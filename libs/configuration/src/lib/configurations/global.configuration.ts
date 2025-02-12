@@ -35,6 +35,6 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
     useSSL: process.env['MINIO_USE_SSL'] === 'true',
     accessKey: process.env['MINIO_ACCESS_KEY'] || 'admin',
     secretKey: process.env['MINIO_SECRET_KEY'] || 'blockchain',
-    bucketName: process.env['MINIO_BUCKET_NAME'] || 'forest-guard',
+    bucketName: process.env['MINIO_BUCKET_NAME'] || 'h2-trust',
   },
 }));
