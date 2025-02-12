@@ -1,0 +1,28 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@h2-trust/amqp": ["libs/amqp/src/index.ts"],
+      "@h2-trust/api": ["libs/api/src/index.ts"],
+      "@h2-trust/blockchain": ["libs/blockchain/src/index.ts"],
+      "@h2-trust/configuration": ["libs/configuration/src/index.ts"],
+      "@h2-trust/database": ["libs/database/src/index.ts"],
+      "@h2-trust/storage": ["libs/storage/src/index.ts"],
+      "@h2-trust/utils": ["libs/utils/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

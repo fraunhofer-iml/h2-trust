@@ -1,0 +1,76 @@
+services:
+  ############
+  # DATABASE #
+  ############
+
+  postgres:
+    image: postgres:17.2-alpine3.21
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=blockchain
+      - POSTGRES_DB=h2_trust
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  ###########
+  # STORAGE #
+  ###########
+
+  minio:
+    profiles:
+      - todo
+    image: minio/minio:RELEASE.2024-09-22T00-33-43Z
+    restart: unless-stopped
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=blockchain
+    ports:
+      - '9000:9000'
+      - '9090:9090'
+    volumes:
+      - minio-data:/data
+    command: server /data --address ":9000" --console-address ":9090"
+
+  minio-setup:
+    profiles:
+      - todo
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_started
+    entrypoint: >
+      /bin/sh -c " echo '### MinIO setup started' && mc alias set local http://minio:9000 admin blockchain && if mc ls
+      local/h2-trust 2>/dev/null; then
+        echo 'Bucket local/h2-trust already exists';
+      else
+        mc mb local/h2-trust &&
+        mc anonymous set download local/h2-trust
+      fi && echo '### MinIO setup ended' "
+
+  #########
+  # UTILS #
+  #########
+
+  rabbitmq:
+    image: rabbitmq:3.13.7-management-alpine
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    environment:
+      RABBITMQ_LOGS: '-error'
+
+networks:
+  default:
+    name: h2-trust
+    driver: bridge
+
+volumes:
+  postgres-data:
+  minio-data:
