@@ -18,28 +18,55 @@ enum CompanyType {
   POWER_PRODUCER
 }
 
+enum BatchType {
+  HYDROGEN
+  POWER
+}
+
+enum PowerAccessApprovalStatus {
+  APPROVED
+  PENDING
+  REJECTED
+}
+
 model User {
   id       String @id @default(cuid())
   name     String
   email    String @unique
   walletId String @unique
 
-  company   Company? @relation(fields: [companyId], references: [id])
-  companyId String?
+  company     Company?      @relation(fields: [companyId], references: [id])
+  companyId   String?
+  processStep ProcessStep[]
 }
 
 model Company {
-  id         String @id @default(cuid())
-  name       String
-  legalForm  String
-  mastNumber String
+  id          String @id @default(cuid())
+  name        String
+  legalForm   String
+  mastrNumber String
 
   companyType CompanyType
 
   address   Address @relation(fields: [addressId], references: [id])
   addressId String
 
-  users User[]
+  users             User[]
+  hydrogenProducers PowerAccessApproval[] @relation(name: "HydrogenProducers")
+  powerProducers    PowerAccessApproval[] @relation(name: "PowerProducers")
+  batch             Batch[]
+}
+
+model Document {
+  id          String @id @default(cuid())
+  description String
+  location    String
+
+  Asset               Asset?                @relation(fields: [assetId], references: [id])
+  assetId             String?
+  powerAccessApproval PowerAccessApproval[]
+  processStep         ProcessStep?          @relation(fields: [processStepId], references: [id])
+  processStepId       String?
 }
 
 model Address {
@@ -51,4 +78,122 @@ model Address {
   country    String
 
   companies Company[]
+  asset     Asset[]
+}
+
+model PowerGenerationUnitType {
+  name                String                @id
+  powerGenerationUnit PowerGenerationUnit[]
+}
+
+model PowerGenerationUnit {
+  id                   String  @id @default(cuid())
+  ratedPower           Decimal
+  gridOperator         String
+  gridLevel            String
+  gridConnectionNumber String
+
+  energyTypeName String
+  energyType     PowerGenerationUnitType @relation(fields: [energyTypeName], references: [name])
+
+  generalInfoId String @unique
+  generalInfo   Asset  @relation(fields: [generalInfoId], references: [id])
+}
+
+model ElectrolysisType {
+  name                   String                   @id
+  hydrogenGEnerationUnit HydrogenGenerationUnit[]
+}
+
+model HydrogenGenerationUnit {
+  id         String  @id @default(cuid())
+  ratedPower Decimal
+
+  electrolysisTypeName String
+  electrolysisType     ElectrolysisType @relation(fields: [electrolysisTypeName], references: [name])
+  generalInfoId        String           @unique
+  generalInfo          Asset            @relation(fields: [generalInfoId], references: [id])
+}
+
+model HydrogenStorageUnit {
+  id       String  @id @default(cuid())
+  capacity Decimal
+  filling  Batch[]
+
+  generalInfoId String @unique
+  generalInfo   Asset  @relation(fields: [generalInfoId], references: [id])
+}
+
+model Asset {
+  id                       String   @id @default(cuid())
+  name                     String
+  mastrNumber              String
+  manufacturer             String
+  modelType                String
+  serialNumber             String
+  commissionedOn           DateTime
+  decommissioningPlannedOn DateTime
+
+  addressId String
+  address   Address @relation(fields: [addressId], references: [id])
+
+  documents              Document[]
+  powerGenerationUnit    PowerGenerationUnit?
+  hydrogenGEnerationUnit HydrogenGenerationUnit?
+  hydrogenStorageUnit    HydrogenStorageUnit?
+  processStep            ProcessStep[]
+}
+
+model EnergySource {
+  name                String                @id
+  powerAccessApproval PowerAccessApproval[]
+}
+
+model PowerAccessApproval {
+  id                        String                    @id @default(cuid())
+  decidedAt                 DateTime
+  powerAccessApprovalStatus PowerAccessApprovalStatus
+
+  energySourceName String
+  energySource     EnergySource @relation(fields: [energySourceName], references: [name])
+
+  hydrogenProducerId String
+  hydrogenProducer   Company @relation(fields: [hydrogenProducerId], references: [id], name: "HydrogenProducers")
+  powerProducerId    String
+  powerProducer      Company @relation(fields: [powerProducerId], references: [id], name: "PowerProducers")
+
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id])
+}
+
+model Batch {
+  id          String       @id @default(cuid())
+  active      Boolean
+  quantity    Decimal
+  recipient   Company      @relation(fields: [recipientId], references: [id])
+  recipientId String
+  processStep ProcessStep?
+  type        BatchType
+
+  hydrogenStorageUnit   HydrogenStorageUnit? @relation(fields: [hydrogenStorageUnitId], references: [id])
+  hydrogenStorageUnitId String?
+}
+
+model Process {
+  name        String        @id
+  processStep ProcessStep[]
+}
+
+model ProcessStep {
+  id          String     @id @default(cuid())
+  timestamp   DateTime
+  documents   Document[]
+  process     Process    @relation(fields: [processName], references: [name])
+  processName String
+  batch       Batch      @relation(fields: [batchId], references: [id])
+  batchId     String     @unique
+  recordedBy  User       @relation(fields: [userId], references: [id])
+  userId      String
+  executedBy  Asset      @relation(fields: [assetId], references: [id])
+  assetId     String
 }

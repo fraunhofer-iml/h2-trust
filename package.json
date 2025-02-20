@@ -45,10 +45,12 @@
   },
   "prisma": {
     "schema": "libs/database/src/lib/schema.prisma",
-    "seed": "tsx ./libs/database/src/lib/seed/import-data.ts"
+    "seed": "tsx ./libs/database/src/lib/seed/import-data.ts",
+    "studio": "npx prisma studio"
   },
   "scripts": {
     "clean": "rm -rf .angular dist node_modules",
+    "migrate-db": "npx prisma migrate dev && npx prisma generate",
     "set-up-db": "npx prisma db push --force-reset && npx prisma db seed",
     "init": "npm run clean && npm install && npm run set-up-db",
     "dev": "nx run-many --all --parallel 4 --target serve",
