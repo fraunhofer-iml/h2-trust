@@ -17,7 +17,7 @@ export class AllErrorsInterceptor implements NestInterceptor {
     return next.handle().pipe(
       catchError((err) => {
         throw new HttpException(err.message, err.status);
-      })
+      }),
     );
   }
 }

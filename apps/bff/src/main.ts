@@ -6,10 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ConfigurationService } from '@h2-trust/configuration';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ConfigurationService } from '@h2-trust/configuration';
 import { AllErrorsInterceptor } from './all-errors.interceptor';
 import { AllExceptionsFilter } from './all-exceptions.filter';
 import { AppModule } from './app/app.module';
@@ -37,7 +37,9 @@ async function bootstrap() {
   app.useLogger(configuration.getGlobalConfiguration().logLevel);
 
   await app.listen(configuration.getBffConfiguration().port);
-  Logger.log(`📡 BFF microservice is up and running via REST: http://localhost:${configuration.getBffConfiguration().port}`);
+  Logger.log(
+    `📡 BFF microservice is up and running via REST: http://localhost:${configuration.getBffConfiguration().port}`,
+  );
 }
 
 bootstrap();

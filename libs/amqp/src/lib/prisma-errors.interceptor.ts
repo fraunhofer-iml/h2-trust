@@ -18,7 +18,7 @@ import { AmqpException } from './amqp.exception';
   Prisma.PrismaClientUnknownRequestError,
   Prisma.PrismaClientRustPanicError,
   Prisma.PrismaClientInitializationError,
-  Prisma.PrismaClientValidationError
+  Prisma.PrismaClientValidationError,
 )
 export class PrismaErrorsInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
@@ -32,7 +32,7 @@ export class PrismaErrorsInterceptor implements NestInterceptor {
         const errorCode = err?.error?.status ? err.error.status : HttpStatus.BAD_REQUEST;
 
         throw new AmqpException(errorMessage, errorCode);
-      })
+      }),
     );
   }
 }

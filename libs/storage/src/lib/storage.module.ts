@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ConfigurationModule, ConfigurationService } from '@h2-trust/configuration';
-import { Module } from '@nestjs/common';
 import { NestMinioModule, NestMinioOptions } from 'nestjs-minio';
+import { Module } from '@nestjs/common';
+import { ConfigurationModule, ConfigurationService } from '@h2-trust/configuration';
 import { StorageService } from './storage.service';
 
 @Module({

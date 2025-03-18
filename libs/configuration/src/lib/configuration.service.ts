@@ -8,14 +8,14 @@
 
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { BFF_CONFIGURATION_IDENTIFIER, BffConfiguration } from './configurations/bff.configuration';
 import { BATCH_SVC_CONFIGURATION_IDENTIFIER, BatchSvcConfiguration } from './configurations/batch-svc.configuration';
-import { GLOBAL_CONFIGURATION_IDENTIFIER, GlobalConfiguration } from './configurations/global.configuration';
-import { KEYCLOAK_CONFIGURATION_IDENTIFIER, KeycloakConfiguration } from './configurations/keycloak.configuration';
+import { BFF_CONFIGURATION_IDENTIFIER, BffConfiguration } from './configurations/bff.configuration';
 import {
   GENERAL_SVC_CONFIGURATION_IDENTIFIER,
   GeneralSvcConfiguration,
 } from './configurations/general-svc.configuration';
+import { GLOBAL_CONFIGURATION_IDENTIFIER, GlobalConfiguration } from './configurations/global.configuration';
+import { KEYCLOAK_CONFIGURATION_IDENTIFIER, KeycloakConfiguration } from './configurations/keycloak.configuration';
 
 @Injectable()
 export class ConfigurationService {
