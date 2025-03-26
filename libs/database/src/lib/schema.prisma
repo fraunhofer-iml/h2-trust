@@ -223,3 +223,10 @@ model ProcessStep {
 
   documents Document[]
 }
+
+enum HydrogenColor {
+  GREEN
+  ORANGE
+  PINK
+  YELLOW
+}

@@ -13,7 +13,7 @@ export class UserController {
   @ApiParam({
     name: 'id',
     description: 'The ID of the user',
-    example: 'user-hydrogen',
+    example: 'user-hydrogen-1',
   })
   getUserDetails(@Param('id') id: string): Promise<UserDetailsDto> {
     return this.userService.readUserWithCompany(id);

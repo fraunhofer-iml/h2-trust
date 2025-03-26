@@ -6,6 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './user.pattern';
-export * from './unit.pattern';
-export * from './process-step.pattern';
+export enum ProcessStepMessagePatterns {
+  READ_ALL = 'process-step.read-all',
+}

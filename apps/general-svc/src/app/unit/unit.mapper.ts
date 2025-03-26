@@ -1,14 +1,8 @@
 import { HttpStatus } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { AmqpException } from '@h2-trust/amqp';
-import {
-  hydrogenProductionOverviewResultFields,
-  hydrogenProductionUnitResultFields,
-  hydrogenStorageOverviewResultFields,
-  hydrogenStorageUnitResultFields,
-  powerProductionUnitResultFields,
-  unitUnionResultFields,
-} from '@h2-trust/api';
+import { hydrogenProductionOverviewResultFields, hydrogenProductionUnitResultFields, hydrogenStorageOverviewResultFields, hydrogenStorageUnitResultFields, powerProductionUnitResultFields, unitUnionResultFields } from '@h2-trust/api';
+
 
 // TODO-MP: correct location for mapper functions?
 

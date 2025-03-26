@@ -74,7 +74,7 @@ describe('UnitService', () => {
       id: givenUnit.id,
       name: givenUnit.name,
       ratedPower: givenUnit.powerProductionUnit.ratedPower.toNumber(),
-      energyTypeName: givenUnit.powerProductionUnit.typeName,
+      typeName: givenUnit.powerProductionUnit.typeName,
       producing: true,
     };
 

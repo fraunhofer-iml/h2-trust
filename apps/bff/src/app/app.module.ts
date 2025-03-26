@@ -4,12 +4,14 @@ import { APP_GUARD } from '@nestjs/core';
 import { ConfigurationModule, KeycloakConfigurationService } from '@h2-trust/configuration';
 import { UnitModule } from './unit/unit.module';
 import { UserModule } from './user/user.module';
+import { ProcessingModule } from './processing/processing.module';
 
 @Module({
   imports: [
     ConfigurationModule,
     UserModule,
     UnitModule,
+    ProcessingModule,
     KeycloakConnectModule.registerAsync({
       useExisting: KeycloakConfigurationService,
       imports: [ConfigurationModule],
