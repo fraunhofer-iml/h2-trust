@@ -1,0 +1,40 @@
+<div class="overview-container">
+  <div class="grey">
+    <h2 class="medium">My Account</h2>
+  </div>
+  <div class="overview-content">
+    <mat-card class="card">
+      <h3 class="medium subtitle">Personal</h3>
+      <mat-card-content class="attributes">
+        <div class="content">
+          <span class="medium grey">Name</span>
+          <span>{{ userDetails.name }}</span>
+        </div>
+        <div class="content">
+          <span class="medium grey">Mail</span>
+          <span>{{ userDetails.email }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="card">
+      <h3 class="subtitle medium">Company</h3>
+      <mat-card-content class="attributes">
+        <div class="content">
+          <span class="medium grey">Name</span>
+          <span>{{ userDetails.company.name }}</span>
+        </div>
+        <div class="content">
+          <span class="medium grey">Address</span>
+          <span>
+            {{ userDetails.company.address.street }},{{ userDetails.company.address.postalCode }}
+            {{ userDetails.company.address.city }}
+          </span>
+        </div>
+        <div class="content">
+          <span class="medium grey">MaStR-number</span>
+          <span>{{ userDetails.company.mastrNumber }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

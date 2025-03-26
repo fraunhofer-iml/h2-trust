@@ -3,3 +3,4 @@ export * from './company';
 export * from './unit';
 export * from './process-step';
 export * from './other';
+export * from './mocks';

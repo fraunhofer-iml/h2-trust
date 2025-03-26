@@ -1,0 +1,50 @@
+<mat-drawer-container class="sidebar-container" autosize>
+  <mat-drawer mode="side" [opened]="true" [disableClose]="true">
+    <div class="sidebar-content">
+      <div options-container>
+        <h2 i18n class="green medium">H2 Trust</h2>
+        <span i18n class="list-title grey">Hydrogen</span>
+        <mat-selection-list class="option-list">
+          @for(option of hydrogenOptions; track option.title){
+          <a class="account-settings-button" routerLink="{{ option.route }}">
+            <div class="option">
+              <span class="material-symbols-outlined grey">{{ option.icon }}</span>
+              <span class="grey">{{ option.title }}</span>
+            </div>
+          </a>
+          }
+        </mat-selection-list>
+      </div>
+      <mat-expansion-panel class="user-block" hideToggle>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <div class="user-toggle">
+              <div class="icon-box">
+                <span class="material-symbols-outlined white">person </span>
+              </div>
+              @if (userDetails$ | async; as details) {
+              <div class="user-information">
+                <span class="bold grey">{{ details.name }}</span>
+                <span class="small grey">{{ details.email }}</span>
+              </div>
+              }
+            </div>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="account-settings-wrapper">
+          <a class="account-settings-button" routerLink="/">
+            <span class="material-symbols-outlined grey">settings</span>
+            <span class="grey">account</span>
+          </a>
+          <button class="account-settings-button reset-button w-full" (click)="logout()">
+            <span class="material-symbols-outlined grey">logout</span>
+            <span class="grey">logout</span>
+          </button>
+        </div>
+      </mat-expansion-panel>
+    </div>
+  </mat-drawer>
+  <mat-drawer-content class="content-background">
+    <ng-content></ng-content>
+  </mat-drawer-content>
+</mat-drawer-container>

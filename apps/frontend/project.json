@@ -13,7 +13,7 @@
         "outputPath": "dist/apps/frontend/browser",
         "index": "apps/frontend/src/index.html",
         "main": "apps/frontend/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": ["zone.js", "@angular/localize/init"],
         "tsConfig": "apps/frontend/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
@@ -26,6 +26,13 @@
         "scripts": []
       },
       "configurations": {
+        "en": {
+          "localize": ["en-US"]
+        },
+        "de": {
+          "localize": ["de-DE"]
+        },
+
         "production": {
           "budgets": [
             {
@@ -55,6 +62,12 @@
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
+        "en": {
+          "buildTarget": "frontend:build:development,en"
+        },
+        "de": {
+          "buildTarget": "frontend:build:development,de"
+        },
         "production": {
           "buildTarget": "frontend:build:production"
         },
@@ -110,6 +123,18 @@
         }
       },
       "defaultConfiguration": "production"
+    },
+
+    "i18n": {
+      "sourceLocale": "de",
+      "locales": {
+        "en-US": {
+          "translation": "apps/frontend/src/locales/messages.en-US.xlf"
+        },
+        "de-DE": {
+          "translation": "apps/frontend/src/locales/messages.de-DE.xlf"
+        }
+      }
     },
     "serve-ssr": {
       "executor": "@angular-devkit/build-angular:ssr-dev-server",

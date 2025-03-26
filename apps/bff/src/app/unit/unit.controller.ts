@@ -1,10 +1,11 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Logger, Param, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { UnitDto, UnitOverviewDto, UnitType } from '@h2-trust/api';
 import { UnitService } from './unit.service';
 
 @Controller('units')
 export class UnitController {
+  logger = new Logger();
   constructor(private readonly unitService: UnitService) {}
 
   @Get(':id')

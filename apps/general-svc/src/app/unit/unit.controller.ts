@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Logger } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UnitMessagePatterns } from '@h2-trust/amqp';
 import { UnitDto, UnitOverviewDto, UnitType } from '@h2-trust/api';
@@ -6,6 +6,7 @@ import { UnitService } from './unit.service';
 
 @Controller()
 export class UnitController {
+  logger = new Logger();
   constructor(private readonly service: UnitService) {}
 
   @MessagePattern(UnitMessagePatterns.READ)

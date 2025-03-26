@@ -9,6 +9,7 @@ export class UserService {
   constructor(@Inject(AmqpClientEnum.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
 
   readUserWithCompany(id: string): Promise<UserDetailsDto> {
-    return firstValueFrom(this.generalService.send(UserMessagePatterns.READ_WITH_COMPANY, { id }));
+    const res = firstValueFrom(this.generalService.send(UserMessagePatterns.READ_WITH_COMPANY, { id }));
+    return res;
   }
 }

@@ -1,0 +1,25 @@
+<div class="mat-elevation-z8">
+  <table mat-table *ngIf="dataSource$ | async as source" [dataSource]="source" matSort>
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-font-size">Name</th>
+      <td mat-cell *matCellDef="let row" class="table-font-size">{{ row.name }}</td>
+    </ng-container>
+    <ng-container matColumnDef="fillingLevel">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-font-size">Filling Level</th>
+      <td mat-cell *matCellDef="let row" class="table-font-size">{{ row.filling }}/{{ row.capacity }}</td>
+    </ng-container>
+    <ng-container matColumnDef="fillingStatus">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-font-size">Filling Status</th>
+      <td mat-cell *matCellDef="let row" class="table-font-size"><div class="red-orb"></div></td>
+    </ng-container>
+    <!-- Returned Overview Unit doesnt contain hydrogenproduction object -->
+    <ng-container matColumnDef="productionUnit">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-font-size">Production Unit</th>
+      <td mat-cell *matCellDef="let row" class="table-font-size"><!-- {{ row.hydrogenProductionUnit.name }} --></td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+</div>

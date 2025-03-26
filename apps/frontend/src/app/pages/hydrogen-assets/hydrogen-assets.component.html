@@ -1,0 +1,14 @@
+<div class="hydrogen-units-container">
+  <div class="grey">
+    <h2 class="medium">Units</h2>
+  </div>
+  <mat-card class="table-card">
+    <h3 class="medium">Overview</h3>
+    <mat-tab-group mat-align-tabs="start" mat-stretch-tabs="false">
+      <mat-tab label="{{ assetTabs.PRODUCTION }}">
+        <app-hydrogen-production-table></app-hydrogen-production-table
+      ></mat-tab>
+      <mat-tab label="{{ assetTabs.STORAGE }}"> <app-hydrogen-storage-table></app-hydrogen-storage-table></mat-tab>
+    </mat-tab-group>
+  </mat-card>
+</div>
