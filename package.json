@@ -87,6 +87,7 @@
     "axios": "^1.6.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "danger": "^12.3.4",
     "express": "^4.21.2",
     "keycloak-angular": "^19.0.2",
     "keycloak-js": "^26.2.0",
