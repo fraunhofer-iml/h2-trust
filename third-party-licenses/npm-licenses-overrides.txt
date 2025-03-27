@@ -1,0 +1,1 @@
+@ap3/source@0.0.1;@ngx-translate/core@15.0.0;@ngx-translate/http-loader@8.0.0;@module-federation/bridge-react-webpack-plugin@0.2.8;only@0.0.2;rgbcolor@1.0.1;union@0.5.0
