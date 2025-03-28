@@ -87,13 +87,10 @@ all:deploy:
     - git config --global user.email "gitlab@oe260.iml.fhg.de"
     - git config --global user.name "GitLab CI/CD"
   script:
-    - cd pipeline/kustomize/core/bff/overlays/prod
+    - cd pipeline/kustomize/core/overlays/prod
     - kustomize edit set image ${CRI_PATH}/bff:$CI_COMMIT_TAG
-    - cd ../../../general-svc/overlays/prod
     - kustomize edit set image ${CRI_PATH}/general-svc:$CI_COMMIT_TAG
-    - cd ../../../batch-svc/overlays/prod
     - kustomize edit set image ${CRI_PATH}/batch-svc:$CI_COMMIT_TAG
-    - cd ../../../frontend/overlays/prod
     - kustomize edit set image ${CRI_PATH}/frontend:$CI_COMMIT_TAG
     - git commit -am '[skip ci] manifest-image update'
     - git push origin main
@@ -116,13 +113,10 @@ all-dev:deploy:
     - git config --global user.email "gitlab@oe260.iml.fhg.de"
     - git config --global user.name "GitLab CI/CD"
   script:
-    - cd pipeline/kustomize/core/bff/overlays/dev
+    - cd pipeline/kustomize/core/overlays/dev
     - kustomize edit set image ${CRI_PATH}/bff:$CI_COMMIT_TAG
-    - cd ../../../general-svc/overlays/dev
     - kustomize edit set image ${CRI_PATH}/general-svc:$CI_COMMIT_TAG
-    - cd ../../../batch-svc/overlays/dev
     - kustomize edit set image ${CRI_PATH}/batch-svc:$CI_COMMIT_TAG
-    - cd ../../../frontend/overlays/dev
     - kustomize edit set image ${CRI_PATH}/frontend:$CI_COMMIT_TAG
     - git commit -am '[skip ci] manifest-image update'
     - git push origin main
