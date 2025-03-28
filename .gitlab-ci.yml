@@ -72,6 +72,10 @@ all:license-check:
     expire_in: 1 hour
     paths:
       - $LICENSES_LIST
+  only:
+    - merge_requests
+    - main
+    - tags
 
 all:deploy:
   stage: deploy
