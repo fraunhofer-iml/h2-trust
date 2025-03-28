@@ -1,4 +1,4 @@
-export const BASE_URL = 'h2-trust-bff.apps.blockchain-europe.iml.fraunhofer.de';
+export const BASE_URL = 'https://h2-trust-bff.apps.blockchain-europe.iml.fraunhofer.de';
 
 export const environment = {
   production: false,
