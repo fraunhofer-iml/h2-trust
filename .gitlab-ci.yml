@@ -102,6 +102,7 @@ all:deploy:
     - /^.*rel.*$/
   except:
     - branches
+    - merge_requests
 
 all-dev:deploy:
   stage: deploy
@@ -128,3 +129,4 @@ all-dev:deploy:
     - /^.*rc.*$/
   except:
     - branches
+    - merge_requests
