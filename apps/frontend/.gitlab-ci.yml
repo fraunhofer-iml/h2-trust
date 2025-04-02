@@ -71,7 +71,7 @@ frontend:build:
   except:
     - /^.*rel.*$/
 
-frontend-prod:build:
+prod:frontend:build:
   stage: build
   extends: .default
   script:
@@ -83,8 +83,6 @@ frontend-prod:build:
     - /^.*rel.*$/
 
 frontend:archive:
-  needs:
-    - frontend:build
   stage: archive
   image: docker
   services:
@@ -94,5 +92,12 @@ frontend:archive:
   script:
     - docker build --pull --cache-from ${CRI_PATH}/frontend --build-arg APP=frontend -t ${CRI_PATH}/frontend:$CI_COMMIT_TAG -f docker/angular.dockerfile  .
     - docker push ${CRI_PATH}/frontend:$CI_COMMIT_TAG
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^.*rel.*$/'
+      needs: 
+        - prod:frontend:build
+    - when: always
+      needs:
+        - frontend:build
   only:
     - tags
