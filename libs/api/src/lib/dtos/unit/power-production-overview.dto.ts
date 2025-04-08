@@ -1,8 +1,10 @@
+import { PowerProductionUnitEntity } from '@h2-trust/amqp';
+
 export class PowerProductionOverviewDto {
   id: string;
   name: string;
   ratedPower: number;
-  typeName: string;
+  typeName: string | undefined;
   producing: boolean;
 
   constructor(id: string, name: string, ratedPower: number, typeName: string, producing: boolean) {
@@ -11,5 +13,15 @@ export class PowerProductionOverviewDto {
     this.ratedPower = ratedPower;
     this.typeName = typeName;
     this.producing = producing;
+  }
+
+  static fromEntity(unit: PowerProductionUnitEntity): PowerProductionOverviewDto {
+    return <PowerProductionOverviewDto>{
+      id: unit.id,
+      name: unit.name,
+      ratedPower: unit.ratedPower,
+      typeName: unit.typeName,
+      producing: true,
+    };
   }
 }

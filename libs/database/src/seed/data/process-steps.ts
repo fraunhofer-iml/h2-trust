@@ -4,7 +4,7 @@ export const ProcessSteps = <ProcessStep[]>[
   {
     id: 'process-step-power-production-1',
     timestamp: new Date('2025-01-20'),
-    processName: 'POWER_PRODUCTION',
+    processTypeName: 'POWER_PRODUCTION',
     batchId: 'batch-produced-power-1',
     userId: 'user-power-1',
     unitId: 'power-production-unit-1',
@@ -12,7 +12,7 @@ export const ProcessSteps = <ProcessStep[]>[
   {
     id: 'process-step-hydrogen-production-1',
     timestamp: new Date('2025-01-20'),
-    processName: 'HYDROGEN_PRODUCTION',
+    processTypeName: 'HYDROGEN_PRODUCTION',
     batchId: 'batch-produced-hydrogen-1',
     userId: 'user-hydrogen-1',
     unitId: 'hydrogen-production-unit-1',
@@ -20,7 +20,7 @@ export const ProcessSteps = <ProcessStep[]>[
   {
     id: 'process-step-hydrogen-bottling-1',
     timestamp: new Date('2025-03-11T02:36:40.001Z'),
-    processName: 'BOTTLING',
+    processTypeName: 'BOTTLING',
     batchId: 'batch-bottled-hydrogen-1',
     userId: 'user-hydrogen-1',
     unitId: 'hydrogen-storage-unit-1',
@@ -28,7 +28,7 @@ export const ProcessSteps = <ProcessStep[]>[
   {
     id: 'process-step-hydrogen-bottling-2',
     timestamp: new Date('2024-11-07T03:57:43.001Z'),
-    processName: 'BOTTLING',
+    processTypeName: 'BOTTLING',
     batchId: 'batch-bottled-hydrogen-2',
     userId: 'user-hydrogen-1',
     unitId: 'hydrogen-storage-unit-1',
@@ -36,7 +36,7 @@ export const ProcessSteps = <ProcessStep[]>[
   {
     id: 'process-step-hydrogen-bottling-3',
     timestamp: new Date('2024-10-17T01:41:12.001Z'),
-    processName: 'BOTTLING',
+    processTypeName: 'BOTTLING',
     batchId: 'batch-bottled-hydrogen-3',
     userId: 'user-hydrogen-1',
     unitId: 'hydrogen-storage-unit-1',
@@ -44,7 +44,7 @@ export const ProcessSteps = <ProcessStep[]>[
   {
     id: 'process-step-hydrogen-bottling-4',
     timestamp: new Date('2024-12-15T06:22:33.001Z'),
-    processName: 'BOTTLING',
+    processTypeName: 'BOTTLING',
     batchId: 'batch-bottled-hydrogen-4',
     userId: 'user-hydrogen-1',
     unitId: 'hydrogen-storage-unit-1',
@@ -52,7 +52,7 @@ export const ProcessSteps = <ProcessStep[]>[
   {
     id: 'process-step-hydrogen-bottling-5',
     timestamp: new Date('2024-11-25T08:12:55.001Z'),
-    processName: 'BOTTLING',
+    processTypeName: 'BOTTLING',
     batchId: 'batch-bottled-hydrogen-5',
     userId: 'user-hydrogen-1',
     unitId: 'hydrogen-storage-unit-1',
@@ -60,7 +60,7 @@ export const ProcessSteps = <ProcessStep[]>[
   {
     id: 'process-step-hydrogen-bottling-6',
     timestamp: new Date('2024-12-01T04:45:22.001Z'),
-    processName: 'BOTTLING',
+    processTypeName: 'BOTTLING',
     batchId: 'batch-bottled-hydrogen-6',
     userId: 'user-hydrogen-1',
     unitId: 'hydrogen-storage-unit-1',
@@ -68,7 +68,7 @@ export const ProcessSteps = <ProcessStep[]>[
   {
     id: 'process-step-hydrogen-bottling-7',
     timestamp: new Date('2024-10-21T23:55:06.001Z'),
-    processName: 'BOTTLING',
+    processTypeName: 'BOTTLING',
     batchId: 'batch-bottled-hydrogen-7',
     userId: 'user-hydrogen-1',
     unitId: 'hydrogen-storage-unit-1',
@@ -76,7 +76,7 @@ export const ProcessSteps = <ProcessStep[]>[
   {
     id: 'process-step-hydrogen-bottling-8',
     timestamp: new Date('2025-02-09T06:32:41.001Z'),
-    processName: 'BOTTLING',
+    processTypeName: 'BOTTLING',
     batchId: 'batch-bottled-hydrogen-8',
     userId: 'user-hydrogen-1',
     unitId: 'hydrogen-storage-unit-1',
@@ -84,7 +84,7 @@ export const ProcessSteps = <ProcessStep[]>[
   {
     id: 'process-step-hydrogen-bottling-9',
     timestamp: new Date('2025-01-12T09:08:02.001Z'),
-    processName: 'BOTTLING',
+    processTypeName: 'BOTTLING',
     batchId: 'batch-bottled-hydrogen-9',
     userId: 'user-hydrogen-1',
     unitId: 'hydrogen-storage-unit-1',

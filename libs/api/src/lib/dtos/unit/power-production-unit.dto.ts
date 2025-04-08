@@ -1,4 +1,4 @@
-import { AddressDto } from '../other';
+import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
 
 export class PowerProductionUnitDto extends BaseUnitDto {
@@ -18,6 +18,10 @@ export class PowerProductionUnitDto extends BaseUnitDto {
     commissionedOn: Date,
     decommissioningPlannedOn: Date,
     address: AddressDto,
+    company: {
+      id: string;
+      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string }[];
+    },
     ratedPower: number,
     gridOperator: string,
     gridLevel: string,
@@ -34,6 +38,7 @@ export class PowerProductionUnitDto extends BaseUnitDto {
       commissionedOn,
       decommissioningPlannedOn,
       address,
+      company,
     );
     this.ratedPower = ratedPower;
     this.gridOperator = gridOperator;

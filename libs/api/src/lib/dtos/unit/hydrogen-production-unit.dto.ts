@@ -1,10 +1,13 @@
-import { AddressDto } from '../other';
+import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
 
 export class HydrogenProductionUnitDto extends BaseUnitDto {
   ratedPower: number;
   typeName: string;
-  hydrogenStorageUnitId: string;
+  hydrogenStorageUnit: {
+    id: string;
+    name: string;
+  };
 
   constructor(
     id: string,
@@ -16,9 +19,13 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     commissionedOn: Date,
     decommissioningPlannedOn: Date,
     address: AddressDto,
+    company: {
+      id: string;
+      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string }[];
+    },
     ratedPower: number,
     typeName: string,
-    hydrogenStorageUnitId: string,
+    hydrogenStorageUnit: { id: string; name: string },
   ) {
     super(
       id,
@@ -30,9 +37,10 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
       commissionedOn,
       decommissioningPlannedOn,
       address,
+      company,
     );
     this.ratedPower = ratedPower;
     this.typeName = typeName;
-    this.hydrogenStorageUnitId = hydrogenStorageUnitId;
+    this.hydrogenStorageUnit = hydrogenStorageUnit;
   }
 }

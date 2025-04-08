@@ -6,10 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RpcException } from '@nestjs/microservices';
+import { Module } from '@nestjs/common';
+import { Broker } from './broker/broker';
 
-export class AmqpException extends RpcException {
-  constructor(message: string, status: number) {
-    super({ message, status });
-  }
-}
+@Module({
+  imports: [],
+  controllers: [],
+  providers: [],
+  exports: [Broker],
+})
+export class AmqpModule {}

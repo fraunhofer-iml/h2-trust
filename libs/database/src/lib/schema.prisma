@@ -14,7 +14,7 @@ datasource db {
 }
 
 model Address {
-  id         String @id @default(cuid())
+  id         String @id @default(cuid(2))
   street     String
   postalCode String
   city       String
@@ -31,9 +31,8 @@ enum CompanyType {
 }
 
 model Company {
-  id          String @id @default(cuid())
+  id          String @id @default(cuid(2))
   name        String
-  legalForm   String
   mastrNumber String
 
   companyType CompanyType
@@ -51,7 +50,7 @@ model Company {
 }
 
 model User {
-  id    String @id @default(cuid())
+  id    String @id @default(cuid(2))
   name  String
   email String @unique
 
@@ -62,7 +61,7 @@ model User {
 }
 
 model Unit {
-  id                       String   @id @default(cuid())
+  id                       String   @id @default(cuid(2))
   name                     String
   mastrNumber              String
   manufacturer             String
@@ -135,7 +134,7 @@ model HydrogenStorageUnit {
 }
 
 model Document {
-  id          String @id @default(cuid())
+  id          String @id @default(cuid(2))
   description String
   location    String
 
@@ -161,7 +160,7 @@ enum PowerAccessApprovalStatus {
 }
 
 model PowerAccessApproval {
-  id                        String                    @id @default(cuid())
+  id                        String                    @id @default(cuid(2))
   decidedAt                 DateTime
   powerAccessApprovalStatus PowerAccessApprovalStatus
 
@@ -184,7 +183,7 @@ enum BatchType {
 }
 
 model Batch {
-  id       String    @id @default(cuid())
+  id       String    @id @default(cuid(2))
   active   Boolean
   quantity Decimal
   quality  String
@@ -199,18 +198,18 @@ model Batch {
   processStep ProcessStep?
 }
 
-model Process {
+model ProcessType {
   name String @id
 
   processStep ProcessStep[]
 }
 
 model ProcessStep {
-  id        String   @id @default(cuid())
+  id        String   @id @default(cuid(2))
   timestamp DateTime
 
-  process     Process @relation(fields: [processName], references: [name])
-  processName String
+  processType     ProcessType @relation(fields: [processTypeName], references: [name])
+  processTypeName String
 
   batch   Batch  @relation(fields: [batchId], references: [id])
   batchId String @unique

@@ -1,14 +1,18 @@
+import { HydrogenProductionUnitEntity } from '@h2-trust/amqp';
+
 export class HydrogenProductionOverviewDto {
   id: string;
   name: string;
   ratedPower: number;
-  typeName: string;
+  typeName: string | undefined;
   producing: boolean;
   powerAccessApprovalStatus: boolean;
-  hydrogenStorageUnit: {
-    id: string;
-    name: string;
-  };
+  hydrogenStorageUnit:
+    | {
+        id?: string;
+        name?: string;
+      }
+    | undefined;
 
   constructor(
     id: string,
@@ -29,5 +33,21 @@ export class HydrogenProductionOverviewDto {
     this.producing = producing;
     this.powerAccessApprovalStatus = powerAccessApprovalStatus;
     this.hydrogenStorageUnit = hydrogenStorageUnit;
+  }
+
+  static fromEntity(unit: HydrogenProductionUnitEntity): HydrogenProductionOverviewDto {
+    return <HydrogenProductionOverviewDto>{
+      id: unit.id,
+      name: unit.name,
+      ratedPower: unit.ratedPower,
+      typeName: unit.typeName,
+      producing: true,
+      powerAccessApprovalStatus: HydrogenProductionOverviewDto.existsPowerProducer(unit),
+      hydrogenStorageUnit: unit.hydrogenStorageUnit,
+    };
+  }
+
+  private static existsPowerProducer(unit: HydrogenProductionUnitEntity) {
+    return unit.company?.hydrogenApprovals?.length ? unit.company.hydrogenApprovals.length !== 0 : false;
   }
 }

@@ -9,7 +9,7 @@ export * from './hydrogen-storage-units';
 export * from './power-access-approvals';
 export * from './power-production-units';
 export * from './power-production-unit-types';
-export * from './processes';
+export * from './process-types';
 export * from './process-steps';
 export * from './units';
 export * from './users';

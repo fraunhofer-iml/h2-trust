@@ -8,10 +8,13 @@
 
 import { Module } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
+import { ProcessStepRepository } from './process-step';
+import { UnitRepository } from './unit';
+import { UserRepository } from './user';
 
 @Module({
   controllers: [],
-  providers: [],
-  exports: [PrismaService],
+  providers: [PrismaService, UserRepository, UnitRepository, ProcessStepRepository],
+  exports: [PrismaService, UserRepository, UnitRepository, ProcessStepRepository],
 })
 export class DatabaseModule {}

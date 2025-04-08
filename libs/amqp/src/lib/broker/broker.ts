@@ -8,15 +8,15 @@
 
 import { DynamicModule } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { AmqpClientEnum } from './queues';
+import { BrokerQueues } from './broker-queues';
 
 export class Broker {
   public getBatchSvcBroker(): DynamicModule {
-    return this.getMessageBroker(AmqpClientEnum.QUEUE_BATCH_SVC);
+    return this.getMessageBroker(BrokerQueues.QUEUE_BATCH_SVC);
   }
 
   public getGeneralSvcBroker(): DynamicModule {
-    return this.getMessageBroker(AmqpClientEnum.QUEUE_GENERAL_SVC);
+    return this.getMessageBroker(BrokerQueues.QUEUE_GENERAL_SVC);
   }
 
   private getMessageBroker(queue: string): DynamicModule {

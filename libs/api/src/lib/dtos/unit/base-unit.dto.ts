@@ -1,4 +1,4 @@
-import { AddressDto } from '../other';
+import { AddressDto } from '../address';
 
 export abstract class BaseUnitDto {
   id: string;
@@ -10,8 +10,15 @@ export abstract class BaseUnitDto {
   commissionedOn: Date;
   decommissioningPlannedOn: Date;
   address: AddressDto;
+  company: {
+    id: string;
+    hydrogenApprovals: {
+      powerAccessApprovalStatus: string;
+      powerProducerId: string;
+    }[];
+  };
 
-  constructor(
+  protected constructor(
     id: string,
     name: string,
     mastrNumber: string,
@@ -21,6 +28,10 @@ export abstract class BaseUnitDto {
     commissionedOn: Date,
     decommissioningPlannedOn: Date,
     address: AddressDto,
+    company: {
+      id: string;
+      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string }[];
+    },
   ) {
     this.id = id;
     this.name = name;
@@ -31,5 +42,6 @@ export abstract class BaseUnitDto {
     this.commissionedOn = commissionedOn;
     this.decommissioningPlannedOn = decommissioningPlannedOn;
     this.address = address;
+    this.company = company;
   }
 }

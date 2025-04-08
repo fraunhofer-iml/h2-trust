@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { userWithCompanyResultFields } from '@h2-trust/api';
-import { Companies, PrismaService, Users } from '@h2-trust/database';
+import { Companies, DatabaseModule, PrismaService, Users, userWithCompanyResultFields } from '@h2-trust/database';
 import { UserService } from './user.service';
 
 // TODO-MP: see integration tests in skala
@@ -10,7 +9,7 @@ describe('UserService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [],
+      imports: [DatabaseModule],
       providers: [
         UserService,
         {

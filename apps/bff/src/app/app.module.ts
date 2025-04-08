@@ -2,9 +2,9 @@ import { AuthGuard, KeycloakConnectModule } from 'nest-keycloak-connect';
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigurationModule, KeycloakConfigurationService } from '@h2-trust/configuration';
+import { ProcessingModule } from './processing/processing.module';
 import { UnitModule } from './unit/unit.module';
 import { UserModule } from './user/user.module';
-import { ProcessingModule } from './processing/processing.module';
 
 @Module({
   imports: [

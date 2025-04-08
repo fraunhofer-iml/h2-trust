@@ -1,5 +1,4 @@
-// TODO-MP: rename to FillingBatchDto and rename file to filling-batch.dto.ts
-export class FillingBatch {
+export class FillingBatchEntity {
   id: string;
   quantity: number;
 

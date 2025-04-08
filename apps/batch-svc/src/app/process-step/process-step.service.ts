@@ -1,30 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { ProcessingOverviewDto, processStepResultFields } from '@h2-trust/api';
-import { PrismaService } from '@h2-trust/database';
-import { mapAllProcessStepsToProcessingOverviewRows } from './process-step.mapper';
-
+import { ProcessStepEntity } from '@h2-trust/amqp';
+import { ProcessStepRepository } from '@h2-trust/database';
 
 @Injectable()
 export class ProcessStepService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly repository: ProcessStepRepository) {}
 
-  async readProcessSteps(processName: string, active: boolean, companyId: string): Promise<ProcessingOverviewDto[]> {
-    return this.prismaService.processStep
-      .findMany({
-        where: {
-          processName: processName,
-          batch: {
-            active: active,
-          },
-          executedBy: {
-            companyId: companyId,
-          },
-        },
-        orderBy: {
-          timestamp: 'desc',
-        },
-        ...processStepResultFields,
-      })
-      .then(mapAllProcessStepsToProcessingOverviewRows);
+  async readProcessSteps(processTypeName: string, active: boolean, companyId: string): Promise<ProcessStepEntity[]> {
+    return this.repository.readProcessSteps(processTypeName, active, companyId);
   }
 }

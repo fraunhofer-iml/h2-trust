@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { CallHandler, Catch, ExecutionContext, HttpStatus, Injectable, NestInterceptor } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { AmqpException } from './amqp.exception';
+import { BrokerException } from './broker/broker-exception';
 
 @Injectable()
 @Catch(
@@ -31,7 +31,7 @@ export class PrismaErrorsInterceptor implements NestInterceptor {
 
         const errorCode = err?.error?.status ? err.error.status : HttpStatus.BAD_REQUEST;
 
-        throw new AmqpException(errorMessage, errorCode);
+        throw new BrokerException(errorMessage, errorCode);
       }),
     );
   }

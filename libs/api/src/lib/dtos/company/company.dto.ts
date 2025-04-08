@@ -1,10 +1,9 @@
-import { AddressDto } from '../other';
+import { AddressDto } from '../address';
 import { UserDto } from '../user';
 
 export class CompanyDto {
   id: string;
   name: string;
-  legalForm: string;
   mastrNumber: string;
   companyType: string;
   address: AddressDto;
@@ -13,7 +12,6 @@ export class CompanyDto {
   constructor(
     id: string,
     name: string,
-    legalForm: string,
     mastrNumber: string,
     companyType: string,
     address: AddressDto,
@@ -21,7 +19,6 @@ export class CompanyDto {
   ) {
     this.id = id;
     this.name = name;
-    this.legalForm = legalForm;
     this.mastrNumber = mastrNumber;
     this.companyType = companyType;
     this.address = address;

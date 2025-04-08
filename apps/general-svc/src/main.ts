@@ -9,7 +9,7 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { AmqpClientEnum, PrismaErrorsInterceptor } from '@h2-trust/amqp';
+import { BrokerQueues, PrismaErrorsInterceptor } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { AppModule } from './app/app.module';
 
@@ -25,7 +25,7 @@ async function bootstrap() {
     transport: Transport.RMQ,
     options: {
       urls: [amqpUri],
-      queue: AmqpClientEnum.QUEUE_GENERAL_SVC,
+      queue: BrokerQueues.QUEUE_GENERAL_SVC,
       queueOptions: {
         durable: false,
       },
@@ -43,7 +43,7 @@ async function bootstrap() {
   await app
     .listen()
     .then(() =>
-      Logger.log(`🧰 General microservice is up and running via RMQ: ${amqpUri}:${AmqpClientEnum.QUEUE_GENERAL_SVC}`),
+      Logger.log(`🧰 General microservice is up and running via RMQ: ${amqpUri}:${BrokerQueues.QUEUE_GENERAL_SVC}`),
     );
 }
 

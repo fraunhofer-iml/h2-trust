@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
+import { DatabaseModule } from '@h2-trust/database';
 import { ProcessStepController } from './process-step.controller';
 import { ProcessStepService } from './process-step.service';
-import { PrismaService } from '@h2-trust/database';
 
 @Module({
+  imports: [DatabaseModule],
   controllers: [ProcessStepController],
-  providers: [ProcessStepService, PrismaService]
+  providers: [ProcessStepService],
 })
 export class ProcessStepModule {}

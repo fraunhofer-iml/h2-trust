@@ -1,6 +1,6 @@
-import { Process } from '@prisma/client';
+import { ProcessType } from '@prisma/client';
 
-export const Processes = <Process[]>[
+export const ProcessTypes = <ProcessType[]>[
   {
     name: 'POWER_PRODUCTION',
   },

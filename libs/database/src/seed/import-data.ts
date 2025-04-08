@@ -19,8 +19,8 @@ import {
   PowerAccessApprovals,
   PowerProductionUnits,
   PowerProductionUnitTypes,
-  Processes,
   ProcessSteps,
+  ProcessTypes,
   Units,
   Users,
 } from './data';
@@ -78,9 +78,9 @@ const data: Data[] = [
     createRecord: async (data: any) => await prisma.batch.create({ data }),
   },
   {
-    name: 'process',
-    records: Processes,
-    createRecord: async (data: any) => await prisma.process.create({ data }),
+    name: 'processTypes',
+    records: ProcessTypes,
+    createRecord: async (data: any) => await prisma.processType.create({ data }),
   },
   {
     name: 'processStep',

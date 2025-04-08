@@ -1,0 +1,67 @@
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { BaseUnitDbType } from '@h2-trust/database';
+import { AddressEntity } from '../address';
+
+export abstract class BaseUnitEntity {
+  id: string;
+  name: string;
+  mastrNumber: string;
+  manufacturer: string;
+  modelType: string;
+  serialNumber: string;
+  commissionedOn: Date;
+  decommissioningPlannedOn: Date;
+  address?: AddressEntity;
+  company?: {
+    id?: string;
+    hydrogenApprovals: {
+      powerAccessApprovalStatus: string;
+      powerProducerId: string;
+    }[];
+  } | null;
+
+  protected constructor(
+    id: string,
+    name: string,
+    mastrNumber: string,
+    manufacturer: string,
+    modelType: string,
+    serialNumber: string,
+    commissionedOn: Date,
+    decommissioningPlannedOn: Date,
+    address: AddressEntity,
+    company: {
+      id: string;
+      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string }[];
+    } | null,
+  ) {
+    this.id = id;
+    this.name = name;
+    this.mastrNumber = mastrNumber;
+    this.manufacturer = manufacturer;
+    this.modelType = modelType;
+    this.serialNumber = serialNumber;
+    this.commissionedOn = commissionedOn;
+    this.decommissioningPlannedOn = decommissioningPlannedOn;
+    this.address = address;
+    this.company = company;
+  }
+
+  protected static mapCompany(unit: BaseUnitDbType) {
+    return unit.company
+      ? {
+          id: unit.company.id,
+          hydrogenApprovals: BaseUnitEntity.mapHydrogenApprovals(unit),
+        }
+      : undefined;
+  }
+
+  private static mapHydrogenApprovals(unit: BaseUnitDbType) {
+    return (
+      unit.company?.hydrogenApprovals?.map((approval) => ({
+        powerAccessApprovalStatus: approval.powerAccessApprovalStatus,
+        powerProducerId: approval.powerProducerId,
+      })) ?? []
+    );
+  }
+}

@@ -1,10 +1,15 @@
-import { AddressDto } from '../other';
+import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
-import { FillingBatch } from './filling.batch';
+import { FillingBatchDto } from './filling-batch.dto';
 
 export class HydrogenStorageUnitDto extends BaseUnitDto {
   capacity: number;
-  filling: FillingBatch[];
+  filling: FillingBatchDto[];
+  hydrogenProductionUnits: {
+    id: string;
+    name: string;
+    hydrogenStorageUnitId: string;
+  }[];
 
   constructor(
     id: string,
@@ -16,8 +21,17 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
     commissionedOn: Date,
     decommissioningPlannedOn: Date,
     address: AddressDto,
+    company: {
+      id: string;
+      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string }[];
+    },
     capacity: number,
-    filling: FillingBatch[],
+    filling: FillingBatchDto[],
+    hydrogenProductionUnits: {
+      id: string;
+      name: string;
+      hydrogenStorageUnitId: string;
+    }[],
   ) {
     super(
       id,
@@ -29,8 +43,10 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
       commissionedOn,
       decommissioningPlannedOn,
       address,
+      company,
     );
     this.capacity = capacity;
     this.filling = filling;
+    this.hydrogenProductionUnits = hydrogenProductionUnits;
   }
 }

@@ -11,7 +11,7 @@ export class ProcessingController {
   @ApiOperation({ description: 'Get all processing batches' })
   @ApiOkResponse({ description: 'Successful request.' })
   @ApiQuery({
-    name: 'processName',
+    name: 'processTypeName',
     required: false,
     examples: {
       allBatches: { value: null, description: 'Get all batches' },
@@ -37,10 +37,10 @@ export class ProcessingController {
     },
   })
   readProcessing(
-    @Query('processName') processName: string,
+    @Query('processTypeName') processTypeName: string,
     @Query('active') active: boolean,
     @Query('companyId') companyId: string,
   ): Promise<ProcessingOverviewDto[]> {
-    return this.processingService.readProcessing(processName, active, companyId);
+    return this.processingService.readProcessing(processTypeName, active, companyId);
   }
 }

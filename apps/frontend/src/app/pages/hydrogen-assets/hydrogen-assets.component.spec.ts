@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { HydrogenAssetsComponent } from './hydrogen-assets.component';
 
 describe('HydrogenAssetsComponent', () => {
@@ -8,9 +7,8 @@ describe('HydrogenAssetsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HydrogenAssetsComponent]
-    })
-    .compileComponents();
+      imports: [HydrogenAssetsComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(HydrogenAssetsComponent);
     component = fixture.componentInstance;

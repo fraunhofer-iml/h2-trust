@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { HydrogenStorageTableComponent } from './hydrogen-storage-table.component';
 
 describe('HydrogenStorageTableComponent', () => {
@@ -8,9 +7,8 @@ describe('HydrogenStorageTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HydrogenStorageTableComponent]
-    })
-    .compileComponents();
+      imports: [HydrogenStorageTableComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(HydrogenStorageTableComponent);
     component = fixture.componentInstance;

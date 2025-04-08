@@ -150,7 +150,7 @@ CREATE TABLE "Batch" (
 );
 
 -- CreateTable
-CREATE TABLE "Process" (
+CREATE TABLE "ProcessType" (
     "name" TEXT NOT NULL,
 
     CONSTRAINT "Process_pkey" PRIMARY KEY ("name")

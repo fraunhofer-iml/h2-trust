@@ -1,6 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { processStepResultFields } from '@h2-trust/api';
-import { Batches, Companies, PrismaService, ProcessSteps, Units } from '@h2-trust/database';
+import { ProcessStepEntity } from '@h2-trust/amqp';
+import {
+  Batches,
+  Companies,
+  DatabaseModule,
+  PrismaService,
+  processStepResultFields,
+  ProcessSteps,
+  Units,
+} from '@h2-trust/database';
 import { ProcessStepService } from './process-step.service';
 
 describe('ProcessStepService', () => {
@@ -9,6 +17,7 @@ describe('ProcessStepService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [DatabaseModule],
       providers: [
         ProcessStepService,
         {
@@ -35,25 +44,18 @@ describe('ProcessStepService', () => {
       },
       executedBy: Units[1],
     };
-    const expectedProcessStep = {
-      id: givenProcessStep.id,
-      timestamp: givenProcessStep.timestamp,
-      owner: givenProcessStep.batch.owner.name,
-      filledAmount: givenProcessStep.batch.quantity.toNumber(),
-      color: givenProcessStep.batch.quality,
-    };
 
     jest.spyOn(prisma.processStep, 'findMany').mockResolvedValue([givenProcessStep]);
 
     const response = await service.readProcessSteps(
-      givenProcessStep.processName,
+      givenProcessStep.processTypeName,
       givenProcessStep.batch.active,
       givenProcessStep.executedBy.companyId,
     );
-    expect(response).toEqual([expectedProcessStep]);
+    expect(response).toEqual([ProcessStepEntity.fromDatabase(givenProcessStep)]);
     expect(prisma.processStep.findMany).toHaveBeenCalledWith({
       where: {
-        processName: givenProcessStep.processName,
+        processTypeName: givenProcessStep.processTypeName,
         batch: {
           active: givenProcessStep.batch.active,
         },

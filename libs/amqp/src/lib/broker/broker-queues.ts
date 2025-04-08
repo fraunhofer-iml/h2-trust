@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export class AmqpClientEnum {
+export class BrokerQueues {
   public static QUEUE_BATCH_SVC = process.env['AMQP_QUEUE_PREFIX'] + 'batch-svc';
   public static QUEUE_GENERAL_SVC = process.env['AMQP_QUEUE_PREFIX'] + 'general-svc';
 }
