@@ -92,6 +92,14 @@ p {
   background-color: red;
 }
 
+.table-styling {
+  th,
+  td {
+    font-size: medium;
+    text-align: center;
+  }
+}
+
 .reset-button {
   border: none;
   outline: none;

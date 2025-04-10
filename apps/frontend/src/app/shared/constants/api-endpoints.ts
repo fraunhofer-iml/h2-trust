@@ -9,4 +9,7 @@ export const ApiEndpoints = {
     getUser: '/users',
     userDetails: '/details',
   },
+  process: {
+    getProcesses: '/processing',
+  },
 };

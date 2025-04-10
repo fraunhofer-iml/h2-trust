@@ -2,8 +2,8 @@
   <mat-drawer mode="side" [opened]="true" [disableClose]="true">
     <div class="sidebar-content">
       <div options-container>
-        <h2 i18n class="green medium">H2 Trust</h2>
-        <span i18n class="list-title grey">Hydrogen</span>
+        <h2 class="green medium">H2 Trust</h2>
+        <span class="list-title grey">Hydrogen</span>
         <mat-selection-list class="option-list">
           @for(option of hydrogenOptions; track option.title){
           <a class="account-settings-button" routerLink="{{ option.route }}">
@@ -22,12 +22,10 @@
               <div class="icon-box">
                 <span class="material-symbols-outlined white">person </span>
               </div>
-              @if (userDetails$ | async; as details) {
               <div class="user-information">
-                <span class="bold grey">{{ details.name }}</span>
-                <span class="small grey">{{ details.email }}</span>
+                <span class="bold grey">{{ userFirstName }} {{ userLastName }}</span>
+                <span class="small grey">{{ userEmail }}</span>
               </div>
-              }
             </div>
           </mat-panel-title>
         </mat-expansion-panel-header>

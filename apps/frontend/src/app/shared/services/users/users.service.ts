@@ -5,9 +5,7 @@ import { BASE_URL } from '../../../../environments/environment';
 import { ApiEndpoints } from '../../constants/api-endpoints';
 import { AuthService } from '../auth/auth.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class UsersService {
   constructor(private readonly httpClient: HttpClient, private readonly authService: AuthService) {}
 

@@ -2,6 +2,7 @@
   <div class="grey">
     <h2 class="medium">My Account</h2>
   </div>
+  @if(userDetails$ | async ; as userDetails){
   <div class="overview-content">
     <mat-card class="card">
       <h3 class="medium subtitle">Personal</h3>
@@ -37,4 +38,5 @@
       </mat-card-content>
     </mat-card>
   </div>
+  }
 </div>

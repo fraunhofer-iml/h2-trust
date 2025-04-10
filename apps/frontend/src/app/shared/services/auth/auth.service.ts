@@ -1,36 +1,30 @@
-import Keycloak from 'keycloak-js';
+import { KeycloakService } from 'keycloak-angular';
+import { KeycloakProfile } from 'keycloak-js';
 import { Injectable } from '@angular/core';
-import { userId } from '../../constants/hardcoded-values';
 
-@Injectable({
-  providedIn: 'root',
-})
-
-//Mostly Mocked since requested users havent been generated jet and mockdata ist synced either
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  private userId: string;
-  constructor(private readonly keycloak: Keycloak) {
-    this.userId = ' ';
-    this.fetchUserId();
+  constructor(private readonly keycloak: KeycloakService) {}
+
+  async getUserId(): Promise<string> {
+    const profile: KeycloakProfile = await this.keycloak.loadUserProfile();
+    return profile.id ?? '';
   }
 
-  async fetchUserId() {
-    if (this.keycloak?.authenticated) {
-      const profile = await this.keycloak.loadUserProfile();
-
-      if (profile.username) {
-        this.userId = profile.username;
-      } else {
-        throw new Error('UserProfile has no Id');
-      }
-    }
+  async getCurrentUserDetails(): Promise<{
+    firstName: string;
+    lastName: string;
+    email: string;
+  }> {
+    const profile: KeycloakProfile = await this.keycloak.loadUserProfile();
+    return {
+      firstName: profile.firstName ?? '',
+      lastName: profile.lastName ?? '',
+      email: profile.email ?? '',
+    };
   }
 
-  getUserId() {
-    return userId;
-  }
-
-  async logout() {
-    await this.keycloak.logout({ redirectUri: '' });
+  logout() {
+    this.keycloak.logout();
   }
 }

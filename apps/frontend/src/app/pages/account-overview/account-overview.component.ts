@@ -1,12 +1,13 @@
+import { Observable, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroupDirective, FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { UserDetailsDto, USERDETAILSDTOMOCK } from '@h2-trust/api';
+import { UserDetailsDto } from '@h2-trust/api';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { UsersService } from '../../shared/services/users/users.service';
 
@@ -29,15 +30,20 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     MatInputModule,
     MatButtonModule,
   ],
-  providers: [AuthService],
   templateUrl: './account-overview.component.html',
   styleUrl: './account-overview.component.scss',
 })
-export class AccountOverviewComponent {
-  userDetails = USERDETAILSDTOMOCK;
-  constructor(private readonly authService: AuthService, private readonly accountService: UsersService) {
-    accountService.getUserAccountInformation(this.authService.getUserId()).subscribe((details: UserDetailsDto) => {
-      this.userDetails = details;
+export class AccountOverviewComponent implements OnInit {
+  userDetails$: Observable<UserDetailsDto> = of();
+  constructor(private readonly authService: AuthService, private readonly accountService: UsersService) {}
+
+  async ngOnInit() {
+    await this.authService.getUserId().then((userId) => {
+      if (userId) {
+        this.userDetails$ = this.accountService.getUserAccountInformation(userId);
+      } else {
+        throw new Error('No userId');
+      }
     });
   }
 }

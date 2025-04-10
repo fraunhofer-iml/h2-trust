@@ -4,9 +4,7 @@ import { HydrogenProductionOverviewDto, HydrogenStorageOverviewDto, UnitType } f
 import { BASE_URL } from '../../../../environments/environment';
 import { ApiEndpoints } from '../../constants/api-endpoints';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class UnitsService {
   constructor(private readonly httpClient: HttpClient) {}
 

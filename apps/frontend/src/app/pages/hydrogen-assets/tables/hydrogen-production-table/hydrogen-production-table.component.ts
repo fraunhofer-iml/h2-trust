@@ -18,6 +18,7 @@ import { hydrogenProductionSet } from '../../config/table-set';
 
 @Component({
   selector: 'app-hydrogen-production-table',
+  providers: [AuthService, UsersService, UnitsService],
   imports: [
     FormsModule,
     MatFormFieldModule,
@@ -51,12 +52,16 @@ export class HydrogenProductionTableComponent implements OnInit, AfterViewInit {
     this.displayedColumns = hydrogenProductionSet;
   }
 
-  ngOnInit(): void {
-    this.usersService
-      .getUserAccountInformation(this.authService.getUserId())
-      .subscribe((userDetails: UserDetailsDto) => {
-        this.initializeTableData(userDetails.company.id);
-      });
+  async ngOnInit() {
+    await this.authService.getUserId().then((userId) => {
+      if (userId) {
+        this.usersService.getUserAccountInformation(userId).subscribe((userDetails: UserDetailsDto) => {
+          this.initializeTableData(userDetails.company.id);
+        });
+      } else {
+        throw new Error('No userId');
+      }
+    });
   }
 
   initializeTableData(companyId: string) {

@@ -18,6 +18,7 @@ import { storageSet } from '../../config/table-set';
 
 @Component({
   selector: 'app-hydrogen-storage-table',
+  providers: [AuthService, UnitsService, UsersService],
   imports: [
     FormsModule,
     MatFormFieldModule,
@@ -50,12 +51,16 @@ export class HydrogenStorageTableComponent implements OnInit, AfterViewInit {
     this.displayedColumns = storageSet;
   }
 
-  ngOnInit(): void {
-    this.usersService
-      .getUserAccountInformation(this.authService.getUserId())
-      .subscribe((userDetails: UserDetailsDto) => {
-        this.initializeTableData(userDetails.company.id);
-      });
+  async ngOnInit() {
+    await this.authService.getUserId().then((userId) => {
+      if (userId) {
+        this.usersService.getUserAccountInformation(userId).subscribe((userDetails: UserDetailsDto) => {
+          this.initializeTableData(userDetails.company.id);
+        });
+      } else {
+        throw new Error('No userId');
+      }
+    });
   }
 
   initializeTableData(companyId: string) {

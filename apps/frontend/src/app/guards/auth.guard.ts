@@ -1,12 +1,12 @@
-import { AuthGuardData, createAuthGuard } from 'keycloak-angular';
-import { ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { KeycloakService } from 'keycloak-angular';
+import { inject } from '@angular/core';
+import { CanActivateFn } from '@angular/router';
 
-const isAccessAllowed = async (
-  route: ActivatedRouteSnapshot,
-  _: RouterStateSnapshot,
-  authData: AuthGuardData,
-): Promise<boolean | UrlTree> => {
-  return authData.authenticated;
+export const AUTHGUARD: CanActivateFn = async (route) => {
+  const keycloakService: KeycloakService = inject(KeycloakService);
+  const isLoggedIn = keycloakService.isLoggedIn();
+  if (!isLoggedIn) return false;
+  const ownCompanyParam = route.queryParamMap.get('own');
+  if (ownCompanyParam === 'true') return true;
+  return true;
 };
-
-export const AUTHGUARD = createAuthGuard<CanActivateFn>(isAccessAllowed);

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "moduleResolution": "bundler",
+    /*     "moduleResolution": "bundler", */
     "target": "es2022",
     "forceConsistentCasingInFileNames": true,
     "strict": true,

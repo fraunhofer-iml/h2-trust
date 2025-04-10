@@ -1,22 +1,19 @@
 import { KeycloakService } from 'keycloak-angular';
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterModule } from '@angular/router';
-import { AuthService } from '../../shared/services/auth/auth.service';
 import { UsersService } from '../../shared/services/users/users.service';
-import { SidebarComponent } from './sidebar.component';
+import { ProcessingOverviewComponent } from './processing-overview.component';
 
-describe('SidebarComponent', () => {
-  let component: SidebarComponent;
-  let fixture: ComponentFixture<SidebarComponent>;
+describe('ProcessingOverviewComponent', () => {
+  let component: ProcessingOverviewComponent;
+  let fixture: ComponentFixture<ProcessingOverviewComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SidebarComponent, RouterModule.forRoot([])],
+      imports: [ProcessingOverviewComponent],
       providers: [
-        provideHttpClient(),
-        AuthService,
         UsersService,
+        provideHttpClient(),
         {
           provide: KeycloakService,
           useValue: {
@@ -26,7 +23,7 @@ describe('SidebarComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SidebarComponent);
+    fixture = TestBed.createComponent(ProcessingOverviewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
