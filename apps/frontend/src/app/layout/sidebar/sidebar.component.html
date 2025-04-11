@@ -3,7 +3,6 @@
     <div class="sidebar-content">
       <div options-container>
         <h2 class="green medium">H2 Trust</h2>
-        <span class="list-title grey">Hydrogen</span>
         <mat-selection-list class="option-list">
           @for(option of hydrogenOptions; track option.title){
           <a class="account-settings-button" routerLink="{{ option.route }}">
@@ -24,7 +23,6 @@
               </div>
               <div class="user-information">
                 <span class="bold grey">{{ userFirstName }} {{ userLastName }}</span>
-                <span class="small grey">{{ userEmail }}</span>
               </div>
             </div>
           </mat-panel-title>
