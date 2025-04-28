@@ -1,5 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { ProcessingOverviewDto } from '@h2-trust/api';
 import { ProcessingService } from './processing.service';
 
@@ -10,6 +10,7 @@ export class ProcessingController {
   @Get()
   @ApiOperation({ description: 'Get all processing batches' })
   @ApiOkResponse({ description: 'Successful request.' })
+  @ApiResponse({ type: [ProcessingOverviewDto] })
   @ApiQuery({
     name: 'processTypeName',
     required: false,

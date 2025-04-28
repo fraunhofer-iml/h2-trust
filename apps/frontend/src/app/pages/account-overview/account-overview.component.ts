@@ -34,7 +34,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   styleUrl: './account-overview.component.scss',
 })
 export class AccountOverviewComponent implements OnInit {
-  userDetails$: Observable<UserDetailsDto> = of();
+  userDetails$!: Observable<UserDetailsDto>;
   constructor(private readonly authService: AuthService, private readonly accountService: UsersService) {}
 
   async ngOnInit() {

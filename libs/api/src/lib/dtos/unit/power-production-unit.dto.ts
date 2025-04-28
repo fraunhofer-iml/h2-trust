@@ -20,7 +20,10 @@ export class PowerProductionUnitDto extends BaseUnitDto {
     address: AddressDto,
     company: {
       id: string;
-      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string }[];
+      hydrogenApprovals: {
+        powerAccessApprovalStatus: string;
+        powerProducerId: string;
+      }[];
     },
     ratedPower: number,
     gridOperator: string,

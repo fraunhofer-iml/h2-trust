@@ -21,7 +21,10 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     address: AddressDto,
     company: {
       id: string;
-      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string }[];
+      hydrogenApprovals: {
+        powerAccessApprovalStatus: string;
+        powerProducerId: string;
+      }[];
     },
     ratedPower: number,
     typeName: string,

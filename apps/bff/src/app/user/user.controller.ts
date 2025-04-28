@@ -1,5 +1,5 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { UserDetailsDto } from '@h2-trust/api';
 import { UserService } from './user.service';
 
@@ -10,6 +10,7 @@ export class UserController {
   @Get(':id/details')
   @ApiOperation({ description: 'Get user and his company' })
   @ApiOkResponse({ description: 'Successful request.' })
+  @ApiResponse({ type: [UserDetailsDto] })
   @ApiParam({
     name: 'id',
     description: 'The ID of the user',

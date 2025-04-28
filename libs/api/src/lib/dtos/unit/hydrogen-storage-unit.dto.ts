@@ -23,7 +23,10 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
     address: AddressDto,
     company: {
       id: string;
-      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string }[];
+      hydrogenApprovals: {
+        powerAccessApprovalStatus: string;
+        powerProducerId: string;
+      }[];
     },
     capacity: number,
     filling: FillingBatchDto[],

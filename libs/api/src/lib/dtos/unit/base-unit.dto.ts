@@ -30,7 +30,10 @@ export abstract class BaseUnitDto {
     address: AddressDto,
     company: {
       id: string;
-      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string }[];
+      hydrogenApprovals: {
+        powerAccessApprovalStatus: string;
+        powerProducerId: string;
+      }[];
     },
   ) {
     this.id = id;
