@@ -22,7 +22,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     address: AddressEntity,
     company: {
       id: string;
-      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string }[];
+      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string; powerProducerName: string }[];
     } | null,
     ratedPower: number,
     gridOperator: string,

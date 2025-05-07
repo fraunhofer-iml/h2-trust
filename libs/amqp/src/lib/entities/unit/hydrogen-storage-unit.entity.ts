@@ -25,7 +25,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     address: AddressEntity,
     company: {
       id: string;
-      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string }[];
+      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string; powerProducerName: string }[];
     } | null,
     capacity: number,
     filling: FillingBatchEntity[],

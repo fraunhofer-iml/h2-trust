@@ -23,7 +23,7 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     address: AddressEntity,
     company: {
       id: string;
-      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string }[];
+      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string; powerProducerName: string }[];
     } | null,
     ratedPower: number,
     typeName: string,

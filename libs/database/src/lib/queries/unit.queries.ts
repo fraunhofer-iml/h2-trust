@@ -5,7 +5,11 @@ export const baseUnitResultFields = Prisma.validator<Prisma.UnitDefaultArgs>()({
     address: true,
     company: {
       include: {
-        hydrogenApprovals: true,
+        hydrogenApprovals: {
+          include: {
+            powerProducer: true,
+          },
+        },
       },
     },
   },

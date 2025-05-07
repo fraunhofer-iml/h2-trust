@@ -17,6 +17,7 @@ export abstract class BaseUnitEntity {
     hydrogenApprovals: {
       powerAccessApprovalStatus: string;
       powerProducerId: string;
+      powerProducerName: string;
     }[];
   } | null;
 
@@ -32,7 +33,7 @@ export abstract class BaseUnitEntity {
     address: AddressEntity,
     company: {
       id: string;
-      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string }[];
+      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string; powerProducerName: string }[];
     } | null,
   ) {
     this.id = id;
@@ -61,6 +62,7 @@ export abstract class BaseUnitEntity {
       unit.company?.hydrogenApprovals?.map((approval) => ({
         powerAccessApprovalStatus: approval.powerAccessApprovalStatus,
         powerProducerId: approval.powerProducerId,
+        powerProducerName: approval.powerProducer.name,
       })) ?? []
     );
   }

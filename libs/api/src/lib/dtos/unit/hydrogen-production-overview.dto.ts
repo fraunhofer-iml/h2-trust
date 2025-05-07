@@ -7,6 +7,8 @@ export class HydrogenProductionOverviewDto {
   typeName: string | undefined;
   producing: boolean;
   powerAccessApprovalStatus: boolean;
+  powerProducerId: string;
+  powerProducerName: string;
   hydrogenStorageUnit:
     | {
         id?: string;
@@ -21,6 +23,8 @@ export class HydrogenProductionOverviewDto {
     typeName: string,
     producing: boolean,
     powerAccessApprovalStatus: boolean,
+    powerProducerId: string,
+    powerProducerName: string,
     hydrogenStorageUnit: {
       id: string;
       name: string;
@@ -32,6 +36,8 @@ export class HydrogenProductionOverviewDto {
     this.typeName = typeName;
     this.producing = producing;
     this.powerAccessApprovalStatus = powerAccessApprovalStatus;
+    this.powerProducerId = powerProducerId;
+    this.powerProducerName = powerProducerName;
     this.hydrogenStorageUnit = hydrogenStorageUnit;
   }
 
@@ -43,6 +49,8 @@ export class HydrogenProductionOverviewDto {
       typeName: unit.typeName,
       producing: true,
       powerAccessApprovalStatus: HydrogenProductionOverviewDto.existsPowerProducer(unit),
+      powerProducerId: unit.company?.hydrogenApprovals[0].powerProducerId,
+      powerProducerName: unit.company?.hydrogenApprovals[0].powerProducerName,
       hydrogenStorageUnit: unit.hydrogenStorageUnit,
     };
   }
