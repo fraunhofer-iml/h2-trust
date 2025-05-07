@@ -28,6 +28,7 @@ model Address {
 enum CompanyType {
   HYDROGEN_PRODUCER
   POWER_PRODUCER
+  HYDROGEN_RECIPIENT
 }
 
 model Company {
@@ -40,7 +41,6 @@ model Company {
   address   Address @relation(fields: [addressId], references: [id])
   addressId String
 
-  // TODO-MP: do we need both?
   hydrogenApprovals PowerAccessApproval[] @relation(name: "HydrogenProducer")
   powerApprovals    PowerAccessApproval[] @relation(name: "PowerProducer")
 
@@ -183,11 +183,14 @@ enum BatchType {
 }
 
 model Batch {
-  id       String    @id @default(cuid(2))
-  active   Boolean
-  quantity Decimal
-  quality  String
-  type     BatchType
+  id      String    @id @default(cuid(2))
+  active  Boolean
+  amount  Decimal
+  quality String
+  type    BatchType
+
+  predecessors Batch[] @relation("BatchRelation")
+  successors   Batch[] @relation("BatchRelation")
 
   owner   Company @relation(fields: [ownerId], references: [id])
   ownerId String
@@ -206,7 +209,8 @@ model ProcessType {
 
 model ProcessStep {
   id        String   @id @default(cuid(2))
-  timestamp DateTime
+  startedAt DateTime
+  endedAt   DateTime
 
   processType     ProcessType @relation(fields: [processTypeName], references: [name])
   processTypeName String

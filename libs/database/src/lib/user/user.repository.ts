@@ -8,7 +8,7 @@ import { retrieveRecordOrThrowException } from '../utils/utils';
 export class UserRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async readUserWithCompany(id: string): Promise<UserDetailsEntity> {
+  async findUserWithCompany(id: string): Promise<UserDetailsEntity> {
     return this.prismaService.user
       .findUnique({
         where: {

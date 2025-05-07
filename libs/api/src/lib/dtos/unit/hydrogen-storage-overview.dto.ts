@@ -38,7 +38,7 @@ export class HydrogenStorageOverviewDto {
   }
 
   private static mapFilling(unit: HydrogenStorageUnitEntity): number {
-    return unit.filling?.map((filling) => filling.quantity).reduce((total, value) => total + value, 0) ?? 0;
+    return unit.filling?.map((filling) => filling.amount).reduce((total, value) => total + value, 0) ?? 0;
   }
 
   private static mapHydrogenProductionUnit(unit: HydrogenStorageUnitEntity) {

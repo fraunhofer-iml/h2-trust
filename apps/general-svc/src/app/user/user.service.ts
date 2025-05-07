@@ -7,6 +7,6 @@ export class UserService {
   constructor(private readonly repository: UserRepository) {}
 
   async readUserWithCompany(id: string): Promise<UserDetailsEntity> {
-    return this.repository.readUserWithCompany(id);
+    return this.repository.findUserWithCompany(id);
   }
 }

@@ -1,9 +1,9 @@
 export class FillingBatchDto {
   id: string;
-  quantity: number;
+  amount: number;
 
-  constructor(id: string, quantity: number) {
+  constructor(id: string, amount: number) {
     this.id = id;
-    this.quantity = quantity;
+    this.amount = amount;
   }
 }

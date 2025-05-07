@@ -1,7 +1,9 @@
-import { Controller, Get, Query } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
-import { ProcessingOverviewDto } from '@h2-trust/api';
+import { Body, Controller, Get, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { BottlingDto, ProcessingOverviewDto, ProcessStepDto } from '@h2-trust/api';
 import { ProcessingService } from './processing.service';
+import 'multer';
 
 @Controller('processing')
 export class ProcessingController {
@@ -37,11 +39,20 @@ export class ProcessingController {
       companyHydrogen: { value: 'company-hydrogen-1', description: 'Get batches from one hydrogen company' },
     },
   })
-  readProcessing(
+  async readProcessing(
     @Query('processTypeName') processTypeName: string,
     @Query('active') active: boolean,
     @Query('companyId') companyId: string,
   ): Promise<ProcessingOverviewDto[]> {
     return this.processingService.readProcessing(processTypeName, active, companyId);
+  }
+
+  @Post('bottling')
+  @ApiOperation({ description: 'Create process step for bottling' })
+  @ApiCreatedResponse({ description: 'Successful creation.' })
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  async executeBottling(@Body() dto: BottlingDto, @UploadedFile() file: Express.Multer.File): Promise<ProcessStepDto> {
+    return this.processingService.executeBottling(dto, file);
   }
 }

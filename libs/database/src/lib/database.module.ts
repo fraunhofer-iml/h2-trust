@@ -7,14 +7,24 @@
  */
 
 import { Module } from '@nestjs/common';
+import { BatchRepository } from './batch';
+import { DocumentRepository } from './document';
 import { PrismaService } from './prisma.service';
 import { ProcessStepRepository } from './process-step';
 import { UnitRepository } from './unit';
 import { UserRepository } from './user';
 
+
 @Module({
   controllers: [],
-  providers: [PrismaService, UserRepository, UnitRepository, ProcessStepRepository],
-  exports: [PrismaService, UserRepository, UnitRepository, ProcessStepRepository],
+  providers: [
+    PrismaService,
+    UserRepository,
+    UnitRepository,
+    ProcessStepRepository,
+    BatchRepository,
+    DocumentRepository,
+  ],
+  exports: [PrismaService, UserRepository, UnitRepository, ProcessStepRepository, BatchRepository, DocumentRepository],
 })
 export class DatabaseModule {}

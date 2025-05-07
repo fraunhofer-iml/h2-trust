@@ -7,6 +7,6 @@ export class ProcessStepService {
   constructor(private readonly repository: ProcessStepRepository) {}
 
   async readProcessSteps(processTypeName: string, active: boolean, companyId: string): Promise<ProcessStepEntity[]> {
-    return this.repository.readProcessSteps(processTypeName, active, companyId);
+    return this.repository.findProcessSteps(processTypeName, active, companyId);
   }
 }

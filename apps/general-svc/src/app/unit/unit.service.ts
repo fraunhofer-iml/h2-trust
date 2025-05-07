@@ -12,18 +12,18 @@ export class UnitService {
   constructor(private readonly repository: UnitRepository) {}
 
   async readUnit(id: string): Promise<UnitEntity> {
-    return this.repository.readUnitById(id);
+    return this.repository.findUnitById(id);
   }
 
   async readPowerProductionUnits(companyId: string): Promise<PowerProductionUnitEntity[]> {
-    return this.repository.readPowerProductionUnitsByCompanyId(companyId);
+    return this.repository.findPowerProductionUnitsByCompanyId(companyId);
   }
 
   async readHydrogenProductionUnits(companyId: string): Promise<HydrogenProductionUnitEntity[]> {
-    return this.repository.readHydrogenProductionUnitsByCompanyId(companyId);
+    return this.repository.findHydrogenProductionUnitsByCompanyId(companyId);
   }
 
   async readHydrogenStorageUnits(companyId: string): Promise<HydrogenStorageUnitEntity[]> {
-    return this.repository.readHydrogenStorageUnitsByCompanyId(companyId);
+    return this.repository.findHydrogenStorageUnitsByCompanyId(companyId);
   }
 }

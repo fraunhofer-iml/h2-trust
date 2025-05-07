@@ -20,7 +20,7 @@ import { retrieveRecordOrThrowException } from '../utils/utils';
 export class UnitRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async readUnitById(id: string): Promise<UnitEntity> {
+  async findUnitById(id: string): Promise<UnitEntity> {
     return this.prismaService.unit
       .findUnique({
         where: {
@@ -32,7 +32,7 @@ export class UnitRepository {
       .then(this.mapToActualUnitEntity);
   }
 
-  async readPowerProductionUnitsByCompanyId(companyId: string): Promise<PowerProductionUnitEntity[]> {
+  async findPowerProductionUnitsByCompanyId(companyId: string): Promise<PowerProductionUnitEntity[]> {
     return this.prismaService.unit
       .findMany({
         where: {
@@ -46,7 +46,7 @@ export class UnitRepository {
       .then((units) => units.map(PowerProductionUnitEntity.fromDatabase));
   }
 
-  async readHydrogenProductionUnitsByCompanyId(companyId: string): Promise<HydrogenProductionUnitEntity[]> {
+  async findHydrogenProductionUnitsByCompanyId(companyId: string): Promise<HydrogenProductionUnitEntity[]> {
     return this.prismaService.unit
       .findMany({
         where: {
@@ -60,7 +60,7 @@ export class UnitRepository {
       .then((units) => units.map(HydrogenProductionUnitEntity.fromDatabase));
   }
 
-  async readHydrogenStorageUnitsByCompanyId(companyId: string): Promise<HydrogenStorageUnitEntity[]> {
+  async findHydrogenStorageUnitsByCompanyId(companyId: string): Promise<HydrogenStorageUnitEntity[]> {
     return this.prismaService.unit
       .findMany({
         where: {

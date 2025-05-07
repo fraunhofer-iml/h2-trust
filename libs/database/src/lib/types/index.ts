@@ -4,3 +4,5 @@ export * from './power-production-unit.db.type';
 export * from './hydrogen-production-unit.db.type';
 export * from './hydrogen-storage-unit.db.type';
 export * from './process-step.db.type';
+export * from './batch.db.type';
+export * from './document.db.type';

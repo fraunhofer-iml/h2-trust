@@ -1,1 +1,1 @@
-export * from './unit-repository.service';
+export * from './unit.repository';

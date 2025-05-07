@@ -18,9 +18,9 @@ export class ProcessingOverviewDto {
   static fromEntity(processStep: ProcessStepEntity): ProcessingOverviewDto {
     return <ProcessingOverviewDto>{
       id: processStep.id,
-      timestamp: processStep.timestamp,
-      owner: processStep.batch?.owner.name,
-      filledAmount: processStep.batch?.quantity,
+      timestamp: processStep.endedAt,
+      owner: processStep.batch?.owner?.name,
+      filledAmount: processStep.batch?.amount,
       color: processStep.batch?.quality,
     };
   }

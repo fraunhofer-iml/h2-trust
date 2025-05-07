@@ -1,42 +1,50 @@
+;
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { ProcessStepDbType } from '@h2-trust/database';
 import { BatchEntity } from '../batch';
+import { DocumentEntity } from '../document';
+
 
 export class ProcessStepEntity {
-  id: string;
-  timestamp: Date;
-  processTypeName: string;
+  id?: string;
+  startedAt: Date;
+  endedAt: Date;
+  processTypeName?: string;
   batch?: BatchEntity | null;
-  userId: string;
+  userId?: string;
+  unitId?: string;
+  documents?: DocumentEntity[];
 
-  constructor(id: string, timestamp: Date, processTypeName: string, batch: BatchEntity, userId: string) {
+  constructor(
+    id: string,
+    startedAt: Date,
+    endedAt: Date,
+    processTypeName: string,
+    batch: BatchEntity | null,
+    userId: string,
+    unitId: string,
+    documents: DocumentEntity[],
+  ) {
     this.id = id;
-    this.timestamp = timestamp;
+    this.startedAt = startedAt;
+    this.endedAt = endedAt;
     this.processTypeName = processTypeName;
     this.batch = batch;
     this.userId = userId;
+    this.unitId = unitId;
+    this.documents = documents;
   }
 
   static fromDatabase(processStep: ProcessStepDbType): ProcessStepEntity {
     return <ProcessStepEntity>{
       id: processStep.id,
-      timestamp: processStep.timestamp,
+      startedAt: processStep.startedAt,
+      endedAt: processStep.endedAt,
       processTypeName: processStep.processTypeName,
-      batch: {
-        id: processStep.batch.id,
-        active: processStep.batch.active,
-        quantity: processStep.batch.quantity.toNumber(),
-        quality: processStep.batch.quality,
-        type: processStep.batch.type,
-        owner: {
-          id: processStep.batch.owner.id,
-          name: processStep.batch.owner.name,
-          mastrNumber: processStep.batch.owner.mastrNumber,
-          companyType: processStep.batch.owner.companyType,
-        },
-        hydrogenStorageUnitId: processStep.batch.hydrogenStorageUnitId,
-      },
+      batch: BatchEntity.fromDatabase(processStep.batch),
       userId: processStep.userId,
+      unitId: processStep.unitId,
+      documents: processStep.documents.map(DocumentEntity.fromDatabase),
     };
   }
 }

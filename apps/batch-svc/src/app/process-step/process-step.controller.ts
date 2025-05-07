@@ -1,16 +1,28 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
+import { ProcessStepEntity, ProcessStepMessagePatterns, ProcessTypeName } from '@h2-trust/amqp';
+import { BottlingService } from './bottling.service';
 import { ProcessStepService } from './process-step.service';
+import 'multer';
 
 @Controller()
 export class ProcessStepController {
-  constructor(private readonly service: ProcessStepService) {}
+  constructor(
+    private readonly processStepService: ProcessStepService,
+    private readonly bottlingService: BottlingService,
+  ) {}
 
   @MessagePattern(ProcessStepMessagePatterns.READ_ALL)
   async readProcessSteps(
-    @Payload() payload: { processTypeName: string; active: boolean; companyId: string },
+    @Payload() payload: { processTypeName: ProcessTypeName; active: boolean; companyId: string },
   ): Promise<ProcessStepEntity[]> {
-    return this.service.readProcessSteps(payload.processTypeName, payload.active, payload.companyId);
+    return this.processStepService.readProcessSteps(payload.processTypeName, payload.active, payload.companyId);
+  }
+
+  @MessagePattern(ProcessStepMessagePatterns.BOTTLING)
+  async executeBottling(
+    @Payload() payload: { processStepData: ProcessStepEntity; file: Express.Multer.File },
+  ): Promise<ProcessStepEntity> {
+    return this.bottlingService.executeBottling(payload.processStepData, payload.file);
   }
 }

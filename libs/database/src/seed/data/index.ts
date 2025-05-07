@@ -1,5 +1,6 @@
 export * from './addresses';
 export * from './batches';
+export * from './batches/';
 export * from './companies';
 export * from './documents';
 export * from './electrolysis-types';
@@ -11,5 +12,6 @@ export * from './power-production-units';
 export * from './power-production-unit-types';
 export * from './process-types';
 export * from './process-steps';
+export * from './process-steps/';
 export * from './units';
 export * from './users';

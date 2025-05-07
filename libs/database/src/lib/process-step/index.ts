@@ -1,1 +1,1 @@
-export * from './process-step-repository.service';
+export * from './process-step.repository';

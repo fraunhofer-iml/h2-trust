@@ -140,7 +140,7 @@ CREATE TABLE "PowerAccessApproval" (
 CREATE TABLE "Batch" (
     "id" TEXT NOT NULL,
     "active" BOOLEAN NOT NULL,
-    "quantity" DECIMAL(65,30) NOT NULL,
+    "amount" DECIMAL(65,30) NOT NULL,
     "quality" TEXT NOT NULL,
     "type" "BatchType" NOT NULL,
     "ownerId" TEXT NOT NULL,

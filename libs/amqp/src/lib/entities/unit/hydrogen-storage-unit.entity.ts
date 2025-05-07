@@ -79,7 +79,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       unit.hydrogenStorageUnit?.filling?.map((batch) => {
         return {
           id: batch.id,
-          quantity: batch.quantity?.toNumber() ?? 0,
+          amount: batch.amount?.toNumber() ?? 0,
         };
       }) ?? []
     );

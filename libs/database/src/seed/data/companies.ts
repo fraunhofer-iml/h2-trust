@@ -15,4 +15,11 @@ export const Companies = <Company[]>[
     companyType: CompanyType.HYDROGEN_PRODUCER,
     addressId: 'address-hydrogen-1',
   },
+  {
+    id: 'company-recipient-1',
+    name: 'H2Logistics',
+    mastrNumber: 'R112233',
+    companyType: CompanyType.HYDROGEN_RECIPIENT,
+    addressId: 'address-hydrogen-1',
+  },
 ];

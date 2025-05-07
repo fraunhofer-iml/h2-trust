@@ -36,7 +36,7 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": ["apps/bff-e2e/**/*", "apps/general-svc-e2e/**/*", "apps/batch-svc-e2e/**/*"]
+      "exclude": ["apps/general-svc-e2e/**/*", "apps/batch-svc-e2e/**/*"]
     },
     {
       "plugin": "@nx/playwright/plugin",

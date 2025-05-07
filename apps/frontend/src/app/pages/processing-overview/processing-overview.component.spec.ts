@@ -1,6 +1,7 @@
 import { KeycloakService } from 'keycloak-angular';
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { UsersService } from '../../shared/services/users/users.service';
 import { ProcessingOverviewComponent } from './processing-overview.component';
 
@@ -14,6 +15,7 @@ describe('ProcessingOverviewComponent', () => {
       providers: [
         UsersService,
         provideHttpClient(),
+        provideAnimations(),
         {
           provide: KeycloakService,
           useValue: {
