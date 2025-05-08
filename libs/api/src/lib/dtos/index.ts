@@ -5,3 +5,5 @@ export * from './batch';
 export * from './unit';
 export * from './user';
 export * from './user/mocks';
+export * from './production/production-overview.dto';
+export * from './production/mocks/production-overview-mock';

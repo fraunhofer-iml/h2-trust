@@ -12,4 +12,7 @@ export const ApiEndpoints = {
   process: {
     getProcesses: '/processing',
   },
+  production: {
+    getProduction: '/production',
+  },
 };

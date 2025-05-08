@@ -51,7 +51,11 @@ export class ProcessingOverviewComponent implements OnInit, AfterViewInit {
     this.dataSource$ = this.processService.getProcessesOfCompany(<ProcessFilter>{ companyId: companyId }).pipe(
       map((processes: ProcessingOverviewDto[]) => {
         processes.forEach((data) => {
-          data.color = JSON.parse(data.color ?? '').color;
+          try {
+            data.color = JSON.parse(data.color ?? '').color ?? '';
+          } catch (error) {
+            console.error('Could not parse color : ' + error);
+          }
         });
         this.dataSource.data = processes;
         return this.dataSource;
