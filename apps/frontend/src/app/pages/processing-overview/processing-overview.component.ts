@@ -66,7 +66,7 @@ export class ProcessingOverviewComponent implements OnInit, AfterViewInit {
   fetchTableData(userId: string) {
     this.usersService.getUserAccountInformation(userId).subscribe((userDetails: UserDetailsDto) => {
       this.dataSource$ = this.processService
-        .getProcessingDataOfCompany(<ProcessingFilter>{ companyId: userDetails.company.id })
+        .getProcessingDataOfCompany(<ProcessingFilter>{ processTypeName: "BOTTLING", companyId: userDetails.company.id })
         .pipe(
           map((processes: ProcessingOverviewDto[]) => {
             processes.forEach((data) => {

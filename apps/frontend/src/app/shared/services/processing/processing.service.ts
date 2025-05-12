@@ -28,8 +28,8 @@ export class ProcessingService {
       if (filter.active) {
         params = params.append('active', filter.active);
       }
-      if (filter.processName) {
-        params = params.append('processName', filter.processName);
+      if (filter.processTypeName) {
+        params = params.append('processTypeName', filter.processTypeName);
       }
     }
     return params;
