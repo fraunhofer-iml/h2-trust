@@ -11,7 +11,7 @@ export class UsersService {
 
   getUserAccountInformation(userId: string) {
     return this.httpClient.get<UserDetailsDto>(
-      `${BASE_URL}${ApiEndpoints.users.getUser}/${userId}${ApiEndpoints.users.userDetails}`,
+      `${BASE_URL}${ApiEndpoints.users.getUsers}/${userId}${ApiEndpoints.users.userDetails}`,
     );
   }
 }

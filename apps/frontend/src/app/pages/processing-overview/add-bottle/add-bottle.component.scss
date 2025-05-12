@@ -1,0 +1,23 @@
+.add-bootle-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: auto !important;
+  gap: 0.5rem;
+}
+
+.date-container {
+  display: grid;
+  grid-template-columns: 13rem 9rem;
+  gap: 1rem;
+}
+
+.amount-container {
+  display: flex;
+  justify-content: center;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+}

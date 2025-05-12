@@ -1,21 +1,25 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ProcessingOverviewDto } from '@h2-trust/api';
+import { BottlingDto, ProcessingOverviewDto } from '@h2-trust/api';
 import { BASE_URL } from '../../../../environments/environment';
-import { ProcessFilter } from '../../../model/process-filter';
+import { ProcessingFilter } from '../../../model/process-filter';
 import { ApiEndpoints } from '../../constants/api-endpoints';
 
 @Injectable()
-export class ProcessService {
+export class ProcessingService {
   constructor(private readonly httpClient: HttpClient) {}
 
-  getProcessesOfCompany(filter?: ProcessFilter) {
-    return this.httpClient.get<ProcessingOverviewDto[]>(`${BASE_URL}${ApiEndpoints.process.getProcesses}`, {
+  getProcessingDataOfCompany(filter?: ProcessingFilter) {
+    return this.httpClient.get<ProcessingOverviewDto[]>(`${BASE_URL}${ApiEndpoints.processing.getProcessingData}`, {
       params: this.generateQueryParametersForProcesses(filter),
     });
   }
 
-  private generateQueryParametersForProcesses(filter?: ProcessFilter): HttpParams {
+  createBottleBatch(data: FormData) {
+    return this.httpClient.post<BottlingDto[]>(`${BASE_URL}${ApiEndpoints.processing.createBottleBatch}`, data);
+  }
+
+  private generateQueryParametersForProcesses(filter?: ProcessingFilter): HttpParams {
     let params = new HttpParams();
     if (filter) {
       if (filter.companyId) {

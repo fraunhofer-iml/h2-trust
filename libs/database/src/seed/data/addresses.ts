@@ -17,4 +17,12 @@ export const Addresses = <Address[]>[
     state: 'Wasserland',
     country: 'Wasserland',
   },
+  {
+    id: 'address-recipient-1',
+    street: 'Empfängerstraße 1',
+    postalCode: '09876',
+    city: 'Empfängerstadt',
+    state: 'Empfängerland',
+    country: 'Empfängerland',
+  },
 ];

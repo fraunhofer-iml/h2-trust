@@ -6,11 +6,14 @@ export const ApiEndpoints = {
     hydrogenStorage: 'hydrogen-storage',
   },
   users: {
-    getUser: '/users',
+    getUsers: '/users',
     userDetails: '/details',
+    recipients: '/recipients',
   },
-  process: {
-    getProcesses: '/processing',
+  companies: { getCompanies: '/companies' },
+  processing: {
+    getProcessingData: '/processing',
+    createBottleBatch: '/processing/bottling',
   },
   production: {
     getProduction: '/production',

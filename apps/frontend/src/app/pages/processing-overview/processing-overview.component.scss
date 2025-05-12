@@ -9,3 +9,11 @@
   flex-direction: column;
   padding: 1rem;
 }
+
+.table-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+

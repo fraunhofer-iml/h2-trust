@@ -2,6 +2,7 @@ import { KeycloakService } from 'keycloak-angular';
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { AuthService } from '../../shared/services/auth/auth.service';
 import { UsersService } from '../../shared/services/users/users.service';
 import { ProductionViewComponent } from './production-view.component';
 
@@ -14,6 +15,7 @@ describe('ProductionViewComponent', () => {
       imports: [ProductionViewComponent],
       providers: [
         UsersService,
+        AuthService,
         provideNoopAnimations(),
         provideHttpClient(),
         {

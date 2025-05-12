@@ -1,10 +1,13 @@
 <div class="processes-container">
-  <div class="grey">
-    <h2 class="medium grey">Processing</h2>
+  <div>
+    <h2 class="head-title grey">Processing</h2>
   </div>
   <mat-card class="table-card">
-    <h2 class="medium">Overview</h2>
-    <div class="mat-elevation-z8">
+    <div class="table-header">
+      <h2 class="card-title">Overview</h2>
+      <button mat-flat-button (click)="openBottleDialog()" class="add-button">Add Bottle</button>
+    </div>
+    <div class="table-container">
       <table mat-table *ngIf="dataSource$ | async as source" [dataSource]="source" matSort class="table-styling">
         <ng-container matColumnDef="timestamp">
           <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Filling Timestamp</div></th>

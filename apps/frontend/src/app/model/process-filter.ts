@@ -1,4 +1,4 @@
-export class ProcessFilter {
+export class ProcessingFilter {
   processName?: string;
   active?: boolean;
   companyId?: string;

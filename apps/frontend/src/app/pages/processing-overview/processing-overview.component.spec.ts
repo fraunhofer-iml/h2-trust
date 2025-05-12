@@ -1,7 +1,10 @@
 import { KeycloakService } from 'keycloak-angular';
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogRef } from '@angular/material/dialog';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { AuthService } from '../../shared/services/auth/auth.service';
+import { ProcessingService } from '../../shared/services/processing/processing.service';
 import { UsersService } from '../../shared/services/users/users.service';
 import { ProcessingOverviewComponent } from './processing-overview.component';
 
@@ -13,7 +16,10 @@ describe('ProcessingOverviewComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ProcessingOverviewComponent],
       providers: [
+        AuthService,
+        ProcessingService,
         UsersService,
+        { provide: MatDialogRef, useValue: {} },
         provideHttpClient(),
         provideAnimations(),
         {

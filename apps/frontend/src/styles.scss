@@ -2,6 +2,10 @@
 @use '@angular/material' as mat;
 @use 'material-symbols';
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 html {
   color-scheme: light;
   @include mat.theme(
@@ -50,8 +54,16 @@ p {
   font-weight: bold;
 }
 
-.small {
+.small-size {
   font-size: small;
+}
+
+.medium-size {
+  font-size: medium;
+}
+
+.large-size {
+  font-size: large;
 }
 
 .medium {
@@ -62,8 +74,14 @@ p {
   font-weight: large;
 }
 
-.subtitle {
-  margin-left: 1rem;
+.head-title {
+  margin: 1rem 1rem 1rem 0rem;
+  font-size: x-large;
+}
+
+.card-title {
+  font-size: larger;
+  margin: 1rem 1rem 1rem 1rem;
 }
 
 //--Standard-Components--//
@@ -152,6 +170,16 @@ mat-paginator {
   background-color: var(--light-grey-color) !important;
 }
 
+.mat-mdc-unelevated-button:not(:disabled) {
+  background-color: var(--light-purple-color) !important;
+}
+
 table {
   background-color: var(--light-grey-color) !important;
+}
+
+//--Tailwind--//
+
+.mdc-notched-outline__notch {
+  border-right: none;
 }

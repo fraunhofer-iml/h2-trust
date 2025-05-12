@@ -28,8 +28,7 @@ export class BottlingDto {
   }
 
   static toEntity(dto: BottlingDto): ProcessStepEntity {
-    const timestamp = Number(dto.timestamp);
-    const validDate = !isNaN(timestamp) ? new Date(timestamp) : null;
+    const validDate = dto.timestamp ? new Date(dto.timestamp) : null;
 
     return <ProcessStepEntity>{
       startedAt: validDate,
