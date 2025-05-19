@@ -1,6 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { ProcessStepEntity, ProcessStepMessagePatterns, ProcessTypeName } from '@h2-trust/amqp';
+import { ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
+import { ProcessType } from '@h2-trust/api';
 import { BottlingService } from './bottling.service';
 import { ProcessStepService } from './process-step.service';
 import 'multer';
@@ -14,9 +15,9 @@ export class ProcessStepController {
 
   @MessagePattern(ProcessStepMessagePatterns.READ_ALL)
   async readProcessSteps(
-    @Payload() payload: { processTypeName: ProcessTypeName; active: boolean; companyId: string },
+    @Payload() payload: { processType: ProcessType; active: boolean; companyId: string },
   ): Promise<ProcessStepEntity[]> {
-    return this.processStepService.readProcessSteps(payload.processTypeName, payload.active, payload.companyId);
+    return this.processStepService.readProcessSteps(payload.processType, payload.active, payload.companyId);
   }
 
   @MessagePattern(ProcessStepMessagePatterns.BOTTLING)

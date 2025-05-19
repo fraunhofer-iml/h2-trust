@@ -8,6 +8,8 @@ export class BatchEntity {
   amount: number;
   quality: string;
   type: string;
+  predecessors?: BatchEntity[];
+  successors?: BatchEntity[];
   owner?: CompanyEntity;
   hydrogenStorageUnitId?: string | null;
 
@@ -17,14 +19,18 @@ export class BatchEntity {
     amount: number,
     quality: string,
     type: string,
+    predecessors: BatchEntity[],
+    successors: BatchEntity[],
     owner: CompanyEntity,
-    hydrogenStorageUnitId: string,
+    hydrogenStorageUnitId: string | null,
   ) {
     this.id = id;
     this.active = active;
     this.amount = amount;
     this.quality = quality;
     this.type = type;
+    this.predecessors = predecessors;
+    this.successors = successors;
     this.owner = owner;
     this.hydrogenStorageUnitId = hydrogenStorageUnitId;
   }
@@ -36,12 +42,13 @@ export class BatchEntity {
       amount: batch.amount.toNumber(),
       quality: batch.quality,
       type: batch.type,
-      owner: {
-        id: batch.owner.id,
-        name: batch.owner.name,
-        mastrNumber: batch.owner.mastrNumber,
-        companyType: batch.owner.companyType,
-      },
+      predecessors: batch.predecessors.map((pred) =>
+        BatchEntity.fromDatabase({ ...pred, predecessors: [], successors: [] }),
+      ),
+      successors: batch.successors.map((succ) =>
+        BatchEntity.fromDatabase({ ...succ, predecessors: [], successors: [] }),
+      ),
+      owner: CompanyEntity.fromDatabase(batch.owner),
       hydrogenStorageUnitId: batch.hydrogenStorageUnitId,
     };
   }

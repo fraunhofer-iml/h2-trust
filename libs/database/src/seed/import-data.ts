@@ -10,6 +10,7 @@ import { PrismaClient } from '@prisma/client';
 import {
   Addresses,
   Batches,
+  BatchRelations,
   Companies,
   Documents,
   ElectrolysisTypes,
@@ -79,6 +80,19 @@ export async function seedDatabase() {
       name: 'batch',
       records: Batches,
       createRecord: async (data: any) => await prisma.batch.create({ data }),
+    },
+    {
+      name: 'batchRelation',
+      records: BatchRelations,
+      createRecord: async (data: any) =>
+        await prisma.batch.update({
+          where: { id: data.A },
+          data: {
+            predecessors: {
+              connect: { id: data.B },
+            },
+          },
+        }),
     },
     {
       name: 'processTypes',

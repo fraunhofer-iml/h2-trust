@@ -1,36 +1,47 @@
-import { danger, markdown, warn } from 'danger';
+import { danger, fail, markdown, warn } from 'danger';
 
 // ENFORCE LOCKFILE UP TO DATE
-const packagesChanged = danger.git.modified_files.includes('package.json');
-const lockfileChanged = ['package-lock.json'].some((file) => danger.git.modified_files.includes(file));
-
-if (packagesChanged && !lockfileChanged) {
-  const message = 'Changes were made to package.json, but not to package-lock.yml';
-  const idea = 'Perhaps you need to run `npm install`?';
-  warn(`${message} - <i>${idea}</i>`);
-}
-
-// ENCOURAGE SMALLER MRs
-var bigMRThreshold = 50;
-if (danger.gitlab.mr.changes_count.length > bigMRThreshold) {
-  warn(':exclamation: Big MR (' + danger.gitlab.mr.changes_count.length + ')');
-  markdown(
-    '> (' +
-      danger.gitlab.mr.changes_count.length +
-      ') : Merge request size seems relatively large. If merge request contains multiple changes, split each into separate MR will helps faster, easier review.'
+const packageFileChanged = danger.git.modified_files.includes('package.json');
+const lockFileChanged = danger.git.modified_files.includes('package-lock.json');
+if (packageFileChanged && !lockFileChanged) {
+  fail(
+    'Changes were made to package.json, but not to package-lock.json. Please run `npm install` and commit the lockfile.',
   );
 }
 
-if (!danger.gitlab.mr.assignee) {
-  const method = danger.gitlab.mr.title.includes('Draft') ? warn : fail;
-  method('This merge request needs an assignee, and optionally include any reviewers.');
+// PREVENT DRAFT MRs
+if (/\b(Draft)\b/i.test(danger.gitlab.mr.title)) {
+  fail('Merge Request is marked as Draft. Please remove this before requesting review.');
 }
 
-if (danger.gitlab.mr.description.length < 10) {
-  fail('This merge request needs a description.');
+// ENFORCE ASSIGNEE
+if (!danger.gitlab.mr.assignee || danger.gitlab.mr.assignee.length === 0) {
+  fail('This merge request needs an assignee.');
 }
 
-// Check for Merge Request Description if it only contains Resolves/Related to Issue fail
-if (danger.gitlab.mr.description.match(/(Resolves) \D+-\d+/)) {
-  fail('Merge Request Description should not only contain Resolves/Related to Issue');
+// ENFORCE REVIEWER
+if (!danger.gitlab.mr.reviewers || danger.gitlab.mr.reviewers.length === 0) {
+  fail('This merge request needs at least one reviewer.');
+}
+
+// ENFORCE MR DESCRIPTION
+if (!danger.gitlab.mr.description || danger.gitlab.mr.description.trim().length < 10) {
+  fail('This merge request needs a meaningful description.');
+}
+
+// ENCOURAGE SMALLER MRs
+const changesCounter = parseInt(danger.gitlab.mr.changes_count, 10);
+if (changesCounter > 50) {
+  warn(`:exclamation: Big Merge Request (${changesCounter} files changed)`);
+  markdown(
+    `> (The merge request size seems relatively large. If the merge request contains multiple changes, splitting them into separate MRs will help with faster and easier review.`,
+  );
+}
+
+// REQUIRE TEST CHANGES FOR CODE CHANGES
+const relevantFiles = danger.git.modified_files.concat(danger.git.created_files);
+const sourceFilesChanged = relevantFiles.some((f) => f.startsWith('apps/') || f.startsWith('libs/'));
+const testFilesChanged = relevantFiles.some((f) => /test|spec/i.test(f));
+if (sourceFilesChanged && !testFilesChanged) {
+  warn('Source code was changed, but no test code was updated. Please consider adding or updating tests.');
 }

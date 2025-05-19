@@ -7,7 +7,7 @@ export const hydrogenProductionSet: string[] = [
   'storageUnit',
 ];
 export const storageSet: string[] = ['name', 'fillingLevel', 'fillingStatus', 'productionUnit'];
-export const processSet: string[] = ['timestamp', 'owner', 'filledAmount', 'color'];
+export const processSet: string[] = ['filledAt', 'owner', 'filledAmount', 'color'];
 export const productionSet: string[] = [
   'startedOn',
   'endedOn',
@@ -16,5 +16,4 @@ export const productionSet: string[] = [
   'color',
   'powerProducer',
   'powerConsumed',
-  'energySource',
 ];

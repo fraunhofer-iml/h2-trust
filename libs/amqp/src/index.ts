@@ -14,4 +14,3 @@ export * from './lib/entities';
 export * from './lib/message-patterns';
 export * from './lib/prisma-errors.interceptor';
 export * from './lib/types';
-export * from './lib/enums';

@@ -1,10 +1,12 @@
 import { Prisma } from '@prisma/client';
+import { companyResultFields } from './company.queries';
 
 export const baseUnitResultFields = Prisma.validator<Prisma.UnitDefaultArgs>()({
   include: {
     address: true,
     company: {
       include: {
+        ...companyResultFields.include,
         hydrogenApprovals: {
           include: {
             powerProducer: true,

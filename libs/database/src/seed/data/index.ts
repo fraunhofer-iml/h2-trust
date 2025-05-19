@@ -1,6 +1,7 @@
 export * from './addresses';
 export * from './batches';
 export * from './batches/';
+export * from './batch-relations';
 export * from './companies';
 export * from './documents';
 export * from './electrolysis-types';

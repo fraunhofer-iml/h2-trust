@@ -28,6 +28,7 @@ danger:
   stage: danger
   extends: .default
   script:
+    - echo "Danger Token ${DANGER_GITLAB_API_TOKEN}"
     - npm install -g danger
     - danger ci --failOnErrors
   allow_failure: true

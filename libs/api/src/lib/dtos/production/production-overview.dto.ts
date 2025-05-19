@@ -1,30 +1,51 @@
+import { ProcessStepEntity } from '@h2-trust/amqp';
+import { BatchType } from '../../enums';
+import { parseColor } from '../util';
+
 export class ProductionOverviewDto {
-  startedOn: string;
-  endedOn: string;
+  startedAt: string;
+  endedAt: string;
   productionUnit: string;
   producedAmount: number;
   color: string;
   powerProducer: string;
   powerConsumed: number;
-  energySource: string;
 
   constructor(
-    start: string,
-    end: string,
+    startedAt: string,
+    endedAt: string,
     productionUnit: string,
     producedAmount: number,
     color: string,
     powerProducer: string,
     powerConsumed: number,
-    energySource: string,
   ) {
-    this.startedOn = start;
-    this.endedOn = end;
+    this.startedAt = startedAt;
+    this.endedAt = endedAt;
     this.productionUnit = productionUnit;
     this.producedAmount = producedAmount;
     this.color = color;
     this.powerProducer = powerProducer;
     this.powerConsumed = powerConsumed;
-    this.energySource = energySource;
+  }
+
+  static fromEntity(processStep: ProcessStepEntity): ProductionOverviewDto {
+    return <ProductionOverviewDto>{
+      startedAt: processStep.startedAt.toString(),
+      endedAt: processStep.endedAt.toString(),
+      productionUnit: processStep.executedBy?.name,
+      producedAmount: processStep.batch?.amount,
+      color: parseColor(processStep.batch?.quality),
+      powerProducer: processStep.batch?.owner?.name,
+      powerConsumed: ProductionOverviewDto.determinePowerConsumed(processStep),
+    };
+  }
+
+  private static determinePowerConsumed(processStep: ProcessStepEntity) {
+    // NOTE: In the future, a batch could also have several predecessors
+    if (processStep.batch?.predecessors?.[0].type !== BatchType.POWER) {
+      return null;
+    }
+    return processStep.batch?.predecessors?.[0].amount;
   }
 }

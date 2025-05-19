@@ -3,12 +3,16 @@ import { Companies, HydrogenProductionProcessSteps, ProducedHydrogenBatches } fr
 import { ProcessStepEntity } from '../process-step.entity';
 
 export const ProcessStepEntitiesMock = <ProcessStepEntity[]>[
-  {
-    ...HydrogenProductionProcessSteps[0],
-    batch: {
-      ...ProducedHydrogenBatches[0],
-      amount: ProducedHydrogenBatches[0].amount.toNumber(),
-      owner: Companies[1],
-    },
-  },
+  ...ProducedHydrogenBatches.map((batch) => ({
+    ...batch,
+    amount: batch.amount.toNumber(),
+    owner: Companies[1],
+  }))
+    .map(batch => ({
+      ...HydrogenProductionProcessSteps[0],
+      executedBy: {
+        id: HydrogenProductionProcessSteps[0].unitId,
+      },
+      batch: batch,
+    }))
 ];

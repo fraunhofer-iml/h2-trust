@@ -1,37 +1,29 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BottlingDto, ProcessingOverviewDto } from '@h2-trust/api';
+import { BottlingDto, ProcessingOverviewDto, ProcessType } from '@h2-trust/api';
 import { BASE_URL } from '../../../../environments/environment';
-import { ProcessingFilter } from '../../../model/process-filter';
 import { ApiEndpoints } from '../../constants/api-endpoints';
 
 @Injectable()
 export class ProcessingService {
   constructor(private readonly httpClient: HttpClient) {}
 
-  getProcessingDataOfCompany(filter?: ProcessingFilter) {
-    return this.httpClient.get<ProcessingOverviewDto[]>(`${BASE_URL}${ApiEndpoints.processing.getProcessingData}`, {
-      params: this.generateQueryParametersForProcesses(filter),
+  getProcessingDataOfCompany(companyId: string) {
+    return this.httpClient.get<ProcessingOverviewDto[]>(`${BASE_URL}${ApiEndpoints.processes.getProcesses}`, {
+      params: this.generateQueryParametersForProcesses(companyId),
     });
   }
 
   createBottleBatch(data: FormData) {
-    return this.httpClient.post<BottlingDto[]>(`${BASE_URL}${ApiEndpoints.processing.createBottleBatch}`, data);
+    return this.httpClient.post<BottlingDto[]>(`${BASE_URL}${ApiEndpoints.processes.getProcesses}`, data);
   }
 
-  private generateQueryParametersForProcesses(filter?: ProcessingFilter): HttpParams {
+  private generateQueryParametersForProcesses(companyId: string): HttpParams {
     let params = new HttpParams();
-    if (filter) {
-      if (filter.companyId) {
-        params = params.append('companyId', filter.companyId);
-      }
-      if (filter.active) {
-        params = params.append('active', filter.active);
-      }
-      if (filter.processTypeName) {
-        params = params.append('processTypeName', filter.processTypeName);
-      }
-    }
+
+    params = params.append('companyId', companyId);
+    params = params.append('processType', ProcessType.BOTTLING);
+
     return params;
   }
 }

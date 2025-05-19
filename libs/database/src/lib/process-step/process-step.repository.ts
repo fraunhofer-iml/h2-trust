@@ -5,6 +5,7 @@ import { PrismaService } from '../prisma.service';
 import { processStepResultFields } from '../queries';
 import { retrieveRecordOrThrowException } from '../utils/utils';
 
+
 @Injectable()
 export class ProcessStepRepository {
   constructor(private readonly prismaService: PrismaService) {}
@@ -21,11 +22,11 @@ export class ProcessStepRepository {
       .then(ProcessStepEntity.fromDatabase);
   }
 
-  async findProcessSteps(processTypeName: string, active: boolean, companyId: string): Promise<ProcessStepEntity[]> {
+  async findProcessSteps(processType: string, active: boolean, companyId: string): Promise<ProcessStepEntity[]> {
     return this.prismaService.processStep
       .findMany({
         where: {
-          processTypeName: processTypeName,
+          processTypeName: processType,
           batch: {
             active: active,
           },
@@ -41,6 +42,23 @@ export class ProcessStepRepository {
       .then((processSteps) => processSteps.map(ProcessStepEntity.fromDatabase));
   }
 
+  async findAllProcessStepsFromStorageUnit(storageUnitId: string): Promise<ProcessStepEntity[]> {
+    return this.prismaService.processStep
+      .findMany({
+        where: {
+          batch: {
+            hydrogenStorageUnitId: storageUnitId,
+            active: true,
+          },
+        },
+        orderBy: {
+          endedAt: 'asc',
+        },
+        ...processStepResultFields,
+      })
+      .then((batches) => batches.map(ProcessStepEntity.fromDatabase));
+  }
+
   async insertProcessStep(entity: ProcessStepEntity, predecessorBatchIds: string[]): Promise<ProcessStepEntity> {
     if (!entity.batch) {
       throw new BrokerException('ProcessStepEntity.batch was undefined', HttpStatus.BAD_REQUEST);
@@ -52,7 +70,7 @@ export class ProcessStepRepository {
           endedAt: entity.endedAt,
           processType: {
             connect: {
-              name: entity.processTypeName,
+              name: entity.processType,
             },
           },
           batch: {
@@ -83,12 +101,12 @@ export class ProcessStepRepository {
           },
           recordedBy: {
             connect: {
-              id: entity.userId,
+              id: entity.recordedBy?.id,
             },
           },
           executedBy: {
             connect: {
-              id: entity.unitId,
+              id: entity.executedBy?.id,
             },
           },
         },

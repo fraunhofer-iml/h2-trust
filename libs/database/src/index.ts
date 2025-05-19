@@ -7,6 +7,5 @@ export * from './lib/batch';
 export * from './lib/document';
 export * from './lib/queries';
 export * from './lib/types';
-export * from './lib/enums';
 export * from './lib/utils/utils';
 export * from './seed';

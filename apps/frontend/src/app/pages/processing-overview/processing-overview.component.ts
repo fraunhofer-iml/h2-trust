@@ -10,7 +10,6 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { ProcessingOverviewDto, UserDetailsDto } from '@h2-trust/api';
-import { ProcessingFilter } from '../../model/process-filter';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { ProcessingService } from '../../shared/services/processing/processing.service';
 import { UsersService } from '../../shared/services/users/users.service';
@@ -65,21 +64,12 @@ export class ProcessingOverviewComponent implements OnInit, AfterViewInit {
 
   fetchTableData(userId: string) {
     this.usersService.getUserAccountInformation(userId).subscribe((userDetails: UserDetailsDto) => {
-      this.dataSource$ = this.processService
-        .getProcessingDataOfCompany(<ProcessingFilter>{ processTypeName: "BOTTLING", companyId: userDetails.company.id })
-        .pipe(
-          map((processes: ProcessingOverviewDto[]) => {
-            processes.forEach((data) => {
-              try {
-                data.color = JSON.parse(data.color ?? '').color ?? '';
-              } catch (error) {
-                throw new Error('Could not parse color : ' + error);
-              }
-            });
-            this.dataSource.data = processes;
-            return this.dataSource;
-          }),
-        );
+      this.dataSource$ = this.processService.getProcessingDataOfCompany(userDetails.company.id).pipe(
+        map((processes: ProcessingOverviewDto[]) => {
+          this.dataSource.data = processes;
+          return this.dataSource;
+        }),
+      );
     });
   }
 

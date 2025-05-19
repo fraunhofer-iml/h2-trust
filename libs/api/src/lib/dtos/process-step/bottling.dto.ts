@@ -3,7 +3,7 @@ import { BatchEntity, CompanyEntity, ProcessStepEntity } from '@h2-trust/amqp';
 export class BottlingDto {
   amount: string;
   recipient: string;
-  timestamp: string;
+  filledAt: string;
   recordedBy: string;
   hydrogenStorageUnit: string;
   file?: string;
@@ -12,7 +12,7 @@ export class BottlingDto {
   constructor(
     amount: string,
     recipient: string,
-    timestamp: string,
+    filledAt: string,
     recordedBy: string,
     hydrogenStorageUnit: string,
     file: string,
@@ -20,7 +20,7 @@ export class BottlingDto {
   ) {
     this.amount = amount;
     this.recipient = recipient;
-    this.timestamp = timestamp;
+    this.filledAt = filledAt;
     this.recordedBy = recordedBy;
     this.hydrogenStorageUnit = hydrogenStorageUnit;
     this.file = file;
@@ -28,7 +28,7 @@ export class BottlingDto {
   }
 
   static toEntity(dto: BottlingDto): ProcessStepEntity {
-    const validDate = dto.timestamp ? new Date(dto.timestamp) : null;
+    const validDate = dto.filledAt ? new Date(dto.filledAt) : null;
 
     return <ProcessStepEntity>{
       startedAt: validDate,
@@ -39,8 +39,12 @@ export class BottlingDto {
           id: dto.recipient,
         },
       },
-      userId: dto.recordedBy,
-      unitId: dto.hydrogenStorageUnit,
+      recordedBy: {
+        id: dto.recordedBy,
+      },
+      executedBy: {
+        id: dto.hydrogenStorageUnit,
+      },
       documents: [
         {
           description: dto.fileDescription,

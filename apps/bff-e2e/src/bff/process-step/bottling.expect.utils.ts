@@ -3,7 +3,7 @@ import { prisma } from '../test-utils/test.utils';
 
 
 export function expectResponseProcessStep(responseProcessStep: ProcessStepDto, expectedBottleDto: BottlingDto) {
-  expect(responseProcessStep.endedAt).toBe(expectedBottleDto.timestamp);
+  expect(responseProcessStep.endedAt).toBe(expectedBottleDto.filledAt);
   expect(responseProcessStep.batch.amount.toString()).toBe(expectedBottleDto.amount);
 }
 

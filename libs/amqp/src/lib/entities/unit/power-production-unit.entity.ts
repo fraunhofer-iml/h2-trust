@@ -49,18 +49,9 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     this.typeName = typeName;
   }
 
-  static fromDatabase(unit: PowerProductionUnitDbType): PowerProductionUnitEntity {
+  static override fromDatabase(unit: PowerProductionUnitDbType): PowerProductionUnitEntity {
     return <PowerProductionUnitEntity>{
-      id: unit.id,
-      name: unit.name,
-      mastrNumber: unit.mastrNumber,
-      manufacturer: unit.manufacturer,
-      modelType: unit.modelType,
-      serialNumber: unit.serialNumber,
-      commissionedOn: unit.commissionedOn,
-      decommissioningPlannedOn: unit.decommissioningPlannedOn,
-      address: AddressEntity.fromDatabase(unit.address),
-      company: BaseUnitEntity.mapCompany(unit),
+      ...BaseUnitEntity.fromDatabase(unit),
       ratedPower: PowerProductionUnitEntity.mapRatedPower(unit),
       gridOperator: unit.powerProductionUnit?.gridOperator,
       gridLevel: unit.powerProductionUnit?.gridLevel,

@@ -1,4 +1,4 @@
-export enum ProcessTypeName {
+export enum ProcessType {
   POWER_PRODUCTION = 'POWER_PRODUCTION',
   HYDROGEN_PRODUCTION = 'HYDROGEN_PRODUCTION',
   BOTTLING = 'BOTTLING',

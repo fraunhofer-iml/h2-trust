@@ -3,14 +3,14 @@ import { BaseUnitDbType } from '@h2-trust/database';
 import { AddressEntity } from '../address';
 
 export abstract class BaseUnitEntity {
-  id: string;
-  name: string;
-  mastrNumber: string;
-  manufacturer: string;
-  modelType: string;
-  serialNumber: string;
-  commissionedOn: Date;
-  decommissioningPlannedOn: Date;
+  id?: string;
+  name?: string;
+  mastrNumber?: string;
+  manufacturer?: string;
+  modelType?: string;
+  serialNumber?: string;
+  commissionedOn?: Date;
+  decommissioningPlannedOn?: Date;
   address?: AddressEntity;
   company?: {
     id?: string;
@@ -46,6 +46,21 @@ export abstract class BaseUnitEntity {
     this.decommissioningPlannedOn = decommissioningPlannedOn;
     this.address = address;
     this.company = company;
+  }
+
+  static fromDatabase(unit: BaseUnitDbType): BaseUnitEntity {
+    return <BaseUnitEntity>{
+      id: unit.id,
+      name: unit.name,
+      mastrNumber: unit.mastrNumber,
+      manufacturer: unit.manufacturer,
+      modelType: unit.modelType,
+      serialNumber: unit.serialNumber,
+      commissionedOn: unit.commissionedOn,
+      decommissioningPlannedOn: unit.decommissioningPlannedOn,
+      address: AddressEntity.fromDatabase(unit.address),
+      company: BaseUnitEntity.mapCompany(unit),
+    };
   }
 
   protected static mapCompany(unit: BaseUnitDbType) {

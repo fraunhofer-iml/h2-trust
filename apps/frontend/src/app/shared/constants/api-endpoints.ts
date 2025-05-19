@@ -11,11 +11,10 @@ export const ApiEndpoints = {
     recipients: '/recipients',
   },
   companies: { getCompanies: '/companies' },
-  processing: {
-    getProcessingData: '/processing',
-    createBottleBatch: '/processing/bottling',
+  processes: {
+    getProcesses: '/process-steps',
   },
   production: {
-    getProduction: '/production',
+    getProduction: '/process-steps',
   },
 };

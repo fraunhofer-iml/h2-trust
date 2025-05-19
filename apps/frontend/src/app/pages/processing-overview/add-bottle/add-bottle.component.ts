@@ -100,7 +100,7 @@ export class AddBottleComponent implements OnInit {
 
     data.append('amount', this.bottleFormGroup.controls['amount'].value);
     data.append('recipient', this.bottleFormGroup.controls['recipient'].value.id);
-    data.append('timestamp', this.createTimestamp().toISOString());
+    data.append('filledAt', this.createTimestamp().toISOString());
     data.append('recordedBy', this.userId);
     data.append('hydrogenStorageUnit', this.bottleFormGroup.controls['storageUnit'].value.id);
 

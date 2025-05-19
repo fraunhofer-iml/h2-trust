@@ -1,5 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { BatchEntity, BrokerException, ProcessStepEntity, ProcessTypeName } from '@h2-trust/amqp';
+import { BrokerException, ProcessStepEntity } from '@h2-trust/amqp';
+import { ProcessType } from '@h2-trust/api';
 import { BatchRepository, BatchTypeDbEnum, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
 import { StorageService } from '@h2-trust/storage';
 
@@ -15,26 +16,33 @@ export class BottlingService {
   async executeBottling(processStep: ProcessStepEntity, file: Express.Multer.File): Promise<ProcessStepEntity> {
     this.validateProcessStep(processStep);
 
-    const allBatchesFromStorageUnit = await this.batchRepository.findAllHydrogenBatchesFromStorageUnit(
-      processStep.unitId,
-    );
-    this.ensureBatchesExist(allBatchesFromStorageUnit, processStep.unitId);
-
-    const { batchesForBottle, remainingHydrogenAmount } = this.pickBatchesForBottleAndCalculateRemainingBatchAmount(
-      allBatchesFromStorageUnit,
-      processStep.batch.amount,
-      processStep.unitId,
+    const allProcessStepsFromStorageUnit = await this.processStepRepository.findAllProcessStepsFromStorageUnit(
+      processStep.executedBy.id,
     );
 
-    const batchIdsForBottle = batchesForBottle.map((batch) => batch.id);
+    if (allProcessStepsFromStorageUnit.length === 0) {
+      throw new BrokerException(
+        `No batches found in storage unit ${processStep.executedBy.id}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const { processStepsForBottle, remainingHydrogenAmount } =
+      this.pickBatchesForBottleAndCalculateRemainingBatchAmount(
+        allProcessStepsFromStorageUnit,
+        processStep.batch.amount,
+        processStep.executedBy.id,
+      );
+
+    const batchIdsForBottle = processStepsForBottle.map((processStep) => processStep.batch.id);
     const bottlingProcessStep = await this.createBottlingProcessStep(processStep, batchIdsForBottle);
 
     if (remainingHydrogenAmount > 0) {
       await this.createHydrogenProductionProcessStepForRemainingBatchAmount(
         processStep,
         remainingHydrogenAmount,
-        batchesForBottle[0].owner.id,
-        [batchIdsForBottle.at(-1)],
+        processStepsForBottle[0].batch.owner.id,
+        processStepsForBottle.at(-1),
       );
     }
     await this.batchRepository.setBatchesInactive(batchIdsForBottle);
@@ -47,7 +55,7 @@ export class BottlingService {
   }
 
   private validateProcessStep(processStep: ProcessStepEntity): void {
-    if (!processStep.unitId) {
+    if (!processStep.executedBy.id) {
       throw new BrokerException(`No storage unit for hydrogen extraction specified`, HttpStatus.BAD_REQUEST);
     }
 
@@ -59,31 +67,25 @@ export class BottlingService {
     }
   }
 
-  private ensureBatchesExist(allBatchesFromStorageUnit: BatchEntity[], storageUnitId: string): void {
-    if (allBatchesFromStorageUnit.length === 0) {
-      throw new BrokerException(`No batches found in storage unit ${storageUnitId}`, HttpStatus.BAD_REQUEST);
-    }
-  }
-
   private pickBatchesForBottleAndCalculateRemainingBatchAmount(
-    allBatchesFromStorageUnit: BatchEntity[],
+    allProcessStepsFromStorageUnit: ProcessStepEntity[],
     bottleCapacity: number,
     storageUnitId: string,
   ) {
-    const batchesForBottle: BatchEntity[] = [];
+    const processStepsForBottle: ProcessStepEntity[] = [];
     let requiredHydrogenAmount = bottleCapacity;
     let remainingHydrogenAmount: number;
 
-    for (const batchFromStorageUnit of allBatchesFromStorageUnit) {
-      batchesForBottle.push(batchFromStorageUnit);
+    for (const processStepFromStorageUnit of allProcessStepsFromStorageUnit) {
+      processStepsForBottle.push(processStepFromStorageUnit);
 
-      if (batchFromStorageUnit.amount >= requiredHydrogenAmount) {
-        remainingHydrogenAmount = batchFromStorageUnit.amount - requiredHydrogenAmount;
+      if (processStepFromStorageUnit.batch.amount >= requiredHydrogenAmount) {
+        remainingHydrogenAmount = processStepFromStorageUnit.batch.amount - requiredHydrogenAmount;
         requiredHydrogenAmount = 0;
         break;
       }
 
-      requiredHydrogenAmount -= batchFromStorageUnit.amount;
+      requiredHydrogenAmount -= processStepFromStorageUnit.batch.amount;
     }
 
     if (requiredHydrogenAmount !== 0) {
@@ -91,7 +93,7 @@ export class BottlingService {
       throw new BrokerException(message, HttpStatus.BAD_REQUEST);
     }
 
-    return { batchesForBottle, remainingHydrogenAmount };
+    return { processStepsForBottle, remainingHydrogenAmount };
   }
 
   private async createBottlingProcessStep(
@@ -100,54 +102,48 @@ export class BottlingService {
   ): Promise<ProcessStepEntity> {
     return this.processStepRepository.insertProcessStep(
       {
-        startedAt: processStep.startedAt,
-        endedAt: processStep.endedAt,
-        processTypeName: ProcessTypeName.BOTTLING,
+        ...processStep,
+        processType: ProcessType.BOTTLING,
         batch: {
           amount: processStep.batch.amount,
           quality: '{}',
           type: BatchTypeDbEnum.HYDROGEN,
           owner: {
             id: processStep.batch.owner.id,
-            name: undefined,
-            mastrNumber: undefined,
-            companyType: undefined,
           },
         },
-        userId: processStep.userId,
-        unitId: processStep.unitId,
       },
       batchIdsForBottle,
     );
   }
 
+  // NOTE: The timestamps here were set to those of the “tapped” batch.
+  // This places the newly created “remaining” batch at the beginning of the storage batch queue.
+  // This seems to contradict the first-in-first-out principle,
+  // but in fact a batch is now tapped before all others until it is empty.
   private async createHydrogenProductionProcessStepForRemainingBatchAmount(
     processStep: ProcessStepEntity,
     remainingAmount: number,
     ownerId: string,
-    batchIdsForBottle: string[],
+    predecessorProcessStep: ProcessStepEntity,
   ): Promise<ProcessStepEntity> {
     return this.processStepRepository.insertProcessStep(
       {
-        startedAt: processStep.startedAt,
-        endedAt: processStep.endedAt,
-        processTypeName: ProcessTypeName.HYDROGEN_PRODUCTION,
+        ...processStep,
+        startedAt: predecessorProcessStep.startedAt,
+        endedAt: predecessorProcessStep.endedAt,
+        processType: ProcessType.HYDROGEN_PRODUCTION,
         batch: {
           amount: remainingAmount,
           quality: '{}',
           type: BatchTypeDbEnum.HYDROGEN,
           owner: {
             id: ownerId,
-            name: undefined,
-            mastrNumber: undefined,
-            companyType: undefined,
           },
-          hydrogenStorageUnitId: processStep.unitId,
+          hydrogenStorageUnitId: processStep.executedBy.id,
         },
-        userId: processStep.userId,
-        unitId: processStep.unitId,
       },
-      batchIdsForBottle,
+      [predecessorProcessStep.batch.id],
     );
   }
 

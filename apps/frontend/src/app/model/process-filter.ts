@@ -1,10 +1,10 @@
 export class ProcessingFilter {
-  processTypeName?: string;
+  processType?: string;
   active?: boolean;
   companyId?: string;
 
-  constructor(processTypeName?: string, active?: boolean, companyId?: string) {
-    this.processTypeName = processTypeName;
+  constructor(processType?: string, active?: boolean, companyId?: string) {
+    this.processType = processType;
     this.active = active;
     this.companyId = companyId;
   }

@@ -1,1 +1,1 @@
-export * from './bottlingDtosMock';
+export * from './bottling-dto.mock';

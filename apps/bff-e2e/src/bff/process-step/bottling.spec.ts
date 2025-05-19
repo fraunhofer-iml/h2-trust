@@ -1,7 +1,7 @@
 import axios from 'axios';
 import FormData from 'form-data';
 import { HttpStatus } from '@nestjs/common';
-import { BottlingDtosMock, ProcessStepDto } from '@h2-trust/api';
+import { BottlingDtoMock, ProcessStepDto } from '@h2-trust/api';
 import { beforeAllAndAfterAll } from '../test-utils/test.utils';
 import {
   expectFileMetadataBeingSavedToDatabase,
@@ -16,8 +16,8 @@ describe('POST /processing/bottling', () => {
   beforeAllAndAfterAll();
 
   it('should create bottling processStep', async () => {
-    const bottleDto = BottlingDtosMock[0];
-    const res = await axios.post<ProcessStepDto>(`/processing/bottling`, bottleDto);
+    const bottleDto = BottlingDtoMock[0];
+    const res = await axios.post<ProcessStepDto>(`/process-steps`, bottleDto);
 
     expect(res.status).toBe(HttpStatus.CREATED);
     expectResponseProcessStep(res.data, bottleDto);
@@ -27,16 +27,16 @@ describe('POST /processing/bottling', () => {
   });
 
   it('should create bottling processStep with file', async () => {
-    const bottleDto = BottlingDtosMock[0];
+    const bottleDto = BottlingDtoMock[0];
     const formData = new FormData();
     formData.append('amount', bottleDto.amount);
     formData.append('recipient', bottleDto.recipient);
-    formData.append('timestamp', bottleDto.timestamp);
+    formData.append('filledAt', bottleDto.filledAt);
     formData.append('recordedBy', bottleDto.recordedBy);
     formData.append('hydrogenStorageUnit', bottleDto.hydrogenStorageUnit);
     formData.append('file', Buffer.from('dummyFileData'), 'dummyFileData.txt');
     formData.append('fileDescription', bottleDto.fileDescription);
-    const res = await axios.post<ProcessStepDto>(`/processing/bottling`, formData, { headers: formData.getHeaders() });
+    const res = await axios.post<ProcessStepDto>(`/process-steps`, formData, { headers: formData.getHeaders() });
 
     expect(res.status).toBe(HttpStatus.CREATED);
     expectResponseProcessStep(res.data, bottleDto);

@@ -49,18 +49,9 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     this.hydrogenStorageUnit = hydrogenStorageUnit;
   }
 
-  static fromDatabase(unit: HydrogenProductionUnitDbType): HydrogenProductionUnitEntity {
+  static override fromDatabase(unit: HydrogenProductionUnitDbType): HydrogenProductionUnitEntity {
     return <HydrogenProductionUnitEntity>{
-      id: unit.id,
-      name: unit.name,
-      mastrNumber: unit.mastrNumber,
-      manufacturer: unit.manufacturer,
-      modelType: unit.modelType,
-      serialNumber: unit.serialNumber,
-      commissionedOn: unit.commissionedOn,
-      decommissioningPlannedOn: unit.decommissioningPlannedOn,
-      address: AddressEntity.fromDatabase(unit.address),
-      company: BaseUnitEntity.mapCompany(unit),
+      ...BaseUnitEntity.fromDatabase(unit),
       ratedPower: HydrogenProductionUnitEntity.mapRatedPower(unit),
       typeName: unit.hydrogenProductionUnit?.typeName,
       hydrogenStorageUnit: HydrogenProductionUnitEntity.mapHydrogenStorageUnit(unit),
