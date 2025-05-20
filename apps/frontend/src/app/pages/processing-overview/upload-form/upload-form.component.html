@@ -3,8 +3,8 @@
   [ngClass]="{ 'grid-cols-1': uploadedFilesPosition === 'bottom', 'grid-cols-2': uploadedFilesPosition === 'right' }"
 >
   <div class="card">
-    <div class="flex items-baseline">
-      <h1 class="text-gray-700 mr-2">{{ title || 'Upload' }}</h1>
+    <div class="">
+      <h3 class="mr-2">{{ title || 'Upload' }}</h3>
       @if (informationText) {
       <span class="material-symbols-outlined" matTooltip="{{ informationText }}"> info </span>
       }
@@ -22,7 +22,7 @@
       }
 
       <div
-        class="flex items-center justify-center w-full mt-4"
+        class="flex items-center justify-center w-full"
         [ngClass]="{
             'cursor-pointer': formGroup.get('documentType')?.value || showDescriptionField,
             'bg-gray-50 hover:bg-gray-100': formGroup.get('documentType')?.value || showDescriptionField,

@@ -1,14 +1,13 @@
 .add-bootle-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  overflow: auto !important;
-  gap: 0.5rem;
+  gap: 2rem;
+  padding: 1rem;
 }
 
 .date-container {
-  display: grid;
-  grid-template-columns: 13rem 9rem;
+  display: flex;
+  flex-direction: row;
   gap: 1rem;
 }
 
@@ -20,4 +19,9 @@
 .content {
   display: flex;
   flex-direction: column;
+}
+
+.error-box {
+  border: 2px solid var(--light-red-color);
+  border-radius: 0.5rem;
 }

@@ -18,15 +18,7 @@ async function bootstrap() {
   Logger.log('📡 BFF microservice is starting with REST API...');
 
   const app = await NestFactory.create(AppModule);
-
   app.enableCors();
-  const configuration = app.get(ConfigurationService);
-
-  const swaggerConfig = new DocumentBuilder().setTitle('H2 Trust - BFF').setVersion('0.1').addBearerAuth().build();
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-
-  SwaggerModule.setup(configuration.getBffConfiguration().swaggerPath, app, document);
-
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -34,9 +26,16 @@ async function bootstrap() {
   );
   app.useGlobalInterceptors(new AllErrorsInterceptor());
   app.useGlobalFilters(new AllExceptionsFilter());
+
+  const configuration = app.get(ConfigurationService);
   app.useLogger(configuration.getGlobalConfiguration().logLevel);
 
+  const swaggerConfig = new DocumentBuilder().setTitle('H2 Trust - BFF').setVersion('0.1').addBearerAuth().build();
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup(configuration.getBffConfiguration().swaggerPath, app, document);
+
   await app.listen(configuration.getBffConfiguration().port);
+
   Logger.log(
     `📡 BFF microservice is up and running via REST: http://localhost:${configuration.getBffConfiguration().port}`,
   );

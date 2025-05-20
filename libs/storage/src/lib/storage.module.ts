@@ -16,22 +16,14 @@ import { StorageService } from './storage.service';
     ConfigurationModule,
     NestMinioModule.registerAsync({
       imports: [ConfigurationModule],
-      useFactory: async (configService: ConfigurationService): Promise<NestMinioOptions> => {
-        const globalConfiguration = configService.getGlobalConfiguration();
-
-        if (!globalConfiguration) {
-          throw new Error('GeneralConfiguration is not defined.');
-        }
-
-        return {
-          endPoint: globalConfiguration.minio.endPoint,
-          port: globalConfiguration.minio.port,
-          useSSL: globalConfiguration.minio.useSSL,
-          accessKey: globalConfiguration.minio.accessKey,
-          secretKey: globalConfiguration.minio.secretKey,
-        };
-      },
       inject: [ConfigurationService],
+      useFactory: async (configService: ConfigurationService): Promise<NestMinioOptions> => ({
+        endPoint: configService.getGlobalConfiguration().minio.endPoint,
+        port: configService.getGlobalConfiguration().minio.port,
+        useSSL: configService.getGlobalConfiguration().minio.useSSL,
+        accessKey: configService.getGlobalConfiguration().minio.accessKey,
+        secretKey: configService.getGlobalConfiguration().minio.secretKey,
+      }),
     }),
   ],
   providers: [StorageService],

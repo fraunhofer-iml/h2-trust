@@ -15,13 +15,14 @@ import { MatTimepickerModule } from '@angular/material/timepicker';
 import { CompanyDto, FGFile, HydrogenStorageOverviewDto, UserDetailsDto, UserDto } from '@h2-trust/api';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
+import { ProcessingService } from '../../../shared/services/processing/processing.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { UsersService } from '../../../shared/services/users/users.service';
 import { UploadFormComponent } from '../upload-form/upload-form.component';
 
 @Component({
   selector: 'app-add-bottle',
-  providers: [provideNativeDateAdapter(), CompaniesService],
+  providers: [provideNativeDateAdapter(), CompaniesService, ProcessingService],
   imports: [
     MatDialogModule,
     CommonModule,
@@ -44,14 +45,15 @@ import { UploadFormComponent } from '../upload-form/upload-form.component';
 export class AddBottleComponent implements OnInit {
   userId: string = '';
   selectedValue: string = '';
-  selectedCar: string = '';
+  receivedError: string = '';
+  dateDelimiter: Date = new Date();
   uploadedFiles: FGFile[] = [];
   storageUnits: Observable<HydrogenStorageOverviewDto[]> = of([]);
   recipients: Observable<CompanyDto[]> = of([]);
 
   bottleFormGroup: FormGroup = new FormGroup({
-    date: new FormControl<Date | undefined>(undefined, Validators.required),
-    time: new FormControl<string | undefined>(undefined, Validators.required),
+    date: new FormControl<Date | undefined>(new Date(), Validators.required),
+    time: new FormControl<Date | undefined>(new Date(), Validators.required),
     amount: new FormControl<number | undefined>(undefined, Validators.required),
     recipient: new FormControl<UserDto | undefined>(undefined, Validators.required),
     storageUnit: new FormControl<HydrogenStorageOverviewDto | undefined>(undefined, Validators.required),
@@ -63,6 +65,7 @@ export class AddBottleComponent implements OnInit {
     private readonly authService: AuthService,
     private readonly usersService: UsersService,
     private readonly companiesService: CompaniesService,
+    private readonly processService: ProcessingService,
   ) {}
 
   async ngOnInit() {
@@ -104,7 +107,18 @@ export class AddBottleComponent implements OnInit {
     data.append('recordedBy', this.userId);
     data.append('hydrogenStorageUnit', this.bottleFormGroup.controls['storageUnit'].value.id);
 
-    this.dialogRef.close(data);
+    this.sendData(data);
+  }
+
+  sendData(result: FormData) {
+    try {
+      this.processService.createBottleBatch(result).subscribe((res) => {
+        this.dialogRef.close(true);
+      });
+    } catch (error) {
+      console.log(typeof error);
+      this.receivedError = error instanceof Error && error.message ? error.message : 'Something went wrong.';
+    }
   }
 
   createTimestamp() {

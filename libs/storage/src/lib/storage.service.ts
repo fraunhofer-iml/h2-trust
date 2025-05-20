@@ -15,22 +15,13 @@ import { randomUUID } from 'crypto';
 
 @Injectable()
 export class StorageService {
-  public readonly storageUrl;
-
   private readonly bucketName;
 
   constructor(
     @Inject(MINIO_CONNECTION) private readonly client: Client,
     private readonly configurationService: ConfigurationService,
   ) {
-    const globalConfiguration = this.configurationService.getGlobalConfiguration();
-
-    if (!globalConfiguration) {
-      throw new Error('GeneralConfiguration is not defined.');
-    }
-
-    this.storageUrl = `http://${globalConfiguration.minio.endPoint}:${globalConfiguration.minio.port}/${globalConfiguration.minio.bucketName}`;
-    this.bucketName = globalConfiguration.minio.bucketName;
+    this.bucketName = this.configurationService.getGlobalConfiguration().minio.bucketName;
   }
 
   async uploadFileWithDeepPath(file: Express.Multer.File, entityPath: string, entityId: string) {

@@ -80,11 +80,9 @@ export class ProcessingOverviewComponent implements OnInit, AfterViewInit {
       autoFocus: true,
     });
 
-    dialogRef.afterClosed().subscribe((result: FormData) => {
-      if (result !== undefined) {
-        this.processService.createBottleBatch(result).subscribe((res) => {
-          this.fetchTableData(this.userId);
-        });
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        this.fetchTableData(this.userId);
       }
     });
   }

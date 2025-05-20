@@ -23,27 +23,61 @@ export class ConfigurationService {
 
   constructor(private readonly configService: ConfigService) {}
 
-  public getBatchSvcConfiguration(): BatchSvcConfiguration | undefined {
-    return this.configService.get<BatchSvcConfiguration>(BATCH_SVC_CONFIGURATION_IDENTIFIER);
+  public getBatchSvcConfiguration(): BatchSvcConfiguration {
+    const batchSvcConfiguration = this.configService.get<BatchSvcConfiguration>(BATCH_SVC_CONFIGURATION_IDENTIFIER);
+
+    if (!batchSvcConfiguration) {
+      const errorMessage = 'Environment variables for batch service configuration missing.';
+      this.logger.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    return batchSvcConfiguration;
   }
 
-  public getBffConfiguration(): BffConfiguration | undefined {
-    return this.configService.get<BffConfiguration>(BFF_CONFIGURATION_IDENTIFIER);
+  public getBffConfiguration(): BffConfiguration {
+    const bffConfiguration = this.configService.get<BffConfiguration>(BFF_CONFIGURATION_IDENTIFIER);
+
+    if (!bffConfiguration) {
+      const errorMessage = 'Environment variables for bff service configuration missing.';
+      this.logger.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    return bffConfiguration;
   }
 
-  public getGeneralSvcConfiguration(): GeneralSvcConfiguration | undefined {
-    return this.configService.get<GeneralSvcConfiguration>(GENERAL_SVC_CONFIGURATION_IDENTIFIER);
+  public getGeneralSvcConfiguration(): GeneralSvcConfiguration {
+    const generalSvcConfiguration = this.configService.get<GeneralSvcConfiguration>(
+      GENERAL_SVC_CONFIGURATION_IDENTIFIER,
+    );
+
+    if (!generalSvcConfiguration) {
+      const errorMessage = 'Environment variables for general service configuration missing.';
+      this.logger.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    return generalSvcConfiguration;
   }
 
-  public getGlobalConfiguration(): GlobalConfiguration | undefined {
-    return this.configService.get<GlobalConfiguration>(GLOBAL_CONFIGURATION_IDENTIFIER);
+  public getGlobalConfiguration(): GlobalConfiguration {
+    const globalConfiguration = this.configService.get<GlobalConfiguration>(GLOBAL_CONFIGURATION_IDENTIFIER);
+
+    if (!globalConfiguration) {
+      const msg = 'Environment variables for global configuration missing.';
+      this.logger.error(msg);
+      throw new Error(msg);
+    }
+
+    return globalConfiguration;
   }
 
   public getKeycloakConfiguration(): KeycloakConfiguration {
     const keycloakConfiguration = this.configService.get<KeycloakConfiguration>(KEYCLOAK_CONFIGURATION_IDENTIFIER);
 
     if (!keycloakConfiguration) {
-      const msg = 'Environment variables for keycloak configuration missing!';
+      const msg = 'Environment variables for keycloak configuration missing.';
       this.logger.error(msg);
       throw new Error(msg);
     }
