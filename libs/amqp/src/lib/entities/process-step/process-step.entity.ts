@@ -1,4 +1,3 @@
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { ProcessStepDbType } from '@h2-trust/database';
 import { BatchEntity } from '../batch';
 import { DocumentEntity } from '../document';

@@ -1,4 +1,3 @@
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { BatchDbType } from '@h2-trust/database';
 import { CompanyEntity } from '../company';
 

@@ -1,7 +1,7 @@
 import { AddressDto } from '../../address';
 import { CompanyDto } from '../company.dto';
 
-export const CompanyDtoMock: CompanyDto[] = [
+export const CompanyDtoMock = <CompanyDto[]>[
   <CompanyDto>{
     id: 'company-power-1',
     name: 'PowerGen AG',

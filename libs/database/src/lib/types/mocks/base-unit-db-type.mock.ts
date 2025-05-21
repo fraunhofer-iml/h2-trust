@@ -1,15 +1,15 @@
 import { BaseUnitDbType } from '..';
-import { Addresses, Companies, PowerAccessApprovals, Units } from '../../../seed';
+import { AddressSeed, CompaniesSeed, PowerAccessApprovalsSeed, UnitsSeed } from '../../../seed';
 
 export const BaseUnitDbTypeMock = <BaseUnitDbType[]>[
   {
-    ...Units[0],
-    address: Addresses[0],
+    ...UnitsSeed[0],
+    address: AddressSeed[0],
     company: {
-      ...Companies[0],
-      hydrogenApprovals: PowerAccessApprovals.map((approval) => ({
+      ...CompaniesSeed[0],
+      hydrogenApprovals: PowerAccessApprovalsSeed.map((approval) => ({
         ...approval,
-        powerProducer: Companies[0],
+        powerProducer: CompaniesSeed[0],
       })),
     },
   },

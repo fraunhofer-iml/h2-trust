@@ -1,19 +1,23 @@
+import { of } from 'rxjs';
+import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues } from '@h2-trust/amqp';
+import { BrokerQueues, CompanyMessagePatterns } from '@h2-trust/amqp';
 import { CompanyDto, CompanyDtoMock } from '@h2-trust/api';
 import { CompanyController } from './company.controller';
 import { CompanyService } from './company.service';
 
 describe('CompanyController', () => {
   let controller: CompanyController;
+  let clientProxy: ClientProxy;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [],
       controllers: [CompanyController],
       providers: [
         CompanyService,
         {
-          provide: BrokerQueues.QUEUE_BATCH_SVC,
+          provide: BrokerQueues.QUEUE_GENERAL_SVC,
           useValue: {
             send: jest.fn(),
           },
@@ -22,17 +26,23 @@ describe('CompanyController', () => {
     }).compile();
 
     controller = module.get<CompanyController>(CompanyController);
+    clientProxy = module.get<ClientProxy>(BrokerQueues.QUEUE_GENERAL_SVC) as ClientProxy;
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should find all companies', async () => {
-    const expectedReturnValue = CompanyDtoMock;
+  it('should find all Companies', async () => {
+    const expectedResponse: CompanyDto[] = CompanyDtoMock;
+    const sendRequestSpy = jest.spyOn(clientProxy, 'send');
 
-    const res: CompanyDto[] = await controller.findAll();
+    sendRequestSpy.mockImplementation((messagePattern: CompanyMessagePatterns, data: any) => {
+      return of(CompanyDtoMock);
+    });
 
-    expect(res).toEqual(expectedReturnValue);
+    const actualResponse: CompanyDto[] = await controller.findAll();
+
+    expect(actualResponse).toEqual(expectedResponse);
   });
 });

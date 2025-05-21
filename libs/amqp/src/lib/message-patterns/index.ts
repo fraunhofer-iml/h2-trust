@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './user.pattern';
-export * from './unit.pattern';
+export * from './company.pattern';
 export * from './process-step.pattern';
+export * from './unit.pattern';
+export * from './user.pattern';

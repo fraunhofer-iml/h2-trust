@@ -8,22 +8,22 @@
 
 import { PrismaClient } from '@prisma/client';
 import {
-  Addresses,
-  Batches,
-  BatchRelations,
-  Companies,
-  Documents,
-  ElectrolysisTypes,
-  EnergySources,
-  HydrogenProductionUnits,
-  HydrogenStorageUnits,
-  PowerAccessApprovals,
-  PowerProductionUnits,
-  PowerProductionUnitTypes,
-  ProcessSteps,
-  ProcessTypes,
-  Units,
-  Users,
+  AddressSeed,
+  BatchesSeed,
+  BatchRelationsSeed,
+  CompaniesSeed,
+  DocumentsSeed,
+  ElectrolysisTypesSeed,
+  EnergySourcesSeed,
+  HydrogenProductionUnitsSeed,
+  HydrogenStorageUnitsSeed,
+  PowerAccessApprovalsSeed,
+  PowerProductionUnitsSeed,
+  PowerProductionUnitTypesSeed,
+  ProcessStepsSeed,
+  ProcessTypesSeed,
+  UnitsSeed,
+  UsersSeed,
 } from './data';
 import { Data, importData } from './data-importer';
 
@@ -33,57 +33,57 @@ export async function seedDatabase() {
   const data: Data[] = [
     {
       name: 'address',
-      records: Addresses,
+      records: AddressSeed,
       createRecord: async (data: any) => await prisma.address.create({ data }),
     },
     {
       name: 'company',
-      records: Companies,
+      records: CompaniesSeed,
       createRecord: async (data: any) => await prisma.company.create({ data }),
     },
     {
       name: 'user',
-      records: Users,
+      records: UsersSeed,
       createRecord: async (data: any) => await prisma.user.create({ data }),
     },
     {
       name: 'unit',
-      records: Units,
+      records: UnitsSeed,
       createRecord: async (data: any) => await prisma.unit.create({ data }),
     },
     {
       name: 'powerProductionUnitType',
-      records: PowerProductionUnitTypes,
+      records: PowerProductionUnitTypesSeed,
       createRecord: async (data: any) => await prisma.powerProductionUnitType.create({ data }),
     },
     {
       name: 'powerProductionUnit',
-      records: PowerProductionUnits,
+      records: PowerProductionUnitsSeed,
       createRecord: async (data: any) => await prisma.powerProductionUnit.create({ data }),
     },
     {
       name: 'electrolysisType',
-      records: ElectrolysisTypes,
+      records: ElectrolysisTypesSeed,
       createRecord: async (data: any) => await prisma.electrolysisType.create({ data }),
     },
     {
       name: 'hydrogenStorageUnit',
-      records: HydrogenStorageUnits,
+      records: HydrogenStorageUnitsSeed,
       createRecord: async (data: any) => await prisma.hydrogenStorageUnit.create({ data }),
     },
     {
       name: 'hydrogenProductionUnit',
-      records: HydrogenProductionUnits,
+      records: HydrogenProductionUnitsSeed,
       createRecord: async (data: any) => await prisma.hydrogenProductionUnit.create({ data }),
     },
     {
       name: 'batch',
-      records: Batches,
+      records: BatchesSeed,
       createRecord: async (data: any) => await prisma.batch.create({ data }),
     },
     {
       name: 'batchRelation',
-      records: BatchRelations,
+      records: BatchRelationsSeed,
       createRecord: async (data: any) =>
         await prisma.batch.update({
           where: { id: data.A },
@@ -96,27 +96,27 @@ export async function seedDatabase() {
     },
     {
       name: 'processTypes',
-      records: ProcessTypes,
+      records: ProcessTypesSeed,
       createRecord: async (data: any) => await prisma.processType.create({ data }),
     },
     {
       name: 'processStep',
-      records: ProcessSteps,
+      records: ProcessStepsSeed,
       createRecord: async (data: any) => await prisma.processStep.create({ data }),
     },
     {
       name: 'document',
-      records: Documents,
+      records: DocumentsSeed,
       createRecord: async (data: any) => await prisma.document.create({ data }),
     },
     {
       name: 'energySource',
-      records: EnergySources,
+      records: EnergySourcesSeed,
       createRecord: async (data: any) => await prisma.energySource.create({ data }),
     },
     {
       name: 'powerAccessApproval',
-      records: PowerAccessApprovals,
+      records: PowerAccessApprovalsSeed,
       createRecord: async (data: any) => await prisma.powerAccessApproval.create({ data }),
     },
   ];

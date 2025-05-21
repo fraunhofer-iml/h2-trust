@@ -9,7 +9,7 @@ export class CompanyController {
 
   @Get()
   @ApiOperation({ description: 'Get all available Companies' })
-  findAll(): CompanyDto[] {
+  async findAll(): Promise<CompanyDto[]> {
     return this.companyService.findAll();
   }
 }

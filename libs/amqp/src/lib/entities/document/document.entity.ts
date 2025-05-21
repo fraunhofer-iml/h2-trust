@@ -1,4 +1,3 @@
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { DocumentDbType } from '@h2-trust/database';
 
 export class DocumentEntity {

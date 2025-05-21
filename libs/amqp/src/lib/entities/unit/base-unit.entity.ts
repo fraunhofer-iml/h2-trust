@@ -1,4 +1,3 @@
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { BaseUnitDbType } from '@h2-trust/database';
 import { AddressEntity } from '../address';
 

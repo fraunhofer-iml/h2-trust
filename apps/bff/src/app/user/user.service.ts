@@ -2,14 +2,14 @@ import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { BrokerQueues, UserMessagePatterns } from '@h2-trust/amqp';
-import { UserDetailsDto, UserDto, USERS } from '@h2-trust/api';
+import { UserDetailsDto, UserDto, UserDtoMock } from '@h2-trust/api';
 
 @Injectable()
 export class UserService {
   constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
 
   readRecipients(): UserDto[] {
-    return USERS;
+    return UserDtoMock;
   }
 
   readUserWithCompany(id: string): Promise<UserDetailsDto> {

@@ -49,7 +49,7 @@
     "studio": "npx prisma studio"
   },
   "scripts": {
-    "clean": "rm -rf .angular dist node_modules",
+    "clean": "rm -rf .angular dist node_modules apps/*/run-code-quality-tools.log libs/*/run-code-quality-tools.log",
     "migrate-db": "npx prisma migrate dev && npx prisma generate",
     "set-up-db": "npx prisma db push --force-reset && npx prisma db seed",
     "init": "npm run clean && npm install && npm run set-up-db",

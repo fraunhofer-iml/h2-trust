@@ -1,4 +1,3 @@
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { HydrogenStorageUnitDbType } from '@h2-trust/database';
 import { AddressEntity } from '../address';
 import { BaseUnitEntity } from './base-unit.entity';

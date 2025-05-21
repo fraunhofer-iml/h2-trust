@@ -7,13 +7,14 @@
  */
 
 import { Module } from '@nestjs/common';
-import { BatchRepository } from './batch';
-import { DocumentRepository } from './document';
 import { PrismaService } from './prisma.service';
-import { ProcessStepRepository } from './process-step';
-import { UnitRepository } from './unit';
-import { UserRepository } from './user';
-
+import {
+  BatchRepository,
+  DocumentRepository,
+  ProcessStepRepository,
+  UnitRepository,
+  UserRepository,
+} from './repositories';
 
 @Module({
   controllers: [],
