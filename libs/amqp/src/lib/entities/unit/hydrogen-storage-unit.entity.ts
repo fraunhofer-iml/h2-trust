@@ -2,6 +2,7 @@ import { HydrogenStorageUnitDbType } from '@h2-trust/database';
 import { AddressEntity } from '../address';
 import { BaseUnitEntity } from './base-unit.entity';
 import { FillingBatchEntity } from './filling-batch.entity';
+import { Batch } from '@prisma/client';
 
 export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   capacity: number;
@@ -64,9 +65,9 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     return unit.hydrogenStorageUnit?.capacity?.toNumber() ?? 0;
   }
 
-  private static mapFilling(unit: HydrogenStorageUnitDbType) {
+  private static mapFilling(unit: HydrogenStorageUnitDbType): FillingBatchEntity[] {
     return (
-      unit.hydrogenStorageUnit?.filling?.map((batch) => {
+      unit.hydrogenStorageUnit?.filling?.map((batch: Batch) => {
         return {
           id: batch.id,
           amount: batch.amount?.toNumber() ?? 0,
