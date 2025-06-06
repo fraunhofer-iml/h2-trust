@@ -7,6 +7,7 @@
  */
 
 export * from './company.pattern';
+export * from './production.pattern';
 export * from './process-step.pattern';
 export * from './unit.pattern';
 export * from './user.pattern';

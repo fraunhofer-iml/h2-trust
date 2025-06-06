@@ -9,4 +9,5 @@
 export class BrokerQueues {
   public static QUEUE_BATCH_SVC = process.env['AMQP_QUEUE_PREFIX'] + 'batch-svc';
   public static QUEUE_GENERAL_SVC = process.env['AMQP_QUEUE_PREFIX'] + 'general-svc';
+  public static QUEUE_PROCESS_SVC = process.env['AMQP_QUEUE_PREFIX'] + 'process-svc';
 }

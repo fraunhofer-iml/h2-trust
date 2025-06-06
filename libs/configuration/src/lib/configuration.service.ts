@@ -16,12 +16,30 @@ import {
 } from './configurations/general-svc.configuration';
 import { GLOBAL_CONFIGURATION_IDENTIFIER, GlobalConfiguration } from './configurations/global.configuration';
 import { KEYCLOAK_CONFIGURATION_IDENTIFIER, KeycloakConfiguration } from './configurations/keycloak.configuration';
+import {
+  PROCESS_SVC_CONFIGURATION_IDENTIFIER,
+  ProcessSvcConfiguration,
+} from './configurations/process-svc.configuration';
 
 @Injectable()
 export class ConfigurationService {
   logger = new Logger(ConfigurationService.name);
 
   constructor(private readonly configService: ConfigService) {}
+
+  public getProcessSvcConfiguration(): ProcessSvcConfiguration {
+    const processSvcConfiguration = this.configService.get<ProcessSvcConfiguration>(
+      PROCESS_SVC_CONFIGURATION_IDENTIFIER,
+    );
+
+    if (!processSvcConfiguration) {
+      const errorMessage = 'Environment variables for process service configuration missing.';
+      this.logger.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    return processSvcConfiguration;
+  }
 
   public getBatchSvcConfiguration(): BatchSvcConfiguration {
     const batchSvcConfiguration = this.configService.get<BatchSvcConfiguration>(BATCH_SVC_CONFIGURATION_IDENTIFIER);

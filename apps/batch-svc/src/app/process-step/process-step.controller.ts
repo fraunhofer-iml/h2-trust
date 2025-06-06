@@ -20,6 +20,13 @@ export class ProcessStepController {
     return this.processStepService.readProcessSteps(payload.processType, payload.active, payload.companyId);
   }
 
+  @MessagePattern(ProcessStepMessagePatterns.CREATE)
+  async createProcessStep(
+    @Payload() payload: { processStepEntity: ProcessStepEntity; predecessors: string[] },
+  ): Promise<ProcessStepEntity> {
+    return this.processStepService.createProcessStep(payload.processStepEntity, payload.predecessors);
+  }
+
   @MessagePattern(ProcessStepMessagePatterns.BOTTLING)
   async executeBottling(
     @Payload() payload: { processStepData: ProcessStepEntity; file: Express.Multer.File },

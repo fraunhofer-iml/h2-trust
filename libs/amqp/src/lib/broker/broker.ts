@@ -19,6 +19,10 @@ export class Broker {
     return this.getMessageBroker(BrokerQueues.QUEUE_GENERAL_SVC);
   }
 
+  public getProcessSvcBroker(): DynamicModule {
+    return this.getMessageBroker(BrokerQueues.QUEUE_PROCESS_SVC);
+  }
+
   private getMessageBroker(queue: string): DynamicModule {
     const amqpUri = process.env['AMQP_URI'];
 

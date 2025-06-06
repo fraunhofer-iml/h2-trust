@@ -1,8 +1,8 @@
+import { Batch } from '@prisma/client';
 import { HydrogenStorageUnitDbType } from '@h2-trust/database';
 import { AddressEntity } from '../address';
 import { BaseUnitEntity } from './base-unit.entity';
 import { FillingBatchEntity } from './filling-batch.entity';
-import { Batch } from '@prisma/client';
 
 export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   capacity: number;

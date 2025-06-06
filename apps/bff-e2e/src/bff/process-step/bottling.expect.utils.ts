@@ -1,7 +1,6 @@
 import { BottlingDto, ProcessStepDto } from '@h2-trust/api';
 import { prisma } from '../test-utils/test.utils';
 
-
 export function expectResponseProcessStep(responseProcessStep: ProcessStepDto, expectedBottleDto: BottlingDto) {
   expect(responseProcessStep.endedAt).toBe(expectedBottleDto.filledAt);
   expect(responseProcessStep.batch.amount.toString()).toBe(expectedBottleDto.amount);

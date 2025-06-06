@@ -1,6 +1,6 @@
 import { Batch, BatchType, HydrogenColor, Prisma } from '@prisma/client';
 import { CompaniesSeed } from '../companies.seed';
-import { HydrogenStorageUnitsSeed } from '../units/hydrogen-storage-units.seed';
+import { HydrogenStorageUnitsSeed } from '../units';
 
 export const HydrogenBatchesProducedSeed = <Batch[]>[
   {

@@ -39,6 +39,7 @@ include:
   - 'apps/bff/.gitlab-ci.yml'
   - 'apps/general-svc/.gitlab-ci.yml'
   - 'apps/batch-svc/.gitlab-ci.yml'
+  - 'apps/process-svc/.gitlab-ci.yml'
   - 'apps/frontend/.gitlab-ci.yml'
 
 all:license-check:

@@ -11,7 +11,6 @@ import {
   expectResponseProcessStep,
 } from './bottling.expect.utils';
 
-// TODO-MP: The import of '../test-utils/test.utils' and './bottling.expect.utils' leads to a circular dependency.
 describe('POST /processing/bottling', () => {
   beforeAllAndAfterAll();
 

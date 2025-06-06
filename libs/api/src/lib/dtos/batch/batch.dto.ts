@@ -26,5 +26,4 @@ export class BatchDto {
     this.owner = owner;
     this.hydrogenStorageUnitId = hydrogenStorageUnitId;
   }
-
 }

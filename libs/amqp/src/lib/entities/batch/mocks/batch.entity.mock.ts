@@ -1,4 +1,4 @@
-import { CompaniesSeed, HydrogenBatchesProducedSeed } from '@h2-trust/database';
+import { CompaniesSeed, HydrogenBatchesProducedSeed } from 'libs/database/src/seed';
 import { BatchEntity } from '../batch.entity';
 
 export const BatchEntitiesMock: BatchEntity[] = HydrogenBatchesProducedSeed.map((batch) => ({

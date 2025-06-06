@@ -22,9 +22,12 @@ import {
 import { ProcessStepService } from './process-step.service';
 import 'multer';
 
+// TODO-MP(DUHGW-106): since the bff is view-based, we should not use the ProcessStepController for the API, because it's not a view but rather an implementation detail.
+// Instead, we should rename this controller to BottlingController and split the readProcessSteps method into two separate methods: readProduction and readBottling.
+// The readProduction method should then be moved to the ProductionController.
 @Controller('process-steps')
 export class ProcessStepController {
-  constructor(private service: ProcessStepService) {}
+  constructor(private readonly service: ProcessStepService) { }
 
   @Get()
   @ApiOperation({ description: 'Get either all production batches or processing batches' })

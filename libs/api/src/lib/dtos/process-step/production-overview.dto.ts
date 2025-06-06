@@ -36,16 +36,16 @@ export class ProductionOverviewDto {
       productionUnit: processStep.executedBy?.name,
       producedAmount: processStep.batch?.amount,
       color: parseColor(processStep.batch?.quality),
-      powerProducer: processStep.batch?.owner?.name,
+      powerProducer: processStep.batch?.predecessors?.[0]?.owner?.name,
       powerConsumed: ProductionOverviewDto.determinePowerConsumed(processStep),
     };
   }
 
   private static determinePowerConsumed(processStep: ProcessStepEntity) {
     // NOTE: In the future, a batch could also have several predecessors
-    if (processStep.batch?.predecessors?.[0].type !== BatchType.POWER) {
+    if (processStep.batch?.predecessors?.[0]?.type !== BatchType.POWER) {
       return null;
     }
-    return processStep.batch?.predecessors?.[0].amount;
+    return processStep.batch?.predecessors?.[0]?.amount;
   }
 }

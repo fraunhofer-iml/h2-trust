@@ -23,7 +23,11 @@
           }
         ],
         "styles": ["apps/frontend/src/styles.scss"],
-        "scripts": []
+        "scripts": [],
+        "allowedCommonJsDependencies": [
+          "class-validator",
+          "validator"
+        ]
       },
       "configurations": {
         "en": {

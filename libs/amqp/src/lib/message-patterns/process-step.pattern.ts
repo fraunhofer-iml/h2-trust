@@ -9,4 +9,5 @@
 export enum ProcessStepMessagePatterns {
   READ_ALL = 'process-step.read-all',
   BOTTLING = 'process-step.bottling',
+  CREATE = 'process-step.create',
 }

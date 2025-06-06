@@ -11,7 +11,16 @@ export class ProcessStepDto {
   unitId?: string;
   documents?: DocumentEntity[];
 
-  constructor(id: string, startedAt: Date, endedAt: Date, processType: string, batch: BatchDto | null, userId: string, unitId: string, documents: DocumentEntity[]) {
+  constructor(
+    id: string,
+    startedAt: Date,
+    endedAt: Date,
+    processType: string,
+    batch: BatchDto | null,
+    userId: string,
+    unitId: string,
+    documents: DocumentEntity[],
+  ) {
     this.id = id;
     this.startedAt = startedAt;
     this.endedAt = endedAt;
