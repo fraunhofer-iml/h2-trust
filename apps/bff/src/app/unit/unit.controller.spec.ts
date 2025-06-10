@@ -2,19 +2,22 @@ import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, UnitMessagePatterns } from '@h2-trust/amqp';
-import { UnitDto, UnitOverviewDto, UnitType } from '@h2-trust/api';
+import { UnitDto, UnitOverviewDto, UnitType, UserDetailsDto } from '@h2-trust/api';
+import { UserService } from '../user/user.service';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
 
 describe('UnitController', () => {
   let controller: UnitController;
   let queue: ClientProxy;
+  let userService: UserService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UnitController],
       providers: [
         UnitService,
+        UserService,
         {
           provide: BrokerQueues.QUEUE_GENERAL_SVC,
           useValue: {
@@ -26,6 +29,7 @@ describe('UnitController', () => {
 
     controller = module.get<UnitController>(UnitController);
     queue = module.get<ClientProxy>(BrokerQueues.QUEUE_GENERAL_SVC) as ClientProxy;
+    userService = module.get<UserService>(UserService);
   });
 
   it('should be defined', () => {
@@ -33,12 +37,19 @@ describe('UnitController', () => {
   });
 
   it('should find all units', async () => {
+    const user = { company: { id: '' } } as UserDetailsDto;
+
     const expectedReturnValue = [];
     const sendRequestSpy = jest.spyOn(queue, 'send');
     sendRequestSpy.mockImplementation((messagePattern: UnitMessagePatterns.READ, data: any) => {
       return of([]);
     });
-    const res: UnitOverviewDto[] = await controller.getUnits('', UnitType.hydrogenProductionUnit);
+    jest.spyOn(userService, 'readUserWithCompany').mockResolvedValue(user);
+
+    const res: UnitOverviewDto[] = await controller.getUnits(
+      '6f63a1a9-6cc5-4a7a-98b2-79a0460910f4',
+      UnitType.hydrogenProductionUnit,
+    );
 
     expect(res).toEqual(expectedReturnValue);
   });

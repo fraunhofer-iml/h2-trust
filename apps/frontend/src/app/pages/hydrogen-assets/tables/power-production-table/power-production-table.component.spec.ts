@@ -2,19 +2,18 @@ import { KeycloakService } from 'keycloak-angular';
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideQueryClient, QueryClient } from '@tanstack/angular-query-experimental';
-import { AuthService } from '../../shared/services/auth/auth.service';
-import { UnitsService } from '../../shared/services/units/units.service';
-import { UsersService } from '../../shared/services/users/users.service';
-import { HydrogenAssetsComponent } from './hydrogen-assets.component';
+import { AuthService } from '../../../../shared/services/auth/auth.service';
+import { UnitsService } from '../../../../shared/services/units/units.service';
+import { UsersService } from '../../../../shared/services/users/users.service';
+import { PowerProductionTableComponent } from './power-production-table.component';
 
-describe('HydrogenAssetsComponent', () => {
-  let component: HydrogenAssetsComponent;
-  let fixture: ComponentFixture<HydrogenAssetsComponent>;
+describe('HydrogenStorageTableComponent', () => {
+  let component: PowerProductionTableComponent;
+  let fixture: ComponentFixture<PowerProductionTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HydrogenAssetsComponent],
+      imports: [PowerProductionTableComponent],
       providers: [
         provideHttpClient(),
         provideAnimations(),
@@ -27,11 +26,10 @@ describe('HydrogenAssetsComponent', () => {
             getUserRoles: () => [],
           },
         },
-        provideQueryClient(new QueryClient()),
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(HydrogenAssetsComponent);
+    fixture = TestBed.createComponent(PowerProductionTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

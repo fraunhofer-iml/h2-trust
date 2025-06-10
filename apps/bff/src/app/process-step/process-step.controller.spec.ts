@@ -3,6 +3,7 @@ import { BrokerQueues } from '@h2-trust/amqp';
 import { ProcessStepController } from './process-step.controller';
 import { ProcessStepService } from './process-step.service';
 import 'multer';
+import { UserService } from '../user/user.service';
 
 describe('ProcessStepController', () => {
   let controller: ProcessStepController;
@@ -18,6 +19,13 @@ describe('ProcessStepController', () => {
             send: jest.fn(),
           },
         },
+        {
+          provide: BrokerQueues.QUEUE_GENERAL_SVC,
+          useValue: {
+            send: jest.fn(),
+          },
+        },
+        UserService,
       ],
     }).compile();
 

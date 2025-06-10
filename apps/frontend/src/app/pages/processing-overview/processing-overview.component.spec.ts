@@ -3,6 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef } from '@angular/material/dialog';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideQueryClient, QueryClient } from '@tanstack/angular-query-experimental';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { ProcessingService } from '../../shared/services/processing/processing.service';
 import { UsersService } from '../../shared/services/users/users.service';
@@ -28,6 +29,7 @@ describe('ProcessingOverviewComponent', () => {
             getUserRoles: () => [],
           },
         },
+        provideQueryClient(new QueryClient()),
       ],
     }).compileComponents();
 

@@ -19,17 +19,17 @@ export class UnitController {
   }
 
   @MessagePattern(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS)
-  async readPowerProductionUnits(companyId: string): Promise<PowerProductionUnitEntity[]> {
+  async readPowerProductionUnits({ companyId }): Promise<PowerProductionUnitEntity[]> {
     return this.service.readPowerProductionUnits(companyId);
   }
 
   @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS)
-  async readHydrogenProductionUnits(companyId: string): Promise<HydrogenProductionUnitEntity[]> {
+  async readHydrogenProductionUnits({ companyId }): Promise<HydrogenProductionUnitEntity[]> {
     return this.service.readHydrogenProductionUnits(companyId);
   }
 
   @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_STORAGE_UNITS)
-  async readHydrogenStorageUnits(companyId: string): Promise<HydrogenStorageUnitEntity[]> {
+  async readHydrogenStorageUnits({ companyId }): Promise<HydrogenStorageUnitEntity[]> {
     return this.service.readHydrogenStorageUnits(companyId);
   }
 }

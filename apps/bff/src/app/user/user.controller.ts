@@ -7,7 +7,7 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get(':id/details')
+  @Get(':id')
   @ApiOperation({ description: 'Get user and his company' })
   @ApiOkResponse({ description: 'Successful request.' })
   @ApiResponse({ type: [UserDetailsDto] })

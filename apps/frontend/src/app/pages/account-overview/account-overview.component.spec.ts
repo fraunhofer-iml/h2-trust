@@ -1,6 +1,7 @@
 import { KeycloakService } from 'keycloak-angular';
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideQueryClient, QueryClient } from '@tanstack/angular-query-experimental';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { UnitsService } from '../../shared/services/units/units.service';
 import { UsersService } from '../../shared/services/users/users.service';
@@ -24,6 +25,7 @@ describe('AccountOverviewComponent', () => {
             getUserRoles: () => [],
           },
         },
+        provideQueryClient(new QueryClient()),
       ],
     }).compileComponents();
 

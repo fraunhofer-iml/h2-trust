@@ -1,46 +1,58 @@
-<mat-drawer-container class="sidebar-container" autosize>
-  <mat-drawer mode="side" [opened]="true" [disableClose]="true">
-    <div class="sidebar-content">
-      <div options-container>
-        <h2 class="green head-title">H2 Trust</h2>
-        <mat-selection-list class="option-list">
-          @for(option of hydrogenOptions; track option.title){
-          <a class="account-settings-button" routerLink="{{ option.route }}">
-            <div class="option">
-              <span class="material-symbols-outlined grey">{{ option.icon }}</span>
-              <span class="grey">{{ option.title }}</span>
-            </div>
-          </a>
-          }
-        </mat-selection-list>
+<mat-drawer-container class="h-[100vh] !bg-neutral-200" autosize>
+  <mat-drawer mode="side" [opened]="true" [disableClose]="true" class="!bg-white">
+    <div class="flex flex-col justify-between h-full p-4">
+      <div class="flex flex-col gap-2">
+        <h3 class="text-secondary-200 text-2xl font-semibold">H2 Trust</h3>
+
+        @for(option of sidebarOptions; track $index){
+        <a class="" routerLink="{{ option.route }}">
+          <div
+            class="w-full flex flex-row gap-2 rounded-xl hover:bg-primary-100/20 p-4"
+            (click)="selectedIndex = $index"
+            role="none"
+            [ngClass]="selectedIndex === $index ? 'bg-primary-100/20' : ''"
+          >
+            <span class="material-symbols-outlined text-neutral-600">{{ option.icon }}</span>
+            <span class="text-neutral-600">{{ option.title }}</span>
+          </div>
+        </a>
+        }
       </div>
-      <mat-expansion-panel class="user-block" hideToggle>
-        <mat-expansion-panel-header>
+
+      <mat-expansion-panel class="p-4 !bg-primary-100/20 border-primary-100 !shadow-none">
+        <mat-expansion-panel-header class="!p-0 !pr-4 !bg-transparent select-none">
           <mat-panel-title>
-            <div class="user-toggle">
-              <div class="icon-box">
-                <span class="material-symbols-outlined white">person </span>
+            <div class="!select-none flex flex-row gap-4 items-center">
+              <div class="bg-primary-300 rounded-xl w-10 h-10 flex justify-center items-center">
+                <span class="material-symbols-outlined text-white text-2xl">person </span>
               </div>
-              <div class="user-information">
-                <span class="bold grey">{{ userFirstName }} {{ userLastName }}</span>
+              <div class="flex flex-col">
+                <span class="text-neutral-500 text-sm font-semibold">{{ userFirstName }} {{ userLastName }}</span>
+                <span class="text-neutral-500 text-sm">{{ userEmail }}</span>
               </div>
             </div>
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <div class="account-settings-wrapper">
-          <a class="account-settings-button" routerLink="/">
-            <span class="material-symbols-outlined grey">settings</span>
-            <span class="grey">account</span>
+        <div class="flex flex-col gap-1 w-full">
+          <a
+            class="hover:text-primary-100 hover:bg-primary-200/10 text-neutral-500 flex flex-row items-center p-4 gap-2 rounded-md"
+            routerLink="/"
+          >
+            <span class="material-symbols-outlined">settings</span>
+            <span>account</span>
           </a>
-          <button class="account-settings-button reset-button w-full" (click)="logout()">
-            <span class="material-symbols-outlined grey">logout</span>
-            <span class="grey">logout</span>
+          <button
+            class="hover:text-primary-100 hover:bg-primary-200/10 text-neutral-500 flex flex-row items-center p-4 gap-2 rounded-md"
+            (click)="logout()"
+          >
+            <span class="material-symbols-outlined">logout</span>
+            <span>logout</span>
           </button>
         </div>
       </mat-expansion-panel>
     </div>
   </mat-drawer>
-  <mat-drawer-content class="content-background">
+  <mat-drawer-content class="bg-neutral-200">
     <ng-content></ng-content>
   </mat-drawer-content>
 </mat-drawer-container>

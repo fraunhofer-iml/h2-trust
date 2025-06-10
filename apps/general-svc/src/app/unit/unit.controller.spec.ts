@@ -65,7 +65,7 @@ describe('UnitController', () => {
 
     jest.spyOn(prisma.unit, 'findMany').mockResolvedValue([expectedResponse]);
 
-    const actualResponse = await controller.readPowerProductionUnits(expectedResponse.companyId);
+    const actualResponse = await controller.readPowerProductionUnits({ companyId: expectedResponse.companyId });
 
     expect(actualResponse).toEqual([PowerProductionUnitEntity.fromDatabase(expectedResponse)]);
     expect(prisma.unit.findMany).toHaveBeenCalledWith({
@@ -84,7 +84,7 @@ describe('UnitController', () => {
 
     jest.spyOn(prisma.unit, 'findMany').mockResolvedValue([expectedResponse]);
 
-    const actualResponse = await controller.readHydrogenProductionUnits(expectedResponse.companyId);
+    const actualResponse = await controller.readHydrogenProductionUnits({ companyId: expectedResponse.companyId });
 
     expect(actualResponse).toEqual([HydrogenProductionUnitEntity.fromDatabase(expectedResponse)]);
     expect(prisma.unit.findMany).toHaveBeenCalledWith({
@@ -103,7 +103,7 @@ describe('UnitController', () => {
 
     jest.spyOn(prisma.unit, 'findMany').mockResolvedValue([expectedResponse]);
 
-    const actualResponse = await controller.readHydrogenStorageUnits(expectedResponse.companyId);
+    const actualResponse = await controller.readHydrogenStorageUnits({ companyId: expectedResponse.companyId });
 
     expect(actualResponse).toEqual([HydrogenStorageUnitEntity.fromDatabase(expectedResponse)]);
     expect(prisma.unit.findMany).toHaveBeenCalledWith({

@@ -1,5 +1,5 @@
 export enum ROUTES {
-  HYDROGEN_UNITS = 'hydrogen/units',
+  UNITS = 'units',
   PRODUCTION = 'production',
   PROCESSING = 'processing',
   OVERVIEW = 'overview',

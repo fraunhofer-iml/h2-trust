@@ -4,7 +4,7 @@
 >
   <div class="card">
     <div class="">
-      <h3 class="mr-2">{{ title || 'Upload' }}</h3>
+      <h3 class="font-semibold text-gray-700">{{ title || 'Upload' }}</h3>
       @if (informationText) {
       <span class="material-symbols-outlined" matTooltip="{{ informationText }}"> info </span>
       }
@@ -85,8 +85,7 @@
       }}</span>
       }
       <div class="ml-2" [ngClass]="{ 'col-span-2': !selectOptions }">
-        <span class="font-semibold text-gray-700">Documents in queue:</span>
-        <span class="ml-1">{{ lengthOfUploadedFiles() }}{{ selectOptions && '/' }}{{ selectOptions?.length }}</span>
+        <span class="font-semibold text-gray-700">Document:</span>
       </div>
     </div>
     @if (selectOptions && selectOptions.length > 0) { @for (option of selectOptions; track $index) {

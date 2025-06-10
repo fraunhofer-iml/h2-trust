@@ -6,9 +6,9 @@ import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterModule } from '@angular/router';
+import { ROUTES } from '../../shared/constants/routes';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { UsersService } from '../../shared/services/users/users.service';
-import { hydrogenOptions } from './options/options';
 
 @Component({
   selector: 'app-sidebar',
@@ -24,14 +24,20 @@ import { hydrogenOptions } from './options/options';
   providers: [UsersService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.scss',
 })
 export class SidebarComponent implements OnInit {
-  hydrogenOptions = hydrogenOptions;
+  sidebarOptions = [
+    { title: 'Units', icon: 'water_drop', route: ROUTES.UNITS },
+    { title: 'Production', icon: 'manufacturing', route: ROUTES.PRODUCTION },
+    { title: 'Processing', icon: 'dynamic_form', route: ROUTES.PROCESSING },
+  ];
+
   userFirstName = '';
   userLastName = '';
   userEmail = '';
-  constructor(readonly authService: AuthService, private accountService: UsersService) {}
+
+  selectedIndex = -1;
+  constructor(readonly authService: AuthService) {}
 
   async ngOnInit() {
     const userProfile = await this.authService.getCurrentUserDetails();

@@ -1,14 +1,12 @@
-<div class="processes-container">
-  <div>
-    <h2 class="head-title grey">Processing</h2>
+<div class="flex flex-col p-4 gap-4">
+  <div class="flex flex-row justify-between">
+    <h2 class="text-neutral-500 text-lg">Processing</h2>
+    <button mat-flat-button (click)="openBottleDialog()">Add Bottle</button>
   </div>
-  <mat-card class="table-card">
-    <div class="table-header">
-      <h2 class="card-title">Overview</h2>
-      <button mat-flat-button (click)="openBottleDialog()" class="add-button">Add Bottle</button>
-    </div>
+
+  <div class="rounded-lg bg-white border-neutral-300 border-solid border-[1px] p-4 flex flex-col gap-4">
     <div class="table-container">
-      <table mat-table *ngIf="dataSource$ | async as source" [dataSource]="source" matSort class="table-styling">
+      <table mat-table [dataSource]="dataSource" matSort>
         <ng-container matColumnDef="filledAt">
           <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Filled At</div></th>
           <td mat-cell *matCellDef="let row">{{ row.filledAt | date }} {{ row.filledAt | date : 'shortTime' }}</td>
@@ -35,5 +33,5 @@
 
       <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
     </div>
-  </mat-card>
+  </div>
 </div>

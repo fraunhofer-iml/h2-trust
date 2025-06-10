@@ -1,11 +1,12 @@
+import { AuthenticatedUser } from 'nest-keycloak-connect';
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { UnitDto, UnitOverviewDto, UnitType } from '@h2-trust/api';
+import { AuthenticatedKCUser, UnitDto, UnitOverviewDto, UnitType } from '@h2-trust/api';
 import { UnitService } from './unit.service';
 
 @Controller('units')
 export class UnitController {
-  constructor(private readonly unitService: UnitService) { }
+  constructor(private readonly unitService: UnitService) {}
 
   @Get(':id')
   @ApiOperation({ description: 'Get one unit.' })

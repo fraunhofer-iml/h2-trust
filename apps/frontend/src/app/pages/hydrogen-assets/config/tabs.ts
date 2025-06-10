@@ -1,4 +1,5 @@
 export const assetTabs = {
-  PRODUCTION: 'Production',
-  STORAGE: 'Storage',
+  H2_PRODUCTION: 'Hydrogen Production',
+  POWER_PRODUCTION: 'Power Production',
+  STORAGE: 'Hydrogen Storage',
 };

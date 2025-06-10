@@ -12,6 +12,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import {
+  AuthenticatedKCUser,
   BottlingDto,
   BottlingDtoMock,
   ProcessingOverviewDto,
@@ -21,13 +22,14 @@ import {
 } from '@h2-trust/api';
 import { ProcessStepService } from './process-step.service';
 import 'multer';
+import { AuthenticatedUser } from 'nest-keycloak-connect';
 
 // TODO-MP(DUHGW-106): since the bff is view-based, we should not use the ProcessStepController for the API, because it's not a view but rather an implementation detail.
 // Instead, we should rename this controller to BottlingController and split the readProcessSteps method into two separate methods: readProduction and readBottling.
 // The readProduction method should then be moved to the ProductionController.
 @Controller('process-steps')
 export class ProcessStepController {
-  constructor(private readonly service: ProcessStepService) { }
+  constructor(private readonly service: ProcessStepService) {}
 
   @Get()
   @ApiOperation({ description: 'Get either all production batches or processing batches' })
@@ -61,14 +63,14 @@ export class ProcessStepController {
     },
   })
   async readProcessSteps(
-    @Query('companyId') companyId: string,
     @Query('processType') processType: ProcessType,
+    @AuthenticatedUser() user: AuthenticatedKCUser,
   ): Promise<ProductionOverviewDto[] | ProcessingOverviewDto[]> {
     switch (processType) {
       case ProcessType.HYDROGEN_PRODUCTION:
-        return this.service.readProduction(companyId);
+        return this.service.readProduction(user.sub);
       case ProcessType.BOTTLING:
-        return this.service.readProcessing(companyId);
+        return this.service.readProcessing(user.sub);
       default:
         throw new HttpException(`Unknown processType '${processType}'`, HttpStatus.BAD_REQUEST);
     }
@@ -114,7 +116,11 @@ export class ProcessStepController {
       },
     },
   })
-  async executeBottling(@Body() dto: BottlingDto, @UploadedFile() file: Express.Multer.File): Promise<ProcessStepDto> {
-    return this.service.executeBottling(dto, file);
+  async executeBottling(
+    @Body() dto: BottlingDto,
+    @UploadedFile() file: Express.Multer.File,
+    @AuthenticatedUser() user: AuthenticatedKCUser,
+  ): Promise<ProcessStepDto> {
+    return this.service.executeBottling(dto, file, user.sub);
   }
 }

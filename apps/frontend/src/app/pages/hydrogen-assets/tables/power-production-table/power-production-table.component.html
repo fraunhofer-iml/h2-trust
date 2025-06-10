@@ -1,15 +1,11 @@
 <div>
-  <table mat-table fixedLayout="(true)" [dataSource]="dataSource$()" matSort>
+  <table mat-table [dataSource]="data()" matSort>
     <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Name</div></th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="bold"><div class="bold">Name</div></th>
       <td mat-cell *matCellDef="let row">{{ row.name }}</td>
     </ng-container>
-    <ng-container matColumnDef="typeName">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Electrolysis Type</div></th>
-      <td mat-cell *matCellDef="let row">{{ row.typeName }}</td>
-    </ng-container>
     <ng-container matColumnDef="ratedPower">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Rated Power (MW)</div></th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Rated Power</div></th>
       <td mat-cell *matCellDef="let row">{{ row.ratedPower | number }}</td>
     </ng-container>
     <ng-container matColumnDef="producing">
@@ -22,14 +18,9 @@
         }
       </td>
     </ng-container>
-    <ng-container matColumnDef="powerProducer">
-      <!-- Power Producer not yet in Dto -->
-      <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Power Producer</div></th>
-      <td mat-cell *matCellDef="let row">{{ row.powerProducerName }}</td>
-    </ng-container>
-    <ng-container matColumnDef="storageUnit">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Storage Unit</div></th>
-      <td mat-cell *matCellDef="let row">{{ row.hydrogenStorageUnit.name }}</td>
+    <ng-container matColumnDef="typeName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Type</div></th>
+      <td mat-cell *matCellDef="let row">{{ row.typeName }}</td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>

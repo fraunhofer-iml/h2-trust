@@ -1,16 +1,15 @@
-import { map, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, input, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
-import { HydrogenProductionOverviewDto, UserDetailsDto } from '@h2-trust/api';
+import { HydrogenProductionOverviewDto } from '@h2-trust/api';
 import { AuthService } from '../../../../shared/services/auth/auth.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
 import { UsersService } from '../../../../shared/services/users/users.service';
@@ -31,59 +30,26 @@ import { hydrogenProductionSet } from '../../config/table-set';
     MatTableModule,
     MatTabsModule,
     MatPaginatorModule,
+    MatSortModule,
   ],
   templateUrl: './hydrogen-production-table.component.html',
-  styleUrl: './hydrogen-production-table.component.scss',
 })
-export class HydrogenProductionTableComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[];
-  dataSource: MatTableDataSource<HydrogenProductionOverviewDto> =
-    new MatTableDataSource<HydrogenProductionOverviewDto>();
-  dataSource$!: Observable<MatTableDataSource<HydrogenProductionOverviewDto>>;
+export class HydrogenProductionTableComponent implements AfterViewInit {
+  displayedColumns = hydrogenProductionSet;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  data = input<HydrogenProductionOverviewDto[]>([]);
 
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly authService: AuthService,
-    private readonly unitsService: UnitsService,
-  ) {
-    this.displayedColumns = hydrogenProductionSet;
-  }
-
-  async ngOnInit() {
-    await this.authService.getUserId().then((userId) => {
-      if (userId) {
-        this.usersService.getUserAccountInformation(userId).subscribe((userDetails: UserDetailsDto) => {
-          this.initializeTableData(userDetails.company.id);
-        });
-      } else {
-        throw new Error('No userId');
-      }
-    });
-  }
-
-  initializeTableData(companyId: string) {
-    this.dataSource$ = this.unitsService.getHydrogenProductionUnitsOfCompany(companyId).pipe(
-      map((units: HydrogenProductionOverviewDto[]) => {
-        this.dataSource.data = units;
-        return this.dataSource;
-      }),
-    );
-  }
+  dataSource$ = computed(() => {
+    const source = new MatTableDataSource<HydrogenProductionOverviewDto>(this.data());
+    source.paginator = this.paginator;
+    source.sort = this.sort;
+    return source;
+  });
 
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  }
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+    this.dataSource$().paginator = this.paginator;
+    this.dataSource$().sort = this.sort;
   }
 }

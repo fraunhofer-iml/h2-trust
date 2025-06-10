@@ -10,16 +10,23 @@ import {
   UnitOverviewDto,
   UnitType,
 } from '@h2-trust/api';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class UnitService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
+  constructor(
+    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
+    private readonly userService: UserService,
+  ) {}
 
   readUnit(id: string): Promise<UnitDto> {
     return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, { id }));
   }
 
-  async readUnits(companyId: string, unitType: UnitType): Promise<UnitOverviewDto[]> {
+  async readUnits(userId: string, unitType: UnitType): Promise<UnitOverviewDto[]> {
+    const userDetails = await this.userService.readUserWithCompany(userId);
+    const companyId = userDetails.company.id;
+
     switch (unitType) {
       case UnitType.powerProductionUnit:
         return this.readPowerProductionUnits(companyId);

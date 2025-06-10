@@ -8,7 +8,7 @@ import { ROUTES } from './shared/constants/routes';
 
 export const appRoutes: Route[] = [
   { path: '', component: AccountOverviewComponent, canActivate: [AUTHGUARD] },
-  { path: ROUTES.HYDROGEN_UNITS, component: HydrogenAssetsComponent, canActivate: [AUTHGUARD] },
+  { path: ROUTES.UNITS, component: HydrogenAssetsComponent, canActivate: [AUTHGUARD] },
   { path: ROUTES.PROCESSING, component: ProcessingOverviewComponent, canActivate: [AUTHGUARD] },
   { path: ROUTES.PRODUCTION, component: ProductionViewComponent, canActivate: [AUTHGUARD] },
 ];

@@ -1,89 +1,79 @@
-<div>
-  <h3 mat-dialog-title>Add bottle</h3>
+<div class="flex flex-col gap-4 min-w-min p-4">
+  <h3 class="font-semibold text-gray-700">Add bottle</h3>
 
-  <div class="add-bootle-container" [formGroup]="bottleFormGroup">
-    <div class="date-container">
-      <div class="content">
-        <mat-form-field appearance="outline">
-          <mat-label>Date</mat-label>
-          <input
-            matInput
-            [matDatepicker]="picker"
-            formControlName="date"
-            [max]="dateDelimiter"
-            placeholder="Choose a date"
-          />
-          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-      </div>
+  <div class="grid grid-cols-2 gap-x-2 gap-y-4 p-2" [formGroup]="bottleFormGroup">
+    <mat-form-field appearance="outline">
+      <mat-label>Date</mat-label>
+      <input
+        matInput
+        [matDatepicker]="picker"
+        formControlName="date"
+        [max]="dateDelimiter"
+        placeholder="Choose a date"
+      />
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
 
-      <div class="content">
-        <mat-form-field appearance="outline">
-          <mat-label>Time</mat-label>
-          <input
-            matInput
-            [matTimepicker]="timepicker"
-            formControlName="time"
-            [max]="dateDelimiter"
-            placeholder="Pick a time"
-          />
-          <mat-timepicker-toggle matIconSuffix [for]="timepicker" />
-          <mat-timepicker #timepicker />
-        </mat-form-field>
-      </div>
-    </div>
+    <mat-form-field appearance="outline">
+      <mat-label>Time</mat-label>
+      <input
+        matInput
+        [matTimepicker]="timepicker"
+        formControlName="time"
+        [max]="dateDelimiter"
+        placeholder="Pick a time"
+      />
+      <mat-timepicker-toggle matIconSuffix [for]="timepicker" />
+      <mat-timepicker #timepicker />
+    </mat-form-field>
 
-    <div class="content">
-      <span class="medium">Amount*</span>
-      <mat-button-toggle-group formControlName="amount" class="amount-container">
-        <mat-button-toggle value="10">10 kg</mat-button-toggle>
-        <mat-button-toggle value="50">50 kg</mat-button-toggle>
-      </mat-button-toggle-group>
-      <!-- Needs to be added, because Formfield destroys everything -->
-    </div>
+    <mat-button-toggle-group formControlName="amount" required="true" class="col-span-2">
+      <mat-button-toggle value="10" class="w-1/2">10 kg</mat-button-toggle>
+      <mat-button-toggle value="50" class="w-1/2">50 kg</mat-button-toggle>
+    </mat-button-toggle-group>
 
-    <div class="content">
-      <mat-form-field appearance="outline">
-        <mat-label>Units</mat-label>
-        <mat-select formControlName="storageUnit" placeholder="Select a Unit">
-          @for (unit of storageUnits | async ; track unit) {
-          <mat-option [value]="unit" [disabled]="bottleFormGroup.controls['amount'].value > unit.filling"
-            >{{ unit.name }} ({{ unit.filling }} kg)
-          </mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-    </div>
+    <mat-form-field appearance="outline">
+      <mat-label>Units</mat-label>
+      <mat-select formControlName="storageUnit" placeholder="Select a Unit">
+        @for (unit of hydrogenStorageQuery.data() ; track unit) {
+        <mat-option [value]="unit" [disabled]="bottleFormGroup.controls['amount'].value > unit.filling"
+          >{{ unit.name }} ({{ unit.filling }} kg)
+        </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
 
-    <div class="content">
-      <mat-form-field class="custom-input" appearance="outline">
-        <mat-label>Recipients</mat-label>
-        <mat-select formControlName="recipient" placeholder="Select a Recipient">
-          @for (recipient of recipients | async ; track recipient) {
-          <mat-option [value]="recipient">{{ recipient.name }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-    </div>
+    <mat-form-field class="custom-input" appearance="outline">
+      <mat-label>Recipients</mat-label>
+      <mat-select formControlName="recipient" placeholder="Select a Recipient">
+        @if( recipientsQuery.isSuccess() && recipientsQuery.data().length ){ @for (recipient of recipientsQuery.data() ;
+        track recipient) {
+        <mat-option [value]="recipient">{{ recipient.name }}</mat-option>
+        } } @else {<mat-option [value]="null">No data found.</mat-option>}
+      </mat-select>
+    </mat-form-field>
 
     <app-upload-form
+      class="col-span-2"
+      [title]="'Add Files'"
       [uploadedFiles]="uploadedFiles"
       (uploadDocument)="submitFile($event)"
       (removeDocument)="removeFile($event)"
     ></app-upload-form>
-    @if (receivedError) {
-    <mat-form-field class="error-box" appearance="outline">
-      <div class="content">
-        <span class="flex-wrap">
-          {{ receivedError }}
-        </span>
-      </div>
-    </mat-form-field>
-    }
   </div>
-  <mat-dialog-actions>
+
+  @if (isError) {
+  <div
+    class="bg-red-900/20 border-solid border-red-900/60 border-[1px] p-4 flex flex-row items-center rounded-lg gap-2"
+  >
+    <span class="material-symbols-outlined text-red-900">error</span>
+    <span class="text-red-900"> <strong> Error: </strong>{{ receivedError }}</span>
+  </div>
+  }
+
+  <div class="flex justify-end gap-2">
     <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-button (click)="createBottleData()" [disabled]="!bottleFormGroup.valid">Add Bottle</button>
-  </mat-dialog-actions>
+    <button mat-flat-button (click)="createBottleData()" [disabled]="!bottleFormGroup.valid">Add Bottle</button>
+  </div>
 </div>

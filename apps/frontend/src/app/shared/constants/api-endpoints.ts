@@ -7,7 +7,6 @@ export const ApiEndpoints = {
   },
   users: {
     getUsers: '/users',
-    userDetails: '/details',
     recipients: '/recipients',
   },
   companies: { getCompanies: '/companies' },

@@ -1,6 +1,5 @@
-import { Observable, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -12,12 +11,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
-import { CompanyDto, FGFile, HydrogenStorageOverviewDto, UserDetailsDto, UserDto } from '@h2-trust/api';
-import { AuthService } from '../../../shared/services/auth/auth.service';
+import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
+import { FGFile, HydrogenStorageOverviewDto, UserDto } from '@h2-trust/api';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { ProcessingService } from '../../../shared/services/processing/processing.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
-import { UsersService } from '../../../shared/services/users/users.service';
 import { UploadFormComponent } from '../upload-form/upload-form.component';
 
 @Component({
@@ -39,17 +37,14 @@ import { UploadFormComponent } from '../upload-form/upload-form.component';
     UploadFormComponent,
   ],
   templateUrl: './add-bottle.component.html',
-  styleUrl: './add-bottle.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddBottleComponent implements OnInit {
-  userId: string = '';
-  selectedValue: string = '';
-  receivedError: string = '';
+export class AddBottleComponent {
+  isError = false;
+  selectedValue = '';
+  receivedError: string | undefined = undefined;
   dateDelimiter: Date = new Date();
   uploadedFiles: FGFile[] = [];
-  storageUnits: Observable<HydrogenStorageOverviewDto[]> = of([]);
-  recipients: Observable<CompanyDto[]> = of([]);
 
   bottleFormGroup: FormGroup = new FormGroup({
     date: new FormControl<Date | undefined>(new Date(), Validators.required),
@@ -62,25 +57,19 @@ export class AddBottleComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<AddBottleComponent>,
     private readonly unitsService: UnitsService,
-    private readonly authService: AuthService,
-    private readonly usersService: UsersService,
     private readonly companiesService: CompaniesService,
     private readonly processService: ProcessingService,
   ) {}
 
-  async ngOnInit() {
-    await this.authService.getUserId().then((userId) => {
-      this.userId = userId;
-      if (userId) {
-        this.usersService.getUserAccountInformation(userId).subscribe((userDetails: UserDetailsDto) => {
-          this.storageUnits = this.unitsService.getHydrogenStorageUnitsOfCompany(userDetails.company.id);
-          this.recipients = this.companiesService.getRecipients();
-        });
-      } else {
-        throw new Error('No userId');
-      }
-    });
-  }
+  hydrogenStorageQuery = injectQuery(() => ({
+    queryKey: ['h2-storage'],
+    queryFn: () => this.unitsService.getHydrogenStorageUnits(),
+  }));
+
+  recipientsQuery = injectQuery(() => ({
+    queryKey: ['recipients'],
+    queryFn: () => this.companiesService.getRecipients(),
+  }));
 
   submitFile({ file, documentType }: FGFile): void {
     this.uploadedFiles.push({ file, documentType });
@@ -104,22 +93,23 @@ export class AddBottleComponent implements OnInit {
     data.append('amount', this.bottleFormGroup.controls['amount'].value);
     data.append('recipient', this.bottleFormGroup.controls['recipient'].value.id);
     data.append('filledAt', this.createTimestamp().toISOString());
-    data.append('recordedBy', this.userId);
+    data.append('recordedBy', '');
     data.append('hydrogenStorageUnit', this.bottleFormGroup.controls['storageUnit'].value.id);
-
-    this.sendData(data);
+    this.mutation.mutate(data);
   }
 
-  sendData(result: FormData) {
-    try {
-      this.processService.createBottleBatch(result).subscribe((res) => {
-        this.dialogRef.close(true);
-      });
-    } catch (error) {
-      console.log(typeof error);
-      this.receivedError = error instanceof Error && error.message ? error.message : 'Something went wrong.';
-    }
-  }
+  mutation = injectMutation(() => ({
+    mutationFn: (dto: FormData) => this.processService.createBottleBatch(dto),
+    onError: (error) => {
+      this.receivedError =
+        error instanceof Error && error.message ? error.message : 'An error occurred. Please try again';
+      this.isError = true;
+    },
+    onSuccess: () => {
+      this.isError = false;
+      this.dialogRef.close(true);
+    },
+  }));
 
   createTimestamp() {
     let pickedDate = new Date();

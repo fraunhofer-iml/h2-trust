@@ -31,7 +31,7 @@ describe('POST /processing/bottling', () => {
     formData.append('amount', bottleDto.amount);
     formData.append('recipient', bottleDto.recipient);
     formData.append('filledAt', bottleDto.filledAt);
-    formData.append('recordedBy', bottleDto.recordedBy);
+    formData.append('recordedBy', '');
     formData.append('hydrogenStorageUnit', bottleDto.hydrogenStorageUnit);
     formData.append('file', Buffer.from('dummyFileData'), 'dummyFileData.txt');
     formData.append('fileDescription', bottleDto.fileDescription);

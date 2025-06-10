@@ -1,77 +1,40 @@
-import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { DatePipe, DecimalPipe, TitleCasePipe } from '@angular/common';
+import { AfterViewInit, Component, inject, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatTabsModule } from '@angular/material/tabs';
-import { ProductionOverviewDto, UserDetailsDto } from '@h2-trust/api';
-import { AuthService } from '../../shared/services/auth/auth.service';
+import { injectQuery } from '@tanstack/angular-query-experimental';
+import { ProductionOverviewDto } from '@h2-trust/api';
 import { ProductionService } from '../../shared/services/production/production.service';
-import { UsersService } from '../../shared/services/users/users.service';
 import { productionSet } from '../hydrogen-assets/config/table-set';
 
 @Component({
   selector: 'app-production-view',
-  imports: [
-    FormsModule,
-    MatFormFieldModule,
-    ReactiveFormsModule,
-    CommonModule,
-    MatCardModule,
-    MatTableModule,
-    MatTabsModule,
-    MatPaginatorModule,
-  ],
+  imports: [FormsModule, MatPaginatorModule, MatTableModule, DatePipe, DecimalPipe, TitleCasePipe],
   providers: [ProductionService],
   templateUrl: './production-view.component.html',
-  styleUrl: './production-view.component.scss',
 })
 export class ProductionViewComponent implements AfterViewInit {
-  displayedColumns: string[];
+  displayedColumns = productionSet;
   dataSource: MatTableDataSource<ProductionOverviewDto> = new MatTableDataSource<ProductionOverviewDto>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly authService: AuthService,
-    private readonly productionService: ProductionService,
-  ) {
-    this.displayedColumns = productionSet;
-    this.setTableData();
-  }
+  productionService = inject(ProductionService);
 
-  setTableData() {
-    this.authService.getUserId().then((userId: string) => {
-      this.fetchData(userId);
-    });
-  }
-
-  fetchData(userId: string) {
-    this.usersService.getUserAccountInformation(userId).subscribe((userDetails: UserDetailsDto) => {
-      this.productionService
-        .getProductionOverview(userDetails.company.id)
-        .subscribe((processes: ProductionOverviewDto[]) => {
-          this.dataSource.data = processes;
-        });
-    });
-  }
+  productionQuery = injectQuery(() => ({
+    queryKey: ['production'],
+    queryFn: async () => {
+      const data = await this.productionService.getProductionOverview();
+      this.dataSource.data = data;
+      return data;
+    },
+  }));
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-  }
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
   }
 }

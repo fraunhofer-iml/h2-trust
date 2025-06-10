@@ -9,14 +9,14 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
-import { HydrogenStorageOverviewDto } from '@h2-trust/api';
+import { PowerProductionOverviewDto } from '@h2-trust/api';
 import { AuthService } from '../../../../shared/services/auth/auth.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
 import { UsersService } from '../../../../shared/services/users/users.service';
-import { storageSet } from '../../config/table-set';
+import { powerProductionSet } from '../../config/table-set';
 
 @Component({
-  selector: 'app-hydrogen-storage-table',
+  selector: 'app-power-production-table',
   providers: [AuthService, UnitsService, UsersService],
   imports: [
     FormsModule,
@@ -32,17 +32,18 @@ import { storageSet } from '../../config/table-set';
     MatPaginatorModule,
     MatSortModule,
   ],
-  templateUrl: './hydrogen-storage-table.component.html',
+  templateUrl: './power-production-table.component.html',
 })
-export class HydrogenStorageTableComponent implements AfterViewInit {
-  displayedColumns = storageSet;
-  data = input<HydrogenStorageOverviewDto[]>([]);
+export class PowerProductionTableComponent implements AfterViewInit {
+  displayedColumns = powerProductionSet;
+
+  data = input<PowerProductionOverviewDto[]>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   dataSource$ = computed(() => {
-    const source = new MatTableDataSource<HydrogenStorageOverviewDto>(this.data());
+    const source = new MatTableDataSource<PowerProductionOverviewDto>(this.data());
     source.paginator = this.paginator;
     source.sort = this.sort;
     return source;

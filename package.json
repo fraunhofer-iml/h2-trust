@@ -81,6 +81,7 @@
     "@nestjs/platform-express": "^10.0.2",
     "@nestjs/swagger": "^8.1.1",
     "@prisma/client": "^6.3.1",
+    "@tanstack/angular-query-experimental": "^5.76.2",
     "amqp-connection-manager": "^4.1.14",
     "amqplib": "^0.10.5",
     "axios": "^1.6.0",

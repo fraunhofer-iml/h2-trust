@@ -1,3 +1,4 @@
+import { lastValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CompanyDto } from '@h2-trust/api';
@@ -9,6 +10,6 @@ export class CompaniesService {
   constructor(private readonly httpClient: HttpClient) {}
 
   getRecipients() {
-    return this.httpClient.get<CompanyDto[]>(`${BASE_URL}${ApiEndpoints.companies.getCompanies}`);
+    return lastValueFrom(this.httpClient.get<CompanyDto[]>(`${BASE_URL}${ApiEndpoints.companies.getCompanies}`));
   }
 }

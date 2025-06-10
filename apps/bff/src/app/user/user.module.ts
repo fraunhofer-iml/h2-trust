@@ -7,5 +7,6 @@ import { UserService } from './user.service';
   imports: [new Broker().getGeneralSvcBroker()],
   controllers: [UserController],
   providers: [UserService],
+  exports: [UserService],
 })
 export class UserModule {}
