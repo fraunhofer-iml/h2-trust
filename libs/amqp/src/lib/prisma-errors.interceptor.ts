@@ -21,7 +21,7 @@ import { BrokerException } from './broker/broker-exception';
   Prisma.PrismaClientValidationError,
 )
 export class PrismaErrorsInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(_context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       catchError((err) => {
         const errorMessage = err.message

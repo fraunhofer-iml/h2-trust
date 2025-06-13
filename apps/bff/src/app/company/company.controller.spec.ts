@@ -37,7 +37,7 @@ describe('CompanyController', () => {
     const expectedResponse: CompanyDto[] = CompanyDtoMock;
     const sendRequestSpy = jest.spyOn(clientProxy, 'send');
 
-    sendRequestSpy.mockImplementation((messagePattern: CompanyMessagePatterns, data: any) => {
+    sendRequestSpy.mockImplementation((_messagePattern: CompanyMessagePatterns, _data: any) => {
       return of(CompanyDtoMock);
     });
 

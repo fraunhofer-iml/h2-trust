@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-4 min-w-min p-6">
+<div class="flex min-w-min flex-col gap-4 p-6">
   <h3 class="font-semibold text-gray-700">Add bottle</h3>
 
   <div class="grid grid-cols-2 gap-x-2 gap-y-4" [formGroup]="bottleFormGroup">
@@ -36,10 +36,10 @@
     <mat-form-field appearance="outline">
       <mat-label>Units</mat-label>
       <mat-select formControlName="storageUnit" placeholder="Select a Unit">
-        @for (unit of hydrogenStorageQuery.data() ; track unit) {
-        <mat-option [value]="unit" [disabled]="bottleFormGroup.controls['amount'].value > unit.filling"
-          >{{ unit.name }} ({{ unit.filling }} kg)
-        </mat-option>
+        @for (unit of hydrogenStorageQuery.data(); track unit) {
+          <mat-option [value]="unit" [disabled]="bottleFormGroup.controls['amount']?.value > unit.filling"
+            >{{ unit.name }} ({{ unit.filling }} kg)
+          </mat-option>
         }
       </mat-select>
     </mat-form-field>
@@ -47,10 +47,13 @@
     <mat-form-field class="custom-input" appearance="outline">
       <mat-label>Recipients</mat-label>
       <mat-select formControlName="recipient" placeholder="Select a Recipient">
-        @if( recipientsQuery.isSuccess() && recipientsQuery.data().length ){ @for (recipient of recipientsQuery.data() ;
-        track recipient) {
-        <mat-option [value]="recipient">{{ recipient.name }}</mat-option>
-        } } @else {<mat-option [value]="null">No data found.</mat-option>}
+        @if (recipientsQuery.isSuccess() && recipientsQuery.data().length) {
+          @for (recipient of recipientsQuery.data(); track recipient) {
+            <mat-option [value]="recipient">{{ recipient.name }}</mat-option>
+          }
+        } @else {
+          <mat-option [value]="null">No data found.</mat-option>
+        }
       </mat-select>
     </mat-form-field>
 
@@ -64,7 +67,7 @@
   </div>
 
   @if (mutation.isError()) {
-  <app-error-card [message]="ERROR_MESSAGES.addBottleFailed"></app-error-card>
+    <app-error-card [message]="ERROR_MESSAGES.addBottleFailed"></app-error-card>
   }
 
   <div class="flex justify-end gap-2">

@@ -2,8 +2,12 @@
   "printWidth": 120,
   "proseWrap": "always",
   "singleQuote": true,
-  "trailingComma": "all",
-  "plugins": ["@ianvs/prettier-plugin-sort-imports"],
+  "plugins": [
+    "@ianvs/prettier-plugin-sort-imports",
+    "prettier-plugin-tailwindcss",
+    "prettier-plugin-packagejson",
+    "prettier-plugin-sh"
+  ],
   "importOrder": ["<BUILTIN_MODULES>", "<THIRD_PARTY_MODULES>", "^@[a-zA-Z]*/", "^@h2-trust/", "^[.][.]/", "^[.]/"],
   "importOrderParserPlugins": ["typescript", "decorators-legacy"],
   "importOrderTypeScriptVersion": "5.7.2"

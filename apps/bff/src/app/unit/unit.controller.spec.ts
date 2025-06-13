@@ -36,31 +36,33 @@ describe('UnitController', () => {
     expect(controller).toBeDefined();
   });
 
+  it('should find a unit', async () => {
+    const expectedResponse = <UnitDto>{};
+    const sendRequestSpy = jest.spyOn(queue, 'send');
+    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns.READ, _data: any) => {
+      return of({});
+    });
+    const actualResponse: UnitDto = await controller.getUnit('');
+
+    expect(actualResponse).toEqual(expectedResponse);
+  });
+
   it('should find all units', async () => {
     const user = { company: { id: '' } } as UserDetailsDto;
 
-    const expectedReturnValue = [];
+    const expectedReturnValue: UnitDto[] = [];
     const sendRequestSpy = jest.spyOn(queue, 'send');
-    sendRequestSpy.mockImplementation((messagePattern: UnitMessagePatterns.READ, data: any) => {
-      return of([]);
-    });
+    sendRequestSpy.mockImplementation(
+      (_messagePattern: UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS, _data: any) => {
+        return of([]);
+      },
+    );
     jest.spyOn(userService, 'readUserWithCompany').mockResolvedValue(user);
 
-    const res: UnitOverviewDto[] = await controller.getUnits(UnitType.hydrogenProductionUnit, {
+    const actualResponse: UnitOverviewDto[] = await controller.getUnits(UnitType.hydrogenProductionUnit, {
       sub: '6f63a1a9-6cc5-4a7a-98b2-79a0460910f4',
     });
 
-    expect(res).toEqual(expectedReturnValue);
-  });
-
-  it('should find a unit', async () => {
-    const expectedReturnValue = <UnitDto>{};
-    const sendRequestSpy = jest.spyOn(queue, 'send');
-    sendRequestSpy.mockImplementation((messagePattern: UnitMessagePatterns.READ, data: any) => {
-      return of({});
-    });
-    const res: UnitDto = await controller.getUnit('');
-
-    expect(res).toEqual(expectedReturnValue);
+    expect(actualResponse).toEqual(expectedReturnValue);
   });
 });

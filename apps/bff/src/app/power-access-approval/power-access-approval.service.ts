@@ -3,7 +3,7 @@ import { PowerAccessApprovalDto, PowerAccessApprovalDtoMock, PowerAccessApproval
 
 @Injectable()
 export class PowerAccessApprovalService {
-  findAll(id: string, status: PowerAccessApprovalStatus): PowerAccessApprovalDto[] {
+  findAll(_id: string, _status: PowerAccessApprovalStatus): PowerAccessApprovalDto[] {
     return PowerAccessApprovalDtoMock;
   }
 }

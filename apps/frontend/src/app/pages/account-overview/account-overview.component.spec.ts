@@ -1,4 +1,5 @@
 import { KeycloakService } from 'keycloak-angular';
+import { KeycloakProfile } from 'keycloak-js';
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideQueryClient, QueryClient } from '@tanstack/angular-query-experimental';
@@ -23,6 +24,7 @@ describe('AccountOverviewComponent', () => {
           provide: KeycloakService,
           useValue: {
             getUserRoles: () => [],
+            loadUserProfile: () => ({}) as KeycloakProfile,
           },
         },
         provideQueryClient(new QueryClient()),

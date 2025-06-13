@@ -23,6 +23,7 @@
       "dependsOn": ["build"],
       "options": {
         "buildTarget": "batch-svc:build",
+        "port": 9231,
         "runBuildTargetDependencies": false
       },
       "configurations": {

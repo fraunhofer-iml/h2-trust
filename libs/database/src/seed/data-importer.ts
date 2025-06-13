@@ -30,4 +30,5 @@ async function importData(data: Data[]) {
   console.log(`🚀 Data import finished with ${counter} records processed.`);
 }
 
-export { Data, importData };
+export type { Data };
+export { importData };

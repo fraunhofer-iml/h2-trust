@@ -2,12 +2,9 @@
   "compilerOptions": {
     /*     "moduleResolution": "bundler", */
     "target": "es2022",
-    "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "module": "commonjs",
+    "moduleResolution": "node"
   },
   "files": [],
   "include": [],

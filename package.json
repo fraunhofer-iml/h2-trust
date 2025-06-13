@@ -19,6 +19,10 @@
   ],
   "homepage": "https://github.com/fraunhofer-iml/h2-trust",
   "bugs": "https://github.com/fraunhofer-iml/h2-trust/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fraunhofer-iml/h2-trust.git"
+  },
   "license": "Apache-2.0",
   "contributors": [
     {
@@ -39,27 +43,19 @@
     }
   ],
   "main": "",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/fraunhofer-iml/h2-trust.git"
-  },
-  "prisma": {
-    "schema": "libs/database/src/lib/schema.prisma",
-    "seed": "tsx ./libs/database/src/seed/import-data.ts",
-    "studio": "npx prisma studio"
-  },
   "scripts": {
     "clean": "rm -rf .angular dist node_modules apps/*/run-code-quality-tools.log libs/*/run-code-quality-tools.log",
+    "dev": "nx run-many --all --parallel 5 --target serve",
+    "init": "npm run clean && npm install && npm run set-up-db",
     "migrate-db": "npx prisma migrate dev && npx prisma generate",
     "set-up-db": "npx prisma db push --force-reset && npx prisma db seed",
-    "init": "npm run clean && npm install && npm run set-up-db",
-    "dev": "nx run-many --all --parallel 5 --target serve",
     "test": "nx run-many --all --parallel 5 --target test",
-    "test-frontend": "nx test frontend",
+    "test-batch-svc": "nx test batch-svc",
     "test-bff": "nx test bff",
     "test-bff-e2e": "nx test bff-e2e --skip-nx-cache --runInBand",
-    "test-batch-svc": "nx test batch-svc",
-    "test-general-svc": "nx test general-svc"
+    "test-frontend": "nx test frontend",
+    "test-general-svc": "nx test general-svc",
+    "test-process-svc": "nx test process-svc"
   },
   "dependencies": {
     "@angular/animations": "~19.1.0",
@@ -113,7 +109,7 @@
     "@babel/preset-env": "^7.26.9",
     "@babel/preset-typescript": "^7.27.0",
     "@eslint/js": "^9.8.0",
-    "@ianvs/prettier-plugin-sort-imports": "^4.4.1",
+    "@ianvs/prettier-plugin-sort-imports": "^4.4.2",
     "@nestjs/schematics": "^10.0.1",
     "@nestjs/testing": "^10.0.2",
     "@nx/angular": "^20.4.2",
@@ -152,7 +148,10 @@
     "jest-preset-angular": "~14.4.0",
     "nx": "20.4.2",
     "postcss": "^8.4.5",
-    "prettier": "^2.6.2",
+    "prettier": "^3.5.3",
+    "prettier-plugin-packagejson": "^2.5.15",
+    "prettier-plugin-sh": "^0.17.4",
+    "prettier-plugin-tailwindcss": "^0.6.12",
     "prisma": "^6.3.1",
     "tailwindcss": "^3.0.2",
     "ts-jest": "^29.1.0",
@@ -162,5 +161,10 @@
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.19.0",
     "webpack-cli": "^5.1.4"
+  },
+  "prisma": {
+    "schema": "libs/database/src/lib/schema.prisma",
+    "seed": "tsx ./libs/database/src/seed/import-data.ts",
+    "studio": "npx prisma studio"
   }
 }

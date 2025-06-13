@@ -24,10 +24,7 @@
         ],
         "styles": ["apps/frontend/src/styles.scss"],
         "scripts": [],
-        "allowedCommonJsDependencies": [
-          "class-validator",
-          "validator"
-        ]
+        "allowedCommonJsDependencies": ["class-validator", "js-sha256", "validator"]
       },
       "configurations": {
         "en": {

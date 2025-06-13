@@ -42,6 +42,8 @@ export class HydrogenProductionOverviewDto {
   }
 
   static fromEntity(unit: HydrogenProductionUnitEntity): HydrogenProductionOverviewDto {
+    const firstApproval = unit.company?.hydrogenApprovals?.[0];
+
     return <HydrogenProductionOverviewDto>{
       id: unit.id,
       name: unit.name,
@@ -49,8 +51,8 @@ export class HydrogenProductionOverviewDto {
       typeName: unit.typeName,
       producing: true,
       powerAccessApprovalStatus: HydrogenProductionOverviewDto.existsPowerProducer(unit),
-      powerProducerId: unit.company?.hydrogenApprovals[0].powerProducerId,
-      powerProducerName: unit.company?.hydrogenApprovals[0].powerProducerName,
+      powerProducerId: firstApproval?.powerProducerId ?? '',
+      powerProducerName: firstApproval?.powerProducerName ?? '',
       hydrogenStorageUnit: unit.hydrogenStorageUnit,
     };
   }

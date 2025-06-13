@@ -1,6 +1,7 @@
 import { Unit } from '@prisma/client';
 import { AddressSeed } from '../addresses.seed';
 import { CompaniesSeed } from '../companies.seed';
+import { getElementOrThrowError } from '../utils';
 
 export const UnitsSeed = <Unit[]>[
   {
@@ -13,8 +14,8 @@ export const UnitsSeed = <Unit[]>[
     serialNumber: 'SN2233445566',
     commissionedOn: new Date('2025-04-01'),
     decommissioningPlannedOn: new Date('2045-04-01'),
-    addressId: AddressSeed[0].id,
-    companyId: CompaniesSeed[0].id,
+    addressId: getElementOrThrowError(AddressSeed, 0, 'Address').id,
+    companyId: getElementOrThrowError(CompaniesSeed, 0, 'Company').id,
   },
   {
     id: 'hydrogen-production-unit-1',
@@ -26,8 +27,8 @@ export const UnitsSeed = <Unit[]>[
     serialNumber: 'SN123456789',
     commissionedOn: new Date('2025-01-15'),
     decommissioningPlannedOn: new Date('2045-01-15'),
-    addressId: AddressSeed[1].id,
-    companyId: CompaniesSeed[1].id,
+    addressId: getElementOrThrowError(AddressSeed, 1, 'Address').id,
+    companyId: getElementOrThrowError(CompaniesSeed, 1, 'Company').id,
   },
   {
     id: 'hydrogen-storage-unit-1',
@@ -39,8 +40,8 @@ export const UnitsSeed = <Unit[]>[
     serialNumber: 'SN1122334455',
     commissionedOn: new Date('2025-03-01'),
     decommissioningPlannedOn: new Date('2040-03-01'),
-    addressId: AddressSeed[1].id,
-    companyId: CompaniesSeed[1].id,
+    addressId: getElementOrThrowError(AddressSeed, 1, 'Address').id,
+    companyId: getElementOrThrowError(CompaniesSeed, 1, 'Company').id,
   },
   {
     id: 'hydrogen-production-unit-2',
@@ -52,7 +53,7 @@ export const UnitsSeed = <Unit[]>[
     serialNumber: 'SN987654321',
     commissionedOn: new Date('2025-02-01'),
     decommissioningPlannedOn: new Date('2035-02-01'),
-    addressId: AddressSeed[1].id,
-    companyId: CompaniesSeed[1].id,
+    addressId: getElementOrThrowError(AddressSeed, 1, 'Address').id,
+    companyId: getElementOrThrowError(CompaniesSeed, 1, 'Company').id,
   },
 ];

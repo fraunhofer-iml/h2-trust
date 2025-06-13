@@ -1,5 +1,6 @@
 import { Batch, BatchType, HydrogenColor, Prisma } from '@prisma/client';
 import { CompaniesSeed } from '../companies.seed';
+import { getElementOrThrowError } from '../utils';
 
 export const HydrogenBatchesBottledSeed = <Batch[]>[
   {
@@ -8,7 +9,7 @@ export const HydrogenBatchesBottledSeed = <Batch[]>[
     amount: new Prisma.Decimal(5),
     quality: `{"color": "${HydrogenColor.GREEN}"}`,
     type: BatchType.HYDROGEN,
-    ownerId: CompaniesSeed[1].id,
+    ownerId: getElementOrThrowError(CompaniesSeed, 1, 'Company').id,
   },
   {
     id: 'batch-bottled-hydrogen-2',
@@ -16,7 +17,7 @@ export const HydrogenBatchesBottledSeed = <Batch[]>[
     amount: new Prisma.Decimal(4),
     quality: `{"color": "${HydrogenColor.GREEN}"}`,
     type: BatchType.HYDROGEN,
-    ownerId: CompaniesSeed[1].id,
+    ownerId: getElementOrThrowError(CompaniesSeed, 1, 'Company').id,
   },
   {
     id: 'batch-bottled-hydrogen-3',
@@ -24,7 +25,7 @@ export const HydrogenBatchesBottledSeed = <Batch[]>[
     amount: new Prisma.Decimal(3),
     quality: `{"color": "${HydrogenColor.GREEN}"}`,
     type: BatchType.HYDROGEN,
-    ownerId: CompaniesSeed[1].id,
+    ownerId: getElementOrThrowError(CompaniesSeed, 1, 'Company').id,
   },
   {
     id: 'batch-bottled-hydrogen-4',
@@ -32,7 +33,7 @@ export const HydrogenBatchesBottledSeed = <Batch[]>[
     amount: new Prisma.Decimal(5),
     quality: `{"color": "${HydrogenColor.YELLOW}"}`,
     type: BatchType.HYDROGEN,
-    ownerId: CompaniesSeed[1].id,
+    ownerId: getElementOrThrowError(CompaniesSeed, 1, 'Company').id,
   },
   {
     id: 'batch-bottled-hydrogen-5',
@@ -40,7 +41,7 @@ export const HydrogenBatchesBottledSeed = <Batch[]>[
     amount: new Prisma.Decimal(4),
     quality: `{"color": "${HydrogenColor.YELLOW}"}`,
     type: BatchType.HYDROGEN,
-    ownerId: CompaniesSeed[1].id,
+    ownerId: getElementOrThrowError(CompaniesSeed, 1, 'Company').id,
   },
   {
     id: 'batch-bottled-hydrogen-6',
@@ -48,7 +49,7 @@ export const HydrogenBatchesBottledSeed = <Batch[]>[
     amount: new Prisma.Decimal(3),
     quality: `{"color": "${HydrogenColor.YELLOW}"}`,
     type: BatchType.HYDROGEN,
-    ownerId: CompaniesSeed[1].id,
+    ownerId: getElementOrThrowError(CompaniesSeed, 1, 'Company').id,
   },
   {
     id: 'batch-bottled-hydrogen-7',
@@ -56,7 +57,7 @@ export const HydrogenBatchesBottledSeed = <Batch[]>[
     amount: new Prisma.Decimal(5),
     quality: `{"color": "${HydrogenColor.ORANGE}"}`,
     type: BatchType.HYDROGEN,
-    ownerId: CompaniesSeed[1].id,
+    ownerId: getElementOrThrowError(CompaniesSeed, 1, 'Company').id,
   },
   {
     id: 'batch-bottled-hydrogen-8',
@@ -64,7 +65,7 @@ export const HydrogenBatchesBottledSeed = <Batch[]>[
     amount: new Prisma.Decimal(4),
     quality: `{"color": "${HydrogenColor.ORANGE}"}`,
     type: BatchType.HYDROGEN,
-    ownerId: CompaniesSeed[1].id,
+    ownerId: getElementOrThrowError(CompaniesSeed, 1, 'Company').id,
   },
   {
     id: 'batch-bottled-hydrogen-9',
@@ -72,6 +73,6 @@ export const HydrogenBatchesBottledSeed = <Batch[]>[
     amount: new Prisma.Decimal(3),
     quality: `{"color": "${HydrogenColor.ORANGE}"}`,
     type: BatchType.HYDROGEN,
-    ownerId: CompaniesSeed[1].id,
+    ownerId: getElementOrThrowError(CompaniesSeed, 1, 'Company').id,
   },
 ];

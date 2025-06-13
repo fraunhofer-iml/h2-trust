@@ -93,11 +93,11 @@ export class AddBottleComponent {
       }
     }
 
-    data.append('amount', this.bottleFormGroup.controls['amount'].value);
-    data.append('recipient', this.bottleFormGroup.controls['recipient'].value.id);
+    data.append('amount', this.bottleFormGroup.controls['amount']?.value ?? '');
+    data.append('recipient', this.bottleFormGroup.controls['recipient']?.value?.id ?? '');
     data.append('filledAt', this.createTimestamp().toISOString());
     data.append('recordedBy', '');
-    data.append('hydrogenStorageUnit', this.bottleFormGroup.controls['storageUnit'].value.id);
+    data.append('hydrogenStorageUnit', this.bottleFormGroup.controls['storageUnit']?.value?.id ?? '');
     this.mutation.mutate(data);
   }
 
@@ -112,7 +112,7 @@ export class AddBottleComponent {
     let pickedDate = new Date();
     let pickedTimeAsDate = new Date();
 
-    if (this.bottleFormGroup.controls['date'].value && this.bottleFormGroup.controls['time'].value) {
+    if (this.bottleFormGroup.controls['date']?.value && this.bottleFormGroup.controls['time']?.value) {
       pickedDate = new Date(this.bottleFormGroup.controls['date'].value);
       pickedTimeAsDate = new Date(this.bottleFormGroup.controls['time'].value);
       pickedDate.setHours(pickedTimeAsDate.getHours());

@@ -38,7 +38,10 @@ export class ProcessingOverviewComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private readonly processService: ProcessingService, private readonly dialog: MatDialog) {}
+  constructor(
+    private readonly processService: ProcessingService,
+    private readonly dialog: MatDialog,
+  ) {}
 
   processingQuery = injectQuery(() => ({
     queryKey: ['processing'],

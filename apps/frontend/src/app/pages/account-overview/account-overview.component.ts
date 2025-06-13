@@ -24,7 +24,10 @@ import { UsersService } from '../../shared/services/users/users.service';
   templateUrl: './account-overview.component.html',
 })
 export class AccountOverviewComponent implements OnInit {
-  constructor(private readonly authService: AuthService, private readonly accountService: UsersService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly accountService: UsersService,
+  ) {}
 
   userId$ = signal<string | undefined>(undefined);
 

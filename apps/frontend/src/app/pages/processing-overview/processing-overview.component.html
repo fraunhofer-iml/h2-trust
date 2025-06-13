@@ -1,15 +1,15 @@
-<div class="flex flex-col p-4 gap-4">
+<div class="flex flex-col gap-4 p-4">
   <div class="flex flex-row justify-between">
-    <h2 class="text-neutral-500 text-lg">Processing</h2>
+    <h2 class="text-lg text-neutral-500">Processing</h2>
     <button mat-flat-button (click)="openBottleDialog()">Add Bottle</button>
   </div>
 
-  <div class="rounded-lg bg-white border-neutral-300 border-solid border-[1px] p-4 flex flex-col gap-4">
+  <div class="flex flex-col gap-4 rounded-lg border-[1px] border-solid border-neutral-300 bg-white p-4">
     <div class="table-container">
       <table mat-table [dataSource]="dataSource" matSort>
         <ng-container matColumnDef="filledAt">
           <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Filled At</div></th>
-          <td mat-cell *matCellDef="let row">{{ row.filledAt | date }} {{ row.filledAt | date : 'shortTime' }}</td>
+          <td mat-cell *matCellDef="let row">{{ row.filledAt | date }} {{ row.filledAt | date: 'shortTime' }}</td>
         </ng-container>
         <ng-container matColumnDef="owner">
           <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-font-size">

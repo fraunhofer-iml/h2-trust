@@ -48,8 +48,7 @@ export class ProductionService {
   }
 
   async createProduction(dto: CreateProductionDto): Promise<ProcessStepEntity[]> {
-    const powerProductionProcessSteps: ProcessStepEntity[] = await this.createProcessSteps(
-      dto, {
+    const powerProductionProcessSteps: ProcessStepEntity[] = await this.createProcessSteps(dto, {
       accountingPeriodInSeconds: this.powerAccountingPeriodInSeconds,
       processType: ProcessType.POWER_PRODUCTION,
       batchAmount: dto.powerAmountKwh,
@@ -60,8 +59,7 @@ export class ProductionService {
       predecessors: [],
     });
 
-    const hydrogenProductionProcessSteps: ProcessStepEntity[] = await this.createProcessSteps(
-      dto, {
+    const hydrogenProductionProcessSteps: ProcessStepEntity[] = await this.createProcessSteps(dto, {
       accountingPeriodInSeconds: this.hydrogenAccountingPeriodInSeconds,
       processType: ProcessType.HYDROGEN_PRODUCTION,
       batchAmount: dto.hydrogenAmountKg,
@@ -75,7 +73,10 @@ export class ProductionService {
     return [...powerProductionProcessSteps, ...hydrogenProductionProcessSteps];
   }
 
-  private async createProcessSteps(dto: CreateProductionDto, params: CreateProcessStepsParams): Promise<ProcessStepEntity[]> {
+  private async createProcessSteps(
+    dto: CreateProductionDto,
+    params: CreateProcessStepsParams,
+  ): Promise<ProcessStepEntity[]> {
     this.logger.debug(`# ${ProcessType[params.processType]}`);
 
     const processSteps: ProcessStepEntity[] = [];
@@ -109,7 +110,10 @@ export class ProductionService {
       );
       this.logger.debug(`Period ${i + 1} ended At: ${endedAt.toISOString()}`);
 
-      const amountPerPeriod = ProductionUtils.calculateBatchAmountPerPeriod(params.batchAmount, numberOfAccountingPeriods);
+      const amountPerPeriod = ProductionUtils.calculateBatchAmountPerPeriod(
+        params.batchAmount,
+        numberOfAccountingPeriods,
+      );
       this.logger.debug(`Amount per period: ${amountPerPeriod}`);
 
       processSteps.push(

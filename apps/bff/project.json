@@ -31,6 +31,7 @@
       "dependsOn": ["build"],
       "options": {
         "buildTarget": "bff:build",
+        "port": 9230,
         "runBuildTargetDependencies": false
       },
       "configurations": {

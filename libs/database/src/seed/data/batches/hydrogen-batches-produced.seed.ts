@@ -1,6 +1,7 @@
 import { Batch, BatchType, HydrogenColor, Prisma } from '@prisma/client';
 import { CompaniesSeed } from '../companies.seed';
 import { HydrogenStorageUnitsSeed } from '../units';
+import { getElementOrThrowError } from '../utils';
 
 export const HydrogenBatchesProducedSeed = <Batch[]>[
   {
@@ -9,8 +10,8 @@ export const HydrogenBatchesProducedSeed = <Batch[]>[
     amount: new Prisma.Decimal(111.0),
     quality: `{"color": "${HydrogenColor.GREEN}"}`,
     type: BatchType.HYDROGEN,
-    ownerId: CompaniesSeed[1].id,
-    hydrogenStorageUnitId: HydrogenStorageUnitsSeed[0].id,
+    ownerId: getElementOrThrowError(CompaniesSeed, 1, 'Company').id,
+    hydrogenStorageUnitId: getElementOrThrowError(HydrogenStorageUnitsSeed, 0, 'Hydrogen Storage Unit').id,
   },
   {
     id: 'batch-produced-hydrogen-2',
@@ -18,8 +19,8 @@ export const HydrogenBatchesProducedSeed = <Batch[]>[
     amount: new Prisma.Decimal(10.0),
     quality: `{"color": "${HydrogenColor.YELLOW}"}`,
     type: BatchType.HYDROGEN,
-    ownerId: CompaniesSeed[1].id,
-    hydrogenStorageUnitId: HydrogenStorageUnitsSeed[0].id,
+    ownerId: getElementOrThrowError(CompaniesSeed, 1, 'Company').id,
+    hydrogenStorageUnitId: getElementOrThrowError(HydrogenStorageUnitsSeed, 0, 'Hydrogen Storage Unit').id,
   },
   {
     id: 'batch-produced-hydrogen-3',
@@ -27,8 +28,8 @@ export const HydrogenBatchesProducedSeed = <Batch[]>[
     amount: new Prisma.Decimal(5.0),
     quality: `{"color": "${HydrogenColor.ORANGE}"}`,
     type: BatchType.HYDROGEN,
-    ownerId: CompaniesSeed[1].id,
-    hydrogenStorageUnitId: HydrogenStorageUnitsSeed[0].id,
+    ownerId: getElementOrThrowError(CompaniesSeed, 1, 'Company').id,
+    hydrogenStorageUnitId: getElementOrThrowError(HydrogenStorageUnitsSeed, 0, 'Hydrogen Storage Unit').id,
   },
   {
     id: 'batch-produced-hydrogen-4',
@@ -36,7 +37,7 @@ export const HydrogenBatchesProducedSeed = <Batch[]>[
     amount: new Prisma.Decimal(5.0),
     quality: `{"color": "${HydrogenColor.PINK}"}`,
     type: BatchType.HYDROGEN,
-    ownerId: CompaniesSeed[1].id,
-    hydrogenStorageUnitId: HydrogenStorageUnitsSeed[0].id,
+    ownerId: getElementOrThrowError(CompaniesSeed, 1, 'Company').id,
+    hydrogenStorageUnitId: getElementOrThrowError(HydrogenStorageUnitsSeed, 0, 'Hydrogen Storage Unit').id,
   },
 ];

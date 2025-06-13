@@ -23,6 +23,7 @@
       "dependsOn": ["build"],
       "options": {
         "buildTarget": "general-svc:build",
+        "port": 9232,
         "runBuildTargetDependencies": false
       },
       "configurations": {

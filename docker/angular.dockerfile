@@ -9,4 +9,4 @@ COPY ./dist/apps/${APP}/browser/ /usr/share/nginx/html/
 
 USER nginx
 EXPOSE 8080:8080
-CMD ["/bin/sh",  "-c",  "exec nginx -g 'daemon off;'"]
+CMD ["/bin/sh", "-c", "exec nginx -g 'daemon off;'"]

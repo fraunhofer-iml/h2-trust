@@ -3,16 +3,17 @@ import { CompaniesSeed } from './companies.seed';
 import { DocumentsSeed } from './documents.seed';
 import { EnergySourcesSeed } from './units/energy-sources.seed';
 import { PowerProductionUnitsSeed } from './units';
+import { getElementOrThrowError } from './utils';
 
 export const PowerAccessApprovalsSeed = <PowerAccessApproval[]>[
   {
     id: 'power-access-approval-1',
     decidedAt: new Date('2025-02-01'),
     powerAccessApprovalStatus: PowerAccessApprovalStatus.APPROVED,
-    energySourceName: EnergySourcesSeed[7].name,
-    powerProducerId: CompaniesSeed[0].id,
-    powerProductionUnitId: PowerProductionUnitsSeed[0].id,
-    hydrogenProducerId: CompaniesSeed[1].id,
-    documentId: DocumentsSeed[0].id,
+    energySourceName: getElementOrThrowError(EnergySourcesSeed, 7, 'Energy Source').name,
+    powerProducerId: getElementOrThrowError(CompaniesSeed, 0, 'Company').id,
+    powerProductionUnitId: getElementOrThrowError(PowerProductionUnitsSeed, 0, 'Power Production Unit').id,
+    hydrogenProducerId: getElementOrThrowError(CompaniesSeed, 1, 'Company').id,
+    documentId: getElementOrThrowError(DocumentsSeed, 0, 'Document').id,
   },
 ];

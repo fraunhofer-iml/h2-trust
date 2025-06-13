@@ -9,7 +9,7 @@ export const ProcessStepEntitiesMock = <ProcessStepEntity[]>[
   })).map((batch) => ({
     ...ProcessStepsHydrogenProductionSeed[0],
     executedBy: {
-      id: ProcessStepsHydrogenProductionSeed[0].unitId,
+      id: ProcessStepsHydrogenProductionSeed[0]?.unitId ?? '',
     },
     batch: batch,
   })),

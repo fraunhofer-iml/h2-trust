@@ -12,13 +12,13 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import {
-  AuthenticatedKCUser,
   BottlingDto,
   BottlingDtoMock,
   ProcessingOverviewDto,
   ProcessStepDto,
   ProcessType,
   ProductionOverviewDto,
+  type AuthenticatedKCUser,
 } from '@h2-trust/api';
 import { ProcessStepService } from './process-step.service';
 import 'multer';

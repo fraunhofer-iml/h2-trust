@@ -1,12 +1,12 @@
 import { AuthenticatedUser } from 'nest-keycloak-connect';
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { AuthenticatedKCUser, UnitDto, UnitOverviewDto, UnitType } from '@h2-trust/api';
+import { UnitDto, UnitOverviewDto, UnitType, type AuthenticatedKCUser } from '@h2-trust/api';
 import { UnitService } from './unit.service';
 
 @Controller('units')
 export class UnitController {
-  constructor(private readonly unitService: UnitService) {}
+  constructor(private readonly unitService: UnitService) { }
 
   @Get(':id')
   @ApiOperation({ description: 'Get one unit.' })
@@ -32,7 +32,10 @@ export class UnitController {
     enum: UnitType,
     required: false,
     examples: {
-      allTypes: { value: null, description: 'Get units of all types' },
+      allTypes: {
+        value: null,
+        description: 'Get units of all types',
+      },
       powerProduction: {
         value: 'power-production',
         description: 'Get all units with type "power-production"',

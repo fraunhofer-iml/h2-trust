@@ -12,7 +12,7 @@ import { CallHandler, ExecutionContext, HttpException, Injectable, NestIntercept
 
 @Injectable()
 export class AllErrorsInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(_context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       catchError((err) => {
         let message = err?.response?.message ?? err?.message ?? 'Internal server error';

@@ -11,7 +11,7 @@ import { UnitService } from './unit.service';
 
 @Controller()
 export class UnitController {
-  constructor(private readonly service: UnitService) {}
+  constructor(private readonly service: UnitService) { }
 
   @MessagePattern(UnitMessagePatterns.READ)
   async readUnit(@Payload() payload: { id: string }): Promise<UnitEntity> {
@@ -19,17 +19,17 @@ export class UnitController {
   }
 
   @MessagePattern(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS)
-  async readPowerProductionUnits({ companyId }): Promise<PowerProductionUnitEntity[]> {
-    return this.service.readPowerProductionUnits(companyId);
+  async readPowerProductionUnits(@Payload() payload: { companyId: string }): Promise<PowerProductionUnitEntity[]> {
+    return this.service.readPowerProductionUnits(payload.companyId);
   }
 
   @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS)
-  async readHydrogenProductionUnits({ companyId }): Promise<HydrogenProductionUnitEntity[]> {
-    return this.service.readHydrogenProductionUnits(companyId);
+  async readHydrogenProductionUnits(@Payload() payload: { companyId: string }): Promise<HydrogenProductionUnitEntity[]> {
+    return this.service.readHydrogenProductionUnits(payload.companyId);
   }
 
   @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_STORAGE_UNITS)
-  async readHydrogenStorageUnits({ companyId }): Promise<HydrogenStorageUnitEntity[]> {
-    return this.service.readHydrogenStorageUnits(companyId);
+  async readHydrogenStorageUnits(@Payload() payload: { companyId: string }): Promise<HydrogenStorageUnitEntity[]> {
+    return this.service.readHydrogenStorageUnits(payload.companyId);
   }
 }
