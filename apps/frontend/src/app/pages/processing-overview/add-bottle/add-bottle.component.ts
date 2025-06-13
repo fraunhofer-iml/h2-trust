@@ -13,6 +13,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
 import { FGFile, HydrogenStorageOverviewDto, UserDto } from '@h2-trust/api';
+import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
+import { ERROR_MESSAGES } from '../../../shared/constants/error.messages';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { ProcessingService } from '../../../shared/services/processing/processing.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
@@ -35,14 +37,15 @@ import { UploadFormComponent } from '../upload-form/upload-form.component';
     MatButtonModule,
     MatIconModule,
     UploadFormComponent,
+    ErrorCardComponent,
   ],
   templateUrl: './add-bottle.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddBottleComponent {
-  isError = false;
+  ERROR_MESSAGES = ERROR_MESSAGES;
+
   selectedValue = '';
-  receivedError: string | undefined = undefined;
   dateDelimiter: Date = new Date();
   uploadedFiles: FGFile[] = [];
 
@@ -100,13 +103,7 @@ export class AddBottleComponent {
 
   mutation = injectMutation(() => ({
     mutationFn: (dto: FormData) => this.processService.createBottleBatch(dto),
-    onError: (error) => {
-      this.receivedError =
-        error instanceof Error && error.message ? error.message : 'An error occurred. Please try again';
-      this.isError = true;
-    },
     onSuccess: () => {
-      this.isError = false;
       this.dialogRef.close(true);
     },
   }));

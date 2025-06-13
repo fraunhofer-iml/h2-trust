@@ -1,0 +1,71 @@
+<div class="flex flex-col gap-4 min-w-min p-6">
+  <h3 class="font-semibold text-gray-700">Add Production Data</h3>
+
+  <div class="grid grid-cols-2 gap-x-2 gap-y-4" [formGroup]="form">
+    <mat-form-field appearance="outline" class="col-span-2">
+      <mat-label>Hydrogen Production Unit</mat-label>
+      <mat-select formControlName="hydrogenProductionUnit">
+        @for (unit of hydrogenProductionQuery.data(); track unit) {
+        <mat-option [value]="unit">{{ unit.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="col-span-2">
+      <mat-label>Power Production Unit</mat-label>
+      <mat-select formControlName="powerProductionUnit">
+        @for (approval of approvalsQuery.data(); track approval) {
+        <mat-option [value]="approval.powerProductionUnit"
+          >{{ approval.powerProducer.name }} | {{ approval.powerProductionUnit.name }}</mat-option
+        >
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Start Date</mat-label>
+      <input matInput [matDatepicker]="startDatepicker" formControlName="productionStartedAt" />
+      <mat-datepicker #startDatepicker />
+      <mat-datepicker-toggle [for]="startDatepicker" matSuffix />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Start Time</mat-label>
+      <input matInput [matTimepicker]="startTimepicker" formControlName="productionStartedAt" />
+      <mat-timepicker #startTimepicker />
+      <mat-timepicker-toggle [for]="startTimepicker" matSuffix />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>End Date</mat-label>
+      <input matInput [matDatepicker]="endDatepicker" formControlName="productionEndedAt" />
+      <mat-datepicker #endDatepicker />
+      <mat-datepicker-toggle [for]="endDatepicker" matSuffix />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>End Time</mat-label>
+      <input matInput [matTimepicker]="endTimepicker" formControlName="productionEndedAt" />
+      <mat-timepicker #endTimepicker />
+      <mat-timepicker-toggle [for]="endTimepicker" matSuffix />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Hydrogen Amount (kg)</mat-label>
+      <input matInput type="number" [min]="0" formControlName="hydrogenAmountKg" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Power Amount (kWh)</mat-label>
+      <input matInput type="number" [min]="0" formControlName="powerAmountKwh" />
+    </mat-form-field>
+  </div>
+
+  @if (mutation.isError()) {
+  <app-error-card [message]="ERROR_MESSAGES.createProductionFailed"></app-error-card>
+  }
+
+  <div class="flex justify-end gap-2">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-flat-button (click)="submit()" [disabled]="form.invalid">Add Data</button>
+  </div>
+</div>

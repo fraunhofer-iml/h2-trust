@@ -24,22 +24,9 @@ export class UnitController {
   @Get()
   @ApiOperation({
     description:
-      'Get Units. If a company ID is provided, returns only that company’s units; otherwise, returns all units.',
+      'Get Units. If a company ID is provided, returns only that company’s units; otherwise, returns all units of the authenticated user.',
   })
   @ApiOkResponse({ description: 'Successful request.' })
-  @ApiQuery({
-    name: 'company-id',
-    type: String,
-    required: false,
-    examples: {
-      allCompanies: { value: null, description: 'Get units from all companies' },
-      companyHydrogen: {
-        value: 'company-hydrogen-1',
-        description: 'Get all units from company with id "company-hydrogen-1"',
-      },
-      companyPower: { value: 'company-power-1', description: 'Get all units from company with id "company-power-1"' },
-    },
-  })
   @ApiQuery({
     name: 'unit-type',
     enum: UnitType,
@@ -60,7 +47,10 @@ export class UnitController {
       },
     },
   })
-  getUnits(@Query('company-id') companyId: string, @Query('unit-type') unitType: UnitType): Promise<UnitOverviewDto[]> {
-    return this.unitService.readUnits(companyId, unitType);
+  getUnits(
+    @Query('unit-type') unitType: UnitType,
+    @AuthenticatedUser() user: AuthenticatedKCUser,
+  ): Promise<UnitOverviewDto[]> {
+    return this.unitService.readUnits(user.sub, unitType);
   }
 }

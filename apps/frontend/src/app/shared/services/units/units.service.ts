@@ -21,10 +21,13 @@ export class UnitsService {
       }),
     );
   }
-  getPowerProductionUnits() {
+  getPowerProductionUnits(companyId?: string) {
+    let params = this.generateQueryParams(UnitType.powerProductionUnit);
+    if (companyId) params = params.append('companyId', companyId);
+
     return lastValueFrom(
       this.httpClient.get<PowerProductionOverviewDto[]>(`${BASE_URL}${ApiEndpoints.units}`, {
-        params: this.generateQueryParams(UnitType.powerProductionUnit),
+        params: params,
       }),
     );
   }

@@ -46,10 +46,9 @@ describe('UnitController', () => {
     });
     jest.spyOn(userService, 'readUserWithCompany').mockResolvedValue(user);
 
-    const res: UnitOverviewDto[] = await controller.getUnits(
-      '6f63a1a9-6cc5-4a7a-98b2-79a0460910f4',
-      UnitType.hydrogenProductionUnit,
-    );
+    const res: UnitOverviewDto[] = await controller.getUnits(UnitType.hydrogenProductionUnit, {
+      sub: '6f63a1a9-6cc5-4a7a-98b2-79a0460910f4',
+    });
 
     expect(res).toEqual(expectedReturnValue);
   });

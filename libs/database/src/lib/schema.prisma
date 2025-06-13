@@ -102,6 +102,8 @@ model PowerProductionUnit {
   typeName String
 
   generalInfo Unit @relation(fields: [id], references: [id])
+
+  PowerAccessApproval PowerAccessApproval[]
 }
 
 model ElectrolysisType {
@@ -170,11 +172,16 @@ model PowerAccessApproval {
   powerProducer   Company @relation(fields: [powerProducerId], references: [id], name: "PowerProducer")
   powerProducerId String
 
+  powerProductionUnit   PowerProductionUnit @relation(fields: [powerProductionUnitId], references: [id])
+  powerProductionUnitId String
+
   hydrogenProducer   Company @relation(fields: [hydrogenProducerId], references: [id], name: "HydrogenProducer")
   hydrogenProducerId String
 
   documentId String
   document   Document @relation(fields: [documentId], references: [id])
+
+  @@unique([powerProducerId, powerProductionUnitId, hydrogenProducerId])
 }
 
 enum BatchType {

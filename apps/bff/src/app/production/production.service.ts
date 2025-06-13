@@ -6,7 +6,7 @@ import { CreateProductionDto, ProcessType, ProductionOverviewDto } from '@h2-tru
 
 @Injectable()
 export class ProductionService {
-  constructor(@Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy) { }
+  constructor(@Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy) {}
 
   async createProduction(dto: CreateProductionDto): Promise<ProductionOverviewDto[]> {
     return firstValueFrom(
@@ -14,7 +14,9 @@ export class ProductionService {
         dto,
       }),
     )
-      .then((entities) => entities.filter((step: ProcessStepEntity) => step.processType === ProcessType.HYDROGEN_PRODUCTION))
+      .then((entities) =>
+        entities.filter((step: ProcessStepEntity) => step.processType === ProcessType.HYDROGEN_PRODUCTION),
+      )
       .then((entities) => entities.map(ProductionOverviewDto.fromEntity));
   }
 }

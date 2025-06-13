@@ -9,7 +9,8 @@
           <div
             class="w-full flex flex-row gap-2 rounded-xl hover:bg-primary-100/20 p-4"
             (click)="selectedIndex = $index"
-            role="none"
+            tabindex="0"
+            role="presentation"
             [ngClass]="selectedIndex === $index ? 'bg-primary-100/20' : ''"
           >
             <span class="material-symbols-outlined text-neutral-600">{{ option.icon }}</span>
@@ -19,7 +20,7 @@
         }
       </div>
 
-      <mat-expansion-panel class="p-4 !bg-primary-100/20 border-primary-100 !shadow-none">
+      <mat-expansion-panel class="p-2 !bg-primary-100/20 border-primary-600/20 border-[1px] !shadow-none">
         <mat-expansion-panel-header class="!p-0 !pr-4 !bg-transparent select-none">
           <mat-panel-title>
             <div class="!select-none flex flex-row gap-4 items-center">

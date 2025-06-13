@@ -1,21 +1,28 @@
 <div class="flex flex-col p-4 gap-4">
-  <h2 class="text-neutral-500 text-lg">Production</h2>
+  <div class="flex flex-row justify-between">
+    <h2 class="text-neutral-500 text-lg">Production</h2>
+    <button mat-flat-button (click)="openBottleDialog()">Add Production Data</button>
+  </div>
 
   <div class="rounded-lg bg-white border-neutral-300 border-solid border-[1px] p-4 flex flex-col gap-4">
     <div>
       <table mat-table [dataSource]="dataSource" matSort>
         <ng-container matColumnDef="startedOn">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Started On</div></th>
-          <td mat-cell *matCellDef="let row">{{ row.startedAt | date }}</td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="startedAt"><div class="bold">Started On</div></th>
+          <td mat-cell *matCellDef="let row">{{ row.startedAt | date }}, {{ row.startedAt | date : 'shortTime' }}</td>
         </ng-container>
         <ng-container matColumnDef="endedOn">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-font-size">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="endedAt" class="table-font-size">
             <div class="bold">Ended On</div>
           </th>
-          <td mat-cell *matCellDef="let row" class="table-font-size">{{ row.endedAt | date }}</td>
+          <td mat-cell *matCellDef="let row" class="table-font-size">
+            {{ row.endedAt | date }}, {{ row.endedAt | date : 'shortTime' }}
+          </td>
         </ng-container>
         <ng-container matColumnDef="productionUnit">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Hydrogen Production Unit</div></th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <div class="bold">Hydrogen Production Unit</div>
+          </th>
           <td mat-cell *matCellDef="let row">
             {{ row.productionUnit | titlecase }}
           </td>
