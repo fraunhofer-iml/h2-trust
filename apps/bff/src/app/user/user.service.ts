@@ -12,7 +12,9 @@ export class UserService {
     return UserDtoMock;
   }
 
-  readUserWithCompany(id: string): Promise<UserDetailsDto> {
-    return firstValueFrom(this.generalService.send(UserMessagePatterns.READ_WITH_COMPANY, { id }));
+  async readUserWithCompany(id: string): Promise<UserDetailsDto> {
+    return firstValueFrom(this.generalService.send(UserMessagePatterns.READ_WITH_COMPANY, { id })).then((dto) =>
+      UserDetailsDto.fromEntity(dto),
+    );
   }
 }

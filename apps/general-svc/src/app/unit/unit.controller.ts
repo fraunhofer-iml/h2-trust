@@ -11,7 +11,7 @@ import { UnitService } from './unit.service';
 
 @Controller()
 export class UnitController {
-  constructor(private readonly service: UnitService) { }
+  constructor(private readonly service: UnitService) {}
 
   @MessagePattern(UnitMessagePatterns.READ)
   async readUnit(@Payload() payload: { id: string }): Promise<UnitEntity> {
@@ -24,7 +24,9 @@ export class UnitController {
   }
 
   @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS)
-  async readHydrogenProductionUnits(@Payload() payload: { companyId: string }): Promise<HydrogenProductionUnitEntity[]> {
+  async readHydrogenProductionUnits(
+    @Payload() payload: { companyId: string },
+  ): Promise<HydrogenProductionUnitEntity[]> {
     return this.service.readHydrogenProductionUnits(payload.companyId);
   }
 

@@ -20,6 +20,11 @@ export class ProcessStepController {
     return this.processStepService.readProcessSteps(payload.processType, payload.active, payload.companyId);
   }
 
+  @MessagePattern(ProcessStepMessagePatterns.READ_UNIQUE)
+  async readProcessStep(@Payload() payload: { processStepId: string }): Promise<ProcessStepEntity> {
+    return this.processStepService.readProcessStep(payload.processStepId);
+  }
+
   @MessagePattern(ProcessStepMessagePatterns.CREATE)
   async createProcessStep(
     @Payload() payload: { processStepEntity: ProcessStepEntity; predecessors: string[] },

@@ -17,7 +17,7 @@ import { ConfigurationService } from './configuration.service';
 
 @Injectable()
 export class KeycloakConfigurationService implements KeycloakConnectOptionsFactory {
-  constructor(private configurationService: ConfigurationService) {}
+  constructor(private readonly configurationService: ConfigurationService) { }
 
   createKeycloakConnectOptions(): KeycloakConnectOptions {
     return {

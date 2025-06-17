@@ -10,6 +10,10 @@ export class ProcessStepService {
     return this.repository.findProcessSteps(processType, active, companyId);
   }
 
+  async readProcessStep(processStepId: string): Promise<ProcessStepEntity> {
+    return this.repository.findProcessStep(processStepId);
+  }
+
   async createProcessStep(processStepData: ProcessStepEntity, predecessors: string[]): Promise<ProcessStepEntity> {
     return this.repository.insertProcessStep(processStepData, predecessors);
   }

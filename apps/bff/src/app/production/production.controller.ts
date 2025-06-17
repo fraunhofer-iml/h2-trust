@@ -5,7 +5,7 @@ import { ProductionService } from './production.service';
 
 @Controller('productions')
 export class ProductionController {
-  constructor(private service: ProductionService) {}
+  constructor(private readonly service: ProductionService) { }
 
   @Post()
   @ApiOperation({ description: 'Create a new production entry' })

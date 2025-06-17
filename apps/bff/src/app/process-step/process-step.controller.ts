@@ -4,6 +4,7 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Param,
   Post,
   Query,
   UploadedFile,
@@ -18,6 +19,7 @@ import {
   ProcessStepDto,
   ProcessType,
   ProductionOverviewDto,
+  ProductPassDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/api';
 import { ProcessStepService } from './process-step.service';
@@ -74,6 +76,13 @@ export class ProcessStepController {
       default:
         throw new HttpException(`Unknown processType '${processType}'`, HttpStatus.BAD_REQUEST);
     }
+  }
+
+  @Get(':id')
+  @ApiOperation({ description: 'Get process step details' })
+  @ApiOkResponse({ description: 'Successful request' })
+  async readProcessStep(@Param('id') processStepId: string): Promise<ProductPassDto> {
+    return this.service.readProcessStep(processStepId);
   }
 
   @Post()

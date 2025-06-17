@@ -1,8 +1,8 @@
 import { PowerAccessApproval, PowerAccessApprovalStatus } from '@prisma/client';
 import { CompaniesSeed } from './companies.seed';
 import { DocumentsSeed } from './documents.seed';
-import { EnergySourcesSeed } from './units/energy-sources.seed';
 import { PowerProductionUnitsSeed } from './units';
+import { EnergySourcesSeed } from './units/energy-sources.seed';
 import { getElementOrThrowError } from './utils';
 
 export const PowerAccessApprovalsSeed = <PowerAccessApproval[]>[
