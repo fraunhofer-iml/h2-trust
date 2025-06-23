@@ -10,6 +10,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ProcessingOverviewDto } from '@h2-trust/api';
+import { H2ColorChipComponent } from '../../layout/h2-color-chip/h2-color-chip.component';
 import { ProcessingService } from '../../shared/services/processing/processing.service';
 import { processSet } from '../hydrogen-assets/config/table-set';
 import { AddBottleComponent } from './add-bottle/add-bottle.component';
@@ -26,6 +27,7 @@ import { AddBottleComponent } from './add-bottle/add-bottle.component';
     MatIconModule,
     MatDialogModule,
     MatSortModule,
+    H2ColorChipComponent,
   ],
   providers: [ProcessingService],
   templateUrl: './processing-overview.component.html',

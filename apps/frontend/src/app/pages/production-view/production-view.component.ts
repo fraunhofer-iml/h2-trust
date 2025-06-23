@@ -8,6 +8,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ProductionOverviewDto } from '@h2-trust/api';
+import { H2ColorChipComponent } from '../../layout/h2-color-chip/h2-color-chip.component';
 import { ProductionService } from '../../shared/services/production/production.service';
 import { productionSet } from '../hydrogen-assets/config/table-set';
 import { AddProductionDataComponent } from './add-production-data/add-production-data.component';
@@ -23,6 +24,7 @@ import { AddProductionDataComponent } from './add-production-data/add-production
     TitleCasePipe,
     MatButtonModule,
     MatSortModule,
+    H2ColorChipComponent,
   ],
   providers: [ProductionService],
   templateUrl: './production-view.component.html',
