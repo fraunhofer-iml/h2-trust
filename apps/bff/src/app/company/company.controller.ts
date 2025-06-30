@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { CompanyDto } from '@h2-trust/api';
 import { CompanyService } from './company.service';
 
@@ -8,6 +8,7 @@ export class CompanyController {
   constructor(private readonly companyService: CompanyService) {}
 
   @Get()
+  @ApiBearerAuth()
   @ApiOperation({ description: 'Get all available Companies' })
   async findAll(): Promise<CompanyDto[]> {
     return this.companyService.findAll();

@@ -1,13 +1,15 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { UserDetailsDto } from '@h2-trust/api';
 import { UserService } from './user.service';
+
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get(':id')
+  @ApiBearerAuth()
   @ApiOperation({ description: 'Get user and his company' })
   @ApiOkResponse({ description: 'Successful request.' })
   @ApiResponse({ type: [UserDetailsDto] })

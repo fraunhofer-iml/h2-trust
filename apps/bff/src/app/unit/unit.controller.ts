@@ -1,6 +1,6 @@
 import { AuthenticatedUser } from 'nest-keycloak-connect';
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { UnitDto, UnitOverviewDto, UnitType, type AuthenticatedKCUser } from '@h2-trust/api';
 import { UnitService } from './unit.service';
 
@@ -9,6 +9,7 @@ export class UnitController {
   constructor(private readonly unitService: UnitService) {}
 
   @Get(':id')
+  @ApiBearerAuth()
   @ApiOperation({ description: 'Get one unit.' })
   @ApiOkResponse({ description: 'Successful request.' })
   @ApiParam({
@@ -22,6 +23,7 @@ export class UnitController {
   }
 
   @Get()
+  @ApiBearerAuth()
   @ApiOperation({
     description:
       'Get Units. If a company ID is provided, returns only that company’s units; otherwise, returns all units of the authenticated user.',

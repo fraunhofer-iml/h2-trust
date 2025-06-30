@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ApiBody, ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
 import { CreateProductionDto, ProductionOverviewDto } from '@h2-trust/api';
 import { ProductionService } from './production.service';
 
@@ -8,6 +8,7 @@ export class ProductionController {
   constructor(private readonly service: ProductionService) { }
 
   @Post()
+  @ApiBearerAuth()
   @ApiOperation({ description: 'Create a new production entry' })
   @ApiCreatedResponse({ description: 'Production created.' })
   @ApiBody({

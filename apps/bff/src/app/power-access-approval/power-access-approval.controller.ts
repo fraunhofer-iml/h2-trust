@@ -1,6 +1,6 @@
 import { AuthenticatedUser } from 'nest-keycloak-connect';
 import { Controller, Get, Query } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { PowerAccessApprovalDto, PowerAccessApprovalStatus, type AuthenticatedKCUser } from '@h2-trust/api';
 import { PowerAccessApprovalService } from './power-access-approval.service';
 
@@ -9,6 +9,7 @@ export class PowerAccessApprovalController {
   constructor(private readonly powerAccessApprovalService: PowerAccessApprovalService) {}
 
   @Get()
+  @ApiBearerAuth()
   @ApiOperation({ description: 'Get all Companies with Power Access Approvals' })
   @ApiOkResponse({ description: 'Successful request.' })
   @ApiQuery({

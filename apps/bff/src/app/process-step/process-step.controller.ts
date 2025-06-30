@@ -11,7 +11,16 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+} from '@nestjs/swagger';
 import {
   BottlingDto,
   BottlingDtoMock,
@@ -34,6 +43,7 @@ export class ProcessStepController {
   constructor(private readonly service: ProcessStepService) {}
 
   @Get()
+  @ApiBearerAuth()
   @ApiOperation({ description: 'Get either all production batches or processing batches' })
   @ApiOkResponse({ description: 'Successful request.' })
   @ApiQuery({
@@ -79,13 +89,20 @@ export class ProcessStepController {
   }
 
   @Get(':id')
+  @ApiBearerAuth()
   @ApiOperation({ description: 'Get process step details' })
   @ApiOkResponse({ description: 'Successful request' })
+  @ApiParam({
+    name: 'id',
+    description: 'The ID of the process step.',
+    example: 'process-step-hydrogen-bottling-1',
+  })
   async readProcessStep(@Param('id') processStepId: string): Promise<ProductPassDto> {
     return this.service.readProcessStep(processStepId);
   }
 
   @Post()
+  @ApiBearerAuth()
   @ApiOperation({ description: 'Create process step for bottling' })
   @ApiCreatedResponse({ description: 'Successful creation.' })
   @UseInterceptors(FileInterceptor('file'))
