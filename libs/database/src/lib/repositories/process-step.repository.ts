@@ -3,7 +3,7 @@ import { BatchType } from '@prisma/client';
 import { BrokerException, ProcessStepEntity } from '@h2-trust/amqp';
 import { PrismaService } from '../prisma.service';
 import { processStepResultFields } from '../queries';
-import { retrieveRecordOrThrowException } from './utils';
+import { assertRecordFound } from './utils';
 
 @Injectable()
 export class ProcessStepRepository {
@@ -17,7 +17,7 @@ export class ProcessStepRepository {
         },
         ...processStepResultFields,
       })
-      .then((record) => retrieveRecordOrThrowException(record, id, 'process-step'))
+      .then((record) => assertRecordFound(record, id, 'process-step'))
       .then(ProcessStepEntity.fromDatabase);
   }
 
@@ -74,7 +74,7 @@ export class ProcessStepRepository {
           },
           batch: {
             create: {
-              active: true,
+              active: entity.batch.active ?? true,
               amount: entity.batch.amount,
               quality: entity.batch.quality,
               type: BatchType[entity.batch.type as keyof typeof BatchType],

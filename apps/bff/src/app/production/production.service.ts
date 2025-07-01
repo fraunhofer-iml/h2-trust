@@ -1,22 +1,48 @@
 import { firstValueFrom } from 'rxjs';
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BrokerQueues, ProcessStepEntity, ProductionMessagePatterns } from '@h2-trust/amqp';
+import {
+  BrokerException,
+  BrokerQueues,
+  PowerProductionUnitEntity,
+  ProcessStepEntity,
+  ProductionMessagePatterns,
+  UnitMessagePatterns
+} from '@h2-trust/amqp';
 import { CreateProductionDto, ProcessType, ProductionOverviewDto } from '@h2-trust/api';
 
 @Injectable()
 export class ProductionService {
-  constructor(@Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy) {}
+  constructor(
+    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
+    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy) { }
 
   async createProduction(dto: CreateProductionDto): Promise<ProductionOverviewDto[]> {
-    return firstValueFrom(
-      this.processSvc.send(ProductionMessagePatterns.CREATE, {
-        dto,
-      }),
-    )
-      .then((entities) =>
-        entities.filter((step: ProcessStepEntity) => step.processType === ProcessType.HYDROGEN_PRODUCTION),
-      )
-      .then((entities) => entities.map(ProductionOverviewDto.fromEntity));
+    const hydrogenColor = await this.fetchHydrogenColor(dto.powerProductionUnitId);
+
+    const processSteps: ProcessStepEntity[] = await firstValueFrom(
+      this.processSvc.send(ProductionMessagePatterns.CREATE, { dto, hydrogenColor })
+    );
+
+    return processSteps
+      .filter((step) => step.processType === ProcessType.HYDROGEN_PRODUCTION)
+      .map(ProductionOverviewDto.fromEntity);
+  }
+
+  private async fetchHydrogenColor(powerProductionUnitId: string): Promise<string> {
+    const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.READ, { id: powerProductionUnitId }),
+    );
+
+    const hydrogenColor = powerProductionUnit?.type?.hydrogenColor;
+
+    if (!hydrogenColor) {
+      throw new BrokerException(
+        `Hydrogen Color for Power Production Unit ${powerProductionUnitId} is undefined`,
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+
+    return hydrogenColor;
   }
 }

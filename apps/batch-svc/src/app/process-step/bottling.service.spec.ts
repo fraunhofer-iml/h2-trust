@@ -93,7 +93,7 @@ describe('ProcessStepService', () => {
       expect(createProcessStepSpy).toHaveBeenCalledTimes(2);
       expect(service['createBottlingProcessStep']).toHaveBeenCalledWith(
         processStepData,
-        givenProcessSteps.map((processStep) => processStep.batch.id),
+        givenProcessSteps,
       );
       expect(service['createHydrogenProductionProcessStepForRemainingBatchAmount']).toHaveBeenCalledWith(
         processStepData,
@@ -131,7 +131,7 @@ describe('ProcessStepService', () => {
       expect(createProcessStepSpy).toHaveBeenCalledTimes(2);
       expect(service['createBottlingProcessStep']).toHaveBeenCalledWith(
         processStepData,
-        givenProcessSteps.slice(0, 3).map((processStep) => processStep.batch.id),
+        givenProcessSteps.slice(0, 3),
       );
       expect(service['createHydrogenProductionProcessStepForRemainingBatchAmount']).toHaveBeenCalledWith(
         processStepData,

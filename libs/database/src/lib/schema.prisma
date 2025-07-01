@@ -86,7 +86,9 @@ model Unit {
 }
 
 model PowerProductionUnitType {
-  name String @id
+  name          String        @id
+  energySource  String
+  hydrogenColor HydrogenColor
 
   powerProductionUnits PowerProductionUnit[]
 }
@@ -149,12 +151,6 @@ model Document {
   powerAccessApproval PowerAccessApproval[]
 }
 
-model EnergySource {
-  name String @id
-
-  powerAccessApproval PowerAccessApproval[]
-}
-
 enum PowerAccessApprovalStatus {
   APPROVED
   PENDING
@@ -165,9 +161,6 @@ model PowerAccessApproval {
   id                        String                    @id @default(cuid(2))
   decidedAt                 DateTime
   powerAccessApprovalStatus PowerAccessApprovalStatus
-
-  energySource     EnergySource @relation(fields: [energySourceName], references: [name])
-  energySourceName String
 
   powerProducer   Company @relation(fields: [powerProducerId], references: [id], name: "PowerProducer")
   powerProducerId String
@@ -239,4 +232,5 @@ enum HydrogenColor {
   ORANGE
   PINK
   YELLOW
+  MIX
 }

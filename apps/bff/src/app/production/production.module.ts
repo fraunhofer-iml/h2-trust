@@ -4,7 +4,7 @@ import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
 
 @Module({
-  imports: [new Broker().getProcessSvcBroker()],
+  imports: [new Broker().getGeneralSvcBroker(), new Broker().getProcessSvcBroker()],
   controllers: [ProductionController],
   providers: [ProductionService],
 })

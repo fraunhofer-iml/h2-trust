@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserDetailsEntity } from '@h2-trust/amqp';
 import { PrismaService } from '../prisma.service';
 import { userWithCompanyResultFields } from '../queries';
-import { retrieveRecordOrThrowException } from './utils';
+import { assertRecordFound } from './utils';
 
 @Injectable()
 export class UserRepository {
@@ -16,6 +16,6 @@ export class UserRepository {
         },
         ...userWithCompanyResultFields,
       })
-      .then((result) => retrieveRecordOrThrowException(result, id, 'User'));
+      .then((result) => assertRecordFound(result, id, 'User'));
   }
 }

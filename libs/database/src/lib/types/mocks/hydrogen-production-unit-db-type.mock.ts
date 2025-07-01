@@ -9,7 +9,7 @@ export const HydrogenProductionUnitDbTypeMock = <HydrogenProductionUnitDbType[]>
       ...HydrogenProductionUnitsSeed[0],
       hydrogenStorageUnit: {
         ...HydrogenStorageUnitsSeed[0],
-        generalInfo: UnitsSeed[2],
+        generalInfo: UnitsSeed[5],
       },
     },
   },

@@ -1,13 +1,14 @@
 import { PowerProductionUnitDbType } from '@h2-trust/database';
 import { AddressEntity } from '../address';
 import { BaseUnitEntity } from './base-unit.entity';
+import { PowerProductionUnitTypeEntity } from './power-production-unit-type.entity';
 
 export class PowerProductionUnitEntity extends BaseUnitEntity {
   ratedPower: number;
   gridOperator?: string;
   gridLevel?: string;
   gridConnectionNumber?: string;
-  typeName?: string;
+  type?: PowerProductionUnitTypeEntity;
 
   constructor(
     id: string,
@@ -27,7 +28,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     gridOperator: string,
     gridLevel: string,
     gridConnectionNumber: string,
-    typeName: string,
+    type: PowerProductionUnitTypeEntity,
   ) {
     super(
       id,
@@ -45,7 +46,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     this.gridOperator = gridOperator;
     this.gridLevel = gridLevel;
     this.gridConnectionNumber = gridConnectionNumber;
-    this.typeName = typeName;
+    this.type = type;
   }
 
   static override fromDatabase(unit: PowerProductionUnitDbType): PowerProductionUnitEntity {
@@ -55,7 +56,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
       gridOperator: unit.powerProductionUnit?.gridOperator,
       gridLevel: unit.powerProductionUnit?.gridLevel,
       gridConnectionNumber: unit.powerProductionUnit?.gridConnectionNumber,
-      typeName: unit.powerProductionUnit?.typeName,
+      type: unit.powerProductionUnit?.type,
     };
   }
 

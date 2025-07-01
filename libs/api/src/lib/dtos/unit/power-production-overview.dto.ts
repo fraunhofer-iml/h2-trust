@@ -20,7 +20,7 @@ export class PowerProductionOverviewDto {
       id: unit.id,
       name: unit.name,
       ratedPower: unit.ratedPower,
-      typeName: unit.typeName,
+      typeName: unit.type?.name,
       producing: true,
     };
   }

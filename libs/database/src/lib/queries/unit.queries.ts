@@ -17,6 +17,12 @@ export const baseUnitResultFields = Prisma.validator<Prisma.UnitDefaultArgs>()({
   },
 });
 
+const powerProductionUnitChildResultFields = Prisma.validator<Prisma.PowerProductionUnitDefaultArgs>()({
+  include: {
+    type: true,
+  },
+});
+
 const hydrogenProductionUnitChildResultFields = Prisma.validator<Prisma.HydrogenProductionUnitDefaultArgs>()({
   include: {
     hydrogenStorageUnit: {
@@ -46,7 +52,7 @@ export const allUnitsResultFields = Prisma.validator<Prisma.UnitDefaultArgs>()({
   ...baseUnitResultFields,
   include: {
     ...baseUnitResultFields.include,
-    powerProductionUnit: true,
+    powerProductionUnit: powerProductionUnitChildResultFields,
     hydrogenProductionUnit: hydrogenProductionUnitChildResultFields,
     hydrogenStorageUnit: hydrogenStorageUnitChildResultFields,
   },
@@ -56,7 +62,7 @@ export const powerProductionUnitResultFields = Prisma.validator<Prisma.UnitDefau
   ...baseUnitResultFields,
   include: {
     ...baseUnitResultFields.include,
-    powerProductionUnit: true,
+    powerProductionUnit: powerProductionUnitChildResultFields,
   },
 });
 

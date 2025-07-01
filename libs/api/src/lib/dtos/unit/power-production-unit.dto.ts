@@ -1,12 +1,13 @@
 import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
+import { PowerProductionUnitTypeDto } from './power-production-unit-type.dto';
 
 export class PowerProductionUnitDto extends BaseUnitDto {
   ratedPower: number;
   gridOperator: string;
   gridLevel: string;
   gridConnectionNumber: string;
-  typeName: string;
+  type: PowerProductionUnitTypeDto;
 
   constructor(
     id: string,
@@ -20,16 +21,13 @@ export class PowerProductionUnitDto extends BaseUnitDto {
     address: AddressDto,
     company: {
       id: string;
-      hydrogenApprovals: {
-        powerAccessApprovalStatus: string;
-        powerProducerId: string;
-      }[];
+      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string }[];
     },
     ratedPower: number,
     gridOperator: string,
     gridLevel: string,
     gridConnectionNumber: string,
-    typeName: string,
+    type: PowerProductionUnitTypeDto,
   ) {
     super(
       id,
@@ -47,6 +45,6 @@ export class PowerProductionUnitDto extends BaseUnitDto {
     this.gridOperator = gridOperator;
     this.gridLevel = gridLevel;
     this.gridConnectionNumber = gridConnectionNumber;
-    this.typeName = typeName;
+    this.type = type;
   }
 }

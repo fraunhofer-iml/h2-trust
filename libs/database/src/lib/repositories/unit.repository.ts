@@ -14,7 +14,7 @@ import {
   hydrogenStorageUnitResultFields,
   powerProductionUnitResultFields,
 } from '../queries';
-import { retrieveRecordOrThrowException } from './utils';
+import { assertRecordFound } from './utils';
 
 @Injectable()
 export class UnitRepository {
@@ -28,7 +28,7 @@ export class UnitRepository {
         },
         ...allUnitsResultFields,
       })
-      .then((result) => retrieveRecordOrThrowException(result, id, 'Unit'))
+      .then((result) => assertRecordFound(result, id, 'Unit'))
       .then(this.mapToActualUnitEntity);
   }
 

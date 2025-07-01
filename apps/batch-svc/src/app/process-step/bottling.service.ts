@@ -1,7 +1,14 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
+import { HydrogenColor } from '@prisma/client';
 import { BrokerException, ProcessStepEntity } from '@h2-trust/amqp';
-import { ProcessType } from '@h2-trust/api';
-import { BatchRepository, BatchTypeDbEnum, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
+import { parseColor, ProcessType } from '@h2-trust/api';
+import {
+  BatchRepository,
+  BatchTypeDbEnum,
+  DocumentRepository,
+  HydrogenColorDbEnum,
+  ProcessStepRepository
+} from '@h2-trust/database';
 import { StorageService } from '@h2-trust/storage';
 
 @Injectable()
@@ -34,8 +41,7 @@ export class BottlingService {
         processStep.executedBy.id,
       );
 
-    const batchIdsForBottle = processStepsForBottle.map((processStep) => processStep.batch.id);
-    const bottlingProcessStep = await this.createBottlingProcessStep(processStep, batchIdsForBottle);
+    const bottlingProcessStep = await this.createBottlingProcessStep(processStep, processStepsForBottle);
 
     if (remainingHydrogenAmount > 0) {
       await this.createHydrogenProductionProcessStepForRemainingBatchAmount(
@@ -45,7 +51,7 @@ export class BottlingService {
         processStepsForBottle.at(-1),
       );
     }
-    await this.batchRepository.setBatchesInactive(batchIdsForBottle);
+    await this.batchRepository.setBatchesInactive(processStepsForBottle.map((processStep) => processStep.batch.id));
 
     if (file) {
       await this.addDocumentToProcessStep(file, bottlingProcessStep.id, processStep.documents[0]?.description);
@@ -98,7 +104,7 @@ export class BottlingService {
 
   private async createBottlingProcessStep(
     processStep: ProcessStepEntity,
-    batchIdsForBottle: string[],
+    processStepsForBottle: ProcessStepEntity[],
   ): Promise<ProcessStepEntity> {
     return this.processStepRepository.insertProcessStep(
       {
@@ -106,14 +112,14 @@ export class BottlingService {
         processType: ProcessType.BOTTLING,
         batch: {
           amount: processStep.batch.amount,
-          quality: '{}',
+          quality: this.determineBottleQualityFromPredecessors(processStepsForBottle),
           type: BatchTypeDbEnum.HYDROGEN,
           owner: {
             id: processStep.batch.owner.id,
           },
         },
       },
-      batchIdsForBottle,
+      processStepsForBottle.map((processStep) => processStep.batch.id),
     );
   }
 
@@ -135,7 +141,7 @@ export class BottlingService {
         processType: ProcessType.HYDROGEN_PRODUCTION,
         batch: {
           amount: remainingAmount,
-          quality: '{}',
+          quality: predecessorProcessStep.batch.quality,
           type: BatchTypeDbEnum.HYDROGEN,
           owner: {
             id: ownerId,
@@ -156,5 +162,27 @@ export class BottlingService {
       },
       processStepId,
     );
+  }
+
+  private determineBottleQualityFromPredecessors(predecessors: ProcessStepEntity[]): string {
+    const colors: HydrogenColorDbEnum[] = predecessors
+      .map((processEntity) => processEntity.batch.quality)
+      .map(parseColor)
+      .map((color) => HydrogenColorDbEnum[color as keyof typeof HydrogenColorDbEnum]);
+    return JSON.stringify({
+      color: this.determineBottleColorFromPredecessors(colors),
+    });
+  }
+
+  private determineBottleColorFromPredecessors(colors: HydrogenColor[]): HydrogenColor {
+    if (colors.length === 0) {
+      throw new BrokerException(`No predecessor colors specified`, HttpStatus.BAD_REQUEST);
+    }
+    const firstColor = colors[0];
+    const allColorsAreEqual = colors.every((color) => color === firstColor);
+
+    return allColorsAreEqual
+      ? firstColor
+      : HydrogenColor.MIX;
   }
 }

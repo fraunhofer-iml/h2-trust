@@ -3,11 +3,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues } from '@h2-trust/amqp';
 import { CreateProductionDto, ProcessType } from '@h2-trust/api';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { BatchTypeDbEnum } from '@h2-trust/database';
+import { BatchTypeDbEnum, HydrogenColorDbEnum } from '@h2-trust/database';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
 
 describe('ProductionController', () => {
+  const DERIVED_HYDROGEN_COLOR = HydrogenColorDbEnum.GREEN;
+
   let controller: ProductionController;
   let batchServiceSendMock: jest.Mock;
 
@@ -57,7 +59,10 @@ describe('ProductionController', () => {
       hydrogenProductionUnitId: 'unit-hydrogen-1',
     };
 
-    const actualResponse = await controller.createProduction({ dto });
+    const actualResponse = await controller.createProduction({
+      dto: dto,
+      hydrogenColor: DERIVED_HYDROGEN_COLOR
+    });
 
     expect(batchServiceSendMock).toHaveBeenCalledTimes(6); // 3 Power + 3 Hydrogen
 
@@ -88,7 +93,7 @@ describe('ProductionController', () => {
         expect(processStepEntity).toHaveProperty('processType', ProcessType.HYDROGEN_PRODUCTION);
         expect(processStepEntity).toHaveProperty('batch');
         expect(processStepEntity.batch).toHaveProperty('amount', 20);
-        expect(processStepEntity.batch).toHaveProperty('quality', '{}');
+        expect(processStepEntity.batch).toHaveProperty('quality', JSON.stringify({color: DERIVED_HYDROGEN_COLOR,}));
         expect(processStepEntity.batch).toHaveProperty('type', BatchTypeDbEnum.HYDROGEN);
         expect(processStepEntity.batch).toHaveProperty('owner', { id: 'company-hydrogen-1' });
         expect(processStepEntity).toHaveProperty('recordedBy', { id: '6f63a1a9-6cc5-4a7a-98b2-79a0460910f4' });

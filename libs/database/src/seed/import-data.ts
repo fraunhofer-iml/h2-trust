@@ -14,7 +14,6 @@ import {
   CompaniesSeed,
   DocumentsSeed,
   ElectrolysisTypesSeed,
-  EnergySourcesSeed,
   HydrogenProductionUnitsSeed,
   HydrogenStorageUnitsSeed,
   PowerAccessApprovalsSeed,
@@ -108,11 +107,6 @@ export async function seedDatabase() {
       name: 'document',
       records: DocumentsSeed,
       createRecord: async (data: any) => await prisma.document.create({ data }),
-    },
-    {
-      name: 'energySource',
-      records: EnergySourcesSeed,
-      createRecord: async (data: any) => await prisma.energySource.create({ data }),
     },
     {
       name: 'powerAccessApproval',

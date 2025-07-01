@@ -18,8 +18,10 @@ import { ProductionUtils } from './utils/production.utils';
 interface CreateProcessStepsParams {
   accountingPeriodInSeconds: number;
   processType: ProcessType;
+  batchActivity: boolean;
   batchAmount: number;
-  batchType: keyof typeof BatchTypeDbEnum;
+  batchQuality: string;
+  batchType: BatchTypeDbEnum;
   batchOwner: string;
   recordedBy: string;
   executedBy: string;
@@ -47,11 +49,13 @@ export class ProductionService {
     this.hydrogenAccountingPeriodInSeconds = configuration.hydrogenAccountingPeriodInSeconds;
   }
 
-  async createProduction(dto: CreateProductionDto): Promise<ProcessStepEntity[]> {
+  async createProduction(dto: CreateProductionDto, hydrogenColor: string): Promise<ProcessStepEntity[]> {
     const powerProductionProcessSteps: ProcessStepEntity[] = await this.createProcessSteps(dto, {
       accountingPeriodInSeconds: this.powerAccountingPeriodInSeconds,
       processType: ProcessType.POWER_PRODUCTION,
+      batchActivity: false,
       batchAmount: dto.powerAmountKwh,
+      batchQuality: '{}',
       batchType: BatchTypeDbEnum.POWER,
       batchOwner: ProductionService.POWER_COMPANY_ID,
       recordedBy: ProductionService.POWER_USER_ID,
@@ -62,7 +66,9 @@ export class ProductionService {
     const hydrogenProductionProcessSteps: ProcessStepEntity[] = await this.createProcessSteps(dto, {
       accountingPeriodInSeconds: this.hydrogenAccountingPeriodInSeconds,
       processType: ProcessType.HYDROGEN_PRODUCTION,
+      batchActivity: true,
       batchAmount: dto.hydrogenAmountKg,
+      batchQuality: JSON.stringify({ color: hydrogenColor }),
       batchType: BatchTypeDbEnum.HYDROGEN,
       batchOwner: ProductionService.HYDROGEN_COMPANY_ID,
       recordedBy: ProductionService.HYDROGEN_USER_ID,
@@ -123,8 +129,9 @@ export class ProductionService {
           endedAt,
           params.processType,
           {
+            active: params.batchActivity,
             amount: amountPerPeriod,
-            quality: '{}',
+            quality: params.batchQuality,
             type: params.batchType,
             owner: { id: params.batchOwner } as CompanyEntity,
           } as BatchEntity,

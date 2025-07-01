@@ -15,4 +15,10 @@ export const UsersSeed = <User[]>[
     email: 'emil@hydrogen.de',
     companyId: getElementOrThrowError(CompaniesSeed, 1, 'Company').id,
   },
+  {
+    id: 'f2872c58-ff19-4079-ad53-e04cd95b5a4a',
+    name: 'Nick Hydrogen',
+    email: 'nick@hydrogen.de',
+    companyId: getElementOrThrowError(CompaniesSeed, 1, 'Company').id,
+  },
 ];

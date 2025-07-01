@@ -11,7 +11,7 @@ export const HydrogenStorageUnitDbTypeMock = <HydrogenStorageUnitDbType[]>[
       hydrogenProductionUnits: [
         {
           ...HydrogenProductionUnitsSeed[0],
-          generalInfo: UnitsSeed[1],
+          generalInfo: UnitsSeed[4],
         },
       ],
     },

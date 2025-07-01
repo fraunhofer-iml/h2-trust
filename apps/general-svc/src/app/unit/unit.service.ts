@@ -9,21 +9,21 @@ import { UnitRepository } from '@h2-trust/database';
 
 @Injectable()
 export class UnitService {
-  constructor(private readonly repository: UnitRepository) {}
+  constructor(private readonly unitRepository: UnitRepository) {}
 
   async readUnit(id: string): Promise<UnitEntity> {
-    return this.repository.findUnitById(id);
+    return this.unitRepository.findUnitById(id);
   }
 
   async readPowerProductionUnits(companyId: string): Promise<PowerProductionUnitEntity[]> {
-    return this.repository.findPowerProductionUnitsByCompanyId(companyId);
+    return this.unitRepository.findPowerProductionUnitsByCompanyId(companyId);
   }
 
   async readHydrogenProductionUnits(companyId: string): Promise<HydrogenProductionUnitEntity[]> {
-    return this.repository.findHydrogenProductionUnitsByCompanyId(companyId);
+    return this.unitRepository.findHydrogenProductionUnitsByCompanyId(companyId);
   }
 
   async readHydrogenStorageUnits(companyId: string): Promise<HydrogenStorageUnitEntity[]> {
-    return this.repository.findHydrogenStorageUnitsByCompanyId(companyId);
+    return this.unitRepository.findHydrogenStorageUnitsByCompanyId(companyId);
   }
 }
