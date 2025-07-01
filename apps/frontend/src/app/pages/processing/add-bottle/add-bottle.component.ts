@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -42,7 +42,7 @@ import { UploadFormComponent } from '../upload-form/upload-form.component';
   templateUrl: './add-bottle.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddBottleComponent {
+export class AddBottleComponent implements OnInit {
   ERROR_MESSAGES = ERROR_MESSAGES;
 
   selectedValue = '';
@@ -63,6 +63,13 @@ export class AddBottleComponent {
     private readonly companiesService: CompaniesService,
     private readonly processService: ProcessingService,
   ) {}
+
+  ngOnInit() {
+    this.bottleFormGroup.controls['amount']?.valueChanges.subscribe((amount) => {
+      if (amount > this.bottleFormGroup.controls['storageUnit']?.value.filling)
+        this.bottleFormGroup.controls['storageUnit']?.reset();
+    });
+  }
 
   hydrogenStorageQuery = injectQuery(() => ({
     queryKey: ['h2-storage'],

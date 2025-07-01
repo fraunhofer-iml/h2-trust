@@ -1,12 +1,12 @@
-<div class="flex flex-col gap-4 min-w-min p-6">
-  <h3 class="font-semibold text-gray-700">Add Production Data</h3>
+<div class="flex min-w-min flex-col gap-4 p-6">
+  <h3 class="font-semibold text-gray-700">Add Production</h3>
 
   <div class="grid grid-cols-2 gap-x-2 gap-y-4" [formGroup]="form">
     <mat-form-field appearance="outline" class="col-span-2">
       <mat-label>Hydrogen Production Unit</mat-label>
       <mat-select formControlName="hydrogenProductionUnit">
         @for (unit of hydrogenProductionQuery.data(); track unit) {
-        <mat-option [value]="unit">{{ unit.name }}</mat-option>
+          <mat-option [value]="unit">{{ unit.name }}</mat-option>
         }
       </mat-select>
     </mat-form-field>
@@ -14,40 +14,72 @@
       <mat-label>Power Production Unit</mat-label>
       <mat-select formControlName="powerProductionUnit">
         @for (approval of approvalsQuery.data(); track approval) {
-        <mat-option [value]="approval.powerProductionUnit"
-          >{{ approval.powerProducer.name }} | {{ approval.powerProductionUnit.name }}</mat-option
-        >
+          <mat-option [value]="approval.powerProductionUnit"
+            >{{ approval.powerProducer.name }} | {{ approval.powerProductionUnit.name }}</mat-option
+          >
         }
       </mat-select>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>Start Date</mat-label>
-      <input matInput [matDatepicker]="startDatepicker" formControlName="productionStartedAt" />
+      <input
+        matInput
+        [matDatepicker]="startDatepicker"
+        (dateChange)="updateDate($event.value, this.form.controls.productionStartedAt)"
+        required
+        [max]="today"
+        [value]="form.controls.productionStartedAt.value"
+      />
       <mat-datepicker #startDatepicker />
       <mat-datepicker-toggle [for]="startDatepicker" matSuffix />
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>Start Time</mat-label>
-      <input matInput [matTimepicker]="startTimepicker" formControlName="productionStartedAt" />
-      <mat-timepicker #startTimepicker />
+      <input
+        matInput
+        [matTimepicker]="startTimepicker"
+        required
+        [value]="form.controls.productionStartedAt.value"
+        (valueChange)="updateTime($event, form.controls.productionStartedAt)"
+      />
+      <mat-timepicker #startTimepicker interval="15min" />
       <mat-timepicker-toggle [for]="startTimepicker" matSuffix />
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>End Date</mat-label>
-      <input matInput [matDatepicker]="endDatepicker" formControlName="productionEndedAt" />
+      <input
+        matInput
+        [matDatepicker]="endDatepicker"
+        (dateChange)="updateDate($event.value, form.controls.productionEndedAt)"
+        required
+        [max]="today.toLocaleTimeString()"
+        [value]="form.controls.productionEndedAt.value"
+      />
       <mat-datepicker #endDatepicker />
       <mat-datepicker-toggle [for]="endDatepicker" matSuffix />
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>End Time</mat-label>
-      <input matInput [matTimepicker]="endTimepicker" formControlName="productionEndedAt" />
-      <mat-timepicker #endTimepicker />
+      <input
+        matInput
+        [matTimepicker]="endTimepicker"
+        required
+        [value]="form.controls.productionEndedAt.value"
+        (valueChange)="updateTime($event, form.controls.productionEndedAt)"
+      />
+      <mat-timepicker #endTimepicker interval="15min" />
       <mat-timepicker-toggle [for]="endTimepicker" matSuffix />
     </mat-form-field>
+
+    @if (isTimePeriodInvalid) {
+      <div class="col-span-2 flex flex-row items-center gap-2 text-sm text-red-700">
+        <span class="material-symbols-outlined">error</span> The start of the specified period must be before the end.
+      </div>
+    }
 
     <mat-form-field appearance="outline">
       <mat-label>Hydrogen Amount (kg)</mat-label>
@@ -61,7 +93,7 @@
   </div>
 
   @if (mutation.isError()) {
-  <app-error-card [message]="ERROR_MESSAGES.createProductionFailed"></app-error-card>
+    <app-error-card [message]="mutation.error().message"></app-error-card>
   }
 
   <div class="flex justify-end gap-2">

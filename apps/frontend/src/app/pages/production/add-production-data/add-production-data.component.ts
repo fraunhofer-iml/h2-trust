@@ -19,7 +19,6 @@ import {
   PowerProductionOverviewDto,
 } from '@h2-trust/api';
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
-import { ERROR_MESSAGES } from '../../../shared/constants/error.messages';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { PowerAccessApprovalService } from '../../../shared/services/power-access-approvals/power-access-approvals.service';
 import { ProductionService } from '../../../shared/services/production/production.service';
@@ -46,8 +45,6 @@ import { UnitsService } from '../../../shared/services/units/units.service';
   templateUrl: './add-production-data.component.html',
 })
 export class AddProductionDataComponent {
-  ERROR_MESSAGES = ERROR_MESSAGES;
-
   form = new FormGroup<{
     productionStartedAt: FormControl<Date | null>;
     productionEndedAt: FormControl<Date | null>;
@@ -81,12 +78,19 @@ export class AddProductionDataComponent {
     },
   }));
 
+  today = new Date();
+  isTimePeriodInvalid = false;
+
   constructor(
     public dialogRef: MatDialogRef<AddProductionDataComponent>,
     private readonly unitsService: UnitsService,
     private readonly powerAccessApprovalsService: PowerAccessApprovalService,
     private readonly productionService: ProductionService,
-  ) {}
+  ) {
+    const minutes = new Date().getMinutes();
+    this.form.controls.productionEndedAt.value?.setMinutes(minutes + 15 - (minutes % 15), 0, 0);
+    this.form.controls.productionStartedAt.value?.setMinutes(minutes - (minutes % 15), 0, 0);
+  }
 
   submit() {
     const dto: CreateProductionDto = {
@@ -98,5 +102,24 @@ export class AddProductionDataComponent {
       powerAmountKwh: this.form.value.powerAmountKwh ?? 0,
     };
     this.mutation.mutate(dto);
+  }
+
+  private validateDate() {
+    const end = this.form.controls.productionEndedAt.value;
+    const start = this.form.controls.productionStartedAt.value;
+    if (start && end) this.isTimePeriodInvalid = end <= start;
+  }
+
+  updateDate(val: Date, formControl: FormControl<Date | null>) {
+    const current = formControl.value ?? new Date();
+    const updated = new Date(val);
+    updated.setHours(current.getHours(), current.getMinutes());
+    formControl.patchValue(updated);
+    this.validateDate();
+  }
+
+  updateTime(event: Date, formControl: FormControl<Date | null>) {
+    formControl.patchValue(event);
+    this.validateDate();
   }
 }

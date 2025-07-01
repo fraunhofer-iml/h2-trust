@@ -67,7 +67,7 @@
   </div>
 
   @if (mutation.isError()) {
-    <app-error-card [message]="ERROR_MESSAGES.addBottleFailed"></app-error-card>
+    <app-error-card [message]="mutation.error().message"></app-error-card>
   }
 
   <div class="flex justify-end gap-2">
