@@ -8,11 +8,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ProcessingOverviewDto } from '@h2-trust/api';
 import { H2ColorChipComponent } from '../../layout/h2-color-chip/h2-color-chip.component';
 import { ProcessingService } from '../../shared/services/processing/processing.service';
-import { processSet } from '../hydrogen-assets/config/table-set';
+import { processSet } from '../units/config/table-set';
 import { AddBottleComponent } from './add-bottle/add-bottle.component';
 
 @Component({
@@ -27,6 +28,7 @@ import { AddBottleComponent } from './add-bottle/add-bottle.component';
     MatIconModule,
     MatDialogModule,
     MatSortModule,
+    RouterModule,
     H2ColorChipComponent,
   ],
   providers: [ProcessingService],

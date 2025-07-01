@@ -1,0 +1,38 @@
+<div class="flex flex-col gap-4 p-4">
+  <div class="flex flex-row items-center gap-2 text-lg text-neutral-500">
+    <a routerLink="/processing" class="cursor-pointer hover:underline">Processing</a>
+    <span class="material-symbols-outlined"> keyboard_arrow_right </span>
+    <span> {{ id() }}</span>
+  </div>
+
+  <div class="grid grid-cols-3 gap-2">
+    <div class="col-span-2 rounded-lg bg-white p-4">
+      <h3 class="mb-4 font-semibold text-neutral-500">General Information</h3>
+
+      @if (batchQuery.isSuccess()) {
+        <div class="flex flex-row">
+          <div class="flex flex-1 flex-col gap-4">
+            <div class="flex flex-col text-sm">
+              <span class="text-sm text-neutral-400">Batch Id</span><span>{{ batchQuery.data().id }}</span>
+            </div>
+            <div class="flex flex-col text-sm">
+              <span class="text-sm text-neutral-400">Date</span><span>{{ batchQuery.data().filledAt | date }}</span>
+            </div>
+            <div class="flex flex-col text-sm">
+              <span class="text-sm text-neutral-400">Producer</span><span>{{ batchQuery.data().producer }}</span>
+            </div>
+            <div class="flex flex-col text-sm">
+              <span class="text-sm text-neutral-400">Amount</span><span>{{ batchQuery.data().filledAmount }} kg</span>
+            </div>
+          </div>
+          <app-h2-composition-chart
+            class="flex-1"
+            [chartData]="batchQuery.data().hydrogenComposition"
+          ></app-h2-composition-chart>
+        </div>
+      } @else {
+        <span class="material-symbols-outlined animate-spin text-neutral-400"> progress_activity </span>
+      }
+    </div>
+  </div>
+</div>

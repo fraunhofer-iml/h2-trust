@@ -14,13 +14,13 @@ export class H2ColorChipComponent {
   getChipColor(): string {
     switch (this.color()) {
       case 'GREEN':
-        return 'text-h2-green bg-h2-green/20 border-h2-green/10';
+        return 'text-h2-green-text bg-h2-green/20 border-h2-green/10';
       case 'PINK':
-        return 'text-h2-pink bg-h2-pink/20 border-h2-pink/10';
+        return 'text-h2-pink-text bg-h2-pink/20 border-h2-pink/10';
       case 'ORANGE':
-        return 'text-h2-orange bg-h2-orange/20 border-h2-orange/10';
+        return 'text-h2-orange-text bg-h2-orange/20 border-h2-orange/10';
       case 'YELLOW':
-        return 'text-h2-yellow bg-h2-yellow/20 border-h2-yellow/10';
+        return 'text-h2-yellow-text bg-h2-yellow/20 border-h2-yellow/10';
       default:
         return ' text-neutral-600 bg-neutral-600/20 border-neutral-600/10';
     }
@@ -29,13 +29,13 @@ export class H2ColorChipComponent {
   getDotColor() {
     switch (this.color()) {
       case 'GREEN':
-        return 'bg-h2-green';
+        return 'bg-h2-green-text';
       case 'PINK':
-        return 'bg-h2-pink';
+        return 'bg-h2-pink-text';
       case 'ORANGE':
-        return 'bg-h2-orange';
+        return 'bg-h2-orange-text';
       case 'YELLOW':
-        return 'bg-h2-yellow';
+        return 'bg-h2-yellow-text';
       default:
         return 'bg-neutral-600';
     }

@@ -24,6 +24,7 @@ import {
 import {
   BottlingDto,
   BottlingDtoMock,
+  ColorCompositionMock,
   ProcessingOverviewDto,
   ProcessStepDto,
   ProcessType,
@@ -98,7 +99,8 @@ export class ProcessStepController {
     example: 'process-step-hydrogen-bottling-1',
   })
   async readProcessStep(@Param('id') processStepId: string): Promise<ProductPassDto> {
-    return this.service.readProcessStep(processStepId);
+    const processStep: ProductPassDto = await this.service.readProcessStep(processStepId);
+    return { ...processStep, hydrogenComposition: ColorCompositionMock };
   }
 
   @Post()

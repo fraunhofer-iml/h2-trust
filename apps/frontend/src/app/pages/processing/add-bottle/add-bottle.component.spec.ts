@@ -1,37 +1,39 @@
 import { KeycloakService } from 'keycloak-angular';
-import { KeycloakProfile } from 'keycloak-js';
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogRef } from '@angular/material/dialog';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideQueryClient, QueryClient } from '@tanstack/angular-query-experimental';
-import { AuthService } from '../../shared/services/auth/auth.service';
-import { UnitsService } from '../../shared/services/units/units.service';
-import { UsersService } from '../../shared/services/users/users.service';
-import { AccountOverviewComponent } from './account-overview.component';
+import { AuthService } from '../../../shared/services/auth/auth.service';
+import { UnitsService } from '../../../shared/services/units/units.service';
+import { UsersService } from '../../../shared/services/users/users.service';
+import { AddBottleComponent } from './add-bottle.component';
 
-describe('AccountOverviewComponent', () => {
-  let component: AccountOverviewComponent;
-  let fixture: ComponentFixture<AccountOverviewComponent>;
+describe('AddBottleComponent', () => {
+  let component: AddBottleComponent;
+  let fixture: ComponentFixture<AddBottleComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AccountOverviewComponent],
+      imports: [AddBottleComponent],
       providers: [
-        provideHttpClient(),
+        { provide: MatDialogRef, useValue: {} },
         AuthService,
         UnitsService,
         UsersService,
+        provideHttpClient(),
         {
           provide: KeycloakService,
           useValue: {
             getUserRoles: () => [],
-            loadUserProfile: () => ({}) as KeycloakProfile,
           },
         },
         provideQueryClient(new QueryClient()),
+        provideAnimations(),
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AccountOverviewComponent);
+    fixture = TestBed.createComponent(AddBottleComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

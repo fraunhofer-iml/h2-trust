@@ -6,8 +6,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { AuthService } from '../../shared/services/auth/auth.service';
-import { UsersService } from '../../shared/services/users/users.service';
+import { AuthService } from '../../../shared/services/auth/auth.service';
+import { UsersService } from '../../../shared/services/users/users.service';
 
 @Component({
   selector: 'app-account-overview',

@@ -69,3 +69,8 @@ body {
 .mat-mdc-dialog-content {
   overflow: scroll !important;
 }
+
+.mat-mdc-row:hover {
+  background-color: #8686c018;
+  cursor: pointer;
+}

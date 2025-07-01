@@ -4,11 +4,12 @@ import { ApplicationConfig, inject, LOCALE_ID, provideAppInitializer, provideZon
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideTanStackQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { appRoutes } from './app.routes';
 import { initializeKeycloak } from './init/keycloak-initializer';
 import { AuthService } from './shared/services/auth/auth.service';
+import { ProcessingService } from './shared/services/processing/processing.service';
 import { UnitsService } from './shared/services/units/units.service';
 import { UsersService } from './shared/services/users/users.service';
 
@@ -30,6 +31,7 @@ export const appConfig: ApplicationConfig = {
     AuthService,
     UsersService,
     UnitsService,
+    ProcessingService,
     { provide: LOCALE_ID, useValue: 'de-DE' },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
@@ -40,8 +42,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptorsFromDi()),
     provideClientHydration(withEventReplay()),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(appRoutes),
-    provideHttpClient(),
+    provideRouter(appRoutes, withComponentInputBinding()),
     provideTanStackQuery(new QueryClient()),
   ],
 };

@@ -1,37 +1,37 @@
 import { KeycloakService } from 'keycloak-angular';
+import { KeycloakProfile } from 'keycloak-js';
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogRef } from '@angular/material/dialog';
 import { provideQueryClient, QueryClient } from '@tanstack/angular-query-experimental';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { UsersService } from '../../../shared/services/users/users.service';
-import { AddProductionDataComponent } from './add-production-data.component';
+import { AccountOverviewComponent } from './account-overview.component';
 
-describe('AddProductionDataComponent', () => {
-  let component: AddProductionDataComponent;
-  let fixture: ComponentFixture<AddProductionDataComponent>;
+describe('AccountOverviewComponent', () => {
+  let component: AccountOverviewComponent;
+  let fixture: ComponentFixture<AccountOverviewComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddProductionDataComponent],
+      imports: [AccountOverviewComponent],
       providers: [
-        { provide: MatDialogRef, useValue: {} },
+        provideHttpClient(),
         AuthService,
         UnitsService,
         UsersService,
-        provideHttpClient(),
         {
           provide: KeycloakService,
           useValue: {
             getUserRoles: () => [],
+            loadUserProfile: () => ({}) as KeycloakProfile,
           },
         },
         provideQueryClient(new QueryClient()),
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AddProductionDataComponent);
+    fixture = TestBed.createComponent(AccountOverviewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
