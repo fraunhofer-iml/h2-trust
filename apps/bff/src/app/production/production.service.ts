@@ -3,7 +3,7 @@ import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerException,
-  BrokerQueues,
+  BrokerQueues, HydrogenProductionUnitEntity,
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ProductionMessagePatterns,
@@ -19,9 +19,10 @@ export class ProductionService {
 
   async createProduction(dto: CreateProductionDto): Promise<ProductionOverviewDto[]> {
     const hydrogenColor = await this.fetchHydrogenColor(dto.powerProductionUnitId);
+    const hydrogenStorageUnitId = await this.fetchHydrogenStorageUnitId(dto.hydrogenProductionUnitId);
 
     const processSteps: ProcessStepEntity[] = await firstValueFrom(
-      this.processSvc.send(ProductionMessagePatterns.CREATE, { dto, hydrogenColor })
+      this.processSvc.send(ProductionMessagePatterns.CREATE, { dto, hydrogenColor, hydrogenStorageUnitId })
     );
 
     return processSteps
@@ -44,5 +45,12 @@ export class ProductionService {
     }
 
     return hydrogenColor;
+  }
+
+  private async fetchHydrogenStorageUnitId(hydrogenProductionUnitId: string): Promise<string | undefined> {
+    const hydrogenProductionUnit: HydrogenProductionUnitEntity = await firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.READ, { id: hydrogenProductionUnitId }),
+    );
+    return hydrogenProductionUnit.hydrogenStorageUnit?.id;
   }
 }

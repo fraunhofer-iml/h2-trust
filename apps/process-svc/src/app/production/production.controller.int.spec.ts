@@ -61,7 +61,8 @@ describe('ProductionController', () => {
 
     const actualResponse = await controller.createProduction({
       dto: dto,
-      hydrogenColor: DERIVED_HYDROGEN_COLOR
+      hydrogenColor: DERIVED_HYDROGEN_COLOR,
+      hydrogenStorageUnitId: 'hydrogen-storage-unit-1',
     });
 
     expect(batchServiceSendMock).toHaveBeenCalledTimes(6); // 3 Power + 3 Hydrogen
@@ -81,6 +82,7 @@ describe('ProductionController', () => {
         expect(processStepEntity.batch).toHaveProperty('quality', '{}');
         expect(processStepEntity.batch).toHaveProperty('type', BatchTypeDbEnum.POWER);
         expect(processStepEntity.batch).toHaveProperty('owner', { id: 'company-power-1' });
+        expect(processStepEntity.batch).toHaveProperty('hydrogenStorageUnitId', null);
         expect(processStepEntity).toHaveProperty('recordedBy', { id: 'user-power-1' });
         expect(processStepEntity).toHaveProperty('executedBy', { id: 'unit-power-1' });
       });
@@ -96,6 +98,7 @@ describe('ProductionController', () => {
         expect(processStepEntity.batch).toHaveProperty('quality', JSON.stringify({color: DERIVED_HYDROGEN_COLOR,}));
         expect(processStepEntity.batch).toHaveProperty('type', BatchTypeDbEnum.HYDROGEN);
         expect(processStepEntity.batch).toHaveProperty('owner', { id: 'company-hydrogen-1' });
+        expect(processStepEntity.batch).toHaveProperty('hydrogenStorageUnitId', 'hydrogen-storage-unit-1');
         expect(processStepEntity).toHaveProperty('recordedBy', { id: '6f63a1a9-6cc5-4a7a-98b2-79a0460910f4' });
         expect(processStepEntity).toHaveProperty('executedBy', { id: 'unit-hydrogen-1' });
       });

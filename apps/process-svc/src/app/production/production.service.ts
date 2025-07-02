@@ -23,6 +23,7 @@ interface CreateProcessStepsParams {
   batchQuality: string;
   batchType: BatchTypeDbEnum;
   batchOwner: string;
+  hydrogenStorageUnitId: string;
   recordedBy: string;
   executedBy: string;
   predecessors: string[];
@@ -49,7 +50,11 @@ export class ProductionService {
     this.hydrogenAccountingPeriodInSeconds = configuration.hydrogenAccountingPeriodInSeconds;
   }
 
-  async createProduction(dto: CreateProductionDto, hydrogenColor: string): Promise<ProcessStepEntity[]> {
+  async createProduction(
+    dto: CreateProductionDto,
+    hydrogenColor: string,
+    hydrogenStorageUnitId: string,
+  ): Promise<ProcessStepEntity[]> {
     const powerProductionProcessSteps: ProcessStepEntity[] = await this.createProcessSteps(dto, {
       accountingPeriodInSeconds: this.powerAccountingPeriodInSeconds,
       processType: ProcessType.POWER_PRODUCTION,
@@ -58,6 +63,7 @@ export class ProductionService {
       batchQuality: '{}',
       batchType: BatchTypeDbEnum.POWER,
       batchOwner: ProductionService.POWER_COMPANY_ID,
+      hydrogenStorageUnitId: null,
       recordedBy: ProductionService.POWER_USER_ID,
       executedBy: dto.powerProductionUnitId,
       predecessors: [],
@@ -71,6 +77,7 @@ export class ProductionService {
       batchQuality: JSON.stringify({ color: hydrogenColor }),
       batchType: BatchTypeDbEnum.HYDROGEN,
       batchOwner: ProductionService.HYDROGEN_COMPANY_ID,
+      hydrogenStorageUnitId: hydrogenStorageUnitId,
       recordedBy: ProductionService.HYDROGEN_USER_ID,
       executedBy: dto.hydrogenProductionUnitId,
       predecessors: powerProductionProcessSteps.map((step) => step.batch.id),
@@ -134,6 +141,7 @@ export class ProductionService {
             quality: params.batchQuality,
             type: params.batchType,
             owner: { id: params.batchOwner } as CompanyEntity,
+            hydrogenStorageUnitId: params.hydrogenStorageUnitId,
           } as BatchEntity,
           { id: params.recordedBy } as UserEntity,
           { id: params.executedBy } as BaseUnitEntity,

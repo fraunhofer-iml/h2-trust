@@ -9,7 +9,9 @@ export class ProductionController {
   constructor(private readonly service: ProductionService) {}
 
   @MessagePattern(ProductionMessagePatterns.CREATE)
-  async createProduction(@Payload() payload: { dto: CreateProductionDto, hydrogenColor: string }): Promise<ProcessStepEntity[]> {
-    return this.service.createProduction(payload.dto, payload.hydrogenColor);
+  async createProduction(
+    @Payload() payload: { dto: CreateProductionDto; hydrogenColor: string; hydrogenStorageUnitId: string },
+  ): Promise<ProcessStepEntity[]> {
+    return this.service.createProduction(payload.dto, payload.hydrogenColor, payload.hydrogenStorageUnitId);
   }
 }
