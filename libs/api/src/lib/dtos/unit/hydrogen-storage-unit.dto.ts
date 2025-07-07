@@ -1,10 +1,10 @@
 import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
-import { FillingBatchDto } from './filling-batch.dto';
+import { FillingDto } from './filling.dto';
 
 export class HydrogenStorageUnitDto extends BaseUnitDto {
   capacity: number;
-  filling: FillingBatchDto[];
+  filling: FillingDto[];
   hydrogenProductionUnits: {
     id: string;
     name: string;
@@ -29,7 +29,7 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
       }[];
     },
     capacity: number,
-    filling: FillingBatchDto[],
+    filling: FillingDto[],
     hydrogenProductionUnits: {
       id: string;
       name: string;

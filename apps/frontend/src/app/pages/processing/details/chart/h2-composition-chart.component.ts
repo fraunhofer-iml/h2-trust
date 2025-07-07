@@ -3,7 +3,7 @@ import * as echarts from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
-import { ColorPortionDto } from '@h2-trust/api';
+import { HydrogenCompositionDto } from '@h2-trust/api';
 
 @Component({
   selector: 'app-h2-composition-chart',
@@ -12,7 +12,7 @@ import { ColorPortionDto } from '@h2-trust/api';
   templateUrl: './h2-composition-chart.component.html',
 })
 export class H2CompositionChartComponent {
-  chartData = input<ColorPortionDto[]>();
+  chartData = input<HydrogenCompositionDto[]>();
 
   chartOption$ = computed(() => this.getOption(this.chartData() ?? []));
 
@@ -23,7 +23,7 @@ export class H2CompositionChartComponent {
     ['YELLOW', '#F0D354'],
   ]);
 
-  private getOption(chartData: ColorPortionDto[]): EChartsOption {
+  private getOption(chartData: HydrogenCompositionDto[]): EChartsOption {
     return {
       series: [
         {

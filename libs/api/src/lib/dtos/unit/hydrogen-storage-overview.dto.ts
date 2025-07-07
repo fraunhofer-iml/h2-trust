@@ -1,10 +1,13 @@
 import { HydrogenStorageUnitEntity } from '@h2-trust/amqp';
+import { HydrogenCompositionDto } from '../process-step';
+
 
 export class HydrogenStorageOverviewDto {
   id: string;
   name: string;
   capacity: number;
   filling: number;
+  hydrogenCompositions: HydrogenCompositionDto[];
   hydrogenProductionUnit: {
     id: string;
     name: string;
@@ -15,6 +18,7 @@ export class HydrogenStorageOverviewDto {
     name: string,
     capacity: number,
     filling: number,
+    hydrogenCompositions: HydrogenCompositionDto[],
     hydrogenProductionUnit: {
       id: string;
       name: string;
@@ -24,6 +28,7 @@ export class HydrogenStorageOverviewDto {
     this.name = name;
     this.capacity = capacity;
     this.filling = filling;
+    this.hydrogenCompositions = hydrogenCompositions;
     this.hydrogenProductionUnit = hydrogenProductionUnit;
   }
 
@@ -33,12 +38,20 @@ export class HydrogenStorageOverviewDto {
       name: unit.name,
       capacity: unit.capacity,
       filling: HydrogenStorageOverviewDto.mapFilling(unit),
+      hydrogenCompositions: HydrogenStorageOverviewDto.mapHydrogenCompositions(unit),
       hydrogenProductionUnit: HydrogenStorageOverviewDto.mapHydrogenProductionUnit(unit),
     };
   }
 
   private static mapFilling(unit: HydrogenStorageUnitEntity): number {
     return unit.filling?.map((filling) => filling.amount).reduce((total, value) => total + value, 0) ?? 0;
+  }
+
+  private static mapHydrogenCompositions(unit: HydrogenStorageUnitEntity): HydrogenCompositionDto[] {
+    return unit.filling.map((batch) => ({
+      color: batch.color,
+      amount: batch.amount,
+    }));
   }
 
   private static mapHydrogenProductionUnit(unit: HydrogenStorageUnitEntity) {

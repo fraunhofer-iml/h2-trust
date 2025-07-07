@@ -1,5 +1,5 @@
 export * from './base-unit.dto';
-export * from './filling-batch.dto';
+export * from './filling.dto';
 export * from './hydrogen-production-overview.dto';
 export * from './hydrogen-production-unit.dto';
 export * from './hydrogen-storage-overview.dto';

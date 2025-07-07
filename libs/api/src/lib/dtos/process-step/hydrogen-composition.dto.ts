@@ -1,4 +1,4 @@
-export class ColorPortionDto {
+export class HydrogenCompositionDto {
   color: string;
   amount: number;
 

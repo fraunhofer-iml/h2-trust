@@ -1,12 +1,15 @@
+import { HttpStatus } from '@nestjs/common';
 import { Batch } from '@prisma/client';
+import { parseColor } from '@h2-trust/api';
 import { HydrogenStorageUnitDbType } from '@h2-trust/database';
+import { BrokerException } from '../../broker/broker-exception';
 import { AddressEntity } from '../address';
 import { BaseUnitEntity } from './base-unit.entity';
-import { FillingBatchEntity } from './filling-batch.entity';
+import { FillingEntity } from './filling.entity';
 
 export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   capacity: number;
-  filling: FillingBatchEntity[];
+  filling: FillingEntity[];
   hydrogenProductionUnits: {
     id: string;
     name: string;
@@ -28,7 +31,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string; powerProducerName: string }[];
     } | null,
     capacity: number,
-    filling: FillingBatchEntity[],
+    filling: FillingEntity[],
     hydrogenProductionUnits: {
       id: string;
       name: string;
@@ -65,15 +68,24 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     return unit.hydrogenStorageUnit?.capacity?.toNumber() ?? 0;
   }
 
-  private static mapFilling(unit: HydrogenStorageUnitDbType): FillingBatchEntity[] {
+  private static mapFilling(unit: HydrogenStorageUnitDbType): FillingEntity[] {
     return (
       unit.hydrogenStorageUnit?.filling?.map((batch: Batch) => {
         return {
           id: batch.id,
+          color: this.getColor(batch.quality),
           amount: batch.amount?.toNumber() ?? 0,
         };
       }) ?? []
     );
+  }
+
+  private static getColor(quality: string) {
+    const parsedColor = parseColor(quality);
+    if (!parsedColor) {
+      throw new BrokerException(`Invalid quality: ${quality}`, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return parsedColor;
   }
 
   private static mapHydrogenProductionUnits(unit: HydrogenStorageUnitDbType) {

@@ -1,10 +1,10 @@
 import { ProcessStepEntity } from '@h2-trust/amqp';
-import { ColorPortionDto } from './color-portion.dto';
+import { HydrogenCompositionDto } from './hydrogen-composition.dto';
 import { ProcessingOverviewDto } from './processing-overview.dto';
 
 export class ProductPassDto extends ProcessingOverviewDto {
   producer?: string;
-  hydrogenComposition: ColorPortionDto[];
+  hydrogenComposition: HydrogenCompositionDto[];
 
   constructor(
     id: string,
@@ -13,7 +13,7 @@ export class ProductPassDto extends ProcessingOverviewDto {
     filledAmount: number,
     color: string,
     producer: string,
-    hydrogenComposition: ColorPortionDto[],
+    hydrogenComposition: HydrogenCompositionDto[],
   ) {
     super(id, timestamp, owner, filledAmount, color);
     this.producer = producer;
