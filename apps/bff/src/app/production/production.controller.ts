@@ -1,7 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
-import { CreateProductionDto, ProductionOverviewDto } from '@h2-trust/api';
+import { CreateProductionDto, ProductionOverviewDto, type AuthenticatedKCUser, } from '@h2-trust/api';
 import { ProductionService } from './production.service';
+import { AuthenticatedUser } from 'nest-keycloak-connect';
 
 @Controller('productions')
 export class ProductionController {
@@ -24,7 +25,7 @@ export class ProductionController {
       },
     },
   })
-  async createProduction(@Body() dto: CreateProductionDto): Promise<ProductionOverviewDto[]> {
-    return this.service.createProduction(dto);
+  async createProduction(@Body() dto: CreateProductionDto, @AuthenticatedUser() user: AuthenticatedKCUser): Promise<ProductionOverviewDto[]> {
+    return this.service.createProduction(dto, user.sub);
   }
 }

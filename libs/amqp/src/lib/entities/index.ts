@@ -5,3 +5,4 @@ export * from './process-step';
 export * from './batch';
 export * from './document';
 export * from './address';
+export * from './production';

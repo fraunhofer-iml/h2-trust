@@ -3,7 +3,7 @@ import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerException,
-  BrokerQueues, HydrogenProductionUnitEntity,
+  BrokerQueues, CreateProductionEntity, HydrogenProductionUnitEntity,
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ProductionMessagePatterns,
@@ -17,12 +17,23 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy) { }
 
-  async createProduction(dto: CreateProductionDto): Promise<ProductionOverviewDto[]> {
+  async createProduction(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
     const hydrogenColor = await this.fetchHydrogenColor(dto.powerProductionUnitId);
     const hydrogenStorageUnitId = await this.fetchHydrogenStorageUnitId(dto.hydrogenProductionUnitId);
+    const companyIdOfPowerProductionUnit = await this.fetchCompanyOfProductionUnit(dto.powerProductionUnitId);
+    const companyIdOfHydrogenProductionUnit = await this.fetchCompanyOfProductionUnit(dto.hydrogenProductionUnitId);
+
+    const createProductionEntity = CreateProductionEntity.of(
+      dto,
+      userId,
+      hydrogenColor,
+      hydrogenStorageUnitId,
+      companyIdOfPowerProductionUnit,
+      companyIdOfHydrogenProductionUnit
+    );
 
     const processSteps: ProcessStepEntity[] = await firstValueFrom(
-      this.processSvc.send(ProductionMessagePatterns.CREATE, { dto, hydrogenColor, hydrogenStorageUnitId })
+      this.processSvc.send(ProductionMessagePatterns.CREATE, { createProductionEntity })
     );
 
     return processSteps
@@ -51,6 +62,21 @@ export class ProductionService {
     const hydrogenProductionUnit: HydrogenProductionUnitEntity = await firstValueFrom(
       this.generalService.send(UnitMessagePatterns.READ, { id: hydrogenProductionUnitId }),
     );
-    return hydrogenProductionUnit.hydrogenStorageUnit?.id;
+    return hydrogenProductionUnit.hydrogenStorageUnit.id;
+  }
+
+  private async fetchCompanyOfProductionUnit(productionUnitId: string): Promise<string> {
+    const productionUnitEntity: PowerProductionUnitEntity = await firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.READ, { id: productionUnitId }),
+    );
+
+    if (!productionUnitEntity.company) {
+      throw new BrokerException(
+        `Production Unit ${productionUnitId} does not have an associated company`,
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+
+    return productionUnitEntity.company.id;
   }
 }
