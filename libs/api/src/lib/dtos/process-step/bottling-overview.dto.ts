@@ -1,7 +1,7 @@
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { parseColor } from '../util';
 
-export class ProcessingOverviewDto {
+export class BottlingOverviewDto {
   id: string;
   filledAt: Date;
   owner?: string;
@@ -16,8 +16,8 @@ export class ProcessingOverviewDto {
     this.color = color;
   }
 
-  static fromEntity(processStep: ProcessStepEntity): ProcessingOverviewDto {
-    return <ProcessingOverviewDto>{
+  static fromEntity(processStep: ProcessStepEntity): BottlingOverviewDto {
+    return <BottlingOverviewDto>{
       id: processStep.id,
       filledAt: processStep.endedAt,
       owner: processStep.batch?.owner?.name,

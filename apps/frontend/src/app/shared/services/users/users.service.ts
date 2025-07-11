@@ -10,6 +10,6 @@ export class UsersService {
   constructor(private readonly httpClient: HttpClient) {}
 
   getUserAccountInformation(userId: string) {
-    return lastValueFrom(this.httpClient.get<UserDetailsDto>(`${BASE_URL}${ApiEndpoints.users.getUsers}/${userId}`));
+    return lastValueFrom(this.httpClient.get<UserDetailsDto>(`${BASE_URL}${ApiEndpoints.USERS}/${userId}`));
   }
 }

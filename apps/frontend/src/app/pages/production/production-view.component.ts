@@ -10,7 +10,6 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ProductionOverviewDto } from '@h2-trust/api';
 import { H2ColorChipComponent } from '../../layout/h2-color-chip/h2-color-chip.component';
 import { ProductionService } from '../../shared/services/production/production.service';
-import { productionSet } from '../units/config/table-set';
 import { AddProductionDataComponent } from './add-production-data/add-production-data.component';
 
 @Component({
@@ -30,7 +29,15 @@ import { AddProductionDataComponent } from './add-production-data/add-production
   templateUrl: './production-view.component.html',
 })
 export class ProductionViewComponent implements AfterViewInit {
-  displayedColumns = productionSet;
+  displayedColumns = [
+    'startedOn',
+    'endedOn',
+    'productionUnit',
+    'producedAmount',
+    'color',
+    'powerProducer',
+    'powerConsumed',
+  ];
   dataSource: MatTableDataSource<ProductionOverviewDto> = new MatTableDataSource<ProductionOverviewDto>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -42,7 +49,7 @@ export class ProductionViewComponent implements AfterViewInit {
   productionQuery = injectQuery(() => ({
     queryKey: ['production'],
     queryFn: async () => {
-      const data = await this.productionService.getProductionOverview();
+      const data = await this.productionService.getProductions();
       this.dataSource.data = data;
       return data;
     },

@@ -10,11 +10,10 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { ProcessingOverviewDto } from '@h2-trust/api';
-import { H2ColorChipComponent } from '../../layout/h2-color-chip/h2-color-chip.component';
-import { ProcessingService } from '../../shared/services/processing/processing.service';
-import { processSet } from '../units/config/table-set';
-import { AddBottleComponent } from './add-bottle/add-bottle.component';
+import { BottlingOverviewDto } from '@h2-trust/api';
+import { H2ColorChipComponent } from '../../../layout/h2-color-chip/h2-color-chip.component';
+import { BottlingService } from '../../../shared/services/bottling/bottling.service';
+import { AddBottleComponent } from '../add-bottle/add-bottle.component';
 
 @Component({
   selector: 'app-processing-overview',
@@ -31,26 +30,26 @@ import { AddBottleComponent } from './add-bottle/add-bottle.component';
     RouterModule,
     H2ColorChipComponent,
   ],
-  providers: [ProcessingService],
-  templateUrl: './processing-overview.component.html',
+  providers: [BottlingService],
+  templateUrl: './bottling-overview.component.html',
 })
-export class ProcessingOverviewComponent implements AfterViewInit {
-  displayedColumns = processSet;
+export class BottlingOverviewComponent implements AfterViewInit {
+  displayedColumns = ['filledAt', 'owner', 'filledAmount', 'color'];
 
-  dataSource: MatTableDataSource<ProcessingOverviewDto> = new MatTableDataSource<ProcessingOverviewDto>();
+  dataSource: MatTableDataSource<BottlingOverviewDto> = new MatTableDataSource<BottlingOverviewDto>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
-    private readonly processService: ProcessingService,
+    private readonly processService: BottlingService,
     private readonly dialog: MatDialog,
   ) {}
 
   processingQuery = injectQuery(() => ({
     queryKey: ['processing'],
     queryFn: async () => {
-      const data = await this.processService.getProcessingDataOfCompany();
+      const data = await this.processService.getBottlings();
       this.dataSource.data = data;
       return data;
     },

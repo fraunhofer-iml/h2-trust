@@ -13,7 +13,6 @@ import { PowerProductionOverviewDto } from '@h2-trust/api';
 import { AuthService } from '../../../../shared/services/auth/auth.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
 import { UsersService } from '../../../../shared/services/users/users.service';
-import { powerProductionSet } from '../../config/table-set';
 
 @Component({
   selector: 'app-power-production-table',
@@ -35,7 +34,7 @@ import { powerProductionSet } from '../../config/table-set';
   templateUrl: './power-production-table.component.html',
 })
 export class PowerProductionTableComponent implements AfterViewInit {
-  displayedColumns = powerProductionSet;
+  displayedColumns = ['name', 'ratedPower', 'typeName', 'producing'];
 
   data = input<PowerProductionOverviewDto[]>([]);
 

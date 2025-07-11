@@ -12,7 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { FileSizePipe } from '../../../shared/pipes/file-size.pipe';
+import { FileSizePipe } from '../../../../shared/pipes/file-size.pipe';
 import { UploadFormSelectType } from './types/upload-form-select.type';
 
 @Component({

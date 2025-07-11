@@ -37,6 +37,33 @@ export class ProductionUtils {
     return batchAmount / Math.max(1, numberOfAccountingPeriods);
   }
 
+
+  static calculateProductionStartDate(
+    productionStartedAtInSeconds: number,
+    accountingPeriodInSeconds: number,
+    accountingPeriodIndex: number,
+  ): Date {
+    return this.calculateProductionDate(
+      productionStartedAtInSeconds,
+      accountingPeriodInSeconds,
+      accountingPeriodIndex,
+      false,
+    );
+  }
+
+  static calculateProductionEndDate(
+    productionStartedAtInSeconds: number,
+    accountingPeriodInSeconds: number,
+    accountingPeriodIndex: number,
+  ): Date {
+    return this.calculateProductionDate(
+      productionStartedAtInSeconds,
+      accountingPeriodInSeconds,
+      accountingPeriodIndex,
+      true,
+    );
+  }
+
   static calculateProductionDate(
     productionStartedAtInSeconds: number,
     accountingPeriodInSeconds: number,

@@ -1,11 +1,11 @@
 import { Route } from '@angular/router';
 import { ProductPassComponent } from './details/product-pass.component';
-import { ProcessingOverviewComponent } from './processing-overview.component';
+import { BottlingOverviewComponent } from './overview/bottling-overview.component';
 
-export const PROCESSING_ROUTES: Route[] = [
+export const BOTTLING_ROUTES: Route[] = [
   {
     path: '',
-    component: ProcessingOverviewComponent,
+    component: BottlingOverviewComponent,
   },
   {
     path: ':id',

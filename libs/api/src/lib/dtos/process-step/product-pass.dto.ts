@@ -1,8 +1,8 @@
 import { ProcessStepEntity } from '@h2-trust/amqp';
+import { BottlingOverviewDto } from './bottling-overview.dto';
 import { HydrogenCompositionDto } from './hydrogen-composition.dto';
-import { ProcessingOverviewDto } from './processing-overview.dto';
 
-export class ProductPassDto extends ProcessingOverviewDto {
+export class ProductPassDto extends BottlingOverviewDto {
   producer?: string;
   hydrogenComposition: HydrogenCompositionDto[];
 

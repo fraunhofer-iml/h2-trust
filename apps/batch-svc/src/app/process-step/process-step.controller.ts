@@ -33,9 +33,9 @@ export class ProcessStepController {
   }
 
   @MessagePattern(ProcessStepMessagePatterns.BOTTLING)
-  async executeBottling(
-    @Payload() payload: { processStepData: ProcessStepEntity; file: Express.Multer.File },
+  async createBottling(
+    @Payload() payload: { processStepEntity: ProcessStepEntity; file: Express.Multer.File },
   ): Promise<ProcessStepEntity> {
-    return this.bottlingService.executeBottling(payload.processStepData, payload.file);
+    return this.bottlingService.createBottling(payload.processStepEntity, payload.file);
   }
 }

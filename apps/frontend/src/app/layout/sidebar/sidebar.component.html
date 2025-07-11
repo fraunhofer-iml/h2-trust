@@ -1,21 +1,18 @@
 <mat-drawer-container class="h-[100vh] !bg-neutral-200" autosize>
-  <mat-drawer mode="side" [opened]="true" [disableClose]="true" class="!rounded-none !bg-white">
+  <mat-drawer mode="side" opened disableClose class="!border-r-1 !rounded-none !border-neutral-200 !bg-neutral-50">
     <div class="flex h-full flex-col justify-between p-4">
       <div class="flex flex-col gap-2">
-        <h3 class="text-secondary-200 text-2xl font-semibold">H2 Trust</h3>
+        <h3 class="text-secondary-200 mb-4 text-2xl font-semibold">H2 Trust</h3>
 
         @for (option of sidebarOptions; track $index) {
-          <a class="" routerLink="{{ option.route }}">
-            <div
-              class="hover:bg-primary-100/20 flex w-full flex-row gap-2 rounded-xl p-4"
-              (click)="selectedIndex = $index"
-              tabindex="0"
-              role="presentation"
-              [ngClass]="selectedIndex === $index ? 'bg-primary-100/20' : ''"
-            >
-              <span class="material-symbols-outlined text-neutral-600">{{ option.icon }}</span>
-              <span class="text-neutral-600">{{ option.title }}</span>
-            </div>
+          <a
+            class="flex w-full flex-row gap-2 rounded-lg p-4 hover:bg-neutral-200"
+            (click)="selectedIndex = $index"
+            [ngClass]="selectedIndex === $index ? 'bg-primary-100/20' : ''"
+            routerLink="{{ option.route }}"
+          >
+            <span class="material-symbols-outlined text-neutral-600">{{ option.icon }}</span>
+            <span class="text-neutral-600">{{ option.title }}</span>
           </a>
         }
       </div>
@@ -53,7 +50,7 @@
       </mat-expansion-panel>
     </div>
   </mat-drawer>
-  <mat-drawer-content class="bg-neutral-200">
+  <mat-drawer-content class="bg-neutral-100">
     <ng-content></ng-content>
   </mat-drawer-content>
 </mat-drawer-container>

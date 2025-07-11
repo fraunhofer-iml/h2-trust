@@ -9,7 +9,7 @@ import { provideTanStackQuery, QueryClient } from '@tanstack/angular-query-exper
 import { appRoutes } from './app.routes';
 import { initializeKeycloak } from './init/keycloak-initializer';
 import { AuthService } from './shared/services/auth/auth.service';
-import { ProcessingService } from './shared/services/processing/processing.service';
+import { BottlingService } from './shared/services/bottling/bottling.service';
 import { UnitsService } from './shared/services/units/units.service';
 import { UsersService } from './shared/services/users/users.service';
 
@@ -31,7 +31,7 @@ export const appConfig: ApplicationConfig = {
     AuthService,
     UsersService,
     UnitsService,
-    ProcessingService,
+    BottlingService,
     { provide: LOCALE_ID, useValue: 'de-DE' },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,

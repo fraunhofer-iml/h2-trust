@@ -89,11 +89,11 @@ export class ProductionService {
     const processSteps: ProcessStepEntity[] = [];
     const productionStartedAtInSeconds = new Date(params.productionStartedAt).getTime() / 1000;
     const productionEndedAtInSeconds = new Date(params.productionEndedAt).getTime() / 1000;
-    const alignedProductionStartedAtInSeconds =
+    const productionStartedAtInSecondsAligned =
       Math.floor(productionStartedAtInSeconds / params.accountingPeriodInSeconds) * params.accountingPeriodInSeconds;
 
     const numberOfAccountingPeriods = ProductionUtils.calculateNumberOfAccountingPeriods(
-      alignedProductionStartedAtInSeconds,
+      productionStartedAtInSecondsAligned,
       productionEndedAtInSeconds,
       params.accountingPeriodInSeconds,
     );
@@ -101,27 +101,14 @@ export class ProductionService {
     for (let i = 0; i < numberOfAccountingPeriods; i++) {
       this.logger.debug(`## Accounting Period ${i + 1} of ${numberOfAccountingPeriods}`);
 
-      const startedAt = ProductionUtils.calculateProductionDate(
-        alignedProductionStartedAtInSeconds,
-        params.accountingPeriodInSeconds,
-        i,
-        false,
-      );
+      const startedAt = ProductionUtils.calculateProductionStartDate(productionStartedAtInSecondsAligned, params.accountingPeriodInSeconds, i);
       this.logger.debug(`Period ${i + 1} started At: ${startedAt.toISOString()}`);
 
-      const endedAt = ProductionUtils.calculateProductionDate(
-        alignedProductionStartedAtInSeconds,
-        params.accountingPeriodInSeconds,
-        i,
-        true,
-      );
+      const endedAt = ProductionUtils.calculateProductionEndDate(productionStartedAtInSecondsAligned, params.accountingPeriodInSeconds, i);
       this.logger.debug(`Period ${i + 1} ended At: ${endedAt.toISOString()}`);
 
-      const amountPerPeriod = ProductionUtils.calculateBatchAmountPerPeriod(
-        params.batchAmount,
-        numberOfAccountingPeriods,
-      );
-      this.logger.debug(`Amount per period: ${amountPerPeriod}`);
+      const amountPerAccountingPeriod = ProductionUtils.calculateBatchAmountPerPeriod(params.batchAmount, numberOfAccountingPeriods);
+      this.logger.debug(`Amount per period: ${amountPerAccountingPeriod}`);
 
       processSteps.push(
         new ProcessStepEntity(
@@ -131,7 +118,7 @@ export class ProductionService {
           params.processType,
           {
             active: params.batchActivity,
-            amount: amountPerPeriod,
+            amount: amountPerAccountingPeriod,
             quality: params.batchQuality,
             type: params.batchType,
             owner: { id: params.batchOwner } as CompanyEntity,

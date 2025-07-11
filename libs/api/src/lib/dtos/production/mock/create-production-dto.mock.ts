@@ -1,0 +1,10 @@
+import { CreateProductionDto } from '../create-production.dto';
+
+export const CreateProductionDtoMock = <CreateProductionDto>{
+  productionStartedAt: '2025-01-01T10:00:00Z',
+  productionEndedAt: '2025-01-01T10:10:00Z',
+  powerProductionUnitId: 'power-production-unit-1',
+  powerAmountKwh: 10,
+  hydrogenProductionUnitId: 'hydrogen-production-unit-1',
+  hydrogenAmountKg: 5,
+};

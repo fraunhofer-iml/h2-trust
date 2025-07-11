@@ -5,7 +5,6 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { UnitsService } from '../../shared/services/units/units.service';
-import { assetTabs } from './config/tabs';
 import { HydrogenProductionTableComponent } from './tables/hydrogen-production-table/hydrogen-production-table.component';
 import { HydrogenStorageTableComponent } from './tables/hydrogen-storage-table/hydrogen-storage-table.component';
 import { PowerProductionTableComponent } from './tables/power-production-table/power-production-table.component';
@@ -25,8 +24,6 @@ import { PowerProductionTableComponent } from './tables/power-production-table/p
   templateUrl: './hydrogen-assets.component.html',
 })
 export class HydrogenAssetsComponent {
-  assetTabs = assetTabs;
-
   unitsService = inject(UnitsService);
 
   hydrogenStorageQuery = injectQuery(() => ({

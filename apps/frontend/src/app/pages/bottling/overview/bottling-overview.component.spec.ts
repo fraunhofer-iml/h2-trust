@@ -4,21 +4,21 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef } from '@angular/material/dialog';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideQueryClient, QueryClient } from '@tanstack/angular-query-experimental';
-import { AuthService } from '../../shared/services/auth/auth.service';
-import { ProcessingService } from '../../shared/services/processing/processing.service';
-import { UsersService } from '../../shared/services/users/users.service';
-import { ProcessingOverviewComponent } from './processing-overview.component';
+import { AuthService } from '../../../shared/services/auth/auth.service';
+import { BottlingService } from '../../../shared/services/bottling/bottling.service';
+import { UsersService } from '../../../shared/services/users/users.service';
+import { BottlingOverviewComponent } from './bottling-overview.component';
 
-describe('ProcessingOverviewComponent', () => {
-  let component: ProcessingOverviewComponent;
-  let fixture: ComponentFixture<ProcessingOverviewComponent>;
+describe('BottlingOverviewComponent', () => {
+  let component: BottlingOverviewComponent;
+  let fixture: ComponentFixture<BottlingOverviewComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProcessingOverviewComponent],
+      imports: [BottlingOverviewComponent],
       providers: [
         AuthService,
-        ProcessingService,
+        BottlingService,
         UsersService,
         { provide: MatDialogRef, useValue: {} },
         provideHttpClient(),
@@ -33,7 +33,7 @@ describe('ProcessingOverviewComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ProcessingOverviewComponent);
+    fixture = TestBed.createComponent(BottlingOverviewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -13,7 +13,6 @@ import { HydrogenProductionOverviewDto } from '@h2-trust/api';
 import { AuthService } from '../../../../shared/services/auth/auth.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
 import { UsersService } from '../../../../shared/services/users/users.service';
-import { hydrogenProductionSet } from '../../config/table-set';
 
 @Component({
   selector: 'app-hydrogen-production-table',
@@ -35,7 +34,7 @@ import { hydrogenProductionSet } from '../../config/table-set';
   templateUrl: './hydrogen-production-table.component.html',
 })
 export class HydrogenProductionTableComponent implements AfterViewInit {
-  displayedColumns = hydrogenProductionSet;
+  displayedColumns = ['name', 'typeName', 'ratedPower', 'producing', 'powerProducer', 'storageUnit'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;

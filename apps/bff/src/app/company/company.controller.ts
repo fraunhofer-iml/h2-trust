@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { CompanyDto } from '@h2-trust/api';
 import { CompanyService } from './company.service';
 
@@ -9,7 +9,13 @@ export class CompanyController {
 
   @Get()
   @ApiBearerAuth()
-  @ApiOperation({ description: 'Get all available Companies' })
+  @ApiOperation({
+    description: 'Retrieve all companies.',
+  })
+  @ApiOkResponse({
+    description: 'Returns a list of all companies.',
+    type: [CompanyDto],
+  })
   async findAll(): Promise<CompanyDto[]> {
     return this.companyService.findAll();
   }

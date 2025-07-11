@@ -28,11 +28,11 @@ export class UnitService {
     const companyId = userDetails.company.id;
 
     switch (unitType) {
-      case UnitType.powerProductionUnit:
+      case UnitType.POWER_PRODUCTION:
         return this.readPowerProductionUnits(companyId);
-      case UnitType.hydrogenProductionUnit:
+      case UnitType.HYDROGEN_PRODUCTION:
         return this.readHydrogenProductionUnits(companyId);
-      case UnitType.hydrogenStorageUnit:
+      case UnitType.HYDROGEN_STORAGE:
         return this.readHydrogenStorageUnits(companyId);
       case undefined: {
         const powerProductionUnits = await this.readPowerProductionUnits(companyId);

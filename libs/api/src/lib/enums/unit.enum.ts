@@ -1,5 +1,5 @@
 export enum UnitType {
-  powerProductionUnit = 'power-production',
-  hydrogenProductionUnit = 'hydrogen-production',
-  hydrogenStorageUnit = 'hydrogen-storage',
+  POWER_PRODUCTION = 'POWER_PRODUCTION',
+  HYDROGEN_PRODUCTION = 'HYDROGEN_PRODUCTION',
+  HYDROGEN_STORAGE = 'HYDROGEN_STORAGE',
 }

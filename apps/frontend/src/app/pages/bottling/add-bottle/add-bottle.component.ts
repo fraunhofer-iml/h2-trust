@@ -15,14 +15,14 @@ import { injectMutation, injectQuery } from '@tanstack/angular-query-experimenta
 import { FGFile, HydrogenStorageOverviewDto, UserDto } from '@h2-trust/api';
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
 import { ERROR_MESSAGES } from '../../../shared/constants/error.messages';
+import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
-import { ProcessingService } from '../../../shared/services/processing/processing.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
-import { UploadFormComponent } from '../upload-form/upload-form.component';
+import { UploadFormComponent } from './upload-form/upload-form.component';
 
 @Component({
   selector: 'app-add-bottle',
-  providers: [provideNativeDateAdapter(), CompaniesService, ProcessingService],
+  providers: [provideNativeDateAdapter(), CompaniesService, BottlingService],
   imports: [
     MatDialogModule,
     CommonModule,
@@ -61,7 +61,7 @@ export class AddBottleComponent implements OnInit {
     public dialogRef: MatDialogRef<AddBottleComponent>,
     private readonly unitsService: UnitsService,
     private readonly companiesService: CompaniesService,
-    private readonly processService: ProcessingService,
+    private readonly processService: BottlingService,
   ) {}
 
   ngOnInit() {

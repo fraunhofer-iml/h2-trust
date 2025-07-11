@@ -20,7 +20,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
   app.useGlobalPipes(
-    // TODO-MP(DUHGW-107): as soon as we have annotated all DTOs with validation decorators, we can add further cool options
     new ValidationPipe({
       disableErrorMessages: false,
       transform: true,

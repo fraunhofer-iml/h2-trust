@@ -38,15 +38,23 @@
       "email": "michael.pichura@iml.fraunhofer.de"
     },
     {
+      "name": "Dominik Sparer",
+      "email": "dominik.sparer@iml.fraunhofer.de"
+    },
+    {
+      "name": "Eva-Maria Stetter",
+      "email": "eva-maria.stetter@iml.fraunhofer.de"
+    },
+    {
       "name": "Lukas Wegler",
       "email": "lukas.wegler@iml.fraunhofer.de"
     }
   ],
   "main": "",
   "scripts": {
-    "clean": "rm -rf .angular dist node_modules apps/*/run-code-quality-tools.log libs/*/run-code-quality-tools.log",
+    "clean": "rm -rf .angular dist node_modules/.prisma apps/*/run-code-quality-tools.log libs/*/run-code-quality-tools.log",
     "dev": "nx run-many --all --parallel 5 --target serve",
-    "init": "npm run clean && npm install && npm run set-up-db",
+    "init": "npm run clean && npm run set-up-db",
     "migrate-db": "npx prisma migrate dev && npx prisma generate",
     "set-up-db": "npx prisma db push --force-reset && npx prisma db seed",
     "test": "nx run-many --all --parallel 5 --target test",

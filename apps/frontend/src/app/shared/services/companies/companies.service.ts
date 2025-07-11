@@ -10,6 +10,6 @@ export class CompaniesService {
   constructor(private readonly httpClient: HttpClient) {}
 
   getRecipients() {
-    return lastValueFrom(this.httpClient.get<CompanyDto[]>(`${BASE_URL}${ApiEndpoints.companies.getCompanies}`));
+    return lastValueFrom(this.httpClient.get<CompanyDto[]>(`${BASE_URL}${ApiEndpoints.COMPANIES}`));
   }
 }

@@ -1,9 +1,9 @@
-import { BottlingDto, ProcessStepDto } from '@h2-trust/api';
+import { BottlingDto, BottlingOverviewDto } from '@h2-trust/api';
 import { prisma } from '../test-utils/test.utils';
 
-export function expectResponseProcessStep(responseProcessStep: ProcessStepDto, expectedBottleDto: BottlingDto) {
-  expect(responseProcessStep.endedAt).toBe(expectedBottleDto.filledAt);
-  expect(responseProcessStep.batch.amount.toString()).toBe(expectedBottleDto.amount);
+export function expectResponseProcessStep(responseProcessStep: BottlingOverviewDto, expectedBottleDto: BottlingDto) {
+  expect(responseProcessStep.filledAt).toBe(expectedBottleDto.filledAt);
+  expect(responseProcessStep.filledAmount.toString()).toBe(expectedBottleDto.amount);
 }
 
 export async function expectProcessStepBeingCreatedInDatabase(responseId: string) {

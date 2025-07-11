@@ -29,7 +29,7 @@ export class SidebarComponent implements OnInit {
   sidebarOptions = [
     { title: 'Units', icon: 'water_drop', route: ROUTES.UNITS },
     { title: 'Production', icon: 'manufacturing', route: ROUTES.PRODUCTION },
-    { title: 'Processing', icon: 'dynamic_form', route: ROUTES.PROCESSING },
+    { title: 'Bottling', icon: 'propane_tank', route: ROUTES.BOTTLING },
   ];
 
   userFirstName = '';

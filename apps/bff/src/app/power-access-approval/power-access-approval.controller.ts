@@ -10,32 +10,40 @@ export class PowerAccessApprovalController {
 
   @Get()
   @ApiBearerAuth()
-  @ApiOperation({ description: 'Get all Companies with Power Access Approvals' })
-  @ApiOkResponse({ description: 'Successful request.' })
+  @ApiOperation({
+    description: 'Retrieve all companies with their power access approval. Optionally filter by approval status.',
+  })
+  @ApiOkResponse({
+    description: 'Returns a list of all companies with their power access approval matching the filter criteria.',
+    type: [PowerAccessApprovalDto],
+  })
   @ApiQuery({
     name: 'status',
     enum: PowerAccessApprovalStatus,
     required: false,
     examples: {
-      allTypes: { value: null, description: 'Get approvals of all status' },
+      allTypes: {
+        value: null,
+        description: 'Get approvals of all status',
+      },
       APPROVED: {
         value: PowerAccessApprovalStatus.APPROVED,
-        description: 'Get all approved PAAs',
+        description: `Get all Power Access Approvals with status "${PowerAccessApprovalStatus.APPROVED}"`,
       },
       PENDING: {
         value: PowerAccessApprovalStatus.PENDING,
-        description: 'Get all pending PAAs',
+        description: `Get all Power Access Approvals with status "${PowerAccessApprovalStatus.PENDING}"`,
       },
       REJECTED: {
         value: PowerAccessApprovalStatus.REJECTED,
-        description: 'Get all rejected PAAs',
+        description: `Get all Power Access Approvals with status "${PowerAccessApprovalStatus.REJECTED}"`,
       },
     },
   })
-  getCompaniesWithApprovals(
-    @AuthenticatedUser() user: AuthenticatedKCUser,
+  getCompaniesWithPowerAccessApproval(
+    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
     @Query('status') status: PowerAccessApprovalStatus,
   ): PowerAccessApprovalDto[] {
-    return this.powerAccessApprovalService.findAll(user.sub, status);
+    return this.powerAccessApprovalService.findAll(authenticatedUser.sub, status);
   }
 }

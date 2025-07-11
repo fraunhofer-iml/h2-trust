@@ -7,7 +7,7 @@ import {
   BatchTypeDbEnum,
   DocumentRepository,
   HydrogenColorDbEnum,
-  ProcessStepRepository
+  ProcessStepRepository,
 } from '@h2-trust/database';
 import { StorageService } from '@h2-trust/storage';
 
@@ -20,7 +20,7 @@ export class BottlingService {
     private readonly storageService: StorageService,
   ) {}
 
-  async executeBottling(processStep: ProcessStepEntity, file: Express.Multer.File): Promise<ProcessStepEntity> {
+  async createBottling(processStep: ProcessStepEntity, file: Express.Multer.File): Promise<ProcessStepEntity> {
     this.validateProcessStep(processStep);
 
     const allProcessStepsFromStorageUnit = await this.processStepRepository.findAllProcessStepsFromStorageUnit(
@@ -181,8 +181,6 @@ export class BottlingService {
     const firstColor = colors[0];
     const allColorsAreEqual = colors.every((color) => color === firstColor);
 
-    return allColorsAreEqual
-      ? firstColor
-      : HydrogenColor.MIX;
+    return allColorsAreEqual ? firstColor : HydrogenColor.MIX;
   }
 }

@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { provideQueryClient, QueryClient } from '@tanstack/angular-query-experimental';
-import { ProcessingService } from '../../../shared/services/processing/processing.service';
+import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { ProductPassComponent } from './product-pass.component';
 
 describe('ProductPassComponent', () => {
@@ -16,9 +16,9 @@ describe('ProductPassComponent', () => {
       imports: [ProductPassComponent],
       providers: [
         provideQueryClient(new QueryClient()),
-        ProcessingService,
         provideHttpClient(),
         provideAnimations(),
+        BottlingService,
         {
           provide: ActivatedRoute,
           useValue: {

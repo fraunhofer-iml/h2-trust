@@ -16,17 +16,17 @@ export class UnitsService {
 
   getHydrogenProductionUnits() {
     return lastValueFrom(
-      this.httpClient.get<HydrogenProductionOverviewDto[]>(`${BASE_URL}${ApiEndpoints.units}`, {
-        params: this.generateQueryParams(UnitType.hydrogenProductionUnit),
+      this.httpClient.get<HydrogenProductionOverviewDto[]>(`${BASE_URL}${ApiEndpoints.UNITS}`, {
+        params: this.generateQueryParams(UnitType.HYDROGEN_PRODUCTION),
       }),
     );
   }
   getPowerProductionUnits(companyId?: string) {
-    let params = this.generateQueryParams(UnitType.powerProductionUnit);
+    let params = this.generateQueryParams(UnitType.POWER_PRODUCTION);
     if (companyId) params = params.append('companyId', companyId);
 
     return lastValueFrom(
-      this.httpClient.get<PowerProductionOverviewDto[]>(`${BASE_URL}${ApiEndpoints.units}`, {
+      this.httpClient.get<PowerProductionOverviewDto[]>(`${BASE_URL}${ApiEndpoints.UNITS}`, {
         params: params,
       }),
     );
@@ -34,8 +34,8 @@ export class UnitsService {
 
   getHydrogenStorageUnits() {
     return lastValueFrom(
-      this.httpClient.get<HydrogenStorageOverviewDto[]>(`${BASE_URL}${ApiEndpoints.units}`, {
-        params: this.generateQueryParams(UnitType.hydrogenStorageUnit),
+      this.httpClient.get<HydrogenStorageOverviewDto[]>(`${BASE_URL}${ApiEndpoints.UNITS}`, {
+        params: this.generateQueryParams(UnitType.HYDROGEN_STORAGE),
       }),
     );
   }

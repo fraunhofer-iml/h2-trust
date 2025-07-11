@@ -13,7 +13,6 @@ import { HydrogenStorageOverviewDto } from '@h2-trust/api';
 import { AuthService } from '../../../../shared/services/auth/auth.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
 import { UsersService } from '../../../../shared/services/users/users.service';
-import { storageSet } from '../../config/table-set';
 
 @Component({
   selector: 'app-hydrogen-storage-table',
@@ -35,7 +34,7 @@ import { storageSet } from '../../config/table-set';
   templateUrl: './hydrogen-storage-table.component.html',
 })
 export class HydrogenStorageTableComponent implements AfterViewInit {
-  displayedColumns = storageSet;
+  displayedColumns = ['name', 'fillingLevel', 'fillingStatus', 'productionUnit'];
   data = input<HydrogenStorageOverviewDto[]>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;

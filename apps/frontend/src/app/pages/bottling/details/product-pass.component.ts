@@ -3,7 +3,7 @@ import { Component, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { ProcessingService } from '../../../shared/services/processing/processing.service';
+import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { H2CompositionChartComponent } from './chart/h2-composition-chart.component';
 
 @Component({
@@ -12,13 +12,13 @@ import { H2CompositionChartComponent } from './chart/h2-composition-chart.compon
   templateUrl: './product-pass.component.html',
 })
 export class ProductPassComponent {
-  constructor(private readonly processingService: ProcessingService) {}
+  constructor(private readonly bottlingService: BottlingService) {}
 
   id = input<string>('');
 
   batchQuery = injectQuery(() => ({
     queryKey: ['batch', this.id()],
-    queryFn: () => this.processingService.findBatchById(this.id() ?? ''),
+    queryFn: () => this.bottlingService.findBatchById(this.id() ?? ''),
     enabled: !!this.id(),
   }));
 }

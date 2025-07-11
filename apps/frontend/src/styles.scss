@@ -22,7 +22,7 @@ body {
 }
 
 :root {
-  @include mat.all-component-themes(m3-theme.$light-theme);
+  @include mat.all-component-themes(m3-theme.$h2-trust-theme);
   @include mat.table-overrides(
     (
       background-color: white,
@@ -46,6 +46,11 @@ body {
       active-focus-label-text-color: #5f5f92,
     )
   );
+  @include mat.button-overrides(
+    (
+      filled-container-color: #747495,
+    )
+  );
 }
 
 //--Materials--//
@@ -60,10 +65,10 @@ body {
 }
 
 .mat-mdc-header-cell {
-  border-bottom-color: #d8d8d8 !important ;
+  border-bottom-color: #dbdbdb !important ;
 }
 .mat-mdc-cell {
-  border-bottom-color: #d8d8d8 !important ;
+  border-bottom-color: #dbdbdb !important ;
 }
 
 .mat-mdc-dialog-content {

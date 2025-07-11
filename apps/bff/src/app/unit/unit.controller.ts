@@ -8,27 +8,14 @@ import { UnitService } from './unit.service';
 export class UnitController {
   constructor(private readonly unitService: UnitService) {}
 
-  @Get(':id')
-  @ApiBearerAuth()
-  @ApiOperation({ description: 'Get one unit.' })
-  @ApiOkResponse({ description: 'Successful request.' })
-  @ApiParam({
-    name: 'id',
-    type: String,
-    description: 'The ID of the unit.',
-    example: 'hydrogen-storage-unit-1',
-  })
-  getUnit(@Param('id') id: string): Promise<UnitDto> {
-    return this.unitService.readUnit(id);
-  }
-
   @Get()
   @ApiBearerAuth()
   @ApiOperation({
-    description:
-      'Get Units. If a company ID is provided, returns only that company’s units; otherwise, returns all units of the authenticated user.',
+    description: 'Retrieve all units of the authenticated user, optionally filtered by unit type.',
   })
-  @ApiOkResponse({ description: 'Successful request.' })
+  @ApiOkResponse({
+    description: 'Returns a list of all units of the authenticated user matching the filter criteria.',
+  })
   @ApiQuery({
     name: 'unit-type',
     enum: UnitType,
@@ -39,23 +26,41 @@ export class UnitController {
         description: 'Get units of all types',
       },
       powerProduction: {
-        value: 'power-production',
-        description: 'Get all units with type "power-production"',
+        value: UnitType.POWER_PRODUCTION,
+        description: `Get all units with type "${UnitType.POWER_PRODUCTION}"`,
       },
       hydrogenProduction: {
-        value: 'hydrogen-production',
-        description: 'Get all units with type "hydrogen-production"',
+        value: UnitType.HYDROGEN_PRODUCTION,
+        description: `Get all units with type "${UnitType.HYDROGEN_PRODUCTION}"`,
       },
       hydrogenStorage: {
-        value: 'hydrogen-storage',
-        description: 'Get all units with type "hydrogen-storage"',
+        value: UnitType.HYDROGEN_STORAGE,
+        description: `Get all units with type "${UnitType.HYDROGEN_STORAGE}"`,
       },
     },
   })
   getUnits(
     @Query('unit-type') unitType: UnitType,
-    @AuthenticatedUser() user: AuthenticatedKCUser,
+    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<UnitOverviewDto[]> {
-    return this.unitService.readUnits(user.sub, unitType);
+    return this.unitService.readUnits(authenticatedUser.sub, unitType);
+  }
+
+  @Get(':id')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Retrieve a specific unit by its ID.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the requested unit.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'Unique identifier of the unit.',
+    example: 'hydrogen-storage-unit-1',
+  })
+  async getUnit(@Param('id') id: string): Promise<UnitDto> {
+    return this.unitService.readUnit(id);
   }
 }

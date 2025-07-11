@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { PowerAccessApprovalDto, PowerAccessApprovalStatus } from '@h2-trust/api';
 import { BASE_URL } from '../../../../environments/environment';
+import { ApiEndpoints } from '../../constants/api-endpoints';
 
 @Injectable()
 export class PowerAccessApprovalService {
@@ -14,7 +15,7 @@ export class PowerAccessApprovalService {
       params = params.append('status', status);
     }
     return lastValueFrom(
-      this.httpClient.get<PowerAccessApprovalDto[]>(`${BASE_URL}${'/power-access-approvals'}`, { params }),
+      this.httpClient.get<PowerAccessApprovalDto[]>(`${BASE_URL}${ApiEndpoints.POWER_ACCESS_APPROVALS}`, { params }),
     );
   }
 }

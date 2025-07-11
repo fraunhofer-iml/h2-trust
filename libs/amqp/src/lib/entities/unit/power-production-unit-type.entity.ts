@@ -8,5 +8,4 @@ export class PowerProductionUnitTypeEntity {
     this.energySource = energySource;
     this.hydrogenColor = hydrogenColor;
   }
-
 }
