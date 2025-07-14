@@ -5,8 +5,8 @@ import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';
 
 @Module({
-  imports: [new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker()],
+  imports: [new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker(), new Broker().getProcessSvcBroker()],
   controllers: [BottlingController],
   providers: [BottlingService, UserService],
 })
-export class BottlingModule {}
+export class BottlingModule { }

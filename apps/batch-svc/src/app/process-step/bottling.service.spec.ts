@@ -6,7 +6,7 @@ import { BottlingService } from './bottling.service';
 import { calculateRemainingAmount } from './bottling.service.spec.util';
 
 describe('ProcessStepService', () => {
-  const SUFFICIENT_AMOUNT = 125;
+  const SUFFICIENT_AMOUNT = 90;
   const EXCESSIVE_AMOUNT = 10000;
 
   let service: BottlingService;
@@ -76,7 +76,40 @@ describe('ProcessStepService', () => {
       processStepData.batch.amount = SUFFICIENT_AMOUNT;
 
       // Arrange
-      const givenProcessSteps = ProcessStepEntitiesMock.slice(0, 3);
+      const hydrogenProcessSteps = ProcessStepEntitiesMock.slice(4, 5);
+      jest.spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit').mockResolvedValue(hydrogenProcessSteps);
+      const insertProcessStepSpy = jest.spyOn(processStepRepository, 'insertProcessStep').mockResolvedValue(processStepData);
+      jest.spyOn(service as any, 'createBottlingProcessStep');
+      jest.spyOn(service as any, 'createHydrogenProductionProcessStepForRemainingBatchAmount');
+      const setBatchesInactiveSpy = jest.spyOn(batchRepository, 'setBatchesInactive');
+      const readProcessStepSpy = jest.spyOn(processStepRepository, 'findProcessStep');
+
+      // Act
+      await service.createBottling(processStepData, undefined);
+
+      // Assert
+      expect(insertProcessStepSpy).toHaveBeenCalledTimes(2);
+      expect(service['createBottlingProcessStep']).toHaveBeenCalledWith(processStepData, hydrogenProcessSteps);
+      expect(service['createHydrogenProductionProcessStepForRemainingBatchAmount']).toHaveBeenCalledWith(
+        processStepData,
+        calculateRemainingAmount(
+          hydrogenProcessSteps.map((processStep) => processStep.batch),
+          processStepData.batch.amount,
+        ),
+        hydrogenProcessSteps[0].batch.owner.id,
+        hydrogenProcessSteps.at(-1),
+      );
+      expect(setBatchesInactiveSpy).toHaveBeenCalledTimes(1);
+      expect(readProcessStepSpy).toHaveBeenCalledTimes(1);
+      expect(readProcessStepSpy).toHaveBeenCalledWith(processStepData.id);
+    });
+
+    it('should create bottling ProcessStep with split merge and overfull storage tank', async () => {
+      const processStepData = structuredClone(ProcessStepEntitiesMock[0]);
+      processStepData.batch.amount = SUFFICIENT_AMOUNT;
+
+      // Arrange
+      const givenProcessSteps = ProcessStepEntitiesMock.slice(4, 5);
       jest.spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit').mockResolvedValue(givenProcessSteps);
       const createProcessStepSpy = jest
         .spyOn(processStepRepository, 'insertProcessStep')
@@ -95,46 +128,11 @@ describe('ProcessStepService', () => {
       expect(service['createHydrogenProductionProcessStepForRemainingBatchAmount']).toHaveBeenCalledWith(
         processStepData,
         calculateRemainingAmount(
-          givenProcessSteps.map((processStep) => processStep.batch),
+          ProcessStepEntitiesMock.map((processStep) => processStep.batch).slice(4, 5),
           processStepData.batch.amount,
         ),
         givenProcessSteps[0].batch.owner.id,
-        givenProcessSteps.at(-1),
-      );
-      expect(setBatchesInactiveSpy).toHaveBeenCalledTimes(1);
-      expect(readProcessStepSpy).toHaveBeenCalledTimes(1);
-      expect(readProcessStepSpy).toHaveBeenCalledWith(processStepData.id);
-    });
-
-    it('should create bottling ProcessStep with split merge and overfull storage tank', async () => {
-      const processStepData = structuredClone(ProcessStepEntitiesMock[0]);
-      processStepData.batch.amount = SUFFICIENT_AMOUNT;
-
-      // Arrange
-      const givenProcessSteps = ProcessStepEntitiesMock.slice();
-      jest.spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit').mockResolvedValue(givenProcessSteps);
-      const createProcessStepSpy = jest
-        .spyOn(processStepRepository, 'insertProcessStep')
-        .mockResolvedValue(processStepData);
-      jest.spyOn(service as any, 'createBottlingProcessStep');
-      jest.spyOn(service as any, 'createHydrogenProductionProcessStepForRemainingBatchAmount');
-      const setBatchesInactiveSpy = jest.spyOn(batchRepository, 'setBatchesInactive');
-      const readProcessStepSpy = jest.spyOn(processStepRepository, 'findProcessStep');
-
-      // Act
-      await service.createBottling(processStepData, undefined);
-
-      // Assert
-      expect(createProcessStepSpy).toHaveBeenCalledTimes(2);
-      expect(service['createBottlingProcessStep']).toHaveBeenCalledWith(processStepData, givenProcessSteps.slice(0, 3));
-      expect(service['createHydrogenProductionProcessStepForRemainingBatchAmount']).toHaveBeenCalledWith(
-        processStepData,
-        calculateRemainingAmount(
-          ProcessStepEntitiesMock.map((processStep) => processStep.batch).slice(0, 3),
-          processStepData.batch.amount,
-        ),
-        givenProcessSteps[0].batch.owner.id,
-        givenProcessSteps.at(-2),
+        givenProcessSteps[0],
       );
       expect(setBatchesInactiveSpy).toHaveBeenCalledTimes(1);
       expect(readProcessStepSpy).toHaveBeenCalledTimes(1);

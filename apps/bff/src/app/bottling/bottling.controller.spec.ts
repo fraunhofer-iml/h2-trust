@@ -1,17 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues, ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
+import { BottlingMessagePatterns, BrokerQueues, HydrogenCompositionEntity, ProcessStepEntity, ProcessStepMessagePatterns, UserMessagePatterns } from '@h2-trust/amqp';
 import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';
 import 'multer';
 import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import {
+  AddressDto,
   BottlingDto,
   BottlingDtoMock,
   BottlingOverviewDto,
-  HydrogenCompositionMock,
+  CompanyDto,
   ProcessType,
   ProductPassDto,
+  UserDetailsDto,
   UserDetailsDtoMock,
 } from '@h2-trust/api';
 import { UserService } from '../user/user.service';
@@ -20,6 +22,8 @@ describe('BottlingController', () => {
   let controller: BottlingController;
   let userService: UserService;
   let batchSvc: ClientProxy;
+  let generalSvc: ClientProxy;
+  let processSvc: ClientProxy;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -40,6 +44,12 @@ describe('BottlingController', () => {
           },
         },
         {
+          provide: BrokerQueues.QUEUE_PROCESS_SVC,
+          useValue: {
+            send: jest.fn(),
+          },
+        },
+        {
           provide: UserService,
           useValue: {
             readUserWithCompany: jest.fn(),
@@ -49,8 +59,10 @@ describe('BottlingController', () => {
     }).compile();
 
     controller = module.get<BottlingController>(BottlingController);
-    batchSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_BATCH_SVC) as ClientProxy;
     userService = module.get<UserService>(UserService);
+    batchSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_BATCH_SVC) as ClientProxy;
+    generalSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_GENERAL_SVC) as ClientProxy;
+    processSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_PROCESS_SVC) as ClientProxy;
   });
 
   it('should be defined', () => {
@@ -108,19 +120,55 @@ describe('BottlingController', () => {
       processType: ProcessType.BOTTLING,
     };
 
-    const expectedResponse: ProductPassDto = {
-      ...ProductPassDto.fromEntityToDto(processStepEntityMock),
-      hydrogenComposition: HydrogenCompositionMock
+    const userDetailsDtoMock: UserDetailsDto = <UserDetailsDto>{
+      id: 'user-id-1',
+      name: 'Producer Name',
+      email: 'producer@example.com',
+      company: <CompanyDto>{
+        id: 'company-id-1',
+        name: 'Producer Company',
+        mastrNumber: '123456',
+        companyType: 'Producer',
+        address: <AddressDto>{
+          street: '123 Main St',
+          postalCode: '12345',
+          city: 'Metropolis',
+          state: 'NY',
+          country: 'USA',
+        },
+      },
     };
-    expectedResponse.producer = UserDetailsDtoMock[0].name;
 
-    jest.spyOn(userService, 'readUserWithCompany').mockResolvedValue(UserDetailsDtoMock[0]);
+    const hydrogenCompositionMock: HydrogenCompositionEntity[] = [
+      {
+        color: 'GREEN',
+        amount: 95
+      },
+      {
+        color: 'YELLOW',
+        amount: 5
+      }
+    ];
 
     jest
       .spyOn(batchSvc, 'send')
       .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(processStepEntityMock));
 
+    jest
+      .spyOn(generalSvc, 'send')
+      .mockImplementation((_messagePattern: UserMessagePatterns, _data: any) => of(userDetailsDtoMock));
+
+    jest
+      .spyOn(processSvc, 'send')
+      .mockImplementation((_messagePattern: BottlingMessagePatterns, _data: any) => of(hydrogenCompositionMock));
+
     const actualResponse: ProductPassDto = await controller.readProductPass(givenProcessStepIdParam);
+
+    const expectedResponse: ProductPassDto = {
+      ...ProductPassDto.fromEntityToDto(processStepEntityMock),
+      hydrogenComposition: hydrogenCompositionMock,
+      producer: userDetailsDtoMock.company.name,
+    };
 
     expect(actualResponse).toEqual(expectedResponse);
   });

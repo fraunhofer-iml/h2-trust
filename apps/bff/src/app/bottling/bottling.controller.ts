@@ -13,7 +13,6 @@ import {
   BottlingDto,
   BottlingDtoMock,
   BottlingOverviewDto,
-  HydrogenCompositionMock,
   ProductPassDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/api';
@@ -109,7 +108,6 @@ export class BottlingController {
     example: 'process-step-hydrogen-bottling-1',
   })
   async readProductPass(@Param('id') processStepId: string): Promise<ProductPassDto> {
-    const productPassDto: ProductPassDto = await this.service.readProductPass(processStepId);
-    return { ...productPassDto, hydrogenComposition: HydrogenCompositionMock };
+    return this.service.readProductPass(processStepId);
   }
 }
