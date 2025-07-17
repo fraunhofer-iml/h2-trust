@@ -27,7 +27,6 @@ describe('BottlingController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [],
       controllers: [BottlingController],
       providers: [
         BottlingService,

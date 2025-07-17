@@ -1,9 +1,10 @@
-import { EChartsOption } from 'echarts';
 import * as echarts from 'echarts';
+import { EChartsOption } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 import { HydrogenCompositionDto } from '@h2-trust/api';
+import { CHART_COLORS } from '../../../../shared/constants/chart-colors';
 
 @Component({
   selector: 'app-h2-composition-chart',
@@ -15,13 +16,6 @@ export class H2CompositionChartComponent {
   chartData = input<HydrogenCompositionDto[]>();
 
   chartOption$ = computed(() => this.getOption(this.chartData() ?? []));
-
-  colors = new Map<string, string>([
-    ['GREEN', '#4F9C83'],
-    ['ORANGE', '#CF9153'],
-    ['PINK', '#BD608B'],
-    ['YELLOW', '#F0D354'],
-  ]);
 
   private getOption(chartData: HydrogenCompositionDto[]): EChartsOption {
     return {
@@ -55,7 +49,7 @@ export class H2CompositionChartComponent {
             value: composition.amount,
             name: composition.color,
             itemStyle: {
-              color: this.colors.get(composition.color),
+              color: CHART_COLORS.get(composition.color),
               borderColor: '#fff',
               opacity: 20,
             },

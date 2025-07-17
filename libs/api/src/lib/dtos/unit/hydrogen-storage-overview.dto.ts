@@ -1,17 +1,16 @@
-import { HydrogenStorageUnitEntity } from '@h2-trust/amqp';
+import { FillingEntity, HydrogenStorageUnitEntity } from '@h2-trust/amqp';
 import { HydrogenCompositionDto } from '../process-step';
-
 
 export class HydrogenStorageOverviewDto {
   id: string;
   name: string;
   capacity: number;
   filling: number;
-  hydrogenCompositions: HydrogenCompositionDto[];
   hydrogenProductionUnit: {
     id: string;
     name: string;
   };
+  hydrogenCompositions: HydrogenCompositionDto[];
 
   constructor(
     id: string,
@@ -23,6 +22,7 @@ export class HydrogenStorageOverviewDto {
       id: string;
       name: string;
     },
+    hydrogenComposition: HydrogenCompositionDto[],
   ) {
     this.id = id;
     this.name = name;
@@ -30,6 +30,7 @@ export class HydrogenStorageOverviewDto {
     this.filling = filling;
     this.hydrogenCompositions = hydrogenCompositions;
     this.hydrogenProductionUnit = hydrogenProductionUnit;
+    this.hydrogenCompositions = hydrogenComposition;
   }
 
   static fromEntity(unit: HydrogenStorageUnitEntity): HydrogenStorageOverviewDto {
@@ -48,9 +49,13 @@ export class HydrogenStorageOverviewDto {
   }
 
   private static mapHydrogenCompositions(unit: HydrogenStorageUnitEntity): HydrogenCompositionDto[] {
-    return unit.filling.map((batch) => ({
-      color: batch.color,
-      amount: batch.amount,
+    const compositionMap = new Map<string, number>();
+    unit.filling.forEach((batch: FillingEntity) => {
+      compositionMap.set(batch.color, (compositionMap.get(batch.color) ?? 0) + batch.amount);
+    });
+    return Array.from(compositionMap, ([color, amount]) => ({
+      color,
+      amount,
     }));
   }
 

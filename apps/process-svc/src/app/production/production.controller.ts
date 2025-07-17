@@ -1,14 +1,17 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { CreateProductionEntity, ProcessStepEntity, ProductionMessagePatterns } from '@h2-trust/amqp';
+import { ProcessStepEntity, ProductionMessagePatterns } from '@h2-trust/amqp';
+import { CreateProductionDto } from '@h2-trust/api';
 import { ProductionService } from './production.service';
 
 @Controller()
 export class ProductionController {
-  constructor(private readonly service: ProductionService) { }
+  constructor(private readonly service: ProductionService) {}
 
   @MessagePattern(ProductionMessagePatterns.CREATE)
-  async createProduction(@Payload() payload: { createProductionEntity: CreateProductionEntity }): Promise<ProcessStepEntity[]> {
-    return this.service.createProduction(payload.createProductionEntity);
+  async createProduction(
+    @Payload() payload: { dto: CreateProductionDto; hydrogenColor: string; hydrogenStorageUnitId: string },
+  ): Promise<ProcessStepEntity[]> {
+    return this.service.createProduction(payload.dto, payload.hydrogenColor, payload.hydrogenStorageUnitId);
   }
 }

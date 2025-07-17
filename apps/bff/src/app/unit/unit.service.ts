@@ -17,7 +17,7 @@ export class UnitService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   readUnit(id: string): Promise<UnitDto> {
     return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, { id }));

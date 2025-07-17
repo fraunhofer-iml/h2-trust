@@ -17,12 +17,11 @@ export class BottlingService {
   async createBottling(dto: BottlingDto, file: Express.Multer.File, userId: string): Promise<BottlingOverviewDto> {
     const payload = {
       processStepEntity: BottlingDto.toEntity({ ...dto, recordedBy: userId }),
-      file,
-    };
+      file
+    }
 
-    return firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.BOTTLING, payload)).then(
-      BottlingOverviewDto.fromEntity,
-    );
+    return firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.BOTTLING, payload))
+      .then(BottlingOverviewDto.fromEntity);
   }
 
   async readBottlingsByCompany(userId: string): Promise<BottlingOverviewDto[]> {
@@ -32,11 +31,10 @@ export class BottlingService {
       processType: ProcessType.BOTTLING,
       active: true,
       companyId: companyIdOfUser,
-    };
+    }
 
-    return firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.READ_ALL, payload)).then((processSteps) =>
-      processSteps.map(BottlingOverviewDto.fromEntity),
-    );
+    return firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.READ_ALL, payload))
+      .then((processSteps) => processSteps.map(BottlingOverviewDto.fromEntity));
   }
 
   async readProductPass(processStepId: string): Promise<ProductPassDto> {

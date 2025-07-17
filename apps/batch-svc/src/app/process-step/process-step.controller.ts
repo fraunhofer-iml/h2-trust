@@ -11,7 +11,7 @@ export class ProcessStepController {
   constructor(
     private readonly processStepService: ProcessStepService,
     private readonly bottlingService: BottlingService,
-  ) {}
+  ) { }
 
   @MessagePattern(ProcessStepMessagePatterns.READ_ALL)
   async readProcessSteps(

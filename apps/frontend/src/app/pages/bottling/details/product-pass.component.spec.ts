@@ -17,8 +17,8 @@ describe('ProductPassComponent', () => {
       providers: [
         provideQueryClient(new QueryClient()),
         provideHttpClient(),
-        provideAnimations(),
         BottlingService,
+        provideAnimations(),
         {
           provide: ActivatedRoute,
           useValue: {

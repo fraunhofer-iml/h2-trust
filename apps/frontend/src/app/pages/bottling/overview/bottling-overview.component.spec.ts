@@ -6,6 +6,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideQueryClient, QueryClient } from '@tanstack/angular-query-experimental';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
+import { UnitsService } from '../../../shared/services/units/units.service';
 import { UsersService } from '../../../shared/services/users/users.service';
 import { BottlingOverviewComponent } from './bottling-overview.component';
 
@@ -19,6 +20,7 @@ describe('BottlingOverviewComponent', () => {
       providers: [
         AuthService,
         BottlingService,
+        UnitsService,
         UsersService,
         { provide: MatDialogRef, useValue: {} },
         provideHttpClient(),
