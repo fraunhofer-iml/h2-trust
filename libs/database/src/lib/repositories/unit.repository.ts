@@ -13,7 +13,7 @@ import {
   hydrogenProductionUnitResultFields,
   hydrogenStorageUnitResultFields,
   powerProductionUnitResultFields,
-} from '../queries';
+} from '../result-fields';
 import { assertRecordFound } from './utils';
 
 @Injectable()

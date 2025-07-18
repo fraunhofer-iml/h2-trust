@@ -1,7 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { ProcessStepEntity, ProductionMessagePatterns } from '@h2-trust/amqp';
-import { CreateProductionDto } from '@h2-trust/api';
+import { CreateProductionEntity, ProcessStepEntity, ProductionMessagePatterns } from '@h2-trust/amqp';
 import { ProductionService } from './production.service';
 
 @Controller()
@@ -10,8 +9,8 @@ export class ProductionController {
 
   @MessagePattern(ProductionMessagePatterns.CREATE)
   async createProduction(
-    @Payload() payload: { dto: CreateProductionDto; hydrogenColor: string; hydrogenStorageUnitId: string },
+    @Payload() payload: { createProductionEntity: CreateProductionEntity },
   ): Promise<ProcessStepEntity[]> {
-    return this.service.createProduction(payload.dto, payload.hydrogenColor, payload.hydrogenStorageUnitId);
+    return this.service.createProduction(payload.createProductionEntity);
   }
 }

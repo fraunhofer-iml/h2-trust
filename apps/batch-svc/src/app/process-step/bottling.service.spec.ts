@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerException, ProcessStepEntitiesMock } from '@h2-trust/amqp';
+import { BrokerException, ProcessStepEntityHydrogenProductionMock } from '@h2-trust/amqp';
 import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
 import { StorageService } from '@h2-trust/storage';
 import { BottlingService } from './bottling.service';
@@ -49,12 +49,12 @@ describe('ProcessStepService', () => {
 
   describe('successful bottling operations', () => {
     it('should create bottling ProcessStep', async () => {
-      const processStepData = structuredClone(ProcessStepEntitiesMock[0]);
+      const processStepData = structuredClone(ProcessStepEntityHydrogenProductionMock[0]);
 
       // Arrange
       jest
         .spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit')
-        .mockResolvedValue(ProcessStepEntitiesMock.slice(0, 1));
+        .mockResolvedValue(ProcessStepEntityHydrogenProductionMock.slice(0, 1));
       const createProcessStepSpy = jest
         .spyOn(processStepRepository, 'insertProcessStep')
         .mockResolvedValue(processStepData);
@@ -72,13 +72,15 @@ describe('ProcessStepService', () => {
     });
 
     it('should create bottling ProcessStep with split merge', async () => {
-      const processStepData = structuredClone(ProcessStepEntitiesMock[0]);
+      const processStepData = structuredClone(ProcessStepEntityHydrogenProductionMock[0]);
       processStepData.batch.amount = SUFFICIENT_AMOUNT;
 
       // Arrange
-      const hydrogenProcessSteps = ProcessStepEntitiesMock.slice(4, 5);
+      const hydrogenProcessSteps = ProcessStepEntityHydrogenProductionMock.slice(4, 5);
       jest.spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit').mockResolvedValue(hydrogenProcessSteps);
-      const insertProcessStepSpy = jest.spyOn(processStepRepository, 'insertProcessStep').mockResolvedValue(processStepData);
+      const insertProcessStepSpy = jest
+        .spyOn(processStepRepository, 'insertProcessStep')
+        .mockResolvedValue(processStepData);
       jest.spyOn(service as any, 'createBottlingProcessStep');
       jest.spyOn(service as any, 'createHydrogenProductionProcessStepForRemainingBatchAmount');
       const setBatchesInactiveSpy = jest.spyOn(batchRepository, 'setBatchesInactive');
@@ -105,11 +107,11 @@ describe('ProcessStepService', () => {
     });
 
     it('should create bottling ProcessStep with split merge and overfull storage tank', async () => {
-      const processStepData = structuredClone(ProcessStepEntitiesMock[0]);
+      const processStepData = structuredClone(ProcessStepEntityHydrogenProductionMock[0]);
       processStepData.batch.amount = SUFFICIENT_AMOUNT;
 
       // Arrange
-      const givenProcessSteps = ProcessStepEntitiesMock.slice(4, 5);
+      const givenProcessSteps = ProcessStepEntityHydrogenProductionMock.slice(4, 5);
       jest.spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit').mockResolvedValue(givenProcessSteps);
       const createProcessStepSpy = jest
         .spyOn(processStepRepository, 'insertProcessStep')
@@ -128,7 +130,7 @@ describe('ProcessStepService', () => {
       expect(service['createHydrogenProductionProcessStepForRemainingBatchAmount']).toHaveBeenCalledWith(
         processStepData,
         calculateRemainingAmount(
-          ProcessStepEntitiesMock.map((processStep) => processStep.batch).slice(4, 5),
+          ProcessStepEntityHydrogenProductionMock.map((processStep) => processStep.batch).slice(4, 5),
           processStepData.batch.amount,
         ),
         givenProcessSteps[0].batch.owner.id,
@@ -142,20 +144,20 @@ describe('ProcessStepService', () => {
 
   describe('error cases', () => {
     it('should throw when insufficient hydrogen amount', async () => {
-      const processStepData = structuredClone(ProcessStepEntitiesMock[0]);
+      const processStepData = structuredClone(ProcessStepEntityHydrogenProductionMock[0]);
       processStepData.batch.amount = EXCESSIVE_AMOUNT;
 
       // Arrange
       jest
         .spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit')
-        .mockResolvedValue(ProcessStepEntitiesMock.slice(0, 1));
+        .mockResolvedValue(ProcessStepEntityHydrogenProductionMock.slice(0, 1));
 
       // Act & Assert
       await expect(service.createBottling(processStepData, undefined)).rejects.toThrow(BrokerException);
     });
 
     it('should throw when no hydrogen batches available', async () => {
-      const processStepData = structuredClone(ProcessStepEntitiesMock[0]);
+      const processStepData = structuredClone(ProcessStepEntityHydrogenProductionMock[0]);
 
       // Arrange
       jest.spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit').mockResolvedValue([]);

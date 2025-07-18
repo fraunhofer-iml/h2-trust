@@ -1,1 +1,1 @@
-export * from './paa-dto.mock';
+export * from './power-access-approval-dto.mock';

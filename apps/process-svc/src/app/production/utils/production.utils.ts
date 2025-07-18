@@ -37,7 +37,6 @@ export class ProductionUtils {
     return batchAmount / Math.max(1, numberOfAccountingPeriods);
   }
 
-
   static calculateProductionStartDate(
     productionStartedAtInSeconds: number,
     accountingPeriodInSeconds: number,

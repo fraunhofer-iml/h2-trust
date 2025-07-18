@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BottlingService } from './bottling.service';
 import { BrokerQueues } from '@h2-trust/amqp';
+import { BottlingService } from './bottling.service';
 
 describe('BottlingService', () => {
   let service: BottlingService;

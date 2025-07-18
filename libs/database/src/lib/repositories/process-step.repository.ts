@@ -2,7 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { BatchType } from '@prisma/client';
 import { BrokerException, ProcessStepEntity } from '@h2-trust/amqp';
 import { PrismaService } from '../prisma.service';
-import { processStepResultFields } from '../queries';
+import { processStepResultFields } from '../result-fields';
 import { assertRecordFound } from './utils';
 
 @Injectable()

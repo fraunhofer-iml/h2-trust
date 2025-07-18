@@ -1,4 +1,4 @@
-import { HydrogenCompositionEntity } from "@h2-trust/amqp";
+import { HydrogenCompositionEntity } from '@h2-trust/amqp';
 
 export class HydrogenCompositionDto {
   color: string;
@@ -12,7 +12,7 @@ export class HydrogenCompositionDto {
   static of(hydrogenCompositionEntity: HydrogenCompositionEntity): HydrogenCompositionDto {
     return <HydrogenCompositionDto>{
       color: hydrogenCompositionEntity.color,
-      amount: hydrogenCompositionEntity.amount
+      amount: hydrogenCompositionEntity.amount,
     };
   }
 }

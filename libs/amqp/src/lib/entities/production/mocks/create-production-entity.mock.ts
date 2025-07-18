@@ -1,0 +1,25 @@
+import { HydrogenColorDbEnum } from 'libs/database/src/lib';
+import {
+  CompanySeed,
+  HydrogenProductionUnitSeed,
+  HydrogenStorageUnitSeed,
+  PowerProductionUnitSeed,
+  UserSeed,
+} from 'libs/database/src/seed';
+import { CreateProductionEntity } from '../create-production.entity';
+
+export const CreateProductionEntityMock: CreateProductionEntity[] = [
+  new CreateProductionEntity(
+    '2025-01-01T10:00:00Z',
+    '2025-01-01T10:10:00Z',
+    PowerProductionUnitSeed[0].id,
+    10,
+    HydrogenProductionUnitSeed[0].id,
+    5,
+    UserSeed[1].id,
+    HydrogenColorDbEnum.GREEN,
+    HydrogenStorageUnitSeed[0].id,
+    CompanySeed[0].id,
+    CompanySeed[1].id,
+  ),
+];

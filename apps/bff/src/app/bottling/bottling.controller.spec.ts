@@ -1,5 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BottlingMessagePatterns, BrokerQueues, HydrogenCompositionEntity, ProcessStepEntity, ProcessStepMessagePatterns, UserMessagePatterns } from '@h2-trust/amqp';
+import {
+  BottlingMessagePatterns,
+  BrokerQueues,
+  HydrogenCompositionEntity,
+  ProcessStepEntity,
+  ProcessStepMessagePatterns,
+  UserMessagePatterns,
+} from '@h2-trust/amqp';
 import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';
 import 'multer';
@@ -27,6 +34,7 @@ describe('BottlingController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [],
       controllers: [BottlingController],
       providers: [
         BottlingService,
@@ -141,12 +149,12 @@ describe('BottlingController', () => {
     const hydrogenCompositionMock: HydrogenCompositionEntity[] = [
       {
         color: 'GREEN',
-        amount: 95
+        amount: 95,
       },
       {
         color: 'YELLOW',
-        amount: 5
-      }
+        amount: 5,
+      },
     ];
 
     jest

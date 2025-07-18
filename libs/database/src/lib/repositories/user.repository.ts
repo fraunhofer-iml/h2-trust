@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserDetailsEntity } from '@h2-trust/amqp';
 import { PrismaService } from '../prisma.service';
-import { userWithCompanyResultFields } from '../queries';
+import { userWithCompanyResultFields } from '../result-fields';
 import { assertRecordFound } from './utils';
 
 @Injectable()

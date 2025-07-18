@@ -8,4 +8,4 @@ import { ProductionModule } from './production/production.module';
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}

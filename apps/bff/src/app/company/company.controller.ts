@@ -5,12 +5,12 @@ import { CompanyService } from './company.service';
 
 @Controller('companies')
 export class CompanyController {
-  constructor(private readonly companyService: CompanyService) { }
+  constructor(private readonly companyService: CompanyService) {}
 
   @Get()
   @ApiBearerAuth()
   @ApiOperation({
-    description: 'Retrieve all companies.'
+    description: 'Retrieve all companies.',
   })
   @ApiOkResponse({
     description: 'Returns a list of all companies.',

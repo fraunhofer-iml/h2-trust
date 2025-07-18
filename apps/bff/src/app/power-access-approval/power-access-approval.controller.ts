@@ -6,12 +6,12 @@ import { PowerAccessApprovalService } from './power-access-approval.service';
 
 @Controller('power-access-approvals')
 export class PowerAccessApprovalController {
-  constructor(private readonly powerAccessApprovalService: PowerAccessApprovalService) { }
+  constructor(private readonly powerAccessApprovalService: PowerAccessApprovalService) {}
 
   @Get()
   @ApiBearerAuth()
   @ApiOperation({
-    description: 'Retrieve all companies with their power access approval. Optionally filter by approval status.'
+    description: 'Retrieve all companies with their power access approval. Optionally filter by approval status.',
   })
   @ApiOkResponse({
     description: 'Returns a list of all companies with their power access approval matching the filter criteria.',
@@ -24,7 +24,7 @@ export class PowerAccessApprovalController {
     examples: {
       allTypes: {
         value: null,
-        description: 'Get approvals of all status'
+        description: 'Get approvals of all status',
       },
       APPROVED: {
         value: PowerAccessApprovalStatus.APPROVED,

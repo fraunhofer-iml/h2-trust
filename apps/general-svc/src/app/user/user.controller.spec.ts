@@ -1,11 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CompanyType } from '@prisma/client';
-import {
-  DatabaseModule,
-  HydrogenBatchesProducedSeed,
-  PrismaService,
-  userWithCompanyResultFields,
-} from '@h2-trust/database';
+import { DatabaseModule, PrismaService, userWithCompanyResultFields } from '@h2-trust/database';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
@@ -35,7 +30,6 @@ describe('UserController', () => {
   });
 
   it('should be defined', () => {
-    console.log(HydrogenBatchesProducedSeed);
     expect(controller).toBeDefined();
   });
 

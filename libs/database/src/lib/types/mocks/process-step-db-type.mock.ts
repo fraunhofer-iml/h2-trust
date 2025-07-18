@@ -1,28 +1,28 @@
 import { ProcessStepDbType } from '..';
-import { AddressSeed, BatchesSeed, CompaniesSeed, ProcessStepsSeed, UnitsSeed, UsersSeed } from '../../../seed';
+import { AddressSeed, BatchSeed, CompanySeed, ProcessStepSeed, UnitSeed, UserSeed } from '../../../seed';
 
 export const ProcessStepDbTypeMock = <ProcessStepDbType[]>[
   {
-    ...ProcessStepsSeed[1],
+    ...ProcessStepSeed[1],
     batch: {
-      ...BatchesSeed[1],
+      ...BatchSeed[1],
       owner: {
-        ...CompaniesSeed[1],
+        ...CompanySeed[1],
         address: AddressSeed[1],
       },
       predecessors: [],
       successors: [],
     },
     executedBy: {
-      ...UnitsSeed[4],
+      ...UnitSeed[4],
       address: AddressSeed[1],
       company: {
-        ...CompaniesSeed[1],
+        ...CompanySeed[1],
         address: AddressSeed[1],
         hydrogenApprovals: [],
       },
     },
-    recordedBy: UsersSeed[1],
+    recordedBy: UserSeed[1],
     documents: [],
   },
 ];

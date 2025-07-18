@@ -1,15 +1,15 @@
 import { HydrogenProductionUnitDbType } from '..';
-import { HydrogenProductionUnitsSeed, HydrogenStorageUnitsSeed, UnitsSeed } from '../../../seed';
+import { HydrogenProductionUnitSeed, HydrogenStorageUnitSeed, UnitSeed } from '../../../seed';
 import { BaseUnitDbTypeMock } from './base-unit-db-type.mock';
 
 export const HydrogenProductionUnitDbTypeMock = <HydrogenProductionUnitDbType[]>[
   {
     ...BaseUnitDbTypeMock[0],
     hydrogenProductionUnit: {
-      ...HydrogenProductionUnitsSeed[0],
+      ...HydrogenProductionUnitSeed[0],
       hydrogenStorageUnit: {
-        ...HydrogenStorageUnitsSeed[0],
-        generalInfo: UnitsSeed[5],
+        ...HydrogenStorageUnitSeed[0],
+        generalInfo: UnitSeed[5],
       },
     },
   },

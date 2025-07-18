@@ -1,4 +1,4 @@
-import { UserDbType } from '@h2-trust/database';
+import { UserDbType } from 'libs/database/src/lib/types';
 
 export class UserEntity {
   id?: string;
