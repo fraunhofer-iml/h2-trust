@@ -55,7 +55,7 @@
         [matDatepicker]="endDatepicker"
         (dateChange)="updateDate($event.value, form.controls.productionEndedAt)"
         required
-        [max]="today.toLocaleTimeString()"
+        [max]="today"
         [value]="form.controls.productionEndedAt.value"
       />
       <mat-datepicker #endDatepicker />

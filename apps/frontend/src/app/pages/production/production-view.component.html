@@ -3,49 +3,52 @@
     <h2 class="text-lg text-neutral-500">Production</h2>
     <button mat-flat-button (click)="openBottleDialog()">Add Production</button>
   </div>
+  <div class="flex w-full flex-col gap-2">
+    <div class="flex flex-col gap-4 rounded-lg bg-white py-2">
+      <table mat-table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="startedOn">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="startedAt"><div class="bold">Started On</div></th>
+          <td mat-cell *matCellDef="let row">{{ row.startedAt | date }}, {{ row.startedAt | date: 'shortTime' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="endedOn">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="endedAt" class="table-font-size">
+            <div class="bold">Ended On</div>
+          </th>
+          <td mat-cell *matCellDef="let row" class="table-font-size">
+            {{ row.endedAt | date }}, {{ row.endedAt | date: 'shortTime' }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="productionUnit">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <div class="bold">Hydrogen Production Unit</div>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.productionUnit | titlecase }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="producedAmount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Hydrogen Produced (kg)</div></th>
+          <td mat-cell *matCellDef="let row">{{ row.producedAmount | number }}</td>
+        </ng-container>
+        <ng-container matColumnDef="color">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Hydrogen Color</div></th>
+          <td mat-cell *matCellDef="let row"><app-h2-color-chip [color]="row.color"></app-h2-color-chip></td>
+        </ng-container>
+        <ng-container matColumnDef="powerProducer">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Power Producer</div></th>
+          <td mat-cell *matCellDef="let row">{{ row.powerProducer }}</td>
+        </ng-container>
+        <ng-container matColumnDef="powerConsumed">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Power Consumed (kWh)</div></th>
+          <td mat-cell *matCellDef="let row">{{ row.powerConsumed | number }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
 
-  <div class="flex flex-col gap-4 rounded-lg bg-white py-2">
-    <table mat-table [dataSource]="dataSource" matSort>
-      <ng-container matColumnDef="startedOn">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header="startedAt"><div class="bold">Started On</div></th>
-        <td mat-cell *matCellDef="let row">{{ row.startedAt | date }}, {{ row.startedAt | date: 'shortTime' }}</td>
-      </ng-container>
-      <ng-container matColumnDef="endedOn">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header="endedAt" class="table-font-size">
-          <div class="bold">Ended On</div>
-        </th>
-        <td mat-cell *matCellDef="let row" class="table-font-size">
-          {{ row.endedAt | date }}, {{ row.endedAt | date: 'shortTime' }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="productionUnit">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>
-          <div class="bold">Hydrogen Production Unit</div>
-        </th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.productionUnit | titlecase }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="producedAmount">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Hydrogen Produced (kg)</div></th>
-        <td mat-cell *matCellDef="let row">{{ row.producedAmount | number }}</td>
-      </ng-container>
-      <ng-container matColumnDef="color">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Hydrogen Color</div></th>
-        <td mat-cell *matCellDef="let row"><app-h2-color-chip [color]="row.color"></app-h2-color-chip></td>
-      </ng-container>
-      <ng-container matColumnDef="powerProducer">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Power Producer</div></th>
-        <td mat-cell *matCellDef="let row">{{ row.powerProducer }}</td>
-      </ng-container>
-      <ng-container matColumnDef="powerConsumed">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Power Consumed (kWh)</div></th>
-        <td mat-cell *matCellDef="let row">{{ row.powerConsumed | number }}</td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
-
-    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+    <div class="flex flex-col gap-4 rounded-lg bg-white py-1">
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+    </div>
   </div>
 </div>

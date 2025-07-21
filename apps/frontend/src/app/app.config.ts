@@ -32,7 +32,7 @@ export const appConfig: ApplicationConfig = {
     UsersService,
     UnitsService,
     BottlingService,
-    { provide: LOCALE_ID, useValue: 'de-DE' },
+    { provide: LOCALE_ID, useValue: 'en-GB' },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: {

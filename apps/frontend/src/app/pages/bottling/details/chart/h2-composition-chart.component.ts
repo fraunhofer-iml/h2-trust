@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 import { HydrogenCompositionDto } from '@h2-trust/api';
 import { CHART_COLORS } from '../../../../shared/constants/chart-colors';
+import { formatNumberForChart } from '../../../../shared/util/number-format.util';
 
 @Component({
   selector: 'app-h2-composition-chart',
@@ -46,12 +47,11 @@ export class H2CompositionChartComponent {
             },
           },
           data: chartData.map((composition) => ({
-            value: composition.amount,
+            value: formatNumberForChart(composition.amount),
             name: composition.color,
             itemStyle: {
               color: CHART_COLORS.get(composition.color),
               borderColor: '#fff',
-              opacity: 20,
             },
           })),
         },

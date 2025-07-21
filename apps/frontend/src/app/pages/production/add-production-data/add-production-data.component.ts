@@ -1,3 +1,4 @@
+import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -72,7 +73,15 @@ export class AddProductionDataComponent {
   }));
 
   mutation = injectMutation(() => ({
-    mutationFn: (dto: CreateProductionDto) => this.productionService.addProductionData(dto),
+    mutationFn: (dto: CreateProductionDto) => {
+      const result = this.productionService.addProductionData(dto);
+      toast.promise(result, {
+        loading: 'Loading...',
+        success: 'Production data was added!',
+      });
+      return result;
+    },
+
     onSuccess: () => {
       this.dialogRef.close(true);
     },

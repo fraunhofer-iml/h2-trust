@@ -104,6 +104,7 @@
     "nest-keycloak-connect": "^1.10.1",
     "nestjs-minio": "^2.6.2",
     "ngx-echarts": "^19.0.0",
+    "ngx-sonner": "^3.1.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",
     "stream-browserify": "^3.0.0",

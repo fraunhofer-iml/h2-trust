@@ -6,6 +6,7 @@ import { Component, computed, input } from '@angular/core';
 import { HydrogenStorageOverviewDto } from '@h2-trust/api';
 import { CHART_COLORS } from '../../../../shared/constants/chart-colors';
 import { ERROR_MESSAGES } from '../../../../shared/constants/error.messages';
+import { formatNumberForChart } from '../../../../shared/util/number-format.util';
 
 @Component({
   selector: 'app-storage-filling-levels',
@@ -26,7 +27,7 @@ export class StorageFillingLevelsComponent {
         stack: 'a',
         data: data.map((dto) => {
           const diff = dto.capacity - dto.hydrogenCompositions.reduce((sum, portion) => sum + portion.amount, 0);
-          return diff > 0 ? diff : 0;
+          return diff > 0 ? formatNumberForChart(diff) : 0;
         }),
         itemStyle: {
           borderRadius: 8,
@@ -48,10 +49,12 @@ export class StorageFillingLevelsComponent {
         axisLabel: {
           formatter: (value: string, index: number) => {
             const item = data[index];
-            const totalH2Amount = item?.hydrogenCompositions.reduce((sum, portion) => sum + portion.amount, 0);
-            const label = `{name|${value}}\n{filling|Filling: ${totalH2Amount}/${item?.capacity} kg (${((100 * (totalH2Amount ?? 0)) / (item?.capacity ?? 0)).toFixed(2)} %)}`;
+            const totalH2Amount = formatNumberForChart(
+              item?.hydrogenCompositions.reduce((sum, portion) => sum + portion.amount, 0),
+            );
+            const label = `{name|${value}}\n{filling|Filling: ${totalH2Amount}/${item?.capacity} kg (${formatNumberForChart((100 * totalH2Amount) / (item?.capacity ?? 0))} %)}`;
             const overflowMessage = `\n{err|${ERROR_MESSAGES.maxCapacityExceeded}}`;
-            return (totalH2Amount ?? 0) > (item?.capacity ?? 0) ? label + overflowMessage : label;
+            return totalH2Amount > (item?.capacity ?? 0) ? label + overflowMessage : label;
           },
           rich: {
             name: {
@@ -108,7 +111,9 @@ export class StorageFillingLevelsComponent {
       type: 'bar',
       stack: 'a',
       barMaxWidth: 100,
-      data: data.map((dto) => dto.hydrogenCompositions.find((color) => color.color === h2color)?.amount ?? 0),
+      data: data.map((dto) =>
+        formatNumberForChart(dto.hydrogenCompositions.find((color) => color.color === h2color)?.amount),
+      ),
       itemStyle: {
         borderRadius: 8,
         borderColor: 'transparent',
