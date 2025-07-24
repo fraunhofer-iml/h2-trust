@@ -59,6 +59,10 @@ export class BottlingController {
           type: 'string',
           default: BottlingDtoMock[0].recordedBy,
         },
+        color: {
+          type: 'string',
+          default: 'GREEN',
+        },
         hydrogenStorageUnit: {
           type: 'string',
           default: BottlingDtoMock[0].hydrogenStorageUnit,

@@ -9,10 +9,11 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
-import { FGFile, HydrogenStorageOverviewDto, UserDto } from '@h2-trust/api';
+import { FGFile, HydrogenCompositionDto, HydrogenStorageOverviewDto, UserDto } from '@h2-trust/api';
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
 import { ERROR_MESSAGES } from '../../../shared/constants/error.messages';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
@@ -38,6 +39,7 @@ import { UploadFormComponent } from './upload-form/upload-form.component';
     MatIconModule,
     UploadFormComponent,
     ErrorCardComponent,
+    MatRadioModule,
   ],
   templateUrl: './add-bottle.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,16 +47,23 @@ import { UploadFormComponent } from './upload-form/upload-form.component';
 export class AddBottleComponent implements OnInit {
   ERROR_MESSAGES = ERROR_MESSAGES;
 
-  selectedValue = '';
   dateDelimiter: Date = new Date();
   uploadedFiles: FGFile[] = [];
 
-  bottleFormGroup: FormGroup = new FormGroup({
+  bottleFormGroup: FormGroup<{
+    date: FormControl<Date | undefined | null>;
+    time: FormControl<Date | undefined | null>;
+    amount: FormControl<number | undefined | null>;
+    recipient: FormControl<UserDto | undefined | null>;
+    storageUnit: FormControl<HydrogenStorageOverviewDto | undefined | null>;
+    type: FormControl<'MIX' | 'GREEN' | undefined | null>;
+  }> = new FormGroup({
     date: new FormControl<Date | undefined>(new Date(), Validators.required),
     time: new FormControl<Date | undefined>(new Date(), Validators.required),
     amount: new FormControl<number | undefined>(undefined, Validators.required),
     recipient: new FormControl<UserDto | undefined>(undefined, Validators.required),
     storageUnit: new FormControl<HydrogenStorageOverviewDto | undefined>(undefined, Validators.required),
+    type: new FormControl<'MIX' | 'GREEN' | undefined>(undefined, Validators.required),
   });
 
   constructor(
@@ -65,9 +74,13 @@ export class AddBottleComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.bottleFormGroup.controls['amount']?.valueChanges.subscribe((amount) => {
-      if (amount > this.bottleFormGroup.controls['storageUnit']?.value.filling)
-        this.bottleFormGroup.controls['storageUnit']?.reset();
+    this.bottleFormGroup.controls.amount?.valueChanges.subscribe((amount) => {
+      if (!amount) return;
+
+      this.bottleFormGroup.controls.type.reset();
+
+      if (this.bottleFormGroup.value?.storageUnit && amount > this.bottleFormGroup.value?.storageUnit?.filling)
+        this.bottleFormGroup.controls.storageUnit?.reset();
     });
   }
 
@@ -100,11 +113,12 @@ export class AddBottleComponent implements OnInit {
       }
     }
 
-    data.append('amount', this.bottleFormGroup.controls['amount']?.value ?? '');
-    data.append('recipient', this.bottleFormGroup.controls['recipient']?.value?.id ?? '');
+    data.append('amount', this.bottleFormGroup.value?.amount?.toString() ?? '');
+    data.append('recipient', this.bottleFormGroup.value.recipient?.id ?? '');
     data.append('filledAt', this.createTimestamp().toISOString());
     data.append('recordedBy', '');
-    data.append('hydrogenStorageUnit', this.bottleFormGroup.controls['storageUnit']?.value?.id ?? '');
+    data.append('hydrogenStorageUnit', this.bottleFormGroup.value.storageUnit?.id ?? '');
+    data.append('color', this.bottleFormGroup.value.type ?? '');
     this.mutation.mutate(data);
   }
 
@@ -129,5 +143,20 @@ export class AddBottleComponent implements OnInit {
     }
 
     return pickedDate;
+  }
+
+  displayComposition(hydrogenCompositions: HydrogenCompositionDto[]) {
+    const sum = hydrogenCompositions.reduce((a, b) => a + b.amount, 0);
+    return hydrogenCompositions.map((c) => ` ${c.color.toLowerCase()} (${((c.amount * 100) / sum).toFixed(2)} %)`);
+  }
+
+  isAmountAvailable(requestedAmount: number | null, hydrogenCompositions: HydrogenCompositionDto[]) {
+    if (!requestedAmount) return false;
+    const greenAmount = this.getAvailableGreenAmount(hydrogenCompositions);
+    return requestedAmount <= greenAmount;
+  }
+
+  getAvailableGreenAmount(hydrogenCompositions: HydrogenCompositionDto[]) {
+    return hydrogenCompositions.find((item) => item.color === 'GREEN')?.amount ?? 0;
   }
 }

@@ -4,7 +4,7 @@
 >
   <div class="card">
     <div class="">
-      <h3 class="font-semibold text-gray-700">{{ title || 'Upload' }}</h3>
+      <h3 class="text-neutral-700">{{ title || 'Upload' }}</h3>
       @if (informationText) {
         <span class="material-symbols-outlined" matTooltip="{{ informationText }}"> info </span>
       }
@@ -85,7 +85,7 @@
         }}</span>
       }
       <div class="ml-2" [ngClass]="{ 'col-span-2': !selectOptions }">
-        <span class="font-semibold text-gray-700">Document:</span>
+        <span class="text-neutral-700">Document:</span>
       </div>
     </div>
     @if (selectOptions && selectOptions.length > 0) {

@@ -6,6 +6,7 @@ export class BottlingDto {
   filledAt: string;
   recordedBy: string;
   hydrogenStorageUnit: string;
+  color: string;
   file?: string;
   fileDescription?: string;
 
@@ -17,6 +18,7 @@ export class BottlingDto {
     hydrogenStorageUnit: string,
     file: string,
     fileDescription: string,
+    color: string,
   ) {
     this.amount = amount;
     this.recipient = recipient;
@@ -25,6 +27,7 @@ export class BottlingDto {
     this.hydrogenStorageUnit = hydrogenStorageUnit;
     this.file = file;
     this.fileDescription = fileDescription;
+    this.color = color;
   }
 
   static toEntity(dto: BottlingDto): ProcessStepEntity {

@@ -51,6 +51,11 @@ body {
       filled-container-color: #747495,
     )
   );
+  @include mat.button-toggle-overrides(
+    (
+      selected-state-background-color: #8686c06e,
+    )
+  );
 }
 
 //--Materials--//

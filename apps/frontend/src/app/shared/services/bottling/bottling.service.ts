@@ -1,7 +1,7 @@
 import { lastValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BottlingDto, BottlingOverviewDto, ProductPassDto } from '@h2-trust/api';
+import { BottlingOverviewDto, ProductPassDto } from '@h2-trust/api';
 import { BASE_URL } from '../../../../environments/environment';
 import { ApiEndpoints } from '../../constants/api-endpoints';
 
@@ -14,7 +14,7 @@ export class BottlingService {
   }
 
   createBottleBatch(data: FormData) {
-    return lastValueFrom(this.httpClient.post<BottlingDto[]>(`${BASE_URL}${ApiEndpoints.BOTTLINGS}`, data));
+    return lastValueFrom(this.httpClient.post<BottlingOverviewDto>(`${BASE_URL}${ApiEndpoints.BOTTLINGS}`, data));
   }
 
   findBatchById(id: string) {
