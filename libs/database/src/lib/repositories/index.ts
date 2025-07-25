@@ -3,3 +3,4 @@ export * from './document.repository';
 export * from './process-step.repository';
 export * from './unit.repository';
 export * from './user.repository';
+export * from './power-access-approval.repository';

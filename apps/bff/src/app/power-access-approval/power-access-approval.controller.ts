@@ -43,7 +43,7 @@ export class PowerAccessApprovalController {
   getCompaniesWithPowerAccessApproval(
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
     @Query('status') status: PowerAccessApprovalStatus,
-  ): PowerAccessApprovalDto[] {
+  ): Promise<PowerAccessApprovalDto[]> {
     return this.powerAccessApprovalService.findAll(authenticatedUser.sub, status);
   }
 }

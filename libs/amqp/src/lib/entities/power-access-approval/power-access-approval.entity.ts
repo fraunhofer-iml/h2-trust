@@ -1,29 +1,55 @@
-import { PowerAccessApprovalStatusDbEnum } from '@h2-trust/database';
+import { PowerAccessApprovalDbType } from "libs/database/src/lib";
+import { PowerAccessApprovalStatus } from "@prisma/client";
+import { CompanyEntity } from "../company";
+import { BaseUnitEntity, PowerProductionUnitEntity } from '../unit';
+import { DocumentEntity } from "../document";
+
 
 export class PowerAccessApprovalEntity {
-  id: string;
-  decidedAt: Date;
-  powerAccessApprovalStatus: PowerAccessApprovalStatusDbEnum;
-  powerProducerId: string;
-  powerProductionUnitId: string;
-  hydrogenProducerId: string;
-  documentId: string;
+    id: string;
+    decidedAt: Date;
+    status: PowerAccessApprovalStatus;
+    powerProducer: CompanyEntity;
+    powerProductionUnit: PowerProductionUnitEntity;
+    hydrogenProducer: CompanyEntity;
+    document: DocumentEntity;
 
-  constructor(
-    id: string,
-    decidedAt: Date,
-    powerAccessApprovalStatus: PowerAccessApprovalStatusDbEnum,
-    powerProducerId: string,
-    powerProductionUnitId: string,
-    hydrogenProducerId: string,
-    documentId: string,
-  ) {
-    this.id = id;
-    this.decidedAt = decidedAt;
-    this.powerAccessApprovalStatus = powerAccessApprovalStatus;
-    this.powerProducerId = powerProducerId;
-    this.powerProductionUnitId = powerProductionUnitId;
-    this.hydrogenProducerId = hydrogenProducerId;
-    this.documentId = documentId;
-  }
+
+    constructor(
+        id: string,
+        decidedAt: Date,
+        status: PowerAccessApprovalStatus,
+        powerProducer: CompanyEntity,
+        powerProductionUnit: PowerProductionUnitEntity,
+        hydrogenProducer: CompanyEntity,
+        document: DocumentEntity,
+    ) {
+        this.id = id;
+        this.decidedAt = decidedAt;
+        this.status = status;
+        this.powerProducer = powerProducer;
+        this.powerProductionUnit = powerProductionUnit;
+        this.hydrogenProducer = hydrogenProducer;
+        this.document = document;
+    }
+
+    static fromDatabase(powerAccessApproval: PowerAccessApprovalDbType): PowerAccessApprovalEntity {
+        return <PowerAccessApprovalEntity>{
+            id: powerAccessApproval.id,
+            decidedAt: powerAccessApproval.decidedAt,
+            status: powerAccessApproval.powerAccessApprovalStatus,
+            powerProducer: CompanyEntity.fromDatabase(powerAccessApproval.powerProducer),
+            powerProductionUnit:
+            {
+                ...BaseUnitEntity.fromDatabase(powerAccessApproval.powerProductionUnit.generalInfo),
+                ratedPower: powerAccessApproval.powerProductionUnit?.ratedPower?.toNumber() ?? 0,
+                gridOperator: powerAccessApproval.powerProductionUnit?.gridOperator,
+                gridLevel: powerAccessApproval.powerProductionUnit?.gridLevel,
+                gridConnectionNumber: powerAccessApproval.powerProductionUnit?.gridConnectionNumber,
+                typeName: powerAccessApproval.powerProductionUnit?.type.name,
+            },
+            hydrogenProducer: CompanyEntity.fromDatabase(powerAccessApproval.powerProducer),
+            document: DocumentEntity.fromDatabase(powerAccessApproval.document),
+        }
+    }
 }

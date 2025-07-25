@@ -1,5 +1,8 @@
 import { PowerAccessApprovalSeed } from 'libs/database/src/seed';
 import { PowerAccessApprovalEntity } from '../power-access-approval.entity';
+import { CompanyEntityHydrogenMock, CompanyEntityPowerMock } from '../../company';
+import { PowerProductionUnitEntityMock } from '../../unit';
+import { DocumentEntityMock } from '../../document';
 
 export const PowerAccessApprovalEntityMock: PowerAccessApprovalEntity[] = PowerAccessApprovalSeed.map(
   (seed) =>
@@ -7,9 +10,9 @@ export const PowerAccessApprovalEntityMock: PowerAccessApprovalEntity[] = PowerA
       seed.id,
       seed.decidedAt,
       seed.powerAccessApprovalStatus,
-      seed.powerProducerId,
-      seed.powerProductionUnitId,
-      seed.hydrogenProducerId,
-      seed.documentId,
+      CompanyEntityPowerMock,
+      PowerProductionUnitEntityMock[0], 
+      CompanyEntityHydrogenMock,
+      DocumentEntityMock[0],
     ),
 );

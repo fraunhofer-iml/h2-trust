@@ -52,12 +52,18 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
   static override fromDatabase(unit: PowerProductionUnitDbType): PowerProductionUnitEntity {
     return <PowerProductionUnitEntity>{
       ...BaseUnitEntity.fromDatabase(unit),
+      ...PowerProductionUnitEntity.mapPowerProductionUnitSpecials(unit),
+    };
+  }
+
+  static mapPowerProductionUnitSpecials(unit: PowerProductionUnitDbType) {
+    return {
       ratedPower: PowerProductionUnitEntity.mapRatedPower(unit),
       gridOperator: unit.powerProductionUnit?.gridOperator,
       gridLevel: unit.powerProductionUnit?.gridLevel,
       gridConnectionNumber: unit.powerProductionUnit?.gridConnectionNumber,
-      type: unit.powerProductionUnit?.type,
-    };
+      typeName: unit.powerProductionUnit?.typeName,
+    }
   }
 
   private static mapRatedPower(unit: PowerProductionUnitDbType): number {
