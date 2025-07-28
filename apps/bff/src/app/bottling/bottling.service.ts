@@ -1,5 +1,5 @@
 import { firstValueFrom } from 'rxjs';
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BottlingMessagePatterns,
@@ -15,12 +15,16 @@ import {
   HydrogenComponentDto,
   ProcessType,
   ProductPassDto,
+  proofOfOriginSectionsMock,
+  SectionDto,
   UserDetailsDto,
 } from '@h2-trust/api';
 import { UserService } from '../user/user.service';
 
 @Injectable()
 export class BottlingService {
+  private readonly logger: Logger = new Logger(BottlingService.name);
+
   constructor(
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchService: ClientProxy,
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
@@ -77,5 +81,10 @@ export class BottlingService {
     productPassDto.hydrogenComposition = hydrogenComposition.map(HydrogenComponentDto.of);
 
     return productPassDto;
+  }
+
+  readProofOfOrigin(batchId: string): SectionDto[] {
+    this.logger.log(`Read Proof Of Origin for batch Id ${batchId}`);
+    return proofOfOriginSectionsMock;
   }
 }

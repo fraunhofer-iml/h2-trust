@@ -20,6 +20,7 @@ import {
   CompanyDto,
   ProcessType,
   ProductPassDto,
+  proofOfOriginSectionsMock,
   UserDetailsDto,
   UserDetailsDtoMock,
 } from '@h2-trust/api';
@@ -178,5 +179,11 @@ describe('BottlingController', () => {
     };
 
     expect(actualResponse).toEqual(expectedResponse);
+  });
+
+  it('should return proof of origin', async () => {
+    const expectedResult = proofOfOriginSectionsMock;
+    const result = controller.readProofOfOrigin('id');
+    expect(result).toEqual(expectedResult);
   });
 });

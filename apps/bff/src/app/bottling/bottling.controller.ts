@@ -14,6 +14,7 @@ import {
   BottlingDtoMock,
   BottlingOverviewDto,
   ProductPassDto,
+  SectionDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/api';
 import { BottlingService } from './bottling.service';
@@ -113,5 +114,19 @@ export class BottlingController {
   })
   async readProductPass(@Param('id') processStepId: string): Promise<ProductPassDto> {
     return this.service.readProductPass(processStepId);
+  }
+
+  @Get(':id/proof-of-origin')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Retrieve the proof of origin by the corresponding batch ID.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Unique identifier of the batch.',
+    example: 'hydrogen-batch-2',
+  })
+  readProofOfOrigin(@Param('id') batchId: string): SectionDto[] {
+    return this.service.readProofOfOrigin(batchId);
   }
 }
