@@ -2,7 +2,8 @@ import { BottlingDto } from '../bottling.dto';
 
 export const BottlingDtoMock = <BottlingDto[]>[
   <BottlingDto>{
-    amount: '1',
+    amount: 1,
+    color: 'GREEN',
     recipient: 'company-recipient-1',
     filledAt: '2025-04-07T00:00:00.000Z',
     recordedBy: 'user-id-1',

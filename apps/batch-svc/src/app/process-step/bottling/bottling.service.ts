@@ -1,0 +1,68 @@
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { BrokerException, ProcessStepEntity } from '@h2-trust/amqp';
+import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
+import { StorageService } from '@h2-trust/storage';
+import { BatchSelectionService } from './batch-selection.service';
+import { HydrogenCompositionService } from './hydrogen-composition.service';
+import { ProcessStepAssemblerService } from './process-step-assembler.service';
+
+@Injectable()
+export class BottlingService {
+  constructor(
+    private readonly hydrogenCompositionService: HydrogenCompositionService,
+    private readonly batchSelectionService: BatchSelectionService,
+    private readonly processStepAssemblerService: ProcessStepAssemblerService,
+    private readonly storageService: StorageService,
+    private readonly processStepRepository: ProcessStepRepository,
+    private readonly batchRepository: BatchRepository,
+    private readonly documentRepository: DocumentRepository,
+  ) {}
+
+  async createBottling(processStep: ProcessStepEntity, file: Express.Multer.File): Promise<ProcessStepEntity> {
+    const allProcessStepsFromStorageUnit = await this.processStepRepository.findAllProcessStepsFromStorageUnit(
+      processStep.executedBy.id,
+    );
+    if (allProcessStepsFromStorageUnit.length === 0) {
+      throw new BrokerException(`No batches found in storage unit ${processStep.executedBy.id}`, HttpStatus.BAD_REQUEST);
+    }
+
+    const hydrogenComposition = await this.hydrogenCompositionService.determineHydrogenComposition(processStep);
+
+    const { batchesForBottle, processStepsForRemainingBatchAmount } =
+      this.batchSelectionService.processBottlingForAllColors(
+        allProcessStepsFromStorageUnit,
+        hydrogenComposition,
+        processStep,
+      );
+
+    await this.batchRepository.setBatchesInactive(batchesForBottle.map((batch) => batch.id));
+
+    await Promise.all(
+      processStepsForRemainingBatchAmount.map((processStep) =>
+        this.processStepRepository.insertProcessStep(processStep)
+      )
+    );
+
+    const bottlingProcessStep = await this.processStepAssemblerService.createBottlingProcessStep(
+      processStep,
+      batchesForBottle,
+    );
+
+    if (file) {
+      await this.addDocumentToProcessStep(file, bottlingProcessStep.id, processStep.documents[0]?.description);
+    }
+
+    return this.processStepRepository.findProcessStep(bottlingProcessStep.id);
+  }
+
+  private async addDocumentToProcessStep(file: Express.Multer.File, processStepId: string, description: string) {
+    const fileName = await this.storageService.uploadFileWithDeepPath(file, `process-step`, processStepId);
+    return this.documentRepository.addDocumentToProcessStep(
+      {
+        description: description,
+        location: fileName,
+      },
+      processStepId,
+    );
+  }
+}

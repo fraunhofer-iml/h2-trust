@@ -4,7 +4,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import {
   BottlingMessagePatterns,
   BrokerQueues,
-  HydrogenCompositionEntity,
+  HydrogenComponentEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   UserMessagePatterns,
@@ -12,7 +12,7 @@ import {
 import {
   BottlingDto,
   BottlingOverviewDto,
-  HydrogenCompositionDto,
+  HydrogenComponentDto,
   ProcessType,
   ProductPassDto,
   UserDetailsDto,
@@ -71,10 +71,10 @@ export class BottlingService {
     );
     productPassDto.producer = producer.company?.name;
 
-    const hydrogenCompositions: HydrogenCompositionEntity[] = await firstValueFrom(
+    const hydrogenComposition: HydrogenComponentEntity[] = await firstValueFrom(
       this.processService.send(BottlingMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION, processStepEntity.id),
     );
-    productPassDto.hydrogenComposition = hydrogenCompositions.map(HydrogenCompositionDto.of);
+    productPassDto.hydrogenComposition = hydrogenComposition.map(HydrogenComponentDto.of);
 
     return productPassDto;
   }

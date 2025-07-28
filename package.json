@@ -52,7 +52,7 @@
   ],
   "main": "",
   "scripts": {
-    "clean": "rm -rf .angular dist node_modules/.prisma apps/*/run-code-quality-tools.log libs/*/run-code-quality-tools.log",
+    "clean": "rm -rf .angular .nx dist node_modules/.prisma apps/*/run-code-quality-tools.log libs/*/run-code-quality-tools.log",
     "dev": "nx run-many --all --parallel 5 --target serve",
     "init": "npm run clean && npm run set-up-db",
     "migrate-db": "npx prisma migrate dev && npx prisma generate",

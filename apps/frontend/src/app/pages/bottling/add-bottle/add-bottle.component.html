@@ -77,12 +77,12 @@
             <mat-radio-button
               #green
               value="GREEN"
-              [disabled]="!isAmountAvailable(bottleFormGroup.value.amount, storage.value.hydrogenCompositions)"
+              [disabled]="!isAmountAvailable(bottleFormGroup.value.amount, storage.value.hydrogenComposition)"
               >GREEN</mat-radio-button
             >
             <span class="ml-2 text-sm"
               >The bottling will contain green hydrogen only. Available Amount:
-              {{ getAvailableGreenAmount(storage.value.hydrogenCompositions) }} kg</span
+              {{ getAvailableGreenAmount(storage.value.hydrogenComposition) }} kg</span
             >
           </div>
           <div
@@ -96,7 +96,7 @@
             <mat-radio-button #mix value="MIX">MIX</mat-radio-button>
             <span class="ml-2 text-sm"
               >The composition of the filling will correspond to the hydrogen composition of the selected storage unit:
-              {{ displayComposition(storage.value.hydrogenCompositions) }}.</span
+              {{ displayComposition(storage.value.hydrogenComposition) }}.</span
             >
           </div>
         </mat-radio-group>

@@ -5,11 +5,11 @@ import { HydrogenStorageUnitDbType } from '@h2-trust/database';
 import { BrokerException } from '../../broker/broker-exception';
 import { AddressEntity } from '../address';
 import { BaseUnitEntity } from './base-unit.entity';
-import { FillingEntity } from './filling.entity';
+import { HydrogenComponentEntity } from '../bottling';
 
 export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   capacity: number;
-  filling: FillingEntity[];
+  filling: HydrogenComponentEntity[];
   hydrogenProductionUnits: {
     id: string;
     name: string;
@@ -31,7 +31,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string; powerProducerName: string }[];
     } | null,
     capacity: number,
-    filling: FillingEntity[],
+    filling: HydrogenComponentEntity[],
     hydrogenProductionUnits: {
       id: string;
       name: string;
@@ -68,11 +68,10 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     return unit.hydrogenStorageUnit?.capacity?.toNumber() ?? 0;
   }
 
-  private static mapFilling(unit: HydrogenStorageUnitDbType): FillingEntity[] {
+  private static mapFilling(unit: HydrogenStorageUnitDbType): HydrogenComponentEntity[] {
     return (
       unit.hydrogenStorageUnit?.filling?.map((batch: Batch) => {
         return {
-          id: batch.id,
           color: this.getColor(batch.quality),
           amount: batch.amount?.toNumber() ?? 0,
         };

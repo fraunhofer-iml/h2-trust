@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import {
   BottlingMessagePatterns,
   BrokerQueues,
-  HydrogenCompositionEntity,
+  HydrogenComponentEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   UserMessagePatterns,
@@ -146,7 +146,7 @@ describe('BottlingController', () => {
       },
     };
 
-    const hydrogenCompositionMock: HydrogenCompositionEntity[] = [
+    const hydrogenCompositionMock: HydrogenComponentEntity[] = [
       {
         color: 'GREEN',
         amount: 95,

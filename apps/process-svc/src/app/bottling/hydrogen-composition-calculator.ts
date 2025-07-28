@@ -1,10 +1,10 @@
 import { HttpStatus } from '@nestjs/common';
-import { BrokerException, HydrogenCompositionEntity, ProcessStepEntity } from '@h2-trust/amqp';
+import { BrokerException, HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import { parseColor, ProcessType } from '@h2-trust/api';
 import { BatchTypeDbEnum } from '@h2-trust/database';
 
 export class HydrogenCompositionCalculator {
-  static calculateFromBottlingProcessStep(bottlingProcessStep: ProcessStepEntity): HydrogenCompositionEntity[] {
+  static calculateFromBottlingProcessStep(bottlingProcessStep: ProcessStepEntity): HydrogenComponentEntity[] {
     this.validateProcessStep(bottlingProcessStep);
 
     const colorToAmount = new Map<string, number>();
@@ -22,7 +22,7 @@ export class HydrogenCompositionCalculator {
       colorToAmount.set(currentColor, updatedAmount);
     }
 
-    return Array.from(colorToAmount.entries()).map(([color, amount]) => new HydrogenCompositionEntity(color, amount));
+    return Array.from(colorToAmount.entries()).map(([color, amount]) => new HydrogenComponentEntity(color, amount));
   }
 
   private static validateProcessStep(bottlingProcessStep: ProcessStepEntity): void {

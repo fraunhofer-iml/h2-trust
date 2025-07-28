@@ -1,4 +1,4 @@
-export class HydrogenCompositionEntity {
+export class HydrogenComponentEntity {
   color: string;
   amount: number;
 

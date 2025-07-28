@@ -58,9 +58,15 @@ export class ProcessStepRepository {
       .then((batches) => batches.map(ProcessStepEntity.fromDatabase));
   }
 
-  async insertProcessStep(entity: ProcessStepEntity, predecessorBatchIds: string[]): Promise<ProcessStepEntity> {
+  async insertProcessStep(entity: ProcessStepEntity): Promise<ProcessStepEntity> {
     if (!entity.batch) {
       throw new BrokerException('ProcessStepEntity.batch was undefined', HttpStatus.BAD_REQUEST);
+    }
+    if (!entity.batch.amount) {
+      throw new BrokerException('ProcessStepEntity.batch.amount was undefined', HttpStatus.BAD_REQUEST);
+    }
+    if (!entity.batch.predecessors) {
+      entity.batch.predecessors = [];
     }
     return this.prismaService.processStep
       .create({
@@ -76,7 +82,7 @@ export class ProcessStepRepository {
             create: {
               active: entity.batch.active ?? true,
               amount: entity.batch.amount,
-              quality: entity.batch.quality,
+              quality: entity.batch.quality ?? '{}',
               type: BatchType[entity.batch.type as keyof typeof BatchType],
 
               owner: {
@@ -85,8 +91,8 @@ export class ProcessStepRepository {
                 },
               },
               predecessors: {
-                connect: predecessorBatchIds.map((id) => {
-                  return { id: id };
+                connect: entity.batch.predecessors.map((batch) => {
+                  return { id: batch.id };
                 }),
               },
               ...(entity.batch.hydrogenStorageUnitId && {

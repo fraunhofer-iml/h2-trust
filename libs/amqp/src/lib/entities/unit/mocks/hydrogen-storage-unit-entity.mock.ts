@@ -1,8 +1,8 @@
 import { HydrogenColorDbEnum } from 'libs/database/src/lib';
 import { HydrogenStorageUnitSeed, UnitSeed } from 'libs/database/src/seed';
 import { AddressEntityPowerMock } from '../../address';
-import { FillingEntity } from '../filling.entity';
 import { HydrogenStorageUnitEntity } from '../hydrogen-storage-unit.entity';
+import { HydrogenComponentEntity } from '../../bottling';
 
 export const HydrogenStorageUnitEntityMock: HydrogenStorageUnitEntity[] = [
   new HydrogenStorageUnitEntity(
@@ -17,7 +17,7 @@ export const HydrogenStorageUnitEntityMock: HydrogenStorageUnitEntity[] = [
     AddressEntityPowerMock,
     null,
     HydrogenStorageUnitSeed[0].capacity.toNumber(),
-    [new FillingEntity('filling-1', HydrogenColorDbEnum.GREEN, 100)],
+    [new HydrogenComponentEntity(HydrogenColorDbEnum.GREEN, 100)],
     [],
   ),
 ];

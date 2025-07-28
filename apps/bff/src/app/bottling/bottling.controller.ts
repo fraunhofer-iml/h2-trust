@@ -44,8 +44,12 @@ export class BottlingController {
           format: 'binary',
         },
         amount: {
-          type: 'string',
+          type: 'number',
           default: BottlingDtoMock[0].amount,
+        },
+        color: {
+          type: 'string',
+          default: BottlingDtoMock[0].color,
         },
         recipient: {
           type: 'string',
@@ -58,10 +62,6 @@ export class BottlingController {
         recordedBy: {
           type: 'string',
           default: BottlingDtoMock[0].recordedBy,
-        },
-        color: {
-          type: 'string',
-          default: 'GREEN',
         },
         hydrogenStorageUnit: {
           type: 'string',

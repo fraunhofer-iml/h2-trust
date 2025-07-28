@@ -3,7 +3,7 @@ import { EChartsOption } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
-import { HydrogenCompositionDto } from '@h2-trust/api';
+import { HydrogenComponentDto } from '@h2-trust/api';
 import { CHART_COLORS } from '../../../../shared/constants/chart-colors';
 import { formatNumberForChart } from '../../../../shared/util/number-format.util';
 
@@ -14,11 +14,11 @@ import { formatNumberForChart } from '../../../../shared/util/number-format.util
   templateUrl: './h2-composition-chart.component.html',
 })
 export class H2CompositionChartComponent {
-  chartData = input<HydrogenCompositionDto[]>();
+  chartData = input<HydrogenComponentDto[]>();
 
   chartOption$ = computed(() => this.getOption(this.chartData() ?? []));
 
-  private getOption(chartData: HydrogenCompositionDto[]): EChartsOption {
+  private getOption(chartData: HydrogenComponentDto[]): EChartsOption {
     return {
       series: [
         {

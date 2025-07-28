@@ -2,7 +2,7 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/api';
-import { BottlingService } from './bottling.service';
+import { BottlingService } from './bottling/bottling.service';
 import { ProcessStepService } from './process-step.service';
 import 'multer';
 
@@ -29,7 +29,7 @@ export class ProcessStepController {
   async createProcessStep(
     @Payload() payload: { processStepEntity: ProcessStepEntity; predecessors: string[] },
   ): Promise<ProcessStepEntity> {
-    return this.processStepService.createProcessStep(payload.processStepEntity, payload.predecessors);
+    return this.processStepService.createProcessStep(payload.processStepEntity);
   }
 
   @MessagePattern(ProcessStepMessagePatterns.BOTTLING)

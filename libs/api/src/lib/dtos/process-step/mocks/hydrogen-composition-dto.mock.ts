@@ -1,6 +1,6 @@
-import { HydrogenCompositionDto } from '../hydrogen-composition.dto';
+import { HydrogenComponentDto } from '../hydrogen-component.dto';
 
-export const HydrogenCompositionDtoMock: HydrogenCompositionDto[] = [
+export const HydrogenCompositionDtoMock: HydrogenComponentDto[] = [
   { color: 'GREEN', amount: 1 },
   { color: 'ORANGE', amount: 2 },
   { color: 'PINK', amount: 3 },

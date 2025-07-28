@@ -1,10 +1,10 @@
 import { HydrogenColorDbEnum } from 'libs/database/src/lib/enums';
-import { HydrogenCompositionEntity } from '../hydrogen-composition.entity';
+import { HydrogenComponentEntity } from '../hydrogen-component.entity';
 
-export const HydrogenCompositionEntityMock: HydrogenCompositionEntity[] = [
-  new HydrogenCompositionEntity(HydrogenColorDbEnum.GREEN, 10),
-  new HydrogenCompositionEntity(HydrogenColorDbEnum.ORANGE, 20),
-  new HydrogenCompositionEntity(HydrogenColorDbEnum.PINK, 30),
-  new HydrogenCompositionEntity(HydrogenColorDbEnum.YELLOW, 40),
-  new HydrogenCompositionEntity(HydrogenColorDbEnum.MIX, 50),
+export const HydrogenCompositionEntityMock: HydrogenComponentEntity[] = [
+  new HydrogenComponentEntity(HydrogenColorDbEnum.GREEN, 10),
+  new HydrogenComponentEntity(HydrogenColorDbEnum.ORANGE, 20),
+  new HydrogenComponentEntity(HydrogenColorDbEnum.PINK, 30),
+  new HydrogenComponentEntity(HydrogenColorDbEnum.YELLOW, 40),
+  new HydrogenComponentEntity(HydrogenColorDbEnum.MIX, 50),
 ];

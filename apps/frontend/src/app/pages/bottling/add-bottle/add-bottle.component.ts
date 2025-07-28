@@ -13,7 +13,12 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
-import { FGFile, HydrogenCompositionDto, HydrogenStorageOverviewDto, UserDto } from '@h2-trust/api';
+import {
+  FGFile,
+  HydrogenComponentDto,
+  HydrogenStorageOverviewDto,
+  UserDto
+} from '@h2-trust/api';
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
 import { ERROR_MESSAGES } from '../../../shared/constants/error.messages';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
@@ -145,18 +150,18 @@ export class AddBottleComponent implements OnInit {
     return pickedDate;
   }
 
-  displayComposition(hydrogenCompositions: HydrogenCompositionDto[]) {
-    const sum = hydrogenCompositions.reduce((a, b) => a + b.amount, 0);
-    return hydrogenCompositions.map((c) => ` ${c.color.toLowerCase()} (${((c.amount * 100) / sum).toFixed(2)} %)`);
+  displayComposition(hydrogenComposition: HydrogenComponentDto[]) {
+    const sum = hydrogenComposition.reduce((a, b) => a + b.amount, 0);
+    return hydrogenComposition.map((c) => ` ${c.color.toLowerCase()} (${((c.amount * 100) / sum).toFixed(2)} %)`);
   }
 
-  isAmountAvailable(requestedAmount: number | null, hydrogenCompositions: HydrogenCompositionDto[]) {
+  isAmountAvailable(requestedAmount: number | null, hydrogenComposition: HydrogenComponentDto[]) {
     if (!requestedAmount) return false;
-    const greenAmount = this.getAvailableGreenAmount(hydrogenCompositions);
+    const greenAmount = this.getAvailableGreenAmount(hydrogenComposition);
     return requestedAmount <= greenAmount;
   }
 
-  getAvailableGreenAmount(hydrogenCompositions: HydrogenCompositionDto[]) {
-    return hydrogenCompositions.find((item) => item.color === 'GREEN')?.amount ?? 0;
+  getAvailableGreenAmount(hydrogenComposition: HydrogenComponentDto[]) {
+    return hydrogenComposition.find((item) => item.color === 'GREEN')?.amount ?? 0;
   }
 }

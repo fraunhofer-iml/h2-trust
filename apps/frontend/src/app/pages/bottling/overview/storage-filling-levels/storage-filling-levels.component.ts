@@ -26,7 +26,7 @@ export class StorageFillingLevelsComponent {
         type: 'bar',
         stack: 'a',
         data: data.map((dto) => {
-          const diff = dto.capacity - dto.hydrogenCompositions.reduce((sum, portion) => sum + portion.amount, 0);
+          const diff = dto.capacity - dto.hydrogenComposition.reduce((sum, portion) => sum + portion.amount, 0);
           return diff > 0 ? formatNumberForChart(diff) : 0;
         }),
         itemStyle: {
@@ -50,7 +50,7 @@ export class StorageFillingLevelsComponent {
           formatter: (value: string, index: number) => {
             const item = data[index];
             const totalH2Amount = formatNumberForChart(
-              item?.hydrogenCompositions.reduce((sum, portion) => sum + portion.amount, 0),
+              item?.hydrogenComposition.reduce((sum, portion) => sum + portion.amount, 0),
             );
             const label = `{name|${value}}\n{filling|Filling: ${totalH2Amount}/${item?.capacity} kg (${formatNumberForChart((100 * totalH2Amount) / (item?.capacity ?? 0))} %)}`;
             const overflowMessage = `\n{err|${ERROR_MESSAGES.maxCapacityExceeded}}`;
@@ -112,7 +112,7 @@ export class StorageFillingLevelsComponent {
       stack: 'a',
       barMaxWidth: 100,
       data: data.map((dto) =>
-        formatNumberForChart(dto.hydrogenCompositions.find((color) => color.color === h2color)?.amount),
+        formatNumberForChart(dto.hydrogenComposition.find((color) => color.color === h2color)?.amount),
       ),
       itemStyle: {
         borderRadius: 8,

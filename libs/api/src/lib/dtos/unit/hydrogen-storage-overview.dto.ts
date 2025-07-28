@@ -1,36 +1,34 @@
-import { FillingEntity, HydrogenStorageUnitEntity } from '@h2-trust/amqp';
-import { HydrogenCompositionDto } from '../process-step';
+import { HydrogenStorageUnitEntity } from '@h2-trust/amqp';
+import { HydrogenComponentDto } from '../process-step';
 
 export class HydrogenStorageOverviewDto {
   id: string;
   name: string;
   capacity: number;
   filling: number;
+  hydrogenComposition: HydrogenComponentDto[];
   hydrogenProductionUnit: {
     id: string;
     name: string;
   };
-  hydrogenCompositions: HydrogenCompositionDto[];
 
   constructor(
     id: string,
     name: string,
     capacity: number,
     filling: number,
-    hydrogenCompositions: HydrogenCompositionDto[],
+    hydrogenComposition: HydrogenComponentDto[],
     hydrogenProductionUnit: {
       id: string;
       name: string;
     },
-    hydrogenComposition: HydrogenCompositionDto[],
   ) {
     this.id = id;
     this.name = name;
     this.capacity = capacity;
     this.filling = filling;
-    this.hydrogenCompositions = hydrogenCompositions;
+    this.hydrogenComposition = hydrogenComposition;
     this.hydrogenProductionUnit = hydrogenProductionUnit;
-    this.hydrogenCompositions = hydrogenComposition;
   }
 
   static fromEntity(unit: HydrogenStorageUnitEntity): HydrogenStorageOverviewDto {
@@ -39,19 +37,27 @@ export class HydrogenStorageOverviewDto {
       name: unit.name,
       capacity: unit.capacity,
       filling: HydrogenStorageOverviewDto.mapFilling(unit),
-      hydrogenCompositions: HydrogenStorageOverviewDto.mapHydrogenCompositions(unit),
+      hydrogenComposition: HydrogenStorageOverviewDto.mapHydrogenComposition(unit),
       hydrogenProductionUnit: HydrogenStorageOverviewDto.mapHydrogenProductionUnit(unit),
     };
   }
 
   private static mapFilling(unit: HydrogenStorageUnitEntity): number {
-    return unit.filling?.map((filling) => filling.amount).reduce((total, value) => total + value, 0) ?? 0;
+    return unit.filling?.reduce((sum, filling) => {
+        if (filling.amount == null) {
+          throw new Error('One or more filling amounts are undefined');
+        }
+        return sum + filling.amount;
+      }, 0) ?? 0;
   }
 
-  private static mapHydrogenCompositions(unit: HydrogenStorageUnitEntity): HydrogenCompositionDto[] {
+  private static mapHydrogenComposition(unit: HydrogenStorageUnitEntity): HydrogenComponentDto[] {
     const compositionMap = new Map<string, number>();
-    unit.filling.forEach((batch: FillingEntity) => {
-      compositionMap.set(batch.color, (compositionMap.get(batch.color) ?? 0) + batch.amount);
+    unit.filling.forEach((filling: HydrogenComponentDto) => {
+      if (filling.color == null || filling.amount == null) {
+        throw new Error('One or more fillings contain undefined values.');
+      }
+      compositionMap.set(filling.color, (compositionMap.get(filling.color) ?? 0) + filling.amount);
     });
     return Array.from(compositionMap, ([color, amount]) => ({
       color,

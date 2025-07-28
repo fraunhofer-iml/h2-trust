@@ -1,6 +1,5 @@
 export * from './mocks';
 export * from './base-unit.entity';
-export * from './filling.entity';
 export * from './hydrogen-production-unit.entity';
 export * from './hydrogen-storage-unit.entity';
 export * from './power-production-unit.entity';

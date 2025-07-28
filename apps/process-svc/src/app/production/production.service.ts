@@ -132,6 +132,7 @@ export class ProductionService {
             amount: amountPerAccountingPeriod,
             quality: params.batchQuality,
             type: params.batchType,
+            predecessors: params.predecessors.slice(i, i + 1).map((id) => ({ id: id })),
             owner: { id: params.batchOwner } as CompanyEntity,
             hydrogenStorageUnitId: params.hydrogenStorageUnitId,
           } as BatchEntity,
@@ -143,12 +144,9 @@ export class ProductionService {
     }
 
     return Promise.all(
-      processSteps.map((step, index) =>
+      processSteps.map((step) =>
         firstValueFrom(
-          this.batchService.send(ProcessStepMessagePatterns.CREATE, {
-            processStepEntity: step,
-            predecessors: params.predecessors[index] ? [params.predecessors[index]] : [],
-          }),
+          this.batchService.send(ProcessStepMessagePatterns.CREATE, { processStepEntity: step }),
         ),
       ),
     );

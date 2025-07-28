@@ -4,9 +4,9 @@ import { CompanyEntity } from '../company';
 export class BatchEntity {
   id?: string;
   active?: boolean;
-  amount: number;
-  quality: string;
-  type: string;
+  amount?: number;
+  quality?: string;
+  type?: string;
   predecessors?: BatchEntity[];
   successors?: BatchEntity[];
   owner?: CompanyEntity;
