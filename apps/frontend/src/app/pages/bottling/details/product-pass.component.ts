@@ -5,17 +5,18 @@ import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { H2CompositionChartComponent } from './chart/h2-composition-chart.component';
+import { ProofOfOriginComponent } from './proof-of-origin/proof-of-origin.component';
 
 @Component({
   selector: 'app-product-pass',
-  imports: [CommonModule, MatIconModule, RouterModule, H2CompositionChartComponent],
+  imports: [CommonModule, MatIconModule, RouterModule, H2CompositionChartComponent, ProofOfOriginComponent],
   templateUrl: './product-pass.component.html',
 })
 export class ProductPassComponent {
   constructor(private readonly bottlingService: BottlingService) {}
 
   id = input<string>('');
-
+ 
   batchQuery = injectQuery(() => ({
     queryKey: ['batch', this.id()],
     queryFn: () => this.bottlingService.findBatchById(this.id() ?? ''),

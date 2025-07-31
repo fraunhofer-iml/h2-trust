@@ -10,7 +10,6 @@ export class PowerAccessApprovalRepository {
   constructor(private readonly prismaService: PrismaService) { }
 
   async findAll(companyId: string, _status: PowerAccessApprovalStatus): Promise<PowerAccessApprovalEntity[]> {
-    console.log(companyId);
     return this.prismaService.powerAccessApproval.findMany({
       where: {
         OR: [

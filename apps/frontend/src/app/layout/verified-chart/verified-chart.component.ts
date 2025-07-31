@@ -1,0 +1,19 @@
+import { CommonModule } from '@angular/common';
+import { Component, computed, input } from '@angular/core';
+
+@Component({
+  selector: 'app-verified-chart',
+  imports: [CommonModule],
+  templateUrl: './verified-chart.component.html',
+})
+export class VerifiedChartComponent {
+  amount = input<number>(0);
+  verifiedAmount = input<number | undefined>();
+  unit = input.required<string>();
+
+  percentage$ = computed(() => {
+    const verified = this.verifiedAmount();
+    if (!verified && verified !== 0) return 100;
+    return ((verified * 100) / this.amount()).toFixed(0);
+  });
+}

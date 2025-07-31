@@ -1,0 +1,13 @@
+<div
+  class="hover:border-primary-100/20 items-center gap-4 rounded-lg border-[2px] border-solid border-neutral-100 bg-neutral-50 px-4 py-2"
+>
+  @if (isInstanceOfWaterBatch(batch()); as waterBatch) {
+    <app-water-batch-card [batch]="waterBatch"> </app-water-batch-card>
+  }
+  @if (isInstanceOfHydrogenBatch(batch()); as hydrogenBatch) {
+    <app-h2-batch-card [batch]="hydrogenBatch"></app-h2-batch-card>
+  }
+  @if (isInstanceOfPowerBatch(batch()); as powerBatch) {
+    <app-power-batch-card [batch]="powerBatch"></app-power-batch-card>
+  }
+</div>

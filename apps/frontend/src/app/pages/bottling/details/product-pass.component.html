@@ -5,7 +5,7 @@
     <span> {{ id() }}</span>
   </div>
 
-  <div class="grid grid-cols-3 gap-2">
+  <div class="grid grid-cols-3 gap-4">
     <div class="col-span-2 rounded-lg bg-white p-4">
       <h3 class="mb-4 font-semibold text-neutral-500">General Information</h3>
 
@@ -34,5 +34,7 @@
         <span class="material-symbols-outlined animate-spin text-neutral-400"> progress_activity </span>
       }
     </div>
+
+    <app-proof-of-origin [id]="id()" class="col-span-3"></app-proof-of-origin>
   </div>
 </div>

@@ -1,3 +1,4 @@
+import { BatchType } from '../../../enums';
 import { CompanyDtoMock } from '../../company';
 import { HydrogenBatchDto } from '../batch.dto';
 import { EmissionMock } from './emissions.mock';
@@ -19,6 +20,7 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
     rfnboReady: true,
     typeOfProduction: 'Electrolysis',
     unitId: 'hydrogen-production-unit-1',
+    batchType: BatchType.HYDROGEN,
   },
   {
     id: 'hydrogen-batch-2',
@@ -36,6 +38,7 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
     rfnboReady: true,
     typeOfProduction: 'Electrolysis',
     unitId: 'hydrogen-production-unit-1',
+    batchType: BatchType.HYDROGEN,
   },
   {
     id: 'hydrogen-batch-3',
@@ -50,9 +53,10 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
     processStep: 'PRODUCTION',
     producer: CompanyDtoMock[1].name,
     purity: 99.9,
-    rfnboReady: true,
+    rfnboReady: false,
     typeOfProduction: 'Electrolysis',
     unitId: 'hydrogen-production-unit-1',
+    batchType: BatchType.HYDROGEN,
   },
   {
     id: 'hydrogen-batch-4',
@@ -69,8 +73,9 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
     processStep: 'BOTTLING',
     producer: CompanyDtoMock[1].name,
     purity: 99.9,
-    rfnboReady: true,
+    rfnboReady: false,
     typeOfProduction: 'Electrolysis',
     unitId: 'hydrogen-production-unit-1',
+    batchType: BatchType.HYDROGEN,
   },
 ];

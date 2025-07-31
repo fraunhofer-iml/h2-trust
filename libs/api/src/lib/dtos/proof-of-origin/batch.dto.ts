@@ -1,4 +1,4 @@
-import { EnergySource } from '../../enums';
+import { BatchType, EnergySource } from '../../enums';
 import { HydrogenComponentDto } from '../process-step';
 import { EmissionDto } from './emission.dto';
 import { WaterDetailsDto } from './water-details.dto';
@@ -13,13 +13,22 @@ export abstract class BatchDto {
    * measuring unit for amount
    */
   unit: string;
+  batchType: BatchType;
 
-  constructor(id: string, emission: EmissionDto, creationDate: Date, amount: number, unit: string) {
+  constructor(
+    id: string,
+    emission: EmissionDto,
+    creationDate: Date,
+    amount: number,
+    unit: string,
+    batchType: BatchType,
+  ) {
     this.id = id;
     this.emission = emission;
     this.createdAt = creationDate;
     this.amount = amount;
     this.unit = unit;
+    this.batchType = batchType;
   }
 }
 
@@ -38,7 +47,7 @@ export class WaterBatchDto extends BatchDto {
     tapWater: WaterDetailsDto,
     wasteWater: WaterDetailsDto,
   ) {
-    super(id, emission, creationDate, amount, unit);
+    super(id, emission, creationDate, amount, unit, BatchType.WATER);
     this.deionizedWater = deionizedWater;
     this.tapWater = tapWater;
     this.wasteWater = wasteWater;
@@ -85,7 +94,7 @@ export class HydrogenBatchDto extends BatchDto {
     processStep: string,
     accountingPeriodEnd?: Date,
   ) {
-    super(id, emission, creationDate, amount, unit);
+    super(id, emission, creationDate, amount, unit, BatchType.HYDROGEN);
     this.amountVerified = amountVerified;
     this.purity = purity;
     this.typeOfProduction = typeOfProduction;
@@ -118,7 +127,7 @@ export class PowerBatchDto extends BatchDto {
     accountingPeriodEnd: Date,
     energySource: EnergySource,
   ) {
-    super(id, emission, creationDate, amount, unit);
+    super(id, emission, creationDate, amount, unit, BatchType.POWER);
     this.producer = producer;
     this.unitId = unitId;
     this.amountVerified = amountVerified;

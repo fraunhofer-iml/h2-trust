@@ -1,0 +1,39 @@
+<div class="flex cursor-pointer flex-row items-center gap-4" (click)="sheet.open()" role="none">
+  <div class="bg-primary-200/60 flex items-center justify-center rounded-full p-2">
+    <span class="material-symbols-outlined text-white"> water_drop </span>
+  </div>
+
+  <div class="flex w-full flex-col">
+    <div class="flex justify-between text-sm text-neutral-500">
+      <h3 class="text-base">Water Supply</h3>
+      <span>GHG-Emissions: {{ batch().emission.amount }} kg</span>
+    </div>
+    <app-verified-chart [amount]="batch().amount" [unit]="batch().unit"></app-verified-chart>
+  </div>
+</div>
+
+<app-base-sheet #sheet>
+  <div class="flex flex-col gap-4">
+    <div>
+      <div class="flex w-full items-center justify-between">
+        <h3>Water Batch</h3>
+      </div>
+      <span class="text-sm text-neutral-400"> Batch-Id: {{ batch().id }}</span>
+    </div>
+
+    <app-verified-chart [amount]="batch().amount" [unit]="batch().unit"></app-verified-chart>
+
+    <div class="grid grid-cols-2 gap-4 rounded-lg bg-neutral-50 p-4">
+      <span class="col-span-2 text-neutral-600">Batch Details</span>
+      <div class="flex flex-col text-sm">
+        <span class="text-sm text-neutral-400">Deionized Water:</span><span>{{ batch().deionizedWater.amount }} l</span>
+      </div>
+      <div class="flex flex-col text-sm">
+        <span class="text-sm text-neutral-400">Tap Water:</span><span>{{ batch().tapWater.amount }} l</span>
+      </div>
+      <div class="flex flex-col text-sm">
+        <span class="text-sm text-neutral-400">Waste Water:</span><span>{{ batch().wasteWater.amount }} l</span>
+      </div>
+    </div>
+  </div>
+</app-base-sheet>

@@ -1,7 +1,7 @@
 import { lastValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BottlingOverviewDto, ProductPassDto } from '@h2-trust/api';
+import { BottlingOverviewDto, ProductPassDto, SectionDto } from '@h2-trust/api';
 import { BASE_URL } from '../../../../environments/environment';
 import { ApiEndpoints } from '../../constants/api-endpoints';
 
@@ -17,7 +17,13 @@ export class BottlingService {
     return lastValueFrom(this.httpClient.post<BottlingOverviewDto>(`${BASE_URL}${ApiEndpoints.BOTTLINGS}`, data));
   }
 
-  findBatchById(id: string) {
+  findBatchById(id: string): Promise<ProductPassDto> {
     return lastValueFrom(this.httpClient.get<ProductPassDto>(`${BASE_URL}${ApiEndpoints.BOTTLINGS}/${id}`));
+  }
+
+  getProofOfOrigin(id: string): Promise<SectionDto[]> {
+    return lastValueFrom(
+      this.httpClient.get<SectionDto[]>(`${BASE_URL}${ApiEndpoints.BOTTLINGS}/${id}/proof-of-origin`),
+    );
   }
 }

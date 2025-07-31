@@ -1,3 +1,4 @@
+import { BatchType } from '../../../enums';
 import { WaterBatchDto } from '../batch.dto';
 import { WaterDetailsDto } from '../water-details.dto';
 import { EmissionMock } from './emissions.mock';
@@ -29,4 +30,5 @@ export const waterBatchMock: WaterBatchDto = {
   tapWater: waterDetailsMock[1],
   wasteWater: waterDetailsMock[2],
   emission: EmissionMock,
+  batchType: BatchType.WATER,
 };

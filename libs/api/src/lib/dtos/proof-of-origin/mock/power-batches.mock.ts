@@ -1,4 +1,4 @@
-import { EnergySource } from '../../../enums';
+import { BatchType, EnergySource } from '../../../enums';
 import { CompanyDtoMock } from '../../company';
 import { PowerProductionUnitOverviewDtoMock } from '../../unit/mocks';
 import { PowerBatchDto } from '../batch.dto';
@@ -16,6 +16,7 @@ export const PowerBatchesMock: PowerBatchDto[] = [
     energySource: EnergySource.WIND_ENERGY,
     producer: CompanyDtoMock[0].name,
     unitId: PowerProductionUnitOverviewDtoMock[0].id,
+    batchType: BatchType.POWER,
   },
   {
     id: 'power-batch-2-wind',
@@ -28,6 +29,7 @@ export const PowerBatchesMock: PowerBatchDto[] = [
     energySource: EnergySource.WIND_ENERGY,
     producer: CompanyDtoMock[0].name,
     unitId: PowerProductionUnitOverviewDtoMock[0].id,
+    batchType: BatchType.POWER,
   },
   {
     id: 'power-batch-3-solar',
@@ -40,6 +42,7 @@ export const PowerBatchesMock: PowerBatchDto[] = [
     energySource: EnergySource.SOLAR_ENERGY,
     producer: CompanyDtoMock[0].name,
     unitId: PowerProductionUnitOverviewDtoMock[0].id,
+    batchType: BatchType.POWER,
   },
   {
     id: 'power-batch-4-solar',
@@ -52,5 +55,6 @@ export const PowerBatchesMock: PowerBatchDto[] = [
     energySource: EnergySource.SOLAR_ENERGY,
     producer: CompanyDtoMock[0].name,
     unitId: PowerProductionUnitOverviewDtoMock[0].id,
+    batchType: BatchType.POWER,
   },
 ];

@@ -5,11 +5,10 @@ import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-h2-color-chip',
   imports: [CommonModule, MatIconModule],
-
   templateUrl: './h2-color-chip.component.html',
 })
 export class H2ColorChipComponent {
-  color = input<'GREEN' | 'PINK' | 'ORANGE' | 'YELLOW'>();
+  color = input<string>();
 
   getChipColor(): string {
     switch (this.color()) {

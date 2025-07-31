@@ -1,0 +1,58 @@
+<div class="flex cursor-pointer flex-row items-center gap-4" (click)="sheet.open()" role="none">
+  <div class="bg-primary-200/60 flex items-center justify-center rounded-full p-2">
+    <span class="material-symbols-outlined text-white"> clock_loader_10 </span>
+  </div>
+
+  <div class="flex w-full flex-col">
+    <div class="flex justify-between text-sm text-neutral-500">
+      <h3 class="text-base">
+        {{ batch().createdAt | date: 'mediumDate' }}, {{ batch().createdAt | date: 'shortTime' }} -
+        {{ batch().accountingPeriodEnd | date: 'shortTime' }}
+      </h3>
+      <span>GHG-Emissions: {{ batch().emission.amount }} kg</span>
+    </div>
+    <app-verified-chart
+      [amount]="batch().amount"
+      [verifiedAmount]="batch().amountVerified"
+      [unit]="batch().unit"
+    ></app-verified-chart>
+  </div>
+</div>
+<app-base-sheet #sheet>
+  <div class="flex flex-col gap-4">
+    <div>
+      <div class="flex w-full items-center justify-between">
+        <h3>Power Batch</h3>
+      </div>
+      <span class="text-sm text-neutral-400"> Generation-Id: {{ batch().id }}</span>
+    </div>
+
+    <app-verified-chart
+      [amount]="batch().amount"
+      [verifiedAmount]="batch().amountVerified"
+      [unit]="batch().unit"
+    ></app-verified-chart>
+
+    <div class="grid grid-cols-2 gap-4 rounded-lg border-[2px] border-solid border-neutral-100 bg-neutral-50 p-4">
+      <span class="col-span-2 text-neutral-600">Batch Details</span>
+
+      <div class="flex flex-col text-sm">
+        <span class="text-sm text-neutral-500">Created at:</span
+        ><span>{{ batch().createdAt | date: 'mediumDate' }}</span>
+      </div>
+      <div class="flex flex-col text-sm">
+        <span class="text-sm text-neutral-500">Accounting Period:</span
+        ><span
+          >{{ batch().createdAt | date: 'shortTime' }} - {{ batch().accountingPeriodEnd | date: 'shortTime' }}</span
+        >
+      </div>
+
+      <div class="flex flex-col text-sm">
+        <span class="text-sm text-neutral-500">Producer:</span><span>{{ batch().producer }}</span>
+      </div>
+      <div class="flex flex-col text-sm">
+        <span class="text-sm text-neutral-500">Unit-Id:</span><span>{{ batch().unitId }}</span>
+      </div>
+    </div>
+  </div>
+</app-base-sheet>
