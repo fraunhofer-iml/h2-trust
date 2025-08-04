@@ -10,6 +10,7 @@ export class ProductionOverviewDto {
   color: string;
   powerProducer: string;
   powerConsumed: number;
+  storageUnit: string;
 
   constructor(
     startedAt: string,
@@ -19,6 +20,7 @@ export class ProductionOverviewDto {
     color: string,
     powerProducer: string,
     powerConsumed: number,
+    storageUnit: string,
   ) {
     this.startedAt = startedAt;
     this.endedAt = endedAt;
@@ -27,6 +29,7 @@ export class ProductionOverviewDto {
     this.color = color;
     this.powerProducer = powerProducer;
     this.powerConsumed = powerConsumed;
+    this.storageUnit = storageUnit;
   }
 
   static fromEntity(processStep: ProcessStepEntity): ProductionOverviewDto {
@@ -38,6 +41,7 @@ export class ProductionOverviewDto {
       color: parseColor(processStep.batch?.quality),
       powerProducer: processStep.batch?.predecessors?.[0]?.owner?.name,
       powerConsumed: ProductionOverviewDto.determinePowerConsumed(processStep),
+      storageUnit: 'Hydrogen Storage Unit 800',
     };
   }
 

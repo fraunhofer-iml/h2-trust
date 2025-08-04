@@ -37,6 +37,7 @@ export class ProductionViewComponent implements AfterViewInit {
     'color',
     'powerProducer',
     'powerConsumed',
+    'storageUnit',
   ];
   dataSource: MatTableDataSource<ProductionOverviewDto> = new MatTableDataSource<ProductionOverviewDto>();
 

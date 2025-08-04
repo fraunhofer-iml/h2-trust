@@ -16,10 +16,12 @@ import { injectMutation, injectQuery } from '@tanstack/angular-query-experimenta
 import {
   CreateProductionDto,
   HydrogenProductionOverviewDto,
+  HydrogenStorageOverviewDto,
   PowerAccessApprovalStatus,
   PowerProductionOverviewDto,
 } from '@h2-trust/api';
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
+import { ERROR_MESSAGES } from '../../../shared/constants/error.messages';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { PowerAccessApprovalService } from '../../../shared/services/power-access-approvals/power-access-approvals.service';
 import { ProductionService } from '../../../shared/services/production/production.service';
@@ -52,6 +54,7 @@ export class AddProductionDataComponent {
     powerProductionUnit: FormControl<PowerProductionOverviewDto | null>;
     powerAmountKwh: FormControl<number | null>;
     hydrogenProductionUnit: FormControl<HydrogenProductionOverviewDto | null>;
+    hydrogenStorageUnit: FormControl<HydrogenStorageOverviewDto | null>;
     hydrogenAmountKg: FormControl<number | null>;
   }>({
     productionStartedAt: new FormControl<Date | null>(new Date(), Validators.required),
@@ -59,6 +62,7 @@ export class AddProductionDataComponent {
     powerProductionUnit: new FormControl<PowerProductionOverviewDto | null>(null, Validators.required),
     powerAmountKwh: new FormControl<number | null>(null, Validators.required),
     hydrogenProductionUnit: new FormControl<HydrogenProductionOverviewDto | null>(null, Validators.required),
+    hydrogenStorageUnit: new FormControl<HydrogenStorageOverviewDto | null>(null, Validators.required),
     hydrogenAmountKg: new FormControl<number | null>(null, Validators.required),
   });
 
@@ -70,6 +74,11 @@ export class AddProductionDataComponent {
   hydrogenProductionQuery = injectQuery(() => ({
     queryKey: ['h2-production'],
     queryFn: async () => this.unitsService.getHydrogenProductionUnits(),
+  }));
+
+  hydrogenStorageQuery = injectQuery(() => ({
+    queryKey: ['h2-storage'],
+    queryFn: async () => this.unitsService.getHydrogenStorageUnits(),
   }));
 
   mutation = injectMutation(() => ({
@@ -89,6 +98,7 @@ export class AddProductionDataComponent {
 
   today = new Date();
   isTimePeriodInvalid = false;
+  ERROR_MESSAGES = ERROR_MESSAGES;
 
   constructor(
     public dialogRef: MatDialogRef<AddProductionDataComponent>,
@@ -109,6 +119,7 @@ export class AddProductionDataComponent {
       powerProductionUnitId: this.form.value.powerProductionUnit?.id ?? '',
       hydrogenAmountKg: this.form.value.hydrogenAmountKg ?? 0,
       powerAmountKwh: this.form.value.powerAmountKwh ?? 0,
+      hydrogenStorageUnitId: this.form.value.hydrogenStorageUnit?.id ?? '',
     };
     this.mutation.mutate(dto);
   }
@@ -130,5 +141,14 @@ export class AddProductionDataComponent {
   updateTime(event: Date, formControl: FormControl<Date | null>) {
     formControl.patchValue(event);
     this.validateDate();
+  }
+
+  amountNotAvailable(): boolean {
+    return (
+      !!this.form.value.hydrogenAmountKg &&
+      !!this.form.value.hydrogenStorageUnit &&
+      this.form.value.hydrogenAmountKg >
+        this.form.value.hydrogenStorageUnit.capacity - this.form.value.hydrogenStorageUnit.filling
+    );
   }
 }

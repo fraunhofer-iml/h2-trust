@@ -27,6 +27,10 @@ export class CreateProductionDto {
   @IsPositive()
   hydrogenAmountKg: number;
 
+  @IsNotEmpty()
+  @IsString()
+  hydrogenStorageUnitId: string;
+
   constructor(
     productionStartedAt: string,
     productionEndedAt: string,
@@ -34,6 +38,7 @@ export class CreateProductionDto {
     powerAmountKwh: number,
     hydrogenProductionUnitId: string,
     hydrogenAmountKg: number,
+    hydrogenStorageUnitId: string,
   ) {
     this.productionStartedAt = productionStartedAt;
     this.productionEndedAt = productionEndedAt;
@@ -41,5 +46,6 @@ export class CreateProductionDto {
     this.powerAmountKwh = powerAmountKwh;
     this.hydrogenProductionUnitId = hydrogenProductionUnitId;
     this.hydrogenAmountKg = hydrogenAmountKg;
+    this.hydrogenStorageUnitId = hydrogenStorageUnitId;
   }
 }

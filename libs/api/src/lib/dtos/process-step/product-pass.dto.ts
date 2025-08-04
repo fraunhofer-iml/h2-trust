@@ -4,6 +4,7 @@ import { HydrogenComponentDto } from './hydrogen-component.dto';
 
 export class ProductPassDto extends BottlingOverviewDto {
   producer?: string;
+  product: string;
   hydrogenComposition: HydrogenComponentDto[];
 
   constructor(
@@ -18,6 +19,7 @@ export class ProductPassDto extends BottlingOverviewDto {
     super(id, timestamp, owner, filledAmount, color);
     this.producer = producer;
     this.hydrogenComposition = hydrogenComposition;
+    this.product = 'Hydrogen';
   }
 
   static fromEntityToDto(processStep: ProcessStepEntity): ProductPassDto {
@@ -28,6 +30,7 @@ export class ProductPassDto extends BottlingOverviewDto {
       filledAmount: processStep.batch?.amount,
       color: processStep.batch?.quality,
       producer: processStep.recordedBy?.id,
+      product: 'Hydrogen',
     };
   }
 }
