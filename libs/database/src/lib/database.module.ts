@@ -10,6 +10,7 @@ import { Module } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { 
   BatchRepository, 
+  CompanyRepository, 
   DocumentRepository, 
   PowerAccessApprovalRepository, 
   ProcessStepRepository, 
@@ -27,6 +28,7 @@ import {
     BatchRepository,
     DocumentRepository,
     PowerAccessApprovalRepository,
+    CompanyRepository,
   ],
   exports: [
     PrismaService, 
@@ -36,6 +38,7 @@ import {
     BatchRepository, 
     DocumentRepository, 
     PowerAccessApprovalRepository, 
+    CompanyRepository,
   ],
 })
 export class DatabaseModule {}

@@ -1,3 +1,4 @@
+import { CompanyEntity } from '@h2-trust/amqp';
 import { AddressDto } from '../address';
 import { UserDto } from '../user';
 
@@ -23,5 +24,16 @@ export class CompanyDto {
     this.companyType = companyType;
     this.address = address;
     this.users = users;
+  }
+
+  static fromEntity(company: CompanyEntity): CompanyDto {
+    return <CompanyDto>{
+      id: company.id,
+      name: company.name,
+      mastrNumber: company.mastrNumber,
+      companyType: company.companyType,
+      address: company.address,
+      users: company.users,
+    }
   }
 }
