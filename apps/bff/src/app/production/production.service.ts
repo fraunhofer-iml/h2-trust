@@ -12,7 +12,13 @@ import {
   ProductionMessagePatterns,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
-import { CreateProductionDto, ProcessType, ProductionOverviewDto, UserDetailsDto } from '@h2-trust/api';
+import {
+  CreateProductionDto,
+  ProcessType,
+  ProductionOverviewDto,
+  ProductionOverviewDtoMock,
+  UserDetailsDto,
+} from '@h2-trust/api';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -25,6 +31,8 @@ export class ProductionService {
   ) {}
 
   async createProduction(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
+    if (!dto.powerProductionUnitId) return ProductionOverviewDtoMock;
+
     const hydrogenColor = await this.fetchHydrogenColor(dto.powerProductionUnitId);
     const hydrogenStorageUnitId = await this.fetchHydrogenStorageUnitId(dto.hydrogenProductionUnitId);
     const companyIdOfPowerProductionUnit = await this.fetchCompanyOfProductionUnit(dto.powerProductionUnitId);

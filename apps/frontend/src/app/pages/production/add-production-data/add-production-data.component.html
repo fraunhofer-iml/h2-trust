@@ -10,13 +10,11 @@
         }
       </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="outline" class="col-span-2">
-      <mat-label>Power Production Unit</mat-label>
-      <mat-select formControlName="powerProductionUnit">
+    <mat-form-field appearance="outline" class="col-span-2" floatLabel="always">
+      <mat-label>Power Production</mat-label>
+      <mat-select formControlName="powerProductionUnit" placeholder="Grid">
         @for (approval of approvalsQuery.data(); track approval) {
-          <mat-option [value]="approval.powerProductionUnit"
-            >{{ approval.powerProducer.name }} | {{ approval.powerProductionUnit.name }}</mat-option
-          >
+          <mat-option [value]="approval.value">{{ approval.name }}</mat-option>
         }
       </mat-select>
     </mat-form-field>

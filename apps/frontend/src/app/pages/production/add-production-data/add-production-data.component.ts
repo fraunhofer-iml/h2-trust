@@ -59,7 +59,7 @@ export class AddProductionDataComponent {
   }>({
     productionStartedAt: new FormControl<Date | null>(new Date(), Validators.required),
     productionEndedAt: new FormControl<Date | null>(new Date(), Validators.required),
-    powerProductionUnit: new FormControl<PowerProductionOverviewDto | null>(null, Validators.required),
+    powerProductionUnit: new FormControl<PowerProductionOverviewDto | null>(null),
     powerAmountKwh: new FormControl<number | null>(null, Validators.required),
     hydrogenProductionUnit: new FormControl<HydrogenProductionOverviewDto | null>(null, Validators.required),
     hydrogenStorageUnit: new FormControl<HydrogenStorageOverviewDto | null>(null, Validators.required),
@@ -68,7 +68,16 @@ export class AddProductionDataComponent {
 
   approvalsQuery = injectQuery(() => ({
     queryKey: ['power-access-approvals'],
-    queryFn: async () => this.powerAccessApprovalsService.getApprovals(PowerAccessApprovalStatus.APPROVED),
+    queryFn: async () => {
+      const approvals = await this.powerAccessApprovalsService.getApprovals(PowerAccessApprovalStatus.APPROVED);
+      return [
+        { value: null, name: 'Grid' },
+        ...approvals.map((a) => ({
+          value: a.powerProductionUnit,
+          name: `${a.powerProducer.name} | ${a.powerProductionUnit.name}`,
+        })),
+      ];
+    },
   }));
 
   hydrogenProductionQuery = injectQuery(() => ({

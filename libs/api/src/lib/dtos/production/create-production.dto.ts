@@ -9,7 +9,6 @@ export class CreateProductionDto {
   @IsISO8601()
   productionEndedAt: string;
 
-  @IsNotEmpty()
   @IsString()
   powerProductionUnitId: string;
 
