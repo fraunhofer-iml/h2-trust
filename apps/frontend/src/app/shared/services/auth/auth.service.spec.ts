@@ -17,6 +17,7 @@ describe('AuthService', () => {
           useValue: {
             getUserRoles: () => [],
             keycloakEvents$: of('test'),
+            isLoggedIn: () => true,
           },
         },
       ],

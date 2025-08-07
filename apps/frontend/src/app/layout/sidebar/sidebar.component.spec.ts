@@ -23,6 +23,7 @@ describe('SidebarComponent', () => {
           useValue: {
             getUserRoles: () => [],
             loadUserProfile: () => ({}) as KeycloakProfile,
+            isLoggedIn: () => true,
           },
         },
       ],

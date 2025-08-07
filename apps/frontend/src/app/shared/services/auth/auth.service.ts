@@ -27,4 +27,8 @@ export class AuthService {
   logout() {
     this.keycloak.logout();
   }
+
+  isAuthenticated() {
+    return this.keycloak.isLoggedIn();
+  }
 }

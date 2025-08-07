@@ -4,5 +4,7 @@ import { CanActivateFn } from '@angular/router';
 
 export const AUTH_GUARD: CanActivateFn = async () => {
   const keycloakService: KeycloakService = inject(KeycloakService);
-  return keycloakService.isLoggedIn();
+  const isLoggedIn = keycloakService.isLoggedIn();
+  if (!isLoggedIn) keycloakService.login();
+  return isLoggedIn;
 };

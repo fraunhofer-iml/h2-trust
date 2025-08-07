@@ -19,7 +19,7 @@ import {
 } from '@h2-trust/api';
 import { BottlingService } from './bottling.service';
 import 'multer';
-import { AuthenticatedUser } from 'nest-keycloak-connect';
+import { AuthenticatedUser, Public } from 'nest-keycloak-connect';
 
 @Controller('bottlings')
 export class BottlingController {
@@ -98,6 +98,7 @@ export class BottlingController {
     return this.service.readBottlingsByCompany(authenticatedUser.sub);
   }
 
+  @Public()
   @Get(':id')
   @ApiBearerAuth()
   @ApiOperation({
@@ -116,6 +117,7 @@ export class BottlingController {
     return this.service.readProductPass(processStepId);
   }
 
+  @Public()
   @Get(':id/proof-of-origin')
   @ApiBearerAuth()
   @ApiOperation({

@@ -31,6 +31,7 @@ export class SidebarComponent implements OnInit {
     { title: 'Bottling', icon: 'propane_tank', route: ROUTES.BOTTLING },
   ];
 
+  isAuthenticated = false;
   userFirstName = '';
   userLastName = '';
   userEmail = '';
@@ -39,10 +40,13 @@ export class SidebarComponent implements OnInit {
   constructor(readonly authService: AuthService) {}
 
   async ngOnInit() {
-    const userProfile = await this.authService.getCurrentUserDetails();
-    this.userFirstName = userProfile.firstName;
-    this.userLastName = userProfile.lastName;
-    this.userEmail = userProfile.email;
+    this.isAuthenticated = this.authService.isAuthenticated();
+    if (this.isAuthenticated) {
+      const userProfile = await this.authService.getCurrentUserDetails();
+      this.userFirstName = userProfile.firstName;
+      this.userLastName = userProfile.lastName;
+      this.userEmail = userProfile.email;
+    }
   }
 
   logout() {

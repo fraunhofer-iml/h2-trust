@@ -15,7 +15,6 @@ export const appRoutes: Route[] = [
   },
   {
     path: ROUTES.BOTTLING,
-    canActivate: [AUTH_GUARD],
     loadChildren: () => import('./pages/bottling/routes').then((m) => m.BOTTLING_ROUTES),
   },
   {
