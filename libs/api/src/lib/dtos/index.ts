@@ -7,3 +7,4 @@ export * from './user';
 export * from './power-access-approval';
 export * from './util';
 export * from './proof-of-origin';
+export * from './file';

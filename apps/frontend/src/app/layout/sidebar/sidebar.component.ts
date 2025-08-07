@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -22,7 +22,6 @@ import { UsersService } from '../../shared/services/users/users.service';
     MatSelectModule,
   ],
   providers: [UsersService],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent implements OnInit {

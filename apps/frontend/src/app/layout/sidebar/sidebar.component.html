@@ -1,5 +1,5 @@
-<mat-drawer-container class="h-[100vh] !bg-neutral-200" autosize>
-  <mat-drawer mode="side" opened disableClose class="!border-r-1 !rounded-none !border-neutral-200 !bg-neutral-50">
+<div class="flex h-[100svh] w-full flex-row bg-neutral-200">
+  <div mode="side" class="w-96 border-r border-neutral-200 bg-neutral-50">
     <div class="flex h-full flex-col justify-between p-4">
       <div class="flex flex-col gap-2">
         <h3 class="text-secondary-200 mb-4 text-2xl font-semibold">H2 Trust</h3>
@@ -52,8 +52,8 @@
         </div>
       </mat-expansion-panel>
     </div>
-  </mat-drawer>
-  <mat-drawer-content class="bg-neutral-100">
+  </div>
+  <div class="h-full w-full bg-neutral-100">
     <ng-content></ng-content>
-  </mat-drawer-content>
-</mat-drawer-container>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-4 p-8">
+<div class="flex h-full flex-col gap-4 overflow-auto p-8">
   <div class="flex flex-row items-center gap-2 text-lg text-neutral-500">
     <a routerLink="/bottling" class="cursor-pointer hover:underline">Bottling</a>
     <span class="material-symbols-outlined"> keyboard_arrow_right </span>
@@ -7,11 +7,11 @@
 
   <div class="grid grid-cols-3 gap-4">
     <div class="col-span-2 rounded-lg bg-white p-4">
-      <h3 class="mb-4 font-semibold text-neutral-500">General Information</h3>
+      <h3 class="font-semibold text-neutral-500">General Information</h3>
 
       @if (batchQuery.isSuccess()) {
         <div class="flex flex-row">
-          <div class="grid w-2/3 grid-cols-2 gap-x-2 gap-y-4">
+          <div class="mt-2 grid w-1/2 grid-cols-2 gap-2">
             <div class="flex flex-col text-sm">
               <span class="text-sm text-neutral-400">Batch Id</span><span>{{ batchQuery.data().id }}</span>
             </div>
@@ -29,7 +29,7 @@
             </div>
           </div>
           <app-h2-composition-chart
-            class="w-1/3"
+            class="w-1/2"
             [chartData]="batchQuery.data().hydrogenComposition"
           ></app-h2-composition-chart>
         </div>
@@ -38,6 +38,31 @@
       }
     </div>
 
-    <app-proof-of-origin [id]="id()" class="col-span-3"></app-proof-of-origin>
+    <div class="rounded-lg bg-white p-4">
+      <h3 class="mb-2 font-semibold text-neutral-500">Attached Files</h3>
+      <div class="flex max-h-60 flex-col gap-2 overflow-y-auto">
+        @for (file of batchQuery.data()?.attachedFiles; track $index) {
+          <div
+            class="hover:bg-primary-100/20 flex flex-row items-center gap-2 rounded-lg border-[2px] border-solid border-transparent bg-neutral-100 p-2 hover:cursor-pointer"
+            (click)="selectedUrl = file.url; sheet.open()"
+            role="none"
+          >
+            <div class="bg-primary-200/60 flex items-center justify-center rounded-lg p-2">
+              <span class="material-symbols-outlined text-white">attach_file </span>
+            </div>
+            <span class="text-sm text-neutral-500">{{ file.description }}</span>
+          </div>
+        }
+      </div>
+      @if (batchQuery.data()?.attachedFiles?.length === 0) {
+        <span class="text-sm text-neutral-600">No files attached.</span>
+      }
+    </div>
+
+    <app-proof-of-origin [id]="id()" class="col-span-3"> </app-proof-of-origin>
   </div>
 </div>
+
+<app-base-sheet #sheet [size]="'medium'">
+  <app-file-sheet [url]="selectedUrl"></app-file-sheet>
+</app-base-sheet>
