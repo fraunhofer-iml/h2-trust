@@ -7,11 +7,26 @@ export const batchResultFields = Prisma.validator<Prisma.BatchDefaultArgs>()({
     predecessors: {
       include: {
         owner: companyResultFields,
+        hydrogenStorageUnit: {
+          include: {
+            generalInfo: true
+          },
+        },
       },
     },
     successors: {
       include: {
         owner: companyResultFields,
+        hydrogenStorageUnit: {
+          include: {
+            generalInfo: true
+          },
+        },
+      },
+    },
+    hydrogenStorageUnit: {
+      include: {
+        generalInfo: true
       },
     },
   },

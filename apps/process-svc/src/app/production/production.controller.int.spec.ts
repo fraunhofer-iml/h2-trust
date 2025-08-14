@@ -67,9 +67,7 @@ describe('ProductionController', () => {
     const actualResponse = await controller.createProduction({ createProductionEntity });
 
     expect(batchServiceSendMock).toHaveBeenCalledTimes(6); // 3 Power + 3 Hydrogen
-
     expect(Array.isArray(actualResponse)).toBe(true);
-
     expect(actualResponse.length).toBe(6); // 3 Power + 3 Hydrogen
 
     actualResponse
@@ -85,9 +83,15 @@ describe('ProductionController', () => {
         expect(processStepEntity.batch).toHaveProperty('owner', {
           id: createProductionEntity.companyIdOfPowerProductionUnit,
         });
-        expect(processStepEntity.batch).toHaveProperty('hydrogenStorageUnitId', null);
-        expect(processStepEntity).toHaveProperty('recordedBy', { id: createProductionEntity.recordedBy });
-        expect(processStepEntity).toHaveProperty('executedBy', { id: createProductionEntity.powerProductionUnitId });
+        expect(processStepEntity.batch).toHaveProperty('hydrogenStorageUnit', {
+          id: null,
+        });
+        expect(processStepEntity).toHaveProperty('recordedBy', {
+          id: createProductionEntity.recordedBy
+        });
+        expect(processStepEntity).toHaveProperty('executedBy', {
+          id: createProductionEntity.powerProductionUnitId
+        });
       });
 
     actualResponse
@@ -103,12 +107,15 @@ describe('ProductionController', () => {
         expect(processStepEntity.batch).toHaveProperty('owner', {
           id: createProductionEntity.companyIdOfHydrogenProductionUnit,
         });
-        expect(processStepEntity.batch).toHaveProperty(
-          'hydrogenStorageUnitId',
-          createProductionEntity.hydrogenStorageUnitId,
-        );
-        expect(processStepEntity).toHaveProperty('recordedBy', { id: createProductionEntity.recordedBy });
-        expect(processStepEntity).toHaveProperty('executedBy', { id: createProductionEntity.hydrogenProductionUnitId });
+        expect(processStepEntity.batch).toHaveProperty('hydrogenStorageUnit', {
+          id: createProductionEntity.hydrogenStorageUnitId,
+        });
+        expect(processStepEntity).toHaveProperty('recordedBy', {
+          id: createProductionEntity.recordedBy
+        });
+        expect(processStepEntity).toHaveProperty('executedBy', {
+          id: createProductionEntity.hydrogenProductionUnitId
+        });
       });
 
     expect(actualResponse[0]).toEqual(

@@ -6,7 +6,7 @@ import { PowerAccessApprovalService } from './power-access-approval.service';
 
 @Controller('power-access-approvals')
 export class PowerAccessApprovalController {
-  constructor(private readonly powerAccessApprovalService: PowerAccessApprovalService) {}
+  constructor(private readonly powerAccessApprovalService: PowerAccessApprovalService) { }
 
   @Get()
   @ApiBearerAuth()
@@ -42,8 +42,8 @@ export class PowerAccessApprovalController {
   })
   getCompaniesWithPowerAccessApproval(
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
-    @Query('status') status: PowerAccessApprovalStatus,
+    @Query('status') powerAccessApprovalStatus: PowerAccessApprovalStatus,
   ): Promise<PowerAccessApprovalDto[]> {
-    return this.powerAccessApprovalService.findAll(authenticatedUser.sub, status);
+    return this.powerAccessApprovalService.findAll(authenticatedUser.sub, powerAccessApprovalStatus);
   }
 }

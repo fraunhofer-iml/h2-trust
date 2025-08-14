@@ -6,7 +6,7 @@ import { ProductionService } from './production.service';
 
 @Controller('productions')
 export class ProductionController {
-  constructor(private readonly service: ProductionService) {}
+  constructor(private readonly service: ProductionService) { }
 
   @Post()
   @ApiBearerAuth()
@@ -21,6 +21,18 @@ export class ProductionController {
     schema: {
       type: 'object',
       properties: {
+        hydrogenProductionUnitId: {
+          type: 'string',
+          default: 'hydrogen-production-unit-1',
+        },
+        powerProductionUnitId: {
+          type: 'string',
+          default: 'power-production-unit-1',
+        },
+        hydrogenStorageUnitId: {
+          type: 'string',
+          default: 'hydrogen-storage-unit-1',
+        },
         productionStartedAt: {
           type: 'string',
           default: '2025-01-01T10:00:00Z',
@@ -29,21 +41,13 @@ export class ProductionController {
           type: 'string',
           default: '2025-01-01T11:00:00Z',
         },
-        powerProductionUnitId: {
-          type: 'string',
-          default: 'power-production-unit-1',
+        hydrogenAmountKg: {
+          type: 'number',
+          default: 5,
         },
         powerAmountKwh: {
           type: 'number',
           default: 10,
-        },
-        hydrogenProductionUnitId: {
-          type: 'string',
-          default: 'hydrogen-production-unit-1',
-        },
-        hydrogenAmountKg: {
-          type: 'number',
-          default: 5,
         },
       },
     },

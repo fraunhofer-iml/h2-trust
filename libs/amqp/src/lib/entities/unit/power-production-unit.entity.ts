@@ -62,7 +62,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
       gridOperator: unit.powerProductionUnit?.gridOperator,
       gridLevel: unit.powerProductionUnit?.gridLevel,
       gridConnectionNumber: unit.powerProductionUnit?.gridConnectionNumber,
-      typeName: unit.powerProductionUnit?.typeName,
+      type: unit.powerProductionUnit?.type,
     }
   }
 

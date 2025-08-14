@@ -13,6 +13,6 @@ export const BatchEntityHydrogenProducedMock: BatchEntity[] = BatchHydrogenProdu
       [],
       [],
       CompanyEntityHydrogenMock,
-      null,
+      undefined,
     ),
 );

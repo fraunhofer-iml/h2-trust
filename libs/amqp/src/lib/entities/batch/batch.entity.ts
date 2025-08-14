@@ -1,5 +1,6 @@
 import { BatchDbType } from '@h2-trust/database';
 import { CompanyEntity } from '../company';
+import { HydrogenStorageUnitEntity } from '../unit';
 
 export class BatchEntity {
   id?: string;
@@ -10,7 +11,7 @@ export class BatchEntity {
   predecessors?: BatchEntity[];
   successors?: BatchEntity[];
   owner?: CompanyEntity;
-  hydrogenStorageUnitId?: string | null;
+  hydrogenStorageUnit?: HydrogenStorageUnitEntity;
 
   constructor(
     id: string,
@@ -21,7 +22,7 @@ export class BatchEntity {
     predecessors: BatchEntity[],
     successors: BatchEntity[],
     owner: CompanyEntity,
-    hydrogenStorageUnitId: string | null,
+    hydrogenStorageUnit: HydrogenStorageUnitEntity | undefined,
   ) {
     this.id = id;
     this.active = active;
@@ -31,7 +32,7 @@ export class BatchEntity {
     this.predecessors = predecessors;
     this.successors = successors;
     this.owner = owner;
-    this.hydrogenStorageUnitId = hydrogenStorageUnitId;
+    this.hydrogenStorageUnit = hydrogenStorageUnit;
   }
 
   static fromDatabase(batch: BatchDbType): BatchEntity {
@@ -48,7 +49,9 @@ export class BatchEntity {
         BatchEntity.fromDatabase({ ...succ, predecessors: [], successors: [] }),
       ),
       owner: CompanyEntity.fromDatabase(batch.owner),
-      hydrogenStorageUnitId: batch.hydrogenStorageUnitId,
+      hydrogenStorageUnit: {
+        name: batch.hydrogenStorageUnit?.generalInfo?.name,
+      }
     };
   }
 }

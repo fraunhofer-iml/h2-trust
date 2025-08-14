@@ -1,14 +1,17 @@
-import { PowerAccessApprovalEntity } from "@h2-trust/amqp";
-import { PowerAccessApprovalRepository } from "libs/database/src/lib";
+import { PowerAccessApprovalEntity, UserDetailsEntity } from "@h2-trust/amqp";
+import { PowerAccessApprovalRepository, UserRepository } from "libs/database/src/lib";
 import { Injectable } from "@nestjs/common";
 import { PowerAccessApprovalStatus } from "@prisma/client";
 
 
 @Injectable()
 export class PowerAccessApprovalService {
-    constructor(private readonly repository: PowerAccessApprovalRepository) {}
+    constructor(private readonly powerAccessApprovalRepository: PowerAccessApprovalRepository,
+        private readonly userRepository: UserRepository
+    ) { }
 
-    async findAll(companyId: string, _status: PowerAccessApprovalStatus): Promise<PowerAccessApprovalEntity[]> {
-        return this.repository.findAll(companyId, _status);
+    async findAll(userId: string, powerAccessApprovalStatus: PowerAccessApprovalStatus): Promise<PowerAccessApprovalEntity[]> {
+        const userWithCompany: UserDetailsEntity = await this.userRepository.findUserWithCompany(userId);
+        return this.powerAccessApprovalRepository.findAll(userWithCompany.company.id, powerAccessApprovalStatus);
     }
 }

@@ -7,7 +7,7 @@ import { assertRecordFound } from './utils';
 
 @Injectable()
 export class ProcessStepRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   async findProcessStep(id: string): Promise<ProcessStepEntity> {
     return this.prismaService.processStep
@@ -95,10 +95,10 @@ export class ProcessStepRepository {
                   return { id: batch.id };
                 }),
               },
-              ...(entity.batch.hydrogenStorageUnitId && {
+              ...(entity.batch.hydrogenStorageUnit?.id && {
                 hydrogenStorageUnit: {
                   connect: {
-                    id: entity.batch.hydrogenStorageUnitId,
+                    id: entity.batch.hydrogenStorageUnit.id,
                   },
                 },
               }),

@@ -41,7 +41,7 @@ export class ProductionOverviewDto {
       color: parseColor(processStep.batch?.quality),
       powerProducer: processStep.batch?.predecessors?.[0]?.owner?.name,
       powerConsumed: ProductionOverviewDto.determinePowerConsumed(processStep),
-      storageUnit: 'Hydrogen Storage Unit 800',
+      storageUnit: processStep.batch?.hydrogenStorageUnit?.name,
     };
   }
 

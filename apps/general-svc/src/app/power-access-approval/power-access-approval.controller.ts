@@ -10,7 +10,7 @@ export class PowerAccessApprovalController {
   constructor(private readonly service: PowerAccessApprovalService) { }
 
   @MessagePattern(PowerAccessApprovalPattern.READ)
-  async findAll(@Payload() payload: { companyId: string, status: PowerAccessApprovalStatus }): Promise<PowerAccessApprovalEntity[]> {
-    return this.service.findAll(payload.companyId, payload.status);
+  async findAll(@Payload() payload: { userId: string, powerAccessApprovalStatus: PowerAccessApprovalStatus }): Promise<PowerAccessApprovalEntity[]> {
+    return this.service.findAll(payload.userId, payload.powerAccessApprovalStatus);
   }
 }

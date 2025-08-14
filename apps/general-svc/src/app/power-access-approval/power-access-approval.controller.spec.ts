@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PowerAccessApprovalController } from './power-access-approval.controller';
 import { PowerAccessApprovalService } from './power-access-approval.service';
-import { PowerAccessApprovalRepository } from '@h2-trust/database';
+import { PowerAccessApprovalRepository, UserRepository } from '@h2-trust/database';
 
 describe('PowerAccessApprovalController', () => {
   let controller: PowerAccessApprovalController;
@@ -13,6 +13,12 @@ describe('PowerAccessApprovalController', () => {
         PowerAccessApprovalService,
         {
           provide: PowerAccessApprovalRepository,
+          useValue: {
+            send: jest.fn(),
+          },
+        },
+        {
+          provide: UserRepository,
           useValue: {
             send: jest.fn(),
           },

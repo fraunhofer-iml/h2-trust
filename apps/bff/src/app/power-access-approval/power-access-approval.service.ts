@@ -11,9 +11,8 @@ export class PowerAccessApprovalService {
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
   ) { }
 
-
-  async findAll(companyId: string, _status: PowerAccessApprovalStatus): Promise<PowerAccessApprovalDto[]> {
-    return firstValueFrom(this.generalService.send(PowerAccessApprovalPattern.READ, { companyId: companyId, status: _status }))
-    .then((entities) => entities.map(PowerAccessApprovalDto.fromEntity));
+  async findAll(userId: string, powerAccessApprovalStatus: PowerAccessApprovalStatus): Promise<PowerAccessApprovalDto[]> {
+    return firstValueFrom(this.generalService.send(PowerAccessApprovalPattern.READ, { userId, powerAccessApprovalStatus }))
+      .then((entities) => entities.map(PowerAccessApprovalDto.fromEntity));
   }
 }

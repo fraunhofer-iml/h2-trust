@@ -13,6 +13,6 @@ export const BatchEntityPowerProducedMock: BatchEntity[] = BatchPowerProducedSee
       [],
       [],
       CompanyEntityPowerMock,
-      null,
+      undefined,
     ),
 );
