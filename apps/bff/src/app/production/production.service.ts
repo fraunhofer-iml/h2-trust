@@ -16,7 +16,6 @@ import {
   CreateProductionDto,
   ProcessType,
   ProductionOverviewDto,
-  ProductionOverviewDtoMock,
   UserDetailsDto,
 } from '@h2-trust/api';
 import { UserService } from '../user/user.service';
@@ -28,11 +27,9 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   async createProduction(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    if (!dto.powerProductionUnitId) return ProductionOverviewDtoMock;
-
     const hydrogenColor = await this.fetchHydrogenColor(dto.powerProductionUnitId);
     const hydrogenStorageUnitId = await this.fetchHydrogenStorageUnitId(dto.hydrogenProductionUnitId);
     const companyIdOfPowerProductionUnit = await this.fetchCompanyOfProductionUnit(dto.powerProductionUnitId);

@@ -23,4 +23,11 @@ export const CompanySeed = <Company[]>[
     companyType: CompanyType.HYDROGEN_RECIPIENT,
     addressId: AddressSeed[1].id,
   },
+  {
+    id: 'company-grid-1',
+    name: 'Power Grid AG',
+    mastrNumber: 'PG1000',
+    companyType: CompanyType.POWER_PRODUCER, // maybe we need to distinguish between grid operators and power producers
+    addressId: AddressSeed[3].id,
+  },
 ];

@@ -94,4 +94,17 @@ export const UnitSeed = <Unit[]>[
     addressId: AddressSeed[1].id,
     companyId: CompanySeed[1].id,
   },
+  {
+    id: 'power-grid-unit-1',
+    name: 'Grid Connection',
+    mastrNumber: 'GRID-2025-01',
+    manufacturer: CompanySeed[3].name,
+    modelType: 'GridConnection',
+    modelNumber: 'GRID-001',
+    serialNumber: 'GRID-SN-0001',
+    commissionedOn: new Date('2025-08-14'),
+    decommissioningPlannedOn: new Date('2035-08-14'),
+    addressId: AddressSeed[3].id,
+    companyId: CompanySeed[3].id,
+  },
 ];

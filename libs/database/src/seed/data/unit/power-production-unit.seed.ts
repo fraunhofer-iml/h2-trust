@@ -1,6 +1,7 @@
 import { PowerProductionUnit, Prisma } from '@prisma/client';
 import { PowerProductionUnitTypeSeed } from './power-production-unit-type.seed';
 import { UnitSeed } from './unit.seed';
+import { CompanySeed } from '../company.seed';
 
 export const PowerProductionUnitSeed = <PowerProductionUnit[]>[
   {
@@ -34,5 +35,13 @@ export const PowerProductionUnitSeed = <PowerProductionUnit[]>[
     gridLevel: 'Medium Voltage',
     gridConnectionNumber: 'GCN-2025-004',
     typeName: PowerProductionUnitTypeSeed[6].name,
+  },
+  {
+    id: UnitSeed[7].id,
+    ratedPower: new Prisma.Decimal(100000),
+    gridOperator: CompanySeed[3].name,
+    gridLevel: 'High Voltage',
+    gridConnectionNumber: 'GRID-2025-01',
+    typeName: PowerProductionUnitTypeSeed[11].name,
   },
 ];

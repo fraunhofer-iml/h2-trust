@@ -59,7 +59,7 @@ export class AddProductionDataComponent {
   }>({
     productionStartedAt: new FormControl<Date | null>(new Date(), Validators.required),
     productionEndedAt: new FormControl<Date | null>(new Date(), Validators.required),
-    powerProductionUnit: new FormControl<PowerProductionOverviewDto | null>(null),
+    powerProductionUnit: new FormControl<PowerProductionOverviewDto | null>(null, Validators.required),
     powerAmountKwh: new FormControl<number | null>(null, Validators.required),
     hydrogenProductionUnit: new FormControl<HydrogenProductionOverviewDto | null>(null, Validators.required),
     hydrogenStorageUnit: new FormControl<HydrogenStorageOverviewDto | null>(null, Validators.required),
@@ -71,7 +71,6 @@ export class AddProductionDataComponent {
     queryFn: async () => {
       const approvals = await this.powerAccessApprovalsService.getApprovals(PowerAccessApprovalStatus.APPROVED);
       return [
-        { value: null, name: 'Grid' },
         ...approvals.map((a) => ({
           value: a.powerProductionUnit,
           name: `${a.powerProducer.name} | ${a.powerProductionUnit.name}`,
@@ -157,7 +156,7 @@ export class AddProductionDataComponent {
       !!this.form.value.hydrogenAmountKg &&
       !!this.form.value.hydrogenStorageUnit &&
       this.form.value.hydrogenAmountKg >
-        this.form.value.hydrogenStorageUnit.capacity - this.form.value.hydrogenStorageUnit.filling
+      this.form.value.hydrogenStorageUnit.capacity - this.form.value.hydrogenStorageUnit.filling
     );
   }
 }

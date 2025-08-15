@@ -56,4 +56,9 @@ export const PowerProductionUnitTypeSeed = <PowerProductionUnitType[]>[
     energySource: 'GEOTHERMAL_ENERGY',
     hydrogenColor: HydrogenColor.YELLOW,
   },
+  {
+    name: 'GRID',
+    energySource: 'Grid',
+    hydrogenColor: HydrogenColor.MIX,
+  },
 ];

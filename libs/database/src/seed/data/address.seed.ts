@@ -25,4 +25,12 @@ export const AddressSeed = <Address[]>[
     state: 'Empfängerland',
     country: 'Empfängerland',
   },
+  {
+    id: 'address-grid-1',
+    street: 'Stromnetzstraße 1',
+    postalCode: '11111',
+    city: 'Netzstadt',
+    state: 'Netzland',
+    country: 'Netzland',
+  },
 ];
