@@ -41,6 +41,7 @@ include:
   - 'apps/batch-svc/.gitlab-ci.yml'
   - 'apps/process-svc/.gitlab-ci.yml'
   - 'apps/frontend/.gitlab-ci.yml'
+  - 'libs/.gitlab-ci.yml'
 
 all:license-check:
   stage: analysis

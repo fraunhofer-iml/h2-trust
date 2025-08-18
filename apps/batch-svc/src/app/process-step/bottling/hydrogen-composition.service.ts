@@ -2,12 +2,11 @@ import { firstValueFrom } from 'rxjs';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
-  BrokerException,
   BrokerQueues,
   HydrogenComponentEntity,
   HydrogenStorageUnitEntity,
   ProcessStepEntity,
-  UnitMessagePatterns,
+  UnitMessagePatterns, HydrogenCompositionUtil
 } from '@h2-trust/amqp';
 import { HydrogenColorDbEnum } from '@h2-trust/database';
 import { parseColor } from '@h2-trust/api';
@@ -26,23 +25,13 @@ export class HydrogenCompositionService {
     const hydrogenStorageUnit: HydrogenStorageUnitEntity = await firstValueFrom(
       this.generalService.send(UnitMessagePatterns.READ, { id: processStep.executedBy.id }),
     );
-    return this.computeMixedComposition(hydrogenStorageUnit, processStep.batch.amount);
-  }
-
-  private computeMixedComposition(
-    hydrogenStorageUnit: HydrogenStorageUnitEntity,
-    requestedAmount: number,
-  ): HydrogenComponentEntity[] {
-    const totalStoredAmount = hydrogenStorageUnit.filling.reduce((sum, batch) => sum + batch.amount, 0);
-    if (totalStoredAmount <= 0) {
+    try {
+      return HydrogenCompositionUtil.computeHydrogenComposition(hydrogenStorageUnit.filling, processStep.batch.amount);
+    } catch (BrokerException) {
       throw new BrokerException(
-`Total stored amount of ${hydrogenStorageUnit.id} is not greater than 0`,
+        `Total stored amount of ${hydrogenStorageUnit.id} is not greater than 0`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-
-    return hydrogenStorageUnit.filling.map(
-      ({ color, amount }) => new HydrogenComponentEntity(color, (requestedAmount * amount) / totalStoredAmount),
-    );
   }
 }

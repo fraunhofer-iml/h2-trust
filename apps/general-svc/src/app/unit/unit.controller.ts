@@ -4,6 +4,7 @@ import {
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
   PowerProductionUnitEntity,
+  PowerProductionUnitTypeEntity,
   UnitEntity,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
@@ -33,5 +34,10 @@ export class UnitController {
   @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_STORAGE_UNITS)
   async readHydrogenStorageUnits(@Payload() payload: { companyId: string }): Promise<HydrogenStorageUnitEntity[]> {
     return this.service.readHydrogenStorageUnits(payload.companyId);
+  }
+
+  @MessagePattern(UnitMessagePatterns.READ_POWER_PRODUCTION_UNIT_TYPES)
+  async readPowerProductionUnitTypes(): Promise<PowerProductionUnitTypeEntity[]> {
+    return this.service.readPowerProductionUnitTypes();
   }
 }

@@ -12,7 +12,7 @@ export const ProcessStepPowerProductionSeed = <ProcessStep[]>[
     processTypeName: ProcessTypeSeed[0].name,
     batchId: BatchPowerProducedSeed[0].id,
     userId: UserSeed[0].id,
-    unitId: PowerProductionUnitSeed[0].id,
+    unitId: PowerProductionUnitSeed[3].id,
   },
   {
     id: 'process-step-power-production-2',
@@ -21,7 +21,7 @@ export const ProcessStepPowerProductionSeed = <ProcessStep[]>[
     processTypeName: ProcessTypeSeed[0].name,
     batchId: BatchPowerProducedSeed[1].id,
     userId: UserSeed[0].id,
-    unitId: PowerProductionUnitSeed[0].id,
+    unitId: PowerProductionUnitSeed[2].id,
   },
   {
     id: 'process-step-power-production-3',
@@ -30,7 +30,7 @@ export const ProcessStepPowerProductionSeed = <ProcessStep[]>[
     processTypeName: ProcessTypeSeed[0].name,
     batchId: BatchPowerProducedSeed[2].id,
     userId: UserSeed[0].id,
-    unitId: PowerProductionUnitSeed[0].id,
+    unitId: PowerProductionUnitSeed[1].id,
   },
   {
     id: 'process-step-power-production-4',
@@ -57,7 +57,7 @@ export const ProcessStepPowerProductionSeed = <ProcessStep[]>[
     processTypeName: ProcessTypeSeed[0].name,
     batchId: BatchPowerProducedSeed[5].id,
     userId: UserSeed[0].id,
-    unitId: PowerProductionUnitSeed[0].id,
+    unitId: PowerProductionUnitSeed[1].id,
   },
   {
     id: 'process-step-power-production-7',
@@ -66,7 +66,7 @@ export const ProcessStepPowerProductionSeed = <ProcessStep[]>[
     processTypeName: ProcessTypeSeed[0].name,
     batchId: BatchPowerProducedSeed[6].id,
     userId: UserSeed[0].id,
-    unitId: PowerProductionUnitSeed[0].id,
+    unitId: PowerProductionUnitSeed[2].id,
   },
   {
     id: 'process-step-power-production-8',
@@ -75,6 +75,6 @@ export const ProcessStepPowerProductionSeed = <ProcessStep[]>[
     processTypeName: ProcessTypeSeed[0].name,
     batchId: BatchPowerProducedSeed[7].id,
     userId: UserSeed[0].id,
-    unitId: PowerProductionUnitSeed[0].id,
+    unitId: PowerProductionUnitSeed[3].id,
   },
 ];

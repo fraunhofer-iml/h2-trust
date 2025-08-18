@@ -8,14 +8,15 @@
 
 import { Module } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
-import { 
-  BatchRepository, 
-  CompanyRepository, 
-  DocumentRepository, 
-  PowerAccessApprovalRepository, 
-  ProcessStepRepository, 
-  UnitRepository, 
-  UserRepository, 
+import {
+  BatchRepository,
+  CompanyRepository,
+  DocumentRepository,
+  PowerAccessApprovalRepository,
+  PowerProductionUnitTypeRepository,
+  ProcessStepRepository,
+  UnitRepository,
+  UserRepository
 } from './repositories';
 
 @Module({
@@ -28,16 +29,18 @@ import {
     BatchRepository,
     DocumentRepository,
     PowerAccessApprovalRepository,
+    PowerProductionUnitTypeRepository,
     CompanyRepository,
   ],
   exports: [
-    PrismaService, 
-    UserRepository, 
-    UnitRepository, 
-    ProcessStepRepository, 
-    BatchRepository, 
-    DocumentRepository, 
-    PowerAccessApprovalRepository, 
+    PrismaService,
+    UserRepository,
+    UnitRepository,
+    ProcessStepRepository,
+    BatchRepository,
+    DocumentRepository,
+    PowerAccessApprovalRepository,
+    PowerProductionUnitTypeRepository,
     CompanyRepository,
   ],
 })

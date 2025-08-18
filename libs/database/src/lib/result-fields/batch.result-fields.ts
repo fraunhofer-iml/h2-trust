@@ -12,6 +12,7 @@ export const batchResultFields = Prisma.validator<Prisma.BatchDefaultArgs>()({
             generalInfo: true
           },
         },
+        processStep: true,
       },
     },
     successors: {
@@ -22,12 +23,14 @@ export const batchResultFields = Prisma.validator<Prisma.BatchDefaultArgs>()({
             generalInfo: true
           },
         },
+        processStep: true,
       },
     },
     hydrogenStorageUnit: {
       include: {
-        generalInfo: true
+        generalInfo: true,
       },
     },
+    processStep: true,
   },
 });

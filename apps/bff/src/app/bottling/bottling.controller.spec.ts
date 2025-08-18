@@ -20,11 +20,11 @@ import {
   CompanyDto,
   ProcessType,
   ProductPassDto,
-  proofOfOriginSectionsMock,
   UserDetailsDto,
   UserDetailsDtoMock,
 } from '@h2-trust/api';
 import { UserService } from '../user/user.service';
+import { ProofOfOriginService } from './proof-of-origin/proof-of-origin.service';
 
 describe('BottlingController', () => {
   let controller: BottlingController;
@@ -61,6 +61,12 @@ describe('BottlingController', () => {
           provide: UserService,
           useValue: {
             readUserWithCompany: jest.fn(),
+          },
+        },
+        {
+          provide: ProofOfOriginService,
+          useValue: {
+            readProofOfOrigin: jest.fn(),
           },
         },
       ],
@@ -170,7 +176,7 @@ describe('BottlingController', () => {
       .spyOn(processSvc, 'send')
       .mockImplementation((_messagePattern: BottlingMessagePatterns, _data: any) => of(hydrogenCompositionMock));
 
-    const actualResponse: ProductPassDto = await controller.readProductPass(givenProcessStepIdParam);
+    const actualResponse: ProductPassDto = await controller.readGeneralInformation(givenProcessStepIdParam);
 
     const expectedResponse: ProductPassDto = {
       ...ProductPassDto.fromEntityToDto(processStepEntityMock),
@@ -181,9 +187,4 @@ describe('BottlingController', () => {
     expect(actualResponse).toEqual(expectedResponse);
   });
 
-  it('should return proof of origin', async () => {
-    const expectedResult = proofOfOriginSectionsMock;
-    const result = controller.readProofOfOrigin('id');
-    expect(result).toEqual(expectedResult);
-  });
 });

@@ -2,7 +2,7 @@ import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { BrokerQueues, HydrogenComponentEntity, ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
-import { HydrogenCompositionCalculator } from './hydrogen-composition-calculator';
+import { HydrogenComponentAssembler } from './hydrogen-component-assembler';
 
 @Injectable()
 export class BottlingService {
@@ -13,6 +13,6 @@ export class BottlingService {
       this.batchService.send(ProcessStepMessagePatterns.READ_UNIQUE, { processStepId: bottlingProcessStepId }),
     );
 
-    return HydrogenCompositionCalculator.calculateFromBottlingProcessStep(bottlingProcessStep);
+    return HydrogenComponentAssembler.assembleFromBottlingProcessStep(bottlingProcessStep);
   }
 }

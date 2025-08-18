@@ -8,7 +8,7 @@
 
 export enum ProcessStepMessagePatterns {
   READ_ALL = 'process-step.read-all',
-  BOTTLING = 'process-step.bottling',
   READ_UNIQUE = 'process-step.read-unique',
   CREATE = 'process-step.create',
+  BOTTLING = 'process-step.bottling',
 }

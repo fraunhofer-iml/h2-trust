@@ -32,7 +32,7 @@ export const powerSupplyClassificationsMock: ClassificationDto[] = [
     batches: [],
     classifications: powerTypeClassificationsMock,
     emission: 260,
-    name: 'POWWER SUPPLY',
+    name: 'POWER SUPPLY',
     classificationType: 'POWER',
     unit: 'kWh',
   },

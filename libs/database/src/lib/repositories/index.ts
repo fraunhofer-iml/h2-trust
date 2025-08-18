@@ -4,4 +4,5 @@ export * from './process-step.repository';
 export * from './unit.repository';
 export * from './user.repository';
 export * from './power-access-approval.repository';
+export * from './power-production-unit-type.repository';
 export * from './company.repository';

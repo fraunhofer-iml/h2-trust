@@ -17,7 +17,8 @@ export const ProcessStepDbTypeMock = <ProcessStepDbType[]>[
           ...UnitSeed[5],
         },
         ...HydrogenStorageUnitSeed[1],
-      }
+      },
+      processStep: null,
     },
     executedBy: {
       ...UnitSeed[4],

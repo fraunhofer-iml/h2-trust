@@ -1,28 +1,17 @@
 import { HttpStatus } from '@nestjs/common';
-import { BrokerException, HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/amqp';
+import { BatchEntity, BrokerException, HydrogenComponentEntity, ProcessStepEntity, HydrogenCompositionUtil } from '@h2-trust/amqp';
 import { parseColor, ProcessType } from '@h2-trust/api';
 import { BatchTypeDbEnum } from '@h2-trust/database';
 
-export class HydrogenCompositionCalculator {
-  static calculateFromBottlingProcessStep(bottlingProcessStep: ProcessStepEntity): HydrogenComponentEntity[] {
+export class HydrogenComponentAssembler {
+  static assembleFromBottlingProcessStep(bottlingProcessStep: ProcessStepEntity): HydrogenComponentEntity[] {
     this.validateProcessStep(bottlingProcessStep);
 
-    const colorToAmount = new Map<string, number>();
+    const predecessorHydrogenComponents = bottlingProcessStep.batch.predecessors.map(
+      HydrogenComponentAssembler.createHydrogenComponentFromBatch,
+    );
 
-    for (const predecessor of bottlingProcessStep.batch.predecessors) {
-      if (predecessor.type !== BatchTypeDbEnum.HYDROGEN) {
-        const errorMessage = `Predecessor batch ${predecessor.id} should be type ${BatchTypeDbEnum.HYDROGEN}, but is ${predecessor.type}.`;
-        throw new BrokerException(errorMessage, HttpStatus.BAD_REQUEST);
-      }
-
-      const currentAmount: number = predecessor.amount;
-      const currentColor: string = parseColor(predecessor.quality);
-
-      const updatedAmount: number = (colorToAmount.get(currentColor) ?? 0) + currentAmount;
-      colorToAmount.set(currentColor, updatedAmount);
-    }
-
-    return Array.from(colorToAmount.entries()).map(([color, amount]) => new HydrogenComponentEntity(color, amount));
+    return HydrogenCompositionUtil.computeHydrogenComposition(predecessorHydrogenComponents, bottlingProcessStep.batch.amount);
   }
 
   private static validateProcessStep(bottlingProcessStep: ProcessStepEntity): void {
@@ -45,5 +34,13 @@ export class HydrogenCompositionCalculator {
       const errorMessage = `ProcessStep ${bottlingProcessStep.id} does not have predecessors.`;
       throw Error(errorMessage);
     }
+  }
+
+  private static createHydrogenComponentFromBatch(batch: BatchEntity): HydrogenComponentEntity {
+    if (batch.type !== BatchTypeDbEnum.HYDROGEN) {
+      const errorMessage = `Predecessor batch ${batch.id} should be type ${BatchTypeDbEnum.HYDROGEN}, but is ${batch.type}.`;
+      throw new BrokerException(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+    return new HydrogenComponentEntity(parseColor(batch.quality), batch.amount);
   }
 }

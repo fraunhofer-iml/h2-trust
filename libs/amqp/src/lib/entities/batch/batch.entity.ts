@@ -12,6 +12,7 @@ export class BatchEntity {
   successors?: BatchEntity[];
   owner?: CompanyEntity;
   hydrogenStorageUnit?: HydrogenStorageUnitEntity;
+  processStepId?: string;
 
   constructor(
     id: string,
@@ -23,6 +24,7 @@ export class BatchEntity {
     successors: BatchEntity[],
     owner: CompanyEntity,
     hydrogenStorageUnit: HydrogenStorageUnitEntity | undefined,
+    processStepId?: string,
   ) {
     this.id = id;
     this.active = active;
@@ -33,6 +35,7 @@ export class BatchEntity {
     this.successors = successors;
     this.owner = owner;
     this.hydrogenStorageUnit = hydrogenStorageUnit;
+    this.processStepId = processStepId;
   }
 
   static fromDatabase(batch: BatchDbType): BatchEntity {
@@ -51,7 +54,8 @@ export class BatchEntity {
       owner: CompanyEntity.fromDatabase(batch.owner),
       hydrogenStorageUnit: {
         name: batch.hydrogenStorageUnit?.generalInfo?.name,
-      }
+      },
+      processStepId: batch.processStep?.id,
     };
   }
 }

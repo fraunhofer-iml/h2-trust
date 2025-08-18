@@ -20,10 +20,14 @@ import {
 import { BottlingService } from './bottling.service';
 import 'multer';
 import { AuthenticatedUser, Public } from 'nest-keycloak-connect';
+import { ProofOfOriginService } from './proof-of-origin/proof-of-origin.service';
 
 @Controller('bottlings')
 export class BottlingController {
-  constructor(private readonly service: BottlingService) {}
+  constructor(
+    private readonly bottlingService: BottlingService,
+    private readonly proofOfOriginService: ProofOfOriginService,
+    ) {}
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))
@@ -80,7 +84,7 @@ export class BottlingController {
     @UploadedFile() file: Express.Multer.File,
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<BottlingOverviewDto> {
-    return this.service.createBottling(dto, file, authenticatedUser.sub);
+    return this.bottlingService.createBottling(dto, file, authenticatedUser.sub);
   }
 
   @Get()
@@ -95,7 +99,7 @@ export class BottlingController {
   async readBottlingsByCompany(
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<BottlingOverviewDto[]> {
-    return this.service.readBottlingsByCompany(authenticatedUser.sub);
+    return this.bottlingService.readBottlingsByCompany(authenticatedUser.sub);
   }
 
   @Public()
@@ -113,22 +117,22 @@ export class BottlingController {
     description: 'Unique identifier of the bottling process step.',
     example: 'process-step-hydrogen-bottling-1',
   })
-  async readProductPass(@Param('id') processStepId: string): Promise<ProductPassDto> {
-    return this.service.readProductPass(processStepId);
+  async readGeneralInformation(@Param('id') processStepId: string): Promise<ProductPassDto> {
+    return this.bottlingService.readGeneralInformation(processStepId);
   }
 
   @Public()
   @Get(':id/proof-of-origin')
   @ApiBearerAuth()
   @ApiOperation({
-    description: 'Retrieve the proof of origin by the corresponding batch ID.',
+    description: 'Retrieve the proof of origin by the corresponding process-step ID.',
   })
   @ApiParam({
     name: 'id',
-    description: 'Unique identifier of the batch.',
-    example: 'hydrogen-batch-2',
+    description: 'Unique identifier of the process-step.',
+    example: 'process-step-hydrogen-bottling-2',
   })
-  readProofOfOrigin(@Param('id') batchId: string): SectionDto[] {
-    return this.service.readProofOfOrigin(batchId);
+  readProofOfOrigin(@Param('id') processStepId: string): Promise<SectionDto[]> {
+    return this.proofOfOriginService.readProofOfOrigin(processStepId);
   }
 }

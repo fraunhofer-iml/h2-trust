@@ -1,8 +1,8 @@
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { BatchTypeDbEnum } from '@h2-trust/database';
-import { HydrogenCompositionCalculator } from './hydrogen-composition-calculator';
+import { HydrogenComponentAssembler } from './hydrogen-component-assembler';
 
-describe('HydrogenCompositionCalculator', () => {
+describe('HydrogenComponentAssembler', () => {
   let bottlingProcessStep: ProcessStepEntity;
 
   beforeEach(() => {
@@ -27,47 +27,14 @@ describe('HydrogenCompositionCalculator', () => {
 
     const expectedResponse = [{ color: 'green', amount: 1 }];
 
-    const actualResponse = HydrogenCompositionCalculator.calculateFromBottlingProcessStep(bottlingProcessStep);
-    expect(actualResponse).toEqual(expectedResponse);
-  });
-
-  it('should calculate hydrogen composition with three different colors', () => {
-    bottlingProcessStep.batch.predecessors = [
-      { amount: 1, quality: '{"color": "blue"}', type: BatchTypeDbEnum.HYDROGEN },
-      { amount: 2, quality: '{"color": "green"}', type: BatchTypeDbEnum.HYDROGEN },
-      { amount: 3, quality: '{"color": "red"}', type: BatchTypeDbEnum.HYDROGEN },
-    ];
-
-    const expectedResponse = [
-      { color: 'blue', amount: 1 },
-      { color: 'green', amount: 2 },
-      { color: 'red', amount: 3 },
-    ];
-
-    const actualResponse = HydrogenCompositionCalculator.calculateFromBottlingProcessStep(bottlingProcessStep);
-    expect(actualResponse).toEqual(expectedResponse);
-  });
-
-  it('should calculate hydrogen composition with a duplicate color', () => {
-    bottlingProcessStep.batch.predecessors = [
-      { amount: 1, quality: '{"color": "blue"}', type: BatchTypeDbEnum.HYDROGEN },
-      { amount: 2, quality: '{"color": "red"}', type: BatchTypeDbEnum.HYDROGEN },
-      { amount: 3, quality: '{"color": "blue"}', type: BatchTypeDbEnum.HYDROGEN },
-    ];
-
-    const expectedResponse = [
-      { color: 'blue', amount: 4 },
-      { color: 'red', amount: 2 },
-    ];
-
-    const actualResponse = HydrogenCompositionCalculator.calculateFromBottlingProcessStep(bottlingProcessStep);
+    const actualResponse = HydrogenComponentAssembler.assembleFromBottlingProcessStep(bottlingProcessStep);
     expect(actualResponse).toEqual(expectedResponse);
   });
 
   it('should not calculate hydrogen composition without a processStep', () => {
     const expectedErrorMessage = 'The provided bottling process step is missing (undefined or null).';
 
-    expect(() => HydrogenCompositionCalculator.calculateFromBottlingProcessStep(undefined)).toThrow(
+    expect(() => HydrogenComponentAssembler.assembleFromBottlingProcessStep(undefined)).toThrow(
       expectedErrorMessage,
     );
   });
@@ -77,7 +44,7 @@ describe('HydrogenCompositionCalculator', () => {
 
     const expectedErrorMessage = `ProcessStep ${bottlingProcessStep.id} should be type BOTTLING, but is ${bottlingProcessStep.processType}.`;
 
-    expect(() => HydrogenCompositionCalculator.calculateFromBottlingProcessStep(bottlingProcessStep)).toThrow(
+    expect(() => HydrogenComponentAssembler.assembleFromBottlingProcessStep(bottlingProcessStep)).toThrow(
       expectedErrorMessage,
     );
   });
@@ -87,7 +54,7 @@ describe('HydrogenCompositionCalculator', () => {
 
     const expectedErrorMessage = `ProcessStep ${bottlingProcessStep.id} does not have a batch.`;
 
-    expect(() => HydrogenCompositionCalculator.calculateFromBottlingProcessStep(bottlingProcessStep)).toThrow(
+    expect(() => HydrogenComponentAssembler.assembleFromBottlingProcessStep(bottlingProcessStep)).toThrow(
       expectedErrorMessage,
     );
   });
@@ -97,7 +64,7 @@ describe('HydrogenCompositionCalculator', () => {
 
     const expectedErrorMessage = `ProcessStep ${bottlingProcessStep.id} does not have predecessors.`;
 
-    expect(() => HydrogenCompositionCalculator.calculateFromBottlingProcessStep(bottlingProcessStep)).toThrow(
+    expect(() => HydrogenComponentAssembler.assembleFromBottlingProcessStep(bottlingProcessStep)).toThrow(
       expectedErrorMessage,
     );
   });
@@ -110,7 +77,7 @@ describe('HydrogenCompositionCalculator', () => {
 
     const expectedErrorMessage = `Predecessor batch ${bottlingProcessStep.batch.predecessors[0].id} should be type ${BatchTypeDbEnum.HYDROGEN}, but is ${BatchTypeDbEnum.POWER}.`;
 
-    expect(() => HydrogenCompositionCalculator.calculateFromBottlingProcessStep(bottlingProcessStep)).toThrow(
+    expect(() => HydrogenComponentAssembler.assembleFromBottlingProcessStep(bottlingProcessStep)).toThrow(
       expectedErrorMessage,
     );
   });

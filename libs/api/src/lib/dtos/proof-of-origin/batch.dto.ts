@@ -56,10 +56,10 @@ export class WaterBatchDto extends BatchDto {
 
 export class HydrogenBatchDto extends BatchDto {
   amountVerified: number;
-  purity: number;
-  typeOfProduction: string;
   producer: string;
   unitId: string;
+  purity: number;
+  typeOfProduction: string;
   hydrogenComposition: HydrogenComponentDto[];
   color: string;
   // Renewable Fuels of Non-Biological Origin
@@ -82,24 +82,24 @@ export class HydrogenBatchDto extends BatchDto {
     emission: EmissionDto,
     creationDate: Date,
     amount: number,
-    amountVerified: number,
     unit: string,
-    purity: number,
-    typeOfProduction: string,
+    amountVerified: number,
     producer: string,
     unitId: string,
+    purity: number,
+    typeOfProduction: string,
     hydrogenComposition: HydrogenComponentDto[],
     color: string,
     rfnboReady: boolean,
     processStep: string,
-    accountingPeriodEnd?: Date,
+    accountingPeriodEnd?: Date
   ) {
     super(id, emission, creationDate, amount, unit, BatchType.HYDROGEN);
     this.amountVerified = amountVerified;
-    this.purity = purity;
-    this.typeOfProduction = typeOfProduction;
     this.producer = producer;
     this.unitId = unitId;
+    this.purity = purity;
+    this.typeOfProduction = typeOfProduction;
     this.hydrogenComposition = hydrogenComposition;
     this.color = color;
     this.rfnboReady = rfnboReady;
@@ -110,10 +110,10 @@ export class HydrogenBatchDto extends BatchDto {
 
 export class PowerBatchDto extends BatchDto {
   amountVerified: number;
-  accountingPeriodEnd: Date;
   producer: string;
   unitId: string;
   energySource: EnergySource;
+  accountingPeriodEnd: Date;
 
   constructor(
     id: string,
@@ -124,14 +124,14 @@ export class PowerBatchDto extends BatchDto {
     amountVerified: number,
     producer: string,
     unitId: string,
-    accountingPeriodEnd: Date,
     energySource: EnergySource,
+    accountingPeriodEnd: Date
   ) {
     super(id, emission, creationDate, amount, unit, BatchType.POWER);
     this.producer = producer;
     this.unitId = unitId;
     this.amountVerified = amountVerified;
-    this.accountingPeriodEnd = accountingPeriodEnd;
     this.energySource = energySource;
+    this.accountingPeriodEnd = accountingPeriodEnd;
   }
 }

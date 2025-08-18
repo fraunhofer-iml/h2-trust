@@ -1,3 +1,5 @@
+import { PowerProductionUnitTypeDbType } from '@h2-trust/database';
+
 export class PowerProductionUnitTypeEntity {
   name: string;
   energySource: string;
@@ -7,5 +9,13 @@ export class PowerProductionUnitTypeEntity {
     this.name = name;
     this.energySource = energySource;
     this.hydrogenColor = hydrogenColor;
+  }
+
+  static fromDatabase(powerProductionUnitDbType: PowerProductionUnitTypeDbType): PowerProductionUnitTypeEntity {
+    return <PowerProductionUnitTypeEntity>{
+      name: powerProductionUnitDbType.name,
+      energySource: powerProductionUnitDbType.energySource,
+      hydrogenColor: powerProductionUnitDbType.hydrogenColor,
+    };
   }
 }
