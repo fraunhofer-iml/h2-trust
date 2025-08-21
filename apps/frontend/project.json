@@ -17,6 +17,7 @@
         "tsConfig": "apps/frontend/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
+          "apps/frontend/src/assets",
           {
             "glob": "**/*",
             "input": "apps/frontend/public"

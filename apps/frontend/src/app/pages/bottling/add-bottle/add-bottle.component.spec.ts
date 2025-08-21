@@ -1,8 +1,10 @@
 import { KeycloakService } from 'keycloak-angular';
+import { of } from 'rxjs';
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef } from '@angular/material/dialog';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { provideQueryClient, QueryClient } from '@tanstack/angular-query-experimental';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
@@ -15,7 +17,7 @@ describe('AddBottleComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddBottleComponent],
+      imports: [AddBottleComponent, RouterModule],
       providers: [
         { provide: MatDialogRef, useValue: {} },
         AuthService,
@@ -26,6 +28,12 @@ describe('AddBottleComponent', () => {
           provide: KeycloakService,
           useValue: {
             getUserRoles: () => [],
+          },
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({ id: 123 }),
           },
         },
         provideQueryClient(new QueryClient()),

@@ -44,10 +44,7 @@ export class UploadFormComponent {
   @Input() selectOptions?: UploadFormSelectType[];
   @Input() showUploadedFiles = true;
   @Input() showDescriptionField = false;
-  @Input() informationText?: string;
   @Input() uploadedFiles: { file: File; documentType?: string }[] = [];
-  @Input() uploadedFilesPosition: 'bottom' | 'right' = 'bottom';
-
   @Output() uploadDocument = new EventEmitter<{ file: File; documentType?: string }>();
   @Output() removeDocument = new EventEmitter<{ file: File; documentType?: string }>();
   @Output() removeProof = new EventEmitter<UploadFormSelectType>();

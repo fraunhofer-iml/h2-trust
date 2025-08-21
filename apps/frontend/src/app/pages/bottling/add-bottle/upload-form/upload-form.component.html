@@ -1,15 +1,8 @@
-<div
-  class="grid gap-4"
-  [ngClass]="{ 'grid-cols-1': uploadedFilesPosition === 'bottom', 'grid-cols-2': uploadedFilesPosition === 'right' }"
->
-  <div class="card">
-    <div class="">
-      <h3 class="text-neutral-700">{{ title || 'Upload' }}</h3>
-      @if (informationText) {
-        <span class="material-symbols-outlined" matTooltip="{{ informationText }}"> info </span>
-      }
-    </div>
-    <form [formGroup]="formGroup">
+<div class="flex h-full flex-col gap-4">
+  <div class="flex h-full flex-col">
+    <h3 class="pb-2 text-neutral-700">{{ title || 'Upload' }}</h3>
+
+    <form [formGroup]="formGroup" class="flex h-full flex-col">
       @if (selectOptions && selectOptions.length > 0) {
         <mat-form-field appearance="outline" class="w-full">
           <mat-label class="w-full">Document Type</mat-label>
@@ -22,7 +15,7 @@
       }
 
       <div
-        class="flex w-full items-center justify-center"
+        class="flex h-full w-full items-center justify-center"
         [ngClass]="{
           'cursor-pointer': formGroup.get('documentType')?.value || showDescriptionField,
           'bg-gray-50 hover:bg-gray-100': formGroup.get('documentType')?.value || showDescriptionField,
@@ -30,7 +23,7 @@
       >
         <label
           for="dropzone-file"
-          class="flex h-64 w-full flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300"
+          class="flex h-full min-h-40 w-full flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300"
           (drop)="onDrop($event, formGroup.get('documentType')?.value)"
           (dragover)="onDragOver($event)"
           [matTooltip]="!formGroup.get('documentType')?.value && selectOptions ? 'Select a Document Type first.' : ''"
@@ -77,7 +70,7 @@
     </form>
   </div>
 
-  <div class="card" *ngIf="showUploadedFiles">
+  <div *ngIf="showUploadedFiles">
     <div class="flex border-b-2 p-2">
       @if (selectOptions) {
         <span class="material-symbols-outlined">{{
@@ -95,9 +88,7 @@
             <span class="material-symbols-outlined border-gray-200" [ngClass]="{ 'text-green-600': option.file }">
               {{ option.file ? 'check_circle' : 'pending' }}
             </span>
-            <div class="ml-2">
-              {{ option.key }}
-            </div>
+            <div class="ml-2">key: {{ option.key }}</div>
           </div>
           @if (option.file) {
             <button
@@ -112,16 +103,17 @@
         </div>
       }
     }
+
     @if (uploadedFiles && uploadedFiles.length > 0) {
       @for (uploadedFile of uploadedFiles; track $index) {
-        <div class="col-span-2 flex w-full justify-between border-b border-gray-200 p-2">
+        <div class="col-span-2 flex w-full justify-between border-b border-gray-200 p-2 text-sm text-neutral-700">
           <span>
             {{ uploadedFile.documentType }}
           </span>
           <div class="flex items-center gap-4">
             {{ uploadedFile.file.name }} ({{ uploadedFile.file.size | fileSize }})
             <button
-              class="material-symbols-outlined cursor-pointer hover:text-red-400"
+              class="material-symbols-outlined cursor-pointer text-neutral-700 hover:text-red-400"
               (click)="removeDocument.emit(uploadedFile)"
             >
               delete

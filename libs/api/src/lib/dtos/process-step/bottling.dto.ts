@@ -1,7 +1,7 @@
 import { Transform } from 'class-transformer';
 import { IsIn, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 import { BatchEntity, CompanyEntity, ProcessStepEntity } from '@h2-trust/amqp';
-import { HydrogenColor } from '../../enums';
+import { FuelType, HydrogenColor, TransportMode } from '../../enums';
 
 export class BottlingDto {
   @IsNotEmpty()
@@ -36,6 +36,13 @@ export class BottlingDto {
   @IsString()
   fileDescription?: string;
 
+  @IsNotEmpty()
+  @IsIn([TransportMode.TRAILER, TransportMode.PIPELINE])
+  transportMode: TransportMode;
+
+  @IsOptional()
+  fuelType?: FuelType;
+
   constructor(
     amount: number,
     recipient: string,
@@ -45,6 +52,8 @@ export class BottlingDto {
     file: string,
     fileDescription: string,
     color: string,
+    transportMode: TransportMode,
+    fuelType: FuelType,
   ) {
     this.amount = amount;
     this.recipient = recipient;
@@ -54,6 +63,8 @@ export class BottlingDto {
     this.file = file;
     this.fileDescription = fileDescription;
     this.color = color;
+    this.transportMode = transportMode;
+    this.fuelType = fuelType;
   }
 
   static toEntity(dto: BottlingDto): ProcessStepEntity {

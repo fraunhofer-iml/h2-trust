@@ -27,7 +27,7 @@ export class BottlingController {
   constructor(
     private readonly bottlingService: BottlingService,
     private readonly proofOfOriginService: ProofOfOriginService,
-    ) {}
+  ) {}
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))

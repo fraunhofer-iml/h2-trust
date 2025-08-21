@@ -5,62 +5,72 @@
     Digital Product Passport
   </div>
 
-  <div class="grid grid-cols-3 gap-4">
-    <div class="col-span-2 rounded-lg bg-white p-4">
-      <h3 class="font-semibold text-neutral-500">General Information</h3>
+  @if (batchQuery.error()) {
+    <app-error-card [message]="ERROR_MESSAGES.dppNotFound + id()"></app-error-card>
+  }
 
-      @if (batchQuery.isSuccess()) {
-        <div class="flex flex-row">
-          <div class="mt-2 grid w-1/2 grid-cols-2 gap-2">
-            <div class="flex flex-col text-sm">
-              <span class="text-sm text-neutral-400">Batch Id</span><span>{{ batchQuery.data().id }}</span>
-            </div>
-            <div class="flex flex-col text-sm">
-              <span class="text-sm text-neutral-400">Date</span><span>{{ batchQuery.data().filledAt | date }}</span>
-            </div>
-            <div class="flex flex-col text-sm">
-              <span class="text-sm text-neutral-400">Producer</span><span>{{ batchQuery.data().producer }}</span>
-            </div>
-            <div class="flex flex-col text-sm">
-              <span class="text-sm text-neutral-400">Amount</span><span>{{ batchQuery.data().filledAmount }} kg</span>
-            </div>
-            <div class="flex flex-col text-sm">
-              <span class="text-sm text-neutral-400">Product</span><span>{{ batchQuery.data().product }}</span>
-            </div>
-          </div>
-          <app-h2-composition-chart
-            class="w-1/2"
-            [chartData]="batchQuery.data().hydrogenComposition"
-          ></app-h2-composition-chart>
-        </div>
-      } @else {
-        <span class="material-symbols-outlined animate-spin text-neutral-400"> progress_activity </span>
-      }
+  @if (batchQuery.isLoading()) {
+    <div>
+      <span class="material-symbols-outlined animate-spin text-neutral-400"> progress_activity </span>
     </div>
+  }
 
-    <div class="rounded-lg bg-white p-4">
-      <h3 class="mb-2 font-semibold text-neutral-500">Attached Files</h3>
-      <div class="flex max-h-60 flex-col gap-2 overflow-y-auto">
-        @for (file of batchQuery.data()?.attachedFiles; track $index) {
-          <div
-            class="hover:bg-primary-100/20 flex flex-row items-center gap-2 rounded-lg border-[2px] border-solid border-transparent bg-neutral-100 p-2 hover:cursor-pointer"
-            (click)="selectedUrl = file.url; sheet.open()"
-            role="none"
-          >
-            <div class="bg-primary-200/60 flex items-center justify-center rounded-lg p-2">
-              <span class="material-symbols-outlined text-white">attach_file </span>
+  @if (batchQuery.isSuccess()) {
+    <div class="grid grid-cols-3 gap-4">
+      <div class="col-span-2 rounded-lg bg-white p-4">
+        <h3 class="font-semibold text-neutral-500">General Information</h3>
+
+        @if (batchQuery.isSuccess()) {
+          <div class="flex flex-row">
+            <div class="mt-2 grid w-1/2 grid-cols-2 gap-2">
+              <div class="flex flex-col text-sm">
+                <span class="text-sm text-neutral-400">Batch Id</span><span>{{ batchQuery.data().id }}</span>
+              </div>
+              <div class="flex flex-col text-sm">
+                <span class="text-sm text-neutral-400">Date</span><span>{{ batchQuery.data().filledAt | date }}</span>
+              </div>
+              <div class="flex flex-col text-sm">
+                <span class="text-sm text-neutral-400">Producer</span><span>{{ batchQuery.data().producer }}</span>
+              </div>
+              <div class="flex flex-col text-sm">
+                <span class="text-sm text-neutral-400">Amount</span><span>{{ batchQuery.data().filledAmount }} kg</span>
+              </div>
+              <div class="flex flex-col text-sm">
+                <span class="text-sm text-neutral-400">Product</span><span>{{ batchQuery.data().product }}</span>
+              </div>
             </div>
-            <span class="text-sm text-neutral-500">{{ file.description }}</span>
+            <app-h2-composition-chart
+              class="w-1/2"
+              [chartData]="batchQuery.data().hydrogenComposition"
+            ></app-h2-composition-chart>
           </div>
         }
       </div>
-      @if (batchQuery.data()?.attachedFiles?.length === 0) {
-        <span class="text-sm text-neutral-600">No files attached.</span>
-      }
-    </div>
 
-    <app-proof-of-origin [id]="id()" class="col-span-3"> </app-proof-of-origin>
-  </div>
+      <div class="rounded-lg bg-white p-4">
+        <h3 class="mb-2 font-semibold text-neutral-500">Attached Files</h3>
+        <div class="flex max-h-60 flex-col gap-2 overflow-y-auto">
+          @for (file of batchQuery.data().attachedFiles; track $index) {
+            <div
+              class="hover:bg-primary-100/20 flex flex-row items-center gap-2 rounded-lg border-[2px] border-solid border-transparent bg-neutral-100 p-2 hover:cursor-pointer"
+              (click)="selectedUrl = file.url; sheet.open()"
+              role="none"
+            >
+              <div class="bg-primary-200/60 flex items-center justify-center rounded-lg p-2">
+                <span class="material-symbols-outlined text-white">attach_file </span>
+              </div>
+              <span class="text-sm text-neutral-500">{{ file.description }}</span>
+            </div>
+          }
+        </div>
+        @if (batchQuery.data().attachedFiles.length === 0) {
+          <span class="text-sm text-neutral-600">No files attached.</span>
+        }
+      </div>
+
+      <app-proof-of-origin [id]="id()" class="col-span-3"> </app-proof-of-origin>
+    </div>
+  }
 </div>
 
 <app-base-sheet #sheet [size]="'medium'">

@@ -1,29 +1,33 @@
+import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
+import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
 import {
   FGFile,
+  FuelType,
   HydrogenComponentDto,
   HydrogenStorageOverviewDto,
-  UserDto
+  TransportMode,
+  UserDto,
 } from '@h2-trust/api';
-import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
 import { ERROR_MESSAGES } from '../../../shared/constants/error.messages';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
+import { BottlingForm } from './form';
 import { UploadFormComponent } from './upload-form/upload-form.component';
 
 @Component({
@@ -43,51 +47,34 @@ import { UploadFormComponent } from './upload-form/upload-form.component';
     MatButtonModule,
     MatIconModule,
     UploadFormComponent,
-    ErrorCardComponent,
     MatRadioModule,
+    RouterModule,
   ],
   templateUrl: './add-bottle.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddBottleComponent implements OnInit {
+export class AddBottleComponent {
+  router = inject(Router);
+  unitsService = inject(UnitsService);
+  companiesService = inject(CompaniesService);
+  processService = inject(BottlingService);
+
   ERROR_MESSAGES = ERROR_MESSAGES;
+  TransportType = TransportMode;
+  FuelType = FuelType;
 
   dateDelimiter: Date = new Date();
   uploadedFiles: FGFile[] = [];
 
-  bottleFormGroup: FormGroup<{
-    date: FormControl<Date | undefined | null>;
-    time: FormControl<Date | undefined | null>;
-    amount: FormControl<number | undefined | null>;
-    recipient: FormControl<UserDto | undefined | null>;
-    storageUnit: FormControl<HydrogenStorageOverviewDto | undefined | null>;
-    type: FormControl<'MIX' | 'GREEN' | undefined | null>;
-  }> = new FormGroup({
+  bottleFormGroup: FormGroup<BottlingForm> = new FormGroup({
     date: new FormControl<Date | undefined>(new Date(), Validators.required),
     time: new FormControl<Date | undefined>(new Date(), Validators.required),
     amount: new FormControl<number | undefined>(undefined, Validators.required),
     recipient: new FormControl<UserDto | undefined>(undefined, Validators.required),
     storageUnit: new FormControl<HydrogenStorageOverviewDto | undefined>(undefined, Validators.required),
     type: new FormControl<'MIX' | 'GREEN' | undefined>(undefined, Validators.required),
+    transportMode: new FormControl<TransportMode | null>(null, Validators.required),
+    fuelType: new FormControl<FuelType | null>(null),
   });
-
-  constructor(
-    public dialogRef: MatDialogRef<AddBottleComponent>,
-    private readonly unitsService: UnitsService,
-    private readonly companiesService: CompaniesService,
-    private readonly processService: BottlingService,
-  ) {}
-
-  ngOnInit() {
-    this.bottleFormGroup.controls.amount?.valueChanges.subscribe((amount) => {
-      if (!amount) return;
-
-      this.bottleFormGroup.controls.type.reset();
-
-      if (this.bottleFormGroup.value?.storageUnit && amount > this.bottleFormGroup.value?.storageUnit?.filling)
-        this.bottleFormGroup.controls.storageUnit?.reset();
-    });
-  }
 
   hydrogenStorageQuery = injectQuery(() => ({
     queryKey: ['h2-storage'],
@@ -98,6 +85,31 @@ export class AddBottleComponent implements OnInit {
     queryKey: ['recipients'],
     queryFn: () => this.companiesService.getRecipients(),
   }));
+
+  mutation = injectMutation(() => ({
+    mutationFn: (dto: FormData) => this.processService.createBottleBatch(dto),
+    onSuccess: () => {
+      toast.success('Successfully created.');
+      this.router.navigateByUrl('bottling');
+    },
+    onError: (e) => toast.error(e.message),
+  }));
+
+  constructor() {
+    this.bottleFormGroup.controls.transportMode.valueChanges.subscribe((value) => {
+      if (value === TransportMode.TRAILER) this.bottleFormGroup.controls.fuelType.addValidators(Validators.required);
+      if (value === TransportMode.PIPELINE)
+        this.bottleFormGroup.controls.fuelType.removeValidators(Validators.required);
+      this.bottleFormGroup.controls.fuelType.updateValueAndValidity();
+    });
+    this.bottleFormGroup.controls.amount?.valueChanges.subscribe((amount) => {
+      if (!amount) return;
+
+      this.bottleFormGroup.controls.type.reset();
+      if (this.bottleFormGroup.value?.storageUnit && amount > this.bottleFormGroup.value?.storageUnit?.filling)
+        this.bottleFormGroup.controls.storageUnit?.reset();
+    });
+  }
 
   submitFile({ file, documentType }: FGFile): void {
     this.uploadedFiles.push({ file, documentType });
@@ -112,11 +124,10 @@ export class AddBottleComponent implements OnInit {
   createBottleData() {
     const data = new FormData();
 
-    if (this.uploadedFiles) {
+    if (this.uploadedFiles)
       for (const file of this.uploadedFiles) {
         data.append('file', file.file);
       }
-    }
 
     data.append('amount', this.bottleFormGroup.value?.amount?.toString() ?? '');
     data.append('recipient', this.bottleFormGroup.value.recipient?.id ?? '');
@@ -124,17 +135,13 @@ export class AddBottleComponent implements OnInit {
     data.append('recordedBy', '');
     data.append('hydrogenStorageUnit', this.bottleFormGroup.value.storageUnit?.id ?? '');
     data.append('color', this.bottleFormGroup.value.type ?? '');
+    data.append('transportMode', this.bottleFormGroup.value.transportMode ?? '');
+    data.append('fuelType', this.bottleFormGroup.value.fuelType ?? '');
+
     this.mutation.mutate(data);
   }
 
-  mutation = injectMutation(() => ({
-    mutationFn: (dto: FormData) => this.processService.createBottleBatch(dto),
-    onSuccess: () => {
-      this.dialogRef.close(true);
-    },
-  }));
-
-  createTimestamp() {
+  private createTimestamp() {
     let pickedDate = new Date();
     let pickedTimeAsDate = new Date();
 

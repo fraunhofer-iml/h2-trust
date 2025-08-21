@@ -6,4 +6,6 @@ export * from './power-access-approval-status.enum';
 export * from './process-type.enum';
 export * from './unit.enum';
 export * from './energy-source.enum';
+export * from './transport-mode.enum';
 export * from './measurement-unit.enum';
+export * from './fuel-type.enum';
