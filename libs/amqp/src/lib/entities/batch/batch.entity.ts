@@ -53,6 +53,7 @@ export class BatchEntity {
       ),
       owner: CompanyEntity.fromDatabase(batch.owner),
       hydrogenStorageUnit: {
+        id: batch.hydrogenStorageUnit?.generalInfo.id,
         name: batch.hydrogenStorageUnit?.generalInfo?.name,
       },
       processStepId: batch.processStep?.id,

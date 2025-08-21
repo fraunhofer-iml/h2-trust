@@ -52,7 +52,7 @@ export class ProcessStepAssemblerService {
   // This places the newly created “remaining” batch at the beginning of the storage batch queue.
   // This seems to contradict the first-in-first-out principle,
   // but in fact a batch is now tapped before all others until it is empty.
-  assembleHydrogenProductionProcessStepForRemainingBatchAmount(
+  assembleHydrogenProductionProcessStepForRemainingAmount(
     processStep: ProcessStepEntity,
     remainingAmount: number,
     ownerId: string,
@@ -75,7 +75,9 @@ export class ProcessStepAssemblerService {
         owner: {
           id: ownerId,
         },
-        hydrogenStorageUnit: processStep.batch.hydrogenStorageUnit,
+        hydrogenStorageUnit: {
+          id: processStep.executedBy?.id
+        },
       },
     };
   }

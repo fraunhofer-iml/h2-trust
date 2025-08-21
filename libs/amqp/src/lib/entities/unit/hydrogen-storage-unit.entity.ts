@@ -8,9 +8,9 @@ import { BaseUnitEntity } from './base-unit.entity';
 import { HydrogenComponentEntity } from '../bottling';
 
 export class HydrogenStorageUnitEntity extends BaseUnitEntity {
-  capacity: number;
-  filling: HydrogenComponentEntity[];
-  hydrogenProductionUnits: {
+  capacity?: number;
+  filling?: HydrogenComponentEntity[];
+  hydrogenProductionUnits?: {
     id: string;
     name: string;
     hydrogenStorageUnitId: string;

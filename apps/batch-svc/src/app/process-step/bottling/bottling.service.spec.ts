@@ -21,7 +21,7 @@ describe('ProcessStepService', () => {
   const EXCESSIVE_AMOUNT = 10000;
 
   let service: BottlingService;
-  let processAssemblerService: ProcessStepAssemblerService;
+  let processStepAssemblerService: ProcessStepAssemblerService;
   let processStepRepository: ProcessStepRepository;
   let batchRepository: BatchRepository;
   let generalService: ClientProxy;
@@ -65,7 +65,7 @@ describe('ProcessStepService', () => {
     }).compile();
 
     service = module.get<BottlingService>(BottlingService);
-    processAssemblerService = module.get<ProcessStepAssemblerService>(ProcessStepAssemblerService);
+    processStepAssemblerService = module.get<ProcessStepAssemblerService>(ProcessStepAssemblerService);
     processStepRepository = module.get<ProcessStepRepository>(ProcessStepRepository);
     batchRepository = module.get<BatchRepository>(BatchRepository);
     generalService = module.get<ClientProxy>(BrokerQueues.QUEUE_GENERAL_SVC) as ClientProxy;
@@ -103,14 +103,14 @@ describe('ProcessStepService', () => {
       const hydrogenProcessSteps = ProcessStepEntityHydrogenProductionMock.slice(4, 5);
       jest.spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit').mockResolvedValue(hydrogenProcessSteps);
       const processAssemblerAssembleMock = jest.spyOn(
-        processAssemblerService,
-        'assembleHydrogenProductionProcessStepForRemainingBatchAmount',
+        processStepAssemblerService,
+        'assembleHydrogenProductionProcessStepForRemainingAmount',
       );
       const setBatchesInactiveSpy = jest.spyOn(batchRepository, 'setBatchesInactive');
       const createProcessStepSpy = jest
         .spyOn(processStepRepository, 'insertProcessStep')
         .mockResolvedValue(processStepData);
-      const processAssemblerCreateMock = jest.spyOn(processAssemblerService, 'createBottlingProcessStep');
+      const processAssemblerCreateMock = jest.spyOn(processStepAssemblerService, 'createBottlingProcessStep');
       const readProcessStepSpy = jest.spyOn(processStepRepository, 'findProcessStep');
 
       // Act
@@ -144,14 +144,14 @@ describe('ProcessStepService', () => {
       const hydrogenProcessSteps = ProcessStepEntityHydrogenProductionMock.slice(3, 6);
       jest.spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit').mockResolvedValue(hydrogenProcessSteps);
       const processAssemblerAssembleMock = jest.spyOn(
-        processAssemblerService,
-        'assembleHydrogenProductionProcessStepForRemainingBatchAmount',
+        processStepAssemblerService,
+        'assembleHydrogenProductionProcessStepForRemainingAmount',
       );
       const setBatchesInactiveSpy = jest.spyOn(batchRepository, 'setBatchesInactive');
       const createProcessStepSpy = jest
         .spyOn(processStepRepository, 'insertProcessStep')
         .mockResolvedValue(processStepData);
-      const processAssemblerCreateMock = jest.spyOn(processAssemblerService, 'createBottlingProcessStep');
+      const processAssemblerCreateMock = jest.spyOn(processStepAssemblerService, 'createBottlingProcessStep');
       const readProcessStepSpy = jest.spyOn(processStepRepository, 'findProcessStep');
 
       // Act
@@ -181,14 +181,14 @@ describe('ProcessStepService', () => {
       const hydrogenProcessSteps = ProcessStepEntityHydrogenProductionMock.slice(4, 8);
       jest.spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit').mockResolvedValue(hydrogenProcessSteps);
       const processAssemblerAssembleMock = jest.spyOn(
-        processAssemblerService,
-        'assembleHydrogenProductionProcessStepForRemainingBatchAmount',
+        processStepAssemblerService,
+        'assembleHydrogenProductionProcessStepForRemainingAmount',
       );
       const setBatchesInactiveSpy = jest.spyOn(batchRepository, 'setBatchesInactive');
       const createProcessStepSpy = jest
         .spyOn(processStepRepository, 'insertProcessStep')
         .mockResolvedValue(processStepData);
-      const processAssemblerCreateMock = jest.spyOn(processAssemblerService, 'createBottlingProcessStep');
+      const processAssemblerCreateMock = jest.spyOn(processStepAssemblerService, 'createBottlingProcessStep');
       const readProcessStepSpy = jest.spyOn(processStepRepository, 'findProcessStep');
       const generalServiceSpy = jest.spyOn(generalService, 'send');
       generalServiceSpy.mockImplementation((_messagePattern: UnitMessagePatterns.READ, _data: any) => {
@@ -209,7 +209,7 @@ describe('ProcessStepService', () => {
       for (let i = 0; i < hydrogenProcessSteps.length; i += 1) {
         expect(processAssemblerAssembleMock).toHaveBeenNthCalledWith(i + 1,
           processStepData,
-          hydrogenProcessSteps[i].batch.amount - processStepData.batch.amount *  hydrogenProcessSteps[i].batch.amount / totalStoredAmount,
+          hydrogenProcessSteps[i].batch.amount - processStepData.batch.amount * hydrogenProcessSteps[i].batch.amount / totalStoredAmount,
           hydrogenProcessSteps[i].batch.owner.id,
           hydrogenProcessSteps.at(i),
         );

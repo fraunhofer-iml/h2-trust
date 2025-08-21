@@ -1,6 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { BatchType } from '@prisma/client';
 import { BrokerException, ProcessStepEntity } from '@h2-trust/amqp';
+import { ProcessType } from '@h2-trust/api';
 import { PrismaService } from '../prisma.service';
 import { processStepResultFields } from '../result-fields';
 import { assertRecordFound } from './utils';
@@ -58,47 +59,62 @@ export class ProcessStepRepository {
       .then((batches) => batches.map(ProcessStepEntity.fromDatabase));
   }
 
-  async insertProcessStep(entity: ProcessStepEntity): Promise<ProcessStepEntity> {
-    if (!entity.batch) {
+  async insertProcessStep(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
+    if (processStep.processType === ProcessType.POWER_PRODUCTION && processStep.batch?.hydrogenStorageUnit?.id) {
+      throw new BrokerException(`Power production batch with amount [${processStep.batch?.amount}] has a hydrogen storage unit [${processStep.batch.hydrogenStorageUnit.id}]`, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    if (processStep.processType === ProcessType.HYDROGEN_PRODUCTION && !processStep.batch?.hydrogenStorageUnit?.id) {
+      throw new BrokerException(`Hydrogen production batch with amount [${processStep.batch?.amount}] has no hydrogen storage unit`, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    if (processStep.processType === ProcessType.BOTTLING && processStep.batch?.hydrogenStorageUnit?.id) {
+      throw new BrokerException(`Hydrogen bottling batch with amount [${processStep.batch?.amount}] has a hydrogen storage unit [${processStep.batch.hydrogenStorageUnit.id}]`, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    if (!processStep.batch) {
       throw new BrokerException('ProcessStepEntity.batch was undefined', HttpStatus.BAD_REQUEST);
     }
-    if (!entity.batch.amount) {
+
+    if (!processStep.batch.amount) {
       throw new BrokerException('ProcessStepEntity.batch.amount was undefined', HttpStatus.BAD_REQUEST);
     }
-    if (!entity.batch.predecessors) {
-      entity.batch.predecessors = [];
+
+    if (!processStep.batch.predecessors) {
+      processStep.batch.predecessors = [];
     }
+
     return this.prismaService.processStep
       .create({
         data: {
-          startedAt: entity.startedAt,
-          endedAt: entity.endedAt,
+          startedAt: processStep.startedAt,
+          endedAt: processStep.endedAt,
           processType: {
             connect: {
-              name: entity.processType,
+              name: processStep.processType,
             },
           },
           batch: {
             create: {
-              active: entity.batch.active ?? true,
-              amount: entity.batch.amount,
-              quality: entity.batch.quality ?? '{}',
-              type: BatchType[entity.batch.type as keyof typeof BatchType],
+              active: processStep.batch.active ?? true,
+              amount: processStep.batch.amount,
+              quality: processStep.batch.quality ?? '{}',
+              type: BatchType[processStep.batch.type as keyof typeof BatchType],
 
               owner: {
                 connect: {
-                  id: entity.batch.owner?.id,
+                  id: processStep.batch.owner?.id,
                 },
               },
               predecessors: {
-                connect: entity.batch.predecessors.map((batch) => {
+                connect: processStep.batch.predecessors.map((batch) => {
                   return { id: batch.id };
                 }),
               },
-              ...(entity.batch.hydrogenStorageUnit?.id && {
+              ...(processStep.batch.hydrogenStorageUnit?.id && {
                 hydrogenStorageUnit: {
                   connect: {
-                    id: entity.batch.hydrogenStorageUnit.id,
+                    id: processStep.batch.hydrogenStorageUnit.id,
                   },
                 },
               }),
@@ -106,12 +122,12 @@ export class ProcessStepRepository {
           },
           recordedBy: {
             connect: {
-              id: entity.recordedBy?.id,
+              id: processStep.recordedBy?.id,
             },
           },
           executedBy: {
             connect: {
-              id: entity.executedBy?.id,
+              id: processStep.executedBy?.id,
             },
           },
         },
