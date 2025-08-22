@@ -14,30 +14,38 @@ export class ProofOfOriginService {
     private readonly inputMediaSectionService: InputMediaSectionService,
   ) {}
 
-  async readProofOfOrigin(processStepId: string): Promise<SectionDto[]> {
-    const processStepEntity: ProcessStepEntity = await this.processStepService.fetchProcessStep(processStepId);
-    if (processStepEntity.processType !== ProcessType.BOTTLING) {
+  async readProofOfOrigin(hydrogenBottlingProcessStepId: string): Promise<SectionDto[]> {
+    const hydrogenBottlingProcessStep: ProcessStepEntity =
+      await this.processStepService.fetchProcessStep(hydrogenBottlingProcessStepId);
+
+    if (hydrogenBottlingProcessStep.processType !== ProcessType.BOTTLING) {
+      const errorMessage = `ProcessStep with ID ${hydrogenBottlingProcessStepId} should be of type ${ProcessType.BOTTLING}, but is ${hydrogenBottlingProcessStep.processType}`;
+      throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    const hydrogenProductionProcessSteps = await this.processStepService.fetchProcessStepsOfBatches(
+      hydrogenBottlingProcessStep.batch.predecessors,
+    );
+
+    if (!hydrogenProductionProcessSteps || hydrogenProductionProcessSteps.length === 0) {
       throw new HttpException(
-        `ProcessStep with ID ${processStepId} should be of type ${ProcessType.BOTTLING}, but is ${processStepEntity.processType}`,
+        `Predecessor process steps of type ${ProcessType.HYDROGEN_PRODUCTION} must not be empty.`,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const hydrogenProductionProcessSteps =
-      await this.processStepService.fetchPredecessorProcessSteps(processStepEntity);
-    if (
-      hydrogenProductionProcessSteps.length === 0 ||
-      !hydrogenProductionProcessSteps.every((step) => step.processType === ProcessType.HYDROGEN_PRODUCTION)
-    ) {
-      throw new HttpException(
-        `Predecessor process steps must not be empty and must be of type ${ProcessType.HYDROGEN_PRODUCTION}`,
-        HttpStatus.BAD_REQUEST,
-      );
+    const invalidProcessSteps = hydrogenProductionProcessSteps.filter(
+      (step) => step.processType !== ProcessType.HYDROGEN_PRODUCTION,
+    );
+
+    if (invalidProcessSteps.length > 0) {
+      const errorMessage = `All predecessor process steps of ${hydrogenBottlingProcessStep.id} must be of type ${ProcessType.HYDROGEN_PRODUCTION}, but found invalid process steps: ${invalidProcessSteps.map((step) => step.id + ' ' + step.processType).join(', ')}`;
+      throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
     const [inputMediaSection, bottlingSection] = await Promise.all([
       this.inputMediaSectionService.buildInputMediaSection(hydrogenProductionProcessSteps),
-      this.bottlingSectionService.buildBottlingSection(processStepEntity),
+      this.bottlingSectionService.buildBottlingSection(hydrogenBottlingProcessStep),
     ]);
     const productionSection = ProductionSectionAssembler.buildProductionSection(hydrogenProductionProcessSteps);
 

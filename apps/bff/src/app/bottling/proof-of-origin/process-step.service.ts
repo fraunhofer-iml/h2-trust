@@ -7,16 +7,12 @@ import { BatchEntity, BrokerQueues, ProcessStepEntity, ProcessStepMessagePattern
 export class ProcessStepService {
   constructor(@Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchService: ClientProxy) {}
 
-  async fetchProcessStep(processStepId: string): Promise<ProcessStepEntity> {
-    return firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.READ_UNIQUE, { processStepId }));
-  }
-
-  async fetchProcessStepsForBatches(batches: BatchEntity[]): Promise<ProcessStepEntity[]> {
+  async fetchProcessStepsOfBatches(batches: BatchEntity[]): Promise<ProcessStepEntity[]> {
     const promises = batches.map(({ processStepId }) => this.fetchProcessStep(processStepId));
     return Promise.all(promises);
   }
 
-  async fetchPredecessorProcessSteps(processStepEntity: ProcessStepEntity): Promise<ProcessStepEntity[]> {
-    return this.fetchProcessStepsForBatches(processStepEntity.batch.predecessors);
+  async fetchProcessStep(processStepId: string): Promise<ProcessStepEntity> {
+    return firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.READ_UNIQUE, { processStepId }));
   }
 }

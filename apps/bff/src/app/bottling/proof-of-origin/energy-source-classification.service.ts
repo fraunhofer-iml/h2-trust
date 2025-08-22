@@ -20,44 +20,76 @@ export class EnergySourceClassificationService {
   ) {}
 
   async buildEnergySourceClassificationsFromProcessSteps(
-    productionProcessSteps: ProcessStepEntity[],
+    hydrogenProductionProcessSteps: ProcessStepEntity[],
   ): Promise<ClassificationDto[]> {
-    const processStepsWithUnits = await this.fetchProcessStepsWithUnits(productionProcessSteps);
-    const energySources = await this.fetchEnergySourceTypes();
-    return this.buildEnergySourceClassifications(energySources, processStepsWithUnits);
+    const powerProductionProcessStepsWithPowerProductionUnits =
+      await this.fetchPowerProductionProcessStepsWithPowerProductionUnits(hydrogenProductionProcessSteps);
+    const energySources = await this.fetchEnergySources();
+    return this.buildEnergySourceClassifications(energySources, powerProductionProcessStepsWithPowerProductionUnits);
   }
 
-  private async fetchProcessStepsWithUnits(
-    productionProcessSteps: ProcessStepEntity[],
+  private async fetchPowerProductionProcessStepsWithPowerProductionUnits(
+    hydrogenProductionProcessSteps: ProcessStepEntity[],
   ): Promise<[ProcessStepEntity, PowerProductionUnitEntity][]> {
-    const predecessorSteps = await this.fetchPredecessorProcessSteps(productionProcessSteps);
-    if (
-      predecessorSteps.length === 0 ||
-      !predecessorSteps.every((step) => step.processType === ProcessType.POWER_PRODUCTION)
-    ) {
-      throw new HttpException(
-        `Predecessor process steps must not be empty and must be of type ${ProcessType.POWER_PRODUCTION}`,
-        HttpStatus.BAD_REQUEST,
-      );
+    if (!hydrogenProductionProcessSteps?.length) {
+      throw new HttpException('Hydrogen production process steps must not be empty.', HttpStatus.BAD_REQUEST);
     }
 
-    return Promise.all(
-      predecessorSteps.map(async (step) => [step, await this.fetchPowerProductionUnit(step.executedBy.id)]),
-    );
-  }
+    // Start with the first layer BOTTLING
+    let processStepsOfCurrentLayer: ProcessStepEntity[] = hydrogenProductionProcessSteps;
 
-  private async fetchPredecessorProcessSteps(
-    productionProcessSteps: ProcessStepEntity[],
-  ): Promise<ProcessStepEntity[]> {
-    const predecessorBatches = productionProcessSteps.flatMap((step) => step.batch.predecessors);
-    return this.processStepService.fetchProcessStepsForBatches(predecessorBatches);
+    // Collect all POWER_PRODUCTION process steps across all layers
+    const powerProductionProcessStepsById = new Map<string, ProcessStepEntity>();
+
+    while (processStepsOfCurrentLayer.length > 0) {
+      const powerProductionProcessSteps = processStepsOfCurrentLayer.filter(
+        (step) => step.processType === ProcessType.POWER_PRODUCTION,
+      );
+
+      // Collect POWER_PRODUCTION process steps of current layer
+      for (const powerProductionProcessStep of powerProductionProcessSteps) {
+        powerProductionProcessStepsById.set(powerProductionProcessStep.id, powerProductionProcessStep);
+      }
+
+      const nonPowerProductionProcessSteps = processStepsOfCurrentLayer.filter(
+        (step) => step.processType !== ProcessType.POWER_PRODUCTION,
+      );
+
+      // If there are no non-POWER_PRODUCTION process steps left in the current layer, we are done
+      if (nonPowerProductionProcessSteps.length === 0) {
+        break;
+      }
+
+      // Move one layer backwards only for non-POWER_PRODUCTION process steps
+      const predecessorBatches = nonPowerProductionProcessSteps.flatMap((step) => step.batch?.predecessors ?? []);
+      if (!predecessorBatches.length) {
+        const processStepIdsWithProcessType = nonPowerProductionProcessSteps
+          .map((step) => `${step.id} ${step.processType}`)
+          .join(', ');
+        const errorMessage = `No further predecessors could be found for the following non-POWER_PRODUCTION process steps: ${processStepIdsWithProcessType}`;
+        throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
+      }
+
+      const predecessorProcessSteps = await this.processStepService.fetchProcessStepsOfBatches(predecessorBatches);
+      if (predecessorProcessSteps.length !== predecessorBatches.length) {
+        const errorMessage = `Predecessor process step length [${predecessorProcessSteps.length}] and predecessor batch length [${predecessorBatches.length}] do not match.`;
+        throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
+      }
+
+      processStepsOfCurrentLayer = predecessorProcessSteps;
+    }
+
+    const powerProductionProcessSteps = Array.from(powerProductionProcessStepsById.values());
+    return Promise.all(
+      powerProductionProcessSteps.map(async (step) => [step, await this.fetchPowerProductionUnit(step.executedBy.id)]),
+    );
   }
 
   private async fetchPowerProductionUnit(id: string): Promise<PowerProductionUnitEntity> {
     return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, { id }));
   }
 
-  private async fetchEnergySourceTypes(): Promise<string[]> {
+  private async fetchEnergySources(): Promise<string[]> {
     const powerProductionUnitTypes: PowerProductionUnitTypeEntity[] = await firstValueFrom(
       this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNIT_TYPES, {}),
     );
@@ -66,31 +98,27 @@ export class EnergySourceClassificationService {
 
   private buildEnergySourceClassifications(
     energySources: string[],
-    processStepsWithUnits: [ProcessStepEntity, PowerProductionUnitEntity][],
+    powerProductionProcessStepsWithPowerProductionUnits: [ProcessStepEntity, PowerProductionUnitEntity][],
   ): ClassificationDto[] {
     const classificationDtos: ClassificationDto[] = [];
+
     for (const energySource of energySources) {
-      const processStepsForAnEnergySourceType = this.filterProcessStepsByEnergySource(
-        processStepsWithUnits,
-        energySource,
-      );
-      if (processStepsForAnEnergySourceType.length === 0) continue;
-      const batchDtosForAnEnergySourceType = processStepsForAnEnergySourceType.map((step) =>
-        ProofOfOriginDtoAssembler.assembleProductionPowerBatchDto(step, energySource),
-      );
-      const classification = ProofOfOriginDtoAssembler.assemblePowerClassification(
-        energySource,
-        batchDtosForAnEnergySourceType,
-      );
-      classificationDtos.push(classification);
+      const filteredPowerProductionProcessSteps = powerProductionProcessStepsWithPowerProductionUnits
+        .filter(([, unit]) => unit.type?.energySource === energySource)
+        .map(([step]) => step);
+
+      if (filteredPowerProductionProcessSteps.length > 0) {
+        const productionPowerBatchDtos = filteredPowerProductionProcessSteps.map((step) =>
+          ProofOfOriginDtoAssembler.assembleProductionPowerBatchDto(step, energySource),
+        );
+
+        const classification = ProofOfOriginDtoAssembler.assemblePowerClassification(
+          energySource,
+          productionPowerBatchDtos,
+        );
+        classificationDtos.push(classification);
+      }
     }
     return classificationDtos;
-  }
-
-  private filterProcessStepsByEnergySource(
-    processStepsWithUnits: [ProcessStepEntity, PowerProductionUnitEntity][],
-    energySource: string,
-  ): ProcessStepEntity[] {
-    return processStepsWithUnits.filter(([, unit]) => unit.type.energySource === energySource).map(([step]) => step);
   }
 }
