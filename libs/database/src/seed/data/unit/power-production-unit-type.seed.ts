@@ -59,6 +59,6 @@ export const PowerProductionUnitTypeSeed = <PowerProductionUnitType[]>[
   {
     name: 'GRID',
     energySource: 'Grid',
-    hydrogenColor: HydrogenColor.MIX,
+    hydrogenColor: HydrogenColor.YELLOW,
   },
 ];
