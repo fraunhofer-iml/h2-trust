@@ -2,10 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { ClassificationDto } from '@h2-trust/api';
 import { VerifiedChartComponent } from '../../../../../layout/verified-chart/verified-chart.component';
+import { PrettyEnumPipe } from '../../../../../shared/pipes/format-enum.pipe';
 
 @Component({
   selector: 'app-classification',
-  imports: [CommonModule, VerifiedChartComponent],
+  imports: [CommonModule, VerifiedChartComponent, PrettyEnumPipe],
   templateUrl: './classification.component.html',
 })
 export class ClassificationComponent {

@@ -14,6 +14,7 @@ describe('BatchCardComponent', () => {
     fixture = TestBed.createComponent(H2BatchCardComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('batch', {
+      processStep: 'test',
       amount: 12,
       emission: { amount: 20 },
       accountingPeriodEnd: new Date(),

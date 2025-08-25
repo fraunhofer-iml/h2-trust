@@ -12,7 +12,7 @@ describe('ClassificationComponent', () => {
 
     fixture = TestBed.createComponent(ClassificationComponent);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('classification', {});
+    fixture.componentRef.setInput('classification', { name: 'test' });
     fixture.detectChanges();
   });
 

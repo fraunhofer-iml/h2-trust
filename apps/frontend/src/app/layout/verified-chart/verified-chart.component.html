@@ -5,5 +5,5 @@
   @if (verifiedAmount() || verifiedAmount() === 0) {
     <span>{{ verifiedAmount() }} {{ unit() }} verified</span>
   }
-  <span class="ml-auto">{{ amount() }} {{ unit() }}</span>
+  <span class="ml-auto">{{ amount() | number: '1.0-2' }} {{ unit() }}</span>
 </div>
