@@ -58,15 +58,12 @@ all:license-check:
       fi
   script:
     - >
-      npx @metamask/license-checker
-      --unknown
-      --csv
-      --excludePackages "${EXCLUDED_PACKAGES}"
-      --onlyAllow "${NPM_LICENSE_CHECKER_WHITELIST}"
-      --out "${LICENSES_LIST}"
+      npx @metamask/license-checker --unknown --csv --excludePackages "${EXCLUDED_PACKAGES}" --onlyAllow
+      "${NPM_LICENSE_CHECKER_WHITELIST}" --out "${LICENSES_LIST}"
     - >
       if [ ${EXCLUDED_PACKAGES} ]; then
-        echo -e "\n\nManually overridden packages excluded from the licenses check:\n${EXCLUDED_PACKAGES}" >> ${LICENSES_LIST};
+        echo -e "\n\nManually overridden packages excluded from the licenses check:\n${EXCLUDED_PACKAGES}" >>
+      ${LICENSES_LIST};
       fi
     - cat "${LICENSES_LIST}"
   artifacts:
@@ -123,9 +120,10 @@ all-dev:deploy:
   script:
     - cd pipeline/kustomize/core/overlays/dev
     - kustomize edit set image ${CRI_PATH}/bff:$CI_COMMIT_TAG
-    - kustomize edit set image ${CRI_PATH}/general-svc:$CI_COMMIT_TAG
     - kustomize edit set image ${CRI_PATH}/batch-svc:$CI_COMMIT_TAG
     - kustomize edit set image ${CRI_PATH}/frontend:$CI_COMMIT_TAG
+    - kustomize edit set image ${CRI_PATH}/general-svc:$CI_COMMIT_TAG
+    - kustomize edit set image ${CRI_PATH}/process-svc:$CI_COMMIT_TAG
     - git commit -am '[skip ci] manifest-image update'
     - git push origin main
   only:
