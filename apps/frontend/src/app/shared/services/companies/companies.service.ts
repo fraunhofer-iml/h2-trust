@@ -9,7 +9,7 @@ import { ApiEndpoints } from '../../constants/api-endpoints';
 export class CompaniesService {
   constructor(private readonly httpClient: HttpClient) {}
 
-  getRecipients() {
+  getCompanies() {
     return lastValueFrom(this.httpClient.get<CompanyDto[]>(`${BASE_URL}${ApiEndpoints.COMPANIES}`));
   }
 }

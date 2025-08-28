@@ -2,7 +2,14 @@ import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, UnitMessagePatterns } from '@h2-trust/amqp';
-import { UnitDto, UnitOverviewDto, UnitType, UserDetailsDto } from '@h2-trust/api';
+import {
+  PowerProductionUnitOverviewDtoMock,
+  UnitCreateDto,
+  UnitDto,
+  UnitOverviewDto,
+  UnitType,
+  UserDetailsDto,
+} from '@h2-trust/api';
 import { UserService } from '../user/user.service';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
@@ -63,6 +70,13 @@ describe('UnitController', () => {
       sub: 'user-id-1',
     });
 
+    expect(actualResponse).toEqual(expectedReturnValue);
+  });
+
+  it('should create unit', () => {
+    const dto = {} as UnitCreateDto;
+    const actualResponse = controller.createUnit(dto);
+    const expectedReturnValue = PowerProductionUnitOverviewDtoMock[0];
     expect(actualResponse).toEqual(expectedReturnValue);
   });
 });

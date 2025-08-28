@@ -8,4 +8,10 @@ export * from './unit.enum';
 export * from './energy-source.enum';
 export * from './transport-mode.enum';
 export * from './measurement-unit.enum';
+export * from './bidding-zones.enum';
+
+export * from './hydrogen-production-type.enum';
+export * from './power-production-type.enum';
+export * from './hydrogen-storage-type.enum';
+export * from './grid-level.enum';
 export * from './fuel-type.enum';

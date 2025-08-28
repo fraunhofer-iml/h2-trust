@@ -1,0 +1,5 @@
+export enum PowerProductionType {
+  GRID = 'GRID',
+  PHOTOVOLTAIC_SYSTEM = 'PHOTOVOLTAIC_SYSTEM',
+  WIND_TURBINE = 'WIND_TURBINE',
+}

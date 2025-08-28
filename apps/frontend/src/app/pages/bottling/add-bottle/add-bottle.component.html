@@ -17,6 +17,7 @@
             formControlName="date"
             [max]="dateDelimiter"
             placeholder="Choose a date"
+            readonly
           />
           <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
@@ -30,6 +31,7 @@
             formControlName="time"
             [max]="dateDelimiter"
             placeholder="Pick a time"
+            readonly
           />
           <mat-timepicker-toggle matIconSuffix [for]="timepicker" />
           <mat-timepicker #timepicker />

@@ -39,6 +39,7 @@
         required
         [max]="today"
         [value]="form.controls.productionStartedAt.value"
+        readonly
       />
       <mat-datepicker #startDatepicker />
       <mat-datepicker-toggle [for]="startDatepicker" matSuffix />
@@ -52,6 +53,7 @@
         required
         [value]="form.controls.productionStartedAt.value"
         (valueChange)="updateTime($event, form.controls.productionStartedAt)"
+        readonly
       />
       <mat-timepicker #startTimepicker interval="15min" />
       <mat-timepicker-toggle [for]="startTimepicker" matSuffix />
@@ -66,6 +68,7 @@
         required
         [max]="today"
         [value]="form.controls.productionEndedAt.value"
+        readonly
       />
       <mat-datepicker #endDatepicker />
       <mat-datepicker-toggle [for]="endDatepicker" matSuffix />
@@ -79,6 +82,7 @@
         required
         [value]="form.controls.productionEndedAt.value"
         (valueChange)="updateTime($event, form.controls.productionEndedAt)"
+        readonly
       />
       <mat-timepicker #endTimepicker interval="15min" />
       <mat-timepicker-toggle [for]="endTimepicker" matSuffix />

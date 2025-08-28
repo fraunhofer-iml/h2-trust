@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
+import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { UnitsService } from '../../shared/services/units/units.service';
 import { HydrogenProductionTableComponent } from './tables/hydrogen-production-table/hydrogen-production-table.component';
@@ -19,6 +21,8 @@ import { PowerProductionTableComponent } from './tables/power-production-table/p
     HydrogenProductionTableComponent,
     HydrogenStorageTableComponent,
     PowerProductionTableComponent,
+    RouterModule,
+    MatButtonModule,
   ],
   providers: [],
   templateUrl: './hydrogen-assets.component.html',

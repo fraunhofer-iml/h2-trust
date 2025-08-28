@@ -2,13 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, input, signal } from '@angular/core';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { SectionDto } from '@h2-trust/api';
+import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
 import { BottlingService } from '../../../../shared/services/bottling/bottling.service';
 import { BatchCardComponent } from './batch-card/batch-card.component';
 import { ClassificationComponent } from './classification/classification.component';
 
 @Component({
   selector: 'app-proof-of-origin',
-  imports: [CommonModule, ClassificationComponent, BatchCardComponent],
+  imports: [CommonModule, ClassificationComponent, BatchCardComponent, PrettyEnumPipe],
   templateUrl: './proof-of-origin.component.html',
 })
 export class ProofOfOriginComponent {
@@ -64,5 +65,11 @@ export class ProofOfOriginComponent {
 
   navigate(index: number) {
     this.classificationIndex$.set(this.classificationIndex$().slice(0, index + 1));
+  }
+
+  back() {
+    const length = this.classificationIndex$().length;
+    if (length === 0) return;
+    this.navigate(length - 2);
   }
 }

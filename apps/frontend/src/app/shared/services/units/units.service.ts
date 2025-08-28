@@ -5,6 +5,7 @@ import {
   HydrogenProductionOverviewDto,
   HydrogenStorageOverviewDto,
   PowerProductionOverviewDto,
+  UnitCreateDto,
   UnitType,
 } from '@h2-trust/api';
 import { BASE_URL } from '../../../../environments/environment';
@@ -38,6 +39,10 @@ export class UnitsService {
         params: this.generateQueryParams(UnitType.HYDROGEN_STORAGE),
       }),
     );
+  }
+
+  createUnit(dto: UnitCreateDto) {
+    return lastValueFrom(this.httpClient.post<HydrogenStorageOverviewDto[]>(`${BASE_URL}${ApiEndpoints.UNITS}`, dto));
   }
 
   private generateQueryParams(unitType: UnitType): HttpParams {

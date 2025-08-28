@@ -83,7 +83,7 @@ export class AddBottleComponent {
 
   recipientsQuery = injectQuery(() => ({
     queryKey: ['recipients'],
-    queryFn: () => this.companiesService.getRecipients(),
+    queryFn: () => this.companiesService.getCompanies(),
   }));
 
   mutation = injectMutation(() => ({

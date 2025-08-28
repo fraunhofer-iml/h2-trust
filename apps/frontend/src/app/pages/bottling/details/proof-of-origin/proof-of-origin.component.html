@@ -2,16 +2,15 @@
   <h3 class="font-semibold text-neutral-500">Proof of Origin</h3>
   <div class="mb-4 flex flex-row gap-2 text-sm text-neutral-500">
     <span class="cursor-pointer" (click)="sectionIndex$.set(-1); classificationIndex$.set([])" role="none">
-      {{ id() }}
       @if (sectionIndex$() > -1 && proofQuery.data(); as data) {
-        <span class="material-symbols-outlined text-sm"> keyboard_arrow_right </span>
         {{ data[sectionIndex$()].name | titlecase }}
       }
     </span>
 
     @for (item of data$().breadcrumbs; track $index) {
       <span class="cursor-pointer" (click)="navigate($index)" role="none">
-        <span class="material-symbols-outlined text-sm"> keyboard_arrow_right </span> {{ item | titlecase }}</span
+        <span class="material-symbols-outlined text-sm"> keyboard_arrow_right </span>
+        {{ item | prettyEnum | titlecase }}</span
       >
     }
   </div>
