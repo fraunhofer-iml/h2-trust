@@ -27,7 +27,7 @@ export const ExpressMulterFileMock = <MulterFileMock[]>[
         destination: '/tmp',
         filename: 'test-file.txt',
         path: '/tmp/test-file.txt',
-        buffer: Buffer.from('Test file content'),
+        buffer: new TextEncoder().encode('Test file content'), // Create Uint8Array
         stream: {
             // Dummy-Implementation
             on: () => { },
