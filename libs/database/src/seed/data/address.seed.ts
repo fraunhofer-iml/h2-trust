@@ -1,4 +1,4 @@
-import { Address } from '@prisma/client';
+import { Address, Prisma } from '@prisma/client';
 
 export const AddressSeed = <Address[]>[
   {
@@ -8,6 +8,8 @@ export const AddressSeed = <Address[]>[
     city: 'Energietown',
     state: 'Energieland',
     country: 'Energieland',
+    latitude: new Prisma.Decimal(12.345678),
+    longitude: new Prisma.Decimal(98.765432),
   },
   {
     id: 'address-hydrogen-1',
@@ -16,6 +18,8 @@ export const AddressSeed = <Address[]>[
     city: 'Wasserstadt',
     state: 'Wasserland',
     country: 'Wasserland',
+    latitude: new Prisma.Decimal(23.456789),
+    longitude: new Prisma.Decimal(87.654321),
   },
   {
     id: 'address-recipient-1',
@@ -24,6 +28,8 @@ export const AddressSeed = <Address[]>[
     city: 'Empfängerstadt',
     state: 'Empfängerland',
     country: 'Empfängerland',
+    latitude: new Prisma.Decimal(34.567890),
+    longitude: new Prisma.Decimal(76.543210),
   },
   {
     id: 'address-grid-1',
@@ -32,5 +38,7 @@ export const AddressSeed = <Address[]>[
     city: 'Netzstadt',
     state: 'Netzland',
     country: 'Netzland',
+    latitude: new Prisma.Decimal(45.678901),
+    longitude: new Prisma.Decimal(65.432109),
   },
 ];

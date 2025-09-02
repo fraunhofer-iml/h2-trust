@@ -1,10 +1,13 @@
 import { HydrogenProductionUnitDbType } from '@h2-trust/database';
 import { AddressEntity } from '../address';
 import { BaseUnitEntity } from './base-unit.entity';
+import { HydrogenProductionTypeEntity } from './hydrogen-production-type.entity';
 
 export class HydrogenProductionUnitEntity extends BaseUnitEntity {
   ratedPower: number;
-  typeName?: string;
+  pressure: number;
+  type?: HydrogenProductionTypeEntity;
+  biddingZoneName?: string;
   hydrogenStorageUnit?: {
     id?: string;
     name?: string;
@@ -18,14 +21,15 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     modelType: string,
     serialNumber: string,
     commissionedOn: Date,
-    decommissioningPlannedOn: Date,
     address: AddressEntity,
     company: {
       id: string;
       hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string; powerProducerName: string }[];
     } | null,
     ratedPower: number,
-    typeName: string,
+    pressure: number,
+    type: HydrogenProductionTypeEntity,
+    biddingZoneName: string,
     hydrogenStorageUnit: {
       id: string;
       name: string;
@@ -39,34 +43,33 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
       modelType,
       serialNumber,
       commissionedOn,
-      decommissioningPlannedOn,
       address,
       company,
     );
     this.ratedPower = ratedPower;
-    this.typeName = typeName;
+    this.pressure = pressure;
+    this.type = type;
+    this.biddingZoneName = biddingZoneName;
     this.hydrogenStorageUnit = hydrogenStorageUnit;
   }
 
   static override fromDatabase(unit: HydrogenProductionUnitDbType): HydrogenProductionUnitEntity {
     return <HydrogenProductionUnitEntity>{
       ...BaseUnitEntity.fromDatabase(unit),
-      ratedPower: HydrogenProductionUnitEntity.mapRatedPower(unit),
-      typeName: unit.hydrogenProductionUnit?.typeName,
+      ratedPower: unit.hydrogenProductionUnit?.ratedPower?.toNumber() ?? 0,
+      pressure: unit.hydrogenProductionUnit?.pressure?.toNumber() ?? 0,
+      type: unit.hydrogenProductionUnit?.type ? HydrogenProductionTypeEntity.fromDatabase(unit.hydrogenProductionUnit.type) : undefined,
+      biddingZoneName: unit.hydrogenProductionUnit?.biddingZoneName,
       hydrogenStorageUnit: HydrogenProductionUnitEntity.mapHydrogenStorageUnit(unit),
     };
-  }
-
-  private static mapRatedPower(unit: HydrogenProductionUnitDbType): number {
-    return unit.hydrogenProductionUnit?.ratedPower?.toNumber() ?? 0;
   }
 
   private static mapHydrogenStorageUnit(unit: HydrogenProductionUnitDbType) {
     return unit.hydrogenProductionUnit?.hydrogenStorageUnit
       ? {
-          id: unit.hydrogenProductionUnit.hydrogenStorageUnit.id,
-          name: unit.hydrogenProductionUnit.hydrogenStorageUnit.generalInfo?.name,
-        }
+        id: unit.hydrogenProductionUnit.hydrogenStorageUnit.id,
+        name: unit.hydrogenProductionUnit.hydrogenStorageUnit.generalInfo?.name,
+      }
       : undefined;
   }
 }

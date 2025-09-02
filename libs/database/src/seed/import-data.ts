@@ -4,18 +4,21 @@ import {
   BatchRelationHydrogenHydrogenSeed,
   BatchRelationPowerHydrogenSeed,
   BatchSeed,
+  BiddingZoneSeed,
   CompanySeed,
   DocumentSeed,
-  ElectrolysisTypeSeed,
+  GridLevelSeed,
+  HydrogenProductionTypeSeed,
   HydrogenProductionUnitSeed,
   HydrogenStorageUnitSeed,
   PowerAccessApprovalSeed,
   PowerProductionUnitSeed,
-  PowerProductionUnitTypeSeed,
+  PowerProductionTypeSeed,
   ProcessStepSeed,
   ProcessTypeSeed,
   UnitSeed,
   UserSeed,
+  HydrogenStorageTypeSeed,
 } from './data';
 import { Data, importData } from './data-importer';
 
@@ -44,9 +47,19 @@ export async function seedDatabase() {
       createRecord: async (data: any) => await prisma.unit.create({ data }),
     },
     {
-      name: 'powerProductionUnitType',
-      records: PowerProductionUnitTypeSeed,
-      createRecord: async (data: any) => await prisma.powerProductionUnitType.create({ data }),
+      name: 'powerProductionType',
+      records: PowerProductionTypeSeed,
+      createRecord: async (data: any) => await prisma.powerProductionType.create({ data }),
+    },
+    {
+      name: 'gridLevel',
+      records: GridLevelSeed,
+      createRecord: async (data: any) => await prisma.gridLevel.create({ data }),
+    },
+    {
+      name: 'biddingZone',
+      records: BiddingZoneSeed,
+      createRecord: async (data: any) => await prisma.biddingZone.create({ data }),
     },
     {
       name: 'powerProductionUnit',
@@ -54,9 +67,14 @@ export async function seedDatabase() {
       createRecord: async (data: any) => await prisma.powerProductionUnit.create({ data }),
     },
     {
-      name: 'electrolysisType',
-      records: ElectrolysisTypeSeed,
-      createRecord: async (data: any) => await prisma.electrolysisType.create({ data }),
+      name: 'hydrogenProductionType',
+      records: HydrogenProductionTypeSeed,
+      createRecord: async (data: any) => await prisma.hydrogenProductionType.create({ data }),
+    },
+    {
+      name: 'hydrogenStorageType',
+      records: HydrogenStorageTypeSeed,
+      createRecord: async (data: any) => await prisma.hydrogenStorageType.create({ data }),
     },
     {
       name: 'hydrogenStorageUnit',

@@ -1,6 +1,6 @@
-import { HydrogenColor, PowerProductionUnitType } from '@prisma/client';
+import { HydrogenColor, PowerProductionType } from '@prisma/client';
 
-export const PowerProductionUnitTypeSeed = <PowerProductionUnitType[]>[
+export const PowerProductionTypeSeed = <PowerProductionType[]>[
   {
     name: 'PHOTOVOLTAIC_SYSTEM',
     energySource: 'SOLAR_ENERGY',

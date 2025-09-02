@@ -23,7 +23,7 @@ function beforeAllAndAfterAll(): void {
 }
 
 async function resetTables(): Promise<void> {
-  await prisma.$executeRaw`TRUNCATE TABLE "Address", "PowerProductionUnitType", "ElectrolysisType", "ProcessType", "EnergySource" RESTART IDENTITY CASCADE`;
+  await prisma.$executeRaw`TRUNCATE TABLE "Address", "PowerProductionType", "ProcessType", "EnergySource" RESTART IDENTITY CASCADE`;
   await seedDatabase();
 }
 

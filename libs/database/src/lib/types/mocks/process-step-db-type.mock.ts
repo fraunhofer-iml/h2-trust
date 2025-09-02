@@ -23,7 +23,7 @@ export const ProcessStepDbTypeMock = <ProcessStepDbType[]>[
     executedBy: {
       ...UnitSeed[4],
       address: AddressSeed[1],
-      company: {
+      owner: {
         ...CompanySeed[1],
         address: AddressSeed[1],
         hydrogenApprovals: [],

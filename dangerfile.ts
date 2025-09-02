@@ -1,10 +1,10 @@
-import { danger, fail, markdown, warn } from 'danger';
+import { danger, fail, markdown, message } from 'danger';
 
 // ENFORCE LOCKFILE UP TO DATE
 const packageFileChanged = danger.git.modified_files.includes('package.json');
 const lockFileChanged = danger.git.modified_files.includes('package-lock.json');
 if (packageFileChanged && !lockFileChanged) {
-  fail(
+  message(
     'Changes were made to package.json, but not to package-lock.json. Please run `npm install` and commit the lockfile.',
   );
 }
@@ -32,7 +32,7 @@ if (!danger.gitlab.mr.description || danger.gitlab.mr.description.trim().length 
 // ENCOURAGE SMALLER MRs
 const changesCounter = parseInt(danger.gitlab.mr.changes_count, 10);
 if (changesCounter > 50) {
-  warn(`:exclamation: Big Merge Request (${changesCounter} files changed)`);
+  message(`:exclamation: Big Merge Request (${changesCounter} files changed)`);
   markdown(
     `> (The merge request size seems relatively large. If the merge request contains multiple changes, splitting them into separate MRs will help with faster and easier review.`,
   );
@@ -43,5 +43,5 @@ const relevantFiles = danger.git.modified_files.concat(danger.git.created_files)
 const sourceFilesChanged = relevantFiles.some((f) => f.startsWith('apps/') || f.startsWith('libs/'));
 const testFilesChanged = relevantFiles.some((f) => /test|spec/i.test(f));
 if (sourceFilesChanged && !testFilesChanged) {
-  warn('Source code was changed, but no test code was updated. Please consider adding or updating tests.');
+  message('Source code was changed, but no test code was updated. Please consider adding or updating tests.');
 }

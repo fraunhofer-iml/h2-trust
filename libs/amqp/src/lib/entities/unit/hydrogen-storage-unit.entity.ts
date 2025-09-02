@@ -9,6 +9,8 @@ import { HydrogenComponentEntity } from '../bottling';
 
 export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   capacity?: number;
+  pressure?: number;
+  type?: string;
   filling?: HydrogenComponentEntity[];
   hydrogenProductionUnits?: {
     id: string;
@@ -24,13 +26,14 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     modelType: string,
     serialNumber: string,
     commissionedOn: Date,
-    decommissioningPlannedOn: Date,
     address: AddressEntity,
     company: {
       id: string;
       hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string; powerProducerName: string }[];
     } | null,
     capacity: number,
+    pressure: number,
+    type: string,
     filling: HydrogenComponentEntity[],
     hydrogenProductionUnits: {
       id: string;
@@ -46,11 +49,12 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       modelType,
       serialNumber,
       commissionedOn,
-      decommissioningPlannedOn,
       address,
       company,
     );
     this.capacity = capacity;
+    this.pressure = pressure;
+    this.type = type;
     this.filling = filling;
     this.hydrogenProductionUnits = hydrogenProductionUnits;
   }
@@ -58,14 +62,12 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   static override fromDatabase(unit: HydrogenStorageUnitDbType): HydrogenStorageUnitEntity {
     return <HydrogenStorageUnitEntity>{
       ...BaseUnitEntity.fromDatabase(unit),
-      capacity: HydrogenStorageUnitEntity.mapCapacity(unit),
+      capacity: unit.hydrogenStorageUnit?.capacity ?? 0,
+      pressure: unit.hydrogenStorageUnit?.pressure ?? 0,
+      type: unit.hydrogenStorageUnit?.typeName,
       filling: HydrogenStorageUnitEntity.mapFilling(unit),
       hydrogenProductionUnits: HydrogenStorageUnitEntity.mapHydrogenProductionUnits(unit),
     };
-  }
-
-  private static mapCapacity(unit: HydrogenStorageUnitDbType): number {
-    return unit.hydrogenStorageUnit?.capacity?.toNumber() ?? 0;
   }
 
   private static mapFilling(unit: HydrogenStorageUnitDbType): HydrogenComponentEntity[] {

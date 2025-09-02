@@ -18,7 +18,7 @@ import { assertRecordFound } from './utils';
 
 @Injectable()
 export class UnitRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   async findUnitById(id: string): Promise<UnitEntity> {
     return this.prismaService.unit
@@ -36,7 +36,7 @@ export class UnitRepository {
     return this.prismaService.unit
       .findMany({
         where: {
-          companyId: companyId,
+          ownerId: companyId,
           powerProductionUnit: {
             isNot: null,
           },
@@ -50,7 +50,7 @@ export class UnitRepository {
     return this.prismaService.unit
       .findMany({
         where: {
-          companyId: companyId,
+          ownerId: companyId,
           hydrogenProductionUnit: {
             isNot: null,
           },
@@ -64,7 +64,7 @@ export class UnitRepository {
     return this.prismaService.unit
       .findMany({
         where: {
-          companyId: companyId,
+          ownerId: companyId,
           hydrogenStorageUnit: {
             isNot: null,
           },

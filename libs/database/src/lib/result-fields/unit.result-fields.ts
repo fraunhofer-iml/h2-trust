@@ -4,7 +4,7 @@ import { companyResultFields } from './company.result-fields';
 export const baseUnitResultFields = Prisma.validator<Prisma.UnitDefaultArgs>()({
   include: {
     address: true,
-    company: {
+    owner: {
       include: {
         ...companyResultFields.include,
         hydrogenApprovals: {
@@ -30,6 +30,7 @@ const hydrogenProductionUnitChildResultFields = Prisma.validator<Prisma.Hydrogen
         generalInfo: true,
       },
     },
+    type: true,
   },
 });
 

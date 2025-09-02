@@ -1,14 +1,17 @@
 import { PowerProductionUnitDbType } from '@h2-trust/database';
 import { AddressEntity } from '../address';
 import { BaseUnitEntity } from './base-unit.entity';
-import { PowerProductionUnitTypeEntity } from './power-production-unit-type.entity';
+import { PowerProductionTypeEntity } from './power-production-type.entity';
 
 export class PowerProductionUnitEntity extends BaseUnitEntity {
+  decommissioningPlannedOn?: Date;
+  electricityMeterNumber?: string;
   ratedPower: number;
   gridOperator?: string;
-  gridLevel?: string;
+  gridLevelName?: string;
+  biddingZoneName?: string;
   gridConnectionNumber?: string;
-  type?: PowerProductionUnitTypeEntity;
+  type?: PowerProductionTypeEntity;
 
   constructor(
     id: string,
@@ -19,6 +22,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     serialNumber: string,
     commissionedOn: Date,
     decommissioningPlannedOn: Date,
+    electricityMeterNumber: string,
     address: AddressEntity,
     company: {
       id: string;
@@ -26,9 +30,10 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     } | null,
     ratedPower: number,
     gridOperator: string,
-    gridLevel: string,
+    gridLevelName: string,
+    biddingZoneName: string,
     gridConnectionNumber: string,
-    type: PowerProductionUnitTypeEntity,
+    type: PowerProductionTypeEntity,
   ) {
     super(
       id,
@@ -38,13 +43,16 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
       modelType,
       serialNumber,
       commissionedOn,
-      decommissioningPlannedOn,
       address,
       company,
     );
+
+    this.decommissioningPlannedOn = decommissioningPlannedOn;
+    this.electricityMeterNumber = electricityMeterNumber;
     this.ratedPower = ratedPower;
     this.gridOperator = gridOperator;
-    this.gridLevel = gridLevel;
+    this.gridLevelName = gridLevelName;
+    this.biddingZoneName = biddingZoneName;
     this.gridConnectionNumber = gridConnectionNumber;
     this.type = type;
   }
@@ -58,15 +66,14 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
 
   static mapPowerProductionUnitSpecials(unit: PowerProductionUnitDbType) {
     return {
-      ratedPower: PowerProductionUnitEntity.mapRatedPower(unit),
+      decommissioningPlannedOn: unit.powerProductionUnit?.decommissioningPlannedOn,
+      electricityMeterNumber: unit.powerProductionUnit?.electricityMeterNumber,
+      ratedPower: unit.powerProductionUnit?.ratedPower?.toNumber() ?? 0,
       gridOperator: unit.powerProductionUnit?.gridOperator,
-      gridLevel: unit.powerProductionUnit?.gridLevel,
+      gridLevelName: unit.powerProductionUnit?.gridLevelName,
+      biddingZoneName: unit.powerProductionUnit?.biddingZoneName,
       gridConnectionNumber: unit.powerProductionUnit?.gridConnectionNumber,
       type: unit.powerProductionUnit?.type,
     }
-  }
-
-  private static mapRatedPower(unit: PowerProductionUnitDbType): number {
-    return unit.powerProductionUnit?.ratedPower?.toNumber() ?? 0;
   }
 }

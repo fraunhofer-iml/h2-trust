@@ -31,7 +31,7 @@ export class ProcessStepRepository {
             active: active,
           },
           executedBy: {
-            companyId: companyId,
+            ownerId: companyId,
           },
         },
         orderBy: {

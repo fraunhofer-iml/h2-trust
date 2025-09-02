@@ -5,7 +5,7 @@ export const BaseUnitDbTypeMock = <BaseUnitDbType[]>[
   {
     ...UnitSeed[0],
     address: AddressSeed[0],
-    company: {
+    owner: {
       ...CompanySeed[0],
       hydrogenApprovals: PowerAccessApprovalSeed.map((approval) => ({
         ...approval,

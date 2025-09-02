@@ -1,6 +1,6 @@
-import { PowerProductionUnitTypeDbType } from '@h2-trust/database';
+import { PowerProductionTypeDbType } from '@h2-trust/database';
 
-export class PowerProductionUnitTypeEntity {
+export class PowerProductionTypeEntity {
   name: string;
   energySource: string;
   hydrogenColor: string;
@@ -11,8 +11,8 @@ export class PowerProductionUnitTypeEntity {
     this.hydrogenColor = hydrogenColor;
   }
 
-  static fromDatabase(powerProductionUnitDbType: PowerProductionUnitTypeDbType): PowerProductionUnitTypeEntity {
-    return <PowerProductionUnitTypeEntity>{
+  static fromDatabase(powerProductionUnitDbType: PowerProductionTypeDbType): PowerProductionTypeEntity {
+    return <PowerProductionTypeEntity>{
       name: powerProductionUnitDbType.name,
       energySource: powerProductionUnitDbType.energySource,
       hydrogenColor: powerProductionUnitDbType.hydrogenColor,

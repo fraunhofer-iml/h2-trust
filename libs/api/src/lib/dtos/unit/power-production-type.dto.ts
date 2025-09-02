@@ -1,4 +1,4 @@
-export class PowerProductionUnitTypeDto {
+export class PowerProductionTypeDto {
   name: string;
   energySource: string;
   hydrogenColor: string;

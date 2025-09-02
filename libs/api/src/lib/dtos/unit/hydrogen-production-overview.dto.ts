@@ -11,9 +11,9 @@ export class HydrogenProductionOverviewDto {
   powerProducerName: string;
   hydrogenStorageUnit:
     | {
-        id?: string;
-        name?: string;
-      }
+      id?: string;
+      name?: string;
+    }
     | undefined;
 
   constructor(
@@ -48,7 +48,7 @@ export class HydrogenProductionOverviewDto {
       id: unit.id,
       name: unit.name,
       ratedPower: unit.ratedPower,
-      typeName: unit.typeName,
+      typeName: unit.type?.technology,
       producing: true,
       powerAccessApprovalStatus: HydrogenProductionOverviewDto.existsPowerProducer(unit),
       powerProducerId: firstApproval?.powerProducerId ?? '',

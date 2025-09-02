@@ -1,13 +1,13 @@
 import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
-import { PowerProductionUnitTypeDto } from './power-production-unit-type.dto';
+import { PowerProductionTypeDto } from './power-production-type.dto';
 
 export class PowerProductionUnitDto extends BaseUnitDto {
   ratedPower: number;
   gridOperator: string;
   gridLevel: string;
   gridConnectionNumber: string;
-  type: PowerProductionUnitTypeDto;
+  type: PowerProductionTypeDto;
 
   constructor(
     id: string,
@@ -27,7 +27,7 @@ export class PowerProductionUnitDto extends BaseUnitDto {
     gridOperator: string,
     gridLevel: string,
     gridConnectionNumber: string,
-    type: PowerProductionUnitTypeDto,
+    type: PowerProductionTypeDto,
   ) {
     super(
       id,

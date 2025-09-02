@@ -5,6 +5,7 @@ export * from './hydrogen-production-unit.dto';
 export * from './hydrogen-storage-overview.dto';
 export * from './hydrogen-storage-unit.dto';
 export * from './power-production-overview.dto';
+export * from './power-production-type.dto';
 export * from './power-production-unit.dto';
 export * from './mocks';
 export * from './create';

@@ -13,7 +13,7 @@ import {
   CompanyRepository,
   DocumentRepository,
   PowerAccessApprovalRepository,
-  PowerProductionUnitTypeRepository,
+  PowerProductionTypeRepository,
   ProcessStepRepository,
   UnitRepository,
   UserRepository
@@ -29,7 +29,7 @@ import {
     BatchRepository,
     DocumentRepository,
     PowerAccessApprovalRepository,
-    PowerProductionUnitTypeRepository,
+    PowerProductionTypeRepository,
     CompanyRepository,
   ],
   exports: [
@@ -40,8 +40,8 @@ import {
     BatchRepository,
     DocumentRepository,
     PowerAccessApprovalRepository,
-    PowerProductionUnitTypeRepository,
+    PowerProductionTypeRepository,
     CompanyRepository,
   ],
 })
-export class DatabaseModule {}
+export class DatabaseModule { }

@@ -4,7 +4,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
   PowerProductionUnitEntity,
-  PowerProductionUnitTypeEntity,
+  PowerProductionTypeEntity,
   ProcessStepEntity,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
@@ -17,7 +17,7 @@ export class EnergySourceClassificationService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     private readonly processStepService: ProcessStepService,
-  ) {}
+  ) { }
 
   async buildEnergySourceClassificationsFromProcessSteps(
     hydrogenProductionProcessSteps: ProcessStepEntity[],
@@ -90,10 +90,10 @@ export class EnergySourceClassificationService {
   }
 
   private async fetchEnergySources(): Promise<string[]> {
-    const powerProductionUnitTypes: PowerProductionUnitTypeEntity[] = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNIT_TYPES, {}),
+    const powerProductionTypes: PowerProductionTypeEntity[] = await firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION_TYPES, {}),
     );
-    return Array.from(new Set(powerProductionUnitTypes.map(({ energySource }) => energySource)));
+    return Array.from(new Set(powerProductionTypes.map(({ energySource }) => energySource)));
   }
 
   private buildEnergySourceClassifications(

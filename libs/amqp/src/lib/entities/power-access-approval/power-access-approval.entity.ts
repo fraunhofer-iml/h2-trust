@@ -14,7 +14,6 @@ export class PowerAccessApprovalEntity {
     hydrogenProducer: CompanyEntity;
     document: DocumentEntity;
 
-
     constructor(
         id: string,
         decidedAt: Date,
@@ -44,7 +43,7 @@ export class PowerAccessApprovalEntity {
                 ...BaseUnitEntity.fromDatabase(powerAccessApproval.powerProductionUnit.generalInfo),
                 ratedPower: powerAccessApproval.powerProductionUnit?.ratedPower?.toNumber() ?? 0,
                 gridOperator: powerAccessApproval.powerProductionUnit?.gridOperator,
-                gridLevel: powerAccessApproval.powerProductionUnit?.gridLevel,
+                gridLevelName: powerAccessApproval.powerProductionUnit?.gridLevelName,
                 gridConnectionNumber: powerAccessApproval.powerProductionUnit?.gridConnectionNumber,
                 typeName: powerAccessApproval.powerProductionUnit?.type.name,
             },

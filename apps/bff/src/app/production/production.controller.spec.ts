@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   BrokerQueues,
-  PowerProductionUnitTypeEntity,
+  PowerProductionTypeEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
 } from '@h2-trust/amqp';
@@ -79,7 +79,7 @@ describe('ProductionController', () => {
       .mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: any) =>
         of({
           ratedPower: 100,
-          type: <PowerProductionUnitTypeEntity>{
+          type: <PowerProductionTypeEntity>{
             name: 'Test Power Production Unit Type',
             energySource: 'Solar',
             hydrogenColor: 'GREEN',

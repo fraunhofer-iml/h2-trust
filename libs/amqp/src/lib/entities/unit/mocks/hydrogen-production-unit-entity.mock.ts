@@ -1,4 +1,4 @@
-import { HydrogenProductionUnitSeed, HydrogenStorageUnitSeed, UnitSeed } from 'libs/database/src/seed';
+import { HydrogenProductionTypeSeed, HydrogenProductionUnitSeed, HydrogenStorageUnitSeed, UnitSeed } from 'libs/database/src/seed';
 import { AddressEntityPowerMock } from '../../address';
 import { HydrogenProductionUnitEntity } from '../hydrogen-production-unit.entity';
 
@@ -11,11 +11,12 @@ export const HydrogenProductionUnitEntityMock: HydrogenProductionUnitEntity[] = 
     UnitSeed[0].modelType,
     UnitSeed[0].serialNumber,
     new Date(UnitSeed[0].commissionedOn),
-    new Date(UnitSeed[0].decommissioningPlannedOn),
     AddressEntityPowerMock,
     null,
     HydrogenProductionUnitSeed[0].ratedPower.toNumber(),
-    HydrogenProductionUnitSeed[0].typeName,
+    HydrogenProductionUnitSeed[0].pressure.toNumber(),
+    HydrogenProductionTypeSeed[0],
+    HydrogenProductionUnitSeed[0].biddingZoneName,
     {
       id: HydrogenStorageUnitSeed[0].id,
       name: UnitSeed[5].name,

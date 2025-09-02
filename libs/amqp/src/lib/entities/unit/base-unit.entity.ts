@@ -9,7 +9,6 @@ export abstract class BaseUnitEntity {
   modelType?: string;
   serialNumber?: string;
   commissionedOn?: Date;
-  decommissioningPlannedOn?: Date;
   address?: AddressEntity;
   company?: {
     id?: string;
@@ -28,7 +27,6 @@ export abstract class BaseUnitEntity {
     modelType: string,
     serialNumber: string,
     commissionedOn: Date,
-    decommissioningPlannedOn: Date,
     address: AddressEntity,
     company: {
       id: string;
@@ -42,7 +40,6 @@ export abstract class BaseUnitEntity {
     this.modelType = modelType;
     this.serialNumber = serialNumber;
     this.commissionedOn = commissionedOn;
-    this.decommissioningPlannedOn = decommissioningPlannedOn;
     this.address = address;
     this.company = company;
   }
@@ -56,24 +53,23 @@ export abstract class BaseUnitEntity {
       modelType: unit.modelType,
       serialNumber: unit.serialNumber,
       commissionedOn: unit.commissionedOn,
-      decommissioningPlannedOn: unit.decommissioningPlannedOn,
       address: AddressEntity.fromDatabase(unit.address),
       company: BaseUnitEntity.mapCompany(unit),
     };
   }
 
   protected static mapCompany(unit: BaseUnitDbType) {
-    return unit.company
+    return unit.owner
       ? {
-          id: unit.company.id,
-          hydrogenApprovals: BaseUnitEntity.mapHydrogenApprovals(unit),
-        }
+        id: unit.ownerId,
+        hydrogenApprovals: BaseUnitEntity.mapHydrogenApprovals(unit),
+      }
       : undefined;
   }
 
   private static mapHydrogenApprovals(unit: BaseUnitDbType) {
     return (
-      unit.company?.hydrogenApprovals?.map((approval) => ({
+      unit.owner?.hydrogenApprovals?.map((approval) => ({
         powerAccessApprovalStatus: approval.powerAccessApprovalStatus,
         powerProducerId: approval.powerProducerId,
         powerProducerName: approval.powerProducer.name,

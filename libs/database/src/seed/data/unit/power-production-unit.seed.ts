@@ -1,47 +1,64 @@
 import { PowerProductionUnit, Prisma } from '@prisma/client';
-import { PowerProductionUnitTypeSeed } from './power-production-unit-type.seed';
+import { PowerProductionTypeSeed } from './power-production-type.seed';
 import { UnitSeed } from './unit.seed';
 import { CompanySeed } from '../company.seed';
+import { GridLevelSeed } from './grid-level.seed';
+import { BiddingZoneSeed } from './bidding-zone.seed';
 
 export const PowerProductionUnitSeed = <PowerProductionUnit[]>[
   {
     id: UnitSeed[0].id,
+    decommissioningPlannedOn: new Date('2045-04-01'),
+    electricityMeterNumber: "EMN-2025-001",
     ratedPower: new Prisma.Decimal(3000),
     gridOperator: 'GreenGrid Operator Inc.',
-    gridLevel: 'Medium Voltage',
+    gridLevelName: GridLevelSeed[1].name,
+    biddingZoneName: BiddingZoneSeed[1].name,
     gridConnectionNumber: 'GCN-2025-001',
-    typeName: PowerProductionUnitTypeSeed[1].name,
+    typeName: PowerProductionTypeSeed[1].name,
   },
   {
     id: UnitSeed[1].id,
+    decommissioningPlannedOn: new Date('2043-06-15'),
+    electricityMeterNumber: "EMN-2025-002",
     ratedPower: new Prisma.Decimal(3000),
     gridOperator: 'FluxDirect Energy Networks',
-    gridLevel: 'Medium Voltage',
+    gridLevelName: GridLevelSeed[2].name,
+    biddingZoneName: BiddingZoneSeed[2].name,
     gridConnectionNumber: 'GCN-2025-002',
-    typeName: PowerProductionUnitTypeSeed[3].name,
+    typeName: PowerProductionTypeSeed[3].name,
   },
   {
     id: UnitSeed[2].id,
+    decommissioningPlannedOn: new Date('2040-09-01'),
+    electricityMeterNumber: "EMN-2025-003",
     ratedPower: new Prisma.Decimal(3000),
     gridOperator: 'FluxDirect Energy Networks',
-    gridLevel: 'Medium Voltage',
+    gridLevelName: GridLevelSeed[3].name,
+    biddingZoneName: BiddingZoneSeed[3].name,
     gridConnectionNumber: 'GCN-2025-003',
-    typeName: PowerProductionUnitTypeSeed[5].name,
+    typeName: PowerProductionTypeSeed[5].name,
   },
   {
     id: UnitSeed[3].id,
+    decommissioningPlannedOn: new Date('2035-03-20'),
+    electricityMeterNumber: "EMN-2025-004",
     ratedPower: new Prisma.Decimal(3000),
     gridOperator: 'FluxDirect Energy Networks',
-    gridLevel: 'Medium Voltage',
+    gridLevelName: GridLevelSeed[3].name,
+    biddingZoneName: BiddingZoneSeed[4].name,
     gridConnectionNumber: 'GCN-2025-004',
-    typeName: PowerProductionUnitTypeSeed[6].name,
+    typeName: PowerProductionTypeSeed[6].name,
   },
   {
     id: UnitSeed[7].id,
+    decommissioningPlannedOn: new Date('2045-08-14'),
+    electricityMeterNumber: "EMN-2025-005",
     ratedPower: new Prisma.Decimal(100000),
     gridOperator: CompanySeed[3].name,
-    gridLevel: 'High Voltage',
+    gridLevelName: GridLevelSeed[0].name,
+    biddingZoneName: BiddingZoneSeed[5].name,
     gridConnectionNumber: 'GRID-2025-01',
-    typeName: PowerProductionUnitTypeSeed[11].name,
+    typeName: PowerProductionTypeSeed[11].name,
   },
 ];

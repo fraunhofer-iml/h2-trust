@@ -1,7 +1,7 @@
 import { PowerProductionUnitSeed, UnitSeed } from 'libs/database/src/seed';
 import { AddressEntityPowerMock } from '../../address';
 import { PowerProductionUnitEntity } from '../power-production-unit.entity';
-import { PowerProductionUnitTypeEntityMock } from './power-production-unit-type-entity.mock';
+import { PowerProductionTypeEntityMock } from './power-production-type-entity.mock';
 
 export const PowerProductionUnitEntityMock: PowerProductionUnitEntity[] = [
   new PowerProductionUnitEntity(
@@ -12,13 +12,15 @@ export const PowerProductionUnitEntityMock: PowerProductionUnitEntity[] = [
     UnitSeed[0].modelType,
     UnitSeed[0].serialNumber,
     new Date(UnitSeed[0].commissionedOn),
-    new Date(UnitSeed[0].decommissioningPlannedOn),
+    new Date(PowerProductionUnitSeed[0].decommissioningPlannedOn),
+    PowerProductionUnitSeed[0].electricityMeterNumber,
     AddressEntityPowerMock,
     null,
     PowerProductionUnitSeed[0].ratedPower.toNumber(),
     PowerProductionUnitSeed[0].gridOperator,
-    PowerProductionUnitSeed[0].gridLevel,
+    PowerProductionUnitSeed[0].gridLevelName,
+    PowerProductionUnitSeed[0].biddingZoneName,
     PowerProductionUnitSeed[0].gridConnectionNumber,
-    PowerProductionUnitTypeEntityMock[1],
+    PowerProductionTypeEntityMock[1],
   ),
 ];
