@@ -12,7 +12,7 @@ export class ProcessStepController {
   constructor(
     private readonly processStepService: ProcessStepService,
     private readonly bottlingService: BottlingService,
-  ) {}
+  ) { }
 
   @MessagePattern(ProcessStepMessagePatterns.READ_ALL)
   async readProcessSteps(
@@ -35,8 +35,8 @@ export class ProcessStepController {
 
   @MessagePattern(ProcessStepMessagePatterns.BOTTLING)
   async createBottling(
-    @Payload() payload: { processStepEntity: ProcessStepEntity; file: Express.Multer.File },
+    @Payload() payload: { processStepEntity: ProcessStepEntity; files: Express.Multer.File[] },
   ): Promise<ProcessStepEntity> {
-    return this.bottlingService.createBottling(payload.processStepEntity, payload.file);
+    return this.bottlingService.createBottling(payload.processStepEntity, payload.files);
   }
 }

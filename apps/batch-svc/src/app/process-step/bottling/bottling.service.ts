@@ -6,6 +6,7 @@ import { BatchSelectionService } from './batch-selection.service';
 import { HydrogenCompositionService } from './hydrogen-composition.service';
 import { ProcessStepAssemblerService } from './process-step-assembler.service';
 import { BatchSelection } from './batch-selection.interface';
+import { ProcessStepService } from '../process-step.service';
 
 @Injectable()
 export class BottlingService {
@@ -17,9 +18,10 @@ export class BottlingService {
     private readonly processStepRepository: ProcessStepRepository,
     private readonly batchRepository: BatchRepository,
     private readonly documentRepository: DocumentRepository,
+    private readonly processStepService: ProcessStepService
   ) { }
 
-  async createBottling(processStep: ProcessStepEntity, file: Express.Multer.File): Promise<ProcessStepEntity> {
+  async createBottling(processStep: ProcessStepEntity, files: Express.Multer.File[]): Promise<ProcessStepEntity> {
     const allProcessStepsFromStorageUnit = await this.processStepRepository.findAllProcessStepsFromStorageUnit(
       processStep.executedBy.id,
     );
@@ -47,11 +49,13 @@ export class BottlingService {
       batchSelection.batchesForBottle,
     );
 
-    if (file) {
-      await this.addDocumentToProcessStep(file, bottlingProcessStep.id, processStep.documents[0]?.description);
+    if (files) {
+      await Promise.all(files.map((file) =>
+        this.addDocumentToProcessStep(file, bottlingProcessStep.id, processStep.documents[0]?.description)
+      ));
     }
 
-    return this.processStepRepository.findProcessStep(bottlingProcessStep.id);
+    return this.processStepService.readProcessStep(bottlingProcessStep.id);
   }
 
   private async addDocumentToProcessStep(file: Express.Multer.File, processStepId: string, description: string) {

@@ -11,18 +11,20 @@ import { registerAs } from '@nestjs/config';
 
 export const GLOBAL_CONFIGURATION_IDENTIFIER = 'global-configuration';
 
+export interface MinioConfiguration {
+  endPoint: string;
+  port: number;
+  useSSL: boolean;
+  accessKey: string;
+  secretKey: string;
+  bucketName: string;
+}
+
 export interface GlobalConfiguration {
   logLevel: LogLevel[];
   amqpUri: string;
   blockchainEnabled: boolean;
-  minio: {
-    endPoint: string;
-    port: number;
-    useSSL: boolean;
-    accessKey: string;
-    secretKey: string;
-    bucketName: string;
-  };
+  minio: MinioConfiguration;
 }
 
 export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({

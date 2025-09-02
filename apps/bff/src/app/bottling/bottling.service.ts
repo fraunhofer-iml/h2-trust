@@ -26,17 +26,16 @@ export class BottlingService {
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processService: ClientProxy,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
-  async createBottling(dto: BottlingDto, file: Express.Multer.File, userId: string): Promise<BottlingOverviewDto> {
+  async createBottling(dto: BottlingDto, files: Express.Multer.File[], userId: string): Promise<BottlingOverviewDto> {
     const payload = {
       processStepEntity: BottlingDto.toEntity({ ...dto, recordedBy: userId }),
-      file,
+      files,
     };
 
-    return firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.BOTTLING, payload)).then(
-      BottlingOverviewDto.fromEntity,
-    );
+    return firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.BOTTLING, payload))
+      .then(BottlingOverviewDto.fromEntity);
   }
 
   async readBottlingsByCompany(userId: string): Promise<BottlingOverviewDto[]> {
@@ -57,6 +56,7 @@ export class BottlingService {
     const processStepEntity: ProcessStepEntity = await firstValueFrom(
       this.batchService.send(ProcessStepMessagePatterns.READ_UNIQUE, { processStepId }),
     );
+
     if (processStepEntity.processType != ProcessType.BOTTLING) {
       throw new HttpException(
         `ProcessStep with ID ${processStepId} should be of type ${ProcessType.BOTTLING}, but is ${processStepEntity.processType}`,

@@ -126,7 +126,7 @@ export class AddBottleComponent {
 
     if (this.uploadedFiles)
       for (const file of this.uploadedFiles) {
-        data.append('file', file.file);
+        data.append('files', file.file);
       }
 
     data.append('amount', this.bottleFormGroup.value?.amount?.toString() ?? '');

@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Body, Controller, Get, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -27,13 +27,13 @@ export class BottlingController {
   constructor(
     private readonly bottlingService: BottlingService,
     private readonly proofOfOriginService: ProofOfOriginService,
-  ) {}
+  ) { }
 
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FilesInterceptor('files'))
   @ApiBearerAuth()
   @ApiOperation({
-    description: 'Create a new bottling process step with file upload and related metadata.',
+    description: 'Create a new bottling process step with multiple file uploads and related metadata.',
   })
   @ApiCreatedResponse({
     description: 'Returns the newly created bottling process step.',
@@ -44,9 +44,12 @@ export class BottlingController {
     schema: {
       type: 'object',
       properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
+        files: {
+          type: 'array',
+          items: {
+            type: 'string',
+            format: 'binary'
+          },
         },
         amount: {
           type: 'number',
@@ -81,10 +84,10 @@ export class BottlingController {
   })
   async createBottling(
     @Body() dto: BottlingDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles() files: Express.Multer.File[],
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<BottlingOverviewDto> {
-    return this.bottlingService.createBottling(dto, file, authenticatedUser.sub);
+    return this.bottlingService.createBottling(dto, files, authenticatedUser.sub);
   }
 
   @Get()

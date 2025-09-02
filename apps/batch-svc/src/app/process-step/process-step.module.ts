@@ -8,9 +8,10 @@ import { HydrogenCompositionService } from './bottling/hydrogen-composition.serv
 import { ProcessStepAssemblerService } from './bottling/process-step-assembler.service';
 import { ProcessStepController } from './process-step.controller';
 import { ProcessStepService } from './process-step.service';
+import { ConfigurationModule } from '@h2-trust/configuration';
 
 @Module({
-  imports: [DatabaseModule, StorageModule, new Broker().getGeneralSvcBroker()],
+  imports: [ConfigurationModule, DatabaseModule, StorageModule, new Broker().getGeneralSvcBroker()],
   controllers: [ProcessStepController],
   providers: [
     ProcessStepService,
@@ -20,4 +21,4 @@ import { ProcessStepService } from './process-step.service';
     ProcessStepAssemblerService,
   ],
 })
-export class ProcessStepModule {}
+export class ProcessStepModule { }

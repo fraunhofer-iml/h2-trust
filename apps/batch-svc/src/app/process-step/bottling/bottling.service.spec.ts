@@ -7,7 +7,7 @@ import {
   ProcessStepEntityHydrogenProductionMock,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
-import { HydrogenColor, parseColor } from '@h2-trust/api';
+import { ExpressMulterFileMock, HydrogenColor, parseColor } from '@h2-trust/api';
 import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
 import { StorageService } from '@h2-trust/storage';
 import { BatchSelectionService } from './batch-selection.service';
@@ -15,6 +15,8 @@ import { BottlingService } from './bottling.service';
 import { calculateRemainingAmount } from './bottling.service.spec.util';
 import { HydrogenCompositionService } from './hydrogen-composition.service';
 import { ProcessStepAssemblerService } from './process-step-assembler.service';
+import { ProcessStepService } from '../process-step.service';
+import { ConfigurationModule } from '@h2-trust/configuration';
 
 describe('ProcessStepService', () => {
   const SUFFICIENT_AMOUNT = 90;
@@ -25,11 +27,15 @@ describe('ProcessStepService', () => {
   let processStepRepository: ProcessStepRepository;
   let batchRepository: BatchRepository;
   let generalService: ClientProxy;
+  let storageService: StorageService;
+  let documentRepository: DocumentRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [ConfigurationModule],
       providers: [
         BottlingService,
+        ProcessStepService,
         HydrogenCompositionService,
         BatchSelectionService,
         ProcessStepAssemblerService,
@@ -37,7 +43,7 @@ describe('ProcessStepService', () => {
           provide: ProcessStepRepository,
           useValue: {
             insertProcessStep: jest.fn(),
-            findProcessStep: jest.fn(),
+            findProcessStep: jest.fn().mockResolvedValue(ProcessStepEntityHydrogenProductionMock[3]),
             findAllProcessStepsFromStorageUnit: jest.fn(),
           },
         },
@@ -49,11 +55,15 @@ describe('ProcessStepService', () => {
         },
         {
           provide: DocumentRepository,
-          useValue: {},
+          useValue: {
+            addDocumentToProcessStep: jest.fn(),
+          },
         },
         {
           provide: StorageService,
-          useValue: {},
+          useValue: {
+            uploadFileWithDeepPath: jest.fn(),
+          },
         },
         {
           provide: BrokerQueues.QUEUE_GENERAL_SVC,
@@ -68,6 +78,8 @@ describe('ProcessStepService', () => {
     processStepAssemblerService = module.get<ProcessStepAssemblerService>(ProcessStepAssemblerService);
     processStepRepository = module.get<ProcessStepRepository>(ProcessStepRepository);
     batchRepository = module.get<BatchRepository>(BatchRepository);
+    storageService = module.get<StorageService>(StorageService);
+    documentRepository = module.get<DocumentRepository>(DocumentRepository);
     generalService = module.get<ClientProxy>(BrokerQueues.QUEUE_GENERAL_SVC) as ClientProxy;
   });
 
@@ -79,20 +91,33 @@ describe('ProcessStepService', () => {
       jest
         .spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit')
         .mockResolvedValue(ProcessStepEntityHydrogenProductionMock.slice(3, 4));
-      const setBatchesInactiveSpy = jest.spyOn(batchRepository, 'setBatchesInactive');
+
+      const setBatchesInactiveSpy = jest
+        .spyOn(batchRepository, 'setBatchesInactive');
+
       const createProcessStepSpy = jest
         .spyOn(processStepRepository, 'insertProcessStep')
         .mockResolvedValue(processStepData);
-      const readProcessStepSpy = jest.spyOn(processStepRepository, 'findProcessStep');
+
+      const readProcessStepSpy = jest
+        .spyOn(processStepRepository, 'findProcessStep');
+
+      const uploadFileWithDeepPathSpy = jest
+        .spyOn(storageService, 'uploadFileWithDeepPath');
+
+      const addDocumentToProcessStepSpy = jest
+        .spyOn(documentRepository, 'addDocumentToProcessStep');
 
       // Act
-      await service.createBottling(processStepData, undefined);
+      await service.createBottling(processStepData, ExpressMulterFileMock);
 
       // Assert
       expect(setBatchesInactiveSpy).toHaveBeenCalledTimes(1);
       expect(createProcessStepSpy).toHaveBeenCalledTimes(1);
       expect(readProcessStepSpy).toHaveBeenCalledTimes(1);
       expect(readProcessStepSpy).toHaveBeenCalledWith(processStepData.id);
+      expect(uploadFileWithDeepPathSpy).toHaveBeenCalledTimes(1);
+      expect(addDocumentToProcessStepSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should create bottling ProcessStep with split merge', async () => {

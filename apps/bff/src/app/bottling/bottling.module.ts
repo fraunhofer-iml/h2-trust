@@ -15,4 +15,4 @@ import { ProofOfOriginModule } from './proof-of-origin/proof-of-origin.module';
   controllers: [BottlingController],
   providers: [BottlingService, UserService],
 })
-export class BottlingModule {}
+export class BottlingModule { }

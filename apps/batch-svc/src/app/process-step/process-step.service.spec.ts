@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { DatabaseModule, PrismaService, ProcessStepDbTypeMock } from '@h2-trust/database';
 import { ProcessStepService } from './process-step.service';
+import { ConfigurationModule } from '@h2-trust/configuration';
 
 describe('ProcessStepService', () => {
   let service: ProcessStepService;
@@ -9,7 +10,7 @@ describe('ProcessStepService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [DatabaseModule],
+      imports: [ConfigurationModule, DatabaseModule],
       providers: [
         ProcessStepService,
         {
@@ -35,7 +36,7 @@ describe('ProcessStepService', () => {
     const response = await service.readProcessSteps(
       givenProcessStep.processTypeName,
       givenProcessStep.batch.active,
-      givenProcessStep.executedBy.companyId,
+      givenProcessStep.executedBy.owner.id,
     );
     expect(response).toEqual([ProcessStepEntity.fromDatabase(givenProcessStep)]);
   });
