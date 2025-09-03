@@ -48,13 +48,7 @@ export class StorageFillingLevelsComponent {
         data: data.map((dto) => dto.name),
         axisLabel: {
           formatter: (value: string, index: number) => {
-            const item = data[index];
-            const totalH2Amount = formatNumberForChart(
-              item?.hydrogenComposition.reduce((sum, portion) => sum + portion.amount, 0),
-            );
-            const label = `{name|${value}}\n{filling|Filling: ${totalH2Amount}/${item?.capacity} kg (${formatNumberForChart((100 * totalH2Amount) / (item?.capacity ?? 0))} %)}`;
-            const overflowMessage = `\n{err|${ERROR_MESSAGES.maxCapacityExceeded}}`;
-            return totalH2Amount > (item?.capacity ?? 0) ? label + overflowMessage : label;
+            return this.getLabel(data, value, index);
           },
           rich: {
             name: {
@@ -121,5 +115,15 @@ export class StorageFillingLevelsComponent {
       },
     };
     return barSeries;
+  }
+
+  private getLabel(data: HydrogenStorageOverviewDto[], value: string, index: number) {
+    const item = data[index];
+    const totalH2Amount = formatNumberForChart(
+      item?.hydrogenComposition.reduce((sum, portion) => sum + portion.amount, 0),
+    );
+    const label = `{name|${value}}\n{filling|Filling: ${totalH2Amount}/${item?.capacity} kg (${formatNumberForChart((100 * totalH2Amount) / (item?.capacity ?? 0))} %)}`;
+    const overflowMessage = `\n{err|${ERROR_MESSAGES.maxCapacityExceeded}}`;
+    return totalH2Amount > (item?.capacity ?? 0) ? label + overflowMessage : label;
   }
 }
