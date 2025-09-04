@@ -7,4 +7,5 @@ export * from './user';
 export * from './power-access-approval';
 export * from './util';
 export * from './proof-of-origin';
+export * from './proof-of-sustainability';
 export * from './file';

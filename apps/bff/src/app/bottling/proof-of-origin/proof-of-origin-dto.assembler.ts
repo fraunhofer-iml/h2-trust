@@ -1,7 +1,17 @@
 import { HydrogenComponentEntity, ProcessStepEntity, Util } from '@h2-trust/amqp';
-import { BatchDto, BatchType, ClassificationDto, ClassificationType, EmissionDto, EnergySource, HydrogenBatchDto, MeasurementUnit, parseColor, PowerBatchDto } from '@h2-trust/api';
+import {
+  BatchDto,
+  BatchType,
+  ClassificationDto,
+  ClassificationType,
+  EmissionDto,
+  EnergySource,
+  HydrogenBatchDto,
+  MeasurementUnit,
+  parseColor,
+  PowerBatchDto,
+} from '@h2-trust/api';
 import { ProofOfOriginConstants } from './proof-of-origin.constants';
-
 
 export class ProofOfOriginDtoAssembler {
   static assembleProductionPowerBatchDto(processStepEntity: ProcessStepEntity, energySource: string): BatchDto {
@@ -69,9 +79,9 @@ export class ProofOfOriginDtoAssembler {
 
   private static assembleEmissionDto() {
     return new EmissionDto(
-      null, // TBA
-      null, // TBA
-      null, // TBA
+      0, // TBA
+      0, // TBA
+      'TBD', // TBA
     );
   }
 

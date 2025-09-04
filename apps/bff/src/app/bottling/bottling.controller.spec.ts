@@ -1,3 +1,4 @@
+import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   BottlingMessagePatterns,
@@ -7,11 +8,6 @@ import {
   ProcessStepMessagePatterns,
   UserMessagePatterns,
 } from '@h2-trust/amqp';
-import { BottlingController } from './bottling.controller';
-import { BottlingService } from './bottling.service';
-import 'multer';
-import { of } from 'rxjs';
-import { ClientProxy } from '@nestjs/microservices';
 import {
   AddressDto,
   BottlingDto,
@@ -20,10 +16,15 @@ import {
   CompanyDto,
   ProcessType,
   ProductPassDto,
+  proofOfSustainabilityMock,
   UserDetailsDto,
   UserDetailsDtoMock,
 } from '@h2-trust/api';
+import 'multer';
+import { of } from 'rxjs';
 import { UserService } from '../user/user.service';
+import { BottlingController } from './bottling.controller';
+import { BottlingService } from './bottling.service';
 import { ProofOfOriginService } from './proof-of-origin/proof-of-origin.service';
 
 describe('BottlingController', () => {
@@ -187,4 +188,9 @@ describe('BottlingController', () => {
     expect(actualResponse).toEqual(expectedResponse);
   });
 
+  it('should return proof of sustainability for process step ID', () => {
+    const actualResponse = controller.readProofOfSustainability('213');
+    const expectedResponse = proofOfSustainabilityMock;
+    expect(actualResponse).toEqual(expectedResponse);
+  });
 });

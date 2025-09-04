@@ -15,3 +15,5 @@ export * from './power-production-type.enum';
 export * from './hydrogen-storage-type.enum';
 export * from './grid-level.enum';
 export * from './fuel-type.enum';
+
+export * from './calculation-topic.enum';

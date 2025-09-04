@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
@@ -14,6 +14,8 @@ import {
   BottlingDtoMock,
   BottlingOverviewDto,
   ProductPassDto,
+  ProofOfSustainabilityDto,
+  proofOfSustainabilityMock,
   SectionDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/api';
@@ -24,10 +26,12 @@ import { ProofOfOriginService } from './proof-of-origin/proof-of-origin.service'
 
 @Controller('bottlings')
 export class BottlingController {
+  private readonly logger: Logger = new Logger(BottlingController.name);
+
   constructor(
     private readonly bottlingService: BottlingService,
     private readonly proofOfOriginService: ProofOfOriginService,
-  ) { }
+  ) {}
 
   @Post()
   @UseInterceptors(FilesInterceptor('files'))
@@ -48,7 +52,7 @@ export class BottlingController {
           type: 'array',
           items: {
             type: 'string',
-            format: 'binary'
+            format: 'binary',
           },
         },
         amount: {
@@ -137,5 +141,21 @@ export class BottlingController {
   })
   readProofOfOrigin(@Param('id') processStepId: string): Promise<SectionDto[]> {
     return this.proofOfOriginService.readProofOfOrigin(processStepId);
+  }
+
+  @Public()
+  @Get(':id/proof-of-sustainability')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Retrieve the proof of sustainability by the corresponding process-step ID.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Unique identifier of the process-step.',
+    example: 'process-step-hydrogen-bottling-2',
+  })
+  readProofOfSustainability(@Param('id') processStepId: string): ProofOfSustainabilityDto {
+    this.logger.log(`Read Proof of Sustainability for Process Stem ${processStepId}`);
+    return proofOfSustainabilityMock;
   }
 }

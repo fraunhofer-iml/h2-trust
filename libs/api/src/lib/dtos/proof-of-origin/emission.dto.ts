@@ -1,11 +1,11 @@
 export class EmissionDto {
-  amount: number;
-  savingsPotential: number;
-  calculation: string;
+  amountCO2: number;
+  amountCO2PerKgH2: number;
+  basisOfCalculation: string;
 
-  constructor(amount: number, savingsPotential: number, calculation: string) {
-    this.amount = amount;
-    this.savingsPotential = savingsPotential;
-    this.calculation = calculation;
+  constructor(amountCO2: number, amountCO2PerKgH2: number, basisOfCalculation: string) {
+    this.amountCO2 = amountCO2;
+    this.amountCO2PerKgH2 = amountCO2PerKgH2;
+    this.basisOfCalculation = basisOfCalculation;
   }
 }

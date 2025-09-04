@@ -6,18 +6,15 @@ import { EmissionMock } from './emissions.mock';
 const waterDetailsMock: WaterDetailsDto[] = [
   {
     amount: 100,
-    emission: 43,
-    emissionCalculation: ' E =  n * 0.43 ',
+    emission: { amountCO2: 50, amountCO2PerKgH2: 8.7, basisOfCalculation: ' E =  n * 0.43 ' },
   },
   {
     amount: 100,
-    emission: 20,
-    emissionCalculation: ' E =  n * 0.2 ',
+    emission: { amountCO2: 50, amountCO2PerKgH2: 8.7, basisOfCalculation: ' E =  n * 0.2 ' },
   },
   {
     amount: 100,
-    emission: 36367,
-    emissionCalculation: ' E =  n * 363.67 ',
+    emission: { amountCO2: 50, amountCO2PerKgH2: 8.7, basisOfCalculation: ' E =  n * 363.67 ' },
   },
 ];
 

@@ -92,7 +92,7 @@ export class HydrogenBatchDto extends BatchDto {
     color: string,
     rfnboReady: boolean,
     processStep: string,
-    accountingPeriodEnd?: Date
+    accountingPeriodEnd?: Date,
   ) {
     super(id, emission, creationDate, amount, unit, BatchType.HYDROGEN);
     this.amountVerified = amountVerified;
@@ -125,7 +125,7 @@ export class PowerBatchDto extends BatchDto {
     producer: string,
     unitId: string,
     energySource: EnergySource,
-    accountingPeriodEnd: Date
+    accountingPeriodEnd: Date,
   ) {
     super(id, emission, creationDate, amount, unit, BatchType.POWER);
     this.producer = producer;

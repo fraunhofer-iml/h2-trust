@@ -17,7 +17,7 @@
         <app-rfnbo-chip [isRFNBOready]="batch().rfnboReady"></app-rfnbo-chip>
       </div>
 
-      <span>GHG-Emissions: {{ batch().emission.amount }} {{ batch().unit }}</span>
+      <span>GHG-Emissions (cumulated): {{ batch().emission.amountCO2PerKgH2 }} {{ batch().unit }}</span>
     </div>
     <app-verified-chart
       [amount]="batch().amount"

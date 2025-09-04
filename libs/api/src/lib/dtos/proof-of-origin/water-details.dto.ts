@@ -1,11 +1,11 @@
+import { EmissionDto } from './emission.dto';
+
 export class WaterDetailsDto {
   amount: number;
-  emission: number;
-  emissionCalculation: string;
+  emission: EmissionDto;
 
-  constructor(amount: number, emission: number, emissionCalculation: string) {
+  constructor(amount: number, emission: EmissionDto) {
     this.amount = amount;
     this.emission = emission;
-    this.emissionCalculation = emissionCalculation;
   }
 }

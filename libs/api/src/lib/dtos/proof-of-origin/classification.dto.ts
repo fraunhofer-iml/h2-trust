@@ -8,7 +8,7 @@ import { BatchDto } from './batch.dto';
  */
 export class ClassificationDto {
   name: string;
-  emission: number;
+  emissionOfProcessStep: number;
   amount: number;
   amountVerified: number;
   batches: BatchDto[];
@@ -21,7 +21,7 @@ export class ClassificationDto {
 
   constructor(
     name: string,
-    emission: number,
+    emissionOfProcessStep: number,
     amount: number,
     amountVerified: number,
     batches: BatchDto[],
@@ -30,7 +30,7 @@ export class ClassificationDto {
     type: ClassificationType,
   ) {
     this.name = name;
-    this.emission = emission;
+    this.emissionOfProcessStep = emissionOfProcessStep;
     this.amount = amount;
     this.amountVerified = amountVerified;
     this.batches = batches;
