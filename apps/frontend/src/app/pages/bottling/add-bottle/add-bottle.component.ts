@@ -117,7 +117,7 @@ export class AddBottleComponent {
 
   removeFile({ file, documentType }: FGFile): void {
     this.uploadedFiles = this.uploadedFiles.filter(
-      (uploadedFile: FGFile) => uploadedFile.file !== file && uploadedFile.documentType !== documentType,
+      (uploadedFile: FGFile) => !(uploadedFile.file === file && uploadedFile.documentType === documentType),
     );
   }
 

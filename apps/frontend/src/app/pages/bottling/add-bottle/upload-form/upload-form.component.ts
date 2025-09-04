@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -13,7 +13,6 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FileSizePipe } from '../../../../shared/pipes/file-size.pipe';
-import { UploadFormSelectType } from './types/upload-form-select.type';
 
 @Component({
   selector: 'app-upload-form',
@@ -38,18 +37,10 @@ import { UploadFormSelectType } from './types/upload-form-select.type';
   templateUrl: './upload-form.component.html',
 })
 export class UploadFormComponent {
-  @Input() title?: string;
-  @Input() buttonText = 'Add file';
-  @Input() buttonTooltip = 'Add file to upload at save';
-  @Input() selectOptions?: UploadFormSelectType[];
-  @Input() showUploadedFiles = true;
-  @Input() showDescriptionField = false;
-  @Input() uploadedFiles: { file: File; documentType?: string }[] = [];
-  @Output() uploadDocument = new EventEmitter<{ file: File; documentType?: string }>();
-  @Output() removeDocument = new EventEmitter<{ file: File; documentType?: string }>();
-  @Output() removeProof = new EventEmitter<UploadFormSelectType>();
+  uploadedFiles = input<{ file: File; documentType?: string }[]>([]);
 
-  file: File | null = null;
+  uploadDocument = output<{ file: File; documentType?: string }>();
+  removeDocument = output<{ file: File; documentType?: string }>();
 
   formGroup: FormGroup = new FormGroup({
     documentType: new FormControl(null),
@@ -57,14 +48,10 @@ export class UploadFormComponent {
     description: new FormControl(null),
   });
 
-  lengthOfUploadedFiles(): number {
-    return this.selectOptions?.filter((option) => option.file).length ?? this.uploadedFiles.length;
-  }
-
-  onDrop(event: DragEvent, documentType: string): void {
+  onDrop(event: DragEvent): void {
     event.preventDefault();
     const file = event.dataTransfer?.files[0];
-    if ((file && documentType) || (file && this.showDescriptionField)) {
+    if (file) {
       this.formGroup.patchValue({ file });
     }
   }
@@ -77,9 +64,9 @@ export class UploadFormComponent {
     const target = event.target as HTMLInputElement;
     if (!target.files) return;
     const file = target.files[0];
-
     this.formGroup.patchValue({
       file: file,
+      documentType: file.type,
     });
   }
 

@@ -1,126 +1,57 @@
 <div class="flex h-full flex-col gap-4">
-  <div class="flex h-full flex-col">
-    <h3 class="pb-2 text-neutral-700">{{ title || 'Upload' }}</h3>
-
-    <form [formGroup]="formGroup" class="flex h-full flex-col">
-      @if (selectOptions && selectOptions.length > 0) {
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label class="w-full">Document Type</mat-label>
-          <mat-select formControlName="documentType" placeholder="Select Document Type" class="w-full !border-none">
-            <mat-option *ngFor="let option of selectOptions" [value]="option.value">
-              {{ option.key }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      }
-
-      <div
-        class="flex h-full w-full items-center justify-center"
-        [ngClass]="{
-          'cursor-pointer': formGroup.get('documentType')?.value || showDescriptionField,
-          'bg-gray-50 hover:bg-gray-100': formGroup.get('documentType')?.value || showDescriptionField,
-        }"
-      >
-        <label
-          for="dropzone-file"
-          class="flex h-full min-h-40 w-full flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300"
-          (drop)="onDrop($event, formGroup.get('documentType')?.value)"
-          (dragover)="onDragOver($event)"
-          [matTooltip]="!formGroup.get('documentType')?.value && selectOptions ? 'Select a Document Type first.' : ''"
-        >
-          <div class="flex flex-col items-center justify-center pb-6 pt-5" *ngIf="!formGroup.value.file">
-            <span class="material-symbols-outlined text-4xl text-gray-500"> cloud_upload </span>
-            <p class="mb-2 text-sm text-gray-500">
-              <span class="font-semibold">Click to upload</span>
-            </p>
-            <p class="text-xs text-gray-500">PNG, JPG, PDF</p>
-          </div>
-          <div class="flex flex-col items-center justify-center pb-6 pt-5" *ngIf="formGroup.value.file">
-            <span class="material-symbols-outlined text-4xl text-green-500"> check_circle</span>
-            <span class="mb-2 text-sm font-semibold text-gray-500">{{ formGroup.value.file.name }}</span>
-          </div>
-          <input
-            id="dropzone-file"
-            type="file"
-            [disabled]="!formGroup.get('documentType')?.value && selectOptions"
-            class="hidden"
-            (change)="onFileSelected($event)"
-          />
-        </label>
+  <h2>Documents</h2>
+  <div
+    (click)="fileInput.click()"
+    role="none"
+    for="dropzone-file"
+    (drop)="onDrop($event)"
+    (dragover)="onDragOver($event)"
+    class="border-primary-600 bg-primary-300/10 flex h-40 w-full cursor-pointer flex-col items-center justify-center rounded-md border-2 border-dashed"
+  >
+    @if (!formGroup.value.file) {
+      <span class="material-symbols-outlined text-primary-600 text-4xl">cloud_upload</span>
+      <p class="text-primary-300 mb-2 text-sm">
+        <span class="font-semibold">Click to upload</span>
+      </p>
+    }
+    @if (formGroup.value.file) {
+      <div class="flex flex-col items-center justify-center">
+        <span class="material-symbols-outlined text-h2-green-text text-4xl"> check_circle</span>
+        <span class="mb-2 text-sm font-semibold text-gray-500">{{ formGroup.value.file.name }}</span>
       </div>
-
-      @if (showDescriptionField) {
-        <mat-form-field class="mt-4 w-full" appearance="outline">
-          <mat-label>Description</mat-label>
-          <input matInput formControlName="description" placeholder="Fairtrade Certificate" />
-        </mat-form-field>
-      }
-
-      <div class="flex items-center justify-center">
-        <button
-          mat-flat-button
-          class="mt-4 text-center"
-          [disabled]="!formGroup.valid"
-          (click)="submitDocument()"
-          [matTooltip]="buttonTooltip"
-        >
-          {{ buttonText }}
-        </button>
-      </div>
-    </form>
+    }
+    <input id="dropzone-file" type="file" class="hidden" #fileInput (change)="onFileSelected($event)" accept=".pdf" />
   </div>
 
-  <div *ngIf="showUploadedFiles">
-    <div class="flex border-b-2 p-2">
-      @if (selectOptions) {
-        <span class="material-symbols-outlined">{{
-          lengthOfUploadedFiles() === selectOptions.length ? 'check_circle' : 'pending'
-        }}</span>
-      }
-      <div class="ml-2" [ngClass]="{ 'col-span-2': !selectOptions }">
-        <span class="text-neutral-700">Document:</span>
-      </div>
-    </div>
-    @if (selectOptions && selectOptions.length > 0) {
-      @for (option of selectOptions; track $index) {
-        <div class="grid grid-cols-3 border-b-2 p-2">
-          <div class="col-span-2 flex">
-            <span class="material-symbols-outlined border-gray-200" [ngClass]="{ 'text-green-600': option.file }">
-              {{ option.file ? 'check_circle' : 'pending' }}
-            </span>
-            <div class="ml-2">key: {{ option.key }}</div>
-          </div>
-          @if (option.file) {
-            <button
-              class="material-symbols-outlined cursor-pointer text-end hover:text-red-400"
-              (click)="removeProof.emit(option)"
-            >
-              delete
-            </button>
-          } @else {
-            <span class="material-symbols-outlined text-end text-gray-300">delete</span>
-          }
-        </div>
-      }
-    }
+  <div class="flex items-center justify-center">
+    <button mat-flat-button class="mt-4 text-center" [disabled]="!formGroup.valid" (click)="submitDocument()">
+      Add Document
+    </button>
+  </div>
 
-    @if (uploadedFiles && uploadedFiles.length > 0) {
-      @for (uploadedFile of uploadedFiles; track $index) {
-        <div class="col-span-2 flex w-full justify-between border-b border-gray-200 p-2 text-sm text-neutral-700">
-          <span>
-            {{ uploadedFile.documentType }}
-          </span>
-          <div class="flex items-center gap-4">
-            {{ uploadedFile.file.name }} ({{ uploadedFile.file.size | fileSize }})
-            <button
-              class="material-symbols-outlined cursor-pointer text-neutral-700 hover:text-red-400"
-              (click)="removeDocument.emit(uploadedFile)"
-            >
-              delete
-            </button>
+  <div class="flex flex-col gap-1">
+    <span>Uploaded Documents:</span>
+    <div class="flex max-h-72 flex-col gap-1 overflow-y-auto">
+      @for (item of uploadedFiles(); track $index) {
+        <div
+          class="flex w-full items-center justify-between rounded-md border-2 border-neutral-200 px-4 py-2 text-neutral-700"
+        >
+          <div class="flex flex-col">
+            <span> {{ item.file.name }} </span>
+            <span class="text-sm text-neutral-500"> ({{ item.file.size | fileSize }})</span>
           </div>
+
+          <button
+            (click)="removeDocument.emit(item)"
+            class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-2 border-neutral-200 p-2 text-neutral-300 hover:border-red-500 hover:text-red-500"
+          >
+            <span class="material-symbols-outlined text-md">clear</span>
+          </button>
         </div>
       }
-    }
+      @if (uploadedFiles().length === 0) {
+        <span class="text-neutral-700">No files selected.</span>
+      }
+    </div>
   </div>
 </div>
