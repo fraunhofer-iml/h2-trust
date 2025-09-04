@@ -19,28 +19,31 @@ export class StorageFillingLevelsComponent {
   chartOption$ = computed(() => this.getOption(this.chartData() ?? []));
 
   private getOption(data: HydrogenStorageOverviewDto[]): EChartsOption {
-    let series: echarts.BarSeriesOption[] = [
-      {
-        name: 'EMPTY',
-        color: 'transparent',
-        type: 'bar',
-        stack: 'a',
-        data: data.map((dto) => {
-          const diff = dto.capacity - dto.hydrogenComposition.reduce((sum, portion) => sum + portion.amount, 0);
-          return diff > 0 ? formatNumberForChart(diff) : 0;
-        }),
-        itemStyle: {
-          borderRadius: 8,
-          borderColor: '#ababab',
-          borderWidth: 2,
-          borderType: 'dashed',
-        },
+    const emptyOption: echarts.BarSeriesOption = {
+      name: 'EMPTY',
+      color: 'transparent',
+      type: 'bar',
+      stack: 'a',
+      data: data.map((dto) => {
+        const diff = dto.capacity - dto.hydrogenComposition.reduce((sum, portion) => sum + portion.amount, 0);
+        return diff > 0 ? formatNumberForChart(diff) : 0;
+      }),
+      itemStyle: {
+        borderRadius: 8,
+        borderColor: '#ababab',
+        borderWidth: 2,
+        borderType: 'dashed',
       },
-    ];
+    };
 
+    const series: echarts.BarSeriesOption[] = [];
     Array.from(CHART_COLORS.keys()).forEach((color) => {
-      series = [this.getSeriesForColor(color, data), ...series];
+      series.push(this.getSeriesForColor(color, data));
     });
+
+    const capacityExceeded = data[0].filling > data[0].capacity;
+    if (!capacityExceeded) series.push(emptyOption);
+    else if (series[0]) series[0].markLine = this.getMarkLine(data[0].capacity);
 
     return {
       yAxis: {
@@ -63,9 +66,14 @@ export class StorageFillingLevelsComponent {
               lineHeight: 20,
             },
             err: {
+              backgroundColor: '#fff',
+              color: '#BD608B',
+              padding: [4, 8],
+              borderRadius: 12,
               fontSize: 12,
               fontWeight: 'bold',
-              color: '#BD608B',
+              borderColor: '#BD608B',
+              borderWidth: 1,
             },
           },
         },
@@ -101,7 +109,7 @@ export class StorageFillingLevelsComponent {
   private getSeriesForColor(h2color: string, data: HydrogenStorageOverviewDto[]): echarts.BarSeriesOption {
     const barSeries: echarts.BarSeriesOption = {
       name: h2color,
-      color: CHART_COLORS.get(h2color),
+      color: CHART_COLORS.get(h2color) + '50',
       type: 'bar',
       stack: 'a',
       barMaxWidth: 100,
@@ -110,8 +118,8 @@ export class StorageFillingLevelsComponent {
       ),
       itemStyle: {
         borderRadius: 8,
-        borderColor: 'transparent',
-        borderWidth: 1,
+        borderColor: CHART_COLORS.get(h2color),
+        borderWidth: 2,
       },
     };
     return barSeries;
@@ -125,5 +133,24 @@ export class StorageFillingLevelsComponent {
     const label = `{name|${value}}\n{filling|Filling: ${totalH2Amount}/${item?.capacity} kg (${formatNumberForChart((100 * totalH2Amount) / (item?.capacity ?? 0))} %)}`;
     const overflowMessage = `\n{err|${ERROR_MESSAGES.maxCapacityExceeded}}`;
     return totalH2Amount > (item?.capacity ?? 0) ? label + overflowMessage : label;
+  }
+
+  private getMarkLine(capacity: number): echarts.MarkLineComponentOption {
+    const markLine: echarts.MarkLineComponentOption = {
+      symbol: 'none',
+      label: {
+        show: true,
+        formatter: `Total \n Capacity `,
+        position: 'insideMiddleTop',
+        color: '#696565',
+      },
+      lineStyle: {
+        color: '#696565',
+        type: 'dashed',
+        width: 2,
+      },
+      data: [{ xAxis: capacity }],
+    };
+    return markLine;
   }
 }
