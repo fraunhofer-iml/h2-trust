@@ -1,3 +1,4 @@
+import { A11yModule } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -20,6 +21,7 @@ import { UsersService } from '../../shared/services/users/users.service';
     RouterModule,
     MatExpansionModule,
     MatSelectModule,
+    A11yModule,
   ],
   providers: [UsersService],
   templateUrl: './sidebar.component.html',
@@ -51,5 +53,9 @@ export class SidebarComponent implements OnInit {
 
   logout() {
     this.authService.logout();
+  }
+
+  signIn() {
+    this.authService.logIn();
   }
 }

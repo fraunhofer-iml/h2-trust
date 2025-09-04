@@ -6,6 +6,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
 import { BaseSheetComponent } from '../../../layout/sheet/sheet.component';
 import { ERROR_MESSAGES } from '../../../shared/constants/error.messages';
+import { AuthService } from '../../../shared/services/auth/auth.service';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { H2CompositionChartComponent } from './chart/h2-composition-chart.component';
 import { FileSheetComponent } from './file-sheet/file-sheet.component';
@@ -27,8 +28,10 @@ import { ProofOfOriginComponent } from './proof-of-origin/proof-of-origin.compon
 })
 export class ProductPassComponent {
   bottlingService = inject(BottlingService);
+  authService = inject(AuthService);
 
   selectedUrl = '';
+  isAuthenticated = false;
 
   id = input<string>('');
 
@@ -39,4 +42,8 @@ export class ProductPassComponent {
     queryFn: () => this.bottlingService.findBatchById(this.id() ?? ''),
     enabled: !!this.id(),
   }));
+
+  constructor() {
+    this.isAuthenticated = this.authService.isAuthenticated();
+  }
 }
