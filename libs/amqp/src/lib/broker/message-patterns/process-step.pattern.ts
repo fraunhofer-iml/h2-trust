@@ -10,5 +10,7 @@ export enum ProcessStepMessagePatterns {
   READ_ALL = 'process-step.read-all',
   READ_UNIQUE = 'process-step.read-unique',
   CREATE = 'process-step.create',
-  BOTTLING = 'process-step.bottling',
+  HYDROGEN_BOTTLING = 'process-step.hydrogen-bottling',
+  HYDROGEN_TRANSPORTATION = 'process-step.hydrogen-transportation',
+  CALCULATE_HYDROGEN_COMPOSITION = 'process-step.calculate_hydrogen_composition',
 }

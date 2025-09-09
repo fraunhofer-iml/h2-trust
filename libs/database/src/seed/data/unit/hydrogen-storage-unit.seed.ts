@@ -1,6 +1,6 @@
 import { HydrogenStorageUnit, Prisma } from '@prisma/client';
-import { UnitSeed } from './unit.seed';
 import { HydrogenStorageTypeSeed } from './hydrogen-storage-type.seed';
+import { UnitSeed } from './unit.seed';
 
 export const HydrogenStorageUnitSeed = <HydrogenStorageUnit[]>[
   {

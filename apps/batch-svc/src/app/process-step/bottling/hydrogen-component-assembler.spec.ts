@@ -10,7 +10,7 @@ describe('HydrogenComponentAssembler', () => {
       id: 'test-process-step-id',
       startedAt: new Date('2025-01-01T00:00:00Z'),
       endedAt: new Date('2025-01-01T01:00:00Z'),
-      processType: 'BOTTLING',
+      processType: 'HYDROGEN_BOTTLING',
       batch: {
         amount: 1,
         quality: '{"color": "mixed"}',
@@ -34,15 +34,13 @@ describe('HydrogenComponentAssembler', () => {
   it('should not calculate hydrogen composition without a processStep', () => {
     const expectedErrorMessage = 'The provided bottling process step is missing (undefined or null).';
 
-    expect(() => HydrogenComponentAssembler.assembleFromBottlingProcessStep(undefined)).toThrow(
-      expectedErrorMessage,
-    );
+    expect(() => HydrogenComponentAssembler.assembleFromBottlingProcessStep(undefined)).toThrow(expectedErrorMessage);
   });
 
   it('should not calculate hydrogen composition with an invalid process type', () => {
     bottlingProcessStep.processType = 'INVALID_TYPE';
 
-    const expectedErrorMessage = `ProcessStep ${bottlingProcessStep.id} should be type BOTTLING, but is ${bottlingProcessStep.processType}.`;
+    const expectedErrorMessage = `ProcessStep ${bottlingProcessStep.id} should be type HYDROGEN_BOTTLING or HYDROGEN_TRANSPORTATION, but is ${bottlingProcessStep.processType}.`;
 
     expect(() => HydrogenComponentAssembler.assembleFromBottlingProcessStep(bottlingProcessStep)).toThrow(
       expectedErrorMessage,

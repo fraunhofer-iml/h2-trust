@@ -35,17 +35,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     gridConnectionNumber: string,
     type: PowerProductionTypeEntity,
   ) {
-    super(
-      id,
-      name,
-      mastrNumber,
-      manufacturer,
-      modelType,
-      serialNumber,
-      commissionedOn,
-      address,
-      company,
-    );
+    super(id, name, mastrNumber, manufacturer, modelType, serialNumber, commissionedOn, address, company);
 
     this.decommissioningPlannedOn = decommissioningPlannedOn;
     this.electricityMeterNumber = electricityMeterNumber;
@@ -74,6 +64,6 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
       biddingZoneName: unit.powerProductionUnit?.biddingZoneName,
       gridConnectionNumber: unit.powerProductionUnit?.gridConnectionNumber,
       type: unit.powerProductionUnit?.type,
-    }
+    };
   }
 }

@@ -1,10 +1,9 @@
- import { Test, TestingModule } from '@nestjs/testing';
-import { CompanyController } from "./company.controller";
-import { CompanyService } from "./company.service";
-import { DatabaseModule, PrismaService } from "libs/database/src/lib";
- import { CompanyType } from '@prisma/client';
- import { CompanyEntity } from '@h2-trust/amqp';
-
+import { DatabaseModule, PrismaService } from 'libs/database/src/lib';
+import { Test, TestingModule } from '@nestjs/testing';
+import { CompanyType } from '@prisma/client';
+import { CompanyEntity } from '@h2-trust/amqp';
+import { CompanyController } from './company.controller';
+import { CompanyService } from './company.service';
 
 describe('CompanyController', () => {
   let controller: CompanyController;
@@ -21,7 +20,7 @@ describe('CompanyController', () => {
           useValue: {
             company: {
               findMany: jest.fn(),
-            }
+            },
           },
         },
       ],
@@ -29,7 +28,6 @@ describe('CompanyController', () => {
 
     controller = module.get<CompanyController>(CompanyController);
     prisma = module.get<PrismaService>(PrismaService);
-
   });
 
   it('should be defined', () => {
@@ -50,9 +48,9 @@ describe('CompanyController', () => {
           postalCode: '12345',
           city: 'Energietown',
           state: 'Energieland',
-          country: 'Energieland'
-        }
-      }
+          country: 'Energieland',
+        },
+      },
     ];
 
     jest.spyOn(prisma.company, 'findMany').mockResolvedValue(expectedResponse);

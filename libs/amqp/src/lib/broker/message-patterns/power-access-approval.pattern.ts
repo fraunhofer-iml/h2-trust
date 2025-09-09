@@ -1,3 +1,3 @@
 export enum PowerAccessApprovalPattern {
-    READ = 'power-access-approval.read',
+  READ = 'power-access-approval.read',
 }

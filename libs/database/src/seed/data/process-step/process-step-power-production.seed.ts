@@ -1,7 +1,7 @@
 import { ProcessStep } from '@prisma/client';
-import { UserSeed } from '../user.seed';
 import { BatchPowerProducedSeed } from '../batch';
 import { PowerProductionUnitSeed } from '../unit';
+import { UserSeed } from '../user.seed';
 import { ProcessTypeSeed } from './process-type.seed';
 
 export const ProcessStepPowerProductionSeed = <ProcessStep[]>[

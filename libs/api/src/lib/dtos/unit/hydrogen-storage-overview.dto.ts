@@ -43,12 +43,14 @@ export class HydrogenStorageOverviewDto {
   }
 
   private static mapFilling(unit: HydrogenStorageUnitEntity): number {
-    return unit.filling?.reduce((sum, filling) => {
-      if (filling.amount == null) {
-        throw new Error('One or more filling amounts are undefined');
-      }
-      return sum + filling.amount;
-    }, 0) ?? 0;
+    return (
+      unit.filling?.reduce((sum, filling) => {
+        if (filling.amount == null) {
+          throw new Error('One or more filling amounts are undefined');
+        }
+        return sum + filling.amount;
+      }, 0) ?? 0
+    );
   }
 
   private static mapHydrogenComposition(unit: HydrogenStorageUnitEntity): HydrogenComponentDto[] {
@@ -66,7 +68,8 @@ export class HydrogenStorageOverviewDto {
   }
 
   private static mapHydrogenProductionUnit(unit: HydrogenStorageUnitEntity) {
-    return unit.hydrogenProductionUnits?.filter((unit) => unit.hydrogenStorageUnitId === unit.id)
+    return unit.hydrogenProductionUnits
+      ?.filter((unit) => unit.hydrogenStorageUnitId === unit.id)
       .map((unit) => ({
         id: unit.id,
         name: unit.name,

@@ -9,23 +9,16 @@ import { ProofOfOriginConstants } from './proof-of-origin.constants';
 export class InputMediaSectionService {
   constructor(private readonly energySourceClassificationService: EnergySourceClassificationService) {}
 
-  async buildInputMediaSection(hydrogenProductionProcessSteps: ProcessStepEntity[]): Promise<SectionDto> {
-    const powerSupplyClassification = await this.buildPowerSupplyClassification(hydrogenProductionProcessSteps);
-    return new SectionDto(ProofOfOriginConstants.INPUT_MEDIA_SECTION_NAME, [], [powerSupplyClassification]);
-  }
-
-  private async buildPowerSupplyClassification(
-    hydrogenProductionProcessSteps: ProcessStepEntity[],
-  ): Promise<ClassificationDto> {
-    const energySourceClassificationDtos =
+  async buildInputMediaSection(powerProductionProcessSteps: ProcessStepEntity[]): Promise<SectionDto> {
+    const energySourceClassificationDtos: ClassificationDto[] =
       await this.energySourceClassificationService.buildEnergySourceClassificationsFromProcessSteps(
-        hydrogenProductionProcessSteps,
+        powerProductionProcessSteps,
       );
-
-    return ProofOfOriginDtoAssembler.assemblePowerClassification(
+    const powerSupplyClassification: ClassificationDto = ProofOfOriginDtoAssembler.assemblePowerClassification(
       ProofOfOriginConstants.POWER_SUPPLY_CLASSIFICATION_NAME,
       [],
       energySourceClassificationDtos,
     );
+    return new SectionDto(ProofOfOriginConstants.INPUT_MEDIA_SECTION_NAME, [], [powerSupplyClassification]);
   }
 }

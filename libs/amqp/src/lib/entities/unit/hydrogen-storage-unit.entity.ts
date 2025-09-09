@@ -4,8 +4,8 @@ import { parseColor } from '@h2-trust/api';
 import { HydrogenStorageUnitDbType } from '@h2-trust/database';
 import { BrokerException } from '../../broker/broker-exception';
 import { AddressEntity } from '../address';
-import { BaseUnitEntity } from './base-unit.entity';
 import { HydrogenComponentEntity } from '../bottling';
+import { BaseUnitEntity } from './base-unit.entity';
 
 export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   capacity?: number;
@@ -41,17 +41,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       hydrogenStorageUnitId: string;
     }[],
   ) {
-    super(
-      id,
-      name,
-      mastrNumber,
-      manufacturer,
-      modelType,
-      serialNumber,
-      commissionedOn,
-      address,
-      company,
-    );
+    super(id, name, mastrNumber, manufacturer, modelType, serialNumber, commissionedOn, address, company);
     this.capacity = capacity;
     this.pressure = pressure;
     this.type = type;

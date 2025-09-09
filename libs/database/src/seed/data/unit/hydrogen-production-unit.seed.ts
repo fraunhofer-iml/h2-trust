@@ -1,8 +1,8 @@
 import { HydrogenProductionUnit, Prisma } from '@prisma/client';
+import { BiddingZoneSeed } from './bidding-zone.seed';
 import { HydrogenProductionTypeSeed } from './hydrogen-production-type.seed';
 import { HydrogenStorageUnitSeed } from './hydrogen-storage-unit.seed';
 import { UnitSeed } from './unit.seed';
-import { BiddingZoneSeed } from './bidding-zone.seed';
 
 export const HydrogenProductionUnitSeed = <HydrogenProductionUnit[]>[
   {

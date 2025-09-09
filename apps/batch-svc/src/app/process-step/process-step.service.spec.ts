@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProcessStepEntity } from '@h2-trust/amqp';
+import { ConfigurationModule } from '@h2-trust/configuration';
 import { DatabaseModule, PrismaService, ProcessStepDbTypeMock } from '@h2-trust/database';
 import { ProcessStepService } from './process-step.service';
-import { ConfigurationModule } from '@h2-trust/configuration';
 
 describe('ProcessStepService', () => {
   let service: ProcessStepService;
@@ -34,7 +34,7 @@ describe('ProcessStepService', () => {
     jest.spyOn(prisma.processStep, 'findMany').mockResolvedValue([givenProcessStep]);
 
     const response = await service.readProcessSteps(
-      givenProcessStep.processTypeName,
+      [givenProcessStep.processTypeName],
       givenProcessStep.batch.active,
       givenProcessStep.executedBy.owner.id,
     );

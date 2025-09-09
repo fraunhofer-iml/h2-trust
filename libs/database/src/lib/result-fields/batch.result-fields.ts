@@ -9,7 +9,7 @@ export const batchResultFields = Prisma.validator<Prisma.BatchDefaultArgs>()({
         owner: companyResultFields,
         hydrogenStorageUnit: {
           include: {
-            generalInfo: true
+            generalInfo: true,
           },
         },
         processStep: true,
@@ -20,7 +20,7 @@ export const batchResultFields = Prisma.validator<Prisma.BatchDefaultArgs>()({
         owner: companyResultFields,
         hydrogenStorageUnit: {
           include: {
-            generalInfo: true
+            generalInfo: true,
           },
         },
         processStep: true,

@@ -5,33 +5,33 @@
 // Node.js's `stream` module, which is not available in the browser
 
 export interface MulterFileMock {
-    fieldname: string;
-    originalname: string;
-    encoding: string;
-    mimetype: string;
-    size: number;
-    destination: string;
-    filename: string;
-    path: string;
-    buffer: Buffer;
-    stream: any; // Dummy-Stream
+  fieldname: string;
+  originalname: string;
+  encoding: string;
+  mimetype: string;
+  size: number;
+  destination: string;
+  filename: string;
+  path: string;
+  buffer: Buffer;
+  stream: any; // Dummy-Stream
 }
 
 export const ExpressMulterFileMock = <MulterFileMock[]>[
-    {
-        fieldname: 'file',
-        originalname: 'test-file.txt',
-        encoding: '7bit',
-        mimetype: 'text/plain',
-        size: 1024,
-        destination: '/tmp',
-        filename: 'test-file.txt',
-        path: '/tmp/test-file.txt',
-        buffer: new TextEncoder().encode('Test file content'), // Create Uint8Array
-        stream: {
-            // Dummy-Implementation
-            on: () => { },
-            pipe: () => { },
-        },
+  {
+    fieldname: 'file',
+    originalname: 'test-file.txt',
+    encoding: '7bit',
+    mimetype: 'text/plain',
+    size: 1024,
+    destination: '/tmp',
+    filename: 'test-file.txt',
+    path: '/tmp/test-file.txt',
+    buffer: new TextEncoder().encode('Test file content'), // Create Uint8Array
+    stream: {
+      // Dummy-Implementation
+      on: () => {},
+      pipe: () => {},
     },
+  },
 ];

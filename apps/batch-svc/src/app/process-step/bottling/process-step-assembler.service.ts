@@ -5,7 +5,7 @@ import { BatchTypeDbEnum, HydrogenColorDbEnum, ProcessStepRepository } from '@h2
 
 @Injectable()
 export class ProcessStepAssemblerService {
-  constructor(private readonly processStepRepository: ProcessStepRepository) { }
+  constructor(private readonly processStepRepository: ProcessStepRepository) {}
 
   async createBottlingProcessStep(
     processStep: ProcessStepEntity,
@@ -13,7 +13,7 @@ export class ProcessStepAssemblerService {
   ): Promise<ProcessStepEntity> {
     return this.processStepRepository.insertProcessStep({
       ...processStep,
-      processType: ProcessType.BOTTLING,
+      processType: ProcessType.HYDROGEN_BOTTLING,
       batch: {
         amount: processStep.batch.amount,
         quality: this.determineBottleQualityFromPredecessors(batchesForBottle),
@@ -76,7 +76,7 @@ export class ProcessStepAssemblerService {
           id: ownerId,
         },
         hydrogenStorageUnit: {
-          id: processStep.executedBy?.id
+          id: processStep.executedBy?.id,
         },
       },
     };

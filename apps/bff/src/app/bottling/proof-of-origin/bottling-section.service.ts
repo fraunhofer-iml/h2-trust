@@ -1,30 +1,44 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BottlingMessagePatterns, BrokerQueues, HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/amqp';
+import { BrokerQueues, HydrogenComponentEntity, ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
 import { SectionDto } from '@h2-trust/api';
 import { ProofOfOriginDtoAssembler } from './proof-of-origin-dto.assembler';
 import { ProofOfOriginConstants } from './proof-of-origin.constants';
 
-
 @Injectable()
 export class BottlingSectionService {
-  constructor(
-    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processService: ClientProxy,
-  ) {}
+  constructor(@Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchService: ClientProxy) {}
 
-  async buildBottlingSection(processStepEntity: ProcessStepEntity): Promise<SectionDto> {
-    const hydrogenComposition = await this.fetchHydrogenComposition(processStepEntity);
+  async buildBottlingSection(processStep: ProcessStepEntity): Promise<SectionDto> {
+    const hydrogenComposition: HydrogenComponentEntity[] = await firstValueFrom(
+      this.batchService.send(ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION, processStep.id),
+    );
+
     return new SectionDto(
-      ProofOfOriginConstants.BOTTLING_SECTION_NAME,
-      [ProofOfOriginDtoAssembler.assembleBottlingHydrogenBatchDto(processStepEntity, hydrogenComposition)],
+      ProofOfOriginConstants.HYDROGEN_BOTTLING_SECTION_NAME,
+      [ProofOfOriginDtoAssembler.assembleBottlingHydrogenBatchDto(processStep, hydrogenComposition)],
       [],
     );
   }
 
-  private async fetchHydrogenComposition(processStepEntity: ProcessStepEntity): Promise<HydrogenComponentEntity[]> {
-    return firstValueFrom(
-      this.processService.send(BottlingMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION, processStepEntity.id),
+  async buildTransportationSection(
+    hydrogenTransportationProcessStep: ProcessStepEntity,
+    hydrogenBottlingProcessStep: ProcessStepEntity,
+  ): Promise<SectionDto> {
+    const hydrogenComposition: HydrogenComponentEntity[] = await firstValueFrom(
+      this.batchService.send(ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION, hydrogenBottlingProcessStep.id),
+    );
+
+    return new SectionDto(
+      ProofOfOriginConstants.HYDROGEN_TRANSPORTATION_SECTION_NAME,
+      [
+        ProofOfOriginDtoAssembler.assembleBottlingHydrogenBatchDto(
+          hydrogenTransportationProcessStep,
+          hydrogenComposition,
+        ),
+      ],
+      [],
     );
   }
 }

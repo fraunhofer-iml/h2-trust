@@ -1,3 +1,4 @@
+import { FuelType, TransportMode } from '../../../enums';
 import { BottlingDto } from '../bottling.dto';
 
 export const BottlingDtoMock = <BottlingDto[]>[
@@ -9,5 +10,7 @@ export const BottlingDtoMock = <BottlingDto[]>[
     recordedBy: 'user-id-1',
     hydrogenStorageUnit: 'hydrogen-storage-unit-1',
     fileDescription: 'Certificate for green hydrogen production',
+    transportMode: TransportMode.TRAILER,
+    fuelType: FuelType.DIESEL,
   },
 ];

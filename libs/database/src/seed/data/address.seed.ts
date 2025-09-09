@@ -28,8 +28,8 @@ export const AddressSeed = <Address[]>[
     city: 'Empfängerstadt',
     state: 'Empfängerland',
     country: 'Empfängerland',
-    latitude: new Prisma.Decimal(34.567890),
-    longitude: new Prisma.Decimal(76.543210),
+    latitude: new Prisma.Decimal(34.56789),
+    longitude: new Prisma.Decimal(76.54321),
   },
   {
     id: 'address-grid-1',

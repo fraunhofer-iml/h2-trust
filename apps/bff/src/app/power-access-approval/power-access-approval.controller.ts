@@ -6,7 +6,7 @@ import { PowerAccessApprovalService } from './power-access-approval.service';
 
 @Controller('power-access-approvals')
 export class PowerAccessApprovalController {
-  constructor(private readonly powerAccessApprovalService: PowerAccessApprovalService) { }
+  constructor(private readonly powerAccessApprovalService: PowerAccessApprovalService) {}
 
   @Get()
   @ApiBearerAuth()

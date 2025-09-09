@@ -1,12 +1,12 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { BatchEntity, BrokerException, HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import { parseColor } from '@h2-trust/api';
-import { ProcessStepAssemblerService } from './process-step-assembler.service';
 import { BatchSelection } from './batch-selection.interface';
+import { ProcessStepAssemblerService } from './process-step-assembler.service';
 
 @Injectable()
 export class BatchSelectionService {
-  constructor(private readonly processStepAssemblerService: ProcessStepAssemblerService) { }
+  constructor(private readonly processStepAssemblerService: ProcessStepAssemblerService) {}
 
   processBottlingForAllColors(
     allProcessStepsFromStorageUnit: ProcessStepEntity[],
@@ -45,24 +45,23 @@ export class BatchSelectionService {
       color,
     );
 
-    const { selectedProcessSteps, remainingAmount } =
-      this.selectProcessStepsForBottlingAndCalculateRemainingAmount(
-        processStepsFromHydrogenStorageWithRequestedColor,
-        amount,
-        processStepDataForBottling.executedBy.id,
-        color,
-      );
+    const { selectedProcessSteps, remainingAmount } = this.selectProcessStepsForBottlingAndCalculateRemainingAmount(
+      processStepsFromHydrogenStorageWithRequestedColor,
+      amount,
+      processStepDataForBottling.executedBy.id,
+      color,
+    );
 
     const processStepsForRemainingAmount: ProcessStepEntity[] =
       remainingAmount > 0
         ? [
-          this.processStepAssemblerService.assembleHydrogenProductionProcessStepForRemainingAmount(
-            processStepDataForBottling,
-            remainingAmount,
-            selectedProcessSteps[0].batch.owner.id,
-            selectedProcessSteps.at(-1),
-          ),
-        ]
+            this.processStepAssemblerService.assembleHydrogenProductionProcessStepForRemainingAmount(
+              processStepDataForBottling,
+              remainingAmount,
+              selectedProcessSteps[0].batch.owner.id,
+              selectedProcessSteps.at(-1),
+            ),
+          ]
         : [];
 
     return {

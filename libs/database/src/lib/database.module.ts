@@ -16,7 +16,7 @@ import {
   PowerProductionTypeRepository,
   ProcessStepRepository,
   UnitRepository,
-  UserRepository
+  UserRepository,
 } from './repositories';
 
 @Module({
@@ -44,4 +44,4 @@ import {
     CompanyRepository,
   ],
 })
-export class DatabaseModule { }
+export class DatabaseModule {}

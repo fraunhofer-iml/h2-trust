@@ -34,6 +34,6 @@ export class CompanyDto {
       companyType: company.companyType,
       address: company.address,
       users: company.users,
-    }
+    };
   }
 }

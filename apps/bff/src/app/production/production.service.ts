@@ -12,12 +12,7 @@ import {
   ProductionMessagePatterns,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
-import {
-  CreateProductionDto,
-  ProcessType,
-  ProductionOverviewDto,
-  UserDetailsDto,
-} from '@h2-trust/api';
+import { CreateProductionDto, ProcessType, ProductionOverviewDto, UserDetailsDto } from '@h2-trust/api';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -27,7 +22,7 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
   async createProduction(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
     const hydrogenColor = await this.fetchHydrogenColor(dto.powerProductionUnitId);
@@ -97,7 +92,7 @@ export class ProductionService {
     const userDetailsDto: UserDetailsDto = await this.userService.readUserWithCompany(userId);
     const companyIdOfUser = userDetailsDto.company.id;
     const payload = {
-      processType: ProcessType.HYDROGEN_PRODUCTION,
+      processTypes: [ProcessType.HYDROGEN_PRODUCTION],
       active: true,
       companyId: companyIdOfUser,
     };

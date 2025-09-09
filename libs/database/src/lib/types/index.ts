@@ -13,3 +13,4 @@ export * from './process-step.db.type';
 export * from './process-type.db.type';
 export * from './user.db.type';
 export * from './power-access-approval.db.type';
+export * from './transportation-details.db.type';

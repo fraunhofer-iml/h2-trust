@@ -8,5 +8,10 @@ export const processStepResultFields = Prisma.validator<Prisma.ProcessStepDefaul
     executedBy: baseUnitResultFields,
     recordedBy: true,
     documents: true,
+    processStepDetails: {
+      include: {
+        transportationDetails: true,
+      },
+    },
   },
 });

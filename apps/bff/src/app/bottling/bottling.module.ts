@@ -6,13 +6,8 @@ import { BottlingService } from './bottling.service';
 import { ProofOfOriginModule } from './proof-of-origin/proof-of-origin.module';
 
 @Module({
-  imports: [
-    new Broker().getBatchSvcBroker(),
-    new Broker().getGeneralSvcBroker(),
-    new Broker().getProcessSvcBroker(),
-    ProofOfOriginModule,
-  ],
+  imports: [new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker(), ProofOfOriginModule],
   controllers: [BottlingController],
   providers: [BottlingService, UserService],
 })
-export class BottlingModule { }
+export class BottlingModule {}

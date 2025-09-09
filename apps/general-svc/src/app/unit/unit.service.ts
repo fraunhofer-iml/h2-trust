@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import {
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
-  PowerProductionUnitEntity,
   PowerProductionTypeEntity,
+  PowerProductionUnitEntity,
   UnitEntity,
 } from '@h2-trust/amqp';
 import { PowerProductionTypeRepository, UnitRepository } from '@h2-trust/database';
@@ -13,7 +13,7 @@ export class UnitService {
   constructor(
     private readonly unitRepository: UnitRepository,
     private readonly powerProductionTypeRepository: PowerProductionTypeRepository,
-  ) { }
+  ) {}
 
   async readUnit(id: string): Promise<UnitEntity> {
     return this.unitRepository.findUnitById(id);

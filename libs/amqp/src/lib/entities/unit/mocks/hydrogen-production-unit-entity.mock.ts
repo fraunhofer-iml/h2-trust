@@ -1,4 +1,9 @@
-import { HydrogenProductionTypeSeed, HydrogenProductionUnitSeed, HydrogenStorageUnitSeed, UnitSeed } from 'libs/database/src/seed';
+import {
+  HydrogenProductionTypeSeed,
+  HydrogenProductionUnitSeed,
+  HydrogenStorageUnitSeed,
+  UnitSeed,
+} from 'libs/database/src/seed';
 import { AddressEntityPowerMock } from '../../address';
 import { HydrogenProductionUnitEntity } from '../hydrogen-production-unit.entity';
 

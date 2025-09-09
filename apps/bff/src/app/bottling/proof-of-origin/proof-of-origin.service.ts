@@ -1,54 +1,103 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { ProcessType, SectionDto } from '@h2-trust/api';
 import { BottlingSectionService } from './bottling-section.service';
+import { HydrogenProductionSectionAssembler } from './hydrogen-production-section.assembler';
 import { InputMediaSectionService } from './input-media-section.service';
+import { ProcessLineageService } from './process-lineage.service';
 import { ProcessStepService } from './process-step.service';
-import { ProductionSectionAssembler } from './production-section.assembler';
+import { invalidProcessType } from './proof-of-origin.validation';
 
 @Injectable()
 export class ProofOfOriginService {
   constructor(
     private readonly processStepService: ProcessStepService,
+    private readonly processLineageService: ProcessLineageService,
     private readonly bottlingSectionService: BottlingSectionService,
     private readonly inputMediaSectionService: InputMediaSectionService,
   ) {}
 
-  async readProofOfOrigin(hydrogenBottlingProcessStepId: string): Promise<SectionDto[]> {
-    const hydrogenBottlingProcessStep: ProcessStepEntity =
-      await this.processStepService.fetchProcessStep(hydrogenBottlingProcessStepId);
+  async readProofOfOrigin(processStepId: string): Promise<SectionDto[]> {
+    const processStep: ProcessStepEntity = await this.processStepService.fetchProcessStep(processStepId);
 
-    if (hydrogenBottlingProcessStep.processType !== ProcessType.BOTTLING) {
-      const errorMessage = `ProcessStep with ID ${hydrogenBottlingProcessStepId} should be of type ${ProcessType.BOTTLING}, but is ${hydrogenBottlingProcessStep.processType}`;
-      throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
+    switch (processStep.processType) {
+      case ProcessType.POWER_PRODUCTION:
+        return this.buildPowerProductionSections(processStep);
+
+      case ProcessType.HYDROGEN_PRODUCTION:
+        return this.buildHydrogenProductionSections(processStep);
+
+      case ProcessType.HYDROGEN_BOTTLING:
+        return this.buildHydrogenBottlingSections(processStep);
+
+      case ProcessType.HYDROGEN_TRANSPORTATION:
+        return this.buildHydrogenTransportationSections(processStep);
+
+      default:
+        throw invalidProcessType(processStep.id, processStep.processType);
     }
+  }
 
-    const hydrogenProductionProcessSteps = await this.processStepService.fetchProcessStepsOfBatches(
-      hydrogenBottlingProcessStep.batch.predecessors,
-    );
+  private async buildPowerProductionSections(powerProductionProcessStep: ProcessStepEntity): Promise<SectionDto[]> {
+    const inputMediaSection: SectionDto = await this.inputMediaSectionService.buildInputMediaSection([
+      powerProductionProcessStep,
+    ]);
+    return [inputMediaSection];
+  }
 
-    if (!hydrogenProductionProcessSteps || hydrogenProductionProcessSteps.length === 0) {
-      throw new HttpException(
-        `Predecessor process steps of type ${ProcessType.HYDROGEN_PRODUCTION} must not be empty.`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+  private async buildHydrogenProductionSections(
+    hydrogenProductionProcessStep: ProcessStepEntity,
+  ): Promise<SectionDto[]> {
+    const powerProductionProcessSteps: ProcessStepEntity[] =
+      await this.processLineageService.fetchPowerProductionProcessSteps([hydrogenProductionProcessStep]);
 
-    const invalidProcessSteps = hydrogenProductionProcessSteps.filter(
-      (step) => step.processType !== ProcessType.HYDROGEN_PRODUCTION,
-    );
+    const inputMediaSection: SectionDto =
+      await this.inputMediaSectionService.buildInputMediaSection(powerProductionProcessSteps);
+    const hydrogenProductionSection: SectionDto = HydrogenProductionSectionAssembler.buildHydrogenProductionSection([
+      hydrogenProductionProcessStep,
+    ]);
 
-    if (invalidProcessSteps.length > 0) {
-      const errorMessage = `All predecessor process steps of ${hydrogenBottlingProcessStep.id} must be of type ${ProcessType.HYDROGEN_PRODUCTION}, but found invalid process steps: ${invalidProcessSteps.map((step) => step.id + ' ' + step.processType).join(', ')}`;
-      throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
-    }
+    return [inputMediaSection, hydrogenProductionSection];
+  }
 
-    const [inputMediaSection, bottlingSection] = await Promise.all([
-      this.inputMediaSectionService.buildInputMediaSection(hydrogenProductionProcessSteps),
+  private async buildHydrogenBottlingSections(hydrogenBottlingProcessStep: ProcessStepEntity): Promise<SectionDto[]> {
+    const hydrogenProductionProcessSteps: ProcessStepEntity[] =
+      await this.processLineageService.fetchHydrogenProductionProcessSteps(hydrogenBottlingProcessStep);
+    const powerProductionProcessSteps: ProcessStepEntity[] =
+      await this.processLineageService.fetchPowerProductionProcessSteps(hydrogenProductionProcessSteps);
+
+    const [inputMediaSection, bottlingSection]: [SectionDto, SectionDto] = await Promise.all([
+      this.inputMediaSectionService.buildInputMediaSection(powerProductionProcessSteps),
       this.bottlingSectionService.buildBottlingSection(hydrogenBottlingProcessStep),
     ]);
-    const productionSection = ProductionSectionAssembler.buildProductionSection(hydrogenProductionProcessSteps);
+    const hydrogenProductionSection: SectionDto =
+      HydrogenProductionSectionAssembler.buildHydrogenProductionSection(hydrogenProductionProcessSteps);
 
-    return [inputMediaSection, productionSection, bottlingSection];
+    return [inputMediaSection, hydrogenProductionSection, bottlingSection];
+  }
+
+  private async buildHydrogenTransportationSections(
+    hydrogenTransportationProcessStep: ProcessStepEntity,
+  ): Promise<SectionDto[]> {
+    const hydrogenBottlingProcessStep: ProcessStepEntity =
+      await this.processLineageService.fetchHydrogenBottlingProcessStep(hydrogenTransportationProcessStep);
+    const hydrogenProductionProcessSteps: ProcessStepEntity[] =
+      await this.processLineageService.fetchHydrogenProductionProcessSteps(hydrogenBottlingProcessStep);
+    const powerProductionProcessSteps: ProcessStepEntity[] =
+      await this.processLineageService.fetchPowerProductionProcessSteps(hydrogenProductionProcessSteps);
+
+    const [inputMediaSection, bottlingSection, transportationSection]: [SectionDto, SectionDto, SectionDto] =
+      await Promise.all([
+        this.inputMediaSectionService.buildInputMediaSection(powerProductionProcessSteps),
+        this.bottlingSectionService.buildBottlingSection(hydrogenBottlingProcessStep),
+        this.bottlingSectionService.buildTransportationSection(
+          hydrogenTransportationProcessStep,
+          hydrogenBottlingProcessStep,
+        ),
+      ]);
+    const hydrogenProductionSection: SectionDto =
+      HydrogenProductionSectionAssembler.buildHydrogenProductionSection(hydrogenProductionProcessSteps);
+
+    return [inputMediaSection, hydrogenProductionSection, bottlingSection, transportationSection];
   }
 }

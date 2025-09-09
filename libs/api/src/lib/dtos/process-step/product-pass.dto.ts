@@ -35,7 +35,8 @@ export class ProductPassDto extends BottlingOverviewDto {
       color: processStep.batch?.quality,
       producer: processStep.recordedBy?.id,
       product: 'Hydrogen',
-      attachedFiles: processStep.documents?.map((document) => new FileInfoDto(document.description, document.location)) || [],
+      attachedFiles:
+        processStep.documents?.map((document) => new FileInfoDto(document.description, document.location)) || [],
     };
   }
 }

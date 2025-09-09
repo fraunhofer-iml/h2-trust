@@ -11,9 +11,9 @@ export class HydrogenProductionOverviewDto {
   powerProducerName: string;
   hydrogenStorageUnit:
     | {
-      id?: string;
-      name?: string;
-    }
+        id?: string;
+        name?: string;
+      }
     | undefined;
 
   constructor(

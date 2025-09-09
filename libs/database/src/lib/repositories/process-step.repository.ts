@@ -8,7 +8,7 @@ import { assertRecordFound } from './utils';
 
 @Injectable()
 export class ProcessStepRepository {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async findProcessStep(id: string): Promise<ProcessStepEntity> {
     return this.prismaService.processStep
@@ -22,11 +22,11 @@ export class ProcessStepRepository {
       .then(ProcessStepEntity.fromDatabase);
   }
 
-  async findProcessSteps(processType: string, active: boolean, companyId: string): Promise<ProcessStepEntity[]> {
+  async findProcessSteps(processTypes: string[], active: boolean, companyId: string): Promise<ProcessStepEntity[]> {
     return this.prismaService.processStep
       .findMany({
         where: {
-          processTypeName: processType,
+          processTypeName: { in: processTypes },
           batch: {
             active: active,
           },
@@ -61,15 +61,24 @@ export class ProcessStepRepository {
 
   async insertProcessStep(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
     if (processStep.processType === ProcessType.POWER_PRODUCTION && processStep.batch?.hydrogenStorageUnit?.id) {
-      throw new BrokerException(`Power production batch with amount [${processStep.batch?.amount}] has a hydrogen storage unit [${processStep.batch.hydrogenStorageUnit.id}]`, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new BrokerException(
+        `Power production batch with amount [${processStep.batch?.amount}] has a hydrogen storage unit [${processStep.batch.hydrogenStorageUnit.id}]`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
 
     if (processStep.processType === ProcessType.HYDROGEN_PRODUCTION && !processStep.batch?.hydrogenStorageUnit?.id) {
-      throw new BrokerException(`Hydrogen production batch with amount [${processStep.batch?.amount}] has no hydrogen storage unit`, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new BrokerException(
+        `Hydrogen production batch with amount [${processStep.batch?.amount}] has no hydrogen storage unit`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
 
-    if (processStep.processType === ProcessType.BOTTLING && processStep.batch?.hydrogenStorageUnit?.id) {
-      throw new BrokerException(`Hydrogen bottling batch with amount [${processStep.batch?.amount}] has a hydrogen storage unit [${processStep.batch.hydrogenStorageUnit.id}]`, HttpStatus.INTERNAL_SERVER_ERROR);
+    if (processStep.processType === ProcessType.HYDROGEN_BOTTLING && processStep.batch?.hydrogenStorageUnit?.id) {
+      throw new BrokerException(
+        `Hydrogen bottling batch with amount [${processStep.batch?.amount}] has a hydrogen storage unit [${processStep.batch.hydrogenStorageUnit.id}]`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
 
     if (!processStep.batch) {
@@ -130,6 +139,29 @@ export class ProcessStepRepository {
               id: processStep.executedBy?.id,
             },
           },
+          ...(processStep.transportationDetails && {
+            processStepDetails: {
+              create: {
+                transportationDetails: {
+                  create: {
+                    distance: processStep.transportationDetails.distance,
+                    transportMode: {
+                      connect: {
+                        name: processStep.transportationDetails.transportMode,
+                      },
+                    },
+                    ...(processStep.transportationDetails.fuelType && {
+                      fuelType: {
+                        connect: {
+                          name: processStep.transportationDetails.fuelType,
+                        },
+                      },
+                    }),
+                  },
+                },
+              },
+            },
+          }),
         },
         ...processStepResultFields,
       })

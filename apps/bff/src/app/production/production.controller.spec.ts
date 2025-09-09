@@ -1,10 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  BrokerQueues,
-  PowerProductionTypeEntity,
-  ProcessStepEntity,
-  ProcessStepMessagePatterns,
-} from '@h2-trust/amqp';
+import { BrokerQueues, PowerProductionTypeEntity, ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
 import 'multer';
 import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';

@@ -35,17 +35,7 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
       name: string;
     },
   ) {
-    super(
-      id,
-      name,
-      mastrNumber,
-      manufacturer,
-      modelType,
-      serialNumber,
-      commissionedOn,
-      address,
-      company,
-    );
+    super(id, name, mastrNumber, manufacturer, modelType, serialNumber, commissionedOn, address, company);
     this.ratedPower = ratedPower;
     this.pressure = pressure;
     this.type = type;
@@ -58,7 +48,9 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
       ...BaseUnitEntity.fromDatabase(unit),
       ratedPower: unit.hydrogenProductionUnit?.ratedPower?.toNumber() ?? 0,
       pressure: unit.hydrogenProductionUnit?.pressure?.toNumber() ?? 0,
-      type: unit.hydrogenProductionUnit?.type ? HydrogenProductionTypeEntity.fromDatabase(unit.hydrogenProductionUnit.type) : undefined,
+      type: unit.hydrogenProductionUnit?.type
+        ? HydrogenProductionTypeEntity.fromDatabase(unit.hydrogenProductionUnit.type)
+        : undefined,
       biddingZoneName: unit.hydrogenProductionUnit?.biddingZoneName,
       hydrogenStorageUnit: HydrogenProductionUnitEntity.mapHydrogenStorageUnit(unit),
     };
@@ -67,9 +59,9 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
   private static mapHydrogenStorageUnit(unit: HydrogenProductionUnitDbType) {
     return unit.hydrogenProductionUnit?.hydrogenStorageUnit
       ? {
-        id: unit.hydrogenProductionUnit.hydrogenStorageUnit.id,
-        name: unit.hydrogenProductionUnit.hydrogenStorageUnit.generalInfo?.name,
-      }
+          id: unit.hydrogenProductionUnit.hydrogenStorageUnit.id,
+          name: unit.hydrogenProductionUnit.hydrogenStorageUnit.generalInfo?.name,
+        }
       : undefined;
   }
 }

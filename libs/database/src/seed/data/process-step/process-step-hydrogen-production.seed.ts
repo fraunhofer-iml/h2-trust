@@ -1,8 +1,8 @@
 import { ProcessStep } from '@prisma/client';
-import { UserSeed } from '../user.seed';
-import { ProcessTypeSeed } from './process-type.seed';
 import { BatchHydrogenProducedSeed } from '../batch';
 import { HydrogenProductionUnitSeed } from '../unit';
+import { UserSeed } from '../user.seed';
+import { ProcessTypeSeed } from './process-type.seed';
 
 export const ProcessStepHydrogenProductionSeed = <ProcessStep[]>[
   {

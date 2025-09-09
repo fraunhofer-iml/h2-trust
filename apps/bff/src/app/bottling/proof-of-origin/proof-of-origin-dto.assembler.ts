@@ -40,7 +40,7 @@ export class ProofOfOriginDtoAssembler {
       processStepEntity.batch.owner.name,
       processStepEntity.executedBy.id,
       null, //TBA
-      ProofOfOriginConstants.TYPE_OF_PRODUCTION,
+      ProofOfOriginConstants.HYDROGEN_PRODUCTION_TYPE,
       [
         {
           color: parseColor(processStepEntity.batch.quality),

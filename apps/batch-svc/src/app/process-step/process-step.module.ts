@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
+import { ConfigurationModule } from '@h2-trust/configuration';
 import { DatabaseModule } from '@h2-trust/database';
 import { StorageModule } from '@h2-trust/storage';
 import { BatchSelectionService } from './bottling/batch-selection.service';
@@ -8,7 +9,7 @@ import { HydrogenCompositionService } from './bottling/hydrogen-composition.serv
 import { ProcessStepAssemblerService } from './bottling/process-step-assembler.service';
 import { ProcessStepController } from './process-step.controller';
 import { ProcessStepService } from './process-step.service';
-import { ConfigurationModule } from '@h2-trust/configuration';
+import { TransportationService } from './transportation.service';
 
 @Module({
   imports: [ConfigurationModule, DatabaseModule, StorageModule, new Broker().getGeneralSvcBroker()],
@@ -19,6 +20,7 @@ import { ConfigurationModule } from '@h2-trust/configuration';
     HydrogenCompositionService,
     BatchSelectionService,
     ProcessStepAssemblerService,
+    TransportationService,
   ],
 })
-export class ProcessStepModule { }
+export class ProcessStepModule {}

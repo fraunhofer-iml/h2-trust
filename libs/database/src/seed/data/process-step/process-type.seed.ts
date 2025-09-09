@@ -8,6 +8,9 @@ export const ProcessTypeSeed = <ProcessType[]>[
     name: 'HYDROGEN_PRODUCTION',
   },
   {
-    name: 'BOTTLING',
+    name: 'HYDROGEN_BOTTLING',
+  },
+  {
+    name: 'HYDROGEN_TRANSPORTATION',
   },
 ];

@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
-import { ProcessStepService } from './process-step.service';
 import { BottlingSectionService } from './bottling-section.service';
-import { ProofOfOriginDtoAssembler } from './proof-of-origin-dto.assembler';
 import { EnergySourceClassificationService } from './energy-source-classification.service';
+import { HydrogenProductionSectionAssembler } from './hydrogen-production-section.assembler';
 import { InputMediaSectionService } from './input-media-section.service';
-import { ProductionSectionAssembler } from './production-section.assembler';
+import { ProcessLineageService } from './process-lineage.service';
+import { ProcessStepService } from './process-step.service';
+import { ProofOfOriginDtoAssembler } from './proof-of-origin-dto.assembler';
 import { ProofOfOriginService } from './proof-of-origin.service';
 
 @Module({
@@ -13,11 +14,12 @@ import { ProofOfOriginService } from './proof-of-origin.service';
   providers: [
     ProofOfOriginService,
     BottlingSectionService,
-    ProductionSectionAssembler,
+    HydrogenProductionSectionAssembler,
     InputMediaSectionService,
     ProofOfOriginDtoAssembler,
     EnergySourceClassificationService,
     ProcessStepService,
+    ProcessLineageService,
   ],
   exports: [ProofOfOriginService],
 })

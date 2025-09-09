@@ -259,6 +259,42 @@ model ProcessStep {
   unitId     String
 
   documents Document[]
+
+  processStepDetails ProcessStepDetails?
+}
+
+model ProcessStepDetails {
+  id String @id @default(cuid(2))
+
+  transportationDetails TransportationDetails?
+
+  processStep   ProcessStep @relation(fields: [processStepId], references: [id])
+  processStepId String      @unique
+}
+
+model TransportationDetails {
+  id       String  @id
+  distance Decimal @db.Decimal(8, 3)
+
+  processStepDetails ProcessStepDetails @relation(fields: [id], references: [id])
+
+  transportMode     TransportMode @relation(fields: [transportModeName], references: [name])
+  transportModeName String
+
+  fuelType     FuelType? @relation(fields: [fuelTypeName], references: [name])
+  fuelTypeName String?
+}
+
+model TransportMode {
+  name String @id
+
+  transportationDetails TransportationDetails[]
+}
+
+model FuelType {
+  name String @id
+
+  transportationDetails TransportationDetails[]
 }
 
 model PowerAccessApproval {

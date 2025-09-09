@@ -61,9 +61,9 @@ export abstract class BaseUnitEntity {
   protected static mapCompany(unit: BaseUnitDbType) {
     return unit.owner
       ? {
-        id: unit.ownerId,
-        hydrogenApprovals: BaseUnitEntity.mapHydrogenApprovals(unit),
-      }
+          id: unit.ownerId,
+          hydrogenApprovals: BaseUnitEntity.mapHydrogenApprovals(unit),
+        }
       : undefined;
   }
 

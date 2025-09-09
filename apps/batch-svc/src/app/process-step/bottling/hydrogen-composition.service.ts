@@ -4,12 +4,13 @@ import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
   HydrogenComponentEntity,
+  HydrogenCompositionUtil,
   HydrogenStorageUnitEntity,
   ProcessStepEntity,
-  UnitMessagePatterns, HydrogenCompositionUtil
+  UnitMessagePatterns,
 } from '@h2-trust/amqp';
-import { HydrogenColorDbEnum } from '@h2-trust/database';
 import { parseColor } from '@h2-trust/api';
+import { HydrogenColorDbEnum } from '@h2-trust/database';
 
 @Injectable()
 export class HydrogenCompositionService {

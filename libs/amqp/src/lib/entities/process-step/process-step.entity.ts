@@ -3,6 +3,7 @@ import { BatchEntity } from '../batch';
 import { DocumentEntity } from '../document';
 import { BaseUnitEntity } from '../unit';
 import { UserEntity } from '../user';
+import { TransportationDetailsEntity } from './transportation-details.entity';
 
 export class ProcessStepEntity {
   id?: string;
@@ -13,6 +14,7 @@ export class ProcessStepEntity {
   recordedBy?: UserEntity;
   executedBy?: BaseUnitEntity;
   documents?: DocumentEntity[];
+  transportationDetails?: TransportationDetailsEntity;
 
   constructor(
     id: string,
@@ -23,6 +25,7 @@ export class ProcessStepEntity {
     recordedBy: UserEntity,
     executedBy: BaseUnitEntity,
     documents: DocumentEntity[],
+    transportationDetails?: TransportationDetailsEntity,
   ) {
     this.id = id;
     this.startedAt = startedAt;
@@ -32,6 +35,7 @@ export class ProcessStepEntity {
     this.recordedBy = recordedBy;
     this.executedBy = executedBy;
     this.documents = documents;
+    this.transportationDetails = transportationDetails;
   }
 
   static fromDatabase(processStep: ProcessStepDbType): ProcessStepEntity {
@@ -44,6 +48,9 @@ export class ProcessStepEntity {
       recordedBy: UserEntity.fromDatabase(processStep.recordedBy),
       executedBy: BaseUnitEntity.fromDatabase(processStep.executedBy),
       documents: processStep.documents.map(DocumentEntity.fromDatabase),
+      transportationDetails: processStep.processStepDetails?.transportationDetails
+        ? TransportationDetailsEntity.fromDatabase(processStep.processStepDetails.transportationDetails)
+        : undefined,
     };
   }
 }

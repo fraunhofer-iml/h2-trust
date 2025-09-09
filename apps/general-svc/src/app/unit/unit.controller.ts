@@ -3,8 +3,8 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import {
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
-  PowerProductionUnitEntity,
   PowerProductionTypeEntity,
+  PowerProductionUnitEntity,
   UnitEntity,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
@@ -12,7 +12,7 @@ import { UnitService } from './unit.service';
 
 @Controller()
 export class UnitController {
-  constructor(private readonly service: UnitService) { }
+  constructor(private readonly service: UnitService) {}
 
   @MessagePattern(UnitMessagePatterns.READ)
   async readUnit(@Payload() payload: { id: string }): Promise<UnitEntity> {

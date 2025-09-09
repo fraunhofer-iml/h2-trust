@@ -1,7 +1,6 @@
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
-  BottlingMessagePatterns,
   BrokerQueues,
   HydrogenComponentEntity,
   ProcessStepEntity,
@@ -32,7 +31,6 @@ describe('BottlingController', () => {
   let userService: UserService;
   let batchSvc: ClientProxy;
   let generalSvc: ClientProxy;
-  let processSvc: ClientProxy;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -77,7 +75,6 @@ describe('BottlingController', () => {
     userService = module.get<UserService>(UserService);
     batchSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_BATCH_SVC) as ClientProxy;
     generalSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_GENERAL_SVC) as ClientProxy;
-    processSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_PROCESS_SVC) as ClientProxy;
   });
 
   it('should be defined', () => {
@@ -94,8 +91,7 @@ describe('BottlingController', () => {
 
     const expectedResponse: BottlingOverviewDto = BottlingOverviewDto.fromEntity(processStepEntityMock);
 
-    jest
-      .spyOn(batchSvc, 'send')
+    jest.spyOn(batchSvc, 'send')
       .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(processStepEntityMock));
 
     const actualResponse: BottlingOverviewDto = await controller.createBottling(givenDto, null, { sub: 'user-id-1' });
@@ -114,10 +110,10 @@ describe('BottlingController', () => {
 
     const expectedResponse: BottlingOverviewDto[] = processStepEntityMocks.map(BottlingOverviewDto.fromEntity);
 
-    jest.spyOn(userService, 'readUserWithCompany').mockResolvedValue(UserDetailsDtoMock[0]);
+    jest.spyOn(userService, 'readUserWithCompany')
+      .mockResolvedValue(UserDetailsDtoMock[0]);
 
-    jest
-      .spyOn(batchSvc, 'send')
+    jest.spyOn(batchSvc, 'send')
       .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(processStepEntityMocks));
 
     const actualResponse: BottlingOverviewDto[] = await controller.readBottlingsByCompany({ sub: 'user-id-1' });
@@ -132,7 +128,7 @@ describe('BottlingController', () => {
       id: 'bottling-process-step-1',
       startedAt: new Date(BottlingDtoMock[0].filledAt),
       endedAt: new Date(BottlingDtoMock[0].filledAt),
-      processType: ProcessType.BOTTLING,
+      processType: ProcessType.HYDROGEN_BOTTLING,
     };
 
     const userDetailsDtoMock: UserDetailsDto = <UserDetailsDto>{
@@ -165,17 +161,12 @@ describe('BottlingController', () => {
       },
     ];
 
-    jest
-      .spyOn(batchSvc, 'send')
-      .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(processStepEntityMock));
+    jest.spyOn(batchSvc, 'send')
+      .mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(processStepEntityMock))
+      .mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(hydrogenCompositionMock));
 
-    jest
-      .spyOn(generalSvc, 'send')
+    jest.spyOn(generalSvc, 'send')
       .mockImplementation((_messagePattern: UserMessagePatterns, _data: any) => of(userDetailsDtoMock));
-
-    jest
-      .spyOn(processSvc, 'send')
-      .mockImplementation((_messagePattern: BottlingMessagePatterns, _data: any) => of(hydrogenCompositionMock));
 
     const actualResponse: ProductPassDto = await controller.readGeneralInformation(givenProcessStepIdParam);
 

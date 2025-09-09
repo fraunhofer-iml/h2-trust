@@ -87,10 +87,10 @@ describe('ProductionController', () => {
           id: null,
         });
         expect(processStepEntity).toHaveProperty('recordedBy', {
-          id: createProductionEntity.recordedBy
+          id: createProductionEntity.recordedBy,
         });
         expect(processStepEntity).toHaveProperty('executedBy', {
-          id: createProductionEntity.powerProductionUnitId
+          id: createProductionEntity.powerProductionUnitId,
         });
       });
 
@@ -111,10 +111,10 @@ describe('ProductionController', () => {
           id: createProductionEntity.hydrogenStorageUnitId,
         });
         expect(processStepEntity).toHaveProperty('recordedBy', {
-          id: createProductionEntity.recordedBy
+          id: createProductionEntity.recordedBy,
         });
         expect(processStepEntity).toHaveProperty('executedBy', {
-          id: createProductionEntity.hydrogenProductionUnitId
+          id: createProductionEntity.hydrogenProductionUnitId,
         });
       });
 

@@ -83,6 +83,14 @@ export class BottlingController {
           type: 'string',
           default: BottlingDtoMock[0].fileDescription,
         },
+        transportMode: {
+          type: 'string',
+          default: BottlingDtoMock[0].transportMode,
+        },
+        fuelType: {
+          type: 'string',
+          default: BottlingDtoMock[0].fuelType,
+        },
       },
     },
   })

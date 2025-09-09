@@ -6,7 +6,7 @@ import { ProductionService } from './production.service';
 
 @Controller('productions')
 export class ProductionController {
-  constructor(private readonly service: ProductionService) { }
+  constructor(private readonly service: ProductionService) {}
 
   @Post()
   @ApiBearerAuth()

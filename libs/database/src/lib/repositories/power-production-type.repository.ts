@@ -4,7 +4,7 @@ import { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class PowerProductionTypeRepository {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async findPowerProductionTypes(): Promise<PowerProductionTypeEntity[]> {
     return this.prismaService.powerProductionType

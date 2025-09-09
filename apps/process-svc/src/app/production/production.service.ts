@@ -146,9 +146,7 @@ export class ProductionService {
 
     return Promise.all(
       processSteps.map((step) =>
-        firstValueFrom(
-          this.batchService.send(ProcessStepMessagePatterns.CREATE, { processStepEntity: step }),
-        ),
+        firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.CREATE, { processStepEntity: step })),
       ),
     );
   }

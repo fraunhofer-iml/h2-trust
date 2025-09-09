@@ -8,15 +8,15 @@ import {
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { ExpressMulterFileMock, HydrogenColor, parseColor } from '@h2-trust/api';
+import { ConfigurationModule } from '@h2-trust/configuration';
 import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
 import { StorageService } from '@h2-trust/storage';
+import { ProcessStepService } from '../process-step.service';
 import { BatchSelectionService } from './batch-selection.service';
 import { BottlingService } from './bottling.service';
 import { calculateRemainingAmount } from './bottling.service.spec.util';
 import { HydrogenCompositionService } from './hydrogen-composition.service';
 import { ProcessStepAssemblerService } from './process-step-assembler.service';
-import { ProcessStepService } from '../process-step.service';
-import { ConfigurationModule } from '@h2-trust/configuration';
 
 describe('ProcessStepService', () => {
   const SUFFICIENT_AMOUNT = 90;
@@ -92,24 +92,20 @@ describe('ProcessStepService', () => {
         .spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit')
         .mockResolvedValue(ProcessStepEntityHydrogenProductionMock.slice(3, 4));
 
-      const setBatchesInactiveSpy = jest
-        .spyOn(batchRepository, 'setBatchesInactive');
+      const setBatchesInactiveSpy = jest.spyOn(batchRepository, 'setBatchesInactive');
 
       const createProcessStepSpy = jest
         .spyOn(processStepRepository, 'insertProcessStep')
         .mockResolvedValue(processStepData);
 
-      const readProcessStepSpy = jest
-        .spyOn(processStepRepository, 'findProcessStep');
+      const readProcessStepSpy = jest.spyOn(processStepRepository, 'findProcessStep');
 
-      const uploadFileWithDeepPathSpy = jest
-        .spyOn(storageService, 'uploadFileWithDeepPath');
+      const uploadFileWithDeepPathSpy = jest.spyOn(storageService, 'uploadFileWithDeepPath');
 
-      const addDocumentToProcessStepSpy = jest
-        .spyOn(documentRepository, 'addDocumentToProcessStep');
+      const addDocumentToProcessStepSpy = jest.spyOn(documentRepository, 'addDocumentToProcessStep');
 
       // Act
-      await service.createBottling(processStepData, ExpressMulterFileMock);
+      await service.createBottlingProcessStep(processStepData, ExpressMulterFileMock);
 
       // Assert
       expect(setBatchesInactiveSpy).toHaveBeenCalledTimes(1);
@@ -139,7 +135,7 @@ describe('ProcessStepService', () => {
       const readProcessStepSpy = jest.spyOn(processStepRepository, 'findProcessStep');
 
       // Act
-      await service.createBottling(processStepData, undefined);
+      await service.createBottlingProcessStep(processStepData, undefined);
 
       // Assert
       expect(processAssemblerAssembleMock).toHaveBeenCalledWith(
@@ -180,7 +176,7 @@ describe('ProcessStepService', () => {
       const readProcessStepSpy = jest.spyOn(processStepRepository, 'findProcessStep');
 
       // Act
-      await service.createBottling(processStepData, undefined);
+      await service.createBottlingProcessStep(processStepData, undefined);
 
       // Assert
       const selectedBatches = hydrogenProcessSteps.slice(0, 2).map((step) => step.batch);
@@ -227,14 +223,16 @@ describe('ProcessStepService', () => {
       });
 
       // Act
-      await service.createBottling(processStepData, undefined);
+      await service.createBottlingProcessStep(processStepData, undefined);
 
       // Assert
       const totalStoredAmount = hydrogenProcessSteps.reduce((sum, step) => sum + step.batch.amount, 0);
       for (let i = 0; i < hydrogenProcessSteps.length; i += 1) {
-        expect(processAssemblerAssembleMock).toHaveBeenNthCalledWith(i + 1,
+        expect(processAssemblerAssembleMock).toHaveBeenNthCalledWith(
+          i + 1,
           processStepData,
-          hydrogenProcessSteps[i].batch.amount - processStepData.batch.amount * hydrogenProcessSteps[i].batch.amount / totalStoredAmount,
+          hydrogenProcessSteps[i].batch.amount -
+            (processStepData.batch.amount * hydrogenProcessSteps[i].batch.amount) / totalStoredAmount,
           hydrogenProcessSteps[i].batch.owner.id,
           hydrogenProcessSteps.at(i),
         );
@@ -263,7 +261,7 @@ describe('ProcessStepService', () => {
       const readProcessStepSpy = jest.spyOn(processStepRepository, 'findProcessStep');
 
       // Act
-      await service.createBottling(processStepData, undefined);
+      await service.createBottlingProcessStep(processStepData, undefined);
 
       // Assert
       expect(createProcessStepSpy).toHaveBeenCalledTimes(1);
@@ -284,7 +282,7 @@ describe('ProcessStepService', () => {
         .mockResolvedValue(ProcessStepEntityHydrogenProductionMock.slice(3, 4));
 
       // Act & Assert
-      await expect(service.createBottling(processStepData, undefined)).rejects.toThrow(BrokerException);
+      await expect(service.createBottlingProcessStep(processStepData, undefined)).rejects.toThrow(BrokerException);
     });
 
     it('should throw when no hydrogen batches available', async () => {
@@ -294,8 +292,7 @@ describe('ProcessStepService', () => {
       jest.spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit').mockResolvedValue([]);
 
       // Act & Assert
-      await expect(service.createBottling(processStepData, undefined)).rejects.toThrow(BrokerException);
+      await expect(service.createBottlingProcessStep(processStepData, undefined)).rejects.toThrow(BrokerException);
     });
-
   });
 });
