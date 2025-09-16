@@ -3,10 +3,11 @@ import { Component, input } from '@angular/core';
 import { WaterBatchDto } from '@h2-trust/api';
 import { VerifiedChartComponent } from '../../../../../..//layout/verified-chart/verified-chart.component';
 import { BaseSheetComponent } from '../../../../../../layout/sheet/sheet.component';
+import { BatchEmissionsComponent } from '../batch-emissions/batch-emissions.component';
 
 @Component({
   selector: 'app-water-batch-card',
-  imports: [CommonModule, BaseSheetComponent, VerifiedChartComponent],
+  imports: [CommonModule, BaseSheetComponent, VerifiedChartComponent, BatchEmissionsComponent],
   templateUrl: './water-batch-card.component.html',
 })
 export class WaterBatchCardComponent {

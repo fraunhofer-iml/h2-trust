@@ -35,5 +35,6 @@
         <span class="text-sm text-neutral-400">Waste Water:</span><span>{{ batch().wasteWater.amount }} l</span>
       </div>
     </div>
+    <app-batch-emissions [emissions]="batch().emission"></app-batch-emissions>
   </div>
 </app-base-sheet>
