@@ -1,0 +1,33 @@
+<div
+  class="rounded-xl border-[3px] border-neutral-100 p-4 hover:cursor-pointer hover:border-neutral-200/80"
+  (click)="sheet.open()"
+  role="none"
+>
+  <div class="flex w-full !select-none flex-row items-center gap-4 text-neutral-400">
+    <div class="bg-primary-200/30 flex items-center justify-center rounded-full p-2 text-center">
+      <span class="material-symbols-outlined text-4xl text-white">{{ getIcon(topic().key) }}</span>
+    </div>
+    <span class="grow text-xs text-neutral-500">
+      Calculation details for
+      <p class="text-lg">{{ topic().key | prettyEnum | titlecase }}</p></span
+    >
+    <span class="material-symbols-outlined text-3xl text-neutral-400">chevron_right</span>
+  </div>
+</div>
+
+<app-base-sheet #sheet>
+  <span class="font-semibold text-neutral-500">{{ topic().key | prettyEnum | titlecase }}</span>
+  <div class="my-2 flex flex-col gap-2">
+    @for (item of topic().items; track $index) {
+      <div class="flex w-full items-center justify-between rounded-lg bg-neutral-100 p-4">
+        <div class="flex w-full flex-row items-center justify-between">
+          <div>
+            <h2>{{ item.name }}</h2>
+            <p class="text-sm text-neutral-400">{{ item.basisOfCalculation }}</p>
+          </div>
+          <h2 class="text-neutral-600">{{ item.result }} {{ item.unit }}</h2>
+        </div>
+      </div>
+    }
+  </div>
+</app-base-sheet>

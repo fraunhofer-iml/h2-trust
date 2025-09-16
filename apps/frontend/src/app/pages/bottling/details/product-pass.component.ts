@@ -11,6 +11,7 @@ import { BottlingService } from '../../../shared/services/bottling/bottling.serv
 import { H2CompositionChartComponent } from './chart/h2-composition-chart.component';
 import { FileSheetComponent } from './file-sheet/file-sheet.component';
 import { ProofOfOriginComponent } from './proof-of-origin/proof-of-origin.component';
+import { ProofOfSustainabilityComponent } from './proof-of-sustainability/proof-of-sustainability.component';
 
 @Component({
   selector: 'app-product-pass',
@@ -23,6 +24,7 @@ import { ProofOfOriginComponent } from './proof-of-origin/proof-of-origin.compon
     BaseSheetComponent,
     FileSheetComponent,
     ErrorCardComponent,
+    ProofOfSustainabilityComponent,
   ],
   templateUrl: './product-pass.component.html',
 })

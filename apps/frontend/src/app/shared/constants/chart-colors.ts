@@ -4,3 +4,7 @@ export const CHART_COLORS = new Map<string, string>([
   ['PINK', '#BD608B'],
   ['YELLOW', '#F0D354'],
 ]);
+
+export const H2_TRUST_THEME = {
+  color: ['#7a7aad', '#9e9ed8', '#b6b6ff', '#c2c2ff', '#d1d1ff', '#eeeeff', '#e0e0ff'],
+};

@@ -20,8 +20,8 @@
   }
 
   @if (batchQuery.isSuccess()) {
-    <div class="grid grid-cols-3 gap-4">
-      <div class="col-span-2 rounded-lg bg-white p-4">
+    <div class="grid grid-cols-6 gap-4">
+      <div class="col-span-4 rounded-lg bg-white p-4">
         <h3 class="font-semibold text-neutral-500">General Information</h3>
 
         @if (batchQuery.isSuccess()) {
@@ -51,12 +51,12 @@
         }
       </div>
 
-      <div class="rounded-lg bg-white p-4">
+      <div class="col-span-2 rounded-lg bg-white p-4">
         <h3 class="mb-2 font-semibold text-neutral-500">Attached Files</h3>
         <div class="flex max-h-60 flex-col gap-2 overflow-y-auto">
           @for (file of batchQuery.data().attachedFiles; track $index) {
             <div
-              class="hover:bg-primary-100/20 flex flex-row items-center gap-2 rounded-lg border-[2px] border-solid border-transparent bg-neutral-100 p-2 hover:cursor-pointer"
+              class="flex flex-row items-center gap-2 rounded-lg border-[2px] border-solid border-neutral-100 bg-neutral-50 p-2 hover:cursor-pointer hover:border-neutral-200 hover:border-neutral-200/80"
               (click)="selectedUrl = file.url; sheet.open()"
               role="none"
             >
@@ -72,7 +72,8 @@
         }
       </div>
 
-      <app-proof-of-origin [id]="id()" class="col-span-3"> </app-proof-of-origin>
+      <app-proof-of-origin [id]="id()" class="col-span-3"> </app-proof-of-origin
+      ><app-proof-of-sustainability [id]="id()" class="col-span-3"></app-proof-of-sustainability>
     </div>
   }
 </div>

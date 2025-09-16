@@ -26,13 +26,13 @@
       @for (class of item.classifications; track $index; let cIndex = $index) {
         <app-classification
           [classification]="class"
-          class="my-1 w-1/2 cursor-pointer"
+          class="my-1 cursor-pointer"
           (click)="setIndex(sIndex, cIndex)"
-          role="button"
+          role="none"
         ></app-classification>
       }
       @for (batch of item.batches; track $index) {
-        <app-batch-card [batch]="batch" class="my-1 w-1/2"> </app-batch-card>
+        <app-batch-card [batch]="batch" class="my-1"> </app-batch-card>
       }
     </div>
   }
