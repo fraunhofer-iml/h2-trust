@@ -31,7 +31,7 @@ async function bootstrap() {
   const configuration = app.get(ConfigurationService);
   app.useLogger(configuration.getGlobalConfiguration().logLevel);
 
-  const swaggerConfig = new DocumentBuilder().setTitle('H2 Trust - BFF').setVersion('0.1').addBearerAuth().build();
+  const swaggerConfig = new DocumentBuilder().setTitle('H2-Trust - BFF').setVersion('0.1').addBearerAuth().build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup(configuration.getBffConfiguration().swaggerPath, app, document);
 

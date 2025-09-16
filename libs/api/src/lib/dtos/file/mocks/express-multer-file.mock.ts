@@ -1,3 +1,11 @@
+/*
+ * Copyright Fraunhofer Institute for Material Flow and Logistics
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * For details on the licensing terms, see the LICENSE file.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 // The `stream` property was added to the `MulterFileMock` interface with a dummy implementation
 // to ensure compatibility with the `File` type used in the tests. This avoids TypeScript errors
 // while maintaining the structure expected by the code. The dummy implementation provides

@@ -2,6 +2,7 @@
 
 **/run-code-quality-tools.log
 .env
+/.inbound-licenses
 
 # compiled output
 dist

@@ -1,117 +1,197 @@
-# H2Trust
+<a id="readme-top"></a>
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+[![Stars][stars-shield]][stars-url] [![Forks][forks-shield]][forks-url] [![Watchers][watchers-shield]][watchers-url]
+[![Contributors][contributors-shield]][contributors-url] [![Commit Activity][commitactivity-shield]][commitactivity-url]
+[![Last Commit][lastcommit-shield]][lastcommit-url] [![Issues][issues-shield]][issues-url]
+[![License][license-shield]][license-url]
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+<br />
+<div align="center">
+<h2 align="center">H2-Trust</h2>
+  <p align="center">
+    A NestJS-based application aimed at tracking hydrogen along the supply chain.
+    <br />
+    <a href="https://github.com/fraunhofer-iml/h2-trust/issues/new?labels=bug&template=bug-report---.md">🐞 Report Bug</a> &middot;
+    <a href="https://github.com/fraunhofer-iml/h2-trust/issues/new?labels=enhancement&template=feature-request---.md">💡 Request Feature</a>
+  </p>
+</div>
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/nest?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">📚 About The Project</a>
+      <ul><li><a href="#description">📄 Description</a></li></ul>
+      <ul><li><a href="#built-with">🛠️ Built With</a></li></ul>
+      <ul><li><a href="#components-overview">🏗️ Components Overview</a></li></ul>
+    </li>
+    <li><a href="#getting-started">🚀 Getting Started</a></li>
+    <li>
+      <a href="#contributing">🤝 Contributing</a>
+      <ul><li><a href="#getting-involved">🌟 Getting Involved</a></li></ul>
+    </li>
+    <li><a href="#license">📜 License</a></li>
+    <li><a href="#contact">📬 Contact</a></li>
+    <li><a href="#acknowledgments">🙏 Acknowledgments</a></li>
+  </ol>
+</details>
 
-## Run tasks
+## 📚 About The Project <a id="about-the-project"></a>
 
-To run the dev server for your app, use:
+### 📄 Description <a id="description"></a>
 
-```sh
-npx nx serve h2-trust
-```
+H2-Trust is our hydrogen product passport, developed as part of the research project DUH-IT. Our goal is to create a
+solution for automated, transparent, and tamper-proof verification of hydrogen properties throughout the entire supply
+chain.
 
-To create a production bundle:
+### 🛠️ Built With <a id="built-with"></a>
 
-```sh
-npx nx build h2-trust
-```
+- [![Angular][angular-shield]][angular-url] Framework for building dynamic web applications
+- [![Docker][docker-shield]][docker-url] Platform for containerizing and deploying applications efficiently
+- [![ESLint][eslint-shield]][eslint-url] Utility for linting and enforcing code quality in JavaScript and TypeScript
+- [![Jest][jest-shield]][jest-url] JavaScript testing framework
+- [![Keycloak][keycloak-shield]][keycloak-url] Identity and access management solution
+- [![MinIO][minio-shield]][minio-url] S3-compatible object storage
+- [![NestJS][nestjs-shield]][nestjs-url] Node.js framework for building scalable server-side applications
+- [![Nx][nx-shield]][nx-url] Build system for monorepos
+- [![PostgreSQL][postgresql-shield]][postgresql-url] Relational database management system known for reliability and
+  performance
+- [![Prettier][prettier-shield]][prettier-url] Code formatter for consistent style
+- [![Prisma][prisma-shield]][prisma-url] ORM for database management
+- [![RabbitMQ][rabbitmq-shield]][rabbitmq-url] Message broker for distributed systems, supporting AMQP
+- [![RxJS][rxjs-shield]][rxjs-url] Library for managing asynchronous events
+- [![Swagger][swagger-shield]][swagger-url] Tools for designing and documenting APIs
+- [![TailwindCSS][tailwindcss-shield]][tailwindcss-url] CSS framework for building custom designs
+- [![TypeScript][typescript-shield]][typescript-url] Strongly typed programming language that enhances JavaScript
 
-To see all available targets to run for a project, run:
+### 🏗️ Components Overview <a id="components-overview"></a>
 
-```sh
-npx nx show project h2-trust
-```
+The project consists of the following components:
 
-These targets are either
-[inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-or defined in the `project.json` or `package.json` files.
+1. **Frontend (`frontend`)**
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+   - Allows users to manage units and track hydrogen batches.
 
-## Add new projects
+2. **API Gateway (`api`)**
 
-While you could add new projects to your workspace manually, you might want to leverage
-[Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and
-their
-[code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-feature.
+   - Handles all incoming HTTP requests and routes them to the appropriate services via AMQP.
 
-Use the plugin's generator to create new projects.
+3. **General Service (`general-svc`)**
 
-To generate a new application, use:
+   - Manages master data.
 
-```sh
-npx nx g @nx/nest:app demo
-```
+4. **Batch Service (`batch-svc`)**
 
-To generate a new library, use:
+   - Manages hydrogen batches and their process steps.
 
-```sh
-npx nx g @nx/node:lib mylib
-```
+5. **Process Service (`process-svc`)**
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more
-specific capabilities of a particular plugin. Alternatively,
-[install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-to browse plugins and generators in your IDE.
+   - Handles workflows.
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-|
-[Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Set up CI!
+## 🚀 Getting Started <a id="getting-started"></a>
 
-### Step 1
+TLDR: open two terminal windows and run in one terminal window `docker-compose up` and in the other terminal window
+`npm install && npm run init && npm run dev`.
 
-To connect to Nx Cloud, run the following command:
+For a more detailed explanation of how to get a development environment running, including all prerequisites, please
+consult the chapters [Deployment View](./documentation/04-deployment-view.adoc) and
+[Tutorial](./documentation/05-tutorial.adoc) in our documentation. These two chapters provide step-by-step instructions
+to guide you through the process of installing, configuring and running H2-Trust on your local machine.
 
-```sh
-npx nx connect
-```
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-Connecting to Nx Cloud ensures a
-[fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-pipeline. It includes features such as:
+## 🤝 Contributing <a id="contributing"></a>
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### 🌟 Getting Involved <a id="getting-involved"></a>
 
-### Step 2
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any
+contributions you make are **greatly appreciated**.
 
-Use the following command to configure a CI workflow for your workspace:
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also
+simply open an issue with the tag "enhancement".
 
-```sh
-npx nx g ci-workflow
-```
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/amazing-feature`)
+3. Commit your Changes (`git commit -m 'Add something amazing'`)
+4. Push to the Branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Install Nx Console
+## 📜 License <a id="license"></a>
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and
-improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+Licensed under the Apache License 2.0. See `LICENSE` for details.
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Useful links
+## 📬 Contact <a id="contact"></a>
 
-Learn more:
+Dominik Sparer: dominik.sparer@iml.fraunhofer.de
 
-- [Learn more about this workspace setup](https://nx.dev/nx-api/nest?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Michael Pichura: michael.pichura@iml.fraunhofer.de
 
-And join the Nx community:
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 🙏 Acknowledgments <a id="acknowledgments"></a>
+
+- [wait-for-it](https://github.com/vishnubob/wait-for-it) for providing the `wait-for-it.sh` script, which is included
+  unmodified in this project under the terms of the
+  [MIT License](https://github.com/vishnubob/wait-for-it/blob/master/LICENSE)
+- [Best-README-Template](https://github.com/othneildrew/Best-README-Template) provided inspiration and structure for
+  creating this README file
+- [Img Shields](https://shields.io) enabled the creation of customizable and visually appealing badges for this project
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+[stars-shield]: https://img.shields.io/github/stars/fraunhofer-iml/h2-trust.svg?style=for-the-badge
+[stars-url]: https://github.com/fraunhofer-iml/h2-trust/stargazers
+[forks-shield]: https://img.shields.io/github/forks/fraunhofer-iml/h2-trust.svg?style=for-the-badge
+[forks-url]: https://github.com/fraunhofer-iml/h2-trust/forks
+[watchers-shield]: https://img.shields.io/github/watchers/fraunhofer-iml/h2-trust?style=for-the-badge
+[watchers-url]: https://github.com/fraunhofer-iml/h2-trust/watchers
+[contributors-shield]: https://img.shields.io/github/contributors/fraunhofer-iml/h2-trust.svg?style=for-the-badge
+[contributors-url]: https://github.com/fraunhofer-iml/h2-trust/graphs/contributors
+[commitactivity-shield]: https://img.shields.io/github/commit-activity/y/fraunhofer-iml/h2-trust?style=for-the-badge
+[commitactivity-url]: https://github.com/fraunhofer-iml/h2-trust/graphs/commit-activity
+[lastcommit-shield]: https://img.shields.io/github/last-commit/fraunhofer-iml/h2-trust?style=for-the-badge
+[lastcommit-url]: https://github.com/fraunhofer-iml/h2-trust/commits/main
+[issues-shield]: https://img.shields.io/github/issues/fraunhofer-iml/h2-trust.svg?style=for-the-badge
+[issues-url]: https://github.com/fraunhofer-iml/h2-trust/issues
+[license-shield]: https://img.shields.io/github/license/fraunhofer-iml/h2-trust.svg?style=for-the-badge
+[license-url]: https://github.com/fraunhofer-iml/h2-trust/blob/main/LICENSE
+[angular-shield]: https://img.shields.io/badge/Framework-Angular-DD0031?style=flat&logo=angular
+[angular-url]: https://angular.io/
+[docker-shield]: https://img.shields.io/badge/Platform-Docker-2496ED?style=flat&logo=docker
+[docker-url]: https://www.docker.com/
+[eslint-shield]: https://img.shields.io/badge/Linting-ESLint-4B32C3?style=flat&logo=eslint
+[eslint-url]: https://eslint.org/
+[jest-shield]: https://img.shields.io/badge/Testing-Jest-C21325?style=flat&logo=jest
+[jest-url]: https://jestjs.io/
+[keycloak-shield]: https://img.shields.io/badge/Library-Keycloak-DC382D?style=flat&logo=keycloak
+[keycloak-url]: https://www.keycloak.org/
+[minio-shield]: https://img.shields.io/badge/Storage-MinIO-FF6F00?style=flat&logo=minio
+[minio-url]: https://min.io/
+[nestjs-shield]: https://img.shields.io/badge/Framework-NestJS-E0234E?style=flat&logo=nestjs
+[nestjs-url]: https://nestjs.com/
+[nx-shield]: https://img.shields.io/badge/Tool-Nx-DD0031?style=flat&logo=nrwl
+[nx-url]: https://nx.dev/
+[postgresql-shield]: https://img.shields.io/badge/Database-PostgreSQL-336791?style=flat&logo=postgresql
+[postgresql-url]: https://www.postgresql.org/
+[prettier-shield]: https://img.shields.io/badge/Formatting-Prettier-F7B93E?style=flat&logo=prettier
+[prettier-url]: https://prettier.io/
+[prisma-shield]: https://img.shields.io/badge/ORM-Prisma-2D3748?style=flat&logo=prisma
+[prisma-url]: https://www.prisma.io/
+[rabbitmq-shield]: https://img.shields.io/badge/Message_Broker-RabbitMQ-FF6600?style=flat&logo=rabbitmq
+[rabbitmq-url]: https://www.rabbitmq.com/
+[rxjs-shield]: https://img.shields.io/badge/Library-RxJS-B7178C?style=flat&logo=reactivex
+[rxjs-url]: https://rxjs.dev/
+[swagger-shield]: https://img.shields.io/badge/API-Swagger-85EA2D?style=flat&logo=swagger
+[swagger-url]: https://swagger.io/
+[tailwindcss-shield]: https://img.shields.io/badge/CSS_Framework-TailwindCSS-06B6D4?style=flat&logo=tailwindcss
+[tailwindcss-url]: https://tailwindcss.com/
+[typescript-shield]: https://img.shields.io/badge/Language-TypeScript-007ACC?style=flat&logo=typescript
+[typescript-url]: https://www.typescriptlang.org/
