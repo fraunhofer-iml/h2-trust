@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { UnitType } from '@h2-trust/api';
 import { PowerProductionUnitDbType } from '@h2-trust/database';
 import { AddressEntity } from '../address';
 import { BaseUnitEntity } from './base-unit.entity';
@@ -59,6 +60,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     return <PowerProductionUnitEntity>{
       ...BaseUnitEntity.fromDatabase(unit),
       ...PowerProductionUnitEntity.mapPowerProductionUnitSpecials(unit),
+      unitType: UnitType.POWER_PRODUCTION,
     };
   }
 

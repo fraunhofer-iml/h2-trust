@@ -1,0 +1,64 @@
+<div class="flex h-full flex-col gap-4 overflow-auto p-8">
+  <div class="flex flex-row items-center gap-2 text-lg text-neutral-500">
+    <a [routerLink]="'/units'" class="cursor-pointer hover:underline">Units</a>
+    <span class="material-symbols-outlined"> keyboard_arrow_right </span>
+    {{ id() }}
+  </div>
+
+  @if (unitQuery.data(); as data) {
+    <div class="col-span-3 grid grid-cols-4 gap-4 rounded-lg bg-white p-4">
+      <div class="col-span-4 flex items-center justify-between">
+        <h3 class="font-semibold text-neutral-500">Details</h3>
+        <app-unit-type-chip [unitType]="unitQuery.data()?.unitType ?? ''"></app-unit-type-chip>
+      </div>
+
+      <div class="flex flex-col text-sm">
+        <span class="text-sm text-neutral-400">Name</span><span>{{ data.name }}</span>
+      </div>
+      <div class="flex flex-col text-sm">
+        <span class="text-sm text-neutral-400">Owner</span><span>{{ data.owner }}</span>
+      </div>
+      <div class="flex flex-col text-sm">
+        <span class="text-sm text-neutral-400">Operator</span><span>{{ data.operator }}</span>
+      </div>
+      <div class="flex flex-col text-sm">
+        <span class="text-sm text-neutral-400">Manufacturer</span><span>{{ data.manufacturer }}</span>
+      </div>
+      <div class="flex flex-col text-sm">
+        <span class="text-sm text-neutral-400">Model Type</span><span>{{ data.modelType }}</span>
+      </div>
+      <div class="flex flex-col text-sm">
+        <span class="text-sm text-neutral-400">Model Number</span><span>{{ data.modelNumber }}</span>
+      </div>
+      <div class="flex flex-col text-sm">
+        <span class="text-sm text-neutral-400">Serial Number</span><span>{{ data.serialNumber }}</span>
+      </div>
+      <div class="flex flex-col text-sm">
+        <span class="text-sm text-neutral-400">Commissioned on</span><span>{{ data.commissionedOn | date }}</span>
+      </div>
+      <div class="flex flex-col text-sm">
+        <span class="text-sm text-neutral-400">MaStrNumber</span><span>{{ data.mastrNumber }}</span>
+      </div>
+      <div class="flex flex-col text-sm">
+        <span class="text-sm text-neutral-400">Address</span
+        ><span
+          >{{ data.address.street }} {{ data.address.postalCode }} {{ data.address.city }}, {{ data.address.state }}
+          {{ data.address.country }}</span
+        >
+      </div>
+    </div>
+
+    <div class="rounded-lg bg-white p-4">
+      <h3 class="pb-4 font-semibold text-neutral-500">Additional Information</h3>
+      @if (toInstanceOfPowerProductionUnit(data); as unit) {
+        <app-power-production-details [unit]="unit"> </app-power-production-details>
+      }
+      @if (toInstanceOfHydrogenStorageUnit(data); as unit) {
+        <app-hydrogen-storage-details [unit]="unit"></app-hydrogen-storage-details>
+      }
+      @if (toInstanceOfHydrogenProductionUnit(data); as unit) {
+        <app-hydrogen-production-details [unit]="unit"></app-hydrogen-production-details>
+      }
+    </div>
+  }
+</div>

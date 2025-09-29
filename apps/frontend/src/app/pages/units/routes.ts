@@ -8,6 +8,7 @@
 
 import { Route } from '@angular/router';
 import { CreateUnitComponent } from './create/create-unit.component';
+import { UnitDetailsComponent } from './details/unit-details.component';
 import { HydrogenAssetsComponent } from './hydrogen-assets.component';
 
 export const HYDROGEN_ASSETS_ROUTES: Route[] = [
@@ -16,4 +17,5 @@ export const HYDROGEN_ASSETS_ROUTES: Route[] = [
     component: HydrogenAssetsComponent,
   },
   { path: 'create', component: CreateUnitComponent },
+  { path: ':id', component: UnitDetailsComponent },
 ];

@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { UnitType } from '@h2-trust/api';
 import { BaseUnitDbType } from '@h2-trust/database';
 import { AddressEntity } from '../address';
 
@@ -26,6 +27,7 @@ export abstract class BaseUnitEntity {
       powerProducerName: string;
     }[];
   } | null;
+  unitType?: UnitType;
 
   protected constructor(
     id: string,

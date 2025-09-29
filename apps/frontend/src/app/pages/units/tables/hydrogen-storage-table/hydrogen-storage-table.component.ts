@@ -17,6 +17,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
+import { RouterModule } from '@angular/router';
 import { HydrogenStorageOverviewDto } from '@h2-trust/api';
 import { AuthService } from '../../../../shared/services/auth/auth.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
@@ -38,6 +39,7 @@ import { UsersService } from '../../../../shared/services/users/users.service';
     MatTabsModule,
     MatPaginatorModule,
     MatSortModule,
+    RouterModule,
   ],
   templateUrl: './hydrogen-storage-table.component.html',
 })

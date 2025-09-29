@@ -17,6 +17,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
+import { RouterLink, RouterModule } from '@angular/router';
 import { PowerProductionOverviewDto } from '@h2-trust/api';
 import { AuthService } from '../../../../shared/services/auth/auth.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
@@ -38,6 +39,8 @@ import { UsersService } from '../../../../shared/services/users/users.service';
     MatTabsModule,
     MatPaginatorModule,
     MatSortModule,
+    RouterLink,
+    RouterModule,
   ],
   templateUrl: './power-production-table.component.html',
 })

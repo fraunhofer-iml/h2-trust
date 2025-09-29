@@ -1,0 +1,23 @@
+<div class="grid grid-cols-4 gap-4">
+  <div class="flex flex-col text-sm">
+    <span class="text-sm text-neutral-400">Bidding Zone</span><span>{{ unit().biddingZoneName }}</span>
+  </div>
+  <div class="flex flex-col text-sm">
+    <span class="text-sm text-neutral-400">Rated Power</span><span>{{ unit().ratedPower }} MW</span>
+  </div>
+  <div class="flex flex-col text-sm">
+    <span class="text-sm text-neutral-400">Method</span><span>{{ unit().method || '--' }}</span>
+  </div>
+  <div class="flex flex-col text-sm">
+    <span class="text-sm text-neutral-400">Technology</span><span>{{ unit().technology || '--' }}</span>
+  </div>
+  <div class="flex flex-col text-sm">
+    <span class="text-sm text-neutral-400">Pressure</span><span>{{ unit().pressure }} bar</span>
+  </div>
+  <div class="flex flex-col text-sm">
+    <span class="text-sm text-neutral-400">Connected Storage Unit</span
+    ><a [routerLink]="['/units', unit().hydrogenStorageUnit.id]" class="hover:text-primary-200 hover:underline">{{
+      unit().hydrogenStorageUnit.name
+    }}</a>
+  </div>
+</div>

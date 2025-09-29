@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { UnitType } from '../../enums';
 import { AddressDto } from '../address';
 
 export abstract class BaseUnitDto {
@@ -14,6 +15,9 @@ export abstract class BaseUnitDto {
   mastrNumber: string;
   manufacturer: string;
   modelType: string;
+  modelNumber: string;
+  owner: string;
+  operator: string;
   serialNumber: string;
   commissionedOn: Date;
   decommissioningPlannedOn: Date;
@@ -25,6 +29,7 @@ export abstract class BaseUnitDto {
       powerProducerId: string;
     }[];
   };
+  unitType: UnitType;
 
   protected constructor(
     id: string,
@@ -43,6 +48,10 @@ export abstract class BaseUnitDto {
         powerProducerId: string;
       }[];
     },
+    modelNumber: string,
+    owner: string,
+    operator: string,
+    unitType: UnitType,
   ) {
     this.id = id;
     this.name = name;
@@ -54,5 +63,9 @@ export abstract class BaseUnitDto {
     this.decommissioningPlannedOn = decommissioningPlannedOn;
     this.address = address;
     this.company = company;
+    this.unitType = unitType;
+    this.modelNumber = modelNumber;
+    this.owner = owner;
+    this.operator = operator;
   }
 }

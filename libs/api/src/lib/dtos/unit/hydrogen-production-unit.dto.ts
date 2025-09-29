@@ -6,12 +6,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { UnitType } from '../../enums';
 import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
 
 export class HydrogenProductionUnitDto extends BaseUnitDto {
   ratedPower: number;
   typeName: string;
+  biddingZoneName: string;
+  pressure: number;
+  method: string;
+  technology: string;
   hydrogenStorageUnit: {
     id: string;
     name: string;
@@ -37,6 +42,14 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     ratedPower: number,
     typeName: string,
     hydrogenStorageUnit: { id: string; name: string },
+    modelNumber: string,
+    owner: string,
+    operator: string,
+    unitType: UnitType,
+    biddingZoneName: string,
+    pressure: number,
+    method: string,
+    technology: string,
   ) {
     super(
       id,
@@ -49,9 +62,17 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
       decommissioningPlannedOn,
       address,
       company,
+      modelNumber,
+      owner,
+      operator,
+      unitType,
     );
     this.ratedPower = ratedPower;
     this.typeName = typeName;
     this.hydrogenStorageUnit = hydrogenStorageUnit;
+    this.biddingZoneName = biddingZoneName;
+    this.pressure = pressure;
+    this.method = method;
+    this.technology = technology;
   }
 }

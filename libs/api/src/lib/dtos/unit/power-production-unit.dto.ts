@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { UnitType } from '../../enums';
 import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
 import { PowerProductionTypeDto } from './power-production-type.dto';
@@ -16,6 +17,8 @@ export class PowerProductionUnitDto extends BaseUnitDto {
   gridLevel: string;
   gridConnectionNumber: string;
   type: PowerProductionTypeDto;
+  electricityMeterNumber: string;
+  biddingZone: string;
 
   constructor(
     id: string,
@@ -36,6 +39,12 @@ export class PowerProductionUnitDto extends BaseUnitDto {
     gridLevel: string,
     gridConnectionNumber: string,
     type: PowerProductionTypeDto,
+    unitType: UnitType,
+    modelNumber: string,
+    owner: string,
+    operator: string,
+    electricityMeterNumber: string,
+    biddingZone: string,
   ) {
     super(
       id,
@@ -48,11 +57,17 @@ export class PowerProductionUnitDto extends BaseUnitDto {
       decommissioningPlannedOn,
       address,
       company,
+      modelNumber,
+      owner,
+      operator,
+      unitType,
     );
     this.ratedPower = ratedPower;
     this.gridOperator = gridOperator;
     this.gridLevel = gridLevel;
     this.gridConnectionNumber = gridConnectionNumber;
     this.type = type;
+    this.electricityMeterNumber = electricityMeterNumber;
+    this.biddingZone = biddingZone;
   }
 }

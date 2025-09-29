@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { UnitType } from '@h2-trust/api';
 import { HydrogenProductionUnitDbType } from '@h2-trust/database';
 import { AddressEntity } from '../address';
 import { BaseUnitEntity } from './base-unit.entity';
@@ -61,6 +62,7 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
         : undefined,
       biddingZoneName: unit.hydrogenProductionUnit?.biddingZoneName,
       hydrogenStorageUnit: HydrogenProductionUnitEntity.mapHydrogenStorageUnit(unit),
+      unitType: UnitType.HYDROGEN_PRODUCTION,
     };
   }
 

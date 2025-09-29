@@ -1,0 +1,11 @@
+<div class="grid grid-cols-4 gap-4">
+  <div class="flex flex-col text-sm">
+    <span class="text-sm text-neutral-400">Capacity</span><span>{{ unit().capacity | number }} kg</span>
+  </div>
+  <div class="flex flex-col text-sm">
+    <span class="text-sm text-neutral-400">Pressure</span><span>{{ unit().pressure | number }} bar</span>
+  </div>
+  <div class="flex flex-col text-sm">
+    <span class="text-sm text-neutral-400">Storage Type</span><span>{{ unit().storageType || '--' }}</span>
+  </div>
+</div>

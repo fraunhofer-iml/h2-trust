@@ -25,7 +25,7 @@ export const PowerAccessApprovalSeed = <PowerAccessApproval[]>[
     id: 'power-access-approval-2',
     decidedAt: new Date('2025-08-14'),
     powerAccessApprovalStatus: PowerAccessApprovalStatus.APPROVED,
-    powerProducerId: CompanySeed[3].id,
+    powerProducerId: CompanySeed[1].id,
     powerProductionUnitId: PowerProductionUnitSeed[4].id,
     hydrogenProducerId: CompanySeed[1].id,
     documentId: DocumentSeed[0].id,
