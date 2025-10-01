@@ -60,7 +60,7 @@
           <mat-select formControlName="storageUnit" placeholder="Select a Unit" #storage>
             @for (unit of hydrogenStorageQuery.data(); track unit) {
               <mat-option [value]="unit" [disabled]="(bottleFormGroup.value.amount ?? 0) > unit.filling"
-                >{{ unit.name }} ({{ unit.filling | number }} kg)
+                >{{ unit.name }} ({{ unit.filling | number | unit: FormattedUnits.KG }})
               </mat-option>
             }
           </mat-select>

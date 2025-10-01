@@ -32,6 +32,8 @@ import {
   UserDto,
 } from '@h2-trust/api';
 import { ERROR_MESSAGES } from '../../../shared/constants/error.messages';
+import { FormattedUnits } from '../../../shared/constants/formatted-units';
+import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
@@ -57,6 +59,7 @@ import { UploadFormComponent } from './upload-form/upload-form.component';
     UploadFormComponent,
     MatRadioModule,
     RouterModule,
+    UnitPipe,
   ],
   templateUrl: './add-bottle.component.html',
 })
@@ -66,9 +69,10 @@ export class AddBottleComponent {
   companiesService = inject(CompaniesService);
   processService = inject(BottlingService);
 
-  ERROR_MESSAGES = ERROR_MESSAGES;
-  TransportType = TransportMode;
-  FuelType = FuelType;
+  readonly ERROR_MESSAGES = ERROR_MESSAGES;
+  readonly TransportType = TransportMode;
+  readonly FuelType = FuelType;
+  readonly FormattedUnits = FormattedUnits;
 
   dateDelimiter: Date = new Date();
   uploadedFiles: FGFile[] = [];

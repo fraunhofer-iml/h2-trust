@@ -4,7 +4,7 @@
 
 <div class="flex text-sm text-neutral-500">
   @if (verifiedAmount() || verifiedAmount() === 0) {
-    <span>{{ verifiedAmount() }} {{ unit() }} verified</span>
+    <span>{{ verifiedAmount() | number | unit: unit() }} verified</span>
   }
-  <span class="ml-auto">{{ amount() | number: '1.0-2' }} {{ unit() }}</span>
+  <span class="ml-auto">{{ amount() | number: '1.0-2' | unit: unit() }}</span>
 </div>

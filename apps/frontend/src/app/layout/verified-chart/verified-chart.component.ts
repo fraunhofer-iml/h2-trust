@@ -8,10 +8,11 @@
 
 import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
+import { UnitPipe } from '../../shared/pipes/unit.pipe';
 
 @Component({
   selector: 'app-verified-chart',
-  imports: [CommonModule],
+  imports: [CommonModule, UnitPipe],
   templateUrl: './verified-chart.component.html',
 })
 export class VerifiedChartComponent {

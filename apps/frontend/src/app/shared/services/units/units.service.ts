@@ -17,8 +17,7 @@ import {
   UnitDto,
   UnitType,
 } from '@h2-trust/api';
-import { BASE_URL } from '../../../../environments/environment';
-import { ApiEndpoints } from '../../constants/api-endpoints';
+import { API } from '../../constants/api-endpoints';
 
 @Injectable()
 export class UnitsService {
@@ -26,17 +25,18 @@ export class UnitsService {
 
   getHydrogenProductionUnits() {
     return lastValueFrom(
-      this.httpClient.get<HydrogenProductionOverviewDto[]>(`${BASE_URL}${ApiEndpoints.UNITS}`, {
+      this.httpClient.get<HydrogenProductionOverviewDto[]>(API.UNITS.BASE, {
         params: this.generateQueryParams(UnitType.HYDROGEN_PRODUCTION),
       }),
     );
   }
+
   getPowerProductionUnits(companyId?: string) {
     let params = this.generateQueryParams(UnitType.POWER_PRODUCTION);
     if (companyId) params = params.append('companyId', companyId);
 
     return lastValueFrom(
-      this.httpClient.get<PowerProductionOverviewDto[]>(`${BASE_URL}${ApiEndpoints.UNITS}`, {
+      this.httpClient.get<PowerProductionOverviewDto[]>(API.UNITS.BASE, {
         params: params,
       }),
     );
@@ -44,18 +44,18 @@ export class UnitsService {
 
   getHydrogenStorageUnits() {
     return lastValueFrom(
-      this.httpClient.get<HydrogenStorageOverviewDto[]>(`${BASE_URL}${ApiEndpoints.UNITS}`, {
+      this.httpClient.get<HydrogenStorageOverviewDto[]>(API.UNITS.BASE, {
         params: this.generateQueryParams(UnitType.HYDROGEN_STORAGE),
       }),
     );
   }
 
   createUnit(dto: UnitCreateDto) {
-    return lastValueFrom(this.httpClient.post<HydrogenStorageOverviewDto[]>(`${BASE_URL}${ApiEndpoints.UNITS}`, dto));
+    return lastValueFrom(this.httpClient.post<HydrogenStorageOverviewDto[]>(API.UNITS.BASE, dto));
   }
 
   getUnitById(id: string) {
-    return lastValueFrom(this.httpClient.get<UnitDto>(`${BASE_URL}${ApiEndpoints.UNITS}/${id}`));
+    return lastValueFrom(this.httpClient.get<UnitDto>(API.UNITS.DETAILS(id)));
   }
 
   private generateQueryParams(unitType: UnitType): HttpParams {

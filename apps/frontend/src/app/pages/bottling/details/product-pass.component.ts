@@ -14,6 +14,8 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
 import { BaseSheetComponent } from '../../../layout/sheet/sheet.component';
 import { ERROR_MESSAGES } from '../../../shared/constants/error.messages';
+import { FormattedUnits } from '../../../shared/constants/formatted-units';
+import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { H2CompositionChartComponent } from './chart/h2-composition-chart.component';
@@ -33,6 +35,7 @@ import { ProofOfSustainabilityComponent } from './proof-of-sustainability/proof-
     FileSheetComponent,
     ErrorCardComponent,
     ProofOfSustainabilityComponent,
+    UnitPipe,
   ],
   templateUrl: './product-pass.component.html',
 })
@@ -45,7 +48,8 @@ export class ProductPassComponent {
 
   id = input<string>('');
 
-  ERROR_MESSAGES = ERROR_MESSAGES;
+  readonly ERROR_MESSAGES = ERROR_MESSAGES;
+  readonly FormattedUnits = FormattedUnits;
 
   batchQuery = injectQuery(() => ({
     queryKey: ['batch', this.id()],

@@ -4,10 +4,11 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { CalculationTopic, EmissionCalculationDto } from '@h2-trust/api';
 import { BaseSheetComponent } from '../../../../../layout/sheet/sheet.component';
 import { PrettyEnumPipe } from '../../../../../shared/pipes/format-enum.pipe';
+import { UnitPipe } from '../../../../../shared/pipes/unit.pipe';
 
 @Component({
   selector: 'app-calculation-item',
-  imports: [CommonModule, PrettyEnumPipe, MatExpansionModule, BaseSheetComponent],
+  imports: [CommonModule, PrettyEnumPipe, MatExpansionModule, BaseSheetComponent, UnitPipe],
   templateUrl: './calculation-item.component.html',
 })
 export class CalculationItemComponent {

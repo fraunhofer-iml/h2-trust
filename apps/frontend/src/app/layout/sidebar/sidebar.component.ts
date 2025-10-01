@@ -15,6 +15,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterModule } from '@angular/router';
+import { ChemicalNames } from '../../shared/constants/chemical-names';
 import { ROUTES } from '../../shared/constants/routes';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { UsersService } from '../../shared/services/users/users.service';
@@ -35,6 +36,8 @@ import { UsersService } from '../../shared/services/users/users.service';
   templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent implements OnInit {
+  protected readonly ChemicalNames = ChemicalNames;
+
   sidebarOptions = [
     { title: 'Units', icon: 'water_drop', route: ROUTES.UNITS },
     { title: 'Production', icon: 'manufacturing', route: ROUTES.PRODUCTION },

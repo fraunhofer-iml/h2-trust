@@ -37,7 +37,8 @@
                 <span class="text-sm text-neutral-400">Producer</span><span>{{ batchQuery.data().producer }}</span>
               </div>
               <div class="flex flex-col text-sm">
-                <span class="text-sm text-neutral-400">Amount</span><span>{{ batchQuery.data().filledAmount }} kg</span>
+                <span class="text-sm text-neutral-400">Amount</span
+                ><span>{{ batchQuery.data().filledAmount | number | unit: FormattedUnits.KG }}</span>
               </div>
               <div class="flex flex-col text-sm">
                 <span class="text-sm text-neutral-400">Product</span><span>{{ batchQuery.data().product }}</span>

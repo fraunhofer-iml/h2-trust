@@ -10,8 +10,7 @@ import { lastValueFrom } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { PowerAccessApprovalDto, PowerAccessApprovalStatus } from '@h2-trust/api';
-import { BASE_URL } from '../../../../environments/environment';
-import { ApiEndpoints } from '../../constants/api-endpoints';
+import { API } from '../../constants/api-endpoints';
 
 @Injectable()
 export class PowerAccessApprovalService {
@@ -22,8 +21,6 @@ export class PowerAccessApprovalService {
     if (status) {
       params = params.append('status', status);
     }
-    return lastValueFrom(
-      this.httpClient.get<PowerAccessApprovalDto[]>(`${BASE_URL}${ApiEndpoints.POWER_ACCESS_APPROVALS}`, { params }),
-    );
+    return lastValueFrom(this.httpClient.get<PowerAccessApprovalDto[]>(API.POWER_ACCESS_APPROVALS.BASE, { params }));
   }
 }

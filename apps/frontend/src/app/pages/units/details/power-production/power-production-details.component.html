@@ -12,7 +12,8 @@
     <span class="text-sm text-neutral-400">Grid Connection Number</span><span>{{ unit().gridConnectionNumber }}</span>
   </div>
   <div class="flex flex-col text-sm">
-    <span class="text-sm text-neutral-400">Rated Power</span><span>{{ unit().ratedPower | number }} MW</span>
+    <span class="text-sm text-neutral-400">Rated Power</span
+    ><span>{{ unit().ratedPower | number | unit: FormattedUnits.MW }}</span>
   </div>
   <div class="flex flex-col text-sm">
     <span class="text-sm text-neutral-400">Electricity Meter Number</span

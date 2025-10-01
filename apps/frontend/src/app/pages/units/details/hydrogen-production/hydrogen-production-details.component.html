@@ -3,7 +3,8 @@
     <span class="text-sm text-neutral-400">Bidding Zone</span><span>{{ unit().biddingZoneName }}</span>
   </div>
   <div class="flex flex-col text-sm">
-    <span class="text-sm text-neutral-400">Rated Power</span><span>{{ unit().ratedPower }} MW</span>
+    <span class="text-sm text-neutral-400">Rated Power</span
+    ><span>{{ unit().ratedPower | number | unit: FormattedUnits.MW }}</span>
   </div>
   <div class="flex flex-col text-sm">
     <span class="text-sm text-neutral-400">Method</span><span>{{ unit().method || '--' }}</span>
@@ -12,7 +13,8 @@
     <span class="text-sm text-neutral-400">Technology</span><span>{{ unit().technology || '--' }}</span>
   </div>
   <div class="flex flex-col text-sm">
-    <span class="text-sm text-neutral-400">Pressure</span><span>{{ unit().pressure }} bar</span>
+    <span class="text-sm text-neutral-400">Pressure</span
+    ><span>{{ unit().pressure | number | unit: FormattedUnits.BAR }} </span>
   </div>
   <div class="flex flex-col text-sm">
     <span class="text-sm text-neutral-400">Connected Storage Unit</span

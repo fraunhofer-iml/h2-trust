@@ -30,6 +30,8 @@ import {
 } from '@h2-trust/api';
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
 import { ERROR_MESSAGES } from '../../../shared/constants/error.messages';
+import { FormattedUnits } from '../../../shared/constants/formatted-units';
+import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { PowerAccessApprovalService } from '../../../shared/services/power-access-approvals/power-access-approvals.service';
 import { ProductionService } from '../../../shared/services/production/production.service';
@@ -52,10 +54,13 @@ import { UnitsService } from '../../../shared/services/units/units.service';
     MatButtonModule,
     MatIconModule,
     ErrorCardComponent,
+    UnitPipe,
   ],
   templateUrl: './add-production-data.component.html',
 })
 export class AddProductionDataComponent {
+  readonly FormattedUnits = FormattedUnits;
+
   form = new FormGroup<{
     productionStartedAt: FormControl<Date | null>;
     productionEndedAt: FormControl<Date | null>;
@@ -164,7 +169,7 @@ export class AddProductionDataComponent {
       !!this.form.value.hydrogenAmountKg &&
       !!this.form.value.hydrogenStorageUnit &&
       this.form.value.hydrogenAmountKg >
-      this.form.value.hydrogenStorageUnit.capacity - this.form.value.hydrogenStorageUnit.filling
+        this.form.value.hydrogenStorageUnit.capacity - this.form.value.hydrogenStorageUnit.filling
     );
   }
 }

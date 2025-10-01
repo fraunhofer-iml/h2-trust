@@ -10,35 +10,28 @@ import { lastValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BottlingOverviewDto, ProductPassDto, ProofOfSustainabilityDto, SectionDto } from '@h2-trust/api';
-import { BASE_URL } from '../../../../environments/environment';
-import { ApiEndpoints } from '../../constants/api-endpoints';
+import { API } from '../../constants/api-endpoints';
 
 @Injectable()
 export class BottlingService {
   constructor(private readonly httpClient: HttpClient) {}
 
   getBottlings() {
-    return lastValueFrom(this.httpClient.get<BottlingOverviewDto[]>(`${BASE_URL}${ApiEndpoints.BOTTLINGS}`));
+    return lastValueFrom(this.httpClient.get<BottlingOverviewDto[]>(API.BOTTLING.BASE));
   }
 
   createBottleBatch(data: FormData) {
-    return lastValueFrom(this.httpClient.post<BottlingOverviewDto>(`${BASE_URL}${ApiEndpoints.BOTTLINGS}`, data));
+    return lastValueFrom(this.httpClient.post<BottlingOverviewDto>(API.BOTTLING.BASE, data));
   }
 
   findBatchById(id: string): Promise<ProductPassDto> {
-    return lastValueFrom(this.httpClient.get<ProductPassDto>(`${BASE_URL}${ApiEndpoints.BOTTLINGS}/${id}`));
+    return lastValueFrom(this.httpClient.get<ProductPassDto>(API.BOTTLING.DETAILS(id)));
   }
 
   getProofOfOrigin(id: string): Promise<SectionDto[]> {
-    return lastValueFrom(
-      this.httpClient.get<SectionDto[]>(`${BASE_URL}${ApiEndpoints.BOTTLINGS}/${id}/proof-of-origin`),
-    );
+    return lastValueFrom(this.httpClient.get<SectionDto[]>(API.BOTTLING.PROOF_OF_ORIGIN(id)));
   }
   getProofOfSustainability(id: string): Promise<ProofOfSustainabilityDto> {
-    return lastValueFrom(
-      this.httpClient.get<ProofOfSustainabilityDto>(
-        `${BASE_URL}${ApiEndpoints.BOTTLINGS}/${id}/proof-of-sustainability`,
-      ),
-    );
+    return lastValueFrom(this.httpClient.get<ProofOfSustainabilityDto>(API.BOTTLING.PROOF_OF_SUSTAINABILITY(id)));
   }
 }

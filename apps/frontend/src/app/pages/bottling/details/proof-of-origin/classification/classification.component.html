@@ -8,7 +8,9 @@
   <div class="flex w-full flex-col">
     <div class="flex justify-between text-sm text-neutral-500">
       <h3 class="text-base">{{ classification().name | prettyEnum | titlecase }}</h3>
-      <span>GHG-Emissions: {{ classification().emissionOfProcessStep | number: '1.0-1' }} kg</span>
+      <span
+        >GHG-Emissions: {{ classification().emissionOfProcessStep | number: '1.0-1' | unit: FormattedUnits.KG }}</span
+      >
     </div>
     <app-verified-chart
       [amount]="classification().amount"

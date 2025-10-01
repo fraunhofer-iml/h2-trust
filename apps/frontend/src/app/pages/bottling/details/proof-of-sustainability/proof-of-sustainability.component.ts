@@ -1,3 +1,4 @@
+import { ChemicalNames } from 'apps/frontend/src/app/shared/constants/chemical-names';
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -25,6 +26,7 @@ export class ProofOfSustainabilityComponent {
   id = input<string>('');
   readonly FormattedUnits = FormattedUnits;
   readonly CalculationTopic = CalculationTopic;
+  readonly ChemicalNames = ChemicalNames;
 
   calculations = computed(() => this.mapCalculations(this.proofQuery.data()?.calculations ?? []));
   totalEmissions = computed(() => {

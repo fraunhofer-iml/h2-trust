@@ -9,7 +9,7 @@
         {{ batch().createdAt | date: 'mediumDate' }}, {{ batch().createdAt | date: 'shortTime' }} -
         {{ batch().accountingPeriodEnd | date: 'shortTime' }}
       </h3>
-      <span>GHG-Emissions (cumulated): {{ batch().emission.amountCO2PerKgH2 }} {{ batch().unit }}</span>
+      <span>GHG-Emissions (cumulated): {{ batch().emission.amountCO2PerKgH2 | number | unit: batch().unit }}</span>
     </div>
     <app-verified-chart
       [amount]="batch().amount"
