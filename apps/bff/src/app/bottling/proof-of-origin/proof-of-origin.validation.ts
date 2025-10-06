@@ -34,7 +34,7 @@ export function assertProcessType(processSteps: ProcessStepEntity[], expectedPro
 
   if (invalidProcessSteps.length > 0) {
     const invalidProcessTypes = invalidProcessSteps
-      .map((processStep) => [processStep.id, processStep.processType].join(' '))
+      .map((processStep) => [processStep.id, processStep.processType].join(':'))
       .join(', ');
     const errorMessage = `All process steps must be of type ${expectedProcessType}, but found invalid process types: ${invalidProcessTypes}`;
     throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);

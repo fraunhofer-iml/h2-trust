@@ -17,7 +17,7 @@ import {
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { BatchDto, ClassificationDto } from '@h2-trust/api';
-import { ProofOfOriginDtoAssembler } from './proof-of-origin-dto.assembler';
+import { ProofOfOriginDtoAssembler } from '../assembler/proof-of-origin-dto.assembler';
 
 @Injectable()
 export class EnergySourceClassificationService {

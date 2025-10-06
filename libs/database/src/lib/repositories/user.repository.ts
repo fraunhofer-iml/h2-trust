@@ -7,23 +7,24 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { UserDetailsEntity } from '@h2-trust/amqp';
+import { UserEntity } from '@h2-trust/amqp';
 import { PrismaService } from '../prisma.service';
-import { userWithCompanyResultFields } from '../result-fields';
+import { userResultFields } from '../result-fields';
 import { assertRecordFound } from './utils';
 
 @Injectable()
 export class UserRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findUserWithCompany(id: string): Promise<UserDetailsEntity> {
+  async findUser(id: string): Promise<UserEntity> {
     return this.prismaService.user
       .findUnique({
         where: {
           id: id,
         },
-        ...userWithCompanyResultFields,
+        ...userResultFields,
       })
-      .then((result) => assertRecordFound(result, id, 'User'));
+      .then((result) => assertRecordFound(result, id, 'User'))
+      .then(UserEntity.fromDatabase);
   }
 }

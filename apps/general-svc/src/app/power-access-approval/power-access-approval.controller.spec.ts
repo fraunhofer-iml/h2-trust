@@ -7,37 +7,63 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { PowerAccessApprovalRepository, UserRepository } from '@h2-trust/database';
+import { PowerAccessApprovalEntity, UserEntityHydrogenMock, UserEntityPowerMock } from '@h2-trust/amqp';
+import { PowerAccessApprovalStatus } from '@h2-trust/api';
+import {
+  DatabaseModule,
+  PowerAccessApprovalDbType,
+  PowerAccessApprovalDbTypeMock,
+  PrismaService,
+  UserRepository,
+} from '@h2-trust/database';
 import { PowerAccessApprovalController } from './power-access-approval.controller';
 import { PowerAccessApprovalService } from './power-access-approval.service';
 
 describe('PowerAccessApprovalController', () => {
   let controller: PowerAccessApprovalController;
+  let userRepository: UserRepository;
+  let prismaService: PrismaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [DatabaseModule],
       controllers: [PowerAccessApprovalController],
-      providers: [
-        PowerAccessApprovalService,
-        {
-          provide: PowerAccessApprovalRepository,
-          useValue: {
-            send: jest.fn(),
-          },
+      providers: [PowerAccessApprovalService],
+    })
+      .overrideProvider(UserRepository)
+      .useValue({
+        findUser: jest.fn().mockResolvedValue(UserEntityHydrogenMock),
+      })
+      .overrideProvider(PrismaService)
+      .useValue({
+        powerAccessApproval: {
+          findMany: jest.fn(),
         },
-        {
-          provide: UserRepository,
-          useValue: {
-            send: jest.fn(),
-          },
-        },
-      ],
-    }).compile();
+      })
+      .compile();
 
-    controller = module.get<PowerAccessApprovalController>(PowerAccessApprovalController);
+    controller = module.get(PowerAccessApprovalController);
+    userRepository = module.get(UserRepository);
+    prismaService = module.get(PrismaService);
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  it('should get power access approvals ', async () => {
+    const mockedPowerAccessApprovals: PowerAccessApprovalDbType[] = PowerAccessApprovalDbTypeMock;
+
+    jest.spyOn(prismaService.powerAccessApproval, 'findMany').mockResolvedValue(mockedPowerAccessApprovals);
+
+    const actualResponse: PowerAccessApprovalEntity[] = await controller.findAll({
+      userId: UserEntityPowerMock.id,
+      powerAccessApprovalStatus: PowerAccessApprovalStatus.APPROVED,
+    });
+
+    expect(userRepository.findUser).toHaveBeenCalledTimes(1);
+    expect(prismaService.powerAccessApproval.findMany).toHaveBeenCalledTimes(1);
+    expect(actualResponse).toBeDefined();
+    expect(actualResponse.length).toBe(mockedPowerAccessApprovals.length);
   });
 });

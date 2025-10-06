@@ -11,20 +11,22 @@ import { Test, TestingModule } from '@nestjs/testing';
 import {
   BrokerQueues,
   HydrogenComponentEntity,
+  HydrogenCompositionEntityMock,
   ProcessStepEntity,
+  ProcessStepEntityHydrogenBottlingMock,
+  ProcessStepEntityPowerProductionMock,
   ProcessStepMessagePatterns,
   UserMessagePatterns,
 } from '@h2-trust/amqp';
 import {
-  AddressDto,
+  AuthenticatedUserMock,
   BottlingDto,
   BottlingDtoMock,
   BottlingOverviewDto,
-  CompanyDto,
+  GeneralInformationDto,
   ProcessType,
-  ProductPassDto,
   proofOfSustainabilityMock,
-  UserDetailsDto,
+  SectionDto,
   UserDetailsDtoMock,
 } from '@h2-trust/api';
 import 'multer';
@@ -32,11 +34,16 @@ import { of } from 'rxjs';
 import { UserService } from '../user/user.service';
 import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';
+import { ProofOfOriginConstants } from './proof-of-origin/proof-of-origin.constants';
 import { ProofOfOriginService } from './proof-of-origin/proof-of-origin.service';
+import { ProcessLineageService } from './proof-of-origin/retrieval/process-lineage.service';
+import { ProcessStepService } from './proof-of-origin/retrieval/process-step.service';
+import { BottlingSectionService } from './proof-of-origin/sections/bottling-section.service';
+import { InputMediaSectionService } from './proof-of-origin/sections/input-media-section.service';
 
 describe('BottlingController', () => {
   let controller: BottlingController;
-  let userService: UserService;
+  let proofOfOriginService: ProofOfOriginService;
   let batchSvc: ClientProxy;
   let generalSvc: ClientProxy;
 
@@ -46,6 +53,40 @@ describe('BottlingController', () => {
       controllers: [BottlingController],
       providers: [
         BottlingService,
+        ProofOfOriginService,
+        {
+          provide: UserService,
+          useValue: {
+            readUserWithCompany: jest.fn().mockResolvedValue(UserDetailsDtoMock[0]),
+          },
+        },
+        {
+          provide: ProcessStepService,
+          useValue: {
+            fetchProcessStep: jest.fn(),
+          },
+        },
+        {
+          provide: ProcessLineageService,
+          useValue: {
+            fetchPowerProductionProcessSteps: jest.fn(),
+            fetchHydrogenProductionProcessSteps: jest.fn(),
+            fetchHydrogenBottlingProcessStep: jest.fn(),
+          },
+        },
+        {
+          provide: BottlingSectionService,
+          useValue: {
+            buildBottlingSection: jest.fn(),
+            buildTransportationSection: jest.fn(),
+          },
+        },
+        {
+          provide: InputMediaSectionService,
+          useValue: {
+            buildInputMediaSection: jest.fn(),
+          },
+        },
         {
           provide: BrokerQueues.QUEUE_BATCH_SVC,
           useValue: {
@@ -58,31 +99,17 @@ describe('BottlingController', () => {
             send: jest.fn(),
           },
         },
-        {
-          provide: BrokerQueues.QUEUE_PROCESS_SVC,
-          useValue: {
-            send: jest.fn(),
-          },
-        },
-        {
-          provide: UserService,
-          useValue: {
-            readUserWithCompany: jest.fn(),
-          },
-        },
-        {
-          provide: ProofOfOriginService,
-          useValue: {
-            readProofOfOrigin: jest.fn(),
-          },
-        },
       ],
     }).compile();
 
     controller = module.get<BottlingController>(BottlingController);
-    userService = module.get<UserService>(UserService);
+    proofOfOriginService = module.get<ProofOfOriginService>(ProofOfOriginService);
     batchSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_BATCH_SVC) as ClientProxy;
     generalSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_GENERAL_SVC) as ClientProxy;
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -91,98 +118,130 @@ describe('BottlingController', () => {
 
   it('should create a bottling batch', async () => {
     const givenDto: BottlingDto = BottlingDtoMock[0];
-    const processStepEntityMock: ProcessStepEntity = {
-      id: 'bottling-process-step-1',
-      startedAt: new Date(givenDto.filledAt),
-      endedAt: new Date(givenDto.filledAt),
+
+    const returnedProcessStep: ProcessStepEntity = structuredClone(ProcessStepEntityHydrogenBottlingMock[0]);
+    returnedProcessStep.startedAt = new Date(givenDto.filledAt);
+    returnedProcessStep.endedAt = new Date(givenDto.filledAt);
+
+    const batchSvcSpy = jest
+      .spyOn(batchSvc, 'send')
+      .mockImplementation((_messagePattern, _data) => of(returnedProcessStep));
+
+    const expectedBatchSvcPayload1 = {
+      processStepEntity: BottlingDto.toEntity({ ...givenDto, recordedBy: AuthenticatedUserMock.sub }),
+      files: [] as Express.Multer.File[],
     };
 
-    const expectedResponse: BottlingOverviewDto = BottlingOverviewDto.fromEntity(processStepEntityMock);
+    const expectedBatchSvcPayload2 = {
+      processStepEntity: {
+        ...returnedProcessStep,
+        transportationDetails: {
+          id: undefined as string,
+          distance: 0,
+          transportMode: givenDto.transportMode,
+          fuelType: givenDto.fuelType,
+        },
+      },
+    };
 
-    jest.spyOn(batchSvc, 'send')
-      .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(processStepEntityMock));
+    const expectedResponse: BottlingOverviewDto = BottlingOverviewDto.fromEntity(returnedProcessStep);
+    const actualResponse: BottlingOverviewDto = await controller.createBottling(givenDto, [], AuthenticatedUserMock);
 
-    const actualResponse: BottlingOverviewDto = await controller.createBottling(givenDto, null, { sub: 'user-id-1' });
+    expect(batchSvcSpy).toHaveBeenCalledTimes(2);
+    expect(batchSvcSpy).toHaveBeenNthCalledWith(
+      1,
+      ProcessStepMessagePatterns.HYDROGEN_BOTTLING,
+      expectedBatchSvcPayload1,
+    );
+    expect(batchSvcSpy).toHaveBeenNthCalledWith(
+      2,
+      ProcessStepMessagePatterns.HYDROGEN_TRANSPORTATION,
+      expectedBatchSvcPayload2,
+    );
 
     expect(actualResponse).toEqual(expectedResponse);
   });
 
   it('should read bottling batches', async () => {
-    const processStepEntityMocks: ProcessStepEntity[] = [
-      {
-        id: 'bottling-process-step-1',
-        startedAt: new Date(BottlingDtoMock[0].filledAt),
-        endedAt: new Date(BottlingDtoMock[0].filledAt),
-      },
-    ];
+    const returnedProcessSteps: ProcessStepEntity[] = ProcessStepEntityHydrogenBottlingMock.map((ps) =>
+      structuredClone(ps),
+    );
 
-    const expectedResponse: BottlingOverviewDto[] = processStepEntityMocks.map(BottlingOverviewDto.fromEntity);
+    const batchSvcSpy = jest
+      .spyOn(batchSvc, 'send')
+      .mockImplementation((_messagePattern, _data) => of(returnedProcessSteps));
 
-    jest.spyOn(userService, 'readUserWithCompany')
-      .mockResolvedValue(UserDetailsDtoMock[0]);
+    const expectedBatchSvcPayload = {
+      processTypes: [ProcessType.HYDROGEN_BOTTLING, ProcessType.HYDROGEN_TRANSPORTATION],
+      active: true,
+      companyId: UserDetailsDtoMock[0].company.id,
+    };
 
-    jest.spyOn(batchSvc, 'send')
-      .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(processStepEntityMocks));
+    const expectedResponse: BottlingOverviewDto[] = returnedProcessSteps.map(BottlingOverviewDto.fromEntity);
+    const actualResponse: BottlingOverviewDto[] = await controller.readBottlingsByCompany(AuthenticatedUserMock);
 
-    const actualResponse: BottlingOverviewDto[] = await controller.readBottlingsByCompany({ sub: 'user-id-1' });
+    expect(batchSvcSpy).toHaveBeenCalledTimes(1);
+    expect(batchSvcSpy).toHaveBeenCalledWith(ProcessStepMessagePatterns.READ_ALL, expectedBatchSvcPayload);
 
     expect(actualResponse).toEqual(expectedResponse);
   });
 
-  it('should read product pass', async () => {
-    const givenProcessStepIdParam = 'bottling-process-step-1';
+  it('should read general information', async () => {
+    const returnedProcessStep: ProcessStepEntity = structuredClone(ProcessStepEntityHydrogenBottlingMock[0]);
+    const returnedHydrogenCompositions: HydrogenComponentEntity[] = HydrogenCompositionEntityMock.map((hc) =>
+      structuredClone(hc),
+    );
 
-    const processStepEntityMock: ProcessStepEntity = {
-      id: 'bottling-process-step-1',
-      startedAt: new Date(BottlingDtoMock[0].filledAt),
-      endedAt: new Date(BottlingDtoMock[0].filledAt),
-      processType: ProcessType.HYDROGEN_BOTTLING,
+    const batchSvcSpy = jest
+      .spyOn(batchSvc, 'send')
+      .mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(returnedProcessStep))
+      .mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: any) =>
+        of(returnedHydrogenCompositions),
+      );
+
+    const generalSvcSpy = jest
+      .spyOn(generalSvc, 'send')
+      .mockImplementation((_messagePattern: UserMessagePatterns, _data: any) => of(UserDetailsDtoMock[0]));
+
+    const expectedBatchSvcPayload1 = { processStepId: returnedProcessStep.id };
+    const expectedBatchSvcPayload2 = returnedProcessStep.id;
+    const expectedGeneralSvcPayload = { id: returnedProcessStep.recordedBy.id };
+
+    const expectedResponse: GeneralInformationDto = {
+      ...GeneralInformationDto.fromEntityToDto(returnedProcessStep),
+      hydrogenComposition: returnedHydrogenCompositions,
+      producer: UserDetailsDtoMock[0].company.name,
     };
+    const actualResponse: GeneralInformationDto = await controller.readGeneralInformation(returnedProcessStep.id);
 
-    const userDetailsDtoMock: UserDetailsDto = <UserDetailsDto>{
-      id: 'user-id-1',
-      name: 'Producer Name',
-      email: 'producer@example.com',
-      company: <CompanyDto>{
-        id: 'company-id-1',
-        name: 'Producer Company',
-        mastrNumber: '123456',
-        companyType: 'Producer',
-        address: <AddressDto>{
-          street: '123 Main St',
-          postalCode: '12345',
-          city: 'Metropolis',
-          state: 'NY',
-          country: 'USA',
-        },
-      },
-    };
+    expect(batchSvcSpy).toHaveBeenCalledTimes(2);
+    expect(batchSvcSpy).toHaveBeenNthCalledWith(1, ProcessStepMessagePatterns.READ_UNIQUE, expectedBatchSvcPayload1);
+    expect(batchSvcSpy).toHaveBeenNthCalledWith(
+      2,
+      ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION,
+      expectedBatchSvcPayload2,
+    );
 
-    const hydrogenCompositionMock: HydrogenComponentEntity[] = [
-      {
-        color: 'GREEN',
-        amount: 95,
-      },
-      {
-        color: 'YELLOW',
-        amount: 5,
-      },
+    expect(generalSvcSpy).toHaveBeenCalledTimes(1);
+    expect(generalSvcSpy).toHaveBeenCalledWith(UserMessagePatterns.READ, expectedGeneralSvcPayload);
+
+    expect(actualResponse).toEqual(expectedResponse);
+  });
+
+  it('should return proof of origin for process step ProcessType.POWER_PRODUCTION', async () => {
+    const givenProcessStep: ProcessStepEntity = structuredClone(ProcessStepEntityPowerProductionMock[0]);
+    const expectedResponse: SectionDto[] = [
+      { name: ProofOfOriginConstants.INPUT_MEDIA_SECTION_NAME, batches: [], classifications: [] },
     ];
 
-    jest.spyOn(batchSvc, 'send')
-      .mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(processStepEntityMock))
-      .mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(hydrogenCompositionMock));
+    const proofOfOriginServiceSpy = jest
+      .spyOn(proofOfOriginService, 'readProofOfOrigin')
+      .mockResolvedValue(expectedResponse);
 
-    jest.spyOn(generalSvc, 'send')
-      .mockImplementation((_messagePattern: UserMessagePatterns, _data: any) => of(userDetailsDtoMock));
+    const actualResponse = await controller.readProofOfOrigin(givenProcessStep.id);
 
-    const actualResponse: ProductPassDto = await controller.readGeneralInformation(givenProcessStepIdParam);
-
-    const expectedResponse: ProductPassDto = {
-      ...ProductPassDto.fromEntityToDto(processStepEntityMock),
-      hydrogenComposition: hydrogenCompositionMock,
-      producer: userDetailsDtoMock.company.name,
-    };
+    expect(proofOfOriginServiceSpy).toHaveBeenCalledTimes(1);
+    expect(proofOfOriginServiceSpy).toHaveBeenCalledWith(givenProcessStep.id);
 
     expect(actualResponse).toEqual(expectedResponse);
   });

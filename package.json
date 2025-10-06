@@ -52,7 +52,7 @@
   ],
   "main": "",
   "scripts": {
-    "clean": "rm -rf .angular .nx dist node_modules/.prisma apps/*/run-code-quality-tools.log libs/*/run-code-quality-tools.log",
+    "clean": "rm -rf .angular .nx dist node_modules/.prisma apps/*/coverage apps/*/run-code-quality-tools.log libs/*/run-code-quality-tools.log",
     "dev": "nx run-many --all --parallel 5 --target serve",
     "init": "npm run clean && npm run set-up-db",
     "license-checker": "npm run license-checker:packages-all && npm run license-checker:packages-unknown && npm run license-checker:licenses-summary",

@@ -53,7 +53,7 @@ export class PowerAccessApprovalEntity {
         gridConnectionNumber: powerAccessApproval.powerProductionUnit?.gridConnectionNumber,
         typeName: powerAccessApproval.powerProductionUnit?.type.name,
       },
-      hydrogenProducer: CompanyEntity.fromDatabase(powerAccessApproval.powerProducer),
+      hydrogenProducer: CompanyEntity.fromDatabase(powerAccessApproval.hydrogenProducer),
       document: DocumentEntity.fromDatabase(powerAccessApproval.document),
     };
   }

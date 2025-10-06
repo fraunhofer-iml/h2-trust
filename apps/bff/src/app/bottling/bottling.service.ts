@@ -20,9 +20,9 @@ import {
 import {
   BottlingDto,
   BottlingOverviewDto,
+  GeneralInformationDto,
   HydrogenComponentDto,
   ProcessType,
-  ProductPassDto,
   UserDetailsDto,
 } from '@h2-trust/api';
 import { UserService } from '../user/user.service';
@@ -74,7 +74,7 @@ export class BottlingService {
     ).then((processSteps) => processSteps.map(BottlingOverviewDto.fromEntity));
   }
 
-  async readGeneralInformation(processStepId: string): Promise<ProductPassDto> {
+  async readGeneralInformation(processStepId: string): Promise<GeneralInformationDto> {
     const processStep: ProcessStepEntity = await firstValueFrom(
       this.batchService.send(ProcessStepMessagePatterns.READ_UNIQUE, { processStepId }),
     );
@@ -87,15 +87,15 @@ export class BottlingService {
       throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
-    const productPassDto = ProductPassDto.fromEntityToDto(processStep);
-    productPassDto.producer = await this.fetchProducerName(productPassDto.producer);
-    productPassDto.hydrogenComposition = await this.fetchHydrogenComposition(processStep);
-    return productPassDto;
+    const generalInformationDto = GeneralInformationDto.fromEntityToDto(processStep);
+    generalInformationDto.producer = await this.fetchProducerName(generalInformationDto.producer);
+    generalInformationDto.hydrogenComposition = await this.fetchHydrogenComposition(processStep);
+    return generalInformationDto;
   }
 
   private async fetchProducerName(producerId: string): Promise<string> {
     const producer: UserDetailsDto = await firstValueFrom(
-      this.generalService.send(UserMessagePatterns.READ_WITH_COMPANY, { id: producerId }),
+      this.generalService.send(UserMessagePatterns.READ, { id: producerId }),
     );
     return producer.company?.name;
   }

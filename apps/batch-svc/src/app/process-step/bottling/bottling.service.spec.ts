@@ -113,7 +113,7 @@ describe('ProcessStepService', () => {
       const addDocumentToProcessStepSpy = jest.spyOn(documentRepository, 'addDocumentToProcessStep');
 
       // Act
-      await service.createBottlingProcessStep(processStepData, ExpressMulterFileMock);
+      await service.createHydrogenBottlingProcessStep(processStepData, ExpressMulterFileMock);
 
       // Assert
       expect(setBatchesInactiveSpy).toHaveBeenCalledTimes(1);
@@ -143,7 +143,7 @@ describe('ProcessStepService', () => {
       const readProcessStepSpy = jest.spyOn(processStepRepository, 'findProcessStep');
 
       // Act
-      await service.createBottlingProcessStep(processStepData, undefined);
+      await service.createHydrogenBottlingProcessStep(processStepData, undefined);
 
       // Assert
       expect(processAssemblerAssembleMock).toHaveBeenCalledWith(
@@ -184,7 +184,7 @@ describe('ProcessStepService', () => {
       const readProcessStepSpy = jest.spyOn(processStepRepository, 'findProcessStep');
 
       // Act
-      await service.createBottlingProcessStep(processStepData, undefined);
+      await service.createHydrogenBottlingProcessStep(processStepData, undefined);
 
       // Assert
       const selectedBatches = hydrogenProcessSteps.slice(0, 2).map((step) => step.batch);
@@ -231,7 +231,7 @@ describe('ProcessStepService', () => {
       });
 
       // Act
-      await service.createBottlingProcessStep(processStepData, undefined);
+      await service.createHydrogenBottlingProcessStep(processStepData, undefined);
 
       // Assert
       const totalStoredAmount = hydrogenProcessSteps.reduce((sum, step) => sum + step.batch.amount, 0);
@@ -269,7 +269,7 @@ describe('ProcessStepService', () => {
       const readProcessStepSpy = jest.spyOn(processStepRepository, 'findProcessStep');
 
       // Act
-      await service.createBottlingProcessStep(processStepData, undefined);
+      await service.createHydrogenBottlingProcessStep(processStepData, undefined);
 
       // Assert
       expect(createProcessStepSpy).toHaveBeenCalledTimes(1);
@@ -290,7 +290,9 @@ describe('ProcessStepService', () => {
         .mockResolvedValue(ProcessStepEntityHydrogenProductionMock.slice(3, 4));
 
       // Act & Assert
-      await expect(service.createBottlingProcessStep(processStepData, undefined)).rejects.toThrow(BrokerException);
+      await expect(service.createHydrogenBottlingProcessStep(processStepData, undefined)).rejects.toThrow(
+        BrokerException,
+      );
     });
 
     it('should throw when no hydrogen batches available', async () => {
@@ -300,7 +302,9 @@ describe('ProcessStepService', () => {
       jest.spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit').mockResolvedValue([]);
 
       // Act & Assert
-      await expect(service.createBottlingProcessStep(processStepData, undefined)).rejects.toThrow(BrokerException);
+      await expect(service.createHydrogenBottlingProcessStep(processStepData, undefined)).rejects.toThrow(
+        BrokerException,
+      );
     });
   });
 });

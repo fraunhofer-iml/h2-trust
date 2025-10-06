@@ -9,8 +9,9 @@
 import { PrismaClient } from '@prisma/client';
 import {
   AddressSeed,
-  BatchRelationHydrogenHydrogenSeed,
+  BatchRelationBottlingProductionSeed,
   BatchRelationPowerHydrogenSeed,
+  BatchRelationTransportationBottlingSeed,
   BatchSeed,
   BiddingZoneSeed,
   CompanySeed,
@@ -115,8 +116,21 @@ export async function seedDatabase() {
         }),
     },
     {
-      name: 'batchRelationHydrogenHydrogen',
-      records: BatchRelationHydrogenHydrogenSeed,
+      name: 'batchRelationBottlingProduction',
+      records: BatchRelationBottlingProductionSeed,
+      createRecord: async (data: any) =>
+        await prisma.batch.update({
+          where: { id: data.A },
+          data: {
+            predecessors: {
+              connect: { id: data.B },
+            },
+          },
+        }),
+    },
+    {
+      name: 'batchRelationTransportationBottling',
+      records: BatchRelationTransportationBottlingSeed,
       createRecord: async (data: any) =>
         await prisma.batch.update({
           where: { id: data.A },

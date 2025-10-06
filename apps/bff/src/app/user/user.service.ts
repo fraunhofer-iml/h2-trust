@@ -17,8 +17,6 @@ export class UserService {
   constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
 
   async readUserWithCompany(id: string): Promise<UserDetailsDto> {
-    return firstValueFrom(this.generalService.send(UserMessagePatterns.READ_WITH_COMPANY, { id })).then(
-      UserDetailsDto.fromEntity,
-    );
+    return firstValueFrom(this.generalService.send(UserMessagePatterns.READ, { id })).then(UserDetailsDto.fromEntity);
   }
 }

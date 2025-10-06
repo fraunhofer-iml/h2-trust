@@ -9,7 +9,7 @@
 import { PowerAccessApprovalRepository, UserRepository } from 'libs/database/src/lib';
 import { Injectable } from '@nestjs/common';
 import { PowerAccessApprovalStatus } from '@prisma/client';
-import { PowerAccessApprovalEntity, UserDetailsEntity } from '@h2-trust/amqp';
+import { PowerAccessApprovalEntity, UserEntity } from '@h2-trust/amqp';
 
 @Injectable()
 export class PowerAccessApprovalService {
@@ -22,7 +22,7 @@ export class PowerAccessApprovalService {
     userId: string,
     powerAccessApprovalStatus: PowerAccessApprovalStatus,
   ): Promise<PowerAccessApprovalEntity[]> {
-    const userWithCompany: UserDetailsEntity = await this.userRepository.findUserWithCompany(userId);
-    return this.powerAccessApprovalRepository.findAll(userWithCompany.company.id, powerAccessApprovalStatus);
+    const user: UserEntity = await this.userRepository.findUser(userId);
+    return this.powerAccessApprovalRepository.findAll(user.company.id, powerAccessApprovalStatus);
   }
 }

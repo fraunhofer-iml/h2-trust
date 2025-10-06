@@ -7,16 +7,19 @@
  */
 
 import { UserDbType } from 'libs/database/src/lib/types';
+import { CompanyEntity } from '../company';
 
 export class UserEntity {
   id?: string;
   name?: string;
   email?: string;
+  company: CompanyEntity;
 
-  constructor(id: string, name: string, email: string) {
+  constructor(id: string, name: string, email: string, company: CompanyEntity) {
     this.id = id;
     this.name = name;
     this.email = email;
+    this.company = company;
   }
 
   static fromDatabase(user: UserDbType): UserEntity {
@@ -24,6 +27,7 @@ export class UserEntity {
       id: user.id,
       name: user.name,
       email: user.email,
+      company: user.company ? CompanyEntity.fromDatabase(user.company) : undefined,
     };
   }
 }

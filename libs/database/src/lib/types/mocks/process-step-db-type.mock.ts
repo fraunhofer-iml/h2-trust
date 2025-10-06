@@ -6,16 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepDbType } from '..';
-import {
-  AddressSeed,
-  BatchSeed,
-  CompanySeed,
-  HydrogenStorageUnitSeed,
-  ProcessStepSeed,
-  UnitSeed,
-  UserSeed,
-} from '../../../seed';
+import { AddressSeed, BatchSeed, CompanySeed, HydrogenStorageUnitSeed, ProcessStepSeed, UnitSeed } from '../../../seed';
+import { ProcessStepDbType } from '../process-step.db.type';
+import { UserDbTypeMock } from './user-db-type.mock';
 
 export const ProcessStepDbTypeMock = <ProcessStepDbType[]>[
   {
@@ -45,7 +38,7 @@ export const ProcessStepDbTypeMock = <ProcessStepDbType[]>[
         hydrogenApprovals: [],
       },
     },
-    recordedBy: UserSeed[1],
+    recordedBy: UserDbTypeMock[1],
     documents: [],
     processStepDetails: null,
   },

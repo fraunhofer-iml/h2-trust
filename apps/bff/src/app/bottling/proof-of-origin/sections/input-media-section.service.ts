@@ -9,9 +9,9 @@
 import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { ClassificationDto, SectionDto } from '@h2-trust/api';
-import { EnergySourceClassificationService } from './energy-source-classification.service';
-import { ProofOfOriginDtoAssembler } from './proof-of-origin-dto.assembler';
-import { ProofOfOriginConstants } from './proof-of-origin.constants';
+import { ProofOfOriginDtoAssembler } from '../assembler/proof-of-origin-dto.assembler';
+import { EnergySourceClassificationService } from '../classification/energy-source-classification.service';
+import { ProofOfOriginConstants } from '../proof-of-origin.constants';
 
 @Injectable()
 export class InputMediaSectionService {

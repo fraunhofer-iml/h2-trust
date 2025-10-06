@@ -11,7 +11,7 @@ import { FileInfoDto } from '../file/file-info.dto';
 import { BottlingOverviewDto } from './bottling-overview.dto';
 import { HydrogenComponentDto } from './hydrogen-component.dto';
 
-export class ProductPassDto extends BottlingOverviewDto {
+export class GeneralInformationDto extends BottlingOverviewDto {
   producer?: string;
   product: string;
   hydrogenComposition: HydrogenComponentDto[];
@@ -34,8 +34,8 @@ export class ProductPassDto extends BottlingOverviewDto {
     this.attachedFiles = attachedFiles;
   }
 
-  static fromEntityToDto(processStep: ProcessStepEntity): ProductPassDto {
-    return <ProductPassDto>{
+  static fromEntityToDto(processStep: ProcessStepEntity): GeneralInformationDto {
+    return <GeneralInformationDto>{
       id: processStep.id,
       filledAt: processStep.endedAt,
       owner: processStep.batch?.owner?.name,

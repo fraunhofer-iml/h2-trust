@@ -30,7 +30,7 @@ export class BottlingService {
     private readonly processStepService: ProcessStepService,
   ) {}
 
-  async createBottlingProcessStep(
+  async createHydrogenBottlingProcessStep(
     processStep: ProcessStepEntity,
     files: Express.Multer.File[],
   ): Promise<ProcessStepEntity> {

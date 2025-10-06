@@ -40,7 +40,7 @@ export class PowerAccessApprovalDto {
       id: powerAccessApproval.id,
       hydrogenProducer: powerAccessApproval.hydrogenProducer,
       powerProducer: powerAccessApproval.powerProducer,
-      powerProductionUnit: powerAccessApproval.powerProductionUnit,
+      powerProductionUnit: PowerProductionOverviewDto.fromEntity(powerAccessApproval.powerProductionUnit),
       status: powerAccessApproval.status,
       energySource: powerAccessApproval.powerProductionUnit.type?.name,
     };

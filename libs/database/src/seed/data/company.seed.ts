@@ -29,7 +29,7 @@ export const CompanySeed = <Company[]>[
     name: 'H2Logistics',
     mastrNumber: 'R112233',
     companyType: CompanyType.HYDROGEN_RECIPIENT,
-    addressId: AddressSeed[1].id,
+    addressId: AddressSeed[2].id,
   },
   {
     id: 'company-grid-1',

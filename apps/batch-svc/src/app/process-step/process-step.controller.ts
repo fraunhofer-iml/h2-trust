@@ -41,17 +41,17 @@ export class ProcessStepController {
   }
 
   @MessagePattern(ProcessStepMessagePatterns.HYDROGEN_BOTTLING)
-  async createBottlingProcessStep(
+  async createHydrogenBottlingProcessStep(
     @Payload() payload: { processStepEntity: ProcessStepEntity; files: Express.Multer.File[] },
   ): Promise<ProcessStepEntity> {
-    return this.bottlingService.createBottlingProcessStep(payload.processStepEntity, payload.files);
+    return this.bottlingService.createHydrogenBottlingProcessStep(payload.processStepEntity, payload.files);
   }
 
   @MessagePattern(ProcessStepMessagePatterns.HYDROGEN_TRANSPORTATION)
-  async createTransportationProcessStep(
+  async createHydrogenTransportationProcessStep(
     @Payload() payload: { processStepEntity: ProcessStepEntity },
   ): Promise<ProcessStepEntity> {
-    return this.transportationService.createTransportationProcessStep(payload.processStepEntity);
+    return this.transportationService.createHydrogenTransportationProcessStep(payload.processStepEntity);
   }
 
   @MessagePattern(ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION)

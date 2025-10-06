@@ -8,7 +8,8 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { CompanyType } from '@prisma/client';
-import { DatabaseModule, PrismaService, userWithCompanyResultFields } from '@h2-trust/database';
+import { UserEntity } from '@h2-trust/amqp';
+import { DatabaseModule, PrismaService, UserDbType, UserDbTypeMock, userResultFields } from '@h2-trust/database';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
@@ -42,37 +43,20 @@ describe('UserController', () => {
   });
 
   it('should get an user and hist company by ID', async () => {
-    const expectedResponse = {
-      id: 'user-power-1',
-      name: 'Petra Power',
-      email: 'petra@power.de',
-      companyId: 'company-power-1',
-      company: {
-        id: 'company-power-1',
-        name: 'PowerGen AG',
-        mastrNumber: 'P12345',
-        companyType: CompanyType.POWER_PRODUCER,
-        addressId: {
-          id: 'address-power-1',
-          street: 'Energieweg 1',
-          postalCode: '12345',
-          city: 'Energietown',
-          state: 'Energieland',
-          country: 'Energieland',
-        },
-      },
-    };
+    const mockedUsers: UserDbType[] = UserDbTypeMock;
 
-    jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(expectedResponse);
+    jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(mockedUsers[0]);
 
+    const expectedResponse: UserEntity = UserEntity.fromDatabase(mockedUsers[0]);
     const actualResponse = await controller.readUserWithCompany({ id: expectedResponse.id });
 
-    expect(actualResponse).toEqual(expectedResponse);
+    expect(prisma.user.findUnique).toHaveBeenCalledTimes(1);
     expect(prisma.user.findUnique).toHaveBeenCalledWith({
       where: {
-        id: expectedResponse.id,
+        id: mockedUsers[0].id,
       },
-      ...userWithCompanyResultFields,
+      ...userResultFields,
     });
+    expect(actualResponse).toEqual(expectedResponse);
   });
 });

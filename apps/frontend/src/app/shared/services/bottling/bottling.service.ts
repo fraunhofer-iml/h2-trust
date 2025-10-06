@@ -9,12 +9,12 @@
 import { lastValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BottlingOverviewDto, ProductPassDto, ProofOfSustainabilityDto, SectionDto } from '@h2-trust/api';
+import { BottlingOverviewDto, GeneralInformationDto, ProofOfSustainabilityDto, SectionDto } from '@h2-trust/api';
 import { API } from '../../constants/api-endpoints';
 
 @Injectable()
 export class BottlingService {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: HttpClient) { }
 
   getBottlings() {
     return lastValueFrom(this.httpClient.get<BottlingOverviewDto[]>(API.BOTTLING.BASE));
@@ -24,8 +24,8 @@ export class BottlingService {
     return lastValueFrom(this.httpClient.post<BottlingOverviewDto>(API.BOTTLING.BASE, data));
   }
 
-  findBatchById(id: string): Promise<ProductPassDto> {
-    return lastValueFrom(this.httpClient.get<ProductPassDto>(API.BOTTLING.DETAILS(id)));
+  findBatchById(id: string): Promise<GeneralInformationDto> {
+    return lastValueFrom(this.httpClient.get<GeneralInformationDto>(API.BOTTLING.DETAILS(id)));
   }
 
   getProofOfOrigin(id: string): Promise<SectionDto[]> {

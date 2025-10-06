@@ -19,7 +19,7 @@ import {
   parseColor,
   PowerBatchDto,
 } from '@h2-trust/api';
-import { ProofOfOriginConstants } from './proof-of-origin.constants';
+import { ProofOfOriginConstants } from '../proof-of-origin.constants';
 
 export class ProofOfOriginDtoAssembler {
   static assembleProductionPowerBatchDto(processStepEntity: ProcessStepEntity, energySource: string): BatchDto {

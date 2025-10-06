@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { User } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import { userResultFields } from '../result-fields';
 
-export type UserDbType = User;
+export type UserDbType = Prisma.UserGetPayload<typeof userResultFields>;

@@ -18,7 +18,7 @@ export class TransportationService {
     private readonly processStepRepository: ProcessStepRepository,
   ) {}
 
-  async createTransportationProcessStep(processStepEntity: ProcessStepEntity): Promise<ProcessStepEntity> {
+  async createHydrogenTransportationProcessStep(processStepEntity: ProcessStepEntity): Promise<ProcessStepEntity> {
     const transportationProcessStepEntity: ProcessStepEntity = {
       ...processStepEntity,
       processType: ProcessType.HYDROGEN_TRANSPORTATION,

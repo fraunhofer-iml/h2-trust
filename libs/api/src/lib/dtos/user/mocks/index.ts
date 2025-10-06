@@ -6,4 +6,5 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+export * from './authenticated-user.mock';
 export * from './user-details-dto.mock';

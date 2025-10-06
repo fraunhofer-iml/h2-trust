@@ -9,8 +9,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/api';
+import { assertNumberOfProcessSteps, assertPredecessorsExist, assertProcessType } from '../proof-of-origin.validation';
 import { ProcessStepService } from './process-step.service';
-import { assertNumberOfProcessSteps, assertPredecessorsExist, assertProcessType } from './proof-of-origin.validation';
 
 @Injectable()
 export class ProcessLineageService {

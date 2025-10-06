@@ -9,12 +9,12 @@
 import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { ProcessType, SectionDto } from '@h2-trust/api';
-import { BottlingSectionService } from './bottling-section.service';
-import { HydrogenProductionSectionAssembler } from './hydrogen-production-section.assembler';
-import { InputMediaSectionService } from './input-media-section.service';
-import { ProcessLineageService } from './process-lineage.service';
-import { ProcessStepService } from './process-step.service';
+import { HydrogenProductionSectionAssembler } from './assembler/hydrogen-production-section.assembler';
 import { invalidProcessType } from './proof-of-origin.validation';
+import { ProcessLineageService } from './retrieval/process-lineage.service';
+import { ProcessStepService } from './retrieval/process-step.service';
+import { BottlingSectionService } from './sections/bottling-section.service';
+import { InputMediaSectionService } from './sections/input-media-section.service';
 
 @Injectable()
 export class ProofOfOriginService {

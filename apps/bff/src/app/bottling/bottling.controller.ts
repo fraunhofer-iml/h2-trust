@@ -21,7 +21,7 @@ import {
   BottlingDto,
   BottlingDtoMock,
   BottlingOverviewDto,
-  ProductPassDto,
+  GeneralInformationDto,
   ProofOfSustainabilityDto,
   proofOfSustainabilityMock,
   SectionDto,
@@ -129,18 +129,18 @@ export class BottlingController {
   @Get(':id')
   @ApiBearerAuth()
   @ApiOperation({
-    description: 'Retrieve the product pass by the corresponding bottling process step ID.',
+    description: 'Retrieve the general information by the corresponding bottling process step ID.',
   })
   @ApiOkResponse({
-    description: 'Returns the requested product pass.',
-    type: ProductPassDto,
+    description: 'Returns the requested general information of a bottling.',
+    type: GeneralInformationDto,
   })
   @ApiParam({
     name: 'id',
     description: 'Unique identifier of the bottling process step.',
     example: 'process-step-hydrogen-bottling-1',
   })
-  async readGeneralInformation(@Param('id') processStepId: string): Promise<ProductPassDto> {
+  async readGeneralInformation(@Param('id') processStepId: string): Promise<GeneralInformationDto> {
     return this.bottlingService.readGeneralInformation(processStepId);
   }
 

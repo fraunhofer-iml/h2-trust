@@ -8,6 +8,7 @@
 
 import { BatchHydrogenBottledSeed } from './batch-hydrogen-bottled.seed';
 import { BatchHydrogenProducedSeed } from './batch-hydrogen-produced.seed';
+import { BatchHydrogenTransportedSeed } from './batch-hydrogen-transported.seed';
 import { BatchPowerProducedSeed } from './batch-power-produced.seed';
 
 export const BatchRelationPowerHydrogenSeed = BatchHydrogenProducedSeed.map((hydrogenBatch, index) => ({
@@ -15,7 +16,7 @@ export const BatchRelationPowerHydrogenSeed = BatchHydrogenProducedSeed.map((hyd
   B: BatchPowerProducedSeed[index].id,
 }));
 
-export const BatchRelationHydrogenHydrogenSeed = [
+export const BatchRelationBottlingProductionSeed = [
   {
     A: BatchHydrogenBottledSeed[0].id,
     B: BatchHydrogenProducedSeed[0].id,
@@ -31,5 +32,16 @@ export const BatchRelationHydrogenHydrogenSeed = [
   {
     A: BatchHydrogenBottledSeed[2].id,
     B: BatchHydrogenProducedSeed[3].id,
+  },
+];
+
+export const BatchRelationTransportationBottlingSeed = [
+  {
+    A: BatchHydrogenTransportedSeed[0].id,
+    B: BatchHydrogenBottledSeed[0].id,
+  },
+  {
+    A: BatchHydrogenTransportedSeed[1].id,
+    B: BatchHydrogenBottledSeed[1].id,
   },
 ];

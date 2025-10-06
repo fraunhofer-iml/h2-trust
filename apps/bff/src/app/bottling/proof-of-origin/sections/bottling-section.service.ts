@@ -11,8 +11,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { BrokerQueues, HydrogenComponentEntity, ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
 import { SectionDto } from '@h2-trust/api';
-import { ProofOfOriginDtoAssembler } from './proof-of-origin-dto.assembler';
-import { ProofOfOriginConstants } from './proof-of-origin.constants';
+import { ProofOfOriginDtoAssembler } from '../assembler/proof-of-origin-dto.assembler';
+import { ProofOfOriginConstants } from '../proof-of-origin.constants';
 
 @Injectable()
 export class BottlingSectionService {

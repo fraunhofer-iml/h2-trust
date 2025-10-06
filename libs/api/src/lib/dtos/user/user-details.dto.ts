@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { UserDetailsEntity } from '@h2-trust/amqp';
+import { UserEntity } from '@h2-trust/amqp';
 import { CompanyDto } from '../company';
 import { UserDto } from './user.dto';
 
@@ -18,7 +18,7 @@ export class UserDetailsDto extends UserDto {
     this.company = company;
   }
 
-  static fromEntity(userDetails: UserDetailsEntity): UserDetailsDto {
+  static fromEntity(userDetails: UserEntity): UserDetailsDto {
     return <UserDetailsDto>{
       id: userDetails.id,
       name: userDetails.name,
