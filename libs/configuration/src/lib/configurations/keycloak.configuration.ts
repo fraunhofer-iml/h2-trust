@@ -22,10 +22,10 @@ export interface KeycloakConfiguration {
 }
 
 export default registerAs(KEYCLOAK_CONFIGURATION_IDENTIFIER, () => ({
-  url: process.env['KEYCLOAK_URL'] || 'https://kc.public.apps.blockchain-europe.iml.fraunhofer.de',
-  realm: process.env['KEYCLOAK_REALM'] || 'h2-trust',
+  url: process.env['KEYCLOAK_URL'] || '',
+  realm: process.env['KEYCLOAK_REALM'] || '',
   tokenUri: process.env['KEYCLOAK_TOKEN_URI'] || 'protocol/openid-connect/token',
-  clientId: process.env['KEYCLOAK_CLIENT_ID'] || 'h2-trust-bff',
+  clientId: process.env['KEYCLOAK_CLIENT_ID'] || '',
   clientSecret: process.env['KEYCLOAK_SECRET'] || '',
   username: process.env['KEYCLOAK_USER'] || '',
   password: process.env['KEYCLOAK_PASSWORD'] || '',
