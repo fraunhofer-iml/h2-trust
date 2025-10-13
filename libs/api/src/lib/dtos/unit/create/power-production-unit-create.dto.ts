@@ -7,6 +7,7 @@
  */
 
 import { IsIn, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { PowerProductionUnitEntity } from '@h2-trust/amqp';
 import { BiddingZones, GridLevel, PowerProductionType, UnitType } from '../../../enums';
 import { AddressDto } from '../../address';
 import { UnitCreateDto } from './unit-create.dto';
@@ -87,5 +88,34 @@ export class PowerProductionUnitCreateDto extends UnitCreateDto {
     this.electricityMeterNumber = electricityMeterNumber;
     this.gridOperator = gridOperator;
     this.gridConnectionNumber = gridConnectionNumber;
+  }
+
+  static toEntity(dto: PowerProductionUnitCreateDto): PowerProductionUnitEntity {
+    return {
+      name: dto.name,
+      mastrNumber: dto.mastrNumber,
+      manufacturer: dto.manufacturer,
+      modelType: dto.modelType,
+      modelNumber: dto.modelNumber,
+      serialNumber: dto.serialNumber,
+      commissionedOn: new Date(dto.commissionedOn),
+      address: dto.address,
+      company: {
+        id: dto.owner,
+      },
+      operator: {
+        id: dto.operator,
+      },
+      decommissioningPlannedOn: dto.decommissioningPlannedOn ? new Date(dto.decommissioningPlannedOn) : undefined,
+      electricityMeterNumber: dto.electricityMeterNumber,
+      ratedPower: dto.ratedPower,
+      gridOperator: dto.gridOperator,
+      gridLevelName: dto.gridLevel,
+      biddingZoneName: dto.biddingZone,
+      gridConnectionNumber: dto.gridConnectionNumber,
+      type: {
+        name: dto.powerProductionType,
+      },
+    };
   }
 }

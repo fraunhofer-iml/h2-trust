@@ -7,16 +7,26 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { HydrogenProductionUnitEntity, HydrogenStorageUnitEntity, PowerProductionUnitEntity } from '@h2-trust/amqp';
 import {
-  allUnitsResultFields,
+  HydrogenProductionUnitEntity,
+  HydrogenProductionUnitEntityMock,
+  HydrogenStorageUnitEntity,
+  HydrogenStorageUnitEntityMock,
+  PowerProductionUnitEntity,
+  PowerProductionUnitEntityMock,
+} from '@h2-trust/amqp';
+import {
+  allUnitsQueryArgs,
   DatabaseModule,
+  HydrogenProductionUnitDbType,
   HydrogenProductionUnitDbTypeMock,
-  hydrogenProductionUnitResultFields,
+  hydrogenProductionUnitQueryArgs,
+  HydrogenStorageUnitDbType,
   HydrogenStorageUnitDbTypeMock,
-  hydrogenStorageUnitResultFields,
+  hydrogenStorageUnitQueryArgs,
+  PowerProductionUnitDbType,
   PowerProductionUnitDbTypeMock,
-  powerProductionUnitResultFields,
+  powerProductionUnitQueryArgs,
   PrismaService,
 } from '@h2-trust/database';
 import { UnitController } from './unit.controller';
@@ -25,6 +35,7 @@ import { UnitService } from './unit.service';
 describe('UnitController', () => {
   let controller: UnitController;
   let prisma: PrismaService;
+  let unitService: UnitService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -38,6 +49,7 @@ describe('UnitController', () => {
             unit: {
               findUnique: jest.fn(),
               findMany: jest.fn(),
+              create: jest.fn(),
             },
           },
         },
@@ -45,6 +57,7 @@ describe('UnitController', () => {
     }).compile();
 
     controller = module.get<UnitController>(UnitController);
+    unitService = module.get(UnitService);
     prisma = module.get<PrismaService>(PrismaService);
   });
 
@@ -64,7 +77,7 @@ describe('UnitController', () => {
       where: {
         id: expectedResponse.id,
       },
-      ...allUnitsResultFields,
+      ...allUnitsQueryArgs,
     });
   });
 
@@ -73,17 +86,17 @@ describe('UnitController', () => {
 
     jest.spyOn(prisma.unit, 'findMany').mockResolvedValue([expectedResponse]);
 
-    const actualResponse = await controller.readPowerProductionUnits({ companyId: expectedResponse.companyId });
+    const actualResponse = await controller.readPowerProductionUnits({ companyId: expectedResponse.ownerId });
 
     expect(actualResponse).toEqual([PowerProductionUnitEntity.fromDatabase(expectedResponse)]);
     expect(prisma.unit.findMany).toHaveBeenCalledWith({
       where: {
-        companyId: expectedResponse.companyId,
+        ownerId: expectedResponse.operatorId,
         powerProductionUnit: {
           isNot: null,
         },
       },
-      ...powerProductionUnitResultFields,
+      ...powerProductionUnitQueryArgs,
     });
   });
 
@@ -92,17 +105,17 @@ describe('UnitController', () => {
 
     jest.spyOn(prisma.unit, 'findMany').mockResolvedValue([expectedResponse]);
 
-    const actualResponse = await controller.readHydrogenProductionUnits({ companyId: expectedResponse.companyId });
+    const actualResponse = await controller.readHydrogenProductionUnits({ companyId: expectedResponse.ownerId });
 
     expect(actualResponse).toEqual([HydrogenProductionUnitEntity.fromDatabase(expectedResponse)]);
     expect(prisma.unit.findMany).toHaveBeenCalledWith({
       where: {
-        companyId: expectedResponse.companyId,
+        ownerId: expectedResponse.ownerId,
         hydrogenProductionUnit: {
           isNot: null,
         },
       },
-      ...hydrogenProductionUnitResultFields,
+      ...hydrogenProductionUnitQueryArgs,
     });
   });
 
@@ -111,17 +124,65 @@ describe('UnitController', () => {
 
     jest.spyOn(prisma.unit, 'findMany').mockResolvedValue([expectedResponse]);
 
-    const actualResponse = await controller.readHydrogenStorageUnits({ companyId: expectedResponse.companyId });
+    const actualResponse = await controller.readHydrogenStorageUnits({ companyId: expectedResponse.ownerId });
 
     expect(actualResponse).toEqual([HydrogenStorageUnitEntity.fromDatabase(expectedResponse)]);
     expect(prisma.unit.findMany).toHaveBeenCalledWith({
       where: {
-        companyId: expectedResponse.companyId,
+        ownerId: expectedResponse.ownerId,
         hydrogenStorageUnit: {
           isNot: null,
         },
       },
-      ...hydrogenStorageUnitResultFields,
+      ...hydrogenStorageUnitQueryArgs,
     });
+  });
+
+  it('should create power production unit', async () => {
+    const givenPayload: PowerProductionUnitEntity = structuredClone(PowerProductionUnitEntityMock[0]);
+    const mockedDbResponse: PowerProductionUnitDbType = PowerProductionUnitDbTypeMock[0];
+    const expectedResponse: PowerProductionUnitEntity = PowerProductionUnitEntity.fromDatabase(mockedDbResponse);
+
+    const unitServiceSpy = jest.spyOn(unitService, 'createPowerProductionUnit');
+
+    const prismaSpy = jest.spyOn(prisma.unit, 'create').mockResolvedValue(mockedDbResponse);
+
+    const actualResponse = await controller.createPowerProductionUnit({ unit: givenPayload });
+
+    expect(unitServiceSpy).toHaveBeenCalledTimes(1);
+    expect(prismaSpy).toHaveBeenCalledTimes(1);
+    expect(actualResponse).toEqual(expectedResponse);
+  });
+
+  it('should create hydrogen production unit', async () => {
+    const givenPayload: HydrogenProductionUnitEntity = structuredClone(HydrogenProductionUnitEntityMock[0]);
+    const mockedDbResponse: HydrogenProductionUnitDbType = HydrogenProductionUnitDbTypeMock[0];
+    const expectedResponse: HydrogenProductionUnitEntity = HydrogenProductionUnitEntity.fromDatabase(mockedDbResponse);
+
+    const unitServiceSpy = jest.spyOn(unitService, 'createHydrogenProductionUnit');
+
+    const prismaSpy = jest.spyOn(prisma.unit, 'create').mockResolvedValue(mockedDbResponse);
+
+    const actualResponse = await controller.createHydrogenProductionUnit({ unit: givenPayload });
+
+    expect(unitServiceSpy).toHaveBeenCalledTimes(1);
+    expect(prismaSpy).toHaveBeenCalledTimes(1);
+    expect(actualResponse).toEqual(expectedResponse);
+  });
+
+  it('should create hydrogen storage unit', async () => {
+    const givenPayload: HydrogenStorageUnitEntity = structuredClone(HydrogenStorageUnitEntityMock[0]);
+    const mockedDbResponse: HydrogenStorageUnitDbType = HydrogenStorageUnitDbTypeMock[0];
+    const expectedResponse: HydrogenStorageUnitEntity = HydrogenStorageUnitEntity.fromDatabase(mockedDbResponse);
+
+    const unitServiceSpy = jest.spyOn(unitService, 'createHydrogenStorageUnit');
+
+    const prismaSpy = jest.spyOn(prisma.unit, 'create').mockResolvedValue(mockedDbResponse);
+
+    const actualResponse = await controller.createHydrogenStorageUnit({ unit: givenPayload });
+
+    expect(unitServiceSpy).toHaveBeenCalledTimes(1);
+    expect(prismaSpy).toHaveBeenCalledTimes(1);
+    expect(actualResponse).toEqual(expectedResponse);
   });
 });

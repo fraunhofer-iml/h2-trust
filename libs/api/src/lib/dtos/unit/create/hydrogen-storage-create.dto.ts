@@ -7,6 +7,7 @@
  */
 
 import { IsIn, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
+import { HydrogenStorageUnitEntity } from '@h2-trust/amqp';
 import { HydrogenStorageType, UnitType } from '../../../enums';
 import { AddressDto } from '../../address';
 import { UnitCreateDto } from './unit-create.dto';
@@ -60,5 +61,27 @@ export class HydrogenStorageUnitCreateDto extends UnitCreateDto {
     this.storageType = storageType;
     this.capacity = capacity;
     this.pressure = pressure;
+  }
+
+  static toEntity(dto: HydrogenStorageUnitCreateDto): HydrogenStorageUnitEntity {
+    return {
+      name: dto.name,
+      mastrNumber: dto.mastrNumber,
+      manufacturer: dto.manufacturer,
+      modelType: dto.modelType,
+      modelNumber: dto.modelNumber,
+      serialNumber: dto.serialNumber,
+      commissionedOn: new Date(dto.commissionedOn),
+      address: dto.address,
+      company: {
+        id: dto.owner,
+      },
+      operator: {
+        id: dto.operator,
+      },
+      capacity: dto.capacity,
+      pressure: dto.pressure,
+      type: dto.storageType,
+    };
   }
 }

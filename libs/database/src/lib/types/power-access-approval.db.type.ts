@@ -7,6 +7,6 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { powerAccessApprovalResultFields } from '../result-fields/power-access-approval.queries';
+import { powerAccessApprovalQueryArgs } from '../query-args/power-access-approval.query-args';
 
-export type PowerAccessApprovalDbType = Prisma.PowerAccessApprovalGetPayload<typeof powerAccessApprovalResultFields>;
+export type PowerAccessApprovalDbType = Prisma.PowerAccessApprovalGetPayload<typeof powerAccessApprovalQueryArgs>;

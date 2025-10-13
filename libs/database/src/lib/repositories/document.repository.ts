@@ -8,6 +8,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { DocumentEntity } from '@h2-trust/amqp';
+import { buildDocumentCreateInput } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 
 @Injectable()
@@ -16,17 +17,7 @@ export class DocumentRepository {
 
   async addDocumentToProcessStep(document: DocumentEntity, processStepId: string): Promise<DocumentEntity> {
     return this.prismaService.document
-      .create({
-        data: {
-          description: document.description ?? '',
-          location: document.location,
-          processStep: {
-            connect: {
-              id: processStepId,
-            },
-          },
-        },
-      })
+      .create({ data: buildDocumentCreateInput(document, processStepId) })
       .then(DocumentEntity.fromDatabase);
   }
 }

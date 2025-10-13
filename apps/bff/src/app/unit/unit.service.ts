@@ -9,11 +9,18 @@
 import { firstValueFrom } from 'rxjs';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BrokerException, BrokerQueues, UnitMessagePatterns } from '@h2-trust/amqp';
+import { BaseUnitEntity, BrokerException, BrokerQueues, UnitEntity, UnitMessagePatterns } from '@h2-trust/amqp';
 import {
   HydrogenProductionOverviewDto,
+  HydrogenProductionUnitCreateDto,
+  HydrogenProductionUnitDto,
   HydrogenStorageOverviewDto,
+  HydrogenStorageUnitCreateDto,
+  HydrogenStorageUnitDto,
   PowerProductionOverviewDto,
+  PowerProductionUnitCreateDto,
+  PowerProductionUnitDto,
+  UnitCreateDto,
   UnitDto,
   UnitOverviewDto,
   UnitType,
@@ -27,8 +34,10 @@ export class UnitService {
     private readonly userService: UserService,
   ) {}
 
-  readUnit(id: string): Promise<UnitDto> {
-    return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, { id }));
+  async readUnit(id: string): Promise<UnitDto> {
+    return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, { id })).then(
+      UnitService.mapUnitEntityToDto,
+    );
   }
 
   async readUnits(userId: string, unitType: UnitType): Promise<UnitOverviewDto[]> {
@@ -69,5 +78,46 @@ export class UnitService {
     return firstValueFrom(
       this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_STORAGE_UNITS, { companyId }),
     ).then((entities) => entities.map(HydrogenStorageOverviewDto.fromEntity));
+  }
+
+  async createUnit(unit: UnitCreateDto): Promise<UnitDto> {
+    let messagePattern: UnitMessagePatterns;
+    let unitEntity: UnitEntity;
+    switch (unit.unitType) {
+      case UnitType.POWER_PRODUCTION: {
+        messagePattern = UnitMessagePatterns.CREATE_POWER_PRODUCTION_UNIT;
+        unitEntity = PowerProductionUnitCreateDto.toEntity(unit as PowerProductionUnitCreateDto);
+        break;
+      }
+      case UnitType.HYDROGEN_PRODUCTION: {
+        messagePattern = UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION_UNIT;
+        unitEntity = HydrogenProductionUnitCreateDto.toEntity(unit as HydrogenProductionUnitCreateDto);
+        break;
+      }
+      case UnitType.HYDROGEN_STORAGE: {
+        messagePattern = UnitMessagePatterns.CREATE_HYDROGEN_STORAGE_UNIT;
+        unitEntity = HydrogenStorageUnitCreateDto.toEntity(unit as HydrogenStorageUnitCreateDto);
+        break;
+      }
+      default: {
+        throw new BrokerException(`Unit type [${unit.unitType}] unknown`, HttpStatus.BAD_REQUEST);
+      }
+    }
+    return firstValueFrom(this.generalService.send(messagePattern, { unit: unitEntity })).then(
+      UnitService.mapUnitEntityToDto,
+    );
+  }
+
+  static mapUnitEntityToDto(unit: BaseUnitEntity): UnitDto {
+    switch (unit.unitType) {
+      case UnitType.POWER_PRODUCTION:
+        return PowerProductionUnitDto.fromEntity(unit);
+      case UnitType.HYDROGEN_PRODUCTION:
+        return HydrogenProductionUnitDto.fromEntity(unit);
+      case UnitType.HYDROGEN_STORAGE:
+        return HydrogenStorageUnitDto.fromEntity(unit);
+      default:
+        throw new BrokerException(`unit-type ${unit.unitType} unknown`, HttpStatus.BAD_REQUEST);
+    }
   }
 }

@@ -7,22 +7,13 @@
  */
 
 import { AuthenticatedUser } from 'nest-keycloak-connect';
-import { Body, Controller, Get, Logger, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
-import {
-  PowerProductionUnitOverviewDtoMock,
-  UnitCreateDto,
-  UnitDto,
-  UnitOverviewDto,
-  UnitType,
-  type AuthenticatedKCUser,
-} from '@h2-trust/api';
+import { UnitCreateDto, UnitDto, UnitOverviewDto, UnitType, type AuthenticatedKCUser } from '@h2-trust/api';
 import { UnitService } from './unit.service';
 
 @Controller('units')
 export class UnitController {
-  private readonly logger = new Logger(UnitController.name);
-
   constructor(private readonly unitService: UnitService) {}
 
   @Get()
@@ -90,7 +81,6 @@ export class UnitController {
     description: 'Returns the created unit.',
   })
   createUnit(@Body() dto: UnitCreateDto) {
-    this.logger.log(`Create unit of type ${dto.unitType}`);
-    return PowerProductionUnitOverviewDtoMock[0];
+    return this.unitService.createUnit(dto);
   }
 }

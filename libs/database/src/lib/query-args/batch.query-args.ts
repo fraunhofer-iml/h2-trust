@@ -7,14 +7,14 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { companyResultFields } from './company.result-fields';
+import { companyQueryArgs } from './company.query.args';
 
-export const batchResultFields = Prisma.validator<Prisma.BatchDefaultArgs>()({
+export const batchQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()({
   include: {
-    owner: companyResultFields,
+    owner: companyQueryArgs,
     predecessors: {
       include: {
-        owner: companyResultFields,
+        owner: companyQueryArgs,
         hydrogenStorageUnit: {
           include: {
             generalInfo: true,
@@ -25,7 +25,7 @@ export const batchResultFields = Prisma.validator<Prisma.BatchDefaultArgs>()({
     },
     successors: {
       include: {
-        owner: companyResultFields,
+        owner: companyQueryArgs,
         hydrogenStorageUnit: {
           include: {
             generalInfo: true,

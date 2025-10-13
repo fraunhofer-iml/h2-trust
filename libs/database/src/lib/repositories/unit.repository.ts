@@ -15,13 +15,18 @@ import {
   PowerProductionUnitEntity,
   UnitEntity,
 } from '@h2-trust/amqp';
+import {
+  buildHydrogenProductionUnitCreateInput,
+  buildHydrogenStorageUnitCreateInput,
+  buildPowerProductionUnitCreateInput,
+} from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 import {
-  allUnitsResultFields,
-  hydrogenProductionUnitResultFields,
-  hydrogenStorageUnitResultFields,
-  powerProductionUnitResultFields,
-} from '../result-fields';
+  allUnitsQueryArgs,
+  hydrogenProductionUnitQueryArgs,
+  hydrogenStorageUnitQueryArgs,
+  powerProductionUnitQueryArgs,
+} from '../query-args';
 import { assertRecordFound } from './utils';
 
 @Injectable()
@@ -34,55 +39,13 @@ export class UnitRepository {
         where: {
           id: id,
         },
-        ...allUnitsResultFields,
+        ...allUnitsQueryArgs,
       })
       .then((result) => assertRecordFound(result, id, 'Unit'))
       .then(this.mapToActualUnitEntity);
   }
 
-  async findPowerProductionUnitsByCompanyId(companyId: string): Promise<PowerProductionUnitEntity[]> {
-    return this.prismaService.unit
-      .findMany({
-        where: {
-          ownerId: companyId,
-          powerProductionUnit: {
-            isNot: null,
-          },
-        },
-        ...powerProductionUnitResultFields,
-      })
-      .then((units) => units.map(PowerProductionUnitEntity.fromDatabase));
-  }
-
-  async findHydrogenProductionUnitsByCompanyId(companyId: string): Promise<HydrogenProductionUnitEntity[]> {
-    return this.prismaService.unit
-      .findMany({
-        where: {
-          ownerId: companyId,
-          hydrogenProductionUnit: {
-            isNot: null,
-          },
-        },
-        ...hydrogenProductionUnitResultFields,
-      })
-      .then((units) => units.map(HydrogenProductionUnitEntity.fromDatabase));
-  }
-
-  async findHydrogenStorageUnitsByCompanyId(companyId: string): Promise<HydrogenStorageUnitEntity[]> {
-    return this.prismaService.unit
-      .findMany({
-        where: {
-          ownerId: companyId,
-          hydrogenStorageUnit: {
-            isNot: null,
-          },
-        },
-        ...hydrogenStorageUnitResultFields,
-      })
-      .then((units) => units.map(HydrogenStorageUnitEntity.fromDatabase));
-  }
-
-  mapToActualUnitEntity(_unit: Prisma.UnitGetPayload<typeof allUnitsResultFields>): UnitEntity {
+  mapToActualUnitEntity(_unit: Prisma.UnitGetPayload<typeof allUnitsQueryArgs>): UnitEntity {
     const { powerProductionUnit, hydrogenProductionUnit, hydrogenStorageUnit, ...unit } = _unit;
 
     if (powerProductionUnit) {
@@ -107,5 +70,74 @@ export class UnitRepository {
     }
 
     throw new BrokerException(`Incompatible unit`, HttpStatus.BAD_REQUEST);
+  }
+
+  async findPowerProductionUnitsByCompanyId(companyId: string): Promise<PowerProductionUnitEntity[]> {
+    return this.prismaService.unit
+      .findMany({
+        where: {
+          ownerId: companyId,
+          powerProductionUnit: {
+            isNot: null,
+          },
+        },
+        ...powerProductionUnitQueryArgs,
+      })
+      .then((units) => units.map(PowerProductionUnitEntity.fromDatabase));
+  }
+
+  async findHydrogenProductionUnitsByCompanyId(companyId: string): Promise<HydrogenProductionUnitEntity[]> {
+    return this.prismaService.unit
+      .findMany({
+        where: {
+          ownerId: companyId,
+          hydrogenProductionUnit: {
+            isNot: null,
+          },
+        },
+        ...hydrogenProductionUnitQueryArgs,
+      })
+      .then((units) => units.map(HydrogenProductionUnitEntity.fromDatabase));
+  }
+
+  async findHydrogenStorageUnitsByCompanyId(companyId: string): Promise<HydrogenStorageUnitEntity[]> {
+    return this.prismaService.unit
+      .findMany({
+        where: {
+          ownerId: companyId,
+          hydrogenStorageUnit: {
+            isNot: null,
+          },
+        },
+        ...hydrogenStorageUnitQueryArgs,
+      })
+      .then((units) => units.map(HydrogenStorageUnitEntity.fromDatabase));
+  }
+
+  async insertPowerProductionUnit(unitEntity: PowerProductionUnitEntity): Promise<PowerProductionUnitEntity> {
+    return this.prismaService.unit
+      .create({
+        data: buildPowerProductionUnitCreateInput(unitEntity),
+        include: powerProductionUnitQueryArgs.include,
+      })
+      .then(PowerProductionUnitEntity.fromDatabase);
+  }
+
+  async insertHydrogenProductionUnit(unitEntity: HydrogenProductionUnitEntity): Promise<HydrogenProductionUnitEntity> {
+    return this.prismaService.unit
+      .create({
+        data: buildHydrogenProductionUnitCreateInput(unitEntity),
+        include: hydrogenProductionUnitQueryArgs.include,
+      })
+      .then(HydrogenProductionUnitEntity.fromDatabase);
+  }
+
+  async insertHydrogenStorageUnit(unitEntity: HydrogenStorageUnitEntity): Promise<HydrogenStorageUnitEntity> {
+    return this.prismaService.unit
+      .create({
+        data: buildHydrogenStorageUnitCreateInput(unitEntity),
+        include: hydrogenStorageUnitQueryArgs.include,
+      })
+      .then(HydrogenStorageUnitEntity.fromDatabase);
   }
 }

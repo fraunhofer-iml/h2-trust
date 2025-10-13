@@ -7,9 +7,8 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { CompanyType } from '@prisma/client';
 import { UserEntity } from '@h2-trust/amqp';
-import { DatabaseModule, PrismaService, UserDbType, UserDbTypeMock, userResultFields } from '@h2-trust/database';
+import { DatabaseModule, PrismaService, UserDbType, UserDbTypeMock, userQueryArgs } from '@h2-trust/database';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
@@ -55,7 +54,7 @@ describe('UserController', () => {
       where: {
         id: mockedUsers[0].id,
       },
-      ...userResultFields,
+      ...userQueryArgs,
     });
     expect(actualResponse).toEqual(expectedResponse);
   });

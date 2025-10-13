@@ -6,4 +6,4 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './lib/utils.module';
+export * from './lib/assertions';

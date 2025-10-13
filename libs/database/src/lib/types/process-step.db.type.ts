@@ -7,6 +7,6 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { processStepResultFields } from '../result-fields';
+import { processStepQueryArgs } from '../query-args';
 
-export type ProcessStepDbType = Prisma.ProcessStepGetPayload<typeof processStepResultFields>;
+export type ProcessStepDbType = Prisma.ProcessStepGetPayload<typeof processStepQueryArgs>;

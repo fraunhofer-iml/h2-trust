@@ -6,8 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './batch.result-fields';
-export * from './company.result-fields';
-export * from './process-step.result-fields';
-export * from './unit.result-fields';
-export * from './user.result-fields';
+export function requireDefined<T>(value: T | undefined | null, name: string): T {
+  if (value === undefined || value === null) {
+    throw new Error(`Missing ${name}`);
+  }
+
+  return value;
+}

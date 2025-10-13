@@ -7,6 +7,6 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { powerProductionUnitResultFields } from '../result-fields';
+import { powerProductionUnitQueryArgs } from '../query-args';
 
-export type PowerProductionUnitDbType = Prisma.UnitGetPayload<typeof powerProductionUnitResultFields>;
+export type PowerProductionUnitDbType = Prisma.UnitGetPayload<typeof powerProductionUnitQueryArgs>;

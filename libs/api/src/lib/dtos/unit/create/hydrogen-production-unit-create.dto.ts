@@ -7,18 +7,15 @@
  */
 
 import { IsIn, IsNotEmpty, IsPositive } from 'class-validator';
-import { BiddingZones, ElectrolysisType, HydrogenProductionType, UnitType } from '../../../enums';
+import { HydrogenProductionUnitEntity } from '@h2-trust/amqp';
+import { BiddingZones, ElectrolysisType, UnitType } from '../../../enums';
 import { AddressDto } from '../../address';
 import { UnitCreateDto } from './unit-create.dto';
 
 export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
   @IsNotEmpty()
-  @IsIn(Object.values(HydrogenProductionType))
-  hydrogenProductionMethod: HydrogenProductionType;
-
-  @IsNotEmpty()
   @IsIn(Object.values(ElectrolysisType))
-  hydrogenProductionTechnology: ElectrolysisType;
+  hydrogenProductionType: ElectrolysisType;
 
   @IsNotEmpty()
   @IsIn(Object.values(BiddingZones))
@@ -45,8 +42,7 @@ export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
     certifiedBy: string,
     commissionedOn: string,
     address: AddressDto,
-    hydrogenProductionMethod: HydrogenProductionType,
-    hydrogenProductionTechnology: ElectrolysisType,
+    hydrogenProductionType: ElectrolysisType,
     biddingZone: BiddingZones,
     ratedPower: number,
     pressure: number,
@@ -65,10 +61,35 @@ export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
       commissionedOn,
       address,
     );
-    this.hydrogenProductionMethod = hydrogenProductionMethod;
-    this.hydrogenProductionTechnology = hydrogenProductionTechnology;
+    this.hydrogenProductionType = hydrogenProductionType;
     this.biddingZone = biddingZone;
     this.ratedPower = ratedPower;
     this.pressure = pressure;
+  }
+
+  static toEntity(dto: HydrogenProductionUnitCreateDto): HydrogenProductionUnitEntity {
+    return {
+      name: dto.name,
+      mastrNumber: dto.mastrNumber,
+      manufacturer: dto.manufacturer,
+      modelType: dto.modelType,
+      modelNumber: dto.modelNumber,
+      serialNumber: dto.serialNumber,
+      commissionedOn: new Date(dto.commissionedOn),
+      address: dto.address,
+      company: {
+        id: dto.owner,
+      },
+      operator: {
+        id: dto.operator,
+      },
+      ratedPower: dto.ratedPower,
+      pressure: dto.pressure,
+      type: {
+        // TODO toLowerCase can be removed once the frontend uses the values directly from the database
+        id: dto.hydrogenProductionType.toLowerCase(),
+      },
+      biddingZoneName: dto.biddingZone,
+    };
   }
 }

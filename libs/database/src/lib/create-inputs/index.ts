@@ -6,11 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Module } from '@nestjs/common';
-
-@Module({
-  controllers: [],
-  providers: [],
-  exports: [],
-})
-export class UtilsModule {}
+export * from './document.create-input';
+export * from './process-step.create-input';
+export * from './unit.create-input';

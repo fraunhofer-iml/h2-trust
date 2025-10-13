@@ -12,6 +12,8 @@ import {
   HydrogenStorageUnitSeed,
   UnitSeed,
 } from 'libs/database/src/seed';
+import { UnitType } from '@h2-trust/api';
+import { CompanyEntityHydrogenMock } from '../..';
 import { AddressEntityPowerMock } from '../../address';
 import { HydrogenProductionUnitEntity } from '../hydrogen-production-unit.entity';
 
@@ -20,12 +22,18 @@ export const HydrogenProductionUnitEntityMock: HydrogenProductionUnitEntity[] = 
     HydrogenProductionUnitSeed[0].id,
     UnitSeed[0].name,
     UnitSeed[0].mastrNumber,
-    UnitSeed[0].manufacturer,
-    UnitSeed[0].modelType,
-    UnitSeed[0].serialNumber,
+    UnitSeed[0].manufacturer!,
+    UnitSeed[0].modelType!,
+    UnitSeed[0].modelNumber!,
+    UnitSeed[0].serialNumber!,
     new Date(UnitSeed[0].commissionedOn),
     AddressEntityPowerMock,
-    null,
+    {
+      id: CompanyEntityHydrogenMock.id!,
+      hydrogenApprovals: [],
+    },
+    CompanyEntityHydrogenMock,
+    UnitType.HYDROGEN_PRODUCTION,
     HydrogenProductionUnitSeed[0].ratedPower.toNumber(),
     HydrogenProductionUnitSeed[0].pressure.toNumber(),
     HydrogenProductionTypeSeed[0],

@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { HydrogenStorageUnitEntity } from '@h2-trust/amqp';
 import { UnitType } from '../../enums';
 import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
@@ -74,5 +75,26 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
     this.hydrogenProductionUnits = hydrogenProductionUnits;
     this.pressure = pressure;
     this.storageType = storageType;
+  }
+
+  static override fromEntity(unit: HydrogenStorageUnitEntity): HydrogenStorageUnitDto {
+    return {
+      ...BaseUnitDto.fromEntity(unit),
+      capacity: unit.capacity!,
+      filling:
+        unit.filling?.map((filling) => ({
+          id: '',
+          color: filling.color,
+          amount: filling.amount,
+        })) ?? [],
+      pressure: unit.pressure!,
+      storageType: unit.type!,
+      hydrogenProductionUnits:
+        unit.hydrogenProductionUnits?.map((hydrogenProductionUnit) => ({
+          id: hydrogenProductionUnit.id,
+          name: hydrogenProductionUnit.name,
+          hydrogenStorageUnitId: hydrogenProductionUnit.hydrogenStorageUnitId,
+        })) ?? [],
+    };
   }
 }

@@ -7,7 +7,9 @@
  */
 
 import { PowerProductionUnitSeed, UnitSeed } from 'libs/database/src/seed';
+import { UnitType } from '@h2-trust/api';
 import { AddressEntityPowerMock } from '../../address';
+import { CompanyEntityPowerMock } from '../../company';
 import { PowerProductionUnitEntity } from '../power-production-unit.entity';
 import { PowerProductionTypeEntityMock } from './power-production-type-entity.mock';
 
@@ -16,19 +18,25 @@ export const PowerProductionUnitEntityMock: PowerProductionUnitEntity[] = [
     PowerProductionUnitSeed[0].id,
     UnitSeed[0].name,
     UnitSeed[0].mastrNumber,
-    UnitSeed[0].manufacturer,
-    UnitSeed[0].modelType,
-    UnitSeed[0].serialNumber,
+    UnitSeed[0].manufacturer!,
+    UnitSeed[0].modelType!,
+    UnitSeed[0].modelNumber!,
+    UnitSeed[0].serialNumber!,
     new Date(UnitSeed[0].commissionedOn),
-    new Date(PowerProductionUnitSeed[0].decommissioningPlannedOn),
-    PowerProductionUnitSeed[0].electricityMeterNumber,
     AddressEntityPowerMock,
-    null,
+    {
+      id: CompanyEntityPowerMock.id!,
+      hydrogenApprovals: [],
+    },
+    CompanyEntityPowerMock,
+    UnitType.POWER_PRODUCTION,
+    new Date(PowerProductionUnitSeed[0].decommissioningPlannedOn!),
+    PowerProductionUnitSeed[0].electricityMeterNumber,
     PowerProductionUnitSeed[0].ratedPower.toNumber(),
-    PowerProductionUnitSeed[0].gridOperator,
+    PowerProductionUnitSeed[0].gridOperator!,
     PowerProductionUnitSeed[0].gridLevelName,
     PowerProductionUnitSeed[0].biddingZoneName,
-    PowerProductionUnitSeed[0].gridConnectionNumber,
+    PowerProductionUnitSeed[0].gridConnectionNumber!,
     PowerProductionTypeEntityMock[1],
   ),
 ];

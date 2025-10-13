@@ -7,6 +7,6 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { hydrogenStorageUnitResultFields } from '../result-fields';
+import { hydrogenStorageUnitQueryArgs } from '../query-args';
 
-export type HydrogenStorageUnitDbType = Prisma.UnitGetPayload<typeof hydrogenStorageUnitResultFields>;
+export type HydrogenStorageUnitDbType = Prisma.UnitGetPayload<typeof hydrogenStorageUnitQueryArgs>;

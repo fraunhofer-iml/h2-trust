@@ -42,4 +42,16 @@ export class UnitService {
   async readPowerProductionTypes(): Promise<PowerProductionTypeEntity[]> {
     return this.powerProductionTypeRepository.findPowerProductionTypes();
   }
+
+  async createPowerProductionUnit(unit: PowerProductionUnitEntity): Promise<PowerProductionUnitEntity> {
+    return this.unitRepository.insertPowerProductionUnit(unit);
+  }
+
+  async createHydrogenProductionUnit(unit: HydrogenProductionUnitEntity): Promise<HydrogenProductionUnitEntity> {
+    return this.unitRepository.insertHydrogenProductionUnit(unit);
+  }
+
+  async createHydrogenStorageUnit(unit: HydrogenStorageUnitEntity): Promise<HydrogenStorageUnitEntity> {
+    return this.unitRepository.insertHydrogenStorageUnit(unit);
+  }
 }

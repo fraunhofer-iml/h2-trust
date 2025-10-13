@@ -7,6 +7,6 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { userResultFields } from '../result-fields';
+import { userQueryArgs } from '../query-args';
 
-export type UserDbType = Prisma.UserGetPayload<typeof userResultFields>;
+export type UserDbType = Prisma.UserGetPayload<typeof userQueryArgs>;

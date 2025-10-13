@@ -10,9 +10,10 @@ import { HttpStatus } from '@nestjs/common';
 import { Batch } from '@prisma/client';
 import { parseColor, UnitType } from '@h2-trust/api';
 import { HydrogenStorageUnitDbType } from '@h2-trust/database';
-import { BrokerException } from '../../broker/broker-exception';
+import { BrokerException } from '../../broker';
 import { AddressEntity } from '../address';
 import { HydrogenComponentEntity } from '../bottling';
+import { CompanyEntity } from '../company';
 import { BaseUnitEntity } from './base-unit.entity';
 
 export class HydrogenStorageUnitEntity extends BaseUnitEntity {
@@ -32,13 +33,20 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     mastrNumber: string,
     manufacturer: string,
     modelType: string,
+    modelNumber: string,
     serialNumber: string,
     commissionedOn: Date,
     address: AddressEntity,
     company: {
-      id: string;
-      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string; powerProducerName: string }[];
+      id?: string;
+      hydrogenApprovals?: {
+        powerAccessApprovalStatus?: string;
+        powerProducerId?: string;
+        powerProducerName?: string;
+      }[];
     } | null,
+    operator: CompanyEntity,
+    unitType: UnitType,
     capacity: number,
     pressure: number,
     type: string,
@@ -49,7 +57,20 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       hydrogenStorageUnitId: string;
     }[],
   ) {
-    super(id, name, mastrNumber, manufacturer, modelType, serialNumber, commissionedOn, address, company);
+    super(
+      id,
+      name,
+      mastrNumber,
+      manufacturer,
+      modelType,
+      modelNumber,
+      serialNumber,
+      commissionedOn,
+      address,
+      company,
+      operator,
+      unitType,
+    );
     this.capacity = capacity;
     this.pressure = pressure;
     this.type = type;

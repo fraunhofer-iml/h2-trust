@@ -6,6 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { requireDefined } from 'libs/utils/src/lib/assertions';
+import { HydrogenProductionUnitEntity } from '@h2-trust/amqp';
 import { UnitType } from '../../enums';
 import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
@@ -74,5 +76,21 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     this.pressure = pressure;
     this.method = method;
     this.technology = technology;
+  }
+
+  static override fromEntity(unit: HydrogenProductionUnitEntity): HydrogenProductionUnitDto {
+    return {
+      ...BaseUnitDto.fromEntity(unit),
+      ratedPower: requireDefined(unit.ratedPower, 'ratedPower'),
+      typeName: requireDefined(unit.type?.id, 'typeName'),
+      biddingZoneName: requireDefined(unit.biddingZoneName, 'biddingZoneName'),
+      pressure: requireDefined(unit.pressure, 'pressure'),
+      method: requireDefined(unit.type?.method, 'method'),
+      technology: requireDefined(unit.type?.technology, 'technology'),
+      hydrogenStorageUnit: {
+        id: requireDefined(unit.hydrogenStorageUnit?.id, 'hydrogenStorageUnit.id'),
+        name: requireDefined(unit.hydrogenStorageUnit?.name, 'hydrogenStorageUnit.name'),
+      },
+    };
   }
 }

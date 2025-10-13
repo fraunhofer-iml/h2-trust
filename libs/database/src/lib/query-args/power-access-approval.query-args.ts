@@ -7,18 +7,18 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { companyResultFields } from './company.result-fields';
-import { baseUnitResultFields } from './unit.result-fields';
+import { companyQueryArgs } from './company.query.args';
+import { baseUnitQueryArgs } from './unit.query-args';
 
-export const powerAccessApprovalResultFields = Prisma.validator<Prisma.PowerAccessApprovalDefaultArgs>()({
+export const powerAccessApprovalQueryArgs = Prisma.validator<Prisma.PowerAccessApprovalDefaultArgs>()({
   include: {
-    powerProducer: companyResultFields,
-    hydrogenProducer: companyResultFields,
+    powerProducer: companyQueryArgs,
+    hydrogenProducer: companyQueryArgs,
     document: true,
     powerProductionUnit: {
       include: {
         generalInfo: {
-          ...baseUnitResultFields,
+          ...baseUnitQueryArgs,
         },
         type: true,
       },

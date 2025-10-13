@@ -10,9 +10,9 @@ import { HydrogenStorageType } from '@prisma/client';
 
 export const HydrogenStorageTypeSeed = <HydrogenStorageType[]>[
   {
-    name: 'Compressed Gaseous Hydrogen',
+    name: 'COMPRESSED_GASEOUS_HYDROGEN',
   },
   {
-    name: 'Liquid Hydrogen',
+    name: 'LIQUID_HYDROGEN',
   },
 ];

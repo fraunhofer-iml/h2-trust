@@ -9,12 +9,13 @@
 import { UnitType } from '@h2-trust/api';
 import { HydrogenProductionUnitDbType } from '@h2-trust/database';
 import { AddressEntity } from '../address';
+import { CompanyEntity } from '../company';
 import { BaseUnitEntity } from './base-unit.entity';
 import { HydrogenProductionTypeEntity } from './hydrogen-production-type.entity';
 
 export class HydrogenProductionUnitEntity extends BaseUnitEntity {
-  ratedPower: number;
-  pressure: number;
+  ratedPower?: number;
+  pressure?: number;
   type?: HydrogenProductionTypeEntity;
   biddingZoneName?: string;
   hydrogenStorageUnit?: {
@@ -28,23 +29,43 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     mastrNumber: string,
     manufacturer: string,
     modelType: string,
+    modelNumber: string,
     serialNumber: string,
     commissionedOn: Date,
     address: AddressEntity,
     company: {
-      id: string;
-      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string; powerProducerName: string }[];
+      id?: string;
+      hydrogenApprovals?: {
+        powerAccessApprovalStatus?: string;
+        powerProducerId?: string;
+        powerProducerName?: string;
+      }[];
     } | null,
+    operator: CompanyEntity,
+    unitType: UnitType,
     ratedPower: number,
     pressure: number,
     type: HydrogenProductionTypeEntity,
     biddingZoneName: string,
     hydrogenStorageUnit: {
-      id: string;
-      name: string;
+      id?: string;
+      name?: string;
     },
   ) {
-    super(id, name, mastrNumber, manufacturer, modelType, serialNumber, commissionedOn, address, company);
+    super(
+      id,
+      name,
+      mastrNumber,
+      manufacturer,
+      modelType,
+      modelNumber,
+      serialNumber,
+      commissionedOn,
+      address,
+      company,
+      operator,
+      unitType,
+    );
     this.ratedPower = ratedPower;
     this.pressure = pressure;
     this.type = type;

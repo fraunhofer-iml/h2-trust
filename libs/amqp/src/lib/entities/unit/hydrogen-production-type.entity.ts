@@ -9,9 +9,9 @@
 import { HydrogenProductionTypeDbType } from '@h2-trust/database';
 
 export class HydrogenProductionTypeEntity {
-  id: string;
-  method: string;
-  technology: string;
+  id?: string;
+  method?: string;
+  technology?: string;
 
   constructor(id: string, method: string, technology: string) {
     this.id = id;

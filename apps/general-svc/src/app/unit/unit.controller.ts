@@ -48,4 +48,25 @@ export class UnitController {
   async readPowerProductionTypes(): Promise<PowerProductionTypeEntity[]> {
     return this.service.readPowerProductionTypes();
   }
+
+  @MessagePattern(UnitMessagePatterns.CREATE_POWER_PRODUCTION_UNIT)
+  async createPowerProductionUnit(
+    @Payload() payload: { unit: PowerProductionUnitEntity },
+  ): Promise<PowerProductionUnitEntity> {
+    return this.service.createPowerProductionUnit(payload.unit);
+  }
+
+  @MessagePattern(UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION_UNIT)
+  async createHydrogenProductionUnit(
+    @Payload() payload: { unit: HydrogenProductionUnitEntity },
+  ): Promise<HydrogenProductionUnitEntity> {
+    return this.service.createHydrogenProductionUnit(payload.unit);
+  }
+
+  @MessagePattern(UnitMessagePatterns.CREATE_HYDROGEN_STORAGE_UNIT)
+  async createHydrogenStorageUnit(
+    @Payload() payload: { unit: HydrogenStorageUnitEntity },
+  ): Promise<HydrogenStorageUnitEntity> {
+    return this.service.createHydrogenStorageUnit(payload.unit);
+  }
 }

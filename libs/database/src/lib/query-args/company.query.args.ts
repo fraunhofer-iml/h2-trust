@@ -7,12 +7,9 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { companyResultFields } from './company.result-fields';
 
-export const userResultFields = Prisma.validator<Prisma.UserDefaultArgs>()({
+export const companyQueryArgs = Prisma.validator<Prisma.CompanyDefaultArgs>()({
   include: {
-    company: {
-      ...companyResultFields,
-    },
+    address: true,
   },
 });

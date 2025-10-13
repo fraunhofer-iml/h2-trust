@@ -7,3 +7,8 @@
  */
 
 export * from './power-production-unit-overview-dto.mock';
+export * from './hydrogen-production-unit-overview-dto.mock';
+export * from './hydrogen-storage-unit-overview-dto.mock';
+export * from './power-production-unit-create-dto.mock';
+export * from './hydrogen-production-unit-create-dto.mock';
+export * from './hydrogen-storage-unit-create-dto.mock';

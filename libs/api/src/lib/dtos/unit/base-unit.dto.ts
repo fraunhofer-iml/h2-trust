@@ -6,6 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { BaseUnitEntity } from '@h2-trust/amqp';
+import { requireDefined } from '@h2-trust/utils';
 import { UnitType } from '../../enums';
 import { AddressDto } from '../address';
 
@@ -20,7 +22,7 @@ export abstract class BaseUnitDto {
   operator: string;
   serialNumber: string;
   commissionedOn: Date;
-  decommissioningPlannedOn: Date;
+  decommissioningPlannedOn?: Date;
   address: AddressDto;
   company: {
     id: string;
@@ -67,5 +69,37 @@ export abstract class BaseUnitDto {
     this.modelNumber = modelNumber;
     this.owner = owner;
     this.operator = operator;
+  }
+
+  static fromEntity(unit: BaseUnitEntity): BaseUnitDto {
+    return {
+      id: requireDefined(unit.id, 'id'),
+      name: requireDefined(unit.name, 'name'),
+      mastrNumber: requireDefined(unit.mastrNumber, 'mastrNumber'),
+      manufacturer: requireDefined(unit.manufacturer, 'manufacturer'),
+      modelType: requireDefined(unit.modelType, 'modelType'),
+      serialNumber: requireDefined(unit.serialNumber, 'serialNumber'),
+      commissionedOn: requireDefined(unit.commissionedOn, 'commissionedOn'),
+      decommissioningPlannedOn: undefined,
+      address: {
+        street: requireDefined(unit.address?.street, 'street'),
+        postalCode: requireDefined(unit.address?.postalCode, 'postalCode'),
+        city: requireDefined(unit.address?.city, 'city'),
+        state: requireDefined(unit.address?.state, 'state'),
+        country: requireDefined(unit.address?.country, 'country'),
+      },
+      company: {
+        id: requireDefined(unit.company?.id, 'company.id'),
+        hydrogenApprovals:
+          unit.company?.hydrogenApprovals?.map((approval) => ({
+            powerAccessApprovalStatus: requireDefined(approval.powerAccessApprovalStatus, 'powerAccessApprovalStatus'),
+            powerProducerId: requireDefined(approval.powerProducerId, 'powerProducerId'),
+          })) ?? [],
+      },
+      modelNumber: requireDefined(unit.modelNumber, 'modelNumber'),
+      owner: requireDefined(unit.company?.id, 'owner'),
+      operator: requireDefined(unit.operator?.id, 'operator'),
+      unitType: requireDefined(unit.unitType, 'unitType'),
+    };
   }
 }

@@ -9,13 +9,14 @@
 import { UnitType } from '@h2-trust/api';
 import { PowerProductionUnitDbType } from '@h2-trust/database';
 import { AddressEntity } from '../address';
+import { CompanyEntity } from '../company';
 import { BaseUnitEntity } from './base-unit.entity';
 import { PowerProductionTypeEntity } from './power-production-type.entity';
 
 export class PowerProductionUnitEntity extends BaseUnitEntity {
   decommissioningPlannedOn?: Date;
   electricityMeterNumber?: string;
-  ratedPower: number;
+  ratedPower?: number;
   gridOperator?: string;
   gridLevelName?: string;
   biddingZoneName?: string;
@@ -28,15 +29,22 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     mastrNumber: string,
     manufacturer: string,
     modelType: string,
+    modelNumber: string,
     serialNumber: string,
     commissionedOn: Date,
-    decommissioningPlannedOn: Date,
-    electricityMeterNumber: string,
     address: AddressEntity,
     company: {
-      id: string;
-      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string; powerProducerName: string }[];
+      id?: string;
+      hydrogenApprovals?: {
+        powerAccessApprovalStatus?: string;
+        powerProducerId?: string;
+        powerProducerName?: string;
+      }[];
     } | null,
+    operator: CompanyEntity,
+    unitType: UnitType,
+    decommissioningPlannedOn: Date,
+    electricityMeterNumber: string,
     ratedPower: number,
     gridOperator: string,
     gridLevelName: string,
@@ -44,8 +52,20 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     gridConnectionNumber: string,
     type: PowerProductionTypeEntity,
   ) {
-    super(id, name, mastrNumber, manufacturer, modelType, serialNumber, commissionedOn, address, company);
-
+    super(
+      id,
+      name,
+      mastrNumber,
+      manufacturer,
+      modelType,
+      modelNumber,
+      serialNumber,
+      commissionedOn,
+      address,
+      company,
+      operator,
+      unitType,
+    );
     this.decommissioningPlannedOn = decommissioningPlannedOn;
     this.electricityMeterNumber = electricityMeterNumber;
     this.ratedPower = ratedPower;

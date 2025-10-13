@@ -9,6 +9,7 @@
 import { UnitType } from '@h2-trust/api';
 import { BaseUnitDbType } from '@h2-trust/database';
 import { AddressEntity } from '../address';
+import { CompanyEntity } from '../company';
 
 export abstract class BaseUnitEntity {
   id?: string;
@@ -16,17 +17,20 @@ export abstract class BaseUnitEntity {
   mastrNumber?: string;
   manufacturer?: string;
   modelType?: string;
+  modelNumber?: string;
   serialNumber?: string;
   commissionedOn?: Date;
   address?: AddressEntity;
   company?: {
+    // TODO-MP: should be owner?
     id?: string;
-    hydrogenApprovals: {
-      powerAccessApprovalStatus: string;
-      powerProducerId: string;
-      powerProducerName: string;
+    hydrogenApprovals?: {
+      powerAccessApprovalStatus?: string;
+      powerProducerId?: string;
+      powerProducerName?: string;
     }[];
   } | null;
+  operator?: CompanyEntity;
   unitType?: UnitType;
 
   protected constructor(
@@ -35,23 +39,33 @@ export abstract class BaseUnitEntity {
     mastrNumber: string,
     manufacturer: string,
     modelType: string,
+    modelNumber: string,
     serialNumber: string,
     commissionedOn: Date,
     address: AddressEntity,
     company: {
-      id: string;
-      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string; powerProducerName: string }[];
+      id?: string;
+      hydrogenApprovals?: {
+        powerAccessApprovalStatus?: string;
+        powerProducerId?: string;
+        powerProducerName?: string;
+      }[];
     } | null,
+    operator: CompanyEntity,
+    unitType: UnitType,
   ) {
     this.id = id;
     this.name = name;
     this.mastrNumber = mastrNumber;
     this.manufacturer = manufacturer;
     this.modelType = modelType;
+    this.modelNumber = modelNumber;
     this.serialNumber = serialNumber;
     this.commissionedOn = commissionedOn;
     this.address = address;
     this.company = company;
+    this.operator = operator;
+    this.unitType = unitType;
   }
 
   static fromDatabase(unit: BaseUnitDbType): BaseUnitEntity {
@@ -61,10 +75,12 @@ export abstract class BaseUnitEntity {
       mastrNumber: unit.mastrNumber,
       manufacturer: unit.manufacturer,
       modelType: unit.modelType,
+      modelNumber: unit.modelNumber,
       serialNumber: unit.serialNumber,
       commissionedOn: unit.commissionedOn,
       address: AddressEntity.fromDatabase(unit.address),
       company: BaseUnitEntity.mapCompany(unit),
+      operator: unit.operator ? CompanyEntity.fromDatabase(unit.operator) : undefined,
     };
   }
 

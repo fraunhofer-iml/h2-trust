@@ -12,4 +12,7 @@ export enum UnitMessagePatterns {
   READ_HYDROGEN_PRODUCTION_UNITS = 'unit.read-hydrogen-production',
   READ_HYDROGEN_STORAGE_UNITS = 'unit.read-hydrogen-storage',
   READ_POWER_PRODUCTION_TYPES = 'unit.read-power-production-types',
+  CREATE_POWER_PRODUCTION_UNIT = 'unit.create-power-production',
+  CREATE_HYDROGEN_PRODUCTION_UNIT = 'unit.create-hydrogen-production',
+  CREATE_HYDROGEN_STORAGE_UNIT = 'unit.create-hydrogen-storage',
 }

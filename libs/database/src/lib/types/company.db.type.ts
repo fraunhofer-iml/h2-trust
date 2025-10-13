@@ -7,6 +7,6 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { companyResultFields } from '../result-fields';
+import { companyQueryArgs } from '../query-args';
 
-export type CompanyDbType = Prisma.CompanyGetPayload<typeof companyResultFields>;
+export type CompanyDbType = Prisma.CompanyGetPayload<typeof companyQueryArgs>;

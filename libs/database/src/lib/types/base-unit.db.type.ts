@@ -7,6 +7,6 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { baseUnitResultFields } from '../result-fields';
+import { baseUnitQueryArgs } from '../query-args';
 
-export type BaseUnitDbType = Prisma.UnitGetPayload<typeof baseUnitResultFields>;
+export type BaseUnitDbType = Prisma.UnitGetPayload<typeof baseUnitQueryArgs>;

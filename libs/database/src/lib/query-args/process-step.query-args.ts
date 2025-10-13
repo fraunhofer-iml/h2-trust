@@ -7,15 +7,15 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { batchResultFields } from './batch.result-fields';
-import { baseUnitResultFields } from './unit.result-fields';
-import { userResultFields } from './user.result-fields';
+import { batchQueryArgs } from './batch.query-args';
+import { baseUnitQueryArgs } from './unit.query-args';
+import { userQueryArgs } from './user.query-args';
 
-export const processStepResultFields = Prisma.validator<Prisma.ProcessStepDefaultArgs>()({
+export const processStepQueryArgs = Prisma.validator<Prisma.ProcessStepDefaultArgs>()({
   include: {
-    batch: batchResultFields,
-    executedBy: baseUnitResultFields,
-    recordedBy: userResultFields,
+    batch: batchQueryArgs,
+    executedBy: baseUnitQueryArgs,
+    recordedBy: userQueryArgs,
     documents: true,
     processStepDetails: {
       include: {

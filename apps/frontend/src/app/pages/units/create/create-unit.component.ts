@@ -77,7 +77,7 @@ export class CreateUnitComponent {
   HydrogenProductionType = HydrogenProductionType;
   HydrogenStorageType = HydrogenStorageType;
 
-  availableBiddingZones = Object.entries(BiddingZones);
+  availableBiddingZones = Object.values(BiddingZones);
   availableGridLevels = Object.entries(GridLevel);
   availableTechnologies: [string, ElectrolysisType][] = [];
   availablePowerProductionType = Object.entries(PowerProductionType);
@@ -129,13 +129,13 @@ export class CreateUnitComponent {
       dto = {
         ...dto,
         ...additional,
-        hydrogenProductionMethod: additional.method,
-        hydrogenProductionTechnology: additional.technology,
+        hydrogenProductionType: additional.technology,
       } as HydrogenProductionUnitCreateDto;
     } else if (type === UnitType.HYDROGEN_STORAGE)
       dto = {
         ...dto,
         ...this.hydrogenStorageForm.value,
+        storageType: this.hydrogenStorageForm.value.hydrogenStorageType,
       } as HydrogenStorageUnitCreateDto;
     else if (type === UnitType.POWER_PRODUCTION)
       dto = {

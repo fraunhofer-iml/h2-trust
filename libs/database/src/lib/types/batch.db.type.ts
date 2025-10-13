@@ -7,6 +7,6 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { batchResultFields } from '../result-fields';
+import { batchQueryArgs } from '../query-args';
 
-export type BatchDbType = Prisma.BatchGetPayload<typeof batchResultFields>;
+export type BatchDbType = Prisma.BatchGetPayload<typeof batchQueryArgs>;

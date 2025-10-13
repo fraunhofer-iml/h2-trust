@@ -37,6 +37,10 @@ export const ProcessStepDbTypeMock = <ProcessStepDbType[]>[
         address: AddressSeed[1],
         hydrogenApprovals: [],
       },
+      operator: {
+        ...CompanySeed[1],
+        address: AddressSeed[1],
+      },
     },
     recordedBy: UserDbTypeMock[1],
     documents: [],

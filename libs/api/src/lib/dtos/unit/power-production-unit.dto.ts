@@ -6,6 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { requireDefined } from 'libs/utils/src/lib/assertions';
+import { PowerProductionUnitEntity } from '@h2-trust/amqp';
 import { UnitType } from '../../enums';
 import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
@@ -69,5 +71,23 @@ export class PowerProductionUnitDto extends BaseUnitDto {
     this.type = type;
     this.electricityMeterNumber = electricityMeterNumber;
     this.biddingZone = biddingZone;
+  }
+
+  static override fromEntity(unit: PowerProductionUnitEntity): PowerProductionUnitDto {
+    return {
+      ...BaseUnitDto.fromEntity(unit),
+      decommissioningPlannedOn: unit.decommissioningPlannedOn,
+      ratedPower: requireDefined(unit.ratedPower, 'ratedPower'),
+      gridOperator: requireDefined(unit.gridOperator, 'gridOperator'),
+      gridLevel: requireDefined(unit.gridLevelName, 'gridLevel'),
+      gridConnectionNumber: requireDefined(unit.gridConnectionNumber, 'gridConnectionNumber'),
+      type: {
+        name: requireDefined(unit.type?.name, 'type.name'),
+        energySource: requireDefined(unit.type?.energySource, 'type.energySource'),
+        hydrogenColor: requireDefined(unit.type?.hydrogenColor, 'type.hydrogenColor'),
+      },
+      electricityMeterNumber: requireDefined(unit.electricityMeterNumber, 'electricityMeterNumber'),
+      biddingZone: requireDefined(unit.biddingZoneName, 'biddingZone'),
+    };
   }
 }
