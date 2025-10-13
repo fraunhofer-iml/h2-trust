@@ -23,6 +23,7 @@ general-svc:sonarqube-check-mr:
   variables:
     GIT_DEPTH: '0' # Tells git to fetch all the branches of the project, required by the analysis task
   script:
+    # prettier-ignore
     - >
       sonar-scanner
       -Dsonar.projectBaseDir=./apps/general-svc/
@@ -70,7 +71,8 @@ general-svc:archive:
   before_script:
     - echo "$HARBOR_TOKEN" | docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - docker build --pull --cache-from ${CRI_PATH}/general-svc --build-arg APP=general-svc -t ${CRI_PATH}/general-svc:$CI_COMMIT_TAG -f docker/nest.dockerfile  .
+    - docker build --pull --cache-from ${CRI_PATH}/general-svc --build-arg APP=general-svc -t
+      ${CRI_PATH}/general-svc:$CI_COMMIT_TAG -f docker/nest.dockerfile  .
     - docker push ${CRI_PATH}/general-svc:$CI_COMMIT_TAG
   only:
     - tags

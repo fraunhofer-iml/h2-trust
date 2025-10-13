@@ -14,7 +14,7 @@ import { API } from '../../constants/api-endpoints';
 
 @Injectable()
 export class BottlingService {
-  constructor(private readonly httpClient: HttpClient) { }
+  constructor(private readonly httpClient: HttpClient) {}
 
   getBottlings() {
     return lastValueFrom(this.httpClient.get<BottlingOverviewDto[]>(API.BOTTLING.BASE));

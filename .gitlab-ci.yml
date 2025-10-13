@@ -35,6 +35,22 @@ danger:
   only:
     - merge_requests
 
+lint:
+  stage: analysis
+  extends: .default
+  script:
+    - npm run eslint-check
+  only:
+    - merge_requests
+
+format:
+  stage: analysis
+  extends: .default
+  script:
+    - npm run prettier-check
+  only:
+    - merge_requests
+
 include:
   - 'apps/bff/.gitlab-ci.yml'
   - 'apps/general-svc/.gitlab-ci.yml'

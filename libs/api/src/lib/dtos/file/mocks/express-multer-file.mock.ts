@@ -12,6 +12,11 @@
 // placeholder methods (`on` and `pipe`) to satisfy the type requirements without relying on
 // Node.js's `stream` module, which is not available in the browser
 
+export interface DummyStream {
+  on(event: string, handler: (...args: any[]) => void): void;
+  pipe<T = unknown>(dest: T): T;
+}
+
 export interface MulterFileMock {
   fieldname: string;
   originalname: string;
@@ -22,10 +27,19 @@ export interface MulterFileMock {
   filename: string;
   path: string;
   buffer: Buffer;
-  stream: any; // Dummy-Stream
+  stream: DummyStream;
 }
 
-export const ExpressMulterFileMock = <MulterFileMock[]>[
+const dummyStream: DummyStream = {
+  on(_event: string, _handler: (..._args: any[]) => void): void {
+    // intentionally empty
+  },
+  pipe<T = unknown>(dest: T): T {
+    return dest;
+  },
+};
+
+export const ExpressMulterFileMock: MulterFileMock[] = [
   {
     fieldname: 'file',
     originalname: 'test-file.txt',
@@ -35,11 +49,7 @@ export const ExpressMulterFileMock = <MulterFileMock[]>[
     destination: '/tmp',
     filename: 'test-file.txt',
     path: '/tmp/test-file.txt',
-    buffer: new TextEncoder().encode('Test file content'), // Create Uint8Array
-    stream: {
-      // Dummy-Implementation
-      on: () => {},
-      pipe: () => {},
-    },
+    buffer: Buffer.from('Test file content'),
+    stream: dummyStream,
   },
 ];
