@@ -21,11 +21,6 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   pressure?: number;
   type?: string;
   filling?: HydrogenComponentEntity[];
-  hydrogenProductionUnits?: {
-    id: string;
-    name: string;
-    hydrogenStorageUnitId: string;
-  }[];
 
   constructor(
     id: string,
@@ -51,11 +46,6 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     pressure: number,
     type: string,
     filling: HydrogenComponentEntity[],
-    hydrogenProductionUnits: {
-      id: string;
-      name: string;
-      hydrogenStorageUnitId: string;
-    }[],
   ) {
     super(
       id,
@@ -75,7 +65,6 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     this.pressure = pressure;
     this.type = type;
     this.filling = filling;
-    this.hydrogenProductionUnits = hydrogenProductionUnits;
   }
 
   static override fromDatabase(unit: HydrogenStorageUnitDbType): HydrogenStorageUnitEntity {
@@ -85,7 +74,6 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       pressure: unit.hydrogenStorageUnit?.pressure ?? 0,
       type: unit.hydrogenStorageUnit?.typeName,
       filling: HydrogenStorageUnitEntity.mapFilling(unit),
-      hydrogenProductionUnits: HydrogenStorageUnitEntity.mapHydrogenProductionUnits(unit),
       unitType: UnitType.HYDROGEN_STORAGE,
     };
   }
@@ -107,15 +95,5 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       throw new BrokerException(`Invalid quality: ${quality}`, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     return parsedColor;
-  }
-
-  private static mapHydrogenProductionUnits(unit: HydrogenStorageUnitDbType) {
-    return (
-      unit.hydrogenStorageUnit?.hydrogenProductionUnits?.map((unit) => ({
-        id: unit.id,
-        name: unit.generalInfo?.name,
-        hydrogenStorageUnitId: unit.hydrogenStorageUnitId,
-      })) ?? []
-    );
   }
 }

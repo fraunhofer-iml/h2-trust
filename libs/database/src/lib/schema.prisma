@@ -195,9 +195,6 @@ model HydrogenProductionUnit {
 
   biddingZone     BiddingZone @relation(fields: [biddingZoneName], references: [name])
   biddingZoneName String
-
-  hydrogenStorageUnit   HydrogenStorageUnit @relation(fields: [hydrogenStorageUnitId], references: [id])
-  hydrogenStorageUnitId String
 }
 
 model HydrogenStorageUnit {
@@ -210,8 +207,6 @@ model HydrogenStorageUnit {
 
   type     HydrogenStorageType @relation(fields: [typeName], references: [name])
   typeName String
-
-  hydrogenProductionUnits HydrogenProductionUnit[]
 }
 
 model Batch {

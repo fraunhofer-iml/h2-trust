@@ -9,7 +9,6 @@
 import { HydrogenProductionUnit, Prisma } from '@prisma/client';
 import { BiddingZoneSeed } from './bidding-zone.seed';
 import { HydrogenProductionTypeSeed } from './hydrogen-production-type.seed';
-import { HydrogenStorageUnitSeed } from './hydrogen-storage-unit.seed';
 import { UnitSeed } from './unit.seed';
 
 export const HydrogenProductionUnitSeed = <HydrogenProductionUnit[]>[
@@ -19,6 +18,5 @@ export const HydrogenProductionUnitSeed = <HydrogenProductionUnit[]>[
     pressure: new Prisma.Decimal(10),
     typeId: HydrogenProductionTypeSeed[0].id,
     biddingZoneName: BiddingZoneSeed[0].name,
-    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
 ];

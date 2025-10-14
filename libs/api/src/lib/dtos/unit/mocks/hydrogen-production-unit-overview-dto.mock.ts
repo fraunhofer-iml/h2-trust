@@ -18,10 +18,6 @@ export const HydrogenProductionUnitOverviewDtoMock = <HydrogenProductionOverview
     powerAccessApprovalStatus: true,
     powerProducerId: 'power-prod-1',
     powerProducerName: 'Solar Plant Alpha',
-    hydrogenStorageUnit: {
-      id: 'storage-1',
-      name: 'Storage Unit 1',
-    },
   },
   {
     id: 'hydrogen-prod-2',
@@ -32,6 +28,5 @@ export const HydrogenProductionUnitOverviewDtoMock = <HydrogenProductionOverview
     powerAccessApprovalStatus: false,
     powerProducerId: 'power-prod-2',
     powerProducerName: 'Wind Farm Beta',
-    hydrogenStorageUnit: undefined,
   },
 ];

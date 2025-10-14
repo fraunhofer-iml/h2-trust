@@ -130,10 +130,6 @@ export function buildHydrogenProductionUnitCreateInput(entity: HydrogenProductio
         biddingZone: {
           connect: { name: entity.biddingZoneName },
         },
-        hydrogenStorageUnit: {
-          // TODO Retrieve the storage unit from a reasonable process or remove storage unit relation.
-          connect: { id: 'hydrogen-storage-unit-1' },
-        },
       },
     },
   });

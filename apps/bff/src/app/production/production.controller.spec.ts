@@ -91,15 +91,6 @@ describe('ProductionController', () => {
       )
       .mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: any) =>
         of({
-          ratedPower: 100,
-          hydrogenStorageUnit: {
-            id: 'hydrogen-storage-unit-1',
-            name: 'Test Hydrogen Storage Unit',
-          },
-        }),
-      )
-      .mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: any) =>
-        of({
           company: {
             id: 'company-power-production-1',
           },

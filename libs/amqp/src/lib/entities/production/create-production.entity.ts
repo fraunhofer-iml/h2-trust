@@ -51,7 +51,6 @@ export class CreateProductionEntity {
     dto: CreateProductionDto,
     recordedBy: string,
     hydrogenColor: string,
-    hydrogenStorageUnitId: string,
     companyIdOfPowerProductionUnit: string,
     companyIdOfHydrogenProductionUnit: string,
   ): CreateProductionEntity {
@@ -64,7 +63,7 @@ export class CreateProductionEntity {
       dto.hydrogenAmountKg,
       recordedBy,
       hydrogenColor,
-      hydrogenStorageUnitId,
+      dto.hydrogenStorageUnitId,
       companyIdOfPowerProductionUnit,
       companyIdOfHydrogenProductionUnit,
     );

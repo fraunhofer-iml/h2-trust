@@ -44,7 +44,7 @@ import { UsersService } from '../../../../shared/services/users/users.service';
   templateUrl: './hydrogen-storage-table.component.html',
 })
 export class HydrogenStorageTableComponent implements AfterViewInit {
-  displayedColumns = ['name', 'fillingLevel', 'fillingStatus', 'productionUnit'];
+  displayedColumns = ['name', 'fillingLevel', 'fillingStatus'];
   data = input<HydrogenStorageOverviewDto[]>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;

@@ -18,10 +18,6 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
   pressure?: number;
   type?: HydrogenProductionTypeEntity;
   biddingZoneName?: string;
-  hydrogenStorageUnit?: {
-    id?: string;
-    name?: string;
-  };
 
   constructor(
     id: string,
@@ -47,10 +43,6 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     pressure: number,
     type: HydrogenProductionTypeEntity,
     biddingZoneName: string,
-    hydrogenStorageUnit: {
-      id?: string;
-      name?: string;
-    },
   ) {
     super(
       id,
@@ -70,7 +62,6 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     this.pressure = pressure;
     this.type = type;
     this.biddingZoneName = biddingZoneName;
-    this.hydrogenStorageUnit = hydrogenStorageUnit;
   }
 
   static override fromDatabase(unit: HydrogenProductionUnitDbType): HydrogenProductionUnitEntity {
@@ -82,17 +73,7 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
         ? HydrogenProductionTypeEntity.fromDatabase(unit.hydrogenProductionUnit.type)
         : undefined,
       biddingZoneName: unit.hydrogenProductionUnit?.biddingZoneName,
-      hydrogenStorageUnit: HydrogenProductionUnitEntity.mapHydrogenStorageUnit(unit),
       unitType: UnitType.HYDROGEN_PRODUCTION,
     };
-  }
-
-  private static mapHydrogenStorageUnit(unit: HydrogenProductionUnitDbType) {
-    return unit.hydrogenProductionUnit?.hydrogenStorageUnit
-      ? {
-          id: unit.hydrogenProductionUnit.hydrogenStorageUnit.id,
-          name: unit.hydrogenProductionUnit.hydrogenStorageUnit.generalInfo?.name,
-        }
-      : undefined;
   }
 }

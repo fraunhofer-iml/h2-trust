@@ -16,10 +16,4 @@
     <span class="text-sm text-neutral-400">Pressure</span
     ><span>{{ unit().pressure | number | unit: FormattedUnits.BAR }} </span>
   </div>
-  <div class="flex flex-col text-sm">
-    <span class="text-sm text-neutral-400">Connected Storage Unit</span
-    ><a [routerLink]="['/units', unit().hydrogenStorageUnit.id]" class="hover:text-primary-200 hover:underline">{{
-      unit().hydrogenStorageUnit.name
-    }}</a>
-  </div>
 </div>

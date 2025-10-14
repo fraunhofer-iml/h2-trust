@@ -17,11 +17,6 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
   filling: FillingDto[];
   pressure: number;
   storageType: string;
-  hydrogenProductionUnits: {
-    id: string;
-    name: string;
-    hydrogenStorageUnitId: string;
-  }[];
 
   constructor(
     id: string,
@@ -44,11 +39,6 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
     filling: FillingDto[],
     pressure: number,
     storageType: string,
-    hydrogenProductionUnits: {
-      id: string;
-      name: string;
-      hydrogenStorageUnitId: string;
-    }[],
     unitType: UnitType,
     modelNumber: string,
     owner: string,
@@ -72,7 +62,6 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
     );
     this.capacity = capacity;
     this.filling = filling;
-    this.hydrogenProductionUnits = hydrogenProductionUnits;
     this.pressure = pressure;
     this.storageType = storageType;
   }
@@ -89,12 +78,6 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
         })) ?? [],
       pressure: unit.pressure!,
       storageType: unit.type!,
-      hydrogenProductionUnits:
-        unit.hydrogenProductionUnits?.map((hydrogenProductionUnit) => ({
-          id: hydrogenProductionUnit.id,
-          name: hydrogenProductionUnit.name,
-          hydrogenStorageUnitId: hydrogenProductionUnit.hydrogenStorageUnitId,
-        })) ?? [],
     };
   }
 }

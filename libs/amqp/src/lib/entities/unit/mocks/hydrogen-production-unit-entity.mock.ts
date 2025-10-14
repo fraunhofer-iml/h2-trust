@@ -6,12 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  HydrogenProductionTypeSeed,
-  HydrogenProductionUnitSeed,
-  HydrogenStorageUnitSeed,
-  UnitSeed,
-} from 'libs/database/src/seed';
+import { HydrogenProductionTypeSeed, HydrogenProductionUnitSeed, UnitSeed } from 'libs/database/src/seed';
 import { UnitType } from '@h2-trust/api';
 import { CompanyEntityHydrogenMock } from '../..';
 import { AddressEntityPowerMock } from '../../address';
@@ -38,9 +33,5 @@ export const HydrogenProductionUnitEntityMock: HydrogenProductionUnitEntity[] = 
     HydrogenProductionUnitSeed[0].pressure.toNumber(),
     HydrogenProductionTypeSeed[0],
     HydrogenProductionUnitSeed[0].biddingZoneName,
-    {
-      id: HydrogenStorageUnitSeed[0].id,
-      name: UnitSeed[5].name,
-    },
   ),
 ];

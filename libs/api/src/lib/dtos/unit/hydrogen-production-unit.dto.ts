@@ -19,10 +19,6 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
   pressure: number;
   method: string;
   technology: string;
-  hydrogenStorageUnit: {
-    id: string;
-    name: string;
-  };
 
   constructor(
     id: string,
@@ -43,7 +39,6 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     },
     ratedPower: number,
     typeName: string,
-    hydrogenStorageUnit: { id: string; name: string },
     modelNumber: string,
     owner: string,
     operator: string,
@@ -71,7 +66,6 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     );
     this.ratedPower = ratedPower;
     this.typeName = typeName;
-    this.hydrogenStorageUnit = hydrogenStorageUnit;
     this.biddingZoneName = biddingZoneName;
     this.pressure = pressure;
     this.method = method;
@@ -87,10 +81,6 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
       pressure: requireDefined(unit.pressure, 'pressure'),
       method: requireDefined(unit.type?.method, 'method'),
       technology: requireDefined(unit.type?.technology, 'technology'),
-      hydrogenStorageUnit: {
-        id: requireDefined(unit.hydrogenStorageUnit?.id, 'hydrogenStorageUnit.id'),
-        name: requireDefined(unit.hydrogenStorageUnit?.name, 'hydrogenStorageUnit.name'),
-      },
     };
   }
 }

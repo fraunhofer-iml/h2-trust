@@ -35,6 +35,5 @@ export const HydrogenStorageUnitEntityMock: HydrogenStorageUnitEntity[] = [
     HydrogenStorageUnitSeed[0].pressure.toNumber(),
     HydrogenStorageUnitSeed[0].typeName,
     [new HydrogenComponentEntity(HydrogenColorDbEnum.GREEN, 100)],
-    [],
   ),
 ];

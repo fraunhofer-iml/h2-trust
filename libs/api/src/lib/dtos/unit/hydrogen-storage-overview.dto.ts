@@ -15,10 +15,6 @@ export class HydrogenStorageOverviewDto {
   capacity: number;
   filling: number;
   hydrogenComposition: HydrogenComponentDto[];
-  hydrogenProductionUnit: {
-    id: string;
-    name: string;
-  };
 
   constructor(
     id: string,
@@ -26,17 +22,12 @@ export class HydrogenStorageOverviewDto {
     capacity: number,
     filling: number,
     hydrogenComposition: HydrogenComponentDto[],
-    hydrogenProductionUnit: {
-      id: string;
-      name: string;
-    },
   ) {
     this.id = id;
     this.name = name;
     this.capacity = capacity;
     this.filling = filling;
     this.hydrogenComposition = hydrogenComposition;
-    this.hydrogenProductionUnit = hydrogenProductionUnit;
   }
 
   static fromEntity(unit: HydrogenStorageUnitEntity): HydrogenStorageOverviewDto {
@@ -46,7 +37,6 @@ export class HydrogenStorageOverviewDto {
       capacity: unit.capacity,
       filling: HydrogenStorageOverviewDto.mapFilling(unit),
       hydrogenComposition: HydrogenStorageOverviewDto.mapHydrogenComposition(unit),
-      hydrogenProductionUnit: HydrogenStorageOverviewDto.mapHydrogenProductionUnit(unit),
     };
   }
 
@@ -73,14 +63,5 @@ export class HydrogenStorageOverviewDto {
       color,
       amount,
     }));
-  }
-
-  private static mapHydrogenProductionUnit(unit: HydrogenStorageUnitEntity) {
-    return unit.hydrogenProductionUnits
-      ?.filter((unit) => unit.hydrogenStorageUnitId === unit.id)
-      .map((unit) => ({
-        id: unit.id,
-        name: unit.name,
-      }))[0];
   }
 }

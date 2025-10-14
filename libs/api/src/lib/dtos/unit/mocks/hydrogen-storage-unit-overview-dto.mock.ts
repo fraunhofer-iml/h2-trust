@@ -18,10 +18,6 @@ export const HydrogenStorageUnitOverviewDtoMock = <HydrogenStorageOverviewDto[]>
       { color: 'GREEN', amount: 80 },
       { color: 'PINK', amount: 20 },
     ],
-    hydrogenProductionUnit: {
-      id: 'prod-1',
-      name: 'Production Unit 1',
-    },
   },
   {
     id: 'storage-2',
@@ -29,9 +25,5 @@ export const HydrogenStorageUnitOverviewDtoMock = <HydrogenStorageOverviewDto[]>
     capacity: 2000,
     filling: 1500,
     hydrogenComposition: [{ color: 'GREEN', amount: 100 }],
-    hydrogenProductionUnit: {
-      id: 'prod-2',
-      name: 'Production Unit 2',
-    },
   },
 ];

@@ -13,7 +13,6 @@ import {
   BrokerException,
   BrokerQueues,
   CreateProductionEntity,
-  HydrogenProductionUnitEntity,
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
@@ -34,7 +33,6 @@ export class ProductionService {
 
   async createProduction(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
     const hydrogenColor = await this.fetchHydrogenColor(dto.powerProductionUnitId);
-    const hydrogenStorageUnitId = await this.fetchHydrogenStorageUnitId(dto.hydrogenProductionUnitId);
     const companyIdOfPowerProductionUnit = await this.fetchCompanyOfProductionUnit(dto.powerProductionUnitId);
     const companyIdOfHydrogenProductionUnit = await this.fetchCompanyOfProductionUnit(dto.hydrogenProductionUnitId);
 
@@ -42,7 +40,6 @@ export class ProductionService {
       dto,
       userId,
       hydrogenColor,
-      hydrogenStorageUnitId,
       companyIdOfPowerProductionUnit,
       companyIdOfHydrogenProductionUnit,
     );
@@ -71,14 +68,6 @@ export class ProductionService {
     }
 
     return hydrogenColor;
-  }
-
-  private async fetchHydrogenStorageUnitId(hydrogenProductionUnitId: string): Promise<string | undefined> {
-    const hydrogenProductionUnit: HydrogenProductionUnitEntity = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ, { id: hydrogenProductionUnitId }),
-    );
-
-    return hydrogenProductionUnit?.hydrogenStorageUnit.id;
   }
 
   private async fetchCompanyOfProductionUnit(productionUnitId: string): Promise<string> {
