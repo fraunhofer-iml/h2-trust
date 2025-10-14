@@ -22,7 +22,7 @@ import { UnitPipe } from '../../../../../shared/pipes/unit.pipe';
 export class ClassificationComponent {
   classification = input.required<ClassificationDto>();
 
-  readonly FormattedUnits = FormattedUnits;
+  protected readonly FormattedUnits = FormattedUnits;
 
   getIcon(key: string): string {
     switch (key) {

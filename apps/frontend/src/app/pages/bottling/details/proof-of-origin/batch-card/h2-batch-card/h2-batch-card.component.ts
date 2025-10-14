@@ -15,7 +15,6 @@ import { BaseSheetComponent } from '../../../../../../layout/sheet/sheet.compone
 import { VerifiedChartComponent } from '../../../../../../layout/verified-chart/verified-chart.component';
 import { FormattedUnits } from '../../../../../../shared/constants/formatted-units';
 import { PrettyEnumPipe } from '../../../../../../shared/pipes/format-enum.pipe';
-import { UnitPipe } from '../../../../../../shared/pipes/unit.pipe';
 import { H2CompositionChartComponent } from '../../../chart/h2-composition-chart.component';
 import { BatchEmissionsComponent } from '../batch-emissions/batch-emissions.component';
 
@@ -30,7 +29,6 @@ import { BatchEmissionsComponent } from '../batch-emissions/batch-emissions.comp
     RfnboChipComponent,
     PrettyEnumPipe,
     BatchEmissionsComponent,
-    UnitPipe,
   ],
   templateUrl: './h2-batch-card.component.html',
 })

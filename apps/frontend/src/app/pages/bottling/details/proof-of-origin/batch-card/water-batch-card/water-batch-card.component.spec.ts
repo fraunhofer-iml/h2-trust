@@ -20,7 +20,7 @@ describe('BatchCardComponent', () => {
 
     fixture = TestBed.createComponent(BatchCardComponent);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('batch', {});
+    fixture.componentRef.setInput('batch', { emission: { amountCO2PerKgH2: 20 } });
     fixture.detectChanges();
   });
 

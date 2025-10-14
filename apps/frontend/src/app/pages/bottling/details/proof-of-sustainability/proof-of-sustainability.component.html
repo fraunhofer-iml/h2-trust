@@ -1,18 +1,20 @@
 <div class="flex flex-col gap-4 rounded-lg bg-white p-4">
   <h3 class="font-semibold text-neutral-500">Proof of Sustainability</h3>
   <div class="flex w-full flex-row gap-4">
-    <div class="bg-secondary-100/15 text-secondary-400 flex min-w-72 flex-row items-center gap-4 rounded-xl p-4">
+    <div class="bg-secondary-100/15 text-secondary-400 flex min-w-64 flex-row items-center gap-4 rounded-xl p-4">
       <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
         <span class="material-symbols-outlined text-secondary-400 text-4xl">air</span>
       </div>
       <span class="grow text-xs text-neutral-500">
         Total {{ ChemicalNames.CO2 }} Emissions <br />
-        <span class="text-xl">{{ totalEmissions() }}</span>
-        {{ FormattedUnits.CO2_PER_KG_H2 }}
+        <span class="text-xl">{{ totalEmissions() | number }}</span>
+        {{ FormattedUnits.CO2_PER_KG_H2 }} <br />
+        <span class="text-xl">{{ proofQuery.data()?.amountCO2PerMJH2 | number }}</span>
+        {{ FormattedUnits.CO2_PER_MJ_H2 }}
       </span>
     </div>
     <div
-      class="bg-secondary-100/15 text-secondary-400 flex w-full min-w-72 grow flex-row items-center gap-4 rounded-xl p-4"
+      class="bg-secondary-100/15 text-secondary-400 flex w-full min-w-64 grow flex-row items-center gap-4 rounded-xl p-4"
     >
       <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
         <span class="material-symbols-outlined text-secondary-400 text-4xl">percent</span>
@@ -36,7 +38,7 @@
   </div>
 
   <!-- Calculations -->
-  <div class="grid grid-cols-3 gap-4">
+  <div class="grid grid-cols-2 gap-4">
     @for (topic of calculations(); track $index) {
       <app-calculation-item [topic]="topic"></app-calculation-item>
     }

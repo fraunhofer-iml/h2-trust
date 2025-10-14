@@ -6,11 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
+import { UnitPipe } from 'apps/frontend/src/app/shared/pipes/unit.pipe';
 import * as echarts from 'echarts';
 import { EChartsOption } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
-import { CommonModule } from '@angular/common';
-import { Component, computed, input } from '@angular/core';
+import { CommonModule, PercentPipe } from '@angular/common';
+import { Component, computed, inject, input } from '@angular/core';
 import { HydrogenStorageOverviewDto } from '@h2-trust/api';
 import { CHART_COLORS } from '../../../../shared/constants/chart-colors';
 import { ERROR_MESSAGES } from '../../../../shared/constants/error.messages';
@@ -19,10 +21,12 @@ import { formatNumberForChart } from '../../../../shared/util/number-format.util
 @Component({
   selector: 'app-storage-filling-levels',
   imports: [CommonModule, NgxEchartsDirective],
-  providers: [provideEchartsCore({ echarts })],
+  providers: [provideEchartsCore({ echarts }), UnitPipe, PercentPipe],
   templateUrl: './storage-filling-levels.component.html',
 })
 export class StorageFillingLevelsComponent {
+  unitPipe = inject(UnitPipe);
+  percentPipe = inject(PercentPipe);
   chartData = input<HydrogenStorageOverviewDto[]>();
   chartOption$ = computed(() => this.getOption(this.chartData() ?? []));
 
@@ -101,14 +105,7 @@ export class StorageFillingLevelsComponent {
           type: 'line',
         },
         confine: true,
-        formatter: function (params) {
-          if (!Array.isArray(params)) return '';
-          let tooltip = '';
-          params.forEach((item) => {
-            tooltip += `${item.marker} ${item.seriesName}: ${item.value} kg<br/>`;
-          });
-          return tooltip;
-        },
+        formatter: (params) => this.tooltipFormatter(params),
       },
       series: series,
     };
@@ -138,8 +135,12 @@ export class StorageFillingLevelsComponent {
     const totalH2Amount = formatNumberForChart(
       item?.hydrogenComposition.reduce((sum, portion) => sum + portion.amount, 0),
     );
-    const label = `{name|${value}}\n{filling|Filling: ${totalH2Amount}/${item?.capacity} kg (${formatNumberForChart((100 * totalH2Amount) / (item?.capacity ?? 0))} %)}`;
+    const capacity = this.unitPipe.transform(item?.capacity.toString(), FormattedUnits.KG);
+    const capacityInPercent = this.percentPipe.transform((100 * totalH2Amount) / (item?.capacity ?? 0), '1.0-2');
+
+    const label = `{name|${value}}\n{filling|Filling: ${totalH2Amount}/${capacity} (${capacityInPercent})}`;
     const overflowMessage = `\n{err|${ERROR_MESSAGES.maxCapacityExceeded}}`;
+
     return totalH2Amount > (item?.capacity ?? 0) ? label + overflowMessage : label;
   }
 
@@ -161,4 +162,14 @@ export class StorageFillingLevelsComponent {
     };
     return markLine;
   }
+
+  private readonly tooltipFormatter = (params: any) => {
+    if (!Array.isArray(params)) return '';
+    let tooltip = '';
+    params.forEach((item) => {
+      const valueWithUnit = this.unitPipe.transform(item.value, FormattedUnits.KG);
+      tooltip += `${item.marker} ${item.seriesName}: ${valueWithUnit}<br/>`;
+    });
+    return tooltip;
+  };
 }

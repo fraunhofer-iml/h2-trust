@@ -9,104 +9,50 @@
 import * as echarts from 'echarts';
 import { EChartsOption, PieSeriesOption } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
-import { CommonModule } from '@angular/common';
-import { Component, computed, input } from '@angular/core';
+import { CommonModule, PercentPipe } from '@angular/common';
+import { Component, computed, inject, input } from '@angular/core';
 import { EmissionForProcessStepDto } from '@h2-trust/api';
 import { FormattedUnits } from '../../../../../shared/constants/formatted-units';
 
 @Component({
   selector: 'app-emission-pie-chart',
   imports: [CommonModule, NgxEchartsDirective],
-  providers: [provideEchartsCore({ echarts })],
+  providers: [provideEchartsCore({ echarts }), PercentPipe],
 
   templateUrl: './emission-pie-chart.component.html',
 })
 export class EmissionPieChartComponent {
+  percentPipe = inject(PercentPipe);
   data = input<EmissionForProcessStepDto[]>([]);
-  chartData$ = computed(() => this.getChartData(this.data()));
-  getChartData(emissionItems: EmissionForProcessStepDto[]) {
-    return this.createChartOption(
-      emissionItems.filter((i) => i.processStepType === 'APPLICATION'),
-      emissionItems.filter((i) => i.processStepType === 'REGULATORY'),
-    );
-  }
+  chartData$ = computed(() => this.toChartData(this.data()));
 
-  private createChartOption(
-    dataTotal: EmissionForProcessStepDto[],
-    dataByItems: EmissionForProcessStepDto[],
-  ): EChartsOption {
-    const chartOption: EChartsOption = this.getDefaultOption(true);
-    chartOption.title = { text: '' };
-    chartOption.legend = {
-      orient: 'vertical',
-      right: 30,
-      top: 'center',
-      textStyle: {
-        color: '#ababab',
-      },
-      selectedMode: false,
-      data: [
-        ...dataTotal.map((i) => {
-          return i.name;
-        }),
-        ...dataByItems.map((i) => i.name),
-      ],
-      formatter: function (name) {
-        const description = [...dataByItems, ...dataTotal].find((item) => item.name === name)?.description;
-        return name + ` (${description})`;
-      },
-    };
+  private toChartData(emissionItems: EmissionForProcessStepDto[]): EChartsOption {
+    const applicationItems = emissionItems.filter((i) => i.processStepType === 'APPLICATION');
+    const regulatoryItems = emissionItems.filter((i) => i.processStepType === 'REGULATORY');
 
-    if (dataTotal.length === 0) chartOption.title.subtext = 'Keine Daten';
+    const chartOption: EChartsOption = this.getChartOption(regulatoryItems, applicationItems);
+
+    if (applicationItems.length === 0) chartOption.title = { text: 'Keine Daten' };
     else {
-      const outerPie: PieSeriesOption = this.getDefaultPieSeries(['60%', '90%']);
-      outerPie.label = {
-        position: 'outer',
-        formatter: function (params) {
-          const percent = params.percent?.toFixed(1);
-          return `${percent}%`;
-        },
-      };
-      outerPie.center = ['30%', '50%'];
-      outerPie.data = dataByItems.map((item, index) => {
-        return {
-          value: +item.amount.toFixed(2),
-          name: item.name,
-          itemStyle: { color: ['#7a7aad', '#9e9ed8', '#b6b6ff', '#c2c2ff', '#d1d1ff', '#eeeeff', '#e0e0ff'][index] },
-        };
-      });
-      outerPie.tooltip = {
-        formatter: function (params) {
-          const percent = params.percent?.toFixed(1);
-          const description = [...dataByItems, ...dataTotal].find((item) => item.name === params.name)?.description;
-          return `${params.marker} ${params.name} (${description}): ${params.value} ${FormattedUnits.CO2_PER_KG_H2} (${percent}%)`;
-        },
-      };
+      const outerColors = ['#7a7aad', '#9e9ed8', '#b6b6ff', '#c2c2ff', '#d1d1ff', '#eeeeff', '#e0e0ff'];
+      const innerColors = ['#004D40', '#00796B', '#009688', '#4DB6AC', '#80CBC4', '#B2DFDB', '#E0F2F1'];
 
-      const innerPie: PieSeriesOption = this.getDefaultPieSeries(['20%', '55%']);
-      innerPie.label = {
-        position: 'inner',
-        formatter: function (params) {
-          const percent = params.percent?.toFixed(1);
-          return `${percent}%`;
-        },
-      };
-      innerPie.center = ['30%', '50%'];
-      innerPie.data = dataTotal.map((item, index) => {
-        return {
-          value: +item.amount.toFixed(2),
-          name: item.name,
-          itemStyle: { color: ['#0a947f', '#045c60', '#077d6a', '#045c5090'][index] },
-        };
-      });
-
-      innerPie.tooltip = {
-        formatter: function (params) {
-          const percent = params.percent?.toFixed(1);
-          const description = [...dataByItems, ...dataTotal].find((item) => item.name === params.name)?.description;
-          return `${params.marker} ${params.name} (${description}): ${params.value} ${FormattedUnits.CO2_PER_KG_H2} (${percent}%)`;
-        },
-      };
+      const outerPie = this.createPieSeries(
+        ['60%', '90%'],
+        'outer',
+        regulatoryItems,
+        outerColors,
+        regulatoryItems,
+        applicationItems,
+      );
+      const innerPie = this.createPieSeries(
+        ['20%', '55%'],
+        'inner',
+        applicationItems,
+        innerColors,
+        regulatoryItems,
+        applicationItems,
+      );
 
       chartOption.series = [outerPie, innerPie];
     }
@@ -114,19 +60,19 @@ export class EmissionPieChartComponent {
     return chartOption;
   }
 
-  getDefaultPieSeries(radius?: [string | number, string]): PieSeriesOption {
+  private getDefaultPieSeries(radius: [string | number, string]): PieSeriesOption {
     return {
       type: 'pie',
-      radius: radius ?? ['40%', '90%'],
+      radius: radius,
       avoidLabelOverlap: false,
       itemStyle: {
         borderRadius: 4,
         borderColor: '#fff',
         borderWidth: 1,
       },
+      center: ['30%', '50%'],
       label: {
         alignTo: 'labelLine',
-        formatter: '{name|{b}}\n{amount|{c} kg ({d} %)}',
         lineHeight: 16,
         rich: {
           amount: {
@@ -142,20 +88,59 @@ export class EmissionPieChartComponent {
     };
   }
 
-  getDefaultOption = (legendItemsSelectable: boolean): EChartsOption => {
-    return {
-      title: {},
-      tooltip: {},
-      legend: {
-        bottom: '0',
-        left: '0',
-        show: true,
-        textStyle: {
-          color: '#fff',
-        },
-        selectedMode: legendItemsSelectable,
-      },
-      series: [],
-    };
+  private readonly tooltipFormatter = (
+    params: any,
+    dataByItems: EmissionForProcessStepDto[],
+    dataTotal: EmissionForProcessStepDto[],
+  ): string => {
+    const percent = this.percentPipe.transform((params.percent ?? 0) / 100, '1.0-1');
+    const description = [...dataByItems, ...dataTotal].find((item) => item.name === params.name)?.description;
+    return `${params.marker} ${params.name} (${description}): ${params.value} ${FormattedUnits.CO2_PER_KG_H2} (${percent})`;
   };
+
+  private readonly getChartOption = (
+    regulatoryItems: EmissionForProcessStepDto[],
+    applicationItems: EmissionForProcessStepDto[],
+  ): EChartsOption => ({
+    title: { text: '' },
+    tooltip: {},
+    legend: {
+      right: 30,
+      top: 'center',
+      show: true,
+      selectedMode: false,
+      orient: 'vertical',
+      textStyle: {
+        color: '#ababab',
+      },
+      data: [...applicationItems.map((i) => i.name), ...regulatoryItems.map((i) => i.name)],
+      formatter: function (name) {
+        const description = [...regulatoryItems, ...applicationItems].find((item) => item.name === name)?.description;
+        return name + ` (${description})`;
+      },
+    },
+    series: [],
+  });
+
+  private createPieSeries(
+    radius: [string, string],
+    position: 'inner' | 'outer',
+    data: { amount: number; name: string }[],
+    colors: string[],
+    dataByItems: EmissionForProcessStepDto[],
+    dataTotal: EmissionForProcessStepDto[],
+  ): PieSeriesOption {
+    const pieSeries = this.getDefaultPieSeries(radius);
+    pieSeries.label = {
+      position: position,
+      formatter: (params) => this.percentPipe.transform((params.percent ?? 0) / 100, '1.0-1') ?? '',
+    };
+    pieSeries.data = data.map((item, index) => ({
+      value: +item.amount.toFixed(2),
+      name: item.name,
+      itemStyle: { color: colors[index] },
+    }));
+    pieSeries.tooltip = { formatter: (params) => this.tooltipFormatter(params, dataByItems, dataTotal) };
+    return pieSeries;
+  }
 }

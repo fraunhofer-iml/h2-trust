@@ -1,13 +1,23 @@
-<div
-  class="items-center gap-4 rounded-xl border-[3px] border-solid border-neutral-100 px-4 py-2 hover:border-neutral-200/80"
->
-  @if (isInstanceOfWaterBatch(batch()); as waterBatch) {
-    <app-water-batch-card [batch]="waterBatch"> </app-water-batch-card>
-  }
-  @if (isInstanceOfHydrogenBatch(batch()); as hydrogenBatch) {
-    <app-h2-batch-card [batch]="hydrogenBatch"></app-h2-batch-card>
-  }
-  @if (isInstanceOfPowerBatch(batch()); as powerBatch) {
-    <app-power-batch-card [batch]="powerBatch"></app-power-batch-card>
-  }
+<div class="group flex flex-row gap-2">
+  <div
+    class="grow items-center gap-4 rounded-xl border-[3px] border-solid border-neutral-100 p-4 group-hover:border-neutral-200/80"
+  >
+    @if (isInstanceOfWaterBatch(batch()); as waterBatch) {
+      <app-water-batch-card [batch]="waterBatch"> </app-water-batch-card>
+    }
+    @if (isInstanceOfHydrogenBatch(batch()); as hydrogenBatch) {
+      <app-h2-batch-card [batch]="hydrogenBatch"></app-h2-batch-card>
+    }
+    @if (isInstanceOfPowerBatch(batch()); as powerBatch) {
+      <app-power-batch-card [batch]="powerBatch"></app-power-batch-card>
+    }
+  </div>
+  <div
+    class="flex w-44 flex-row items-center gap-4 rounded-xl border-[3px] border-neutral-100 px-4 py-2 group-hover:cursor-pointer group-hover:border-neutral-200/80"
+  >
+    <span class="text-sm text-neutral-500"
+      >Cumulated <br />GHG-Emissions: <br />
+      {{ batch().emission.amountCO2PerKgH2 | number: '1.0-1' | unit: FormattedUnits.CO2_PER_KG_H2 }}
+    </span>
+  </div>
 </div>

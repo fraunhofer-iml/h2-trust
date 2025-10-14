@@ -26,6 +26,7 @@ import { SavingsPotentialChartComponent } from './savings-potential/savings-pote
     MatExpansionModule,
     CalculationItemComponent,
     EmissionPieChartComponent,
+    EmissionPieChartComponent,
   ],
   templateUrl: './proof-of-sustainability.component.html',
 })

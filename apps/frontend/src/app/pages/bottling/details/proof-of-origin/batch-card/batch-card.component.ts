@@ -6,6 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
+import { UnitPipe } from 'apps/frontend/src/app/shared/pipes/unit.pipe';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { BatchDto, BatchType, HydrogenBatchDto, PowerBatchDto, WaterBatchDto } from '@h2-trust/api';
@@ -15,11 +17,13 @@ import { WaterBatchCardComponent } from './water-batch-card/water-batch-card.com
 
 @Component({
   selector: 'app-batch-card',
-  imports: [CommonModule, WaterBatchCardComponent, H2BatchCardComponent, PowerBatchCardComponent],
+  imports: [CommonModule, WaterBatchCardComponent, H2BatchCardComponent, PowerBatchCardComponent, UnitPipe],
   templateUrl: './batch-card.component.html',
 })
 export class BatchCardComponent {
   batch = input.required<BatchDto>();
+
+  protected readonly FormattedUnits = FormattedUnits;
 
   isInstanceOfWaterBatch(batch: BatchDto): WaterBatchDto | null {
     return batch.batchType === BatchType.WATER ? (batch as WaterBatchDto) : null;

@@ -6,7 +6,7 @@
   </div>
 
   <div class="flex w-full flex-col">
-    <div class="mb-1 flex justify-between text-sm text-neutral-500">
+    <div class="mb-2 flex justify-between text-sm text-neutral-500">
       <div class="flex flex-row items-center gap-2">
         <h3 class="text-base">
           {{ batch().createdAt | date: 'mediumDate' }}, {{ batch().createdAt | date: 'shortTime' }}
@@ -14,10 +14,9 @@
             - {{ batch().accountingPeriodEnd | date: 'shortTime' }}
           }
         </h3>
-        <app-rfnbo-chip [isRFNBOready]="batch().rfnboReady"></app-rfnbo-chip>
       </div>
 
-      <span>GHG-Emissions (cumulated): {{ batch().emission.amountCO2PerKgH2 | number | unit: batch().unit }} </span>
+      <app-rfnbo-chip [isRFNBOready]="batch().rfnboReady"></app-rfnbo-chip>
     </div>
     <app-verified-chart
       [amount]="batch().amount"
@@ -71,7 +70,7 @@
         </div>
       }
       <div class="flex flex-col text-sm">
-        <span class="text-sm text-neutral-500">Purity:</span><span>{{ batch().purity || '-' }} %</span>
+        <span class="text-sm text-neutral-500">Purity:</span><span>{{ (batch().purity | percent) || '-' }}</span>
       </div>
       <div class="flex flex-col text-sm">
         <span class="text-sm text-neutral-500">Process Step:</span
