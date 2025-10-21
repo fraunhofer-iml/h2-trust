@@ -6,7 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Company, CompanyType } from '@prisma/client';
+import { Company } from '@prisma/client';
+import { CompanyType } from '@h2-trust/domain';
 import { AddressSeed } from './address.seed';
 
 export const CompanySeed = <Company[]>[
@@ -14,28 +15,28 @@ export const CompanySeed = <Company[]>[
     id: 'company-power-1',
     name: 'PowerGen AG',
     mastrNumber: 'P12345',
-    companyType: CompanyType.POWER_PRODUCER,
+    type: CompanyType.POWER_PRODUCER,
     addressId: AddressSeed[0].id,
   },
   {
     id: 'company-hydrogen-1',
     name: 'HydroGen GmbH',
     mastrNumber: 'H67890',
-    companyType: CompanyType.HYDROGEN_PRODUCER,
+    type: CompanyType.HYDROGEN_PRODUCER,
     addressId: AddressSeed[1].id,
   },
   {
     id: 'company-recipient-1',
     name: 'H2Logistics',
     mastrNumber: 'R112233',
-    companyType: CompanyType.HYDROGEN_RECIPIENT,
+    type: CompanyType.HYDROGEN_RECIPIENT,
     addressId: AddressSeed[2].id,
   },
   {
     id: 'company-grid-1',
     name: 'Power Grid AG',
     mastrNumber: 'PG1000',
-    companyType: CompanyType.POWER_PRODUCER, // maybe we need to distinguish between grid operators and power producers
+    type: CompanyType.POWER_PRODUCER,
     addressId: AddressSeed[3].id,
   },
 ];

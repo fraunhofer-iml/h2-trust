@@ -12,7 +12,7 @@ export class HydrogenProductionOverviewDto {
   id: string;
   name: string;
   ratedPower: number;
-  typeName: string | undefined;
+  technology: string | undefined;
   producing: boolean;
   powerAccessApprovalStatus: boolean;
   powerProducerId: string;
@@ -22,7 +22,7 @@ export class HydrogenProductionOverviewDto {
     id: string,
     name: string,
     ratedPower: number,
-    typeName: string,
+    technology: string,
     producing: boolean,
     powerAccessApprovalStatus: boolean,
     powerProducerId: string,
@@ -31,7 +31,7 @@ export class HydrogenProductionOverviewDto {
     this.id = id;
     this.name = name;
     this.ratedPower = ratedPower;
-    this.typeName = typeName;
+    this.technology = technology;
     this.producing = producing;
     this.powerAccessApprovalStatus = powerAccessApprovalStatus;
     this.powerProducerId = powerProducerId;
@@ -45,7 +45,7 @@ export class HydrogenProductionOverviewDto {
       id: unit.id,
       name: unit.name,
       ratedPower: unit.ratedPower,
-      typeName: unit.type?.technology,
+      technology: unit.technology,
       producing: true,
       powerAccessApprovalStatus: HydrogenProductionOverviewDto.existsPowerProducer(unit),
       powerProducerId: firstApproval?.powerProducerId ?? '',

@@ -14,22 +14,15 @@ export class CompanyDto {
   id: string;
   name: string;
   mastrNumber: string;
-  companyType: string;
+  type: string;
   address: AddressDto;
   users: UserDto[];
 
-  constructor(
-    id: string,
-    name: string,
-    mastrNumber: string,
-    companyType: string,
-    address: AddressDto,
-    users: UserDto[],
-  ) {
+  constructor(id: string, name: string, mastrNumber: string, type: string, address: AddressDto, users: UserDto[]) {
     this.id = id;
     this.name = name;
     this.mastrNumber = mastrNumber;
-    this.companyType = companyType;
+    this.type = type;
     this.address = address;
     this.users = users;
   }
@@ -39,7 +32,7 @@ export class CompanyDto {
       id: company.id,
       name: company.name,
       mastrNumber: company.mastrNumber,
-      companyType: company.companyType,
+      type: company.type,
       address: company.address,
       users: company.users,
     };

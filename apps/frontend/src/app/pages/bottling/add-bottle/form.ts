@@ -7,7 +7,8 @@
  */
 
 import { FormControl } from '@angular/forms';
-import { FuelType, HydrogenStorageOverviewDto, TransportMode, UserDto } from '@h2-trust/api';
+import { HydrogenStorageOverviewDto, UserDto } from '@h2-trust/api';
+import { FuelType, TransportMode } from '@h2-trust/domain';
 
 export type BottlingForm = {
   date: FormControl<Date | undefined | null>;

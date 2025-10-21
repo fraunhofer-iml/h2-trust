@@ -8,7 +8,7 @@
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
-import { ProcessType } from '@h2-trust/api';
+import { ProcessType } from '@h2-trust/domain';
 import { assertNumberOfProcessSteps, assertPredecessorsExist, assertProcessType } from '../proof-of-origin.validation';
 import { ProcessStepService } from './process-step.service';
 
@@ -34,7 +34,7 @@ export class ProcessLineageService {
 
     while (currentProcessStepLayer.length > 0) {
       const powerProductionProcessSteps = currentProcessStepLayer.filter(
-        (processSteps) => processSteps.processType === ProcessType.POWER_PRODUCTION,
+        (processSteps) => processSteps.type === ProcessType.POWER_PRODUCTION,
       );
 
       // Collect POWER_PRODUCTION process steps of the current layer
@@ -43,7 +43,7 @@ export class ProcessLineageService {
       }
 
       const otherProcessSteps = currentProcessStepLayer.filter(
-        (processStep) => processStep.processType !== ProcessType.POWER_PRODUCTION,
+        (processStep) => processStep.type !== ProcessType.POWER_PRODUCTION,
       );
 
       // If there are no non-POWER_PRODUCTION process steps left in the current layer, we are done

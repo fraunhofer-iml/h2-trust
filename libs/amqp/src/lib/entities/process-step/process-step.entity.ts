@@ -17,7 +17,7 @@ export class ProcessStepEntity {
   id?: string;
   startedAt: Date;
   endedAt: Date;
-  processType?: string;
+  type?: string;
   batch?: BatchEntity | null;
   recordedBy?: UserEntity;
   executedBy?: BaseUnitEntity;
@@ -28,7 +28,7 @@ export class ProcessStepEntity {
     id: string,
     startedAt: Date,
     endedAt: Date,
-    processType: string,
+    type: string,
     batch: BatchEntity | null,
     recordedBy: UserEntity,
     executedBy: BaseUnitEntity,
@@ -38,7 +38,7 @@ export class ProcessStepEntity {
     this.id = id;
     this.startedAt = startedAt;
     this.endedAt = endedAt;
-    this.processType = processType;
+    this.type = type;
     this.batch = batch;
     this.recordedBy = recordedBy;
     this.executedBy = executedBy;
@@ -51,7 +51,7 @@ export class ProcessStepEntity {
       id: processStep.id,
       startedAt: processStep.startedAt,
       endedAt: processStep.endedAt,
-      processType: processStep.processTypeName,
+      type: processStep.type,
       batch: BatchEntity.fromDatabase(processStep.batch),
       recordedBy: UserEntity.fromDatabase(processStep.recordedBy),
       executedBy: BaseUnitEntity.fromDatabase(processStep.executedBy),

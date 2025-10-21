@@ -7,10 +7,11 @@
  */
 
 import { HydrogenStorageUnitCreateDto } from '@h2-trust/api';
+import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
 
 export const HydrogenStorageUnitCreateDtoMock = <HydrogenStorageUnitCreateDto[]>[
   {
-    unitType: 'HYDROGEN_STORAGE',
+    unitType: UnitType.HYDROGEN_STORAGE,
     name: 'Storage Unit 1',
     owner: 'Company A',
     operator: 'Operator A',
@@ -28,12 +29,12 @@ export const HydrogenStorageUnitCreateDtoMock = <HydrogenStorageUnitCreateDto[]>
       state: 'Berlin',
       country: 'Germany',
     },
-    storageType: 'COMPRESSED_GASEOUS_HYDROGEN',
+    storageType: HydrogenStorageType.COMPRESSED_GASEOUS_HYDROGEN,
     capacity: 1000,
     pressure: 350,
   },
   {
-    unitType: 'HYDROGEN_STORAGE',
+    unitType: UnitType.HYDROGEN_STORAGE,
     name: 'Storage Unit 2',
     owner: 'Company B',
     operator: 'Operator B',
@@ -51,7 +52,7 @@ export const HydrogenStorageUnitCreateDtoMock = <HydrogenStorageUnitCreateDto[]>
       state: 'Niedersachsen',
       country: 'Germany',
     },
-    storageType: 'LIQUID_HYDROGEN',
+    storageType: HydrogenStorageType.LIQUID_HYDROGEN,
     capacity: 2000,
     pressure: 700,
   },

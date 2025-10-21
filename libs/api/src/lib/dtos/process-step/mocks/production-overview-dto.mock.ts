@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { HydrogenColor } from '@h2-trust/domain';
 import { ProductionOverviewDto } from '../production-overview.dto';
 
 export const ProductionOverviewDtoMock = <ProductionOverviewDto[]>[
@@ -14,7 +15,7 @@ export const ProductionOverviewDtoMock = <ProductionOverviewDto[]>[
     endedAt: new Date('2025-01-20').toISOString(),
     productionUnit: 'Hydrogen Generator 3000',
     producedAmount: 15,
-    color: 'GREEN',
+    color: HydrogenColor.GREEN,
     powerProducer: 'PowerGen AG',
     powerConsumed: 20,
   },
@@ -23,7 +24,7 @@ export const ProductionOverviewDtoMock = <ProductionOverviewDto[]>[
     endedAt: new Date('2025-01-19').toISOString(),
     productionUnit: 'Hydrogen Generator 3000',
     producedAmount: 44,
-    color: 'GREEN',
+    color: HydrogenColor.GREEN,
     powerProducer: 'PowerGen AG',
     powerConsumed: 32,
   },

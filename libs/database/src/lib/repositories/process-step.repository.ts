@@ -33,7 +33,7 @@ export class ProcessStepRepository {
     return this.prismaService.processStep
       .findMany({
         where: {
-          processTypeName: { in: processTypes },
+          type: { in: processTypes },
           batch: {
             active: active,
           },

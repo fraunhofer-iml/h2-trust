@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenColor } from '@prisma/client';
-
-export const HydrogenColorDbEnum = HydrogenColor;
-export type HydrogenColorDbEnum = HydrogenColor;
+export enum HydrogenProductionMethod {
+  ELECTROLYSIS = 'ELECTROLYSIS',
+}

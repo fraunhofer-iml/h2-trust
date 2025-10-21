@@ -7,23 +7,22 @@
  */
 
 import { BaseUnitEntity } from '@h2-trust/amqp';
+import { UnitType } from '@h2-trust/domain';
 import { requireDefined } from '@h2-trust/utils';
-import { UnitType } from '../../enums';
 import { AddressDto } from '../address';
 
 export abstract class BaseUnitDto {
   id: string;
   name: string;
   mastrNumber: string;
-  manufacturer: string;
-  modelType: string;
-  modelNumber: string;
-  owner: string;
-  operator: string;
-  serialNumber: string;
+  manufacturer?: string;
+  modelType?: string;
+  modelNumber?: string;
+  serialNumber?: string;
   commissionedOn: Date;
-  decommissioningPlannedOn?: Date;
   address: AddressDto;
+  owner: string;
+  operator?: string;
   company: {
     id: string;
     hydrogenApprovals: {
@@ -41,7 +40,6 @@ export abstract class BaseUnitDto {
     modelType: string,
     serialNumber: string,
     commissionedOn: Date,
-    decommissioningPlannedOn: Date,
     address: AddressDto,
     company: {
       id: string;
@@ -60,15 +58,14 @@ export abstract class BaseUnitDto {
     this.mastrNumber = mastrNumber;
     this.manufacturer = manufacturer;
     this.modelType = modelType;
+    this.modelNumber = modelNumber;
     this.serialNumber = serialNumber;
     this.commissionedOn = commissionedOn;
-    this.decommissioningPlannedOn = decommissioningPlannedOn;
     this.address = address;
     this.company = company;
-    this.unitType = unitType;
-    this.modelNumber = modelNumber;
     this.owner = owner;
     this.operator = operator;
+    this.unitType = unitType;
   }
 
   static fromEntity(unit: BaseUnitEntity): BaseUnitDto {
@@ -76,11 +73,11 @@ export abstract class BaseUnitDto {
       id: requireDefined(unit.id, 'id'),
       name: requireDefined(unit.name, 'name'),
       mastrNumber: requireDefined(unit.mastrNumber, 'mastrNumber'),
-      manufacturer: requireDefined(unit.manufacturer, 'manufacturer'),
-      modelType: requireDefined(unit.modelType, 'modelType'),
-      serialNumber: requireDefined(unit.serialNumber, 'serialNumber'),
+      manufacturer: unit.manufacturer,
+      modelType: unit.modelType,
+      modelNumber: unit.modelNumber,
+      serialNumber: unit.serialNumber,
       commissionedOn: requireDefined(unit.commissionedOn, 'commissionedOn'),
-      decommissioningPlannedOn: undefined,
       address: {
         street: requireDefined(unit.address?.street, 'street'),
         postalCode: requireDefined(unit.address?.postalCode, 'postalCode'),
@@ -96,9 +93,8 @@ export abstract class BaseUnitDto {
             powerProducerId: requireDefined(approval.powerProducerId, 'powerProducerId'),
           })) ?? [],
       },
-      modelNumber: requireDefined(unit.modelNumber, 'modelNumber'),
       owner: requireDefined(unit.company?.id, 'owner'),
-      operator: requireDefined(unit.operator?.id, 'operator'),
+      operator: unit.operator?.id,
       unitType: requireDefined(unit.unitType, 'unitType'),
     };
   }

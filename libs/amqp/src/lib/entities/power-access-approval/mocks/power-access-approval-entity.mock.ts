@@ -17,7 +17,7 @@ export const PowerAccessApprovalEntityMock: PowerAccessApprovalEntity[] = PowerA
     new PowerAccessApprovalEntity(
       seed.id,
       seed.decidedAt,
-      seed.powerAccessApprovalStatus,
+      seed.status,
       CompanyEntityPowerMock,
       PowerProductionUnitEntityMock[0],
       CompanyEntityHydrogenMock,

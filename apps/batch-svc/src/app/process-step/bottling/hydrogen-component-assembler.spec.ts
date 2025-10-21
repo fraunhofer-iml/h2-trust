@@ -7,7 +7,7 @@
  */
 
 import { ProcessStepEntity } from '@h2-trust/amqp';
-import { BatchTypeDbEnum } from '@h2-trust/database';
+import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
 import { HydrogenComponentAssembler } from './hydrogen-component-assembler';
 
 describe('HydrogenComponentAssembler', () => {
@@ -18,11 +18,11 @@ describe('HydrogenComponentAssembler', () => {
       id: 'test-process-step-id',
       startedAt: new Date('2025-01-01T00:00:00Z'),
       endedAt: new Date('2025-01-01T01:00:00Z'),
-      processType: 'HYDROGEN_BOTTLING',
+      type: ProcessType.HYDROGEN_BOTTLING,
       batch: {
         amount: 1,
         quality: '{"color": "mixed"}',
-        type: 'HYDROGEN',
+        type: BatchType.HYDROGEN,
         predecessors: [],
       },
     };
@@ -30,10 +30,10 @@ describe('HydrogenComponentAssembler', () => {
 
   it('should calculate hydrogen composition with one color', () => {
     bottlingProcessStep.batch.predecessors = [
-      { amount: 1, quality: '{"color": "green"}', type: BatchTypeDbEnum.HYDROGEN },
+      { amount: 1, quality: `{"color": "${HydrogenColor.GREEN}"}`, type: BatchType.HYDROGEN },
     ];
 
-    const expectedResponse = [{ color: 'green', amount: 1 }];
+    const expectedResponse = [{ color: HydrogenColor.GREEN, amount: 1 }];
 
     const actualResponse = HydrogenComponentAssembler.assembleFromBottlingProcessStep(bottlingProcessStep);
     expect(actualResponse).toEqual(expectedResponse);
@@ -46,9 +46,9 @@ describe('HydrogenComponentAssembler', () => {
   });
 
   it('should not calculate hydrogen composition with an invalid process type', () => {
-    bottlingProcessStep.processType = 'INVALID_TYPE';
+    bottlingProcessStep.type = 'INVALID_TYPE';
 
-    const expectedErrorMessage = `ProcessStep ${bottlingProcessStep.id} should be type HYDROGEN_BOTTLING or HYDROGEN_TRANSPORTATION, but is ${bottlingProcessStep.processType}.`;
+    const expectedErrorMessage = `ProcessStep ${bottlingProcessStep.id} should be type HYDROGEN_BOTTLING or HYDROGEN_TRANSPORTATION, but is ${bottlingProcessStep.type}.`;
 
     expect(() => HydrogenComponentAssembler.assembleFromBottlingProcessStep(bottlingProcessStep)).toThrow(
       expectedErrorMessage,
@@ -77,11 +77,11 @@ describe('HydrogenComponentAssembler', () => {
 
   it('should not calculate hydrogen composition with an invalid predecessor type', () => {
     bottlingProcessStep.batch.predecessors = [
-      { amount: 1, quality: '{"color": "blue"}', type: BatchTypeDbEnum.HYDROGEN },
-      { amount: 2, quality: '{"color": "blue"}', type: BatchTypeDbEnum.POWER },
+      { amount: 1, quality: '{"color": "blue"}', type: BatchType.HYDROGEN },
+      { amount: 2, quality: '{"color": "blue"}', type: BatchType.POWER },
     ];
 
-    const expectedErrorMessage = `Predecessor batch ${bottlingProcessStep.batch.predecessors[0].id} should be type ${BatchTypeDbEnum.HYDROGEN}, but is ${BatchTypeDbEnum.POWER}.`;
+    const expectedErrorMessage = `Predecessor batch ${bottlingProcessStep.batch.predecessors[0].id} should be type ${BatchType.HYDROGEN}, but is ${BatchType.POWER}.`;
 
     expect(() => HydrogenComponentAssembler.assembleFromBottlingProcessStep(bottlingProcessStep)).toThrow(
       expectedErrorMessage,

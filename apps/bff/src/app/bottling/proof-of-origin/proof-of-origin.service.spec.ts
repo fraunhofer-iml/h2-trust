@@ -295,7 +295,7 @@ describe('ProofOfOriginService', () => {
   });
 
   it('should throw for unsupported process type', async () => {
-    powerProductionProcessStep.processType = 'UNSUPPORTED_TYPE' as any;
+    powerProductionProcessStep.type = 'UNSUPPORTED_TYPE' as any;
 
     jest.spyOn(processStepService, 'fetchProcessStep').mockResolvedValue(powerProductionProcessStep);
 

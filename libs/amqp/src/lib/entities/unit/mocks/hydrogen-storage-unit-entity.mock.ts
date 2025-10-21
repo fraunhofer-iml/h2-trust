@@ -6,9 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenColorDbEnum } from 'libs/database/src/lib/enums/hydrogen-color.db.enum';
 import { HydrogenStorageUnitSeed, UnitSeed } from 'libs/database/src/seed';
-import { UnitType } from '@h2-trust/api';
+import { HydrogenColor, UnitType } from '@h2-trust/domain';
 import { AddressEntityPowerMock } from '../../address';
 import { HydrogenComponentEntity } from '../../bottling';
 import { CompanyEntityHydrogenMock } from '../../company';
@@ -33,7 +32,7 @@ export const HydrogenStorageUnitEntityMock: HydrogenStorageUnitEntity[] = [
     UnitType.HYDROGEN_STORAGE,
     HydrogenStorageUnitSeed[0].capacity.toNumber(),
     HydrogenStorageUnitSeed[0].pressure.toNumber(),
-    HydrogenStorageUnitSeed[0].typeName,
-    [new HydrogenComponentEntity(HydrogenColorDbEnum.GREEN, 100)],
+    HydrogenStorageUnitSeed[0].type,
+    [new HydrogenComponentEntity(HydrogenColor.GREEN, 100)],
   ),
 ];

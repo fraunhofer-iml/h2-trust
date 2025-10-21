@@ -7,26 +7,30 @@
  */
 
 import { HttpStatus } from '@nestjs/common';
-import { BatchType, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { BrokerException, ProcessStepEntity } from '@h2-trust/amqp';
-import { ProcessType } from '@h2-trust/api';
+import { BatchType, ProcessType } from '@h2-trust/domain';
 
 export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Prisma.ProcessStepCreateInput {
-  if (processStep.processType === ProcessType.POWER_PRODUCTION && processStep.batch?.hydrogenStorageUnit?.id) {
+  if (!processStep.type) {
+    throw new BrokerException(`ProcessType must be defined.`, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  if (processStep.type === ProcessType.POWER_PRODUCTION && processStep.batch?.hydrogenStorageUnit?.id) {
     throw new BrokerException(
       `Power production batch with amount [${processStep.batch?.amount}] has a hydrogen storage unit [${processStep.batch.hydrogenStorageUnit.id}]`,
       HttpStatus.INTERNAL_SERVER_ERROR,
     );
   }
 
-  if (processStep.processType === ProcessType.HYDROGEN_PRODUCTION && !processStep.batch?.hydrogenStorageUnit?.id) {
+  if (processStep.type === ProcessType.HYDROGEN_PRODUCTION && !processStep.batch?.hydrogenStorageUnit?.id) {
     throw new BrokerException(
       `Hydrogen production batch with amount [${processStep.batch?.amount}] has no hydrogen storage unit`,
       HttpStatus.INTERNAL_SERVER_ERROR,
     );
   }
 
-  if (processStep.processType === ProcessType.HYDROGEN_BOTTLING && processStep.batch?.hydrogenStorageUnit?.id) {
+  if (processStep.type === ProcessType.HYDROGEN_BOTTLING && processStep.batch?.hydrogenStorageUnit?.id) {
     throw new BrokerException(
       `Hydrogen bottling batch with amount [${processStep.batch?.amount}] has a hydrogen storage unit [${processStep.batch.hydrogenStorageUnit.id}]`,
       HttpStatus.INTERNAL_SERVER_ERROR,
@@ -48,11 +52,7 @@ export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Pri
   return Prisma.validator<Prisma.ProcessStepCreateInput>()({
     startedAt: processStep.startedAt,
     endedAt: processStep.endedAt,
-    processType: {
-      connect: {
-        name: processStep.processType,
-      },
-    },
+    type: processStep.type,
     batch: {
       create: {
         active: processStep.batch.active ?? true,
@@ -95,18 +95,8 @@ export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Pri
           transportationDetails: {
             create: {
               distance: processStep.transportationDetails.distance,
-              transportMode: {
-                connect: {
-                  name: processStep.transportationDetails.transportMode,
-                },
-              },
-              ...(processStep.transportationDetails.fuelType && {
-                fuelType: {
-                  connect: {
-                    name: processStep.transportationDetails.fuelType,
-                  },
-                },
-              }),
+              transportMode: processStep.transportationDetails.transportMode,
+              fuelType: processStep.transportationDetails.fuelType,
             },
           },
         },

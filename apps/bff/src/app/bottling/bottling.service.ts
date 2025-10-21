@@ -22,9 +22,9 @@ import {
   BottlingOverviewDto,
   GeneralInformationDto,
   HydrogenComponentDto,
-  ProcessType,
   UserDetailsDto,
 } from '@h2-trust/api';
+import { ProcessType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -79,11 +79,8 @@ export class BottlingService {
       this.batchService.send(ProcessStepMessagePatterns.READ_UNIQUE, { processStepId }),
     );
 
-    if (
-      processStep.processType != ProcessType.HYDROGEN_BOTTLING &&
-      processStep.processType != ProcessType.HYDROGEN_TRANSPORTATION
-    ) {
-      const errorMessage = `ProcessStep with ID ${processStepId} should be of type ${ProcessType.HYDROGEN_BOTTLING} or ${ProcessType.HYDROGEN_TRANSPORTATION}, but is ${processStep.processType}`;
+    if (processStep.type != ProcessType.HYDROGEN_BOTTLING && processStep.type != ProcessType.HYDROGEN_TRANSPORTATION) {
+      const errorMessage = `ProcessStep with ID ${processStepId} should be of type ${ProcessType.HYDROGEN_BOTTLING} or ${ProcessType.HYDROGEN_TRANSPORTATION}, but is ${processStep.type}`;
       throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
@@ -103,7 +100,7 @@ export class BottlingService {
   private async fetchHydrogenComposition(processStep: ProcessStepEntity): Promise<HydrogenComponentDto[]> {
     // if the process step is of type transportation, we need to get the composition from the predecessor bottling process step
     const processStepId =
-      processStep.processType === ProcessType.HYDROGEN_TRANSPORTATION
+      processStep.type === ProcessType.HYDROGEN_TRANSPORTATION
         ? processStep.batch?.predecessors[0].processStepId
         : processStep.id;
 

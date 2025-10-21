@@ -7,8 +7,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { PowerAccessApprovalStatus } from '@prisma/client';
 import { PowerAccessApprovalEntity } from '@h2-trust/amqp';
+import { PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { PrismaService } from '../prisma.service';
 import { powerAccessApprovalQueryArgs } from '../query-args/power-access-approval.query-args';
 
@@ -21,7 +21,7 @@ export class PowerAccessApprovalRepository {
       .findMany({
         where: {
           OR: [{ powerProducerId: companyId }, { hydrogenProducerId: companyId }],
-          powerAccessApprovalStatus: _status,
+          status: _status,
         },
         ...powerAccessApprovalQueryArgs,
       })

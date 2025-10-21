@@ -8,19 +8,20 @@
 
 import { requireDefined } from 'libs/utils/src/lib/assertions';
 import { PowerProductionUnitEntity } from '@h2-trust/amqp';
-import { UnitType } from '../../enums';
+import { UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
 import { PowerProductionTypeDto } from './power-production-type.dto';
 
 export class PowerProductionUnitDto extends BaseUnitDto {
-  ratedPower: number;
-  gridOperator: string;
-  gridLevel: string;
-  gridConnectionNumber: string;
-  type: PowerProductionTypeDto;
   electricityMeterNumber: string;
+  gridOperator?: string;
+  gridConnectionNumber?: string;
+  gridLevel: string;
   biddingZone: string;
+  ratedPower: number;
+  decommissioningPlannedOn?: Date;
+  type: PowerProductionTypeDto;
 
   constructor(
     id: string,
@@ -56,7 +57,6 @@ export class PowerProductionUnitDto extends BaseUnitDto {
       modelType,
       serialNumber,
       commissionedOn,
-      decommissioningPlannedOn,
       address,
       company,
       modelNumber,
@@ -71,23 +71,24 @@ export class PowerProductionUnitDto extends BaseUnitDto {
     this.type = type;
     this.electricityMeterNumber = electricityMeterNumber;
     this.biddingZone = biddingZone;
+    this.decommissioningPlannedOn = decommissioningPlannedOn;
   }
 
   static override fromEntity(unit: PowerProductionUnitEntity): PowerProductionUnitDto {
     return {
       ...BaseUnitDto.fromEntity(unit),
-      decommissioningPlannedOn: unit.decommissioningPlannedOn,
+      electricityMeterNumber: requireDefined(unit.electricityMeterNumber, 'electricityMeterNumber'),
+      gridOperator: unit.gridOperator,
+      gridConnectionNumber: unit.gridConnectionNumber,
+      gridLevel: requireDefined(unit.gridLevel, 'gridLevel'),
+      biddingZone: requireDefined(unit.biddingZone, 'biddingZone'),
       ratedPower: requireDefined(unit.ratedPower, 'ratedPower'),
-      gridOperator: requireDefined(unit.gridOperator, 'gridOperator'),
-      gridLevel: requireDefined(unit.gridLevelName, 'gridLevel'),
-      gridConnectionNumber: requireDefined(unit.gridConnectionNumber, 'gridConnectionNumber'),
+      decommissioningPlannedOn: unit.decommissioningPlannedOn,
       type: {
         name: requireDefined(unit.type?.name, 'type.name'),
         energySource: requireDefined(unit.type?.energySource, 'type.energySource'),
         hydrogenColor: requireDefined(unit.type?.hydrogenColor, 'type.hydrogenColor'),
       },
-      electricityMeterNumber: requireDefined(unit.electricityMeterNumber, 'electricityMeterNumber'),
-      biddingZone: requireDefined(unit.biddingZoneName, 'biddingZone'),
     };
   }
 }

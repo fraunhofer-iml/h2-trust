@@ -7,7 +7,7 @@
  */
 
 import { PowerProductionUnitSeed, UnitSeed } from 'libs/database/src/seed';
-import { UnitType } from '@h2-trust/api';
+import { UnitType } from '@h2-trust/domain';
 import { AddressEntityPowerMock } from '../../address';
 import { CompanyEntityPowerMock } from '../../company';
 import { PowerProductionUnitEntity } from '../power-production-unit.entity';
@@ -34,8 +34,8 @@ export const PowerProductionUnitEntityMock: PowerProductionUnitEntity[] = [
     PowerProductionUnitSeed[0].electricityMeterNumber,
     PowerProductionUnitSeed[0].ratedPower.toNumber(),
     PowerProductionUnitSeed[0].gridOperator!,
-    PowerProductionUnitSeed[0].gridLevelName,
-    PowerProductionUnitSeed[0].biddingZoneName,
+    PowerProductionUnitSeed[0].gridLevel,
+    PowerProductionUnitSeed[0].biddingZone,
     PowerProductionUnitSeed[0].gridConnectionNumber!,
     PowerProductionTypeEntityMock[1],
   ),

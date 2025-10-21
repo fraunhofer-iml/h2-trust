@@ -21,18 +21,20 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
 import {
-  BiddingZones,
-  ElectrolysisType,
-  GridLevel,
-  HydrogenProductionType,
   HydrogenProductionUnitCreateDto,
-  HydrogenStorageType,
   HydrogenStorageUnitCreateDto,
-  PowerProductionType,
   PowerProductionUnitCreateDto,
   UnitCreateDto,
-  UnitType,
 } from '@h2-trust/api';
+import {
+  BiddingZone,
+  GridLevel,
+  HydrogenProductionMethod,
+  HydrogenProductionTechnology,
+  HydrogenStorageType,
+  PowerProductionType,
+  UnitType,
+} from '@h2-trust/domain';
 import { H2_PRODUCTION_TYPES } from '../../../shared/constants/hydrogen-production-types';
 import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
@@ -74,12 +76,12 @@ export class CreateUnitComponent {
   router = inject(Router);
 
   UnitType = UnitType;
-  HydrogenProductionType = HydrogenProductionType;
+  HydrogenProductionMethod = HydrogenProductionMethod;
   HydrogenStorageType = HydrogenStorageType;
 
-  availableBiddingZones = Object.values(BiddingZones);
+  availableBiddingZones = Object.values(BiddingZone);
   availableGridLevels = Object.entries(GridLevel);
-  availableTechnologies: [string, ElectrolysisType][] = [];
+  availableTechnologies: [string, HydrogenProductionTechnology][] = [];
   availablePowerProductionType = Object.entries(PowerProductionType);
 
   unitForm: FormGroup<UnitFormGroup> = newUnitForm();
@@ -129,7 +131,8 @@ export class CreateUnitComponent {
       dto = {
         ...dto,
         ...additional,
-        hydrogenProductionType: additional.technology,
+        method: additional.method,
+        technology: additional.technology,
       } as HydrogenProductionUnitCreateDto;
     } else if (type === UnitType.HYDROGEN_STORAGE)
       dto = {
@@ -146,7 +149,7 @@ export class CreateUnitComponent {
     this.createMutation.mutate(dto);
   }
 
-  private onH2ProductionTypeChange(value: HydrogenProductionType | null) {
+  private onH2ProductionTypeChange(value: HydrogenProductionMethod | null) {
     if (!value) this.hydrogenProductionForm.controls.technology.disable();
     else {
       this.hydrogenProductionForm.controls.technology.enable();

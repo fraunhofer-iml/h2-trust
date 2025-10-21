@@ -25,9 +25,9 @@ import {
   CreateProductionDto,
   HydrogenProductionOverviewDto,
   HydrogenStorageOverviewDto,
-  PowerAccessApprovalStatus,
   PowerProductionOverviewDto,
 } from '@h2-trust/api';
+import { PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
 import { ERROR_MESSAGES } from '../../../shared/constants/error.messages';
 import { FormattedUnits } from '../../../shared/constants/formatted-units';

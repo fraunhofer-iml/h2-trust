@@ -44,7 +44,7 @@ import { UsersService } from '../../../../shared/services/users/users.service';
   templateUrl: './hydrogen-production-table.component.html',
 })
 export class HydrogenProductionTableComponent implements AfterViewInit {
-  displayedColumns = ['name', 'typeName', 'ratedPower', 'producing', 'powerProducer'];
+  displayedColumns = ['name', 'technology', 'ratedPower', 'producing', 'powerProducer'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;

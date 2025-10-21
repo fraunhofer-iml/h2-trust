@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ElectrolysisType, HydrogenProductionType } from '@h2-trust/api';
+import { HydrogenProductionMethod, HydrogenProductionTechnology } from '@h2-trust/domain';
 
-export const H2_PRODUCTION_TYPES: Map<HydrogenProductionType, typeof ElectrolysisType> = new Map([
-  [HydrogenProductionType.ELECTROLYSIS, ElectrolysisType],
+export const H2_PRODUCTION_TYPES: Map<HydrogenProductionMethod, typeof HydrogenProductionTechnology> = new Map([
+  [HydrogenProductionMethod.ELECTROLYSIS, HydrogenProductionTechnology],
 ]);

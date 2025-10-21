@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerAccessApprovalStatus } from '../../../enums';
+import { EnergySource, PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { CompanyDtoMock } from '../../company';
 import { PowerProductionUnitOverviewDtoMock } from '../../unit/mocks/power-production-unit-overview-dto.mock';
 import { PowerAccessApprovalDto } from '../power-access-approval.dto';
@@ -18,6 +18,6 @@ export const PowerAccessApprovalDtoMock = <PowerAccessApprovalDto[]>[
     powerProducer: CompanyDtoMock[0],
     powerProductionUnit: PowerProductionUnitOverviewDtoMock[0],
     status: PowerAccessApprovalStatus.APPROVED,
-    energySource: 'WIND_ENERGY',
+    energySource: EnergySource.WIND_ENERGY,
   },
 ];

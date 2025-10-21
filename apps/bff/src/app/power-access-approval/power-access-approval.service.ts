@@ -10,7 +10,8 @@ import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { BrokerQueues, PowerAccessApprovalPattern } from '@h2-trust/amqp';
-import { PowerAccessApprovalDto, PowerAccessApprovalStatus } from '@h2-trust/api';
+import { PowerAccessApprovalDto } from '@h2-trust/api';
+import { PowerAccessApprovalStatus } from '@h2-trust/domain';
 
 @Injectable()
 export class PowerAccessApprovalService {

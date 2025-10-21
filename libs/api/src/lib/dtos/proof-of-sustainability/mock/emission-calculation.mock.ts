@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CalculationTopic } from '../../../enums';
+import { CalculationTopic } from '@h2-trust/domain';
 import { EmissionCalculationDto } from '../emission-calculation.dto';
 
 export const emissionCalculationMock: EmissionCalculationDto[] = [

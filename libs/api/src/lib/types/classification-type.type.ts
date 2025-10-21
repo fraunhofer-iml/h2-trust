@@ -6,4 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export type ClassificationType = 'POWER' | 'HYDROGEN';
+import { BatchType } from '@h2-trust/domain';
+
+export type ClassificationType = BatchType.POWER | BatchType.HYDROGEN;

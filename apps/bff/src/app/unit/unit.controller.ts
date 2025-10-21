@@ -9,7 +9,8 @@
 import { AuthenticatedUser } from 'nest-keycloak-connect';
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { UnitCreateDto, UnitDto, UnitOverviewDto, UnitType, type AuthenticatedKCUser } from '@h2-trust/api';
+import { UnitCreateDto, UnitDto, UnitOverviewDto, type AuthenticatedKCUser } from '@h2-trust/api';
+import { UnitType } from '@h2-trust/domain';
 import { UnitService } from './unit.service';
 
 @Controller('units')

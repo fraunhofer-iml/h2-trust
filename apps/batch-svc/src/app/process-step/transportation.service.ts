@@ -8,8 +8,8 @@
 
 import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity } from '@h2-trust/amqp';
-import { ProcessType } from '@h2-trust/api';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
+import { ProcessType } from '@h2-trust/domain';
 
 @Injectable()
 export class TransportationService {
@@ -21,7 +21,7 @@ export class TransportationService {
   async createHydrogenTransportationProcessStep(processStepEntity: ProcessStepEntity): Promise<ProcessStepEntity> {
     const transportationProcessStepEntity: ProcessStepEntity = {
       ...processStepEntity,
-      processType: ProcessType.HYDROGEN_TRANSPORTATION,
+      type: ProcessType.HYDROGEN_TRANSPORTATION,
       batch: {
         ...processStepEntity.batch,
         predecessors: [

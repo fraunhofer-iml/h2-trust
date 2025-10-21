@@ -12,7 +12,7 @@ import {
   ProcessStepEntityHydrogenProductionMock,
   ProcessStepEntityPowerProductionMock,
 } from '@h2-trust/amqp';
-import { ProcessType } from '@h2-trust/api';
+import { ProcessType } from '@h2-trust/domain';
 import { ProcessLineageService } from './process-lineage.service';
 import { ProcessStepService } from './process-step.service';
 
@@ -62,7 +62,7 @@ describe('ProcessLineageService#fetchPowerProductionProcessSteps', () => {
   it('should throw if a process step has wrong type', async () => {
     const powerProduction: ProcessStepEntity = structuredClone(ProcessStepEntityPowerProductionMock[0]);
 
-    const expectedErrorMessage = `All process steps must be of type ${ProcessType.HYDROGEN_PRODUCTION}, but found invalid process types: ${powerProduction.id}:${powerProduction.processType}`;
+    const expectedErrorMessage = `All process steps must be of type ${ProcessType.HYDROGEN_PRODUCTION}, but found invalid process types: ${powerProduction.id}:${powerProduction.type}`;
 
     await expect(processLineageService.fetchPowerProductionProcessSteps([powerProduction])).rejects.toThrow(
       expectedErrorMessage,

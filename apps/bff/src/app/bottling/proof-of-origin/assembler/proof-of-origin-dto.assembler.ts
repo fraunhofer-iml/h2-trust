@@ -9,16 +9,14 @@
 import { HydrogenComponentEntity, ProcessStepEntity, Util } from '@h2-trust/amqp';
 import {
   BatchDto,
-  BatchType,
   ClassificationDto,
   ClassificationType,
   EmissionDto,
-  EnergySource,
   HydrogenBatchDto,
-  MeasurementUnit,
   parseColor,
   PowerBatchDto,
 } from '@h2-trust/api';
+import { BatchType, EnergySource, MeasurementUnit } from '@h2-trust/domain';
 import { ProofOfOriginConstants } from '../proof-of-origin.constants';
 
 export class ProofOfOriginDtoAssembler {
@@ -57,7 +55,7 @@ export class ProofOfOriginDtoAssembler {
       ],
       parseColor(processStepEntity.batch.quality),
       null, // TBA
-      processStepEntity.processType,
+      processStepEntity.type,
       processStepEntity.endedAt,
     );
   }
@@ -80,7 +78,7 @@ export class ProofOfOriginDtoAssembler {
       hydrogenComposition,
       parseColor(processStepEntity.batch.quality),
       null, // TBA
-      processStepEntity.processType,
+      processStepEntity.type,
       processStepEntity.endedAt,
     );
   }

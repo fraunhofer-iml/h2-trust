@@ -9,7 +9,8 @@
 import { AuthenticatedUser } from 'nest-keycloak-connect';
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
-import { PowerAccessApprovalDto, PowerAccessApprovalStatus, type AuthenticatedKCUser } from '@h2-trust/api';
+import { PowerAccessApprovalDto, type AuthenticatedKCUser } from '@h2-trust/api';
+import { PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { PowerAccessApprovalService } from './power-access-approval.service';
 
 @Controller('power-access-approvals')

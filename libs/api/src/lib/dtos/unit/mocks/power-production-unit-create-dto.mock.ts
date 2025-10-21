@@ -7,10 +7,11 @@
  */
 
 import { PowerProductionUnitCreateDto } from '@h2-trust/api';
+import { BiddingZone, GridLevel, PowerProductionType, UnitType } from '@h2-trust/domain';
 
 export const PowerProductionUnitCreateDtoMock = <PowerProductionUnitCreateDto[]>[
   {
-    unitType: 'POWER_PRODUCTION',
+    unitType: UnitType.POWER_PRODUCTION,
     name: 'Onshore Wind Turbine 3000',
     owner: 'Wind Power Corp',
     certifiedBy: 'TÜV Nord',
@@ -28,9 +29,9 @@ export const PowerProductionUnitCreateDtoMock = <PowerProductionUnitCreateDto[]>
       state: 'North Rhine-Westphalia',
       country: 'Germany',
     },
-    powerProductionType: 'WIND_TURBINE',
-    biddingZone: 'DE-LU',
-    gridLevel: 'HIGH_VOLTAGE',
+    powerProductionType: PowerProductionType.WIND_TURBINE,
+    biddingZone: BiddingZone.DE_LU,
+    gridLevel: GridLevel.HIGH_VOLTAGE,
     ratedPower: 3000,
     electricityMeterNumber: 'EM789012',
     gridOperator: 'Regional Grid Operator GmbH',

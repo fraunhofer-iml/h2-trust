@@ -24,13 +24,13 @@ import {
   BottlingDtoMock,
   BottlingOverviewDto,
   GeneralInformationDto,
-  ProcessType,
   proofOfSustainabilityMock,
   SectionDto,
   UserDetailsDtoMock,
 } from '@h2-trust/api';
 import 'multer';
 import { of } from 'rxjs';
+import { ProcessType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';

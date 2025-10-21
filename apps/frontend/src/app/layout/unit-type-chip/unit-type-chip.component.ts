@@ -8,7 +8,7 @@
 
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
-import { UnitType } from '@h2-trust/api';
+import { UnitType } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
 
 @Component({

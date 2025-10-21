@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export enum BiddingZones {
+export enum BiddingZone {
   DE_LU = 'DE-LU',
   BE = 'BE',
   FR = 'FR',

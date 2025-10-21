@@ -19,7 +19,7 @@ export const ProcessStepEntityPowerProductionMock: ProcessStepEntity[] = Process
       seed.id,
       seed.startedAt,
       seed.endedAt,
-      seed.processTypeName,
+      seed.type,
       BatchEntityPowerProducedMock[index],
       UserEntityPowerMock,
       PowerProductionUnitEntityMock[0],

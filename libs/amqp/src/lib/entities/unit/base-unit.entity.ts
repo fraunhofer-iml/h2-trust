@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { UnitType } from '@h2-trust/api';
 import { BaseUnitDbType } from '@h2-trust/database';
+import { UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
 
@@ -96,7 +96,7 @@ export abstract class BaseUnitEntity {
   private static mapHydrogenApprovals(unit: BaseUnitDbType) {
     return (
       unit.owner?.hydrogenApprovals?.map((approval) => ({
-        powerAccessApprovalStatus: approval.powerAccessApprovalStatus,
+        powerAccessApprovalStatus: approval.status,
         powerProducerId: approval.powerProducerId,
         powerProducerName: approval.powerProducer.name,
       })) ?? []

@@ -6,12 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsIn, IsISO8601, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { UnitType } from '../../../enums';
+import { IsEnum, IsISO8601, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 
 export abstract class UnitCreateDto {
-  @IsIn(Object.values(UnitType))
+  @IsEnum(UnitType)
   @IsNotEmpty()
   unitType: UnitType;
 

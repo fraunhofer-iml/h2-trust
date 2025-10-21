@@ -6,20 +6,24 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsIn, IsNotEmpty, IsPositive } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsPositive } from 'class-validator';
 import { HydrogenProductionUnitEntity } from '@h2-trust/amqp';
-import { BiddingZones, ElectrolysisType, UnitType } from '../../../enums';
+import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 import { UnitCreateDto } from './unit-create.dto';
 
 export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
   @IsNotEmpty()
-  @IsIn(Object.values(ElectrolysisType))
-  hydrogenProductionType: ElectrolysisType;
+  @IsEnum(HydrogenProductionMethod)
+  method: HydrogenProductionMethod;
 
   @IsNotEmpty()
-  @IsIn(Object.values(BiddingZones))
-  biddingZone: BiddingZones;
+  @IsEnum(HydrogenProductionTechnology)
+  technology: HydrogenProductionTechnology;
+
+  @IsNotEmpty()
+  @IsEnum(BiddingZone)
+  biddingZone: BiddingZone;
 
   @IsNotEmpty()
   @IsPositive()
@@ -42,8 +46,9 @@ export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
     certifiedBy: string,
     commissionedOn: string,
     address: AddressDto,
-    hydrogenProductionType: ElectrolysisType,
-    biddingZone: BiddingZones,
+    technology: HydrogenProductionTechnology,
+    method: HydrogenProductionMethod,
+    biddingZone: BiddingZone,
     ratedPower: number,
     pressure: number,
   ) {
@@ -61,7 +66,8 @@ export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
       commissionedOn,
       address,
     );
-    this.hydrogenProductionType = hydrogenProductionType;
+    this.method = method;
+    this.technology = technology;
     this.biddingZone = biddingZone;
     this.ratedPower = ratedPower;
     this.pressure = pressure;
@@ -83,13 +89,11 @@ export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
       operator: {
         id: dto.operator,
       },
+      method: dto.method,
+      technology: dto.technology,
+      biddingZone: dto.biddingZone,
       ratedPower: dto.ratedPower,
       pressure: dto.pressure,
-      type: {
-        // TODO toLowerCase can be removed once the frontend uses the values directly from the database
-        id: dto.hydrogenProductionType.toLowerCase(),
-      },
-      biddingZoneName: dto.biddingZone,
     };
   }
 }

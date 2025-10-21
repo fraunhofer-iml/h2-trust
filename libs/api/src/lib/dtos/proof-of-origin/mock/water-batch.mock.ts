@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType } from '../../../enums';
+import { BatchType, MeasurementUnit } from '@h2-trust/domain';
 import { WaterBatchDto } from '../batch.dto';
 import { WaterDetailsDto } from '../water-details.dto';
 import { EmissionMock } from './emissions.mock';
@@ -29,7 +29,7 @@ const waterDetailsMock: WaterDetailsDto[] = [
 export const waterBatchMock: WaterBatchDto = {
   id: 'water-batch-1',
   amount: 300,
-  unit: 'l',
+  unit: MeasurementUnit.WATER,
   createdAt: new Date(),
   deionizedWater: waterDetailsMock[0],
   tapWater: waterDetailsMock[1],

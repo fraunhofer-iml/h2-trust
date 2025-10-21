@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { UnitType } from '@h2-trust/api';
 import { PowerProductionUnitDbType } from '@h2-trust/database';
+import { UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
 import { BaseUnitEntity } from './base-unit.entity';
@@ -18,8 +18,8 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
   electricityMeterNumber?: string;
   ratedPower?: number;
   gridOperator?: string;
-  gridLevelName?: string;
-  biddingZoneName?: string;
+  gridLevel?: string;
+  biddingZone?: string;
   gridConnectionNumber?: string;
   type?: PowerProductionTypeEntity;
 
@@ -47,8 +47,8 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     electricityMeterNumber: string,
     ratedPower: number,
     gridOperator: string,
-    gridLevelName: string,
-    biddingZoneName: string,
+    gridLevel: string,
+    biddingZone: string,
     gridConnectionNumber: string,
     type: PowerProductionTypeEntity,
   ) {
@@ -70,8 +70,8 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     this.electricityMeterNumber = electricityMeterNumber;
     this.ratedPower = ratedPower;
     this.gridOperator = gridOperator;
-    this.gridLevelName = gridLevelName;
-    this.biddingZoneName = biddingZoneName;
+    this.gridLevel = gridLevel;
+    this.biddingZone = biddingZone;
     this.gridConnectionNumber = gridConnectionNumber;
     this.type = type;
   }
@@ -90,8 +90,8 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
       electricityMeterNumber: unit.powerProductionUnit?.electricityMeterNumber,
       ratedPower: unit.powerProductionUnit?.ratedPower?.toNumber() ?? 0,
       gridOperator: unit.powerProductionUnit?.gridOperator,
-      gridLevelName: unit.powerProductionUnit?.gridLevelName,
-      biddingZoneName: unit.powerProductionUnit?.biddingZoneName,
+      gridLevel: unit.powerProductionUnit?.gridLevel,
+      biddingZone: unit.powerProductionUnit?.biddingZone,
       gridConnectionNumber: unit.powerProductionUnit?.gridConnectionNumber,
       type: unit.powerProductionUnit?.type,
     };

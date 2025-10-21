@@ -14,7 +14,7 @@ export class CompanyEntity {
   id?: string;
   name?: string;
   mastrNumber?: string;
-  companyType?: string;
+  type?: string;
   address?: AddressEntity;
   users?: UserEntity[];
 
@@ -22,14 +22,14 @@ export class CompanyEntity {
     id: string,
     name: string,
     mastrNumber: string,
-    companyType: string,
+    type: string,
     address: AddressEntity,
     users: UserEntity[],
   ) {
     this.id = id;
     this.name = name;
     this.mastrNumber = mastrNumber;
-    this.companyType = companyType;
+    this.type = type;
     this.address = address;
     this.users = users;
   }
@@ -39,7 +39,7 @@ export class CompanyEntity {
       id: company.id,
       name: company.name,
       mastrNumber: company.mastrNumber,
-      companyType: company.companyType,
+      type: company.type,
       address: AddressEntity.fromDatabase(company.address),
     };
   }

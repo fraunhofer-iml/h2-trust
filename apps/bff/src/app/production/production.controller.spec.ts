@@ -15,10 +15,10 @@ import {
   AuthenticatedKCUser,
   CreateProductionDto,
   CreateProductionDtoMock,
-  ProcessType,
   ProductionOverviewDto,
   UserDetailsDtoMock,
 } from '@h2-trust/api';
+import { EnergySource, HydrogenColor, ProcessType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
@@ -84,8 +84,8 @@ describe('ProductionController', () => {
           ratedPower: 100,
           type: <PowerProductionTypeEntity>{
             name: 'Test Power Production Unit Type',
-            energySource: 'Solar',
-            hydrogenColor: 'GREEN',
+            energySource: EnergySource.SOLAR_ENERGY,
+            hydrogenColor: HydrogenColor.GREEN,
           },
         }),
       )
@@ -109,13 +109,13 @@ describe('ProductionController', () => {
         id: 'hydrogen-production-process-step-1',
         startedAt: new Date(CreateProductionDtoMock.productionStartedAt),
         endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
-        processType: ProcessType.HYDROGEN_PRODUCTION,
+        type: ProcessType.HYDROGEN_PRODUCTION,
       },
       {
         id: 'hydrogen-production-process-step-2',
         startedAt: new Date(CreateProductionDtoMock.productionEndedAt),
         endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
-        processType: ProcessType.HYDROGEN_PRODUCTION,
+        type: ProcessType.HYDROGEN_PRODUCTION,
       },
     ];
 

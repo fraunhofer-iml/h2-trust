@@ -6,22 +6,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenColor, PowerProductionType } from '@prisma/client';
+import { PowerProductionType } from '@prisma/client';
+import { EnergySource, HydrogenColor, PowerProductionType as PowerProductionTypeName } from '@h2-trust/domain';
 
 export const PowerProductionTypeSeed = <PowerProductionType[]>[
   {
-    name: 'PHOTOVOLTAIC_SYSTEM',
-    energySource: 'SOLAR_ENERGY',
+    name: PowerProductionTypeName.PHOTOVOLTAIC_SYSTEM,
+    energySource: EnergySource.SOLAR_ENERGY,
     hydrogenColor: HydrogenColor.GREEN,
   },
   {
-    name: 'WIND_TURBINE',
-    energySource: 'WIND_ENERGY',
+    name: PowerProductionTypeName.WIND_TURBINE,
+    energySource: EnergySource.WIND_ENERGY,
     hydrogenColor: HydrogenColor.GREEN,
   },
   {
-    name: 'HYDROPOWER_PLANT',
-    energySource: 'HYDROPOWER',
+    name: PowerProductionTypeName.HYDRO_POWER_PLANT,
+    energySource: EnergySource.HYDRO_POWER,
     hydrogenColor: HydrogenColor.GREEN,
   },
   {
@@ -65,8 +66,8 @@ export const PowerProductionTypeSeed = <PowerProductionType[]>[
     hydrogenColor: HydrogenColor.YELLOW,
   },
   {
-    name: 'GRID',
-    energySource: 'Grid',
+    name: PowerProductionTypeName.GRID,
+    energySource: EnergySource.GRID,
     hydrogenColor: HydrogenColor.YELLOW,
   },
 ];

@@ -19,7 +19,8 @@ import {
   ProductionMessagePatterns,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
-import { CreateProductionDto, ProcessType, ProductionOverviewDto, UserDetailsDto } from '@h2-trust/api';
+import { CreateProductionDto, ProductionOverviewDto, UserDetailsDto } from '@h2-trust/api';
+import { ProcessType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -49,7 +50,7 @@ export class ProductionService {
     );
 
     return processSteps
-      .filter((step) => step.processType === ProcessType.HYDROGEN_PRODUCTION)
+      .filter((step) => step.type === ProcessType.HYDROGEN_PRODUCTION)
       .map(ProductionOverviewDto.fromEntity);
   }
 

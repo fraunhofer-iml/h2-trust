@@ -10,7 +10,8 @@ import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted
 import { UnitPipe } from 'apps/frontend/src/app/shared/pipes/unit.pipe';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
-import { BatchDto, BatchType, HydrogenBatchDto, PowerBatchDto, WaterBatchDto } from '@h2-trust/api';
+import { BatchDto, HydrogenBatchDto, PowerBatchDto, WaterBatchDto } from '@h2-trust/api';
+import { BatchType } from '@h2-trust/domain';
 import { H2BatchCardComponent } from './h2-batch-card/h2-batch-card.component';
 import { PowerBatchCardComponent } from './power-batch-card/power-batch-card.component';
 import { WaterBatchCardComponent } from './water-batch-card/water-batch-card.component';

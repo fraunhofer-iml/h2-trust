@@ -7,7 +7,7 @@
  */
 
 import { PowerAccessApprovalEntity } from '@h2-trust/amqp';
-import { PowerAccessApprovalStatus } from '../../enums';
+import { PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { CompanyDto } from '../company';
 import { PowerProductionOverviewDto } from '../unit';
 

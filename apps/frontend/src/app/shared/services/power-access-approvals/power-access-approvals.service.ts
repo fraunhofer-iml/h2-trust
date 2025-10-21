@@ -9,7 +9,8 @@
 import { lastValueFrom } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { PowerAccessApprovalDto, PowerAccessApprovalStatus } from '@h2-trust/api';
+import { PowerAccessApprovalDto } from '@h2-trust/api';
+import { PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { API } from '../../constants/api-endpoints';
 
 @Injectable()

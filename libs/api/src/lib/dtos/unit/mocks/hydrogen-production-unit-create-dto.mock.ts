@@ -7,10 +7,11 @@
  */
 
 import { HydrogenProductionUnitCreateDto } from '@h2-trust/api';
+import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
 
 export const HydrogenProductionUnitCreateDtoMock = <HydrogenProductionUnitCreateDto[]>[
   {
-    unitType: 'HYDROGEN_PRODUCTION',
+    unitType: UnitType.HYDROGEN_PRODUCTION,
     name: 'Hydrogen Production Unit 1',
     owner: 'Company A',
     operator: 'Operator A',
@@ -28,13 +29,14 @@ export const HydrogenProductionUnitCreateDtoMock = <HydrogenProductionUnitCreate
       state: 'Berlin',
       country: 'Germany',
     },
-    hydrogenProductionType: 'PEM',
-    biddingZone: 'DE_LU',
+    method: HydrogenProductionMethod.ELECTROLYSIS,
+    technology: HydrogenProductionTechnology.AEL,
+    biddingZone: BiddingZone.DE_LU,
     ratedPower: 1000,
     pressure: 30,
   },
   {
-    unitType: 'HYDROGEN_PRODUCTION',
+    unitType: UnitType.HYDROGEN_PRODUCTION,
     name: 'Hydrogen Production Unit 2',
     owner: 'Company B',
     operator: 'Operator B',
@@ -52,8 +54,9 @@ export const HydrogenProductionUnitCreateDtoMock = <HydrogenProductionUnitCreate
       state: 'Niedersachsen',
       country: 'Germany',
     },
-    hydrogenProductionType: 'SOEC',
-    biddingZone: 'DE-LU',
+    method: HydrogenProductionMethod.ELECTROLYSIS,
+    technology: HydrogenProductionTechnology.AEL,
+    biddingZone: BiddingZone.DE_LU,
     ratedPower: 2000,
     pressure: 40,
   },

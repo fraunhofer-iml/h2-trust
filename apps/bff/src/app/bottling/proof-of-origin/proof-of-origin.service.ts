@@ -8,7 +8,8 @@
 
 import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity } from '@h2-trust/amqp';
-import { ProcessType, SectionDto } from '@h2-trust/api';
+import { SectionDto } from '@h2-trust/api';
+import { ProcessType } from '@h2-trust/domain';
 import { HydrogenProductionSectionAssembler } from './assembler/hydrogen-production-section.assembler';
 import { invalidProcessType } from './proof-of-origin.validation';
 import { ProcessLineageService } from './retrieval/process-lineage.service';
@@ -28,7 +29,7 @@ export class ProofOfOriginService {
   async readProofOfOrigin(processStepId: string): Promise<SectionDto[]> {
     const processStep: ProcessStepEntity = await this.processStepService.fetchProcessStep(processStepId);
 
-    switch (processStep.processType) {
+    switch (processStep.type) {
       case ProcessType.POWER_PRODUCTION:
         return this.buildPowerProductionSections(processStep);
 
@@ -42,7 +43,7 @@ export class ProofOfOriginService {
         return this.buildHydrogenTransportationSections(processStep);
 
       default:
-        throw invalidProcessType(processStep.id, processStep.processType);
+        throw invalidProcessType(processStep.id, processStep.type);
     }
   }
 

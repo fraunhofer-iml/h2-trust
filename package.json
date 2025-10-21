@@ -180,16 +180,15 @@
     "prisma": "^6.3.1",
     "tailwindcss": "^3.0.2",
     "ts-jest": "^29.1.0",
-    "ts-node": "10.9.1",
+    "ts-node": "^10.9.1",
     "tslib": "^2.3.0",
-    "tsx": "^4.19.2",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.19.0",
     "webpack-cli": "^5.1.4"
   },
   "prisma": {
     "schema": "libs/database/src/lib/schema.prisma",
-    "seed": "tsx ./libs/database/src/seed/import-data.ts",
+    "seed": "ts-node -P tsconfig.base.json -r tsconfig-paths/register ./libs/database/src/seed/import-data.ts",
     "studio": "npx prisma studio"
   }
 }

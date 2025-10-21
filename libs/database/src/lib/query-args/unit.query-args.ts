@@ -36,12 +36,6 @@ const powerProductionUnitChildQueryArgs = Prisma.validator<Prisma.PowerProductio
   },
 });
 
-const hydrogenProductionUnitChildQueryArgs = Prisma.validator<Prisma.HydrogenProductionUnitDefaultArgs>()({
-  include: {
-    type: true,
-  },
-});
-
 const hydrogenStorageUnitChildQueryArgs = Prisma.validator<Prisma.HydrogenStorageUnitDefaultArgs>()({
   include: {
     filling: {
@@ -57,7 +51,7 @@ export const allUnitsQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
   include: {
     ...baseUnitQueryArgs.include,
     powerProductionUnit: powerProductionUnitChildQueryArgs,
-    hydrogenProductionUnit: hydrogenProductionUnitChildQueryArgs,
+    hydrogenProductionUnit: true,
     hydrogenStorageUnit: hydrogenStorageUnitChildQueryArgs,
   },
 });
@@ -74,7 +68,7 @@ export const hydrogenProductionUnitQueryArgs = Prisma.validator<Prisma.UnitDefau
   ...baseUnitQueryArgs,
   include: {
     ...baseUnitQueryArgs.include,
-    hydrogenProductionUnit: hydrogenProductionUnitChildQueryArgs,
+    hydrogenProductionUnit: true,
   },
 });
 

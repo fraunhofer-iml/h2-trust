@@ -9,14 +9,13 @@
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, CreateProductionEntity } from '@h2-trust/amqp';
-import { ProcessType } from '@h2-trust/api';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { BatchTypeDbEnum, HydrogenColorDbEnum } from '@h2-trust/database';
+import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
 
 describe('ProductionController', () => {
-  const DERIVED_HYDROGEN_COLOR = HydrogenColorDbEnum.GREEN;
+  const DERIVED_HYDROGEN_COLOR = HydrogenColor.GREEN;
 
   let controller: ProductionController;
   let batchServiceSendMock: jest.Mock;
@@ -79,15 +78,15 @@ describe('ProductionController', () => {
     expect(actualResponse.length).toBe(6); // 3 Power + 3 Hydrogen
 
     actualResponse
-      .filter((step) => step.processType === ProcessType.POWER_PRODUCTION)
+      .filter((step) => step.type === ProcessType.POWER_PRODUCTION)
       .forEach((processStepEntity) => {
         expect(processStepEntity).toHaveProperty('startedAt');
         expect(processStepEntity).toHaveProperty('endedAt');
-        expect(processStepEntity).toHaveProperty('processType', ProcessType.POWER_PRODUCTION);
+        expect(processStepEntity).toHaveProperty('type', ProcessType.POWER_PRODUCTION);
         expect(processStepEntity).toHaveProperty('batch');
         expect(processStepEntity.batch).toHaveProperty('amount', 30);
         expect(processStepEntity.batch).toHaveProperty('quality', '{}');
-        expect(processStepEntity.batch).toHaveProperty('type', BatchTypeDbEnum.POWER);
+        expect(processStepEntity.batch).toHaveProperty('type', BatchType.POWER);
         expect(processStepEntity.batch).toHaveProperty('owner', {
           id: createProductionEntity.companyIdOfPowerProductionUnit,
         });
@@ -103,15 +102,15 @@ describe('ProductionController', () => {
       });
 
     actualResponse
-      .filter((step) => step.processType === ProcessType.HYDROGEN_PRODUCTION)
+      .filter((step) => step.type === ProcessType.HYDROGEN_PRODUCTION)
       .forEach((processStepEntity) => {
         expect(processStepEntity).toHaveProperty('startedAt');
         expect(processStepEntity).toHaveProperty('endedAt');
-        expect(processStepEntity).toHaveProperty('processType', ProcessType.HYDROGEN_PRODUCTION);
+        expect(processStepEntity).toHaveProperty('type', ProcessType.HYDROGEN_PRODUCTION);
         expect(processStepEntity).toHaveProperty('batch');
         expect(processStepEntity.batch).toHaveProperty('amount', 20);
         expect(processStepEntity.batch).toHaveProperty('quality', JSON.stringify({ color: DERIVED_HYDROGEN_COLOR }));
-        expect(processStepEntity.batch).toHaveProperty('type', BatchTypeDbEnum.HYDROGEN);
+        expect(processStepEntity.batch).toHaveProperty('type', BatchType.HYDROGEN);
         expect(processStepEntity.batch).toHaveProperty('owner', {
           id: createProductionEntity.companyIdOfHydrogenProductionUnit,
         });

@@ -20,7 +20,7 @@ export const ProcessStepEntityHydrogenTransportationMock: ProcessStepEntity[] =
         seed.id,
         seed.startedAt,
         seed.endedAt,
-        seed.processTypeName,
+        seed.type,
         BatchEntityHydrogenBottledMock[index],
         UserEntityHydrogenMock,
         HydrogenStorageUnitEntityMock[0],

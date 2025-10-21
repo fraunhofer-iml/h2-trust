@@ -10,6 +10,7 @@ import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { ClassificationDto } from '@h2-trust/api';
+import { BatchType } from '@h2-trust/domain';
 import { VerifiedChartComponent } from '../../../../../layout/verified-chart/verified-chart.component';
 import { PrettyEnumPipe } from '../../../../../shared/pipes/format-enum.pipe';
 import { UnitPipe } from '../../../../../shared/pipes/unit.pipe';
@@ -26,11 +27,11 @@ export class ClassificationComponent {
 
   getIcon(key: string): string {
     switch (key) {
-      case 'HYDROGEN':
+      case BatchType.HYDROGEN:
         return 'bubble_chart';
-      case 'POWER':
+      case BatchType.POWER:
         return 'charger';
-      case 'WATER':
+      case BatchType.WATER:
         return 'water_drop';
       default:
         return '';

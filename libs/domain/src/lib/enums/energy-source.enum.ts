@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export enum ElectrolysisType {
-  AEL = 'AEL',
-  AEM = 'AEM',
-  PEM = 'PEM',
-  SOEC = 'SOEC',
+export enum EnergySource {
+  GRID = 'GRID',
+  HYDRO_POWER = 'HYDRO_POWER',
+  SOLAR_ENERGY = 'SOLAR_ENERGY',
+  WIND_ENERGY = 'WIND_ENERGY',
 }

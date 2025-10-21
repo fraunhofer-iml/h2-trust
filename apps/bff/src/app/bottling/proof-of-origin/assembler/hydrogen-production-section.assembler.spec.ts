@@ -6,13 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenColor } from '@prisma/client';
 import {
   ProcessStepEntity,
   ProcessStepEntityHydrogenProductionMock,
   ProcessStepEntityPowerProductionMock,
 } from '@h2-trust/amqp';
-import { BatchDto, ClassificationDto, ProcessType, SectionDto } from '@h2-trust/api';
+import { BatchDto, ClassificationDto, SectionDto } from '@h2-trust/api';
+import { HydrogenColor, ProcessType } from '@h2-trust/domain';
 import { ProofOfOriginConstants } from '../proof-of-origin.constants';
 import { HydrogenProductionSectionAssembler } from './hydrogen-production-section.assembler';
 import { ProofOfOriginDtoAssembler } from './proof-of-origin-dto.assembler';

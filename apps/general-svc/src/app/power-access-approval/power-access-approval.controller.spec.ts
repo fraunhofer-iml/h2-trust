@@ -8,7 +8,6 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { PowerAccessApprovalEntity, UserEntityHydrogenMock, UserEntityPowerMock } from '@h2-trust/amqp';
-import { PowerAccessApprovalStatus } from '@h2-trust/api';
 import {
   DatabaseModule,
   PowerAccessApprovalDbType,
@@ -16,6 +15,7 @@ import {
   PrismaService,
   UserRepository,
 } from '@h2-trust/database';
+import { PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { PowerAccessApprovalController } from './power-access-approval.controller';
 import { PowerAccessApprovalService } from './power-access-approval.service';
 

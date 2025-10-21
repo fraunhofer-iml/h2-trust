@@ -8,14 +8,15 @@
 
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { ProcessStepEntity } from '@h2-trust/amqp';
-import { ClassificationDto, HydrogenColor, parseColor, ProcessType, SectionDto } from '@h2-trust/api';
+import { ClassificationDto, parseColor, SectionDto } from '@h2-trust/api';
+import { HydrogenColor, ProcessType } from '@h2-trust/domain';
 import { ProofOfOriginConstants } from '../proof-of-origin.constants';
 import { ProofOfOriginDtoAssembler } from './proof-of-origin-dto.assembler';
 
 export class HydrogenProductionSectionAssembler {
   static buildHydrogenProductionSection(hydrogenProductionProcessSteps: ProcessStepEntity[]): SectionDto {
     const nonHydrogenProductionProcessSteps = hydrogenProductionProcessSteps.filter(
-      (processStep) => processStep.processType !== ProcessType.HYDROGEN_PRODUCTION,
+      (processStep) => processStep.type !== ProcessType.HYDROGEN_PRODUCTION,
     );
 
     if (nonHydrogenProductionProcessSteps.length > 0) {

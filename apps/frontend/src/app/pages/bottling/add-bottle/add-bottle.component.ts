@@ -23,14 +23,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
-import {
-  FGFile,
-  FuelType,
-  HydrogenComponentDto,
-  HydrogenStorageOverviewDto,
-  TransportMode,
-  UserDto,
-} from '@h2-trust/api';
+import { FGFile, HydrogenComponentDto, HydrogenStorageOverviewDto, UserDto } from '@h2-trust/api';
+import { FuelType, TransportMode } from '@h2-trust/domain';
 import { ERROR_MESSAGES } from '../../../shared/constants/error.messages';
 import { FormattedUnits } from '../../../shared/constants/formatted-units';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';

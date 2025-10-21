@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CompanyType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 import { CompanyDto } from '../company.dto';
 
@@ -14,7 +15,7 @@ export const CompanyDtoMock = <CompanyDto[]>[
     id: 'company-power-1',
     name: 'PowerGen AG',
     mastrNumber: 'P12345',
-    companyType: 'POWER_PRODUCER',
+    type: CompanyType.POWER_PRODUCER,
     address: <AddressDto>{
       id: 'address-power-1',
       street: 'Energieweg 1',
@@ -29,7 +30,7 @@ export const CompanyDtoMock = <CompanyDto[]>[
     id: 'company-hydrogen-1',
     name: 'HydroGen GmbH',
     mastrNumber: 'H67890',
-    companyType: 'HYDROGEN_PRODUCER',
+    type: CompanyType.HYDROGEN_PRODUCER,
     address: <AddressDto>{
       id: 'address-hydrogen-1',
       street: 'Wasserstoffstraße 1',
@@ -44,7 +45,7 @@ export const CompanyDtoMock = <CompanyDto[]>[
     id: 'company-recipient-1',
     name: 'H2Logistics',
     mastrNumber: 'R112233',
-    companyType: 'HYDROGEN_RECIPIENT',
+    type: CompanyType.HYDROGEN_RECIPIENT,
     address: <AddressDto>{
       id: 'address-recipient-1',
       street: 'Empfängerstraße 1',

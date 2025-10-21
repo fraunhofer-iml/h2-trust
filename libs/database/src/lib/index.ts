@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './enums';
 export * from './create-inputs';
 export * from './database.module';
 export * from './query-args';

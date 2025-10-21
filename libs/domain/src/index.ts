@@ -6,7 +6,4 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export enum MeasurementUnit {
-  HYDROGEN = 'kg',
-  POWER = 'kWh',
-}
+export * from './lib/enums';

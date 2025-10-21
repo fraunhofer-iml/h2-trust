@@ -7,6 +7,7 @@
  */
 
 import { UserDetailsDto } from '..';
+import { CompanyType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 import { CompanyDto } from '../../company';
 
@@ -19,7 +20,7 @@ export const UserDetailsDtoMock: UserDetailsDto[] = [
       id: '',
       name: '',
       mastrNumber: '',
-      companyType: '',
+      type: CompanyType.POWER_PRODUCER,
       address: <AddressDto>{
         street: '',
         postalCode: '',

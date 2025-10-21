@@ -8,8 +8,8 @@
 
 import { PowerAccessApprovalRepository, UserRepository } from 'libs/database/src/lib';
 import { Injectable } from '@nestjs/common';
-import { PowerAccessApprovalStatus } from '@prisma/client';
 import { PowerAccessApprovalEntity, UserEntity } from '@h2-trust/amqp';
+import { PowerAccessApprovalStatus } from '@h2-trust/domain';
 
 @Injectable()
 export class PowerAccessApprovalService {

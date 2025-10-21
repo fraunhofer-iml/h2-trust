@@ -10,13 +10,8 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import {
-  HydrogenProductionUnitDto,
-  HydrogenStorageUnitDto,
-  PowerProductionUnitDto,
-  UnitDto,
-  UnitType,
-} from '@h2-trust/api';
+import { HydrogenProductionUnitDto, HydrogenStorageUnitDto, PowerProductionUnitDto, UnitDto } from '@h2-trust/api';
+import { UnitType } from '@h2-trust/domain';
 import { UnitTypeChipComponent } from '../../../layout/unit-type-chip/unit-type-chip.component';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { HydrogenProductionDetailsComponent } from './hydrogen-production/hydrogen-production-details.component';

@@ -7,14 +7,14 @@
  */
 
 import { HydrogenStorageUnit, Prisma } from '@prisma/client';
-import { HydrogenStorageTypeSeed } from './hydrogen-storage-type.seed';
+import { HydrogenStorageType } from '@h2-trust/domain';
 import { UnitSeed } from './unit.seed';
 
 export const HydrogenStorageUnitSeed = <HydrogenStorageUnit[]>[
   {
     id: UnitSeed[5].id,
+    type: HydrogenStorageType.COMPRESSED_GASEOUS_HYDROGEN,
     capacity: new Prisma.Decimal(800),
     pressure: new Prisma.Decimal(5),
-    typeName: HydrogenStorageTypeSeed[0].name,
   },
 ];

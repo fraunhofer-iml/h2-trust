@@ -6,18 +6,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { UnitType } from '@h2-trust/api';
 import { HydrogenProductionUnitDbType } from '@h2-trust/database';
+import { UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
 import { BaseUnitEntity } from './base-unit.entity';
-import { HydrogenProductionTypeEntity } from './hydrogen-production-type.entity';
 
 export class HydrogenProductionUnitEntity extends BaseUnitEntity {
   ratedPower?: number;
   pressure?: number;
-  type?: HydrogenProductionTypeEntity;
-  biddingZoneName?: string;
+  method?: string;
+  technology?: string;
+  biddingZone?: string;
 
   constructor(
     id: string,
@@ -41,8 +41,9 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     unitType: UnitType,
     ratedPower: number,
     pressure: number,
-    type: HydrogenProductionTypeEntity,
-    biddingZoneName: string,
+    method: string,
+    technology: string,
+    biddingZone: string,
   ) {
     super(
       id,
@@ -58,10 +59,11 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
       operator,
       unitType,
     );
+    this.method = method;
+    this.technology = technology;
     this.ratedPower = ratedPower;
     this.pressure = pressure;
-    this.type = type;
-    this.biddingZoneName = biddingZoneName;
+    this.biddingZone = biddingZone;
   }
 
   static override fromDatabase(unit: HydrogenProductionUnitDbType): HydrogenProductionUnitEntity {
@@ -69,10 +71,9 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
       ...BaseUnitEntity.fromDatabase(unit),
       ratedPower: unit.hydrogenProductionUnit?.ratedPower?.toNumber() ?? 0,
       pressure: unit.hydrogenProductionUnit?.pressure?.toNumber() ?? 0,
-      type: unit.hydrogenProductionUnit?.type
-        ? HydrogenProductionTypeEntity.fromDatabase(unit.hydrogenProductionUnit.type)
-        : undefined,
-      biddingZoneName: unit.hydrogenProductionUnit?.biddingZoneName,
+      method: unit.hydrogenProductionUnit?.method,
+      technology: unit.hydrogenProductionUnit?.technology,
+      biddingZone: unit.hydrogenProductionUnit?.biddingZone,
       unitType: UnitType.HYDROGEN_PRODUCTION,
     };
   }

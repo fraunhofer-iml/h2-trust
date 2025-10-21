@@ -80,11 +80,11 @@ export function buildPowerProductionUnitCreateInput(entity: PowerProductionUnitE
   if (!entity.type?.name) {
     throw new BrokerException('PowerProductionUnitEntity.type was undefined', HttpStatus.BAD_REQUEST);
   }
-  if (!entity.gridLevelName) {
-    throw new BrokerException('PowerProductionUnitEntity.gridLevelName was undefined', HttpStatus.BAD_REQUEST);
+  if (!entity.gridLevel) {
+    throw new BrokerException('PowerProductionUnitEntity.gridLevel was undefined', HttpStatus.BAD_REQUEST);
   }
-  if (!entity.biddingZoneName) {
-    throw new BrokerException('PowerProductionUnitEntity.biddingZoneName was undefined', HttpStatus.BAD_REQUEST);
+  if (!entity.biddingZone) {
+    throw new BrokerException('PowerProductionUnitEntity.biddingZone was undefined', HttpStatus.BAD_REQUEST);
   }
 
   return Prisma.validator<Prisma.UnitCreateInput>()({
@@ -97,39 +97,39 @@ export function buildPowerProductionUnitCreateInput(entity: PowerProductionUnitE
         gridOperator: entity.gridOperator,
         gridConnectionNumber: entity.gridConnectionNumber,
         type: { connect: { name: entity.type.name } },
-        gridLevel: { connect: { name: entity.gridLevelName } },
-        biddingZone: { connect: { name: entity.biddingZoneName } },
+        gridLevel: entity.gridLevel,
+        biddingZone: entity.biddingZone,
       },
     },
   });
 }
 
 export function buildHydrogenProductionUnitCreateInput(entity: HydrogenProductionUnitEntity): Prisma.UnitCreateInput {
+  if (!entity.biddingZone) {
+    throw new BrokerException('HydrogenProductionUnitEntity.biddingZone was undefined', HttpStatus.BAD_REQUEST);
+  }
+  if (!entity.method) {
+    throw new BrokerException('HydrogenProductionUnitEntity.method was undefined', HttpStatus.BAD_REQUEST);
+  }
+  if (!entity.technology) {
+    throw new BrokerException('HydrogenProductionUnitEntity.technology was undefined', HttpStatus.BAD_REQUEST);
+  }
   if (!entity.ratedPower) {
     throw new BrokerException('HydrogenProductionUnitEntity.ratedPower was undefined', HttpStatus.BAD_REQUEST);
   }
   if (!entity.pressure) {
     throw new BrokerException('HydrogenProductionUnitEntity.pressure was undefined', HttpStatus.BAD_REQUEST);
   }
-  if (!entity.type?.id) {
-    throw new BrokerException('HydrogenProductionUnitEntity.type.id was undefined', HttpStatus.BAD_REQUEST);
-  }
-  if (!entity.biddingZoneName) {
-    throw new BrokerException('HydrogenProductionUnitEntity.biddingZoneName was undefined', HttpStatus.BAD_REQUEST);
-  }
 
   return Prisma.validator<Prisma.UnitCreateInput>()({
     ...buildBaseUnitCreateInput(entity),
     hydrogenProductionUnit: {
       create: {
+        method: entity.method,
+        technology: entity.technology,
+        biddingZone: entity.biddingZone,
         ratedPower: new Prisma.Decimal(entity.ratedPower),
         pressure: new Prisma.Decimal(entity.pressure),
-        type: {
-          connect: { id: entity.type.id },
-        },
-        biddingZone: {
-          connect: { name: entity.biddingZoneName },
-        },
       },
     },
   });
@@ -152,11 +152,7 @@ export function buildHydrogenStorageUnitCreateInput(entity: HydrogenStorageUnitE
       create: {
         capacity: new Prisma.Decimal(entity.capacity),
         pressure: new Prisma.Decimal(entity.pressure),
-        type: {
-          connect: {
-            name: entity.type,
-          },
-        },
+        type: entity.type,
       },
     },
   });

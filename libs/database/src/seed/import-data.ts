@@ -13,21 +13,14 @@ import {
   BatchRelationPowerHydrogenSeed,
   BatchRelationTransportationBottlingSeed,
   BatchSeed,
-  BiddingZoneSeed,
   CompanySeed,
   DocumentSeed,
-  FuelTypeSeed,
-  GridLevelSeed,
-  HydrogenProductionTypeSeed,
   HydrogenProductionUnitSeed,
-  HydrogenStorageTypeSeed,
   HydrogenStorageUnitSeed,
   PowerAccessApprovalSeed,
   PowerProductionTypeSeed,
   PowerProductionUnitSeed,
   ProcessStepSeed,
-  ProcessTypeSeed,
-  TransportModeSeed,
   UnitSeed,
   UserSeed,
 } from './data';
@@ -61,26 +54,6 @@ export async function seedDatabase() {
       name: 'powerProductionType',
       records: PowerProductionTypeSeed,
       createRecord: async (data: any) => await prisma.powerProductionType.create({ data }),
-    },
-    {
-      name: 'hydrogenProductionType',
-      records: HydrogenProductionTypeSeed,
-      createRecord: async (data: any) => await prisma.hydrogenProductionType.create({ data }),
-    },
-    {
-      name: 'hydrogenStorageType',
-      records: HydrogenStorageTypeSeed,
-      createRecord: async (data: any) => await prisma.hydrogenStorageType.create({ data }),
-    },
-    {
-      name: 'gridLevel',
-      records: GridLevelSeed,
-      createRecord: async (data: any) => await prisma.gridLevel.create({ data }),
-    },
-    {
-      name: 'biddingZone',
-      records: BiddingZoneSeed,
-      createRecord: async (data: any) => await prisma.biddingZone.create({ data }),
     },
     {
       name: 'powerProductionUnit',
@@ -142,24 +115,9 @@ export async function seedDatabase() {
         }),
     },
     {
-      name: 'processTypes',
-      records: ProcessTypeSeed,
-      createRecord: async (data: any) => await prisma.processType.create({ data }),
-    },
-    {
       name: 'processStep',
       records: ProcessStepSeed,
       createRecord: async (data: any) => await prisma.processStep.create({ data }),
-    },
-    {
-      name: 'transportMode',
-      records: TransportModeSeed,
-      createRecord: async (data: any) => await prisma.transportMode.create({ data }),
-    },
-    {
-      name: 'fuelType',
-      records: FuelTypeSeed,
-      createRecord: async (data: any) => await prisma.fuelType.create({ data }),
     },
     {
       name: 'document',

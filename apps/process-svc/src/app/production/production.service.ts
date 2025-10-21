@@ -20,20 +20,19 @@ import {
   ProcessStepMessagePatterns,
   UserEntity,
 } from '@h2-trust/amqp';
-import { ProcessType } from '@h2-trust/api';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { BatchTypeDbEnum } from '@h2-trust/database';
+import { BatchType, ProcessType } from '@h2-trust/domain';
 import { ProductionUtils } from './utils/production.utils';
 
 interface CreateProcessStepsParams {
   productionStartedAt: string;
   productionEndedAt: string;
   accountingPeriodInSeconds: number;
-  processType: ProcessType;
+  type: ProcessType;
   batchActivity: boolean;
   batchAmount: number;
   batchQuality: string;
-  batchType: BatchTypeDbEnum;
+  batchType: BatchType;
   batchOwner: string;
   hydrogenStorageUnitId: string;
   recordedBy: string;
@@ -61,11 +60,11 @@ export class ProductionService {
       productionStartedAt: createProductionEntity.productionStartedAt,
       productionEndedAt: createProductionEntity.productionEndedAt,
       accountingPeriodInSeconds: this.powerAccountingPeriodInSeconds,
-      processType: ProcessType.POWER_PRODUCTION,
+      type: ProcessType.POWER_PRODUCTION,
       batchActivity: false,
       batchAmount: createProductionEntity.powerAmountKwh,
       batchQuality: '{}',
-      batchType: BatchTypeDbEnum.POWER,
+      batchType: BatchType.POWER,
       batchOwner: createProductionEntity.companyIdOfPowerProductionUnit,
       hydrogenStorageUnitId: null,
       recordedBy: createProductionEntity.recordedBy,
@@ -77,11 +76,11 @@ export class ProductionService {
       productionStartedAt: createProductionEntity.productionStartedAt,
       productionEndedAt: createProductionEntity.productionEndedAt,
       accountingPeriodInSeconds: this.hydrogenAccountingPeriodInSeconds,
-      processType: ProcessType.HYDROGEN_PRODUCTION,
+      type: ProcessType.HYDROGEN_PRODUCTION,
       batchActivity: true,
       batchAmount: createProductionEntity.hydrogenAmountKg,
       batchQuality: JSON.stringify({ color: createProductionEntity.hydrogenColor }),
-      batchType: BatchTypeDbEnum.HYDROGEN,
+      batchType: BatchType.HYDROGEN,
       batchOwner: createProductionEntity.companyIdOfHydrogenProductionUnit,
       hydrogenStorageUnitId: createProductionEntity.hydrogenStorageUnitId,
       recordedBy: createProductionEntity.recordedBy,
@@ -93,7 +92,7 @@ export class ProductionService {
   }
 
   private async createProcessSteps(params: CreateProcessStepsParams): Promise<ProcessStepEntity[]> {
-    this.logger.debug(`# ${ProcessType[params.processType]}`);
+    this.logger.debug(`# ${ProcessType[params.type]}`);
 
     const processSteps: ProcessStepEntity[] = [];
     const productionStartedAtInSeconds = new Date(params.productionStartedAt).getTime() / 1000;
@@ -135,7 +134,7 @@ export class ProductionService {
           null,
           startedAt,
           endedAt,
-          params.processType,
+          params.type,
           {
             active: params.batchActivity,
             amount: amountPerAccountingPeriod,

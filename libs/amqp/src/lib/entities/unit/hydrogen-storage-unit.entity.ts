@@ -8,8 +8,9 @@
 
 import { HttpStatus } from '@nestjs/common';
 import { Batch } from '@prisma/client';
-import { parseColor, UnitType } from '@h2-trust/api';
+import { parseColor } from '@h2-trust/api';
 import { HydrogenStorageUnitDbType } from '@h2-trust/database';
+import { UnitType } from '@h2-trust/domain';
 import { BrokerException } from '../../broker';
 import { AddressEntity } from '../address';
 import { HydrogenComponentEntity } from '../bottling';
@@ -72,7 +73,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       ...BaseUnitEntity.fromDatabase(unit),
       capacity: unit.hydrogenStorageUnit?.capacity ?? 0,
       pressure: unit.hydrogenStorageUnit?.pressure ?? 0,
-      type: unit.hydrogenStorageUnit?.typeName,
+      type: unit.hydrogenStorageUnit?.type,
       filling: HydrogenStorageUnitEntity.mapFilling(unit),
       unitType: UnitType.HYDROGEN_STORAGE,
     };

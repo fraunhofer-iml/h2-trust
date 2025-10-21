@@ -7,16 +7,16 @@
  */
 
 import { HydrogenProductionUnit, Prisma } from '@prisma/client';
-import { BiddingZoneSeed } from './bidding-zone.seed';
-import { HydrogenProductionTypeSeed } from './hydrogen-production-type.seed';
+import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology } from '@h2-trust/domain';
 import { UnitSeed } from './unit.seed';
 
 export const HydrogenProductionUnitSeed = <HydrogenProductionUnit[]>[
   {
     id: UnitSeed[4].id,
+    method: HydrogenProductionMethod.ELECTROLYSIS,
+    technology: HydrogenProductionTechnology.AEL,
+    biddingZone: BiddingZone.DE_LU,
     ratedPower: new Prisma.Decimal(1000),
     pressure: new Prisma.Decimal(10),
-    typeId: HydrogenProductionTypeSeed[0].id,
-    biddingZoneName: BiddingZoneSeed[0].name,
   },
 ];

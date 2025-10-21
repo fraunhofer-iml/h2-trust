@@ -24,8 +24,8 @@ export const UserSeed = <User[]>[
   },
   {
     id: 'f2872c58-ff19-4079-ad53-e04cd95b5a4a',
-    name: 'Nick Hydrogen',
-    email: 'nick@hydrogen.de',
+    name: 'Erika Hydrogen',
+    email: 'erika@hydrogen.de',
     companyId: CompanySeed[1].id,
   },
 ];

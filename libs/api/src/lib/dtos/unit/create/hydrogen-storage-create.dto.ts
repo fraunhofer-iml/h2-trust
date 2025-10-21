@@ -6,15 +6,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsIn, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
 import { HydrogenStorageUnitEntity } from '@h2-trust/amqp';
-import { HydrogenStorageType, UnitType } from '../../../enums';
+import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 import { UnitCreateDto } from './unit-create.dto';
 
 export class HydrogenStorageUnitCreateDto extends UnitCreateDto {
   @IsNotEmpty()
-  @IsIn(Object.values(HydrogenStorageType))
+  @IsEnum(HydrogenStorageType)
   storageType: HydrogenStorageType;
 
   @IsNotEmpty()

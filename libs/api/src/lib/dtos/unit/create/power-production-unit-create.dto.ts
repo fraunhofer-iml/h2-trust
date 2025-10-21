@@ -6,15 +6,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsIn, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { IsEnum, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 import { PowerProductionUnitEntity } from '@h2-trust/amqp';
-import { BiddingZones, GridLevel, PowerProductionType, UnitType } from '../../../enums';
+import { BiddingZone, GridLevel, PowerProductionType, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 import { UnitCreateDto } from './unit-create.dto';
 
 export class PowerProductionUnitCreateDto extends UnitCreateDto {
   @IsNotEmpty()
-  @IsIn([Object.values(PowerProductionType)])
+  @IsEnum(PowerProductionType)
   powerProductionType: PowerProductionType;
 
   @IsOptional()
@@ -22,15 +22,15 @@ export class PowerProductionUnitCreateDto extends UnitCreateDto {
   decommissioningPlannedOn?: string;
 
   @IsNotEmpty()
-  @IsIn([Object.values(BiddingZones)])
-  biddingZone: BiddingZones;
+  @IsEnum(BiddingZone)
+  biddingZone: BiddingZone;
 
   @IsOptional()
   @IsString()
   gridOperator?: string;
 
   @IsNotEmpty()
-  @IsIn([Object.values(BiddingZones)])
+  @IsEnum(GridLevel)
   gridLevel: GridLevel;
 
   @IsOptional()
@@ -60,7 +60,7 @@ export class PowerProductionUnitCreateDto extends UnitCreateDto {
     commissionedOn: string,
     address: AddressDto,
     powerProductionType: PowerProductionType,
-    biddingZone: BiddingZones,
+    biddingZone: BiddingZone,
     gridLevel: GridLevel,
     ratedPower: number,
     electricityMeterNumber: string,
@@ -110,8 +110,8 @@ export class PowerProductionUnitCreateDto extends UnitCreateDto {
       electricityMeterNumber: dto.electricityMeterNumber,
       ratedPower: dto.ratedPower,
       gridOperator: dto.gridOperator,
-      gridLevelName: dto.gridLevel,
-      biddingZoneName: dto.biddingZone,
+      gridLevel: dto.gridLevel,
+      biddingZone: dto.biddingZone,
       gridConnectionNumber: dto.gridConnectionNumber,
       type: {
         name: dto.powerProductionType,

@@ -23,8 +23,8 @@ import {
   UnitCreateDto,
   UnitDto,
   UnitOverviewDto,
-  UnitType,
 } from '@h2-trust/api';
+import { UnitType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 
 @Injectable()

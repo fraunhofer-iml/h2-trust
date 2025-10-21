@@ -14,8 +14,8 @@ import {
   HydrogenCompositionUtil,
   ProcessStepEntity,
 } from '@h2-trust/amqp';
-import { parseColor, ProcessType } from '@h2-trust/api';
-import { BatchTypeDbEnum } from '@h2-trust/database';
+import { parseColor } from '@h2-trust/api';
+import { BatchType, ProcessType } from '@h2-trust/domain';
 
 export class HydrogenComponentAssembler {
   static assembleFromBottlingProcessStep(bottlingProcessStep: ProcessStepEntity): HydrogenComponentEntity[] {
@@ -38,10 +38,10 @@ export class HydrogenComponentAssembler {
     }
 
     if (
-      bottlingProcessStep.processType != ProcessType.HYDROGEN_BOTTLING &&
-      bottlingProcessStep.processType != ProcessType.HYDROGEN_TRANSPORTATION
+      bottlingProcessStep.type != ProcessType.HYDROGEN_BOTTLING &&
+      bottlingProcessStep.type != ProcessType.HYDROGEN_TRANSPORTATION
     ) {
-      const errorMessage = `ProcessStep ${bottlingProcessStep.id} should be type ${ProcessType.HYDROGEN_BOTTLING} or ${ProcessType.HYDROGEN_TRANSPORTATION}, but is ${bottlingProcessStep.processType}.`;
+      const errorMessage = `ProcessStep ${bottlingProcessStep.id} should be type ${ProcessType.HYDROGEN_BOTTLING} or ${ProcessType.HYDROGEN_TRANSPORTATION}, but is ${bottlingProcessStep.type}.`;
       throw Error(errorMessage);
     }
 
@@ -57,8 +57,8 @@ export class HydrogenComponentAssembler {
   }
 
   private static createHydrogenComponentFromBatch(batch: BatchEntity): HydrogenComponentEntity {
-    if (batch.type !== BatchTypeDbEnum.HYDROGEN) {
-      const errorMessage = `Predecessor batch ${batch.id} should be type ${BatchTypeDbEnum.HYDROGEN}, but is ${batch.type}.`;
+    if (batch.type !== BatchType.HYDROGEN) {
+      const errorMessage = `Predecessor batch ${batch.id} should be type ${BatchType.HYDROGEN}, but is ${batch.type}.`;
       throw new BrokerException(errorMessage, HttpStatus.BAD_REQUEST);
     }
 

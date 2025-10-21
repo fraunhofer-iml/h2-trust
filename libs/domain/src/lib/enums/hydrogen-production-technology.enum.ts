@@ -6,6 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessType } from '@prisma/client';
-
-export type ProcessTypeDb = ProcessType;
+export enum HydrogenProductionTechnology {
+  AEL = 'AEL',
+  AEM = 'AEM',
+  PEM = 'PEM',
+  SOEC = 'SOEC',
+}

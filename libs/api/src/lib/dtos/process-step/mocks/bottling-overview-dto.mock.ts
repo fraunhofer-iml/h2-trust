@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { HydrogenColor } from '@h2-trust/domain';
 import { BottlingOverviewDto } from '../bottling-overview.dto';
 
 export const BottlingOverviewDtoMock = <BottlingOverviewDto[]>[
@@ -14,6 +15,6 @@ export const BottlingOverviewDtoMock = <BottlingOverviewDto[]>[
     filledAt: new Date('2025-04-07T08:48:00.000Z'),
     filledAmount: 100,
     owner: 'company-hydrogen-1',
-    color: 'GREEN',
+    color: HydrogenColor.GREEN,
   },
 ];

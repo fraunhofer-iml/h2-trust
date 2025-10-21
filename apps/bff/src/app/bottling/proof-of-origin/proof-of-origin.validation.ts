@@ -8,7 +8,7 @@
 
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
-import { ProcessType } from '@h2-trust/api';
+import { ProcessType } from '@h2-trust/domain';
 
 export function assertPredecessorsExist(predecessors: BatchEntity[] | undefined, processStepId: string): void {
   if (!Array.isArray(predecessors) || predecessors.length === 0) {
@@ -29,12 +29,12 @@ export function assertNumberOfProcessSteps(
 
 export function assertProcessType(processSteps: ProcessStepEntity[], expectedProcessType: ProcessType): void {
   const invalidProcessSteps: ProcessStepEntity[] = processSteps.filter(
-    (processStep) => processStep.processType !== expectedProcessType,
+    (processStep) => processStep.type !== expectedProcessType,
   );
 
   if (invalidProcessSteps.length > 0) {
     const invalidProcessTypes = invalidProcessSteps
-      .map((processStep) => [processStep.id, processStep.processType].join(':'))
+      .map((processStep) => [processStep.id, processStep.type].join(':'))
       .join(', ');
     const errorMessage = `All process steps must be of type ${expectedProcessType}, but found invalid process types: ${invalidProcessTypes}`;
     throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);

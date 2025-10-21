@@ -13,7 +13,7 @@ import {
   ProcessStepEntityHydrogenTransportationMock,
   ProcessStepEntityPowerProductionMock,
 } from '@h2-trust/amqp';
-import { ProcessType } from '@h2-trust/api';
+import { ProcessType } from '@h2-trust/domain';
 import { ProcessLineageService } from './process-lineage.service';
 import { ProcessStepService } from './process-step.service';
 
@@ -55,7 +55,7 @@ describe('ProcessLineageService#fetchHydrogenBottlingProcessStep', () => {
   it('should throw if process step has wrong type', async () => {
     const hydrogenBottling: ProcessStepEntity = structuredClone(ProcessStepEntityHydrogenBottlingMock[0]);
 
-    const expectedErrorMessage = `All process steps must be of type ${ProcessType.HYDROGEN_TRANSPORTATION}, but found invalid process types: ${hydrogenBottling.id}:${hydrogenBottling.processType}`;
+    const expectedErrorMessage = `All process steps must be of type ${ProcessType.HYDROGEN_TRANSPORTATION}, but found invalid process types: ${hydrogenBottling.id}:${hydrogenBottling.type}`;
 
     await expect(service.fetchHydrogenBottlingProcessStep(hydrogenBottling)).rejects.toThrow(expectedErrorMessage);
   });
@@ -94,7 +94,7 @@ describe('ProcessLineageService#fetchHydrogenBottlingProcessStep', () => {
 
     jest.spyOn(processStepService, 'fetchProcessStepsOfBatches').mockResolvedValueOnce([powerProduction]);
 
-    const expectedErrorMessage = `All process steps must be of type ${ProcessType.HYDROGEN_BOTTLING}, but found invalid process types: ${powerProduction.id}:${powerProduction.processType}`;
+    const expectedErrorMessage = `All process steps must be of type ${ProcessType.HYDROGEN_BOTTLING}, but found invalid process types: ${powerProduction.id}:${powerProduction.type}`;
 
     await expect(service.fetchHydrogenBottlingProcessStep(hydrogenTransportation)).rejects.toThrow(
       expectedErrorMessage,

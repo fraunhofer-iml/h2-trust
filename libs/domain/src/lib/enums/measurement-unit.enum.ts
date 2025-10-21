@@ -6,13 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenStorageType } from '@prisma/client';
-
-export const HydrogenStorageTypeSeed = <HydrogenStorageType[]>[
-  {
-    name: 'COMPRESSED_GASEOUS_HYDROGEN',
-  },
-  {
-    name: 'LIQUID_HYDROGEN',
-  },
-];
+export enum MeasurementUnit {
+  HYDROGEN = 'kg',
+  POWER = 'kWh',
+  WATER = 'l',
+}

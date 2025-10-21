@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType, EnergySource } from '../../enums';
+import { BatchType, EnergySource } from '@h2-trust/domain';
 import { HydrogenComponentDto } from '../process-step';
 import { EmissionDto } from './emission.dto';
 import { WaterDetailsDto } from './water-details.dto';
@@ -21,16 +21,9 @@ export abstract class BatchDto {
    * measuring unit for amount
    */
   unit: string;
-  batchType: BatchType;
+  batchType: string;
 
-  constructor(
-    id: string,
-    emission: EmissionDto,
-    creationDate: Date,
-    amount: number,
-    unit: string,
-    batchType: BatchType,
-  ) {
+  constructor(id: string, emission: EmissionDto, creationDate: Date, amount: number, unit: string, batchType: string) {
     this.id = id;
     this.emission = emission;
     this.createdAt = creationDate;

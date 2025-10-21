@@ -6,24 +6,25 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Batch, BatchType, HydrogenColor, Prisma } from '@prisma/client';
+import { Batch, Prisma } from '@prisma/client';
+import { BatchType, HydrogenColor } from '@h2-trust/domain';
 import { CompanySeed } from '../company.seed';
 
 export const BatchHydrogenTransportedSeed = <Batch[]>[
   {
     id: 'batch-hydrogen-transported-1',
-    active: true,
-    amount: new Prisma.Decimal(10),
-    quality: `{"color":"${HydrogenColor.MIX}"}`,
     type: BatchType.HYDROGEN,
+    amount: new Prisma.Decimal(10),
+    active: true,
+    quality: `{"color":"${HydrogenColor.MIX}"}`,
     ownerId: CompanySeed[3].id,
   },
   {
     id: 'batch-hydrogen-transported-2',
-    active: true,
-    amount: new Prisma.Decimal(50),
-    quality: `{"color":"${HydrogenColor.MIX}"}`,
     type: BatchType.HYDROGEN,
+    amount: new Prisma.Decimal(50),
+    active: true,
+    quality: `{"color":"${HydrogenColor.MIX}"}`,
     ownerId: CompanySeed[3].id,
   },
 ];

@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenColorDbEnum } from 'libs/database/src/lib';
 import {
   CompanySeed,
   HydrogenProductionUnitSeed,
@@ -14,6 +13,7 @@ import {
   PowerProductionUnitSeed,
   UserSeed,
 } from 'libs/database/src/seed';
+import { HydrogenColor } from '@h2-trust/domain';
 import { CreateProductionEntity } from '../create-production.entity';
 
 export const CreateProductionEntityMock: CreateProductionEntity[] = [
@@ -25,7 +25,7 @@ export const CreateProductionEntityMock: CreateProductionEntity[] = [
     HydrogenProductionUnitSeed[0].id,
     5,
     UserSeed[1].id,
-    HydrogenColorDbEnum.GREEN,
+    HydrogenColor.GREEN,
     HydrogenStorageUnitSeed[0].id,
     CompanySeed[0].id,
     CompanySeed[1].id,

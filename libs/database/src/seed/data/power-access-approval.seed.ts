@@ -6,7 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerAccessApproval, PowerAccessApprovalStatus } from '@prisma/client';
+import { PowerAccessApproval } from '@prisma/client';
+import { PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { CompanySeed } from './company.seed';
 import { DocumentSeed } from './document.seed';
 import { PowerProductionUnitSeed } from './unit';
@@ -15,7 +16,7 @@ export const PowerAccessApprovalSeed = <PowerAccessApproval[]>[
   {
     id: 'power-access-approval-1',
     decidedAt: new Date('2025-02-01'),
-    powerAccessApprovalStatus: PowerAccessApprovalStatus.APPROVED,
+    status: PowerAccessApprovalStatus.APPROVED,
     powerProducerId: CompanySeed[0].id,
     powerProductionUnitId: PowerProductionUnitSeed[0].id,
     hydrogenProducerId: CompanySeed[1].id,
@@ -24,7 +25,7 @@ export const PowerAccessApprovalSeed = <PowerAccessApproval[]>[
   {
     id: 'power-access-approval-2',
     decidedAt: new Date('2025-08-14'),
-    powerAccessApprovalStatus: PowerAccessApprovalStatus.APPROVED,
+    status: PowerAccessApprovalStatus.APPROVED,
     powerProducerId: CompanySeed[1].id,
     powerProductionUnitId: PowerProductionUnitSeed[4].id,
     hydrogenProducerId: CompanySeed[1].id,

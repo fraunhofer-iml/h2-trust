@@ -7,16 +7,16 @@
  */
 
 import { HydrogenStorageUnitEntity } from '@h2-trust/amqp';
-import { UnitType } from '../../enums';
+import { UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
 import { FillingDto } from './filling.dto';
 
 export class HydrogenStorageUnitDto extends BaseUnitDto {
-  capacity: number;
-  filling: FillingDto[];
-  pressure: number;
   storageType: string;
+  capacity: number;
+  pressure: number;
+  filling: FillingDto[];
 
   constructor(
     id: string,
@@ -26,7 +26,6 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
     modelType: string,
     serialNumber: string,
     commissionedOn: Date,
-    decommissioningPlannedOn: Date,
     address: AddressDto,
     company: {
       id: string;
@@ -52,7 +51,6 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
       modelType,
       serialNumber,
       commissionedOn,
-      decommissioningPlannedOn,
       address,
       company,
       modelNumber,
@@ -69,15 +67,15 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
   static override fromEntity(unit: HydrogenStorageUnitEntity): HydrogenStorageUnitDto {
     return {
       ...BaseUnitDto.fromEntity(unit),
+      storageType: unit.type!,
       capacity: unit.capacity!,
+      pressure: unit.pressure!,
       filling:
         unit.filling?.map((filling) => ({
           id: '',
           color: filling.color,
           amount: filling.amount,
         })) ?? [],
-      pressure: unit.pressure!,
-      storageType: unit.type!,
     };
   }
 }

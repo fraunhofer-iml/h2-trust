@@ -30,9 +30,9 @@ import {
   UnitCreateDto,
   UnitDto,
   UnitOverviewDto,
-  UnitType,
   UserDetailsDto,
 } from '@h2-trust/api';
+import { UnitType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';

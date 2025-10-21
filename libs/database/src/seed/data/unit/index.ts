@@ -6,11 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './bidding-zone.seed';
-export * from './grid-level.seed';
-export * from './hydrogen-production-type.seed';
 export * from './hydrogen-production-unit.seed';
-export * from './hydrogen-storage-type.seed';
 export * from './hydrogen-storage-unit.seed';
 export * from './power-production-type.seed';
 export * from './power-production-unit.seed';

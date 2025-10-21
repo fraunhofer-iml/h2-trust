@@ -8,14 +8,14 @@
 
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
-  BiddingZones,
-  ElectrolysisType,
+  BiddingZone,
   GridLevel,
-  HydrogenProductionType,
+  HydrogenProductionMethod,
+  HydrogenProductionTechnology,
   HydrogenStorageType,
   PowerProductionType,
   UnitType,
-} from '@h2-trust/api';
+} from '@h2-trust/domain';
 
 export type UnitFormGroup = {
   name: FormControl<string | null>;
@@ -39,10 +39,10 @@ export type UnitFormGroup = {
 };
 
 export type HydrogenProductionFormGroup = {
-  biddingZone: FormControl<BiddingZones | null>;
+  biddingZone: FormControl<BiddingZone | null>;
   ratedPower: FormControl<number | null>;
-  method: FormControl<HydrogenProductionType | null>;
-  technology: FormControl<ElectrolysisType | null>;
+  method: FormControl<HydrogenProductionMethod | null>;
+  technology: FormControl<HydrogenProductionTechnology | null>;
   pressure: FormControl<number | null>;
 };
 export type HydrogenStorageFormGroup = {
@@ -52,7 +52,7 @@ export type HydrogenStorageFormGroup = {
 };
 
 export type PowerProductionFormGroup = {
-  biddingZone: FormControl<BiddingZones | null>;
+  biddingZone: FormControl<BiddingZone | null>;
   gridOperator: FormControl<string | null>;
   gridLevel: FormControl<GridLevel | null>;
   gridConnectionNumber: FormControl<string | null>;
@@ -99,7 +99,7 @@ export const newH2StorageForm = () =>
 
 export const newPowerProductionForm = () =>
   new FormGroup<PowerProductionFormGroup>({
-    biddingZone: new FormControl<BiddingZones | null>(null, Validators.required),
+    biddingZone: new FormControl<BiddingZone | null>(null, Validators.required),
     gridOperator: new FormControl<string | null>(null),
     gridLevel: new FormControl<GridLevel | null>(null, Validators.required),
     gridConnectionNumber: new FormControl<string | null>(null),
@@ -111,10 +111,13 @@ export const newPowerProductionForm = () =>
 
 export const newH2ProductionForm = () =>
   new FormGroup<HydrogenProductionFormGroup>({
-    biddingZone: new FormControl<BiddingZones | null>(null, Validators.required),
+    biddingZone: new FormControl<BiddingZone | null>(null, Validators.required),
     ratedPower: new FormControl<number | null>(null, Validators.required),
-    method: new FormControl<HydrogenProductionType | null>(null, Validators.required),
-    technology: new FormControl<ElectrolysisType | null>({ value: null, disabled: true }, Validators.required),
+    method: new FormControl<HydrogenProductionMethod | null>(null, Validators.required),
+    technology: new FormControl<HydrogenProductionTechnology | null>(
+      { value: null, disabled: true },
+      Validators.required,
+    ),
     pressure: new FormControl<number | null>(null, Validators.required),
   });
 

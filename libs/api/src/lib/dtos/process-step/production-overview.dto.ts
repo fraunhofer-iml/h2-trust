@@ -7,7 +7,7 @@
  */
 
 import { ProcessStepEntity } from '@h2-trust/amqp';
-import { BatchType } from '../../enums';
+import { BatchType } from '@h2-trust/domain';
 import { parseColor } from '../util';
 
 export class ProductionOverviewDto {

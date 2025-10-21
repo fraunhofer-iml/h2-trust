@@ -7,7 +7,6 @@
  */
 
 import { PowerAccessApprovalDbType } from 'libs/database/src/lib';
-import { PowerAccessApprovalStatus } from '@prisma/client';
 import { CompanyEntity } from '../company';
 import { DocumentEntity } from '../document';
 import { BaseUnitEntity, PowerProductionUnitEntity } from '../unit';
@@ -15,7 +14,7 @@ import { BaseUnitEntity, PowerProductionUnitEntity } from '../unit';
 export class PowerAccessApprovalEntity {
   id: string;
   decidedAt: Date;
-  status: PowerAccessApprovalStatus;
+  status: string;
   powerProducer: CompanyEntity;
   powerProductionUnit: PowerProductionUnitEntity;
   hydrogenProducer: CompanyEntity;
@@ -24,7 +23,7 @@ export class PowerAccessApprovalEntity {
   constructor(
     id: string,
     decidedAt: Date,
-    status: PowerAccessApprovalStatus,
+    status: string,
     powerProducer: CompanyEntity,
     powerProductionUnit: PowerProductionUnitEntity,
     hydrogenProducer: CompanyEntity,
@@ -43,13 +42,13 @@ export class PowerAccessApprovalEntity {
     return <PowerAccessApprovalEntity>{
       id: powerAccessApproval.id,
       decidedAt: powerAccessApproval.decidedAt,
-      status: powerAccessApproval.powerAccessApprovalStatus,
+      status: powerAccessApproval.status,
       powerProducer: CompanyEntity.fromDatabase(powerAccessApproval.powerProducer),
       powerProductionUnit: {
         ...BaseUnitEntity.fromDatabase(powerAccessApproval.powerProductionUnit.generalInfo),
         ratedPower: powerAccessApproval.powerProductionUnit?.ratedPower?.toNumber() ?? 0,
         gridOperator: powerAccessApproval.powerProductionUnit?.gridOperator,
-        gridLevelName: powerAccessApproval.powerProductionUnit?.gridLevelName,
+        gridLevel: powerAccessApproval.powerProductionUnit?.gridLevel,
         gridConnectionNumber: powerAccessApproval.powerProductionUnit?.gridConnectionNumber,
         typeName: powerAccessApproval.powerProductionUnit?.type.name,
       },

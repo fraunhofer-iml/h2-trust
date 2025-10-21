@@ -18,7 +18,7 @@ import {
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { parseColor } from '@h2-trust/api';
-import { HydrogenColorDbEnum } from '@h2-trust/database';
+import { HydrogenColor } from '@h2-trust/domain';
 
 @Injectable()
 export class HydrogenCompositionService {
@@ -27,8 +27,8 @@ export class HydrogenCompositionService {
   async determineHydrogenComposition(processStep: ProcessStepEntity): Promise<HydrogenComponentEntity[]> {
     const color = parseColor(processStep.batch.quality);
 
-    if (color === HydrogenColorDbEnum.GREEN) {
-      return [new HydrogenComponentEntity(HydrogenColorDbEnum.GREEN, processStep.batch.amount)];
+    if (color === HydrogenColor.GREEN) {
+      return [new HydrogenComponentEntity(HydrogenColor.GREEN, processStep.batch.amount)];
     }
 
     const hydrogenStorageUnit: HydrogenStorageUnitEntity = await firstValueFrom(

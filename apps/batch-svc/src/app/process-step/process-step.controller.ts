@@ -9,10 +9,10 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { HydrogenComponentEntity, ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
-import { ProcessType } from '@h2-trust/api';
 import { BottlingService } from './bottling/bottling.service';
 import { ProcessStepService } from './process-step.service';
 import 'multer';
+import { ProcessType } from '@h2-trust/domain';
 import { TransportationService } from './transportation.service';
 
 @Controller()

@@ -25,8 +25,8 @@ export class TransportationDetailsEntity {
     return <TransportationDetailsEntity>{
       id: transportationDetails.id,
       distance: transportationDetails.distance.toNumber() ?? 0,
-      transportMode: transportationDetails.transportModeName,
-      fuelType: transportationDetails.fuelTypeName,
+      transportMode: transportationDetails.transportMode,
+      fuelType: transportationDetails.fuelType,
     };
   }
 }

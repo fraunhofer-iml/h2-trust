@@ -6,11 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { HydrogenColor } from '@h2-trust/domain';
 import { HydrogenComponentDto } from '../hydrogen-component.dto';
 
 export const HydrogenCompositionDtoMock: HydrogenComponentDto[] = [
-  { color: 'GREEN', amount: 1 },
-  { color: 'ORANGE', amount: 2 },
-  { color: 'PINK', amount: 3 },
-  { color: 'YELLOW', amount: 4 },
+  { color: HydrogenColor.GREEN, amount: 1 },
+  { color: HydrogenColor.ORANGE, amount: 2 },
+  { color: HydrogenColor.PINK, amount: 3 },
+  { color: HydrogenColor.YELLOW, amount: 4 },
 ];

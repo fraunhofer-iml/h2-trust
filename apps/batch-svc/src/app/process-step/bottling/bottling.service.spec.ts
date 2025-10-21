@@ -15,9 +15,10 @@ import {
   ProcessStepEntityHydrogenProductionMock,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
-import { ExpressMulterFileMock, HydrogenColor, parseColor } from '@h2-trust/api';
+import { ExpressMulterFileMock, parseColor } from '@h2-trust/api';
 import { ConfigurationModule } from '@h2-trust/configuration';
 import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
+import { HydrogenColor } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step.service';
 import { BatchSelectionService } from './batch-selection.service';

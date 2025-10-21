@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { BatchType, EnergySource, HydrogenColor, MeasurementUnit } from '@h2-trust/domain';
 import { ClassificationDto } from '../classification.dto';
 import { hydrogenBatchesMock } from './hydrogen-batches.mock';
 import { PowerBatchesMock } from './power-batches.mock';
@@ -17,9 +18,9 @@ export const powerTypeClassificationsMock: ClassificationDto[] = [
     batches: [PowerBatchesMock[0], PowerBatchesMock[1]],
     classifications: [],
     emissionOfProcessStep: 260,
-    name: 'WIND_ENERGY',
-    classificationType: 'POWER',
-    unit: 'kWh',
+    name: EnergySource.WIND_ENERGY,
+    classificationType: BatchType.POWER,
+    unit: MeasurementUnit.POWER,
   },
   {
     amount: 60,
@@ -27,9 +28,9 @@ export const powerTypeClassificationsMock: ClassificationDto[] = [
     batches: [PowerBatchesMock[2], PowerBatchesMock[3]],
     classifications: [],
     emissionOfProcessStep: 260,
-    name: 'SOLAR_ENERGY',
-    classificationType: 'POWER',
-    unit: 'kWh',
+    name: EnergySource.SOLAR_ENERGY,
+    classificationType: BatchType.POWER,
+    unit: MeasurementUnit.POWER,
   },
 ];
 
@@ -41,8 +42,8 @@ export const powerSupplyClassificationsMock: ClassificationDto[] = [
     classifications: powerTypeClassificationsMock,
     emissionOfProcessStep: 260,
     name: 'POWER SUPPLY',
-    classificationType: 'POWER',
-    unit: 'kWh',
+    classificationType: BatchType.POWER,
+    unit: MeasurementUnit.POWER,
   },
 ];
 
@@ -53,9 +54,9 @@ export const hydrogenColorClassificationsMock: ClassificationDto[] = [
     batches: [hydrogenBatchesMock[0], hydrogenBatchesMock[1]],
     classifications: [],
     emissionOfProcessStep: 260,
-    name: 'GREEN',
-    classificationType: 'HYDROGEN',
-    unit: 'kg',
+    name: HydrogenColor.GREEN,
+    classificationType: BatchType.HYDROGEN,
+    unit: MeasurementUnit.HYDROGEN,
   },
   {
     amount: 300,
@@ -63,8 +64,8 @@ export const hydrogenColorClassificationsMock: ClassificationDto[] = [
     batches: [hydrogenBatchesMock[2]],
     classifications: [],
     emissionOfProcessStep: 260,
-    name: 'PINK',
-    classificationType: 'HYDROGEN',
-    unit: 'kg',
+    name: HydrogenColor.PINK,
+    classificationType: BatchType.HYDROGEN,
+    unit: MeasurementUnit.HYDROGEN,
   },
 ];

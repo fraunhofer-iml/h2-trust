@@ -13,31 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum CompanyType {
-  HYDROGEN_PRODUCER
-  POWER_PRODUCER
-  HYDROGEN_RECIPIENT
-}
-
-enum HydrogenColor {
-  GREEN
-  ORANGE
-  PINK
-  YELLOW
-  MIX
-}
-
-enum BatchType {
-  HYDROGEN
-  POWER
-}
-
-enum PowerAccessApprovalStatus {
-  APPROVED
-  PENDING
-  REJECTED
-}
-
 model Address {
   id         String   @id @default(cuid(2))
   street     String
@@ -68,10 +43,9 @@ model Document {
 
 model Company {
   id          String @id @default(cuid(2))
+  type        String
   name        String
   mastrNumber String @unique
-
-  companyType CompanyType
 
   address   Address @relation(fields: [addressId], references: [id])
   addressId String
@@ -123,101 +97,61 @@ model Unit {
 }
 
 model PowerProductionType {
-  name          String        @id
+  name          String @id
   energySource  String
-  hydrogenColor HydrogenColor
+  hydrogenColor String
 
   powerProductionUnits PowerProductionUnit[]
 
   @@unique([name, energySource, hydrogenColor])
 }
 
-model HydrogenProductionType {
-  id         String @id @default(cuid(2))
-  method     String
-  technology String
-
-  hydrogenProductionUnits HydrogenProductionUnit[]
-
-  @@unique([method, technology])
-}
-
-model HydrogenStorageType {
-  name String @id
-
-  hydrogenStorageUnits HydrogenStorageUnit[]
-}
-
-model GridLevel {
-  name String @id
-
-  powerProductionUnits PowerProductionUnit[]
-}
-
-model BiddingZone {
-  name String @id
-
-  powerProductionUnits    PowerProductionUnit[]
-  hydrogenProductionUnits HydrogenProductionUnit[]
-}
-
 model PowerProductionUnit {
   id                       String    @id
-  decommissioningPlannedOn DateTime?
   electricityMeterNumber   String
-  ratedPower               Decimal   @db.Decimal(18, 6)
   gridOperator             String?
   gridConnectionNumber     String?
+  gridLevel                String
+  biddingZone              String
+  ratedPower               Decimal   @db.Decimal(18, 6)
+  decommissioningPlannedOn DateTime?
 
   generalInfo Unit @relation(fields: [id], references: [id])
 
   type     PowerProductionType @relation(fields: [typeName], references: [name])
   typeName String
 
-  gridLevel     GridLevel @relation(fields: [gridLevelName], references: [name])
-  gridLevelName String
-
-  biddingZone     BiddingZone @relation(fields: [biddingZoneName], references: [name])
-  biddingZoneName String
-
   powerAccessApprovals PowerAccessApproval[]
 }
 
 model HydrogenProductionUnit {
-  id         String  @id
-  ratedPower Decimal @db.Decimal(18, 6)
-  pressure   Decimal @db.Decimal(8, 2)
+  id          String  @id
+  method      String
+  technology  String
+  biddingZone String
+  ratedPower  Decimal @db.Decimal(18, 6)
+  pressure    Decimal @db.Decimal(8, 2)
 
   generalInfo Unit @relation(fields: [id], references: [id])
-
-  type   HydrogenProductionType @relation(fields: [typeId], references: [id])
-  typeId String
-
-  biddingZone     BiddingZone @relation(fields: [biddingZoneName], references: [name])
-  biddingZoneName String
 }
 
 model HydrogenStorageUnit {
   id       String  @id
+  type     String
   capacity Decimal @db.Decimal(18, 6)
   pressure Decimal @db.Decimal(8, 2)
-  filling  Batch[]
 
   generalInfo Unit @relation(fields: [id], references: [id])
 
-  type     HydrogenStorageType @relation(fields: [typeName], references: [name])
-  typeName String
+  filling Batch[]
 }
 
 model Batch {
-  id      String    @id @default(cuid(2))
-  active  Boolean   @default(true)
-  amount  Decimal   @db.Decimal(18, 6)
+  id      String  @id @default(cuid(2))
+  type    String
+  amount  Decimal @db.Decimal(18, 6)
+  active  Boolean @default(true)
   quality String
-  type    BatchType
-
-  predecessors Batch[] @relation("BatchRelation")
-  successors   Batch[] @relation("BatchRelation")
 
   owner   Company @relation(fields: [ownerId], references: [id])
   ownerId String
@@ -226,21 +160,16 @@ model Batch {
   hydrogenStorageUnitId String?
 
   processStep ProcessStep?
-}
 
-model ProcessType {
-  name String @id
-
-  processSteps ProcessStep[]
+  predecessors Batch[] @relation("BatchRelation")
+  successors   Batch[] @relation("BatchRelation")
 }
 
 model ProcessStep {
   id        String   @id @default(cuid(2))
+  type      String
   startedAt DateTime
   endedAt   DateTime
-
-  processType     ProcessType @relation(fields: [processTypeName], references: [name])
-  processTypeName String
 
   batch   Batch  @relation(fields: [batchId], references: [id])
   batchId String @unique
@@ -251,9 +180,9 @@ model ProcessStep {
   executedBy Unit   @relation(fields: [unitId], references: [id])
   unitId     String
 
-  documents Document[]
-
   processStepDetails ProcessStepDetails?
+
+  documents Document[]
 }
 
 model ProcessStepDetails {
@@ -266,34 +195,18 @@ model ProcessStepDetails {
 }
 
 model TransportationDetails {
-  id       String  @id
-  distance Decimal @db.Decimal(8, 3)
+  id            String  @id
+  transportMode String
+  fuelType      String?
+  distance      Decimal @db.Decimal(8, 3)
 
   processStepDetails ProcessStepDetails @relation(fields: [id], references: [id])
-
-  transportMode     TransportMode @relation(fields: [transportModeName], references: [name])
-  transportModeName String
-
-  fuelType     FuelType? @relation(fields: [fuelTypeName], references: [name])
-  fuelTypeName String?
-}
-
-model TransportMode {
-  name String @id
-
-  transportationDetails TransportationDetails[]
-}
-
-model FuelType {
-  name String @id
-
-  transportationDetails TransportationDetails[]
 }
 
 model PowerAccessApproval {
-  id                        String                    @id @default(cuid(2))
-  decidedAt                 DateTime
-  powerAccessApprovalStatus PowerAccessApprovalStatus
+  id        String   @id @default(cuid(2))
+  status    String
+  decidedAt DateTime
 
   powerProducer   Company @relation(fields: [powerProducerId], references: [id], name: "PowerProducer")
   powerProducerId String

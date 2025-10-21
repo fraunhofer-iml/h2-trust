@@ -15,8 +15,8 @@ import {
   PowerProductionOverviewDto,
   UnitCreateDto,
   UnitDto,
-  UnitType,
 } from '@h2-trust/api';
+import { UnitType } from '@h2-trust/domain';
 import { API } from '../../constants/api-endpoints';
 
 @Injectable()
