@@ -15,12 +15,12 @@ import { UnitSeed } from './unit.seed';
 export const PowerProductionUnitSeed = <PowerProductionUnit[]>[
   {
     id: UnitSeed[0].id,
-    electricityMeterNumber: 'EMN-2025-001',
-    gridOperator: 'GreenGrid Operator Inc.',
-    gridConnectionNumber: 'GCN-2025-001',
-    gridLevel: GridLevel.HIGH_VOLTAGE,
-    biddingZone: BiddingZone.BE,
-    ratedPower: new Prisma.Decimal(3000),
+    electricityMeterNumber: '123456789012',
+    gridOperator: 'Powernetz GmbH',
+    gridConnectionNumber: 'DE0012345678901234',
+    gridLevel: GridLevel.MEDIUM_VOLTAGE,
+    biddingZone: BiddingZone.DE_LU,
+    ratedPower: new Prisma.Decimal(4.5),
     decommissioningPlannedOn: new Date('2045-04-01'),
     typeName: PowerProductionTypeSeed[1].name,
   },
@@ -58,7 +58,7 @@ export const PowerProductionUnitSeed = <PowerProductionUnit[]>[
     typeName: PowerProductionTypeSeed[6].name,
   },
   {
-    id: UnitSeed[7].id,
+    id: UnitSeed[6].id,
     electricityMeterNumber: 'EMN-2025-005',
     gridOperator: CompanySeed[3].name,
     gridConnectionNumber: 'GRID-2025-01',

@@ -13,15 +13,15 @@ import { AddressSeed } from './address.seed';
 export const CompanySeed = <Company[]>[
   {
     id: 'company-power-1',
-    name: 'PowerGen AG',
+    name: 'Power Generation AG',
     mastrNumber: 'P12345',
     type: CompanyType.POWER_PRODUCER,
     addressId: AddressSeed[0].id,
   },
   {
     id: 'company-hydrogen-1',
-    name: 'HydroGen GmbH',
-    mastrNumber: 'H67890',
+    name: 'Green Solutions GmbH',
+    mastrNumber: 'ABR900000176543',
     type: CompanyType.HYDROGEN_PRODUCER,
     addressId: AddressSeed[1].id,
   },

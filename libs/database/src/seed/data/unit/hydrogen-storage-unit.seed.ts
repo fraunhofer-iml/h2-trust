@@ -14,7 +14,7 @@ export const HydrogenStorageUnitSeed = <HydrogenStorageUnit[]>[
   {
     id: UnitSeed[5].id,
     type: HydrogenStorageType.COMPRESSED_GASEOUS_HYDROGEN,
-    capacity: new Prisma.Decimal(800),
-    pressure: new Prisma.Decimal(5),
+    capacity: new Prisma.Decimal(1200),
+    pressure: new Prisma.Decimal(350),
   },
 ];

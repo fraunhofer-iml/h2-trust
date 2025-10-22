@@ -14,9 +14,9 @@ export const HydrogenProductionUnitSeed = <HydrogenProductionUnit[]>[
   {
     id: UnitSeed[4].id,
     method: HydrogenProductionMethod.ELECTROLYSIS,
-    technology: HydrogenProductionTechnology.AEL,
+    technology: HydrogenProductionTechnology.PEM,
     biddingZone: BiddingZone.DE_LU,
-    ratedPower: new Prisma.Decimal(1000),
-    pressure: new Prisma.Decimal(10),
+    ratedPower: new Prisma.Decimal(5),
+    pressure: new Prisma.Decimal(25),
   },
 ];
