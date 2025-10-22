@@ -81,6 +81,7 @@ export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
       modelType: dto.modelType,
       modelNumber: dto.modelNumber,
       serialNumber: dto.serialNumber,
+      certifiedBy: dto.certifiedBy,
       commissionedOn: new Date(dto.commissionedOn),
       address: dto.address,
       company: {

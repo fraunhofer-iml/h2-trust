@@ -49,6 +49,7 @@ export function buildBaseUnitCreateInput(entity: BaseUnitEntity): Prisma.UnitCre
     modelType: entity.modelType,
     modelNumber: entity.modelNumber,
     serialNumber: entity.serialNumber,
+    certifiedBy: entity.certifiedBy,
     commissionedOn: entity.commissionedOn,
     address: {
       create: {

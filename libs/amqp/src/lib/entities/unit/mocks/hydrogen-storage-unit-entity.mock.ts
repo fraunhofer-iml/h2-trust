@@ -22,6 +22,7 @@ export const HydrogenStorageUnitEntityMock: HydrogenStorageUnitEntity[] = [
     UnitSeed[0].modelType!,
     UnitSeed[0].modelNumber!,
     UnitSeed[0].serialNumber!,
+    UnitSeed[0].certifiedBy!,
     new Date(UnitSeed[0].commissionedOn),
     AddressEntityPowerMock,
     {

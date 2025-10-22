@@ -19,6 +19,7 @@ export abstract class BaseUnitEntity {
   modelType?: string;
   modelNumber?: string;
   serialNumber?: string;
+  certifiedBy?: string;
   commissionedOn?: Date;
   address?: AddressEntity;
   company?: {
@@ -41,6 +42,7 @@ export abstract class BaseUnitEntity {
     modelType: string,
     modelNumber: string,
     serialNumber: string,
+    certifiedBy: string,
     commissionedOn: Date,
     address: AddressEntity,
     company: {
@@ -61,6 +63,7 @@ export abstract class BaseUnitEntity {
     this.modelType = modelType;
     this.modelNumber = modelNumber;
     this.serialNumber = serialNumber;
+    this.certifiedBy = certifiedBy;
     this.commissionedOn = commissionedOn;
     this.address = address;
     this.company = company;
@@ -77,6 +80,7 @@ export abstract class BaseUnitEntity {
       modelType: unit.modelType,
       modelNumber: unit.modelNumber,
       serialNumber: unit.serialNumber,
+      certifiedBy: unit.certifiedBy,
       commissionedOn: unit.commissionedOn,
       address: AddressEntity.fromDatabase(unit.address),
       company: BaseUnitEntity.mapCompany(unit),

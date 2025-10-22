@@ -31,6 +31,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     modelType: string,
     modelNumber: string,
     serialNumber: string,
+    certifiedBy: string,
     commissionedOn: Date,
     address: AddressEntity,
     company: {
@@ -56,6 +57,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       modelType,
       modelNumber,
       serialNumber,
+      certifiedBy,
       commissionedOn,
       address,
       company,

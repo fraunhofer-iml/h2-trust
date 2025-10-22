@@ -19,6 +19,7 @@ export abstract class BaseUnitDto {
   modelType?: string;
   modelNumber?: string;
   serialNumber?: string;
+  certifiedBy?: string;
   commissionedOn: Date;
   address: AddressDto;
   owner: string;
@@ -39,6 +40,7 @@ export abstract class BaseUnitDto {
     manufacturer: string,
     modelType: string,
     serialNumber: string,
+    certifiedBy: string,
     commissionedOn: Date,
     address: AddressDto,
     company: {
@@ -60,6 +62,7 @@ export abstract class BaseUnitDto {
     this.modelType = modelType;
     this.modelNumber = modelNumber;
     this.serialNumber = serialNumber;
+    this.certifiedBy = certifiedBy;
     this.commissionedOn = commissionedOn;
     this.address = address;
     this.company = company;
@@ -77,6 +80,7 @@ export abstract class BaseUnitDto {
       modelType: unit.modelType,
       modelNumber: unit.modelNumber,
       serialNumber: unit.serialNumber,
+      certifiedBy: unit.certifiedBy,
       commissionedOn: requireDefined(unit.commissionedOn, 'commissionedOn'),
       address: {
         street: requireDefined(unit.address?.street, 'street'),

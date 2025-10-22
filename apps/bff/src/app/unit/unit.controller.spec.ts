@@ -69,7 +69,7 @@ describe('UnitController', () => {
   it('should find a unit', async () => {
     const givenUserId = 'unit-id-1';
     const fixtureUnit: HydrogenProductionUnitEntity = HydrogenProductionUnitEntityMock[0];
-    const expectedResponse: UnitDto = UnitService.mapUnitEntityToDto(fixtureUnit);
+    const expectedResponse: UnitDto = UnitService.mapEntityToDto(fixtureUnit);
 
     const sendRequestSpy = jest.spyOn(queue, 'send');
     sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: any) => {
@@ -113,7 +113,7 @@ describe('UnitController', () => {
   it('should create power production unit', async () => {
     const givenDto: PowerProductionUnitCreateDto = PowerProductionUnitCreateDtoMock[0];
     const fixtureUnit: PowerProductionUnitEntity = PowerProductionUnitEntityMock[0];
-    const expectedResponse: UnitDto = UnitService.mapUnitEntityToDto(fixtureUnit);
+    const expectedResponse: UnitDto = UnitService.mapEntityToDto(fixtureUnit);
 
     const sendRequestSpy = jest.spyOn(queue, 'send');
     sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: any) => {
@@ -132,7 +132,7 @@ describe('UnitController', () => {
   it('should create hydrogen production unit', async () => {
     const givenDto: HydrogenProductionUnitCreateDto = HydrogenProductionUnitCreateDtoMock[0];
     const fixtureUnit: HydrogenProductionUnitEntity = HydrogenProductionUnitEntityMock[0];
-    const expectedResponse: UnitDto = UnitService.mapUnitEntityToDto(fixtureUnit);
+    const expectedResponse: UnitDto = UnitService.mapEntityToDto(fixtureUnit);
 
     const sendRequestSpy = jest.spyOn(queue, 'send');
     sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: any) => {
@@ -151,7 +151,7 @@ describe('UnitController', () => {
   it('should create hydrogen storage unit', async () => {
     const givenDto: HydrogenStorageUnitCreateDto = HydrogenStorageUnitCreateDtoMock[0];
     const fixtureUnit: HydrogenStorageUnitEntity = HydrogenStorageUnitEntityMock[0];
-    const expectedResponse: UnitDto = UnitService.mapUnitEntityToDto(fixtureUnit);
+    const expectedResponse: UnitDto = UnitService.mapEntityToDto(fixtureUnit);
 
     const sendRequestSpy = jest.spyOn(queue, 'send');
     sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: any) => {

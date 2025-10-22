@@ -26,6 +26,7 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     manufacturer: string,
     modelType: string,
     serialNumber: string,
+    certifiedBy: string,
     commissionedOn: Date,
     address: AddressDto,
     company: {
@@ -52,6 +53,7 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
       manufacturer,
       modelType,
       serialNumber,
+      certifiedBy,
       commissionedOn,
       address,
       company,

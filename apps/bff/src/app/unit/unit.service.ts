@@ -7,9 +7,9 @@
  */
 
 import { firstValueFrom } from 'rxjs';
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BaseUnitEntity, BrokerException, BrokerQueues, UnitEntity, UnitMessagePatterns } from '@h2-trust/amqp';
+import { BaseUnitEntity, BrokerQueues, UnitEntity, UnitMessagePatterns } from '@h2-trust/amqp';
 import {
   HydrogenProductionOverviewDto,
   HydrogenProductionUnitCreateDto,
@@ -35,9 +35,7 @@ export class UnitService {
   ) {}
 
   async readUnit(id: string): Promise<UnitDto> {
-    return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, { id })).then(
-      UnitService.mapUnitEntityToDto,
-    );
+    return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, { id })).then(UnitService.mapEntityToDto);
   }
 
   async readUnits(userId: string, unitType: UnitType): Promise<UnitOverviewDto[]> {
@@ -58,7 +56,7 @@ export class UnitService {
         return [...powerProductionUnits, ...hydrogenProductionUnits, ...hydrogenStorageUnits];
       }
       default:
-        throw new BrokerException(`unit-type ${unitType} unknown`, HttpStatus.BAD_REQUEST);
+        throw new BadRequestException(`Unit type [${unitType}] unknown`);
     }
   }
 
@@ -80,44 +78,53 @@ export class UnitService {
     ).then((entities) => entities.map(HydrogenStorageOverviewDto.fromEntity));
   }
 
-  async createUnit(unit: UnitCreateDto): Promise<UnitDto> {
+  async createUnit(unitDto: UnitCreateDto): Promise<UnitDto> {
     let messagePattern: UnitMessagePatterns;
     let unitEntity: UnitEntity;
-    switch (unit.unitType) {
+
+    switch (unitDto.unitType) {
       case UnitType.POWER_PRODUCTION: {
         messagePattern = UnitMessagePatterns.CREATE_POWER_PRODUCTION_UNIT;
-        unitEntity = PowerProductionUnitCreateDto.toEntity(unit as PowerProductionUnitCreateDto);
+        unitEntity = PowerProductionUnitCreateDto.toEntity(unitDto as PowerProductionUnitCreateDto);
         break;
       }
       case UnitType.HYDROGEN_PRODUCTION: {
         messagePattern = UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION_UNIT;
-        unitEntity = HydrogenProductionUnitCreateDto.toEntity(unit as HydrogenProductionUnitCreateDto);
+        unitEntity = HydrogenProductionUnitCreateDto.toEntity(unitDto as HydrogenProductionUnitCreateDto);
         break;
       }
       case UnitType.HYDROGEN_STORAGE: {
         messagePattern = UnitMessagePatterns.CREATE_HYDROGEN_STORAGE_UNIT;
-        unitEntity = HydrogenStorageUnitCreateDto.toEntity(unit as HydrogenStorageUnitCreateDto);
+        unitEntity = HydrogenStorageUnitCreateDto.toEntity(unitDto as HydrogenStorageUnitCreateDto);
         break;
       }
       default: {
-        throw new BrokerException(`Unit type [${unit.unitType}] unknown`, HttpStatus.BAD_REQUEST);
+        throw new BadRequestException(`Unit type [${unitDto.unitType}] unknown`);
       }
     }
+
     return firstValueFrom(this.generalService.send(messagePattern, { unit: unitEntity })).then(
-      UnitService.mapUnitEntityToDto,
+      UnitService.mapEntityToDto,
     );
   }
 
-  static mapUnitEntityToDto(unit: BaseUnitEntity): UnitDto {
-    switch (unit.unitType) {
+  static mapEntityToDto(unitEntity: BaseUnitEntity): UnitDto {
+    let unitDto: UnitDto;
+
+    switch (unitEntity.unitType) {
       case UnitType.POWER_PRODUCTION:
-        return PowerProductionUnitDto.fromEntity(unit);
+        unitDto = PowerProductionUnitDto.fromEntity(unitEntity);
+        break;
       case UnitType.HYDROGEN_PRODUCTION:
-        return HydrogenProductionUnitDto.fromEntity(unit);
+        unitDto = HydrogenProductionUnitDto.fromEntity(unitEntity);
+        break;
       case UnitType.HYDROGEN_STORAGE:
-        return HydrogenStorageUnitDto.fromEntity(unit);
+        unitDto = HydrogenStorageUnitDto.fromEntity(unitEntity);
+        break;
       default:
-        throw new BrokerException(`unit-type ${unit.unitType} unknown`, HttpStatus.BAD_REQUEST);
+        throw new BadRequestException(`Unit type [${unitEntity.unitType}] unknown`);
     }
+
+    return unitDto;
   }
 }
