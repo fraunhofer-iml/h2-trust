@@ -14,6 +14,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { EmissionCalculationDto } from '@h2-trust/api';
 import { CalculationTopic } from '@h2-trust/domain';
 import { FormattedUnits } from '../../../../shared/constants/formatted-units';
+import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { BottlingService } from '../../../../shared/services/bottling/bottling.service';
 import { CalculationItemComponent } from './calculation-item/calculation-item.component';
 import { EmissionPieChartComponent } from './emission-pie-chart/emission-pie-chart.component';
@@ -28,6 +29,7 @@ import { SavingsPotentialChartComponent } from './savings-potential/savings-pote
     CalculationItemComponent,
     EmissionPieChartComponent,
     EmissionPieChartComponent,
+    UnitPipe,
   ],
   templateUrl: './proof-of-sustainability.component.html',
 })

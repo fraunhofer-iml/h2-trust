@@ -19,10 +19,13 @@
       <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
         <span class="material-symbols-outlined text-secondary-400 text-4xl">percent</span>
       </div>
-      <div class="flex w-full flex-col gap-1">
-        <span class="grow text-xs text-neutral-500">Savings Potential</span>
+      <div class="flex w-full flex-col">
+        <span class="grow text-xs text-neutral-500">Savings Potential</span
+        ><span class="text-xs text-neutral-500"
+          >(Reference for fossil fuels: {{ '94' | unit: FormattedUnits.CO2_PER_MJ_H2 }})</span
+        >
         <app-savings-potential-chart
-          class="w-full"
+          class="mt-2 w-full"
           [percentage]="proofQuery.data()?.emissionReductionPercentage ?? 0"
         ></app-savings-potential-chart>
       </div>
