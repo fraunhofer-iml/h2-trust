@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsEnum, IsNotEmpty, IsPositive } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
 import { HydrogenProductionUnitEntity } from '@h2-trust/amqp';
 import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
@@ -33,6 +33,11 @@ export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
   @IsPositive()
   pressure: number;
 
+  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
+  waterConsumption: number;
+
   constructor(
     type: UnitType,
     name: string,
@@ -51,6 +56,7 @@ export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
     biddingZone: BiddingZone,
     ratedPower: number,
     pressure: number,
+    waterConsumption: number,
   ) {
     super(
       type,
@@ -71,6 +77,7 @@ export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
     this.biddingZone = biddingZone;
     this.ratedPower = ratedPower;
     this.pressure = pressure;
+    this.waterConsumption = waterConsumption;
   }
 
   static toEntity(dto: HydrogenProductionUnitCreateDto): HydrogenProductionUnitEntity {
@@ -95,6 +102,7 @@ export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
       biddingZone: dto.biddingZone,
       ratedPower: dto.ratedPower,
       pressure: dto.pressure,
+      waterConsumption: dto.waterConsumption,
     };
   }
 }

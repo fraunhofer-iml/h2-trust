@@ -34,6 +34,7 @@ export const HydrogenProductionUnitCreateDtoMock = <HydrogenProductionUnitCreate
     biddingZone: BiddingZone.DE_LU,
     ratedPower: 1000,
     pressure: 30,
+    waterConsumption: 2,
   },
   {
     unitType: UnitType.HYDROGEN_PRODUCTION,
@@ -59,5 +60,6 @@ export const HydrogenProductionUnitCreateDtoMock = <HydrogenProductionUnitCreate
     biddingZone: BiddingZone.DE_LU,
     ratedPower: 2000,
     pressure: 40,
+    waterConsumption: 3,
   },
 ];

@@ -121,6 +121,9 @@ export function buildHydrogenProductionUnitCreateInput(entity: HydrogenProductio
   if (!entity.pressure) {
     throw new BrokerException('HydrogenProductionUnitEntity.pressure was undefined', HttpStatus.BAD_REQUEST);
   }
+  if (!entity.waterConsumption) {
+    throw new BrokerException('HydrogenProductionUnitEntity.waterConsumption was undefined', HttpStatus.BAD_REQUEST);
+  }
 
   return Prisma.validator<Prisma.UnitCreateInput>()({
     ...buildBaseUnitCreateInput(entity),
@@ -131,6 +134,7 @@ export function buildHydrogenProductionUnitCreateInput(entity: HydrogenProductio
         biddingZone: entity.biddingZone,
         ratedPower: new Prisma.Decimal(entity.ratedPower),
         pressure: new Prisma.Decimal(entity.pressure),
+        waterConsumption: new Prisma.Decimal(entity.waterConsumption),
       },
     },
   });

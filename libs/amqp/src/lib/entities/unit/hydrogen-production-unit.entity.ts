@@ -18,6 +18,7 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
   method?: string;
   technology?: string;
   biddingZone?: string;
+  waterConsumption?: number;
 
   constructor(
     id: string,
@@ -45,6 +46,7 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     method: string,
     technology: string,
     biddingZone: string,
+    waterConsumption: number,
   ) {
     super(
       id,
@@ -66,6 +68,7 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     this.ratedPower = ratedPower;
     this.pressure = pressure;
     this.biddingZone = biddingZone;
+    this.waterConsumption = waterConsumption;
   }
 
   static override fromDatabase(unit: HydrogenProductionUnitDbType): HydrogenProductionUnitEntity {
@@ -77,6 +80,7 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
       technology: unit.hydrogenProductionUnit?.technology,
       biddingZone: unit.hydrogenProductionUnit?.biddingZone,
       unitType: UnitType.HYDROGEN_PRODUCTION,
+      waterConsumption: unit.hydrogenProductionUnit?.waterConsumption?.toNumber() ?? 0,
     };
   }
 }

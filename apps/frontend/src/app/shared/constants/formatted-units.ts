@@ -13,6 +13,7 @@ export enum FormattedUnits {
   KG = 'kg',
   KWH = 'kWh',
   BAR = 'bar',
-  L = 'l',
+  L = 'L',
+  L_PER_H = 'L/h',
   CO2_PER_MJ_H2 = 'g CO₂ / MJ H₂ ',
 }

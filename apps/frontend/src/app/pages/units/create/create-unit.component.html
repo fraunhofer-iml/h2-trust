@@ -228,6 +228,11 @@
             <mat-label>Pressure</mat-label>
             <input matInput placeholder="1000" formControlName="pressure" type="number" min="0" />
           </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Water Consumption</mat-label>
+            <input matInput placeholder="1000" formControlName="waterConsumption" type="number" min="0" />
+          </mat-form-field>
         </div>
       }
       @if (selectedType.value === UnitType.HYDROGEN_STORAGE) {

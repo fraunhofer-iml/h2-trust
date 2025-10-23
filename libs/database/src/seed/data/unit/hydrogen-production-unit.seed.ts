@@ -18,5 +18,6 @@ export const HydrogenProductionUnitSeed = <HydrogenProductionUnit[]>[
     biddingZone: BiddingZone.DE_LU,
     ratedPower: new Prisma.Decimal(5),
     pressure: new Prisma.Decimal(25),
+    waterConsumption: new Prisma.Decimal(2),
   },
 ];

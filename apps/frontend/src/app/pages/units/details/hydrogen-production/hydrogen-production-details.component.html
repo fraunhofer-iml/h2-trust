@@ -16,4 +16,8 @@
     <span class="text-sm text-neutral-400">Pressure</span
     ><span>{{ unit().pressure | number | unit: FormattedUnits.BAR }} </span>
   </div>
+  <div class="flex flex-col text-sm">
+    <span class="text-sm text-neutral-400">Water Consumption</span
+    ><span>{{ unit().waterConsumption | number | unit: FormattedUnits.L_PER_H }}</span>
+  </div>
 </div>
