@@ -30,16 +30,12 @@ import {
 } from '@h2-trust/api';
 import 'multer';
 import { of } from 'rxjs';
-import { ProcessType } from '@h2-trust/domain';
+import { ProcessType, ProofOfOrigin } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';
-import { ProofOfOriginConstants } from './proof-of-origin/proof-of-origin.constants';
 import { ProofOfOriginService } from './proof-of-origin/proof-of-origin.service';
-import { ProcessLineageService } from './proof-of-origin/retrieval/process-lineage.service';
-import { ProcessStepService } from './proof-of-origin/retrieval/process-step.service';
-import { BottlingSectionService } from './proof-of-origin/sections/bottling-section.service';
-import { InputMediaSectionService } from './proof-of-origin/sections/input-media-section.service';
+import { ProofOfSustainabilityService } from './proof-of-sustainability/proof-of-sustainability.service';
 
 describe('BottlingController', () => {
   let controller: BottlingController;
@@ -53,38 +49,18 @@ describe('BottlingController', () => {
       controllers: [BottlingController],
       providers: [
         BottlingService,
-        ProofOfOriginService,
+        {
+          provide: ProofOfOriginService,
+          useValue: { readProofOfOrigin: jest.fn() },
+        },
+        {
+          provide: ProofOfSustainabilityService,
+          useValue: { readProofOfSustainability: jest.fn().mockResolvedValue(proofOfSustainabilityMock) },
+        },
         {
           provide: UserService,
           useValue: {
             readUserWithCompany: jest.fn().mockResolvedValue(UserDetailsDtoMock[0]),
-          },
-        },
-        {
-          provide: ProcessStepService,
-          useValue: {
-            fetchProcessStep: jest.fn(),
-          },
-        },
-        {
-          provide: ProcessLineageService,
-          useValue: {
-            fetchPowerProductionProcessSteps: jest.fn(),
-            fetchHydrogenProductionProcessSteps: jest.fn(),
-            fetchHydrogenBottlingProcessStep: jest.fn(),
-          },
-        },
-        {
-          provide: BottlingSectionService,
-          useValue: {
-            buildBottlingSection: jest.fn(),
-            buildTransportationSection: jest.fn(),
-          },
-        },
-        {
-          provide: InputMediaSectionService,
-          useValue: {
-            buildInputMediaSection: jest.fn(),
           },
         },
         {
@@ -137,7 +113,7 @@ describe('BottlingController', () => {
         ...returnedProcessStep,
         transportationDetails: {
           id: undefined as string,
-          distance: 0,
+          distance: 100,
           transportMode: givenDto.transportMode,
           fuelType: givenDto.fuelType,
         },
@@ -231,7 +207,7 @@ describe('BottlingController', () => {
   it('should return proof of origin for process step ProcessType.POWER_PRODUCTION', async () => {
     const givenProcessStep: ProcessStepEntity = structuredClone(ProcessStepEntityPowerProductionMock[0]);
     const expectedResponse: SectionDto[] = [
-      { name: ProofOfOriginConstants.INPUT_MEDIA_SECTION_NAME, batches: [], classifications: [] },
+      { name: ProofOfOrigin.INPUT_MEDIA_SECTION_NAME, batches: [], classifications: [] },
     ];
 
     const proofOfOriginServiceSpy = jest
@@ -246,8 +222,8 @@ describe('BottlingController', () => {
     expect(actualResponse).toEqual(expectedResponse);
   });
 
-  it('should return proof of sustainability for process step ID', () => {
-    const actualResponse = controller.readProofOfSustainability('213');
+  it('should return proof of sustainability for process step ID', async () => {
+    const actualResponse = await controller.readProofOfSustainability('213');
     const expectedResponse = proofOfSustainabilityMock;
     expect(actualResponse).toEqual(expectedResponse);
   });

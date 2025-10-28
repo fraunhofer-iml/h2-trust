@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export enum ProofOfOriginConstants {
+export enum ProofOfOrigin {
   HYDROGEN_TRANSPORTATION_SECTION_NAME = 'Hydrogen Transportation',
   HYDROGEN_BOTTLING_SECTION_NAME = 'Hydrogen Bottling',
   HYDROGEN_PRODUCTION_SECTION_NAME = 'Hydrogen Production',

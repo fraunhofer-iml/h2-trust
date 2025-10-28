@@ -11,3 +11,5 @@ export * from './process-step-hydrogen-production.seed';
 export * from './process-step-hydrogen-transportation.seed';
 export * from './process-step-power-production.seed';
 export * from './process-step.seed';
+export * from './transportation-details.seed';
+export * from './process-step-details.seed';

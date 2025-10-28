@@ -6,6 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export enum PowerAccessApprovalPattern {
+export enum PowerAccessApprovalPatterns {
   READ = 'power-access-approval.read',
 }

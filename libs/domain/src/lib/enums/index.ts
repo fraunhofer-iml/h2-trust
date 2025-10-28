@@ -23,3 +23,4 @@ export * from './power-production-type.enum';
 export * from './process-type.enum';
 export * from './transport-mode.enum';
 export * from './unit-type.enum';
+export * from './proof-of-origin.enum';

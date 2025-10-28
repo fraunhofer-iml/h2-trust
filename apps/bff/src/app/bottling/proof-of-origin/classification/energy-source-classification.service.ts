@@ -14,22 +14,64 @@ import {
   PowerProductionTypeEntity,
   PowerProductionUnitEntity,
   ProcessStepEntity,
+  SustainabilityMessagePatterns,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
-import { BatchDto, ClassificationDto } from '@h2-trust/api';
+import { BatchDto, ClassificationDto, EmissionCalculationDto } from '@h2-trust/api';
 import { ProofOfOriginDtoAssembler } from '../assembler/proof-of-origin-dto.assembler';
+import { toEmissionDto } from '../emission-dto.builder';
 
 @Injectable()
 export class EnergySourceClassificationService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
+  constructor(
+    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
+    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processClient: ClientProxy,
+  ) {}
 
-  async buildEnergySourceClassificationsFromProcessSteps(
+  async buildEnergySourceClassificationsFromContext(
     powerProductionProcessSteps: ProcessStepEntity[],
+    batchAmount: number,
   ): Promise<ClassificationDto[]> {
+    if (powerProductionProcessSteps.length === 0) {
+      return [];
+    }
+
     const energySources = await this.fetchEnergySources();
-    const powerProductionProcessStepsWithPowerProductionUnits =
+    const processStepsWithUnits =
       await this.fetchPowerProductionProcessStepsWithPowerProductionUnits(powerProductionProcessSteps);
-    return this.buildEnergySourceClassifications(energySources, powerProductionProcessStepsWithPowerProductionUnits);
+    const classifications: ClassificationDto[] = [];
+
+    for (const energySource of energySources) {
+      const processStepsWithUnitsByEnergySource = processStepsWithUnits.filter(
+        ([, unit]) => unit.type?.energySource === energySource,
+      );
+
+      if (processStepsWithUnitsByEnergySource.length > 0) {
+        const productionPowerBatches: BatchDto[] = [];
+
+        for (const [processStep] of processStepsWithUnitsByEnergySource) {
+          const emissionCalculation: EmissionCalculationDto = await firstValueFrom(
+            this.processClient.send(SustainabilityMessagePatterns.COMPUTE_POWER_FOR_STEP, { processStep: processStep }),
+          );
+          const emission = toEmissionDto(emissionCalculation, batchAmount);
+
+          const productionPowerBatch = ProofOfOriginDtoAssembler.assembleProductionPowerBatchDto(
+            processStep,
+            energySource,
+            emission,
+          );
+          productionPowerBatches.push(productionPowerBatch);
+        }
+
+        const classification = ProofOfOriginDtoAssembler.assemblePowerClassification(
+          energySource,
+          productionPowerBatches,
+        );
+        classifications.push(classification);
+      }
+    }
+
+    return classifications;
   }
 
   private async fetchEnergySources(): Promise<string[]> {
@@ -40,43 +82,15 @@ export class EnergySourceClassificationService {
   }
 
   private async fetchPowerProductionProcessStepsWithPowerProductionUnits(
-    powerProductionProcessSteps: ProcessStepEntity[],
+    processSteps: ProcessStepEntity[],
   ): Promise<[ProcessStepEntity, PowerProductionUnitEntity][]> {
     return Promise.all(
-      powerProductionProcessSteps.map(
-        async (powerProductionProcessStep): Promise<[ProcessStepEntity, PowerProductionUnitEntity]> => {
-          const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
-            this.generalService.send(UnitMessagePatterns.READ, { id: powerProductionProcessStep.executedBy.id }),
-          );
-          return [powerProductionProcessStep, powerProductionUnit];
-        },
-      ),
+      processSteps.map(async (processStep): Promise<[ProcessStepEntity, PowerProductionUnitEntity]> => {
+        const unit: PowerProductionUnitEntity = await firstValueFrom(
+          this.generalService.send(UnitMessagePatterns.READ, { id: processStep.executedBy.id }),
+        );
+        return [processStep, unit];
+      }),
     );
-  }
-
-  private buildEnergySourceClassifications(
-    energySources: string[],
-    powerProductionProcessStepsWithPowerProductionUnits: [ProcessStepEntity, PowerProductionUnitEntity][],
-  ): ClassificationDto[] {
-    const classificationDtos: ClassificationDto[] = [];
-
-    for (const energySource of energySources) {
-      const filteredPowerProductionProcessSteps = powerProductionProcessStepsWithPowerProductionUnits
-        .filter(([, powerProductionUnit]) => powerProductionUnit.type?.energySource === energySource)
-        .map(([processStep]) => processStep);
-
-      if (filteredPowerProductionProcessSteps.length > 0) {
-        const productionPowerBatchDtos: BatchDto[] = filteredPowerProductionProcessSteps.map((processStep) =>
-          ProofOfOriginDtoAssembler.assembleProductionPowerBatchDto(processStep, energySource),
-        );
-
-        const powerClassification: ClassificationDto = ProofOfOriginDtoAssembler.assemblePowerClassification(
-          energySource,
-          productionPowerBatchDtos,
-        );
-        classificationDtos.push(powerClassification);
-      }
-    }
-    return classificationDtos;
   }
 }

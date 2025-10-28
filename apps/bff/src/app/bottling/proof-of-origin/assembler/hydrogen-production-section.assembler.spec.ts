@@ -6,97 +6,68 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  ProcessStepEntity,
-  ProcessStepEntityHydrogenProductionMock,
-  ProcessStepEntityPowerProductionMock,
-} from '@h2-trust/amqp';
-import { BatchDto, ClassificationDto, SectionDto } from '@h2-trust/api';
-import { HydrogenColor, ProcessType } from '@h2-trust/domain';
-import { ProofOfOriginConstants } from '../proof-of-origin.constants';
+import { of } from 'rxjs';
+import { ProcessStepEntity, ProcessStepEntityHydrogenProductionMock } from '@h2-trust/amqp';
+import { HydrogenColor, ProofOfOrigin } from '@h2-trust/domain';
 import { HydrogenProductionSectionAssembler } from './hydrogen-production-section.assembler';
-import { ProofOfOriginDtoAssembler } from './proof-of-origin-dto.assembler';
 
 describe('HydrogenProductionSectionAssembler.buildHydrogenProductionSection', () => {
+  let assembler: HydrogenProductionSectionAssembler;
+  let processClientMock: { send: jest.Mock };
+
+  beforeEach(() => {
+    processClientMock = { send: jest.fn() };
+    processClientMock.send.mockReturnValue(of({ result: 0, basisOfCalculation: '' }));
+    assembler = new HydrogenProductionSectionAssembler(processClientMock as any);
+  });
+
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
-  it('should return empty classifications when no process steps provided', () => {
+  it('should return empty classifications when no process steps provided', async () => {
     const givenProcessSteps: ProcessStepEntity[] = [];
 
-    const expectedResponse: SectionDto = new SectionDto(
-      ProofOfOriginConstants.HYDROGEN_PRODUCTION_SECTION_NAME,
-      [],
-      [],
-    );
+    const actualResponse = await assembler.buildHydrogenProductionSection(givenProcessSteps);
 
-    const actualResponse: SectionDto =
-      HydrogenProductionSectionAssembler.buildHydrogenProductionSection(givenProcessSteps);
-    expect(actualResponse.name).toBe(expectedResponse.name);
-    expect(actualResponse.batches).toEqual(expectedResponse.batches);
-    expect(actualResponse.classifications).toEqual(expectedResponse.classifications);
+    expect(actualResponse.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION_NAME);
+    expect(actualResponse.batches).toEqual([]);
+    expect(actualResponse.classifications).toEqual([]);
   });
 
-  it('should throw an error when process steps are not of type HYDROGEN_PRODUCTION', () => {
-    const givenProcessSteps: ProcessStepEntity[] = [
-      ProcessStepEntityHydrogenProductionMock[0],
-      ProcessStepEntityPowerProductionMock[0],
-    ];
-
-    const expectedErrorMessage = `All process steps must be of type [${ProcessType.HYDROGEN_PRODUCTION}]`;
-    expect(() => HydrogenProductionSectionAssembler.buildHydrogenProductionSection(givenProcessSteps)).toThrow(
-      expectedErrorMessage,
-    );
-  });
-
-  it('should return one classification (yellow)', () => {
+  it('should return one classification (yellow)', async () => {
     const givenProcessSteps: ProcessStepEntity[] = [ProcessStepEntityHydrogenProductionMock[0]];
 
-    const batchDto: BatchDto = ProofOfOriginDtoAssembler.assembleProductionHydrogenBatchDto(givenProcessSteps[0]);
-    const classificationDto: ClassificationDto = ProofOfOriginDtoAssembler.assembleHydrogenClassification(
-      HydrogenColor.YELLOW,
-      [batchDto],
-    );
-    const expectedResponse: SectionDto = new SectionDto(
-      ProofOfOriginConstants.HYDROGEN_PRODUCTION_SECTION_NAME,
-      [],
-      [classificationDto],
-    );
+    const actualResponse = await assembler.buildHydrogenProductionSection(givenProcessSteps);
 
-    const actualResponse: SectionDto =
-      HydrogenProductionSectionAssembler.buildHydrogenProductionSection(givenProcessSteps);
-    expect(actualResponse.name).toBe(expectedResponse.name);
-    expect(actualResponse.batches).toEqual(expectedResponse.batches);
-    expect(actualResponse.classifications).toEqual(expectedResponse.classifications);
+    expect(actualResponse.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION_NAME);
+    expect(actualResponse.batches).toEqual([]);
+    expect(actualResponse.classifications.length).toBe(1);
+
+    const yellow = actualResponse.classifications.find((c) => c.name === HydrogenColor.YELLOW);
+    expect(yellow).toBeDefined();
+    expect((yellow?.batches || []).map((b) => b.id)).toEqual([givenProcessSteps[0].batch.id]);
   });
 
-  it('should return two classification (yellow + pink)', () => {
+  it('should return two classification (yellow + pink)', async () => {
     const givenProcessSteps: ProcessStepEntity[] = [
       ProcessStepEntityHydrogenProductionMock[0],
       ProcessStepEntityHydrogenProductionMock[1],
     ];
 
-    const batchDto1: BatchDto = ProofOfOriginDtoAssembler.assembleProductionHydrogenBatchDto(givenProcessSteps[0]);
-    const classificationDto1: ClassificationDto = ProofOfOriginDtoAssembler.assembleHydrogenClassification(
-      HydrogenColor.YELLOW,
-      [batchDto1],
-    );
-    const batchDto2: BatchDto = ProofOfOriginDtoAssembler.assembleProductionHydrogenBatchDto(givenProcessSteps[1]);
-    const classificationDto2: ClassificationDto = ProofOfOriginDtoAssembler.assembleHydrogenClassification(
-      HydrogenColor.PINK,
-      [batchDto2],
-    );
-    const expectedResponse: SectionDto = new SectionDto(
-      ProofOfOriginConstants.HYDROGEN_PRODUCTION_SECTION_NAME,
-      [],
-      [classificationDto2, classificationDto1],
-    );
+    const actualResponse = await assembler.buildHydrogenProductionSection(givenProcessSteps);
 
-    const actualResponse: SectionDto =
-      HydrogenProductionSectionAssembler.buildHydrogenProductionSection(givenProcessSteps);
-    expect(actualResponse.name).toBe(expectedResponse.name);
-    expect(actualResponse.batches).toEqual(expectedResponse.batches);
-    expect(actualResponse.classifications).toEqual(expectedResponse.classifications);
+    expect(actualResponse.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION_NAME);
+    expect(actualResponse.batches).toEqual([]);
+    expect(actualResponse.classifications.length).toBe(2);
+
+    const yellow = actualResponse.classifications.find((c) => c.name === HydrogenColor.YELLOW);
+    const pink = actualResponse.classifications.find((c) => c.name === HydrogenColor.PINK);
+
+    expect(yellow).toBeDefined();
+    expect(pink).toBeDefined();
+
+    expect((yellow?.batches || []).map((b) => b.id)).toEqual([givenProcessSteps[0].batch.id]);
+    expect((pink?.batches || []).map((b) => b.id)).toEqual([givenProcessSteps[1].batch.id]);
   });
 });

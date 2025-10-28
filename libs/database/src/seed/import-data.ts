@@ -20,7 +20,9 @@ import {
   PowerAccessApprovalSeed,
   PowerProductionTypeSeed,
   PowerProductionUnitSeed,
+  ProcessStepDetailsSeed,
   ProcessStepSeed,
+  TransportationDetailsSeed,
   UnitSeed,
   UserSeed,
 } from './data';
@@ -118,6 +120,16 @@ export async function seedDatabase() {
       name: 'processStep',
       records: ProcessStepSeed,
       createRecord: async (data: any) => await prisma.processStep.create({ data }),
+    },
+    {
+      name: 'processStepDetails',
+      records: ProcessStepDetailsSeed,
+      createRecord: async (data: any) => await prisma.processStepDetails.create({ data }),
+    },
+    {
+      name: 'transportionDetails',
+      records: TransportationDetailsSeed,
+      createRecord: async (data: any) => await prisma.transportationDetails.create({ data }),
     },
     {
       name: 'document',

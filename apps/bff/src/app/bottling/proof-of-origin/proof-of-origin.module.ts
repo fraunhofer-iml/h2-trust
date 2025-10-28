@@ -11,9 +11,8 @@ import { Broker } from '@h2-trust/amqp';
 import { HydrogenProductionSectionAssembler } from './assembler/hydrogen-production-section.assembler';
 import { ProofOfOriginDtoAssembler } from './assembler/proof-of-origin-dto.assembler';
 import { EnergySourceClassificationService } from './classification/energy-source-classification.service';
+import { ProofOfOriginAssembler } from './proof-of-origin.assembler';
 import { ProofOfOriginService } from './proof-of-origin.service';
-import { ProcessLineageService } from './retrieval/process-lineage.service';
-import { ProcessStepService } from './retrieval/process-step.service';
 import { BottlingSectionService } from './sections/bottling-section.service';
 import { InputMediaSectionService } from './sections/input-media-section.service';
 
@@ -21,13 +20,12 @@ import { InputMediaSectionService } from './sections/input-media-section.service
   imports: [new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker(), new Broker().getProcessSvcBroker()],
   providers: [
     ProofOfOriginService,
+    ProofOfOriginAssembler,
     BottlingSectionService,
     HydrogenProductionSectionAssembler,
     InputMediaSectionService,
     ProofOfOriginDtoAssembler,
     EnergySourceClassificationService,
-    ProcessStepService,
-    ProcessLineageService,
   ],
   exports: [ProofOfOriginService],
 })

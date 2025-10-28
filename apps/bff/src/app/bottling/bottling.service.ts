@@ -24,7 +24,7 @@ import {
   HydrogenComponentDto,
   UserDetailsDto,
 } from '@h2-trust/api';
-import { ProcessType } from '@h2-trust/domain';
+import { ProcessType, TransportMode } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -50,9 +50,12 @@ export class BottlingService {
       );
     }
 
+    // TODO-MP: just a placeholder, will be replaced with DUHGW-176
+    const distance = dto.transportMode === TransportMode.TRAILER ? 100 : 0;
+
     processStepEntity.transportationDetails = new TransportationDetailsEntity(
       undefined,
-      0,
+      distance,
       dto.transportMode,
       dto.fuelType,
     );

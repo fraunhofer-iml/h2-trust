@@ -12,3 +12,5 @@ export * from './process-step.pattern';
 export * from './unit.pattern';
 export * from './user.pattern';
 export * from './power-access-approval.pattern';
+export * from './lineage.pattern';
+export * from './sustainability.pattern';

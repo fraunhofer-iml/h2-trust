@@ -9,7 +9,7 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BrokerQueues, PowerAccessApprovalPattern } from '@h2-trust/amqp';
+import { BrokerQueues, PowerAccessApprovalPatterns } from '@h2-trust/amqp';
 import { PowerAccessApprovalDto } from '@h2-trust/api';
 import { PowerAccessApprovalStatus } from '@h2-trust/domain';
 
@@ -22,7 +22,7 @@ export class PowerAccessApprovalService {
     powerAccessApprovalStatus: PowerAccessApprovalStatus,
   ): Promise<PowerAccessApprovalDto[]> {
     return firstValueFrom(
-      this.generalService.send(PowerAccessApprovalPattern.READ, { userId, powerAccessApprovalStatus }),
+      this.generalService.send(PowerAccessApprovalPatterns.READ, { userId, powerAccessApprovalStatus }),
     ).then((entities) => entities.map(PowerAccessApprovalDto.fromEntity));
   }
 }

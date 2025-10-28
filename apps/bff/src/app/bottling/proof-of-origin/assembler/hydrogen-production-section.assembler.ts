@@ -6,47 +6,56 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpException, HttpStatus } from '@nestjs/common';
-import { ProcessStepEntity } from '@h2-trust/amqp';
-import { ClassificationDto, parseColor, SectionDto } from '@h2-trust/api';
-import { HydrogenColor, ProcessType } from '@h2-trust/domain';
-import { ProofOfOriginConstants } from '../proof-of-origin.constants';
+import { firstValueFrom } from 'rxjs';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { BrokerQueues, ProcessStepEntity, SustainabilityMessagePatterns } from '@h2-trust/amqp';
+import { BatchDto, ClassificationDto, EmissionCalculationDto, parseColor, SectionDto } from '@h2-trust/api';
+import { HydrogenColor, ProofOfOrigin } from '@h2-trust/domain';
+import { toEmissionDto } from '../emission-dto.builder';
 import { ProofOfOriginDtoAssembler } from './proof-of-origin-dto.assembler';
 
+@Injectable()
 export class HydrogenProductionSectionAssembler {
-  static buildHydrogenProductionSection(hydrogenProductionProcessSteps: ProcessStepEntity[]): SectionDto {
-    const nonHydrogenProductionProcessSteps = hydrogenProductionProcessSteps.filter(
-      (processStep) => processStep.type !== ProcessType.HYDROGEN_PRODUCTION,
-    );
+  constructor(@Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processClient: ClientProxy) {}
 
-    if (nonHydrogenProductionProcessSteps.length > 0) {
-      throw new HttpException(
-        `All process steps must be of type [${ProcessType.HYDROGEN_PRODUCTION}]`,
-        HttpStatus.BAD_REQUEST,
-      );
+  async buildHydrogenProductionSection(hydrogenProductionProcessSteps: ProcessStepEntity[]): Promise<SectionDto> {
+    if (!hydrogenProductionProcessSteps || hydrogenProductionProcessSteps.length === 0) {
+      return new SectionDto(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION_NAME, [], []);
     }
 
-    const productionClassifications: ClassificationDto[] = [];
+    const classifications: ClassificationDto[] = [];
 
     for (const hydrogenColor of Object.values(HydrogenColor)) {
-      const processStepsByHydrogenColor = hydrogenProductionProcessSteps.filter(
+      const processStepsByCurrentHydrogenColor = hydrogenProductionProcessSteps.filter(
         (processStep) => parseColor(processStep.batch.quality) === hydrogenColor,
       );
 
-      if (processStepsByHydrogenColor.length > 0) {
-        const batchesForAColor = processStepsByHydrogenColor.map(
-          ProofOfOriginDtoAssembler.assembleProductionHydrogenBatchDto,
-        );
-
-        const productionClassification = ProofOfOriginDtoAssembler.assembleHydrogenClassification(
-          hydrogenColor,
-          batchesForAColor,
-        );
-
-        productionClassifications.push(productionClassification);
+      if (processStepsByCurrentHydrogenColor.length === 0) {
+        continue;
       }
+
+      const batchesForCurrentColor: BatchDto[] = [];
+
+      for (const processStep of processStepsByCurrentHydrogenColor) {
+        const emissionCalculation: EmissionCalculationDto = await firstValueFrom(
+          this.processClient.send(SustainabilityMessagePatterns.COMPUTE_CUMULATIVE_FOR_STEP, {
+            processStepId: processStep.id,
+            emissionCalculationName: 'hydrogenProduction',
+          }),
+        );
+        const emission = toEmissionDto(emissionCalculation, processStep.batch.amount);
+        const batch: BatchDto = ProofOfOriginDtoAssembler.assembleProductionHydrogenBatchDto(processStep, emission);
+        batchesForCurrentColor.push(batch);
+      }
+
+      const classification: ClassificationDto = ProofOfOriginDtoAssembler.assembleHydrogenClassification(
+        hydrogenColor,
+        batchesForCurrentColor,
+      );
+      classifications.push(classification);
     }
 
-    return new SectionDto(ProofOfOriginConstants.HYDROGEN_PRODUCTION_SECTION_NAME, [], productionClassifications);
+    return new SectionDto(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION_NAME, [], classifications);
   }
 }

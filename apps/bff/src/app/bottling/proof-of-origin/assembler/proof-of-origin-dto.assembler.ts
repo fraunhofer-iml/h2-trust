@@ -16,14 +16,17 @@ import {
   parseColor,
   PowerBatchDto,
 } from '@h2-trust/api';
-import { BatchType, EnergySource, MeasurementUnit } from '@h2-trust/domain';
-import { ProofOfOriginConstants } from '../proof-of-origin.constants';
+import { BatchType, EnergySource, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
 
 export class ProofOfOriginDtoAssembler {
-  static assembleProductionPowerBatchDto(processStepEntity: ProcessStepEntity, energySource: string): BatchDto {
+  static assembleProductionPowerBatchDto(
+    processStepEntity: ProcessStepEntity,
+    energySource: string,
+    emission?: EmissionDto,
+  ): BatchDto {
     return new PowerBatchDto(
       processStepEntity.batch.id,
-      ProofOfOriginDtoAssembler.assembleEmissionDto(),
+      emission,
       processStepEntity.startedAt,
       processStepEntity.batch.amount,
       MeasurementUnit.POWER,
@@ -35,10 +38,10 @@ export class ProofOfOriginDtoAssembler {
     );
   }
 
-  static assembleProductionHydrogenBatchDto(processStepEntity: ProcessStepEntity): BatchDto {
+  static assembleProductionHydrogenBatchDto(processStepEntity: ProcessStepEntity, emission?: EmissionDto): BatchDto {
     return new HydrogenBatchDto(
       processStepEntity.batch.id,
-      ProofOfOriginDtoAssembler.assembleEmissionDto(),
+      emission,
       processStepEntity.startedAt,
       processStepEntity.batch.amount,
       MeasurementUnit.HYDROGEN,
@@ -46,7 +49,7 @@ export class ProofOfOriginDtoAssembler {
       processStepEntity.batch.owner.name,
       processStepEntity.executedBy.id,
       null, //TBA
-      ProofOfOriginConstants.HYDROGEN_PRODUCTION_TYPE,
+      ProofOfOrigin.HYDROGEN_PRODUCTION_TYPE,
       [
         {
           color: parseColor(processStepEntity.batch.quality),
@@ -60,13 +63,14 @@ export class ProofOfOriginDtoAssembler {
     );
   }
 
-  static assembleBottlingHydrogenBatchDto(
+  static assembleBottlingOrTransportationHydrogenBatchDto(
     processStepEntity: ProcessStepEntity,
     hydrogenComposition: HydrogenComponentEntity[],
+    emission?: EmissionDto,
   ): BatchDto {
     return new HydrogenBatchDto(
       processStepEntity.batch.id,
-      ProofOfOriginDtoAssembler.assembleEmissionDto(),
+      emission,
       processStepEntity.startedAt,
       processStepEntity.batch.amount,
       MeasurementUnit.HYDROGEN,
@@ -80,14 +84,6 @@ export class ProofOfOriginDtoAssembler {
       null, // TBA
       processStepEntity.type,
       processStepEntity.endedAt,
-    );
-  }
-
-  private static assembleEmissionDto() {
-    return new EmissionDto(
-      0, // TBA
-      0, // TBA
-      'TBD', // TBA
     );
   }
 
@@ -128,7 +124,7 @@ export class ProofOfOriginDtoAssembler {
   ): ClassificationDto {
     return new ClassificationDto(
       classificationName,
-      null, // TBA
+      this.calculateClassificationEmission(batchDtos, nestedClassificationDtos),
       this.calculateClassificationAmount(batchDtos, nestedClassificationDtos),
       null, // TBA
       batchDtos,
@@ -138,7 +134,23 @@ export class ProofOfOriginDtoAssembler {
     );
   }
 
-  private static calculateClassificationAmount(batchDtos: BatchDto[], nestedClassificationDtos: ClassificationDto[]) {
+  private static calculateClassificationAmount(
+    batchDtos: BatchDto[],
+    nestedClassificationDtos: ClassificationDto[],
+  ): number {
     return Util.sumAmounts(batchDtos) || Util.sumAmounts(nestedClassificationDtos);
+  }
+
+  private static calculateClassificationEmission(
+    batchDtos: BatchDto[],
+    nestedClassificationDtos: ClassificationDto[],
+  ): number {
+    const batchEmissionSum = (batchDtos || []).map((b) => b.emission?.amountCO2PerKgH2 ?? 0).reduce((a, b) => a + b, 0);
+
+    const nestedEmissionSum = (nestedClassificationDtos || [])
+      .map((c) => c.emissionOfProcessStep ?? 0)
+      .reduce((a, b) => a + b, 0);
+
+    return batchEmissionSum + nestedEmissionSum;
   }
 }

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Body, Controller, Get, Logger, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
@@ -23,7 +23,6 @@ import {
   BottlingOverviewDto,
   GeneralInformationDto,
   ProofOfSustainabilityDto,
-  proofOfSustainabilityMock,
   SectionDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/api';
@@ -31,14 +30,14 @@ import { BottlingService } from './bottling.service';
 import 'multer';
 import { AuthenticatedUser, Public } from 'nest-keycloak-connect';
 import { ProofOfOriginService } from './proof-of-origin/proof-of-origin.service';
+import { ProofOfSustainabilityService } from './proof-of-sustainability/proof-of-sustainability.service';
 
 @Controller('bottlings')
 export class BottlingController {
-  private readonly logger: Logger = new Logger(BottlingController.name);
-
   constructor(
     private readonly bottlingService: BottlingService,
     private readonly proofOfOriginService: ProofOfOriginService,
+    private readonly proofOfSustainabilityService: ProofOfSustainabilityService,
   ) {}
 
   @Post()
@@ -170,8 +169,7 @@ export class BottlingController {
     description: 'Unique identifier of the process-step.',
     example: 'process-step-hydrogen-bottling-2',
   })
-  readProofOfSustainability(@Param('id') processStepId: string): ProofOfSustainabilityDto {
-    this.logger.log(`Read Proof of Sustainability for Process Stem ${processStepId}`);
-    return proofOfSustainabilityMock;
+  readProofOfSustainability(@Param('id') processStepId: string): Promise<ProofOfSustainabilityDto> {
+    return this.proofOfSustainabilityService.readProofOfSustainability(processStepId);
   }
 }

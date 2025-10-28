@@ -9,301 +9,72 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   BrokerQueues,
-  ProcessStepEntity,
-  ProcessStepEntityHydrogenBottlingMock,
-  ProcessStepEntityHydrogenProductionMock,
-  ProcessStepEntityHydrogenTransportationMock,
+  LineageContextEntity,
+  LineageMessagePatterns,
   ProcessStepEntityPowerProductionMock,
 } from '@h2-trust/amqp';
 import { SectionDto } from '@h2-trust/api';
 import 'multer';
-import { HydrogenProductionSectionAssembler } from './assembler/hydrogen-production-section.assembler';
-import { ProofOfOriginConstants } from './proof-of-origin.constants';
+import { of } from 'rxjs';
+import { ClientProxy } from '@nestjs/microservices';
+import { ProofOfOriginAssembler } from './proof-of-origin.assembler';
 import { ProofOfOriginService } from './proof-of-origin.service';
-import { ProcessLineageService } from './retrieval/process-lineage.service';
-import { ProcessStepService } from './retrieval/process-step.service';
-import { BottlingSectionService } from './sections/bottling-section.service';
-import { InputMediaSectionService } from './sections/input-media-section.service';
 
 describe('ProofOfOriginService', () => {
-  let proofOfOriginService: ProofOfOriginService;
-  let processStepService: ProcessStepService;
-  let processLineageService: ProcessLineageService;
-  let bottlingSectionService: BottlingSectionService;
-  let inputMediaSectionService: InputMediaSectionService;
+  let service: ProofOfOriginService;
+  let assembler: ProofOfOriginAssembler;
+  let processSvc: ClientProxy;
 
-  let hydrogenTransportationProcessStep: ProcessStepEntity;
-  let hydrogenBottlingProcessStep: ProcessStepEntity;
-  let hydrogenProductionProcessStep: ProcessStepEntity;
-  let powerProductionProcessStep: ProcessStepEntity;
+  let ctx: LineageContextEntity;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [],
-      controllers: [],
       providers: [
         ProofOfOriginService,
         {
-          provide: ProcessStepService,
-          useValue: {
-            fetchProcessStep: jest.fn(),
-          },
+          provide: BrokerQueues.QUEUE_PROCESS_SVC,
+          useValue: { send: jest.fn() },
         },
         {
-          provide: ProcessLineageService,
-          useValue: {
-            fetchPowerProductionProcessSteps: jest.fn(),
-            fetchHydrogenProductionProcessSteps: jest.fn(),
-            fetchHydrogenBottlingProcessStep: jest.fn(),
-          },
-        },
-        {
-          provide: BottlingSectionService,
-          useValue: {
-            buildBottlingSection: jest.fn(),
-            buildTransportationSection: jest.fn(),
-          },
-        },
-        {
-          provide: InputMediaSectionService,
-          useValue: {
-            buildInputMediaSection: jest.fn(),
-          },
-        },
-        {
-          provide: BrokerQueues.QUEUE_BATCH_SVC,
-          useValue: {
-            send: jest.fn(),
-          },
-        },
-        {
-          provide: BrokerQueues.QUEUE_GENERAL_SVC,
-          useValue: {
-            send: jest.fn(),
-          },
+          provide: ProofOfOriginAssembler,
+          useValue: { build: jest.fn() },
         },
       ],
     }).compile();
 
-    proofOfOriginService = module.get<ProofOfOriginService>(ProofOfOriginService);
-    bottlingSectionService = module.get<BottlingSectionService>(BottlingSectionService);
-    processStepService = module.get<ProcessStepService>(ProcessStepService);
-    inputMediaSectionService = module.get<InputMediaSectionService>(InputMediaSectionService);
-    processLineageService = module.get<ProcessLineageService>(ProcessLineageService);
+    service = module.get(ProofOfOriginService);
+    assembler = module.get(ProofOfOriginAssembler);
+    processSvc = module.get(BrokerQueues.QUEUE_PROCESS_SVC);
 
-    hydrogenTransportationProcessStep = structuredClone(ProcessStepEntityHydrogenTransportationMock[0]);
-    hydrogenBottlingProcessStep = structuredClone(ProcessStepEntityHydrogenBottlingMock[0]);
-    hydrogenProductionProcessStep = structuredClone(ProcessStepEntityHydrogenProductionMock[0]);
-    powerProductionProcessStep = structuredClone(ProcessStepEntityPowerProductionMock[0]);
+    ctx = {
+      root: structuredClone(ProcessStepEntityPowerProductionMock[0]),
+      hydrogenProductionProcessSteps: [],
+      powerProductionProcessSteps: [],
+    } as LineageContextEntity;
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should be defined', () => {
-    expect(proofOfOriginService).toBeDefined();
-  });
+  it('should delegate to chain runner and assembler and return sections', async () => {
+    const processStepId = 'step-123';
+    const expectedSections: SectionDto[] = [{ name: 'Any', batches: [], classifications: [] }];
 
-  it('should return proof of origin for process step ProcessType.POWER_PRODUCTION', async () => {
-    const expectedResponse: SectionDto[] = [
-      { name: ProofOfOriginConstants.INPUT_MEDIA_SECTION_NAME, batches: [], classifications: [] },
-    ];
+    const sendSpy = jest
+      .spyOn(processSvc, 'send')
+      .mockImplementation((_pattern: LineageMessagePatterns, _payload: any) => of(ctx as any));
 
-    const processStepServiceSpy = jest
-      .spyOn(processStepService, 'fetchProcessStep')
-      .mockResolvedValue(powerProductionProcessStep);
+    jest.spyOn(assembler, 'build').mockResolvedValue(expectedSections);
 
-    const inputMediaSectionServiceSpy = jest
-      .spyOn(inputMediaSectionService, 'buildInputMediaSection')
-      .mockResolvedValue(expectedResponse[0]);
+    const actual = await service.readProofOfOrigin(processStepId);
 
-    const actualResponse = await proofOfOriginService.readProofOfOrigin(powerProductionProcessStep.id);
+    expect(sendSpy).toHaveBeenCalledTimes(1);
+    expect(sendSpy).toHaveBeenCalledWith(LineageMessagePatterns.BUILD_CONTEXT, { processStepId });
 
-    expect(processStepServiceSpy).toHaveBeenCalledTimes(1);
-    expect(processStepServiceSpy).toHaveBeenCalledWith(powerProductionProcessStep.id);
+    expect(assembler.build).toHaveBeenCalledTimes(1);
+    expect(assembler.build).toHaveBeenCalledWith(ctx);
 
-    expect(inputMediaSectionServiceSpy).toHaveBeenCalledTimes(1);
-    expect(inputMediaSectionServiceSpy).toHaveBeenCalledWith([powerProductionProcessStep]);
-
-    expect(actualResponse).toEqual(expectedResponse);
-  });
-
-  it('should return proof of origin for process step ProcessType.HYDROGEN_PRODUCTION', async () => {
-    const expectedResponse: SectionDto[] = [
-      { name: ProofOfOriginConstants.INPUT_MEDIA_SECTION_NAME, batches: [], classifications: [] },
-      { name: ProofOfOriginConstants.HYDROGEN_PRODUCTION_SECTION_NAME, batches: [], classifications: [] },
-    ];
-
-    const processStepServiceSpy = jest
-      .spyOn(processStepService, 'fetchProcessStep')
-      .mockResolvedValue(hydrogenProductionProcessStep);
-
-    const processLineageServiceSpy = jest
-      .spyOn(processLineageService, 'fetchPowerProductionProcessSteps')
-      .mockResolvedValue([powerProductionProcessStep]);
-
-    const inputMediaSectionServiceSpy = jest
-      .spyOn(inputMediaSectionService, 'buildInputMediaSection')
-      .mockResolvedValue(expectedResponse[0]);
-
-    const hydrogenProductionSectionServiceSpy = jest
-      .spyOn(HydrogenProductionSectionAssembler, 'buildHydrogenProductionSection')
-      .mockReturnValue(expectedResponse[1]);
-
-    const actualResponse = await proofOfOriginService.readProofOfOrigin(hydrogenProductionProcessStep.id);
-
-    expect(processStepServiceSpy).toHaveBeenCalledTimes(1);
-    expect(processStepServiceSpy).toHaveBeenCalledWith(hydrogenProductionProcessStep.id);
-
-    expect(processLineageServiceSpy).toHaveBeenCalledTimes(1);
-    expect(processLineageServiceSpy).toHaveBeenCalledWith([hydrogenProductionProcessStep]);
-
-    expect(inputMediaSectionServiceSpy).toHaveBeenCalledTimes(1);
-    expect(inputMediaSectionServiceSpy).toHaveBeenCalledWith([powerProductionProcessStep]);
-
-    expect(hydrogenProductionSectionServiceSpy).toHaveBeenCalledTimes(1);
-    expect(hydrogenProductionSectionServiceSpy).toHaveBeenCalledWith([hydrogenProductionProcessStep]);
-
-    expect(actualResponse).toEqual(expectedResponse);
-  });
-
-  it('should return proof of origin for process step ProcessType.HYDROGEN_BOTTLING', async () => {
-    const expectedResponse: SectionDto[] = [
-      { name: ProofOfOriginConstants.INPUT_MEDIA_SECTION_NAME, batches: [], classifications: [] },
-      { name: ProofOfOriginConstants.HYDROGEN_PRODUCTION_SECTION_NAME, batches: [], classifications: [] },
-      { name: ProofOfOriginConstants.HYDROGEN_BOTTLING_SECTION_NAME, batches: [], classifications: [] },
-    ];
-
-    const fetchProcessStepSpy = jest
-      .spyOn(processStepService, 'fetchProcessStep')
-      .mockResolvedValue(hydrogenBottlingProcessStep);
-
-    const fetchHydrogenProductionStepsSpy = jest
-      .spyOn(processLineageService, 'fetchHydrogenProductionProcessSteps')
-      .mockResolvedValue([hydrogenProductionProcessStep]);
-
-    const fetchPowerProductionStepsSpy = jest
-      .spyOn(processLineageService, 'fetchPowerProductionProcessSteps')
-      .mockResolvedValue([powerProductionProcessStep]);
-
-    const buildInputMediaSectionSpy = jest
-      .spyOn(inputMediaSectionService, 'buildInputMediaSection')
-      .mockResolvedValue(expectedResponse[0]);
-
-    const buildBottlingSectionSpy = jest
-      .spyOn(bottlingSectionService, 'buildBottlingSection')
-      .mockResolvedValue(expectedResponse[2]);
-
-    const buildHydrogenProductionSectionSpy = jest
-      .spyOn(HydrogenProductionSectionAssembler, 'buildHydrogenProductionSection')
-      .mockReturnValue(expectedResponse[1]);
-
-    const actualResponse = await proofOfOriginService.readProofOfOrigin(hydrogenBottlingProcessStep.id);
-
-    expect(fetchProcessStepSpy).toHaveBeenCalledTimes(1);
-    expect(fetchProcessStepSpy).toHaveBeenCalledWith(hydrogenBottlingProcessStep.id);
-
-    expect(fetchHydrogenProductionStepsSpy).toHaveBeenCalledTimes(1);
-    expect(fetchHydrogenProductionStepsSpy).toHaveBeenCalledWith(hydrogenBottlingProcessStep);
-
-    expect(fetchPowerProductionStepsSpy).toHaveBeenCalledTimes(1);
-    expect(fetchPowerProductionStepsSpy).toHaveBeenCalledWith([hydrogenProductionProcessStep]);
-
-    expect(buildInputMediaSectionSpy).toHaveBeenCalledTimes(1);
-    expect(buildInputMediaSectionSpy).toHaveBeenCalledWith([powerProductionProcessStep]);
-
-    expect(buildBottlingSectionSpy).toHaveBeenCalledTimes(1);
-    expect(buildBottlingSectionSpy).toHaveBeenCalledWith(hydrogenBottlingProcessStep);
-
-    expect(buildHydrogenProductionSectionSpy).toHaveBeenCalledTimes(1);
-    expect(buildHydrogenProductionSectionSpy).toHaveBeenCalledWith([hydrogenProductionProcessStep]);
-
-    expect(actualResponse).toEqual(expectedResponse);
-  });
-
-  it('should return proof of origin for process step ProcessType.HYDROGEN_TRANSPORTATION', async () => {
-    const expectedResponse: SectionDto[] = [
-      { name: ProofOfOriginConstants.INPUT_MEDIA_SECTION_NAME, batches: [], classifications: [] },
-      { name: ProofOfOriginConstants.HYDROGEN_PRODUCTION_SECTION_NAME, batches: [], classifications: [] },
-      { name: ProofOfOriginConstants.HYDROGEN_BOTTLING_SECTION_NAME, batches: [], classifications: [] },
-      { name: ProofOfOriginConstants.HYDROGEN_TRANSPORTATION_SECTION_NAME, batches: [], classifications: [] },
-    ];
-
-    const fetchProcessStepSpy = jest
-      .spyOn(processStepService, 'fetchProcessStep')
-      .mockResolvedValue(hydrogenTransportationProcessStep);
-
-    const fetchHydrogenBottlingProcessStepSpy = jest
-      .spyOn(processLineageService, 'fetchHydrogenBottlingProcessStep')
-      .mockResolvedValue(hydrogenBottlingProcessStep);
-
-    const fetchHydrogenProductionProcessStepsSpy = jest
-      .spyOn(processLineageService, 'fetchHydrogenProductionProcessSteps')
-      .mockResolvedValue([hydrogenProductionProcessStep]);
-
-    const fetchPowerProductionProcessStepsSpy = jest
-      .spyOn(processLineageService, 'fetchPowerProductionProcessSteps')
-      .mockResolvedValue([powerProductionProcessStep]);
-
-    const buildInputMediaSectionSpy = jest
-      .spyOn(inputMediaSectionService, 'buildInputMediaSection')
-      .mockResolvedValue(expectedResponse[0]);
-
-    const buildBottlingSectionSpy = jest
-      .spyOn(bottlingSectionService, 'buildBottlingSection')
-      .mockResolvedValue(expectedResponse[2]);
-
-    const buildTransportationSectionSpy = jest
-      .spyOn(bottlingSectionService, 'buildTransportationSection')
-      .mockResolvedValue(expectedResponse[3]);
-
-    const buildHydrogenProductionSectionSpy = jest
-      .spyOn(HydrogenProductionSectionAssembler, 'buildHydrogenProductionSection')
-      .mockReturnValue(expectedResponse[1]);
-
-    const actualResponse = await proofOfOriginService.readProofOfOrigin(hydrogenTransportationProcessStep.id);
-
-    expect(fetchProcessStepSpy).toHaveBeenCalledTimes(1);
-    expect(fetchProcessStepSpy).toHaveBeenCalledWith(hydrogenTransportationProcessStep.id);
-
-    expect(fetchHydrogenBottlingProcessStepSpy).toHaveBeenCalledTimes(1);
-    expect(fetchHydrogenBottlingProcessStepSpy).toHaveBeenCalledWith(hydrogenTransportationProcessStep);
-
-    expect(fetchHydrogenProductionProcessStepsSpy).toHaveBeenCalledTimes(1);
-    expect(fetchHydrogenProductionProcessStepsSpy).toHaveBeenCalledWith(hydrogenBottlingProcessStep);
-
-    expect(fetchPowerProductionProcessStepsSpy).toHaveBeenCalledTimes(1);
-    expect(fetchPowerProductionProcessStepsSpy).toHaveBeenCalledWith([hydrogenProductionProcessStep]);
-
-    expect(buildInputMediaSectionSpy).toHaveBeenCalledTimes(1);
-    expect(buildInputMediaSectionSpy).toHaveBeenCalledWith([powerProductionProcessStep]);
-
-    expect(buildBottlingSectionSpy).toHaveBeenCalledTimes(1);
-    expect(buildBottlingSectionSpy).toHaveBeenCalledWith(hydrogenBottlingProcessStep);
-
-    expect(buildTransportationSectionSpy).toHaveBeenCalledTimes(1);
-    expect(buildTransportationSectionSpy).toHaveBeenCalledWith(
-      hydrogenTransportationProcessStep,
-      hydrogenBottlingProcessStep,
-    );
-
-    expect(buildHydrogenProductionSectionSpy).toHaveBeenCalledTimes(1);
-    expect(buildHydrogenProductionSectionSpy).toHaveBeenCalledWith([hydrogenProductionProcessStep]);
-
-    expect(actualResponse).toEqual(expectedResponse);
-  });
-
-  it('should throw for unsupported process type', async () => {
-    powerProductionProcessStep.type = 'UNSUPPORTED_TYPE' as any;
-
-    jest.spyOn(processStepService, 'fetchProcessStep').mockResolvedValue(powerProductionProcessStep);
-
-    await expect(proofOfOriginService.readProofOfOrigin(powerProductionProcessStep.id)).rejects.toMatchObject({
-      message: expect.stringContaining('UNSUPPORTED_TYPE'),
-    });
-
-    expect(processStepService.fetchProcessStep).toHaveBeenCalledTimes(1);
-    expect(processStepService.fetchProcessStep).toHaveBeenCalledWith(powerProductionProcessStep.id);
+    expect(actual).toEqual(expectedSections);
   });
 });

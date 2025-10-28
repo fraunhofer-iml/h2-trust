@@ -9,7 +9,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
-import { assertNumberOfProcessSteps, assertPredecessorsExist, assertProcessType } from '../proof-of-origin.validation';
 import { ProcessStepService } from './process-step.service';
 
 @Injectable()
@@ -24,9 +23,9 @@ export class ProcessLineageService {
       );
     }
 
-    assertProcessType(processSteps, ProcessType.HYDROGEN_PRODUCTION);
+    this.assertProcessType(processSteps, ProcessType.HYDROGEN_PRODUCTION);
 
-    // Start with the first layer HYDROGEN_BOTTLING -> due to split batches we may have multiple layers of HYDROGEN_PRODUCTION predecessors
+    // Start with the first layer HYDROGEN_PRODUCTION -> due to split batches, we may have multiple layers of POWER_PRODUCTION predecessors
     let currentProcessStepLayer: ProcessStepEntity[] = processSteps;
 
     // Collect all POWER_PRODUCTION process steps across all layers
@@ -68,13 +67,13 @@ export class ProcessLineageService {
       );
     }
 
-    assertProcessType([processStep], ProcessType.HYDROGEN_BOTTLING);
+    this.assertProcessType([processStep], ProcessType.HYDROGEN_BOTTLING);
 
     const predecessorBatches: BatchEntity[] = this.getPredecessorBatchesOrThrow(processStep);
     const processStepsOfPredecessorBatches =
       await this.processStepService.fetchProcessStepsOfBatches(predecessorBatches);
-    assertProcessType(processStepsOfPredecessorBatches, ProcessType.HYDROGEN_PRODUCTION);
-    assertNumberOfProcessSteps(processStepsOfPredecessorBatches, predecessorBatches.length);
+    this.assertProcessType(processStepsOfPredecessorBatches, ProcessType.HYDROGEN_PRODUCTION);
+    this.assertNumberOfProcessSteps(processStepsOfPredecessorBatches, predecessorBatches.length);
 
     return processStepsOfPredecessorBatches;
   }
@@ -87,20 +86,44 @@ export class ProcessLineageService {
       );
     }
 
-    assertProcessType([processStep], ProcessType.HYDROGEN_TRANSPORTATION);
+    this.assertProcessType([processStep], ProcessType.HYDROGEN_TRANSPORTATION);
 
     const predecessorBatches: BatchEntity[] = this.getPredecessorBatchesOrThrow(processStep);
     const processStepsOfPredecessorBatches: ProcessStepEntity[] =
       await this.processStepService.fetchProcessStepsOfBatches(predecessorBatches);
-    assertProcessType(processStepsOfPredecessorBatches, ProcessType.HYDROGEN_BOTTLING);
-    assertNumberOfProcessSteps(processStepsOfPredecessorBatches, 1);
+    this.assertProcessType(processStepsOfPredecessorBatches, ProcessType.HYDROGEN_BOTTLING);
+    this.assertNumberOfProcessSteps(processStepsOfPredecessorBatches, 1);
 
     return processStepsOfPredecessorBatches[0];
   }
 
   private getPredecessorBatchesOrThrow(processStep: ProcessStepEntity): BatchEntity[] {
     const predecessorBatches: BatchEntity[] = processStep.batch?.predecessors;
-    assertPredecessorsExist(predecessorBatches, processStep.id);
+    if (!Array.isArray(predecessorBatches) || predecessorBatches.length === 0) {
+      const errorMessage = `No further predecessors could be found for process step(s) with ID ${processStep.id}`;
+      throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
+    }
     return predecessorBatches;
+  }
+
+  private assertNumberOfProcessSteps(processSteps: ProcessStepEntity[], expectedNumberOfProcessSteps: number): void {
+    if (!processSteps || processSteps.length !== expectedNumberOfProcessSteps) {
+      const errorMessage = `Number of process steps must be exactly ${expectedNumberOfProcessSteps}, but found ${processSteps?.length ?? 0}.`;
+      throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  private assertProcessType(processSteps: ProcessStepEntity[], expectedProcessType: ProcessType): void {
+    const invalidProcessSteps: ProcessStepEntity[] = processSteps.filter(
+      (processStep) => processStep.type !== expectedProcessType,
+    );
+
+    if (invalidProcessSteps.length > 0) {
+      const invalidProcessTypes = invalidProcessSteps
+        .map((processStep) => [processStep.id, processStep.type].join(' '))
+        .join(', ');
+      const errorMessage = `All process steps must be of type ${expectedProcessType}, but found invalid process types: ${invalidProcessTypes}`;
+      throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
+    }
   }
 }
