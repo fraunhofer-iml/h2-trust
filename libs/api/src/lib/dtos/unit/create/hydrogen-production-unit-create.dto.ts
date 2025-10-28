@@ -36,7 +36,7 @@ export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
   @IsNotEmpty()
   @IsNumber()
   @IsPositive()
-  waterConsumption: number;
+  waterConsumptionLitersPerHour: number;
 
   constructor(
     type: UnitType,
@@ -56,7 +56,7 @@ export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
     biddingZone: BiddingZone,
     ratedPower: number,
     pressure: number,
-    waterConsumption: number,
+    waterConsumptionLitersPerHour: number,
   ) {
     super(
       type,
@@ -77,7 +77,7 @@ export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
     this.biddingZone = biddingZone;
     this.ratedPower = ratedPower;
     this.pressure = pressure;
-    this.waterConsumption = waterConsumption;
+    this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 
   static toEntity(dto: HydrogenProductionUnitCreateDto): HydrogenProductionUnitEntity {
@@ -102,7 +102,7 @@ export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
       biddingZone: dto.biddingZone,
       ratedPower: dto.ratedPower,
       pressure: dto.pressure,
-      waterConsumption: dto.waterConsumption,
+      waterConsumptionLitersPerHour: dto.waterConsumptionLitersPerHour,
     };
   }
 }

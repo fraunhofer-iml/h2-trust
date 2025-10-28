@@ -13,7 +13,7 @@ import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
 
 @Module({
-  imports: [ConfigurationModule, new Broker().getBatchSvcBroker()],
+  imports: [ConfigurationModule, new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker()],
   controllers: [ProductionController],
   providers: [ProductionService],
 })

@@ -18,9 +18,15 @@ describe('ProductionController', () => {
   const DERIVED_HYDROGEN_COLOR = HydrogenColor.GREEN;
 
   let controller: ProductionController;
+  let generalServiceSendMock: jest.Mock;
   let batchServiceSendMock: jest.Mock;
 
   beforeEach(async () => {
+    generalServiceSendMock = jest.fn().mockImplementation(() => {
+      return of({
+        waterConsumptionLitersPerHour: 18,
+      });
+    });
     batchServiceSendMock = jest.fn().mockImplementation((_pattern, data) => {
       return of({
         ...data.processStepEntity,
@@ -36,8 +42,15 @@ describe('ProductionController', () => {
           useValue: {
             getProcessSvcConfiguration: () => ({
               powerAccountingPeriodInSeconds: 900,
+              waterAccountingPeriodInSeconds: 900,
               hydrogenAccountingPeriodInSeconds: 900,
             }),
+          },
+        },
+        {
+          provide: BrokerQueues.QUEUE_GENERAL_SVC,
+          useValue: {
+            send: generalServiceSendMock,
           },
         },
         {
@@ -73,9 +86,9 @@ describe('ProductionController', () => {
 
     const actualResponse = await controller.createProduction({ createProductionEntity });
 
-    expect(batchServiceSendMock).toHaveBeenCalledTimes(6); // 3 Power + 3 Hydrogen
+    expect(batchServiceSendMock).toHaveBeenCalledTimes(9); // 3 Power + 3 Water + 3 Hydrogen
     expect(Array.isArray(actualResponse)).toBe(true);
-    expect(actualResponse.length).toBe(6); // 3 Power + 3 Hydrogen
+    expect(actualResponse.length).toBe(9); // 3 Power + 3 Water + 3 Hydrogen
 
     actualResponse
       .filter((step) => step.type === ProcessType.POWER_PRODUCTION)
@@ -98,6 +111,30 @@ describe('ProductionController', () => {
         });
         expect(processStepEntity).toHaveProperty('executedBy', {
           id: createProductionEntity.powerProductionUnitId,
+        });
+      });
+
+    actualResponse
+      .filter((step) => step.type === ProcessType.WATER_CONSUMPTION)
+      .forEach((processStepEntity) => {
+        expect(processStepEntity).toHaveProperty('startedAt');
+        expect(processStepEntity).toHaveProperty('endedAt');
+        expect(processStepEntity).toHaveProperty('type', ProcessType.WATER_CONSUMPTION);
+        expect(processStepEntity).toHaveProperty('batch');
+        expect(processStepEntity.batch).toHaveProperty('amount', 3.1);
+        expect(processStepEntity.batch).toHaveProperty('quality', '{}');
+        expect(processStepEntity.batch).toHaveProperty('type', BatchType.WATER);
+        expect(processStepEntity.batch).toHaveProperty('owner', {
+          id: createProductionEntity.companyIdOfHydrogenProductionUnit,
+        });
+        expect(processStepEntity.batch).toHaveProperty('hydrogenStorageUnit', {
+          id: null,
+        });
+        expect(processStepEntity).toHaveProperty('recordedBy', {
+          id: createProductionEntity.recordedBy,
+        });
+        expect(processStepEntity).toHaveProperty('executedBy', {
+          id: createProductionEntity.hydrogenProductionUnitId,
         });
       });
 
@@ -161,6 +198,27 @@ describe('ProductionController', () => {
     );
 
     expect(actualResponse[5]).toEqual(
+      expect.objectContaining({
+        startedAt: new Date('2025-01-01T10:30:00.000Z'),
+        endedAt: new Date('2025-01-01T10:44:59.000Z'),
+      }),
+    );
+
+    expect(actualResponse[6]).toEqual(
+      expect.objectContaining({
+        startedAt: new Date('2025-01-01T10:00:00.000Z'),
+        endedAt: new Date('2025-01-01T10:14:59.000Z'),
+      }),
+    );
+
+    expect(actualResponse[7]).toEqual(
+      expect.objectContaining({
+        startedAt: new Date('2025-01-01T10:15:00.000Z'),
+        endedAt: new Date('2025-01-01T10:29:59.000Z'),
+      }),
+    );
+
+    expect(actualResponse[8]).toEqual(
       expect.objectContaining({
         startedAt: new Date('2025-01-01T10:30:00.000Z'),
         endedAt: new Date('2025-01-01T10:44:59.000Z'),

@@ -7,3 +7,4 @@
  */
 
 export * from './lib/assertions';
+export * from './lib/date-time.util';

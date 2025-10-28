@@ -12,6 +12,20 @@ export class ProductionUtils {
     productionEndedAtInSeconds: number,
     accountingPeriodInSeconds: number,
   ): number {
+    const durationInSeconds = this.calculateDuration(productionStartedAtInSeconds, productionEndedAtInSeconds);
+
+    if (!Number.isFinite(accountingPeriodInSeconds)) {
+      throw new Error('accountingPeriodInSeconds must be a finite number: ' + accountingPeriodInSeconds);
+    }
+
+    if (accountingPeriodInSeconds <= 0) {
+      throw new Error('accountingPeriodInSeconds must be greater than zero');
+    }
+
+    return Math.ceil(durationInSeconds / accountingPeriodInSeconds);
+  }
+
+  static calculateDuration(productionStartedAtInSeconds: number, productionEndedAtInSeconds: number) {
     const durationInSeconds = productionEndedAtInSeconds - productionStartedAtInSeconds;
 
     if (productionStartedAtInSeconds < 0) {
@@ -22,15 +36,11 @@ export class ProductionUtils {
       throw new Error('productionEndedAtInSeconds must be positive');
     }
 
-    if (accountingPeriodInSeconds <= 0) {
-      throw new Error('accountingPeriodInSeconds must be greater than zero');
-    }
-
     if (durationInSeconds <= 0) {
       throw new Error('productionEndedAtInSeconds must be greater than productionStartedAtInSeconds');
     }
 
-    return Math.ceil(durationInSeconds / accountingPeriodInSeconds);
+    return durationInSeconds;
   }
 
   static calculateBatchAmountPerPeriod(batchAmount: number, numberOfAccountingPeriods: number): number {
@@ -80,6 +90,7 @@ export class ProductionUtils {
     const productionStartedAtInMs = productionStartedAtInSeconds * 1000;
     const accountingPeriodInMs = accountingPeriodInSeconds * 1000;
     const accountingPeriodOffsetInMs = (accountingPeriodIndex + (isEnd ? 1 : 0)) * accountingPeriodInMs;
+
     return new Date(
       isEnd
         ? productionStartedAtInMs + accountingPeriodOffsetInMs - 1000 // Subtract 1 second to ensure the end time is before the next period starts

@@ -44,7 +44,7 @@ export type HydrogenProductionFormGroup = {
   method: FormControl<HydrogenProductionMethod | null>;
   technology: FormControl<HydrogenProductionTechnology | null>;
   pressure: FormControl<number | null>;
-  waterConsumption: FormControl<number | null>;
+  waterConsumptionLitersPerHour: FormControl<number | null>;
 };
 export type HydrogenStorageFormGroup = {
   capacity: FormControl<number | null>;
@@ -120,7 +120,7 @@ export const newH2ProductionForm = () =>
       Validators.required,
     ),
     pressure: new FormControl<number | null>(null, Validators.required),
-    waterConsumption: new FormControl<number | null>(null, Validators.required),
+    waterConsumptionLitersPerHour: new FormControl<number | null>(null, Validators.required),
   });
 
 export const addValidatorsToFormGroup = (formGroup: FormGroup): void => {
