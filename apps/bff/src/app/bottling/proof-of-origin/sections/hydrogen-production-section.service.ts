@@ -10,14 +10,14 @@ import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { ClassificationDto, SectionDto } from '@h2-trust/api';
 import { ProofOfOrigin } from '@h2-trust/domain';
-import { ProofOfOriginDtoAssembler } from '../assembler/proof-of-origin-dto.assembler';
-import { EnergySourceClassificationService } from '../classification/energy-source-classification.service';
+import { EnergySourceClassificationService } from '../classifications/energy-source-classification.service';
+import { ProofOfOriginDtoAssembler } from '../proof-of-origin-dto.assembler';
 
 @Injectable()
-export class InputMediaSectionService {
+export class HydrogenProductionSectionService {
   constructor(private readonly energySourceClassificationService: EnergySourceClassificationService) {}
 
-  async buildInputMediaSection(
+  async buildHydrogenProductionSection(
     powerProductionProcessSteps: ProcessStepEntity[],
     batchAmount: number,
   ): Promise<SectionDto> {
@@ -31,6 +31,6 @@ export class InputMediaSectionService {
       [],
       energySourceClassificationDtos,
     );
-    return new SectionDto(ProofOfOrigin.INPUT_MEDIA_SECTION_NAME, [], [powerSupplyClassification]);
+    return new SectionDto(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION_NAME, [], [powerSupplyClassification]);
   }
 }

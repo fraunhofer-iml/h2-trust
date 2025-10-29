@@ -9,16 +9,16 @@
 import { of } from 'rxjs';
 import { ProcessStepEntity, ProcessStepEntityHydrogenProductionMock } from '@h2-trust/amqp';
 import { HydrogenColor, ProofOfOrigin } from '@h2-trust/domain';
-import { HydrogenProductionSectionAssembler } from './hydrogen-production-section.assembler';
+import { HydrogenStorageSectionService } from './hydrogen-storage-section.service';
 
-describe('HydrogenProductionSectionAssembler.buildHydrogenProductionSection', () => {
-  let assembler: HydrogenProductionSectionAssembler;
-  let processClientMock: { send: jest.Mock };
+describe('HydrogenStorageSectionService.buildHydrogenStorageSection', () => {
+  let service: HydrogenStorageSectionService;
+  let processSvcMock: { send: jest.Mock };
 
   beforeEach(() => {
-    processClientMock = { send: jest.fn() };
-    processClientMock.send.mockReturnValue(of({ result: 0, basisOfCalculation: '' }));
-    assembler = new HydrogenProductionSectionAssembler(processClientMock as any);
+    processSvcMock = { send: jest.fn() };
+    processSvcMock.send.mockReturnValue(of({ result: 0, basisOfCalculation: '' }));
+    service = new HydrogenStorageSectionService(processSvcMock as any);
   });
 
   afterEach(() => {
@@ -28,9 +28,9 @@ describe('HydrogenProductionSectionAssembler.buildHydrogenProductionSection', ()
   it('should return empty classifications when no process steps provided', async () => {
     const givenProcessSteps: ProcessStepEntity[] = [];
 
-    const actualResponse = await assembler.buildHydrogenProductionSection(givenProcessSteps);
+    const actualResponse = await service.buildHydrogenStorageSection(givenProcessSteps);
 
-    expect(actualResponse.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION_NAME);
+    expect(actualResponse.name).toBe(ProofOfOrigin.HYDROGEN_STORAGE_SECTION_NAME);
     expect(actualResponse.batches).toEqual([]);
     expect(actualResponse.classifications).toEqual([]);
   });
@@ -38,9 +38,9 @@ describe('HydrogenProductionSectionAssembler.buildHydrogenProductionSection', ()
   it('should return one classification (yellow)', async () => {
     const givenProcessSteps: ProcessStepEntity[] = [ProcessStepEntityHydrogenProductionMock[0]];
 
-    const actualResponse = await assembler.buildHydrogenProductionSection(givenProcessSteps);
+    const actualResponse = await service.buildHydrogenStorageSection(givenProcessSteps);
 
-    expect(actualResponse.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION_NAME);
+    expect(actualResponse.name).toBe(ProofOfOrigin.HYDROGEN_STORAGE_SECTION_NAME);
     expect(actualResponse.batches).toEqual([]);
     expect(actualResponse.classifications.length).toBe(1);
 
@@ -55,9 +55,9 @@ describe('HydrogenProductionSectionAssembler.buildHydrogenProductionSection', ()
       ProcessStepEntityHydrogenProductionMock[1],
     ];
 
-    const actualResponse = await assembler.buildHydrogenProductionSection(givenProcessSteps);
+    const actualResponse = await service.buildHydrogenStorageSection(givenProcessSteps);
 
-    expect(actualResponse.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION_NAME);
+    expect(actualResponse.name).toBe(ProofOfOrigin.HYDROGEN_STORAGE_SECTION_NAME);
     expect(actualResponse.batches).toEqual([]);
     expect(actualResponse.classifications.length).toBe(2);
 

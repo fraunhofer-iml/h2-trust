@@ -38,7 +38,7 @@ export class ProofOfOriginDtoAssembler {
     );
   }
 
-  static assembleProductionHydrogenBatchDto(processStepEntity: ProcessStepEntity, emission?: EmissionDto): BatchDto {
+  static assembleStorageHydrogenBatchDto(processStepEntity: ProcessStepEntity, emission?: EmissionDto): BatchDto {
     return new HydrogenBatchDto(
       processStepEntity.batch.id,
       emission,

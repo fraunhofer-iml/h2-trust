@@ -13,15 +13,15 @@ import { BrokerQueues, ProcessStepEntity, SustainabilityMessagePatterns } from '
 import { BatchDto, ClassificationDto, EmissionCalculationDto, parseColor, SectionDto } from '@h2-trust/api';
 import { HydrogenColor, ProofOfOrigin } from '@h2-trust/domain';
 import { toEmissionDto } from '../emission-dto.builder';
-import { ProofOfOriginDtoAssembler } from './proof-of-origin-dto.assembler';
+import { ProofOfOriginDtoAssembler } from '../proof-of-origin-dto.assembler';
 
 @Injectable()
-export class HydrogenProductionSectionAssembler {
+export class HydrogenStorageSectionService {
   constructor(@Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processClient: ClientProxy) {}
 
-  async buildHydrogenProductionSection(hydrogenProductionProcessSteps: ProcessStepEntity[]): Promise<SectionDto> {
+  async buildHydrogenStorageSection(hydrogenProductionProcessSteps: ProcessStepEntity[]): Promise<SectionDto> {
     if (!hydrogenProductionProcessSteps || hydrogenProductionProcessSteps.length === 0) {
-      return new SectionDto(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION_NAME, [], []);
+      return new SectionDto(ProofOfOrigin.HYDROGEN_STORAGE_SECTION_NAME, [], []);
     }
 
     const classifications: ClassificationDto[] = [];
@@ -45,7 +45,7 @@ export class HydrogenProductionSectionAssembler {
           }),
         );
         const emission = toEmissionDto(emissionCalculation, processStep.batch.amount);
-        const batch: BatchDto = ProofOfOriginDtoAssembler.assembleProductionHydrogenBatchDto(processStep, emission);
+        const batch: BatchDto = ProofOfOriginDtoAssembler.assembleStorageHydrogenBatchDto(processStep, emission);
         batchesForCurrentColor.push(batch);
       }
 
@@ -56,6 +56,6 @@ export class HydrogenProductionSectionAssembler {
       classifications.push(classification);
     }
 
-    return new SectionDto(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION_NAME, [], classifications);
+    return new SectionDto(ProofOfOrigin.HYDROGEN_STORAGE_SECTION_NAME, [], classifications);
   }
 }

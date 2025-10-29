@@ -37,7 +37,7 @@ export class EmissionCalculatorService {
 
     if (ctx.hydrogenProductionProcessSteps) {
       const hydrogenProductionEmissions = ctx.hydrogenProductionProcessSteps.map((step) =>
-        EmissionAssembler.assembleHydrogenProductionCalculation(step),
+        EmissionAssembler.assembleHydrogenStorageCalculation(step),
       );
       emissionCalculations.push(...hydrogenProductionEmissions);
     }
@@ -93,7 +93,7 @@ export class EmissionCalculatorService {
       processSteps.map((step) => {
         const unit = powerProductionUnitsByProcessSteps.get(step.id);
         const entry = getPowerEmissionFactorByEnergySource(unit?.type?.energySource);
-        return EmissionAssembler.assemblePowerProductionCalculation(step, entry.emissionFactor, entry.label);
+        return EmissionAssembler.assembleHydrogenProductionCalculation(step, entry.emissionFactor, entry.label);
       }),
     );
   }

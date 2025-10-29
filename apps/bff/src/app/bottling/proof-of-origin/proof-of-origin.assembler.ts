@@ -10,16 +10,18 @@ import { Injectable } from '@nestjs/common';
 import { LineageContextEntity } from '@h2-trust/amqp';
 import { SectionDto } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
-import { HydrogenProductionSectionAssembler } from './assembler/hydrogen-production-section.assembler';
-import { BottlingSectionService } from './sections/bottling-section.service';
-import { InputMediaSectionService } from './sections/input-media-section.service';
+import { HydrogenBottlingSectionService } from './sections/hydrogen-bottling-section.service';
+import { HydrogenProductionSectionService } from './sections/hydrogen-production-section.service';
+import { HydrogenStorageSectionService } from './sections/hydrogen-storage-section.service';
+import { HydrogenTransportationSectionService } from './sections/hydrogen-transportation-section.service';
 
 @Injectable()
 export class ProofOfOriginAssembler {
   constructor(
-    private readonly bottlingSectionService: BottlingSectionService,
-    private readonly inputMediaSectionService: InputMediaSectionService,
-    private readonly hydrogenProductionSectionAssembler: HydrogenProductionSectionAssembler,
+    private readonly hydrogenProductionSectionService: HydrogenProductionSectionService,
+    private readonly hydrogenStorageSectionAssembler: HydrogenStorageSectionService,
+    private readonly hydrogenBottlingSectionService: HydrogenBottlingSectionService,
+    private readonly hydrogenTransportationSectionService: HydrogenTransportationSectionService,
   ) {}
 
   async build(ctx: LineageContextEntity): Promise<SectionDto[]> {
@@ -27,7 +29,7 @@ export class ProofOfOriginAssembler {
 
     if (ctx.powerProductionProcessSteps?.length) {
       sections.push(
-        await this.inputMediaSectionService.buildInputMediaSection(
+        await this.hydrogenProductionSectionService.buildHydrogenProductionSection(
           ctx.powerProductionProcessSteps,
           ctx.root.batch.amount,
         ),
@@ -36,21 +38,24 @@ export class ProofOfOriginAssembler {
 
     if (ctx.hydrogenProductionProcessSteps?.length) {
       sections.push(
-        await this.hydrogenProductionSectionAssembler.buildHydrogenProductionSection(
-          ctx.hydrogenProductionProcessSteps,
-        ),
+        await this.hydrogenStorageSectionAssembler.buildHydrogenStorageSection(ctx.hydrogenProductionProcessSteps),
       );
     }
 
     if (ctx.root.type === ProcessType.HYDROGEN_BOTTLING || ctx.root.type === ProcessType.HYDROGEN_TRANSPORTATION) {
       sections.push(
-        await this.bottlingSectionService.buildBottlingSection(ctx.hydrogenBottlingProcessStep ?? ctx.root),
+        await this.hydrogenBottlingSectionService.buildHydrogenBottlingSection(
+          ctx.hydrogenBottlingProcessStep ?? ctx.root,
+        ),
       );
     }
 
     if (ctx.root.type === ProcessType.HYDROGEN_TRANSPORTATION && ctx.hydrogenBottlingProcessStep) {
       sections.push(
-        await this.bottlingSectionService.buildTransportationSection(ctx.root, ctx.hydrogenBottlingProcessStep),
+        await this.hydrogenTransportationSectionService.buildHydrogenTransportationSection(
+          ctx.root,
+          ctx.hydrogenBottlingProcessStep,
+        ),
       );
     }
 

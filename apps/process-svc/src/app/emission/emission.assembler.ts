@@ -18,7 +18,7 @@ import {
 } from '@h2-trust/domain';
 
 export class EmissionAssembler {
-  static assemblePowerProductionCalculation(
+  static assembleHydrogenProductionCalculation(
     processStep: ProcessStepEntity,
     emissionFactorGPerKWh: number,
     label: string,
@@ -26,14 +26,14 @@ export class EmissionAssembler {
     const successorProducedHydrogenMassKg = processStep.batch.successors[0].amount;
     const basis = `E = ${processStep.batch.amount} kWh * ${emissionFactorGPerKWh} g CO₂,eq/kWh / ${successorProducedHydrogenMassKg} kg H₂`;
     const result = (processStep.batch.amount * emissionFactorGPerKWh) / successorProducedHydrogenMassKg;
-    return new EmissionCalculationDto(label, basis, result, UNIT_G_CO2_PER_KG_H2, CalculationTopic.POWER_PRODUCTION);
+    return new EmissionCalculationDto(label, basis, result, UNIT_G_CO2_PER_KG_H2, CalculationTopic.HYDROGEN_PRODUCTION);
   }
 
-  static assembleHydrogenProductionCalculation(_processStep: ProcessStepEntity): EmissionCalculationDto {
-    const name = 'Emissions (Hydrogen Production - placeholder)';
+  static assembleHydrogenStorageCalculation(_processStep: ProcessStepEntity): EmissionCalculationDto {
+    const name = 'Emissions (Hydrogen Storage - placeholder)';
     const basis = 'TBA';
     const result = 0;
-    return new EmissionCalculationDto(name, basis, result, UNIT_G_CO2_PER_KG_H2, CalculationTopic.HYDROGEN_PRODUCTION);
+    return new EmissionCalculationDto(name, basis, result, UNIT_G_CO2_PER_KG_H2, CalculationTopic.HYDROGEN_STORAGE);
   }
 
   static assembleHydrogenBottlingCalculation(gridFactorGPerKWh: number): EmissionCalculationDto {
@@ -69,11 +69,11 @@ export class EmissionAssembler {
 
   static assemblePipelineTransportationCalculation(): EmissionCalculationDto {
     return new EmissionCalculationDto(
-      'Emissions (Transportation With Pipeline)',
+      'Emissions (Transportation with Pipeline)',
       'E = 0 g CO₂,eq/kg H₂',
       0,
       UNIT_G_CO2_PER_KG_H2,
-      CalculationTopic.TRANSPORT,
+      CalculationTopic.HYDROGEN_TRANSPORTATION,
     );
   }
 
@@ -89,11 +89,11 @@ export class EmissionAssembler {
     const result = distanceKm * (transportEfficiencyMJPerKgPerKm * fuelFactor + gEqEmissionsOfCH4AndN2OPerKmPerKgH2);
 
     return new EmissionCalculationDto(
-      'Emissions (Transportation With Trailer)',
+      'Emissions (Transportation with Trailer)',
       basis,
       result,
       UNIT_G_CO2_PER_KG_H2,
-      CalculationTopic.TRANSPORT,
+      CalculationTopic.HYDROGEN_TRANSPORTATION,
     );
   }
 
@@ -105,27 +105,27 @@ export class EmissionAssembler {
 
     return [
       {
-        amount: sumBy(CalculationTopic.POWER_PRODUCTION),
-        name: 'Epp',
-        description: 'Power Production Emissions',
-        processStepType: 'APPLICATION',
-      },
-      {
         amount: sumBy(CalculationTopic.HYDROGEN_PRODUCTION),
         name: 'Ehp',
         description: 'Hydrogen Production Emissions',
         processStepType: 'APPLICATION',
       },
       {
-        amount: sumBy(CalculationTopic.HYDROGEN_BOTTLING),
-        name: 'Eb',
-        description: 'Bottling Emissions',
+        amount: sumBy(CalculationTopic.HYDROGEN_STORAGE),
+        name: 'Ehs',
+        description: 'Hydrogen Storage Emissions',
         processStepType: 'APPLICATION',
       },
       {
-        amount: sumBy(CalculationTopic.TRANSPORT),
+        amount: sumBy(CalculationTopic.HYDROGEN_BOTTLING),
+        name: 'Eb',
+        description: 'Hydrogen Bottling Emissions',
+        processStepType: 'APPLICATION',
+      },
+      {
+        amount: sumBy(CalculationTopic.HYDROGEN_TRANSPORTATION),
         name: 'Et',
-        description: 'Transport Emissions',
+        description: 'Hydrogen Transportation Emissions',
         processStepType: 'APPLICATION',
       },
     ];

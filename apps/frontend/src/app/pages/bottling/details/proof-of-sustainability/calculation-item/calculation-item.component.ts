@@ -32,8 +32,8 @@ export class CalculationItemComponent {
     const map = new Map<string, string>([
       [CalculationTopic.HYDROGEN_BOTTLING, 'propane_tank'],
       [CalculationTopic.WATER_SUPPLY, 'water'],
-      [CalculationTopic.POWER_PRODUCTION, 'offline_bolt'],
-      [CalculationTopic.TRANSPORT, 'road'],
+      [CalculationTopic.HYDROGEN_PRODUCTION, 'offline_bolt'],
+      [CalculationTopic.HYDROGEN_TRANSPORTATION, 'road'],
     ]);
 
     return map.get(topic);

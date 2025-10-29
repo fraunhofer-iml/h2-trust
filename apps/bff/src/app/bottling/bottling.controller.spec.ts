@@ -207,7 +207,7 @@ describe('BottlingController', () => {
   it('should return proof of origin for process step ProcessType.POWER_PRODUCTION', async () => {
     const givenProcessStep: ProcessStepEntity = structuredClone(ProcessStepEntityPowerProductionMock[0]);
     const expectedResponse: SectionDto[] = [
-      { name: ProofOfOrigin.INPUT_MEDIA_SECTION_NAME, batches: [], classifications: [] },
+      { name: ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION_NAME, batches: [], classifications: [] },
     ];
 
     const proofOfOriginServiceSpy = jest
