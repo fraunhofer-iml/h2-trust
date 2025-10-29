@@ -7,7 +7,7 @@
  */
 
 import { firstValueFrom } from 'rxjs';
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerException,
@@ -19,7 +19,7 @@ import {
   ProductionMessagePatterns,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
-import { CreateProductionDto, ProductionOverviewDto, UserDetailsDto } from '@h2-trust/api';
+import { CreateProductionDto, ProductionCSVUploadDto, ProductionOverviewDto, UserDetailsDto } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 
@@ -98,5 +98,22 @@ export class ProductionService {
     return firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.READ_ALL, payload)).then((processSteps) =>
       processSteps.map(ProductionOverviewDto.fromEntity),
     );
+  }
+
+  async importCSV(
+    powerProductionFiles: Express.Multer.File[],
+    hydrogenProductionFiles: Express.Multer.File[],
+    dto: ProductionCSVUploadDto,
+  ) {
+    const missingFiles = [];
+    if (!powerProductionFiles || powerProductionFiles.length === 0) missingFiles.push('Power Production');
+    if (!hydrogenProductionFiles || hydrogenProductionFiles.length === 0) missingFiles.push('Hydrogen Production');
+    if (missingFiles.length > 0) throw new BadRequestException(`Missing Information: ${missingFiles.join(' & ')}.`);
+
+    const missingUnitIds = [];
+    if (dto.hydrogenProductionUnitIds.length < hydrogenProductionFiles.length)
+      missingUnitIds.push('Hydrogen Production Unit');
+    if (dto.powerProductionUnitIds.length < powerProductionFiles.length) missingUnitIds.push('Power Production Unit');
+    if (missingUnitIds.length > 0) throw new BadRequestException(`Missing Information: ${missingUnitIds.join(' & ')}.`);
   }
 }

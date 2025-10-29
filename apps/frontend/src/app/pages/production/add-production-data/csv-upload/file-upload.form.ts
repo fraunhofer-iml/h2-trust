@@ -6,6 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './create-production.dto';
-export * from './mocks';
-export * from './production-csv-upload.dto';
+import { FormControl, FormGroup } from '@angular/forms';
+
+export type FileForm = FormGroup<{ file: FormControl<File | null>; unitId: FormControl<string | null> }>;

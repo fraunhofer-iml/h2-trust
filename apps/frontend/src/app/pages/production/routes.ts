@@ -7,11 +7,16 @@
  */
 
 import { Route } from '@angular/router';
+import { AddProductionDataComponent } from './add-production-data/add-production-data.component';
 import { ProductionViewComponent } from './production-view.component';
 
 export const PRODUCTION_ROUTES: Route[] = [
   {
     path: '',
     component: ProductionViewComponent,
+  },
+  {
+    path: 'add',
+    component: AddProductionDataComponent,
   },
 ];

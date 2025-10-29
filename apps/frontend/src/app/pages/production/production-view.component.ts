@@ -14,11 +14,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ProductionOverviewDto } from '@h2-trust/api';
 import { H2ColorChipComponent } from '../../layout/h2-color-chip/h2-color-chip.component';
 import { ProductionService } from '../../shared/services/production/production.service';
-import { AddProductionDataComponent } from './add-production-data/add-production-data.component';
 
 @Component({
   selector: 'app-production-view',
@@ -32,6 +32,7 @@ import { AddProductionDataComponent } from './add-production-data/add-production
     MatButtonModule,
     MatSortModule,
     H2ColorChipComponent,
+    RouterModule,
   ],
   providers: [ProductionService],
   templateUrl: './production-view.component.html',
@@ -77,18 +78,5 @@ export class ProductionViewComponent implements AfterViewInit {
       }
     };
     this.dataSource.sort = this.sort;
-  }
-
-  openBottleDialog() {
-    const dialogRef = this.dialog.open(AddProductionDataComponent, {
-      hasBackdrop: true,
-      disableClose: true,
-      autoFocus: true,
-      minWidth: '48rem',
-    });
-
-    dialogRef.afterClosed().subscribe((res) => {
-      if (res) this.productionQuery.refetch();
-    });
   }
 }

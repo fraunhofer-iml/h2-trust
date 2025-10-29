@@ -7,9 +7,16 @@
  */
 
 import { AuthenticatedUser } from 'nest-keycloak-connect';
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
-import { CreateProductionDto, ProductionOverviewDto, type AuthenticatedKCUser } from '@h2-trust/api';
+import {
+  CreateProductionDto,
+  ProductionCSVUploadDto,
+  ProductionOverviewDto,
+  type AuthenticatedKCUser,
+} from '@h2-trust/api';
+import { FileUploadKeys } from '@h2-trust/domain';
 import { ProductionService } from './production.service';
 
 @Controller('productions')
@@ -80,5 +87,24 @@ export class ProductionController {
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<ProductionOverviewDto[]> {
     return this.service.readHydrogenProductionsByCompany(authenticatedUser.sub);
+  }
+
+  @Post('csv-import')
+  @UseInterceptors(
+    FileFieldsInterceptor([{ name: FileUploadKeys.POWER_PRODUCTION }, { name: FileUploadKeys.HYDROGEN_PRODUCTION }]),
+  )
+  importCsv(
+    @Body() dto: ProductionCSVUploadDto,
+    @UploadedFiles()
+    files: {
+      [FileUploadKeys.POWER_PRODUCTION]: Express.Multer.File[];
+      [FileUploadKeys.HYDROGEN_PRODUCTION]: Express.Multer.File[];
+    },
+  ) {
+    return this.service.importCSV(
+      files[FileUploadKeys.POWER_PRODUCTION],
+      files[FileUploadKeys.HYDROGEN_PRODUCTION],
+      dto,
+    );
   }
 }

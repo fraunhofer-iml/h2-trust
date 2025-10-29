@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { requireDefined } from 'libs/utils/src/lib/assertions';
 import { PowerProductionUnitEntity } from '@h2-trust/amqp';
 import { UnitType } from '@h2-trust/domain';
+import { requireDefined } from '@h2-trust/utils';
 import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
 import { PowerProductionTypeDto } from './power-production-type.dto';

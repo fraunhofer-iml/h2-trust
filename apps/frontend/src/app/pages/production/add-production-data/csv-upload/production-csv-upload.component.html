@@ -1,0 +1,89 @@
+<div class="grid w-full grid-cols-2 gap-4" [formGroup]="form">
+  <div class="bg-primary-200/20 col-span-2 rounded-lg p-4 text-neutral-600">
+    <span class="flex items-center gap-1 font-semibold">
+      <span class="material-symbols-outlined">lightbulb_2</span>Hint</span
+    >
+    <p>
+      Drag and drop your CSV file here. It must use a semicolon (;) as the delimiter and include the columns
+      <strong>time</strong> and <strong>amount</strong>, the first row should contain headers. Other formats cannot be
+      processed.
+    </p>
+  </div>
+  <div class="flex flex-col gap-4 rounded-lg bg-white p-4" formArrayName="h2ProductionFiles">
+    <span>Hydrogen Production</span>
+    <app-file-drag-and-drop (fileSelected)="addFileFormWithUnit($event, h2ProductionFiles)"></app-file-drag-and-drop>
+    @if (h2ProductionFiles.controls.length !== 0) {
+      @for (file of h2ProductionFiles.controls; track $index; let i = $index) {
+        <div [formGroupName]="i" class="rounded-md bg-neutral-100 p-4">
+          <div class="flex flex-row justify-between pb-4">
+            <div class="flex flex-col">
+              <span class="text-base text-neutral-600">
+                {{ h2ProductionFiles.controls[i].controls.file.value?.name }}
+              </span>
+              <span class="text-sm text-neutral-500">
+                ({{ h2ProductionFiles.controls[i].controls.file.value?.size ?? 0 | fileSize }})</span
+              >
+            </div>
+            <span
+              class="material-symbols-outlined text-neutral-500 hover:cursor-pointer"
+              role="none"
+              (click)="removeFile(i, h2ProductionFiles)"
+              >close</span
+            >
+          </div>
+          <mat-form-field class="w-full" appearance="outline">
+            <mat-label>Hydrogen Production Unit</mat-label>
+            <mat-select formControlName="unitId">
+              @for (unit of hydrogenProductionUnits(); track unit) {
+                <mat-option [value]="unit.id">{{ unit.name }}</mat-option>
+              }
+            </mat-select></mat-form-field
+          >
+        </div>
+      }
+    } @else {
+      <span class="text-sm text-neutral-500">No files selected.</span>
+    }
+  </div>
+
+  <div class="flex flex-col gap-4 rounded-lg bg-white p-4" formArrayName="powerProductionFiles">
+    <span>Power Production</span>
+    <app-file-drag-and-drop (fileSelected)="addFileFormWithUnit($event, powerProductionFiles)"></app-file-drag-and-drop>
+    @if (powerProductionFiles.controls.length !== 0) {
+      @for (file of powerProductionFiles.controls; track $index; let j = $index) {
+        <div [formGroupName]="j" class="rounded-md bg-neutral-100 p-4">
+          <div class="flex flex-row justify-between pb-4">
+            <div class="flex flex-col">
+              <span class="text-base text-neutral-600">
+                {{ powerProductionFiles.controls[j].controls.file.value?.name }}
+              </span>
+              <span class="text-sm text-neutral-500">
+                ({{ powerProductionFiles.controls[j].controls.file.value?.size ?? 0 | fileSize }})</span
+              >
+            </div>
+            <span
+              class="material-symbols-outlined text-neutral-500 hover:cursor-pointer"
+              role="none"
+              (click)="removeFile(j, powerProductionFiles)"
+              >close</span
+            >
+          </div>
+          <mat-form-field class="w-full" appearance="outline">
+            <mat-label>Power Production Unit</mat-label>
+            <mat-select formControlName="unitId">
+              @for (unit of powerAccessApprovals(); track unit) {
+                <mat-option [value]="unit.value.id">{{ unit.name }}</mat-option>
+              }
+            </mat-select></mat-form-field
+          >
+        </div>
+      }
+    } @else {
+      <span class="text-sm text-neutral-500">No files selected.</span>
+    }
+  </div>
+
+  <div class="col-span-2 flex justify-end gap-4 rounded-lg bg-white p-4">
+    <button mat-flat-button (click)="submit()" [disabled]="form.invalid">submit</button>
+  </div>
+</div>

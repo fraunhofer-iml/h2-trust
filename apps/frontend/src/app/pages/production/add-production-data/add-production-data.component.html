@@ -1,122 +1,29 @@
-<div class="flex min-w-min flex-col gap-4 p-6">
-  <h3 class="font-semibold text-gray-700">Add Production</h3>
-
-  <div class="grid grid-cols-2 gap-x-2 gap-y-4" [formGroup]="form">
-    <mat-form-field appearance="outline" class="col-span-2">
-      <mat-label>Hydrogen Production Unit</mat-label>
-      <mat-select formControlName="hydrogenProductionUnit">
-        @for (unit of hydrogenProductionQuery.data(); track unit) {
-          <mat-option [value]="unit">{{ unit.name }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="outline" class="col-span-2">
-      <mat-label>Power Production</mat-label>
-      <mat-select formControlName="powerProductionUnit">
-        @for (approval of approvalsQuery.data(); track approval) {
-          <mat-option [value]="approval.value">{{ approval.name }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="col-span-2">
-      <mat-label>Hydrogen Storage Unit</mat-label>
-      <mat-select formControlName="hydrogenStorageUnit">
-        @for (unit of hydrogenStorageQuery.data(); track unit) {
-          <mat-option [value]="unit"
-            >{{ unit.name }} (Remaining Capacity: {{ unit.capacity - unit.filling | number | unit: FormattedUnits.KG }})
-          </mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Start Date</mat-label>
-      <input
-        matInput
-        [matDatepicker]="startDatepicker"
-        (dateChange)="updateDate($event.value, this.form.controls.productionStartedAt)"
-        required
-        [max]="today"
-        [value]="form.controls.productionStartedAt.value"
-        readonly
-      />
-      <mat-datepicker #startDatepicker />
-      <mat-datepicker-toggle [for]="startDatepicker" matSuffix />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Start Time</mat-label>
-      <input
-        matInput
-        [matTimepicker]="startTimepicker"
-        required
-        [value]="form.controls.productionStartedAt.value"
-        (valueChange)="updateTime($event, form.controls.productionStartedAt)"
-        readonly
-      />
-      <mat-timepicker #startTimepicker interval="15min" />
-      <mat-timepicker-toggle [for]="startTimepicker" matSuffix />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>End Date</mat-label>
-      <input
-        matInput
-        [matDatepicker]="endDatepicker"
-        (dateChange)="updateDate($event.value, form.controls.productionEndedAt)"
-        required
-        [max]="today"
-        [value]="form.controls.productionEndedAt.value"
-        readonly
-      />
-      <mat-datepicker #endDatepicker />
-      <mat-datepicker-toggle [for]="endDatepicker" matSuffix />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>End Time</mat-label>
-      <input
-        matInput
-        [matTimepicker]="endTimepicker"
-        required
-        [value]="form.controls.productionEndedAt.value"
-        (valueChange)="updateTime($event, form.controls.productionEndedAt)"
-        readonly
-      />
-      <mat-timepicker #endTimepicker interval="15min" />
-      <mat-timepicker-toggle [for]="endTimepicker" matSuffix />
-    </mat-form-field>
-
-    @if (isTimePeriodInvalid) {
-      <div class="col-span-2 flex flex-row items-center gap-2 text-sm text-red-700">
-        <span class="material-symbols-outlined">error</span> The start of the specified period must be before the end.
-      </div>
-    }
-
-    <mat-form-field appearance="outline">
-      <mat-label>Hydrogen Amount (kg)</mat-label>
-      <input matInput type="number" [min]="0" formControlName="hydrogenAmountKg" />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Power Amount (kWh)</mat-label>
-      <input matInput type="number" [min]="0" formControlName="powerAmountKwh" />
-    </mat-form-field>
-
-    @if (amountNotAvailable()) {
-      <div class="text-primary-200 col-span-2 flex flex-row items-center gap-2 text-sm">
-        <span class="material-symbols-outlined">warning</span> {{ ERROR_MESSAGES.amountIsGreaterThanRemainingCapacity }}
-      </div>
+<div class="flex flex-col gap-4 overflow-auto p-8">
+  <div class="flex flex-row items-center justify-between gap-2 text-lg text-neutral-500">
+    <span class="flex flex-row items-center gap-2">
+      <a routerLink="/production" class="cursor-pointer hover:underline">Production</a>
+      <span class="material-symbols-outlined"> keyboard_arrow_right </span>
+      add
+    </span>
+    @if (useCSV) {
+      <button mat-stroked-button (click)="useCSV = false">Add data manually</button>
+    } @else {
+      <button mat-stroked-button (click)="useCSV = true">CSV upload</button>
     }
   </div>
 
-  @if (mutation.isError()) {
-    <app-error-card [message]="mutation.error().message"></app-error-card>
+  @if (useCSV) {
+    <app-production-csv-upload
+      [hydrogenProductionUnits]="hydrogenProductionQuery.data() ?? []"
+      [hydrogenStorageUnits]="hydrogenStorageQuery.data() ?? []"
+      [powerAccessApprovals]="approvalsQuery.data() ?? []"
+    >
+    </app-production-csv-upload>
+  } @else {
+    <app-production-form
+      [hydrogenProductionUnits]="hydrogenProductionQuery.data() ?? []"
+      [hydrogenStorageUnits]="hydrogenStorageQuery.data() ?? []"
+      [powerAccessApprovals]="approvalsQuery.data() ?? []"
+    ></app-production-form>
   }
-
-  <div class="flex justify-end gap-2">
-    <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-flat-button (click)="submit()" [disabled]="form.invalid">Add Data</button>
-  </div>
 </div>

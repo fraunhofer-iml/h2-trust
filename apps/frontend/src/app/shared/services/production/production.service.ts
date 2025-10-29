@@ -23,4 +23,8 @@ export class ProductionService {
   addProductionData(dto: CreateProductionDto) {
     return lastValueFrom(this.httpClient.post<ProductionOverviewDto[]>(API.PRODUCTION.BASE, dto));
   }
+
+  uploadCsv(data: FormData) {
+    return lastValueFrom(this.httpClient.post<ProductionOverviewDto[]>(API.PRODUCTION.BASE + 'csv', data));
+  }
 }

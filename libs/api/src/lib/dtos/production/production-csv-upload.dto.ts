@@ -6,6 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './create-production.dto';
-export * from './mocks';
-export * from './production-csv-upload.dto';
+export class ProductionCSVUploadDto {
+  powerProductionUnitIds: string[];
+  hydrogenProductionUnitIds: string[];
+
+  constructor() {
+    this.powerProductionUnitIds = [];
+    this.hydrogenProductionUnitIds = [];
+  }
+}

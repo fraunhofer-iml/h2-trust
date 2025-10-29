@@ -9,7 +9,11 @@
     <span class="text-sm text-neutral-500">Emissions per kg Hydrogen</span
     ><span>{{ emissions().amountCO2PerKgH2 | number | unit: FormattedUnits.CO2_PER_KG_H2 }} </span>
   </div>
-  <div class="flex flex-col text-sm">
-    <span class="text-sm text-neutral-500">Basis of Calculation</span><span>{{ emissions().basisOfCalculation }}</span>
+  <div class="col-span-2 flex flex-col text-sm">
+    <span class="text-sm text-neutral-500">Basis of Calculation</span>
+    <span class="text-sm text-neutral-500">
+      (Accumulated amount of process emissions along the entire supply chain)
+    </span>
+    <span>{{ emissions().basisOfCalculation }}</span>
   </div>
 </div>

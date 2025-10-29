@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './create-production.dto';
-export * from './mocks';
-export * from './production-csv-upload.dto';
+export enum FileUploadKeys {
+  POWER_PRODUCTION = 'powerProductionFiles',
+  HYDROGEN_PRODUCTION = 'hydrogenProductionFiles',
+}
