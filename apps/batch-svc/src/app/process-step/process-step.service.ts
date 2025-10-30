@@ -7,9 +7,10 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { ProcessStepEntity } from '@h2-trust/amqp';
+import { DocumentEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import { ConfigurationService, MinioConfiguration } from '@h2-trust/configuration';
 import { ProcessStepRepository } from '@h2-trust/database';
+import { ProcessType } from '@h2-trust/domain';
 
 @Injectable()
 export class ProcessStepService {
@@ -25,18 +26,49 @@ export class ProcessStepService {
   async readProcessStep(processStepId: string): Promise<ProcessStepEntity> {
     const processStep: ProcessStepEntity = await this.repository.findProcessStep(processStepId);
 
-    const minio: MinioConfiguration = this.configurationService.getGlobalConfiguration().minio;
-
-    for (let i = 0; i < processStep.documents?.length; i++) {
-      const document = processStep.documents[i];
-
-      if (document.location) {
-        document.location = `http://${minio.endPoint}:${minio.port}/${minio.bucketName}/${document.location}`;
-        document.description = `File #${i}`;
-      }
+    if (processStep.type === ProcessType.HYDROGEN_TRANSPORTATION) {
+      const predecessorProcessStep = await this.fetchPredecessorProcessStep(
+        processStep.batch.predecessors[0]?.processStepId,
+      );
+      processStep.documents = await this.updateDocuments(predecessorProcessStep);
+    } else {
+      processStep.documents = await this.updateDocuments(processStep);
     }
 
     return processStep;
+  }
+
+  private async fetchPredecessorProcessStep(predecessorProcessStepId: string): Promise<ProcessStepEntity> {
+    if (!predecessorProcessStepId) {
+      const errorMessage = 'ProcessStepId of predecessor is missing.';
+      throw new Error(errorMessage);
+    }
+
+    const predecessorProcessStep: ProcessStepEntity = await this.repository.findProcessStep(predecessorProcessStepId);
+
+    if (predecessorProcessStep.type !== ProcessType.HYDROGEN_BOTTLING) {
+      const errorMessage = `Expected process type of predecessor to be ${ProcessType.HYDROGEN_BOTTLING}, but got ${predecessorProcessStep.type}.`;
+      throw new Error(errorMessage);
+    }
+
+    return predecessorProcessStep;
+  }
+
+  private async updateDocuments(processStep: ProcessStepEntity): Promise<DocumentEntity[]> {
+    const documents: DocumentEntity[] = [];
+    const minio: MinioConfiguration = this.configurationService.getGlobalConfiguration().minio;
+
+    processStep.documents?.forEach((document, index) => {
+      if (document.location) {
+        documents.push({
+          ...document,
+          location: `http://${minio.endPoint}:${minio.port}/${minio.bucketName}/${document.location}`,
+          description: `File #${index}`,
+        });
+      }
+    });
+
+    return documents;
   }
 
   async createProcessStep(processStepData: ProcessStepEntity): Promise<ProcessStepEntity> {
