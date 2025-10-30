@@ -1,49 +1,49 @@
-<div class="flex flex-col gap-4 rounded-lg bg-white p-4">
-  <h3 class="font-semibold text-neutral-500">Proof of Sustainability</h3>
-  <div class="flex w-full flex-row gap-4">
-    <div class="bg-secondary-100/15 text-secondary-400 flex min-w-64 flex-row items-center gap-4 rounded-xl p-4">
-      <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
-        <span class="material-symbols-outlined text-secondary-400 text-4xl">air</span>
+@if (proofQuery.isLoading()) {
+  <div class="h-[16rem] w-full animate-pulse rounded-md bg-neutral-50"></div>
+} @else {
+  <div class="flex flex-col gap-4 rounded-lg bg-white p-4">
+    <h3 class="font-semibold text-neutral-500">Proof of Sustainability</h3>
+    <div class="flex w-full flex-row gap-4 lg:flex-wrap">
+      <div class="bg-secondary-200/15 text-secondary-400 flex min-w-52 grow flex-row items-center gap-4 rounded-xl p-4">
+        <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
+          <span class="material-symbols-outlined text-secondary-400 text-4xl">air</span>
+        </div>
+        <span class="grow text-xs text-neutral-500">
+          Total {{ ChemicalNames.CO2 }} Emissions <br />
+          <span class="text-xl">{{ totalEmissions() | number }}</span>
+          {{ FormattedUnits.CO2_PER_KG_H2 }} <br />
+          <span class="text-xl">{{ proofQuery.data()?.amountCO2PerMJH2 | number }}</span>
+          {{ FormattedUnits.CO2_PER_MJ_H2 }}
+        </span>
       </div>
-      <span class="grow text-xs text-neutral-500">
-        Total {{ ChemicalNames.CO2 }} Emissions <br />
-        <span class="text-xl">{{ totalEmissions() | number }}</span>
-        {{ FormattedUnits.CO2_PER_KG_H2 }} <br />
-        <span class="text-xl">{{ proofQuery.data()?.amountCO2PerMJH2 | number }}</span>
-        {{ FormattedUnits.CO2_PER_MJ_H2 }}
-      </span>
+      <div class="bg-secondary-200/15 text-secondary-400 flex min-w-96 grow flex-row items-center gap-4 rounded-xl p-4">
+        <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
+          <span class="material-symbols-outlined text-secondary-400 text-4xl">percent</span>
+        </div>
+        <div class="flex w-full flex-col">
+          <span class="grow text-xs text-neutral-500">Savings Potential</span
+          ><span class="text-xs text-neutral-500"
+            >(Reference for fossil fuels: {{ '94' | unit: FormattedUnits.CO2_PER_MJ_H2 }})</span
+          >
+          <app-savings-potential-chart
+            class="mt-2 w-full"
+            [percentage]="proofQuery.data()?.emissionReductionPercentage ?? 0"
+          ></app-savings-potential-chart>
+        </div>
+      </div>
     </div>
-    <div
-      class="bg-secondary-100/15 text-secondary-400 flex w-full min-w-64 grow flex-row items-center gap-4 rounded-xl p-4"
-    >
-      <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
-        <span class="material-symbols-outlined text-secondary-400 text-4xl">percent</span>
-      </div>
-      <div class="flex w-full flex-col">
-        <span class="grow text-xs text-neutral-500">Savings Potential</span
-        ><span class="text-xs text-neutral-500"
-          >(Reference for fossil fuels: {{ '94' | unit: FormattedUnits.CO2_PER_MJ_H2 }})</span
-        >
-        <app-savings-potential-chart
-          class="mt-2 w-full"
-          [percentage]="proofQuery.data()?.emissionReductionPercentage ?? 0"
-        ></app-savings-potential-chart>
-      </div>
-    </div>
-  </div>
 
-  <!-- Emission Composition -->
-  <div class="rounded-xl border-neutral-100 py-2">
-    <span class="text-base text-neutral-400">Emission Composition </span>
-    @if (proofQuery.data()) {
+    <!-- Emission Composition -->
+    <div class="rounded-xl border-neutral-100 py-2">
+      <span class="text-base text-neutral-400">Emission Composition </span>
       <app-emission-pie-chart [data]="proofQuery.data()?.processStepEmissions ?? []"></app-emission-pie-chart>
-    }
-  </div>
+    </div>
 
-  <!-- Calculations -->
-  <div class="grid grid-cols-2 gap-4">
-    @for (topic of calculations(); track $index) {
-      <app-calculation-item [topic]="topic"></app-calculation-item>
-    }
+    <!-- Calculations -->
+    <div class="grid grid-cols-2 gap-4">
+      @for (topic of calculations(); track $index) {
+        <app-calculation-item [topic]="topic"></app-calculation-item>
+      }
+    </div>
   </div>
-</div>
+}

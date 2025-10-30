@@ -11,12 +11,13 @@ import { EChartsOption, PieSeriesOption } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { CommonModule, PercentPipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { EmissionForProcessStepDto } from '@h2-trust/api';
 import { FormattedUnits } from '../../../../../shared/constants/formatted-units';
 
 @Component({
   selector: 'app-emission-pie-chart',
-  imports: [CommonModule, NgxEchartsDirective],
+  imports: [CommonModule, NgxEchartsDirective, MatProgressSpinnerModule],
   providers: [provideEchartsCore({ echarts }), PercentPipe],
 
   templateUrl: './emission-pie-chart.component.html',
@@ -38,7 +39,7 @@ export class EmissionPieChartComponent {
       const innerColors = ['#004D40', '#00796B', '#009688', '#4DB6AC', '#80CBC4', '#B2DFDB', '#E0F2F1'];
 
       const outerPie = this.createPieSeries(
-        ['60%', '90%'],
+        ['50%', '80%'],
         'outer',
         regulatoryItems,
         outerColors,
@@ -46,7 +47,7 @@ export class EmissionPieChartComponent {
         applicationItems,
       );
       const innerPie = this.createPieSeries(
-        ['20%', '55%'],
+        ['15%', '45%'],
         'inner',
         applicationItems,
         innerColors,

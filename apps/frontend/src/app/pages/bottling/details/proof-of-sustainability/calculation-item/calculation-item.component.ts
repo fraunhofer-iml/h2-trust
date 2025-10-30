@@ -30,10 +30,11 @@ export class CalculationItemComponent {
 
   getIcon(topic: string) {
     const map = new Map<string, string>([
-      [CalculationTopic.HYDROGEN_BOTTLING, 'propane_tank'],
+      [CalculationTopic.HYDROGEN_STORAGE, 'propane_tank'],
       [CalculationTopic.WATER_SUPPLY, 'water'],
-      [CalculationTopic.HYDROGEN_PRODUCTION, 'offline_bolt'],
       [CalculationTopic.HYDROGEN_TRANSPORTATION, 'road'],
+      [CalculationTopic.HYDROGEN_PRODUCTION, 'bubble_chart'],
+      [CalculationTopic.HYDROGEN_BOTTLING, 'water_do'],
     ]);
 
     return map.get(topic);

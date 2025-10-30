@@ -1,1 +1,5 @@
-<div echarts [options]="chartData$()" class="echart mb-4 max-h-[14rem]"></div>
+@if (chartData$() && data().length > 0) {
+  <div echarts [options]="chartData$()" class="echart mb-4 max-h-[16rem]"></div>
+} @else {
+  <span class="text-sm text-neutral-600">No data available.</span>
+}
