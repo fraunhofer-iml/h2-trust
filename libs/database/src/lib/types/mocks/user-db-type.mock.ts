@@ -16,7 +16,7 @@ export const UserDbTypeMock = <UserDbType[]>[
   },
   {
     ...UserSeed[1],
-    company: CompanySeed[1],
+    company: CompanySeed[2],
   },
   {
     ...UserSeed[2],

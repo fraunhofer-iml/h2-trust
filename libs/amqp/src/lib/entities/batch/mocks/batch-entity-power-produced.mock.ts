@@ -6,11 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchPowerProducedSeed } from 'libs/database/src/seed';
+import { PowerProductionBatchSeed } from 'libs/database/src/seed';
 import { CompanyEntityPowerMock } from '../../company/mocks';
 import { BatchEntity } from '../batch.entity';
 
-export const BatchEntityPowerProducedMock: BatchEntity[] = BatchPowerProducedSeed.map(
+export const BatchEntityPowerProducedMock: BatchEntity[] = PowerProductionBatchSeed.map(
   (seed) =>
     new BatchEntity(
       seed.id,

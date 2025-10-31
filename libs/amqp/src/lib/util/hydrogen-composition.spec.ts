@@ -21,20 +21,16 @@ describe('HydrogenCompositionUtil', () => {
       expect(actualResponse).toEqual(components);
     });
 
-    it('should calculate hydrogen composition with three different colors', () => {
+    it('should calculate hydrogen composition with two different colors', () => {
       const bottleAmount = 1;
       const components = [
-        new HydrogenComponentEntity(HydrogenColor.PINK, 1),
         new HydrogenComponentEntity(HydrogenColor.GREEN, 2),
-        new HydrogenComponentEntity(HydrogenColor.ORANGE, 3),
-        new HydrogenComponentEntity(HydrogenColor.YELLOW, 4),
+        new HydrogenComponentEntity(HydrogenColor.YELLOW, 3),
       ];
 
       const expectedResponse = [
-        new HydrogenComponentEntity(HydrogenColor.PINK, 0.1),
-        new HydrogenComponentEntity(HydrogenColor.GREEN, 0.2),
-        new HydrogenComponentEntity(HydrogenColor.ORANGE, 0.3),
-        new HydrogenComponentEntity(HydrogenColor.YELLOW, 0.4),
+        new HydrogenComponentEntity(HydrogenColor.GREEN, 0.4),
+        new HydrogenComponentEntity(HydrogenColor.YELLOW, 0.6),
       ];
 
       const actualResponse = HydrogenCompositionUtil.computeHydrogenComposition(components, bottleAmount);
@@ -44,18 +40,14 @@ describe('HydrogenCompositionUtil', () => {
     it('should calculate hydrogen composition with a duplicate color', () => {
       const bottleAmount = 1;
       const components = [
-        new HydrogenComponentEntity(HydrogenColor.PINK, 1),
-        new HydrogenComponentEntity(HydrogenColor.GREEN, 1),
-        new HydrogenComponentEntity(HydrogenColor.ORANGE, 3),
+        new HydrogenComponentEntity(HydrogenColor.GREEN, 2),
         new HydrogenComponentEntity(HydrogenColor.YELLOW, 4),
-        new HydrogenComponentEntity(HydrogenColor.GREEN, 1),
+        new HydrogenComponentEntity(HydrogenColor.GREEN, 2),
       ];
 
       const expectedResponse = [
-        new HydrogenComponentEntity(HydrogenColor.PINK, 0.1),
-        new HydrogenComponentEntity(HydrogenColor.GREEN, 0.2),
-        new HydrogenComponentEntity(HydrogenColor.ORANGE, 0.3),
-        new HydrogenComponentEntity(HydrogenColor.YELLOW, 0.4),
+        new HydrogenComponentEntity(HydrogenColor.GREEN, 0.5),
+        new HydrogenComponentEntity(HydrogenColor.YELLOW, 0.5),
       ];
 
       const actualResponse = HydrogenCompositionUtil.computeHydrogenComposition(components, bottleAmount);
@@ -64,10 +56,7 @@ describe('HydrogenCompositionUtil', () => {
 
     it('should throw an error if totalPredecessorAmount is zero', () => {
       const bottleAmount = 30;
-      const components = [
-        new HydrogenComponentEntity(HydrogenColor.ORANGE, 0),
-        new HydrogenComponentEntity(HydrogenColor.PINK, 0),
-      ];
+      const components = [new HydrogenComponentEntity(HydrogenColor.GREEN, 0)];
 
       expect(() => HydrogenCompositionUtil.computeHydrogenComposition(components, bottleAmount)).toThrow(
         BrokerException,

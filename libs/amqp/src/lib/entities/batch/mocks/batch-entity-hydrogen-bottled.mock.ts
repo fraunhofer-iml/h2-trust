@@ -6,11 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchHydrogenBottledSeed } from 'libs/database/src/seed';
+import { HydrogenBottlingBatchSeed } from 'libs/database/src/seed';
 import { CompanyEntityHydrogenMock } from '../../company/mocks';
 import { BatchEntity } from '../batch.entity';
 
-export const BatchEntityHydrogenBottledMock: BatchEntity[] = BatchHydrogenBottledSeed.map(
+export const BatchEntityHydrogenBottledMock: BatchEntity[] = HydrogenBottlingBatchSeed.map(
   (seed) =>
     new BatchEntity(
       seed.id,

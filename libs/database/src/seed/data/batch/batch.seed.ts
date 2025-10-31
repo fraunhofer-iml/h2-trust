@@ -7,14 +7,14 @@
  */
 
 import { Batch } from '@prisma/client';
-import { BatchHydrogenBottledSeed } from './batch-hydrogen-bottled.seed';
-import { BatchHydrogenProducedSeed } from './batch-hydrogen-produced.seed';
-import { BatchHydrogenTransportedSeed } from './batch-hydrogen-transported.seed';
-import { BatchPowerProducedSeed } from './batch-power-produced.seed';
+import { HydrogenBottlingBatchSeed } from './hydrogen-bottling-batch.seed';
+import { HydrogenProductionBatchSeed } from './hydrogen-production-batch.seed';
+import { HydrogenTransportationBatchSeed } from './hydrogen-transportation-batch.seed';
+import { PowerProductionBatchSeed } from './power-production-batch.seed';
 
 export const BatchSeed = <Batch[]>[
-  ...BatchPowerProducedSeed,
-  ...BatchHydrogenBottledSeed,
-  ...BatchHydrogenProducedSeed,
-  ...BatchHydrogenTransportedSeed,
+  ...PowerProductionBatchSeed,
+  ...HydrogenProductionBatchSeed,
+  ...HydrogenBottlingBatchSeed,
+  ...HydrogenTransportationBatchSeed,
 ];

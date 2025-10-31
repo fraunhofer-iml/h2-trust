@@ -11,7 +11,7 @@ import { CompanySeed } from './company.seed';
 
 export const UserSeed = <User[]>[
   {
-    id: 'user-power-1',
+    id: 'user-power-0',
     name: 'Petra Power',
     email: 'petra@power.de',
     companyId: CompanySeed[0].id,
@@ -20,12 +20,12 @@ export const UserSeed = <User[]>[
     id: '6f63a1a9-6cc5-4a7a-98b2-79a0460910f4',
     name: 'Emil Hydrogen',
     email: 'emil@hydrogen.de',
-    companyId: CompanySeed[1].id,
+    companyId: CompanySeed[2].id,
   },
   {
     id: 'f2872c58-ff19-4079-ad53-e04cd95b5a4a',
     name: 'Erika Hydrogen',
     email: 'erika@hydrogen.de',
-    companyId: CompanySeed[1].id,
+    companyId: CompanySeed[2].id,
   },
 ];

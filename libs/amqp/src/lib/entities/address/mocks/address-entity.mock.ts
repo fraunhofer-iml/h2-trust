@@ -17,7 +17,7 @@ export const AddressEntityPowerMock: AddressEntity = new AddressEntity(
   AddressSeed[0].country,
 );
 
-export const AddressEntityHydrogenMock: AddressEntity = new AddressEntity(
+export const AddressEntityGridMock: AddressEntity = new AddressEntity(
   AddressSeed[1].street,
   AddressSeed[1].postalCode,
   AddressSeed[1].city,
@@ -25,10 +25,18 @@ export const AddressEntityHydrogenMock: AddressEntity = new AddressEntity(
   AddressSeed[1].country,
 );
 
-export const AddressEntityRecipientMock: AddressEntity = new AddressEntity(
+export const AddressEntityHydrogenMock: AddressEntity = new AddressEntity(
   AddressSeed[2].street,
   AddressSeed[2].postalCode,
   AddressSeed[2].city,
   AddressSeed[2].state,
   AddressSeed[2].country,
+);
+
+export const AddressEntityRecipientMock: AddressEntity = new AddressEntity(
+  AddressSeed[3].street,
+  AddressSeed[3].postalCode,
+  AddressSeed[3].city,
+  AddressSeed[3].state,
+  AddressSeed[3].country,
 );

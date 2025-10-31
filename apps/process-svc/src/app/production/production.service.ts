@@ -69,8 +69,8 @@ export class ProductionService {
     const powerProductionProcessSteps: ProcessStepEntity[] =
       await this.createPowerProductionProcessSteps(createProductionEntity);
 
-    const waterConsumptionProcessSteps: ProcessStepEntity[] =
-      await this.createWaterConsumptionProcessSteps(createProductionEntity);
+    const waterConsumptionProcessSteps: ProcessStepEntity[] = [];
+    await this.createWaterConsumptionProcessSteps(createProductionEntity);
 
     const hydrogenProductionProcessSteps: ProcessStepEntity[] = await this.createHydrogenProductionProcessSteps(
       createProductionEntity,
@@ -146,11 +146,10 @@ export class ProductionService {
   private async createHydrogenProductionProcessSteps(
     createProductionEntity: CreateProductionEntity,
     powerProductionProcessSteps: ProcessStepEntity[],
-    waterConsumptionProcessSteps: ProcessStepEntity[],
+    _waterConsumptionProcessSteps: ProcessStepEntity[],
   ): Promise<ProcessStepEntity[]> {
-    const predecessors: string[] = [...powerProductionProcessSteps, ...waterConsumptionProcessSteps].map(
-      (step) => step.batch.id,
-    );
+    // TODO-MP: add `...waterConsumptionProcessSteps` to predecessors in DUHGW-236
+    const predecessors: string[] = [...powerProductionProcessSteps].map((step) => step.batch.id);
 
     return this.createProcessSteps({
       productionStartedAt: createProductionEntity.productionStartedAt,

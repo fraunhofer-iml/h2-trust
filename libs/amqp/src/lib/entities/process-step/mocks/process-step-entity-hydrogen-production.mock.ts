@@ -6,14 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepHydrogenProductionSeed } from 'libs/database/src/seed';
+import { HydrogenProductionProcessStepSeed } from 'libs/database/src/seed';
 import { BatchEntityHydrogenProducedMock } from '../../batch/mocks';
 import { DocumentEntityMock } from '../../document/mocks';
 import { HydrogenProductionUnitEntityMock } from '../../unit/mocks';
 import { UserEntityHydrogenMock } from '../../user/mocks';
 import { ProcessStepEntity } from '../process-step.entity';
 
-export const ProcessStepEntityHydrogenProductionMock: ProcessStepEntity[] = ProcessStepHydrogenProductionSeed.map(
+export const ProcessStepEntityHydrogenProductionMock: ProcessStepEntity[] = HydrogenProductionProcessStepSeed.map(
   (seed, index) =>
     new ProcessStepEntity(
       seed.id,

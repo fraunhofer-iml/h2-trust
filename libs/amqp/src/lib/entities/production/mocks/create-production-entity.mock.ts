@@ -28,6 +28,6 @@ export const CreateProductionEntityMock: CreateProductionEntity[] = [
     HydrogenColor.GREEN,
     HydrogenStorageUnitSeed[0].id,
     CompanySeed[0].id,
-    CompanySeed[1].id,
+    CompanySeed[2].id,
   ),
 ];

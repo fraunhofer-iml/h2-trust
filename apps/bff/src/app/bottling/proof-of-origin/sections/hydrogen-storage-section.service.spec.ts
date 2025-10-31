@@ -35,7 +35,7 @@ describe('HydrogenStorageSectionService.buildHydrogenStorageSection', () => {
     expect(actualResponse.classifications).toEqual([]);
   });
 
-  it('should return one classification (yellow)', async () => {
+  it('should return one classification (green)', async () => {
     const givenProcessSteps: ProcessStepEntity[] = [ProcessStepEntityHydrogenProductionMock[0]];
 
     const actualResponse = await service.buildHydrogenStorageSection(givenProcessSteps);
@@ -44,15 +44,15 @@ describe('HydrogenStorageSectionService.buildHydrogenStorageSection', () => {
     expect(actualResponse.batches).toEqual([]);
     expect(actualResponse.classifications.length).toBe(1);
 
-    const yellow = actualResponse.classifications.find((c) => c.name === HydrogenColor.YELLOW);
-    expect(yellow).toBeDefined();
-    expect((yellow?.batches || []).map((b) => b.id)).toEqual([givenProcessSteps[0].batch.id]);
+    const green = actualResponse.classifications.find((c) => c.name === HydrogenColor.GREEN);
+    expect(green).toBeDefined();
+    expect((green?.batches || []).map((b) => b.id)).toEqual([givenProcessSteps[0].batch.id]);
   });
 
-  it('should return two classification (yellow + pink)', async () => {
+  it('should return two classification (green + yellow)', async () => {
     const givenProcessSteps: ProcessStepEntity[] = [
       ProcessStepEntityHydrogenProductionMock[0],
-      ProcessStepEntityHydrogenProductionMock[1],
+      ProcessStepEntityHydrogenProductionMock[6],
     ];
 
     const actualResponse = await service.buildHydrogenStorageSection(givenProcessSteps);
@@ -61,13 +61,13 @@ describe('HydrogenStorageSectionService.buildHydrogenStorageSection', () => {
     expect(actualResponse.batches).toEqual([]);
     expect(actualResponse.classifications.length).toBe(2);
 
+    const green = actualResponse.classifications.find((c) => c.name === HydrogenColor.GREEN);
     const yellow = actualResponse.classifications.find((c) => c.name === HydrogenColor.YELLOW);
-    const pink = actualResponse.classifications.find((c) => c.name === HydrogenColor.PINK);
 
+    expect(green).toBeDefined();
     expect(yellow).toBeDefined();
-    expect(pink).toBeDefined();
 
-    expect((yellow?.batches || []).map((b) => b.id)).toEqual([givenProcessSteps[0].batch.id]);
-    expect((pink?.batches || []).map((b) => b.id)).toEqual([givenProcessSteps[1].batch.id]);
+    expect((green?.batches || []).map((b) => b.id)).toEqual([givenProcessSteps[0].batch.id]);
+    expect((yellow?.batches || []).map((b) => b.id)).toEqual([givenProcessSteps[1].batch.id]);
   });
 });

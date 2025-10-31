@@ -6,42 +6,50 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchHydrogenBottledSeed } from './batch-hydrogen-bottled.seed';
-import { BatchHydrogenProducedSeed } from './batch-hydrogen-produced.seed';
-import { BatchHydrogenTransportedSeed } from './batch-hydrogen-transported.seed';
-import { BatchPowerProducedSeed } from './batch-power-produced.seed';
+import { HydrogenBottlingBatchSeed } from './hydrogen-bottling-batch.seed';
+import { HydrogenProductionBatchSeed } from './hydrogen-production-batch.seed';
+import { HydrogenTransportationBatchSeed } from './hydrogen-transportation-batch.seed';
+import { PowerProductionBatchSeed } from './power-production-batch.seed';
 
-export const BatchRelationPowerHydrogenSeed = BatchHydrogenProducedSeed.map((hydrogenBatch, index) => ({
+export const BatchRelationPowerHydrogenSeed = HydrogenProductionBatchSeed.map((hydrogenBatch, index) => ({
   A: hydrogenBatch.id,
-  B: BatchPowerProducedSeed[index].id,
+  B: PowerProductionBatchSeed[index].id,
 }));
 
 export const BatchRelationBottlingProductionSeed = [
   {
-    A: BatchHydrogenBottledSeed[0].id,
-    B: BatchHydrogenProducedSeed[0].id,
+    A: HydrogenBottlingBatchSeed[0].id,
+    B: HydrogenProductionBatchSeed[2].id,
   },
   {
-    A: BatchHydrogenBottledSeed[1].id,
-    B: BatchHydrogenProducedSeed[1].id,
+    A: HydrogenBottlingBatchSeed[0].id,
+    B: HydrogenProductionBatchSeed[3].id,
   },
   {
-    A: BatchHydrogenBottledSeed[1].id,
-    B: BatchHydrogenProducedSeed[2].id,
+    A: HydrogenBottlingBatchSeed[0].id,
+    B: HydrogenProductionBatchSeed[4].id,
   },
   {
-    A: BatchHydrogenBottledSeed[2].id,
-    B: BatchHydrogenProducedSeed[3].id,
+    A: HydrogenBottlingBatchSeed[1].id,
+    B: HydrogenProductionBatchSeed[6].id,
+  },
+  {
+    A: HydrogenBottlingBatchSeed[1].id,
+    B: HydrogenProductionBatchSeed[7].id,
+  },
+  {
+    A: HydrogenBottlingBatchSeed[2].id,
+    B: HydrogenProductionBatchSeed[5].id,
+  },
+  {
+    A: HydrogenBottlingBatchSeed[2].id,
+    B: HydrogenProductionBatchSeed[8].id,
   },
 ];
 
-export const BatchRelationTransportationBottlingSeed = [
-  {
-    A: BatchHydrogenTransportedSeed[0].id,
-    B: BatchHydrogenBottledSeed[0].id,
-  },
-  {
-    A: BatchHydrogenTransportedSeed[1].id,
-    B: BatchHydrogenBottledSeed[1].id,
-  },
-];
+export const BatchRelationTransportationBottlingSeed = HydrogenTransportationBatchSeed.map(
+  (batchTransported, index) => ({
+    A: batchTransported.id,
+    B: HydrogenBottlingBatchSeed[index].id,
+  }),
+);

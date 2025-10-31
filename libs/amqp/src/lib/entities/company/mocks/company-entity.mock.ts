@@ -7,7 +7,12 @@
  */
 
 import { CompanySeed } from 'libs/database/src/seed';
-import { AddressEntityHydrogenMock, AddressEntityPowerMock, AddressEntityRecipientMock } from '../../address/mocks';
+import {
+  AddressEntityGridMock,
+  AddressEntityHydrogenMock,
+  AddressEntityPowerMock,
+  AddressEntityRecipientMock,
+} from '../../address/mocks';
 import { CompanyEntity } from '../company.entity';
 
 export const CompanyEntityPowerMock: CompanyEntity = new CompanyEntity(
@@ -18,19 +23,27 @@ export const CompanyEntityPowerMock: CompanyEntity = new CompanyEntity(
   AddressEntityPowerMock,
   [],
 );
-export const CompanyEntityHydrogenMock: CompanyEntity = new CompanyEntity(
+export const CompanyEntityGridMock: CompanyEntity = new CompanyEntity(
   CompanySeed[1].id,
   CompanySeed[1].name,
   CompanySeed[1].mastrNumber,
   CompanySeed[1].type,
-  AddressEntityHydrogenMock,
+  AddressEntityGridMock,
   [],
 );
-export const CompanyEntityRecipientMock: CompanyEntity = new CompanyEntity(
+export const CompanyEntityHydrogenMock: CompanyEntity = new CompanyEntity(
   CompanySeed[2].id,
   CompanySeed[2].name,
   CompanySeed[2].mastrNumber,
   CompanySeed[2].type,
+  AddressEntityHydrogenMock,
+  [],
+);
+export const CompanyEntityRecipientMock: CompanyEntity = new CompanyEntity(
+  CompanySeed[3].id,
+  CompanySeed[3].name,
+  CompanySeed[3].mastrNumber,
+  CompanySeed[3].type,
   AddressEntityRecipientMock,
   [],
 );

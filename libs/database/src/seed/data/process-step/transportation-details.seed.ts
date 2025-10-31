@@ -11,10 +11,16 @@ import { FuelType, TransportMode } from '@h2-trust/domain';
 
 export const TransportationDetailsSeed = <TransportationDetails[]>[
   {
-    id: 'transportation-details-1',
+    id: 'transportation-details-0',
     transportMode: TransportMode.PIPELINE,
     fuelType: undefined,
     distance: new Prisma.Decimal(0),
+  },
+  {
+    id: 'transportation-details-1',
+    transportMode: TransportMode.TRAILER,
+    fuelType: FuelType.DIESEL,
+    distance: new Prisma.Decimal(100),
   },
   {
     id: 'transportation-details-2',

@@ -11,8 +11,6 @@ import { HydrogenComponentEntity } from '../hydrogen-component.entity';
 
 export const HydrogenCompositionEntityMock: HydrogenComponentEntity[] = [
   new HydrogenComponentEntity(HydrogenColor.GREEN, 10),
-  new HydrogenComponentEntity(HydrogenColor.ORANGE, 20),
-  new HydrogenComponentEntity(HydrogenColor.PINK, 30),
   new HydrogenComponentEntity(HydrogenColor.YELLOW, 40),
   new HydrogenComponentEntity(HydrogenColor.MIX, 50),
 ];

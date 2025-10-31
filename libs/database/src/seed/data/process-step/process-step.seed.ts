@@ -7,14 +7,14 @@
  */
 
 import { ProcessStep } from '@prisma/client';
-import { ProcessStepHydrogenBottlingSeed } from './process-step-hydrogen-bottling.seed';
-import { ProcessStepHydrogenProductionSeed } from './process-step-hydrogen-production.seed';
-import { ProcessStepHydrogenTransportationSeed } from './process-step-hydrogen-transportation.seed';
-import { ProcessStepPowerProductionSeed } from './process-step-power-production.seed';
+import { HydrogenBottlingProcessStepSeed } from './hydrogen-bottling-process-step.seed';
+import { HydrogenProductionProcessStepSeed } from './hydrogen-production-process-step.seed';
+import { HydrogenTransportationProcessStepSeed } from './hydrogen-transportation-process-step.seed';
+import { PowerProductionProcessStepSeed } from './power-production-process-step.seed';
 
 export const ProcessStepSeed = <ProcessStep[]>[
-  ...ProcessStepPowerProductionSeed,
-  ...ProcessStepHydrogenProductionSeed,
-  ...ProcessStepHydrogenBottlingSeed,
-  ...ProcessStepHydrogenTransportationSeed,
+  ...PowerProductionProcessStepSeed,
+  ...HydrogenProductionProcessStepSeed,
+  ...HydrogenBottlingProcessStepSeed,
+  ...HydrogenTransportationProcessStepSeed,
 ];

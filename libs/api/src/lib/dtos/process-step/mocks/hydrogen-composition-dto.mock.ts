@@ -11,7 +11,5 @@ import { HydrogenComponentDto } from '../hydrogen-component.dto';
 
 export const HydrogenCompositionDtoMock: HydrogenComponentDto[] = [
   { color: HydrogenColor.GREEN, amount: 1 },
-  { color: HydrogenColor.ORANGE, amount: 2 },
-  { color: HydrogenColor.PINK, amount: 3 },
   { color: HydrogenColor.YELLOW, amount: 4 },
 ];

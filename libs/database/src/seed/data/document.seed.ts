@@ -7,15 +7,15 @@
  */
 
 import { Document } from '@prisma/client';
-import { ProcessStepHydrogenProductionSeed } from './process-step';
+import { HydrogenProductionProcessStepSeed } from './process-step';
 import { UnitSeed } from './unit';
 
 export const DocumentSeed = <Document[]>[
   {
-    id: 'document-hydrogen-production-1',
+    id: 'document-hydrogen-production-0',
     description: 'Certificate for green hydrogen production',
     location: '/dead-path/green-h2-certificate.pdf',
     unitId: UnitSeed[0].id,
-    processStepId: ProcessStepHydrogenProductionSeed[0].id,
+    processStepId: HydrogenProductionProcessStepSeed[0].id,
   },
 ];

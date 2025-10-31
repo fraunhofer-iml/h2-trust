@@ -10,29 +10,29 @@ import { Batch, Prisma } from '@prisma/client';
 import { BatchType, HydrogenColor } from '@h2-trust/domain';
 import { CompanySeed } from '../company.seed';
 
-export const BatchHydrogenBottledSeed = <Batch[]>[
+export const HydrogenBottlingBatchSeed = <Batch[]>[
+  {
+    id: 'batch-hydrogen-bottled-0',
+    type: BatchType.HYDROGEN,
+    amount: new Prisma.Decimal(15),
+    active: false,
+    quality: `{"color": "${HydrogenColor.GREEN}"}`,
+    ownerId: CompanySeed[1].id,
+  },
   {
     id: 'batch-hydrogen-bottled-1',
     type: BatchType.HYDROGEN,
     amount: new Prisma.Decimal(10),
-    active: true,
+    active: false,
     quality: `{"color": "${HydrogenColor.MIX}"}`,
     ownerId: CompanySeed[1].id,
   },
   {
     id: 'batch-hydrogen-bottled-2',
     type: BatchType.HYDROGEN,
-    active: true,
-    amount: new Prisma.Decimal(50),
+    amount: new Prisma.Decimal(10),
+    active: false,
     quality: `{"color": "${HydrogenColor.MIX}"}`,
-    ownerId: CompanySeed[1].id,
-  },
-  {
-    id: 'batch-hydrogen-bottled-3',
-    type: BatchType.HYDROGEN,
-    active: true,
-    amount: new Prisma.Decimal(50),
-    quality: `{"color": "${HydrogenColor.GREEN}"}`,
     ownerId: CompanySeed[1].id,
   },
 ];

@@ -17,7 +17,7 @@ export const HydrogenStorageUnitOverviewDtoMock = <HydrogenStorageOverviewDto[]>
     filling: 750,
     hydrogenComposition: [
       { color: HydrogenColor.GREEN, amount: 80 },
-      { color: HydrogenColor.PINK, amount: 20 },
+      { color: HydrogenColor.YELLOW, amount: 20 },
     ],
   },
   {

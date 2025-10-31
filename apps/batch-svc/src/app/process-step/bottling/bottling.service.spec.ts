@@ -28,9 +28,6 @@ import { HydrogenCompositionService } from './hydrogen-composition.service';
 import { ProcessStepAssemblerService } from './process-step-assembler.service';
 
 describe('ProcessStepService', () => {
-  const SUFFICIENT_AMOUNT = 90;
-  const EXCESSIVE_AMOUNT = 10000;
-
   let service: BottlingService;
   let processStepAssemblerService: ProcessStepAssemblerService;
   let processStepRepository: ProcessStepRepository;
@@ -127,10 +124,10 @@ describe('ProcessStepService', () => {
 
     it('should create bottling ProcessStep with split merge', async () => {
       const processStepData = structuredClone(ProcessStepEntityHydrogenProductionMock[3]);
-      processStepData.batch.amount = SUFFICIENT_AMOUNT;
+      processStepData.batch.amount = 4;
 
       // Arrange
-      const hydrogenProcessSteps = ProcessStepEntityHydrogenProductionMock.slice(4, 5);
+      const hydrogenProcessSteps = ProcessStepEntityHydrogenProductionMock.slice(4, 5); // 5
       jest.spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit').mockResolvedValue(hydrogenProcessSteps);
       const processAssemblerAssembleMock = jest.spyOn(
         processStepAssemblerService,
@@ -164,10 +161,10 @@ describe('ProcessStepService', () => {
 
     it('should create bottling ProcessStep with split merge and overfull storage tank', async () => {
       const processStepData = structuredClone(ProcessStepEntityHydrogenProductionMock[3]);
-      processStepData.batch.amount = SUFFICIENT_AMOUNT;
+      processStepData.batch.amount = 6;
 
       // Arrange
-      const hydrogenProcessSteps = ProcessStepEntityHydrogenProductionMock.slice(3, 6);
+      const hydrogenProcessSteps = ProcessStepEntityHydrogenProductionMock.slice(3, 6); // 5 + 5 + 5 = 15
       jest.spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit').mockResolvedValue(hydrogenProcessSteps);
       const processAssemblerAssembleMock = jest.spyOn(
         processStepAssemblerService,
@@ -199,11 +196,14 @@ describe('ProcessStepService', () => {
 
     it('should create MIX bottling ProcessStep', async () => {
       const processStepData = structuredClone(ProcessStepEntityHydrogenProductionMock[3]);
-      processStepData.batch.amount = SUFFICIENT_AMOUNT;
+      processStepData.batch.amount = 10;
       processStepData.batch.quality = `{"color":"${HydrogenColor.MIX}"}`;
 
       // Arrange
-      const hydrogenProcessSteps = ProcessStepEntityHydrogenProductionMock.slice(4, 8);
+      const hydrogenProcessSteps = [
+        ProcessStepEntityHydrogenProductionMock[0],
+        ProcessStepEntityHydrogenProductionMock[9],
+      ];
       jest.spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit').mockResolvedValue(hydrogenProcessSteps);
       const processAssemblerAssembleMock = jest.spyOn(
         processStepAssemblerService,
@@ -248,12 +248,12 @@ describe('ProcessStepService', () => {
     });
 
     it('should create bottling ProcessStep only with green batches', async () => {
-      const processStepData = structuredClone(ProcessStepEntityHydrogenProductionMock[3]);
+      const processStepData = structuredClone(ProcessStepEntityHydrogenProductionMock[0]);
 
       // Arrange
       jest
         .spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit')
-        .mockResolvedValue(ProcessStepEntityHydrogenProductionMock.slice(0, 4));
+        .mockResolvedValue(ProcessStepEntityHydrogenProductionMock.slice(0, 3));
       const createProcessStepSpy = jest
         .spyOn(processStepRepository, 'insertProcessStep')
         .mockResolvedValue(processStepData);
@@ -274,7 +274,7 @@ describe('ProcessStepService', () => {
   describe('error cases', () => {
     it('should throw when insufficient hydrogen amount', async () => {
       const processStepData = structuredClone(ProcessStepEntityHydrogenProductionMock[3]);
-      processStepData.batch.amount = EXCESSIVE_AMOUNT;
+      processStepData.batch.amount = 10000;
 
       // Arrange
       jest

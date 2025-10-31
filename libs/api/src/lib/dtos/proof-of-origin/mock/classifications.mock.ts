@@ -64,7 +64,7 @@ export const hydrogenColorClassificationsMock: ClassificationDto[] = [
     batches: [hydrogenBatchesMock[2]],
     classifications: [],
     emissionOfProcessStep: 260,
-    name: HydrogenColor.PINK,
+    name: HydrogenColor.YELLOW,
     classificationType: BatchType.HYDROGEN,
     unit: MeasurementUnit.HYDROGEN,
   },
