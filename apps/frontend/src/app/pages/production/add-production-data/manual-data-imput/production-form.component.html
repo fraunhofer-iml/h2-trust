@@ -102,11 +102,6 @@
       <input matInput type="number" [min]="0" formControlName="powerAmountKwh" />
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Amount of Tap Water (l)</mat-label>
-      <input matInput type="number" [min]="0" formControlName="waterAmount" />
-    </mat-form-field>
-
     @if (amountNotAvailable()) {
       <div class="text-primary-200 col-span-2 flex flex-row items-center gap-2 text-sm">
         <span class="material-symbols-outlined">warning</span>

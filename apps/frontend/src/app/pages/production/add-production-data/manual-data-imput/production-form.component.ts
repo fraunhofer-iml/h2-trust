@@ -71,7 +71,6 @@ export class ProductionFormComponent {
     hydrogenProductionUnit: FormControl<HydrogenProductionOverviewDto | null>;
     hydrogenStorageUnit: FormControl<HydrogenStorageOverviewDto | null>;
     hydrogenAmountKg: FormControl<number | null>;
-    waterAmount: FormControl<number | null>;
   }>({
     productionStartedAt: new FormControl<Date | null>(new Date(), Validators.required),
     productionEndedAt: new FormControl<Date | null>(new Date(), Validators.required),
@@ -80,7 +79,6 @@ export class ProductionFormComponent {
     hydrogenProductionUnit: new FormControl<HydrogenProductionOverviewDto | null>(null, Validators.required),
     hydrogenStorageUnit: new FormControl<HydrogenStorageOverviewDto | null>(null, Validators.required),
     hydrogenAmountKg: new FormControl<number | null>(null, Validators.required),
-    waterAmount: new FormControl<number | null>(null, Validators.required),
   });
 
   mutation = injectMutation(() => ({
