@@ -16,5 +16,5 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './rfnbo-chip.component.html',
 })
 export class RfnboChipComponent {
-  isRFNBOready = input<boolean>(false);
+  isRFNBOready = input<boolean>();
 }

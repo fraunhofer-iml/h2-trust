@@ -10,9 +10,9 @@
         </div>
         <span class="grow text-xs text-neutral-500">
           Total {{ ChemicalNames.CO2 }} Emissions <br />
-          <span class="text-xl">{{ totalEmissions() | number }}</span>
+          <span class="text-xl">{{ totalEmissions() | number: '1.0-2' }}</span>
           {{ FormattedUnits.CO2_PER_KG_H2 }} <br />
-          <span class="text-xl">{{ proofQuery.data()?.amountCO2PerMJH2 | number }}</span>
+          <span class="text-xl">{{ proofQuery.data()?.amountCO2PerMJH2 | number: '1.0-2' }}</span>
           {{ FormattedUnits.CO2_PER_MJ_H2 }}
         </span>
       </div>

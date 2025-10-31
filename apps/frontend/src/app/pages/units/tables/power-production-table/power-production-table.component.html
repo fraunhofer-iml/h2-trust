@@ -1,4 +1,4 @@
-<div>
+<div class="mt-4 flex flex-col gap-4 rounded-lg bg-white py-2">
   <table mat-table [dataSource]="data()" matSort>
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef mat-sort-header class="bold"><div class="bold">Name</div></th>
@@ -28,6 +28,7 @@
       <td class="mat-cell" [attr.colspan]="displayedColumns.length">No data found.</td>
     </tr>
   </table>
-
+</div>
+<div class="mt-2 rounded-lg bg-white p-2">
   <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
 </div>

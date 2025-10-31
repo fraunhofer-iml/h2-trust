@@ -1,5 +1,6 @@
-<div class="flex flex-col gap-4 rounded-lg bg-white p-4">
-  <div class="grid grid-cols-2 gap-x-2 gap-y-4" [formGroup]="form">
+<div class="grid grid-cols-2 gap-4" [formGroup]="form">
+  <div class="flex flex-col gap-4 rounded-lg bg-white p-4">
+    <span>Units used</span>
     <mat-form-field appearance="outline" class="col-span-2">
       <mat-label>Hydrogen Production Unit</mat-label>
       <mat-select formControlName="hydrogenProductionUnit">
@@ -27,6 +28,10 @@
         }
       </mat-select>
     </mat-form-field>
+  </div>
+
+  <div class="grid grid-cols-2 gap-x-2 gap-y-4 rounded-lg bg-white p-4">
+    <span class="col-span-2">Production Details</span>
 
     <mat-form-field appearance="outline">
       <mat-label>Start Date</mat-label>
@@ -108,14 +113,13 @@
         {{ ERROR_MESSAGES.amountIsGreaterThanRemainingCapacity }}
       </div>
     }
-  </div>
 
-  @if (mutation.isError()) {
-    <app-error-card [message]="mutation.error().message"></app-error-card>
-  }
-
-  <div class="flex justify-end gap-2">
-    <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-flat-button (click)="submit()" [disabled]="form.invalid">Add Data</button>
+    @if (mutation.isError()) {
+      <app-error-card class="col-span-2" [message]="mutation.error().message"></app-error-card>
+    }
   </div>
+</div>
+
+<div class="mt-4 flex justify-end gap-4 rounded-lg bg-white p-4">
+  <button mat-flat-button (click)="submit()" [disabled]="form.invalid">Save</button>
 </div>
