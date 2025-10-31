@@ -30,7 +30,6 @@ export class EnergySourceClassificationService {
 
   async buildEnergySourceClassificationsFromContext(
     powerProductionProcessSteps: ProcessStepEntity[],
-    batchAmount: number,
   ): Promise<ClassificationDto[]> {
     if (powerProductionProcessSteps.length === 0) {
       return [];
@@ -53,7 +52,8 @@ export class EnergySourceClassificationService {
           const emissionCalculation: EmissionCalculationDto = await firstValueFrom(
             this.processClient.send(SustainabilityMessagePatterns.COMPUTE_POWER_FOR_STEP, { processStep: processStep }),
           );
-          const emission = toEmissionDto(emissionCalculation, batchAmount);
+          const h2KgEquivalentToPowerBatch = processStep.batch.successors[0].amount;
+          const emission = toEmissionDto(emissionCalculation, h2KgEquivalentToPowerBatch);
 
           const productionPowerBatch = ProofOfOriginDtoAssembler.assembleProductionPowerBatchDto(
             processStep,

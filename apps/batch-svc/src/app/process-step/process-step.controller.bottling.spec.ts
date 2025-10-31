@@ -139,6 +139,8 @@ describe('ProcessStepController / Bottling', () => {
       .spyOn(batchSelectionService, 'processBottlingForAllColors')
       .mockReturnValue({
         batchesForBottle: [expectedResponse.batch],
+        processStepsToBeSplit: [],
+        consumedSplitProcessSteps: [],
         processStepsForRemainingAmount: [],
       });
 

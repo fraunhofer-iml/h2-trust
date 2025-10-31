@@ -53,7 +53,18 @@ export class BottlingService {
       processStep,
     );
 
-    await this.batchRepository.setBatchesInactive(batchSelection.batchesForBottle.map((batch) => batch.id));
+    const batchesToSetInactive = [
+      ...batchSelection.batchesForBottle,
+      ...batchSelection.processStepsToBeSplit.map((processStep) => processStep.batch),
+    ];
+    await this.batchRepository.setBatchesInactive(batchesToSetInactive.map((batch) => batch.id));
+
+    const createdConsumedSplitProcessSteps = await Promise.all(
+      batchSelection.consumedSplitProcessSteps.map((processStep) =>
+        this.processStepRepository.insertProcessStep(processStep),
+      ),
+    );
+    const createdConsumedSplitBatches = createdConsumedSplitProcessSteps.map((processStep) => processStep.batch);
 
     await Promise.all(
       batchSelection.processStepsForRemainingAmount.map((processStep) =>
@@ -61,10 +72,10 @@ export class BottlingService {
       ),
     );
 
-    const bottlingProcessStep = await this.processStepAssemblerService.createBottlingProcessStep(
-      processStep,
-      batchSelection.batchesForBottle,
-    );
+    const bottlingProcessStep = await this.processStepAssemblerService.createBottlingProcessStep(processStep, [
+      ...batchSelection.batchesForBottle,
+      ...createdConsumedSplitBatches,
+    ]);
 
     if (files) {
       await Promise.all(

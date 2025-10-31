@@ -17,14 +17,10 @@ import { ProofOfOriginDtoAssembler } from '../proof-of-origin-dto.assembler';
 export class HydrogenProductionSectionService {
   constructor(private readonly energySourceClassificationService: EnergySourceClassificationService) {}
 
-  async buildHydrogenProductionSection(
-    powerProductionProcessSteps: ProcessStepEntity[],
-    batchAmount: number,
-  ): Promise<SectionDto> {
+  async buildHydrogenProductionSection(powerProductionProcessSteps: ProcessStepEntity[]): Promise<SectionDto> {
     const energySourceClassificationDtos: ClassificationDto[] =
       await this.energySourceClassificationService.buildEnergySourceClassificationsFromContext(
         powerProductionProcessSteps,
-        batchAmount,
       );
     const powerSupplyClassification: ClassificationDto = ProofOfOriginDtoAssembler.assemblePowerClassification(
       ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION_NAME,

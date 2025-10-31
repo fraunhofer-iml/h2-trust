@@ -10,5 +10,7 @@ import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
 
 export interface BatchSelection {
   batchesForBottle: BatchEntity[];
+  processStepsToBeSplit: ProcessStepEntity[];
+  consumedSplitProcessSteps: ProcessStepEntity[];
   processStepsForRemainingAmount: ProcessStepEntity[];
 }

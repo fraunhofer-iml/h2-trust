@@ -147,21 +147,17 @@ describe('ProcessStepService', () => {
       await service.createHydrogenBottlingProcessStep(processStepData, undefined);
 
       // Assert
-      expect(processAssemblerAssembleMock).toHaveBeenCalledWith(
-        processStepData,
+      expect(processAssemblerAssembleMock).toHaveBeenLastCalledWith(
+        hydrogenProcessSteps[0],
         calculateRemainingAmount(
           hydrogenProcessSteps.map((processStep) => processStep.batch),
           processStepData.batch.amount,
         ),
-        hydrogenProcessSteps[0].batch.owner.id,
-        hydrogenProcessSteps[0],
+        true,
       );
       expect(setBatchesInactiveSpy).toHaveBeenCalledTimes(1);
-      expect(createProcessStepSpy).toHaveBeenCalledTimes(2);
-      expect(processAssemblerCreateMock).toHaveBeenCalledWith(
-        processStepData,
-        hydrogenProcessSteps.map((step) => step.batch),
-      );
+      expect(createProcessStepSpy).toHaveBeenCalledTimes(3);
+      expect(processAssemblerCreateMock).toHaveBeenCalledWith(processStepData, expect.any(Array));
       expect(readProcessStepSpy).toHaveBeenCalledTimes(1);
       expect(readProcessStepSpy).toHaveBeenCalledWith(processStepData.id);
     });
@@ -189,15 +185,14 @@ describe('ProcessStepService', () => {
 
       // Assert
       const selectedBatches = hydrogenProcessSteps.slice(0, 2).map((step) => step.batch);
-      expect(processAssemblerAssembleMock).toHaveBeenCalledWith(
-        processStepData,
-        calculateRemainingAmount(selectedBatches, processStepData.batch.amount),
-        hydrogenProcessSteps[0].batch.owner.id,
+      expect(processAssemblerAssembleMock).toHaveBeenLastCalledWith(
         hydrogenProcessSteps.at(-2),
+        calculateRemainingAmount(selectedBatches, processStepData.batch.amount),
+        true,
       );
       expect(setBatchesInactiveSpy).toHaveBeenCalledTimes(1);
-      expect(createProcessStepSpy).toHaveBeenCalledTimes(2);
-      expect(processAssemblerCreateMock).toHaveBeenCalledWith(processStepData, selectedBatches);
+      expect(createProcessStepSpy).toHaveBeenCalledTimes(3);
+      expect(processAssemblerCreateMock).toHaveBeenCalledWith(processStepData, expect.any(Array));
       expect(readProcessStepSpy).toHaveBeenCalledTimes(1);
       expect(readProcessStepSpy).toHaveBeenCalledWith(processStepData.id);
     });
@@ -238,20 +233,16 @@ describe('ProcessStepService', () => {
       const totalStoredAmount = hydrogenProcessSteps.reduce((sum, step) => sum + step.batch.amount, 0);
       for (let i = 0; i < hydrogenProcessSteps.length; i += 1) {
         expect(processAssemblerAssembleMock).toHaveBeenNthCalledWith(
-          i + 1,
-          processStepData,
+          2 * (i + 1), // Every second call goes to the assembling of the remaining amount batch
+          hydrogenProcessSteps.at(i),
           hydrogenProcessSteps[i].batch.amount -
             (processStepData.batch.amount * hydrogenProcessSteps[i].batch.amount) / totalStoredAmount,
-          hydrogenProcessSteps[i].batch.owner.id,
-          hydrogenProcessSteps.at(i),
+          true,
         );
       }
       expect(setBatchesInactiveSpy).toHaveBeenCalledTimes(1);
-      expect(createProcessStepSpy).toHaveBeenCalledTimes(hydrogenProcessSteps.length + 1);
-      expect(processAssemblerCreateMock).toHaveBeenCalledWith(
-        processStepData,
-        hydrogenProcessSteps.map((step) => step.batch),
-      );
+      expect(createProcessStepSpy).toHaveBeenCalledTimes(2 * hydrogenProcessSteps.length + 1);
+      expect(processAssemblerCreateMock).toHaveBeenCalledWith(processStepData, expect.any(Array));
       expect(readProcessStepSpy).toHaveBeenCalledTimes(1);
       expect(readProcessStepSpy).toHaveBeenCalledWith(processStepData.id);
     });

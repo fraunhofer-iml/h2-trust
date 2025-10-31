@@ -22,22 +22,29 @@ export class BatchSelectionService {
     processStepDataForBottling: ProcessStepEntity,
   ): BatchSelection {
     const aggregatedBatchesForBottle: BatchEntity[] = [];
+    const aggregatedProcessStepsToBeSplit: ProcessStepEntity[] = [];
+    const aggregatedConsumedSplitProcessSteps: ProcessStepEntity[] = [];
     const aggregatedProcessStepsForRemainingAmount: ProcessStepEntity[] = [];
 
     for (const hydrogenComponent of hydrogenComposition) {
-      const { batchesForBottle, processStepsForRemainingAmount } = this.processBottlingForEachColor(
-        allProcessStepsFromStorageUnit,
-        hydrogenComponent.color,
-        hydrogenComponent.amount,
-        processStepDataForBottling,
-      );
+      const { batchesForBottle, processStepsToBeSplit, consumedSplitProcessSteps, processStepsForRemainingAmount } =
+        this.processBottlingForEachColor(
+          allProcessStepsFromStorageUnit,
+          hydrogenComponent.color,
+          hydrogenComponent.amount,
+          processStepDataForBottling,
+        );
 
       aggregatedBatchesForBottle.push(...batchesForBottle);
+      aggregatedProcessStepsToBeSplit.push(...processStepsToBeSplit);
+      aggregatedConsumedSplitProcessSteps.push(...consumedSplitProcessSteps);
       aggregatedProcessStepsForRemainingAmount.push(...processStepsForRemainingAmount);
     }
 
     return {
       batchesForBottle: aggregatedBatchesForBottle,
+      processStepsToBeSplit: aggregatedProcessStepsToBeSplit,
+      consumedSplitProcessSteps: aggregatedConsumedSplitProcessSteps,
       processStepsForRemainingAmount: aggregatedProcessStepsForRemainingAmount,
     };
   }
@@ -60,22 +67,7 @@ export class BatchSelectionService {
       color,
     );
 
-    const processStepsForRemainingAmount: ProcessStepEntity[] =
-      remainingAmount > 0
-        ? [
-            this.processStepAssemblerService.assembleHydrogenProductionProcessStepForRemainingAmount(
-              processStepDataForBottling,
-              remainingAmount,
-              selectedProcessSteps[0].batch.owner.id,
-              selectedProcessSteps.at(-1),
-            ),
-          ]
-        : [];
-
-    return {
-      batchesForBottle: selectedProcessSteps.map((processStep) => processStep.batch),
-      processStepsForRemainingAmount,
-    };
+    return this.splitLastProcessStepIfNeeded(selectedProcessSteps, remainingAmount);
   }
 
   private filterProcessStepsByColor(processSteps: ProcessStepEntity[], color: string): ProcessStepEntity[] {
@@ -104,5 +96,37 @@ export class BatchSelectionService {
 
     const message = `There is not enough hydrogen in storage unit ${storageUnitId} for the requested amount of ${requestedAmount} of quality ${color}.`;
     throw new BrokerException(message, HttpStatus.BAD_REQUEST);
+  }
+
+  private splitLastProcessStepIfNeeded(
+    selectedProcessSteps: ProcessStepEntity[],
+    remainingAmount: number,
+  ): BatchSelection {
+    const batchesForBottle: BatchEntity[] = selectedProcessSteps.map((processStep) => processStep.batch);
+    const processStepsToBeSplit: ProcessStepEntity[] = [];
+    const consumedSplitProcessSteps: ProcessStepEntity[] = [];
+    const processStepsForRemainingAmount: ProcessStepEntity[] = [];
+    if (remainingAmount > 0) {
+      const consumedSplitProcessStep = selectedProcessSteps.at(-1);
+      processStepsToBeSplit.push(consumedSplitProcessStep);
+      batchesForBottle.pop();
+
+      consumedSplitProcessSteps.push(
+        this.processStepAssemblerService.assembleHydrogenProductionProcessStepForRemainingAmount(
+          consumedSplitProcessStep,
+          consumedSplitProcessStep.batch.amount - remainingAmount,
+          false,
+        ),
+      );
+
+      processStepsForRemainingAmount.push(
+        this.processStepAssemblerService.assembleHydrogenProductionProcessStepForRemainingAmount(
+          consumedSplitProcessStep,
+          remainingAmount,
+          true,
+        ),
+      );
+    }
+    return { batchesForBottle, processStepsToBeSplit, consumedSplitProcessSteps, processStepsForRemainingAmount };
   }
 }

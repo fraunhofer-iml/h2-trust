@@ -59,13 +59,11 @@ describe('EnergySourceClassificationService', () => {
 
   it('should return empty list when no process steps are given', async () => {
     const givenPowerProductionProcessSteps: ProcessStepEntity[] = [];
-    const givenBatchAmount = 100;
 
     const generalSvcSpy = jest.spyOn(generalSvc, 'send');
 
     const actualResponse: ClassificationDto[] = await service.buildEnergySourceClassificationsFromContext(
       givenPowerProductionProcessSteps,
-      givenBatchAmount,
     );
 
     expect(generalSvcSpy).toHaveBeenCalledTimes(0);
@@ -75,6 +73,7 @@ describe('EnergySourceClassificationService', () => {
 
   it('should build one classification for a single energy source with one process step', async () => {
     const powerProductionProcessSteps: ProcessStepEntity[] = [structuredClone(ProcessStepEntityPowerProductionMock[0])];
+    powerProductionProcessSteps[0].batch.successors = [powerProductionProcessSteps[0].batch];
     const powerProductionTypes: PowerProductionTypeEntity[] = [
       PowerProductionTypeEntityMock[0],
       PowerProductionTypeEntityMock[1],
@@ -110,7 +109,6 @@ describe('EnergySourceClassificationService', () => {
 
     const actualResponse: ClassificationDto[] = await service.buildEnergySourceClassificationsFromContext(
       ctx.powerProductionProcessSteps,
-      ctx.root.batch.amount,
     );
 
     expect(generalSvcSpy).toHaveBeenCalledTimes(2); // types + unit

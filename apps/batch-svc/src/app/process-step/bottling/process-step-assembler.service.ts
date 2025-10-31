@@ -62,17 +62,17 @@ export class ProcessStepAssemblerService {
   // This seems to contradict the first-in-first-out principle,
   // but in fact a batch is now tapped before all others until it is empty.
   assembleHydrogenProductionProcessStepForRemainingAmount(
-    processStep: ProcessStepEntity,
-    remainingAmount: number,
-    ownerId: string,
     predecessorProcessStep: ProcessStepEntity,
+    remainingAmount: number,
+    active: boolean,
   ): ProcessStepEntity {
     return {
-      ...processStep,
+      ...predecessorProcessStep,
       startedAt: predecessorProcessStep.startedAt,
       endedAt: predecessorProcessStep.endedAt,
       type: ProcessType.HYDROGEN_PRODUCTION,
       batch: {
+        active: active,
         amount: remainingAmount,
         quality: predecessorProcessStep.batch.quality,
         type: BatchType.HYDROGEN,
@@ -82,10 +82,10 @@ export class ProcessStepAssemblerService {
           },
         ],
         owner: {
-          id: ownerId,
+          id: predecessorProcessStep.batch.owner.id,
         },
         hydrogenStorageUnit: {
-          id: processStep.executedBy?.id,
+          id: predecessorProcessStep.batch.hydrogenStorageUnit.id,
         },
       },
     };

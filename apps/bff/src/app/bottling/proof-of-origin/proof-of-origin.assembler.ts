@@ -29,10 +29,7 @@ export class ProofOfOriginAssembler {
 
     if (ctx.powerProductionProcessSteps?.length) {
       sections.push(
-        await this.hydrogenProductionSectionService.buildHydrogenProductionSection(
-          ctx.powerProductionProcessSteps,
-          ctx.root.batch.amount,
-        ),
+        await this.hydrogenProductionSectionService.buildHydrogenProductionSection(ctx.powerProductionProcessSteps),
       );
     }
 

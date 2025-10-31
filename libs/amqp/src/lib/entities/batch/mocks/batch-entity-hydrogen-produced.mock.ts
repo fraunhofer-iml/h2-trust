@@ -8,6 +8,7 @@
 
 import { BatchHydrogenProducedSeed } from 'libs/database/src/seed';
 import { CompanyEntityHydrogenMock } from '../../company/mocks';
+import { HydrogenStorageUnitEntityMock } from '../../unit';
 import { BatchEntity } from '../batch.entity';
 
 export const BatchEntityHydrogenProducedMock: BatchEntity[] = BatchHydrogenProducedSeed.map(
@@ -21,6 +22,6 @@ export const BatchEntityHydrogenProducedMock: BatchEntity[] = BatchHydrogenProdu
       [],
       [],
       CompanyEntityHydrogenMock,
-      undefined,
+      HydrogenStorageUnitEntityMock[0],
     ),
 );
