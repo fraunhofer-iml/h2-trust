@@ -1,37 +1,22 @@
-name: Lint & Format
+name: Danger
 
 on:
+  push:
+    branches: ['main']
   pull_request:
 
 jobs:
   danger:
-    name: Run Danger on Pull Requests
     runs-on: ubuntu-latest
-    if: github.event_name  == 'pull_request'
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '2.6'
-
-      - name: Cache Ruby Gems
-        uses: actions/cache@v4
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('.github/Gemfile') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-
+      - name: Common Setup
+        uses: ./.github/actions/common-setup
 
       - name: Run Danger
-        uses: MeilCli/danger-action@v6
-        with:
-          plugins_file: 'Gemfile'
-          install_path: 'vendor/bundle'
-          danger_file: 'dangerfile'
-          danger_id: 'danger-pr'
+        run: npx danger ci --failOnErrors
         env:
-          DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

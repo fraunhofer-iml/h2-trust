@@ -11,7 +11,6 @@ permissions:
 
 jobs:
   build-and-push-images:
-    name: Build & Push Docker Images
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
 

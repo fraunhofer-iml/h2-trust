@@ -7,7 +7,6 @@ on:
 
 jobs:
   lint-format:
-    name: Lint Codebase with ESLint and Prettier
     runs-on: ubuntu-latest
 
     steps:
