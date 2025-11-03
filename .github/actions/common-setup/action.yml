@@ -22,7 +22,7 @@ runs:
       shell: bash
       run: |
         cat package.json
-        cat package-lock.json
+        cat package-lock.json | grep chokidar
 
     - name: Install Dependencies
       shell: bash
