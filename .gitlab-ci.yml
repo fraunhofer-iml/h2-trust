@@ -82,7 +82,7 @@ all:deploy-staging:
     - git commit -am '[skip ci] manifest-image update'
     - git push origin main
   only:
-    - /^staging-\d{8}-\d+$/
+    - /^v\d+\.\d+\.\d+-rc\.\d+$/
   except:
     - branches
     - merge_requests
