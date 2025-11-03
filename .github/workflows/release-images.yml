@@ -1,0 +1,97 @@
+name: Images
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  build-and-push-images:
+    name: Build & Push Docker Images
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Common Setup
+        uses: ./.github/actions/common-setup
+
+      - name: Build Artifacts
+        run: npx nx run-many --all -t build --parallel
+
+      - name: Setup Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & Push batch-svc
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/nest.dockerfile
+          build-args: APP=batch-svc
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/batch-svc:latest
+            ghcr.io/${{ github.repository }}/batch-svc:${{ github.ref_name }}
+
+      - name: Build & Push bff
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/nest.dockerfile
+          build-args: APP=bff
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/bff:latest
+            ghcr.io/${{ github.repository }}/bff:${{ github.ref_name }}
+
+      - name: Build & Push frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/angular.dockerfile
+          build-args: APP=frontend
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/frontend:latest
+            ghcr.io/${{ github.repository }}/frontend:${{ github.ref_name }}
+
+      - name: Build & Push general-svc
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/nest.dockerfile
+          build-args: APP=general-svc
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/general-svc:latest
+            ghcr.io/${{ github.repository }}/general-svc:${{ github.ref_name }}
+
+      - name: Build & Push process-svc
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/nest.dockerfile
+          build-args: APP=process-svc
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/process-svc:latest
+            ghcr.io/${{ github.repository }}/process-svc:${{ github.ref_name }}
