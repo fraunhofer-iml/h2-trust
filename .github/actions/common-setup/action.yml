@@ -18,6 +18,12 @@ runs:
         restore-keys: |
           ${{ runner.os }}-node-
 
+    - name: Debug Files
+      shell: bash
+      run: |
+        cat package.json
+        cat package-lock.json
+
     - name: Install Dependencies
       shell: bash
       run: npm ci --no-audit --no-fund
