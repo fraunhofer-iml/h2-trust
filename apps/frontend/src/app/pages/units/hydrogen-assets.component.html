@@ -1,0 +1,27 @@
+<div class="flex flex-col gap-4 p-8">
+  <div class="flex flex-row justify-between">
+    <h2 class="text-lg text-neutral-500">Units</h2>
+    <button mat-flat-button routerLink="create">Add Unit</button>
+  </div>
+
+  <mat-tab-group mat-align-tabs="start" mat-stretch-tabs="false">
+    @if (powerProductionQuery.isSuccess() && powerProductionQuery.data().length !== 0) {
+      <mat-tab label="Power Production">
+        <app-power-production-table class="mt-8" [data]="powerProductionQuery.data()"></app-power-production-table
+      ></mat-tab>
+    }
+    @if (hydrogenProductionQuery.isSuccess() && hydrogenProductionQuery.data().length !== 0) {
+      <mat-tab label="Hydrogen Production">
+        <app-hydrogen-production-table
+          class="mt-8"
+          [data]="hydrogenProductionQuery.data()"
+        ></app-hydrogen-production-table>
+      </mat-tab>
+    }
+    @if (hydrogenStorageQuery.isSuccess() && hydrogenStorageQuery.data().length !== 0) {
+      <mat-tab label="Hydrogen Storage">
+        <app-hydrogen-storage-table class="mt-8" [data]="hydrogenStorageQuery.data()"></app-hydrogen-storage-table>
+      </mat-tab>
+    }
+  </mat-tab-group>
+</div>

@@ -1,0 +1,226 @@
+// Copyright Fraunhofer Institute for Material Flow and Logistics
+//
+// Licensed under the Apache License, Version 2.0 (the "License").
+// For details on the licensing terms, see the LICENSE file.
+// SPDX-License-Identifier: Apache-2.0
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Address {
+  id         String   @id @default(cuid(2))
+  street     String
+  postalCode String
+  city       String
+  state      String
+  country    String
+  latitude   Decimal? @db.Decimal(8, 6)
+  longitude  Decimal? @db.Decimal(9, 6)
+
+  companies Company[]
+  units     Unit[]
+}
+
+model Document {
+  id          String @id @default(cuid(2))
+  description String
+  location    String
+
+  unit   Unit?   @relation(fields: [unitId], references: [id])
+  unitId String?
+
+  processStep   ProcessStep? @relation(fields: [processStepId], references: [id])
+  processStepId String?
+
+  powerAccessApprovals PowerAccessApproval[]
+}
+
+model Company {
+  id          String @id @default(cuid(2))
+  type        String
+  name        String
+  mastrNumber String @unique
+
+  address   Address @relation(fields: [addressId], references: [id])
+  addressId String
+
+  hydrogenApprovals PowerAccessApproval[] @relation(name: "HydrogenProducer")
+  powerApprovals    PowerAccessApproval[] @relation(name: "PowerProducer")
+  unitOwners        Unit[]                @relation(name: "UnitOwner")
+  unitOperators     Unit[]                @relation(name: "UnitOperator")
+  users             User[]
+  batches           Batch[]
+}
+
+model User {
+  id    String @id @default(cuid(2))
+  name  String
+  email String @unique
+
+  company   Company? @relation(fields: [companyId], references: [id])
+  companyId String?
+
+  processSteps ProcessStep[]
+}
+
+model Unit {
+  id             String   @id @default(cuid(2))
+  name           String
+  mastrNumber    String   @unique
+  manufacturer   String?
+  modelType      String?
+  modelNumber    String?
+  serialNumber   String?  @unique
+  certifiedBy    String?
+  commissionedOn DateTime
+
+  address   Address @relation(fields: [addressId], references: [id])
+  addressId String
+
+  owner   Company @relation(name: "UnitOwner", fields: [ownerId], references: [id])
+  ownerId String
+
+  operator   Company? @relation(name: "UnitOperator", fields: [operatorId], references: [id])
+  operatorId String?
+
+  powerProductionUnit    PowerProductionUnit?
+  hydrogenProductionUnit HydrogenProductionUnit?
+  hydrogenStorageUnit    HydrogenStorageUnit?
+
+  documents    Document[]
+  processSteps ProcessStep[]
+}
+
+model PowerProductionType {
+  name          String @id
+  energySource  String
+  hydrogenColor String
+
+  powerProductionUnits PowerProductionUnit[]
+
+  @@unique([name, energySource, hydrogenColor])
+}
+
+model PowerProductionUnit {
+  id                       String    @id
+  electricityMeterNumber   String
+  gridOperator             String?
+  gridConnectionNumber     String?
+  gridLevel                String
+  biddingZone              String
+  ratedPower               Decimal   @db.Decimal(18, 6)
+  decommissioningPlannedOn DateTime?
+
+  generalInfo Unit @relation(fields: [id], references: [id])
+
+  type     PowerProductionType @relation(fields: [typeName], references: [name])
+  typeName String
+
+  powerAccessApprovals PowerAccessApproval[]
+}
+
+model HydrogenProductionUnit {
+  id                            String  @id
+  method                        String
+  technology                    String
+  biddingZone                   String
+  ratedPower                    Decimal @db.Decimal(18, 6)
+  pressure                      Decimal @db.Decimal(8, 2)
+  waterConsumptionLitersPerHour Decimal @db.Decimal(7, 3)
+
+  generalInfo Unit @relation(fields: [id], references: [id])
+}
+
+model HydrogenStorageUnit {
+  id       String  @id
+  type     String
+  capacity Decimal @db.Decimal(18, 6)
+  pressure Decimal @db.Decimal(8, 2)
+
+  generalInfo Unit @relation(fields: [id], references: [id])
+
+  filling Batch[]
+}
+
+model Batch {
+  id      String  @id @default(cuid(2))
+  type    String
+  amount  Decimal @db.Decimal(18, 6)
+  active  Boolean @default(true)
+  quality String
+
+  owner   Company @relation(fields: [ownerId], references: [id])
+  ownerId String
+
+  hydrogenStorageUnit   HydrogenStorageUnit? @relation(fields: [hydrogenStorageUnitId], references: [id])
+  hydrogenStorageUnitId String?
+
+  processStep ProcessStep?
+
+  predecessors Batch[] @relation("BatchRelation")
+  successors   Batch[] @relation("BatchRelation")
+}
+
+model ProcessStep {
+  id        String   @id @default(cuid(2))
+  type      String
+  startedAt DateTime
+  endedAt   DateTime
+
+  batch   Batch  @relation(fields: [batchId], references: [id])
+  batchId String @unique
+
+  recordedBy User   @relation(fields: [userId], references: [id])
+  userId     String
+
+  executedBy Unit   @relation(fields: [unitId], references: [id])
+  unitId     String
+
+  processStepDetails ProcessStepDetails?
+
+  documents Document[]
+}
+
+model ProcessStepDetails {
+  id String @id @default(cuid(2))
+
+  transportationDetails TransportationDetails?
+
+  processStep   ProcessStep @relation(fields: [processStepId], references: [id])
+  processStepId String      @unique
+}
+
+model TransportationDetails {
+  id            String  @id
+  transportMode String
+  fuelType      String?
+  distance      Decimal @db.Decimal(8, 3)
+
+  processStepDetails ProcessStepDetails @relation(fields: [id], references: [id])
+}
+
+model PowerAccessApproval {
+  id        String   @id @default(cuid(2))
+  status    String
+  decidedAt DateTime
+
+  powerProducer   Company @relation(fields: [powerProducerId], references: [id], name: "PowerProducer")
+  powerProducerId String
+
+  hydrogenProducer   Company @relation(fields: [hydrogenProducerId], references: [id], name: "HydrogenProducer")
+  hydrogenProducerId String
+
+  powerProductionUnit   PowerProductionUnit @relation(fields: [powerProductionUnitId], references: [id])
+  powerProductionUnitId String
+
+  document   Document @relation(fields: [documentId], references: [id])
+  documentId String
+
+  @@unique([powerProducerId, powerProductionUnitId, hydrogenProducerId])
+}

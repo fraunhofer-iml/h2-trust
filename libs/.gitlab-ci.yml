@@ -1,0 +1,10 @@
+libs:run-amqp-tests:
+  needs: []
+  stage: test
+  extends: .default
+  script:
+    - npx nx run amqp:test
+  allow_failure: true
+  only:
+    - merge_requests
+    - main

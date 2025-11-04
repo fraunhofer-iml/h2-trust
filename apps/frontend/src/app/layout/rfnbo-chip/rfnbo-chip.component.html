@@ -1,0 +1,10 @@
+@if (isRFNBOready()) {
+  <div
+    class="flex min-w-24 flex-row items-center gap-2 rounded-md px-2 py-1"
+    [ngClass]="isRFNBOready() ? 'bg-primary-200/30' : 'bg-neutral-300/50'"
+  >
+    <span class="text-center text-sm" [ngClass]="isRFNBOready() ? 'text-primary-200' : 'text-neutral-500'">{{
+      isRFNBOready() ? 'RFNBO ready' : 'not RFNBO ready'
+    }}</span>
+  </div>
+}

@@ -1,0 +1,23 @@
+{
+  "name": "amqp",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/amqp/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project amqp --web",
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/amqp/jest.config.ts",
+        "codeCoverage": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true
+        }
+      }
+    }
+  }
+}

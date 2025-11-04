@@ -1,0 +1,78 @@
+general-svc:run-tests:
+  needs: []
+  stage: test
+  extends: .default
+  script:
+    - npx nx run general-svc:test
+  artifacts:
+    paths:
+      - ./apps/general-svc/coverage
+    expire_in: 1 week
+  allow_failure: true
+  only:
+    - merge_requests
+    - main
+
+general-svc:sonarqube-check-mr:
+  needs:
+    - general-svc:run-tests
+  stage: analysis
+  image:
+    name: sonarsource/sonar-scanner-cli:11.4
+    entrypoint: ['']
+  variables:
+    GIT_DEPTH: '0' # Tells git to fetch all the branches of the project, required by the analysis task
+  script:
+    # prettier-ignore
+    - >
+      sonar-scanner
+      -Dsonar.projectBaseDir=./apps/general-svc/
+      -Dsonar.pullrequest.key=${CI_MERGE_REQUEST_IID}
+      -Dsonar.pullrequest.branch=${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}
+      -Dsonar.pullrequest.base=${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}
+  allow_failure: true
+  only:
+    - merge_requests
+
+general-svc:sonarqube-check-main:
+  needs:
+    - general-svc:run-tests
+  stage: analysis
+  image:
+    name: sonarsource/sonar-scanner-cli:11.4
+    entrypoint: ['']
+  variables:
+    GIT_DEPTH: '0' # Tells git to fetch all the branches of the project, required by the analysis task
+  script:
+    - sonar-scanner -Dsonar.projectBaseDir=./apps/general-svc/
+  allow_failure: true
+  only:
+    - main
+
+general-svc:build:
+  stage: build
+  extends: .default
+  script:
+    - npx nx run general-svc:build
+  artifacts:
+    paths:
+      - dist/apps/general-svc
+  only:
+    - merge_requests
+    - tags
+
+general-svc:archive:
+  needs:
+    - general-svc:build
+  stage: archive
+  image: docker
+  services:
+    - docker:dind
+  before_script:
+    - echo "$HARBOR_TOKEN" | docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build --pull --cache-from ${CRI_PATH}/general-svc --build-arg APP=general-svc -t
+      ${CRI_PATH}/general-svc:$CI_COMMIT_TAG -f docker/nest.dockerfile  .
+    - docker push ${CRI_PATH}/general-svc:$CI_COMMIT_TAG
+  only:
+    - tags

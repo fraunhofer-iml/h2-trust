@@ -1,0 +1,29 @@
+<div class="flex flex-col gap-4 overflow-auto p-8">
+  <div class="flex flex-row items-center justify-between gap-2 text-lg text-neutral-500">
+    <span class="flex flex-row items-center gap-2">
+      <a routerLink="/production" class="cursor-pointer hover:underline">Production</a>
+      <span class="material-symbols-outlined"> keyboard_arrow_right </span>
+      add
+    </span>
+    @if (useCSV) {
+      <button mat-stroked-button (click)="useCSV = false">Add data manually</button>
+    } @else {
+      <button mat-stroked-button (click)="useCSV = true">CSV upload</button>
+    }
+  </div>
+
+  @if (useCSV) {
+    <app-production-csv-upload
+      [hydrogenProductionUnits]="hydrogenProductionQuery.data() ?? []"
+      [hydrogenStorageUnits]="hydrogenStorageQuery.data() ?? []"
+      [powerAccessApprovals]="approvalsQuery.data() ?? []"
+    >
+    </app-production-csv-upload>
+  } @else {
+    <app-production-form
+      [hydrogenProductionUnits]="hydrogenProductionQuery.data() ?? []"
+      [hydrogenStorageUnits]="hydrogenStorageQuery.data() ?? []"
+      [powerAccessApprovals]="approvalsQuery.data() ?? []"
+    ></app-production-form>
+  }
+</div>

@@ -1,0 +1,321 @@
+<div class="flex flex-col gap-4 overflow-auto p-8">
+  <div class="flex flex-row items-center gap-2 text-lg text-neutral-500">
+    <a routerLink="/units" class="cursor-pointer hover:underline">Units</a>
+    <span class="material-symbols-outlined"> keyboard_arrow_right </span>
+    add Unit
+  </div>
+
+  <div class="flex flex-col gap-2 rounded-lg bg-white p-4">
+    <span>Unit type</span>
+
+    <div class="col-span-2 py-2">
+      <mat-radio-group
+        required
+        class="flex w-full flex-row gap-2"
+        aria-label="Select an option"
+        [formControl]="selectedType"
+      >
+        <div
+          class="flex w-1/3 cursor-pointer flex-col rounded-md border-[2px] border-solid p-2"
+          (click)="selectedType.patchValue(UnitType.HYDROGEN_PRODUCTION)"
+          role="none"
+          [ngClass]="
+            selectedType.value === UnitType.HYDROGEN_PRODUCTION
+              ? 'border-primary-400 text-primary-100'
+              : 'border-neutral-300 text-neutral-500'
+          "
+        >
+          <div class="flex w-full items-center justify-between">
+            <div class="flex flex-row items-center gap-2">
+              <div
+                class="h-10 w-10 rounded-full p-2 text-center"
+                [ngClass]="
+                  selectedType.value === UnitType.HYDROGEN_PRODUCTION ? 'bg-primary-200/20' : 'bg-neutral-200/80'
+                "
+              >
+                <span
+                  class="material-symbols-outlined"
+                  [ngClass]="
+                    selectedType.value === UnitType.HYDROGEN_PRODUCTION ? 'text-primary-200' : 'bg-neutral-200/20'
+                  "
+                  >water_ec</span
+                >
+              </div>
+              <span class="text-base">{{ UnitType.HYDROGEN_PRODUCTION | prettyEnum | titlecase }}</span>
+            </div>
+            <mat-radio-button [value]="UnitType.HYDROGEN_PRODUCTION"> </mat-radio-button>
+          </div>
+        </div>
+        <div
+          class="flex w-1/3 cursor-pointer flex-col rounded-md border-[2px] border-solid p-2"
+          (click)="selectedType.patchValue(UnitType.POWER_PRODUCTION)"
+          role="none"
+          [ngClass]="
+            selectedType.value === UnitType.POWER_PRODUCTION
+              ? 'border-primary-400 text-primary-100'
+              : 'border-neutral-300 text-neutral-500'
+          "
+        >
+          <div class="flex w-full items-center justify-between">
+            <div class="flex flex-row items-center gap-2">
+              <div
+                class="h-10 w-10 rounded-full p-2 text-center"
+                [ngClass]="selectedType.value === UnitType.POWER_PRODUCTION ? 'bg-primary-200/20' : 'bg-neutral-200/80'"
+              >
+                <span
+                  class="material-symbols-outlined"
+                  [ngClass]="
+                    selectedType.value === UnitType.POWER_PRODUCTION ? 'text-primary-200' : 'bg-neutral-200/20'
+                  "
+                  >bolt</span
+                >
+              </div>
+              <span class="text-base">{{ UnitType.POWER_PRODUCTION | prettyEnum | titlecase }}</span>
+            </div>
+            <mat-radio-button [value]="UnitType.POWER_PRODUCTION"> </mat-radio-button>
+          </div>
+        </div>
+        <div
+          class="flex w-1/3 cursor-pointer flex-col rounded-md border-[2px] border-solid p-2"
+          (click)="selectedType.patchValue(UnitType.HYDROGEN_STORAGE)"
+          role="none"
+          [ngClass]="
+            selectedType.value === UnitType.HYDROGEN_STORAGE
+              ? 'border-primary-400 text-primary-100'
+              : 'border-neutral-300 text-neutral-500'
+          "
+        >
+          <div class="flex w-full items-center justify-between">
+            <div class="flex flex-row items-center gap-2">
+              <div
+                class="h-10 w-10 rounded-full p-2 text-center"
+                [ngClass]="selectedType.value === UnitType.HYDROGEN_STORAGE ? 'bg-primary-200/20' : 'bg-neutral-200/80'"
+              >
+                <span
+                  class="material-symbols-outlined"
+                  [ngClass]="
+                    selectedType.value === UnitType.HYDROGEN_STORAGE ? 'text-primary-200' : 'bg-neutral-200/20'
+                  "
+                  >battery_profile</span
+                >
+              </div>
+              <span class="text-base">{{ UnitType.HYDROGEN_STORAGE | prettyEnum | titlecase }}</span>
+            </div>
+            <mat-radio-button [value]="UnitType.HYDROGEN_STORAGE" #storage> </mat-radio-button>
+          </div>
+        </div>
+      </mat-radio-group>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-2 rounded-lg bg-white p-4">
+    <span>Unit details</span>
+
+    <div class="grid grid-cols-3 gap-2" [formGroup]="unitForm">
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput placeholder="Unit 45-944" formControlName="name" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Owner</mat-label>
+
+        <mat-select formControlName="owner">
+          @for (company of companiesQuery.data(); track company) {
+            <mat-option [value]="company.id">{{ company.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Operator</mat-label>
+
+        <mat-select formControlName="operator">
+          @for (company of companiesQuery.data(); track company) {
+            <mat-option [value]="company.id">{{ company.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Manufacturer</mat-label>
+        <input matInput placeholder="HydroNova Technologies GmbH" formControlName="manufacturer" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Model Type</mat-label>
+        <input matInput placeholder="HN-Elektrolyser Pro X" formControlName="modelType" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Model Number</mat-label>
+        <input matInput placeholder="HN-EL-PX500" formControlName="modelNumber" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Serial Number</mat-label>
+        <input matInput placeholder="PX500-00034872" formControlName="serialNumber" /> </mat-form-field
+      ><mat-form-field appearance="outline">
+        <mat-label>Mastr Number</mat-label>
+        <input matInput placeholder="SEE900000198765" formControlName="mastrNumber" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Certified by</mat-label>
+        <input matInput placeholder="EnergieControl Cert GmbH" formControlName="certifiedBy" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Commissioned on</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="commissionedOn" readonly />
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-2 rounded-lg bg-white p-4">
+    <span>Address</span>
+
+    <div class="grid grid-cols-3 gap-2" [formGroup]="unitForm.controls.address">
+      <mat-form-field appearance="outline" class="col-span-2">
+        <mat-label>Street</mat-label>
+        <input matInput placeholder="Joseph-von-Fraunhofer-Straße 2-5" formControlName="street" /> </mat-form-field
+      ><mat-form-field appearance="outline">
+        <mat-label>Postcode</mat-label>
+        <input matInput placeholder="44227" formControlName="postalCode" /> </mat-form-field
+      ><mat-form-field appearance="outline">
+        <mat-label>City</mat-label>
+        <input matInput placeholder="Dortmund" formControlName="city" /> </mat-form-field
+      ><mat-form-field appearance="outline">
+        <mat-label>State</mat-label>
+        <input matInput placeholder="NRW" formControlName="state" /> </mat-form-field
+      ><mat-form-field appearance="outline">
+        <mat-label>Country</mat-label>
+        <input matInput placeholder="Germany" formControlName="country" />
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-2 rounded-lg bg-white p-4">
+    <span>Additional Information</span>
+    @if (!selectedType.value) {
+      <span class="tetx-sm text-neutral-500"> Please select a unit type first. </span>
+    } @else {
+      @if (selectedType.value === UnitType.HYDROGEN_PRODUCTION) {
+        <div class="grid grid-cols-3 gap-2" [formGroup]="hydrogenProductionForm">
+          <mat-form-field appearance="outline">
+            <mat-label>Method</mat-label>
+            <mat-select formControlName="method">
+              <mat-option [value]="HydrogenProductionMethod.ELECTROLYSIS">{{
+                HydrogenProductionMethod.ELECTROLYSIS | prettyEnum | titlecase
+              }}</mat-option>
+            </mat-select> </mat-form-field
+          ><mat-form-field appearance="outline">
+            <mat-label>Technology</mat-label>
+            <mat-select formControlName="technology">
+              @for (technology of availableTechnologies; track $index) {
+                <mat-option [value]="technology[0]">{{ technology[1] }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Bidding Zone</mat-label>
+            <mat-select formControlName="biddingZone">
+              @for (zone of availableBiddingZones; track zone) {
+                <mat-option [value]="zone">{{ zone }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Rated Power (MW) </mat-label>
+            <input matInput placeholder="1000" formControlName="ratedPower" type="number" min="0" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Pressure</mat-label>
+            <input matInput placeholder="1000" formControlName="pressure" type="number" min="0" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Water Consumption</mat-label>
+            <input matInput placeholder="1000" formControlName="waterConsumptionLitersPerHour" type="number" min="0" />
+          </mat-form-field>
+        </div>
+      }
+      @if (selectedType.value === UnitType.HYDROGEN_STORAGE) {
+        <div class="grid grid-cols-3 gap-2" [formGroup]="hydrogenStorageForm">
+          <mat-form-field appearance="outline">
+            <mat-label>Type</mat-label>
+            <mat-select formControlName="hydrogenStorageType">
+              <mat-option [value]="HydrogenStorageType.LIQUID_HYDROGEN">{{
+                HydrogenStorageType.LIQUID_HYDROGEN | prettyEnum | titlecase
+              }}</mat-option>
+              <mat-option [value]="HydrogenStorageType.COMPRESSED_GASEOUS_HYDROGEN">{{
+                HydrogenStorageType.COMPRESSED_GASEOUS_HYDROGEN | prettyEnum | titlecase
+              }}</mat-option>
+            </mat-select> </mat-form-field
+          ><mat-form-field appearance="outline">
+            <mat-label>Capacity (kg)</mat-label>
+            <input matInput formControlName="capacity" type="number" min="0" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Pressure</mat-label>
+            <input matInput formControlName="pressure" type="number" min="0" />
+          </mat-form-field>
+        </div>
+      }
+      @if (selectedType.value === UnitType.POWER_PRODUCTION) {
+        <div class="grid grid-cols-3 gap-2" [formGroup]="powerProductionForm">
+          <mat-form-field appearance="outline">
+            <mat-label>Type</mat-label>
+            <mat-select formControlName="powerProductionType">
+              @for (type of availablePowerProductionType; track type) {
+                <mat-option [value]="type[1]">{{ type[0] | prettyEnum | titlecase }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Decommissioning planned on</mat-label>
+            <input
+              matInput
+              [matDatepicker]="decommissioningPicker"
+              formControlName="decommissioningPlannedOn"
+              readonly
+            />
+            <mat-datepicker-toggle matIconSuffix [for]="decommissioningPicker"></mat-datepicker-toggle>
+            <mat-datepicker #decommissioningPicker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Bidding Zone</mat-label>
+            <mat-select formControlName="biddingZone">
+              @for (zone of availableBiddingZones; track zone) {
+                <mat-option [value]="zone">{{ zone }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Grid Operator</mat-label>
+            <input matInput placeholder="Powernetz GmbH" formControlName="gridOperator" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Grid Level</mat-label>
+            <mat-select formControlName="gridLevel">
+              @for (level of availableGridLevels; track level) {
+                <mat-option [value]="level[1]">{{ level[0] | prettyEnum | titlecase }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Grid Connection Number</mat-label>
+            <input matInput placeholder="DE0012345678901234" formControlName="gridConnectionNumber" /> </mat-form-field
+          ><mat-form-field appearance="outline">
+            <mat-label>Rated Power (MW)</mat-label>
+            <input matInput placeholder="50" type="number" formControlName="ratedPower" min="0" /> </mat-form-field
+          ><mat-form-field appearance="outline">
+            <mat-label>Electricity Meter Number</mat-label>
+            <input matInput placeholder="1EMH726364890" formControlName="electricityMeterNumber" />
+          </mat-form-field>
+        </div>
+      }
+    }
+  </div>
+
+  <div class="flex justify-end rounded-lg bg-white p-4">
+    <button mat-flat-button (click)="save()" [disabled]="unitForm.invalid || selectedForm.invalid">Save</button>
+  </div>
+</div>

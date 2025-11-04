@@ -1,0 +1,30 @@
+<div class="grid grid-cols-4 gap-4">
+  <div class="flex flex-col text-sm">
+    <span class="text-sm text-neutral-400">Bidding Zone</span><span>{{ unit().biddingZone }}</span>
+  </div>
+  <div class="flex flex-col text-sm">
+    <span class="text-sm text-neutral-400">Grid Operator</span><span>{{ unit().gridOperator }}</span>
+  </div>
+  <div class="flex flex-col text-sm">
+    <span class="text-sm text-neutral-400">Grid Level</span><span>{{ unit().gridLevel }}</span>
+  </div>
+  <div class="flex flex-col text-sm">
+    <span class="text-sm text-neutral-400">Grid Connection Number</span><span>{{ unit().gridConnectionNumber }}</span>
+  </div>
+  <div class="flex flex-col text-sm">
+    <span class="text-sm text-neutral-400">Rated Power</span
+    ><span>{{ unit().ratedPower | number | unit: FormattedUnits.MW }}</span>
+  </div>
+  <div class="flex flex-col text-sm">
+    <span class="text-sm text-neutral-400">Electricity Meter Number</span
+    ><span>{{ unit().electricityMeterNumber || '--' }}</span>
+  </div>
+  <div class="flex flex-col text-sm">
+    <span class="text-sm text-neutral-400">Power Production Type</span
+    ><span>{{ unit().type.name | prettyEnum | titlecase }}</span>
+  </div>
+  <div class="flex flex-col text-sm">
+    <span class="text-sm text-neutral-400">Decommissioning Planned On</span
+    ><span>{{ unit().decommissioningPlannedOn | date }}</span>
+  </div>
+</div>

@@ -1,0 +1,55 @@
+/*
+ * Copyright Fraunhofer Institute for Material Flow and Logistics
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * For details on the licensing terms, see the LICENSE file.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+// The `stream` property was added to the `MulterFileMock` interface with a dummy implementation
+// to ensure compatibility with the `File` type used in the tests. This avoids TypeScript errors
+// while maintaining the structure expected by the code. The dummy implementation provides
+// placeholder methods (`on` and `pipe`) to satisfy the type requirements without relying on
+// Node.js's `stream` module, which is not available in the browser
+
+export interface DummyStream {
+  on(event: string, handler: (...args: any[]) => void): void;
+  pipe<T = unknown>(dest: T): T;
+}
+
+export interface MulterFileMock {
+  fieldname: string;
+  originalname: string;
+  encoding: string;
+  mimetype: string;
+  size: number;
+  destination: string;
+  filename: string;
+  path: string;
+  buffer: Buffer | Uint8Array;
+  stream: DummyStream;
+}
+
+const dummyStream: DummyStream = {
+  on(_event: string, _handler: (..._args: any[]) => void): void {
+    // intentionally empty
+  },
+  pipe<T = unknown>(dest: T): T {
+    return dest;
+  },
+};
+
+export const ExpressMulterFileMock: MulterFileMock[] = [
+  {
+    fieldname: 'file',
+    originalname: 'test-file.txt',
+    encoding: '7bit',
+    mimetype: 'text/plain',
+    size: 1024,
+    destination: '/tmp',
+    filename: 'test-file.txt',
+    path: '/tmp/test-file.txt',
+    buffer: new TextEncoder().encode('Test file content'), // Create Uint8Array
+    stream: dummyStream,
+  },
+];

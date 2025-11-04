@@ -1,0 +1,24 @@
+/*
+ * Copyright Fraunhofer Institute for Material Flow and Logistics
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * For details on the licensing terms, see the LICENSE file.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
+import { CommonModule } from '@angular/common';
+import { Component, input } from '@angular/core';
+import { HydrogenStorageUnitDto } from '@h2-trust/api';
+import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
+
+@Component({
+  selector: 'app-hydrogen-storage-details',
+  imports: [CommonModule, UnitPipe],
+  templateUrl: './hydrogen-storage-details.component.html',
+})
+export class HydrogenStorageDetailsComponent {
+  unit = input.required<HydrogenStorageUnitDto>();
+
+  readonly FormattedUnits = FormattedUnits;
+}

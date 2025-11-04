@@ -1,0 +1,86 @@
+/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+@use './m3-theme.scss';
+
+@use 'material-symbols';
+
+@include mat.elevation-classes();
+@include mat.app-background();
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  height: 100%;
+}
+
+:root {
+  @include mat.all-component-themes(m3-theme.$h2-trust-theme);
+  @include mat.table-overrides(
+    (
+      background-color: white,
+      header-headline-color: grey,
+    )
+  );
+
+  @include mat.paginator-overrides(
+    (
+      container-background-color: white,
+    )
+  );
+
+  @include mat.tabs-overrides(
+    (
+      divider-color: #cecece,
+      active-label-text-color: #5f5f92,
+      active-indicator-color: #8686c0,
+      active-focus-indicator-color: #8686c0,
+      inactive-focus-label-text-color: #5f5f92,
+      active-focus-label-text-color: #5f5f92,
+    )
+  );
+  @include mat.button-overrides(
+    (
+      filled-container-color: #747495,
+    )
+  );
+  @include mat.button-toggle-overrides(
+    (
+      selected-state-background-color: #8686c06e,
+    )
+  );
+}
+
+//--Materials--//
+
+.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field
+  .mdc-notched-outline__notch {
+  border-right-style: hidden;
+}
+
+.mat-expansion-panel-body {
+  padding: 0 !important;
+}
+
+.mat-mdc-header-cell {
+  border-bottom-color: #dbdbdb !important ;
+}
+.mat-mdc-cell {
+  border-bottom-color: #dbdbdb !important ;
+}
+
+.mat-mdc-dialog-content {
+  overflow: scroll !important;
+}
+
+.mat-mdc-row:hover {
+  background-color: #8686c018;
+  cursor: pointer;
+}

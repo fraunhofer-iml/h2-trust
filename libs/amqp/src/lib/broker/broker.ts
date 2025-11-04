@@ -1,0 +1,47 @@
+/*
+ * Copyright Fraunhofer Institute for Material Flow and Logistics
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * For details on the licensing terms, see the LICENSE file.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { DynamicModule } from '@nestjs/common';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { BrokerQueues } from './broker-queues';
+
+export class Broker {
+  public getBatchSvcBroker(): DynamicModule {
+    return this.getMessageBroker(BrokerQueues.QUEUE_BATCH_SVC);
+  }
+
+  public getGeneralSvcBroker(): DynamicModule {
+    return this.getMessageBroker(BrokerQueues.QUEUE_GENERAL_SVC);
+  }
+
+  public getProcessSvcBroker(): DynamicModule {
+    return this.getMessageBroker(BrokerQueues.QUEUE_PROCESS_SVC);
+  }
+
+  private getMessageBroker(queue: string): DynamicModule {
+    const amqpUri = process.env['AMQP_URI'];
+
+    if (!amqpUri) {
+      throw new Error('AMQP_URI is not defined');
+    }
+
+    return ClientsModule.register([
+      {
+        name: queue,
+        transport: Transport.RMQ,
+        options: {
+          urls: [amqpUri],
+          queue: queue,
+          queueOptions: {
+            durable: false,
+          },
+        },
+      },
+    ]);
+  }
+}

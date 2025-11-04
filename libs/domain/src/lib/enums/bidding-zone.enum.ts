@@ -1,0 +1,47 @@
+/*
+ * Copyright Fraunhofer Institute for Material Flow and Logistics
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * For details on the licensing terms, see the LICENSE file.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+export enum BiddingZone {
+  DE_LU = 'DE-LU',
+  BE = 'BE',
+  FR = 'FR',
+  NL = 'NL',
+  PL = 'PL',
+  CZ = 'CZ',
+  SK = 'SK',
+  HU = 'HU',
+  RO = 'RO',
+  AT = 'AT',
+  CH = 'CH',
+  DK1 = 'DK1',
+  DK2 = 'DK2',
+  SE1 = 'SE1',
+  SE2 = 'SE2',
+  SE3 = 'SE3',
+  SE4 = 'SE4',
+  NO1 = 'NO1',
+  NO2 = 'NO2',
+  NO3 = 'NO3',
+  NO4 = 'NO4',
+  NO5 = 'NO5',
+  FI = 'FI',
+  EE = 'EE',
+  LV = 'LV',
+  LT = 'LT',
+  IT_NORD = 'IT-NORD',
+  IT_CNOR = 'IT-CNOR',
+  IT_CSUD = 'IT-CSUD',
+  IT_SARD = 'IT-SARD',
+  IT_SICI = 'IT-SICI',
+  MT = 'MT',
+  GR = 'GR',
+  IE = 'IE',
+  SEM = 'SEM',
+  GB = 'GB',
+  NIR = 'NIR',
+}

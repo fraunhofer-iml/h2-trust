@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc",
+    "types": ["node"]
+  },
+  "include": [
+    "src/**/*.ts",
+    "../batch-svc/src/app/process-step/bottling/hydrogen-component-assembler.ts",
+    "../batch-svc/src/app/process-step/bottling/hydrogen-composition-calculator.spec.ts"
+  ],
+  "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]
+}

@@ -1,0 +1,57 @@
+<div class="flex h-full flex-col gap-4">
+  <h2>Documents</h2>
+  <div
+    (click)="fileInput.click()"
+    role="none"
+    for="dropzone-file"
+    (drop)="onDrop($event)"
+    (dragover)="onDragOver($event)"
+    class="border-primary-600 bg-primary-300/10 flex h-40 w-full cursor-pointer flex-col items-center justify-center rounded-md border-2 border-dashed"
+  >
+    @if (!formGroup.value.file) {
+      <span class="material-symbols-outlined text-primary-600 text-4xl">cloud_upload</span>
+      <p class="text-primary-300 mb-2 text-sm">
+        <span class="font-semibold">Click to upload</span>
+      </p>
+    }
+    @if (formGroup.value.file) {
+      <div class="flex flex-col items-center justify-center">
+        <span class="material-symbols-outlined text-h2-green-text text-4xl"> check_circle</span>
+        <span class="mb-2 text-sm font-semibold text-gray-500">{{ formGroup.value.file.name }}</span>
+      </div>
+    }
+    <input id="dropzone-file" type="file" class="hidden" #fileInput (change)="onFileSelected($event)" accept=".pdf" />
+  </div>
+
+  <div class="flex items-center justify-center">
+    <button mat-flat-button class="mt-4 text-center" [disabled]="!formGroup.valid" (click)="submitDocument()">
+      Add Document
+    </button>
+  </div>
+
+  <div class="flex flex-col gap-1">
+    <span>Uploaded Documents:</span>
+    <div class="flex max-h-72 flex-col gap-1 overflow-y-auto">
+      @for (item of uploadedFiles(); track $index) {
+        <div
+          class="flex w-full items-center justify-between rounded-md border-2 border-neutral-200 px-4 py-2 text-neutral-700"
+        >
+          <div class="flex flex-col">
+            <span> {{ item.file.name }} </span>
+            <span class="text-sm text-neutral-500"> ({{ item.file.size | fileSize }})</span>
+          </div>
+
+          <button
+            (click)="removeDocument.emit(item)"
+            class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-2 border-neutral-200 p-2 text-neutral-300 hover:border-red-500 hover:text-red-500"
+          >
+            <span class="material-symbols-outlined text-md">clear</span>
+          </button>
+        </div>
+      }
+      @if (uploadedFiles().length === 0) {
+        <span class="text-neutral-700">No files selected.</span>
+      }
+    </div>
+  </div>
+</div>
