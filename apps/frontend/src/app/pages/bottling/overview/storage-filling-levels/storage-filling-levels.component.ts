@@ -136,7 +136,7 @@ export class StorageFillingLevelsComponent {
       item?.hydrogenComposition.reduce((sum, portion) => sum + portion.amount, 0),
     );
     const capacity = this.unitPipe.transform(item?.capacity.toString(), FormattedUnits.KG);
-    const capacityInPercent = this.percentPipe.transform((100 * totalH2Amount) / (item?.capacity ?? 0), '1.0-2');
+    const capacityInPercent = this.percentPipe.transform(totalH2Amount / (item?.capacity ?? 0), '1.0-2');
 
     const label = `{name|${value}}\n{filling|Filling: ${totalH2Amount}/${capacity} (${capacityInPercent})}`;
     const overflowMessage = `\n{err|${ERROR_MESSAGES.maxCapacityExceeded}}`;
