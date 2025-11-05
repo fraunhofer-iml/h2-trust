@@ -1,0 +1,32 @@
+name: Tests
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Common Setup
+        uses: ./.github/actions/common-setup
+
+      - name: Run Tests for batch-svc
+        run: npx nx run batch-svc:test
+
+      - name: Run Tests for bff
+        run: npx nx run bff:test
+
+      - name: Run Tests for frontend
+        run: npx nx run frontend:test
+
+      - name: Run Tests for general-svc
+        run: npx nx run general-svc:test
+
+      - name: Run Tests for process-svc
+        run: npx nx run process-svc:test

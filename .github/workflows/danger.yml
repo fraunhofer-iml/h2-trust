@@ -1,0 +1,20 @@
+name: Danger
+
+on:
+  pull_request:
+
+jobs:
+  danger:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Common Setup
+        uses: ./.github/actions/common-setup
+
+      - name: Run Danger
+        run: npx danger ci --failOnErrors
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

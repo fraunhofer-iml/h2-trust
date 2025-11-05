@@ -7,22 +7,21 @@
   <mat-tab-group mat-align-tabs="start" mat-stretch-tabs="false">
     @if (powerProductionQuery.isSuccess() && powerProductionQuery.data().length !== 0) {
       <mat-tab label="Power Production">
-        <div class="mt-8 flex flex-col gap-4 rounded-lg bg-white py-2">
-          <app-power-production-table [data]="powerProductionQuery.data()"></app-power-production-table></div
+        <app-power-production-table class="mt-8" [data]="powerProductionQuery.data()"></app-power-production-table
       ></mat-tab>
     }
     @if (hydrogenProductionQuery.isSuccess() && hydrogenProductionQuery.data().length !== 0) {
       <mat-tab label="Hydrogen Production">
-        <div class="mt-8 flex flex-col gap-4 rounded-lg bg-white py-2">
-          <app-hydrogen-production-table [data]="hydrogenProductionQuery.data()"></app-hydrogen-production-table>
-        </div>
+        <app-hydrogen-production-table
+          class="mt-8"
+          [data]="hydrogenProductionQuery.data()"
+        ></app-hydrogen-production-table>
       </mat-tab>
     }
     @if (hydrogenStorageQuery.isSuccess() && hydrogenStorageQuery.data().length !== 0) {
       <mat-tab label="Hydrogen Storage">
-        <div class="mt-8 flex flex-col gap-4 rounded-lg bg-white py-2">
-          <app-hydrogen-storage-table [data]="hydrogenStorageQuery.data()"></app-hydrogen-storage-table></div
-      ></mat-tab>
+        <app-hydrogen-storage-table class="mt-8" [data]="hydrogenStorageQuery.data()"></app-hydrogen-storage-table>
+      </mat-tab>
     }
   </mat-tab-group>
 </div>

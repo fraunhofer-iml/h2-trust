@@ -1,0 +1,23 @@
+name: Lint & Format
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+
+jobs:
+  lint-format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Common Setup
+        uses: ./.github/actions/common-setup
+
+      - name: Run ESLint
+        run: npx eslint --quiet .
+
+      - name: Run Prettier
+        run: npx prettier --check .
