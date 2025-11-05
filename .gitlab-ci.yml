@@ -1,6 +1,6 @@
 variables:
   CRI_URL: $CI_REGISTRY
-  CRI_PATH: ${CRI_URL}/oe260/duh-it/h2-trust/core
+  CRI_PATH: ${CRI_URL}/oe260/duh-it/h2-trust/core-gh
 
 stages:
   - danger
