@@ -90,7 +90,7 @@ export class ProductionService {
     const userDetailsDto: UserDetailsDto = await this.userService.readUserWithCompany(userId);
     const companyIdOfUser = userDetailsDto.company.id;
     const payload = {
-      predecessorProcessType: ProcessType.POWER_PRODUCTION,
+      predecessorProcessTypes: [ProcessType.POWER_PRODUCTION],
       companyId: companyIdOfUser,
     };
 

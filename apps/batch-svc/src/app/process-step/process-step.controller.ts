@@ -25,9 +25,9 @@ export class ProcessStepController {
 
   @MessagePattern(ProcessStepMessagePatterns.READ_ALL)
   async readProcessSteps(
-    @Payload() payload: { processTypes: ProcessType[]; predecessorProcessType: string; active: boolean; companyId: string },
+    @Payload() payload: { processTypes: ProcessType[]; predecessorProcessTypes: string[]; active: boolean; companyId: string },
   ): Promise<ProcessStepEntity[]> {
-    return this.processStepService.readProcessSteps(payload.processTypes, payload.predecessorProcessType, payload.active, payload.companyId);
+    return this.processStepService.readProcessSteps(payload.processTypes, payload.predecessorProcessTypes, payload.active, payload.companyId);
   }
 
   @MessagePattern(ProcessStepMessagePatterns.READ_UNIQUE)
