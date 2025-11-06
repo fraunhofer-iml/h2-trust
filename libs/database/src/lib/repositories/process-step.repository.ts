@@ -6,17 +6,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {Injectable} from '@nestjs/common';
-import {ProcessStepEntity} from '@h2-trust/amqp';
-import {buildProcessStepCreateInput} from '../create-inputs';
-import {PrismaService} from '../prisma.service';
-import {processStepQueryArgs} from '../query-args';
-import {assertRecordFound} from './utils';
+import { Injectable } from '@nestjs/common';
+import { ProcessStepEntity } from '@h2-trust/amqp';
+import { buildProcessStepCreateInput } from '../create-inputs';
+import { PrismaService } from '../prisma.service';
+import { processStepQueryArgs } from '../query-args';
+import { assertRecordFound } from './utils';
 
 @Injectable()
 export class ProcessStepRepository {
-  constructor(private readonly prismaService: PrismaService) {
-  }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async findProcessStep(id: string): Promise<ProcessStepEntity> {
     return this.prismaService.processStep
@@ -30,27 +29,32 @@ export class ProcessStepRepository {
       .then(ProcessStepEntity.fromDatabase);
   }
 
-  async findProcessSteps(processTypes: string[], predecessorProcessTypes: string[], active: boolean, companyId: string): Promise<ProcessStepEntity[]> {
+  async findProcessSteps(
+    processTypes: string[],
+    predecessorProcessTypes: string[],
+    active: boolean,
+    companyId: string,
+  ): Promise<ProcessStepEntity[]> {
     const predecessorsFilter =
       Array.isArray(predecessorProcessTypes) && predecessorProcessTypes.length > 0
         ? {
-          predecessors: {
-            some: {
-              processStep: {
-                type: {in: predecessorProcessTypes},
+            predecessors: {
+              some: {
+                processStep: {
+                  type: { in: predecessorProcessTypes },
+                },
               },
             },
-          },
-        }
+          }
         : {};
 
     return this.prismaService.processStep
       .findMany({
         where: {
-          type: {in: processTypes},
+          type: { in: processTypes },
           batch: {
             active: active,
-            ...predecessorsFilter
+            ...predecessorsFilter,
           },
           executedBy: {
             ownerId: companyId,
