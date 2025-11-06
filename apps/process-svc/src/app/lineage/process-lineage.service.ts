@@ -41,16 +41,16 @@ export class ProcessLineageService {
         powerProductionProcessStepsById.set(powerProductionProcessStep.id, powerProductionProcessStep);
       }
 
-      const otherProcessSteps = currentProcessStepLayer.filter(
-        (processStep) => processStep.type !== ProcessType.POWER_PRODUCTION,
+      const hydrogenProductionProcessSteps = currentProcessStepLayer.filter(
+        (processStep) => processStep.type === ProcessType.HYDROGEN_PRODUCTION,
       );
 
-      // If there are no non-POWER_PRODUCTION process steps left in the current layer, we are done
-      if (otherProcessSteps.length === 0) {
+      // If there are no HYDROGEN_PRODUCTION process steps left in the current layer, we are done
+      if (hydrogenProductionProcessSteps.length === 0) {
         break;
       }
 
-      const predecessorBatches = otherProcessSteps.flatMap((processStep) =>
+      const predecessorBatches = hydrogenProductionProcessSteps.flatMap((processStep) =>
         this.getPredecessorBatchesOrThrow(processStep),
       );
       currentProcessStepLayer = await this.processStepService.fetchProcessStepsOfBatches(predecessorBatches);
