@@ -16,7 +16,7 @@ export const HydrogenTransportationBatchSeed = <Batch[]>[
     type: BatchType.HYDROGEN,
     amount: new Prisma.Decimal(15),
     active: true,
-    quality: `{"color": "${HydrogenColor.GREEN}"}`,
+    quality: `{"color":"${HydrogenColor.GREEN}"}`,
     ownerId: CompanySeed[1].id,
   },
   {
@@ -24,7 +24,7 @@ export const HydrogenTransportationBatchSeed = <Batch[]>[
     type: BatchType.HYDROGEN,
     amount: new Prisma.Decimal(10),
     active: true,
-    quality: `{"color": "${HydrogenColor.MIX}"}`,
+    quality: `{"color":"${HydrogenColor.MIX}"}`,
     ownerId: CompanySeed[1].id,
   },
   {
@@ -32,7 +32,7 @@ export const HydrogenTransportationBatchSeed = <Batch[]>[
     type: BatchType.HYDROGEN,
     amount: new Prisma.Decimal(10),
     active: true,
-    quality: `{"color": "${HydrogenColor.MIX}"}`,
+    quality: `{"color":"${HydrogenColor.MIX}"}`,
     ownerId: CompanySeed[1].id,
   },
 ];

@@ -6,14 +6,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenBottlingBatchSeed } from './hydrogen-bottling-batch.seed';
-import { HydrogenProductionBatchSeed } from './hydrogen-production-batch.seed';
-import { HydrogenTransportationBatchSeed } from './hydrogen-transportation-batch.seed';
-import { PowerProductionBatchSeed } from './power-production-batch.seed';
+import {HydrogenBottlingBatchSeed} from './hydrogen-bottling-batch.seed';
+import {HydrogenProductionBatchSeed} from './hydrogen-production-batch.seed';
+import {HydrogenTransportationBatchSeed} from './hydrogen-transportation-batch.seed';
+import {PowerProductionBatchSeed} from './power-production-batch.seed';
+import {WaterConsumptionBatchSeed} from "./water-consumption-batch.seed";
 
 export const BatchRelationPowerHydrogenSeed = HydrogenProductionBatchSeed.map((hydrogenBatch, index) => ({
   A: hydrogenBatch.id,
   B: PowerProductionBatchSeed[index].id,
+}));
+
+export const BatchRelationWaterHydrogenSeed = HydrogenProductionBatchSeed.map((hydrogenBatch, index) => ({
+  A: hydrogenBatch.id,
+  B: WaterConsumptionBatchSeed[index].id,
 }));
 
 export const BatchRelationBottlingProductionSeed = [
