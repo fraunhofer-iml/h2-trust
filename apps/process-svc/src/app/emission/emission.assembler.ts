@@ -18,7 +18,7 @@ import {
 } from '@h2-trust/domain';
 
 export class EmissionAssembler {
-  static assembleHydrogenProductionCalculation(
+    static assembleHydrogenProductionCalculation(
     processStep: ProcessStepEntity,
     emissionFactorGPerKWh: number,
     label: string,
@@ -27,6 +27,20 @@ export class EmissionAssembler {
     const basis = `E = ${processStep.batch.amount} kWh * ${emissionFactorGPerKWh} g CO₂,eq/kWh / ${successorProducedHydrogenMassKg} kg H₂`;
     const result = (processStep.batch.amount * emissionFactorGPerKWh) / successorProducedHydrogenMassKg;
     return new EmissionCalculationDto(label, basis, result, UNIT_G_CO2_PER_KG_H2, CalculationTopic.HYDROGEN_PRODUCTION);
+  }
+
+  static assembleWaterConsumptionCalculation(
+    processStep: ProcessStepEntity,
+    // emissionFactorGPerKWh: number,  // TODO
+  ): EmissionCalculationDto {
+    const successorProducedHydrogenMassKg = processStep.batch.successors[0].amount;
+    const name = 'Emissions (Water Supply)';  // TODO auf ionisiert/Leitungswasser/Abasser ändern?
+    const emissionFactorGCO2EqPerLiterWater = 0.2;  // TODO to Constants File
+    const basis = `E = ${processStep.batch.amount} L * ${emissionFactorGCO2EqPerLiterWater} g CO₂,eq/L / ${successorProducedHydrogenMassKg} kg H₂`;
+    const result = (processStep.batch.amount * emissionFactorGCO2EqPerLiterWater) / successorProducedHydrogenMassKg;
+    console.log('## EmissionAssembler.assembleWaterConsumptionCalculation#result: ');  // TODO Debug Log
+    console.log(result);
+    return new EmissionCalculationDto(name, basis, result, UNIT_G_CO2_PER_KG_H2, CalculationTopic.WATER_SUPPLY);
   }
 
   static assembleHydrogenStorageCalculation(_processStep: ProcessStepEntity): EmissionCalculationDto {
@@ -108,6 +122,12 @@ export class EmissionAssembler {
         amount: sumBy(CalculationTopic.HYDROGEN_PRODUCTION),
         name: 'Ehp',
         description: 'Hydrogen Production Emissions',
+        processStepType: 'APPLICATION',
+      },
+      {
+        amount: sumBy(CalculationTopic.WATER_SUPPLY),
+        name: 'Ew',
+        description: 'Water Supply Emissions',
         processStepType: 'APPLICATION',
       },
       {

@@ -69,7 +69,6 @@ describe('ProductionController', () => {
     expect(controller).toBeDefined();
   });
 
-  // TODO-MP: remove comments with DUHGW-236
   it('should create production process steps and call batchService.send for each period', async () => {
     const createProductionEntity: CreateProductionEntity = {
       productionStartedAt: new Date('2025-01-01T10:00:00Z').toISOString(),

@@ -35,6 +35,13 @@ export class EmissionCalculatorService {
       emissionCalculations.push(...powerProductionEmissions);
     }
 
+    if (ctx.waterConsumptionProcessSteps) {
+      const waterConsumptionEmissions = ctx.waterConsumptionProcessSteps.map((step) =>
+        EmissionAssembler.assembleWaterConsumptionCalculation(step),
+      );
+      emissionCalculations.push(...waterConsumptionEmissions);
+    }
+
     if (ctx.hydrogenProductionProcessSteps) {
       const hydrogenProductionEmissions = ctx.hydrogenProductionProcessSteps.map((step) =>
         EmissionAssembler.assembleHydrogenStorageCalculation(step),
