@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { LineageContextEntity, ProcessStepEntity } from '@h2-trust/amqp';
-import { EmissionCalculationDto, EmissionComputationResultDto, EmissionForProcessStepDto } from '@h2-trust/api';
+import {Injectable} from '@nestjs/common';
+import {LineageContextEntity, ProcessStepEntity} from '@h2-trust/amqp';
+import {EmissionCalculationDto, EmissionComputationResultDto, EmissionForProcessStepDto} from '@h2-trust/api';
 import {
   FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ,
   getPowerEmissionFactorByEnergySource,
@@ -16,16 +16,17 @@ import {
   ProcessType,
   UNIT_G_CO2_PER_KG_H2,
 } from '@h2-trust/domain';
-import { LineageContextService } from '../lineage/lineage-context.service';
-import { EmissionAssembler } from './emission.assembler';
-import { PowerUnitLoader } from './power-unit.loader';
+import {LineageContextService} from '../lineage/lineage-context.service';
+import {EmissionAssembler} from './emission.assembler';
+import {PowerUnitLoader} from './power-unit.loader';
 
 @Injectable()
 export class EmissionCalculatorService {
   constructor(
     private readonly powerUnitLoader: PowerUnitLoader,
     private readonly lineageService: LineageContextService,
-  ) {}
+  ) {
+  }
 
   async computeForContext(ctx: LineageContextEntity): Promise<EmissionComputationResultDto> {
     const emissionCalculations: EmissionCalculationDto[] = [];
@@ -36,9 +37,7 @@ export class EmissionCalculatorService {
     }
 
     if (ctx.waterConsumptionProcessSteps) {
-      const waterConsumptionEmissions = ctx.waterConsumptionProcessSteps.map((step) =>
-        EmissionAssembler.assembleWaterConsumptionCalculation(step),
-      );
+      const waterConsumptionEmissions = this.calculateWaterConsumptionEmissions(ctx.waterConsumptionProcessSteps);
       emissionCalculations.push(...waterConsumptionEmissions);
     }
 
@@ -87,8 +86,8 @@ export class EmissionCalculatorService {
   }
 
   async computePowerCalculation(processStep: ProcessStepEntity): Promise<EmissionCalculationDto> {
-    const [powerCalc]: EmissionCalculationDto[] = await this.calculatePowerProductionEmissions([processStep]);
-    return powerCalc;
+    const [powerCalculations]: EmissionCalculationDto[] = await this.calculatePowerProductionEmissions([processStep]);
+    return powerCalculations;
   }
 
   private async calculatePowerProductionEmissions(
@@ -102,6 +101,19 @@ export class EmissionCalculatorService {
         const entry = getPowerEmissionFactorByEnergySource(unit?.type?.energySource);
         return EmissionAssembler.assembleHydrogenProductionCalculation(step, entry.emissionFactor, entry.label);
       }),
+    );
+  }
+
+  computeWaterCalculation(processStep: ProcessStepEntity): EmissionCalculationDto {
+    const [waterCalculation]: EmissionCalculationDto[] = this.calculateWaterConsumptionEmissions([processStep]);
+    return waterCalculation;
+  }
+
+  private calculateWaterConsumptionEmissions(
+    processSteps: ProcessStepEntity[],
+  ): EmissionCalculationDto[] {
+    return processSteps.map((step) =>
+      EmissionAssembler.assembleWaterConsumptionCalculation(step),
     );
   }
 

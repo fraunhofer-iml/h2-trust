@@ -31,6 +31,7 @@ describe('LineageContextService', () => {
           provide: ProcessLineageService,
           useValue: {
             fetchPowerProductionProcessSteps: jest.fn(),
+            fetchWaterConsumptionProcessSteps: jest.fn(),
             fetchHydrogenProductionProcessSteps: jest.fn(),
             fetchHydrogenBottlingProcessStep: jest.fn(),
           },

@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { firstValueFrom } from 'rxjs';
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import {firstValueFrom} from 'rxjs';
+import {Inject, Injectable} from '@nestjs/common';
+import {ClientProxy} from '@nestjs/microservices';
 import {
   BrokerQueues,
   PowerProductionTypeEntity,
@@ -17,18 +17,19 @@ import {
   SustainabilityMessagePatterns,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
-import { BatchDto, ClassificationDto, EmissionCalculationDto } from '@h2-trust/api';
-import { toEmissionDto } from '../emission-dto.builder';
-import { ProofOfOriginDtoAssembler } from '../proof-of-origin-dto.assembler';
+import {BatchDto, ClassificationDto, EmissionCalculationDto} from '@h2-trust/api';
+import {toEmissionDto} from '../emission-dto.builder';
+import {ProofOfOriginDtoAssembler} from '../proof-of-origin-dto.assembler';
 
 @Injectable()
 export class EnergySourceClassificationService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processClient: ClientProxy,
-  ) {}
+  ) {
+  }
 
-  async buildEnergySourceClassificationsFromContext(
+  async buildEnergySourceClassifications(
     powerProductionProcessSteps: ProcessStepEntity[],
   ): Promise<ClassificationDto[]> {
     if (powerProductionProcessSteps.length === 0) {
@@ -50,7 +51,7 @@ export class EnergySourceClassificationService {
 
         for (const [processStep] of processStepsWithUnitsByEnergySource) {
           const emissionCalculation: EmissionCalculationDto = await firstValueFrom(
-            this.processClient.send(SustainabilityMessagePatterns.COMPUTE_POWER_FOR_STEP, { processStep: processStep }),
+            this.processClient.send(SustainabilityMessagePatterns.COMPUTE_POWER_FOR_STEP, {processStep: processStep}),
           );
           const h2KgEquivalentToPowerBatch = processStep.batch.successors[0].amount;
           const emission = toEmissionDto(emissionCalculation, h2KgEquivalentToPowerBatch);
@@ -78,7 +79,7 @@ export class EnergySourceClassificationService {
     const powerProductionTypes: PowerProductionTypeEntity[] = await firstValueFrom(
       this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION_TYPES, {}),
     );
-    return Array.from(new Set(powerProductionTypes.map(({ energySource }) => energySource)));
+    return Array.from(new Set(powerProductionTypes.map(({energySource}) => energySource)));
   }
 
   private async fetchPowerProductionProcessStepsWithPowerProductionUnits(
@@ -87,7 +88,7 @@ export class EnergySourceClassificationService {
     return Promise.all(
       processSteps.map(async (processStep): Promise<[ProcessStepEntity, PowerProductionUnitEntity]> => {
         const unit: PowerProductionUnitEntity = await firstValueFrom(
-          this.generalService.send(UnitMessagePatterns.READ, { id: processStep.executedBy.id }),
+          this.generalService.send(UnitMessagePatterns.READ, {id: processStep.executedBy.id}),
         );
         return [processStep, unit];
       }),

@@ -6,15 +6,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
-import { LineageContextEntity, ProcessStepEntity, SustainabilityMessagePatterns } from '@h2-trust/amqp';
-import { EmissionCalculationDto, EmissionComputationResultDto } from '@h2-trust/api';
-import { EmissionCalculatorService } from './emission-calculator.service';
+import {Controller} from '@nestjs/common';
+import {MessagePattern, Payload} from '@nestjs/microservices';
+import {LineageContextEntity, ProcessStepEntity, SustainabilityMessagePatterns} from '@h2-trust/amqp';
+import {EmissionCalculationDto, EmissionComputationResultDto} from '@h2-trust/api';
+import {EmissionCalculatorService} from './emission-calculator.service';
 
 @Controller()
 export class EmissionController {
-  constructor(private readonly service: EmissionCalculatorService) {}
+  constructor(private readonly service: EmissionCalculatorService) {
+  }
 
   @MessagePattern(SustainabilityMessagePatterns.COMPUTE_FOR_PROCESS_STEP)
   async computeForProcessStep(
@@ -26,6 +27,11 @@ export class EmissionController {
   @MessagePattern(SustainabilityMessagePatterns.COMPUTE_POWER_FOR_STEP)
   async computePowerForStep(@Payload() payload: { processStep: ProcessStepEntity }): Promise<EmissionCalculationDto> {
     return this.service.computePowerCalculation(payload.processStep);
+  }
+
+  @MessagePattern(SustainabilityMessagePatterns.COMPUTE_WATER_FOR_STEP)
+  computeWaterForStep(@Payload() payload: { processStep: ProcessStepEntity }): EmissionCalculationDto {
+    return this.service.computeWaterCalculation(payload.processStep);
   }
 
   @MessagePattern(SustainabilityMessagePatterns.COMPUTE_CUMULATIVE_FOR_STEP)

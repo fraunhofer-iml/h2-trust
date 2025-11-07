@@ -6,60 +6,25 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
-import { ProcessType } from '@h2-trust/domain';
-import { ProcessStepService } from './process-step.service';
+import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import {BatchEntity, ProcessStepEntity} from '@h2-trust/amqp';
+import {ProcessType} from '@h2-trust/domain';
+import {ProcessStepService} from './process-step.service';
 
 @Injectable()
 export class ProcessLineageService {
-  constructor(private readonly processStepService: ProcessStepService) {}
+  constructor(private readonly processStepService: ProcessStepService) {
+  }
 
   async fetchPowerProductionProcessSteps(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
-    if (!processSteps || processSteps.length === 0) {
-      throw new HttpException(
-        `Process steps of type [${ProcessType.HYDROGEN_PRODUCTION}] are missing.`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    this.assertProcessType(processSteps, ProcessType.HYDROGEN_PRODUCTION);
-
-    // Start with the first layer HYDROGEN_PRODUCTION -> due to split batches, we may have multiple layers of POWER_PRODUCTION predecessors
-    let currentProcessStepLayer: ProcessStepEntity[] = processSteps;
-
-    // Collect all POWER_PRODUCTION process steps across all layers
-    const powerProductionProcessStepsById = new Map<string, ProcessStepEntity>();
-
-    while (currentProcessStepLayer.length > 0) {
-      const powerProductionProcessSteps = currentProcessStepLayer.filter(
-        (processSteps) => processSteps.type === ProcessType.POWER_PRODUCTION,
-      );
-
-      // Collect POWER_PRODUCTION process steps of the current layer
-      for (const powerProductionProcessStep of powerProductionProcessSteps) {
-        powerProductionProcessStepsById.set(powerProductionProcessStep.id, powerProductionProcessStep);
-      }
-
-      const hydrogenProductionProcessSteps = currentProcessStepLayer.filter(
-        (processStep) => processStep.type === ProcessType.HYDROGEN_PRODUCTION,
-      );
-
-      // If there are no HYDROGEN_PRODUCTION process steps left in the current layer, we are done
-      if (hydrogenProductionProcessSteps.length === 0) {
-        break;
-      }
-
-      const predecessorBatches = hydrogenProductionProcessSteps.flatMap((processStep) =>
-        this.getPredecessorBatchesOrThrow(processStep),
-      );
-      currentProcessStepLayer = await this.processStepService.fetchProcessStepsOfBatches(predecessorBatches);
-    }
-
-    return Array.from(powerProductionProcessStepsById.values());
+    return this.fetchProcessStepsDownFromHydrogenProduction(processSteps, ProcessType.POWER_PRODUCTION);
   }
 
   async fetchWaterConsumptionProcessSteps(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
+    return this.fetchProcessStepsDownFromHydrogenProduction(processSteps, ProcessType.WATER_CONSUMPTION);
+  }
+
+  async fetchProcessStepsDownFromHydrogenProduction(processSteps: ProcessStepEntity[], questedProcessType: ProcessType): Promise<ProcessStepEntity[]> {
     if (!processSteps || processSteps.length === 0) {
       throw new HttpException(
         `Process steps of type [${ProcessType.HYDROGEN_PRODUCTION}] are missing.`,
@@ -69,20 +34,20 @@ export class ProcessLineageService {
 
     this.assertProcessType(processSteps, ProcessType.HYDROGEN_PRODUCTION);
 
-    // Start with the first layer HYDROGEN_PRODUCTION -> due to split batches, we may have multiple layers of POWER_PRODUCTION predecessors
+    // Start with the first layer HYDROGEN_PRODUCTION -> due to split batches, we may have multiple layers of predecessors
     let currentProcessStepLayer: ProcessStepEntity[] = processSteps;
 
-    // Collect all POWER_PRODUCTION process steps across all layers
-    const powerProductionProcessStepsById = new Map<string, ProcessStepEntity>();
+    // Collect all quested process steps across all layers
+    const questedProcessStepsById = new Map<string, ProcessStepEntity>();
 
     while (currentProcessStepLayer.length > 0) {
-      const powerProductionProcessSteps = currentProcessStepLayer.filter(
-        (processSteps) => processSteps.type === ProcessType.WATER_CONSUMPTION,
+      const questedProcessSteps = currentProcessStepLayer.filter(
+        (processSteps) => processSteps.type === questedProcessType,
       );
 
-      // Collect POWER_PRODUCTION process steps of the current layer
-      for (const powerProductionProcessStep of powerProductionProcessSteps) {
-        powerProductionProcessStepsById.set(powerProductionProcessStep.id, powerProductionProcessStep);
+      // Collect quested process steps of the current layer
+      for (const questedProcessStep of questedProcessSteps) {
+        questedProcessStepsById.set(questedProcessStep.id, questedProcessStep);
       }
 
       const hydrogenProductionProcessSteps = currentProcessStepLayer.filter(
@@ -100,7 +65,7 @@ export class ProcessLineageService {
       currentProcessStepLayer = await this.processStepService.fetchProcessStepsOfBatches(predecessorBatches);
     }
 
-    return Array.from(powerProductionProcessStepsById.values());
+    return Array.from(questedProcessStepsById.values());
   }
 
   async fetchHydrogenProductionProcessSteps(processStep: ProcessStepEntity): Promise<ProcessStepEntity[]> {

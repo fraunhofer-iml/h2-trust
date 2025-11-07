@@ -31,15 +31,12 @@ export class EmissionAssembler {
 
   static assembleWaterConsumptionCalculation(
     processStep: ProcessStepEntity,
-    // emissionFactorGPerKWh: number,  // TODO
   ): EmissionCalculationDto {
     const successorProducedHydrogenMassKg = processStep.batch.successors[0].amount;
-    const name = 'Emissions (Water Supply)';  // TODO auf ionisiert/Leitungswasser/Abasser ändern?
-    const emissionFactorGCO2EqPerLiterWater = 0.2;  // TODO to Constants File
+    const name = 'Emissions (Water Supply)';
+    const emissionFactorGCO2EqPerLiterWater = 0.43;
     const basis = `E = ${processStep.batch.amount} L * ${emissionFactorGCO2EqPerLiterWater} g CO₂,eq/L / ${successorProducedHydrogenMassKg} kg H₂`;
     const result = (processStep.batch.amount * emissionFactorGCO2EqPerLiterWater) / successorProducedHydrogenMassKg;
-    console.log('## EmissionAssembler.assembleWaterConsumptionCalculation#result: ');  // TODO Debug Log
-    console.log(result);
     return new EmissionCalculationDto(name, basis, result, UNIT_G_CO2_PER_KG_H2, CalculationTopic.WATER_SUPPLY);
   }
 

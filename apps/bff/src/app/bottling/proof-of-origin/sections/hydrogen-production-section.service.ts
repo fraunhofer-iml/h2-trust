@@ -6,20 +6,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { ProcessStepEntity } from '@h2-trust/amqp';
-import { ClassificationDto, SectionDto } from '@h2-trust/api';
-import { ProofOfOrigin } from '@h2-trust/domain';
-import { EnergySourceClassificationService } from '../classifications/energy-source-classification.service';
-import { ProofOfOriginDtoAssembler } from '../proof-of-origin-dto.assembler';
+import {Injectable} from '@nestjs/common';
+import {ProcessStepEntity} from '@h2-trust/amqp';
+import {ClassificationDto, SectionDto} from '@h2-trust/api';
+import {ProofOfOrigin} from '@h2-trust/domain';
+import {EnergySourceClassificationService} from '../classifications/energy-source-classification.service';
+import {ProofOfOriginDtoAssembler} from '../proof-of-origin-dto.assembler';
+import {WaterBatchService} from "../classifications/water-batch.service";
 
 @Injectable()
 export class HydrogenProductionSectionService {
-  constructor(private readonly energySourceClassificationService: EnergySourceClassificationService) {}
+  constructor(private readonly energySourceClassificationService: EnergySourceClassificationService, private readonly waterBatchService: WaterBatchService,) {
+  }
 
-  async buildHydrogenProductionSection(powerProductionProcessSteps: ProcessStepEntity[]): Promise<SectionDto> {
+  async buildHydrogenProductionSection(powerProductionProcessSteps: ProcessStepEntity[], waterConsumptionProcessSteps: ProcessStepEntity[]): Promise<SectionDto> {
     const energySourceClassificationDtos: ClassificationDto[] =
-      await this.energySourceClassificationService.buildEnergySourceClassificationsFromContext(
+      await this.energySourceClassificationService.buildEnergySourceClassifications(
         powerProductionProcessSteps,
       );
     const powerSupplyClassification: ClassificationDto = ProofOfOriginDtoAssembler.assemblePowerClassification(
@@ -27,6 +29,7 @@ export class HydrogenProductionSectionService {
       [],
       energySourceClassificationDtos,
     );
-    return new SectionDto(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION_NAME, [], [powerSupplyClassification]);
+    const waterBatches = await this.waterBatchService.buildWaterBatches(waterConsumptionProcessSteps);
+    return new SectionDto(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION_NAME, [...waterBatches], [powerSupplyClassification]);
   }
 }
