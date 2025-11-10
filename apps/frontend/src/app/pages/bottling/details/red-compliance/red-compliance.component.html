@@ -1,0 +1,99 @@
+<div class="relative">
+  <button
+    (click)="onCLick()"
+    class="flex w-[12rem] flex-row items-center gap-2 rounded-md p-2 text-sm duration-300 ease-in-out hover:scale-105"
+    [ngClass]="
+      redCompliance()?.isRedCompliant ? 'bg-secondary-200/20 text-secondary-200' : 'bg-neutral-200/80 text-neutral-700'
+    "
+  >
+    <span class="material-symbols-outlined"> {{ redCompliance()?.isAdditionalityFulfilled ? 'check' : 'close' }}</span>
+    <span>
+      {{ redCompliance()?.isRedCompliant ? 'RED Compliant' : 'not RED Compliant' }}
+    </span>
+  </button>
+
+  <div
+    [ngClass]="{ 'opacity-0': !showOverlay, 'opacity-100': showOverlay }"
+    class="absolute left-[12rem] top-[-8px] z-20 ml-2 flex w-[32rem] flex-col gap-2 rounded-lg border-2 border-neutral-100 bg-white p-4 opacity-100 shadow-2xl transition-opacity duration-200"
+  >
+    <div class="flex flex-row items-center justify-between">
+      <h3 class="font-semibold text-neutral-600">RED Compliance</h3>
+      <button class="material-symbols-outlined text-neutral-500" (click)="close()" [disabled]="!showOverlay">
+        close
+      </button>
+    </div>
+    <div
+      class="flex flex-row rounded-md bg-neutral-200/80 p-4 text-sm"
+      [ngClass]="redCompliance()?.isGeoCorrelationValid ? 'bg-secondary-200/20' : 'bg-neutral-200/80'"
+    >
+      <div class="stretch flex flex-col">
+        <span class="font-semibold text-neutral-600">Geographical Correlation</span>
+        <p>Power Production Unit and Hydrogen Production Unit have to be located in the same bidding Zone.</p>
+      </div>
+      <div class="flex w-16 items-center justify-center p-2">
+        <span
+          class="material-symbols-outlined text-4xl"
+          [ngClass]="redCompliance()?.isGeoCorrelationValid ? 'text-secondary-200' : 'text-neutral-700'"
+        >
+          {{ redCompliance()?.isGeoCorrelationValid ? 'check' : 'close' }}</span
+        >
+      </div>
+    </div>
+
+    <div
+      class="flex flex-row rounded-md bg-neutral-200/80 p-4 text-sm"
+      [ngClass]="redCompliance()?.isAdditionalityFulfilled ? 'bg-secondary-200/20' : 'bg-neutral-200/80'"
+    >
+      <div class="stretch flex flex-col">
+        <span class="font-semibold text-neutral-600">Additionality Requirement</span>
+        <p>
+          The system must not have been in operation for more than 36 months prior to commissioning of the electrolyzer.
+        </p>
+      </div>
+      <div class="flex w-16 items-center justify-center pl-2">
+        <span
+          class="material-symbols-outlined text-4xl"
+          [ngClass]="redCompliance()?.isAdditionalityFulfilled ? 'text-secondary-200' : 'text-neutral-700'"
+        >
+          {{ redCompliance()?.isAdditionalityFulfilled ? 'check' : 'close' }}</span
+        >
+      </div>
+    </div>
+
+    <div
+      class="flex flex-row rounded-md bg-neutral-200/80 p-4 text-sm"
+      [ngClass]="redCompliance()?.isTimeCorrelationValid ? 'bg-secondary-200/20' : 'bg-neutral-200/80'"
+    >
+      <div class="stretch flex flex-col">
+        <span class="font-semibold text-neutral-600">Time Correlation</span>
+        <p>Electricity and hydrogen must be generated within the same hour.</p>
+      </div>
+      <div class="flex w-16 items-center justify-center pl-2">
+        <span
+          class="material-symbols-outlined text-4xl"
+          [ngClass]="redCompliance()?.isTimeCorrelationValid ? 'text-secondary-200' : 'text-neutral-700'"
+        >
+          {{ redCompliance()?.isTimeCorrelationValid ? 'check' : 'close' }}</span
+        >
+      </div>
+    </div>
+
+    <div
+      class="flex flex-row rounded-md bg-neutral-200/80 p-4 text-sm"
+      [ngClass]="redCompliance()?.financialSupportReceived ? 'bg-secondary-200/20' : 'bg-neutral-200/80'"
+    >
+      <div class="stretch flex flex-col">
+        <span class="font-semibold text-neutral-600">Financial Support</span>
+        <p>{{ FFINANCIAL_SUPPORT_INFOI }}.</p>
+      </div>
+      <div class="flex w-16 items-center justify-center pl-2">
+        <span
+          class="material-symbols-outlined text-4xl"
+          [ngClass]="redCompliance()?.financialSupportReceived ? 'text-secondary-200' : 'text-neutral-700'"
+        >
+          {{ redCompliance()?.financialSupportReceived ? 'check' : 'close' }}</span
+        >
+      </div>
+    </div>
+  </div>
+</div>

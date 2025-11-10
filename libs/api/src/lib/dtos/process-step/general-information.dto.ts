@@ -49,7 +49,7 @@ export class GeneralInformationDto extends BottlingOverviewDto {
       product: 'Hydrogen',
       attachedFiles:
         processStep.documents?.map((document) => new FileInfoDto(document.description, document.location)) || [],
-      redCompliance: new RedComplianceDto(true, true, false),
+      redCompliance: new RedComplianceDto(true, true, false, true),
     };
   }
 }
