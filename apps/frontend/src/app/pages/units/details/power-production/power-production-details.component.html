@@ -27,4 +27,12 @@
     <span class="text-sm text-neutral-400">Decommissioning Planned On</span
     ><span>{{ unit().decommissioningPlannedOn | date }}</span>
   </div>
+  <div class="flex flex-col text-sm">
+    <span class="flex flex-row items-center gap-2 text-sm text-neutral-400"
+      >Financial Support
+      <span class="material-symbols-outlined text-sm hover:cursor-pointer" [matTooltip]="FINANCIAL_SUPPORT_INFO"
+        >info</span
+      > </span
+    ><span>{{ unit().financialSupportReceived | bool }}</span>
+  </div>
 </div>

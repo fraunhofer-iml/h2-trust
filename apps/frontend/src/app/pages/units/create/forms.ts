@@ -61,6 +61,7 @@ export type PowerProductionFormGroup = {
   electricityMeterNumber: FormControl<string | null>;
   powerProductionType: FormControl<PowerProductionType | null>;
   decommissioningPlannedOn: FormControl<Date | null>;
+  financialSupportReceived: FormControl<boolean | null>;
 };
 
 export const newUnitForm = () =>
@@ -108,6 +109,7 @@ export const newPowerProductionForm = () =>
     electricityMeterNumber: new FormControl<string | null>(null, Validators.required),
     powerProductionType: new FormControl<PowerProductionType | null>(null, Validators.required),
     decommissioningPlannedOn: new FormControl<Date | null>(null),
+    financialSupportReceived: new FormControl<boolean | null>(false),
   });
 
 export const newH2ProductionForm = () =>
