@@ -6,8 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenStorageUnitDbType } from '..';
+import { HydrogenColor } from '@h2-trust/domain';
 import { HydrogenProductionBatchSeed, HydrogenStorageUnitSeed } from '../../../seed';
+import { HydrogenStorageUnitDbType } from '../hydrogen-storage-unit.db.type';
 import { BaseUnitDbTypeMock } from './base-unit-db-type.mock';
 
 export const HydrogenStorageUnitDbTypeMock = <HydrogenStorageUnitDbType[]>[
@@ -15,7 +16,16 @@ export const HydrogenStorageUnitDbTypeMock = <HydrogenStorageUnitDbType[]>[
     ...BaseUnitDbTypeMock[0],
     hydrogenStorageUnit: {
       ...HydrogenStorageUnitSeed[0],
-      filling: [HydrogenProductionBatchSeed[0]],
+      filling: [
+        {
+          ...HydrogenProductionBatchSeed[0],
+          batchDetails: {
+            qualityDetails: {
+              color: HydrogenColor.GREEN,
+            },
+          },
+        },
+      ],
     },
   },
 ];
