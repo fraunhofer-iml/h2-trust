@@ -10,18 +10,16 @@ import { FINANCIAL_SUPPORT_INFO } from 'apps/frontend/src/app/shared/constants/f
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { RedComplianceDto } from '@h2-trust/api';
+import { RedCheckCardComponent } from './red-check-card/red-check-card.component';
 
 @Component({
   selector: 'app-red-compliance',
-  imports: [CommonModule],
+  imports: [CommonModule, RedCheckCardComponent],
   templateUrl: './red-compliance.component.html',
 })
 export class RedComplianceComponent {
-  protected readonly FFINANCIAL_SUPPORT_INFOI = FINANCIAL_SUPPORT_INFO;
-  redCompliance = input<RedComplianceDto>();
-  showOverlay = false;
+  protected readonly FINANCIAL_SUPPORT_INFO = FINANCIAL_SUPPORT_INFO;
 
-  onCLick(show: boolean) {
-    this.showOverlay = show;
-  }
+  redCompliance = input<RedComplianceDto>();
+  showComplianceInfo = false;
 }
