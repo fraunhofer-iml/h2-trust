@@ -24,14 +24,12 @@ export class AddressEntity {
   }
 
   static fromDatabase(address: AddressDbType) {
-    return address
-      ? <AddressEntity>{
-          street: address.street,
-          postalCode: address.postalCode,
-          city: address.city,
-          state: address.state,
-          country: address.country,
-        }
-      : undefined;
+    return new AddressEntity(
+      address.street,
+      address.postalCode,
+      address.city,
+      address.state,
+      address.country,
+    );
   }
 }

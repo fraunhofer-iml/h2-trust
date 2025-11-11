@@ -13,7 +13,7 @@ export class UserEntity {
   id?: string;
   name?: string;
   email?: string;
-  company: CompanyEntity;
+  company?: CompanyEntity;
 
   constructor(id: string, name: string, email: string, company: CompanyEntity) {
     this.id = id;
@@ -23,11 +23,11 @@ export class UserEntity {
   }
 
   static fromDatabase(user: UserDbType): UserEntity {
-    return <UserEntity>{
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      company: user.company ? CompanyEntity.fromDatabase(user.company) : undefined,
-    };
+    return new UserEntity(
+      user.id,
+      user.name,
+      user.email,
+      CompanyEntity.fromDatabase(user.company)
+    );
   }
 }

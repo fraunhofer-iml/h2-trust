@@ -106,7 +106,7 @@ export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Pri
             create: {
               distance: processStep.transportationDetails.distance,
               transportMode: processStep.transportationDetails.transportMode,
-              fuelType: processStep.transportationDetails.fuelType,
+              fuelType: processStep.transportationDetails.fuelType ?? null,
             },
           },
         },

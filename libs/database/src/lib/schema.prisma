@@ -63,8 +63,8 @@ model User {
   name  String
   email String @unique
 
-  company   Company? @relation(fields: [companyId], references: [id])
-  companyId String?
+  company   Company @relation(fields: [companyId], references: [id])
+  companyId String
 
   processSteps ProcessStep[]
 }

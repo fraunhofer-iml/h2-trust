@@ -48,26 +48,28 @@ export class BatchEntity {
   }
 
   static fromDatabase(batch: BatchDbType): BatchEntity {
-    return <BatchEntity>{
-      id: batch.id,
-      active: batch.active,
-      amount: batch.amount.toNumber(),
-      type: batch.type,
-      predecessors: batch.predecessors.map((pred) =>
+    return new BatchEntity(
+      batch.id,
+      batch.active,
+      batch.amount.toNumber(),
+      batch.type,
+      batch.predecessors.map((pred) =>
         BatchEntity.fromDatabase({ ...pred, predecessors: [], successors: [] }),
       ),
-      successors: batch.successors.map((succ) =>
+      batch.successors.map((succ) =>
         BatchEntity.fromDatabase({ ...succ, predecessors: [], successors: [] }),
       ),
-      owner: CompanyEntity.fromDatabase(batch.owner),
-      hydrogenStorageUnit: {
-        id: batch.hydrogenStorageUnit?.generalInfo.id,
-        name: batch.hydrogenStorageUnit?.generalInfo?.name,
-      },
-      qualityDetails: batch.batchDetails?.qualityDetails
+      CompanyEntity.fromDatabase(batch.owner),
+      batch.hydrogenStorageUnit
+        ? {
+          id: batch.hydrogenStorageUnit.generalInfo.id,
+          name: batch.hydrogenStorageUnit.generalInfo?.name,
+        }
+        : undefined,
+      batch.batchDetails?.qualityDetails
         ? QualityDetailsEntity.fromDatabase(batch.batchDetails.qualityDetails)
         : undefined,
-      processStepId: batch.processStep?.id,
-    };
+      batch.processStep?.id,
+    );
   }
 }

@@ -35,12 +35,13 @@ export class CompanyEntity {
   }
 
   static fromDatabase(company: CompanyDbType): CompanyEntity {
-    return <CompanyEntity>{
-      id: company.id,
-      name: company.name,
-      mastrNumber: company.mastrNumber,
-      type: company.type,
-      address: AddressEntity.fromDatabase(company.address),
-    };
+    return new CompanyEntity(
+      company.id,
+      company.name,
+      company.mastrNumber,
+      company.type,
+      AddressEntity.fromDatabase(company.address),
+      []
+    );
   }
 }
