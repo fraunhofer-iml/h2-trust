@@ -100,7 +100,7 @@ describe('ProductionController', () => {
         expect(processStepEntity).toHaveProperty('type', ProcessType.POWER_PRODUCTION);
         expect(processStepEntity).toHaveProperty('batch');
         expect(processStepEntity.batch).toHaveProperty('amount', 30);
-        expect(processStepEntity.batch).toHaveProperty('quality', '{}');
+        expect(processStepEntity.batch).toHaveProperty('qualityDetails', null);
         expect(processStepEntity.batch).toHaveProperty('type', BatchType.POWER);
         expect(processStepEntity.batch).toHaveProperty('owner', {
           id: createProductionEntity.companyIdOfPowerProductionUnit,
@@ -124,7 +124,7 @@ describe('ProductionController', () => {
         expect(processStepEntity).toHaveProperty('type', ProcessType.WATER_CONSUMPTION);
         expect(processStepEntity).toHaveProperty('batch');
         expect(processStepEntity.batch).toHaveProperty('amount', 3.1);
-        expect(processStepEntity.batch).toHaveProperty('quality', '{}');
+        expect(processStepEntity.batch).toHaveProperty('qualityDetails', null);
         expect(processStepEntity.batch).toHaveProperty('type', BatchType.WATER);
         expect(processStepEntity.batch).toHaveProperty('owner', {
           id: createProductionEntity.companyIdOfHydrogenProductionUnit,
@@ -148,7 +148,7 @@ describe('ProductionController', () => {
         expect(processStepEntity).toHaveProperty('type', ProcessType.HYDROGEN_PRODUCTION);
         expect(processStepEntity).toHaveProperty('batch');
         expect(processStepEntity.batch).toHaveProperty('amount', 20);
-        expect(processStepEntity.batch).toHaveProperty('quality', JSON.stringify({ color: DERIVED_HYDROGEN_COLOR }));
+        expect(processStepEntity.batch).toHaveProperty('qualityDetails', { color: DERIVED_HYDROGEN_COLOR, id: null });
         expect(processStepEntity.batch).toHaveProperty('type', BatchType.HYDROGEN);
         expect(processStepEntity.batch).toHaveProperty('owner', {
           id: createProductionEntity.companyIdOfHydrogenProductionUnit,
