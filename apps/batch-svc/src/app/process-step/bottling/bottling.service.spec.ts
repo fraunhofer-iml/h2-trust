@@ -14,6 +14,7 @@ import {
   BrokerQueues,
   ProcessStepEntityHydrogenProductionMock,
   QualityDetailsEntity,
+  QualityDetailsEntityMock,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { ExpressMulterFileMock } from '@h2-trust/api';
@@ -93,7 +94,7 @@ describe('ProcessStepService', () => {
   describe('successful bottling operations', () => {
     it('should create bottling ProcessStep', async () => {
       const processStepData = structuredClone(ProcessStepEntityHydrogenProductionMock[3]);
-      processStepData.batch.qualityDetails = new QualityDetailsEntity('qd-0', HydrogenColor.GREEN);
+      processStepData.batch.qualityDetails = QualityDetailsEntityMock[0]; // GREEN
 
       // Arrange
       jest
@@ -206,7 +207,7 @@ describe('ProcessStepService', () => {
         ProcessStepEntityHydrogenProductionMock[0],
         ProcessStepEntityHydrogenProductionMock[9],
       ];
-      hydrogenProcessSteps[1].batch.qualityDetails = new QualityDetailsEntity('qd-9', HydrogenColor.YELLOW);
+      hydrogenProcessSteps[1].batch.qualityDetails = QualityDetailsEntityMock[1]; // YELLOW
 
       jest.spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit').mockResolvedValue(hydrogenProcessSteps);
       const processAssemblerAssembleMock = jest.spyOn(
