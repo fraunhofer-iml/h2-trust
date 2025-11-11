@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { QualityDetailsEntity } from 'libs/amqp/src/lib/entities/batch/quality-details.entity';
 import { of } from 'rxjs';
 import { ProcessStepEntity, ProcessStepEntityHydrogenProductionMock, QualityDetailsEntityMock } from '@h2-trust/amqp';
 import { HydrogenColor, ProofOfOrigin } from '@h2-trust/domain';
@@ -38,7 +37,7 @@ describe('HydrogenStorageSectionService.buildHydrogenStorageSection', () => {
 
   it('should return one classification (green)', async () => {
     const givenProcessSteps: ProcessStepEntity[] = [ProcessStepEntityHydrogenProductionMock[0]];
-    givenProcessSteps[0].batch.qualityDetails = QualityDetailsEntityMock[0]; // GREEN
+    givenProcessSteps[0].batch.qualityDetails = structuredClone(QualityDetailsEntityMock[0]); // GREEN
 
     const actualResponse = await service.buildHydrogenStorageSection(givenProcessSteps);
 
@@ -56,8 +55,8 @@ describe('HydrogenStorageSectionService.buildHydrogenStorageSection', () => {
       ProcessStepEntityHydrogenProductionMock[0],
       ProcessStepEntityHydrogenProductionMock[6],
     ];
-    givenProcessSteps[0].batch.qualityDetails = QualityDetailsEntityMock[0]; // GREEN
-    givenProcessSteps[1].batch.qualityDetails = QualityDetailsEntityMock[1]; // YELLOW
+    givenProcessSteps[0].batch.qualityDetails = structuredClone(QualityDetailsEntityMock[0]); // GREEN
+    givenProcessSteps[1].batch.qualityDetails = structuredClone(QualityDetailsEntityMock[1]); // YELLOW
 
     const actualResponse = await service.buildHydrogenStorageSection(givenProcessSteps);
 
