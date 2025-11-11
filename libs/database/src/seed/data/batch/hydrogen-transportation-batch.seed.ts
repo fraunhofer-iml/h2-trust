@@ -10,13 +10,14 @@ import { Batch, Prisma } from '@prisma/client';
 import { BatchType } from '@h2-trust/domain';
 import { CompanySeed } from '../company.seed';
 
-export const HydrogenTransportationBatchSeed = <Batch[]>[
+export const HydrogenTransportationBatchSeed: readonly Batch[] = Object.freeze([
   {
     id: 'batch-hydrogen-transported-0',
     type: BatchType.HYDROGEN,
     amount: new Prisma.Decimal(15),
     active: true,
     ownerId: CompanySeed[1].id,
+    hydrogenStorageUnitId: null,
   },
   {
     id: 'batch-hydrogen-transported-1',
@@ -24,6 +25,7 @@ export const HydrogenTransportationBatchSeed = <Batch[]>[
     amount: new Prisma.Decimal(10),
     active: true,
     ownerId: CompanySeed[1].id,
+    hydrogenStorageUnitId: null,
   },
   {
     id: 'batch-hydrogen-transported-2',
@@ -31,5 +33,6 @@ export const HydrogenTransportationBatchSeed = <Batch[]>[
     amount: new Prisma.Decimal(10),
     active: true,
     ownerId: CompanySeed[1].id,
+    hydrogenStorageUnitId: null,
   },
-];
+]);

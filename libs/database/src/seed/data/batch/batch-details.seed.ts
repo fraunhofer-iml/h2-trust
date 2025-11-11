@@ -12,7 +12,7 @@ import { HydrogenProductionBatchSeed } from './hydrogen-production-batch.seed';
 import { HydrogenTransportationBatchSeed } from './hydrogen-transportation-batch.seed';
 import { QualityDetailsSeed } from './quality-details.seed';
 
-export const BatchDetailsSeed = <BatchDetails[]>[
+export const BatchDetailsSeed: readonly BatchDetails[] = Object.freeze([
   {
     id: QualityDetailsSeed[0].id,
     batchId: HydrogenProductionBatchSeed[0].id,
@@ -77,4 +77,4 @@ export const BatchDetailsSeed = <BatchDetails[]>[
     id: QualityDetailsSeed[15].id,
     batchId: HydrogenTransportationBatchSeed[2].id,
   },
-];
+]);

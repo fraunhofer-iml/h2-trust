@@ -9,11 +9,11 @@
 import { Prisma, TransportationDetails } from '@prisma/client';
 import { FuelType, TransportMode } from '@h2-trust/domain';
 
-export const TransportationDetailsSeed = <TransportationDetails[]>[
+export const TransportationDetailsSeed: readonly TransportationDetails[] = Object.freeze([
   {
     id: 'transportation-details-0',
     transportMode: TransportMode.PIPELINE,
-    fuelType: undefined,
+    fuelType: null,
     distance: new Prisma.Decimal(0),
   },
   {
@@ -28,4 +28,4 @@ export const TransportationDetailsSeed = <TransportationDetails[]>[
     fuelType: FuelType.DIESEL,
     distance: new Prisma.Decimal(100),
   },
-];
+]);

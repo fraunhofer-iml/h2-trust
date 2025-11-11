@@ -9,7 +9,7 @@
 import { QualityDetails } from '@prisma/client';
 import { HydrogenColor } from '@h2-trust/domain';
 
-export const QualityDetailsSeed = <QualityDetails[]>[
+export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
   {
     id: 'quality-details-0',
     color: HydrogenColor.GREEN,
@@ -74,4 +74,4 @@ export const QualityDetailsSeed = <QualityDetails[]>[
     id: 'quality-details-15',
     color: HydrogenColor.MIX,
   },
-];
+]);

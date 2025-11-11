@@ -10,7 +10,7 @@ import { Document } from '@prisma/client';
 import { HydrogenProductionProcessStepSeed } from './process-step';
 import { UnitSeed } from './unit';
 
-export const DocumentSeed = <Document[]>[
+export const DocumentSeed: readonly Document[] = Object.freeze([
   {
     id: 'document-hydrogen-production-0',
     description: 'Certificate for green hydrogen production',
@@ -18,4 +18,4 @@ export const DocumentSeed = <Document[]>[
     unitId: UnitSeed[0].id,
     processStepId: HydrogenProductionProcessStepSeed[0].id,
   },
-];
+]);

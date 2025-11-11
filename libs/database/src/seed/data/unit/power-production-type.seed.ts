@@ -9,7 +9,7 @@
 import { PowerProductionType } from '@prisma/client';
 import { EnergySource, HydrogenColor, PowerProductionType as PowerProductionTypeName } from '@h2-trust/domain';
 
-export const PowerProductionTypeSeed = <PowerProductionType[]>[
+export const PowerProductionTypeSeed: readonly PowerProductionType[] = Object.freeze([
   {
     name: PowerProductionTypeName.PHOTOVOLTAIC_SYSTEM,
     energySource: EnergySource.SOLAR_ENERGY,
@@ -30,4 +30,4 @@ export const PowerProductionTypeSeed = <PowerProductionType[]>[
     energySource: EnergySource.GRID,
     hydrogenColor: HydrogenColor.YELLOW,
   },
-];
+]);

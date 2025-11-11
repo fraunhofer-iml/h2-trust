@@ -11,7 +11,7 @@ import { BatchType } from '@h2-trust/domain';
 import { CompanySeed } from '../company.seed';
 import { HydrogenStorageUnitSeed } from '../unit/hydrogen-storage-unit.seed';
 
-export const HydrogenProductionBatchSeed = <Batch[]>[
+export const HydrogenProductionBatchSeed: readonly Batch[] = Object.freeze([
   {
     id: 'batch-hydrogen-produced-0',
     type: BatchType.HYDROGEN,
@@ -92,4 +92,4 @@ export const HydrogenProductionBatchSeed = <Batch[]>[
     ownerId: CompanySeed[2].id,
     hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
-];
+]);

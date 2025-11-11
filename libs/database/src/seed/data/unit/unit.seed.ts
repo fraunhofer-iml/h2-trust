@@ -10,7 +10,7 @@ import { Unit } from '@prisma/client';
 import { AddressSeed } from '../address.seed';
 import { CompanySeed } from '../company.seed';
 
-export const UnitSeed = <Unit[]>[
+export const UnitSeed: readonly Unit[] = Object.freeze([
   {
     id: 'power-production-unit-0',
     name: 'Photovoltaic System 001',
@@ -95,4 +95,4 @@ export const UnitSeed = <Unit[]>[
     ownerId: CompanySeed[2].id,
     operatorId: CompanySeed[2].id,
   },
-];
+]);
