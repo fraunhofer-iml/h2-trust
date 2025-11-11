@@ -17,7 +17,7 @@ import { ProofOfOriginDtoAssembler } from '../proof-of-origin-dto.assembler';
 
 @Injectable()
 export class HydrogenStorageSectionService {
-  constructor(@Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processClient: ClientProxy) { }
+  constructor(@Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processClient: ClientProxy) {}
 
   async buildHydrogenStorageSection(hydrogenProductionProcessSteps: ProcessStepEntity[]): Promise<SectionDto> {
     if (!hydrogenProductionProcessSteps || hydrogenProductionProcessSteps.length === 0) {

@@ -57,17 +57,18 @@ export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Pri
       create: {
         active: processStep.batch.active ?? true,
         amount: processStep.batch.amount,
-        ...(processStep.batch.qualityDetails && processStep.batch.qualityDetails.color && {
-          batchDetails: {
-            create: {
-              qualityDetails: {
-                create: {
-                  color: processStep.batch.qualityDetails.color,
+        ...(processStep.batch.qualityDetails &&
+          processStep.batch.qualityDetails.color && {
+            batchDetails: {
+              create: {
+                qualityDetails: {
+                  create: {
+                    color: processStep.batch.qualityDetails.color,
+                  },
                 },
               },
             },
-          },
-        }),
+          }),
         type: BatchType[processStep.batch.type as keyof typeof BatchType],
 
         owner: {

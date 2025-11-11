@@ -13,7 +13,7 @@ import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
 
 @Injectable()
 export class ProcessStepAssemblerService {
-  constructor(private readonly processStepRepository: ProcessStepRepository) { }
+  constructor(private readonly processStepRepository: ProcessStepRepository) {}
 
   async createBottlingProcessStep(
     processStep: ProcessStepEntity,
@@ -25,7 +25,7 @@ export class ProcessStepAssemblerService {
       batch: {
         amount: processStep.batch.amount,
         qualityDetails: {
-          color: this.determineBottleQualityFromPredecessors(batchesForBottle)
+          color: this.determineBottleQualityFromPredecessors(batchesForBottle),
         },
         type: BatchType.HYDROGEN,
         predecessors: batchesForBottle.map((batch) => ({

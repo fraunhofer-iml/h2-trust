@@ -6,11 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { QualityDetailsEntity } from 'libs/amqp/src/lib/entities/batch/quality-details.entity';
 import { of } from 'rxjs';
 import { ProcessStepEntity, ProcessStepEntityHydrogenProductionMock, QualityDetailsEntityMock } from '@h2-trust/amqp';
 import { HydrogenColor, ProofOfOrigin } from '@h2-trust/domain';
 import { HydrogenStorageSectionService } from './hydrogen-storage-section.service';
-import { QualityDetailsEntity } from 'libs/amqp/src/lib/entities/batch/quality-details.entity';
 
 describe('HydrogenStorageSectionService.buildHydrogenStorageSection', () => {
   let service: HydrogenStorageSectionService;

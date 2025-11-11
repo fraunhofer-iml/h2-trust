@@ -7,10 +7,10 @@
  */
 
 import { BatchDetails } from '@prisma/client';
-import { QualityDetailsSeed } from './quality-details.seed';
+import { HydrogenBottlingBatchSeed } from './hydrogen-bottling-batch.seed';
 import { HydrogenProductionBatchSeed } from './hydrogen-production-batch.seed';
 import { HydrogenTransportationBatchSeed } from './hydrogen-transportation-batch.seed';
-import { HydrogenBottlingBatchSeed } from './hydrogen-bottling-batch.seed';
+import { QualityDetailsSeed } from './quality-details.seed';
 
 export const BatchDetailsSeed = <BatchDetails[]>[
   {
