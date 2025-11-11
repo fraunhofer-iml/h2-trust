@@ -8,13 +8,12 @@
 
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { BatchEntity, BrokerException, ProcessStepEntity } from '@h2-trust/amqp';
-import { parseColor } from '@h2-trust/api';
 import { ProcessStepRepository } from '@h2-trust/database';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
 
 @Injectable()
 export class ProcessStepAssemblerService {
-  constructor(private readonly processStepRepository: ProcessStepRepository) {}
+  constructor(private readonly processStepRepository: ProcessStepRepository) { }
 
   async createBottlingProcessStep(
     processStep: ProcessStepEntity,
@@ -25,7 +24,9 @@ export class ProcessStepAssemblerService {
       type: ProcessType.HYDROGEN_BOTTLING,
       batch: {
         amount: processStep.batch.amount,
-        quality: this.determineBottleQualityFromPredecessors(batchesForBottle),
+        qualityDetails: {
+          color: this.determineBottleQualityFromPredecessors(batchesForBottle)
+        },
         type: BatchType.HYDROGEN,
         predecessors: batchesForBottle.map((batch) => ({
           id: batch.id,
@@ -39,12 +40,9 @@ export class ProcessStepAssemblerService {
 
   private determineBottleQualityFromPredecessors(predecessors: BatchEntity[]): string {
     const colors: HydrogenColor[] = predecessors
-      .map((batch) => batch.quality)
-      .map(parseColor)
+      .map((batch) => batch.qualityDetails?.color)
       .map((color) => HydrogenColor[color as keyof typeof HydrogenColor]);
-    return JSON.stringify({
-      color: this.determineBottleColorFromPredecessors(colors),
-    });
+    return this.determineBottleColorFromPredecessors(colors);
   }
 
   private determineBottleColorFromPredecessors(colors: HydrogenColor[]): HydrogenColor {
@@ -74,7 +72,9 @@ export class ProcessStepAssemblerService {
       batch: {
         active: active,
         amount: remainingAmount,
-        quality: predecessorProcessStep.batch.quality,
+        qualityDetails: {
+          color: predecessorProcessStep.batch.qualityDetails.color,
+        },
         type: BatchType.HYDROGEN,
         predecessors: [
           {

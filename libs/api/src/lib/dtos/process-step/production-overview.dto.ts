@@ -8,7 +8,6 @@
 
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { BatchType } from '@h2-trust/domain';
-import { parseColor } from '../util';
 
 export class ProductionOverviewDto {
   startedAt: string;
@@ -46,7 +45,7 @@ export class ProductionOverviewDto {
       endedAt: processStep.endedAt.toString(),
       productionUnit: processStep.executedBy?.name,
       producedAmount: processStep.batch?.amount,
-      color: parseColor(processStep.batch?.quality),
+      color: processStep.batch?.qualityDetails?.color,
       powerProducer: processStep.batch?.predecessors?.[0]?.owner?.name,
       powerConsumed: ProductionOverviewDto.determinePowerConsumed(processStep),
       storageUnit: processStep.batch?.hydrogenStorageUnit?.name,

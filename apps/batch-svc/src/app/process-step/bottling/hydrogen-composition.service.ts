@@ -17,17 +17,14 @@ import {
   ProcessStepEntity,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
-import { parseColor } from '@h2-trust/api';
 import { HydrogenColor } from '@h2-trust/domain';
 
 @Injectable()
 export class HydrogenCompositionService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
+  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) { }
 
   async determineHydrogenComposition(processStep: ProcessStepEntity): Promise<HydrogenComponentEntity[]> {
-    const color = parseColor(processStep.batch.quality);
-
-    if (color === HydrogenColor.GREEN) {
+    if (processStep.batch?.qualityDetails?.color === HydrogenColor.GREEN) {
       return [new HydrogenComponentEntity(HydrogenColor.GREEN, processStep.batch.amount)];
     }
 

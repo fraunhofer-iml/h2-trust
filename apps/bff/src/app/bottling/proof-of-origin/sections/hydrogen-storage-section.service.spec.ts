@@ -10,6 +10,7 @@ import { of } from 'rxjs';
 import { ProcessStepEntity, ProcessStepEntityHydrogenProductionMock } from '@h2-trust/amqp';
 import { HydrogenColor, ProofOfOrigin } from '@h2-trust/domain';
 import { HydrogenStorageSectionService } from './hydrogen-storage-section.service';
+import { QualityDetailsEntity } from 'libs/amqp/src/lib/entities/batch/quality-details.entity';
 
 describe('HydrogenStorageSectionService.buildHydrogenStorageSection', () => {
   let service: HydrogenStorageSectionService;
@@ -37,6 +38,7 @@ describe('HydrogenStorageSectionService.buildHydrogenStorageSection', () => {
 
   it('should return one classification (green)', async () => {
     const givenProcessSteps: ProcessStepEntity[] = [ProcessStepEntityHydrogenProductionMock[0]];
+    givenProcessSteps[0].batch.qualityDetails = new QualityDetailsEntity('qd-0', HydrogenColor.GREEN);
 
     const actualResponse = await service.buildHydrogenStorageSection(givenProcessSteps);
 
@@ -54,6 +56,8 @@ describe('HydrogenStorageSectionService.buildHydrogenStorageSection', () => {
       ProcessStepEntityHydrogenProductionMock[0],
       ProcessStepEntityHydrogenProductionMock[6],
     ];
+    givenProcessSteps[0].batch.qualityDetails = new QualityDetailsEntity('qd-0', HydrogenColor.GREEN);
+    givenProcessSteps[1].batch.qualityDetails = new QualityDetailsEntity('qd-1', HydrogenColor.YELLOW);
 
     const actualResponse = await service.buildHydrogenStorageSection(givenProcessSteps);
 

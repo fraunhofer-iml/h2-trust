@@ -10,14 +10,14 @@ import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { BrokerQueues, ProcessStepEntity, SustainabilityMessagePatterns } from '@h2-trust/amqp';
-import { BatchDto, ClassificationDto, EmissionCalculationDto, parseColor, SectionDto } from '@h2-trust/api';
+import { BatchDto, ClassificationDto, EmissionCalculationDto, SectionDto } from '@h2-trust/api';
 import { HydrogenColor, ProofOfOrigin } from '@h2-trust/domain';
 import { toEmissionDto } from '../emission-dto.builder';
 import { ProofOfOriginDtoAssembler } from '../proof-of-origin-dto.assembler';
 
 @Injectable()
 export class HydrogenStorageSectionService {
-  constructor(@Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processClient: ClientProxy) {}
+  constructor(@Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processClient: ClientProxy) { }
 
   async buildHydrogenStorageSection(hydrogenProductionProcessSteps: ProcessStepEntity[]): Promise<SectionDto> {
     if (!hydrogenProductionProcessSteps || hydrogenProductionProcessSteps.length === 0) {
@@ -28,7 +28,7 @@ export class HydrogenStorageSectionService {
 
     for (const hydrogenColor of Object.values(HydrogenColor)) {
       const processStepsByCurrentHydrogenColor = hydrogenProductionProcessSteps.filter(
-        (processStep) => parseColor(processStep.batch.quality) === hydrogenColor,
+        (processStep) => processStep.batch?.qualityDetails?.color === hydrogenColor,
       );
 
       if (processStepsByCurrentHydrogenColor.length === 0) {

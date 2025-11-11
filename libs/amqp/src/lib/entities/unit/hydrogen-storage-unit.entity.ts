@@ -6,12 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus } from '@nestjs/common';
-import { Batch } from '@prisma/client';
-import { parseColor } from '@h2-trust/api';
 import { HydrogenStorageUnitDbType } from '@h2-trust/database';
 import { UnitType } from '@h2-trust/domain';
-import { BrokerException } from '../../broker';
 import { AddressEntity } from '../address';
 import { HydrogenComponentEntity } from '../bottling';
 import { CompanyEntity } from '../company';
@@ -83,20 +79,12 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
 
   private static mapFilling(unit: HydrogenStorageUnitDbType): HydrogenComponentEntity[] {
     return (
-      unit.hydrogenStorageUnit?.filling?.map((batch: Batch) => {
+      unit.hydrogenStorageUnit?.filling?.map((batch) => {
         return {
-          color: this.getColor(batch.quality),
+          color: batch.batchDetails?.qualityDetails?.color ?? '',
           amount: batch.amount?.toNumber() ?? 0,
         };
       }) ?? []
     );
-  }
-
-  private static getColor(quality: string) {
-    const parsedColor = parseColor(quality);
-    if (!parsedColor) {
-      throw new BrokerException(`Invalid quality: ${quality}`, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-    return parsedColor;
   }
 }

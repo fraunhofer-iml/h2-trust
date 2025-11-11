@@ -16,7 +16,6 @@ export const BatchEntityPowerProducedMock: BatchEntity[] = PowerProductionBatchS
       seed.id,
       seed.active,
       seed.amount.toNumber(),
-      seed.quality,
       seed.type,
       [],
       [],

@@ -20,6 +20,11 @@ export const batchQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()({
             generalInfo: true,
           },
         },
+        batchDetails: {
+          include: {
+            qualityDetails: true,
+          },
+        },
         processStep: true,
       },
     },
@@ -31,12 +36,22 @@ export const batchQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()({
             generalInfo: true,
           },
         },
+        batchDetails: {
+          include: {
+            qualityDetails: true,
+          },
+        },
         processStep: true,
       },
     },
     hydrogenStorageUnit: {
       include: {
         generalInfo: true,
+      },
+    },
+    batchDetails: {
+      include: {
+        qualityDetails: true,
       },
     },
     processStep: true,

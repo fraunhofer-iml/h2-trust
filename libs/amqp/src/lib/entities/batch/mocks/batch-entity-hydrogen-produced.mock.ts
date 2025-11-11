@@ -10,6 +10,8 @@ import { HydrogenProductionBatchSeed } from 'libs/database/src/seed';
 import { CompanyEntityHydrogenMock } from '../../company/mocks';
 import { HydrogenStorageUnitEntityMock } from '../../unit';
 import { BatchEntity } from '../batch.entity';
+import { QualityDetailsEntity } from '../quality-details.entity';
+import { HydrogenColor } from '@h2-trust/domain';
 
 export const BatchEntityHydrogenProducedMock: BatchEntity[] = HydrogenProductionBatchSeed.map(
   (seed) =>
@@ -17,11 +19,11 @@ export const BatchEntityHydrogenProducedMock: BatchEntity[] = HydrogenProduction
       seed.id,
       seed.active,
       seed.amount.toNumber(),
-      seed.quality,
       seed.type,
       [],
       [],
       CompanyEntityHydrogenMock,
       HydrogenStorageUnitEntityMock[0],
+      new QualityDetailsEntity('qd-0', HydrogenColor.GREEN),
     ),
 );

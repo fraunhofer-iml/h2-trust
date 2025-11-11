@@ -13,9 +13,10 @@ import {
   BrokerException,
   BrokerQueues,
   ProcessStepEntityHydrogenProductionMock,
+  QualityDetailsEntity,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
-import { ExpressMulterFileMock, parseColor } from '@h2-trust/api';
+import { ExpressMulterFileMock } from '@h2-trust/api';
 import { ConfigurationModule } from '@h2-trust/configuration';
 import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
 import { HydrogenColor } from '@h2-trust/domain';
@@ -92,6 +93,7 @@ describe('ProcessStepService', () => {
   describe('successful bottling operations', () => {
     it('should create bottling ProcessStep', async () => {
       const processStepData = structuredClone(ProcessStepEntityHydrogenProductionMock[3]);
+      processStepData.batch.qualityDetails = new QualityDetailsEntity('qd-0', HydrogenColor.GREEN);
 
       // Arrange
       jest
@@ -197,13 +199,15 @@ describe('ProcessStepService', () => {
     it('should create MIX bottling ProcessStep', async () => {
       const processStepData = structuredClone(ProcessStepEntityHydrogenProductionMock[3]);
       processStepData.batch.amount = 10;
-      processStepData.batch.quality = `{"color":"${HydrogenColor.MIX}"}`;
+      processStepData.batch.qualityDetails.color = HydrogenColor.MIX;
 
       // Arrange
       const hydrogenProcessSteps = [
         ProcessStepEntityHydrogenProductionMock[0],
         ProcessStepEntityHydrogenProductionMock[9],
       ];
+      hydrogenProcessSteps[1].batch.qualityDetails = new QualityDetailsEntity('qd-9', HydrogenColor.YELLOW);
+
       jest.spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit').mockResolvedValue(hydrogenProcessSteps);
       const processAssemblerAssembleMock = jest.spyOn(
         processStepAssemblerService,
@@ -220,7 +224,7 @@ describe('ProcessStepService', () => {
         return of({
           id: 'hydrogen-storage-unit-id',
           filling: hydrogenProcessSteps.map((step) => ({
-            color: parseColor(step.batch.quality),
+            color: step.batch.qualityDetails.color,
             amount: step.batch.amount,
           })),
         });
@@ -236,7 +240,7 @@ describe('ProcessStepService', () => {
           2 * (i + 1), // Every second call goes to the assembling of the remaining amount batch
           hydrogenProcessSteps.at(i),
           hydrogenProcessSteps[i].batch.amount -
-            (processStepData.batch.amount * hydrogenProcessSteps[i].batch.amount) / totalStoredAmount,
+          (processStepData.batch.amount * hydrogenProcessSteps[i].batch.amount) / totalStoredAmount,
           true,
         );
       }

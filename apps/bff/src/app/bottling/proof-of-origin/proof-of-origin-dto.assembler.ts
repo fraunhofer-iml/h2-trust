@@ -13,7 +13,6 @@ import {
   ClassificationType,
   EmissionDto,
   HydrogenBatchDto,
-  parseColor,
   PowerBatchDto,
 } from '@h2-trust/api';
 import { BatchType, EnergySource, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
@@ -52,11 +51,11 @@ export class ProofOfOriginDtoAssembler {
       ProofOfOrigin.HYDROGEN_PRODUCTION_TYPE,
       [
         {
-          color: parseColor(processStepEntity.batch.quality),
+          color: processStepEntity.batch?.qualityDetails?.color,
           amount: processStepEntity.batch.amount,
         },
       ],
-      parseColor(processStepEntity.batch.quality),
+      processStepEntity.batch?.qualityDetails?.color,
       null, // TBA
       processStepEntity.type,
       processStepEntity.endedAt,
@@ -80,7 +79,7 @@ export class ProofOfOriginDtoAssembler {
       null, // TBA
       null,
       hydrogenComposition,
-      parseColor(processStepEntity.batch.quality),
+      processStepEntity.batch?.qualityDetails?.color,
       null, // TBA
       processStepEntity.type,
       processStepEntity.endedAt,

@@ -39,6 +39,13 @@ const powerProductionUnitChildQueryArgs = Prisma.validator<Prisma.PowerProductio
 const hydrogenStorageUnitChildQueryArgs = Prisma.validator<Prisma.HydrogenStorageUnitDefaultArgs>()({
   include: {
     filling: {
+      include: {
+        batchDetails: {
+          include: {
+            qualityDetails: true,
+          },
+        },
+      },
       where: {
         active: true,
       },
