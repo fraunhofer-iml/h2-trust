@@ -149,11 +149,10 @@ model HydrogenStorageUnit {
 }
 
 model Batch {
-  id      String  @id @default(cuid(2))
-  type    String
-  amount  Decimal @db.Decimal(18, 6)
-  active  Boolean @default(true)
-  quality String
+  id     String  @id @default(cuid(2))
+  type   String
+  amount Decimal @db.Decimal(18, 6)
+  active Boolean @default(true)
 
   owner   Company @relation(fields: [ownerId], references: [id])
   ownerId String
@@ -161,10 +160,27 @@ model Batch {
   hydrogenStorageUnit   HydrogenStorageUnit? @relation(fields: [hydrogenStorageUnitId], references: [id])
   hydrogenStorageUnitId String?
 
-  processStep ProcessStep?
+  batchDetails BatchDetails?
+  processStep  ProcessStep?
 
   predecessors Batch[] @relation("BatchRelation")
   successors   Batch[] @relation("BatchRelation")
+}
+
+model BatchDetails {
+  id String @id @default(cuid(2))
+
+  qualityDetails QualityDetails?
+
+  batch   Batch  @relation(fields: [batchId], references: [id])
+  batchId String @unique
+}
+
+model QualityDetails {
+  id    String @id
+  color String
+
+  batchDetails BatchDetails @relation(fields: [id], references: [id])
 }
 
 model ProcessStep {

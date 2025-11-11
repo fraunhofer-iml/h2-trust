@@ -16,7 +16,6 @@ export const PowerProductionBatchSeed = <Batch[]>[
     type: BatchType.POWER,
     amount: new Prisma.Decimal(50),
     active: false,
-    quality: `TBD`,
     ownerId: CompanySeed[2].id,
   },
   {
@@ -24,7 +23,6 @@ export const PowerProductionBatchSeed = <Batch[]>[
     type: BatchType.POWER,
     amount: new Prisma.Decimal(50),
     active: false,
-    quality: `TBD`,
     ownerId: CompanySeed[2].id,
   },
   {
@@ -32,7 +30,6 @@ export const PowerProductionBatchSeed = <Batch[]>[
     type: BatchType.POWER,
     amount: new Prisma.Decimal(10),
     active: false,
-    quality: `TBD`,
     ownerId: CompanySeed[2].id,
   },
   {
@@ -40,7 +37,6 @@ export const PowerProductionBatchSeed = <Batch[]>[
     type: BatchType.POWER,
     amount: new Prisma.Decimal(10),
     active: false,
-    quality: `TBD`,
     ownerId: CompanySeed[2].id,
   },
   {
@@ -48,7 +44,6 @@ export const PowerProductionBatchSeed = <Batch[]>[
     type: BatchType.POWER,
     amount: new Prisma.Decimal(10),
     active: false,
-    quality: `TBD`,
     ownerId: CompanySeed[2].id,
   },
   {
@@ -56,7 +51,6 @@ export const PowerProductionBatchSeed = <Batch[]>[
     type: BatchType.POWER,
     amount: new Prisma.Decimal(10),
     active: false,
-    quality: `TBD`,
     ownerId: CompanySeed[2].id,
   },
   {
@@ -64,7 +58,6 @@ export const PowerProductionBatchSeed = <Batch[]>[
     type: BatchType.POWER,
     amount: new Prisma.Decimal(10),
     active: false,
-    quality: `TBD`,
     ownerId: CompanySeed[2].id,
   },
   {
@@ -72,7 +65,6 @@ export const PowerProductionBatchSeed = <Batch[]>[
     type: BatchType.POWER,
     amount: new Prisma.Decimal(10),
     active: false,
-    quality: `TBD`,
     ownerId: CompanySeed[2].id,
   },
   {
@@ -80,7 +72,6 @@ export const PowerProductionBatchSeed = <Batch[]>[
     type: BatchType.POWER,
     amount: new Prisma.Decimal(10),
     active: false,
-    quality: `TBD`,
     ownerId: CompanySeed[2].id,
   },
   {
@@ -88,7 +79,6 @@ export const PowerProductionBatchSeed = <Batch[]>[
     type: BatchType.POWER,
     amount: new Prisma.Decimal(50),
     active: false,
-    quality: `TBD`,
     ownerId: CompanySeed[2].id,
   },
 ];
