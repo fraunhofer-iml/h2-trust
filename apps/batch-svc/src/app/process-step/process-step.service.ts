@@ -19,8 +19,13 @@ export class ProcessStepService {
     private readonly configurationService: ConfigurationService,
   ) {}
 
-  async readProcessSteps(processTypes: string[], active: boolean, companyId: string): Promise<ProcessStepEntity[]> {
-    return this.repository.findProcessSteps(processTypes, active, companyId);
+  async readProcessSteps(
+    processTypes: string[],
+    predecessorProcessTypes: string[],
+    active: boolean,
+    companyId: string,
+  ): Promise<ProcessStepEntity[]> {
+    return this.repository.findProcessSteps(processTypes, predecessorProcessTypes, active, companyId);
   }
 
   async readProcessStep(processStepId: string): Promise<ProcessStepEntity> {
