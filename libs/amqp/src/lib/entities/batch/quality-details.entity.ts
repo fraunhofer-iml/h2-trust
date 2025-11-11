@@ -18,9 +18,6 @@ export class QualityDetailsEntity {
   }
 
   static fromDatabase(qualityDetails: QualityDetailsDbType): QualityDetailsEntity {
-    return new QualityDetailsEntity(
-      qualityDetails.id,
-      qualityDetails.color
-    );
+    return new QualityDetailsEntity(qualityDetails.id, qualityDetails.color);
   }
 }

@@ -20,10 +20,6 @@ export class DocumentEntity {
   }
 
   static fromDatabase(document: DocumentDbType): DocumentEntity {
-    return new DocumentEntity(
-      document.id,
-      document.description,
-      document.location
-    );
+    return new DocumentEntity(document.id, document.description, document.location);
   }
 }

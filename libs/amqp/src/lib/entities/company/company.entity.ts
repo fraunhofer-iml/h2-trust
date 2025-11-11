@@ -41,7 +41,7 @@ export class CompanyEntity {
       company.mastrNumber,
       company.type,
       AddressEntity.fromDatabase(company.address),
-      []
+      [],
     );
   }
 }

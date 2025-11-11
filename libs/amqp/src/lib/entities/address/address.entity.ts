@@ -24,12 +24,6 @@ export class AddressEntity {
   }
 
   static fromDatabase(address: AddressDbType) {
-    return new AddressEntity(
-      address.street,
-      address.postalCode,
-      address.city,
-      address.state,
-      address.country,
-    );
+    return new AddressEntity(address.street, address.postalCode, address.city, address.state, address.country);
   }
 }

@@ -23,11 +23,6 @@ export class UserEntity {
   }
 
   static fromDatabase(user: UserDbType): UserEntity {
-    return new UserEntity(
-      user.id,
-      user.name,
-      user.email,
-      CompanyEntity.fromDatabase(user.company)
-    );
+    return new UserEntity(user.id, user.name, user.email, CompanyEntity.fromDatabase(user.company));
   }
 }

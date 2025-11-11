@@ -225,9 +225,7 @@ export class ProductionService {
             [],
             { id: params.batchOwner } as CompanyEntity,
             { id: params.hydrogenStorageUnitId } as HydrogenStorageUnitEntity,
-            params.batchQuality
-              ? new QualityDetailsEntity(null, params.batchQuality)
-              : null,
+            params.batchQuality ? new QualityDetailsEntity(null, params.batchQuality) : null,
           ),
           { id: params.recordedBy } as UserEntity,
           { id: params.executedBy } as BaseUnitEntity,

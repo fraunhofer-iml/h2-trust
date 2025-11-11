@@ -53,18 +53,14 @@ export class BatchEntity {
       batch.active,
       batch.amount.toNumber(),
       batch.type,
-      batch.predecessors.map((pred) =>
-        BatchEntity.fromDatabase({ ...pred, predecessors: [], successors: [] }),
-      ),
-      batch.successors.map((succ) =>
-        BatchEntity.fromDatabase({ ...succ, predecessors: [], successors: [] }),
-      ),
+      batch.predecessors.map((pred) => BatchEntity.fromDatabase({ ...pred, predecessors: [], successors: [] })),
+      batch.successors.map((succ) => BatchEntity.fromDatabase({ ...succ, predecessors: [], successors: [] })),
       CompanyEntity.fromDatabase(batch.owner),
       batch.hydrogenStorageUnit
         ? {
-          id: batch.hydrogenStorageUnit.generalInfo.id,
-          name: batch.hydrogenStorageUnit.generalInfo?.name,
-        }
+            id: batch.hydrogenStorageUnit.generalInfo.id,
+            name: batch.hydrogenStorageUnit.generalInfo?.name,
+          }
         : undefined,
       batch.batchDetails?.qualityDetails
         ? QualityDetailsEntity.fromDatabase(batch.batchDetails.qualityDetails)
