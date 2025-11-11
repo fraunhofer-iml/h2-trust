@@ -90,8 +90,7 @@ export class ProductionService {
     const userDetailsDto: UserDetailsDto = await this.userService.readUserWithCompany(userId);
     const companyIdOfUser = userDetailsDto.company.id;
     const payload = {
-      processTypes: [ProcessType.HYDROGEN_PRODUCTION],
-      active: true,
+      predecessorProcessTypes: [ProcessType.POWER_PRODUCTION],
       companyId: companyIdOfUser,
     };
 

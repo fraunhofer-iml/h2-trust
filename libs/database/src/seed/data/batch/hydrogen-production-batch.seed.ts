@@ -34,7 +34,7 @@ export const HydrogenProductionBatchSeed = <Batch[]>[
     amount: new Prisma.Decimal(5),
     active: false,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: undefined,
+    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-3',
@@ -42,7 +42,7 @@ export const HydrogenProductionBatchSeed = <Batch[]>[
     amount: new Prisma.Decimal(5),
     active: false,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: undefined,
+    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-4',
@@ -50,7 +50,7 @@ export const HydrogenProductionBatchSeed = <Batch[]>[
     amount: new Prisma.Decimal(5),
     active: false,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: undefined,
+    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-5',
@@ -58,7 +58,7 @@ export const HydrogenProductionBatchSeed = <Batch[]>[
     amount: new Prisma.Decimal(5),
     active: false,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: undefined,
+    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-6',
@@ -66,7 +66,7 @@ export const HydrogenProductionBatchSeed = <Batch[]>[
     amount: new Prisma.Decimal(5),
     active: false,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: undefined,
+    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-7',
@@ -74,7 +74,7 @@ export const HydrogenProductionBatchSeed = <Batch[]>[
     amount: new Prisma.Decimal(5),
     active: false,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: undefined,
+    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-8',
@@ -82,7 +82,7 @@ export const HydrogenProductionBatchSeed = <Batch[]>[
     amount: new Prisma.Decimal(5),
     active: false,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: undefined,
+    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-9',

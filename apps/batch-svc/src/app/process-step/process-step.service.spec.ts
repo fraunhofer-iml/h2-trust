@@ -66,14 +66,25 @@ describe('ProcessStepService', () => {
       repository.findProcessSteps.mockResolvedValue(fixture);
 
       const givenProcessTypes = [fixture[0].type];
+      const givenPredecessorProcessTypes = [fixture[0].type];
       const givenActive = true;
       const givenCompanyId = fixture[0].recordedBy.company.id;
 
       // Act
-      const actualResponse = await service.readProcessSteps(givenProcessTypes, givenActive, givenCompanyId);
+      const actualResponse = await service.readProcessSteps(
+        givenProcessTypes,
+        givenPredecessorProcessTypes,
+        givenActive,
+        givenCompanyId,
+      );
 
       // Assert
-      expect(repository.findProcessSteps).toHaveBeenCalledWith(givenProcessTypes, givenActive, givenCompanyId);
+      expect(repository.findProcessSteps).toHaveBeenCalledWith(
+        givenProcessTypes,
+        givenPredecessorProcessTypes,
+        givenActive,
+        givenCompanyId,
+      );
       expect(actualResponse).toBe(fixture);
     });
   });
