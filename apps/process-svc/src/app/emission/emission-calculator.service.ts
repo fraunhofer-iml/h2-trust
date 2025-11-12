@@ -99,7 +99,7 @@ export class EmissionCalculatorService {
       processSteps.map((step) => {
         const unit = powerProductionUnitsByProcessSteps.get(step.id);
         const entry = getPowerEmissionFactorByEnergySource(unit?.type?.energySource);
-        return EmissionAssembler.assembleHydrogenProductionCalculation(step, entry.emissionFactor, entry.label);
+        return EmissionAssembler.assemblePowerProductionCalculation(step, entry.emissionFactor, entry.label);
       }),
     );
   }

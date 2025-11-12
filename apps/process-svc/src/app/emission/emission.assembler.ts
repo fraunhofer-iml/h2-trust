@@ -18,7 +18,7 @@ import {
 } from '@h2-trust/domain';
 
 export class EmissionAssembler {
-    static assembleHydrogenProductionCalculation(
+    static assemblePowerProductionCalculation(
     processStep: ProcessStepEntity,
     emissionFactorGPerKWh: number,
     label: string,
@@ -33,7 +33,7 @@ export class EmissionAssembler {
     processStep: ProcessStepEntity,
   ): EmissionCalculationDto {
     const successorProducedHydrogenMassKg = processStep.batch.successors[0].amount;
-    const name = 'Emissions (Water Supply)';
+    const name = 'Emissions (Water Consumption)';
     const emissionFactorGCO2EqPerLiterWater = 0.43;
     const basis = `E = ${processStep.batch.amount} L * ${emissionFactorGCO2EqPerLiterWater} g CO₂,eq/L / ${successorProducedHydrogenMassKg} kg H₂`;
     const result = (processStep.batch.amount * emissionFactorGCO2EqPerLiterWater) / successorProducedHydrogenMassKg;
