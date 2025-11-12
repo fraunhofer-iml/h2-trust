@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { GridLevel, HydrogenProductionMethod, HydrogenProductionTechnology, PowerProductionType } from '../enums';
+import { GridLevel, HydrogenProductionMethod, HydrogenProductionTechnology, HydrogenStorageType, PowerProductionType } from '../enums';
 
 export class EnumLabelMapper {
   private static readonly POWER_PRODUCTION_TYPE_LABELS: Record<PowerProductionType, string> = {
@@ -34,6 +34,11 @@ export class EnumLabelMapper {
     [HydrogenProductionTechnology.SOEC]: 'Solid Oxide Electrolysis Cell (SOEC)',
   };
 
+  private static readonly HYDROGEN_STORAGE_TYPE_LABELS: Record<HydrogenStorageType, string> = {
+    [HydrogenStorageType.COMPRESSED_GASEOUS_HYDROGEN]: 'Compressed Gaseous Hydrogen',
+    [HydrogenStorageType.LIQUID_HYDROGEN]: 'Liquid Hydrogen',
+  };
+
   private static getLabel<T extends string>(value: T, labels: Record<T, string>): string {
     const label = labels[value];
     if (!label) {
@@ -56,5 +61,9 @@ export class EnumLabelMapper {
 
   public static getHydrogenProductionTechnology(value: HydrogenProductionTechnology): string {
     return this.getLabel(value, this.HYDROGEN_PRODUCTION_TECHNOLOGY_LABELS);
+  }
+
+  public static getHydrogenStorageType(value: HydrogenStorageType): string {
+    return this.getLabel(value, this.HYDROGEN_STORAGE_TYPE_LABELS);
   }
 }

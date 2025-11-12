@@ -7,7 +7,7 @@
  */
 
 import { HydrogenStorageUnitSeed, UnitSeed } from 'libs/database/src/seed';
-import { HydrogenColor, UnitType } from '@h2-trust/domain';
+import { HydrogenColor, HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { AddressEntityPowerMock } from '../../address';
 import { HydrogenComponentEntity } from '../../bottling';
 import { CompanyEntityHydrogenMock } from '../../company';
@@ -33,7 +33,7 @@ export const HydrogenStorageUnitEntityMock: HydrogenStorageUnitEntity[] = [
     UnitType.HYDROGEN_STORAGE,
     HydrogenStorageUnitSeed[0].capacity.toNumber(),
     HydrogenStorageUnitSeed[0].pressure.toNumber(),
-    HydrogenStorageUnitSeed[0].type,
+    HydrogenStorageUnitSeed[0].type as HydrogenStorageType,
     [new HydrogenComponentEntity(HydrogenColor.GREEN, 100)],
   ),
 ];
