@@ -36,7 +36,7 @@ describe('HydrogenStorageSectionService.buildHydrogenStorageSection', () => {
   });
 
   it('should return one classification (green)', async () => {
-    const givenProcessSteps: ProcessStepEntity[] = [ProcessStepEntityHydrogenProductionMock[0]];
+    const givenProcessSteps: ProcessStepEntity[] = [structuredClone(ProcessStepEntityHydrogenProductionMock[0])];
     givenProcessSteps[0].batch.qualityDetails = structuredClone(QualityDetailsEntityMock[0]); // GREEN
 
     const actualResponse = await service.buildHydrogenStorageSection(givenProcessSteps);
