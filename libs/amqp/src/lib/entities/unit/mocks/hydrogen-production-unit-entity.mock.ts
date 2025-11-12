@@ -7,7 +7,7 @@
  */
 
 import { HydrogenProductionUnitSeed, UnitSeed } from 'libs/database/src/seed';
-import { UnitType } from '@h2-trust/domain';
+import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
 import { CompanyEntityHydrogenMock } from '../..';
 import { AddressEntityPowerMock } from '../../address';
 import { HydrogenProductionUnitEntity } from '../hydrogen-production-unit.entity';
@@ -32,9 +32,9 @@ export const HydrogenProductionUnitEntityMock: HydrogenProductionUnitEntity[] = 
     UnitType.HYDROGEN_PRODUCTION,
     HydrogenProductionUnitSeed[0].ratedPower.toNumber(),
     HydrogenProductionUnitSeed[0].pressure.toNumber(),
-    HydrogenProductionUnitSeed[0].method,
-    HydrogenProductionUnitSeed[0].technology,
-    HydrogenProductionUnitSeed[0].biddingZone,
+    HydrogenProductionUnitSeed[0].method as HydrogenProductionMethod,
+    HydrogenProductionUnitSeed[0].technology as HydrogenProductionTechnology,
+    HydrogenProductionUnitSeed[0].biddingZone as BiddingZone,
     HydrogenProductionUnitSeed[0].waterConsumptionLitersPerHour.toNumber(),
   ),
 ];

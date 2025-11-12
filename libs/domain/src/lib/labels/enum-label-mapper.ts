@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { GridLevel, PowerProductionType } from '../enums';
+import { GridLevel, HydrogenProductionMethod, HydrogenProductionTechnology, PowerProductionType } from '../enums';
 
 export class EnumLabelMapper {
   private static readonly POWER_PRODUCTION_TYPE_LABELS: Record<PowerProductionType, string> = {
@@ -23,6 +23,17 @@ export class EnumLabelMapper {
     [GridLevel.LOW_VOLTAGE]: 'Low Voltage',
   };
 
+  private static readonly HYDROGEN_PRODUCTION_METHOD_LABELS: Record<HydrogenProductionMethod, string> = {
+    [HydrogenProductionMethod.ELECTROLYSIS]: 'Electrolysis',
+  };
+
+  private static readonly HYDROGEN_PRODUCTION_TECHNOLOGY_LABELS: Record<HydrogenProductionTechnology, string> = {
+    [HydrogenProductionTechnology.AEL]: 'Alkaline Electrolysis (AEL)',
+    [HydrogenProductionTechnology.AEM]: 'Anion Exchange Membrane (AEM)',
+    [HydrogenProductionTechnology.PEM]: 'Proton Exchange Membrane (PEM)',
+    [HydrogenProductionTechnology.SOEC]: 'Solid Oxide Electrolysis Cell (SOEC)',
+  };
+
   private static getLabel<T extends string>(value: T, labels: Record<T, string>): string {
     const label = labels[value];
     if (!label) {
@@ -37,5 +48,13 @@ export class EnumLabelMapper {
 
   public static getGridLevel(value: GridLevel): string {
     return this.getLabel(value, this.GRID_LEVEL_LABELS);
+  }
+
+  public static getHydrogenProductionMethod(value: HydrogenProductionMethod): string {
+    return this.getLabel(value, this.HYDROGEN_PRODUCTION_METHOD_LABELS);
+  }
+
+  public static getHydrogenProductionTechnology(value: HydrogenProductionTechnology): string {
+    return this.getLabel(value, this.HYDROGEN_PRODUCTION_TECHNOLOGY_LABELS);
   }
 }

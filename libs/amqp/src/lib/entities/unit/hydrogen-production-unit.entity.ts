@@ -7,7 +7,7 @@
  */
 
 import { HydrogenProductionUnitDbType } from '@h2-trust/database';
-import { UnitType } from '@h2-trust/domain';
+import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
 import { BaseUnitEntity } from './base-unit.entity';
@@ -15,9 +15,9 @@ import { BaseUnitEntity } from './base-unit.entity';
 export class HydrogenProductionUnitEntity extends BaseUnitEntity {
   ratedPower?: number;
   pressure?: number;
-  method?: string;
-  technology?: string;
-  biddingZone?: string;
+  method?: HydrogenProductionMethod;
+  technology?: HydrogenProductionTechnology;
+  biddingZone?: BiddingZone;
   waterConsumptionLitersPerHour?: number;
 
   constructor(
@@ -43,9 +43,9 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     unitType: UnitType,
     ratedPower: number,
     pressure: number,
-    method: string,
-    technology: string,
-    biddingZone: string,
+    method: HydrogenProductionMethod,
+    technology: HydrogenProductionTechnology,
+    biddingZone: BiddingZone,
     waterConsumptionLitersPerHour: number,
   ) {
     super(
