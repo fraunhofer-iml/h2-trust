@@ -22,6 +22,7 @@ export class PowerProductionUnitDto extends BaseUnitDto {
   ratedPower: number;
   decommissioningPlannedOn?: Date;
   type: PowerProductionTypeDto;
+  financialSupportReceived: boolean;
 
   constructor(
     id: string,
@@ -49,6 +50,7 @@ export class PowerProductionUnitDto extends BaseUnitDto {
     operator: string,
     electricityMeterNumber: string,
     biddingZone: string,
+    financialSupportReceived: boolean,
   ) {
     super(
       id,
@@ -74,6 +76,7 @@ export class PowerProductionUnitDto extends BaseUnitDto {
     this.electricityMeterNumber = electricityMeterNumber;
     this.biddingZone = biddingZone;
     this.decommissioningPlannedOn = decommissioningPlannedOn;
+    this.financialSupportReceived = financialSupportReceived;
   }
 
   static override fromEntity(unit: PowerProductionUnitEntity): PowerProductionUnitDto {
@@ -91,6 +94,7 @@ export class PowerProductionUnitDto extends BaseUnitDto {
         energySource: requireDefined(unit.type?.energySource, 'type.energySource'),
         hydrogenColor: requireDefined(unit.type?.hydrogenColor, 'type.hydrogenColor'),
       },
+      financialSupportReceived: false,
     };
   }
 }

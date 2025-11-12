@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDividerModule } from '@angular/material/divider';
@@ -35,6 +36,7 @@ import {
   PowerProductionType,
   UnitType,
 } from '@h2-trust/domain';
+import { RED_III_CRITERIA } from '../../../shared/constants/financial-support-info';
 import { H2_PRODUCTION_TYPES } from '../../../shared/constants/hydrogen-production-types';
 import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
@@ -66,11 +68,14 @@ import {
     MatButtonModule,
     MatSelectModule,
     PrettyEnumPipe,
+    MatCheckboxModule,
   ],
   providers: [provideNativeDateAdapter(), CompaniesService],
   templateUrl: './create-unit.component.html',
 })
 export class CreateUnitComponent {
+  protected readonly RED_III_CRITERIA = RED_III_CRITERIA;
+
   unitsService = inject(UnitsService);
   companiesService = inject(CompaniesService);
   router = inject(Router);
