@@ -7,12 +7,13 @@
  */
 
 import { PowerProductionUnitEntity } from '@h2-trust/amqp';
+import { EnumLabelMapper } from '@h2-trust/domain';
 
 export class PowerProductionOverviewDto {
   id: string;
   name: string;
   ratedPower: number;
-  typeName: string | undefined;
+  typeName: string;
   producing: boolean;
 
   constructor(id: string, name: string, ratedPower: number, typeName: string, producing: boolean) {
@@ -28,7 +29,7 @@ export class PowerProductionOverviewDto {
       id: unit.id,
       name: unit.name,
       ratedPower: unit.ratedPower,
-      typeName: unit.type?.name,
+      typeName: unit.type?.name ? EnumLabelMapper.getPowerProductionType(unit.type.name) : undefined,
       producing: true,
     };
   }

@@ -6,6 +6,4 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './lib/enums';
-export * from './lib/emission';
-export * from './lib/labels';
+export * from './enum-label-mapper';
