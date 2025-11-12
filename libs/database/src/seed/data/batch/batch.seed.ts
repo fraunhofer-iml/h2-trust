@@ -11,7 +11,7 @@ import { HydrogenBottlingBatchSeed } from './hydrogen-bottling-batch.seed';
 import { HydrogenProductionBatchSeed } from './hydrogen-production-batch.seed';
 import { HydrogenTransportationBatchSeed } from './hydrogen-transportation-batch.seed';
 import { PowerProductionBatchSeed } from './power-production-batch.seed';
-import {WaterConsumptionBatchSeed} from "./water-consumption-batch.seed";
+import { WaterConsumptionBatchSeed } from './water-consumption-batch.seed';
 
 export const BatchSeed = <Batch[]>[
   ...PowerProductionBatchSeed,

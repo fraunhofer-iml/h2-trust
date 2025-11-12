@@ -9,6 +9,7 @@
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
 import { EnergySourceClassificationService } from './classifications/energy-source-classification.service';
+import { WaterClassificationService } from './classifications/water-classification.service';
 import { ProofOfOriginDtoAssembler } from './proof-of-origin-dto.assembler';
 import { ProofOfOriginAssembler } from './proof-of-origin.assembler';
 import { ProofOfOriginService } from './proof-of-origin.service';
@@ -16,7 +17,6 @@ import { HydrogenBottlingSectionService } from './sections/hydrogen-bottling-sec
 import { HydrogenProductionSectionService } from './sections/hydrogen-production-section.service';
 import { HydrogenStorageSectionService } from './sections/hydrogen-storage-section.service';
 import { HydrogenTransportationSectionService } from './sections/hydrogen-transportation-section.service';
-import {WaterClassificationService} from "./classifications/water-classification.service";
 
 @Module({
   imports: [new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker(), new Broker().getProcessSvcBroker()],
@@ -29,7 +29,7 @@ import {WaterClassificationService} from "./classifications/water-classification
     HydrogenTransportationSectionService,
     ProofOfOriginDtoAssembler,
     EnergySourceClassificationService,
-    WaterClassificationService
+    WaterClassificationService,
   ],
   exports: [ProofOfOriginService],
 })

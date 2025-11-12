@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {Injectable} from '@nestjs/common';
-import {LineageContextEntity, ProcessStepEntity} from '@h2-trust/amqp';
-import {EmissionCalculationDto, EmissionComputationResultDto, EmissionForProcessStepDto} from '@h2-trust/api';
+import { Injectable } from '@nestjs/common';
+import { LineageContextEntity, ProcessStepEntity } from '@h2-trust/amqp';
+import { EmissionCalculationDto, EmissionComputationResultDto, EmissionForProcessStepDto } from '@h2-trust/api';
 import {
   FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ,
   getPowerEmissionFactorByEnergySource,
@@ -16,17 +16,16 @@ import {
   ProcessType,
   UNIT_G_CO2_PER_KG_H2,
 } from '@h2-trust/domain';
-import {LineageContextService} from '../lineage/lineage-context.service';
-import {EmissionAssembler} from './emission.assembler';
-import {PowerUnitLoader} from './power-unit.loader';
+import { LineageContextService } from '../lineage/lineage-context.service';
+import { EmissionAssembler } from './emission.assembler';
+import { PowerUnitLoader } from './power-unit.loader';
 
 @Injectable()
 export class EmissionCalculatorService {
   constructor(
     private readonly powerUnitLoader: PowerUnitLoader,
     private readonly lineageService: LineageContextService,
-  ) {
-  }
+  ) {}
 
   async computeForContext(ctx: LineageContextEntity): Promise<EmissionComputationResultDto> {
     const emissionCalculations: EmissionCalculationDto[] = [];
@@ -109,12 +108,8 @@ export class EmissionCalculatorService {
     return waterCalculation;
   }
 
-  private calculateWaterConsumptionEmissions(
-    processSteps: ProcessStepEntity[],
-  ): EmissionCalculationDto[] {
-    return processSteps.map((step) =>
-      EmissionAssembler.assembleWaterConsumptionCalculation(step),
-    );
+  private calculateWaterConsumptionEmissions(processSteps: ProcessStepEntity[]): EmissionCalculationDto[] {
+    return processSteps.map((step) => EmissionAssembler.assembleWaterConsumptionCalculation(step));
   }
 
   async computeForProcessStep(processStepId: string, emissionCalculationName: string): Promise<EmissionCalculationDto> {

@@ -29,7 +29,10 @@ export class ProofOfOriginAssembler {
 
     if (ctx.powerProductionProcessSteps?.length || ctx.waterConsumptionProcessSteps?.length) {
       sections.push(
-        await this.hydrogenProductionSectionService.buildHydrogenProductionSection(ctx.powerProductionProcessSteps, ctx.waterConsumptionProcessSteps),
+        await this.hydrogenProductionSectionService.buildHydrogenProductionSection(
+          ctx.powerProductionProcessSteps,
+          ctx.waterConsumptionProcessSteps,
+        ),
       );
     }
 

@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {Batch, Prisma} from '@prisma/client';
-import {BatchType} from '@h2-trust/domain';
-import {CompanySeed} from '../company.seed';
+import { Batch, Prisma } from '@prisma/client';
+import { BatchType } from '@h2-trust/domain';
+import { CompanySeed } from '../company.seed';
 
 export const WaterConsumptionBatchSeed = <Batch[]>[
   {

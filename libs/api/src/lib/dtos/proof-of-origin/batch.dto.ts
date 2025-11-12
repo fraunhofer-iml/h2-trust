@@ -23,7 +23,14 @@ export abstract class BatchDto {
   unit: string;
   batchType: string;
 
-  protected constructor(id: string, emission: EmissionDto, creationDate: Date, amount: number, unit: string, batchType: string) {
+  protected constructor(
+    id: string,
+    emission: EmissionDto,
+    creationDate: Date,
+    amount: number,
+    unit: string,
+    batchType: string,
+  ) {
     this.id = id;
     this.emission = emission;
     this.createdAt = creationDate;

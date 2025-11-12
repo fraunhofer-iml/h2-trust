@@ -6,25 +6,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {firstValueFrom} from 'rxjs';
-import {Inject, Injectable} from '@nestjs/common';
-import {ClientProxy} from '@nestjs/microservices';
-import {BrokerQueues, ProcessStepEntity, SustainabilityMessagePatterns,} from '@h2-trust/amqp';
-import {ClassificationDto, EmissionCalculationDto, WaterBatchDto,} from '@h2-trust/api';
-import {BatchType, MeasurementUnit, ProofOfOrigin} from "@h2-trust/domain";
-import {toEmissionDto} from "../emission-dto.builder";
-import {ProofOfOriginDtoAssembler} from "../proof-of-origin-dto.assembler";
+import { firstValueFrom } from 'rxjs';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { BrokerQueues, ProcessStepEntity, SustainabilityMessagePatterns } from '@h2-trust/amqp';
+import { ClassificationDto, EmissionCalculationDto, WaterBatchDto } from '@h2-trust/api';
+import { BatchType, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
+import { toEmissionDto } from '../emission-dto.builder';
+import { ProofOfOriginDtoAssembler } from '../proof-of-origin-dto.assembler';
 
 @Injectable()
 export class WaterClassificationService {
-  constructor(
-    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processClient: ClientProxy,
-  ) {
-  }
+  constructor(@Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processClient: ClientProxy) {}
 
-  async buildWaterClassification(
-    waterConsumptionProcessSteps: ProcessStepEntity[],
-  ): Promise<ClassificationDto> {
+  async buildWaterClassification(waterConsumptionProcessSteps: ProcessStepEntity[]): Promise<ClassificationDto> {
     if (!waterConsumptionProcessSteps?.length) {
       const message = 'No water consumption process steps found';
       throw new Error(message);
@@ -41,16 +36,13 @@ export class WaterClassificationService {
     );
   }
 
-  private async buildWaterBatches(
-    waterConsumptionProcessSteps: ProcessStepEntity[],
-  ): Promise<WaterBatchDto[]> {
+  private async buildWaterBatches(waterConsumptionProcessSteps: ProcessStepEntity[]): Promise<WaterBatchDto[]> {
     return await Promise.all(
       waterConsumptionProcessSteps.map(async (waterConsumptionProcessStep) => {
         const emissionCalculation: EmissionCalculationDto = await firstValueFrom(
-          this.processClient.send(
-            SustainabilityMessagePatterns.COMPUTE_WATER_FOR_STEP,
-            {processStep: waterConsumptionProcessStep},
-          ),
+          this.processClient.send(SustainabilityMessagePatterns.COMPUTE_WATER_FOR_STEP, {
+            processStep: waterConsumptionProcessStep,
+          }),
         );
 
         const h2KgEquivalentToWaterBatch = waterConsumptionProcessStep.batch.successors[0].amount;

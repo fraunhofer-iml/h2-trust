@@ -6,11 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {ProcessStep} from '@prisma/client';
-import {ProcessType} from '@h2-trust/domain';
-import {HydrogenProductionUnitSeed} from '../unit';
-import {UserSeed} from '../user.seed';
-import {WaterConsumptionBatchSeed} from "../batch";
+import { ProcessStep } from '@prisma/client';
+import { ProcessType } from '@h2-trust/domain';
+import { WaterConsumptionBatchSeed } from '../batch';
+import { HydrogenProductionUnitSeed } from '../unit';
+import { UserSeed } from '../user.seed';
 
 export const WaterConsumptionProcessStepSeed = <ProcessStep[]>[
   {

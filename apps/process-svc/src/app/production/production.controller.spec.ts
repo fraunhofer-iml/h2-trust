@@ -6,13 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {of} from 'rxjs';
-import {Test, TestingModule} from '@nestjs/testing';
-import {BrokerQueues, CreateProductionEntity} from '@h2-trust/amqp';
-import {ConfigurationService} from '@h2-trust/configuration';
-import {BatchType, HydrogenColor, ProcessType} from '@h2-trust/domain';
-import {ProductionController} from './production.controller';
-import {ProductionService} from './production.service';
+import { of } from 'rxjs';
+import { Test, TestingModule } from '@nestjs/testing';
+import { BrokerQueues, CreateProductionEntity } from '@h2-trust/amqp';
+import { ConfigurationService } from '@h2-trust/configuration';
+import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
+import { ProductionController } from './production.controller';
+import { ProductionService } from './production.service';
 
 describe('ProductionController', () => {
   const DERIVED_HYDROGEN_COLOR = HydrogenColor.GREEN;
@@ -84,7 +84,7 @@ describe('ProductionController', () => {
       companyIdOfHydrogenProductionUnit: 'company-hydrogen-1',
     };
 
-    const actualResponse = await controller.createProduction({createProductionEntity});
+    const actualResponse = await controller.createProduction({ createProductionEntity });
 
     expect(batchServiceSendMock).toHaveBeenCalledTimes(9); // 3 Power + 3 Water + 3 Hydrogen
     expect(Array.isArray(actualResponse)).toBe(true);
@@ -146,7 +146,7 @@ describe('ProductionController', () => {
         expect(processStepEntity).toHaveProperty('type', ProcessType.HYDROGEN_PRODUCTION);
         expect(processStepEntity).toHaveProperty('batch');
         expect(processStepEntity.batch).toHaveProperty('amount', 20);
-        expect(processStepEntity.batch).toHaveProperty('quality', JSON.stringify({color: DERIVED_HYDROGEN_COLOR}));
+        expect(processStepEntity.batch).toHaveProperty('quality', JSON.stringify({ color: DERIVED_HYDROGEN_COLOR }));
         expect(processStepEntity.batch).toHaveProperty('type', BatchType.HYDROGEN);
         expect(processStepEntity.batch).toHaveProperty('owner', {
           id: createProductionEntity.companyIdOfHydrogenProductionUnit,

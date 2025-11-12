@@ -6,15 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
-import {BatchEntity, ProcessStepEntity} from '@h2-trust/amqp';
-import {ProcessType} from '@h2-trust/domain';
-import {ProcessStepService} from './process-step.service';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
+import { ProcessType } from '@h2-trust/domain';
+import { ProcessStepService } from './process-step.service';
 
 @Injectable()
 export class ProcessLineageService {
-  constructor(private readonly processStepService: ProcessStepService) {
-  }
+  constructor(private readonly processStepService: ProcessStepService) {}
 
   async fetchPowerProductionProcessSteps(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
     return this.fetchProcessStepsDownFromHydrogenProduction(processSteps, ProcessType.POWER_PRODUCTION);
@@ -24,7 +23,10 @@ export class ProcessLineageService {
     return this.fetchProcessStepsDownFromHydrogenProduction(processSteps, ProcessType.WATER_CONSUMPTION);
   }
 
-  async fetchProcessStepsDownFromHydrogenProduction(processSteps: ProcessStepEntity[], questedProcessType: ProcessType): Promise<ProcessStepEntity[]> {
+  async fetchProcessStepsDownFromHydrogenProduction(
+    processSteps: ProcessStepEntity[],
+    questedProcessType: ProcessType,
+  ): Promise<ProcessStepEntity[]> {
     if (!processSteps || processSteps.length === 0) {
       throw new HttpException(
         `Process steps of type [${ProcessType.HYDROGEN_PRODUCTION}] are missing.`,

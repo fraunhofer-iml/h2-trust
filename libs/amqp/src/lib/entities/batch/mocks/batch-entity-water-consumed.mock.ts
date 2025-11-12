@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {WaterConsumptionBatchSeed} from 'libs/database/src/seed';
-import {CompanyEntityHydrogenMock} from '../../company/mocks';
+import { WaterConsumptionBatchSeed } from 'libs/database/src/seed';
+import { CompanyEntityHydrogenMock } from '../../company/mocks';
 import { BatchEntity } from '../batch.entity';
 
 export const BatchEntityWaterConsumedMock: BatchEntity[] = WaterConsumptionBatchSeed.map(

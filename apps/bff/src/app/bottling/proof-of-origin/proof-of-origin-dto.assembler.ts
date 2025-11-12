@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {HydrogenComponentEntity, ProcessStepEntity, Util} from '@h2-trust/amqp';
+import { HydrogenComponentEntity, ProcessStepEntity, Util } from '@h2-trust/amqp';
 import {
   BatchDto,
   ClassificationDto,
@@ -18,7 +18,7 @@ import {
   WaterBatchDto,
   WaterDetailsDto,
 } from '@h2-trust/api';
-import {BatchType, EnergySource, MeasurementUnit, ProofOfOrigin} from '@h2-trust/domain';
+import { BatchType, EnergySource, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
 
 export class ProofOfOriginDtoAssembler {
   static assembleProductionPowerBatchDto(
@@ -40,44 +40,23 @@ export class ProofOfOriginDtoAssembler {
     );
   }
 
-  static assembleWaterBatchDto(
-    processStepEntity: ProcessStepEntity,
-    emission?: EmissionDto,
-  ): WaterBatchDto {
+  static assembleWaterBatchDto(processStepEntity: ProcessStepEntity, emission?: EmissionDto): WaterBatchDto {
     return new WaterBatchDto(
       processStepEntity.batch.id,
       emission,
       processStepEntity.startedAt,
       processStepEntity.batch.amount,
       MeasurementUnit.WATER,
-      new WaterDetailsDto(
-        0,
-        new EmissionDto(
-          undefined,
-          undefined,
-          undefined,
-        ),
-      ),
-      new WaterDetailsDto(
-        0,
-        new EmissionDto(
-          undefined,
-          undefined,
-          undefined,
-        ),
-      ),
-      new WaterDetailsDto(
-        0,
-        new EmissionDto(
-          undefined,
-          undefined,
-          undefined,
-        ),
-      ),
+      new WaterDetailsDto(0, new EmissionDto(undefined, undefined, undefined)),
+      new WaterDetailsDto(0, new EmissionDto(undefined, undefined, undefined)),
+      new WaterDetailsDto(0, new EmissionDto(undefined, undefined, undefined)),
     );
   }
 
-  static assembleStorageHydrogenBatchDto(processStepEntity: ProcessStepEntity, emission?: EmissionDto): HydrogenBatchDto {
+  static assembleStorageHydrogenBatchDto(
+    processStepEntity: ProcessStepEntity,
+    emission?: EmissionDto,
+  ): HydrogenBatchDto {
     return new HydrogenBatchDto(
       processStepEntity.batch.id,
       emission,

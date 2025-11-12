@@ -6,12 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {WaterConsumptionProcessStepSeed} from 'libs/database/src/seed';
-import {BatchEntityWaterConsumedMock} from '../../batch/mocks';
-import {DocumentEntityMock} from '../../document/mocks';
-import {HydrogenProductionUnitEntityMock} from '../../unit/mocks';
-import {UserEntityHydrogenMock} from '../../user/mocks';
-import {ProcessStepEntity} from '../process-step.entity';
+import { WaterConsumptionProcessStepSeed } from 'libs/database/src/seed';
+import { BatchEntityWaterConsumedMock } from '../../batch/mocks';
+import { DocumentEntityMock } from '../../document/mocks';
+import { HydrogenProductionUnitEntityMock } from '../../unit/mocks';
+import { UserEntityHydrogenMock } from '../../user/mocks';
+import { ProcessStepEntity } from '../process-step.entity';
 
 export const ProcessStepEntityWaterConsumptionMock: ProcessStepEntity[] = WaterConsumptionProcessStepSeed.map(
   (seed, index) =>
