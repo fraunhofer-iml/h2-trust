@@ -11,7 +11,7 @@ import {
   ProcessStepEntityHydrogenBottlingMock,
   ProcessStepEntityHydrogenProductionMock,
   ProcessStepEntityHydrogenTransportationMock,
-  ProcessStepEntityPowerProductionMock,
+  ProcessStepEntityPowerProductionMock, ProcessStepEntityWaterConsumptionMock,
 } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { LineageContextService } from './lineage-context.service';
@@ -64,6 +64,7 @@ describe('LineageContextService', () => {
 
     expect(ctx.root.id).toBe(root.id);
     expect(ctx.powerProductionProcessSteps).toEqual([root]);
+    expect(ctx.waterConsumptionProcessSteps).toEqual([]);
     expect(ctx.hydrogenProductionProcessSteps).toEqual([]);
     expect(ctx.hydrogenBottlingProcessStep).toBeUndefined();
   });
@@ -89,24 +90,29 @@ describe('LineageContextService', () => {
   it('build() should return context for HYDROGEN_BOTTLING', async () => {
     const root = structuredClone(ProcessStepEntityHydrogenBottlingMock[0]);
     const hydrogenProduction = [structuredClone(ProcessStepEntityHydrogenProductionMock[0])];
+    const waterSteps = [structuredClone(ProcessStepEntityWaterConsumptionMock[0])];
     const powerSteps = [structuredClone(ProcessStepEntityPowerProductionMock[0])];
 
     jest.spyOn(stepService, 'fetchProcessStep').mockResolvedValue(root);
     const fetchHydrogenProdSpy = jest
       .spyOn(lineage, 'fetchHydrogenProductionProcessSteps')
       .mockResolvedValue(hydrogenProduction);
+    const fetchWaterSpy = jest.spyOn(lineage, 'fetchWaterConsumptionProcessSteps').mockResolvedValue(waterSteps);
     const fetchPowerSpy = jest.spyOn(lineage, 'fetchPowerProductionProcessSteps').mockResolvedValue(powerSteps);
 
     const ctx = await service.build(root.id);
 
     expect(fetchHydrogenProdSpy).toHaveBeenCalledTimes(1);
     expect(fetchHydrogenProdSpy).toHaveBeenCalledWith(root);
+    expect(fetchWaterSpy).toHaveBeenCalledTimes(1);
+    expect(fetchWaterSpy).toHaveBeenCalledWith(hydrogenProduction);
     expect(fetchPowerSpy).toHaveBeenCalledTimes(1);
     expect(fetchPowerSpy).toHaveBeenCalledWith(hydrogenProduction);
 
     expect(ctx.root.id).toBe(root.id);
     expect(ctx.hydrogenBottlingProcessStep?.id).toBe(root.id);
     expect(ctx.hydrogenProductionProcessSteps).toEqual(hydrogenProduction);
+    expect(ctx.waterConsumptionProcessSteps).toEqual(waterSteps);
     expect(ctx.powerProductionProcessSteps).toEqual(powerSteps);
   });
 
@@ -114,6 +120,7 @@ describe('LineageContextService', () => {
     const root = structuredClone(ProcessStepEntityHydrogenTransportationMock[0]);
     const hydrogenBottling = structuredClone(ProcessStepEntityHydrogenBottlingMock[0]);
     const hydrogenProduction = [structuredClone(ProcessStepEntityHydrogenProductionMock[0])];
+    const waterSteps = [structuredClone(ProcessStepEntityWaterConsumptionMock[0])];
     const powerSteps = [structuredClone(ProcessStepEntityPowerProductionMock[0])];
 
     jest.spyOn(stepService, 'fetchProcessStep').mockResolvedValue(root);
@@ -123,6 +130,7 @@ describe('LineageContextService', () => {
     const fetchHydrogenProdSpy = jest
       .spyOn(lineage, 'fetchHydrogenProductionProcessSteps')
       .mockResolvedValue(hydrogenProduction);
+    const fetchWaterSpy = jest.spyOn(lineage, 'fetchWaterConsumptionProcessSteps').mockResolvedValue(waterSteps);
     const fetchPowerSpy = jest.spyOn(lineage, 'fetchPowerProductionProcessSteps').mockResolvedValue(powerSteps);
 
     const ctx = await service.build(root.id);
@@ -131,12 +139,15 @@ describe('LineageContextService', () => {
     expect(fetchBottlingSpy).toHaveBeenCalledWith(root);
     expect(fetchHydrogenProdSpy).toHaveBeenCalledTimes(1);
     expect(fetchHydrogenProdSpy).toHaveBeenCalledWith(hydrogenBottling);
+    expect(fetchWaterSpy).toHaveBeenCalledTimes(1);
+    expect(fetchWaterSpy).toHaveBeenCalledWith(hydrogenProduction);
     expect(fetchPowerSpy).toHaveBeenCalledTimes(1);
     expect(fetchPowerSpy).toHaveBeenCalledWith(hydrogenProduction);
 
     expect(ctx.root.id).toBe(root.id);
     expect(ctx.hydrogenBottlingProcessStep?.id).toBe(hydrogenBottling.id);
     expect(ctx.hydrogenProductionProcessSteps).toEqual(hydrogenProduction);
+    expect(ctx.waterConsumptionProcessSteps).toEqual(waterSteps);
     expect(ctx.powerProductionProcessSteps).toEqual(powerSteps);
   });
 
