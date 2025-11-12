@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { firstValueFrom } from 'rxjs';
-import { Inject, Injectable, Logger } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import {firstValueFrom} from 'rxjs';
+import {Inject, Injectable, Logger} from '@nestjs/common';
+import {ClientProxy} from '@nestjs/microservices';
 import {
   BaseUnitEntity,
   BatchEntity,
@@ -22,10 +22,10 @@ import {
   UnitMessagePatterns,
   UserEntity,
 } from '@h2-trust/amqp';
-import { ConfigurationService } from '@h2-trust/configuration';
-import { BatchType, ProcessType } from '@h2-trust/domain';
-import { DateTimeUtil } from '@h2-trust/utils';
-import { ProductionUtils } from './utils/production.utils';
+import {ConfigurationService} from '@h2-trust/configuration';
+import {BatchType, ProcessType} from '@h2-trust/domain';
+import {DateTimeUtil} from '@h2-trust/utils';
+import {ProductionUtils} from './utils/production.utils';
 
 interface CreateProcessStepsParams {
   productionStartedAt: string;
@@ -40,13 +40,12 @@ interface CreateProcessStepsParams {
   hydrogenStorageUnitId: string;
   recordedBy: string;
   executedBy: string;
-  predecessors: string[];
+  predecessors: ProcessStepEntity[];
 }
 
 @Injectable()
 export class ProductionService {
   private readonly logger = new Logger(ProductionService.name);
-  private readonly numberOfPredecessors = 2;
   private readonly secondsPerHour = 3600;
   private readonly powerAccountingPeriodInSeconds: number;
   private readonly waterAccountingPeriodInSeconds: number;
@@ -127,7 +126,7 @@ export class ProductionService {
 
   private async calculateTotalWaterAmount(createProductionEntity: CreateProductionEntity): Promise<number> {
     const hydrogenProductionUnit: HydrogenProductionUnitEntity = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ, { id: createProductionEntity.hydrogenProductionUnitId }),
+      this.generalService.send(UnitMessagePatterns.READ, {id: createProductionEntity.hydrogenProductionUnitId}),
     );
 
     if (!Number.isFinite(hydrogenProductionUnit?.waterConsumptionLitersPerHour)) {
@@ -148,8 +147,6 @@ export class ProductionService {
     powerProductionProcessSteps: ProcessStepEntity[],
     waterConsumptionProcessSteps: ProcessStepEntity[],
   ): Promise<ProcessStepEntity[]> {
-    const predecessors: string[] = [...powerProductionProcessSteps, ...waterConsumptionProcessSteps].map((step) => step.batch.id);
-
     return this.createProcessSteps({
       productionStartedAt: createProductionEntity.productionStartedAt,
       productionEndedAt: createProductionEntity.productionEndedAt,
@@ -157,13 +154,13 @@ export class ProductionService {
       type: ProcessType.HYDROGEN_PRODUCTION,
       batchActivity: true,
       batchAmount: createProductionEntity.hydrogenAmountKg,
-      batchQuality: JSON.stringify({ color: createProductionEntity.hydrogenColor }),
+      batchQuality: JSON.stringify({color: createProductionEntity.hydrogenColor}),
       batchType: BatchType.HYDROGEN,
       batchOwner: createProductionEntity.companyIdOfHydrogenProductionUnit,
       hydrogenStorageUnitId: createProductionEntity.hydrogenStorageUnitId,
       recordedBy: createProductionEntity.recordedBy,
       executedBy: createProductionEntity.hydrogenProductionUnitId,
-      predecessors: predecessors,
+      predecessors: [...powerProductionProcessSteps, ...waterConsumptionProcessSteps],
     });
   }
 
@@ -205,8 +202,9 @@ export class ProductionService {
       );
       this.logger.debug(`ended At: ${endedAt.toISOString()}`);
 
-      const predecessors = params.predecessors.slice(i, i + this.numberOfPredecessors).map((id) => ({ id: id }));
-      this.logger.debug(`predecessors: ${predecessors.map((p) => p.id).join(', ')}`);
+      const predecessors: BatchEntity[] = params.predecessors
+        .filter(step => this.toMilliseconds(step.startedAt) === this.toMilliseconds(startedAt))
+        .map(processStep => processStep.batch);
 
       processSteps.push(
         new ProcessStepEntity(
@@ -220,11 +218,11 @@ export class ProductionService {
             quality: params.batchQuality,
             type: params.batchType,
             predecessors: predecessors,
-            owner: { id: params.batchOwner } as CompanyEntity,
-            hydrogenStorageUnit: { id: params.hydrogenStorageUnitId } as HydrogenStorageUnitEntity,
+            owner: {id: params.batchOwner} as CompanyEntity,
+            hydrogenStorageUnit: {id: params.hydrogenStorageUnitId} as HydrogenStorageUnitEntity,
           } as BatchEntity,
-          { id: params.recordedBy } as UserEntity,
-          { id: params.executedBy } as BaseUnitEntity,
+          {id: params.recordedBy} as UserEntity,
+          {id: params.executedBy} as BaseUnitEntity,
           null,
         ),
       );
@@ -232,8 +230,25 @@ export class ProductionService {
 
     return Promise.all(
       processSteps.map((step) =>
-        firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.CREATE, { processStepEntity: step })),
+        firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.CREATE, {processStepEntity: step})),
       ),
     );
+  }
+
+  private toMilliseconds(date: Date | string | undefined | null): number {
+    if (date == null) {
+      throw new Error('Date parameter cannot be null or undefined');
+    }
+
+    if (date instanceof Date) {
+      return date.getTime();
+    }
+
+    const milliseconds = Date.parse(date);
+    if (!Number.isFinite(milliseconds)) {
+      throw new Error(`Invalid date string format: ${date}`);
+    }
+
+    return milliseconds;
   }
 }
