@@ -85,7 +85,7 @@ export class PowerProductionUnitDto extends BaseUnitDto {
       electricityMeterNumber: requireDefined(unit.electricityMeterNumber, 'electricityMeterNumber'),
       gridOperator: unit.gridOperator,
       gridConnectionNumber: unit.gridConnectionNumber,
-      gridLevel: requireDefined(unit.gridLevel, 'gridLevel'),
+      gridLevel: EnumLabelMapper.getGridLevel(requireDefined(unit.gridLevel, 'gridLevel')),
       biddingZone: requireDefined(unit.biddingZone, 'biddingZone'),
       ratedPower: requireDefined(unit.ratedPower, 'ratedPower'),
       decommissioningPlannedOn: unit.decommissioningPlannedOn,

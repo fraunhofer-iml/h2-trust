@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerProductionType } from '../enums';
+import { GridLevel, PowerProductionType } from '../enums';
 
 export class EnumLabelMapper {
   private static readonly POWER_PRODUCTION_TYPE_LABELS: Record<PowerProductionType, string> = {
@@ -14,6 +14,13 @@ export class EnumLabelMapper {
     [PowerProductionType.HYDRO_POWER_PLANT]: 'Hydro Power Plant',
     [PowerProductionType.PHOTOVOLTAIC_SYSTEM]: 'Photovoltaic System',
     [PowerProductionType.WIND_TURBINE]: 'Wind Turbine',
+  };
+
+  private static readonly GRID_LEVEL_LABELS: Record<GridLevel, string> = {
+    [GridLevel.EXTRA_HIGH_VOLTAGE]: 'Extra High Voltage',
+    [GridLevel.HIGH_VOLTAGE]: 'High Voltage',
+    [GridLevel.MEDIUM_VOLTAGE]: 'Medium Voltage',
+    [GridLevel.LOW_VOLTAGE]: 'Low Voltage',
   };
 
   private static getLabel<T extends string>(value: T, labels: Record<T, string>): string {
@@ -24,7 +31,11 @@ export class EnumLabelMapper {
     return label;
   }
 
-  public static getPowerProductionType(status: PowerProductionType): string {
-    return this.getLabel(status, this.POWER_PRODUCTION_TYPE_LABELS);
+  public static getPowerProductionType(value: PowerProductionType): string {
+    return this.getLabel(value, this.POWER_PRODUCTION_TYPE_LABELS);
+  }
+
+  public static getGridLevel(value: GridLevel): string {
+    return this.getLabel(value, this.GRID_LEVEL_LABELS);
   }
 }
