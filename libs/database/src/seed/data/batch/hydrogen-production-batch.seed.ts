@@ -7,17 +7,16 @@
  */
 
 import { Batch, Prisma } from '@prisma/client';
-import { BatchType, HydrogenColor } from '@h2-trust/domain';
+import { BatchType } from '@h2-trust/domain';
 import { CompanySeed } from '../company.seed';
 import { HydrogenStorageUnitSeed } from '../unit/hydrogen-storage-unit.seed';
 
-export const HydrogenProductionBatchSeed = <Batch[]>[
+export const HydrogenProductionBatchSeed: readonly Batch[] = Object.freeze([
   {
     id: 'batch-hydrogen-produced-0',
     type: BatchType.HYDROGEN,
     amount: new Prisma.Decimal(50),
     active: true,
-    quality: `{"color": "${HydrogenColor.GREEN}"}`,
     ownerId: CompanySeed[2].id,
     hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
@@ -26,7 +25,6 @@ export const HydrogenProductionBatchSeed = <Batch[]>[
     type: BatchType.HYDROGEN,
     amount: new Prisma.Decimal(50),
     active: true,
-    quality: `{"color": "${HydrogenColor.GREEN}"}`,
     ownerId: CompanySeed[2].id,
     hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
@@ -35,71 +33,63 @@ export const HydrogenProductionBatchSeed = <Batch[]>[
     type: BatchType.HYDROGEN,
     amount: new Prisma.Decimal(5),
     active: false,
-    quality: `{"color": "${HydrogenColor.GREEN}"}`,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: undefined,
+    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-3',
     type: BatchType.HYDROGEN,
     amount: new Prisma.Decimal(5),
     active: false,
-    quality: `{"color": "${HydrogenColor.GREEN}"}`,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: undefined,
+    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-4',
     type: BatchType.HYDROGEN,
     amount: new Prisma.Decimal(5),
     active: false,
-    quality: `{"color": "${HydrogenColor.GREEN}"}`,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: undefined,
+    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-5',
     type: BatchType.HYDROGEN,
     amount: new Prisma.Decimal(5),
     active: false,
-    quality: `{"color": "${HydrogenColor.GREEN}"}`,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: undefined,
+    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-6',
     type: BatchType.HYDROGEN,
     amount: new Prisma.Decimal(5),
     active: false,
-    quality: `{"color": "${HydrogenColor.YELLOW}"}`,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: undefined,
+    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-7',
     type: BatchType.HYDROGEN,
     amount: new Prisma.Decimal(5),
     active: false,
-    quality: `{"color": "${HydrogenColor.YELLOW}"}`,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: undefined,
+    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-8',
     type: BatchType.HYDROGEN,
     amount: new Prisma.Decimal(5),
     active: false,
-    quality: `{"color": "${HydrogenColor.YELLOW}"}`,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: undefined,
+    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-9',
     type: BatchType.HYDROGEN,
     amount: new Prisma.Decimal(50),
     active: true,
-    quality: `{"color": "${HydrogenColor.YELLOW}"}`,
     ownerId: CompanySeed[2].id,
     hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
-];
+]);

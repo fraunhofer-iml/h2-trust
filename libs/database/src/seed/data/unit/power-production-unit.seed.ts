@@ -11,7 +11,7 @@ import { BiddingZone, GridLevel } from '@h2-trust/domain';
 import { PowerProductionTypeSeed } from './power-production-type.seed';
 import { UnitSeed } from './unit.seed';
 
-export const PowerProductionUnitSeed = <PowerProductionUnit[]>[
+export const PowerProductionUnitSeed: readonly PowerProductionUnit[] = Object.freeze([
   {
     id: UnitSeed[0].id,
     electricityMeterNumber: '123456789012',
@@ -56,4 +56,4 @@ export const PowerProductionUnitSeed = <PowerProductionUnit[]>[
     decommissioningPlannedOn: new Date('2045-08-14'),
     typeName: PowerProductionTypeSeed[3].name,
   },
-];
+]);

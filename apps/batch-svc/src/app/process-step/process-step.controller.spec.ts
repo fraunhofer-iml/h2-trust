@@ -87,6 +87,7 @@ describe('ProcessStepController', () => {
   it('should read process steps', async () => {
     const givenPayload = {
       processTypes: [ProcessType.HYDROGEN_BOTTLING],
+      predecessorProcessTypes: [ProcessType.HYDROGEN_PRODUCTION],
       active: true,
       companyId: CompanyEntityHydrogenMock.id,
     };

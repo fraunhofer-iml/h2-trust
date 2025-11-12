@@ -10,6 +10,7 @@ import { HydrogenProductionBatchSeed } from 'libs/database/src/seed';
 import { CompanyEntityHydrogenMock } from '../../company/mocks';
 import { HydrogenStorageUnitEntityMock } from '../../unit';
 import { BatchEntity } from '../batch.entity';
+import { QualityDetailsEntityMock } from './quality-details-entity.mock';
 
 export const BatchEntityHydrogenProducedMock: BatchEntity[] = HydrogenProductionBatchSeed.map(
   (seed) =>
@@ -17,11 +18,11 @@ export const BatchEntityHydrogenProducedMock: BatchEntity[] = HydrogenProduction
       seed.id,
       seed.active,
       seed.amount.toNumber(),
-      seed.quality,
       seed.type,
       [],
       [],
       CompanyEntityHydrogenMock,
       HydrogenStorageUnitEntityMock[0],
+      QualityDetailsEntityMock[0],
     ),
 );

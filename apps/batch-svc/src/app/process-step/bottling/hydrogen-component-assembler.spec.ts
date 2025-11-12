@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepEntity } from '@h2-trust/amqp';
+import { ProcessStepEntity, QualityDetailsEntity, QualityDetailsEntityMock } from '@h2-trust/amqp';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
 import { HydrogenComponentAssembler } from './hydrogen-component-assembler';
 
@@ -21,7 +21,7 @@ describe('HydrogenComponentAssembler', () => {
       type: ProcessType.HYDROGEN_BOTTLING,
       batch: {
         amount: 1,
-        quality: '{"color": "mixed"}',
+        qualityDetails: QualityDetailsEntityMock[2], // MIX
         type: BatchType.HYDROGEN,
         predecessors: [],
       },
@@ -30,7 +30,7 @@ describe('HydrogenComponentAssembler', () => {
 
   it('should calculate hydrogen composition with one color', () => {
     bottlingProcessStep.batch.predecessors = [
-      { amount: 1, quality: `{"color": "${HydrogenColor.GREEN}"}`, type: BatchType.HYDROGEN },
+      { amount: 1, qualityDetails: QualityDetailsEntityMock[0], type: BatchType.HYDROGEN },
     ];
 
     const expectedResponse = [{ color: HydrogenColor.GREEN, amount: 1 }];
@@ -77,8 +77,8 @@ describe('HydrogenComponentAssembler', () => {
 
   it('should not calculate hydrogen composition with an invalid predecessor type', () => {
     bottlingProcessStep.batch.predecessors = [
-      { amount: 1, quality: '{"color": "blue"}', type: BatchType.HYDROGEN },
-      { amount: 2, quality: '{"color": "blue"}', type: BatchType.POWER },
+      { amount: 1, qualityDetails: QualityDetailsEntityMock[0], type: BatchType.HYDROGEN },
+      { amount: 2, qualityDetails: QualityDetailsEntityMock[0], type: BatchType.POWER },
     ];
 
     const expectedErrorMessage = `Predecessor batch ${bottlingProcessStep.batch.predecessors[0].id} should be type ${BatchType.HYDROGEN}, but is ${BatchType.POWER}.`;

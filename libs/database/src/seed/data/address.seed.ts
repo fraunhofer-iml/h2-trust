@@ -8,7 +8,7 @@
 
 import { Address, Prisma } from '@prisma/client';
 
-export const AddressSeed = <Address[]>[
+export const AddressSeed: readonly Address[] = Object.freeze([
   {
     id: 'address-power-0',
     street: 'Energieweg 1',
@@ -69,4 +69,4 @@ export const AddressSeed = <Address[]>[
     latitude: new Prisma.Decimal(51.520727),
     longitude: new Prisma.Decimal(7.429133),
   },
-];
+]);

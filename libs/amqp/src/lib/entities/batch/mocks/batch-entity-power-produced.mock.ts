@@ -12,15 +12,5 @@ import { BatchEntity } from '../batch.entity';
 
 export const BatchEntityPowerProducedMock: BatchEntity[] = PowerProductionBatchSeed.map(
   (seed) =>
-    new BatchEntity(
-      seed.id,
-      seed.active,
-      seed.amount.toNumber(),
-      seed.quality,
-      seed.type,
-      [],
-      [],
-      CompanyEntityPowerMock,
-      undefined,
-    ),
+    new BatchEntity(seed.id, seed.active, seed.amount.toNumber(), seed.type, [], [], CompanyEntityPowerMock, undefined),
 );
