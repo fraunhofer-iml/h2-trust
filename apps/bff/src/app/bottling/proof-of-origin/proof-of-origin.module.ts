@@ -16,7 +16,7 @@ import { HydrogenBottlingSectionService } from './sections/hydrogen-bottling-sec
 import { HydrogenProductionSectionService } from './sections/hydrogen-production-section.service';
 import { HydrogenStorageSectionService } from './sections/hydrogen-storage-section.service';
 import { HydrogenTransportationSectionService } from './sections/hydrogen-transportation-section.service';
-import {WaterBatchService} from "./classifications/water-batch.service";
+import {WaterClassificationService} from "./classifications/water-classification.service";
 
 @Module({
   imports: [new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker(), new Broker().getProcessSvcBroker()],
@@ -29,7 +29,7 @@ import {WaterBatchService} from "./classifications/water-batch.service";
     HydrogenTransportationSectionService,
     ProofOfOriginDtoAssembler,
     EnergySourceClassificationService,
-    WaterBatchService
+    WaterClassificationService
   ],
   exports: [ProofOfOriginService],
 })

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenComponentEntity, ProcessStepEntity, Util } from '@h2-trust/amqp';
+import {HydrogenComponentEntity, ProcessStepEntity, Util} from '@h2-trust/amqp';
 import {
   BatchDto,
   ClassificationDto,
@@ -14,9 +14,11 @@ import {
   EmissionDto,
   HydrogenBatchDto,
   parseColor,
-  PowerBatchDto, WaterBatchDto, WaterDetailsDto,
+  PowerBatchDto,
+  WaterBatchDto,
+  WaterDetailsDto,
 } from '@h2-trust/api';
-import { BatchType, EnergySource, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
+import {BatchType, EnergySource, MeasurementUnit, ProofOfOrigin} from '@h2-trust/domain';
 
 export class ProofOfOriginDtoAssembler {
   static assembleProductionPowerBatchDto(

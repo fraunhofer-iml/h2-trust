@@ -8,4 +8,4 @@
 
 import { BatchType } from '@h2-trust/domain';
 
-export type ClassificationType = BatchType.POWER | BatchType.HYDROGEN;
+export type ClassificationType = BatchType.POWER | BatchType.WATER | BatchType.HYDROGEN;
