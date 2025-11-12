@@ -7,7 +7,7 @@
  */
 
 import { PowerProductionUnitEntity } from '@h2-trust/amqp';
-import { UnitType } from '@h2-trust/domain';
+import { EnumLabelMapper, UnitType } from '@h2-trust/domain';
 import { requireDefined } from '@h2-trust/utils';
 import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
@@ -90,7 +90,7 @@ export class PowerProductionUnitDto extends BaseUnitDto {
       ratedPower: requireDefined(unit.ratedPower, 'ratedPower'),
       decommissioningPlannedOn: unit.decommissioningPlannedOn,
       type: {
-        name: requireDefined(unit.type?.name, 'type.name'),
+        name: EnumLabelMapper.getPowerProductionType(requireDefined(unit.type?.name, 'type.name')),
         energySource: requireDefined(unit.type?.energySource, 'type.energySource'),
         hydrogenColor: requireDefined(unit.type?.hydrogenColor, 'type.hydrogenColor'),
       },
