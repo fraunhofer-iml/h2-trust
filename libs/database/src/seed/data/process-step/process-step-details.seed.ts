@@ -10,7 +10,7 @@ import { ProcessStepDetails } from '@prisma/client';
 import { HydrogenTransportationProcessStepSeed } from './hydrogen-transportation-process-step.seed';
 import { TransportationDetailsSeed } from './transportation-details.seed';
 
-export const ProcessStepDetailsSeed = <ProcessStepDetails[]>[
+export const ProcessStepDetailsSeed: readonly ProcessStepDetails[] = Object.freeze([
   {
     id: TransportationDetailsSeed[0].id,
     processStepId: HydrogenTransportationProcessStepSeed[0].id,
@@ -23,4 +23,4 @@ export const ProcessStepDetailsSeed = <ProcessStepDetails[]>[
     id: TransportationDetailsSeed[2].id,
     processStepId: HydrogenTransportationProcessStepSeed[2].id,
   },
-];
+]);

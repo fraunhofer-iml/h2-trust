@@ -6,20 +6,21 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { UserDbType } from '..';
-import { CompanySeed, UserSeed } from '../../../seed';
+import { UserSeed } from '../../../seed';
+import { UserDbType } from '../user.db.type';
+import { CompanyDbTypeMock } from './company-db-type.mock';
 
 export const UserDbTypeMock = <UserDbType[]>[
   {
     ...UserSeed[0],
-    company: CompanySeed[0],
+    company: CompanyDbTypeMock[0],
   },
   {
     ...UserSeed[1],
-    company: CompanySeed[2],
+    company: CompanyDbTypeMock[2],
   },
   {
     ...UserSeed[2],
-    company: CompanySeed[2],
+    company: CompanyDbTypeMock[2],
   },
 ];

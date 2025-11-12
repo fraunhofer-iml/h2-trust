@@ -12,7 +12,7 @@ import { HydrogenBottlingBatchSeed } from '../batch';
 import { HydrogenStorageUnitSeed } from '../unit';
 import { UserSeed } from '../user.seed';
 
-export const HydrogenBottlingProcessStepSeed = <ProcessStep[]>[
+export const HydrogenBottlingProcessStepSeed: readonly ProcessStep[] = Object.freeze([
   {
     id: 'process-step-hydrogen-bottling-0',
     type: ProcessType.HYDROGEN_BOTTLING,
@@ -40,4 +40,4 @@ export const HydrogenBottlingProcessStepSeed = <ProcessStep[]>[
     userId: UserSeed[1].id,
     unitId: HydrogenStorageUnitSeed[0].id,
   },
-];
+]);

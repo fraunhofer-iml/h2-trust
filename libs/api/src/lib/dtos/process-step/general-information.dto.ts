@@ -40,7 +40,7 @@ export class GeneralInformationDto extends BottlingOverviewDto {
       filledAt: processStep.endedAt,
       owner: processStep.batch?.owner?.name,
       filledAmount: processStep.batch?.amount,
-      color: processStep.batch?.quality,
+      color: processStep.batch?.qualityDetails?.color,
       producer: processStep.recordedBy?.id,
       product: 'Hydrogen',
       attachedFiles:

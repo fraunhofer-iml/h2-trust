@@ -7,7 +7,7 @@
  */
 
 import { of } from 'rxjs';
-import { ProcessStepEntity, ProcessStepEntityHydrogenProductionMock } from '@h2-trust/amqp';
+import { ProcessStepEntity, ProcessStepEntityHydrogenProductionMock, QualityDetailsEntityMock } from '@h2-trust/amqp';
 import { HydrogenColor, ProofOfOrigin } from '@h2-trust/domain';
 import { HydrogenStorageSectionService } from './hydrogen-storage-section.service';
 
@@ -36,7 +36,8 @@ describe('HydrogenStorageSectionService.buildHydrogenStorageSection', () => {
   });
 
   it('should return one classification (green)', async () => {
-    const givenProcessSteps: ProcessStepEntity[] = [ProcessStepEntityHydrogenProductionMock[0]];
+    const givenProcessSteps: ProcessStepEntity[] = [structuredClone(ProcessStepEntityHydrogenProductionMock[0])];
+    givenProcessSteps[0].batch.qualityDetails = structuredClone(QualityDetailsEntityMock[0]); // GREEN
 
     const actualResponse = await service.buildHydrogenStorageSection(givenProcessSteps);
 
@@ -54,6 +55,8 @@ describe('HydrogenStorageSectionService.buildHydrogenStorageSection', () => {
       ProcessStepEntityHydrogenProductionMock[0],
       ProcessStepEntityHydrogenProductionMock[6],
     ];
+    givenProcessSteps[0].batch.qualityDetails = structuredClone(QualityDetailsEntityMock[0]); // GREEN
+    givenProcessSteps[1].batch.qualityDetails = structuredClone(QualityDetailsEntityMock[1]); // YELLOW
 
     const actualResponse = await service.buildHydrogenStorageSection(givenProcessSteps);
 

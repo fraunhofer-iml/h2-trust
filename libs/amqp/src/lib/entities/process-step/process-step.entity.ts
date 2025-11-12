@@ -47,18 +47,18 @@ export class ProcessStepEntity {
   }
 
   static fromDatabase(processStep: ProcessStepDbType): ProcessStepEntity {
-    return <ProcessStepEntity>{
-      id: processStep.id,
-      startedAt: processStep.startedAt,
-      endedAt: processStep.endedAt,
-      type: processStep.type,
-      batch: BatchEntity.fromDatabase(processStep.batch),
-      recordedBy: UserEntity.fromDatabase(processStep.recordedBy),
-      executedBy: BaseUnitEntity.fromDatabase(processStep.executedBy),
-      documents: processStep.documents.map(DocumentEntity.fromDatabase),
-      transportationDetails: processStep.processStepDetails?.transportationDetails
+    return new ProcessStepEntity(
+      processStep.id,
+      processStep.startedAt,
+      processStep.endedAt,
+      processStep.type,
+      BatchEntity.fromDatabase(processStep.batch),
+      UserEntity.fromDatabase(processStep.recordedBy),
+      BaseUnitEntity.fromDatabase(processStep.executedBy),
+      processStep.documents.map((doc) => DocumentEntity.fromDatabase(doc)),
+      processStep.processStepDetails?.transportationDetails
         ? TransportationDetailsEntity.fromDatabase(processStep.processStepDetails.transportationDetails)
         : undefined,
-    };
+    );
   }
 }

@@ -10,7 +10,7 @@ import { HydrogenProductionUnit, Prisma } from '@prisma/client';
 import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology } from '@h2-trust/domain';
 import { UnitSeed } from './unit.seed';
 
-export const HydrogenProductionUnitSeed = <HydrogenProductionUnit[]>[
+export const HydrogenProductionUnitSeed: readonly HydrogenProductionUnit[] = Object.freeze([
   {
     id: UnitSeed[4].id,
     method: HydrogenProductionMethod.ELECTROLYSIS,
@@ -20,4 +20,4 @@ export const HydrogenProductionUnitSeed = <HydrogenProductionUnit[]>[
     pressure: new Prisma.Decimal(25),
     waterConsumptionLitersPerHour: new Prisma.Decimal(2),
   },
-];
+]);

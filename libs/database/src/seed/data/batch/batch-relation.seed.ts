@@ -11,12 +11,14 @@ import { HydrogenProductionBatchSeed } from './hydrogen-production-batch.seed';
 import { HydrogenTransportationBatchSeed } from './hydrogen-transportation-batch.seed';
 import { PowerProductionBatchSeed } from './power-production-batch.seed';
 
-export const BatchRelationPowerHydrogenSeed = HydrogenProductionBatchSeed.map((hydrogenBatch, index) => ({
-  A: hydrogenBatch.id,
-  B: PowerProductionBatchSeed[index].id,
-}));
+export const BatchRelationPowerHydrogenSeed: readonly { A: string; B: string }[] = Object.freeze(
+  HydrogenProductionBatchSeed.map((hydrogenBatch, index) => ({
+    A: hydrogenBatch.id,
+    B: PowerProductionBatchSeed[index].id,
+  })),
+);
 
-export const BatchRelationBottlingProductionSeed = [
+export const BatchRelationBottlingProductionSeed: readonly { A: string; B: string }[] = Object.freeze([
   {
     A: HydrogenBottlingBatchSeed[0].id,
     B: HydrogenProductionBatchSeed[2].id,
@@ -45,11 +47,11 @@ export const BatchRelationBottlingProductionSeed = [
     A: HydrogenBottlingBatchSeed[2].id,
     B: HydrogenProductionBatchSeed[8].id,
   },
-];
+]);
 
-export const BatchRelationTransportationBottlingSeed = HydrogenTransportationBatchSeed.map(
-  (batchTransported, index) => ({
+export const BatchRelationTransportationBottlingSeed: readonly { A: string; B: string }[] = Object.freeze(
+  HydrogenTransportationBatchSeed.map((batchTransported, index) => ({
     A: batchTransported.id,
     B: HydrogenBottlingBatchSeed[index].id,
-  }),
+  })),
 );

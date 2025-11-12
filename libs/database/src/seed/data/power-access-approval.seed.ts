@@ -12,7 +12,7 @@ import { CompanySeed } from './company.seed';
 import { DocumentSeed } from './document.seed';
 import { PowerProductionUnitSeed } from './unit';
 
-export const PowerAccessApprovalSeed = <PowerAccessApproval[]>[
+export const PowerAccessApprovalSeed: readonly PowerAccessApproval[] = Object.freeze([
   {
     id: 'power-access-approval-0',
     decidedAt: new Date('2025-02-01'),
@@ -49,4 +49,4 @@ export const PowerAccessApprovalSeed = <PowerAccessApproval[]>[
     hydrogenProducerId: CompanySeed[2].id,
     documentId: DocumentSeed[0].id,
   },
-];
+]);

@@ -14,7 +14,6 @@ import {
   HydrogenCompositionUtil,
   ProcessStepEntity,
 } from '@h2-trust/amqp';
-import { parseColor } from '@h2-trust/api';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 
 export class HydrogenComponentAssembler {
@@ -62,6 +61,6 @@ export class HydrogenComponentAssembler {
       throw new BrokerException(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
-    return new HydrogenComponentEntity(parseColor(batch.quality), batch.amount);
+    return new HydrogenComponentEntity(batch.qualityDetails?.color, batch.amount);
   }
 }
