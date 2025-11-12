@@ -7,7 +7,7 @@
  */
 
 import { PowerProductionUnitEntity } from '@h2-trust/amqp';
-import { EnumLabelMapper } from '@h2-trust/domain';
+import { EnumLabelMapper } from '../../labels';
 
 export class PowerProductionOverviewDto {
   id: string;

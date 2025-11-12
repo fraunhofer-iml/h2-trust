@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { GridLevel, HydrogenProductionMethod, HydrogenProductionTechnology, HydrogenStorageType, PowerProductionType } from '../enums';
+import { GridLevel, HydrogenProductionMethod, HydrogenProductionTechnology, HydrogenStorageType, PowerProductionType } from "@h2-trust/domain";
 
 export class EnumLabelMapper {
   private static readonly POWER_PRODUCTION_TYPE_LABELS: Record<PowerProductionType, string> = {

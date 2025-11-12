@@ -7,7 +7,7 @@
  */
 
 import { HydrogenProductionUnitEntity } from '@h2-trust/amqp';
-import { EnumLabelMapper } from '@h2-trust/domain';
+import { EnumLabelMapper } from '../../labels';
 
 export class HydrogenProductionOverviewDto {
   id: string;
