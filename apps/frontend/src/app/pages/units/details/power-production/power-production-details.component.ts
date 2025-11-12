@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FINANCIAL_SUPPORT_INFO } from 'apps/frontend/src/app/shared/constants/financial-support-info';
+import { RED_III_CRITERIA } from 'apps/frontend/src/app/shared/constants/financial-support-info';
 import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
@@ -22,7 +22,7 @@ import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
   templateUrl: './power-production-details.component.html',
 })
 export class PowerProductionDetailsComponent {
-  protected readonly FINANCIAL_SUPPORT_INFO = FINANCIAL_SUPPORT_INFO;
+  protected readonly RED_III_CRITERIA = RED_III_CRITERIA;
 
   unit = input.required<PowerProductionUnitDto>();
 

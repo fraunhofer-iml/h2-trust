@@ -1,10 +1,10 @@
 <div
-  class="flex flex-row rounded-md border-[3px] p-4 text-sm"
-  [ngClass]="isValid() ? 'border-secondary-300/20' : 'border-neutral-200/80'"
+  class="flex flex-row rounded-md border-2 p-4 text-sm"
+  [ngClass]="isValid() ? 'border-secondary-300/20 bg-secondary-700/10' : 'border-neutral-200/80 bg-neutral-300/20'"
 >
   <div class="stretch flex flex-col">
-    <span class="font-semibold text-neutral-600">{{ title() }}</span>
-    <p>{{ description() }}.</p>
+    <span class="font-semibold text-neutral-600">{{ content()?.TITLE }}</span>
+    <p>{{ content()?.DESCRIPTION }}</p>
   </div>
   <div class="flex w-16 items-center justify-center pl-2">
     <span class="material-symbols-outlined text-4xl" [ngClass]="isValid() ? 'text-secondary-200' : 'text-neutral-700'">

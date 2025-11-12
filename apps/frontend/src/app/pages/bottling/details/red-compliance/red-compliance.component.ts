@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FINANCIAL_SUPPORT_INFO } from 'apps/frontend/src/app/shared/constants/financial-support-info';
+import { RED_III_CRITERIA } from 'apps/frontend/src/app/shared/constants/financial-support-info';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { RedComplianceDto } from '@h2-trust/api';
@@ -18,7 +18,7 @@ import { RedCheckCardComponent } from './red-check-card/red-check-card.component
   templateUrl: './red-compliance.component.html',
 })
 export class RedComplianceComponent {
-  protected readonly FINANCIAL_SUPPORT_INFO = FINANCIAL_SUPPORT_INFO;
+  protected readonly RED_III_CRITERIA = RED_III_CRITERIA;
 
   redCompliance = input<RedComplianceDto>();
   showComplianceInfo = false;

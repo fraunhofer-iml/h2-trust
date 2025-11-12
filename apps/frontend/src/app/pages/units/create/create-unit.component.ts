@@ -36,7 +36,7 @@ import {
   PowerProductionType,
   UnitType,
 } from '@h2-trust/domain';
-import { FINANCIAL_SUPPORT_INFO } from '../../../shared/constants/financial-support-info';
+import { RED_III_CRITERIA } from '../../../shared/constants/financial-support-info';
 import { H2_PRODUCTION_TYPES } from '../../../shared/constants/hydrogen-production-types';
 import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
@@ -74,7 +74,7 @@ import {
   templateUrl: './create-unit.component.html',
 })
 export class CreateUnitComponent {
-  protected readonly FINANCIAL_SUPORT_INFO = FINANCIAL_SUPPORT_INFO;
+  protected readonly RED_III_CRITERIA = RED_III_CRITERIA;
 
   unitsService = inject(UnitsService);
   companiesService = inject(CompaniesService);

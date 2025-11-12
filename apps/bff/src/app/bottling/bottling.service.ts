@@ -91,7 +91,7 @@ export class BottlingService {
     const generalInformationDto = GeneralInformationDto.fromEntityToDto(processStep);
     generalInformationDto.producer = await this.fetchProducerName(generalInformationDto.producer);
     generalInformationDto.hydrogenComposition = await this.fetchHydrogenComposition(processStep);
-    return { ...generalInformationDto, redCompliance: new RedComplianceDto(true, true, true, true) };
+    return { ...generalInformationDto, redCompliance: new RedComplianceDto(true, true, false, true) };
   }
 
   private async fetchProducerName(producerId: string): Promise<string> {

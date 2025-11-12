@@ -7,7 +7,6 @@ import { Component, input } from '@angular/core';
   templateUrl: './red-check-card.component.html',
 })
 export class RedCheckCardComponent {
-  title = input<string>('');
-  description = input<string>('');
+  content = input<{ TITLE: string; DESCRIPTION: string }>();
   isValid = input<boolean>(false);
 }
