@@ -7,7 +7,7 @@
  */
 
 import { HydrogenStorageUnitDbType } from '@h2-trust/database';
-import { UnitType } from '@h2-trust/domain';
+import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { HydrogenComponentEntity } from '../bottling';
 import { CompanyEntity } from '../company';
@@ -16,7 +16,7 @@ import { BaseUnitEntity } from './base-unit.entity';
 export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   capacity?: number;
   pressure?: number;
-  type?: string;
+  type?: HydrogenStorageType;
   filling?: HydrogenComponentEntity[];
 
   constructor(
@@ -42,7 +42,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     unitType: UnitType,
     capacity: number,
     pressure: number,
-    type: string,
+    type: HydrogenStorageType,
     filling: HydrogenComponentEntity[],
   ) {
     super(

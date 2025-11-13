@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { PowerProductionType } from '@h2-trust/domain';
 import { PowerProductionOverviewDto } from '../power-production-overview.dto';
 
 export const PowerProductionUnitOverviewDtoMock = <PowerProductionOverviewDto[]>[
@@ -14,13 +15,13 @@ export const PowerProductionUnitOverviewDtoMock = <PowerProductionOverviewDto[]>
     name: 'Onshore Wind Turbine 3000',
     ratedPower: 0,
     producing: true,
-    typeName: undefined,
+    typeName: PowerProductionType.WIND_TURBINE,
   },
   {
     id: 'power-production-unit-2',
     name: 'Onshore Wind Turbine 4500',
     ratedPower: 0,
     producing: true,
-    typeName: undefined,
+    typeName: PowerProductionType.WIND_TURBINE,
   },
 ];

@@ -7,13 +7,14 @@
  */
 
 import { PowerProductionTypeDbType } from '@h2-trust/database';
+import { PowerProductionType } from '@h2-trust/domain';
 
 export class PowerProductionTypeEntity {
-  name?: string;
+  name?: PowerProductionType;
   energySource?: string;
   hydrogenColor?: string;
 
-  constructor(name: string, energySource: string, hydrogenColor: string) {
+  constructor(name: PowerProductionType, energySource: string, hydrogenColor: string) {
     this.name = name;
     this.energySource = energySource;
     this.hydrogenColor = hydrogenColor;

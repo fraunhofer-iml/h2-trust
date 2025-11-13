@@ -9,6 +9,7 @@
 import { PowerProductionUnitEntity } from '@h2-trust/amqp';
 import { UnitType } from '@h2-trust/domain';
 import { requireDefined } from '@h2-trust/utils';
+import { EnumLabelMapper } from '../../labels';
 import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
 import { PowerProductionTypeDto } from './power-production-type.dto';
@@ -85,12 +86,12 @@ export class PowerProductionUnitDto extends BaseUnitDto {
       electricityMeterNumber: requireDefined(unit.electricityMeterNumber, 'electricityMeterNumber'),
       gridOperator: unit.gridOperator,
       gridConnectionNumber: unit.gridConnectionNumber,
-      gridLevel: requireDefined(unit.gridLevel, 'gridLevel'),
+      gridLevel: EnumLabelMapper.getGridLevel(requireDefined(unit.gridLevel, 'gridLevel')),
       biddingZone: requireDefined(unit.biddingZone, 'biddingZone'),
       ratedPower: requireDefined(unit.ratedPower, 'ratedPower'),
       decommissioningPlannedOn: unit.decommissioningPlannedOn,
       type: {
-        name: requireDefined(unit.type?.name, 'type.name'),
+        name: EnumLabelMapper.getPowerProductionType(requireDefined(unit.type?.name, 'type.name')),
         energySource: requireDefined(unit.type?.energySource, 'type.energySource'),
         hydrogenColor: requireDefined(unit.type?.hydrogenColor, 'type.hydrogenColor'),
       },

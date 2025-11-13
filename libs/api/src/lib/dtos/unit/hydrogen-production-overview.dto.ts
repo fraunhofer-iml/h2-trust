@@ -7,12 +7,14 @@
  */
 
 import { HydrogenProductionUnitEntity } from '@h2-trust/amqp';
+import { requireDefined } from '@h2-trust/utils';
+import { EnumLabelMapper } from '../../labels';
 
 export class HydrogenProductionOverviewDto {
   id: string;
   name: string;
   ratedPower: number;
-  technology: string | undefined;
+  technology: string;
   producing: boolean;
   powerAccessApprovalStatus: boolean;
   powerProducerId: string;
@@ -45,7 +47,7 @@ export class HydrogenProductionOverviewDto {
       id: unit.id,
       name: unit.name,
       ratedPower: unit.ratedPower,
-      technology: unit.technology,
+      technology: EnumLabelMapper.getHydrogenProductionTechnology(requireDefined(unit.technology, 'unit.technology')),
       producing: true,
       powerAccessApprovalStatus: HydrogenProductionOverviewDto.existsPowerProducer(unit),
       powerProducerId: firstApproval?.powerProducerId ?? '',
