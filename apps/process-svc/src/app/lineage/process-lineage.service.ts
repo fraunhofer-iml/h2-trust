@@ -6,14 +6,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { BatchEntity, BrokerQueues, ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
-import { ProcessStepService } from './process-step.service';
+import { firstValueFrom } from 'rxjs';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class ProcessLineageService {
-  constructor(private readonly processStepService: ProcessStepService) {}
+  constructor(@Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchService: ClientProxy) { }
 
   async fetchPowerProductionProcessSteps(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
     return this.fetchProcessStepsDownFromHydrogenProduction(processSteps, ProcessType.POWER_PRODUCTION);
@@ -64,7 +65,7 @@ export class ProcessLineageService {
       const predecessorBatches = hydrogenProductionProcessSteps.flatMap((processStep) =>
         this.getPredecessorBatchesOrThrow(processStep),
       );
-      currentProcessStepLayer = await this.processStepService.fetchProcessStepsOfBatches(predecessorBatches);
+      currentProcessStepLayer = await this.fetchProcessStepsOfBatches(predecessorBatches);
     }
 
     return Array.from(questedProcessStepsById.values());
@@ -82,7 +83,7 @@ export class ProcessLineageService {
 
     const predecessorBatches: BatchEntity[] = this.getPredecessorBatchesOrThrow(processStep);
     const processStepsOfPredecessorBatches =
-      await this.processStepService.fetchProcessStepsOfBatches(predecessorBatches);
+      await this.fetchProcessStepsOfBatches(predecessorBatches);
     this.assertProcessType(processStepsOfPredecessorBatches, ProcessType.HYDROGEN_PRODUCTION);
     this.assertNumberOfProcessSteps(processStepsOfPredecessorBatches, predecessorBatches.length);
 
@@ -101,7 +102,7 @@ export class ProcessLineageService {
 
     const predecessorBatches: BatchEntity[] = this.getPredecessorBatchesOrThrow(processStep);
     const processStepsOfPredecessorBatches: ProcessStepEntity[] =
-      await this.processStepService.fetchProcessStepsOfBatches(predecessorBatches);
+      await this.fetchProcessStepsOfBatches(predecessorBatches);
     this.assertProcessType(processStepsOfPredecessorBatches, ProcessType.HYDROGEN_BOTTLING);
     this.assertNumberOfProcessSteps(processStepsOfPredecessorBatches, 1);
 
@@ -136,5 +137,10 @@ export class ProcessLineageService {
       const errorMessage = `All process steps must be of type ${expectedProcessType}, but found invalid process types: ${invalidProcessTypes}`;
       throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
     }
+  }
+
+  async fetchProcessStepsOfBatches(batches: BatchEntity[]): Promise<ProcessStepEntity[]> {
+    const promises = batches.map(({ processStepId }) => firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.READ_UNIQUE, { processStepId })));
+    return Promise.all(promises);
   }
 }

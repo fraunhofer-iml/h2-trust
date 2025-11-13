@@ -11,12 +11,11 @@ import { Broker } from '@h2-trust/amqp';
 import { LineageContextService } from './lineage-context.service';
 import { LineageController } from './lineage.controller';
 import { ProcessLineageService } from './process-lineage.service';
-import { ProcessStepService } from './process-step.service';
 
 @Module({
   imports: [new Broker().getBatchSvcBroker()],
   controllers: [LineageController],
-  providers: [LineageContextService, ProcessLineageService, ProcessStepService],
+  providers: [LineageContextService, ProcessLineageService],
   exports: [LineageContextService],
 })
-export class LineageModule {}
+export class LineageModule { }

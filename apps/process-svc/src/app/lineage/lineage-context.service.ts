@@ -6,21 +6,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { LineageContextEntity, ProcessStepEntity } from '@h2-trust/amqp';
+import { Inject, Injectable } from '@nestjs/common';
+import { BrokerQueues, LineageContextEntity, ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { ProcessLineageService } from './process-lineage.service';
-import { ProcessStepService } from './process-step.service';
+import { firstValueFrom } from 'rxjs';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class LineageContextService {
   constructor(
-    private readonly processStepService: ProcessStepService,
+    @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchService: ClientProxy,
     private readonly lineage: ProcessLineageService,
-  ) {}
+  ) { }
 
   async build(processStepId: string): Promise<LineageContextEntity> {
-    const processStep = await this.processStepService.fetchProcessStep(processStepId);
+    const processStep = await firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.READ_UNIQUE, { processStepId }));
     switch (processStep.type) {
       case ProcessType.POWER_PRODUCTION:
         return this.buildForPowerProduction(processStep);
