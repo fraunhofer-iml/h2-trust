@@ -8,21 +8,25 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import {
+  BrokerQueues,
   ProcessStepEntityHydrogenBottlingMock,
   ProcessStepEntityHydrogenProductionMock,
   ProcessStepEntityHydrogenTransportationMock,
   ProcessStepEntityPowerProductionMock,
   ProcessStepEntityWaterConsumptionMock,
+  ProcessStepMessagePatterns,
+  UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { LineageContextService } from './lineage-context.service';
 import { ProcessLineageService } from './process-lineage.service';
-import { ProcessStepService } from './process-step.service';
+import { ClientProxy } from '@nestjs/microservices';
+import { of } from 'rxjs';
 
 describe('LineageContextService', () => {
   let service: LineageContextService;
   let lineage: ProcessLineageService;
-  let stepService: ProcessStepService;
+  let batchSvc: ClientProxy;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -38,15 +42,17 @@ describe('LineageContextService', () => {
           },
         },
         {
-          provide: ProcessStepService,
-          useValue: { fetchProcessStep: jest.fn(), fetchProcessStepsOfBatches: jest.fn() },
+          provide: BrokerQueues.QUEUE_BATCH_SVC,
+          useValue: {
+            send: jest.fn(),
+          },
         },
       ],
     }).compile();
 
     service = module.get(LineageContextService);
     lineage = module.get(ProcessLineageService);
-    stepService = module.get(ProcessStepService);
+    batchSvc = module.get(BrokerQueues.QUEUE_BATCH_SVC);
   });
 
   afterEach(() => {
@@ -59,7 +65,9 @@ describe('LineageContextService', () => {
 
   it('build() should return context for POWER_PRODUCTION', async () => {
     const root = structuredClone(ProcessStepEntityPowerProductionMock[0]);
-    jest.spyOn(stepService, 'fetchProcessStep').mockResolvedValue(root);
+
+    jest.spyOn(batchSvc, 'send')
+      .mockImplementation((_messagePattern, _data) => of(root));
 
     const ctx = await service.build(root.id);
 
@@ -74,7 +82,8 @@ describe('LineageContextService', () => {
     const root = structuredClone(ProcessStepEntityHydrogenProductionMock[0]);
     const powerSteps = [structuredClone(ProcessStepEntityPowerProductionMock[0])];
 
-    jest.spyOn(stepService, 'fetchProcessStep').mockResolvedValue(root);
+    jest.spyOn(batchSvc, 'send')
+      .mockImplementation((_messagePattern, _data) => of(root));
     const fetchPowerSpy = jest.spyOn(lineage, 'fetchPowerProductionProcessSteps').mockResolvedValue(powerSteps);
 
     const ctx = await service.build(root.id);
@@ -94,7 +103,8 @@ describe('LineageContextService', () => {
     const waterSteps = [structuredClone(ProcessStepEntityWaterConsumptionMock[0])];
     const powerSteps = [structuredClone(ProcessStepEntityPowerProductionMock[0])];
 
-    jest.spyOn(stepService, 'fetchProcessStep').mockResolvedValue(root);
+    jest.spyOn(batchSvc, 'send')
+      .mockImplementation((_messagePattern, _data) => of(root));
     const fetchHydrogenProdSpy = jest
       .spyOn(lineage, 'fetchHydrogenProductionProcessSteps')
       .mockResolvedValue(hydrogenProduction);
@@ -124,7 +134,8 @@ describe('LineageContextService', () => {
     const waterSteps = [structuredClone(ProcessStepEntityWaterConsumptionMock[0])];
     const powerSteps = [structuredClone(ProcessStepEntityPowerProductionMock[0])];
 
-    jest.spyOn(stepService, 'fetchProcessStep').mockResolvedValue(root);
+    jest.spyOn(batchSvc, 'send')
+      .mockImplementation((_messagePattern, _data) => of(root));
     const fetchBottlingSpy = jest
       .spyOn(lineage, 'fetchHydrogenBottlingProcessStep')
       .mockResolvedValue(hydrogenBottling);
@@ -155,7 +166,8 @@ describe('LineageContextService', () => {
   it('should throw for invalid process type', async () => {
     const invalid = structuredClone(ProcessStepEntityPowerProductionMock[0]);
     invalid.type = 'INVALID' as unknown as ProcessType;
-    jest.spyOn(stepService, 'fetchProcessStep').mockResolvedValue(invalid);
+    jest.spyOn(batchSvc, 'send')
+      .mockImplementation((_messagePattern, _data) => of(invalid));
 
     await expect(service.build(invalid.id)).rejects.toThrow(
       `ProcessStep with ID ${invalid.id} has an invalid process type: ${invalid.type}`,
