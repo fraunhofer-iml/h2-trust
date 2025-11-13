@@ -27,9 +27,12 @@ export class ProofOfOriginAssembler {
   async build(ctx: LineageContextEntity): Promise<SectionDto[]> {
     const sections: SectionDto[] = [];
 
-    if (ctx.powerProductionProcessSteps?.length) {
+    if (ctx.powerProductionProcessSteps?.length || ctx.waterConsumptionProcessSteps?.length) {
       sections.push(
-        await this.hydrogenProductionSectionService.buildHydrogenProductionSection(ctx.powerProductionProcessSteps),
+        await this.hydrogenProductionSectionService.buildHydrogenProductionSection(
+          ctx.powerProductionProcessSteps,
+          ctx.waterConsumptionProcessSteps,
+        ),
       );
     }
 

@@ -11,22 +11,39 @@ import { ProcessStepEntity } from '@h2-trust/amqp';
 import { ClassificationDto, SectionDto } from '@h2-trust/api';
 import { ProofOfOrigin } from '@h2-trust/domain';
 import { EnergySourceClassificationService } from '../classifications/energy-source-classification.service';
+import { WaterClassificationService } from '../classifications/water-classification.service';
 import { ProofOfOriginDtoAssembler } from '../proof-of-origin-dto.assembler';
 
 @Injectable()
 export class HydrogenProductionSectionService {
-  constructor(private readonly energySourceClassificationService: EnergySourceClassificationService) {}
+  constructor(
+    private readonly energySourceClassificationService: EnergySourceClassificationService,
+    private readonly waterClassificationService: WaterClassificationService,
+  ) {}
 
-  async buildHydrogenProductionSection(powerProductionProcessSteps: ProcessStepEntity[]): Promise<SectionDto> {
-    const energySourceClassificationDtos: ClassificationDto[] =
-      await this.energySourceClassificationService.buildEnergySourceClassificationsFromContext(
-        powerProductionProcessSteps,
+  async buildHydrogenProductionSection(
+    powerProductionProcessSteps: ProcessStepEntity[],
+    waterConsumptionProcessSteps: ProcessStepEntity[],
+  ): Promise<SectionDto> {
+    const classifications: ClassificationDto[] = [];
+
+    if (powerProductionProcessSteps?.length) {
+      const energySourceClassificationDtos: ClassificationDto[] =
+        await this.energySourceClassificationService.buildEnergySourceClassifications(powerProductionProcessSteps);
+      const powerSupplyClassification: ClassificationDto = ProofOfOriginDtoAssembler.assemblePowerClassification(
+        ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION_NAME,
+        [],
+        energySourceClassificationDtos,
       );
-    const powerSupplyClassification: ClassificationDto = ProofOfOriginDtoAssembler.assemblePowerClassification(
-      ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION_NAME,
-      [],
-      energySourceClassificationDtos,
-    );
-    return new SectionDto(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION_NAME, [], [powerSupplyClassification]);
+      classifications.push(powerSupplyClassification);
+    }
+
+    if (waterConsumptionProcessSteps?.length) {
+      classifications.push(
+        await this.waterClassificationService.buildWaterClassification(waterConsumptionProcessSteps),
+      );
+    }
+
+    return new SectionDto(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION_NAME, [], classifications);
   }
 }

@@ -69,7 +69,6 @@ describe('ProductionController', () => {
     expect(controller).toBeDefined();
   });
 
-  // TODO-MP: remove comments with DUHGW-236
   it('should create production process steps and call batchService.send for each period', async () => {
     const createProductionEntity: CreateProductionEntity = {
       productionStartedAt: new Date('2025-01-01T10:00:00Z').toISOString(),
@@ -89,8 +88,7 @@ describe('ProductionController', () => {
 
     expect(batchServiceSendMock).toHaveBeenCalledTimes(9); // 3 Power + 3 Water + 3 Hydrogen
     expect(Array.isArray(actualResponse)).toBe(true);
-    //expect(actualResponse.length).toBe(9); // 3 Power + 3 Water + 3 Hydrogen
-    expect(actualResponse.length).toBe(6); // 3 Power + 3 Water + 3 Hydrogen
+    expect(actualResponse.length).toBe(9); // 3 Power + 3 Water + 3 Hydrogen
 
     actualResponse
       .filter((step) => step.type === ProcessType.POWER_PRODUCTION)
@@ -205,27 +203,25 @@ describe('ProductionController', () => {
         endedAt: new Date('2025-01-01T10:44:59.000Z'),
       }),
     );
-    /*
-      expect(actualResponse[6]).toEqual(
-        expect.objectContaining({
-          startedAt: new Date('2025-01-01T10:00:00.000Z'),
-          endedAt: new Date('2025-01-01T10:14:59.000Z'),
-        }),
-      );
-  
-      expect(actualResponse[7]).toEqual(
-        expect.objectContaining({
-          startedAt: new Date('2025-01-01T10:15:00.000Z'),
-          endedAt: new Date('2025-01-01T10:29:59.000Z'),
-        }),
-      );
-  
-      expect(actualResponse[8]).toEqual(
-        expect.objectContaining({
-          startedAt: new Date('2025-01-01T10:30:00.000Z'),
-          endedAt: new Date('2025-01-01T10:44:59.000Z'),
-        }),
-      );
-    */
+    expect(actualResponse[6]).toEqual(
+      expect.objectContaining({
+        startedAt: new Date('2025-01-01T10:00:00.000Z'),
+        endedAt: new Date('2025-01-01T10:14:59.000Z'),
+      }),
+    );
+
+    expect(actualResponse[7]).toEqual(
+      expect.objectContaining({
+        startedAt: new Date('2025-01-01T10:15:00.000Z'),
+        endedAt: new Date('2025-01-01T10:29:59.000Z'),
+      }),
+    );
+
+    expect(actualResponse[8]).toEqual(
+      expect.objectContaining({
+        startedAt: new Date('2025-01-01T10:30:00.000Z'),
+        endedAt: new Date('2025-01-01T10:44:59.000Z'),
+      }),
+    );
   });
 });

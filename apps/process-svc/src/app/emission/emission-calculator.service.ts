@@ -35,6 +35,11 @@ export class EmissionCalculatorService {
       emissionCalculations.push(...powerProductionEmissions);
     }
 
+    if (ctx.waterConsumptionProcessSteps) {
+      const waterConsumptionEmissions = this.calculateWaterConsumptionEmissions(ctx.waterConsumptionProcessSteps);
+      emissionCalculations.push(...waterConsumptionEmissions);
+    }
+
     if (ctx.hydrogenProductionProcessSteps) {
       const hydrogenProductionEmissions = ctx.hydrogenProductionProcessSteps.map((step) =>
         EmissionAssembler.assembleHydrogenStorageCalculation(step),
@@ -80,8 +85,8 @@ export class EmissionCalculatorService {
   }
 
   async computePowerCalculation(processStep: ProcessStepEntity): Promise<EmissionCalculationDto> {
-    const [powerCalc]: EmissionCalculationDto[] = await this.calculatePowerProductionEmissions([processStep]);
-    return powerCalc;
+    const [powerCalculations]: EmissionCalculationDto[] = await this.calculatePowerProductionEmissions([processStep]);
+    return powerCalculations;
   }
 
   private async calculatePowerProductionEmissions(
@@ -93,9 +98,18 @@ export class EmissionCalculatorService {
       processSteps.map((step) => {
         const unit = powerProductionUnitsByProcessSteps.get(step.id);
         const entry = getPowerEmissionFactorByEnergySource(unit?.type?.energySource);
-        return EmissionAssembler.assembleHydrogenProductionCalculation(step, entry.emissionFactor, entry.label);
+        return EmissionAssembler.assemblePowerProductionCalculation(step, entry.emissionFactor, entry.label);
       }),
     );
+  }
+
+  computeWaterCalculation(processStep: ProcessStepEntity): EmissionCalculationDto {
+    const [waterCalculation]: EmissionCalculationDto[] = this.calculateWaterConsumptionEmissions([processStep]);
+    return waterCalculation;
+  }
+
+  private calculateWaterConsumptionEmissions(processSteps: ProcessStepEntity[]): EmissionCalculationDto[] {
+    return processSteps.map((step) => EmissionAssembler.assembleWaterConsumptionCalculation(step));
   }
 
   async computeForProcessStep(processStepId: string, emissionCalculationName: string): Promise<EmissionCalculationDto> {

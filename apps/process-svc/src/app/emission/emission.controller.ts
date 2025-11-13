@@ -28,6 +28,11 @@ export class EmissionController {
     return this.service.computePowerCalculation(payload.processStep);
   }
 
+  @MessagePattern(SustainabilityMessagePatterns.COMPUTE_WATER_FOR_STEP)
+  computeWaterForStep(@Payload() payload: { processStep: ProcessStepEntity }): EmissionCalculationDto {
+    return this.service.computeWaterCalculation(payload.processStep);
+  }
+
   @MessagePattern(SustainabilityMessagePatterns.COMPUTE_CUMULATIVE_FOR_STEP)
   async computeCumulativeForStep(
     @Payload() payload: { processStepId: string; emissionCalculationName: string },

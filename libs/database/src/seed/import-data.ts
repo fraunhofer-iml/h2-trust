@@ -13,6 +13,7 @@ import {
   BatchRelationBottlingProductionSeed,
   BatchRelationPowerHydrogenSeed,
   BatchRelationTransportationBottlingSeed,
+  BatchRelationWaterHydrogenSeed,
   BatchSeed,
   CompanySeed,
   DocumentSeed,
@@ -82,6 +83,19 @@ export async function seedDatabase() {
     {
       name: 'batchRelationPowerHydrogen',
       records: BatchRelationPowerHydrogenSeed,
+      createRecord: async (data: any) =>
+        await prisma.batch.update({
+          where: { id: data.A },
+          data: {
+            predecessors: {
+              connect: { id: data.B },
+            },
+          },
+        }),
+    },
+    {
+      name: 'batchRelationWaterHydrogen',
+      records: BatchRelationWaterHydrogenSeed,
       createRecord: async (data: any) =>
         await prisma.batch.update({
           where: { id: data.A },

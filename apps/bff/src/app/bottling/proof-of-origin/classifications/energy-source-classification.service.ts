@@ -28,7 +28,7 @@ export class EnergySourceClassificationService {
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processClient: ClientProxy,
   ) {}
 
-  async buildEnergySourceClassificationsFromContext(
+  async buildEnergySourceClassifications(
     powerProductionProcessSteps: ProcessStepEntity[],
   ): Promise<ClassificationDto[]> {
     if (powerProductionProcessSteps.length === 0) {

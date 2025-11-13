@@ -41,13 +41,12 @@ interface CreateProcessStepsParams {
   hydrogenStorageUnitId: string;
   recordedBy: string;
   executedBy: string;
-  predecessors: string[];
+  predecessors: ProcessStepEntity[];
 }
 
 @Injectable()
 export class ProductionService {
   private readonly logger = new Logger(ProductionService.name);
-  private readonly numberOfPredecessors = 2;
   private readonly secondsPerHour = 3600;
   private readonly powerAccountingPeriodInSeconds: number;
   private readonly waterAccountingPeriodInSeconds: number;
@@ -70,8 +69,8 @@ export class ProductionService {
     const powerProductionProcessSteps: ProcessStepEntity[] =
       await this.createPowerProductionProcessSteps(createProductionEntity);
 
-    const waterConsumptionProcessSteps: ProcessStepEntity[] = [];
-    await this.createWaterConsumptionProcessSteps(createProductionEntity);
+    const waterConsumptionProcessSteps: ProcessStepEntity[] =
+      await this.createWaterConsumptionProcessSteps(createProductionEntity);
 
     const hydrogenProductionProcessSteps: ProcessStepEntity[] = await this.createHydrogenProductionProcessSteps(
       createProductionEntity,
@@ -147,11 +146,8 @@ export class ProductionService {
   private async createHydrogenProductionProcessSteps(
     createProductionEntity: CreateProductionEntity,
     powerProductionProcessSteps: ProcessStepEntity[],
-    _waterConsumptionProcessSteps: ProcessStepEntity[],
+    waterConsumptionProcessSteps: ProcessStepEntity[],
   ): Promise<ProcessStepEntity[]> {
-    // TODO-MP: add `...waterConsumptionProcessSteps` to predecessors in DUHGW-236
-    const predecessors: string[] = [...powerProductionProcessSteps].map((step) => step.batch.id);
-
     return this.createProcessSteps({
       productionStartedAt: createProductionEntity.productionStartedAt,
       productionEndedAt: createProductionEntity.productionEndedAt,
@@ -165,7 +161,7 @@ export class ProductionService {
       hydrogenStorageUnitId: createProductionEntity.hydrogenStorageUnitId,
       recordedBy: createProductionEntity.recordedBy,
       executedBy: createProductionEntity.hydrogenProductionUnitId,
-      predecessors: predecessors,
+      predecessors: [...powerProductionProcessSteps, ...waterConsumptionProcessSteps],
     });
   }
 
@@ -207,8 +203,13 @@ export class ProductionService {
       );
       this.logger.debug(`ended At: ${endedAt.toISOString()}`);
 
-      const predecessors = params.predecessors.slice(i, i + this.numberOfPredecessors).map((id) => ({ id: id }));
-      this.logger.debug(`predecessors: ${predecessors.map((p) => p.id).join(', ')}`);
+      const predecessors: BatchEntity[] = params.predecessors
+        .filter(
+          (step) =>
+            DateTimeUtil.convertDateToMilliseconds(step.startedAt) ===
+            DateTimeUtil.convertDateToMilliseconds(startedAt),
+        )
+        .map((processStep) => processStep.batch);
 
       processSteps.push(
         new ProcessStepEntity(

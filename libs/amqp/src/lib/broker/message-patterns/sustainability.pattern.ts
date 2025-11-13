@@ -9,8 +9,6 @@
 export enum SustainabilityMessagePatterns {
   COMPUTE_FOR_PROCESS_STEP = 'sustainability.compute-for-process-step',
   COMPUTE_POWER_FOR_STEP = 'sustainability.compute-power-for-step',
-  COMPUTE_BOTTLING_FOR_STEP = 'sustainability.compute-bottling-for-step',
-  COMPUTE_TRANSPORT_FOR_STEP = 'sustainability.compute-transport-for-step',
-  COMPUTE_HYDROGEN_PRODUCTION_FOR_STEP = 'sustainability.compute-hydrogen-production-for-step',
+  COMPUTE_WATER_FOR_STEP = 'sustainability.compute-water-for-step',
   COMPUTE_CUMULATIVE_FOR_STEP = 'sustainability.compute-cumulative-for-step',
 }

@@ -11,18 +11,21 @@ import { ProcessStepEntity } from './process-step.entity';
 export class LineageContextEntity {
   root: ProcessStepEntity;
   hydrogenBottlingProcessStep?: ProcessStepEntity;
-  hydrogenProductionProcessSteps: ProcessStepEntity[];
-  powerProductionProcessSteps: ProcessStepEntity[];
+  hydrogenProductionProcessSteps?: ProcessStepEntity[];
+  waterConsumptionProcessSteps?: ProcessStepEntity[];
+  powerProductionProcessSteps?: ProcessStepEntity[];
 
   constructor(
     root: ProcessStepEntity,
-    hydrogenProductionProcessSteps: ProcessStepEntity[],
-    powerProductionProcessSteps: ProcessStepEntity[],
     hydrogenBottlingProcessStep?: ProcessStepEntity,
+    hydrogenProductionProcessSteps?: ProcessStepEntity[],
+    waterConsumptionProcessSteps?: ProcessStepEntity[],
+    powerProductionProcessSteps?: ProcessStepEntity[],
   ) {
     this.root = root;
     this.hydrogenProductionProcessSteps = hydrogenProductionProcessSteps;
-    this.powerProductionProcessSteps = powerProductionProcessSteps;
     this.hydrogenBottlingProcessStep = hydrogenBottlingProcessStep;
+    this.waterConsumptionProcessSteps = waterConsumptionProcessSteps;
+    this.powerProductionProcessSteps = powerProductionProcessSteps;
   }
 }

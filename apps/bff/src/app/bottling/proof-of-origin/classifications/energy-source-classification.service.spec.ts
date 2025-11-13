@@ -62,7 +62,7 @@ describe('EnergySourceClassificationService', () => {
 
     const generalSvcSpy = jest.spyOn(generalSvc, 'send');
 
-    const actualResponse: ClassificationDto[] = await service.buildEnergySourceClassificationsFromContext(
+    const actualResponse: ClassificationDto[] = await service.buildEnergySourceClassifications(
       givenPowerProductionProcessSteps,
     );
 
@@ -107,7 +107,7 @@ describe('EnergySourceClassificationService', () => {
       powerProductionProcessSteps,
     };
 
-    const actualResponse: ClassificationDto[] = await service.buildEnergySourceClassificationsFromContext(
+    const actualResponse: ClassificationDto[] = await service.buildEnergySourceClassifications(
       ctx.powerProductionProcessSteps,
     );
 

@@ -39,15 +39,18 @@ export class LineageContextService {
     return {
       root: processStep,
       hydrogenProductionProcessSteps: [],
+      waterConsumptionProcessSteps: [],
       powerProductionProcessSteps: [processStep],
     };
   }
 
   private async buildForHydrogenProduction(processStep: ProcessStepEntity): Promise<LineageContextEntity> {
     const powerProductionProcessSteps = await this.lineage.fetchPowerProductionProcessSteps([processStep]);
+    const waterConsumptionProcessSteps = await this.lineage.fetchWaterConsumptionProcessSteps([processStep]);
     return {
       root: processStep,
       hydrogenProductionProcessSteps: [processStep],
+      waterConsumptionProcessSteps,
       powerProductionProcessSteps,
     };
   }
@@ -56,10 +59,13 @@ export class LineageContextService {
     const hydrogenProductionProcessSteps = await this.lineage.fetchHydrogenProductionProcessSteps(processStep);
     const powerProductionProcessSteps =
       await this.lineage.fetchPowerProductionProcessSteps(hydrogenProductionProcessSteps);
+    const waterConsumptionProcessSteps =
+      await this.lineage.fetchWaterConsumptionProcessSteps(hydrogenProductionProcessSteps);
     return {
       root: processStep,
       hydrogenBottlingProcessStep: processStep,
       hydrogenProductionProcessSteps,
+      waterConsumptionProcessSteps,
       powerProductionProcessSteps,
     };
   }
@@ -70,10 +76,13 @@ export class LineageContextService {
       await this.lineage.fetchHydrogenProductionProcessSteps(hydrogenBottlingProcessStep);
     const powerProductionProcessSteps =
       await this.lineage.fetchPowerProductionProcessSteps(hydrogenProductionProcessSteps);
+    const waterConsumptionProcessSteps =
+      await this.lineage.fetchWaterConsumptionProcessSteps(hydrogenProductionProcessSteps);
     return {
       root: processStep,
       hydrogenBottlingProcessStep,
       hydrogenProductionProcessSteps,
+      waterConsumptionProcessSteps,
       powerProductionProcessSteps,
     };
   }
