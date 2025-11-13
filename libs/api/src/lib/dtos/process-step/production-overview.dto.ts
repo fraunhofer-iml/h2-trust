@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepEntity } from '@h2-trust/amqp';
+import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import { BatchType } from '@h2-trust/domain';
 
 export class ProductionOverviewDto {
@@ -53,10 +53,16 @@ export class ProductionOverviewDto {
   }
 
   private static determinePowerConsumed(processStep: ProcessStepEntity) {
-    // NOTE: In the future, a batch could also have several predecessors
-    if (processStep.batch?.predecessors?.[0]?.type !== BatchType.POWER) {
+    const powerPredecessorBatches = processStep.batch?.predecessors?.filter(
+      (predecessor) => predecessor.type === BatchType.POWER,
+    );
+    if (!powerPredecessorBatches?.length) {
       return null;
     }
-    return processStep.batch?.predecessors?.[0]?.amount;
+    return this.summarizeBatchAmounts(powerPredecessorBatches);
+  }
+
+  private static summarizeBatchAmounts(powerPredecessorBatches: BatchEntity[]): number {
+    return powerPredecessorBatches.reduce((sum, batch) => sum + (batch.amount ?? 0), 0);
   }
 }
