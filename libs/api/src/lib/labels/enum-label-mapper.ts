@@ -34,10 +34,10 @@ export class EnumLabelMapper {
   };
 
   private static readonly HYDROGEN_PRODUCTION_TECHNOLOGY_LABELS: Record<HydrogenProductionTechnology, string> = {
-    [HydrogenProductionTechnology.AEL]: 'Alkaline Electrolysis (AEL)',
-    [HydrogenProductionTechnology.AEM]: 'Anion Exchange Membrane (AEM)',
-    [HydrogenProductionTechnology.PEM]: 'Proton Exchange Membrane (PEM)',
-    [HydrogenProductionTechnology.SOEC]: 'Solid Oxide Electrolysis Cell (SOEC)',
+    [HydrogenProductionTechnology.AEL]: 'AEL',
+    [HydrogenProductionTechnology.AEM]: 'AEM',
+    [HydrogenProductionTechnology.PEM]: 'PEM',
+    [HydrogenProductionTechnology.SOEC]: 'SOEC',
   };
 
   private static readonly HYDROGEN_STORAGE_TYPE_LABELS: Record<HydrogenStorageType, string> = {
