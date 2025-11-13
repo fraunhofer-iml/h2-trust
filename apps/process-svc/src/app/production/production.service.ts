@@ -204,7 +204,11 @@ export class ProductionService {
       this.logger.debug(`ended At: ${endedAt.toISOString()}`);
 
       const predecessors: BatchEntity[] = params.predecessors
-        .filter((step) => this.toMilliseconds(step.startedAt) === this.toMilliseconds(startedAt))
+        .filter(
+          (step) =>
+            DateTimeUtil.convertDateToMilliseconds(step.startedAt) ===
+            DateTimeUtil.convertDateToMilliseconds(startedAt),
+        )
         .map((processStep) => processStep.batch);
 
       processSteps.push(
@@ -236,22 +240,5 @@ export class ProductionService {
         firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.CREATE, { processStepEntity: step })),
       ),
     );
-  }
-
-  private toMilliseconds(date: Date | string | undefined | null): number {
-    if (date == null) {
-      throw new Error('Date parameter cannot be null or undefined');
-    }
-
-    if (date instanceof Date) {
-      return date.getTime();
-    }
-
-    const milliseconds = Date.parse(date);
-    if (!Number.isFinite(milliseconds)) {
-      throw new Error(`Invalid date string format: ${date}`);
-    }
-
-    return milliseconds;
   }
 }

@@ -16,7 +16,6 @@ export const BatchEntityWaterConsumedMock: BatchEntity[] = WaterConsumptionBatch
       seed.id,
       seed.active,
       seed.amount.toNumber(),
-      seed.quality,
       seed.type,
       [],
       [],

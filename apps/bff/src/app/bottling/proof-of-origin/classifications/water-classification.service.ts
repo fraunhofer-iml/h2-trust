@@ -25,20 +25,20 @@ export class WaterClassificationService {
       throw new Error(message);
     }
 
-    const waterBatches = await this.buildWaterBatches(waterConsumptionProcessSteps);
+    const waterDtos = await this.buildWaterDtos(waterConsumptionProcessSteps);
 
     return ProofOfOriginDtoAssembler.assembleClassification(
       ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION_NAME,
       MeasurementUnit.WATER,
       BatchType.WATER,
-      waterBatches,
+      waterDtos,
       [],
     );
   }
 
-  private async buildWaterBatches(waterConsumptionProcessSteps: ProcessStepEntity[]): Promise<WaterBatchDto[]> {
-    return await Promise.all(
-      waterConsumptionProcessSteps.map(async (waterConsumptionProcessStep) => {
+  private async buildWaterDtos(waterConsumptionProcessSteps: ProcessStepEntity[]): Promise<WaterBatchDto[]> {
+    const waterBatchDtoPromises: Promise<WaterBatchDto>[] = waterConsumptionProcessSteps.map(
+      async (waterConsumptionProcessStep) => {
         const emissionCalculation: EmissionCalculationDto = await firstValueFrom(
           this.processClient.send(SustainabilityMessagePatterns.COMPUTE_WATER_FOR_STEP, {
             processStep: waterConsumptionProcessStep,
@@ -49,7 +49,9 @@ export class WaterClassificationService {
         const emission = toEmissionDto(emissionCalculation, h2KgEquivalentToWaterBatch);
 
         return ProofOfOriginDtoAssembler.assembleWaterBatchDto(waterConsumptionProcessStep, emission);
-      }),
+      },
     );
+
+    return Promise.all(waterBatchDtoPromises);
   }
 }

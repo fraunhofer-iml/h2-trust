@@ -7,13 +7,30 @@
  */
 
 export class DateTimeUtil {
-  static convertDateStringToSeconds(date: string): number {
+  static convertDateStringToMilliseconds(date: string): number {
     const parsedDate = new Date(date);
 
-    if (isNaN(parsedDate.getTime())) {
+    const milliseconds = parsedDate.getTime();
+    if (!Number.isFinite(milliseconds)) {
       throw new Error(`Invalid date string: "${date}"`);
     }
 
-    return Math.floor(parsedDate.getTime() / 1000);
+    return milliseconds;
+  }
+
+  static convertDateStringToSeconds(date: string): number {
+    return Math.floor(DateTimeUtil.convertDateStringToMilliseconds(date) / 1000);
+  }
+
+  static convertDateToMilliseconds(date: Date | string): number {
+    if (date == null) {
+      throw new Error('Date parameter cannot be null or undefined');
+    }
+
+    if (date instanceof Date) {
+      return date.getTime();
+    }
+
+    return DateTimeUtil.convertDateStringToMilliseconds(date);
   }
 }
