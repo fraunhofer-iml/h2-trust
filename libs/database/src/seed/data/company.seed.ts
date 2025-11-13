@@ -10,7 +10,7 @@ import { Company } from '@prisma/client';
 import { CompanyType } from '@h2-trust/domain';
 import { AddressSeed } from './address.seed';
 
-export const CompanySeed = <Company[]>[
+export const CompanySeed: readonly Company[] = Object.freeze([
   {
     id: 'company-power-0',
     name: 'Power Generation AG',
@@ -39,4 +39,4 @@ export const CompanySeed = <Company[]>[
     type: CompanyType.HYDROGEN_RECIPIENT,
     addressId: AddressSeed[3].id,
   },
-];
+]);

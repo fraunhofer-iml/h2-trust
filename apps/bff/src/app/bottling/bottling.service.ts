@@ -22,6 +22,7 @@ import {
   BottlingOverviewDto,
   GeneralInformationDto,
   HydrogenComponentDto,
+  RedComplianceDto,
   UserDetailsDto,
 } from '@h2-trust/api';
 import { ProcessType, TransportMode } from '@h2-trust/domain';
@@ -90,7 +91,7 @@ export class BottlingService {
     const generalInformationDto = GeneralInformationDto.fromEntityToDto(processStep);
     generalInformationDto.producer = await this.fetchProducerName(generalInformationDto.producer);
     generalInformationDto.hydrogenComposition = await this.fetchHydrogenComposition(processStep);
-    return generalInformationDto;
+    return { ...generalInformationDto, redCompliance: new RedComplianceDto(true, true, false, true) };
   }
 
   private async fetchProducerName(producerId: string): Promise<string> {

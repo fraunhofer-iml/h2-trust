@@ -13,10 +13,10 @@ import { HydrogenTransportationProcessStepSeed } from './hydrogen-transportation
 import { PowerProductionProcessStepSeed } from './power-production-process-step.seed';
 import { WaterConsumptionProcessStepSeed } from './water-consumption-process-step.seed';
 
-export const ProcessStepSeed = <ProcessStep[]>[
+export const ProcessStepSeed: readonly ProcessStep[] = Object.freeze([
   ...PowerProductionProcessStepSeed,
   ...WaterConsumptionProcessStepSeed,
   ...HydrogenProductionProcessStepSeed,
   ...HydrogenBottlingProcessStepSeed,
   ...HydrogenTransportationProcessStepSeed,
-];
+]);

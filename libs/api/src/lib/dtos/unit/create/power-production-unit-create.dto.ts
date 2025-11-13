@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsEnum, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { IsBoolean, IsEnum, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 import { PowerProductionUnitEntity } from '@h2-trust/amqp';
 import { BiddingZone, GridLevel, PowerProductionType, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
@@ -46,6 +46,10 @@ export class PowerProductionUnitCreateDto extends UnitCreateDto {
   @IsString()
   electricityMeterNumber: string;
 
+  @IsNotEmpty()
+  @IsBoolean()
+  financialSupportReceived: boolean;
+
   constructor(
     type: UnitType,
     name: string,
@@ -64,6 +68,7 @@ export class PowerProductionUnitCreateDto extends UnitCreateDto {
     gridLevel: GridLevel,
     ratedPower: number,
     electricityMeterNumber: string,
+    financialSupportReceived: boolean,
     gridOperator?: string,
     gridConnectionNumber?: string,
   ) {
@@ -88,6 +93,7 @@ export class PowerProductionUnitCreateDto extends UnitCreateDto {
     this.electricityMeterNumber = electricityMeterNumber;
     this.gridOperator = gridOperator;
     this.gridConnectionNumber = gridConnectionNumber;
+    this.financialSupportReceived = financialSupportReceived;
   }
 
   static toEntity(dto: PowerProductionUnitCreateDto): PowerProductionUnitEntity {

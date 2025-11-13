@@ -8,7 +8,7 @@
 
 interface Data {
   name: string;
-  records: any[];
+  records: readonly any[];
   createRecord: (record: any) => Promise<any>;
 }
 

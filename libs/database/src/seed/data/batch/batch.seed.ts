@@ -13,10 +13,10 @@ import { HydrogenTransportationBatchSeed } from './hydrogen-transportation-batch
 import { PowerProductionBatchSeed } from './power-production-batch.seed';
 import { WaterConsumptionBatchSeed } from './water-consumption-batch.seed';
 
-export const BatchSeed = <Batch[]>[
+export const BatchSeed: readonly Batch[] = Object.freeze([
   ...PowerProductionBatchSeed,
   ...WaterConsumptionBatchSeed,
   ...HydrogenProductionBatchSeed,
   ...HydrogenBottlingBatchSeed,
   ...HydrogenTransportationBatchSeed,
-];
+]);

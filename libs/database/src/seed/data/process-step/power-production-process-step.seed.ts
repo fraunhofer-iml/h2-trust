@@ -12,7 +12,7 @@ import { PowerProductionBatchSeed } from '../batch';
 import { PowerProductionUnitSeed } from '../unit';
 import { UserSeed } from '../user.seed';
 
-export const PowerProductionProcessStepSeed = <ProcessStep[]>[
+export const PowerProductionProcessStepSeed: readonly ProcessStep[] = Object.freeze([
   {
     id: 'process-step-power-production-0',
     type: ProcessType.POWER_PRODUCTION,
@@ -103,4 +103,4 @@ export const PowerProductionProcessStepSeed = <ProcessStep[]>[
     userId: UserSeed[1].id,
     unitId: PowerProductionUnitSeed[3].id,
   },
-];
+]);

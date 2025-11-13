@@ -9,7 +9,7 @@
 import { User } from '@prisma/client';
 import { CompanySeed } from './company.seed';
 
-export const UserSeed = <User[]>[
+export const UserSeed: readonly User[] = Object.freeze([
   {
     id: 'user-power-0',
     name: 'Petra Power',
@@ -28,4 +28,4 @@ export const UserSeed = <User[]>[
     email: 'erika@hydrogen.de',
     companyId: CompanySeed[2].id,
   },
-];
+]);

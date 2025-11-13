@@ -16,7 +16,6 @@ export const BatchEntityHydrogenBottledMock: BatchEntity[] = HydrogenBottlingBat
       seed.id,
       seed.active,
       seed.amount.toNumber(),
-      seed.quality,
       seed.type,
       [],
       [],

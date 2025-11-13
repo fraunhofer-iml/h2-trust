@@ -6,15 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export function parseColor(quality: string | undefined): string | undefined {
-  if (!quality) {
-    return undefined;
-  }
+import { Pipe, PipeTransform } from '@angular/core';
 
-  try {
-    const parsed = JSON.parse(quality);
-    return parsed.color;
-  } catch {
-    return undefined;
+@Pipe({ name: 'bool' })
+export class BoolPipe implements PipeTransform {
+  transform(value: boolean): string {
+    return value ? 'Yes' : 'No';
   }
 }

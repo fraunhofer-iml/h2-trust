@@ -10,12 +10,14 @@ import { ProcessStepEntity } from '@h2-trust/amqp';
 import { FileInfoDto } from '../file/file-info.dto';
 import { BottlingOverviewDto } from './bottling-overview.dto';
 import { HydrogenComponentDto } from './hydrogen-component.dto';
+import { RedComplianceDto } from './red-compliance.dto';
 
 export class GeneralInformationDto extends BottlingOverviewDto {
   producer?: string;
   product: string;
   hydrogenComposition: HydrogenComponentDto[];
   attachedFiles: FileInfoDto[];
+  redCompliance: RedComplianceDto;
 
   constructor(
     id: string,
@@ -26,12 +28,14 @@ export class GeneralInformationDto extends BottlingOverviewDto {
     producer: string,
     hydrogenComposition: HydrogenComponentDto[],
     attachedFiles: FileInfoDto[],
+    redCompliance: RedComplianceDto,
   ) {
     super(id, timestamp, owner, filledAmount, color);
     this.producer = producer;
     this.hydrogenComposition = hydrogenComposition;
     this.product = 'Hydrogen';
     this.attachedFiles = attachedFiles;
+    this.redCompliance = redCompliance;
   }
 
   static fromEntityToDto(processStep: ProcessStepEntity): GeneralInformationDto {
@@ -40,11 +44,12 @@ export class GeneralInformationDto extends BottlingOverviewDto {
       filledAt: processStep.endedAt,
       owner: processStep.batch?.owner?.name,
       filledAmount: processStep.batch?.amount,
-      color: processStep.batch?.quality,
+      color: processStep.batch?.qualityDetails?.color,
       producer: processStep.recordedBy?.id,
       product: 'Hydrogen',
       attachedFiles:
         processStep.documents?.map((document) => new FileInfoDto(document.description, document.location)) || [],
+      redCompliance: new RedComplianceDto(true, true, false, true),
     };
   }
 }

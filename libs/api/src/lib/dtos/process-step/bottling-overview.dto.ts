@@ -7,7 +7,6 @@
  */
 
 import { ProcessStepEntity } from '@h2-trust/amqp';
-import { parseColor } from '../util';
 
 export class BottlingOverviewDto {
   id: string;
@@ -30,7 +29,7 @@ export class BottlingOverviewDto {
       filledAt: processStep.endedAt,
       owner: processStep.batch?.owner?.name,
       filledAmount: processStep.batch?.amount,
-      color: parseColor(processStep.batch?.quality),
+      color: processStep.batch?.qualityDetails?.color,
     };
   }
 }

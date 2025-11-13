@@ -6,6 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './mocks';
-export * from './batch.entity';
-export * from './quality-details.entity';
+import { QualityDetails } from '@prisma/client';
+
+export type QualityDetailsDbType = QualityDetails;

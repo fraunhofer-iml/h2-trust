@@ -9,6 +9,7 @@
 import { PrismaClient } from '@prisma/client';
 import {
   AddressSeed,
+  BatchDetailsSeed,
   BatchRelationBottlingProductionSeed,
   BatchRelationPowerHydrogenSeed,
   BatchRelationTransportationBottlingSeed,
@@ -23,6 +24,7 @@ import {
   PowerProductionUnitSeed,
   ProcessStepDetailsSeed,
   ProcessStepSeed,
+  QualityDetailsSeed,
   TransportationDetailsSeed,
   UnitSeed,
   UserSeed,
@@ -131,6 +133,16 @@ export async function seedDatabase() {
         }),
     },
     {
+      name: 'batchDetails',
+      records: BatchDetailsSeed,
+      createRecord: async (data: any) => await prisma.batchDetails.create({ data }),
+    },
+    {
+      name: 'qualityDetails',
+      records: QualityDetailsSeed,
+      createRecord: async (data: any) => await prisma.qualityDetails.create({ data }),
+    },
+    {
       name: 'processStep',
       records: ProcessStepSeed,
       createRecord: async (data: any) => await prisma.processStep.create({ data }),
@@ -141,7 +153,7 @@ export async function seedDatabase() {
       createRecord: async (data: any) => await prisma.processStepDetails.create({ data }),
     },
     {
-      name: 'transportionDetails',
+      name: 'transportationDetails',
       records: TransportationDetailsSeed,
       createRecord: async (data: any) => await prisma.transportationDetails.create({ data }),
     },
