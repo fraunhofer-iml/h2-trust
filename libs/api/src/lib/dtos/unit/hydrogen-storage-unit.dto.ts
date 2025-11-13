@@ -8,10 +8,10 @@
 
 import { HydrogenStorageUnitEntity } from '@h2-trust/amqp';
 import { UnitType } from '@h2-trust/domain';
+import { EnumLabelMapper } from '../../labels';
 import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
 import { FillingDto } from './filling.dto';
-import { EnumLabelMapper } from '../../labels';
 
 export class HydrogenStorageUnitDto extends BaseUnitDto {
   storageType: string;

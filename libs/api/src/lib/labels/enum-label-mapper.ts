@@ -6,7 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { GridLevel, HydrogenProductionMethod, HydrogenProductionTechnology, HydrogenStorageType, PowerProductionType } from "@h2-trust/domain";
+import {
+  GridLevel,
+  HydrogenProductionMethod,
+  HydrogenProductionTechnology,
+  HydrogenStorageType,
+  PowerProductionType,
+} from '@h2-trust/domain';
 
 export class EnumLabelMapper {
   private static readonly POWER_PRODUCTION_TYPE_LABELS: Record<PowerProductionType, string> = {
@@ -39,14 +45,6 @@ export class EnumLabelMapper {
     [HydrogenStorageType.LIQUID_HYDROGEN]: 'Liquid Hydrogen',
   };
 
-  private static getLabel<T extends string>(value: T, labels: Record<T, string>): string {
-    const label = labels[value];
-    if (!label) {
-      throw new Error(`Unmapped enum value: ${value}`);
-    }
-    return label;
-  }
-
   public static getPowerProductionType(value: PowerProductionType): string {
     return this.getLabel(value, this.POWER_PRODUCTION_TYPE_LABELS);
   }
@@ -65,5 +63,13 @@ export class EnumLabelMapper {
 
   public static getHydrogenStorageType(value: HydrogenStorageType): string {
     return this.getLabel(value, this.HYDROGEN_STORAGE_TYPE_LABELS);
+  }
+
+  private static getLabel<T extends string>(value: T, labels: Record<T, string>): string {
+    const label = labels[value];
+    if (!label) {
+      throw new Error(`Unmapped enum value: ${value}`);
+    }
+    return label;
   }
 }

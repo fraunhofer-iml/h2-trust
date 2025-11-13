@@ -9,10 +9,10 @@
 import { PowerProductionUnitEntity } from '@h2-trust/amqp';
 import { UnitType } from '@h2-trust/domain';
 import { requireDefined } from '@h2-trust/utils';
+import { EnumLabelMapper } from '../../labels';
 import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
 import { PowerProductionTypeDto } from './power-production-type.dto';
-import { EnumLabelMapper } from '../../labels';
 
 export class PowerProductionUnitDto extends BaseUnitDto {
   electricityMeterNumber: string;
