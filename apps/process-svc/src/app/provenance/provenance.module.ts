@@ -8,14 +8,14 @@
 
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
-import { LineageContextService } from './lineage-context.service';
-import { LineageController } from './lineage.controller';
-import { ProcessLineageService } from './process-lineage.service';
+import { ProvenanceService } from './provenance.service';
+import { ProvenanceController } from './provenance.controller';
+import { ProcessStepTraversalService } from './process-step-traversal.service';
 
 @Module({
   imports: [new Broker().getBatchSvcBroker()],
-  controllers: [LineageController],
-  providers: [LineageContextService, ProcessLineageService],
-  exports: [LineageContextService],
+  controllers: [ProvenanceController],
+  providers: [ProvenanceService, ProcessStepTraversalService],
+  exports: [ProvenanceService],
 })
-export class LineageModule { }
+export class ProvenanceModule { }

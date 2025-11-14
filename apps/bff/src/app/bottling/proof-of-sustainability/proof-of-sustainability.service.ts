@@ -11,7 +11,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
-  LineageContextEntity,
+  ProvenanceEntity,
   LineageMessagePatterns,
   SustainabilityMessagePatterns,
 } from '@h2-trust/amqp';
@@ -19,10 +19,10 @@ import { EmissionComputationResultDto, ProofOfSustainabilityDto } from '@h2-trus
 
 @Injectable()
 export class ProofOfSustainabilityService {
-  constructor(@Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy) {}
+  constructor(@Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy) { }
 
   async readProofOfSustainability(processStepId: string): Promise<ProofOfSustainabilityDto> {
-    const context: LineageContextEntity = await firstValueFrom(
+    const context: ProvenanceEntity = await firstValueFrom(
       this.processSvc.send(LineageMessagePatterns.BUILD_CONTEXT, { processStepId }),
     );
     const emissionComputationResult: EmissionComputationResultDto = await firstValueFrom(

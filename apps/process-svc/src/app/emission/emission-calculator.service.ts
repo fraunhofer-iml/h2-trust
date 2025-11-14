@@ -7,7 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { LineageContextEntity, ProcessStepEntity } from '@h2-trust/amqp';
+import { ProvenanceEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import { EmissionCalculationDto, EmissionComputationResultDto, EmissionForProcessStepDto } from '@h2-trust/api';
 import {
   FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ,
@@ -16,7 +16,7 @@ import {
   ProcessType,
   UNIT_G_CO2_PER_KG_H2,
 } from '@h2-trust/domain';
-import { LineageContextService } from '../lineage/lineage-context.service';
+import { ProvenanceService } from '../provenance/provenance.service';
 import { EmissionAssembler } from './emission.assembler';
 import { PowerUnitLoader } from './power-unit.loader';
 
@@ -24,30 +24,30 @@ import { PowerUnitLoader } from './power-unit.loader';
 export class EmissionCalculatorService {
   constructor(
     private readonly powerUnitLoader: PowerUnitLoader,
-    private readonly lineageService: LineageContextService,
-  ) {}
+    private readonly lineageService: ProvenanceService,
+  ) { }
 
-  async computeForContext(ctx: LineageContextEntity): Promise<EmissionComputationResultDto> {
+  async computeForContext(ctx: ProvenanceEntity): Promise<EmissionComputationResultDto> {
     const emissionCalculations: EmissionCalculationDto[] = [];
 
-    if (ctx.powerProductionProcessSteps) {
-      const powerProductionEmissions = await this.calculatePowerProductionEmissions(ctx.powerProductionProcessSteps);
+    if (ctx.powerProductions) {
+      const powerProductionEmissions = await this.calculatePowerProductionEmissions(ctx.powerProductions);
       emissionCalculations.push(...powerProductionEmissions);
     }
 
-    if (ctx.waterConsumptionProcessSteps) {
-      const waterConsumptionEmissions = this.calculateWaterConsumptionEmissions(ctx.waterConsumptionProcessSteps);
+    if (ctx.waterConsumptions) {
+      const waterConsumptionEmissions = this.calculateWaterConsumptionEmissions(ctx.waterConsumptions);
       emissionCalculations.push(...waterConsumptionEmissions);
     }
 
-    if (ctx.hydrogenProductionProcessSteps) {
-      const hydrogenProductionEmissions = ctx.hydrogenProductionProcessSteps.map((step) =>
+    if (ctx.hydrogenProductions) {
+      const hydrogenProductionEmissions = ctx.hydrogenProductions.map((step) =>
         EmissionAssembler.assembleHydrogenStorageCalculation(step),
       );
       emissionCalculations.push(...hydrogenProductionEmissions);
     }
 
-    if (ctx.hydrogenBottlingProcessStep) {
+    if (ctx.hydrogenBottling) {
       const powerEmissionFactor = getPowerEmissionFactorByEnergySource('GRID');
       const hydrogenBottlingCalculation = EmissionAssembler.assembleHydrogenBottlingCalculation(
         powerEmissionFactor.emissionFactor,
@@ -113,7 +113,7 @@ export class EmissionCalculatorService {
   }
 
   async computeForProcessStep(processStepId: string, emissionCalculationName: string): Promise<EmissionCalculationDto> {
-    const context: LineageContextEntity = await this.lineageService.build(processStepId);
+    const context: ProvenanceEntity = await this.lineageService.buildProvenance(processStepId);
     const emissionComputationResult: EmissionComputationResultDto = await this.computeForContext(context);
 
     const basisOfCalculation = `Emissions (Cumulative - ${emissionCalculationName})`;

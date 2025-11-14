@@ -7,7 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { LineageContextEntity } from '@h2-trust/amqp';
+import { ProvenanceEntity } from '@h2-trust/amqp';
 import { SectionDto } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
 import { HydrogenBottlingSectionService } from './sections/hydrogen-bottling-section.service';
@@ -22,39 +22,39 @@ export class ProofOfOriginAssembler {
     private readonly hydrogenStorageSectionAssembler: HydrogenStorageSectionService,
     private readonly hydrogenBottlingSectionService: HydrogenBottlingSectionService,
     private readonly hydrogenTransportationSectionService: HydrogenTransportationSectionService,
-  ) {}
+  ) { }
 
-  async build(ctx: LineageContextEntity): Promise<SectionDto[]> {
+  async build(ctx: ProvenanceEntity): Promise<SectionDto[]> {
     const sections: SectionDto[] = [];
 
-    if (ctx.powerProductionProcessSteps?.length || ctx.waterConsumptionProcessSteps?.length) {
+    if (ctx.powerProductions?.length || ctx.waterConsumptions?.length) {
       sections.push(
         await this.hydrogenProductionSectionService.buildHydrogenProductionSection(
-          ctx.powerProductionProcessSteps,
-          ctx.waterConsumptionProcessSteps,
+          ctx.powerProductions,
+          ctx.waterConsumptions,
         ),
       );
     }
 
-    if (ctx.hydrogenProductionProcessSteps?.length) {
+    if (ctx.hydrogenProductions?.length) {
       sections.push(
-        await this.hydrogenStorageSectionAssembler.buildHydrogenStorageSection(ctx.hydrogenProductionProcessSteps),
+        await this.hydrogenStorageSectionAssembler.buildHydrogenStorageSection(ctx.hydrogenProductions),
       );
     }
 
     if (ctx.root.type === ProcessType.HYDROGEN_BOTTLING || ctx.root.type === ProcessType.HYDROGEN_TRANSPORTATION) {
       sections.push(
         await this.hydrogenBottlingSectionService.buildHydrogenBottlingSection(
-          ctx.hydrogenBottlingProcessStep ?? ctx.root,
+          ctx.hydrogenBottling ?? ctx.root,
         ),
       );
     }
 
-    if (ctx.root.type === ProcessType.HYDROGEN_TRANSPORTATION && ctx.hydrogenBottlingProcessStep) {
+    if (ctx.root.type === ProcessType.HYDROGEN_TRANSPORTATION && ctx.hydrogenBottling) {
       sections.push(
         await this.hydrogenTransportationSectionService.buildHydrogenTransportationSection(
           ctx.root,
-          ctx.hydrogenBottlingProcessStep,
+          ctx.hydrogenBottling,
         ),
       );
     }

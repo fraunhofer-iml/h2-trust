@@ -8,17 +8,17 @@
 
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { LineageContextEntity, ProcessStepEntity, SustainabilityMessagePatterns } from '@h2-trust/amqp';
+import { ProvenanceEntity, ProcessStepEntity, SustainabilityMessagePatterns } from '@h2-trust/amqp';
 import { EmissionCalculationDto, EmissionComputationResultDto } from '@h2-trust/api';
 import { EmissionCalculatorService } from './emission-calculator.service';
 
 @Controller()
 export class EmissionController {
-  constructor(private readonly service: EmissionCalculatorService) {}
+  constructor(private readonly service: EmissionCalculatorService) { }
 
   @MessagePattern(SustainabilityMessagePatterns.COMPUTE_FOR_PROCESS_STEP)
   async computeForProcessStep(
-    @Payload() payload: { lineageContext: LineageContextEntity },
+    @Payload() payload: { lineageContext: ProvenanceEntity },
   ): Promise<EmissionComputationResultDto> {
     return this.service.computeForContext(payload.lineageContext);
   }

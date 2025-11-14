@@ -8,15 +8,15 @@
 
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { LineageContextEntity, LineageMessagePatterns } from '@h2-trust/amqp';
-import { LineageContextService } from './lineage-context.service';
+import { ProvenanceEntity, LineageMessagePatterns } from '@h2-trust/amqp';
+import { ProvenanceService } from './provenance.service';
 
 @Controller()
-export class LineageController {
-  constructor(private readonly contextService: LineageContextService) {}
+export class ProvenanceController {
+  constructor(private readonly service: ProvenanceService) { }
 
   @MessagePattern(LineageMessagePatterns.BUILD_CONTEXT)
-  async buildContext(@Payload() payload: { processStepId: string }): Promise<LineageContextEntity> {
-    return this.contextService.build(payload.processStepId);
+  async buildProvenance(@Payload() payload: { processStepId: string }): Promise<ProvenanceEntity> {
+    return this.service.buildProvenance(payload.processStepId);
   }
 }
