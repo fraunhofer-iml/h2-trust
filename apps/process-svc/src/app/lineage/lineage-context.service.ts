@@ -17,74 +17,59 @@ import { ClientProxy } from '@nestjs/microservices';
 export class LineageContextService {
   constructor(
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchService: ClientProxy,
-    private readonly lineage: ProcessLineageService,
+    private readonly traversal: ProcessLineageService,
   ) { }
 
+  private readonly strategies: Record<ProcessType, (root: ProcessStepEntity) => Promise<LineageContextEntity>> = {
+    [ProcessType.POWER_PRODUCTION]: async (root) => {
+      return new LineageContextEntity(root, undefined, [], [], [root]);
+    },
+
+    [ProcessType.WATER_CONSUMPTION]: async (root) => {
+      return new LineageContextEntity(root, undefined, [], [root], []);
+    },
+
+    [ProcessType.HYDROGEN_PRODUCTION]: async (root) => {
+      const powerProductions = await this.traversal.fetchPowerProductionProcessSteps([root]);
+      const waterConsumptions = await this.traversal.fetchWaterConsumptionProcessSteps([root]);
+      return new LineageContextEntity(root, undefined, [root], waterConsumptions, powerProductions);
+    },
+
+    [ProcessType.HYDROGEN_BOTTLING]: async (root) => {
+      const hydrogenProductions = await this.traversal.fetchHydrogenProductionProcessSteps(root);
+      const powerProductions = await this.traversal.fetchPowerProductionProcessSteps(hydrogenProductions);
+      const waterConsumptions = await this.traversal.fetchWaterConsumptionProcessSteps(hydrogenProductions);
+      return new LineageContextEntity(root, root, hydrogenProductions, waterConsumptions, powerProductions);
+    },
+
+    [ProcessType.HYDROGEN_TRANSPORTATION]: async (root) => {
+      const hydrogenBottling = await this.traversal.fetchHydrogenBottlingProcessStep(root);
+      const hydrogenProductions = await this.traversal.fetchHydrogenProductionProcessSteps(hydrogenBottling);
+      const powerProductions = await this.traversal.fetchPowerProductionProcessSteps(hydrogenProductions);
+      const waterConsumptions = await this.traversal.fetchWaterConsumptionProcessSteps(hydrogenProductions);
+      return new LineageContextEntity(root, hydrogenBottling, hydrogenProductions, waterConsumptions, powerProductions);
+    },
+  };
+
   async build(processStepId: string): Promise<LineageContextEntity> {
-    const processStep = await firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.READ_UNIQUE, { processStepId }));
-    switch (processStep.type) {
-      case ProcessType.POWER_PRODUCTION:
-        return this.buildForPowerProduction(processStep);
-      case ProcessType.HYDROGEN_PRODUCTION:
-        return this.buildForHydrogenProduction(processStep);
-      case ProcessType.HYDROGEN_BOTTLING:
-        return this.buildForHydrogenBottling(processStep);
-      case ProcessType.HYDROGEN_TRANSPORTATION:
-        return this.buildForHydrogenTransportation(processStep);
-      default:
-        throw new Error(`ProcessStep with ID ${processStep.id} has an invalid process type: ${processStep.type}`);
+    if (!processStepId) {
+      throw new Error('Process step ID must be provided to build lineage context.');
     }
-  }
 
-  private async buildForPowerProduction(processStep: ProcessStepEntity): Promise<LineageContextEntity> {
-    return {
-      root: processStep,
-      hydrogenProductionProcessSteps: [],
-      waterConsumptionProcessSteps: [],
-      powerProductionProcessSteps: [processStep],
-    };
-  }
+    const root: ProcessStepEntity = await firstValueFrom(
+      this.batchService.send(ProcessStepMessagePatterns.READ_UNIQUE, { processStepId }),
+    );
 
-  private async buildForHydrogenProduction(processStep: ProcessStepEntity): Promise<LineageContextEntity> {
-    const powerProductionProcessSteps = await this.lineage.fetchPowerProductionProcessSteps([processStep]);
-    const waterConsumptionProcessSteps = await this.lineage.fetchWaterConsumptionProcessSteps([processStep]);
-    return {
-      root: processStep,
-      hydrogenProductionProcessSteps: [processStep],
-      waterConsumptionProcessSteps,
-      powerProductionProcessSteps,
-    };
-  }
+    if (!root || !root.type) {
+      throw new Error('Invalid process step.');
+    }
 
-  private async buildForHydrogenBottling(processStep: ProcessStepEntity): Promise<LineageContextEntity> {
-    const hydrogenProductionProcessSteps = await this.lineage.fetchHydrogenProductionProcessSteps(processStep);
-    const powerProductionProcessSteps =
-      await this.lineage.fetchPowerProductionProcessSteps(hydrogenProductionProcessSteps);
-    const waterConsumptionProcessSteps =
-      await this.lineage.fetchWaterConsumptionProcessSteps(hydrogenProductionProcessSteps);
-    return {
-      root: processStep,
-      hydrogenBottlingProcessStep: processStep,
-      hydrogenProductionProcessSteps,
-      waterConsumptionProcessSteps,
-      powerProductionProcessSteps,
-    };
-  }
+    const executeStrategy = this.strategies[root.type as ProcessType];
 
-  private async buildForHydrogenTransportation(processStep: ProcessStepEntity): Promise<LineageContextEntity> {
-    const hydrogenBottlingProcessStep = await this.lineage.fetchHydrogenBottlingProcessStep(processStep);
-    const hydrogenProductionProcessSteps =
-      await this.lineage.fetchHydrogenProductionProcessSteps(hydrogenBottlingProcessStep);
-    const powerProductionProcessSteps =
-      await this.lineage.fetchPowerProductionProcessSteps(hydrogenProductionProcessSteps);
-    const waterConsumptionProcessSteps =
-      await this.lineage.fetchWaterConsumptionProcessSteps(hydrogenProductionProcessSteps);
-    return {
-      root: processStep,
-      hydrogenBottlingProcessStep,
-      hydrogenProductionProcessSteps,
-      waterConsumptionProcessSteps,
-      powerProductionProcessSteps,
-    };
+    if (!executeStrategy) {
+      throw new Error(`Unsupported process type [${root.type}] for lineage context build.`);
+    }
+
+    return executeStrategy(root);
   }
 }

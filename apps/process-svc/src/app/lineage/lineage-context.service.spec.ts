@@ -13,9 +13,7 @@ import {
   ProcessStepEntityHydrogenProductionMock,
   ProcessStepEntityHydrogenTransportationMock,
   ProcessStepEntityPowerProductionMock,
-  ProcessStepEntityWaterConsumptionMock,
-  ProcessStepMessagePatterns,
-  UnitMessagePatterns,
+  ProcessStepEntityWaterConsumptionMock
 } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { LineageContextService } from './lineage-context.service';
