@@ -11,7 +11,7 @@ import { of } from 'rxjs';
 import { BrokerQueues, ProcessStepEntity, ProvenanceEntity } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { ProvenanceService } from './provenance.service';
-import { ProcessStepTraversalService } from './process-step-traversal.service';
+import { TraversalService } from './traversal.service';
 
 function createProcessStep(id: string, type: ProcessType): ProcessStepEntity {
   return { id, type } as ProcessStepEntity;
@@ -35,7 +35,7 @@ describe('ProvenanceService', () => {
       providers: [
         ProvenanceService,
         { provide: BrokerQueues.QUEUE_BATCH_SVC, useValue: { send: batchSvcSendMock } },
-        { provide: ProcessStepTraversalService, useValue: traversalServiceMock },
+        { provide: TraversalService, useValue: traversalServiceMock },
       ],
     }).compile();
 

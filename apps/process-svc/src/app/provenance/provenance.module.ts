@@ -10,12 +10,12 @@ import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
 import { ProvenanceService } from './provenance.service';
 import { ProvenanceController } from './provenance.controller';
-import { ProcessStepTraversalService } from './process-step-traversal.service';
+import { TraversalService } from './traversal.service';
 
 @Module({
   imports: [new Broker().getBatchSvcBroker()],
   controllers: [ProvenanceController],
-  providers: [ProvenanceService, ProcessStepTraversalService],
+  providers: [ProvenanceService, TraversalService],
   exports: [ProvenanceService],
 })
 export class ProvenanceModule { }

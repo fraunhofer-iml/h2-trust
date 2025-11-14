@@ -13,7 +13,7 @@ import { firstValueFrom } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
-export class ProcessStepTraversalService {
+export class TraversalService {
   constructor(@Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchService: ClientProxy) { }
 
   async fetchPowerProductionsFromHydrogenProductions(hydrogenProductions: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
