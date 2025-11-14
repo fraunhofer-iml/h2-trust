@@ -9,7 +9,7 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BrokerQueues, LineageMessagePatterns } from '@h2-trust/amqp';
+import { BrokerQueues, ProvenanceMessagePatterns } from '@h2-trust/amqp';
 import { SectionDto } from '@h2-trust/api';
 import { ProofOfOriginAssembler } from './proof-of-origin.assembler';
 
@@ -21,7 +21,7 @@ export class ProofOfOriginService {
   ) {}
 
   async readProofOfOrigin(processStepId: string): Promise<SectionDto[]> {
-    const context = await firstValueFrom(this.processSvc.send(LineageMessagePatterns.BUILD_CONTEXT, { processStepId }));
+    const context = await firstValueFrom(this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, { processStepId }));
     return this.assembler.build(context);
   }
 }

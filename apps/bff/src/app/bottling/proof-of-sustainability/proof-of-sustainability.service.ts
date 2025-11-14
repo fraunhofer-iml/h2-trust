@@ -12,7 +12,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
   ProvenanceEntity,
-  LineageMessagePatterns,
+  ProvenanceMessagePatterns,
   SustainabilityMessagePatterns,
 } from '@h2-trust/amqp';
 import { EmissionComputationResultDto, ProofOfSustainabilityDto } from '@h2-trust/api';
@@ -23,7 +23,7 @@ export class ProofOfSustainabilityService {
 
   async readProofOfSustainability(processStepId: string): Promise<ProofOfSustainabilityDto> {
     const context: ProvenanceEntity = await firstValueFrom(
-      this.processSvc.send(LineageMessagePatterns.BUILD_CONTEXT, { processStepId }),
+      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, { processStepId }),
     );
     const emissionComputationResult: EmissionComputationResultDto = await firstValueFrom(
       this.processSvc.send(SustainabilityMessagePatterns.COMPUTE_FOR_PROCESS_STEP, { lineageContext: context }),

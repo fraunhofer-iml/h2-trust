@@ -6,6 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export enum LineageMessagePatterns {
-  BUILD_CONTEXT = 'lineage.build-context',
+export enum ProvenanceMessagePatterns {
+  BUILD_PROVENANCE = 'provenance.build',
 }
