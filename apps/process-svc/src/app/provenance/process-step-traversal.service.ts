@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { BatchEntity, BrokerQueues, ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { firstValueFrom } from 'rxjs';
@@ -16,93 +16,67 @@ import { ClientProxy } from '@nestjs/microservices';
 export class ProcessStepTraversalService {
   constructor(@Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchService: ClientProxy) { }
 
-  async fetchPowerProductions(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
-    return this.fetchProcessStepsDownFromHydrogenProduction(processSteps, ProcessType.POWER_PRODUCTION);
+  async fetchPowerProductionsFromHydrogenProductions(hydrogenProductions: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
+    return this.traverseFromHydrogenProductions(hydrogenProductions, ProcessType.POWER_PRODUCTION);
   }
 
-  async fetchWaterConsumptions(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
-    return this.fetchProcessStepsDownFromHydrogenProduction(processSteps, ProcessType.WATER_CONSUMPTION);
+  async fetchWaterConsumptionsFromHydrogenProductions(hydrogenProductions: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
+    return this.traverseFromHydrogenProductions(hydrogenProductions, ProcessType.WATER_CONSUMPTION);
   }
 
-  private async fetchProcessStepsDownFromHydrogenProduction(
-    processSteps: ProcessStepEntity[],
-    questedProcessType: ProcessType,
-  ): Promise<ProcessStepEntity[]> {
-    if (!processSteps || processSteps.length === 0) {
-      throw new HttpException(
-        `Process steps of type [${ProcessType.HYDROGEN_PRODUCTION}] are missing.`,
-        HttpStatus.BAD_REQUEST,
-      );
+  private async traverseFromHydrogenProductions(hydrogenProductions: ProcessStepEntity[], targetType: ProcessType): Promise<ProcessStepEntity[]> {
+    if (!hydrogenProductions || hydrogenProductions.length === 0) {
+      throw new Error(`Process steps of type [${ProcessType.HYDROGEN_PRODUCTION}] are missing.`);
     }
 
-    this.assertProcessType(processSteps, ProcessType.HYDROGEN_PRODUCTION);
+    this.assertProcessType(hydrogenProductions, ProcessType.HYDROGEN_PRODUCTION);
 
-    // Start with the first layer HYDROGEN_PRODUCTION -> due to split batches, we may have multiple layers of predecessors
-    let currentProcessStepLayer: ProcessStepEntity[] = processSteps;
+    const collectedProcessSteps = new Map<string, ProcessStepEntity>();
+    let currentLayer = hydrogenProductions;
 
-    // Collect all quested process steps across all layers
-    const questedProcessStepsById = new Map<string, ProcessStepEntity>();
+    // Due to split batches, we may have multiple layers of HYDROGEN_PRODUCTION process steps
+    while (currentLayer.length > 0) {
+      currentLayer
+        .filter((processStep) => processStep.type === targetType)
+        .forEach((processStep) => collectedProcessSteps.set(processStep.id, processStep));
 
-    while (currentProcessStepLayer.length > 0) {
-      const questedProcessSteps = currentProcessStepLayer.filter(
-        (processSteps) => processSteps.type === questedProcessType,
-      );
+      const hydrogenProductions = currentLayer.filter((processStep) => processStep.type === ProcessType.HYDROGEN_PRODUCTION)
 
-      // Collect quested process steps of the current layer
-      for (const questedProcessStep of questedProcessSteps) {
-        questedProcessStepsById.set(questedProcessStep.id, questedProcessStep);
-      }
+      if (hydrogenProductions.length === 0) {
+        break
+      };
 
-      const hydrogenProductionProcessSteps = currentProcessStepLayer.filter(
-        (processStep) => processStep.type === ProcessType.HYDROGEN_PRODUCTION,
-      );
-
-      // If there are no HYDROGEN_PRODUCTION process steps left in the current layer, we are done
-      if (hydrogenProductionProcessSteps.length === 0) {
-        break;
-      }
-
-      const predecessorBatches = hydrogenProductionProcessSteps.flatMap((processStep) =>
-        this.getPredecessorBatchesOrThrow(processStep),
-      );
-      currentProcessStepLayer = await this.fetchProcessStepsOfBatches(predecessorBatches);
+      const predecessorBatches = hydrogenProductions.flatMap(this.getPredecessorBatchesOrThrow);
+      currentLayer = await this.fetchProcessStepsOfBatches(predecessorBatches);
     }
 
-    return Array.from(questedProcessStepsById.values());
+    return Array.from(collectedProcessSteps.values());
   }
 
-  async fetchHydrogenProductions(processStep: ProcessStepEntity): Promise<ProcessStepEntity[]> {
-    if (!processStep) {
-      throw new HttpException(
-        `Process step of type [${ProcessType.HYDROGEN_BOTTLING}] is missing.`,
-        HttpStatus.BAD_REQUEST,
-      );
+  async fetchHydrogenProductionsFromHydrogenBottling(hydrogenBottling: ProcessStepEntity): Promise<ProcessStepEntity[]> {
+    if (!hydrogenBottling) {
+      throw new Error(`Process step of type [${ProcessType.HYDROGEN_BOTTLING}] is missing.`);
     }
 
-    this.assertProcessType([processStep], ProcessType.HYDROGEN_BOTTLING);
+    this.assertProcessType([hydrogenBottling], ProcessType.HYDROGEN_BOTTLING);
 
-    const predecessorBatches: BatchEntity[] = this.getPredecessorBatchesOrThrow(processStep);
-    const processStepsOfPredecessorBatches =
-      await this.fetchProcessStepsOfBatches(predecessorBatches);
+    const predecessorBatches: BatchEntity[] = this.getPredecessorBatchesOrThrow(hydrogenBottling);
+    const processStepsOfPredecessorBatches: ProcessStepEntity[] = await this.fetchProcessStepsOfBatches(predecessorBatches);
     this.assertProcessType(processStepsOfPredecessorBatches, ProcessType.HYDROGEN_PRODUCTION);
     this.assertNumberOfProcessSteps(processStepsOfPredecessorBatches, predecessorBatches.length);
 
     return processStepsOfPredecessorBatches;
   }
 
-  async fetchHydrogenBottling(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
-    if (!processStep) {
-      throw new HttpException(
-        `Process step of type [${ProcessType.HYDROGEN_TRANSPORTATION}] is missing.`,
-        HttpStatus.BAD_REQUEST,
-      );
+  async fetchHydrogenBottlingFromHydrogenTransportation(hydrogenTransportation: ProcessStepEntity): Promise<ProcessStepEntity> {
+    if (!hydrogenTransportation) {
+      throw new Error(`Process step of type [${ProcessType.HYDROGEN_TRANSPORTATION}] is missing.`);
     }
 
-    this.assertProcessType([processStep], ProcessType.HYDROGEN_TRANSPORTATION);
+    this.assertProcessType([hydrogenTransportation], ProcessType.HYDROGEN_TRANSPORTATION);
 
-    const predecessorBatches: BatchEntity[] = this.getPredecessorBatchesOrThrow(processStep);
-    const processStepsOfPredecessorBatches: ProcessStepEntity[] =
-      await this.fetchProcessStepsOfBatches(predecessorBatches);
+    const predecessorBatches: BatchEntity[] = this.getPredecessorBatchesOrThrow(hydrogenTransportation);
+    const processStepsOfPredecessorBatches: ProcessStepEntity[] = await this.fetchProcessStepsOfBatches(predecessorBatches);
     this.assertProcessType(processStepsOfPredecessorBatches, ProcessType.HYDROGEN_BOTTLING);
     this.assertNumberOfProcessSteps(processStepsOfPredecessorBatches, 1);
 
@@ -111,18 +85,17 @@ export class ProcessStepTraversalService {
 
   private getPredecessorBatchesOrThrow(processStep: ProcessStepEntity): BatchEntity[] {
     const predecessorBatches: BatchEntity[] = processStep.batch?.predecessors;
+
     if (!Array.isArray(predecessorBatches) || predecessorBatches.length === 0) {
-      const errorMessage = `No further predecessors could be found for process step(s) with ID ${processStep.id}`;
-      throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
+      throw new Error(`No predecessors found for process step [${processStep.id}]`);
     }
+
     return predecessorBatches;
   }
 
-  private assertNumberOfProcessSteps(processSteps: ProcessStepEntity[], expectedNumberOfProcessSteps: number): void {
-    if (!processSteps || processSteps.length !== expectedNumberOfProcessSteps) {
-      const errorMessage = `Number of process steps must be exactly ${expectedNumberOfProcessSteps}, but found ${processSteps?.length ?? 0}.`;
-      throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
-    }
+  private async fetchProcessStepsOfBatches(batches: BatchEntity[]): Promise<ProcessStepEntity[]> {
+    const promises = batches.map(({ processStepId }) => firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.READ_UNIQUE, { processStepId })));
+    return Promise.all(promises);
   }
 
   private assertProcessType(processSteps: ProcessStepEntity[], expectedProcessType: ProcessType): void {
@@ -134,13 +107,14 @@ export class ProcessStepTraversalService {
       const invalidProcessTypes = invalidProcessSteps
         .map((processStep) => [processStep.id, processStep.type].join(' '))
         .join(', ');
-      const errorMessage = `All process steps must be of type ${expectedProcessType}, but found invalid process types: ${invalidProcessTypes}`;
-      throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
+      throw new Error(`All process steps must be of type [${expectedProcessType}], but found [${invalidProcessTypes}]`);
     }
   }
 
-  async fetchProcessStepsOfBatches(batches: BatchEntity[]): Promise<ProcessStepEntity[]> {
-    const promises = batches.map(({ processStepId }) => firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.READ_UNIQUE, { processStepId })));
-    return Promise.all(promises);
+  private assertNumberOfProcessSteps(processSteps: ProcessStepEntity[], expectedNumberOfProcessSteps: number): void {
+    if (!processSteps || processSteps.length !== expectedNumberOfProcessSteps) {
+      const errorMessage = `Number of process steps must be [${expectedNumberOfProcessSteps}], but found [${processSteps?.length ?? 0}].`;
+      throw new Error(errorMessage);
+    }
   }
 }
