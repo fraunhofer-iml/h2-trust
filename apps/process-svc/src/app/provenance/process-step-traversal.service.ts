@@ -16,15 +16,15 @@ import { ClientProxy } from '@nestjs/microservices';
 export class ProcessStepTraversalService {
   constructor(@Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchService: ClientProxy) { }
 
-  async fetchPowerProductionProcessSteps(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
+  async fetchPowerProductions(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
     return this.fetchProcessStepsDownFromHydrogenProduction(processSteps, ProcessType.POWER_PRODUCTION);
   }
 
-  async fetchWaterConsumptionProcessSteps(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
+  async fetchWaterConsumptions(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
     return this.fetchProcessStepsDownFromHydrogenProduction(processSteps, ProcessType.WATER_CONSUMPTION);
   }
 
-  async fetchProcessStepsDownFromHydrogenProduction(
+  private async fetchProcessStepsDownFromHydrogenProduction(
     processSteps: ProcessStepEntity[],
     questedProcessType: ProcessType,
   ): Promise<ProcessStepEntity[]> {
@@ -71,7 +71,7 @@ export class ProcessStepTraversalService {
     return Array.from(questedProcessStepsById.values());
   }
 
-  async fetchHydrogenProductionProcessSteps(processStep: ProcessStepEntity): Promise<ProcessStepEntity[]> {
+  async fetchHydrogenProductions(processStep: ProcessStepEntity): Promise<ProcessStepEntity[]> {
     if (!processStep) {
       throw new HttpException(
         `Process step of type [${ProcessType.HYDROGEN_BOTTLING}] is missing.`,
@@ -90,7 +90,7 @@ export class ProcessStepTraversalService {
     return processStepsOfPredecessorBatches;
   }
 
-  async fetchHydrogenBottlingProcessStep(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
+  async fetchHydrogenBottling(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
     if (!processStep) {
       throw new HttpException(
         `Process step of type [${ProcessType.HYDROGEN_TRANSPORTATION}] is missing.`,

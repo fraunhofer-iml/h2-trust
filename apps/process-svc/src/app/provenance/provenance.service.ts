@@ -7,7 +7,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { BrokerQueues, ProvenanceEntity as ProvenanceEntity, ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
+import { BrokerQueues, ProvenanceEntity, ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { ProcessStepTraversalService } from './process-step-traversal.service';
 import { firstValueFrom } from 'rxjs';
@@ -35,23 +35,23 @@ export class ProvenanceService {
 
     [ProcessType.HYDROGEN_PRODUCTION]: async (root) => {
       const hydrogenProductions = [root];
-      const waterConsumptions = await this.traversal.fetchWaterConsumptionProcessSteps(hydrogenProductions);
-      const powerProductions = await this.traversal.fetchPowerProductionProcessSteps(hydrogenProductions);
+      const waterConsumptions = await this.traversal.fetchWaterConsumptions(hydrogenProductions);
+      const powerProductions = await this.traversal.fetchPowerProductions(hydrogenProductions);
       return new ProvenanceEntity(root, undefined, hydrogenProductions, waterConsumptions, powerProductions);
     },
 
     [ProcessType.HYDROGEN_BOTTLING]: async (root) => {
-      const hydrogenProductions = await this.traversal.fetchHydrogenProductionProcessSteps(root);
-      const waterConsumptions = await this.traversal.fetchWaterConsumptionProcessSteps(hydrogenProductions);
-      const powerProductions = await this.traversal.fetchPowerProductionProcessSteps(hydrogenProductions);
+      const hydrogenProductions = await this.traversal.fetchHydrogenProductions(root);
+      const waterConsumptions = await this.traversal.fetchWaterConsumptions(hydrogenProductions);
+      const powerProductions = await this.traversal.fetchPowerProductions(hydrogenProductions);
       return new ProvenanceEntity(root, root, hydrogenProductions, waterConsumptions, powerProductions);
     },
 
     [ProcessType.HYDROGEN_TRANSPORTATION]: async (root) => {
-      const hydrogenBottling = await this.traversal.fetchHydrogenBottlingProcessStep(root);
-      const hydrogenProductions = await this.traversal.fetchHydrogenProductionProcessSteps(hydrogenBottling);
-      const waterConsumptions = await this.traversal.fetchWaterConsumptionProcessSteps(hydrogenProductions);
-      const powerProductions = await this.traversal.fetchPowerProductionProcessSteps(hydrogenProductions);
+      const hydrogenBottling = await this.traversal.fetchHydrogenBottling(root);
+      const hydrogenProductions = await this.traversal.fetchHydrogenProductions(hydrogenBottling);
+      const waterConsumptions = await this.traversal.fetchWaterConsumptions(hydrogenProductions);
+      const powerProductions = await this.traversal.fetchPowerProductions(hydrogenProductions);
       return new ProvenanceEntity(root, hydrogenBottling, hydrogenProductions, waterConsumptions, powerProductions);
     },
   };
