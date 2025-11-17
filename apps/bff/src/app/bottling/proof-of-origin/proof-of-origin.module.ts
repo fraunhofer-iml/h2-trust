@@ -10,7 +10,6 @@ import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
 import { EnergySourceClassificationService } from './classifications/energy-source-classification.service';
 import { WaterClassificationService } from './classifications/water-classification.service';
-import { ProofOfOriginDtoAssembler } from './proof-of-origin-dto.assembler';
 import { ProofOfOriginService } from './proof-of-origin.service';
 import { HydrogenBottlingSectionService } from './sections/hydrogen-bottling-section.service';
 import { HydrogenProductionSectionService } from './sections/hydrogen-production-section.service';
@@ -26,7 +25,6 @@ import { EmissionModule } from '../emission/emission.module';
     HydrogenProductionSectionService,
     HydrogenStorageSectionService,
     HydrogenTransportationSectionService,
-    ProofOfOriginDtoAssembler,
     EnergySourceClassificationService,
     WaterClassificationService
   ],

@@ -17,16 +17,17 @@ import {
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { BatchDto, ClassificationDto, EmissionCalculationDto } from '@h2-trust/api';
-import { toEmissionDto } from '../sections/emission-dto.builder';
-import { ProofOfOriginDtoAssembler } from '../proof-of-origin-dto.assembler';
+import { assembleEmissionDto } from '../assembler/emission.assembler';
 import { EmissionCalculatorService } from '../../emission/emission-calculator.service';
+import { BatchAssembler } from '../assembler/batch.assembler';
+import { ClassificationAssembler } from '../assembler/classification.assembler';
 
 @Injectable()
 export class EnergySourceClassificationService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     private readonly emissionCalculatorService: EmissionCalculatorService,
-  ) {}
+  ) { }
 
   async buildEnergySourceClassifications(
     powerProductionProcessSteps: ProcessStepEntity[],
@@ -52,9 +53,9 @@ export class EnergySourceClassificationService {
           const emissionCalculation: EmissionCalculationDto = await this.emissionCalculatorService.computePowerCalculation(processStep);
 
           const h2KgEquivalentToPowerBatch = processStep.batch.successors[0].amount;
-          const emission = toEmissionDto(emissionCalculation, h2KgEquivalentToPowerBatch);
+          const emission = assembleEmissionDto(emissionCalculation, h2KgEquivalentToPowerBatch);
 
-          const productionPowerBatch = ProofOfOriginDtoAssembler.assembleProductionPowerBatchDto(
+          const productionPowerBatch = BatchAssembler.assemblePowerProductionBatchDto(
             processStep,
             energySource,
             emission,
@@ -62,7 +63,7 @@ export class EnergySourceClassificationService {
           productionPowerBatches.push(productionPowerBatch);
         }
 
-        const classification = ProofOfOriginDtoAssembler.assemblePowerClassification(
+        const classification = ClassificationAssembler.assemblePowerClassification(
           energySource,
           productionPowerBatches,
         );

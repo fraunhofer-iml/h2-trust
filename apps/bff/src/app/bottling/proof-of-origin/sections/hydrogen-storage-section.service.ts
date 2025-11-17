@@ -10,9 +10,10 @@ import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity, } from '@h2-trust/amqp';
 import { BatchDto, ClassificationDto, EmissionCalculationDto, SectionDto } from '@h2-trust/api';
 import { HydrogenColor, ProofOfOrigin } from '@h2-trust/domain';
-import { toEmissionDto } from './emission-dto.builder';
-import { ProofOfOriginDtoAssembler } from '../proof-of-origin-dto.assembler';
+import { assembleEmissionDto } from '../assembler/emission.assembler';
 import { EmissionCalculatorService } from '../../emission/emission-calculator.service';
+import { BatchAssembler } from '../assembler/batch.assembler';
+import { ClassificationAssembler } from '../assembler/classification.assembler';
 
 @Injectable()
 export class HydrogenStorageSectionService {
@@ -37,15 +38,14 @@ export class HydrogenStorageSectionService {
       const batchesForCurrentColor: BatchDto[] = [];
 
       for (const processStep of processStepsByCurrentHydrogenColor) {
-
         const emissionCalculation: EmissionCalculationDto = await this.emissionCalculatorService.computeForProcessStep(processStep.id, 'hydrogenProduction');
 
-        const emission = toEmissionDto(emissionCalculation, processStep.batch.amount);
-        const batch: BatchDto = ProofOfOriginDtoAssembler.assembleStorageHydrogenBatchDto(processStep, emission);
+        const emission = assembleEmissionDto(emissionCalculation, processStep.batch.amount);
+        const batch: BatchDto = BatchAssembler.assembleHydrogenStorageBatchDto(processStep, emission);
         batchesForCurrentColor.push(batch);
       }
 
-      const classification: ClassificationDto = ProofOfOriginDtoAssembler.assembleHydrogenClassification(
+      const classification: ClassificationDto = ClassificationAssembler.assembleHydrogenClassification(
         hydrogenColor,
         batchesForCurrentColor,
       );

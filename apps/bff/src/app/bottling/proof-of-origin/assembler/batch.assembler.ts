@@ -6,21 +6,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenComponentEntity, ProcessStepEntity, Util } from '@h2-trust/amqp';
+import { HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import {
-  BatchDto,
-  ClassificationDto,
-  ClassificationType,
   EmissionDto,
   HydrogenBatchDto,
   PowerBatchDto,
   WaterBatchDto,
   WaterDetailsDto,
 } from '@h2-trust/api';
-import { BatchType, EnergySource, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
+import { EnergySource, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
 
-export class ProofOfOriginDtoAssembler {
-  static assembleProductionPowerBatchDto(
+export class BatchAssembler {
+  static assemblePowerProductionBatchDto(
     processStepEntity: ProcessStepEntity,
     energySource: string,
     emission?: EmissionDto,
@@ -52,7 +49,7 @@ export class ProofOfOriginDtoAssembler {
     );
   }
 
-  static assembleStorageHydrogenBatchDto(
+  static assembleHydrogenStorageBatchDto(
     processStepEntity: ProcessStepEntity,
     emission?: EmissionDto,
   ): HydrogenBatchDto {
@@ -80,7 +77,7 @@ export class ProofOfOriginDtoAssembler {
     );
   }
 
-  static assembleBottlingOrTransportationHydrogenBatchDto(
+  static assembleHydrogenBottlingBatchDto(
     processStepEntity: ProcessStepEntity,
     hydrogenComposition: HydrogenComponentEntity[],
     emission?: EmissionDto,
@@ -104,70 +101,27 @@ export class ProofOfOriginDtoAssembler {
     );
   }
 
-  static assemblePowerClassification(
-    classificationName: string,
-    batchDtos?: BatchDto[],
-    nestedClassificationDtos?: ClassificationDto[],
-  ): ClassificationDto {
-    return this.assembleClassification(
-      classificationName,
-      MeasurementUnit.POWER,
-      BatchType.POWER,
-      batchDtos,
-      nestedClassificationDtos,
-    );
-  }
-
-  static assembleHydrogenClassification(
-    classificationName: string,
-    batchDtos?: BatchDto[],
-    nestedClassificationDtos?: ClassificationDto[],
-  ): ClassificationDto {
-    return this.assembleClassification(
-      classificationName,
+  static assembleHydrogenTransportationBatchDto(
+    processStepEntity: ProcessStepEntity,
+    hydrogenComposition: HydrogenComponentEntity[],
+    emission?: EmissionDto,
+  ): HydrogenBatchDto {
+    return new HydrogenBatchDto(
+      processStepEntity.batch.id,
+      emission,
+      processStepEntity.startedAt,
+      processStepEntity.batch.amount,
       MeasurementUnit.HYDROGEN,
-      BatchType.HYDROGEN,
-      batchDtos,
-      nestedClassificationDtos,
-    );
-  }
-
-  static assembleClassification(
-    classificationName: string,
-    measurementUnit: MeasurementUnit,
-    classificationType: ClassificationType,
-    batchDtos: BatchDto[] = [],
-    nestedClassificationDtos: ClassificationDto[] = [],
-  ): ClassificationDto {
-    return new ClassificationDto(
-      classificationName,
-      this.calculateClassificationEmission(batchDtos, nestedClassificationDtos),
-      this.calculateClassificationAmount(batchDtos, nestedClassificationDtos),
       null, // TBA
-      batchDtos,
-      nestedClassificationDtos,
-      measurementUnit,
-      classificationType,
+      null,
+      processStepEntity.executedBy.id,
+      null, // TBA
+      null,
+      hydrogenComposition,
+      processStepEntity.batch?.qualityDetails?.color,
+      null, // TBA
+      processStepEntity.type,
+      processStepEntity.endedAt,
     );
-  }
-
-  private static calculateClassificationAmount(
-    batchDtos: BatchDto[],
-    nestedClassificationDtos: ClassificationDto[],
-  ): number {
-    return Util.sumAmounts(batchDtos) || Util.sumAmounts(nestedClassificationDtos);
-  }
-
-  private static calculateClassificationEmission(
-    batchDtos: BatchDto[],
-    nestedClassificationDtos: ClassificationDto[],
-  ): number {
-    const batchEmissionSum = (batchDtos || []).map((b) => b.emission?.amountCO2PerKgH2 ?? 0).reduce((a, b) => a + b, 0);
-
-    const nestedEmissionSum = (nestedClassificationDtos || [])
-      .map((c) => c.emissionOfProcessStep ?? 0)
-      .reduce((a, b) => a + b, 0);
-
-    return batchEmissionSum + nestedEmissionSum;
   }
 }

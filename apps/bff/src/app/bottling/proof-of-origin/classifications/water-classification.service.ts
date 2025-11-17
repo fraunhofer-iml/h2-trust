@@ -10,9 +10,10 @@ import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { ClassificationDto, EmissionCalculationDto, WaterBatchDto } from '@h2-trust/api';
 import { BatchType, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
-import { toEmissionDto } from '../sections/emission-dto.builder';
-import { ProofOfOriginDtoAssembler } from '../proof-of-origin-dto.assembler';
+import { assembleEmissionDto } from '../assembler/emission.assembler';
 import { EmissionCalculatorService } from '../../emission/emission-calculator.service';
+import { ClassificationAssembler } from '../assembler/classification.assembler';
+import { BatchAssembler } from '../assembler/batch.assembler';
 
 @Injectable()
 export class WaterClassificationService {
@@ -27,7 +28,7 @@ export class WaterClassificationService {
 
     const waterDtos = await this.buildWaterDtos(waterConsumptionProcessSteps);
 
-    return ProofOfOriginDtoAssembler.assembleClassification(
+    return ClassificationAssembler.assembleClassification(
       ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION_NAME,
       MeasurementUnit.WATER,
       BatchType.WATER,
@@ -39,14 +40,12 @@ export class WaterClassificationService {
   private async buildWaterDtos(waterConsumptionProcessSteps: ProcessStepEntity[]): Promise<WaterBatchDto[]> {
     const waterBatchDtoPromises: Promise<WaterBatchDto>[] = waterConsumptionProcessSteps.map(
       async (waterConsumptionProcessStep) => {
-
-
         const emissionCalculation: EmissionCalculationDto = this.emissionCalculatorService.computeWaterCalculation(waterConsumptionProcessStep);
 
         const h2KgEquivalentToWaterBatch = waterConsumptionProcessStep.batch.successors[0].amount;
-        const emission = toEmissionDto(emissionCalculation, h2KgEquivalentToWaterBatch);
+        const emission = assembleEmissionDto(emissionCalculation, h2KgEquivalentToWaterBatch);
 
-        return ProofOfOriginDtoAssembler.assembleWaterBatchDto(waterConsumptionProcessStep, emission);
+        return BatchAssembler.assembleWaterBatchDto(waterConsumptionProcessStep, emission);
       },
     );
 

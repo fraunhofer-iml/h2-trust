@@ -12,7 +12,7 @@ import { ClassificationDto, SectionDto } from '@h2-trust/api';
 import { ProofOfOrigin } from '@h2-trust/domain';
 import { EnergySourceClassificationService } from '../classifications/energy-source-classification.service';
 import { WaterClassificationService } from '../classifications/water-classification.service';
-import { ProofOfOriginDtoAssembler } from '../proof-of-origin-dto.assembler';
+import { ClassificationAssembler } from '../assembler/classification.assembler';
 
 @Injectable()
 export class HydrogenProductionSectionService {
@@ -30,7 +30,8 @@ export class HydrogenProductionSectionService {
     if (powerProductionProcessSteps?.length) {
       const energySourceClassificationDtos: ClassificationDto[] =
         await this.energySourceClassificationService.buildEnergySourceClassifications(powerProductionProcessSteps);
-      const powerSupplyClassification: ClassificationDto = ProofOfOriginDtoAssembler.assemblePowerClassification(
+
+      const powerSupplyClassification: ClassificationDto = ClassificationAssembler.assemblePowerClassification(
         ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION_NAME,
         [],
         energySourceClassificationDtos,

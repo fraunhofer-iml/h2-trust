@@ -17,9 +17,9 @@ import {
 } from '@h2-trust/amqp';
 import { BatchDto, EmissionCalculationDto, EmissionDto, SectionDto } from '@h2-trust/api';
 import { ProofOfOrigin } from '@h2-trust/domain';
-import { toEmissionDto } from './emission-dto.builder';
-import { ProofOfOriginDtoAssembler } from '../proof-of-origin-dto.assembler';
+import { assembleEmissionDto } from '../assembler/emission.assembler';
 import { EmissionCalculatorService } from '../../emission/emission-calculator.service';
+import { BatchAssembler } from '../assembler/batch.assembler';
 
 @Injectable()
 export class HydrogenTransportationSectionService {
@@ -36,13 +36,11 @@ export class HydrogenTransportationSectionService {
       this.batchSvc.send(ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION, hydrogenBottlingProcessStep.id),
     );
 
-
     const emissionCalculation: EmissionCalculationDto = await this.emissionCalculatorService.computeForProcessStep(hydrogenTransportationProcessStep.id, 'transport');
 
+    const emission: EmissionDto = assembleEmissionDto(emissionCalculation, hydrogenTransportationProcessStep.batch.amount);
 
-    const emission: EmissionDto = toEmissionDto(emissionCalculation, hydrogenTransportationProcessStep.batch.amount);
-
-    const batch: BatchDto = ProofOfOriginDtoAssembler.assembleBottlingOrTransportationHydrogenBatchDto(
+    const batch: BatchDto = BatchAssembler.assembleHydrogenTransportationBatchDto(
       hydrogenTransportationProcessStep,
       hydrogenComposition,
       emission,
