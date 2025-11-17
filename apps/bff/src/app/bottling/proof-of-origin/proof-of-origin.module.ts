@@ -11,7 +11,6 @@ import { Broker } from '@h2-trust/amqp';
 import { EnergySourceClassificationService } from './classifications/energy-source-classification.service';
 import { WaterClassificationService } from './classifications/water-classification.service';
 import { ProofOfOriginDtoAssembler } from './proof-of-origin-dto.assembler';
-import { ProofOfOriginAssembler } from './proof-of-origin.assembler';
 import { ProofOfOriginService } from './proof-of-origin.service';
 import { HydrogenBottlingSectionService } from './sections/hydrogen-bottling-section.service';
 import { HydrogenProductionSectionService } from './sections/hydrogen-production-section.service';
@@ -23,7 +22,6 @@ import { EmissionModule } from '../emission/emission.module';
   imports: [new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker(), new Broker().getProcessSvcBroker(), EmissionModule],
   providers: [
     ProofOfOriginService,
-    ProofOfOriginAssembler,
     HydrogenBottlingSectionService,
     HydrogenProductionSectionService,
     HydrogenStorageSectionService,
