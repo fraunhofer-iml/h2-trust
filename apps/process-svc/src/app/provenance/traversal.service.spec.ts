@@ -87,34 +87,6 @@ describe('TraversalService', () => {
             expect(actualResult).toEqual(expectedResult);
         });
 
-        it(`should return two ${ProcessType.POWER_PRODUCTION} process steps`, async () => {
-            // arrange
-            const givenProcessSteps = [
-                createProcessStep('hp1', ProcessType.HYDROGEN_PRODUCTION, [createBatch('b1')]),
-                createProcessStep('hp2', ProcessType.HYDROGEN_PRODUCTION, [createBatch('b2')])
-            ];
-
-            const expectedResult: ProcessStepEntity[] = [
-                createProcessStep('pp1', ProcessType.POWER_PRODUCTION, []),
-                createProcessStep('pp2', ProcessType.POWER_PRODUCTION, [])
-            ];
-
-            batchSvcSendMock
-                .mockReturnValueOnce(of(expectedResult.at(0)))
-                .mockReturnValueOnce(of(expectedResult.at(1)));
-
-            // act
-            const actualResult = await service.fetchPowerProductionsFromHydrogenProductions(givenProcessSteps);
-
-            // assert
-            expect(batchSvcSendMock).toHaveBeenCalledTimes(2);
-
-            expect(Array.isArray(actualResult)).toBe(true);
-            expect(actualResult.length).toEqual(expectedResult.length);
-            expect(actualResult).toEqual(expectedResult);
-
-        });
-
         it(`should traverse recursively through two layers of ${ProcessType.HYDROGEN_PRODUCTION} process steps`, async () => {
             // arrange
             const givenProcessSteps = [
@@ -200,34 +172,6 @@ describe('TraversalService', () => {
             expect(actualResult).toEqual(expectedResult);
         });
 
-        it(`should return two ${ProcessType.WATER_CONSUMPTION} process steps`, async () => {
-            // arrange
-            const givenProcessSteps = [
-                createProcessStep('hp1', ProcessType.HYDROGEN_PRODUCTION, [createBatch('b1')]),
-                createProcessStep('hp2', ProcessType.HYDROGEN_PRODUCTION, [createBatch('b2')])
-            ];
-
-            const expectedResult: ProcessStepEntity[] = [
-                createProcessStep('wc1', ProcessType.WATER_CONSUMPTION, []),
-                createProcessStep('wc2', ProcessType.WATER_CONSUMPTION, [])
-            ];
-
-            batchSvcSendMock
-                .mockReturnValueOnce(of(expectedResult.at(0)))
-                .mockReturnValueOnce(of(expectedResult.at(1)));
-
-            // act
-            const actualResult = await service.fetchWaterConsumptionsFromHydrogenProductions(givenProcessSteps);
-
-            // assert
-            expect(batchSvcSendMock).toHaveBeenCalledTimes(2);
-
-            expect(Array.isArray(actualResult)).toBe(true);
-            expect(actualResult.length).toEqual(expectedResult.length);
-            expect(actualResult).toEqual(expectedResult);
-
-        });
-
         it(`should traverse recursively through two layers of ${ProcessType.HYDROGEN_PRODUCTION} process steps`, async () => {
             // arrange
             const givenProcessSteps = [
@@ -249,6 +193,106 @@ describe('TraversalService', () => {
             // assert
             expect(batchSvcSendMock).toHaveBeenCalledTimes(2);
 
+            expect(Array.isArray(actualResult)).toBe(true);
+            expect(actualResult.length).toEqual(expectedResult.length);
+            expect(actualResult).toEqual(expectedResult);
+        });
+    });
+
+    describe('fetchHydrogenProductionsFromHydrogenBottling', () => {
+        it(`throws if ${ProcessType.HYDROGEN_BOTTLING} process step is null`, async () => {
+            // arrange
+            const givenProcessStep: ProcessStepEntity = null;
+
+            const expectedError = `Process steps of type [${ProcessType.HYDROGEN_BOTTLING}] are missing.`;
+
+            // act & assert
+            await expect(service.fetchHydrogenProductionsFromHydrogenBottling(givenProcessStep))
+                .rejects.toThrow(expectedError);
+        });
+
+        it(`throws if any processStep is not ${ProcessType.HYDROGEN_BOTTLING}`, async () => {
+            // arrange
+            const givenProcessStep = createProcessStep('hp1', ProcessType.HYDROGEN_PRODUCTION, []);
+
+            const expectedError = `All process steps must be of type [${ProcessType.HYDROGEN_BOTTLING}], but found invalid types: ${givenProcessStep.id} (${ProcessType.HYDROGEN_PRODUCTION})`;
+
+            // act & assert
+            await expect(service.fetchHydrogenProductionsFromHydrogenBottling(givenProcessStep))
+                .rejects.toThrow(expectedError);
+        });
+
+        it(`throws if a ${ProcessType.HYDROGEN_BOTTLING} process step has no predecessor batch`, async () => {
+            // arrange
+            const givenProcessStep = createProcessStep('hp1', ProcessType.HYDROGEN_BOTTLING, []);
+
+            // act & assert
+            await expect(service.fetchHydrogenProductionsFromHydrogenBottling(givenProcessStep))
+                .rejects.toThrow(`No predecessors found for process step [${givenProcessStep.id}]`);
+        });
+
+        it(`throws if a predecessor process step is not ${ProcessType.HYDROGEN_PRODUCTION}`, async () => {
+            // arrange
+            const givenProcessStep = createProcessStep('hb1', ProcessType.HYDROGEN_BOTTLING, [
+                createBatch('b1'),
+            ]);
+            const invalidStep = createProcessStep('pp1', ProcessType.POWER_PRODUCTION, []);
+            batchSvcSendMock.mockReturnValueOnce(of(invalidStep));
+
+            // act & assert
+            await expect(service.fetchHydrogenProductionsFromHydrogenBottling(givenProcessStep))
+                .rejects.toThrow(`All process steps must be of type [${ProcessType.HYDROGEN_PRODUCTION}], but found invalid types: ${invalidStep.id} (${invalidStep.type})`);
+        });
+
+        it('throws if a predecessor process step is null', async () => {
+            // arrange
+            const givenProcessStep = createProcessStep('hb1', ProcessType.HYDROGEN_BOTTLING, [
+                createBatch('b1'),
+            ]);
+            batchSvcSendMock.mockReturnValueOnce(of(null));
+
+            // act & assert
+            await expect(service.fetchHydrogenProductionsFromHydrogenBottling(givenProcessStep))
+                .rejects.toThrow(`Process steps of type [${ProcessType.HYDROGEN_PRODUCTION}] are missing.`);
+        });
+
+        it(`should return one ${ProcessType.HYDROGEN_PRODUCTION} process step`, async () => {
+            // arrange
+            const givenProcessStep = createProcessStep('hp1', ProcessType.HYDROGEN_BOTTLING, [createBatch('b1')]);
+
+            const expectedResult: ProcessStepEntity[] = [
+                createProcessStep('hp1', ProcessType.HYDROGEN_PRODUCTION, [])
+            ];
+
+            batchSvcSendMock.mockReturnValue(of(expectedResult.at(0)));
+
+            // act
+            const actualResult = await service.fetchHydrogenProductionsFromHydrogenBottling(givenProcessStep);
+
+            // assert
+            expect(Array.isArray(actualResult)).toBe(true);
+            expect(actualResult.length).toEqual(expectedResult.length);
+            expect(actualResult).toEqual(expectedResult);
+        });
+
+        it(`should return multiple ${ProcessType.HYDROGEN_PRODUCTION} process steps if multiple predecessor batches exist`, async () => {
+            // arrange
+            const givenProcessStep = createProcessStep('hb1', ProcessType.HYDROGEN_BOTTLING, [
+                createBatch('b1'),
+                createBatch('b2'),
+            ]);
+            const expectedResult: ProcessStepEntity[] = [
+                createProcessStep('hp1', ProcessType.HYDROGEN_PRODUCTION, []),
+                createProcessStep('hp2', ProcessType.HYDROGEN_PRODUCTION, []),
+            ];
+            batchSvcSendMock
+                .mockReturnValueOnce(of(expectedResult[0]))
+                .mockReturnValueOnce(of(expectedResult[1]));
+
+            // act
+            const actualResult = await service.fetchHydrogenProductionsFromHydrogenBottling(givenProcessStep);
+
+            // assert
             expect(Array.isArray(actualResult)).toBe(true);
             expect(actualResult.length).toEqual(expectedResult.length);
             expect(actualResult).toEqual(expectedResult);

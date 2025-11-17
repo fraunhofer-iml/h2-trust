@@ -125,7 +125,9 @@ export class TraversalService {
   }
 
   private assertAllProcessStepsOfType(processSteps: ProcessStepEntity[], expectedProcessType: ProcessType): void {
-    if (!processSteps || processSteps.length === 0) {
+    if (!processSteps
+      || processSteps.length === 0
+      || processSteps.some((processStep) => !processStep)) {
       throw new Error(`Process steps of type [${expectedProcessType}] are missing.`);
     }
 
