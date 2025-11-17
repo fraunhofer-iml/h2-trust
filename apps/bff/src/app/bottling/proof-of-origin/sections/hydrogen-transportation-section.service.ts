@@ -14,19 +14,19 @@ import {
   HydrogenComponentEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
-  SustainabilityMessagePatterns,
 } from '@h2-trust/amqp';
 import { BatchDto, EmissionCalculationDto, EmissionDto, SectionDto } from '@h2-trust/api';
 import { ProofOfOrigin } from '@h2-trust/domain';
-import { toEmissionDto } from '../emission-dto.builder';
+import { toEmissionDto } from './emission-dto.builder';
 import { ProofOfOriginDtoAssembler } from '../proof-of-origin-dto.assembler';
+import { EmissionCalculatorService } from '../../emission/emission-calculator.service';
 
 @Injectable()
 export class HydrogenTransportationSectionService {
   constructor(
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
-    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
-  ) {}
+    private readonly emissionCalculatorService: EmissionCalculatorService,
+  ) { }
 
   async buildHydrogenTransportationSection(
     hydrogenTransportationProcessStep: ProcessStepEntity,
@@ -36,12 +36,9 @@ export class HydrogenTransportationSectionService {
       this.batchSvc.send(ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION, hydrogenBottlingProcessStep.id),
     );
 
-    const emissionCalculation: EmissionCalculationDto = await firstValueFrom(
-      this.processSvc.send(SustainabilityMessagePatterns.COMPUTE_CUMULATIVE_FOR_STEP, {
-        processStepId: hydrogenTransportationProcessStep.id,
-        emissionCalculationName: 'transport',
-      }),
-    );
+
+    const emissionCalculation: EmissionCalculationDto = await this.emissionCalculatorService.computeForProcessStep(hydrogenTransportationProcessStep.id, 'transport');
+
 
     const emission: EmissionDto = toEmissionDto(emissionCalculation, hydrogenTransportationProcessStep.batch.amount);
 

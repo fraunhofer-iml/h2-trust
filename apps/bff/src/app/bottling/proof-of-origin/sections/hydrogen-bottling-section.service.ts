@@ -14,31 +14,26 @@ import {
   HydrogenComponentEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
-  SustainabilityMessagePatterns,
 } from '@h2-trust/amqp';
 import { BatchDto, EmissionCalculationDto, EmissionDto, SectionDto } from '@h2-trust/api';
 import { ProofOfOrigin } from '@h2-trust/domain';
-import { toEmissionDto } from '../emission-dto.builder';
+import { toEmissionDto } from './emission-dto.builder';
 import { ProofOfOriginDtoAssembler } from '../proof-of-origin-dto.assembler';
+import { EmissionCalculatorService } from '../../emission/emission-calculator.service';
 
 @Injectable()
 export class HydrogenBottlingSectionService {
   constructor(
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
-    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
-  ) {}
+    private readonly emissionCalculatorService: EmissionCalculatorService,
+  ) { }
 
   async buildHydrogenBottlingSection(processStep: ProcessStepEntity): Promise<SectionDto> {
     const hydrogenComposition: HydrogenComponentEntity[] = await firstValueFrom(
       this.batchSvc.send(ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION, processStep.id),
     );
 
-    const emissionCalculation: EmissionCalculationDto = await firstValueFrom(
-      this.processSvc.send(SustainabilityMessagePatterns.COMPUTE_CUMULATIVE_FOR_STEP, {
-        processStepId: processStep.id,
-        emissionCalculationName: 'bottling',
-      }),
-    );
+    const emissionCalculation: EmissionCalculationDto = await this.emissionCalculatorService.computeForProcessStep(processStep.id, 'bottling');
 
     const emission: EmissionDto = toEmissionDto(emissionCalculation, processStep.batch.amount);
 

@@ -14,18 +14,18 @@ import {
   PowerProductionTypeEntity,
   PowerProductionUnitEntity,
   ProcessStepEntity,
-  SustainabilityMessagePatterns,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { BatchDto, ClassificationDto, EmissionCalculationDto } from '@h2-trust/api';
-import { toEmissionDto } from '../emission-dto.builder';
+import { toEmissionDto } from '../sections/emission-dto.builder';
 import { ProofOfOriginDtoAssembler } from '../proof-of-origin-dto.assembler';
+import { EmissionCalculatorService } from '../../emission/emission-calculator.service';
 
 @Injectable()
 export class EnergySourceClassificationService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
-    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processClient: ClientProxy,
+    private readonly emissionCalculatorService: EmissionCalculatorService,
   ) {}
 
   async buildEnergySourceClassifications(
@@ -49,9 +49,8 @@ export class EnergySourceClassificationService {
         const productionPowerBatches: BatchDto[] = [];
 
         for (const [processStep] of processStepsWithUnitsByEnergySource) {
-          const emissionCalculation: EmissionCalculationDto = await firstValueFrom(
-            this.processClient.send(SustainabilityMessagePatterns.COMPUTE_POWER_FOR_STEP, { processStep: processStep }),
-          );
+          const emissionCalculation: EmissionCalculationDto = await this.emissionCalculatorService.computePowerCalculation(processStep);
+
           const h2KgEquivalentToPowerBatch = processStep.batch.successors[0].amount;
           const emission = toEmissionDto(emissionCalculation, h2KgEquivalentToPowerBatch);
 

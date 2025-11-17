@@ -9,9 +9,10 @@
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
 import { ProofOfSustainabilityService } from './proof-of-sustainability.service';
+import { EmissionModule } from '../emission/emission.module';
 
 @Module({
-  imports: [new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker(), new Broker().getProcessSvcBroker()],
+  imports: [new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker(), new Broker().getProcessSvcBroker(), EmissionModule],
   providers: [ProofOfSustainabilityService],
   exports: [ProofOfSustainabilityService],
 })

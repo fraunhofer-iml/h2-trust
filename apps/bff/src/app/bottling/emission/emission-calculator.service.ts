@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { ProvenanceEntity, ProcessStepEntity } from '@h2-trust/amqp';
+import { Inject, Injectable } from '@nestjs/common';
+import { ProvenanceEntity, ProcessStepEntity, BrokerQueues, ProvenanceMessagePatterns } from '@h2-trust/amqp';
 import { EmissionCalculationDto, EmissionComputationResultDto, EmissionForProcessStepDto } from '@h2-trust/api';
 import {
   FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ,
@@ -16,38 +16,39 @@ import {
   ProcessType,
   UNIT_G_CO2_PER_KG_H2,
 } from '@h2-trust/domain';
-import { ProvenanceService } from '../provenance/provenance.service';
 import { EmissionAssembler } from './emission.assembler';
 import { PowerUnitLoader } from './power-unit.loader';
+import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class EmissionCalculatorService {
   constructor(
     private readonly powerUnitLoader: PowerUnitLoader,
-    private readonly lineageService: ProvenanceService,
+    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy
   ) { }
 
-  async computeForContext(ctx: ProvenanceEntity): Promise<EmissionComputationResultDto> {
+  async computeForProvenance(provenance: ProvenanceEntity): Promise<EmissionComputationResultDto> {
     const emissionCalculations: EmissionCalculationDto[] = [];
 
-    if (ctx.powerProductions) {
-      const powerProductionEmissions = await this.calculatePowerProductionEmissions(ctx.powerProductions);
+    if (provenance.powerProductions) {
+      const powerProductionEmissions = await this.calculatePowerProductionEmissions(provenance.powerProductions);
       emissionCalculations.push(...powerProductionEmissions);
     }
 
-    if (ctx.waterConsumptions) {
-      const waterConsumptionEmissions = this.calculateWaterConsumptionEmissions(ctx.waterConsumptions);
+    if (provenance.waterConsumptions) {
+      const waterConsumptionEmissions = this.calculateWaterConsumptionEmissions(provenance.waterConsumptions);
       emissionCalculations.push(...waterConsumptionEmissions);
     }
 
-    if (ctx.hydrogenProductions) {
-      const hydrogenProductionEmissions = ctx.hydrogenProductions.map((step) =>
+    if (provenance.hydrogenProductions) {
+      const hydrogenProductionEmissions = provenance.hydrogenProductions.map((step) =>
         EmissionAssembler.assembleHydrogenStorageCalculation(step),
       );
       emissionCalculations.push(...hydrogenProductionEmissions);
     }
 
-    if (ctx.hydrogenBottling) {
+    if (provenance.hydrogenBottling) {
       const powerEmissionFactor = getPowerEmissionFactorByEnergySource('GRID');
       const hydrogenBottlingCalculation = EmissionAssembler.assembleHydrogenBottlingCalculation(
         powerEmissionFactor.emissionFactor,
@@ -55,8 +56,8 @@ export class EmissionCalculatorService {
       emissionCalculations.push(hydrogenBottlingCalculation);
     }
 
-    if (ctx.root.type === ProcessType.HYDROGEN_TRANSPORTATION) {
-      const hydrogenTransportationCalculations = EmissionAssembler.assembleHydrogenTransportationCalculation(ctx.root);
+    if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION) {
+      const hydrogenTransportationCalculations = EmissionAssembler.assembleHydrogenTransportationCalculation(provenance.root);
       emissionCalculations.push(hydrogenTransportationCalculations);
     }
 
@@ -113,8 +114,10 @@ export class EmissionCalculatorService {
   }
 
   async computeForProcessStep(processStepId: string, emissionCalculationName: string): Promise<EmissionCalculationDto> {
-    const context: ProvenanceEntity = await this.lineageService.buildProvenance(processStepId);
-    const emissionComputationResult: EmissionComputationResultDto = await this.computeForContext(context);
+    const context: ProvenanceEntity = await firstValueFrom(
+      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, { processStepId }),
+    );
+    const emissionComputationResult: EmissionComputationResultDto = await this.computeForProvenance(context);
 
     const basisOfCalculation = `Emissions (Cumulative - ${emissionCalculationName})`;
     const totalEmissionsPerKg = (emissionComputationResult.calculations ?? []).reduce(

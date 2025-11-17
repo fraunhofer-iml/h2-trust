@@ -13,24 +13,24 @@ import {
   BrokerQueues,
   ProvenanceEntity,
   ProvenanceMessagePatterns,
-  SustainabilityMessagePatterns,
 } from '@h2-trust/amqp';
 import { EmissionComputationResultDto, ProofOfSustainabilityDto } from '@h2-trust/api';
+import { EmissionCalculatorService } from '../emission/emission-calculator.service';
 
 @Injectable()
 export class ProofOfSustainabilityService {
-  constructor(@Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy) { }
+  constructor(
+    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
+    private readonly emissionCalculatorService: EmissionCalculatorService) { }
 
   async readProofOfSustainability(processStepId: string): Promise<ProofOfSustainabilityDto> {
-    const context: ProvenanceEntity = await firstValueFrom(
+    const provenance: ProvenanceEntity = await firstValueFrom(
       this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, { processStepId }),
     );
-    const emissionComputationResult: EmissionComputationResultDto = await firstValueFrom(
-      this.processSvc.send(SustainabilityMessagePatterns.COMPUTE_FOR_PROCESS_STEP, { lineageContext: context }),
-    );
+    const emissionComputationResult: EmissionComputationResultDto = await this.emissionCalculatorService.computeForProvenance(provenance);
 
     return {
-      batchId: context.root.id,
+      batchId: provenance.root.id,
       amountCO2PerMJH2: emissionComputationResult.amountCO2PerMJH2,
       emissionReductionPercentage: emissionComputationResult.emissionReductionPercentage,
       calculations: emissionComputationResult.calculations,

@@ -6,18 +6,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { firstValueFrom } from 'rxjs';
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { BrokerQueues, ProcessStepEntity, SustainabilityMessagePatterns } from '@h2-trust/amqp';
+import { Injectable } from '@nestjs/common';
+import { ProcessStepEntity } from '@h2-trust/amqp';
 import { ClassificationDto, EmissionCalculationDto, WaterBatchDto } from '@h2-trust/api';
 import { BatchType, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
-import { toEmissionDto } from '../emission-dto.builder';
+import { toEmissionDto } from '../sections/emission-dto.builder';
 import { ProofOfOriginDtoAssembler } from '../proof-of-origin-dto.assembler';
+import { EmissionCalculatorService } from '../../emission/emission-calculator.service';
 
 @Injectable()
 export class WaterClassificationService {
-  constructor(@Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processClient: ClientProxy) {}
+  constructor(private readonly emissionCalculatorService: EmissionCalculatorService,
+  ) { }
 
   async buildWaterClassification(waterConsumptionProcessSteps: ProcessStepEntity[]): Promise<ClassificationDto> {
     if (!waterConsumptionProcessSteps?.length) {
@@ -39,11 +39,9 @@ export class WaterClassificationService {
   private async buildWaterDtos(waterConsumptionProcessSteps: ProcessStepEntity[]): Promise<WaterBatchDto[]> {
     const waterBatchDtoPromises: Promise<WaterBatchDto>[] = waterConsumptionProcessSteps.map(
       async (waterConsumptionProcessStep) => {
-        const emissionCalculation: EmissionCalculationDto = await firstValueFrom(
-          this.processClient.send(SustainabilityMessagePatterns.COMPUTE_WATER_FOR_STEP, {
-            processStep: waterConsumptionProcessStep,
-          }),
-        );
+
+
+        const emissionCalculation: EmissionCalculationDto = this.emissionCalculatorService.computeWaterCalculation(waterConsumptionProcessStep);
 
         const h2KgEquivalentToWaterBatch = waterConsumptionProcessStep.batch.successors[0].amount;
         const emission = toEmissionDto(emissionCalculation, h2KgEquivalentToWaterBatch);
