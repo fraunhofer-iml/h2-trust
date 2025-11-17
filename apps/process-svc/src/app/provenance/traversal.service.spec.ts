@@ -211,7 +211,7 @@ describe('TraversalService', () => {
                 .rejects.toThrow(expectedError);
         });
 
-        it(`throws if any processStep is not ${ProcessType.HYDROGEN_BOTTLING}`, async () => {
+        it(`throws if a processStep is not ${ProcessType.HYDROGEN_BOTTLING}`, async () => {
             // arrange
             const givenProcessStep = createProcessStep('hp1', ProcessType.HYDROGEN_PRODUCTION, []);
 
@@ -236,12 +236,13 @@ describe('TraversalService', () => {
             const givenProcessStep = createProcessStep('hb1', ProcessType.HYDROGEN_BOTTLING, [
                 createBatch('b1'),
             ]);
-            const invalidStep = createProcessStep('pp1', ProcessType.POWER_PRODUCTION, []);
-            batchSvcSendMock.mockReturnValueOnce(of(invalidStep));
+
+            const invalidPredecessorProcessStep = createProcessStep('pp1', ProcessType.POWER_PRODUCTION, []);
+            batchSvcSendMock.mockReturnValueOnce(of(invalidPredecessorProcessStep));
 
             // act & assert
             await expect(service.fetchHydrogenProductionsFromHydrogenBottling(givenProcessStep))
-                .rejects.toThrow(`All process steps must be of type [${ProcessType.HYDROGEN_PRODUCTION}], but found invalid types: ${invalidStep.id} (${invalidStep.type})`);
+                .rejects.toThrow(`All process steps must be of type [${ProcessType.HYDROGEN_PRODUCTION}], but found invalid types: ${invalidPredecessorProcessStep.id} (${invalidPredecessorProcessStep.type})`);
         });
 
         it('throws if a predecessor process step is null', async () => {
@@ -295,6 +296,100 @@ describe('TraversalService', () => {
             // assert
             expect(Array.isArray(actualResult)).toBe(true);
             expect(actualResult.length).toEqual(expectedResult.length);
+            expect(actualResult).toEqual(expectedResult);
+        });
+    });
+
+    describe('fetchHydrogenBottlingFromHydrogenTransportation', () => {
+        it(`throws if ${ProcessType.HYDROGEN_TRANSPORTATION} process step is null`, async () => {
+            // arrange
+            const givenProcessStep: ProcessStepEntity = null;
+
+            const expectedError = `Process steps of type [${ProcessType.HYDROGEN_TRANSPORTATION}] are missing.`;
+
+            // act & assert
+            await expect(service.fetchHydrogenBottlingFromHydrogenTransportation(givenProcessStep))
+                .rejects.toThrow(expectedError);
+        });
+
+        it(`throws if a processStep is not ${ProcessType.HYDROGEN_TRANSPORTATION}`, async () => {
+            // arrange
+            const givenProcessStep = createProcessStep('hp1', ProcessType.HYDROGEN_BOTTLING, []);
+
+            const expectedError = `All process steps must be of type [${ProcessType.HYDROGEN_TRANSPORTATION}], but found invalid types: ${givenProcessStep.id} (${ProcessType.HYDROGEN_BOTTLING})`;
+
+            // act & assert
+            await expect(service.fetchHydrogenBottlingFromHydrogenTransportation(givenProcessStep))
+                .rejects.toThrow(expectedError);
+        });
+
+        it(`throws if a ${ProcessType.HYDROGEN_TRANSPORTATION} process step has no predecessor batch`, async () => {
+            // arrange
+            const givenProcessStep = createProcessStep('hp1', ProcessType.HYDROGEN_TRANSPORTATION, []);
+
+            // act & assert
+            await expect(service.fetchHydrogenBottlingFromHydrogenTransportation(givenProcessStep))
+                .rejects.toThrow(`No predecessors found for process step [${givenProcessStep.id}]`);
+        });
+
+        it(`throws if a predecessor process step is not ${ProcessType.HYDROGEN_TRANSPORTATION}`, async () => {
+            // arrange
+            const givenProcessStep = createProcessStep('hb1', ProcessType.HYDROGEN_TRANSPORTATION, [
+                createBatch('b1'),
+            ]);
+
+            const invalidPredecessorProcessStep = createProcessStep('pp1', ProcessType.POWER_PRODUCTION, []);
+            batchSvcSendMock.mockReturnValueOnce(of(invalidPredecessorProcessStep));
+
+            // act & assert
+            await expect(service.fetchHydrogenBottlingFromHydrogenTransportation(givenProcessStep))
+                .rejects.toThrow(`All process steps must be of type [${ProcessType.HYDROGEN_BOTTLING}], but found invalid types: ${invalidPredecessorProcessStep.id} (${invalidPredecessorProcessStep.type})`);
+        });
+
+        it('throws if a predecessor process step is null', async () => {
+            // arrange
+            const givenProcessStep = createProcessStep('hb1', ProcessType.HYDROGEN_TRANSPORTATION, [
+                createBatch('b1'),
+            ]);
+
+            batchSvcSendMock.mockReturnValueOnce(of(null));
+
+            // act & assert
+            await expect(service.fetchHydrogenBottlingFromHydrogenTransportation(givenProcessStep))
+                .rejects.toThrow(`Process steps of type [${ProcessType.HYDROGEN_BOTTLING}] are missing.`);
+        });
+
+        it(`throws if more than one predecessor ${ProcessType.HYDROGEN_BOTTLING} process step is found`, async () => {
+            // arrange
+            const givenProcessStep = createProcessStep('ht1', ProcessType.HYDROGEN_TRANSPORTATION, [
+                createBatch('b1'),
+                createBatch('b2'),
+            ]);
+
+            const hb1 = createProcessStep('hb1', ProcessType.HYDROGEN_BOTTLING, []);
+            const hb2 = createProcessStep('hb2', ProcessType.HYDROGEN_BOTTLING, []);
+
+            batchSvcSendMock
+                .mockReturnValueOnce(of(hb1))
+                .mockReturnValueOnce(of(hb2));
+
+            // act & assert
+            await expect(service.fetchHydrogenBottlingFromHydrogenTransportation(givenProcessStep))
+                .rejects.toThrow(`Expected exactly one predecessor ${ProcessType.HYDROGEN_BOTTLING} process step, but found [2].`);
+        });
+
+        it(`should return one ${ProcessType.HYDROGEN_BOTTLING} process step`, async () => {
+            // arrange
+            const givenProcessStep: ProcessStepEntity = createProcessStep('hp1', ProcessType.HYDROGEN_TRANSPORTATION, [createBatch('b1')]);
+
+            const expectedResult: ProcessStepEntity = createProcessStep('hp1', ProcessType.HYDROGEN_BOTTLING, []);
+
+            batchSvcSendMock.mockReturnValue(of(expectedResult));
+
+            // act
+            const actualResult: ProcessStepEntity = await service.fetchHydrogenBottlingFromHydrogenTransportation(givenProcessStep);
+
+            // assert
             expect(actualResult).toEqual(expectedResult);
         });
     });
