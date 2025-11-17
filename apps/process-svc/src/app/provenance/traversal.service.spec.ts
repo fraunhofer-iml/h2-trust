@@ -5,14 +5,14 @@ import { TraversalService } from './traversal.service';
 import { of } from 'rxjs';
 
 function createProcessStep(
-    id,
+    id: string,
     type: ProcessType,
     predecessorBatches: BatchEntity[]
 ): ProcessStepEntity {
     return { id, type, batch: { predecessors: predecessorBatches } } as ProcessStepEntity;
 }
 
-function createBatch(processStepId): BatchEntity {
+function createBatch(processStepId: string): BatchEntity {
     return { processStepId } as BatchEntity;
 }
 
