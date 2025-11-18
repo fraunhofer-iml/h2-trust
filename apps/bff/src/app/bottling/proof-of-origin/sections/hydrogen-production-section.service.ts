@@ -21,7 +21,7 @@ export class HydrogenProductionSectionService {
     private readonly waterClassificationService: WaterClassificationService,
   ) { }
 
-  async buildHydrogenProductionSection(powerProductions: ProcessStepEntity[], waterConsumptions: ProcessStepEntity[]): Promise<SectionDto> {
+  async buildSection(powerProductions: ProcessStepEntity[], waterConsumptions: ProcessStepEntity[]): Promise<SectionDto> {
     const classifications: ClassificationDto[] = [];
 
     if (powerProductions?.length) {

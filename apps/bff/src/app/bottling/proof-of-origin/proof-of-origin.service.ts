@@ -33,40 +33,32 @@ export class ProofOfOriginService {
   }
 
   private async buildSections(provenance: ProvenanceEntity): Promise<SectionDto[]> {
-    const sections: SectionDto[] = [];
+    const sectionPromises: Array<Promise<SectionDto>> = [];
 
-    if (provenance.powerProductions?.length || provenance.waterConsumptions?.length) {
-      sections.push(
-        await this.hydrogenProductionSectionService.buildHydrogenProductionSection(
-          provenance.powerProductions,
-          provenance.waterConsumptions,
-        ),
-      );
-    }
+    const hydrogenProductionPromise = (provenance.powerProductions?.length || provenance.waterConsumptions?.length)
+      ? this.hydrogenProductionSectionService.buildSection(provenance.powerProductions, provenance.waterConsumptions)
+      : Promise.resolve(undefined);
 
-    if (provenance.hydrogenProductions?.length) {
-      sections.push(
-        await this.hydrogenStorageSectionService.buildHydrogenStorageSection(provenance.hydrogenProductions),
-      );
-    }
+    const hydrogenStoragePromise = provenance.hydrogenProductions?.length
+      ? this.hydrogenStorageSectionService.buildSection(provenance.hydrogenProductions)
+      : Promise.resolve(undefined);
 
-    if (provenance.root.type === ProcessType.HYDROGEN_BOTTLING || provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION) {
-      sections.push(
-        await this.hydrogenBottlingSectionService.buildHydrogenBottlingSection(
-          provenance.hydrogenBottling ?? provenance.root,
-        ),
-      );
-    }
+    const hydrogenBottlingPromise = (provenance.root.type === ProcessType.HYDROGEN_BOTTLING || provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION)
+      ? this.hydrogenBottlingSectionService.buildSection(provenance.hydrogenBottling ?? provenance.root)
+      : Promise.resolve(undefined);
 
-    if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION && provenance.hydrogenBottling) {
-      sections.push(
-        await this.hydrogenTransportationSectionService.buildHydrogenTransportationSection(
-          provenance.root,
-          provenance.hydrogenBottling,
-        ),
-      );
-    }
+    const hydrogenTransportationPromise = (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION && provenance.hydrogenBottling)
+      ? this.hydrogenTransportationSectionService.buildSection(provenance.root, provenance.hydrogenBottling)
+      : Promise.resolve(undefined);
 
-    return sections;
+    sectionPromises.push(
+      hydrogenProductionPromise,
+      hydrogenStoragePromise,
+      hydrogenBottlingPromise,
+      hydrogenTransportationPromise,
+    );
+
+    const sections = await Promise.all(sectionPromises);
+    return sections.filter(section => section !== undefined);
   }
 }

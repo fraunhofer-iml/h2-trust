@@ -19,7 +19,7 @@ import { ClassificationAssembler } from '../assembler/classification.assembler';
 export class HydrogenStorageSectionService {
   constructor(private readonly emissionCalculatorService: EmissionCalculatorService) { }
 
-  async buildHydrogenStorageSection(hydrogenProductions: ProcessStepEntity[]): Promise<SectionDto> {
+  async buildSection(hydrogenProductions: ProcessStepEntity[]): Promise<SectionDto> {
     if (!hydrogenProductions?.length) {
       return new SectionDto(ProofOfOrigin.HYDROGEN_STORAGE_SECTION, [], []);
     }

@@ -28,7 +28,7 @@ export class HydrogenBottlingSectionService {
     private readonly emissionCalculatorService: EmissionCalculatorService,
   ) { }
 
-  async buildHydrogenBottlingSection(hydrogenBottling: ProcessStepEntity): Promise<SectionDto> {
+  async buildSection(hydrogenBottling: ProcessStepEntity): Promise<SectionDto> {
     const hydrogenCompositions: HydrogenComponentEntity[] = await firstValueFrom(
       this.batchSvc.send(ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION, hydrogenBottling.id),
     );
