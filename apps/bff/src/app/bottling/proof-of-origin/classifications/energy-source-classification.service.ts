@@ -16,7 +16,7 @@ import {
   ProcessStepEntity,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
-import { BatchDto, ClassificationDto, EmissionCalculationDto } from '@h2-trust/api';
+import { BatchDto, ClassificationDto, EmissionCalculationDto, EmissionDto, PowerBatchDto } from '@h2-trust/api';
 import { assembleEmissionDto } from '../assembler/emission.assembler';
 import { EmissionCalculatorService } from '../../emission/emission-calculator.service';
 import { BatchAssembler } from '../assembler/batch.assembler';
@@ -29,16 +29,13 @@ export class EnergySourceClassificationService {
     private readonly emissionCalculatorService: EmissionCalculatorService,
   ) { }
 
-  async buildEnergySourceClassifications(
-    powerProductionProcessSteps: ProcessStepEntity[],
-  ): Promise<ClassificationDto[]> {
-    if (powerProductionProcessSteps.length === 0) {
+  async buildEnergySourceClassifications(powerProductions: ProcessStepEntity[]): Promise<ClassificationDto[]> {
+    if (!powerProductions?.length) {
       return [];
     }
 
     const energySources = await this.fetchEnergySources();
-    const processStepsWithUnits =
-      await this.fetchPowerProductionProcessStepsWithPowerProductionUnits(powerProductionProcessSteps);
+    const processStepsWithUnits = await this.fetchPowerProductionProcessStepsWithPowerProductionUnits(powerProductions);
     const classifications: ClassificationDto[] = [];
 
     for (const energySource of energySources) {
@@ -47,23 +44,17 @@ export class EnergySourceClassificationService {
       );
 
       if (processStepsWithUnitsByEnergySource.length > 0) {
-        const productionPowerBatches: BatchDto[] = [];
+        const productionPowerBatches: BatchDto[] = await Promise.all(
+          processStepsWithUnitsByEnergySource.map(async ([processStep]) => {
+            const emissionCalculation: EmissionCalculationDto = await this.emissionCalculatorService.computePowerCalculation(processStep);
+            const hydrogenKgEquivalentToPowerBatch: number = processStep.batch.successors[0].amount;
+            const emission: EmissionDto = assembleEmissionDto(emissionCalculation, hydrogenKgEquivalentToPowerBatch);
+            const batch: PowerBatchDto = BatchAssembler.assemblePowerProductionBatchDto(processStep, energySource, emission);
+            return batch;
+          }),
+        );
 
-        for (const [processStep] of processStepsWithUnitsByEnergySource) {
-          const emissionCalculation: EmissionCalculationDto = await this.emissionCalculatorService.computePowerCalculation(processStep);
-
-          const h2KgEquivalentToPowerBatch = processStep.batch.successors[0].amount;
-          const emission = assembleEmissionDto(emissionCalculation, h2KgEquivalentToPowerBatch);
-
-          const productionPowerBatch = BatchAssembler.assemblePowerProductionBatchDto(
-            processStep,
-            energySource,
-            emission,
-          );
-          productionPowerBatches.push(productionPowerBatch);
-        }
-
-        const classification = ClassificationAssembler.assemblePowerClassification(
+        const classification: ClassificationDto = ClassificationAssembler.assemblePowerClassification(
           energySource,
           productionPowerBatches,
         );
@@ -81,15 +72,14 @@ export class EnergySourceClassificationService {
     return Array.from(new Set(powerProductionTypes.map(({ energySource }) => energySource)));
   }
 
-  private async fetchPowerProductionProcessStepsWithPowerProductionUnits(
-    processSteps: ProcessStepEntity[],
-  ): Promise<[ProcessStepEntity, PowerProductionUnitEntity][]> {
+  private async fetchPowerProductionProcessStepsWithPowerProductionUnits(powerProductions: ProcessStepEntity[]): Promise<[ProcessStepEntity, PowerProductionUnitEntity][]> {
+  // TODO-MP: bulk request to fetch all units at once
     return Promise.all(
-      processSteps.map(async (processStep): Promise<[ProcessStepEntity, PowerProductionUnitEntity]> => {
-        const unit: PowerProductionUnitEntity = await firstValueFrom(
-          this.generalService.send(UnitMessagePatterns.READ, { id: processStep.executedBy.id }),
+      powerProductions.map(async (powerProduction): Promise<[ProcessStepEntity, PowerProductionUnitEntity]> => {
+        const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
+          this.generalService.send(UnitMessagePatterns.READ, { id: powerProduction.executedBy.id }),
         );
-        return [processStep, unit];
+        return [powerProduction, powerProductionUnit];
       }),
     );
   }

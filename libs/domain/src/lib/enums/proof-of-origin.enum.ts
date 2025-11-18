@@ -7,11 +7,11 @@
  */
 
 export enum ProofOfOrigin {
-  HYDROGEN_TRANSPORTATION_SECTION_NAME = 'Hydrogen Transportation',
-  HYDROGEN_BOTTLING_SECTION_NAME = 'Hydrogen Bottling',
-  HYDROGEN_PRODUCTION_SECTION_NAME = 'Hydrogen Production',
-  HYDROGEN_STORAGE_SECTION_NAME = 'Hydrogen Storage',
-  POWER_SUPPLY_CLASSIFICATION_NAME = 'Power Supply',
-  WATER_SUPPLY_CLASSIFICATION_NAME = 'Water Supply',
+  HYDROGEN_TRANSPORTATION_SECTION = 'Hydrogen Transportation',
+  HYDROGEN_BOTTLING_SECTION = 'Hydrogen Bottling',
+  HYDROGEN_PRODUCTION_SECTION = 'Hydrogen Production',
+  HYDROGEN_STORAGE_SECTION = 'Hydrogen Storage',
+  POWER_SUPPLY_CLASSIFICATION = 'Power Supply',
+  WATER_SUPPLY_CLASSIFICATION = 'Water Supply',
   HYDROGEN_PRODUCTION_TYPE = 'Electrolysis',
 }

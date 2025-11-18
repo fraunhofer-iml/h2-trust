@@ -22,7 +22,7 @@ export class ProofOfOriginService {
   constructor(
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly hydrogenProductionSectionService: HydrogenProductionSectionService,
-    private readonly hydrogenStorageSectionAssembler: HydrogenStorageSectionService,
+    private readonly hydrogenStorageSectionService: HydrogenStorageSectionService,
     private readonly hydrogenBottlingSectionService: HydrogenBottlingSectionService,
     private readonly hydrogenTransportationSectionService: HydrogenTransportationSectionService,
   ) { }
@@ -46,7 +46,7 @@ export class ProofOfOriginService {
 
     if (provenance.hydrogenProductions?.length) {
       sections.push(
-        await this.hydrogenStorageSectionAssembler.buildHydrogenStorageSection(provenance.hydrogenProductions),
+        await this.hydrogenStorageSectionService.buildHydrogenStorageSection(provenance.hydrogenProductions),
       );
     }
 

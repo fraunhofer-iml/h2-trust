@@ -19,32 +19,22 @@ export class HydrogenProductionSectionService {
   constructor(
     private readonly energySourceClassificationService: EnergySourceClassificationService,
     private readonly waterClassificationService: WaterClassificationService,
-  ) {}
+  ) { }
 
-  async buildHydrogenProductionSection(
-    powerProductionProcessSteps: ProcessStepEntity[],
-    waterConsumptionProcessSteps: ProcessStepEntity[],
-  ): Promise<SectionDto> {
+  async buildHydrogenProductionSection(powerProductions: ProcessStepEntity[], waterConsumptions: ProcessStepEntity[]): Promise<SectionDto> {
     const classifications: ClassificationDto[] = [];
 
-    if (powerProductionProcessSteps?.length) {
-      const energySourceClassificationDtos: ClassificationDto[] =
-        await this.energySourceClassificationService.buildEnergySourceClassifications(powerProductionProcessSteps);
-
-      const powerSupplyClassification: ClassificationDto = ClassificationAssembler.assemblePowerClassification(
-        ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION_NAME,
-        [],
-        energySourceClassificationDtos,
-      );
+    if (powerProductions?.length) {
+      const energySourceClassifications: ClassificationDto[] = await this.energySourceClassificationService.buildEnergySourceClassifications(powerProductions);
+      const powerSupplyClassification: ClassificationDto = ClassificationAssembler.assemblePowerClassification(ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION, [], energySourceClassifications);
       classifications.push(powerSupplyClassification);
     }
 
-    if (waterConsumptionProcessSteps?.length) {
-      classifications.push(
-        await this.waterClassificationService.buildWaterClassification(waterConsumptionProcessSteps),
-      );
+    if (waterConsumptions?.length) {
+      const waterSupplyClassification: ClassificationDto = this.waterClassificationService.createWaterSupplyClassification(waterConsumptions);
+      classifications.push(waterSupplyClassification);
     }
 
-    return new SectionDto(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION_NAME, [], classifications);
+    return new SectionDto(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION, [], classifications);
   }
 }

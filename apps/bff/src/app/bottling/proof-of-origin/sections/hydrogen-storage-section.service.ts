@@ -8,7 +8,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity, } from '@h2-trust/amqp';
-import { BatchDto, ClassificationDto, EmissionCalculationDto, SectionDto } from '@h2-trust/api';
+import { BatchDto, ClassificationDto, EmissionCalculationDto, EmissionDto, HydrogenBatchDto, SectionDto } from '@h2-trust/api';
 import { HydrogenColor, ProofOfOrigin } from '@h2-trust/domain';
 import { assembleEmissionDto } from '../assembler/emission.assembler';
 import { EmissionCalculatorService } from '../../emission/emission-calculator.service';
@@ -17,41 +17,37 @@ import { ClassificationAssembler } from '../assembler/classification.assembler';
 
 @Injectable()
 export class HydrogenStorageSectionService {
-  constructor(private readonly emissionCalculatorService: EmissionCalculatorService,) { }
+  constructor(private readonly emissionCalculatorService: EmissionCalculatorService) { }
 
-  async buildHydrogenStorageSection(hydrogenProductionProcessSteps: ProcessStepEntity[]): Promise<SectionDto> {
-    if (!hydrogenProductionProcessSteps || hydrogenProductionProcessSteps.length === 0) {
-      return new SectionDto(ProofOfOrigin.HYDROGEN_STORAGE_SECTION_NAME, [], []);
+  async buildHydrogenStorageSection(hydrogenProductions: ProcessStepEntity[]): Promise<SectionDto> {
+    if (!hydrogenProductions?.length) {
+      return new SectionDto(ProofOfOrigin.HYDROGEN_STORAGE_SECTION, [], []);
     }
 
     const classifications: ClassificationDto[] = [];
 
     for (const hydrogenColor of Object.values(HydrogenColor)) {
-      const processStepsByCurrentHydrogenColor = hydrogenProductionProcessSteps.filter(
-        (processStep) => processStep.batch?.qualityDetails?.color === hydrogenColor,
+      const hydrogenProductionsByHydrogenColor = hydrogenProductions.filter(
+        hydrogenProduction => hydrogenProduction.batch?.qualityDetails?.color === hydrogenColor,
       );
 
-      if (processStepsByCurrentHydrogenColor.length === 0) {
+      if (hydrogenProductionsByHydrogenColor.length === 0) {
         continue;
       }
 
-      const batchesForCurrentColor: BatchDto[] = [];
+      const batchesForHydrogenColor: BatchDto[] = await Promise.all(
+        hydrogenProductionsByHydrogenColor.map(async hydrogenProduction => {
+          const emissionCalculation: EmissionCalculationDto = await this.emissionCalculatorService.computeForProcessStep(hydrogenProduction.id, 'storage');
+          const hydrogenKgEquivalent: number = hydrogenProduction.batch.amount;
+          const emission: EmissionDto = assembleEmissionDto(emissionCalculation, hydrogenKgEquivalent);
+          const batch: HydrogenBatchDto = BatchAssembler.assembleHydrogenStorageBatchDto(hydrogenProduction, emission);
+          return batch;
+        }));
 
-      for (const processStep of processStepsByCurrentHydrogenColor) {
-        const emissionCalculation: EmissionCalculationDto = await this.emissionCalculatorService.computeForProcessStep(processStep.id, 'hydrogenProduction');
-
-        const emission = assembleEmissionDto(emissionCalculation, processStep.batch.amount);
-        const batch: BatchDto = BatchAssembler.assembleHydrogenStorageBatchDto(processStep, emission);
-        batchesForCurrentColor.push(batch);
-      }
-
-      const classification: ClassificationDto = ClassificationAssembler.assembleHydrogenClassification(
-        hydrogenColor,
-        batchesForCurrentColor,
-      );
+      const classification: ClassificationDto = ClassificationAssembler.assembleHydrogenClassification(hydrogenColor, batchesForHydrogenColor);
       classifications.push(classification);
     }
 
-    return new SectionDto(ProofOfOrigin.HYDROGEN_STORAGE_SECTION_NAME, [], classifications);
+    return new SectionDto(ProofOfOrigin.HYDROGEN_STORAGE_SECTION, [], classifications);
   }
 }

@@ -8,7 +8,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity } from '@h2-trust/amqp';
-import { ClassificationDto, EmissionCalculationDto, WaterBatchDto } from '@h2-trust/api';
+import { ClassificationDto, EmissionCalculationDto, EmissionDto, WaterBatchDto } from '@h2-trust/api';
 import { BatchType, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
 import { assembleEmissionDto } from '../assembler/emission.assembler';
 import { EmissionCalculatorService } from '../../emission/emission-calculator.service';
@@ -20,35 +20,26 @@ export class WaterClassificationService {
   constructor(private readonly emissionCalculatorService: EmissionCalculatorService,
   ) { }
 
-  async buildWaterClassification(waterConsumptionProcessSteps: ProcessStepEntity[]): Promise<ClassificationDto> {
-    if (!waterConsumptionProcessSteps?.length) {
-      const message = 'No water consumption process steps found';
+  createWaterSupplyClassification(waterSupplies: ProcessStepEntity[]): ClassificationDto {
+    if (!waterSupplies?.length) {
+      const message = 'No process steps of type water supply found.';
       throw new Error(message);
     }
 
-    const waterDtos = await this.buildWaterDtos(waterConsumptionProcessSteps);
+    const waterBatches: WaterBatchDto[] = waterSupplies.map(waterSupply => {
+      const emissionCalculation: EmissionCalculationDto = this.emissionCalculatorService.computeWaterCalculation(waterSupply);
+      const hydrogenKgEquivalentToWaterBatch: number = waterSupply.batch.successors[0].amount;
+      const emission: EmissionDto = assembleEmissionDto(emissionCalculation, hydrogenKgEquivalentToWaterBatch);
+      const batch: WaterBatchDto = BatchAssembler.assembleWaterBatchDto(waterSupply, emission);
+      return batch;
+    });
 
     return ClassificationAssembler.assembleClassification(
-      ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION_NAME,
+      ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION,
       MeasurementUnit.WATER,
       BatchType.WATER,
-      waterDtos,
+      waterBatches,
       [],
     );
-  }
-
-  private async buildWaterDtos(waterConsumptionProcessSteps: ProcessStepEntity[]): Promise<WaterBatchDto[]> {
-    const waterBatchDtoPromises: Promise<WaterBatchDto>[] = waterConsumptionProcessSteps.map(
-      async (waterConsumptionProcessStep) => {
-        const emissionCalculation: EmissionCalculationDto = this.emissionCalculatorService.computeWaterCalculation(waterConsumptionProcessStep);
-
-        const h2KgEquivalentToWaterBatch = waterConsumptionProcessStep.batch.successors[0].amount;
-        const emission = assembleEmissionDto(emissionCalculation, h2KgEquivalentToWaterBatch);
-
-        return BatchAssembler.assembleWaterBatchDto(waterConsumptionProcessStep, emission);
-      },
-    );
-
-    return Promise.all(waterBatchDtoPromises);
   }
 }
