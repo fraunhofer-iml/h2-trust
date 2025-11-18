@@ -6,16 +6,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Transform } from 'class-transformer';
-import { IsEnum, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
-import { BatchEntity, CompanyEntity, ProcessStepEntity } from '@h2-trust/amqp';
-import { FuelType, HydrogenColor, TransportMode } from '@h2-trust/domain';
+import {Transform} from 'class-transformer';
+import {IsEnum, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString} from 'class-validator';
+import {BatchEntity, CompanyEntity, ProcessStepEntity, QualityDetailsEntity} from '@h2-trust/amqp';
+import {FuelType, HydrogenColor, TransportMode} from '@h2-trust/domain';
 
 export class BottlingDto {
   @IsNotEmpty()
   @IsNumber()
   @IsPositive()
-  @Transform(({ value }) => Number(value), { toClassOnly: true })
+  @Transform(({value}) => Number(value), {toClassOnly: true})
   amount: number;
 
   @IsNotEmpty()
@@ -82,9 +82,11 @@ export class BottlingDto {
       endedAt: validDate,
       batch: <BatchEntity>{
         amount: dto.amount,
-        quality: `{"color":"${dto.color}"}`,
         owner: <CompanyEntity>{
           id: dto.recipient,
+        },
+        qualityDetails: <QualityDetailsEntity>{
+          color: dto.color,
         },
       },
       recordedBy: {
