@@ -11,7 +11,7 @@ import { ProcessStepEntity, } from '@h2-trust/amqp';
 import { BatchDto, ClassificationDto, EmissionCalculationDto, EmissionDto, HydrogenBatchDto, SectionDto } from '@h2-trust/api';
 import { HydrogenColor, ProofOfOrigin } from '@h2-trust/domain';
 import { assembleEmissionDto } from '../assembler/emission.assembler';
-import { EmissionCalculatorService } from '../../emission/emission-calculator.service';
+import { EmissionCalculatorService } from '../emission/emission-calculator.service';
 import { BatchAssembler } from '../assembler/batch.assembler';
 import { ClassificationAssembler } from '../assembler/classification.assembler';
 

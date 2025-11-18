@@ -18,7 +18,7 @@ import {
 } from '@h2-trust/amqp';
 import { BatchDto, ClassificationDto, EmissionCalculationDto, EmissionDto, PowerBatchDto } from '@h2-trust/api';
 import { assembleEmissionDto } from '../assembler/emission.assembler';
-import { EmissionCalculatorService } from '../../emission/emission-calculator.service';
+import { EmissionCalculatorService } from '../emission/emission-calculator.service';
 import { BatchAssembler } from '../assembler/batch.assembler';
 import { ClassificationAssembler } from '../assembler/classification.assembler';
 

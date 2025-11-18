@@ -10,8 +10,8 @@ import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { ClassificationDto, SectionDto } from '@h2-trust/api';
 import { ProofOfOrigin } from '@h2-trust/domain';
-import { EnergySourceClassificationService } from '../classifications/energy-source-classification.service';
-import { WaterClassificationService } from '../classifications/water-classification.service';
+import { EnergySourceClassificationService } from '../classification/energy-source-classification.service';
+import { WaterClassificationService } from '../classification/water-classification.service';
 import { ClassificationAssembler } from '../assembler/classification.assembler';
 
 @Injectable()

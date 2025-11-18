@@ -29,16 +29,14 @@ import {
 import { BottlingService } from './bottling.service';
 import 'multer';
 import { AuthenticatedUser, Public } from 'nest-keycloak-connect';
-import { ProofOfOriginService } from './proof-of-origin/proof-of-origin.service';
-import { ProofOfSustainabilityService } from './proof-of-sustainability/proof-of-sustainability.service';
+import { DigitalProductPassportService } from './digital-product-passport/digital-product-passport.service';
 
 @Controller('bottlings')
 export class BottlingController {
   constructor(
     private readonly bottlingService: BottlingService,
-    private readonly proofOfOriginService: ProofOfOriginService,
-    private readonly proofOfSustainabilityService: ProofOfSustainabilityService,
-  ) {}
+    private readonly digitalProductPassportService: DigitalProductPassportService,
+  ) { }
 
   @Post()
   @UseInterceptors(FilesInterceptor('files'))
@@ -155,7 +153,7 @@ export class BottlingController {
     example: 'process-step-hydrogen-bottling-2',
   })
   readProofOfOrigin(@Param('id') processStepId: string): Promise<SectionDto[]> {
-    return this.proofOfOriginService.readProofOfOrigin(processStepId);
+    return this.digitalProductPassportService.buildProofOfOrigin(processStepId);
   }
 
   @Public()
@@ -170,6 +168,6 @@ export class BottlingController {
     example: 'process-step-hydrogen-bottling-2',
   })
   readProofOfSustainability(@Param('id') processStepId: string): Promise<ProofOfSustainabilityDto> {
-    return this.proofOfSustainabilityService.readProofOfSustainability(processStepId);
+    return this.digitalProductPassportService.buildProofOfSustainability(processStepId);
   }
 }

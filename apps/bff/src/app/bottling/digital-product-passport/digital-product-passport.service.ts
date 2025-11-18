@@ -10,29 +10,27 @@ import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { BrokerQueues, ProvenanceEntity, ProvenanceMessagePatterns } from '@h2-trust/amqp';
-import { SectionDto } from '@h2-trust/api';
+import { EmissionComputationResultDto, ProofOfSustainabilityDto, SectionDto } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
-import { HydrogenBottlingSectionService } from './sections/hydrogen-bottling-section.service';
-import { HydrogenProductionSectionService } from './sections/hydrogen-production-section.service';
-import { HydrogenStorageSectionService } from './sections/hydrogen-storage-section.service';
-import { HydrogenTransportationSectionService } from './sections/hydrogen-transportation-section.service';
+import { HydrogenBottlingSectionService } from './section/hydrogen-bottling-section.service';
+import { HydrogenProductionSectionService } from './section/hydrogen-production-section.service';
+import { HydrogenStorageSectionService } from './section/hydrogen-storage-section.service';
+import { HydrogenTransportationSectionService } from './section/hydrogen-transportation-section.service';
+import { EmissionCalculatorService } from './emission/emission-calculator.service';
 
 @Injectable()
-export class ProofOfOriginService {
+export class DigitalProductPassportService {
   constructor(
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly hydrogenProductionSectionService: HydrogenProductionSectionService,
     private readonly hydrogenStorageSectionService: HydrogenStorageSectionService,
     private readonly hydrogenBottlingSectionService: HydrogenBottlingSectionService,
     private readonly hydrogenTransportationSectionService: HydrogenTransportationSectionService,
+    private readonly emissionCalculatorService: EmissionCalculatorService
   ) { }
 
-  async readProofOfOrigin(processStepId: string): Promise<SectionDto[]> {
+  async buildProofOfOrigin(processStepId: string): Promise<SectionDto[]> {
     const provenance = await firstValueFrom(this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, { processStepId }));
-    return this.buildSections(provenance);
-  }
-
-  private async buildSections(provenance: ProvenanceEntity): Promise<SectionDto[]> {
     const sectionPromises: Array<Promise<SectionDto>> = [];
 
     const hydrogenProductionPromise = (provenance.powerProductions?.length || provenance.waterConsumptions?.length)
@@ -60,5 +58,17 @@ export class ProofOfOriginService {
 
     const sections = await Promise.all(sectionPromises);
     return sections.filter(section => section !== undefined);
+  }
+
+  async buildProofOfSustainability(processStepId: string): Promise<ProofOfSustainabilityDto> {
+    const provenance: ProvenanceEntity = await firstValueFrom(this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, { processStepId }));
+    const emissionComputationResult: EmissionComputationResultDto = await this.emissionCalculatorService.computeForProvenance(provenance);
+    return new ProofOfSustainabilityDto(
+      provenance.root.id,
+      emissionComputationResult.amountCO2PerMJH2,
+      emissionComputationResult.emissionReductionPercentage,
+      emissionComputationResult.calculations,
+      emissionComputationResult.processStepEmissions,
+    );
   }
 }

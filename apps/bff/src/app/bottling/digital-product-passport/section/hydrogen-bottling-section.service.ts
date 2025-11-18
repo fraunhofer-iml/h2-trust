@@ -18,7 +18,7 @@ import {
 import { EmissionCalculationDto, EmissionDto, HydrogenBatchDto, SectionDto } from '@h2-trust/api';
 import { ProofOfOrigin } from '@h2-trust/domain';
 import { assembleEmissionDto } from '../assembler/emission.assembler';
-import { EmissionCalculatorService } from '../../emission/emission-calculator.service';
+import { EmissionCalculatorService } from '../emission/emission-calculator.service';
 import { BatchAssembler } from '../assembler/batch.assembler';
 
 @Injectable()
