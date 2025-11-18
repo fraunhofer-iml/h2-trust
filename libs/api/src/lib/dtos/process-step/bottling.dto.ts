@@ -48,29 +48,27 @@ export class BottlingDto {
   transportMode: TransportMode;
 
   @IsOptional()
+  @IsNumber()
+  @IsPositive()
+  @Transform(({value}) => Number(value), {toClassOnly: true})
+  transportDistance?: number;
+
+  @IsOptional()
   fuelType?: FuelType;
 
-  constructor(
-    amount: number,
-    recipient: string,
-    filledAt: string,
-    recordedBy: string,
-    hydrogenStorageUnit: string,
-    file: string,
-    fileDescription: string,
-    color: HydrogenColor,
-    transportMode: TransportMode,
-    fuelType: FuelType,
-  ) {
+  constructor(amount: number, recipient: string, filledAt: string, recordedBy: string, hydrogenStorageUnit: string, color: HydrogenColor, file: string, fileDescription: string, transportMode: TransportMode, transportDistance: number, fuelType: FuelType) {
     this.amount = amount;
     this.recipient = recipient;
     this.filledAt = filledAt;
     this.recordedBy = recordedBy;
     this.hydrogenStorageUnit = hydrogenStorageUnit;
+    this.color = color;
     this.file = file;
     this.fileDescription = fileDescription;
-    this.color = color;
     this.transportMode = transportMode;
+    // TODO-MH: Remove the default value once DUHGW-274 has been completed
+    // this.transportDistance = transportDistance
+    this.transportDistance = transportDistance ?? 101;
     this.fuelType = fuelType;
   }
 
