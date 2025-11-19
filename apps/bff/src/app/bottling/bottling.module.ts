@@ -12,14 +12,12 @@ import { UserService } from '../user/user.service';
 import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';
 import { DigitalProductPassportModule } from './digital-product-passport/digital-product-passport.module';
-import { EmissionModule } from './digital-product-passport/emission/emission.module';
 
 @Module({
   imports: [
     new Broker().getBatchSvcBroker(),
     new Broker().getGeneralSvcBroker(),
     DigitalProductPassportModule,
-    EmissionModule
   ],
   controllers: [BottlingController],
   providers: [BottlingService, UserService],

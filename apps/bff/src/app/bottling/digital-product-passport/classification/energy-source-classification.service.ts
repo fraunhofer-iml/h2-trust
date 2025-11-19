@@ -17,10 +17,10 @@ import {
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { BatchDto, ClassificationDto, EmissionCalculationDto, EmissionDto, PowerBatchDto } from '@h2-trust/api';
-import { EmissionComputationService } from '../emission/emission.service';
+import { EmissionComputationService } from '../emission-computation.service';
 import { BatchAssembler } from '../assembler/batch.assembler';
 import { ClassificationAssembler } from '../assembler/classification.assembler';
-import { EmissionCalculationAssembler } from '../emission/emission.assembler';
+import { EmissionCalculationAssembler } from '../assembler/emission.assembler';
 
 @Injectable()
 export class EnergySourceClassificationService {

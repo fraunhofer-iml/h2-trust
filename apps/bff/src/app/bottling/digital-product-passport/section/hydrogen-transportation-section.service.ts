@@ -17,9 +17,9 @@ import {
 } from '@h2-trust/amqp';
 import { EmissionCalculationDto, EmissionDto, HydrogenBatchDto, SectionDto } from '@h2-trust/api';
 import { ProofOfOrigin } from '@h2-trust/domain';
-import { assembleEmissionDto } from '../assembler/emission.assembler';
-import { EmissionComputationService } from '../emission/emission.service';
+import { EmissionComputationService } from '../emission-computation.service';
 import { BatchAssembler } from '../assembler/batch.assembler';
+import { EmissionCalculationAssembler } from '../assembler/emission.assembler';
 
 @Injectable()
 export class HydrogenTransportationSectionService {
@@ -35,7 +35,7 @@ export class HydrogenTransportationSectionService {
 
     const emissionCalculation: EmissionCalculationDto = await this.emissionCalculatorService.computeCumulativeEmissions(hydrogenTransportation.id, 'transportation');
     const hydrogenKgEquivalent: number = hydrogenTransportation.batch.amount;
-    const emission: EmissionDto = assembleEmissionDto(emissionCalculation, hydrogenKgEquivalent);
+    const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(emissionCalculation, hydrogenKgEquivalent);
     const batch: HydrogenBatchDto = BatchAssembler.assembleHydrogenTransportationBatchDto(hydrogenTransportation, hydrogenCompositions, emission);
     return new SectionDto(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION, [batch], []);
   }

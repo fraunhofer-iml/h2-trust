@@ -16,7 +16,7 @@ import { HydrogenBottlingSectionService } from './section/hydrogen-bottling-sect
 import { HydrogenProductionSectionService } from './section/hydrogen-production-section.service';
 import { HydrogenStorageSectionService } from './section/hydrogen-storage-section.service';
 import { HydrogenTransportationSectionService } from './section/hydrogen-transportation-section.service';
-import { EmissionComputationService } from './emission/emission.service';
+import { EmissionComputationService } from './emission-computation.service';
 
 @Injectable()
 export class DigitalProductPassportService {

@@ -15,10 +15,11 @@ import { HydrogenBottlingSectionService } from './section/hydrogen-bottling-sect
 import { HydrogenProductionSectionService } from './section/hydrogen-production-section.service';
 import { HydrogenStorageSectionService } from './section/hydrogen-storage-section.service';
 import { HydrogenTransportationSectionService } from './section/hydrogen-transportation-section.service';
-import { EmissionModule } from './emission/emission.module';
+import { EmissionComputationService } from './emission-computation.service';
+import { PowerUnitLoader } from './power-unit.loader';
 
 @Module({
-  imports: [new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker(), new Broker().getProcessSvcBroker(), EmissionModule],
+  imports: [new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker(), new Broker().getProcessSvcBroker()],
   providers: [
     DigitalProductPassportService,
     HydrogenBottlingSectionService,
@@ -26,7 +27,9 @@ import { EmissionModule } from './emission/emission.module';
     HydrogenStorageSectionService,
     HydrogenTransportationSectionService,
     EnergySourceClassificationService,
-    WaterClassificationService
+    WaterClassificationService,
+    EmissionComputationService,
+    PowerUnitLoader
   ],
   exports: [DigitalProductPassportService],
 })

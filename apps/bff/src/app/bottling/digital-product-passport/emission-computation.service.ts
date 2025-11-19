@@ -10,7 +10,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ProvenanceEntity, ProcessStepEntity, BrokerQueues, ProvenanceMessagePatterns } from '@h2-trust/amqp';
 import { EmissionCalculationDto, EmissionComputationResultDto } from '@h2-trust/api';
 import { getPowerEmissionFactorByEnergySource, ProcessType } from '@h2-trust/domain';
-import { EmissionCalculationAssembler } from './emission.assembler';
+import { EmissionCalculationAssembler } from './assembler/emission.assembler';
 import { PowerUnitLoader } from './power-unit.loader';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';

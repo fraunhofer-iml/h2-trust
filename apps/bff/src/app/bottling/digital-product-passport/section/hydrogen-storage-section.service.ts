@@ -10,10 +10,10 @@ import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity, } from '@h2-trust/amqp';
 import { BatchDto, ClassificationDto, EmissionCalculationDto, EmissionDto, HydrogenBatchDto, SectionDto } from '@h2-trust/api';
 import { HydrogenColor, ProofOfOrigin } from '@h2-trust/domain';
-import { EmissionComputationService } from '../emission/emission.service';
+import { EmissionComputationService } from '../emission-computation.service';
 import { BatchAssembler } from '../assembler/batch.assembler';
 import { ClassificationAssembler } from '../assembler/classification.assembler';
-import { EmissionCalculationAssembler } from '../emission/emission.assembler';
+import { EmissionCalculationAssembler } from '../assembler/emission.assembler';
 
 @Injectable()
 export class HydrogenStorageSectionService {

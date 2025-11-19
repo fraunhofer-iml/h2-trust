@@ -17,9 +17,9 @@ import {
 } from '@h2-trust/amqp';
 import { EmissionCalculationDto, EmissionDto, HydrogenBatchDto, SectionDto } from '@h2-trust/api';
 import { ProofOfOrigin } from '@h2-trust/domain';
-import { EmissionComputationService } from '../emission/emission.service';
+import { EmissionComputationService } from '../emission-computation.service';
 import { BatchAssembler } from '../assembler/batch.assembler';
-import { EmissionCalculationAssembler } from '../emission/emission.assembler';
+import { EmissionCalculationAssembler } from '../assembler/emission.assembler';
 
 @Injectable()
 export class HydrogenBottlingSectionService {
