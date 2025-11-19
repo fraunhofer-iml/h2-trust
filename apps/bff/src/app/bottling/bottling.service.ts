@@ -108,9 +108,10 @@ export class BottlingService {
         return new TransportationDetailsEntity(undefined, dto.transportDistance, dto.transportMode, dto.fuelType);
       case TransportMode.PIPELINE:
         return new TransportationDetailsEntity(undefined, 0, dto.transportMode, undefined);
-      default:
+      default: {
         const message = `Invalid transport mode: ${dto.transportMode}`;
         throw new HttpException(message, HttpStatus.BAD_REQUEST);
+      }
     }
   }
 
