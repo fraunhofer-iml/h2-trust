@@ -6,16 +6,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {Transform} from 'class-transformer';
-import {IsEnum, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString} from 'class-validator';
-import {BatchEntity, CompanyEntity, ProcessStepEntity, QualityDetailsEntity} from '@h2-trust/amqp';
-import {FuelType, HydrogenColor, TransportMode} from '@h2-trust/domain';
+import { Transform } from 'class-transformer';
+import { IsEnum, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { BatchEntity, CompanyEntity, ProcessStepEntity, QualityDetailsEntity } from '@h2-trust/amqp';
+import { FuelType, HydrogenColor, TransportMode } from '@h2-trust/domain';
 
 export class BottlingDto {
   @IsNotEmpty()
   @IsNumber()
   @IsPositive()
-  @Transform(({value}) => Number(value), {toClassOnly: true})
+  @Transform(({ value }) => Number(value), { toClassOnly: true })
   amount: number;
 
   @IsNotEmpty()
@@ -50,13 +50,25 @@ export class BottlingDto {
   @IsOptional()
   @IsNumber()
   @IsPositive()
-  @Transform(({value}) => Number(value), {toClassOnly: true})
+  @Transform(({ value }) => Number(value), { toClassOnly: true })
   transportDistance?: number;
 
   @IsOptional()
   fuelType?: FuelType;
 
-  constructor(amount: number, recipient: string, filledAt: string, recordedBy: string, hydrogenStorageUnit: string, color: HydrogenColor, file: string, fileDescription: string, transportMode: TransportMode, transportDistance: number, fuelType: FuelType) {
+  constructor(
+    amount: number,
+    recipient: string,
+    filledAt: string,
+    recordedBy: string,
+    hydrogenStorageUnit: string,
+    color: HydrogenColor,
+    file: string,
+    fileDescription: string,
+    transportMode: TransportMode,
+    transportDistance: number,
+    fuelType: FuelType,
+  ) {
     this.amount = amount;
     this.recipient = recipient;
     this.filledAt = filledAt;

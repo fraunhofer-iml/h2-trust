@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {firstValueFrom} from 'rxjs';
-import {HttpException, HttpStatus, Inject, Injectable} from '@nestjs/common';
-import {ClientProxy} from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
   HydrogenComponentEntity,
@@ -25,8 +25,8 @@ import {
   RedComplianceDto,
   UserDetailsDto,
 } from '@h2-trust/api';
-import {ProcessType, TransportMode} from '@h2-trust/domain';
-import {UserService} from '../user/user.service';
+import { ProcessType, TransportMode } from '@h2-trust/domain';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class BottlingService {
@@ -34,8 +34,7 @@ export class BottlingService {
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchService: ClientProxy,
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     private readonly userService: UserService,
-  ) {
-  }
+  ) {}
 
   async createBottling(dto: BottlingDto, files: Express.Multer.File[], userId: string): Promise<BottlingOverviewDto> {
     const baseEntity = BottlingDto.toEntity({ ...dto, recordedBy: userId });
@@ -63,7 +62,9 @@ export class BottlingService {
     };
 
     return firstValueFrom(
-      this.batchService.send(ProcessStepMessagePatterns.HYDROGEN_TRANSPORTATION, {processStepEntity: transportProcessStepEntity}),
+      this.batchService.send(ProcessStepMessagePatterns.HYDROGEN_TRANSPORTATION, {
+        processStepEntity: transportProcessStepEntity,
+      }),
     ).then(BottlingOverviewDto.fromEntity);
   }
 
@@ -81,7 +82,7 @@ export class BottlingService {
 
   async readGeneralInformation(processStepId: string): Promise<GeneralInformationDto> {
     const processStep: ProcessStepEntity = await firstValueFrom(
-      this.batchService.send(ProcessStepMessagePatterns.READ_UNIQUE, {processStepId}),
+      this.batchService.send(ProcessStepMessagePatterns.READ_UNIQUE, { processStepId }),
     );
 
     if (processStep.type != ProcessType.HYDROGEN_BOTTLING && processStep.type != ProcessType.HYDROGEN_TRANSPORTATION) {
@@ -92,7 +93,7 @@ export class BottlingService {
     const generalInformationDto = GeneralInformationDto.fromEntityToDto(processStep);
     generalInformationDto.producer = await this.fetchProducerName(generalInformationDto.producer);
     generalInformationDto.hydrogenComposition = await this.fetchHydrogenComposition(processStep);
-    return {...generalInformationDto, redCompliance: new RedComplianceDto(true, true, false, true)};
+    return { ...generalInformationDto, redCompliance: new RedComplianceDto(true, true, false, true) };
   }
 
   private buildTransportationDetails(dto: BottlingDto): TransportationDetailsEntity {
@@ -117,7 +118,7 @@ export class BottlingService {
 
   private async fetchProducerName(producerId: string): Promise<string> {
     const producer: UserDetailsDto = await firstValueFrom(
-      this.generalService.send(UserMessagePatterns.READ, {id: producerId}),
+      this.generalService.send(UserMessagePatterns.READ, { id: producerId }),
     );
     return producer.company?.name;
   }

@@ -9,7 +9,7 @@
 import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
-import {BatchType, ProcessType} from '@h2-trust/domain';
+import { BatchType, ProcessType } from '@h2-trust/domain';
 
 @Injectable()
 export class TransportationService {
@@ -25,7 +25,7 @@ export class TransportationService {
       batch: {
         ...processStepEntity.batch,
         type: BatchType.HYDROGEN,
-      }
+      },
     };
 
     if (processStepEntity.batch?.predecessors?.length !== 1) {
