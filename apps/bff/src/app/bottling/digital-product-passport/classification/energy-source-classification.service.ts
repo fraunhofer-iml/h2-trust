@@ -46,7 +46,7 @@ export class EnergySourceClassificationService {
       if (processStepsWithUnitsByEnergySource.length > 0) {
         const productionPowerBatches: BatchDto[] = await Promise.all(
           processStepsWithUnitsByEnergySource.map(async ([processStep]) => {
-            const emissionCalculation: EmissionCalculationDto = await this.emissionCalculatorService.computePowerCalculation(processStep);
+            const emissionCalculation: EmissionCalculationDto = await this.emissionCalculatorService.aggregatePowerProductionEmissions(processStep);
             const hydrogenKgEquivalentToPowerBatch: number = processStep.batch.successors[0].amount;
             const emission: EmissionDto = assembleEmissionDto(emissionCalculation, hydrogenKgEquivalentToPowerBatch);
             const batch: PowerBatchDto = BatchAssembler.assemblePowerProductionBatchDto(processStep, energySource, emission);

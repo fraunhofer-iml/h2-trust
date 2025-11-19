@@ -62,7 +62,7 @@ export class DigitalProductPassportService {
 
   async buildProofOfSustainability(processStepId: string): Promise<ProofOfSustainabilityDto> {
     const provenance: ProvenanceEntity = await firstValueFrom(this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, { processStepId }));
-    const emissionComputationResult: EmissionComputationResultDto = await this.emissionCalculatorService.computeForProvenance(provenance);
+    const emissionComputationResult: EmissionComputationResultDto = await this.emissionCalculatorService.aggregateProvenanceEmissions(provenance);
     return new ProofOfSustainabilityDto(
       provenance.root.id,
       emissionComputationResult.amountCO2PerMJH2,

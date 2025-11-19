@@ -27,7 +27,7 @@ export class WaterClassificationService {
     }
 
     const waterBatches: WaterBatchDto[] = waterSupplies.map(waterSupply => {
-      const emissionCalculation: EmissionCalculationDto = this.emissionCalculatorService.computeWaterCalculation(waterSupply);
+      const emissionCalculation: EmissionCalculationDto = this.emissionCalculatorService.aggregateWaterSupplyEmissions(waterSupply);
       const hydrogenKgEquivalentToWaterBatch: number = waterSupply.batch.successors[0].amount;
       const emission: EmissionDto = assembleEmissionDto(emissionCalculation, hydrogenKgEquivalentToWaterBatch);
       const batch: WaterBatchDto = BatchAssembler.assembleWaterBatchDto(waterSupply, emission);
