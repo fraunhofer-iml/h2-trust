@@ -38,25 +38,23 @@ export class BottlingService {
 
   async createBottling(dto: BottlingDto, files: Express.Multer.File[], userId: string): Promise<BottlingOverviewDto> {
     const baseEntity = BottlingDto.toEntity({ ...dto, recordedBy: userId });
-    const processStepEntity: ProcessStepEntity = await firstValueFrom(
+    const bottlingProcessStepEntity: ProcessStepEntity = await firstValueFrom(
       this.batchService.send(ProcessStepMessagePatterns.HYDROGEN_BOTTLING, {
         processStepEntity: baseEntity,
         files,
       }),
     );
 
-    if (processStepEntity.transportationDetails) {
-      throw new HttpException(
-        `ProcessStep with ID ${processStepEntity.id} should not have transportation details upon creation.`,
-        HttpStatus.BAD_REQUEST,
-      );
+    if (bottlingProcessStepEntity.transportationDetails) {
+      const message = `ProcessStep with ID ${bottlingProcessStepEntity.id} should not have transportation details upon creation.`;
+      throw new HttpException(message, HttpStatus.BAD_REQUEST);
     }
 
     const transportProcessStepEntity: ProcessStepEntity = {
       ...baseEntity,
       batch: {
         ...baseEntity.batch,
-        predecessors: [processStepEntity.batch],
+        predecessors: [bottlingProcessStepEntity.batch],
       },
       transportationDetails: this.buildTransportationDetails(dto),
     };
