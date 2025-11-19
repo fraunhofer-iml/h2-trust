@@ -7,7 +7,7 @@
  */
 
 import { ProcessStepEntity } from '@h2-trust/amqp';
-import { EmissionCalculationDto, EmissionComputationResultDto, EmissionForProcessStepDto } from '@h2-trust/api';
+import { EmissionCalculationDto, EmissionComputationResultDto, EmissionDto, EmissionForProcessStepDto } from '@h2-trust/api';
 import {
   CalculationTopic,
   FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ,
@@ -143,5 +143,11 @@ export class EmissionCalculationAssembler {
       transportAndDistributionEmission,
       processingEmission,
     ];
+  }
+
+  static assembleEmissionDto(calc: EmissionCalculationDto, hydrogenMassKg: number): EmissionDto {
+    const amountCO2PerKgH2 = calc?.result ?? 0;
+    const amountCO2 = amountCO2PerKgH2 * hydrogenMassKg;
+    return new EmissionDto(amountCO2, amountCO2PerKgH2, calc?.basisOfCalculation ?? '');
   }
 }

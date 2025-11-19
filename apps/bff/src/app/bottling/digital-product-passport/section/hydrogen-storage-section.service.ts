@@ -10,10 +10,10 @@ import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity, } from '@h2-trust/amqp';
 import { BatchDto, ClassificationDto, EmissionCalculationDto, EmissionDto, HydrogenBatchDto, SectionDto } from '@h2-trust/api';
 import { HydrogenColor, ProofOfOrigin } from '@h2-trust/domain';
-import { assembleEmissionDto } from '../assembler/emission.assembler';
 import { EmissionComputationService } from '../emission/emission.service';
 import { BatchAssembler } from '../assembler/batch.assembler';
 import { ClassificationAssembler } from '../assembler/classification.assembler';
+import { EmissionCalculationAssembler } from '../emission/emission.assembler';
 
 @Injectable()
 export class HydrogenStorageSectionService {
@@ -39,7 +39,7 @@ export class HydrogenStorageSectionService {
         hydrogenProductionsByHydrogenColor.map(async hydrogenProduction => {
           const emissionCalculation: EmissionCalculationDto = await this.emissionCalculatorService.computeCumulativeEmissions(hydrogenProduction.id, 'storage');
           const hydrogenKgEquivalent: number = hydrogenProduction.batch.amount;
-          const emission: EmissionDto = assembleEmissionDto(emissionCalculation, hydrogenKgEquivalent);
+          const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(emissionCalculation, hydrogenKgEquivalent);
           const batch: HydrogenBatchDto = BatchAssembler.assembleHydrogenStorageBatchDto(hydrogenProduction, emission);
           return batch;
         }));

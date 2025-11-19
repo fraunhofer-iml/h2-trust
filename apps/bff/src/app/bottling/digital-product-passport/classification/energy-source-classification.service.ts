@@ -17,10 +17,10 @@ import {
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { BatchDto, ClassificationDto, EmissionCalculationDto, EmissionDto, PowerBatchDto } from '@h2-trust/api';
-import { assembleEmissionDto } from '../assembler/emission.assembler';
 import { EmissionComputationService } from '../emission/emission.service';
 import { BatchAssembler } from '../assembler/batch.assembler';
 import { ClassificationAssembler } from '../assembler/classification.assembler';
+import { EmissionCalculationAssembler } from '../emission/emission.assembler';
 
 @Injectable()
 export class EnergySourceClassificationService {
@@ -49,7 +49,7 @@ export class EnergySourceClassificationService {
             const [powerCalculation] = await this.emissionCalculatorService.computePowerProductionEmissions([processStep]);
             const emissionCalculation: EmissionCalculationDto = powerCalculation;
             const hydrogenKgEquivalentToPowerBatch: number = processStep.batch.successors[0].amount;
-            const emission: EmissionDto = assembleEmissionDto(emissionCalculation, hydrogenKgEquivalentToPowerBatch);
+            const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(emissionCalculation, hydrogenKgEquivalentToPowerBatch);
             const batch: PowerBatchDto = BatchAssembler.assemblePowerProductionBatchDto(processStep, energySource, emission);
             return batch;
           }),
