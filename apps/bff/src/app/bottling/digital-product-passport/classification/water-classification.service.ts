@@ -11,13 +11,13 @@ import { ProcessStepEntity } from '@h2-trust/amqp';
 import { ClassificationDto, EmissionCalculationDto, EmissionDto, WaterBatchDto } from '@h2-trust/api';
 import { BatchType, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
 import { assembleEmissionDto } from '../assembler/emission.assembler';
-import { EmissionCalculatorService } from '../emission/emission-calculator.service';
+import { EmissionComputationService } from '../emission/emission.service';
 import { ClassificationAssembler } from '../assembler/classification.assembler';
 import { BatchAssembler } from '../assembler/batch.assembler';
 
 @Injectable()
 export class WaterClassificationService {
-  constructor(private readonly emissionCalculatorService: EmissionCalculatorService,
+  constructor(private readonly emissionService: EmissionComputationService,
   ) { }
 
   createWaterSupplyClassification(waterSupplies: ProcessStepEntity[]): ClassificationDto {
@@ -27,7 +27,7 @@ export class WaterClassificationService {
     }
 
     const waterBatches: WaterBatchDto[] = waterSupplies.map(waterSupply => {
-      const emissionCalculation: EmissionCalculationDto = this.emissionCalculatorService.aggregateWaterSupplyEmissions(waterSupply);
+      const emissionCalculation: EmissionCalculationDto = this.emissionService.computeWaterSupplyEmissions(waterSupply);
       const hydrogenKgEquivalentToWaterBatch: number = waterSupply.batch.successors[0].amount;
       const emission: EmissionDto = assembleEmissionDto(emissionCalculation, hydrogenKgEquivalentToWaterBatch);
       const batch: WaterBatchDto = BatchAssembler.assembleWaterBatchDto(waterSupply, emission);

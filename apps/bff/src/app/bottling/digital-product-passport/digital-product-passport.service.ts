@@ -16,7 +16,7 @@ import { HydrogenBottlingSectionService } from './section/hydrogen-bottling-sect
 import { HydrogenProductionSectionService } from './section/hydrogen-production-section.service';
 import { HydrogenStorageSectionService } from './section/hydrogen-storage-section.service';
 import { HydrogenTransportationSectionService } from './section/hydrogen-transportation-section.service';
-import { EmissionCalculatorService } from './emission/emission-calculator.service';
+import { EmissionComputationService } from './emission/emission.service';
 
 @Injectable()
 export class DigitalProductPassportService {
@@ -26,7 +26,7 @@ export class DigitalProductPassportService {
     private readonly hydrogenStorageSectionService: HydrogenStorageSectionService,
     private readonly hydrogenBottlingSectionService: HydrogenBottlingSectionService,
     private readonly hydrogenTransportationSectionService: HydrogenTransportationSectionService,
-    private readonly emissionCalculatorService: EmissionCalculatorService
+    private readonly emissionCalculatorService: EmissionComputationService
   ) { }
 
   async buildProofOfOrigin(processStepId: string): Promise<SectionDto[]> {
@@ -62,13 +62,13 @@ export class DigitalProductPassportService {
 
   async buildProofOfSustainability(processStepId: string): Promise<ProofOfSustainabilityDto> {
     const provenance: ProvenanceEntity = await firstValueFrom(this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, { processStepId }));
-    const emissionComputationResult: EmissionComputationResultDto = await this.emissionCalculatorService.aggregateProvenanceEmissions(provenance);
+    const provenanceEmission: EmissionComputationResultDto = await this.emissionCalculatorService.computeProvenanceEmissions(provenance);
     return new ProofOfSustainabilityDto(
       provenance.root.id,
-      emissionComputationResult.amountCO2PerMJH2,
-      emissionComputationResult.emissionReductionPercentage,
-      emissionComputationResult.calculations,
-      emissionComputationResult.processStepEmissions,
+      provenanceEmission.amountCO2PerMJH2,
+      provenanceEmission.emissionReductionPercentage,
+      provenanceEmission.calculations,
+      provenanceEmission.processStepEmissions,
     );
   }
 }

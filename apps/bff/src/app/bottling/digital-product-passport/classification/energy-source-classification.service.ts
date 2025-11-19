@@ -18,7 +18,7 @@ import {
 } from '@h2-trust/amqp';
 import { BatchDto, ClassificationDto, EmissionCalculationDto, EmissionDto, PowerBatchDto } from '@h2-trust/api';
 import { assembleEmissionDto } from '../assembler/emission.assembler';
-import { EmissionCalculatorService } from '../emission/emission-calculator.service';
+import { EmissionComputationService } from '../emission/emission.service';
 import { BatchAssembler } from '../assembler/batch.assembler';
 import { ClassificationAssembler } from '../assembler/classification.assembler';
 
@@ -26,7 +26,7 @@ import { ClassificationAssembler } from '../assembler/classification.assembler';
 export class EnergySourceClassificationService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
-    private readonly emissionCalculatorService: EmissionCalculatorService,
+    private readonly emissionCalculatorService: EmissionComputationService,
   ) { }
 
   async buildEnergySourceClassifications(powerProductions: ProcessStepEntity[]): Promise<ClassificationDto[]> {
@@ -46,7 +46,8 @@ export class EnergySourceClassificationService {
       if (processStepsWithUnitsByEnergySource.length > 0) {
         const productionPowerBatches: BatchDto[] = await Promise.all(
           processStepsWithUnitsByEnergySource.map(async ([processStep]) => {
-            const emissionCalculation: EmissionCalculationDto = await this.emissionCalculatorService.aggregatePowerProductionEmissions(processStep);
+            const [powerCalculation] = await this.emissionCalculatorService.computePowerProductionEmissions([processStep]);
+            const emissionCalculation: EmissionCalculationDto = powerCalculation;
             const hydrogenKgEquivalentToPowerBatch: number = processStep.batch.successors[0].amount;
             const emission: EmissionDto = assembleEmissionDto(emissionCalculation, hydrogenKgEquivalentToPowerBatch);
             const batch: PowerBatchDto = BatchAssembler.assemblePowerProductionBatchDto(processStep, energySource, emission);
@@ -73,7 +74,7 @@ export class EnergySourceClassificationService {
   }
 
   private async fetchPowerProductionProcessStepsWithPowerProductionUnits(powerProductions: ProcessStepEntity[]): Promise<[ProcessStepEntity, PowerProductionUnitEntity][]> {
-  // TODO-MP: bulk request to fetch all units at once
+    // TODO-MP: bulk request to fetch all units at once
     return Promise.all(
       powerProductions.map(async (powerProduction): Promise<[ProcessStepEntity, PowerProductionUnitEntity]> => {
         const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(

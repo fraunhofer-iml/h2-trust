@@ -8,13 +8,13 @@
 
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
-import { EmissionCalculatorService } from './emission-calculator.service';
+import { EmissionComputationService } from './emission.service';
 import { PowerUnitLoader } from './power-unit.loader';
 
 @Module({
   imports: [new Broker().getGeneralSvcBroker(), new Broker().getBatchSvcBroker(), new Broker().getProcessSvcBroker()],
   controllers: [],
-  providers: [EmissionCalculatorService, PowerUnitLoader],
-  exports: [EmissionCalculatorService],
+  providers: [EmissionComputationService, PowerUnitLoader],
+  exports: [EmissionComputationService],
 })
 export class EmissionModule { }
