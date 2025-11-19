@@ -14,7 +14,7 @@ import {
   ProcessStepEntityHydrogenTransportationMock,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
+import {BatchRepository, HydrogenBottlingProcessStepSeed, ProcessStepRepository} from '@h2-trust/database';
 import { ProcessType } from '@h2-trust/domain';
 import { BottlingService } from './bottling/bottling.service';
 import { ProcessStepController } from './process-step.controller';
@@ -147,6 +147,7 @@ describe('ProcessStepController', () => {
 
   it('should create hydrogen transportation process step', async () => {
     const expectedResponse: ProcessStepEntity = structuredClone(ProcessStepEntityHydrogenTransportationMock[0]);
+    expectedResponse.batch.predecessors = [structuredClone(HydrogenBottlingProcessStepSeed[0])];
 
     const transportationServiceSpy = jest.spyOn(transportationService, 'createHydrogenTransportationProcessStep');
 
@@ -162,7 +163,7 @@ describe('ProcessStepController', () => {
 
     expect(transportationServiceSpy).toHaveBeenCalledTimes(1);
     expect(batchRepositorySpy).toHaveBeenCalledTimes(1);
-    expect(batchRepositorySpy).toHaveBeenCalledWith([expectedResponse.batch.id]);
+    expect(batchRepositorySpy).toHaveBeenCalledWith([expectedResponse.batch.predecessors[0].id]);
     expect(processStepRepositorySpy).toHaveBeenCalledTimes(1);
     expect(actualResponse).toEqual(expectedResponse);
   });

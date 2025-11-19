@@ -110,10 +110,14 @@ describe('BottlingController', () => {
 
     const expectedBatchSvcPayload2 = {
       processStepEntity: {
-        ...returnedProcessStep,
+        ...expectedBatchSvcPayload1.processStepEntity,
+        batch: {
+          ...expectedBatchSvcPayload1.processStepEntity.batch,
+          predecessors: [returnedProcessStep.batch]
+        },
         transportationDetails: {
           id: undefined as string,
-          distance: 100,
+          distance: givenDto.transportDistance,
           transportMode: givenDto.transportMode,
           fuelType: givenDto.fuelType,
         },
