@@ -56,7 +56,7 @@ export class EmissionComputationService {
   }
 
   async computePowerProductionEmissions(powerProductions: ProcessStepEntity[]): Promise<EmissionCalculationDto[]> {
-    const powerProductionUnitsByProcessSteps = await this.powerUnitLoader.loadByProcessSteps(powerProductions);
+    const powerProductionUnitsByProcessSteps = await this.powerUnitLoader.fetchPowerProductionUnits(powerProductions);
 
     return Promise.all(
       powerProductions.map((powerProduction) => {

@@ -20,11 +20,16 @@ import { UnitService } from './unit.service';
 
 @Controller()
 export class UnitController {
-  constructor(private readonly service: UnitService) {}
+  constructor(private readonly service: UnitService) { }
 
   @MessagePattern(UnitMessagePatterns.READ)
   async readUnit(@Payload() payload: { id: string }): Promise<UnitEntity> {
     return this.service.readUnit(payload.id);
+  }
+
+  @MessagePattern(UnitMessagePatterns.READ_MANY)
+  async readUnits(@Payload() payload: { ids: string[] }): Promise<UnitEntity[]> {
+    return this.service.readUnits(payload.ids);
   }
 
   @MessagePattern(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS)

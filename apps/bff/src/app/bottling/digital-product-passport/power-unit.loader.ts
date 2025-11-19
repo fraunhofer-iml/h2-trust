@@ -13,25 +13,40 @@ import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { BrokerQueues, PowerProductionUnitEntity, ProcessStepEntity, UnitMessagePatterns } from '@h2-trust/amqp';
+import { ProcessType } from '@h2-trust/domain';
 
 @Injectable()
 export class PowerUnitLoader {
-  private readonly byUnitId = new Map<string, PowerProductionUnitEntity>();
+  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) { }
 
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
+  async fetchPowerProductionUnits(powerProductions: ProcessStepEntity[] = []): Promise<Map<string, PowerProductionUnitEntity>> {
+    if (!powerProductions.length) {
+      return new Map();
+    }
 
-  async loadByProcessSteps(steps: ProcessStepEntity[] = []): Promise<Map<string, PowerProductionUnitEntity>> {
-    const pairs = await Promise.all(
-      steps.map(async (s) => {
-        const unitId = s.executedBy.id;
-        let unit = this.byUnitId.get(unitId);
-        if (!unit) {
-          unit = await firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, { id: unitId }));
-          this.byUnitId.set(unitId, unit);
-        }
-        return [s.id, unit] as const;
+    if (!powerProductions.every((powerProduction) => powerProduction.type === ProcessType.POWER_PRODUCTION)) {
+      throw new Error(`All ProcessSteps must be of type [${ProcessType.POWER_PRODUCTION}].`);
+    }
+
+    const unitIds = Array.from(new Set(powerProductions.map((powerProduction) => powerProduction.executedBy.id)));
+
+    const units: PowerProductionUnitEntity[] = await firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.READ_MANY, { ids: unitIds }),
+    );
+
+    const unitsById = new Map<string, PowerProductionUnitEntity>(units.map((u) => [u.id, u]));
+
+    for (const unitId of unitIds) {
+      if (!unitsById.has(unitId)) {
+        throw new Error(`PowerProductionUnit [${unitId}] not found.`);
+      }
+    }
+
+    return new Map(
+      powerProductions.map((powerProduction) => {
+        const unit = unitsById.get(powerProduction.executedBy.id)!;
+        return [powerProduction.id, unit];
       }),
     );
-    return new Map(pairs);
   }
 }

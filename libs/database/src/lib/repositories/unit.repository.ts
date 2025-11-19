@@ -31,7 +31,7 @@ import { assertRecordFound } from './utils';
 
 @Injectable()
 export class UnitRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   async findUnitById(id: string): Promise<UnitEntity> {
     return this.prismaService.unit
@@ -43,6 +43,27 @@ export class UnitRepository {
       })
       .then((result) => assertRecordFound(result, id, 'Unit'))
       .then(this.mapToActualUnitEntity);
+  }
+
+  async findUnitsByIds(ids: string[]): Promise<UnitEntity[]> {
+    return this.prismaService.unit
+      .findMany({
+        where: {
+          id: {
+            in: ids,
+          },
+        },
+        ...allUnitsQueryArgs,
+      })
+      .then((result) => {
+        const foundIds = result.map((r) => r.id);
+        const notFoundIds = ids.filter((id) => !foundIds.includes(id));
+        if (notFoundIds.length) {
+          throw new BrokerException(`Units [${notFoundIds.join(', ')}] not found.`, HttpStatus.NOT_FOUND);
+        }
+        return result;
+      })
+      .then((results) => results.map(this.mapToActualUnitEntity));
   }
 
   mapToActualUnitEntity(_unit: Prisma.UnitGetPayload<typeof allUnitsQueryArgs>): UnitEntity {
