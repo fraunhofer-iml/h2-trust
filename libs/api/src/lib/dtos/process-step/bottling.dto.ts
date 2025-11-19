@@ -68,7 +68,7 @@ export class BottlingDto {
     this.transportMode = transportMode;
     // TODO-MH: Remove the default value once DUHGW-274 has been completed
     // this.transportDistance = transportDistance
-    this.transportDistance = transportDistance ?? 101;
+    this.transportDistance = transportDistance ?? 100;
     this.fuelType = fuelType;
   }
 

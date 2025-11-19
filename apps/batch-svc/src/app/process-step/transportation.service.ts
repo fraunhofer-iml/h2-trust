@@ -9,7 +9,7 @@
 import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
-import { ProcessType } from '@h2-trust/domain';
+import {BatchType, ProcessType} from '@h2-trust/domain';
 
 @Injectable()
 export class TransportationService {
@@ -24,16 +24,15 @@ export class TransportationService {
       type: ProcessType.HYDROGEN_TRANSPORTATION,
       batch: {
         ...processStepEntity.batch,
-        predecessors: [
-          {
-            id: processStepEntity.batch.id,
-          },
-        ],
-      },
-      transportationDetails: processStepEntity.transportationDetails,
+        type: BatchType.HYDROGEN,
+      }
     };
 
-    await this.batchRepository.setBatchesInactive([processStepEntity.batch.id]);
+    if (processStepEntity.batch?.predecessors?.length !== 1) {
+      const message = `Only one predecessor is allowed for hydrogen transportation process step. Found ${processStepEntity.batch.predecessors.length}.`;
+      throw new Error(message);
+    }
+    await this.batchRepository.setBatchesInactive([processStepEntity.batch.predecessors[0].id]);
     return this.processStepRepository.insertProcessStep(transportationProcessStepEntity);
   }
 }
