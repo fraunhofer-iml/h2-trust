@@ -27,14 +27,14 @@ export class UnitController {
     return this.service.readUnit(payload.id);
   }
 
-  @MessagePattern(UnitMessagePatterns.READ_MANY)
-  async readUnits(@Payload() payload: { ids: string[] }): Promise<UnitEntity[]> {
-    return this.service.readUnits(payload.ids);
-  }
-
   @MessagePattern(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS)
   async readPowerProductionUnits(@Payload() payload: { companyId: string }): Promise<PowerProductionUnitEntity[]> {
     return this.service.readPowerProductionUnits(payload.companyId);
+  }
+
+  @MessagePattern(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS_BY_IDS)
+  async readPowerProductionUnitsByIds(@Payload() payload: { ids: string[] }): Promise<PowerProductionUnitEntity[]> {
+    return this.service.readPowerProductionUnitsByIds(payload.ids);
   }
 
   @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS)

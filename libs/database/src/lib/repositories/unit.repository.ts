@@ -45,27 +45,6 @@ export class UnitRepository {
       .then(this.mapToActualUnitEntity);
   }
 
-  async findUnitsByIds(ids: string[]): Promise<UnitEntity[]> {
-    return this.prismaService.unit
-      .findMany({
-        where: {
-          id: {
-            in: ids,
-          },
-        },
-        ...allUnitsQueryArgs,
-      })
-      .then((result) => {
-        const foundIds = result.map((r) => r.id);
-        const notFoundIds = ids.filter((id) => !foundIds.includes(id));
-        if (notFoundIds.length) {
-          throw new BrokerException(`Units [${notFoundIds.join(', ')}] not found.`, HttpStatus.NOT_FOUND);
-        }
-        return result;
-      })
-      .then((results) => results.map(this.mapToActualUnitEntity));
-  }
-
   mapToActualUnitEntity(_unit: Prisma.UnitGetPayload<typeof allUnitsQueryArgs>): UnitEntity {
     const { powerProductionUnit, hydrogenProductionUnit, hydrogenStorageUnit, ...unit } = _unit;
 
@@ -105,6 +84,25 @@ export class UnitRepository {
         ...powerProductionUnitQueryArgs,
       })
       .then((units) => units.map(PowerProductionUnitEntity.fromDatabase));
+  }
+
+  async findPowerProductionUnitsByIds(ids: string[]): Promise<PowerProductionUnitEntity[]> {
+    return this.prismaService.unit
+      .findMany({
+        where: {
+          id: { in: ids },
+          powerProductionUnit: { isNot: null },
+        },
+        ...powerProductionUnitQueryArgs,
+      })
+      .then((units) => {
+        const foundIds = units.map((u) => u.id);
+        const notFound = ids.filter((id) => !foundIds.includes(id));
+        if (notFound.length) {
+          throw new BrokerException(`PowerProductionUnits [${notFound.join(', ')}] not found.`, HttpStatus.NOT_FOUND);
+        }
+        return units.map(PowerProductionUnitEntity.fromDatabase);
+      });
   }
 
   async findHydrogenProductionUnitsByCompanyId(companyId: string): Promise<HydrogenProductionUnitEntity[]> {

@@ -16,7 +16,6 @@ import { HydrogenProductionSectionService } from './section/hydrogen-production-
 import { HydrogenStorageSectionService } from './section/hydrogen-storage-section.service';
 import { HydrogenTransportationSectionService } from './section/hydrogen-transportation-section.service';
 import { EmissionComputationService } from './emission-computation.service';
-import { PowerUnitLoader } from './power-unit.loader';
 
 @Module({
   imports: [new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker(), new Broker().getProcessSvcBroker()],
@@ -28,8 +27,7 @@ import { PowerUnitLoader } from './power-unit.loader';
     HydrogenTransportationSectionService,
     EnergySourceClassificationService,
     WaterClassificationService,
-    EmissionComputationService,
-    PowerUnitLoader
+    EmissionComputationService
   ],
   exports: [DigitalProductPassportService],
 })

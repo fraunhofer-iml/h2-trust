@@ -7,11 +7,10 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { ProvenanceEntity, ProcessStepEntity, BrokerQueues, ProvenanceMessagePatterns } from '@h2-trust/amqp';
+import { ProvenanceEntity, ProcessStepEntity, BrokerQueues, ProvenanceMessagePatterns, UnitMessagePatterns, PowerProductionUnitEntity } from '@h2-trust/amqp';
 import { EmissionCalculationDto, EmissionComputationResultDto } from '@h2-trust/api';
 import { getPowerEmissionFactorByEnergySource, ProcessType } from '@h2-trust/domain';
 import { EmissionCalculationAssembler } from './assembler/emission.assembler';
-import { PowerUnitLoader } from './power-unit.loader';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
@@ -19,7 +18,7 @@ import { firstValueFrom } from 'rxjs';
 export class EmissionComputationService {
   constructor(
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
-    private readonly powerUnitLoader: PowerUnitLoader,
+    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
   ) { }
 
   async computeProvenanceEmissions(provenance: ProvenanceEntity): Promise<EmissionComputationResultDto> {
@@ -56,15 +55,32 @@ export class EmissionComputationService {
   }
 
   async computePowerProductionEmissions(powerProductions: ProcessStepEntity[]): Promise<EmissionCalculationDto[]> {
-    const powerProductionUnitsByProcessSteps = await this.powerUnitLoader.fetchPowerProductionUnits(powerProductions);
+    if (!powerProductions.length) {
+      return [];
+    }
 
-    return Promise.all(
-      powerProductions.map((powerProduction) => {
-        const powerProductionUnit = powerProductionUnitsByProcessSteps.get(powerProduction.id);
-        const powerEmissionFactor = getPowerEmissionFactorByEnergySource(powerProductionUnit?.type?.energySource);
-        return EmissionCalculationAssembler.assemblePowerProductionCalculation(powerProduction, powerEmissionFactor.emissionFactor, powerEmissionFactor.label);
-      }),
+    const unitIds = Array.from(new Set(powerProductions.map((p) => p.executedBy.id)));
+
+    const units: PowerProductionUnitEntity[] = await firstValueFrom(
+      this.generalSvc.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS_BY_IDS, { ids: unitIds }),
     );
+
+    const unitsById = new Map<string, PowerProductionUnitEntity>(units.map((u) => [u.id, u]));
+    for (const unitId of unitIds) {
+      if (!unitsById.has(unitId)) {
+        throw new Error(`PowerProductionUnit [${unitId}] not found.`);
+      }
+    }
+
+    return powerProductions.map((powerProduction) => {
+      const unit = unitsById.get(powerProduction.executedBy.id)!;
+      const powerEmissionFactor = getPowerEmissionFactorByEnergySource(unit.type?.energySource);
+      return EmissionCalculationAssembler.assemblePowerProductionCalculation(
+        powerProduction,
+        powerEmissionFactor.emissionFactor,
+        powerEmissionFactor.label,
+      );
+    });
   }
 
   computeWaterSupplyEmissions(waterSupply: ProcessStepEntity): EmissionCalculationDto {

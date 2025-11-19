@@ -27,12 +27,12 @@ export class UnitService {
     return this.unitRepository.findUnitById(id);
   }
 
-  readUnits(ids: string[]): Promise<UnitEntity[]> {
-    return this.unitRepository.findUnitsByIds(ids);
-  }
-
   async readPowerProductionUnits(companyId: string): Promise<PowerProductionUnitEntity[]> {
     return this.unitRepository.findPowerProductionUnitsByCompanyId(companyId);
+  }
+
+  async readPowerProductionUnitsByIds(ids: string[]): Promise<PowerProductionUnitEntity[]> {
+    return this.unitRepository.findPowerProductionUnitsByIds(ids);
   }
 
   async readHydrogenProductionUnits(companyId: string): Promise<HydrogenProductionUnitEntity[]> {

@@ -10,6 +10,7 @@ export enum UnitMessagePatterns {
   READ = 'unit.read',
   READ_MANY = 'unit.read-many',
   READ_POWER_PRODUCTION_UNITS = 'unit.read-power-production',
+  READ_POWER_PRODUCTION_UNITS_BY_IDS = 'unit.read-power-production-by-ids',
   READ_HYDROGEN_PRODUCTION_UNITS = 'unit.read-hydrogen-production',
   READ_HYDROGEN_STORAGE_UNITS = 'unit.read-hydrogen-storage',
   READ_POWER_PRODUCTION_TYPES = 'unit.read-power-production-types',
