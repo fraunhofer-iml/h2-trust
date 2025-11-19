@@ -113,7 +113,7 @@ describe('BottlingController', () => {
         ...expectedBatchSvcPayload1.processStepEntity,
         batch: {
           ...expectedBatchSvcPayload1.processStepEntity.batch,
-          predecessors: [returnedProcessStep.batch]
+          predecessors: [returnedProcessStep.batch],
         },
         transportationDetails: {
           id: undefined as string,

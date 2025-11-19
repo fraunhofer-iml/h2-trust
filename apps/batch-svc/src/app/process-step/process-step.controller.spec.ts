@@ -14,7 +14,7 @@ import {
   ProcessStepEntityHydrogenTransportationMock,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
-import {BatchRepository, HydrogenBottlingProcessStepSeed, ProcessStepRepository} from '@h2-trust/database';
+import { BatchRepository, HydrogenBottlingProcessStepSeed, ProcessStepRepository } from '@h2-trust/database';
 import { ProcessType } from '@h2-trust/domain';
 import { BottlingService } from './bottling/bottling.service';
 import { ProcessStepController } from './process-step.controller';
