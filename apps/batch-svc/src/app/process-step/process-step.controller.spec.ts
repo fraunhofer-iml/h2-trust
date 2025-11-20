@@ -8,6 +8,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import {
+  BatchEntity,
   CompanyEntityHydrogenMock,
   ProcessStepEntity,
   ProcessStepEntityHydrogenBottlingMock,
@@ -147,7 +148,7 @@ describe('ProcessStepController', () => {
 
   it('should create hydrogen transportation process step', async () => {
     const expectedResponse: ProcessStepEntity = structuredClone(ProcessStepEntityHydrogenTransportationMock[0]);
-    expectedResponse.batch.predecessors = [structuredClone(HydrogenBottlingProcessStepSeed[0])];
+    const givenPredecessorBatch: BatchEntity = structuredClone(HydrogenBottlingProcessStepSeed[0]);
 
     const transportationServiceSpy = jest.spyOn(transportationService, 'createHydrogenTransportationProcessStep');
 
@@ -159,11 +160,13 @@ describe('ProcessStepController', () => {
 
     const actualResponse = await controller.createHydrogenTransportationProcessStep({
       processStepEntity: expectedResponse,
+      predecessorBatch: givenPredecessorBatch,
+      transportationDetails: expectedResponse.transportationDetails,
     });
 
     expect(transportationServiceSpy).toHaveBeenCalledTimes(1);
     expect(batchRepositorySpy).toHaveBeenCalledTimes(1);
-    expect(batchRepositorySpy).toHaveBeenCalledWith([expectedResponse.batch.predecessors[0].id]);
+    expect(batchRepositorySpy).toHaveBeenCalledWith([givenPredecessorBatch.id]);
     expect(processStepRepositorySpy).toHaveBeenCalledTimes(1);
     expect(actualResponse).toEqual(expectedResponse);
   });

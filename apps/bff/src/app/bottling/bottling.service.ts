@@ -46,24 +46,18 @@ export class BottlingService {
     );
 
     if (bottlingProcessStepEntity.transportationDetails) {
-      const message = `ProcessStep with ID ${bottlingProcessStepEntity.id} should not have transportation details upon creation.`;
+      const message = `ProcessStep [${bottlingProcessStepEntity.id}] of type [${bottlingProcessStepEntity.type}] should not have transportation details upon creation.`;
       throw new HttpException(message, HttpStatus.BAD_REQUEST);
     }
 
-    const transportProcessStepEntity: ProcessStepEntity = {
-      ...baseEntity,
-      batch: {
-        ...baseEntity.batch,
-        predecessors: [bottlingProcessStepEntity.batch],
-      },
+    const payload = {
+      processStepEntity: baseEntity,
+      predecessorBatch: bottlingProcessStepEntity.batch,
       transportationDetails: this.buildTransportationDetails(dto),
     };
-
-    return firstValueFrom(
-      this.batchService.send(ProcessStepMessagePatterns.HYDROGEN_TRANSPORTATION, {
-        processStepEntity: transportProcessStepEntity,
-      }),
-    ).then(BottlingOverviewDto.fromEntity);
+    return firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.HYDROGEN_TRANSPORTATION, payload)).then(
+      BottlingOverviewDto.fromEntity,
+    );
   }
 
   async readBottlingsByCompany(userId: string): Promise<BottlingOverviewDto[]> {

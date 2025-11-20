@@ -7,7 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { ProcessStepEntity } from '@h2-trust/amqp';
+import { BatchEntity, ProcessStepEntity, TransportationDetailsEntity } from '@h2-trust/amqp';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 
@@ -18,21 +18,23 @@ export class TransportationService {
     private readonly processStepRepository: ProcessStepRepository,
   ) {}
 
-  async createHydrogenTransportationProcessStep(processStepEntity: ProcessStepEntity): Promise<ProcessStepEntity> {
+  async createHydrogenTransportationProcessStep(
+    processStepEntity: ProcessStepEntity,
+    predecessorBatch: BatchEntity,
+    transportationDetails: TransportationDetailsEntity,
+  ): Promise<ProcessStepEntity> {
     const transportationProcessStepEntity: ProcessStepEntity = {
       ...processStepEntity,
       type: ProcessType.HYDROGEN_TRANSPORTATION,
       batch: {
         ...processStepEntity.batch,
         type: BatchType.HYDROGEN,
+        predecessors: [predecessorBatch],
       },
+      transportationDetails: transportationDetails,
     };
 
-    if (processStepEntity.batch?.predecessors?.length !== 1) {
-      const message = `Only one predecessor is allowed for hydrogen transportation process step. Found ${processStepEntity.batch.predecessors.length}.`;
-      throw new Error(message);
-    }
-    await this.batchRepository.setBatchesInactive([processStepEntity.batch.predecessors[0].id]);
+    await this.batchRepository.setBatchesInactive([predecessorBatch.id]);
     return this.processStepRepository.insertProcessStep(transportationProcessStepEntity);
   }
 }
