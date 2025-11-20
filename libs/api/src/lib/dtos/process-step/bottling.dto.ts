@@ -8,7 +8,7 @@
 
 import { Transform } from 'class-transformer';
 import { IsEnum, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
-import { BatchEntity, CompanyEntity, ProcessStepEntity } from '@h2-trust/amqp';
+import { BatchEntity, CompanyEntity, ProcessStepEntity, QualityDetailsEntity } from '@h2-trust/amqp';
 import { FuelType, HydrogenColor, TransportMode } from '@h2-trust/domain';
 
 export class BottlingDto {
@@ -48,6 +48,12 @@ export class BottlingDto {
   transportMode: TransportMode;
 
   @IsOptional()
+  @IsNumber()
+  @IsPositive()
+  @Transform(({ value }) => Number(value), { toClassOnly: true })
+  transportDistance?: number;
+
+  @IsOptional()
   fuelType?: FuelType;
 
   constructor(
@@ -56,10 +62,11 @@ export class BottlingDto {
     filledAt: string,
     recordedBy: string,
     hydrogenStorageUnit: string,
+    color: HydrogenColor,
     file: string,
     fileDescription: string,
-    color: HydrogenColor,
     transportMode: TransportMode,
+    transportDistance: number,
     fuelType: FuelType,
   ) {
     this.amount = amount;
@@ -67,10 +74,13 @@ export class BottlingDto {
     this.filledAt = filledAt;
     this.recordedBy = recordedBy;
     this.hydrogenStorageUnit = hydrogenStorageUnit;
+    this.color = color;
     this.file = file;
     this.fileDescription = fileDescription;
-    this.color = color;
     this.transportMode = transportMode;
+    // TODO-MH: Remove the default value once DUHGW-274 has been completed
+    // this.transportDistance = transportDistance
+    this.transportDistance = transportDistance ?? 100;
     this.fuelType = fuelType;
   }
 
@@ -82,9 +92,11 @@ export class BottlingDto {
       endedAt: validDate,
       batch: <BatchEntity>{
         amount: dto.amount,
-        quality: `{"color":"${dto.color}"}`,
         owner: <CompanyEntity>{
           id: dto.recipient,
+        },
+        qualityDetails: <QualityDetailsEntity>{
+          color: dto.color,
         },
       },
       recordedBy: {
