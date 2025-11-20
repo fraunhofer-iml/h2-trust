@@ -10,15 +10,14 @@ import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { ClassificationDto, EmissionCalculationDto, EmissionDto, WaterBatchDto } from '@h2-trust/api';
 import { BatchType, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
-import { EmissionComputationService } from '../emission-computation.service';
-import { ClassificationAssembler } from '../assembler/classification.assembler';
 import { BatchAssembler } from '../assembler/batch.assembler';
+import { ClassificationAssembler } from '../assembler/classification.assembler';
 import { EmissionCalculationAssembler } from '../assembler/emission.assembler';
+import { EmissionComputationService } from '../emission-computation.service';
 
 @Injectable()
 export class WaterClassificationService {
-  constructor(private readonly emissionService: EmissionComputationService,
-  ) { }
+  constructor(private readonly emissionService: EmissionComputationService) {}
 
   createWaterSupplyClassification(waterSupplies: ProcessStepEntity[]): ClassificationDto {
     if (!waterSupplies?.length) {
@@ -26,10 +25,13 @@ export class WaterClassificationService {
       throw new Error(message);
     }
 
-    const waterBatches: WaterBatchDto[] = waterSupplies.map(waterSupply => {
+    const waterBatches: WaterBatchDto[] = waterSupplies.map((waterSupply) => {
       const emissionCalculation: EmissionCalculationDto = this.emissionService.computeWaterSupplyEmissions(waterSupply);
       const hydrogenKgEquivalentToWaterBatch: number = waterSupply.batch.successors[0].amount;
-      const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(emissionCalculation, hydrogenKgEquivalentToWaterBatch);
+      const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(
+        emissionCalculation,
+        hydrogenKgEquivalentToWaterBatch,
+      );
       const batch: WaterBatchDto = BatchAssembler.assembleWaterBatchDto(waterSupply, emission);
       return batch;
     });

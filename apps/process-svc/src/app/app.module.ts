@@ -8,8 +8,8 @@
 
 import { Module } from '@nestjs/common';
 import { ConfigurationModule } from '@h2-trust/configuration';
-import { ProvenanceModule } from './provenance/provenance.module';
 import { ProductionModule } from './production/production.module';
+import { ProvenanceModule } from './provenance/provenance.module';
 
 @Module({
   imports: [ConfigurationModule, ProductionModule, ProvenanceModule],

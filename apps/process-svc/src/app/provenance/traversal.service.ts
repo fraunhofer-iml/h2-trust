@@ -14,7 +14,7 @@ import { ProcessType } from '@h2-trust/domain';
 
 @Injectable()
 export class TraversalService {
-  constructor(@Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchService: ClientProxy) { }
+  constructor(@Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchService: ClientProxy) {}
 
   async fetchPowerProductionsFromHydrogenProductions(
     hydrogenProductions: ProcessStepEntity[],
@@ -125,9 +125,7 @@ export class TraversalService {
   }
 
   private assertAllProcessStepsOfType(processSteps: ProcessStepEntity[], expectedProcessType: ProcessType): void {
-    if (!processSteps
-      || processSteps.length === 0
-      || processSteps.some((processStep) => !processStep)) {
+    if (!processSteps || processSteps.length === 0 || processSteps.some((processStep) => !processStep)) {
       throw new Error(`Process steps of type [${expectedProcessType}] are missing.`);
     }
 

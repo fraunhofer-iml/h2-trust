@@ -8,8 +8,8 @@
 
 import { BatchType } from '@h2-trust/domain';
 import { HydrogenComponentDto } from '../process-step';
-import { EmissionDto } from './emission.dto';
 import { BatchDto } from './batch.dto';
+import { EmissionDto } from './emission.dto';
 
 export class HydrogenBatchDto extends BatchDto {
   amountVerified: number;

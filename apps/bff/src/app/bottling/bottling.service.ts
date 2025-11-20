@@ -34,7 +34,7 @@ export class BottlingService {
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
   async createBottling(dto: BottlingDto, files: Express.Multer.File[], userId: string): Promise<BottlingOverviewDto> {
     const processStepEntity: ProcessStepEntity = await firstValueFrom(

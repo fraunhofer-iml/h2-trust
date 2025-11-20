@@ -7,13 +7,7 @@
  */
 
 import { HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/amqp';
-import {
-  EmissionDto,
-  HydrogenBatchDto,
-  PowerBatchDto,
-  WaterBatchDto,
-  WaterDetailsDto,
-} from '@h2-trust/api';
+import { EmissionDto, HydrogenBatchDto, PowerBatchDto, WaterBatchDto, WaterDetailsDto } from '@h2-trust/api';
 import { EnergySource, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
 
 export class BatchAssembler {

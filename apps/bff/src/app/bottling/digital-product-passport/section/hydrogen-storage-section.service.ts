@@ -7,17 +7,24 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { ProcessStepEntity, } from '@h2-trust/amqp';
-import { BatchDto, ClassificationDto, EmissionCalculationDto, EmissionDto, HydrogenBatchDto, SectionDto } from '@h2-trust/api';
+import { ProcessStepEntity } from '@h2-trust/amqp';
+import {
+  BatchDto,
+  ClassificationDto,
+  EmissionCalculationDto,
+  EmissionDto,
+  HydrogenBatchDto,
+  SectionDto,
+} from '@h2-trust/api';
 import { HydrogenColor, ProofOfOrigin } from '@h2-trust/domain';
-import { EmissionComputationService } from '../emission-computation.service';
 import { BatchAssembler } from '../assembler/batch.assembler';
 import { ClassificationAssembler } from '../assembler/classification.assembler';
 import { EmissionCalculationAssembler } from '../assembler/emission.assembler';
+import { EmissionComputationService } from '../emission-computation.service';
 
 @Injectable()
 export class HydrogenStorageSectionService {
-  constructor(private readonly emissionCalculatorService: EmissionComputationService) { }
+  constructor(private readonly emissionCalculatorService: EmissionComputationService) {}
 
   async buildSection(hydrogenProductions: ProcessStepEntity[]): Promise<SectionDto> {
     if (!hydrogenProductions?.length) {
@@ -28,7 +35,7 @@ export class HydrogenStorageSectionService {
 
     for (const hydrogenColor of Object.values(HydrogenColor)) {
       const hydrogenProductionsByHydrogenColor = hydrogenProductions.filter(
-        hydrogenProduction => hydrogenProduction.batch?.qualityDetails?.color === hydrogenColor,
+        (hydrogenProduction) => hydrogenProduction.batch?.qualityDetails?.color === hydrogenColor,
       );
 
       if (hydrogenProductionsByHydrogenColor.length === 0) {
@@ -36,15 +43,23 @@ export class HydrogenStorageSectionService {
       }
 
       const batchesForHydrogenColor: BatchDto[] = await Promise.all(
-        hydrogenProductionsByHydrogenColor.map(async hydrogenProduction => {
-          const emissionCalculation: EmissionCalculationDto = await this.emissionCalculatorService.computeCumulativeEmissions(hydrogenProduction.id, 'storage');
+        hydrogenProductionsByHydrogenColor.map(async (hydrogenProduction) => {
+          const emissionCalculation: EmissionCalculationDto =
+            await this.emissionCalculatorService.computeCumulativeEmissions(hydrogenProduction.id, 'storage');
           const hydrogenKgEquivalent: number = hydrogenProduction.batch.amount;
-          const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(emissionCalculation, hydrogenKgEquivalent);
+          const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(
+            emissionCalculation,
+            hydrogenKgEquivalent,
+          );
           const batch: HydrogenBatchDto = BatchAssembler.assembleHydrogenStorageBatchDto(hydrogenProduction, emission);
           return batch;
-        }));
+        }),
+      );
 
-      const classification: ClassificationDto = ClassificationAssembler.assembleHydrogenClassification(hydrogenColor, batchesForHydrogenColor);
+      const classification: ClassificationDto = ClassificationAssembler.assembleHydrogenClassification(
+        hydrogenColor,
+        batchesForHydrogenColor,
+      );
       classifications.push(classification);
     }
 

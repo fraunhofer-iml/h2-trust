@@ -36,7 +36,7 @@ export class BottlingController {
   constructor(
     private readonly bottlingService: BottlingService,
     private readonly digitalProductPassportService: DigitalProductPassportService,
-  ) { }
+  ) {}
 
   @Post()
   @UseInterceptors(FilesInterceptor('files'))

@@ -7,8 +7,8 @@
  */
 
 import { BatchType, EnergySource } from '@h2-trust/domain';
-import { EmissionDto } from './emission.dto';
 import { BatchDto } from './batch.dto';
+import { EmissionDto } from './emission.dto';
 
 export class PowerBatchDto extends BatchDto {
   amountVerified: number;

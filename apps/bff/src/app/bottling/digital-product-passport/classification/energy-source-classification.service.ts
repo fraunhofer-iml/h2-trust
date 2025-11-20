@@ -17,17 +17,17 @@ import {
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { BatchDto, ClassificationDto, EmissionCalculationDto, EmissionDto, PowerBatchDto } from '@h2-trust/api';
-import { EmissionComputationService } from '../emission-computation.service';
 import { BatchAssembler } from '../assembler/batch.assembler';
 import { ClassificationAssembler } from '../assembler/classification.assembler';
 import { EmissionCalculationAssembler } from '../assembler/emission.assembler';
+import { EmissionComputationService } from '../emission-computation.service';
 
 @Injectable()
 export class EnergySourceClassificationService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     private readonly emissionCalculatorService: EmissionComputationService,
-  ) { }
+  ) {}
 
   async buildEnergySourceClassifications(powerProductions: ProcessStepEntity[]): Promise<ClassificationDto[]> {
     if (!powerProductions?.length) {
@@ -46,11 +46,20 @@ export class EnergySourceClassificationService {
       if (processStepsWithUnitsByEnergySource.length > 0) {
         const productionPowerBatches: BatchDto[] = await Promise.all(
           processStepsWithUnitsByEnergySource.map(async ([processStep]) => {
-            const [powerCalculation] = await this.emissionCalculatorService.computePowerProductionEmissions([processStep]);
+            const [powerCalculation] = await this.emissionCalculatorService.computePowerProductionEmissions([
+              processStep,
+            ]);
             const emissionCalculation: EmissionCalculationDto = powerCalculation;
             const hydrogenKgEquivalentToPowerBatch: number = processStep.batch.successors[0].amount;
-            const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(emissionCalculation, hydrogenKgEquivalentToPowerBatch);
-            const batch: PowerBatchDto = BatchAssembler.assemblePowerProductionBatchDto(processStep, energySource, emission);
+            const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(
+              emissionCalculation,
+              hydrogenKgEquivalentToPowerBatch,
+            );
+            const batch: PowerBatchDto = BatchAssembler.assemblePowerProductionBatchDto(
+              processStep,
+              energySource,
+              emission,
+            );
             return batch;
           }),
         );
@@ -73,7 +82,9 @@ export class EnergySourceClassificationService {
     return Array.from(new Set(powerProductionTypes.map(({ energySource }) => energySource)));
   }
 
-  private async fetchPowerProductionProcessStepsWithPowerProductionUnits(powerProductions: ProcessStepEntity[]): Promise<[ProcessStepEntity, PowerProductionUnitEntity][]> {
+  private async fetchPowerProductionProcessStepsWithPowerProductionUnits(
+    powerProductions: ProcessStepEntity[],
+  ): Promise<[ProcessStepEntity, PowerProductionUnitEntity][]> {
     // TODO-MP: bulk request to fetch all units at once
     return Promise.all(
       powerProductions.map(async (powerProduction): Promise<[ProcessStepEntity, PowerProductionUnitEntity]> => {

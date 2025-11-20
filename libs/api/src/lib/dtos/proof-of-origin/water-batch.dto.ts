@@ -7,9 +7,9 @@
  */
 
 import { BatchType } from '@h2-trust/domain';
+import { BatchDto } from './batch.dto';
 import { EmissionDto } from './emission.dto';
 import { WaterDetailsDto } from './water-details.dto';
-import { BatchDto } from './batch.dto';
 
 export class WaterBatchDto extends BatchDto {
   deionizedWater: WaterDetailsDto;

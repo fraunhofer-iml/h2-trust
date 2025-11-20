@@ -13,7 +13,7 @@ import { ProvenanceService } from './provenance.service';
 
 @Controller()
 export class ProvenanceController {
-  constructor(private readonly service: ProvenanceService) { }
+  constructor(private readonly service: ProvenanceService) {}
 
   @MessagePattern(ProvenanceMessagePatterns.BUILD_PROVENANCE)
   async buildProvenance(@Payload() payload: { processStepId: string }): Promise<ProvenanceEntity> {

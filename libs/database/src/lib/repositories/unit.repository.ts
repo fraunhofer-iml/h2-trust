@@ -31,7 +31,7 @@ import { assertRecordFound } from './utils';
 
 @Injectable()
 export class UnitRepository {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async findUnitById(id: string): Promise<UnitEntity> {
     return this.prismaService.unit

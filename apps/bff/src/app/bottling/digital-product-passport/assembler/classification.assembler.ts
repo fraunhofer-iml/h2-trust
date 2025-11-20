@@ -7,11 +7,7 @@
  */
 
 import { Util } from '@h2-trust/amqp';
-import {
-  BatchDto,
-  ClassificationDto,
-  ClassificationType,
-} from '@h2-trust/api';
+import { BatchDto, ClassificationDto, ClassificationType } from '@h2-trust/api';
 import { BatchType, MeasurementUnit } from '@h2-trust/domain';
 
 export class ClassificationAssembler {

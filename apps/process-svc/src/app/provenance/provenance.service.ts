@@ -6,12 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
-import { BrokerQueues, ProvenanceEntity, ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
+import { ClientProxy } from '@nestjs/microservices';
+import { BrokerQueues, ProcessStepEntity, ProcessStepMessagePatterns, ProvenanceEntity } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { TraversalService } from './traversal.service';
-import { firstValueFrom } from 'rxjs';
-import { ClientProxy } from '@nestjs/microservices';
 
 type ProvenanceBuilderFn = (root: ProcessStepEntity) => Promise<ProvenanceEntity>;
 
@@ -20,7 +20,7 @@ export class ProvenanceService {
   constructor(
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
     private readonly traversalService: TraversalService,
-  ) { }
+  ) {}
 
   private readonly provenanceBuilders: Record<ProcessType, ProvenanceBuilderFn> = {
     [ProcessType.POWER_PRODUCTION]: async (root) => {
@@ -35,23 +35,30 @@ export class ProvenanceService {
 
     [ProcessType.HYDROGEN_PRODUCTION]: async (root) => {
       const hydrogenProductions = [root];
-      const waterConsumptions = await this.traversalService.fetchWaterConsumptionsFromHydrogenProductions(hydrogenProductions);
-      const powerProductions = await this.traversalService.fetchPowerProductionsFromHydrogenProductions(hydrogenProductions);
+      const waterConsumptions =
+        await this.traversalService.fetchWaterConsumptionsFromHydrogenProductions(hydrogenProductions);
+      const powerProductions =
+        await this.traversalService.fetchPowerProductionsFromHydrogenProductions(hydrogenProductions);
       return new ProvenanceEntity(root, undefined, hydrogenProductions, waterConsumptions, powerProductions);
     },
 
     [ProcessType.HYDROGEN_BOTTLING]: async (root) => {
       const hydrogenProductions = await this.traversalService.fetchHydrogenProductionsFromHydrogenBottling(root);
-      const waterConsumptions = await this.traversalService.fetchWaterConsumptionsFromHydrogenProductions(hydrogenProductions);
-      const powerProductions = await this.traversalService.fetchPowerProductionsFromHydrogenProductions(hydrogenProductions);
+      const waterConsumptions =
+        await this.traversalService.fetchWaterConsumptionsFromHydrogenProductions(hydrogenProductions);
+      const powerProductions =
+        await this.traversalService.fetchPowerProductionsFromHydrogenProductions(hydrogenProductions);
       return new ProvenanceEntity(root, root, hydrogenProductions, waterConsumptions, powerProductions);
     },
 
     [ProcessType.HYDROGEN_TRANSPORTATION]: async (root) => {
       const hydrogenBottling = await this.traversalService.fetchHydrogenBottlingFromHydrogenTransportation(root);
-      const hydrogenProductions = await this.traversalService.fetchHydrogenProductionsFromHydrogenBottling(hydrogenBottling);
-      const waterConsumptions = await this.traversalService.fetchWaterConsumptionsFromHydrogenProductions(hydrogenProductions);
-      const powerProductions = await this.traversalService.fetchPowerProductionsFromHydrogenProductions(hydrogenProductions);
+      const hydrogenProductions =
+        await this.traversalService.fetchHydrogenProductionsFromHydrogenBottling(hydrogenBottling);
+      const waterConsumptions =
+        await this.traversalService.fetchWaterConsumptionsFromHydrogenProductions(hydrogenProductions);
+      const powerProductions =
+        await this.traversalService.fetchPowerProductionsFromHydrogenProductions(hydrogenProductions);
       return new ProvenanceEntity(root, hydrogenBottling, hydrogenProductions, waterConsumptions, powerProductions);
     },
   };

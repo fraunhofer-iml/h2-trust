@@ -8,8 +8,8 @@
 
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
-import { ProvenanceService } from './provenance.service';
 import { ProvenanceController } from './provenance.controller';
+import { ProvenanceService } from './provenance.service';
 import { TraversalService } from './traversal.service';
 
 @Module({
@@ -18,4 +18,4 @@ import { TraversalService } from './traversal.service';
   providers: [ProvenanceService, TraversalService],
   exports: [ProvenanceService],
 })
-export class ProvenanceModule { }
+export class ProvenanceModule {}
