@@ -50,21 +50,14 @@ export class BottlingService {
       throw new HttpException(message, HttpStatus.BAD_REQUEST);
     }
 
-    // TODO-MP: just a placeholder, will be replaced with DUHGW-176
-    const distance = dto.transportMode === TransportMode.TRAILER ? 100 : 0;
-
-    createdBottling.transportationDetails = new TransportationDetailsEntity(
-      undefined,
-      distance,
-      dto.transportMode,
-      dto.fuelType,
+    const payload = {
+      processStepEntity: baseBottling,
+      predecessorBatch: createdBottling.batch,
+      transportationDetails: this.buildTransportationDetails(dto),
+    };
+    return firstValueFrom(this.batchSvc.send(ProcessStepMessagePatterns.HYDROGEN_TRANSPORTATION, payload)).then(
+      BottlingOverviewDto.fromEntity,
     );
-
-    return firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.HYDROGEN_TRANSPORTATION, {
-        bottlingProcessStepEntity: createdBottling,
-      }),
-    ).then(BottlingOverviewDto.fromEntity);
   }
 
   async readBottlingsByCompany(userId: string): Promise<BottlingOverviewDto[]> {
