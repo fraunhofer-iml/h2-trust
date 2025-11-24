@@ -26,11 +26,11 @@ export class DigitalProductPassportService {
     private readonly hydrogenStorageSectionService: HydrogenStorageSectionService,
     private readonly hydrogenBottlingSectionService: HydrogenBottlingSectionService,
     private readonly hydrogenTransportationSectionService: HydrogenTransportationSectionService,
-    private readonly emissionCalculatorService: EmissionComputationService,
+    private readonly emissionComputationService: EmissionComputationService,
   ) {}
 
   async buildProofOfOrigin(processStepId: string): Promise<SectionDto[]> {
-    const provenance = await firstValueFrom(
+    const provenance: ProvenanceEntity = await firstValueFrom(
       this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, { processStepId }),
     );
     const sectionPromises: Array<Promise<SectionDto>> = [];
@@ -71,7 +71,7 @@ export class DigitalProductPassportService {
       this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, { processStepId }),
     );
     const provenanceEmission: EmissionComputationResultDto =
-      await this.emissionCalculatorService.computeProvenanceEmissions(provenance);
+      await this.emissionComputationService.computeProvenanceEmissions(provenance);
     return new ProofOfSustainabilityDto(
       provenance.root.id,
       provenanceEmission.amountCO2PerMJH2,
