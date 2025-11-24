@@ -37,24 +37,23 @@ export class BottlingService {
   ) {}
 
   async createBottling(dto: BottlingDto, files: Express.Multer.File[], userId: string): Promise<BottlingOverviewDto> {
-    const processStepEntity: ProcessStepEntity = await firstValueFrom(
+    const baseBottling = BottlingDto.toEntity({ ...dto, recordedBy: userId });
+    const createdBottling: ProcessStepEntity = await firstValueFrom(
       this.batchSvc.send(ProcessStepMessagePatterns.HYDROGEN_BOTTLING, {
-        processStepEntity: BottlingDto.toEntity({ ...dto, recordedBy: userId }),
+        processStepEntity: baseBottling,
         files,
       }),
     );
 
-    if (processStepEntity.transportationDetails) {
-      throw new HttpException(
-        `ProcessStep with ID ${processStepEntity.id} should not have transportation details upon creation.`,
-        HttpStatus.BAD_REQUEST,
-      );
+    if (createdBottling.transportationDetails) {
+      const message = `ProcessStep [${createdBottling.id}] of type [${createdBottling.type}] should not have transportation details upon creation.`;
+      throw new HttpException(message, HttpStatus.BAD_REQUEST);
     }
 
     // TODO-MP: just a placeholder, will be replaced with DUHGW-176
     const distance = dto.transportMode === TransportMode.TRAILER ? 100 : 0;
 
-    processStepEntity.transportationDetails = new TransportationDetailsEntity(
+    createdBottling.transportationDetails = new TransportationDetailsEntity(
       undefined,
       distance,
       dto.transportMode,
@@ -62,7 +61,9 @@ export class BottlingService {
     );
 
     return firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.HYDROGEN_TRANSPORTATION, { processStepEntity }),
+      this.batchSvc.send(ProcessStepMessagePatterns.HYDROGEN_TRANSPORTATION, {
+        bottlingProcessStepEntity: createdBottling,
+      }),
     ).then(BottlingOverviewDto.fromEntity);
   }
 
@@ -92,6 +93,27 @@ export class BottlingService {
     generalInformationDto.producer = await this.fetchProducerName(generalInformationDto.producer);
     generalInformationDto.hydrogenComposition = await this.fetchHydrogenComposition(processStep);
     return { ...generalInformationDto, redCompliance: new RedComplianceDto(true, true, false, true) };
+  }
+
+  private buildTransportationDetails(dto: BottlingDto): TransportationDetailsEntity {
+    switch (dto.transportMode) {
+      case TransportMode.TRAILER:
+        if (dto.transportDistance == undefined) {
+          const message = `Transport distance is required for trailer transportation.`;
+          throw new HttpException(message, HttpStatus.BAD_REQUEST);
+        }
+        if (dto.fuelType == undefined) {
+          const message = `Transport fuel type is required for trailer transportation.`;
+          throw new HttpException(message, HttpStatus.BAD_REQUEST);
+        }
+        return new TransportationDetailsEntity(undefined, dto.transportDistance, dto.transportMode, dto.fuelType);
+      case TransportMode.PIPELINE:
+        return new TransportationDetailsEntity(undefined, 0, dto.transportMode, undefined);
+      default: {
+        const message = `Invalid transport mode: ${dto.transportMode}`;
+        throw new HttpException(message, HttpStatus.BAD_REQUEST);
+      }
+    }
   }
 
   private async fetchProducerName(producerId: string): Promise<string> {

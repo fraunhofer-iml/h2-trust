@@ -12,6 +12,7 @@ import { DocumentEntityMock } from '../../document/mocks';
 import { HydrogenStorageUnitEntityMock } from '../../unit/mocks';
 import { UserEntityHydrogenMock } from '../../user/mocks';
 import { ProcessStepEntity } from '../process-step.entity';
+import { TransportationDetailsEntityMock } from './transportation-details-entity.mock';
 
 export const ProcessStepEntityHydrogenTransportationMock: ProcessStepEntity[] =
   HydrogenTransportationProcessStepSeed.map(
@@ -25,5 +26,6 @@ export const ProcessStepEntityHydrogenTransportationMock: ProcessStepEntity[] =
         UserEntityHydrogenMock,
         HydrogenStorageUnitEntityMock[0],
         DocumentEntityMock,
+        TransportationDetailsEntityMock[index],
       ),
   );
