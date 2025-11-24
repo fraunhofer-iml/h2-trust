@@ -7,7 +7,7 @@
  */
 
 import { BatchType, MeasurementUnit } from '@h2-trust/domain';
-import { WaterBatchDto } from '../batch.dto';
+import { WaterBatchDto } from '../water-batch.dto';
 import { WaterDetailsDto } from '../water-details.dto';
 import { EmissionMock } from './emissions.mock';
 

@@ -31,31 +31,31 @@ import { UserService } from '../user/user.service';
 @Injectable()
 export class BottlingService {
   constructor(
-    @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchService: ClientProxy,
-    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
+    @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
+    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly userService: UserService,
   ) {}
 
   async createBottling(dto: BottlingDto, files: Express.Multer.File[], userId: string): Promise<BottlingOverviewDto> {
-    const baseEntity = BottlingDto.toEntity({ ...dto, recordedBy: userId });
-    const bottlingProcessStepEntity: ProcessStepEntity = await firstValueFrom(
-      this.batchService.send(ProcessStepMessagePatterns.HYDROGEN_BOTTLING, {
-        processStepEntity: baseEntity,
+    const baseBottling = BottlingDto.toEntity({ ...dto, recordedBy: userId });
+    const createdBottling: ProcessStepEntity = await firstValueFrom(
+      this.batchSvc.send(ProcessStepMessagePatterns.HYDROGEN_BOTTLING, {
+        processStepEntity: baseBottling,
         files,
       }),
     );
 
-    if (bottlingProcessStepEntity.transportationDetails) {
-      const message = `ProcessStep [${bottlingProcessStepEntity.id}] of type [${bottlingProcessStepEntity.type}] should not have transportation details upon creation.`;
+    if (createdBottling.transportationDetails) {
+      const message = `ProcessStep [${createdBottling.id}] of type [${createdBottling.type}] should not have transportation details upon creation.`;
       throw new HttpException(message, HttpStatus.BAD_REQUEST);
     }
 
     const payload = {
-      processStepEntity: baseEntity,
-      predecessorBatch: bottlingProcessStepEntity.batch,
+      processStepEntity: baseBottling,
+      predecessorBatch: createdBottling.batch,
       transportationDetails: this.buildTransportationDetails(dto),
     };
-    return firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.HYDROGEN_TRANSPORTATION, payload)).then(
+    return firstValueFrom(this.batchSvc.send(ProcessStepMessagePatterns.HYDROGEN_TRANSPORTATION, payload)).then(
       BottlingOverviewDto.fromEntity,
     );
   }
@@ -64,7 +64,7 @@ export class BottlingService {
     const userDetailsDto: UserDetailsDto = await this.userService.readUserWithCompany(userId);
 
     return firstValueFrom(
-      this.batchService.send(ProcessStepMessagePatterns.READ_ALL, {
+      this.batchSvc.send(ProcessStepMessagePatterns.READ_ALL, {
         processTypes: [ProcessType.HYDROGEN_BOTTLING, ProcessType.HYDROGEN_TRANSPORTATION],
         active: true,
         companyId: userDetailsDto.company.id,
@@ -74,7 +74,7 @@ export class BottlingService {
 
   async readGeneralInformation(processStepId: string): Promise<GeneralInformationDto> {
     const processStep: ProcessStepEntity = await firstValueFrom(
-      this.batchService.send(ProcessStepMessagePatterns.READ_UNIQUE, { processStepId }),
+      this.batchSvc.send(ProcessStepMessagePatterns.READ_UNIQUE, { processStepId }),
     );
 
     if (processStep.type != ProcessType.HYDROGEN_BOTTLING && processStep.type != ProcessType.HYDROGEN_TRANSPORTATION) {
@@ -111,7 +111,7 @@ export class BottlingService {
 
   private async fetchProducerName(producerId: string): Promise<string> {
     const producer: UserDetailsDto = await firstValueFrom(
-      this.generalService.send(UserMessagePatterns.READ, { id: producerId }),
+      this.generalSvc.send(UserMessagePatterns.READ, { id: producerId }),
     );
     return producer.company?.name;
   }
@@ -124,7 +124,7 @@ export class BottlingService {
         : processStep.id;
 
     const hydrogenComposition: HydrogenComponentEntity[] = await firstValueFrom(
-      this.batchService.send(ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION, processStepId),
+      this.batchSvc.send(ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION, processStepId),
     );
 
     return hydrogenComposition.map(HydrogenComponentDto.of);

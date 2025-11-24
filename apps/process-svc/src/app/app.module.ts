@@ -8,12 +8,11 @@
 
 import { Module } from '@nestjs/common';
 import { ConfigurationModule } from '@h2-trust/configuration';
-import { EmissionModule } from './emission/emission.module';
-import { LineageModule } from './lineage/lineage.module';
 import { ProductionModule } from './production/production.module';
+import { ProvenanceModule } from './provenance/provenance.module';
 
 @Module({
-  imports: [ConfigurationModule, ProductionModule, LineageModule, EmissionModule],
+  imports: [ConfigurationModule, ProductionModule, ProvenanceModule],
   controllers: [],
   providers: [],
 })

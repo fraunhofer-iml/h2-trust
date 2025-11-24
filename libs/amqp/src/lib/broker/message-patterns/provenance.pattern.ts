@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './mocks';
-export * from './process-step.entity';
-export * from './provenance.entity';
-export * from './transportation-details.entity';
+export enum ProvenanceMessagePatterns {
+  BUILD_PROVENANCE = 'provenance.build',
+}

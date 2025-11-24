@@ -14,7 +14,6 @@ import {
   HydrogenCompositionEntityMock,
   ProcessStepEntity,
   ProcessStepEntityHydrogenBottlingMock,
-  ProcessStepEntityPowerProductionMock,
   ProcessStepMessagePatterns,
   UserMessagePatterns,
 } from '@h2-trust/amqp';
@@ -24,22 +23,18 @@ import {
   BottlingDtoMock,
   BottlingOverviewDto,
   GeneralInformationDto,
-  proofOfSustainabilityMock,
-  SectionDto,
   UserDetailsDtoMock,
 } from '@h2-trust/api';
 import 'multer';
 import { of } from 'rxjs';
-import { ProcessType, ProofOfOrigin } from '@h2-trust/domain';
+import { ProcessType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';
-import { ProofOfOriginService } from './proof-of-origin/proof-of-origin.service';
-import { ProofOfSustainabilityService } from './proof-of-sustainability/proof-of-sustainability.service';
+import { DigitalProductPassportService } from './digital-product-passport/digital-product-passport.service';
 
 describe('BottlingController', () => {
   let controller: BottlingController;
-  let proofOfOriginService: ProofOfOriginService;
   let batchSvc: ClientProxy;
   let generalSvc: ClientProxy;
 
@@ -50,12 +45,8 @@ describe('BottlingController', () => {
       providers: [
         BottlingService,
         {
-          provide: ProofOfOriginService,
-          useValue: { readProofOfOrigin: jest.fn() },
-        },
-        {
-          provide: ProofOfSustainabilityService,
-          useValue: { readProofOfSustainability: jest.fn().mockResolvedValue(proofOfSustainabilityMock) },
+          provide: DigitalProductPassportService,
+          useValue: {},
         },
         {
           provide: UserService,
@@ -75,11 +66,16 @@ describe('BottlingController', () => {
             send: jest.fn(),
           },
         },
+        {
+          provide: BrokerQueues.QUEUE_PROCESS_SVC,
+          useValue: {
+            send: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     controller = module.get<BottlingController>(BottlingController);
-    proofOfOriginService = module.get<ProofOfOriginService>(ProofOfOriginService);
     batchSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_BATCH_SVC) as ClientProxy;
     generalSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_GENERAL_SVC) as ClientProxy;
   });
@@ -199,30 +195,6 @@ describe('BottlingController', () => {
     expect(generalSvcSpy).toHaveBeenCalledTimes(1);
     expect(generalSvcSpy).toHaveBeenCalledWith(UserMessagePatterns.READ, expectedGeneralSvcPayload);
 
-    expect(actualResponse).toEqual(expectedResponse);
-  });
-
-  it('should return proof of origin for process step ProcessType.POWER_PRODUCTION', async () => {
-    const givenProcessStep: ProcessStepEntity = structuredClone(ProcessStepEntityPowerProductionMock[0]);
-    const expectedResponse: SectionDto[] = [
-      { name: ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION_NAME, batches: [], classifications: [] },
-    ];
-
-    const proofOfOriginServiceSpy = jest
-      .spyOn(proofOfOriginService, 'readProofOfOrigin')
-      .mockResolvedValue(expectedResponse);
-
-    const actualResponse = await controller.readProofOfOrigin(givenProcessStep.id);
-
-    expect(proofOfOriginServiceSpy).toHaveBeenCalledTimes(1);
-    expect(proofOfOriginServiceSpy).toHaveBeenCalledWith(givenProcessStep.id);
-
-    expect(actualResponse).toEqual(expectedResponse);
-  });
-
-  it('should return proof of sustainability for process step ID', async () => {
-    const actualResponse = await controller.readProofOfSustainability('213');
-    const expectedResponse = proofOfSustainabilityMock;
     expect(actualResponse).toEqual(expectedResponse);
   });
 });

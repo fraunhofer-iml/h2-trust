@@ -32,6 +32,11 @@ export class UnitController {
     return this.service.readPowerProductionUnits(payload.companyId);
   }
 
+  @MessagePattern(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS_BY_IDS)
+  async readPowerProductionUnitsByIds(@Payload() payload: { ids: string[] }): Promise<PowerProductionUnitEntity[]> {
+    return this.service.readPowerProductionUnitsByIds(payload.ids);
+  }
+
   @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS)
   async readHydrogenProductionUnits(
     @Payload() payload: { companyId: string },

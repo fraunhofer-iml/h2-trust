@@ -11,16 +11,10 @@ import { Broker } from '@h2-trust/amqp';
 import { UserService } from '../user/user.service';
 import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';
-import { ProofOfOriginModule } from './proof-of-origin/proof-of-origin.module';
-import { ProofOfSustainabilityModule } from './proof-of-sustainability/proof-of-sustainability.module';
+import { DigitalProductPassportModule } from './digital-product-passport/digital-product-passport.module';
 
 @Module({
-  imports: [
-    new Broker().getBatchSvcBroker(),
-    new Broker().getGeneralSvcBroker(),
-    ProofOfOriginModule,
-    ProofOfSustainabilityModule,
-  ],
+  imports: [new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker(), DigitalProductPassportModule],
   controllers: [BottlingController],
   providers: [BottlingService, UserService],
 })

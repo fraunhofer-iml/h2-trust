@@ -86,6 +86,25 @@ export class UnitRepository {
       .then((units) => units.map(PowerProductionUnitEntity.fromDatabase));
   }
 
+  async findPowerProductionUnitsByIds(ids: string[]): Promise<PowerProductionUnitEntity[]> {
+    return this.prismaService.unit
+      .findMany({
+        where: {
+          id: { in: ids },
+          powerProductionUnit: { isNot: null },
+        },
+        ...powerProductionUnitQueryArgs,
+      })
+      .then((units) => {
+        const foundIds = units.map((u) => u.id);
+        const notFound = ids.filter((id) => !foundIds.includes(id));
+        if (notFound.length) {
+          throw new BrokerException(`PowerProductionUnits [${notFound.join(', ')}] not found.`, HttpStatus.NOT_FOUND);
+        }
+        return units.map(PowerProductionUnitEntity.fromDatabase);
+      });
+  }
+
   async findHydrogenProductionUnitsByCompanyId(companyId: string): Promise<HydrogenProductionUnitEntity[]> {
     return this.prismaService.unit
       .findMany({

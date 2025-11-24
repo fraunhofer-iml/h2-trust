@@ -31,6 +31,10 @@ export class UnitService {
     return this.unitRepository.findPowerProductionUnitsByCompanyId(companyId);
   }
 
+  async readPowerProductionUnitsByIds(ids: string[]): Promise<PowerProductionUnitEntity[]> {
+    return this.unitRepository.findPowerProductionUnitsByIds(ids);
+  }
+
   async readHydrogenProductionUnits(companyId: string): Promise<HydrogenProductionUnitEntity[]> {
     return this.unitRepository.findHydrogenProductionUnitsByCompanyId(companyId);
   }
