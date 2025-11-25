@@ -9,8 +9,9 @@
 import {
   FUEL_EMISSION_FACTORS_G_CO2_PER_MJ_FUEL,
   POWER_EMISSION_FACTORS,
-  TRAILER_DEPENDENT_PARAMETERS,
+  TRAILER_PARAMETERS,
 } from './constants';
+import { TrailerParameterEntry } from './types';
 
 export function getPowerEmissionFactorByEnergySource(energySource: string) {
   const key = (energySource ?? 'UNKNOWN').toUpperCase();
@@ -34,12 +35,11 @@ export function getFuelEmissionFactorByFuelType(fuelType: string): number {
   return entry;
 }
 
-export function getTrailerParameters(capacityKg: number) {
-  const entry = TRAILER_DEPENDENT_PARAMETERS.find((e) => e.capacityKg === capacityKg);
-
-  if (!entry) {
-    throw new Error(`Unknown or unsupported trailer capacity (kg H₂): ${capacityKg ?? 'undefined'}`);
+export function getTrailerParameterByCapacity(capacityKg: number): TrailerParameterEntry {
+  if (TRAILER_PARAMETERS.length === 0) {
+    throw new Error("TRAILER_PARAMETERS is empty.");
   }
 
-  return entry;
+  return TRAILER_PARAMETERS.find(trailerEntry => capacityKg <= trailerEntry.capacityKg)
+    ?? TRAILER_PARAMETERS[TRAILER_PARAMETERS.length - 1];
 }

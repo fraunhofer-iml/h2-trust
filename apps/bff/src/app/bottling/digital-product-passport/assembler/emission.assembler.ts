@@ -18,9 +18,9 @@ import {
   FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ,
   getFuelEmissionFactorByFuelType,
   getPowerEmissionFactorByEnergySource,
-  getTrailerParameters,
+  getTrailerParameterByCapacity,
   GRAVIMETRIC_ENERGY_DENSITY_H2_MJ_PER_KG,
-  TrailerEntry,
+  TrailerParameterEntry,
   TransportMode,
   UNIT_G_CO2_PER_KG_H2,
 } from '@h2-trust/domain';
@@ -91,8 +91,9 @@ export class EmissionCalculationAssembler {
         break;
       case TransportMode.TRAILER:
         emissionCalculation = this.assembleTrailerCalculation(
-          processStep.transportationDetails.distance,
+          processStep.batch.amount,
           processStep.transportationDetails.fuelType,
+          processStep.transportationDetails.distance,
         );
         break;
       default:
@@ -114,13 +115,15 @@ export class EmissionCalculationAssembler {
     return new EmissionCalculationDto(label, basisOfCalculation, result, unit, calculationTopic);
   }
 
-  private static assembleTrailerCalculation(distanceKm: number, fuelType: string): EmissionCalculationDto {
+  private static assembleTrailerCalculation(amount: number, fuelType: string, distanceKm: number): EmissionCalculationDto {
     const label = 'Emissions (Transportation with Trailer)';
 
-    const trailerParams: TrailerEntry = getTrailerParameters(155); // TODO-MP: hardcoded value will be calculated in DUHGW-176
-    const transportEfficiencyMJPerKgPerKm = trailerParams.transportEfficiencyMJPerTonnePerKm / 1000;
-    const gEqEmissionsOfCH4AndN2OPerKmPerKgH2 = trailerParams.gEqEmissionsOfCH4AndN2OPerKmDistancePerTonneH2 / 1000;
-    const fuelFactor = getFuelEmissionFactorByFuelType(fuelType);
+    const trailerParameterEntry: TrailerParameterEntry = getTrailerParameterByCapacity(amount);
+    const fuelFactor: number = getFuelEmissionFactorByFuelType(fuelType);
+
+    const transportEfficiencyMJPerKgPerKm = trailerParameterEntry.transportEfficiencyMJPerTonnePerKm / 1000;
+    const gEqEmissionsOfCH4AndN2OPerKmPerKgH2 = trailerParameterEntry.gEqEmissionsOfCH4AndN2OPerKmDistancePerTonneH2 / 1000;
+
     const basisOfCalculation = `E = ${distanceKm} km * (${transportEfficiencyMJPerKgPerKm} MJ fuel/(km*kg H₂) * ${fuelFactor} g CO₂,eq/MJ fuel + ${gEqEmissionsOfCH4AndN2OPerKmPerKgH2} g CO₂,eq/(km*kg H₂))`;
     const result = distanceKm * (transportEfficiencyMJPerKgPerKm * fuelFactor + gEqEmissionsOfCH4AndN2OPerKmPerKgH2);
 
