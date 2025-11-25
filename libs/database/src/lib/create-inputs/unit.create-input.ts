@@ -6,21 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import {
   BaseUnitEntity,
-  BrokerException,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
   PowerProductionUnitEntity,
 } from '@h2-trust/amqp';
-
-function assertDefined<T>(value: T | null | undefined, fieldName: string): asserts value is T {
-  if (value == null) {
-    throw new BrokerException(`${fieldName} was undefined`, HttpStatus.BAD_REQUEST);
-  }
-}
+import {assertDefined} from "./util";
 
 export function buildBaseUnitCreateInput(entity: BaseUnitEntity): Prisma.UnitCreateInput {
   assertDefined(entity.name, 'BaseUnitEntity.name');
