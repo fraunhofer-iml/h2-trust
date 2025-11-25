@@ -240,3 +240,21 @@ model PowerAccessApproval {
 
   @@unique([powerProducerId, powerProductionUnitId, hydrogenProducerId])
 }
+
+model ProductionIntervall {
+  id                       String   @id @default(cuid(2))
+  powerProductionUnitId    String
+  hydrogenProductionUnitId String
+  powerAmount              Int
+  hydrogenAmount           Int
+  date                     DateTime
+
+  productionIntervallSetId String
+  productionIntervallSet   ProductionIntervallSet @relation(fields: [productionIntervallSetId], references: [id])
+}
+
+model ProductionIntervallSet {
+  id                   String                @id @default(cuid(2))
+  createdAt            DateTime              @default(now())
+  productionIntervalls ProductionIntervall[]
+}

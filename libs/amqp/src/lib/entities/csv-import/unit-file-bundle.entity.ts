@@ -6,8 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './mocks';
-export * from './create-production.entity';
-export * from './production-intervall.entity';
-export * from './intervall-mapping-result.entity';
-export * from './submit-production.entity';
+import 'multer';
+
+export class UnitFileBundle {
+  unitId: string;
+  file: Express.Multer.File;
+
+  constructor(unitId: string, file: Express.Multer.File) {
+    this.unitId = unitId;
+    this.file = file;
+  }
+}

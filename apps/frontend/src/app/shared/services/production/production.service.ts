@@ -9,7 +9,12 @@
 import { lastValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CreateProductionDto, ProductionOverviewDto } from '@h2-trust/api';
+import {
+  CreateProductionDto,
+  ImportSubmissionDto,
+  IntervallMappingResultDto,
+  ProductionOverviewDto,
+} from '@h2-trust/api';
 import { API } from '../../constants/api-endpoints';
 
 @Injectable()
@@ -25,6 +30,10 @@ export class ProductionService {
   }
 
   uploadCsv(data: FormData) {
-    return lastValueFrom(this.httpClient.post<ProductionOverviewDto[]>(API.PRODUCTION.BASE + 'csv', data));
+    return lastValueFrom(this.httpClient.post<IntervallMappingResultDto>(API.PRODUCTION.CSV, data));
+  }
+
+  submitCsv(dto: ImportSubmissionDto) {
+    return lastValueFrom(this.httpClient.post<ProductionOverviewDto[]>(API.PRODUCTION.CSV_SUBMIT, dto));
   }
 }

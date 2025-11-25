@@ -6,8 +6,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './mocks';
-export * from './create-production.entity';
-export * from './production-intervall.entity';
-export * from './intervall-mapping-result.entity';
-export * from './submit-production.entity';
+export function parseColor(quality: string | undefined): string | undefined {
+  if (!quality) {
+    return undefined;
+  }
+
+  try {
+    const parsed = JSON.parse(quality);
+    return parsed.color;
+  } catch {
+    return undefined;
+  }
+}

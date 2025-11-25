@@ -6,8 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './mocks';
-export * from './create-production.entity';
-export * from './production-intervall.entity';
-export * from './intervall-mapping-result.entity';
-export * from './submit-production.entity';
+export interface ProductionIntervallEntity {
+  date: Date;
+  hydrogenAmount: number;
+  hydrogenProductionUnitId: string;
+  powerAmount: number;
+  powerProductionUnitId: string;
+}

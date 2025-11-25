@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepEntity, QualityDetailsEntity, QualityDetailsEntityMock } from '@h2-trust/amqp';
+import { ProcessStepEntity, QualityDetailsEntityMock } from '@h2-trust/amqp';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
 import { HydrogenComponentAssembler } from './hydrogen-component-assembler';
 

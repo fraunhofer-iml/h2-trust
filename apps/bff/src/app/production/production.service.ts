@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CsvParserService } from 'libs/csv-parser/src/lib/csv-parser.service';
 import { firstValueFrom } from 'rxjs';
 import { BadRequestException, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
@@ -13,13 +14,22 @@ import {
   BrokerException,
   BrokerQueues,
   CreateProductionEntity,
+  IntervallMappingResult,
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
+  SubmitProductionProps,
+  UnitFileBundle,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
-import { CreateProductionDto, ProductionCSVUploadDto, ProductionOverviewDto, UserDetailsDto } from '@h2-trust/api';
+import {
+  CreateProductionDto,
+  IntervallMappingResultDto,
+  ProductionCSVUploadDto,
+  ProductionOverviewDto,
+  UserDetailsDto,
+} from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 
@@ -30,6 +40,7 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly userService: UserService,
+    private readonly csvParser: CsvParserService,
   ) {}
 
   async createProduction(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
@@ -103,16 +114,67 @@ export class ProductionService {
     powerProductionFiles: Express.Multer.File[],
     hydrogenProductionFiles: Express.Multer.File[],
     dto: ProductionCSVUploadDto,
+    userId: string,
   ) {
-    const missingFiles = [];
-    if (!powerProductionFiles || powerProductionFiles.length === 0) missingFiles.push('Power Production');
-    if (!hydrogenProductionFiles || hydrogenProductionFiles.length === 0) missingFiles.push('Hydrogen Production');
-    if (missingFiles.length > 0) throw new BadRequestException(`Missing Information: ${missingFiles.join(' & ')}.`);
+    if (
+      !powerProductionFiles ||
+      powerProductionFiles.length === 0 ||
+      !hydrogenProductionFiles ||
+      hydrogenProductionFiles.length === 0
+    )
+      throw new BadRequestException(
+        'At least one file for power production and one file for hydrogen production is required.',
+      );
 
-    const missingUnitIds = [];
-    if (dto.hydrogenProductionUnitIds.length < hydrogenProductionFiles.length)
-      missingUnitIds.push('Hydrogen Production Unit');
-    if (dto.powerProductionUnitIds.length < powerProductionFiles.length) missingUnitIds.push('Power Production Unit');
-    if (missingUnitIds.length > 0) throw new BadRequestException(`Missing Information: ${missingUnitIds.join(' & ')}.`);
+    if (
+      dto.hydrogenProductionUnitIds.length < hydrogenProductionFiles.length ||
+      dto.powerProductionUnitIds.length < powerProductionFiles.length
+    )
+      throw new BadRequestException(`Missing related  unit for at least one file.`);
+
+    const h2ProductionData: UnitFileBundle[] = this.mapToImportedFileBundles(
+      dto.hydrogenProductionUnitIds,
+      hydrogenProductionFiles,
+    );
+
+    const powerProductionData: UnitFileBundle[] = this.mapToImportedFileBundles(
+      dto.powerProductionUnitIds,
+      powerProductionFiles,
+    );
+
+    const processedFiles = await this.csvParser.processFiles(powerProductionData, h2ProductionData);
+
+    if (
+      processedFiles.hydrogenProduction.some((bundle) => bundle.data.length < 1) ||
+      processedFiles.powerProduction.some((bundle) => bundle.data.length < 1)
+    )
+      throw new BrokerException('All files need to contain at least one valid item.', HttpStatus.BAD_REQUEST);
+
+    const payload = { data: processedFiles, userId: userId };
+    const matchingResult = await firstValueFrom(
+      this.processSvc.send<IntervallMappingResult>(ProductionMessagePatterns.PERIOD_MATCHING, payload),
+    );
+
+    return new IntervallMappingResultDto(matchingResult);
+  }
+
+  submitCsvdata(id: string, hydrogenStorageUnitId: string, userId: string) {
+    const payload: SubmitProductionProps = new SubmitProductionProps(userId, hydrogenStorageUnitId, id);
+    return firstValueFrom(this.processSvc.send(ProductionMessagePatterns.IMPORT, payload));
+  }
+
+  private mapToImportedFileBundles(unitIds: string | string[], files: Express.Multer.File[]): UnitFileBundle[] {
+    const data: UnitFileBundle[] = [];
+
+    if (Array.isArray(unitIds)) {
+      for (let i = 0; i < files.length; i++) {
+        const bundle = new UnitFileBundle(unitIds[i], files[i]);
+        data.push(bundle);
+      }
+    } else {
+      data.push(new UnitFileBundle(unitIds, files[0]));
+    }
+
+    return data;
   }
 }

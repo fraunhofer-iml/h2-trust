@@ -8,17 +8,28 @@
 
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { CreateProductionEntity, ProcessStepEntity, ProductionMessagePatterns } from '@h2-trust/amqp';
+import * as amqp from '@h2-trust/amqp';
+import { SubmitProductionProps } from '@h2-trust/amqp';
 import { ProductionService } from './production.service';
 
 @Controller()
 export class ProductionController {
   constructor(private readonly service: ProductionService) {}
 
-  @MessagePattern(ProductionMessagePatterns.CREATE)
+  @MessagePattern(amqp.ProductionMessagePatterns.CREATE)
   async createProduction(
-    @Payload() payload: { createProductionEntity: CreateProductionEntity },
-  ): Promise<ProcessStepEntity[]> {
-    return this.service.createProduction(payload.createProductionEntity);
+    @Payload() payload: { createProductionEntity: amqp.CreateProductionEntity },
+  ): Promise<amqp.ProcessStepEntity[]> {
+    return this.service.createProduction(payload.createProductionEntity, false);
+  }
+
+  @MessagePattern(amqp.ProductionMessagePatterns.PERIOD_MATCHING)
+  async createProductionINtervalsFromCsvData(@Payload() payload: { data: amqp.ParsedFileBundles; userId: string }) {
+    return this.service.matchAccountingPeriods(payload.data, payload.userId);
+  }
+
+  @MessagePattern(amqp.ProductionMessagePatterns.IMPORT)
+  async saveImportedData(@Payload() payload: SubmitProductionProps) {
+    return this.service.saveImportedData(payload);
   }
 }

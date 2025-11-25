@@ -6,26 +6,36 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { TempAccountingPeriodRepository } from 'libs/database/src/lib/repositories/temp-accounting-period.repository';
 import { firstValueFrom } from 'rxjs';
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BaseUnitEntity,
   BatchEntity,
+  BrokerException,
   BrokerQueues,
   CompanyEntity,
   CreateProductionEntity,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
+  IntervallMappingResult,
+  ParsedFileBundles,
+  PowerAccessApprovalEntity,
+  PowerAccessApprovalPatterns,
+  PowerProductionUnitEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
+  ProductionIntervallEntity,
   QualityDetailsEntity,
+  SubmitProductionProps,
   UnitMessagePatterns,
   UserEntity,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { BatchType, ProcessType } from '@h2-trust/domain';
+import { BatchType, PowerAccessApprovalStatus, ProcessType } from '@h2-trust/domain';
 import { DateTimeUtil } from '@h2-trust/utils';
+import { AccountingPeriodMatcherService } from './accounting-period-matching/accounting-period-matcher.service';
 import { ProductionUtils } from './utils/production.utils';
 
 interface CreateProcessStepsParams {
@@ -56,6 +66,8 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchService: ClientProxy,
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     private readonly configurationService: ConfigurationService,
+    private readonly accountingPeriodMatcher: AccountingPeriodMatcherService,
+    private readonly intervallRepo: TempAccountingPeriodRepository,
   ) {
     const configuration = this.configurationService.getProcessSvcConfiguration();
     this.powerAccountingPeriodInSeconds = configuration.powerAccountingPeriodInSeconds;
@@ -63,19 +75,25 @@ export class ProductionService {
     this.hydrogenAccountingPeriodInSeconds = configuration.hydrogenAccountingPeriodInSeconds;
   }
 
-  async createProduction(createProductionEntity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
+  async createProduction(
+    createProductionEntity: CreateProductionEntity,
+    isSingleAccountingPeriod: boolean,
+  ): Promise<ProcessStepEntity[]> {
     this.logger.debug(`### START PRODUCTION ###`);
 
-    const powerProductionProcessSteps: ProcessStepEntity[] =
-      await this.createPowerProductionProcessSteps(createProductionEntity);
+    const powerProductionProcessSteps: ProcessStepEntity[] = await this.createPowerProductionProcessSteps(
+      createProductionEntity,
+      isSingleAccountingPeriod,
+    );
 
-    const waterConsumptionProcessSteps: ProcessStepEntity[] =
-      await this.createWaterConsumptionProcessSteps(createProductionEntity);
+    const waterConsumptionProcessSteps: ProcessStepEntity[] = [];
+    await this.createWaterConsumptionProcessSteps(createProductionEntity, isSingleAccountingPeriod);
 
     const hydrogenProductionProcessSteps: ProcessStepEntity[] = await this.createHydrogenProductionProcessSteps(
       createProductionEntity,
       powerProductionProcessSteps,
       waterConsumptionProcessSteps,
+      isSingleAccountingPeriod,
     );
 
     this.logger.debug(`### END PRODUCTION ###`);
@@ -85,44 +103,52 @@ export class ProductionService {
 
   private async createPowerProductionProcessSteps(
     createProductionEntity: CreateProductionEntity,
+    isSingleAccountingPeriod: boolean,
   ): Promise<ProcessStepEntity[]> {
-    return this.createProcessSteps({
-      productionStartedAt: createProductionEntity.productionStartedAt,
-      productionEndedAt: createProductionEntity.productionEndedAt,
-      accountingPeriodInSeconds: this.powerAccountingPeriodInSeconds,
-      type: ProcessType.POWER_PRODUCTION,
-      batchActivity: false,
-      batchAmount: createProductionEntity.powerAmountKwh,
-      batchQuality: null,
-      batchType: BatchType.POWER,
-      batchOwner: createProductionEntity.companyIdOfPowerProductionUnit,
-      hydrogenStorageUnitId: null,
-      recordedBy: createProductionEntity.recordedBy,
-      executedBy: createProductionEntity.powerProductionUnitId,
-      predecessors: [],
-    });
+    return this.createProcessSteps(
+      {
+        productionStartedAt: createProductionEntity.productionStartedAt,
+        productionEndedAt: createProductionEntity.productionEndedAt,
+        accountingPeriodInSeconds: isSingleAccountingPeriod ? 3600 : this.powerAccountingPeriodInSeconds,
+        type: ProcessType.POWER_PRODUCTION,
+        batchActivity: false,
+        batchAmount: createProductionEntity.powerAmountKwh,
+        batchQuality: null,
+        batchType: BatchType.POWER,
+        batchOwner: createProductionEntity.companyIdOfPowerProductionUnit,
+        hydrogenStorageUnitId: null,
+        recordedBy: createProductionEntity.recordedBy,
+        executedBy: createProductionEntity.powerProductionUnitId,
+        predecessors: [],
+      },
+      isSingleAccountingPeriod,
+    );
   }
 
   private async createWaterConsumptionProcessSteps(
     createProductionEntity: CreateProductionEntity,
+    isSingleAccountingPeriod: boolean,
   ): Promise<ProcessStepEntity[]> {
     const waterAmountLiters: number = await this.calculateTotalWaterAmount(createProductionEntity);
 
-    return this.createProcessSteps({
-      productionStartedAt: createProductionEntity.productionStartedAt,
-      productionEndedAt: createProductionEntity.productionEndedAt,
-      accountingPeriodInSeconds: this.waterAccountingPeriodInSeconds,
-      type: ProcessType.WATER_CONSUMPTION,
-      batchActivity: false,
-      batchAmount: waterAmountLiters,
-      batchQuality: null,
-      batchType: BatchType.WATER,
-      batchOwner: createProductionEntity.companyIdOfHydrogenProductionUnit,
-      hydrogenStorageUnitId: null,
-      recordedBy: createProductionEntity.recordedBy,
-      executedBy: createProductionEntity.hydrogenProductionUnitId,
-      predecessors: [],
-    });
+    return this.createProcessSteps(
+      {
+        productionStartedAt: createProductionEntity.productionStartedAt,
+        productionEndedAt: createProductionEntity.productionEndedAt,
+        accountingPeriodInSeconds: isSingleAccountingPeriod ? 3600 : this.waterAccountingPeriodInSeconds,
+        type: ProcessType.WATER_CONSUMPTION,
+        batchActivity: false,
+        batchAmount: waterAmountLiters,
+        batchQuality: null,
+        batchType: BatchType.WATER,
+        batchOwner: createProductionEntity.companyIdOfHydrogenProductionUnit,
+        hydrogenStorageUnitId: null,
+        recordedBy: createProductionEntity.recordedBy,
+        executedBy: createProductionEntity.hydrogenProductionUnitId,
+        predecessors: [],
+      },
+      isSingleAccountingPeriod,
+    );
   }
 
   private async calculateTotalWaterAmount(createProductionEntity: CreateProductionEntity): Promise<number> {
@@ -147,36 +173,45 @@ export class ProductionService {
     createProductionEntity: CreateProductionEntity,
     powerProductionProcessSteps: ProcessStepEntity[],
     waterConsumptionProcessSteps: ProcessStepEntity[],
+    isSingleAccountingPeriod: boolean,
   ): Promise<ProcessStepEntity[]> {
-    return this.createProcessSteps({
-      productionStartedAt: createProductionEntity.productionStartedAt,
-      productionEndedAt: createProductionEntity.productionEndedAt,
-      accountingPeriodInSeconds: this.hydrogenAccountingPeriodInSeconds,
-      type: ProcessType.HYDROGEN_PRODUCTION,
-      batchActivity: true,
-      batchAmount: createProductionEntity.hydrogenAmountKg,
-      batchQuality: createProductionEntity.hydrogenColor,
-      batchType: BatchType.HYDROGEN,
-      batchOwner: createProductionEntity.companyIdOfHydrogenProductionUnit,
-      hydrogenStorageUnitId: createProductionEntity.hydrogenStorageUnitId,
-      recordedBy: createProductionEntity.recordedBy,
-      executedBy: createProductionEntity.hydrogenProductionUnitId,
-      predecessors: [...powerProductionProcessSteps, ...waterConsumptionProcessSteps],
-    });
+    return this.createProcessSteps(
+      {
+        productionStartedAt: createProductionEntity.productionStartedAt,
+        productionEndedAt: createProductionEntity.productionEndedAt,
+        accountingPeriodInSeconds: isSingleAccountingPeriod ? 3600 : this.hydrogenAccountingPeriodInSeconds,
+        type: ProcessType.HYDROGEN_PRODUCTION,
+        batchActivity: true,
+        batchAmount: createProductionEntity.hydrogenAmountKg,
+        batchQuality: createProductionEntity.hydrogenColor,
+        batchType: BatchType.HYDROGEN,
+        batchOwner: createProductionEntity.companyIdOfHydrogenProductionUnit,
+        hydrogenStorageUnitId: createProductionEntity.hydrogenStorageUnitId,
+        recordedBy: createProductionEntity.recordedBy,
+        executedBy: createProductionEntity.hydrogenProductionUnitId,
+        predecessors: [...powerProductionProcessSteps, ...waterConsumptionProcessSteps],
+      },
+      isSingleAccountingPeriod,
+    );
   }
 
-  private async createProcessSteps(params: CreateProcessStepsParams): Promise<ProcessStepEntity[]> {
+  private async createProcessSteps(
+    params: CreateProcessStepsParams,
+    isSingleAccountingPeriod: boolean,
+  ): Promise<ProcessStepEntity[]> {
     const processSteps: ProcessStepEntity[] = [];
     const startedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(params.productionStartedAt);
     const endedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(params.productionEndedAt);
     const startedAtInSecondsAligned =
       Math.floor(startedAtInSeconds / params.accountingPeriodInSeconds) * params.accountingPeriodInSeconds;
 
-    const numberOfAccountingPeriods = ProductionUtils.calculateNumberOfAccountingPeriods(
-      startedAtInSecondsAligned,
-      endedAtInSeconds,
-      params.accountingPeriodInSeconds,
-    );
+    const numberOfAccountingPeriods = isSingleAccountingPeriod
+      ? 1
+      : ProductionUtils.calculateNumberOfAccountingPeriods(
+          startedAtInSecondsAligned,
+          endedAtInSeconds,
+          params.accountingPeriodInSeconds,
+        );
 
     const amountPerAccountingPeriod = ProductionUtils.calculateBatchAmountPerPeriod(
       params.batchAmount,
@@ -240,5 +275,101 @@ export class ProductionService {
         firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.CREATE, { processStepEntity: step })),
       ),
     );
+  }
+
+  async matchAccountingPeriods(data: ParsedFileBundles, userId: string) {
+    const gridUnitId = await this.fetchGridUnitId(userId);
+    const productionIntervalls: ProductionIntervallEntity[] = this.accountingPeriodMatcher.matchIntervalls(
+      data,
+      gridUnitId,
+    );
+
+    const { id, createdAt } = await this.intervallRepo.createTempAccountingPeriods(productionIntervalls);
+
+    return new IntervallMappingResult(id, createdAt, productionIntervalls);
+  }
+
+  async saveImportedData(props: SubmitProductionProps): Promise<ProcessStepEntity[]> {
+    const intervalls = await this.intervallRepo.getIntervallSetById(props.accountingPeriodSetId);
+
+    return await Promise.all(
+      intervalls
+        .map(async (intervall) => {
+          const hydrogenColor = await this.fetchHydrogenColor(intervall.powerProductionUnitId);
+          const companyIdOfPowerProductionUnit = await this.fetchCompanyOfProductionUnit(
+            intervall.powerProductionUnitId,
+          );
+          const companyIdOfHydrogenProductionUnit = await this.fetchCompanyOfProductionUnit(
+            intervall.hydrogenProductionUnitId,
+          );
+
+          const startedAt: Date = new Date(intervall.date);
+          const endedAt: Date = new Date(new Date(intervall.date).setMinutes(59, 59, 999));
+
+          const entity = new CreateProductionEntity(
+            startedAt.toISOString(),
+            endedAt.toISOString(),
+            intervall.powerProductionUnitId,
+            intervall.powerAmount,
+            intervall.hydrogenProductionUnitId,
+            intervall.hydrogenAmount,
+            props.recordedBy,
+            hydrogenColor,
+            props.hydrogenStorageUnitId,
+            companyIdOfPowerProductionUnit,
+            companyIdOfHydrogenProductionUnit,
+          );
+
+          return this.createProduction(entity, true);
+        })
+        .flat(),
+    ).then((rs) => rs.flat());
+  }
+
+  private async fetchHydrogenColor(powerProductionUnitId: string): Promise<string> {
+    const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.READ, { id: powerProductionUnitId }),
+    );
+
+    const hydrogenColor = powerProductionUnit?.type?.hydrogenColor;
+
+    if (!hydrogenColor) {
+      throw new BrokerException(
+        `Power Production Unit ${powerProductionUnitId} has no Hydrogen Color`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    return hydrogenColor;
+  }
+
+  private async fetchCompanyOfProductionUnit(productionUnitId: string): Promise<string> {
+    const productionUnitEntity: PowerProductionUnitEntity = await firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.READ, { id: productionUnitId }),
+    );
+
+    if (!productionUnitEntity.company) {
+      throw new BrokerException(
+        `Production Unit ${productionUnitId} does not have an associated company`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    return productionUnitEntity.company.id;
+  }
+
+  private async fetchGridUnitId(userId: string): Promise<string> {
+    const approvals: PowerAccessApprovalEntity[] = await firstValueFrom(
+      this.generalService.send(PowerAccessApprovalPatterns.READ, {
+        userId: userId,
+        powerAccessApprovalStatus: PowerAccessApprovalStatus.APPROVED,
+      }),
+    );
+    const powerAccessApprovalForGrid = approvals.find((approval) => approval.powerProductionUnit.type.name === 'GRID');
+
+    if (!powerAccessApprovalForGrid)
+      throw new BrokerException(`No grid coinnection found.`, HttpStatus.INTERNAL_SERVER_ERROR);
+
+    return powerAccessApprovalForGrid.powerProductionUnit.id;
   }
 }

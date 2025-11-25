@@ -12,6 +12,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import {
   CreateProductionDto,
+  ImportSubmissionDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   type AuthenticatedKCUser,
@@ -89,7 +90,7 @@ export class ProductionController {
     return this.service.readHydrogenProductionsByCompany(authenticatedUser.sub);
   }
 
-  @Post('csv-import')
+  @Post('csv/import')
   @UseInterceptors(
     FileFieldsInterceptor([{ name: FileUploadKeys.POWER_PRODUCTION }, { name: FileUploadKeys.HYDROGEN_PRODUCTION }]),
   )
@@ -100,11 +101,22 @@ export class ProductionController {
       [FileUploadKeys.POWER_PRODUCTION]: Express.Multer.File[];
       [FileUploadKeys.HYDROGEN_PRODUCTION]: Express.Multer.File[];
     },
+    @AuthenticatedUser() user: AuthenticatedKCUser,
   ) {
     return this.service.importCSV(
       files[FileUploadKeys.POWER_PRODUCTION],
       files[FileUploadKeys.HYDROGEN_PRODUCTION],
       dto,
+      user.sub,
     );
+  }
+
+  @Post('csv/submit')
+  @ApiBearerAuth()
+  submitCsvImport(
+    @Body() { intervallSetId, storageUnitId }: ImportSubmissionDto,
+    @AuthenticatedUser() user: AuthenticatedKCUser,
+  ) {
+    return this.service.submitCsvdata(intervallSetId, storageUnitId, user.sub);
   }
 }

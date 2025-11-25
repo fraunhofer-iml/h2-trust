@@ -18,6 +18,7 @@ import {
   UnitRepository,
   UserRepository,
 } from './repositories';
+import { TempAccountingPeriodRepository } from './repositories/temp-accounting-period.repository';
 
 @Module({
   controllers: [],
@@ -31,6 +32,7 @@ import {
     PowerAccessApprovalRepository,
     PowerProductionTypeRepository,
     CompanyRepository,
+    TempAccountingPeriodRepository,
   ],
   exports: [
     PrismaService,
@@ -42,6 +44,7 @@ import {
     PowerAccessApprovalRepository,
     PowerProductionTypeRepository,
     CompanyRepository,
+    TempAccountingPeriodRepository,
   ],
 })
 export class DatabaseModule {}
