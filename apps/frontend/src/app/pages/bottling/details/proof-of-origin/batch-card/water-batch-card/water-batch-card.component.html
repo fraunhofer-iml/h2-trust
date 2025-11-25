@@ -6,7 +6,6 @@
   <div class="flex w-full flex-col">
     <div class="flex justify-between text-sm text-neutral-500">
       <h3 class="text-base">Water Supply</h3>
-      <span>GHG-Emissions (cumulated): {{ batch().emission.amountCO2PerKgH2 | number | unit: batch().unit }}</span>
     </div>
     <app-verified-chart [amount]="batch().amount" [unit]="batch().unit"></app-verified-chart>
   </div>
