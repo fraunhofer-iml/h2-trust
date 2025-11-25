@@ -16,31 +16,23 @@ import {
   PowerProductionUnitEntity,
 } from '@h2-trust/amqp';
 
+function assertDefined<T>(value: T | null | undefined, fieldName: string): asserts value is T {
+  if (value == null) {
+    throw new BrokerException(`${fieldName} was undefined`, HttpStatus.BAD_REQUEST);
+  }
+}
+
 export function buildBaseUnitCreateInput(entity: BaseUnitEntity): Prisma.UnitCreateInput {
-  if (!entity.name) {
-    throw new BrokerException('BaseUnitEntity.name was undefined', HttpStatus.BAD_REQUEST);
-  }
-  if (!entity.mastrNumber) {
-    throw new BrokerException('BaseUnitEntity.mastrNumber was undefined', HttpStatus.BAD_REQUEST);
-  }
-  if (!entity.commissionedOn) {
-    throw new BrokerException('BaseUnitEntity.commissionedOn was undefined', HttpStatus.BAD_REQUEST);
-  }
-  if (
-    !entity.address?.street ||
-    !entity.address.postalCode ||
-    !entity.address.city ||
-    !entity.address.state ||
-    !entity.address.country
-  ) {
-    throw new BrokerException(
-      'BaseUnitEntity.address is incomplete (street, postalCode, city, state, country are required)',
-      HttpStatus.BAD_REQUEST,
-    );
-  }
-  if (!entity.company?.id) {
-    throw new BrokerException('BaseUnitEntity.company was undefined', HttpStatus.BAD_REQUEST);
-  }
+  assertDefined(entity.name, 'BaseUnitEntity.name');
+  assertDefined(entity.mastrNumber, 'BaseUnitEntity.mastrNumber');
+  assertDefined(entity.commissionedOn, 'BaseUnitEntity.commissionedOn');
+  assertDefined(entity.address, 'BaseUnitEntity.address')
+  assertDefined(entity.address.street, 'BaseUnitEntity.address.street');
+  assertDefined(entity.address.postalCode, 'BaseUnitEntity.address.postalCode');
+  assertDefined(entity.address.city, 'BaseUnitEntity.address.city');
+  assertDefined(entity.address.state, 'BaseUnitEntity.address.state');
+  assertDefined(entity.address.country, 'BaseUnitEntity.address.country');
+  assertDefined(entity.company?.id, 'BaseUnitEntity.company.id');
 
   return Prisma.validator<Prisma.UnitCreateInput>()({
     name: entity.name,
@@ -72,24 +64,12 @@ export function buildBaseUnitCreateInput(entity: BaseUnitEntity): Prisma.UnitCre
 }
 
 export function buildPowerProductionUnitCreateInput(entity: PowerProductionUnitEntity): Prisma.UnitCreateInput {
-  if (entity.electricityMeterNumber == null) {
-    throw new BrokerException('PowerProductionUnitEntity.electricityMeterNumber was undefined', HttpStatus.BAD_REQUEST);
-  }
-  if (entity.ratedPower == null) {
-    throw new BrokerException('PowerProductionUnitEntity.ratedPower was undefined', HttpStatus.BAD_REQUEST);
-  }
-  if (entity.financialSupportReceived == null) {
-    throw new BrokerException('PowerProductionUnitEntity.financialSupportReceived was undefined', HttpStatus.BAD_REQUEST);
-  }
-  if (entity.type?.name == null) {
-    throw new BrokerException('PowerProductionUnitEntity.type was undefined', HttpStatus.BAD_REQUEST);
-  }
-  if (entity.gridLevel == null) {
-    throw new BrokerException('PowerProductionUnitEntity.gridLevel was undefined', HttpStatus.BAD_REQUEST);
-  }
-  if (entity.biddingZone == null) {
-    throw new BrokerException('PowerProductionUnitEntity.biddingZone was undefined', HttpStatus.BAD_REQUEST);
-  }
+  assertDefined(entity.electricityMeterNumber, 'PowerProductionUnitEntity.electricityMeterNumber');
+  assertDefined(entity.ratedPower, 'PowerProductionUnitEntity.ratedPower');
+  assertDefined(entity.financialSupportReceived, 'PowerProductionUnitEntity.financialSupportReceived');
+  assertDefined(entity.type?.name, 'PowerProductionUnitEntity.type');
+  assertDefined(entity.gridLevel, 'PowerProductionUnitEntity.gridLevel');
+  assertDefined(entity.biddingZone, 'PowerProductionUnitEntity.biddingZone');
 
   return Prisma.validator<Prisma.UnitCreateInput>()({
     ...buildBaseUnitCreateInput(entity),
@@ -110,27 +90,12 @@ export function buildPowerProductionUnitCreateInput(entity: PowerProductionUnitE
 }
 
 export function buildHydrogenProductionUnitCreateInput(entity: HydrogenProductionUnitEntity): Prisma.UnitCreateInput {
-  if (!entity.biddingZone) {
-    throw new BrokerException('HydrogenProductionUnitEntity.biddingZone was undefined', HttpStatus.BAD_REQUEST);
-  }
-  if (!entity.method) {
-    throw new BrokerException('HydrogenProductionUnitEntity.method was undefined', HttpStatus.BAD_REQUEST);
-  }
-  if (!entity.technology) {
-    throw new BrokerException('HydrogenProductionUnitEntity.technology was undefined', HttpStatus.BAD_REQUEST);
-  }
-  if (!entity.ratedPower) {
-    throw new BrokerException('HydrogenProductionUnitEntity.ratedPower was undefined', HttpStatus.BAD_REQUEST);
-  }
-  if (!entity.pressure) {
-    throw new BrokerException('HydrogenProductionUnitEntity.pressure was undefined', HttpStatus.BAD_REQUEST);
-  }
-  if (!entity.waterConsumptionLitersPerHour) {
-    throw new BrokerException(
-      'HydrogenProductionUnitEntity.waterConsumptionLitersPerHour was undefined',
-      HttpStatus.BAD_REQUEST,
-    );
-  }
+  assertDefined(entity.biddingZone, 'HydrogenProductionUnitEntity.biddingZone');
+  assertDefined(entity.method, 'HydrogenProductionUnitEntity.method');
+  assertDefined(entity.technology, 'HydrogenProductionUnitEntity.technology');
+  assertDefined(entity.ratedPower, 'HydrogenProductionUnitEntity.ratedPower');
+  assertDefined(entity.pressure, 'HydrogenProductionUnitEntity.pressure');
+  assertDefined(entity.waterConsumptionLitersPerHour, 'HydrogenProductionUnitEntity.waterConsumptionLitersPerHour');
 
   return Prisma.validator<Prisma.UnitCreateInput>()({
     ...buildBaseUnitCreateInput(entity),
@@ -148,15 +113,9 @@ export function buildHydrogenProductionUnitCreateInput(entity: HydrogenProductio
 }
 
 export function buildHydrogenStorageUnitCreateInput(entity: HydrogenStorageUnitEntity): Prisma.UnitCreateInput {
-  if (!entity.type) {
-    throw new BrokerException('HydrogenStorageUnitEntity.type was undefined', HttpStatus.BAD_REQUEST);
-  }
-  if (!entity.capacity) {
-    throw new BrokerException('HydrogenStorageUnitEntity.capacity was undefined', HttpStatus.BAD_REQUEST);
-  }
-  if (!entity.pressure) {
-    throw new BrokerException('HydrogenStorageUnitEntity.pressure was undefined', HttpStatus.BAD_REQUEST);
-  }
+  assertDefined(entity.type, 'HydrogenStorageUnitEntity.type');
+  assertDefined(entity.capacity, 'HydrogenStorageUnitEntity.capacity');
+  assertDefined(entity.pressure, 'HydrogenStorageUnitEntity.pressure');
 
   return Prisma.validator<Prisma.UnitCreateInput>()({
     ...buildBaseUnitCreateInput(entity),
