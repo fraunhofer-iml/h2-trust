@@ -9,15 +9,15 @@
 export const RED_III_CRITERIA = {
   FINANCIAL_SUPPORT: {
     TITLE: 'Financial Support',
-    DESCRIPTION: 'Electricity and hydrogen must be generated within the same hour.',
+    DESCRIPTION: 'Received financial support in the form of operating subsidies or investment subsidies.',
   },
   GEOGRAPHICAL_CORRELATION: {
-    TITLE: 'Geographical Corelation',
+    TITLE: 'Geographical Correlation',
     DESCRIPTION: 'Power Production Unit and Hydrogen Production Unit have to be located in the same bidding Zone.',
   },
   TIME_CORRELATION: {
     TITLE: 'Financial Support',
-    DESCRIPTION: 'Received financial support in the form of operating subsidies or investment subsidies.',
+    DESCRIPTION: 'Electricity and hydrogen must be generated within the same hour.',
   },
   ADDITIONALITY_REQUIREMENT: {
     TITLE: 'Additionality Requirement',
