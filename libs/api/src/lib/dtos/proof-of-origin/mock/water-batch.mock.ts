@@ -16,14 +16,6 @@ const waterDetailsMock: WaterDetailsDto[] = [
     amount: 100,
     emission: { amountCO2: 50, amountCO2PerKgH2: 8.7, basisOfCalculation: ' E =  n * 0.43 ' },
   },
-  {
-    amount: 100,
-    emission: { amountCO2: 50, amountCO2PerKgH2: 8.7, basisOfCalculation: ' E =  n * 0.2 ' },
-  },
-  {
-    amount: 100,
-    emission: { amountCO2: 50, amountCO2PerKgH2: 8.7, basisOfCalculation: ' E =  n * 363.67 ' },
-  },
 ];
 
 export const waterBatchMock: WaterBatchDto = {
@@ -32,8 +24,6 @@ export const waterBatchMock: WaterBatchDto = {
   unit: MeasurementUnit.WATER,
   createdAt: new Date(),
   deionizedWater: waterDetailsMock[0],
-  tapWater: waterDetailsMock[1],
-  wasteWater: waterDetailsMock[2],
   emission: EmissionMock,
   batchType: BatchType.WATER,
 };

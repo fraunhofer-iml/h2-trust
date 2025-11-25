@@ -13,8 +13,6 @@ import { WaterDetailsDto } from './water-details.dto';
 
 export class WaterBatchDto extends BatchDto {
   deionizedWater: WaterDetailsDto;
-  tapWater: WaterDetailsDto;
-  wasteWater: WaterDetailsDto;
 
   constructor(
     id: string,
@@ -23,12 +21,8 @@ export class WaterBatchDto extends BatchDto {
     amount: number,
     unit: string,
     deionizedWater: WaterDetailsDto,
-    tapWater: WaterDetailsDto,
-    wasteWater: WaterDetailsDto,
   ) {
     super(id, emission, creationDate, amount, unit, BatchType.WATER);
     this.deionizedWater = deionizedWater;
-    this.tapWater = tapWater;
-    this.wasteWater = wasteWater;
   }
 }
