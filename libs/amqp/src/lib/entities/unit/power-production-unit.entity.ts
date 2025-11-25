@@ -6,12 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {PowerProductionUnitDbType} from '@h2-trust/database';
-import {GridLevel, UnitType} from '@h2-trust/domain';
-import {AddressEntity} from '../address';
-import {CompanyEntity} from '../company';
-import {BaseUnitEntity} from './base-unit.entity';
-import {PowerProductionTypeEntity} from './power-production-type.entity';
+import { PowerProductionUnitDbType } from '@h2-trust/database';
+import { GridLevel, UnitType } from '@h2-trust/domain';
+import { AddressEntity } from '../address';
+import { CompanyEntity } from '../company';
+import { BaseUnitEntity } from './base-unit.entity';
+import { PowerProductionTypeEntity } from './power-production-type.entity';
 
 export class PowerProductionUnitEntity extends BaseUnitEntity {
   decommissioningPlannedOn?: Date;
@@ -24,11 +24,52 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
   financialSupportReceived?: boolean;
   type?: PowerProductionTypeEntity;
 
-  constructor(id: string, name: string, mastrNumber: string, manufacturer: string, modelType: string, modelNumber: string, serialNumber: string, certifiedBy: string, commissionedOn: Date, address: AddressEntity, company: {
-    id?: string;
-    hydrogenApprovals?: { powerAccessApprovalStatus?: string; powerProducerId?: string; powerProducerName?: string }[]
-  } | null, operator: CompanyEntity, unitType: UnitType, decommissioningPlannedOn: Date, electricityMeterNumber: string, ratedPower: number, gridOperator: string, gridLevel: GridLevel, biddingZone: string, gridConnectionNumber: string, financialSupportReceived: boolean, type: PowerProductionTypeEntity) {
-    super(id, name, mastrNumber, manufacturer, modelType, modelNumber, serialNumber, certifiedBy, commissionedOn, address, company, operator, unitType);
+  constructor(
+    id: string,
+    name: string,
+    mastrNumber: string,
+    manufacturer: string,
+    modelType: string,
+    modelNumber: string,
+    serialNumber: string,
+    certifiedBy: string,
+    commissionedOn: Date,
+    address: AddressEntity,
+    company: {
+      id?: string;
+      hydrogenApprovals?: {
+        powerAccessApprovalStatus?: string;
+        powerProducerId?: string;
+        powerProducerName?: string;
+      }[];
+    } | null,
+    operator: CompanyEntity,
+    unitType: UnitType,
+    decommissioningPlannedOn: Date,
+    electricityMeterNumber: string,
+    ratedPower: number,
+    gridOperator: string,
+    gridLevel: GridLevel,
+    biddingZone: string,
+    gridConnectionNumber: string,
+    financialSupportReceived: boolean,
+    type: PowerProductionTypeEntity,
+  ) {
+    super(
+      id,
+      name,
+      mastrNumber,
+      manufacturer,
+      modelType,
+      modelNumber,
+      serialNumber,
+      certifiedBy,
+      commissionedOn,
+      address,
+      company,
+      operator,
+      unitType,
+    );
     this.decommissioningPlannedOn = decommissioningPlannedOn;
     this.electricityMeterNumber = electricityMeterNumber;
     this.ratedPower = ratedPower;

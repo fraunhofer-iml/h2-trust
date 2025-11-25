@@ -13,13 +13,13 @@ import {
   HydrogenStorageUnitEntity,
   PowerProductionUnitEntity,
 } from '@h2-trust/amqp';
-import {assertDefined} from "./util";
+import { assertDefined } from './util';
 
 export function buildBaseUnitCreateInput(entity: BaseUnitEntity): Prisma.UnitCreateInput {
   assertDefined(entity.name, 'BaseUnitEntity.name');
   assertDefined(entity.mastrNumber, 'BaseUnitEntity.mastrNumber');
   assertDefined(entity.commissionedOn, 'BaseUnitEntity.commissionedOn');
-  assertDefined(entity.address, 'BaseUnitEntity.address')
+  assertDefined(entity.address, 'BaseUnitEntity.address');
   assertDefined(entity.address.street, 'BaseUnitEntity.address.street');
   assertDefined(entity.address.postalCode, 'BaseUnitEntity.address.postalCode');
   assertDefined(entity.address.city, 'BaseUnitEntity.address.city');
