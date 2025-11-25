@@ -87,10 +87,7 @@ export class EmissionComputationService {
 
     return powerProductions.map((powerProduction) => {
       const unit = unitsById.get(powerProduction.executedBy.id)!;
-      return EmissionCalculationAssembler.assemblePowerProductionCalculation(
-        powerProduction,
-        unit.type.energySource
-      );
+      return EmissionCalculationAssembler.assemblePowerProductionCalculation(powerProduction, unit.type.energySource);
     });
   }
 

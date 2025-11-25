@@ -11,5 +11,10 @@ import { EnergySource, PowerProductionType } from '@h2-trust/domain';
 import { PowerProductionTypeEntity } from '../power-production-type.entity';
 
 export const PowerProductionTypeEntityMock: PowerProductionTypeEntity[] = PowerProductionTypeSeed.map(
-  (seed) => new PowerProductionTypeEntity(seed.name as PowerProductionType, seed.energySource as EnergySource, seed.hydrogenColor),
+  (seed) =>
+    new PowerProductionTypeEntity(
+      seed.name as PowerProductionType,
+      seed.energySource as EnergySource,
+      seed.hydrogenColor,
+    ),
 );

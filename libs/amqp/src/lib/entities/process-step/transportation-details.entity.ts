@@ -24,9 +24,7 @@ export class TransportationDetailsEntity {
 
   static fromDatabase(transportationDetails: TransportationDetailsDbType): TransportationDetailsEntity {
     const fuelType = transportationDetails.fuelType?.toUpperCase() as FuelType;
-    const validFuelType = Object.values(FuelType).includes(fuelType)
-      ? fuelType
-      : null;
+    const validFuelType = Object.values(FuelType).includes(fuelType) ? fuelType : null;
 
     return new TransportationDetailsEntity(
       transportationDetails.id,

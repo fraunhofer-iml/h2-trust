@@ -23,7 +23,7 @@ export const POWER_EMISSION_FACTORS: Readonly<Record<EnergySource, PowerEmission
 };
 
 export const FUEL_EMISSION_FACTORS: Readonly<Record<FuelType, number>> = {
-  [FuelType.DIESEL]: 95.1
+  [FuelType.DIESEL]: 95.1,
 };
 
 export const TRAILER_PARAMETERS: readonly TrailerParameter[] = [

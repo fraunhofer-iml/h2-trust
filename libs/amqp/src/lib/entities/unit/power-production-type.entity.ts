@@ -22,9 +22,7 @@ export class PowerProductionTypeEntity {
 
   static fromDatabase(powerProductionUnitDbType: PowerProductionTypeDbType): PowerProductionTypeEntity {
     const energySource = powerProductionUnitDbType.energySource?.toUpperCase() as EnergySource;
-    const validEnergySource = Object.values(EnergySource).includes(energySource)
-      ? energySource
-      : null;
+    const validEnergySource = Object.values(EnergySource).includes(energySource) ? energySource : null;
 
     return <PowerProductionTypeEntity>{
       name: powerProductionUnitDbType.name,
