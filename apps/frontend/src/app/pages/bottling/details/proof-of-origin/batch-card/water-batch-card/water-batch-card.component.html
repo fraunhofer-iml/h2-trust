@@ -28,14 +28,6 @@
         <span class="text-sm text-neutral-400">Deionized Water:</span
         ><span>{{ batch().deionizedWater.amount | number | unit: FormattedUnits.L }}</span>
       </div>
-      <div class="flex flex-col text-sm">
-        <span class="text-sm text-neutral-400">Tap Water:</span
-        ><span>{{ batch().tapWater.amount | number | unit: FormattedUnits.L }} </span>
-      </div>
-      <div class="flex flex-col text-sm">
-        <span class="text-sm text-neutral-400">Waste Water:</span
-        ><span>{{ batch().wasteWater.amount | number | unit: FormattedUnits.L }} </span>
-      </div>
     </div>
     <app-batch-emissions [emissions]="batch().emission"></app-batch-emissions>
   </div>
