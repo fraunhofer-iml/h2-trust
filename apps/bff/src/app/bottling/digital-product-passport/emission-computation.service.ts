@@ -18,7 +18,7 @@ import {
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { EmissionCalculationDto, EmissionComputationResultDto } from '@h2-trust/api';
-import { getPowerEmissionFactorByEnergySource, ProcessType } from '@h2-trust/domain';
+import { ProcessType } from '@h2-trust/domain';
 import { EmissionCalculationAssembler } from './assembler/emission.assembler';
 
 @Injectable()
@@ -87,11 +87,9 @@ export class EmissionComputationService {
 
     return powerProductions.map((powerProduction) => {
       const unit = unitsById.get(powerProduction.executedBy.id)!;
-      const powerEmissionFactor = getPowerEmissionFactorByEnergySource(unit.type?.energySource);
       return EmissionCalculationAssembler.assemblePowerProductionCalculation(
         powerProduction,
-        powerEmissionFactor.emissionFactor,
-        powerEmissionFactor.label,
+        unit.type.energySource
       );
     });
   }
