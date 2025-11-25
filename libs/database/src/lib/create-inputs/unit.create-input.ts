@@ -72,19 +72,22 @@ export function buildBaseUnitCreateInput(entity: BaseUnitEntity): Prisma.UnitCre
 }
 
 export function buildPowerProductionUnitCreateInput(entity: PowerProductionUnitEntity): Prisma.UnitCreateInput {
-  if (!entity.electricityMeterNumber) {
+  if (entity.electricityMeterNumber == null) {
     throw new BrokerException('PowerProductionUnitEntity.electricityMeterNumber was undefined', HttpStatus.BAD_REQUEST);
   }
-  if (!entity.ratedPower) {
+  if (entity.ratedPower == null) {
     throw new BrokerException('PowerProductionUnitEntity.ratedPower was undefined', HttpStatus.BAD_REQUEST);
   }
-  if (!entity.type?.name) {
+  if (entity.financialSupportReceived == null) {
+    throw new BrokerException('PowerProductionUnitEntity.financialSupportReceived was undefined', HttpStatus.BAD_REQUEST);
+  }
+  if (entity.type?.name == null) {
     throw new BrokerException('PowerProductionUnitEntity.type was undefined', HttpStatus.BAD_REQUEST);
   }
-  if (!entity.gridLevel) {
+  if (entity.gridLevel == null) {
     throw new BrokerException('PowerProductionUnitEntity.gridLevel was undefined', HttpStatus.BAD_REQUEST);
   }
-  if (!entity.biddingZone) {
+  if (entity.biddingZone == null) {
     throw new BrokerException('PowerProductionUnitEntity.biddingZone was undefined', HttpStatus.BAD_REQUEST);
   }
 
@@ -97,6 +100,7 @@ export function buildPowerProductionUnitCreateInput(entity: PowerProductionUnitE
         ratedPower: new Prisma.Decimal(entity.ratedPower),
         gridOperator: entity.gridOperator,
         gridConnectionNumber: entity.gridConnectionNumber,
+        financialSupportReceived: entity.financialSupportReceived,
         type: { connect: { name: entity.type.name } },
         gridLevel: entity.gridLevel,
         biddingZone: entity.biddingZone,

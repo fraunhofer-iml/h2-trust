@@ -21,6 +21,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
   gridLevel?: GridLevel;
   biddingZone?: string;
   gridConnectionNumber?: string;
+  financialSupportReceived?: boolean;
   type?: PowerProductionTypeEntity;
 
   constructor(
@@ -95,6 +96,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
       gridLevel: unit.powerProductionUnit?.gridLevel,
       biddingZone: unit.powerProductionUnit?.biddingZone,
       gridConnectionNumber: unit.powerProductionUnit?.gridConnectionNumber,
+      financialSupportReceived: unit.powerProductionUnit?.financialSupportReceived,
       type: unit.powerProductionUnit?.type,
     };
   }
