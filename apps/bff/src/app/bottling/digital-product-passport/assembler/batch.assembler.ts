@@ -38,8 +38,6 @@ export class BatchAssembler {
       processStepEntity.batch.amount,
       MeasurementUnit.WATER,
       new WaterDetailsDto(0, new EmissionDto(undefined, undefined, undefined)),
-      new WaterDetailsDto(0, new EmissionDto(undefined, undefined, undefined)),
-      new WaterDetailsDto(0, new EmissionDto(undefined, undefined, undefined)),
     );
   }
 

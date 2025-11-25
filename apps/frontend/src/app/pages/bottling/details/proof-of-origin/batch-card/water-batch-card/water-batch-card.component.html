@@ -6,7 +6,6 @@
   <div class="flex w-full flex-col">
     <div class="flex justify-between text-sm text-neutral-500">
       <h3 class="text-base">Water Supply</h3>
-      <span>GHG-Emissions (cumulated): {{ batch().emission.amountCO2PerKgH2 | number | unit: batch().unit }}</span>
     </div>
     <app-verified-chart [amount]="batch().amount" [unit]="batch().unit"></app-verified-chart>
   </div>
@@ -28,14 +27,6 @@
       <div class="flex flex-col text-sm">
         <span class="text-sm text-neutral-400">Deionized Water:</span
         ><span>{{ batch().deionizedWater.amount | number | unit: FormattedUnits.L }}</span>
-      </div>
-      <div class="flex flex-col text-sm">
-        <span class="text-sm text-neutral-400">Tap Water:</span
-        ><span>{{ batch().tapWater.amount | number | unit: FormattedUnits.L }} </span>
-      </div>
-      <div class="flex flex-col text-sm">
-        <span class="text-sm text-neutral-400">Waste Water:</span
-        ><span>{{ batch().wasteWater.amount | number | unit: FormattedUnits.L }} </span>
       </div>
     </div>
     <app-batch-emissions [emissions]="batch().emission"></app-batch-emissions>
