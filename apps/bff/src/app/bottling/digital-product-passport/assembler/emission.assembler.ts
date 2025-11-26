@@ -195,6 +195,16 @@ export class EmissionCalculationAssembler {
         .filter((emissionCalculation) => emissionCalculation.calculationTopic === calculationTopic)
         .reduce((acc, emissionCalculation) => acc + (emissionCalculation.result ?? 0), 0);
 
+    const waterSupplyTotalEmissions = calculateTotalEmissionsByCalculationTopic(
+      CalculationTopic.WATER_SUPPLY
+    );
+    const waterSupplyEmission = new EmissionForProcessStepDto(
+      waterSupplyTotalEmissions,
+      'Ew',
+      'Water Supply Emissions',
+      'APPLICATION',
+    );
+
     const hydrogenProductionTotalEmissions = calculateTotalEmissionsByCalculationTopic(
       CalculationTopic.HYDROGEN_PRODUCTION,
     );
@@ -205,15 +215,9 @@ export class EmissionCalculationAssembler {
       'APPLICATION',
     );
 
-    const waterSupplyTotalEmissions = calculateTotalEmissionsByCalculationTopic(CalculationTopic.WATER_SUPPLY);
-    const waterSupplyEmission = new EmissionForProcessStepDto(
-      waterSupplyTotalEmissions,
-      'Ew',
-      'Water Supply Emissions',
-      'APPLICATION',
+    const hydrogenStorageTotalEmissions = calculateTotalEmissionsByCalculationTopic(
+      CalculationTopic.HYDROGEN_STORAGE
     );
-
-    const hydrogenStorageTotalEmissions = calculateTotalEmissionsByCalculationTopic(CalculationTopic.HYDROGEN_STORAGE);
     const hydrogenStorageEmission = new EmissionForProcessStepDto(
       hydrogenStorageTotalEmissions,
       'Ehs',
@@ -242,8 +246,8 @@ export class EmissionCalculationAssembler {
     );
 
     return [
-      hydrogenProductionEmission,
       waterSupplyEmission,
+      hydrogenProductionEmission,
       hydrogenStorageEmission,
       hydrogenBottlingEmission,
       hydrogenTransportationEmission,
@@ -254,12 +258,6 @@ export class EmissionCalculationAssembler {
     totalApplicationEmission: number,
     transportApplicationAmount: number,
   ): EmissionForProcessStepDto[] {
-    const transportAndDistributionEmission = new EmissionForProcessStepDto(
-      transportApplicationAmount,
-      'Etd',
-      'Emissions from transport and distribution',
-      'REGULATORY',
-    );
     const processingEmission = new EmissionForProcessStepDto(
       totalApplicationEmission - transportApplicationAmount,
       'Ep',
@@ -267,7 +265,14 @@ export class EmissionCalculationAssembler {
       'REGULATORY',
     );
 
-    return [transportAndDistributionEmission, processingEmission];
+    const transportAndDistributionEmission = new EmissionForProcessStepDto(
+      transportApplicationAmount,
+      'Etd',
+      'Emissions from transport and distribution',
+      'REGULATORY',
+    );
+
+    return [processingEmission, transportAndDistributionEmission];
   }
 
   static assembleEmissionDto(calc: EmissionCalculationDto, hydrogenMassKg: number): EmissionDto {
