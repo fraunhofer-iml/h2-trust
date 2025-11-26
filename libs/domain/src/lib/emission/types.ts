@@ -6,12 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export interface EmissionFactorEntry {
+export interface PowerEmissionFactor {
   emissionFactor: number; // g CO₂,eq/kWh
   label: string; // Human-readable name used in calculation names
 }
 
-export interface TrailerEntry {
+export interface TrailerParameter {
   capacityKg: number; // nominal trailer capacity in kg H2
   transportEfficiencyMJPerTonnePerKm: number; // MJ fuel / (km * tonne H2)
   gEqEmissionsOfCH4AndN2OPerKmDistancePerTonneH2: number; // g CO2,eq / (km * tonne H2)

@@ -11,7 +11,6 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -46,7 +45,6 @@ import { UploadFormComponent } from './upload-form/upload-form.component';
     MatFormFieldModule,
     MatTimepickerModule,
     MatDatepickerModule,
-    MatButtonToggleModule,
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
@@ -74,7 +72,7 @@ export class AddBottleComponent {
   bottleFormGroup: FormGroup<BottlingForm> = new FormGroup({
     date: new FormControl<Date | undefined>(new Date(), Validators.required),
     time: new FormControl<Date | undefined>(new Date(), Validators.required),
-    amount: new FormControl<number | undefined>(undefined, Validators.required),
+    amount: new FormControl<number | undefined>(undefined, [Validators.required, Validators.min(1)]),
     recipient: new FormControl<UserDto | undefined>(undefined, Validators.required),
     storageUnit: new FormControl<HydrogenStorageOverviewDto | undefined>(undefined, Validators.required),
     type: new FormControl<'MIX' | 'GREEN' | undefined>(undefined, Validators.required),

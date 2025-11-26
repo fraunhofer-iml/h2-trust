@@ -37,10 +37,19 @@
           <mat-timepicker #timepicker />
         </mat-form-field>
 
-        <mat-button-toggle-group formControlName="amount" required="true" class="col-span-2">
-          <mat-button-toggle value="10" class="w-1/2">10 kg</mat-button-toggle>
-          <mat-button-toggle value="50" class="w-1/2">50 kg</mat-button-toggle>
-        </mat-button-toggle-group>
+        <mat-form-field appearance="outline" class="col-span-2">
+          <mat-label>Amount (kg)</mat-label>
+          <input
+            matInput
+            type="number"
+            inputmode="numeric"
+            formControlName="amount"
+            min="1"
+            step="1"
+            placeholder="e.g. 71"
+            required
+          />
+        </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Recipients</mat-label>
