@@ -101,26 +101,31 @@ export class AddBottleComponent {
   }));
 
   constructor() {
-    this.bottleFormGroup.controls.transportMode.valueChanges.subscribe((value) => {
-      if (value === TransportMode.TRAILER) this.bottleFormGroup.controls.fuelType.addValidators(Validators.required);
-      if (value === TransportMode.PIPELINE)
-        this.bottleFormGroup.controls.fuelType.removeValidators(Validators.required);
+    this.bottleFormGroup.controls.transportMode.valueChanges.subscribe((transportMode) => {
+      if (!transportMode) return;
 
-      this.bottleFormGroup.controls.fuelType.updateValueAndValidity();
+      const fuelTypeControl = this.bottleFormGroup.controls.fuelType;
+      const distanceControl = this.bottleFormGroup.controls.distance;
 
-      if (value === TransportMode.TRAILER) {
-        this.bottleFormGroup.controls.distance.addValidators([Validators.required, Validators.min(1)]);
+      if (transportMode === TransportMode.TRAILER) {
+        fuelTypeControl.addValidators(Validators.required);
+        distanceControl.addValidators([Validators.required, Validators.min(1)]);
       } else {
-        this.bottleFormGroup.controls.distance.removeValidators([Validators.required, Validators.min(1)]);
-        this.bottleFormGroup.controls.distance.setValue(null);
+        fuelTypeControl.removeValidators(Validators.required);
+        fuelTypeControl.setValue(null);
+        distanceControl.removeValidators([Validators.required, Validators.min(1)]);
+        distanceControl.setValue(null);
       }
 
-      this.bottleFormGroup.controls.distance.updateValueAndValidity();
+      fuelTypeControl.updateValueAndValidity();
+      distanceControl.updateValueAndValidity();
     });
+
     this.bottleFormGroup.controls.amount?.valueChanges.subscribe((amount) => {
       if (!amount) return;
 
       this.bottleFormGroup.controls.type.reset();
+
       if (this.bottleFormGroup.value?.storageUnit && amount > this.bottleFormGroup.value?.storageUnit?.filling)
         this.bottleFormGroup.controls.storageUnit?.reset();
     });
