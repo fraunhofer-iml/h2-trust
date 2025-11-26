@@ -166,16 +166,22 @@ export class EmissionCalculationAssembler {
   static assembleComputationResult(emissionCalculations: EmissionCalculationDto[]): EmissionComputationResultDto {
     const applicationEmissions: EmissionForProcessStepDto[] =
       EmissionCalculationAssembler.assembleApplicationEmissions(emissionCalculations);
-    const totalApplicationEmission: number = applicationEmissions.reduce((acc, emission) => acc + emission.amount, 0);
-    const transportApplicationEmission: number = applicationEmissions.find((e) => e.name === 'Et')?.amount ?? 0;
+
+    const productionEmissionAmount: number = applicationEmissions
+      .filter((e) => e.name === 'Ew' || e.name === 'Ehp')
+      .reduce((sum, e) => sum + e.amount, 0);
+
+    const applicationEmissionAmount: number = applicationEmissions.reduce((acc, emission) => acc + emission.amount, 0);
+    const transportEmissionAmount: number = applicationEmissions.find((e) => e.name === 'Et')?.amount ?? 0;
 
     const regulatoryEmissions: EmissionForProcessStepDto[] = EmissionCalculationAssembler.assembleRegulatoryEmissions(
-      totalApplicationEmission,
-      transportApplicationEmission,
+      productionEmissionAmount,
+      applicationEmissionAmount,
+      transportEmissionAmount,
     );
     const processStepEmissions: EmissionForProcessStepDto[] = [...applicationEmissions, ...regulatoryEmissions];
 
-    const amountCO2PerMJH2: number = totalApplicationEmission / GRAVIMETRIC_ENERGY_DENSITY_H2_MJ_PER_KG;
+    const amountCO2PerMJH2: number = applicationEmissionAmount / GRAVIMETRIC_ENERGY_DENSITY_H2_MJ_PER_KG;
     const emissionReductionPercentage: number =
       ((FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ - amountCO2PerMJH2) / FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ) * 100;
 
@@ -195,16 +201,6 @@ export class EmissionCalculationAssembler {
         .filter((emissionCalculation) => emissionCalculation.calculationTopic === calculationTopic)
         .reduce((acc, emissionCalculation) => acc + (emissionCalculation.result ?? 0), 0);
 
-    const waterSupplyTotalEmissions = calculateTotalEmissionsByCalculationTopic(
-      CalculationTopic.WATER_SUPPLY
-    );
-    const waterSupplyEmission = new EmissionForProcessStepDto(
-      waterSupplyTotalEmissions,
-      'Ew',
-      'Water Supply Emissions',
-      'APPLICATION',
-    );
-
     const hydrogenProductionTotalEmissions = calculateTotalEmissionsByCalculationTopic(
       CalculationTopic.HYDROGEN_PRODUCTION,
     );
@@ -212,6 +208,16 @@ export class EmissionCalculationAssembler {
       hydrogenProductionTotalEmissions,
       'Ehp',
       'Hydrogen Production Emissions',
+      'APPLICATION',
+    );
+
+    const waterSupplyTotalEmissions = calculateTotalEmissionsByCalculationTopic(
+      CalculationTopic.WATER_SUPPLY
+    );
+    const waterSupplyEmission = new EmissionForProcessStepDto(
+      waterSupplyTotalEmissions,
+      'Ew',
+      'Water Supply Emissions',
       'APPLICATION',
     );
 
@@ -246,8 +252,8 @@ export class EmissionCalculationAssembler {
     );
 
     return [
-      waterSupplyEmission,
       hydrogenProductionEmission,
+      waterSupplyEmission,
       hydrogenStorageEmission,
       hydrogenBottlingEmission,
       hydrogenTransportationEmission,
@@ -255,24 +261,32 @@ export class EmissionCalculationAssembler {
   }
 
   private static assembleRegulatoryEmissions(
-    totalApplicationEmission: number,
-    transportApplicationAmount: number,
+    productionEmissionAmount: number,
+    applicationEmissionAmount: number,
+    transportEmissionAmount: number,
   ): EmissionForProcessStepDto[] {
+    const productionEmission = new EmissionForProcessStepDto(
+      productionEmissionAmount,
+      'Ei',
+      'Production emissions',
+      'REGULATORY',
+    );
+
     const processingEmission = new EmissionForProcessStepDto(
-      totalApplicationEmission - transportApplicationAmount,
+      applicationEmissionAmount - productionEmissionAmount - transportEmissionAmount,
       'Ep',
       'Processing emissions',
       'REGULATORY',
     );
 
     const transportAndDistributionEmission = new EmissionForProcessStepDto(
-      transportApplicationAmount,
+      transportEmissionAmount,
       'Etd',
       'Emissions from transport and distribution',
       'REGULATORY',
     );
 
-    return [processingEmission, transportAndDistributionEmission];
+    return [productionEmission, processingEmission, transportAndDistributionEmission];
   }
 
   static assembleEmissionDto(calc: EmissionCalculationDto, hydrogenMassKg: number): EmissionDto {
