@@ -284,12 +284,7 @@ export class ProductionService {
       gridUnitId,
     );
 
-    const { id, createdAt } = await this.intervallRepo.createTempAccountingPeriods(productionIntervalls);
-
-    console.log(new IntervallMappingResult(id, createdAt, productionIntervalls));
-    console.log(await this.intervallRepo.getIntervallSetById(id));
-    console.log(productionIntervalls);
-
+    const { id, createdAt } = await this.intervallRepo.createProductionIntervalls(productionIntervalls);
     return new IntervallMappingResult(id, createdAt, productionIntervalls);
   }
 
@@ -368,7 +363,7 @@ export class ProductionService {
     const powerAccessApprovalForGrid = approvals.find((approval) => approval.powerProductionUnit.type.name === 'GRID');
 
     if (!powerAccessApprovalForGrid)
-      throw new BrokerException(`No grid coinnection found.`, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new BrokerException(`No grid connection found.`, HttpStatus.INTERNAL_SERVER_ERROR);
 
     return powerAccessApprovalForGrid.powerProductionUnit.id;
   }

@@ -14,7 +14,7 @@ import { PrismaService } from '../prisma.service';
 export class TempAccountingPeriodRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async createTempAccountingPeriods(data: ProductionIntervallEntity[]) {
+  async createProductionIntervalls(data: ProductionIntervallEntity[]) {
     return this.prismaService.productionIntervallSet.create({
       data: {
         productionIntervalls: {
