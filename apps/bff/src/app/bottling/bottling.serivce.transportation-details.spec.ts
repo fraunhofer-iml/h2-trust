@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// TypeScript
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { TransportationDetailsEntity } from '@h2-trust/amqp';
 import { BottlingDto } from '@h2-trust/api';
