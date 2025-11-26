@@ -28,7 +28,7 @@ import {
 } from '@h2-trust/domain';
 
 export class EmissionCalculationAssembler {
-  static assemblePowerProductionCalculation(
+  static assemblePowerSupplyCalculation(
     powerSupply: ProcessStepEntity,
     energySource: EnergySource,
   ): EmissionCalculationDto {
@@ -41,7 +41,7 @@ export class EmissionCalculationAssembler {
     const result = (powerAmountKwh * emissionFactorGPerKWh) / successorProducedHydrogenMassKg;
 
     const unit = UNIT_G_CO2_PER_KG_H2;
-    const calculationTopic = CalculationTopic.HYDROGEN_PRODUCTION;
+    const calculationTopic = CalculationTopic.POWER_SUPPLY;
 
     return new EmissionCalculationDto(label, basisOfCalculation, result, unit, calculationTopic);
   }
@@ -193,59 +193,57 @@ export class EmissionCalculationAssembler {
     );
   }
 
-  private static assembleApplicationEmissions(
-    emissionCalculations: EmissionCalculationDto[],
-  ): EmissionForProcessStepDto[] {
-    const calculateTotalEmissionsByCalculationTopic = (calculationTopic: CalculationTopic): number =>
+  private static assembleApplicationEmissions(emissionCalculations: EmissionCalculationDto[]): EmissionForProcessStepDto[] {
+    const calculateTotalEmissionAmountByCalculationTopic = (calculationTopic: CalculationTopic): number =>
       emissionCalculations
         .filter((emissionCalculation) => emissionCalculation.calculationTopic === calculationTopic)
         .reduce((acc, emissionCalculation) => acc + (emissionCalculation.result ?? 0), 0);
 
-    const powerSupplyTotalEmissions = calculateTotalEmissionsByCalculationTopic(
-      CalculationTopic.HYDROGEN_PRODUCTION,
+    const powerSupplyEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(
+      CalculationTopic.POWER_SUPPLY,
     );
     const powerSupplyEmission = new EmissionForProcessStepDto(
-      powerSupplyTotalEmissions,
+      powerSupplyEmissionAmount,
       'eps',
       'Emissions from power supply',
       'APPLICATION',
     );
 
-    const waterSupplyTotalEmissions = calculateTotalEmissionsByCalculationTopic(
+    const waterSupplyEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(
       CalculationTopic.WATER_SUPPLY
     );
     const waterSupplyEmission = new EmissionForProcessStepDto(
-      waterSupplyTotalEmissions,
+      waterSupplyEmissionAmount,
       'ews',
       'Emissions from water supply',
       'APPLICATION',
     );
 
-    const hydrogenStorageTotalEmissions = calculateTotalEmissionsByCalculationTopic(
+    const hydrogenStorageEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(
       CalculationTopic.HYDROGEN_STORAGE
     );
     const hydrogenStorageEmission = new EmissionForProcessStepDto(
-      hydrogenStorageTotalEmissions,
+      hydrogenStorageEmissionAmount,
       'ehs',
       'Emissions from hydrogen storage',
       'APPLICATION',
     );
 
-    const hydrogenBottlingTotalEmissions = calculateTotalEmissionsByCalculationTopic(
+    const hydrogenBottlingEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(
       CalculationTopic.HYDROGEN_BOTTLING,
     );
     const hydrogenBottlingEmission = new EmissionForProcessStepDto(
-      hydrogenBottlingTotalEmissions,
+      hydrogenBottlingEmissionAmount,
       'ehb',
       'Emissions from hydrogen bottling',
       'APPLICATION',
     );
 
-    const hydrogenTransportationTotalEmissions = calculateTotalEmissionsByCalculationTopic(
+    const hydrogenTransportationEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(
       CalculationTopic.HYDROGEN_TRANSPORTATION,
     );
     const hydrogenTransportationEmission = new EmissionForProcessStepDto(
-      hydrogenTransportationTotalEmissions,
+      hydrogenTransportationEmissionAmount,
       'eht',
       'Emissions from hydrogen transportation',
       'APPLICATION',

@@ -46,7 +46,7 @@ export class EnergySourceClassificationService {
       if (processStepsWithUnitsByEnergySource.length > 0) {
         const productionPowerBatches: BatchDto[] = await Promise.all(
           processStepsWithUnitsByEnergySource.map(async ([processStep]) => {
-            const [powerCalculation] = await this.emissionCalculatorService.computePowerProductionEmissions([
+            const [powerCalculation] = await this.emissionCalculatorService.computePowerSupplyEmissions([
               processStep,
             ]);
             const emissionCalculation: EmissionCalculationDto = powerCalculation;

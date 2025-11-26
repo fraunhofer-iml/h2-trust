@@ -26,13 +26,13 @@ export class EmissionComputationService {
   constructor(
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
-  ) {}
+  ) { }
 
   async computeProvenanceEmissions(provenance: ProvenanceEntity): Promise<EmissionComputationResultDto> {
     const emissionCalculations: EmissionCalculationDto[] = [];
 
     if (provenance.powerProductions) {
-      const powerProductions: EmissionCalculationDto[] = await this.computePowerProductionEmissions(
+      const powerProductions: EmissionCalculationDto[] = await this.computePowerSupplyEmissions(
         provenance.powerProductions,
       );
       emissionCalculations.push(...powerProductions);
@@ -67,12 +67,12 @@ export class EmissionComputationService {
     return EmissionCalculationAssembler.assembleComputationResult(emissionCalculations);
   }
 
-  async computePowerProductionEmissions(powerProductions: ProcessStepEntity[]): Promise<EmissionCalculationDto[]> {
-    if (!powerProductions.length) {
+  async computePowerSupplyEmissions(powerSupplies: ProcessStepEntity[]): Promise<EmissionCalculationDto[]> {
+    if (!powerSupplies.length) {
       return [];
     }
 
-    const unitIds = Array.from(new Set(powerProductions.map((p) => p.executedBy.id)));
+    const unitIds = Array.from(new Set(powerSupplies.map((p) => p.executedBy.id)));
 
     const units: PowerProductionUnitEntity[] = await firstValueFrom(
       this.generalSvc.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS_BY_IDS, { ids: unitIds }),
@@ -85,9 +85,9 @@ export class EmissionComputationService {
       }
     }
 
-    return powerProductions.map((powerProduction) => {
-      const unit = unitsById.get(powerProduction.executedBy.id)!;
-      return EmissionCalculationAssembler.assemblePowerProductionCalculation(powerProduction, unit.type.energySource);
+    return powerSupplies.map((powerSupply) => {
+      const unit = unitsById.get(powerSupply.executedBy.id)!;
+      return EmissionCalculationAssembler.assemblePowerSupplyCalculation(powerSupply, unit.type.energySource);
     });
   }
 
