@@ -94,6 +94,7 @@
     "@nestjs/core": "^10.0.2",
     "@nestjs/microservices": "^10.4.15",
     "@nestjs/platform-express": "^10.4.20",
+    "@nestjs/schedule": "^6.0.1",
     "@nestjs/swagger": "^8.1.1",
     "@prisma/client": "^6.3.1",
     "@tanstack/angular-query-experimental": "^5.76.2",

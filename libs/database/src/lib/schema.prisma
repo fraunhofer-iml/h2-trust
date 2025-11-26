@@ -250,7 +250,7 @@ model ProductionIntervall {
   date                     DateTime
 
   productionIntervallSetId String
-  productionIntervallSet   ProductionIntervallSet @relation(fields: [productionIntervallSetId], references: [id])
+  productionIntervallSet   ProductionIntervallSet @relation(fields: [productionIntervallSetId], references: [id], onDelete: Cascade)
 }
 
 model ProductionIntervallSet {

@@ -33,4 +33,16 @@ export class TempAccountingPeriodRepository {
     if (!res) throw new Error(`Could not find Intervalls for id ${id}`);
     return res.productionIntervalls.map(ProductionIntervallEntity.fromDatabase);
   }
+
+  async deleteOldIntervalls() {
+    const expirationThreshold: Date = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+    return await this.prismaService.productionIntervallSet.deleteMany({
+      where: {
+        createdAt: {
+          lt: expirationThreshold,
+        },
+      },
+    });
+  }
 }
