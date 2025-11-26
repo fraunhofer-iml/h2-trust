@@ -9,7 +9,15 @@
           <span class="material-symbols-outlined text-secondary-400 text-4xl">air</span>
         </div>
         <span class="grow text-xs text-neutral-500">
-          Total {{ ChemicalNames.CO2 }} Emissions <br />
+          Total {{ ChemicalNames.CO2 }} Emissions
+          <span
+            class="ml-1 inline-block cursor-help align-middle"
+            title="E = Ei + Ep + Etd + Eu - Eccs
+Eu: emissions from fuel combustion at end use (always 0)
+Eccs: emission savings from CO₂ capture and geological storage (always 0)"
+            >ⓘ</span
+          >
+          <br />
           <span class="text-xl">{{ totalEmissions() | number: '1.0-2' }}</span>
           {{ FormattedUnits.CO2_PER_KG_H2 }} <br />
           <span class="text-xl">{{ proofQuery.data()?.amountCO2PerMJH2 | number: '1.0-2' }}</span>
