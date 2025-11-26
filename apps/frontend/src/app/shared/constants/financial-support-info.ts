@@ -16,7 +16,7 @@ export const RED_III_CRITERIA = {
     DESCRIPTION: 'Power Production Unit and Hydrogen Production Unit have to be located in the same bidding Zone.',
   },
   TIME_CORRELATION: {
-    TITLE: 'Financial Support',
+    TITLE: 'Time Correlation',
     DESCRIPTION: 'Electricity and hydrogen must be generated within the same hour.',
   },
   ADDITIONALITY_REQUIREMENT: {

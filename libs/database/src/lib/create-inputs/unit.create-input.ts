@@ -13,7 +13,7 @@ import {
   HydrogenStorageUnitEntity,
   PowerProductionUnitEntity,
 } from '@h2-trust/amqp';
-import { assertDefined } from './util';
+import { assertDefined } from '@h2-trust/utils';
 
 export function buildBaseUnitCreateInput(entity: BaseUnitEntity): Prisma.UnitCreateInput {
   assertDefined(entity.name, 'BaseUnitEntity.name');
