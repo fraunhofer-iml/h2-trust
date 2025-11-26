@@ -12,108 +12,108 @@ import { EnergySource, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
 
 export class BatchAssembler {
   static assemblePowerProductionBatchDto(
-    processStepEntity: ProcessStepEntity,
+    powerSupply: ProcessStepEntity,
     energySource: string,
     emission?: EmissionDto,
   ): PowerBatchDto {
     return new PowerBatchDto(
-      processStepEntity.batch.id,
+      powerSupply.batch.id,
       emission,
-      processStepEntity.startedAt,
-      processStepEntity.batch.amount,
+      powerSupply.startedAt,
+      powerSupply.batch.amount,
       MeasurementUnit.POWER,
       null, // TBA
-      processStepEntity.batch.owner.name,
-      processStepEntity.executedBy.id,
+      powerSupply.batch.owner.name,
+      powerSupply.executedBy.id,
       energySource as EnergySource,
-      processStepEntity.endedAt,
+      powerSupply.endedAt,
     );
   }
 
-  static assembleWaterBatchDto(processStepEntity: ProcessStepEntity, emission?: EmissionDto): WaterBatchDto {
+  static assembleWaterBatchDto(waterSupply: ProcessStepEntity, emission?: EmissionDto): WaterBatchDto {
     return new WaterBatchDto(
-      processStepEntity.batch.id,
+      waterSupply.batch.id,
       emission,
-      processStepEntity.startedAt,
-      processStepEntity.batch.amount,
+      waterSupply.startedAt,
+      waterSupply.batch.amount,
       MeasurementUnit.WATER,
       new WaterDetailsDto(0, new EmissionDto(undefined, undefined, undefined)),
     );
   }
 
   static assembleHydrogenStorageBatchDto(
-    processStepEntity: ProcessStepEntity,
+    hydrogenStorage: ProcessStepEntity,
     emission?: EmissionDto,
   ): HydrogenBatchDto {
     return new HydrogenBatchDto(
-      processStepEntity.batch.id,
+      hydrogenStorage.batch.id,
       emission,
-      processStepEntity.startedAt,
-      processStepEntity.batch.amount,
+      hydrogenStorage.startedAt,
+      hydrogenStorage.batch.amount,
       MeasurementUnit.HYDROGEN,
       null, // TBA
-      processStepEntity.batch.owner.name,
-      processStepEntity.executedBy.id,
+      hydrogenStorage.batch.owner.name,
+      hydrogenStorage.executedBy.id,
       null, //TBA
       ProofOfOrigin.HYDROGEN_PRODUCTION_TYPE,
       [
         {
-          color: processStepEntity.batch?.qualityDetails?.color,
-          amount: processStepEntity.batch.amount,
+          color: hydrogenStorage.batch?.qualityDetails?.color,
+          amount: hydrogenStorage.batch.amount,
         },
       ],
-      processStepEntity.batch?.qualityDetails?.color,
+      hydrogenStorage.batch?.qualityDetails?.color,
       null, // TBA
-      processStepEntity.type,
-      processStepEntity.endedAt,
+      hydrogenStorage.type,
+      hydrogenStorage.endedAt,
     );
   }
 
   static assembleHydrogenBottlingBatchDto(
-    processStepEntity: ProcessStepEntity,
+    hydrogenBottling: ProcessStepEntity,
     hydrogenComposition: HydrogenComponentEntity[],
     emission?: EmissionDto,
   ): HydrogenBatchDto {
     return new HydrogenBatchDto(
-      processStepEntity.batch.id,
+      hydrogenBottling.batch.id,
       emission,
-      processStepEntity.startedAt,
-      processStepEntity.batch.amount,
+      hydrogenBottling.startedAt,
+      hydrogenBottling.batch.amount,
       MeasurementUnit.HYDROGEN,
       null, // TBA
       null,
-      processStepEntity.executedBy.id,
+      hydrogenBottling.executedBy.id,
       null, // TBA
       null,
       hydrogenComposition,
-      processStepEntity.batch?.qualityDetails?.color,
+      hydrogenBottling.batch?.qualityDetails?.color,
       null, // TBA
-      processStepEntity.type,
-      processStepEntity.endedAt,
+      hydrogenBottling.type,
+      hydrogenBottling.endedAt,
     );
   }
 
   static assembleHydrogenTransportationBatchDto(
-    processStepEntity: ProcessStepEntity,
+    hydrogenTransportation: ProcessStepEntity,
     hydrogenComposition: HydrogenComponentEntity[],
     emission?: EmissionDto,
   ): HydrogenBatchDto {
     return new HydrogenBatchDto(
-      processStepEntity.batch.id,
+      hydrogenTransportation.batch.id,
       emission,
-      processStepEntity.startedAt,
-      processStepEntity.batch.amount,
+      hydrogenTransportation.startedAt,
+      hydrogenTransportation.batch.amount,
       MeasurementUnit.HYDROGEN,
       null, // TBA
       null,
-      processStepEntity.executedBy.id,
+      hydrogenTransportation.executedBy.id,
       null, // TBA
       null,
       hydrogenComposition,
-      processStepEntity.batch?.qualityDetails?.color,
+      hydrogenTransportation.batch?.qualityDetails?.color,
       null, // TBA
-      processStepEntity.type,
-      processStepEntity.endedAt,
+      hydrogenTransportation.type,
+      hydrogenTransportation.endedAt,
     );
   }
 }
