@@ -94,11 +94,11 @@ export class BottlingService {
     switch (dto.transportMode) {
       case TransportMode.TRAILER:
         if (!dto.distance) {
-          const message = 'Distance is required for trailer transportation.';
+          const message = `Distance is required for transport mode [${TransportMode.TRAILER}].`;
           throw new HttpException(message, HttpStatus.BAD_REQUEST);
         }
         if (!dto.fuelType) {
-          const message = 'Fuel type is required for trailer transportation.';
+          const message = `Fuel type is required for transport mode [${TransportMode.TRAILER}].`;
           throw new HttpException(message, HttpStatus.BAD_REQUEST);
         }
         transportationDetails = new TransportationDetailsEntity(
