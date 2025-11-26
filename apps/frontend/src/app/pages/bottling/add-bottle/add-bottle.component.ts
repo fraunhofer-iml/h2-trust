@@ -78,6 +78,7 @@ export class AddBottleComponent {
     type: new FormControl<'MIX' | 'GREEN' | undefined>(undefined, Validators.required),
     transportMode: new FormControl<TransportMode | null>(null, Validators.required),
     fuelType: new FormControl<FuelType | null>(null),
+    distance: new FormControl<number | null>(null),
   });
 
   hydrogenStorageQuery = injectQuery(() => ({
@@ -101,10 +102,21 @@ export class AddBottleComponent {
 
   constructor() {
     this.bottleFormGroup.controls.transportMode.valueChanges.subscribe((value) => {
-      if (value === TransportMode.TRAILER) this.bottleFormGroup.controls.fuelType.addValidators(Validators.required);
+      if (value === TransportMode.TRAILER) 
+        this.bottleFormGroup.controls.fuelType.addValidators(Validators.required);
       if (value === TransportMode.PIPELINE)
         this.bottleFormGroup.controls.fuelType.removeValidators(Validators.required);
+      
       this.bottleFormGroup.controls.fuelType.updateValueAndValidity();
+
+      if (value === TransportMode.TRAILER) {
+        this.bottleFormGroup.controls.distance.addValidators([Validators.required, Validators.min(1)]);
+      } else {
+        this.bottleFormGroup.controls.distance.removeValidators([Validators.required, Validators.min(1)]);
+        this.bottleFormGroup.controls.distance.setValue(null);
+      }
+
+      this.bottleFormGroup.controls.distance.updateValueAndValidity();
     });
     this.bottleFormGroup.controls.amount?.valueChanges.subscribe((amount) => {
       if (!amount) return;
@@ -141,6 +153,7 @@ export class AddBottleComponent {
     data.append('color', this.bottleFormGroup.value.type ?? '');
     data.append('transportMode', this.bottleFormGroup.value.transportMode ?? '');
     data.append('fuelType', this.bottleFormGroup.value.fuelType ?? '');
+    data.append('distance', this.bottleFormGroup.value.distance?.toString() ?? '');
 
     this.mutation.mutate(data);
   }

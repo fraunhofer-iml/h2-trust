@@ -19,4 +19,5 @@ export type BottlingForm = {
   type: FormControl<'MIX' | 'GREEN' | undefined | null>;
   transportMode: FormControl<TransportMode | null>;
   fuelType: FormControl<FuelType | null>;
+  distance: FormControl<number | null>;
 };
