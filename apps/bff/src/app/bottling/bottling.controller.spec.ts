@@ -108,7 +108,7 @@ describe('BottlingController', () => {
       processStepEntity: expectedBatchSvcPayload1.processStepEntity,
       predecessorBatch: returnedProcessStep.batch,
       transportationDetails: {
-        distance: givenDto.transportDistance,
+        distance: givenDto.distance,
         transportMode: givenDto.transportMode,
         fuelType: givenDto.fuelType,
       },
@@ -120,12 +120,12 @@ describe('BottlingController', () => {
     expect(batchSvcSpy).toHaveBeenCalledTimes(2);
     expect(batchSvcSpy).toHaveBeenNthCalledWith(
       1,
-      ProcessStepMessagePatterns.HYDROGEN_BOTTLING,
+      ProcessStepMessagePatterns.CREATE_HYDROGEN_BOTTLING,
       expectedBatchSvcPayload1,
     );
     expect(batchSvcSpy).toHaveBeenNthCalledWith(
       2,
-      ProcessStepMessagePatterns.HYDROGEN_TRANSPORTATION,
+      ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION,
       expectedBatchSvcPayload2,
     );
 
