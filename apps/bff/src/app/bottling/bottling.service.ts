@@ -34,12 +34,12 @@ export class BottlingService {
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   async createBottling(dto: BottlingDto, files: Express.Multer.File[], userId: string): Promise<BottlingOverviewDto> {
     const baseBottling = BottlingDto.toEntity({ ...dto, recordedBy: userId });
     const createdBottling: ProcessStepEntity = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.HYDROGEN_BOTTLING, {
+      this.batchSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_BOTTLING, {
         processStepEntity: baseBottling,
         files,
       }),
@@ -55,9 +55,9 @@ export class BottlingService {
       predecessorBatch: createdBottling.batch,
       transportationDetails: this.buildTransportationDetails(dto),
     };
-    return firstValueFrom(this.batchSvc.send(ProcessStepMessagePatterns.HYDROGEN_TRANSPORTATION, payload)).then(
-      BottlingOverviewDto.fromEntity,
-    );
+    return firstValueFrom(
+      this.batchSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION, payload)
+    ).then(BottlingOverviewDto.fromEntity);
   }
 
   async readBottlingsByCompany(userId: string): Promise<BottlingOverviewDto[]> {
@@ -89,24 +89,30 @@ export class BottlingService {
   }
 
   private buildTransportationDetails(dto: BottlingDto): TransportationDetailsEntity {
+    let transportationDetails: TransportationDetailsEntity;
+
     switch (dto.transportMode) {
       case TransportMode.TRAILER:
-        if (dto.transportDistance == undefined) {
-          const message = `Transport distance is required for trailer transportation.`;
+        if (!dto.distance) {
+          const message = 'Distance is required for trailer transportation.';
           throw new HttpException(message, HttpStatus.BAD_REQUEST);
         }
-        if (dto.fuelType == undefined) {
-          const message = `Transport fuel type is required for trailer transportation.`;
+        if (!dto.fuelType) {
+          const message = 'Fuel type is required for trailer transportation.';
           throw new HttpException(message, HttpStatus.BAD_REQUEST);
         }
-        return new TransportationDetailsEntity(undefined, dto.transportDistance, dto.transportMode, dto.fuelType);
+        transportationDetails = new TransportationDetailsEntity(undefined, dto.distance, dto.transportMode, dto.fuelType);
+        break;
       case TransportMode.PIPELINE:
-        return new TransportationDetailsEntity(undefined, 0, dto.transportMode, undefined);
+        transportationDetails = new TransportationDetailsEntity(undefined, 0, dto.transportMode, undefined);
+        break;
       default: {
         const message = `Invalid transport mode: ${dto.transportMode}`;
         throw new HttpException(message, HttpStatus.BAD_REQUEST);
       }
     }
+
+    return transportationDetails;
   }
 
   private async fetchProducerName(producerId: string): Promise<string> {

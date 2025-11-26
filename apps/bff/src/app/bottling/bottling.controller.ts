@@ -92,6 +92,10 @@ export class BottlingController {
           type: 'string',
           default: BottlingDtoMock[0].transportMode,
         },
+        distance: {
+          type: 'number',
+          default: BottlingDtoMock[0].distance,
+        },
         fuelType: {
           type: 'string',
           default: BottlingDtoMock[0].fuelType,

@@ -7,7 +7,7 @@
  */
 
 import { Transform } from 'class-transformer';
-import { IsEnum, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { IsEnum, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, ValidateIf } from 'class-validator';
 import { BatchEntity, CompanyEntity, ProcessStepEntity, QualityDetailsEntity } from '@h2-trust/amqp';
 import { FuelType, HydrogenColor, TransportMode } from '@h2-trust/domain';
 
@@ -47,13 +47,16 @@ export class BottlingDto {
   @IsEnum(TransportMode)
   transportMode: TransportMode;
 
+  @ValidateIf((o) => o.transportMode === TransportMode.TRAILER)
   @IsOptional()
   @IsNumber()
   @IsPositive()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
-  transportDistance?: number;
+  distance?: number;
 
+  @ValidateIf((o) => o.transportMode === TransportMode.TRAILER)
   @IsOptional()
+  @IsEnum(FuelType)
   fuelType?: FuelType;
 
   constructor(
@@ -66,7 +69,7 @@ export class BottlingDto {
     file: string,
     fileDescription: string,
     transportMode: TransportMode,
-    transportDistance: number,
+    distance: number,
     fuelType: FuelType,
   ) {
     this.amount = amount;
@@ -78,9 +81,7 @@ export class BottlingDto {
     this.file = file;
     this.fileDescription = fileDescription;
     this.transportMode = transportMode;
-    // TODO-MH: Remove the default value once DUHGW-274 has been completed
-    // this.transportDistance = transportDistance
-    this.transportDistance = transportDistance ?? 100;
+    this.distance = distance;
     this.fuelType = fuelType;
   }
 
