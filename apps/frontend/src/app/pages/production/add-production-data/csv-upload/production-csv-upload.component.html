@@ -1,16 +1,19 @@
 <div class="grid w-full grid-cols-2 gap-4" [formGroup]="form">
   @if (mutation.isPending()) {
+    <!--LOADING-->
     <div class="col-span-2 flex flex-col items-center gap-4 rounded-lg bg-white p-8">
       <mat-spinner></mat-spinner>
       <span class="text-neutral-500">Processing files...</span>
     </div>
   } @else if (mutation.isError()) {
+    <!--ERROR-->
     <div class="col-span-2 flex flex-col items-center gap-2 rounded-lg bg-white p-8">
       <span class="material-symbols-outlined text-primary-200 text-4xl">error</span>
       <span class="text-neutral-500">Failed to import files.</span>
       <button mat-button (click)="cancel()">try again</button>
     </div>
   } @else if (mutation.isSuccess()) {
+    <!--RESULT-->
     <div class="col-span-2 grid grid-cols-3 gap-4 rounded-lg bg-white p-4">
       <div class="col-span-3 flex flex-col">
         <h2>Import Result</h2>
@@ -73,6 +76,7 @@
       <button mat-flat-button (click)="save()" [disabled]="storageUnit.invalid">Save</button>
     </div>
   } @else {
+    <!--FILE INPUT-->
     <div class="bg-primary-200/20 col-span-2 rounded-lg p-4 text-neutral-600">
       <span class="flex items-center gap-1 font-semibold">
         <span class="material-symbols-outlined">lightbulb_2</span>Hint</span
@@ -118,7 +122,7 @@
           </div>
         }
       } @else {
-        <span class="text-sm text-neutral-500">No files selected.</span>
+        <span class="text-sm text-neutral-500">No file selected.</span>
       }
     </div>
 
