@@ -34,6 +34,7 @@ export const PowerProductionUnitCreateDtoMock = <PowerProductionUnitCreateDto[]>
     gridLevel: GridLevel.HIGH_VOLTAGE,
     ratedPower: 3000,
     electricityMeterNumber: 'EM789012',
+    financialSupportReceived: false,
     gridOperator: 'Regional Grid Operator GmbH',
     gridConnectionNumber: 'GC456789',
     decommissioningPlannedOn: new Date('2043-01-15').toISOString(),

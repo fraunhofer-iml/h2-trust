@@ -10,44 +10,37 @@ import { HttpStatus } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { BrokerException, ProcessStepEntity } from '@h2-trust/amqp';
 import { BatchType, ProcessType } from '@h2-trust/domain';
+import { assertDefined } from '@h2-trust/utils';
 
 export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Prisma.ProcessStepCreateInput {
-  if (!processStep.type) {
-    throw new BrokerException(`ProcessType must be defined.`, HttpStatus.INTERNAL_SERVER_ERROR);
-  }
+  assertDefined(processStep.batch, 'ProcessStepEntity.batch');
+  assertDefined(processStep.batch.amount, 'ProcessStepEntity.batch.amount');
+  assertDefined(processStep.type, 'ProcessStepEntity.type');
 
-  if (processStep.type === ProcessType.POWER_PRODUCTION && processStep.batch?.hydrogenStorageUnit?.id) {
+  const hydrogenStorageUnitId = processStep.batch.hydrogenStorageUnit?.id;
+
+  if (processStep.type === ProcessType.POWER_PRODUCTION && hydrogenStorageUnitId) {
     throw new BrokerException(
-      `Power production batch with amount [${processStep.batch?.amount}] has a hydrogen storage unit [${processStep.batch.hydrogenStorageUnit.id}]`,
+      `Power production batch with amount [${processStep.batch.amount}] has a hydrogen storage unit [${hydrogenStorageUnitId}]`,
       HttpStatus.INTERNAL_SERVER_ERROR,
     );
   }
 
-  if (processStep.type === ProcessType.HYDROGEN_PRODUCTION && !processStep.batch?.hydrogenStorageUnit?.id) {
+  if (processStep.type === ProcessType.HYDROGEN_PRODUCTION && !hydrogenStorageUnitId) {
     throw new BrokerException(
-      `Hydrogen production batch with amount [${processStep.batch?.amount}] has no hydrogen storage unit`,
+      `Hydrogen production batch with amount [${processStep.batch.amount}] has no hydrogen storage unit`,
       HttpStatus.INTERNAL_SERVER_ERROR,
     );
   }
 
-  if (processStep.type === ProcessType.HYDROGEN_BOTTLING && processStep.batch?.hydrogenStorageUnit?.id) {
+  if (processStep.type === ProcessType.HYDROGEN_BOTTLING && hydrogenStorageUnitId) {
     throw new BrokerException(
-      `Hydrogen bottling batch with amount [${processStep.batch?.amount}] has a hydrogen storage unit [${processStep.batch.hydrogenStorageUnit.id}]`,
+      `Hydrogen bottling batch with amount [${processStep.batch.amount}] has a hydrogen storage unit [${hydrogenStorageUnitId}]`,
       HttpStatus.INTERNAL_SERVER_ERROR,
     );
   }
 
-  if (!processStep.batch) {
-    throw new BrokerException('ProcessStepEntity.batch was undefined', HttpStatus.BAD_REQUEST);
-  }
-
-  if (!processStep.batch.amount) {
-    throw new BrokerException('ProcessStepEntity.batch.amount was undefined', HttpStatus.BAD_REQUEST);
-  }
-
-  if (!processStep.batch.predecessors) {
-    processStep.batch.predecessors = [];
-  }
+  const predecessors = processStep.batch.predecessors ?? [];
 
   return Prisma.validator<Prisma.ProcessStepCreateInput>()({
     startedAt: processStep.startedAt,
@@ -76,14 +69,14 @@ export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Pri
           },
         },
         predecessors: {
-          connect: processStep.batch.predecessors.map((batch) => {
+          connect: predecessors.map((batch) => {
             return { id: batch.id };
           }),
         },
-        ...(processStep.batch.hydrogenStorageUnit?.id && {
+        ...(hydrogenStorageUnitId && {
           hydrogenStorageUnit: {
             connect: {
-              id: processStep.batch.hydrogenStorageUnit.id,
+              id: hydrogenStorageUnitId,
             },
           },
         }),
