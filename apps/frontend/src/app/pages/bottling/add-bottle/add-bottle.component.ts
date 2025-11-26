@@ -102,11 +102,10 @@ export class AddBottleComponent {
 
   constructor() {
     this.bottleFormGroup.controls.transportMode.valueChanges.subscribe((value) => {
-      if (value === TransportMode.TRAILER) 
-        this.bottleFormGroup.controls.fuelType.addValidators(Validators.required);
+      if (value === TransportMode.TRAILER) this.bottleFormGroup.controls.fuelType.addValidators(Validators.required);
       if (value === TransportMode.PIPELINE)
         this.bottleFormGroup.controls.fuelType.removeValidators(Validators.required);
-      
+
       this.bottleFormGroup.controls.fuelType.updateValueAndValidity();
 
       if (value === TransportMode.TRAILER) {

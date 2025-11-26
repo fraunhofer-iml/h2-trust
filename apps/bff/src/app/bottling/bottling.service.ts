@@ -34,7 +34,7 @@ export class BottlingService {
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
   async createBottling(dto: BottlingDto, files: Express.Multer.File[], userId: string): Promise<BottlingOverviewDto> {
     const baseBottling = BottlingDto.toEntity({ ...dto, recordedBy: userId });
@@ -55,9 +55,9 @@ export class BottlingService {
       predecessorBatch: createdBottling.batch,
       transportationDetails: this.buildTransportationDetails(dto),
     };
-    return firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION, payload)
-    ).then(BottlingOverviewDto.fromEntity);
+    return firstValueFrom(this.batchSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION, payload)).then(
+      BottlingOverviewDto.fromEntity,
+    );
   }
 
   async readBottlingsByCompany(userId: string): Promise<BottlingOverviewDto[]> {
@@ -101,7 +101,12 @@ export class BottlingService {
           const message = 'Fuel type is required for trailer transportation.';
           throw new HttpException(message, HttpStatus.BAD_REQUEST);
         }
-        transportationDetails = new TransportationDetailsEntity(undefined, dto.distance, dto.transportMode, dto.fuelType);
+        transportationDetails = new TransportationDetailsEntity(
+          undefined,
+          dto.distance,
+          dto.transportMode,
+          dto.fuelType,
+        );
         break;
       case TransportMode.PIPELINE:
         transportationDetails = new TransportationDetailsEntity(undefined, 0, dto.transportMode, undefined);

@@ -20,6 +20,6 @@ export const BottlingDtoMock = <BottlingDto[]>[
     fileDescription: 'Certificate for green hydrogen production',
     transportMode: TransportMode.TRAILER,
     distance: 1000,
-    fuelType: FuelType.DIESEL,    
+    fuelType: FuelType.DIESEL,
   },
 ];
