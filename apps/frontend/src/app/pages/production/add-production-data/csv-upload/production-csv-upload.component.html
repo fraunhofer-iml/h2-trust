@@ -1,6 +1,15 @@
 <div class="grid w-full grid-cols-2 gap-4" [formGroup]="form">
   @if (mutation.isPending()) {
-    <div class="h-10 animate-pulse rounded-lg bg-white"></div>
+    <div class="col-span-2 flex flex-col items-center gap-4 rounded-lg bg-white p-8">
+      <mat-spinner></mat-spinner>
+      <span class="text-neutral-500">Processing files...</span>
+    </div>
+  } @else if (mutation.isError()) {
+    <div class="col-span-2 flex flex-col items-center gap-2 rounded-lg bg-white p-8">
+      <span class="material-symbols-outlined text-primary-200 text-4xl">error</span>
+      <span class="text-neutral-500">Failed to import files.</span>
+      <button mat-button (click)="cancel()">try again</button>
+    </div>
   } @else if (mutation.isSuccess()) {
     <div class="col-span-2 grid grid-cols-3 gap-4 rounded-lg bg-white p-4">
       <div class="col-span-3 flex flex-col">
@@ -69,16 +78,18 @@
         <span class="material-symbols-outlined">lightbulb_2</span>Hint</span
       >
       <p>
-        Drag and drop your CSV file here. It must use a semicolon (;) as the delimiter and include the columns
+        Drag and drop your CSV file here. It must use a comma (,) as the delimiter and include the columns
         <strong>time</strong> and <strong>amount</strong>, for hydrogen production the column <strong>power</strong> is
         required as well. The first row should contain headers. Other formats cannot be processed.
       </p>
     </div>
     <div class="flex flex-col gap-4 rounded-lg bg-white p-4" formArrayName="h2ProductionFiles">
       <span>Hydrogen Production</span>
-      <app-file-drag-and-drop (fileSelected)="addFileFormWithUnit($event, h2ProductionFiles)"></app-file-drag-and-drop>
+      <app-file-drag-and-drop
+        (fileSelected)="addHydrogenProductionFileWithUnit($event, h2ProductionFiles)"
+      ></app-file-drag-and-drop>
       @if (h2ProductionFiles.controls.length !== 0) {
-        @for (file of h2ProductionFiles.controls; track $index; let i = $index) {
+        @for (file of h2ProductionFiles.controls; track file; let i = $index) {
           <div [formGroupName]="i" class="rounded-md bg-neutral-100 p-4">
             <div class="flex flex-row justify-between pb-4">
               <div class="flex flex-col">

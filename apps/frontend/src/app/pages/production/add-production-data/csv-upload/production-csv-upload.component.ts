@@ -22,6 +22,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
@@ -56,6 +57,7 @@ import { FileForm } from './file-upload.form';
     FileSizePipe,
     MatButtonModule,
     UnitPipe,
+    MatProgressBarModule,
   ],
   templateUrl: './production-csv-upload.component.html',
 })
@@ -139,6 +141,11 @@ export class ProductionCsvUploadComponent {
   removeFile(index: number, form: FormArray<FileForm> | FormArray<FormGroup<{ file: FormControl<File | null> }>>) {
     form.controls.splice(index, 1);
     form.updateValueAndValidity();
+  }
+
+  addHydrogenProductionFileWithUnit(file: File, form: FormArray<FileForm>) {
+    form.clear();
+    this.addFileFormWithUnit(file, form);
   }
 
   addFileFormWithUnit(file: File, form: FormArray<FileForm>) {

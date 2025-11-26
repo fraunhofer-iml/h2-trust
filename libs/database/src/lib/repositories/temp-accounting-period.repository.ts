@@ -31,6 +31,6 @@ export class TempAccountingPeriodRepository {
     });
 
     if (!res) throw new Error(`Could not find Intervalls for id ${id}`);
-    return res.productionIntervalls;
+    return res.productionIntervalls.map(ProductionIntervallEntity.fromDatabase);
   }
 }

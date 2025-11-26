@@ -44,7 +44,8 @@ export class CsvParserService {
   }
 
   async parseFile<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(buffer: string): Promise<T[]> {
-    const errors: string[] = [];
+    let skipped = 0;
+    let invalid = 0;
     return new Promise<T[]>((resolve, reject) => {
       parse<T>(
         buffer,
@@ -69,7 +70,7 @@ export class CsvParserService {
               }
 
               if (!date || isNaN(date.getTime())) {
-                this.logger.warn(`Failed to convert "${value}" to date`);
+                invalid++;
                 return null;
               }
               return date;
@@ -79,11 +80,11 @@ export class CsvParserService {
               if (!value) return null;
               const num = Number(value);
               if (Number.isNaN(num)) {
-                this.logger.warn(`Failed to convert "${value}" to Number`);
+                invalid++;
                 return null;
               }
               if (num === 0) {
-                this.logger.warn(`Skipped row containing 0 in column ${context.column}`);
+                skipped++;
                 return null;
               }
               return num;
@@ -97,7 +98,8 @@ export class CsvParserService {
             return reject(err);
           }
           this.logger.log('Parsed records:', records.length);
-          this.logger.log('skipped records:', errors.length);
+          this.logger.log('skipped records:', skipped);
+          this.logger.log('Invalid records:', invalid);
           resolve(records);
         },
       );

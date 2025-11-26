@@ -29,11 +29,9 @@ export class AccountingPeriodMatcherService {
         const powerConsumed = value[0].powerConsumed;
         let remainingPower = powerConsumed;
 
-        while (power.length > 0) {
+        while (power.length > 0 && remainingPower > 0) {
           const powerUsed = power[0].amount > powerConsumed ? powerConsumed : power[0].amount;
           const fraction = powerUsed / powerConsumed;
-
-          console.log(value[0]);
 
           batches.push({
             date: new Date(key),
@@ -99,8 +97,6 @@ export class AccountingPeriodMatcherService {
 
           if (!acc[hourKey]) acc[hourKey] = [0, 0];
 
-          console.log(acc[hourKey][1]);
-
           acc[hourKey][0] = (acc[hourKey][0] || 0) + item.amount;
           acc[hourKey][1] = (acc[hourKey][1] || 0) + item.power;
           return acc;
@@ -108,7 +104,6 @@ export class AccountingPeriodMatcherService {
         {} as Record<string, [number, number]>,
       );
       Object.entries(hourlyTotals).forEach(([key, value]) => {
-        console.log(value);
         this.addToMap<{ unitId: string; amount: number; powerConsumed: number }>(powerMap, `${key}:00:00Z`, {
           unitId: bundle.unitId,
           amount: value[0],

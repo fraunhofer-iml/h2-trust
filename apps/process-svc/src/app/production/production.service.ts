@@ -286,6 +286,10 @@ export class ProductionService {
 
     const { id, createdAt } = await this.intervallRepo.createTempAccountingPeriods(productionIntervalls);
 
+    console.log(new IntervallMappingResult(id, createdAt, productionIntervalls));
+    console.log(await this.intervallRepo.getIntervallSetById(id));
+    console.log(productionIntervalls);
+
     return new IntervallMappingResult(id, createdAt, productionIntervalls);
   }
 
@@ -293,37 +297,33 @@ export class ProductionService {
     const intervalls = await this.intervallRepo.getIntervallSetById(props.accountingPeriodSetId);
 
     return await Promise.all(
-      intervalls
-        .map(async (intervall) => {
-          const hydrogenColor = await this.fetchHydrogenColor(intervall.powerProductionUnitId);
-          const companyIdOfPowerProductionUnit = await this.fetchCompanyOfProductionUnit(
-            intervall.powerProductionUnitId,
-          );
-          const companyIdOfHydrogenProductionUnit = await this.fetchCompanyOfProductionUnit(
-            intervall.hydrogenProductionUnitId,
-          );
+      intervalls.map(async (intervall) => {
+        const hydrogenColor = await this.fetchHydrogenColor(intervall.powerProductionUnitId);
+        const companyIdOfPowerProductionUnit = await this.fetchCompanyOfProductionUnit(intervall.powerProductionUnitId);
+        const companyIdOfHydrogenProductionUnit = await this.fetchCompanyOfProductionUnit(
+          intervall.hydrogenProductionUnitId,
+        );
 
-          const startedAt: Date = new Date(intervall.date);
-          const endedAt: Date = new Date(new Date(intervall.date).setMinutes(59, 59, 999));
+        const startedAt: Date = new Date(intervall.date);
+        const endedAt: Date = new Date(new Date(intervall.date).setMinutes(59, 59, 999));
 
-          const entity = new CreateProductionEntity(
-            startedAt.toISOString(),
-            endedAt.toISOString(),
-            intervall.powerProductionUnitId,
-            intervall.powerAmount,
-            intervall.hydrogenProductionUnitId,
-            intervall.hydrogenAmount,
-            props.recordedBy,
-            hydrogenColor,
-            props.hydrogenStorageUnitId,
-            companyIdOfPowerProductionUnit,
-            companyIdOfHydrogenProductionUnit,
-          );
+        const entity = new CreateProductionEntity(
+          startedAt.toISOString(),
+          endedAt.toISOString(),
+          intervall.powerProductionUnitId,
+          intervall.powerAmount,
+          intervall.hydrogenProductionUnitId,
+          intervall.hydrogenAmount,
+          props.recordedBy,
+          hydrogenColor,
+          props.hydrogenStorageUnitId,
+          companyIdOfPowerProductionUnit,
+          companyIdOfHydrogenProductionUnit,
+        );
 
-          return this.createProduction(entity, true);
-        })
-        .flat(),
-    ).then((rs) => rs.flat());
+        return this.createProduction(entity, true);
+      }),
+    ).then((processSteps) => processSteps.flat());
   }
 
   private async fetchHydrogenColor(powerProductionUnitId: string): Promise<string> {
