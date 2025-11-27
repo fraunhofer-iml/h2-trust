@@ -115,7 +115,7 @@ export class ProductionService {
     hydrogenProductionFiles: Express.Multer.File[],
     dto: ProductionCSVUploadDto,
     userId: string,
-  ) {
+  ): Promise<IntervallMappingResultDto>  {
     if (
       !powerProductionFiles ||
       powerProductionFiles.length === 0 ||
