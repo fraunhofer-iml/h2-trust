@@ -44,6 +44,11 @@ export class UnitController {
     return this.service.readHydrogenProductionUnits(payload.companyId);
   }
 
+  @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS_BY_IDS)
+  async readHydrogenProductionUnitsByIds(@Payload() payload: { ids: string[] }): Promise<HydrogenProductionUnitEntity[]> {
+    return this.service.readHydrogenProductionUnitsByIds(payload.ids);
+  }
+
   @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_STORAGE_UNITS)
   async readHydrogenStorageUnits(@Payload() payload: { companyId: string }): Promise<HydrogenStorageUnitEntity[]> {
     return this.service.readHydrogenStorageUnits(payload.companyId);
