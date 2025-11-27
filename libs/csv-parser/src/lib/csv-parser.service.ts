@@ -72,11 +72,9 @@ export class CsvParserService {
                 date = new Date(year, month - 1, day, hours, minutes, 0);
               } else if (!isNaN(Date.parse(value))) {
                 date = new Date(value);
-                console.log('timestamp', date);
               } else if (!isNaN(Number(value))) {
                 const num = Number(value);
                 date = new Date((num - 25569) * 86400 * 1000);
-                console.log('excel', date);
               }
 
               if (!date || isNaN(date.getTime())) {

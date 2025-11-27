@@ -9,16 +9,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, PowerProductionTypeEntity, ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
 import 'multer';
+import { Express } from 'express';
+import { CsvParserService } from 'libs/csv-parser/src/lib/csv-parser.service';
+import { Multer } from 'multer';
 import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   AuthenticatedKCUser,
   CreateProductionDto,
   CreateProductionDtoMock,
+  IntervallMappingResultDto,
+  ProductionCSVUploadDto,
   ProductionOverviewDto,
   UserDetailsDtoMock,
 } from '@h2-trust/api';
-import { EnergySource, HydrogenColor, ProcessType } from '@h2-trust/domain';
+import { CsvParserModule } from '@h2-trust/csv-parser';
+import { EnergySource, HydrogenColor, PowerProductionType, ProcessType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
@@ -32,7 +38,7 @@ describe('ProductionController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [],
+      imports: [CsvParserModule],
       controllers: [ProductionController],
       providers: [
         ProductionService,
@@ -83,7 +89,7 @@ describe('ProductionController', () => {
         of({
           ratedPower: 100,
           type: <PowerProductionTypeEntity>{
-            name: 'Test Power Production Unit Type',
+            name: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
             energySource: EnergySource.SOLAR_ENERGY,
             hydrogenColor: HydrogenColor.GREEN,
           },
@@ -151,5 +157,82 @@ describe('ProductionController', () => {
       await controller.readHydrogenProductionsByCompany(givenAuthenticatedUser);
 
     expect(actualResponse).toEqual(expectedResponse);
+  });
+
+  it('should throw because files are missing ', async () => {
+    const givenAuthenticatedUser: AuthenticatedKCUser = { sub: 'user-1' };
+
+    const dto: ProductionCSVUploadDto = { hydrogenProductionUnitIds: [], powerProductionUnitIds: [] };
+
+    await expect(
+      controller.importCsv(dto, { powerProductionFiles: [], hydrogenProductionFiles: [] }, givenAuthenticatedUser),
+    ).rejects.toThrow(Error);
+  });
+
+  it('should parse csv', async () => {
+    const givenAuthenticatedUser: AuthenticatedKCUser = { sub: 'user-1' };
+
+    const expectedResponse: IntervallMappingResultDto = {
+      createdAt: new Date(),
+      hydrogenProduced: 20,
+      id: 'id',
+      numberOfBatches: 1,
+      powerUsed: 2,
+    };
+
+    const powerContent = 'time,amount\n2025-11-27T09:00:00Z,2\n2025-11-27T09:00:00Z,2';
+
+    const powerFile: Express.Multer.File = {
+      fieldname: 'file',
+      originalname: 'powerFile',
+      encoding: '7bit',
+      mimetype: 'text/csv',
+      buffer: Buffer.from(powerContent, 'utf-8'),
+      size: Buffer.byteLength(powerContent),
+      destination: '',
+      filename: 'powerFile',
+      path: '',
+      stream: null as any,
+    };
+
+    const h2Content = 'time,amount,power\n2025-11-27T09:00:00Z,2\n2025-11-27T09:00:00Z,2,2';
+
+    const h2File: Express.Multer.File = {
+      fieldname: 'file',
+      originalname: 'h2File',
+      encoding: '7bit',
+      mimetype: 'text/csv',
+      buffer: Buffer.from(h2Content, 'utf-8'),
+      size: Buffer.byteLength(h2Content),
+      destination: '',
+      filename: 'h2File',
+      path: '',
+      stream: null as any,
+    };
+
+    jest.spyOn(generalSvc, 'send').mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: any) =>
+      of({
+        company: {
+          id: 'company-power-production-1',
+        },
+      }),
+    );
+
+    jest
+      .spyOn(processSvc, 'send')
+      .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(expectedResponse));
+
+    const dto: ProductionCSVUploadDto = {
+      hydrogenProductionUnitIds: ['hydrogen-production-unit-1'],
+      powerProductionUnitIds: ['power-production-unit-1'],
+    };
+
+    const actualResponse = await controller.importCsv(
+      dto,
+      { powerProductionFiles: [powerFile], hydrogenProductionFiles: [h2File] },
+      givenAuthenticatedUser,
+    );
+
+    expect(actualResponse.numberOfBatches).toBe(1);
   });
 });

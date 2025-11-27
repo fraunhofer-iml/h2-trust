@@ -18,7 +18,7 @@ import {
   UnitRepository,
   UserRepository,
 } from './repositories';
-import { TempAccountingPeriodRepository } from './repositories/temp-accounting-period.repository';
+import { ProductionIntervallRepository } from './repositories/production-intervall.repository';
 
 @Module({
   controllers: [],
@@ -32,7 +32,7 @@ import { TempAccountingPeriodRepository } from './repositories/temp-accounting-p
     PowerAccessApprovalRepository,
     PowerProductionTypeRepository,
     CompanyRepository,
-    TempAccountingPeriodRepository,
+    ProductionIntervallRepository,
   ],
   exports: [
     PrismaService,
@@ -44,7 +44,7 @@ import { TempAccountingPeriodRepository } from './repositories/temp-accounting-p
     PowerAccessApprovalRepository,
     PowerProductionTypeRepository,
     CompanyRepository,
-    TempAccountingPeriodRepository,
+    ProductionIntervallRepository,
   ],
 })
 export class DatabaseModule {}

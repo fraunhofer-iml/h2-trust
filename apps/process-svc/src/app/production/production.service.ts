@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { TempAccountingPeriodRepository } from 'libs/database/src/lib/repositories/temp-accounting-period.repository';
 import { firstValueFrom } from 'rxjs';
 import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
@@ -33,6 +32,7 @@ import {
   UserEntity,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
+import { ProductionIntervallRepository } from '@h2-trust/database';
 import { BatchType, PowerAccessApprovalStatus, ProcessType } from '@h2-trust/domain';
 import { DateTimeUtil } from '@h2-trust/utils';
 import { AccountingPeriodMatcherService } from './accounting-period-matching/accounting-period-matcher.service';
@@ -67,7 +67,7 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     private readonly configurationService: ConfigurationService,
     private readonly accountingPeriodMatcher: AccountingPeriodMatcherService,
-    private readonly intervallRepo: TempAccountingPeriodRepository,
+    private readonly intervallRepo: ProductionIntervallRepository,
   ) {
     const configuration = this.configurationService.getProcessSvcConfiguration();
     this.powerAccountingPeriodInSeconds = configuration.powerAccountingPeriodInSeconds;

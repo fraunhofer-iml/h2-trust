@@ -6,11 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ProductionIntervallRepository } from 'libs/database/src/lib/repositories/production-intervall.repository';
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues, CreateProductionEntity } from '@h2-trust/amqp';
+import { BrokerQueues, CreateProductionEntity, ParsedFileBundles, PowerAccessApprovalEntity } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
+import { AccountingPeriodMatcherService } from './accounting-period-matching/accounting-period-matcher.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
 
@@ -20,6 +22,7 @@ describe('ProductionController', () => {
   let controller: ProductionController;
   let generalServiceSendMock: jest.Mock;
   let batchServiceSendMock: jest.Mock;
+  let productionIntervallRepo: ProductionIntervallRepository;
 
   beforeEach(async () => {
     generalServiceSendMock = jest.fn().mockImplementation(() => {
@@ -59,10 +62,19 @@ describe('ProductionController', () => {
             send: batchServiceSendMock,
           },
         },
+        AccountingPeriodMatcherService,
+        {
+          provide: ProductionIntervallRepository,
+          useValue: {
+            createProductionIntervalls: jest.fn(),
+            getIntervallSetById: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     controller = moduleRef.get<ProductionController>(ProductionController);
+    productionIntervallRepo = moduleRef.get<ProductionIntervallRepository>(ProductionIntervallRepository);
   });
 
   it('should be defined', () => {
@@ -223,5 +235,48 @@ describe('ProductionController', () => {
         endedAt: new Date('2025-01-01T10:44:59.000Z'),
       }),
     );
+  });
+
+  it('should create productionintervalls from parsed files', async () => {
+    const data: ParsedFileBundles = {
+      hydrogenProduction: [
+        {
+          unitId: 'test-hydrogen-unit-1',
+          data: [
+            {
+              amount: 20,
+              power: 20,
+              time: new Date('2025-01-01T10:44:59.000Z'),
+            },
+          ],
+        },
+      ],
+      powerProduction: [
+        {
+          unitId: 'test-hydrogen-unit-1',
+          data: [
+            {
+              amount: 20,
+              time: new Date('2025-01-01T10:44:59.000Z'),
+            },
+          ],
+        },
+      ],
+    };
+
+    generalServiceSendMock.mockImplementation(() => {
+      return of([
+        { id: 'test-approval-1', powerProductionUnit: { type: { name: 'GRID' } } } as PowerAccessApprovalEntity,
+      ]);
+    });
+
+    jest
+      .spyOn(productionIntervallRepo, 'createProductionIntervalls')
+      .mockResolvedValue({ id: 'test-id', createdAt: new Date() });
+
+    const actualResponse = await controller.createProductionINtervalsFromCsvData({ data, userId: 'user-id-1' });
+
+    expect(actualResponse.numberOfBatches).toBe(1);
+    expect(actualResponse.id).toBe('test-id');
   });
 });

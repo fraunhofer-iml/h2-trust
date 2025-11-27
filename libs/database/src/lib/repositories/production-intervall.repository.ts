@@ -11,7 +11,7 @@ import { ProductionIntervallEntity } from '@h2-trust/amqp';
 import { PrismaService } from '../prisma.service';
 
 @Injectable()
-export class TempAccountingPeriodRepository {
+export class ProductionIntervallRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async createProductionIntervalls(data: ProductionIntervallEntity[]) {
