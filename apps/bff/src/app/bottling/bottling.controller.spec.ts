@@ -32,11 +32,13 @@ import { UserService } from '../user/user.service';
 import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';
 import { DigitalProductPassportService } from './digital-product-passport/digital-product-passport.service';
+import { RedComplianceService } from './red-compliance/red-compliance.service';
 
 describe('BottlingController', () => {
   let controller: BottlingController;
   let batchSvc: ClientProxy;
   let generalSvc: ClientProxy;
+  let redComplianceService: RedComplianceService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -47,6 +49,12 @@ describe('BottlingController', () => {
         {
           provide: DigitalProductPassportService,
           useValue: {},
+        },
+        {
+          provide: RedComplianceService,
+          useValue: {
+            determineRedCompliance: jest.fn(),
+          },
         },
         {
           provide: UserService,
@@ -78,6 +86,7 @@ describe('BottlingController', () => {
     controller = module.get<BottlingController>(BottlingController);
     batchSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_BATCH_SVC) as ClientProxy;
     generalSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_GENERAL_SVC) as ClientProxy;
+    redComplianceService = module.get<RedComplianceService>(RedComplianceService);
   });
 
   afterEach(() => {
@@ -177,10 +186,21 @@ describe('BottlingController', () => {
     const expectedBatchSvcPayload2 = returnedProcessStep.id;
     const expectedGeneralSvcPayload = { id: returnedProcessStep.recordedBy.id };
 
+    const mockedRedCompliance = {
+      isGeoCorrelationValid: true,
+      isTimeCorrelationValid: true,
+      isAdditionalityFulfilled: true,
+      isFinancialSupportReceived: true,
+    };
+    jest
+      .spyOn(redComplianceService, 'determineRedCompliance')
+      .mockResolvedValue(mockedRedCompliance as any);
+
     const expectedResponse: GeneralInformationDto = {
       ...GeneralInformationDto.fromEntityToDto(returnedProcessStep),
       hydrogenComposition: returnedHydrogenCompositions,
       producer: UserDetailsDtoMock[0].company.name,
+      redCompliance: mockedRedCompliance as any,
     };
     const actualResponse: GeneralInformationDto = await controller.readGeneralInformation(returnedProcessStep.id);
 

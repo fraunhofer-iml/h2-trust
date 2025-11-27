@@ -15,7 +15,7 @@ import {
   ProvenanceMessagePatterns,
 } from '@h2-trust/amqp';
 import {RedComplianceDto,} from '@h2-trust/api';
-import { areUnitsInSameBiddingZone, hasFinancialSupport, isAdditionality, isWithinTimeCorrelation } from './red-compliance.flags';
+import { areUnitsInSameBiddingZone, hasFinancialSupport, meetsAdditionalityCriterion, isWithinTimeCorrelation } from './red-compliance.flags';
 import { RedCompliancePairingService } from './red-compliance.pairs.service';
 import { MatchedProductionPair } from './matched-production-pair';
 
@@ -63,7 +63,7 @@ export class RedComplianceService {
 
       isGeoCorrelationValid &&= areUnitsInSameBiddingZone(powerProductionUnit, hydrogenProductionUnit);
       isTimeCorrelationValid &&= isWithinTimeCorrelation(pair.power.processStep, pair.hydrogen.processStep);
-      isAdditionalityFulfilled &&= isAdditionality(powerProductionUnit, hydrogenProductionUnit);
+      isAdditionalityFulfilled &&= meetsAdditionalityCriterion(powerProductionUnit, hydrogenProductionUnit);
       isFinancialSupportReceived &&= hasFinancialSupport(powerProductionUnit);
 
       if (!isGeoCorrelationValid && !isTimeCorrelationValid && !isAdditionalityFulfilled && !isFinancialSupportReceived) {

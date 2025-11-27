@@ -16,7 +16,7 @@ describe('BottlingService#buildTransportationDetails', () => {
   let service: BottlingService;
 
   beforeEach(() => {
-    service = new BottlingService(undefined, undefined, undefined);
+    service = new BottlingService(undefined, undefined, undefined, undefined);
   });
 
   it(`should throw exception for transport mode ${TransportMode.TRAILER} when distance is missing`, () => {

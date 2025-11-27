@@ -51,7 +51,7 @@ export function isWithinTimeCorrelation(
   );
 }
 
-export function isAdditionality(
+export function meetsAdditionalityCriterion(
   powerUnit: PowerProductionUnitEntity,
   hydrogenUnit: HydrogenProductionUnitEntity,
 ): boolean {
