@@ -13,11 +13,10 @@ import { BatchType, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
 import { BatchAssembler } from './batch.assembler';
 import { ClassificationAssembler } from './classification.assembler';
 import { EmissionCalculationAssembler } from '../emission.assembler';
-import { EmissionComputationService } from '../emission-computation.service';
 
 @Injectable()
 export class WaterSupplyClassificationService {
-  constructor(private readonly emissionService: EmissionComputationService) {}
+  constructor() { }
 
   createWaterSupplyClassification(waterSupplies: ProcessStepEntity[]): ClassificationDto {
     if (!waterSupplies?.length) {
@@ -26,7 +25,7 @@ export class WaterSupplyClassificationService {
     }
 
     const waterBatches: WaterBatchDto[] = waterSupplies.map((waterSupply) => {
-      const emissionCalculation: EmissionCalculationDto = this.emissionService.computeWaterSupplyEmissions(waterSupply);
+      const emissionCalculation: EmissionCalculationDto = EmissionCalculationAssembler.assembleWaterSupplyCalculation(waterSupply);
       const hydrogenKgEquivalentToWaterBatch: number = waterSupply.batch.successors[0].amount;
       const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(
         emissionCalculation,
