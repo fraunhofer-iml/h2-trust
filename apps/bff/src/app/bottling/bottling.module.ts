@@ -12,10 +12,11 @@ import { UserService } from '../user/user.service';
 import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';
 import { DigitalProductPassportModule } from './digital-product-passport/digital-product-passport.module';
+import {RedComplianceService} from "./red-compliance.service";
 
 @Module({
-  imports: [new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker(), DigitalProductPassportModule],
+  imports: [new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker(), new Broker().getProcessSvcBroker(), DigitalProductPassportModule],
   controllers: [BottlingController],
-  providers: [BottlingService, UserService],
+  providers: [BottlingService, UserService, RedComplianceService],
 })
 export class BottlingModule {}
