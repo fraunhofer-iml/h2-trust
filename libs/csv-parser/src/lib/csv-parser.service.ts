@@ -30,11 +30,11 @@ export class CsvParserService {
       }
     }
 
-    const records: T[] = await this.parseFile<T>(buffer, columns);
+    const records: T[] = await this.parseBuffer<T>(buffer, columns);
     return records.filter((row) => Object.values(row).every((val) => val !== null));
   }
 
-  async parseFile<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
+  private async parseBuffer<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
     buffer: string,
     colums: string[],
   ): Promise<T[]> {

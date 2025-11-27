@@ -16,7 +16,7 @@ import {
   BrokerException,
   BrokerQueues,
   CreateProductionEntity,
-  IntervallMatchingResult,
+  IntervallMatchingResultEntity,
   ParsedFileBundles,
   PowerProductionUnitEntity,
   ProcessStepEntity,
@@ -29,7 +29,8 @@ import {
 } from '@h2-trust/amqp';
 import {
   CreateProductionDto,
-  IntervallMappingResultDto,
+  ImportSubmissionDto,
+  IntervallMatchingResultDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   UserDetailsDto,
@@ -136,14 +137,14 @@ export class ProductionService {
 
     const payload = { data: processedFiles, userId: userId };
     const matchingResult = await firstValueFrom(
-      this.processSvc.send<IntervallMatchingResult>(ProductionMessagePatterns.PERIOD_MATCHING, payload),
+      this.processSvc.send<IntervallMatchingResultEntity>(ProductionMessagePatterns.PERIOD_MATCHING, payload),
     );
 
-    return new IntervallMappingResultDto(matchingResult);
+    return new IntervallMatchingResultDto(matchingResult);
   }
 
-  submitCsvdata(id: string, hydrogenStorageUnitId: string, userId: string) {
-    const payload: SubmitProductionProps = new SubmitProductionProps(userId, hydrogenStorageUnitId, id);
+  submitCsvData(dto: ImportSubmissionDto, userId: string) {
+    const payload: SubmitProductionProps = new SubmitProductionProps(userId, dto.storageUnitId, dto.intervallSetId);
     return firstValueFrom(this.processSvc.send(ProductionMessagePatterns.IMPORT, payload));
   }
 
@@ -153,46 +154,6 @@ export class ProductionService {
       : files.length
         ? [new UnitFileBundle(unitIds, files[0])]
         : [];
-  }
-
-  private async processFile<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
-    files: Express.Multer.File[],
-    unitIds: string | string[],
-    kind: 'power' | 'hydrogen',
-  ) {
-    if (!files || files.length === 0) {
-      throw new BadRequestException('Missing file for hydrogen production.');
-    }
-
-    if (unitIds.length < files.length) {
-      throw new BadRequestException(`Missing related unit for power production.`);
-    }
-
-    const h2ProductionData: UnitFileBundle[] = this.mapToImportedFileBundles(unitIds, files);
-
-    const headers = this.getValidHeaders(kind);
-
-    const parsedPowerFiles = await Promise.all(
-      h2ProductionData.map(async (bundle) => {
-        const parsedFile: T[] = await this.csvParser.parse<T>(bundle.file, headers);
-        return new UnitDataBundle<T>(bundle.unitId, parsedFile);
-      }),
-    );
-
-    if (parsedPowerFiles.some((bundle) => bundle.data.length < 1)) {
-      throw new BrokerException('Hydrogen production file does not contain any valid items.', HttpStatus.BAD_REQUEST);
-    }
-
-    return parsedPowerFiles;
-  }
-
-  private getValidHeaders(kind: 'power' | 'hydrogen'): string[] {
-    const map = new Map<'power' | 'hydrogen', string[]>([
-      ['power', ['time', 'amount']],
-      ['hydrogen', ['time', 'amount', 'power']],
-    ]);
-
-    return map.get(kind);
   }
 
   private async processFile<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(

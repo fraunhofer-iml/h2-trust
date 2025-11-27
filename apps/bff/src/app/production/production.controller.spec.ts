@@ -13,7 +13,7 @@ import {
   AuthenticatedKCUser,
   CreateProductionDto,
   CreateProductionDtoMock,
-  IntervallMappingResultDto,
+  IntervallMatchingResultDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   UserDetailsDtoMock,
@@ -169,7 +169,7 @@ describe('ProductionController', () => {
   it('should parse csv', async () => {
     const givenAuthenticatedUser: AuthenticatedKCUser = { sub: 'user-1' };
 
-    const expectedResponse: IntervallMappingResultDto = {
+    const expectedResponse: IntervallMatchingResultDto = {
       createdAt: new Date(),
       hydrogenProduced: 20,
       id: 'id',

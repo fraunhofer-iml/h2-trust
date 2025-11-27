@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IntervallMatchingResult } from '@h2-trust/amqp';
+import { IntervallMatchingResultEntity } from '@h2-trust/amqp';
 
-export class IntervallMappingResultDto {
+export class IntervallMatchingResultDto {
   id: string;
   createdAt: Date;
 
@@ -16,7 +16,7 @@ export class IntervallMappingResultDto {
   hydrogenProduced: number;
   numberOfBatches: number;
 
-  constructor(entity: IntervallMatchingResult) {
+  constructor(entity: IntervallMatchingResultEntity) {
     this.id = entity.id;
     this.createdAt = entity.createdAt;
     this.powerUsed = entity.powerUsed;
