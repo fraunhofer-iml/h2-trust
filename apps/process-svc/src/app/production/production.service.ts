@@ -86,8 +86,10 @@ export class ProductionService {
       isSingleAccountingPeriod,
     );
 
-    const waterConsumptionProcessSteps: ProcessStepEntity[] = [];
-    await this.createWaterConsumptionProcessSteps(createProductionEntity, isSingleAccountingPeriod);
+    const waterConsumptionProcessSteps: ProcessStepEntity[] = await this.createWaterConsumptionProcessSteps(
+      createProductionEntity,
+      isSingleAccountingPeriod,
+    );
 
     const hydrogenProductionProcessSteps: ProcessStepEntity[] = await this.createHydrogenProductionProcessSteps(
       createProductionEntity,
