@@ -6,14 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { of } from 'rxjs';
 import { HttpException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import { of } from 'rxjs';
 import { BrokerQueues } from '@h2-trust/amqp';
-import { RedComplianceService } from './red-compliance.service';
+import { RedComplianceDto } from '@h2-trust/api';
 import { RedCompliancePairingService } from './red-compliance.pairs.service';
-import {RedComplianceDto} from "@h2-trust/api";
+import { RedComplianceService } from './red-compliance.service';
 
 describe('RedComplianceService', () => {
   let service: RedComplianceService;
@@ -81,7 +81,7 @@ describe('RedComplianceService', () => {
     (pairingService.buildMatchedPairs as jest.Mock).mockResolvedValue(pairs);
 
     const result = await service.determineRedCompliance('root-ps');
-    expect(result).toEqual( new RedComplianceDto(true, true, true, true));
+    expect(result).toEqual(new RedComplianceDto(true, true, true, true));
   });
 
   it('returns all false when the first pair violates all rules', async () => {
@@ -112,14 +112,20 @@ describe('RedComplianceService', () => {
     jest.spyOn(processSvc, 'send').mockImplementation(() => of(baseProvenance));
     (pairingService.buildMatchedPairs as jest.Mock).mockResolvedValue(pairs);
     const result = await service.determineRedCompliance('root-ps');
-    expect(result).toEqual( new RedComplianceDto(false, false, false, false));
+    expect(result).toEqual(new RedComplianceDto(false, false, false, false));
   });
 
   it('throws error when a pair is missing production units after enrichment', async () => {
     const pairs = [
       {
-        power: { processStep: { executedBy: { id: 'power-1' }, startedAt: '2025-01-01T10:00:00.000Z' }, unit: undefined },
-        hydrogen: { processStep: { executedBy: { id: 'h2-1' }, startedAt: '2025-01-01T10:00:00.000Z' }, unit: undefined },
+        power: {
+          processStep: { executedBy: { id: 'power-1' }, startedAt: '2025-01-01T10:00:00.000Z' },
+          unit: undefined,
+        },
+        hydrogen: {
+          processStep: { executedBy: { id: 'h2-1' }, startedAt: '2025-01-01T10:00:00.000Z' },
+          unit: undefined,
+        },
       },
     ];
     jest.spyOn(processSvc, 'send').mockImplementation(() => of(baseProvenance));

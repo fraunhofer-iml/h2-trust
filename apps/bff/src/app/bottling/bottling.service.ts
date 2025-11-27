@@ -26,7 +26,7 @@ import {
 } from '@h2-trust/api';
 import { ProcessType, TransportMode } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
-import {RedComplianceService} from "./red-compliance/red-compliance.service";
+import { RedComplianceService } from './red-compliance/red-compliance.service';
 
 @Injectable()
 export class BottlingService {

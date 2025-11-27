@@ -6,10 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { of } from 'rxjs';
 import { HttpException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import { of } from 'rxjs';
 import { BrokerQueues, UnitMessagePatterns } from '@h2-trust/amqp';
 import { RedCompliancePairingService } from './red-compliance.pairs.service';
 
@@ -64,9 +64,7 @@ describe('RedCompliancePairingService', () => {
         );
       }
       if (pattern === UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS_BY_IDS) {
-        return of(
-          data.ids.map((id: string) => ({ id, biddingZone: 'DE_LU', commissionedOn: '2024-01-01' })),
-        );
+        return of(data.ids.map((id: string) => ({ id, biddingZone: 'DE_LU', commissionedOn: '2024-01-01' })));
       }
       return of(undefined);
     });

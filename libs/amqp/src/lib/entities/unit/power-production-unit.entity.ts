@@ -7,7 +7,7 @@
  */
 
 import { PowerProductionUnitDbType } from '@h2-trust/database';
-import {BiddingZone, GridLevel, UnitType} from '@h2-trust/domain';
+import { BiddingZone, GridLevel, UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
 import { BaseUnitEntity } from './base-unit.entity';

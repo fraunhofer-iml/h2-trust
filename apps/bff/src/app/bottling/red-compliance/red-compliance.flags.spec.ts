@@ -7,8 +7,13 @@
  */
 
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { areUnitsInSameBiddingZone, hasFinancialSupport, meetsAdditionalityCriterion, isWithinTimeCorrelation } from './red-compliance.flags';
 import { BiddingZone } from '@h2-trust/domain';
+import {
+  areUnitsInSameBiddingZone,
+  hasFinancialSupport,
+  isWithinTimeCorrelation,
+  meetsAdditionalityCriterion,
+} from './red-compliance.flags';
 
 describe('red-compliance.flags', () => {
   describe('areUnitsInSameBiddingZone', () => {

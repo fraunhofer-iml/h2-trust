@@ -6,30 +6,30 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {firstValueFrom} from 'rxjs';
-import {HttpException, HttpStatus, Inject, Injectable} from '@nestjs/common';
-import {ClientProxy} from '@nestjs/microservices';
-import {
-  BrokerQueues,
-  ProvenanceEntity,
-  ProvenanceMessagePatterns,
-} from '@h2-trust/amqp';
-import {RedComplianceDto,} from '@h2-trust/api';
-import { areUnitsInSameBiddingZone, hasFinancialSupport, meetsAdditionalityCriterion, isWithinTimeCorrelation } from './red-compliance.flags';
-import { RedCompliancePairingService } from './red-compliance.pairs.service';
+import { firstValueFrom } from 'rxjs';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { BrokerQueues, ProvenanceEntity, ProvenanceMessagePatterns } from '@h2-trust/amqp';
+import { RedComplianceDto } from '@h2-trust/api';
 import { MatchedProductionPair } from './matched-production-pair';
+import {
+  areUnitsInSameBiddingZone,
+  hasFinancialSupport,
+  isWithinTimeCorrelation,
+  meetsAdditionalityCriterion,
+} from './red-compliance.flags';
+import { RedCompliancePairingService } from './red-compliance.pairs.service';
 
 @Injectable()
 export class RedComplianceService {
   constructor(
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly pairingService: RedCompliancePairingService,
-  ) {
-  }
+  ) {}
 
   async determineRedCompliance(processStepId: string): Promise<RedComplianceDto> {
     const provenance: ProvenanceEntity = await firstValueFrom(
-      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, {processStepId}),
+      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, { processStepId }),
     );
     if (!provenance || !provenance.powerProductions?.length || !provenance.hydrogenProductions?.length) {
       const message = `Provenance or required productions (power/hydrogen) are missing for processStepId [${processStepId}]`;
@@ -66,7 +66,12 @@ export class RedComplianceService {
       isAdditionalityFulfilled &&= meetsAdditionalityCriterion(powerProductionUnit, hydrogenProductionUnit);
       isFinancialSupportReceived &&= hasFinancialSupport(powerProductionUnit);
 
-      if (!isGeoCorrelationValid && !isTimeCorrelationValid && !isAdditionalityFulfilled && !isFinancialSupportReceived) {
+      if (
+        !isGeoCorrelationValid &&
+        !isTimeCorrelationValid &&
+        !isAdditionalityFulfilled &&
+        !isFinancialSupportReceived
+      ) {
         break;
       }
     }
@@ -78,5 +83,4 @@ export class RedComplianceService {
       isFinancialSupportReceived,
     );
   }
-
 }

@@ -7,7 +7,7 @@
  */
 
 import { PowerProductionUnitSeed, UnitSeed } from 'libs/database/src/seed';
-import {BiddingZone, GridLevel, UnitType} from '@h2-trust/domain';
+import { BiddingZone, GridLevel, UnitType } from '@h2-trust/domain';
 import { AddressEntityPowerMock } from '../../address';
 import { CompanyEntityPowerMock } from '../../company';
 import { PowerProductionUnitEntity } from '../power-production-unit.entity';

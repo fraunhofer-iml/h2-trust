@@ -45,7 +45,9 @@ export class UnitController {
   }
 
   @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS_BY_IDS)
-  async readHydrogenProductionUnitsByIds(@Payload() payload: { ids: string[] }): Promise<HydrogenProductionUnitEntity[]> {
+  async readHydrogenProductionUnitsByIds(
+    @Payload() payload: { ids: string[] },
+  ): Promise<HydrogenProductionUnitEntity[]> {
     return this.service.readHydrogenProductionUnitsByIds(payload.ids);
   }
 

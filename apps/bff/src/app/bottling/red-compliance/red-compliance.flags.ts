@@ -7,11 +7,7 @@
  */
 
 import { HttpException, HttpStatus } from '@nestjs/common';
-import {
-  HydrogenProductionUnitEntity,
-  PowerProductionUnitEntity,
-  ProcessStepEntity,
-} from '@h2-trust/amqp';
+import { HydrogenProductionUnitEntity, PowerProductionUnitEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import { BiddingZone } from '@h2-trust/domain';
 
 export function areUnitsInSameBiddingZone(
@@ -21,10 +17,7 @@ export function areUnitsInSameBiddingZone(
   const powerUnitZone: BiddingZone = powerUnit.biddingZone;
   const hydrogenUnitZone: BiddingZone = hydrogenUnit.biddingZone;
   if (powerUnitZone == null || hydrogenUnitZone == null) {
-    throw new HttpException(
-      'Missing biddingZone on power or hydrogen unit',
-      HttpStatus.BAD_REQUEST,
-    );
+    throw new HttpException('Missing biddingZone on power or hydrogen unit', HttpStatus.BAD_REQUEST);
   }
   return powerUnitZone === hydrogenUnitZone;
 }
@@ -35,20 +28,11 @@ export function isWithinTimeCorrelation(
 ): boolean {
   const powerStartedAt = new Date(powerProduction.startedAt);
   const hydrogenStartedAt = new Date(hydrogenProduction.startedAt);
-  if (
-    Number.isNaN(powerStartedAt.getTime()) ||
-    Number.isNaN(hydrogenStartedAt.getTime())
-  ) {
-    throw new HttpException(
-      'Invalid startedAt on power or hydrogen production step',
-      HttpStatus.BAD_REQUEST,
-    );
+  if (Number.isNaN(powerStartedAt.getTime()) || Number.isNaN(hydrogenStartedAt.getTime())) {
+    throw new HttpException('Invalid startedAt on power or hydrogen production step', HttpStatus.BAD_REQUEST);
   }
   // Rounding to the nearest hour and comparing
-  return (
-    powerStartedAt.setMinutes(0, 0, 0) ===
-    hydrogenStartedAt.setMinutes(0, 0, 0)
-  );
+  return powerStartedAt.setMinutes(0, 0, 0) === hydrogenStartedAt.setMinutes(0, 0, 0);
 }
 
 export function meetsAdditionalityCriterion(
@@ -57,14 +41,8 @@ export function meetsAdditionalityCriterion(
 ): boolean {
   const powerCommissioning = new Date(powerUnit.commissionedOn);
   const hydrogenCommissioning = new Date(hydrogenUnit.commissionedOn);
-  if (
-    Number.isNaN(powerCommissioning.getTime()) ||
-    Number.isNaN(hydrogenCommissioning.getTime())
-  ) {
-    throw new HttpException(
-      'Invalid commissionedOn on power or hydrogen unit',
-      HttpStatus.BAD_REQUEST,
-    );
+  if (Number.isNaN(powerCommissioning.getTime()) || Number.isNaN(hydrogenCommissioning.getTime())) {
+    throw new HttpException('Invalid commissionedOn on power or hydrogen unit', HttpStatus.BAD_REQUEST);
   }
 
   // Limit date: 36 months prior to commissioning of the electrolyzer
@@ -74,8 +52,6 @@ export function meetsAdditionalityCriterion(
   return powerCommissioning >= limitDate;
 }
 
-export function hasFinancialSupport(
-  powerUnit: PowerProductionUnitEntity,
-): boolean {
+export function hasFinancialSupport(powerUnit: PowerProductionUnitEntity): boolean {
   return powerUnit.financialSupportReceived;
 }

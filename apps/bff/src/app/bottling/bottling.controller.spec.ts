@@ -192,9 +192,7 @@ describe('BottlingController', () => {
       isAdditionalityFulfilled: true,
       isFinancialSupportReceived: true,
     };
-    jest
-      .spyOn(redComplianceService, 'determineRedCompliance')
-      .mockResolvedValue(mockedRedCompliance as any);
+    jest.spyOn(redComplianceService, 'determineRedCompliance').mockResolvedValue(mockedRedCompliance as any);
 
     const expectedResponse: GeneralInformationDto = {
       ...GeneralInformationDto.fromEntityToDto(returnedProcessStep),

@@ -45,7 +45,6 @@ export class UnitRepository {
       .then(this.mapToActualUnitEntity);
   }
 
-
   mapToActualUnitEntity(_unit: Prisma.UnitGetPayload<typeof allUnitsQueryArgs>): UnitEntity {
     const { powerProductionUnit, hydrogenProductionUnit, hydrogenStorageUnit, ...unit } = _unit;
 
