@@ -164,17 +164,8 @@ export class ProductionService {
   }
 
   private mapToImportedFileBundles(unitIds: string | string[], files: Express.Multer.File[]): UnitFileBundle[] {
-    const data: UnitFileBundle[] = [];
-
-    if (Array.isArray(unitIds)) {
-      for (let i = 0; i < files.length; i++) {
-        const bundle = new UnitFileBundle(unitIds[i], files[i]);
-        data.push(bundle);
-      }
-    } else {
-      data.push(new UnitFileBundle(unitIds, files[0]));
-    }
-
-    return data;
+    return Array.isArray(unitIds)
+      ? files.map((file, i) => new UnitFileBundle(unitIds[i], file))
+      : (files.length ? [new UnitFileBundle(unitIds, files[0])] : []);
   }
 }
