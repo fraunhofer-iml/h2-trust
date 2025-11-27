@@ -18,7 +18,7 @@ import {
   CreateProductionEntity,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
-  IntervallMappingResult,
+  IntervallMatchingResult,
   ParsedFileBundles,
   PowerAccessApprovalEntity,
   PowerAccessApprovalPatterns,
@@ -287,7 +287,7 @@ export class ProductionService {
     );
 
     const { id, createdAt } = await this.intervallRepo.createProductionIntervalls(productionIntervalls);
-    return new IntervallMappingResult(id, createdAt, productionIntervalls);
+    return new IntervallMatchingResult(id, createdAt, productionIntervalls);
   }
 
   async saveImportedData(props: SubmitProductionProps): Promise<ProcessStepEntity[]> {

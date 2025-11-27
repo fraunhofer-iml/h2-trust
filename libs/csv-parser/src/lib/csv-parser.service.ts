@@ -8,45 +8,11 @@
 
 import { parse } from 'csv-parse';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import {
-  AccountingPeriodHydrogen,
-  AccountingPeriodPower,
-  BrokerException,
-  ParsedFileBundles,
-  UnitDataBundle,
-  UnitFileBundle,
-} from '@h2-trust/amqp';
+import { AccountingPeriodHydrogen, AccountingPeriodPower, BrokerException } from '@h2-trust/amqp';
 
 @Injectable()
 export class CsvParserService {
-  columns = {
-    AccountingPeriodPower: ['time', 'amount'],
-    AccountingPeriodHydrogen: ['time', 'amount', 'power'],
-  };
-
   private readonly logger: Logger = new Logger(CsvParserService.name);
-
-  async processFiles(powerProduction: UnitFileBundle[], hydrogenProduction: UnitFileBundle[]) {
-    const parsedPowerFiles = await Promise.all(
-      powerProduction.map(async (bundle) => {
-        const parsedFile: AccountingPeriodPower[] = await this.parse<AccountingPeriodPower>(
-          bundle.file,
-          this.columns.AccountingPeriodPower,
-        );
-        return new UnitDataBundle<AccountingPeriodPower>(bundle.unitId, parsedFile);
-      }),
-    );
-    const parsedHydrogenFiles = await Promise.all(
-      hydrogenProduction.map(async (bundle) => {
-        const parsedFile: AccountingPeriodHydrogen[] = await this.parse<AccountingPeriodHydrogen>(
-          bundle.file,
-          this.columns.AccountingPeriodHydrogen,
-        );
-        return new UnitDataBundle<AccountingPeriodHydrogen>(bundle.unitId, parsedFile);
-      }),
-    );
-    return new ParsedFileBundles(parsedPowerFiles, parsedHydrogenFiles);
-  }
 
   async parse<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
     file: Express.Multer.File,
@@ -138,7 +104,6 @@ export class CsvParserService {
           this.logger.log('skipped records:', skipped);
           this.logger.log('Invalid records:', invalid);
 
-          console.log(records);
           resolve(records);
         },
       );

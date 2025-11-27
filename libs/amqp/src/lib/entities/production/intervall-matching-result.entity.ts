@@ -8,7 +8,7 @@
 
 import { ProductionIntervallEntity } from './production-intervall.entity';
 
-export class IntervallMappingResult {
+export class IntervallMatchingResult {
   id: string;
   createdAt: Date;
 

@@ -11,15 +11,19 @@ import { firstValueFrom } from 'rxjs';
 import { BadRequestException, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
+  AccountingPeriodHydrogen,
+  AccountingPeriodPower,
   BrokerException,
   BrokerQueues,
   CreateProductionEntity,
-  IntervallMappingResult,
+  IntervallMatchingResult,
+  ParsedFileBundles,
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
   SubmitProductionProps,
+  UnitDataBundle,
   UnitFileBundle,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
@@ -116,43 +120,23 @@ export class ProductionService {
     dto: ProductionCSVUploadDto,
     userId: string,
   ) {
-    if (
-      !powerProductionFiles ||
-      powerProductionFiles.length === 0 ||
-      !hydrogenProductionFiles ||
-      hydrogenProductionFiles.length === 0
-    )
-      throw new BadRequestException(
-        'At least one file for power production and one file for hydrogen production is required.',
-      );
-
-    if (
-      dto.hydrogenProductionUnitIds.length < hydrogenProductionFiles.length ||
-      dto.powerProductionUnitIds.length < powerProductionFiles.length
-    )
-      throw new BadRequestException(`Missing related  unit for at least one file.`);
-
-    const h2ProductionData: UnitFileBundle[] = this.mapToImportedFileBundles(
-      dto.hydrogenProductionUnitIds,
+    const h2 = await this.processFile<AccountingPeriodHydrogen>(
       hydrogenProductionFiles,
+      dto.hydrogenProductionUnitIds,
+      'hydrogen',
     );
 
-    const powerProductionData: UnitFileBundle[] = this.mapToImportedFileBundles(
-      dto.powerProductionUnitIds,
+    const power = await this.processFile<AccountingPeriodPower>(
       powerProductionFiles,
+      dto.powerProductionUnitIds,
+      'power',
     );
 
-    const processedFiles = await this.csvParser.processFiles(powerProductionData, h2ProductionData);
-
-    if (
-      processedFiles.hydrogenProduction.some((bundle) => bundle.data.length < 1) ||
-      processedFiles.powerProduction.some((bundle) => bundle.data.length < 1)
-    )
-      throw new BrokerException('All files need to contain at least one valid item.', HttpStatus.BAD_REQUEST);
+    const processedFiles: ParsedFileBundles = { hydrogenProduction: h2, powerProduction: power };
 
     const payload = { data: processedFiles, userId: userId };
     const matchingResult = await firstValueFrom(
-      this.processSvc.send<IntervallMappingResult>(ProductionMessagePatterns.PERIOD_MATCHING, payload),
+      this.processSvc.send<IntervallMatchingResult>(ProductionMessagePatterns.PERIOD_MATCHING, payload),
     );
 
     return new IntervallMappingResultDto(matchingResult);
@@ -176,5 +160,45 @@ export class ProductionService {
     }
 
     return data;
+  }
+
+  private async processFile<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
+    files: Express.Multer.File[],
+    unitIds: string | string[],
+    kind: 'power' | 'hydrogen',
+  ) {
+    if (!files || files.length === 0) {
+      throw new BadRequestException('Missing file for hydrogen production.');
+    }
+
+    if (unitIds.length < files.length) {
+      throw new BadRequestException(`Missing related unit for power production.`);
+    }
+
+    const h2ProductionData: UnitFileBundle[] = this.mapToImportedFileBundles(unitIds, files);
+
+    const headers = this.getValidHeaders(kind);
+
+    const parsedPowerFiles = await Promise.all(
+      h2ProductionData.map(async (bundle) => {
+        const parsedFile: T[] = await this.csvParser.parse<T>(bundle.file, headers);
+        return new UnitDataBundle<T>(bundle.unitId, parsedFile);
+      }),
+    );
+
+    if (parsedPowerFiles.some((bundle) => bundle.data.length < 1)) {
+      throw new BrokerException('Hydrogen production file does not contain any valid items.', HttpStatus.BAD_REQUEST);
+    }
+
+    return parsedPowerFiles;
+  }
+
+  private getValidHeaders(kind: 'power' | 'hydrogen'): string[] {
+    const map = new Map<'power' | 'hydrogen', string[]>([
+      ['power', ['time', 'amount']],
+      ['hydrogen', ['time', 'amount', 'power']],
+    ]);
+
+    return map.get(kind);
   }
 }
