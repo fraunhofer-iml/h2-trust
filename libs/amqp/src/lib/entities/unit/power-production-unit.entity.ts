@@ -7,7 +7,7 @@
  */
 
 import { PowerProductionUnitDbType } from '@h2-trust/database';
-import { GridLevel, UnitType } from '@h2-trust/domain';
+import {BiddingZone, GridLevel, UnitType} from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
 import { BaseUnitEntity } from './base-unit.entity';
@@ -19,7 +19,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
   ratedPower?: number;
   gridOperator?: string;
   gridLevel?: GridLevel;
-  biddingZone?: string;
+  biddingZone?: BiddingZone;
   gridConnectionNumber?: string;
   financialSupportReceived?: boolean;
   type?: PowerProductionTypeEntity;
@@ -50,7 +50,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     ratedPower: number,
     gridOperator: string,
     gridLevel: GridLevel,
-    biddingZone: string,
+    biddingZone: BiddingZone,
     gridConnectionNumber: string,
     financialSupportReceived: boolean,
     type: PowerProductionTypeEntity,
