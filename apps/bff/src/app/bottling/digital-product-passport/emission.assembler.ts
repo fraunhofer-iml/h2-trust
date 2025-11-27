@@ -187,7 +187,7 @@ export class EmissionCalculationAssembler {
     const powerSupplyEmission = new EmissionForProcessStepDto(
       powerSupplyEmissionAmount,
       'eps',
-      'Emissions from power supply',
+      'Power Supply',
       'APPLICATION',
     );
 
@@ -197,7 +197,7 @@ export class EmissionCalculationAssembler {
     const waterSupplyEmission = new EmissionForProcessStepDto(
       waterSupplyEmissionAmount,
       'ews',
-      'Emissions from water supply',
+      'Water Supply',
       'APPLICATION',
     );
 
@@ -207,7 +207,7 @@ export class EmissionCalculationAssembler {
     const hydrogenStorageEmission = new EmissionForProcessStepDto(
       hydrogenStorageEmissionAmount,
       'ehs',
-      'Emissions from hydrogen storage',
+      'Hydrogen Storage',
       'APPLICATION',
     );
 
@@ -217,7 +217,7 @@ export class EmissionCalculationAssembler {
     const hydrogenBottlingEmission = new EmissionForProcessStepDto(
       hydrogenBottlingEmissionAmount,
       'ehb',
-      'Emissions from hydrogen bottling',
+      'Hydrogen Bottling',
       'APPLICATION',
     );
 
@@ -227,7 +227,7 @@ export class EmissionCalculationAssembler {
     const hydrogenTransportationEmission = new EmissionForProcessStepDto(
       hydrogenTransportationEmissionAmount,
       'eht',
-      'Emissions from hydrogen transportation',
+      'Hydrogen Transportation',
       'APPLICATION',
     );
 
@@ -248,21 +248,21 @@ export class EmissionCalculationAssembler {
     const ei = new EmissionForProcessStepDto(
       hydrogenProductionEmissionAmount,
       'ei',
-      'Emissions from the supply of inputs',
+      'Supply of Inputs',
       'REGULATORY',
     );
 
     const ep = new EmissionForProcessStepDto(
       applicationEmissionAmount - hydrogenProductionEmissionAmount - hydrogenTransportEmissionAmount,
       'ep',
-      'Emissions from processing',
+      'Processing',
       'REGULATORY',
     );
 
     const etd = new EmissionForProcessStepDto(
       hydrogenTransportEmissionAmount,
       'etd',
-      'Emissions from transport and distribution',
+      'Transport and Distribution',
       'REGULATORY',
     );
 
