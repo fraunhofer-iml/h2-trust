@@ -245,7 +245,7 @@ describe('ProductionController', () => {
           data: [
             {
               amount: 20,
-              power: 20,
+              power: 40,
               time: new Date('2025-01-01T10:44:59.000Z'),
             },
           ],
@@ -276,7 +276,7 @@ describe('ProductionController', () => {
 
     const actualResponse = await controller.createProductionINtervalsFromCsvData({ data, userId: 'user-id-1' });
 
-    expect(actualResponse.numberOfBatches).toBe(1);
+    expect(actualResponse.numberOfBatches).toBe(2);
     expect(actualResponse.id).toBe('test-id');
   });
 });
