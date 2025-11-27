@@ -46,15 +46,12 @@ export class EmissionComputationService {
     }
 
     if (provenance.hydrogenProductions) {
-      const hydrogenProductions: EmissionCalculationDto[] = provenance.hydrogenProductions.map((hydrogenProduction) =>
-        EmissionCalculationAssembler.assembleHydrogenStorageCalculation(hydrogenProduction),
-      );
-      emissionCalculations.push(...hydrogenProductions);
+      const hydrogenStorages: EmissionCalculationDto[] = provenance.hydrogenProductions.map(() => EmissionCalculationAssembler.assembleHydrogenStorageCalculation(provenance.hydrogenProductions.length));
+      emissionCalculations.push(...hydrogenStorages);
     }
 
     if (provenance.hydrogenBottling) {
-      const hydrogenBottling: EmissionCalculationDto =
-        EmissionCalculationAssembler.assembleHydrogenBottlingCalculation();
+      const hydrogenBottling: EmissionCalculationDto = EmissionCalculationAssembler.assembleHydrogenBottlingCalculation(provenance.hydrogenBottling)
       emissionCalculations.push(hydrogenBottling);
     }
 

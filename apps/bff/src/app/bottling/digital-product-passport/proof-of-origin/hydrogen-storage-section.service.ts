@@ -20,11 +20,10 @@ import { HydrogenColor, ProofOfOrigin } from '@h2-trust/domain';
 import { BatchAssembler } from './batch.assembler';
 import { ClassificationAssembler } from './classification.assembler';
 import { EmissionCalculationAssembler } from '../emission.assembler';
-import { EmissionComputationService } from '../emission-computation.service';
 
 @Injectable()
 export class HydrogenStorageSectionService {
-  constructor(private readonly emissionCalculatorService: EmissionComputationService) {}
+  constructor() { }
 
   async buildSection(hydrogenProductions: ProcessStepEntity[]): Promise<SectionDto> {
     if (!hydrogenProductions?.length) {
@@ -44,13 +43,9 @@ export class HydrogenStorageSectionService {
 
       const batchesForHydrogenColor: BatchDto[] = await Promise.all(
         hydrogenProductionsByHydrogenColor.map(async (hydrogenProduction) => {
-          const emissionCalculation: EmissionCalculationDto =
-            await this.emissionCalculatorService.computeCumulativeEmissions(hydrogenProduction.id, 'storage');
+          const emissionCalculation: EmissionCalculationDto = EmissionCalculationAssembler.assembleHydrogenStorageCalculation(hydrogenProductions.length)
           const hydrogenKgEquivalent: number = hydrogenProduction.batch.amount;
-          const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(
-            emissionCalculation,
-            hydrogenKgEquivalent,
-          );
+          const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(emissionCalculation, hydrogenKgEquivalent);
           const batch: HydrogenBatchDto = BatchAssembler.assembleHydrogenStorageBatchDto(hydrogenProduction, emission);
           return batch;
         }),
