@@ -21,6 +21,7 @@ import {
   FuelType,
   GRAVIMETRIC_ENERGY_DENSITY_H2_MJ_PER_KG,
   POWER_EMISSION_FACTORS,
+  ProcessType,
   TRAILER_PARAMETERS,
   TrailerParameter,
   TransportMode,
@@ -32,6 +33,10 @@ export class EmissionCalculationAssembler {
     powerProduction: ProcessStepEntity,
     energySource: EnergySource,
   ): EmissionCalculationDto {
+    if (powerProduction?.type !== ProcessType.POWER_PRODUCTION) {
+      throw new Error(`Invalid process step type [${powerProduction?.type}] for power supply emission calculation`);
+    }
+
     const label = POWER_EMISSION_FACTORS[energySource].label;
     const powerAmountKwh = powerProduction.batch.amount;
     const emissionFactorGPerKWh = POWER_EMISSION_FACTORS[energySource].emissionFactor;
@@ -47,6 +52,10 @@ export class EmissionCalculationAssembler {
   }
 
   static assembleWaterSupplyCalculation(waterSupply: ProcessStepEntity): EmissionCalculationDto {
+    if (waterSupply?.type !== ProcessType.WATER_CONSUMPTION) {
+      throw new Error(`Invalid process step type [${waterSupply?.type}] for water supply emission calculation`);
+    }
+
     const label = 'Emissions (Water Supply)';
 
     const emissionFactorGCO2EqPerLiterWater = 0.43;
@@ -61,6 +70,10 @@ export class EmissionCalculationAssembler {
   }
 
   static assembleHydrogenStorageCalculation(batchAmount: number, hydrogenProductions: ProcessStepEntity[]): EmissionCalculationDto {
+    if (hydrogenProductions.some(hp => hp.type !== ProcessType.HYDROGEN_PRODUCTION)) {
+      throw new Error(`Invalid process step type for hydrogen storage emission calculation`);
+    }
+
     const label = 'Emissions (Compression)';
 
     const compression = 1.65;
@@ -76,6 +89,10 @@ export class EmissionCalculationAssembler {
   }
 
   static assembleHydrogenBottlingCalculation(_hydrogenBottling: ProcessStepEntity): EmissionCalculationDto {
+    if (_hydrogenBottling?.type !== ProcessType.HYDROGEN_BOTTLING) {
+      throw new Error(`Invalid process step type [${_hydrogenBottling?.type}] for hydrogen bottling emission calculation`);
+    }
+
     const label = 'Emissions (Hydrogen Bottling)';
 
     const basisOfCalculation = `TBA`;
@@ -88,6 +105,10 @@ export class EmissionCalculationAssembler {
   }
 
   static assembleHydrogenTransportationCalculation(processStep: ProcessStepEntity): EmissionCalculationDto {
+    if (processStep?.type !== ProcessType.HYDROGEN_TRANSPORTATION) {
+      throw new Error(`Invalid process step type [${processStep?.type}] for hydrogen transportation emission calculation`);
+    }
+
     const transportMode: string = processStep.transportationDetails?.transportMode;
     let emissionCalculation: EmissionCalculationDto;
 
