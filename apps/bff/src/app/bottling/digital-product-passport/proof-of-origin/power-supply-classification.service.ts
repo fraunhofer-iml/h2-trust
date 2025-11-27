@@ -17,25 +17,26 @@ import {
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { BatchDto, ClassificationDto, EmissionCalculationDto, EmissionDto, PowerBatchDto } from '@h2-trust/api';
+import { EmissionComputationService } from '../emission-computation.service';
+import { EmissionCalculationAssembler } from '../emission.assembler';
 import { BatchAssembler } from './batch.assembler';
 import { ClassificationAssembler } from './classification.assembler';
-import { EmissionCalculationAssembler } from '../emission.assembler';
-import { EmissionComputationService } from '../emission-computation.service';
 
 @Injectable()
 export class PowerSupplyClassificationService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     private readonly emissionComputationService: EmissionComputationService,
-  ) { }
+  ) {}
 
-  async createPowerSupplyClassifications(powerProductions: ProcessStepEntity[]): Promise<ClassificationDto[]> {
+  async buildPowerSupplyClassifications(powerProductions: ProcessStepEntity[]): Promise<ClassificationDto[]> {
     if (!powerProductions?.length) {
       return [];
     }
 
     const energySources = await this.fetchEnergySources();
-    const powerProductionsWithUnits = await this.fetchPowerProductionProcessStepsWithPowerProductionUnits(powerProductions);
+    const powerProductionsWithUnits =
+      await this.fetchPowerProductionProcessStepsWithPowerProductionUnits(powerProductions);
     const classifications: ClassificationDto[] = [];
 
     for (const energySource of energySources) {
@@ -46,15 +47,26 @@ export class PowerSupplyClassificationService {
       if (powerProductionsWithUnitsByEnergySource.length > 0) {
         const productionPowerBatches: BatchDto[] = await Promise.all(
           powerProductionsWithUnitsByEnergySource.map(async ([powerProduction]) => {
-            const [powerSupplyEmission]: EmissionCalculationDto[] = await this.emissionComputationService.computePowerSupplyEmissions([powerProduction]);
+            const [powerSupplyEmission]: EmissionCalculationDto[] =
+              await this.emissionComputationService.computePowerSupplyEmissions([powerProduction]);
             const hydrogenKgEquivalentToPowerBatch: number = powerProduction.batch.successors[0].amount;
-            const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(powerSupplyEmission, hydrogenKgEquivalentToPowerBatch);
-            const batch: PowerBatchDto = BatchAssembler.assemblePowerSupplyBatchDto(powerProduction, energySource, emission);
+            const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(
+              powerSupplyEmission,
+              hydrogenKgEquivalentToPowerBatch,
+            );
+            const batch: PowerBatchDto = BatchAssembler.assemblePowerSupplyBatchDto(
+              powerProduction,
+              energySource,
+              emission,
+            );
             return batch;
           }),
         );
 
-        const classification: ClassificationDto = ClassificationAssembler.assemblePowerClassification(energySource, productionPowerBatches);
+        const classification: ClassificationDto = ClassificationAssembler.assemblePowerClassification(
+          energySource,
+          productionPowerBatches,
+        );
         classifications.push(classification);
       }
     }

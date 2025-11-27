@@ -69,8 +69,11 @@ export class EmissionCalculationAssembler {
     return new EmissionCalculationDto(label, basisOfCalculation, result, unit, calculationTopic);
   }
 
-  static assembleHydrogenStorageCalculation(batchAmount: number, hydrogenProductions: ProcessStepEntity[]): EmissionCalculationDto {
-    if (hydrogenProductions.some(hp => hp.type !== ProcessType.HYDROGEN_PRODUCTION)) {
+  static assembleHydrogenStorageCalculation(
+    batchAmount: number,
+    hydrogenProductions: ProcessStepEntity[],
+  ): EmissionCalculationDto {
+    if (hydrogenProductions.some((hp) => hp.type !== ProcessType.HYDROGEN_PRODUCTION)) {
       throw new Error(`Invalid process step type for hydrogen storage emission calculation`);
     }
 
@@ -90,7 +93,9 @@ export class EmissionCalculationAssembler {
 
   static assembleHydrogenBottlingCalculation(_hydrogenBottling: ProcessStepEntity): EmissionCalculationDto {
     if (_hydrogenBottling?.type !== ProcessType.HYDROGEN_BOTTLING) {
-      throw new Error(`Invalid process step type [${_hydrogenBottling?.type}] for hydrogen bottling emission calculation`);
+      throw new Error(
+        `Invalid process step type [${_hydrogenBottling?.type}] for hydrogen bottling emission calculation`,
+      );
     }
 
     const label = 'Emissions (Hydrogen Bottling)';
@@ -106,7 +111,9 @@ export class EmissionCalculationAssembler {
 
   static assembleHydrogenTransportationCalculation(processStep: ProcessStepEntity): EmissionCalculationDto {
     if (processStep?.type !== ProcessType.HYDROGEN_TRANSPORTATION) {
-      throw new Error(`Invalid process step type [${processStep?.type}] for hydrogen transportation emission calculation`);
+      throw new Error(
+        `Invalid process step type [${processStep?.type}] for hydrogen transportation emission calculation`,
+      );
     }
 
     const transportMode: string = processStep.transportationDetails?.transportMode;
@@ -197,15 +204,15 @@ export class EmissionCalculationAssembler {
     );
   }
 
-  private static assembleApplicationEmissions(emissionCalculations: EmissionCalculationDto[]): EmissionForProcessStepDto[] {
+  private static assembleApplicationEmissions(
+    emissionCalculations: EmissionCalculationDto[],
+  ): EmissionForProcessStepDto[] {
     const calculateTotalEmissionAmountByCalculationTopic = (calculationTopic: CalculationTopic): number =>
       emissionCalculations
         .filter((emissionCalculation) => emissionCalculation.calculationTopic === calculationTopic)
         .reduce((acc, emissionCalculation) => acc + (emissionCalculation.result ?? 0), 0);
 
-    const powerSupplyEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(
-      CalculationTopic.POWER_SUPPLY,
-    );
+    const powerSupplyEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(CalculationTopic.POWER_SUPPLY);
     const powerSupplyEmission = new EmissionForProcessStepDto(
       powerSupplyEmissionAmount,
       'eps',
@@ -213,9 +220,7 @@ export class EmissionCalculationAssembler {
       'APPLICATION',
     );
 
-    const waterSupplyEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(
-      CalculationTopic.WATER_SUPPLY
-    );
+    const waterSupplyEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(CalculationTopic.WATER_SUPPLY);
     const waterSupplyEmission = new EmissionForProcessStepDto(
       waterSupplyEmissionAmount,
       'ews',
@@ -224,7 +229,7 @@ export class EmissionCalculationAssembler {
     );
 
     const hydrogenStorageEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(
-      CalculationTopic.HYDROGEN_STORAGE
+      CalculationTopic.HYDROGEN_STORAGE,
     );
     const hydrogenStorageEmission = new EmissionForProcessStepDto(
       hydrogenStorageEmissionAmount,
@@ -267,12 +272,7 @@ export class EmissionCalculationAssembler {
     applicationEmissionAmount: number,
     hydrogenTransportEmissionAmount: number,
   ): EmissionForProcessStepDto[] {
-    const ei = new EmissionForProcessStepDto(
-      hydrogenProductionEmissionAmount,
-      'ei',
-      'Supply of Inputs',
-      'REGULATORY',
-    );
+    const ei = new EmissionForProcessStepDto(hydrogenProductionEmissionAmount, 'ei', 'Supply of Inputs', 'REGULATORY');
 
     const ep = new EmissionForProcessStepDto(
       applicationEmissionAmount - hydrogenProductionEmissionAmount - hydrogenTransportEmissionAmount,

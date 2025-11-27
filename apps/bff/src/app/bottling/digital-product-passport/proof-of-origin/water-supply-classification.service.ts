@@ -10,22 +10,21 @@ import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { ClassificationDto, EmissionCalculationDto, EmissionDto, WaterBatchDto } from '@h2-trust/api';
 import { BatchType, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
+import { EmissionCalculationAssembler } from '../emission.assembler';
 import { BatchAssembler } from './batch.assembler';
 import { ClassificationAssembler } from './classification.assembler';
-import { EmissionCalculationAssembler } from '../emission.assembler';
 
 @Injectable()
 export class WaterSupplyClassificationService {
-  constructor() { }
-
-  createWaterSupplyClassification(waterSupplies: ProcessStepEntity[]): ClassificationDto {
+  buildWaterSupplyClassification(waterSupplies: ProcessStepEntity[]): ClassificationDto {
     if (!waterSupplies?.length) {
       const message = 'No process steps of type water supply found.';
       throw new Error(message);
     }
 
     const waterBatches: WaterBatchDto[] = waterSupplies.map((waterSupply) => {
-      const emissionCalculation: EmissionCalculationDto = EmissionCalculationAssembler.assembleWaterSupplyCalculation(waterSupply);
+      const emissionCalculation: EmissionCalculationDto =
+        EmissionCalculationAssembler.assembleWaterSupplyCalculation(waterSupply);
       const hydrogenKgEquivalentToWaterBatch: number = waterSupply.batch.successors[0].amount;
       const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(
         emissionCalculation,

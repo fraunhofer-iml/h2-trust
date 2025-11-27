@@ -30,10 +30,7 @@ export class BatchAssembler {
     );
   }
 
-  static assembleWaterSupplyBatchDto(
-    waterConsumption: ProcessStepEntity,
-    emission?: EmissionDto
-  ): WaterBatchDto {
+  static assembleWaterSupplyBatchDto(waterConsumption: ProcessStepEntity, emission?: EmissionDto): WaterBatchDto {
     return new WaterBatchDto(
       waterConsumption.batch.id,
       emission,
@@ -44,10 +41,7 @@ export class BatchAssembler {
     );
   }
 
-  static assembleHydrogenStorageBatchDto(
-    hydrogenStorage: ProcessStepEntity,
-    emission?: EmissionDto,
-  ): HydrogenBatchDto {
+  static assembleHydrogenStorageBatchDto(hydrogenStorage: ProcessStepEntity, emission?: EmissionDto): HydrogenBatchDto {
     return new HydrogenBatchDto(
       hydrogenStorage.batch.id,
       emission,

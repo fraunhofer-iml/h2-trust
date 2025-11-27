@@ -22,33 +22,45 @@ import { EmissionCalculationAssembler } from './emission.assembler';
 
 @Injectable()
 export class EmissionComputationService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) { }
+  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) {}
 
   async computeProvenanceEmissions(provenance: ProvenanceEntity): Promise<EmissionComputationResultDto> {
     const emissionCalculations: EmissionCalculationDto[] = [];
 
     if (provenance.powerProductions) {
-      const powerProductions: EmissionCalculationDto[] = await this.computePowerSupplyEmissions(provenance.powerProductions);
+      const powerProductions: EmissionCalculationDto[] = await this.computePowerSupplyEmissions(
+        provenance.powerProductions,
+      );
       emissionCalculations.push(...powerProductions);
     }
 
     if (provenance.waterConsumptions) {
-      const waterConsumptions: EmissionCalculationDto[] = provenance.waterConsumptions.map((waterConsumption) => EmissionCalculationAssembler.assembleWaterSupplyCalculation(waterConsumption));
+      const waterConsumptions: EmissionCalculationDto[] = provenance.waterConsumptions.map((waterConsumption) =>
+        EmissionCalculationAssembler.assembleWaterSupplyCalculation(waterConsumption),
+      );
       emissionCalculations.push(...waterConsumptions);
     }
 
     if (provenance.hydrogenProductions) {
-      const hydrogenStorages: EmissionCalculationDto[] = provenance.hydrogenProductions.map((hydrogenProduction) => EmissionCalculationAssembler.assembleHydrogenStorageCalculation(hydrogenProduction.batch.amount, provenance.hydrogenProductions));
+      const hydrogenStorages: EmissionCalculationDto[] = provenance.hydrogenProductions.map((hydrogenProduction) =>
+        EmissionCalculationAssembler.assembleHydrogenStorageCalculation(
+          hydrogenProduction.batch.amount,
+          provenance.hydrogenProductions,
+        ),
+      );
       emissionCalculations.push(...hydrogenStorages);
     }
 
     if (provenance.hydrogenBottling) {
-      const hydrogenBottling: EmissionCalculationDto = EmissionCalculationAssembler.assembleHydrogenBottlingCalculation(provenance.hydrogenBottling);
+      const hydrogenBottling: EmissionCalculationDto = EmissionCalculationAssembler.assembleHydrogenBottlingCalculation(
+        provenance.hydrogenBottling,
+      );
       emissionCalculations.push(hydrogenBottling);
     }
 
     if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION) {
-      const hydrogenTransportation: EmissionCalculationDto = EmissionCalculationAssembler.assembleHydrogenTransportationCalculation(provenance.root);
+      const hydrogenTransportation: EmissionCalculationDto =
+        EmissionCalculationAssembler.assembleHydrogenTransportationCalculation(provenance.root);
       emissionCalculations.push(hydrogenTransportation);
     }
 

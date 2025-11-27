@@ -19,7 +19,7 @@ export class HydrogenProductionSectionService {
   constructor(
     private readonly powerSupplyClassificationService: PowerSupplyClassificationService,
     private readonly waterSupplyClassificationService: WaterSupplyClassificationService,
-  ) { }
+  ) {}
 
   async buildSection(
     powerProductions: ProcessStepEntity[],
@@ -28,7 +28,8 @@ export class HydrogenProductionSectionService {
     const classifications: ClassificationDto[] = [];
 
     if (powerProductions?.length) {
-      const energySourceClassifications: ClassificationDto[] = await this.powerSupplyClassificationService.createPowerSupplyClassifications(powerProductions);
+      const energySourceClassifications: ClassificationDto[] =
+        await this.powerSupplyClassificationService.buildPowerSupplyClassifications(powerProductions);
       const powerSupplyClassification: ClassificationDto = ClassificationAssembler.assemblePowerClassification(
         ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION,
         [],
@@ -39,7 +40,7 @@ export class HydrogenProductionSectionService {
 
     if (waterConsumptions?.length) {
       const waterSupplyClassification: ClassificationDto =
-        this.waterSupplyClassificationService.createWaterSupplyClassification(waterConsumptions);
+        this.waterSupplyClassificationService.buildWaterSupplyClassification(waterConsumptions);
       classifications.push(waterSupplyClassification);
     }
 
