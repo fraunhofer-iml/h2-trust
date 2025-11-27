@@ -60,13 +60,14 @@ export class EmissionCalculationAssembler {
     return new EmissionCalculationDto(label, basisOfCalculation, result, unit, calculationTopic);
   }
 
-  static assembleHydrogenStorageCalculation(numberOfHydrogenProductionBatches: number): EmissionCalculationDto {
+  static assembleHydrogenStorageCalculation(batchAmount: number, hydrogenProductions: ProcessStepEntity[]): EmissionCalculationDto {
     const label = 'Emissions (Compression)';
 
-    const compressionKWhPerKg = 1.65;
+    const compression = 1.65;
     const powerEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID].emissionFactor;
-    const basisOfCalculation = `E = ${compressionKWhPerKg} kWh/kg H₂ * ${powerEmissionFactor} g CO₂,eq/kWh / ${numberOfHydrogenProductionBatches} batches`;
-    const result = compressionKWhPerKg * powerEmissionFactor / numberOfHydrogenProductionBatches;
+    const totalAmount = hydrogenProductions.reduce((acc, hp) => acc + hp.batch.amount, 0);
+    const basisOfCalculation = `E = ${compression} kWh/kg H₂ * ${powerEmissionFactor} g CO₂,eq/kWh * (${batchAmount} kg H₂ / ${totalAmount} kg H₂)`;
+    const result = compression * powerEmissionFactor * (batchAmount / totalAmount);
 
     const unit = UNIT_G_CO2_PER_KG_H2;
     const calculationTopic = CalculationTopic.HYDROGEN_STORAGE;

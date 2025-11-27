@@ -38,7 +38,7 @@ export class EmissionComputationService {
     }
 
     if (provenance.hydrogenProductions) {
-      const hydrogenStorages: EmissionCalculationDto[] = provenance.hydrogenProductions.map(() => EmissionCalculationAssembler.assembleHydrogenStorageCalculation(provenance.hydrogenProductions.length));
+      const hydrogenStorages: EmissionCalculationDto[] = provenance.hydrogenProductions.map((hydrogenProduction) => EmissionCalculationAssembler.assembleHydrogenStorageCalculation(hydrogenProduction.batch.amount, provenance.hydrogenProductions));
       emissionCalculations.push(...hydrogenStorages);
     }
 
