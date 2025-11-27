@@ -145,24 +145,6 @@ export class EmissionCalculationAssembler {
     return new EmissionCalculationDto(label, basisOfCalculation, result, unit, calculationTopic);
   }
 
-  static assembleCumulativeCalculation(
-    emissionCalculations: EmissionCalculationDto[],
-    emissionCalculationName: string,
-  ): EmissionCalculationDto {
-    const label = emissionCalculationName;
-
-    const basisOfCalculation = `Emissions (Cumulative - ${emissionCalculationName})`;
-    const totalEmissionsPerKg = (emissionCalculations ?? []).reduce(
-      (acc, emissionCalculation) => acc + (emissionCalculation.result || 0),
-      0,
-    );
-
-    const unit = UNIT_G_CO2_PER_KG_H2;
-    const calculationTopic = undefined as CalculationTopic;
-
-    return new EmissionCalculationDto(label, basisOfCalculation, totalEmissionsPerKg, unit, calculationTopic);
-  }
-
   static assembleComputationResult(emissionCalculations: EmissionCalculationDto[]): EmissionComputationResultDto {
     const applicationEmissions: EmissionForProcessStepDto[] =
       EmissionCalculationAssembler.assembleApplicationEmissions(emissionCalculations);

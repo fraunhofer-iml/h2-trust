@@ -14,7 +14,6 @@ import {
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ProvenanceEntity,
-  ProvenanceMessagePatterns,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { EmissionCalculationDto, EmissionComputationResultDto } from '@h2-trust/api';
@@ -23,10 +22,7 @@ import { EmissionCalculationAssembler } from './emission.assembler';
 
 @Injectable()
 export class EmissionComputationService {
-  constructor(
-    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
-    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
-  ) { }
+  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) { }
 
   async computeProvenanceEmissions(provenance: ProvenanceEntity): Promise<EmissionComputationResultDto> {
     const emissionCalculations: EmissionCalculationDto[] = [];
@@ -81,17 +77,5 @@ export class EmissionComputationService {
       const unit = unitsById.get(powerSupply.executedBy.id)!;
       return EmissionCalculationAssembler.assemblePowerSupplyCalculation(powerSupply, unit.type.energySource);
     });
-  }
-
-  async computeCumulativeEmissions(processStepId: string, emissionCalculationName: string): Promise<EmissionCalculationDto> {
-    const provenance: ProvenanceEntity = await firstValueFrom(
-      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, { processStepId }),
-    );
-    const provenanceEmission: EmissionComputationResultDto = await this.computeProvenanceEmissions(provenance);
-
-    return EmissionCalculationAssembler.assembleCumulativeCalculation(
-      provenanceEmission.calculations,
-      emissionCalculationName,
-    );
   }
 }
