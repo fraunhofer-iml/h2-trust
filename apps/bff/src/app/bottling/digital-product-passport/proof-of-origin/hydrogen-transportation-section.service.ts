@@ -14,14 +14,10 @@ import { EmissionCalculationDto, EmissionDto, HydrogenBatchDto, SectionDto } fro
 import { ProofOfOrigin } from '@h2-trust/domain';
 import { BatchAssembler } from './batch.assembler';
 import { EmissionCalculationAssembler } from '../emission.assembler';
-import { EmissionComputationService } from '../emission-computation.service';
 
 @Injectable()
 export class HydrogenTransportationSectionService {
-  constructor(
-    @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
-    private readonly emissionCalculatorService: EmissionComputationService,
-  ) {}
+  constructor(@Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy) { }
 
   async buildSection(
     hydrogenTransportation: ProcessStepEntity,
@@ -30,21 +26,20 @@ export class HydrogenTransportationSectionService {
     const hydrogenCompositions: HydrogenComponentEntity[] = await firstValueFrom(
       this.batchSvc.send(ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION, hydrogenBottling.id),
     );
-
-    const emissionCalculation: EmissionCalculationDto = await this.emissionCalculatorService.computeCumulativeEmissions(
-      hydrogenTransportation.id,
-      'transportation',
-    );
+    const emissionCalculation: EmissionCalculationDto = EmissionCalculationAssembler.assembleHydrogenTransportationCalculation(hydrogenTransportation);
     const hydrogenKgEquivalent: number = hydrogenTransportation.batch.amount;
+
     const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(
       emissionCalculation,
       hydrogenKgEquivalent,
     );
+
     const batch: HydrogenBatchDto = BatchAssembler.assembleHydrogenTransportationBatchDto(
       hydrogenTransportation,
       hydrogenCompositions,
       emission,
     );
+
     return new SectionDto(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION, [batch], []);
   }
 }
