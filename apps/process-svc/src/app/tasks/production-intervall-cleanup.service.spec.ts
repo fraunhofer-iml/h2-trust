@@ -1,15 +1,26 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ProductionIntervallRepository } from '@h2-trust/database';
 import { ProductionIntervallCleanupService } from './production-intervall-cleanup.service';
 
 describe('ProductionIntervallCleanupService', () => {
   let service: ProductionIntervallCleanupService;
+  let productionIntervallRepo: ProductionIntervallRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ProductionIntervallCleanupService],
+      providers: [
+        ProductionIntervallCleanupService,
+        {
+          provide: ProductionIntervallRepository,
+          useValue: {
+            deleteOldIntervalls: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     service = module.get<ProductionIntervallCleanupService>(ProductionIntervallCleanupService);
+    productionIntervallRepo = module.get<ProductionIntervallRepository>(ProductionIntervallRepository);
   });
 
   it('should be defined', () => {
