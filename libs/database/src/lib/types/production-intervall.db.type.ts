@@ -8,4 +8,4 @@
 
 import { Prisma } from '@prisma/client';
 
-export type ProductionIntervall = Prisma.ProductionIntervallGetPayload<true>;
+export type ProductionIntervalDbType = Prisma.ProductionIntervallGetPayload<true>;
