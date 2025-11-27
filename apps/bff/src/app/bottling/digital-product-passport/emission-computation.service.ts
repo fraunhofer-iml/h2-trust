@@ -55,12 +55,12 @@ export class EmissionComputationService {
     return EmissionCalculationAssembler.assembleComputationResult(emissionCalculations);
   }
 
-  async computePowerSupplyEmissions(powerSupplies: ProcessStepEntity[]): Promise<EmissionCalculationDto[]> {
-    if (!powerSupplies.length) {
+  async computePowerSupplyEmissions(powerProductions: ProcessStepEntity[]): Promise<EmissionCalculationDto[]> {
+    if (!powerProductions.length) {
       return [];
     }
 
-    const unitIds = Array.from(new Set(powerSupplies.map((p) => p.executedBy.id)));
+    const unitIds = Array.from(new Set(powerProductions.map((p) => p.executedBy.id)));
 
     const units: PowerProductionUnitEntity[] = await firstValueFrom(
       this.generalSvc.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS_BY_IDS, { ids: unitIds }),
@@ -73,9 +73,9 @@ export class EmissionComputationService {
       }
     }
 
-    return powerSupplies.map((powerSupply) => {
-      const unit = unitsById.get(powerSupply.executedBy.id)!;
-      return EmissionCalculationAssembler.assemblePowerSupplyCalculation(powerSupply, unit.type.energySource);
+    return powerProductions.map((powerProduction) => {
+      const unit = unitsById.get(powerProduction.executedBy.id)!;
+      return EmissionCalculationAssembler.assemblePowerSupplyCalculation(powerProduction, unit.type.energySource);
     });
   }
 }

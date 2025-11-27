@@ -29,13 +29,13 @@ import {
 
 export class EmissionCalculationAssembler {
   static assemblePowerSupplyCalculation(
-    powerSupply: ProcessStepEntity,
+    powerProduction: ProcessStepEntity,
     energySource: EnergySource,
   ): EmissionCalculationDto {
     const label = POWER_EMISSION_FACTORS[energySource].label;
-    const powerAmountKwh = powerSupply.batch.amount;
+    const powerAmountKwh = powerProduction.batch.amount;
     const emissionFactorGPerKWh = POWER_EMISSION_FACTORS[energySource].emissionFactor;
-    const successorProducedHydrogenMassKg = powerSupply.batch.successors[0].amount;
+    const successorProducedHydrogenMassKg = powerProduction.batch.successors[0].amount;
 
     const basisOfCalculation = `E = ${powerAmountKwh} kWh * ${emissionFactorGPerKWh} g CO₂,eq/kWh / ${successorProducedHydrogenMassKg} kg H₂`;
     const result = (powerAmountKwh * emissionFactorGPerKWh) / successorProducedHydrogenMassKg;
