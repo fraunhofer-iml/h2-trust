@@ -6,14 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, PowerProductionTypeEntity, ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
-import 'multer';
-import { Express } from 'express';
-import { CsvParserService } from 'libs/csv-parser/src/lib/csv-parser.service';
-import { Multer } from 'multer';
-import { of } from 'rxjs';
-import { ClientProxy } from '@nestjs/microservices';
 import {
   AuthenticatedKCUser,
   CreateProductionDto,
@@ -25,6 +20,8 @@ import {
 } from '@h2-trust/api';
 import { CsvParserModule } from '@h2-trust/csv-parser';
 import { EnergySource, HydrogenColor, PowerProductionType, ProcessType } from '@h2-trust/domain';
+import 'multer';
+import { of } from 'rxjs';
 import { UserService } from '../user/user.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
@@ -234,5 +231,46 @@ describe('ProductionController', () => {
     );
 
     expect(actualResponse.numberOfBatches).toBe(1);
+  });
+
+  it('should throw error because unitId is missing', async () => {
+    const givenAuthenticatedUser: AuthenticatedKCUser = { sub: 'user-1' };
+    const dto: ProductionCSVUploadDto = { hydrogenProductionUnitIds: ['test-id'], powerProductionUnitIds: [] };
+
+    const powerContent = 'time,amount\n2025-11-27T09:00:00Z,2\n2025-11-27T09:00:00Z,2';
+    const powerFile: Express.Multer.File = {
+      fieldname: 'file',
+      originalname: 'powerFile',
+      encoding: '7bit',
+      mimetype: 'text/csv',
+      buffer: Buffer.from(powerContent, 'utf-8'),
+      size: Buffer.byteLength(powerContent),
+      destination: '',
+      filename: 'powerFile',
+      path: '',
+      stream: null as any,
+    };
+
+    const h2Content = 'time,amount,power\n2025-11-27T09:00:00Z,2\n2025-11-27T09:00:00Z,2,2';
+    const h2File: Express.Multer.File = {
+      fieldname: 'file',
+      originalname: 'h2File',
+      encoding: '7bit',
+      mimetype: 'text/csv',
+      buffer: Buffer.from(h2Content, 'utf-8'),
+      size: Buffer.byteLength(h2Content),
+      destination: '',
+      filename: 'h2File',
+      path: '',
+      stream: null as any,
+    };
+
+    await expect(
+      controller.importCsv(
+        dto,
+        { powerProductionFiles: [powerFile], hydrogenProductionFiles: [h2File] },
+        givenAuthenticatedUser,
+      ),
+    ).rejects.toThrow('Missing related  unit for at least one file.');
   });
 });

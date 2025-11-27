@@ -24,7 +24,7 @@ export class ProductionController {
   }
 
   @MessagePattern(amqp.ProductionMessagePatterns.PERIOD_MATCHING)
-  async createProductionINtervalsFromCsvData(@Payload() payload: { data: amqp.ParsedFileBundles; userId: string }) {
+  async createProductionIntervalsFromCsvData(@Payload() payload: { data: amqp.ParsedFileBundles; userId: string }) {
     return this.service.matchAccountingPeriods(payload.data, payload.userId);
   }
 

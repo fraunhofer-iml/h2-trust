@@ -7,10 +7,11 @@
  */
 
 import { parse } from 'csv-parse';
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
   AccountingPeriodHydrogen,
   AccountingPeriodPower,
+  BrokerException,
   ParsedFileBundles,
   UnitDataBundle,
   UnitFileBundle,
@@ -18,39 +19,67 @@ import {
 
 @Injectable()
 export class CsvParserService {
+  columns = {
+    AccountingPeriodPower: ['time', 'amount'],
+    AccountingPeriodHydrogen: ['time', 'amount', 'power'],
+  };
+
   private readonly logger: Logger = new Logger(CsvParserService.name);
 
   async processFiles(powerProduction: UnitFileBundle[], hydrogenProduction: UnitFileBundle[]) {
     const parsedPowerFiles = await Promise.all(
       powerProduction.map(async (bundle) => {
-        const parsedFile: AccountingPeriodPower[] = await this.parse<AccountingPeriodPower>(bundle.file);
+        const parsedFile: AccountingPeriodPower[] = await this.parse<AccountingPeriodPower>(
+          bundle.file,
+          this.columns.AccountingPeriodPower,
+        );
         return new UnitDataBundle<AccountingPeriodPower>(bundle.unitId, parsedFile);
       }),
     );
-
     const parsedHydrogenFiles = await Promise.all(
       hydrogenProduction.map(async (bundle) => {
-        const parsedFile: AccountingPeriodHydrogen[] = await this.parse<AccountingPeriodHydrogen>(bundle.file);
+        const parsedFile: AccountingPeriodHydrogen[] = await this.parse<AccountingPeriodHydrogen>(
+          bundle.file,
+          this.columns.AccountingPeriodHydrogen,
+        );
         return new UnitDataBundle<AccountingPeriodHydrogen>(bundle.unitId, parsedFile);
       }),
     );
     return new ParsedFileBundles(parsedPowerFiles, parsedHydrogenFiles);
   }
 
-  async parse<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(file: Express.Multer.File): Promise<T[]> {
+  async parse<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
+    file: Express.Multer.File,
+    columns: string[],
+  ): Promise<T[]> {
     const buffer = file.buffer.toString();
-    const records: T[] = await this.parseFile<T>(buffer);
+
+    const firstLine = buffer
+      .split('\n')[0]
+      .split(',')
+      .map((h) => h.trim());
+    for (const header of columns) {
+      if (!firstLine.includes(header)) {
+        throw new BrokerException(`Missing required column: ${header}`, HttpStatus.BAD_REQUEST);
+      }
+    }
+
+    const records: T[] = await this.parseFile<T>(buffer, columns);
     return records.filter((row) => Object.values(row).every((val) => val !== null));
   }
 
-  async parseFile<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(buffer: string): Promise<T[]> {
+  async parseFile<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
+    buffer: string,
+    colums: string[],
+  ): Promise<T[]> {
     let skipped = 0;
     let invalid = 0;
     return new Promise<T[]>((resolve, reject) => {
       parse<T>(
         buffer,
         {
-          columns: true,
+          columns: colums,
+          from_line: 2,
           delimiter: ',',
           relax_column_count: true,
           skip_empty_lines: true,
@@ -108,6 +137,8 @@ export class CsvParserService {
           this.logger.log('Parsed records:', records.length);
           this.logger.log('skipped records:', skipped);
           this.logger.log('Invalid records:', invalid);
+
+          console.log(records);
           resolve(records);
         },
       );

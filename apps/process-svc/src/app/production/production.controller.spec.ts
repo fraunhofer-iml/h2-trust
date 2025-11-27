@@ -9,7 +9,13 @@
 import { ProductionIntervallRepository } from 'libs/database/src/lib/repositories/production-intervall.repository';
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues, CreateProductionEntity, ParsedFileBundles, PowerAccessApprovalEntity } from '@h2-trust/amqp';
+import {
+  BrokerQueues,
+  CreateProductionEntity,
+  ParsedFileBundles,
+  PowerAccessApprovalEntity,
+  ProductionIntervallEntity,
+} from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
 import { AccountingPeriodMatcherService } from './accounting-period-matching/accounting-period-matcher.service';
@@ -274,7 +280,7 @@ describe('ProductionController', () => {
       .spyOn(productionIntervallRepo, 'createProductionIntervalls')
       .mockResolvedValue({ id: 'test-id', createdAt: new Date() });
 
-    const actualResponse = await controller.createProductionINtervalsFromCsvData({ data, userId: 'user-id-1' });
+    const actualResponse = await controller.createProductionIntervalsFromCsvData({ data, userId: 'user-id-1' });
 
     expect(actualResponse.numberOfBatches).toBe(2);
     expect(actualResponse.id).toBe('test-id');
