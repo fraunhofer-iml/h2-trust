@@ -21,6 +21,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
   gridLevel?: GridLevel;
   biddingZone?: string;
   gridConnectionNumber?: string;
+  financialSupportReceived?: boolean;
   type?: PowerProductionTypeEntity;
 
   constructor(
@@ -51,6 +52,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     gridLevel: GridLevel,
     biddingZone: string,
     gridConnectionNumber: string,
+    financialSupportReceived: boolean,
     type: PowerProductionTypeEntity,
   ) {
     super(
@@ -75,6 +77,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     this.gridLevel = gridLevel;
     this.biddingZone = biddingZone;
     this.gridConnectionNumber = gridConnectionNumber;
+    this.financialSupportReceived = financialSupportReceived;
     this.type = type;
   }
 
@@ -95,6 +98,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
       gridLevel: unit.powerProductionUnit?.gridLevel,
       biddingZone: unit.powerProductionUnit?.biddingZone,
       gridConnectionNumber: unit.powerProductionUnit?.gridConnectionNumber,
+      financialSupportReceived: unit.powerProductionUnit?.financialSupportReceived,
       type: unit.powerProductionUnit?.type,
     };
   }

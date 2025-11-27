@@ -19,7 +19,7 @@ export const BottlingDtoMock = <BottlingDto[]>[
     hydrogenStorageUnit: 'hydrogen-storage-unit-1',
     fileDescription: 'Certificate for green hydrogen production',
     transportMode: TransportMode.TRAILER,
-    transportDistance: 1000,
+    distance: 1000,
     fuelType: FuelType.DIESEL,
   },
 ];

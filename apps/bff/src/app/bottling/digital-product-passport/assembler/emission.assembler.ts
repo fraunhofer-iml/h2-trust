@@ -15,12 +15,14 @@ import {
 } from '@h2-trust/api';
 import {
   CalculationTopic,
+  EnergySource,
   FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ,
-  getFuelEmissionFactorByFuelType,
-  getPowerEmissionFactorByEnergySource,
-  getTrailerParameters,
+  FUEL_EMISSION_FACTORS,
+  FuelType,
   GRAVIMETRIC_ENERGY_DENSITY_H2_MJ_PER_KG,
-  TrailerEntry,
+  POWER_EMISSION_FACTORS,
+  TRAILER_PARAMETERS,
+  TrailerParameter,
   TransportMode,
   UNIT_G_CO2_PER_KG_H2,
 } from '@h2-trust/domain';
@@ -28,12 +30,15 @@ import {
 export class EmissionCalculationAssembler {
   static assemblePowerProductionCalculation(
     powerProduction: ProcessStepEntity,
-    emissionFactorGPerKWh: number,
-    label: string,
+    energySource: EnergySource,
   ): EmissionCalculationDto {
+    const label = POWER_EMISSION_FACTORS[energySource].label;
+    const powerAmountKwh = powerProduction.batch.amount;
+    const emissionFactorGPerKWh = POWER_EMISSION_FACTORS[energySource].emissionFactor;
     const successorProducedHydrogenMassKg = powerProduction.batch.successors[0].amount;
-    const basisOfCalculation = `E = ${powerProduction.batch.amount} kWh * ${emissionFactorGPerKWh} g CO₂,eq/kWh / ${successorProducedHydrogenMassKg} kg H₂`;
-    const result = (powerProduction.batch.amount * emissionFactorGPerKWh) / successorProducedHydrogenMassKg;
+
+    const basisOfCalculation = `E = ${powerAmountKwh} kWh * ${emissionFactorGPerKWh} g CO₂,eq/kWh / ${successorProducedHydrogenMassKg} kg H₂`;
+    const result = (powerAmountKwh * emissionFactorGPerKWh) / successorProducedHydrogenMassKg;
 
     const unit = UNIT_G_CO2_PER_KG_H2;
     const calculationTopic = CalculationTopic.HYDROGEN_PRODUCTION;
@@ -71,7 +76,7 @@ export class EmissionCalculationAssembler {
     const label = 'Emissions (Compression)';
 
     const compressionKWhPerKg = 1.65;
-    const powerEmissionFactor = getPowerEmissionFactorByEnergySource('GRID').emissionFactor;
+    const powerEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID].emissionFactor;
     const basisOfCalculation = `E = ${compressionKWhPerKg} kWh/kg H₂ * ${powerEmissionFactor} g CO₂,eq/kWh`;
     const result = compressionKWhPerKg * powerEmissionFactor;
 
@@ -91,8 +96,9 @@ export class EmissionCalculationAssembler {
         break;
       case TransportMode.TRAILER:
         emissionCalculation = this.assembleTrailerCalculation(
-          processStep.transportationDetails.distance,
+          processStep.batch.amount,
           processStep.transportationDetails.fuelType,
+          processStep.transportationDetails.distance,
         );
         break;
       default:
@@ -114,15 +120,24 @@ export class EmissionCalculationAssembler {
     return new EmissionCalculationDto(label, basisOfCalculation, result, unit, calculationTopic);
   }
 
-  private static assembleTrailerCalculation(distanceKm: number, fuelType: string): EmissionCalculationDto {
+  private static assembleTrailerCalculation(
+    amount: number,
+    fuelType: FuelType,
+    distanceKm: number,
+  ): EmissionCalculationDto {
     const label = 'Emissions (Transportation with Trailer)';
 
-    const trailerParams: TrailerEntry = getTrailerParameters(155); // TODO-MP: hardcoded value will be calculated in DUHGW-176
-    const transportEfficiencyMJPerKgPerKm = trailerParams.transportEfficiencyMJPerTonnePerKm / 1000;
-    const gEqEmissionsOfCH4AndN2OPerKmPerKgH2 = trailerParams.gEqEmissionsOfCH4AndN2OPerKmDistancePerTonneH2 / 1000;
-    const fuelFactor = getFuelEmissionFactorByFuelType(fuelType);
-    const basisOfCalculation = `E = ${distanceKm} km * (${transportEfficiencyMJPerKgPerKm} MJ fuel/(km*kg H₂) * ${fuelFactor} g CO₂,eq/MJ fuel + ${gEqEmissionsOfCH4AndN2OPerKmPerKgH2} g CO₂,eq/(km*kg H₂))`;
-    const result = distanceKm * (transportEfficiencyMJPerKgPerKm * fuelFactor + gEqEmissionsOfCH4AndN2OPerKmPerKgH2);
+    const trailerParameter: TrailerParameter =
+      TRAILER_PARAMETERS.find((trailerEntry) => amount <= trailerEntry.capacityKg) ??
+      TRAILER_PARAMETERS.at(TRAILER_PARAMETERS.length - 1);
+    const fuelEmissionFactor: number = FUEL_EMISSION_FACTORS[fuelType];
+
+    const transportEfficiencyMJPerKgPerKm = trailerParameter.transportEfficiencyMJPerTonnePerKm / 1000;
+    const gEqEmissionsOfCH4AndN2OPerKmPerKgH2 = trailerParameter.gEqEmissionsOfCH4AndN2OPerKmDistancePerTonneH2 / 1000;
+
+    const basisOfCalculation = `E = ${distanceKm} km * (${transportEfficiencyMJPerKgPerKm} MJ fuel/(km*kg H₂) * ${fuelEmissionFactor} g CO₂,eq/MJ fuel + ${gEqEmissionsOfCH4AndN2OPerKmPerKgH2} g CO₂,eq/(km*kg H₂))`;
+    const result =
+      distanceKm * (transportEfficiencyMJPerKgPerKm * fuelEmissionFactor + gEqEmissionsOfCH4AndN2OPerKmPerKgH2);
 
     const unit = UNIT_G_CO2_PER_KG_H2;
     const calculationTopic = CalculationTopic.HYDROGEN_TRANSPORTATION;

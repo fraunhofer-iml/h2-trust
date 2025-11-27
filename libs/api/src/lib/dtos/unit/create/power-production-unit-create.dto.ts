@@ -120,6 +120,7 @@ export class PowerProductionUnitCreateDto extends UnitCreateDto {
       gridLevel: dto.gridLevel,
       biddingZone: dto.biddingZone,
       gridConnectionNumber: dto.gridConnectionNumber,
+      financialSupportReceived: dto.financialSupportReceived,
       type: {
         name: dto.powerProductionType,
       },

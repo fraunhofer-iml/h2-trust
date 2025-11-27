@@ -38,6 +38,7 @@ export const PowerProductionUnitEntityMock: PowerProductionUnitEntity[] = [
     PowerProductionUnitSeed[0].gridLevel as GridLevel,
     PowerProductionUnitSeed[0].biddingZone,
     PowerProductionUnitSeed[0].gridConnectionNumber!,
+    PowerProductionUnitSeed[0].financialSupportReceived,
     PowerProductionTypeEntityMock[1],
   ),
 ];

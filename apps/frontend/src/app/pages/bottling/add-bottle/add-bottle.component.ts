@@ -11,7 +11,6 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -46,7 +45,6 @@ import { UploadFormComponent } from './upload-form/upload-form.component';
     MatFormFieldModule,
     MatTimepickerModule,
     MatDatepickerModule,
-    MatButtonToggleModule,
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
@@ -74,12 +72,13 @@ export class AddBottleComponent {
   bottleFormGroup: FormGroup<BottlingForm> = new FormGroup({
     date: new FormControl<Date | undefined>(new Date(), Validators.required),
     time: new FormControl<Date | undefined>(new Date(), Validators.required),
-    amount: new FormControl<number | undefined>(undefined, Validators.required),
+    amount: new FormControl<number | undefined>(undefined, [Validators.required, Validators.min(1)]),
     recipient: new FormControl<UserDto | undefined>(undefined, Validators.required),
     storageUnit: new FormControl<HydrogenStorageOverviewDto | undefined>(undefined, Validators.required),
     type: new FormControl<'MIX' | 'GREEN' | undefined>(undefined, Validators.required),
     transportMode: new FormControl<TransportMode | null>(null, Validators.required),
     fuelType: new FormControl<FuelType | null>(null),
+    distance: new FormControl<number | null>(null),
   });
 
   hydrogenStorageQuery = injectQuery(() => ({
@@ -102,16 +101,31 @@ export class AddBottleComponent {
   }));
 
   constructor() {
-    this.bottleFormGroup.controls.transportMode.valueChanges.subscribe((value) => {
-      if (value === TransportMode.TRAILER) this.bottleFormGroup.controls.fuelType.addValidators(Validators.required);
-      if (value === TransportMode.PIPELINE)
-        this.bottleFormGroup.controls.fuelType.removeValidators(Validators.required);
-      this.bottleFormGroup.controls.fuelType.updateValueAndValidity();
+    this.bottleFormGroup.controls.transportMode.valueChanges.subscribe((transportMode) => {
+      if (!transportMode) return;
+
+      const fuelTypeControl = this.bottleFormGroup.controls.fuelType;
+      const distanceControl = this.bottleFormGroup.controls.distance;
+
+      if (transportMode === TransportMode.TRAILER) {
+        fuelTypeControl.addValidators(Validators.required);
+        distanceControl.addValidators([Validators.required, Validators.min(1)]);
+      } else {
+        fuelTypeControl.removeValidators(Validators.required);
+        fuelTypeControl.setValue(null);
+        distanceControl.removeValidators([Validators.required, Validators.min(1)]);
+        distanceControl.setValue(null);
+      }
+
+      fuelTypeControl.updateValueAndValidity();
+      distanceControl.updateValueAndValidity();
     });
+
     this.bottleFormGroup.controls.amount?.valueChanges.subscribe((amount) => {
       if (!amount) return;
 
       this.bottleFormGroup.controls.type.reset();
+
       if (this.bottleFormGroup.value?.storageUnit && amount > this.bottleFormGroup.value?.storageUnit?.filling)
         this.bottleFormGroup.controls.storageUnit?.reset();
     });
@@ -143,6 +157,7 @@ export class AddBottleComponent {
     data.append('color', this.bottleFormGroup.value.type ?? '');
     data.append('transportMode', this.bottleFormGroup.value.transportMode ?? '');
     data.append('fuelType', this.bottleFormGroup.value.fuelType ?? '');
+    data.append('distance', this.bottleFormGroup.value.distance?.toString() ?? '');
 
     this.mutation.mutate(data);
   }

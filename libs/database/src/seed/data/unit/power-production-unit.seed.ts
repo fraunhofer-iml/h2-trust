@@ -21,6 +21,7 @@ export const PowerProductionUnitSeed: readonly PowerProductionUnit[] = Object.fr
     biddingZone: BiddingZone.DE_LU,
     ratedPower: new Prisma.Decimal(4.5),
     decommissioningPlannedOn: new Date('2045-04-01'),
+    financialSupportReceived: false,
     typeName: PowerProductionTypeSeed[0].name,
   },
   {
@@ -32,6 +33,7 @@ export const PowerProductionUnitSeed: readonly PowerProductionUnit[] = Object.fr
     biddingZone: BiddingZone.FR,
     ratedPower: new Prisma.Decimal(1500),
     decommissioningPlannedOn: new Date('2043-06-15'),
+    financialSupportReceived: true,
     typeName: PowerProductionTypeSeed[1].name,
   },
   {
@@ -43,6 +45,7 @@ export const PowerProductionUnitSeed: readonly PowerProductionUnit[] = Object.fr
     biddingZone: BiddingZone.NL,
     ratedPower: new Prisma.Decimal(3000),
     decommissioningPlannedOn: new Date('2040-09-01'),
+    financialSupportReceived: false,
     typeName: PowerProductionTypeSeed[2].name,
   },
   {
@@ -54,6 +57,7 @@ export const PowerProductionUnitSeed: readonly PowerProductionUnit[] = Object.fr
     biddingZone: BiddingZone.CZ,
     ratedPower: new Prisma.Decimal(100000),
     decommissioningPlannedOn: new Date('2045-08-14'),
+    financialSupportReceived: true,
     typeName: PowerProductionTypeSeed[3].name,
   },
 ]);

@@ -95,7 +95,7 @@ export class PowerProductionUnitDto extends BaseUnitDto {
         energySource: requireDefined(unit.type?.energySource, 'type.energySource'),
         hydrogenColor: requireDefined(unit.type?.hydrogenColor, 'type.hydrogenColor'),
       },
-      financialSupportReceived: false,
+      financialSupportReceived: requireDefined(unit.financialSupportReceived, 'financialSupportReceived'),
     };
   }
 }
