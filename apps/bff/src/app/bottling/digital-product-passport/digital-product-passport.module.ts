@@ -8,14 +8,14 @@
 
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
-import { EnergySourceClassificationService } from './classification/energy-source-classification.service';
-import { WaterClassificationService } from './classification/water-classification.service';
+import { PowerSupplyClassificationService } from './proof-of-origin/power-supply-classification.service';
+import { WaterSupplyClassificationService } from './proof-of-origin/water-supply-classification.service';
 import { DigitalProductPassportService } from './digital-product-passport.service';
 import { EmissionComputationService } from './emission-computation.service';
-import { HydrogenBottlingSectionService } from './section/hydrogen-bottling-section.service';
-import { HydrogenProductionSectionService } from './section/hydrogen-production-section.service';
-import { HydrogenStorageSectionService } from './section/hydrogen-storage-section.service';
-import { HydrogenTransportationSectionService } from './section/hydrogen-transportation-section.service';
+import { HydrogenBottlingSectionService } from './proof-of-origin/hydrogen-bottling-section.service';
+import { HydrogenProductionSectionService } from './proof-of-origin/hydrogen-production-section.service';
+import { HydrogenStorageSectionService } from './proof-of-origin/hydrogen-storage-section.service';
+import { HydrogenTransportationSectionService } from './proof-of-origin/hydrogen-transportation-section.service';
 
 @Module({
   imports: [new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker(), new Broker().getProcessSvcBroker()],
@@ -25,8 +25,8 @@ import { HydrogenTransportationSectionService } from './section/hydrogen-transpo
     HydrogenProductionSectionService,
     HydrogenStorageSectionService,
     HydrogenTransportationSectionService,
-    EnergySourceClassificationService,
-    WaterClassificationService,
+    PowerSupplyClassificationService,
+    WaterSupplyClassificationService,
     EmissionComputationService,
   ],
   exports: [DigitalProductPassportService],

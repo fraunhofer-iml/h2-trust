@@ -10,13 +10,13 @@ import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { ClassificationDto, EmissionCalculationDto, EmissionDto, WaterBatchDto } from '@h2-trust/api';
 import { BatchType, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
-import { BatchAssembler } from '../assembler/batch.assembler';
-import { ClassificationAssembler } from '../assembler/classification.assembler';
-import { EmissionCalculationAssembler } from '../assembler/emission.assembler';
+import { BatchAssembler } from './batch.assembler';
+import { ClassificationAssembler } from './classification.assembler';
+import { EmissionCalculationAssembler } from '../emission.assembler';
 import { EmissionComputationService } from '../emission-computation.service';
 
 @Injectable()
-export class WaterClassificationService {
+export class WaterSupplyClassificationService {
   constructor(private readonly emissionService: EmissionComputationService) {}
 
   createWaterSupplyClassification(waterSupplies: ProcessStepEntity[]): ClassificationDto {
@@ -32,7 +32,7 @@ export class WaterClassificationService {
         emissionCalculation,
         hydrogenKgEquivalentToWaterBatch,
       );
-      const batch: WaterBatchDto = BatchAssembler.assembleWaterBatchDto(waterSupply, emission);
+      const batch: WaterBatchDto = BatchAssembler.assembleWaterSupplyBatchDto(waterSupply, emission);
       return batch;
     });
 

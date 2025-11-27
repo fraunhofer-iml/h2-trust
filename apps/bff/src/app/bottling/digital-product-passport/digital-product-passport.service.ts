@@ -13,10 +13,10 @@ import { BrokerQueues, ProvenanceEntity, ProvenanceMessagePatterns } from '@h2-t
 import { EmissionComputationResultDto, ProofOfSustainabilityDto, SectionDto } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
 import { EmissionComputationService } from './emission-computation.service';
-import { HydrogenBottlingSectionService } from './section/hydrogen-bottling-section.service';
-import { HydrogenProductionSectionService } from './section/hydrogen-production-section.service';
-import { HydrogenStorageSectionService } from './section/hydrogen-storage-section.service';
-import { HydrogenTransportationSectionService } from './section/hydrogen-transportation-section.service';
+import { HydrogenBottlingSectionService } from './proof-of-origin/hydrogen-bottling-section.service';
+import { HydrogenProductionSectionService } from './proof-of-origin/hydrogen-production-section.service';
+import { HydrogenStorageSectionService } from './proof-of-origin/hydrogen-storage-section.service';
+import { HydrogenTransportationSectionService } from './proof-of-origin/hydrogen-transportation-section.service';
 
 @Injectable()
 export class DigitalProductPassportService {
@@ -27,7 +27,7 @@ export class DigitalProductPassportService {
     private readonly hydrogenBottlingSectionService: HydrogenBottlingSectionService,
     private readonly hydrogenTransportationSectionService: HydrogenTransportationSectionService,
     private readonly emissionComputationService: EmissionComputationService,
-  ) {}
+  ) { }
 
   async buildProofOfOrigin(processStepId: string): Promise<SectionDto[]> {
     const provenance: ProvenanceEntity = await firstValueFrom(
@@ -46,7 +46,7 @@ export class DigitalProductPassportService {
 
     const hydrogenBottlingPromise =
       provenance.root.type === ProcessType.HYDROGEN_BOTTLING ||
-      provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION
+        provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION
         ? this.hydrogenBottlingSectionService.buildSection(provenance.hydrogenBottling ?? provenance.root)
         : Promise.resolve(undefined);
 
@@ -68,10 +68,11 @@ export class DigitalProductPassportService {
 
   async buildProofOfSustainability(processStepId: string): Promise<ProofOfSustainabilityDto> {
     const provenance: ProvenanceEntity = await firstValueFrom(
-      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, { processStepId }),
+      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, { processStepId })
     );
-    const provenanceEmission: EmissionComputationResultDto =
-      await this.emissionComputationService.computeProvenanceEmissions(provenance);
+
+    const provenanceEmission: EmissionComputationResultDto = await this.emissionComputationService.computeProvenanceEmissions(provenance);
+
     return new ProofOfSustainabilityDto(
       provenance.root.id,
       provenanceEmission.amountCO2PerMJH2,

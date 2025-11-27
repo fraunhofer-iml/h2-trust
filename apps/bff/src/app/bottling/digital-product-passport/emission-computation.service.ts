@@ -19,7 +19,7 @@ import {
 } from '@h2-trust/amqp';
 import { EmissionCalculationDto, EmissionComputationResultDto } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
-import { EmissionCalculationAssembler } from './assembler/emission.assembler';
+import { EmissionCalculationAssembler } from './emission.assembler';
 
 @Injectable()
 export class EmissionComputationService {

@@ -17,9 +17,9 @@ import {
   SectionDto,
 } from '@h2-trust/api';
 import { HydrogenColor, ProofOfOrigin } from '@h2-trust/domain';
-import { BatchAssembler } from '../assembler/batch.assembler';
-import { ClassificationAssembler } from '../assembler/classification.assembler';
-import { EmissionCalculationAssembler } from '../assembler/emission.assembler';
+import { BatchAssembler } from './batch.assembler';
+import { ClassificationAssembler } from './classification.assembler';
+import { EmissionCalculationAssembler } from '../emission.assembler';
 import { EmissionComputationService } from '../emission-computation.service';
 
 @Injectable()

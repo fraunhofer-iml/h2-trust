@@ -11,31 +11,34 @@ import { EmissionDto, HydrogenBatchDto, PowerBatchDto, WaterBatchDto, WaterDetai
 import { EnergySource, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
 
 export class BatchAssembler {
-  static assemblePowerProductionBatchDto(
-    powerSupply: ProcessStepEntity,
+  static assemblePowerSupplyBatchDto(
+    powerProduction: ProcessStepEntity,
     energySource: string,
     emission?: EmissionDto,
   ): PowerBatchDto {
     return new PowerBatchDto(
-      powerSupply.batch.id,
+      powerProduction.batch.id,
       emission,
-      powerSupply.startedAt,
-      powerSupply.batch.amount,
+      powerProduction.startedAt,
+      powerProduction.batch.amount,
       MeasurementUnit.POWER,
       null, // TBA
-      powerSupply.batch.owner.name,
-      powerSupply.executedBy.id,
+      powerProduction.batch.owner.name,
+      powerProduction.executedBy.id,
       energySource as EnergySource,
-      powerSupply.endedAt,
+      powerProduction.endedAt,
     );
   }
 
-  static assembleWaterBatchDto(waterSupply: ProcessStepEntity, emission?: EmissionDto): WaterBatchDto {
+  static assembleWaterSupplyBatchDto(
+    waterConsumption: ProcessStepEntity,
+    emission?: EmissionDto
+  ): WaterBatchDto {
     return new WaterBatchDto(
-      waterSupply.batch.id,
+      waterConsumption.batch.id,
       emission,
-      waterSupply.startedAt,
-      waterSupply.batch.amount,
+      waterConsumption.startedAt,
+      waterConsumption.batch.amount,
       MeasurementUnit.WATER,
       new WaterDetailsDto(0, new EmissionDto(undefined, undefined, undefined)),
     );
