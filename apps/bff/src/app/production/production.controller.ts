@@ -114,9 +114,9 @@ export class ProductionController {
   @Post('csv/submit')
   @ApiBearerAuth()
   submitCsvImport(
-    @Body() { intervallSetId, storageUnitId }: ImportSubmissionDto,
+    @Body() dto: ImportSubmissionDto,
     @AuthenticatedUser() user: AuthenticatedKCUser,
   ) {
-    return this.service.submitCsvdata(intervallSetId, storageUnitId, user.sub);
+    return this.service.submitCsvData(dto, user.sub);
   }
 }

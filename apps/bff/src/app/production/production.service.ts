@@ -148,18 +148,51 @@ export class ProductionService {
   }
 
   private mapToImportedFileBundles(unitIds: string | string[], files: Express.Multer.File[]): UnitFileBundle[] {
-    const data: UnitFileBundle[] = [];
+    return Array.isArray(unitIds)
+      ? files.map((file, i) => new UnitFileBundle(unitIds[i], file))
+      : files.length
+        ? [new UnitFileBundle(unitIds, files[0])]
+        : [];
+  }
 
-    if (Array.isArray(unitIds)) {
-      for (let i = 0; i < files.length; i++) {
-        const bundle = new UnitFileBundle(unitIds[i], files[i]);
-        data.push(bundle);
-      }
-    } else {
-      data.push(new UnitFileBundle(unitIds, files[0]));
+  private async processFile<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
+    files: Express.Multer.File[],
+    unitIds: string | string[],
+    kind: 'power' | 'hydrogen',
+  ) {
+    if (!files || files.length === 0) {
+      throw new BadRequestException('Missing file for hydrogen production.');
     }
 
-    return data;
+    if (unitIds.length < files.length) {
+      throw new BadRequestException(`Missing related unit for power production.`);
+    }
+
+    const h2ProductionData: UnitFileBundle[] = this.mapToImportedFileBundles(unitIds, files);
+
+    const headers = this.getValidHeaders(kind);
+
+    const parsedPowerFiles = await Promise.all(
+      h2ProductionData.map(async (bundle) => {
+        const parsedFile: T[] = await this.csvParser.parse<T>(bundle.file, headers);
+        return new UnitDataBundle<T>(bundle.unitId, parsedFile);
+      }),
+    );
+
+    if (parsedPowerFiles.some((bundle) => bundle.data.length < 1)) {
+      throw new BrokerException('Hydrogen production file does not contain any valid items.', HttpStatus.BAD_REQUEST);
+    }
+
+    return parsedPowerFiles;
+  }
+
+  private getValidHeaders(kind: 'power' | 'hydrogen'): string[] {
+    const map = new Map<'power' | 'hydrogen', string[]>([
+      ['power', ['time', 'amount']],
+      ['hydrogen', ['time', 'amount', 'power']],
+    ]);
+
+    return map.get(kind);
   }
 
   private async processFile<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
