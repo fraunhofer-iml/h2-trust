@@ -8,15 +8,14 @@
         <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
           <span class="material-symbols-outlined text-secondary-400 text-4xl">air</span>
         </div>
-        <span class="grow text-xs text-neutral-500">
+        <span
+          class="grow text-xs text-neutral-500"
+          [matTooltip]="
+            EMISSIONS.TOTAL_EMISSIONS.FORMULA + EMISSIONS.TOTAL_EMISSIONS.EU + EMISSIONS.TOTAL_EMISSIONS.ECCS
+          "
+          [matTooltipClass]="'multiline-tooltip'"
+        >
           Total {{ ChemicalNames.CO2 }} Emissions
-          <span
-            class="ml-1 inline-block cursor-help align-middle"
-            title="E = ei + ep + etd + eu - eccs
-eu: Emissions from the combustion of the fuel at its end use (always 0)
-eccs: Emission savings through carbon dioxide capture and geological storage (always 0)"
-            >ⓘ</span
-          >
           <br />
           <span class="text-xl">{{ totalEmissions() | number: '1.2-2' }}</span>
           {{ FormattedUnits.CO2_PER_KG_H2 }} <br />

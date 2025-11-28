@@ -7,9 +7,11 @@
  */
 
 import { ChemicalNames } from 'apps/frontend/src/app/shared/constants/chemical-names';
+import { EMISSIONS } from 'apps/frontend/src/app/shared/constants/emissions';
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { EmissionCalculationDto } from '@h2-trust/api';
 import { CalculationTopic } from '@h2-trust/domain';
@@ -26,6 +28,7 @@ import { SavingsPotentialChartComponent } from './savings-potential/savings-pote
     CommonModule,
     SavingsPotentialChartComponent,
     MatExpansionModule,
+    MatTooltipModule,
     CalculationItemComponent,
     EmissionPieChartComponent,
     EmissionPieChartComponent,
@@ -34,6 +37,7 @@ import { SavingsPotentialChartComponent } from './savings-potential/savings-pote
   templateUrl: './proof-of-sustainability.component.html',
 })
 export class ProofOfSustainabilityComponent {
+  protected readonly EMISSIONS = EMISSIONS;
   bottlingService = inject(BottlingService);
   id = input<string>('');
   readonly FormattedUnits = FormattedUnits;
