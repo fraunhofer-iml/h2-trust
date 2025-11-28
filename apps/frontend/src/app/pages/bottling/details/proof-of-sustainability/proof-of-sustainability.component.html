@@ -11,7 +11,11 @@
         <span
           class="grow text-xs text-neutral-500"
           [matTooltip]="
-            EMISSIONS.TOTAL_EMISSIONS.FORMULA + EMISSIONS.TOTAL_EMISSIONS.EU + EMISSIONS.TOTAL_EMISSIONS.ECCS
+            EMISSIONS.TOTAL_EMISSIONS.FORMULA +
+            '\n' +
+            EMISSIONS.TOTAL_EMISSIONS.EU +
+            '\n' +
+            EMISSIONS.TOTAL_EMISSIONS.ECCS
           "
           [matTooltipClass]="'multiline-tooltip'"
         >

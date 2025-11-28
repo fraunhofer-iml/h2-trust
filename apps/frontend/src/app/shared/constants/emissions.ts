@@ -8,8 +8,8 @@
 
 export const EMISSIONS = {
   TOTAL_EMISSIONS: {
-    FORMULA: 'E = ei + ep + etd + eu - eccs\n',
-    EU: 'eu: Emissions from the combustion of the fuel at its end use (always 0)\n',
+    FORMULA: 'E = ei + ep + etd + eu - eccs',
+    EU: 'eu: Emissions from the combustion of the fuel at its end use (always 0)',
     ECCS: 'eccs: Emission savings through carbon dioxide capture and geological storage (always 0)',
   },
 };
