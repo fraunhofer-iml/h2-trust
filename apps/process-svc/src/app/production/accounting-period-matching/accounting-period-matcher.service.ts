@@ -31,7 +31,7 @@ interface HydrogenMapItem {
 export class AccountingPeriodMatcherService {
   matchAccountingPeriods(data: ParsedFileBundles, gridUnitId: string) {
     const normalizedPowerData = this.normalizePowerLists(data.powerProduction);
-    const normalizedH2Data = this.normalizeHydrogenLists(data.hydrogenProduction);
+    const hydrogenByDateHour = this.normalizeHydrogenLists(data.hydrogenProduction);
 
     const batches: AccountingPeriodEntity[] = [];
 
@@ -40,10 +40,10 @@ export class AccountingPeriodMatcherService {
       const { amount, unitId, powerConsumed } = value[0];
       const date = new Date(key);
 
-      if (powerProductionUnits) {
+      if (powerItems) {
         let remainingPower = powerConsumed;
 
-        for (const unit of powerProductionUnits) {
+        for (const powerItem of powerItems) {
           if (remainingPower <= 0) break;
           const powerUsed = Math.min(unit.amount, remainingPower);
           const usageRatio = powerUsed / remainingPower;
