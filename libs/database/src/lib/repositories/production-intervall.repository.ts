@@ -21,17 +21,22 @@ export class ProductionIntervallRepository {
     const importId = cuid();
 
     await this.prismaService.stagedProduction.createMany({
-      data: data.map((item) => {
-        const args: Prisma.StagedProductionCreateManyInput = {
-          startedAt: item.startedAt,
-          hydrogenAmount: item.hydrogenAmount,
-          hydrogenProductionUnitId: item.hydrogenProductionUnitId,
-          importId: importId,
-          powerAmount: item.powerAmount,
-          powerProductionUnitId: item.powerProductionUnitId,
-        };
-        return args;
-      }),
+  data: data.map(
+    ({
+      startedAt,
+      hydrogenAmount,
+      hydrogenProductionUnitId,
+      powerAmount,
+      powerProductionUnitId,
+    }) => ({
+      startedAt,
+      hydrogenAmount,
+      hydrogenProductionUnitId,
+      importId,
+      powerAmount,
+      powerProductionUnitId,
+    })
+  ),
     });
 
     return importId;
