@@ -29,12 +29,12 @@ export class ProductionController {
   }
 
   @MessagePattern(ProductionMessagePatterns.STAGE)
-  async createProductionIntervalsFromCsvData(@Payload() payload: { data: ParsedFileBundles; userId: string }) {
-    return this.service.matchAccountingPeriods(payload.data, payload.userId);
+  async stageProductionData(@Payload() payload: { data: ParsedFileBundles; userId: string }) {
+    return this.service.stageImportedProductionData(payload.data, payload.userId);
   }
 
-  @MessagePattern(ProductionMessagePatterns.SUBMIT)
-  async saveImportedData(@Payload() payload: SubmitProductionProps) {
-    return this.service.saveImportedData(payload);
+  @MessagePattern(ProductionMessagePatterns.FINALIZE)
+  async finalizeProductionData(@Payload() payload: SubmitProductionProps) {
+    return this.service.finalizeProductionData(payload);
   }
 }
