@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import cuid from 'cuid';
 import { Injectable } from '@nestjs/common';
+import { createId } from '@paralleldrive/cuid2';
 import { AccountingPeriodEntity } from '@h2-trust/amqp';
 import { PrismaService } from '../prisma.service';
 
@@ -17,7 +17,7 @@ export class AccountingPeriodRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async stageProduction(data: AccountingPeriodEntity[]) {
-    const importId = cuid();
+    const importId = createId();
 
     await this.prismaService.stagedProduction.createMany({
       data: data.map(({ startedAt, hydrogenAmount, hydrogenProductionUnitId, powerAmount, powerProductionUnitId }) => ({
