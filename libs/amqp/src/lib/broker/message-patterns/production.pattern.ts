@@ -8,6 +8,6 @@
 
 export enum ProductionMessagePatterns {
   CREATE = 'production.create',
-  PERIOD_MATCHING = 'period.matching',
-  IMPORT = 'production.import',
+  STAGE = 'production.stage',,
+  SUBMIT = 'production.submit',
 }
