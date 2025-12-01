@@ -35,7 +35,7 @@ export class ProductionIntervallRepository {
   }
 
   async deleteExpiredIntervalls() {
-    const expirationThreshold: Date = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const expirationThreshold: Date = new Date(Date.now() - DAY_IN_MS);
 
     return await this.prismaService.productionIntervallSet.deleteMany({
       where: {
