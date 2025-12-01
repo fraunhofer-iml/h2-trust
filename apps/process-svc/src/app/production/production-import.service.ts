@@ -41,10 +41,10 @@ export class ProductionImportService {
   }
 
   async finalizeProductionData(props: SubmitProductionProps): Promise<ProcessStepEntity[]> {
-    const accountingPeriods = await this.accountingPeriodRepo.getStagedProductionByImportId(props.importId);
+    const stagedProductions = await this.accountingPeriodRepo.getStagedProductionByImportId(props.importId);
 
     return await Promise.all(
-      accountingPeriods.map(async (accountingPeriod) => {
+      stagedProductions.map(async (accountingPeriod) => {
         const hydrogenColor = await this.fetchHydrogenColor(accountingPeriod.powerProductionUnitId);
         const companyIdOfPowerProductionUnit = await this.fetchCompanyOfProductionUnit(
           accountingPeriod.powerProductionUnitId,

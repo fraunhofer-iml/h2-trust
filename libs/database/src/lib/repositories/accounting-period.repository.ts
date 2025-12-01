@@ -8,7 +8,6 @@
 
 import cuid from 'cuid';
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { AccountingPeriodEntity } from '@h2-trust/amqp';
 import { PrismaService } from '../prisma.service';
 
@@ -21,22 +20,14 @@ export class AccountingPeriodRepository {
     const importId = cuid();
 
     await this.prismaService.stagedProduction.createMany({
-  data: data.map(
-    ({
-      startedAt,
-      hydrogenAmount,
-      hydrogenProductionUnitId,
-      powerAmount,
-      powerProductionUnitId,
-    }) => ({
-      startedAt,
-      hydrogenAmount,
-      hydrogenProductionUnitId,
-      importId,
-      powerAmount,
-      powerProductionUnitId,
-    })
-  ),
+      data: data.map(({ startedAt, hydrogenAmount, hydrogenProductionUnitId, powerAmount, powerProductionUnitId }) => ({
+        startedAt,
+        hydrogenAmount,
+        hydrogenProductionUnitId,
+        importId,
+        powerAmount,
+        powerProductionUnitId,
+      })),
     });
 
     return importId;
