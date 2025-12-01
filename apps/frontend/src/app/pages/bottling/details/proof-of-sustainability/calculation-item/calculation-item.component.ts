@@ -33,7 +33,7 @@ export class CalculationItemComponent {
       [CalculationTopic.HYDROGEN_STORAGE, 'propane_tank'],
       [CalculationTopic.WATER_SUPPLY, 'water'],
       [CalculationTopic.HYDROGEN_TRANSPORTATION, 'road'],
-      [CalculationTopic.HYDROGEN_PRODUCTION, 'bubble_chart'],
+      [CalculationTopic.POWER_SUPPLY, 'bubble_chart'],
       [CalculationTopic.HYDROGEN_BOTTLING, 'water_do'],
     ]);
 

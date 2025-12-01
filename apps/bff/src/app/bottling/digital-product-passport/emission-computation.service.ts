@@ -14,47 +14,47 @@ import {
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ProvenanceEntity,
-  ProvenanceMessagePatterns,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { EmissionCalculationDto, EmissionComputationResultDto } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
-import { EmissionCalculationAssembler } from './assembler/emission.assembler';
+import { EmissionCalculationAssembler } from './emission.assembler';
 
 @Injectable()
 export class EmissionComputationService {
-  constructor(
-    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
-    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
-  ) {}
+  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) {}
 
   async computeProvenanceEmissions(provenance: ProvenanceEntity): Promise<EmissionComputationResultDto> {
     const emissionCalculations: EmissionCalculationDto[] = [];
 
     if (provenance.powerProductions) {
-      const powerProductions: EmissionCalculationDto[] = await this.computePowerProductionEmissions(
+      const powerProductions: EmissionCalculationDto[] = await this.computePowerSupplyEmissions(
         provenance.powerProductions,
       );
       emissionCalculations.push(...powerProductions);
     }
 
     if (provenance.waterConsumptions) {
-      const waterConsumptions: EmissionCalculationDto[] = provenance.waterConsumptions.map((waterSupply) =>
-        this.computeWaterSupplyEmissions(waterSupply),
+      const waterConsumptions: EmissionCalculationDto[] = provenance.waterConsumptions.map((waterConsumption) =>
+        EmissionCalculationAssembler.assembleWaterSupplyCalculation(waterConsumption),
       );
       emissionCalculations.push(...waterConsumptions);
     }
 
     if (provenance.hydrogenProductions) {
-      const hydrogenProductions: EmissionCalculationDto[] = provenance.hydrogenProductions.map((hydrogenProduction) =>
-        EmissionCalculationAssembler.assembleHydrogenStorageCalculation(hydrogenProduction),
+      const hydrogenStorages: EmissionCalculationDto[] = provenance.hydrogenProductions.map((hydrogenProduction) =>
+        EmissionCalculationAssembler.assembleHydrogenStorageCalculation(
+          hydrogenProduction.batch.amount,
+          provenance.hydrogenProductions,
+        ),
       );
-      emissionCalculations.push(...hydrogenProductions);
+      emissionCalculations.push(...hydrogenStorages);
     }
 
     if (provenance.hydrogenBottling) {
-      const hydrogenBottling: EmissionCalculationDto =
-        EmissionCalculationAssembler.assembleHydrogenBottlingCalculation();
+      const hydrogenBottling: EmissionCalculationDto = EmissionCalculationAssembler.assembleHydrogenBottlingCalculation(
+        provenance.hydrogenBottling,
+      );
       emissionCalculations.push(hydrogenBottling);
     }
 
@@ -67,7 +67,7 @@ export class EmissionComputationService {
     return EmissionCalculationAssembler.assembleComputationResult(emissionCalculations);
   }
 
-  async computePowerProductionEmissions(powerProductions: ProcessStepEntity[]): Promise<EmissionCalculationDto[]> {
+  async computePowerSupplyEmissions(powerProductions: ProcessStepEntity[]): Promise<EmissionCalculationDto[]> {
     if (!powerProductions.length) {
       return [];
     }
@@ -87,26 +87,7 @@ export class EmissionComputationService {
 
     return powerProductions.map((powerProduction) => {
       const unit = unitsById.get(powerProduction.executedBy.id)!;
-      return EmissionCalculationAssembler.assemblePowerProductionCalculation(powerProduction, unit.type.energySource);
+      return EmissionCalculationAssembler.assemblePowerSupplyCalculation(powerProduction, unit.type.energySource);
     });
-  }
-
-  computeWaterSupplyEmissions(waterSupply: ProcessStepEntity): EmissionCalculationDto {
-    return EmissionCalculationAssembler.assembleWaterSupplyCalculation(waterSupply);
-  }
-
-  async computeCumulativeEmissions(
-    processStepId: string,
-    emissionCalculationName: string,
-  ): Promise<EmissionCalculationDto> {
-    const provenance: ProvenanceEntity = await firstValueFrom(
-      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, { processStepId }),
-    );
-    const provenanceEmission: EmissionComputationResultDto = await this.computeProvenanceEmissions(provenance);
-
-    return EmissionCalculationAssembler.assembleCumulativeCalculation(
-      provenanceEmission.calculations,
-      emissionCalculationName,
-    );
   }
 }
