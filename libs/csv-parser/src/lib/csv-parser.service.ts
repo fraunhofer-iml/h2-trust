@@ -57,7 +57,7 @@ export class CsvParserService {
       parse<T>(
         buffer,
         {
-          columns: colums,
+          columns: columns,
           from_line: 2,
           delimiter: ',',
           relax_column_count: true,
