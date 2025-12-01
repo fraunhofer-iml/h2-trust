@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpException, HttpStatus } from '@nestjs/common';
 import { BiddingZone } from '@h2-trust/domain';
 import {
   areUnitsInSameBiddingZone,
@@ -29,15 +28,10 @@ describe('red-compliance.flags', () => {
       expect(areUnitsInSameBiddingZone(powerUnit, hydrogenUnit)).toBe(false);
     });
 
-    it('throws BAD_REQUEST when a biddingZone is missing', () => {
+    it('throws error when a biddingZone is missing', () => {
       const powerUnit: any = { biddingZone: null };
       const hydrogenUnit: any = { biddingZone: BiddingZone.DE_LU };
-      expect(() => areUnitsInSameBiddingZone(powerUnit, hydrogenUnit)).toThrow(HttpException);
-      try {
-        areUnitsInSameBiddingZone(powerUnit, hydrogenUnit);
-      } catch (e) {
-        expect(e.getStatus()).toBe(HttpStatus.BAD_REQUEST);
-      }
+      expect(() => areUnitsInSameBiddingZone(powerUnit, hydrogenUnit)).toThrow(Error);
     });
   });
 
@@ -54,15 +48,10 @@ describe('red-compliance.flags', () => {
       expect(isWithinTimeCorrelation(power, hydrogen)).toBe(false);
     });
 
-    it('throws BAD_REQUEST for invalid dates', () => {
+    it('throws error for invalid dates', () => {
       const power: any = { startedAt: 'invalid-date' };
       const hydrogen: any = { startedAt: '2025-01-01T10:00:00.000Z' };
-      expect(() => isWithinTimeCorrelation(power, hydrogen)).toThrow(HttpException);
-      try {
-        isWithinTimeCorrelation(power, hydrogen);
-      } catch (e) {
-        expect(e.getStatus()).toBe(HttpStatus.BAD_REQUEST);
-      }
+      expect(() => isWithinTimeCorrelation(power, hydrogen)).toThrow(Error);
     });
   });
 
@@ -79,15 +68,10 @@ describe('red-compliance.flags', () => {
       expect(meetsAdditionalityCriterion(power, hydrogen)).toBe(false);
     });
 
-    it('throws BAD_REQUEST for invalid commissionedOn dates', () => {
+    it('throws error for invalid commissionedOn dates', () => {
       const hydrogen: any = { commissionedOn: 'invalid-date' };
       const power: any = { commissionedOn: '2023-01-01T00:00:00.000Z' };
-      expect(() => meetsAdditionalityCriterion(power, hydrogen)).toThrow(HttpException);
-      try {
-        meetsAdditionalityCriterion(power, hydrogen);
-      } catch (e) {
-        expect(e.getStatus()).toBe(HttpStatus.BAD_REQUEST);
-      }
+      expect(() => meetsAdditionalityCriterion(power, hydrogen)).toThrow(Error);
     });
   });
 

@@ -29,7 +29,7 @@ export class RedCompliancePairingService {
   ): Promise<MatchedProductionPair[]> {
     const pairs: MatchedProductionPair[] = this.buildMatchedPairsWithoutUnits(powerProductions, hydrogenProductions);
 
-    if (pairs.length === 0) {
+    if (!pairs?.length) {
       const message = `No matching power↔hydrogen production pairs found for processStepId [${processStepId}]`;
       throw new HttpException(message, HttpStatus.BAD_REQUEST);
     }
@@ -66,7 +66,7 @@ export class RedCompliancePairingService {
 
   private async enrichPairsWithUnits(pairs: MatchedProductionPair[]): Promise<MatchedProductionPair[]> {
     const { uniquePowerUnitIds, uniqueHydrogenUnitIds } = this.collectUniqueUnitIdsFromPairs(pairs);
-    const { powerUnitById, hydrogenUnitById } = await this.loadProductionUnits(
+    const { powerUnitById, hydrogenUnitById } = await this.fetchProductionUnits(
       uniquePowerUnitIds,
       uniqueHydrogenUnitIds,
     );
@@ -92,7 +92,7 @@ export class RedCompliancePairingService {
     return { uniquePowerUnitIds, uniqueHydrogenUnitIds };
   }
 
-  private async loadProductionUnits(
+  private async fetchProductionUnits(
     powerUnitIds: string[],
     hydrogenUnitIds: string[],
   ): Promise<{

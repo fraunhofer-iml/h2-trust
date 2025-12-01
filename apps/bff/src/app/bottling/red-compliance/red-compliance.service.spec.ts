@@ -68,11 +68,11 @@ describe('RedComplianceService', () => {
       {
         power: {
           processStep: { startedAt: '2025-01-01T10:00:00.000Z', executedBy: { id: 'power-1' } },
-          unit: { biddingZone: 'DE_LU', commissionedOn: '2023-01-01T00:00:00.000Z', financialSupportReceived: true },
+          unit: { biddingZone: 'DE-LU', commissionedOn: '2023-01-01T00:00:00.000Z', financialSupportReceived: true },
         },
         hydrogen: {
           processStep: { startedAt: '2025-01-01T10:30:00.000Z', executedBy: { id: 'h2-1' } },
-          unit: { biddingZone: 'DE_LU', commissionedOn: '2024-01-01T00:00:00.000Z' },
+          unit: { biddingZone: 'DE-LU', commissionedOn: '2024-01-01T00:00:00.000Z' },
         },
       },
     ];
@@ -93,14 +93,14 @@ describe('RedComplianceService', () => {
         },
         hydrogen: {
           processStep: { startedAt: '2025-01-01T10:30:00.000Z', executedBy: { id: 'h2-1' } },
-          unit: { biddingZone: 'DE_LU', commissionedOn: '2024-01-01T00:00:00.000Z' },
+          unit: { biddingZone: 'DE-LU', commissionedOn: '2024-01-01T00:00:00.000Z' },
         },
       },
       // second pair should not be evaluated due to break
       {
         power: {
           processStep: { startedAt: '2025-01-01T10:00:00.000Z', executedBy: { id: 'power-2' } },
-          unit: { biddingZone: 'DE_LU', commissionedOn: '2023-01-01T00:00:00.000Z', financialSupportReceived: true },
+          unit: { biddingZone: 'DE-LU', commissionedOn: '2023-01-01T00:00:00.000Z', financialSupportReceived: true },
         },
         hydrogen: {
           processStep: { startedAt: '2025-01-01T10:00:00.000Z', executedBy: { id: 'h2-2' } },
