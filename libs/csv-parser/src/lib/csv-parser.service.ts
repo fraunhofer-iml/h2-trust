@@ -12,6 +12,8 @@ import { AccountingPeriodHydrogen, AccountingPeriodPower, BrokerException } from
 
 @Injectable()
 export class CsvParserService {
+  static readonly DATE_TIME_REGEX = /^\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2}(:\d{2})?$/;
+
   private readonly logger: Logger = new Logger(CsvParserService.name);
 
   async parseFile<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
@@ -36,8 +38,8 @@ export class CsvParserService {
       .split(',')
       .map((h) => h.trim());
     for (const column of columns) {
-      if (!firstLine.includes(header)) {
-        throw new BrokerException(`Missing required column: ${header}`, HttpStatus.BAD_REQUEST);
+      if (!firstLine.includes(column)) {
+        throw new BrokerException(`Missing required column: ${column}`, HttpStatus.BAD_REQUEST);
       }
     }
 
@@ -64,25 +66,18 @@ export class CsvParserService {
           cast: (value, context) => {
             if (context.column === 'time') {
               let date: Date | null = null;
-              if (/^\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2}:\d{2}$/.test(value)) {
+
+              if (CsvParserService.DATE_TIME_REGEX.test(value)) {
                 const [datePart, timePart] = value.split(/\s+/);
                 const [day, month, year] = datePart.split('.').map(Number);
-                const [hours, minutes, seconds] = timePart.split(':').map(Number);
-
-                date = new Date(year, month - 1, day, hours, minutes, seconds);
-              } else if (/^\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2}$/.test(value)) {
-                const [datePart, timePart] = value.split(/\s+/);
-                const [day, month, year] = datePart.split('.').map(Number);
-                const [hours, minutes] = timePart.split(':').map(Number);
-
-                date = new Date(year, month - 1, day, hours, minutes, 0);
+                const [hours, minutes, seconds = 0] = timePart.split(':').map(Number);
+                return new Date(year, month - 1, day, hours, minutes, seconds);
               } else if (!isNaN(Date.parse(value))) {
                 date = new Date(value);
               } else if (!isNaN(Number(value))) {
                 const num = Number(value);
                 date = new Date((num - 25569) * 86400 * 1000);
               }
-
               if (!date || isNaN(date.getTime())) {
                 invalid++;
                 return null;
@@ -97,7 +92,7 @@ export class CsvParserService {
                 invalid++;
                 return null;
               }
-              if (num === 0) {
+              if (num <= 0) {
                 skipped++;
                 return null;
               }

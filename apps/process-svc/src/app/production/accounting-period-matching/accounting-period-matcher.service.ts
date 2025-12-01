@@ -16,12 +16,12 @@ import {
   UnitDataBundle,
 } from '@h2-trust/amqp';
 
-interface PowerMapItem {
+interface PowerItem {
   unitId: string;
   amount: number;
 }
 
-interface HydrogenMapItem {
+interface HydrogenItem {
   unitId: string;
   amount: number;
   powerConsumed: number;
@@ -30,44 +30,20 @@ interface HydrogenMapItem {
 @Injectable()
 export class AccountingPeriodMatcherService {
   matchAccountingPeriods(data: ParsedFileBundles, gridUnitId: string) {
-    const powerByDateHour = this.normalizePowerLists(data.powerProduction);
-    const hydrogenByDateHour = this.normalizeHydrogenLists(data.hydrogenProduction);
+    this.validateBundles(data.hydrogenProduction, 'hydrogen');
+    this.validateBundles(data.powerProduction, 'power');
+
+    const powerByDateHour: Map<string, PowerItem[]> = this.normalizePowerLists(data.powerProduction);
+    const hydrogenByDateHour: Map<string, HydrogenItem[]> = this.normalizeHydrogenLists(data.hydrogenProduction);
 
     const batches: AccountingPeriodEntity[] = [];
 
-    normalizedH2Data.forEach((value, key) => {
-      const powerProductionUnits = normalizedPowerData.get(key);
-      const { amount, unitId, powerConsumed } = value[0];
-      const date = new Date(key);
+    for (const [dateHour, hydrogenItems] of hydrogenByDateHour) {
+      const powerItemsByDateHour: PowerItem[] = powerByDateHour.get(dateHour);
+      const { amount, unitId, powerConsumed } = hydrogenItems[0];
+      const date = new Date(dateHour);
 
-      if (powerItems) {
-        let remainingPower = powerConsumed;
-
-        for (const powerItem of powerItems) {
-          if (remainingPower <= 0) break;
-          const powerUsed = Math.min(unit.amount, remainingPower);
-          const usageRatio = powerUsed / remainingPower;
-
-          batches.push({
-            startedAt: date,
-            hydrogenAmount: amount * usageRatio,
-            hydrogenProductionUnitId: unitId,
-            powerAmount: powerUsed,
-            powerProductionUnitId: powerProductionUnits[0].unitId,
-          });
-
-          remainingPower -= powerUsed;
-        }
-
-        if (remainingPower > 0)
-          batches.push({
-            startedAt: date,
-            hydrogenAmount: (remainingPower / powerConsumed) * amount,
-            hydrogenProductionUnitId: unitId,
-            powerAmount: remainingPower,
-            powerProductionUnitId: gridUnitId,
-          });
-      } else {
+      if (!powerItemsByDateHour) {
         batches.push({
           startedAt: date,
           hydrogenAmount: amount,
@@ -75,8 +51,38 @@ export class AccountingPeriodMatcherService {
           powerAmount: powerConsumed,
           powerProductionUnitId: gridUnitId,
         });
+        continue;
       }
-    });
+      let remainingPower = powerConsumed;
+
+      for (const powerItem of powerItemsByDateHour) {
+        if (remainingPower <= 0) break;
+        const powerUsed = Math.min(powerItem.amount, remainingPower);
+        const usageRatio = powerUsed / remainingPower;
+
+        batches.push({
+          startedAt: date,
+          hydrogenAmount: amount * usageRatio,
+          hydrogenProductionUnitId: unitId,
+          powerAmount: powerUsed,
+          powerProductionUnitId: powerItem.unitId,
+        });
+
+        remainingPower -= powerUsed;
+      }
+
+      if (remainingPower > 0) {
+        batches.push({
+          startedAt: date,
+          hydrogenAmount: (remainingPower / powerConsumed) * amount,
+          hydrogenProductionUnitId: unitId,
+          powerAmount: remainingPower,
+          powerProductionUnitId: gridUnitId,
+        });
+      }
+    }
+
+    console.log(batches);
 
     if (batches.length === 0)
       throw new BrokerException(
@@ -87,22 +93,22 @@ export class AccountingPeriodMatcherService {
     return batches;
   }
 
-  private normalizePowerLists(data: UnitDataBundle<AccountingPeriodPower>[]) {
-    const map = new Map<string, PowerMapItem[]>();
+  private normalizePowerLists(data: UnitDataBundle<AccountingPeriodPower>[]): Map<string, PowerItem[]> {
+    const map = new Map<string, PowerItem[]>();
 
     data.forEach((bundle) => {
       const hourlyTotals = bundle.data.reduce(
         (acc, item) => {
           const date = new Date(item.time);
-          const hourKey = date.toISOString().slice(0, 13);
+          const dateHourKey = date.toISOString().slice(0, 13);
 
-          acc[hourKey] = (acc[hourKey] || 0) + item.amount;
+          acc[dateHourKey] = (acc[dateHourKey] || 0) + item.amount;
           return acc;
         },
         {} as Record<string, number>,
       );
       Object.entries(hourlyTotals).forEach(([timestamp, amount]) => {
-        this.addToMap<PowerMapItem>(map, `${timestamp}:00:00Z`, {
+        this.addToMap<PowerItem>(map, `${timestamp}:00:00Z`, {
           unitId: bundle.unitId,
           amount,
         });
@@ -112,25 +118,25 @@ export class AccountingPeriodMatcherService {
     return map;
   }
 
-  private normalizeHydrogenLists(data: UnitDataBundle<AccountingPeriodHydrogen>[]) {
-    const map = new Map<string, HydrogenMapItem[]>();
+  private normalizeHydrogenLists(data: UnitDataBundle<AccountingPeriodHydrogen>[]): Map<string, HydrogenItem[]> {
+    const map = new Map<string, HydrogenItem[]>();
 
     data.forEach((bundle) => {
       const hourlyTotals = bundle.data.reduce(
         (acc, item) => {
           const date = new Date(item.time);
-          const hourKey = date.toISOString().slice(0, 13);
+          const dateHourKey = date.toISOString().slice(0, 13);
 
-          if (!acc[hourKey]) acc[hourKey] = [0, 0];
+          if (!acc[dateHourKey]) acc[dateHourKey] = [0, 0];
 
-          acc[hourKey][0] = (acc[hourKey][0] || 0) + item.amount;
-          acc[hourKey][1] = (acc[hourKey][1] || 0) + item.power;
+          acc[dateHourKey][0] = (acc[dateHourKey][0] || 0) + item.amount;
+          acc[dateHourKey][1] = (acc[dateHourKey][1] || 0) + item.power;
           return acc;
         },
         {} as Record<string, [number, number]>,
       );
       Object.entries(hourlyTotals).forEach(([timestamp, [amount, powerConsumed]]) => {
-        this.addToMap<HydrogenMapItem>(map, `${timestamp}:00:00Z`, {
+        this.addToMap<HydrogenItem>(map, `${timestamp}:00:00Z`, {
           unitId: bundle.unitId,
           amount,
           powerConsumed,
@@ -141,8 +147,18 @@ export class AccountingPeriodMatcherService {
     return map;
   }
 
-  private addToMap<T extends PowerMapItem | HydrogenMapItem>(map: Map<string, T[]>, key: string, value: T) {
+  private addToMap<T extends PowerItem | HydrogenItem>(map: Map<string, T[]>, key: string, value: T): void {
     if (!map.get(key)) map.set(key, [value]);
     else map.get(key).push(value);
+  }
+
+  private validateBundles(bundles: UnitDataBundle<any>[] | undefined, type: 'hydrogen' | 'power') {
+    if (!bundles || bundles.length === 0) {
+      throw new BrokerException(`Missing ${type} production data`, HttpStatus.BAD_REQUEST);
+    }
+
+    if (bundles.some((bundle) => !bundle.unitId || bundle.data.length === 0)) {
+      throw new BrokerException(`Invalid unit data relation for ${type} production`, HttpStatus.BAD_REQUEST);
+    }
   }
 }
