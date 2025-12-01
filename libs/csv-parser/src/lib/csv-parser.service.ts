@@ -47,7 +47,7 @@ export class CsvParserService {
 
   private async parseBuffer<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
     buffer: string,
-    colums: string[],
+    columns: string[],
   ): Promise<T[]> {
     let skipped = 0;
     let invalid = 0;
