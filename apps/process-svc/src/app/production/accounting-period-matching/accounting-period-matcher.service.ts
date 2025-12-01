@@ -43,7 +43,7 @@ export class AccountingPeriodMatcherService {
       if (powerItems) {
         let remainingPower = powerConsumed;
 
-        for (const unit of powerProductionUnits) {
+        for (const powerItem of powerItems) {
           if (remainingPower <= 0) break;
           const powerUsed = Math.min(unit.amount, remainingPower);
           const usageRatio = powerUsed / remainingPower;
