@@ -13,6 +13,7 @@ import { ConfigurationService } from '@h2-trust/configuration';
 import { AccountingPeriodRepository } from '@h2-trust/database';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
 import { AccountingPeriodMatcherService } from './accounting-period-matching/accounting-period-matcher.service';
+import { ProductionImportService } from './production-import.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
 
@@ -40,6 +41,7 @@ describe('ProductionController', () => {
       controllers: [ProductionController],
       providers: [
         ProductionService,
+        ProductionImportService,
         {
           provide: ConfigurationService,
           useValue: {
@@ -272,7 +274,7 @@ describe('ProductionController', () => {
 
     jest.spyOn(accountingPeriodRepo, 'stageProduction').mockResolvedValue('test-id');
 
-    const actualResponse = await controller.createProductionIntervalsFromCsvData({ data, userId: 'user-id-1' });
+    const actualResponse = await controller.stageProductionData({ data, userId: 'user-id-1' });
 
     expect(actualResponse.numberOfBatches).toBe(2);
     expect(actualResponse.id).toBe('test-id');

@@ -180,7 +180,7 @@ describe('ProductionController', () => {
 
     const powerFile: Express.Multer.File = {
       fieldname: 'file',
-      originalname: 'powerFile',
+      originalname: 'powerFile.csv',
       encoding: '7bit',
       mimetype: 'text/csv',
       buffer: Buffer.from(powerContent, 'utf-8'),
@@ -195,7 +195,7 @@ describe('ProductionController', () => {
 
     const h2File: Express.Multer.File = {
       fieldname: 'file',
-      originalname: 'h2File',
+      originalname: 'h2File.csv',
       encoding: '7bit',
       mimetype: 'text/csv',
       buffer: Buffer.from(h2Content, 'utf-8'),
@@ -239,7 +239,7 @@ describe('ProductionController', () => {
     const powerContent = 'time,amount\n2025-11-27T09:00:00Z,2\n2025-11-27T09:00:00Z,2';
     const powerFile: Express.Multer.File = {
       fieldname: 'file',
-      originalname: 'powerFile',
+      originalname: 'powerFile.csv',
       encoding: '7bit',
       mimetype: 'text/csv',
       buffer: Buffer.from(powerContent, 'utf-8'),
@@ -253,7 +253,7 @@ describe('ProductionController', () => {
     const h2Content = 'time,amount,power\n2025-11-27T09:00:00Z,2\n2025-11-27T09:00:00Z,2,2';
     const h2File: Express.Multer.File = {
       fieldname: 'file',
-      originalname: 'h2File',
+      originalname: 'h2File.csv',
       encoding: '7bit',
       mimetype: 'text/csv',
       buffer: Buffer.from(h2Content, 'utf-8'),
@@ -270,6 +270,6 @@ describe('ProductionController', () => {
         { powerProductionFiles: [powerFile], hydrogenProductionFiles: [h2File] },
         givenAuthenticatedUser,
       ),
-    ).rejects.toThrow('Missing related  unit for at least one file.');
+    ).rejects.toThrow('Missing related unit for power production.');
   });
 });

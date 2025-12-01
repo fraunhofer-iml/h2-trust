@@ -171,11 +171,11 @@ export class ProductionService {
     type: 'hydrogen' | 'power',
   ) {
     if (!files || files.length === 0) {
-      throw new BadRequestException(`Missing file for  ${type}  production.`);
+      throw new BadRequestException(`Missing file for ${type} production.`);
     }
 
     if (unitIds.length < files.length) {
-      throw new BadRequestException(`Missing related unit for  ${type} production.`);
+      throw new BadRequestException(`Missing related unit for ${type} production.`);
     }
 
     const productionData: UnitFileBundle[] = this.mapToImportedFileBundles(unitIds, files);
