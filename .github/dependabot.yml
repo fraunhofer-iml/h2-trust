@@ -1,0 +1,11 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'thursday'
+      time: '08:00'
+    ignore:
+      - dependency-name: 'npm'
+        update-types: ['version-update:semver-major']
