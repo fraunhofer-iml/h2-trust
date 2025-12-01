@@ -35,7 +35,7 @@ export class CsvParserService {
       .split('\n')[0]
       .split(',')
       .map((h) => h.trim());
-    for (const header of columns) {
+    for (const column of columns) {
       if (!firstLine.includes(header)) {
         throw new BrokerException(`Missing required column: ${header}`, HttpStatus.BAD_REQUEST);
       }
