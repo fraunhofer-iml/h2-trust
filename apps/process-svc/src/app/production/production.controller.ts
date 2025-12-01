@@ -23,13 +23,13 @@ export class ProductionController {
     return this.service.createProduction(payload.createProductionEntity, false);
   }
 
-  @MessagePattern(amqp.ProductionMessagePatterns.STAGE)
-  async createProductionIntervalsFromCsvData(@Payload() payload: { data: amqp.ParsedFileBundles; userId: string }) {
-    return this.service.matchAccountingPeriods(payload.data, payload.userId);
+   @MessagePattern(amqp.ProductionMessagePatterns.STAGE)
+  async stageProductionData(@Payload() payload: { data: amqp.ParsedFileBundles; userId: string }) {
+    return this.service.stageImportedProductionData(payload.data, payload.userId);
   }
 
-  @MessagePattern(amqp.ProductionMessagePatterns.SUBMIT)
-  async saveImportedData(@Payload() payload: SubmitProductionProps) {
-    return this.service.saveImportedData(payload);
+ @MessagePattern(amqp.ProductionMessagePatterns.FINALIZE)
+  async finalizeProductionData(@Payload() payload: SubmitProductionProps) {
+    return this.service.finalizeProductionData(payload);
   }
 }
