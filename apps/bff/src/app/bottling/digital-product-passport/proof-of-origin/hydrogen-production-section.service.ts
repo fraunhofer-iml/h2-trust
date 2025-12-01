@@ -10,15 +10,15 @@ import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { ClassificationDto, SectionDto } from '@h2-trust/api';
 import { ProofOfOrigin } from '@h2-trust/domain';
-import { ClassificationAssembler } from '../assembler/classification.assembler';
-import { EnergySourceClassificationService } from '../classification/energy-source-classification.service';
-import { WaterClassificationService } from '../classification/water-classification.service';
+import { ClassificationAssembler } from './classification.assembler';
+import { PowerSupplyClassificationService } from './power-supply-classification.service';
+import { WaterSupplyClassificationService } from './water-supply-classification.service';
 
 @Injectable()
 export class HydrogenProductionSectionService {
   constructor(
-    private readonly energySourceClassificationService: EnergySourceClassificationService,
-    private readonly waterClassificationService: WaterClassificationService,
+    private readonly powerSupplyClassificationService: PowerSupplyClassificationService,
+    private readonly waterSupplyClassificationService: WaterSupplyClassificationService,
   ) {}
 
   async buildSection(
@@ -29,7 +29,7 @@ export class HydrogenProductionSectionService {
 
     if (powerProductions?.length) {
       const energySourceClassifications: ClassificationDto[] =
-        await this.energySourceClassificationService.buildEnergySourceClassifications(powerProductions);
+        await this.powerSupplyClassificationService.buildPowerSupplyClassifications(powerProductions);
       const powerSupplyClassification: ClassificationDto = ClassificationAssembler.assemblePowerClassification(
         ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION,
         [],
@@ -40,7 +40,7 @@ export class HydrogenProductionSectionService {
 
     if (waterConsumptions?.length) {
       const waterSupplyClassification: ClassificationDto =
-        this.waterClassificationService.createWaterSupplyClassification(waterConsumptions);
+        this.waterSupplyClassificationService.buildWaterSupplyClassification(waterConsumptions);
       classifications.push(waterSupplyClassification);
     }
 

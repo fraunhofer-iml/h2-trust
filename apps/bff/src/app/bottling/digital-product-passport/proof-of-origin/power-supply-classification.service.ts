@@ -17,46 +17,45 @@ import {
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { BatchDto, ClassificationDto, EmissionCalculationDto, EmissionDto, PowerBatchDto } from '@h2-trust/api';
-import { BatchAssembler } from '../assembler/batch.assembler';
-import { ClassificationAssembler } from '../assembler/classification.assembler';
-import { EmissionCalculationAssembler } from '../assembler/emission.assembler';
 import { EmissionComputationService } from '../emission-computation.service';
+import { EmissionCalculationAssembler } from '../emission.assembler';
+import { BatchAssembler } from './batch.assembler';
+import { ClassificationAssembler } from './classification.assembler';
 
 @Injectable()
-export class EnergySourceClassificationService {
+export class PowerSupplyClassificationService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
-    private readonly emissionCalculatorService: EmissionComputationService,
+    private readonly emissionComputationService: EmissionComputationService,
   ) {}
 
-  async buildEnergySourceClassifications(powerProductions: ProcessStepEntity[]): Promise<ClassificationDto[]> {
+  async buildPowerSupplyClassifications(powerProductions: ProcessStepEntity[]): Promise<ClassificationDto[]> {
     if (!powerProductions?.length) {
       return [];
     }
 
     const energySources = await this.fetchEnergySources();
-    const processStepsWithUnits = await this.fetchPowerProductionProcessStepsWithPowerProductionUnits(powerProductions);
+    const powerProductionsWithUnits =
+      await this.fetchPowerProductionProcessStepsWithPowerProductionUnits(powerProductions);
     const classifications: ClassificationDto[] = [];
 
     for (const energySource of energySources) {
-      const processStepsWithUnitsByEnergySource = processStepsWithUnits.filter(
+      const powerProductionsWithUnitsByEnergySource = powerProductionsWithUnits.filter(
         ([, unit]) => unit.type?.energySource === energySource,
       );
 
-      if (processStepsWithUnitsByEnergySource.length > 0) {
+      if (powerProductionsWithUnitsByEnergySource.length > 0) {
         const productionPowerBatches: BatchDto[] = await Promise.all(
-          processStepsWithUnitsByEnergySource.map(async ([processStep]) => {
-            const [powerCalculation] = await this.emissionCalculatorService.computePowerProductionEmissions([
-              processStep,
-            ]);
-            const emissionCalculation: EmissionCalculationDto = powerCalculation;
-            const hydrogenKgEquivalentToPowerBatch: number = processStep.batch.successors[0].amount;
+          powerProductionsWithUnitsByEnergySource.map(async ([powerProduction]) => {
+            const [powerSupplyEmission]: EmissionCalculationDto[] =
+              await this.emissionComputationService.computePowerSupplyEmissions([powerProduction]);
+            const hydrogenKgEquivalentToPowerBatch: number = powerProduction.batch.successors[0].amount;
             const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(
-              emissionCalculation,
+              powerSupplyEmission,
               hydrogenKgEquivalentToPowerBatch,
             );
-            const batch: PowerBatchDto = BatchAssembler.assemblePowerProductionBatchDto(
-              processStep,
+            const batch: PowerBatchDto = BatchAssembler.assemblePowerSupplyBatchDto(
+              powerProduction,
               energySource,
               emission,
             );
@@ -85,7 +84,7 @@ export class EnergySourceClassificationService {
   private async fetchPowerProductionProcessStepsWithPowerProductionUnits(
     powerProductions: ProcessStepEntity[],
   ): Promise<[ProcessStepEntity, PowerProductionUnitEntity][]> {
-    // TODO-MP: bulk request to fetch all units at once
+    // TODO-MP: bulk request to fetch all units at once (see computePowerSupplyEmissions)
     return Promise.all(
       powerProductions.map(async (powerProduction): Promise<[ProcessStepEntity, PowerProductionUnitEntity]> => {
         const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(

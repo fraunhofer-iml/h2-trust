@@ -12,28 +12,28 @@ import { EmissionCalculationDto } from '../emission-calculation.dto';
 export const emissionCalculationMock: EmissionCalculationDto[] = [
   {
     basisOfCalculation: 'E = Egrid + Esolar + Ewind ',
-    calculationTopic: CalculationTopic.HYDROGEN_PRODUCTION,
+    calculationTopic: CalculationTopic.POWER_SUPPLY,
     name: 'Emissions (Hydrogen Production)',
     result: 17,
     unit: 'g CO₂,eq/kg H₂',
   },
   {
     basisOfCalculation: 'E = 1000 kWh/50 kg H2* 0 g CO2,eq/kWh',
-    calculationTopic: CalculationTopic.HYDROGEN_PRODUCTION,
+    calculationTopic: CalculationTopic.POWER_SUPPLY,
     name: 'Emissions (Wind Energy)',
     result: 0,
     unit: 'g CO₂,eq/kg H₂',
   },
   {
     basisOfCalculation: 'E = 1000 kWh/50 kg H2* 0 g CO2,eq/kWh',
-    calculationTopic: CalculationTopic.HYDROGEN_PRODUCTION,
+    calculationTopic: CalculationTopic.POWER_SUPPLY,
     name: 'Emissions (Solar Energy)',
     result: 0,
     unit: 'g CO₂,eq/kg H₂',
   },
   {
     basisOfCalculation: 'E = 2,37 kWh/50 kg H2* 0 g CO2,eq/kWh',
-    calculationTopic: CalculationTopic.HYDROGEN_PRODUCTION,
+    calculationTopic: CalculationTopic.POWER_SUPPLY,
     name: 'Emissions (Grid Energy)',
     result: 13.2,
     unit: 'g CO₂,eq/kg H₂',
