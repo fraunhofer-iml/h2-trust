@@ -170,7 +170,6 @@ describe('ProductionController', () => {
     const givenAuthenticatedUser: AuthenticatedKCUser = { sub: 'user-1' };
 
     const expectedResponse: IntervallMatchingResultDto = {
-      createdAt: new Date(),
       hydrogenProduced: 20,
       id: 'id',
       numberOfBatches: 1,

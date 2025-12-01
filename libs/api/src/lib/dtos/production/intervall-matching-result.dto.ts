@@ -22,7 +22,7 @@ export class IntervallMatchingResultDto {
     this.numberOfBatches = numberOfBatches;
   }
 
-  static fromDatabase(entity: IntervallMatchingResultEntity) {
+  static fromEntity(entity: IntervallMatchingResultEntity) {
     return new IntervallMatchingResultDto(entity.id, entity.powerUsed, entity.hydrogenProduced, entity.numberOfBatches);
   }
 }

@@ -145,7 +145,7 @@ export class ProductionService {
       this.processSvc.send<IntervallMatchingResultEntity>(ProductionMessagePatterns.STAGE, payload),
     );
 
-    return IntervallMatchingResultDto.fromDatabase(matchingResult);
+    return IntervallMatchingResultDto.fromEntity(matchingResult);
   }
 
   async submitCsvData(dto: ImportSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
