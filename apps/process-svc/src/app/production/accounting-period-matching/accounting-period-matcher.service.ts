@@ -40,7 +40,7 @@ export class AccountingPeriodMatcherService {
       const { amount, unitId, powerConsumed } = value[0];
       const date = new Date(key);
 
-      if (powerProductionUnits) {
+      if (powerItems) {
         let remainingPower = powerConsumed;
 
         for (const unit of powerProductionUnits) {
