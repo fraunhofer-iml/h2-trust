@@ -16,11 +16,19 @@ export class IntervallMatchingResultDto {
   hydrogenProduced: number;
   numberOfBatches: number;
 
-  constructor(entity: IntervallMatchingResultEntity) {
-    this.id = entity.id;
-    this.createdAt = entity.createdAt;
-    this.powerUsed = entity.powerUsed;
-    this.hydrogenProduced = entity.hydrogenProduced;
-    this.numberOfBatches = entity.numberOfBatches;
+  constructor(id: string, createdAt: Date, powerUsed: number, hydrogenProduced: number, numberOfBatches: number) {
+    this.id = id;
+    (this.createdAt = createdAt), (this.powerUsed = powerUsed);
+    (this.hydrogenProduced = hydrogenProduced), (this.numberOfBatches = numberOfBatches);
+  }
+
+  static fromDatabase(entity: IntervallMatchingResultEntity) {
+    return new IntervallMatchingResultDto(
+      entity.id,
+      entity.createdAt,
+      entity.powerUsed,
+      entity.hydrogenProduced,
+      entity.numberOfBatches,
+    );
   }
 }

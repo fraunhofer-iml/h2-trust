@@ -12,6 +12,7 @@ import { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class ProductionIntervallRepository {
+  static readonly DAY_IN_MS = 24 * 60 * 60 * 1000;
   constructor(private readonly prismaService: PrismaService) {}
 
   async createProductionIntervalls(data: ProductionIntervallEntity[]) {
@@ -35,7 +36,7 @@ export class ProductionIntervallRepository {
   }
 
   async deleteExpiredIntervalls() {
-    const expirationThreshold: Date = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const expirationThreshold: Date = new Date(Date.now() - ProductionIntervallRepository.DAY_IN_MS);
 
     return await this.prismaService.productionIntervallSet.deleteMany({
       where: {

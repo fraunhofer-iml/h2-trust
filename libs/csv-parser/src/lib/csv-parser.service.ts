@@ -14,7 +14,7 @@ import { AccountingPeriodHydrogen, AccountingPeriodPower, BrokerException } from
 export class CsvParserService {
   private readonly logger: Logger = new Logger(CsvParserService.name);
 
-  async parse<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
+  async parseFile<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
     file: Express.Multer.File,
     columns: string[],
   ): Promise<T[]> {
