@@ -9,7 +9,7 @@
 export const RED_III_CRITERIA = {
   FINANCIAL_SUPPORT: {
     TITLE: 'Financial Support',
-    DESCRIPTION: 'Received financial support in the form of operating subsidies or investment subsidies.',
+    DESCRIPTION: 'Received no financial support in the form of operating subsidies or investment subsidies.',
   },
   GEOGRAPHICAL_CORRELATION: {
     TITLE: 'Geographical Correlation',
@@ -22,6 +22,6 @@ export const RED_III_CRITERIA = {
   ADDITIONALITY_REQUIREMENT: {
     TITLE: 'Additionality Requirement',
     DESCRIPTION:
-      ' The system must not have been in operation for more than 36 months prior to commissioning of the electrolyzer.',
+      'The system must not have been in operation for more than 36 months prior to commissioning of the electrolyzer.',
   },
 };
