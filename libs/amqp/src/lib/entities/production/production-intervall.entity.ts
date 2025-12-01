@@ -6,32 +6,32 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProductionIntervall } from '@h2-trust/database';
+import { ProductionIntervalDbType } from '@h2-trust/database';
 
 export class ProductionIntervallEntity {
-  date: Date;
+  startedAt: Date;
   hydrogenAmount: number;
   hydrogenProductionUnitId: string;
   powerAmount: number;
   powerProductionUnitId: string;
 
   constructor(
-    date: Date,
+    startedAt: Date,
     hydrogenAmount: number,
     hydrogenProductionUnitId: string,
     powerAmount: number,
     powerProductionUnitId: string,
   ) {
-    this.date = date;
+    this.startedAt = startedAt;
     this.hydrogenAmount = hydrogenAmount;
     this.hydrogenProductionUnitId = hydrogenProductionUnitId;
     this.powerAmount = powerAmount;
     this.powerProductionUnitId = powerProductionUnitId;
   }
 
-  static fromDatabase(intervall: ProductionIntervall) {
+  static fromDatabase(intervall: ProductionIntervalDbType) {
     return new ProductionIntervallEntity(
-      intervall.date,
+      intervall.startedAt,
       intervall.hydrogenAmount.toNumber(),
       intervall.hydrogenProductionUnitId,
       intervall.powerAmount.toNumber(),

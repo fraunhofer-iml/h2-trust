@@ -16,7 +16,7 @@ export class IntervallMatchingResultEntity {
   hydrogenProduced: number;
   numberOfBatches: number;
 
-  constructor(id: string, createdAt: Date, batches: ProductionIntervallEntity[]) {
+  constructor(id: string, batches: ProductionIntervallEntity[]) {
     const { powerAmount, hydrogenAmount } = batches.reduce(
       (acc, curr) => {
         acc.hydrogenAmount += curr.hydrogenAmount;
@@ -30,7 +30,7 @@ export class IntervallMatchingResultEntity {
     );
 
     this.id = id;
-    this.createdAt = createdAt;
+    this.createdAt = batches[0].startedAt;
     this.numberOfBatches = batches.length;
     this.powerUsed = powerAmount;
     this.hydrogenProduced = hydrogenAmount;

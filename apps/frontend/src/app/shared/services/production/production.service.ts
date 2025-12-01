@@ -12,7 +12,7 @@ import { Injectable } from '@angular/core';
 import {
   CreateProductionDto,
   ImportSubmissionDto,
-  IntervallMappingResultDto,
+  IntervallMatchingResultDto,
   ProductionOverviewDto,
 } from '@h2-trust/api';
 import { API } from '../../constants/api-endpoints';
@@ -30,7 +30,7 @@ export class ProductionService {
   }
 
   uploadCsv(data: FormData) {
-    return lastValueFrom(this.httpClient.post<IntervallMappingResultDto>(API.PRODUCTION.CSV, data));
+    return lastValueFrom(this.httpClient.post<IntervallMatchingResultDto>(API.PRODUCTION.CSV, data));
   }
 
   submitCsv(dto: ImportSubmissionDto) {

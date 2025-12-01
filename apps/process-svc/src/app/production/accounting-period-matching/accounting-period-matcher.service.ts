@@ -49,7 +49,7 @@ export class AccountingPeriodMatcherService {
           const usageRatio = powerUsed / remainingPower;
 
           batches.push({
-            date,
+            startedAt: date,
             hydrogenAmount: amount * usageRatio,
             hydrogenProductionUnitId: unitId,
             powerAmount: powerUsed,
@@ -61,7 +61,7 @@ export class AccountingPeriodMatcherService {
 
         if (remainingPower > 0)
           batches.push({
-            date,
+            startedAt: date,
             hydrogenAmount: (remainingPower / powerConsumed) * amount,
             hydrogenProductionUnitId: unitId,
             powerAmount: remainingPower,
@@ -69,7 +69,7 @@ export class AccountingPeriodMatcherService {
           });
       } else {
         batches.push({
-          date,
+          startedAt: date,
           hydrogenAmount: amount,
           hydrogenProductionUnitId: unitId,
           powerAmount: powerConsumed,

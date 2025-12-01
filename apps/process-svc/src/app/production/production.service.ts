@@ -18,7 +18,7 @@ import {
   CreateProductionEntity,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
-  IntervallMatchingResult,
+  IntervallMatchingResultEntity,
   ParsedFileBundles,
   PowerAccessApprovalEntity,
   PowerAccessApprovalPatterns,
@@ -286,12 +286,12 @@ export class ProductionService {
       gridUnitId,
     );
 
-    const { id, createdAt } = await this.intervallRepo.createProductionIntervalls(productionIntervalls);
-    return new IntervallMatchingResult(id, createdAt, productionIntervalls);
+    const id = await this.intervallRepo.stageProduction(productionIntervalls);
+    return new IntervallMatchingResultEntity(id, productionIntervalls);
   }
 
   async saveImportedData(props: SubmitProductionProps): Promise<ProcessStepEntity[]> {
-    const intervalls = await this.intervallRepo.getIntervallSetById(props.accountingPeriodSetId);
+    const intervalls = await this.intervallRepo.getStagedProductionById(props.accountingPeriodSetId);
 
     return await Promise.all(
       intervalls.map(async (intervall) => {
@@ -301,8 +301,8 @@ export class ProductionService {
           intervall.hydrogenProductionUnitId,
         );
 
-        const startedAt: Date = new Date(intervall.date);
-        const endedAt: Date = new Date(new Date(intervall.date).setMinutes(59, 59, 999));
+        const startedAt: Date = new Date(intervall.startedAt);
+        const endedAt: Date = new Date(new Date(intervall.startedAt).setMinutes(59, 59, 999));
 
         const entity = new CreateProductionEntity(
           startedAt.toISOString(),

@@ -242,20 +242,13 @@ model PowerAccessApproval {
   @@unique([powerProducerId, powerProductionUnitId, hydrogenProducerId])
 }
 
-model ProductionInterval {
+model StagedProduction {
   id                       String   @id @default(cuid(2))
+  importId                 String
+  createdAt                DateTime @default(now())
   powerProductionUnitId    String
   hydrogenProductionUnitId String
   powerAmount              Decimal  @db.Decimal(18, 6)
   hydrogenAmount           Decimal  @db.Decimal(18, 6)
-  date                     DateTime
-
-  productionIntervallSetId String
-  productionIntervallSet   ProductionIntervallSet @relation(fields: [productionIntervallSetId], references: [id], onDelete: Cascade)
-}
-
-model ProductionIntervallSet {
-  id                   String                @id @default(cuid(2))
-  createdAt            DateTime              @default(now())
-  productionIntervalls ProductionIntervall[]
+  startedAt                DateTime
 }

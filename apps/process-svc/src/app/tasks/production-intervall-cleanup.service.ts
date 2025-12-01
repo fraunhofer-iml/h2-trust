@@ -19,7 +19,7 @@ export class ProductionIntervallCleanupService {
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async cleanupOldProductionIntervalls() {
     try {
-      await this.intervallRepo.deleteOldIntervalls();
+      await this.intervallRepo.deleteExpiredIntervalls();
     } catch (error) {
       this.logger.error('Failed to clean old records:', error);
     }

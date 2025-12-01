@@ -142,7 +142,7 @@ export class ProductionService {
 
     const payload = { data: processedFiles, userId: userId };
     const matchingResult = await firstValueFrom(
-      this.processSvc.send<IntervallMatchingResultEntity>(ProductionMessagePatterns.PERIOD_MATCHING, payload),
+      this.processSvc.send<IntervallMatchingResultEntity>(ProductionMessagePatterns.STAGE, payload),
     );
 
     return IntervallMatchingResultDto.fromDatabase(matchingResult);
@@ -151,7 +151,7 @@ export class ProductionService {
   async submitCsvData(dto: ImportSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
     const payload: SubmitProductionProps = new SubmitProductionProps(userId, dto.storageUnitId, dto.intervallSetId);
     const processSteps: ProcessStepEntity[] = await firstValueFrom(
-      this.processSvc.send<ProcessStepEntity[]>(ProductionMessagePatterns.IMPORT, payload),
+      this.processSvc.send<ProcessStepEntity[]>(ProductionMessagePatterns.SUBMIT, payload),
     );
 
     return processSteps.map(ProductionOverviewDto.fromEntity);
