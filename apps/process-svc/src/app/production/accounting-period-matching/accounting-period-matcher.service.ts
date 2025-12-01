@@ -82,8 +82,6 @@ export class AccountingPeriodMatcherService {
       }
     }
 
-    console.log(batches);
-
     if (batches.length === 0)
       throw new BrokerException(
         'The data on electricity production and hydrogen production are not in the same time frame.',
