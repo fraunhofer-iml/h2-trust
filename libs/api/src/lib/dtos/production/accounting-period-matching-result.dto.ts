@@ -6,11 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IntervallMatchingResultEntity } from '@h2-trust/amqp';
+import { AccountingPeriodMatchingResultEntity } from '@h2-trust/amqp';
 
-export class IntervallMatchingResultDto {
+export class AccountingPeriodMatchingResultDto {
   id: string;
-
   powerUsed: number;
   hydrogenProduced: number;
   numberOfBatches: number;
@@ -22,7 +21,12 @@ export class IntervallMatchingResultDto {
     this.numberOfBatches = numberOfBatches;
   }
 
-  static fromEntity(entity: IntervallMatchingResultEntity) {
-    return new IntervallMatchingResultDto(entity.id, entity.powerUsed, entity.hydrogenProduced, entity.numberOfBatches);
+  static fromEntity(entity: AccountingPeriodMatchingResultEntity) {
+    return new AccountingPeriodMatchingResultDto(
+      entity.id,
+      entity.powerUsed,
+      entity.hydrogenProduced,
+      entity.numberOfBatches,
+    );
   }
 }

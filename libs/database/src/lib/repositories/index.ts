@@ -14,4 +14,4 @@ export * from './user.repository';
 export * from './power-access-approval.repository';
 export * from './power-production-type.repository';
 export * from './company.repository';
-export * from './production-intervall.repository';
+export * from './accounting-period.repository';

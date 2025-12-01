@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProductionIntervallEntity } from './production-intervall.entity';
+import { AccountingPeriodEntity } from './accounting-period.entity';
 
-export class IntervallMatchingResultEntity {
+export class AccountingPeriodMatchingResultEntity {
   id: string;
   createdAt: Date;
 
@@ -16,7 +16,7 @@ export class IntervallMatchingResultEntity {
   hydrogenProduced: number;
   numberOfBatches: number;
 
-  constructor(id: string, batches: ProductionIntervallEntity[]) {
+  constructor(id: string, batches: AccountingPeriodEntity[]) {
     const { powerAmount, hydrogenAmount } = batches.reduce(
       (acc, curr) => {
         acc.hydrogenAmount += curr.hydrogenAmount;

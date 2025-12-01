@@ -18,6 +18,17 @@ export class CsvParserService {
     file: Express.Multer.File,
     columns: string[],
   ): Promise<T[]> {
+    if (file.size === 0) {
+      throw new BrokerException(`${file.originalname} is empty`, HttpStatus.BAD_REQUEST);
+    }
+
+    if (!file.originalname.toLowerCase().endsWith('.csv')) {
+      throw new BrokerException(
+        `Invalid file type: expected .csv but got: ${file.originalname}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const buffer = file.buffer.toString();
 
     const firstLine = buffer

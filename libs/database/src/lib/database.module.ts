@@ -18,7 +18,7 @@ import {
   UnitRepository,
   UserRepository,
 } from './repositories';
-import { ProductionIntervallRepository } from './repositories/production-intervall.repository';
+import { AccountingPeriodRepository } from './repositories/accounting-period.repository';
 
 @Module({
   controllers: [],
@@ -32,7 +32,7 @@ import { ProductionIntervallRepository } from './repositories/production-interva
     PowerAccessApprovalRepository,
     PowerProductionTypeRepository,
     CompanyRepository,
-    ProductionIntervallRepository,
+    AccountingPeriodRepository,
   ],
   exports: [
     PrismaService,
@@ -44,7 +44,7 @@ import { ProductionIntervallRepository } from './repositories/production-interva
     PowerAccessApprovalRepository,
     PowerProductionTypeRepository,
     CompanyRepository,
-    ProductionIntervallRepository,
+    AccountingPeriodRepository,
   ],
 })
 export class DatabaseModule {}

@@ -10,9 +10,9 @@ import { lastValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
+  AccountingPeriodMatchingResultDto,
   CreateProductionDto,
   ImportSubmissionDto,
-  IntervallMatchingResultDto,
   ProductionOverviewDto,
 } from '@h2-trust/api';
 import { API } from '../../constants/api-endpoints';
@@ -30,7 +30,7 @@ export class ProductionService {
   }
 
   uploadCsv(data: FormData) {
-    return lastValueFrom(this.httpClient.post<IntervallMatchingResultDto>(API.PRODUCTION.CSV, data));
+    return lastValueFrom(this.httpClient.post<AccountingPeriodMatchingResultDto>(API.PRODUCTION.CSV, data));
   }
 
   submitCsv(dto: ImportSubmissionDto) {

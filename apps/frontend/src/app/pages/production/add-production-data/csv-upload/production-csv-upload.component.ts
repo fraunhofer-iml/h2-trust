@@ -160,7 +160,7 @@ export class ProductionCsvUploadComponent {
   save() {
     const id = this.mutation.data()?.id;
     if (!this.storageUnit.value || !id) return;
-    const dto: ImportSubmissionDto = { storageUnitId: this.storageUnit.value, intervallSetId: id };
+    const dto: ImportSubmissionDto = { storageUnitId: this.storageUnit.value, importId: id };
     this.submitMutation.mutate(dto);
   }
 

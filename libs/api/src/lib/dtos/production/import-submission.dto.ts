@@ -7,11 +7,11 @@
  */
 
 export class ImportSubmissionDto {
-  intervallSetId: string;
+  importId: string;
   storageUnitId: string;
 
-  constructor(intervallSetId: string, storageUnitId: string) {
-    this.intervallSetId = intervallSetId;
+  constructor(importId: string, storageUnitId: string) {
+    this.importId = importId;
     this.storageUnitId = storageUnitId;
   }
 }

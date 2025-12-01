@@ -10,10 +10,10 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, PowerProductionTypeEntity, ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
 import {
+  AccountingPeriodMatchingResultDto,
   AuthenticatedKCUser,
   CreateProductionDto,
   CreateProductionDtoMock,
-  IntervallMatchingResultDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   UserDetailsDtoMock,
@@ -169,7 +169,7 @@ describe('ProductionController', () => {
   it('should parse csv', async () => {
     const givenAuthenticatedUser: AuthenticatedKCUser = { sub: 'user-1' };
 
-    const expectedResponse: IntervallMatchingResultDto = {
+    const expectedResponse: AccountingPeriodMatchingResultDto = {
       hydrogenProduced: 20,
       id: 'id',
       numberOfBatches: 1,

@@ -8,18 +8,18 @@
 
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { ProductionIntervallRepository } from '@h2-trust/database';
+import { AccountingPeriodRepository } from '@h2-trust/database';
 
 @Injectable()
-export class ProductionIntervallCleanupService {
-  private readonly logger: Logger = new Logger(ProductionIntervallCleanupService.name);
+export class AccountingPeriodCleanupService {
+  private readonly logger: Logger = new Logger(AccountingPeriodCleanupService.name);
 
-  constructor(private readonly intervallRepo: ProductionIntervallRepository) {}
+  constructor(private readonly accountingPeriodRepo: AccountingPeriodRepository) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  async cleanupOldProductionIntervalls() {
+  async cleanupExpiredAccountingPeriods() {
     try {
-      await this.intervallRepo.deleteExpiredIntervalls();
+      await this.accountingPeriodRepo.deleteExpiredAccountingPeriods();
     } catch (error) {
       this.logger.error('Failed to clean old records:', error);
     }

@@ -9,15 +9,15 @@
 import cuid from 'cuid';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { ProductionIntervallEntity } from '@h2-trust/amqp';
+import { AccountingPeriodEntity } from '@h2-trust/amqp';
 import { PrismaService } from '../prisma.service';
 
 @Injectable()
-export class ProductionIntervallRepository {
+export class AccountingPeriodRepository {
   static readonly DAY_IN_MS = 24 * 60 * 60 * 1000;
   constructor(private readonly prismaService: PrismaService) {}
 
-  async stageProduction(data: ProductionIntervallEntity[]) {
+  async stageProduction(data: AccountingPeriodEntity[]) {
     const importId = cuid();
 
     await this.prismaService.stagedProduction.createMany({
@@ -37,17 +37,17 @@ export class ProductionIntervallRepository {
     return importId;
   }
 
-  async getStagedProductionById(id: string): Promise<ProductionIntervallEntity[]> {
+  async getStagedProductionById(id: string): Promise<AccountingPeriodEntity[]> {
     const res = await this.prismaService.stagedProduction.findMany({
       where: { importId: id },
     });
 
-    if (!res || res.length === 0) throw new Error(`Could not find intervalls for id ${id}`);
-    return res.map(ProductionIntervallEntity.fromDatabase);
+    if (!res || res.length === 0) throw new Error(`Could not find staged production for id ${id}`);
+    return res.map(AccountingPeriodEntity.fromDatabase);
   }
 
-  async deleteExpiredIntervalls() {
-    const expirationThreshold: Date = new Date(Date.now() - ProductionIntervallRepository.DAY_IN_MS);
+  async deleteExpiredAccountingPeriods() {
+    const expirationThreshold: Date = new Date(Date.now() - AccountingPeriodRepository.DAY_IN_MS);
 
     return await this.prismaService.stagedProduction.deleteMany({
       where: {

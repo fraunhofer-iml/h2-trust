@@ -10,6 +10,8 @@ import { firstValueFrom } from 'rxjs';
 import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
+  AccountingPeriodEntity,
+  AccountingPeriodMatchingResultEntity,
   BaseUnitEntity,
   BatchEntity,
   BrokerException,
@@ -18,21 +20,19 @@ import {
   CreateProductionEntity,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
-  IntervallMatchingResultEntity,
   ParsedFileBundles,
   PowerAccessApprovalEntity,
   PowerAccessApprovalPatterns,
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
-  ProductionIntervallEntity,
   QualityDetailsEntity,
   SubmitProductionProps,
   UnitMessagePatterns,
   UserEntity,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { ProductionIntervallRepository } from '@h2-trust/database';
+import { AccountingPeriodRepository } from '@h2-trust/database';
 import { BatchType, PowerAccessApprovalStatus, ProcessType } from '@h2-trust/domain';
 import { DateTimeUtil } from '@h2-trust/utils';
 import { AccountingPeriodMatcherService } from './accounting-period-matching/accounting-period-matcher.service';
@@ -67,7 +67,7 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     private readonly configurationService: ConfigurationService,
     private readonly accountingPeriodMatcher: AccountingPeriodMatcherService,
-    private readonly intervallRepo: ProductionIntervallRepository,
+    private readonly accountingPeriodRepo: AccountingPeriodRepository,
   ) {
     const configuration = this.configurationService.getProcessSvcConfiguration();
     this.powerAccountingPeriodInSeconds = configuration.powerAccountingPeriodInSeconds;
@@ -281,36 +281,38 @@ export class ProductionService {
 
   async matchAccountingPeriods(data: ParsedFileBundles, userId: string) {
     const gridUnitId = await this.fetchGridUnitId(userId);
-    const productionIntervalls: ProductionIntervallEntity[] = this.accountingPeriodMatcher.matchIntervalls(
+    const accountingPeriods: AccountingPeriodEntity[] = this.accountingPeriodMatcher.matchAccountingPeriods(
       data,
       gridUnitId,
     );
 
-    const id = await this.intervallRepo.stageProduction(productionIntervalls);
-    return new IntervallMatchingResultEntity(id, productionIntervalls);
+    const id = await this.accountingPeriodRepo.stageProduction(accountingPeriods);
+    return new AccountingPeriodMatchingResultEntity(id, accountingPeriods);
   }
 
   async saveImportedData(props: SubmitProductionProps): Promise<ProcessStepEntity[]> {
-    const intervalls = await this.intervallRepo.getStagedProductionById(props.accountingPeriodSetId);
+    const accountingPeriods = await this.accountingPeriodRepo.getStagedProductionById(props.accountingPeriodSetId);
 
     return await Promise.all(
-      intervalls.map(async (intervall) => {
-        const hydrogenColor = await this.fetchHydrogenColor(intervall.powerProductionUnitId);
-        const companyIdOfPowerProductionUnit = await this.fetchCompanyOfProductionUnit(intervall.powerProductionUnitId);
+      accountingPeriods.map(async (accountingPeriod) => {
+        const hydrogenColor = await this.fetchHydrogenColor(accountingPeriod.powerProductionUnitId);
+        const companyIdOfPowerProductionUnit = await this.fetchCompanyOfProductionUnit(
+          accountingPeriod.powerProductionUnitId,
+        );
         const companyIdOfHydrogenProductionUnit = await this.fetchCompanyOfProductionUnit(
-          intervall.hydrogenProductionUnitId,
+          accountingPeriod.hydrogenProductionUnitId,
         );
 
-        const startedAt: Date = new Date(intervall.startedAt);
-        const endedAt: Date = new Date(new Date(intervall.startedAt).setMinutes(59, 59, 999));
+        const startedAt: Date = new Date(accountingPeriod.startedAt);
+        const endedAt: Date = new Date(new Date(accountingPeriod.startedAt).setMinutes(59, 59, 999));
 
         const entity = new CreateProductionEntity(
           startedAt.toISOString(),
           endedAt.toISOString(),
-          intervall.powerProductionUnitId,
-          intervall.powerAmount,
-          intervall.hydrogenProductionUnitId,
-          intervall.hydrogenAmount,
+          accountingPeriod.powerProductionUnitId,
+          accountingPeriod.powerAmount,
+          accountingPeriod.hydrogenProductionUnitId,
+          accountingPeriod.hydrogenAmount,
           props.recordedBy,
           hydrogenColor,
           props.hydrogenStorageUnitId,

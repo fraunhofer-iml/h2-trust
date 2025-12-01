@@ -8,11 +8,11 @@
 
 import { HttpStatus, Injectable } from '@nestjs/common';
 import {
+  AccountingPeriodEntity,
   AccountingPeriodHydrogen,
   AccountingPeriodPower,
   BrokerException,
   ParsedFileBundles,
-  ProductionIntervallEntity,
   UnitDataBundle,
 } from '@h2-trust/amqp';
 
@@ -29,11 +29,11 @@ interface HydrogenMapItem {
 
 @Injectable()
 export class AccountingPeriodMatcherService {
-  matchIntervalls(data: ParsedFileBundles, gridUnitId: string) {
+  matchAccountingPeriods(data: ParsedFileBundles, gridUnitId: string) {
     const normalizedPowerData = this.normalizePowerLists(data.powerProduction);
     const normalizedH2Data = this.normalizeHydrogenLists(data.hydrogenProduction);
 
-    const batches: ProductionIntervallEntity[] = [];
+    const batches: AccountingPeriodEntity[] = [];
 
     normalizedH2Data.forEach((value, key) => {
       const powerProductionUnits = normalizedPowerData.get(key);

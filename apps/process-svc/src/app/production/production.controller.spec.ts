@@ -6,17 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProductionIntervallRepository } from 'libs/database/src/lib/repositories/production-intervall.repository';
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  BrokerQueues,
-  CreateProductionEntity,
-  ParsedFileBundles,
-  PowerAccessApprovalEntity,
-  ProductionIntervallEntity,
-} from '@h2-trust/amqp';
+import { BrokerQueues, CreateProductionEntity, ParsedFileBundles, PowerAccessApprovalEntity } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
+import { AccountingPeriodRepository } from '@h2-trust/database';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
 import { AccountingPeriodMatcherService } from './accounting-period-matching/accounting-period-matcher.service';
 import { ProductionController } from './production.controller';
@@ -28,7 +22,7 @@ describe('ProductionController', () => {
   let controller: ProductionController;
   let generalServiceSendMock: jest.Mock;
   let batchServiceSendMock: jest.Mock;
-  let productionIntervallRepo: ProductionIntervallRepository;
+  let accountingPeriodRepo: AccountingPeriodRepository;
 
   beforeEach(async () => {
     generalServiceSendMock = jest.fn().mockImplementation(() => {
@@ -70,17 +64,17 @@ describe('ProductionController', () => {
         },
         AccountingPeriodMatcherService,
         {
-          provide: ProductionIntervallRepository,
+          provide: AccountingPeriodRepository,
           useValue: {
-            createProductionIntervalls: jest.fn(),
-            getIntervallSetById: jest.fn(),
+            stageProduction: jest.fn(),
+            getStagedProductionById: jest.fn(),
           },
         },
       ],
     }).compile();
 
     controller = moduleRef.get<ProductionController>(ProductionController);
-    productionIntervallRepo = moduleRef.get<ProductionIntervallRepository>(ProductionIntervallRepository);
+    accountingPeriodRepo = moduleRef.get<AccountingPeriodRepository>(AccountingPeriodRepository);
   });
 
   it('should be defined', () => {
@@ -243,7 +237,7 @@ describe('ProductionController', () => {
     );
   });
 
-  it('should create productionintervalls from parsed files', async () => {
+  it('should create accounting periods from parsed files', async () => {
     const data: ParsedFileBundles = {
       hydrogenProduction: [
         {
@@ -276,9 +270,7 @@ describe('ProductionController', () => {
       ]);
     });
 
-    jest
-      .spyOn(productionIntervallRepo, 'createProductionIntervalls')
-      .mockResolvedValue({ id: 'test-id', createdAt: new Date() });
+    jest.spyOn(accountingPeriodRepo, 'stageProduction').mockResolvedValue('test-id');
 
     const actualResponse = await controller.createProductionIntervalsFromCsvData({ data, userId: 'user-id-1' });
 

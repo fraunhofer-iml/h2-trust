@@ -12,11 +12,11 @@ import { BadRequestException, HttpException, HttpStatus, Inject, Injectable } fr
 import { ClientProxy } from '@nestjs/microservices';
 import {
   AccountingPeriodHydrogen,
+  AccountingPeriodMatchingResultEntity,
   AccountingPeriodPower,
   BrokerException,
   BrokerQueues,
   CreateProductionEntity,
-  IntervallMatchingResultEntity,
   ParsedFileBundles,
   PowerProductionUnitEntity,
   ProcessStepEntity,
@@ -28,9 +28,9 @@ import {
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import {
+  AccountingPeriodMatchingResultDto,
   CreateProductionDto,
   ImportSubmissionDto,
-  IntervallMatchingResultDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   UserDetailsDto,
@@ -142,14 +142,14 @@ export class ProductionService {
 
     const payload = { data: processedFiles, userId: userId };
     const matchingResult = await firstValueFrom(
-      this.processSvc.send<IntervallMatchingResultEntity>(ProductionMessagePatterns.STAGE, payload),
+      this.processSvc.send<AccountingPeriodMatchingResultEntity>(ProductionMessagePatterns.STAGE, payload),
     );
 
-    return IntervallMatchingResultDto.fromEntity(matchingResult);
+    return AccountingPeriodMatchingResultDto.fromEntity(matchingResult);
   }
 
   async submitCsvData(dto: ImportSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    const payload: SubmitProductionProps = new SubmitProductionProps(userId, dto.storageUnitId, dto.intervallSetId);
+    const payload: SubmitProductionProps = new SubmitProductionProps(userId, dto.storageUnitId, dto.importId);
     const processSteps: ProcessStepEntity[] = await firstValueFrom(
       this.processSvc.send<ProcessStepEntity[]>(ProductionMessagePatterns.SUBMIT, payload),
     );
