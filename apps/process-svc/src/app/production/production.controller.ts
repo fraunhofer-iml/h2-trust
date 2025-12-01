@@ -15,11 +15,15 @@ import {
   ProductionMessagePatterns,
   SubmitProductionProps,
 } from '@h2-trust/amqp';
+import { ProductionImportService } from './production-import.service';
 import { ProductionService } from './production.service';
 
 @Controller()
 export class ProductionController {
-  constructor(private readonly service: ProductionService) {}
+  constructor(
+    private readonly service: ProductionService,
+    private readonly productionImportService: ProductionImportService,
+  ) {}
 
   @MessagePattern(ProductionMessagePatterns.CREATE)
   async createProduction(
@@ -30,11 +34,11 @@ export class ProductionController {
 
   @MessagePattern(ProductionMessagePatterns.STAGE)
   async stageProductionData(@Payload() payload: { data: ParsedFileBundles; userId: string }) {
-    return this.service.stageImportedProductionData(payload.data, payload.userId);
+    return this.productionImportService.stageImportedProductionData(payload.data, payload.userId);
   }
 
   @MessagePattern(ProductionMessagePatterns.FINALIZE)
   async finalizeProductionData(@Payload() payload: SubmitProductionProps) {
-    return this.service.finalizeProductionData(payload);
+    return this.productionImportService.finalizeProductionData(payload);
   }
 }

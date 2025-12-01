@@ -37,12 +37,15 @@ export class AccountingPeriodRepository {
     return importId;
   }
 
-  async getStagedProductionById(id: string): Promise<AccountingPeriodEntity[]> {
+  async getStagedProductionByImportId(id: string): Promise<AccountingPeriodEntity[]> {
     const res = await this.prismaService.stagedProduction.findMany({
       where: { importId: id },
     });
 
-    if (!res || res.length === 0) throw new Error(`Could not find staged production for id ${id}`);
+    if (!res || res.length === 0) {
+      throw new Error(`Could not find staged production for id ${id}`);
+    }
+
     return res.map(AccountingPeriodEntity.fromDatabase);
   }
 

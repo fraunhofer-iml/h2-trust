@@ -17,7 +17,7 @@ export class AccountingPeriodMatchingResultEntity {
   numberOfBatches: number;
 
   constructor(id: string, batches: AccountingPeriodEntity[]) {
-    const { powerAmount, hydrogenAmount } = batches.reduce(
+    const { powerAmount, hydrogenAmount } = (batches ?? []).reduce(
       (acc, curr) => {
         acc.hydrogenAmount += curr.hydrogenAmount;
         acc.powerAmount += curr.powerAmount;

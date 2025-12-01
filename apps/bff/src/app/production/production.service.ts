@@ -151,7 +151,7 @@ export class ProductionService {
   async submitCsvData(dto: ImportSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
     const payload: SubmitProductionProps = new SubmitProductionProps(userId, dto.storageUnitId, dto.importId);
     const processSteps: ProcessStepEntity[] = await firstValueFrom(
-      this.processSvc.send<ProcessStepEntity[]>(ProductionMessagePatterns.SUBMIT, payload),
+      this.processSvc.send<ProcessStepEntity[]>(ProductionMessagePatterns.FINALIZE, payload),
     );
 
     return processSteps.map(ProductionOverviewDto.fromEntity);

@@ -9,11 +9,11 @@
 export class SubmitProductionProps {
   recordedBy: string;
   hydrogenStorageUnitId: string;
-  accountingPeriodSetId: string;
+  importId: string;
 
-  constructor(recordedBy: string, hydrogenStorageUnitId: string, accountingPeriodSetId: string) {
+  constructor(recordedBy: string, hydrogenStorageUnitId: string, importId: string) {
     this.recordedBy = recordedBy;
     this.hydrogenStorageUnitId = hydrogenStorageUnitId;
-    this.accountingPeriodSetId = accountingPeriodSetId;
+    this.importId = importId;
   }
 }

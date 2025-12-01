@@ -7,35 +7,25 @@
  */
 
 import { firstValueFrom } from 'rxjs';
-import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
-  AccountingPeriodEntity,
-  AccountingPeriodMatchingResultEntity,
   BaseUnitEntity,
   BatchEntity,
-  BrokerException,
   BrokerQueues,
   CompanyEntity,
   CreateProductionEntity,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
-  ParsedFileBundles,
-  PowerAccessApprovalEntity,
-  PowerAccessApprovalPatterns,
-  PowerProductionUnitEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   QualityDetailsEntity,
-  SubmitProductionProps,
   UnitMessagePatterns,
   UserEntity,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { AccountingPeriodRepository } from '@h2-trust/database';
-import { BatchType, PowerAccessApprovalStatus, ProcessType } from '@h2-trust/domain';
+import { BatchType, ProcessType } from '@h2-trust/domain';
 import { DateTimeUtil } from '@h2-trust/utils';
-import { AccountingPeriodMatcherService } from './accounting-period-matching/accounting-period-matcher.service';
 import { ProductionUtils } from './utils/production.utils';
 
 interface CreateProcessStepsParams {
@@ -66,8 +56,6 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchService: ClientProxy,
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     private readonly configurationService: ConfigurationService,
-    private readonly accountingPeriodMatcher: AccountingPeriodMatcherService,
-    private readonly accountingPeriodRepo: AccountingPeriodRepository,
   ) {
     const configuration = this.configurationService.getProcessSvcConfiguration();
     this.powerAccountingPeriodInSeconds = configuration.powerAccountingPeriodInSeconds;
@@ -277,98 +265,5 @@ export class ProductionService {
         firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.CREATE, { processStepEntity: step })),
       ),
     );
-  }
-
-  async matchAccountingPeriods(data: ParsedFileBundles, userId: string) {
-    const gridUnitId = await this.fetchGridUnitId(userId);
-    const accountingPeriods: AccountingPeriodEntity[] = this.accountingPeriodMatcher.matchAccountingPeriods(
-      data,
-      gridUnitId,
-    );
-
-    const id = await this.accountingPeriodRepo.stageProduction(accountingPeriods);
-    return new AccountingPeriodMatchingResultEntity(id, accountingPeriods);
-  }
-
-  async saveImportedData(props: SubmitProductionProps): Promise<ProcessStepEntity[]> {
-    const accountingPeriods = await this.accountingPeriodRepo.getStagedProductionById(props.accountingPeriodSetId);
-
-    return await Promise.all(
-      accountingPeriods.map(async (accountingPeriod) => {
-        const hydrogenColor = await this.fetchHydrogenColor(accountingPeriod.powerProductionUnitId);
-        const companyIdOfPowerProductionUnit = await this.fetchCompanyOfProductionUnit(
-          accountingPeriod.powerProductionUnitId,
-        );
-        const companyIdOfHydrogenProductionUnit = await this.fetchCompanyOfProductionUnit(
-          accountingPeriod.hydrogenProductionUnitId,
-        );
-
-        const startedAt: Date = new Date(accountingPeriod.startedAt);
-        const endedAt: Date = new Date(new Date(accountingPeriod.startedAt).setMinutes(59, 59, 999));
-
-        const entity = new CreateProductionEntity(
-          startedAt.toISOString(),
-          endedAt.toISOString(),
-          accountingPeriod.powerProductionUnitId,
-          accountingPeriod.powerAmount,
-          accountingPeriod.hydrogenProductionUnitId,
-          accountingPeriod.hydrogenAmount,
-          props.recordedBy,
-          hydrogenColor,
-          props.hydrogenStorageUnitId,
-          companyIdOfPowerProductionUnit,
-          companyIdOfHydrogenProductionUnit,
-        );
-
-        return this.createProduction(entity, true);
-      }),
-    ).then((processSteps) => processSteps.flat());
-  }
-
-  private async fetchHydrogenColor(powerProductionUnitId: string): Promise<string> {
-    const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ, { id: powerProductionUnitId }),
-    );
-
-    const hydrogenColor = powerProductionUnit?.type?.hydrogenColor;
-
-    if (!hydrogenColor) {
-      throw new BrokerException(
-        `Power Production Unit ${powerProductionUnitId} has no Hydrogen Color`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-
-    return hydrogenColor;
-  }
-
-  private async fetchCompanyOfProductionUnit(productionUnitId: string): Promise<string> {
-    const productionUnitEntity: PowerProductionUnitEntity = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ, { id: productionUnitId }),
-    );
-
-    if (!productionUnitEntity.company) {
-      throw new BrokerException(
-        `Production Unit ${productionUnitId} does not have an associated company`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-
-    return productionUnitEntity.company.id;
-  }
-
-  private async fetchGridUnitId(userId: string): Promise<string> {
-    const approvals: PowerAccessApprovalEntity[] = await firstValueFrom(
-      this.generalService.send(PowerAccessApprovalPatterns.READ, {
-        userId: userId,
-        powerAccessApprovalStatus: PowerAccessApprovalStatus.APPROVED,
-      }),
-    );
-    const powerAccessApprovalForGrid = approvals.find((approval) => approval.powerProductionUnit.type.name === PowerProductionType.GRID);
-
-    if (!powerAccessApprovalForGrid)
-      throw new BrokerException(`No grid connection found.`, HttpStatus.INTERNAL_SERVER_ERROR);
-
-    return powerAccessApprovalForGrid.powerProductionUnit.id;
   }
 }
