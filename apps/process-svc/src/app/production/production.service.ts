@@ -362,7 +362,7 @@ export class ProductionService {
         powerAccessApprovalStatus: PowerAccessApprovalStatus.APPROVED,
       }),
     );
-    const powerAccessApprovalForGrid = approvals.find((approval) => approval.powerProductionUnit.type.name === 'GRID');
+    const powerAccessApprovalForGrid = approvals.find((approval) => approval.powerProductionUnit.type.name === PowerProductionType.GRID);
 
     if (!powerAccessApprovalForGrid)
       throw new BrokerException(`No grid connection found.`, HttpStatus.INTERNAL_SERVER_ERROR);
