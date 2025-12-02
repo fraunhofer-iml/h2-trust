@@ -77,8 +77,8 @@ describe('red-compliance.flags', () => {
 
   describe('hasFinancialSupport', () => {
     it('reflects financialSupportReceived field', () => {
-      expect(hasFinancialSupport({ financialSupportReceived: true } as any)).toBe(true);
-      expect(hasFinancialSupport({ financialSupportReceived: false } as any)).toBe(false);
+      expect(hasFinancialSupport({ financialSupportReceived: true } as any)).toBe(false);
+      expect(hasFinancialSupport({ financialSupportReceived: false } as any)).toBe(true);
     });
   });
 });

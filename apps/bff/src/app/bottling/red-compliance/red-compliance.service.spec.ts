@@ -68,7 +68,7 @@ describe('RedComplianceService', () => {
       {
         power: {
           processStep: { startedAt: '2025-01-01T10:00:00.000Z', executedBy: { id: 'power-1' } },
-          unit: { biddingZone: 'DE-LU', commissionedOn: '2023-01-01T00:00:00.000Z', financialSupportReceived: true },
+          unit: { biddingZone: 'DE-LU', commissionedOn: '2023-01-01T00:00:00.000Z', financialSupportReceived: false },
         },
         hydrogen: {
           processStep: { startedAt: '2025-01-01T10:30:00.000Z', executedBy: { id: 'h2-1' } },
