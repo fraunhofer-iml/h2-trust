@@ -54,10 +54,10 @@ export const PowerProductionUnitSeed: readonly PowerProductionUnit[] = Object.fr
     gridOperator: 'FluxDirect Energy Networks',
     gridConnectionNumber: 'GRID-2025-004',
     gridLevel: GridLevel.EXTRA_HIGH_VOLTAGE,
-    biddingZone: BiddingZone.CZ,
+    biddingZone: BiddingZone.DE_LU,
     ratedPower: new Prisma.Decimal(100000),
     decommissioningPlannedOn: new Date('2045-08-14'),
-    financialSupportReceived: true,
+    financialSupportReceived: false,
     typeName: PowerProductionTypeSeed[3].name,
   },
 ]);

@@ -22,11 +22,11 @@ import {
   BottlingOverviewDto,
   GeneralInformationDto,
   HydrogenComponentDto,
-  RedComplianceDto,
   UserDetailsDto,
 } from '@h2-trust/api';
 import { ProcessType, TransportMode } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
+import { RedComplianceService } from './red-compliance/red-compliance.service';
 
 @Injectable()
 export class BottlingService {
@@ -34,6 +34,7 @@ export class BottlingService {
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly userService: UserService,
+    private readonly redComplianceService: RedComplianceService,
   ) {}
 
   async createBottling(dto: BottlingDto, files: Express.Multer.File[], userId: string): Promise<BottlingOverviewDto> {
@@ -85,7 +86,8 @@ export class BottlingService {
     const generalInformationDto = GeneralInformationDto.fromEntityToDto(processStep);
     generalInformationDto.producer = await this.fetchProducerName(generalInformationDto.producer);
     generalInformationDto.hydrogenComposition = await this.fetchHydrogenComposition(processStep);
-    return { ...generalInformationDto, redCompliance: new RedComplianceDto(true, true, false, true) };
+    const redCompliance = await this.redComplianceService.determineRedCompliance(processStepId);
+    return { ...generalInformationDto, redCompliance: redCompliance };
   }
 
   private buildTransportationDetails(dto: BottlingDto): TransportationDetailsEntity {

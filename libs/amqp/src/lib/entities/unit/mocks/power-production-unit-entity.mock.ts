@@ -7,7 +7,7 @@
  */
 
 import { PowerProductionUnitSeed, UnitSeed } from 'libs/database/src/seed';
-import { GridLevel, UnitType } from '@h2-trust/domain';
+import { BiddingZone, GridLevel, UnitType } from '@h2-trust/domain';
 import { AddressEntityPowerMock } from '../../address';
 import { CompanyEntityPowerMock } from '../../company';
 import { PowerProductionUnitEntity } from '../power-production-unit.entity';
@@ -36,7 +36,7 @@ export const PowerProductionUnitEntityMock: PowerProductionUnitEntity[] = [
     PowerProductionUnitSeed[0].ratedPower.toNumber(),
     PowerProductionUnitSeed[0].gridOperator!,
     PowerProductionUnitSeed[0].gridLevel as GridLevel,
-    PowerProductionUnitSeed[0].biddingZone,
+    PowerProductionUnitSeed[0].biddingZone as BiddingZone,
     PowerProductionUnitSeed[0].gridConnectionNumber!,
     PowerProductionUnitSeed[0].financialSupportReceived,
     PowerProductionTypeEntityMock[1],

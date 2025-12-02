@@ -27,7 +27,7 @@ import {
   hydrogenStorageUnitQueryArgs,
   powerProductionUnitQueryArgs,
 } from '../query-args';
-import { assertRecordFound } from './utils';
+import { assertAllIdsFound, assertRecordFound } from './utils';
 
 @Injectable()
 export class UnitRepository {
@@ -96,11 +96,7 @@ export class UnitRepository {
         ...powerProductionUnitQueryArgs,
       })
       .then((units) => {
-        const foundIds = units.map((u) => u.id);
-        const notFound = ids.filter((id) => !foundIds.includes(id));
-        if (notFound.length) {
-          throw new BrokerException(`PowerProductionUnits [${notFound.join(', ')}] not found.`, HttpStatus.NOT_FOUND);
-        }
+        assertAllIdsFound(units, ids, 'PowerProductionUnits');
         return units.map(PowerProductionUnitEntity.fromDatabase);
       });
   }
@@ -117,6 +113,21 @@ export class UnitRepository {
         ...hydrogenProductionUnitQueryArgs,
       })
       .then((units) => units.map(HydrogenProductionUnitEntity.fromDatabase));
+  }
+
+  async findHydrogenProductionUnitsByIds(ids: string[]): Promise<HydrogenProductionUnitEntity[]> {
+    return this.prismaService.unit
+      .findMany({
+        where: {
+          id: { in: ids },
+          hydrogenProductionUnit: { isNot: null },
+        },
+        ...hydrogenProductionUnitQueryArgs,
+      })
+      .then((units) => {
+        assertAllIdsFound(units, ids, 'HydrogenProductionUnits');
+        return units.map(HydrogenProductionUnitEntity.fromDatabase);
+      });
   }
 
   async findHydrogenStorageUnitsByCompanyId(companyId: string): Promise<HydrogenStorageUnitEntity[]> {

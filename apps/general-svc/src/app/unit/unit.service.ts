@@ -39,6 +39,10 @@ export class UnitService {
     return this.unitRepository.findHydrogenProductionUnitsByCompanyId(companyId);
   }
 
+  async readHydrogenProductionUnitsByIds(ids: string[]): Promise<HydrogenProductionUnitEntity[]> {
+    return this.unitRepository.findHydrogenProductionUnitsByIds(ids);
+  }
+
   async readHydrogenStorageUnits(companyId: string): Promise<HydrogenStorageUnitEntity[]> {
     return this.unitRepository.findHydrogenStorageUnitsByCompanyId(companyId);
   }
