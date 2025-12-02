@@ -50,7 +50,7 @@ export class PowerAccessApprovalEntity {
         gridOperator: powerAccessApproval.powerProductionUnit?.gridOperator,
         gridLevel: powerAccessApproval.powerProductionUnit?.gridLevel,
         gridConnectionNumber: powerAccessApproval.powerProductionUnit?.gridConnectionNumber,
-        typeName: powerAccessApproval.powerProductionUnit?.type.name,
+        type: powerAccessApproval.powerProductionUnit?.type,
       },
       hydrogenProducer: CompanyEntity.fromDatabase(powerAccessApproval.hydrogenProducer),
       document: DocumentEntity.fromDatabase(powerAccessApproval.document),

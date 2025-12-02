@@ -6,8 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './mocks';
-export * from './create-production.entity';
-export * from './staged-production.entity';
-export * from './staged-production-matching-result.entity';
-export * from './submit-production.entity';
+export class ImportSubmissionDto {
+  importId: string;
+  storageUnitId: string;
+
+  constructor(importId: string, storageUnitId: string) {
+    this.importId = importId;
+    this.storageUnitId = storageUnitId;
+  }
+}

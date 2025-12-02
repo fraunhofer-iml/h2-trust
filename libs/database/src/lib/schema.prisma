@@ -124,6 +124,7 @@ model PowerProductionUnit {
   typeName String
 
   powerAccessApprovals PowerAccessApproval[]
+  stagedProductions    StagedProduction[]
 }
 
 model HydrogenProductionUnit {
@@ -135,7 +136,8 @@ model HydrogenProductionUnit {
   pressure                      Decimal @db.Decimal(8, 2)
   waterConsumptionLitersPerHour Decimal @db.Decimal(7, 3)
 
-  generalInfo Unit @relation(fields: [id], references: [id])
+  generalInfo       Unit               @relation(fields: [id], references: [id])
+  stagedProductions StagedProduction[]
 }
 
 model HydrogenStorageUnit {
@@ -240,4 +242,20 @@ model PowerAccessApproval {
   documentId String
 
   @@unique([powerProducerId, powerProductionUnitId, hydrogenProducerId])
+}
+
+model StagedProduction {
+  id        String   @id @default(cuid(2))
+  importId  String
+  createdAt DateTime @default(now())
+
+  powerProductionUnit   PowerProductionUnit @relation(fields: [powerProductionUnitId], references: [id])
+  powerProductionUnitId String
+
+  hydrogenProductionUnit   HydrogenProductionUnit @relation(fields: [hydrogenProductionUnitId], references: [id])
+  hydrogenProductionUnitId String
+
+  powerAmount    Decimal  @db.Decimal(18, 6)
+  hydrogenAmount Decimal  @db.Decimal(18, 6)
+  startedAt      DateTime
 }

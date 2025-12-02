@@ -8,9 +8,12 @@
 
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues, CreateProductionEntity } from '@h2-trust/amqp';
+import { BrokerQueues, CreateProductionEntity, ParsedFileBundles, PowerAccessApprovalEntity } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
+import { StagedProductionRepository } from '@h2-trust/database';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
+import { AccountingPeriodMatchingService } from './accounting-period-matching.service';
+import { ProductionImportService } from './production-import.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
 
@@ -20,6 +23,7 @@ describe('ProductionController', () => {
   let controller: ProductionController;
   let generalServiceSendMock: jest.Mock;
   let batchServiceSendMock: jest.Mock;
+  let stagedProductionRepository: StagedProductionRepository;
 
   beforeEach(async () => {
     generalServiceSendMock = jest.fn().mockImplementation(() => {
@@ -37,6 +41,7 @@ describe('ProductionController', () => {
       controllers: [ProductionController],
       providers: [
         ProductionService,
+        ProductionImportService,
         {
           provide: ConfigurationService,
           useValue: {
@@ -59,10 +64,19 @@ describe('ProductionController', () => {
             send: batchServiceSendMock,
           },
         },
+        AccountingPeriodMatchingService,
+        {
+          provide: StagedProductionRepository,
+          useValue: {
+            stageProductions: jest.fn(),
+            getStagedProductionById: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     controller = moduleRef.get<ProductionController>(ProductionController);
+    stagedProductionRepository = moduleRef.get<StagedProductionRepository>(StagedProductionRepository);
   });
 
   it('should be defined', () => {
@@ -223,5 +237,46 @@ describe('ProductionController', () => {
         endedAt: new Date('2025-01-01T10:44:59.000Z'),
       }),
     );
+  });
+
+  it('should create accounting periods from parsed files', async () => {
+    const data: ParsedFileBundles = {
+      hydrogenProduction: [
+        {
+          unitId: 'test-hydrogen-unit-1',
+          data: [
+            {
+              amount: 20,
+              power: 40,
+              time: new Date('2025-01-01T10:44:59.000Z'),
+            },
+          ],
+        },
+      ],
+      powerProduction: [
+        {
+          unitId: 'test-hydrogen-unit-1',
+          data: [
+            {
+              amount: 20,
+              time: new Date('2025-01-01T10:44:59.000Z'),
+            },
+          ],
+        },
+      ],
+    };
+
+    generalServiceSendMock.mockImplementation(() => {
+      return of([
+        { id: 'test-approval-1', powerProductionUnit: { type: { name: 'GRID' } } } as PowerAccessApprovalEntity,
+      ]);
+    });
+
+    jest.spyOn(stagedProductionRepository, 'stageProductions').mockResolvedValue('test-id');
+
+    const actualResponse = await controller.stageProductionData({ data, userId: 'user-id-1' });
+
+    expect(actualResponse.numberOfBatches).toBe(2);
+    expect(actualResponse.id).toBe('test-id');
   });
 });

@@ -6,30 +6,51 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CsvParserService } from 'libs/csv-parser/src/lib/csv-parser.service';
 import { firstValueFrom } from 'rxjs';
 import { BadRequestException, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
+  AccountingPeriodHydrogen,
+  AccountingPeriodPower,
   BrokerException,
   BrokerQueues,
   CreateProductionEntity,
+  ParsedFileBundles,
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
+  StagedProductionMatchingResultEntity,
+  SubmitProductionProps,
+  UnitDataBundle,
+  UnitFileBundle,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
-import { CreateProductionDto, ProductionCSVUploadDto, ProductionOverviewDto, UserDetailsDto } from '@h2-trust/api';
+import {
+  AccountingPeriodMatchingResultDto,
+  CreateProductionDto,
+  ImportSubmissionDto,
+  ProductionCSVUploadDto,
+  ProductionOverviewDto,
+  UserDetailsDto,
+} from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 
 @Injectable()
 export class ProductionService {
+  private readonly headersMap: Record<'power' | 'hydrogen', string[]> = {
+    power: ['time', 'amount'],
+    hydrogen: ['time', 'amount', 'power'],
+  };
+
   constructor(
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchService: ClientProxy,
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly userService: UserService,
+    private readonly csvParser: CsvParserService,
   ) {}
 
   async createProduction(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
@@ -103,16 +124,75 @@ export class ProductionService {
     powerProductionFiles: Express.Multer.File[],
     hydrogenProductionFiles: Express.Multer.File[],
     dto: ProductionCSVUploadDto,
+    userId: string,
   ) {
-    const missingFiles = [];
-    if (!powerProductionFiles || powerProductionFiles.length === 0) missingFiles.push('Power Production');
-    if (!hydrogenProductionFiles || hydrogenProductionFiles.length === 0) missingFiles.push('Hydrogen Production');
-    if (missingFiles.length > 0) throw new BadRequestException(`Missing Information: ${missingFiles.join(' & ')}.`);
+    const h2 = await this.processFile<AccountingPeriodHydrogen>(
+      hydrogenProductionFiles,
+      dto.hydrogenProductionUnitIds,
+      'hydrogen',
+    );
 
-    const missingUnitIds = [];
-    if (dto.hydrogenProductionUnitIds.length < hydrogenProductionFiles.length)
-      missingUnitIds.push('Hydrogen Production Unit');
-    if (dto.powerProductionUnitIds.length < powerProductionFiles.length) missingUnitIds.push('Power Production Unit');
-    if (missingUnitIds.length > 0) throw new BadRequestException(`Missing Information: ${missingUnitIds.join(' & ')}.`);
+    const power = await this.processFile<AccountingPeriodPower>(
+      powerProductionFiles,
+      dto.powerProductionUnitIds,
+      'power',
+    );
+
+    const processedFiles: ParsedFileBundles = { hydrogenProduction: h2, powerProduction: power };
+
+    const payload = { data: processedFiles, userId: userId };
+    const matchingResult = await firstValueFrom(
+      this.processSvc.send<StagedProductionMatchingResultEntity>(ProductionMessagePatterns.STAGE, payload),
+    );
+
+    return AccountingPeriodMatchingResultDto.fromEntity(matchingResult);
+  }
+
+  async submitCsvData(dto: ImportSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
+    const payload: SubmitProductionProps = new SubmitProductionProps(userId, dto.storageUnitId, dto.importId);
+    const processSteps: ProcessStepEntity[] = await firstValueFrom(
+      this.processSvc.send<ProcessStepEntity[]>(ProductionMessagePatterns.FINALIZE, payload),
+    );
+
+    return processSteps.map(ProductionOverviewDto.fromEntity);
+  }
+
+  private mapToImportedFileBundles(unitIds: string | string[], files: Express.Multer.File[]): UnitFileBundle[] {
+    return Array.isArray(unitIds)
+      ? files.map((file, i) => new UnitFileBundle(unitIds[i], file))
+      : files.length
+        ? [new UnitFileBundle(unitIds, files[0])]
+        : [];
+  }
+
+  private async processFile<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
+    files: Express.Multer.File[],
+    unitIds: string | string[],
+    type: 'hydrogen' | 'power',
+  ) {
+    if (!files || files.length === 0) {
+      throw new BadRequestException(`Missing file for ${type} production.`);
+    }
+
+    if (unitIds.length < files.length) {
+      throw new BadRequestException(`Missing related unit for ${type} production.`);
+    }
+
+    const productionData: UnitFileBundle[] = this.mapToImportedFileBundles(unitIds, files);
+
+    const headers = this.headersMap[type];
+
+    const parsedFiles = await Promise.all(
+      productionData.map(async (bundle) => {
+        const parsedFile: T[] = await this.csvParser.parseFile<T>(bundle.file, headers);
+        return new UnitDataBundle<T>(bundle.unitId, parsedFile);
+      }),
+    );
+
+    if (parsedFiles.some((bundle) => bundle.data.length < 1)) {
+      throw new BrokerException(` ${type} production file does not contain any valid items.`, HttpStatus.BAD_REQUEST);
+    }
+
+    return parsedFiles;
   }
 }

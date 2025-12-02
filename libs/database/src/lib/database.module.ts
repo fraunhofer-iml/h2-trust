@@ -18,6 +18,7 @@ import {
   UnitRepository,
   UserRepository,
 } from './repositories';
+import { StagedProductionRepository } from './repositories/staged-production.repository';
 
 @Module({
   controllers: [],
@@ -31,6 +32,7 @@ import {
     PowerAccessApprovalRepository,
     PowerProductionTypeRepository,
     CompanyRepository,
+    StagedProductionRepository,
   ],
   exports: [
     PrismaService,
@@ -42,6 +44,7 @@ import {
     PowerAccessApprovalRepository,
     PowerProductionTypeRepository,
     CompanyRepository,
+    StagedProductionRepository,
   ],
 })
 export class DatabaseModule {}

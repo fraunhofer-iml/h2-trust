@@ -53,7 +53,7 @@ import { ProductionFormComponent } from './manual-data-imput/production-form.com
   templateUrl: './add-production-data.component.html',
 })
 export class AddProductionDataComponent {
-  useCSV = false;
+  useCSV = true;
   readonly FormattedUnits = FormattedUnits;
 
   approvalsQuery = injectQuery(() => ({

@@ -21,3 +21,4 @@ export * from './user.db.type';
 export * from './power-access-approval.db.type';
 export * from './transportation-details.db.type';
 export * from './quality-details.db.type';
+export * from './accounting-period.db.type';
