@@ -10,8 +10,6 @@ import { firstValueFrom } from 'rxjs';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
-  StagedProductionEntity,
-  StagedProductionMatchingResultEntity,
   BrokerException,
   BrokerQueues,
   CreateProductionEntity,
@@ -20,6 +18,8 @@ import {
   PowerAccessApprovalPatterns,
   PowerProductionUnitEntity,
   ProcessStepEntity,
+  StagedProductionEntity,
+  StagedProductionMatchingResultEntity,
   SubmitProductionProps,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
@@ -35,7 +35,7 @@ export class ProductionImportService {
     private readonly accountingPeriodMatcher: AccountingPeriodMatchingService,
     private readonly stagedProductionRepository: StagedProductionRepository,
     private readonly productionService: ProductionService,
-  ) { }
+  ) {}
 
   async stageImportedProductionData(data: ParsedFileBundles, userId: string) {
     const gridUnitId = await this.fetchGridUnitId(userId);

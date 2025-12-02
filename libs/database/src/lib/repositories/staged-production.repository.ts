@@ -15,20 +15,22 @@ import { PrismaService } from '../prisma.service';
 export class StagedProductionRepository {
   static readonly DAY_IN_MS = 24 * 60 * 60 * 1000;
 
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async stageProductions(stagedProductions: StagedProductionEntity[]) {
     const importId = cuid();
 
     await this.prismaService.stagedProduction.createMany({
-      data: stagedProductions.map(({ startedAt, hydrogenAmount, hydrogenProductionUnitId, powerAmount, powerProductionUnitId }) => ({
-        startedAt,
-        hydrogenAmount,
-        hydrogenProductionUnitId,
-        importId,
-        powerAmount,
-        powerProductionUnitId,
-      })),
+      data: stagedProductions.map(
+        ({ startedAt, hydrogenAmount, hydrogenProductionUnitId, powerAmount, powerProductionUnitId }) => ({
+          startedAt,
+          hydrogenAmount,
+          hydrogenProductionUnitId,
+          importId,
+          powerAmount,
+          powerProductionUnitId,
+        }),
+      ),
     });
 
     return importId;

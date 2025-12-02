@@ -14,7 +14,7 @@ import { StagedProductionRepository } from '@h2-trust/database';
 export class StagedProductionCleanupService {
   private readonly logger: Logger = new Logger(StagedProductionCleanupService.name);
 
-  constructor(private readonly repository: StagedProductionRepository) { }
+  constructor(private readonly repository: StagedProductionRepository) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async cleanupExpiredAccountingPeriods() {
