@@ -57,7 +57,7 @@ export const PowerProductionUnitSeed: readonly PowerProductionUnit[] = Object.fr
     biddingZone: BiddingZone.DE_LU,
     ratedPower: new Prisma.Decimal(100000),
     decommissioningPlannedOn: new Date('2045-08-14'),
-    financialSupportReceived: true,
+    financialSupportReceived: false,
     typeName: PowerProductionTypeSeed[3].name,
   },
 ]);

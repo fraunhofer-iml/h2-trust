@@ -56,7 +56,7 @@ export function meetsAdditionalityCriterion(
 
 export function hasFinancialSupport(powerUnit: PowerProductionUnitEntity): boolean {
   assertBoolean(powerUnit?.financialSupportReceived, 'powerUnit.financialSupportReceived');
-  return powerUnit.financialSupportReceived;
+  return !powerUnit.financialSupportReceived; // TODO-MP: change in data model
 }
 
 function assertValidBiddingZone(zone: unknown, name: string): asserts zone is BiddingZone {
