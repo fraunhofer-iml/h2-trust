@@ -7,7 +7,7 @@
  */
 
 import { firstValueFrom } from 'rxjs';
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
@@ -25,18 +25,19 @@ export class RedCompliancePairingService {
   async buildMatchedPairs(
     powerProductions: ProcessStepEntity[],
     hydrogenProductions: ProcessStepEntity[],
-    processStepId: string,
+    _processStepId: string,
   ): Promise<MatchedProductionPair[]> {
     const pairs: MatchedProductionPair[] = this.buildMatchedPairsWithoutUnits(powerProductions, hydrogenProductions);
 
     if (!pairs?.length) {
-      const message = `No matching power↔hydrogen production pairs found for processStepId [${processStepId}]`;
-      throw new HttpException(message, HttpStatus.BAD_REQUEST);
+      return [];
+      // TODO throw exception when matching is solved in long chains
+      // const message = `No matching power↔hydrogen production pairs found for processStepId [${processStepId}]`;
+      // throw new HttpException(message, HttpStatus.BAD_REQUEST);
     }
 
     return await this.enrichPairsWithUnits(pairs);
   }
-
   private buildMatchedPairsWithoutUnits(
     powerProductions: ProcessStepEntity[],
     hydrogenProductions: ProcessStepEntity[],
