@@ -21,9 +21,9 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     serialNumber: 'PPU-SN-0002',
     certifiedBy: 'TÜV NORD AG',
     commissionedOn: new Date('2023-06-15'),
-    addressId: AddressSeed[0].id,
-    ownerId: CompanySeed[0].id,
-    operatorId: CompanySeed[0].id,
+    addressId: AddressSeed[2].id,
+    ownerId: CompanySeed[2].id,
+    operatorId: CompanySeed[2].id,
   },
   {
     id: 'power-production-unit-1',
@@ -50,8 +50,8 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     certifiedBy: 'TÜV SÜD AG',
     commissionedOn: new Date('2020-09-01'),
     addressId: AddressSeed[4].id,
-    ownerId: CompanySeed[2].id,
-    operatorId: CompanySeed[2].id,
+    ownerId: CompanySeed[0].id,
+    operatorId: CompanySeed[0].id,
   },
   {
     id: 'power-production-unit-3',
