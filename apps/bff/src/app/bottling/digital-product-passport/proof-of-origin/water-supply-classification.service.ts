@@ -10,29 +10,27 @@ import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { ClassificationDto, EmissionCalculationDto, EmissionDto, WaterBatchDto } from '@h2-trust/api';
 import { BatchType, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
-import { BatchAssembler } from '../assembler/batch.assembler';
-import { ClassificationAssembler } from '../assembler/classification.assembler';
-import { EmissionCalculationAssembler } from '../assembler/emission.assembler';
-import { EmissionComputationService } from '../emission-computation.service';
+import { EmissionCalculationAssembler } from '../emission.assembler';
+import { BatchAssembler } from './batch.assembler';
+import { ClassificationAssembler } from './classification.assembler';
 
 @Injectable()
-export class WaterClassificationService {
-  constructor(private readonly emissionService: EmissionComputationService) {}
-
-  createWaterSupplyClassification(waterSupplies: ProcessStepEntity[]): ClassificationDto {
+export class WaterSupplyClassificationService {
+  buildWaterSupplyClassification(waterSupplies: ProcessStepEntity[]): ClassificationDto {
     if (!waterSupplies?.length) {
       const message = 'No process steps of type water supply found.';
       throw new Error(message);
     }
 
     const waterBatches: WaterBatchDto[] = waterSupplies.map((waterSupply) => {
-      const emissionCalculation: EmissionCalculationDto = this.emissionService.computeWaterSupplyEmissions(waterSupply);
+      const emissionCalculation: EmissionCalculationDto =
+        EmissionCalculationAssembler.assembleWaterSupplyCalculation(waterSupply);
       const hydrogenKgEquivalentToWaterBatch: number = waterSupply.batch.successors[0].amount;
       const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(
         emissionCalculation,
         hydrogenKgEquivalentToWaterBatch,
       );
-      const batch: WaterBatchDto = BatchAssembler.assembleWaterBatchDto(waterSupply, emission);
+      const batch: WaterBatchDto = BatchAssembler.assembleWaterSupplyBatchDto(waterSupply, emission);
       return batch;
     });
 

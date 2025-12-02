@@ -21,9 +21,8 @@
   <div
     class="flex w-44 flex-row items-center gap-4 rounded-xl border-[3px] border-neutral-100 px-4 py-2 group-hover:border-neutral-200/80"
   >
-    <span class="text-sm text-neutral-500"
-      >GHG-Emissions: <br />
-      {{ classification().emissionOfProcessStep || 0 | number: '1.0-1' | unit: FormattedUnits.CO2_PER_KG_H2 }}
+    <span class="text-sm text-neutral-500">
+      {{ classification().emissionOfProcessStep || 0 | number: '1.2-2' | unit: FormattedUnits.CO2_PER_KG_H2 }}
     </span>
   </div>
 </div>
