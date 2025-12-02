@@ -7,8 +7,8 @@
  */
 
 export class ProductionCSVUploadDto {
-  powerProductionUnitIds: string[];
-  hydrogenProductionUnitIds: string[];
+  powerProductionUnitIds: string | string[];
+  hydrogenProductionUnitIds: string | string[];
 
   constructor() {
     this.powerProductionUnitIds = [];

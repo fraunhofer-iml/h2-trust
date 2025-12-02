@@ -6,8 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './mocks';
-export * from './create-production.entity';
-export * from './staged-production.entity';
-export * from './staged-production-matching-result.entity';
-export * from './submit-production.entity';
+import { Module } from '@nestjs/common';
+import { CsvParserService } from './csv-parser.service';
+
+@Module({
+  controllers: [],
+  providers: [CsvParserService],
+  exports: [CsvParserService],
+})
+export class CsvParserModule {}

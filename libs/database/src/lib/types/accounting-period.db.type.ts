@@ -6,8 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './mocks';
-export * from './create-production.entity';
-export * from './staged-production.entity';
-export * from './staged-production-matching-result.entity';
-export * from './submit-production.entity';
+import { Prisma } from '@prisma/client';
+
+export type StagedProductionDbType = Prisma.StagedProductionGetPayload<true>;

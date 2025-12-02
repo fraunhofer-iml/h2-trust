@@ -36,6 +36,7 @@
       "@h2-trust/api": ["libs/api/src/index.ts"],
       "@h2-trust/blockchain": ["libs/blockchain/src/index.ts"],
       "@h2-trust/configuration": ["libs/configuration/src/index.ts"],
+      "@h2-trust/csv-parser": ["libs/csv-parser/src/index.ts"],
       "@h2-trust/database": ["libs/database/src/index.ts"],
       "@h2-trust/domain": ["libs/domain/src/index.ts"],
       "@h2-trust/storage": ["libs/storage/src/index.ts"],

@@ -8,4 +8,6 @@
 
 export enum ProductionMessagePatterns {
   CREATE = 'production.create',
+  STAGE = 'production.stage',
+  FINALIZE = 'production.finalize',
 }

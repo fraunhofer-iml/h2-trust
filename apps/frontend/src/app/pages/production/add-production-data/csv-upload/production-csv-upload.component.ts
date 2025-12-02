@@ -7,6 +7,8 @@
  */
 
 import { FileDragAndDropComponent } from 'apps/frontend/src/app/layout/drag-and-drop/file-drag-and-drop.component';
+import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
+import { ROUTES } from 'apps/frontend/src/app/shared/constants/routes';
 import { FileSizePipe } from 'apps/frontend/src/app/shared/pipes/file-size.pipe';
 import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
 import { minFormArrayLength } from 'apps/frontend/src/app/shared/util/form-array-lengh.validator';
@@ -20,12 +22,20 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { Router } from '@angular/router';
 import { injectMutation } from '@tanstack/angular-query-experimental';
-import { HydrogenProductionOverviewDto, HydrogenStorageOverviewDto, PowerProductionOverviewDto } from '@h2-trust/api';
+import {
+  HydrogenProductionOverviewDto,
+  HydrogenStorageOverviewDto,
+  ImportSubmissionDto,
+  PowerProductionOverviewDto,
+} from '@h2-trust/api';
 import { FileUploadKeys } from '@h2-trust/domain';
+import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { FileForm } from './file-upload.form';
 
 @Component({
@@ -46,11 +56,16 @@ import { FileForm } from './file-upload.form';
     MatInputModule,
     FileSizePipe,
     MatButtonModule,
+    UnitPipe,
+    MatProgressBarModule,
   ],
   templateUrl: './production-csv-upload.component.html',
 })
 export class ProductionCsvUploadComponent {
+  protected readonly FormattedUnits = FormattedUnits;
+
   productionService: ProductionService = inject(ProductionService);
+  router = inject(Router);
 
   powerAccessApprovals = input<{ value: PowerProductionOverviewDto; name: string }[]>([]);
   hydrogenProductionUnits = input<HydrogenProductionOverviewDto[]>([]);
@@ -61,10 +76,23 @@ export class ProductionCsvUploadComponent {
     powerProductionFiles: new FormArray<FileForm>([], minFormArrayLength(1)),
   });
 
+  storageUnit = new FormControl<string | null>('', Validators.required);
+
   mutation = injectMutation(() => ({
     mutationFn: (data: FormData) => {
       return this.productionService.uploadCsv(data);
     },
+    onError: (e: HttpErrorResponse) => {
+      console.error(e);
+      toast.error(e.error.message);
+    },
+  }));
+
+  submitMutation = injectMutation(() => ({
+    mutationFn: (dto: ImportSubmissionDto) => {
+      return this.productionService.submitCsv(dto);
+    },
+    onSuccess: () => this.router.navigateByUrl(ROUTES.PRODUCTION),
     onError: (e: HttpErrorResponse) => {
       console.error(e);
       toast.error(e.error.message);
@@ -115,6 +143,11 @@ export class ProductionCsvUploadComponent {
     form.updateValueAndValidity();
   }
 
+  addHydrogenProductionFileWithUnit(file: File, form: FormArray<FileForm>) {
+    form.clear();
+    this.addFileFormWithUnit(file, form);
+  }
+
   addFileFormWithUnit(file: File, form: FormArray<FileForm>) {
     form.push(
       new FormGroup<{ file: FormControl<File | null>; unitId: FormControl<string | null> }>({
@@ -122,5 +155,16 @@ export class ProductionCsvUploadComponent {
         unitId: new FormControl<string | null>(null, Validators.required),
       }),
     );
+  }
+
+  save() {
+    const id = this.mutation.data()?.id;
+    if (!this.storageUnit.value || !id) return;
+    const dto: ImportSubmissionDto = { storageUnitId: this.storageUnit.value, importId: id };
+    this.submitMutation.mutate(dto);
+  }
+
+  cancel() {
+    this.mutation.reset();
   }
 }

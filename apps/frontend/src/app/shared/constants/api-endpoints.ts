@@ -32,5 +32,9 @@ export const API = {
     PROOF_OF_ORIGIN: (id: string) => `${BOTTLING_ENDPOINT}${id}/proof-of-origin`,
     PROOF_OF_SUSTAINABILITY: (id: string) => `${BOTTLING_ENDPOINT}${id}/proof-of-sustainability`,
   },
-  PRODUCTION: { BASE: PRODUCTION_ENDPOINT, CSV: BOTTLING_ENDPOINT + '/csv-import' },
+  PRODUCTION: {
+    BASE: PRODUCTION_ENDPOINT,
+    CSV: PRODUCTION_ENDPOINT + 'csv/import',
+    CSV_SUBMIT: PRODUCTION_ENDPOINT + 'csv/submit',
+  },
 };
