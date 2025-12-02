@@ -8,7 +8,7 @@
 
 import { StagedProductionDbType } from '@h2-trust/database';
 
-export class AccountingPeriodEntity {
+export class StagedProductionEntity {
   startedAt: Date;
   hydrogenAmount: number;
   hydrogenProductionUnitId: string;
@@ -29,13 +29,13 @@ export class AccountingPeriodEntity {
     this.powerProductionUnitId = powerProductionUnitId;
   }
 
-  static fromDatabase(accountingPeriod: StagedProductionDbType) {
-    return new AccountingPeriodEntity(
-      accountingPeriod.startedAt,
-      accountingPeriod.hydrogenAmount.toNumber(),
-      accountingPeriod.hydrogenProductionUnitId,
-      accountingPeriod.powerAmount.toNumber(),
-      accountingPeriod.powerProductionUnitId,
+  static fromDatabase(stagedProduction: StagedProductionDbType) {
+    return new StagedProductionEntity(
+      stagedProduction.startedAt,
+      stagedProduction.hydrogenAmount.toNumber(),
+      stagedProduction.hydrogenProductionUnitId,
+      stagedProduction.powerAmount.toNumber(),
+      stagedProduction.powerProductionUnitId,
     );
   }
 }

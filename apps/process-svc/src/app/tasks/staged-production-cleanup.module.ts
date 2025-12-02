@@ -9,7 +9,7 @@
 import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 import { DatabaseModule } from '@h2-trust/database';
-import { AccountingPeriodCleanupService } from './accounting-period-cleanup.service';
+import { StagedProductionCleanupService } from './staged-production-cleanup.service';
 
-@Module({ imports: [ScheduleModule.forRoot(), DatabaseModule], providers: [AccountingPeriodCleanupService] })
-export class AccountingPeriodCleanupModule {}
+@Module({ imports: [ScheduleModule.forRoot(), DatabaseModule], providers: [StagedProductionCleanupService] })
+export class StagedProductionCleanupModule { }

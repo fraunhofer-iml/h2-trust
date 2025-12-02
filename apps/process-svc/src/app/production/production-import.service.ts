@@ -10,8 +10,8 @@ import { firstValueFrom } from 'rxjs';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
-  AccountingPeriodEntity,
-  AccountingPeriodMatchingResultEntity,
+  StagedProductionEntity,
+  StagedProductionMatchingResultEntity,
   BrokerException,
   BrokerQueues,
   CreateProductionEntity,
@@ -23,33 +23,33 @@ import {
   SubmitProductionProps,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
-import { AccountingPeriodRepository } from '@h2-trust/database';
+import { StagedProductionRepository } from '@h2-trust/database';
 import { PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
-import { AccountingPeriodMatcherService } from './accounting-period-matching/accounting-period-matcher.service';
+import { AccountingPeriodMatchingService } from './accounting-period-matching.service';
 import { ProductionService } from './production.service';
 
 @Injectable()
 export class ProductionImportService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
-    private readonly accountingPeriodMatcher: AccountingPeriodMatcherService,
-    private readonly accountingPeriodRepo: AccountingPeriodRepository,
+    private readonly accountingPeriodMatcher: AccountingPeriodMatchingService,
+    private readonly stagedProductionRepository: StagedProductionRepository,
     private readonly productionService: ProductionService,
-  ) {}
+  ) { }
 
   async stageImportedProductionData(data: ParsedFileBundles, userId: string) {
     const gridUnitId = await this.fetchGridUnitId(userId);
-    const accountingPeriods: AccountingPeriodEntity[] = this.accountingPeriodMatcher.matchAccountingPeriods(
+    const stagedProductions: StagedProductionEntity[] = this.accountingPeriodMatcher.matchAccountingPeriods(
       data,
       gridUnitId,
     );
 
-    const id = await this.accountingPeriodRepo.stageProduction(accountingPeriods);
-    return new AccountingPeriodMatchingResultEntity(id, accountingPeriods);
+    const id = await this.stagedProductionRepository.stageProductions(stagedProductions);
+    return new StagedProductionMatchingResultEntity(id, stagedProductions);
   }
 
   async finalizeProductionData(props: SubmitProductionProps): Promise<ProcessStepEntity[]> {
-    const stagedProductions = await this.accountingPeriodRepo.getStagedProductionByImportId(props.importId);
+    const stagedProductions = await this.stagedProductionRepository.getStagedProductionsByImportId(props.importId);
 
     return await Promise.all(
       stagedProductions.map(async (accountingPeriod) => {

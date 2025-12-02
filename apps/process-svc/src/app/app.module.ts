@@ -10,10 +10,10 @@ import { Module } from '@nestjs/common';
 import { ConfigurationModule } from '@h2-trust/configuration';
 import { ProductionModule } from './production/production.module';
 import { ProvenanceModule } from './provenance/provenance.module';
-import { AccountingPeriodCleanupModule } from './tasks/accounting-period-cleanup.module';
+import { StagedProductionCleanupModule } from './tasks/staged-production-cleanup.module';
 
 @Module({
-  imports: [ConfigurationModule, ProductionModule, ProvenanceModule, AccountingPeriodCleanupModule],
+  imports: [ConfigurationModule, ProductionModule, ProvenanceModule, StagedProductionCleanupModule],
   controllers: [],
   providers: [],
 })

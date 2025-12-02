@@ -8,6 +8,6 @@
 
 export * from './mocks';
 export * from './create-production.entity';
-export * from './accounting-period.entity';
-export * from './accounting-period-matching-result.entity';
+export * from './staged-production.entity';
+export * from './staged-production-matching-result.entity';
 export * from './submit-production.entity';

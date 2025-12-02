@@ -7,17 +7,17 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { AccountingPeriodMatcherService } from './accounting-period-matcher.service';
+import { AccountingPeriodMatchingService } from './accounting-period-matching.service';
 
-describe('AccountingPeriodMatcherService', () => {
-  let service: AccountingPeriodMatcherService;
+describe('AccountingPeriodMatchingService', () => {
+  let service: AccountingPeriodMatchingService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AccountingPeriodMatcherService],
+      providers: [AccountingPeriodMatchingService],
     }).compile();
 
-    service = module.get<AccountingPeriodMatcherService>(AccountingPeriodMatcherService);
+    service = module.get<AccountingPeriodMatchingService>(AccountingPeriodMatchingService);
   });
 
   it('should be defined', () => {

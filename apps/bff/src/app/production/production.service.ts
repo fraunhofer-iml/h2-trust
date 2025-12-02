@@ -12,7 +12,7 @@ import { BadRequestException, HttpException, HttpStatus, Inject, Injectable } fr
 import { ClientProxy } from '@nestjs/microservices';
 import {
   AccountingPeriodHydrogen,
-  AccountingPeriodMatchingResultEntity,
+  StagedProductionMatchingResultEntity,
   AccountingPeriodPower,
   BrokerException,
   BrokerQueues,
@@ -142,7 +142,7 @@ export class ProductionService {
 
     const payload = { data: processedFiles, userId: userId };
     const matchingResult = await firstValueFrom(
-      this.processSvc.send<AccountingPeriodMatchingResultEntity>(ProductionMessagePatterns.STAGE, payload),
+      this.processSvc.send<StagedProductionMatchingResultEntity>(ProductionMessagePatterns.STAGE, payload),
     );
 
     return AccountingPeriodMatchingResultDto.fromEntity(matchingResult);

@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AccountingPeriodEntity } from './accounting-period.entity';
+import { StagedProductionEntity } from './staged-production.entity';
 
-export class AccountingPeriodMatchingResultEntity {
+export class StagedProductionMatchingResultEntity {
   id: string;
   createdAt: Date;
 
@@ -16,8 +16,8 @@ export class AccountingPeriodMatchingResultEntity {
   hydrogenProduced: number;
   numberOfBatches: number;
 
-  constructor(id: string, batches: AccountingPeriodEntity[]) {
-    const { powerAmount, hydrogenAmount } = (batches ?? []).reduce(
+  constructor(id: string, stagedProductions: StagedProductionEntity[]) {
+    const { powerAmount, hydrogenAmount } = (stagedProductions ?? []).reduce(
       (acc, curr) => {
         acc.hydrogenAmount += curr.hydrogenAmount;
         acc.powerAmount += curr.powerAmount;
@@ -30,8 +30,8 @@ export class AccountingPeriodMatchingResultEntity {
     );
 
     this.id = id;
-    this.createdAt = batches[0].startedAt;
-    this.numberOfBatches = batches.length;
+    this.createdAt = stagedProductions[0].startedAt;
+    this.numberOfBatches = stagedProductions.length;
     this.powerUsed = powerAmount;
     this.hydrogenProduced = hydrogenAmount;
   }

@@ -10,9 +10,9 @@ import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, CreateProductionEntity, ParsedFileBundles, PowerAccessApprovalEntity } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { AccountingPeriodRepository } from '@h2-trust/database';
+import { StagedProductionRepository } from '@h2-trust/database';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
-import { AccountingPeriodMatcherService } from './accounting-period-matching/accounting-period-matcher.service';
+import { AccountingPeriodMatchingService } from './accounting-period-matching.service';
 import { ProductionImportService } from './production-import.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
@@ -23,7 +23,7 @@ describe('ProductionController', () => {
   let controller: ProductionController;
   let generalServiceSendMock: jest.Mock;
   let batchServiceSendMock: jest.Mock;
-  let accountingPeriodRepo: AccountingPeriodRepository;
+  let stagedProductionRepository: StagedProductionRepository;
 
   beforeEach(async () => {
     generalServiceSendMock = jest.fn().mockImplementation(() => {
@@ -64,11 +64,11 @@ describe('ProductionController', () => {
             send: batchServiceSendMock,
           },
         },
-        AccountingPeriodMatcherService,
+        AccountingPeriodMatchingService,
         {
-          provide: AccountingPeriodRepository,
+          provide: StagedProductionRepository,
           useValue: {
-            stageProduction: jest.fn(),
+            stageProductions: jest.fn(),
             getStagedProductionById: jest.fn(),
           },
         },
@@ -76,7 +76,7 @@ describe('ProductionController', () => {
     }).compile();
 
     controller = moduleRef.get<ProductionController>(ProductionController);
-    accountingPeriodRepo = moduleRef.get<AccountingPeriodRepository>(AccountingPeriodRepository);
+    stagedProductionRepository = moduleRef.get<StagedProductionRepository>(StagedProductionRepository);
   });
 
   it('should be defined', () => {
@@ -272,7 +272,7 @@ describe('ProductionController', () => {
       ]);
     });
 
-    jest.spyOn(accountingPeriodRepo, 'stageProduction').mockResolvedValue('test-id');
+    jest.spyOn(stagedProductionRepository, 'stageProductions').mockResolvedValue('test-id');
 
     const actualResponse = await controller.stageProductionData({ data, userId: 'user-id-1' });
 
