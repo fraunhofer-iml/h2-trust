@@ -33,12 +33,12 @@ export class ProductionController {
   }
 
   @MessagePattern(ProductionMessagePatterns.STAGE)
-  async stageProductionData(@Payload() payload: { data: ParsedFileBundles; userId: string }) {
-    return this.productionImportService.stageImportedProductionData(payload.data, payload.userId);
+  async stageProductions(@Payload() payload: { data: ParsedFileBundles; userId: string }) {
+    return this.productionImportService.stageProductions(payload.data, payload.userId);
   }
 
   @MessagePattern(ProductionMessagePatterns.FINALIZE)
-  async finalizeProductionData(@Payload() payload: SubmitProductionProps) {
-    return this.productionImportService.finalizeProductionData(payload);
+  async finalizeStagedProductions(@Payload() payload: SubmitProductionProps) {
+    return this.productionImportService.finalizeStagedProductions(payload);
   }
 }

@@ -21,7 +21,7 @@ import {
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
-  StagedProductionMatchingResultEntity,
+  ParsedProductionMatchingResultEntity,
   SubmitProductionProps,
   UnitDataBundle,
   UnitFileBundle,
@@ -142,7 +142,7 @@ export class ProductionService {
 
     const payload = { data: processedFiles, userId: userId };
     const matchingResult = await firstValueFrom(
-      this.processSvc.send<StagedProductionMatchingResultEntity>(ProductionMessagePatterns.STAGE, payload),
+      this.processSvc.send<ParsedProductionMatchingResultEntity>(ProductionMessagePatterns.STAGE, payload),
     );
 
     return AccountingPeriodMatchingResultDto.fromEntity(matchingResult);

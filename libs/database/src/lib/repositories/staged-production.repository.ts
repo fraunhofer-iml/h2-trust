@@ -8,20 +8,22 @@
 
 import cuid from 'cuid';
 import { Injectable } from '@nestjs/common';
-import { StagedProductionEntity } from '@h2-trust/amqp';
+import { ParsedProductionEntity, StagedProductionEntity } from '@h2-trust/amqp';
 import { PrismaService } from '../prisma.service';
+import { stagedProductionQueryArgs } from '../query-args';
+import { StagedProductionDbType } from '../types';
 
 @Injectable()
 export class StagedProductionRepository {
   static readonly DAY_IN_MS = 24 * 60 * 60 * 1000;
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
-  async stageProductions(stagedProductions: StagedProductionEntity[]) {
+  async stageParsedProductions(parsedProductions: ParsedProductionEntity[]): Promise<string> {
     const importId = cuid();
 
     await this.prismaService.stagedProduction.createMany({
-      data: stagedProductions.map(
+      data: parsedProductions.map(
         ({ startedAt, hydrogenAmount, hydrogenProductionUnitId, powerAmount, powerProductionUnitId }) => ({
           startedAt,
           hydrogenAmount,
@@ -37,15 +39,18 @@ export class StagedProductionRepository {
   }
 
   async getStagedProductionsByImportId(id: string): Promise<StagedProductionEntity[]> {
-    const res = await this.prismaService.stagedProduction.findMany({
+    const stagedProductions: StagedProductionDbType[] = await this.prismaService.stagedProduction.findMany({
       where: { importId: id },
+      include: {
+        ...stagedProductionQueryArgs.include,
+      },
     });
 
-    if (!res || res.length === 0) {
+    if (!stagedProductions || stagedProductions.length === 0) {
       throw new Error(`Could not find staged production for id ${id}`);
     }
 
-    return res.map(StagedProductionEntity.fromDatabase);
+    return stagedProductions.map(StagedProductionEntity.fromDatabase);
   }
 
   async deleteExpiredStagedProductions() {

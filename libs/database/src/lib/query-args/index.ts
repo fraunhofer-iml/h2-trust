@@ -11,3 +11,4 @@ export * from './company.query.args';
 export * from './process-step.query-args';
 export * from './unit.query-args';
 export * from './user.query-args';
+export * from './staged-production.query-args';

@@ -7,5 +7,6 @@
  */
 
 import { Prisma } from '@prisma/client';
+import { stagedProductionQueryArgs } from '../query-args/staged-production.query-args';
 
-export type StagedProductionDbType = Prisma.StagedProductionGetPayload<true>;
+export type StagedProductionDbType = Prisma.StagedProductionGetPayload<typeof stagedProductionQueryArgs>;
