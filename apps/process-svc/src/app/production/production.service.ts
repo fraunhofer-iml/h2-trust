@@ -21,31 +21,10 @@ import {
   QualityDetailsEntity,
   UserEntity,
 } from '@h2-trust/amqp';
-import { BatchType, ProcessType, TimeInSeconds } from '@h2-trust/domain';
+import { BatchType, ProcessType } from '@h2-trust/domain';
 import { DateTimeUtil } from '@h2-trust/utils';
 import { ProductionUtils } from './utils/production.utils';
-
-interface BatchParams {
-  activity: boolean;
-  type: BatchType;
-  owner: string;
-  quality?: string;
-  hydrogenStorageUnitId?: string;
-}
-
-interface ProcessStepParams {
-  type: ProcessType;
-  executedBy: string;
-  recordedBy: string;
-  batchParams: BatchParams;
-}
-
-interface AccountingPeriod {
-  startedAt: Date;
-  endedAt: Date;
-  amount: number;
-  predecessors: BatchEntity[];
-}
+import { AccountingPeriod, ProcessStepParams } from './production.types';
 
 @Injectable()
 export class ProductionService {
@@ -94,7 +73,7 @@ export class ProductionService {
   }
 
   private async createWaterConsumptions(entity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
-    const waterAmountLiters = this.calculateWaterAmount(
+    const waterAmountLiters = ProductionUtils.calculateWaterAmount(
       entity.productionStartedAt,
       entity.productionEndedAt,
       entity.waterConsumptionLitersPerHour,
@@ -118,17 +97,6 @@ export class ProductionService {
       params,
       [],
     );
-  }
-
-  private calculateWaterAmount(
-    startDate: string,
-    endDate: string,
-    consumptionPerHour: number,
-  ): number {
-    const startInSeconds = DateTimeUtil.convertDateStringToSeconds(startDate);
-    const endInSeconds = DateTimeUtil.convertDateStringToSeconds(endDate);
-    const durationInSeconds = ProductionUtils.calculateDuration(startInSeconds, endInSeconds);
-    return (consumptionPerHour / TimeInSeconds.ONE_HOUR) * durationInSeconds;
   }
 
   private async createHydrogenProductions(
@@ -159,109 +127,21 @@ export class ProductionService {
   }
 
   private async createAndPersistProcessSteps(
-    startDate: string,
-    endDate: string,
+    startedAt: string,
+    endedAt: string,
     totalAmount: number,
     params: ProcessStepParams,
     predecessors: ProcessStepEntity[],
   ): Promise<ProcessStepEntity[]> {
-    const accountingPeriods: AccountingPeriod[] = this.calculateAccountingPeriods(
-      startDate,
-      endDate,
-      totalAmount,
-      predecessors,
-    );
-    const processSteps = accountingPeriods.map((accountingPeriod) =>
-      this.createProcessStep(accountingPeriod, params),
-    );
-
+    const accountingPeriods: AccountingPeriod[] = ProductionUtils.calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
+    const processSteps = accountingPeriods.map((accountingPeriod) => this.createProcessStep(accountingPeriod, params));
     return this.persistProcessSteps(processSteps);
   }
 
-  private calculateAccountingPeriods(
-    startDate: string,
-    endDate: string,
-    totalAmount: number,
-    predecessors: ProcessStepEntity[],
-  ): AccountingPeriod[] {
-    const startInSeconds = DateTimeUtil.convertDateStringToSeconds(startDate);
-    const endInSeconds = DateTimeUtil.convertDateStringToSeconds(endDate);
-    const alignedStartInSeconds = Math.floor(startInSeconds / TimeInSeconds.ACCOUNTING_PERIOD) * TimeInSeconds.ACCOUNTING_PERIOD;
-
-    const numberOfAccountingPeriods = ProductionUtils.calculateNumberOfAccountingPeriods(
-      alignedStartInSeconds,
-      endInSeconds,
-      TimeInSeconds.ACCOUNTING_PERIOD,
-    );
-
-    const amountPerAccountingPeriod = ProductionUtils.calculateBatchAmountPerAccountingPeriod(
-      totalAmount,
-      numberOfAccountingPeriods,
-    );
-
-    const predecessorsByStartedAt = this.groupBatchesByStartedAt(predecessors);
-    const accountingPeriods: AccountingPeriod[] = [];
-
-    for (let i = 0; i < numberOfAccountingPeriods; i++) {
-      const startedAt = ProductionUtils.calculateProductionStartDate(
-        alignedStartInSeconds,
-        TimeInSeconds.ACCOUNTING_PERIOD,
-        i,
-      );
-
-      const endedAt = ProductionUtils.calculateProductionEndDate(
-        alignedStartInSeconds,
-        TimeInSeconds.ACCOUNTING_PERIOD,
-        i,
-      );
-
-      const startedAtConverted = DateTimeUtil.convertDateToMilliseconds(startedAt);
-      const predecessors = predecessorsByStartedAt.get(startedAtConverted) || [];
-
-      accountingPeriods.push({
-        startedAt: startedAt,
-        endedAt: endedAt,
-        amount: amountPerAccountingPeriod,
-        predecessors: predecessors,
-      });
-    }
-
-    return accountingPeriods;
-  }
-
-  private groupBatchesByStartedAt(processSteps: ProcessStepEntity[]): Map<number, BatchEntity[]> {
-    const batchesByStartedAt = new Map<number, BatchEntity[]>();
-
-    for (const processStep of processSteps) {
-      const startedAt = DateTimeUtil.convertDateToMilliseconds(processStep.startedAt);
-
-      const batches = batchesByStartedAt.get(startedAt) || [];
-      batches.push(processStep.batch);
-      batchesByStartedAt.set(startedAt, batches);
-    }
-
-    return batchesByStartedAt;
-  }
-
-  private createProcessStep(
-    accountingPeriod: AccountingPeriod,
-    params: ProcessStepParams,
-  ): ProcessStepEntity {
+  private createProcessStep(accountingPeriod: AccountingPeriod, params: ProcessStepParams): ProcessStepEntity {
     const { batchParams } = params;
 
-    const formatDate = (date: Date): string => {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      const hours = String(date.getHours()).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
-      const seconds = String(date.getSeconds()).padStart(2, '0');
-      return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
-    };
-
-    this.logger.debug(
-      `${formatDate(accountingPeriod.startedAt)} - ${formatDate(accountingPeriod.endedAt)} | ${params.type} | ${batchParams.activity} | ${accountingPeriod.amount}`
-    );
+    this.logger.debug(`${DateTimeUtil.formatDate(accountingPeriod.startedAt)} - ${DateTimeUtil.formatDate(accountingPeriod.endedAt)} | ${params.type} | ${batchParams.activity} | ${accountingPeriod.amount}`);
 
     const hydrogenStorageUnit = batchParams.hydrogenStorageUnitId
       ? ({ id: batchParams.hydrogenStorageUnitId } as HydrogenStorageUnitEntity)
