@@ -139,9 +139,9 @@ export class ProductionService {
   }
 
   private createProcessStep(accountingPeriod: AccountingPeriod, params: ProcessStepParams): ProcessStepEntity {
-    const { batchParams } = params;
+    this.logger.debug(`${DateTimeUtil.formatDate(accountingPeriod.startedAt)} - ${DateTimeUtil.formatDate(accountingPeriod.endedAt)} | ${params.type} | ${accountingPeriod.amount}`);
 
-    this.logger.debug(`${DateTimeUtil.formatDate(accountingPeriod.startedAt)} - ${DateTimeUtil.formatDate(accountingPeriod.endedAt)} | ${params.type} | ${batchParams.activity} | ${accountingPeriod.amount}`);
+    const { batchParams } = params;
 
     const hydrogenStorageUnit = batchParams.hydrogenStorageUnitId
       ? ({ id: batchParams.hydrogenStorageUnitId } as HydrogenStorageUnitEntity)
