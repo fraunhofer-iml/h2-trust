@@ -57,7 +57,7 @@ export class ProductionFormComponent {
   private readonly productionService: ProductionService = inject(ProductionService);
   private readonly router: Router = inject(Router);
 
-  private readonly accountingPeriod: number = (environment.ACCOUNTING_PERIOD_IN_SECONDS ?? 900) / 60;
+  private readonly accountingPeriodInMinutes: number = (environment.ACCOUNTING_PERIOD_IN_SECONDS ?? 3600) / 60;
 
   powerAccessApprovals = input<{ value: PowerProductionOverviewDto; name: string }[]>([]);
   hydrogenProductionUnits = input<HydrogenProductionOverviewDto[]>([]);
@@ -103,11 +103,11 @@ export class ProductionFormComponent {
   constructor() {
     const minutes = new Date().getMinutes();
     this.form.controls.productionEndedAt.value?.setMinutes(
-      minutes + this.accountingPeriod - (minutes % this.accountingPeriod),
+      minutes + this.accountingPeriodInMinutes - (minutes % this.accountingPeriodInMinutes),
       0,
       0,
     );
-    this.form.controls.productionStartedAt.value?.setMinutes(minutes - (minutes % this.accountingPeriod), 0, 0);
+    this.form.controls.productionStartedAt.value?.setMinutes(minutes - (minutes % this.accountingPeriodInMinutes), 0, 0);
   }
 
   submit() {

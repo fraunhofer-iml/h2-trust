@@ -69,7 +69,7 @@ export class ProductionImportService {
           stagedProduction.hydrogenProductionUnitOwnerId,
         );
 
-        return this.productionService.createProduction(entity, true);
+        return this.productionService.createProduction(entity);
       }),
     ).then((processSteps) => processSteps.flat());
   }

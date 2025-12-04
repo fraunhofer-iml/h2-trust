@@ -16,5 +16,5 @@ export const environment = {
   KEYCLOAK_REALM: 'h2-trust',
   KEYCLOAK_GRANT_TYPE: 'client_credentials',
 
-  ACCOUNTING_PERIOD_IN_SECONDS: 900,
+  ACCOUNTING_PERIOD_IN_SECONDS: 3600,
 };

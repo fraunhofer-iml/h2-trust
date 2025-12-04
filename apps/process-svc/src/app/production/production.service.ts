@@ -23,7 +23,6 @@ import {
   UnitMessagePatterns,
   UserEntity,
 } from '@h2-trust/amqp';
-import { ConfigurationService } from '@h2-trust/configuration';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 import { DateTimeUtil } from '@h2-trust/utils';
 import { ProductionUtils } from './utils/production.utils';
@@ -31,7 +30,6 @@ import { ProductionUtils } from './utils/production.utils';
 interface CreateProcessStepsParams {
   productionStartedAt: string;
   productionEndedAt: string;
-  accountingPeriodInSeconds: number;
   type: ProcessType;
   batchActivity: boolean;
   batchAmount: number;
@@ -47,43 +45,30 @@ interface CreateProcessStepsParams {
 @Injectable()
 export class ProductionService {
   private readonly logger = new Logger(ProductionService.name);
-  private readonly secondsPerHour = 3600;
-  private readonly powerAccountingPeriodInSeconds: number;
-  private readonly waterAccountingPeriodInSeconds: number;
-  private readonly hydrogenAccountingPeriodInSeconds: number;
+  private readonly accountingPeriodInSeconds = 3600; // TODO-MP: move to lib
+  private readonly hourInSeconds = 3600;
 
   constructor(
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchService: ClientProxy,
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
-    private readonly configurationService: ConfigurationService,
   ) {
-    const configuration = this.configurationService.getProcessSvcConfiguration();
-    this.powerAccountingPeriodInSeconds = configuration.powerAccountingPeriodInSeconds;
-    this.waterAccountingPeriodInSeconds = configuration.waterAccountingPeriodInSeconds;
-    this.hydrogenAccountingPeriodInSeconds = configuration.hydrogenAccountingPeriodInSeconds;
   }
 
-  async createProduction(
-    createProductionEntity: CreateProductionEntity,
-    isSingleAccountingPeriod: boolean,
-  ): Promise<ProcessStepEntity[]> {
+  async createProduction(createProductionEntity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
     this.logger.debug(`### START PRODUCTION ###`);
 
     const powerProductionProcessSteps: ProcessStepEntity[] = await this.createPowerProductionProcessSteps(
       createProductionEntity,
-      isSingleAccountingPeriod,
     );
 
     const waterConsumptionProcessSteps: ProcessStepEntity[] = await this.createWaterConsumptionProcessSteps(
       createProductionEntity,
-      isSingleAccountingPeriod,
     );
 
     const hydrogenProductionProcessSteps: ProcessStepEntity[] = await this.createHydrogenProductionProcessSteps(
       createProductionEntity,
       powerProductionProcessSteps,
       waterConsumptionProcessSteps,
-      isSingleAccountingPeriod,
     );
 
     this.logger.debug(`### END PRODUCTION ###`);
@@ -91,15 +76,11 @@ export class ProductionService {
     return [...powerProductionProcessSteps, ...waterConsumptionProcessSteps, ...hydrogenProductionProcessSteps];
   }
 
-  private async createPowerProductionProcessSteps(
-    createProductionEntity: CreateProductionEntity,
-    isSingleAccountingPeriod: boolean,
-  ): Promise<ProcessStepEntity[]> {
+  private async createPowerProductionProcessSteps(createProductionEntity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
     return this.createProcessSteps(
       {
         productionStartedAt: createProductionEntity.productionStartedAt,
         productionEndedAt: createProductionEntity.productionEndedAt,
-        accountingPeriodInSeconds: isSingleAccountingPeriod ? 3600 : this.powerAccountingPeriodInSeconds,
         type: ProcessType.POWER_PRODUCTION,
         batchActivity: false,
         batchAmount: createProductionEntity.powerAmountKwh,
@@ -111,21 +92,16 @@ export class ProductionService {
         executedBy: createProductionEntity.powerProductionUnitId,
         predecessors: [],
       },
-      isSingleAccountingPeriod,
     );
   }
 
-  private async createWaterConsumptionProcessSteps(
-    createProductionEntity: CreateProductionEntity,
-    isSingleAccountingPeriod: boolean,
-  ): Promise<ProcessStepEntity[]> {
+  private async createWaterConsumptionProcessSteps(createProductionEntity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
     const waterAmountLiters: number = await this.calculateTotalWaterAmount(createProductionEntity);
 
     return this.createProcessSteps(
       {
         productionStartedAt: createProductionEntity.productionStartedAt,
         productionEndedAt: createProductionEntity.productionEndedAt,
-        accountingPeriodInSeconds: isSingleAccountingPeriod ? 3600 : this.waterAccountingPeriodInSeconds,
         type: ProcessType.WATER_CONSUMPTION,
         batchActivity: false,
         batchAmount: waterAmountLiters,
@@ -137,7 +113,6 @@ export class ProductionService {
         executedBy: createProductionEntity.hydrogenProductionUnitId,
         predecessors: [],
       },
-      isSingleAccountingPeriod,
     );
   }
 
@@ -156,20 +131,18 @@ export class ProductionService {
     const endedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(createProductionEntity.productionEndedAt);
     const durationInSeconds = ProductionUtils.calculateDuration(startedAtInSeconds, endedAtInSeconds);
 
-    return (hydrogenProductionUnit.waterConsumptionLitersPerHour / this.secondsPerHour) * durationInSeconds;
+    return (hydrogenProductionUnit.waterConsumptionLitersPerHour / this.hourInSeconds) * durationInSeconds;
   }
 
   private async createHydrogenProductionProcessSteps(
     createProductionEntity: CreateProductionEntity,
     powerProductionProcessSteps: ProcessStepEntity[],
     waterConsumptionProcessSteps: ProcessStepEntity[],
-    isSingleAccountingPeriod: boolean,
   ): Promise<ProcessStepEntity[]> {
     return this.createProcessSteps(
       {
         productionStartedAt: createProductionEntity.productionStartedAt,
         productionEndedAt: createProductionEntity.productionEndedAt,
-        accountingPeriodInSeconds: isSingleAccountingPeriod ? 3600 : this.hydrogenAccountingPeriodInSeconds,
         type: ProcessType.HYDROGEN_PRODUCTION,
         batchActivity: true,
         batchAmount: createProductionEntity.hydrogenAmountKg,
@@ -181,27 +154,21 @@ export class ProductionService {
         executedBy: createProductionEntity.hydrogenProductionUnitId,
         predecessors: [...powerProductionProcessSteps, ...waterConsumptionProcessSteps],
       },
-      isSingleAccountingPeriod,
     );
   }
 
-  private async createProcessSteps(
-    params: CreateProcessStepsParams,
-    isSingleAccountingPeriod: boolean,
-  ): Promise<ProcessStepEntity[]> {
+  private async createProcessSteps(params: CreateProcessStepsParams): Promise<ProcessStepEntity[]> {
     const processSteps: ProcessStepEntity[] = [];
     const startedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(params.productionStartedAt);
     const endedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(params.productionEndedAt);
     const startedAtInSecondsAligned =
-      Math.floor(startedAtInSeconds / params.accountingPeriodInSeconds) * params.accountingPeriodInSeconds;
+      Math.floor(startedAtInSeconds / this.accountingPeriodInSeconds) * this.accountingPeriodInSeconds;
 
-    const numberOfAccountingPeriods = isSingleAccountingPeriod
-      ? 1
-      : ProductionUtils.calculateNumberOfAccountingPeriods(
-          startedAtInSecondsAligned,
-          endedAtInSeconds,
-          params.accountingPeriodInSeconds,
-        );
+    const numberOfAccountingPeriods = ProductionUtils.calculateNumberOfAccountingPeriods(
+      startedAtInSecondsAligned,
+      endedAtInSeconds,
+      this.accountingPeriodInSeconds,
+    );
 
     const amountPerAccountingPeriod = ProductionUtils.calculateBatchAmountPerPeriod(
       params.batchAmount,
@@ -216,14 +183,14 @@ export class ProductionService {
 
       const startedAt = ProductionUtils.calculateProductionStartDate(
         startedAtInSecondsAligned,
-        params.accountingPeriodInSeconds,
+        this.accountingPeriodInSeconds,
         i,
       );
       this.logger.debug(`started At: ${startedAt.toISOString()}`);
 
       const endedAt = ProductionUtils.calculateProductionEndDate(
         startedAtInSecondsAligned,
-        params.accountingPeriodInSeconds,
+        this.accountingPeriodInSeconds,
         i,
       );
       this.logger.debug(`ended At: ${endedAt.toISOString()}`);

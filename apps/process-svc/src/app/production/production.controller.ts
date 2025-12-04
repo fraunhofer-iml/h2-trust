@@ -23,13 +23,13 @@ export class ProductionController {
   constructor(
     private readonly service: ProductionService,
     private readonly productionImportService: ProductionImportService,
-  ) {}
+  ) { }
 
   @MessagePattern(ProductionMessagePatterns.CREATE)
   async createProduction(
     @Payload() payload: { createProductionEntity: CreateProductionEntity },
   ): Promise<ProcessStepEntity[]> {
-    return this.service.createProduction(payload.createProductionEntity, false);
+    return this.service.createProduction(payload.createProductionEntity);
   }
 
   @MessagePattern(ProductionMessagePatterns.STAGE)
