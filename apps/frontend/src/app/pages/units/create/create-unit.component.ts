@@ -36,6 +36,7 @@ import {
   PowerProductionType,
   UnitType,
 } from '@h2-trust/domain';
+import { InfoTooltipComponent } from '../../../layout/info-tooltip/info-tooltip.component';
 import { RED_III_CRITERIA } from '../../../shared/constants/financial-support-info';
 import { H2_PRODUCTION_TYPES } from '../../../shared/constants/hydrogen-production-types';
 import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
@@ -69,6 +70,7 @@ import {
     MatSelectModule,
     PrettyEnumPipe,
     MatCheckboxModule,
+    InfoTooltipComponent,
   ],
   providers: [provideNativeDateAdapter(), CompaniesService],
   templateUrl: './create-unit.component.html',

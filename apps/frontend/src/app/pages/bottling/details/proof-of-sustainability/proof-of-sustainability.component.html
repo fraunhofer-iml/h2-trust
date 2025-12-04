@@ -8,24 +8,18 @@
         <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
           <span class="material-symbols-outlined text-secondary-400 text-4xl">air</span>
         </div>
-        <span
-          class="grow text-xs text-neutral-500"
-          [matTooltip]="
-            EMISSIONS.TOTAL_EMISSIONS.FORMULA +
-            '\n' +
-            EMISSIONS.TOTAL_EMISSIONS.EU +
-            '\n' +
-            EMISSIONS.TOTAL_EMISSIONS.ECCS
-          "
-          [matTooltipClass]="'multiline-tooltip'"
-        >
-          Total {{ ChemicalNames.CO2 }} Emissions
-          <br />
-          <span class="text-xl">{{ totalEmissions() | number: '1.2-2' }}</span>
-          {{ FormattedUnits.CO2_PER_KG_H2 }} <br />
-          <span class="text-xl">{{ proofQuery.data()?.amountCO2PerMJH2 | number: '1.2-2' }}</span>
-          {{ FormattedUnits.CO2_PER_MJ_H2 }}
-        </span>
+        <div class="flex flex-col gap-1 text-neutral-500">
+          <span class="flex w-full items-center justify-between gap-2 text-sm">
+            Total {{ ChemicalNames.CO2 }} Emissions
+            <app-info-tooltip [tooltip]="totalEmissionsTooltip" [position]="'above'"></app-info-tooltip>
+          </span>
+          <span class="text-xs">
+            <span class="text-xl">{{ totalEmissions() | number: '1.2-2' }}</span> {{ FormattedUnits.CO2_PER_KG_H2 }}
+            <br />
+            <span class="text-xl">{{ proofQuery.data()?.amountCO2PerMJH2 | number: '1.2-2' }}</span>
+            {{ FormattedUnits.CO2_PER_MJ_H2 }}</span
+          >
+        </div>
       </div>
       <div class="bg-secondary-200/15 text-secondary-400 flex min-w-96 grow flex-row items-center gap-4 rounded-xl p-4">
         <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">

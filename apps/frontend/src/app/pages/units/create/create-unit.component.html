@@ -311,8 +311,9 @@
             <input matInput placeholder="1EMH726364890" formControlName="electricityMeterNumber" />
           </mat-form-field>
 
-          <section class="flex h-full items-center">
-            <mat-checkbox formControlName="financialSupportReceived">FINANCIAL_SUPORT_INFO</mat-checkbox>
+          <section class="flex h-full flex-row items-center gap-2">
+            <mat-checkbox formControlName="financialSupportReceived">Financial support received</mat-checkbox>
+            <app-info-tooltip [tooltip]="RED_III_CRITERIA.FINANCIAL_SUPPORT.DESCRIPTION"></app-info-tooltip>
           </section>
         </div>
       }

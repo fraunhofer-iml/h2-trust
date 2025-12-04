@@ -19,7 +19,6 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { FileSizePipe } from '../../../../shared/pipes/file-size.pipe';
 
 @Component({
@@ -27,7 +26,6 @@ import { FileSizePipe } from '../../../../shared/pipes/file-size.pipe';
   imports: [
     FileSizePipe,
     CommonModule,
-    MatTooltipModule,
     ReactiveFormsModule,
     FormsModule,
     MatFormFieldModule,
