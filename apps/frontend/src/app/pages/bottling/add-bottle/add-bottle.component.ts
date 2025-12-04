@@ -31,6 +31,7 @@ import { BottlingService } from '../../../shared/services/bottling/bottling.serv
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { BottlingForm } from './form';
+import { StorageFillingLevelsComponent } from './storage-filling-levels/storage-filling-levels.component';
 import { UploadFormComponent } from './upload-form/upload-form.component';
 
 @Component({
@@ -52,6 +53,7 @@ import { UploadFormComponent } from './upload-form/upload-form.component';
     MatRadioModule,
     RouterModule,
     UnitPipe,
+    StorageFillingLevelsComponent,
   ],
   templateUrl: './add-bottle.component.html',
 })

@@ -67,7 +67,7 @@ export class StorageFillingLevelsComponent {
           },
           rich: {
             name: {
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: 'bold',
               color: '#707070',
               lineHeight: 20,
@@ -77,14 +77,17 @@ export class StorageFillingLevelsComponent {
               color: '#8c8c8c',
               lineHeight: 20,
             },
+            spacer: {
+              height: 8,
+            },
             err: {
               backgroundColor: '#fff',
-              color: '#BD608B',
-              padding: [4, 8],
-              borderRadius: 12,
+              color: '#7a7aad',
+              padding: [6, 5, 5, 5],
+              borderRadius: 4,
               fontSize: 12,
               fontWeight: 'bold',
-              borderColor: '#BD608B',
+              borderColor: '#7a7aad',
               borderWidth: 1,
             },
           },
@@ -114,7 +117,7 @@ export class StorageFillingLevelsComponent {
   private getSeriesForColor(h2color: string, data: HydrogenStorageOverviewDto[]): echarts.BarSeriesOption {
     const barSeries: echarts.BarSeriesOption = {
       name: h2color,
-      color: CHART_COLORS.get(h2color) + '50',
+      color: CHART_COLORS.get(h2color) + '30',
       type: 'bar',
       stack: 'a',
       barMaxWidth: 100,
@@ -123,7 +126,7 @@ export class StorageFillingLevelsComponent {
       ),
       itemStyle: {
         borderRadius: 8,
-        borderColor: CHART_COLORS.get(h2color),
+        borderColor: CHART_COLORS.get(h2color) + '80',
         borderWidth: 2,
       },
     };
@@ -139,7 +142,7 @@ export class StorageFillingLevelsComponent {
     const capacityInPercent = this.percentPipe.transform(totalH2Amount / (item?.capacity ?? 0), '1.2-2');
 
     const label = `{name|${value}}\n{filling|Filling: ${totalH2Amount}/${capacity} (${capacityInPercent})}`;
-    const overflowMessage = `\n{err|${ERROR_MESSAGES.maxCapacityExceeded}}`;
+    const overflowMessage = `\n{spacer| }\n{err|${ERROR_MESSAGES.maxCapacityExceeded}}`;
 
     return totalH2Amount > (item?.capacity ?? 0) ? label + overflowMessage : label;
   }
