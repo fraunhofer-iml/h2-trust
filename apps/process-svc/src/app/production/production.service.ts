@@ -90,7 +90,7 @@ export class ProductionService {
   }
 
   private async createWaterConsumptionProcessSteps(createProductionEntity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
-    const waterAmountLiters: number = await this.calculateTotalWaterAmount(createProductionEntity);
+    const waterAmountLiters: number = this.calculateTotalWaterAmount(createProductionEntity.productionStartedAt, createProductionEntity.productionEndedAt, createProductionEntity.waterConsumptionLitersPerHour);
 
     return this.createProcessSteps(
       {
@@ -110,12 +110,11 @@ export class ProductionService {
     );
   }
 
-  private async calculateTotalWaterAmount(createProductionEntity: CreateProductionEntity): Promise<number> {
-    const startedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(createProductionEntity.productionStartedAt);
-    const endedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(createProductionEntity.productionEndedAt);
+  private calculateTotalWaterAmount(productionStartedAt: string, productionEndedAt: string, waterConsumptionLitersPerHour: number): number {
+    const startedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(productionStartedAt);
+    const endedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(productionEndedAt);
     const durationInSeconds = ProductionUtils.calculateDuration(startedAtInSeconds, endedAtInSeconds);
-
-    return (createProductionEntity.waterConsumptionLitersPerHour / this.hourInSeconds) * durationInSeconds;
+    return (waterConsumptionLitersPerHour / this.hourInSeconds) * durationInSeconds;
   }
 
   private async createHydrogenProductionProcessSteps(

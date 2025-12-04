@@ -14,10 +14,11 @@ import { AccountingPeriodMatchingService } from './accounting-period-matching.se
 import { ProductionImportService } from './production-import.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
+import { ProductionCreationService } from './production-creation.service';
 
 @Module({
   imports: [ConfigurationModule, new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker(), DatabaseModule],
   controllers: [ProductionController],
-  providers: [ProductionService, AccountingPeriodMatchingService, ProductionImportService],
+  providers: [ProductionService, ProductionCreationService, ProductionImportService, AccountingPeriodMatchingService],
 })
-export class ProductionModule {}
+export class ProductionModule { }

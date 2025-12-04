@@ -16,20 +16,18 @@ import {
   SubmitProductionProps,
 } from '@h2-trust/amqp';
 import { ProductionImportService } from './production-import.service';
-import { ProductionService } from './production.service';
+import { ProductionCreationService } from './production-creation.service';
 
 @Controller()
 export class ProductionController {
   constructor(
-    private readonly service: ProductionService,
+    private readonly productionCreationService: ProductionCreationService,
     private readonly productionImportService: ProductionImportService,
   ) { }
 
   @MessagePattern(ProductionMessagePatterns.CREATE)
-  async createProduction(
-    @Payload() payload: { createProductionEntity: CreateProductionEntity },
-  ): Promise<ProcessStepEntity[]> {
-    return this.service.createProduction(payload.createProductionEntity);
+  async createProduction(@Payload() payload: { createProductionEntity: CreateProductionEntity }): Promise<ProcessStepEntity[]> {
+    return this.productionCreationService.createProduction(payload.createProductionEntity);
   }
 
   @MessagePattern(ProductionMessagePatterns.STAGE)

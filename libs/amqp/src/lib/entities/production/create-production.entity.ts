@@ -6,8 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CreateProductionDto } from '@h2-trust/api';
-
 export class CreateProductionEntity {
   productionStartedAt: string;
   productionEndedAt: string;
@@ -48,29 +46,5 @@ export class CreateProductionEntity {
     this.companyIdOfPowerProductionUnit = companyOfPowerProductionUnitId;
     this.companyIdOfHydrogenProductionUnit = companyOfHydrogenProductionUnitId;
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
-  }
-
-  static of(
-    dto: CreateProductionDto,
-    recordedBy: string,
-    hydrogenColor: string,
-    companyIdOfPowerProductionUnit: string,
-    companyIdOfHydrogenProductionUnit: string,
-    waterConsumptionLitersPerHour: number,
-  ): CreateProductionEntity {
-    return new CreateProductionEntity(
-      dto.productionStartedAt,
-      dto.productionEndedAt,
-      dto.powerProductionUnitId,
-      dto.powerAmountKwh,
-      dto.hydrogenProductionUnitId,
-      dto.hydrogenAmountKg,
-      recordedBy,
-      hydrogenColor,
-      dto.hydrogenStorageUnitId,
-      companyIdOfPowerProductionUnit,
-      companyIdOfHydrogenProductionUnit,
-      waterConsumptionLitersPerHour,
-    );
   }
 }
