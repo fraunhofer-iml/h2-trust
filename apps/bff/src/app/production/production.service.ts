@@ -17,10 +17,10 @@ import {
   BrokerQueues,
   CreateProductionEntity,
   ParsedFileBundles,
+  ParsedProductionMatchingResultEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
-  ParsedProductionMatchingResultEntity,
   SubmitProductionProps,
   UnitDataBundle,
   UnitFileBundle,
@@ -48,10 +48,10 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly userService: UserService,
     private readonly csvParser: CsvParserService,
-  ) { }
+  ) {}
 
   async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
-  // TODO-MP: we need to send a message and NOT an entity here (see DUHGW-137)
+    // TODO-MP: we need to send a message and NOT an entity here (see DUHGW-137)
     const createProductionEntity = new CreateProductionEntity(
       dto.productionStartedAt,
       dto.productionEndedAt,
@@ -64,7 +64,7 @@ export class ProductionService {
       dto.hydrogenStorageUnitId,
       null,
       null,
-      null
+      null,
     );
     const processSteps: ProcessStepEntity[] = await firstValueFrom(
       this.processSvc.send(ProductionMessagePatterns.CREATE, { createProductionEntity }),
@@ -83,8 +83,9 @@ export class ProductionService {
       companyId: companyIdOfUser,
     };
 
-    return firstValueFrom(this.batchSvc.send(ProcessStepMessagePatterns.READ_ALL, payload))
-      .then((processSteps) => processSteps.map(ProductionOverviewDto.fromEntity));
+    return firstValueFrom(this.batchSvc.send(ProcessStepMessagePatterns.READ_ALL, payload)).then((processSteps) =>
+      processSteps.map(ProductionOverviewDto.fromEntity),
+    );
   }
 
   async importCSV(

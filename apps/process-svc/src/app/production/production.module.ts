@@ -11,14 +11,14 @@ import { Broker } from '@h2-trust/amqp';
 import { ConfigurationModule } from '@h2-trust/configuration';
 import { DatabaseModule } from '@h2-trust/database';
 import { AccountingPeriodMatchingService } from './accounting-period-matching.service';
+import { ProductionCreationService } from './production-creation.service';
 import { ProductionImportService } from './production-import.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
-import { ProductionCreationService } from './production-creation.service';
 
 @Module({
   imports: [ConfigurationModule, new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker(), DatabaseModule],
   controllers: [ProductionController],
   providers: [ProductionService, ProductionCreationService, ProductionImportService, AccountingPeriodMatchingService],
 })
-export class ProductionModule { }
+export class ProductionModule {}

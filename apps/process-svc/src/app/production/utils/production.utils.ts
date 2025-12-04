@@ -6,13 +6,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepEntity, BatchEntity } from "@h2-trust/amqp";
-import { TimeInSeconds } from "@h2-trust/domain";
-import { DateTimeUtil } from "@h2-trust/utils";
-import { AccountingPeriod } from "../production.types";
+import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
+import { TimeInSeconds } from '@h2-trust/domain';
+import { DateTimeUtil } from '@h2-trust/utils';
+import { AccountingPeriod } from '../production.types';
 
 export class ProductionUtils {
-  static calculateNumberOfAccountingPeriods(startedAtInSeconds: number, endedAtInSeconds: number, accountingPeriodInSeconds: number): number {
+  static calculateNumberOfAccountingPeriods(
+    startedAtInSeconds: number,
+    endedAtInSeconds: number,
+    accountingPeriodInSeconds: number,
+  ): number {
     const durationInSeconds = this.calculateDuration(startedAtInSeconds, endedAtInSeconds);
 
     if (!Number.isFinite(accountingPeriodInSeconds)) {
@@ -56,25 +60,28 @@ export class ProductionUtils {
     return batchAmount / Math.max(1, numberOfAccountingPeriods);
   }
 
-  static calculateProductionStartDate(startedAtInSeconds: number, accountingPeriodInSeconds: number, accountingPeriodIndex: number): Date {
-    return this.calculateProductionDate(
-      startedAtInSeconds,
-      accountingPeriodInSeconds,
-      accountingPeriodIndex,
-      false,
-    );
+  static calculateProductionStartDate(
+    startedAtInSeconds: number,
+    accountingPeriodInSeconds: number,
+    accountingPeriodIndex: number,
+  ): Date {
+    return this.calculateProductionDate(startedAtInSeconds, accountingPeriodInSeconds, accountingPeriodIndex, false);
   }
 
-  static calculateProductionEndDate(startedAtInSeconds: number, accountingPeriodInSeconds: number, accountingPeriodIndex: number): Date {
-    return this.calculateProductionDate(
-      startedAtInSeconds,
-      accountingPeriodInSeconds,
-      accountingPeriodIndex,
-      true,
-    );
+  static calculateProductionEndDate(
+    startedAtInSeconds: number,
+    accountingPeriodInSeconds: number,
+    accountingPeriodIndex: number,
+  ): Date {
+    return this.calculateProductionDate(startedAtInSeconds, accountingPeriodInSeconds, accountingPeriodIndex, true);
   }
 
-  static calculateProductionDate(startedAtInSeconds: number, accountingPeriodInSeconds: number, accountingPeriodIndex: number, isEnd: boolean): Date {
+  static calculateProductionDate(
+    startedAtInSeconds: number,
+    accountingPeriodInSeconds: number,
+    accountingPeriodIndex: number,
+    isEnd: boolean,
+  ): Date {
     const productionStartedAtInMs = startedAtInSeconds * 1000;
     const accountingPeriodInMs = accountingPeriodInSeconds * 1000;
     const accountingPeriodOffsetInMs = (accountingPeriodIndex + (isEnd ? 1 : 0)) * accountingPeriodInMs;
@@ -93,10 +100,16 @@ export class ProductionUtils {
     return (waterConsumptionPerHour / TimeInSeconds.ONE_HOUR) * durationInSeconds;
   }
 
-  static calculateAccountingPeriods(startedAt: string, endedAt: string, totalAmount: number, predecessors: ProcessStepEntity[]): AccountingPeriod[] {
+  static calculateAccountingPeriods(
+    startedAt: string,
+    endedAt: string,
+    totalAmount: number,
+    predecessors: ProcessStepEntity[],
+  ): AccountingPeriod[] {
     const startInSeconds = DateTimeUtil.convertDateStringToSeconds(startedAt);
     const endInSeconds = DateTimeUtil.convertDateStringToSeconds(endedAt);
-    const alignedStartInSeconds = Math.floor(startInSeconds / TimeInSeconds.ACCOUNTING_PERIOD) * TimeInSeconds.ACCOUNTING_PERIOD;
+    const alignedStartInSeconds =
+      Math.floor(startInSeconds / TimeInSeconds.ACCOUNTING_PERIOD) * TimeInSeconds.ACCOUNTING_PERIOD;
 
     const numberOfAccountingPeriods = ProductionUtils.calculateNumberOfAccountingPeriods(
       alignedStartInSeconds,

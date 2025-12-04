@@ -23,14 +23,14 @@ import {
 } from '@h2-trust/amqp';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 import { DateTimeUtil } from '@h2-trust/utils';
-import { ProductionUtils } from './utils/production.utils';
 import { AccountingPeriod, ProcessStepParams } from './production.types';
+import { ProductionUtils } from './utils/production.utils';
 
 @Injectable()
 export class ProductionService {
   private readonly logger = new Logger(ProductionService.name);
 
-  constructor(@Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy) { }
+  constructor(@Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy) {}
 
   async createProductions(entity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
     this.logger.debug('Production Creation Started');
@@ -40,11 +40,7 @@ export class ProductionService {
       this.createWaterConsumptions(entity),
     ]);
 
-    const hydrogenProductions = await this.createHydrogenProductions(
-      entity,
-      powerProductions,
-      waterConsumptions,
-    );
+    const hydrogenProductions = await this.createHydrogenProductions(entity, powerProductions, waterConsumptions);
 
     this.logger.debug('Production Creation Completed');
 
@@ -133,13 +129,20 @@ export class ProductionService {
     params: ProcessStepParams,
     predecessors: ProcessStepEntity[],
   ): Promise<ProcessStepEntity[]> {
-    const accountingPeriods: AccountingPeriod[] = ProductionUtils.calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
+    const accountingPeriods: AccountingPeriod[] = ProductionUtils.calculateAccountingPeriods(
+      startedAt,
+      endedAt,
+      totalAmount,
+      predecessors,
+    );
     const processSteps = accountingPeriods.map((accountingPeriod) => this.createProcessStep(accountingPeriod, params));
     return this.persistProcessSteps(processSteps);
   }
 
   private createProcessStep(accountingPeriod: AccountingPeriod, params: ProcessStepParams): ProcessStepEntity {
-    this.logger.debug(`${DateTimeUtil.formatDate(accountingPeriod.startedAt)} - ${DateTimeUtil.formatDate(accountingPeriod.endedAt)} | ${params.type} | ${accountingPeriod.amount}`);
+    this.logger.debug(
+      `${DateTimeUtil.formatDate(accountingPeriod.startedAt)} - ${DateTimeUtil.formatDate(accountingPeriod.endedAt)} | ${params.type} | ${accountingPeriod.amount}`,
+    );
 
     const { batchParams } = params;
 
@@ -147,9 +150,7 @@ export class ProductionService {
       ? ({ id: batchParams.hydrogenStorageUnitId } as HydrogenStorageUnitEntity)
       : null;
 
-    const qualityDetails = batchParams.quality
-      ? new QualityDetailsEntity(null, batchParams.quality)
-      : null;
+    const qualityDetails = batchParams.quality ? new QualityDetailsEntity(null, batchParams.quality) : null;
 
     const batch = new BatchEntity(
       null,
@@ -160,7 +161,7 @@ export class ProductionService {
       [],
       { id: batchParams.owner } as CompanyEntity,
       hydrogenStorageUnit,
-      qualityDetails
+      qualityDetails,
     );
 
     return new ProcessStepEntity(
@@ -177,9 +178,9 @@ export class ProductionService {
 
   private async persistProcessSteps(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
     return Promise.all(
-      processSteps.map((processStep) => firstValueFrom(
-        this.batchSvc.send(ProcessStepMessagePatterns.CREATE, { processStepEntity: processStep })
-      )),
+      processSteps.map((processStep) =>
+        firstValueFrom(this.batchSvc.send(ProcessStepMessagePatterns.CREATE, { processStepEntity: processStep })),
+      ),
     );
   }
 }

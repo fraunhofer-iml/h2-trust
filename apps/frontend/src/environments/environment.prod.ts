@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { TimeInSeconds } from "@h2-trust/domain";
+import { TimeInSeconds } from '@h2-trust/domain';
 
 export const BASE_URL = 'https://h2-trust-bff.apps.blockchain-europe.iml.fraunhofer.de';
 

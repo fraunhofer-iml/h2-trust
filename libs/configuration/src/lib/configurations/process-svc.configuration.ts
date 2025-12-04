@@ -11,6 +11,6 @@ import { registerAs } from '@nestjs/config';
 export const PROCESS_SVC_CONFIGURATION_IDENTIFIER = 'process-configuration';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
-export interface ProcessSvcConfiguration { }
+export interface ProcessSvcConfiguration {}
 
 export default registerAs(PROCESS_SVC_CONFIGURATION_IDENTIFIER, () => ({}));

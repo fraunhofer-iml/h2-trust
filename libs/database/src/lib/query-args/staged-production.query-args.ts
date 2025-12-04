@@ -15,19 +15,19 @@ export const stagedProductionQueryArgs = Prisma.validator<Prisma.StagedProductio
         generalInfo: {
           include: {
             owner: true,
-          }
-        }
-      }
+          },
+        },
+      },
     },
     powerProductionUnit: {
       include: {
         generalInfo: {
           include: {
             owner: true,
-          }
+          },
         },
         type: true,
-      }
+      },
     },
-  }
+  },
 });

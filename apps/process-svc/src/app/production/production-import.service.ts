@@ -15,11 +15,11 @@ import {
   CreateProductionEntity,
   ParsedFileBundles,
   ParsedProductionEntity,
+  ParsedProductionMatchingResultEntity,
   PowerAccessApprovalEntity,
   PowerAccessApprovalPatterns,
   ProcessStepEntity,
   StagedProductionEntity,
-  ParsedProductionMatchingResultEntity,
   SubmitProductionProps,
 } from '@h2-trust/amqp';
 import { StagedProductionRepository } from '@h2-trust/database';
@@ -34,7 +34,7 @@ export class ProductionImportService {
     private readonly accountingPeriodMatchingService: AccountingPeriodMatchingService,
     private readonly stagedProductionRepository: StagedProductionRepository,
     private readonly productionService: ProductionService,
-  ) { }
+  ) {}
 
   async stageProductions(data: ParsedFileBundles, userId: string) {
     const gridUnitId = await this.fetchGridUnitId(userId);
@@ -48,7 +48,8 @@ export class ProductionImportService {
   }
 
   async finalizeStagedProductions(props: SubmitProductionProps): Promise<ProcessStepEntity[]> {
-    const stagedProductions: StagedProductionEntity[] = await this.stagedProductionRepository.getStagedProductionsByImportId(props.importId);
+    const stagedProductions: StagedProductionEntity[] =
+      await this.stagedProductionRepository.getStagedProductionsByImportId(props.importId);
 
     return await Promise.all(
       stagedProductions.map(async (stagedProduction) => {
