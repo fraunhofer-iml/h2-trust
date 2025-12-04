@@ -43,7 +43,7 @@ export class ProductionUtils {
     return durationInSeconds;
   }
 
-  static calculateBatchAmountPerPeriod(batchAmount: number, numberOfAccountingPeriods: number): number {
+  static calculateBatchAmountPerAccountingPeriod(batchAmount: number, numberOfAccountingPeriods: number): number {
     if (batchAmount <= 0) {
       throw new Error('batchAmount must be greater than zero');
     }

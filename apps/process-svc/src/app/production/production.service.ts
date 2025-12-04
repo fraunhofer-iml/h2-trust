@@ -25,19 +25,26 @@ import { BatchType, ProcessType, TimeInSeconds } from '@h2-trust/domain';
 import { DateTimeUtil } from '@h2-trust/utils';
 import { ProductionUtils } from './utils/production.utils';
 
-interface CreateProcessStepsParams {
-  productionStartedAt: string;
-  productionEndedAt: string;
+interface BatchParams {
+  activity: boolean;
+  type: BatchType;
+  owner: string;
+  quality?: string;
+  hydrogenStorageUnitId?: string;
+}
+
+interface ProcessStepParams {
   type: ProcessType;
-  batchActivity: boolean;
-  batchAmount: number;
-  batchQuality: string;
-  batchType: BatchType;
-  batchOwner: string;
-  hydrogenStorageUnitId: string;
-  recordedBy: string;
   executedBy: string;
-  predecessors: ProcessStepEntity[];
+  recordedBy: string;
+  batchParams: BatchParams;
+}
+
+interface AccountingPeriod {
+  startedAt: Date;
+  endedAt: Date;
+  amount: number;
+  predecessors: BatchEntity[];
 }
 
 @Injectable()
@@ -47,155 +54,252 @@ export class ProductionService {
   constructor(@Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy) { }
 
   async createProductions(entity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
-    this.logger.debug(`### START PRODUCTION ###`);
+    this.logger.debug('Production Creation Started');
 
-    const powerProductions: ProcessStepEntity[] = await this.createPowerProductions(entity);
-    const waterConsumptions: ProcessStepEntity[] = await this.createWaterConsumptions(entity);
-    const hydrogenProductions: ProcessStepEntity[] = await this.createHydrogenProductions(entity, powerProductions, waterConsumptions);
+    const [powerProductions, waterConsumptions] = await Promise.all([
+      this.createPowerProductions(entity),
+      this.createWaterConsumptions(entity),
+    ]);
 
-    this.logger.debug(`### END PRODUCTION ###`);
+    const hydrogenProductions = await this.createHydrogenProductions(
+      entity,
+      powerProductions,
+      waterConsumptions,
+    );
+
+    this.logger.debug('Production Creation Completed');
 
     return [...powerProductions, ...waterConsumptions, ...hydrogenProductions];
   }
 
   private async createPowerProductions(entity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
-    return this.createProcessSteps(
-      {
-        productionStartedAt: entity.productionStartedAt,
-        productionEndedAt: entity.productionEndedAt,
-        type: ProcessType.POWER_PRODUCTION,
-        batchActivity: false,
-        batchAmount: entity.powerAmountKwh,
-        batchQuality: null,
-        batchType: BatchType.POWER,
-        batchOwner: entity.companyIdOfPowerProductionUnit,
-        hydrogenStorageUnitId: null,
-        recordedBy: entity.recordedBy,
-        executedBy: entity.powerProductionUnitId,
-        predecessors: [],
+    const params: ProcessStepParams = {
+      type: ProcessType.POWER_PRODUCTION,
+      executedBy: entity.powerProductionUnitId,
+      recordedBy: entity.recordedBy,
+      batchParams: {
+        activity: false,
+        type: BatchType.POWER,
+        owner: entity.companyIdOfPowerProductionUnit,
       },
+    };
+
+    return this.createAndPersistProcessSteps(
+      entity.productionStartedAt,
+      entity.productionEndedAt,
+      entity.powerAmountKwh,
+      params,
+      [],
     );
   }
 
   private async createWaterConsumptions(entity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
-    const waterAmountLiters: number = this.calculateTotalWaterAmount(entity.productionStartedAt, entity.productionEndedAt, entity.waterConsumptionLitersPerHour);
+    const waterAmountLiters = this.calculateWaterAmount(
+      entity.productionStartedAt,
+      entity.productionEndedAt,
+      entity.waterConsumptionLitersPerHour,
+    );
 
-    return this.createProcessSteps(
-      {
-        productionStartedAt: entity.productionStartedAt,
-        productionEndedAt: entity.productionEndedAt,
-        type: ProcessType.WATER_CONSUMPTION,
-        batchActivity: false,
-        batchAmount: waterAmountLiters,
-        batchQuality: null,
-        batchType: BatchType.WATER,
-        batchOwner: entity.companyIdOfHydrogenProductionUnit,
-        hydrogenStorageUnitId: null,
-        recordedBy: entity.recordedBy,
-        executedBy: entity.hydrogenProductionUnitId,
-        predecessors: [],
+    const params: ProcessStepParams = {
+      type: ProcessType.WATER_CONSUMPTION,
+      executedBy: entity.hydrogenProductionUnitId,
+      recordedBy: entity.recordedBy,
+      batchParams: {
+        activity: false,
+        type: BatchType.WATER,
+        owner: entity.companyIdOfHydrogenProductionUnit,
       },
+    };
+
+    return this.createAndPersistProcessSteps(
+      entity.productionStartedAt,
+      entity.productionEndedAt,
+      waterAmountLiters,
+      params,
+      [],
     );
   }
 
-  private calculateTotalWaterAmount(productionStartedAt: string, productionEndedAt: string, waterConsumptionLitersPerHour: number): number {
-    const startedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(productionStartedAt);
-    const endedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(productionEndedAt);
-    const durationInSeconds = ProductionUtils.calculateDuration(startedAtInSeconds, endedAtInSeconds);
-    return (waterConsumptionLitersPerHour / TimeInSeconds.ONE_HOUR) * durationInSeconds;
+  private calculateWaterAmount(
+    startDate: string,
+    endDate: string,
+    consumptionPerHour: number,
+  ): number {
+    const startInSeconds = DateTimeUtil.convertDateStringToSeconds(startDate);
+    const endInSeconds = DateTimeUtil.convertDateStringToSeconds(endDate);
+    const durationInSeconds = ProductionUtils.calculateDuration(startInSeconds, endInSeconds);
+    return (consumptionPerHour / TimeInSeconds.ONE_HOUR) * durationInSeconds;
   }
 
-  private async createHydrogenProductions(entity: CreateProductionEntity, powerProductions: ProcessStepEntity[], waterConsumptions: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
-    return this.createProcessSteps(
-      {
-        productionStartedAt: entity.productionStartedAt,
-        productionEndedAt: entity.productionEndedAt,
-        type: ProcessType.HYDROGEN_PRODUCTION,
-        batchActivity: true,
-        batchAmount: entity.hydrogenAmountKg,
-        batchQuality: entity.hydrogenColor,
-        batchType: BatchType.HYDROGEN,
-        batchOwner: entity.companyIdOfHydrogenProductionUnit,
+  private async createHydrogenProductions(
+    entity: CreateProductionEntity,
+    powerProductions: ProcessStepEntity[],
+    waterConsumptions: ProcessStepEntity[],
+  ): Promise<ProcessStepEntity[]> {
+    const params: ProcessStepParams = {
+      type: ProcessType.HYDROGEN_PRODUCTION,
+      executedBy: entity.hydrogenProductionUnitId,
+      recordedBy: entity.recordedBy,
+      batchParams: {
+        activity: true,
+        type: BatchType.HYDROGEN,
+        owner: entity.companyIdOfHydrogenProductionUnit,
+        quality: entity.hydrogenColor,
         hydrogenStorageUnitId: entity.hydrogenStorageUnitId,
-        recordedBy: entity.recordedBy,
-        executedBy: entity.hydrogenProductionUnitId,
-        predecessors: [...powerProductions, ...waterConsumptions],
       },
+    };
+
+    return this.createAndPersistProcessSteps(
+      entity.productionStartedAt,
+      entity.productionEndedAt,
+      entity.hydrogenAmountKg,
+      params,
+      [...powerProductions, ...waterConsumptions],
     );
   }
 
-  private async createProcessSteps(params: CreateProcessStepsParams): Promise<ProcessStepEntity[]> {
-    const processSteps: ProcessStepEntity[] = [];
+  private async createAndPersistProcessSteps(
+    startDate: string,
+    endDate: string,
+    totalAmount: number,
+    params: ProcessStepParams,
+    predecessors: ProcessStepEntity[],
+  ): Promise<ProcessStepEntity[]> {
+    const accountingPeriods: AccountingPeriod[] = this.calculateAccountingPeriods(
+      startDate,
+      endDate,
+      totalAmount,
+      predecessors,
+    );
+    const processSteps = accountingPeriods.map((accountingPeriod) =>
+      this.createProcessStep(accountingPeriod, params),
+    );
 
-    const startedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(params.productionStartedAt);
-    const endedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(params.productionEndedAt);
-    const startedAtInSecondsAligned = Math.floor(startedAtInSeconds / TimeInSeconds.ACCOUNTING_PERIOD) * TimeInSeconds.ACCOUNTING_PERIOD;
+    return this.persistProcessSteps(processSteps);
+  }
+
+  private calculateAccountingPeriods(
+    startDate: string,
+    endDate: string,
+    totalAmount: number,
+    predecessors: ProcessStepEntity[],
+  ): AccountingPeriod[] {
+    const startInSeconds = DateTimeUtil.convertDateStringToSeconds(startDate);
+    const endInSeconds = DateTimeUtil.convertDateStringToSeconds(endDate);
+    const alignedStartInSeconds = Math.floor(startInSeconds / TimeInSeconds.ACCOUNTING_PERIOD) * TimeInSeconds.ACCOUNTING_PERIOD;
 
     const numberOfAccountingPeriods = ProductionUtils.calculateNumberOfAccountingPeriods(
-      startedAtInSecondsAligned,
-      endedAtInSeconds,
+      alignedStartInSeconds,
+      endInSeconds,
       TimeInSeconds.ACCOUNTING_PERIOD,
     );
 
-    const amountPerAccountingPeriod = ProductionUtils.calculateBatchAmountPerPeriod(
-      params.batchAmount,
+    const amountPerAccountingPeriod = ProductionUtils.calculateBatchAmountPerAccountingPeriod(
+      totalAmount,
       numberOfAccountingPeriods,
     );
 
-    for (let i = 0; i < numberOfAccountingPeriods; i++) {
-      this.logger.debug(`## Accounting Period ${i + 1} of ${numberOfAccountingPeriods} for process type ${params.type} ##`,);
-      this.logger.debug(`amount: ${amountPerAccountingPeriod}`);
+    const predecessorsByStartedAt = this.groupBatchesByStartedAt(predecessors);
+    const accountingPeriods: AccountingPeriod[] = [];
 
+    for (let i = 0; i < numberOfAccountingPeriods; i++) {
       const startedAt = ProductionUtils.calculateProductionStartDate(
-        startedAtInSecondsAligned,
+        alignedStartInSeconds,
         TimeInSeconds.ACCOUNTING_PERIOD,
         i,
       );
-      this.logger.debug(`started At: ${startedAt.toISOString()}`);
 
       const endedAt = ProductionUtils.calculateProductionEndDate(
-        startedAtInSecondsAligned,
+        alignedStartInSeconds,
         TimeInSeconds.ACCOUNTING_PERIOD,
         i,
       );
-      this.logger.debug(`ended At: ${endedAt.toISOString()}`);
 
-      const predecessors: BatchEntity[] = params.predecessors
-        .filter(
-          (step) =>
-            DateTimeUtil.convertDateToMilliseconds(step.startedAt) ===
-            DateTimeUtil.convertDateToMilliseconds(startedAt),
-        )
-        .map((processStep) => processStep.batch);
+      const startedAtConverted = DateTimeUtil.convertDateToMilliseconds(startedAt);
+      const predecessors = predecessorsByStartedAt.get(startedAtConverted) || [];
 
-      processSteps.push(
-        new ProcessStepEntity(
-          null,
-          startedAt,
-          endedAt,
-          params.type,
-          new BatchEntity(
-            null,
-            params.batchActivity,
-            amountPerAccountingPeriod,
-            params.batchType,
-            predecessors,
-            [],
-            { id: params.batchOwner } as CompanyEntity,
-            { id: params.hydrogenStorageUnitId } as HydrogenStorageUnitEntity,
-            params.batchQuality ? new QualityDetailsEntity(null, params.batchQuality) : null,
-          ),
-          { id: params.recordedBy } as UserEntity,
-          { id: params.executedBy } as BaseUnitEntity,
-          null,
-        ),
-      );
+      accountingPeriods.push({
+        startedAt: startedAt,
+        endedAt: endedAt,
+        amount: amountPerAccountingPeriod,
+        predecessors: predecessors,
+      });
     }
 
+    return accountingPeriods;
+  }
+
+  private groupBatchesByStartedAt(processSteps: ProcessStepEntity[]): Map<number, BatchEntity[]> {
+    const batchesByStartedAt = new Map<number, BatchEntity[]>();
+
+    for (const processStep of processSteps) {
+      const startedAt = DateTimeUtil.convertDateToMilliseconds(processStep.startedAt);
+
+      const batches = batchesByStartedAt.get(startedAt) || [];
+      batches.push(processStep.batch);
+      batchesByStartedAt.set(startedAt, batches);
+    }
+
+    return batchesByStartedAt;
+  }
+
+  private createProcessStep(
+    accountingPeriod: AccountingPeriod,
+    params: ProcessStepParams,
+  ): ProcessStepEntity {
+    const { batchParams } = params;
+
+    const formatDate = (date: Date): string => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const seconds = String(date.getSeconds()).padStart(2, '0');
+      return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+    };
+
+    this.logger.debug(
+      `${formatDate(accountingPeriod.startedAt)} - ${formatDate(accountingPeriod.endedAt)} | ${params.type} | ${batchParams.activity} | ${accountingPeriod.amount}`
+    );
+
+    const hydrogenStorageUnit = batchParams.hydrogenStorageUnitId
+      ? ({ id: batchParams.hydrogenStorageUnitId } as HydrogenStorageUnitEntity)
+      : null;
+
+    const qualityDetails = batchParams.quality
+      ? new QualityDetailsEntity(null, batchParams.quality)
+      : null;
+
+    const batch = new BatchEntity(
+      null,
+      batchParams.activity,
+      accountingPeriod.amount,
+      batchParams.type,
+      accountingPeriod.predecessors,
+      [],
+      { id: batchParams.owner } as CompanyEntity,
+      hydrogenStorageUnit,
+      qualityDetails
+    );
+
+    return new ProcessStepEntity(
+      null,
+      accountingPeriod.startedAt,
+      accountingPeriod.endedAt,
+      params.type,
+      batch,
+      { id: params.recordedBy } as UserEntity,
+      { id: params.executedBy } as BaseUnitEntity,
+      null,
+    );
+  }
+
+  private async persistProcessSteps(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
     return Promise.all(
-      processSteps.map((processStep) =>
-        firstValueFrom(this.batchSvc.send(ProcessStepMessagePatterns.CREATE, { processStepEntity: processStep })),
-      ),
+      processSteps.map((processStep) => firstValueFrom(
+        this.batchSvc.send(ProcessStepMessagePatterns.CREATE, { processStepEntity: processStep })
+      )),
     );
   }
 }
