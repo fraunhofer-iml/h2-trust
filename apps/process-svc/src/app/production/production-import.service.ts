@@ -67,6 +67,7 @@ export class ProductionImportService {
           props.hydrogenStorageUnitId,
           stagedProduction.powerProductionUnitOwnerId,
           stagedProduction.hydrogenProductionUnitOwnerId,
+          stagedProduction.waterConsumptionLitersPerHour,
         );
 
         return this.productionService.createProduction(entity);

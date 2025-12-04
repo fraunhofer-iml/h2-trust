@@ -20,6 +20,7 @@ export class CreateProductionEntity {
   hydrogenStorageUnitId: string;
   companyIdOfPowerProductionUnit: string;
   companyIdOfHydrogenProductionUnit: string;
+  waterConsumptionLitersPerHour: number;
 
   constructor(
     productionStartedAt: string,
@@ -33,6 +34,7 @@ export class CreateProductionEntity {
     hydrogenStorageUnitId: string,
     companyOfPowerProductionUnitId: string,
     companyOfHydrogenProductionUnitId: string,
+    waterConsumptionLitersPerHour: number,
   ) {
     this.productionStartedAt = productionStartedAt;
     this.productionEndedAt = productionEndedAt;
@@ -45,6 +47,7 @@ export class CreateProductionEntity {
     this.hydrogenStorageUnitId = hydrogenStorageUnitId;
     this.companyIdOfPowerProductionUnit = companyOfPowerProductionUnitId;
     this.companyIdOfHydrogenProductionUnit = companyOfHydrogenProductionUnitId;
+    this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 
   static of(
@@ -53,6 +56,7 @@ export class CreateProductionEntity {
     hydrogenColor: string,
     companyIdOfPowerProductionUnit: string,
     companyIdOfHydrogenProductionUnit: string,
+    waterConsumptionLitersPerHour: number,
   ): CreateProductionEntity {
     return new CreateProductionEntity(
       dto.productionStartedAt,
@@ -66,6 +70,7 @@ export class CreateProductionEntity {
       dto.hydrogenStorageUnitId,
       companyIdOfPowerProductionUnit,
       companyIdOfHydrogenProductionUnit,
+      waterConsumptionLitersPerHour,
     );
   }
 }

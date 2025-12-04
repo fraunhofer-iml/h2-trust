@@ -58,12 +58,14 @@ export class ProductionService {
     const companyIdOfPowerProductionUnit = await this.fetchCompanyOfProductionUnit(dto.powerProductionUnitId);
     const companyIdOfHydrogenProductionUnit = await this.fetchCompanyOfProductionUnit(dto.hydrogenProductionUnitId);
 
+    // TODO-MP: we should only pass dto and userId and fetch other data in process-svc
     const createProductionEntity = CreateProductionEntity.of(
       dto,
       userId,
       hydrogenColor,
       companyIdOfPowerProductionUnit,
       companyIdOfHydrogenProductionUnit,
+      1 // TODO-MP: THIS IS WRONG, ONLY DUMMY VALUE FOR NOW 
     );
 
     const processSteps: ProcessStepEntity[] = await firstValueFrom(

@@ -15,12 +15,10 @@ import {
   BrokerQueues,
   CompanyEntity,
   CreateProductionEntity,
-  HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   QualityDetailsEntity,
-  UnitMessagePatterns,
   UserEntity,
 } from '@h2-trust/amqp';
 import { BatchType, ProcessType } from '@h2-trust/domain';
@@ -48,11 +46,7 @@ export class ProductionService {
   private readonly accountingPeriodInSeconds = 3600; // TODO-MP: move to lib
   private readonly hourInSeconds = 3600;
 
-  constructor(
-    @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchService: ClientProxy,
-    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
-  ) {
-  }
+  constructor(@Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchService: ClientProxy) { }
 
   async createProduction(createProductionEntity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
     this.logger.debug(`### START PRODUCTION ###`);
@@ -117,21 +111,11 @@ export class ProductionService {
   }
 
   private async calculateTotalWaterAmount(createProductionEntity: CreateProductionEntity): Promise<number> {
-    const hydrogenProductionUnit: HydrogenProductionUnitEntity = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ, { id: createProductionEntity.hydrogenProductionUnitId }),
-    );
-
-    if (!Number.isFinite(hydrogenProductionUnit?.waterConsumptionLitersPerHour)) {
-      throw new Error(
-        `Invalid or missing waterConsumptionLitersPerHour for HydrogenProductionUnit with id: ${createProductionEntity.hydrogenProductionUnitId}`,
-      );
-    }
-
     const startedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(createProductionEntity.productionStartedAt);
     const endedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(createProductionEntity.productionEndedAt);
     const durationInSeconds = ProductionUtils.calculateDuration(startedAtInSeconds, endedAtInSeconds);
 
-    return (hydrogenProductionUnit.waterConsumptionLitersPerHour / this.hourInSeconds) * durationInSeconds;
+    return (createProductionEntity.waterConsumptionLitersPerHour / this.hourInSeconds) * durationInSeconds;
   }
 
   private async createHydrogenProductionProcessSteps(

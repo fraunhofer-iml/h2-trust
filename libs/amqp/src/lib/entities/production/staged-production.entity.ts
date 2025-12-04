@@ -17,6 +17,7 @@ export class StagedProductionEntity {
   powerProductionUnitId: string;
   powerProductionUnitOwnerId: string;
   hydrogenColor: string;
+  waterConsumptionLitersPerHour: number;
 
   constructor(
     startedAt: Date,
@@ -27,6 +28,7 @@ export class StagedProductionEntity {
     powerProductionUnitId: string,
     powerProductionUnitOwnerId: string,
     hydrogenColor: string,
+    waterConsumptionLitersPerHour: number,
   ) {
     this.startedAt = startedAt;
     this.hydrogenAmount = hydrogenAmount;
@@ -36,6 +38,7 @@ export class StagedProductionEntity {
     this.powerProductionUnitId = powerProductionUnitId;
     this.powerProductionUnitOwnerId = powerProductionUnitOwnerId;
     this.hydrogenColor = hydrogenColor;
+    this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 
   static fromDatabase(stagedProduction: StagedProductionDbType) {
@@ -47,7 +50,8 @@ export class StagedProductionEntity {
       stagedProduction.powerAmount.toNumber(),
       stagedProduction.powerProductionUnitId,
       stagedProduction.powerProductionUnit.generalInfo.owner.id,
-      stagedProduction.powerProductionUnit.type.hydrogenColor
+      stagedProduction.powerProductionUnit.type.hydrogenColor,
+      stagedProduction.hydrogenProductionUnit.waterConsumptionLitersPerHour.toNumber(),
     );
   }
 }
