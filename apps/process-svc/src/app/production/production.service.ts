@@ -21,7 +21,7 @@ import {
   QualityDetailsEntity,
   UserEntity,
 } from '@h2-trust/amqp';
-import { BatchType, ProcessType } from '@h2-trust/domain';
+import { BatchType, ProcessType, TimeInSeconds } from '@h2-trust/domain';
 import { DateTimeUtil } from '@h2-trust/utils';
 import { ProductionUtils } from './utils/production.utils';
 
@@ -43,8 +43,6 @@ interface CreateProcessStepsParams {
 @Injectable()
 export class ProductionService {
   private readonly logger = new Logger(ProductionService.name);
-  private readonly accountingPeriodInSeconds = 3600; // TODO-MP: move to lib
-  private readonly hourInSeconds = 3600;
 
   constructor(@Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy) { }
 
@@ -104,7 +102,7 @@ export class ProductionService {
     const startedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(productionStartedAt);
     const endedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(productionEndedAt);
     const durationInSeconds = ProductionUtils.calculateDuration(startedAtInSeconds, endedAtInSeconds);
-    return (waterConsumptionLitersPerHour / this.hourInSeconds) * durationInSeconds;
+    return (waterConsumptionLitersPerHour / TimeInSeconds.ONE_HOUR) * durationInSeconds;
   }
 
   private async createHydrogenProductions(entity: CreateProductionEntity, powerProductions: ProcessStepEntity[], waterConsumptions: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
@@ -131,12 +129,12 @@ export class ProductionService {
 
     const startedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(params.productionStartedAt);
     const endedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(params.productionEndedAt);
-    const startedAtInSecondsAligned = Math.floor(startedAtInSeconds / this.accountingPeriodInSeconds) * this.accountingPeriodInSeconds;
+    const startedAtInSecondsAligned = Math.floor(startedAtInSeconds / TimeInSeconds.ACCOUNTING_PERIOD) * TimeInSeconds.ACCOUNTING_PERIOD;
 
     const numberOfAccountingPeriods = ProductionUtils.calculateNumberOfAccountingPeriods(
       startedAtInSecondsAligned,
       endedAtInSeconds,
-      this.accountingPeriodInSeconds,
+      TimeInSeconds.ACCOUNTING_PERIOD,
     );
 
     const amountPerAccountingPeriod = ProductionUtils.calculateBatchAmountPerPeriod(
@@ -150,14 +148,14 @@ export class ProductionService {
 
       const startedAt = ProductionUtils.calculateProductionStartDate(
         startedAtInSecondsAligned,
-        this.accountingPeriodInSeconds,
+        TimeInSeconds.ACCOUNTING_PERIOD,
         i,
       );
       this.logger.debug(`started At: ${startedAt.toISOString()}`);
 
       const endedAt = ProductionUtils.calculateProductionEndDate(
         startedAtInSecondsAligned,
-        this.accountingPeriodInSeconds,
+        TimeInSeconds.ACCOUNTING_PERIOD,
         i,
       );
       this.logger.debug(`ended At: ${endedAt.toISOString()}`);

@@ -6,6 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { TimeInSeconds } from "@h2-trust/domain";
+
 export const BASE_URL = 'https://h2-trust-bff-staging.apps.blockchain-europe.iml.fraunhofer.de';
 
 export const environment = {
@@ -16,5 +18,5 @@ export const environment = {
   KEYCLOAK_REALM: 'h2-trust',
   KEYCLOAK_GRANT_TYPE: 'client_credentials',
 
-  ACCOUNTING_PERIOD_IN_SECONDS: 3600,
+  ACCOUNTING_PERIOD_IN_SECONDS: TimeInSeconds.ACCOUNTING_PERIOD,
 };

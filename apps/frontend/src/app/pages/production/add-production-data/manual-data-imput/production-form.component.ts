@@ -33,6 +33,7 @@ import {
   PowerProductionOverviewDto,
 } from '@h2-trust/api';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
+import { TimeInSeconds } from '@h2-trust/domain';
 
 @Component({
   selector: 'app-production-form',
@@ -57,7 +58,7 @@ export class ProductionFormComponent {
   private readonly productionService: ProductionService = inject(ProductionService);
   private readonly router: Router = inject(Router);
 
-  private readonly accountingPeriodInMinutes: number = (environment.ACCOUNTING_PERIOD_IN_SECONDS ?? 3600) / 60;
+  private readonly accountingPeriodInMinutes: number = (environment.ACCOUNTING_PERIOD_IN_SECONDS ?? TimeInSeconds.ACCOUNTING_PERIOD) / 60;
 
   powerAccessApprovals = input<{ value: PowerProductionOverviewDto; name: string }[]>([]);
   hydrogenProductionUnits = input<HydrogenProductionOverviewDto[]>([]);
