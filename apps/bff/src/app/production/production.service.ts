@@ -50,8 +50,8 @@ export class ProductionService {
     private readonly csvParser: CsvParserService,
   ) { }
 
-  async createProduction(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    // TODO-MP: we need to send a message and NOT an entity here
+  async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
+  // TODO-MP: we need to send a message and NOT an entity here (see DUHGW-137)
     const createProductionEntity = new CreateProductionEntity(
       dto.productionStartedAt,
       dto.productionEndedAt,

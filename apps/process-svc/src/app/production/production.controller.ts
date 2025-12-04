@@ -26,8 +26,8 @@ export class ProductionController {
   ) { }
 
   @MessagePattern(ProductionMessagePatterns.CREATE)
-  async createProduction(@Payload() payload: { createProductionEntity: CreateProductionEntity }): Promise<ProcessStepEntity[]> {
-    return this.productionCreationService.createProduction(payload.createProductionEntity);
+  async createProductions(@Payload() payload: { createProductionEntity: CreateProductionEntity }): Promise<ProcessStepEntity[]> {
+    return this.productionCreationService.createProductions(payload.createProductionEntity);
   }
 
   @MessagePattern(ProductionMessagePatterns.STAGE)

@@ -70,7 +70,7 @@ export class ProductionImportService {
           stagedProduction.waterConsumptionLitersPerHour,
         );
 
-        return this.productionService.createProduction(entity);
+        return this.productionService.createProductions(entity);
       }),
     ).then((processSteps) => processSteps.flat());
   }

@@ -11,7 +11,7 @@ export class ProductionCreationService {
         private readonly productionService: ProductionService,
     ) { }
 
-    async createProduction(createProductionEntity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
+    async createProductions(createProductionEntity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
         const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
             this.generalSvc.send(UnitMessagePatterns.READ, { id: createProductionEntity.powerProductionUnitId }),
         );
@@ -26,6 +26,6 @@ export class ProductionCreationService {
         createProductionEntity.waterConsumptionLitersPerHour = hydrogenProductionUnit.waterConsumptionLitersPerHour;
 
 
-        return this.productionService.createProduction(createProductionEntity);
+        return this.productionService.createProductions(createProductionEntity);
     }
 }
