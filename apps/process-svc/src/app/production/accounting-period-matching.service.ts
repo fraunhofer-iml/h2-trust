@@ -55,6 +55,7 @@ export class AccountingPeriodMatchingService {
       }
 
       let remainingPower = powerConsumed;
+      let remainingHydrogen = amount;
 
       for (const powerItem of powerItems) {
         if (remainingPower <= 0) {
@@ -63,22 +64,24 @@ export class AccountingPeriodMatchingService {
 
         const powerUsed = Math.min(powerItem.amount, remainingPower);
         const powerUsageRatio = powerUsed / remainingPower;
+        const hydrogenUsed = remainingHydrogen * powerUsageRatio;
 
         stagedProductions.push({
           startedAt: parsedDateHour,
-          hydrogenAmount: amount * powerUsageRatio,
+          hydrogenAmount: hydrogenUsed,
           hydrogenProductionUnitId: unitId,
           powerAmount: powerUsed,
           powerProductionUnitId: powerItem.unitId,
         });
 
         remainingPower -= powerUsed;
+        remainingHydrogen -= hydrogenUsed;
       }
 
-      if (remainingPower > 0) {
+      if (remainingHydrogen > 0) {
         stagedProductions.push({
           startedAt: parsedDateHour,
-          hydrogenAmount: (remainingPower / powerConsumed) * amount,
+          hydrogenAmount: remainingHydrogen,
           hydrogenProductionUnitId: unitId,
           powerAmount: remainingPower,
           powerProductionUnitId: gridUnitId,
