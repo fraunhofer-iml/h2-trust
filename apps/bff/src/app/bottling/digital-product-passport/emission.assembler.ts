@@ -71,7 +71,7 @@ export class EmissionCalculationAssembler {
 
   static assembleHydrogenStorageCalculation(hydrogenProduction: ProcessStepEntity): EmissionCalculationDto {
     if (hydrogenProduction?.type !== ProcessType.HYDROGEN_PRODUCTION) {
-      throw new Error(`Invalid process step type for hydrogen storage emission calculation`);
+      throw new Error(`Invalid process step type [${hydrogenProduction?.type}] for hydrogen storage emission calculation`);
     }
 
     const label = 'Emissions (Compression)';
