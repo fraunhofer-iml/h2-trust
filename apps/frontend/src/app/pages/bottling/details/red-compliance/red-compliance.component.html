@@ -13,30 +13,28 @@
     </span>
   </button>
 
-  @if (showComplianceInfo) {
-    <div
-      [ngClass]="showComplianceInfo ? 'opacity-100' : 'opacity-0'"
-      class="absolute top-[3rem] z-20 flex w-[24rem] flex-col gap-2 rounded-lg border-2 border-neutral-100 bg-white p-4 shadow-2xl transition-opacity duration-300 2xl:left-[13rem] 2xl:top-0"
-    >
-      <app-red-check-card
-        [content]="RED_III_CRITERIA.TIME_CORRELATION"
-        [isValid]="redCompliance()?.isTimeCorrelationValid ?? false"
-      ></app-red-check-card>
+  <div
+    [ngClass]="showComplianceInfo ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'"
+    class="absolute top-[3rem] z-20 flex w-[24rem] flex-col gap-2 rounded-lg border-2 border-neutral-100 bg-white p-4 shadow-2xl transition-opacity duration-300 2xl:left-[13rem] 2xl:top-0"
+  >
+    <app-red-check-card
+      [content]="RED_III_CRITERIA.TIME_CORRELATION"
+      [isValid]="redCompliance()?.isTimeCorrelationValid ?? false"
+    ></app-red-check-card>
 
-      <app-red-check-card
-        [content]="RED_III_CRITERIA.GEOGRAPHICAL_CORRELATION"
-        [isValid]="redCompliance()?.isGeoCorrelationValid ?? false"
-      ></app-red-check-card>
+    <app-red-check-card
+      [content]="RED_III_CRITERIA.GEOGRAPHICAL_CORRELATION"
+      [isValid]="redCompliance()?.isGeoCorrelationValid ?? false"
+    ></app-red-check-card>
 
-      <app-red-check-card
-        [content]="RED_III_CRITERIA.ADDITIONALITY_REQUIREMENT"
-        [isValid]="redCompliance()?.isAdditionalityFulfilled ?? false"
-      ></app-red-check-card>
+    <app-red-check-card
+      [content]="RED_III_CRITERIA.ADDITIONALITY_REQUIREMENT"
+      [isValid]="redCompliance()?.isAdditionalityFulfilled ?? false"
+    ></app-red-check-card>
 
-      <app-red-check-card
-        [content]="RED_III_CRITERIA.FINANCIAL_SUPPORT"
-        [isValid]="redCompliance()?.financialSupportReceived ?? false"
-      ></app-red-check-card>
-    </div>
-  }
+    <app-red-check-card
+      [content]="RED_III_CRITERIA.FINANCIAL_SUPPORT"
+      [isValid]="redCompliance()?.financialSupportReceived ?? false"
+    ></app-red-check-card>
+  </div>
 </div>
