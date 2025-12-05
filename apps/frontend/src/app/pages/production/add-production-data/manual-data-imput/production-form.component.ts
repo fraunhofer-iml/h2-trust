@@ -11,7 +11,6 @@ import { ERROR_MESSAGES } from 'apps/frontend/src/app/shared/constants/error.mes
 import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
 import { ROUTES } from 'apps/frontend/src/app/shared/constants/routes';
 import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
-import { environment } from 'apps/frontend/src/environments/environment';
 import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
@@ -58,7 +57,7 @@ export class ProductionFormComponent {
   private readonly productionService: ProductionService = inject(ProductionService);
   private readonly router: Router = inject(Router);
 
-  private readonly accountingPeriodInMinutes: number = TimeInSeconds.ACCOUNTING_PERIOD;
+  private readonly accountingPeriodInMinutes: number = TimeInSeconds.ACCOUNTING_PERIOD / 60;
 
   powerAccessApprovals = input<{ value: PowerProductionOverviewDto; name: string }[]>([]);
   hydrogenProductionUnits = input<HydrogenProductionOverviewDto[]>([]);
