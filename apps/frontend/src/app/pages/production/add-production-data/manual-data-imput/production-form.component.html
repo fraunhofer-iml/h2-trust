@@ -58,7 +58,7 @@
         (valueChange)="updateTime($event, form.controls.productionStartedAt)"
         readonly
       />
-      <mat-timepicker #startTimepicker interval="15min" />
+      <mat-timepicker #startTimepicker interval="60min" />
       <mat-timepicker-toggle [for]="startTimepicker" matSuffix />
     </mat-form-field>
 
@@ -87,7 +87,7 @@
         (valueChange)="updateTime($event, form.controls.productionEndedAt)"
         readonly
       />
-      <mat-timepicker #endTimepicker interval="15min" />
+      <mat-timepicker #endTimepicker interval="60min" />
       <mat-timepicker-toggle [for]="endTimepicker" matSuffix />
     </mat-form-field>
 

@@ -15,30 +15,30 @@ import {
   ProductionMessagePatterns,
   SubmitProductionProps,
 } from '@h2-trust/amqp';
+import { ProductionCreationService } from './production-creation.service';
 import { ProductionImportService } from './production-import.service';
-import { ProductionService } from './production.service';
 
 @Controller()
 export class ProductionController {
   constructor(
-    private readonly service: ProductionService,
+    private readonly productionCreationService: ProductionCreationService,
     private readonly productionImportService: ProductionImportService,
   ) {}
 
   @MessagePattern(ProductionMessagePatterns.CREATE)
-  async createProduction(
+  async createProductions(
     @Payload() payload: { createProductionEntity: CreateProductionEntity },
   ): Promise<ProcessStepEntity[]> {
-    return this.service.createProduction(payload.createProductionEntity, false);
+    return this.productionCreationService.createProductions(payload.createProductionEntity);
   }
 
   @MessagePattern(ProductionMessagePatterns.STAGE)
-  async stageProductionData(@Payload() payload: { data: ParsedFileBundles; userId: string }) {
-    return this.productionImportService.stageImportedProductionData(payload.data, payload.userId);
+  async stageProductions(@Payload() payload: { data: ParsedFileBundles; userId: string }) {
+    return this.productionImportService.stageProductions(payload.data, payload.userId);
   }
 
   @MessagePattern(ProductionMessagePatterns.FINALIZE)
-  async finalizeProductionData(@Payload() payload: SubmitProductionProps) {
-    return this.productionImportService.finalizeProductionData(payload);
+  async finalizeStagedProductions(@Payload() payload: SubmitProductionProps) {
+    return this.productionImportService.finalizeStagedProductions(payload);
   }
 }

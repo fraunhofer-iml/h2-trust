@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { StagedProductionMatchingResultEntity } from '@h2-trust/amqp';
+import { ParsedProductionMatchingResultEntity } from '@h2-trust/amqp';
 
 export class AccountingPeriodMatchingResultDto {
   id: string;
@@ -21,7 +21,7 @@ export class AccountingPeriodMatchingResultDto {
     this.numberOfBatches = numberOfBatches;
   }
 
-  static fromEntity(entity: StagedProductionMatchingResultEntity) {
+  static fromEntity(entity: ParsedProductionMatchingResultEntity) {
     return new AccountingPeriodMatchingResultDto(
       entity.id,
       entity.powerUsed,

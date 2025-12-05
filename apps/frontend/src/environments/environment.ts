@@ -15,6 +15,4 @@ export const environment = {
   KEYCLOAK_URL: 'https://kc.public.apps.blockchain-europe.iml.fraunhofer.de',
   KEYCLOAK_REALM: 'h2-trust',
   KEYCLOAK_GRANT_TYPE: 'client_credentials',
-
-  ACCOUNTING_PERIOD_IN_SECONDS: 900,
 };

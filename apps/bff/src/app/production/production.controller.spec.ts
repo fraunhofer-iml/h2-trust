@@ -127,7 +127,7 @@ describe('ProductionController', () => {
       .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(mockedProcessStepEntities));
 
     const expectedResponse: ProductionOverviewDto[] = mockedProcessStepEntities.map(ProductionOverviewDto.fromEntity);
-    const actualResponse: ProductionOverviewDto[] = await controller.createProduction(givenDto, { sub: 'user-1' });
+    const actualResponse: ProductionOverviewDto[] = await controller.createProductions(givenDto, { sub: 'user-1' });
 
     expect(actualResponse).toEqual(expectedResponse);
   });
