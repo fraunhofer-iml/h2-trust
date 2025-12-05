@@ -7,7 +7,6 @@
  */
 
 import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
-import { UnitPipe } from 'apps/frontend/src/app/shared/pipes/unit.pipe';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { BatchDto, HydrogenBatchDto, PowerBatchDto, WaterBatchDto } from '@h2-trust/api';
@@ -18,7 +17,7 @@ import { WaterBatchCardComponent } from './water-batch-card/water-batch-card.com
 
 @Component({
   selector: 'app-batch-card',
-  imports: [CommonModule, WaterBatchCardComponent, H2BatchCardComponent, PowerBatchCardComponent, UnitPipe],
+  imports: [CommonModule, WaterBatchCardComponent, H2BatchCardComponent, PowerBatchCardComponent],
   templateUrl: './batch-card.component.html',
 })
 export class BatchCardComponent {

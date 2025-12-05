@@ -4,11 +4,14 @@
   </div>
 
   <div class="flex w-full flex-col">
-    <div class="flex justify-between text-sm text-neutral-500">
+    <div class="flex w-full justify-between text-sm text-neutral-500">
       <h3 class="text-base">
         {{ batch().createdAt | date: 'mediumDate' }}, {{ batch().createdAt | date: 'shortTime' }} -
         {{ batch().accountingPeriodEnd | date: 'shortTime' }}
       </h3>
+      <span class="text-sm text-neutral-500">
+        {{ batch().emission.amountCO2PerKgH2 | number: '1.2-2' | unit: FormattedUnits.CO2_PER_KG_H2 }}
+      </span>
     </div>
     <app-verified-chart
       [amount]="batch().amount"
