@@ -21,6 +21,8 @@ import { EmissionComputationService } from '../emission-computation.service';
 import { EmissionCalculationAssembler } from '../emission.assembler';
 import { BatchAssembler } from './batch.assembler';
 import { ClassificationAssembler } from './classification.assembler';
+import { ProvenanceGraph } from '../../../provenance/provenance-graph';
+import { ProcessType } from '@h2-trust/domain';
 
 @Injectable()
 export class PowerSupplyClassificationService {
@@ -29,7 +31,10 @@ export class PowerSupplyClassificationService {
     private readonly emissionComputationService: EmissionComputationService,
   ) {}
 
-  async buildPowerSupplyClassifications(powerProductions: ProcessStepEntity[]): Promise<ClassificationDto[]> {
+  async buildPowerSupplyClassifications(
+    powerProductions: ProcessStepEntity[],
+    hydrogenProductions: ProcessStepEntity[] = [],
+  ): Promise<ClassificationDto[]> {
     if (!powerProductions?.length) {
       return [];
     }
@@ -38,6 +43,11 @@ export class PowerSupplyClassificationService {
     const powerProductionsWithUnits =
       await this.fetchPowerProductionProcessStepsWithPowerProductionUnits(powerProductions);
     const classifications: ClassificationDto[] = [];
+
+    // Build a small provenance graph over the involved steps to robustly find downstream hydrogen batches
+    const graph = ProvenanceGraph.fromProcessSteps([
+      ...new Map([...powerProductions, ...hydrogenProductions].map((p) => [p.id, p])).values(),
+    ]);
 
     for (const energySource of energySources) {
       const powerProductionsWithUnitsByEnergySource = powerProductionsWithUnits.filter(
@@ -49,7 +59,15 @@ export class PowerSupplyClassificationService {
           powerProductionsWithUnitsByEnergySource.map(async ([powerProduction]) => {
             const [powerSupplyEmission]: EmissionCalculationDto[] =
               await this.emissionComputationService.computePowerSupplyEmissions([powerProduction]);
-            const hydrogenKgEquivalentToPowerBatch: number = powerProduction.batch.successors[0].amount;
+            // Use graph traversal to find the nearest downstream HydrogenProduction linked to this power batch
+            const startNode = graph.getNodeByProcessStepId(powerProduction.id);
+            const downstreamHydrogen = startNode
+              ? graph.findFirstDownstream(
+                  startNode,
+                  (n) => n.processStep.type === (ProcessType.HYDROGEN_PRODUCTION as unknown as string),
+                )
+              : undefined;
+            const hydrogenKgEquivalentToPowerBatch: number = downstreamHydrogen?.processStep?.batch?.amount ?? 0;
             const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(
               powerSupplyEmission,
               hydrogenKgEquivalentToPowerBatch,

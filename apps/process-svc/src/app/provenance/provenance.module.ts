@@ -11,11 +11,13 @@ import { Broker } from '@h2-trust/amqp';
 import { ProvenanceController } from './provenance.controller';
 import { ProvenanceService } from './provenance.service';
 import { TraversalService } from './traversal.service';
+import { GraphBuilderService } from './graph-builder.service';
+import { ProvenanceAssembler } from './provenance.assembler';
 
 @Module({
   imports: [new Broker().getBatchSvcBroker()],
   controllers: [ProvenanceController],
-  providers: [ProvenanceService, TraversalService],
+  providers: [ProvenanceService, TraversalService, GraphBuilderService, ProvenanceAssembler],
   exports: [ProvenanceService],
 })
 export class ProvenanceModule {}

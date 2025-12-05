@@ -9,11 +9,20 @@
 import { ProcessStepEntity } from './process-step.entity';
 
 export class ProvenanceEntity {
+  /**
+   * Deprecated: prefer using entry points (hydrogenTransportations/hydrogenBottlings) from arrays
+   */
   root: ProcessStepEntity;
+  /**
+   * Legacy singular accessor. Prefer hydrogenBottlings[]
+   */
   hydrogenBottling?: ProcessStepEntity;
   hydrogenProductions?: ProcessStepEntity[];
   waterConsumptions?: ProcessStepEntity[];
   powerProductions?: ProcessStepEntity[];
+  // New: normalized arrays for consistency with DAG reality
+  hydrogenTransportations?: ProcessStepEntity[];
+  hydrogenBottlings?: ProcessStepEntity[];
 
   constructor(
     root: ProcessStepEntity,
@@ -27,5 +36,13 @@ export class ProvenanceEntity {
     this.hydrogenProductions = hydrogenProductions;
     this.waterConsumptions = waterConsumptions;
     this.powerProductions = powerProductions;
+    // Best-effort normalization for legacy constructor
+    this.hydrogenBottlings = hydrogenBottling ? [hydrogenBottling] : [];
+    // If root is a transportation step, expose it also via array for consumers
+    if ((root as any)?.type === 'HYDROGEN_TRANSPORTATION') {
+      this.hydrogenTransportations = [root];
+    } else {
+      this.hydrogenTransportations = [];
+    }
   }
 }

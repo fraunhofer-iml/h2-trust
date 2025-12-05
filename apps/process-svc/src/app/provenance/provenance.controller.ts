@@ -8,15 +8,22 @@
 
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { ProvenanceEntity, ProvenanceMessagePatterns } from '@h2-trust/amqp';
-import { ProvenanceService } from './provenance.service';
+import * as amqp from '@h2-trust/amqp';
+import {ProvenanceService} from './provenance.service';
+import {GraphBuilderService} from './graph-builder.service';
 
 @Controller()
 export class ProvenanceController {
-  constructor(private readonly service: ProvenanceService) {}
+  constructor(private readonly service: ProvenanceService, private readonly graphBuilder: GraphBuilderService) {
+  }
 
-  @MessagePattern(ProvenanceMessagePatterns.BUILD_PROVENANCE)
-  async buildProvenance(@Payload() payload: { processStepId: string }): Promise<ProvenanceEntity> {
+  @MessagePattern(amqp.ProvenanceMessagePatterns.BUILD_PROVENANCE)
+  async buildProvenance(@Payload() payload: { processStepId: string }): Promise<amqp.ProvenanceEntity> {
     return this.service.buildProvenance(payload.processStepId);
+  }
+
+  @MessagePattern(amqp.ProvenanceMessagePatterns.BUILD_GRAPH)
+  async buildGraph(@Payload() payload: amqp.BuildGraphParamsDto): Promise<amqp.ProvenanceGraphDto> {
+    return this.graphBuilder.buildGraph(payload);
   }
 }

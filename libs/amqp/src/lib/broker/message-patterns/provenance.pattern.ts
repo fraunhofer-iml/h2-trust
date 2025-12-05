@@ -8,4 +8,5 @@
 
 export enum ProvenanceMessagePatterns {
   BUILD_PROVENANCE = 'provenance.build',
+  BUILD_GRAPH = 'provenance.graph.build',
 }

@@ -9,7 +9,7 @@
 import { firstValueFrom } from 'rxjs';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BrokerQueues, ProvenanceEntity, ProvenanceMessagePatterns } from '@h2-trust/amqp';
+import { BrokerQueues, ProvenanceMessagePatterns, ProvenanceGraphDto } from '@h2-trust/amqp';
 import { RedComplianceDto } from '@h2-trust/api';
 import { MatchedProductionPair } from './matched-production-pair';
 import {
@@ -19,6 +19,7 @@ import {
   meetsAdditionalityCriterion,
 } from './red-compliance.flags';
 import { RedCompliancePairingService } from './red-compliance.pairs.service';
+import { ProvenanceGraph } from '../../provenance/provenance-graph';
 
 @Injectable()
 export class RedComplianceService {
@@ -28,18 +29,25 @@ export class RedComplianceService {
   ) {}
 
   async determineRedCompliance(processStepId: string): Promise<RedComplianceDto> {
-    const provenance: ProvenanceEntity = await firstValueFrom(
-      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, { processStepId }),
+    // Graph-first: Only build the graph; no Provenance view required
+    const graphDto: ProvenanceGraphDto = await firstValueFrom(
+      this.processSvc.send(ProvenanceMessagePatterns.BUILD_GRAPH, {
+        rootId: processStepId,
+        direction: 'BOTH',
+        maxDepth: 50,
+        maxNodes: 5000,
+      }),
     );
-    if (!provenance || !provenance.powerProductions?.length || !provenance.hydrogenProductions?.length) {
-      const message = `Provenance or required productions (power/hydrogen) are missing for processStepId [${processStepId}]`;
+
+    if (!graphDto?.nodes?.length) {
+      const message = `Graph is missing for processStepId [${processStepId}]`;
       throw new HttpException(message, HttpStatus.BAD_REQUEST);
     }
-    const pairs: MatchedProductionPair[] = await this.pairingService.buildMatchedPairs(
-      provenance.powerProductions,
-      provenance.hydrogenProductions,
-      processStepId,
-    );
+
+    // Build in-memory traversal graph directly from Graph DTO meta
+    const graph = ProvenanceGraph.fromDto(graphDto);
+
+    const pairs: MatchedProductionPair[] = await this.pairingService.buildMatchedPairs(graph);
 
     return this.evaluateCompliance(pairs);
   }

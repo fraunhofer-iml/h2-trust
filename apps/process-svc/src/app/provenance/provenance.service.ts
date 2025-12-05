@@ -9,59 +9,24 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BrokerQueues, ProcessStepEntity, ProcessStepMessagePatterns, ProvenanceEntity } from '@h2-trust/amqp';
-import { ProcessType } from '@h2-trust/domain';
-import { TraversalService } from './traversal.service';
-
-type ProvenanceBuilderFn = (root: ProcessStepEntity) => Promise<ProvenanceEntity>;
+import {
+  BrokerQueues,
+  ProcessStepEntity,
+  ProcessStepMessagePatterns,
+  ProvenanceEntity,
+  ProvenanceGraphDto,
+} from '@h2-trust/amqp';
+import { GraphBuilderService } from './graph-builder.service';
+import { ProvenanceAssembler } from './provenance.assembler';
 
 @Injectable()
 export class ProvenanceService {
+
   constructor(
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
-    private readonly traversalService: TraversalService,
+    private readonly graphBuilder: GraphBuilderService,
+    private readonly provenanceAssembler: ProvenanceAssembler,
   ) {}
-
-  private readonly provenanceBuilders: Record<ProcessType, ProvenanceBuilderFn> = {
-    [ProcessType.POWER_PRODUCTION]: async (root) => {
-      const powerProductions = [root];
-      return new ProvenanceEntity(root, undefined, [], [], powerProductions);
-    },
-
-    [ProcessType.WATER_CONSUMPTION]: async (root) => {
-      const waterConsumptions = [root];
-      return new ProvenanceEntity(root, undefined, [], waterConsumptions, []);
-    },
-
-    [ProcessType.HYDROGEN_PRODUCTION]: async (root) => {
-      const hydrogenProductions = [root];
-      const waterConsumptions =
-        await this.traversalService.fetchWaterConsumptionsFromHydrogenProductions(hydrogenProductions);
-      const powerProductions =
-        await this.traversalService.fetchPowerProductionsFromHydrogenProductions(hydrogenProductions);
-      return new ProvenanceEntity(root, undefined, hydrogenProductions, waterConsumptions, powerProductions);
-    },
-
-    [ProcessType.HYDROGEN_BOTTLING]: async (root) => {
-      const hydrogenProductions = await this.traversalService.fetchHydrogenProductionsFromHydrogenBottling(root);
-      const waterConsumptions =
-        await this.traversalService.fetchWaterConsumptionsFromHydrogenProductions(hydrogenProductions);
-      const powerProductions =
-        await this.traversalService.fetchPowerProductionsFromHydrogenProductions(hydrogenProductions);
-      return new ProvenanceEntity(root, root, hydrogenProductions, waterConsumptions, powerProductions);
-    },
-
-    [ProcessType.HYDROGEN_TRANSPORTATION]: async (root) => {
-      const hydrogenBottling = await this.traversalService.fetchHydrogenBottlingFromHydrogenTransportation(root);
-      const hydrogenProductions =
-        await this.traversalService.fetchHydrogenProductionsFromHydrogenBottling(hydrogenBottling);
-      const waterConsumptions =
-        await this.traversalService.fetchWaterConsumptionsFromHydrogenProductions(hydrogenProductions);
-      const powerProductions =
-        await this.traversalService.fetchPowerProductionsFromHydrogenProductions(hydrogenProductions);
-      return new ProvenanceEntity(root, hydrogenBottling, hydrogenProductions, waterConsumptions, powerProductions);
-    },
-  };
 
   async buildProvenance(processStepId: string): Promise<ProvenanceEntity> {
     if (!processStepId) {
@@ -76,12 +41,9 @@ export class ProvenanceService {
       throw new Error('Invalid process step.');
     }
 
-    const provenanceBuilder: ProvenanceBuilderFn = this.provenanceBuilders[root.type as ProcessType];
-
-    if (!provenanceBuilder) {
-      throw new Error(`Unsupported process type [${root.type}].`);
-    }
-
-    return provenanceBuilder(root);
+    // Build graph directly from DB starting at the root, both directions, with defaults
+    const graph: ProvenanceGraphDto = await this.graphBuilder.buildGraph({ rootId: processStepId, direction: 'BOTH' });
+    // Derive the existing ProvenanceEntity view from the graph for backward compatibility
+    return this.provenanceAssembler.fromGraph(graph, root.id);
   }
 }
