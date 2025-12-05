@@ -11,7 +11,6 @@ import { ERROR_MESSAGES } from 'apps/frontend/src/app/shared/constants/error.mes
 import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
 import { ROUTES } from 'apps/frontend/src/app/shared/constants/routes';
 import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
-import { environment } from 'apps/frontend/src/environments/environment';
 import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
