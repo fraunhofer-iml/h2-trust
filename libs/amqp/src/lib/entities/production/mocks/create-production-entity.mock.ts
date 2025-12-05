@@ -29,5 +29,6 @@ export const CreateProductionEntityMock: CreateProductionEntity[] = [
     HydrogenStorageUnitSeed[0].id,
     CompanySeed[0].id,
     CompanySeed[2].id,
+    1,
   ),
 ];

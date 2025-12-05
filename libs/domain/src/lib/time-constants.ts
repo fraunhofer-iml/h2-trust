@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Prisma } from '@prisma/client';
-
-export type StagedProductionDbType = Prisma.StagedProductionGetPayload<true>;
+export const TimeInSeconds = {
+  ACCOUNTING_PERIOD: 3600,
+  ONE_HOUR: 3600,
+} as const;

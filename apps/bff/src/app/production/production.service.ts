@@ -8,7 +8,7 @@
 
 import { CsvParserService } from 'libs/csv-parser/src/lib/csv-parser.service';
 import { firstValueFrom } from 'rxjs';
-import { BadRequestException, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   AccountingPeriodHydrogen,
@@ -17,15 +17,13 @@ import {
   BrokerQueues,
   CreateProductionEntity,
   ParsedFileBundles,
-  PowerProductionUnitEntity,
+  ParsedProductionMatchingResultEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
-  StagedProductionMatchingResultEntity,
   SubmitProductionProps,
   UnitDataBundle,
   UnitFileBundle,
-  UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import {
   AccountingPeriodMatchingResultDto,
@@ -46,26 +44,28 @@ export class ProductionService {
   };
 
   constructor(
-    @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchService: ClientProxy,
-    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
+    @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly userService: UserService,
     private readonly csvParser: CsvParserService,
   ) {}
 
-  async createProduction(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    const hydrogenColor = await this.fetchHydrogenColor(dto.powerProductionUnitId);
-    const companyIdOfPowerProductionUnit = await this.fetchCompanyOfProductionUnit(dto.powerProductionUnitId);
-    const companyIdOfHydrogenProductionUnit = await this.fetchCompanyOfProductionUnit(dto.hydrogenProductionUnitId);
-
-    const createProductionEntity = CreateProductionEntity.of(
-      dto,
+  async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
+    // TODO-MP: we need to send a message and NOT an entity here (see DUHGW-137)
+    const createProductionEntity = new CreateProductionEntity(
+      dto.productionStartedAt,
+      dto.productionEndedAt,
+      dto.powerProductionUnitId,
+      dto.powerAmountKwh,
+      dto.hydrogenProductionUnitId,
+      dto.hydrogenAmountKg,
       userId,
-      hydrogenColor,
-      companyIdOfPowerProductionUnit,
-      companyIdOfHydrogenProductionUnit,
+      null,
+      dto.hydrogenStorageUnitId,
+      null,
+      null,
+      null,
     );
-
     const processSteps: ProcessStepEntity[] = await firstValueFrom(
       this.processSvc.send(ProductionMessagePatterns.CREATE, { createProductionEntity }),
     );
@@ -73,38 +73,6 @@ export class ProductionService {
     return processSteps
       .filter((step) => step.type === ProcessType.HYDROGEN_PRODUCTION)
       .map(ProductionOverviewDto.fromEntity);
-  }
-
-  private async fetchHydrogenColor(powerProductionUnitId: string): Promise<string> {
-    const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ, { id: powerProductionUnitId }),
-    );
-
-    const hydrogenColor = powerProductionUnit?.type?.hydrogenColor;
-
-    if (!hydrogenColor) {
-      throw new HttpException(
-        `Power Production Unit ${powerProductionUnitId} has no Hydrogen Color`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-
-    return hydrogenColor;
-  }
-
-  private async fetchCompanyOfProductionUnit(productionUnitId: string): Promise<string> {
-    const productionUnitEntity: PowerProductionUnitEntity = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ, { id: productionUnitId }),
-    );
-
-    if (!productionUnitEntity.company) {
-      throw new BrokerException(
-        `Production Unit ${productionUnitId} does not have an associated company`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-
-    return productionUnitEntity.company.id;
   }
 
   async readHydrogenProductionsByCompany(userId: string): Promise<ProductionOverviewDto[]> {
@@ -115,7 +83,7 @@ export class ProductionService {
       companyId: companyIdOfUser,
     };
 
-    return firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.READ_ALL, payload)).then((processSteps) =>
+    return firstValueFrom(this.batchSvc.send(ProcessStepMessagePatterns.READ_ALL, payload)).then((processSteps) =>
       processSteps.map(ProductionOverviewDto.fromEntity),
     );
   }
@@ -142,7 +110,7 @@ export class ProductionService {
 
     const payload = { data: processedFiles, userId: userId };
     const matchingResult = await firstValueFrom(
-      this.processSvc.send<StagedProductionMatchingResultEntity>(ProductionMessagePatterns.STAGE, payload),
+      this.processSvc.send<ParsedProductionMatchingResultEntity>(ProductionMessagePatterns.STAGE, payload),
     );
 
     return AccountingPeriodMatchingResultDto.fromEntity(matchingResult);
