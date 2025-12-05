@@ -22,15 +22,14 @@ import { EmissionCalculationAssembler } from './emission.assembler';
 
 @Injectable()
 export class EmissionComputationService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) {}
+  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) { }
 
   async computeProvenanceEmissions(provenance: ProvenanceEntity): Promise<EmissionComputationResultDto> {
     const emissionCalculations: EmissionCalculationDto[] = [];
 
     if (provenance.powerProductions) {
-      const powerProductions: EmissionCalculationDto[] = await this.computePowerSupplyEmissions(
-        provenance.powerProductions,
-      );
+      const powerProductions: EmissionCalculationDto[] =
+        await this.computePowerSupplyEmissions(provenance.powerProductions);
       emissionCalculations.push(...powerProductions);
     }
 
@@ -43,18 +42,14 @@ export class EmissionComputationService {
 
     if (provenance.hydrogenProductions) {
       const hydrogenStorages: EmissionCalculationDto[] = provenance.hydrogenProductions.map((hydrogenProduction) =>
-        EmissionCalculationAssembler.assembleHydrogenStorageCalculation(
-          hydrogenProduction.batch.amount,
-          provenance.hydrogenProductions,
-        ),
+        EmissionCalculationAssembler.assembleHydrogenStorageCalculation(hydrogenProduction),
       );
       emissionCalculations.push(...hydrogenStorages);
     }
 
     if (provenance.hydrogenBottling) {
-      const hydrogenBottling: EmissionCalculationDto = EmissionCalculationAssembler.assembleHydrogenBottlingCalculation(
-        provenance.hydrogenBottling,
-      );
+      const hydrogenBottling: EmissionCalculationDto =
+        EmissionCalculationAssembler.assembleHydrogenBottlingCalculation(provenance.hydrogenBottling);
       emissionCalculations.push(hydrogenBottling);
     }
 
