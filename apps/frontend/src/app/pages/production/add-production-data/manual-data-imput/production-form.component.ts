@@ -57,7 +57,7 @@ export class ProductionFormComponent {
   private readonly productionService: ProductionService = inject(ProductionService);
   private readonly router: Router = inject(Router);
 
-  private readonly accountingPeriodInMinutes: number = TimeInSeconds.ACCOUNTING_PERIOD;
+  private readonly accountingPeriodInMinutes: number = TimeInSeconds.ACCOUNTING_PERIOD / 60;
 
   powerAccessApprovals = input<{ value: PowerProductionOverviewDto; name: string }[]>([]);
   hydrogenProductionUnits = input<HydrogenProductionOverviewDto[]>([]);

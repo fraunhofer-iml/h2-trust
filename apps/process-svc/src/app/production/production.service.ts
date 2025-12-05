@@ -141,7 +141,7 @@ export class ProductionService {
 
   private createProcessStep(accountingPeriod: AccountingPeriod, params: ProcessStepParams): ProcessStepEntity {
     this.logger.debug(
-      `${DateTimeUtil.formatDate(accountingPeriod.startedAt)} - ${DateTimeUtil.formatDate(accountingPeriod.endedAt)} | ${params.type} | ${accountingPeriod.amount}`,
+      `${DateTimeUtil.formatDate(accountingPeriod.startedAt)} | ${DateTimeUtil.formatDate(accountingPeriod.endedAt)} | ${params.type} | ${params.executedBy} | ${accountingPeriod.amount}`,
     );
 
     const { batchParams } = params;
