@@ -94,6 +94,10 @@ export class ProductionUtils {
   }
 
   static calculateWaterAmount(startedAt: string, endedAt: string, waterConsumptionPerHour: number): number {
+    if (waterConsumptionPerHour < 0) {
+      throw new Error(`waterConsumptionPerHour must be non-negative: [${waterConsumptionPerHour}]`);
+    }
+
     const startedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(startedAt);
     const endedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(endedAt);
     const durationInSeconds = ProductionUtils.calculateDuration(startedAtInSeconds, endedAtInSeconds);
