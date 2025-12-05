@@ -12,7 +12,7 @@ import {
   AccountingPeriodPower,
   BrokerException,
   ParsedFileBundles,
-  StagedProductionEntity,
+  ParsedProductionEntity,
   UnitDataBundle,
 } from '@h2-trust/amqp';
 
@@ -29,14 +29,14 @@ interface HydrogenItem {
 
 @Injectable()
 export class AccountingPeriodMatchingService {
-  matchAccountingPeriods(data: ParsedFileBundles, gridUnitId: string) {
+  matchAccountingPeriods(data: ParsedFileBundles, gridUnitId: string): ParsedProductionEntity[] {
     this.validateBundles(data.hydrogenProduction, 'hydrogen');
     this.validateBundles(data.powerProduction, 'power');
 
     const powerItemsByDateHour: Map<string, PowerItem[]> = this.normalizePower(data.powerProduction);
     const hydrogenItemsByDateHour: Map<string, HydrogenItem[]> = this.normalizeHydrogen(data.hydrogenProduction);
 
-    const stagedProductions: StagedProductionEntity[] = [];
+    const parsedProductions: ParsedProductionEntity[] = [];
 
     for (const [dateHour, hydrogenItems] of hydrogenItemsByDateHour) {
       const powerItems: PowerItem[] = powerItemsByDateHour.get(dateHour);
@@ -44,7 +44,7 @@ export class AccountingPeriodMatchingService {
       const parsedDateHour = new Date(dateHour);
 
       if (!powerItems) {
-        stagedProductions.push({
+        parsedProductions.push({
           startedAt: parsedDateHour,
           hydrogenAmount: amount,
           hydrogenProductionUnitId: unitId,
@@ -55,6 +55,7 @@ export class AccountingPeriodMatchingService {
       }
 
       let remainingPower = powerConsumed;
+      let remainingHydrogen = amount;
 
       for (const powerItem of powerItems) {
         if (remainingPower <= 0) {
@@ -63,22 +64,24 @@ export class AccountingPeriodMatchingService {
 
         const powerUsed = Math.min(powerItem.amount, remainingPower);
         const powerUsageRatio = powerUsed / remainingPower;
+        const hydrogenUsed = remainingHydrogen * powerUsageRatio;
 
-        stagedProductions.push({
+        parsedProductions.push({
           startedAt: parsedDateHour,
-          hydrogenAmount: amount * powerUsageRatio,
+          hydrogenAmount: hydrogenUsed,
           hydrogenProductionUnitId: unitId,
           powerAmount: powerUsed,
           powerProductionUnitId: powerItem.unitId,
         });
 
         remainingPower -= powerUsed;
+        remainingHydrogen -= hydrogenUsed;
       }
 
-      if (remainingPower > 0) {
-        stagedProductions.push({
+      if (remainingHydrogen > 0) {
+        parsedProductions.push({
           startedAt: parsedDateHour,
-          hydrogenAmount: (remainingPower / powerConsumed) * amount,
+          hydrogenAmount: remainingHydrogen,
           hydrogenProductionUnitId: unitId,
           powerAmount: remainingPower,
           powerProductionUnitId: gridUnitId,
@@ -86,13 +89,13 @@ export class AccountingPeriodMatchingService {
       }
     }
 
-    if (stagedProductions.length === 0)
+    if (parsedProductions.length === 0)
       throw new BrokerException(
         'The data on electricity production and hydrogen production are not in the same time frame.',
         HttpStatus.BAD_REQUEST,
       );
 
-    return stagedProductions;
+    return parsedProductions;
   }
 
   private normalizePower(data: UnitDataBundle<AccountingPeriodPower>[]): Map<string, PowerItem[]> {

@@ -68,11 +68,11 @@ export class ProductionController {
       },
     },
   })
-  async createProduction(
+  async createProductions(
     @Body() dto: CreateProductionDto,
     @AuthenticatedUser() user: AuthenticatedKCUser,
   ): Promise<ProductionOverviewDto[]> {
-    return this.service.createProduction(dto, user.sub);
+    return this.service.createProductions(dto, user.sub);
   }
 
   @Get()

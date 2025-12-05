@@ -46,7 +46,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenProductionEndedAtSeconds = 75;
     const givenAccountingPeriodSeconds = 15;
 
-    const expectedErrorMessage = 'productionStartedAtInSeconds must be positive';
+    const expectedErrorMessage = 'startedAtInSeconds must be positive';
 
     expect(() =>
       ProductionUtils.calculateNumberOfAccountingPeriods(
@@ -62,7 +62,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenProductionEndedAtSeconds = -75;
     const givenAccountingPeriodSeconds = 15;
 
-    const expectedErrorMessage = 'productionEndedAtInSeconds must be positive';
+    const expectedErrorMessage = 'endedAtInSeconds must be positive';
 
     expect(() =>
       ProductionUtils.calculateNumberOfAccountingPeriods(
@@ -110,7 +110,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenProductionEndedAtSeconds = 75;
     const givenAccountingPeriodSeconds = 15;
 
-    const expectedErrorMessage = 'productionEndedAtInSeconds must be greater than productionStartedAtInSeconds';
+    const expectedErrorMessage = 'endedAtInSeconds must be greater than startedAtInSeconds';
 
     expect(() =>
       ProductionUtils.calculateNumberOfAccountingPeriods(
@@ -126,7 +126,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenProductionEndedAtSeconds = 75;
     const givenAccountingPeriodSeconds = 15;
 
-    const expectedErrorMessage = 'productionEndedAtInSeconds must be greater than productionStartedAtInSeconds';
+    const expectedErrorMessage = 'endedAtInSeconds must be greater than startedAtInSeconds';
 
     expect(() =>
       ProductionUtils.calculateNumberOfAccountingPeriods(
