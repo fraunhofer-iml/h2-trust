@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { InfoTooltipComponent } from 'apps/frontend/src/app/layout/info-tooltip/info-tooltip.component';
 import { ChemicalNames } from 'apps/frontend/src/app/shared/constants/chemical-names';
 import { EMISSIONS } from 'apps/frontend/src/app/shared/constants/emissions';
 import { CommonModule } from '@angular/common';
@@ -33,6 +34,7 @@ import { SavingsPotentialChartComponent } from './savings-potential/savings-pote
     EmissionPieChartComponent,
     EmissionPieChartComponent,
     UnitPipe,
+    InfoTooltipComponent,
   ],
   templateUrl: './proof-of-sustainability.component.html',
 })
@@ -76,5 +78,11 @@ export class ProofOfSustainabilityComponent {
       key,
       items,
     }));
+  }
+
+  get totalEmissionsTooltip() {
+    return (
+      EMISSIONS.TOTAL_EMISSIONS.FORMULA + '\n' + EMISSIONS.TOTAL_EMISSIONS.EU + '\n' + EMISSIONS.TOTAL_EMISSIONS.ECCS
+    );
   }
 }

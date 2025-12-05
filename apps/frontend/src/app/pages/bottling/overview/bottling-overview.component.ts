@@ -22,7 +22,6 @@ import { BottlingOverviewDto } from '@h2-trust/api';
 import { H2ColorChipComponent } from '../../../layout/h2-color-chip/h2-color-chip.component';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
-import { StorageFillingLevelsComponent } from './storage-filling-levels/storage-filling-levels.component';
 
 @Component({
   selector: 'app-processing-overview',
@@ -38,7 +37,6 @@ import { StorageFillingLevelsComponent } from './storage-filling-levels/storage-
     MatSortModule,
     RouterModule,
     H2ColorChipComponent,
-    StorageFillingLevelsComponent,
   ],
   providers: [BottlingService],
   templateUrl: './bottling-overview.component.html',
@@ -59,13 +57,6 @@ export class BottlingOverviewComponent implements AfterViewInit {
       const data = await this.processService.getBottlings();
       this.dataSource.data = data;
       return data;
-    },
-  }));
-
-  hydrogenStorageQuery = injectQuery(() => ({
-    queryKey: ['h2-storage'],
-    queryFn: async () => {
-      return this.unitsService.getHydrogenStorageUnits();
     },
   }));
 

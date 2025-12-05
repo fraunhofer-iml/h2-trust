@@ -5,6 +5,8 @@
     create
   </div>
 
+  <app-storage-filling-levels [chartData]="hydrogenStorageQuery.data()"></app-storage-filling-levels>
+
   <div [formGroup]="bottleFormGroup" class="flex w-full flex-row gap-4">
     <div class="flex flex-1 flex-col gap-4">
       <div class="grid grid-cols-2 gap-x-2 gap-y-4 rounded-lg bg-white p-4">

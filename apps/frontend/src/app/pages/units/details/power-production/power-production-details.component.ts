@@ -6,18 +6,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { InfoTooltipComponent } from 'apps/frontend/src/app/layout/info-tooltip/info-tooltip.component';
 import { RED_III_CRITERIA } from 'apps/frontend/src/app/shared/constants/financial-support-info';
 import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { PowerProductionUnitDto } from '@h2-trust/api';
 import { BoolPipe } from '../../../../shared/pipes/bool-pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 
 @Component({
   selector: 'app-power-production-details',
-  imports: [CommonModule, UnitPipe, MatTooltipModule, BoolPipe],
+  imports: [CommonModule, UnitPipe, BoolPipe, InfoTooltipComponent],
   templateUrl: './power-production-details.component.html',
 })
 export class PowerProductionDetailsComponent {
