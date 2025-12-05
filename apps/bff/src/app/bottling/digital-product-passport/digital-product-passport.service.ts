@@ -37,7 +37,7 @@ export class DigitalProductPassportService {
 
     const hydrogenProductionPromise =
       provenance.powerProductions?.length || provenance.waterConsumptions?.length
-        ? this.hydrogenProductionSectionService.buildSection(provenance.powerProductions, provenance.waterConsumptions)
+        ? this.hydrogenProductionSectionService.buildSection(provenance.powerProductions, provenance.waterConsumptions, provenance.hydrogenBottling.batch.amount)
         : Promise.resolve(undefined);
 
     const hydrogenStoragePromise = provenance.hydrogenProductions?.length
