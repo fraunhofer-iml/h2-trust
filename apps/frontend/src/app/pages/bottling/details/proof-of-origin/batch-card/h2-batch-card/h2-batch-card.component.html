@@ -7,13 +7,18 @@
 
   <div class="flex w-full flex-col">
     <div class="mb-2 flex justify-between text-sm text-neutral-500">
-      <div class="flex flex-row items-center gap-2">
+      <div class="flex w-full flex-row items-center justify-between gap-2">
         <h3 class="text-base">
           {{ batch().createdAt | date: 'mediumDate' }}, {{ batch().createdAt | date: 'shortTime' }}
           @if (batch().processStep !== 'BOTTLING') {
             - {{ batch().accountingPeriodEnd | date: 'shortTime' }}
           }
         </h3>
+        <span class="text-sm">
+          <span class="text-sm text-neutral-500">
+            {{ batch().emission.amountCO2PerKgH2 | number: '1.2-2' | unit: FormattedUnits.CO2_PER_KG_H2 }}
+          </span></span
+        >
       </div>
 
       <app-rfnbo-chip [isRFNBOready]="batch().rfnboReady"></app-rfnbo-chip>
