@@ -9,7 +9,7 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { HydrogenProductionUnitEntity, PowerProductionUnitEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import { BiddingZone } from '@h2-trust/domain';
-import { assertBoolean, assertDefined, toValidDate } from '@h2-trust/utils';
+import { assertBoolean, assertDefined, DateTimeUtil } from '@h2-trust/utils';
 
 export function areUnitsInSameBiddingZone(
   powerUnit: PowerProductionUnitEntity,
@@ -26,8 +26,8 @@ export function isWithinTimeCorrelation(
   powerProduction: ProcessStepEntity,
   hydrogenProduction: ProcessStepEntity,
 ): boolean {
-  const powerStartedAt = toValidDate(powerProduction?.startedAt, 'powerProduction.startedAt');
-  const hydrogenStartedAt = toValidDate(hydrogenProduction?.startedAt, 'hydrogenProduction.startedAt');
+  const powerStartedAt = DateTimeUtil.toValidDate(powerProduction?.startedAt, 'powerProduction.startedAt');
+  const hydrogenStartedAt = DateTimeUtil.toValidDate(hydrogenProduction?.startedAt, 'hydrogenProduction.startedAt');
 
   // Rounding to the same hour and comparing
   const msPerHour = 60 * 60 * 1000;
@@ -40,15 +40,11 @@ export function meetsAdditionalityCriterion(
   powerUnit: PowerProductionUnitEntity,
   hydrogenUnit: HydrogenProductionUnitEntity,
 ): boolean {
-  const powerCommissioning = toValidDate(powerUnit?.commissionedOn, 'powerUnit.commissionedOn');
-  const hydrogenCommissioning = toValidDate(hydrogenUnit?.commissionedOn, 'hydrogenUnit.commissionedOn');
+  const powerCommissioning = DateTimeUtil.toValidDate(powerUnit?.commissionedOn, 'powerUnit.commissionedOn');
+  const hydrogenCommissioning = DateTimeUtil.toValidDate(hydrogenUnit?.commissionedOn, 'hydrogenUnit.commissionedOn');
 
   // Limit date: 36 months prior to commissioning of the electrolyzer
-  const limitDate = new Date(hydrogenCommissioning);
-  limitDate.setMonth(limitDate.getMonth() - 36);
-  // Please note: Due to months of unequal length, a maximum inaccuracy of 3 days may occur.
-  // XXXX-03-31 minus one month does not become XXXX-02-28, but XXXX-03-03.
-  // 2024-02-29 minus 36 months does not become 2021-02-28, but 2021-03-01.
+  const limitDate = DateTimeUtil.subtractMonthsSafe(hydrogenCommissioning, 36);
 
   // Power generation must not occur BEFORE this limit date (i.e., it must be >=).
   return powerCommissioning >= limitDate;

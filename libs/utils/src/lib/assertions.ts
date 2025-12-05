@@ -29,21 +29,3 @@ export function assertBoolean(value: unknown, name: string): asserts value is bo
     throw new Error(message);
   }
 }
-
-export function toValidDate(value: unknown, name: string): Date {
-  assertDefined(value, name);
-  let date: Date;
-  if (value instanceof Date) {
-    date = value;
-  } else if (typeof value === 'string' || typeof value === 'number') {
-    date = new Date(value);
-  } else {
-    const message = `${name} must be a string, number or Date: ${value}`;
-    throw new Error(message);
-  }
-  if (Number.isNaN(date.getTime())) {
-    const message = `${name} is not a valid date: ${value}`;
-    throw new Error(message);
-  }
-  return date;
-}
