@@ -7,8 +7,8 @@
  */
 
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
-import { ProductionUtils } from './production.utils';
 import { ProcessType } from '@h2-trust/domain';
+import { ProductionUtils } from './production.utils';
 
 describe('ProductionUtils.calculateAccountingPeriods', () => {
   const emptyBatchEntityArray: readonly BatchEntity[] = [];
@@ -30,12 +30,7 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // Act
-      const actualResult = ProductionUtils.calculateAccountingPeriods(
-        startedAt,
-        endedAt,
-        totalAmount,
-        predecessors,
-      );
+      const actualResult = ProductionUtils.calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
       // Assert
       expect(actualResult).toEqual(expectedResult);
@@ -64,12 +59,7 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // Act
-      const actualResult = ProductionUtils.calculateAccountingPeriods(
-        startedAt,
-        endedAt,
-        totalAmount,
-        predecessors,
-      );
+      const actualResult = ProductionUtils.calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
       // Assert
       expect(actualResult).toEqual(expectedResult);
@@ -98,12 +88,7 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // Act
-      const actualResult = ProductionUtils.calculateAccountingPeriods(
-        startedAt,
-        endedAt,
-        totalAmount,
-        predecessors,
-      );
+      const actualResult = ProductionUtils.calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
       // Assert
       expect(actualResult).toEqual(expectedResult);
@@ -138,12 +123,7 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // Act
-      const actualResult = ProductionUtils.calculateAccountingPeriods(
-        startedAt,
-        endedAt,
-        totalAmount,
-        predecessors,
-      );
+      const actualResult = ProductionUtils.calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
       // Assert
       expect(actualResult).toEqual(expectedResult);
@@ -195,12 +175,7 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // Act
-      const actualResult = ProductionUtils.calculateAccountingPeriods(
-        startedAt,
-        endedAt,
-        totalAmount,
-        predecessors,
-      );
+      const actualResult = ProductionUtils.calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
       // Assert
       expect(actualResult).toEqual(expectedResult);
@@ -245,12 +220,7 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // Act
-      const actualResult = ProductionUtils.calculateAccountingPeriods(
-        startedAt,
-        endedAt,
-        totalAmount,
-        predecessors,
-      );
+      const actualResult = ProductionUtils.calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
       // Assert
       expect(actualResult).toEqual(expectedResult);
@@ -279,12 +249,7 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // Act
-      const actualResult = ProductionUtils.calculateAccountingPeriods(
-        startedAt,
-        endedAt,
-        totalAmount,
-        predecessors,
-      );
+      const actualResult = ProductionUtils.calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
       // Assert
       expect(actualResult).toEqual(expectedResult);
@@ -373,12 +338,7 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // Act
-      const actualResult = ProductionUtils.calculateAccountingPeriods(
-        startedAt,
-        endedAt,
-        totalAmount,
-        predecessors,
-      );
+      const actualResult = ProductionUtils.calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
       // Assert
       expect(actualResult).toEqual(expectedResult);
@@ -400,12 +360,7 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // Act
-      const actualResult = ProductionUtils.calculateAccountingPeriods(
-        startedAt,
-        endedAt,
-        totalAmount,
-        predecessors,
-      );
+      const actualResult = ProductionUtils.calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
       // Assert
       expect(actualResult).toEqual(expectedResult);
@@ -421,12 +376,7 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       const amountPerPeriod = totalAmount / expectedNumberOfPeriods;
 
       // Act
-      const actualResult = ProductionUtils.calculateAccountingPeriods(
-        startedAt,
-        endedAt,
-        totalAmount,
-        predecessors,
-      );
+      const actualResult = ProductionUtils.calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
       // Assert
       expect(actualResult).toHaveLength(expectedNumberOfPeriods);
@@ -471,12 +421,7 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // Act
-      const actualResult = ProductionUtils.calculateAccountingPeriods(
-        startedAt,
-        endedAt,
-        totalAmount,
-        predecessors,
-      );
+      const actualResult = ProductionUtils.calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
       // Assert
       expect(actualResult).toEqual(expectedResult);
@@ -505,12 +450,7 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // Act
-      const actualResult = ProductionUtils.calculateAccountingPeriods(
-        startedAt,
-        endedAt,
-        totalAmount,
-        predecessors,
-      );
+      const actualResult = ProductionUtils.calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
       // Assert
       expect(actualResult).toEqual(expectedResult);
@@ -532,12 +472,7 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // Act
-      const actualResult = ProductionUtils.calculateAccountingPeriods(
-        startedAt,
-        endedAt,
-        totalAmount,
-        predecessors,
-      );
+      const actualResult = ProductionUtils.calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
       // Assert
       expect(actualResult).toEqual(expectedResult);
