@@ -15,7 +15,7 @@ describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
 
     const expectedAmountPerPeriod = 10;
 
-    const actualAmountPerPeriod = ProductionUtils.calculateBatchAmountPerPeriod(
+    const actualAmountPerPeriod = ProductionUtils.calculateBatchAmountPerAccountingPeriod(
       givenBatchAmount,
       givenNumberOfAccountingPeriods,
     );
@@ -29,7 +29,7 @@ describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
 
     const expectedAmountPerPeriod = 5;
 
-    const actualAmountPerPeriod = ProductionUtils.calculateBatchAmountPerPeriod(
+    const actualAmountPerPeriod = ProductionUtils.calculateBatchAmountPerAccountingPeriod(
       givenBatchAmount,
       givenNumberOfAccountingPeriods,
     );
@@ -43,7 +43,7 @@ describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
 
     const expectedAmountPerPeriod = 10 / 2.2;
 
-    const actualAmountPerPeriod = ProductionUtils.calculateBatchAmountPerPeriod(
+    const actualAmountPerPeriod = ProductionUtils.calculateBatchAmountPerAccountingPeriod(
       givenBatchAmount,
       givenNumberOfAccountingPeriods,
     );
@@ -57,7 +57,7 @@ describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
 
     const expectedAmountPerPeriod = 10;
 
-    const actualAmountPerPeriod = ProductionUtils.calculateBatchAmountPerPeriod(
+    const actualAmountPerPeriod = ProductionUtils.calculateBatchAmountPerAccountingPeriod(
       givenBatchAmount,
       givenNumberOfAccountingPeriods,
     );
@@ -72,7 +72,7 @@ describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
     const expectedErrorMessage = 'batchAmount must be greater than zero';
 
     expect(() =>
-      ProductionUtils.calculateBatchAmountPerPeriod(givenBatchAmount, givenNumberOfAccountingPeriods),
+      ProductionUtils.calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods),
     ).toThrow(expectedErrorMessage);
   });
 
@@ -83,7 +83,7 @@ describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
     const expectedErrorMessage = 'batchAmount must be greater than zero';
 
     expect(() =>
-      ProductionUtils.calculateBatchAmountPerPeriod(givenBatchAmount, givenNumberOfAccountingPeriods),
+      ProductionUtils.calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods),
     ).toThrow(expectedErrorMessage);
   });
 
@@ -94,7 +94,7 @@ describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
     const expectedErrorMessage = 'numberOfAccountingPeriods must be greater than zero';
 
     expect(() =>
-      ProductionUtils.calculateBatchAmountPerPeriod(givenBatchAmount, givenNumberOfAccountingPeriods),
+      ProductionUtils.calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods),
     ).toThrow(expectedErrorMessage);
   });
 
@@ -105,7 +105,7 @@ describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
     const expectedErrorMessage = 'numberOfAccountingPeriods must be greater than zero';
 
     expect(() =>
-      ProductionUtils.calculateBatchAmountPerPeriod(givenBatchAmount, givenNumberOfAccountingPeriods),
+      ProductionUtils.calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods),
     ).toThrow(expectedErrorMessage);
   });
 });

@@ -6,8 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CreateProductionDto } from '@h2-trust/api';
-
 export class CreateProductionEntity {
   productionStartedAt: string;
   productionEndedAt: string;
@@ -20,6 +18,7 @@ export class CreateProductionEntity {
   hydrogenStorageUnitId: string;
   companyIdOfPowerProductionUnit: string;
   companyIdOfHydrogenProductionUnit: string;
+  waterConsumptionLitersPerHour: number;
 
   constructor(
     productionStartedAt: string,
@@ -33,6 +32,7 @@ export class CreateProductionEntity {
     hydrogenStorageUnitId: string,
     companyOfPowerProductionUnitId: string,
     companyOfHydrogenProductionUnitId: string,
+    waterConsumptionLitersPerHour: number,
   ) {
     this.productionStartedAt = productionStartedAt;
     this.productionEndedAt = productionEndedAt;
@@ -45,27 +45,6 @@ export class CreateProductionEntity {
     this.hydrogenStorageUnitId = hydrogenStorageUnitId;
     this.companyIdOfPowerProductionUnit = companyOfPowerProductionUnitId;
     this.companyIdOfHydrogenProductionUnit = companyOfHydrogenProductionUnitId;
-  }
-
-  static of(
-    dto: CreateProductionDto,
-    recordedBy: string,
-    hydrogenColor: string,
-    companyIdOfPowerProductionUnit: string,
-    companyIdOfHydrogenProductionUnit: string,
-  ): CreateProductionEntity {
-    return new CreateProductionEntity(
-      dto.productionStartedAt,
-      dto.productionEndedAt,
-      dto.powerProductionUnitId,
-      dto.powerAmountKwh,
-      dto.hydrogenProductionUnitId,
-      dto.hydrogenAmountKg,
-      recordedBy,
-      hydrogenColor,
-      dto.hydrogenStorageUnitId,
-      companyIdOfPowerProductionUnit,
-      companyIdOfHydrogenProductionUnit,
-    );
+    this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 }

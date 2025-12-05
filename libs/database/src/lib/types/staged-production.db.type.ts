@@ -6,9 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './batch.query-args';
-export * from './company.query.args';
-export * from './process-step.query-args';
-export * from './unit.query-args';
-export * from './user.query-args';
-export * from './staged-production.query-args';
+import { Prisma } from '@prisma/client';
+import { stagedProductionQueryArgs } from '../query-args/staged-production.query-args';
+
+export type StagedProductionDbType = Prisma.StagedProductionGetPayload<typeof stagedProductionQueryArgs>;
