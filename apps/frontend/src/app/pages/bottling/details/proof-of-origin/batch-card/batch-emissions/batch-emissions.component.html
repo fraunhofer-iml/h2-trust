@@ -11,6 +11,8 @@
   </div>
   <div class="col-span-2 flex flex-col text-sm">
     <span class="text-sm text-neutral-500">Basis of Calculation</span>
-    <span>{{ emissions().basisOfCalculation }}</span>
+      @for (current of emissions().basisOfCalculation; track $index) {
+        <p class="m-0">{{ current }}</p>
+      }
   </div>
 </div>
