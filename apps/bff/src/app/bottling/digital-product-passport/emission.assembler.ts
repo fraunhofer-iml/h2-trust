@@ -87,15 +87,15 @@ export class EmissionCalculationAssembler {
       throw new Error(`Invalid process step type [${hydrogenProduction?.type}] for hydrogen storage emission calculation`);
     }
 
-    const label = 'Emissions (Compression)';
+    const label = 'Emissions (Compression from 30 bar to 300 bar)';
 
-    const energyDemand = 1.65;
+    const energyDemand = 1.65; // 5.93 / 3.6 -> default values for compression from 30 bar to 300 bar
     const emissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID].emissionFactor;
     const result = energyDemand * emissionFactor;
 
     const energyDemandVar = `Energy Demand: ${energyDemand} kWh/kg H₂`;
     const emissionFactorVar = `Emission Factor: ${emissionFactor} g CO₂,eq/kWh`;
-    const formula = `E = Energy Demand * Emission Factor`; // TODO-MP: what about the energy input?
+    const formula = `E = Energy Demand * Emission Factor`;
     const basisOfCalculation = [energyDemandVar, emissionFactorVar, formula];
 
     const unit = UNIT_G_CO2_PER_KG_H2;
