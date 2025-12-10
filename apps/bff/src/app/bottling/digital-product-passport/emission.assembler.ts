@@ -166,7 +166,7 @@ export class EmissionCalculationAssembler {
   private static assembleTrailerCalculation(
     amount: number,
     fuelType: FuelType,
-    distanceKm: number,
+    transportDistance: number,
   ): EmissionCalculationDto {
     const label = 'Emissions (Transportation with Trailer)';
 
@@ -174,14 +174,45 @@ export class EmissionCalculationAssembler {
       TRAILER_PARAMETERS.find((trailerEntry) => amount <= trailerEntry.capacityKg) ??
       TRAILER_PARAMETERS.at(TRAILER_PARAMETERS.length - 1);
 
-    const transportEfficiency: number = trailerParameter.transportEfficiencyMJPerTonnePerKm / 1000;
-    const emissionFactor: number = FUEL_EMISSION_FACTORS[fuelType];
-    const transportEmissions: number = trailerParameter.gEqEmissionsOfCH4AndN2OPerKmDistancePerTonneH2 / 1000;
-    const result = distanceKm * (transportEfficiency * emissionFactor + transportEmissions); // TODO: verify calculation
+    const tonPerKg = 0.001;
 
-    const formula = `E = ${distanceKm} km * (${transportEfficiency} MJ fuel/(km*kg H₂) * ${emissionFactor} g CO₂,eq/MJ fuel + ${transportEmissions} g CO₂,eq/(km*kg H₂))`;
+    // Amount of fuel used per ton of material transported = transport distance * transport efficiency
+    // [MJ fuel / ton of H₂] = [km] * [MJ fuel / (ton, km)]
+    const transportEfficiency = trailerParameter.transportEfficiencyMJPerTonnePerKm;
+    const amountOfFuelPerTonOfHydrogen = transportDistance * transportEfficiency;
 
-    const basisOfCalculation = [formula];
+    // Emission = 0.001 * Amount of fuel used per ton of material transported * emission factor
+    // [g CO₂,eq/kg of H₂] = [ton / kg] * [MJ fuel / ton of H₂] * [g CO₂,eq / MJ fuel]
+    const emissionFactorForFuel = FUEL_EMISSION_FACTORS[fuelType];
+    const emissionsFromFuelCombustion = tonPerKg * amountOfFuelPerTonOfHydrogen * emissionFactorForFuel;
+
+    // Emission = 0.001 * transport distance * emission factor for CH4 and N2O emissions
+    // [g CO₂,eq/kg of H₂] = [ton / kg] * [km] * [g CO₂,eq / (ton, km)]
+    const emissionFactorForCh4AndN2O = trailerParameter.gEqEmissionsOfCH4AndN2OPerKmDistancePerTonneH2;
+    const emissionDueToCh4AndN2O = tonPerKg * transportDistance * emissionFactorForCh4AndN2O;
+
+    const result = emissionsFromFuelCombustion + emissionDueToCh4AndN2O;
+
+    const amountOfFuelPerTonOfHydrogenFormula = `Amount of Fuel used per Ton of H₂ = Transport Distance * Transport Efficiency`;
+    const amountOfFuelPerTonOfHydrogenFormulaWithValues = `${amountOfFuelPerTonOfHydrogen} MJ / ton of H₂ = ${transportDistance} km * ${transportEfficiency} MJ / (ton·km)`;
+
+    const emissionFromFuelCombustionFormula = `Emissions from Fuel Combustion = Ton per Kg * Amount of Fuel per Ton of H₂ * Emission Factor for ${fuelType}`;
+    const emissionFromFuelCombustionFormulaWithValues = `${emissionsFromFuelCombustion} g CO₂,eq/kg H₂ = ${tonPerKg} ton/kg * ${amountOfFuelPerTonOfHydrogen} MJ / ton of H₂ * ${emissionFactorForFuel} g CO₂,eq/MJ`;
+
+    const emissionDueToCh4AndN2OFormula = `Emissions due to CH₄ and N₂O = Ton per Kg * Transport Distance * Emission Factor for CH₄ and N₂O`;
+    const emissionDueToCh4AndN2OFormulaWithValues = `${emissionDueToCh4AndN2O} g CO₂,eq/kg H₂ = ${tonPerKg} ton/kg * ${transportDistance} km * ${emissionFactorForCh4AndN2O} g CO₂,eq/(ton·km)`;
+
+    const formula = `E = Emissions from Fuel Combustion + Emissions due to CH₄ and N₂O`;
+
+    const basisOfCalculation = [
+      amountOfFuelPerTonOfHydrogenFormula,
+      amountOfFuelPerTonOfHydrogenFormulaWithValues,
+      emissionFromFuelCombustionFormula,
+      emissionFromFuelCombustionFormulaWithValues,
+      emissionDueToCh4AndN2OFormula,
+      emissionDueToCh4AndN2OFormulaWithValues,
+      formula,
+    ];
 
     const unit = UNIT_G_CO2_PER_KG_H2;
     const calculationTopic = CalculationTopic.HYDROGEN_TRANSPORTATION;
