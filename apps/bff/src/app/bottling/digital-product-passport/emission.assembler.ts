@@ -48,7 +48,7 @@ export class EmissionCalculationAssembler {
     const powerInputVar = `Power Input: ${powerInput} kWh`;
     const emissionFactorVar = `Emission Factor: ${emissionFactor} g CO₂,eq/kWh`;
     const hydrogenOutputVar = `Hydrogen Output: ${hydrogenOutput} kg H₂`;
-    const formula = `E = (Energy Input *  Emission Factor) / Hydrogen Output`;
+    const formula = `E = (Power Input * Emission Factor) / Hydrogen Output`;
     const basisOfCalculation = [powerInputVar, emissionFactorVar, hydrogenOutputVar, formula];
 
     const unit = UNIT_G_CO2_PER_KG_H2;
@@ -95,7 +95,7 @@ export class EmissionCalculationAssembler {
 
     const energyDemandVar = `Energy Demand: ${energyDemand} kWh/kg H₂`;
     const emissionFactorVar = `Emission Factor: ${emissionFactor} g CO₂,eq/kWh`;
-    const formula = `E = Energy Demand * Emission Factor`;
+    const formula = `E = Energy Demand * Emission Factor`; // TODO-MP: what about the energy input?
     const basisOfCalculation = [energyDemandVar, emissionFactorVar, formula];
 
     const unit = UNIT_G_CO2_PER_KG_H2;
@@ -115,7 +115,7 @@ export class EmissionCalculationAssembler {
 
     const result = 0;
 
-    const basisOfCalculation = [`TBA`];
+    const basisOfCalculation = ['TBA'];
 
     const unit = UNIT_G_CO2_PER_KG_H2;
     const calculationTopic = CalculationTopic.HYDROGEN_BOTTLING;
@@ -176,10 +176,10 @@ export class EmissionCalculationAssembler {
 
     const transportEfficiency: number = trailerParameter.transportEfficiencyMJPerTonnePerKm / 1000;
     const emissionFactor: number = FUEL_EMISSION_FACTORS[fuelType];
-    const emissions: number = trailerParameter.gEqEmissionsOfCH4AndN2OPerKmDistancePerTonneH2 / 1000;
-    const result = distanceKm * (transportEfficiency * emissionFactor + emissions);
+    const transportEmissions: number = trailerParameter.gEqEmissionsOfCH4AndN2OPerKmDistancePerTonneH2 / 1000;
+    const result = distanceKm * (transportEfficiency * emissionFactor + transportEmissions); // TODO: verify calculation
 
-    const formula = `E = ${distanceKm} km * (${transportEfficiency} MJ fuel/(km*kg H₂) * ${emissionFactor} g CO₂,eq/MJ fuel + ${emissions} g CO₂,eq/(km*kg H₂))`;
+    const formula = `E = ${distanceKm} km * (${transportEfficiency} MJ fuel/(km*kg H₂) * ${emissionFactor} g CO₂,eq/MJ fuel + ${transportEmissions} g CO₂,eq/(km*kg H₂))`;
 
     const basisOfCalculation = [formula];
 
