@@ -37,7 +37,7 @@ export class BatchAssembler {
       waterConsumption.startedAt,
       waterConsumption.batch.amount,
       MeasurementUnit.WATER,
-      new WaterDetailsDto(0, new EmissionDto(undefined, undefined, undefined)),
+      new WaterDetailsDto(waterConsumption.batch.amount, new EmissionDto(undefined, undefined, undefined)),
     );
   }
 

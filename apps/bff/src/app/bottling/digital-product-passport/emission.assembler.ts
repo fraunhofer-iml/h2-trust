@@ -12,6 +12,7 @@ import {
   EmissionComputationResultDto,
   EmissionDto,
   EmissionForProcessStepDto,
+  EnumLabelMapper,
 } from '@h2-trust/api';
 import {
   CalculationTopic,
@@ -32,18 +33,25 @@ export class EmissionCalculationAssembler {
   static assemblePowerSupplyCalculation(
     powerProduction: ProcessStepEntity,
     energySource: EnergySource,
+    hydrogenAmount: number,
   ): EmissionCalculationDto {
     if (powerProduction?.type !== ProcessType.POWER_PRODUCTION) {
       throw new Error(`Invalid process step type [${powerProduction?.type}] for power supply emission calculation`);
     }
 
     const label = POWER_EMISSION_FACTORS[energySource].label;
-    const powerAmountKwh = powerProduction.batch.amount;
-    const emissionFactorGPerKWh = POWER_EMISSION_FACTORS[energySource].emissionFactor;
-    const successorProducedHydrogenMassKg = powerProduction.batch.successors[0].amount;
 
-    const basisOfCalculation = `E = ${powerAmountKwh} kWh * ${emissionFactorGPerKWh} g CO₂,eq/kWh / ${successorProducedHydrogenMassKg} kg H₂`;
-    const result = (powerAmountKwh * emissionFactorGPerKWh) / successorProducedHydrogenMassKg;
+    const powerInput = powerProduction.batch.amount;
+    const emissionFactor = POWER_EMISSION_FACTORS[energySource].emissionFactor;
+    const hydrogenOutput = hydrogenAmount;
+    const result = (powerInput * emissionFactor) / hydrogenOutput;
+
+    const emissionFactorLabel = EnumLabelMapper.getEnergySource(energySource);
+    const powerInputInput = `Power Input: ${powerInput} kWh`;
+    const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} g CO₂,eq/kWh`;
+    const hydrogenOutputInput = `Hydrogen Output: ${hydrogenOutput} kg H₂`;
+    const formula = `E = (Power Input * Emission Factor ${emissionFactorLabel}) / Hydrogen Output`;
+    const basisOfCalculation = [powerInputInput, emissionFactorInput, hydrogenOutputInput, formula];
 
     const unit = UNIT_G_CO2_PER_KG_H2;
     const calculationTopic = CalculationTopic.POWER_SUPPLY;
@@ -51,17 +59,27 @@ export class EmissionCalculationAssembler {
     return new EmissionCalculationDto(label, basisOfCalculation, result, unit, calculationTopic);
   }
 
-  static assembleWaterSupplyCalculation(waterSupply: ProcessStepEntity): EmissionCalculationDto {
+  static assembleWaterSupplyCalculation(
+    waterSupply: ProcessStepEntity,
+    hydrogenAmount: number,
+  ): EmissionCalculationDto {
     if (waterSupply?.type !== ProcessType.WATER_CONSUMPTION) {
       throw new Error(`Invalid process step type [${waterSupply?.type}] for water supply emission calculation`);
     }
 
     const label = 'Emissions (Water Supply)';
 
-    const emissionFactorGCO2EqPerLiterWater = 0.43;
-    const successorProducedHydrogenMassKg = waterSupply.batch.successors[0].amount;
-    const basisOfCalculation = `E = ${waterSupply.batch.amount} L * ${emissionFactorGCO2EqPerLiterWater} g CO₂,eq/L / ${successorProducedHydrogenMassKg} kg H₂`;
-    const result = (waterSupply.batch.amount * emissionFactorGCO2EqPerLiterWater) / successorProducedHydrogenMassKg;
+    const waterInput = waterSupply.batch.amount;
+    const emissionFactorDeionizedWater = 0.43;
+    const hydrogenOutput = hydrogenAmount;
+    const result = (waterInput * emissionFactorDeionizedWater) / hydrogenOutput;
+
+    const emissionFactorLabel = 'Deionized Water';
+    const waterInputInput = `Water Input: ${waterInput} L`;
+    const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactorDeionizedWater} g CO₂,eq/L`;
+    const hydrogenOutputInput = `Hydrogen Output: ${hydrogenOutput} kg H₂`;
+    const formula = `E = (Water Input * Emission Factor ${emissionFactorLabel}) / Hydrogen Output`;
+    const basisOfCalculation = [waterInputInput, emissionFactorInput, hydrogenOutputInput, formula];
 
     const unit = UNIT_G_CO2_PER_KG_H2;
     const calculationTopic = CalculationTopic.WATER_SUPPLY;
@@ -69,21 +87,24 @@ export class EmissionCalculationAssembler {
     return new EmissionCalculationDto(label, basisOfCalculation, result, unit, calculationTopic);
   }
 
-  static assembleHydrogenStorageCalculation(
-    batchAmount: number,
-    hydrogenProductions: ProcessStepEntity[],
-  ): EmissionCalculationDto {
-    if (hydrogenProductions.some((hp) => hp.type !== ProcessType.HYDROGEN_PRODUCTION)) {
-      throw new Error(`Invalid process step type for hydrogen storage emission calculation`);
+  static assembleHydrogenStorageCalculation(hydrogenProduction: ProcessStepEntity): EmissionCalculationDto {
+    if (hydrogenProduction?.type !== ProcessType.HYDROGEN_PRODUCTION) {
+      throw new Error(
+        `Invalid process step type [${hydrogenProduction?.type}] for hydrogen storage emission calculation`,
+      );
     }
 
-    const label = 'Emissions (Compression)';
+    const label = 'Emissions (Compression from 30 bar to 300 bar)';
 
-    const compression = 1.65;
-    const powerEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID].emissionFactor;
-    const totalAmount = hydrogenProductions.reduce((acc, hp) => acc + hp.batch.amount, 0);
-    const basisOfCalculation = `E = ${compression} kWh/kg H₂ * ${powerEmissionFactor} g CO₂,eq/kWh * (${batchAmount} kg H₂ / ${totalAmount} kg H₂)`;
-    const result = compression * powerEmissionFactor * (batchAmount / totalAmount);
+    const energyDemand = 1.65; // 5.93 / 3.6 -> default values for compression from 30 bar to 300 bar
+    const emissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID].emissionFactor;
+    const result = energyDemand * emissionFactor;
+
+    const emissionFactorLabel = EnumLabelMapper.getEnergySource(EnergySource.GRID);
+    const energyDemandInput = `Energy Demand: ${energyDemand} kWh/kg H₂`;
+    const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} g CO₂,eq/kWh`;
+    const formula = `E = Energy Demand * Emission Factor ${emissionFactorLabel}`;
+    const basisOfCalculation = [energyDemandInput, emissionFactorInput, formula];
 
     const unit = UNIT_G_CO2_PER_KG_H2;
     const calculationTopic = CalculationTopic.HYDROGEN_STORAGE;
@@ -100,8 +121,9 @@ export class EmissionCalculationAssembler {
 
     const label = 'Emissions (Hydrogen Bottling)';
 
-    const basisOfCalculation = `TBA`;
     const result = 0;
+
+    const basisOfCalculation = ['E = [TBD]'];
 
     const unit = UNIT_G_CO2_PER_KG_H2;
     const calculationTopic = CalculationTopic.HYDROGEN_BOTTLING;
@@ -140,8 +162,9 @@ export class EmissionCalculationAssembler {
   private static assemblePipelineCalculation(): EmissionCalculationDto {
     const label = 'Emissions (Transportation with Pipeline)';
 
-    const basisOfCalculation = 'E = 0 g CO₂,eq/kg H₂';
     const result = 0;
+
+    const basisOfCalculation = ['E = 0 g CO₂,eq/kg H₂'];
 
     const unit = UNIT_G_CO2_PER_KG_H2;
     const calculationTopic = CalculationTopic.HYDROGEN_TRANSPORTATION;
@@ -152,21 +175,52 @@ export class EmissionCalculationAssembler {
   private static assembleTrailerCalculation(
     amount: number,
     fuelType: FuelType,
-    distanceKm: number,
+    transportDistance: number,
   ): EmissionCalculationDto {
     const label = 'Emissions (Transportation with Trailer)';
 
     const trailerParameter: TrailerParameter =
       TRAILER_PARAMETERS.find((trailerEntry) => amount <= trailerEntry.capacityKg) ??
       TRAILER_PARAMETERS.at(TRAILER_PARAMETERS.length - 1);
-    const fuelEmissionFactor: number = FUEL_EMISSION_FACTORS[fuelType];
 
-    const transportEfficiencyMJPerKgPerKm = trailerParameter.transportEfficiencyMJPerTonnePerKm / 1000;
-    const gEqEmissionsOfCH4AndN2OPerKmPerKgH2 = trailerParameter.gEqEmissionsOfCH4AndN2OPerKmDistancePerTonneH2 / 1000;
+    const tonPerKg = 0.001;
 
-    const basisOfCalculation = `E = ${distanceKm} km * (${transportEfficiencyMJPerKgPerKm} MJ fuel/(km*kg H₂) * ${fuelEmissionFactor} g CO₂,eq/MJ fuel + ${gEqEmissionsOfCH4AndN2OPerKmPerKgH2} g CO₂,eq/(km*kg H₂))`;
-    const result =
-      distanceKm * (transportEfficiencyMJPerKgPerKm * fuelEmissionFactor + gEqEmissionsOfCH4AndN2OPerKmPerKgH2);
+    // Amount of fuel used per ton of material transported = transport distance * transport efficiency
+    // [MJ fuel / ton of H₂] = [km] * [MJ fuel / (ton, km)]
+    const transportEfficiency = trailerParameter.transportEfficiencyMJPerTonnePerKm;
+    const amountOfFuelPerTonOfHydrogen = transportDistance * transportEfficiency;
+
+    // Emission = 0.001 * Amount of fuel used per ton of material transported * emission factor
+    // [g CO₂,eq/kg of H₂] = [ton / kg] * [MJ fuel / ton of H₂] * [g CO₂,eq / MJ fuel]
+    const emissionFactorFuel = FUEL_EMISSION_FACTORS[fuelType];
+    const emissionsFuelCombustion = tonPerKg * amountOfFuelPerTonOfHydrogen * emissionFactorFuel;
+
+    // Emission = 0.001 * transport distance * emission factor for CH4 and N2O emissions
+    // [g CO₂,eq/kg of H₂] = [ton / kg] * [km] * [g CO₂,eq / (ton, km)]
+    const emissionFactorCh4AndN2O = trailerParameter.gEqEmissionsOfCH4AndN2OPerKmDistancePerTonneH2;
+    const emissionCh4AndN2O = tonPerKg * transportDistance * emissionFactorCh4AndN2O;
+
+    const result = emissionsFuelCombustion + emissionCh4AndN2O;
+
+    const fuelTypeLabel = EnumLabelMapper.getFuelType(fuelType);
+    const tonPerKgInput = `Ton per Kg: ${tonPerKg} ton/kg`;
+    const transportDistanceInput = `Transport Distance: ${transportDistance} km`;
+    const transportEfficiencyInput = `Transport Efficiency: ${transportEfficiency} MJ fuel / (ton, km)`;
+    const emissionFactorFuelInput = `Emission Factor ${fuelTypeLabel}: ${emissionFactorFuel} g CO₂,eq / MJ`;
+    const emissionFactorCh4AndN2OInput = `Emission Factor CH₄ & N₂O: ${emissionFactorCh4AndN2O} g CO₂,eq / (ton, km)`;
+    const emissionFuelCombustionFormula = `Emission Fuel Combustion = Ton per Kg * Transport Distance * Transport Efficiency * Emission Factor ${fuelTypeLabel}`;
+    const emissionCh4AndN2OFormula = `Emission CH₄ & N₂O = Ton per Kg * Transport Distance * Emission Factor CH₄ & N₂O`;
+    const formula = `E = Emission Fuel Combustion + Emission CH₄ & N₂O`;
+    const basisOfCalculation = [
+      tonPerKgInput,
+      transportDistanceInput,
+      transportEfficiencyInput,
+      emissionFactorFuelInput,
+      emissionFactorCh4AndN2OInput,
+      emissionFuelCombustionFormula,
+      emissionCh4AndN2OFormula,
+      formula,
+    ];
 
     const unit = UNIT_G_CO2_PER_KG_H2;
     const calculationTopic = CalculationTopic.HYDROGEN_TRANSPORTATION;
@@ -294,6 +348,6 @@ export class EmissionCalculationAssembler {
   static assembleEmissionDto(calc: EmissionCalculationDto, hydrogenMassKg: number): EmissionDto {
     const amountCO2PerKgH2 = calc?.result ?? 0;
     const amountCO2 = amountCO2PerKgH2 * hydrogenMassKg;
-    return new EmissionDto(amountCO2, amountCO2PerKgH2, calc?.basisOfCalculation ?? '');
+    return new EmissionDto(amountCO2, amountCO2PerKgH2, calc?.basisOfCalculation ?? []);
   }
 }

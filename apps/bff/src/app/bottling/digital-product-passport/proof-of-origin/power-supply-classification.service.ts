@@ -29,7 +29,10 @@ export class PowerSupplyClassificationService {
     private readonly emissionComputationService: EmissionComputationService,
   ) {}
 
-  async buildPowerSupplyClassifications(powerProductions: ProcessStepEntity[]): Promise<ClassificationDto[]> {
+  async buildPowerSupplyClassifications(
+    powerProductions: ProcessStepEntity[],
+    hydrogenAmount: number,
+  ): Promise<ClassificationDto[]> {
     if (!powerProductions?.length) {
       return [];
     }
@@ -48,17 +51,19 @@ export class PowerSupplyClassificationService {
         const productionPowerBatches: BatchDto[] = await Promise.all(
           powerProductionsWithUnitsByEnergySource.map(async ([powerProduction]) => {
             const [powerSupplyEmission]: EmissionCalculationDto[] =
-              await this.emissionComputationService.computePowerSupplyEmissions([powerProduction]);
-            const hydrogenKgEquivalentToPowerBatch: number = powerProduction.batch.successors[0].amount;
+              await this.emissionComputationService.computePowerSupplyEmissions([powerProduction], hydrogenAmount);
+
             const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(
               powerSupplyEmission,
-              hydrogenKgEquivalentToPowerBatch,
+              hydrogenAmount,
             );
+
             const batch: PowerBatchDto = BatchAssembler.assemblePowerSupplyBatchDto(
               powerProduction,
               energySource,
               emission,
             );
+
             return batch;
           }),
         );
