@@ -6,7 +6,25 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { assertDefined } from './assertions';
+
 export class DateTimeUtil {
+  static toValidDate(value: unknown, name: string): Date {
+    assertDefined(value, name);
+
+    if (!(value instanceof Date || typeof value === 'string' || typeof value === 'number')) {
+      throw new Error(`[${name}] must be a Date, string or number: ${value}`);
+    }
+
+    const date = value instanceof Date ? value : new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+      throw new Error(`[${name}] is not a valid date: ${value}`);
+    }
+
+    return date;
+  }
+
   static convertDateStringToMilliseconds(date: string): number {
     const parsedDate = new Date(date);
 
@@ -34,7 +52,26 @@ export class DateTimeUtil {
     return DateTimeUtil.convertDateStringToMilliseconds(date);
   }
 
+  // Ensures safe subtraction of months
+  // XXXX-03-31 minus one month becomes XXXX-02-28, not XXXX-03-03.
+  static subtractMonthsSafe(date: Date, months: number): Date {
+    assertDefined(date, 'date');
+    assertDefined(months, 'months');
+
+    const year = date.getUTCFullYear();
+    const month = date.getUTCMonth();
+    const day = date.getUTCDate();
+    const targetIndex = month - months;
+    const targetYear = year + Math.floor(targetIndex / 12);
+    const targetMonth = ((targetIndex % 12) + 12) % 12;
+    const lastDay = new Date(Date.UTC(targetYear, targetMonth + 1, 0)).getUTCDate();
+    const clampedDay = Math.min(day, lastDay);
+    return new Date(Date.UTC(targetYear, targetMonth, clampedDay, 0, 0, 0, 0));
+  }
+
   static formatDate(date: Date): string {
+    assertDefined(date, 'date');
+
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
