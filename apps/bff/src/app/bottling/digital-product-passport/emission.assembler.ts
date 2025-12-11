@@ -46,10 +46,11 @@ export class EmissionCalculationAssembler {
     const hydrogenOutput = hydrogenAmount;
     const result = (powerInput * emissionFactor) / hydrogenOutput;
 
+    const emissionFactorLabel = EnumLabelMapper.getEnergySource(energySource);
     const powerInputInput = `Power Input: ${powerInput} kWh`;
-    const emissionFactorInput = `Emission Factor: ${emissionFactor} g CO₂,eq/kWh`;
+    const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} g CO₂,eq/kWh`;
     const hydrogenOutputInput = `Hydrogen Output: ${hydrogenOutput} kg H₂`;
-    const formula = `E = (Power Input * Emission Factor) / Hydrogen Output`;
+    const formula = `E = (Power Input * Emission Factor ${emissionFactorLabel}) / Hydrogen Output`;
     const basisOfCalculation = [powerInputInput, emissionFactorInput, hydrogenOutputInput, formula];
 
     const unit = UNIT_G_CO2_PER_KG_H2;
@@ -66,14 +67,15 @@ export class EmissionCalculationAssembler {
     const label = 'Emissions (Water Supply)';
 
     const waterInput = waterSupply.batch.amount;
-    const emissionFactor = 0.43;
+    const emissionFactorDeionizedWater = 0.43;
     const hydrogenOutput = hydrogenAmount;
-    const result = (waterInput * emissionFactor) / hydrogenOutput;
+    const result = (waterInput * emissionFactorDeionizedWater) / hydrogenOutput;
 
+    const emissionFactorLabel = 'Deionized Water';
     const waterInputInput = `Water Input: ${waterInput} L`;
-    const emissionFactorInput = `Emission Factor: ${emissionFactor} g CO₂,eq/L`;
+    const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactorDeionizedWater} g CO₂,eq/L`;
     const hydrogenOutputInput = `Hydrogen Output: ${hydrogenOutput} kg H₂`;
-    const formula = `E = (Water Input * Emission Factor) / Hydrogen Output`;
+    const formula = `E = (Water Input * Emission Factor ${emissionFactorLabel}) / Hydrogen Output`;
     const basisOfCalculation = [waterInputInput, emissionFactorInput, hydrogenOutputInput, formula];
 
     const unit = UNIT_G_CO2_PER_KG_H2;
@@ -93,9 +95,10 @@ export class EmissionCalculationAssembler {
     const emissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID].emissionFactor;
     const result = energyDemand * emissionFactor;
 
+    const emissionFactorLabel = EnumLabelMapper.getEnergySource(EnergySource.GRID);
     const energyDemandInput = `Energy Demand: ${energyDemand} kWh/kg H₂`;
-    const emissionFactorInput = `Emission Factor: ${emissionFactor} g CO₂,eq/kWh`;
-    const formula = `E = Energy Demand * Emission Factor`;
+    const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} g CO₂,eq/kWh`;
+    const formula = `E = Energy Demand * Emission Factor ${emissionFactorLabel}`;
     const basisOfCalculation = [energyDemandInput, emissionFactorInput, formula];
 
     const unit = UNIT_G_CO2_PER_KG_H2;
@@ -184,22 +187,22 @@ export class EmissionCalculationAssembler {
 
     // Emission = 0.001 * Amount of fuel used per ton of material transported * emission factor
     // [g CO₂,eq/kg of H₂] = [ton / kg] * [MJ fuel / ton of H₂] * [g CO₂,eq / MJ fuel]
-    const emissionFactorForFuel = FUEL_EMISSION_FACTORS[fuelType];
-    const emissionsFromFuelCombustion = tonPerKg * amountOfFuelPerTonOfHydrogen * emissionFactorForFuel;
+    const emissionFactorFuel = FUEL_EMISSION_FACTORS[fuelType];
+    const emissionsFuelCombustion = tonPerKg * amountOfFuelPerTonOfHydrogen * emissionFactorFuel;
 
     // Emission = 0.001 * transport distance * emission factor for CH4 and N2O emissions
     // [g CO₂,eq/kg of H₂] = [ton / kg] * [km] * [g CO₂,eq / (ton, km)]
-    const emissionFactorForCh4AndN2O = trailerParameter.gEqEmissionsOfCH4AndN2OPerKmDistancePerTonneH2;
-    const emissionDueToCh4AndN2O = tonPerKg * transportDistance * emissionFactorForCh4AndN2O;
+    const emissionFactorCh4AndN2O = trailerParameter.gEqEmissionsOfCH4AndN2OPerKmDistancePerTonneH2;
+    const emissionCh4AndN2O = tonPerKg * transportDistance * emissionFactorCh4AndN2O;
 
-    const result = emissionsFromFuelCombustion + emissionDueToCh4AndN2O;
+    const result = emissionsFuelCombustion + emissionCh4AndN2O;
 
     const fuelTypeLabel = EnumLabelMapper.getFuelType(fuelType);
     const tonPerKgInput = `Ton per Kg: ${tonPerKg} ton/kg`;
     const transportDistanceInput = `Transport Distance: ${transportDistance} km`;
     const transportEfficiencyInput = `Transport Efficiency: ${transportEfficiency} MJ fuel / (ton, km)`;
-    const emissionFactorFuelInput = `Emission Factor ${fuelTypeLabel}: ${emissionFactorForFuel} g CO₂,eq / MJ`;
-    const emissionFactorCh4AndN2OInput = `Emission Factor CH₄ & N₂O: ${emissionFactorForCh4AndN2O} g CO₂,eq / (ton, km)`;
+    const emissionFactorFuelInput = `Emission Factor ${fuelTypeLabel}: ${emissionFactorFuel} g CO₂,eq / MJ`;
+    const emissionFactorCh4AndN2OInput = `Emission Factor CH₄ & N₂O: ${emissionFactorCh4AndN2O} g CO₂,eq / (ton, km)`;
     const emissionFuelCombustionFormula = `Emission Fuel Combustion = Ton per Kg * Transport Distance * Transport Efficiency * Emission Factor ${fuelTypeLabel}`;
     const emissionCh4AndN2OFormula = `Emission CH₄ & N₂O = Ton per Kg * Transport Distance * Emission Factor CH₄ & N₂O`;
     const formula = `E = Emission Fuel Combustion + Emission CH₄ & N₂O`;
