@@ -9,6 +9,7 @@
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, CreateProductionEntity, ParsedFileBundles, PowerAccessApprovalEntity } from '@h2-trust/amqp';
+import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
 import { AccountingPeriodMatchingService } from './accounting-period-matching.service';
@@ -69,6 +70,14 @@ describe('ProductionController', () => {
             stageProductions: jest.fn(),
             stageParsedProductions: jest.fn(),
             getStagedProductionById: jest.fn(),
+          },
+        },
+        {
+          provide: ConfigurationService,
+          useValue: {
+            getProcessSvcConfiguration: jest.fn().mockReturnValue({
+              productionChunkSize: 50,
+            }),
           },
         },
       ],
