@@ -67,7 +67,7 @@
     "set-up-db": "npx prisma db push --force-reset && npx prisma db seed",
     "test": "nx run-many --all --parallel 5 --target test",
     "test-amqp-lib": "npx nx test amqp",
-    "test-backend": "npm run test-bff && npm run test-general-svc && npm run test-process-svc && npm run test-batch-svc",
+    "test-backend": "npm run test-bff && npm run test-general-svc && npm run test-process-svc && npm run test-batch-svc && npm run test-amqp-lib && npm run test-utils-lib",
     "test-batch-svc": "nx test batch-svc",
     "test-bff": "nx test bff",
     "test-bff-e2e": "nx test bff-e2e --skip-nx-cache --runInBand",
