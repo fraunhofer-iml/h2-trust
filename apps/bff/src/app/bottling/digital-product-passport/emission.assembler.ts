@@ -59,7 +59,10 @@ export class EmissionCalculationAssembler {
     return new EmissionCalculationDto(label, basisOfCalculation, result, unit, calculationTopic);
   }
 
-  static assembleWaterSupplyCalculation(waterSupply: ProcessStepEntity, hydrogenAmount: number): EmissionCalculationDto {
+  static assembleWaterSupplyCalculation(
+    waterSupply: ProcessStepEntity,
+    hydrogenAmount: number,
+  ): EmissionCalculationDto {
     if (waterSupply?.type !== ProcessType.WATER_CONSUMPTION) {
       throw new Error(`Invalid process step type [${waterSupply?.type}] for water supply emission calculation`);
     }
@@ -86,7 +89,9 @@ export class EmissionCalculationAssembler {
 
   static assembleHydrogenStorageCalculation(hydrogenProduction: ProcessStepEntity): EmissionCalculationDto {
     if (hydrogenProduction?.type !== ProcessType.HYDROGEN_PRODUCTION) {
-      throw new Error(`Invalid process step type [${hydrogenProduction?.type}] for hydrogen storage emission calculation`);
+      throw new Error(
+        `Invalid process step type [${hydrogenProduction?.type}] for hydrogen storage emission calculation`,
+      );
     }
 
     const label = 'Emissions (Compression from 30 bar to 300 bar)';

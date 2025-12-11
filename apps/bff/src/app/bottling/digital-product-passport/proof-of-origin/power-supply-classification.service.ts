@@ -27,9 +27,12 @@ export class PowerSupplyClassificationService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     private readonly emissionComputationService: EmissionComputationService,
-  ) { }
+  ) {}
 
-  async buildPowerSupplyClassifications(powerProductions: ProcessStepEntity[], hydrogenAmount: number): Promise<ClassificationDto[]> {
+  async buildPowerSupplyClassifications(
+    powerProductions: ProcessStepEntity[],
+    hydrogenAmount: number,
+  ): Promise<ClassificationDto[]> {
     if (!powerProductions?.length) {
       return [];
     }
@@ -50,11 +53,16 @@ export class PowerSupplyClassificationService {
             const [powerSupplyEmission]: EmissionCalculationDto[] =
               await this.emissionComputationService.computePowerSupplyEmissions([powerProduction], hydrogenAmount);
 
-            const emission: EmissionDto =
-              EmissionCalculationAssembler.assembleEmissionDto(powerSupplyEmission, hydrogenAmount);
+            const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(
+              powerSupplyEmission,
+              hydrogenAmount,
+            );
 
-            const batch: PowerBatchDto =
-              BatchAssembler.assemblePowerSupplyBatchDto(powerProduction, energySource, emission);
+            const batch: PowerBatchDto = BatchAssembler.assemblePowerSupplyBatchDto(
+              powerProduction,
+              energySource,
+              emission,
+            );
 
             return batch;
           }),

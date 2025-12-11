@@ -23,14 +23,17 @@ export class WaterSupplyClassificationService {
     }
 
     const waterBatches: WaterBatchDto[] = waterSupplies.map((waterSupply) => {
-      const emissionCalculation: EmissionCalculationDto =
-        EmissionCalculationAssembler.assembleWaterSupplyCalculation(waterSupply, hydrogenAmount);
+      const emissionCalculation: EmissionCalculationDto = EmissionCalculationAssembler.assembleWaterSupplyCalculation(
+        waterSupply,
+        hydrogenAmount,
+      );
 
-      const emission: EmissionDto =
-        EmissionCalculationAssembler.assembleEmissionDto(emissionCalculation, hydrogenAmount);
+      const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(
+        emissionCalculation,
+        hydrogenAmount,
+      );
 
-      const batch: WaterBatchDto =
-        BatchAssembler.assembleWaterSupplyBatchDto(waterSupply, emission);
+      const batch: WaterBatchDto = BatchAssembler.assembleWaterSupplyBatchDto(waterSupply, emission);
 
       return batch;
     });
