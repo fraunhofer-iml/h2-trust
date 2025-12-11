@@ -6,16 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export function requireDefined<T>(value: T | undefined | null, name: string): NonNullable<T> {
-  if (value === undefined || value === null) {
-    const message = `Missing ${name}`;
-    throw new Error(message);
-  }
-
-  return value;
-}
-
-export function assertDefined<T>(value: T | null | undefined, name: string): asserts value is NonNullable<T> {
+export function assertDefined<T>(value: T | undefined | null, name: string): asserts value is NonNullable<T> {
   if (value === undefined || value === null) {
     const message = `Missing ${name}`;
     throw new Error(message);
@@ -24,8 +15,15 @@ export function assertDefined<T>(value: T | null | undefined, name: string): ass
 
 export function assertBoolean(value: unknown, name: string): asserts value is boolean {
   assertDefined(value, name);
+
   if (typeof value !== 'boolean') {
     const message = `${name} must be a boolean: ${value}`;
     throw new Error(message);
   }
+}
+
+export function requireDefined<T>(value: T | undefined | null, name: string): NonNullable<T> {
+  assertDefined(value, name);
+
+  return value;
 }

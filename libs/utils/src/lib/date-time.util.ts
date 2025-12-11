@@ -11,19 +11,17 @@ import { assertDefined } from './assertions';
 export class DateTimeUtil {
   static toValidDate(value: unknown, name: string): Date {
     assertDefined(value, name);
-    let date: Date;
-    if (value instanceof Date) {
-      date = value;
-    } else if (typeof value === 'string' || typeof value === 'number') {
-      date = new Date(value);
-    } else {
-      const message = `${name} must be a string, number or Date: ${value}`;
-      throw new Error(message);
+
+    if (!(value instanceof Date || typeof value === 'string' || typeof value === 'number')) {
+      throw new Error(`[${name}] must be a Date, string or number: ${value}`);
     }
+
+    const date = value instanceof Date ? value : new Date(value);
+
     if (Number.isNaN(date.getTime())) {
-      const message = `${name} is not a valid date: ${value}`;
-      throw new Error(message);
+      throw new Error(`[${name}] is not a valid date: ${value}`);
     }
+
     return date;
   }
 
@@ -57,6 +55,9 @@ export class DateTimeUtil {
   // Ensures safe subtraction of months
   // XXXX-03-31 minus one month becomes XXXX-02-28, not XXXX-03-03.
   static subtractMonthsSafe(date: Date, months: number): Date {
+    assertDefined(date, 'date');
+    assertDefined(months, 'months');
+
     const year = date.getUTCFullYear();
     const month = date.getUTCMonth();
     const day = date.getUTCDate();
@@ -69,6 +70,8 @@ export class DateTimeUtil {
   }
 
   static formatDate(date: Date): string {
+    assertDefined(date, 'date');
+    
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
