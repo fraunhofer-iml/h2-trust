@@ -194,20 +194,13 @@ export class EmissionCalculationAssembler {
 
     const result = emissionsFromFuelCombustion + emissionDueToCh4AndN2O;
 
-    //const amountOfFuelPerTonOfHydrogenFormula = `Amount of Fuel used per Ton of H₂ = Transport Distance * Transport Efficiency`;
-    //const amountOfFuelPerTonOfHydrogenFormulaWithValues = `${amountOfFuelPerTonOfHydrogen} MJ / ton of H₂ = ${transportDistance} km * ${transportEfficiency} MJ / (ton, km)`;
-
     const tonPerKgFormula = `Ton per Kg = 0.001 ton/kg`;
     const transportDistanceFormula = `Transport Distance = ${transportDistance} km`;
     const transportEfficiencyFormula = `Transport Efficiency = ${transportEfficiency} MJ fuel / (ton, km)`;
     const emissionFactorForFuelFormula = `Emission Factor ${EnumLabelMapper.getFuelType(fuelType)} = ${emissionFactorForFuel} g CO₂,eq / MJ`;
     const emissionFactorForCh4AndN2OFormula = `Emission Factor CH₄ & N₂O = ${emissionFactorForCh4AndN2O} g CO₂,eq / (ton, km)`;
-
     const emissionFromFuelCombustionFormula = `Emission Fuel Combustion = Ton per Kg * Transport Distance * Transport Efficiency * Emission Factor ${EnumLabelMapper.getFuelType(fuelType)}`;
-    //const emissionFromFuelCombustionFormulaWithValues = `${emissionsFromFuelCombustion} g CO₂,eq/kg H₂ = ${tonPerKg} ton/kg * ${amountOfFuelPerTonOfHydrogen} MJ / ton of H₂ * ${emissionFactorForFuel} g CO₂,eq/MJ`;
-
     const emissionDueToCh4AndN2OFormula = `Emission CH₄ & N₂O = Ton per Kg * Transport Distance * Emission Factor CH₄ & N₂O`;
-    //const emissionDueToCh4AndN2OFormulaWithValues = `${emissionDueToCh4AndN2O} g CO₂,eq/kg H₂ = ${tonPerKg} ton/kg * ${transportDistance} km * ${emissionFactorForCh4AndN2O} g CO₂,eq/(ton, km)`;
 
     const formula = `E = Emission Fuel Combustion + Emission CH₄ & N₂O`;
 
@@ -217,12 +210,8 @@ export class EmissionCalculationAssembler {
       transportEfficiencyFormula,
       emissionFactorForFuelFormula,
       emissionFactorForCh4AndN2OFormula,
-      //amountOfFuelPerTonOfHydrogenFormula,
-      //amountOfFuelPerTonOfHydrogenFormulaWithValues,
       emissionFromFuelCombustionFormula,
-      //emissionFromFuelCombustionFormulaWithValues,
       emissionDueToCh4AndN2OFormula,
-      //emissionDueToCh4AndN2OFormulaWithValues,
       formula,
     ];
 
