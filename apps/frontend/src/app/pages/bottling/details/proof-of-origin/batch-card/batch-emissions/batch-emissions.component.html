@@ -11,8 +11,20 @@
   </div>
   <div class="col-span-2 flex flex-col text-sm">
     <span class="text-sm text-neutral-500">Basis of Calculation</span>
-      @for (current of emissions().basisOfCalculation; track $index) {
-        <p class="m-0">{{ current }}</p>
-      }
+    <div class="flex flex-col gap-2">
+      <ng-container *ngIf="inputs.length > 0">
+        <span class="text-xs text-neutral-500">Input</span>
+        <div class="flex flex-col gap-1 text-neutral-700">
+          <p class="m-0" *ngFor="let input of inputs">{{ input }}</p>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="formulas.length > 0">
+        <span class="text-xs text-neutral-500">Formula</span>
+        <div class="flex flex-col gap-1 text-neutral-700">
+          <p class="m-0" *ngFor="let formula of formulas">{{ formula }}</p>
+        </div>
+      </ng-container>
+    </div>
   </div>
 </div>

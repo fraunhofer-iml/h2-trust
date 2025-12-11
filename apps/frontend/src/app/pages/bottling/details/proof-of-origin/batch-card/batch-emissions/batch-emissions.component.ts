@@ -20,4 +20,12 @@ import { UnitPipe } from '../../../../../../shared/pipes/unit.pipe';
 export class BatchEmissionsComponent {
   emissions = input.required<EmissionDto>();
   protected readonly FormattedUnits = FormattedUnits;
+
+  get inputs(): string[] {
+    return this.emissions().basisOfCalculation.filter((input) => input.includes(':'));
+  }
+
+  get formulas(): string[] {
+    return this.emissions().basisOfCalculation.filter((formula) => formula.includes('='));
+  }
 }
