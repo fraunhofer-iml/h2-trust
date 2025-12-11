@@ -22,10 +22,10 @@ export class BatchEmissionsComponent {
   protected readonly FormattedUnits = FormattedUnits;
 
   get inputs(): string[] {
-    return this.emissions().basisOfCalculation.filter((input) => input.includes(':'));
+    return (this.emissions()?.basisOfCalculation ?? []).filter((input) => input.includes(':'));
   }
 
   get formulas(): string[] {
-    return this.emissions().basisOfCalculation.filter((formula) => formula.includes('='));
+    return (this.emissions()?.basisOfCalculation ?? []).filter((formula) => formula.includes('='));
   }
 }
