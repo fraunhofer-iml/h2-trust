@@ -7,7 +7,7 @@
  */
 
 import { firstValueFrom } from 'rxjs';
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerException,
@@ -35,6 +35,9 @@ export class ProductionImportService {
     private readonly stagedProductionRepository: StagedProductionRepository,
     private readonly productionService: ProductionService,
   ) { }
+
+  private static readonly CHUNK_SIZE = 10;
+  private readonly logger = new Logger(ProductionImportService.name);
 
   async stageProductions(data: ParsedFileBundles, userId: string) {
     const gridUnitId = await this.fetchGridUnitId(userId);
@@ -71,18 +74,30 @@ export class ProductionImportService {
       );
     });
 
-    const [powerProductions, waterConsumptions] = await Promise.all([
-      Promise.all(createProductions.map((production) => this.productionService.createPowerProductions(production))),
-      Promise.all(createProductions.map((production) => this.productionService.createWaterConsumptions(production))),
-    ]);
+    this.logger.debug(`Finalizing ${createProductions.length} staged productions in chunks of ${ProductionImportService.CHUNK_SIZE}`);
 
-    const hydrogenProductions = await Promise.all(
-      createProductions.map((production, index) =>
-        this.productionService.createHydrogenProductions(production, powerProductions[index], waterConsumptions[index]),
-      ),
-    );
+    const processSteps: ProcessStepEntity[] = [];
 
-    return [...powerProductions.flat(), ...waterConsumptions.flat(), ...hydrogenProductions.flat()];
+    for (let i = 0; i < createProductions.length; i += ProductionImportService.CHUNK_SIZE) {
+      this.logger.debug(`Processing ${i + 1} to ${Math.min(i + ProductionImportService.CHUNK_SIZE, createProductions.length)}`);
+
+      const createProductionChunk = createProductions.slice(i, i + ProductionImportService.CHUNK_SIZE);
+
+      const [powerProductions, waterConsumptions] = await Promise.all([
+        Promise.all(createProductionChunk.map((production) => this.productionService.createPowerProductions(production))),
+        Promise.all(createProductionChunk.map((production) => this.productionService.createWaterConsumptions(production))),
+      ]);
+
+      const hydrogenProductions = await Promise.all(
+        createProductionChunk.map((production, index) =>
+          this.productionService.createHydrogenProductions(production, powerProductions[index], waterConsumptions[index]),
+        ),
+      );
+
+      processSteps.push(...powerProductions.flat(), ...waterConsumptions.flat(), ...hydrogenProductions.flat());
+    }
+
+    return processSteps;
   }
 
   private async fetchGridUnitId(userId: string): Promise<string> {
