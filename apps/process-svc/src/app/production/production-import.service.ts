@@ -22,11 +22,11 @@ import {
   StagedProductionEntity,
   SubmitProductionProps,
 } from '@h2-trust/amqp';
+import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
 import { PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
 import { AccountingPeriodMatchingService } from './accounting-period-matching.service';
 import { ProductionService } from './production.service';
-import { ConfigurationService } from '@h2-trust/configuration';
 
 @Injectable()
 export class ProductionImportService {
@@ -78,7 +78,9 @@ export class ProductionImportService {
       );
     });
 
-    this.logger.debug(`Finalizing ${createProductions.length} staged productions in chunks of ${this.productionChunkSize}`);
+    this.logger.debug(
+      `Finalizing ${createProductions.length} staged productions in chunks of ${this.productionChunkSize}`,
+    );
 
     const processSteps: ProcessStepEntity[] = [];
 
@@ -88,13 +90,21 @@ export class ProductionImportService {
       const createProductionChunk = createProductions.slice(i, i + this.productionChunkSize);
 
       const [powerProductions, waterConsumptions] = await Promise.all([
-        Promise.all(createProductionChunk.map((production) => this.productionService.createPowerProductions(production))),
-        Promise.all(createProductionChunk.map((production) => this.productionService.createWaterConsumptions(production))),
+        Promise.all(
+          createProductionChunk.map((production) => this.productionService.createPowerProductions(production)),
+        ),
+        Promise.all(
+          createProductionChunk.map((production) => this.productionService.createWaterConsumptions(production)),
+        ),
       ]);
 
       const hydrogenProductions = await Promise.all(
         createProductionChunk.map((production, index) =>
-          this.productionService.createHydrogenProductions(production, powerProductions[index], waterConsumptions[index]),
+          this.productionService.createHydrogenProductions(
+            production,
+            powerProductions[index],
+            waterConsumptions[index],
+          ),
         ),
       );
 
