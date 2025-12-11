@@ -12,19 +12,23 @@
   <div class="col-span-2 flex flex-col text-sm">
     <span class="text-sm text-neutral-500">Basis of Calculation</span>
     <div class="flex flex-col gap-2">
-      <ng-container *ngIf="inputs.length > 0">
+      @if (inputs.length > 0) {
         <span class="text-xs text-neutral-500">Input</span>
         <div class="flex flex-col gap-1 text-neutral-700">
-          <p class="m-0" *ngFor="let input of inputs">{{ input }}</p>
+          @for (input of inputs; track input) {
+            <p class="m-0">{{ input }}</p>
+          }
         </div>
-      </ng-container>
+      }
 
-      <ng-container *ngIf="formulas.length > 0">
+      @if (formulas.length > 0) {
         <span class="text-xs text-neutral-500">Formula</span>
         <div class="flex flex-col gap-1 text-neutral-700">
-          <p class="m-0" *ngFor="let formula of formulas">{{ formula }}</p>
+          @for (formula of formulas; track formula) {
+            <p class="m-0">{{ formula }}</p>
+          }
         </div>
-      </ng-container>
+      }
     </div>
   </div>
 </div>
