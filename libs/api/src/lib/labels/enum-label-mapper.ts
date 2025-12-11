@@ -7,6 +7,7 @@
  */
 
 import {
+  EnergySource,
   GridLevel,
   HydrogenProductionMethod,
   HydrogenProductionTechnology,
@@ -45,6 +46,17 @@ export class EnumLabelMapper {
     [HydrogenStorageType.LIQUID_HYDROGEN]: 'Liquid Hydrogen',
   };
 
+  private static readonly FUEL_TYPE_LABELS: Record<string, string> = {
+    DIESEL: 'Diesel',
+  };
+
+  private static readonly ENERGY_SOURCE_LABELS: Record<EnergySource, string> = {
+    [EnergySource.GRID]: 'Grid',
+    [EnergySource.HYDRO_POWER]: 'Hydro Power Plant',
+    [EnergySource.SOLAR_ENERGY]: 'Photovoltaic System',
+    [EnergySource.WIND_ENERGY]: 'Wind Turbine',
+  };
+
   public static getPowerProductionType(value: PowerProductionType): string {
     return this.getLabel(value, this.POWER_PRODUCTION_TYPE_LABELS);
   }
@@ -63,6 +75,14 @@ export class EnumLabelMapper {
 
   public static getHydrogenStorageType(value: HydrogenStorageType): string {
     return this.getLabel(value, this.HYDROGEN_STORAGE_TYPE_LABELS);
+  }
+
+  public static getFuelType(value: string): string {
+    return this.getLabel(value, this.FUEL_TYPE_LABELS);
+  }
+
+  public static getEnergySource(value: EnergySource): string {
+    return this.getLabel(value, this.ENERGY_SOURCE_LABELS);
   }
 
   private static getLabel<T extends string>(value: T, labels: Record<T, string>): string {

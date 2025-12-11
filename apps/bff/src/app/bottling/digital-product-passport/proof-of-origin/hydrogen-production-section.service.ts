@@ -24,12 +24,13 @@ export class HydrogenProductionSectionService {
   async buildSection(
     powerProductions: ProcessStepEntity[],
     waterConsumptions: ProcessStepEntity[],
+    hydrogenAmount: number,
   ): Promise<SectionDto> {
     const classifications: ClassificationDto[] = [];
 
     if (powerProductions?.length) {
       const energySourceClassifications: ClassificationDto[] =
-        await this.powerSupplyClassificationService.buildPowerSupplyClassifications(powerProductions);
+        await this.powerSupplyClassificationService.buildPowerSupplyClassifications(powerProductions, hydrogenAmount);
       const powerSupplyClassification: ClassificationDto = ClassificationAssembler.assemblePowerClassification(
         ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION,
         [],
@@ -40,7 +41,7 @@ export class HydrogenProductionSectionService {
 
     if (waterConsumptions?.length) {
       const waterSupplyClassification: ClassificationDto =
-        this.waterSupplyClassificationService.buildWaterSupplyClassification(waterConsumptions);
+        this.waterSupplyClassificationService.buildWaterSupplyClassification(waterConsumptions, hydrogenAmount);
       classifications.push(waterSupplyClassification);
     }
 

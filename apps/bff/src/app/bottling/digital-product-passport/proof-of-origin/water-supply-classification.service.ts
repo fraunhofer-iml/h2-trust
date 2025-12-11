@@ -16,21 +16,25 @@ import { ClassificationAssembler } from './classification.assembler';
 
 @Injectable()
 export class WaterSupplyClassificationService {
-  buildWaterSupplyClassification(waterSupplies: ProcessStepEntity[]): ClassificationDto {
+  buildWaterSupplyClassification(waterSupplies: ProcessStepEntity[], hydrogenAmount: number): ClassificationDto {
     if (!waterSupplies?.length) {
       const message = 'No process steps of type water supply found.';
       throw new Error(message);
     }
 
     const waterBatches: WaterBatchDto[] = waterSupplies.map((waterSupply) => {
-      const emissionCalculation: EmissionCalculationDto =
-        EmissionCalculationAssembler.assembleWaterSupplyCalculation(waterSupply);
-      const hydrogenKgEquivalentToWaterBatch: number = waterSupply.batch.successors[0].amount;
+      const emissionCalculation: EmissionCalculationDto = EmissionCalculationAssembler.assembleWaterSupplyCalculation(
+        waterSupply,
+        hydrogenAmount,
+      );
+
       const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(
         emissionCalculation,
-        hydrogenKgEquivalentToWaterBatch,
+        hydrogenAmount,
       );
+
       const batch: WaterBatchDto = BatchAssembler.assembleWaterSupplyBatchDto(waterSupply, emission);
+
       return batch;
     });
 

@@ -42,10 +42,7 @@ export class HydrogenStorageSectionService {
       const batchesForHydrogenColor: BatchDto[] = await Promise.all(
         hydrogenProductionsByHydrogenColor.map(async (hydrogenProduction) => {
           const emissionCalculation: EmissionCalculationDto =
-            EmissionCalculationAssembler.assembleHydrogenStorageCalculation(
-              hydrogenProduction.batch.amount,
-              hydrogenProductions,
-            );
+            EmissionCalculationAssembler.assembleHydrogenStorageCalculation(hydrogenProduction);
           const hydrogenKgEquivalent: number = hydrogenProduction.batch.amount;
           const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(
             emissionCalculation,
