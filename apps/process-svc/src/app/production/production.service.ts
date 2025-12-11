@@ -32,22 +32,7 @@ export class ProductionService {
 
   constructor(@Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy) {}
 
-  async createProductions(entity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
-    this.logger.debug('Production Creation Started');
-
-    const [powerProductions, waterConsumptions] = await Promise.all([
-      this.createPowerProductions(entity),
-      this.createWaterConsumptions(entity),
-    ]);
-
-    const hydrogenProductions = await this.createHydrogenProductions(entity, powerProductions, waterConsumptions);
-
-    this.logger.debug('Production Creation Completed');
-
-    return [...powerProductions, ...waterConsumptions, ...hydrogenProductions];
-  }
-
-  private async createPowerProductions(entity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
+  async createPowerProductions(entity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
     const params: ProcessStepParams = {
       type: ProcessType.POWER_PRODUCTION,
       executedBy: entity.powerProductionUnitId,
@@ -68,7 +53,7 @@ export class ProductionService {
     );
   }
 
-  private async createWaterConsumptions(entity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
+  async createWaterConsumptions(entity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
     const waterAmountLiters = ProductionUtils.calculateWaterAmount(
       entity.productionStartedAt,
       entity.productionEndedAt,
@@ -95,7 +80,7 @@ export class ProductionService {
     );
   }
 
-  private async createHydrogenProductions(
+  async createHydrogenProductions(
     entity: CreateProductionEntity,
     powerProductions: ProcessStepEntity[],
     waterConsumptions: ProcessStepEntity[],

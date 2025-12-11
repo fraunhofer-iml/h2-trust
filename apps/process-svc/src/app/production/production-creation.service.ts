@@ -24,7 +24,7 @@ export class ProductionCreationService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly productionService: ProductionService,
-  ) {}
+  ) { }
 
   async createProductions(createProductionEntity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
     const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
@@ -40,6 +40,13 @@ export class ProductionCreationService {
     createProductionEntity.companyIdOfHydrogenProductionUnit = hydrogenProductionUnit.company.id;
     createProductionEntity.waterConsumptionLitersPerHour = hydrogenProductionUnit.waterConsumptionLitersPerHour;
 
-    return this.productionService.createProductions(createProductionEntity);
+    const [powerProductions, waterConsumptions] = await Promise.all([
+      this.productionService.createPowerProductions(createProductionEntity),
+      this.productionService.createWaterConsumptions(createProductionEntity),
+    ]);
+
+    const hydrogenProductions = await this.productionService.createHydrogenProductions(createProductionEntity, powerProductions, waterConsumptions);
+
+    return [...powerProductions, ...waterConsumptions, ...hydrogenProductions];
   }
 }

@@ -34,7 +34,7 @@ export class ProductionImportService {
     private readonly accountingPeriodMatchingService: AccountingPeriodMatchingService,
     private readonly stagedProductionRepository: StagedProductionRepository,
     private readonly productionService: ProductionService,
-  ) {}
+  ) { }
 
   async stageProductions(data: ParsedFileBundles, userId: string) {
     const gridUnitId = await this.fetchGridUnitId(userId);
@@ -51,29 +51,38 @@ export class ProductionImportService {
     const stagedProductions: StagedProductionEntity[] =
       await this.stagedProductionRepository.getStagedProductionsByImportId(props.importId);
 
-    return await Promise.all(
-      stagedProductions.map(async (stagedProduction) => {
-        const startedAt: Date = new Date(stagedProduction.startedAt);
-        const endedAt: Date = new Date(new Date(stagedProduction.startedAt).setMinutes(59, 59, 999));
+    const createProductions: CreateProductionEntity[] = stagedProductions.map((stagedProduction) => {
+      const startedAt: Date = new Date(stagedProduction.startedAt);
+      const endedAt: Date = new Date(new Date(stagedProduction.startedAt).setMinutes(59, 59, 999));
 
-        const entity = new CreateProductionEntity(
-          startedAt.toISOString(),
-          endedAt.toISOString(),
-          stagedProduction.powerProductionUnitId,
-          stagedProduction.powerAmount,
-          stagedProduction.hydrogenProductionUnitId,
-          stagedProduction.hydrogenAmount,
-          props.recordedBy,
-          stagedProduction.hydrogenColor,
-          props.hydrogenStorageUnitId,
-          stagedProduction.powerProductionUnitOwnerId,
-          stagedProduction.hydrogenProductionUnitOwnerId,
-          stagedProduction.waterConsumptionLitersPerHour,
-        );
+      return new CreateProductionEntity(
+        startedAt.toISOString(),
+        endedAt.toISOString(),
+        stagedProduction.powerProductionUnitId,
+        stagedProduction.powerAmount,
+        stagedProduction.hydrogenProductionUnitId,
+        stagedProduction.hydrogenAmount,
+        props.recordedBy,
+        stagedProduction.hydrogenColor,
+        props.hydrogenStorageUnitId,
+        stagedProduction.powerProductionUnitOwnerId,
+        stagedProduction.hydrogenProductionUnitOwnerId,
+        stagedProduction.waterConsumptionLitersPerHour,
+      );
+    });
 
-        return this.productionService.createProductions(entity);
-      }),
-    ).then((processSteps) => processSteps.flat());
+    const [powerProductions, waterConsumptions] = await Promise.all([
+      Promise.all(createProductions.map((production) => this.productionService.createPowerProductions(production))),
+      Promise.all(createProductions.map((production) => this.productionService.createWaterConsumptions(production))),
+    ]);
+
+    const hydrogenProductions = await Promise.all(
+      createProductions.map((production, index) =>
+        this.productionService.createHydrogenProductions(production, powerProductions[index], waterConsumptions[index]),
+      ),
+    );
+
+    return [...powerProductions.flat(), ...waterConsumptions.flat(), ...hydrogenProductions.flat()];
   }
 
   private async fetchGridUnitId(userId: string): Promise<string> {
