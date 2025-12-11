@@ -73,7 +73,8 @@
     "test-bff-e2e": "nx test bff-e2e --skip-nx-cache --runInBand",
     "test-frontend": "nx test frontend",
     "test-general-svc": "nx test general-svc",
-    "test-process-svc": "nx test process-svc"
+    "test-process-svc": "nx test process-svc",
+    "test-utils-lib": "npx nx test utils"
   },
   "dependencies": {
     "@angular/animations": "~19.1.0",
