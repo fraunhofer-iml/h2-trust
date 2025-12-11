@@ -26,17 +26,21 @@ import { StagedProductionRepository } from '@h2-trust/database';
 import { PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
 import { AccountingPeriodMatchingService } from './accounting-period-matching.service';
 import { ProductionService } from './production.service';
+import { ConfigurationService } from '@h2-trust/configuration';
 
 @Injectable()
 export class ProductionImportService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
+    private readonly configurationService: ConfigurationService,
     private readonly accountingPeriodMatchingService: AccountingPeriodMatchingService,
     private readonly stagedProductionRepository: StagedProductionRepository,
     private readonly productionService: ProductionService,
-  ) { }
+  ) {
+    this.productionChunkSize = this.configurationService.getProcessSvcConfiguration().productionChunkSize;
+  }
 
-  private static readonly CHUNK_SIZE = 10;
+  private readonly productionChunkSize: number;
   private readonly logger = new Logger(ProductionImportService.name);
 
   async stageProductions(data: ParsedFileBundles, userId: string) {
@@ -74,14 +78,14 @@ export class ProductionImportService {
       );
     });
 
-    this.logger.debug(`Finalizing ${createProductions.length} staged productions in chunks of ${ProductionImportService.CHUNK_SIZE}`);
+    this.logger.debug(`Finalizing ${createProductions.length} staged productions in chunks of ${this.productionChunkSize}`);
 
     const processSteps: ProcessStepEntity[] = [];
 
-    for (let i = 0; i < createProductions.length; i += ProductionImportService.CHUNK_SIZE) {
-      this.logger.debug(`Processing ${i + 1} to ${Math.min(i + ProductionImportService.CHUNK_SIZE, createProductions.length)}`);
+    for (let i = 0; i < createProductions.length; i += this.productionChunkSize) {
+      this.logger.debug(`Processing ${i + 1} to ${Math.min(i + this.productionChunkSize, createProductions.length)}`);
 
-      const createProductionChunk = createProductions.slice(i, i + ProductionImportService.CHUNK_SIZE);
+      const createProductionChunk = createProductions.slice(i, i + this.productionChunkSize);
 
       const [powerProductions, waterConsumptions] = await Promise.all([
         Promise.all(createProductionChunk.map((production) => this.productionService.createPowerProductions(production))),
