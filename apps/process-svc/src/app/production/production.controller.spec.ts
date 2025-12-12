@@ -40,9 +40,7 @@ describe('ProductionController', () => {
     });
 
     batchSvcSendMock = jest.fn().mockImplementation((_pattern, data) => {
-      return of({
-        ...data.processStepEntity,
-      });
+      return of(data.processSteps);
     });
 
     const moduleRef: TestingModule = await Test.createTestingModule({
