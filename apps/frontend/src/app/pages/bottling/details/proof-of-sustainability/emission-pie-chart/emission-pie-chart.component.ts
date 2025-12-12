@@ -7,7 +7,7 @@
  */
 
 import * as echarts from 'echarts';
-import { EChartsOption, PieSeriesOption } from 'echarts';
+import { EChartsOption, LegendComponentOption, PieSeriesOption } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { CommonModule, PercentPipe, TitleCasePipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
@@ -29,7 +29,10 @@ export class EmissionPieChartComponent {
   data = input<EmissionForProcessStepDto[]>([]);
   chartData$ = computed(() => this.toChartData(this.data()));
 
-  readonly availableEmissionProcessStepTypes: EmissionProcessStepType[] = ['APPLICATION', 'REGULATORY'] as const;
+  readonly headings: Record<EmissionProcessStepType, string> = {
+    APPLICATION: 'Emissions according to Proof of Origin',
+    REGULATORY: 'Emissions according to RED III',
+  };
 
   private toChartData(emissionItems: EmissionForProcessStepDto[]): EChartsOption {
     const applicationItems = emissionItems.filter((i) => i.processStepType === 'APPLICATION');
@@ -37,19 +40,14 @@ export class EmissionPieChartComponent {
 
     const chartOption: EChartsOption = this.getChartOption(regulatoryItems, applicationItems);
 
-    if (applicationItems.length === 0) chartOption.title = { text: 'Keine Daten' };
-    else {
+    if (applicationItems.length === 0) {
+      chartOption.title = { text: 'Keine Daten' };
+    } else {
       const outerColors = ['#7a7aad', '#9e9ed8', '#b6b6ff', '#c2c2ff', '#d1d1ff', '#eeeeff', '#e0e0ff'];
       const innerColors = ['#004D40', '#00796B', '#009688', '#4DB6AC', '#80CBC4', '#B2DFDB', '#E0F2F1'];
 
-      const outerName: EmissionProcessStepType = 'REGULATORY';
-      const innerName: EmissionProcessStepType = 'APPLICATION';
-
       const outerPie = this.createPieSeries(['40%', '60%'], 'outer', regulatoryItems, outerColors, emissionItems);
-      outerPie.name = outerName;
-
       const innerPie = this.createPieSeries(['10%', '35%'], 'inner', applicationItems, innerColors, emissionItems);
-      innerPie.name = innerName;
 
       chartOption.series = [outerPie, innerPie];
     }
@@ -98,38 +96,8 @@ export class EmissionPieChartComponent {
     title: { text: '' },
     tooltip: {},
     legend: [
-      this.getHeading('REGULATORY'),
-      {
-        left: '60%',
-        top: '16%',
-        show: true,
-        selectedMode: false,
-        orient: 'vertical',
-        textStyle: {
-          color: '#ababab',
-        },
-        data: [...regulatoryItems.map((i) => i.name)],
-        formatter: function (name) {
-          const description = [...regulatoryItems].find((item) => item.name === name)?.description;
-          return name + ` (${description})`;
-        },
-      },
-      this.getHeading('APPLICATION'),
-      {
-        left: '60%',
-        top: '50%',
-        show: true,
-        selectedMode: false,
-        orient: 'vertical',
-        textStyle: {
-          color: '#ababab',
-        },
-        data: [...applicationItems.map((i) => i.name)],
-        formatter: function (name) {
-          const description = [...applicationItems].find((item) => item.name === name)?.description;
-          return name + ` (${description})`;
-        },
-      },
+      ...this.buildLegendGroup('REGULATORY', regulatoryItems, '16%'),
+      ...this.buildLegendGroup('APPLICATION', applicationItems, '50%'),
     ],
     series: [],
   });
@@ -142,6 +110,7 @@ export class EmissionPieChartComponent {
     totalItems: EmissionForProcessStepDto[],
   ): PieSeriesOption {
     const pieSeries = this.getDefaultPieSeries(radius);
+    pieSeries.name = position === 'inner' ? 'APPLICATION' : 'REGULATORY';
     pieSeries.label = {
       position: position,
       formatter: (params) => this.percentPipe.transform((params.percent ?? 0) / 100, '1.0-1') ?? '',
@@ -155,21 +124,43 @@ export class EmissionPieChartComponent {
     return pieSeries;
   }
 
-  private getHeading(type: EmissionProcessStepType) {
-    return {
-      data: [type as string],
-      top: type === 'APPLICATION' ? '10%' : '44%',
-      left: '56%',
-      selectedMode: false,
-      icon: 'none',
-      textStyle: {
-        color: '#787a78',
-        fontSize: 12,
-        fontWeight: 'bolder',
+  private buildLegendGroup(
+    type: EmissionProcessStepType,
+    items: EmissionForProcessStepDto[],
+    top: string,
+  ): LegendComponentOption[] {
+    return [
+      {
+        data: [type],
+        top: type === 'REGULATORY' ? '10%' : '44%',
+        left: '56%',
+        selectedMode: false,
+        icon: 'none',
+        itemWidth: 0,
+        itemHeight: 0,
+        itemGap: 0,
+        textStyle: {
+          color: '#787a78',
+          fontSize: 12,
+          fontWeight: 'bolder',
+        },
+        formatter: (type) => {
+          return this.headings[type as EmissionProcessStepType];
+        },
       },
-      formatter: (params) => {
-        return this.titleCasePipe.transform(params).trim();
+      {
+        left: '56%',
+        top,
+        show: true,
+        selectedMode: false,
+        orient: 'vertical',
+        textStyle: { color: '#ababab' },
+        data: items.map((i) => i.name),
+        formatter: (name: string) => {
+          const item = items.find((i) => i.name === name);
+          return `${name} (${item?.description})`;
+        },
       },
-    } as echarts.LegendComponentOption;
+    ];
   }
 }
