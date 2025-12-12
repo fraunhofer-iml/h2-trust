@@ -102,18 +102,18 @@ export class ProcessStepRepository {
     // Separate insertion of process steps for efficiency:
     // those without predecessors can use bulk insert
     // those with predecessors need individual inserts
-    const processStepsWithoutPredecessors = processSteps.filter((ps) => !ps.batch?.predecessors?.length);
-    const processStepsWithPredecessors = processSteps.filter((ps) => ps.batch?.predecessors?.length);
+    const processStepsWithoutPredecessors: ProcessStepEntity[] = processSteps.filter((ps) => !ps.batch?.predecessors?.length);
+    const processStepsWithPredecessors: ProcessStepEntity[] = processSteps.filter((ps) => ps.batch?.predecessors?.length);
 
     return this.prismaService.$transaction(async (tx) => {
       const persistedProcessSteps: ProcessStepEntity[] = [];
 
       if (processStepsWithoutPredecessors.length > 0) {
-        const persistedProcessStepsWithoutPredecessors = await this.persistProcessStepsInBulk(tx, processStepsWithoutPredecessors);
+        const persistedProcessStepsWithoutPredecessors: ProcessStepEntity[] = await this.persistProcessStepsInBulk(tx, processStepsWithoutPredecessors);
         persistedProcessSteps.push(...persistedProcessStepsWithoutPredecessors);
       }
 
-      const persistedProcessStepsWithPredecessors = await this.persistProcessStepsIndividually(tx, processStepsWithPredecessors);
+      const persistedProcessStepsWithPredecessors: ProcessStepEntity[] = await this.persistProcessStepsIndividually(tx, processStepsWithPredecessors);
       persistedProcessSteps.push(...persistedProcessStepsWithPredecessors);
 
       return persistedProcessSteps;
@@ -121,29 +121,41 @@ export class ProcessStepRepository {
   }
 
   private async persistProcessStepsInBulk(tx: Prisma.TransactionClient, processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
-    const processStepTypes = [...new Set(processSteps.map((ps) => ps.type))].join(', ');
+    const processStepTypes: string = [...new Set(processSteps.map((ps) => ps.type))].join(', ');
     this.logger.debug(`Inserting ${processSteps.length} process steps with types [${processStepTypes}] in bulk.`);
 
-    const persistedBatches = await tx.batch.createManyAndReturn({
-      data: processSteps.map((ps) => ({
-        active: ps.batch?.active ?? true,
-        amount: ps.batch?.amount!,
-        type: BatchType[ps.batch?.type as keyof typeof BatchType],
-        ownerId: ps.batch?.owner?.id!,
-        hydrogenStorageUnitId: ps.batch?.hydrogenStorageUnit?.id ?? null,
-      })),
+    const batchInputs: Prisma.BatchCreateManyInput[] = processSteps.map((ps) => {
+      if (!ps.batch?.amount || !ps.batch?.type || !ps.batch?.owner?.id) {
+        throw new Error(`Invalid batch data for process step: ${JSON.stringify(ps)}`);
+      }
+
+      return {
+        active: ps.batch.active ?? true,
+        amount: ps.batch.amount,
+        type: BatchType[ps.batch.type as keyof typeof BatchType],
+        ownerId: ps.batch.owner.id,
+        hydrogenStorageUnitId: ps.batch.hydrogenStorageUnit?.id ?? null,
+      };
     });
 
-    const persistedProcessSteps = await tx.processStep.createManyAndReturn({
-      data: processSteps.map((ps, index) => ({
-        startedAt: ps.startedAt!,
-        endedAt: ps.endedAt!,
-        type: ps.type!,
+    const persistedBatches = await tx.batch.createManyAndReturn({ data: batchInputs });
+
+    const processStepInputs: Prisma.ProcessStepCreateManyInput[] = processSteps.map((ps, index) => {
+      if (!ps.startedAt || !ps.endedAt || !ps.type || !ps.recordedBy?.id || !ps.executedBy?.id) {
+        throw new Error(`Invalid process step data: ${JSON.stringify(ps)}`);
+      }
+
+      return {
+        startedAt: ps.startedAt,
+        endedAt: ps.endedAt,
+        type: ps.type,
         batchId: persistedBatches[index].id,
-        userId: ps.recordedBy?.id!,
-        unitId: ps.executedBy?.id!,
-      })),
+        userId: ps.recordedBy.id,
+        unitId: ps.executedBy.id,
+      };
     });
+
+    const persistedProcessSteps = await tx.processStep.createManyAndReturn({ data: processStepInputs });
 
     const fetchedProcessSteps = await tx.processStep.findMany({
       where: { id: { in: persistedProcessSteps.map((ps) => ps.id) } },
