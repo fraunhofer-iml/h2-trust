@@ -7,7 +7,7 @@
  */
 
 import { firstValueFrom } from 'rxjs';
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerException,
@@ -22,6 +22,7 @@ import {
   StagedProductionEntity,
   SubmitProductionProps,
 } from '@h2-trust/amqp';
+import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
 import { PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
 import { AccountingPeriodMatchingService } from './accounting-period-matching.service';
@@ -31,10 +32,16 @@ import { ProductionService } from './production.service';
 export class ProductionImportService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
+    private readonly configurationService: ConfigurationService,
     private readonly accountingPeriodMatchingService: AccountingPeriodMatchingService,
     private readonly stagedProductionRepository: StagedProductionRepository,
     private readonly productionService: ProductionService,
-  ) {}
+  ) {
+    this.productionChunkSize = this.configurationService.getProcessSvcConfiguration().productionChunkSize;
+  }
+
+  private readonly productionChunkSize: number;
+  private readonly logger = new Logger(ProductionImportService.name);
 
   async stageProductions(data: ParsedFileBundles, userId: string) {
     const gridUnitId = await this.fetchGridUnitId(userId);
@@ -51,29 +58,60 @@ export class ProductionImportService {
     const stagedProductions: StagedProductionEntity[] =
       await this.stagedProductionRepository.getStagedProductionsByImportId(props.importId);
 
-    return await Promise.all(
-      stagedProductions.map(async (stagedProduction) => {
-        const startedAt: Date = new Date(stagedProduction.startedAt);
-        const endedAt: Date = new Date(new Date(stagedProduction.startedAt).setMinutes(59, 59, 999));
+    const createProductions: CreateProductionEntity[] = stagedProductions.map((stagedProduction) => {
+      const startedAt: Date = new Date(stagedProduction.startedAt);
+      const endedAt: Date = new Date(new Date(stagedProduction.startedAt).setMinutes(59, 59, 999));
 
-        const entity = new CreateProductionEntity(
-          startedAt.toISOString(),
-          endedAt.toISOString(),
-          stagedProduction.powerProductionUnitId,
-          stagedProduction.powerAmount,
-          stagedProduction.hydrogenProductionUnitId,
-          stagedProduction.hydrogenAmount,
-          props.recordedBy,
-          stagedProduction.hydrogenColor,
-          props.hydrogenStorageUnitId,
-          stagedProduction.powerProductionUnitOwnerId,
-          stagedProduction.hydrogenProductionUnitOwnerId,
-          stagedProduction.waterConsumptionLitersPerHour,
-        );
+      return new CreateProductionEntity(
+        startedAt.toISOString(),
+        endedAt.toISOString(),
+        stagedProduction.powerProductionUnitId,
+        stagedProduction.powerAmount,
+        stagedProduction.hydrogenProductionUnitId,
+        stagedProduction.hydrogenAmount,
+        props.recordedBy,
+        stagedProduction.hydrogenColor,
+        props.hydrogenStorageUnitId,
+        stagedProduction.powerProductionUnitOwnerId,
+        stagedProduction.hydrogenProductionUnitOwnerId,
+        stagedProduction.waterConsumptionLitersPerHour,
+      );
+    });
 
-        return this.productionService.createProductions(entity);
-      }),
-    ).then((processSteps) => processSteps.flat());
+    this.logger.debug(
+      `Finalizing ${createProductions.length} staged productions in chunks of ${this.productionChunkSize}`,
+    );
+
+    const processSteps: ProcessStepEntity[] = [];
+
+    for (let i = 0; i < createProductions.length; i += this.productionChunkSize) {
+      this.logger.debug(`Processing ${i + 1} to ${Math.min(i + this.productionChunkSize, createProductions.length)}`);
+
+      const createProductionChunk = createProductions.slice(i, i + this.productionChunkSize);
+
+      const [powerProductions, waterConsumptions] = await Promise.all([
+        Promise.all(
+          createProductionChunk.map((production) => this.productionService.createPowerProductions(production)),
+        ),
+        Promise.all(
+          createProductionChunk.map((production) => this.productionService.createWaterConsumptions(production)),
+        ),
+      ]);
+
+      const hydrogenProductions = await Promise.all(
+        createProductionChunk.map((production, index) =>
+          this.productionService.createHydrogenProductions(
+            production,
+            powerProductions[index],
+            waterConsumptions[index],
+          ),
+        ),
+      );
+
+      processSteps.push(...powerProductions.flat(), ...waterConsumptions.flat(), ...hydrogenProductions.flat());
+    }
+
+    return processSteps;
   }
 
   private async fetchGridUnitId(userId: string): Promise<string> {

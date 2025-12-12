@@ -40,6 +40,17 @@ export class ProductionCreationService {
     createProductionEntity.companyIdOfHydrogenProductionUnit = hydrogenProductionUnit.company.id;
     createProductionEntity.waterConsumptionLitersPerHour = hydrogenProductionUnit.waterConsumptionLitersPerHour;
 
-    return this.productionService.createProductions(createProductionEntity);
+    const [powerProductions, waterConsumptions] = await Promise.all([
+      this.productionService.createPowerProductions(createProductionEntity),
+      this.productionService.createWaterConsumptions(createProductionEntity),
+    ]);
+
+    const hydrogenProductions = await this.productionService.createHydrogenProductions(
+      createProductionEntity,
+      powerProductions,
+      waterConsumptions,
+    );
+
+    return [...powerProductions, ...waterConsumptions, ...hydrogenProductions];
   }
 }
