@@ -26,7 +26,7 @@ export class ProductionCreationService {
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly productionService: ProductionService,
-  ) { }
+  ) {}
 
   async createProductions(createProductionEntity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
     const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
@@ -47,7 +47,9 @@ export class ProductionCreationService {
     const water: ProcessStepEntity[] = this.productionService.createWaterConsumptions(createProductionEntity);
 
     if (power.length !== water.length) {
-      throw new Error(`Mismatch in created power and water process steps count: ${power.length} power steps vs ${water.length} water steps`);
+      throw new Error(
+        `Mismatch in created power and water process steps count: ${power.length} power steps vs ${water.length} water steps`,
+      );
     }
 
     // Step 2: Persist power and water

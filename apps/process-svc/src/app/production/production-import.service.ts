@@ -80,7 +80,9 @@ export class ProductionImportService {
       );
     });
 
-    this.logger.debug(`Finalizing ${createProductions.length} staged productions in chunks of ${this.productionChunkSize}`);
+    this.logger.debug(
+      `Finalizing ${createProductions.length} staged productions in chunks of ${this.productionChunkSize}`,
+    );
     return this.createAndPersistProcessSteps(createProductions);
   }
 
@@ -104,7 +106,9 @@ export class ProductionImportService {
     return powerAccessApprovalForGrid.powerProductionUnit.id;
   }
 
-  private async createAndPersistProcessSteps(createProductions: CreateProductionEntity[]): Promise<ProcessStepEntity[]> {
+  private async createAndPersistProcessSteps(
+    createProductions: CreateProductionEntity[],
+  ): Promise<ProcessStepEntity[]> {
     const persistedProcessSteps: ProcessStepEntity[] = [];
 
     for (let i = 0; i < createProductions.length; i += this.productionChunkSize) {

@@ -65,13 +65,7 @@ export class ProductionService {
       },
     };
 
-    return this.createProcessSteps(
-      entity.productionStartedAt,
-      entity.productionEndedAt,
-      waterAmountLiters,
-      params,
-      [],
-    );
+    return this.createProcessSteps(entity.productionStartedAt, entity.productionEndedAt, waterAmountLiters, params, []);
   }
 
   createHydrogenProductions(

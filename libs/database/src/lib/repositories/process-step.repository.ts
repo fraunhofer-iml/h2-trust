@@ -7,19 +7,19 @@
  */
 
 import { Injectable, Logger } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { BatchType } from '@h2-trust/domain';
 import { buildProcessStepCreateInput } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 import { processStepQueryArgs } from '../query-args';
 import { assertRecordFound } from './utils';
-import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ProcessStepRepository {
   private readonly logger = new Logger(ProcessStepRepository.name);
 
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async findProcessStep(id: string): Promise<ProcessStepEntity> {
     return this.prismaService.processStep
@@ -42,14 +42,14 @@ export class ProcessStepRepository {
     const predecessorsFilter =
       Array.isArray(predecessorProcessTypes) && predecessorProcessTypes.length > 0
         ? {
-          predecessors: {
-            some: {
-              processStep: {
-                type: { in: predecessorProcessTypes },
+            predecessors: {
+              some: {
+                processStep: {
+                  type: { in: predecessorProcessTypes },
+                },
               },
             },
-          },
-        }
+          }
         : {};
 
     return this.prismaService.processStep
@@ -102,25 +102,38 @@ export class ProcessStepRepository {
     // Separate insertion of process steps for efficiency:
     // those without predecessors can use bulk insert
     // those with predecessors need individual inserts
-    const processStepsWithoutPredecessors: ProcessStepEntity[] = processSteps.filter((ps) => !ps.batch?.predecessors?.length);
-    const processStepsWithPredecessors: ProcessStepEntity[] = processSteps.filter((ps) => ps.batch?.predecessors?.length);
+    const processStepsWithoutPredecessors: ProcessStepEntity[] = processSteps.filter(
+      (ps) => !ps.batch?.predecessors?.length,
+    );
+    const processStepsWithPredecessors: ProcessStepEntity[] = processSteps.filter(
+      (ps) => ps.batch?.predecessors?.length,
+    );
 
     return this.prismaService.$transaction(async (tx) => {
       const persistedProcessSteps: ProcessStepEntity[] = [];
 
       if (processStepsWithoutPredecessors.length > 0) {
-        const persistedProcessStepsWithoutPredecessors: ProcessStepEntity[] = await this.persistProcessStepsInBulk(tx, processStepsWithoutPredecessors);
+        const persistedProcessStepsWithoutPredecessors: ProcessStepEntity[] = await this.persistProcessStepsInBulk(
+          tx,
+          processStepsWithoutPredecessors,
+        );
         persistedProcessSteps.push(...persistedProcessStepsWithoutPredecessors);
       }
 
-      const persistedProcessStepsWithPredecessors: ProcessStepEntity[] = await this.persistProcessStepsIndividually(tx, processStepsWithPredecessors);
+      const persistedProcessStepsWithPredecessors: ProcessStepEntity[] = await this.persistProcessStepsIndividually(
+        tx,
+        processStepsWithPredecessors,
+      );
       persistedProcessSteps.push(...persistedProcessStepsWithPredecessors);
 
       return persistedProcessSteps;
     });
   }
 
-  private async persistProcessStepsInBulk(tx: Prisma.TransactionClient, processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
+  private async persistProcessStepsInBulk(
+    tx: Prisma.TransactionClient,
+    processSteps: ProcessStepEntity[],
+  ): Promise<ProcessStepEntity[]> {
     const processStepTypes: string = [...new Set(processSteps.map((ps) => ps.type))].join(', ');
     this.logger.debug(`Inserting ${processSteps.length} process steps with types [${processStepTypes}] in bulk.`);
 
@@ -165,7 +178,10 @@ export class ProcessStepRepository {
     return fetchedProcessSteps.map(ProcessStepEntity.fromDatabase);
   }
 
-  private async persistProcessStepsIndividually(tx: Prisma.TransactionClient, processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
+  private async persistProcessStepsIndividually(
+    tx: Prisma.TransactionClient,
+    processSteps: ProcessStepEntity[],
+  ): Promise<ProcessStepEntity[]> {
     const persistedProcessSteps: ProcessStepEntity[] = [];
 
     for (const processStep of processSteps) {
