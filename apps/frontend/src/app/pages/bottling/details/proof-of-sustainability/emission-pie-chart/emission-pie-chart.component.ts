@@ -9,7 +9,7 @@
 import * as echarts from 'echarts';
 import { EChartsOption, LegendComponentOption, PieSeriesOption } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
-import { CommonModule, PercentPipe, TitleCasePipe } from '@angular/common';
+import { CommonModule, PercentPipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { EmissionForProcessStepDto, EmissionProcessStepType } from '@h2-trust/api';
@@ -18,13 +18,12 @@ import { FormattedUnits } from '../../../../../shared/constants/formatted-units'
 @Component({
   selector: 'app-emission-pie-chart',
   imports: [CommonModule, NgxEchartsDirective, MatProgressSpinnerModule],
-  providers: [provideEchartsCore({ echarts }), PercentPipe, TitleCasePipe],
+  providers: [provideEchartsCore({ echarts }), PercentPipe],
 
   templateUrl: './emission-pie-chart.component.html',
 })
 export class EmissionPieChartComponent {
   percentPipe = inject(PercentPipe);
-  titleCasePipe = inject(TitleCasePipe);
 
   data = input<EmissionForProcessStepDto[]>([]);
   chartData$ = computed(() => this.toChartData(this.data()));
