@@ -57,6 +57,13 @@ export class ProcessStepController {
     return this.processStepService.createProcessStep(payload.processStepEntity);
   }
 
+  @MessagePattern(ProcessStepMessagePatterns.CREATE_MANY)
+  async createManyProcessSteps(
+    @Payload() payload: { processSteps: ProcessStepEntity[] },
+  ): Promise<ProcessStepEntity[]> {
+    return this.processStepService.createManyProcessSteps(payload.processSteps);
+  }
+
   @MessagePattern(ProcessStepMessagePatterns.CREATE_HYDROGEN_BOTTLING)
   async createHydrogenBottlingProcessStep(
     @Payload() payload: { processStepEntity: ProcessStepEntity; files: Express.Multer.File[] },

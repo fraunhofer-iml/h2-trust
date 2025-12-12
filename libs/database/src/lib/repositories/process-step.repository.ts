@@ -93,4 +93,17 @@ export class ProcessStepRepository {
       })
       .then(ProcessStepEntity.fromDatabase);
   }
+
+  async insertManyProcessSteps(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
+    return this.prismaService
+      .$transaction(
+        processSteps.map((processStep) =>
+          this.prismaService.processStep.create({
+            data: buildProcessStepCreateInput(processStep),
+            ...processStepQueryArgs,
+          }),
+        ),
+      )
+      .then((processSteps) => processSteps.map(ProcessStepEntity.fromDatabase));
+  }
 }

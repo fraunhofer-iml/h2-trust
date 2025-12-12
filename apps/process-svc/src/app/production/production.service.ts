@@ -162,10 +162,6 @@ export class ProductionService {
   }
 
   private async persistProcessSteps(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
-    return Promise.all(
-      processSteps.map((processStep) =>
-        firstValueFrom(this.batchSvc.send(ProcessStepMessagePatterns.CREATE, { processStepEntity: processStep })),
-      ),
-    );
+    return firstValueFrom(this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, { processSteps }));
   }
 }
