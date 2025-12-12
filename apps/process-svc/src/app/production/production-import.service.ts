@@ -19,6 +19,7 @@ import {
   PowerAccessApprovalEntity,
   PowerAccessApprovalPatterns,
   ProcessStepEntity,
+  ProcessStepMessagePatterns,
   StagedProductionEntity,
   SubmitProductionProps,
 } from '@h2-trust/amqp';
@@ -30,7 +31,11 @@ import { ProductionService } from './production.service';
 
 @Injectable()
 export class ProductionImportService {
+  private readonly logger = new Logger(ProductionImportService.name);
+  private readonly productionChunkSize: number;
+
   constructor(
+    @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     private readonly configurationService: ConfigurationService,
     private readonly accountingPeriodMatchingService: AccountingPeriodMatchingService,
@@ -39,9 +44,6 @@ export class ProductionImportService {
   ) {
     this.productionChunkSize = this.configurationService.getProcessSvcConfiguration().productionChunkSize;
   }
-
-  private readonly productionChunkSize: number;
-  private readonly logger = new Logger(ProductionImportService.name);
 
   async stageProductions(data: ParsedFileBundles, userId: string) {
     const gridUnitId = await this.fetchGridUnitId(userId);
@@ -78,40 +80,8 @@ export class ProductionImportService {
       );
     });
 
-    this.logger.debug(
-      `Finalizing ${createProductions.length} staged productions in chunks of ${this.productionChunkSize}`,
-    );
-
-    const processSteps: ProcessStepEntity[] = [];
-
-    for (let i = 0; i < createProductions.length; i += this.productionChunkSize) {
-      this.logger.debug(`Processing ${i + 1} to ${Math.min(i + this.productionChunkSize, createProductions.length)}`);
-
-      const createProductionChunk = createProductions.slice(i, i + this.productionChunkSize);
-
-      const [powerProductions, waterConsumptions] = await Promise.all([
-        Promise.all(
-          createProductionChunk.map((production) => this.productionService.createPowerProductions(production)),
-        ),
-        Promise.all(
-          createProductionChunk.map((production) => this.productionService.createWaterConsumptions(production)),
-        ),
-      ]);
-
-      const hydrogenProductions = await Promise.all(
-        createProductionChunk.map((production, index) =>
-          this.productionService.createHydrogenProductions(
-            production,
-            powerProductions[index],
-            waterConsumptions[index],
-          ),
-        ),
-      );
-
-      processSteps.push(...powerProductions.flat(), ...waterConsumptions.flat(), ...hydrogenProductions.flat());
-    }
-
-    return processSteps;
+    this.logger.debug(`Finalizing ${createProductions.length} staged productions in chunks of ${this.productionChunkSize}`);
+    return this.createAndPersistProcessSteps(createProductions);
   }
 
   private async fetchGridUnitId(userId: string): Promise<string> {
@@ -132,5 +102,57 @@ export class ProductionImportService {
       );
 
     return powerAccessApprovalForGrid.powerProductionUnit.id;
+  }
+
+  private async createAndPersistProcessSteps(createProductions: CreateProductionEntity[]): Promise<ProcessStepEntity[]> {
+    const persistedProcessSteps: ProcessStepEntity[] = [];
+
+    for (let i = 0; i < createProductions.length; i += this.productionChunkSize) {
+      const chunk = createProductions.slice(i, i + this.productionChunkSize);
+
+      this.logger.debug(`Processing ${i + 1} to ${Math.min(i + this.productionChunkSize, createProductions.length)}`);
+
+      // Step 1: Create power and water (each returns array with 1 element due to 1:1 relation)
+      const power: ProcessStepEntity[] = chunk.flatMap((production) =>
+        this.productionService.createPowerProductions(production),
+      );
+      const water: ProcessStepEntity[] = chunk.flatMap((production) =>
+        this.productionService.createWaterConsumptions(production),
+      );
+
+      if (power.length !== chunk.length || water.length !== chunk.length) {
+        throw new BrokerException(
+          `Expected 1:1 relation between given productions and created process steps, but got ${power.length} power and ${water.length} water for ${chunk.length} productions.`,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
+      // Step 2: Persist power and water
+      const persistedPowerAndWater: ProcessStepEntity[] = await firstValueFrom(
+        this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, {
+          processSteps: [...power, ...water],
+        }),
+      );
+
+      // Step 3: Split response back into power and water
+      // We use chunk.length because there is a 1:1 relation between productions and process steps,
+      // so each production creates exactly one power step and one water step.
+      const persistedPower: ProcessStepEntity[] = persistedPowerAndWater.slice(0, chunk.length);
+      const persistedWater: ProcessStepEntity[] = persistedPowerAndWater.slice(chunk.length);
+
+      // Step 4: Create hydrogen with persisted predecessors
+      const hydrogen: ProcessStepEntity[] = chunk.flatMap((production, index) =>
+        this.productionService.createHydrogenProductions(production, [persistedPower[index]], [persistedWater[index]]),
+      );
+
+      // Step 5: Persist hydrogen
+      const persistedHydrogen: ProcessStepEntity[] = await firstValueFrom(
+        this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, { processSteps: hydrogen }),
+      );
+
+      persistedProcessSteps.push(...persistedPowerAndWater, ...persistedHydrogen);
+    }
+
+    return persistedProcessSteps;
   }
 }

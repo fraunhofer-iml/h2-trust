@@ -6,18 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { firstValueFrom } from 'rxjs';
-import { Inject, Injectable, Logger } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   BaseUnitEntity,
   BatchEntity,
-  BrokerQueues,
   CompanyEntity,
   CreateProductionEntity,
   HydrogenStorageUnitEntity,
   ProcessStepEntity,
-  ProcessStepMessagePatterns,
   QualityDetailsEntity,
   UserEntity,
 } from '@h2-trust/amqp';
@@ -30,9 +26,7 @@ import { ProductionUtils } from './utils/production.utils';
 export class ProductionService {
   private readonly logger = new Logger(ProductionService.name);
 
-  constructor(@Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy) {}
-
-  async createPowerProductions(entity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
+  createPowerProductions(entity: CreateProductionEntity): ProcessStepEntity[] {
     const params: ProcessStepParams = {
       type: ProcessType.POWER_PRODUCTION,
       executedBy: entity.powerProductionUnitId,
@@ -44,7 +38,7 @@ export class ProductionService {
       },
     };
 
-    return this.createAndPersistProcessSteps(
+    return this.createProcessSteps(
       entity.productionStartedAt,
       entity.productionEndedAt,
       entity.powerAmountKwh,
@@ -53,7 +47,7 @@ export class ProductionService {
     );
   }
 
-  async createWaterConsumptions(entity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
+  createWaterConsumptions(entity: CreateProductionEntity): ProcessStepEntity[] {
     const waterAmountLiters = ProductionUtils.calculateWaterAmount(
       entity.productionStartedAt,
       entity.productionEndedAt,
@@ -71,7 +65,7 @@ export class ProductionService {
       },
     };
 
-    return this.createAndPersistProcessSteps(
+    return this.createProcessSteps(
       entity.productionStartedAt,
       entity.productionEndedAt,
       waterAmountLiters,
@@ -80,11 +74,11 @@ export class ProductionService {
     );
   }
 
-  async createHydrogenProductions(
+  createHydrogenProductions(
     entity: CreateProductionEntity,
     powerProductions: ProcessStepEntity[],
     waterConsumptions: ProcessStepEntity[],
-  ): Promise<ProcessStepEntity[]> {
+  ): ProcessStepEntity[] {
     const params: ProcessStepParams = {
       type: ProcessType.HYDROGEN_PRODUCTION,
       executedBy: entity.hydrogenProductionUnitId,
@@ -98,7 +92,7 @@ export class ProductionService {
       },
     };
 
-    return this.createAndPersistProcessSteps(
+    return this.createProcessSteps(
       entity.productionStartedAt,
       entity.productionEndedAt,
       entity.hydrogenAmountKg,
@@ -107,21 +101,20 @@ export class ProductionService {
     );
   }
 
-  private async createAndPersistProcessSteps(
+  private createProcessSteps(
     startedAt: string,
     endedAt: string,
     totalAmount: number,
     params: ProcessStepParams,
     predecessors: ProcessStepEntity[],
-  ): Promise<ProcessStepEntity[]> {
+  ): ProcessStepEntity[] {
     const accountingPeriods: AccountingPeriod[] = ProductionUtils.calculateAccountingPeriods(
       startedAt,
       endedAt,
       totalAmount,
       predecessors,
     );
-    const processSteps = accountingPeriods.map((accountingPeriod) => this.createProcessStep(accountingPeriod, params));
-    return this.persistProcessSteps(processSteps);
+    return accountingPeriods.map((accountingPeriod) => this.createProcessStep(accountingPeriod, params));
   }
 
   private createProcessStep(accountingPeriod: AccountingPeriod, params: ProcessStepParams): ProcessStepEntity {
@@ -159,9 +152,5 @@ export class ProductionService {
       { id: params.executedBy } as BaseUnitEntity,
       null,
     );
-  }
-
-  private async persistProcessSteps(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
-    return firstValueFrom(this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, { processSteps }));
   }
 }

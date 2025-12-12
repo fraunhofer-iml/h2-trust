@@ -15,6 +15,7 @@ import {
   HydrogenProductionUnitEntity,
   PowerProductionUnitEntity,
   ProcessStepEntity,
+  ProcessStepMessagePatterns,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { ProductionService } from './production.service';
@@ -22,9 +23,10 @@ import { ProductionService } from './production.service';
 @Injectable()
 export class ProductionCreationService {
   constructor(
+    @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly productionService: ProductionService,
-  ) {}
+  ) { }
 
   async createProductions(createProductionEntity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
     const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
@@ -40,17 +42,37 @@ export class ProductionCreationService {
     createProductionEntity.companyIdOfHydrogenProductionUnit = hydrogenProductionUnit.company.id;
     createProductionEntity.waterConsumptionLitersPerHour = hydrogenProductionUnit.waterConsumptionLitersPerHour;
 
-    const [powerProductions, waterConsumptions] = await Promise.all([
-      this.productionService.createPowerProductions(createProductionEntity),
-      this.productionService.createWaterConsumptions(createProductionEntity),
-    ]);
+    // Step 1: Create power and water
+    const power: ProcessStepEntity[] = this.productionService.createPowerProductions(createProductionEntity);
+    const water: ProcessStepEntity[] = this.productionService.createWaterConsumptions(createProductionEntity);
 
-    const hydrogenProductions = await this.productionService.createHydrogenProductions(
-      createProductionEntity,
-      powerProductions,
-      waterConsumptions,
+    if (power.length !== water.length) {
+      throw new Error(`Mismatch in created power and water process steps count: ${power.length} power steps vs ${water.length} water steps`);
+    }
+
+    // Step 2: Persist power and water
+    const persistedPowerAndWater: ProcessStepEntity[] = await firstValueFrom(
+      this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, {
+        processSteps: [...power, ...water],
+      }),
     );
 
-    return [...powerProductions, ...waterConsumptions, ...hydrogenProductions];
+    // Step 3: Split response back into power and water (1:1 relation)
+    const persistedPower: ProcessStepEntity[] = persistedPowerAndWater.slice(0, power.length);
+    const persistedWater: ProcessStepEntity[] = persistedPowerAndWater.slice(power.length);
+
+    // Step 4: Create hydrogen with persisted predecessors
+    const hydrogen: ProcessStepEntity[] = this.productionService.createHydrogenProductions(
+      createProductionEntity,
+      persistedPower,
+      persistedWater,
+    );
+
+    // Step 5: Persist hydrogen
+    const persistedHydrogen: ProcessStepEntity[] = await firstValueFrom(
+      this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, { processSteps: hydrogen }),
+    );
+
+    return [...persistedPowerAndWater, ...persistedHydrogen];
   }
 }
