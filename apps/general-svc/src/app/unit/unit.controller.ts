@@ -14,6 +14,7 @@ import {
   PowerProductionTypeEntity,
   PowerProductionUnitEntity,
   ReadByIdPayload,
+  ReadByIdsPayload,
   UnitEntity,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
@@ -34,7 +35,7 @@ export class UnitController {
   }
 
   @MessagePattern(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS_BY_IDS)
-  async readPowerProductionUnitsByIds(@Payload() payload: { ids: string[] }): Promise<PowerProductionUnitEntity[]> {
+  async readPowerProductionUnitsByIds(@Payload() payload: ReadByIdsPayload): Promise<PowerProductionUnitEntity[]> {
     return this.service.readPowerProductionUnitsByIds(payload.ids);
   }
 
@@ -44,7 +45,7 @@ export class UnitController {
   }
 
   @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS_BY_IDS)
-  async readHydrogenProductionUnitsByIds(@Payload() payload: { ids: string[] }): Promise<HydrogenProductionUnitEntity[]> {
+  async readHydrogenProductionUnitsByIds(@Payload() payload: ReadByIdsPayload): Promise<HydrogenProductionUnitEntity[]> {
     return this.service.readHydrogenProductionUnitsByIds(payload.ids);
   }
 

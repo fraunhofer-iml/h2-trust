@@ -14,13 +14,14 @@ import {
   HydrogenProductionUnitEntity,
   PowerProductionUnitEntity,
   ProcessStepEntity,
+  ReadByIdsPayload,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { MatchedProductionPair } from './matched-production-pair';
 
 @Injectable()
 export class RedCompliancePairingService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) {}
+  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) { }
 
   async buildMatchedPairs(
     powerProductions: ProcessStepEntity[],
@@ -102,10 +103,10 @@ export class RedCompliancePairingService {
   }> {
     const [powerProductionUnitEntities, hydrogenProductionUnitEntities] = await Promise.all([
       firstValueFrom(
-        this.generalSvc.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS_BY_IDS, { ids: powerUnitIds }),
+        this.generalSvc.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS_BY_IDS, ReadByIdsPayload.of(powerUnitIds)),
       ),
       firstValueFrom(
-        this.generalSvc.send(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS_BY_IDS, { ids: hydrogenUnitIds }),
+        this.generalSvc.send(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS_BY_IDS, ReadByIdsPayload.of(hydrogenUnitIds)),
       ),
     ]);
 

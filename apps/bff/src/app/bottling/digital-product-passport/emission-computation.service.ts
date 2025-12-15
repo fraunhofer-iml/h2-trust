@@ -14,6 +14,7 @@ import {
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ProvenanceEntity,
+  ReadByIdsPayload,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { EmissionCalculationDto, EmissionComputationResultDto } from '@h2-trust/api';
@@ -22,7 +23,7 @@ import { EmissionCalculationAssembler } from './emission.assembler';
 
 @Injectable()
 export class EmissionComputationService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) {}
+  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) { }
 
   async computeProvenanceEmissions(provenance: ProvenanceEntity): Promise<EmissionComputationResultDto> {
     if (!provenance) {
@@ -87,7 +88,7 @@ export class EmissionComputationService {
     const unitIds = Array.from(new Set(powerProductions.map((p) => p.executedBy.id)));
 
     const units: PowerProductionUnitEntity[] = await firstValueFrom(
-      this.generalSvc.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS_BY_IDS, { ids: unitIds }),
+      this.generalSvc.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS_BY_IDS, ReadByIdsPayload.of(unitIds)),
     );
 
     const unitsById = new Map<string, PowerProductionUnitEntity>(units.map((u) => [u.id, u]));
