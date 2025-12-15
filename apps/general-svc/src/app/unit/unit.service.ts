@@ -27,7 +27,7 @@ export class UnitService {
     return this.unitRepository.findUnitById(id);
   }
 
-  async readPowerProductionUnits(companyId: string): Promise<PowerProductionUnitEntity[]> {
+  async readPowerProductionUnitsByCompanyId(companyId: string): Promise<PowerProductionUnitEntity[]> {
     return this.unitRepository.findPowerProductionUnitsByCompanyId(companyId);
   }
 
