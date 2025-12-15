@@ -12,3 +12,4 @@ export * from './lib/types';
 export * from './lib/amqp.module';
 export * from './lib/prisma-errors.interceptor';
 export * from './lib/util';
+export * from './lib/payloads';

@@ -1,0 +1,1 @@
+export * from './read-power-access-approvals.payload';

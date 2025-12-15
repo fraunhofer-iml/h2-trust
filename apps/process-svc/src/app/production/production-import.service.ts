@@ -20,6 +20,7 @@ import {
   PowerAccessApprovalPatterns,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
+  ReadPowerAccessApprovalsPayload,
   StagedProductionEntity,
   SubmitProductionProps,
 } from '@h2-trust/amqp';
@@ -88,10 +89,10 @@ export class ProductionImportService {
 
   private async fetchGridUnitId(userId: string): Promise<string> {
     const approvals: PowerAccessApprovalEntity[] = await firstValueFrom(
-      this.generalService.send(PowerAccessApprovalPatterns.READ, {
-        userId: userId,
-        powerAccessApprovalStatus: PowerAccessApprovalStatus.APPROVED,
-      }),
+      this.generalService.send(
+        PowerAccessApprovalPatterns.READ,
+        ReadPowerAccessApprovalsPayload.of(userId, PowerAccessApprovalStatus.APPROVED),
+      ),
     );
     const powerAccessApprovalForGrid = approvals.find(
       (approval) => approval.powerProductionUnit.type.name === PowerProductionType.GRID,
