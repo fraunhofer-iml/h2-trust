@@ -9,7 +9,7 @@
 import { firstValueFrom } from 'rxjs';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BaseUnitEntity, BrokerQueues, UnitEntity, UnitMessagePatterns } from '@h2-trust/amqp';
+import { BaseUnitEntity, BrokerQueues, ReadByIdPayload, UnitEntity, UnitMessagePatterns } from '@h2-trust/amqp';
 import {
   HydrogenProductionOverviewDto,
   HydrogenProductionUnitCreateDto,
@@ -35,7 +35,7 @@ export class UnitService {
   ) {}
 
   async readUnit(id: string): Promise<UnitDto> {
-    return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, { id })).then(UnitService.mapEntityToDto);
+    return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, ReadByIdPayload.of(id))).then(UnitService.mapEntityToDto);
   }
 
   async readUnits(userId: string, unitType: UnitType): Promise<UnitOverviewDto[]> {

@@ -15,6 +15,7 @@ import {
   HydrogenCompositionUtil,
   HydrogenStorageUnitEntity,
   ProcessStepEntity,
+  ReadByIdPayload,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { HydrogenColor } from '@h2-trust/domain';
@@ -29,7 +30,7 @@ export class HydrogenCompositionService {
     }
 
     const hydrogenStorageUnit: HydrogenStorageUnitEntity = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ, { id: processStep.executedBy.id }),
+      this.generalService.send(UnitMessagePatterns.READ, ReadByIdPayload.of(processStep.executedBy.id)),
     );
     try {
       return HydrogenCompositionUtil.computeHydrogenComposition(hydrogenStorageUnit.filling, processStep.batch.amount);

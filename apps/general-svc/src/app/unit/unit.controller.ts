@@ -13,6 +13,7 @@ import {
   HydrogenStorageUnitEntity,
   PowerProductionTypeEntity,
   PowerProductionUnitEntity,
+  ReadByIdPayload,
   UnitEntity,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
@@ -23,7 +24,7 @@ export class UnitController {
   constructor(private readonly service: UnitService) {}
 
   @MessagePattern(UnitMessagePatterns.READ)
-  async readUnit(@Payload() payload: { id: string }): Promise<UnitEntity> {
+  async readUnit(@Payload() payload: ReadByIdPayload): Promise<UnitEntity> {
     return this.service.readUnit(payload.id);
   }
 

@@ -16,6 +16,7 @@ import {
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
+  ReadByIdPayload,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { ProductionService } from './production.service';
@@ -30,11 +31,11 @@ export class ProductionCreationService {
 
   async createProductions(createProductionEntity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
     const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
-      this.generalSvc.send(UnitMessagePatterns.READ, { id: createProductionEntity.powerProductionUnitId }),
+      this.generalSvc.send(UnitMessagePatterns.READ, ReadByIdPayload.of(createProductionEntity.powerProductionUnitId)),
     );
 
     const hydrogenProductionUnit: HydrogenProductionUnitEntity = await firstValueFrom(
-      this.generalSvc.send(UnitMessagePatterns.READ, { id: createProductionEntity.hydrogenProductionUnitId }),
+      this.generalSvc.send(UnitMessagePatterns.READ, ReadByIdPayload.of(createProductionEntity.hydrogenProductionUnitId)),
     );
 
     createProductionEntity.hydrogenColor = powerProductionUnit.type.hydrogenColor;
