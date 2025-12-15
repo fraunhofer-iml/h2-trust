@@ -103,7 +103,7 @@ describe('ProductionController', () => {
 
     const actualResponse = await controller.createProductions({ createProductionEntity: givenProduction });
 
-    expect(batchSvcSendMock.mock.calls.length).toBe(3);
+    expect(batchSvcSendMock.mock.calls.length).toBe(2); // One for power & water, one for hydrogen
     expect(actualResponse.length).toBe(3);
 
     const powerProductions = actualResponse.filter(
