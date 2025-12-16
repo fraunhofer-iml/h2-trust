@@ -6,11 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsBoolean, IsEnum, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 import { AddressPayload, CreatePowerProductionUnitPayload } from '@h2-trust/amqp';
 import { BiddingZone, GridLevel, PowerProductionType, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 import { UnitCreateDto } from './unit-create.dto';
+import { Type } from 'class-transformer';
 
 export class PowerProductionUnitCreateDto extends UnitCreateDto {
   @IsNotEmpty()
@@ -18,8 +19,9 @@ export class PowerProductionUnitCreateDto extends UnitCreateDto {
   powerProductionType: PowerProductionType;
 
   @IsOptional()
-  @IsISO8601()
-  decommissioningPlannedOn?: string;
+  @IsDate()
+  @Type(() => Date)
+  decommissioningPlannedOn?: Date;
 
   @IsNotEmpty()
   @IsEnum(BiddingZone)
@@ -61,7 +63,7 @@ export class PowerProductionUnitCreateDto extends UnitCreateDto {
     serialNumber: string,
     mastrNumber: string,
     certifiedBy: string,
-    commissionedOn: string,
+    commissionedOn: Date,
     address: AddressDto,
     powerProductionType: PowerProductionType,
     biddingZone: BiddingZone,
@@ -71,6 +73,7 @@ export class PowerProductionUnitCreateDto extends UnitCreateDto {
     financialSupportReceived: boolean,
     gridOperator?: string,
     gridConnectionNumber?: string,
+    decommissioningPlannedOn?: Date,
   ) {
     super(
       type,
@@ -94,13 +97,14 @@ export class PowerProductionUnitCreateDto extends UnitCreateDto {
     this.gridOperator = gridOperator;
     this.gridConnectionNumber = gridConnectionNumber;
     this.financialSupportReceived = financialSupportReceived;
+    this.decommissioningPlannedOn = decommissioningPlannedOn;
   }
 
   static toPayload(dto: PowerProductionUnitCreateDto): CreatePowerProductionUnitPayload {
     return CreatePowerProductionUnitPayload.of(
       dto.name,
       dto.mastrNumber,
-      new Date(dto.commissionedOn),
+      dto.commissionedOn,
       AddressPayload.of(dto.address.street, dto.address.postalCode, dto.address.city, dto.address.state, dto.address.country),
       dto.owner,
       dto.electricityMeterNumber,
@@ -115,7 +119,7 @@ export class PowerProductionUnitCreateDto extends UnitCreateDto {
       dto.serialNumber,
       dto.certifiedBy,
       dto.operator,
-      dto.decommissioningPlannedOn ? new Date(dto.decommissioningPlannedOn) : undefined,
+      dto.decommissioningPlannedOn,
       dto.gridOperator,
       dto.gridConnectionNumber,
     );

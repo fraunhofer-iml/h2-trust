@@ -38,7 +38,7 @@ export class HydrogenStorageUnitCreateDto extends UnitCreateDto {
     serialNumber: string,
     mastrNumber: string,
     certifiedBy: string,
-    commissionedOn: string,
+    commissionedOn: Date,
     address: AddressDto,
     storageType: HydrogenStorageType,
     capacity: number,
@@ -67,7 +67,7 @@ export class HydrogenStorageUnitCreateDto extends UnitCreateDto {
     return CreateHydrogenStorageUnitPayload.of(
       dto.name,
       dto.mastrNumber,
-      new Date(dto.commissionedOn),
+      dto.commissionedOn,
       AddressPayload.of(dto.address.street, dto.address.postalCode, dto.address.city, dto.address.state, dto.address.country),
       dto.owner,
       dto.storageType,

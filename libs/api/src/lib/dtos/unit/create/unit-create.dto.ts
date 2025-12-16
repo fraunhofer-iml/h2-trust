@@ -6,13 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsEnum, IsISO8601, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsDate, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
+import { Type } from 'class-transformer';
 
 export abstract class UnitCreateDto {
-  @IsEnum(UnitType)
   @IsNotEmpty()
+  @IsEnum(UnitType)
   unitType: UnitType;
 
   @IsNotEmpty()
@@ -52,10 +53,12 @@ export abstract class UnitCreateDto {
   certifiedBy?: string;
 
   @IsNotEmpty()
-  @IsISO8601()
-  commissionedOn: string;
+  @IsDate()
+  @Type(() => Date)
+  commissionedOn: Date;
 
   @IsNotEmpty()
+  @Type(() => AddressDto)
   address: AddressDto;
 
   constructor(
@@ -69,7 +72,7 @@ export abstract class UnitCreateDto {
     serialNumber: string,
     mastrNumber: string,
     certifiedBy: string,
-    commissionedOn: string,
+    commissionedOn: Date,
     address: AddressDto,
   ) {
     this.unitType = type;

@@ -129,7 +129,7 @@ export class CreateUnitComponent {
 
     let dto: UnitCreateDto = {
       ...this.unitForm.value,
-      commissionedOn: this.unitForm.value.commissionedOn?.toISOString(),
+      commissionedOn: this.unitForm.value.commissionedOn,
       unitType: type,
     } as UnitCreateDto;
 

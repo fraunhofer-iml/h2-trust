@@ -78,28 +78,28 @@ export class UnitService {
     ).then((entities) => entities.map(HydrogenStorageOverviewDto.fromEntity));
   }
 
-  async createUnit(unitDto: UnitCreateDto): Promise<UnitDto> {
+  async createUnit(dto: UnitCreateDto): Promise<UnitDto> {
     let messagePattern: UnitMessagePatterns;
     let payload: CreatePowerProductionUnitPayload | CreateHydrogenProductionUnitPayload | CreateHydrogenStorageUnitPayload;
 
-    switch (unitDto.unitType) {
+    switch (dto.unitType) {
       case UnitType.POWER_PRODUCTION: {
         messagePattern = UnitMessagePatterns.CREATE_POWER_PRODUCTION_UNIT;
-        payload = PowerProductionUnitCreateDto.toPayload(unitDto as PowerProductionUnitCreateDto);
+        payload = PowerProductionUnitCreateDto.toPayload(dto as PowerProductionUnitCreateDto);
         break;
       }
       case UnitType.HYDROGEN_PRODUCTION: {
         messagePattern = UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION_UNIT;
-        payload = HydrogenProductionUnitCreateDto.toPayload(unitDto as HydrogenProductionUnitCreateDto);
+        payload = HydrogenProductionUnitCreateDto.toPayload(dto as HydrogenProductionUnitCreateDto);
         break;
       }
       case UnitType.HYDROGEN_STORAGE: {
         messagePattern = UnitMessagePatterns.CREATE_HYDROGEN_STORAGE_UNIT;
-        payload = HydrogenStorageUnitCreateDto.toPayload(unitDto as HydrogenStorageUnitCreateDto);
+        payload = HydrogenStorageUnitCreateDto.toPayload(dto as HydrogenStorageUnitCreateDto);
         break;
       }
       default: {
-        throw new BadRequestException(`Unit type [${unitDto.unitType}] unknown`);
+        throw new BadRequestException(`Unit type [${dto.unitType}] unknown`);
       }
     }
 

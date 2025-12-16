@@ -49,7 +49,7 @@ export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
     serialNumber: string,
     mastrNumber: string,
     certifiedBy: string,
-    commissionedOn: string,
+    commissionedOn: Date,
     address: AddressDto,
     technology: HydrogenProductionTechnology,
     method: HydrogenProductionMethod,
@@ -84,7 +84,7 @@ export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
     return CreateHydrogenProductionUnitPayload.of(
       dto.name,
       dto.mastrNumber,
-      new Date(dto.commissionedOn),
+      dto.commissionedOn,
       AddressPayload.of(dto.address.street, dto.address.postalCode, dto.address.city, dto.address.state, dto.address.country),
       dto.owner,
       dto.method,
