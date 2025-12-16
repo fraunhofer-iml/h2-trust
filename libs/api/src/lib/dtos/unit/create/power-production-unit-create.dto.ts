@@ -7,7 +7,7 @@
  */
 
 import { IsBoolean, IsEnum, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
-import { PowerProductionUnitEntity } from '@h2-trust/amqp';
+import { AddressPayload, CreatePowerProductionUnitPayload } from '@h2-trust/amqp';
 import { BiddingZone, GridLevel, PowerProductionType, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 import { UnitCreateDto } from './unit-create.dto';
@@ -96,34 +96,28 @@ export class PowerProductionUnitCreateDto extends UnitCreateDto {
     this.financialSupportReceived = financialSupportReceived;
   }
 
-  static toEntity(dto: PowerProductionUnitCreateDto): PowerProductionUnitEntity {
-    return {
-      name: dto.name,
-      mastrNumber: dto.mastrNumber,
-      manufacturer: dto.manufacturer,
-      modelType: dto.modelType,
-      modelNumber: dto.modelNumber,
-      serialNumber: dto.serialNumber,
-      certifiedBy: dto.certifiedBy,
-      commissionedOn: new Date(dto.commissionedOn),
-      address: dto.address,
-      company: {
-        id: dto.owner,
-      },
-      operator: {
-        id: dto.operator,
-      },
-      decommissioningPlannedOn: dto.decommissioningPlannedOn ? new Date(dto.decommissioningPlannedOn) : undefined,
-      electricityMeterNumber: dto.electricityMeterNumber,
-      ratedPower: dto.ratedPower,
-      gridOperator: dto.gridOperator,
-      gridLevel: dto.gridLevel,
-      biddingZone: dto.biddingZone,
-      gridConnectionNumber: dto.gridConnectionNumber,
-      financialSupportReceived: dto.financialSupportReceived,
-      type: {
-        name: dto.powerProductionType,
-      },
-    };
+  static toPayload(dto: PowerProductionUnitCreateDto): CreatePowerProductionUnitPayload {
+    return CreatePowerProductionUnitPayload.of(
+      dto.name,
+      dto.mastrNumber,
+      new Date(dto.commissionedOn),
+      AddressPayload.of(dto.address.street, dto.address.postalCode, dto.address.city, dto.address.state, dto.address.country),
+      dto.owner,
+      dto.electricityMeterNumber,
+      dto.ratedPower,
+      dto.gridLevel,
+      dto.biddingZone,
+      dto.financialSupportReceived,
+      dto.powerProductionType,
+      dto.manufacturer,
+      dto.modelType,
+      dto.modelNumber,
+      dto.serialNumber,
+      dto.certifiedBy,
+      dto.operator,
+      dto.decommissioningPlannedOn ? new Date(dto.decommissioningPlannedOn) : undefined,
+      dto.gridOperator,
+      dto.gridConnectionNumber,
+    );
   }
 }

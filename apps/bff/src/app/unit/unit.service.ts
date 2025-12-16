@@ -9,7 +9,7 @@
 import { firstValueFrom } from 'rxjs';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BaseUnitEntity, BrokerQueues, ReadByIdPayload, UnitEntity, UnitMessagePatterns } from '@h2-trust/amqp';
+import { BaseUnitEntity, BrokerQueues, CreateHydrogenProductionUnitPayload, CreateHydrogenStorageUnitPayload, CreatePowerProductionUnitPayload, ReadByIdPayload, UnitMessagePatterns } from '@h2-trust/amqp';
 import {
   HydrogenProductionOverviewDto,
   HydrogenProductionUnitCreateDto,
@@ -80,22 +80,22 @@ export class UnitService {
 
   async createUnit(unitDto: UnitCreateDto): Promise<UnitDto> {
     let messagePattern: UnitMessagePatterns;
-    let unitEntity: UnitEntity;
+    let payload: CreatePowerProductionUnitPayload | CreateHydrogenProductionUnitPayload | CreateHydrogenStorageUnitPayload;
 
     switch (unitDto.unitType) {
       case UnitType.POWER_PRODUCTION: {
         messagePattern = UnitMessagePatterns.CREATE_POWER_PRODUCTION_UNIT;
-        unitEntity = PowerProductionUnitCreateDto.toEntity(unitDto as PowerProductionUnitCreateDto);
+        payload = PowerProductionUnitCreateDto.toPayload(unitDto as PowerProductionUnitCreateDto);
         break;
       }
       case UnitType.HYDROGEN_PRODUCTION: {
         messagePattern = UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION_UNIT;
-        unitEntity = HydrogenProductionUnitCreateDto.toEntity(unitDto as HydrogenProductionUnitCreateDto);
+        payload = HydrogenProductionUnitCreateDto.toPayload(unitDto as HydrogenProductionUnitCreateDto);
         break;
       }
       case UnitType.HYDROGEN_STORAGE: {
         messagePattern = UnitMessagePatterns.CREATE_HYDROGEN_STORAGE_UNIT;
-        unitEntity = HydrogenStorageUnitCreateDto.toEntity(unitDto as HydrogenStorageUnitCreateDto);
+        payload = HydrogenStorageUnitCreateDto.toPayload(unitDto as HydrogenStorageUnitCreateDto);
         break;
       }
       default: {
@@ -103,9 +103,8 @@ export class UnitService {
       }
     }
 
-    return firstValueFrom(this.generalService.send(messagePattern, { unit: unitEntity })).then(
-      UnitService.mapEntityToDto,
-    );
+    return firstValueFrom(this.generalService.send(messagePattern, payload))
+      .then(UnitService.mapEntityToDto);
   }
 
   static mapEntityToDto(unitEntity: BaseUnitEntity): UnitDto {

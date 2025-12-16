@@ -9,6 +9,9 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import {
+  CreateHydrogenProductionUnitPayload,
+  CreateHydrogenStorageUnitPayload,
+  CreatePowerProductionUnitPayload,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
   PowerProductionTypeEntity,
@@ -60,23 +63,23 @@ export class UnitController {
   }
 
   @MessagePattern(UnitMessagePatterns.CREATE_POWER_PRODUCTION_UNIT)
-  async createPowerProductionUnit(
-    @Payload() payload: { unit: PowerProductionUnitEntity },
-  ): Promise<PowerProductionUnitEntity> {
-    return this.service.createPowerProductionUnit(payload.unit);
+  async createPowerProductionUnit(@Payload() payload: CreatePowerProductionUnitPayload): Promise<PowerProductionUnitEntity> {
+
+    console.log(payload);
+    return this.service.createPowerProductionUnit(payload);
   }
 
   @MessagePattern(UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION_UNIT)
-  async createHydrogenProductionUnit(
-    @Payload() payload: { unit: HydrogenProductionUnitEntity },
-  ): Promise<HydrogenProductionUnitEntity> {
-    return this.service.createHydrogenProductionUnit(payload.unit);
+  async createHydrogenProductionUnit(@Payload() payload: CreateHydrogenProductionUnitPayload): Promise<HydrogenProductionUnitEntity> {
+
+    console.log(payload);
+    return this.service.createHydrogenProductionUnit(payload);
   }
 
   @MessagePattern(UnitMessagePatterns.CREATE_HYDROGEN_STORAGE_UNIT)
-  async createHydrogenStorageUnit(
-    @Payload() payload: { unit: HydrogenStorageUnitEntity },
-  ): Promise<HydrogenStorageUnitEntity> {
-    return this.service.createHydrogenStorageUnit(payload.unit);
+  async createHydrogenStorageUnit(@Payload() payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
+
+    console.log(payload);
+    return this.service.createHydrogenStorageUnit(payload);
   }
 }

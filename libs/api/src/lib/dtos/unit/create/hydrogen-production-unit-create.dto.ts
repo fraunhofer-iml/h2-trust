@@ -7,7 +7,7 @@
  */
 
 import { IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
-import { HydrogenProductionUnitEntity } from '@h2-trust/amqp';
+import { AddressPayload, CreateHydrogenProductionUnitPayload } from '@h2-trust/amqp';
 import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 import { UnitCreateDto } from './unit-create.dto';
@@ -80,29 +80,25 @@ export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 
-  static toEntity(dto: HydrogenProductionUnitCreateDto): HydrogenProductionUnitEntity {
-    return {
-      name: dto.name,
-      mastrNumber: dto.mastrNumber,
-      manufacturer: dto.manufacturer,
-      modelType: dto.modelType,
-      modelNumber: dto.modelNumber,
-      serialNumber: dto.serialNumber,
-      certifiedBy: dto.certifiedBy,
-      commissionedOn: new Date(dto.commissionedOn),
-      address: dto.address,
-      company: {
-        id: dto.owner,
-      },
-      operator: {
-        id: dto.operator,
-      },
-      method: dto.method,
-      technology: dto.technology,
-      biddingZone: dto.biddingZone,
-      ratedPower: dto.ratedPower,
-      pressure: dto.pressure,
-      waterConsumptionLitersPerHour: dto.waterConsumptionLitersPerHour,
-    };
+  static toPayload(dto: HydrogenProductionUnitCreateDto): CreateHydrogenProductionUnitPayload {
+    return CreateHydrogenProductionUnitPayload.of(
+      dto.name,
+      dto.mastrNumber,
+      new Date(dto.commissionedOn),
+      AddressPayload.of(dto.address.street, dto.address.postalCode, dto.address.city, dto.address.state, dto.address.country),
+      dto.owner,
+      dto.method,
+      dto.technology,
+      dto.biddingZone,
+      dto.ratedPower,
+      dto.pressure,
+      dto.waterConsumptionLitersPerHour,
+      dto.manufacturer,
+      dto.modelType,
+      dto.modelNumber,
+      dto.serialNumber,
+      dto.certifiedBy,
+      dto.operator,
+    );
   }
 }

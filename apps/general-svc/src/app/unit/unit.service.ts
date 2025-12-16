@@ -8,6 +8,9 @@
 
 import { Injectable } from '@nestjs/common';
 import {
+  CreateHydrogenProductionUnitPayload,
+  CreateHydrogenStorageUnitPayload,
+  CreatePowerProductionUnitPayload,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
   PowerProductionTypeEntity,
@@ -51,15 +54,15 @@ export class UnitService {
     return this.powerProductionTypeRepository.findPowerProductionTypes();
   }
 
-  async createPowerProductionUnit(unit: PowerProductionUnitEntity): Promise<PowerProductionUnitEntity> {
-    return this.unitRepository.insertPowerProductionUnit(unit);
+  async createPowerProductionUnit(payload: CreatePowerProductionUnitPayload): Promise<PowerProductionUnitEntity> {
+    return this.unitRepository.insertPowerProductionUnit(payload);
   }
 
-  async createHydrogenProductionUnit(unit: HydrogenProductionUnitEntity): Promise<HydrogenProductionUnitEntity> {
-    return this.unitRepository.insertHydrogenProductionUnit(unit);
+  async createHydrogenProductionUnit(payload: CreateHydrogenProductionUnitPayload): Promise<HydrogenProductionUnitEntity> {
+    return this.unitRepository.insertHydrogenProductionUnit(payload);
   }
 
-  async createHydrogenStorageUnit(unit: HydrogenStorageUnitEntity): Promise<HydrogenStorageUnitEntity> {
-    return this.unitRepository.insertHydrogenStorageUnit(unit);
+  async createHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
+    return this.unitRepository.insertHydrogenStorageUnit(payload);
   }
 }

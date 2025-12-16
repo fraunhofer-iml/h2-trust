@@ -7,7 +7,7 @@
  */
 
 import { IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
-import { HydrogenStorageUnitEntity } from '@h2-trust/amqp';
+import { AddressPayload, CreateHydrogenStorageUnitPayload } from '@h2-trust/amqp';
 import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 import { UnitCreateDto } from './unit-create.dto';
@@ -63,26 +63,22 @@ export class HydrogenStorageUnitCreateDto extends UnitCreateDto {
     this.pressure = pressure;
   }
 
-  static toEntity(dto: HydrogenStorageUnitCreateDto): HydrogenStorageUnitEntity {
-    return {
-      name: dto.name,
-      mastrNumber: dto.mastrNumber,
-      manufacturer: dto.manufacturer,
-      modelType: dto.modelType,
-      modelNumber: dto.modelNumber,
-      serialNumber: dto.serialNumber,
-      certifiedBy: dto.certifiedBy,
-      commissionedOn: new Date(dto.commissionedOn),
-      address: dto.address,
-      company: {
-        id: dto.owner,
-      },
-      operator: {
-        id: dto.operator,
-      },
-      capacity: dto.capacity,
-      pressure: dto.pressure,
-      type: dto.storageType,
-    };
+  static toPayload(dto: HydrogenStorageUnitCreateDto): CreateHydrogenStorageUnitPayload {
+    return CreateHydrogenStorageUnitPayload.of(
+      dto.name,
+      dto.mastrNumber,
+      new Date(dto.commissionedOn),
+      AddressPayload.of(dto.address.street, dto.address.postalCode, dto.address.city, dto.address.state, dto.address.country),
+      dto.owner,
+      dto.storageType,
+      dto.capacity,
+      dto.pressure,
+      dto.manufacturer,
+      dto.modelType,
+      dto.modelNumber,
+      dto.serialNumber,
+      dto.certifiedBy,
+      dto.operator,
+    );
   }
 }

@@ -10,6 +10,9 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import {
   BrokerException,
+  CreateHydrogenProductionUnitPayload,
+  CreateHydrogenStorageUnitPayload,
+  CreatePowerProductionUnitPayload,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
   PowerProductionUnitEntity,
@@ -144,28 +147,28 @@ export class UnitRepository {
       .then((units) => units.map(HydrogenStorageUnitEntity.fromDatabase));
   }
 
-  async insertPowerProductionUnit(unitEntity: PowerProductionUnitEntity): Promise<PowerProductionUnitEntity> {
+  async insertPowerProductionUnit(payload: CreatePowerProductionUnitPayload): Promise<PowerProductionUnitEntity> {
     return this.prismaService.unit
       .create({
-        data: buildPowerProductionUnitCreateInput(unitEntity),
+        data: buildPowerProductionUnitCreateInput(payload),
         include: powerProductionUnitQueryArgs.include,
       })
       .then(PowerProductionUnitEntity.fromDatabase);
   }
 
-  async insertHydrogenProductionUnit(unitEntity: HydrogenProductionUnitEntity): Promise<HydrogenProductionUnitEntity> {
+  async insertHydrogenProductionUnit(payload: CreateHydrogenProductionUnitPayload): Promise<HydrogenProductionUnitEntity> {
     return this.prismaService.unit
       .create({
-        data: buildHydrogenProductionUnitCreateInput(unitEntity),
+        data: buildHydrogenProductionUnitCreateInput(payload),
         include: hydrogenProductionUnitQueryArgs.include,
       })
       .then(HydrogenProductionUnitEntity.fromDatabase);
   }
 
-  async insertHydrogenStorageUnit(unitEntity: HydrogenStorageUnitEntity): Promise<HydrogenStorageUnitEntity> {
+  async insertHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
     return this.prismaService.unit
       .create({
-        data: buildHydrogenStorageUnitCreateInput(unitEntity),
+        data: buildHydrogenStorageUnitCreateInput(payload),
         include: hydrogenStorageUnitQueryArgs.include,
       })
       .then(HydrogenStorageUnitEntity.fromDatabase);
