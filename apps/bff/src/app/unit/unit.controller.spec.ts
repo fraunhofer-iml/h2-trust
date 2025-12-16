@@ -17,7 +17,9 @@ import {
   HydrogenStorageUnitEntityMock,
   PowerProductionUnitEntity,
   PowerProductionUnitEntityMock,
+  ReadByIdPayload,
   UnitMessagePatterns,
+  UserMessagePatterns,
 } from '@h2-trust/amqp';
 import {
   HydrogenProductionOverviewDto,
@@ -79,7 +81,7 @@ describe('UnitController', () => {
     const actualResponse: UnitDto = await controller.getUnit(givenUserId);
 
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
-    expect(sendRequestSpy).toHaveBeenCalledWith(UnitMessagePatterns.READ, { id: givenUserId });
+    expect(sendRequestSpy).toHaveBeenCalledWith(UnitMessagePatterns.READ, ReadByIdPayload.of(givenUserId));
     expect(actualResponse).toEqual(expectedResponse);
   });
 
@@ -104,9 +106,7 @@ describe('UnitController', () => {
     expect(readUserRequestSpy).toHaveBeenCalledTimes(1);
     expect(readUserRequestSpy).toHaveBeenCalledWith(givenUserId);
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
-    expect(sendRequestSpy).toHaveBeenCalledWith(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS, {
-      companyId: fixtureUser.company.id,
-    });
+    expect(sendRequestSpy).toHaveBeenCalledWith(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS, ReadByIdPayload.of(fixtureUser.company.id));
     expect(actualResponse).toEqual(expectedResponse);
   });
 
@@ -123,9 +123,7 @@ describe('UnitController', () => {
     const actualResponse = await controller.createUnit(givenDto);
 
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
-    expect(sendRequestSpy).toHaveBeenCalledWith(UnitMessagePatterns.CREATE_POWER_PRODUCTION_UNIT, {
-      unit: PowerProductionUnitCreateDto.toEntity(givenDto as PowerProductionUnitCreateDto),
-    });
+    expect(sendRequestSpy).toHaveBeenCalledWith(UnitMessagePatterns.CREATE_POWER_PRODUCTION_UNIT, PowerProductionUnitCreateDto.toPayload(givenDto as PowerProductionUnitCreateDto));
     expect(actualResponse).toEqual(expectedResponse);
   });
 
@@ -142,9 +140,7 @@ describe('UnitController', () => {
     const actualResponse = await controller.createUnit(givenDto);
 
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
-    expect(sendRequestSpy).toHaveBeenCalledWith(UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION_UNIT, {
-      unit: HydrogenProductionUnitCreateDto.toEntity(givenDto as HydrogenProductionUnitCreateDto),
-    });
+    expect(sendRequestSpy).toHaveBeenCalledWith(UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION_UNIT, HydrogenProductionUnitCreateDto.toPayload(givenDto as HydrogenProductionUnitCreateDto));
     expect(actualResponse).toEqual(expectedResponse);
   });
 
@@ -161,9 +157,7 @@ describe('UnitController', () => {
     const actualResponse = await controller.createUnit(givenDto);
 
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
-    expect(sendRequestSpy).toHaveBeenCalledWith(UnitMessagePatterns.CREATE_HYDROGEN_STORAGE_UNIT, {
-      unit: HydrogenStorageUnitCreateDto.toEntity(givenDto as HydrogenStorageUnitCreateDto),
-    });
+    expect(sendRequestSpy).toHaveBeenCalledWith(UnitMessagePatterns.CREATE_HYDROGEN_STORAGE_UNIT, HydrogenStorageUnitCreateDto.toPayload(givenDto as HydrogenStorageUnitCreateDto));
     expect(actualResponse).toEqual(expectedResponse);
   });
 

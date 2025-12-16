@@ -64,22 +64,16 @@ export class UnitController {
 
   @MessagePattern(UnitMessagePatterns.CREATE_POWER_PRODUCTION_UNIT)
   async createPowerProductionUnit(@Payload() payload: CreatePowerProductionUnitPayload): Promise<PowerProductionUnitEntity> {
-
-    console.log(payload);
     return this.service.createPowerProductionUnit(payload);
   }
 
   @MessagePattern(UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION_UNIT)
   async createHydrogenProductionUnit(@Payload() payload: CreateHydrogenProductionUnitPayload): Promise<HydrogenProductionUnitEntity> {
-
-    console.log(payload);
     return this.service.createHydrogenProductionUnit(payload);
   }
 
   @MessagePattern(UnitMessagePatterns.CREATE_HYDROGEN_STORAGE_UNIT)
   async createHydrogenStorageUnit(@Payload() payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
-
-    console.log(payload);
     return this.service.createHydrogenStorageUnit(payload);
   }
 }
