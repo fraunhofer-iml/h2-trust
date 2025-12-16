@@ -9,9 +9,10 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import {
-  CreateProductionEntity,
+  CreateProductionsPayload,
   FinalizeStagedProductionsPayload,
   ParsedFileBundles,
+  ParsedProductionMatchingResultEntity,
   ProcessStepEntity,
   ProductionMessagePatterns,
 } from '@h2-trust/amqp';
@@ -26,19 +27,17 @@ export class ProductionController {
   ) { }
 
   @MessagePattern(ProductionMessagePatterns.CREATE)
-  async createProductions(
-    @Payload() payload: { createProductionEntity: CreateProductionEntity },
-  ): Promise<ProcessStepEntity[]> {
-    return this.productionCreationService.createProductions(payload.createProductionEntity);
+  async createProductions(@Payload() payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
+    return this.productionCreationService.createProductions(payload);
   }
 
   @MessagePattern(ProductionMessagePatterns.STAGE)
-  async stageProductions(@Payload() payload: { data: ParsedFileBundles; userId: string }) {
+  async stageProductions(@Payload() payload: { data: ParsedFileBundles; userId: string }): Promise<ParsedProductionMatchingResultEntity> {
     return this.productionImportService.stageProductions(payload.data, payload.userId);
   }
 
   @MessagePattern(ProductionMessagePatterns.FINALIZE)
-  async finalizeStagedProductions(@Payload() payload: FinalizeStagedProductionsPayload) {
+  async finalizeStagedProductions(@Payload() payload: FinalizeStagedProductionsPayload): Promise<ProcessStepEntity[]> {
     return this.productionImportService.finalizeStagedProductions(payload);
   }
 }

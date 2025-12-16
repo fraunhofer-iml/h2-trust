@@ -116,8 +116,8 @@ export class ProductionFormComponent {
 
   submit() {
     const dto: CreateProductionDto = {
-      productionStartedAt: this.form.value.productionStartedAt?.toISOString() ?? new Date().toISOString(),
-      productionEndedAt: this.form.value.productionEndedAt?.toISOString() ?? new Date().toISOString(),
+      productionStartedAt: this.form.value.productionStartedAt ?? new Date(),
+      productionEndedAt: this.form.value.productionEndedAt ?? new Date(),
       hydrogenProductionUnitId: this.form.value.hydrogenProductionUnit?.id ?? '',
       powerProductionUnitId: this.form.value.powerProductionUnit?.id ?? '',
       hydrogenAmountKg: this.form.value.hydrogenAmountKg ?? 0,
@@ -151,7 +151,7 @@ export class ProductionFormComponent {
       !!this.form.value.hydrogenAmountKg &&
       !!this.form.value.hydrogenStorageUnit &&
       this.form.value.hydrogenAmountKg >
-        this.form.value.hydrogenStorageUnit.capacity - this.form.value.hydrogenStorageUnit.filling
+      this.form.value.hydrogenStorageUnit.capacity - this.form.value.hydrogenStorageUnit.filling
     );
   }
 }

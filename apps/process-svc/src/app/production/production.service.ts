@@ -96,8 +96,8 @@ export class ProductionService {
   }
 
   private createProcessSteps(
-    startedAt: string,
-    endedAt: string,
+    startedAt: Date,
+    endedAt: Date,
     totalAmount: number,
     params: ProcessStepParams,
     predecessors: ProcessStepEntity[],

@@ -6,16 +6,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsISO8601, IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDate, IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
 
 export class CreateProductionDto {
   @IsNotEmpty()
-  @IsISO8601()
-  productionStartedAt: string;
+  @IsDate()
+  @Type(() => Date)
+  productionStartedAt: Date;
 
   @IsNotEmpty()
-  @IsISO8601()
-  productionEndedAt: string;
+  @IsDate()
+  @Type(() => Date)
+  productionEndedAt: Date;
 
   @IsNotEmpty()
   @IsString()
@@ -40,8 +43,8 @@ export class CreateProductionDto {
   hydrogenStorageUnitId: string;
 
   constructor(
-    productionStartedAt: string,
-    productionEndedAt: string,
+    productionStartedAt: Date,
+    productionEndedAt: Date,
     powerProductionUnitId: string,
     powerAmountKwh: number,
     hydrogenProductionUnitId: string,

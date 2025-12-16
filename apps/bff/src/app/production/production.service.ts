@@ -15,7 +15,7 @@ import {
   AccountingPeriodPower,
   BrokerException,
   BrokerQueues,
-  CreateProductionEntity,
+  CreateProductionsPayload,
   FinalizeStagedProductionsPayload,
   ParsedFileBundles,
   ParsedProductionMatchingResultEntity,
@@ -48,11 +48,10 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly userService: UserService,
     private readonly csvParser: CsvParserService,
-  ) {}
+  ) { }
 
   async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    // TODO-MP: we need to send a message and NOT an entity here (see DUHGW-137)
-    const createProductionEntity = new CreateProductionEntity(
+    const payload: CreateProductionsPayload = CreateProductionsPayload.of(
       dto.productionStartedAt,
       dto.productionEndedAt,
       dto.powerProductionUnitId,
@@ -60,14 +59,11 @@ export class ProductionService {
       dto.hydrogenProductionUnitId,
       dto.hydrogenAmountKg,
       userId,
-      null,
-      dto.hydrogenStorageUnitId,
-      null,
-      null,
-      null,
+      dto.hydrogenStorageUnitId
     );
+
     const processSteps: ProcessStepEntity[] = await firstValueFrom(
-      this.processSvc.send(ProductionMessagePatterns.CREATE, { createProductionEntity }),
+      this.processSvc.send(ProductionMessagePatterns.CREATE, payload),
     );
 
     return processSteps

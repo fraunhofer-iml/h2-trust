@@ -12,6 +12,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
   CreateProductionEntity,
+  CreateProductionsPayload,
   HydrogenProductionUnitEntity,
   PowerProductionUnitEntity,
   ProcessStepEntity,
@@ -27,25 +28,35 @@ export class ProductionCreationService {
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly productionService: ProductionService,
-  ) {}
+  ) { }
 
-  async createProductions(createProductionEntity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
+  async createProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
     const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
-      this.generalSvc.send(UnitMessagePatterns.READ, ReadByIdPayload.of(createProductionEntity.powerProductionUnitId)),
+      this.generalSvc.send(UnitMessagePatterns.READ, ReadByIdPayload.of(payload.powerProductionUnitId)),
     );
 
     const hydrogenProductionUnit: HydrogenProductionUnitEntity = await firstValueFrom(
-      this.generalSvc.send(UnitMessagePatterns.READ, ReadByIdPayload.of(createProductionEntity.hydrogenProductionUnitId)),
+      this.generalSvc.send(UnitMessagePatterns.READ, ReadByIdPayload.of(payload.hydrogenProductionUnitId)),
     );
 
-    createProductionEntity.hydrogenColor = powerProductionUnit.type.hydrogenColor;
-    createProductionEntity.companyIdOfPowerProductionUnit = powerProductionUnit.company.id;
-    createProductionEntity.companyIdOfHydrogenProductionUnit = hydrogenProductionUnit.company.id;
-    createProductionEntity.waterConsumptionLitersPerHour = hydrogenProductionUnit.waterConsumptionLitersPerHour;
+    const entity: CreateProductionEntity = new CreateProductionEntity(
+      payload.productionStartedAt,
+      payload.productionEndedAt,
+      payload.powerProductionUnitId,
+      payload.powerAmountKwh,
+      payload.hydrogenProductionUnitId,
+      payload.hydrogenAmountKg,
+      payload.userId,
+      powerProductionUnit.type.hydrogenColor,
+      payload.hydrogenStorageUnitId,
+      powerProductionUnit.company.id,
+      hydrogenProductionUnit.company.id,
+      hydrogenProductionUnit.waterConsumptionLitersPerHour
+    );
 
     // Step 1: Create power and water
-    const power: ProcessStepEntity[] = this.productionService.createPowerProductions(createProductionEntity);
-    const water: ProcessStepEntity[] = this.productionService.createWaterConsumptions(createProductionEntity);
+    const power: ProcessStepEntity[] = this.productionService.createPowerProductions(entity);
+    const water: ProcessStepEntity[] = this.productionService.createWaterConsumptions(entity);
 
     if (power.length !== water.length) {
       throw new Error(
@@ -66,7 +77,7 @@ export class ProductionCreationService {
 
     // Step 4: Create hydrogen with persisted predecessors
     const hydrogen: ProcessStepEntity[] = this.productionService.createHydrogenProductions(
-      createProductionEntity,
+      entity,
       persistedPower,
       persistedWater,
     );

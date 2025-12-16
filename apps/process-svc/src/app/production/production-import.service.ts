@@ -46,7 +46,7 @@ export class ProductionImportService {
     this.productionChunkSize = this.configurationService.getProcessSvcConfiguration().productionChunkSize;
   }
 
-  async stageProductions(data: ParsedFileBundles, userId: string) {
+  async stageProductions(data: ParsedFileBundles, userId: string): Promise<ParsedProductionMatchingResultEntity> {
     const gridUnitId = await this.fetchGridUnitId(userId);
     const parsedProductions: ParsedProductionEntity[] = this.accountingPeriodMatchingService.matchAccountingPeriods(
       data,
@@ -63,12 +63,9 @@ export class ProductionImportService {
       await this.stagedProductionRepository.getStagedProductionsByImportId(payload.importId);
 
     const createProductions: CreateProductionEntity[] = stagedProductions.map((stagedProduction) => {
-      const startedAt: Date = new Date(stagedProduction.startedAt);
-      const endedAt: Date = new Date(new Date(stagedProduction.startedAt).setMinutes(59, 59, 999));
-
       return new CreateProductionEntity(
-        startedAt.toISOString(),
-        endedAt.toISOString(),
+        stagedProduction.startedAt,
+        new Date(new Date(stagedProduction.startedAt).setMinutes(59, 59, 999)),
         stagedProduction.powerProductionUnitId,
         stagedProduction.powerAmount,
         stagedProduction.hydrogenProductionUnitId,
