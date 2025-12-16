@@ -8,7 +8,7 @@
 
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues, CreateProductionEntity, ParsedFileBundles, PowerAccessApprovalEntity } from '@h2-trust/amqp';
+import { BrokerQueues, CreateProductionEntity, CreateProductionsPayload, ParsedFileBundles, PowerAccessApprovalEntity } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
@@ -20,6 +20,7 @@ import { ProductionService } from './production.service';
 
 describe('ProductionController', () => {
   const DERIVED_HYDROGEN_COLOR = HydrogenColor.GREEN;
+  const DERIVED_COMPANY_ID = 'company-id';
 
   let controller: ProductionController;
   let generalSvcSendMock: jest.Mock;
@@ -34,7 +35,7 @@ describe('ProductionController', () => {
           hydrogenColor: DERIVED_HYDROGEN_COLOR,
         },
         company: {
-          id: 'company-id',
+          id: DERIVED_COMPANY_ID,
         },
       });
     });
@@ -86,22 +87,18 @@ describe('ProductionController', () => {
   });
 
   it('should create production process steps and call batchService.send for each period', async () => {
-    const givenProduction: CreateProductionEntity = {
-      productionStartedAt: new Date('2025-01-01T10:00:00Z').toISOString(),
-      productionEndedAt: new Date('2025-01-01T11:00:00Z').toISOString(),
-      powerProductionUnitId: 'unit-power-1',
-      powerAmountKwh: 90,
-      hydrogenProductionUnitId: 'unit-hydrogen-1',
-      hydrogenAmountKg: 60,
-      recordedBy: 'user-id-1',
-      hydrogenColor: DERIVED_HYDROGEN_COLOR,
-      hydrogenStorageUnitId: 'hydrogen-storage-unit-1',
-      companyIdOfPowerProductionUnit: 'company-power-1',
-      companyIdOfHydrogenProductionUnit: 'company-hydrogen-1',
-      waterConsumptionLitersPerHour: 10,
-    };
+    const givenPayload = CreateProductionsPayload.of(
+      new Date('2025-01-01T10:00:00Z'),
+      new Date('2025-01-01T11:00:00Z'),
+      'unit-power-1',
+      90,
+      'unit-hydrogen-1',
+      60,
+      'user-id-1',
+      'hydrogen-storage-unit-1',
+    )
 
-    const actualResponse = await controller.createProductions({ createProductionEntity: givenProduction });
+    const actualResponse = await controller.createProductions(givenPayload);
 
     expect(batchSvcSendMock.mock.calls.length).toBe(2); // One for power & water, one for hydrogen
     expect(actualResponse.length).toBe(3);
@@ -123,59 +120,59 @@ describe('ProductionController', () => {
 
     expect(actualResponse.length).toBe(powerProductions.length + waterConsumptions.length + hydrogenProductions.length);
 
-    const expectedPowerAmount = givenProduction.powerAmountKwh / powerProductions.length;
-    const expectedWaterAmount = givenProduction.waterConsumptionLitersPerHour;
-    const expectedHydrogenAmount = givenProduction.hydrogenAmountKg / hydrogenProductions.length;
+    const expectedPowerAmount = givenPayload.powerAmountKwh / powerProductions.length;
+    const expectedWaterAmount = 10;
+    const expectedHydrogenAmount = givenPayload.hydrogenAmountKg / hydrogenProductions.length;
 
     actualResponse
       .filter((powerProduction) => powerProduction.type === ProcessType.POWER_PRODUCTION)
       .forEach((powerProduction) => {
-        expect(powerProduction.startedAt).toStrictEqual(new Date(givenProduction.productionStartedAt));
+        expect(powerProduction.startedAt).toStrictEqual(new Date(givenPayload.productionStartedAt));
         expect(powerProduction.endedAt).toStrictEqual(
-          new Date(new Date(givenProduction.productionEndedAt).setSeconds(-1)),
+          new Date(new Date(givenPayload.productionEndedAt).setSeconds(-1)),
         );
         expect(powerProduction.type).toBe(ProcessType.POWER_PRODUCTION);
         expect(powerProduction.batch.amount).toBe(expectedPowerAmount);
         expect(powerProduction.batch.qualityDetails).toBeNull();
         expect(powerProduction.batch.type).toBe(BatchType.POWER);
-        expect(powerProduction.batch.owner.id).toBe(givenProduction.companyIdOfPowerProductionUnit);
+        expect(powerProduction.batch.owner.id).toBe(DERIVED_COMPANY_ID);
         expect(powerProduction.batch.hydrogenStorageUnit).toBeNull();
-        expect(powerProduction.recordedBy.id).toBe(givenProduction.recordedBy);
-        expect(powerProduction.executedBy.id).toBe(givenProduction.powerProductionUnitId);
+        expect(powerProduction.recordedBy.id).toBe(givenPayload.userId);
+        expect(powerProduction.executedBy.id).toBe(givenPayload.powerProductionUnitId);
       });
 
     actualResponse
-      .filter((powerProduction) => powerProduction.type === ProcessType.WATER_CONSUMPTION)
-      .forEach((powerProduction) => {
-        expect(powerProduction.startedAt).toStrictEqual(new Date(givenProduction.productionStartedAt));
-        expect(powerProduction.endedAt).toStrictEqual(
-          new Date(new Date(givenProduction.productionEndedAt).setSeconds(-1)),
+      .filter((waterConsumption) => waterConsumption.type === ProcessType.WATER_CONSUMPTION)
+      .forEach((waterConsumption) => {
+        expect(waterConsumption.startedAt).toStrictEqual(new Date(givenPayload.productionStartedAt));
+        expect(waterConsumption.endedAt).toStrictEqual(
+          new Date(new Date(givenPayload.productionEndedAt).setSeconds(-1)),
         );
-        expect(powerProduction.type).toBe(ProcessType.WATER_CONSUMPTION);
-        expect(powerProduction.batch.amount).toBe(expectedWaterAmount);
-        expect(powerProduction.batch.qualityDetails).toBeNull();
-        expect(powerProduction.batch.type).toBe(BatchType.WATER);
-        expect(powerProduction.batch.owner.id).toBe(givenProduction.companyIdOfHydrogenProductionUnit);
-        expect(powerProduction.batch.hydrogenStorageUnit).toBeNull();
-        expect(powerProduction.recordedBy.id).toBe(givenProduction.recordedBy);
-        expect(powerProduction.executedBy.id).toBe(givenProduction.hydrogenProductionUnitId);
+        expect(waterConsumption.type).toBe(ProcessType.WATER_CONSUMPTION);
+        expect(waterConsumption.batch.amount).toBe(expectedWaterAmount);
+        expect(waterConsumption.batch.qualityDetails).toBeNull();
+        expect(waterConsumption.batch.type).toBe(BatchType.WATER);
+        expect(waterConsumption.batch.owner.id).toBe(DERIVED_COMPANY_ID);
+        expect(waterConsumption.batch.hydrogenStorageUnit).toBeNull();
+        expect(waterConsumption.recordedBy.id).toBe(givenPayload.userId);
+        expect(waterConsumption.executedBy.id).toBe(givenPayload.hydrogenProductionUnitId);
       });
 
     actualResponse
-      .filter((powerProduction) => powerProduction.type === ProcessType.HYDROGEN_PRODUCTION)
-      .forEach((powerProduction) => {
-        expect(powerProduction.startedAt).toStrictEqual(new Date(givenProduction.productionStartedAt));
-        expect(powerProduction.endedAt).toStrictEqual(
-          new Date(new Date(givenProduction.productionEndedAt).setSeconds(-1)),
+      .filter((hydrogenProduction) => hydrogenProduction.type === ProcessType.HYDROGEN_PRODUCTION)
+      .forEach((hydrogenProduction) => {
+        expect(hydrogenProduction.startedAt).toStrictEqual(new Date(givenPayload.productionStartedAt));
+        expect(hydrogenProduction.endedAt).toStrictEqual(
+          new Date(new Date(givenPayload.productionEndedAt).setSeconds(-1)),
         );
-        expect(powerProduction.type).toBe(ProcessType.HYDROGEN_PRODUCTION);
-        expect(powerProduction.batch.amount).toBe(expectedHydrogenAmount);
-        expect(powerProduction.batch.qualityDetails.color).toBe(DERIVED_HYDROGEN_COLOR);
-        expect(powerProduction.batch.type).toBe(BatchType.HYDROGEN);
-        expect(powerProduction.batch.owner.id).toBe(givenProduction.companyIdOfHydrogenProductionUnit);
-        expect(powerProduction.batch.hydrogenStorageUnit.id).toBe(givenProduction.hydrogenStorageUnitId);
-        expect(powerProduction.recordedBy.id).toBe(givenProduction.recordedBy);
-        expect(powerProduction.executedBy.id).toBe(givenProduction.hydrogenProductionUnitId);
+        expect(hydrogenProduction.type).toBe(ProcessType.HYDROGEN_PRODUCTION);
+        expect(hydrogenProduction.batch.amount).toBe(expectedHydrogenAmount);
+        expect(hydrogenProduction.batch.qualityDetails.color).toBe(DERIVED_HYDROGEN_COLOR);
+        expect(hydrogenProduction.batch.type).toBe(BatchType.HYDROGEN);
+        expect(hydrogenProduction.batch.owner.id).toBe(DERIVED_COMPANY_ID);
+        expect(hydrogenProduction.batch.hydrogenStorageUnit.id).toBe(givenPayload.hydrogenStorageUnitId);
+        expect(hydrogenProduction.recordedBy.id).toBe(givenPayload.userId);
+        expect(hydrogenProduction.executedBy.id).toBe(givenPayload.hydrogenProductionUnitId);
       });
 
     actualResponse.forEach((processStep) => {
