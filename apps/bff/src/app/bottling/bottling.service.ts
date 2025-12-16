@@ -14,6 +14,7 @@ import {
   HydrogenComponentEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
+  ReadByIdPayload,
   TransportationDetailsEntity,
   UserMessagePatterns,
 } from '@h2-trust/amqp';
@@ -124,7 +125,7 @@ export class BottlingService {
 
   private async fetchProducerName(producerId: string): Promise<string> {
     const producer: UserDetailsDto = await firstValueFrom(
-      this.generalSvc.send(UserMessagePatterns.READ, { id: producerId }),
+      this.generalSvc.send(UserMessagePatterns.READ, ReadByIdPayload.of(producerId)),
     );
     return producer.company?.name;
   }

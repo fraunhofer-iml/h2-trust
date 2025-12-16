@@ -9,14 +9,17 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BrokerQueues, UserMessagePatterns } from '@h2-trust/amqp';
+import { BrokerQueues, ReadByIdPayload, UserMessagePatterns } from '@h2-trust/amqp';
 import { UserDetailsDto } from '@h2-trust/api';
 
 @Injectable()
 export class UserService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
+  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) { }
 
   async readUserWithCompany(id: string): Promise<UserDetailsDto> {
-    return firstValueFrom(this.generalService.send(UserMessagePatterns.READ, { id })).then(UserDetailsDto.fromEntity);
+    return firstValueFrom(
+      this.generalService.send(UserMessagePatterns.READ, ReadByIdPayload.of(id))
+    )
+      .then(UserDetailsDto.fromEntity);
   }
 }

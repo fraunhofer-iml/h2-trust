@@ -9,7 +9,7 @@
 import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues, UserEntity, UserEntityPowerMock, UserMessagePatterns } from '@h2-trust/amqp';
+import { BrokerQueues, ReadByIdPayload, UserEntity, UserEntityPowerMock, UserMessagePatterns } from '@h2-trust/amqp';
 import { UserDetailsDto } from '@h2-trust/api';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
@@ -55,7 +55,7 @@ describe('UserController', () => {
     const actualResponse = await controller.readUserWithCompany(mockedUser.id);
 
     expect(generalServiceSpy).toHaveBeenCalledTimes(1);
-    expect(generalServiceSpy).toHaveBeenCalledWith(UserMessagePatterns.READ, { id: mockedUser.id });
+    expect(generalServiceSpy).toHaveBeenCalledWith(UserMessagePatterns.READ, ReadByIdPayload.of(mockedUser.id));
     expect(actualResponse).toEqual(expectedResponse);
   });
 });
