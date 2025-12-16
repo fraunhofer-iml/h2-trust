@@ -16,12 +16,12 @@ import {
   BrokerException,
   BrokerQueues,
   CreateProductionEntity,
+  FinalizeStagedProductionsPayload,
   ParsedFileBundles,
   ParsedProductionMatchingResultEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
-  SubmitProductionProps,
   UnitDataBundle,
   UnitFileBundle,
 } from '@h2-trust/amqp';
@@ -117,7 +117,7 @@ export class ProductionService {
   }
 
   async submitCsvData(dto: ImportSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    const payload: SubmitProductionProps = new SubmitProductionProps(userId, dto.storageUnitId, dto.importId);
+    const payload: FinalizeStagedProductionsPayload = FinalizeStagedProductionsPayload.of(userId, dto.storageUnitId, dto.importId);
     const processSteps: ProcessStepEntity[] = await firstValueFrom(
       this.processSvc.send<ProcessStepEntity[]>(ProductionMessagePatterns.FINALIZE, payload),
     );

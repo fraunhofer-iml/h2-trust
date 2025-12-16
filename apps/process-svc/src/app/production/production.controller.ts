@@ -10,10 +10,10 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import {
   CreateProductionEntity,
+  FinalizeStagedProductionsPayload,
   ParsedFileBundles,
   ProcessStepEntity,
   ProductionMessagePatterns,
-  SubmitProductionProps,
 } from '@h2-trust/amqp';
 import { ProductionCreationService } from './production-creation.service';
 import { ProductionImportService } from './production-import.service';
@@ -23,7 +23,7 @@ export class ProductionController {
   constructor(
     private readonly productionCreationService: ProductionCreationService,
     private readonly productionImportService: ProductionImportService,
-  ) {}
+  ) { }
 
   @MessagePattern(ProductionMessagePatterns.CREATE)
   async createProductions(
@@ -38,7 +38,7 @@ export class ProductionController {
   }
 
   @MessagePattern(ProductionMessagePatterns.FINALIZE)
-  async finalizeStagedProductions(@Payload() payload: SubmitProductionProps) {
+  async finalizeStagedProductions(@Payload() payload: FinalizeStagedProductionsPayload) {
     return this.productionImportService.finalizeStagedProductions(payload);
   }
 }

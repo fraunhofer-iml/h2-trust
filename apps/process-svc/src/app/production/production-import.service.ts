@@ -13,6 +13,7 @@ import {
   BrokerException,
   BrokerQueues,
   CreateProductionEntity,
+  FinalizeStagedProductionsPayload,
   ParsedFileBundles,
   ParsedProductionEntity,
   ParsedProductionMatchingResultEntity,
@@ -22,7 +23,6 @@ import {
   ProcessStepMessagePatterns,
   ReadPowerAccessApprovalsPayload,
   StagedProductionEntity,
-  SubmitProductionProps,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
@@ -57,9 +57,10 @@ export class ProductionImportService {
     return new ParsedProductionMatchingResultEntity(importId, parsedProductions);
   }
 
-  async finalizeStagedProductions(props: SubmitProductionProps): Promise<ProcessStepEntity[]> {
+  // TODO-MP: change parameters ?
+  async finalizeStagedProductions(payload: FinalizeStagedProductionsPayload): Promise<ProcessStepEntity[]> {
     const stagedProductions: StagedProductionEntity[] =
-      await this.stagedProductionRepository.getStagedProductionsByImportId(props.importId);
+      await this.stagedProductionRepository.getStagedProductionsByImportId(payload.importId);
 
     const createProductions: CreateProductionEntity[] = stagedProductions.map((stagedProduction) => {
       const startedAt: Date = new Date(stagedProduction.startedAt);
@@ -72,9 +73,9 @@ export class ProductionImportService {
         stagedProduction.powerAmount,
         stagedProduction.hydrogenProductionUnitId,
         stagedProduction.hydrogenAmount,
-        props.recordedBy,
+        payload.recordedBy,
         stagedProduction.hydrogenColor,
-        props.hydrogenStorageUnitId,
+        payload.hydrogenStorageUnitId,
         stagedProduction.powerProductionUnitOwnerId,
         stagedProduction.hydrogenProductionUnitOwnerId,
         stagedProduction.waterConsumptionLitersPerHour,
