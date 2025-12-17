@@ -53,7 +53,7 @@
       [unit]="batch().unit"
     ></app-verified-chart>
 
-    <div class="grid grid-cols-2 gap-4 rounded-lg border-[2px] border-solid border-neutral-100 bg-neutral-50 p-4">
+    <div class="grid grid-cols-2 gap-4 rounded-xl border-[2px] border-solid border-neutral-100 bg-neutral-50 p-4">
       <span class="col-span-2 text-neutral-600">Batch Details</span>
       @if (batch().processStep !== 'BOTTLING') {
         <div class="flex flex-col text-sm">
@@ -94,7 +94,7 @@
       </div>
     </div>
 
-    <div class="flex flex-col rounded-lg border-[2px] border-solid border-neutral-100 bg-neutral-50 p-4">
+    <div class="flex flex-col rounded-xl border-[2px] border-solid border-neutral-100 bg-neutral-50 p-4">
       <span class="text-neutral-600">Hydrogen Composition</span>
       <app-h2-composition-chart [chartData]="batch().hydrogenComposition"></app-h2-composition-chart>
     </div>

@@ -25,10 +25,10 @@
 
     <app-verified-chart [amount]="batch().amount" [unit]="batch().unit"></app-verified-chart>
 
-    <div class="grid grid-cols-2 gap-4 rounded-lg bg-neutral-50 p-4">
+    <div class="grid grid-cols-2 gap-4 rounded-xl border-[2px] border-solid border-neutral-100 bg-neutral-50 p-4">
       <span class="col-span-2 text-neutral-600">Batch Details</span>
       <div class="flex flex-col text-sm">
-        <span class="text-sm text-neutral-400">Deionized Water:</span
+        <span class="text-sm text-neutral-500">Deionized Water:</span
         ><span>{{ batch().deionizedWater.amount | number | unit: FormattedUnits.L }}</span>
       </div>
     </div>
