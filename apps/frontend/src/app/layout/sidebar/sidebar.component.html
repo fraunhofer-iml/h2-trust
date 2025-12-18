@@ -15,7 +15,9 @@
                 (click)="selectedIndex = $index"
                 tabindex="0"
                 role="presentation"
-                [ngClass]="selectedIndex === $index ? 'bg-primary-100/20' : ''"
+                [ngClass]="{
+                  'bg-primary-100/20': router.url.includes(option.route),
+                }"
               >
                 <span class="material-symbols-outlined text-neutral-600">{{ option.icon }}</span>
                 <span class="text-neutral-600">{{ option.title }}</span>
