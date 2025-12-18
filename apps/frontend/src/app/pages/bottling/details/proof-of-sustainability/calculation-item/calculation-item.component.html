@@ -16,8 +16,8 @@
 </div>
 
 <app-base-sheet #sheet>
-  <span class="font-semibold text-neutral-500">{{ topic().key | prettyEnum | titlecase }}</span>
   <div class="flex flex-col gap-4">
+    <span class="font-semibold text-neutral-500">{{ topic().key | prettyEnum | titlecase }}</span>
     @for (item of topic().items; track $index) {
       <div class="flex w-full flex-col justify-between rounded-xl border-[2px] border-solid border-neutral-100">
         <div
