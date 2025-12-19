@@ -10,7 +10,7 @@
         {{ batch().accountingPeriodEnd | date: 'shortTime' }}
       </h3>
       <span class="text-sm text-neutral-500">
-        {{ batch().emission.amountCO2PerKgH2 | number: '1.2-2' | unit: FormattedUnits.CO2_PER_KG_H2 }}
+        {{ batch().emission.amountCO2PerKgH2 | unit: FormattedUnits.CO2_PER_KG_H2 }}
       </span>
     </div>
     <app-verified-chart
@@ -35,7 +35,7 @@
       [unit]="batch().unit"
     ></app-verified-chart>
 
-    <div class="grid grid-cols-2 gap-4 rounded-lg border-[2px] border-solid border-neutral-100 bg-neutral-50 p-4">
+    <div class="grid grid-cols-2 gap-4 rounded-xl border-[2px] border-solid border-neutral-100 bg-neutral-50 p-4">
       <span class="col-span-2 text-neutral-600">Batch Details</span>
 
       <div class="flex flex-col text-sm">

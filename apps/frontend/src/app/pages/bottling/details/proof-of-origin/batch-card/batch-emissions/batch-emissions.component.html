@@ -1,34 +1,33 @@
-<div class="grid grid-cols-2 gap-4 rounded-lg border-[2px] border-solid border-neutral-100 bg-neutral-50 p-4">
-  <span class="col-span-2 text-neutral-600">GHG-Emissions</span>
-
-  <div class="flex flex-col text-sm">
-    <span class="text-sm text-neutral-500">Total Emissions</span
-    ><span>{{ emissions().amountCO2 | number: '1.2-2' | unit: FormattedUnits.G_CO2 }} </span>
-  </div>
-  <div class="flex flex-col text-sm">
-    <span class="text-sm text-neutral-500">Emissions per kg Hydrogen</span
-    ><span>{{ emissions().amountCO2PerKgH2 | number: '1.2-2' | unit: FormattedUnits.CO2_PER_KG_H2 }} </span>
-  </div>
-  <div class="col-span-2 flex flex-col text-sm">
-    <span class="text-sm text-neutral-500">Basis of Calculation</span>
-    <div class="flex flex-col gap-2">
-      @if (inputs.length > 0) {
-        <span class="text-xs text-neutral-500">Input</span>
-        <div class="flex flex-col gap-1 text-neutral-700">
-          @for (input of inputs; track input) {
-            <p class="m-0">{{ input }}</p>
-          }
-        </div>
-      }
-
-      @if (formulas.length > 0) {
-        <span class="text-xs text-neutral-500">Formula</span>
-        <div class="flex flex-col gap-1 text-neutral-700">
-          @for (formula of formulas; track formula) {
-            <p class="m-0">{{ formula }}</p>
-          }
-        </div>
-      }
+<div class="rounded-xl border-[2px] border-solid border-neutral-100">
+  <div class="grid grid-cols-2 gap-2 rounded-xl border-b-[2px] border-solid border-neutral-100 bg-neutral-50 p-4">
+    <span class="col-span-2 text-neutral-600">GHG-Emissions</span>
+    <div class="flex flex-col text-sm">
+      <span class="text-sm text-neutral-500">Total Emissions</span
+      ><span>{{ emissions().amountCO2 | unit: FormattedUnits.G_CO2 }} </span>
     </div>
+    <div class="flex flex-col text-sm">
+      <span class="text-sm text-neutral-500">Emissions per kg Hydrogen</span
+      ><span>{{ emissions().amountCO2PerKgH2 | unit: FormattedUnits.CO2_PER_KG_H2 }} </span>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-1 p-4 text-sm">
+    @if (inputs.length > 0) {
+      <span class="text-neutral-500">Basis of Calculation - Input</span>
+      <div class="mb-2 text-neutral-700">
+        @for (input of inputs; track input) {
+          <p>{{ input }}</p>
+        }
+      </div>
+    }
+
+    @if (formulas.length > 0) {
+      <span class="text-neutral-500">Basis of Calculation - Formula</span>
+      <div class="text-neutral-700">
+        @for (formula of formulas; track formula) {
+          <p>{{ formula }}</p>
+        }
+      </div>
+    }
   </div>
 </div>

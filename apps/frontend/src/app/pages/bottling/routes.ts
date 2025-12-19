@@ -20,6 +20,7 @@ export const BOTTLING_ROUTES: Route[] = [
   },
   {
     path: 'create',
+    canActivate: [AUTH_GUARD],
     component: AddBottleComponent,
   },
   {

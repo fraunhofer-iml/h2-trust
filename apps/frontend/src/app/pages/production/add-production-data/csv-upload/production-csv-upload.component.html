@@ -63,8 +63,7 @@
         <mat-select [formControl]="storageUnit">
           @for (unit of hydrogenStorageUnits(); track unit) {
             <mat-option [value]="unit.id"
-              >{{ unit.name }} (Remaining Capacity:
-              {{ unit.capacity - unit.filling | number | unit: FormattedUnits.KG }})
+              >{{ unit.name }} (Remaining Capacity: {{ unit.capacity - unit.filling | unit: FormattedUnits.KG }})
             </mat-option>
           }
         </mat-select>

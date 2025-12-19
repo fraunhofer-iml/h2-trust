@@ -9,6 +9,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { UnitType } from '@h2-trust/domain';
+import { ICONS } from '../../shared/constants/icons';
 import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
 
 @Component({
@@ -17,18 +18,17 @@ import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
   templateUrl: './unit-type-chip.component.html',
 })
 export class UnitTypeChipComponent {
-  unitType = input<string>('');
+  protected readonly ICONS = ICONS.UNITS;
+  unitType = input.required<UnitType>();
 
   getIcon() {
     switch (this.unitType()) {
       case UnitType.HYDROGEN_PRODUCTION:
-        return 'settings';
+        return this.ICONS.HYDROGEN_PRODUCTION;
       case UnitType.POWER_PRODUCTION:
-        return 'electric_bolt';
+        return this.ICONS.POWER_PRODUCTION;
       case UnitType.HYDROGEN_STORAGE:
-        return 'propane';
-      default:
-        return 'block';
+        return this.ICONS.HYDROGEN_STORAGE;
     }
   }
 }

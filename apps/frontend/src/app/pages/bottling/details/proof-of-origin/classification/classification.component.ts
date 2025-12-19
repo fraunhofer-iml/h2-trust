@@ -7,6 +7,7 @@
  */
 
 import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
+import { ICONS } from 'apps/frontend/src/app/shared/constants/icons';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { ClassificationDto } from '@h2-trust/api';
@@ -28,11 +29,11 @@ export class ClassificationComponent {
   getIcon(key: string): string {
     switch (key) {
       case BatchType.HYDROGEN:
-        return 'bubble_chart';
+        return ICONS.PROCESS_STEPS.HYDROGEN_STORAGE;
       case BatchType.POWER:
-        return 'charger';
+        return ICONS.PROCESS_STEPS.POWER_SUPPLY;
       case BatchType.WATER:
-        return 'water_drop';
+        return ICONS.PROCESS_STEPS.WATER_SUPPLY;
       default:
         return '';
     }

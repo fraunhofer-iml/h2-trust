@@ -7,6 +7,7 @@
  */
 
 import { HydrogenStorageUnitEntity } from '@h2-trust/amqp';
+import { HydrogenStorageType } from '@h2-trust/domain';
 import { HydrogenComponentDto } from '../process-step';
 
 export class HydrogenStorageOverviewDto {
@@ -14,6 +15,7 @@ export class HydrogenStorageOverviewDto {
   name: string;
   capacity: number;
   filling: number;
+  storageType: HydrogenStorageType;
   hydrogenComposition: HydrogenComponentDto[];
 
   constructor(
@@ -21,12 +23,14 @@ export class HydrogenStorageOverviewDto {
     name: string,
     capacity: number,
     filling: number,
+    storageType: HydrogenStorageType,
     hydrogenComposition: HydrogenComponentDto[],
   ) {
     this.id = id;
     this.name = name;
     this.capacity = capacity;
     this.filling = filling;
+    this.storageType = storageType;
     this.hydrogenComposition = hydrogenComposition;
   }
 
@@ -35,6 +39,7 @@ export class HydrogenStorageOverviewDto {
       id: unit.id,
       name: unit.name,
       capacity: unit.capacity,
+      storageType: unit.type,
       filling: HydrogenStorageOverviewDto.mapFilling(unit),
       hydrogenComposition: HydrogenStorageOverviewDto.mapHydrogenComposition(unit),
     };

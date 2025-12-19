@@ -39,6 +39,7 @@ import {
 import { InfoTooltipComponent } from '../../../layout/info-tooltip/info-tooltip.component';
 import { RED_III_CRITERIA } from '../../../shared/constants/financial-support-info';
 import { H2_PRODUCTION_TYPES } from '../../../shared/constants/hydrogen-production-types';
+import { ICONS } from '../../../shared/constants/icons';
 import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
@@ -77,6 +78,7 @@ import {
 })
 export class CreateUnitComponent {
   protected readonly RED_III_CRITERIA = RED_III_CRITERIA;
+  protected readonly ICONS = ICONS.UNITS;
 
   unitsService = inject(UnitsService);
   companiesService = inject(CompaniesService);

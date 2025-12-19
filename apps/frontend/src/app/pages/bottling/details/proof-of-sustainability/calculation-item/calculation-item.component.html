@@ -16,20 +16,23 @@
 </div>
 
 <app-base-sheet #sheet>
-  <span class="font-semibold text-neutral-500">{{ topic().key | prettyEnum | titlecase }}</span>
-  <div class="my-2 flex flex-col gap-2">
+  <div class="flex flex-col gap-4">
+    <span class="font-semibold text-neutral-500">{{ topic().key | prettyEnum | titlecase }}</span>
     @for (item of topic().items; track $index) {
-      <div class="flex w-full items-center justify-between rounded-lg bg-neutral-100 p-4">
-        <div class="flex w-full flex-row items-center justify-between">
-          <div>
-            <h2>{{ item.name }}</h2>
-            <div class="text-sm leading-5 text-neutral-400">
-              @for (current of item.basisOfCalculation; track $index) {
-                <p class="m-0">{{ current }}</p>
-              }
-            </div>
-          </div>
-          <h2 class="text-neutral-600">{{ item.result | number: '1.2-2' | unit: item.unit }}</h2>
+      <div class="flex w-full flex-col justify-between rounded-xl border-[2px] border-solid border-neutral-100">
+        <div
+          class="flex w-full justify-between rounded-xl border-b-[2px] border-solid border-neutral-100 bg-neutral-50 p-4 text-neutral-800"
+        >
+          <h2>
+            {{ item.name }}
+          </h2>
+          <span class="ml-2">{{ item.result | unit: item.unit }}</span>
+        </div>
+
+        <div class="p-4 text-sm text-neutral-500">
+          @for (current of item.basisOfCalculation; track $index) {
+            <p>{{ current }}</p>
+          }
         </div>
       </div>
     }

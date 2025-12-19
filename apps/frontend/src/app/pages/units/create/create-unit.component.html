@@ -38,7 +38,7 @@
                   [ngClass]="
                     selectedType.value === UnitType.HYDROGEN_PRODUCTION ? 'text-primary-200' : 'bg-neutral-200/20'
                   "
-                  >water_ec</span
+                  >{{ ICONS.HYDROGEN_PRODUCTION }}</span
                 >
               </div>
               <span class="text-base">{{ UnitType.HYDROGEN_PRODUCTION | prettyEnum | titlecase }}</span>
@@ -67,7 +67,7 @@
                   [ngClass]="
                     selectedType.value === UnitType.POWER_PRODUCTION ? 'text-primary-200' : 'bg-neutral-200/20'
                   "
-                  >bolt</span
+                  >{{ ICONS.POWER_PRODUCTION }}</span
                 >
               </div>
               <span class="text-base">{{ UnitType.POWER_PRODUCTION | prettyEnum | titlecase }}</span>
@@ -96,7 +96,7 @@
                   [ngClass]="
                     selectedType.value === UnitType.HYDROGEN_STORAGE ? 'text-primary-200' : 'bg-neutral-200/20'
                   "
-                  >battery_profile</span
+                  >{{ ICONS.HYDROGEN_STORAGE }}</span
                 >
               </div>
               <span class="text-base">{{ UnitType.HYDROGEN_STORAGE | prettyEnum | titlecase }}</span>

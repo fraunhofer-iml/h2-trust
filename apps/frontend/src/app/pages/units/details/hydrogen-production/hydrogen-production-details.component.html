@@ -4,7 +4,7 @@
   </div>
   <div class="flex flex-col text-sm">
     <span class="text-sm text-neutral-400">Rated Power</span
-    ><span>{{ unit().ratedPower | number | unit: FormattedUnits.MW }}</span>
+    ><span>{{ unit().ratedPower | unit: FormattedUnits.MW }}</span>
   </div>
   <div class="flex flex-col text-sm">
     <span class="text-sm text-neutral-400">Method</span><span>{{ unit().method || '--' }}</span>
@@ -13,11 +13,10 @@
     <span class="text-sm text-neutral-400">Technology</span><span>{{ unit().technology || '--' }}</span>
   </div>
   <div class="flex flex-col text-sm">
-    <span class="text-sm text-neutral-400">Pressure</span
-    ><span>{{ unit().pressure | number | unit: FormattedUnits.BAR }} </span>
+    <span class="text-sm text-neutral-400">Pressure</span><span>{{ unit().pressure | unit: FormattedUnits.BAR }} </span>
   </div>
   <div class="flex flex-col text-sm">
     <span class="text-sm text-neutral-400">Water Consumption</span
-    ><span>{{ unit().waterConsumptionLitersPerHour | number | unit: FormattedUnits.L_PER_H }}</span>
+    ><span>{{ unit().waterConsumptionLitersPerHour | unit: FormattedUnits.L_PER_H }}</span>
   </div>
 </div>

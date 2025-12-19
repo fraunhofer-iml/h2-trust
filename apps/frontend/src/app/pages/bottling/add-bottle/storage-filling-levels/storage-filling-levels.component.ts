@@ -138,7 +138,7 @@ export class StorageFillingLevelsComponent {
     const totalH2Amount = formatNumberForChart(
       item?.hydrogenComposition.reduce((sum, portion) => sum + portion.amount, 0),
     );
-    const capacity = this.unitPipe.transform(item?.capacity.toString(), FormattedUnits.KG);
+    const capacity = this.unitPipe.transform(item?.capacity, FormattedUnits.KG);
     const capacityInPercent = this.percentPipe.transform(totalH2Amount / (item?.capacity ?? 0), '1.2-2');
 
     const label = `{name|${value}}\n{filling|Filling: ${totalH2Amount}/${capacity} (${capacityInPercent})}`;

@@ -14,6 +14,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
+import { ICONS } from '../../shared/constants/icons';
 import { UnitsService } from '../../shared/services/units/units.service';
 import { HydrogenProductionTableComponent } from './tables/hydrogen-production-table/hydrogen-production-table.component';
 import { HydrogenStorageTableComponent } from './tables/hydrogen-storage-table/hydrogen-storage-table.component';
@@ -36,6 +37,7 @@ import { PowerProductionTableComponent } from './tables/power-production-table/p
   templateUrl: './hydrogen-assets.component.html',
 })
 export class HydrogenAssetsComponent {
+  protected readonly ICONS = ICONS.UNITS;
   unitsService = inject(UnitsService);
 
   hydrogenStorageQuery = injectQuery(() => ({

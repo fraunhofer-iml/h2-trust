@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ICONS } from 'apps/frontend/src/app/shared/constants/icons';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -30,11 +31,11 @@ export class CalculationItemComponent {
 
   getIcon(topic: string) {
     const map = new Map<string, string>([
-      [CalculationTopic.HYDROGEN_STORAGE, 'propane_tank'],
-      [CalculationTopic.WATER_SUPPLY, 'water'],
-      [CalculationTopic.HYDROGEN_TRANSPORTATION, 'road'],
-      [CalculationTopic.POWER_SUPPLY, 'bubble_chart'],
-      [CalculationTopic.HYDROGEN_BOTTLING, 'water_do'],
+      [CalculationTopic.HYDROGEN_STORAGE, ICONS.PROCESS_STEPS.HYDROGEN_STORAGE],
+      [CalculationTopic.WATER_SUPPLY, ICONS.PROCESS_STEPS.WATER_SUPPLY],
+      [CalculationTopic.HYDROGEN_TRANSPORTATION, ICONS.PROCESS_STEPS.TRANSPORTATION],
+      [CalculationTopic.POWER_SUPPLY, ICONS.PROCESS_STEPS.POWER_SUPPLY],
+      [CalculationTopic.HYDROGEN_BOTTLING, ICONS.PROCESS_STEPS.HYDROGEN_BOTTLING],
     ]);
 
     return map.get(topic);

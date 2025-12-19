@@ -7,7 +7,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, computed, input, ViewChild } from '@angular/core';
+import { Component, computed, input, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -19,6 +19,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { HydrogenStorageOverviewDto } from '@h2-trust/api';
+import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
 import { AuthService } from '../../../../shared/services/auth/auth.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
 import { UsersService } from '../../../../shared/services/users/users.service';
@@ -40,11 +41,12 @@ import { UsersService } from '../../../../shared/services/users/users.service';
     MatPaginatorModule,
     MatSortModule,
     RouterModule,
+    PrettyEnumPipe,
   ],
   templateUrl: './hydrogen-storage-table.component.html',
 })
-export class HydrogenStorageTableComponent implements AfterViewInit {
-  displayedColumns = ['name', 'fillingLevel', 'fillingStatus'];
+export class HydrogenStorageTableComponent {
+  displayedColumns = ['name', 'fillingLevel', 'storageType'];
   data = input<HydrogenStorageOverviewDto[]>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
