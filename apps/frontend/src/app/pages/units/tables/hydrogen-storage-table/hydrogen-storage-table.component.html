@@ -8,7 +8,6 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Filling Level (kg)</div></th>
       <td mat-cell *matCellDef="let row">{{ row.filling | number }} / {{ row.capacity | number }}</td>
     </ng-container>
-    <!-- TODO: add storage type to DTO -->
     <ng-container matColumnDef="storageType">
       <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Type</div></th>
       <td mat-cell *matCellDef="let row">{{ row.storageType | prettyEnum | titlecase }}</td>

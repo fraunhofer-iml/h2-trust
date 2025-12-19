@@ -50,7 +50,6 @@ export class SidebarComponent implements OnInit {
   userLastName = '';
   userEmail = '';
 
-  selectedIndex = -1;
   constructor(readonly authService: AuthService) {}
 
   async ngOnInit() {
