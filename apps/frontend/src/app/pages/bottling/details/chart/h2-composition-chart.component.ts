@@ -74,8 +74,7 @@ export class H2CompositionChartComponent {
   }
 
   private readonly labelFormatter = (params: any) => {
-    const amount = this.decimalPipe.transform(params.value);
     const percentage = this.percentPipe.transform((params.percent ?? 0) / 100, '1.0-1');
-    return `${params.name}\n ${this.unitPipe.transform(amount, FormattedUnits.KG)} (${percentage})`;
+    return `${params.name}\n ${this.unitPipe.transform(params.value, FormattedUnits.KG)} (${percentage})`;
   };
 }
