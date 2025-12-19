@@ -7,12 +7,12 @@
  */
 
 import * as echarts from 'echarts';
-import { EChartsOption, PieSeriesOption } from 'echarts';
+import { EChartsOption, LegendComponentOption, PieSeriesOption } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { CommonModule, PercentPipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { EmissionForProcessStepDto } from '@h2-trust/api';
+import { EmissionForProcessStepDto, EmissionProcessStepType } from '@h2-trust/api';
 import { FormattedUnits } from '../../../../../shared/constants/formatted-units';
 
 @Component({
@@ -24,8 +24,14 @@ import { FormattedUnits } from '../../../../../shared/constants/formatted-units'
 })
 export class EmissionPieChartComponent {
   percentPipe = inject(PercentPipe);
+
   data = input<EmissionForProcessStepDto[]>([]);
   chartData$ = computed(() => this.toChartData(this.data()));
+
+  readonly headings: Record<EmissionProcessStepType, string> = {
+    APPLICATION: 'Emissions according to Proof of Origin',
+    REGULATORY: 'Emissions according to RED III',
+  };
 
   private toChartData(emissionItems: EmissionForProcessStepDto[]): EChartsOption {
     const applicationItems = emissionItems.filter((i) => i.processStepType === 'APPLICATION');
@@ -33,27 +39,14 @@ export class EmissionPieChartComponent {
 
     const chartOption: EChartsOption = this.getChartOption(regulatoryItems, applicationItems);
 
-    if (applicationItems.length === 0) chartOption.title = { text: 'Keine Daten' };
-    else {
+    if (applicationItems.length === 0) {
+      chartOption.title = { text: 'Keine Daten' };
+    } else {
       const outerColors = ['#7a7aad', '#9e9ed8', '#b6b6ff', '#c2c2ff', '#d1d1ff', '#eeeeff', '#e0e0ff'];
       const innerColors = ['#004D40', '#00796B', '#009688', '#4DB6AC', '#80CBC4', '#B2DFDB', '#E0F2F1'];
 
-      const outerPie = this.createPieSeries(
-        ['50%', '80%'],
-        'outer',
-        regulatoryItems,
-        outerColors,
-        regulatoryItems,
-        applicationItems,
-      );
-      const innerPie = this.createPieSeries(
-        ['15%', '45%'],
-        'inner',
-        applicationItems,
-        innerColors,
-        regulatoryItems,
-        applicationItems,
-      );
+      const outerPie = this.createPieSeries(['40%', '60%'], 'outer', regulatoryItems, outerColors, emissionItems);
+      const innerPie = this.createPieSeries(['10%', '35%'], 'inner', applicationItems, innerColors, emissionItems);
 
       chartOption.series = [outerPie, innerPie];
     }
@@ -89,13 +82,9 @@ export class EmissionPieChartComponent {
     };
   }
 
-  private readonly tooltipFormatter = (
-    params: any,
-    dataByItems: EmissionForProcessStepDto[],
-    dataTotal: EmissionForProcessStepDto[],
-  ): string => {
+  private readonly tooltipFormatter = (params: any, dataTotal: EmissionForProcessStepDto[]): string => {
     const percent = this.percentPipe.transform((params.percent ?? 0) / 100, '1.0-1');
-    const description = [...dataByItems, ...dataTotal].find((item) => item.name === params.name)?.description;
+    const description = dataTotal.find((item) => item.name === params.name)?.description;
     return `${params.marker} ${params.name} (${description}): ${params.value} ${FormattedUnits.CO2_PER_KG_H2} (${percent})`;
   };
 
@@ -105,33 +94,22 @@ export class EmissionPieChartComponent {
   ): EChartsOption => ({
     title: { text: '' },
     tooltip: {},
-    legend: {
-      right: 30,
-      top: 'center',
-      show: true,
-      selectedMode: false,
-      orient: 'vertical',
-      textStyle: {
-        color: '#ababab',
-      },
-      data: [...applicationItems.map((i) => i.name), ...regulatoryItems.map((i) => i.name)],
-      formatter: function (name) {
-        const description = [...regulatoryItems, ...applicationItems].find((item) => item.name === name)?.description;
-        return name + ` (${description})`;
-      },
-    },
+    legend: [
+      ...this.buildLegendGroup('REGULATORY', regulatoryItems, '16%'),
+      ...this.buildLegendGroup('APPLICATION', applicationItems, '50%'),
+    ],
     series: [],
   });
 
   private createPieSeries(
     radius: [string, string],
     position: 'inner' | 'outer',
-    data: { amount: number; name: string }[],
+    data: EmissionForProcessStepDto[],
     colors: string[],
-    dataByItems: EmissionForProcessStepDto[],
-    dataTotal: EmissionForProcessStepDto[],
+    totalItems: EmissionForProcessStepDto[],
   ): PieSeriesOption {
     const pieSeries = this.getDefaultPieSeries(radius);
+    pieSeries.name = position === 'inner' ? 'APPLICATION' : 'REGULATORY';
     pieSeries.label = {
       position: position,
       formatter: (params) => this.percentPipe.transform((params.percent ?? 0) / 100, '1.0-1') ?? '',
@@ -141,7 +119,47 @@ export class EmissionPieChartComponent {
       name: item.name,
       itemStyle: { color: colors[index] },
     }));
-    pieSeries.tooltip = { formatter: (params) => this.tooltipFormatter(params, dataByItems, dataTotal) };
+    pieSeries.tooltip = { formatter: (params) => this.tooltipFormatter(params, totalItems) };
     return pieSeries;
+  }
+
+  private buildLegendGroup(
+    type: EmissionProcessStepType,
+    items: EmissionForProcessStepDto[],
+    top: string,
+  ): LegendComponentOption[] {
+    return [
+      {
+        data: [type],
+        top: type === 'REGULATORY' ? '10%' : '44%',
+        left: '56%',
+        selectedMode: false,
+        icon: 'none',
+        itemWidth: 0,
+        itemHeight: 0,
+        itemGap: 0,
+        textStyle: {
+          color: '#787a78',
+          fontSize: 12,
+          fontWeight: 'bolder',
+        },
+        formatter: (type) => {
+          return this.headings[type as EmissionProcessStepType];
+        },
+      },
+      {
+        left: '56%',
+        top,
+        show: true,
+        selectedMode: false,
+        orient: 'vertical',
+        textStyle: { color: '#ababab' },
+        data: items.map((i) => i.name),
+        formatter: (name: string) => {
+          const item = items.find((i) => i.name === name);
+          return `${name} (${item?.description})`;
+        },
+      },
+    ];
   }
 }
