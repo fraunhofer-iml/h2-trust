@@ -33,7 +33,7 @@ export class ProductionController {
 
   @MessagePattern(ProductionMessagePatterns.STAGE)
   async stageProductions(@Payload() payload: StageProductionsPayload): Promise<ParsedProductionMatchingResultEntity> {
-    return this.productionImportService.stageProductions(payload.data, payload.userId);
+    return this.productionImportService.stageProductions(payload);
   }
 
   @MessagePattern(ProductionMessagePatterns.FINALIZE)

@@ -14,7 +14,6 @@ import {
   BrokerQueues,
   CreateProductionEntity,
   FinalizeStagedProductionsPayload,
-  ParsedFileBundles,
   ParsedProductionEntity,
   ParsedProductionMatchingResultEntity,
   PowerAccessApprovalEntity,
@@ -23,6 +22,7 @@ import {
   ProcessStepMessagePatterns,
   ReadPowerAccessApprovalsPayload,
   StagedProductionEntity,
+  StageProductionsPayload,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
@@ -46,10 +46,10 @@ export class ProductionImportService {
     this.productionChunkSize = this.configurationService.getProcessSvcConfiguration().productionChunkSize;
   }
 
-  async stageProductions(data: ParsedFileBundles, userId: string): Promise<ParsedProductionMatchingResultEntity> {
-    const gridUnitId = await this.fetchGridUnitId(userId);
+  async stageProductions(payload: StageProductionsPayload): Promise<ParsedProductionMatchingResultEntity> {
+    const gridUnitId = await this.fetchGridUnitId(payload.userId);
     const parsedProductions: ParsedProductionEntity[] = this.accountingPeriodMatchingService.matchAccountingPeriods(
-      data,
+      payload.data,
       gridUnitId,
     );
 
@@ -57,7 +57,6 @@ export class ProductionImportService {
     return new ParsedProductionMatchingResultEntity(importId, parsedProductions);
   }
 
-  // TODO-MP: change parameters ?
   async finalizeStagedProductions(payload: FinalizeStagedProductionsPayload): Promise<ProcessStepEntity[]> {
     const stagedProductions: StagedProductionEntity[] =
       await this.stagedProductionRepository.getStagedProductionsByImportId(payload.importId);

@@ -7,14 +7,14 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { UserEntity } from '@h2-trust/amqp';
+import { ReadByIdPayload, UserEntity } from '@h2-trust/amqp';
 import { UserRepository } from '@h2-trust/database';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly repository: UserRepository) {}
+  constructor(private readonly repository: UserRepository) { }
 
-  async readUserWithCompany(id: string): Promise<UserEntity> {
-    return this.repository.findUser(id);
+  async readUserWithCompany(payload: ReadByIdPayload): Promise<UserEntity> {
+    return this.repository.findUser(payload.id);
   }
 }

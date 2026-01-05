@@ -17,6 +17,6 @@ export class ProvenanceController {
 
   @MessagePattern(ProvenanceMessagePatterns.BUILD_PROVENANCE)
   async buildProvenance(@Payload() payload: ReadByIdPayload): Promise<ProvenanceEntity> {
-    return this.service.buildProvenance(payload.id);
+    return this.service.buildProvenance(payload);
   }
 }

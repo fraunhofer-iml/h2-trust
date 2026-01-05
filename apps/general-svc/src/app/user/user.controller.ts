@@ -17,6 +17,6 @@ export class UserController {
 
   @MessagePattern(UserMessagePatterns.READ)
   async readUserWithCompany(@Payload() payload: ReadByIdPayload): Promise<UserEntity> {
-    return this.service.readUserWithCompany(payload.id);
+    return this.service.readUserWithCompany(payload);
   }
 }

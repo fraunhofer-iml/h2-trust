@@ -17,6 +17,6 @@ export class PowerAccessApprovalController {
 
   @MessagePattern(PowerAccessApprovalPatterns.READ)
   async findAll(@Payload() payload: ReadPowerAccessApprovalsPayload): Promise<PowerAccessApprovalEntity[]> {
-    return this.service.findAll(payload.userId, payload.powerAccessApprovalStatus);
+    return this.service.findAll(payload);
   }
 }

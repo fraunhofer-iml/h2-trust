@@ -8,21 +8,17 @@
 
 import { PowerAccessApprovalRepository, UserRepository } from 'libs/database/src/lib';
 import { Injectable } from '@nestjs/common';
-import { PowerAccessApprovalEntity, UserEntity } from '@h2-trust/amqp';
-import { PowerAccessApprovalStatus } from '@h2-trust/domain';
+import { PowerAccessApprovalEntity, ReadPowerAccessApprovalsPayload, UserEntity } from '@h2-trust/amqp';
 
 @Injectable()
 export class PowerAccessApprovalService {
   constructor(
     private readonly powerAccessApprovalRepository: PowerAccessApprovalRepository,
     private readonly userRepository: UserRepository,
-  ) {}
+  ) { }
 
-  async findAll(
-    userId: string,
-    powerAccessApprovalStatus: PowerAccessApprovalStatus,
-  ): Promise<PowerAccessApprovalEntity[]> {
-    const user: UserEntity = await this.userRepository.findUser(userId);
-    return this.powerAccessApprovalRepository.findAll(user.company.id, powerAccessApprovalStatus);
+  async findAll(payload: ReadPowerAccessApprovalsPayload): Promise<PowerAccessApprovalEntity[]> {
+    const user: UserEntity = await this.userRepository.findUser(payload.userId);
+    return this.powerAccessApprovalRepository.findAll(user.company.id, payload.powerAccessApprovalStatus);
   }
 }
