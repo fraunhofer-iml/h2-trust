@@ -11,10 +11,10 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import {
   CreateProductionsPayload,
   FinalizeStagedProductionsPayload,
-  ParsedFileBundles,
   ParsedProductionMatchingResultEntity,
   ProcessStepEntity,
   ProductionMessagePatterns,
+  StageProductionsPayload,
 } from '@h2-trust/amqp';
 import { ProductionCreationService } from './production-creation.service';
 import { ProductionImportService } from './production-import.service';
@@ -32,7 +32,7 @@ export class ProductionController {
   }
 
   @MessagePattern(ProductionMessagePatterns.STAGE)
-  async stageProductions(@Payload() payload: { data: ParsedFileBundles; userId: string }): Promise<ParsedProductionMatchingResultEntity> {
+  async stageProductions(@Payload() payload: StageProductionsPayload): Promise<ParsedProductionMatchingResultEntity> {
     return this.productionImportService.stageProductions(payload.data, payload.userId);
   }
 

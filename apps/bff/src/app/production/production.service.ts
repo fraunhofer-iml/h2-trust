@@ -22,6 +22,7 @@ import {
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
+  StageProductionsPayload,
   UnitDataBundle,
   UnitFileBundle,
 } from '@h2-trust/amqp';
@@ -90,21 +91,20 @@ export class ProductionService {
     dto: ProductionCSVUploadDto,
     userId: string,
   ) {
-    const h2 = await this.processFile<AccountingPeriodHydrogen>(
-      hydrogenProductionFiles,
-      dto.hydrogenProductionUnitIds,
-      'hydrogen',
-    );
-
-    const power = await this.processFile<AccountingPeriodPower>(
+    const powerProduction = await this.processFile<AccountingPeriodPower>(
       powerProductionFiles,
       dto.powerProductionUnitIds,
       'power',
     );
 
-    const processedFiles: ParsedFileBundles = { hydrogenProduction: h2, powerProduction: power };
+    const hydrogenProduction = await this.processFile<AccountingPeriodHydrogen>(
+      hydrogenProductionFiles,
+      dto.hydrogenProductionUnitIds,
+      'hydrogen',
+    );
 
-    const payload = { data: processedFiles, userId: userId };
+    const parsedFileBundles = new ParsedFileBundles(powerProduction, hydrogenProduction);
+    const payload = StageProductionsPayload.of(parsedFileBundles, userId);
     const matchingResult = await firstValueFrom(
       this.processSvc.send<ParsedProductionMatchingResultEntity>(ProductionMessagePatterns.STAGE, payload),
     );
