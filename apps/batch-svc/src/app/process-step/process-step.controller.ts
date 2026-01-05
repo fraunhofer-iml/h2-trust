@@ -40,11 +40,6 @@ export class ProcessStepController {
     return this.processStepService.readProcessStep(payload);
   }
 
-  @MessagePattern(ProcessStepMessagePatterns.CREATE)
-  async createProcessStep(@Payload() payload: { processStepEntity: ProcessStepEntity }): Promise<ProcessStepEntity> {
-    return this.processStepService.createProcessStep(payload.processStepEntity);
-  }
-
   @MessagePattern(ProcessStepMessagePatterns.CREATE_MANY)
   async createManyProcessSteps(
     @Payload() payload: { processSteps: ProcessStepEntity[] },

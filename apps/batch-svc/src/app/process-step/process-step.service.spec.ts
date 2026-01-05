@@ -194,15 +194,4 @@ describe('ProcessStepService', () => {
       await expect(service.readProcessStep(ReadByIdPayload.of(hydrogenTransportationFixture.id))).rejects.toThrow(expectedErrorMessage);
     });
   });
-
-  describe('createProcessStep', () => {
-    it('should create a new process step', async () => {
-      const powerProductionFixture: ProcessStepEntity = ProcessStepEntityPowerProductionMock[0];
-      repository.insertProcessStep.mockResolvedValue(powerProductionFixture);
-
-      const actualResponse = await service.createProcessStep(powerProductionFixture);
-      expect(repository.insertProcessStep).toHaveBeenCalledWith(powerProductionFixture);
-      expect(actualResponse).toBe(powerProductionFixture);
-    });
-  });
 });

@@ -71,10 +71,6 @@ export class ProcessStepService {
     return documents;
   }
 
-  async createProcessStep(processStepData: ProcessStepEntity): Promise<ProcessStepEntity> {
-    return this.repository.insertProcessStep(processStepData);
-  }
-
   async createManyProcessSteps(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
     return this.repository.insertManyProcessSteps(processSteps);
   }
