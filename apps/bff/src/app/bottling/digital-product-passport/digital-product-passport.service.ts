@@ -9,7 +9,7 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BrokerQueues, ProvenanceEntity, ProvenanceMessagePatterns } from '@h2-trust/amqp';
+import { BrokerQueues, ProvenanceEntity, ProvenanceMessagePatterns, ReadByIdPayload } from '@h2-trust/amqp';
 import { EmissionComputationResultDto, ProofOfSustainabilityDto, SectionDto } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
 import { EmissionComputationService } from './emission-computation.service';
@@ -31,7 +31,7 @@ export class DigitalProductPassportService {
 
   async buildProofOfOrigin(processStepId: string): Promise<SectionDto[]> {
     const provenance: ProvenanceEntity = await firstValueFrom(
-      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, { processStepId }),
+      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, ReadByIdPayload.of(processStepId)),
     );
     const sectionPromises: Array<Promise<SectionDto>> = [];
 
@@ -72,7 +72,7 @@ export class DigitalProductPassportService {
 
   async buildProofOfSustainability(processStepId: string): Promise<ProofOfSustainabilityDto> {
     const provenance: ProvenanceEntity = await firstValueFrom(
-      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, { processStepId }),
+      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, ReadByIdPayload.of(processStepId)),
     );
 
     const provenanceEmission: EmissionComputationResultDto =
