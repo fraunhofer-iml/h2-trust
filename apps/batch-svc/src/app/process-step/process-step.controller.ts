@@ -9,15 +9,14 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import {
-  BatchEntity,
   CreateHydrogenBottlingPayload,
+  CreateHydrogenTransportationPayload,
   CreateManyProcessStepsPayload,
   HydrogenComponentEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ReadByIdPayload,
   ReadProcessStepsPayload,
-  TransportationDetailsEntity,
 } from '@h2-trust/amqp';
 import { BottlingService } from './bottling/bottling.service';
 import { ProcessStepService } from './process-step.service';
@@ -53,19 +52,8 @@ export class ProcessStepController {
   }
 
   @MessagePattern(ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION)
-  async createHydrogenTransportationProcessStep(
-    @Payload()
-    payload: {
-      processStepEntity: ProcessStepEntity;
-      predecessorBatch: BatchEntity;
-      transportationDetails: TransportationDetailsEntity;
-    },
-  ): Promise<ProcessStepEntity> {
-    return this.transportationService.createHydrogenTransportationProcessStep(
-      payload.processStepEntity,
-      payload.predecessorBatch,
-      payload.transportationDetails,
-    );
+  async createHydrogenTransportationProcessStep(@Payload() payload: CreateHydrogenTransportationPayload): Promise<ProcessStepEntity> {
+    return this.transportationService.createHydrogenTransportationProcessStep(payload);
   }
 
   @MessagePattern(ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION)

@@ -7,7 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { BatchEntity, ProcessStepEntity, TransportationDetailsEntity } from '@h2-trust/amqp';
+import { CreateHydrogenTransportationPayload, ProcessStepEntity } from '@h2-trust/amqp';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 
@@ -16,25 +16,21 @@ export class TransportationService {
   constructor(
     private readonly batchRepository: BatchRepository,
     private readonly processStepRepository: ProcessStepRepository,
-  ) {}
+  ) { }
 
-  async createHydrogenTransportationProcessStep(
-    processStepEntity: ProcessStepEntity,
-    predecessorBatch: BatchEntity,
-    transportationDetails: TransportationDetailsEntity,
-  ): Promise<ProcessStepEntity> {
+  async createHydrogenTransportationProcessStep(payload: CreateHydrogenTransportationPayload): Promise<ProcessStepEntity> {
     const transportationProcessStepEntity: ProcessStepEntity = {
-      ...processStepEntity,
+      ...payload.processStep,
       type: ProcessType.HYDROGEN_TRANSPORTATION,
       batch: {
-        ...processStepEntity.batch,
+        ...payload.processStep.batch,
         type: BatchType.HYDROGEN,
-        predecessors: [predecessorBatch],
+        predecessors: [payload.predecessorBatch],
       },
-      transportationDetails: transportationDetails,
+      transportationDetails: payload.transportationDetails,
     };
 
-    await this.batchRepository.setBatchesInactive([predecessorBatch.id]);
+    await this.batchRepository.setBatchesInactive([payload.predecessorBatch.id]);
     return this.processStepRepository.insertProcessStep(transportationProcessStepEntity);
   }
 }

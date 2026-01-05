@@ -12,6 +12,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
   CreateHydrogenBottlingPayload,
+  CreateHydrogenTransportationPayload,
   HydrogenComponentEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
@@ -60,13 +61,16 @@ export class BottlingService {
       throw new HttpException(message, HttpStatus.BAD_REQUEST);
     }
 
-    const transportationPayload = {
-      processStepEntity: bottlingEntity,
-      predecessorBatch: bottlingEntity.batch,
-      transportationDetails: this.buildTransportationDetails(dto),
-    };
-    return firstValueFrom(this.batchSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION, transportationPayload)).then(
-      BottlingOverviewDto.fromEntity,
+    const transportationPayload: CreateHydrogenTransportationPayload = CreateHydrogenTransportationPayload.of(
+      bottlingEntity,
+      bottlingEntity.batch,
+      this.buildTransportationDetailsEntity(dto),
+    );
+
+    return firstValueFrom(
+      this.batchSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION, transportationPayload)
+    ).then(
+      BottlingOverviewDto.fromEntity
     );
   }
 
@@ -103,7 +107,7 @@ export class BottlingService {
     return { ...generalInformationDto, redCompliance: redCompliance };
   }
 
-  private buildTransportationDetails(dto: BottlingDto): TransportationDetailsEntity {
+  private buildTransportationDetailsEntity(dto: BottlingDto): TransportationDetailsEntity {
     let transportationDetails: TransportationDetailsEntity;
 
     switch (dto.transportMode) {

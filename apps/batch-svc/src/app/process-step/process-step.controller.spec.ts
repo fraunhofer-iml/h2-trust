@@ -10,6 +10,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import {
   BatchEntity,
   CompanyEntityHydrogenMock,
+  CreateHydrogenTransportationPayload,
   ProcessStepEntity,
   ProcessStepEntityHydrogenBottlingMock,
   ProcessStepEntityHydrogenTransportationMock,
@@ -143,15 +144,17 @@ describe('ProcessStepController', () => {
       .spyOn(processStepRepository, 'insertProcessStep')
       .mockResolvedValue(expectedResponse);
 
-    const actualResponse = await controller.createHydrogenTransportationProcessStep({
-      processStepEntity: expectedResponse,
-      predecessorBatch: givenPredecessorBatch,
-      transportationDetails: expectedResponse.transportationDetails,
-    });
+    const payload: CreateHydrogenTransportationPayload = CreateHydrogenTransportationPayload.of(
+      expectedResponse,
+      givenPredecessorBatch,
+      expectedResponse.transportationDetails,
+    );
+
+    const actualResponse = await controller.createHydrogenTransportationProcessStep(payload)
 
     expect(transportationServiceSpy).toHaveBeenCalledTimes(1);
     expect(batchRepositorySpy).toHaveBeenCalledTimes(1);
-    expect(batchRepositorySpy).toHaveBeenCalledWith([givenPredecessorBatch.id]);
+    expect(batchRepositorySpy).toHaveBeenCalledWith([payload.predecessorBatch.id]);
     expect(processStepRepositorySpy).toHaveBeenCalledTimes(1);
     expect(actualResponse).toEqual(expectedResponse);
   });
