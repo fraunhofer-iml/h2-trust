@@ -11,6 +11,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
+  CreateManyProcessStepsPayload,
   CreateProductionEntity,
   CreateProductionsPayload,
   HydrogenProductionUnitEntity,
@@ -64,11 +65,11 @@ export class ProductionCreationService {
       );
     }
 
+    const powerAndWaterPayload: CreateManyProcessStepsPayload = CreateManyProcessStepsPayload.of([...power, ...water]);
+
     // Step 2: Persist power and water
     const persistedPowerAndWater: ProcessStepEntity[] = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, {
-        processSteps: [...power, ...water],
-      }),
+      this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, powerAndWaterPayload),
     );
 
     // Step 3: Split response back into power and water (1:1 relation)
@@ -82,9 +83,11 @@ export class ProductionCreationService {
       persistedWater,
     );
 
+    const hydrogenPayload: CreateManyProcessStepsPayload = CreateManyProcessStepsPayload.of(hydrogen);
+
     // Step 5: Persist hydrogen
     const persistedHydrogen: ProcessStepEntity[] = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, { processSteps: hydrogen }),
+      this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, hydrogenPayload),
     );
 
     return [...persistedPowerAndWater, ...persistedHydrogen];

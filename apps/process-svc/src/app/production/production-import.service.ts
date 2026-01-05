@@ -12,6 +12,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerException,
   BrokerQueues,
+  CreateManyProcessStepsPayload,
   CreateProductionEntity,
   FinalizeStagedProductionsPayload,
   ParsedProductionEntity,
@@ -131,9 +132,7 @@ export class ProductionImportService {
 
       // Step 2: Persist power and water
       const persistedPowerAndWater: ProcessStepEntity[] = await firstValueFrom(
-        this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, {
-          processSteps: [...power, ...water],
-        }),
+        this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, CreateManyProcessStepsPayload.of([...power, ...water])),
       );
 
       // Step 3: Split response back into power and water
@@ -149,7 +148,7 @@ export class ProductionImportService {
 
       // Step 5: Persist hydrogen
       const persistedHydrogen: ProcessStepEntity[] = await firstValueFrom(
-        this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, { processSteps: hydrogen }),
+        this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, CreateManyProcessStepsPayload.of(hydrogen)),
       );
 
       persistedProcessSteps.push(...persistedPowerAndWater, ...persistedHydrogen);
