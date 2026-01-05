@@ -81,7 +81,7 @@ export class BottlingService {
 
   async readGeneralInformation(processStepId: string): Promise<GeneralInformationDto> {
     const processStep: ProcessStepEntity = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.READ_UNIQUE, { processStepId }),
+      this.batchSvc.send(ProcessStepMessagePatterns.READ_UNIQUE, ReadByIdPayload.of(processStepId)),
     );
 
     if (processStep.type != ProcessType.HYDROGEN_BOTTLING && processStep.type != ProcessType.HYDROGEN_TRANSPORTATION) {

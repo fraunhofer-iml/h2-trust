@@ -15,6 +15,7 @@ import {
   ProcessStepEntity,
   ProcessStepEntityHydrogenBottlingMock,
   ProcessStepMessagePatterns,
+  ReadByIdPayload,
   UserMessagePatterns,
 } from '@h2-trust/amqp';
 import {
@@ -182,7 +183,7 @@ describe('BottlingController', () => {
       .spyOn(generalSvc, 'send')
       .mockImplementation((_messagePattern: UserMessagePatterns, _data: any) => of(UserDetailsDtoMock[0]));
 
-    const expectedBatchSvcPayload1 = { processStepId: returnedProcessStep.id };
+    const expectedBatchSvcPayload1 = ReadByIdPayload.of(returnedProcessStep.id);
     const expectedBatchSvcPayload2 = returnedProcessStep.id;
     const expectedGeneralSvcPayload = { id: returnedProcessStep.recordedBy.id };
 

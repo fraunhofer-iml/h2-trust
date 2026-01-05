@@ -7,7 +7,7 @@
  */
 
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { BrokerException, HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/amqp';
+import { BrokerException, HydrogenComponentEntity, ProcessStepEntity, ReadByIdPayload } from '@h2-trust/amqp';
 import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
 import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step.service';
@@ -85,7 +85,7 @@ export class BottlingService {
       );
     }
 
-    return this.processStepService.readProcessStep(bottlingProcessStep.id);
+    return this.processStepService.readProcessStep(ReadByIdPayload.of(bottlingProcessStep.id));
   }
 
   private async addDocumentToProcessStep(file: Express.Multer.File, processStepId: string, description: string) {
@@ -100,7 +100,7 @@ export class BottlingService {
   }
 
   async calculateHydrogenComposition(bottlingProcessStepId: string): Promise<HydrogenComponentEntity[]> {
-    const bottlingProcessStep: ProcessStepEntity = await this.processStepService.readProcessStep(bottlingProcessStepId);
+    const bottlingProcessStep: ProcessStepEntity = await this.processStepService.readProcessStep(ReadByIdPayload.of(bottlingProcessStepId));
     return HydrogenComponentAssembler.assembleFromBottlingProcessStep(bottlingProcessStep);
   }
 }

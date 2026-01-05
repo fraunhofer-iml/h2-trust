@@ -7,7 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { DocumentEntity, ProcessStepEntity, ReadProcessStepsPayload } from '@h2-trust/amqp';
+import { DocumentEntity, ProcessStepEntity, ReadByIdPayload, ReadProcessStepsPayload } from '@h2-trust/amqp';
 import { ConfigurationService, MinioConfiguration } from '@h2-trust/configuration';
 import { ProcessStepRepository } from '@h2-trust/database';
 import { ProcessType } from '@h2-trust/domain';
@@ -23,8 +23,8 @@ export class ProcessStepService {
     return this.repository.findProcessSteps(payload.processTypes, payload.predecessorProcessTypes, payload.active, payload.companyId);
   }
 
-  async readProcessStep(processStepId: string): Promise<ProcessStepEntity> {
-    const processStep: ProcessStepEntity = await this.repository.findProcessStep(processStepId);
+  async readProcessStep(payload: ReadByIdPayload): Promise<ProcessStepEntity> {
+    const processStep: ProcessStepEntity = await this.repository.findProcessStep(payload.id);
 
     if (processStep.type === ProcessType.HYDROGEN_TRANSPORTATION) {
       const predecessorProcessStep = await this.fetchPredecessorProcessStep(

@@ -13,6 +13,7 @@ import {
   HydrogenComponentEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
+  ReadByIdPayload,
   ReadProcessStepsPayload,
   TransportationDetailsEntity,
 } from '@h2-trust/amqp';
@@ -35,8 +36,8 @@ export class ProcessStepController {
   }
 
   @MessagePattern(ProcessStepMessagePatterns.READ_UNIQUE)
-  async readProcessStep(@Payload() payload: { processStepId: string }): Promise<ProcessStepEntity> {
-    return this.processStepService.readProcessStep(payload.processStepId);
+  async readProcessStep(@Payload() payload: ReadByIdPayload): Promise<ProcessStepEntity> {
+    return this.processStepService.readProcessStep(payload);
   }
 
   @MessagePattern(ProcessStepMessagePatterns.CREATE)

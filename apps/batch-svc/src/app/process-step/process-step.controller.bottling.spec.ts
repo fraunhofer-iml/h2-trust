@@ -13,6 +13,7 @@ import {
   ProcessStepEntity,
   ProcessStepEntityHydrogenBottlingMock,
   ProcessStepEntityHydrogenProductionMock,
+  ReadByIdPayload,
 } from '@h2-trust/amqp';
 import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
 import { StorageService } from '@h2-trust/storage';
@@ -169,7 +170,7 @@ describe('ProcessStepController / Bottling', () => {
     expect(uploadSpy).toHaveBeenCalledTimes(0);
     expect(addDocSpy).toHaveBeenCalledTimes(0);
     expect(readProcessStepSpy).toHaveBeenCalledTimes(1);
-    expect(readProcessStepSpy).toHaveBeenCalledWith(expectedResponse.id);
+    expect(readProcessStepSpy).toHaveBeenCalledWith(ReadByIdPayload.of(expectedResponse.id));
     expect(actualResponse).toEqual(expectedResponse);
   });
 
@@ -184,7 +185,7 @@ describe('ProcessStepController / Bottling', () => {
     const expectedResponse = HydrogenComponentAssembler.assembleFromBottlingProcessStep(givenBottlingProcessStep);
     const actualResponse = await controller.calculateHydrogenComposition(givenBottlingProcessStep.id);
 
-    expect(readProcessStepSpy).toHaveBeenCalledWith(givenBottlingProcessStep.id);
+    expect(readProcessStepSpy).toHaveBeenCalledWith(ReadByIdPayload.of(givenBottlingProcessStep.id));
     expect(actualResponse).toEqual(expectedResponse);
   });
 });

@@ -13,6 +13,7 @@ import {
   ProcessStepEntityHydrogenProductionMock,
   ProcessStepEntityHydrogenTransportationMock,
   ProcessStepEntityPowerProductionMock,
+  ReadByIdPayload,
   ReadProcessStepsPayload,
 } from '@h2-trust/amqp';
 import { ConfigurationService, MinioConfiguration } from '@h2-trust/configuration';
@@ -103,7 +104,7 @@ describe('ProcessStepService', () => {
       repository.findProcessStep.mockResolvedValue(hydrogenProductionFixture);
 
       // Act
-      const actualResponse: ProcessStepEntity = await service.readProcessStep(hydrogenProductionFixture.id);
+      const actualResponse: ProcessStepEntity = await service.readProcessStep(ReadByIdPayload.of(hydrogenProductionFixture.id));
 
       // Assert
       expect(repository.findProcessStep).toHaveBeenCalledWith(hydrogenProductionFixture.id);
@@ -140,7 +141,7 @@ describe('ProcessStepService', () => {
       });
 
       // Act
-      const actualResponse = await service.readProcessStep(hydrogenTransportationFixture.id);
+      const actualResponse = await service.readProcessStep(ReadByIdPayload.of(hydrogenTransportationFixture.id));
 
       // Assert
       expect(repository.findProcessStep).toHaveBeenCalledWith(hydrogenTransportationFixture.id);
@@ -164,7 +165,7 @@ describe('ProcessStepService', () => {
       repository.findProcessStep.mockResolvedValue(hydrogenTransportationFixture);
 
       // Act & Assert
-      await expect(service.readProcessStep(hydrogenTransportationFixture.id)).rejects.toThrow(
+      await expect(service.readProcessStep(ReadByIdPayload.of(hydrogenTransportationFixture.id))).rejects.toThrow(
         'ProcessStepId of predecessor is missing.',
       );
     });
@@ -190,7 +191,7 @@ describe('ProcessStepService', () => {
       const expectedErrorMessage = `Expected process type of predecessor to be ${ProcessType.HYDROGEN_BOTTLING}, but got ${ProcessType.HYDROGEN_PRODUCTION}.`;
 
       // Act & Assert
-      await expect(service.readProcessStep(hydrogenTransportationFixture.id)).rejects.toThrow(expectedErrorMessage);
+      await expect(service.readProcessStep(ReadByIdPayload.of(hydrogenTransportationFixture.id))).rejects.toThrow(expectedErrorMessage);
     });
   });
 

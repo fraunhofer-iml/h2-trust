@@ -9,7 +9,7 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BatchEntity, BrokerQueues, ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
+import { BatchEntity, BrokerQueues, ProcessStepEntity, ProcessStepMessagePatterns, ReadByIdPayload } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 
 @Injectable()
@@ -119,7 +119,7 @@ export class TraversalService {
 
   private async fetchProcessStepsOfBatches(batches: BatchEntity[]): Promise<ProcessStepEntity[]> {
     const promises = batches.map(({ processStepId }) =>
-      firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.READ_UNIQUE, { processStepId })),
+      firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.READ_UNIQUE, ReadByIdPayload.of(processStepId))),
     );
     return Promise.all(promises);
   }

@@ -69,7 +69,7 @@ export class ProvenanceService {
     }
 
     const root: ProcessStepEntity = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.READ_UNIQUE, { processStepId: payload.id }),
+      this.batchSvc.send(ProcessStepMessagePatterns.READ_UNIQUE, ReadByIdPayload.of(payload.id)),
     );
 
     if (!root || !root.type) {
