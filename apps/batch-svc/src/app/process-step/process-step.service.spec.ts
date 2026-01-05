@@ -13,6 +13,7 @@ import {
   ProcessStepEntityHydrogenProductionMock,
   ProcessStepEntityHydrogenTransportationMock,
   ProcessStepEntityPowerProductionMock,
+  ReadProcessStepsPayload,
 } from '@h2-trust/amqp';
 import { ConfigurationService, MinioConfiguration } from '@h2-trust/configuration';
 import { ProcessStepRepository } from '@h2-trust/database';
@@ -69,14 +70,15 @@ describe('ProcessStepService', () => {
       const givenPredecessorProcessTypes = [fixture[0].type];
       const givenActive = true;
       const givenCompanyId = fixture[0].recordedBy.company.id;
-
-      // Act
-      const actualResponse = await service.readProcessSteps(
+      const payload: ReadProcessStepsPayload = ReadProcessStepsPayload.of(
         givenProcessTypes,
         givenPredecessorProcessTypes,
         givenActive,
-        givenCompanyId,
-      );
+        givenCompanyId
+      )
+
+      // Act
+      const actualResponse = await service.readProcessSteps(payload);
 
       // Assert
       expect(repository.findProcessSteps).toHaveBeenCalledWith(

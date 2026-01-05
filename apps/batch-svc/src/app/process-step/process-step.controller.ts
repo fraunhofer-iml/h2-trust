@@ -13,12 +13,12 @@ import {
   HydrogenComponentEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
+  ReadProcessStepsPayload,
   TransportationDetailsEntity,
 } from '@h2-trust/amqp';
 import { BottlingService } from './bottling/bottling.service';
 import { ProcessStepService } from './process-step.service';
 import 'multer';
-import { ProcessType } from '@h2-trust/domain';
 import { TransportationService } from './transportation.service';
 
 @Controller()
@@ -27,24 +27,11 @@ export class ProcessStepController {
     private readonly processStepService: ProcessStepService,
     private readonly bottlingService: BottlingService,
     private readonly transportationService: TransportationService,
-  ) {}
+  ) { }
 
   @MessagePattern(ProcessStepMessagePatterns.READ_ALL)
-  async readProcessSteps(
-    @Payload()
-    payload: {
-      processTypes: ProcessType[];
-      predecessorProcessTypes: string[];
-      active: boolean;
-      companyId: string;
-    },
-  ): Promise<ProcessStepEntity[]> {
-    return this.processStepService.readProcessSteps(
-      payload.processTypes,
-      payload.predecessorProcessTypes,
-      payload.active,
-      payload.companyId,
-    );
+  async readProcessSteps(@Payload() payload: ReadProcessStepsPayload): Promise<ProcessStepEntity[]> {
+    return this.processStepService.readProcessSteps(payload);
   }
 
   @MessagePattern(ProcessStepMessagePatterns.READ_UNIQUE)

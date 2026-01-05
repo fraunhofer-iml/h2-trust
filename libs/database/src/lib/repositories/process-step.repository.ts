@@ -33,6 +33,7 @@ export class ProcessStepRepository {
       .then(ProcessStepEntity.fromDatabase);
   }
 
+  // TODO-MP: split into two methods for clarity
   async findProcessSteps(
     processTypes: string[],
     predecessorProcessTypes: string[],

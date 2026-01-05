@@ -22,6 +22,7 @@ import {
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
+  ReadProcessStepsPayload,
   StageProductionsPayload,
   UnitDataBundle,
   UnitFileBundle,
@@ -75,10 +76,12 @@ export class ProductionService {
   async readHydrogenProductionsByCompany(userId: string): Promise<ProductionOverviewDto[]> {
     const userDetailsDto: UserDetailsDto = await this.userService.readUserWithCompany(userId);
     const companyIdOfUser = userDetailsDto.company.id;
-    const payload = {
-      predecessorProcessTypes: [ProcessType.POWER_PRODUCTION],
-      companyId: companyIdOfUser,
-    };
+    const payload: ReadProcessStepsPayload = ReadProcessStepsPayload.of(
+      undefined,
+      [ProcessType.POWER_PRODUCTION],
+      undefined,
+      companyIdOfUser,
+    );
 
     return firstValueFrom(this.batchSvc.send(ProcessStepMessagePatterns.READ_ALL, payload)).then((processSteps) =>
       processSteps.map(ProductionOverviewDto.fromEntity),
