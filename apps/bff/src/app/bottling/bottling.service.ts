@@ -154,7 +154,7 @@ export class BottlingService {
         : processStep.id;
 
     const hydrogenComposition: HydrogenComponentEntity[] = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION, processStepId),
+      this.batchSvc.send(ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION, ReadByIdPayload.of(processStepId)),
     );
 
     return hydrogenComposition.map(HydrogenComponentDto.of);

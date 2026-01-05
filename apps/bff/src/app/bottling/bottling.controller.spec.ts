@@ -190,8 +190,8 @@ describe('BottlingController', () => {
       .mockImplementation((_messagePattern: UserMessagePatterns, _data: any) => of(UserDetailsDtoMock[0]));
 
     const expectedBatchSvcPayload1 = ReadByIdPayload.of(returnedProcessStep.id);
-    const expectedBatchSvcPayload2 = returnedProcessStep.id;
-    const expectedGeneralSvcPayload = { id: returnedProcessStep.recordedBy.id };
+    const expectedBatchSvcPayload2 = ReadByIdPayload.of(returnedProcessStep.id);
+    const expectedGeneralSvcPayload = ReadByIdPayload.of(returnedProcessStep.recordedBy.id);
 
     const mockedRedCompliance = {
       isGeoCorrelationValid: true,

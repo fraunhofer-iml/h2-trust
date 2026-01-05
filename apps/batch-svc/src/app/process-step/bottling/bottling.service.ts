@@ -121,8 +121,8 @@ export class BottlingService {
     );
   }
 
-  async calculateHydrogenComposition(bottlingProcessStepId: string): Promise<HydrogenComponentEntity[]> {
-    const bottlingProcessStep: ProcessStepEntity = await this.processStepService.readProcessStep(ReadByIdPayload.of(bottlingProcessStepId));
+  async calculateHydrogenComposition(payload: ReadByIdPayload): Promise<HydrogenComponentEntity[]> {
+    const bottlingProcessStep: ProcessStepEntity = await this.processStepService.readProcessStep(payload);
     return HydrogenComponentAssembler.assembleFromBottlingProcessStep(bottlingProcessStep);
   }
 }

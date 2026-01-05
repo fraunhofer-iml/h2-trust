@@ -199,10 +199,12 @@ describe('ProcessStepController / Bottling', () => {
       .spyOn(processStepService, 'readProcessStep')
       .mockResolvedValue(givenBottlingProcessStep);
 
-    const expectedResponse = HydrogenComponentAssembler.assembleFromBottlingProcessStep(givenBottlingProcessStep);
-    const actualResponse = await controller.calculateHydrogenComposition(givenBottlingProcessStep.id);
+    const payload: ReadByIdPayload = ReadByIdPayload.of(givenBottlingProcessStep.id);
 
-    expect(readProcessStepSpy).toHaveBeenCalledWith(ReadByIdPayload.of(givenBottlingProcessStep.id));
+    const expectedResponse = HydrogenComponentAssembler.assembleFromBottlingProcessStep(givenBottlingProcessStep);
+    const actualResponse = await controller.calculateHydrogenComposition(payload);
+
+    expect(readProcessStepSpy).toHaveBeenCalledWith(payload);
     expect(actualResponse).toEqual(expectedResponse);
   });
 });

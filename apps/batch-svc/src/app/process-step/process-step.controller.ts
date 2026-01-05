@@ -57,7 +57,7 @@ export class ProcessStepController {
   }
 
   @MessagePattern(ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION)
-  async calculateHydrogenComposition(bottlingProcessStepId: string): Promise<HydrogenComponentEntity[]> {
-    return this.bottlingService.calculateHydrogenComposition(bottlingProcessStepId);
+  async calculateHydrogenComposition(@Payload() payload: ReadByIdPayload): Promise<HydrogenComponentEntity[]> {
+    return this.bottlingService.calculateHydrogenComposition(payload);
   }
 }
