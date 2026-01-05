@@ -10,6 +10,7 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import {
   BatchEntity,
+  CreateHydrogenBottlingPayload,
   CreateManyProcessStepsPayload,
   HydrogenComponentEntity,
   ProcessStepEntity,
@@ -42,17 +43,13 @@ export class ProcessStepController {
   }
 
   @MessagePattern(ProcessStepMessagePatterns.CREATE_MANY)
-  async createManyProcessSteps(
-    @Payload() payload: CreateManyProcessStepsPayload,
-  ): Promise<ProcessStepEntity[]> {
+  async createManyProcessSteps(@Payload() payload: CreateManyProcessStepsPayload): Promise<ProcessStepEntity[]> {
     return this.processStepService.createManyProcessSteps(payload);
   }
 
   @MessagePattern(ProcessStepMessagePatterns.CREATE_HYDROGEN_BOTTLING)
-  async createHydrogenBottlingProcessStep(
-    @Payload() payload: { processStepEntity: ProcessStepEntity; files: Express.Multer.File[] },
-  ): Promise<ProcessStepEntity> {
-    return this.bottlingService.createHydrogenBottlingProcessStep(payload.processStepEntity, payload.files);
+  async createHydrogenBottlingProcessStep(@Payload() payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
+    return this.bottlingService.createHydrogenBottlingProcessStep(payload);
   }
 
   @MessagePattern(ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION)

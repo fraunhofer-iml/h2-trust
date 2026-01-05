@@ -11,6 +11,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
+  CreateHydrogenBottlingPayload,
   HydrogenComponentEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
@@ -40,25 +41,31 @@ export class BottlingService {
   ) { }
 
   async createBottling(dto: BottlingDto, files: Express.Multer.File[], userId: string): Promise<BottlingOverviewDto> {
-    const baseBottling = BottlingDto.toEntity({ ...dto, recordedBy: userId });
-    const createdBottling: ProcessStepEntity = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_BOTTLING, {
-        processStepEntity: baseBottling,
-        files,
-      }),
+    const bottlingPayload: CreateHydrogenBottlingPayload = CreateHydrogenBottlingPayload.of(
+      dto.amount,
+      dto.recipient,
+      new Date(dto.filledAt),
+      userId,
+      dto.hydrogenStorageUnit,
+      dto.color,
+      dto.fileDescription,
+      files,
+    );
+    const bottlingEntity: ProcessStepEntity = await firstValueFrom(
+      this.batchSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_BOTTLING, bottlingPayload),
     );
 
-    if (createdBottling.transportationDetails) {
-      const message = `ProcessStep [${createdBottling.id}] of type [${createdBottling.type}] should not have transportation details upon creation.`;
+    if (bottlingEntity.transportationDetails) {
+      const message = `ProcessStep [${bottlingEntity.id}] of type [${bottlingEntity.type}] should not have transportation details upon creation.`;
       throw new HttpException(message, HttpStatus.BAD_REQUEST);
     }
 
-    const payload = {
-      processStepEntity: baseBottling,
-      predecessorBatch: createdBottling.batch,
+    const transportationPayload = {
+      processStepEntity: bottlingEntity,
+      predecessorBatch: bottlingEntity.batch,
       transportationDetails: this.buildTransportationDetails(dto),
     };
-    return firstValueFrom(this.batchSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION, payload)).then(
+    return firstValueFrom(this.batchSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION, transportationPayload)).then(
       BottlingOverviewDto.fromEntity,
     );
   }

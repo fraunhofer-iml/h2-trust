@@ -7,7 +7,7 @@
  */
 
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { BrokerException, HydrogenComponentEntity, ProcessStepEntity, ReadByIdPayload } from '@h2-trust/amqp';
+import { BatchEntity, BrokerException, CompanyEntity, CreateHydrogenBottlingPayload, HydrogenComponentEntity, ProcessStepEntity, QualityDetailsEntity, ReadByIdPayload } from '@h2-trust/amqp';
 import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
 import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step.service';
@@ -30,17 +30,16 @@ export class BottlingService {
     private readonly processStepService: ProcessStepService,
   ) {}
 
-  async createHydrogenBottlingProcessStep(
-    processStep: ProcessStepEntity,
-    files: Express.Multer.File[],
-  ): Promise<ProcessStepEntity> {
+  async createHydrogenBottlingProcessStep(payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
+    const processStep = this.toProcessStepEntity(payload);
+
     const allProcessStepsFromStorageUnit = await this.processStepRepository.findAllProcessStepsFromStorageUnit(
-      processStep.executedBy.id,
+      payload.hydrogenStorageUnitId,
     );
 
     if (allProcessStepsFromStorageUnit.length === 0) {
       throw new BrokerException(
-        `No batches found in storage unit ${processStep.executedBy.id}`,
+        `No batches found in storage unit ${payload.hydrogenStorageUnitId}`,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -55,20 +54,20 @@ export class BottlingService {
 
     const batchesToSetInactive = [
       ...batchSelection.batchesForBottle,
-      ...batchSelection.processStepsToBeSplit.map((processStep) => processStep.batch),
+      ...batchSelection.processStepsToBeSplit.map((ps) => ps.batch),
     ];
     await this.batchRepository.setBatchesInactive(batchesToSetInactive.map((batch) => batch.id));
 
     const createdConsumedSplitProcessSteps = await Promise.all(
-      batchSelection.consumedSplitProcessSteps.map((processStep) =>
-        this.processStepRepository.insertProcessStep(processStep),
+      batchSelection.consumedSplitProcessSteps.map((step) =>
+        this.processStepRepository.insertProcessStep(step),
       ),
     );
-    const createdConsumedSplitBatches = createdConsumedSplitProcessSteps.map((processStep) => processStep.batch);
+    const createdConsumedSplitBatches = createdConsumedSplitProcessSteps.map((ps) => ps.batch);
 
     await Promise.all(
-      batchSelection.processStepsForRemainingAmount.map((processStep) =>
-        this.processStepRepository.insertProcessStep(processStep),
+      batchSelection.processStepsForRemainingAmount.map((ps) =>
+        this.processStepRepository.insertProcessStep(ps),
       ),
     );
 
@@ -77,15 +76,38 @@ export class BottlingService {
       ...createdConsumedSplitBatches,
     ]);
 
-    if (files) {
+    if (payload.files) {
       await Promise.all(
-        files.map((file) =>
-          this.addDocumentToProcessStep(file, bottlingProcessStep.id, processStep.documents[0]?.description),
+        payload.files.map((file) =>
+          this.addDocumentToProcessStep(file, bottlingProcessStep.id, payload.fileDescription),
         ),
       );
     }
 
     return this.processStepService.readProcessStep(ReadByIdPayload.of(bottlingProcessStep.id));
+  }
+
+  private toProcessStepEntity(payload: CreateHydrogenBottlingPayload): ProcessStepEntity {
+    return <ProcessStepEntity>{
+      startedAt: payload.filledAt,
+      endedAt: payload.filledAt,
+      batch: <BatchEntity>{
+        amount: payload.amount,
+        owner: <CompanyEntity>{
+          id: payload.ownerId,
+        },
+        qualityDetails: <QualityDetailsEntity>{
+          color: payload.color,
+        },
+      },
+      recordedBy: {
+        id: payload.recordedById,
+      },
+      executedBy: {
+        id: payload.hydrogenStorageUnitId,
+      },
+      documents: payload.fileDescription ? [{ description: payload.fileDescription }] : [],
+    };
   }
 
   private async addDocumentToProcessStep(file: Express.Multer.File, processStepId: string, description: string) {

@@ -9,6 +9,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   BatchEntityHydrogenProducedMock,
+  CreateHydrogenBottlingPayload,
   HydrogenCompositionEntityMock,
   ProcessStepEntity,
   ProcessStepEntityHydrogenBottlingMock,
@@ -25,6 +26,7 @@ import { ProcessStepAssemblerService } from './bottling/process-step-assembler.s
 import { ProcessStepController } from './process-step.controller';
 import { ProcessStepService } from './process-step.service';
 import { TransportationService } from './transportation.service';
+import { HydrogenColor } from '@h2-trust/domain';
 
 describe('ProcessStepController / Bottling', () => {
   let controller: ProcessStepController;
@@ -156,17 +158,32 @@ describe('ProcessStepController / Bottling', () => {
     const uploadSpy = jest.spyOn(storageService, 'uploadFileWithDeepPath');
     const addDocSpy = jest.spyOn(documentRepository, 'addDocumentToProcessStep');
 
-    const actualResponse = await controller.createHydrogenBottlingProcessStep({
-      processStepEntity: givenProcessStep,
-      files: [],
-    });
+    const payload: CreateHydrogenBottlingPayload = CreateHydrogenBottlingPayload.of(
+      givenProcessStep.batch.amount,
+      givenProcessStep.batch.owner?.id ?? 'test-recipient',
+      givenProcessStep.startedAt ?? new Date(),
+      givenProcessStep.recordedBy?.id ?? 'test-user',
+      givenProcessStep.executedBy.id,
+      (givenProcessStep.batch.qualityDetails?.color ?? HydrogenColor.GREEN) as HydrogenColor,
+      givenProcessStep.documents?.[0]?.description,
+      [],
+    );
+
+    const actualResponse = await controller.createHydrogenBottlingProcessStep(payload);
 
     expect(findAllProcessStepsFromStorageUnitSpy).toHaveBeenCalledWith(givenProcessStep.executedBy.id);
     expect(determineHydrogenCompositionSpy).toHaveBeenCalledTimes(1);
     expect(processBottlingForAllColorsSpy).toHaveBeenCalledTimes(1);
     expect(setBatchesInactiveSpy).toHaveBeenCalledWith([expectedResponse.batch.id]);
     expect(insertProcessStepSpy).toHaveBeenCalledTimes(0);
-    expect(createBottlingProcessStepSpy).toHaveBeenCalledWith(givenProcessStep, [expectedResponse.batch]);
+    expect(createBottlingProcessStepSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        batch: expect.objectContaining({
+          amount: givenProcessStep.batch.amount,
+        }),
+      }),
+      [expectedResponse.batch],
+    );
     expect(uploadSpy).toHaveBeenCalledTimes(0);
     expect(addDocSpy).toHaveBeenCalledTimes(0);
     expect(readProcessStepSpy).toHaveBeenCalledTimes(1);

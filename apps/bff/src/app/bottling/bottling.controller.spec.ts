@@ -110,12 +110,18 @@ describe('BottlingController', () => {
       .mockImplementation((_messagePattern, _data) => of(returnedProcessStep));
 
     const expectedBatchSvcPayload1 = {
-      processStepEntity: BottlingDto.toEntity({ ...givenDto, recordedBy: AuthenticatedUserMock.sub }),
+      amount: givenDto.amount,
+      ownerId: givenDto.recipient,
+      filledAt: new Date(givenDto.filledAt),
+      recordedById: AuthenticatedUserMock.sub,
+      hydrogenStorageUnitId: givenDto.hydrogenStorageUnit,
+      color: givenDto.color,
+      fileDescription: givenDto.fileDescription,
       files: [] as Express.Multer.File[],
     };
 
     const expectedBatchSvcPayload2 = {
-      processStepEntity: expectedBatchSvcPayload1.processStepEntity,
+      processStepEntity: returnedProcessStep,
       predecessorBatch: returnedProcessStep.batch,
       transportationDetails: {
         distance: givenDto.distance,
