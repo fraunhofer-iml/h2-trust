@@ -37,6 +37,8 @@ export class BottlingDto {
   @IsEnum(HydrogenColor)
   color: HydrogenColor;
 
+  @IsOptional()
+  @IsString()
   file?: string;
 
   @IsOptional()
