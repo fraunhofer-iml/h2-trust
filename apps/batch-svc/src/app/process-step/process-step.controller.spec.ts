@@ -15,6 +15,8 @@ import {
   ProcessStepEntityHydrogenBottlingMock,
   ProcessStepEntityHydrogenTransportationMock,
   ReadByIdPayload,
+  ReadProcessStepsByPredecessorTypesAndCompanyPayload,
+  ReadProcessStepsByTypesAndActiveAndCompanyPayload,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { BatchRepository, HydrogenBottlingProcessStepSeed, ProcessStepRepository } from '@h2-trust/database';
@@ -49,7 +51,8 @@ describe('ProcessStepController', () => {
         {
           provide: ProcessStepRepository,
           useValue: {
-            findProcessSteps: jest.fn(),
+            findProcessStepsByPredecessorTypesAndCompany: jest.fn(),
+            findProcessStepsByTypesAndActiveAndCompany: jest.fn(),
             findProcessStep: jest.fn(),
             insertProcessStep: jest.fn(),
           },
@@ -87,23 +90,43 @@ describe('ProcessStepController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should read process steps', async () => {
-    const givenPayload = {
-      processTypes: [ProcessType.HYDROGEN_BOTTLING],
-      predecessorProcessTypes: [ProcessType.HYDROGEN_PRODUCTION],
-      active: true,
-      companyId: CompanyEntityHydrogenMock.id,
-    };
+  it('should read process steps by predecessor types and company', async () => {
+    const givenPayload = ReadProcessStepsByPredecessorTypesAndCompanyPayload.of(
+      [ProcessType.HYDROGEN_PRODUCTION],
+      CompanyEntityHydrogenMock.id,
+    );
 
     const expectedResponse: ProcessStepEntity[] = [structuredClone(ProcessStepEntityHydrogenBottlingMock[0])];
 
-    const processStepServiceSpy = jest.spyOn(processStepService, 'readProcessSteps');
+    const processStepServiceSpy = jest.spyOn(processStepService, 'readProcessStepsByPredecessorTypesAndCompany');
 
     const processStepRepositorySpy = jest
-      .spyOn(processStepRepository, 'findProcessSteps')
+      .spyOn(processStepRepository, 'findProcessStepsByPredecessorTypesAndCompany')
       .mockResolvedValue(expectedResponse);
 
-    const actualResponse = await controller.readProcessSteps(givenPayload);
+    const actualResponse = await controller.readProcessStepsByPredecessorTypesAndCompany(givenPayload);
+
+    expect(processStepServiceSpy).toHaveBeenCalledTimes(1);
+    expect(processStepRepositorySpy).toHaveBeenCalledTimes(1);
+    expect(actualResponse).toEqual(expectedResponse);
+  });
+
+  it('should read process steps by types and active and company', async () => {
+    const givenPayload = ReadProcessStepsByTypesAndActiveAndCompanyPayload.of(
+      [ProcessType.HYDROGEN_PRODUCTION],
+      true,
+      CompanyEntityHydrogenMock.id,
+    );
+
+    const expectedResponse: ProcessStepEntity[] = [structuredClone(ProcessStepEntityHydrogenBottlingMock[0])];
+
+    const processStepServiceSpy = jest.spyOn(processStepService, 'readProcessStepsByTypesAndActiveAndCompany');
+
+    const processStepRepositorySpy = jest
+      .spyOn(processStepRepository, 'findProcessStepsByTypesAndActiveAndCompany')
+      .mockResolvedValue(expectedResponse);
+
+    const actualResponse = await controller.readProcessStepsByTypesAndActiveAndCompany(givenPayload);
 
     expect(processStepServiceSpy).toHaveBeenCalledTimes(1);
     expect(processStepRepositorySpy).toHaveBeenCalledTimes(1);

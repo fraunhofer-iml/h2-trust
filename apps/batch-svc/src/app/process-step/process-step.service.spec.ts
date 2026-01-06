@@ -12,9 +12,8 @@ import {
   ProcessStepEntityHydrogenBottlingMock,
   ProcessStepEntityHydrogenProductionMock,
   ProcessStepEntityHydrogenTransportationMock,
-  ProcessStepEntityPowerProductionMock,
   ReadByIdPayload,
-  ReadProcessStepsPayload,
+  ReadProcessStepsByPredecessorTypesAndCompanyPayload,
 } from '@h2-trust/amqp';
 import { ConfigurationService, MinioConfiguration } from '@h2-trust/configuration';
 import { ProcessStepRepository } from '@h2-trust/database';
@@ -38,7 +37,7 @@ describe('ProcessStepService', () => {
         {
           provide: ProcessStepRepository,
           useValue: {
-            findProcessSteps: jest.fn(),
+            findProcessStepsByPredecessorTypesAndCompany: jest.fn(),
             findProcessStep: jest.fn(),
             insertProcessStep: jest.fn(),
           },
@@ -65,27 +64,22 @@ describe('ProcessStepService', () => {
         ProcessStepEntityHydrogenProductionMock[0],
         ProcessStepEntityHydrogenProductionMock[1],
       ];
-      repository.findProcessSteps.mockResolvedValue(fixture);
+      repository.findProcessStepsByPredecessorTypesAndCompany.mockResolvedValue(fixture);
 
-      const givenProcessTypes = [fixture[0].type];
       const givenPredecessorProcessTypes = [fixture[0].type];
-      const givenActive = true;
       const givenCompanyId = fixture[0].recordedBy.company.id;
-      const payload: ReadProcessStepsPayload = ReadProcessStepsPayload.of(
-        givenProcessTypes,
+
+      const payload: ReadProcessStepsByPredecessorTypesAndCompanyPayload = ReadProcessStepsByPredecessorTypesAndCompanyPayload.of(
         givenPredecessorProcessTypes,
-        givenActive,
         givenCompanyId
       )
 
       // Act
-      const actualResponse = await service.readProcessSteps(payload);
+      const actualResponse = await service.readProcessStepsByPredecessorTypesAndCompany(payload);
 
       // Assert
-      expect(repository.findProcessSteps).toHaveBeenCalledWith(
-        givenProcessTypes,
+      expect(repository.findProcessStepsByPredecessorTypesAndCompany).toHaveBeenCalledWith(
         givenPredecessorProcessTypes,
-        givenActive,
         givenCompanyId,
       );
       expect(actualResponse).toBe(fixture);

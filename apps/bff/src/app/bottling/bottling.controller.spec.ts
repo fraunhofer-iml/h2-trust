@@ -167,7 +167,7 @@ describe('BottlingController', () => {
     const actualResponse: BottlingOverviewDto[] = await controller.readBottlingsByCompany(AuthenticatedUserMock);
 
     expect(batchSvcSpy).toHaveBeenCalledTimes(1);
-    expect(batchSvcSpy).toHaveBeenCalledWith(ProcessStepMessagePatterns.READ_ALL, expectedBatchSvcPayload);
+    expect(batchSvcSpy).toHaveBeenCalledWith(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_COMPANY, expectedBatchSvcPayload);
 
     expect(actualResponse).toEqual(expectedResponse);
   });
