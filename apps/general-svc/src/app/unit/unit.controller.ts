@@ -25,7 +25,7 @@ import { UnitService } from './unit.service';
 
 @Controller()
 export class UnitController {
-  constructor(private readonly service: UnitService) { }
+  constructor(private readonly service: UnitService) {}
 
   @MessagePattern(UnitMessagePatterns.READ)
   async readUnit(@Payload() payload: ReadByIdPayload): Promise<UnitEntity> {
@@ -48,7 +48,9 @@ export class UnitController {
   }
 
   @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS_BY_IDS)
-  async readHydrogenProductionUnitsByIds(@Payload() payload: ReadByIdsPayload): Promise<HydrogenProductionUnitEntity[]> {
+  async readHydrogenProductionUnitsByIds(
+    @Payload() payload: ReadByIdsPayload,
+  ): Promise<HydrogenProductionUnitEntity[]> {
     return this.service.readHydrogenProductionUnitsByIds(payload);
   }
 
@@ -63,17 +65,23 @@ export class UnitController {
   }
 
   @MessagePattern(UnitMessagePatterns.CREATE_POWER_PRODUCTION_UNIT)
-  async createPowerProductionUnit(@Payload() payload: CreatePowerProductionUnitPayload): Promise<PowerProductionUnitEntity> {
+  async createPowerProductionUnit(
+    @Payload() payload: CreatePowerProductionUnitPayload,
+  ): Promise<PowerProductionUnitEntity> {
     return this.service.createPowerProductionUnit(payload);
   }
 
   @MessagePattern(UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION_UNIT)
-  async createHydrogenProductionUnit(@Payload() payload: CreateHydrogenProductionUnitPayload): Promise<HydrogenProductionUnitEntity> {
+  async createHydrogenProductionUnit(
+    @Payload() payload: CreateHydrogenProductionUnitPayload,
+  ): Promise<HydrogenProductionUnitEntity> {
     return this.service.createHydrogenProductionUnit(payload);
   }
 
   @MessagePattern(UnitMessagePatterns.CREATE_HYDROGEN_STORAGE_UNIT)
-  async createHydrogenStorageUnit(@Payload() payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
+  async createHydrogenStorageUnit(
+    @Payload() payload: CreateHydrogenStorageUnitPayload,
+  ): Promise<HydrogenStorageUnitEntity> {
     return this.service.createHydrogenStorageUnit(payload);
   }
 }

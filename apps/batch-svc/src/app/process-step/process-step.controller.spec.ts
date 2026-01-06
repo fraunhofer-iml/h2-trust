@@ -173,7 +173,7 @@ describe('ProcessStepController', () => {
       expectedResponse.transportationDetails,
     );
 
-    const actualResponse = await controller.createHydrogenTransportationProcessStep(payload)
+    const actualResponse = await controller.createHydrogenTransportationProcessStep(payload);
 
     expect(transportationServiceSpy).toHaveBeenCalledTimes(1);
     expect(batchRepositorySpy).toHaveBeenCalledTimes(1);

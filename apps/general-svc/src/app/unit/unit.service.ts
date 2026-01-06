@@ -26,7 +26,7 @@ export class UnitService {
   constructor(
     private readonly unitRepository: UnitRepository,
     private readonly powerProductionTypeRepository: PowerProductionTypeRepository,
-  ) { }
+  ) {}
 
   async readUnit(id: string): Promise<UnitEntity> {
     return this.unitRepository.findUnitById(id);
@@ -60,7 +60,9 @@ export class UnitService {
     return this.unitRepository.insertPowerProductionUnit(payload);
   }
 
-  async createHydrogenProductionUnit(payload: CreateHydrogenProductionUnitPayload): Promise<HydrogenProductionUnitEntity> {
+  async createHydrogenProductionUnit(
+    payload: CreateHydrogenProductionUnitPayload,
+  ): Promise<HydrogenProductionUnitEntity> {
     return this.unitRepository.insertHydrogenProductionUnit(payload);
   }
 

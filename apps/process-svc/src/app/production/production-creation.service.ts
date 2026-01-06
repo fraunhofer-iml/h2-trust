@@ -29,7 +29,7 @@ export class ProductionCreationService {
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly productionService: ProductionService,
-  ) { }
+  ) {}
 
   async createProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
     const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
@@ -52,7 +52,7 @@ export class ProductionCreationService {
       payload.hydrogenStorageUnitId,
       powerProductionUnit.company.id,
       hydrogenProductionUnit.company.id,
-      hydrogenProductionUnit.waterConsumptionLitersPerHour
+      hydrogenProductionUnit.waterConsumptionLitersPerHour,
     );
 
     // Step 1: Create power and water

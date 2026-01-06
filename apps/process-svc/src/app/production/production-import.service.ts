@@ -132,7 +132,10 @@ export class ProductionImportService {
 
       // Step 2: Persist power and water
       const persistedPowerAndWater: ProcessStepEntity[] = await firstValueFrom(
-        this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, CreateManyProcessStepsPayload.of([...power, ...water])),
+        this.batchSvc.send(
+          ProcessStepMessagePatterns.CREATE_MANY,
+          CreateManyProcessStepsPayload.of([...power, ...water]),
+        ),
       );
 
       // Step 3: Split response back into power and water

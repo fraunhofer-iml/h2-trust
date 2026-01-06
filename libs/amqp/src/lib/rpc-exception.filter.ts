@@ -6,10 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Observable, throwError } from 'rxjs';
 import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, HttpStatus, Logger } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { Prisma } from '@prisma/client';
-import { Observable, throwError } from 'rxjs';
 import { BrokerException } from './broker/broker-exception';
 
 interface ErrorDetails {
@@ -221,14 +221,13 @@ export class RpcExceptionFilter implements ExceptionFilter {
   private buildStructuredError(errorDetails: ErrorDetails): StructuredError {
     return errorDetails.validationErrors.length > 0
       ? {
-        message: errorDetails.validationErrors,
-        status: errorDetails.status,
-        error: errorDetails.message,
-      }
+          message: errorDetails.validationErrors,
+          status: errorDetails.status,
+          error: errorDetails.message,
+        }
       : {
-        message: errorDetails.message,
-        status: errorDetails.status,
-      };
-
+          message: errorDetails.message,
+          status: errorDetails.status,
+        };
   }
 }

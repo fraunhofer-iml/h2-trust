@@ -91,7 +91,9 @@ describe('UnitController', () => {
 
     jest.spyOn(prisma.unit, 'findMany').mockResolvedValue([expectedResponse]);
 
-    const actualResponse = await controller.readPowerProductionUnitsByCompanyId(ReadByIdPayload.of(expectedResponse.ownerId));
+    const actualResponse = await controller.readPowerProductionUnitsByCompanyId(
+      ReadByIdPayload.of(expectedResponse.ownerId),
+    );
 
     expect(actualResponse).toEqual([PowerProductionUnitEntity.fromDatabase(expectedResponse)]);
     expect(prisma.unit.findMany).toHaveBeenCalledWith({
@@ -210,7 +212,7 @@ describe('UnitController', () => {
       HydrogenProductionUnitEntityMock[0].modelNumber,
       HydrogenProductionUnitEntityMock[0].serialNumber,
       HydrogenProductionUnitEntityMock[0].certifiedBy,
-      HydrogenProductionUnitEntityMock[0].operator.id
+      HydrogenProductionUnitEntityMock[0].operator.id,
     );
 
     const mockedDbResponse: HydrogenProductionUnitDbType = HydrogenProductionUnitDbTypeMock[0];
@@ -248,9 +250,8 @@ describe('UnitController', () => {
       HydrogenStorageUnitEntityMock[0].modelNumber,
       HydrogenStorageUnitEntityMock[0].serialNumber,
       HydrogenStorageUnitEntityMock[0].certifiedBy,
-      HydrogenStorageUnitEntityMock[0].operator.id
+      HydrogenStorageUnitEntityMock[0].operator.id,
     );
-
 
     const mockedDbResponse: HydrogenStorageUnitDbType = HydrogenStorageUnitDbTypeMock[0];
     const expectedResponse: HydrogenStorageUnitEntity = HydrogenStorageUnitEntity.fromDatabase(mockedDbResponse);

@@ -58,7 +58,9 @@ describe('ProvenanceService', () => {
 
       batchSvcSendMock.mockReturnValue(of(unknown));
 
-      await expect(service.buildProvenance(ReadByIdPayload.of(unknown.id))).rejects.toThrow('Unsupported process type [UNKNOWN].');
+      await expect(service.buildProvenance(ReadByIdPayload.of(unknown.id))).rejects.toThrow(
+        'Unsupported process type [UNKNOWN].',
+      );
     });
   });
 
@@ -217,7 +219,9 @@ describe('ProvenanceService', () => {
       );
 
       // Act
-      const actualResult: ProvenanceEntity = await service.buildProvenance(ReadByIdPayload.of(hydrogenTransportation.id));
+      const actualResult: ProvenanceEntity = await service.buildProvenance(
+        ReadByIdPayload.of(hydrogenTransportation.id),
+      );
 
       // Assert
       expect(actualResult.root).toBe(expectedResult.root);

@@ -11,47 +11,47 @@ import { IsDate, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-
 import { AddressPayload } from '../common';
 
 export abstract class BaseCreateUnitPayload {
-    @IsString()
-    @IsNotEmpty()
-    name!: string;
+  @IsString()
+  @IsNotEmpty()
+  name!: string;
 
-    @IsString()
-    @IsNotEmpty()
-    mastrNumber!: string;
+  @IsString()
+  @IsNotEmpty()
+  mastrNumber!: string;
 
-    @IsOptional()
-    @IsString()
-    manufacturer?: string;
+  @IsOptional()
+  @IsString()
+  manufacturer?: string;
 
-    @IsOptional()
-    @IsString()
-    modelType?: string;
+  @IsOptional()
+  @IsString()
+  modelType?: string;
 
-    @IsOptional()
-    @IsString()
-    modelNumber?: string;
+  @IsOptional()
+  @IsString()
+  modelNumber?: string;
 
-    @IsOptional()
-    @IsString()
-    serialNumber?: string;
+  @IsOptional()
+  @IsString()
+  serialNumber?: string;
 
-    @IsOptional()
-    @IsString()
-    certifiedBy?: string;
+  @IsOptional()
+  @IsString()
+  certifiedBy?: string;
 
-    @IsDate()
-    @Type(() => Date)
-    commissionedOn!: Date;
+  @IsDate()
+  @Type(() => Date)
+  commissionedOn!: Date;
 
-    @ValidateNested()
-    @Type(() => AddressPayload)
-    address!: AddressPayload;
+  @ValidateNested()
+  @Type(() => AddressPayload)
+  address!: AddressPayload;
 
-    @IsString()
-    @IsNotEmpty()
-    companyId!: string; // TODO-MP: should be ownerId
+  @IsString()
+  @IsNotEmpty()
+  companyId!: string; // TODO-MP: should be ownerId
 
-    @IsOptional()
-    @IsString()
-    operatorId?: string;
+  @IsOptional()
+  @IsString()
+  operatorId?: string;
 }

@@ -7,7 +7,16 @@
  */
 
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { BatchEntity, BrokerException, CompanyEntity, CreateHydrogenBottlingPayload, HydrogenComponentEntity, ProcessStepEntity, QualityDetailsEntity, ReadByIdPayload } from '@h2-trust/amqp';
+import {
+  BatchEntity,
+  BrokerException,
+  CompanyEntity,
+  CreateHydrogenBottlingPayload,
+  HydrogenComponentEntity,
+  ProcessStepEntity,
+  QualityDetailsEntity,
+  ReadByIdPayload,
+} from '@h2-trust/amqp';
 import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
 import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step.service';
@@ -59,16 +68,12 @@ export class BottlingService {
     await this.batchRepository.setBatchesInactive(batchesToSetInactive.map((batch) => batch.id));
 
     const createdConsumedSplitProcessSteps = await Promise.all(
-      batchSelection.consumedSplitProcessSteps.map((step) =>
-        this.processStepRepository.insertProcessStep(step),
-      ),
+      batchSelection.consumedSplitProcessSteps.map((step) => this.processStepRepository.insertProcessStep(step)),
     );
     const createdConsumedSplitBatches = createdConsumedSplitProcessSteps.map((ps) => ps.batch);
 
     await Promise.all(
-      batchSelection.processStepsForRemainingAmount.map((ps) =>
-        this.processStepRepository.insertProcessStep(ps),
-      ),
+      batchSelection.processStepsForRemainingAmount.map((ps) => this.processStepRepository.insertProcessStep(ps)),
     );
 
     const bottlingProcessStep = await this.processStepAssemblerService.createBottlingProcessStep(processStep, [

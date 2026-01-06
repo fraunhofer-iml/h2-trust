@@ -8,12 +8,16 @@
 
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { PowerAccessApprovalEntity, PowerAccessApprovalPatterns, ReadPowerAccessApprovalsPayload } from '@h2-trust/amqp';
+import {
+  PowerAccessApprovalEntity,
+  PowerAccessApprovalPatterns,
+  ReadPowerAccessApprovalsPayload,
+} from '@h2-trust/amqp';
 import { PowerAccessApprovalService } from './power-access-approval.service';
 
 @Controller()
 export class PowerAccessApprovalController {
-  constructor(private readonly service: PowerAccessApprovalService) { }
+  constructor(private readonly service: PowerAccessApprovalService) {}
 
   @MessagePattern(PowerAccessApprovalPatterns.READ)
   async findAll(@Payload() payload: ReadPowerAccessApprovalsPayload): Promise<PowerAccessApprovalEntity[]> {

@@ -156,7 +156,9 @@ export class UnitRepository {
       .then(PowerProductionUnitEntity.fromDatabase);
   }
 
-  async insertHydrogenProductionUnit(payload: CreateHydrogenProductionUnitPayload): Promise<HydrogenProductionUnitEntity> {
+  async insertHydrogenProductionUnit(
+    payload: CreateHydrogenProductionUnitPayload,
+  ): Promise<HydrogenProductionUnitEntity> {
     return this.prismaService.unit
       .create({
         data: buildHydrogenProductionUnitCreateInput(payload),

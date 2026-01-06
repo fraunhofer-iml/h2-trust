@@ -12,64 +12,64 @@ import { AddressPayload } from '../common';
 import { BaseCreateUnitPayload } from './base-create-unit.payload';
 
 export class CreateHydrogenProductionUnitPayload extends BaseCreateUnitPayload {
-    @IsEnum(HydrogenProductionMethod)
-    method!: HydrogenProductionMethod;
+  @IsEnum(HydrogenProductionMethod)
+  method!: HydrogenProductionMethod;
 
-    @IsEnum(HydrogenProductionTechnology)
-    technology!: HydrogenProductionTechnology;
+  @IsEnum(HydrogenProductionTechnology)
+  technology!: HydrogenProductionTechnology;
 
-    @IsEnum(BiddingZone)
-    biddingZone!: BiddingZone;
+  @IsEnum(BiddingZone)
+  biddingZone!: BiddingZone;
 
-    @IsNumber()
-    @IsPositive()
-    ratedPower!: number;
+  @IsNumber()
+  @IsPositive()
+  ratedPower!: number;
 
-    @IsNumber()
-    @IsPositive()
-    pressure!: number;
+  @IsNumber()
+  @IsPositive()
+  pressure!: number;
 
-    @IsNumber()
-    @IsPositive()
-    waterConsumptionLitersPerHour!: number;
+  @IsNumber()
+  @IsPositive()
+  waterConsumptionLitersPerHour!: number;
 
-    static of(
-        name: string,
-        mastrNumber: string,
-        commissionedOn: Date,
-        address: AddressPayload,
-        companyId: string,
-        method: HydrogenProductionMethod,
-        technology: HydrogenProductionTechnology,
-        biddingZone: BiddingZone,
-        ratedPower: number,
-        pressure: number,
-        waterConsumptionLitersPerHour: number,
-        manufacturer?: string,
-        modelType?: string,
-        modelNumber?: string,
-        serialNumber?: string,
-        certifiedBy?: string,
-        operatorId?: string,
-    ): CreateHydrogenProductionUnitPayload {
-        return {
-            name,
-            mastrNumber,
-            commissionedOn,
-            address,
-            companyId,
-            method,
-            technology,
-            biddingZone,
-            ratedPower,
-            pressure,
-            waterConsumptionLitersPerHour,
-            manufacturer,
-            modelType,
-            modelNumber,
-            serialNumber,
-            certifiedBy,
-            operatorId,
-        };
-    }
+  static of(
+    name: string,
+    mastrNumber: string,
+    commissionedOn: Date,
+    address: AddressPayload,
+    companyId: string,
+    method: HydrogenProductionMethod,
+    technology: HydrogenProductionTechnology,
+    biddingZone: BiddingZone,
+    ratedPower: number,
+    pressure: number,
+    waterConsumptionLitersPerHour: number,
+    manufacturer?: string,
+    modelType?: string,
+    modelNumber?: string,
+    serialNumber?: string,
+    certifiedBy?: string,
+    operatorId?: string,
+  ): CreateHydrogenProductionUnitPayload {
+    return {
+      name,
+      mastrNumber,
+      commissionedOn,
+      address,
+      companyId,
+      method,
+      technology,
+      biddingZone,
+      ratedPower,
+      pressure,
+      waterConsumptionLitersPerHour,
+      manufacturer,
+      modelType,
+      modelNumber,
+      serialNumber,
+      certifiedBy,
+      operatorId,
+    };
+  }
 }

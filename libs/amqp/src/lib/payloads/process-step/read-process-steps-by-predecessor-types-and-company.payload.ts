@@ -6,18 +6,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsString, IsNotEmpty, IsArray } from "class-validator";
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 
 export class ReadProcessStepsByPredecessorTypesAndCompanyPayload {
-    @IsArray()
-    @IsNotEmpty()
-    predecessorProcessTypes!: string[];
+  @IsArray()
+  @IsNotEmpty()
+  predecessorProcessTypes!: string[];
 
-    @IsString()
-    @IsNotEmpty()
-    companyId!: string;
+  @IsString()
+  @IsNotEmpty()
+  companyId!: string;
 
-    static of(predecessorProcessTypes: string[], companyId: string): ReadProcessStepsByPredecessorTypesAndCompanyPayload {
-        return { predecessorProcessTypes, companyId };
-    }
+  static of(predecessorProcessTypes: string[], companyId: string): ReadProcessStepsByPredecessorTypesAndCompanyPayload {
+    return { predecessorProcessTypes, companyId };
+  }
 }

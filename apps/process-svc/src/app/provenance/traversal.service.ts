@@ -9,7 +9,13 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BatchEntity, BrokerQueues, ProcessStepEntity, ProcessStepMessagePatterns, ReadByIdPayload } from '@h2-trust/amqp';
+import {
+  BatchEntity,
+  BrokerQueues,
+  ProcessStepEntity,
+  ProcessStepMessagePatterns,
+  ReadByIdPayload,
+} from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 
 @Injectable()

@@ -8,7 +8,13 @@
 
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues, CreateProductionEntity, CreateProductionsPayload, ParsedFileBundles, PowerAccessApprovalEntity } from '@h2-trust/amqp';
+import {
+  BrokerQueues,
+  CreateProductionEntity,
+  CreateProductionsPayload,
+  ParsedFileBundles,
+  PowerAccessApprovalEntity,
+} from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
@@ -96,7 +102,7 @@ describe('ProductionController', () => {
       60,
       'user-id-1',
       'hydrogen-storage-unit-1',
-    )
+    );
 
     const actualResponse = await controller.createProductions(givenPayload);
 

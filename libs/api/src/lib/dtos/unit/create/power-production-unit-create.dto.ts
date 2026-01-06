@@ -6,12 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Type } from 'class-transformer';
 import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 import { AddressPayload, CreatePowerProductionUnitPayload } from '@h2-trust/amqp';
 import { BiddingZone, GridLevel, PowerProductionType, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 import { UnitCreateDto } from './unit-create.dto';
-import { Type } from 'class-transformer';
 
 export class PowerProductionUnitCreateDto extends UnitCreateDto {
   @IsNotEmpty()
@@ -105,7 +105,13 @@ export class PowerProductionUnitCreateDto extends UnitCreateDto {
       dto.name,
       dto.mastrNumber,
       dto.commissionedOn,
-      AddressPayload.of(dto.address.street, dto.address.postalCode, dto.address.city, dto.address.state, dto.address.country),
+      AddressPayload.of(
+        dto.address.street,
+        dto.address.postalCode,
+        dto.address.city,
+        dto.address.state,
+        dto.address.country,
+      ),
       dto.owner,
       dto.electricityMeterNumber,
       dto.ratedPower,

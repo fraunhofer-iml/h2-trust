@@ -6,22 +6,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ArrayNotEmpty, IsArray, IsNotEmpty, IsString, ValidateIf } from "class-validator";
+import { ArrayNotEmpty, IsArray, IsNotEmpty, IsString, ValidateIf } from 'class-validator';
 
 export class ProductionCSVUploadDto {
-  @ValidateIf(o => typeof o.powerProductionUnitIds === 'string')
+  @ValidateIf((o) => typeof o.powerProductionUnitIds === 'string')
   @IsString()
   @IsNotEmpty()
-  @ValidateIf(o => Array.isArray(o.powerProductionUnitIds))
+  @ValidateIf((o) => Array.isArray(o.powerProductionUnitIds))
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
   powerProductionUnitIds: string | string[];
 
-  @ValidateIf(o => typeof o.powerProductionUnitIds === 'string')
+  @ValidateIf((o) => typeof o.powerProductionUnitIds === 'string')
   @IsString()
   @IsNotEmpty()
-  @ValidateIf(o => Array.isArray(o.powerProductionUnitIds))
+  @ValidateIf((o) => Array.isArray(o.powerProductionUnitIds))
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })

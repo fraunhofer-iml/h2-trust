@@ -151,7 +151,7 @@ export class ProductionFormComponent {
       !!this.form.value.hydrogenAmountKg &&
       !!this.form.value.hydrogenStorageUnit &&
       this.form.value.hydrogenAmountKg >
-      this.form.value.hydrogenStorageUnit.capacity - this.form.value.hydrogenStorageUnit.filling
+        this.form.value.hydrogenStorageUnit.capacity - this.form.value.hydrogenStorageUnit.filling
     );
   }
 }

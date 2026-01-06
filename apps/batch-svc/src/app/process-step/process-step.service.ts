@@ -7,7 +7,14 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { CreateManyProcessStepsPayload, DocumentEntity, ProcessStepEntity, ReadByIdPayload, ReadProcessStepsByPredecessorTypesAndCompanyPayload, ReadProcessStepsByTypesAndActiveAndCompanyPayload } from '@h2-trust/amqp';
+import {
+  CreateManyProcessStepsPayload,
+  DocumentEntity,
+  ProcessStepEntity,
+  ReadByIdPayload,
+  ReadProcessStepsByPredecessorTypesAndCompanyPayload,
+  ReadProcessStepsByTypesAndActiveAndCompanyPayload,
+} from '@h2-trust/amqp';
 import { ConfigurationService, MinioConfiguration } from '@h2-trust/configuration';
 import { ProcessStepRepository } from '@h2-trust/database';
 import { ProcessType } from '@h2-trust/domain';
@@ -17,14 +24,25 @@ export class ProcessStepService {
   constructor(
     private readonly repository: ProcessStepRepository,
     private readonly configurationService: ConfigurationService,
-  ) { }
+  ) {}
 
-  async readProcessStepsByPredecessorTypesAndCompany(payload: ReadProcessStepsByPredecessorTypesAndCompanyPayload): Promise<ProcessStepEntity[]> {
-    return this.repository.findProcessStepsByPredecessorTypesAndCompany(payload.predecessorProcessTypes, payload.companyId);
+  async readProcessStepsByPredecessorTypesAndCompany(
+    payload: ReadProcessStepsByPredecessorTypesAndCompanyPayload,
+  ): Promise<ProcessStepEntity[]> {
+    return this.repository.findProcessStepsByPredecessorTypesAndCompany(
+      payload.predecessorProcessTypes,
+      payload.companyId,
+    );
   }
 
-  async readProcessStepsByTypesAndActiveAndCompany(payload: ReadProcessStepsByTypesAndActiveAndCompanyPayload): Promise<ProcessStepEntity[]> {
-    return this.repository.findProcessStepsByTypesAndActiveAndCompany(payload.processTypes, payload.active, payload.companyId);
+  async readProcessStepsByTypesAndActiveAndCompany(
+    payload: ReadProcessStepsByTypesAndActiveAndCompanyPayload,
+  ): Promise<ProcessStepEntity[]> {
+    return this.repository.findProcessStepsByTypesAndActiveAndCompany(
+      payload.processTypes,
+      payload.active,
+      payload.companyId,
+    );
   }
 
   async readProcessStep(payload: ReadByIdPayload): Promise<ProcessStepEntity> {

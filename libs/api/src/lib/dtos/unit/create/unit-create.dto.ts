@@ -6,10 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Type } from 'class-transformer';
 import { IsDate, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
-import { Type } from 'class-transformer';
 
 export abstract class UnitCreateDto {
   @IsNotEmpty()

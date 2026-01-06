@@ -15,7 +15,7 @@ export class PowerAccessApprovalService {
   constructor(
     private readonly powerAccessApprovalRepository: PowerAccessApprovalRepository,
     private readonly userRepository: UserRepository,
-  ) { }
+  ) {}
 
   async findAll(payload: ReadPowerAccessApprovalsPayload): Promise<PowerAccessApprovalEntity[]> {
     const user: UserEntity = await this.userRepository.findUser(payload.userId);

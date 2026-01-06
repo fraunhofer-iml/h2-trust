@@ -21,7 +21,7 @@ import { MatchedProductionPair } from './matched-production-pair';
 
 @Injectable()
 export class RedCompliancePairingService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) { }
+  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) {}
 
   async buildMatchedPairs(
     powerProductions: ProcessStepEntity[],
@@ -106,7 +106,10 @@ export class RedCompliancePairingService {
         this.generalSvc.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS_BY_IDS, ReadByIdsPayload.of(powerUnitIds)),
       ),
       firstValueFrom(
-        this.generalSvc.send(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS_BY_IDS, ReadByIdsPayload.of(hydrogenUnitIds)),
+        this.generalSvc.send(
+          UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS_BY_IDS,
+          ReadByIdsPayload.of(hydrogenUnitIds),
+        ),
       ),
     ]);
 

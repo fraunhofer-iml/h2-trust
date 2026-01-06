@@ -26,6 +26,6 @@ export class FinalizeStagedProductionsPayload {
       recordedBy,
       hydrogenStorageUnitId,
       importId,
-    }
+    };
   }
 }

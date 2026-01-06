@@ -17,6 +17,7 @@ import {
   ReadByIdPayload,
 } from '@h2-trust/amqp';
 import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
+import { HydrogenColor } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { BatchSelectionService } from './bottling/batch-selection.service';
 import { BottlingService } from './bottling/bottling.service';
@@ -26,7 +27,6 @@ import { ProcessStepAssemblerService } from './bottling/process-step-assembler.s
 import { ProcessStepController } from './process-step.controller';
 import { ProcessStepService } from './process-step.service';
 import { TransportationService } from './transportation.service';
-import { HydrogenColor } from '@h2-trust/domain';
 
 describe('ProcessStepController / Bottling', () => {
   let controller: ProcessStepController;

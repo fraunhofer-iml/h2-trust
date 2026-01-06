@@ -23,7 +23,7 @@ async function bootstrap() {
     new ValidationPipe({
       transform: true,
       whitelist: true,
-      forbidNonWhitelisted: true
+      forbidNonWhitelisted: true,
     }),
   );
   app.useGlobalInterceptors(new AllErrorsInterceptor());

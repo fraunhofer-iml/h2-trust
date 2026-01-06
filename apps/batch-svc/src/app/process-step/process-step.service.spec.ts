@@ -69,10 +69,8 @@ describe('ProcessStepService', () => {
       const givenPredecessorProcessTypes = [fixture[0].type];
       const givenCompanyId = fixture[0].recordedBy.company.id;
 
-      const payload: ReadProcessStepsByPredecessorTypesAndCompanyPayload = ReadProcessStepsByPredecessorTypesAndCompanyPayload.of(
-        givenPredecessorProcessTypes,
-        givenCompanyId
-      )
+      const payload: ReadProcessStepsByPredecessorTypesAndCompanyPayload =
+        ReadProcessStepsByPredecessorTypesAndCompanyPayload.of(givenPredecessorProcessTypes, givenCompanyId);
 
       // Act
       const actualResponse = await service.readProcessStepsByPredecessorTypesAndCompany(payload);
@@ -98,7 +96,9 @@ describe('ProcessStepService', () => {
       repository.findProcessStep.mockResolvedValue(hydrogenProductionFixture);
 
       // Act
-      const actualResponse: ProcessStepEntity = await service.readProcessStep(ReadByIdPayload.of(hydrogenProductionFixture.id));
+      const actualResponse: ProcessStepEntity = await service.readProcessStep(
+        ReadByIdPayload.of(hydrogenProductionFixture.id),
+      );
 
       // Assert
       expect(repository.findProcessStep).toHaveBeenCalledWith(hydrogenProductionFixture.id);
@@ -185,7 +185,9 @@ describe('ProcessStepService', () => {
       const expectedErrorMessage = `Expected process type of predecessor to be ${ProcessType.HYDROGEN_BOTTLING}, but got ${ProcessType.HYDROGEN_PRODUCTION}.`;
 
       // Act & Assert
-      await expect(service.readProcessStep(ReadByIdPayload.of(hydrogenTransportationFixture.id))).rejects.toThrow(expectedErrorMessage);
+      await expect(service.readProcessStep(ReadByIdPayload.of(hydrogenTransportationFixture.id))).rejects.toThrow(
+        expectedErrorMessage,
+      );
     });
   });
 });

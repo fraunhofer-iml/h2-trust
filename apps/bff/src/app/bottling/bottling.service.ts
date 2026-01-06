@@ -39,7 +39,7 @@ export class BottlingService {
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly userService: UserService,
     private readonly redComplianceService: RedComplianceService,
-  ) { }
+  ) {}
 
   async createBottling(dto: BottlingDto, files: Express.Multer.File[], userId: string): Promise<BottlingOverviewDto> {
     const bottlingPayload: CreateHydrogenBottlingPayload = CreateHydrogenBottlingPayload.of(
@@ -68,26 +68,23 @@ export class BottlingService {
     );
 
     return firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION, transportationPayload)
-    ).then(
-      BottlingOverviewDto.fromEntity
-    );
+      this.batchSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION, transportationPayload),
+    ).then(BottlingOverviewDto.fromEntity);
   }
 
   async readBottlingsByCompany(userId: string): Promise<BottlingOverviewDto[]> {
     const userDetailsDto: UserDetailsDto = await this.userService.readUserWithCompany(userId);
 
-    const payload: ReadProcessStepsByTypesAndActiveAndCompanyPayload = ReadProcessStepsByTypesAndActiveAndCompanyPayload.of(
-      [ProcessType.HYDROGEN_BOTTLING, ProcessType.HYDROGEN_TRANSPORTATION],
-      true,
-      userDetailsDto.company.id,
-    );
+    const payload: ReadProcessStepsByTypesAndActiveAndCompanyPayload =
+      ReadProcessStepsByTypesAndActiveAndCompanyPayload.of(
+        [ProcessType.HYDROGEN_BOTTLING, ProcessType.HYDROGEN_TRANSPORTATION],
+        true,
+        userDetailsDto.company.id,
+      );
 
     return firstValueFrom(
       this.batchSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_COMPANY, payload),
-    ).then(
-      (processSteps) => processSteps.map(BottlingOverviewDto.fromEntity)
-    );
+    ).then((processSteps) => processSteps.map(BottlingOverviewDto.fromEntity));
   }
 
   async readGeneralInformation(processStepId: string): Promise<GeneralInformationDto> {

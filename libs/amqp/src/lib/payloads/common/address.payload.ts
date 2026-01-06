@@ -9,33 +9,27 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class AddressPayload {
-    @IsString()
-    @IsNotEmpty()
-    street!: string;
+  @IsString()
+  @IsNotEmpty()
+  street!: string;
 
-    @IsString()
-    @IsNotEmpty()
-    postalCode!: string;
+  @IsString()
+  @IsNotEmpty()
+  postalCode!: string;
 
-    @IsString()
-    @IsNotEmpty()
-    city!: string;
+  @IsString()
+  @IsNotEmpty()
+  city!: string;
 
-    @IsString()
-    @IsNotEmpty()
-    state!: string;
+  @IsString()
+  @IsNotEmpty()
+  state!: string;
 
-    @IsString()
-    @IsNotEmpty()
-    country!: string;
+  @IsString()
+  @IsNotEmpty()
+  country!: string;
 
-    static of(
-        street: string,
-        postalCode: string,
-        city: string,
-        state: string,
-        country: string
-    ): AddressPayload {
-        return { street, postalCode, city, state, country };
-    }
+  static of(street: string, postalCode: string, city: string, state: string, country: string): AddressPayload {
+    return { street, postalCode, city, state, country };
+  }
 }

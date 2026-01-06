@@ -15,7 +15,7 @@ import { PowerAccessApprovalStatus } from '@h2-trust/domain';
 
 @Injectable()
 export class PowerAccessApprovalService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) { }
+  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
 
   async findAll(
     userId: string,
@@ -24,7 +24,7 @@ export class PowerAccessApprovalService {
     return firstValueFrom(
       this.generalService.send(
         PowerAccessApprovalPatterns.READ,
-        ReadPowerAccessApprovalsPayload.of(userId, powerAccessApprovalStatus)
+        ReadPowerAccessApprovalsPayload.of(userId, powerAccessApprovalStatus),
       ),
     ).then((entities) => entities.map(PowerAccessApprovalDto.fromEntity));
   }

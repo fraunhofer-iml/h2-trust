@@ -82,13 +82,18 @@ export function buildPowerProductionUnitCreateInput(payload: CreatePowerProducti
   });
 }
 
-export function buildHydrogenProductionUnitCreateInput(payload: CreateHydrogenProductionUnitPayload): Prisma.UnitCreateInput {
+export function buildHydrogenProductionUnitCreateInput(
+  payload: CreateHydrogenProductionUnitPayload,
+): Prisma.UnitCreateInput {
   assertDefined(payload.biddingZone, 'CreateHydrogenProductionUnitPayload.biddingZone');
   assertDefined(payload.method, 'CreateHydrogenProductionUnitPayload.method');
   assertDefined(payload.technology, 'CreateHydrogenProductionUnitPayload.technology');
   assertDefined(payload.ratedPower, 'CreateHydrogenProductionUnitPayload.ratedPower');
   assertDefined(payload.pressure, 'CreateHydrogenProductionUnitPayload.pressure');
-  assertDefined(payload.waterConsumptionLitersPerHour, 'CreateHydrogenProductionUnitPayload.waterConsumptionLitersPerHour');
+  assertDefined(
+    payload.waterConsumptionLitersPerHour,
+    'CreateHydrogenProductionUnitPayload.waterConsumptionLitersPerHour',
+  );
 
   return Prisma.validator<Prisma.UnitCreateInput>()({
     ...buildBaseUnitCreateInput(payload),

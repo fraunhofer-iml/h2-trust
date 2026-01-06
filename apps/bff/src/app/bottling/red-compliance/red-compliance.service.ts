@@ -25,7 +25,7 @@ export class RedComplianceService {
   constructor(
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly pairingService: RedCompliancePairingService,
-  ) { }
+  ) {}
 
   async determineRedCompliance(processStepId: string): Promise<RedComplianceDto> {
     const provenance: ProvenanceEntity = await firstValueFrom(

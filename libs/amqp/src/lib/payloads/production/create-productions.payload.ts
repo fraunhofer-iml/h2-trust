@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Type } from "class-transformer";
-import { IsDate, IsNotEmpty, IsNumber, IsPositive, IsString } from "class-validator";
+import { Type } from 'class-transformer';
+import { IsDate, IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
 
 export class CreateProductionsPayload {
   @IsNotEmpty()
@@ -65,6 +65,6 @@ export class CreateProductionsPayload {
       hydrogenAmountKg,
       userId,
       hydrogenStorageUnitId,
-    }
+    };
   }
 }

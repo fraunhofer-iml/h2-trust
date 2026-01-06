@@ -22,8 +22,18 @@ import { ExpressMulterFileMock } from '@h2-trust/api';
 import { ConfigurationModule } from '@h2-trust/configuration';
 import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
 import { HydrogenColor } from '@h2-trust/domain';
+import { StorageService } from '@h2-trust/storage';
+import { ProcessStepService } from '../process-step.service';
+import { BatchSelectionService } from './batch-selection.service';
+import { BottlingService } from './bottling.service';
+import { calculateRemainingAmount } from './bottling.service.spec.util';
+import { HydrogenCompositionService } from './hydrogen-composition.service';
+import { ProcessStepAssemblerService } from './process-step-assembler.service';
 
-function createPayloadFromEntity(entity: ProcessStepEntity, files?: Express.Multer.File[]): CreateHydrogenBottlingPayload {
+function createPayloadFromEntity(
+  entity: ProcessStepEntity,
+  files?: Express.Multer.File[],
+): CreateHydrogenBottlingPayload {
   return CreateHydrogenBottlingPayload.of(
     entity.batch.amount,
     entity.batch.owner?.id ?? 'test-recipient',
@@ -35,13 +45,6 @@ function createPayloadFromEntity(entity: ProcessStepEntity, files?: Express.Mult
     files,
   );
 }
-import { StorageService } from '@h2-trust/storage';
-import { ProcessStepService } from '../process-step.service';
-import { BatchSelectionService } from './batch-selection.service';
-import { BottlingService } from './bottling.service';
-import { calculateRemainingAmount } from './bottling.service.spec.util';
-import { HydrogenCompositionService } from './hydrogen-composition.service';
-import { ProcessStepAssemblerService } from './process-step-assembler.service';
 
 describe('ProcessStepService', () => {
   let service: BottlingService;
@@ -269,7 +272,7 @@ describe('ProcessStepService', () => {
           2 * (i + 1), // Every second call goes to the assembling of the remaining amount batch
           hydrogenProcessSteps.at(i),
           hydrogenProcessSteps[i].batch.amount -
-          (processStepData.batch.amount * hydrogenProcessSteps[i].batch.amount) / totalStoredAmount,
+            (processStepData.batch.amount * hydrogenProcessSteps[i].batch.amount) / totalStoredAmount,
           true,
         );
       }
