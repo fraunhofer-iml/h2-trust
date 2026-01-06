@@ -21,8 +21,9 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalPipes(
     new ValidationPipe({
-      disableErrorMessages: false,
       transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true
     }),
   );
   app.useGlobalInterceptors(new AllErrorsInterceptor());
