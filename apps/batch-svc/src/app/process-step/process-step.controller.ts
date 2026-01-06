@@ -16,7 +16,8 @@ import {
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ReadByIdPayload,
-  ReadProcessStepsPayload,
+  ReadProcessStepsByPredecessorTypesAndCompanyPayload,
+  ReadProcessStepsByTypesAndActiveAndCompanyPayload,
 } from '@h2-trust/amqp';
 import { BottlingService } from './bottling/bottling.service';
 import { ProcessStepService } from './process-step.service';
@@ -31,9 +32,13 @@ export class ProcessStepController {
     private readonly transportationService: TransportationService,
   ) { }
 
-  @MessagePattern(ProcessStepMessagePatterns.READ_ALL)
-  async readProcessSteps(@Payload() payload: ReadProcessStepsPayload): Promise<ProcessStepEntity[]> {
-    return this.processStepService.readProcessSteps(payload);
+  @MessagePattern(ProcessStepMessagePatterns.READ_ALL_BY_PREDECESSOR_TYPES_AND_COMPANY)
+  async readProcessStepsByPredecessorTypesAndCompany(@Payload() payload: ReadProcessStepsByPredecessorTypesAndCompanyPayload): Promise<ProcessStepEntity[]> {
+    return this.processStepService.readProcessStepsByPredecessorTypesAndCompany(payload);
+  }
+  @MessagePattern(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_COMPANY)
+  async readProcessStepsByTypesAndActiveAndCompany(@Payload() payload: ReadProcessStepsByTypesAndActiveAndCompanyPayload): Promise<ProcessStepEntity[]> {
+    return this.processStepService.readProcessStepsByTypesAndActiveAndCompany(payload);
   }
 
   @MessagePattern(ProcessStepMessagePatterns.READ_UNIQUE)

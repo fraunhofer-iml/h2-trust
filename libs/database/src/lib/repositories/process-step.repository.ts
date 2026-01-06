@@ -19,7 +19,7 @@ import { assertRecordFound } from './utils';
 export class ProcessStepRepository {
   private readonly logger = new Logger(ProcessStepRepository.name);
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   async findProcessStep(id: string): Promise<ProcessStepEntity> {
     return this.prismaService.processStep
@@ -33,33 +33,52 @@ export class ProcessStepRepository {
       .then(ProcessStepEntity.fromDatabase);
   }
 
-  // TODO-MP: split into two methods for clarity
-  async findProcessSteps(
-    processTypes: string[],
+  async findProcessStepsByPredecessorTypesAndCompany(
     predecessorProcessTypes: string[],
-    active: boolean,
     companyId: string,
   ): Promise<ProcessStepEntity[]> {
     const predecessorsFilter =
       Array.isArray(predecessorProcessTypes) && predecessorProcessTypes.length > 0
         ? {
-            predecessors: {
-              some: {
-                processStep: {
-                  type: { in: predecessorProcessTypes },
-                },
+          predecessors: {
+            some: {
+              processStep: {
+                type: { in: predecessorProcessTypes },
               },
             },
-          }
+          },
+        }
         : {};
 
+    return this.prismaService.processStep
+      .findMany({
+        where: {
+          batch: {
+            ...predecessorsFilter,
+          },
+          executedBy: {
+            ownerId: companyId,
+          },
+        },
+        orderBy: {
+          endedAt: 'desc',
+        },
+        ...processStepQueryArgs,
+      })
+      .then((processSteps) => processSteps.map(ProcessStepEntity.fromDatabase));
+  }
+
+  async findProcessStepsByTypesAndActiveAndCompany(
+    processTypes: string[],
+    active: boolean,
+    companyId: string,
+  ): Promise<ProcessStepEntity[]> {
     return this.prismaService.processStep
       .findMany({
         where: {
           type: { in: processTypes },
           batch: {
             active: active,
-            ...predecessorsFilter,
           },
           executedBy: {
             ownerId: companyId,

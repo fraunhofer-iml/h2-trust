@@ -6,22 +6,28 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// TODO-MP: will be split into two payloads with validation later 
-export class ReadProcessStepsPayload {
+import { IsArray, IsBoolean, IsNotEmpty, IsString } from "class-validator";
+
+export class ReadProcessStepsByTypesAndActiveAndCompanyPayload {
+    @IsArray()
+    @IsNotEmpty()
     processTypes!: string[];
-    predecessorProcessTypes!: string[];
+
+    @IsBoolean()
+    @IsNotEmpty()
     active!: boolean;
+
+    @IsString()
+    @IsNotEmpty()
     companyId!: string;
 
     static of(
         processTypes: string[],
-        predecessorProcessTypes: string[],
         active: boolean,
         companyId: string,
-    ): ReadProcessStepsPayload {
+    ): ReadProcessStepsByTypesAndActiveAndCompanyPayload {
         return {
             processTypes,
-            predecessorProcessTypes,
             active,
             companyId,
         };
