@@ -18,6 +18,12 @@ interface ErrorDetails {
   validationErrors: string[];
 }
 
+interface StructuredError {
+  message: string | string[];
+  status: number;
+  error?: string;
+}
+
 @Catch()
 export class RpcExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger('RpcExceptionFilter');
@@ -30,28 +36,32 @@ export class RpcExceptionFilter implements ExceptionFilter {
 
     this.logError(pattern, errorDetails, data);
 
-    return throwError(() => exception);
+    const structuredError = this.buildStructuredError(errorDetails);
+    return throwError(() => new RpcException(structuredError));
   }
 
   private extractMessagePattern(context: any): string {
-    if (!context?.args?.[0]?.content) {
-      return 'unknown';
+    let pattern = 'unknown';
+
+    if (context?.args?.[0]?.content) {
+      const content = context.args[0].content;
+
+      if (Buffer.isBuffer(content)) {
+        try {
+          const message = JSON.parse(content.toString());
+          pattern = message.pattern || 'unknown';
+        } catch {
+          // Keep default pattern
+        }
+      }
     }
 
-    const content = context.args[0].content;
-    if (!Buffer.isBuffer(content)) {
-      return 'unknown';
-    }
-
-    try {
-      const message = JSON.parse(content.toString());
-      return message.pattern || 'unknown';
-    } catch {
-      return 'unknown';
-    }
+    return pattern;
   }
 
   private extractErrorDetails(exception: unknown): ErrorDetails {
+    let errorDetails: ErrorDetails;
+
     if (
       exception instanceof Prisma.PrismaClientKnownRequestError ||
       exception instanceof Prisma.PrismaClientUnknownRequestError ||
@@ -59,39 +69,30 @@ export class RpcExceptionFilter implements ExceptionFilter {
       exception instanceof Prisma.PrismaClientInitializationError ||
       exception instanceof Prisma.PrismaClientValidationError
     ) {
-      return this.extractFromPrismaError(exception);
-    }
-
-    // errors from business logic
-    if (exception instanceof BrokerException) {
-      return this.extractFromBrokerException(exception);
-    }
-
-    // errors from ValidationPipe
-    if (exception instanceof BadRequestException) {
-      return this.extractFromBadRequestException(exception);
-    }
-
-    // errors from other microservices
-    if (exception instanceof RpcException) {
-      return this.extractFromRpcException(exception);
-    }
-
-    // Generic Error
-    if (exception instanceof Error) {
-      return {
+      errorDetails = this.extractFromPrismaError(exception);
+    } else if (exception instanceof BrokerException) {
+      errorDetails = this.extractFromBrokerException(exception); // Business logic
+    } else if (exception instanceof BadRequestException) {
+      errorDetails = this.extractFromBadRequestException(exception); // ValidationPipe
+    } else if (exception instanceof RpcException) {
+      errorDetails = this.extractFromRpcException(exception); // Other microservices
+    } else if (exception instanceof Error) {
+      // Generic Error
+      errorDetails = {
         message: exception.message,
+        status: 500,
+        validationErrors: [],
+      };
+    } else {
+      // Unknown exception type
+      errorDetails = {
+        message: String(exception),
         status: 500,
         validationErrors: [],
       };
     }
 
-    // Unknown exception type
-    return {
-      message: String(exception),
-      status: 500,
-      validationErrors: [],
-    };
+    return errorDetails;
   }
 
   private extractFromPrismaError(error: Error): ErrorDetails {
@@ -109,99 +110,105 @@ export class RpcExceptionFilter implements ExceptionFilter {
 
   private extractFromBrokerException(exception: BrokerException): ErrorDetails {
     const errorObject = exception.getError();
+    let errorDetails: ErrorDetails;
 
     if (typeof errorObject === 'string') {
-      return {
+      errorDetails = {
         message: errorObject,
+        status: 500,
+        validationErrors: [],
+      };
+    } else if (typeof errorObject === 'object' && errorObject !== null) {
+      const error = errorObject as any;
+      errorDetails = {
+        message: error.message || JSON.stringify(error),
+        status: error.status || error.statusCode || 500,
+        validationErrors: [],
+      };
+    } else {
+      errorDetails = {
+        message: 'Unknown broker error',
         status: 500,
         validationErrors: [],
       };
     }
 
-    if (typeof errorObject === 'object' && errorObject !== null) {
-      const error = errorObject as any;
-      return {
-        message: error.message || JSON.stringify(error),
-        status: error.status || error.statusCode || 500,
-        validationErrors: [],
-      };
-    }
-
-    return {
-      message: 'Unknown broker error',
-      status: 500,
-      validationErrors: [],
-    };
+    return errorDetails;
   }
 
   private extractFromBadRequestException(exception: BadRequestException): ErrorDetails {
     const response = exception.getResponse() as any;
     const status = exception.getStatus();
+    let errorDetails: ErrorDetails;
 
     if (typeof response === 'object' && response.message) {
       if (Array.isArray(response.message)) {
-        return {
+        errorDetails = {
           message: response.error || 'Validation failed',
           status,
           validationErrors: response.message,
         };
+      } else {
+        errorDetails = {
+          message: response.message,
+          status,
+          validationErrors: [],
+        };
       }
-      return {
-        message: response.message,
+    } else {
+      errorDetails = {
+        message: exception.message,
         status,
         validationErrors: [],
       };
     }
 
-    return {
-      message: exception.message,
-      status,
-      validationErrors: [],
-    };
+    return errorDetails;
   }
 
   private extractFromRpcException(exception: RpcException): ErrorDetails {
     const errorObject = exception.getError();
+    let errorDetails: ErrorDetails;
 
     if (typeof errorObject === 'string') {
-      return {
+      errorDetails = {
         message: errorObject,
+        status: 500,
+        validationErrors: [],
+      };
+    } else if (typeof errorObject === 'object' && errorObject !== null) {
+      const error = errorObject as any;
+      const status = error.status || error.statusCode || 500;
+
+      if (Array.isArray(error.message)) {
+        errorDetails = {
+          message: error.error || 'Validation failed',
+          status,
+          validationErrors: error.message,
+        };
+      } else {
+        errorDetails = {
+          message: error.message || JSON.stringify(error),
+          status,
+          validationErrors: [],
+        };
+      }
+    } else {
+      errorDetails = {
+        message: 'Unknown RPC error',
         status: 500,
         validationErrors: [],
       };
     }
 
-    if (typeof errorObject === 'object' && errorObject !== null) {
-      const error = errorObject as any;
-      const status = error.status || error.statusCode || 500;
-
-      if (Array.isArray(error.message)) {
-        return {
-          message: error.error || 'Validation failed',
-          status,
-          validationErrors: error.message,
-        };
-      }
-
-      return {
-        message: error.message || JSON.stringify(error),
-        status,
-        validationErrors: [],
-      };
-    }
-
-    return {
-      message: 'Unknown RPC error',
-      status: 500,
-      validationErrors: [],
-    };
+    return errorDetails;
   }
 
   private logError(pattern: string, errorDetails: ErrorDetails, data: unknown): void {
     let logMessage = `[${pattern}] ${errorDetails.message} (Status: ${errorDetails.status})`;
 
     if (errorDetails.validationErrors.length > 0) {
-      logMessage += `\nValidation errors:\n  - ${errorDetails.validationErrors.join('\n  - ')}`;
+      logMessage += `\nValidation errors:\n - ${errorDetails.validationErrors.join('\n - ')}`;
     }
 
     if (data) {
@@ -209,5 +216,19 @@ export class RpcExceptionFilter implements ExceptionFilter {
     }
 
     this.logger.error(logMessage);
+  }
+
+  private buildStructuredError(errorDetails: ErrorDetails): StructuredError {
+    return errorDetails.validationErrors.length > 0
+      ? {
+        message: errorDetails.validationErrors,
+        status: errorDetails.status,
+        error: errorDetails.message,
+      }
+      : {
+        message: errorDetails.message,
+        status: errorDetails.status,
+      };
+
   }
 }
