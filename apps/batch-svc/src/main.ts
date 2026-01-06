@@ -9,7 +9,7 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { BrokerQueues, PrismaErrorsInterceptor } from '@h2-trust/amqp';
+import { BrokerQueues, RpcExceptionFilter } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { AppModule } from './app/app.module';
 
@@ -37,7 +37,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  app.useGlobalInterceptors(new PrismaErrorsInterceptor());
+  app.useGlobalFilters(new RpcExceptionFilter());
   app.useLogger(configuration.getGlobalConfiguration().logLevel);
 
   await app
