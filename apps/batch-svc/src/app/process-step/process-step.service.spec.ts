@@ -8,7 +8,7 @@
 
 import { Test } from '@nestjs/testing';
 import {
-  BatchEntity,
+  BatchEntityHydrogenProducedMock,
   ProcessStepEntity,
   ProcessStepEntityHydrogenBottlingMock,
   ProcessStepEntityHydrogenProductionMock,
@@ -20,11 +20,6 @@ import { ConfigurationService, MinioConfiguration } from '@h2-trust/configuratio
 import { ProcessStepRepository } from '@h2-trust/database';
 import { ProcessType } from '@h2-trust/domain';
 import { ProcessStepService } from './process-step.service';
-
-// Helper to create a minimal BatchEntity with only processStepId for testing
-const createBatchWithProcessStepId = (processStepId: string | undefined): Partial<BatchEntity> => ({
-  processStepId,
-});
 
 describe('ProcessStepService', () => {
   let service: ProcessStepService;
@@ -128,7 +123,7 @@ describe('ProcessStepService', () => {
 
       const hydrogenTransportationFixture: ProcessStepEntity = ProcessStepEntityHydrogenTransportationMock[0];
       hydrogenTransportationFixture.batch.predecessors = [
-        createBatchWithProcessStepId(hydrogenBottlingFixture.id) as BatchEntity,
+        { ...BatchEntityHydrogenProducedMock[0], processStepId: hydrogenBottlingFixture.id },
       ];
 
       // First call for transportation id, second call for bottling id
@@ -155,7 +150,7 @@ describe('ProcessStepService', () => {
       // Arrange
       const hydrogenTransportationFixture: ProcessStepEntity = ProcessStepEntityHydrogenTransportationMock[0];
       hydrogenTransportationFixture.batch.predecessors = [
-        createBatchWithProcessStepId(undefined) as BatchEntity,
+        { ...BatchEntityHydrogenProducedMock[0], processStepId: undefined },
       ];
 
       repository.findProcessStep.mockResolvedValue(hydrogenTransportationFixture);
@@ -172,7 +167,7 @@ describe('ProcessStepService', () => {
 
       const hydrogenTransportationFixture: ProcessStepEntity = ProcessStepEntityHydrogenTransportationMock[0];
       hydrogenTransportationFixture.batch.predecessors = [
-        createBatchWithProcessStepId(hydrogenProductionFixture.id) as BatchEntity,
+        { ...BatchEntityHydrogenProducedMock[0], processStepId: hydrogenProductionFixture.id },
       ];
 
       // First call for transportation id, second call for production id

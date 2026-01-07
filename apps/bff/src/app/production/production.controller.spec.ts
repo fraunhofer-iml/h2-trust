@@ -8,7 +8,15 @@
 
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BatchEntity, BaseUnitEntity, BrokerQueues, PowerProductionTypeEntity, ProcessStepEntity, ProcessStepMessagePatterns, UserEntity } from '@h2-trust/amqp';
+import {
+  BatchEntityHydrogenProducedMock,
+  BrokerQueues,
+  HydrogenProductionUnitEntityMock,
+  PowerProductionTypeEntity,
+  ProcessStepEntity,
+  ProcessStepMessagePatterns,
+  UserEntityHydrogenMock,
+} from '@h2-trust/amqp';
 import {
   AccountingPeriodMatchingResultDto,
   AuthenticatedKCUser,
@@ -24,11 +32,6 @@ import 'multer';
 import { of } from 'rxjs';
 import { UserService } from '../user/user.service';
 import { ProductionController } from './production.controller';
-
-// Test helpers for creating minimal entities
-const createMinimalBatch = (): Partial<BatchEntity> => ({});
-const createMinimalUser = (): Partial<UserEntity> => ({});
-const createMinimalUnit = (): Partial<BaseUnitEntity> => ({});
 import { ProductionService } from './production.service';
 
 describe('ProductionController', () => {
@@ -118,18 +121,18 @@ describe('ProductionController', () => {
         startedAt: new Date(CreateProductionDtoMock.productionStartedAt),
         endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
         type: ProcessType.HYDROGEN_PRODUCTION,
-        batch: createMinimalBatch() as BatchEntity,
-        recordedBy: createMinimalUser() as UserEntity,
-        executedBy: createMinimalUnit() as BaseUnitEntity,
+        batch: BatchEntityHydrogenProducedMock[0],
+        recordedBy: UserEntityHydrogenMock,
+        executedBy: HydrogenProductionUnitEntityMock[0],
       },
       {
         id: 'hydrogen-production-process-step-2',
         startedAt: new Date(CreateProductionDtoMock.productionEndedAt),
         endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
         type: ProcessType.HYDROGEN_PRODUCTION,
-        batch: createMinimalBatch() as BatchEntity,
-        recordedBy: createMinimalUser() as UserEntity,
-        executedBy: createMinimalUnit() as BaseUnitEntity,
+        batch: BatchEntityHydrogenProducedMock[0],
+        recordedBy: UserEntityHydrogenMock,
+        executedBy: HydrogenProductionUnitEntityMock[0],
       },
     ];
 
@@ -151,9 +154,9 @@ describe('ProductionController', () => {
         startedAt: new Date(CreateProductionDtoMock.productionStartedAt),
         endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
         type: ProcessType.HYDROGEN_PRODUCTION,
-        batch: createMinimalBatch() as BatchEntity,
-        recordedBy: createMinimalUser() as UserEntity,
-        executedBy: createMinimalUnit() as BaseUnitEntity,
+        batch: BatchEntityHydrogenProducedMock[0],
+        recordedBy: UserEntityHydrogenMock,
+        executedBy: HydrogenProductionUnitEntityMock[0],
       },
     ];
 
