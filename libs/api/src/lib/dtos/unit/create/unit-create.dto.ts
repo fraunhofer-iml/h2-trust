@@ -12,48 +12,48 @@ import { UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 
 export abstract class UnitCreateDto {
-  @IsNotEmpty()
   @IsEnum(UnitType)
+  @IsNotEmpty()
   unitType: UnitType;
 
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   name: string;
 
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   owner: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   operator?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   manufacturer?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   modelType?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   modelNumber?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   serialNumber?: string;
 
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   mastrNumber: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   certifiedBy?: string;
 
-  @IsNotEmpty()
   @IsDate()
+  @IsNotEmpty()
   @Type(() => Date)
   commissionedOn: Date;
 

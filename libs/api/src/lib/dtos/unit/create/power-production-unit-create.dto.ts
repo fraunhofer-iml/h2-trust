@@ -14,42 +14,42 @@ import { AddressDto } from '../../address';
 import { UnitCreateDto } from './unit-create.dto';
 
 export class PowerProductionUnitCreateDto extends UnitCreateDto {
-  @IsNotEmpty()
   @IsEnum(PowerProductionType)
+  @IsNotEmpty()
   powerProductionType: PowerProductionType;
 
-  @IsOptional()
   @IsDate()
+  @IsOptional()
   @Type(() => Date)
   decommissioningPlannedOn?: Date;
 
-  @IsNotEmpty()
   @IsEnum(BiddingZone)
+  @IsNotEmpty()
   biddingZone: BiddingZone;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   gridOperator?: string;
 
-  @IsNotEmpty()
   @IsEnum(GridLevel)
+  @IsNotEmpty()
   gridLevel: GridLevel;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   gridConnectionNumber?: string;
 
-  @IsNotEmpty()
   @IsNumber()
   @IsPositive()
+  @IsNotEmpty()
   ratedPower: number;
 
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   electricityMeterNumber: string;
 
-  @IsNotEmpty()
   @IsBoolean()
+  @IsNotEmpty()
   financialSupportReceived: boolean;
 
   constructor(

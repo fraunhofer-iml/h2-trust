@@ -10,36 +10,36 @@ import { Type } from 'class-transformer';
 import { IsDate, IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
 
 export class CreateProductionDto {
-  @IsNotEmpty()
   @IsDate()
+  @IsNotEmpty()
   @Type(() => Date)
   productionStartedAt: Date;
 
-  @IsNotEmpty()
   @IsDate()
+  @IsNotEmpty()
   @Type(() => Date)
   productionEndedAt: Date;
 
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   powerProductionUnitId: string;
 
-  @IsNotEmpty()
   @IsNumber()
   @IsPositive()
+  @IsNotEmpty()
   powerAmountKwh: number;
 
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   hydrogenProductionUnitId: string;
 
-  @IsNotEmpty()
   @IsNumber()
   @IsPositive()
+  @IsNotEmpty()
   hydrogenAmountKg: number;
 
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   hydrogenStorageUnitId: string;
 
   constructor(

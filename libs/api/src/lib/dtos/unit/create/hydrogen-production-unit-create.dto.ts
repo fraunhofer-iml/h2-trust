@@ -13,29 +13,31 @@ import { AddressDto } from '../../address';
 import { UnitCreateDto } from './unit-create.dto';
 
 export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
-  @IsNotEmpty()
   @IsEnum(HydrogenProductionMethod)
+  @IsNotEmpty()
   method: HydrogenProductionMethod;
 
-  @IsNotEmpty()
   @IsEnum(HydrogenProductionTechnology)
+  @IsNotEmpty()
   technology: HydrogenProductionTechnology;
 
-  @IsNotEmpty()
   @IsEnum(BiddingZone)
+  @IsNotEmpty()
   biddingZone: BiddingZone;
 
-  @IsNotEmpty()
-  @IsPositive()
-  ratedPower: number;
-
-  @IsNotEmpty()
-  @IsPositive()
-  pressure: number;
-
-  @IsNotEmpty()
   @IsNumber()
   @IsPositive()
+  @IsNotEmpty()
+  ratedPower: number;
+
+  @IsNumber()
+  @IsPositive()
+  @IsNotEmpty()
+  pressure: number;
+
+  @IsNumber()
+  @IsPositive()
+  @IsNotEmpty()
   waterConsumptionLitersPerHour: number;
 
   constructor(

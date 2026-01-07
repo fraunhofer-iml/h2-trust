@@ -13,18 +13,18 @@ import { AddressDto } from '../../address';
 import { UnitCreateDto } from './unit-create.dto';
 
 export class HydrogenStorageUnitCreateDto extends UnitCreateDto {
-  @IsNotEmpty()
   @IsEnum(HydrogenStorageType)
+  @IsNotEmpty()
   storageType: HydrogenStorageType;
 
-  @IsNotEmpty()
   @IsNumber()
   @IsPositive()
+  @IsNotEmpty()
   capacity: number;
 
-  @IsNotEmpty()
   @IsNumber()
   @IsPositive()
+  @IsNotEmpty()
   pressure: number;
 
   constructor(

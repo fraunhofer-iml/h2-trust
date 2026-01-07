@@ -9,12 +9,12 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class ImportSubmissionDto {
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   importId: string;
 
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   storageUnitId: string;
 
   constructor(importId: string, storageUnitId: string) {
