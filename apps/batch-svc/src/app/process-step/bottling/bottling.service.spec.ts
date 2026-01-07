@@ -27,7 +27,6 @@ import { ProcessStepService } from '../process-step.service';
 import { BatchSelectionService } from './batch-selection.service';
 import { BottlingService } from './bottling.service';
 import { calculateRemainingAmount } from './bottling.service.spec.util';
-import { HydrogenCompositionService } from './hydrogen-composition.service';
 import { ProcessStepAssemblerService } from './process-step-assembler.service';
 
 function createPayloadFromEntity(
@@ -61,7 +60,6 @@ describe('ProcessStepService', () => {
       providers: [
         BottlingService,
         ProcessStepService,
-        HydrogenCompositionService,
         BatchSelectionService,
         ProcessStepAssemblerService,
         {
@@ -157,7 +155,7 @@ describe('ProcessStepService', () => {
       const createProcessStepSpy = jest
         .spyOn(processStepRepository, 'insertProcessStep')
         .mockResolvedValue(processStepData);
-      const processAssemblerCreateMock = jest.spyOn(processStepAssemblerService, 'createBottlingProcessStep');
+      const processAssemblerCreateMock = jest.spyOn(processStepAssemblerService, 'assembleBottlingProcessStep');
       const readProcessStepSpy = jest.spyOn(processStepRepository, 'findProcessStep');
 
       // Act
@@ -176,9 +174,7 @@ describe('ProcessStepService', () => {
       expect(createProcessStepSpy).toHaveBeenCalledTimes(3);
       expect(processAssemblerCreateMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          batch: expect.objectContaining({
-            amount: processStepData.batch.amount,
-          }),
+          amount: processStepData.batch.amount,
         }),
         expect.any(Array),
       );
@@ -201,7 +197,7 @@ describe('ProcessStepService', () => {
       const createProcessStepSpy = jest
         .spyOn(processStepRepository, 'insertProcessStep')
         .mockResolvedValue(processStepData);
-      const processAssemblerCreateMock = jest.spyOn(processStepAssemblerService, 'createBottlingProcessStep');
+      const processAssemblerCreateMock = jest.spyOn(processStepAssemblerService, 'assembleBottlingProcessStep');
       const readProcessStepSpy = jest.spyOn(processStepRepository, 'findProcessStep');
 
       // Act
@@ -218,9 +214,7 @@ describe('ProcessStepService', () => {
       expect(createProcessStepSpy).toHaveBeenCalledTimes(3);
       expect(processAssemblerCreateMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          batch: expect.objectContaining({
-            amount: processStepData.batch.amount,
-          }),
+          amount: processStepData.batch.amount,
         }),
         expect.any(Array),
       );
@@ -249,7 +243,7 @@ describe('ProcessStepService', () => {
       const createProcessStepSpy = jest
         .spyOn(processStepRepository, 'insertProcessStep')
         .mockResolvedValue(processStepData);
-      const processAssemblerCreateMock = jest.spyOn(processStepAssemblerService, 'createBottlingProcessStep');
+      const processAssemblerCreateMock = jest.spyOn(processStepAssemblerService, 'assembleBottlingProcessStep');
       const readProcessStepSpy = jest.spyOn(processStepRepository, 'findProcessStep');
       const generalServiceSpy = jest.spyOn(generalService, 'send');
       generalServiceSpy.mockImplementation((_messagePattern: UnitMessagePatterns.READ, _data: any) => {
@@ -280,9 +274,7 @@ describe('ProcessStepService', () => {
       expect(createProcessStepSpy).toHaveBeenCalledTimes(2 * hydrogenProcessSteps.length + 1);
       expect(processAssemblerCreateMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          batch: expect.objectContaining({
-            amount: processStepData.batch.amount,
-          }),
+          amount: processStepData.batch.amount,
         }),
         expect.any(Array),
       );

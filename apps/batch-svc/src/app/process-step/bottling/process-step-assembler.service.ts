@@ -7,23 +7,18 @@
  */
 
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { BatchEntity, BrokerException, ProcessStepEntity } from '@h2-trust/amqp';
-import { ProcessStepRepository } from '@h2-trust/database';
+import { BatchEntity, BrokerException, CreateHydrogenBottlingPayload, ProcessStepEntity } from '@h2-trust/amqp';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
 
 @Injectable()
 export class ProcessStepAssemblerService {
-  constructor(private readonly processStepRepository: ProcessStepRepository) {}
-
-  async createBottlingProcessStep(
-    processStep: ProcessStepEntity,
-    batchesForBottle: BatchEntity[],
-  ): Promise<ProcessStepEntity> {
-    return this.processStepRepository.insertProcessStep({
-      ...processStep,
+  assembleBottlingProcessStep(payload: CreateHydrogenBottlingPayload, batchesForBottle: BatchEntity[]): ProcessStepEntity {
+    return {
+      startedAt: payload.filledAt,
+      endedAt: payload.filledAt,
       type: ProcessType.HYDROGEN_BOTTLING,
       batch: {
-        amount: processStep.batch.amount,
+        amount: payload.amount,
         qualityDetails: {
           color: this.determineBottleQualityFromPredecessors(batchesForBottle),
         },
@@ -32,23 +27,27 @@ export class ProcessStepAssemblerService {
           id: batch.id,
         })),
         owner: {
-          id: processStep.batch.owner.id,
+          id: payload.ownerId,
         },
       },
-    });
+      recordedBy: {
+        id: payload.recordedById,
+      },
+      executedBy: {
+        id: payload.hydrogenStorageUnitId,
+      },
+    };
   }
 
-  private determineBottleQualityFromPredecessors(predecessors: BatchEntity[]): string {
+  private determineBottleQualityFromPredecessors(predecessors: BatchEntity[]): HydrogenColor {
     const colors: HydrogenColor[] = predecessors
       .map((batch) => batch.qualityDetails?.color)
       .map((color) => HydrogenColor[color as keyof typeof HydrogenColor]);
-    return this.determineBottleColorFromPredecessors(colors);
-  }
 
-  private determineBottleColorFromPredecessors(colors: HydrogenColor[]): HydrogenColor {
     if (colors.length === 0) {
       throw new BrokerException(`No predecessor colors specified`, HttpStatus.BAD_REQUEST);
     }
+
     const firstColor = colors[0];
     const allColorsAreEqual = colors.every((color) => color === firstColor);
 

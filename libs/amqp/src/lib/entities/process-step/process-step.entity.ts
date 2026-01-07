@@ -13,6 +13,7 @@ import { BaseUnitEntity } from '../unit';
 import { UserEntity } from '../user';
 import { TransportationDetailsEntity } from './transportation-details.entity';
 
+// TODO-MP: remove optionals...
 export class ProcessStepEntity {
   id?: string;
   startedAt: Date;

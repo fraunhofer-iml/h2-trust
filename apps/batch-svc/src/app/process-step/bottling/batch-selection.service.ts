@@ -13,12 +13,12 @@ import { ProcessStepAssemblerService } from './process-step-assembler.service';
 
 @Injectable()
 export class BatchSelectionService {
-  constructor(private readonly processStepAssemblerService: ProcessStepAssemblerService) {}
+  constructor(private readonly processStepAssemblerService: ProcessStepAssemblerService) { }
 
   processBottlingForAllColors(
     allProcessStepsFromStorageUnit: ProcessStepEntity[],
     hydrogenComposition: HydrogenComponentEntity[],
-    processStepDataForBottling: ProcessStepEntity,
+    hydrogenStorageUnitId: string,
   ): BatchSelection {
     const aggregatedBatchesForBottle: BatchEntity[] = [];
     const aggregatedProcessStepsToBeSplit: ProcessStepEntity[] = [];
@@ -31,7 +31,7 @@ export class BatchSelectionService {
           allProcessStepsFromStorageUnit,
           hydrogenComponent.color,
           hydrogenComponent.amount,
-          processStepDataForBottling,
+          hydrogenStorageUnitId,
         );
 
       aggregatedBatchesForBottle.push(...batchesForBottle);
@@ -52,7 +52,7 @@ export class BatchSelectionService {
     allProcessStepsFromStorageUnit: ProcessStepEntity[],
     color: string,
     amount: number,
-    processStepDataForBottling: ProcessStepEntity,
+    hydrogenStorageUnitId: string,
   ): BatchSelection {
     const processStepsFromHydrogenStorageWithRequestedColor = this.filterProcessStepsByColor(
       allProcessStepsFromStorageUnit,
@@ -62,7 +62,7 @@ export class BatchSelectionService {
     const { selectedProcessSteps, remainingAmount } = this.selectProcessStepsForBottlingAndCalculateRemainingAmount(
       processStepsFromHydrogenStorageWithRequestedColor,
       amount,
-      processStepDataForBottling.executedBy.id,
+      hydrogenStorageUnitId,
       color,
     );
 
