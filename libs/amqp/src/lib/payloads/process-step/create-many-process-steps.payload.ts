@@ -18,9 +18,9 @@ import { ProcessStepEntity } from '../../entities';
 export class CreateManyProcessStepsPayload {
   @IsArray()
   @IsNotEmpty()
-  processSteps!: ProcessStepEntity[];
+  processSteps: ProcessStepEntity[];
 
-  static of(processSteps: ProcessStepEntity[]): CreateManyProcessStepsPayload {
-    return { processSteps };
+  constructor(processSteps: ProcessStepEntity[]) {
+    this.processSteps = processSteps;
   }
 }

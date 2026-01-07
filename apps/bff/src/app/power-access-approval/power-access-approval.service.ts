@@ -24,7 +24,7 @@ export class PowerAccessApprovalService {
     return firstValueFrom(
       this.generalService.send(
         PowerAccessApprovalPatterns.READ,
-        ReadPowerAccessApprovalsPayload.of(userId, powerAccessApprovalStatus),
+        new ReadPowerAccessApprovalsPayload(userId, powerAccessApprovalStatus),
       ),
     ).then((entities) => entities.map(PowerAccessApprovalDto.fromEntity));
   }

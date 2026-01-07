@@ -92,7 +92,7 @@ describe('ProcessStepController', () => {
   });
 
   it('should read process steps by predecessor types and company', async () => {
-    const givenPayload = ReadProcessStepsByPredecessorTypesAndCompanyPayload.of(
+    const givenPayload = new ReadProcessStepsByPredecessorTypesAndCompanyPayload(
       [ProcessType.HYDROGEN_PRODUCTION],
       CompanyEntityHydrogenMock.id,
     );
@@ -113,7 +113,7 @@ describe('ProcessStepController', () => {
   });
 
   it('should read process steps by types and active and company', async () => {
-    const givenPayload = ReadProcessStepsByTypesAndActiveAndCompanyPayload.of(
+    const givenPayload = new ReadProcessStepsByTypesAndActiveAndCompanyPayload(
       [ProcessType.HYDROGEN_PRODUCTION],
       true,
       CompanyEntityHydrogenMock.id,
@@ -135,7 +135,7 @@ describe('ProcessStepController', () => {
   });
 
   it('should read process step', async () => {
-    const givenPayload = ReadByIdPayload.of(ProcessStepEntityHydrogenBottlingMock[0].id);
+    const givenPayload = new ReadByIdPayload(ProcessStepEntityHydrogenBottlingMock[0].id);
 
     const expectedResponse: ProcessStepEntity = structuredClone(ProcessStepEntityHydrogenBottlingMock[0]);
     expectedResponse.documents = [];
@@ -168,7 +168,7 @@ describe('ProcessStepController', () => {
       .spyOn(processStepRepository, 'insertProcessStep')
       .mockResolvedValue(expectedResponse);
 
-    const payload: CreateHydrogenTransportationPayload = CreateHydrogenTransportationPayload.of(
+    const payload: CreateHydrogenTransportationPayload = new CreateHydrogenTransportationPayload(
       expectedResponse,
       givenPredecessorBatch,
       expectedResponse.transportationDetails,

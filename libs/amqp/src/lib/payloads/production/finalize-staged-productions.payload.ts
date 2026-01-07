@@ -11,21 +11,19 @@ import { IsNotEmpty, IsString } from 'class-validator';
 export class FinalizeStagedProductionsPayload {
   @IsString()
   @IsNotEmpty()
-  recordedBy!: string;
+  recordedBy: string;
 
   @IsString()
   @IsNotEmpty()
-  hydrogenStorageUnitId!: string;
+  hydrogenStorageUnitId: string;
 
   @IsString()
   @IsNotEmpty()
-  importId!: string;
+  importId: string;
 
-  static of(recordedBy: string, hydrogenStorageUnitId: string, importId: string): FinalizeStagedProductionsPayload {
-    return {
-      recordedBy,
-      hydrogenStorageUnitId,
-      importId,
-    };
+  constructor(recordedBy: string, hydrogenStorageUnitId: string, importId: string) {
+    this.recordedBy = recordedBy;
+    this.hydrogenStorageUnitId = hydrogenStorageUnitId;
+    this.importId = importId;
   }
 }

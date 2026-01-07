@@ -14,28 +14,28 @@ export class CreateHydrogenBottlingPayload {
   @IsNumber()
   @IsPositive()
   @IsNotEmpty()
-  amount!: number;
+  amount: number;
 
   @IsString()
   @IsNotEmpty()
-  ownerId!: string;
+  ownerId: string;
 
   @IsDate()
   @IsNotEmpty()
   @Type(() => Date)
-  filledAt!: Date;
+  filledAt: Date;
 
   @IsString()
   @IsNotEmpty()
-  recordedById!: string;
+  recordedById: string;
 
   @IsString()
   @IsNotEmpty()
-  hydrogenStorageUnitId!: string;
+  hydrogenStorageUnitId: string;
 
   @IsString()
   @IsNotEmpty()
-  color!: HydrogenColor;
+  color: HydrogenColor;
 
   @IsString()
   @IsOptional()
@@ -45,7 +45,7 @@ export class CreateHydrogenBottlingPayload {
   @IsOptional()
   files?: Express.Multer.File[];
 
-  static of(
+  constructor(
     amount: number,
     ownerId: string,
     filledAt: Date,
@@ -54,16 +54,14 @@ export class CreateHydrogenBottlingPayload {
     color: HydrogenColor,
     fileDescription?: string,
     files?: Express.Multer.File[],
-  ): CreateHydrogenBottlingPayload {
-    return {
-      amount,
-      ownerId,
-      filledAt,
-      recordedById,
-      hydrogenStorageUnitId,
-      color,
-      fileDescription,
-      files,
-    };
+  ) {
+    this.amount = amount;
+    this.ownerId = ownerId;
+    this.filledAt = filledAt;
+    this.recordedById = recordedById;
+    this.hydrogenStorageUnitId = hydrogenStorageUnitId;
+    this.color = color;
+    this.fileDescription = fileDescription;
+    this.files = files;
   }
 }

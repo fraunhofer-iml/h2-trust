@@ -11,13 +11,14 @@ import { ParsedFileBundles } from '../../entities';
 
 export class StageProductionsPayload {
   @IsNotEmptyObject()
-  data!: ParsedFileBundles;
+  data: ParsedFileBundles;
 
   @IsString()
   @IsNotEmpty()
-  userId!: string;
+  userId: string;
 
-  static of(data: ParsedFileBundles, userId: string): StageProductionsPayload {
-    return { data, userId };
+  constructor(data: ParsedFileBundles, userId: string) {
+    this.data = data;
+    this.userId = userId;
   }
 }

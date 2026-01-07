@@ -43,7 +43,7 @@ export class UnitService {
   ) {}
 
   async readUnit(id: string): Promise<UnitDto> {
-    return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, ReadByIdPayload.of(id))).then(
+    return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, new ReadByIdPayload(id))).then(
       UnitService.mapEntityToDto,
     );
   }
@@ -72,19 +72,19 @@ export class UnitService {
 
   private async readPowerProductionUnits(companyId: string): Promise<PowerProductionOverviewDto[]> {
     return firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS, ReadByIdPayload.of(companyId)),
+      this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS, new ReadByIdPayload(companyId)),
     ).then((entities) => entities.map(PowerProductionOverviewDto.fromEntity));
   }
 
   private async readHydrogenProductionUnits(companyId: string): Promise<HydrogenProductionOverviewDto[]> {
     return firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS, ReadByIdPayload.of(companyId)),
+      this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS, new ReadByIdPayload(companyId)),
     ).then((entities) => entities.map(HydrogenProductionOverviewDto.fromEntity));
   }
 
   private async readHydrogenStorageUnits(companyId: string): Promise<HydrogenStorageOverviewDto[]> {
     return firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_STORAGE_UNITS, ReadByIdPayload.of(companyId)),
+      this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_STORAGE_UNITS, new ReadByIdPayload(companyId)),
     ).then((entities) => entities.map(HydrogenStorageOverviewDto.fromEntity));
   }
 

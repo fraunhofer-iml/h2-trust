@@ -92,7 +92,7 @@ describe('UnitController', () => {
     jest.spyOn(prisma.unit, 'findMany').mockResolvedValue([expectedResponse]);
 
     const actualResponse = await controller.readPowerProductionUnitsByCompanyId(
-      ReadByIdPayload.of(expectedResponse.ownerId),
+      new ReadByIdPayload(expectedResponse.ownerId),
     );
 
     expect(actualResponse).toEqual([PowerProductionUnitEntity.fromDatabase(expectedResponse)]);
@@ -112,7 +112,7 @@ describe('UnitController', () => {
 
     jest.spyOn(prisma.unit, 'findMany').mockResolvedValue([expectedResponse]);
 
-    const actualResponse = await controller.readHydrogenProductionUnits(ReadByIdPayload.of(expectedResponse.ownerId));
+    const actualResponse = await controller.readHydrogenProductionUnits(new ReadByIdPayload(expectedResponse.ownerId));
 
     expect(actualResponse).toEqual([HydrogenProductionUnitEntity.fromDatabase(expectedResponse)]);
     expect(prisma.unit.findMany).toHaveBeenCalledWith({
@@ -131,7 +131,7 @@ describe('UnitController', () => {
 
     jest.spyOn(prisma.unit, 'findMany').mockResolvedValue([expectedResponse]);
 
-    const actualResponse = await controller.readHydrogenStorageUnits(ReadByIdPayload.of(expectedResponse.ownerId));
+    const actualResponse = await controller.readHydrogenStorageUnits(new ReadByIdPayload(expectedResponse.ownerId));
 
     expect(actualResponse).toEqual([HydrogenStorageUnitEntity.fromDatabase(expectedResponse)]);
     expect(prisma.unit.findMany).toHaveBeenCalledWith({
@@ -150,7 +150,7 @@ describe('UnitController', () => {
       PowerProductionUnitEntityMock[0].name,
       PowerProductionUnitEntityMock[0].mastrNumber,
       PowerProductionUnitEntityMock[0].commissionedOn,
-      AddressPayload.of(
+      new AddressPayload(
         PowerProductionUnitEntityMock[0].address.street,
         PowerProductionUnitEntityMock[0].address.postalCode,
         PowerProductionUnitEntityMock[0].address.city,
@@ -193,7 +193,7 @@ describe('UnitController', () => {
       HydrogenProductionUnitEntityMock[0].name,
       HydrogenProductionUnitEntityMock[0].mastrNumber,
       HydrogenProductionUnitEntityMock[0].commissionedOn,
-      AddressPayload.of(
+      new AddressPayload(
         HydrogenProductionUnitEntityMock[0].address.street,
         HydrogenProductionUnitEntityMock[0].address.postalCode,
         HydrogenProductionUnitEntityMock[0].address.city,
@@ -234,7 +234,7 @@ describe('UnitController', () => {
       HydrogenStorageUnitEntityMock[0].name,
       HydrogenStorageUnitEntityMock[0].mastrNumber,
       HydrogenStorageUnitEntityMock[0].commissionedOn,
-      AddressPayload.of(
+      new AddressPayload(
         HydrogenStorageUnitEntityMock[0].address.street,
         HydrogenStorageUnitEntityMock[0].address.postalCode,
         HydrogenStorageUnitEntityMock[0].address.city,

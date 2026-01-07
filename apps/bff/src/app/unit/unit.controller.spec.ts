@@ -81,7 +81,7 @@ describe('UnitController', () => {
     const actualResponse: UnitDto = await controller.getUnit(givenUserId);
 
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
-    expect(sendRequestSpy).toHaveBeenCalledWith(UnitMessagePatterns.READ, ReadByIdPayload.of(givenUserId));
+    expect(sendRequestSpy).toHaveBeenCalledWith(UnitMessagePatterns.READ, new ReadByIdPayload(givenUserId));
     expect(actualResponse).toEqual(expectedResponse);
   });
 
@@ -108,7 +108,7 @@ describe('UnitController', () => {
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
     expect(sendRequestSpy).toHaveBeenCalledWith(
       UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS,
-      ReadByIdPayload.of(fixtureUser.company.id),
+      new ReadByIdPayload(fixtureUser.company.id),
     );
     expect(actualResponse).toEqual(expectedResponse);
   });

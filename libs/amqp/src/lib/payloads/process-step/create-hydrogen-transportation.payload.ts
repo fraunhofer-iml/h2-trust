@@ -19,15 +19,13 @@ export class CreateHydrogenTransportationPayload {
   @IsNotEmpty()
   transportationDetails!: TransportationDetailsEntity;
 
-  static of(
+  constructor(
     processStep: ProcessStepEntity,
     predecessorBatch: BatchEntity,
     transportationDetails: TransportationDetailsEntity,
-  ): CreateHydrogenTransportationPayload {
-    return {
-      processStep,
-      predecessorBatch,
-      transportationDetails,
-    };
+  ) {
+    this.processStep = processStep;
+    this.predecessorBatch = predecessorBatch;
+    this.transportationDetails = transportationDetails;
   }
 }

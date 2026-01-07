@@ -103,12 +103,15 @@ export class RedCompliancePairingService {
   }> {
     const [powerProductionUnitEntities, hydrogenProductionUnitEntities] = await Promise.all([
       firstValueFrom(
-        this.generalSvc.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS_BY_IDS, ReadByIdsPayload.of(powerUnitIds)),
+        this.generalSvc.send(
+          UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS_BY_IDS,
+          new ReadByIdsPayload(powerUnitIds),
+        ),
       ),
       firstValueFrom(
         this.generalSvc.send(
           UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS_BY_IDS,
-          ReadByIdsPayload.of(hydrogenUnitIds),
+          new ReadByIdsPayload(hydrogenUnitIds),
         ),
       ),
     ]);

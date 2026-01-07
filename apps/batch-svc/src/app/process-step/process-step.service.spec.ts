@@ -70,8 +70,10 @@ describe('ProcessStepService', () => {
       const givenPredecessorProcessTypes = [fixture[0].type];
       const givenCompanyId = fixture[0].recordedBy.company.id;
 
-      const payload: ReadProcessStepsByPredecessorTypesAndCompanyPayload =
-        ReadProcessStepsByPredecessorTypesAndCompanyPayload.of(givenPredecessorProcessTypes, givenCompanyId);
+      const payload = new ReadProcessStepsByPredecessorTypesAndCompanyPayload(
+        givenPredecessorProcessTypes,
+        givenCompanyId,
+      );
 
       // Act
       const actualResponse = await service.readProcessStepsByPredecessorTypesAndCompany(payload);
@@ -98,7 +100,7 @@ describe('ProcessStepService', () => {
 
       // Act
       const actualResponse: ProcessStepEntity = await service.readProcessStep(
-        ReadByIdPayload.of(hydrogenProductionFixture.id),
+        new ReadByIdPayload(hydrogenProductionFixture.id),
       );
 
       // Assert
@@ -134,7 +136,7 @@ describe('ProcessStepService', () => {
       });
 
       // Act
-      const actualResponse = await service.readProcessStep(ReadByIdPayload.of(hydrogenTransportationFixture.id));
+      const actualResponse = await service.readProcessStep(new ReadByIdPayload(hydrogenTransportationFixture.id));
 
       // Assert
       expect(repository.findProcessStep).toHaveBeenCalledWith(hydrogenTransportationFixture.id);
@@ -156,7 +158,7 @@ describe('ProcessStepService', () => {
       repository.findProcessStep.mockResolvedValue(hydrogenTransportationFixture);
 
       // Act & Assert
-      await expect(service.readProcessStep(ReadByIdPayload.of(hydrogenTransportationFixture.id))).rejects.toThrow(
+      await expect(service.readProcessStep(new ReadByIdPayload(hydrogenTransportationFixture.id))).rejects.toThrow(
         'ProcessStepId of predecessor is missing.',
       );
     });
@@ -180,7 +182,7 @@ describe('ProcessStepService', () => {
       const expectedErrorMessage = `Expected process type of predecessor to be ${ProcessType.HYDROGEN_BOTTLING}, but got ${ProcessType.HYDROGEN_PRODUCTION}.`;
 
       // Act & Assert
-      await expect(service.readProcessStep(ReadByIdPayload.of(hydrogenTransportationFixture.id))).rejects.toThrow(
+      await expect(service.readProcessStep(new ReadByIdPayload(hydrogenTransportationFixture.id))).rejects.toThrow(
         expectedErrorMessage,
       );
     });

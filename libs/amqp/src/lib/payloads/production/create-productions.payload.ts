@@ -13,40 +13,40 @@ export class CreateProductionsPayload {
   @IsNotEmpty()
   @IsDate()
   @Type(() => Date)
-  productionStartedAt!: Date;
+  productionStartedAt: Date;
 
   @IsNotEmpty()
   @IsDate()
   @Type(() => Date)
-  productionEndedAt!: Date;
+  productionEndedAt: Date;
 
   @IsString()
   @IsNotEmpty()
-  powerProductionUnitId!: string;
+  powerProductionUnitId: string;
 
   @IsNumber()
   @IsPositive()
   @IsNotEmpty()
-  powerAmountKwh!: number;
+  powerAmountKwh: number;
 
   @IsString()
   @IsNotEmpty()
-  hydrogenProductionUnitId!: string;
+  hydrogenProductionUnitId: string;
 
   @IsNumber()
   @IsPositive()
   @IsNotEmpty()
-  hydrogenAmountKg!: number;
+  hydrogenAmountKg: number;
 
   @IsString()
   @IsNotEmpty()
-  userId!: string;
+  userId: string;
 
   @IsString()
   @IsNotEmpty()
-  hydrogenStorageUnitId!: string;
+  hydrogenStorageUnitId: string;
 
-  static of(
+  constructor(
     productionStartedAt: Date,
     productionEndedAt: Date,
     powerProductionUnitId: string,
@@ -55,16 +55,14 @@ export class CreateProductionsPayload {
     hydrogenAmountKg: number,
     userId: string,
     hydrogenStorageUnitId: string,
-  ): CreateProductionsPayload {
-    return {
-      productionStartedAt,
-      productionEndedAt,
-      powerProductionUnitId,
-      powerAmountKwh,
-      hydrogenProductionUnitId,
-      hydrogenAmountKg,
-      userId,
-      hydrogenStorageUnitId,
-    };
+  ) {
+    this.productionStartedAt = productionStartedAt;
+    this.productionEndedAt = productionEndedAt;
+    this.powerProductionUnitId = powerProductionUnitId;
+    this.powerAmountKwh = powerAmountKwh;
+    this.hydrogenProductionUnitId = hydrogenProductionUnitId;
+    this.hydrogenAmountKg = hydrogenAmountKg;
+    this.userId = userId;
+    this.hydrogenStorageUnitId = hydrogenStorageUnitId;
   }
 }

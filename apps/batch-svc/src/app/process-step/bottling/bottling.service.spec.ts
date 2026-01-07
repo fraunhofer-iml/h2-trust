@@ -33,7 +33,7 @@ function createPayloadFromEntity(
   entity: ProcessStepEntity,
   files?: Express.Multer.File[],
 ): CreateHydrogenBottlingPayload {
-  return CreateHydrogenBottlingPayload.of(
+  return new CreateHydrogenBottlingPayload(
     entity.batch.amount,
     entity.batch.owner?.id ?? 'test-recipient',
     entity.startedAt ?? new Date(),

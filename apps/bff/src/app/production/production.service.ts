@@ -53,7 +53,7 @@ export class ProductionService {
   ) {}
 
   async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    const payload: CreateProductionsPayload = CreateProductionsPayload.of(
+    const payload: CreateProductionsPayload = new CreateProductionsPayload(
       dto.productionStartedAt,
       dto.productionEndedAt,
       dto.powerProductionUnitId,
@@ -78,7 +78,7 @@ export class ProductionService {
     const companyIdOfUser = userDetailsDto.company.id;
 
     const payload: ReadProcessStepsByPredecessorTypesAndCompanyPayload =
-      ReadProcessStepsByPredecessorTypesAndCompanyPayload.of([ProcessType.POWER_PRODUCTION], companyIdOfUser);
+      new ReadProcessStepsByPredecessorTypesAndCompanyPayload([ProcessType.POWER_PRODUCTION], companyIdOfUser);
 
     return firstValueFrom(
       this.batchSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_PREDECESSOR_TYPES_AND_COMPANY, payload),
@@ -104,7 +104,7 @@ export class ProductionService {
     );
 
     const parsedFileBundles = new ParsedFileBundles(powerProduction, hydrogenProduction);
-    const payload = StageProductionsPayload.of(parsedFileBundles, userId);
+    const payload = new StageProductionsPayload(parsedFileBundles, userId);
     const matchingResult = await firstValueFrom(
       this.processSvc.send<ParsedProductionMatchingResultEntity>(ProductionMessagePatterns.STAGE, payload),
     );
@@ -113,7 +113,7 @@ export class ProductionService {
   }
 
   async submitCsvData(dto: ImportSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    const payload: FinalizeStagedProductionsPayload = FinalizeStagedProductionsPayload.of(
+    const payload: FinalizeStagedProductionsPayload = new FinalizeStagedProductionsPayload(
       userId,
       dto.storageUnitId,
       dto.importId,

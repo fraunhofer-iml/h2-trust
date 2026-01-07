@@ -44,13 +44,13 @@ describe('ProvenanceService', () => {
 
   describe('buildProvenance error paths', () => {
     it('throws when processStepId missing', async () => {
-      await expect(service.buildProvenance(ReadByIdPayload.of(''))).rejects.toThrow('processStepId must be provided.');
+      await expect(service.buildProvenance(new ReadByIdPayload(''))).rejects.toThrow('processStepId must be provided.');
     });
 
     it('throws when root step has no type', async () => {
       batchSvcSendMock.mockReturnValue(of({ id: 'p1' }));
 
-      await expect(service.buildProvenance(ReadByIdPayload.of('p1'))).rejects.toThrow('Invalid process step.');
+      await expect(service.buildProvenance(new ReadByIdPayload('p1'))).rejects.toThrow('Invalid process step.');
     });
 
     it('throws when unsupported process type', async () => {
@@ -58,7 +58,7 @@ describe('ProvenanceService', () => {
 
       batchSvcSendMock.mockReturnValue(of(unknown));
 
-      await expect(service.buildProvenance(ReadByIdPayload.of(unknown.id))).rejects.toThrow(
+      await expect(service.buildProvenance(new ReadByIdPayload(unknown.id))).rejects.toThrow(
         'Unsupported process type [UNKNOWN].',
       );
     });
@@ -74,7 +74,7 @@ describe('ProvenanceService', () => {
       const expectedResult = new ProvenanceEntity(powerProduction, undefined, [], [], [powerProduction]);
 
       // Act
-      const actualResult: ProvenanceEntity = await service.buildProvenance(ReadByIdPayload.of(powerProduction.id));
+      const actualResult: ProvenanceEntity = await service.buildProvenance(new ReadByIdPayload(powerProduction.id));
 
       // Assert
       expect(actualResult.root).toBe(expectedResult.root);
@@ -98,7 +98,7 @@ describe('ProvenanceService', () => {
       const expectedResult = new ProvenanceEntity(waterConsumption, undefined, [], [waterConsumption], []);
 
       // Act
-      const actualResult: ProvenanceEntity = await service.buildProvenance(ReadByIdPayload.of(waterConsumption.id));
+      const actualResult: ProvenanceEntity = await service.buildProvenance(new ReadByIdPayload(waterConsumption.id));
 
       // Assert
       expect(actualResult.root).toBe(expectedResult.root);
@@ -133,7 +133,7 @@ describe('ProvenanceService', () => {
       );
 
       // Act
-      const actualResult: ProvenanceEntity = await service.buildProvenance(ReadByIdPayload.of(hydrogenProduction.id));
+      const actualResult: ProvenanceEntity = await service.buildProvenance(new ReadByIdPayload(hydrogenProduction.id));
 
       // Assert
       expect(actualResult.root).toBe(expectedResult.root);
@@ -174,7 +174,7 @@ describe('ProvenanceService', () => {
       );
 
       // Act
-      const actualResult: ProvenanceEntity = await service.buildProvenance(ReadByIdPayload.of(hydrogenBottling.id));
+      const actualResult: ProvenanceEntity = await service.buildProvenance(new ReadByIdPayload(hydrogenBottling.id));
 
       // Assert
       expect(actualResult.root).toBe(expectedResult.root);
@@ -220,7 +220,7 @@ describe('ProvenanceService', () => {
 
       // Act
       const actualResult: ProvenanceEntity = await service.buildProvenance(
-        ReadByIdPayload.of(hydrogenTransportation.id),
+        new ReadByIdPayload(hydrogenTransportation.id),
       );
 
       // Assert

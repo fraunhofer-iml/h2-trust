@@ -96,7 +96,7 @@ export class BottlingService {
       );
     }
 
-    return this.processStepService.readProcessStep(ReadByIdPayload.of(persistedBottlingProcessStep.id));
+    return this.processStepService.readProcessStep(new ReadByIdPayload(persistedBottlingProcessStep.id));
   }
 
   private async determineHydrogenComposition(
@@ -109,7 +109,7 @@ export class BottlingService {
     }
 
     const hydrogenStorageUnit: HydrogenStorageUnitEntity = await firstValueFrom(
-      this.generalSvc.send(UnitMessagePatterns.READ, ReadByIdPayload.of(executedById)),
+      this.generalSvc.send(UnitMessagePatterns.READ, new ReadByIdPayload(executedById)),
     );
 
     try {

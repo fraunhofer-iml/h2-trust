@@ -55,7 +55,7 @@ describe('UserController', () => {
     const actualResponse = await controller.readUserWithCompany(mockedUser.id);
 
     expect(generalServiceSpy).toHaveBeenCalledTimes(1);
-    expect(generalServiceSpy).toHaveBeenCalledWith(UserMessagePatterns.READ, ReadByIdPayload.of(mockedUser.id));
+    expect(generalServiceSpy).toHaveBeenCalledWith(UserMessagePatterns.READ, new ReadByIdPayload(mockedUser.id));
     expect(actualResponse).toEqual(expectedResponse);
   });
 });

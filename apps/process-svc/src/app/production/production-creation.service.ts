@@ -33,11 +33,11 @@ export class ProductionCreationService {
 
   async createProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
     const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
-      this.generalSvc.send(UnitMessagePatterns.READ, ReadByIdPayload.of(payload.powerProductionUnitId)),
+      this.generalSvc.send(UnitMessagePatterns.READ, new ReadByIdPayload(payload.powerProductionUnitId)),
     );
 
     const hydrogenProductionUnit: HydrogenProductionUnitEntity = await firstValueFrom(
-      this.generalSvc.send(UnitMessagePatterns.READ, ReadByIdPayload.of(payload.hydrogenProductionUnitId)),
+      this.generalSvc.send(UnitMessagePatterns.READ, new ReadByIdPayload(payload.hydrogenProductionUnitId)),
     );
 
     const entity: CreateProductionEntity = new CreateProductionEntity(
@@ -65,7 +65,7 @@ export class ProductionCreationService {
       );
     }
 
-    const powerAndWaterPayload: CreateManyProcessStepsPayload = CreateManyProcessStepsPayload.of([...power, ...water]);
+    const powerAndWaterPayload: CreateManyProcessStepsPayload = new CreateManyProcessStepsPayload([...power, ...water]);
 
     // Step 2: Persist power and water
     const persistedPowerAndWater: ProcessStepEntity[] = await firstValueFrom(
@@ -83,7 +83,7 @@ export class ProductionCreationService {
       persistedWater,
     );
 
-    const hydrogenPayload: CreateManyProcessStepsPayload = CreateManyProcessStepsPayload.of(hydrogen);
+    const hydrogenPayload: CreateManyProcessStepsPayload = new CreateManyProcessStepsPayload(hydrogen);
 
     // Step 5: Persist hydrogen
     const persistedHydrogen: ProcessStepEntity[] = await firstValueFrom(

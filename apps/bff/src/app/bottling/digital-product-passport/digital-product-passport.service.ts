@@ -31,7 +31,7 @@ export class DigitalProductPassportService {
 
   async buildProofOfOrigin(processStepId: string): Promise<SectionDto[]> {
     const provenance: ProvenanceEntity = await firstValueFrom(
-      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, ReadByIdPayload.of(processStepId)),
+      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, new ReadByIdPayload(processStepId)),
     );
     const sectionPromises: Array<Promise<SectionDto>> = [];
 
@@ -72,7 +72,7 @@ export class DigitalProductPassportService {
 
   async buildProofOfSustainability(processStepId: string): Promise<ProofOfSustainabilityDto> {
     const provenance: ProvenanceEntity = await firstValueFrom(
-      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, ReadByIdPayload.of(processStepId)),
+      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, new ReadByIdPayload(processStepId)),
     );
 
     const provenanceEmission: EmissionComputationResultDto =

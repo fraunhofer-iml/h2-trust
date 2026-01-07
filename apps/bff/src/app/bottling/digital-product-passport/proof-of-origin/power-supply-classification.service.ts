@@ -94,7 +94,7 @@ export class PowerSupplyClassificationService {
     return Promise.all(
       powerProductions.map(async (powerProduction): Promise<[ProcessStepEntity, PowerProductionUnitEntity]> => {
         const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
-          this.generalService.send(UnitMessagePatterns.READ, ReadByIdPayload.of(powerProduction.executedBy.id)),
+          this.generalService.send(UnitMessagePatterns.READ, new ReadByIdPayload(powerProduction.executedBy.id)),
         );
         return [powerProduction, powerProductionUnit];
       }),

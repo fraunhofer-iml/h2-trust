@@ -11,25 +11,19 @@ import { IsArray, IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 export class ReadProcessStepsByTypesAndActiveAndCompanyPayload {
   @IsArray()
   @IsNotEmpty()
-  processTypes!: string[];
+  processTypes: string[];
 
   @IsBoolean()
   @IsNotEmpty()
-  active!: boolean;
+  active: boolean;
 
   @IsString()
   @IsNotEmpty()
-  companyId!: string;
+  companyId: string;
 
-  static of(
-    processTypes: string[],
-    active: boolean,
-    companyId: string,
-  ): ReadProcessStepsByTypesAndActiveAndCompanyPayload {
-    return {
-      processTypes,
-      active,
-      companyId,
-    };
+  constructor(processTypes: string[], active: boolean, companyId: string) {
+    this.processTypes = processTypes;
+    this.active = active;
+    this.companyId = companyId;
   }
 }

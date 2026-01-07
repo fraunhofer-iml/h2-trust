@@ -11,13 +11,14 @@ import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 export class ReadProcessStepsByPredecessorTypesAndCompanyPayload {
   @IsArray()
   @IsNotEmpty()
-  predecessorProcessTypes!: string[];
+  predecessorProcessTypes: string[];
 
   @IsString()
   @IsNotEmpty()
-  companyId!: string;
+  companyId: string;
 
-  static of(predecessorProcessTypes: string[], companyId: string): ReadProcessStepsByPredecessorTypesAndCompanyPayload {
-    return { predecessorProcessTypes, companyId };
+  constructor(predecessorProcessTypes: string[], companyId: string) {
+    this.predecessorProcessTypes = predecessorProcessTypes;
+    this.companyId = companyId;
   }
 }

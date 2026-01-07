@@ -29,7 +29,7 @@ export class HydrogenBottlingSectionService {
     const hydrogenCompositions: HydrogenComponentEntity[] = await firstValueFrom(
       this.batchSvc.send(
         ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION,
-        ReadByIdPayload.of(hydrogenBottling.id),
+        new ReadByIdPayload(hydrogenBottling.id),
       ),
     );
     const emissionCalculation: EmissionCalculationDto =

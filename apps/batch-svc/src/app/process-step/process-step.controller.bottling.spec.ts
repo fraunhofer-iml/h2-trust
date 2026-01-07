@@ -152,7 +152,7 @@ describe('ProcessStepController / Bottling', () => {
     const uploadSpy = jest.spyOn(storageService, 'uploadFileWithDeepPath');
     const addDocSpy = jest.spyOn(documentRepository, 'addDocumentToProcessStep');
 
-    const payload: CreateHydrogenBottlingPayload = CreateHydrogenBottlingPayload.of(
+    const payload: CreateHydrogenBottlingPayload = new CreateHydrogenBottlingPayload(
       givenProcessStep.batch.amount,
       givenProcessStep.batch.owner?.id ?? 'test-recipient',
       givenProcessStep.startedAt ?? new Date(),
@@ -173,7 +173,7 @@ describe('ProcessStepController / Bottling', () => {
     expect(uploadSpy).toHaveBeenCalledTimes(0);
     expect(addDocSpy).toHaveBeenCalledTimes(0);
     expect(readProcessStepSpy).toHaveBeenCalledTimes(1);
-    expect(readProcessStepSpy).toHaveBeenCalledWith(ReadByIdPayload.of(expectedResponse.id));
+    expect(readProcessStepSpy).toHaveBeenCalledWith(new ReadByIdPayload(expectedResponse.id));
     expect(actualResponse).toEqual(expectedResponse);
   });
 
@@ -185,7 +185,7 @@ describe('ProcessStepController / Bottling', () => {
       .spyOn(processStepService, 'readProcessStep')
       .mockResolvedValue(givenBottlingProcessStep);
 
-    const payload: ReadByIdPayload = ReadByIdPayload.of(givenBottlingProcessStep.id);
+    const payload: ReadByIdPayload = new ReadByIdPayload(givenBottlingProcessStep.id);
 
     const expectedResponse = HydrogenComponentAssembler.assembleFromBottlingProcessStep(givenBottlingProcessStep);
     const actualResponse = await controller.calculateHydrogenComposition(payload);

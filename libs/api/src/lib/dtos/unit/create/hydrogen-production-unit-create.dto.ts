@@ -85,7 +85,7 @@ export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
       dto.name,
       dto.mastrNumber,
       dto.commissionedOn,
-      AddressPayload.of(
+      new AddressPayload(
         dto.address.street,
         dto.address.postalCode,
         dto.address.city,

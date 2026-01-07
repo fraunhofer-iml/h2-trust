@@ -89,7 +89,7 @@ export class ProductionImportService {
     const approvals: PowerAccessApprovalEntity[] = await firstValueFrom(
       this.generalService.send(
         PowerAccessApprovalPatterns.READ,
-        ReadPowerAccessApprovalsPayload.of(userId, PowerAccessApprovalStatus.APPROVED),
+        new ReadPowerAccessApprovalsPayload(userId, PowerAccessApprovalStatus.APPROVED),
       ),
     );
     const powerAccessApprovalForGrid = approvals.find(
@@ -134,7 +134,7 @@ export class ProductionImportService {
       const persistedPowerAndWater: ProcessStepEntity[] = await firstValueFrom(
         this.batchSvc.send(
           ProcessStepMessagePatterns.CREATE_MANY,
-          CreateManyProcessStepsPayload.of([...power, ...water]),
+          new CreateManyProcessStepsPayload([...power, ...water]),
         ),
       );
 
@@ -151,7 +151,7 @@ export class ProductionImportService {
 
       // Step 5: Persist hydrogen
       const persistedHydrogen: ProcessStepEntity[] = await firstValueFrom(
-        this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, CreateManyProcessStepsPayload.of(hydrogen)),
+        this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, new CreateManyProcessStepsPayload(hydrogen)),
       );
 
       persistedProcessSteps.push(...persistedPowerAndWater, ...persistedHydrogen);

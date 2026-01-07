@@ -29,7 +29,7 @@ export class RedComplianceService {
 
   async determineRedCompliance(processStepId: string): Promise<RedComplianceDto> {
     const provenance: ProvenanceEntity = await firstValueFrom(
-      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, ReadByIdPayload.of(processStepId)),
+      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, new ReadByIdPayload(processStepId)),
     );
     if (!provenance || !provenance.powerProductions?.length || !provenance.hydrogenProductions?.length) {
       const message = `Provenance or required productions (power/hydrogen) are missing for processStepId [${processStepId}]`;

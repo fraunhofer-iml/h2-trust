@@ -88,7 +88,7 @@ export class EmissionComputationService {
     const unitIds = Array.from(new Set(powerProductions.map((p) => p.executedBy.id)));
 
     const units: PowerProductionUnitEntity[] = await firstValueFrom(
-      this.generalSvc.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS_BY_IDS, ReadByIdsPayload.of(unitIds)),
+      this.generalSvc.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS_BY_IDS, new ReadByIdsPayload(unitIds)),
     );
 
     const unitsById = new Map<string, PowerProductionUnitEntity>(units.map((u) => [u.id, u]));

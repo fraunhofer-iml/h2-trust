@@ -125,7 +125,9 @@ export class TraversalService {
 
   private async fetchProcessStepsOfBatches(batches: BatchEntity[]): Promise<ProcessStepEntity[]> {
     const promises = batches.map(({ processStepId }) =>
-      firstValueFrom(this.batchService.send(ProcessStepMessagePatterns.READ_UNIQUE, ReadByIdPayload.of(processStepId))),
+      firstValueFrom(
+        this.batchService.send(ProcessStepMessagePatterns.READ_UNIQUE, new ReadByIdPayload(processStepId)),
+      ),
     );
     return Promise.all(promises);
   }

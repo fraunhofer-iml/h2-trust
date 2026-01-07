@@ -93,7 +93,7 @@ describe('ProductionController', () => {
   });
 
   it('should create production process steps and call batchService.send for each period', async () => {
-    const givenPayload = CreateProductionsPayload.of(
+    const givenPayload = new CreateProductionsPayload(
       new Date('2025-01-01T10:00:00Z'),
       new Date('2025-01-01T11:00:00Z'),
       'unit-power-1',

@@ -10,9 +10,9 @@ import { IsString } from 'class-validator';
 
 export class ReadByIdPayload {
   @IsString()
-  id!: string;
+  id: string;
 
-  static of(id: string): ReadByIdPayload {
-    return { id };
+  constructor(id: string) {
+    this.id = id;
   }
 }

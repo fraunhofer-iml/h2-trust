@@ -12,12 +12,13 @@ import { PowerAccessApprovalStatus } from '@h2-trust/domain';
 export class ReadPowerAccessApprovalsPayload {
   @IsString()
   @IsNotEmpty()
-  userId!: string;
+  userId: string;
 
   @IsEnum(PowerAccessApprovalStatus)
-  powerAccessApprovalStatus!: PowerAccessApprovalStatus;
+  powerAccessApprovalStatus: PowerAccessApprovalStatus;
 
-  static of(userId: string, powerAccessApprovalStatus: PowerAccessApprovalStatus): ReadPowerAccessApprovalsPayload {
-    return { userId, powerAccessApprovalStatus };
+  constructor(userId: string, powerAccessApprovalStatus: PowerAccessApprovalStatus) {
+    this.userId = userId;
+    this.powerAccessApprovalStatus = powerAccessApprovalStatus;
   }
 }
