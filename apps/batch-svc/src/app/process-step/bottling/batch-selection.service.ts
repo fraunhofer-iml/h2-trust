@@ -13,7 +13,7 @@ import { ProcessStepAssemblerService } from './process-step-assembler.service';
 
 @Injectable()
 export class BatchSelectionService {
-  constructor(private readonly processStepAssemblerService: ProcessStepAssemblerService) { }
+  constructor(private readonly processStepAssemblerService: ProcessStepAssemblerService) {}
 
   processBottlingForAllColors(
     allProcessStepsFromStorageUnit: ProcessStepEntity[],

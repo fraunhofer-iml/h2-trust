@@ -8,10 +8,10 @@
 
 import {
   BatchEntityHydrogenProducedMock,
+  HydrogenProductionUnitEntityMock,
   ProcessStepEntity,
   QualityDetailsEntityMock,
   UserEntityHydrogenMock,
-  HydrogenProductionUnitEntityMock,
 } from '@h2-trust/amqp';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
 import { HydrogenComponentAssembler } from './hydrogen-component-assembler';

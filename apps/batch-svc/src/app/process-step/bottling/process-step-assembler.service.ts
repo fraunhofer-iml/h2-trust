@@ -18,7 +18,10 @@ type UnitReference = { id: string };
 
 @Injectable()
 export class ProcessStepAssemblerService {
-  assembleBottlingProcessStep(payload: CreateHydrogenBottlingPayload, batchesForBottle: BatchEntity[]): ProcessStepEntity {
+  assembleBottlingProcessStep(
+    payload: CreateHydrogenBottlingPayload,
+    batchesForBottle: BatchEntity[],
+  ): ProcessStepEntity {
     return {
       startedAt: payload.filledAt,
       endedAt: payload.filledAt,
@@ -29,9 +32,11 @@ export class ProcessStepAssemblerService {
           color: this.determineBottleQualityFromPredecessors(batchesForBottle),
         },
         type: BatchType.HYDROGEN,
-        predecessors: batchesForBottle.map((batch): BatchReference => ({
-          id: batch.id,
-        })) as BatchEntity[],
+        predecessors: batchesForBottle.map(
+          (batch): BatchReference => ({
+            id: batch.id,
+          }),
+        ) as BatchEntity[],
         owner: { id: payload.ownerId } satisfies CompanyReference,
       } as BatchEntity,
       recordedBy: { id: payload.recordedById } satisfies UserReference,

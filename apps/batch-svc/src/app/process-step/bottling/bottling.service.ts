@@ -6,7 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { firstValueFrom } from 'rxjs';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import {
   BatchEntity,
   BrokerException,
@@ -20,15 +22,13 @@ import {
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
+import { HydrogenColor } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step.service';
 import { BatchSelection } from './batch-selection.interface';
 import { BatchSelectionService } from './batch-selection.service';
 import { HydrogenComponentAssembler } from './hydrogen-component-assembler';
 import { ProcessStepAssemblerService } from './process-step-assembler.service';
-import { HydrogenColor } from '@h2-trust/domain';
-import { firstValueFrom } from 'rxjs';
-import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class BottlingService {
@@ -41,12 +41,11 @@ export class BottlingService {
     private readonly batchRepository: BatchRepository,
     private readonly documentRepository: DocumentRepository,
     private readonly processStepService: ProcessStepService,
-  ) { }
+  ) {}
 
   async createHydrogenBottlingProcessStep(payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
-    const allProcessStepsFromStorageUnit: ProcessStepEntity[] = await this.processStepRepository.findAllProcessStepsFromStorageUnit(
-      payload.hydrogenStorageUnitId,
-    );
+    const allProcessStepsFromStorageUnit: ProcessStepEntity[] =
+      await this.processStepRepository.findAllProcessStepsFromStorageUnit(payload.hydrogenStorageUnitId);
 
     if (allProcessStepsFromStorageUnit.length === 0) {
       throw new BrokerException(
@@ -58,7 +57,7 @@ export class BottlingService {
     const hydrogenComposition: HydrogenComponentEntity[] = await this.determineHydrogenComposition(
       payload.amount,
       payload.color,
-      payload.hydrogenStorageUnitId
+      payload.hydrogenStorageUnitId,
     );
 
     const batchSelection: BatchSelection = this.batchSelectionService.processBottlingForAllColors(
@@ -84,14 +83,10 @@ export class BottlingService {
 
     const bottlingProcessStep: ProcessStepEntity = this.processStepAssemblerService.assembleBottlingProcessStep(
       payload,
-      [
-        ...batchSelection.batchesForBottle,
-        ...persistedConsumedSplitBatches,
-      ]
+      [...batchSelection.batchesForBottle, ...persistedConsumedSplitBatches],
     );
-    const persistedBottlingProcessStep: ProcessStepEntity = await this.processStepRepository.insertProcessStep(
-      bottlingProcessStep,
-    );
+    const persistedBottlingProcessStep: ProcessStepEntity =
+      await this.processStepRepository.insertProcessStep(bottlingProcessStep);
 
     if (payload.files) {
       await Promise.all(
@@ -104,7 +99,11 @@ export class BottlingService {
     return this.processStepService.readProcessStep(ReadByIdPayload.of(persistedBottlingProcessStep.id));
   }
 
-  private async determineHydrogenComposition(batchAmount: number, hydrogenColor: HydrogenColor, executedById: string): Promise<HydrogenComponentEntity[]> {
+  private async determineHydrogenComposition(
+    batchAmount: number,
+    hydrogenColor: HydrogenColor,
+    executedById: string,
+  ): Promise<HydrogenComponentEntity[]> {
     if (hydrogenColor === HydrogenColor.GREEN) {
       return [new HydrogenComponentEntity(HydrogenColor.GREEN, batchAmount)];
     }

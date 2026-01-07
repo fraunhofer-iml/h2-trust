@@ -29,4 +29,4 @@ import { TransportationService } from './transportation.service';
     TransportationService,
   ],
 })
-export class ProcessStepModule { }
+export class ProcessStepModule {}

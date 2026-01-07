@@ -6,6 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { of } from 'rxjs';
+import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   BatchEntityHydrogenProducedMock,
@@ -28,8 +30,6 @@ import { ProcessStepAssemblerService } from './bottling/process-step-assembler.s
 import { ProcessStepController } from './process-step.controller';
 import { ProcessStepService } from './process-step.service';
 import { TransportationService } from './transportation.service';
-import { ClientProxy } from '@nestjs/microservices';
-import { of } from 'rxjs';
 
 describe('ProcessStepController / Bottling', () => {
   let controller: ProcessStepController;
@@ -146,7 +146,9 @@ describe('ProcessStepController / Bottling', () => {
     const readProcessStepSpy = jest.spyOn(processStepService, 'readProcessStep').mockResolvedValue(expectedResponse);
 
     const setBatchesInactiveSpy = jest.spyOn(batchRepository, 'setBatchesInactive');
-    const insertProcessStepSpy = jest.spyOn(processStepRepository, 'insertProcessStep').mockResolvedValue(expectedResponse);
+    const insertProcessStepSpy = jest
+      .spyOn(processStepRepository, 'insertProcessStep')
+      .mockResolvedValue(expectedResponse);
     const uploadSpy = jest.spyOn(storageService, 'uploadFileWithDeepPath');
     const addDocSpy = jest.spyOn(documentRepository, 'addDocumentToProcessStep');
 
