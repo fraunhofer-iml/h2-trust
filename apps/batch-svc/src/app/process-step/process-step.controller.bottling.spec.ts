@@ -37,7 +37,6 @@ describe('ProcessStepController / Bottling', () => {
   let batchRepository: BatchRepository;
   let bottlingService: BottlingService;
   let batchSelectionService: BatchSelectionService;
-  let processStepAssemblerService: ProcessStepAssemblerService;
   let storageService: StorageService;
   let documentRepository: DocumentRepository;
   let processStepService: ProcessStepService;
@@ -106,7 +105,6 @@ describe('ProcessStepController / Bottling', () => {
     batchRepository = module.get<BatchRepository>(BatchRepository);
     bottlingService = module.get<BottlingService>(BottlingService);
     batchSelectionService = module.get<BatchSelectionService>(BatchSelectionService);
-    processStepAssemblerService = module.get<ProcessStepAssemblerService>(ProcessStepAssemblerService);
     storageService = module.get<StorageService>(StorageService);
     documentRepository = module.get<DocumentRepository>(DocumentRepository);
     processStepService = module.get<ProcessStepService>(ProcessStepService);
