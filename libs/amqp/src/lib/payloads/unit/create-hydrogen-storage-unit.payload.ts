@@ -13,17 +13,17 @@ import { BaseCreateUnitPayload } from './base-create-unit.payload';
 
 export class CreateHydrogenStorageUnitPayload extends BaseCreateUnitPayload {
   @IsEnum(HydrogenStorageType)
-  storageType!: HydrogenStorageType; // TODO-MP: rename to type
+  storageType: HydrogenStorageType; // TODO-MP: rename to type
 
   @IsNumber()
   @IsPositive()
-  capacity!: number;
+  capacity: number;
 
   @IsNumber()
   @IsPositive()
-  pressure!: number;
+  pressure: number;
 
-  static of(
+  constructor(
     name: string,
     mastrNumber: string,
     commissionedOn: Date,
@@ -38,22 +38,10 @@ export class CreateHydrogenStorageUnitPayload extends BaseCreateUnitPayload {
     serialNumber?: string,
     certifiedBy?: string,
     operatorId?: string,
-  ): CreateHydrogenStorageUnitPayload {
-    return {
-      name,
-      mastrNumber,
-      commissionedOn,
-      address,
-      companyId,
-      storageType,
-      capacity,
-      pressure,
-      manufacturer,
-      modelType,
-      modelNumber,
-      serialNumber,
-      certifiedBy,
-      operatorId,
-    };
+  ) {
+    super(name, mastrNumber, commissionedOn, address, companyId, manufacturer, modelType, modelNumber, serialNumber, certifiedBy, operatorId);
+    this.storageType = storageType;
+    this.capacity = capacity;
+    this.pressure = pressure;
   }
 }

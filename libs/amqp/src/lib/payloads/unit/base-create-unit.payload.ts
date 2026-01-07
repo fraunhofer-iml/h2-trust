@@ -13,11 +13,11 @@ import { AddressPayload } from '../common';
 export abstract class BaseCreateUnitPayload {
   @IsString()
   @IsNotEmpty()
-  name!: string;
+  name: string;
 
   @IsString()
   @IsNotEmpty()
-  mastrNumber!: string;
+  mastrNumber: string;
 
   @IsOptional()
   @IsString()
@@ -41,17 +41,43 @@ export abstract class BaseCreateUnitPayload {
 
   @IsDate()
   @Type(() => Date)
-  commissionedOn!: Date;
+  commissionedOn: Date;
 
   @ValidateNested()
   @Type(() => AddressPayload)
-  address!: AddressPayload;
+  address: AddressPayload;
 
   @IsString()
   @IsNotEmpty()
-  companyId!: string; // TODO-MP: should be ownerId
+  companyId: string; // TODO-MP: should be ownerId
 
   @IsOptional()
   @IsString()
   operatorId?: string;
+
+  protected constructor(
+    name: string,
+    mastrNumber: string,
+    commissionedOn: Date,
+    address: AddressPayload,
+    companyId: string,
+    manufacturer?: string,
+    modelType?: string,
+    modelNumber?: string,
+    serialNumber?: string,
+    certifiedBy?: string,
+    operatorId?: string,
+  ) {
+    this.name = name;
+    this.mastrNumber = mastrNumber;
+    this.commissionedOn = commissionedOn;
+    this.address = address;
+    this.companyId = companyId;
+    this.manufacturer = manufacturer;
+    this.modelType = modelType;
+    this.modelNumber = modelNumber;
+    this.serialNumber = serialNumber;
+    this.certifiedBy = certifiedBy;
+    this.operatorId = operatorId;
+  }
 }

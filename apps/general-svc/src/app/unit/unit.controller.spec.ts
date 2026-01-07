@@ -146,7 +146,7 @@ describe('UnitController', () => {
   });
 
   it('should create power production unit', async () => {
-    const givenPayload: CreatePowerProductionUnitPayload = CreatePowerProductionUnitPayload.of(
+    const givenPayload: CreatePowerProductionUnitPayload = new CreatePowerProductionUnitPayload(
       PowerProductionUnitEntityMock[0].name,
       PowerProductionUnitEntityMock[0].mastrNumber,
       PowerProductionUnitEntityMock[0].commissionedOn,
@@ -189,7 +189,7 @@ describe('UnitController', () => {
   });
 
   it('should create hydrogen production unit', async () => {
-    const givenPayload: CreateHydrogenProductionUnitPayload = CreateHydrogenProductionUnitPayload.of(
+    const givenPayload: CreateHydrogenProductionUnitPayload = new CreateHydrogenProductionUnitPayload(
       HydrogenProductionUnitEntityMock[0].name,
       HydrogenProductionUnitEntityMock[0].mastrNumber,
       HydrogenProductionUnitEntityMock[0].commissionedOn,
@@ -230,7 +230,7 @@ describe('UnitController', () => {
   });
 
   it('should create hydrogen storage unit', async () => {
-    const givenPayload: CreateHydrogenStorageUnitPayload = CreateHydrogenStorageUnitPayload.of(
+    const givenPayload: CreateHydrogenStorageUnitPayload = new CreateHydrogenStorageUnitPayload(
       HydrogenStorageUnitEntityMock[0].name,
       HydrogenStorageUnitEntityMock[0].mastrNumber,
       HydrogenStorageUnitEntityMock[0].commissionedOn,

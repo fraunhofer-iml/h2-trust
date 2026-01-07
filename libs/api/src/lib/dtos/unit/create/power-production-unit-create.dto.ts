@@ -101,7 +101,7 @@ export class PowerProductionUnitCreateDto extends UnitCreateDto {
   }
 
   static toPayload(dto: PowerProductionUnitCreateDto): CreatePowerProductionUnitPayload {
-    return CreatePowerProductionUnitPayload.of(
+    return new CreatePowerProductionUnitPayload(
       dto.name,
       dto.mastrNumber,
       dto.commissionedOn,

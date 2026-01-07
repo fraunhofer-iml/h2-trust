@@ -22,8 +22,8 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
+      whitelist: false, // TODO-MP: set to true after DUHGW-220 is implemented
+      forbidNonWhitelisted: false, // TODO-MP: set to true after DUHGW-220 is implemented
     }),
   );
   app.useGlobalInterceptors(new AllErrorsInterceptor());

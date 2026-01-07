@@ -15,7 +15,7 @@ import { BaseCreateUnitPayload } from './base-create-unit.payload';
 export class CreatePowerProductionUnitPayload extends BaseCreateUnitPayload {
   @IsString()
   @IsNotEmpty()
-  electricityMeterNumber!: string;
+  electricityMeterNumber: string;
 
   @IsOptional()
   @IsString()
@@ -26,14 +26,14 @@ export class CreatePowerProductionUnitPayload extends BaseCreateUnitPayload {
   gridConnectionNumber?: string;
 
   @IsEnum(GridLevel)
-  gridLevel!: GridLevel;
+  gridLevel: GridLevel;
 
   @IsEnum(BiddingZone)
-  biddingZone!: BiddingZone;
+  biddingZone: BiddingZone;
 
   @IsNumber()
   @IsPositive()
-  ratedPower!: number;
+  ratedPower: number;
 
   @IsOptional()
   @IsDate()
@@ -41,12 +41,12 @@ export class CreatePowerProductionUnitPayload extends BaseCreateUnitPayload {
   decommissioningPlannedOn?: Date;
 
   @IsBoolean()
-  financialSupportReceived!: boolean;
+  financialSupportReceived: boolean;
 
   @IsEnum(PowerProductionType)
-  powerProductionType!: PowerProductionType; // TODO-MP: rename to type
+  powerProductionType: PowerProductionType; // TODO-MP: rename to type
 
-  static of(
+  constructor(
     name: string,
     mastrNumber: string,
     commissionedOn: Date,
@@ -67,28 +67,16 @@ export class CreatePowerProductionUnitPayload extends BaseCreateUnitPayload {
     decommissioningPlannedOn?: Date,
     gridOperator?: string,
     gridConnectionNumber?: string,
-  ): CreatePowerProductionUnitPayload {
-    return {
-      name,
-      mastrNumber,
-      commissionedOn,
-      address,
-      companyId,
-      electricityMeterNumber,
-      ratedPower,
-      gridLevel,
-      biddingZone,
-      financialSupportReceived,
-      powerProductionType,
-      manufacturer,
-      modelType,
-      modelNumber,
-      serialNumber,
-      certifiedBy,
-      operatorId,
-      decommissioningPlannedOn,
-      gridOperator,
-      gridConnectionNumber,
-    };
+  ) {
+    super(name, mastrNumber, commissionedOn, address, companyId, manufacturer, modelType, modelNumber, serialNumber, certifiedBy, operatorId);
+    this.electricityMeterNumber = electricityMeterNumber;
+    this.ratedPower = ratedPower;
+    this.gridLevel = gridLevel;
+    this.biddingZone = biddingZone;
+    this.financialSupportReceived = financialSupportReceived;
+    this.powerProductionType = powerProductionType;
+    this.decommissioningPlannedOn = decommissioningPlannedOn;
+    this.gridOperator = gridOperator;
+    this.gridConnectionNumber = gridConnectionNumber;
   }
 }

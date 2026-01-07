@@ -13,27 +13,27 @@ import { BaseCreateUnitPayload } from './base-create-unit.payload';
 
 export class CreateHydrogenProductionUnitPayload extends BaseCreateUnitPayload {
   @IsEnum(HydrogenProductionMethod)
-  method!: HydrogenProductionMethod;
+  method: HydrogenProductionMethod;
 
   @IsEnum(HydrogenProductionTechnology)
-  technology!: HydrogenProductionTechnology;
+  technology: HydrogenProductionTechnology;
 
   @IsEnum(BiddingZone)
-  biddingZone!: BiddingZone;
+  biddingZone: BiddingZone;
 
   @IsNumber()
   @IsPositive()
-  ratedPower!: number;
+  ratedPower: number;
 
   @IsNumber()
   @IsPositive()
-  pressure!: number;
+  pressure: number;
 
   @IsNumber()
   @IsPositive()
-  waterConsumptionLitersPerHour!: number;
+  waterConsumptionLitersPerHour: number;
 
-  static of(
+  constructor(
     name: string,
     mastrNumber: string,
     commissionedOn: Date,
@@ -51,25 +51,13 @@ export class CreateHydrogenProductionUnitPayload extends BaseCreateUnitPayload {
     serialNumber?: string,
     certifiedBy?: string,
     operatorId?: string,
-  ): CreateHydrogenProductionUnitPayload {
-    return {
-      name,
-      mastrNumber,
-      commissionedOn,
-      address,
-      companyId,
-      method,
-      technology,
-      biddingZone,
-      ratedPower,
-      pressure,
-      waterConsumptionLitersPerHour,
-      manufacturer,
-      modelType,
-      modelNumber,
-      serialNumber,
-      certifiedBy,
-      operatorId,
-    };
+  ) {
+    super(name, mastrNumber, commissionedOn, address, companyId, manufacturer, modelType, modelNumber, serialNumber, certifiedBy, operatorId);
+    this.method = method;
+    this.technology = technology;
+    this.biddingZone = biddingZone;
+    this.ratedPower = ratedPower;
+    this.pressure = pressure;
+    this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 }

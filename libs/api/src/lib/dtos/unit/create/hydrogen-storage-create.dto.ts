@@ -64,7 +64,7 @@ export class HydrogenStorageUnitCreateDto extends UnitCreateDto {
   }
 
   static toPayload(dto: HydrogenStorageUnitCreateDto): CreateHydrogenStorageUnitPayload {
-    return CreateHydrogenStorageUnitPayload.of(
+    return new CreateHydrogenStorageUnitPayload(
       dto.name,
       dto.mastrNumber,
       dto.commissionedOn,
