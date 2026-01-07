@@ -10,13 +10,8 @@ import { HttpStatus } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { BrokerException, ProcessStepEntity } from '@h2-trust/amqp';
 import { BatchType, ProcessType } from '@h2-trust/domain';
-import { assertDefined } from '@h2-trust/utils';
 
 export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Prisma.ProcessStepCreateInput {
-  assertDefined(processStep.batch, 'ProcessStepEntity.batch');
-  assertDefined(processStep.batch.amount, 'ProcessStepEntity.batch.amount');
-  assertDefined(processStep.type, 'ProcessStepEntity.type');
-
   const hydrogenStorageUnitId = processStep.batch.hydrogenStorageUnit?.id;
 
   if (processStep.type === ProcessType.POWER_PRODUCTION && hydrogenStorageUnitId) {
