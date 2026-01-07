@@ -13,27 +13,26 @@ import { BaseUnitEntity } from '../unit';
 import { UserEntity } from '../user';
 import { TransportationDetailsEntity } from './transportation-details.entity';
 
-// TODO-MP: remove optionals...
 export class ProcessStepEntity {
   id?: string;
   startedAt: Date;
   endedAt: Date;
-  type?: string;
-  batch?: BatchEntity | null;
-  recordedBy?: UserEntity;
-  executedBy?: BaseUnitEntity;
+  type: string;
+  batch: BatchEntity;
+  recordedBy: UserEntity;
+  executedBy: BaseUnitEntity;
   documents?: DocumentEntity[];
   transportationDetails?: TransportationDetailsEntity;
 
   constructor(
-    id: string,
+    id: string | undefined,
     startedAt: Date,
     endedAt: Date,
     type: string,
-    batch: BatchEntity | null,
+    batch: BatchEntity,
     recordedBy: UserEntity,
     executedBy: BaseUnitEntity,
-    documents: DocumentEntity[],
+    documents?: DocumentEntity[],
     transportationDetails?: TransportationDetailsEntity,
   ) {
     this.id = id;

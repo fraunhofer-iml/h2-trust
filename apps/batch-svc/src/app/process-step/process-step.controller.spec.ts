@@ -157,7 +157,7 @@ describe('ProcessStepController', () => {
 
   it('should create hydrogen transportation process step', async () => {
     const expectedResponse: ProcessStepEntity = structuredClone(ProcessStepEntityHydrogenTransportationMock[0]);
-    const givenPredecessorBatch: BatchEntity = structuredClone(HydrogenBottlingProcessStepSeed[0]);
+    const givenPredecessorBatch = structuredClone(HydrogenBottlingProcessStepSeed[0]) as unknown as BatchEntity;
 
     const transportationServiceSpy = jest.spyOn(transportationService, 'createHydrogenTransportationProcessStep');
 

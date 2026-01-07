@@ -6,9 +6,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepEntity, QualityDetailsEntityMock } from '@h2-trust/amqp';
+import { BatchEntity, CompanyEntity, ProcessStepEntity, QualityDetailsEntityMock, BaseUnitEntity, UserEntity } from '@h2-trust/amqp';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
 import { HydrogenComponentAssembler } from './hydrogen-component-assembler';
+
+// Test helpers for creating minimal entities
+const createMinimalBatch = (props: Partial<BatchEntity>): Partial<BatchEntity> => props;
+const createMinimalCompany = (id: string): Partial<CompanyEntity> => ({ id });
+const createMinimalUser = (id: string): Partial<UserEntity> => ({ id });
+const createMinimalUnit = (id: string): Partial<BaseUnitEntity> => ({ id });
 
 describe('HydrogenComponentAssembler', () => {
   let bottlingProcessStep: ProcessStepEntity;
@@ -19,18 +25,26 @@ describe('HydrogenComponentAssembler', () => {
       startedAt: new Date('2025-01-01T00:00:00Z'),
       endedAt: new Date('2025-01-01T01:00:00Z'),
       type: ProcessType.HYDROGEN_BOTTLING,
-      batch: {
+      batch: createMinimalBatch({
         amount: 1,
         qualityDetails: QualityDetailsEntityMock[2], // MIX
         type: BatchType.HYDROGEN,
+        owner: createMinimalCompany('test-owner-id') as CompanyEntity,
         predecessors: [],
-      },
+      }) as BatchEntity,
+      recordedBy: createMinimalUser('test-user-id') as UserEntity,
+      executedBy: createMinimalUnit('test-unit-id') as BaseUnitEntity,
     };
   });
 
   it('should calculate hydrogen composition with one color', () => {
     bottlingProcessStep.batch.predecessors = [
-      { amount: 1, qualityDetails: QualityDetailsEntityMock[0], type: BatchType.HYDROGEN },
+      createMinimalBatch({
+        amount: 1,
+        qualityDetails: QualityDetailsEntityMock[0],
+        type: BatchType.HYDROGEN,
+        owner: createMinimalCompany('test-owner-id') as CompanyEntity,
+      }) as BatchEntity,
     ];
 
     const expectedResponse = [{ color: HydrogenColor.GREEN, amount: 1 }];
@@ -77,8 +91,18 @@ describe('HydrogenComponentAssembler', () => {
 
   it('should not calculate hydrogen composition with an invalid predecessor type', () => {
     bottlingProcessStep.batch.predecessors = [
-      { amount: 1, qualityDetails: QualityDetailsEntityMock[0], type: BatchType.HYDROGEN },
-      { amount: 2, qualityDetails: QualityDetailsEntityMock[0], type: BatchType.POWER },
+      createMinimalBatch({
+        amount: 1,
+        qualityDetails: QualityDetailsEntityMock[0],
+        type: BatchType.HYDROGEN,
+        owner: createMinimalCompany('test-owner-id') as CompanyEntity,
+      }) as BatchEntity,
+      createMinimalBatch({
+        amount: 2,
+        qualityDetails: QualityDetailsEntityMock[0],
+        type: BatchType.POWER,
+        owner: createMinimalCompany('test-owner-id') as CompanyEntity,
+      }) as BatchEntity,
     ];
 
     const expectedErrorMessage = `Predecessor batch ${bottlingProcessStep.batch.predecessors[0].id} should be type ${BatchType.HYDROGEN}, but is ${BatchType.POWER}.`;

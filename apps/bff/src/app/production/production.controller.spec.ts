@@ -8,7 +8,7 @@
 
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues, PowerProductionTypeEntity, ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
+import { BatchEntity, BaseUnitEntity, BrokerQueues, PowerProductionTypeEntity, ProcessStepEntity, ProcessStepMessagePatterns, UserEntity } from '@h2-trust/amqp';
 import {
   AccountingPeriodMatchingResultDto,
   AuthenticatedKCUser,
@@ -24,6 +24,11 @@ import 'multer';
 import { of } from 'rxjs';
 import { UserService } from '../user/user.service';
 import { ProductionController } from './production.controller';
+
+// Test helpers for creating minimal entities
+const createMinimalBatch = (): Partial<BatchEntity> => ({});
+const createMinimalUser = (): Partial<UserEntity> => ({});
+const createMinimalUnit = (): Partial<BaseUnitEntity> => ({});
 import { ProductionService } from './production.service';
 
 describe('ProductionController', () => {
@@ -113,12 +118,18 @@ describe('ProductionController', () => {
         startedAt: new Date(CreateProductionDtoMock.productionStartedAt),
         endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
         type: ProcessType.HYDROGEN_PRODUCTION,
+        batch: createMinimalBatch() as BatchEntity,
+        recordedBy: createMinimalUser() as UserEntity,
+        executedBy: createMinimalUnit() as BaseUnitEntity,
       },
       {
         id: 'hydrogen-production-process-step-2',
         startedAt: new Date(CreateProductionDtoMock.productionEndedAt),
         endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
         type: ProcessType.HYDROGEN_PRODUCTION,
+        batch: createMinimalBatch() as BatchEntity,
+        recordedBy: createMinimalUser() as UserEntity,
+        executedBy: createMinimalUnit() as BaseUnitEntity,
       },
     ];
 
@@ -139,6 +150,10 @@ describe('ProductionController', () => {
         id: 'hydrogen-production-process-step-1',
         startedAt: new Date(CreateProductionDtoMock.productionStartedAt),
         endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
+        type: ProcessType.HYDROGEN_PRODUCTION,
+        batch: createMinimalBatch() as BatchEntity,
+        recordedBy: createMinimalUser() as UserEntity,
+        executedBy: createMinimalUnit() as BaseUnitEntity,
       },
     ];
 

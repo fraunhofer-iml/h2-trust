@@ -10,6 +10,12 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { BatchEntity, BrokerException, CreateHydrogenBottlingPayload, ProcessStepEntity } from '@h2-trust/amqp';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
 
+// Types for creating entities (only IDs needed for references)
+type BatchReference = Pick<BatchEntity, 'id'>;
+type CompanyReference = { id: string };
+type UserReference = { id: string };
+type UnitReference = { id: string };
+
 @Injectable()
 export class ProcessStepAssemblerService {
   assembleBottlingProcessStep(payload: CreateHydrogenBottlingPayload, batchesForBottle: BatchEntity[]): ProcessStepEntity {
@@ -23,20 +29,14 @@ export class ProcessStepAssemblerService {
           color: this.determineBottleQualityFromPredecessors(batchesForBottle),
         },
         type: BatchType.HYDROGEN,
-        predecessors: batchesForBottle.map((batch) => ({
+        predecessors: batchesForBottle.map((batch): BatchReference => ({
           id: batch.id,
-        })),
-        owner: {
-          id: payload.ownerId,
-        },
-      },
-      recordedBy: {
-        id: payload.recordedById,
-      },
-      executedBy: {
-        id: payload.hydrogenStorageUnitId,
-      },
-    };
+        })) as BatchEntity[],
+        owner: { id: payload.ownerId } satisfies CompanyReference,
+      } as BatchEntity,
+      recordedBy: { id: payload.recordedById } satisfies UserReference,
+      executedBy: { id: payload.hydrogenStorageUnitId } satisfies UnitReference,
+    } as ProcessStepEntity;
   }
 
   private determineBottleQualityFromPredecessors(predecessors: BatchEntity[]): HydrogenColor {
@@ -78,15 +78,15 @@ export class ProcessStepAssemblerService {
         predecessors: [
           {
             id: predecessorProcessStep.batch.id,
-          },
-        ],
+          } satisfies BatchReference,
+        ] as BatchEntity[],
         owner: {
           id: predecessorProcessStep.batch.owner.id,
-        },
+        } satisfies CompanyReference,
         hydrogenStorageUnit: {
           id: predecessorProcessStep.batch.hydrogenStorageUnit.id,
-        },
-      },
+        } satisfies UnitReference,
+      } as BatchEntity,
     };
   }
 }
