@@ -58,7 +58,19 @@ export class CreateHydrogenProductionUnitPayload extends BaseCreateUnitPayload {
     certifiedBy?: string,
     operatorId?: string,
   ) {
-    super(name, mastrNumber, commissionedOn, address, companyId, manufacturer, modelType, modelNumber, serialNumber, certifiedBy, operatorId);
+    super(
+      name,
+      mastrNumber,
+      commissionedOn,
+      address,
+      companyId,
+      manufacturer,
+      modelType,
+      modelNumber,
+      serialNumber,
+      certifiedBy,
+      operatorId,
+    );
     this.method = method;
     this.technology = technology;
     this.biddingZone = biddingZone;

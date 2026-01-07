@@ -73,7 +73,19 @@ export class CreatePowerProductionUnitPayload extends BaseCreateUnitPayload {
     gridOperator?: string,
     gridConnectionNumber?: string,
   ) {
-    super(name, mastrNumber, commissionedOn, address, companyId, manufacturer, modelType, modelNumber, serialNumber, certifiedBy, operatorId);
+    super(
+      name,
+      mastrNumber,
+      commissionedOn,
+      address,
+      companyId,
+      manufacturer,
+      modelType,
+      modelNumber,
+      serialNumber,
+      certifiedBy,
+      operatorId,
+    );
     this.electricityMeterNumber = electricityMeterNumber;
     this.ratedPower = ratedPower;
     this.gridLevel = gridLevel;

@@ -42,7 +42,19 @@ export class CreateHydrogenStorageUnitPayload extends BaseCreateUnitPayload {
     certifiedBy?: string,
     operatorId?: string,
   ) {
-    super(name, mastrNumber, commissionedOn, address, companyId, manufacturer, modelType, modelNumber, serialNumber, certifiedBy, operatorId);
+    super(
+      name,
+      mastrNumber,
+      commissionedOn,
+      address,
+      companyId,
+      manufacturer,
+      modelType,
+      modelNumber,
+      serialNumber,
+      certifiedBy,
+      operatorId,
+    );
     this.storageType = storageType;
     this.capacity = capacity;
     this.pressure = pressure;
