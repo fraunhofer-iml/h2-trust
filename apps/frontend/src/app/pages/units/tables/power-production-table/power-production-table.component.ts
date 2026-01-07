@@ -45,7 +45,7 @@ import { UsersService } from '../../../../shared/services/users/users.service';
   templateUrl: './power-production-table.component.html',
 })
 export class PowerProductionTableComponent implements AfterViewInit {
-  displayedColumns = ['name', 'ratedPower', 'typeName', 'producing'];
+  displayedColumns = ['name', 'ratedPower', 'typeName'];
 
   data = input<PowerProductionOverviewDto[]>([]);
 
