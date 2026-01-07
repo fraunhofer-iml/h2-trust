@@ -17,33 +17,38 @@ export class CreatePowerProductionUnitPayload extends BaseCreateUnitPayload {
   @IsNotEmpty()
   electricityMeterNumber: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   gridOperator?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   gridConnectionNumber?: string;
 
   @IsEnum(GridLevel)
+  @IsNotEmpty()
   gridLevel: GridLevel;
 
   @IsEnum(BiddingZone)
+  @IsNotEmpty()
   biddingZone: BiddingZone;
 
   @IsNumber()
   @IsPositive()
+  @IsNotEmpty()
   ratedPower: number;
 
-  @IsOptional()
   @IsDate()
+  @IsOptional()
   @Type(() => Date)
   decommissioningPlannedOn?: Date;
 
   @IsBoolean()
+  @IsNotEmpty()
   financialSupportReceived: boolean;
 
   @IsEnum(PowerProductionType)
+  @IsNotEmpty()
   powerProductionType: PowerProductionType; // TODO-MP: rename to type
 
   constructor(

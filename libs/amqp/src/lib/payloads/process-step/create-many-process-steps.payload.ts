@@ -6,7 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsArray, IsNotEmpty } from 'class-validator';
+import { Type } from 'class-transformer';
+import { ArrayNotEmpty, IsNotEmpty } from 'class-validator';
 import { ProcessStepEntity } from '../../entities';
 
 /*
@@ -16,8 +17,9 @@ import { ProcessStepEntity } from '../../entities';
  * in process-svc and database operations in batch-svc.
  */
 export class CreateManyProcessStepsPayload {
-  @IsArray()
+  @ArrayNotEmpty()
   @IsNotEmpty()
+  @Type(() => ProcessStepEntity)
   processSteps: ProcessStepEntity[];
 
   constructor(processSteps: ProcessStepEntity[]) {

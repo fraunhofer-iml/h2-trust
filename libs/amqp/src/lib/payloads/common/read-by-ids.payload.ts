@@ -6,10 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsArray } from 'class-validator';
+import { ArrayNotEmpty, IsString } from 'class-validator';
 
 export class ReadByIdsPayload {
-  @IsArray()
+  @IsString({ each: true })
+  @ArrayNotEmpty()
   ids: string[];
 
   constructor(ids: string[]) {

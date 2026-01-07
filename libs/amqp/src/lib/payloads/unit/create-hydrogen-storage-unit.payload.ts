@@ -6,21 +6,24 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsEnum, IsNumber, IsPositive } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
 import { HydrogenStorageType } from '@h2-trust/domain';
 import { AddressPayload } from '../common';
 import { BaseCreateUnitPayload } from './base-create-unit.payload';
 
 export class CreateHydrogenStorageUnitPayload extends BaseCreateUnitPayload {
   @IsEnum(HydrogenStorageType)
+  @IsNotEmpty()
   storageType: HydrogenStorageType; // TODO-MP: rename to type
 
   @IsNumber()
   @IsPositive()
+  @IsNotEmpty()
   capacity: number;
 
   @IsNumber()
   @IsPositive()
+  @IsNotEmpty()
   pressure: number;
 
   constructor(

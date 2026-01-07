@@ -19,31 +19,33 @@ export abstract class BaseCreateUnitPayload {
   @IsNotEmpty()
   mastrNumber: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   manufacturer?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   modelType?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   modelNumber?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   serialNumber?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   certifiedBy?: string;
 
   @IsDate()
+  @IsNotEmpty()
   @Type(() => Date)
   commissionedOn: Date;
 
   @ValidateNested()
+  @IsNotEmpty()
   @Type(() => AddressPayload)
   address: AddressPayload;
 
@@ -51,8 +53,8 @@ export abstract class BaseCreateUnitPayload {
   @IsNotEmpty()
   companyId: string; // TODO-MP: should be ownerId
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   operatorId?: string;
 
   protected constructor(

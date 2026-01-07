@@ -15,6 +15,7 @@ export class ReadPowerAccessApprovalsPayload {
   userId: string;
 
   @IsEnum(PowerAccessApprovalStatus)
+  @IsNotEmpty()
   powerAccessApprovalStatus: PowerAccessApprovalStatus;
 
   constructor(userId: string, powerAccessApprovalStatus: PowerAccessApprovalStatus) {

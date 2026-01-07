@@ -10,13 +10,13 @@ import { Type } from 'class-transformer';
 import { IsDate, IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
 
 export class CreateProductionsPayload {
-  @IsNotEmpty()
   @IsDate()
+  @IsNotEmpty()
   @Type(() => Date)
   productionStartedAt: Date;
 
-  @IsNotEmpty()
   @IsDate()
+  @IsNotEmpty()
   @Type(() => Date)
   productionEndedAt: Date;
 

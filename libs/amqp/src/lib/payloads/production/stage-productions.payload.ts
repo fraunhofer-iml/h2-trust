@@ -6,11 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Type } from 'class-transformer';
 import { IsNotEmpty, IsNotEmptyObject, IsString } from 'class-validator';
 import { ParsedFileBundles } from '../../entities';
 
 export class StageProductionsPayload {
   @IsNotEmptyObject()
+  @Type(() => ParsedFileBundles)
   data: ParsedFileBundles;
 
   @IsString()

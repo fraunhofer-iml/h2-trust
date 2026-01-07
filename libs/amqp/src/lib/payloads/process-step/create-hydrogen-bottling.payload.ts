@@ -7,7 +7,7 @@
  */
 
 import { Type } from 'class-transformer';
-import { IsArray, IsDate, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { IsArray, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 import { HydrogenColor } from '@h2-trust/domain';
 
 export class CreateHydrogenBottlingPayload {
@@ -33,7 +33,7 @@ export class CreateHydrogenBottlingPayload {
   @IsNotEmpty()
   hydrogenStorageUnitId: string;
 
-  @IsString()
+  @IsEnum(HydrogenColor)
   @IsNotEmpty()
   color: HydrogenColor;
 

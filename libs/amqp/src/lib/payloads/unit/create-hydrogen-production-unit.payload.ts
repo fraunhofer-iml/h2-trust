@@ -6,31 +6,37 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsEnum, IsNumber, IsPositive } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
 import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology } from '@h2-trust/domain';
 import { AddressPayload } from '../common';
 import { BaseCreateUnitPayload } from './base-create-unit.payload';
 
 export class CreateHydrogenProductionUnitPayload extends BaseCreateUnitPayload {
   @IsEnum(HydrogenProductionMethod)
+  @IsNotEmpty()
   method: HydrogenProductionMethod;
 
   @IsEnum(HydrogenProductionTechnology)
+  @IsNotEmpty()
   technology: HydrogenProductionTechnology;
 
   @IsEnum(BiddingZone)
+  @IsNotEmpty()
   biddingZone: BiddingZone;
 
   @IsNumber()
   @IsPositive()
+  @IsNotEmpty()
   ratedPower: number;
 
   @IsNumber()
   @IsPositive()
+  @IsNotEmpty()
   pressure: number;
 
   @IsNumber()
   @IsPositive()
+  @IsNotEmpty()
   waterConsumptionLitersPerHour: number;
 
   constructor(

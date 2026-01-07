@@ -6,18 +6,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Type } from 'class-transformer';
 import { IsNotEmpty } from 'class-validator';
 import { BatchEntity, ProcessStepEntity, TransportationDetailsEntity } from '../../entities';
 
 export class CreateHydrogenTransportationPayload {
   @IsNotEmpty()
-  processStep!: ProcessStepEntity;
+  @Type(() => ProcessStepEntity)
+  processStep: ProcessStepEntity;
 
   @IsNotEmpty()
-  predecessorBatch!: BatchEntity;
+  @Type(() => BatchEntity)
+  predecessorBatch: BatchEntity;
 
   @IsNotEmpty()
-  transportationDetails!: TransportationDetailsEntity;
+  @Type(() => TransportationDetailsEntity)
+  transportationDetails: TransportationDetailsEntity;
 
   constructor(
     processStep: ProcessStepEntity,
