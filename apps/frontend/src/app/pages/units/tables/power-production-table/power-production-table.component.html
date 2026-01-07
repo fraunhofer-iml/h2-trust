@@ -1,5 +1,5 @@
 <div class="mt-4 flex flex-col gap-4 rounded-lg bg-white py-2">
-  <table mat-table [dataSource]="data()" matSort>
+  <table mat-table [dataSource]="dataSource$()" matSort>
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef mat-sort-header class="bold"><div class="bold">Name</div></th>
       <td mat-cell *matCellDef="let row">{{ row.name }}</td>
@@ -7,16 +7,6 @@
     <ng-container matColumnDef="ratedPower">
       <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Rated Power</div></th>
       <td mat-cell *matCellDef="let row">{{ row.ratedPower | number }}</td>
-    </ng-container>
-    <ng-container matColumnDef="producing">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Producing</div></th>
-      <td mat-cell *matCellDef="let row">
-        @if (row.producing) {
-          <span class="material-symbols-outlined text-secondary-200 bg-secondary-200/20 rounded-full p-1"> cached</span>
-        } @else {
-          <span class="material-symbols-outlined rounded-full bg-neutral-300 p-1 text-neutral-600"> block</span>
-        }
-      </td>
     </ng-container>
     <ng-container matColumnDef="typeName">
       <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Type</div></th>

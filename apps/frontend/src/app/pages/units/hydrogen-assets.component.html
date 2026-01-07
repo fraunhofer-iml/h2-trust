@@ -6,12 +6,20 @@
 
   <mat-tab-group mat-align-tabs="start" mat-stretch-tabs="false">
     @if (powerProductionQuery.isSuccess() && powerProductionQuery.data().length !== 0) {
-      <mat-tab label="Power Production">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <span class="material-symbols-outlined mr-2 text-base"> {{ ICONS.POWER_PRODUCTION }} </span>
+          Power Production
+        </ng-template>
         <app-power-production-table class="mt-8" [data]="powerProductionQuery.data()"></app-power-production-table
       ></mat-tab>
     }
     @if (hydrogenProductionQuery.isSuccess() && hydrogenProductionQuery.data().length !== 0) {
-      <mat-tab label="Hydrogen Production">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <span class="material-symbols-outlined mr-2 text-base"> {{ ICONS.HYDROGEN_PRODUCTION }} </span>
+          Hydrogen Production
+        </ng-template>
         <app-hydrogen-production-table
           class="mt-8"
           [data]="hydrogenProductionQuery.data()"
@@ -19,7 +27,11 @@
       </mat-tab>
     }
     @if (hydrogenStorageQuery.isSuccess() && hydrogenStorageQuery.data().length !== 0) {
-      <mat-tab label="Hydrogen Storage">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <span class="material-symbols-outlined mr-2 text-base"> {{ ICONS.HYDROGEN_STORAGE }} </span>
+          Hydrogen Storage
+        </ng-template>
         <app-hydrogen-storage-table class="mt-8" [data]="hydrogenStorageQuery.data()"></app-hydrogen-storage-table>
       </mat-tab>
     }

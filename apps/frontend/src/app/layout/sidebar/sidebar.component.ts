@@ -8,13 +8,13 @@
 
 import { A11yModule } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ChemicalNames } from '../../shared/constants/chemical-names';
 import { ROUTES } from '../../shared/constants/routes';
 import { AuthService } from '../../shared/services/auth/auth.service';
@@ -37,6 +37,7 @@ import { UsersService } from '../../shared/services/users/users.service';
 })
 export class SidebarComponent implements OnInit {
   protected readonly ChemicalNames = ChemicalNames;
+  protected readonly router = inject(Router);
 
   sidebarOptions = [
     { title: 'Units', icon: 'water_drop', route: ROUTES.UNITS },
@@ -49,7 +50,6 @@ export class SidebarComponent implements OnInit {
   userLastName = '';
   userEmail = '';
 
-  selectedIndex = -1;
   constructor(readonly authService: AuthService) {}
 
   async ngOnInit() {
