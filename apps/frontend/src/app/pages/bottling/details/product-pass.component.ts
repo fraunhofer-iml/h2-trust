@@ -12,14 +12,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
-import { BaseSheetComponent } from '../../../layout/sheet/sheet.component';
 import { ERROR_MESSAGES } from '../../../shared/constants/error.messages';
 import { FormattedUnits } from '../../../shared/constants/formatted-units';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { H2CompositionChartComponent } from './chart/h2-composition-chart.component';
-import { FileSheetComponent } from './file-sheet/file-sheet.component';
 import { ProofOfOriginComponent } from './proof-of-origin/proof-of-origin.component';
 import { ProofOfSustainabilityComponent } from './proof-of-sustainability/proof-of-sustainability.component';
 import { RedComplianceComponent } from './red-compliance/red-compliance.component';
@@ -32,8 +30,6 @@ import { RedComplianceComponent } from './red-compliance/red-compliance.componen
     RouterModule,
     H2CompositionChartComponent,
     ProofOfOriginComponent,
-    BaseSheetComponent,
-    FileSheetComponent,
     ErrorCardComponent,
     ProofOfSustainabilityComponent,
     UnitPipe,
