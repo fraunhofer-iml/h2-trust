@@ -18,7 +18,6 @@ import {
   PowerProductionUnitEntity,
   ReadByIdPayload,
   ReadByIdsPayload,
-  UnitEntity,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { UnitService } from './unit.service';
@@ -27,9 +26,19 @@ import { UnitService } from './unit.service';
 export class UnitController {
   constructor(private readonly service: UnitService) {}
 
-  @MessagePattern(UnitMessagePatterns.READ)
-  async readUnit(@Payload() payload: ReadByIdPayload): Promise<UnitEntity> {
-    return this.service.readUnit(payload.id);
+  @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNIT_BY_ID)
+  async readHyrogenProductionUnitById(@Payload() payload: ReadByIdPayload): Promise<HydrogenStorageUnitEntity> {
+    return this.service.readHydrogenProductionUnitById(payload.id);
+  }
+
+  @MessagePattern(UnitMessagePatterns.READ_POWER_PRODUCTION_UNIT_BY_ID)
+  async readPowerProductionUnitById(@Payload() payload: ReadByIdPayload): Promise<PowerProductionUnitEntity> {
+    return this.service.readPowerProductionUnitById(payload.id);
+  }
+
+  @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_STORAGE_UNIT_BY_ID)
+  async readUnit(@Payload() payload: ReadByIdPayload): Promise<HydrogenStorageUnitEntity> {
+    return this.service.readHydrogenStorageUnitById(payload.id);
   }
 
   @MessagePattern(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS)
