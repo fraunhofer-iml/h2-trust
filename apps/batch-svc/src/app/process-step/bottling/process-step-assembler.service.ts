@@ -26,11 +26,9 @@ export class ProcessStepAssemblerService {
           color: this.determineBottleQualityFromPredecessors(batchesForBottle),
         },
         type: BatchType.HYDROGEN,
-        predecessors: batchesForBottle.map(
-          (batch) => ({
-            id: batch.id,
-          }),
-        ) as BatchEntity[],
+        predecessors: batchesForBottle.map((batch) => ({
+          id: batch.id,
+        })) as BatchEntity[],
         owner: { id: payload.ownerId },
       } as BatchEntity,
       recordedBy: { id: payload.recordedById },
