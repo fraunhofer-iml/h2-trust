@@ -181,17 +181,12 @@ describe('BottlingController', () => {
         of(returnedHydrogenCompositions),
       );
 
-    const generalSvcSpy = jest
-      .spyOn(generalSvc, 'send')
-      .mockImplementation((_messagePattern: UserMessagePatterns, _data: any) => of(UserDetailsDtoMock[0]));
-
     const processSvcSpy = jest
       .spyOn(processSvc, 'send')
       .mockImplementation((_messagePattern: RedComplianceMessagePatterns, _data: any) => of(RedComplianceDtoMock[0]));
 
     const expectedBatchSvcPayload1 = new ReadByIdPayload(returnedProcessStep.id);
     const expectedBatchSvcPayload2 = new ReadByIdPayload(returnedProcessStep.id);
-    const expectedGeneralSvcPayload = new ReadByIdPayload(returnedProcessStep.recordedBy.id);
     const expectedProcessSvcPayload = new ReadByIdPayload(returnedProcessStep.id);
 
     const expectedResponse: GeneralInformationDto = {
@@ -209,9 +204,6 @@ describe('BottlingController', () => {
       ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION,
       expectedBatchSvcPayload2,
     );
-
-    expect(generalSvcSpy).toHaveBeenCalledTimes(1);
-    expect(generalSvcSpy).toHaveBeenCalledWith(UserMessagePatterns.READ, expectedGeneralSvcPayload);
 
     expect(processSvcSpy).toHaveBeenCalledTimes(1);
     expect(processSvcSpy).toHaveBeenCalledWith(RedComplianceMessagePatterns.DETERMINE, expectedProcessSvcPayload);

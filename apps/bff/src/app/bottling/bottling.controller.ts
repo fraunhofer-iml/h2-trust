@@ -108,7 +108,7 @@ export class BottlingController {
     @UploadedFiles() files: Express.Multer.File[],
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<BottlingOverviewDto> {
-    return this.bottlingService.createBottling(dto, files, authenticatedUser.sub);
+    return this.bottlingService.createBottlingAndTransportation(dto, files, authenticatedUser.sub);
   }
 
   @Get()

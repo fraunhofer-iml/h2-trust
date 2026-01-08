@@ -22,7 +22,7 @@ import {
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
-import { HydrogenColor } from '@h2-trust/domain';
+import { HydrogenColor, ProcessType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step.service';
 import { BatchSelection } from './batch-selection.interface';
@@ -41,7 +41,7 @@ export class BottlingService {
     private readonly batchRepository: BatchRepository,
     private readonly documentRepository: DocumentRepository,
     private readonly processStepService: ProcessStepService,
-  ) {}
+  ) { }
 
   async createHydrogenBottlingProcessStep(payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
     const allProcessStepsFromStorageUnit: ProcessStepEntity[] =
@@ -134,7 +134,34 @@ export class BottlingService {
   }
 
   async calculateHydrogenComposition(payload: ReadByIdPayload): Promise<HydrogenComponentEntity[]> {
-    const bottlingProcessStep: ProcessStepEntity = await this.processStepService.readProcessStep(payload);
-    return HydrogenComponentAssembler.assembleFromBottlingProcessStep(bottlingProcessStep);
+    const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(payload);
+
+    const hydrogenBottling: ProcessStepEntity = processStep.type === ProcessType.HYDROGEN_BOTTLING
+      ? processStep
+      : await this.readHydrogenBottling(processStep);
+
+    return HydrogenComponentAssembler.assembleFromBottlingProcessStep(hydrogenBottling);
+  }
+
+  private async readHydrogenBottling(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
+    const predecessorId: string = processStep.batch?.predecessors[0]?.processStepId;
+
+    if (!predecessorId) {
+      throw new BrokerException(
+        `Process step ${processStep.id} has no predecessor to derive composition from`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    const predecessor: ProcessStepEntity = await this.processStepService.readProcessStep(new ReadByIdPayload(predecessorId));
+
+    if (predecessor.type !== ProcessType.HYDROGEN_BOTTLING) {
+      throw new BrokerException(
+        `Predecessor process step ${predecessor.id} is not of type ${ProcessType.HYDROGEN_BOTTLING}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    return predecessor;
   }
 }
