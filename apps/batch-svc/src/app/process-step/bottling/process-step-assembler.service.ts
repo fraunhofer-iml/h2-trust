@@ -10,12 +10,6 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { BatchEntity, BrokerException, CreateHydrogenBottlingPayload, ProcessStepEntity } from '@h2-trust/amqp';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
 
-// Types for creating entities (only IDs needed for references)
-type BatchReference = Pick<BatchEntity, 'id'>;
-type CompanyReference = { id: string };
-type UserReference = { id: string };
-type UnitReference = { id: string };
-
 @Injectable()
 export class ProcessStepAssemblerService {
   assembleBottlingProcessStep(
@@ -33,14 +27,14 @@ export class ProcessStepAssemblerService {
         },
         type: BatchType.HYDROGEN,
         predecessors: batchesForBottle.map(
-          (batch): BatchReference => ({
+          (batch) => ({
             id: batch.id,
           }),
         ) as BatchEntity[],
-        owner: { id: payload.ownerId } satisfies CompanyReference,
+        owner: { id: payload.ownerId },
       } as BatchEntity,
-      recordedBy: { id: payload.recordedById } satisfies UserReference,
-      executedBy: { id: payload.hydrogenStorageUnitId } satisfies UnitReference,
+      recordedBy: { id: payload.recordedById },
+      executedBy: { id: payload.hydrogenStorageUnitId },
     } as ProcessStepEntity;
   }
 
@@ -83,15 +77,15 @@ export class ProcessStepAssemblerService {
         predecessors: [
           {
             id: predecessorProcessStep.batch.id,
-          } satisfies BatchReference,
-        ] as BatchEntity[],
+          },
+        ],
         owner: {
           id: predecessorProcessStep.batch.owner.id,
-        } satisfies CompanyReference,
+        },
         hydrogenStorageUnit: {
           id: predecessorProcessStep.batch.hydrogenStorageUnit.id,
-        } satisfies UnitReference,
+        },
       } as BatchEntity,
-    };
+    } as ProcessStepEntity;
   }
 }
