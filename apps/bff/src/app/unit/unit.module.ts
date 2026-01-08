@@ -8,13 +8,13 @@
 
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
-import { UserService } from '../user/user.service';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
+import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [new Broker().getGeneralSvcBroker()],
+  imports: [new Broker().getGeneralSvcBroker(), UserModule],
   controllers: [UnitController],
-  providers: [UnitService, UserService],
+  providers: [UnitService],
 })
 export class UnitModule {}

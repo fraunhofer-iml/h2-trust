@@ -53,6 +53,6 @@ export class PowerAccessApprovalController {
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
     @Query('status') powerAccessApprovalStatus: PowerAccessApprovalStatus,
   ): Promise<PowerAccessApprovalDto[]> {
-    return this.powerAccessApprovalService.findAll(authenticatedUser.sub, powerAccessApprovalStatus);
+    return this.powerAccessApprovalService.readByUserAndStatus(authenticatedUser.sub, powerAccessApprovalStatus);
   }
 }

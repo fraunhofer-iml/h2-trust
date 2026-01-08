@@ -120,10 +120,10 @@ export class BottlingController {
     description: "Returns a list of all bottling process steps belonging to the authenticated user's company.",
     type: [BottlingOverviewDto],
   })
-  async readBottlingsByCompany(
+  async readBottlingsAndTransportationsByCompany(
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<BottlingOverviewDto[]> {
-    return this.bottlingService.readBottlingsByCompany(authenticatedUser.sub);
+    return this.bottlingService.readBottlingsAndTransportationsByCompany(authenticatedUser.sub);
   }
 
   @Public()

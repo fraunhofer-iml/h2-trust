@@ -15,17 +15,14 @@ import { PowerAccessApprovalStatus } from '@h2-trust/domain';
 
 @Injectable()
 export class PowerAccessApprovalService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
+  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) { }
 
-  async findAll(
-    userId: string,
-    powerAccessApprovalStatus: PowerAccessApprovalStatus,
-  ): Promise<PowerAccessApprovalDto[]> {
-    return firstValueFrom(
-      this.generalService.send(
-        PowerAccessApprovalPatterns.READ,
-        new ReadPowerAccessApprovalsPayload(userId, powerAccessApprovalStatus),
-      ),
-    ).then((entities) => entities.map(PowerAccessApprovalDto.fromEntity));
+  async readByUserAndStatus(userId: string, status: PowerAccessApprovalStatus): Promise<PowerAccessApprovalDto[]> {
+    const payload = new ReadPowerAccessApprovalsPayload(userId, status);
+
+    const powerAccessApprovals = await firstValueFrom(
+      this.generalService.send(PowerAccessApprovalPatterns.READ, payload),
+    );
+    return powerAccessApprovals.map(PowerAccessApprovalDto.fromEntity);
   }
 }

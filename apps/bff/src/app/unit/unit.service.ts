@@ -40,12 +40,13 @@ export class UnitService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   async readUnit(id: string): Promise<UnitDto> {
-    return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, new ReadByIdPayload(id))).then(
-      UnitService.mapEntityToDto,
+    const unit: BaseUnitEntity = await firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.READ, new ReadByIdPayload(id))
     );
+    return UnitService.mapEntityToDto(unit);
   }
 
   async readUnits(userId: string, unitType: UnitType): Promise<UnitOverviewDto[]> {
@@ -60,9 +61,11 @@ export class UnitService {
       case UnitType.HYDROGEN_STORAGE:
         return this.readHydrogenStorageUnits(companyId);
       case undefined: {
-        const powerProductionUnits = await this.readPowerProductionUnits(companyId);
-        const hydrogenProductionUnits = await this.readHydrogenProductionUnits(companyId);
-        const hydrogenStorageUnits = await this.readHydrogenStorageUnits(companyId);
+        const [powerProductionUnits, hydrogenProductionUnits, hydrogenStorageUnits] = await Promise.all([
+          this.readPowerProductionUnits(companyId),
+          this.readHydrogenProductionUnits(companyId),
+          this.readHydrogenStorageUnits(companyId),
+        ]);
         return [...powerProductionUnits, ...hydrogenProductionUnits, ...hydrogenStorageUnits];
       }
       default:
@@ -71,21 +74,24 @@ export class UnitService {
   }
 
   private async readPowerProductionUnits(companyId: string): Promise<PowerProductionOverviewDto[]> {
-    return firstValueFrom(
+    const units: BaseUnitEntity[] = await firstValueFrom(
       this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS, new ReadByIdPayload(companyId)),
-    ).then((entities) => entities.map(PowerProductionOverviewDto.fromEntity));
+    );
+    return units.map(PowerProductionOverviewDto.fromEntity);
   }
 
   private async readHydrogenProductionUnits(companyId: string): Promise<HydrogenProductionOverviewDto[]> {
-    return firstValueFrom(
+    const units: BaseUnitEntity[] = await firstValueFrom(
       this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS, new ReadByIdPayload(companyId)),
-    ).then((entities) => entities.map(HydrogenProductionOverviewDto.fromEntity));
+    );
+    return units.map(HydrogenProductionOverviewDto.fromEntity);
   }
 
   private async readHydrogenStorageUnits(companyId: string): Promise<HydrogenStorageOverviewDto[]> {
-    return firstValueFrom(
+    const units: BaseUnitEntity[] = await firstValueFrom(
       this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_STORAGE_UNITS, new ReadByIdPayload(companyId)),
-    ).then((entities) => entities.map(HydrogenStorageOverviewDto.fromEntity));
+    );
+    return units.map(HydrogenStorageOverviewDto.fromEntity);
   }
 
   async createUnit(dto: UnitCreateDto): Promise<UnitDto> {
@@ -116,26 +122,29 @@ export class UnitService {
       }
     }
 
-    return firstValueFrom(this.generalService.send(messagePattern, payload)).then(UnitService.mapEntityToDto);
+    const entity: BaseUnitEntity = await firstValueFrom(
+      this.generalService.send(messagePattern, payload)
+    );
+    return UnitService.mapEntityToDto(entity);
   }
 
   static mapEntityToDto(unitEntity: BaseUnitEntity): UnitDto {
-    let unitDto: UnitDto;
+    let unit: UnitDto;
 
     switch (unitEntity.unitType) {
       case UnitType.POWER_PRODUCTION:
-        unitDto = PowerProductionUnitDto.fromEntity(unitEntity);
+        unit = PowerProductionUnitDto.fromEntity(unitEntity);
         break;
       case UnitType.HYDROGEN_PRODUCTION:
-        unitDto = HydrogenProductionUnitDto.fromEntity(unitEntity);
+        unit = HydrogenProductionUnitDto.fromEntity(unitEntity);
         break;
       case UnitType.HYDROGEN_STORAGE:
-        unitDto = HydrogenStorageUnitDto.fromEntity(unitEntity);
+        unit = HydrogenStorageUnitDto.fromEntity(unitEntity);
         break;
       default:
         throw new BadRequestException(`Unit type [${unitEntity.unitType}] unknown`);
     }
 
-    return unitDto;
+    return unit;
   }
 }

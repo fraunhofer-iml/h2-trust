@@ -147,7 +147,7 @@ describe('BottlingController', () => {
     };
 
     const expectedResponse: BottlingOverviewDto[] = returnedProcessSteps.map(BottlingOverviewDto.fromEntity);
-    const actualResponse: BottlingOverviewDto[] = await controller.readBottlingsByCompany(AuthenticatedUserMock);
+    const actualResponse: BottlingOverviewDto[] = await controller.readBottlingsAndTransportationsByCompany(AuthenticatedUserMock);
 
     expect(batchSvcSpy).toHaveBeenCalledTimes(1);
     expect(batchSvcSpy).toHaveBeenCalledWith(

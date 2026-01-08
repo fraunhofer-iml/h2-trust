@@ -14,11 +14,12 @@ import { CompanyDto } from '@h2-trust/api';
 
 @Injectable()
 export class CompanyService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
+  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) { }
 
   async findAll(): Promise<CompanyDto[]> {
-    return await firstValueFrom(this.generalService.send(CompanyMessagePatterns.READ_ALL, {})).then((entities) =>
-      entities.map(CompanyDto.fromEntity),
+    const companies = await firstValueFrom(
+      this.generalService.send(CompanyMessagePatterns.READ_ALL, {})
     );
+    return companies.map(CompanyDto.fromEntity);
   }
 }

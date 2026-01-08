@@ -55,12 +55,13 @@ export class BottlingService {
       dto.fuelType,
     );
 
-    return firstValueFrom(
+    const persistedTransportation: ProcessStepEntity = await firstValueFrom(
       this.batchSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION, transportationPayload),
-    ).then(BottlingOverviewDto.fromEntity);
+    );
+    return BottlingOverviewDto.fromEntity(persistedTransportation);
   }
 
-  async readBottlingsByCompany(userId: string): Promise<BottlingOverviewDto[]> {
+  async readBottlingsAndTransportationsByCompany(userId: string): Promise<BottlingOverviewDto[]> {
     const userDetails = await this.userService.readUserWithCompany(userId);
 
     const payload = new ReadProcessStepsByTypesAndActiveAndCompanyPayload(
@@ -69,8 +70,9 @@ export class BottlingService {
       userDetails.company.id,
     );
 
-    return firstValueFrom(
+    const bottlingsAndTransportations: ProcessStepEntity[] = await firstValueFrom(
       this.batchSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_COMPANY, payload),
-    ).then((processSteps) => processSteps.map(BottlingOverviewDto.fromEntity));
+    );
+    return bottlingsAndTransportations.map(BottlingOverviewDto.fromEntity);
   }
 }
