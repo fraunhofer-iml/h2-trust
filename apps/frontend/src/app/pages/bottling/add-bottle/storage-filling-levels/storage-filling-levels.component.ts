@@ -120,7 +120,7 @@ export class StorageFillingLevelsComponent {
       color: CHART_COLORS.get(h2color) + '30',
       type: 'bar',
       stack: 'a',
-      barMaxWidth: 100,
+      barMaxWidth: 80,
       data: data.map((dto) =>
         formatNumberForChart(dto.hydrogenComposition.find((color) => color.color === h2color)?.amount),
       ),

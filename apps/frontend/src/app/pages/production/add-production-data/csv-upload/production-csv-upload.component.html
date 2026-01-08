@@ -89,6 +89,7 @@
     <div class="flex flex-col gap-4 rounded-lg bg-white p-4" formArrayName="h2ProductionFiles">
       <span>Hydrogen Production</span>
       <app-file-drag-and-drop
+        [acceptedFileTypes]="FileTypes.CSV"
         (fileSelected)="addHydrogenProductionFileWithUnit($event, h2ProductionFiles)"
       ></app-file-drag-and-drop>
       @if (h2ProductionFiles.controls.length !== 0) {
@@ -128,6 +129,7 @@
     <div class="flex flex-col gap-4 rounded-lg bg-white p-4" formArrayName="powerProductionFiles">
       <span>Power Production</span>
       <app-file-drag-and-drop
+        [acceptedFileTypes]="FileTypes.CSV"
         (fileSelected)="addFileFormWithUnit($event, powerProductionFiles)"
       ></app-file-drag-and-drop>
       @if (powerProductionFiles.controls.length !== 0) {

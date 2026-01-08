@@ -32,7 +32,9 @@ export class StorageService {
   }
 
   uploadFile(fileName: string, file: Buffer) {
-    return this.client.putObject(this.bucketName, fileName, file);
+    return this.client.putObject(this.bucketName, fileName, file, file.length, {
+      'Content-Type': 'application/pdf',
+    });
   }
 
   downloadFile(fileName: string) {

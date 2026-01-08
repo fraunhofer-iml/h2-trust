@@ -22,9 +22,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
-import { FGFile, HydrogenComponentDto, HydrogenStorageOverviewDto, UserDto } from '@h2-trust/api';
+import { HydrogenComponentDto, HydrogenStorageOverviewDto, UserDto } from '@h2-trust/api';
 import { FuelType, TransportMode } from '@h2-trust/domain';
-import { ERROR_MESSAGES } from '../../../shared/constants/error.messages';
+import { FileDragAndDropComponent } from '../../../layout/drag-and-drop/file-drag-and-drop.component';
+import { FileCardComponent } from '../../../layout/file-card/file-card.component';
+import { FileTypes } from '../../../shared/constants/file-types';
 import { FormattedUnits } from '../../../shared/constants/formatted-units';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
@@ -32,7 +34,6 @@ import { CompaniesService } from '../../../shared/services/companies/companies.s
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { BottlingForm } from './form';
 import { StorageFillingLevelsComponent } from './storage-filling-levels/storage-filling-levels.component';
-import { UploadFormComponent } from './upload-form/upload-form.component';
 
 @Component({
   selector: 'app-add-bottle',
@@ -49,11 +50,12 @@ import { UploadFormComponent } from './upload-form/upload-form.component';
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
-    UploadFormComponent,
     MatRadioModule,
     RouterModule,
     UnitPipe,
     StorageFillingLevelsComponent,
+    FileDragAndDropComponent,
+    FileCardComponent,
   ],
   templateUrl: './add-bottle.component.html',
 })
@@ -63,13 +65,13 @@ export class AddBottleComponent {
   companiesService = inject(CompaniesService);
   processService = inject(BottlingService);
 
-  readonly ERROR_MESSAGES = ERROR_MESSAGES;
-  readonly TransportType = TransportMode;
-  readonly FuelType = FuelType;
-  readonly FormattedUnits = FormattedUnits;
+  protected readonly FileTypes = FileTypes;
+  protected readonly TransportType = TransportMode;
+  protected readonly FuelType = FuelType;
+  protected readonly FormattedUnits = FormattedUnits;
 
   dateDelimiter: Date = new Date();
-  uploadedFiles: FGFile[] = [];
+  uploadedFiles: File[] = [];
 
   bottleFormGroup: FormGroup<BottlingForm> = new FormGroup({
     date: new FormControl<Date | undefined>(new Date(), Validators.required),
@@ -103,44 +105,15 @@ export class AddBottleComponent {
   }));
 
   constructor() {
-    this.bottleFormGroup.controls.transportMode.valueChanges.subscribe((transportMode) => {
-      if (!transportMode) return;
-
-      const fuelTypeControl = this.bottleFormGroup.controls.fuelType;
-      const distanceControl = this.bottleFormGroup.controls.distance;
-
-      if (transportMode === TransportMode.TRAILER) {
-        fuelTypeControl.addValidators(Validators.required);
-        distanceControl.addValidators([Validators.required, Validators.min(1)]);
-      } else {
-        fuelTypeControl.removeValidators(Validators.required);
-        fuelTypeControl.setValue(null);
-        distanceControl.removeValidators([Validators.required, Validators.min(1)]);
-        distanceControl.setValue(null);
-      }
-
-      fuelTypeControl.updateValueAndValidity();
-      distanceControl.updateValueAndValidity();
-    });
-
-    this.bottleFormGroup.controls.amount?.valueChanges.subscribe((amount) => {
-      if (!amount) return;
-
-      this.bottleFormGroup.controls.type.reset();
-
-      if (this.bottleFormGroup.value?.storageUnit && amount > this.bottleFormGroup.value?.storageUnit?.filling)
-        this.bottleFormGroup.controls.storageUnit?.reset();
-    });
-  }
-
-  submitFile({ file, documentType }: FGFile): void {
-    this.uploadedFiles.push({ file, documentType });
-  }
-
-  removeFile({ file, documentType }: FGFile): void {
-    this.uploadedFiles = this.uploadedFiles.filter(
-      (uploadedFile: FGFile) => !(uploadedFile.file === file && uploadedFile.documentType === documentType),
+    this.bottleFormGroup.controls.transportMode.valueChanges.subscribe((transportMode) =>
+      this.onTransportModeChange(transportMode),
     );
+
+    this.bottleFormGroup.controls.amount?.valueChanges.subscribe((amount) => this.onAmountChnage(amount));
+  }
+
+  removeFile(file: File): void {
+    this.uploadedFiles = this.uploadedFiles.filter((uploadedFile: File) => uploadedFile !== file);
   }
 
   createBottleData() {
@@ -148,7 +121,7 @@ export class AddBottleComponent {
 
     if (this.uploadedFiles)
       for (const file of this.uploadedFiles) {
-        data.append('files', file.file);
+        data.append('files', file);
       }
 
     data.append('amount', this.bottleFormGroup.value?.amount?.toString() ?? '');
@@ -178,6 +151,35 @@ export class AddBottleComponent {
     }
 
     return pickedDate;
+  }
+
+  private onTransportModeChange(transportMode: TransportMode | null) {
+    if (!transportMode) return;
+
+    const fuelTypeControl = this.bottleFormGroup.controls.fuelType;
+    const distanceControl = this.bottleFormGroup.controls.distance;
+
+    if (transportMode === TransportMode.TRAILER) {
+      fuelTypeControl.addValidators(Validators.required);
+      distanceControl.addValidators([Validators.required, Validators.min(1)]);
+    } else {
+      fuelTypeControl.removeValidators(Validators.required);
+      fuelTypeControl.setValue(null);
+      distanceControl.removeValidators([Validators.required, Validators.min(1)]);
+      distanceControl.setValue(null);
+    }
+
+    fuelTypeControl.updateValueAndValidity();
+    distanceControl.updateValueAndValidity();
+  }
+
+  private onAmountChnage(amount: number | null | undefined) {
+    if (!amount) return;
+
+    this.bottleFormGroup.controls.type.reset();
+
+    if (this.bottleFormGroup.value?.storageUnit && amount > this.bottleFormGroup.value?.storageUnit?.filling)
+      this.bottleFormGroup.controls.storageUnit?.reset();
   }
 
   displayComposition(hydrogenComposition: HydrogenComponentDto[]) {

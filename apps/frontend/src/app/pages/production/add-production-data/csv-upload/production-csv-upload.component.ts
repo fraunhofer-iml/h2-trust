@@ -7,6 +7,7 @@
  */
 
 import { FileDragAndDropComponent } from 'apps/frontend/src/app/layout/drag-and-drop/file-drag-and-drop.component';
+import { FileTypes } from 'apps/frontend/src/app/shared/constants/file-types';
 import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
 import { ROUTES } from 'apps/frontend/src/app/shared/constants/routes';
 import { FileSizePipe } from 'apps/frontend/src/app/shared/pipes/file-size.pipe';
@@ -63,6 +64,7 @@ import { FileForm } from './file-upload.form';
 })
 export class ProductionCsvUploadComponent {
   protected readonly FormattedUnits = FormattedUnits;
+  protected readonly FileTypes = FileTypes;
 
   productionService: ProductionService = inject(ProductionService);
   router = inject(Router);
