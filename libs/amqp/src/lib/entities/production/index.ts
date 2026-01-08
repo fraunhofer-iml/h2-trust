@@ -11,4 +11,3 @@ export * from './create-production.entity';
 export * from './parsed-production.entity';
 export * from './parsed-production-matching-result.entity';
 export * from './staged-production.entity';
-export * from './submit-production.entity';

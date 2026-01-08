@@ -10,9 +10,9 @@ import { QualityDetailsDbType } from '@h2-trust/database';
 
 export class QualityDetailsEntity {
   id?: string;
-  color?: string;
+  color: string;
 
-  constructor(id: string, color: string) {
+  constructor(id: string | undefined, color: string) {
     this.id = id;
     this.color = color;
   }

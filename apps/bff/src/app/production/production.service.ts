@@ -15,13 +15,15 @@ import {
   AccountingPeriodPower,
   BrokerException,
   BrokerQueues,
-  CreateProductionEntity,
+  CreateProductionsPayload,
+  FinalizeStagedProductionsPayload,
   ParsedFileBundles,
   ParsedProductionMatchingResultEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
-  SubmitProductionProps,
+  ReadProcessStepsByPredecessorTypesAndCompanyPayload,
+  StageProductionsPayload,
   UnitDataBundle,
   UnitFileBundle,
 } from '@h2-trust/amqp';
@@ -51,8 +53,7 @@ export class ProductionService {
   ) {}
 
   async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    // TODO-MP: we need to send a message and NOT an entity here (see DUHGW-137)
-    const createProductionEntity = new CreateProductionEntity(
+    const payload: CreateProductionsPayload = new CreateProductionsPayload(
       dto.productionStartedAt,
       dto.productionEndedAt,
       dto.powerProductionUnitId,
@@ -60,14 +61,11 @@ export class ProductionService {
       dto.hydrogenProductionUnitId,
       dto.hydrogenAmountKg,
       userId,
-      null,
       dto.hydrogenStorageUnitId,
-      null,
-      null,
-      null,
     );
+
     const processSteps: ProcessStepEntity[] = await firstValueFrom(
-      this.processSvc.send(ProductionMessagePatterns.CREATE, { createProductionEntity }),
+      this.processSvc.send(ProductionMessagePatterns.CREATE, payload),
     );
 
     return processSteps
@@ -78,14 +76,13 @@ export class ProductionService {
   async readHydrogenProductionsByCompany(userId: string): Promise<ProductionOverviewDto[]> {
     const userDetailsDto: UserDetailsDto = await this.userService.readUserWithCompany(userId);
     const companyIdOfUser = userDetailsDto.company.id;
-    const payload = {
-      predecessorProcessTypes: [ProcessType.POWER_PRODUCTION],
-      companyId: companyIdOfUser,
-    };
 
-    return firstValueFrom(this.batchSvc.send(ProcessStepMessagePatterns.READ_ALL, payload)).then((processSteps) =>
-      processSteps.map(ProductionOverviewDto.fromEntity),
-    );
+    const payload: ReadProcessStepsByPredecessorTypesAndCompanyPayload =
+      new ReadProcessStepsByPredecessorTypesAndCompanyPayload([ProcessType.POWER_PRODUCTION], companyIdOfUser);
+
+    return firstValueFrom(
+      this.batchSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_PREDECESSOR_TYPES_AND_COMPANY, payload),
+    ).then((processSteps) => processSteps.map(ProductionOverviewDto.fromEntity));
   }
 
   async importCSV(
@@ -94,21 +91,20 @@ export class ProductionService {
     dto: ProductionCSVUploadDto,
     userId: string,
   ) {
-    const h2 = await this.processFile<AccountingPeriodHydrogen>(
-      hydrogenProductionFiles,
-      dto.hydrogenProductionUnitIds,
-      'hydrogen',
-    );
-
-    const power = await this.processFile<AccountingPeriodPower>(
+    const powerProduction = await this.processFile<AccountingPeriodPower>(
       powerProductionFiles,
       dto.powerProductionUnitIds,
       'power',
     );
 
-    const processedFiles: ParsedFileBundles = { hydrogenProduction: h2, powerProduction: power };
+    const hydrogenProduction = await this.processFile<AccountingPeriodHydrogen>(
+      hydrogenProductionFiles,
+      dto.hydrogenProductionUnitIds,
+      'hydrogen',
+    );
 
-    const payload = { data: processedFiles, userId: userId };
+    const parsedFileBundles = new ParsedFileBundles(powerProduction, hydrogenProduction);
+    const payload = new StageProductionsPayload(parsedFileBundles, userId);
     const matchingResult = await firstValueFrom(
       this.processSvc.send<ParsedProductionMatchingResultEntity>(ProductionMessagePatterns.STAGE, payload),
     );
@@ -117,7 +113,11 @@ export class ProductionService {
   }
 
   async submitCsvData(dto: ImportSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    const payload: SubmitProductionProps = new SubmitProductionProps(userId, dto.storageUnitId, dto.importId);
+    const payload: FinalizeStagedProductionsPayload = new FinalizeStagedProductionsPayload(
+      userId,
+      dto.storageUnitId,
+      dto.importId,
+    );
     const processSteps: ProcessStepEntity[] = await firstValueFrom(
       this.processSvc.send<ProcessStepEntity[]>(ProductionMessagePatterns.FINALIZE, payload),
     );

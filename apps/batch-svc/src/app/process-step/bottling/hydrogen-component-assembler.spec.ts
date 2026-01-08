@@ -6,7 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepEntity, QualityDetailsEntityMock } from '@h2-trust/amqp';
+import {
+  BatchEntityHydrogenProducedMock,
+  HydrogenProductionUnitEntityMock,
+  ProcessStepEntity,
+  QualityDetailsEntityMock,
+  UserEntityHydrogenMock,
+} from '@h2-trust/amqp';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
 import { HydrogenComponentAssembler } from './hydrogen-component-assembler';
 
@@ -20,17 +26,23 @@ describe('HydrogenComponentAssembler', () => {
       endedAt: new Date('2025-01-01T01:00:00Z'),
       type: ProcessType.HYDROGEN_BOTTLING,
       batch: {
+        ...BatchEntityHydrogenProducedMock[0],
         amount: 1,
         qualityDetails: QualityDetailsEntityMock[2], // MIX
-        type: BatchType.HYDROGEN,
         predecessors: [],
       },
+      recordedBy: UserEntityHydrogenMock,
+      executedBy: HydrogenProductionUnitEntityMock[0],
     };
   });
 
   it('should calculate hydrogen composition with one color', () => {
     bottlingProcessStep.batch.predecessors = [
-      { amount: 1, qualityDetails: QualityDetailsEntityMock[0], type: BatchType.HYDROGEN },
+      {
+        ...BatchEntityHydrogenProducedMock[0],
+        amount: 1,
+        qualityDetails: QualityDetailsEntityMock[0],
+      },
     ];
 
     const expectedResponse = [{ color: HydrogenColor.GREEN, amount: 1 }];
@@ -77,8 +89,18 @@ describe('HydrogenComponentAssembler', () => {
 
   it('should not calculate hydrogen composition with an invalid predecessor type', () => {
     bottlingProcessStep.batch.predecessors = [
-      { amount: 1, qualityDetails: QualityDetailsEntityMock[0], type: BatchType.HYDROGEN },
-      { amount: 2, qualityDetails: QualityDetailsEntityMock[0], type: BatchType.POWER },
+      {
+        ...BatchEntityHydrogenProducedMock[0],
+        amount: 1,
+        qualityDetails: QualityDetailsEntityMock[0],
+        type: BatchType.HYDROGEN,
+      },
+      {
+        ...BatchEntityHydrogenProducedMock[0],
+        amount: 2,
+        qualityDetails: QualityDetailsEntityMock[0],
+        type: BatchType.POWER,
+      },
     ];
 
     const expectedErrorMessage = `Predecessor batch ${bottlingProcessStep.batch.predecessors[0].id} should be type ${BatchType.HYDROGEN}, but is ${BatchType.POWER}.`;

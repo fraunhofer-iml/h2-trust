@@ -8,10 +8,15 @@
 
 import { Injectable } from '@nestjs/common';
 import {
+  CreateHydrogenProductionUnitPayload,
+  CreateHydrogenStorageUnitPayload,
+  CreatePowerProductionUnitPayload,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
   PowerProductionTypeEntity,
   PowerProductionUnitEntity,
+  ReadByIdPayload,
+  ReadByIdsPayload,
   UnitEntity,
 } from '@h2-trust/amqp';
 import { PowerProductionTypeRepository, UnitRepository } from '@h2-trust/database';
@@ -27,39 +32,41 @@ export class UnitService {
     return this.unitRepository.findUnitById(id);
   }
 
-  async readPowerProductionUnits(companyId: string): Promise<PowerProductionUnitEntity[]> {
-    return this.unitRepository.findPowerProductionUnitsByCompanyId(companyId);
+  async readPowerProductionUnitsByCompanyId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity[]> {
+    return this.unitRepository.findPowerProductionUnitsByCompanyId(payload.id);
   }
 
-  async readPowerProductionUnitsByIds(ids: string[]): Promise<PowerProductionUnitEntity[]> {
-    return this.unitRepository.findPowerProductionUnitsByIds(ids);
+  async readPowerProductionUnitsByIds(payload: ReadByIdsPayload): Promise<PowerProductionUnitEntity[]> {
+    return this.unitRepository.findPowerProductionUnitsByIds(payload.ids);
   }
 
-  async readHydrogenProductionUnits(companyId: string): Promise<HydrogenProductionUnitEntity[]> {
-    return this.unitRepository.findHydrogenProductionUnitsByCompanyId(companyId);
+  async readHydrogenProductionUnits(payload: ReadByIdPayload): Promise<HydrogenProductionUnitEntity[]> {
+    return this.unitRepository.findHydrogenProductionUnitsByCompanyId(payload.id);
   }
 
-  async readHydrogenProductionUnitsByIds(ids: string[]): Promise<HydrogenProductionUnitEntity[]> {
-    return this.unitRepository.findHydrogenProductionUnitsByIds(ids);
+  async readHydrogenProductionUnitsByIds(payload: ReadByIdsPayload): Promise<HydrogenProductionUnitEntity[]> {
+    return this.unitRepository.findHydrogenProductionUnitsByIds(payload.ids);
   }
 
-  async readHydrogenStorageUnits(companyId: string): Promise<HydrogenStorageUnitEntity[]> {
-    return this.unitRepository.findHydrogenStorageUnitsByCompanyId(companyId);
+  async readHydrogenStorageUnits(payload: ReadByIdPayload): Promise<HydrogenStorageUnitEntity[]> {
+    return this.unitRepository.findHydrogenStorageUnitsByCompanyId(payload.id);
   }
 
   async readPowerProductionTypes(): Promise<PowerProductionTypeEntity[]> {
     return this.powerProductionTypeRepository.findPowerProductionTypes();
   }
 
-  async createPowerProductionUnit(unit: PowerProductionUnitEntity): Promise<PowerProductionUnitEntity> {
-    return this.unitRepository.insertPowerProductionUnit(unit);
+  async createPowerProductionUnit(payload: CreatePowerProductionUnitPayload): Promise<PowerProductionUnitEntity> {
+    return this.unitRepository.insertPowerProductionUnit(payload);
   }
 
-  async createHydrogenProductionUnit(unit: HydrogenProductionUnitEntity): Promise<HydrogenProductionUnitEntity> {
-    return this.unitRepository.insertHydrogenProductionUnit(unit);
+  async createHydrogenProductionUnit(
+    payload: CreateHydrogenProductionUnitPayload,
+  ): Promise<HydrogenProductionUnitEntity> {
+    return this.unitRepository.insertHydrogenProductionUnit(payload);
   }
 
-  async createHydrogenStorageUnit(unit: HydrogenStorageUnitEntity): Promise<HydrogenStorageUnitEntity> {
-    return this.unitRepository.insertHydrogenStorageUnit(unit);
+  async createHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
+    return this.unitRepository.insertHydrogenStorageUnit(payload);
   }
 }

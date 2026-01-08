@@ -6,7 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsEnum, IsISO8601, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDate, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 
@@ -15,47 +16,49 @@ export abstract class UnitCreateDto {
   @IsNotEmpty()
   unitType: UnitType;
 
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   name: string;
 
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   owner: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   operator?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   manufacturer?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   modelType?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   modelNumber?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   serialNumber?: string;
 
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   mastrNumber: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   certifiedBy?: string;
 
+  @IsDate()
   @IsNotEmpty()
-  @IsISO8601()
-  commissionedOn: string;
+  @Type(() => Date)
+  commissionedOn: Date;
 
   @IsNotEmpty()
+  @Type(() => AddressDto)
   address: AddressDto;
 
   constructor(
@@ -69,7 +72,7 @@ export abstract class UnitCreateDto {
     serialNumber: string,
     mastrNumber: string,
     certifiedBy: string,
-    commissionedOn: string,
+    commissionedOn: Date,
     address: AddressDto,
   ) {
     this.unitType = type;

@@ -28,10 +28,10 @@ describe('BottlingService#buildTransportationDetails', () => {
     } as BottlingDto;
 
     // act & assert
-    expect(() => (service as any).buildTransportationDetails(givenDto)).toThrow(HttpException);
+    expect(() => (service as any).buildTransportationDetailsEntity(givenDto)).toThrow(HttpException);
 
     try {
-      (service as any).buildTransportationDetails(givenDto);
+      (service as any).buildTransportationDetailsEntity(givenDto);
     } catch (exception) {
       expect(exception.getStatus()).toBe(HttpStatus.BAD_REQUEST);
       expect(exception.message).toBe(`Distance is required for transport mode [${givenDto.transportMode}].`);
@@ -47,10 +47,10 @@ describe('BottlingService#buildTransportationDetails', () => {
     } as BottlingDto;
 
     // act & assert
-    expect(() => (service as any).buildTransportationDetails(givenDto)).toThrow(HttpException);
+    expect(() => (service as any).buildTransportationDetailsEntity(givenDto)).toThrow(HttpException);
 
     try {
-      (service as any).buildTransportationDetails(givenDto);
+      (service as any).buildTransportationDetailsEntity(givenDto);
     } catch (exception) {
       expect(exception.getStatus()).toBe(HttpStatus.BAD_REQUEST);
       expect(exception.message).toBe(`Fuel type is required for transport mode [${givenDto.transportMode}].`);
@@ -66,7 +66,7 @@ describe('BottlingService#buildTransportationDetails', () => {
     } as BottlingDto;
 
     // act
-    const result: TransportationDetailsEntity = (service as any).buildTransportationDetails(givenDto);
+    const result: TransportationDetailsEntity = (service as any).buildTransportationDetailsEntity(givenDto);
 
     // assert
     expect(result).toBeInstanceOf(TransportationDetailsEntity);
@@ -82,7 +82,7 @@ describe('BottlingService#buildTransportationDetails', () => {
     } as BottlingDto;
 
     // act
-    const result: TransportationDetailsEntity = (service as any).buildTransportationDetails(givenDto);
+    const result: TransportationDetailsEntity = (service as any).buildTransportationDetailsEntity(givenDto);
 
     // assert
     expect(result).toBeInstanceOf(TransportationDetailsEntity);
@@ -98,10 +98,10 @@ describe('BottlingService#buildTransportationDetails', () => {
     } as BottlingDto;
 
     // act & assert
-    expect(() => (service as any).buildTransportationDetails(givenDto)).toThrow(HttpException);
+    expect(() => (service as any).buildTransportationDetailsEntity(givenDto)).toThrow(HttpException);
 
     try {
-      (service as any).buildTransportationDetails(givenDto);
+      (service as any).buildTransportationDetailsEntity(givenDto);
     } catch (exception) {
       expect(exception.getStatus()).toBe(HttpStatus.BAD_REQUEST);
       expect(exception.message).toBe(`Invalid transport mode: ${givenDto.transportMode}`);

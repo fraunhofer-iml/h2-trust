@@ -10,10 +10,10 @@ import { UserDbType } from 'libs/database/src/lib/types';
 import { CompanyEntity } from '../company';
 
 export class UserEntity {
-  id?: string;
-  name?: string;
-  email?: string;
-  company?: CompanyEntity;
+  id: string;
+  name: string;
+  email: string;
+  company: CompanyEntity;
 
   constructor(id: string, name: string, email: string, company: CompanyEntity) {
     this.id = id;

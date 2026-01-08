@@ -93,25 +93,25 @@ export class ProductionUtils {
     );
   }
 
-  static calculateWaterAmount(startedAt: string, endedAt: string, waterConsumptionPerHour: number): number {
+  static calculateWaterAmount(startedAt: Date, endedAt: Date, waterConsumptionPerHour: number): number {
     if (waterConsumptionPerHour < 0) {
       throw new Error(`waterConsumptionPerHour must be non-negative: [${waterConsumptionPerHour}]`);
     }
 
-    const startedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(startedAt);
-    const endedAtInSeconds = DateTimeUtil.convertDateStringToSeconds(endedAt);
+    const startedAtInSeconds = DateTimeUtil.convertDateToSeconds(startedAt);
+    const endedAtInSeconds = DateTimeUtil.convertDateToSeconds(endedAt);
     const durationInSeconds = ProductionUtils.calculateDuration(startedAtInSeconds, endedAtInSeconds);
     return (waterConsumptionPerHour / TimeInSeconds.ONE_HOUR) * durationInSeconds;
   }
 
   static calculateAccountingPeriods(
-    startedAt: string,
-    endedAt: string,
+    startedAt: Date,
+    endedAt: Date,
     totalAmount: number,
     predecessors: ProcessStepEntity[],
   ): AccountingPeriod[] {
-    const startInSeconds = DateTimeUtil.convertDateStringToSeconds(startedAt);
-    const endInSeconds = DateTimeUtil.convertDateStringToSeconds(endedAt);
+    const startInSeconds = DateTimeUtil.convertDateToSeconds(startedAt);
+    const endInSeconds = DateTimeUtil.convertDateToSeconds(endedAt);
     const alignedStartInSeconds =
       Math.floor(startInSeconds / TimeInSeconds.ACCOUNTING_PERIOD) * TimeInSeconds.ACCOUNTING_PERIOD;
 

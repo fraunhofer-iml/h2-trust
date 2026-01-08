@@ -33,10 +33,8 @@ export class ProcessStepRepository {
       .then(ProcessStepEntity.fromDatabase);
   }
 
-  async findProcessSteps(
-    processTypes: string[],
+  async findProcessStepsByPredecessorTypesAndCompany(
     predecessorProcessTypes: string[],
-    active: boolean,
     companyId: string,
   ): Promise<ProcessStepEntity[]> {
     const predecessorsFilter =
@@ -55,10 +53,32 @@ export class ProcessStepRepository {
     return this.prismaService.processStep
       .findMany({
         where: {
+          batch: {
+            ...predecessorsFilter,
+          },
+          executedBy: {
+            ownerId: companyId,
+          },
+        },
+        orderBy: {
+          endedAt: 'desc',
+        },
+        ...processStepQueryArgs,
+      })
+      .then((processSteps) => processSteps.map(ProcessStepEntity.fromDatabase));
+  }
+
+  async findProcessStepsByTypesAndActiveAndCompany(
+    processTypes: string[],
+    active: boolean,
+    companyId: string,
+  ): Promise<ProcessStepEntity[]> {
+    return this.prismaService.processStep
+      .findMany({
+        where: {
           type: { in: processTypes },
           batch: {
             active: active,
-            ...predecessorsFilter,
           },
           executedBy: {
             ownerId: companyId,

@@ -12,16 +12,18 @@ import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerException,
   BrokerQueues,
+  CreateManyProcessStepsPayload,
   CreateProductionEntity,
-  ParsedFileBundles,
+  FinalizeStagedProductionsPayload,
   ParsedProductionEntity,
   ParsedProductionMatchingResultEntity,
   PowerAccessApprovalEntity,
   PowerAccessApprovalPatterns,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
+  ReadPowerAccessApprovalsPayload,
   StagedProductionEntity,
-  SubmitProductionProps,
+  StageProductionsPayload,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
@@ -45,10 +47,10 @@ export class ProductionImportService {
     this.productionChunkSize = this.configurationService.getProcessSvcConfiguration().productionChunkSize;
   }
 
-  async stageProductions(data: ParsedFileBundles, userId: string) {
-    const gridUnitId = await this.fetchGridUnitId(userId);
+  async stageProductions(payload: StageProductionsPayload): Promise<ParsedProductionMatchingResultEntity> {
+    const gridUnitId = await this.fetchGridUnitId(payload.userId);
     const parsedProductions: ParsedProductionEntity[] = this.accountingPeriodMatchingService.matchAccountingPeriods(
-      data,
+      payload.data,
       gridUnitId,
     );
 
@@ -56,24 +58,21 @@ export class ProductionImportService {
     return new ParsedProductionMatchingResultEntity(importId, parsedProductions);
   }
 
-  async finalizeStagedProductions(props: SubmitProductionProps): Promise<ProcessStepEntity[]> {
+  async finalizeStagedProductions(payload: FinalizeStagedProductionsPayload): Promise<ProcessStepEntity[]> {
     const stagedProductions: StagedProductionEntity[] =
-      await this.stagedProductionRepository.getStagedProductionsByImportId(props.importId);
+      await this.stagedProductionRepository.getStagedProductionsByImportId(payload.importId);
 
     const createProductions: CreateProductionEntity[] = stagedProductions.map((stagedProduction) => {
-      const startedAt: Date = new Date(stagedProduction.startedAt);
-      const endedAt: Date = new Date(new Date(stagedProduction.startedAt).setMinutes(59, 59, 999));
-
       return new CreateProductionEntity(
-        startedAt.toISOString(),
-        endedAt.toISOString(),
+        stagedProduction.startedAt,
+        new Date(new Date(stagedProduction.startedAt).setMinutes(59, 59, 999)),
         stagedProduction.powerProductionUnitId,
         stagedProduction.powerAmount,
         stagedProduction.hydrogenProductionUnitId,
         stagedProduction.hydrogenAmount,
-        props.recordedBy,
+        payload.recordedBy,
         stagedProduction.hydrogenColor,
-        props.hydrogenStorageUnitId,
+        payload.hydrogenStorageUnitId,
         stagedProduction.powerProductionUnitOwnerId,
         stagedProduction.hydrogenProductionUnitOwnerId,
         stagedProduction.waterConsumptionLitersPerHour,
@@ -88,10 +87,10 @@ export class ProductionImportService {
 
   private async fetchGridUnitId(userId: string): Promise<string> {
     const approvals: PowerAccessApprovalEntity[] = await firstValueFrom(
-      this.generalService.send(PowerAccessApprovalPatterns.READ, {
-        userId: userId,
-        powerAccessApprovalStatus: PowerAccessApprovalStatus.APPROVED,
-      }),
+      this.generalService.send(
+        PowerAccessApprovalPatterns.READ,
+        new ReadPowerAccessApprovalsPayload(userId, PowerAccessApprovalStatus.APPROVED),
+      ),
     );
     const powerAccessApprovalForGrid = approvals.find(
       (approval) => approval.powerProductionUnit.type.name === PowerProductionType.GRID,
@@ -133,9 +132,10 @@ export class ProductionImportService {
 
       // Step 2: Persist power and water
       const persistedPowerAndWater: ProcessStepEntity[] = await firstValueFrom(
-        this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, {
-          processSteps: [...power, ...water],
-        }),
+        this.batchSvc.send(
+          ProcessStepMessagePatterns.CREATE_MANY,
+          new CreateManyProcessStepsPayload([...power, ...water]),
+        ),
       );
 
       // Step 3: Split response back into power and water
@@ -151,7 +151,7 @@ export class ProductionImportService {
 
       // Step 5: Persist hydrogen
       const persistedHydrogen: ProcessStepEntity[] = await firstValueFrom(
-        this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, { processSteps: hydrogen }),
+        this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, new CreateManyProcessStepsPayload(hydrogen)),
       );
 
       persistedProcessSteps.push(...persistedPowerAndWater, ...persistedHydrogen);

@@ -7,24 +7,24 @@
  */
 
 import { IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
-import { HydrogenStorageUnitEntity } from '@h2-trust/amqp';
+import { AddressPayload, CreateHydrogenStorageUnitPayload } from '@h2-trust/amqp';
 import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 import { UnitCreateDto } from './unit-create.dto';
 
 export class HydrogenStorageUnitCreateDto extends UnitCreateDto {
-  @IsNotEmpty()
   @IsEnum(HydrogenStorageType)
+  @IsNotEmpty()
   storageType: HydrogenStorageType;
 
-  @IsNotEmpty()
   @IsNumber()
   @IsPositive()
+  @IsNotEmpty()
   capacity: number;
 
-  @IsNotEmpty()
   @IsNumber()
   @IsPositive()
+  @IsNotEmpty()
   pressure: number;
 
   constructor(
@@ -38,7 +38,7 @@ export class HydrogenStorageUnitCreateDto extends UnitCreateDto {
     serialNumber: string,
     mastrNumber: string,
     certifiedBy: string,
-    commissionedOn: string,
+    commissionedOn: Date,
     address: AddressDto,
     storageType: HydrogenStorageType,
     capacity: number,
@@ -63,26 +63,28 @@ export class HydrogenStorageUnitCreateDto extends UnitCreateDto {
     this.pressure = pressure;
   }
 
-  static toEntity(dto: HydrogenStorageUnitCreateDto): HydrogenStorageUnitEntity {
-    return {
-      name: dto.name,
-      mastrNumber: dto.mastrNumber,
-      manufacturer: dto.manufacturer,
-      modelType: dto.modelType,
-      modelNumber: dto.modelNumber,
-      serialNumber: dto.serialNumber,
-      certifiedBy: dto.certifiedBy,
-      commissionedOn: new Date(dto.commissionedOn),
-      address: dto.address,
-      company: {
-        id: dto.owner,
-      },
-      operator: {
-        id: dto.operator,
-      },
-      capacity: dto.capacity,
-      pressure: dto.pressure,
-      type: dto.storageType,
-    };
+  static toPayload(dto: HydrogenStorageUnitCreateDto): CreateHydrogenStorageUnitPayload {
+    return new CreateHydrogenStorageUnitPayload(
+      dto.name,
+      dto.mastrNumber,
+      dto.commissionedOn,
+      new AddressPayload(
+        dto.address.street,
+        dto.address.postalCode,
+        dto.address.city,
+        dto.address.state,
+        dto.address.country,
+      ),
+      dto.owner,
+      dto.storageType,
+      dto.capacity,
+      dto.pressure,
+      dto.manufacturer,
+      dto.modelType,
+      dto.modelNumber,
+      dto.serialNumber,
+      dto.certifiedBy,
+      dto.operator,
+    );
   }
 }

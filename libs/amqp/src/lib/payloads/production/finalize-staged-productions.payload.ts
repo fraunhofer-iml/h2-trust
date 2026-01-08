@@ -6,9 +6,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export class SubmitProductionProps {
+import { IsNotEmpty, IsString } from 'class-validator';
+
+export class FinalizeStagedProductionsPayload {
+  @IsString()
+  @IsNotEmpty()
   recordedBy: string;
+
+  @IsString()
+  @IsNotEmpty()
   hydrogenStorageUnitId: string;
+
+  @IsString()
+  @IsNotEmpty()
   importId: string;
 
   constructor(recordedBy: string, hydrogenStorageUnitId: string, importId: string) {

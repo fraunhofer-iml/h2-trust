@@ -21,8 +21,9 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalPipes(
     new ValidationPipe({
-      disableErrorMessages: false,
       transform: true,
+      whitelist: false, // TODO-MP: set to true after DUHGW-220 is implemented
+      forbidNonWhitelisted: false, // TODO-MP: set to true after DUHGW-220 is implemented
     }),
   );
   app.useGlobalInterceptors(new AllErrorsInterceptor());

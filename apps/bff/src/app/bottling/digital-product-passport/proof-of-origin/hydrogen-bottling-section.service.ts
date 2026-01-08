@@ -9,7 +9,13 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BrokerQueues, HydrogenComponentEntity, ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
+import {
+  BrokerQueues,
+  HydrogenComponentEntity,
+  ProcessStepEntity,
+  ProcessStepMessagePatterns,
+  ReadByIdPayload,
+} from '@h2-trust/amqp';
 import { EmissionCalculationDto, EmissionDto, HydrogenBatchDto, SectionDto } from '@h2-trust/api';
 import { ProofOfOrigin } from '@h2-trust/domain';
 import { EmissionCalculationAssembler } from '../emission.assembler';
@@ -21,7 +27,10 @@ export class HydrogenBottlingSectionService {
 
   async buildSection(hydrogenBottling: ProcessStepEntity): Promise<SectionDto> {
     const hydrogenCompositions: HydrogenComponentEntity[] = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION, hydrogenBottling.id),
+      this.batchSvc.send(
+        ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION,
+        new ReadByIdPayload(hydrogenBottling.id),
+      ),
     );
     const emissionCalculation: EmissionCalculationDto =
       EmissionCalculationAssembler.assembleHydrogenBottlingCalculation(hydrogenBottling);

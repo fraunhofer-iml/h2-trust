@@ -21,7 +21,7 @@ export const HydrogenStorageUnitCreateDtoMock = <HydrogenStorageUnitCreateDto[]>
     serialNumber: 'SER-001',
     mastrNumber: 'MASTR-001',
     certifiedBy: 'Certification Body A',
-    commissionedOn: '2025-01-01',
+    commissionedOn: new Date('2025-01-01'),
     address: {
       street: 'Main Street',
       postalCode: '12345',

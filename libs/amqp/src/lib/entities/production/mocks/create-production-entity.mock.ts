@@ -18,8 +18,8 @@ import { CreateProductionEntity } from '../create-production.entity';
 
 export const CreateProductionEntityMock: CreateProductionEntity[] = [
   new CreateProductionEntity(
-    '2025-01-01T10:00:00Z',
-    '2025-01-01T10:10:00Z',
+    new Date('2025-01-01T10:00:00Z'),
+    new Date('2025-01-01T10:10:00Z'),
     PowerProductionUnitSeed[0].id,
     10,
     HydrogenProductionUnitSeed[0].id,

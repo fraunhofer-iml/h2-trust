@@ -9,7 +9,13 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BrokerQueues, ProcessStepEntity, ProcessStepMessagePatterns, ProvenanceEntity } from '@h2-trust/amqp';
+import {
+  BrokerQueues,
+  ProcessStepEntity,
+  ProcessStepMessagePatterns,
+  ProvenanceEntity,
+  ReadByIdPayload,
+} from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { TraversalService } from './traversal.service';
 
@@ -63,13 +69,13 @@ export class ProvenanceService {
     },
   };
 
-  async buildProvenance(processStepId: string): Promise<ProvenanceEntity> {
-    if (!processStepId) {
+  async buildProvenance(payload: ReadByIdPayload): Promise<ProvenanceEntity> {
+    if (!payload.id) {
       throw new Error('processStepId must be provided.');
     }
 
     const root: ProcessStepEntity = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.READ_UNIQUE, { processStepId }),
+      this.batchSvc.send(ProcessStepMessagePatterns.READ_UNIQUE, new ReadByIdPayload(payload.id)),
     );
 
     if (!root || !root.type) {

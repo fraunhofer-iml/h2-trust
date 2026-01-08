@@ -8,115 +8,120 @@
 
 import { Prisma } from '@prisma/client';
 import {
-  BaseUnitEntity,
-  HydrogenProductionUnitEntity,
-  HydrogenStorageUnitEntity,
-  PowerProductionUnitEntity,
+  BaseCreateUnitPayload,
+  CreateHydrogenProductionUnitPayload,
+  CreateHydrogenStorageUnitPayload,
+  CreatePowerProductionUnitPayload,
 } from '@h2-trust/amqp';
 import { assertDefined } from '@h2-trust/utils';
 
-export function buildBaseUnitCreateInput(entity: BaseUnitEntity): Prisma.UnitCreateInput {
-  assertDefined(entity.name, 'BaseUnitEntity.name');
-  assertDefined(entity.mastrNumber, 'BaseUnitEntity.mastrNumber');
-  assertDefined(entity.commissionedOn, 'BaseUnitEntity.commissionedOn');
-  assertDefined(entity.address, 'BaseUnitEntity.address');
-  assertDefined(entity.address.street, 'BaseUnitEntity.address.street');
-  assertDefined(entity.address.postalCode, 'BaseUnitEntity.address.postalCode');
-  assertDefined(entity.address.city, 'BaseUnitEntity.address.city');
-  assertDefined(entity.address.state, 'BaseUnitEntity.address.state');
-  assertDefined(entity.address.country, 'BaseUnitEntity.address.country');
-  assertDefined(entity.company?.id, 'BaseUnitEntity.company.id');
+export function buildBaseUnitCreateInput(payload: BaseCreateUnitPayload): Prisma.UnitCreateInput {
+  assertDefined(payload.name, 'BaseCreateUnitPayload.name');
+  assertDefined(payload.mastrNumber, 'BaseCreateUnitPayload.mastrNumber');
+  assertDefined(payload.commissionedOn, 'BaseCreateUnitPayload.commissionedOn');
+  assertDefined(payload.address, 'BaseCreateUnitPayload.address');
+  assertDefined(payload.address.street, 'BaseCreateUnitPayload.address.street');
+  assertDefined(payload.address.postalCode, 'BaseCreateUnitPayload.address.postalCode');
+  assertDefined(payload.address.city, 'BaseCreateUnitPayload.address.city');
+  assertDefined(payload.address.state, 'BaseCreateUnitPayload.address.state');
+  assertDefined(payload.address.country, 'BaseCreateUnitPayload.address.country');
+  assertDefined(payload.companyId, 'BaseCreateUnitPayload.companyId');
 
   return Prisma.validator<Prisma.UnitCreateInput>()({
-    name: entity.name,
-    mastrNumber: entity.mastrNumber,
-    manufacturer: entity.manufacturer,
-    modelType: entity.modelType,
-    modelNumber: entity.modelNumber,
-    serialNumber: entity.serialNumber,
-    certifiedBy: entity.certifiedBy,
-    commissionedOn: entity.commissionedOn,
+    name: payload.name,
+    mastrNumber: payload.mastrNumber,
+    manufacturer: payload.manufacturer,
+    modelType: payload.modelType,
+    modelNumber: payload.modelNumber,
+    serialNumber: payload.serialNumber,
+    certifiedBy: payload.certifiedBy,
+    commissionedOn: payload.commissionedOn,
     address: {
       create: {
-        street: entity.address.street,
-        postalCode: entity.address.postalCode,
-        city: entity.address.city,
-        state: entity.address.state,
-        country: entity.address.country,
+        street: payload.address.street,
+        postalCode: payload.address.postalCode,
+        city: payload.address.city,
+        state: payload.address.state,
+        country: payload.address.country,
       },
     },
     owner: {
-      connect: { id: entity.company.id },
+      connect: { id: payload.companyId },
     },
-    ...(entity.operator?.id && {
+    ...(payload.operatorId && {
       operator: {
-        connect: { id: entity.operator.id },
+        connect: { id: payload.operatorId },
       },
     }),
   });
 }
 
-export function buildPowerProductionUnitCreateInput(entity: PowerProductionUnitEntity): Prisma.UnitCreateInput {
-  assertDefined(entity.electricityMeterNumber, 'PowerProductionUnitEntity.electricityMeterNumber');
-  assertDefined(entity.ratedPower, 'PowerProductionUnitEntity.ratedPower');
-  assertDefined(entity.financialSupportReceived, 'PowerProductionUnitEntity.financialSupportReceived');
-  assertDefined(entity.type?.name, 'PowerProductionUnitEntity.type');
-  assertDefined(entity.gridLevel, 'PowerProductionUnitEntity.gridLevel');
-  assertDefined(entity.biddingZone, 'PowerProductionUnitEntity.biddingZone');
+export function buildPowerProductionUnitCreateInput(payload: CreatePowerProductionUnitPayload): Prisma.UnitCreateInput {
+  assertDefined(payload.electricityMeterNumber, 'CreatePowerProductionUnitPayload.electricityMeterNumber');
+  assertDefined(payload.ratedPower, 'CreatePowerProductionUnitPayload.ratedPower');
+  assertDefined(payload.financialSupportReceived, 'CreatePowerProductionUnitPayload.financialSupportReceived');
+  assertDefined(payload.powerProductionType, 'CreatePowerProductionUnitPayload.powerProductionType');
+  assertDefined(payload.gridLevel, 'CreatePowerProductionUnitPayload.gridLevel');
+  assertDefined(payload.biddingZone, 'CreatePowerProductionUnitPayload.biddingZone');
 
   return Prisma.validator<Prisma.UnitCreateInput>()({
-    ...buildBaseUnitCreateInput(entity),
+    ...buildBaseUnitCreateInput(payload),
     powerProductionUnit: {
       create: {
-        decommissioningPlannedOn: entity.decommissioningPlannedOn,
-        electricityMeterNumber: entity.electricityMeterNumber,
-        ratedPower: new Prisma.Decimal(entity.ratedPower),
-        gridOperator: entity.gridOperator,
-        gridConnectionNumber: entity.gridConnectionNumber,
-        financialSupportReceived: entity.financialSupportReceived,
-        type: { connect: { name: entity.type.name } },
-        gridLevel: entity.gridLevel,
-        biddingZone: entity.biddingZone,
+        decommissioningPlannedOn: payload.decommissioningPlannedOn,
+        electricityMeterNumber: payload.electricityMeterNumber,
+        ratedPower: new Prisma.Decimal(payload.ratedPower),
+        gridOperator: payload.gridOperator,
+        gridConnectionNumber: payload.gridConnectionNumber,
+        financialSupportReceived: payload.financialSupportReceived,
+        type: { connect: { name: payload.powerProductionType } },
+        gridLevel: payload.gridLevel,
+        biddingZone: payload.biddingZone,
       },
     },
   });
 }
 
-export function buildHydrogenProductionUnitCreateInput(entity: HydrogenProductionUnitEntity): Prisma.UnitCreateInput {
-  assertDefined(entity.biddingZone, 'HydrogenProductionUnitEntity.biddingZone');
-  assertDefined(entity.method, 'HydrogenProductionUnitEntity.method');
-  assertDefined(entity.technology, 'HydrogenProductionUnitEntity.technology');
-  assertDefined(entity.ratedPower, 'HydrogenProductionUnitEntity.ratedPower');
-  assertDefined(entity.pressure, 'HydrogenProductionUnitEntity.pressure');
-  assertDefined(entity.waterConsumptionLitersPerHour, 'HydrogenProductionUnitEntity.waterConsumptionLitersPerHour');
+export function buildHydrogenProductionUnitCreateInput(
+  payload: CreateHydrogenProductionUnitPayload,
+): Prisma.UnitCreateInput {
+  assertDefined(payload.biddingZone, 'CreateHydrogenProductionUnitPayload.biddingZone');
+  assertDefined(payload.method, 'CreateHydrogenProductionUnitPayload.method');
+  assertDefined(payload.technology, 'CreateHydrogenProductionUnitPayload.technology');
+  assertDefined(payload.ratedPower, 'CreateHydrogenProductionUnitPayload.ratedPower');
+  assertDefined(payload.pressure, 'CreateHydrogenProductionUnitPayload.pressure');
+  assertDefined(
+    payload.waterConsumptionLitersPerHour,
+    'CreateHydrogenProductionUnitPayload.waterConsumptionLitersPerHour',
+  );
 
   return Prisma.validator<Prisma.UnitCreateInput>()({
-    ...buildBaseUnitCreateInput(entity),
+    ...buildBaseUnitCreateInput(payload),
     hydrogenProductionUnit: {
       create: {
-        method: entity.method,
-        technology: entity.technology,
-        biddingZone: entity.biddingZone,
-        ratedPower: new Prisma.Decimal(entity.ratedPower),
-        pressure: new Prisma.Decimal(entity.pressure),
-        waterConsumptionLitersPerHour: new Prisma.Decimal(entity.waterConsumptionLitersPerHour),
+        method: payload.method,
+        technology: payload.technology,
+        biddingZone: payload.biddingZone,
+        ratedPower: new Prisma.Decimal(payload.ratedPower),
+        pressure: new Prisma.Decimal(payload.pressure),
+        waterConsumptionLitersPerHour: new Prisma.Decimal(payload.waterConsumptionLitersPerHour),
       },
     },
   });
 }
 
-export function buildHydrogenStorageUnitCreateInput(entity: HydrogenStorageUnitEntity): Prisma.UnitCreateInput {
-  assertDefined(entity.type, 'HydrogenStorageUnitEntity.type');
-  assertDefined(entity.capacity, 'HydrogenStorageUnitEntity.capacity');
-  assertDefined(entity.pressure, 'HydrogenStorageUnitEntity.pressure');
+export function buildHydrogenStorageUnitCreateInput(payload: CreateHydrogenStorageUnitPayload): Prisma.UnitCreateInput {
+  assertDefined(payload.storageType, 'CreateHydrogenStorageUnitPayload.storageType');
+  assertDefined(payload.capacity, 'CreateHydrogenStorageUnitPayload.capacity');
+  assertDefined(payload.pressure, 'CreateHydrogenStorageUnitPayload.pressure');
 
   return Prisma.validator<Prisma.UnitCreateInput>()({
-    ...buildBaseUnitCreateInput(entity),
+    ...buildBaseUnitCreateInput(payload),
     hydrogenStorageUnit: {
       create: {
-        capacity: new Prisma.Decimal(entity.capacity),
-        pressure: new Prisma.Decimal(entity.pressure),
-        type: entity.type,
+        capacity: new Prisma.Decimal(payload.capacity),
+        pressure: new Prisma.Decimal(payload.pressure),
+        type: payload.storageType,
       },
     },
   });

@@ -21,7 +21,7 @@ export const HydrogenProductionUnitCreateDtoMock = <HydrogenProductionUnitCreate
     serialNumber: 'SN001',
     mastrNumber: 'MASTR001',
     certifiedBy: 'Certification Body A',
-    commissionedOn: '2025-01-01',
+    commissionedOn: new Date('2025-01-01'),
     address: {
       street: 'Main Street',
       postalCode: '12345',
@@ -47,7 +47,7 @@ export const HydrogenProductionUnitCreateDtoMock = <HydrogenProductionUnitCreate
     serialNumber: 'SN002',
     mastrNumber: 'MASTR002',
     certifiedBy: 'Certification Body B',
-    commissionedOn: '2025-02-01',
+    commissionedOn: new Date('2025-02-01'),
     address: {
       street: 'Secondary Street',
       postalCode: '23456',

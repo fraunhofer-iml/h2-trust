@@ -16,8 +16,8 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
   describe('valid inputs', () => {
     it('should calculate single accounting period for 1 hour duration', () => {
       // Arrange
-      const startedAt = '2024-01-01T00:00:00Z';
-      const endedAt = '2024-01-01T01:00:00Z';
+      const startedAt = new Date('2024-01-01T00:00:00Z');
+      const endedAt = new Date('2024-01-01T01:00:00Z');
       const totalAmount = 100;
       const predecessors: ProcessStepEntity[] = [];
       const expectedResult = [
@@ -38,8 +38,8 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
 
     it('should calculate two accounting periods for 2 hour duration', () => {
       // Arrange
-      const startedAt = '2024-01-01T00:00:00Z';
-      const endedAt = '2024-01-01T02:00:00Z';
+      const startedAt = new Date('2024-01-01T00:00:00Z');
+      const endedAt = new Date('2024-01-01T02:00:00Z');
       const totalAmount = 200;
       const predecessors: ProcessStepEntity[] = [];
       const amountPerPeriod = totalAmount / 2;
@@ -67,8 +67,8 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
 
     it('should align start time to accounting period boundary', () => {
       // Arrange
-      const startedAt = '2024-01-01T00:30:00Z';
-      const endedAt = '2024-01-01T01:30:00Z';
+      const startedAt = new Date('2024-01-01T00:30:00Z');
+      const endedAt = new Date('2024-01-01T01:30:00Z');
       const totalAmount = 100;
       const predecessors: ProcessStepEntity[] = [];
       const amountPerPeriod = totalAmount / 2;
@@ -96,8 +96,8 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
 
     it('should distribute amount evenly across multiple periods', () => {
       // Arrange
-      const startedAt = '2024-01-01T00:00:00Z';
-      const endedAt = '2024-01-01T03:00:00Z';
+      const startedAt = new Date('2024-01-01T00:00:00Z');
+      const endedAt = new Date('2024-01-01T03:00:00Z');
       const totalAmount = 300;
       const predecessors: ProcessStepEntity[] = [];
       const amountPerPeriod = totalAmount / 3;
@@ -131,8 +131,8 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
 
     it('should include predecessors matching the period start time', () => {
       // Arrange
-      const startedAt = '2024-01-01T00:00:00Z';
-      const endedAt = '2024-01-01T02:00:00Z';
+      const startedAt = new Date('2024-01-01T00:00:00Z');
+      const endedAt = new Date('2024-01-01T02:00:00Z');
       const totalAmount = 200;
       const batch1: BatchEntity = {
         id: 'batch-1',
@@ -183,8 +183,8 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
 
     it('should group multiple predecessors with same start time', () => {
       // Arrange
-      const startedAt = '2024-01-01T00:00:00Z';
-      const endedAt = '2024-01-01T01:00:00Z';
+      const startedAt = new Date('2024-01-01T00:00:00Z');
+      const endedAt = new Date('2024-01-01T01:00:00Z');
       const totalAmount = 100;
       const batch1: BatchEntity = {
         id: 'batch-1',
@@ -228,8 +228,8 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
 
     it('should handle periods spanning across days', () => {
       // Arrange
-      const startedAt = '2024-01-01T23:00:00Z';
-      const endedAt = '2024-01-02T01:00:00Z';
+      const startedAt = new Date('2024-01-01T23:00:00Z');
+      const endedAt = new Date('2024-01-02T01:00:00Z');
       const totalAmount = 200;
       const predecessors: ProcessStepEntity[] = [];
       const amountPerPeriod = totalAmount / 2;
@@ -259,8 +259,8 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
   describe('invalid inputs', () => {
     it('should throw error when endedAt is before startedAt', () => {
       // Arrange
-      const startedAt = '2024-01-01T02:00:00Z';
-      const endedAt = '2024-01-01T01:00:00Z';
+      const startedAt = new Date('2024-01-01T02:00:00Z');
+      const endedAt = new Date('2024-01-01T01:00:00Z');
       const totalAmount = 100;
       const predecessors: ProcessStepEntity[] = [];
       const expectedResult = 'endedAtInSeconds must be greater than startedAtInSeconds';
@@ -273,8 +273,8 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
 
     it('should throw error when startedAt equals endedAt', () => {
       // Arrange
-      const startedAt = '2024-01-01T00:00:00Z';
-      const endedAt = '2024-01-01T00:00:00Z';
+      const startedAt = new Date('2024-01-01T00:00:00Z');
+      const endedAt = new Date('2024-01-01T00:00:00Z');
       const totalAmount = 100;
       const predecessors: ProcessStepEntity[] = [];
       const expectedResult = 'endedAtInSeconds must be greater than startedAtInSeconds';
@@ -287,8 +287,8 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
 
     it('should throw error when totalAmount is zero', () => {
       // Arrange
-      const startedAt = '2024-01-01T00:00:00Z';
-      const endedAt = '2024-01-01T01:00:00Z';
+      const startedAt = new Date('2024-01-01T00:00:00Z');
+      const endedAt = new Date('2024-01-01T01:00:00Z');
       const totalAmount = 0;
       const predecessors: ProcessStepEntity[] = [];
       const expectedResult = 'batchAmount must be greater than zero';
@@ -301,8 +301,8 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
 
     it('should throw error when totalAmount is negative', () => {
       // Arrange
-      const startedAt = '2024-01-01T00:00:00Z';
-      const endedAt = '2024-01-01T01:00:00Z';
+      const startedAt = new Date('2024-01-01T00:00:00Z');
+      const endedAt = new Date('2024-01-01T01:00:00Z');
       const totalAmount = -100;
       const predecessors: ProcessStepEntity[] = [];
       const expectedResult = 'batchAmount must be greater than zero';
@@ -317,8 +317,8 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
   describe('edge cases', () => {
     it('should handle very small amounts', () => {
       // Arrange
-      const startedAt = '2024-01-01T00:00:00Z';
-      const endedAt = '2024-01-01T02:00:00Z';
+      const startedAt = new Date('2024-01-01T00:00:00Z');
+      const endedAt = new Date('2024-01-01T02:00:00Z');
       const totalAmount = 0.001;
       const predecessors: ProcessStepEntity[] = [];
       const amountPerPeriod = totalAmount / 2;
@@ -346,8 +346,8 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
 
     it('should handle very large amounts', () => {
       // Arrange
-      const startedAt = '2024-01-01T00:00:00Z';
-      const endedAt = '2024-01-01T01:00:00Z';
+      const startedAt = new Date('2024-01-01T00:00:00Z');
+      const endedAt = new Date('2024-01-01T01:00:00Z');
       const totalAmount = 1000000;
       const predecessors: ProcessStepEntity[] = [];
       const expectedResult = [
@@ -368,8 +368,8 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
 
     it('should handle many accounting periods', () => {
       // Arrange
-      const startedAt = '2024-01-01T00:00:00Z';
-      const endedAt = '2024-01-01T12:00:00Z';
+      const startedAt = new Date('2024-01-01T00:00:00Z');
+      const endedAt = new Date('2024-01-01T12:00:00Z');
       const totalAmount = 1200;
       const predecessors: ProcessStepEntity[] = [];
       const expectedNumberOfPeriods = 12;
@@ -388,8 +388,8 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
 
     it('should handle predecessors not matching any period start time', () => {
       // Arrange
-      const startedAt = '2024-01-01T00:00:00Z';
-      const endedAt = '2024-01-01T02:00:00Z';
+      const startedAt = new Date('2024-01-01T00:00:00Z');
+      const endedAt = new Date('2024-01-01T02:00:00Z');
       const totalAmount = 200;
       const batch1: BatchEntity = {
         id: 'batch-1',
@@ -429,8 +429,8 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
 
     it('should handle year boundary crossing', () => {
       // Arrange
-      const startedAt = '2023-12-31T23:00:00Z';
-      const endedAt = '2024-01-01T01:00:00Z';
+      const startedAt = new Date('2023-12-31T23:00:00Z');
+      const endedAt = new Date('2024-01-01T01:00:00Z');
       const totalAmount = 200;
       const predecessors: ProcessStepEntity[] = [];
       const amountPerPeriod = totalAmount / 2;
@@ -458,8 +458,8 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
 
     it('should handle partial hour at end of period', () => {
       // Arrange
-      const startedAt = '2024-01-01T00:00:00Z';
-      const endedAt = '2024-01-01T00:30:00Z';
+      const startedAt = new Date('2024-01-01T00:00:00Z');
+      const endedAt = new Date('2024-01-01T00:30:00Z');
       const totalAmount = 100;
       const predecessors: ProcessStepEntity[] = [];
       const expectedResult = [
