@@ -62,4 +62,8 @@ export class ProductPassComponent {
   constructor() {
     this.isAuthenticated = this.authService.isAuthenticated();
   }
+
+  openFile(url: string) {
+    window.open(url, '_blank');
+  }
 }
