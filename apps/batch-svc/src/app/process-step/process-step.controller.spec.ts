@@ -171,7 +171,9 @@ describe('ProcessStepController', () => {
     const payload: CreateHydrogenTransportationPayload = new CreateHydrogenTransportationPayload(
       expectedResponse,
       givenPredecessorBatch,
-      expectedResponse.transportationDetails,
+      expectedResponse.transportationDetails.transportMode,
+      expectedResponse.transportationDetails.distance,
+      expectedResponse.transportationDetails.fuelType,
     );
 
     const actualResponse = await controller.createHydrogenTransportationProcessStep(payload);

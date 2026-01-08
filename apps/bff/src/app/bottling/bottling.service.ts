@@ -20,7 +20,6 @@ import {
   ReadProcessStepsByTypesAndActiveAndCompanyPayload,
   RedComplianceEntity,
   RedComplianceMessagePatterns,
-  TransportationDetailsEntity,
   UserMessagePatterns,
 } from '@h2-trust/amqp';
 import {
@@ -30,7 +29,7 @@ import {
   HydrogenComponentDto,
   UserDetailsDto,
 } from '@h2-trust/api';
-import { ProcessType, TransportMode } from '@h2-trust/domain';
+import { ProcessType, } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -54,19 +53,21 @@ export class BottlingService {
       files,
     );
 
-    const bottlingEntity: ProcessStepEntity = await firstValueFrom(
+    const persistedBottling: ProcessStepEntity = await firstValueFrom(
       this.batchSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_BOTTLING, bottlingPayload),
     );
 
-    if (bottlingEntity.transportationDetails) {
-      const message = `ProcessStep [${bottlingEntity.id}] of type [${bottlingEntity.type}] should not have transportation details upon creation.`;
+    if (persistedBottling.transportationDetails) {
+      const message = `ProcessStep [${persistedBottling.id}] of type [${persistedBottling.type}] should not have transportation details upon creation.`;
       throw new HttpException(message, HttpStatus.BAD_REQUEST);
     }
 
     const transportationPayload: CreateHydrogenTransportationPayload = new CreateHydrogenTransportationPayload(
-      bottlingEntity,
-      bottlingEntity.batch,
-      this.buildTransportationDetailsEntity(dto),
+      persistedBottling,
+      persistedBottling.batch,
+      dto.transportMode,
+      dto.distance,
+      dto.fuelType,
     );
 
     return firstValueFrom(
@@ -108,38 +109,6 @@ export class BottlingService {
     );
 
     return { ...generalInformationDto, redCompliance };
-  }
-
-  private buildTransportationDetailsEntity(dto: BottlingDto): TransportationDetailsEntity {
-    let transportationDetails: TransportationDetailsEntity;
-
-    switch (dto.transportMode) {
-      case TransportMode.TRAILER:
-        if (!dto.distance) {
-          const message = `Distance is required for transport mode [${TransportMode.TRAILER}].`;
-          throw new HttpException(message, HttpStatus.BAD_REQUEST);
-        }
-        if (!dto.fuelType) {
-          const message = `Fuel type is required for transport mode [${TransportMode.TRAILER}].`;
-          throw new HttpException(message, HttpStatus.BAD_REQUEST);
-        }
-        transportationDetails = new TransportationDetailsEntity(
-          undefined,
-          dto.distance,
-          dto.transportMode,
-          dto.fuelType,
-        );
-        break;
-      case TransportMode.PIPELINE:
-        transportationDetails = new TransportationDetailsEntity(undefined, 0, dto.transportMode, undefined);
-        break;
-      default: {
-        const message = `Invalid transport mode: ${dto.transportMode}`;
-        throw new HttpException(message, HttpStatus.BAD_REQUEST);
-      }
-    }
-
-    return transportationDetails;
   }
 
   private async fetchProducerName(producerId: string): Promise<string> {
