@@ -9,25 +9,57 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BrokerQueues, ProvenanceEntity, ProvenanceMessagePatterns, ReadByIdPayload } from '@h2-trust/amqp';
-import { EmissionComputationResultDto, ProofOfSustainabilityDto, SectionDto } from '@h2-trust/api';
+import { BrokerQueues, HydrogenComponentEntity, ProcessStepMessagePatterns, ProvenanceEntity, ProvenanceMessagePatterns, ReadByIdPayload, RedComplianceMessagePatterns } from '@h2-trust/amqp';
+import { EmissionComputationResultDto, GeneralInformationDto, HydrogenComponentDto, ProofOfSustainabilityDto, SectionDto } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
 import { EmissionComputationService } from './emission-computation.service';
 import { HydrogenBottlingSectionService } from './proof-of-origin/hydrogen-bottling-section.service';
 import { HydrogenProductionSectionService } from './proof-of-origin/hydrogen-production-section.service';
 import { HydrogenStorageSectionService } from './proof-of-origin/hydrogen-storage-section.service';
 import { HydrogenTransportationSectionService } from './proof-of-origin/hydrogen-transportation-section.service';
+import { UserService } from '../../user/user.service';
 
 @Injectable()
 export class DigitalProductPassportService {
   constructor(
+    @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
+    private readonly userService: UserService,
     private readonly hydrogenProductionSectionService: HydrogenProductionSectionService,
     private readonly hydrogenStorageSectionService: HydrogenStorageSectionService,
     private readonly hydrogenBottlingSectionService: HydrogenBottlingSectionService,
     private readonly hydrogenTransportationSectionService: HydrogenTransportationSectionService,
     private readonly emissionComputationService: EmissionComputationService,
-  ) {}
+  ) { }
+
+  async readGeneralInformation(processStepId: string): Promise<GeneralInformationDto> {
+    const processStep = await firstValueFrom(
+      this.batchSvc.send(ProcessStepMessagePatterns.READ_UNIQUE, new ReadByIdPayload(processStepId)),
+    );
+
+    const generalInformation = GeneralInformationDto.fromEntityToDto(processStep);
+
+    const [producerName, hydrogenComposition, redCompliance] = await Promise.all([
+      this.userService.readUserWithCompany(generalInformation.producer).then((user) => user.company.name),
+      this.fetchHydrogenComposition(processStep.id),
+      firstValueFrom(this.processSvc.send(RedComplianceMessagePatterns.DETERMINE, new ReadByIdPayload(processStepId))),
+    ]);
+
+    return {
+      ...generalInformation,
+      producer: producerName,
+      hydrogenComposition,
+      redCompliance,
+    };
+  }
+
+  private async fetchHydrogenComposition(processStepId: string): Promise<HydrogenComponentDto[]> {
+    const hydrogenComposition: HydrogenComponentEntity[] = await firstValueFrom(
+      this.batchSvc.send(ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION, new ReadByIdPayload(processStepId)),
+    );
+
+    return hydrogenComposition.map(HydrogenComponentDto.of);
+  }
 
   async buildProofOfOrigin(processStepId: string): Promise<SectionDto[]> {
     const provenance: ProvenanceEntity = await firstValueFrom(
@@ -38,10 +70,10 @@ export class DigitalProductPassportService {
     const hydrogenProductionPromise =
       provenance.powerProductions?.length || provenance.waterConsumptions?.length
         ? this.hydrogenProductionSectionService.buildSection(
-            provenance.powerProductions,
-            provenance.waterConsumptions,
-            provenance.hydrogenBottling.batch.amount,
-          )
+          provenance.powerProductions,
+          provenance.waterConsumptions,
+          provenance.hydrogenBottling.batch.amount,
+        )
         : Promise.resolve(undefined);
 
     const hydrogenStoragePromise = provenance.hydrogenProductions?.length
@@ -50,7 +82,7 @@ export class DigitalProductPassportService {
 
     const hydrogenBottlingPromise =
       provenance.root.type === ProcessType.HYDROGEN_BOTTLING ||
-      provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION
+        provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION
         ? this.hydrogenBottlingSectionService.buildSection(provenance.hydrogenBottling ?? provenance.root)
         : Promise.resolve(undefined);
 

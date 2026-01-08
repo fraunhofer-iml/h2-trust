@@ -8,10 +8,10 @@
 
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
-import { UserService } from '../user/user.service';
 import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';
 import { DigitalProductPassportModule } from './digital-product-passport/digital-product-passport.module';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
@@ -19,8 +19,9 @@ import { DigitalProductPassportModule } from './digital-product-passport/digital
     new Broker().getGeneralSvcBroker(),
     new Broker().getProcessSvcBroker(),
     DigitalProductPassportModule,
+    UserModule
   ],
   controllers: [BottlingController],
-  providers: [BottlingService, UserService],
+  providers: [BottlingService],
 })
 export class BottlingModule { }

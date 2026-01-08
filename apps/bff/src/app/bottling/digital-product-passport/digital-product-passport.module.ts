@@ -16,9 +16,15 @@ import { HydrogenStorageSectionService } from './proof-of-origin/hydrogen-storag
 import { HydrogenTransportationSectionService } from './proof-of-origin/hydrogen-transportation-section.service';
 import { PowerSupplyClassificationService } from './proof-of-origin/power-supply-classification.service';
 import { WaterSupplyClassificationService } from './proof-of-origin/water-supply-classification.service';
+import { UserModule } from '../../user/user.module';
 
 @Module({
-  imports: [new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker(), new Broker().getProcessSvcBroker()],
+  imports: [
+    new Broker().getBatchSvcBroker(),
+    new Broker().getGeneralSvcBroker(),
+    new Broker().getProcessSvcBroker(),
+    UserModule,
+  ],
   providers: [
     DigitalProductPassportService,
     HydrogenBottlingSectionService,

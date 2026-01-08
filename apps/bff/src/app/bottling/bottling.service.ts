@@ -13,18 +13,13 @@ import {
   BrokerQueues,
   CreateHydrogenBottlingPayload,
   CreateHydrogenTransportationPayload,
-  HydrogenComponentEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
-  ReadByIdPayload,
   ReadProcessStepsByTypesAndActiveAndCompanyPayload,
-  RedComplianceMessagePatterns,
 } from '@h2-trust/amqp';
 import {
   BottlingDto,
   BottlingOverviewDto,
-  GeneralInformationDto,
-  HydrogenComponentDto,
 } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
@@ -33,7 +28,6 @@ import { UserService } from '../user/user.service';
 export class BottlingService {
   constructor(
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
-    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly userService: UserService,
   ) { }
 
@@ -78,34 +72,5 @@ export class BottlingService {
     return firstValueFrom(
       this.batchSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_COMPANY, payload),
     ).then((processSteps) => processSteps.map(BottlingOverviewDto.fromEntity));
-  }
-
-  async readGeneralInformation(processStepId: string): Promise<GeneralInformationDto> {
-    const processStep = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.READ_UNIQUE, new ReadByIdPayload(processStepId)),
-    );
-
-    const generalInformation = GeneralInformationDto.fromEntityToDto(processStep);
-
-    const [producerName, hydrogenComposition, redCompliance] = await Promise.all([
-      this.userService.readUserWithCompany(generalInformation.producer).then((user) => user.company.name),
-      this.fetchHydrogenComposition(processStep.id),
-      firstValueFrom(this.processSvc.send(RedComplianceMessagePatterns.DETERMINE, new ReadByIdPayload(processStepId))),
-    ]);
-
-    return {
-      ...generalInformation,
-      producer: producerName,
-      hydrogenComposition,
-      redCompliance,
-    };
-  }
-
-  private async fetchHydrogenComposition(processStepId: string): Promise<HydrogenComponentDto[]> {
-    const hydrogenComposition: HydrogenComponentEntity[] = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION, new ReadByIdPayload(processStepId)),
-    );
-
-    return hydrogenComposition.map(HydrogenComponentDto.of);
   }
 }

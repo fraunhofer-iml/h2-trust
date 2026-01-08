@@ -103,7 +103,7 @@ export class BottlingController {
       },
     },
   })
-  async createBottling(
+  async createBottlingAndTransportation(
     @Body() dto: BottlingDto,
     @UploadedFiles() files: Express.Multer.File[],
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
@@ -142,7 +142,7 @@ export class BottlingController {
     example: 'process-step-hydrogen-bottling-1',
   })
   async readGeneralInformation(@Param('id') processStepId: string): Promise<GeneralInformationDto> {
-    return this.bottlingService.readGeneralInformation(processStepId);
+    return this.digitalProductPassportService.readGeneralInformation(processStepId);
   }
 
   @Public()
