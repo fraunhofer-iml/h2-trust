@@ -10,9 +10,12 @@ import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
 import { RedCompliancePairingService } from './red-compliance.pairs.service';
 import { RedComplianceService } from './red-compliance.service';
+import { ProvenanceModule } from '../provenance/provenance.module';
+import { RedComplianceController } from './red-compliance.controller';
 
 @Module({
-  imports: [new Broker().getProcessSvcBroker(), new Broker().getGeneralSvcBroker()],
+  imports: [new Broker().getGeneralSvcBroker(), ProvenanceModule],
+  controllers: [RedComplianceController],
   providers: [RedComplianceService, RedCompliancePairingService],
   exports: [RedComplianceService],
 })

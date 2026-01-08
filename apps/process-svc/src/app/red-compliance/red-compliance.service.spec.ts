@@ -6,18 +6,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { of } from 'rxjs';
-import { HttpException } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { RpcException } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues } from '@h2-trust/amqp';
+import { ReadByIdPayload } from '@h2-trust/amqp';
 import { RedComplianceDto } from '@h2-trust/api';
 import { RedCompliancePairingService } from './red-compliance.pairs.service';
 import { RedComplianceService } from './red-compliance.service';
+import { ProvenanceService } from '../provenance/provenance.service';
+import { HttpException } from '@nestjs/common';
 
 describe('RedComplianceService', () => {
   let service: RedComplianceService;
-  let processSvc: ClientProxy;
+  let provenanceService: ProvenanceService;
   let pairingService: RedCompliancePairingService;
 
   beforeEach(async () => {
@@ -25,20 +25,22 @@ describe('RedComplianceService', () => {
       providers: [
         RedComplianceService,
         {
+          provide: ProvenanceService,
+          useValue: {
+            buildProvenance: jest.fn().mockResolvedValue(mockedProvenance),
+          },
+        },
+        {
           provide: RedCompliancePairingService,
           useValue: {
             buildMatchedPairs: jest.fn(),
           },
         },
-        {
-          provide: BrokerQueues.QUEUE_PROCESS_SVC,
-          useValue: { send: jest.fn() },
-        },
       ],
     }).compile();
 
     service = module.get<RedComplianceService>(RedComplianceService);
-    processSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_PROCESS_SVC);
+    provenanceService = module.get<ProvenanceService>(ProvenanceService);
     pairingService = module.get<RedCompliancePairingService>(RedCompliancePairingService);
   });
 
@@ -46,18 +48,18 @@ describe('RedComplianceService', () => {
     jest.clearAllMocks();
   });
 
-  const baseProvenance = {
+  const mockedProvenance = {
     powerProductions: [{ id: 'ps-power-1', startedAt: '2025-01-01T10:00:00.000Z', executedBy: { id: 'power-1' } }],
     hydrogenProductions: [{ id: 'ps-h2-1', startedAt: '2025-01-01T10:30:00.000Z', executedBy: { id: 'h2-1' } }],
   };
 
   it('throws error when provenance or required productions are missing', async () => {
-    jest.spyOn(processSvc, 'send').mockImplementation(() => of(undefined));
+    jest.spyOn(provenanceService, 'buildProvenance').mockResolvedValue(undefined);
 
-    await expect(service.determineRedCompliance('root-ps')).rejects.toThrow(HttpException);
+    await expect(service.determineRedCompliance(new ReadByIdPayload('root-ps'))).rejects.toThrow(RpcException);
 
     try {
-      await service.determineRedCompliance('root-ps');
+      await service.determineRedCompliance(new ReadByIdPayload('root-ps'));
     } catch (e) {
       expect(e.message).toContain('Provenance or required productions');
     }
@@ -77,10 +79,9 @@ describe('RedComplianceService', () => {
       },
     ];
 
-    jest.spyOn(processSvc, 'send').mockImplementation(() => of(baseProvenance));
     (pairingService.buildMatchedPairs as jest.Mock).mockResolvedValue(pairs);
 
-    const result = await service.determineRedCompliance('root-ps');
+    const result = await service.determineRedCompliance(new ReadByIdPayload('root-ps'));
     expect(result).toEqual(new RedComplianceDto(true, true, true, true));
   });
 
@@ -109,9 +110,8 @@ describe('RedComplianceService', () => {
       },
     ];
 
-    jest.spyOn(processSvc, 'send').mockImplementation(() => of(baseProvenance));
     (pairingService.buildMatchedPairs as jest.Mock).mockResolvedValue(pairs);
-    const result = await service.determineRedCompliance('root-ps');
+    const result = await service.determineRedCompliance(new ReadByIdPayload('root-ps'));
     expect(result).toEqual(new RedComplianceDto(false, false, false, false));
   });
 
@@ -120,20 +120,20 @@ describe('RedComplianceService', () => {
       {
         power: {
           processStep: { executedBy: { id: 'power-1' }, startedAt: '2025-01-01T10:00:00.000Z' },
-          unit: undefined,
+          unit: undefined as any,
         },
         hydrogen: {
           processStep: { executedBy: { id: 'h2-1' }, startedAt: '2025-01-01T10:00:00.000Z' },
-          unit: undefined,
+          unit: undefined as any,
         },
       },
     ];
-    jest.spyOn(processSvc, 'send').mockImplementation(() => of(baseProvenance));
+
     (pairingService.buildMatchedPairs as jest.Mock).mockResolvedValue(pairs);
 
-    await expect(service.determineRedCompliance('root-ps')).rejects.toThrow(HttpException);
+    await expect(service.determineRedCompliance(new ReadByIdPayload('root-ps'))).rejects.toThrow(HttpException);
     try {
-      await service.determineRedCompliance('root-ps');
+      await service.determineRedCompliance(new ReadByIdPayload('root-ps'));
     } catch (e) {
       expect(e.message).toContain('Production units not found');
     }

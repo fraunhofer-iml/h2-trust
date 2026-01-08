@@ -6,11 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { firstValueFrom } from 'rxjs';
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { BrokerQueues, ProvenanceEntity, ProvenanceMessagePatterns, ReadByIdPayload } from '@h2-trust/amqp';
-import { RedComplianceDto } from '@h2-trust/api';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ProvenanceEntity, ReadByIdPayload, RedComplianceEntity } from '@h2-trust/amqp';
 import { MatchedProductionPair } from './matched-production-pair';
 import {
   areUnitsInSameBiddingZone,
@@ -19,32 +16,34 @@ import {
   meetsAdditionalityCriterion,
 } from './red-compliance.flags';
 import { RedCompliancePairingService } from './red-compliance.pairs.service';
+import { ProvenanceService } from '../provenance/provenance.service';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class RedComplianceService {
   constructor(
-    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly pairingService: RedCompliancePairingService,
-  ) {}
+    private readonly provenanceService: ProvenanceService,
+  ) { }
 
-  async determineRedCompliance(processStepId: string): Promise<RedComplianceDto> {
-    const provenance: ProvenanceEntity = await firstValueFrom(
-      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, new ReadByIdPayload(processStepId)),
-    );
+  async determineRedCompliance(payload: ReadByIdPayload): Promise<RedComplianceEntity> {
+    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(payload);
+
     if (!provenance || !provenance.powerProductions?.length || !provenance.hydrogenProductions?.length) {
-      const message = `Provenance or required productions (power/hydrogen) are missing for processStepId [${processStepId}]`;
-      throw new HttpException(message, HttpStatus.BAD_REQUEST);
+      const message = `Provenance or required productions (power/hydrogen) are missing for processStepId [${payload.id}]`;
+      throw new RpcException(message);
     }
+
     const pairs: MatchedProductionPair[] = await this.pairingService.buildMatchedPairs(
       provenance.powerProductions,
       provenance.hydrogenProductions,
-      processStepId,
+      payload.id,
     );
 
     return this.evaluateCompliance(pairs);
   }
 
-  private evaluateCompliance(pairs: MatchedProductionPair[]): RedComplianceDto {
+  private evaluateCompliance(pairs: MatchedProductionPair[]): RedComplianceEntity {
     let isGeoCorrelationValid = true;
     let isTimeCorrelationValid = true;
     let isAdditionalityFulfilled = true;
@@ -76,7 +75,7 @@ export class RedComplianceService {
       }
     }
 
-    return new RedComplianceDto(
+    return new RedComplianceEntity(
       isGeoCorrelationValid,
       isTimeCorrelationValid,
       isAdditionalityFulfilled,

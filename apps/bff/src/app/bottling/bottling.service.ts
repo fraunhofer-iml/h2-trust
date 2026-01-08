@@ -18,6 +18,8 @@ import {
   ProcessStepMessagePatterns,
   ReadByIdPayload,
   ReadProcessStepsByTypesAndActiveAndCompanyPayload,
+  RedComplianceEntity,
+  RedComplianceMessagePatterns,
   TransportationDetailsEntity,
   UserMessagePatterns,
 } from '@h2-trust/amqp';
@@ -30,16 +32,15 @@ import {
 } from '@h2-trust/api';
 import { ProcessType, TransportMode } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
-import { RedComplianceService } from './red-compliance/red-compliance.service';
 
 @Injectable()
 export class BottlingService {
   constructor(
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
+    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly userService: UserService,
-    private readonly redComplianceService: RedComplianceService,
-  ) {}
+  ) { }
 
   async createBottling(dto: BottlingDto, files: Express.Multer.File[], userId: string): Promise<BottlingOverviewDto> {
     const bottlingPayload: CreateHydrogenBottlingPayload = new CreateHydrogenBottlingPayload(
@@ -101,8 +102,12 @@ export class BottlingService {
     const generalInformationDto = GeneralInformationDto.fromEntityToDto(processStep);
     generalInformationDto.producer = await this.fetchProducerName(generalInformationDto.producer);
     generalInformationDto.hydrogenComposition = await this.fetchHydrogenComposition(processStep);
-    const redCompliance = await this.redComplianceService.determineRedCompliance(processStepId);
-    return { ...generalInformationDto, redCompliance: redCompliance };
+
+    const redCompliance: RedComplianceEntity = await firstValueFrom(
+      this.processSvc.send(RedComplianceMessagePatterns.DETERMINE, new ReadByIdPayload(processStepId)),
+    );
+
+    return { ...generalInformationDto, redCompliance };
   }
 
   private buildTransportationDetailsEntity(dto: BottlingDto): TransportationDetailsEntity {

@@ -13,4 +13,5 @@ export * from './unit.pattern';
 export * from './user.pattern';
 export * from './power-access-approval.pattern';
 export * from './provenance.pattern';
+export * from './red-compliance.pattern';
 export * from './sustainability.pattern';

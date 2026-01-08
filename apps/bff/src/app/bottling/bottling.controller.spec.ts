@@ -16,6 +16,7 @@ import {
   ProcessStepEntityHydrogenBottlingMock,
   ProcessStepMessagePatterns,
   ReadByIdPayload,
+  RedComplianceMessagePatterns,
   UserMessagePatterns,
 } from '@h2-trust/amqp';
 import {
@@ -24,6 +25,7 @@ import {
   BottlingDtoMock,
   BottlingOverviewDto,
   GeneralInformationDto,
+  RedComplianceDtoMock,
   UserDetailsDtoMock,
 } from '@h2-trust/api';
 import 'multer';
@@ -33,13 +35,12 @@ import { UserService } from '../user/user.service';
 import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';
 import { DigitalProductPassportService } from './digital-product-passport/digital-product-passport.service';
-import { RedComplianceService } from './red-compliance/red-compliance.service';
 
 describe('BottlingController', () => {
   let controller: BottlingController;
   let batchSvc: ClientProxy;
   let generalSvc: ClientProxy;
-  let redComplianceService: RedComplianceService;
+  let processSvc: ClientProxy;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -50,12 +51,6 @@ describe('BottlingController', () => {
         {
           provide: DigitalProductPassportService,
           useValue: {},
-        },
-        {
-          provide: RedComplianceService,
-          useValue: {
-            determineRedCompliance: jest.fn(),
-          },
         },
         {
           provide: UserService,
@@ -87,7 +82,7 @@ describe('BottlingController', () => {
     controller = module.get<BottlingController>(BottlingController);
     batchSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_BATCH_SVC) as ClientProxy;
     generalSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_GENERAL_SVC) as ClientProxy;
-    redComplianceService = module.get<RedComplianceService>(RedComplianceService);
+    processSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_PROCESS_SVC) as ClientProxy;
   });
 
   afterEach(() => {
@@ -192,23 +187,20 @@ describe('BottlingController', () => {
       .spyOn(generalSvc, 'send')
       .mockImplementation((_messagePattern: UserMessagePatterns, _data: any) => of(UserDetailsDtoMock[0]));
 
+    const processSvcSpy = jest
+      .spyOn(processSvc, 'send')
+      .mockImplementation((_messagePattern: RedComplianceMessagePatterns, _data: any) => of(RedComplianceDtoMock[0]));
+
     const expectedBatchSvcPayload1 = new ReadByIdPayload(returnedProcessStep.id);
     const expectedBatchSvcPayload2 = new ReadByIdPayload(returnedProcessStep.id);
     const expectedGeneralSvcPayload = new ReadByIdPayload(returnedProcessStep.recordedBy.id);
-
-    const mockedRedCompliance = {
-      isGeoCorrelationValid: true,
-      isTimeCorrelationValid: true,
-      isAdditionalityFulfilled: true,
-      isFinancialSupportReceived: true,
-    };
-    jest.spyOn(redComplianceService, 'determineRedCompliance').mockResolvedValue(mockedRedCompliance as any);
+    const expectedProcessSvcPayload = new ReadByIdPayload(returnedProcessStep.id);
 
     const expectedResponse: GeneralInformationDto = {
       ...GeneralInformationDto.fromEntityToDto(returnedProcessStep),
       hydrogenComposition: returnedHydrogenCompositions,
       producer: UserDetailsDtoMock[0].company.name,
-      redCompliance: mockedRedCompliance as any,
+      redCompliance: RedComplianceDtoMock[0],
     };
     const actualResponse: GeneralInformationDto = await controller.readGeneralInformation(returnedProcessStep.id);
 
@@ -222,6 +214,9 @@ describe('BottlingController', () => {
 
     expect(generalSvcSpy).toHaveBeenCalledTimes(1);
     expect(generalSvcSpy).toHaveBeenCalledWith(UserMessagePatterns.READ, expectedGeneralSvcPayload);
+
+    expect(processSvcSpy).toHaveBeenCalledTimes(1);
+    expect(processSvcSpy).toHaveBeenCalledWith(RedComplianceMessagePatterns.DETERMINE, expectedProcessSvcPayload);
 
     expect(actualResponse).toEqual(expectedResponse);
   });
