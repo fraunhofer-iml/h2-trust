@@ -8,7 +8,7 @@
 
 import { Subject } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-base-sheet',
@@ -19,8 +19,6 @@ export class BaseSheetComponent {
   visible = false;
   private previousTimeout: ReturnType<typeof setTimeout> | undefined;
   readonly closing$ = new Subject<boolean>();
-
-  size = input<'medium' | 'small'>('small');
 
   open() {
     this.visible = true;

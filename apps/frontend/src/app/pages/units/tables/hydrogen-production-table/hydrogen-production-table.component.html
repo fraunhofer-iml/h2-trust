@@ -1,5 +1,5 @@
 <div class="mt-4 flex flex-col gap-4 rounded-lg bg-white py-2">
-  <table mat-table fixedLayout="(true)" [dataSource]="dataSource$()" matSort>
+  <table mat-table [dataSource]="dataSource$()" matSort>
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Name</div></th>
       <td mat-cell *matCellDef="let row">{{ row.name }}</td>
@@ -12,21 +12,6 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Rated Power (MW)</div></th>
       <td mat-cell *matCellDef="let row">{{ row.ratedPower | number }}</td>
     </ng-container>
-    <ng-container matColumnDef="producing">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Producing</div></th>
-      <td mat-cell *matCellDef="let row">
-        @if (row.producing) {
-          <span class="material-symbols-outlined text-secondary-200 bg-secondary-200/20 rounded-full p-1"> cached</span>
-        } @else {
-          <span class="material-symbols-outlined rounded-full bg-neutral-300 p-1 text-neutral-600"> block</span>
-        }
-      </td>
-    </ng-container>
-    <ng-container matColumnDef="powerProducer">
-      <!-- Power Producer not yet in Dto -->
-      <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Power Producer</div></th>
-      <td mat-cell *matCellDef="let row">{{ row.powerProducerName }}</td>
-    </ng-container>
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns" [routerLink]="['/units', row.id]"></tr>
     <tr class="mat-row" *matNoDataRow>
@@ -35,5 +20,5 @@
   </table>
 </div>
 <div class="mt-2 rounded-lg bg-white p-2">
-  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of units"></mat-paginator>
 </div>
