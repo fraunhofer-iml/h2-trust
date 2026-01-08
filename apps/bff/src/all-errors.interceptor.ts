@@ -15,13 +15,17 @@ export class AllErrorsInterceptor implements NestInterceptor {
   intercept(_context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       catchError((err) => {
-        let message = err?.response?.message ?? err?.message ?? 'Internal server error';
+        // Extract structured error from RpcException
+        const errorObject = err?.error ?? err?.response ?? err;
 
+        let message = errorObject?.message ?? err?.message ?? 'Internal server error';
+        const status = errorObject?.status ?? err?.status ?? 500;
+
+        // Handle validation errors (array of messages)
         if (Array.isArray(message)) {
           message = message.join('; ');
         }
 
-        const status = err?.status ?? 500;
         throw new HttpException(message, status);
       }),
     );

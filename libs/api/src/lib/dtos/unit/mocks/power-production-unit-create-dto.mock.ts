@@ -20,7 +20,7 @@ export const PowerProductionUnitCreateDtoMock = <PowerProductionUnitCreateDto[]>
     modelType: 'WT-3000',
     modelNumber: 'WTP-789-X',
     serialNumber: 'SN123456789',
-    commissionedOn: new Date('2023-01-15').toISOString(),
+    commissionedOn: new Date('2023-01-15'),
     mastrNumber: 'MASTR123456',
     address: {
       street: 'Wind Park Street 42',
@@ -37,6 +37,6 @@ export const PowerProductionUnitCreateDtoMock = <PowerProductionUnitCreateDto[]>
     financialSupportReceived: false,
     gridOperator: 'Regional Grid Operator GmbH',
     gridConnectionNumber: 'GC456789',
-    decommissioningPlannedOn: new Date('2043-01-15').toISOString(),
+    decommissioningPlannedOn: new Date('2043-01-15'),
   },
 ];

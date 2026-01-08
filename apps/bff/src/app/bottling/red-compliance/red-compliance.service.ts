@@ -9,7 +9,7 @@
 import { firstValueFrom } from 'rxjs';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BrokerQueues, ProvenanceEntity, ProvenanceMessagePatterns } from '@h2-trust/amqp';
+import { BrokerQueues, ProvenanceEntity, ProvenanceMessagePatterns, ReadByIdPayload } from '@h2-trust/amqp';
 import { RedComplianceDto } from '@h2-trust/api';
 import { MatchedProductionPair } from './matched-production-pair';
 import {
@@ -29,7 +29,7 @@ export class RedComplianceService {
 
   async determineRedCompliance(processStepId: string): Promise<RedComplianceDto> {
     const provenance: ProvenanceEntity = await firstValueFrom(
-      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, { processStepId }),
+      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, new ReadByIdPayload(processStepId)),
     );
     if (!provenance || !provenance.powerProductions?.length || !provenance.hydrogenProductions?.length) {
       const message = `Provenance or required productions (power/hydrogen) are missing for processStepId [${processStepId}]`;

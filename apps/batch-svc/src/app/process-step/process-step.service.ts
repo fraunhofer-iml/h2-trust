@@ -7,7 +7,14 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { DocumentEntity, ProcessStepEntity } from '@h2-trust/amqp';
+import {
+  CreateManyProcessStepsPayload,
+  DocumentEntity,
+  ProcessStepEntity,
+  ReadByIdPayload,
+  ReadProcessStepsByPredecessorTypesAndCompanyPayload,
+  ReadProcessStepsByTypesAndActiveAndCompanyPayload,
+} from '@h2-trust/amqp';
 import { ConfigurationService, MinioConfiguration } from '@h2-trust/configuration';
 import { ProcessStepRepository } from '@h2-trust/database';
 import { ProcessType } from '@h2-trust/domain';
@@ -19,17 +26,27 @@ export class ProcessStepService {
     private readonly configurationService: ConfigurationService,
   ) {}
 
-  async readProcessSteps(
-    processTypes: string[],
-    predecessorProcessTypes: string[],
-    active: boolean,
-    companyId: string,
+  async readProcessStepsByPredecessorTypesAndCompany(
+    payload: ReadProcessStepsByPredecessorTypesAndCompanyPayload,
   ): Promise<ProcessStepEntity[]> {
-    return this.repository.findProcessSteps(processTypes, predecessorProcessTypes, active, companyId);
+    return this.repository.findProcessStepsByPredecessorTypesAndCompany(
+      payload.predecessorProcessTypes,
+      payload.companyId,
+    );
   }
 
-  async readProcessStep(processStepId: string): Promise<ProcessStepEntity> {
-    const processStep: ProcessStepEntity = await this.repository.findProcessStep(processStepId);
+  async readProcessStepsByTypesAndActiveAndCompany(
+    payload: ReadProcessStepsByTypesAndActiveAndCompanyPayload,
+  ): Promise<ProcessStepEntity[]> {
+    return this.repository.findProcessStepsByTypesAndActiveAndCompany(
+      payload.processTypes,
+      payload.active,
+      payload.companyId,
+    );
+  }
+
+  async readProcessStep(payload: ReadByIdPayload): Promise<ProcessStepEntity> {
+    const processStep: ProcessStepEntity = await this.repository.findProcessStep(payload.id);
 
     if (processStep.type === ProcessType.HYDROGEN_TRANSPORTATION) {
       const predecessorProcessStep = await this.fetchPredecessorProcessStep(
@@ -76,11 +93,7 @@ export class ProcessStepService {
     return documents;
   }
 
-  async createProcessStep(processStepData: ProcessStepEntity): Promise<ProcessStepEntity> {
-    return this.repository.insertProcessStep(processStepData);
-  }
-
-  async createManyProcessSteps(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
-    return this.repository.insertManyProcessSteps(processSteps);
+  async createManyProcessSteps(payload: CreateManyProcessStepsPayload): Promise<ProcessStepEntity[]> {
+    return this.repository.insertManyProcessSteps(payload.processSteps);
   }
 }

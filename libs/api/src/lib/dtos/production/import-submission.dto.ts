@@ -6,8 +6,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { IsNotEmpty, IsString } from 'class-validator';
+
 export class ImportSubmissionDto {
+  @IsString()
+  @IsNotEmpty()
   importId: string;
+
+  @IsString()
+  @IsNotEmpty()
   storageUnitId: string;
 
   constructor(importId: string, storageUnitId: string) {

@@ -11,12 +11,12 @@ import { AddressEntity } from '../address';
 import { UserEntity } from '../user';
 
 export class CompanyEntity {
-  id?: string;
-  name?: string;
-  mastrNumber?: string;
-  type?: string;
-  address?: AddressEntity;
-  users?: UserEntity[];
+  id: string;
+  name: string;
+  mastrNumber: string;
+  type: string;
+  address: AddressEntity;
+  users: UserEntity[];
 
   constructor(
     id: string,

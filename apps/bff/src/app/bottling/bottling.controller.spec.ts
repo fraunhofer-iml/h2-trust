@@ -15,6 +15,7 @@ import {
   ProcessStepEntity,
   ProcessStepEntityHydrogenBottlingMock,
   ProcessStepMessagePatterns,
+  ReadByIdPayload,
   UserMessagePatterns,
 } from '@h2-trust/amqp';
 import {
@@ -109,12 +110,18 @@ describe('BottlingController', () => {
       .mockImplementation((_messagePattern, _data) => of(returnedProcessStep));
 
     const expectedBatchSvcPayload1 = {
-      processStepEntity: BottlingDto.toEntity({ ...givenDto, recordedBy: AuthenticatedUserMock.sub }),
+      amount: givenDto.amount,
+      ownerId: givenDto.recipient,
+      filledAt: new Date(givenDto.filledAt),
+      recordedById: AuthenticatedUserMock.sub,
+      hydrogenStorageUnitId: givenDto.hydrogenStorageUnit,
+      color: givenDto.color,
+      fileDescription: givenDto.fileDescription,
       files: [] as Express.Multer.File[],
     };
 
     const expectedBatchSvcPayload2 = {
-      processStepEntity: expectedBatchSvcPayload1.processStepEntity,
+      processStep: returnedProcessStep,
       predecessorBatch: returnedProcessStep.batch,
       transportationDetails: {
         distance: givenDto.distance,
@@ -160,7 +167,10 @@ describe('BottlingController', () => {
     const actualResponse: BottlingOverviewDto[] = await controller.readBottlingsByCompany(AuthenticatedUserMock);
 
     expect(batchSvcSpy).toHaveBeenCalledTimes(1);
-    expect(batchSvcSpy).toHaveBeenCalledWith(ProcessStepMessagePatterns.READ_ALL, expectedBatchSvcPayload);
+    expect(batchSvcSpy).toHaveBeenCalledWith(
+      ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_COMPANY,
+      expectedBatchSvcPayload,
+    );
 
     expect(actualResponse).toEqual(expectedResponse);
   });
@@ -182,9 +192,9 @@ describe('BottlingController', () => {
       .spyOn(generalSvc, 'send')
       .mockImplementation((_messagePattern: UserMessagePatterns, _data: any) => of(UserDetailsDtoMock[0]));
 
-    const expectedBatchSvcPayload1 = { processStepId: returnedProcessStep.id };
-    const expectedBatchSvcPayload2 = returnedProcessStep.id;
-    const expectedGeneralSvcPayload = { id: returnedProcessStep.recordedBy.id };
+    const expectedBatchSvcPayload1 = new ReadByIdPayload(returnedProcessStep.id);
+    const expectedBatchSvcPayload2 = new ReadByIdPayload(returnedProcessStep.id);
+    const expectedGeneralSvcPayload = new ReadByIdPayload(returnedProcessStep.recordedBy.id);
 
     const mockedRedCompliance = {
       isGeoCorrelationValid: true,

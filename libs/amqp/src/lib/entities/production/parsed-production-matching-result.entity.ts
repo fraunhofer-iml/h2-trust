@@ -11,7 +11,6 @@ import { ParsedProductionEntity } from './parsed-production.entity';
 export class ParsedProductionMatchingResultEntity {
   id: string;
   createdAt: Date;
-
   powerUsed: number;
   hydrogenProduced: number;
   numberOfBatches: number;

@@ -8,7 +8,15 @@
 
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues, PowerProductionTypeEntity, ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
+import {
+  BatchEntityHydrogenProducedMock,
+  BrokerQueues,
+  HydrogenProductionUnitEntityMock,
+  PowerProductionTypeEntity,
+  ProcessStepEntity,
+  ProcessStepMessagePatterns,
+  UserEntityHydrogenMock,
+} from '@h2-trust/amqp';
 import {
   AccountingPeriodMatchingResultDto,
   AuthenticatedKCUser,
@@ -113,12 +121,18 @@ describe('ProductionController', () => {
         startedAt: new Date(CreateProductionDtoMock.productionStartedAt),
         endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
         type: ProcessType.HYDROGEN_PRODUCTION,
+        batch: BatchEntityHydrogenProducedMock[0],
+        recordedBy: UserEntityHydrogenMock,
+        executedBy: HydrogenProductionUnitEntityMock[0],
       },
       {
         id: 'hydrogen-production-process-step-2',
         startedAt: new Date(CreateProductionDtoMock.productionEndedAt),
         endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
         type: ProcessType.HYDROGEN_PRODUCTION,
+        batch: BatchEntityHydrogenProducedMock[0],
+        recordedBy: UserEntityHydrogenMock,
+        executedBy: HydrogenProductionUnitEntityMock[0],
       },
     ];
 
@@ -139,6 +153,10 @@ describe('ProductionController', () => {
         id: 'hydrogen-production-process-step-1',
         startedAt: new Date(CreateProductionDtoMock.productionStartedAt),
         endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
+        type: ProcessType.HYDROGEN_PRODUCTION,
+        batch: BatchEntityHydrogenProducedMock[0],
+        recordedBy: UserEntityHydrogenMock,
+        executedBy: HydrogenProductionUnitEntityMock[0],
       },
     ];
 

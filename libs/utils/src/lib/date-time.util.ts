@@ -40,6 +40,14 @@ export class DateTimeUtil {
     return Math.floor(DateTimeUtil.convertDateStringToMilliseconds(date) / 1000);
   }
 
+  static convertDateToSeconds(date: Date): number {
+    if (!date || !(date instanceof Date)) {
+      throw new Error('Invalid date parameter');
+    }
+
+    return Math.floor(date.getTime() / 1000);
+  }
+
   static convertDateToMilliseconds(date: Date | string): number {
     if (date == null) {
       throw new Error('Date parameter cannot be null or undefined');

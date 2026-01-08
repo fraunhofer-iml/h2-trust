@@ -7,8 +7,8 @@
  */
 
 export class CreateProductionEntity {
-  productionStartedAt: string;
-  productionEndedAt: string;
+  productionStartedAt: Date;
+  productionEndedAt: Date;
   powerProductionUnitId: string;
   powerAmountKwh: number;
   hydrogenProductionUnitId: string;
@@ -21,8 +21,8 @@ export class CreateProductionEntity {
   waterConsumptionLitersPerHour: number;
 
   constructor(
-    productionStartedAt: string,
-    productionEndedAt: string,
+    productionStartedAt: Date,
+    productionEndedAt: Date,
     powerProductionUnitId: string,
     powerAmountKwh: number,
     hydrogenProductionUnitId: string,

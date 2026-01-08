@@ -14,22 +14,22 @@ import { QualityDetailsEntity } from './quality-details.entity';
 export class BatchEntity {
   id?: string;
   active?: boolean;
-  amount?: number;
-  type?: string;
+  amount: number;
+  type: string;
   predecessors?: BatchEntity[];
   successors?: BatchEntity[];
-  owner?: CompanyEntity;
+  owner: CompanyEntity;
   hydrogenStorageUnit?: HydrogenStorageUnitEntity;
   qualityDetails?: QualityDetailsEntity;
   processStepId?: string;
 
   constructor(
-    id: string,
-    active: boolean,
+    id: string | undefined,
+    active: boolean | undefined,
     amount: number,
     type: string,
-    predecessors: BatchEntity[],
-    successors: BatchEntity[],
+    predecessors: BatchEntity[] | undefined,
+    successors: BatchEntity[] | undefined,
     owner: CompanyEntity,
     hydrogenStorageUnit: HydrogenStorageUnitEntity | undefined,
     qualityDetails?: QualityDetailsEntity,

@@ -6,21 +6,34 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { BrokerException, HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/amqp';
+import { firstValueFrom } from 'rxjs';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import {
+  BatchEntity,
+  BrokerException,
+  BrokerQueues,
+  CreateHydrogenBottlingPayload,
+  HydrogenComponentEntity,
+  HydrogenCompositionUtil,
+  HydrogenStorageUnitEntity,
+  ProcessStepEntity,
+  ReadByIdPayload,
+  UnitMessagePatterns,
+} from '@h2-trust/amqp';
 import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
+import { HydrogenColor } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step.service';
 import { BatchSelection } from './batch-selection.interface';
 import { BatchSelectionService } from './batch-selection.service';
 import { HydrogenComponentAssembler } from './hydrogen-component-assembler';
-import { HydrogenCompositionService } from './hydrogen-composition.service';
 import { ProcessStepAssemblerService } from './process-step-assembler.service';
 
 @Injectable()
 export class BottlingService {
   constructor(
-    private readonly hydrogenCompositionService: HydrogenCompositionService,
+    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly batchSelectionService: BatchSelectionService,
     private readonly processStepAssemblerService: ProcessStepAssemblerService,
     private readonly storageService: StorageService,
@@ -30,62 +43,83 @@ export class BottlingService {
     private readonly processStepService: ProcessStepService,
   ) {}
 
-  async createHydrogenBottlingProcessStep(
-    processStep: ProcessStepEntity,
-    files: Express.Multer.File[],
-  ): Promise<ProcessStepEntity> {
-    const allProcessStepsFromStorageUnit = await this.processStepRepository.findAllProcessStepsFromStorageUnit(
-      processStep.executedBy.id,
-    );
+  async createHydrogenBottlingProcessStep(payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
+    const allProcessStepsFromStorageUnit: ProcessStepEntity[] =
+      await this.processStepRepository.findAllProcessStepsFromStorageUnit(payload.hydrogenStorageUnitId);
 
     if (allProcessStepsFromStorageUnit.length === 0) {
       throw new BrokerException(
-        `No batches found in storage unit ${processStep.executedBy.id}`,
+        `No process steps found in storage unit ${payload.hydrogenStorageUnitId}`,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const hydrogenComposition = await this.hydrogenCompositionService.determineHydrogenComposition(processStep);
+    const hydrogenComposition: HydrogenComponentEntity[] = await this.determineHydrogenComposition(
+      payload.amount,
+      payload.color,
+      payload.hydrogenStorageUnitId,
+    );
 
     const batchSelection: BatchSelection = this.batchSelectionService.processBottlingForAllColors(
       allProcessStepsFromStorageUnit,
       hydrogenComposition,
-      processStep,
+      payload.hydrogenStorageUnitId,
     );
 
-    const batchesToSetInactive = [
+    const batchesToSetInactive: BatchEntity[] = [
       ...batchSelection.batchesForBottle,
-      ...batchSelection.processStepsToBeSplit.map((processStep) => processStep.batch),
+      ...batchSelection.processStepsToBeSplit.map((ps) => ps.batch),
     ];
     await this.batchRepository.setBatchesInactive(batchesToSetInactive.map((batch) => batch.id));
 
-    const createdConsumedSplitProcessSteps = await Promise.all(
-      batchSelection.consumedSplitProcessSteps.map((processStep) =>
-        this.processStepRepository.insertProcessStep(processStep),
-      ),
+    const persistedConsumedSplitProcessSteps: ProcessStepEntity[] = await Promise.all(
+      batchSelection.consumedSplitProcessSteps.map((step) => this.processStepRepository.insertProcessStep(step)),
     );
-    const createdConsumedSplitBatches = createdConsumedSplitProcessSteps.map((processStep) => processStep.batch);
+    const persistedConsumedSplitBatches: BatchEntity[] = persistedConsumedSplitProcessSteps.map((ps) => ps.batch);
 
     await Promise.all(
-      batchSelection.processStepsForRemainingAmount.map((processStep) =>
-        this.processStepRepository.insertProcessStep(processStep),
-      ),
+      batchSelection.processStepsForRemainingAmount.map((ps) => this.processStepRepository.insertProcessStep(ps)),
     );
 
-    const bottlingProcessStep = await this.processStepAssemblerService.createBottlingProcessStep(processStep, [
-      ...batchSelection.batchesForBottle,
-      ...createdConsumedSplitBatches,
-    ]);
+    const bottlingProcessStep: ProcessStepEntity = this.processStepAssemblerService.assembleBottlingProcessStep(
+      payload,
+      [...batchSelection.batchesForBottle, ...persistedConsumedSplitBatches],
+    );
+    const persistedBottlingProcessStep: ProcessStepEntity =
+      await this.processStepRepository.insertProcessStep(bottlingProcessStep);
 
-    if (files) {
+    if (payload.files) {
       await Promise.all(
-        files.map((file) =>
-          this.addDocumentToProcessStep(file, bottlingProcessStep.id, processStep.documents[0]?.description),
+        payload.files.map((file) =>
+          this.addDocumentToProcessStep(file, persistedBottlingProcessStep.id, payload.fileDescription),
         ),
       );
     }
 
-    return this.processStepService.readProcessStep(bottlingProcessStep.id);
+    return this.processStepService.readProcessStep(new ReadByIdPayload(persistedBottlingProcessStep.id));
+  }
+
+  private async determineHydrogenComposition(
+    batchAmount: number,
+    hydrogenColor: HydrogenColor,
+    executedById: string,
+  ): Promise<HydrogenComponentEntity[]> {
+    if (hydrogenColor === HydrogenColor.GREEN) {
+      return [new HydrogenComponentEntity(HydrogenColor.GREEN, batchAmount)];
+    }
+
+    const hydrogenStorageUnit: HydrogenStorageUnitEntity = await firstValueFrom(
+      this.generalSvc.send(UnitMessagePatterns.READ, new ReadByIdPayload(executedById)),
+    );
+
+    try {
+      return HydrogenCompositionUtil.computeHydrogenComposition(hydrogenStorageUnit.filling, batchAmount);
+    } catch (BrokerException) {
+      throw new BrokerException(
+        `Total stored amount of ${hydrogenStorageUnit.id} is not greater than 0`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   private async addDocumentToProcessStep(file: Express.Multer.File, processStepId: string, description: string) {
@@ -99,8 +133,8 @@ export class BottlingService {
     );
   }
 
-  async calculateHydrogenComposition(bottlingProcessStepId: string): Promise<HydrogenComponentEntity[]> {
-    const bottlingProcessStep: ProcessStepEntity = await this.processStepService.readProcessStep(bottlingProcessStepId);
+  async calculateHydrogenComposition(payload: ReadByIdPayload): Promise<HydrogenComponentEntity[]> {
+    const bottlingProcessStep: ProcessStepEntity = await this.processStepService.readProcessStep(payload);
     return HydrogenComponentAssembler.assembleFromBottlingProcessStep(bottlingProcessStep);
   }
 }
