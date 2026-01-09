@@ -6,27 +6,25 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { firstValueFrom } from 'rxjs';
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Injectable } from '@nestjs/common';
 import {
-  BrokerQueues,
   ProcessStepEntity,
-  ProcessStepMessagePatterns,
   ProvenanceEntity,
   ReadByIdPayload,
 } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { TraversalService } from './traversal.service';
+import { ProcessStepService } from '../process-step/process-step.service';
 
 type ProvenanceBuilderFn = (root: ProcessStepEntity) => Promise<ProvenanceEntity>;
 
 @Injectable()
 export class ProvenanceService {
   constructor(
-    @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
+    private readonly processStepService: ProcessStepService,
     private readonly traversalService: TraversalService,
-  ) {}
+
+  ) { }
 
   private readonly provenanceBuilders: Record<ProcessType, ProvenanceBuilderFn> = {
     [ProcessType.POWER_PRODUCTION]: async (root) => {
@@ -74,9 +72,7 @@ export class ProvenanceService {
       throw new Error('processStepId must be provided.');
     }
 
-    const root: ProcessStepEntity = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.READ_UNIQUE, new ReadByIdPayload(payload.id)),
-    );
+    const root: ProcessStepEntity = await this.processStepService.readProcessStep(payload);
 
     if (!root || !root.type) {
       throw new Error('Invalid process step.');

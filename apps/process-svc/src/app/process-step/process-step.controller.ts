@@ -11,11 +11,8 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import {
   CreateHydrogenBottlingPayload,
   CreateHydrogenTransportationPayload,
-  CreateManyProcessStepsPayload,
-  HydrogenComponentEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
-  ReadByIdPayload,
   ReadProcessStepsByPredecessorTypesAndCompanyPayload,
   ReadProcessStepsByTypesAndActiveAndCompanyPayload,
 } from '@h2-trust/amqp';
@@ -30,7 +27,7 @@ export class ProcessStepController {
     private readonly processStepService: ProcessStepService,
     private readonly bottlingService: BottlingService,
     private readonly transportationService: TransportationService,
-  ) {}
+  ) { }
 
   @MessagePattern(ProcessStepMessagePatterns.READ_ALL_BY_PREDECESSOR_TYPES_AND_COMPANY)
   async readProcessStepsByPredecessorTypesAndCompany(
@@ -38,21 +35,12 @@ export class ProcessStepController {
   ): Promise<ProcessStepEntity[]> {
     return this.processStepService.readProcessStepsByPredecessorTypesAndCompany(payload);
   }
+
   @MessagePattern(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_COMPANY)
   async readProcessStepsByTypesAndActiveAndCompany(
     @Payload() payload: ReadProcessStepsByTypesAndActiveAndCompanyPayload,
   ): Promise<ProcessStepEntity[]> {
     return this.processStepService.readProcessStepsByTypesAndActiveAndCompany(payload);
-  }
-
-  @MessagePattern(ProcessStepMessagePatterns.READ_UNIQUE)
-  async readProcessStep(@Payload() payload: ReadByIdPayload): Promise<ProcessStepEntity> {
-    return this.processStepService.readProcessStep(payload);
-  }
-
-  @MessagePattern(ProcessStepMessagePatterns.CREATE_MANY)
-  async createManyProcessSteps(@Payload() payload: CreateManyProcessStepsPayload): Promise<ProcessStepEntity[]> {
-    return this.processStepService.createManyProcessSteps(payload);
   }
 
   @MessagePattern(ProcessStepMessagePatterns.CREATE_HYDROGEN_BOTTLING)
@@ -67,10 +55,5 @@ export class ProcessStepController {
     @Payload() payload: CreateHydrogenTransportationPayload,
   ): Promise<ProcessStepEntity> {
     return this.transportationService.createHydrogenTransportationProcessStep(payload);
-  }
-
-  @MessagePattern(ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION)
-  async calculateHydrogenComposition(@Payload() payload: ReadByIdPayload): Promise<HydrogenComponentEntity[]> {
-    return this.bottlingService.calculateHydrogenComposition(payload);
   }
 }

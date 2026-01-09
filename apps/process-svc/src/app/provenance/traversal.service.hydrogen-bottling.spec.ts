@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { of } from 'rxjs';
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { TraversalService } from './traversal.service';
@@ -14,10 +13,10 @@ import { createBatch, createProcessStep, setupTraversalServiceTestingModule } fr
 
 describe('TraversalService', () => {
   let service: TraversalService;
-  let batchSvcSendMock: jest.Mock;
+  let processStepServiceMock: Record<string, jest.Mock>;
 
   beforeEach(async () => {
-    ({ service, batchSvcSendMock } = await setupTraversalServiceTestingModule());
+    ({ service, processStepServiceMock } = await setupTraversalServiceTestingModule());
   });
 
   describe('fetchHydrogenBottlingFromHydrogenTransportation', () => {
@@ -64,7 +63,7 @@ describe('TraversalService', () => {
       ]);
 
       const invalidPredecessorProcessStep = createProcessStep('pp1', ProcessType.POWER_PRODUCTION, []);
-      batchSvcSendMock.mockReturnValueOnce(of(invalidPredecessorProcessStep));
+      processStepServiceMock['readProcessStep'].mockResolvedValueOnce(invalidPredecessorProcessStep);
 
       const expectedError = `All process steps must be of type [${ProcessType.HYDROGEN_BOTTLING}], but found invalid types: ${invalidPredecessorProcessStep.id} (${invalidPredecessorProcessStep.type})`;
 
@@ -80,7 +79,7 @@ describe('TraversalService', () => {
         createBatch('b1'),
       ]);
 
-      batchSvcSendMock.mockReturnValueOnce(of(null));
+      processStepServiceMock['readProcessStep'].mockResolvedValueOnce(null);
 
       const expectedError = `Process steps of type [${ProcessType.HYDROGEN_BOTTLING}] are missing.`;
 
@@ -100,7 +99,7 @@ describe('TraversalService', () => {
       const hb1: ProcessStepEntity = createProcessStep('hb1', ProcessType.HYDROGEN_BOTTLING, []);
       const hb2: ProcessStepEntity = createProcessStep('hb2', ProcessType.HYDROGEN_BOTTLING, []);
 
-      batchSvcSendMock.mockReturnValueOnce(of(hb1)).mockReturnValueOnce(of(hb2));
+      processStepServiceMock['readProcessStep'].mockResolvedValueOnce(hb1).mockResolvedValueOnce(hb2);
 
       const expectedError = `Expected exactly one predecessor ${ProcessType.HYDROGEN_BOTTLING} process step, but found [2].`;
 
@@ -118,7 +117,7 @@ describe('TraversalService', () => {
 
       const expectedResult: ProcessStepEntity = createProcessStep('hp1', ProcessType.HYDROGEN_BOTTLING, []);
 
-      batchSvcSendMock.mockReturnValue(of(expectedResult));
+      processStepServiceMock['readProcessStep'].mockResolvedValue(expectedResult);
 
       // act
       const actualResult: ProcessStepEntity =

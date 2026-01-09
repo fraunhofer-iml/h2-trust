@@ -15,7 +15,6 @@ import {
   ProcessStepEntity,
   ProcessStepEntityHydrogenBottlingMock,
   ProcessStepEntityHydrogenTransportationMock,
-  ReadByIdPayload,
   ReadProcessStepsByPredecessorTypesAndCompanyPayload,
   ReadProcessStepsByTypesAndActiveAndCompanyPayload,
 } from '@h2-trust/amqp';
@@ -131,28 +130,6 @@ describe('ProcessStepController', () => {
 
     expect(processStepServiceSpy).toHaveBeenCalledTimes(1);
     expect(processStepRepositorySpy).toHaveBeenCalledTimes(1);
-    expect(actualResponse).toEqual(expectedResponse);
-  });
-
-  it('should read process step', async () => {
-    const givenPayload = new ReadByIdPayload(ProcessStepEntityHydrogenBottlingMock[0].id);
-
-    const expectedResponse: ProcessStepEntity = structuredClone(ProcessStepEntityHydrogenBottlingMock[0]);
-    expectedResponse.documents = [];
-
-    const processStepServiceSpy = jest.spyOn(processStepService, 'readProcessStep');
-
-    const processStepRepositorySpy = jest
-      .spyOn(processStepRepository, 'findProcessStep')
-      .mockResolvedValue(expectedResponse);
-
-    const configurationServiceSpy = jest.spyOn(configurationService, 'getGlobalConfiguration');
-
-    const actualResponse = await controller.readProcessStep(givenPayload);
-
-    expect(processStepServiceSpy).toHaveBeenCalledTimes(1);
-    expect(processStepRepositorySpy).toHaveBeenCalledTimes(1);
-    expect(configurationServiceSpy).toHaveBeenCalledTimes(1);
     expect(actualResponse).toEqual(expectedResponse);
   });
 

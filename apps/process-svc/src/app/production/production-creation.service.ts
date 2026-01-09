@@ -17,19 +17,19 @@ import {
   HydrogenProductionUnitEntity,
   PowerProductionUnitEntity,
   ProcessStepEntity,
-  ProcessStepMessagePatterns,
   ReadByIdPayload,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { ProductionService } from './production.service';
+import { ProcessStepService } from '../process-step/process-step.service';
 
 @Injectable()
 export class ProductionCreationService {
   constructor(
-    @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
+    private readonly processStepService: ProcessStepService,
     private readonly productionService: ProductionService,
-  ) {}
+  ) { }
 
   async createProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
     const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
@@ -68,9 +68,7 @@ export class ProductionCreationService {
     const powerAndWaterPayload: CreateManyProcessStepsPayload = new CreateManyProcessStepsPayload([...power, ...water]);
 
     // Step 2: Persist power and water
-    const persistedPowerAndWater: ProcessStepEntity[] = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, powerAndWaterPayload),
-    );
+    const persistedPowerAndWater: ProcessStepEntity[] = await this.processStepService.createManyProcessSteps(powerAndWaterPayload);
 
     // Step 3: Split response back into power and water (1:1 relation)
     const persistedPower: ProcessStepEntity[] = persistedPowerAndWater.slice(0, power.length);
@@ -86,9 +84,7 @@ export class ProductionCreationService {
     const hydrogenPayload: CreateManyProcessStepsPayload = new CreateManyProcessStepsPayload(hydrogen);
 
     // Step 5: Persist hydrogen
-    const persistedHydrogen: ProcessStepEntity[] = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, hydrogenPayload),
-    );
+    const persistedHydrogen: ProcessStepEntity[] = await this.processStepService.createManyProcessSteps(hydrogenPayload);
 
     return [...persistedPowerAndWater, ...persistedHydrogen];
   }

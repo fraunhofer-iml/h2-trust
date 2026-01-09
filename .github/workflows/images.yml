@@ -40,17 +40,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build & Push batch-svc
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: docker/nest.dockerfile
-          build-args: APP=batch-svc
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository }}/batch-svc:latest
-            ghcr.io/${{ github.repository }}/batch-svc:${{ github.ref_name }}
-
       - name: Build & Push bff
         uses: docker/build-push-action@v6
         with:

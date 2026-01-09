@@ -6,35 +6,28 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { firstValueFrom } from 'rxjs';
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Injectable } from '@nestjs/common';
 import {
-  BrokerQueues,
   HydrogenComponentEntity,
   ProcessStepEntity,
-  ProcessStepMessagePatterns,
   ReadByIdPayload,
 } from '@h2-trust/amqp';
 import { EmissionCalculationDto, EmissionDto, HydrogenBatchDto, SectionDto } from '@h2-trust/api';
 import { ProofOfOrigin } from '@h2-trust/domain';
 import { EmissionCalculationAssembler } from '../emission.assembler';
 import { BatchAssembler } from './batch.assembler';
+import { BottlingService } from '../../process-step/bottling/bottling.service';
 
 @Injectable()
 export class HydrogenTransportationSectionService {
-  constructor(@Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy) {}
+  constructor(private readonly bottlingService: BottlingService) { }
 
   async buildSection(
     hydrogenTransportation: ProcessStepEntity,
     hydrogenBottling: ProcessStepEntity,
   ): Promise<SectionDto> {
-    const hydrogenCompositions: HydrogenComponentEntity[] = await firstValueFrom(
-      this.batchSvc.send(
-        ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION,
-        new ReadByIdPayload(hydrogenBottling.id),
-      ),
-    );
+    const hydrogenCompositions: HydrogenComponentEntity[] = await this.bottlingService.calculateHydrogenComposition(new ReadByIdPayload(hydrogenBottling.id));
+
     const emissionCalculation: EmissionCalculationDto =
       EmissionCalculationAssembler.assembleHydrogenTransportationCalculation(hydrogenTransportation);
     const hydrogenKgEquivalent: number = hydrogenTransportation.batch.amount;

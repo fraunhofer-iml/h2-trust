@@ -8,7 +8,6 @@
 
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { BATCH_SVC_CONFIGURATION_IDENTIFIER, BatchSvcConfiguration } from './configurations/batch-svc.configuration';
 import { BFF_CONFIGURATION_IDENTIFIER, BffConfiguration } from './configurations/bff.configuration';
 import {
   GENERAL_SVC_CONFIGURATION_IDENTIFIER,
@@ -39,18 +38,6 @@ export class ConfigurationService {
     }
 
     return processSvcConfiguration;
-  }
-
-  public getBatchSvcConfiguration(): BatchSvcConfiguration {
-    const batchSvcConfiguration = this.configService.get<BatchSvcConfiguration>(BATCH_SVC_CONFIGURATION_IDENTIFIER);
-
-    if (!batchSvcConfiguration) {
-      const errorMessage = 'Environment variables for batch service configuration missing.';
-      this.logger.error(errorMessage);
-      throw new Error(errorMessage);
-    }
-
-    return batchSvcConfiguration;
   }
 
   public getBffConfiguration(): BffConfiguration {

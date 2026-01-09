@@ -10,7 +10,6 @@ import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   BrokerQueues,
-  CreateProductionEntity,
   CreateProductionsPayload,
   ParsedFileBundles,
   PowerAccessApprovalEntity,
@@ -23,6 +22,7 @@ import { ProductionCreationService } from './production-creation.service';
 import { ProductionImportService } from './production-import.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
+import { ProcessStepService } from '../process-step/process-step.service';
 
 describe('ProductionController', () => {
   const DERIVED_HYDROGEN_COLOR = HydrogenColor.GREEN;
@@ -30,8 +30,8 @@ describe('ProductionController', () => {
 
   let controller: ProductionController;
   let generalSvcSendMock: jest.Mock;
-  let batchSvcSendMock: jest.Mock;
   let stagedProductionRepository: StagedProductionRepository;
+  let processStepService: ProcessStepService;
 
   beforeEach(async () => {
     generalSvcSendMock = jest.fn().mockImplementation(() => {
@@ -46,10 +46,6 @@ describe('ProductionController', () => {
       });
     });
 
-    batchSvcSendMock = jest.fn().mockImplementation((_pattern, data) => {
-      return of(data.processSteps);
-    });
-
     const moduleRef: TestingModule = await Test.createTestingModule({
       controllers: [ProductionController],
       providers: [
@@ -62,13 +58,16 @@ describe('ProductionController', () => {
             send: generalSvcSendMock,
           },
         },
+        AccountingPeriodMatchingService,
         {
-          provide: BrokerQueues.QUEUE_BATCH_SVC,
+          provide: ProcessStepService,
           useValue: {
-            send: batchSvcSendMock,
+            createPowerProductions: jest.fn().mockImplementation((data) => { return data }),
+            createWaterConsumptions: jest.fn().mockImplementation((data) => { return data }),
+            createHydrogenProductions: jest.fn().mockImplementation((data) => { return data }),
+            createManyProcessSteps: jest.fn().mockImplementation((data) => { return [data] }),
           },
         },
-        AccountingPeriodMatchingService,
         {
           provide: StagedProductionRepository,
           useValue: {
@@ -90,6 +89,7 @@ describe('ProductionController', () => {
 
     controller = moduleRef.get<ProductionController>(ProductionController);
     stagedProductionRepository = moduleRef.get<StagedProductionRepository>(StagedProductionRepository);
+    processStepService = moduleRef.get<ProcessStepService>(ProcessStepService);
   });
 
   it('should create production process steps and call batchService.send for each period', async () => {
@@ -105,8 +105,6 @@ describe('ProductionController', () => {
     );
 
     const actualResponse = await controller.createProductions(givenPayload);
-
-    expect(batchSvcSendMock.mock.calls.length).toBe(2); // One for power & water, one for hydrogen
     expect(actualResponse.length).toBe(3);
 
     const powerProductions = actualResponse.filter(

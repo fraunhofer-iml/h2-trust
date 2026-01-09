@@ -6,12 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues, ProcessStepEntity, ProvenanceEntity, ReadByIdPayload } from '@h2-trust/amqp';
+import { ProcessStepEntity, ProvenanceEntity, ReadByIdPayload } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { ProvenanceService } from './provenance.service';
 import { TraversalService } from './traversal.service';
+import { ProcessStepService } from '../process-step/process-step.service';
 
 function createProcessStep(id: string, type: ProcessType): ProcessStepEntity {
   return { id, type } as ProcessStepEntity;
@@ -19,11 +19,14 @@ function createProcessStep(id: string, type: ProcessType): ProcessStepEntity {
 
 describe('ProvenanceService', () => {
   let service: ProvenanceService;
-  let batchSvcSendMock: jest.Mock;
+  let processStepServiceMock: Record<string, jest.Mock>;
   let traversalServiceMock: Record<string, jest.Mock>;
 
   beforeEach(async () => {
-    batchSvcSendMock = jest.fn();
+    processStepServiceMock = {
+      readProcessStep: jest.fn(),
+    };
+
     traversalServiceMock = {
       fetchPowerProductionsFromHydrogenProductions: jest.fn(),
       fetchWaterConsumptionsFromHydrogenProductions: jest.fn(),
@@ -34,7 +37,7 @@ describe('ProvenanceService', () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       providers: [
         ProvenanceService,
-        { provide: BrokerQueues.QUEUE_BATCH_SVC, useValue: { send: batchSvcSendMock } },
+        { provide: ProcessStepService, useValue: processStepServiceMock },
         { provide: TraversalService, useValue: traversalServiceMock },
       ],
     }).compile();
@@ -48,7 +51,7 @@ describe('ProvenanceService', () => {
     });
 
     it('throws when root step has no type', async () => {
-      batchSvcSendMock.mockReturnValue(of({ id: 'p1' }));
+      processStepServiceMock['readProcessStep'].mockResolvedValue({ id: 'p1' });
 
       await expect(service.buildProvenance(new ReadByIdPayload('p1'))).rejects.toThrow('Invalid process step.');
     });
@@ -56,7 +59,7 @@ describe('ProvenanceService', () => {
     it('throws when unsupported process type', async () => {
       const unknown = createProcessStep('p1', 'UNKNOWN' as ProcessType);
 
-      batchSvcSendMock.mockReturnValue(of(unknown));
+      processStepServiceMock['readProcessStep'].mockResolvedValue(unknown);
 
       await expect(service.buildProvenance(new ReadByIdPayload(unknown.id))).rejects.toThrow(
         'Unsupported process type [UNKNOWN].',
@@ -69,7 +72,7 @@ describe('ProvenanceService', () => {
       // Arrange
       const powerProduction = createProcessStep('pp1', ProcessType.POWER_PRODUCTION);
 
-      batchSvcSendMock.mockReturnValue(of(powerProduction));
+      processStepServiceMock['readProcessStep'].mockResolvedValue(powerProduction);
 
       const expectedResult = new ProvenanceEntity(powerProduction, undefined, [], [], [powerProduction]);
 
@@ -93,7 +96,7 @@ describe('ProvenanceService', () => {
       // Arrange
       const waterConsumption = createProcessStep('wc1', ProcessType.WATER_CONSUMPTION);
 
-      batchSvcSendMock.mockReturnValue(of(waterConsumption));
+      processStepServiceMock['readProcessStep'].mockResolvedValue(waterConsumption);
 
       const expectedResult = new ProvenanceEntity(waterConsumption, undefined, [], [waterConsumption], []);
 
@@ -119,7 +122,7 @@ describe('ProvenanceService', () => {
       const waterConsumptions = [createProcessStep('wc1', ProcessType.WATER_CONSUMPTION)];
       const powerProductions = [createProcessStep('pp1', ProcessType.POWER_PRODUCTION)];
 
-      batchSvcSendMock.mockReturnValue(of(hydrogenProduction));
+      processStepServiceMock['readProcessStep'].mockResolvedValue(hydrogenProduction);
 
       traversalServiceMock['fetchPowerProductionsFromHydrogenProductions'].mockResolvedValue(powerProductions);
       traversalServiceMock['fetchWaterConsumptionsFromHydrogenProductions'].mockResolvedValue(waterConsumptions);
@@ -159,7 +162,7 @@ describe('ProvenanceService', () => {
       const waterConsumptions = [createProcessStep('wc1', ProcessType.WATER_CONSUMPTION)];
       const powerProductions = [createProcessStep('pp1', ProcessType.POWER_PRODUCTION)];
 
-      batchSvcSendMock.mockReturnValue(of(hydrogenBottling));
+      processStepServiceMock['readProcessStep'].mockResolvedValue(hydrogenBottling);
 
       traversalServiceMock['fetchPowerProductionsFromHydrogenProductions'].mockResolvedValue(powerProductions);
       traversalServiceMock['fetchWaterConsumptionsFromHydrogenProductions'].mockResolvedValue(waterConsumptions);
@@ -203,7 +206,7 @@ describe('ProvenanceService', () => {
       const hydrogenProductions = [createProcessStep('hp1', ProcessType.HYDROGEN_PRODUCTION)];
       const hydrogenBottling = createProcessStep('hb1', ProcessType.HYDROGEN_BOTTLING);
 
-      batchSvcSendMock.mockReturnValue(of(hydrogenTransportation));
+      processStepServiceMock['readProcessStep'].mockResolvedValue(hydrogenTransportation);
 
       traversalServiceMock['fetchPowerProductionsFromHydrogenProductions'].mockResolvedValue(powerProductions);
       traversalServiceMock['fetchWaterConsumptionsFromHydrogenProductions'].mockResolvedValue(waterConsumptions);

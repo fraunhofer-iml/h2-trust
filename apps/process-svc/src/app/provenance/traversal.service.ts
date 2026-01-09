@@ -6,21 +6,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { firstValueFrom } from 'rxjs';
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Injectable } from '@nestjs/common';
 import {
   BatchEntity,
-  BrokerQueues,
   ProcessStepEntity,
-  ProcessStepMessagePatterns,
   ReadByIdPayload,
 } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
+import { ProcessStepService } from '../process-step/process-step.service';
 
 @Injectable()
 export class TraversalService {
-  constructor(@Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchService: ClientProxy) {}
+  constructor(private readonly processStepService: ProcessStepService) { }
 
   async fetchPowerProductionsFromHydrogenProductions(
     hydrogenProductions: ProcessStepEntity[],
@@ -124,11 +121,7 @@ export class TraversalService {
   }
 
   private async fetchProcessStepsOfBatches(batches: BatchEntity[]): Promise<ProcessStepEntity[]> {
-    const promises = batches.map(({ processStepId }) =>
-      firstValueFrom(
-        this.batchService.send(ProcessStepMessagePatterns.READ_UNIQUE, new ReadByIdPayload(processStepId)),
-      ),
-    );
+    const promises = batches.map(({ processStepId }) => this.processStepService.readProcessStep(new ReadByIdPayload(processStepId)));
     return Promise.all(promises);
   }
 

@@ -19,13 +19,14 @@ import { WaterSupplyClassificationService } from './proof-of-origin/water-supply
 import { ProvenanceModule } from '../provenance/provenance.module';
 import { RedComplianceModule } from '../red-compliance/red-compliance.module';
 import { DigitalProductPassportController } from './digital-product-passport.controller';
+import { ProcessStepModule } from '../process-step/process-step.module';
 
 @Module({
   imports: [
-    new Broker().getBatchSvcBroker(),
     new Broker().getGeneralSvcBroker(),
     ProvenanceModule, // TODO-MP: move to dpp
-    RedComplianceModule // TODO-MP: move to dpp
+    RedComplianceModule, // TODO-MP: move to dpp
+    ProcessStepModule
   ],
   controllers: [DigitalProductPassportController],
   providers: [
@@ -40,4 +41,4 @@ import { DigitalProductPassportController } from './digital-product-passport.con
   ],
   exports: [DigitalProductPassportService],
 })
-export class DigitalProductPassportModule {}
+export class DigitalProductPassportModule { }

@@ -15,7 +15,6 @@ import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
-    new Broker().getBatchSvcBroker(),
     new Broker().getGeneralSvcBroker(),
     new Broker().getProcessSvcBroker(),
     CsvParserModule,

@@ -28,5 +28,6 @@ import { TransportationService } from './transportation.service';
     ProcessStepAssemblerService,
     TransportationService,
   ],
+  exports: [BottlingService, ProcessStepService],
 })
-export class ProcessStepModule {}
+export class ProcessStepModule { }

@@ -11,10 +11,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { BrokerQueues } from './broker-queues';
 
 export class Broker {
-  public getBatchSvcBroker(): DynamicModule {
-    return this.getMessageBroker(BrokerQueues.QUEUE_BATCH_SVC);
-  }
-
   public getGeneralSvcBroker(): DynamicModule {
     return this.getMessageBroker(BrokerQueues.QUEUE_GENERAL_SVC);
   }

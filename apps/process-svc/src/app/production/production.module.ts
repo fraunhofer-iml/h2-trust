@@ -15,10 +15,11 @@ import { ProductionCreationService } from './production-creation.service';
 import { ProductionImportService } from './production-import.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
+import { ProcessStepModule } from '../process-step/process-step.module';
 
 @Module({
-  imports: [ConfigurationModule, new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker(), DatabaseModule],
+  imports: [ConfigurationModule, DatabaseModule, ProcessStepModule, new Broker().getGeneralSvcBroker()],
   controllers: [ProductionController],
   providers: [ProductionService, ProductionCreationService, ProductionImportService, AccountingPeriodMatchingService],
 })
-export class ProductionModule {}
+export class ProductionModule { }

@@ -13,9 +13,10 @@ import { ProvenanceModule } from './provenance/provenance.module';
 import { StagedProductionCleanupModule } from './tasks/staged-production-cleanup.module';
 import { RedComplianceModule } from './red-compliance/red-compliance.module';
 import { DigitalProductPassportModule } from './digital-product-passport/digital-product-passport.module';
+import { ProcessStepModule } from './process-step/process-step.module';
 
 @Module({
-  imports: [ConfigurationModule, DigitalProductPassportModule, ProductionModule, ProvenanceModule, RedComplianceModule, StagedProductionCleanupModule],
+  imports: [ConfigurationModule, DigitalProductPassportModule, ProcessStepModule, ProductionModule, ProvenanceModule, RedComplianceModule, StagedProductionCleanupModule],
   controllers: [],
   providers: [],
 })

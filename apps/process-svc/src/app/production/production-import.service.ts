@@ -20,7 +20,6 @@ import {
   PowerAccessApprovalEntity,
   PowerAccessApprovalPatterns,
   ProcessStepEntity,
-  ProcessStepMessagePatterns,
   ReadPowerAccessApprovalsPayload,
   StagedProductionEntity,
   StageProductionsPayload,
@@ -30,6 +29,7 @@ import { StagedProductionRepository } from '@h2-trust/database';
 import { PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
 import { AccountingPeriodMatchingService } from './accounting-period-matching.service';
 import { ProductionService } from './production.service';
+import { ProcessStepService } from '../process-step/process-step.service';
 
 @Injectable()
 export class ProductionImportService {
@@ -37,11 +37,11 @@ export class ProductionImportService {
   private readonly productionChunkSize: number;
 
   constructor(
-    @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     private readonly configurationService: ConfigurationService,
     private readonly accountingPeriodMatchingService: AccountingPeriodMatchingService,
     private readonly stagedProductionRepository: StagedProductionRepository,
+    private readonly processStepService: ProcessStepService,
     private readonly productionService: ProductionService,
   ) {
     this.productionChunkSize = this.configurationService.getProcessSvcConfiguration().productionChunkSize;
@@ -131,12 +131,7 @@ export class ProductionImportService {
       }
 
       // Step 2: Persist power and water
-      const persistedPowerAndWater: ProcessStepEntity[] = await firstValueFrom(
-        this.batchSvc.send(
-          ProcessStepMessagePatterns.CREATE_MANY,
-          new CreateManyProcessStepsPayload([...power, ...water]),
-        ),
-      );
+      const persistedPowerAndWater: ProcessStepEntity[] = await this.processStepService.createManyProcessSteps(new CreateManyProcessStepsPayload([...power, ...water]));
 
       // Step 3: Split response back into power and water
       // We use chunk.length because there is a 1:1 relation between productions and process steps,
@@ -150,9 +145,7 @@ export class ProductionImportService {
       );
 
       // Step 5: Persist hydrogen
-      const persistedHydrogen: ProcessStepEntity[] = await firstValueFrom(
-        this.batchSvc.send(ProcessStepMessagePatterns.CREATE_MANY, new CreateManyProcessStepsPayload(hydrogen)),
-      );
+      const persistedHydrogen: ProcessStepEntity[] = await this.processStepService.createManyProcessSteps(new CreateManyProcessStepsPayload(hydrogen));
 
       persistedProcessSteps.push(...persistedPowerAndWater, ...persistedHydrogen);
     }

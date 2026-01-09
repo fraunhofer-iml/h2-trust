@@ -10,7 +10,6 @@ import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
-  BatchEntityHydrogenProducedMock,
   BrokerQueues,
   CreateHydrogenBottlingPayload,
   HydrogenStorageUnitEntityMock,
@@ -25,7 +24,6 @@ import { HydrogenColor } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { BatchSelectionService } from './bottling/batch-selection.service';
 import { BottlingService } from './bottling/bottling.service';
-import { HydrogenComponentAssembler } from './bottling/hydrogen-component-assembler';
 import { ProcessStepAssemblerService } from './bottling/process-step-assembler.service';
 import { ProcessStepController } from './process-step.controller';
 import { ProcessStepService } from './process-step.service';
@@ -174,23 +172,6 @@ describe('ProcessStepController / Bottling', () => {
     expect(addDocSpy).toHaveBeenCalledTimes(0);
     expect(readProcessStepSpy).toHaveBeenCalledTimes(1);
     expect(readProcessStepSpy).toHaveBeenCalledWith(new ReadByIdPayload(expectedResponse.id));
-    expect(actualResponse).toEqual(expectedResponse);
-  });
-
-  it('should calculate hydrogen composition', async () => {
-    const givenBottlingProcessStep = structuredClone(ProcessStepEntityHydrogenBottlingMock[0]);
-    givenBottlingProcessStep.batch.predecessors = [BatchEntityHydrogenProducedMock[0]];
-
-    const readProcessStepSpy = jest
-      .spyOn(processStepService, 'readProcessStep')
-      .mockResolvedValue(givenBottlingProcessStep);
-
-    const payload: ReadByIdPayload = new ReadByIdPayload(givenBottlingProcessStep.id);
-
-    const expectedResponse = HydrogenComponentAssembler.assembleFromBottlingProcessStep(givenBottlingProcessStep);
-    const actualResponse = await controller.calculateHydrogenComposition(payload);
-
-    expect(readProcessStepSpy).toHaveBeenCalledWith(payload);
     expect(actualResponse).toEqual(expectedResponse);
   });
 });

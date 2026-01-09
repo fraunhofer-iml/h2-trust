@@ -46,7 +46,6 @@ export class ProductionService {
   };
 
   constructor(
-    @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly userService: UserService,
     private readonly csvParser: CsvParserService,
@@ -80,7 +79,7 @@ export class ProductionService {
     const payload = new ReadProcessStepsByPredecessorTypesAndCompanyPayload([ProcessType.POWER_PRODUCTION], companyIdOfUser);
 
     const productions: ProcessStepEntity[] = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_PREDECESSOR_TYPES_AND_COMPANY, payload),
+      this.processSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_PREDECESSOR_TYPES_AND_COMPANY, payload),
     );
     return productions.map(ProductionOverviewDto.fromEntity);
   }

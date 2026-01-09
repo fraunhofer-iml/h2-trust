@@ -80,13 +80,9 @@ The project consists of the following components:
 
    - Manages master data.
 
-4. **Batch Service (`batch-svc`)**
+4. **Process Service (`process-svc`)**
 
-   - Manages hydrogen batches and their process steps.
-
-5. **Process Service (`process-svc`)**
-
-   - Handles workflows.
+   - Manages hydrogen batches and their process steps and handles workflows.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

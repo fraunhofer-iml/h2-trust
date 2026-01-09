@@ -36,7 +36,6 @@ import { ProductionService } from './production.service';
 
 describe('ProductionController', () => {
   let controller: ProductionController;
-  let batchSvc: ClientProxy;
   let generalSvc: ClientProxy;
   let processSvc: ClientProxy;
   let userService: UserService;
@@ -47,12 +46,6 @@ describe('ProductionController', () => {
       controllers: [ProductionController],
       providers: [
         ProductionService,
-        {
-          provide: BrokerQueues.QUEUE_BATCH_SVC,
-          useValue: {
-            send: jest.fn(),
-          },
-        },
         {
           provide: BrokerQueues.QUEUE_GENERAL_SVC,
           useValue: {
@@ -75,7 +68,6 @@ describe('ProductionController', () => {
     }).compile();
 
     controller = module.get<ProductionController>(ProductionController);
-    batchSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_BATCH_SVC) as ClientProxy;
     generalSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_GENERAL_SVC) as ClientProxy;
     processSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_PROCESS_SVC) as ClientProxy;
     userService = module.get<UserService>(UserService);
@@ -165,7 +157,7 @@ describe('ProductionController', () => {
     jest.spyOn(userService, 'readUserWithCompany').mockResolvedValue(UserDetailsDtoMock[0]);
 
     jest
-      .spyOn(batchSvc, 'send')
+      .spyOn(processSvc, 'send')
       .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(processStepEntityMocks));
 
     const actualResponse: ProductionOverviewDto[] =

@@ -32,7 +32,6 @@ import { UserService } from '../user/user.service';
 @Injectable()
 export class BottlingService {
   constructor(
-    @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly userService: UserService,
   ) { }
@@ -50,7 +49,7 @@ export class BottlingService {
     );
 
     const persistedBottling: ProcessStepEntity = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_BOTTLING, bottlingPayload),
+      this.processSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_BOTTLING, bottlingPayload),
     );
 
     const transportationPayload: CreateHydrogenTransportationPayload = new CreateHydrogenTransportationPayload(
@@ -62,7 +61,7 @@ export class BottlingService {
     );
 
     const persistedTransportation: ProcessStepEntity = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION, transportationPayload),
+      this.processSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION, transportationPayload),
     );
     return BottlingOverviewDto.fromEntity(persistedTransportation);
   }
@@ -77,7 +76,7 @@ export class BottlingService {
     );
 
     const bottlingsAndTransportations: ProcessStepEntity[] = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_COMPANY, payload),
+      this.processSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_COMPANY, payload),
     );
     return bottlingsAndTransportations.map(BottlingOverviewDto.fromEntity);
   }
