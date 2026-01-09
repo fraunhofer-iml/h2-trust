@@ -6,20 +6,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 import { BatchEntity, BrokerException, HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/amqp';
-import { BatchSelection } from './batch-selection.interface';
 import { ProcessStepAssembler } from './process-step.assembler';
 
-@Injectable()
-export class BatchSelectionService {
-  constructor() { }
+export interface BatchSelectionResult {
+  batchesForBottle: BatchEntity[];
+  processStepsToBeSplit: ProcessStepEntity[];
+  consumedSplitProcessSteps: ProcessStepEntity[];
+  processStepsForRemainingAmount: ProcessStepEntity[];
+}
 
-  processBottlingForAllColors(
-    allProcessStepsFromStorageUnit: ProcessStepEntity[],
+export class BatchSelector {
+  static processBottlingForAllColors(
+    processSteps: ProcessStepEntity[],
     hydrogenComposition: HydrogenComponentEntity[],
     hydrogenStorageUnitId: string,
-  ): BatchSelection {
+  ): BatchSelectionResult {
     const aggregatedBatchesForBottle: BatchEntity[] = [];
     const aggregatedProcessStepsToBeSplit: ProcessStepEntity[] = [];
     const aggregatedConsumedSplitProcessSteps: ProcessStepEntity[] = [];
@@ -27,8 +30,8 @@ export class BatchSelectionService {
 
     for (const hydrogenComponent of hydrogenComposition) {
       const { batchesForBottle, processStepsToBeSplit, consumedSplitProcessSteps, processStepsForRemainingAmount } =
-        this.processBottlingForEachColor(
-          allProcessStepsFromStorageUnit,
+        BatchSelector.processBottlingForEachColor(
+          processSteps,
           hydrogenComponent.color,
           hydrogenComponent.amount,
           hydrogenStorageUnitId,
@@ -48,32 +51,27 @@ export class BatchSelectionService {
     };
   }
 
-  private processBottlingForEachColor(
-    allProcessStepsFromStorageUnit: ProcessStepEntity[],
+  private static processBottlingForEachColor(
+    processSteps: ProcessStepEntity[],
     color: string,
     amount: number,
     hydrogenStorageUnitId: string,
-  ): BatchSelection {
-    const processStepsFromHydrogenStorageWithRequestedColor = this.filterProcessStepsByColor(
-      allProcessStepsFromStorageUnit,
-      color,
-    );
+  ): BatchSelectionResult {
+    const processStepsFromHydrogenStorageWithRequestedColor = processSteps.filter(
+      (ps) => ps.batch.qualityDetails.color === color
+    )
 
-    const { selectedProcessSteps, remainingAmount } = this.selectProcessStepsForBottlingAndCalculateRemainingAmount(
+    const { selectedProcessSteps, remainingAmount } = BatchSelector.selectProcessStepsForBottlingAndCalculateRemainingAmount(
       processStepsFromHydrogenStorageWithRequestedColor,
       amount,
       hydrogenStorageUnitId,
       color,
     );
 
-    return this.splitLastProcessStepIfNeeded(selectedProcessSteps, remainingAmount);
+    return BatchSelector.splitLastProcessStepIfNeeded(selectedProcessSteps, remainingAmount);
   }
 
-  private filterProcessStepsByColor(processSteps: ProcessStepEntity[], color: string): ProcessStepEntity[] {
-    return processSteps.filter((processStep) => processStep.batch.qualityDetails.color === color);
-  }
-
-  private selectProcessStepsForBottlingAndCalculateRemainingAmount(
+  private static selectProcessStepsForBottlingAndCalculateRemainingAmount(
     availableProcessSteps: ProcessStepEntity[],
     requestedAmount: number,
     storageUnitId: string,
@@ -97,10 +95,10 @@ export class BatchSelectionService {
     throw new BrokerException(message, HttpStatus.BAD_REQUEST);
   }
 
-  private splitLastProcessStepIfNeeded(
+  private static splitLastProcessStepIfNeeded(
     selectedProcessSteps: ProcessStepEntity[],
     remainingAmount: number,
-  ): BatchSelection {
+  ): BatchSelectionResult {
     const batchesForBottle: BatchEntity[] = selectedProcessSteps.map((processStep) => processStep.batch);
     const processStepsToBeSplit: ProcessStepEntity[] = [];
     const consumedSplitProcessSteps: ProcessStepEntity[] = [];

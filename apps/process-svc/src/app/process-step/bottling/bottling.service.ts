@@ -25,16 +25,14 @@ import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-
 import { HydrogenColor, ProcessType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step.service';
-import { BatchSelection } from './batch-selection.interface';
-import { BatchSelectionService } from './batch-selection.service';
 import { HydrogenComponentAssembler } from './hydrogen-component-assembler';
 import { ProcessStepAssembler } from './process-step.assembler';
+import { BatchSelectionResult, BatchSelector } from './batch.selector';
 
 @Injectable()
 export class BottlingService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
-    private readonly batchSelectionService: BatchSelectionService,
     private readonly storageService: StorageService,
     private readonly processStepRepository: ProcessStepRepository,
     private readonly batchRepository: BatchRepository,
@@ -59,7 +57,7 @@ export class BottlingService {
       payload.hydrogenStorageUnitId,
     );
 
-    const batchSelection: BatchSelection = this.batchSelectionService.processBottlingForAllColors(
+    const batchSelection: BatchSelectionResult = BatchSelector.processBottlingForAllColors(
       allProcessStepsFromStorageUnit,
       hydrogenComposition,
       payload.hydrogenStorageUnitId,
