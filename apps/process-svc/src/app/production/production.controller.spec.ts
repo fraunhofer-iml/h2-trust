@@ -8,13 +8,7 @@
 
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  BrokerQueues,
-  CreateProductionEntity,
-  CreateProductionsPayload,
-  ParsedFileBundles,
-  PowerAccessApprovalEntity,
-} from '@h2-trust/amqp';
+import { BrokerQueues, CreateProductionsPayload, ParsedFileBundles, PowerAccessApprovalEntity } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';

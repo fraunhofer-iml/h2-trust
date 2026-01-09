@@ -7,17 +7,9 @@
  */
 
 import { firstValueFrom } from 'rxjs';
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import {
-  BaseUnitEntity,
-  BrokerQueues,
-  CreateHydrogenProductionUnitPayload,
-  CreateHydrogenStorageUnitPayload,
-  CreatePowerProductionUnitPayload,
-  ReadByIdPayload,
-  UnitMessagePatterns,
-} from '@h2-trust/amqp';
+import { BrokerQueues, ReadByIdPayload, UnitMessagePatterns } from '@h2-trust/amqp';
 import {
   HydrogenProductionOverviewDto,
   HydrogenProductionUnitCreateDto,
@@ -28,11 +20,7 @@ import {
   PowerProductionOverviewDto,
   PowerProductionUnitCreateDto,
   PowerProductionUnitDto,
-  UnitCreateDto,
-  UnitDto,
-  UnitOverviewDto,
 } from '@h2-trust/api';
-import { UnitType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -43,21 +31,21 @@ export class UnitService {
   ) {}
 
   async readPowerProductionUnit(id: string): Promise<PowerProductionUnitDto> {
-    return firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNIT_BY_ID, new ReadByIdPayload(id)),
-    ).then(PowerProductionUnitDto.fromEntity);
+    return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, new ReadByIdPayload(id))).then(
+      PowerProductionUnitDto.fromEntity,
+    );
   }
 
   async readHydrogenProductionUnit(id: string): Promise<HydrogenProductionUnitDto> {
-    return firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNIT_BY_ID, new ReadByIdPayload(id)),
-    ).then(HydrogenProductionUnitDto.fromEntity);
+    return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, new ReadByIdPayload(id))).then(
+      HydrogenProductionUnitDto.fromEntity,
+    );
   }
 
   async readHydrogenStorageUnit(id: string): Promise<HydrogenStorageUnitDto> {
-    return firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNIT_BY_ID, new ReadByIdPayload(id)),
-    ).then(HydrogenStorageUnitDto.fromEntity);
+    return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, new ReadByIdPayload(id))).then(
+      HydrogenStorageUnitDto.fromEntity,
+    );
   }
 
   async readPowerProductionUnits(userId: string): Promise<PowerProductionOverviewDto[]> {
@@ -113,25 +101,5 @@ export class UnitService {
   private async getCompanyIdFromUserId(id: string): Promise<string> {
     const userDetails = await this.userService.readUserWithCompany(id);
     return userDetails.company.id;
-  }
-
-  static mapEntityToDto(unitEntity: BaseUnitEntity): UnitDto {
-    let unitDto: UnitDto;
-
-    switch (unitEntity.unitType) {
-      case UnitType.POWER_PRODUCTION:
-        unitDto = PowerProductionUnitDto.fromEntity(unitEntity);
-        break;
-      case UnitType.HYDROGEN_PRODUCTION:
-        unitDto = HydrogenProductionUnitDto.fromEntity(unitEntity);
-        break;
-      case UnitType.HYDROGEN_STORAGE:
-        unitDto = HydrogenStorageUnitDto.fromEntity(unitEntity);
-        break;
-      default:
-        throw new BadRequestException(`Unit type [${unitEntity.unitType}] unknown`);
-    }
-
-    return unitDto;
   }
 }
