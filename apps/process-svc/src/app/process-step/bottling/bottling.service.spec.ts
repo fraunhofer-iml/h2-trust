@@ -10,6 +10,7 @@ import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
+  BatchEntity,
   BrokerException,
   BrokerQueues,
   CreateHydrogenBottlingPayload,
@@ -26,7 +27,6 @@ import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step.service';
 import { BatchSelector } from './batch.selector';
 import { BottlingService } from './bottling.service';
-import { calculateRemainingAmount } from './bottling.service.spec.util';
 import { ProcessStepAssemblerService } from './process-step-assembler.service';
 
 function createPayloadFromEntity(
@@ -43,6 +43,10 @@ function createPayloadFromEntity(
     entity.documents?.[0]?.description,
     files,
   );
+}
+
+function calculateRemainingAmount(givenBatches: BatchEntity[], amountRequiredForBottle: number) {
+  return givenBatches.reduce((sum, batch) => sum + batch.amount, 0) - amountRequiredForBottle;
 }
 
 describe('ProcessStepService', () => {
@@ -266,7 +270,7 @@ describe('ProcessStepService', () => {
           2 * (i + 1), // Every second call goes to the assembling of the remaining amount batch
           hydrogenProcessSteps.at(i),
           hydrogenProcessSteps[i].batch.amount -
-            (processStepData.batch.amount * hydrogenProcessSteps[i].batch.amount) / totalStoredAmount,
+          (processStepData.batch.amount * hydrogenProcessSteps[i].batch.amount) / totalStoredAmount,
           true,
         );
       }
