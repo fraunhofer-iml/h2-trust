@@ -8,4 +8,5 @@
 
 import { HydrogenProductionUnitDto, HydrogenStorageUnitDto, PowerProductionUnitDto } from '../dtos';
 
+// TODO: remove
 export type UnitDto = PowerProductionUnitDto | HydrogenProductionUnitDto | HydrogenStorageUnitDto;

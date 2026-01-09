@@ -12,6 +12,7 @@ import { requireDefined } from '@h2-trust/utils';
 import { EnumLabelMapper } from '../../labels';
 import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
+import { UnitOwnerDto } from './unit-owner.dto';
 
 export class HydrogenProductionUnitDto extends BaseUnitDto {
   method: string;
@@ -31,13 +32,7 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     certifiedBy: string,
     commissionedOn: Date,
     address: AddressDto,
-    company: {
-      id: string;
-      hydrogenApprovals: {
-        powerAccessApprovalStatus: string;
-        powerProducerId: string;
-      }[];
-    },
+    company: UnitOwnerDto,
     ratedPower: number,
     modelNumber: string,
     owner: string,

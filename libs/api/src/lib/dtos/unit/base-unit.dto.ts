@@ -10,6 +10,7 @@ import { BaseUnitEntity } from '@h2-trust/amqp';
 import { UnitType } from '@h2-trust/domain';
 import { requireDefined } from '@h2-trust/utils';
 import { AddressDto } from '../address';
+import { UnitOwnerDto } from './unit-owner.dto';
 
 export abstract class BaseUnitDto {
   id: string;
@@ -24,13 +25,7 @@ export abstract class BaseUnitDto {
   address: AddressDto;
   owner: string;
   operator?: string;
-  company: {
-    id: string;
-    hydrogenApprovals: {
-      powerAccessApprovalStatus: string;
-      powerProducerId: string;
-    }[];
-  };
+  company: UnitOwnerDto;
   unitType: UnitType;
 
   protected constructor(
@@ -43,13 +38,7 @@ export abstract class BaseUnitDto {
     certifiedBy: string,
     commissionedOn: Date,
     address: AddressDto,
-    company: {
-      id: string;
-      hydrogenApprovals: {
-        powerAccessApprovalStatus: string;
-        powerProducerId: string;
-      }[];
-    },
+    company: UnitOwnerDto,
     modelNumber: string,
     owner: string,
     operator: string,
