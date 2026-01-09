@@ -13,7 +13,7 @@ import { StorageModule } from '@h2-trust/storage';
 import { BottlingService } from './bottling/bottling.service';
 import { ProcessStepController } from './process-step.controller';
 import { ProcessStepService } from './process-step.service';
-import { TransportationService } from './transportation.service';
+import { TransportationService } from './transportation/transportation.service';
 import { ConfigurationModule } from '@h2-trust/configuration';
 
 @Module({

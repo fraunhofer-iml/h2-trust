@@ -24,7 +24,7 @@ import { ProcessType } from '@h2-trust/domain';
 import { BottlingService } from './bottling/bottling.service';
 import { ProcessStepController } from './process-step.controller';
 import { ProcessStepService } from './process-step.service';
-import { TransportationService } from './transportation.service';
+import { TransportationService } from './transportation/transportation.service';
 
 describe('ProcessStepController', () => {
   let controller: ProcessStepController;
