@@ -15,10 +15,10 @@ import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
-    new Broker().getGeneralSvcBroker(),
-    new Broker().getProcessSvcBroker(),
     CsvParserModule,
-    UserModule
+    UserModule,
+    new Broker().getGeneralSvcBroker(),
+    new Broker().getProcessSvcBroker()
   ],
   controllers: [ProductionController],
   providers: [ProductionService],

@@ -7,14 +7,12 @@
  */
 
 import { Module } from '@nestjs/common';
-import { ProvenanceController } from './provenance.controller';
 import { ProvenanceService } from './provenance.service';
 import { TraversalService } from './traversal.service';
-import { ProcessStepModule } from '../process-step/process-step.module';
+import { ProcessStepModule } from '../../process-step/process-step.module';
 
 @Module({
   imports: [ProcessStepModule],
-  controllers: [ProvenanceController],
   providers: [ProvenanceService, TraversalService],
   exports: [ProvenanceService],
 })

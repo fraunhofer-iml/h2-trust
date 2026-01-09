@@ -11,5 +11,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { DatabaseModule } from '@h2-trust/database';
 import { StagedProductionCleanupService } from './staged-production-cleanup.service';
 
-@Module({ imports: [ScheduleModule.forRoot(), DatabaseModule], providers: [StagedProductionCleanupService] })
-export class StagedProductionCleanupModule {}
+@Module({
+    imports: [ScheduleModule.forRoot(), DatabaseModule],
+    providers: [StagedProductionCleanupService]
+})
+export class StagedProductionCleanupModule { }

@@ -13,7 +13,7 @@ import {
   ReadByIdPayload,
 } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
-import { ProcessStepService } from '../process-step/process-step.service';
+import { ProcessStepService } from '../../process-step/process-step.service';
 
 @Injectable()
 export class TraversalService {

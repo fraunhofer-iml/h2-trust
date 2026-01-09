@@ -11,7 +11,7 @@ import { ProcessStepEntity, ProvenanceEntity, ReadByIdPayload } from '@h2-trust/
 import { ProcessType } from '@h2-trust/domain';
 import { ProvenanceService } from './provenance.service';
 import { TraversalService } from './traversal.service';
-import { ProcessStepService } from '../process-step/process-step.service';
+import { ProcessStepService } from '../../process-step/process-step.service';
 
 function createProcessStep(id: string, type: ProcessType): ProcessStepEntity {
   return { id, type } as ProcessStepEntity;

@@ -11,12 +11,10 @@ import { Broker } from '@h2-trust/amqp';
 import { RedCompliancePairingService } from './red-compliance.pairs.service';
 import { RedComplianceService } from './red-compliance.service';
 import { ProvenanceModule } from '../provenance/provenance.module';
-import { RedComplianceController } from './red-compliance.controller';
 
 @Module({
-  imports: [new Broker().getGeneralSvcBroker(), ProvenanceModule],
-  controllers: [RedComplianceController],
-  providers: [RedComplianceService, RedCompliancePairingService],
+  imports: [ProvenanceModule, new Broker().getGeneralSvcBroker()],
+  providers: [RedCompliancePairingService, RedComplianceService],
   exports: [RedComplianceService],
 })
-export class RedComplianceModule {}
+export class RedComplianceModule { }

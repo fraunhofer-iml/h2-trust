@@ -11,7 +11,7 @@ import { Test } from '@nestjs/testing';
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { TraversalService } from './traversal.service';
-import { ProcessStepService } from '../process-step/process-step.service';
+import { ProcessStepService } from '../../process-step/process-step.service';
 
 export function createProcessStep(id: string, type: ProcessType, predecessorBatches: BatchEntity[]): ProcessStepEntity {
   return { id, type, batch: { predecessors: predecessorBatches } } as ProcessStepEntity;

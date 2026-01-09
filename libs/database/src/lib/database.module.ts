@@ -15,36 +15,36 @@ import {
   PowerAccessApprovalRepository,
   PowerProductionTypeRepository,
   ProcessStepRepository,
+  StagedProductionRepository,
   UnitRepository,
   UserRepository,
 } from './repositories';
-import { StagedProductionRepository } from './repositories/staged-production.repository';
 
 @Module({
   controllers: [],
   providers: [
     PrismaService,
-    UserRepository,
-    UnitRepository,
-    ProcessStepRepository,
     BatchRepository,
+    CompanyRepository,
     DocumentRepository,
     PowerAccessApprovalRepository,
     PowerProductionTypeRepository,
-    CompanyRepository,
+    ProcessStepRepository,
     StagedProductionRepository,
+    UnitRepository,
+    UserRepository,
   ],
   exports: [
     PrismaService,
-    UserRepository,
-    UnitRepository,
-    ProcessStepRepository,
     BatchRepository,
+    CompanyRepository,
     DocumentRepository,
     PowerAccessApprovalRepository,
     PowerProductionTypeRepository,
-    CompanyRepository,
+    ProcessStepRepository,
     StagedProductionRepository,
+    UnitRepository,
+    UserRepository,
   ],
 })
-export class DatabaseModule {}
+export class DatabaseModule { }

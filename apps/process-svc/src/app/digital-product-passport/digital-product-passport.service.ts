@@ -17,8 +17,8 @@ import { HydrogenBottlingSectionService } from './proof-of-origin/hydrogen-bottl
 import { HydrogenProductionSectionService } from './proof-of-origin/hydrogen-production-section.service';
 import { HydrogenStorageSectionService } from './proof-of-origin/hydrogen-storage-section.service';
 import { HydrogenTransportationSectionService } from './proof-of-origin/hydrogen-transportation-section.service';
-import { ProvenanceService } from '../provenance/provenance.service';
-import { RedComplianceService } from '../red-compliance/red-compliance.service';
+import { ProvenanceService } from './provenance/provenance.service';
+import { RedComplianceService } from './red-compliance/red-compliance.service';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { BottlingService } from '../process-step/bottling/bottling.service';
 

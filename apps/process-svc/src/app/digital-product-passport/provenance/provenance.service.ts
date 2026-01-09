@@ -14,7 +14,7 @@ import {
 } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { TraversalService } from './traversal.service';
-import { ProcessStepService } from '../process-step/process-step.service';
+import { ProcessStepService } from '../../process-step/process-step.service';
 
 type ProvenanceBuilderFn = (root: ProcessStepEntity) => Promise<ProvenanceEntity>;
 
@@ -23,8 +23,27 @@ export class ProvenanceService {
   constructor(
     private readonly processStepService: ProcessStepService,
     private readonly traversalService: TraversalService,
-
   ) { }
+
+  async buildProvenance(payload: ReadByIdPayload): Promise<ProvenanceEntity> {
+    if (!payload.id) {
+      throw new Error('processStepId must be provided.');
+    }
+
+    const root: ProcessStepEntity = await this.processStepService.readProcessStep(payload);
+
+    if (!root || !root.type) {
+      throw new Error('Invalid process step.');
+    }
+
+    const provenanceBuilder: ProvenanceBuilderFn = this.provenanceBuilders[root.type as ProcessType];
+
+    if (!provenanceBuilder) {
+      throw new Error(`Unsupported process type [${root.type}].`);
+    }
+
+    return provenanceBuilder(root);
+  }
 
   private readonly provenanceBuilders: Record<ProcessType, ProvenanceBuilderFn> = {
     [ProcessType.POWER_PRODUCTION]: async (root) => {
@@ -66,24 +85,4 @@ export class ProvenanceService {
       return new ProvenanceEntity(root, hydrogenBottling, hydrogenProductions, waterConsumptions, powerProductions);
     },
   };
-
-  async buildProvenance(payload: ReadByIdPayload): Promise<ProvenanceEntity> {
-    if (!payload.id) {
-      throw new Error('processStepId must be provided.');
-    }
-
-    const root: ProcessStepEntity = await this.processStepService.readProcessStep(payload);
-
-    if (!root || !root.type) {
-      throw new Error('Invalid process step.');
-    }
-
-    const provenanceBuilder: ProvenanceBuilderFn = this.provenanceBuilders[root.type as ProcessType];
-
-    if (!provenanceBuilder) {
-      throw new Error(`Unsupported process type [${root.type}].`);
-    }
-
-    return provenanceBuilder(root);
-  }
 }

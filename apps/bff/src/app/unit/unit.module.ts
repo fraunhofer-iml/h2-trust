@@ -13,8 +13,8 @@ import { UnitService } from './unit.service';
 import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [new Broker().getGeneralSvcBroker(), UserModule],
+  imports: [UserModule, new Broker().getGeneralSvcBroker()],
   controllers: [UnitController],
   providers: [UnitService],
 })
-export class UnitModule {}
+export class UnitModule { }
