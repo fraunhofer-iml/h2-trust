@@ -32,7 +32,6 @@ import { ProcessType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';
-import { DigitalProductPassportService } from './digital-product-passport/digital-product-passport.service';
 
 describe('BottlingController', () => {
   let controller: BottlingController;
@@ -45,10 +44,6 @@ describe('BottlingController', () => {
       controllers: [BottlingController],
       providers: [
         BottlingService,
-        {
-          provide: DigitalProductPassportService,
-          useValue: {},
-        },
         {
           provide: UserService,
           useValue: {

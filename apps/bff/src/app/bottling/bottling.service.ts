@@ -13,13 +13,18 @@ import {
   BrokerQueues,
   CreateHydrogenBottlingPayload,
   CreateHydrogenTransportationPayload,
+  DigitalProductPassportPatterns,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
+  ReadByIdPayload,
   ReadProcessStepsByTypesAndActiveAndCompanyPayload,
 } from '@h2-trust/amqp';
 import {
   BottlingDto,
   BottlingOverviewDto,
+  GeneralInformationDto,
+  ProofOfSustainabilityDto,
+  SectionDto,
 } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
@@ -28,6 +33,7 @@ import { UserService } from '../user/user.service';
 export class BottlingService {
   constructor(
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
+    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly userService: UserService,
   ) { }
 
@@ -74,5 +80,31 @@ export class BottlingService {
       this.batchSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_COMPANY, payload),
     );
     return bottlingsAndTransportations.map(BottlingOverviewDto.fromEntity);
+  }
+
+  async readGeneralInformation(id: string): Promise<GeneralInformationDto> {
+    const generalInformation = await firstValueFrom(
+      this.processSvc.send(DigitalProductPassportPatterns.READ_GENERAL_INFORMATION, new ReadByIdPayload(id))
+    );
+    // TODO-MP: introduce mapper
+    return generalInformation;
+  }
+
+  async readProofOfOrigin(id: string): Promise<SectionDto[]> {
+    const proofOfOrigin = await firstValueFrom(
+      this.processSvc.send(DigitalProductPassportPatterns.BUILD_PROOF_OF_ORIGIN, new ReadByIdPayload(id))
+    );
+    // TODO-MP: introduce dto and mapper
+    //return ProofOfOriginDto.fromEntity(proofOfOrigin);
+    return proofOfOrigin
+  }
+
+  async readProofOfSustainability(id: string): Promise<ProofOfSustainabilityDto> {
+    const proofOfSustainability = await firstValueFrom(
+      this.processSvc.send(DigitalProductPassportPatterns.BUILD_PROOF_OF_SUSTAINABILITY, new ReadByIdPayload(id))
+    );
+    // TODO-MP: introduce mapper
+    //return ProofOfSustainabilityDto.fromEntity(proofOfSustainability);
+    return proofOfSustainability;
   }
 }

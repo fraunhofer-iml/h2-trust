@@ -9,7 +9,7 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BrokerQueues, HydrogenComponentEntity, ProcessStepMessagePatterns, ProvenanceEntity, ProvenanceMessagePatterns, ReadByIdPayload, RedComplianceMessagePatterns } from '@h2-trust/amqp';
+import { BrokerQueues, ProcessStepMessagePatterns, ProvenanceEntity, ReadByIdPayload, UserMessagePatterns } from '@h2-trust/amqp';
 import { EmissionComputationResultDto, GeneralInformationDto, HydrogenComponentDto, ProofOfSustainabilityDto, SectionDto } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
 import { EmissionComputationService } from './emission-computation.service';
@@ -17,32 +17,34 @@ import { HydrogenBottlingSectionService } from './proof-of-origin/hydrogen-bottl
 import { HydrogenProductionSectionService } from './proof-of-origin/hydrogen-production-section.service';
 import { HydrogenStorageSectionService } from './proof-of-origin/hydrogen-storage-section.service';
 import { HydrogenTransportationSectionService } from './proof-of-origin/hydrogen-transportation-section.service';
-import { UserService } from '../../user/user.service';
+import { ProvenanceService } from '../provenance/provenance.service';
+import { RedComplianceService } from '../red-compliance/red-compliance.service';
 
 @Injectable()
 export class DigitalProductPassportService {
   constructor(
     @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
-    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
-    private readonly userService: UserService,
+    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly hydrogenProductionSectionService: HydrogenProductionSectionService,
     private readonly hydrogenStorageSectionService: HydrogenStorageSectionService,
     private readonly hydrogenBottlingSectionService: HydrogenBottlingSectionService,
     private readonly hydrogenTransportationSectionService: HydrogenTransportationSectionService,
     private readonly emissionComputationService: EmissionComputationService,
+    private readonly provenanceService: ProvenanceService,
+    private readonly redComplianceService: RedComplianceService,
   ) { }
 
-  async readGeneralInformation(processStepId: string): Promise<GeneralInformationDto> {
+  async readGeneralInformation(payload: ReadByIdPayload): Promise<GeneralInformationDto> {
     const processStep = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.READ_UNIQUE, new ReadByIdPayload(processStepId)),
+      this.batchSvc.send(ProcessStepMessagePatterns.READ_UNIQUE, payload),
     );
 
     const generalInformation = GeneralInformationDto.fromEntityToDto(processStep);
 
     const [producerName, hydrogenComposition, redCompliance] = await Promise.all([
-      this.userService.readUserWithCompany(generalInformation.producer).then((user) => user.company.name),
-      this.fetchHydrogenComposition(processStep.id),
-      firstValueFrom(this.processSvc.send(RedComplianceMessagePatterns.DETERMINE, new ReadByIdPayload(processStepId))),
+      firstValueFrom(this.generalSvc.send(UserMessagePatterns.READ, new ReadByIdPayload(generalInformation.producer))).then((user) => user.company.name),
+      firstValueFrom(this.batchSvc.send(ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION, payload)).then((hydrogenCompositions) => hydrogenCompositions.map(HydrogenComponentDto.of)),
+      this.redComplianceService.determineRedCompliance(payload),
     ]);
 
     return {
@@ -53,18 +55,8 @@ export class DigitalProductPassportService {
     };
   }
 
-  private async fetchHydrogenComposition(processStepId: string): Promise<HydrogenComponentDto[]> {
-    const hydrogenComposition: HydrogenComponentEntity[] = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION, new ReadByIdPayload(processStepId)),
-    );
-
-    return hydrogenComposition.map(HydrogenComponentDto.of);
-  }
-
-  async buildProofOfOrigin(processStepId: string): Promise<SectionDto[]> {
-    const provenance: ProvenanceEntity = await firstValueFrom(
-      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, new ReadByIdPayload(processStepId)),
-    );
+  async buildProofOfOrigin(payload: ReadByIdPayload): Promise<SectionDto[]> {
+    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(payload);
     const sectionPromises: Array<Promise<SectionDto>> = [];
 
     const hydrogenProductionPromise =
@@ -102,10 +94,8 @@ export class DigitalProductPassportService {
     return sections.filter((section) => section !== undefined);
   }
 
-  async buildProofOfSustainability(processStepId: string): Promise<ProofOfSustainabilityDto> {
-    const provenance: ProvenanceEntity = await firstValueFrom(
-      this.processSvc.send(ProvenanceMessagePatterns.BUILD_PROVENANCE, new ReadByIdPayload(processStepId)),
-    );
+  async buildProofOfSustainability(payload: ReadByIdPayload): Promise<ProofOfSustainabilityDto> {
+    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(payload);
 
     const provenanceEmission: EmissionComputationResultDto =
       await this.emissionComputationService.computeProvenanceEmissions(provenance);

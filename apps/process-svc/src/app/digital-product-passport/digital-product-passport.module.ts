@@ -16,15 +16,18 @@ import { HydrogenStorageSectionService } from './proof-of-origin/hydrogen-storag
 import { HydrogenTransportationSectionService } from './proof-of-origin/hydrogen-transportation-section.service';
 import { PowerSupplyClassificationService } from './proof-of-origin/power-supply-classification.service';
 import { WaterSupplyClassificationService } from './proof-of-origin/water-supply-classification.service';
-import { UserModule } from '../../user/user.module';
+import { ProvenanceModule } from '../provenance/provenance.module';
+import { RedComplianceModule } from '../red-compliance/red-compliance.module';
+import { DigitalProductPassportController } from './digital-product-passport.controller';
 
 @Module({
   imports: [
     new Broker().getBatchSvcBroker(),
     new Broker().getGeneralSvcBroker(),
-    new Broker().getProcessSvcBroker(),
-    UserModule,
+    ProvenanceModule, // TODO-MP: move to dpp
+    RedComplianceModule // TODO-MP: move to dpp
   ],
+  controllers: [DigitalProductPassportController],
   providers: [
     DigitalProductPassportService,
     HydrogenBottlingSectionService,

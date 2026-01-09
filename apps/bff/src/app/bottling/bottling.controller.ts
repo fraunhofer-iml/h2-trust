@@ -29,14 +29,10 @@ import {
 import { BottlingService } from './bottling.service';
 import 'multer';
 import { AuthenticatedUser, Public } from 'nest-keycloak-connect';
-import { DigitalProductPassportService } from './digital-product-passport/digital-product-passport.service';
 
 @Controller('bottlings')
 export class BottlingController {
-  constructor(
-    private readonly bottlingService: BottlingService,
-    private readonly digitalProductPassportService: DigitalProductPassportService,
-  ) {}
+  constructor(private readonly bottlingService: BottlingService) { }
 
   @Post()
   @UseInterceptors(FilesInterceptor('files'))
@@ -141,37 +137,37 @@ export class BottlingController {
     description: 'Unique identifier of the bottling process step.',
     example: 'process-step-hydrogen-bottling-1',
   })
-  async readGeneralInformation(@Param('id') processStepId: string): Promise<GeneralInformationDto> {
-    return this.digitalProductPassportService.readGeneralInformation(processStepId);
+  async readGeneralInformation(@Param('id') id: string): Promise<GeneralInformationDto> {
+    return this.bottlingService.readGeneralInformation(id);
   }
 
   @Public()
   @Get(':id/proof-of-origin')
   @ApiBearerAuth()
   @ApiOperation({
-    description: 'Retrieve the proof of origin by the corresponding process-step ID.',
+    description: 'Retrieve the proof of origin by the corresponding process step ID.',
   })
   @ApiParam({
     name: 'id',
-    description: 'Unique identifier of the process-step.',
+    description: 'Unique identifier of the process step.',
     example: 'process-step-hydrogen-bottling-2',
   })
-  readProofOfOrigin(@Param('id') processStepId: string): Promise<SectionDto[]> {
-    return this.digitalProductPassportService.buildProofOfOrigin(processStepId);
+  async readProofOfOrigin(@Param('id') id: string): Promise<SectionDto[]> {
+    return this.bottlingService.readProofOfOrigin(id);
   }
 
   @Public()
   @Get(':id/proof-of-sustainability')
   @ApiBearerAuth()
   @ApiOperation({
-    description: 'Retrieve the proof of sustainability by the corresponding process-step ID.',
+    description: 'Retrieve the proof of sustainability by the corresponding process step ID.',
   })
   @ApiParam({
     name: 'id',
-    description: 'Unique identifier of the process-step.',
+    description: 'Unique identifier of the process step.',
     example: 'process-step-hydrogen-bottling-2',
   })
-  readProofOfSustainability(@Param('id') processStepId: string): Promise<ProofOfSustainabilityDto> {
-    return this.digitalProductPassportService.buildProofOfSustainability(processStepId);
+  async readProofOfSustainability(@Param('id') id: string): Promise<ProofOfSustainabilityDto> {
+    return this.bottlingService.readProofOfSustainability(id);
   }
 }

@@ -12,10 +12,11 @@ import { ProductionModule } from './production/production.module';
 import { ProvenanceModule } from './provenance/provenance.module';
 import { StagedProductionCleanupModule } from './tasks/staged-production-cleanup.module';
 import { RedComplianceModule } from './red-compliance/red-compliance.module';
+import { DigitalProductPassportModule } from './digital-product-passport/digital-product-passport.module';
 
 @Module({
-  imports: [ConfigurationModule, ProductionModule, ProvenanceModule, RedComplianceModule, StagedProductionCleanupModule],
+  imports: [ConfigurationModule, DigitalProductPassportModule, ProductionModule, ProvenanceModule, RedComplianceModule, StagedProductionCleanupModule],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }
