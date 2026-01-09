@@ -18,7 +18,7 @@ export interface BatchSelectionResult {
 }
 
 export class BatchSelector {
-  static processBottlingForAllColors(
+  static selectBatches(
     processSteps: ProcessStepEntity[],
     hydrogenComposition: HydrogenComponentEntity[],
     hydrogenStorageUnitId: string,

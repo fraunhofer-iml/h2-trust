@@ -57,7 +57,7 @@ export class BottlingService {
       payload.hydrogenStorageUnitId,
     );
 
-    const batchSelection: BatchSelectionResult = BatchSelector.processBottlingForAllColors(
+    const batchSelection: BatchSelectionResult = BatchSelector.selectBatches(
       allProcessStepsFromStorageUnit,
       hydrogenComposition,
       payload.hydrogenStorageUnitId,
