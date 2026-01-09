@@ -25,7 +25,7 @@ export class UnitsService {
 
   getHydrogenProductionUnits() {
     return lastValueFrom(
-      this.httpClient.get<HydrogenProductionOverviewDto[]>(API.UNITS.BASE, {
+      this.httpClient.get<HydrogenProductionOverviewDto[]>(API.UNITS.HYDROGEN_PRODUCTION.BASE, {
         params: this.generateQueryParams(UnitType.HYDROGEN_PRODUCTION),
       }),
     );
@@ -36,7 +36,7 @@ export class UnitsService {
     if (companyId) params = params.append('companyId', companyId);
 
     return lastValueFrom(
-      this.httpClient.get<PowerProductionOverviewDto[]>(API.UNITS.BASE, {
+      this.httpClient.get<PowerProductionOverviewDto[]>(API.UNITS.POWER_PRODUCTION.BASE, {
         params: params,
       }),
     );
@@ -44,18 +44,19 @@ export class UnitsService {
 
   getHydrogenStorageUnits() {
     return lastValueFrom(
-      this.httpClient.get<HydrogenStorageOverviewDto[]>(API.UNITS.BASE, {
+      this.httpClient.get<HydrogenStorageOverviewDto[]>(API.UNITS.HYDROGEN_STORAGE.BASE, {
         params: this.generateQueryParams(UnitType.HYDROGEN_STORAGE),
       }),
     );
   }
 
+  // TODO:
   createUnit(dto: UnitCreateDto) {
-    return lastValueFrom(this.httpClient.post<HydrogenStorageOverviewDto[]>(API.UNITS.BASE, dto));
+    return lastValueFrom(this.httpClient.post<HydrogenStorageOverviewDto[]>(API.UNITS.POWER_PRODUCTION.BASE, dto));
   }
 
   getUnitById(id: string) {
-    return lastValueFrom(this.httpClient.get<UnitDto>(API.UNITS.DETAILS(id)));
+    return lastValueFrom(this.httpClient.get<UnitDto>(API.UNITS.POWER_PRODUCTION.DETAILS(id)));
   }
 
   private generateQueryParams(unitType: UnitType): HttpParams {

@@ -7,15 +7,13 @@
  */
 
 export enum UnitMessagePatterns {
+  READ = 'unit.read-by-id',
   READ_MANY = 'unit.read-many',
-  READ_POWER_PRODUCTION_UNIT_BY_ID = 'unit.read-power-production-by-id',
   READ_POWER_PRODUCTION_UNITS = 'unit.read-power-production',
   READ_POWER_PRODUCTION_UNITS_BY_IDS = 'unit.read-power-production-by-ids',
-  READ_HYDROGEN_PRODUCTION_UNIT_BY_ID = 'unit.read-hydrogen-production-by-id',
   READ_HYDROGEN_PRODUCTION_UNITS = 'unit.read-hydrogen-production',
   READ_HYDROGEN_PRODUCTION_UNITS_BY_IDS = 'unit.read-hydrogen-production-by-ids',
   READ_HYDROGEN_STORAGE_UNITS = 'unit.read-hydrogen-storage',
-  READ_HYDROGEN_STORAGE_UNIT_BY_ID = 'unit.read-hydrogen-storage-by-id',
   READ_POWER_PRODUCTION_TYPES = 'unit.read-power-production-types',
   CREATE_POWER_PRODUCTION_UNIT = 'unit.create-power-production',
   CREATE_HYDROGEN_PRODUCTION_UNIT = 'unit.create-hydrogen-production',

@@ -17,6 +17,7 @@ import {
   PowerProductionUnitEntity,
   ReadByIdPayload,
   ReadByIdsPayload,
+  UnitEntity,
 } from '@h2-trust/amqp';
 import { PowerProductionTypeRepository, UnitRepository } from '@h2-trust/database';
 
@@ -27,16 +28,8 @@ export class UnitService {
     private readonly powerProductionTypeRepository: PowerProductionTypeRepository,
   ) {}
 
-  async readPowerProductionUnitById(id: string): Promise<PowerProductionUnitEntity> {
-    return this.unitRepository.findPowerProductionUnitById(id);
-  }
-
-  async readHydrogenProductionUnitById(id: string): Promise<HydrogenProductionUnitEntity> {
-    return this.unitRepository.findHydrogenProductionUnitById(id);
-  }
-
-  async readHydrogenStorageUnitById(id: string): Promise<HydrogenStorageUnitEntity> {
-    return this.unitRepository.findhydrogenStorageUnitById(id);
+  async readUnitById(id: string): Promise<UnitEntity> {
+    return this.unitRepository.findUnitById(id);
   }
 
   async readPowerProductionUnitsByCompanyId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity[]> {
