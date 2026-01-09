@@ -7,7 +7,7 @@
  */
 
 import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { MessagePattern } from '@nestjs/microservices';
 import {
   PowerAccessApprovalEntity,
   PowerAccessApprovalPatterns,
@@ -17,10 +17,10 @@ import { PowerAccessApprovalService } from './power-access-approval.service';
 
 @Controller()
 export class PowerAccessApprovalController {
-  constructor(private readonly service: PowerAccessApprovalService) {}
+  constructor(private readonly service: PowerAccessApprovalService) { }
 
   @MessagePattern(PowerAccessApprovalPatterns.READ)
-  async findAll(@Payload() payload: ReadPowerAccessApprovalsPayload): Promise<PowerAccessApprovalEntity[]> {
+  async findAll(payload: ReadPowerAccessApprovalsPayload): Promise<PowerAccessApprovalEntity[]> {
     return this.service.findAll(payload);
   }
 }
