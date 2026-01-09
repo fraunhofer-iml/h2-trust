@@ -42,81 +42,77 @@ export class UnitService {
     private readonly userService: UserService,
   ) {}
 
-  async readUnit(id: string): Promise<UnitDto> {
-    return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, new ReadByIdPayload(id))).then(
-      UnitService.mapEntityToDto,
-    );
+  async readPowerProductionUnit(id: string): Promise<PowerProductionUnitDto> {
+    return firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNIT_BY_ID, new ReadByIdPayload(id)),
+    ).then(PowerProductionUnitDto.fromEntity);
   }
 
-  async readUnits(userId: string, unitType: UnitType): Promise<UnitOverviewDto[]> {
-    const userDetails = await this.userService.readUserWithCompany(userId);
-    const companyId = userDetails.company.id;
-
-    switch (unitType) {
-      case UnitType.POWER_PRODUCTION:
-        return this.readPowerProductionUnits(companyId);
-      case UnitType.HYDROGEN_PRODUCTION:
-        return this.readHydrogenProductionUnits(companyId);
-      case UnitType.HYDROGEN_STORAGE:
-        return this.readHydrogenStorageUnits(companyId);
-      case undefined: {
-        const powerProductionUnits = await this.readPowerProductionUnits(companyId);
-        const hydrogenProductionUnits = await this.readHydrogenProductionUnits(companyId);
-        const hydrogenStorageUnits = await this.readHydrogenStorageUnits(companyId);
-        return [...powerProductionUnits, ...hydrogenProductionUnits, ...hydrogenStorageUnits];
-      }
-      default:
-        throw new BadRequestException(`Unit type [${unitType}] unknown`);
-    }
+  async readHydrogenProductionUnit(id: string): Promise<HydrogenProductionUnitDto> {
+    return firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNIT_BY_ID, new ReadByIdPayload(id)),
+    ).then(HydrogenProductionUnitDto.fromEntity);
   }
 
-  private async readPowerProductionUnits(companyId: string): Promise<PowerProductionOverviewDto[]> {
+  async readHydrogenStorageUnit(id: string): Promise<HydrogenStorageUnitDto> {
+    return firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNIT_BY_ID, new ReadByIdPayload(id)),
+    ).then(HydrogenStorageUnitDto.fromEntity);
+  }
+
+  async readPowerProductionUnits(userId: string): Promise<PowerProductionOverviewDto[]> {
+    const companyId = await this.getCompanyIdFromUserId(userId);
     return firstValueFrom(
       this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS, new ReadByIdPayload(companyId)),
     ).then((entities) => entities.map(PowerProductionOverviewDto.fromEntity));
   }
 
-  private async readHydrogenProductionUnits(companyId: string): Promise<HydrogenProductionOverviewDto[]> {
+  async readHydrogenProductionUnits(userId: string): Promise<HydrogenProductionOverviewDto[]> {
+    const companyId = await this.getCompanyIdFromUserId(userId);
+
     return firstValueFrom(
       this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS, new ReadByIdPayload(companyId)),
     ).then((entities) => entities.map(HydrogenProductionOverviewDto.fromEntity));
   }
 
-  private async readHydrogenStorageUnits(companyId: string): Promise<HydrogenStorageOverviewDto[]> {
+  async readHydrogenStorageUnits(userId: string): Promise<HydrogenStorageOverviewDto[]> {
+    const companyId = await this.getCompanyIdFromUserId(userId);
+
     return firstValueFrom(
       this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_STORAGE_UNITS, new ReadByIdPayload(companyId)),
     ).then((entities) => entities.map(HydrogenStorageOverviewDto.fromEntity));
   }
 
-  async createUnit(dto: UnitCreateDto): Promise<UnitDto> {
-    let messagePattern: UnitMessagePatterns;
-    let payload:
-      | CreatePowerProductionUnitPayload
-      | CreateHydrogenProductionUnitPayload
-      | CreateHydrogenStorageUnitPayload;
+  async createPowerProductionUnit(dto: PowerProductionUnitCreateDto): Promise<PowerProductionUnitDto> {
+    return firstValueFrom(
+      this.generalService.send(
+        UnitMessagePatterns.CREATE_POWER_PRODUCTION_UNIT,
+        PowerProductionUnitCreateDto.toPayload(dto),
+      ),
+    ).then(PowerProductionUnitDto.fromEntity);
+  }
 
-    switch (dto.unitType) {
-      case UnitType.POWER_PRODUCTION: {
-        messagePattern = UnitMessagePatterns.CREATE_POWER_PRODUCTION_UNIT;
-        payload = PowerProductionUnitCreateDto.toPayload(dto as PowerProductionUnitCreateDto);
-        break;
-      }
-      case UnitType.HYDROGEN_PRODUCTION: {
-        messagePattern = UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION_UNIT;
-        payload = HydrogenProductionUnitCreateDto.toPayload(dto as HydrogenProductionUnitCreateDto);
-        break;
-      }
-      case UnitType.HYDROGEN_STORAGE: {
-        messagePattern = UnitMessagePatterns.CREATE_HYDROGEN_STORAGE_UNIT;
-        payload = HydrogenStorageUnitCreateDto.toPayload(dto as HydrogenStorageUnitCreateDto);
-        break;
-      }
-      default: {
-        throw new BadRequestException(`Unit type [${dto.unitType}] unknown`);
-      }
-    }
+  async createHydrogenProductionUnit(dto: HydrogenProductionUnitCreateDto): Promise<HydrogenProductionUnitDto> {
+    return firstValueFrom(
+      this.generalService.send(
+        UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION_UNIT,
+        HydrogenProductionUnitCreateDto.toPayload(dto),
+      ),
+    ).then(HydrogenProductionUnitDto.fromEntity);
+  }
 
-    return firstValueFrom(this.generalService.send(messagePattern, payload)).then(UnitService.mapEntityToDto);
+  async createHydrogenStorageUnit(dto: HydrogenStorageUnitCreateDto): Promise<HydrogenStorageUnitDto> {
+    return firstValueFrom(
+      this.generalService.send(
+        UnitMessagePatterns.CREATE_HYDROGEN_STORAGE_UNIT,
+        HydrogenStorageUnitCreateDto.toPayload(dto),
+      ),
+    ).then(HydrogenStorageUnitDto.fromEntity);
+  }
+
+  private async getCompanyIdFromUserId(id: string): Promise<string> {
+    const userDetails = await this.userService.readUserWithCompany(id);
+    return userDetails.company.id;
   }
 
   static mapEntityToDto(unitEntity: BaseUnitEntity): UnitDto {
