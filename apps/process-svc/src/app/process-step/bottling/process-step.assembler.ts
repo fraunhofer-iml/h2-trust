@@ -6,13 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 import { BatchEntity, BrokerException, CreateHydrogenBottlingPayload, ProcessStepEntity } from '@h2-trust/amqp';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
 
-@Injectable()
-export class ProcessStepAssemblerService {
-  assembleBottlingProcessStep(
+export class ProcessStepAssembler {
+  static assembleBottlingProcessStep(
     payload: CreateHydrogenBottlingPayload,
     batchesForBottle: BatchEntity[],
   ): ProcessStepEntity {
@@ -23,7 +22,7 @@ export class ProcessStepAssemblerService {
       batch: {
         amount: payload.amount,
         qualityDetails: {
-          color: this.determineBottleQualityFromPredecessors(batchesForBottle),
+          color: ProcessStepAssembler.determineBottleQualityFromPredecessors(batchesForBottle),
         },
         type: BatchType.HYDROGEN,
         predecessors: batchesForBottle.map((batch) => ({
@@ -36,7 +35,7 @@ export class ProcessStepAssemblerService {
     } as ProcessStepEntity;
   }
 
-  private determineBottleQualityFromPredecessors(predecessors: BatchEntity[]): HydrogenColor {
+  static determineBottleQualityFromPredecessors(predecessors: BatchEntity[]): HydrogenColor {
     const colors: HydrogenColor[] = predecessors
       .map((batch) => batch.qualityDetails?.color)
       .map((color) => HydrogenColor[color as keyof typeof HydrogenColor]);
@@ -55,7 +54,7 @@ export class ProcessStepAssemblerService {
   // This places the newly created “remaining” batch at the beginning of the storage batch queue.
   // This seems to contradict the first-in-first-out principle,
   // but in fact a batch is now tapped before all others until it is empty.
-  assembleHydrogenProductionProcessStepForRemainingAmount(
+  static assembleHydrogenProductionProcessStepForRemainingAmount(
     predecessorProcessStep: ProcessStepEntity,
     remainingAmount: number,
     active: boolean,

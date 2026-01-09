@@ -28,14 +28,13 @@ import { ProcessStepService } from '../process-step.service';
 import { BatchSelection } from './batch-selection.interface';
 import { BatchSelectionService } from './batch-selection.service';
 import { HydrogenComponentAssembler } from './hydrogen-component-assembler';
-import { ProcessStepAssemblerService } from './process-step-assembler.service';
+import { ProcessStepAssembler } from './process-step.assembler';
 
 @Injectable()
 export class BottlingService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly batchSelectionService: BatchSelectionService,
-    private readonly processStepAssemblerService: ProcessStepAssemblerService,
     private readonly storageService: StorageService,
     private readonly processStepRepository: ProcessStepRepository,
     private readonly batchRepository: BatchRepository,
@@ -81,7 +80,7 @@ export class BottlingService {
       batchSelection.processStepsForRemainingAmount.map((ps) => this.processStepRepository.insertProcessStep(ps)),
     );
 
-    const bottlingProcessStep: ProcessStepEntity = this.processStepAssemblerService.assembleBottlingProcessStep(
+    const bottlingProcessStep: ProcessStepEntity = ProcessStepAssembler.assembleBottlingProcessStep(
       payload,
       [...batchSelection.batchesForBottle, ...persistedConsumedSplitBatches],
     );

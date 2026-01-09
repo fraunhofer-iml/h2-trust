@@ -9,11 +9,11 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { BatchEntity, BrokerException, HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import { BatchSelection } from './batch-selection.interface';
-import { ProcessStepAssemblerService } from './process-step-assembler.service';
+import { ProcessStepAssembler } from './process-step.assembler';
 
 @Injectable()
 export class BatchSelectionService {
-  constructor(private readonly processStepAssemblerService: ProcessStepAssemblerService) {}
+  constructor() { }
 
   processBottlingForAllColors(
     allProcessStepsFromStorageUnit: ProcessStepEntity[],
@@ -111,7 +111,7 @@ export class BatchSelectionService {
       batchesForBottle.pop();
 
       consumedSplitProcessSteps.push(
-        this.processStepAssemblerService.assembleHydrogenProductionProcessStepForRemainingAmount(
+        ProcessStepAssembler.assembleHydrogenProductionProcessStepForRemainingAmount(
           consumedSplitProcessStep,
           consumedSplitProcessStep.batch.amount - remainingAmount,
           false,
@@ -119,7 +119,7 @@ export class BatchSelectionService {
       );
 
       processStepsForRemainingAmount.push(
-        this.processStepAssemblerService.assembleHydrogenProductionProcessStepForRemainingAmount(
+        ProcessStepAssembler.assembleHydrogenProductionProcessStepForRemainingAmount(
           consumedSplitProcessStep,
           remainingAmount,
           true,
