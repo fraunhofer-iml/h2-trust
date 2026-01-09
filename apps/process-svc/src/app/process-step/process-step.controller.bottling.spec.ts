@@ -22,7 +22,7 @@ import {
 import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
 import { HydrogenColor } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
-import { BatchSelector } from './bottling/batch.selector';
+import { BottlingAllocator } from './bottling/bottling.allocator';
 import { BottlingService } from './bottling/bottling.service';
 import { ProcessStepAssemblerService } from './bottling/process-step-assembler.service';
 import { ProcessStepController } from './process-step.controller';
@@ -34,7 +34,7 @@ describe('ProcessStepController / Bottling', () => {
   let processStepRepository: ProcessStepRepository;
   let batchRepository: BatchRepository;
   let bottlingService: BottlingService;
-  let batchSelectionService: BatchSelector;
+  let batchSelectionService: BottlingAllocator;
   let storageService: StorageService;
   let documentRepository: DocumentRepository;
   let processStepService: ProcessStepService;
@@ -56,7 +56,7 @@ describe('ProcessStepController / Bottling', () => {
           },
         },
         {
-          provide: BatchSelector,
+          provide: BottlingAllocator,
           useValue: {
             processBottlingForAllColors: jest.fn(),
           },
@@ -102,7 +102,7 @@ describe('ProcessStepController / Bottling', () => {
     processStepRepository = module.get<ProcessStepRepository>(ProcessStepRepository);
     batchRepository = module.get<BatchRepository>(BatchRepository);
     bottlingService = module.get<BottlingService>(BottlingService);
-    batchSelectionService = module.get<BatchSelector>(BatchSelector);
+    batchSelectionService = module.get<BottlingAllocator>(BottlingAllocator);
     storageService = module.get<StorageService>(StorageService);
     documentRepository = module.get<DocumentRepository>(DocumentRepository);
     processStepService = module.get<ProcessStepService>(ProcessStepService);

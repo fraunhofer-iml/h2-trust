@@ -10,8 +10,8 @@ import { HttpStatus } from '@nestjs/common';
 import { BatchEntity, BrokerException, CreateHydrogenBottlingPayload, ProcessStepEntity } from '@h2-trust/amqp';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
 
-export class ProcessStepAssembler {
-  static assembleBottlingProcessStep(
+export class BottlingProcessStepAssembler {
+  static assemble(
     payload: CreateHydrogenBottlingPayload,
     batchesForBottle: BatchEntity[],
   ): ProcessStepEntity {
@@ -22,7 +22,7 @@ export class ProcessStepAssembler {
       batch: {
         amount: payload.amount,
         qualityDetails: {
-          color: ProcessStepAssembler.determineBottleQualityFromPredecessors(batchesForBottle),
+          color: BottlingProcessStepAssembler.determineBottleQualityFromPredecessors(batchesForBottle),
         },
         type: BatchType.HYDROGEN,
         predecessors: batchesForBottle.map((batch) => ({
@@ -35,7 +35,7 @@ export class ProcessStepAssembler {
     } as ProcessStepEntity;
   }
 
-  static determineBottleQualityFromPredecessors(predecessors: BatchEntity[]): HydrogenColor {
+  private static determineBottleQualityFromPredecessors(predecessors: BatchEntity[]): HydrogenColor {
     const colors: HydrogenColor[] = predecessors
       .map((batch) => batch.qualityDetails?.color)
       .map((color) => HydrogenColor[color as keyof typeof HydrogenColor]);
@@ -48,41 +48,5 @@ export class ProcessStepAssembler {
     const allColorsAreEqual = colors.every((color) => color === firstColor);
 
     return allColorsAreEqual ? firstColor : HydrogenColor.MIX;
-  }
-
-  // NOTE: The timestamps here were set to those of the “tapped” batch.
-  // This places the newly created “remaining” batch at the beginning of the storage batch queue.
-  // This seems to contradict the first-in-first-out principle,
-  // but in fact a batch is now tapped before all others until it is empty.
-  static assembleHydrogenProductionProcessStepForRemainingAmount(
-    predecessorProcessStep: ProcessStepEntity,
-    remainingAmount: number,
-    active: boolean,
-  ): ProcessStepEntity {
-    return {
-      ...predecessorProcessStep,
-      startedAt: predecessorProcessStep.startedAt,
-      endedAt: predecessorProcessStep.endedAt,
-      type: ProcessType.HYDROGEN_PRODUCTION,
-      batch: {
-        active: active,
-        amount: remainingAmount,
-        qualityDetails: {
-          color: predecessorProcessStep.batch.qualityDetails.color,
-        },
-        type: BatchType.HYDROGEN,
-        predecessors: [
-          {
-            id: predecessorProcessStep.batch.id,
-          },
-        ],
-        owner: {
-          id: predecessorProcessStep.batch.owner.id,
-        },
-        hydrogenStorageUnit: {
-          id: predecessorProcessStep.batch.hydrogenStorageUnit.id,
-        },
-      } as BatchEntity,
-    } as ProcessStepEntity;
   }
 }

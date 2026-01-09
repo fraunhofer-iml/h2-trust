@@ -25,9 +25,9 @@ import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-
 import { HydrogenColor, ProcessType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step.service';
-import { HydrogenComponentAssembler } from './hydrogen-component-assembler';
-import { ProcessStepAssembler } from './process-step.assembler';
-import { BatchSelectionResult, BatchSelector } from './batch.selector';
+import { HydrogenComponentAssembler } from './hydrogen-component.assembler';
+import { BottlingAllocation, BottlingAllocator } from './bottling.allocator';
+import { BottlingProcessStepAssembler } from './bottling-process-step.assembler';
 
 @Injectable()
 export class BottlingService {
@@ -57,30 +57,30 @@ export class BottlingService {
       payload.hydrogenStorageUnitId,
     );
 
-    const batchSelection: BatchSelectionResult = BatchSelector.selectBatches(
+    const allocation: BottlingAllocation = BottlingAllocator.allocate(
       allProcessStepsFromStorageUnit,
       hydrogenComposition,
       payload.hydrogenStorageUnitId,
     );
 
     const batchesToSetInactive: BatchEntity[] = [
-      ...batchSelection.batchesForBottle,
-      ...batchSelection.processStepsToBeSplit.map((ps) => ps.batch),
+      ...allocation.batchesForBottle,
+      ...allocation.processStepsToBeSplit.map((ps) => ps.batch),
     ];
     await this.batchRepository.setBatchesInactive(batchesToSetInactive.map((batch) => batch.id));
 
     const persistedConsumedSplitProcessSteps: ProcessStepEntity[] = await Promise.all(
-      batchSelection.consumedSplitProcessSteps.map((step) => this.processStepRepository.insertProcessStep(step)),
+      allocation.consumedSplitProcessSteps.map((step) => this.processStepRepository.insertProcessStep(step)),
     );
     const persistedConsumedSplitBatches: BatchEntity[] = persistedConsumedSplitProcessSteps.map((ps) => ps.batch);
 
     await Promise.all(
-      batchSelection.processStepsForRemainingAmount.map((ps) => this.processStepRepository.insertProcessStep(ps)),
+      allocation.processStepsForRemainingAmount.map((ps) => this.processStepRepository.insertProcessStep(ps)),
     );
 
-    const bottlingProcessStep: ProcessStepEntity = ProcessStepAssembler.assembleBottlingProcessStep(
+    const bottlingProcessStep: ProcessStepEntity = BottlingProcessStepAssembler.assemble(
       payload,
-      [...batchSelection.batchesForBottle, ...persistedConsumedSplitBatches],
+      [...allocation.batchesForBottle, ...persistedConsumedSplitBatches],
     );
     const persistedBottlingProcessStep: ProcessStepEntity =
       await this.processStepRepository.insertProcessStep(bottlingProcessStep);
@@ -137,7 +137,7 @@ export class BottlingService {
       ? processStep
       : await this.readHydrogenBottling(processStep);
 
-    return HydrogenComponentAssembler.assembleFromBottlingProcessStep(hydrogenBottling);
+    return HydrogenComponentAssembler.assemble(hydrogenBottling);
   }
 
   private async readHydrogenBottling(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {

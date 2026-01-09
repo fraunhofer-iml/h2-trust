@@ -8,21 +8,21 @@
 
 import { HttpStatus } from '@nestjs/common';
 import { BatchEntity, BrokerException, HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/amqp';
-import { ProcessStepAssembler } from './process-step.assembler';
+import { BatchType, ProcessType } from '@h2-trust/domain';
 
-export interface BatchSelectionResult {
+export interface BottlingAllocation {
   batchesForBottle: BatchEntity[];
   processStepsToBeSplit: ProcessStepEntity[];
   consumedSplitProcessSteps: ProcessStepEntity[];
   processStepsForRemainingAmount: ProcessStepEntity[];
 }
 
-export class BatchSelector {
-  static selectBatches(
+export class BottlingAllocator {
+  static allocate(
     processSteps: ProcessStepEntity[],
     hydrogenComposition: HydrogenComponentEntity[],
     hydrogenStorageUnitId: string,
-  ): BatchSelectionResult {
+  ): BottlingAllocation {
     const aggregatedBatchesForBottle: BatchEntity[] = [];
     const aggregatedProcessStepsToBeSplit: ProcessStepEntity[] = [];
     const aggregatedConsumedSplitProcessSteps: ProcessStepEntity[] = [];
@@ -30,7 +30,7 @@ export class BatchSelector {
 
     for (const hydrogenComponent of hydrogenComposition) {
       const { batchesForBottle, processStepsToBeSplit, consumedSplitProcessSteps, processStepsForRemainingAmount } =
-        BatchSelector.processBottlingForEachColor(
+        BottlingAllocator.processBottlingForEachColor(
           processSteps,
           hydrogenComponent.color,
           hydrogenComponent.amount,
@@ -56,19 +56,19 @@ export class BatchSelector {
     color: string,
     amount: number,
     hydrogenStorageUnitId: string,
-  ): BatchSelectionResult {
+  ): BottlingAllocation {
     const processStepsFromHydrogenStorageWithRequestedColor = processSteps.filter(
       (ps) => ps.batch.qualityDetails.color === color
     )
 
-    const { selectedProcessSteps, remainingAmount } = BatchSelector.selectProcessStepsForBottlingAndCalculateRemainingAmount(
+    const { selectedProcessSteps, remainingAmount } = BottlingAllocator.selectProcessStepsForBottlingAndCalculateRemainingAmount(
       processStepsFromHydrogenStorageWithRequestedColor,
       amount,
       hydrogenStorageUnitId,
       color,
     );
 
-    return BatchSelector.splitLastProcessStepIfNeeded(selectedProcessSteps, remainingAmount);
+    return BottlingAllocator.splitLastProcessStepIfNeeded(selectedProcessSteps, remainingAmount);
   }
 
   private static selectProcessStepsForBottlingAndCalculateRemainingAmount(
@@ -98,7 +98,7 @@ export class BatchSelector {
   private static splitLastProcessStepIfNeeded(
     selectedProcessSteps: ProcessStepEntity[],
     remainingAmount: number,
-  ): BatchSelectionResult {
+  ): BottlingAllocation {
     const batchesForBottle: BatchEntity[] = selectedProcessSteps.map((processStep) => processStep.batch);
     const processStepsToBeSplit: ProcessStepEntity[] = [];
     const consumedSplitProcessSteps: ProcessStepEntity[] = [];
@@ -109,7 +109,7 @@ export class BatchSelector {
       batchesForBottle.pop();
 
       consumedSplitProcessSteps.push(
-        ProcessStepAssembler.assembleHydrogenProductionProcessStepForRemainingAmount(
+        BottlingAllocator.assembleHydrogenProductionProcessStepForRemainingAmount(
           consumedSplitProcessStep,
           consumedSplitProcessStep.batch.amount - remainingAmount,
           false,
@@ -117,7 +117,7 @@ export class BatchSelector {
       );
 
       processStepsForRemainingAmount.push(
-        ProcessStepAssembler.assembleHydrogenProductionProcessStepForRemainingAmount(
+        BottlingAllocator.assembleHydrogenProductionProcessStepForRemainingAmount(
           consumedSplitProcessStep,
           remainingAmount,
           true,
@@ -125,5 +125,41 @@ export class BatchSelector {
       );
     }
     return { batchesForBottle, processStepsToBeSplit, consumedSplitProcessSteps, processStepsForRemainingAmount };
+  }
+
+  // NOTE: The timestamps here were set to those of the “tapped” batch.
+  // This places the newly created “remaining” batch at the beginning of the storage batch queue.
+  // This seems to contradict the first-in-first-out principle,
+  // but in fact a batch is now tapped before all others until it is empty.
+  private static assembleHydrogenProductionProcessStepForRemainingAmount(
+    predecessorProcessStep: ProcessStepEntity,
+    remainingAmount: number,
+    active: boolean,
+  ): ProcessStepEntity {
+    return {
+      ...predecessorProcessStep,
+      startedAt: predecessorProcessStep.startedAt,
+      endedAt: predecessorProcessStep.endedAt,
+      type: ProcessType.HYDROGEN_PRODUCTION,
+      batch: {
+        active: active,
+        amount: remainingAmount,
+        qualityDetails: {
+          color: predecessorProcessStep.batch.qualityDetails.color,
+        },
+        type: BatchType.HYDROGEN,
+        predecessors: [
+          {
+            id: predecessorProcessStep.batch.id,
+          },
+        ],
+        owner: {
+          id: predecessorProcessStep.batch.owner.id,
+        },
+        hydrogenStorageUnit: {
+          id: predecessorProcessStep.batch.hydrogenStorageUnit.id,
+        },
+      } as BatchEntity,
+    } as ProcessStepEntity;
   }
 }

@@ -25,7 +25,7 @@ import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-
 import { HydrogenColor } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step.service';
-import { BatchSelector } from './batch.selector';
+import { BottlingAllocator } from './bottling.allocator';
 import { BottlingService } from './bottling.service';
 import { ProcessStepAssemblerService } from './process-step-assembler.service';
 
@@ -64,7 +64,7 @@ describe('ProcessStepService', () => {
       providers: [
         BottlingService,
         ProcessStepService,
-        BatchSelector,
+        BottlingAllocator,
         ProcessStepAssemblerService,
         {
           provide: ProcessStepRepository,

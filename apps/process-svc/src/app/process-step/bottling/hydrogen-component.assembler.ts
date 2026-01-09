@@ -17,40 +17,40 @@ import {
 import { BatchType, ProcessType } from '@h2-trust/domain';
 
 export class HydrogenComponentAssembler {
-  static assembleFromBottlingProcessStep(bottlingProcessStep: ProcessStepEntity): HydrogenComponentEntity[] {
-    this.validateProcessStep(bottlingProcessStep);
+  static assemble(processStep: ProcessStepEntity): HydrogenComponentEntity[] {
+    this.validateProcessStep(processStep);
 
-    const predecessorHydrogenComponents = bottlingProcessStep.batch.predecessors.map(
+    const predecessorHydrogenComponents = processStep.batch.predecessors.map(
       HydrogenComponentAssembler.createHydrogenComponentFromBatch,
     );
 
     return HydrogenCompositionUtil.computeHydrogenComposition(
       predecessorHydrogenComponents,
-      bottlingProcessStep.batch.amount,
+      processStep.batch.amount,
     );
   }
 
-  private static validateProcessStep(bottlingProcessStep: ProcessStepEntity): void {
-    if (!bottlingProcessStep) {
+  private static validateProcessStep(processStep: ProcessStepEntity): void {
+    if (!processStep) {
       const errorMessage = 'The provided bottling process step is missing (undefined or null).';
       throw Error(errorMessage);
     }
 
     if (
-      bottlingProcessStep.type != ProcessType.HYDROGEN_BOTTLING &&
-      bottlingProcessStep.type != ProcessType.HYDROGEN_TRANSPORTATION
+      processStep.type != ProcessType.HYDROGEN_BOTTLING &&
+      processStep.type != ProcessType.HYDROGEN_TRANSPORTATION
     ) {
-      const errorMessage = `ProcessStep ${bottlingProcessStep.id} should be type ${ProcessType.HYDROGEN_BOTTLING} or ${ProcessType.HYDROGEN_TRANSPORTATION}, but is ${bottlingProcessStep.type}.`;
+      const errorMessage = `ProcessStep ${processStep.id} should be type ${ProcessType.HYDROGEN_BOTTLING} or ${ProcessType.HYDROGEN_TRANSPORTATION}, but is ${processStep.type}.`;
       throw Error(errorMessage);
     }
 
-    if (!bottlingProcessStep.batch) {
-      const errorMessage = `ProcessStep ${bottlingProcessStep.id} does not have a batch.`;
+    if (!processStep.batch) {
+      const errorMessage = `ProcessStep ${processStep.id} does not have a batch.`;
       throw Error(errorMessage);
     }
 
-    if (bottlingProcessStep.batch.predecessors?.length === 0) {
-      const errorMessage = `ProcessStep ${bottlingProcessStep.id} does not have predecessors.`;
+    if (processStep.batch.predecessors?.length === 0) {
+      const errorMessage = `ProcessStep ${processStep.id} does not have predecessors.`;
       throw Error(errorMessage);
     }
   }
