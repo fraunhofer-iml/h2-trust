@@ -14,7 +14,7 @@ import {
 } from '@h2-trust/amqp';
 import { EmissionCalculationDto, EmissionDto, HydrogenBatchDto, SectionDto } from '@h2-trust/api';
 import { ProofOfOrigin } from '@h2-trust/domain';
-import { EmissionCalculationAssembler } from '../emission.assembler';
+import { EmissionCalculationAssembler } from './emission.assembler';
 import { BatchAssembler } from './batch.assembler';
 import { BottlingService } from '../../process-step/bottling/bottling.service';
 

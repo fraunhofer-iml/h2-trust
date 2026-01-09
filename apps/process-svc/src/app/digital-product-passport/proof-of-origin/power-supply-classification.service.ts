@@ -18,8 +18,8 @@ import {
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { BatchDto, ClassificationDto, EmissionCalculationDto, EmissionDto, PowerBatchDto } from '@h2-trust/api';
-import { EmissionComputationService } from '../emission-computation.service';
-import { EmissionCalculationAssembler } from '../emission.assembler';
+import { EmissionComputationService } from './emission-computation.service';
+import { EmissionCalculationAssembler } from './emission.assembler';
 import { BatchAssembler } from './batch.assembler';
 import { ClassificationAssembler } from './classification.assembler';
 

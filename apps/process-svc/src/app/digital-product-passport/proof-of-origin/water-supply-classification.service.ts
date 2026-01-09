@@ -10,7 +10,7 @@ import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { ClassificationDto, EmissionCalculationDto, EmissionDto, WaterBatchDto } from '@h2-trust/api';
 import { BatchType, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
-import { EmissionCalculationAssembler } from '../emission.assembler';
+import { EmissionCalculationAssembler } from './emission.assembler';
 import { BatchAssembler } from './batch.assembler';
 import { ClassificationAssembler } from './classification.assembler';
 
