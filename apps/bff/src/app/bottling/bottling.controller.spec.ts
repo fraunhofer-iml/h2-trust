@@ -95,7 +95,11 @@ describe('BottlingController', () => {
     };
 
     const expectedResponse: BottlingOverviewDto = BottlingOverviewDto.fromEntity(returnedProcessStep);
-    const actualResponse: BottlingOverviewDto = await controller.createBottlingAndTransportation(givenDto, [], AuthenticatedUserMock);
+    const actualResponse: BottlingOverviewDto = await controller.createBottlingAndTransportation(
+      givenDto,
+      [],
+      AuthenticatedUserMock,
+    );
 
     expect(processSvcSpy).toHaveBeenCalledTimes(2);
     expect(processSvcSpy).toHaveBeenNthCalledWith(

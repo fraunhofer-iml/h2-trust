@@ -7,23 +7,21 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import {
-  HydrogenComponentEntity,
-  ProcessStepEntity,
-  ReadByIdPayload,
-} from '@h2-trust/amqp';
+import { HydrogenComponentEntity, ProcessStepEntity, ReadByIdPayload } from '@h2-trust/amqp';
 import { EmissionCalculationDto, EmissionDto, HydrogenBatchDto, SectionDto } from '@h2-trust/api';
 import { ProofOfOrigin } from '@h2-trust/domain';
-import { EmissionCalculationAssembler } from './emission.assembler';
-import { BatchAssembler } from './batch.assembler';
 import { BottlingService } from '../../process-step/bottling/bottling.service';
+import { BatchAssembler } from './batch.assembler';
+import { EmissionCalculationAssembler } from './emission.assembler';
 
 @Injectable()
 export class HydrogenBottlingSectionService {
-  constructor(private readonly bottlingService: BottlingService) { }
+  constructor(private readonly bottlingService: BottlingService) {}
 
   async buildSection(hydrogenBottling: ProcessStepEntity): Promise<SectionDto> {
-    const hydrogenCompositions: HydrogenComponentEntity[] = await this.bottlingService.calculateHydrogenComposition(new ReadByIdPayload(hydrogenBottling.id));
+    const hydrogenCompositions: HydrogenComponentEntity[] = await this.bottlingService.calculateHydrogenComposition(
+      new ReadByIdPayload(hydrogenBottling.id),
+    );
 
     const emissionCalculation: EmissionCalculationDto =
       EmissionCalculationAssembler.assembleHydrogenBottlingCalculation(hydrogenBottling);

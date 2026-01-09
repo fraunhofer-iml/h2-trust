@@ -25,9 +25,9 @@ import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-
 import { HydrogenColor, ProcessType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step.service';
-import { HydrogenComponentAssembler } from './hydrogen-component.assembler';
-import { BottlingAllocation, BottlingAllocator } from './bottling.allocator';
 import { BottlingProcessStepAssembler } from './bottling-process-step.assembler';
+import { BottlingAllocation, BottlingAllocator } from './bottling.allocator';
+import { HydrogenComponentAssembler } from './hydrogen-component.assembler';
 
 @Injectable()
 export class BottlingService {
@@ -38,7 +38,7 @@ export class BottlingService {
     private readonly batchRepository: BatchRepository,
     private readonly documentRepository: DocumentRepository,
     private readonly processStepService: ProcessStepService,
-  ) { }
+  ) {}
 
   async createHydrogenBottlingProcessStep(payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
     const allProcessStepsFromStorageUnit: ProcessStepEntity[] =
@@ -78,10 +78,10 @@ export class BottlingService {
       allocation.processStepsForRemainingAmount.map((ps) => this.processStepRepository.insertProcessStep(ps)),
     );
 
-    const bottlingProcessStep: ProcessStepEntity = BottlingProcessStepAssembler.assemble(
-      payload,
-      [...allocation.batchesForBottle, ...persistedConsumedSplitBatches],
-    );
+    const bottlingProcessStep: ProcessStepEntity = BottlingProcessStepAssembler.assemble(payload, [
+      ...allocation.batchesForBottle,
+      ...persistedConsumedSplitBatches,
+    ]);
     const persistedBottlingProcessStep: ProcessStepEntity =
       await this.processStepRepository.insertProcessStep(bottlingProcessStep);
 
@@ -133,9 +133,8 @@ export class BottlingService {
   async calculateHydrogenComposition(payload: ReadByIdPayload): Promise<HydrogenComponentEntity[]> {
     const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(payload);
 
-    const hydrogenBottling: ProcessStepEntity = processStep.type === ProcessType.HYDROGEN_BOTTLING
-      ? processStep
-      : await this.readHydrogenBottling(processStep);
+    const hydrogenBottling: ProcessStepEntity =
+      processStep.type === ProcessType.HYDROGEN_BOTTLING ? processStep : await this.readHydrogenBottling(processStep);
 
     return HydrogenComponentAssembler.assemble(hydrogenBottling);
   }
@@ -150,7 +149,9 @@ export class BottlingService {
       );
     }
 
-    const predecessor: ProcessStepEntity = await this.processStepService.readProcessStep(new ReadByIdPayload(predecessorId));
+    const predecessor: ProcessStepEntity = await this.processStepService.readProcessStep(
+      new ReadByIdPayload(predecessorId),
+    );
 
     if (predecessor.type !== ProcessType.HYDROGEN_BOTTLING) {
       throw new BrokerException(

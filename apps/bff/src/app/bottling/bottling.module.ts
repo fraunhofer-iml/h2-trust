@@ -8,13 +8,13 @@
 
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
+import { UserModule } from '../user/user.module';
 import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';
-import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [UserModule, new Broker().getProcessSvcBroker()],
   controllers: [BottlingController],
   providers: [BottlingService],
 })
-export class BottlingModule { }
+export class BottlingModule {}

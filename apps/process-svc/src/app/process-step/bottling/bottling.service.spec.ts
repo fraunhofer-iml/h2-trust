@@ -270,7 +270,7 @@ describe('ProcessStepService', () => {
           2 * (i + 1), // Every second call goes to the assembling of the remaining amount batch
           hydrogenProcessSteps.at(i),
           hydrogenProcessSteps[i].batch.amount -
-          (processStepData.batch.amount * hydrogenProcessSteps[i].batch.amount) / totalStoredAmount,
+            (processStepData.batch.amount * hydrogenProcessSteps[i].batch.amount) / totalStoredAmount,
           true,
         );
       }

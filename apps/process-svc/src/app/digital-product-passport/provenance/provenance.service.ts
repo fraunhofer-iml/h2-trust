@@ -7,14 +7,10 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import {
-  ProcessStepEntity,
-  ProvenanceEntity,
-  ReadByIdPayload,
-} from '@h2-trust/amqp';
+import { ProcessStepEntity, ProvenanceEntity, ReadByIdPayload } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
-import { TraversalService } from './traversal.service';
 import { ProcessStepService } from '../../process-step/process-step.service';
+import { TraversalService } from './traversal.service';
 
 type ProvenanceBuilderFn = (root: ProcessStepEntity) => Promise<ProvenanceEntity>;
 
@@ -23,7 +19,7 @@ export class ProvenanceService {
   constructor(
     private readonly processStepService: ProcessStepService,
     private readonly traversalService: TraversalService,
-  ) { }
+  ) {}
 
   async buildProvenance(payload: ReadByIdPayload): Promise<ProvenanceEntity> {
     if (!payload.id) {

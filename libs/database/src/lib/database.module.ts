@@ -47,4 +47,4 @@ import {
     UserRepository,
   ],
 })
-export class DatabaseModule { }
+export class DatabaseModule {}

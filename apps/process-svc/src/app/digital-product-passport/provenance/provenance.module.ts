@@ -7,9 +7,9 @@
  */
 
 import { Module } from '@nestjs/common';
+import { ProcessStepModule } from '../../process-step/process-step.module';
 import { ProvenanceService } from './provenance.service';
 import { TraversalService } from './traversal.service';
-import { ProcessStepModule } from '../../process-step/process-step.module';
 
 @Module({
   imports: [ProcessStepModule],

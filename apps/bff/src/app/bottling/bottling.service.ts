@@ -34,9 +34,13 @@ export class BottlingService {
   constructor(
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
-  async createBottlingAndTransportation(dto: BottlingDto, files: Express.Multer.File[], userId: string): Promise<BottlingOverviewDto> {
+  async createBottlingAndTransportation(
+    dto: BottlingDto,
+    files: Express.Multer.File[],
+    userId: string,
+  ): Promise<BottlingOverviewDto> {
     const bottlingPayload: CreateHydrogenBottlingPayload = new CreateHydrogenBottlingPayload(
       dto.amount,
       dto.recipient,
@@ -83,7 +87,7 @@ export class BottlingService {
 
   async readGeneralInformation(id: string): Promise<GeneralInformationDto> {
     const generalInformation = await firstValueFrom(
-      this.processSvc.send(DigitalProductPassportPatterns.READ_GENERAL_INFORMATION, new ReadByIdPayload(id))
+      this.processSvc.send(DigitalProductPassportPatterns.READ_GENERAL_INFORMATION, new ReadByIdPayload(id)),
     );
     // TODO-MP: introduce mapper
     return generalInformation;
@@ -91,16 +95,16 @@ export class BottlingService {
 
   async readProofOfOrigin(id: string): Promise<SectionDto[]> {
     const proofOfOrigin = await firstValueFrom(
-      this.processSvc.send(DigitalProductPassportPatterns.BUILD_PROOF_OF_ORIGIN, new ReadByIdPayload(id))
+      this.processSvc.send(DigitalProductPassportPatterns.BUILD_PROOF_OF_ORIGIN, new ReadByIdPayload(id)),
     );
     // TODO-MP: introduce dto and mapper
     //return ProofOfOriginDto.fromEntity(proofOfOrigin);
-    return proofOfOrigin
+    return proofOfOrigin;
   }
 
   async readProofOfSustainability(id: string): Promise<ProofOfSustainabilityDto> {
     const proofOfSustainability = await firstValueFrom(
-      this.processSvc.send(DigitalProductPassportPatterns.BUILD_PROOF_OF_SUSTAINABILITY, new ReadByIdPayload(id))
+      this.processSvc.send(DigitalProductPassportPatterns.BUILD_PROOF_OF_SUSTAINABILITY, new ReadByIdPayload(id)),
     );
     // TODO-MP: introduce mapper
     //return ProofOfSustainabilityDto.fromEntity(proofOfSustainability);

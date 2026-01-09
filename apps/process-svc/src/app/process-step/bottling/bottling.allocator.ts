@@ -58,15 +58,16 @@ export class BottlingAllocator {
     hydrogenStorageUnitId: string,
   ): BottlingAllocation {
     const processStepsFromHydrogenStorageWithRequestedColor = processSteps.filter(
-      (ps) => ps.batch.qualityDetails.color === color
-    )
-
-    const { selectedProcessSteps, remainingAmount } = BottlingAllocator.selectProcessStepsForBottlingAndCalculateRemainingAmount(
-      processStepsFromHydrogenStorageWithRequestedColor,
-      amount,
-      hydrogenStorageUnitId,
-      color,
+      (ps) => ps.batch.qualityDetails.color === color,
     );
+
+    const { selectedProcessSteps, remainingAmount } =
+      BottlingAllocator.selectProcessStepsForBottlingAndCalculateRemainingAmount(
+        processStepsFromHydrogenStorageWithRequestedColor,
+        amount,
+        hydrogenStorageUnitId,
+        color,
+      );
 
     return BottlingAllocator.splitLastProcessStepIfNeeded(selectedProcessSteps, remainingAmount);
   }

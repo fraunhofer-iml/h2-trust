@@ -8,21 +8,16 @@
 
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  BrokerQueues,
-  CreateProductionsPayload,
-  ParsedFileBundles,
-  PowerAccessApprovalEntity,
-} from '@h2-trust/amqp';
+import { BrokerQueues, CreateProductionsPayload, ParsedFileBundles, PowerAccessApprovalEntity } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
+import { ProcessStepService } from '../process-step/process-step.service';
 import { AccountingPeriodMatchingService } from './accounting-period-matching.service';
 import { ProductionCreationService } from './production-creation.service';
 import { ProductionImportService } from './production-import.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
-import { ProcessStepService } from '../process-step/process-step.service';
 
 describe('ProductionController', () => {
   const DERIVED_HYDROGEN_COLOR = HydrogenColor.GREEN;
@@ -62,10 +57,18 @@ describe('ProductionController', () => {
         {
           provide: ProcessStepService,
           useValue: {
-            createPowerProductions: jest.fn().mockImplementation((data) => { return data }),
-            createWaterConsumptions: jest.fn().mockImplementation((data) => { return data }),
-            createHydrogenProductions: jest.fn().mockImplementation((data) => { return data }),
-            createManyProcessSteps: jest.fn().mockImplementation((data) => { return [data] }),
+            createPowerProductions: jest.fn().mockImplementation((data) => {
+              return data;
+            }),
+            createWaterConsumptions: jest.fn().mockImplementation((data) => {
+              return data;
+            }),
+            createHydrogenProductions: jest.fn().mockImplementation((data) => {
+              return data;
+            }),
+            createManyProcessSteps: jest.fn().mockImplementation((data) => {
+              return [data];
+            }),
           },
         },
         {

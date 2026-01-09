@@ -9,18 +9,13 @@
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
 import { CsvParserModule } from '@h2-trust/csv-parser';
+import { UserModule } from '../user/user.module';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
-import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [
-    CsvParserModule,
-    UserModule,
-    new Broker().getGeneralSvcBroker(),
-    new Broker().getProcessSvcBroker()
-  ],
+  imports: [CsvParserModule, UserModule, new Broker().getGeneralSvcBroker(), new Broker().getProcessSvcBroker()],
   controllers: [ProductionController],
   providers: [ProductionService],
 })
-export class ProductionModule { }
+export class ProductionModule {}

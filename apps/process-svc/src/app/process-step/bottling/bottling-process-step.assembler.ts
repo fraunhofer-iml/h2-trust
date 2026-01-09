@@ -11,10 +11,7 @@ import { BatchEntity, BrokerException, CreateHydrogenBottlingPayload, ProcessSte
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
 
 export class BottlingProcessStepAssembler {
-  static assemble(
-    payload: CreateHydrogenBottlingPayload,
-    batchesForBottle: BatchEntity[],
-  ): ProcessStepEntity {
+  static assemble(payload: CreateHydrogenBottlingPayload, batchesForBottle: BatchEntity[]): ProcessStepEntity {
     return {
       startedAt: payload.filledAt,
       endedAt: payload.filledAt,

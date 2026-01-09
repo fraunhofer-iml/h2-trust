@@ -40,11 +40,11 @@ export class UnitService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
   async readUnit(id: string): Promise<UnitDto> {
     const unit: BaseUnitEntity = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ, new ReadByIdPayload(id))
+      this.generalService.send(UnitMessagePatterns.READ, new ReadByIdPayload(id)),
     );
     return UnitService.mapEntityToDto(unit);
   }
@@ -122,9 +122,7 @@ export class UnitService {
       }
     }
 
-    const entity: BaseUnitEntity = await firstValueFrom(
-      this.generalService.send(messagePattern, payload)
-    );
+    const entity: BaseUnitEntity = await firstValueFrom(this.generalService.send(messagePattern, payload));
     return UnitService.mapEntityToDto(entity);
   }
 

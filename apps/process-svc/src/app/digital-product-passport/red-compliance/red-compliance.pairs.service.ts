@@ -118,7 +118,7 @@ export class RedCompliancePairingService {
 
     const powerUnitById = new Map<string, PowerProductionUnitEntity>();
     for (const unit of powerProductionUnitEntities) powerUnitById.set(unit.id, unit);
-    
+
     const hydrogenUnitById = new Map<string, HydrogenProductionUnitEntity>();
     for (const unit of hydrogenProductionUnitEntities) hydrogenUnitById.set(unit.id, unit);
 

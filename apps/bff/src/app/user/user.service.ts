@@ -14,12 +14,10 @@ import { UserDetailsDto } from '@h2-trust/api';
 
 @Injectable()
 export class UserService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) { }
+  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
 
   async readUserWithCompany(id: string): Promise<UserDetailsDto> {
-    const user = await firstValueFrom(
-      this.generalService.send(UserMessagePatterns.READ, new ReadByIdPayload(id))
-    );
+    const user = await firstValueFrom(this.generalService.send(UserMessagePatterns.READ, new ReadByIdPayload(id)));
     return UserDetailsDto.fromEntity(user);
   }
 }

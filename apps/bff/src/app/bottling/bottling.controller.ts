@@ -32,7 +32,7 @@ import { AuthenticatedUser, Public } from 'nest-keycloak-connect';
 
 @Controller('bottlings')
 export class BottlingController {
-  constructor(private readonly bottlingService: BottlingService) { }
+  constructor(private readonly bottlingService: BottlingService) {}
 
   @Post()
   @UseInterceptors(FilesInterceptor('files'))

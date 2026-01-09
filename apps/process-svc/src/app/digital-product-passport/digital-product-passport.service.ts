@@ -10,13 +10,19 @@ import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { BrokerQueues, ProvenanceEntity, ReadByIdPayload, UserMessagePatterns } from '@h2-trust/amqp';
-import { EmissionComputationResultDto, GeneralInformationDto, HydrogenComponentDto, ProofOfSustainabilityDto, SectionDto } from '@h2-trust/api';
+import {
+  EmissionComputationResultDto,
+  GeneralInformationDto,
+  HydrogenComponentDto,
+  ProofOfSustainabilityDto,
+  SectionDto,
+} from '@h2-trust/api';
+import { BottlingService } from '../process-step/bottling/bottling.service';
+import { ProcessStepService } from '../process-step/process-step.service';
 import { EmissionComputationService } from './proof-of-origin/emission-computation.service';
+import { ProofOfOriginService } from './proof-of-origin/proof-of-origin.service';
 import { ProvenanceService } from './provenance/provenance.service';
 import { RedComplianceService } from './red-compliance/red-compliance.service';
-import { ProcessStepService } from '../process-step/process-step.service';
-import { BottlingService } from '../process-step/bottling/bottling.service';
-import { ProofOfOriginService } from './proof-of-origin/proof-of-origin.service';
 
 @Injectable()
 export class DigitalProductPassportService {
@@ -27,8 +33,8 @@ export class DigitalProductPassportService {
     private readonly redComplianceService: RedComplianceService,
     private readonly processStepService: ProcessStepService,
     private readonly bottlingService: BottlingService,
-    private readonly proofOfOriginService: ProofOfOriginService
-  ) { }
+    private readonly proofOfOriginService: ProofOfOriginService,
+  ) {}
 
   async readGeneralInformation(payload: ReadByIdPayload): Promise<GeneralInformationDto> {
     const processStep = await this.processStepService.readProcessStep(payload);
@@ -36,8 +42,12 @@ export class DigitalProductPassportService {
     const generalInformation = GeneralInformationDto.fromEntityToDto(processStep);
 
     const [producerName, hydrogenComposition, redCompliance] = await Promise.all([
-      firstValueFrom(this.generalSvc.send(UserMessagePatterns.READ, new ReadByIdPayload(generalInformation.producer))).then((user) => user.company.name),
-      this.bottlingService.calculateHydrogenComposition(payload).then((hydrogenCompositions) => hydrogenCompositions.map(HydrogenComponentDto.of)),
+      firstValueFrom(
+        this.generalSvc.send(UserMessagePatterns.READ, new ReadByIdPayload(generalInformation.producer)),
+      ).then((user) => user.company.name),
+      this.bottlingService
+        .calculateHydrogenComposition(payload)
+        .then((hydrogenCompositions) => hydrogenCompositions.map(HydrogenComponentDto.of)),
       this.redComplianceService.determineRedCompliance(payload),
     ]);
 

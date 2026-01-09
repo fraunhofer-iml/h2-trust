@@ -13,7 +13,7 @@ import { UserService } from './user.service';
 
 @Controller()
 export class UserController {
-  constructor(private readonly service: UserService) { }
+  constructor(private readonly service: UserService) {}
 
   @MessagePattern(UserMessagePatterns.READ)
   async readUserWithCompany(payload: ReadByIdPayload): Promise<UserEntity> {

@@ -8,13 +8,13 @@
 
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
+import { ProvenanceModule } from '../provenance/provenance.module';
 import { RedCompliancePairingService } from './red-compliance.pairs.service';
 import { RedComplianceService } from './red-compliance.service';
-import { ProvenanceModule } from '../provenance/provenance.module';
 
 @Module({
   imports: [ProvenanceModule, new Broker().getGeneralSvcBroker()],
   providers: [RedCompliancePairingService, RedComplianceService],
   exports: [RedComplianceService],
 })
-export class RedComplianceModule { }
+export class RedComplianceModule {}

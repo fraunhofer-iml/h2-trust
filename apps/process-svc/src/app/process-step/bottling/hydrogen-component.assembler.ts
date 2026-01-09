@@ -24,10 +24,7 @@ export class HydrogenComponentAssembler {
       HydrogenComponentAssembler.createHydrogenComponentFromBatch,
     );
 
-    return HydrogenCompositionUtil.computeHydrogenComposition(
-      predecessorHydrogenComponents,
-      processStep.batch.amount,
-    );
+    return HydrogenCompositionUtil.computeHydrogenComposition(predecessorHydrogenComponents, processStep.batch.amount);
   }
 
   private static validateProcessStep(processStep: ProcessStepEntity): void {
@@ -36,10 +33,7 @@ export class HydrogenComponentAssembler {
       throw Error(errorMessage);
     }
 
-    if (
-      processStep.type != ProcessType.HYDROGEN_BOTTLING &&
-      processStep.type != ProcessType.HYDROGEN_TRANSPORTATION
-    ) {
+    if (processStep.type != ProcessType.HYDROGEN_BOTTLING && processStep.type != ProcessType.HYDROGEN_TRANSPORTATION) {
       const errorMessage = `ProcessStep ${processStep.id} should be type ${ProcessType.HYDROGEN_BOTTLING} or ${ProcessType.HYDROGEN_TRANSPORTATION}, but is ${processStep.type}.`;
       throw Error(errorMessage);
     }

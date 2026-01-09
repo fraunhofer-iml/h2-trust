@@ -7,17 +7,13 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import {
-  BatchEntity,
-  ProcessStepEntity,
-  ReadByIdPayload,
-} from '@h2-trust/amqp';
+import { BatchEntity, ProcessStepEntity, ReadByIdPayload } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { ProcessStepService } from '../../process-step/process-step.service';
 
 @Injectable()
 export class TraversalService {
-  constructor(private readonly processStepService: ProcessStepService) { }
+  constructor(private readonly processStepService: ProcessStepService) {}
 
   async fetchPowerProductionsFromHydrogenProductions(
     hydrogenProductions: ProcessStepEntity[],
@@ -121,7 +117,9 @@ export class TraversalService {
   }
 
   private async fetchProcessStepsOfBatches(batches: BatchEntity[]): Promise<ProcessStepEntity[]> {
-    const promises = batches.map(({ processStepId }) => this.processStepService.readProcessStep(new ReadByIdPayload(processStepId)));
+    const promises = batches.map(({ processStepId }) =>
+      this.processStepService.readProcessStep(new ReadByIdPayload(processStepId)),
+    );
     return Promise.all(promises);
   }
 

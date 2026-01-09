@@ -49,7 +49,7 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly userService: UserService,
     private readonly csvParser: CsvParserService,
-  ) { }
+  ) {}
 
   async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
     const payload = new CreateProductionsPayload(
@@ -76,7 +76,10 @@ export class ProductionService {
     const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
     const companyIdOfUser = userDetails.company.id;
 
-    const payload = new ReadProcessStepsByPredecessorTypesAndCompanyPayload([ProcessType.POWER_PRODUCTION], companyIdOfUser);
+    const payload = new ReadProcessStepsByPredecessorTypesAndCompanyPayload(
+      [ProcessType.POWER_PRODUCTION],
+      companyIdOfUser,
+    );
 
     const productions: ProcessStepEntity[] = await firstValueFrom(
       this.processSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_PREDECESSOR_TYPES_AND_COMPANY, payload),

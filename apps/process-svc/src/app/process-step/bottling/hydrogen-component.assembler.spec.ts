@@ -62,9 +62,7 @@ describe('HydrogenComponentAssembler', () => {
 
     const expectedErrorMessage = `ProcessStep ${bottlingProcessStep.id} should be type HYDROGEN_BOTTLING or HYDROGEN_TRANSPORTATION, but is ${bottlingProcessStep.type}.`;
 
-    expect(() => HydrogenComponentAssembler.assemble(bottlingProcessStep)).toThrow(
-      expectedErrorMessage,
-    );
+    expect(() => HydrogenComponentAssembler.assemble(bottlingProcessStep)).toThrow(expectedErrorMessage);
   });
 
   it('should not calculate hydrogen composition without a batch', () => {
@@ -72,9 +70,7 @@ describe('HydrogenComponentAssembler', () => {
 
     const expectedErrorMessage = `ProcessStep ${bottlingProcessStep.id} does not have a batch.`;
 
-    expect(() => HydrogenComponentAssembler.assemble(bottlingProcessStep)).toThrow(
-      expectedErrorMessage,
-    );
+    expect(() => HydrogenComponentAssembler.assemble(bottlingProcessStep)).toThrow(expectedErrorMessage);
   });
 
   it('should not calculate hydrogen composition without predecessors', () => {
@@ -82,9 +78,7 @@ describe('HydrogenComponentAssembler', () => {
 
     const expectedErrorMessage = `ProcessStep ${bottlingProcessStep.id} does not have predecessors.`;
 
-    expect(() => HydrogenComponentAssembler.assemble(bottlingProcessStep)).toThrow(
-      expectedErrorMessage,
-    );
+    expect(() => HydrogenComponentAssembler.assemble(bottlingProcessStep)).toThrow(expectedErrorMessage);
   });
 
   it('should not calculate hydrogen composition with an invalid predecessor type', () => {
@@ -105,8 +99,6 @@ describe('HydrogenComponentAssembler', () => {
 
     const expectedErrorMessage = `Predecessor batch ${bottlingProcessStep.batch.predecessors[0].id} should be type ${BatchType.HYDROGEN}, but is ${BatchType.POWER}.`;
 
-    expect(() => HydrogenComponentAssembler.assemble(bottlingProcessStep)).toThrow(
-      expectedErrorMessage,
-    );
+    expect(() => HydrogenComponentAssembler.assemble(bottlingProcessStep)).toThrow(expectedErrorMessage);
   });
 });

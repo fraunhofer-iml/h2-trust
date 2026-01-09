@@ -15,7 +15,7 @@ import { PowerAccessApprovalStatus } from '@h2-trust/domain';
 
 @Injectable()
 export class PowerAccessApprovalService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) { }
+  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
 
   async readByUserAndStatus(userId: string, status: PowerAccessApprovalStatus): Promise<PowerAccessApprovalDto[]> {
     const payload = new ReadPowerAccessApprovalsPayload(userId, status);

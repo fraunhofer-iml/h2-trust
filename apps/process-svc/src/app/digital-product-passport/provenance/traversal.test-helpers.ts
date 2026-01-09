@@ -10,8 +10,8 @@ import { jest } from '@jest/globals';
 import { Test } from '@nestjs/testing';
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
-import { TraversalService } from './traversal.service';
 import { ProcessStepService } from '../../process-step/process-step.service';
+import { TraversalService } from './traversal.service';
 
 export function createProcessStep(id: string, type: ProcessType, predecessorBatches: BatchEntity[]): ProcessStepEntity {
   return { id, type, batch: { predecessors: predecessorBatches } } as ProcessStepEntity;
@@ -30,10 +30,7 @@ export async function setupTraversalServiceTestingModule(): Promise<{
   };
 
   const moduleRef = await Test.createTestingModule({
-    providers: [
-      TraversalService,
-      { provide: ProcessStepService, useValue: processStepServiceMock },
-    ],
+    providers: [TraversalService, { provide: ProcessStepService, useValue: processStepServiceMock }],
   }).compile();
 
   const service = moduleRef.get(TraversalService);

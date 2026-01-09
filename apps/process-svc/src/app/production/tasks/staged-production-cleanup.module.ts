@@ -12,7 +12,7 @@ import { DatabaseModule } from '@h2-trust/database';
 import { StagedProductionCleanupService } from './staged-production-cleanup.service';
 
 @Module({
-    imports: [ScheduleModule.forRoot(), DatabaseModule],
-    providers: [StagedProductionCleanupService]
+  imports: [ScheduleModule.forRoot(), DatabaseModule],
+  providers: [StagedProductionCleanupService],
 })
-export class StagedProductionCleanupModule { }
+export class StagedProductionCleanupModule {}

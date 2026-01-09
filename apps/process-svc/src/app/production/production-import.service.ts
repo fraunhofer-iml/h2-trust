@@ -27,9 +27,9 @@ import {
 import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
 import { PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
+import { ProcessStepService } from '../process-step/process-step.service';
 import { AccountingPeriodMatchingService } from './accounting-period-matching.service';
 import { ProductionService } from './production.service';
-import { ProcessStepService } from '../process-step/process-step.service';
 
 @Injectable()
 export class ProductionImportService {
@@ -131,7 +131,9 @@ export class ProductionImportService {
       }
 
       // Step 2: Persist power and water
-      const persistedPowerAndWater: ProcessStepEntity[] = await this.processStepService.createManyProcessSteps(new CreateManyProcessStepsPayload([...power, ...water]));
+      const persistedPowerAndWater: ProcessStepEntity[] = await this.processStepService.createManyProcessSteps(
+        new CreateManyProcessStepsPayload([...power, ...water]),
+      );
 
       // Step 3: Split response back into power and water
       // We use chunk.length because there is a 1:1 relation between productions and process steps,
@@ -145,7 +147,9 @@ export class ProductionImportService {
       );
 
       // Step 5: Persist hydrogen
-      const persistedHydrogen: ProcessStepEntity[] = await this.processStepService.createManyProcessSteps(new CreateManyProcessStepsPayload(hydrogen));
+      const persistedHydrogen: ProcessStepEntity[] = await this.processStepService.createManyProcessSteps(
+        new CreateManyProcessStepsPayload(hydrogen),
+      );
 
       persistedProcessSteps.push(...persistedPowerAndWater, ...persistedHydrogen);
     }

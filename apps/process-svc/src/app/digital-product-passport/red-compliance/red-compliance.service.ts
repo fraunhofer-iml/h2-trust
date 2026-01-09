@@ -7,7 +7,9 @@
  */
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 import { ProvenanceEntity, ReadByIdPayload, RedComplianceEntity } from '@h2-trust/amqp';
+import { ProvenanceService } from '../provenance/provenance.service';
 import { MatchedProductionPair } from './matched-production-pair';
 import {
   areUnitsInSameBiddingZone,
@@ -16,15 +18,13 @@ import {
   meetsAdditionalityCriterion,
 } from './red-compliance.flags';
 import { RedCompliancePairingService } from './red-compliance.pairs.service';
-import { ProvenanceService } from '../provenance/provenance.service';
-import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class RedComplianceService {
   constructor(
     private readonly pairingService: RedCompliancePairingService,
     private readonly provenanceService: ProvenanceService,
-  ) { }
+  ) {}
 
   async determineRedCompliance(payload: ReadByIdPayload): Promise<RedComplianceEntity> {
     const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(payload);

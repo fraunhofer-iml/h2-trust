@@ -6,14 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { HttpException } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ReadByIdPayload } from '@h2-trust/amqp';
 import { RedComplianceDto } from '@h2-trust/api';
+import { ProvenanceService } from '../provenance/provenance.service';
 import { RedCompliancePairingService } from './red-compliance.pairs.service';
 import { RedComplianceService } from './red-compliance.service';
-import { ProvenanceService } from '../provenance/provenance.service';
-import { HttpException } from '@nestjs/common';
 
 describe('RedComplianceService', () => {
   let service: RedComplianceService;

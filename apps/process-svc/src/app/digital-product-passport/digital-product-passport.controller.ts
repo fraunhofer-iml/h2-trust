@@ -6,17 +6,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DigitalProductPassportPatterns, ReadByIdPayload } from '@h2-trust/amqp';
-import { GeneralInformationDto, ProofOfSustainabilityDto, SectionDto } from '@h2-trust/api';
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
+import { DigitalProductPassportPatterns, ReadByIdPayload } from '@h2-trust/amqp';
+import { GeneralInformationDto, ProofOfSustainabilityDto, SectionDto } from '@h2-trust/api';
 import { DigitalProductPassportService } from './digital-product-passport.service';
 
 @Controller()
 export class DigitalProductPassportController {
-  constructor(
-    private readonly digitalProductPassportService: DigitalProductPassportService,
-  ) { }
+  constructor(private readonly digitalProductPassportService: DigitalProductPassportService) {}
 
   @MessagePattern(DigitalProductPassportPatterns.READ_GENERAL_INFORMATION)
   async readGeneralInformation(payload: ReadByIdPayload): Promise<GeneralInformationDto> {

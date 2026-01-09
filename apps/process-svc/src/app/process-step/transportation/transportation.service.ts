@@ -16,15 +16,15 @@ export class TransportationService {
   constructor(
     private readonly batchRepository: BatchRepository,
     private readonly processStepRepository: ProcessStepRepository,
-  ) { }
+  ) {}
 
   async createHydrogenTransportationProcessStep(
-    payload: CreateHydrogenTransportationPayload
+    payload: CreateHydrogenTransportationPayload,
   ): Promise<ProcessStepEntity> {
     const transportationDetails: TransportationDetailsEntity = this.buildTransportationDetails(
       payload.transportMode,
       payload.distance,
-      payload.fuelType
+      payload.fuelType,
     );
 
     const transportation: ProcessStepEntity = {
@@ -35,14 +35,18 @@ export class TransportationService {
         type: BatchType.HYDROGEN,
         predecessors: [payload.predecessorBatch],
       },
-      transportationDetails
+      transportationDetails,
     };
 
     await this.batchRepository.setBatchesInactive([payload.predecessorBatch.id]);
     return this.processStepRepository.insertProcessStep(transportation);
   }
 
-  private buildTransportationDetails(transportMode: TransportMode, distance: number, fuelType: FuelType): TransportationDetailsEntity {
+  private buildTransportationDetails(
+    transportMode: TransportMode,
+    distance: number,
+    fuelType: FuelType,
+  ): TransportationDetailsEntity {
     let output: TransportationDetailsEntity;
 
     switch (transportMode) {
@@ -57,12 +61,7 @@ export class TransportationService {
           throw new HttpException(message, HttpStatus.BAD_REQUEST);
         }
 
-        output = new TransportationDetailsEntity(
-          undefined,
-          distance,
-          transportMode,
-          fuelType,
-        );
+        output = new TransportationDetailsEntity(undefined, distance, transportMode, fuelType);
         break;
       case TransportMode.PIPELINE:
         output = new TransportationDetailsEntity(undefined, 0, transportMode, undefined);

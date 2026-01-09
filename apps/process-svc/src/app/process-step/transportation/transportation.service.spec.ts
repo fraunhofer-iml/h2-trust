@@ -25,7 +25,9 @@ describe('TransportationService', () => {
     const givenFuelType = FuelType.DIESEL;
 
     // act & assert
-    expect(() => (service as any).buildTransportationDetails(givenTransportMode, givenDistance, givenFuelType)).toThrow(HttpException);
+    expect(() => (service as any).buildTransportationDetails(givenTransportMode, givenDistance, givenFuelType)).toThrow(
+      HttpException,
+    );
 
     try {
       (service as any).buildTransportationDetails(givenTransportMode, givenDistance, givenFuelType);
@@ -42,7 +44,9 @@ describe('TransportationService', () => {
     const givenFuelType: FuelType = undefined;
 
     // act & assert
-    expect(() => (service as any).buildTransportationDetails(givenTransportMode, givenDistance, givenFuelType)).toThrow(HttpException);
+    expect(() => (service as any).buildTransportationDetails(givenTransportMode, givenDistance, givenFuelType)).toThrow(
+      HttpException,
+    );
 
     try {
       (service as any).buildTransportationDetails(givenTransportMode, givenDistance, givenFuelType);
@@ -59,7 +63,11 @@ describe('TransportationService', () => {
     const givenFuelType = FuelType.DIESEL;
 
     // act
-    const result: TransportationDetailsEntity = (service as any).buildTransportationDetails(givenTransportMode, givenDistance, givenFuelType);
+    const result: TransportationDetailsEntity = (service as any).buildTransportationDetails(
+      givenTransportMode,
+      givenDistance,
+      givenFuelType,
+    );
 
     // assert
     expect(result).toBeInstanceOf(TransportationDetailsEntity);
