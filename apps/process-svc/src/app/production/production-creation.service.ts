@@ -28,7 +28,7 @@ export class ProductionCreationService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly processStepService: ProcessStepService,
-  ) { }
+  ) {}
 
   // TODO-MP: almost identical method exists in ProductionImportService - refactor to avoid code duplication
   async createAndPersistProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {

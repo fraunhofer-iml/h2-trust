@@ -24,7 +24,7 @@ export class RedComplianceService {
   constructor(
     private readonly redCompliancePairingService: RedCompliancePairingService,
     private readonly provenanceService: ProvenanceService,
-  ) { }
+  ) {}
 
   async determineRedCompliance(processStepId: string): Promise<RedComplianceEntity> {
     const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStepId);

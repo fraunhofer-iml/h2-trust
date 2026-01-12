@@ -13,10 +13,10 @@ import { ProcessStepService } from '../process-step.service';
 
 @Injectable()
 export class TransportationService {
-  constructor(private readonly processStepService: ProcessStepService) { }
+  constructor(private readonly processStepService: ProcessStepService) {}
 
   async createHydrogenTransportationProcessStep(
-    payload: CreateHydrogenTransportationPayload
+    payload: CreateHydrogenTransportationPayload,
   ): Promise<ProcessStepEntity> {
     const transportationDetails: TransportationDetailsEntity = this.buildTransportationDetails(
       payload.transportMode,
@@ -42,7 +42,7 @@ export class TransportationService {
   private buildTransportationDetails(
     transportMode: TransportMode,
     distance: number,
-    fuelType: FuelType
+    fuelType: FuelType,
   ): TransportationDetailsEntity {
     let output: TransportationDetailsEntity;
 

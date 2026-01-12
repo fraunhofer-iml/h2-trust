@@ -6,14 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepEntity } from '@h2-trust/amqp';
 import {
-  EmissionCalculationDto,
-  EmissionComputationResultDto,
-  EmissionDto,
-  EmissionForProcessStepDto,
-  EnumLabelMapper,
-} from '@h2-trust/api';
+  ProcessStepEntity,
+  ProofOfOriginEmissionEntity,
+  ProofOfSustainabilityEmissionCalculationEntity,
+  ProofOfSustainabilityEmissionComputationEntity,
+  ProofOfSustainabilityProcessStepEmissionEntity,
+} from '@h2-trust/amqp';
+import { EnumLabelMapper } from '@h2-trust/api';
 import {
   CalculationTopic,
   EnergySource,
@@ -30,7 +30,11 @@ import {
 } from '@h2-trust/domain';
 
 export class EmissionAssembler {
-  static assemblePowerSupply(powerProduction: ProcessStepEntity, energySource: EnergySource, hydrogenAmount: number): EmissionCalculationDto {
+  static assemblePowerSupply(
+    powerProduction: ProcessStepEntity,
+    energySource: EnergySource,
+    hydrogenAmount: number,
+  ): ProofOfSustainabilityEmissionCalculationEntity {
     if (powerProduction?.type !== ProcessType.POWER_PRODUCTION) {
       throw new Error(`Invalid process step type [${powerProduction?.type}] for power supply emission calculation`);
     }
@@ -52,10 +56,19 @@ export class EmissionAssembler {
     const unit = UNIT_G_CO2_PER_KG_H2;
     const calculationTopic = CalculationTopic.POWER_SUPPLY;
 
-    return new EmissionCalculationDto(label, basisOfCalculation, result, unit, calculationTopic);
+    return new ProofOfSustainabilityEmissionCalculationEntity(
+      label,
+      basisOfCalculation,
+      result,
+      unit,
+      calculationTopic,
+    );
   }
 
-  static assembleWaterSupply(waterSupply: ProcessStepEntity, hydrogenAmount: number): EmissionCalculationDto {
+  static assembleWaterSupply(
+    waterSupply: ProcessStepEntity,
+    hydrogenAmount: number,
+  ): ProofOfSustainabilityEmissionCalculationEntity {
     if (waterSupply?.type !== ProcessType.WATER_CONSUMPTION) {
       throw new Error(`Invalid process step type [${waterSupply?.type}] for water supply emission calculation`);
     }
@@ -77,10 +90,18 @@ export class EmissionAssembler {
     const unit = UNIT_G_CO2_PER_KG_H2;
     const calculationTopic = CalculationTopic.WATER_SUPPLY;
 
-    return new EmissionCalculationDto(label, basisOfCalculation, result, unit, calculationTopic);
+    return new ProofOfSustainabilityEmissionCalculationEntity(
+      label,
+      basisOfCalculation,
+      result,
+      unit,
+      calculationTopic,
+    );
   }
 
-  static assembleHydrogenStorage(hydrogenProduction: ProcessStepEntity): EmissionCalculationDto {
+  static assembleHydrogenStorage(
+    hydrogenProduction: ProcessStepEntity,
+  ): ProofOfSustainabilityEmissionCalculationEntity {
     if (hydrogenProduction?.type !== ProcessType.HYDROGEN_PRODUCTION) {
       throw new Error(
         `Invalid process step type [${hydrogenProduction?.type}] for hydrogen storage emission calculation`,
@@ -102,10 +123,18 @@ export class EmissionAssembler {
     const unit = UNIT_G_CO2_PER_KG_H2;
     const calculationTopic = CalculationTopic.HYDROGEN_STORAGE;
 
-    return new EmissionCalculationDto(label, basisOfCalculation, result, unit, calculationTopic);
+    return new ProofOfSustainabilityEmissionCalculationEntity(
+      label,
+      basisOfCalculation,
+      result,
+      unit,
+      calculationTopic,
+    );
   }
 
-  static assembleHydrogenBottling(_hydrogenBottling: ProcessStepEntity): EmissionCalculationDto {
+  static assembleHydrogenBottling(
+    _hydrogenBottling: ProcessStepEntity,
+  ): ProofOfSustainabilityEmissionCalculationEntity {
     if (_hydrogenBottling?.type !== ProcessType.HYDROGEN_BOTTLING) {
       throw new Error(
         `Invalid process step type [${_hydrogenBottling?.type}] for hydrogen bottling emission calculation`,
@@ -121,18 +150,26 @@ export class EmissionAssembler {
     const unit = UNIT_G_CO2_PER_KG_H2;
     const calculationTopic = CalculationTopic.HYDROGEN_BOTTLING;
 
-    return new EmissionCalculationDto(label, basisOfCalculation, result, unit, calculationTopic);
+    return new ProofOfSustainabilityEmissionCalculationEntity(
+      label,
+      basisOfCalculation,
+      result,
+      unit,
+      calculationTopic,
+    );
   }
 
-  static assembleHydrogenTransportation(processStep: ProcessStepEntity): EmissionCalculationDto {
-    if (processStep?.type !== ProcessType.HYDROGEN_TRANSPORTATION) {
+  static assembleHydrogenTransportation(
+    hydrogenTransportation: ProcessStepEntity,
+  ): ProofOfSustainabilityEmissionCalculationEntity {
+    if (hydrogenTransportation?.type !== ProcessType.HYDROGEN_TRANSPORTATION) {
       throw new Error(
-        `Invalid process step type [${processStep?.type}] for hydrogen transportation emission calculation`,
+        `Invalid process step type [${hydrogenTransportation?.type}] for hydrogen transportation emission calculation`,
       );
     }
 
-    const transportMode: string = processStep.transportationDetails?.transportMode;
-    let emissionCalculation: EmissionCalculationDto;
+    const transportMode: string = hydrogenTransportation.transportationDetails?.transportMode;
+    let emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity;
 
     switch (transportMode) {
       case TransportMode.PIPELINE:
@@ -140,19 +177,19 @@ export class EmissionAssembler {
         break;
       case TransportMode.TRAILER:
         emissionCalculation = this.assembleTrailer(
-          processStep.batch.amount,
-          processStep.transportationDetails.fuelType,
-          processStep.transportationDetails.distance,
+          hydrogenTransportation.batch.amount,
+          hydrogenTransportation.transportationDetails.fuelType,
+          hydrogenTransportation.transportationDetails.distance,
         );
         break;
       default:
-        throw new Error(`Unknown transport mode [${transportMode}] for process step [${processStep.id}]`);
+        throw new Error(`Unknown transport mode [${transportMode}] for process step [${hydrogenTransportation.id}]`);
     }
 
     return emissionCalculation;
   }
 
-  private static assemblePipeline(): EmissionCalculationDto {
+  private static assemblePipeline(): ProofOfSustainabilityEmissionCalculationEntity {
     const label = 'Emissions (Transportation with Pipeline)';
 
     const result = 0;
@@ -162,14 +199,20 @@ export class EmissionAssembler {
     const unit = UNIT_G_CO2_PER_KG_H2;
     const calculationTopic = CalculationTopic.HYDROGEN_TRANSPORTATION;
 
-    return new EmissionCalculationDto(label, basisOfCalculation, result, unit, calculationTopic);
+    return new ProofOfSustainabilityEmissionCalculationEntity(
+      label,
+      basisOfCalculation,
+      result,
+      unit,
+      calculationTopic,
+    );
   }
 
   private static assembleTrailer(
     amount: number,
     fuelType: FuelType,
     transportDistance: number,
-  ): EmissionCalculationDto {
+  ): ProofOfSustainabilityEmissionCalculationEntity {
     const label = 'Emissions (Transportation with Trailer)';
 
     const trailerParameter: TrailerParameter =
@@ -218,11 +261,19 @@ export class EmissionAssembler {
     const unit = UNIT_G_CO2_PER_KG_H2;
     const calculationTopic = CalculationTopic.HYDROGEN_TRANSPORTATION;
 
-    return new EmissionCalculationDto(label, basisOfCalculation, result, unit, calculationTopic);
+    return new ProofOfSustainabilityEmissionCalculationEntity(
+      label,
+      basisOfCalculation,
+      result,
+      unit,
+      calculationTopic,
+    );
   }
 
-  static assembleComputationResult(emissionCalculations: EmissionCalculationDto[]): EmissionComputationResultDto {
-    const applicationEmissions: EmissionForProcessStepDto[] =
+  static assembleComputationResult(
+    emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
+  ): ProofOfSustainabilityEmissionComputationEntity {
+    const applicationEmissions: ProofOfSustainabilityProcessStepEmissionEntity[] =
       EmissionAssembler.assembleApplicationEmissions(emissionCalculations);
 
     const hydrogenProductionEmissionAmount: number = applicationEmissions
@@ -232,18 +283,22 @@ export class EmissionAssembler {
     const applicationEmissionAmount: number = applicationEmissions.reduce((acc, emission) => acc + emission.amount, 0);
     const hydrogenTransportEmissionAmount: number = applicationEmissions.find((e) => e.name === 'eht')?.amount ?? 0;
 
-    const regulatoryEmissions: EmissionForProcessStepDto[] = EmissionAssembler.assembleRegulatoryEmissions(
-      hydrogenProductionEmissionAmount,
-      applicationEmissionAmount,
-      hydrogenTransportEmissionAmount,
-    );
-    const processStepEmissions: EmissionForProcessStepDto[] = [...applicationEmissions, ...regulatoryEmissions];
+    const regulatoryEmissions: ProofOfSustainabilityProcessStepEmissionEntity[] =
+      EmissionAssembler.assembleRegulatoryEmissions(
+        hydrogenProductionEmissionAmount,
+        applicationEmissionAmount,
+        hydrogenTransportEmissionAmount,
+      );
+    const processStepEmissions: ProofOfSustainabilityProcessStepEmissionEntity[] = [
+      ...applicationEmissions,
+      ...regulatoryEmissions,
+    ];
 
     const amountCO2PerMJH2: number = applicationEmissionAmount / GRAVIMETRIC_ENERGY_DENSITY_H2_MJ_PER_KG;
     const emissionReductionPercentage: number =
       (Math.max(FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ - amountCO2PerMJH2, 0) / FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ) * 100;
 
-    return new EmissionComputationResultDto(
+    return new ProofOfSustainabilityEmissionComputationEntity(
       emissionCalculations,
       processStepEmissions,
       amountCO2PerMJH2,
@@ -252,15 +307,15 @@ export class EmissionAssembler {
   }
 
   private static assembleApplicationEmissions(
-    emissionCalculations: EmissionCalculationDto[],
-  ): EmissionForProcessStepDto[] {
+    emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
+  ): ProofOfSustainabilityProcessStepEmissionEntity[] {
     const calculateTotalEmissionAmountByCalculationTopic = (calculationTopic: CalculationTopic): number =>
       emissionCalculations
         .filter((emissionCalculation) => emissionCalculation.calculationTopic === calculationTopic)
         .reduce((acc, emissionCalculation) => acc + (emissionCalculation.result ?? 0), 0);
 
     const powerSupplyEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(CalculationTopic.POWER_SUPPLY);
-    const powerSupplyEmission = new EmissionForProcessStepDto(
+    const powerSupplyEmission = new ProofOfSustainabilityProcessStepEmissionEntity(
       powerSupplyEmissionAmount,
       'eps',
       'Power Supply',
@@ -268,7 +323,7 @@ export class EmissionAssembler {
     );
 
     const waterSupplyEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(CalculationTopic.WATER_SUPPLY);
-    const waterSupplyEmission = new EmissionForProcessStepDto(
+    const waterSupplyEmission = new ProofOfSustainabilityProcessStepEmissionEntity(
       waterSupplyEmissionAmount,
       'ews',
       'Water Supply',
@@ -278,7 +333,7 @@ export class EmissionAssembler {
     const hydrogenStorageEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(
       CalculationTopic.HYDROGEN_STORAGE,
     );
-    const hydrogenStorageEmission = new EmissionForProcessStepDto(
+    const hydrogenStorageEmission = new ProofOfSustainabilityProcessStepEmissionEntity(
       hydrogenStorageEmissionAmount,
       'ehs',
       'Hydrogen Storage',
@@ -288,7 +343,7 @@ export class EmissionAssembler {
     const hydrogenBottlingEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(
       CalculationTopic.HYDROGEN_BOTTLING,
     );
-    const hydrogenBottlingEmission = new EmissionForProcessStepDto(
+    const hydrogenBottlingEmission = new ProofOfSustainabilityProcessStepEmissionEntity(
       hydrogenBottlingEmissionAmount,
       'ehb',
       'Hydrogen Bottling',
@@ -298,7 +353,7 @@ export class EmissionAssembler {
     const hydrogenTransportationEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(
       CalculationTopic.HYDROGEN_TRANSPORTATION,
     );
-    const hydrogenTransportationEmission = new EmissionForProcessStepDto(
+    const hydrogenTransportationEmission = new ProofOfSustainabilityProcessStepEmissionEntity(
       hydrogenTransportationEmissionAmount,
       'eht',
       'Hydrogen Transportation',
@@ -318,17 +373,22 @@ export class EmissionAssembler {
     hydrogenProductionEmissionAmount: number,
     applicationEmissionAmount: number,
     hydrogenTransportEmissionAmount: number,
-  ): EmissionForProcessStepDto[] {
-    const ei = new EmissionForProcessStepDto(hydrogenProductionEmissionAmount, 'ei', 'Supply of Inputs', 'REGULATORY');
+  ): ProofOfSustainabilityProcessStepEmissionEntity[] {
+    const ei = new ProofOfSustainabilityProcessStepEmissionEntity(
+      hydrogenProductionEmissionAmount,
+      'ei',
+      'Supply of Inputs',
+      'REGULATORY',
+    );
 
-    const ep = new EmissionForProcessStepDto(
+    const ep = new ProofOfSustainabilityProcessStepEmissionEntity(
       applicationEmissionAmount - hydrogenProductionEmissionAmount - hydrogenTransportEmissionAmount,
       'ep',
       'Processing',
       'REGULATORY',
     );
 
-    const etd = new EmissionForProcessStepDto(
+    const etd = new ProofOfSustainabilityProcessStepEmissionEntity(
       hydrogenTransportEmissionAmount,
       'etd',
       'Transport and Distribution',
@@ -338,9 +398,12 @@ export class EmissionAssembler {
     return [ei, ep, etd];
   }
 
-  static assembleEmissionDto(calc: EmissionCalculationDto, hydrogenMassKg: number): EmissionDto {
+  static assembleEmissionDto(
+    calc: ProofOfSustainabilityEmissionCalculationEntity,
+    hydrogenMassKg: number,
+  ): ProofOfOriginEmissionEntity {
     const amountCO2PerKgH2 = calc?.result ?? 0;
     const amountCO2 = amountCO2PerKgH2 * hydrogenMassKg;
-    return new EmissionDto(amountCO2, amountCO2PerKgH2, calc?.basisOfCalculation ?? []);
+    return new ProofOfOriginEmissionEntity(amountCO2, amountCO2PerKgH2, calc?.basisOfCalculation ?? []);
   }
 }

@@ -6,6 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import {
+  ProofOfSustainabilityEmissionCalculationEntity,
+  ProofOfSustainabilityEntity,
+  ProofOfSustainabilityProcessStepEmissionEntity,
+} from '@h2-trust/amqp';
 import { EmissionCalculationDto } from './emission-calculation.dto';
 import { EmissionForProcessStepDto } from './process-step-emission.dto';
 
@@ -28,5 +33,41 @@ export class ProofOfSustainabilityDto {
     this.emissionReductionPercentage = emissionReductionPercentage;
     this.calculations = calculations;
     this.processStepEmissions = processStepEmissions;
+  }
+
+  static fromEntity(entity: ProofOfSustainabilityEntity): ProofOfSustainabilityDto {
+    const calculations = (entity.calculations ?? []).map(this.toEmissionCalculationDto);
+    const emissions = (entity.processStepEmissions ?? []).map(this.toProcessStepEmissionDto);
+
+    return new ProofOfSustainabilityDto(
+      entity.batchId,
+      entity.amountCO2PerMJH2,
+      entity.emissionReductionPercentage,
+      calculations,
+      emissions,
+    );
+  }
+
+  private static toEmissionCalculationDto(
+    calc: ProofOfSustainabilityEmissionCalculationEntity,
+  ): EmissionCalculationDto {
+    return new EmissionCalculationDto(
+      calc.name,
+      calc.basisOfCalculation,
+      calc.result,
+      calc.unit,
+      calc.calculationTopic,
+    );
+  }
+
+  private static toProcessStepEmissionDto(
+    emission: ProofOfSustainabilityProcessStepEmissionEntity,
+  ): EmissionForProcessStepDto {
+    return new EmissionForProcessStepDto(
+      emission.amount,
+      emission.name,
+      emission.description,
+      emission.processStepType,
+    );
   }
 }

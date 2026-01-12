@@ -24,7 +24,7 @@ export class ProcessStepService {
     private readonly configurationService: ConfigurationService,
     private readonly batchRepository: BatchRepository,
     private readonly processStepRepository: ProcessStepRepository,
-  ) { }
+  ) {}
 
   async createProcessStep(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
     return this.processStepRepository.insertProcessStep(processStep);
@@ -55,7 +55,8 @@ export class ProcessStepService {
       throw new Error(errorMessage);
     }
 
-    const predecessorProcessStep: ProcessStepEntity = await this.processStepRepository.findProcessStep(predecessorProcessStepId);
+    const predecessorProcessStep: ProcessStepEntity =
+      await this.processStepRepository.findProcessStep(predecessorProcessStepId);
 
     if (predecessorProcessStep.type !== ProcessType.HYDROGEN_BOTTLING) {
       const errorMessage = `Expected process type of predecessor to be ${ProcessType.HYDROGEN_BOTTLING}, but got ${predecessorProcessStep.type}.`;

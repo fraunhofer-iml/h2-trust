@@ -14,14 +14,18 @@ import {
   PowerProductionTypeEntity,
   PowerProductionUnitEntity,
   ProcessStepEntity,
+  ProofOfOriginBatchEntity,
+  ProofOfOriginClassificationEntity,
+  ProofOfOriginEmissionEntity,
+  ProofOfOriginPowerBatchEntity,
+  ProofOfSustainabilityEmissionCalculationEntity,
   ReadByIdPayload,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
-import { BatchDto, ClassificationDto, EmissionCalculationDto, EmissionDto, PowerBatchDto } from '@h2-trust/api';
 import { BatchAssembler } from './batch.assembler';
 import { ClassificationAssembler } from './classification.assembler';
-import { EmissionService } from './emission.service';
 import { EmissionAssembler } from './emission.assembler';
+import { EmissionService } from './emission.service';
 
 @Injectable()
 export class PowerSupplyClassificationService {
@@ -33,7 +37,7 @@ export class PowerSupplyClassificationService {
   async buildPowerSupplyClassifications(
     powerProductions: ProcessStepEntity[],
     hydrogenAmount: number,
-  ): Promise<ClassificationDto[]> {
+  ): Promise<ProofOfOriginClassificationEntity[]> {
     if (!powerProductions?.length) {
       return [];
     }
@@ -41,7 +45,7 @@ export class PowerSupplyClassificationService {
     const energySources = await this.fetchEnergySources();
     const powerProductionsWithUnits =
       await this.fetchPowerProductionProcessStepsWithPowerProductionUnits(powerProductions);
-    const classifications: ClassificationDto[] = [];
+    const classifications: ProofOfOriginClassificationEntity[] = [];
 
     for (const energySource of energySources) {
       const powerProductionsWithUnitsByEnergySource = powerProductionsWithUnits.filter(
@@ -49,17 +53,17 @@ export class PowerSupplyClassificationService {
       );
 
       if (powerProductionsWithUnitsByEnergySource.length > 0) {
-        const productionPowerBatches: BatchDto[] = await Promise.all(
+        const productionPowerBatches: ProofOfOriginBatchEntity[] = await Promise.all(
           powerProductionsWithUnitsByEnergySource.map(async ([powerProduction]) => {
-            const [powerSupplyEmission]: EmissionCalculationDto[] =
+            const [powerSupplyEmission]: ProofOfSustainabilityEmissionCalculationEntity[] =
               await this.emissionService.computePowerSupplyEmissions([powerProduction], hydrogenAmount);
 
-            const emission: EmissionDto = EmissionAssembler.assembleEmissionDto(
+            const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionDto(
               powerSupplyEmission,
               hydrogenAmount,
             );
 
-            const batch: PowerBatchDto = BatchAssembler.assemblePowerSupply(
+            const batch: ProofOfOriginPowerBatchEntity = BatchAssembler.assemblePowerSupply(
               powerProduction,
               energySource,
               emission,
@@ -69,7 +73,7 @@ export class PowerSupplyClassificationService {
           }),
         );
 
-        const classification: ClassificationDto = ClassificationAssembler.assemblePower(
+        const classification: ProofOfOriginClassificationEntity = ClassificationAssembler.assemblePower(
           energySource,
           productionPowerBatches,
         );

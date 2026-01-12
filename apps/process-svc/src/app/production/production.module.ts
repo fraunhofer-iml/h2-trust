@@ -27,4 +27,4 @@ import { StagedProductionCleanupModule } from './tasks/staged-production-cleanup
   controllers: [ProductionController],
   providers: [ProductionCreationService, ProductionImportService],
 })
-export class ProductionModule { }
+export class ProductionModule {}

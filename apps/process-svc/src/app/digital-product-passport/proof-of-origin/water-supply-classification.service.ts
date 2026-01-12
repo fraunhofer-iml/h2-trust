@@ -7,8 +7,13 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { ProcessStepEntity } from '@h2-trust/amqp';
-import { ClassificationDto, EmissionCalculationDto, EmissionDto, WaterBatchDto } from '@h2-trust/api';
+import {
+  ProcessStepEntity,
+  ProofOfOriginClassificationEntity,
+  ProofOfOriginEmissionEntity,
+  ProofOfOriginWaterBatchEntity,
+  ProofOfSustainabilityEmissionCalculationEntity,
+} from '@h2-trust/amqp';
 import { BatchType, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
 import { BatchAssembler } from './batch.assembler';
 import { ClassificationAssembler } from './classification.assembler';
@@ -16,24 +21,27 @@ import { EmissionAssembler } from './emission.assembler';
 
 @Injectable()
 export class WaterSupplyClassificationService {
-  buildWaterSupplyClassification(waterSupplies: ProcessStepEntity[], hydrogenAmount: number): ClassificationDto {
+  buildWaterSupplyClassification(
+    waterSupplies: ProcessStepEntity[],
+    hydrogenAmount: number,
+  ): ProofOfOriginClassificationEntity {
     if (!waterSupplies?.length) {
       const message = 'No process steps of type water supply found.';
       throw new Error(message);
     }
 
-    const waterBatches: WaterBatchDto[] = waterSupplies.map((waterSupply) => {
-      const emissionCalculation: EmissionCalculationDto = EmissionAssembler.assembleWaterSupply(
+    const waterBatches: ProofOfOriginWaterBatchEntity[] = waterSupplies.map((waterSupply) => {
+      const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity = EmissionAssembler.assembleWaterSupply(
         waterSupply,
         hydrogenAmount,
       );
 
-      const emission: EmissionDto = EmissionAssembler.assembleEmissionDto(
+      const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionDto(
         emissionCalculation,
         hydrogenAmount,
       );
 
-      const batch: WaterBatchDto = BatchAssembler.assembleWaterSupply(waterSupply, emission);
+      const batch: ProofOfOriginWaterBatchEntity = BatchAssembler.assembleWaterSupply(waterSupply, emission);
 
       return batch;
     });

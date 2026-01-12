@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepEntity } from '@h2-trust/amqp';
+import { DigitalProductPassportGeneralInformationEntity } from '@h2-trust/amqp';
 import { FileInfoDto } from '../file/file-info.dto';
 import { BottlingOverviewDto } from './bottling-overview.dto';
 import { HydrogenComponentDto } from './hydrogen-component.dto';
@@ -38,18 +38,30 @@ export class GeneralInformationDto extends BottlingOverviewDto {
     this.redCompliance = redCompliance;
   }
 
-  static fromEntityToDto(processStep: ProcessStepEntity): GeneralInformationDto {
-    return <GeneralInformationDto>{
-      id: processStep.id,
-      filledAt: processStep.endedAt,
-      owner: processStep.batch?.owner?.name,
-      filledAmount: processStep.batch?.amount,
-      color: processStep.batch?.qualityDetails?.color,
-      producer: processStep.recordedBy?.id,
-      product: 'Hydrogen',
-      attachedFiles:
-        processStep.documents?.map((document) => new FileInfoDto(document.description, document.location)) || [],
-      redCompliance: new RedComplianceDto(true, true, false, true),
-    };
+  static toGeneralInformationDto(entity: DigitalProductPassportGeneralInformationEntity): GeneralInformationDto {
+    const hydrogenComposition = (entity.hydrogenComposition ?? []).map(HydrogenComponentDto.of);
+    const attachedFiles = (entity.attachedFiles ?? []).map(
+      (document) => new FileInfoDto(document.description, document.location),
+    );
+    const redCompliance = entity.redCompliance
+      ? new RedComplianceDto(
+          entity.redCompliance.isGeoCorrelationValid,
+          entity.redCompliance.isTimeCorrelationValid,
+          entity.redCompliance.isAdditionalityFulfilled,
+          entity.redCompliance.financialSupportReceived,
+        )
+      : new RedComplianceDto(false, false, false, false);
+
+    return new GeneralInformationDto(
+      entity.id,
+      entity.filledAt,
+      entity.owner ?? '',
+      entity.filledAmount ?? 0,
+      entity.color ?? '',
+      entity.producer ?? '',
+      hydrogenComposition,
+      attachedFiles,
+      redCompliance,
+    );
   }
 }

@@ -13,11 +13,12 @@ import {
   BrokerQueues,
   PowerProductionUnitEntity,
   ProcessStepEntity,
+  ProofOfSustainabilityEmissionCalculationEntity,
+  ProofOfSustainabilityEmissionComputationEntity,
   ProvenanceEntity,
   ReadByIdsPayload,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
-import { EmissionCalculationDto, EmissionComputationResultDto } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
 import { EmissionAssembler } from './emission.assembler';
 
@@ -25,7 +26,9 @@ import { EmissionAssembler } from './emission.assembler';
 export class EmissionService {
   constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) {}
 
-  async computeProvenanceEmissions(provenance: ProvenanceEntity): Promise<EmissionComputationResultDto> {
+  async computeProvenanceEmissions(
+    provenance: ProvenanceEntity,
+  ): Promise<ProofOfSustainabilityEmissionComputationEntity> {
     if (!provenance) {
       throw new Error('Provenance is undefined.');
     }
@@ -34,10 +37,10 @@ export class EmissionService {
       throw new Error('Provenance is missing hydrogen bottling process step.');
     }
 
-    const emissionCalculations: EmissionCalculationDto[] = [];
+    const emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[] = [];
 
     if (provenance.powerProductions) {
-      const powerProductions: EmissionCalculationDto[] = await this.computePowerSupplyEmissions(
+      const powerProductions: ProofOfSustainabilityEmissionCalculationEntity[] = await this.computePowerSupplyEmissions(
         provenance.powerProductions,
         provenance.hydrogenBottling.batch.amount,
       );
@@ -45,31 +48,28 @@ export class EmissionService {
     }
 
     if (provenance.waterConsumptions) {
-      const waterConsumptions: EmissionCalculationDto[] = provenance.waterConsumptions.map((waterConsumption) =>
-        EmissionAssembler.assembleWaterSupply(
-          waterConsumption,
-          provenance.hydrogenBottling.batch.amount,
-        ),
+      const waterConsumptions: ProofOfSustainabilityEmissionCalculationEntity[] = provenance.waterConsumptions.map(
+        (waterConsumption) =>
+          EmissionAssembler.assembleWaterSupply(waterConsumption, provenance.hydrogenBottling.batch.amount),
       );
       emissionCalculations.push(...waterConsumptions);
     }
 
     if (provenance.hydrogenProductions) {
-      const hydrogenStorages: EmissionCalculationDto[] = provenance.hydrogenProductions.map((hydrogenProduction) =>
-        EmissionAssembler.assembleHydrogenStorage(hydrogenProduction),
+      const hydrogenStorages: ProofOfSustainabilityEmissionCalculationEntity[] = provenance.hydrogenProductions.map(
+        (hydrogenProduction) => EmissionAssembler.assembleHydrogenStorage(hydrogenProduction),
       );
       emissionCalculations.push(...hydrogenStorages);
     }
 
     if (provenance.hydrogenBottling) {
-      const hydrogenBottling: EmissionCalculationDto = EmissionAssembler.assembleHydrogenBottling(
-        provenance.hydrogenBottling,
-      );
+      const hydrogenBottling: ProofOfSustainabilityEmissionCalculationEntity =
+        EmissionAssembler.assembleHydrogenBottling(provenance.hydrogenBottling);
       emissionCalculations.push(hydrogenBottling);
     }
 
     if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION) {
-      const hydrogenTransportation: EmissionCalculationDto =
+      const hydrogenTransportation: ProofOfSustainabilityEmissionCalculationEntity =
         EmissionAssembler.assembleHydrogenTransportation(provenance.root);
       emissionCalculations.push(hydrogenTransportation);
     }
@@ -80,7 +80,7 @@ export class EmissionService {
   async computePowerSupplyEmissions(
     powerProductions: ProcessStepEntity[],
     hydrogenAmount: number,
-  ): Promise<EmissionCalculationDto[]> {
+  ): Promise<ProofOfSustainabilityEmissionCalculationEntity[]> {
     if (!powerProductions.length) {
       return [];
     }
@@ -100,11 +100,7 @@ export class EmissionService {
 
     return powerProductions.map((powerProduction) => {
       const unit = unitsById.get(powerProduction.executedBy.id)!;
-      return EmissionAssembler.assemblePowerSupply(
-        powerProduction,
-        unit.type.energySource,
-        hydrogenAmount,
-      );
+      return EmissionAssembler.assemblePowerSupply(powerProduction, unit.type.energySource, hydrogenAmount);
     });
   }
 }

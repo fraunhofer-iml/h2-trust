@@ -9,14 +9,17 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BrokerQueues, ProvenanceEntity, ReadByIdPayload, UserMessagePatterns } from '@h2-trust/amqp';
 import {
-  EmissionComputationResultDto,
-  GeneralInformationDto,
-  HydrogenComponentDto,
-  ProofOfSustainabilityDto,
-  SectionDto,
-} from '@h2-trust/api';
+  BrokerQueues,
+  DigitalProductPassportGeneralInformationEntity,
+  DocumentEntity,
+  ProofOfOriginSectionEntity,
+  ProofOfSustainabilityEmissionComputationEntity,
+  ProofOfSustainabilityEntity,
+  ProvenanceEntity,
+  ReadByIdPayload,
+  UserMessagePatterns,
+} from '@h2-trust/amqp';
 import { BottlingService } from '../process-step/bottling/bottling.service';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { EmissionService } from './proof-of-origin/emission.service';
@@ -36,40 +39,43 @@ export class DigitalProductPassportService {
     private readonly proofOfOriginService: ProofOfOriginService,
   ) {}
 
-  async readGeneralInformation(processStepId: string): Promise<GeneralInformationDto> {
+  async readGeneralInformation(processStepId: string): Promise<DigitalProductPassportGeneralInformationEntity> {
     const processStep = await this.processStepService.readProcessStep(processStepId);
-
-    const generalInformation = GeneralInformationDto.fromEntityToDto(processStep);
 
     const [producerName, hydrogenComposition, redCompliance] = await Promise.all([
       firstValueFrom(
-        this.generalSvc.send(UserMessagePatterns.READ, new ReadByIdPayload(generalInformation.producer)),
+        this.generalSvc.send(UserMessagePatterns.READ, new ReadByIdPayload(processStep.recordedBy?.id)),
       ).then((user) => user.company.name),
-      this.bottlingService
-        .calculateHydrogenComposition(processStep)
-        .then((hydrogenCompositions) => hydrogenCompositions.map(HydrogenComponentDto.of)),
+      this.bottlingService.calculateHydrogenComposition(processStep),
       this.redComplianceService.determineRedCompliance(processStepId),
     ]);
 
-    return {
-      ...generalInformation,
-      producer: producerName,
+    const attachedFiles: DocumentEntity[] = processStep.documents ?? [];
+
+    return new DigitalProductPassportGeneralInformationEntity(
+      processStep.id,
+      processStep.endedAt,
+      processStep.batch?.owner?.name,
+      processStep.batch?.amount,
+      processStep.batch?.qualityDetails?.color,
+      producerName,
       hydrogenComposition,
+      attachedFiles,
       redCompliance,
-    };
+    );
   }
 
-  async readProofOfOrigin(processStepId: string): Promise<SectionDto[]> {
+  async readProofOfOrigin(processStepId: string): Promise<ProofOfOriginSectionEntity[]> {
     return this.proofOfOriginService.readProofOfOrigin(processStepId);
   }
 
-  async readProofOfSustainability(processStepId: string): Promise<ProofOfSustainabilityDto> {
+  async readProofOfSustainability(processStepId: string): Promise<ProofOfSustainabilityEntity> {
     const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStepId);
 
-    const provenanceEmission: EmissionComputationResultDto =
+    const provenanceEmission: ProofOfSustainabilityEmissionComputationEntity =
       await this.emissionService.computeProvenanceEmissions(provenance);
 
-    return new ProofOfSustainabilityDto(
+    return new ProofOfSustainabilityEntity(
       provenance.root.id,
       provenanceEmission.amountCO2PerMJH2,
       provenanceEmission.emissionReductionPercentage,

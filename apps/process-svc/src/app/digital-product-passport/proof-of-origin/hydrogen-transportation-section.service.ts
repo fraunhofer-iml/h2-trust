@@ -7,8 +7,14 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/amqp';
-import { EmissionCalculationDto, EmissionDto, HydrogenBatchDto, SectionDto } from '@h2-trust/api';
+import {
+  HydrogenComponentEntity,
+  ProcessStepEntity,
+  ProofOfOriginEmissionEntity,
+  ProofOfOriginHydrogenBatchEntity,
+  ProofOfOriginSectionEntity,
+  ProofOfSustainabilityEmissionCalculationEntity,
+} from '@h2-trust/amqp';
 import { ProofOfOrigin } from '@h2-trust/domain';
 import { BottlingService } from '../../process-step/bottling/bottling.service';
 import { BatchAssembler } from './batch.assembler';
@@ -16,29 +22,30 @@ import { EmissionAssembler } from './emission.assembler';
 
 @Injectable()
 export class HydrogenTransportationSectionService {
-  constructor(private readonly bottlingService: BottlingService) { }
+  constructor(private readonly bottlingService: BottlingService) {}
 
   async buildSection(
     hydrogenTransportation: ProcessStepEntity,
     hydrogenBottling: ProcessStepEntity,
-  ): Promise<SectionDto> {
-    const hydrogenCompositions: HydrogenComponentEntity[] = await this.bottlingService.calculateHydrogenComposition(hydrogenBottling);
+  ): Promise<ProofOfOriginSectionEntity> {
+    const hydrogenCompositions: HydrogenComponentEntity[] =
+      await this.bottlingService.calculateHydrogenComposition(hydrogenBottling);
 
-    const emissionCalculation: EmissionCalculationDto =
+    const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
       EmissionAssembler.assembleHydrogenTransportation(hydrogenTransportation);
     const hydrogenKgEquivalent: number = hydrogenTransportation.batch.amount;
 
-    const emission: EmissionDto = EmissionAssembler.assembleEmissionDto(
+    const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionDto(
       emissionCalculation,
       hydrogenKgEquivalent,
     );
 
-    const batch: HydrogenBatchDto = BatchAssembler.assembleHydrogenTransportation(
+    const batch: ProofOfOriginHydrogenBatchEntity = BatchAssembler.assembleHydrogenTransportation(
       hydrogenTransportation,
       hydrogenCompositions,
       emission,
     );
 
-    return new SectionDto(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION, [batch], []);
+    return new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION, [batch], []);
   }
 }

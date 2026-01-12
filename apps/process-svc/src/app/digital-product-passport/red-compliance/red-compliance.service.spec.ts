@@ -9,8 +9,7 @@
 import { HttpException } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ReadByIdPayload } from '@h2-trust/amqp';
-import { RedComplianceDto } from '@h2-trust/api';
+import { ReadByIdPayload, RedComplianceEntity } from '@h2-trust/amqp';
 import { ProvenanceService } from '../provenance/provenance.service';
 import { RedCompliancePairingService } from './red-compliance.pairs.service';
 import { RedComplianceService } from './red-compliance.service';
@@ -82,7 +81,7 @@ describe('RedComplianceService', () => {
     (pairingService.buildMatchedPairs as jest.Mock).mockResolvedValue(pairs);
 
     const result = await service.determineRedCompliance(new ReadByIdPayload('root-ps'));
-    expect(result).toEqual(new RedComplianceDto(true, true, true, true));
+    expect(result).toEqual(new RedComplianceEntity(true, true, true, true));
   });
 
   it('returns all false when the first pair violates all rules', async () => {
@@ -112,7 +111,7 @@ describe('RedComplianceService', () => {
 
     (pairingService.buildMatchedPairs as jest.Mock).mockResolvedValue(pairs);
     const result = await service.determineRedCompliance(new ReadByIdPayload('root-ps'));
-    expect(result).toEqual(new RedComplianceDto(false, false, false, false));
+    expect(result).toEqual(new RedComplianceEntity(false, false, false, false));
   });
 
   it('throws error when a pair is missing production units after enrichment', async () => {

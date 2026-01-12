@@ -6,16 +6,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Util } from '@h2-trust/amqp';
-import { BatchDto, ClassificationDto, ClassificationType } from '@h2-trust/api';
+import { ProofOfOriginBatchEntity, ProofOfOriginClassificationEntity, Util } from '@h2-trust/amqp';
 import { BatchType, MeasurementUnit } from '@h2-trust/domain';
 
 export class ClassificationAssembler {
   static assemblePower(
     classificationName: string,
-    batches?: BatchDto[],
-    nestedClassifications?: ClassificationDto[],
-  ): ClassificationDto {
+    batches?: ProofOfOriginBatchEntity[],
+    nestedClassifications?: ProofOfOriginClassificationEntity[],
+  ): ProofOfOriginClassificationEntity {
     return this.assembleClassification(
       classificationName,
       MeasurementUnit.POWER,
@@ -27,9 +26,9 @@ export class ClassificationAssembler {
 
   static assembleHydrogen(
     classificationName: string,
-    batches?: BatchDto[],
-    nestedClassifications?: ClassificationDto[],
-  ): ClassificationDto {
+    batches?: ProofOfOriginBatchEntity[],
+    nestedClassifications?: ProofOfOriginClassificationEntity[],
+  ): ProofOfOriginClassificationEntity {
     return this.assembleClassification(
       classificationName,
       MeasurementUnit.HYDROGEN,
@@ -42,25 +41,24 @@ export class ClassificationAssembler {
   static assembleClassification(
     classificationName: string,
     measurementUnit: MeasurementUnit,
-    classificationType: ClassificationType,
-    batches: BatchDto[] = [],
-    nestedClassifications: ClassificationDto[] = [],
-  ): ClassificationDto {
-    return new ClassificationDto(
+    classificationType: BatchType,
+    batches: ProofOfOriginBatchEntity[] = [],
+    nestedClassifications: ProofOfOriginClassificationEntity[] = [],
+  ): ProofOfOriginClassificationEntity {
+    return new ProofOfOriginClassificationEntity(
       classificationName,
       this.calculateEmission(batches, nestedClassifications),
       this.calculateAmount(batches, nestedClassifications),
-      null, // TBA
-      batches,
-      nestedClassifications,
       measurementUnit,
       classificationType,
+      batches,
+      nestedClassifications,
     );
   }
 
   private static calculateEmission(
-    batches: BatchDto[],
-    nestedClassifications: ClassificationDto[],
+    batches: ProofOfOriginBatchEntity[],
+    nestedClassifications: ProofOfOriginClassificationEntity[],
   ): number {
     const batchEmissionSum = (batches || []).map((b) => b.emission?.amountCO2PerKgH2 ?? 0).reduce((a, b) => a + b, 0);
 
@@ -72,8 +70,8 @@ export class ClassificationAssembler {
   }
 
   private static calculateAmount(
-    batches: BatchDto[],
-    nestedClassifications: ClassificationDto[],
+    batches: ProofOfOriginBatchEntity[],
+    nestedClassifications: ProofOfOriginClassificationEntity[],
   ): number {
     return Util.sumAmounts(batches) || Util.sumAmounts(nestedClassifications);
   }

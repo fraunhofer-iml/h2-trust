@@ -28,8 +28,8 @@ import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
 import { PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
 import { ProcessStepService } from '../process-step/process-step.service';
-import { ProductionAssembler } from './production.assembler';
 import { AccountingPeriodMatcher } from './accounting-period.matcher';
+import { ProductionAssembler } from './production.assembler';
 
 @Injectable()
 export class ProductionImportService {

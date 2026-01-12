@@ -13,9 +13,12 @@ import {
   BrokerQueues,
   CreateHydrogenBottlingPayload,
   CreateHydrogenTransportationPayload,
+  DigitalProductPassportGeneralInformationEntity,
   DigitalProductPassportPatterns,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
+  ProofOfOriginSectionEntity,
+  ProofOfSustainabilityEntity,
   ReadByIdPayload,
   ReadProcessStepsByTypesAndActiveAndCompanyPayload,
 } from '@h2-trust/amqp';
@@ -86,26 +89,23 @@ export class BottlingService {
   }
 
   async readGeneralInformation(id: string): Promise<GeneralInformationDto> {
-    const generalInformation = await firstValueFrom(
+    const generalInformation: DigitalProductPassportGeneralInformationEntity = await firstValueFrom(
       this.processSvc.send(DigitalProductPassportPatterns.READ_GENERAL_INFORMATION, new ReadByIdPayload(id)),
     );
-    // TODO-MP: return GeneralInformationDto.fromEntity(generalInformationEntity);
-    return generalInformation;
+    return GeneralInformationDto.toGeneralInformationDto(generalInformation);
   }
 
   async readProofOfOrigin(id: string): Promise<SectionDto[]> {
-    const proofOfOrigin = await firstValueFrom(
+    const proofOfOrigin: ProofOfOriginSectionEntity[] = await firstValueFrom(
       this.processSvc.send(DigitalProductPassportPatterns.READ_PROOF_OF_ORIGIN, new ReadByIdPayload(id)),
     );
-    // TODO-MP: return SectionDto.fromEntity(sectionEntity[]);
-    return proofOfOrigin;
+    return SectionDto.fromEntities(proofOfOrigin);
   }
 
   async readProofOfSustainability(id: string): Promise<ProofOfSustainabilityDto> {
-    const proofOfSustainability = await firstValueFrom(
+    const proofOfSustainability: ProofOfSustainabilityEntity = await firstValueFrom(
       this.processSvc.send(DigitalProductPassportPatterns.READ_PROOF_OF_SUSTAINABILITY, new ReadByIdPayload(id)),
     );
-    // TODO-MP: return ProofOfSustainabilityDto.fromEntity(proofOfSustainabilityEntity);
-    return proofOfSustainability;
+    return ProofOfSustainabilityDto.fromEntity(proofOfSustainability);
   }
 }

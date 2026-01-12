@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   BatchEntity,
@@ -25,12 +26,11 @@ import {
 import { ConfigurationService } from '@h2-trust/configuration';
 import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
 import { HydrogenColor, ProcessType } from '@h2-trust/domain';
+import { StorageService } from '@h2-trust/storage';
 import { BottlingService } from './bottling/bottling.service';
 import { ProcessStepController } from './process-step.controller';
 import { ProcessStepService } from './process-step.service';
 import { TransportationService } from './transportation/transportation.service';
-import { StorageService } from '@h2-trust/storage';
-import { ClientProxy } from '@nestjs/microservices';
 
 describe('ProcessStepController', () => {
   let controller: ProcessStepController;
@@ -50,7 +50,9 @@ describe('ProcessStepController', () => {
         {
           provide: ConfigurationService,
           useValue: {
-            getGlobalConfiguration: jest.fn().mockReturnValue({ minio: { endpoint: 'http://minio', bucket: 'test-bucket' } }),
+            getGlobalConfiguration: jest
+              .fn()
+              .mockReturnValue({ minio: { endpoint: 'http://minio', bucket: 'test-bucket' } }),
           },
         },
         {
@@ -115,8 +117,7 @@ describe('ProcessStepController', () => {
 
     const expectedResponse: ProcessStepEntity[] = [structuredClone(ProcessStepEntityHydrogenBottlingMock[0])];
 
-    const processStepServiceSpy = jest
-      .spyOn(processStepService, 'readProcessStepsByPredecessorTypesAndCompany');
+    const processStepServiceSpy = jest.spyOn(processStepService, 'readProcessStepsByPredecessorTypesAndCompany');
 
     const processStepRepositorySpy = jest
       .spyOn(processStepRepository, 'findProcessStepsByPredecessorTypesAndCompany')
@@ -141,8 +142,7 @@ describe('ProcessStepController', () => {
 
     const expectedResponse: ProcessStepEntity[] = [structuredClone(ProcessStepEntityHydrogenBottlingMock[0])];
 
-    const processStepServiceSpy = jest
-      .spyOn(processStepService, 'readProcessStepsByTypesAndActiveAndCompany');
+    const processStepServiceSpy = jest.spyOn(processStepService, 'readProcessStepsByTypesAndActiveAndCompany');
 
     const processStepRepositorySpy = jest
       .spyOn(processStepRepository, 'findProcessStepsByTypesAndActiveAndCompany')
@@ -164,17 +164,11 @@ describe('ProcessStepController', () => {
 
     const productionProcessStep: ProcessStepEntity = structuredClone(ProcessStepEntityHydrogenProductionMock[0]);
 
-    jest
-      .spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit')
-      .mockResolvedValue([productionProcessStep]);
+    jest.spyOn(processStepRepository, 'findAllProcessStepsFromStorageUnit').mockResolvedValue([productionProcessStep]);
 
-    jest
-      .spyOn(processStepRepository, 'insertProcessStep')
-      .mockResolvedValue(expectedResponse);
+    jest.spyOn(processStepRepository, 'insertProcessStep').mockResolvedValue(expectedResponse);
 
-    jest
-      .spyOn(processStepRepository, 'findProcessStep')
-      .mockResolvedValue(expectedResponse);
+    jest.spyOn(processStepRepository, 'findProcessStep').mockResolvedValue(expectedResponse);
 
     const bottlingServiceSpy = jest.spyOn(bottlingService, 'createHydrogenBottlingProcessStep');
 
@@ -206,11 +200,9 @@ describe('ProcessStepController', () => {
     const expectedResponse: ProcessStepEntity = structuredClone(ProcessStepEntityHydrogenTransportationMock[0]);
     const givenPredecessorBatch: BatchEntity = structuredClone(BatchEntityHydrogenTransportedMock[0]);
 
-    const transportationServiceSpy = jest
-      .spyOn(transportationService, 'createHydrogenTransportationProcessStep');
+    const transportationServiceSpy = jest.spyOn(transportationService, 'createHydrogenTransportationProcessStep');
 
-    const batchRepositorySpy = jest
-      .spyOn(batchRepository, 'setBatchesInactive');
+    const batchRepositorySpy = jest.spyOn(batchRepository, 'setBatchesInactive');
 
     const processStepRepositorySpy = jest
       .spyOn(processStepRepository, 'insertProcessStep')

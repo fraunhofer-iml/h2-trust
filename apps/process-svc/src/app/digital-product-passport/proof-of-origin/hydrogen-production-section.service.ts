@@ -7,8 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { ProcessStepEntity } from '@h2-trust/amqp';
-import { ClassificationDto, SectionDto } from '@h2-trust/api';
+import { ProcessStepEntity, ProofOfOriginClassificationEntity, ProofOfOriginSectionEntity } from '@h2-trust/amqp';
 import { ProofOfOrigin } from '@h2-trust/domain';
 import { ClassificationAssembler } from './classification.assembler';
 import { PowerSupplyClassificationService } from './power-supply-classification.service';
@@ -25,13 +24,13 @@ export class HydrogenProductionSectionService {
     powerProductions: ProcessStepEntity[],
     waterConsumptions: ProcessStepEntity[],
     hydrogenAmount: number,
-  ): Promise<SectionDto> {
-    const classifications: ClassificationDto[] = [];
+  ): Promise<ProofOfOriginSectionEntity> {
+    const classifications: ProofOfOriginClassificationEntity[] = [];
 
     if (powerProductions?.length) {
-      const energySourceClassifications: ClassificationDto[] =
+      const energySourceClassifications: ProofOfOriginClassificationEntity[] =
         await this.powerSupplyClassificationService.buildPowerSupplyClassifications(powerProductions, hydrogenAmount);
-      const powerSupplyClassification: ClassificationDto = ClassificationAssembler.assemblePower(
+      const powerSupplyClassification: ProofOfOriginClassificationEntity = ClassificationAssembler.assemblePower(
         ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION,
         [],
         energySourceClassifications,
@@ -40,11 +39,11 @@ export class HydrogenProductionSectionService {
     }
 
     if (waterConsumptions?.length) {
-      const waterSupplyClassification: ClassificationDto =
+      const waterSupplyClassification: ProofOfOriginClassificationEntity =
         this.waterSupplyClassificationService.buildWaterSupplyClassification(waterConsumptions, hydrogenAmount);
       classifications.push(waterSupplyClassification);
     }
 
-    return new SectionDto(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION, [], classifications);
+    return new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION, [], classifications);
   }
 }

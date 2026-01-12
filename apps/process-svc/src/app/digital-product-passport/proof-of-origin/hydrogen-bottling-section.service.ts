@@ -7,8 +7,14 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/amqp';
-import { EmissionCalculationDto, EmissionDto, HydrogenBatchDto, SectionDto } from '@h2-trust/api';
+import {
+  HydrogenComponentEntity,
+  ProcessStepEntity,
+  ProofOfOriginEmissionEntity,
+  ProofOfOriginHydrogenBatchEntity,
+  ProofOfOriginSectionEntity,
+  ProofOfSustainabilityEmissionCalculationEntity,
+} from '@h2-trust/amqp';
 import { ProofOfOrigin } from '@h2-trust/domain';
 import { BottlingService } from '../../process-step/bottling/bottling.service';
 import { BatchAssembler } from './batch.assembler';
@@ -16,24 +22,26 @@ import { EmissionAssembler } from './emission.assembler';
 
 @Injectable()
 export class HydrogenBottlingSectionService {
-  constructor(private readonly bottlingService: BottlingService) { }
+  constructor(private readonly bottlingService: BottlingService) {}
 
-  async buildSection(hydrogenBottling: ProcessStepEntity): Promise<SectionDto> {
-    const hydrogenCompositions: HydrogenComponentEntity[] = await this.bottlingService.calculateHydrogenComposition(hydrogenBottling);
+  async buildSection(hydrogenBottling: ProcessStepEntity): Promise<ProofOfOriginSectionEntity> {
+    const hydrogenCompositions: HydrogenComponentEntity[] =
+      await this.bottlingService.calculateHydrogenComposition(hydrogenBottling);
 
-    const emissionCalculation: EmissionCalculationDto = EmissionAssembler.assembleHydrogenBottling(hydrogenBottling);
+    const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
+      EmissionAssembler.assembleHydrogenBottling(hydrogenBottling);
 
-    const emission: EmissionDto = EmissionAssembler.assembleEmissionDto(
+    const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionDto(
       emissionCalculation,
       hydrogenBottling.batch.amount,
     );
 
-    const batch: HydrogenBatchDto = BatchAssembler.assembleHydrogenBottling(
+    const batch: ProofOfOriginHydrogenBatchEntity = BatchAssembler.assembleHydrogenBottling(
       hydrogenBottling,
       hydrogenCompositions,
       emission,
     );
 
-    return new SectionDto(ProofOfOrigin.HYDROGEN_BOTTLING_SECTION, [batch], []);
+    return new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_BOTTLING_SECTION, [batch], []);
   }
 }
