@@ -7,19 +7,29 @@
  */
 
 import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
+import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
 import { CommonModule } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { HydrogenProductionUnitDto } from '@h2-trust/api';
+import { injectQuery } from '@tanstack/angular-query-experimental';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
+import { UnitDetailsComponent } from '../unit-details.component';
 
 @Component({
   selector: 'app-hydrogen-production-details',
-  imports: [CommonModule, RouterModule, UnitPipe],
+  imports: [CommonModule, RouterModule, UnitPipe, UnitDetailsComponent],
   templateUrl: './hydrogen-production-details.component.html',
 })
 export class HydrogenProductionDetailsComponent {
-  unit = input.required<HydrogenProductionUnitDto>();
-
   readonly FormattedUnits = FormattedUnits;
+
+  id = input<string>();
+
+  unitsService = inject(UnitsService);
+
+  unitQuery = injectQuery(() => ({
+    queryKey: ['unit', this.id()],
+    queryFn: () => this.unitsService.getHydrogenProductionUnit(this.id() ?? ''),
+    enabled: !!this.id(),
+  }));
 }

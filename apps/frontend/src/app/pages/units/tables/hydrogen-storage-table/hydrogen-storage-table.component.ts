@@ -7,7 +7,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, computed, input, ViewChild } from '@angular/core';
+import { Component, computed, inject, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -23,6 +23,7 @@ import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
 import { AuthService } from '../../../../shared/services/auth/auth.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
 import { UsersService } from '../../../../shared/services/users/users.service';
+import { UnitQueryService } from '../../unit-query.service';
 
 @Component({
   selector: 'app-hydrogen-storage-table',
@@ -46,14 +47,15 @@ import { UsersService } from '../../../../shared/services/users/users.service';
   templateUrl: './hydrogen-storage-table.component.html',
 })
 export class HydrogenStorageTableComponent {
+  queryService = inject(UnitQueryService);
+
   displayedColumns = ['name', 'fillingLevel', 'storageType'];
-  data = input<HydrogenStorageOverviewDto[]>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   dataSource$ = computed(() => {
-    const source = new MatTableDataSource<HydrogenStorageOverviewDto>(this.data());
+    const source = new MatTableDataSource<HydrogenStorageOverviewDto>(this.queryService.hydrogenStorageQuery.data());
     source.paginator = this.paginator;
     source.sort = this.sort;
     return source;

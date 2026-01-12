@@ -15,7 +15,7 @@
                 tabindex="0"
                 role="presentation"
                 [ngClass]="{
-                  'bg-primary-100/20': router.url.includes(option.route),
+                  'bg-primary-100/20': option.isActive(),
                 }"
               >
                 <span class="material-symbols-outlined text-neutral-600">{{ option.icon }}</span>

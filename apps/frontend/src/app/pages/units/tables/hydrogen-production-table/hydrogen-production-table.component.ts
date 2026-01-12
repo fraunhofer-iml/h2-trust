@@ -7,7 +7,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, computed, input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, inject, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -22,6 +22,7 @@ import { HydrogenProductionOverviewDto } from '@h2-trust/api';
 import { AuthService } from '../../../../shared/services/auth/auth.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
 import { UsersService } from '../../../../shared/services/users/users.service';
+import { UnitQueryService } from '../../unit-query.service';
 
 @Component({
   selector: 'app-hydrogen-production-table',
@@ -44,14 +45,17 @@ import { UsersService } from '../../../../shared/services/users/users.service';
   templateUrl: './hydrogen-production-table.component.html',
 })
 export class HydrogenProductionTableComponent implements AfterViewInit {
+  queryService = inject(UnitQueryService);
+
   displayedColumns = ['name', 'technology', 'ratedPower'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  data = input<HydrogenProductionOverviewDto[]>([]);
 
   dataSource$ = computed(() => {
-    const source = new MatTableDataSource<HydrogenProductionOverviewDto>(this.data());
+    const source = new MatTableDataSource<HydrogenProductionOverviewDto>(
+      this.queryService.hydrogenProductionQuery.data(),
+    );
     source.paginator = this.paginator;
     source.sort = this.sort;
     return source;

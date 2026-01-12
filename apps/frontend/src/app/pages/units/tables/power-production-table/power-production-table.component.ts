@@ -7,7 +7,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, computed, input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, inject, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -22,6 +22,7 @@ import { PowerProductionOverviewDto } from '@h2-trust/api';
 import { AuthService } from '../../../../shared/services/auth/auth.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
 import { UsersService } from '../../../../shared/services/users/users.service';
+import { UnitQueryService } from '../../unit-query.service';
 
 @Component({
   selector: 'app-power-production-table',
@@ -45,15 +46,15 @@ import { UsersService } from '../../../../shared/services/users/users.service';
   templateUrl: './power-production-table.component.html',
 })
 export class PowerProductionTableComponent implements AfterViewInit {
-  displayedColumns = ['name', 'ratedPower', 'typeName'];
+  queryService = inject(UnitQueryService);
 
-  data = input<PowerProductionOverviewDto[]>([]);
+  displayedColumns = ['name', 'ratedPower', 'typeName'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   dataSource$ = computed(() => {
-    const source = new MatTableDataSource<PowerProductionOverviewDto>(this.data());
+    const source = new MatTableDataSource<PowerProductionOverviewDto>(this.queryService.powerProductionQuery.data());
     source.paginator = this.paginator;
     source.sort = this.sort;
     return source;

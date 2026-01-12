@@ -1,10 +1,11 @@
-<div class="flex flex-col gap-4 p-8">
-  <div class="flex flex-row justify-between">
-    <h2 class="text-lg text-neutral-500">Units</h2>
-    <button mat-flat-button routerLink="create">Add Unit</button>
-  </div>
-
-  <mat-tab-group mat-align-tabs="start" mat-stretch-tabs="false">
+<!--
+ 
+  <mat-tab-group
+    mat-align-tabs="start"
+    mat-stretch-tabs="false"
+    [selectedIndex]="selectedIndex"
+    (selectedIndexChange)="onTabChange($event)"
+  >
     @if (powerProductionQuery.isSuccess() && powerProductionQuery.data().length !== 0) {
       <mat-tab>
         <ng-template mat-tab-label>
@@ -36,4 +37,22 @@
       </mat-tab>
     }
   </mat-tab-group>
-</div>
+ -->
+@if (showTabs()) {
+  <div class="flex flex-col gap-4 p-8">
+    <div class="flex flex-row justify-between">
+      <h2 class="text-lg text-neutral-500">Units</h2>
+      <button mat-flat-button routerLink="create">Add Unit</button>
+    </div>
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel">
+      @for (tab of tabs(); track tab) {
+        <a mat-tab-link [routerLink]="tab.route" [active]="router.url.includes(tab.route)">
+          {{ tab.label }}
+        </a>
+      }
+    </nav>
+    <mat-tab-nav-panel #tabPanel> <router-outlet></router-outlet> </mat-tab-nav-panel>
+  </div>
+} @else {
+  <router-outlet></router-outlet>
+}

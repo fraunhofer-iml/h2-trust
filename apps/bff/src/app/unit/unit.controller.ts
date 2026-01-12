@@ -40,7 +40,7 @@ export class UnitController {
   @ApiOkResponse({
     description: 'Returns hydrogen-storage unit ',
   })
-  getHydrogenStorageUnitById(@Param() id: string): Promise<HydrogenStorageUnitDto> {
+  getHydrogenStorageUnitById(@Param('id') id: string): Promise<HydrogenStorageUnitDto> {
     return this.unitService.readHydrogenStorageUnit(id);
   }
 
@@ -78,7 +78,8 @@ export class UnitController {
   @ApiOkResponse({
     description: 'Returns power-production unit ',
   })
-  getPowerProductionUnitById(@Param() id: string): Promise<PowerProductionUnitDto> {
+  getPowerProductionUnitById(@Param('id') id: string): Promise<PowerProductionUnitDto> {
+    console.log(id);
     return this.unitService.readPowerProductionUnit(id);
   }
 
@@ -116,7 +117,8 @@ export class UnitController {
   @ApiOkResponse({
     description: 'Returns hydrogen-storage unit ',
   })
-  getHydrogenProductionUnitById(@Param() id: string): Promise<HydrogenProductionUnitDto> {
+  getHydrogenProductionUnitById(@Param('id') id: string): Promise<HydrogenProductionUnitDto> {
+    console.log(id);
     return this.unitService.readHydrogenProductionUnit(id);
   }
 
