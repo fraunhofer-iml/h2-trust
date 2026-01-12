@@ -28,8 +28,8 @@ import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
 import { PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
 import { ProcessStepService } from '../process-step/process-step.service';
-import { AccountingPeriodMatchingService } from './accounting-period-matching.service';
-import { ProductionService } from './production.service';
+import { ProductionAssembler } from './production.assembler';
+import { AccountingPeriodMatcher } from './accounting-period.matcher';
 
 @Injectable()
 export class ProductionImportService {
@@ -37,19 +37,17 @@ export class ProductionImportService {
   private readonly productionChunkSize: number;
 
   constructor(
-    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
+    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly configurationService: ConfigurationService,
-    private readonly accountingPeriodMatchingService: AccountingPeriodMatchingService,
     private readonly stagedProductionRepository: StagedProductionRepository,
     private readonly processStepService: ProcessStepService,
-    private readonly productionService: ProductionService,
   ) {
     this.productionChunkSize = this.configurationService.getProcessSvcConfiguration().productionChunkSize;
   }
 
   async stageProductions(payload: StageProductionsPayload): Promise<ParsedProductionMatchingResultEntity> {
     const gridUnitId = await this.fetchGridUnitId(payload.userId);
-    const parsedProductions: ParsedProductionEntity[] = this.accountingPeriodMatchingService.matchAccountingPeriods(
+    const parsedProductions: ParsedProductionEntity[] = AccountingPeriodMatcher.matchAccountingPeriods(
       payload.data,
       gridUnitId,
     );
@@ -87,7 +85,7 @@ export class ProductionImportService {
 
   private async fetchGridUnitId(userId: string): Promise<string> {
     const approvals: PowerAccessApprovalEntity[] = await firstValueFrom(
-      this.generalService.send(
+      this.generalSvc.send(
         PowerAccessApprovalPatterns.READ,
         new ReadPowerAccessApprovalsPayload(userId, PowerAccessApprovalStatus.APPROVED),
       ),
@@ -117,10 +115,10 @@ export class ProductionImportService {
 
       // Step 1: Create power and water (each returns array with 1 element due to 1:1 relation)
       const power: ProcessStepEntity[] = chunk.flatMap((production) =>
-        this.productionService.createPowerProductions(production),
+        ProductionAssembler.assemblePowerProductions(production),
       );
       const water: ProcessStepEntity[] = chunk.flatMap((production) =>
-        this.productionService.createWaterConsumptions(production),
+        ProductionAssembler.assembleWaterConsumptions(production),
       );
 
       if (power.length !== chunk.length || water.length !== chunk.length) {
@@ -143,7 +141,7 @@ export class ProductionImportService {
 
       // Step 4: Create hydrogen with persisted predecessors
       const hydrogen: ProcessStepEntity[] = chunk.flatMap((production, index) =>
-        this.productionService.createHydrogenProductions(production, [persistedPower[index]], [persistedWater[index]]),
+        ProductionAssembler.assembleHydrogenProductions(production, [persistedPower[index]], [persistedWater[index]]),
       );
 
       // Step 5: Persist hydrogen

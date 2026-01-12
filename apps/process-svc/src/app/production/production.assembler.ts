@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import {
   BaseUnitEntity,
   BatchEntity,
@@ -22,11 +22,10 @@ import { DateTimeUtil } from '@h2-trust/utils';
 import { AccountingPeriod, ProcessStepParams } from './production.types';
 import { ProductionUtils } from './utils/production.utils';
 
-@Injectable()
-export class ProductionService {
-  private readonly logger = new Logger(ProductionService.name);
+export class ProductionAssembler {
+  private static readonly logger = new Logger(ProductionAssembler.name);
 
-  createPowerProductions(entity: CreateProductionEntity): ProcessStepEntity[] {
+  static assemblePowerProductions(entity: CreateProductionEntity): ProcessStepEntity[] {
     const params: ProcessStepParams = {
       type: ProcessType.POWER_PRODUCTION,
       executedBy: entity.powerProductionUnitId,
@@ -47,7 +46,7 @@ export class ProductionService {
     );
   }
 
-  createWaterConsumptions(entity: CreateProductionEntity): ProcessStepEntity[] {
+  static assembleWaterConsumptions(entity: CreateProductionEntity): ProcessStepEntity[] {
     const waterAmountLiters = ProductionUtils.calculateWaterAmount(
       entity.productionStartedAt,
       entity.productionEndedAt,
@@ -68,7 +67,7 @@ export class ProductionService {
     return this.createProcessSteps(entity.productionStartedAt, entity.productionEndedAt, waterAmountLiters, params, []);
   }
 
-  createHydrogenProductions(
+  static assembleHydrogenProductions(
     entity: CreateProductionEntity,
     powerProductions: ProcessStepEntity[],
     waterConsumptions: ProcessStepEntity[],
@@ -95,7 +94,7 @@ export class ProductionService {
     );
   }
 
-  private createProcessSteps(
+  private static createProcessSteps(
     startedAt: Date,
     endedAt: Date,
     totalAmount: number,
@@ -111,7 +110,7 @@ export class ProductionService {
     return accountingPeriods.map((accountingPeriod) => this.createProcessStep(accountingPeriod, params));
   }
 
-  private createProcessStep(accountingPeriod: AccountingPeriod, params: ProcessStepParams): ProcessStepEntity {
+  private static createProcessStep(accountingPeriod: AccountingPeriod, params: ProcessStepParams): ProcessStepEntity {
     this.logger.debug(
       `${DateTimeUtil.formatDate(accountingPeriod.startedAt)} | ${DateTimeUtil.formatDate(accountingPeriod.endedAt)} | ${params.type} | ${params.executedBy} | ${accountingPeriod.amount}`,
     );

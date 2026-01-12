@@ -11,11 +11,9 @@ import { Broker } from '@h2-trust/amqp';
 import { ConfigurationModule } from '@h2-trust/configuration';
 import { DatabaseModule } from '@h2-trust/database';
 import { ProcessStepModule } from '../process-step/process-step.module';
-import { AccountingPeriodMatchingService } from './accounting-period-matching.service';
 import { ProductionCreationService } from './production-creation.service';
 import { ProductionImportService } from './production-import.service';
 import { ProductionController } from './production.controller';
-import { ProductionService } from './production.service';
 import { StagedProductionCleanupModule } from './tasks/staged-production-cleanup.module';
 
 @Module({
@@ -27,6 +25,6 @@ import { StagedProductionCleanupModule } from './tasks/staged-production-cleanup
     new Broker().getGeneralSvcBroker(),
   ],
   controllers: [ProductionController],
-  providers: [AccountingPeriodMatchingService, ProductionCreationService, ProductionImportService, ProductionService],
+  providers: [ProductionCreationService, ProductionImportService],
 })
-export class ProductionModule {}
+export class ProductionModule { }

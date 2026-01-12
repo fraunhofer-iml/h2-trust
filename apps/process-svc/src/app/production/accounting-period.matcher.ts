@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 import {
   AccountingPeriodHydrogen,
   AccountingPeriodPower,
@@ -27,9 +27,8 @@ interface HydrogenItem {
   powerConsumed: number;
 }
 
-@Injectable()
-export class AccountingPeriodMatchingService {
-  matchAccountingPeriods(data: ParsedFileBundles, gridUnitId: string): ParsedProductionEntity[] {
+export class AccountingPeriodMatcher {
+  static matchAccountingPeriods(data: ParsedFileBundles, gridUnitId: string): ParsedProductionEntity[] {
     this.validateBundles(data.hydrogenProduction, 'hydrogen');
     this.validateBundles(data.powerProduction, 'power');
 
@@ -98,7 +97,7 @@ export class AccountingPeriodMatchingService {
     return parsedProductions;
   }
 
-  private normalizePower(data: UnitDataBundle<AccountingPeriodPower>[]): Map<string, PowerItem[]> {
+  private static normalizePower(data: UnitDataBundle<AccountingPeriodPower>[]): Map<string, PowerItem[]> {
     const powerItemsByDateHour = new Map<string, PowerItem[]>();
 
     data.forEach((bundle) => {
@@ -123,7 +122,7 @@ export class AccountingPeriodMatchingService {
     return powerItemsByDateHour;
   }
 
-  private normalizeHydrogen(data: UnitDataBundle<AccountingPeriodHydrogen>[]): Map<string, HydrogenItem[]> {
+  private static normalizeHydrogen(data: UnitDataBundle<AccountingPeriodHydrogen>[]): Map<string, HydrogenItem[]> {
     const hydrogenItemsByDateHour = new Map<string, HydrogenItem[]>();
 
     data.forEach((bundle) => {
@@ -152,12 +151,12 @@ export class AccountingPeriodMatchingService {
     return hydrogenItemsByDateHour;
   }
 
-  private addToMap<T extends PowerItem | HydrogenItem>(map: Map<string, T[]>, key: string, value: T): void {
+  private static addToMap<T extends PowerItem | HydrogenItem>(map: Map<string, T[]>, key: string, value: T): void {
     if (!map.get(key)) map.set(key, [value]);
     else map.get(key).push(value);
   }
 
-  private validateBundles(bundles: UnitDataBundle<any>[] | undefined, type: 'hydrogen' | 'power') {
+  private static validateBundles(bundles: UnitDataBundle<any>[] | undefined, type: 'hydrogen' | 'power') {
     if (!bundles || bundles.length === 0) {
       throw new BrokerException(`Missing ${type} production data`, HttpStatus.BAD_REQUEST);
     }

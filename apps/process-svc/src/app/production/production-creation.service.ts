@@ -21,17 +21,17 @@ import {
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { ProcessStepService } from '../process-step/process-step.service';
-import { ProductionService } from './production.service';
+import { ProductionAssembler } from './production.assembler';
 
 @Injectable()
 export class ProductionCreationService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly processStepService: ProcessStepService,
-    private readonly productionService: ProductionService,
-  ) {}
+  ) { }
 
-  async createProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
+  // TODO-MP: almost identical method exists in ProductionImportService - refactor to avoid code duplication
+  async createAndPersistProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
     const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
       this.generalSvc.send(UnitMessagePatterns.READ, new ReadByIdPayload(payload.powerProductionUnitId)),
     );
@@ -56,8 +56,8 @@ export class ProductionCreationService {
     );
 
     // Step 1: Create power and water
-    const power: ProcessStepEntity[] = this.productionService.createPowerProductions(entity);
-    const water: ProcessStepEntity[] = this.productionService.createWaterConsumptions(entity);
+    const power: ProcessStepEntity[] = ProductionAssembler.assemblePowerProductions(entity);
+    const water: ProcessStepEntity[] = ProductionAssembler.assembleWaterConsumptions(entity);
 
     if (power.length !== water.length) {
       throw new Error(
@@ -76,7 +76,7 @@ export class ProductionCreationService {
     const persistedWater: ProcessStepEntity[] = persistedPowerAndWater.slice(power.length);
 
     // Step 4: Create hydrogen with persisted predecessors
-    const hydrogen: ProcessStepEntity[] = this.productionService.createHydrogenProductions(
+    const hydrogen: ProcessStepEntity[] = ProductionAssembler.assembleHydrogenProductions(
       entity,
       persistedPower,
       persistedWater,
