@@ -89,7 +89,7 @@ export class BottlingService {
     const generalInformation = await firstValueFrom(
       this.processSvc.send(DigitalProductPassportPatterns.READ_GENERAL_INFORMATION, new ReadByIdPayload(id)),
     );
-    // TODO-MP: introduce mapper
+    // TODO-MP: return GeneralInformationDto.fromEntity(generalInformationEntity);
     return generalInformation;
   }
 
@@ -97,8 +97,7 @@ export class BottlingService {
     const proofOfOrigin = await firstValueFrom(
       this.processSvc.send(DigitalProductPassportPatterns.READ_PROOF_OF_ORIGIN, new ReadByIdPayload(id)),
     );
-    // TODO-MP: introduce dto and mapper
-    //return ProofOfOriginDto.fromEntity(proofOfOrigin);
+    // TODO-MP: return SectionDto.fromEntity(sectionEntity[]);
     return proofOfOrigin;
   }
 
@@ -106,8 +105,7 @@ export class BottlingService {
     const proofOfSustainability = await firstValueFrom(
       this.processSvc.send(DigitalProductPassportPatterns.READ_PROOF_OF_SUSTAINABILITY, new ReadByIdPayload(id)),
     );
-    // TODO-MP: introduce mapper
-    //return ProofOfSustainabilityDto.fromEntity(proofOfSustainability);
+    // TODO-MP: return ProofOfSustainabilityDto.fromEntity(proofOfSustainabilityEntity);
     return proofOfSustainability;
   }
 }
