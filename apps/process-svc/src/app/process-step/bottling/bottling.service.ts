@@ -14,6 +14,7 @@ import {
   BrokerException,
   BrokerQueues,
   CreateHydrogenBottlingPayload,
+  DocumentEntity,
   HydrogenComponentEntity,
   HydrogenCompositionUtil,
   HydrogenStorageUnitEntity,
@@ -117,7 +118,7 @@ export class BottlingService {
     }
   }
 
-  private async addDocumentToProcessStep(file: Express.Multer.File, processStepId: string, description: string) {
+  private async addDocumentToProcessStep(file: Express.Multer.File, processStepId: string, description: string): Promise<DocumentEntity> {
     const fileName = await this.storageService.uploadFileWithDeepPath(file, `process-step`, processStepId);
     return this.documentRepository.addDocumentToProcessStep(
       {
