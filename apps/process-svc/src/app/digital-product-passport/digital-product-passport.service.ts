@@ -36,8 +36,8 @@ export class DigitalProductPassportService {
     private readonly proofOfOriginService: ProofOfOriginService,
   ) {}
 
-  async readGeneralInformation(payload: ReadByIdPayload): Promise<GeneralInformationDto> {
-    const processStep = await this.processStepService.readProcessStep(payload);
+  async readGeneralInformation(processStepId: string): Promise<GeneralInformationDto> {
+    const processStep = await this.processStepService.readProcessStep(processStepId);
 
     const generalInformation = GeneralInformationDto.fromEntityToDto(processStep);
 
@@ -48,7 +48,7 @@ export class DigitalProductPassportService {
       this.bottlingService
         .calculateHydrogenComposition(processStep)
         .then((hydrogenCompositions) => hydrogenCompositions.map(HydrogenComponentDto.of)),
-      this.redComplianceService.determineRedCompliance(payload),
+      this.redComplianceService.determineRedCompliance(processStepId),
     ]);
 
     return {
@@ -59,12 +59,12 @@ export class DigitalProductPassportService {
     };
   }
 
-  async readProofOfOrigin(payload: ReadByIdPayload): Promise<SectionDto[]> {
-    return this.proofOfOriginService.readProofOfOrigin(payload);
+  async readProofOfOrigin(processStepId: string): Promise<SectionDto[]> {
+    return this.proofOfOriginService.readProofOfOrigin(processStepId);
   }
 
-  async readProofOfSustainability(payload: ReadByIdPayload): Promise<ProofOfSustainabilityDto> {
-    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(payload);
+  async readProofOfSustainability(processStepId: string): Promise<ProofOfSustainabilityDto> {
+    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStepId);
 
     const provenanceEmission: EmissionComputationResultDto =
       await this.emissionService.computeProvenanceEmissions(provenance);

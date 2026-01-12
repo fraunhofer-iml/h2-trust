@@ -7,7 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { ProcessStepEntity, ProvenanceEntity, ReadByIdPayload } from '@h2-trust/amqp';
+import { ProcessStepEntity, ProvenanceEntity } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { ProcessStepService } from '../../process-step/process-step.service';
 import { TraversalService } from './traversal.service';
@@ -21,12 +21,12 @@ export class ProvenanceService {
     private readonly traversalService: TraversalService,
   ) {}
 
-  async buildProvenance(payload: ReadByIdPayload): Promise<ProvenanceEntity> {
-    if (!payload.id) {
+  async buildProvenance(processStepId: string): Promise<ProvenanceEntity> {
+    if (!processStepId) {
       throw new Error('processStepId must be provided.');
     }
 
-    const root: ProcessStepEntity = await this.processStepService.readProcessStep(payload);
+    const root: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
 
     if (!root || !root.type) {
       throw new Error('Invalid process step.');

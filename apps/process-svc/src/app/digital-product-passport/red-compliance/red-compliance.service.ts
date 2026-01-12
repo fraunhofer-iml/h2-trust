@@ -8,7 +8,7 @@
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
-import { ProvenanceEntity, ReadByIdPayload, RedComplianceEntity } from '@h2-trust/amqp';
+import { ProvenanceEntity, RedComplianceEntity } from '@h2-trust/amqp';
 import { ProvenanceService } from '../provenance/provenance.service';
 import { MatchedProductionPair } from './matched-production-pair';
 import {
@@ -26,18 +26,18 @@ export class RedComplianceService {
     private readonly provenanceService: ProvenanceService,
   ) { }
 
-  async determineRedCompliance(payload: ReadByIdPayload): Promise<RedComplianceEntity> {
-    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(payload);
+  async determineRedCompliance(processStepId: string): Promise<RedComplianceEntity> {
+    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStepId);
 
     if (!provenance || !provenance.powerProductions?.length || !provenance.hydrogenProductions?.length) {
-      const message = `Provenance or required productions (power/hydrogen) are missing for processStepId [${payload.id}]`;
+      const message = `Provenance or required productions (power/hydrogen) are missing for processStepId [${processStepId}]`;
       throw new RpcException(message);
     }
 
     const pairs: MatchedProductionPair[] = await this.redCompliancePairingService.buildMatchedPairs(
       provenance.powerProductions,
       provenance.hydrogenProductions,
-      payload.id,
+      processStepId,
     );
 
     return this.evaluateCompliance(pairs);

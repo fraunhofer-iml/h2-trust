@@ -91,7 +91,7 @@ export class BottlingService {
       );
     }
 
-    return this.processStepService.readProcessStep(new ReadByIdPayload(persistedBottlingProcessStep.id));
+    return this.processStepService.readProcessStep(persistedBottlingProcessStep.id);
   }
 
   private async determineHydrogenComposition(
@@ -145,9 +145,7 @@ export class BottlingService {
       );
     }
 
-    const predecessor: ProcessStepEntity = await this.processStepService.readProcessStep(
-      new ReadByIdPayload(predecessorId),
-    );
+    const predecessor: ProcessStepEntity = await this.processStepService.readProcessStep(predecessorId);
 
     if (predecessor.type !== ProcessType.HYDROGEN_BOTTLING) {
       throw new BrokerException(

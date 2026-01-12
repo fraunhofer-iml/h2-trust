@@ -7,7 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { ProvenanceEntity, ReadByIdPayload } from '@h2-trust/amqp';
+import { ProvenanceEntity } from '@h2-trust/amqp';
 import { SectionDto } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
 import { ProvenanceService } from '../provenance/provenance.service';
@@ -26,8 +26,8 @@ export class ProofOfOriginService {
     private readonly provenanceService: ProvenanceService,
   ) {}
 
-  async readProofOfOrigin(payload: ReadByIdPayload): Promise<SectionDto[]> {
-    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(payload);
+  async readProofOfOrigin(processStepId: string): Promise<SectionDto[]> {
+    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStepId);
     const sectionPromises: Array<Promise<SectionDto>> = [];
 
     const hydrogenProductionPromise =

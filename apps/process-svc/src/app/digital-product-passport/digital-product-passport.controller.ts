@@ -18,16 +18,16 @@ export class DigitalProductPassportController {
 
   @MessagePattern(DigitalProductPassportPatterns.READ_GENERAL_INFORMATION)
   async readGeneralInformation(payload: ReadByIdPayload): Promise<GeneralInformationDto> {
-    return this.digitalProductPassportService.readGeneralInformation(payload);
+    return this.digitalProductPassportService.readGeneralInformation(payload.id);
   }
 
   @MessagePattern(DigitalProductPassportPatterns.READ_PROOF_OF_ORIGIN)
   async readProofOfOrigin(payload: ReadByIdPayload): Promise<SectionDto[]> {
-    return this.digitalProductPassportService.readProofOfOrigin(payload);
+    return this.digitalProductPassportService.readProofOfOrigin(payload.id);
   }
 
   @MessagePattern(DigitalProductPassportPatterns.READ_PROOF_OF_SUSTAINABILITY)
   async readProofOfSustainability(payload: ReadByIdPayload): Promise<ProofOfSustainabilityDto> {
-    return this.digitalProductPassportService.readProofOfSustainability(payload);
+    return this.digitalProductPassportService.readProofOfSustainability(payload.id);
   }
 }

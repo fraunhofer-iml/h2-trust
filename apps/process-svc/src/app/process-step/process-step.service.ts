@@ -11,7 +11,6 @@ import {
   CreateManyProcessStepsPayload,
   DocumentEntity,
   ProcessStepEntity,
-  ReadByIdPayload,
   ReadProcessStepsByPredecessorTypesAndCompanyPayload,
   ReadProcessStepsByTypesAndActiveAndCompanyPayload,
 } from '@h2-trust/amqp';
@@ -35,8 +34,8 @@ export class ProcessStepService {
     return this.processStepRepository.insertManyProcessSteps(payload.processSteps);
   }
 
-  async readProcessStep(payload: ReadByIdPayload): Promise<ProcessStepEntity> {
-    const processStep: ProcessStepEntity = await this.processStepRepository.findProcessStep(payload.id);
+  async readProcessStep(processStepId: string): Promise<ProcessStepEntity> {
+    const processStep: ProcessStepEntity = await this.processStepRepository.findProcessStep(processStepId);
 
     if (processStep.type === ProcessType.HYDROGEN_TRANSPORTATION) {
       const predecessorProcessStep = await this.readPredecessorProcessStep(
