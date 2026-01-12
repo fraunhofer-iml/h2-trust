@@ -7,17 +7,17 @@
  */
 
 import { ProofOfSustainabilityEmissionCalculationEntity } from './proof-of-sustainability-emission-calculation.entity';
-import { ProofOfSustainabilityProcessStepEmissionEntity } from './proof-of-sustainability-process-step-emission.entity';
+import { ProofOfSustainabilityEmissionEntity } from './proof-of-sustainability-emission.entity';
 
 export class ProofOfSustainabilityEmissionComputationEntity {
   calculations: ProofOfSustainabilityEmissionCalculationEntity[];
-  processStepEmissions: ProofOfSustainabilityProcessStepEmissionEntity[];
+  processStepEmissions: ProofOfSustainabilityEmissionEntity[];
   amountCO2PerMJH2: number;
   emissionReductionPercentage: number;
 
   constructor(
     calculations: ProofOfSustainabilityEmissionCalculationEntity[],
-    processStepEmissions: ProofOfSustainabilityProcessStepEmissionEntity[],
+    processStepEmissions: ProofOfSustainabilityEmissionEntity[],
     amountCO2PerMJH2: number,
     emissionReductionPercentage: number,
   ) {

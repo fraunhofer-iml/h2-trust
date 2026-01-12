@@ -8,5 +8,5 @@
 
 export * from './proof-of-sustainability.entity';
 export * from './proof-of-sustainability-emission-calculation.entity';
-export * from './proof-of-sustainability-process-step-emission.entity';
+export * from './proof-of-sustainability-emission.entity';
 export * from './proof-of-sustainability-emission-computation.entity';

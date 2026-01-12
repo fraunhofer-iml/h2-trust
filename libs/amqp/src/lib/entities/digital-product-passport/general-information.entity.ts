@@ -17,7 +17,6 @@ export class GeneralInformationEntity {
   filledAmount?: number;
   color?: string;
   producer?: string;
-  product: string;
   hydrogenComposition: HydrogenComponentEntity[];
   attachedFiles: DocumentEntity[];
   redCompliance?: RedComplianceEntity;
@@ -31,8 +30,7 @@ export class GeneralInformationEntity {
     producer: string | undefined,
     hydrogenComposition: HydrogenComponentEntity[],
     attachedFiles: DocumentEntity[],
-    redCompliance?: RedComplianceEntity,
-    product = 'Hydrogen',
+    redCompliance?: RedComplianceEntity
   ) {
     this.id = id;
     this.filledAt = filledAt;
@@ -40,7 +38,6 @@ export class GeneralInformationEntity {
     this.filledAmount = filledAmount;
     this.color = color;
     this.producer = producer;
-    this.product = product;
     this.hydrogenComposition = hydrogenComposition;
     this.attachedFiles = attachedFiles;
     this.redCompliance = redCompliance;

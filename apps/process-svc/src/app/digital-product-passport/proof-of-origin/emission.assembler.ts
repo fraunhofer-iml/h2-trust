@@ -11,7 +11,7 @@ import {
   ProofOfOriginEmissionEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
   ProofOfSustainabilityEmissionComputationEntity,
-  ProofOfSustainabilityProcessStepEmissionEntity,
+  ProofOfSustainabilityEmissionEntity,
 } from '@h2-trust/amqp';
 import { EnumLabelMapper } from '@h2-trust/api';
 import {
@@ -273,7 +273,7 @@ export class EmissionAssembler {
   static assembleComputationResult(
     emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
   ): ProofOfSustainabilityEmissionComputationEntity {
-    const applicationEmissions: ProofOfSustainabilityProcessStepEmissionEntity[] =
+    const applicationEmissions: ProofOfSustainabilityEmissionEntity[] =
       EmissionAssembler.assembleApplicationEmissions(emissionCalculations);
 
     const hydrogenProductionEmissionAmount: number = applicationEmissions
@@ -283,13 +283,13 @@ export class EmissionAssembler {
     const applicationEmissionAmount: number = applicationEmissions.reduce((acc, emission) => acc + emission.amount, 0);
     const hydrogenTransportEmissionAmount: number = applicationEmissions.find((e) => e.name === 'eht')?.amount ?? 0;
 
-    const regulatoryEmissions: ProofOfSustainabilityProcessStepEmissionEntity[] =
+    const regulatoryEmissions: ProofOfSustainabilityEmissionEntity[] =
       EmissionAssembler.assembleRegulatoryEmissions(
         hydrogenProductionEmissionAmount,
         applicationEmissionAmount,
         hydrogenTransportEmissionAmount,
       );
-    const processStepEmissions: ProofOfSustainabilityProcessStepEmissionEntity[] = [
+    const processStepEmissions: ProofOfSustainabilityEmissionEntity[] = [
       ...applicationEmissions,
       ...regulatoryEmissions,
     ];
@@ -308,14 +308,14 @@ export class EmissionAssembler {
 
   private static assembleApplicationEmissions(
     emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
-  ): ProofOfSustainabilityProcessStepEmissionEntity[] {
+  ): ProofOfSustainabilityEmissionEntity[] {
     const calculateTotalEmissionAmountByCalculationTopic = (calculationTopic: CalculationTopic): number =>
       emissionCalculations
         .filter((emissionCalculation) => emissionCalculation.calculationTopic === calculationTopic)
         .reduce((acc, emissionCalculation) => acc + (emissionCalculation.result ?? 0), 0);
 
     const powerSupplyEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(CalculationTopic.POWER_SUPPLY);
-    const powerSupplyEmission = new ProofOfSustainabilityProcessStepEmissionEntity(
+    const powerSupplyEmission = new ProofOfSustainabilityEmissionEntity(
       powerSupplyEmissionAmount,
       'eps',
       'Power Supply',
@@ -323,7 +323,7 @@ export class EmissionAssembler {
     );
 
     const waterSupplyEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(CalculationTopic.WATER_SUPPLY);
-    const waterSupplyEmission = new ProofOfSustainabilityProcessStepEmissionEntity(
+    const waterSupplyEmission = new ProofOfSustainabilityEmissionEntity(
       waterSupplyEmissionAmount,
       'ews',
       'Water Supply',
@@ -333,7 +333,7 @@ export class EmissionAssembler {
     const hydrogenStorageEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(
       CalculationTopic.HYDROGEN_STORAGE,
     );
-    const hydrogenStorageEmission = new ProofOfSustainabilityProcessStepEmissionEntity(
+    const hydrogenStorageEmission = new ProofOfSustainabilityEmissionEntity(
       hydrogenStorageEmissionAmount,
       'ehs',
       'Hydrogen Storage',
@@ -343,7 +343,7 @@ export class EmissionAssembler {
     const hydrogenBottlingEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(
       CalculationTopic.HYDROGEN_BOTTLING,
     );
-    const hydrogenBottlingEmission = new ProofOfSustainabilityProcessStepEmissionEntity(
+    const hydrogenBottlingEmission = new ProofOfSustainabilityEmissionEntity(
       hydrogenBottlingEmissionAmount,
       'ehb',
       'Hydrogen Bottling',
@@ -353,7 +353,7 @@ export class EmissionAssembler {
     const hydrogenTransportationEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(
       CalculationTopic.HYDROGEN_TRANSPORTATION,
     );
-    const hydrogenTransportationEmission = new ProofOfSustainabilityProcessStepEmissionEntity(
+    const hydrogenTransportationEmission = new ProofOfSustainabilityEmissionEntity(
       hydrogenTransportationEmissionAmount,
       'eht',
       'Hydrogen Transportation',
@@ -373,22 +373,22 @@ export class EmissionAssembler {
     hydrogenProductionEmissionAmount: number,
     applicationEmissionAmount: number,
     hydrogenTransportEmissionAmount: number,
-  ): ProofOfSustainabilityProcessStepEmissionEntity[] {
-    const ei = new ProofOfSustainabilityProcessStepEmissionEntity(
+  ): ProofOfSustainabilityEmissionEntity[] {
+    const ei = new ProofOfSustainabilityEmissionEntity(
       hydrogenProductionEmissionAmount,
       'ei',
       'Supply of Inputs',
       'REGULATORY',
     );
 
-    const ep = new ProofOfSustainabilityProcessStepEmissionEntity(
+    const ep = new ProofOfSustainabilityEmissionEntity(
       applicationEmissionAmount - hydrogenProductionEmissionAmount - hydrogenTransportEmissionAmount,
       'ep',
       'Processing',
       'REGULATORY',
     );
 
-    const etd = new ProofOfSustainabilityProcessStepEmissionEntity(
+    const etd = new ProofOfSustainabilityEmissionEntity(
       hydrogenTransportEmissionAmount,
       'etd',
       'Transport and Distribution',

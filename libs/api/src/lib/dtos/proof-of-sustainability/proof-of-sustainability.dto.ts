@@ -9,7 +9,7 @@
 import {
   ProofOfSustainabilityEmissionCalculationEntity,
   ProofOfSustainabilityEntity,
-  ProofOfSustainabilityProcessStepEmissionEntity,
+  ProofOfSustainabilityEmissionEntity,
 } from '@h2-trust/amqp';
 import { EmissionCalculationDto } from './emission-calculation.dto';
 import { EmissionForProcessStepDto } from './process-step-emission.dto';
@@ -37,7 +37,7 @@ export class ProofOfSustainabilityDto {
 
   static fromEntity(entity: ProofOfSustainabilityEntity): ProofOfSustainabilityDto {
     const calculations = (entity.calculations ?? []).map(this.toEmissionCalculationDto);
-    const emissions = (entity.processStepEmissions ?? []).map(this.toProcessStepEmissionDto);
+    const emissions = (entity.emissions ?? []).map(this.toProcessStepEmissionDto);
 
     return new ProofOfSustainabilityDto(
       entity.batchId,
@@ -61,13 +61,13 @@ export class ProofOfSustainabilityDto {
   }
 
   private static toProcessStepEmissionDto(
-    emission: ProofOfSustainabilityProcessStepEmissionEntity,
+    emission: ProofOfSustainabilityEmissionEntity,
   ): EmissionForProcessStepDto {
     return new EmissionForProcessStepDto(
       emission.amount,
       emission.name,
       emission.description,
-      emission.processStepType,
+      emission.emissionType,
     );
   }
 }

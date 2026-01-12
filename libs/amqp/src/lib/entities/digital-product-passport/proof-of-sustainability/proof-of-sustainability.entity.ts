@@ -7,26 +7,26 @@
  */
 
 import { ProofOfSustainabilityEmissionCalculationEntity } from './proof-of-sustainability-emission-calculation.entity';
-import { ProofOfSustainabilityProcessStepEmissionEntity } from './proof-of-sustainability-process-step-emission.entity';
+import { ProofOfSustainabilityEmissionEntity } from './proof-of-sustainability-emission.entity';
 
 export class ProofOfSustainabilityEntity {
   batchId: string;
   amountCO2PerMJH2: number;
   emissionReductionPercentage: number;
   calculations: ProofOfSustainabilityEmissionCalculationEntity[];
-  processStepEmissions: ProofOfSustainabilityProcessStepEmissionEntity[];
+  emissions: ProofOfSustainabilityEmissionEntity[];
 
   constructor(
     batchId: string,
     amountCO2PerMJH2: number,
     emissionReductionPercentage: number,
     calculations: ProofOfSustainabilityEmissionCalculationEntity[],
-    processStepEmissions: ProofOfSustainabilityProcessStepEmissionEntity[],
+    emissions: ProofOfSustainabilityEmissionEntity[],
   ) {
     this.batchId = batchId;
     this.amountCO2PerMJH2 = amountCO2PerMJH2;
     this.emissionReductionPercentage = emissionReductionPercentage;
     this.calculations = calculations;
-    this.processStepEmissions = processStepEmissions;
+    this.emissions = emissions;
   }
 }

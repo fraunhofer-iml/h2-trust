@@ -6,23 +6,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export type ProofOfSustainabilityProcessStepType = 'APPLICATION' | 'REGULATORY';
+export type ProofOfSustainabilityEmissionType = 'APPLICATION' | 'REGULATORY';
 
-export class ProofOfSustainabilityProcessStepEmissionEntity {
+export class ProofOfSustainabilityEmissionEntity {
   amount: number;
   name: string;
   description: string;
-  processStepType: ProofOfSustainabilityProcessStepType;
+  emissionType: ProofOfSustainabilityEmissionType;
 
   constructor(
     amount: number,
     name: string,
     description: string,
-    processStepType: ProofOfSustainabilityProcessStepType,
+    emissionType: ProofOfSustainabilityEmissionType,
   ) {
     this.amount = amount;
     this.name = name;
     this.description = description;
-    this.processStepType = processStepType;
+    this.emissionType = emissionType;
   }
 }
