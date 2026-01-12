@@ -13,7 +13,7 @@ import {
   BrokerQueues,
   CreateHydrogenBottlingPayload,
   CreateHydrogenTransportationPayload,
-  DigitalProductPassportGeneralInformationEntity,
+  GeneralInformationEntity,
   DigitalProductPassportPatterns,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
@@ -89,7 +89,7 @@ export class BottlingService {
   }
 
   async readGeneralInformation(id: string): Promise<GeneralInformationDto> {
-    const generalInformation: DigitalProductPassportGeneralInformationEntity = await firstValueFrom(
+    const generalInformation: GeneralInformationEntity = await firstValueFrom(
       this.processSvc.send(DigitalProductPassportPatterns.READ_GENERAL_INFORMATION, new ReadByIdPayload(id)),
     );
     return GeneralInformationDto.toGeneralInformationDto(generalInformation);

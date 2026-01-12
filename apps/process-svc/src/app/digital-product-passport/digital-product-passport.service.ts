@@ -11,7 +11,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
-  DigitalProductPassportGeneralInformationEntity,
+  GeneralInformationEntity,
   DocumentEntity,
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEmissionComputationEntity,
@@ -39,7 +39,7 @@ export class DigitalProductPassportService {
     private readonly proofOfOriginService: ProofOfOriginService,
   ) {}
 
-  async readGeneralInformation(processStepId: string): Promise<DigitalProductPassportGeneralInformationEntity> {
+  async readGeneralInformation(processStepId: string): Promise<GeneralInformationEntity> {
     const processStep = await this.processStepService.readProcessStep(processStepId);
 
     const [producerName, hydrogenComposition, redCompliance] = await Promise.all([
@@ -52,7 +52,7 @@ export class DigitalProductPassportService {
 
     const attachedFiles: DocumentEntity[] = processStep.documents ?? [];
 
-    return new DigitalProductPassportGeneralInformationEntity(
+    return new GeneralInformationEntity(
       processStep.id,
       processStep.endedAt,
       processStep.batch?.owner?.name,

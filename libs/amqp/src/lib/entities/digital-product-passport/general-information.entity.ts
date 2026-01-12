@@ -10,7 +10,7 @@ import { HydrogenComponentEntity } from '../bottling';
 import { RedComplianceEntity } from '../compliance';
 import { DocumentEntity } from '../document';
 
-export class DigitalProductPassportGeneralInformationEntity {
+export class GeneralInformationEntity {
   id: string;
   filledAt: Date;
   owner?: string;

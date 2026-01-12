@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DigitalProductPassportGeneralInformationEntity } from '@h2-trust/amqp';
+import { GeneralInformationEntity } from '@h2-trust/amqp';
 import { FileInfoDto } from '../file/file-info.dto';
 import { BottlingOverviewDto } from './bottling-overview.dto';
 import { HydrogenComponentDto } from './hydrogen-component.dto';
@@ -38,7 +38,7 @@ export class GeneralInformationDto extends BottlingOverviewDto {
     this.redCompliance = redCompliance;
   }
 
-  static toGeneralInformationDto(entity: DigitalProductPassportGeneralInformationEntity): GeneralInformationDto {
+  static toGeneralInformationDto(entity: GeneralInformationEntity): GeneralInformationDto {
     const hydrogenComposition = (entity.hydrogenComposition ?? []).map(HydrogenComponentDto.of);
     const attachedFiles = (entity.attachedFiles ?? []).map(
       (document) => new FileInfoDto(document.description, document.location),

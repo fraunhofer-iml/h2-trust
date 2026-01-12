@@ -9,7 +9,7 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
-  DigitalProductPassportGeneralInformationEntity,
+  GeneralInformationEntity,
   DigitalProductPassportPatterns,
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEntity,
@@ -22,7 +22,7 @@ export class DigitalProductPassportController {
   constructor(private readonly digitalProductPassportService: DigitalProductPassportService) {}
 
   @MessagePattern(DigitalProductPassportPatterns.READ_GENERAL_INFORMATION)
-  async readGeneralInformation(payload: ReadByIdPayload): Promise<DigitalProductPassportGeneralInformationEntity> {
+  async readGeneralInformation(payload: ReadByIdPayload): Promise<GeneralInformationEntity> {
     return this.digitalProductPassportService.readGeneralInformation(payload.id);
   }
 
