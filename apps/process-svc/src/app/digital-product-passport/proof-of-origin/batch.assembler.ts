@@ -11,7 +11,7 @@ import { EmissionDto, HydrogenBatchDto, PowerBatchDto, WaterBatchDto, WaterDetai
 import { EnergySource, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
 
 export class BatchAssembler {
-  static assemblePowerSupplyBatchDto(
+  static assemblePowerSupply(
     powerProduction: ProcessStepEntity,
     energySource: string,
     emission?: EmissionDto,
@@ -30,7 +30,7 @@ export class BatchAssembler {
     );
   }
 
-  static assembleWaterSupplyBatchDto(waterConsumption: ProcessStepEntity, emission?: EmissionDto): WaterBatchDto {
+  static assembleWaterSupply(waterConsumption: ProcessStepEntity, emission?: EmissionDto): WaterBatchDto {
     return new WaterBatchDto(
       waterConsumption.batch.id,
       emission,
@@ -41,7 +41,7 @@ export class BatchAssembler {
     );
   }
 
-  static assembleHydrogenStorageBatchDto(hydrogenStorage: ProcessStepEntity, emission?: EmissionDto): HydrogenBatchDto {
+  static assembleHydrogenStorage(hydrogenStorage: ProcessStepEntity, emission?: EmissionDto): HydrogenBatchDto {
     return new HydrogenBatchDto(
       hydrogenStorage.batch.id,
       emission,
@@ -66,7 +66,7 @@ export class BatchAssembler {
     );
   }
 
-  static assembleHydrogenBottlingBatchDto(
+  static assembleHydrogenBottling(
     hydrogenBottling: ProcessStepEntity,
     hydrogenComposition: HydrogenComponentEntity[],
     emission?: EmissionDto,
@@ -90,7 +90,7 @@ export class BatchAssembler {
     );
   }
 
-  static assembleHydrogenTransportationBatchDto(
+  static assembleHydrogenTransportation(
     hydrogenTransportation: ProcessStepEntity,
     hydrogenComposition: HydrogenComponentEntity[],
     emission?: EmissionDto,

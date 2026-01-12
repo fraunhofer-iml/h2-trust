@@ -29,12 +29,8 @@ import {
   UNIT_G_CO2_PER_KG_H2,
 } from '@h2-trust/domain';
 
-export class EmissionCalculationAssembler {
-  static assemblePowerSupplyCalculation(
-    powerProduction: ProcessStepEntity,
-    energySource: EnergySource,
-    hydrogenAmount: number,
-  ): EmissionCalculationDto {
+export class EmissionAssembler {
+  static assemblePowerSupply(powerProduction: ProcessStepEntity, energySource: EnergySource, hydrogenAmount: number): EmissionCalculationDto {
     if (powerProduction?.type !== ProcessType.POWER_PRODUCTION) {
       throw new Error(`Invalid process step type [${powerProduction?.type}] for power supply emission calculation`);
     }
@@ -59,10 +55,7 @@ export class EmissionCalculationAssembler {
     return new EmissionCalculationDto(label, basisOfCalculation, result, unit, calculationTopic);
   }
 
-  static assembleWaterSupplyCalculation(
-    waterSupply: ProcessStepEntity,
-    hydrogenAmount: number,
-  ): EmissionCalculationDto {
+  static assembleWaterSupply(waterSupply: ProcessStepEntity, hydrogenAmount: number): EmissionCalculationDto {
     if (waterSupply?.type !== ProcessType.WATER_CONSUMPTION) {
       throw new Error(`Invalid process step type [${waterSupply?.type}] for water supply emission calculation`);
     }
@@ -87,7 +80,7 @@ export class EmissionCalculationAssembler {
     return new EmissionCalculationDto(label, basisOfCalculation, result, unit, calculationTopic);
   }
 
-  static assembleHydrogenStorageCalculation(hydrogenProduction: ProcessStepEntity): EmissionCalculationDto {
+  static assembleHydrogenStorage(hydrogenProduction: ProcessStepEntity): EmissionCalculationDto {
     if (hydrogenProduction?.type !== ProcessType.HYDROGEN_PRODUCTION) {
       throw new Error(
         `Invalid process step type [${hydrogenProduction?.type}] for hydrogen storage emission calculation`,
@@ -112,7 +105,7 @@ export class EmissionCalculationAssembler {
     return new EmissionCalculationDto(label, basisOfCalculation, result, unit, calculationTopic);
   }
 
-  static assembleHydrogenBottlingCalculation(_hydrogenBottling: ProcessStepEntity): EmissionCalculationDto {
+  static assembleHydrogenBottling(_hydrogenBottling: ProcessStepEntity): EmissionCalculationDto {
     if (_hydrogenBottling?.type !== ProcessType.HYDROGEN_BOTTLING) {
       throw new Error(
         `Invalid process step type [${_hydrogenBottling?.type}] for hydrogen bottling emission calculation`,
@@ -131,7 +124,7 @@ export class EmissionCalculationAssembler {
     return new EmissionCalculationDto(label, basisOfCalculation, result, unit, calculationTopic);
   }
 
-  static assembleHydrogenTransportationCalculation(processStep: ProcessStepEntity): EmissionCalculationDto {
+  static assembleHydrogenTransportation(processStep: ProcessStepEntity): EmissionCalculationDto {
     if (processStep?.type !== ProcessType.HYDROGEN_TRANSPORTATION) {
       throw new Error(
         `Invalid process step type [${processStep?.type}] for hydrogen transportation emission calculation`,
@@ -143,10 +136,10 @@ export class EmissionCalculationAssembler {
 
     switch (transportMode) {
       case TransportMode.PIPELINE:
-        emissionCalculation = this.assemblePipelineCalculation();
+        emissionCalculation = this.assemblePipeline();
         break;
       case TransportMode.TRAILER:
-        emissionCalculation = this.assembleTrailerCalculation(
+        emissionCalculation = this.assembleTrailer(
           processStep.batch.amount,
           processStep.transportationDetails.fuelType,
           processStep.transportationDetails.distance,
@@ -159,7 +152,7 @@ export class EmissionCalculationAssembler {
     return emissionCalculation;
   }
 
-  private static assemblePipelineCalculation(): EmissionCalculationDto {
+  private static assemblePipeline(): EmissionCalculationDto {
     const label = 'Emissions (Transportation with Pipeline)';
 
     const result = 0;
@@ -172,7 +165,7 @@ export class EmissionCalculationAssembler {
     return new EmissionCalculationDto(label, basisOfCalculation, result, unit, calculationTopic);
   }
 
-  private static assembleTrailerCalculation(
+  private static assembleTrailer(
     amount: number,
     fuelType: FuelType,
     transportDistance: number,
@@ -230,7 +223,7 @@ export class EmissionCalculationAssembler {
 
   static assembleComputationResult(emissionCalculations: EmissionCalculationDto[]): EmissionComputationResultDto {
     const applicationEmissions: EmissionForProcessStepDto[] =
-      EmissionCalculationAssembler.assembleApplicationEmissions(emissionCalculations);
+      EmissionAssembler.assembleApplicationEmissions(emissionCalculations);
 
     const hydrogenProductionEmissionAmount: number = applicationEmissions
       .filter((e) => e.name === 'eps' || e.name === 'ews')
@@ -239,7 +232,7 @@ export class EmissionCalculationAssembler {
     const applicationEmissionAmount: number = applicationEmissions.reduce((acc, emission) => acc + emission.amount, 0);
     const hydrogenTransportEmissionAmount: number = applicationEmissions.find((e) => e.name === 'eht')?.amount ?? 0;
 
-    const regulatoryEmissions: EmissionForProcessStepDto[] = EmissionCalculationAssembler.assembleRegulatoryEmissions(
+    const regulatoryEmissions: EmissionForProcessStepDto[] = EmissionAssembler.assembleRegulatoryEmissions(
       hydrogenProductionEmissionAmount,
       applicationEmissionAmount,
       hydrogenTransportEmissionAmount,

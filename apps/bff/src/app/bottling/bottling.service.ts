@@ -95,7 +95,7 @@ export class BottlingService {
 
   async readProofOfOrigin(id: string): Promise<SectionDto[]> {
     const proofOfOrigin = await firstValueFrom(
-      this.processSvc.send(DigitalProductPassportPatterns.BUILD_PROOF_OF_ORIGIN, new ReadByIdPayload(id)),
+      this.processSvc.send(DigitalProductPassportPatterns.READ_PROOF_OF_ORIGIN, new ReadByIdPayload(id)),
     );
     // TODO-MP: introduce dto and mapper
     //return ProofOfOriginDto.fromEntity(proofOfOrigin);
@@ -104,7 +104,7 @@ export class BottlingService {
 
   async readProofOfSustainability(id: string): Promise<ProofOfSustainabilityDto> {
     const proofOfSustainability = await firstValueFrom(
-      this.processSvc.send(DigitalProductPassportPatterns.BUILD_PROOF_OF_SUSTAINABILITY, new ReadByIdPayload(id)),
+      this.processSvc.send(DigitalProductPassportPatterns.READ_PROOF_OF_SUSTAINABILITY, new ReadByIdPayload(id)),
     );
     // TODO-MP: introduce mapper
     //return ProofOfSustainabilityDto.fromEntity(proofOfSustainability);

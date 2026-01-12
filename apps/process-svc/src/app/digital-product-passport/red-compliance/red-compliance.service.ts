@@ -22,9 +22,9 @@ import { RedCompliancePairingService } from './red-compliance.pairs.service';
 @Injectable()
 export class RedComplianceService {
   constructor(
-    private readonly pairingService: RedCompliancePairingService,
+    private readonly redCompliancePairingService: RedCompliancePairingService,
     private readonly provenanceService: ProvenanceService,
-  ) {}
+  ) { }
 
   async determineRedCompliance(payload: ReadByIdPayload): Promise<RedComplianceEntity> {
     const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(payload);
@@ -34,7 +34,7 @@ export class RedComplianceService {
       throw new RpcException(message);
     }
 
-    const pairs: MatchedProductionPair[] = await this.pairingService.buildMatchedPairs(
+    const pairs: MatchedProductionPair[] = await this.redCompliancePairingService.buildMatchedPairs(
       provenance.powerProductions,
       provenance.hydrogenProductions,
       payload.id,

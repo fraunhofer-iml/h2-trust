@@ -8,6 +8,6 @@
 
 export enum DigitalProductPassportPatterns {
   READ_GENERAL_INFORMATION = 'digital-product-passport.read-general-information',
-  BUILD_PROOF_OF_ORIGIN = 'digital-product-passport.build-proof-of-origin',
-  BUILD_PROOF_OF_SUSTAINABILITY = 'digital-product-passport.build-proof-of-sustainability',
+  READ_PROOF_OF_ORIGIN = 'digital-product-passport.read-proof-of-origin',
+  READ_PROOF_OF_SUSTAINABILITY = 'digital-product-passport.read-proof-of-sustainability',
 }

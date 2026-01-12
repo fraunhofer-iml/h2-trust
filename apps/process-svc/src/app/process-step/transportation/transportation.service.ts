@@ -8,18 +8,15 @@
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateHydrogenTransportationPayload, ProcessStepEntity, TransportationDetailsEntity } from '@h2-trust/amqp';
-import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
 import { BatchType, FuelType, ProcessType, TransportMode } from '@h2-trust/domain';
+import { ProcessStepService } from '../process-step.service';
 
 @Injectable()
 export class TransportationService {
-  constructor(
-    private readonly batchRepository: BatchRepository,
-    private readonly processStepRepository: ProcessStepRepository,
-  ) {}
+  constructor(private readonly processStepService: ProcessStepService) { }
 
   async createHydrogenTransportationProcessStep(
-    payload: CreateHydrogenTransportationPayload,
+    payload: CreateHydrogenTransportationPayload
   ): Promise<ProcessStepEntity> {
     const transportationDetails: TransportationDetailsEntity = this.buildTransportationDetails(
       payload.transportMode,
@@ -38,14 +35,14 @@ export class TransportationService {
       transportationDetails,
     };
 
-    await this.batchRepository.setBatchesInactive([payload.predecessorBatch.id]);
-    return this.processStepRepository.insertProcessStep(transportation);
+    await this.processStepService.setBatchesInactive([payload.predecessorBatch.id]);
+    return this.processStepService.createProcessStep(transportation);
   }
 
   private buildTransportationDetails(
     transportMode: TransportMode,
     distance: number,
-    fuelType: FuelType,
+    fuelType: FuelType
   ): TransportationDetailsEntity {
     let output: TransportationDetailsEntity;
 

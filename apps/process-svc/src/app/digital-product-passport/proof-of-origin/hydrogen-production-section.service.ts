@@ -31,7 +31,7 @@ export class HydrogenProductionSectionService {
     if (powerProductions?.length) {
       const energySourceClassifications: ClassificationDto[] =
         await this.powerSupplyClassificationService.buildPowerSupplyClassifications(powerProductions, hydrogenAmount);
-      const powerSupplyClassification: ClassificationDto = ClassificationAssembler.assemblePowerClassification(
+      const powerSupplyClassification: ClassificationDto = ClassificationAssembler.assemblePower(
         ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION,
         [],
         energySourceClassifications,

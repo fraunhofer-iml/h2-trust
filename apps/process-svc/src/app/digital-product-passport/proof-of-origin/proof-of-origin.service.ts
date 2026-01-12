@@ -26,7 +26,7 @@ export class ProofOfOriginService {
     private readonly provenanceService: ProvenanceService,
   ) {}
 
-  async buildProofOfOrigin(payload: ReadByIdPayload): Promise<SectionDto[]> {
+  async readProofOfOrigin(payload: ReadByIdPayload): Promise<SectionDto[]> {
     const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(payload);
     const sectionPromises: Array<Promise<SectionDto>> = [];
 

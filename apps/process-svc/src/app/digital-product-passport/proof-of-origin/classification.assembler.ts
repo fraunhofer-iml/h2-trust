@@ -11,31 +11,31 @@ import { BatchDto, ClassificationDto, ClassificationType } from '@h2-trust/api';
 import { BatchType, MeasurementUnit } from '@h2-trust/domain';
 
 export class ClassificationAssembler {
-  static assemblePowerClassification(
+  static assemblePower(
     classificationName: string,
-    batchDtos?: BatchDto[],
-    nestedClassificationDtos?: ClassificationDto[],
+    batches?: BatchDto[],
+    nestedClassifications?: ClassificationDto[],
   ): ClassificationDto {
     return this.assembleClassification(
       classificationName,
       MeasurementUnit.POWER,
       BatchType.POWER,
-      batchDtos,
-      nestedClassificationDtos,
+      batches,
+      nestedClassifications,
     );
   }
 
-  static assembleHydrogenClassification(
+  static assembleHydrogen(
     classificationName: string,
-    batchDtos?: BatchDto[],
-    nestedClassificationDtos?: ClassificationDto[],
+    batches?: BatchDto[],
+    nestedClassifications?: ClassificationDto[],
   ): ClassificationDto {
     return this.assembleClassification(
       classificationName,
       MeasurementUnit.HYDROGEN,
       BatchType.HYDROGEN,
-      batchDtos,
-      nestedClassificationDtos,
+      batches,
+      nestedClassifications,
     );
   }
 
@@ -43,38 +43,38 @@ export class ClassificationAssembler {
     classificationName: string,
     measurementUnit: MeasurementUnit,
     classificationType: ClassificationType,
-    batchDtos: BatchDto[] = [],
-    nestedClassificationDtos: ClassificationDto[] = [],
+    batches: BatchDto[] = [],
+    nestedClassifications: ClassificationDto[] = [],
   ): ClassificationDto {
     return new ClassificationDto(
       classificationName,
-      this.calculateClassificationEmission(batchDtos, nestedClassificationDtos),
-      this.calculateClassificationAmount(batchDtos, nestedClassificationDtos),
+      this.calculateEmission(batches, nestedClassifications),
+      this.calculateAmount(batches, nestedClassifications),
       null, // TBA
-      batchDtos,
-      nestedClassificationDtos,
+      batches,
+      nestedClassifications,
       measurementUnit,
       classificationType,
     );
   }
 
-  private static calculateClassificationAmount(
-    batchDtos: BatchDto[],
-    nestedClassificationDtos: ClassificationDto[],
+  private static calculateEmission(
+    batches: BatchDto[],
+    nestedClassifications: ClassificationDto[],
   ): number {
-    return Util.sumAmounts(batchDtos) || Util.sumAmounts(nestedClassificationDtos);
-  }
+    const batchEmissionSum = (batches || []).map((b) => b.emission?.amountCO2PerKgH2 ?? 0).reduce((a, b) => a + b, 0);
 
-  private static calculateClassificationEmission(
-    batchDtos: BatchDto[],
-    nestedClassificationDtos: ClassificationDto[],
-  ): number {
-    const batchEmissionSum = (batchDtos || []).map((b) => b.emission?.amountCO2PerKgH2 ?? 0).reduce((a, b) => a + b, 0);
-
-    const nestedEmissionSum = (nestedClassificationDtos || [])
+    const nestedEmissionSum = (nestedClassifications || [])
       .map((c) => c.emissionOfProcessStep ?? 0)
       .reduce((a, b) => a + b, 0);
 
     return batchEmissionSum + nestedEmissionSum;
+  }
+
+  private static calculateAmount(
+    batches: BatchDto[],
+    nestedClassifications: ClassificationDto[],
+  ): number {
+    return Util.sumAmounts(batches) || Util.sumAmounts(nestedClassifications);
   }
 }

@@ -19,7 +19,7 @@ import {
 import { HydrogenColor, ProofOfOrigin } from '@h2-trust/domain';
 import { BatchAssembler } from './batch.assembler';
 import { ClassificationAssembler } from './classification.assembler';
-import { EmissionCalculationAssembler } from './emission.assembler';
+import { EmissionAssembler } from './emission.assembler';
 
 @Injectable()
 export class HydrogenStorageSectionService {
@@ -42,18 +42,18 @@ export class HydrogenStorageSectionService {
       const batchesForHydrogenColor: BatchDto[] = await Promise.all(
         hydrogenProductionsByHydrogenColor.map(async (hydrogenProduction) => {
           const emissionCalculation: EmissionCalculationDto =
-            EmissionCalculationAssembler.assembleHydrogenStorageCalculation(hydrogenProduction);
+            EmissionAssembler.assembleHydrogenStorage(hydrogenProduction);
           const hydrogenKgEquivalent: number = hydrogenProduction.batch.amount;
-          const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(
+          const emission: EmissionDto = EmissionAssembler.assembleEmissionDto(
             emissionCalculation,
             hydrogenKgEquivalent,
           );
-          const batch: HydrogenBatchDto = BatchAssembler.assembleHydrogenStorageBatchDto(hydrogenProduction, emission);
+          const batch: HydrogenBatchDto = BatchAssembler.assembleHydrogenStorage(hydrogenProduction, emission);
           return batch;
         }),
       );
 
-      const classification: ClassificationDto = ClassificationAssembler.assembleHydrogenClassification(
+      const classification: ClassificationDto = ClassificationAssembler.assembleHydrogen(
         hydrogenColor,
         batchesForHydrogenColor,
       );

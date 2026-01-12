@@ -16,57 +16,47 @@ import {
   ReadProcessStepsByTypesAndActiveAndCompanyPayload,
 } from '@h2-trust/amqp';
 import { ConfigurationService, MinioConfiguration } from '@h2-trust/configuration';
-import { ProcessStepRepository } from '@h2-trust/database';
+import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
 import { ProcessType } from '@h2-trust/domain';
 
 @Injectable()
 export class ProcessStepService {
   constructor(
-    private readonly repository: ProcessStepRepository,
     private readonly configurationService: ConfigurationService,
-  ) {}
+    private readonly batchRepository: BatchRepository,
+    private readonly processStepRepository: ProcessStepRepository,
+  ) { }
 
-  async readProcessStepsByPredecessorTypesAndCompany(
-    payload: ReadProcessStepsByPredecessorTypesAndCompanyPayload,
-  ): Promise<ProcessStepEntity[]> {
-    return this.repository.findProcessStepsByPredecessorTypesAndCompany(
-      payload.predecessorProcessTypes,
-      payload.companyId,
-    );
+  async createProcessStep(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
+    return this.processStepRepository.insertProcessStep(processStep);
   }
 
-  async readProcessStepsByTypesAndActiveAndCompany(
-    payload: ReadProcessStepsByTypesAndActiveAndCompanyPayload,
-  ): Promise<ProcessStepEntity[]> {
-    return this.repository.findProcessStepsByTypesAndActiveAndCompany(
-      payload.processTypes,
-      payload.active,
-      payload.companyId,
-    );
+  async createManyProcessSteps(payload: CreateManyProcessStepsPayload): Promise<ProcessStepEntity[]> {
+    return this.processStepRepository.insertManyProcessSteps(payload.processSteps);
   }
 
   async readProcessStep(payload: ReadByIdPayload): Promise<ProcessStepEntity> {
-    const processStep: ProcessStepEntity = await this.repository.findProcessStep(payload.id);
+    const processStep: ProcessStepEntity = await this.processStepRepository.findProcessStep(payload.id);
 
     if (processStep.type === ProcessType.HYDROGEN_TRANSPORTATION) {
-      const predecessorProcessStep = await this.fetchPredecessorProcessStep(
+      const predecessorProcessStep = await this.readPredecessorProcessStep(
         processStep.batch.predecessors[0]?.processStepId,
       );
-      processStep.documents = await this.updateDocuments(predecessorProcessStep);
+      processStep.documents = await this.assembleDocuments(predecessorProcessStep);
     } else {
-      processStep.documents = await this.updateDocuments(processStep);
+      processStep.documents = await this.assembleDocuments(processStep);
     }
 
     return processStep;
   }
 
-  private async fetchPredecessorProcessStep(predecessorProcessStepId: string): Promise<ProcessStepEntity> {
+  private async readPredecessorProcessStep(predecessorProcessStepId: string): Promise<ProcessStepEntity> {
     if (!predecessorProcessStepId) {
       const errorMessage = 'ProcessStepId of predecessor is missing.';
       throw new Error(errorMessage);
     }
 
-    const predecessorProcessStep: ProcessStepEntity = await this.repository.findProcessStep(predecessorProcessStepId);
+    const predecessorProcessStep: ProcessStepEntity = await this.processStepRepository.findProcessStep(predecessorProcessStepId);
 
     if (predecessorProcessStep.type !== ProcessType.HYDROGEN_BOTTLING) {
       const errorMessage = `Expected process type of predecessor to be ${ProcessType.HYDROGEN_BOTTLING}, but got ${predecessorProcessStep.type}.`;
@@ -76,7 +66,7 @@ export class ProcessStepService {
     return predecessorProcessStep;
   }
 
-  private async updateDocuments(processStep: ProcessStepEntity): Promise<DocumentEntity[]> {
+  private async assembleDocuments(processStep: ProcessStepEntity): Promise<DocumentEntity[]> {
     const documents: DocumentEntity[] = [];
     const minio: MinioConfiguration = this.configurationService.getGlobalConfiguration().minio;
 
@@ -93,7 +83,30 @@ export class ProcessStepService {
     return documents;
   }
 
-  async createManyProcessSteps(payload: CreateManyProcessStepsPayload): Promise<ProcessStepEntity[]> {
-    return this.repository.insertManyProcessSteps(payload.processSteps);
+  async readAllProcessStepsFromStorageUnit(hydrogenStorageUnitId: string): Promise<ProcessStepEntity[]> {
+    return this.processStepRepository.findAllProcessStepsFromStorageUnit(hydrogenStorageUnitId);
+  }
+
+  async readProcessStepsByPredecessorTypesAndCompany(
+    payload: ReadProcessStepsByPredecessorTypesAndCompanyPayload,
+  ): Promise<ProcessStepEntity[]> {
+    return this.processStepRepository.findProcessStepsByPredecessorTypesAndCompany(
+      payload.predecessorProcessTypes,
+      payload.companyId,
+    );
+  }
+
+  async readProcessStepsByTypesAndActiveAndCompany(
+    payload: ReadProcessStepsByTypesAndActiveAndCompanyPayload,
+  ): Promise<ProcessStepEntity[]> {
+    return this.processStepRepository.findProcessStepsByTypesAndActiveAndCompany(
+      payload.processTypes,
+      payload.active,
+      payload.companyId,
+    );
+  }
+
+  async setBatchesInactive(batchIds: string[]): Promise<{ count: number }> {
+    return this.batchRepository.setBatchesInactive(batchIds);
   }
 }

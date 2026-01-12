@@ -19,7 +19,7 @@ import {
 } from '@h2-trust/api';
 import { BottlingService } from '../process-step/bottling/bottling.service';
 import { ProcessStepService } from '../process-step/process-step.service';
-import { EmissionComputationService } from './proof-of-origin/emission-computation.service';
+import { EmissionService } from './proof-of-origin/emission.service';
 import { ProofOfOriginService } from './proof-of-origin/proof-of-origin.service';
 import { ProvenanceService } from './provenance/provenance.service';
 import { RedComplianceService } from './red-compliance/red-compliance.service';
@@ -28,7 +28,7 @@ import { RedComplianceService } from './red-compliance/red-compliance.service';
 export class DigitalProductPassportService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
-    private readonly emissionComputationService: EmissionComputationService,
+    private readonly emissionService: EmissionService,
     private readonly provenanceService: ProvenanceService,
     private readonly redComplianceService: RedComplianceService,
     private readonly processStepService: ProcessStepService,
@@ -46,7 +46,7 @@ export class DigitalProductPassportService {
         this.generalSvc.send(UserMessagePatterns.READ, new ReadByIdPayload(generalInformation.producer)),
       ).then((user) => user.company.name),
       this.bottlingService
-        .calculateHydrogenComposition(payload)
+        .calculateHydrogenComposition(processStep)
         .then((hydrogenCompositions) => hydrogenCompositions.map(HydrogenComponentDto.of)),
       this.redComplianceService.determineRedCompliance(payload),
     ]);
@@ -59,15 +59,15 @@ export class DigitalProductPassportService {
     };
   }
 
-  async buildProofOfOrigin(payload: ReadByIdPayload): Promise<SectionDto[]> {
-    return this.proofOfOriginService.buildProofOfOrigin(payload);
+  async readProofOfOrigin(payload: ReadByIdPayload): Promise<SectionDto[]> {
+    return this.proofOfOriginService.readProofOfOrigin(payload);
   }
 
-  async buildProofOfSustainability(payload: ReadByIdPayload): Promise<ProofOfSustainabilityDto> {
+  async readProofOfSustainability(payload: ReadByIdPayload): Promise<ProofOfSustainabilityDto> {
     const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(payload);
 
     const provenanceEmission: EmissionComputationResultDto =
-      await this.emissionComputationService.computeProvenanceEmissions(provenance);
+      await this.emissionService.computeProvenanceEmissions(provenance);
 
     return new ProofOfSustainabilityDto(
       provenance.root.id,

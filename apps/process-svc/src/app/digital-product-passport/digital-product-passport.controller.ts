@@ -14,20 +14,20 @@ import { DigitalProductPassportService } from './digital-product-passport.servic
 
 @Controller()
 export class DigitalProductPassportController {
-  constructor(private readonly digitalProductPassportService: DigitalProductPassportService) {}
+  constructor(private readonly digitalProductPassportService: DigitalProductPassportService) { }
 
   @MessagePattern(DigitalProductPassportPatterns.READ_GENERAL_INFORMATION)
   async readGeneralInformation(payload: ReadByIdPayload): Promise<GeneralInformationDto> {
     return this.digitalProductPassportService.readGeneralInformation(payload);
   }
 
-  @MessagePattern(DigitalProductPassportPatterns.BUILD_PROOF_OF_ORIGIN)
-  async buildProofOfOrigin(payload: ReadByIdPayload): Promise<SectionDto[]> {
-    return this.digitalProductPassportService.buildProofOfOrigin(payload);
+  @MessagePattern(DigitalProductPassportPatterns.READ_PROOF_OF_ORIGIN)
+  async readProofOfOrigin(payload: ReadByIdPayload): Promise<SectionDto[]> {
+    return this.digitalProductPassportService.readProofOfOrigin(payload);
   }
 
-  @MessagePattern(DigitalProductPassportPatterns.BUILD_PROOF_OF_SUSTAINABILITY)
-  async buildProofOfSustainability(payload: ReadByIdPayload): Promise<ProofOfSustainabilityDto> {
-    return this.digitalProductPassportService.buildProofOfSustainability(payload);
+  @MessagePattern(DigitalProductPassportPatterns.READ_PROOF_OF_SUSTAINABILITY)
+  async readProofOfSustainability(payload: ReadByIdPayload): Promise<ProofOfSustainabilityDto> {
+    return this.digitalProductPassportService.readProofOfSustainability(payload);
   }
 }

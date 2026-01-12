@@ -20,14 +20,14 @@ import {
 import { BatchDto, ClassificationDto, EmissionCalculationDto, EmissionDto, PowerBatchDto } from '@h2-trust/api';
 import { BatchAssembler } from './batch.assembler';
 import { ClassificationAssembler } from './classification.assembler';
-import { EmissionComputationService } from './emission-computation.service';
-import { EmissionCalculationAssembler } from './emission.assembler';
+import { EmissionService } from './emission.service';
+import { EmissionAssembler } from './emission.assembler';
 
 @Injectable()
 export class PowerSupplyClassificationService {
   constructor(
-    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
-    private readonly emissionComputationService: EmissionComputationService,
+    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
+    private readonly emissionService: EmissionService,
   ) {}
 
   async buildPowerSupplyClassifications(
@@ -52,14 +52,14 @@ export class PowerSupplyClassificationService {
         const productionPowerBatches: BatchDto[] = await Promise.all(
           powerProductionsWithUnitsByEnergySource.map(async ([powerProduction]) => {
             const [powerSupplyEmission]: EmissionCalculationDto[] =
-              await this.emissionComputationService.computePowerSupplyEmissions([powerProduction], hydrogenAmount);
+              await this.emissionService.computePowerSupplyEmissions([powerProduction], hydrogenAmount);
 
-            const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(
+            const emission: EmissionDto = EmissionAssembler.assembleEmissionDto(
               powerSupplyEmission,
               hydrogenAmount,
             );
 
-            const batch: PowerBatchDto = BatchAssembler.assemblePowerSupplyBatchDto(
+            const batch: PowerBatchDto = BatchAssembler.assemblePowerSupply(
               powerProduction,
               energySource,
               emission,
@@ -69,7 +69,7 @@ export class PowerSupplyClassificationService {
           }),
         );
 
-        const classification: ClassificationDto = ClassificationAssembler.assemblePowerClassification(
+        const classification: ClassificationDto = ClassificationAssembler.assemblePower(
           energySource,
           productionPowerBatches,
         );
@@ -82,7 +82,7 @@ export class PowerSupplyClassificationService {
 
   private async fetchEnergySources(): Promise<string[]> {
     const powerProductionTypes: PowerProductionTypeEntity[] = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION_TYPES, {}),
+      this.generalSvc.send(UnitMessagePatterns.READ_POWER_PRODUCTION_TYPES, {}),
     );
     return Array.from(new Set(powerProductionTypes.map(({ energySource }) => energySource)));
   }
@@ -94,7 +94,7 @@ export class PowerSupplyClassificationService {
     return Promise.all(
       powerProductions.map(async (powerProduction): Promise<[ProcessStepEntity, PowerProductionUnitEntity]> => {
         const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
-          this.generalService.send(UnitMessagePatterns.READ, new ReadByIdPayload(powerProduction.executedBy.id)),
+          this.generalSvc.send(UnitMessagePatterns.READ, new ReadByIdPayload(powerProduction.executedBy.id)),
         );
         return [powerProduction, powerProductionUnit];
       }),

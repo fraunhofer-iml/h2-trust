@@ -12,7 +12,7 @@ import { ClassificationDto, EmissionCalculationDto, EmissionDto, WaterBatchDto }
 import { BatchType, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
 import { BatchAssembler } from './batch.assembler';
 import { ClassificationAssembler } from './classification.assembler';
-import { EmissionCalculationAssembler } from './emission.assembler';
+import { EmissionAssembler } from './emission.assembler';
 
 @Injectable()
 export class WaterSupplyClassificationService {
@@ -23,17 +23,17 @@ export class WaterSupplyClassificationService {
     }
 
     const waterBatches: WaterBatchDto[] = waterSupplies.map((waterSupply) => {
-      const emissionCalculation: EmissionCalculationDto = EmissionCalculationAssembler.assembleWaterSupplyCalculation(
+      const emissionCalculation: EmissionCalculationDto = EmissionAssembler.assembleWaterSupply(
         waterSupply,
         hydrogenAmount,
       );
 
-      const emission: EmissionDto = EmissionCalculationAssembler.assembleEmissionDto(
+      const emission: EmissionDto = EmissionAssembler.assembleEmissionDto(
         emissionCalculation,
         hydrogenAmount,
       );
 
-      const batch: WaterBatchDto = BatchAssembler.assembleWaterSupplyBatchDto(waterSupply, emission);
+      const batch: WaterBatchDto = BatchAssembler.assembleWaterSupply(waterSupply, emission);
 
       return batch;
     });

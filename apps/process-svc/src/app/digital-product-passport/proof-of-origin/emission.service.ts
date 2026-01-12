@@ -19,10 +19,10 @@ import {
 } from '@h2-trust/amqp';
 import { EmissionCalculationDto, EmissionComputationResultDto } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
-import { EmissionCalculationAssembler } from './emission.assembler';
+import { EmissionAssembler } from './emission.assembler';
 
 @Injectable()
-export class EmissionComputationService {
+export class EmissionService {
   constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) {}
 
   async computeProvenanceEmissions(provenance: ProvenanceEntity): Promise<EmissionComputationResultDto> {
@@ -46,7 +46,7 @@ export class EmissionComputationService {
 
     if (provenance.waterConsumptions) {
       const waterConsumptions: EmissionCalculationDto[] = provenance.waterConsumptions.map((waterConsumption) =>
-        EmissionCalculationAssembler.assembleWaterSupplyCalculation(
+        EmissionAssembler.assembleWaterSupply(
           waterConsumption,
           provenance.hydrogenBottling.batch.amount,
         ),
@@ -56,13 +56,13 @@ export class EmissionComputationService {
 
     if (provenance.hydrogenProductions) {
       const hydrogenStorages: EmissionCalculationDto[] = provenance.hydrogenProductions.map((hydrogenProduction) =>
-        EmissionCalculationAssembler.assembleHydrogenStorageCalculation(hydrogenProduction),
+        EmissionAssembler.assembleHydrogenStorage(hydrogenProduction),
       );
       emissionCalculations.push(...hydrogenStorages);
     }
 
     if (provenance.hydrogenBottling) {
-      const hydrogenBottling: EmissionCalculationDto = EmissionCalculationAssembler.assembleHydrogenBottlingCalculation(
+      const hydrogenBottling: EmissionCalculationDto = EmissionAssembler.assembleHydrogenBottling(
         provenance.hydrogenBottling,
       );
       emissionCalculations.push(hydrogenBottling);
@@ -70,11 +70,11 @@ export class EmissionComputationService {
 
     if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION) {
       const hydrogenTransportation: EmissionCalculationDto =
-        EmissionCalculationAssembler.assembleHydrogenTransportationCalculation(provenance.root);
+        EmissionAssembler.assembleHydrogenTransportation(provenance.root);
       emissionCalculations.push(hydrogenTransportation);
     }
 
-    return EmissionCalculationAssembler.assembleComputationResult(emissionCalculations);
+    return EmissionAssembler.assembleComputationResult(emissionCalculations);
   }
 
   async computePowerSupplyEmissions(
@@ -100,7 +100,7 @@ export class EmissionComputationService {
 
     return powerProductions.map((powerProduction) => {
       const unit = unitsById.get(powerProduction.executedBy.id)!;
-      return EmissionCalculationAssembler.assemblePowerSupplyCalculation(
+      return EmissionAssembler.assemblePowerSupply(
         powerProduction,
         unit.type.energySource,
         hydrogenAmount,
