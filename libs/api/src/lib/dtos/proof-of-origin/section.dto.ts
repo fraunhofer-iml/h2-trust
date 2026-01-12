@@ -116,11 +116,11 @@ export class SectionDto {
       batch.amount, // TODO-MP: was previously null
       batch.producer ?? '',
       batch.unitId ?? '',
-      batch.purity ?? 0,
-      batch.typeOfProduction ?? '',
+      0,
+      '',
       hydrogenComposition,
       batch.color ?? '',
-      batch.rfnboReady ?? false,
+      false,
       batch.processStep ?? '',
       batch.accountingPeriodEnd,
     );

@@ -13,11 +13,8 @@ import { ProofOfOriginEmissionEntity } from './proof-of-origin-emission.entity';
 export class ProofOfOriginHydrogenBatchEntity extends ProofOfOriginBatchEntity {
   producer?: string;
   unitId?: string;
-  purity?: number;
-  typeOfProduction?: string;
   hydrogenComposition: HydrogenComponentEntity[];
   color?: string;
-  rfnboReady?: boolean;
   processStep?: string;
   accountingPeriodEnd?: Date;
 
@@ -31,21 +28,15 @@ export class ProofOfOriginHydrogenBatchEntity extends ProofOfOriginBatchEntity {
     batchType: string,
     producer?: string,
     unitId?: string,
-    purity?: number,
-    typeOfProduction?: string,
     color?: string,
-    rfnboReady?: boolean,
     processStep?: string,
     accountingPeriodEnd?: Date,
   ) {
     super(id, emission, createdAt, amount, unit, batchType);
     this.producer = producer;
     this.unitId = unitId;
-    this.purity = purity;
-    this.typeOfProduction = typeOfProduction;
     this.hydrogenComposition = hydrogenComposition;
     this.color = color;
-    this.rfnboReady = rfnboReady;
     this.processStep = processStep;
     this.accountingPeriodEnd = accountingPeriodEnd;
   }

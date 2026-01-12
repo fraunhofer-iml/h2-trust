@@ -74,10 +74,7 @@ export class BatchAssembler {
       BatchType.HYDROGEN,
       hydrogenStorage.batch.owner?.name,
       hydrogenStorage.executedBy.id,
-      undefined,
-      undefined,
       hydrogenStorage.batch?.qualityDetails?.color,
-      undefined,
       hydrogenStorage.type,
       hydrogenStorage.endedAt,
     );
@@ -98,10 +95,7 @@ export class BatchAssembler {
       BatchType.HYDROGEN,
       undefined,
       hydrogenBottling.executedBy.id,
-      undefined,
-      undefined,
       hydrogenBottling.batch?.qualityDetails?.color,
-      undefined,
       hydrogenBottling.type,
       hydrogenBottling.endedAt,
     );
@@ -122,10 +116,7 @@ export class BatchAssembler {
       BatchType.HYDROGEN,
       undefined,
       hydrogenTransportation.executedBy.id,
-      undefined,
-      undefined,
       hydrogenTransportation.batch?.qualityDetails?.color,
-      undefined,
       hydrogenTransportation.type,
       hydrogenTransportation.endedAt,
     );
