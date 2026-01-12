@@ -13,7 +13,6 @@ export class ProofOfOriginClassificationEntity {
   name: string;
   emissionOfProcessStep: number;
   amount: number;
-  amountVerified?: number;
   batches: ProofOfOriginBatchEntity[];
   classifications: ProofOfOriginClassificationEntity[];
   unit: string;
@@ -27,12 +26,10 @@ export class ProofOfOriginClassificationEntity {
     classificationType: BatchType,
     batches: ProofOfOriginBatchEntity[] = [],
     classifications: ProofOfOriginClassificationEntity[] = [],
-    amountVerified?: number,
   ) {
     this.name = name;
     this.emissionOfProcessStep = emissionOfProcessStep;
     this.amount = amount;
-    this.amountVerified = amountVerified;
     this.batches = batches;
     this.classifications = classifications;
     this.unit = unit;

@@ -11,7 +11,6 @@ import { ProofOfOriginBatchEntity } from './proof-of-origin-batch.entity';
 import { ProofOfOriginEmissionEntity } from './proof-of-origin-emission.entity';
 
 export class ProofOfOriginPowerBatchEntity extends ProofOfOriginBatchEntity {
-  amountVerified?: number;
   producer: string;
   unitId: string;
   energySource: EnergySource;
@@ -23,7 +22,6 @@ export class ProofOfOriginPowerBatchEntity extends ProofOfOriginBatchEntity {
     createdAt: Date,
     amount: number,
     unit: string,
-    amountVerified: number | undefined,
     producer: string,
     unitId: string,
     energySource: EnergySource,
@@ -31,7 +29,6 @@ export class ProofOfOriginPowerBatchEntity extends ProofOfOriginBatchEntity {
     batchType: string,
   ) {
     super(id, emission, createdAt, amount, unit, batchType);
-    this.amountVerified = amountVerified;
     this.producer = producer;
     this.unitId = unitId;
     this.energySource = energySource;

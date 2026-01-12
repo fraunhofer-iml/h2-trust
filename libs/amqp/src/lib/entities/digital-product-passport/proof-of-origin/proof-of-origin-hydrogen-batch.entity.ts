@@ -11,7 +11,6 @@ import { ProofOfOriginBatchEntity } from './proof-of-origin-batch.entity';
 import { ProofOfOriginEmissionEntity } from './proof-of-origin-emission.entity';
 
 export class ProofOfOriginHydrogenBatchEntity extends ProofOfOriginBatchEntity {
-  amountVerified?: number;
   producer?: string;
   unitId?: string;
   purity?: number;
@@ -30,7 +29,6 @@ export class ProofOfOriginHydrogenBatchEntity extends ProofOfOriginBatchEntity {
     unit: string,
     hydrogenComposition: HydrogenComponentEntity[],
     batchType: string,
-    amountVerified?: number,
     producer?: string,
     unitId?: string,
     purity?: number,
@@ -41,7 +39,6 @@ export class ProofOfOriginHydrogenBatchEntity extends ProofOfOriginBatchEntity {
     accountingPeriodEnd?: Date,
   ) {
     super(id, emission, createdAt, amount, unit, batchType);
-    this.amountVerified = amountVerified;
     this.producer = producer;
     this.unitId = unitId;
     this.purity = purity;
