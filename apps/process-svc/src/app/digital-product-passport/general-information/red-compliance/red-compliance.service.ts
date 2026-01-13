@@ -17,7 +17,7 @@ import {
   isWithinTimeCorrelation,
   meetsAdditionalityCriterion,
 } from './red-compliance.flags';
-import { RedCompliancePairingService } from './red-compliance.pairs.service';
+import { RedCompliancePairingService } from './red-compliance-pairing.service';
 
 @Injectable()
 export class RedComplianceService {
