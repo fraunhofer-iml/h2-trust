@@ -42,9 +42,9 @@ export class GeneralInformationService {
     return new GeneralInformationEntity(
       processStep.id,
       processStep.endedAt,
-      processStep.batch?.owner?.name,
-      processStep.batch?.amount,
-      processStep.batch?.qualityDetails?.color,
+      processStep.batch.owner.name,
+      processStep.batch.amount,
+      processStep.batch.qualityDetails.color,
       producerName,
       hydrogenComposition,
       processStep.documents ?? [],

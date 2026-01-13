@@ -13,24 +13,24 @@ import { DocumentEntity } from '../document';
 export class GeneralInformationEntity {
   id: string;
   filledAt: Date;
-  owner?: string;
-  filledAmount?: number;
-  color?: string;
-  producer?: string;
+  owner: string;
+  filledAmount: number;
+  color: string;
+  producer: string;
   hydrogenComposition: HydrogenComponentEntity[];
   attachedFiles: DocumentEntity[];
-  redCompliance?: RedComplianceEntity;
+  redCompliance: RedComplianceEntity;
 
   constructor(
     id: string,
     filledAt: Date,
-    owner: string | undefined,
-    filledAmount: number | undefined,
-    color: string | undefined,
-    producer: string | undefined,
+    owner: string,
+    filledAmount: number,
+    color: string,
+    producer: string,
     hydrogenComposition: HydrogenComponentEntity[],
     attachedFiles: DocumentEntity[],
-    redCompliance?: RedComplianceEntity
+    redCompliance: RedComplianceEntity
   ) {
     this.id = id;
     this.filledAt = filledAt;
