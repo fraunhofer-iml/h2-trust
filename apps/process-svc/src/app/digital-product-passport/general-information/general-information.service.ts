@@ -28,7 +28,7 @@ export class GeneralInformationService {
     private readonly redComplianceService: RedComplianceService,
   ) { }
 
-  async buildGeneralInformation(processStepId: string): Promise<GeneralInformationEntity> {
+  async readGeneralInformation(processStepId: string): Promise<GeneralInformationEntity> {
     const processStep = await this.processStepService.readProcessStep(processStepId);
 
     const [producerName, hydrogenComposition, redCompliance] = await Promise.all([

@@ -18,7 +18,7 @@ export class ProofOfSustainabilityService {
     private readonly emissionService: EmissionService,
   ) {}
 
-  async buildProofOfSustainability(processStepId: string): Promise<ProofOfSustainabilityEntity> {
+  async readProofOfSustainability(processStepId: string): Promise<ProofOfSustainabilityEntity> {
     const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStepId);
     return this.emissionService.computeProvenanceEmissions(provenance);
   }

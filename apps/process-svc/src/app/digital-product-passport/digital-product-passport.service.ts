@@ -25,7 +25,7 @@ export class DigitalProductPassportService {
   ) {}
 
   async readGeneralInformation(processStepId: string): Promise<GeneralInformationEntity> {
-    return this.generalInformationService.buildGeneralInformation(processStepId);
+    return this.generalInformationService.readGeneralInformation(processStepId);
   }
 
   async readProofOfOrigin(processStepId: string): Promise<ProofOfOriginSectionEntity[]> {
@@ -33,6 +33,6 @@ export class DigitalProductPassportService {
   }
 
   async readProofOfSustainability(processStepId: string): Promise<ProofOfSustainabilityEntity> {
-    return this.proofOfSustainabilityService.buildProofOfSustainability(processStepId);
+    return this.proofOfSustainabilityService.readProofOfSustainability(processStepId);
   }
 }
