@@ -8,11 +8,15 @@
 
 import { GeneralInformationEntity } from '@h2-trust/amqp';
 import { FileInfoDto } from '../file/file-info.dto';
-import { BottlingOverviewDto } from './bottling-overview.dto';
 import { HydrogenComponentDto } from './hydrogen-component.dto';
 import { RedComplianceDto } from './red-compliance.dto';
 
-export class GeneralInformationDto extends BottlingOverviewDto {
+export class GeneralInformationDto {
+  id: string;
+  filledAt: Date;
+  owner?: string;
+  filledAmount?: number;
+  color?: string;
   producer?: string;
   product: string;
   hydrogenComposition: HydrogenComponentDto[];
@@ -30,7 +34,11 @@ export class GeneralInformationDto extends BottlingOverviewDto {
     attachedFiles: FileInfoDto[],
     redCompliance: RedComplianceDto,
   ) {
-    super(id, timestamp, owner, filledAmount, color);
+    this.id = id;
+    this.filledAt = timestamp;
+    this.owner = owner;
+    this.filledAmount = filledAmount;
+    this.color = color;
     this.producer = producer;
     this.hydrogenComposition = hydrogenComposition;
     this.product = 'Hydrogen';
@@ -45,11 +53,11 @@ export class GeneralInformationDto extends BottlingOverviewDto {
     );
     const redCompliance = entity.redCompliance
       ? new RedComplianceDto(
-          entity.redCompliance.isGeoCorrelationValid,
-          entity.redCompliance.isTimeCorrelationValid,
-          entity.redCompliance.isAdditionalityFulfilled,
-          entity.redCompliance.financialSupportReceived,
-        )
+        entity.redCompliance.isGeoCorrelationValid,
+        entity.redCompliance.isTimeCorrelationValid,
+        entity.redCompliance.isAdditionalityFulfilled,
+        entity.redCompliance.financialSupportReceived,
+      )
       : new RedComplianceDto(false, false, false, false);
 
     return new GeneralInformationDto(
