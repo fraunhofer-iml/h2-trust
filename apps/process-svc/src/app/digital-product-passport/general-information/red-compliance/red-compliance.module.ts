@@ -8,7 +8,7 @@
 
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
-import { ProvenanceModule } from '../provenance/provenance.module';
+import { ProvenanceModule } from '../../provenance/provenance.module';
 import { RedCompliancePairingService } from './red-compliance.pairs.service';
 import { RedComplianceService } from './red-compliance.service';
 

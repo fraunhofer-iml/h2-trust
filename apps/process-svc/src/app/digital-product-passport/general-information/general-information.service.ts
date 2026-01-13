@@ -11,14 +11,13 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
-  DocumentEntity,
   GeneralInformationEntity,
   ReadByIdPayload,
   UserMessagePatterns,
 } from '@h2-trust/amqp';
 import { BottlingService } from '../../process-step/bottling/bottling.service';
 import { ProcessStepService } from '../../process-step/process-step.service';
-import { RedComplianceService } from '../red-compliance/red-compliance.service';
+import { RedComplianceService } from './red-compliance/red-compliance.service';
 
 @Injectable()
 export class GeneralInformationService {
@@ -27,7 +26,7 @@ export class GeneralInformationService {
     private readonly processStepService: ProcessStepService,
     private readonly bottlingService: BottlingService,
     private readonly redComplianceService: RedComplianceService,
-  ) {}
+  ) { }
 
   async buildGeneralInformation(processStepId: string): Promise<GeneralInformationEntity> {
     const processStep = await this.processStepService.readProcessStep(processStepId);
@@ -40,8 +39,6 @@ export class GeneralInformationService {
       this.redComplianceService.determineRedCompliance(processStepId),
     ]);
 
-    const attachedFiles: DocumentEntity[] = processStep.documents ?? [];
-
     return new GeneralInformationEntity(
       processStep.id,
       processStep.endedAt,
@@ -50,7 +47,7 @@ export class GeneralInformationService {
       processStep.batch?.qualityDetails?.color,
       producerName,
       hydrogenComposition,
-      attachedFiles,
+      processStep.documents ?? [],
       redCompliance,
     );
   }

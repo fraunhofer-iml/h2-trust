@@ -9,7 +9,7 @@
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
 import { ProcessStepModule } from '../../process-step/process-step.module';
-import { RedComplianceModule } from '../red-compliance/red-compliance.module';
+import { RedComplianceModule } from './red-compliance/red-compliance.module';
 import { GeneralInformationService } from './general-information.service';
 
 @Module({

@@ -9,7 +9,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { ProvenanceEntity, RedComplianceEntity } from '@h2-trust/amqp';
-import { ProvenanceService } from '../provenance/provenance.service';
+import { ProvenanceService } from '../../provenance/provenance.service';
 import { MatchedProductionPair } from './matched-production-pair';
 import {
   areUnitsInSameBiddingZone,
