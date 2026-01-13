@@ -72,7 +72,7 @@ describe('DigitalProductPassportController', () => {
   });
 
   describe('readGeneralInformation', () => {
-    it('delegates to DigitalProductPassportService', async () => {
+    it('delegates to GeneralInformationService', async () => {
       // Arrange
       const expected = GeneralInformationEntityFixture.create();
       const given = new ReadByIdPayload(expected.id);
@@ -89,7 +89,7 @@ describe('DigitalProductPassportController', () => {
   });
 
   describe('readProofOfOrigin', () => {
-    it('delegates to DigitalProductPassportService', async () => {
+    it('delegates to ProofOfOriginService', async () => {
       // Arrange
       const expected = [ProofOfOriginSectionEntityFixture.create()];
       const given = new ReadByIdPayload('a');
@@ -106,7 +106,7 @@ describe('DigitalProductPassportController', () => {
   });
 
   describe('readProofOfSustainability', () => {
-    it('delegates to DigitalProductPassportService', async () => {
+    it('delegates to ProofOfSustainabilityService', async () => {
       // Arrange
       const expected = ProofOfSustainabilityEntityFixture.create();
       const given = new ReadByIdPayload(expected.batchId);
