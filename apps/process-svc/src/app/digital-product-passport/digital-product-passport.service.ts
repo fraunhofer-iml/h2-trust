@@ -14,7 +14,6 @@ import {
   GeneralInformationEntity,
   DocumentEntity,
   ProofOfOriginSectionEntity,
-  ProofOfSustainabilityEmissionComputationEntity,
   ProofOfSustainabilityEntity,
   ProvenanceEntity,
   ReadByIdPayload,
@@ -71,16 +70,6 @@ export class DigitalProductPassportService {
 
   async readProofOfSustainability(processStepId: string): Promise<ProofOfSustainabilityEntity> {
     const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStepId);
-
-    const provenanceEmission: ProofOfSustainabilityEmissionComputationEntity =
-      await this.emissionService.computeProvenanceEmissions(provenance);
-
-    return new ProofOfSustainabilityEntity(
-      provenance.root.id,
-      provenanceEmission.amountCO2PerMJH2,
-      provenanceEmission.emissionReductionPercentage,
-      provenanceEmission.calculations,
-      provenanceEmission.processStepEmissions,
-    );
+    return this.emissionService.computeProvenanceEmissions(provenance);
   }
 }

@@ -6,17 +6,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProofOfOriginBatchEntity } from './proof-of-origin-batch.entity';
+import { ProofOfOriginBatch } from './proof-of-origin-batch.entity';
 import { ProofOfOriginClassificationEntity } from './proof-of-origin-classification.entity';
 
 export class ProofOfOriginSectionEntity {
   name: string;
-  batches: ProofOfOriginBatchEntity[];
+  batches: ProofOfOriginBatch[];
   classifications: ProofOfOriginClassificationEntity[];
 
   constructor(
     name: string,
-    batches: ProofOfOriginBatchEntity[] = [],
+    batches: ProofOfOriginBatch[] = [],
     classifications: ProofOfOriginClassificationEntity[] = [],
   ) {
     this.name = name;

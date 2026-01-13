@@ -11,17 +11,18 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
+  PowerBatch,
   PowerProductionTypeEntity,
   PowerProductionUnitEntity,
   ProcessStepEntity,
-  ProofOfOriginBatchEntity,
-  ProofOfOriginClassificationEntity,
+  ProofOfOriginBatch,
   ProofOfOriginEmissionEntity,
-  ProofOfOriginPowerBatchEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
   ReadByIdPayload,
+  SubClassification,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
+import { BatchType, MeasurementUnit } from '@h2-trust/domain';
 import { BatchAssembler } from './batch.assembler';
 import { ClassificationAssembler } from './classification.assembler';
 import { EmissionAssembler } from './emission.assembler';
@@ -34,10 +35,10 @@ export class PowerSupplyClassificationService {
     private readonly emissionService: EmissionService,
   ) {}
 
-  async buildPowerSupplyClassifications(
+  async buildPowerSupplySubClassifications(
     powerProductions: ProcessStepEntity[],
     hydrogenAmount: number,
-  ): Promise<ProofOfOriginClassificationEntity[]> {
+  ): Promise<SubClassification[]> {
     if (!powerProductions?.length) {
       return [];
     }
@@ -45,7 +46,7 @@ export class PowerSupplyClassificationService {
     const energySources = await this.fetchEnergySources();
     const powerProductionsWithUnits =
       await this.fetchPowerProductionProcessStepsWithPowerProductionUnits(powerProductions);
-    const classifications: ProofOfOriginClassificationEntity[] = [];
+    const subClassifications: SubClassification[] = [];
 
     for (const energySource of energySources) {
       const powerProductionsWithUnitsByEnergySource = powerProductionsWithUnits.filter(
@@ -53,7 +54,7 @@ export class PowerSupplyClassificationService {
       );
 
       if (powerProductionsWithUnitsByEnergySource.length > 0) {
-        const productionPowerBatches: ProofOfOriginBatchEntity[] = await Promise.all(
+        const productionPowerBatches: ProofOfOriginBatch[] = await Promise.all(
           powerProductionsWithUnitsByEnergySource.map(async ([powerProduction]) => {
             const [powerSupplyEmission]: ProofOfSustainabilityEmissionCalculationEntity[] =
               await this.emissionService.computePowerSupplyEmissions([powerProduction], hydrogenAmount);
@@ -63,25 +64,23 @@ export class PowerSupplyClassificationService {
               hydrogenAmount,
             );
 
-            const batch: ProofOfOriginPowerBatchEntity = BatchAssembler.assemblePowerSupply(
-              powerProduction,
-              energySource,
-              emission,
-            );
+            const batch: PowerBatch = BatchAssembler.assemblePowerSupply(powerProduction, energySource, emission);
 
             return batch;
           }),
         );
 
-        const classification: ProofOfOriginClassificationEntity = ClassificationAssembler.assemblePower(
+        const subClassification: SubClassification = ClassificationAssembler.assembleSubClassification(
           energySource,
+          MeasurementUnit.POWER,
+          BatchType.POWER,
           productionPowerBatches,
         );
-        classifications.push(classification);
+        subClassifications.push(subClassification);
       }
     }
 
-    return classifications;
+    return subClassifications;
   }
 
   private async fetchEnergySources(): Promise<string[]> {

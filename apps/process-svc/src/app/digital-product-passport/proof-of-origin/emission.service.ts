@@ -14,7 +14,7 @@ import {
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
-  ProofOfSustainabilityEmissionComputationEntity,
+  ProofOfSustainabilityEntity,
   ProvenanceEntity,
   ReadByIdsPayload,
   UnitMessagePatterns,
@@ -26,9 +26,7 @@ import { EmissionAssembler } from './emission.assembler';
 export class EmissionService {
   constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) {}
 
-  async computeProvenanceEmissions(
-    provenance: ProvenanceEntity,
-  ): Promise<ProofOfSustainabilityEmissionComputationEntity> {
+  async computeProvenanceEmissions(provenance: ProvenanceEntity): Promise<ProofOfSustainabilityEntity> {
     if (!provenance) {
       throw new Error('Provenance is undefined.');
     }
@@ -74,7 +72,7 @@ export class EmissionService {
       emissionCalculations.push(hydrogenTransportation);
     }
 
-    return EmissionAssembler.assembleComputationResult(emissionCalculations);
+    return EmissionAssembler.assembleProofOfSustainability(provenance.root.id, emissionCalculations);
   }
 
   async computePowerSupplyEmissions(

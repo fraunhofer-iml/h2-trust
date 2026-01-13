@@ -6,35 +6,35 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProofOfOriginBatchEntity, ProofOfOriginClassificationEntity, Util } from '@h2-trust/amqp';
+import { ProofOfOriginBatch, ProofOfOriginClassificationEntity, SubClassification, Util } from '@h2-trust/amqp';
 import { BatchType, MeasurementUnit } from '@h2-trust/domain';
 
 export class ClassificationAssembler {
   static assemblePower(
     classificationName: string,
-    batches?: ProofOfOriginBatchEntity[],
-    nestedClassifications?: ProofOfOriginClassificationEntity[],
+    batches?: ProofOfOriginBatch[],
+    subClassifications?: SubClassification[],
   ): ProofOfOriginClassificationEntity {
     return this.assembleClassification(
       classificationName,
       MeasurementUnit.POWER,
       BatchType.POWER,
       batches,
-      nestedClassifications,
+      subClassifications,
     );
   }
 
   static assembleHydrogen(
     classificationName: string,
-    batches?: ProofOfOriginBatchEntity[],
-    nestedClassifications?: ProofOfOriginClassificationEntity[],
+    batches?: ProofOfOriginBatch[],
+    subClassifications?: SubClassification[],
   ): ProofOfOriginClassificationEntity {
     return this.assembleClassification(
       classificationName,
       MeasurementUnit.HYDROGEN,
       BatchType.HYDROGEN,
       batches,
-      nestedClassifications,
+      subClassifications,
     );
   }
 
@@ -42,37 +42,56 @@ export class ClassificationAssembler {
     classificationName: string,
     measurementUnit: MeasurementUnit,
     classificationType: BatchType,
-    batches: ProofOfOriginBatchEntity[] = [],
-    nestedClassifications: ProofOfOriginClassificationEntity[] = [],
+    batches: ProofOfOriginBatch[] = [],
+    subClassifications: SubClassification[] = [],
   ): ProofOfOriginClassificationEntity {
     return new ProofOfOriginClassificationEntity(
       classificationName,
-      this.calculateEmission(batches, nestedClassifications),
-      this.calculateAmount(batches, nestedClassifications),
+      this.calculateEmission(batches, subClassifications),
+      this.calculateAmount(batches, subClassifications),
       measurementUnit,
       classificationType,
       batches,
-      nestedClassifications,
+      subClassifications,
     );
   }
 
-  private static calculateEmission(
-    batches: ProofOfOriginBatchEntity[],
-    nestedClassifications: ProofOfOriginClassificationEntity[],
-  ): number {
-    const batchEmissionSum = (batches || []).map((b) => b.emission?.amountCO2PerKgH2 ?? 0).reduce((a, b) => a + b, 0);
+  static assembleSubClassification(
+    classificationName: string,
+    measurementUnit: MeasurementUnit,
+    classificationType: BatchType,
+    batches: ProofOfOriginBatch[] = [],
+  ): SubClassification {
+    return {
+      name: classificationName,
+      emissionOfProcessStep: this.calculateBatchEmission(batches),
+      amount: Util.sumAmounts(batches),
+      batches,
+      unit: measurementUnit,
+      classificationType,
+    };
+  }
 
-    const nestedEmissionSum = (nestedClassifications || [])
+  private static calculateEmission(
+    batches: ProofOfOriginBatch[],
+    subClassifications: SubClassification[],
+  ): number {
+    const batchEmissionSum = this.calculateBatchEmission(batches);
+    const subClassificationEmissionSum = (subClassifications || [])
       .map((c) => c.emissionOfProcessStep ?? 0)
       .reduce((a, b) => a + b, 0);
 
-    return batchEmissionSum + nestedEmissionSum;
+    return batchEmissionSum + subClassificationEmissionSum;
+  }
+
+  private static calculateBatchEmission(batches: ProofOfOriginBatch[]): number {
+    return (batches || []).map((b) => b.emission?.amountCO2PerKgH2 ?? 0).reduce((a, b) => a + b, 0);
   }
 
   private static calculateAmount(
-    batches: ProofOfOriginBatchEntity[],
-    nestedClassifications: ProofOfOriginClassificationEntity[],
+    batches: ProofOfOriginBatch[],
+    subClassifications: SubClassification[],
   ): number {
-    return Util.sumAmounts(batches) || Util.sumAmounts(nestedClassifications);
+    return Util.sumAmounts(batches) || Util.sumAmounts(subClassifications);
   }
 }

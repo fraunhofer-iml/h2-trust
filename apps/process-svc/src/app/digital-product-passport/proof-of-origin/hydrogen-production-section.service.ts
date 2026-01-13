@@ -7,7 +7,12 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { ProcessStepEntity, ProofOfOriginClassificationEntity, ProofOfOriginSectionEntity } from '@h2-trust/amqp';
+import {
+  ProcessStepEntity,
+  ProofOfOriginClassificationEntity,
+  ProofOfOriginSectionEntity,
+  SubClassification,
+} from '@h2-trust/amqp';
 import { ProofOfOrigin } from '@h2-trust/domain';
 import { ClassificationAssembler } from './classification.assembler';
 import { PowerSupplyClassificationService } from './power-supply-classification.service';
@@ -28,12 +33,12 @@ export class HydrogenProductionSectionService {
     const classifications: ProofOfOriginClassificationEntity[] = [];
 
     if (powerProductions?.length) {
-      const energySourceClassifications: ProofOfOriginClassificationEntity[] =
-        await this.powerSupplyClassificationService.buildPowerSupplyClassifications(powerProductions, hydrogenAmount);
+      const energySourceSubClassifications: SubClassification[] =
+        await this.powerSupplyClassificationService.buildPowerSupplySubClassifications(powerProductions, hydrogenAmount);
       const powerSupplyClassification: ProofOfOriginClassificationEntity = ClassificationAssembler.assemblePower(
         ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION,
         [],
-        energySourceClassifications,
+        energySourceSubClassifications,
       );
       classifications.push(powerSupplyClassification);
     }

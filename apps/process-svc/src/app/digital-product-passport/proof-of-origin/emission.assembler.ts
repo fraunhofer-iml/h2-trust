@@ -8,10 +8,10 @@
 
 import {
   ProcessStepEntity,
-  ProofOfOriginEmissionEntity,
+  ProofOfOriginEmission,
   ProofOfSustainabilityEmissionCalculationEntity,
-  ProofOfSustainabilityEmissionComputationEntity,
   ProofOfSustainabilityEmissionEntity,
+  ProofOfSustainabilityEntity,
 } from '@h2-trust/amqp';
 import { EnumLabelMapper } from '@h2-trust/api';
 import {
@@ -270,9 +270,10 @@ export class EmissionAssembler {
     );
   }
 
-  static assembleComputationResult(
+  static assembleProofOfSustainability(
+    batchId: string,
     emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
-  ): ProofOfSustainabilityEmissionComputationEntity {
+  ): ProofOfSustainabilityEntity {
     const applicationEmissions: ProofOfSustainabilityEmissionEntity[] =
       EmissionAssembler.assembleApplicationEmissions(emissionCalculations);
 
@@ -289,7 +290,7 @@ export class EmissionAssembler {
         applicationEmissionAmount,
         hydrogenTransportEmissionAmount,
       );
-    const processStepEmissions: ProofOfSustainabilityEmissionEntity[] = [
+    const emissions: ProofOfSustainabilityEmissionEntity[] = [
       ...applicationEmissions,
       ...regulatoryEmissions,
     ];
@@ -298,11 +299,12 @@ export class EmissionAssembler {
     const emissionReductionPercentage: number =
       (Math.max(FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ - amountCO2PerMJH2, 0) / FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ) * 100;
 
-    return new ProofOfSustainabilityEmissionComputationEntity(
-      emissionCalculations,
-      processStepEmissions,
+    return new ProofOfSustainabilityEntity(
+      batchId,
       amountCO2PerMJH2,
       emissionReductionPercentage,
+      emissionCalculations,
+      emissions,
     );
   }
 
@@ -401,9 +403,13 @@ export class EmissionAssembler {
   static assembleEmissionDto(
     calc: ProofOfSustainabilityEmissionCalculationEntity,
     hydrogenMassKg: number,
-  ): ProofOfOriginEmissionEntity {
+  ): ProofOfOriginEmission {
     const amountCO2PerKgH2 = calc?.result ?? 0;
     const amountCO2 = amountCO2PerKgH2 * hydrogenMassKg;
-    return new ProofOfOriginEmissionEntity(amountCO2, amountCO2PerKgH2, calc?.basisOfCalculation ?? []);
+    return {
+      amountCO2,
+      amountCO2PerKgH2,
+      basisOfCalculation: calc?.basisOfCalculation ?? [],
+    };
   }
 }

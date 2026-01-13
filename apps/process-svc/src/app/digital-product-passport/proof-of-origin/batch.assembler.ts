@@ -7,13 +7,12 @@
  */
 
 import {
+  HydrogenBatch,
   HydrogenComponentEntity,
+  PowerBatch,
   ProcessStepEntity,
-  ProofOfOriginEmissionEntity,
-  ProofOfOriginHydrogenBatchEntity,
-  ProofOfOriginPowerBatchEntity,
-  ProofOfOriginWaterBatchEntity,
-  ProofOfOriginWaterDetailsEntity,
+  ProofOfOriginEmission,
+  WaterBatch,
 } from '@h2-trust/amqp';
 import { BatchType, EnergySource, MeasurementUnit } from '@h2-trust/domain';
 
@@ -21,104 +20,97 @@ export class BatchAssembler {
   static assemblePowerSupply(
     powerProduction: ProcessStepEntity,
     energySource: string,
-    emission?: ProofOfOriginEmissionEntity,
-  ): ProofOfOriginPowerBatchEntity {
-    return new ProofOfOriginPowerBatchEntity(
-      powerProduction.batch.id,
+    emission?: ProofOfOriginEmission,
+  ): PowerBatch {
+    return {
+      id: powerProduction.batch.id,
       emission,
-      powerProduction.startedAt,
-      powerProduction.batch.amount,
-      MeasurementUnit.POWER,
-      powerProduction.batch.owner.name,
-      powerProduction.executedBy.id,
-      energySource as EnergySource,
-      powerProduction.endedAt,
-      BatchType.POWER,
-    );
+      createdAt: powerProduction.startedAt,
+      amount: powerProduction.batch.amount,
+      unit: MeasurementUnit.POWER,
+      batchType: BatchType.POWER,
+      producer: powerProduction.batch.owner.name,
+      unitId: powerProduction.executedBy.id,
+      energySource: energySource as EnergySource,
+      accountingPeriodEnd: powerProduction.endedAt,
+    };
   }
 
-  static assembleWaterSupply(
-    waterConsumption: ProcessStepEntity,
-    emission?: ProofOfOriginEmissionEntity,
-  ): ProofOfOriginWaterBatchEntity {
-    return new ProofOfOriginWaterBatchEntity(
-      waterConsumption.batch.id,
+  static assembleWaterSupply(waterConsumption: ProcessStepEntity, emission?: ProofOfOriginEmission): WaterBatch {
+    return {
+      id: waterConsumption.batch.id,
       emission,
-      waterConsumption.startedAt,
-      waterConsumption.batch.amount,
-      MeasurementUnit.WATER,
-      new ProofOfOriginWaterDetailsEntity(
-        waterConsumption.batch.amount,
-        new ProofOfOriginEmissionEntity(undefined, undefined, undefined),
-      ),
-      BatchType.WATER,
-    );
+      createdAt: waterConsumption.startedAt,
+      amount: waterConsumption.batch.amount,
+      unit: MeasurementUnit.WATER,
+      batchType: BatchType.WATER,
+      deionizedWaterAmount: waterConsumption.batch.amount,
+      deionizedWaterEmission: { amountCO2: 0, amountCO2PerKgH2: 0, basisOfCalculation: [] },
+    };
   }
 
   static assembleHydrogenStorage(
     hydrogenStorage: ProcessStepEntity,
-    emission?: ProofOfOriginEmissionEntity,
-  ): ProofOfOriginHydrogenBatchEntity {
-    return new ProofOfOriginHydrogenBatchEntity(
-      hydrogenStorage.batch.id,
+    emission?: ProofOfOriginEmission,
+  ): HydrogenBatch {
+    return {
+      id: hydrogenStorage.batch.id,
       emission,
-      hydrogenStorage.startedAt,
-      hydrogenStorage.batch.amount,
-      MeasurementUnit.HYDROGEN,
-      [
+      createdAt: hydrogenStorage.startedAt,
+      amount: hydrogenStorage.batch.amount,
+      unit: MeasurementUnit.HYDROGEN,
+      batchType: BatchType.HYDROGEN,
+      hydrogenComposition: [
         {
           color: hydrogenStorage.batch?.qualityDetails?.color,
           amount: hydrogenStorage.batch.amount,
         },
       ],
-      BatchType.HYDROGEN,
-      hydrogenStorage.batch.owner?.name,
-      hydrogenStorage.executedBy.id,
-      hydrogenStorage.batch?.qualityDetails?.color,
-      hydrogenStorage.type,
-      hydrogenStorage.endedAt,
-    );
+      producer: hydrogenStorage.batch.owner?.name,
+      unitId: hydrogenStorage.executedBy.id,
+      color: hydrogenStorage.batch?.qualityDetails?.color,
+      processStep: hydrogenStorage.type,
+      accountingPeriodEnd: hydrogenStorage.endedAt,
+    };
   }
 
   static assembleHydrogenBottling(
     hydrogenBottling: ProcessStepEntity,
     hydrogenComposition: HydrogenComponentEntity[],
-    emission?: ProofOfOriginEmissionEntity,
-  ): ProofOfOriginHydrogenBatchEntity {
-    return new ProofOfOriginHydrogenBatchEntity(
-      hydrogenBottling.batch.id,
+    emission?: ProofOfOriginEmission,
+  ): HydrogenBatch {
+    return {
+      id: hydrogenBottling.batch.id,
       emission,
-      hydrogenBottling.startedAt,
-      hydrogenBottling.batch.amount,
-      MeasurementUnit.HYDROGEN,
+      createdAt: hydrogenBottling.startedAt,
+      amount: hydrogenBottling.batch.amount,
+      unit: MeasurementUnit.HYDROGEN,
+      batchType: BatchType.HYDROGEN,
       hydrogenComposition,
-      BatchType.HYDROGEN,
-      undefined,
-      hydrogenBottling.executedBy.id,
-      hydrogenBottling.batch?.qualityDetails?.color,
-      hydrogenBottling.type,
-      hydrogenBottling.endedAt,
-    );
+      unitId: hydrogenBottling.executedBy.id,
+      color: hydrogenBottling.batch?.qualityDetails?.color,
+      processStep: hydrogenBottling.type,
+      accountingPeriodEnd: hydrogenBottling.endedAt,
+    };
   }
 
   static assembleHydrogenTransportation(
     hydrogenTransportation: ProcessStepEntity,
     hydrogenComposition: HydrogenComponentEntity[],
-    emission?: ProofOfOriginEmissionEntity,
-  ): ProofOfOriginHydrogenBatchEntity {
-    return new ProofOfOriginHydrogenBatchEntity(
-      hydrogenTransportation.batch.id,
+    emission?: ProofOfOriginEmission,
+  ): HydrogenBatch {
+    return {
+      id: hydrogenTransportation.batch.id,
       emission,
-      hydrogenTransportation.startedAt,
-      hydrogenTransportation.batch.amount,
-      MeasurementUnit.HYDROGEN,
+      createdAt: hydrogenTransportation.startedAt,
+      amount: hydrogenTransportation.batch.amount,
+      unit: MeasurementUnit.HYDROGEN,
+      batchType: BatchType.HYDROGEN,
       hydrogenComposition,
-      BatchType.HYDROGEN,
-      undefined,
-      hydrogenTransportation.executedBy.id,
-      hydrogenTransportation.batch?.qualityDetails?.color,
-      hydrogenTransportation.type,
-      hydrogenTransportation.endedAt,
-    );
+      unitId: hydrogenTransportation.executedBy.id,
+      color: hydrogenTransportation.batch?.qualityDetails?.color,
+      processStep: hydrogenTransportation.type,
+      accountingPeriodEnd: hydrogenTransportation.endedAt,
+    };
   }
 }

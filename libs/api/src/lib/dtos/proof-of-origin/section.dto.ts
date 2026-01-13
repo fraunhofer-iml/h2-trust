@@ -7,13 +7,14 @@
  */
 
 import {
-  ProofOfOriginBatchEntity,
+  HydrogenBatch,
+  PowerBatch,
+  ProofOfOriginBatch,
   ProofOfOriginClassificationEntity,
-  ProofOfOriginEmissionEntity,
-  ProofOfOriginHydrogenBatchEntity,
-  ProofOfOriginPowerBatchEntity,
+  ProofOfOriginEmission,
   ProofOfOriginSectionEntity,
-  ProofOfOriginWaterBatchEntity,
+  SubClassification,
+  WaterBatch,
 } from '@h2-trust/amqp';
 import { BatchType } from '@h2-trust/domain';
 import { HydrogenComponentDto } from '../process-step';
@@ -53,20 +54,20 @@ export class SectionDto {
     return new SectionDto(section.name, batches, classifications);
   }
 
-  private static toBatchDto(batch: ProofOfOriginBatchEntity): BatchDto {
+  private static toBatchDto(batch: ProofOfOriginBatch): BatchDto {
     switch (batch.batchType) {
       case BatchType.POWER:
-        return this.toPowerBatch(batch as ProofOfOriginPowerBatchEntity);
+        return this.toPowerBatch(batch);
       case BatchType.WATER:
-        return this.toWaterBatchDto(batch as ProofOfOriginWaterBatchEntity);
+        return this.toWaterBatchDto(batch);
       case BatchType.HYDROGEN:
-        return this.toHydrogenBatchDto(batch as ProofOfOriginHydrogenBatchEntity);
+        return this.toHydrogenBatchDto(batch);
       default:
-        throw new Error(`Unsupported batch type: ${batch.batchType}`);
+        throw new Error(`Unsupported batch type: ${(batch as ProofOfOriginBatch).batchType}`);
     }
   }
 
-  private static toPowerBatch(batch: ProofOfOriginPowerBatchEntity): PowerBatchDto {
+  private static toPowerBatch(batch: PowerBatch): PowerBatchDto {
     const emission = this.toEmissionDto(batch.emission);
 
     return new PowerBatchDto(
@@ -75,7 +76,7 @@ export class SectionDto {
       batch.createdAt,
       batch.amount,
       batch.unit,
-      batch.amount, // TODO-MP: was previously null
+      batch.amount, // TODO-MP: will be removed in DUHGW-310
       batch.producer ?? '',
       batch.unitId ?? '',
       batch.energySource,
@@ -83,27 +84,20 @@ export class SectionDto {
     );
   }
 
-  private static toWaterBatchDto(batch: ProofOfOriginWaterBatchEntity): WaterBatchDto {
+  private static toWaterBatchDto(batch: WaterBatch): WaterBatchDto {
     const emission = this.toEmissionDto(batch.emission);
 
-    return new WaterBatchDto(
-      batch.id,
-      emission,
-      batch.createdAt,
-      batch.amount,
-      batch.unit,
-      this.toWaterDetailsDto(batch),
-    );
+    return new WaterBatchDto(batch.id, emission, batch.createdAt, batch.amount, batch.unit, this.toWaterDetailsDto(batch));
   }
 
-  private static toWaterDetailsDto(batch: ProofOfOriginWaterBatchEntity): WaterDetailsDto {
-    const amount = batch.deionizedWater?.amount ?? 0;
-    const emission = this.toEmissionDto(batch.deionizedWater?.emission);
+  private static toWaterDetailsDto(batch: WaterBatch): WaterDetailsDto {
+    const amount = batch.deionizedWaterAmount ?? 0;
+    const emission = this.toEmissionDto(batch.deionizedWaterEmission);
 
     return new WaterDetailsDto(amount, emission);
   }
 
-  private static toHydrogenBatchDto(batch: ProofOfOriginHydrogenBatchEntity): HydrogenBatchDto {
+  private static toHydrogenBatchDto(batch: HydrogenBatch): HydrogenBatchDto {
     const emission = this.toEmissionDto(batch.emission);
     const hydrogenComposition = (batch.hydrogenComposition ?? []).map(HydrogenComponentDto.of);
 
@@ -113,10 +107,10 @@ export class SectionDto {
       batch.createdAt,
       batch.amount,
       batch.unit,
-      batch.amount, // TODO-MP: was previously null
+      batch.amount, // TODO-MP: will be removed in DUHGW-310
       batch.producer ?? '',
       batch.unitId ?? '',
-      0,
+      0,  // TODO-MP: will be removed in DUHGW-312
       '',
       hydrogenComposition,
       batch.color ?? '',
@@ -128,23 +122,39 @@ export class SectionDto {
 
   private static toClassificationDto(classification: ProofOfOriginClassificationEntity): ClassificationDto {
     const batches = (classification.batches ?? []).map((batch) => SectionDto.toBatchDto(batch));
-    const nestedClassifications = (classification.classifications ?? []).map((classification) =>
-      SectionDto.toClassificationDto(classification),
+    // Map flat subClassifications (Entity) to recursive classifications (DTO)
+    const classifications = (classification.subClassifications ?? []).map((sub) =>
+      SectionDto.subClassificationToDto(sub),
     );
 
     return new ClassificationDto(
       classification.name,
       classification.emissionOfProcessStep,
       classification.amount,
-      classification.amount, // TODO-MP: was previously null
+      classification.amount, // TODO-MP: will be removed in DUHGW-310
       batches,
-      nestedClassifications,
+      classifications,
       classification.unit,
       classification.classificationType,
     );
   }
 
-  private static toEmissionDto(emission?: ProofOfOriginEmissionEntity): EmissionDto {
+  private static subClassificationToDto(sub: SubClassification): ClassificationDto {
+    const batches = (sub.batches ?? []).map((batch) => SectionDto.toBatchDto(batch));
+
+    return new ClassificationDto(
+      sub.name,
+      sub.emissionOfProcessStep,
+      sub.amount,
+      sub.amount, // TODO-MP: will be removed in DUHGW-310
+      batches,
+      [], // Leaf classification has no nested classifications
+      sub.unit,
+      sub.classificationType,
+    );
+  }
+
+  private static toEmissionDto(emission?: ProofOfOriginEmission): EmissionDto {
     if (!emission) {
       return new EmissionDto(0, 0, []);
     }

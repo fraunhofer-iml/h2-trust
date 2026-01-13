@@ -8,11 +8,11 @@
 
 import { Injectable } from '@nestjs/common';
 import {
+  HydrogenBatch,
   ProcessStepEntity,
-  ProofOfOriginBatchEntity,
+  ProofOfOriginBatch,
   ProofOfOriginClassificationEntity,
   ProofOfOriginEmissionEntity,
-  ProofOfOriginHydrogenBatchEntity,
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/amqp';
@@ -39,7 +39,7 @@ export class HydrogenStorageSectionService {
         continue;
       }
 
-      const batchesForHydrogenColor: ProofOfOriginBatchEntity[] = await Promise.all(
+      const batchesForHydrogenColor: ProofOfOriginBatch[] = await Promise.all(
         hydrogenProductionsByHydrogenColor.map(async (hydrogenProduction) => {
           const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
             EmissionAssembler.assembleHydrogenStorage(hydrogenProduction);
@@ -48,10 +48,7 @@ export class HydrogenStorageSectionService {
             emissionCalculation,
             hydrogenKgEquivalent,
           );
-          const batch: ProofOfOriginHydrogenBatchEntity = BatchAssembler.assembleHydrogenStorage(
-            hydrogenProduction,
-            emission,
-          );
+          const batch: HydrogenBatch = BatchAssembler.assembleHydrogenStorage(hydrogenProduction, emission);
           return batch;
         }),
       );

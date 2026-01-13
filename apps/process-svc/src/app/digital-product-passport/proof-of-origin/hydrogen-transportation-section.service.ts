@@ -8,10 +8,10 @@
 
 import { Injectable } from '@nestjs/common';
 import {
+  HydrogenBatch,
   HydrogenComponentEntity,
   ProcessStepEntity,
   ProofOfOriginEmissionEntity,
-  ProofOfOriginHydrogenBatchEntity,
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/amqp';
@@ -40,7 +40,7 @@ export class HydrogenTransportationSectionService {
       hydrogenKgEquivalent,
     );
 
-    const batch: ProofOfOriginHydrogenBatchEntity = BatchAssembler.assembleHydrogenTransportation(
+    const batch: HydrogenBatch = BatchAssembler.assembleHydrogenTransportation(
       hydrogenTransportation,
       hydrogenCompositions,
       emission,
