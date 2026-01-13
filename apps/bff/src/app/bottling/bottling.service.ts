@@ -92,7 +92,7 @@ export class BottlingService {
     const generalInformation: GeneralInformationEntity = await firstValueFrom(
       this.processSvc.send(DigitalProductPassportPatterns.READ_GENERAL_INFORMATION, new ReadByIdPayload(id)),
     );
-    return GeneralInformationDto.toGeneralInformationDto(generalInformation);
+    return GeneralInformationDto.fromEntity(generalInformation);
   }
 
   async readProofOfOrigin(id: string): Promise<SectionDto[]> {

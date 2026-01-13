@@ -17,7 +17,7 @@ export class HydrogenComponentDto {
     this.amount = amount;
   }
 
-  static of(hydrogenComponentEntity: HydrogenComponentEntity): HydrogenComponentDto {
+  static fromEntity(hydrogenComponentEntity: HydrogenComponentEntity): HydrogenComponentDto {
     return <HydrogenComponentDto>{
       color: hydrogenComponentEntity.color,
       amount: hydrogenComponentEntity.amount,

@@ -42,33 +42,35 @@ export class SectionDto {
   }
 
   static fromEntities(entities: ProofOfOriginSectionEntity[]): SectionDto[] {
-    return (entities ?? []).map((section) => SectionDto.toSectionDto(section));
+    return (entities ?? [])
+      .map((section) => SectionDto.fromEntity(section));
   }
 
-  private static toSectionDto(section: ProofOfOriginSectionEntity): SectionDto {
-    const batches = (section.batches ?? []).map((batch) => SectionDto.toBatchDto(batch));
-    const classifications = (section.classifications ?? []).map((classification) =>
-      SectionDto.toClassificationDto(classification),
-    );
+  private static fromEntity(section: ProofOfOriginSectionEntity): SectionDto {
+    const batches = (section.batches ?? [])
+      .map((batch) => SectionDto.fromBatchEntity(batch));
+
+    const classifications = (section.classifications ?? [])
+      .map((classification) => SectionDto.fromClassificationEntity(classification));
 
     return new SectionDto(section.name, batches, classifications);
   }
 
-  private static toBatchDto(batch: ProofOfOriginBatchEntity): BatchDto {
+  private static fromBatchEntity(batch: ProofOfOriginBatchEntity): BatchDto {
     switch (batch.batchType) {
       case BatchType.POWER:
-        return this.toPowerBatch(batch as ProofOfOriginPowerBatchEntity);
+        return this.fromPowerBatchEntity(batch as ProofOfOriginPowerBatchEntity);
       case BatchType.WATER:
-        return this.toWaterBatchDto(batch as ProofOfOriginWaterBatchEntity);
+        return this.fromWaterBatchEntity(batch as ProofOfOriginWaterBatchEntity);
       case BatchType.HYDROGEN:
-        return this.toHydrogenBatchDto(batch as ProofOfOriginHydrogenBatchEntity);
+        return this.fromHydrogenBatchEntity(batch as ProofOfOriginHydrogenBatchEntity);
       default:
         throw new Error(`Unsupported batch type: ${(batch as ProofOfOriginBatchEntity).batchType}`);
     }
   }
 
-  private static toPowerBatch(batch: ProofOfOriginPowerBatchEntity): PowerBatchDto {
-    const emission = this.toEmissionDto(batch.emission);
+  private static fromPowerBatchEntity(batch: ProofOfOriginPowerBatchEntity): PowerBatchDto {
+    const emission = this.fromEmissionEntity(batch.emission);
 
     return new PowerBatchDto(
       batch.id,
@@ -84,22 +86,19 @@ export class SectionDto {
     );
   }
 
-  private static toWaterBatchDto(batch: ProofOfOriginWaterBatchEntity): WaterBatchDto {
-    const emission = this.toEmissionDto(batch.emission);
+  private static fromWaterBatchEntity(batch: ProofOfOriginWaterBatchEntity): WaterBatchDto {
+    const emission = this.fromEmissionEntity(batch.emission);
 
-    return new WaterBatchDto(batch.id, emission, batch.createdAt, batch.amount, batch.unit, this.toWaterDetailsDto(batch));
+    const waterDetails = new WaterDetailsDto(batch.deionizedWaterAmount ?? 0, this.fromEmissionEntity(batch.deionizedWaterEmission))
+
+    return new WaterBatchDto(batch.id, emission, batch.createdAt, batch.amount, batch.unit, waterDetails);
   }
 
-  private static toWaterDetailsDto(batch: ProofOfOriginWaterBatchEntity): WaterDetailsDto {
-    const amount = batch.deionizedWaterAmount ?? 0;
-    const emission = this.toEmissionDto(batch.deionizedWaterEmission);
+  private static fromHydrogenBatchEntity(batch: ProofOfOriginHydrogenBatchEntity): HydrogenBatchDto {
+    const emission = this.fromEmissionEntity(batch.emission);
 
-    return new WaterDetailsDto(amount, emission);
-  }
-
-  private static toHydrogenBatchDto(batch: ProofOfOriginHydrogenBatchEntity): HydrogenBatchDto {
-    const emission = this.toEmissionDto(batch.emission);
-    const hydrogenComposition = (batch.hydrogenComposition ?? []).map(HydrogenComponentDto.of);
+    const hydrogenComposition = (batch.hydrogenComposition ?? [])
+      .map(HydrogenComponentDto.fromEntity);
 
     return new HydrogenBatchDto(
       batch.id,
@@ -120,12 +119,12 @@ export class SectionDto {
     );
   }
 
-  private static toClassificationDto(classification: ProofOfOriginClassificationEntity): ClassificationDto {
-    const batches = (classification.batches ?? []).map((batch) => SectionDto.toBatchDto(batch));
-    // Map flat subClassifications (Entity) to recursive classifications (DTO)
-    const classifications = (classification.subClassifications ?? []).map((sub) =>
-      SectionDto.subClassificationToDto(sub),
-    );
+  private static fromClassificationEntity(classification: ProofOfOriginClassificationEntity): ClassificationDto {
+    const batches = (classification.batches ?? [])
+      .map((batch) => SectionDto.fromBatchEntity(batch));
+
+    const classifications = (classification.subClassifications ?? [])
+      .map((sub) => SectionDto.fromSubClassificationEntity(sub));
 
     return new ClassificationDto(
       classification.name,
@@ -139,26 +138,25 @@ export class SectionDto {
     );
   }
 
-  private static subClassificationToDto(sub: ProofOfOriginSubClassificationEntity): ClassificationDto {
-    const batches = (sub.batches ?? []).map((batch) => SectionDto.toBatchDto(batch));
+  private static fromSubClassificationEntity(subClassification: ProofOfOriginSubClassificationEntity): ClassificationDto {
+    const batches = (subClassification.batches ?? [])
+      .map((batch) => SectionDto.fromBatchEntity(batch));
 
     return new ClassificationDto(
-      sub.name,
-      sub.emissionOfProcessStep,
-      sub.amount,
-      sub.amount, // TODO-MP: will be removed in DUHGW-310
+      subClassification.name,
+      subClassification.emissionOfProcessStep,
+      subClassification.amount,
+      subClassification.amount, // TODO-MP: will be removed in DUHGW-310
       batches,
       [], // Leaf classification has no nested classifications
-      sub.unit,
-      sub.classificationType,
+      subClassification.unit,
+      subClassification.classificationType,
     );
   }
 
-  private static toEmissionDto(emission?: ProofOfOriginEmissionEntity): EmissionDto {
-    if (!emission) {
-      return new EmissionDto(0, 0, []);
-    }
-
-    return new EmissionDto(emission.amountCO2 ?? 0, emission.amountCO2PerKgH2 ?? 0, emission.basisOfCalculation ?? []);
+  private static fromEmissionEntity(emission: ProofOfOriginEmissionEntity): EmissionDto {
+    return emission
+      ? new EmissionDto(emission.amountCO2 ?? 0, emission.amountCO2PerKgH2 ?? 0, emission.basisOfCalculation ?? [])
+      : new EmissionDto(0, 0, [])
   }
 }

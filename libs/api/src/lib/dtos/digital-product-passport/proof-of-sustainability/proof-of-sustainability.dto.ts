@@ -36,8 +36,11 @@ export class ProofOfSustainabilityDto {
   }
 
   static fromEntity(entity: ProofOfSustainabilityEntity): ProofOfSustainabilityDto {
-    const calculations = (entity.calculations ?? []).map(this.toEmissionCalculationDto);
-    const emissions = (entity.emissions ?? []).map(this.toProcessStepEmissionDto);
+    const calculations = (entity.calculations ?? [])
+      .map(this.fromEmissionCalculationEntity);
+
+    const emissions = (entity.emissions ?? [])
+      .map(this.fromEmissionEntity);
 
     return new ProofOfSustainabilityDto(
       entity.batchId,
@@ -48,19 +51,19 @@ export class ProofOfSustainabilityDto {
     );
   }
 
-  private static toEmissionCalculationDto(
-    calc: ProofOfSustainabilityEmissionCalculationEntity,
+  private static fromEmissionCalculationEntity(
+    calculation: ProofOfSustainabilityEmissionCalculationEntity,
   ): EmissionCalculationDto {
     return new EmissionCalculationDto(
-      calc.name,
-      calc.basisOfCalculation,
-      calc.result,
-      calc.unit,
-      calc.calculationTopic,
+      calculation.name,
+      calculation.basisOfCalculation,
+      calculation.result,
+      calculation.unit,
+      calculation.calculationTopic,
     );
   }
 
-  private static toProcessStepEmissionDto(
+  private static fromEmissionEntity(
     emission: ProofOfSustainabilityEmissionEntity,
   ): EmissionForProcessStepDto {
     return new EmissionForProcessStepDto(

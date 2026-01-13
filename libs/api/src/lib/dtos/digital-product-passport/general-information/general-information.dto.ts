@@ -46,8 +46,8 @@ export class GeneralInformationDto {
     this.redCompliance = redCompliance;
   }
 
-  static toGeneralInformationDto(entity: GeneralInformationEntity): GeneralInformationDto {
-    const hydrogenComposition = (entity.hydrogenComposition ?? []).map(HydrogenComponentDto.of);
+  static fromEntity(entity: GeneralInformationEntity): GeneralInformationDto {
+    const hydrogenComposition = (entity.hydrogenComposition ?? []).map(HydrogenComponentDto.fromEntity);
     const attachedFiles = (entity.attachedFiles ?? []).map(
       (document) => new FileInfoDto(document.description, document.location),
     );
