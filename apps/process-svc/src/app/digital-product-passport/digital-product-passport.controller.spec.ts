@@ -8,9 +8,9 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import {
-  GeneralInformationEntity,
-  ProofOfOriginSectionEntity,
-  ProofOfSustainabilityEntity,
+  GeneralInformationEntityFixture,
+  ProofOfOriginSectionEntityFixture,
+  ProofOfSustainabilityEntityFixture,
   ReadByIdPayload,
 } from '@h2-trust/amqp';
 
@@ -74,17 +74,9 @@ describe('DigitalProductPassportController', () => {
   describe('readGeneralInformation', () => {
     it('delegates to DigitalProductPassportService', async () => {
       // Arrange
-      const given: ReadByIdPayload = { id: 'a' };
-      const expected = new GeneralInformationEntity(
-        given.id,
-        new Date('2024-01-01T00:00:00Z'),
-        'owner-1',
-        42,
-        'GREEN',
-        'producer-1',
-        [],
-        [],
-      );
+      const expected = GeneralInformationEntityFixture.create();
+      const given = new ReadByIdPayload(expected.id);
+
       generalInformationService.readGeneralInformation.mockResolvedValue(expected);
 
       // Act
@@ -99,10 +91,9 @@ describe('DigitalProductPassportController', () => {
   describe('readProofOfOrigin', () => {
     it('delegates to DigitalProductPassportService', async () => {
       // Arrange
-      const given: ReadByIdPayload = { id: 'a' };
-      const expected: ProofOfOriginSectionEntity[] = [
-        new ProofOfOriginSectionEntity('Renewable Energy'),
-      ];
+      const expected = [ProofOfOriginSectionEntityFixture.create()];
+      const given = new ReadByIdPayload('a');
+
       proofOfOriginService.readProofOfOrigin.mockResolvedValue(expected);
 
       // Act
@@ -117,8 +108,9 @@ describe('DigitalProductPassportController', () => {
   describe('readProofOfSustainability', () => {
     it('delegates to DigitalProductPassportService', async () => {
       // Arrange
-      const given: ReadByIdPayload = { id: 'a' };
-      const expected = new ProofOfSustainabilityEntity(given.id, 12, 50, [], []);
+      const expected = ProofOfSustainabilityEntityFixture.create();
+      const given = new ReadByIdPayload(expected.batchId);
+
       proofOfSustainabilityService.readProofOfSustainability.mockResolvedValue(expected);
 
       // Act
