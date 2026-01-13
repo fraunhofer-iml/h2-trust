@@ -7,7 +7,7 @@
  */
 
 import { BatchType } from '@h2-trust/domain';
-import { ProofOfOriginBatch } from './proof-of-origin-batch.entity';
+import { ProofOfOriginBatchEntity } from './proof-of-origin-batch.entity';
 
 /**
  * A top-level classification within a section.
@@ -17,8 +17,8 @@ export class ProofOfOriginClassificationEntity {
   name: string;
   emissionOfProcessStep: number;
   amount: number;
-  batches: ProofOfOriginBatch[];
-  subClassifications: SubClassification[];
+  batches: ProofOfOriginBatchEntity[];
+  subClassifications: ProofOfOriginSubClassificationEntity[];
   unit: string;
   classificationType: BatchType;
 
@@ -28,8 +28,8 @@ export class ProofOfOriginClassificationEntity {
     amount: number,
     unit: string,
     classificationType: BatchType,
-    batches: ProofOfOriginBatch[] = [],
-    subClassifications: SubClassification[] = [],
+    batches: ProofOfOriginBatchEntity[] = [],
+    subClassifications: ProofOfOriginSubClassificationEntity[] = [],
   ) {
     this.name = name;
     this.emissionOfProcessStep = emissionOfProcessStep;
@@ -45,11 +45,27 @@ export class ProofOfOriginClassificationEntity {
  * A leaf classification that contains batches but no further sub-classifications.
  * Used for grouping batches by a specific criterion (e.g., energy source, hydrogen color).
  */
-export interface SubClassification {
+export class ProofOfOriginSubClassificationEntity {
   name: string;
   emissionOfProcessStep: number;
   amount: number;
-  batches: ProofOfOriginBatch[];
+  batches: ProofOfOriginBatchEntity[];
   unit: string;
   classificationType: BatchType;
+
+  constructor(
+    name: string,
+    emissionOfProcessStep: number,
+    amount: number,
+    unit: string,
+    classificationType: BatchType,
+    batches: ProofOfOriginBatchEntity[] = [],
+  ) {
+    this.name = name;
+    this.emissionOfProcessStep = emissionOfProcessStep;
+    this.amount = amount;
+    this.batches = batches;
+    this.unit = unit;
+    this.classificationType = classificationType;
+  }
 }

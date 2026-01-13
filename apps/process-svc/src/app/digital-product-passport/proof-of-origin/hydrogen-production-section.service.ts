@@ -11,7 +11,7 @@ import {
   ProcessStepEntity,
   ProofOfOriginClassificationEntity,
   ProofOfOriginSectionEntity,
-  SubClassification,
+  ProofOfOriginSubClassificationEntity
 } from '@h2-trust/amqp';
 import { ProofOfOrigin } from '@h2-trust/domain';
 import { ClassificationAssembler } from './classification.assembler';
@@ -23,7 +23,7 @@ export class HydrogenProductionSectionService {
   constructor(
     private readonly powerSupplyClassificationService: PowerSupplyClassificationService,
     private readonly waterSupplyClassificationService: WaterSupplyClassificationService,
-  ) {}
+  ) { }
 
   async buildSection(
     powerProductions: ProcessStepEntity[],
@@ -33,19 +33,22 @@ export class HydrogenProductionSectionService {
     const classifications: ProofOfOriginClassificationEntity[] = [];
 
     if (powerProductions?.length) {
-      const energySourceSubClassifications: SubClassification[] =
+      const energySourceSubClassifications: ProofOfOriginSubClassificationEntity[] =
         await this.powerSupplyClassificationService.buildPowerSupplySubClassifications(powerProductions, hydrogenAmount);
+
       const powerSupplyClassification: ProofOfOriginClassificationEntity = ClassificationAssembler.assemblePower(
         ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION,
         [],
         energySourceSubClassifications,
       );
+
       classifications.push(powerSupplyClassification);
     }
 
     if (waterConsumptions?.length) {
       const waterSupplyClassification: ProofOfOriginClassificationEntity =
         this.waterSupplyClassificationService.buildWaterSupplyClassification(waterConsumptions, hydrogenAmount);
+
       classifications.push(waterSupplyClassification);
     }
 

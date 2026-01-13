@@ -8,9 +8,9 @@
 
 import { Injectable } from '@nestjs/common';
 import {
-  HydrogenBatch,
+  ProofOfOriginHydrogenBatchEntity,
   ProcessStepEntity,
-  ProofOfOriginBatch,
+  ProofOfOriginBatchEntity,
   ProofOfOriginClassificationEntity,
   ProofOfOriginEmissionEntity,
   ProofOfOriginSectionEntity,
@@ -31,32 +31,40 @@ export class HydrogenStorageSectionService {
     const classifications: ProofOfOriginClassificationEntity[] = [];
 
     for (const hydrogenColor of Object.values(HydrogenColor)) {
-      const hydrogenProductionsByHydrogenColor = hydrogenProductions.filter(
-        (hydrogenProduction) => hydrogenProduction.batch?.qualityDetails?.color === hydrogenColor,
-      );
+      const hydrogenProductionsByHydrogenColor = hydrogenProductions
+        .filter((hp) => hp.batch?.qualityDetails?.color === hydrogenColor);
 
       if (hydrogenProductionsByHydrogenColor.length === 0) {
         continue;
       }
 
-      const batchesForHydrogenColor: ProofOfOriginBatch[] = await Promise.all(
+      const batchesForHydrogenColor: ProofOfOriginBatchEntity[] = await Promise.all(
         hydrogenProductionsByHydrogenColor.map(async (hydrogenProduction) => {
           const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
             EmissionAssembler.assembleHydrogenStorage(hydrogenProduction);
-          const hydrogenKgEquivalent: number = hydrogenProduction.batch.amount;
-          const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionDto(
-            emissionCalculation,
-            hydrogenKgEquivalent,
-          );
-          const batch: HydrogenBatch = BatchAssembler.assembleHydrogenStorage(hydrogenProduction, emission);
+
+          const emission: ProofOfOriginEmissionEntity =
+            EmissionAssembler.assembleEmissionDto(
+              emissionCalculation,
+              hydrogenProduction.batch.amount,
+            );
+
+          const batch: ProofOfOriginHydrogenBatchEntity =
+            BatchAssembler.assembleHydrogenStorage(
+              hydrogenProduction,
+              emission
+            );
+
           return batch;
         }),
       );
 
-      const classification: ProofOfOriginClassificationEntity = ClassificationAssembler.assembleHydrogen(
-        hydrogenColor,
-        batchesForHydrogenColor,
-      );
+      const classification: ProofOfOriginClassificationEntity =
+        ClassificationAssembler.assembleHydrogen(
+          hydrogenColor,
+          batchesForHydrogenColor,
+        );
+
       classifications.push(classification);
     }
 

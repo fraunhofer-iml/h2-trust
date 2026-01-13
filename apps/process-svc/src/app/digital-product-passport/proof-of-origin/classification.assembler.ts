@@ -6,14 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProofOfOriginBatch, ProofOfOriginClassificationEntity, SubClassification, Util } from '@h2-trust/amqp';
+import { ProofOfOriginBatchEntity, ProofOfOriginClassificationEntity, ProofOfOriginSubClassificationEntity, Util } from '@h2-trust/amqp';
 import { BatchType, MeasurementUnit } from '@h2-trust/domain';
 
 export class ClassificationAssembler {
   static assemblePower(
     classificationName: string,
-    batches?: ProofOfOriginBatch[],
-    subClassifications?: SubClassification[],
+    batches?: ProofOfOriginBatchEntity[],
+    subClassifications?: ProofOfOriginSubClassificationEntity[],
   ): ProofOfOriginClassificationEntity {
     return this.assembleClassification(
       classificationName,
@@ -26,8 +26,8 @@ export class ClassificationAssembler {
 
   static assembleHydrogen(
     classificationName: string,
-    batches?: ProofOfOriginBatch[],
-    subClassifications?: SubClassification[],
+    batches?: ProofOfOriginBatchEntity[],
+    subClassifications?: ProofOfOriginSubClassificationEntity[],
   ): ProofOfOriginClassificationEntity {
     return this.assembleClassification(
       classificationName,
@@ -42,8 +42,8 @@ export class ClassificationAssembler {
     classificationName: string,
     measurementUnit: MeasurementUnit,
     classificationType: BatchType,
-    batches: ProofOfOriginBatch[] = [],
-    subClassifications: SubClassification[] = [],
+    batches: ProofOfOriginBatchEntity[] = [],
+    subClassifications: ProofOfOriginSubClassificationEntity[] = [],
   ): ProofOfOriginClassificationEntity {
     return new ProofOfOriginClassificationEntity(
       classificationName,
@@ -60,8 +60,8 @@ export class ClassificationAssembler {
     classificationName: string,
     measurementUnit: MeasurementUnit,
     classificationType: BatchType,
-    batches: ProofOfOriginBatch[] = [],
-  ): SubClassification {
+    batches: ProofOfOriginBatchEntity[] = [],
+  ): ProofOfOriginSubClassificationEntity {
     return {
       name: classificationName,
       emissionOfProcessStep: this.calculateBatchEmission(batches),
@@ -73,8 +73,8 @@ export class ClassificationAssembler {
   }
 
   private static calculateEmission(
-    batches: ProofOfOriginBatch[],
-    subClassifications: SubClassification[],
+    batches: ProofOfOriginBatchEntity[],
+    subClassifications: ProofOfOriginSubClassificationEntity[],
   ): number {
     const batchEmissionSum = this.calculateBatchEmission(batches);
     const subClassificationEmissionSum = (subClassifications || [])
@@ -84,13 +84,13 @@ export class ClassificationAssembler {
     return batchEmissionSum + subClassificationEmissionSum;
   }
 
-  private static calculateBatchEmission(batches: ProofOfOriginBatch[]): number {
+  private static calculateBatchEmission(batches: ProofOfOriginBatchEntity[]): number {
     return (batches || []).map((b) => b.emission?.amountCO2PerKgH2 ?? 0).reduce((a, b) => a + b, 0);
   }
 
   private static calculateAmount(
-    batches: ProofOfOriginBatch[],
-    subClassifications: SubClassification[],
+    batches: ProofOfOriginBatchEntity[],
+    subClassifications: ProofOfOriginSubClassificationEntity[],
   ): number {
     return Util.sumAmounts(batches) || Util.sumAmounts(subClassifications);
   }

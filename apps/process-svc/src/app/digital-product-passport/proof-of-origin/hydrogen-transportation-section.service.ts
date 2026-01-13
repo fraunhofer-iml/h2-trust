@@ -8,7 +8,7 @@
 
 import { Injectable } from '@nestjs/common';
 import {
-  HydrogenBatch,
+  ProofOfOriginHydrogenBatchEntity,
   HydrogenComponentEntity,
   ProcessStepEntity,
   ProofOfOriginEmissionEntity,
@@ -22,7 +22,7 @@ import { EmissionAssembler } from './emission.assembler';
 
 @Injectable()
 export class HydrogenTransportationSectionService {
-  constructor(private readonly bottlingService: BottlingService) {}
+  constructor(private readonly bottlingService: BottlingService) { }
 
   async buildSection(
     hydrogenTransportation: ProcessStepEntity,
@@ -33,18 +33,19 @@ export class HydrogenTransportationSectionService {
 
     const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
       EmissionAssembler.assembleHydrogenTransportation(hydrogenTransportation);
-    const hydrogenKgEquivalent: number = hydrogenTransportation.batch.amount;
 
-    const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionDto(
-      emissionCalculation,
-      hydrogenKgEquivalent,
-    );
+    const emission: ProofOfOriginEmissionEntity =
+      EmissionAssembler.assembleEmissionDto(
+        emissionCalculation,
+        hydrogenTransportation.batch.amount,
+      );
 
-    const batch: HydrogenBatch = BatchAssembler.assembleHydrogenTransportation(
-      hydrogenTransportation,
-      hydrogenCompositions,
-      emission,
-    );
+    const batch: ProofOfOriginHydrogenBatchEntity =
+      BatchAssembler.assembleHydrogenTransportation(
+        hydrogenTransportation,
+        hydrogenCompositions,
+        emission,
+      );
 
     return new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION, [batch], []);
   }

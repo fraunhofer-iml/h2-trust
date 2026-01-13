@@ -7,12 +7,12 @@
  */
 
 import {
-  HydrogenBatch,
+  ProofOfOriginHydrogenBatchEntity,
   HydrogenComponentEntity,
-  PowerBatch,
+  ProofOfOriginPowerBatchEntity,
   ProcessStepEntity,
-  ProofOfOriginEmission,
-  WaterBatch,
+  ProofOfOriginEmissionEntity,
+  ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/amqp';
 import { BatchType, EnergySource, MeasurementUnit } from '@h2-trust/domain';
 
@@ -20,8 +20,8 @@ export class BatchAssembler {
   static assemblePowerSupply(
     powerProduction: ProcessStepEntity,
     energySource: string,
-    emission?: ProofOfOriginEmission,
-  ): PowerBatch {
+    emission?: ProofOfOriginEmissionEntity,
+  ): ProofOfOriginPowerBatchEntity {
     return {
       id: powerProduction.batch.id,
       emission,
@@ -36,7 +36,7 @@ export class BatchAssembler {
     };
   }
 
-  static assembleWaterSupply(waterConsumption: ProcessStepEntity, emission?: ProofOfOriginEmission): WaterBatch {
+  static assembleWaterSupply(waterConsumption: ProcessStepEntity, emission?: ProofOfOriginEmissionEntity): ProofOfOriginWaterBatchEntity {
     return {
       id: waterConsumption.batch.id,
       emission,
@@ -51,8 +51,8 @@ export class BatchAssembler {
 
   static assembleHydrogenStorage(
     hydrogenStorage: ProcessStepEntity,
-    emission?: ProofOfOriginEmission,
-  ): HydrogenBatch {
+    emission?: ProofOfOriginEmissionEntity,
+  ): ProofOfOriginHydrogenBatchEntity {
     return {
       id: hydrogenStorage.batch.id,
       emission,
@@ -77,8 +77,8 @@ export class BatchAssembler {
   static assembleHydrogenBottling(
     hydrogenBottling: ProcessStepEntity,
     hydrogenComposition: HydrogenComponentEntity[],
-    emission?: ProofOfOriginEmission,
-  ): HydrogenBatch {
+    emission?: ProofOfOriginEmissionEntity,
+  ): ProofOfOriginHydrogenBatchEntity {
     return {
       id: hydrogenBottling.batch.id,
       emission,
@@ -97,8 +97,8 @@ export class BatchAssembler {
   static assembleHydrogenTransportation(
     hydrogenTransportation: ProcessStepEntity,
     hydrogenComposition: HydrogenComponentEntity[],
-    emission?: ProofOfOriginEmission,
-  ): HydrogenBatch {
+    emission?: ProofOfOriginEmissionEntity,
+  ): ProofOfOriginHydrogenBatchEntity {
     return {
       id: hydrogenTransportation.batch.id,
       emission,

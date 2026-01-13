@@ -7,14 +7,14 @@
  */
 
 import {
-  HydrogenBatch,
-  PowerBatch,
-  ProofOfOriginBatch,
+  ProofOfOriginHydrogenBatchEntity,
+  ProofOfOriginPowerBatchEntity,
+  ProofOfOriginBatchEntity,
   ProofOfOriginClassificationEntity,
-  ProofOfOriginEmission,
+  ProofOfOriginEmissionEntity,
   ProofOfOriginSectionEntity,
-  SubClassification,
-  WaterBatch,
+  ProofOfOriginSubClassificationEntity,
+  ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/amqp';
 import { BatchType } from '@h2-trust/domain';
 import { HydrogenComponentDto } from '../process-step';
@@ -54,20 +54,20 @@ export class SectionDto {
     return new SectionDto(section.name, batches, classifications);
   }
 
-  private static toBatchDto(batch: ProofOfOriginBatch): BatchDto {
+  private static toBatchDto(batch: ProofOfOriginBatchEntity): BatchDto {
     switch (batch.batchType) {
       case BatchType.POWER:
-        return this.toPowerBatch(batch);
+        return this.toPowerBatch(batch as ProofOfOriginPowerBatchEntity);
       case BatchType.WATER:
-        return this.toWaterBatchDto(batch);
+        return this.toWaterBatchDto(batch as ProofOfOriginWaterBatchEntity);
       case BatchType.HYDROGEN:
-        return this.toHydrogenBatchDto(batch);
+        return this.toHydrogenBatchDto(batch as ProofOfOriginHydrogenBatchEntity);
       default:
-        throw new Error(`Unsupported batch type: ${(batch as ProofOfOriginBatch).batchType}`);
+        throw new Error(`Unsupported batch type: ${(batch as ProofOfOriginBatchEntity).batchType}`);
     }
   }
 
-  private static toPowerBatch(batch: PowerBatch): PowerBatchDto {
+  private static toPowerBatch(batch: ProofOfOriginPowerBatchEntity): PowerBatchDto {
     const emission = this.toEmissionDto(batch.emission);
 
     return new PowerBatchDto(
@@ -84,20 +84,20 @@ export class SectionDto {
     );
   }
 
-  private static toWaterBatchDto(batch: WaterBatch): WaterBatchDto {
+  private static toWaterBatchDto(batch: ProofOfOriginWaterBatchEntity): WaterBatchDto {
     const emission = this.toEmissionDto(batch.emission);
 
     return new WaterBatchDto(batch.id, emission, batch.createdAt, batch.amount, batch.unit, this.toWaterDetailsDto(batch));
   }
 
-  private static toWaterDetailsDto(batch: WaterBatch): WaterDetailsDto {
+  private static toWaterDetailsDto(batch: ProofOfOriginWaterBatchEntity): WaterDetailsDto {
     const amount = batch.deionizedWaterAmount ?? 0;
     const emission = this.toEmissionDto(batch.deionizedWaterEmission);
 
     return new WaterDetailsDto(amount, emission);
   }
 
-  private static toHydrogenBatchDto(batch: HydrogenBatch): HydrogenBatchDto {
+  private static toHydrogenBatchDto(batch: ProofOfOriginHydrogenBatchEntity): HydrogenBatchDto {
     const emission = this.toEmissionDto(batch.emission);
     const hydrogenComposition = (batch.hydrogenComposition ?? []).map(HydrogenComponentDto.of);
 
@@ -139,7 +139,7 @@ export class SectionDto {
     );
   }
 
-  private static subClassificationToDto(sub: SubClassification): ClassificationDto {
+  private static subClassificationToDto(sub: ProofOfOriginSubClassificationEntity): ClassificationDto {
     const batches = (sub.batches ?? []).map((batch) => SectionDto.toBatchDto(batch));
 
     return new ClassificationDto(
@@ -154,7 +154,7 @@ export class SectionDto {
     );
   }
 
-  private static toEmissionDto(emission?: ProofOfOriginEmission): EmissionDto {
+  private static toEmissionDto(emission?: ProofOfOriginEmissionEntity): EmissionDto {
     if (!emission) {
       return new EmissionDto(0, 0, []);
     }

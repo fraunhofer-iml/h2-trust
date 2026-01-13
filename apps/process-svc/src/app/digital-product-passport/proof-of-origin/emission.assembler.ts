@@ -8,7 +8,7 @@
 
 import {
   ProcessStepEntity,
-  ProofOfOriginEmission,
+  ProofOfOriginEmissionEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
   ProofOfSustainabilityEmissionEntity,
   ProofOfSustainabilityEntity,
@@ -403,7 +403,7 @@ export class EmissionAssembler {
   static assembleEmissionDto(
     calc: ProofOfSustainabilityEmissionCalculationEntity,
     hydrogenMassKg: number,
-  ): ProofOfOriginEmission {
+  ): ProofOfOriginEmissionEntity {
     const amountCO2PerKgH2 = calc?.result ?? 0;
     const amountCO2 = amountCO2PerKgH2 * hydrogenMassKg;
     return {
