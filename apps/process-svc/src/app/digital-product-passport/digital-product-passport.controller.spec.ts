@@ -7,13 +7,8 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  GeneralInformationEntityFixture,
-  ProofOfOriginSectionEntityFixture,
-  ProofOfSustainabilityEntityFixture,
-  ReadByIdPayload,
-} from '@h2-trust/amqp';
-
+import { ReadByIdPayload } from '@h2-trust/amqp';
+import { GeneralInformationEntityFixture, ProofOfOriginSectionEntityFixture, ProofOfSustainabilityEntityFixture } from '@h2-trust/fixtures/entities';
 import { DigitalProductPassportController } from './digital-product-passport.controller';
 import { DigitalProductPassportService } from './digital-product-passport.service';
 import { GeneralInformationService } from './general-information/general-information.service';

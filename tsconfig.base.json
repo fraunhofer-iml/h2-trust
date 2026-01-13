@@ -33,6 +33,9 @@
     "lib": ["es2023", "dom"],
     "paths": {
       "@h2-trust/amqp": ["libs/amqp/src/index.ts"],
+      "@h2-trust/fixtures/entities": [
+        "libs/amqp/src/lib/fixtures/index.ts"
+      ],
       "@h2-trust/api": ["libs/api/src/index.ts"],
       "@h2-trust/blockchain": ["libs/blockchain/src/index.ts"],
       "@h2-trust/configuration": ["libs/configuration/src/index.ts"],
