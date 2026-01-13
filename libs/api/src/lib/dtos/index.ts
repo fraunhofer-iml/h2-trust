@@ -13,6 +13,5 @@ export * from './process-step';
 export * from './unit';
 export * from './user';
 export * from './power-access-approval';
-export * from './proof-of-origin';
-export * from './proof-of-sustainability';
 export * from './file';
+export * from './digital-product-passport';

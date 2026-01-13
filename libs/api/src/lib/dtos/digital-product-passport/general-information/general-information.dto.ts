@@ -7,7 +7,7 @@
  */
 
 import { GeneralInformationEntity } from '@h2-trust/amqp';
-import { FileInfoDto } from '../file/file-info.dto';
+import { FileInfoDto } from '../../file/file-info.dto';
 import { HydrogenComponentDto } from './hydrogen-component.dto';
 import { RedComplianceDto } from './red-compliance.dto';
 

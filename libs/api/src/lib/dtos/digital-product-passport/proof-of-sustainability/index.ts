@@ -10,4 +10,4 @@ export * from './emission-calculation.dto';
 export * from './emission-computation-result.dto';
 export * from './process-step-emission.dto';
 export * from './proof-of-sustainability.dto';
-export * from './mock';
+export * from './mocks';

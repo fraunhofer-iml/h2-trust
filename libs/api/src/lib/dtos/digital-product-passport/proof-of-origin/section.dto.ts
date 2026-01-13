@@ -17,7 +17,6 @@ import {
   ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/amqp';
 import { BatchType } from '@h2-trust/domain';
-import { HydrogenComponentDto } from '../process-step';
 import { BatchDto } from './batch.dto';
 import { ClassificationDto } from './classification.dto';
 import { EmissionDto } from './emission.dto';
@@ -25,6 +24,7 @@ import { HydrogenBatchDto } from './hydrogen-batch.dto';
 import { PowerBatchDto } from './power-batch.dto';
 import { WaterBatchDto } from './water-batch.dto';
 import { WaterDetailsDto } from './water-details.dto';
+import { HydrogenComponentDto } from '../general-information';
 
 /**
  * top level sections of proof of origin

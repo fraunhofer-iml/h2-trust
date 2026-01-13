@@ -8,7 +8,7 @@
 
 import { HydrogenStorageUnitEntity } from '@h2-trust/amqp';
 import { HydrogenStorageType } from '@h2-trust/domain';
-import { HydrogenComponentDto } from '../process-step';
+import { HydrogenComponentDto } from '../digital-product-passport';
 
 export class HydrogenStorageOverviewDto {
   id: string;

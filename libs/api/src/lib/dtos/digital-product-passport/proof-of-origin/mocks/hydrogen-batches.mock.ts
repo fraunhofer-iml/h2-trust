@@ -7,9 +7,9 @@
  */
 
 import { BatchType, HydrogenColor, HydrogenProductionMethod, MeasurementUnit, ProcessType } from '@h2-trust/domain';
-import { CompanyDtoMock } from '../../company';
 import { HydrogenBatchDto } from '../hydrogen-batch.dto';
 import { EmissionMock } from './emissions.mock';
+import { CompanyDtoMock } from '../../../company';
 
 export const hydrogenBatchesMock: HydrogenBatchDto[] = [
   {
