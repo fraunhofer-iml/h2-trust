@@ -6,106 +6,150 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { of } from 'rxjs';
+import { Test, TestingModule } from '@nestjs/testing';
 import { ProcessStepEntity } from '@h2-trust/amqp';
+import { BatchEntityFixture, ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
 import { ProcessType } from '@h2-trust/domain';
 import { TraversalService } from './traversal.service';
-import { createBatch, createProcessStep, setupTraversalServiceTestingModule } from './traversal.test-helpers';
+import { ProcessStepService } from '../../process-step/process-step.service';
 
 describe('TraversalService', () => {
   let service: TraversalService;
-  let batchSvcSendMock: jest.Mock;
+
+  const processStepServiceMock = {
+    readProcessStep: jest.fn(),
+  };
 
   beforeEach(async () => {
-    ({ service, batchSvcSendMock } = await setupTraversalServiceTestingModule());
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        TraversalService,
+        {
+          provide: ProcessStepService,
+          useValue: processStepServiceMock,
+        },
+      ],
+    }).compile();
+
+    service = module.get<TraversalService>(TraversalService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('fetchWaterConsumptionsFromHydrogenProductions', () => {
-    it(`throws if ${ProcessType.HYDROGEN_PRODUCTION} process steps are empty`, async () => {
-      // arrange
-      const givenProcessSteps: ProcessStepEntity[] = [];
+    it('throws error when hydrogenProductions is empty', async () => {
+      // Arrange
+      const givenHydrogenProductions: ProcessStepEntity[] = [];
 
-      const expectedError = `Process steps of type [${ProcessType.HYDROGEN_PRODUCTION}] are missing.`;
+      const expectedErrorMessage = `Process steps of type [${ProcessType.HYDROGEN_PRODUCTION}] are missing.`;
 
-      // act & assert
-      await expect(service.fetchWaterConsumptionsFromHydrogenProductions(givenProcessSteps)).rejects.toThrow(
-        expectedError,
-      );
+      // Act & Assert
+      await expect(service.fetchWaterConsumptionsFromHydrogenProductions(givenHydrogenProductions))
+        .rejects.toThrow(expectedErrorMessage);
     });
 
-    it(`throws if any processStep is not ${ProcessType.HYDROGEN_PRODUCTION}`, async () => {
-      // arrange
-      const givenProcessSteps: ProcessStepEntity[] = [
-        createProcessStep('hp1', ProcessType.HYDROGEN_PRODUCTION, []),
-        createProcessStep('pp2', ProcessType.POWER_PRODUCTION, []),
-      ];
+    it(`throws error when process step is not ${ProcessType.HYDROGEN_PRODUCTION} type`, async () => {
+      // Arrange
+      const givenWrongProcessStep = ProcessStepEntityFixture.createWaterConsumption();
+      const givenHydrogenProductions = [givenWrongProcessStep];
 
-      const expectedError = `All process steps must be of type [${ProcessType.HYDROGEN_PRODUCTION}], but found invalid types: ${givenProcessSteps.at(1).id} (${ProcessType.POWER_PRODUCTION})`;
+      const expectedErrorMessage = `All process steps must be of type [${ProcessType.HYDROGEN_PRODUCTION}], but found invalid types: ${givenWrongProcessStep.id} (${givenWrongProcessStep.type})`;
 
-      // act & assert
-      await expect(service.fetchWaterConsumptionsFromHydrogenProductions(givenProcessSteps)).rejects.toThrow(
-        expectedError,
-      );
+      // Act & Assert
+      await expect(service.fetchWaterConsumptionsFromHydrogenProductions(givenHydrogenProductions))
+        .rejects.toThrow(expectedErrorMessage);
     });
 
-    it(`throws if a ${ProcessType.HYDROGEN_PRODUCTION} process step has no predecessor batch`, async () => {
-      // arrange
-      const givenProcessSteps: ProcessStepEntity[] = [createProcessStep('hp1', ProcessType.HYDROGEN_PRODUCTION, [])];
+    it('throws error when hydrogenProduction has no predecessors', async () => {
+      // Arrange
+      const givenHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction();
+      givenHydrogenProduction.batch.predecessors = [];
 
-      const expectedError = `No predecessors found for process step [${givenProcessSteps.at(0).id}]`;
+      const expectedErrorMessage = `No predecessors found for process step [${givenHydrogenProduction.id}]`;
 
-      // act & assert
-      await expect(service.fetchWaterConsumptionsFromHydrogenProductions(givenProcessSteps)).rejects.toThrow(
-        expectedError,
-      );
+      // Act & Assert
+      await expect(service.fetchWaterConsumptionsFromHydrogenProductions([givenHydrogenProduction]))
+        .rejects.toThrow(expectedErrorMessage);
     });
 
-    it(`should return one ${ProcessType.WATER_CONSUMPTION} process step`, async () => {
-      // arrange
-      const givenProcessSteps: ProcessStepEntity[] = [
-        createProcessStep('hp1', ProcessType.HYDROGEN_PRODUCTION, [createBatch('b1')]),
-      ];
+    it('returns water consumption process steps from hydrogen production predecessors', async () => {
+      // Arrange
+      const givenWaterConsumption = ProcessStepEntityFixture.createWaterConsumption();
+      const givenWaterBatch = BatchEntityFixture.createWaterBatch({ processStepId: givenWaterConsumption.id });
 
-      const expectedResult: ProcessStepEntity[] = [createProcessStep('wc1', ProcessType.WATER_CONSUMPTION, [])];
+      const givenHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction();
+      givenHydrogenProduction.batch.predecessors = [givenWaterBatch];
 
-      batchSvcSendMock.mockReturnValue(of(expectedResult.at(0)));
+      processStepServiceMock.readProcessStep.mockResolvedValue(givenWaterConsumption);
 
-      // act
-      const actualResult: ProcessStepEntity[] =
-        await service.fetchWaterConsumptionsFromHydrogenProductions(givenProcessSteps);
+      // Act
+      const actualResult = await service.fetchWaterConsumptionsFromHydrogenProductions([givenHydrogenProduction]);
 
-      // assert
-      expect(Array.isArray(actualResult)).toBe(true);
-      expect(actualResult.length).toEqual(expectedResult.length);
-      expect(actualResult).toEqual(expectedResult);
+      // Assert
+      expect(processStepServiceMock.readProcessStep).toHaveBeenCalledWith(givenWaterBatch.processStepId);
+      expect(actualResult).toEqual([givenWaterConsumption]);
     });
 
-    it(`should traverse recursively through two layers of ${ProcessType.HYDROGEN_PRODUCTION} process steps`, async () => {
-      // arrange
-      const givenProcessSteps: ProcessStepEntity[] = [
-        createProcessStep('hp1', ProcessType.HYDROGEN_PRODUCTION, [createBatch('b1')]),
-      ];
+    it('returns multiple water consumption process steps from multiple hydrogen productions', async () => {
+      // Arrange
+      const givenWaterConsumption1 = ProcessStepEntityFixture.createWaterConsumption({ id: 'water-step-1' });
+      const givenWaterConsumption2 = ProcessStepEntityFixture.createWaterConsumption({ id: 'water-step-2' });
 
-      const hp2: ProcessStepEntity = createProcessStep('hp2', ProcessType.HYDROGEN_PRODUCTION, [createBatch('b2')]);
-      const wc1: ProcessStepEntity = createProcessStep('wc1', ProcessType.WATER_CONSUMPTION, []);
+      const givenWaterBatch1 = BatchEntityFixture.createWaterBatch({ id: 'batch-1', processStepId: givenWaterConsumption1.id });
+      const givenWaterBatch2 = BatchEntityFixture.createWaterBatch({ id: 'batch-2', processStepId: givenWaterConsumption2.id });
 
-      // hp1's predecessor batch resolves to hp2, hp2's predecessor batch resolves to pp1
-      batchSvcSendMock
-        .mockReturnValueOnce(of(hp2)) // fetchProcessStepsOfBatches([b1]) => [hp2]
-        .mockReturnValueOnce(of(wc1)); // fetchProcessStepsOfBatches([b2]) => [pp1]
+      const givenHydrogenProduction1 = ProcessStepEntityFixture.createHydrogenProduction({ id: 'hydrogen-step-1' });
+      const givenHydrogenProduction2 = ProcessStepEntityFixture.createHydrogenProduction({ id: 'hydrogen-step-2' });
 
-      const expectedResult: ProcessStepEntity[] = [wc1];
+      givenHydrogenProduction1.batch.predecessors = [givenWaterBatch1];
+      givenHydrogenProduction2.batch.predecessors = [givenWaterBatch2];
 
-      // act
-      const actualResult: ProcessStepEntity[] =
-        await service.fetchWaterConsumptionsFromHydrogenProductions(givenProcessSteps);
+      processStepServiceMock.readProcessStep.mockImplementation((id) => {
+        if (id === givenWaterConsumption1.id) {
+          return Promise.resolve(givenWaterConsumption1);
+        }
+        if (id === givenWaterConsumption2.id) {
+          return Promise.resolve(givenWaterConsumption2);
+        }
+        return Promise.resolve(null);
+      });
 
-      // assert
-      expect(batchSvcSendMock).toHaveBeenCalledTimes(2);
+      // Act
+      const actualResult = await service.fetchWaterConsumptionsFromHydrogenProductions([
+        givenHydrogenProduction1,
+        givenHydrogenProduction2,
+      ]);
 
-      expect(Array.isArray(actualResult)).toBe(true);
-      expect(actualResult.length).toEqual(expectedResult.length);
-      expect(actualResult).toEqual(expectedResult);
+      // Assert
+      expect(actualResult).toHaveLength(2);
+      expect(actualResult).toContainEqual(givenWaterConsumption1);
+      expect(actualResult).toContainEqual(givenWaterConsumption2);
+    });
+
+    it('deduplicates water consumptions when same water batch is predecessor of multiple hydrogen productions', async () => {
+      // Arrange
+      const givenWaterConsumption = ProcessStepEntityFixture.createWaterConsumption({ id: 'water-step-1' });
+      const givenWaterBatch = BatchEntityFixture.createWaterBatch({ processStepId: givenWaterConsumption.id });
+
+      const givenHydrogenProduction1 = ProcessStepEntityFixture.createHydrogenProduction({ id: 'hydrogen-step-1' });
+      const givenHydrogenProduction2 = ProcessStepEntityFixture.createHydrogenProduction({ id: 'hydrogen-step-2' });
+
+      givenHydrogenProduction1.batch.predecessors = [givenWaterBatch];
+      givenHydrogenProduction2.batch.predecessors = [givenWaterBatch];
+
+      processStepServiceMock.readProcessStep.mockResolvedValue(givenWaterConsumption);
+
+      // Act
+      const actualResult = await service.fetchWaterConsumptionsFromHydrogenProductions([
+        givenHydrogenProduction1,
+        givenHydrogenProduction2,
+      ]);
+
+      // Assert
+      expect(actualResult).toHaveLength(1);
+      expect(actualResult).toEqual([givenWaterConsumption]);
     });
   });
 });
