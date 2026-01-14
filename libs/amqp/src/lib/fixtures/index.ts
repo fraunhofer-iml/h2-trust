@@ -16,4 +16,5 @@ export * from './proof-of-sustainability-emission.entity.fixture';
 export * from './proof-of-sustainability.entity.fixture';
 export * from './quality-details.entity.fixture';
 export * from './red-compliance.entity.fixture';
+export * from './transportation-details.entity.fixture';
 export * from './user.entity.fixture';
