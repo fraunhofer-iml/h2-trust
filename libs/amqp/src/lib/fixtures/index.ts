@@ -1,5 +1,4 @@
 export * from './address.entity.fixture';
-export * from './base-unit.entity.fixture';
 export * from './batch.entity.fixture';
 export * from './company.entity.fixture';
 export * from './document.entity.fixture';
