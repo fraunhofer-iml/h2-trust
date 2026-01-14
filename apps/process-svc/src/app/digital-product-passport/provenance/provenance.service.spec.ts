@@ -55,6 +55,7 @@ describe('ProvenanceService', () => {
       const givenProcessStepId = '';
 
       const expectedErrorMessage = 'processStepId must be provided.';
+
       // Act & Assert
       await expect(service.buildProvenance(givenProcessStepId)).rejects.toThrow(expectedErrorMessage);
     });
