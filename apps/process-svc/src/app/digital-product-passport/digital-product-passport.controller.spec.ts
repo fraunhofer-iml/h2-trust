@@ -18,43 +18,34 @@ import { ProofOfSustainabilityService } from './proof-of-sustainability/proof-of
 describe('DigitalProductPassportController', () => {
   let controller: DigitalProductPassportController;
 
-  type GeneralInformationServiceMock = Pick<GeneralInformationService, 'readGeneralInformation'>;
-  let generalInformationService: jest.Mocked<GeneralInformationServiceMock>;
+  const generalInformationServiceMock = {
+    readGeneralInformation: jest.fn(),
+  }
 
-  type ProofOfOriginServiceMock = Pick<ProofOfOriginService, 'readProofOfOrigin'>;
-  let proofOfOriginService: jest.Mocked<ProofOfOriginServiceMock>;
+  const proofOfOriginServiceMock = {
+    readProofOfOrigin: jest.fn(),
+  }
 
-  type ProofOfSustainabilityServiceMock = Pick<ProofOfSustainabilityService, 'readProofOfSustainability'>;
-  let proofOfSustainabilityService: jest.Mocked<ProofOfSustainabilityServiceMock>;
+  const proofOfSustainabilityServiceMock = {
+    readProofOfSustainability: jest.fn(),
+  }
 
   beforeEach(async () => {
-    generalInformationService = {
-      readGeneralInformation: jest.fn(),
-    } as jest.Mocked<GeneralInformationServiceMock>;
-
-    proofOfOriginService = {
-      readProofOfOrigin: jest.fn(),
-    } as jest.Mocked<ProofOfOriginServiceMock>;
-
-    proofOfSustainabilityService = {
-      readProofOfSustainability: jest.fn(),
-    } as jest.Mocked<ProofOfSustainabilityServiceMock>;
-
     const module: TestingModule = await Test.createTestingModule({
       controllers: [DigitalProductPassportController],
       providers: [
         DigitalProductPassportService,
         {
           provide: GeneralInformationService,
-          useValue: generalInformationService,
+          useValue: generalInformationServiceMock,
         },
         {
           provide: ProofOfOriginService,
-          useValue: proofOfOriginService,
+          useValue: proofOfOriginServiceMock,
         },
         {
           provide: ProofOfSustainabilityService,
-          useValue: proofOfSustainabilityService,
+          useValue: proofOfSustainabilityServiceMock,
         },
       ],
     }).compile();
@@ -72,13 +63,13 @@ describe('DigitalProductPassportController', () => {
       const expected = GeneralInformationEntityFixture.create();
       const given = new ReadByIdPayload(expected.id);
 
-      generalInformationService.readGeneralInformation.mockResolvedValue(expected);
+      generalInformationServiceMock.readGeneralInformation.mockResolvedValue(expected);
 
       // Act
       const actual = await controller.readGeneralInformation(given);
 
       // Assert
-      expect(generalInformationService.readGeneralInformation).toHaveBeenCalledWith(given.id);
+      expect(generalInformationServiceMock.readGeneralInformation).toHaveBeenCalledWith(given.id);
       expect(actual).toEqual(expected);
     });
   });
@@ -89,13 +80,13 @@ describe('DigitalProductPassportController', () => {
       const expected = [ProofOfOriginSectionEntityFixture.create()];
       const given = new ReadByIdPayload('a');
 
-      proofOfOriginService.readProofOfOrigin.mockResolvedValue(expected);
+      proofOfOriginServiceMock.readProofOfOrigin.mockResolvedValue(expected);
 
       // Act
       const actual = await controller.readProofOfOrigin(given);
 
       // Assert
-      expect(proofOfOriginService.readProofOfOrigin).toHaveBeenCalledWith(given.id);
+      expect(proofOfOriginServiceMock.readProofOfOrigin).toHaveBeenCalledWith(given.id);
       expect(actual).toEqual(expected);
     });
   });
@@ -106,13 +97,13 @@ describe('DigitalProductPassportController', () => {
       const expected = ProofOfSustainabilityEntityFixture.create();
       const given = new ReadByIdPayload(expected.batchId);
 
-      proofOfSustainabilityService.readProofOfSustainability.mockResolvedValue(expected);
+      proofOfSustainabilityServiceMock.readProofOfSustainability.mockResolvedValue(expected);
 
       // Act
       const actual = await controller.readProofOfSustainability(given);
 
       // Assert
-      expect(proofOfSustainabilityService.readProofOfSustainability).toHaveBeenCalledWith(given.id);
+      expect(proofOfSustainabilityServiceMock.readProofOfSustainability).toHaveBeenCalledWith(given.id);
       expect(actual).toEqual(expected);
     });
   });
