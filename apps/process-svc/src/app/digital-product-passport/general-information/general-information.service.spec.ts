@@ -25,32 +25,23 @@ import { RedComplianceService } from './red-compliance/red-compliance.service';
 describe('GeneralInformationService', () => {
   let service: GeneralInformationService;
 
-  type ProcessStepServiceMock = Pick<ProcessStepService, 'readProcessStep'>;
-  let processStepService: jest.Mocked<ProcessStepServiceMock>;
+  const processStepServiceMock = {
+    readProcessStep: jest.fn(),
+  };
 
-  type BottlingServiceMock = Pick<BottlingService, 'calculateHydrogenComposition'>;
-  let bottlingService: jest.Mocked<BottlingServiceMock>;
+  const bottlingServiceMock = {
+    calculateHydrogenComposition: jest.fn(),
+  };
 
-  type RedComplianceServiceMock = Pick<RedComplianceService, 'determineRedCompliance'>;
-  let redComplianceService: jest.Mocked<RedComplianceServiceMock>;
+  const redComplianceServiceMock = {
+    determineRedCompliance: jest.fn(),
+  };
 
   const generalSvcMock = {
     send: jest.fn(),
   };
 
   beforeEach(async () => {
-    processStepService = {
-      readProcessStep: jest.fn(),
-    } as jest.Mocked<ProcessStepServiceMock>;
-
-    bottlingService = {
-      calculateHydrogenComposition: jest.fn(),
-    } as jest.Mocked<BottlingServiceMock>;
-
-    redComplianceService = {
-      determineRedCompliance: jest.fn(),
-    } as jest.Mocked<RedComplianceServiceMock>;
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GeneralInformationService,
@@ -60,15 +51,15 @@ describe('GeneralInformationService', () => {
         },
         {
           provide: ProcessStepService,
-          useValue: processStepService,
+          useValue: processStepServiceMock,
         },
         {
           provide: BottlingService,
-          useValue: bottlingService,
+          useValue: bottlingServiceMock,
         },
         {
           provide: RedComplianceService,
-          useValue: redComplianceService,
+          useValue: redComplianceServiceMock,
         },
       ],
     }).compile();
@@ -99,19 +90,19 @@ describe('GeneralInformationService', () => {
         redCompliance: givenRedCompliance
       });
 
-      processStepService.readProcessStep.mockResolvedValue(givenProcessStep);
+      processStepServiceMock.readProcessStep.mockResolvedValue(givenProcessStep);
       generalSvcMock.send.mockReturnValue(of(givenUser));
-      bottlingService.calculateHydrogenComposition.mockResolvedValue(givenHydrogenComposition);
-      redComplianceService.determineRedCompliance.mockResolvedValue(givenRedCompliance);
+      bottlingServiceMock.calculateHydrogenComposition.mockResolvedValue(givenHydrogenComposition);
+      redComplianceServiceMock.determineRedCompliance.mockResolvedValue(givenRedCompliance);
 
       // Act
       const actualResult = await service.readGeneralInformation(givenProcessStep.id);
 
       // Assert
-      expect(processStepService.readProcessStep).toHaveBeenCalledWith(givenProcessStep.id);
+      expect(processStepServiceMock.readProcessStep).toHaveBeenCalledWith(givenProcessStep.id);
       expect(generalSvcMock.send).toHaveBeenCalledWith(UserMessagePatterns.READ, new ReadByIdPayload(givenProcessStep.recordedBy.id))
-      expect(bottlingService.calculateHydrogenComposition).toHaveBeenCalledWith(givenProcessStep);
-      expect(redComplianceService.determineRedCompliance).toHaveBeenCalledWith(givenProcessStep.id);
+      expect(bottlingServiceMock.calculateHydrogenComposition).toHaveBeenCalledWith(givenProcessStep);
+      expect(redComplianceServiceMock.determineRedCompliance).toHaveBeenCalledWith(givenProcessStep.id);
 
       expect(actualResult).toEqual(expectedResult);
     });
