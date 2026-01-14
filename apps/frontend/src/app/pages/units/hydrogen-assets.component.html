@@ -3,60 +3,51 @@
 
   <div class="flex w-full justify-between">
     <mat-chip-set aria-label="List filter">
-      <mat-chip-option selectable [selected]="showHydrogenProduction" (click)="toggle(UnitType.HYDROGEN_PRODUCTION)">
+      <mat-chip-option
+        selectable
+        [selected]="typeToShow === UnitType.HYDROGEN_PRODUCTION"
+        (click)="toggle(UnitType.HYDROGEN_PRODUCTION)"
+      >
         Hydrogen Production
       </mat-chip-option>
 
-      <mat-chip-option selectable [selected]="showPowerProduction" (click)="toggle(UnitType.POWER_PRODUCTION)">
+      <mat-chip-option
+        selectable
+        [selected]="typeToShow === UnitType.POWER_PRODUCTION"
+        (click)="toggle(UnitType.POWER_PRODUCTION)"
+      >
         Power Production
       </mat-chip-option>
 
-      <mat-chip-option selectable [selected]="showHydrogenStorage" (click)="toggle(UnitType.HYDROGEN_STORAGE)">
+      <mat-chip-option
+        selectable
+        [selected]="typeToShow === UnitType.HYDROGEN_STORAGE"
+        (click)="toggle(UnitType.HYDROGEN_STORAGE)"
+      >
         Hydrogen Storage
       </mat-chip-option>
+
+      <mat-chip-option selectable [selected]="!typeToShow" (click)="toggle(null)"> All </mat-chip-option>
     </mat-chip-set>
-    <button mat-flat-button>add</button>
+    <button [routerLink]="'create'" mat-flat-button>Add Unit</button>
   </div>
 
   <mat-divider></mat-divider>
 
-  <div class="grid grid-cols-4 gap-4 lg:grid-cols-3">
-    @if (showPowerProduction) {
-      @for (item of powerProductionQuery.data(); track $index) {
-        <a
-          class="hover:border-primary-200 flex flex-col gap-2 rounded-lg border-2 border-white bg-white p-4"
-          [routerLink]="['power-production', item.id]"
-        >
-          <span class="text-primary-800 bg-primary-200 flex w-14 items-center gap-4 rounded-md p-4">
-            <span class="material-symbols-outlined"> {{ ICONS.UNITS.POWER_PRODUCTION }}</span>
-          </span>
-          <div class="flex flex-col gap-1">
-            <span class="flex items-center gap-4 text-sm font-semibold"> {{ item.name }}</span>
-            <mat-chip-set aria-label="attributes">
-              <mat-chip
-                ><span matChipAvatar class="material-symbols-outlined">charger</span>
-                {{ item.ratedPower | unit: FormattedUnits.KWH }}</mat-chip
-              >
-              <mat-chip>
-                <span matChipAvatar class="material-symbols-outlined">category</span>{{ item.typeName }}</mat-chip
-              >
-            </mat-chip-set>
-          </div>
-        </a>
-      }
-    }
-
-    @if (showHydrogenProduction) {
+  <div class="grid grid-cols-3 gap-4 xl:grid-cols-4">
+    @if (!typeToShow || typeToShow === UnitType.HYDROGEN_PRODUCTION) {
       @for (item of hydrogenProductionQuery.data(); track $index) {
-        <a
-          class="hover:border-secondary-200 flex flex-col gap-2 rounded-lg border-2 border-white bg-white p-4"
-          [routerLink]="['hydrogen-production', item.id]"
-        >
-          <span class="text-secondary-800 bg-secondary-200 flex w-14 items-center gap-4 rounded-md p-4">
-            <span class="material-symbols-outlined"> {{ ICONS.UNITS.HYDROGEN_PRODUCTION }}</span>
-          </span>
-          <div class="flex flex-col gap-1">
-            <span class="flex items-center gap-4 text-sm font-semibold"> {{ item.name }}</span>
+        <a class="group flex flex-col rounded-lg hover:shadow-lg" [routerLink]="['power-production', item.id]">
+          <div class="bg-secondary-100 group-hover:bg-secondary-200 flex flex-row gap-4 rounded-t-lg p-4">
+            <span class="text-secondary-600 flex items-center gap-4 rounded-xl bg-white p-2">
+              <span class="material-symbols-outlined"> {{ ICONS.UNITS.HYDROGEN_PRODUCTION }}</span>
+            </span>
+            <div class="flex flex-col justify-center text-sm">
+              <span class="font-semibold"> {{ item.name }}</span>
+              <span class="text-secondary-600">Hydrogen Production Unit</span>
+            </div>
+          </div>
+          <div class="h-full rounded-b-lg bg-white p-4">
             <mat-chip-set aria-label="attributes">
               <mat-chip>
                 <span matChipAvatar class="material-symbols-outlined">charger</span>
@@ -70,19 +61,19 @@
         </a>
       }
     }
-
-    @if (showHydrogenStorage) {
+    @if (!typeToShow || typeToShow === UnitType.HYDROGEN_STORAGE) {
       @for (item of hydrogenStorageQuery.data(); track $index) {
-        <a
-          class="flex flex-col gap-2 rounded-lg border-2 border-white bg-white p-4 hover:border-neutral-200"
-          [routerLink]="['hydrogen-storage', item.id]"
-        >
-          <span class="flex w-14 items-center gap-4 rounded-md bg-neutral-200 p-4 text-neutral-600">
-            <span class="material-symbols-outlined"> {{ ICONS.UNITS.HYDROGEN_STORAGE }}</span>
-          </span>
-          <div class="flex flex-col gap-1">
-            <span class="flex items-center gap-4 text-sm font-semibold"> {{ item.name }}</span>
-
+        <a class="group flex flex-col rounded-lg hover:shadow-lg" [routerLink]="['hydrogen-storage', item.id]">
+          <div class="flex flex-row gap-4 rounded-t-lg bg-neutral-200 p-4 group-hover:bg-neutral-300">
+            <span class="flex items-center gap-4 rounded-xl bg-white p-2 text-neutral-600">
+              <span class="material-symbols-outlined"> {{ ICONS.UNITS.HYDROGEN_STORAGE }}</span>
+            </span>
+            <div class="flex flex-col justify-center text-sm">
+              <span class="font-semibold"> {{ item.name }}</span>
+              <span class="text-neutral-600">Hydrogen Storage Unit</span>
+            </div>
+          </div>
+          <div class="h-full rounded-b-lg bg-white p-4">
             <mat-chip-set aria-label="attributes">
               <mat-chip>
                 <span matChipAvatar class="material-symbols-outlined">bar_chart</span> {{ item.filling }}/{{
@@ -92,6 +83,33 @@
               <mat-chip>
                 <span matChipAvatar class="material-symbols-outlined">label</span>
                 {{ item.storageType | prettyEnum | titlecase }}</mat-chip
+              >
+            </mat-chip-set>
+          </div>
+        </a>
+      }
+    }
+
+    @if (!typeToShow || typeToShow === UnitType.POWER_PRODUCTION) {
+      @for (item of powerProductionQuery.data(); track $index) {
+        <a class="group flex flex-col rounded-lg hover:shadow-lg" [routerLink]="['hydrogen-storage', item.id]">
+          <div class="bg-primary-100 group-hover:bg-primary-200 flex flex-row gap-4 rounded-t-lg p-4">
+            <span class="text-primary-600 flex items-center gap-4 rounded-xl bg-white p-2">
+              <span class="material-symbols-outlined"> {{ ICONS.UNITS.POWER_PRODUCTION }}</span>
+            </span>
+            <div class="flex flex-col justify-center text-sm">
+              <span class="font-semibold"> {{ item.name }}</span>
+              <span class="text-neutral-600">Power Production Unit</span>
+            </div>
+          </div>
+          <div class="h-full rounded-b-lg bg-white p-4">
+            <mat-chip-set aria-label="attributes">
+              <mat-chip
+                ><span matChipAvatar class="material-symbols-outlined">charger</span>
+                {{ item.ratedPower | unit: FormattedUnits.KWH }}</mat-chip
+              >
+              <mat-chip>
+                <span matChipAvatar class="material-symbols-outlined">category</span>{{ item.typeName }}</mat-chip
               >
             </mat-chip-set>
           </div>

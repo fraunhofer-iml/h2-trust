@@ -1,13 +1,13 @@
 <div
   class="flex flex-row rounded-lg border-2 p-4 text-sm"
-  [ngClass]="isValid() ? 'border-secondary-100/5 bg-secondary-700/10' : 'border-neutral-100 bg-neutral-200/20'"
+  [ngClass]="isValid() ? 'border-secondary-100 bg-secondary-100/50' : 'border-neutral-200 bg-neutral-100'"
 >
   <div class="stretch flex flex-col">
     <span class="font-semibold text-neutral-600">{{ content()?.TITLE }}</span>
     <p>{{ content()?.DESCRIPTION }}</p>
   </div>
   <div class="flex w-16 items-center justify-center pl-2">
-    <span class="material-symbols-outlined text-4xl" [ngClass]="isValid() ? 'text-secondary-200' : 'text-neutral-700'">
+    <span class="material-symbols-outlined text-4xl" [ngClass]="isValid() ? 'text-secondary-300' : 'text-neutral-400'">
       {{ isValid() ? 'check' : 'close' }}</span
     >
   </div>

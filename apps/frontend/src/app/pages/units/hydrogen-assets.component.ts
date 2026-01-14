@@ -47,9 +47,7 @@ export class HydrogenAssetsComponent {
 
   protected readonly unitsService = inject(UnitsService);
 
-  showPowerProduction = true;
-  showHydrogenProduction = true;
-  showHydrogenStorage = true;
+  typeToShow: UnitType | null = null;
 
   hydrogenStorageQuery = injectQuery(() => ({
     queryKey: ['h2-storage'],
@@ -66,17 +64,7 @@ export class HydrogenAssetsComponent {
     queryFn: async () => this.unitsService.getHydrogenProductionUnits(),
   }));
 
-  toggle(type: UnitType) {
-    switch (type) {
-      case UnitType.HYDROGEN_PRODUCTION:
-        this.showHydrogenProduction = !this.showHydrogenProduction;
-        break;
-      case UnitType.POWER_PRODUCTION:
-        this.showPowerProduction = !this.showPowerProduction;
-        break;
-      case UnitType.HYDROGEN_STORAGE:
-        this.showHydrogenStorage = !this.showHydrogenStorage;
-        break;
-    }
+  toggle(type: UnitType | null) {
+    this.typeToShow = type;
   }
 }

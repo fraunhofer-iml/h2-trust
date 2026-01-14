@@ -4,5 +4,8 @@
   "github.copilot.chat.codeGeneration.useInstructionFiles": true,
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }
