@@ -78,7 +78,6 @@ import {
 })
 export class CreateUnitComponent {
   protected readonly RED_III_CRITERIA = RED_III_CRITERIA;
-  protected readonly ICONS = ICONS.UNITS;
   protected readonly UnitType = UnitType;
   protected readonly HydrogenProductionMethod = HydrogenProductionMethod;
   protected readonly HydrogenStorageType = HydrogenStorageType;
@@ -136,6 +135,17 @@ export class CreateUnitComponent {
 
   get selectedType() {
     return this.unitForm.get('unitType') as FormControl;
+  }
+
+  getIcon(unitType: UnitType) {
+    switch (unitType) {
+      case UnitType.HYDROGEN_PRODUCTION:
+        return ICONS.UNITS.HYDROGEN_PRODUCTION;
+      case UnitType.HYDROGEN_STORAGE:
+        return ICONS.UNITS.HYDROGEN_STORAGE;
+      case UnitType.POWER_PRODUCTION:
+        return ICONS.UNITS.POWER_PRODUCTION;
+    }
   }
 
   save() {

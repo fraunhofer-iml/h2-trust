@@ -37,7 +37,7 @@
   <div class="grid grid-cols-3 gap-4 xl:grid-cols-4">
     @if (!typeToShow || typeToShow === UnitType.HYDROGEN_PRODUCTION) {
       @for (item of hydrogenProductionQuery.data(); track $index) {
-        <a class="group flex flex-col rounded-lg hover:shadow-lg" [routerLink]="['power-production', item.id]">
+        <a class="group flex flex-col rounded-lg hover:shadow-lg" [routerLink]="['hydrogen-production', item.id]">
           <div class="bg-secondary-100 group-hover:bg-secondary-200 flex flex-row gap-4 rounded-t-lg p-4">
             <span class="text-secondary-600 flex items-center gap-4 rounded-xl bg-white p-2">
               <span class="material-symbols-outlined"> {{ ICONS.UNITS.HYDROGEN_PRODUCTION }}</span>
@@ -92,7 +92,7 @@
 
     @if (!typeToShow || typeToShow === UnitType.POWER_PRODUCTION) {
       @for (item of powerProductionQuery.data(); track $index) {
-        <a class="group flex flex-col rounded-lg hover:shadow-lg" [routerLink]="['hydrogen-storage', item.id]">
+        <a class="group flex flex-col rounded-lg hover:shadow-lg" [routerLink]="['power-production', item.id]">
           <div class="bg-primary-100 group-hover:bg-primary-200 flex flex-row gap-4 rounded-t-lg p-4">
             <span class="text-primary-600 flex items-center gap-4 rounded-xl bg-white p-2">
               <span class="material-symbols-outlined"> {{ ICONS.UNITS.POWER_PRODUCTION }}</span>
