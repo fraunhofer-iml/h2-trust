@@ -6,185 +6,255 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Test } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 import {
-  BatchEntityHydrogenProducedMock,
-  ProcessStepEntity,
-  ProcessStepEntityHydrogenBottlingMock,
-  ProcessStepEntityHydrogenProductionMock,
-  ProcessStepEntityHydrogenTransportationMock,
-  ReadByIdPayload,
   ReadProcessStepsByPredecessorTypesAndCompanyPayload,
+  ReadProcessStepsByTypesAndActiveAndCompanyPayload,
+  CreateManyProcessStepsPayload,
 } from '@h2-trust/amqp';
-import { ConfigurationService, MinioConfiguration } from '@h2-trust/configuration';
-import { ProcessStepRepository } from '@h2-trust/database';
+import { ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
+import { ConfigurationService } from '@h2-trust/configuration';
+import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
 import { ProcessType } from '@h2-trust/domain';
+
 import { ProcessStepService } from './process-step.service';
 
 describe('ProcessStepService', () => {
   let service: ProcessStepService;
-  let repository: jest.Mocked<ProcessStepRepository>;
 
-  const minioConfig = {
-    endPoint: 'minio.local',
-    port: 9000,
-    bucketName: 'docs-bucket',
-  } as MinioConfiguration;
+  const configurationServiceMock = {
+    getGlobalConfiguration: jest.fn().mockReturnValue({
+      minio: {
+        endPoint: 'localhost',
+        port: 9000,
+        bucketName: 'test-bucket',
+      },
+    }),
+  };
+
+  const batchRepositoryMock = {
+    setBatchesInactive: jest.fn(),
+  };
+
+  const processStepRepositoryMock = {
+    insertProcessStep: jest.fn(),
+    insertManyProcessSteps: jest.fn(),
+    findProcessStep: jest.fn(),
+    findAllProcessStepsFromStorageUnit: jest.fn(),
+    findProcessStepsByPredecessorTypesAndCompany: jest.fn(),
+    findProcessStepsByTypesAndActiveAndCompany: jest.fn(),
+  };
 
   beforeEach(async () => {
-    const module = await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
       providers: [
         ProcessStepService,
         {
-          provide: ProcessStepRepository,
-          useValue: {
-            findProcessStepsByPredecessorTypesAndCompany: jest.fn(),
-            findProcessStep: jest.fn(),
-            insertProcessStep: jest.fn(),
-          },
+          provide: ConfigurationService,
+          useValue: configurationServiceMock,
         },
         {
-          provide: ConfigurationService,
-          useValue: {
-            getGlobalConfiguration: jest.fn().mockReturnValue({
-              minio: minioConfig,
-            }),
-          },
+          provide: BatchRepository,
+          useValue: batchRepositoryMock,
+        },
+        {
+          provide: ProcessStepRepository,
+          useValue: processStepRepositoryMock,
         },
       ],
     }).compile();
 
-    service = module.get(ProcessStepService);
-    repository = module.get(ProcessStepRepository);
+    service = module.get<ProcessStepService>(ProcessStepService);
   });
 
-  describe('readProcessSteps', () => {
-    it('should return process steps for given criteria', async () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('createProcessStep', () => {
+    it('delegates to ProcessStepRepository', async () => {
       // Arrange
-      const fixture: ProcessStepEntity[] = [
-        ProcessStepEntityHydrogenProductionMock[0],
-        ProcessStepEntityHydrogenProductionMock[1],
-      ];
-      repository.findProcessStepsByPredecessorTypesAndCompany.mockResolvedValue(fixture);
+      const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
 
-      const givenPredecessorProcessTypes = [fixture[0].type];
-      const givenCompanyId = fixture[0].recordedBy.company.id;
-
-      const payload = new ReadProcessStepsByPredecessorTypesAndCompanyPayload(
-        givenPredecessorProcessTypes,
-        givenCompanyId,
-      );
+      processStepRepositoryMock.insertProcessStep.mockResolvedValue(givenProcessStep);
 
       // Act
-      const actualResponse = await service.readProcessStepsByPredecessorTypesAndCompany(payload);
+      const actualResult = await service.createProcessStep(givenProcessStep);
 
       // Assert
-      expect(repository.findProcessStepsByPredecessorTypesAndCompany).toHaveBeenCalledWith(
-        givenPredecessorProcessTypes,
-        givenCompanyId,
-      );
-      expect(actualResponse).toBe(fixture);
+      expect(processStepRepositoryMock.insertProcessStep).toHaveBeenCalledWith(givenProcessStep);
+      expect(actualResult).toEqual(givenProcessStep);
     });
   });
 
-  describe('readProcessStep (HYDROGEN_BOTTLING)', () => {
-    it('should return enriched process step with full document URLs and filtered locations', async () => {
+  describe('createManyProcessSteps', () => {
+    it('delegates to ProcessStepRepository', async () => {
       // Arrange
-      const hydrogenProductionFixture: ProcessStepEntity = structuredClone(ProcessStepEntityHydrogenBottlingMock[0]);
-      hydrogenProductionFixture.documents = [
-        { id: 'd1', location: 'path/file1.pdf', description: 'Some Description 1' },
-        { id: 'd2', location: undefined, description: 'FILTERED OUT' },
-        { id: 'd3', location: 'path/file3.png', description: 'Some Description 2' },
+      const givenProcessSteps = [
+        ProcessStepEntityFixture.createHydrogenBottling(),
+        ProcessStepEntityFixture.createHydrogenProduction(),
       ];
-      repository.findProcessStep.mockResolvedValue(hydrogenProductionFixture);
+      const givenPayload = new CreateManyProcessStepsPayload(givenProcessSteps);
+
+      processStepRepositoryMock.insertManyProcessSteps.mockResolvedValue(givenProcessSteps);
 
       // Act
-      const actualResponse: ProcessStepEntity = await service.readProcessStep(
-        new ReadByIdPayload(hydrogenProductionFixture.id),
-      );
+      const actualResult = await service.createManyProcessSteps(givenPayload);
 
       // Assert
-      expect(repository.findProcessStep).toHaveBeenCalledWith(hydrogenProductionFixture.id);
-      expect(actualResponse.documents).toHaveLength(2);
-      expect(actualResponse.documents?.[0]).toMatchObject({
-        location: `http://${minioConfig.endPoint}:${minioConfig.port}/${minioConfig.bucketName}/path/file1.pdf`,
-        description: 'File #0',
-      });
-      expect(actualResponse.documents?.[1]).toMatchObject({
-        location: `http://${minioConfig.endPoint}:${minioConfig.port}/${minioConfig.bucketName}/path/file3.png`,
-        description: 'File #2',
-      });
+      expect(processStepRepositoryMock.insertManyProcessSteps).toHaveBeenCalledWith(givenProcessSteps);
+      expect(actualResult).toEqual(givenProcessSteps);
     });
   });
 
-  describe('readProcessStep (HYDROGEN_TRANSPORTATION)', () => {
-    it('should use predecessor documents for transportation steps', async () => {
+  describe('readProcessStep', () => {
+    it('returns process step with assembled documents for non-transportation type', async () => {
       // Arrange
-      const hydrogenBottlingFixture: ProcessStepEntity = ProcessStepEntityHydrogenBottlingMock[0];
-      hydrogenBottlingFixture.documents = [{ id: 'd1', location: 'path/file1.pdf', description: 'Some Description 1' }];
+      const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
 
-      const hydrogenTransportationFixture: ProcessStepEntity = ProcessStepEntityHydrogenTransportationMock[0];
-      hydrogenTransportationFixture.batch.predecessors = [
-        { ...BatchEntityHydrogenProducedMock[0], processStepId: hydrogenBottlingFixture.id },
-      ];
-
-      // First call for transportation id, second call for bottling id
-      repository.findProcessStep.mockImplementation(async (id: string) => {
-        if (id === hydrogenTransportationFixture.id) return hydrogenTransportationFixture;
-        if (id === hydrogenBottlingFixture.id) return hydrogenBottlingFixture;
-        throw new Error('unexpected id');
-      });
+      processStepRepositoryMock.findProcessStep.mockResolvedValue(givenProcessStep);
 
       // Act
-      const actualResponse = await service.readProcessStep(new ReadByIdPayload(hydrogenTransportationFixture.id));
+      const actualResult = await service.readProcessStep(givenProcessStep.id);
 
       // Assert
-      expect(repository.findProcessStep).toHaveBeenCalledWith(hydrogenTransportationFixture.id);
-      expect(repository.findProcessStep).toHaveBeenCalledWith(hydrogenBottlingFixture.id);
-      expect(actualResponse.documents).toHaveLength(1);
-      expect(actualResponse.documents?.[0]).toMatchObject({
-        location: `http://${minioConfig.endPoint}:${minioConfig.port}/${minioConfig.bucketName}/path/file1.pdf`,
-        description: 'File #0',
-      });
+      expect(processStepRepositoryMock.findProcessStep).toHaveBeenCalledWith(givenProcessStep.id);
+      expect(actualResult.id).toBe(givenProcessStep.id);
+      expect(actualResult.documents).toHaveLength(1);
+      expect(actualResult.documents[0].location).toBe('http://localhost:9000/test-bucket/dummy-document.pdf');
+      expect(actualResult.documents[0].description).toBe('File #0')
     });
 
-    it('should throw an error when predecessor processStepId is missing', async () => {
+    it('returns transportation process step with documents from predecessor', async () => {
       // Arrange
-      const hydrogenTransportationFixture: ProcessStepEntity = ProcessStepEntityHydrogenTransportationMock[0];
-      hydrogenTransportationFixture.batch.predecessors = [
-        { ...BatchEntityHydrogenProducedMock[0], processStepId: undefined },
-      ];
+      const givenPredecessorProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
+      const givenTransportationProcessStep = ProcessStepEntityFixture.createHydrogenTransportation();
+      givenTransportationProcessStep.batch.predecessors = [givenPredecessorProcessStep.batch];
 
-      repository.findProcessStep.mockResolvedValue(hydrogenTransportationFixture);
+      processStepRepositoryMock.findProcessStep
+        .mockResolvedValueOnce(givenTransportationProcessStep)
+        .mockResolvedValueOnce(givenPredecessorProcessStep);
+
+      // Act
+      const actualResult = await service.readProcessStep(givenTransportationProcessStep.id);
+
+      // Assert
+      expect(processStepRepositoryMock.findProcessStep).toHaveBeenCalledTimes(2);
+      expect(actualResult.id).toBe(givenTransportationProcessStep.id);
+      expect(actualResult.documents).toHaveLength(1);
+      expect(actualResult.documents[0].location).toBe('http://localhost:9000/test-bucket/dummy-document.pdf');
+      expect(actualResult.documents[0].description).toBe('File #0')
+    });
+
+    it('throws error when transportation has no predecessor', async () => {
+      // Arrange
+      const givenTransportationProcessStep = ProcessStepEntityFixture.createHydrogenTransportation();
+      givenTransportationProcessStep.batch.predecessors = [];
+
+      processStepRepositoryMock.findProcessStep.mockResolvedValue(givenTransportationProcessStep);
+
+      const expectedErrorMessage = 'ProcessStepId of predecessor is missing.';
 
       // Act & Assert
-      await expect(service.readProcessStep(new ReadByIdPayload(hydrogenTransportationFixture.id))).rejects.toThrow(
-        'ProcessStepId of predecessor is missing.',
-      );
+      await expect(service.readProcessStep(givenTransportationProcessStep.id)).rejects.toThrow(expectedErrorMessage);
     });
 
-    it('throws when predecessor type is not HYDROGEN_BOTTLING', async () => {
+    it('throws error when predecessor is not hydrogen bottling', async () => {
       // Arrange
-      const hydrogenProductionFixture: ProcessStepEntity = ProcessStepEntityHydrogenProductionMock[0];
+      const givenPredecessorProcessStep = ProcessStepEntityFixture.createHydrogenProduction();
+      const givenTransportationProcessStep = ProcessStepEntityFixture.createHydrogenTransportation();
+      givenTransportationProcessStep.batch.predecessors = [givenPredecessorProcessStep.batch];
 
-      const hydrogenTransportationFixture: ProcessStepEntity = ProcessStepEntityHydrogenTransportationMock[0];
-      hydrogenTransportationFixture.batch.predecessors = [
-        { ...BatchEntityHydrogenProducedMock[0], processStepId: hydrogenProductionFixture.id },
-      ];
+      processStepRepositoryMock.findProcessStep
+        .mockResolvedValueOnce(givenTransportationProcessStep)
+        .mockResolvedValueOnce(givenPredecessorProcessStep);
 
-      // First call for transportation id, second call for production id
-      repository.findProcessStep.mockImplementation(async (id: string) => {
-        if (id === hydrogenTransportationFixture.id) return hydrogenTransportationFixture;
-        if (id === hydrogenProductionFixture.id) return hydrogenProductionFixture;
-        throw new Error('unexpected id');
-      });
-
-      const expectedErrorMessage = `Expected process type of predecessor to be ${ProcessType.HYDROGEN_BOTTLING}, but got ${ProcessType.HYDROGEN_PRODUCTION}.`;
+      const errorMessage = `Expected process type of predecessor to be ${ProcessType.HYDROGEN_BOTTLING}, but got ${ProcessType.HYDROGEN_PRODUCTION}.`;
 
       // Act & Assert
-      await expect(service.readProcessStep(new ReadByIdPayload(hydrogenTransportationFixture.id))).rejects.toThrow(
-        expectedErrorMessage,
+      await expect(service.readProcessStep(givenTransportationProcessStep.id)).rejects.toThrow(errorMessage);
+    });
+  });
+
+  describe('readAllProcessStepsFromStorageUnit', () => {
+    it('delegates to ProcessStepRepository', async () => {
+      // Arrange
+      const givenStorageUnitId = 'storage-unit-1';
+      const givenProcessSteps = [ProcessStepEntityFixture.createHydrogenProduction(), ProcessStepEntityFixture.createHydrogenProduction()];
+
+      processStepRepositoryMock.findAllProcessStepsFromStorageUnit.mockResolvedValue(givenProcessSteps);
+
+      // Act
+      const actualResult = await service.readAllProcessStepsFromStorageUnit(givenStorageUnitId);
+
+      // Assert
+      expect(processStepRepositoryMock.findAllProcessStepsFromStorageUnit).toHaveBeenCalledWith(givenStorageUnitId);
+      expect(actualResult).toEqual(givenProcessSteps);
+    });
+  });
+
+  describe('readProcessStepsByPredecessorTypesAndCompany', () => {
+    it('delegates to ProcessStepRepository', async () => {
+      // Arrange
+      const givenPayload = new ReadProcessStepsByPredecessorTypesAndCompanyPayload(
+        [ProcessType.HYDROGEN_PRODUCTION],
+        'company-1',
       );
+      const givenProcessSteps = [ProcessStepEntityFixture.createHydrogenBottling()];
+
+      processStepRepositoryMock.findProcessStepsByPredecessorTypesAndCompany.mockResolvedValue(givenProcessSteps);
+
+      // Act
+      const actualResult = await service.readProcessStepsByPredecessorTypesAndCompany(givenPayload);
+
+      // Assert
+      expect(processStepRepositoryMock.findProcessStepsByPredecessorTypesAndCompany).toHaveBeenCalledWith(
+        givenPayload.predecessorProcessTypes,
+        givenPayload.companyId,
+      );
+      expect(actualResult).toEqual(givenProcessSteps);
+    });
+  });
+
+  describe('readProcessStepsByTypesAndActiveAndCompany', () => {
+    it('delegates to ProcessStepRepository', async () => {
+      // Arrange
+      const givenPayload = new ReadProcessStepsByTypesAndActiveAndCompanyPayload(
+        [ProcessType.HYDROGEN_BOTTLING],
+        true,
+        'company-1',
+      );
+      const givenProcessSteps = [ProcessStepEntityFixture.createHydrogenBottling()];
+
+      processStepRepositoryMock.findProcessStepsByTypesAndActiveAndCompany.mockResolvedValue(givenProcessSteps);
+
+      // Act
+      const actualResult = await service.readProcessStepsByTypesAndActiveAndCompany(givenPayload);
+
+      // Assert
+      expect(processStepRepositoryMock.findProcessStepsByTypesAndActiveAndCompany).toHaveBeenCalledWith(
+        givenPayload.processTypes,
+        givenPayload.active,
+        givenPayload.companyId,
+      );
+      expect(actualResult).toEqual(givenProcessSteps);
+    });
+  });
+
+  describe('setBatchesInactive', () => {
+    it('delegates to BatchRepository', async () => {
+      // Arrange
+      const givenBatchIds = ['batch-1', 'batch-2'];
+      const expected = { count: 2 };
+
+      batchRepositoryMock.setBatchesInactive.mockResolvedValue(expected);
+
+      // Act
+      const actualResult = await service.setBatchesInactive(givenBatchIds);
+
+      // Assert
+      expect(batchRepositoryMock.setBatchesInactive).toHaveBeenCalledWith(givenBatchIds);
+      expect(actualResult).toEqual(expected);
     });
   });
 });

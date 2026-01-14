@@ -5,6 +5,6 @@ export const DocumentEntityFixture = {
     new DocumentEntity(
       overrides.id ?? 'document-1',
       overrides.description ?? 'Dummy Document',
-      overrides.location ?? 'https://files.example.com/dummy-document.pdf',
+      overrides.location ?? 'dummy-document.pdf',
     ),
 } as const;

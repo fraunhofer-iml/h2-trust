@@ -27,7 +27,7 @@ export class ProcessStepController {
     private readonly processStepService: ProcessStepService,
     private readonly bottlingService: BottlingService,
     private readonly transportationService: TransportationService,
-  ) {}
+  ) { }
 
   @MessagePattern(ProcessStepMessagePatterns.READ_ALL_BY_PREDECESSOR_TYPES_AND_COMPANY)
   async readProcessStepsByPredecessorTypesAndCompany(
@@ -44,7 +44,8 @@ export class ProcessStepController {
   }
 
   @MessagePattern(ProcessStepMessagePatterns.CREATE_HYDROGEN_BOTTLING)
-  async createHydrogenBottlingProcessStep(payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
+  async createHydrogenBottlingProcessStep(
+    payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
     return this.bottlingService.createHydrogenBottlingProcessStep(payload);
   }
 

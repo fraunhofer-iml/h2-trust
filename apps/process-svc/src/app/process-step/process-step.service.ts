@@ -24,7 +24,7 @@ export class ProcessStepService {
     private readonly configurationService: ConfigurationService,
     private readonly batchRepository: BatchRepository,
     private readonly processStepRepository: ProcessStepRepository,
-  ) {}
+  ) { }
 
   async createProcessStep(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
     return this.processStepRepository.insertProcessStep(processStep);
@@ -41,9 +41,9 @@ export class ProcessStepService {
       const predecessorProcessStep = await this.readPredecessorProcessStep(
         processStep.batch.predecessors[0]?.processStepId,
       );
-      processStep.documents = await this.assembleDocuments(predecessorProcessStep);
+      processStep.documents = this.assembleDocuments(predecessorProcessStep);
     } else {
-      processStep.documents = await this.assembleDocuments(processStep);
+      processStep.documents = this.assembleDocuments(processStep);
     }
 
     return processStep;
@@ -66,14 +66,14 @@ export class ProcessStepService {
     return predecessorProcessStep;
   }
 
-  private async assembleDocuments(processStep: ProcessStepEntity): Promise<DocumentEntity[]> {
+  private assembleDocuments(processStep: ProcessStepEntity): DocumentEntity[] {
     const documents: DocumentEntity[] = [];
     const minio: MinioConfiguration = this.configurationService.getGlobalConfiguration().minio;
 
     processStep.documents?.forEach((document, index) => {
       if (document.location) {
         documents.push({
-          ...document,
+          id: document.id,
           location: `http://${minio.endPoint}:${minio.port}/${minio.bucketName}/${document.location}`,
           description: `File #${index}`,
         });

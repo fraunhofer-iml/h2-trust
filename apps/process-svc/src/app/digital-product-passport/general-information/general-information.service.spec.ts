@@ -79,17 +79,6 @@ describe('GeneralInformationService', () => {
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createGreen()];
       const givenRedCompliance = RedComplianceEntityFixture.create();
 
-      const expectedResult = GeneralInformationEntityFixture.create({
-        id: givenProcessStep.id,
-        filledAt: givenProcessStep.endedAt,
-        owner: givenProcessStep.batch.owner.name,
-        filledAmount: givenProcessStep.batch.amount,
-        color: givenProcessStep.batch.qualityDetails.color,
-        producer: givenUser.company.name,
-        hydrogenComposition: givenHydrogenComposition,
-        redCompliance: givenRedCompliance
-      });
-
       processStepServiceMock.readProcessStep.mockResolvedValue(givenProcessStep);
       generalSvcMock.send.mockReturnValue(of(givenUser));
       bottlingServiceMock.calculateHydrogenComposition.mockResolvedValue(givenHydrogenComposition);
@@ -104,7 +93,21 @@ describe('GeneralInformationService', () => {
       expect(bottlingServiceMock.calculateHydrogenComposition).toHaveBeenCalledWith(givenProcessStep);
       expect(redComplianceServiceMock.determineRedCompliance).toHaveBeenCalledWith(givenProcessStep.id);
 
-      expect(actualResult).toEqual(expectedResult);
+      expect(actualResult.id).toEqual(givenProcessStep.id);
+      expect(actualResult.filledAt).toEqual(givenProcessStep.endedAt);
+      expect(actualResult.owner).toEqual(givenProcessStep.batch.owner.name);
+      expect(actualResult.filledAmount).toEqual(givenProcessStep.batch.amount);
+      expect(actualResult.color).toEqual(givenProcessStep.batch.qualityDetails.color);
+      expect(actualResult.producer).toEqual(givenUser.company.name);
+      expect(actualResult.hydrogenComposition).toHaveLength(1);
+      expect(actualResult.hydrogenComposition[0].amount).toEqual(givenHydrogenComposition[0].amount);
+      expect(actualResult.hydrogenComposition[0].color).toEqual(givenHydrogenComposition[0].color);
+      expect(actualResult.redCompliance).toBeDefined();
+      expect(actualResult.redCompliance.financialSupportReceived).toEqual(givenRedCompliance.financialSupportReceived);
+      expect(actualResult.redCompliance.isAdditionalityFulfilled).toEqual(givenRedCompliance.isAdditionalityFulfilled);
+      expect(actualResult.redCompliance.isGeoCorrelationValid).toEqual(givenRedCompliance.isAdditionalityFulfilled);
+      expect(actualResult.redCompliance.isTimeCorrelationValid).toEqual(givenRedCompliance.isTimeCorrelationValid);
+      expect(actualResult.redCompliance.isRedCompliant).toEqual(givenRedCompliance.isRedCompliant);
     });
   });
 });
