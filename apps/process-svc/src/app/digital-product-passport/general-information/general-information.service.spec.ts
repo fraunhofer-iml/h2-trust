@@ -14,7 +14,6 @@ import {
   UserEntityFixture,
   HydrogenComponentEntityFixture,
   RedComplianceEntityFixture,
-  GeneralInformationEntityFixture,
 } from '@h2-trust/fixtures/entities';
 
 import { GeneralInformationService } from './general-information.service';
