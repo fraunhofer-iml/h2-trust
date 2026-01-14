@@ -1,8 +1,16 @@
+/*
+ * Copyright Fraunhofer Institute for Material Flow and Logistics
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * For details on the licensing terms, see the LICENSE file.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { GeneralInformationEntity } from '@h2-trust/amqp';
-import { HydrogenComponentEntityFixture } from './hydrogen-component.entity.fixture';
-import { DocumentEntityFixture } from './document.entity.fixture';
-import { RedComplianceEntityFixture } from './red-compliance.entity.fixture';
 import { HydrogenColor } from '@h2-trust/domain';
+import { DocumentEntityFixture } from './document.entity.fixture';
+import { HydrogenComponentEntityFixture } from './hydrogen-component.entity.fixture';
+import { RedComplianceEntityFixture } from './red-compliance.entity.fixture';
 
 export const GeneralInformationEntityFixture = {
   create: (overrides: Partial<GeneralInformationEntity> = {}): GeneralInformationEntity =>

@@ -9,13 +9,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProvenanceEntity } from '@h2-trust/amqp';
 import { ProcessStepEntityFixture, ProofOfOriginSectionEntityFixture } from '@h2-trust/fixtures/entities';
-
-import { ProofOfOriginService } from './proof-of-origin.service';
+import { ProvenanceService } from '../provenance/provenance.service';
+import { HydrogenBottlingSectionService } from './hydrogen-bottling-section.service';
 import { HydrogenProductionSectionService } from './hydrogen-production-section.service';
 import { HydrogenStorageSectionService } from './hydrogen-storage-section.service';
-import { HydrogenBottlingSectionService } from './hydrogen-bottling-section.service';
 import { HydrogenTransportationSectionService } from './hydrogen-transportation-section.service';
-import { ProvenanceService } from '../provenance/provenance.service';
+import { ProofOfOriginService } from './proof-of-origin.service';
 
 describe('ProofOfOriginService', () => {
   let service: ProofOfOriginService;
@@ -95,7 +94,9 @@ describe('ProofOfOriginService', () => {
       const hydrogenProductionSection = ProofOfOriginSectionEntityFixture.create({ name: 'Hydrogen Production' });
       const hydrogenStorageSection = ProofOfOriginSectionEntityFixture.create({ name: 'Hydrogen Storage' });
       const hydrogenBottlingSection = ProofOfOriginSectionEntityFixture.create({ name: 'Hydrogen Bottling' });
-      const hydrogenTransportationSection = ProofOfOriginSectionEntityFixture.create({ name: 'Hydrogen Transportation' });
+      const hydrogenTransportationSection = ProofOfOriginSectionEntityFixture.create({
+        name: 'Hydrogen Transportation',
+      });
 
       provenanceServiceMock.buildProvenance.mockResolvedValue(givenProvenance);
       hydrogenProductionSectionServiceMock.buildSection.mockResolvedValue(hydrogenProductionSection);

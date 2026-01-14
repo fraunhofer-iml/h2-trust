@@ -8,16 +8,16 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProvenanceEntity, RedComplianceEntity } from '@h2-trust/amqp';
+import { BiddingZone } from '@h2-trust/domain';
 import {
   HydrogenProductionUnitEntityFixture,
   PowerProductionUnitEntityFixture,
   ProcessStepEntityFixture,
 } from '@h2-trust/fixtures/entities';
-import { BiddingZone } from '@h2-trust/domain';
-import { RedComplianceService } from './red-compliance.service';
-import { RedCompliancePairingService } from './red-compliance-pairing.service';
 import { ProvenanceService } from '../../provenance/provenance.service';
 import { MatchedProductionPair } from './matched-production-pair';
+import { RedCompliancePairingService } from './red-compliance-pairing.service';
+import { RedComplianceService } from './red-compliance.service';
 
 describe('RedComplianceService', () => {
   let service: RedComplianceService;
@@ -59,7 +59,7 @@ describe('RedComplianceService', () => {
 
       provenanceServiceMock.buildProvenance.mockResolvedValue(null);
 
-      const expectedErrorMessage = `Provenance or required productions (power/hydrogen) are missing for processStepId [${givenProcessStepId}]`
+      const expectedErrorMessage = `Provenance or required productions (power/hydrogen) are missing for processStepId [${givenProcessStepId}]`;
 
       // Act & Assert
       await expect(service.determineRedCompliance(givenProcessStepId)).rejects.toThrow(expectedErrorMessage);

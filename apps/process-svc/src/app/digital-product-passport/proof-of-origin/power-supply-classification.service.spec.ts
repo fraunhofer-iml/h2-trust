@@ -6,13 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
 import { of } from 'rxjs';
-import {
-  ProcessStepEntityFixture,
-  PowerProductionUnitEntityFixture,
-  ProofOfSustainabilityEmissionCalculationEntityFixture,
-} from '@h2-trust/fixtures/entities';
+import { Test, TestingModule } from '@nestjs/testing';
 import {
   BrokerQueues,
   PowerProductionTypeEntity,
@@ -20,9 +15,13 @@ import {
   ProofOfOriginPowerBatchEntity,
 } from '@h2-trust/amqp';
 import { BatchType, EnergySource, HydrogenColor, MeasurementUnit, PowerProductionType } from '@h2-trust/domain';
-
-import { PowerSupplyClassificationService } from './power-supply-classification.service';
+import {
+  PowerProductionUnitEntityFixture,
+  ProcessStepEntityFixture,
+  ProofOfSustainabilityEmissionCalculationEntityFixture,
+} from '@h2-trust/fixtures/entities';
 import { EmissionService } from './emission.service';
+import { PowerSupplyClassificationService } from './power-supply-classification.service';
 
 describe('PowerSupplyClassificationService', () => {
   let service: PowerSupplyClassificationService;
@@ -61,18 +60,22 @@ describe('PowerSupplyClassificationService', () => {
     it('returns sub-classifications grouped by energy source', async () => {
       // Arrange
       const givenSolarPowerProduction = ProcessStepEntityFixture.createPowerProduction();
-      givenSolarPowerProduction.id = 'solar-production'
+      givenSolarPowerProduction.id = 'solar-production';
       givenSolarPowerProduction.executedBy.id = 'solar-unit';
 
       const givenWindPowerProduction = ProcessStepEntityFixture.createPowerProduction();
-      givenWindPowerProduction.id = 'wind-production'
+      givenWindPowerProduction.id = 'wind-production';
       givenWindPowerProduction.executedBy.id = 'wind-unit';
 
       const givenPowerProductions = [givenSolarPowerProduction, givenWindPowerProduction];
       const givenHydrogenAmount = 100;
 
       const givenPowerProductionTypes = [
-        new PowerProductionTypeEntity(PowerProductionType.PHOTOVOLTAIC_SYSTEM, EnergySource.SOLAR_ENERGY, HydrogenColor.GREEN),
+        new PowerProductionTypeEntity(
+          PowerProductionType.PHOTOVOLTAIC_SYSTEM,
+          EnergySource.SOLAR_ENERGY,
+          HydrogenColor.GREEN,
+        ),
         new PowerProductionTypeEntity(PowerProductionType.WIND_TURBINE, EnergySource.WIND_ENERGY, HydrogenColor.GREEN),
       ];
 
@@ -95,10 +98,7 @@ describe('PowerSupplyClassificationService', () => {
       emissionServiceMock.computePowerSupplyEmissions.mockResolvedValue([givenEmissionCalculation]);
 
       // Act
-      const actualResult = await service.buildPowerSupplySubClassifications(
-        givenPowerProductions,
-        givenHydrogenAmount,
-      );
+      const actualResult = await service.buildPowerSupplySubClassifications(givenPowerProductions, givenHydrogenAmount);
 
       // Assert
       expect(actualResult).toHaveLength(2);
@@ -128,10 +128,7 @@ describe('PowerSupplyClassificationService', () => {
       const givenHydrogenAmount = 100;
 
       // Act
-      const actualResult = await service.buildPowerSupplySubClassifications(
-        givenPowerProductions,
-        givenHydrogenAmount,
-      );
+      const actualResult = await service.buildPowerSupplySubClassifications(givenPowerProductions, givenHydrogenAmount);
 
       // Assert
       expect(actualResult).toEqual([]);
@@ -144,10 +141,7 @@ describe('PowerSupplyClassificationService', () => {
       const givenHydrogenAmount = 100;
 
       // Act
-      const actualResult = await service.buildPowerSupplySubClassifications(
-        undefined,
-        givenHydrogenAmount
-      );
+      const actualResult = await service.buildPowerSupplySubClassifications(undefined, givenHydrogenAmount);
 
       // Assert
       expect(actualResult).toEqual([]);

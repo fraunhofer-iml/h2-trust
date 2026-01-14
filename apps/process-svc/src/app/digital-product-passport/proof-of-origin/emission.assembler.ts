@@ -284,16 +284,12 @@ export class EmissionAssembler {
     const applicationEmissionAmount: number = applicationEmissions.reduce((acc, emission) => acc + emission.amount, 0);
     const hydrogenTransportEmissionAmount: number = applicationEmissions.find((e) => e.name === 'eht')?.amount ?? 0;
 
-    const regulatoryEmissions: ProofOfSustainabilityEmissionEntity[] =
-      EmissionAssembler.assembleRegulatoryEmissions(
-        hydrogenProductionEmissionAmount,
-        applicationEmissionAmount,
-        hydrogenTransportEmissionAmount,
-      );
-    const emissions: ProofOfSustainabilityEmissionEntity[] = [
-      ...applicationEmissions,
-      ...regulatoryEmissions,
-    ];
+    const regulatoryEmissions: ProofOfSustainabilityEmissionEntity[] = EmissionAssembler.assembleRegulatoryEmissions(
+      hydrogenProductionEmissionAmount,
+      applicationEmissionAmount,
+      hydrogenTransportEmissionAmount,
+    );
+    const emissions: ProofOfSustainabilityEmissionEntity[] = [...applicationEmissions, ...regulatoryEmissions];
 
     const amountCO2PerMJH2: number = applicationEmissionAmount / GRAVIMETRIC_ENERGY_DENSITY_H2_MJ_PER_KG;
     const emissionReductionPercentage: number =

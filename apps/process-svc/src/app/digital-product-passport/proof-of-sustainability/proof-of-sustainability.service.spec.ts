@@ -9,9 +9,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProvenanceEntity } from '@h2-trust/amqp';
 import { ProcessStepEntityFixture, ProofOfSustainabilityEntityFixture } from '@h2-trust/fixtures/entities';
-import { ProofOfSustainabilityService } from './proof-of-sustainability.service';
-import { ProvenanceService } from '../provenance/provenance.service';
 import { EmissionService } from '../proof-of-origin/emission.service';
+import { ProvenanceService } from '../provenance/provenance.service';
+import { ProofOfSustainabilityService } from './proof-of-sustainability.service';
 
 describe('ProofOfSustainabilityService', () => {
   let service: ProofOfSustainabilityService;
@@ -68,7 +68,7 @@ describe('ProofOfSustainabilityService', () => {
       // Assert
       expect(provenanceServiceMock.buildProvenance).toHaveBeenCalledWith(givenProcessStepId);
       expect(emissionServiceMock.computeProvenanceEmissions).toHaveBeenCalledWith(givenProvenance);
-      
+
       expect(actualResult.batchId).toEqual(givenProofOfSustainability.batchId);
       expect(actualResult.amountCO2PerMJH2).toEqual(givenProofOfSustainability.amountCO2PerMJH2);
       expect(actualResult.emissionReductionPercentage).toEqual(givenProofOfSustainability.emissionReductionPercentage);

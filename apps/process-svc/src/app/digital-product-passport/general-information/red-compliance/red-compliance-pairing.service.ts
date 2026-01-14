@@ -21,7 +21,7 @@ import { MatchedProductionPair } from './matched-production-pair';
 
 @Injectable()
 export class RedCompliancePairingService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) { }
+  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) {}
 
   async buildMatchedPairs(
     powerProcessSteps: ProcessStepEntity[],

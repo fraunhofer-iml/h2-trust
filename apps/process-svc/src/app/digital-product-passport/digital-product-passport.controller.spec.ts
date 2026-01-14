@@ -8,7 +8,11 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { ReadByIdPayload } from '@h2-trust/amqp';
-import { GeneralInformationEntityFixture, ProofOfOriginSectionEntityFixture, ProofOfSustainabilityEntityFixture } from '@h2-trust/fixtures/entities';
+import {
+  GeneralInformationEntityFixture,
+  ProofOfOriginSectionEntityFixture,
+  ProofOfSustainabilityEntityFixture,
+} from '@h2-trust/fixtures/entities';
 import { DigitalProductPassportController } from './digital-product-passport.controller';
 import { DigitalProductPassportService } from './digital-product-passport.service';
 import { GeneralInformationService } from './general-information/general-information.service';
@@ -20,15 +24,15 @@ describe('DigitalProductPassportController', () => {
 
   const generalInformationServiceMock = {
     readGeneralInformation: jest.fn(),
-  }
+  };
 
   const proofOfOriginServiceMock = {
     readProofOfOrigin: jest.fn(),
-  }
+  };
 
   const proofOfSustainabilityServiceMock = {
     readProofOfSustainability: jest.fn(),
-  }
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

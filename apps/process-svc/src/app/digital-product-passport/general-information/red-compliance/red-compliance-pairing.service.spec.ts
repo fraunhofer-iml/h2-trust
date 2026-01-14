@@ -6,12 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
 import { of } from 'rxjs';
+import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, ProcessStepEntity, ReadByIdsPayload, UnitMessagePatterns } from '@h2-trust/amqp';
 import { ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
-import { RedCompliancePairingService } from './red-compliance-pairing.service';
 import { MatchedProductionPair } from './matched-production-pair';
+import { RedCompliancePairingService } from './red-compliance-pairing.service';
 
 describe('RedCompliancePairingService', () => {
   let service: RedCompliancePairingService;

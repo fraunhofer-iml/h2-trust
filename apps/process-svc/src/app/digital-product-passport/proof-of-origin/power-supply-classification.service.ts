@@ -11,12 +11,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
-  ProofOfOriginPowerBatchEntity,
   PowerProductionTypeEntity,
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ProofOfOriginBatchEntity,
   ProofOfOriginEmissionEntity,
+  ProofOfOriginPowerBatchEntity,
   ProofOfOriginSubClassificationEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
   ReadByIdPayload,
@@ -33,7 +33,7 @@ export class PowerSupplyClassificationService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly emissionService: EmissionService,
-  ) { }
+  ) {}
 
   async buildPowerSupplySubClassifications(
     powerProductions: ProcessStepEntity[],
@@ -51,12 +51,12 @@ export class PowerSupplyClassificationService {
     const subClassifications: ProofOfOriginSubClassificationEntity[] = [];
 
     for (const energySource of energySources) {
-      const powerProductionsWithUnitsByEnergySource = powerProductionsWithUnits
-        .filter(([, unit]) => unit.type?.energySource === energySource);
+      const powerProductionsWithUnitsByEnergySource = powerProductionsWithUnits.filter(
+        ([, unit]) => unit.type?.energySource === energySource,
+      );
 
       if (powerProductionsWithUnitsByEnergySource.length > 0) {
         const productionPowerBatches: ProofOfOriginBatchEntity[] = await Promise.all(
-
           powerProductionsWithUnitsByEnergySource.map(async ([powerProduction]) => {
             const [powerSupplyEmission]: ProofOfSustainabilityEmissionCalculationEntity[] =
               await this.emissionService.computePowerSupplyEmissions([powerProduction], hydrogenAmount);
@@ -66,12 +66,11 @@ export class PowerSupplyClassificationService {
               hydrogenAmount,
             );
 
-            const batch: ProofOfOriginPowerBatchEntity =
-              BatchAssembler.assemblePowerSupply(
-                powerProduction,
-                energySource,
-                emission
-              );
+            const batch: ProofOfOriginPowerBatchEntity = BatchAssembler.assemblePowerSupply(
+              powerProduction,
+              energySource,
+              emission,
+            );
 
             return batch;
           }),

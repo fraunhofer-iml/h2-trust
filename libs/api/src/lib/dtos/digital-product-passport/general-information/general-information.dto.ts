@@ -53,11 +53,11 @@ export class GeneralInformationDto {
     );
     const redCompliance = entity.redCompliance
       ? new RedComplianceDto(
-        entity.redCompliance.isGeoCorrelationValid,
-        entity.redCompliance.isTimeCorrelationValid,
-        entity.redCompliance.isAdditionalityFulfilled,
-        entity.redCompliance.financialSupportReceived,
-      )
+          entity.redCompliance.isGeoCorrelationValid,
+          entity.redCompliance.isTimeCorrelationValid,
+          entity.redCompliance.isAdditionalityFulfilled,
+          entity.redCompliance.financialSupportReceived,
+        )
       : new RedComplianceDto(false, false, false, false);
 
     return new GeneralInformationDto(

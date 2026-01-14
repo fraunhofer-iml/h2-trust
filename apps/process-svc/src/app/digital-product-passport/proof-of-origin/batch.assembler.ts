@@ -7,11 +7,11 @@
  */
 
 import {
-  ProofOfOriginHydrogenBatchEntity,
   HydrogenComponentEntity,
-  ProofOfOriginPowerBatchEntity,
   ProcessStepEntity,
   ProofOfOriginEmissionEntity,
+  ProofOfOriginHydrogenBatchEntity,
+  ProofOfOriginPowerBatchEntity,
   ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/amqp';
 import { BatchType, EnergySource, MeasurementUnit } from '@h2-trust/domain';
@@ -36,7 +36,10 @@ export class BatchAssembler {
     };
   }
 
-  static assembleWaterSupply(waterConsumption: ProcessStepEntity, emission?: ProofOfOriginEmissionEntity): ProofOfOriginWaterBatchEntity {
+  static assembleWaterSupply(
+    waterConsumption: ProcessStepEntity,
+    emission?: ProofOfOriginEmissionEntity,
+  ): ProofOfOriginWaterBatchEntity {
     return {
       id: waterConsumption.batch.id,
       emission,

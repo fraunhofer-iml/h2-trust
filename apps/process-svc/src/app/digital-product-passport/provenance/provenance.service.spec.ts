@@ -7,11 +7,11 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
-import { ProvenanceService } from './provenance.service';
-import { ProcessStepService } from '../../process-step/process-step.service';
-import { TraversalService } from './traversal.service';
 import { ProcessType } from '@h2-trust/domain';
+import { ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
+import { ProcessStepService } from '../../process-step/process-step.service';
+import { ProvenanceService } from './provenance.service';
+import { TraversalService } from './traversal.service';
 
 describe('ProvenanceService', () => {
   let service: ProvenanceService;
@@ -75,7 +75,7 @@ describe('ProvenanceService', () => {
     it('throws error when process step type is invalid', async () => {
       // Arrange
       const givenProcessStep = ProcessStepEntityFixture.createPowerProduction();
-      givenProcessStep.type = 'INVALID_TYPE'
+      givenProcessStep.type = 'INVALID_TYPE';
 
       processStepServiceMock.readProcessStep.mockResolvedValue(givenProcessStep);
 
@@ -138,8 +138,12 @@ describe('ProvenanceService', () => {
 
       // Assert
       expect(processStepServiceMock.readProcessStep).toHaveBeenCalledWith(givenProcessStep.id);
-      expect(traversalServiceMock.fetchWaterConsumptionsFromHydrogenProductions).toHaveBeenCalledWith([givenProcessStep]);
-      expect(traversalServiceMock.fetchPowerProductionsFromHydrogenProductions).toHaveBeenCalledWith([givenProcessStep]);
+      expect(traversalServiceMock.fetchWaterConsumptionsFromHydrogenProductions).toHaveBeenCalledWith([
+        givenProcessStep,
+      ]);
+      expect(traversalServiceMock.fetchPowerProductionsFromHydrogenProductions).toHaveBeenCalledWith([
+        givenProcessStep,
+      ]);
 
       expect(actualResult.root).toBe(givenProcessStep);
       expect(actualResult.hydrogenBottling).toBeUndefined();
@@ -166,8 +170,12 @@ describe('ProvenanceService', () => {
       // Assert
       expect(processStepServiceMock.readProcessStep).toHaveBeenCalledWith(givenProcessStep.id);
       expect(traversalServiceMock.fetchHydrogenProductionsFromHydrogenBottling).toHaveBeenCalledWith(givenProcessStep);
-      expect(traversalServiceMock.fetchWaterConsumptionsFromHydrogenProductions).toHaveBeenCalledWith(givenHydrogenProductions);
-      expect(traversalServiceMock.fetchPowerProductionsFromHydrogenProductions).toHaveBeenCalledWith(givenHydrogenProductions);
+      expect(traversalServiceMock.fetchWaterConsumptionsFromHydrogenProductions).toHaveBeenCalledWith(
+        givenHydrogenProductions,
+      );
+      expect(traversalServiceMock.fetchPowerProductionsFromHydrogenProductions).toHaveBeenCalledWith(
+        givenHydrogenProductions,
+      );
 
       expect(actualResult.root).toBe(givenProcessStep);
       expect(actualResult.hydrogenBottling).toBe(givenProcessStep);
@@ -195,10 +203,18 @@ describe('ProvenanceService', () => {
 
       // Assert
       expect(processStepServiceMock.readProcessStep).toHaveBeenCalledWith(givenProcessStep.id);
-      expect(traversalServiceMock.fetchHydrogenBottlingFromHydrogenTransportation).toHaveBeenCalledWith(givenProcessStep);
-      expect(traversalServiceMock.fetchHydrogenProductionsFromHydrogenBottling).toHaveBeenCalledWith(givenHydrogenBottling);
-      expect(traversalServiceMock.fetchWaterConsumptionsFromHydrogenProductions).toHaveBeenCalledWith(givenHydrogenProductions);
-      expect(traversalServiceMock.fetchPowerProductionsFromHydrogenProductions).toHaveBeenCalledWith(givenHydrogenProductions);
+      expect(traversalServiceMock.fetchHydrogenBottlingFromHydrogenTransportation).toHaveBeenCalledWith(
+        givenProcessStep,
+      );
+      expect(traversalServiceMock.fetchHydrogenProductionsFromHydrogenBottling).toHaveBeenCalledWith(
+        givenHydrogenBottling,
+      );
+      expect(traversalServiceMock.fetchWaterConsumptionsFromHydrogenProductions).toHaveBeenCalledWith(
+        givenHydrogenProductions,
+      );
+      expect(traversalServiceMock.fetchPowerProductionsFromHydrogenProductions).toHaveBeenCalledWith(
+        givenHydrogenProductions,
+      );
 
       expect(actualResult.root).toBe(givenProcessStep);
       expect(actualResult.hydrogenBottling).toBe(givenHydrogenBottling);

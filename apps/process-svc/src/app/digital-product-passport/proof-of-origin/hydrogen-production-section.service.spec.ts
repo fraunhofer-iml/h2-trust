@@ -7,17 +7,16 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
+import { ProcessStepEntity } from '@h2-trust/amqp';
+import { ProofOfOrigin } from '@h2-trust/domain';
 import {
   ProcessStepEntityFixture,
   ProofOfOriginClassificationEntityFixture,
   ProofOfOriginSubClassificationEntityFixture,
 } from '@h2-trust/fixtures/entities';
-import { ProofOfOrigin } from '@h2-trust/domain';
-
 import { HydrogenProductionSectionService } from './hydrogen-production-section.service';
 import { PowerSupplyClassificationService } from './power-supply-classification.service';
 import { WaterSupplyClassificationService } from './water-supply-classification.service';
-import { ProcessStepEntity } from '@h2-trust/amqp';
 
 describe('HydrogenProductionSectionService', () => {
   let service: HydrogenProductionSectionService;
@@ -64,11 +63,19 @@ describe('HydrogenProductionSectionService', () => {
         name: ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION,
       });
 
-      powerSupplyClassificationServiceMock.buildPowerSupplySubClassifications.mockResolvedValue(givenPowerSubClassifications);
-      waterSupplyClassificationServiceMock.buildWaterSupplyClassification.mockReturnValue(givenWaterSupplyClassification);
+      powerSupplyClassificationServiceMock.buildPowerSupplySubClassifications.mockResolvedValue(
+        givenPowerSubClassifications,
+      );
+      waterSupplyClassificationServiceMock.buildWaterSupplyClassification.mockReturnValue(
+        givenWaterSupplyClassification,
+      );
 
       // Act
-      const actualResult = await service.buildSection(givenPowerProductions, givenWaterConsumptions, givenHydrogenAmount);
+      const actualResult = await service.buildSection(
+        givenPowerProductions,
+        givenWaterConsumptions,
+        givenHydrogenAmount,
+      );
 
       // Assert
       expect(powerSupplyClassificationServiceMock.buildPowerSupplySubClassifications).toHaveBeenCalledWith(
@@ -96,10 +103,16 @@ describe('HydrogenProductionSectionService', () => {
 
       const givenPowerSubClassifications = [ProofOfOriginSubClassificationEntityFixture.create()];
 
-      powerSupplyClassificationServiceMock.buildPowerSupplySubClassifications.mockResolvedValue(givenPowerSubClassifications);
+      powerSupplyClassificationServiceMock.buildPowerSupplySubClassifications.mockResolvedValue(
+        givenPowerSubClassifications,
+      );
 
       // Act
-      const actualResult = await service.buildSection(givenPowerProductions, givenWaterConsumptions, givenHydrogenAmount);
+      const actualResult = await service.buildSection(
+        givenPowerProductions,
+        givenWaterConsumptions,
+        givenHydrogenAmount,
+      );
 
       // Assert
       expect(powerSupplyClassificationServiceMock.buildPowerSupplySubClassifications).toHaveBeenCalledWith(
@@ -123,10 +136,16 @@ describe('HydrogenProductionSectionService', () => {
         name: ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION,
       });
 
-      waterSupplyClassificationServiceMock.buildWaterSupplyClassification.mockReturnValue(givenWaterSupplyClassification);
+      waterSupplyClassificationServiceMock.buildWaterSupplyClassification.mockReturnValue(
+        givenWaterSupplyClassification,
+      );
 
       // Act
-      const actualResult = await service.buildSection(givenPowerProductions, givenWaterConsumptions, givenHydrogenAmount);
+      const actualResult = await service.buildSection(
+        givenPowerProductions,
+        givenWaterConsumptions,
+        givenHydrogenAmount,
+      );
 
       // Assert
       expect(powerSupplyClassificationServiceMock.buildPowerSupplySubClassifications).not.toHaveBeenCalled();
@@ -147,7 +166,11 @@ describe('HydrogenProductionSectionService', () => {
       const givenHydrogenAmount = 100;
 
       // Act
-      const actualResult = await service.buildSection(givenPowerProductions, givenWaterConsumptions, givenHydrogenAmount);
+      const actualResult = await service.buildSection(
+        givenPowerProductions,
+        givenWaterConsumptions,
+        givenHydrogenAmount,
+      );
 
       // Assert
       expect(powerSupplyClassificationServiceMock.buildPowerSupplySubClassifications).not.toHaveBeenCalled();

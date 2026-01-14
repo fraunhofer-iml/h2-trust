@@ -11,13 +11,13 @@ import { RpcException } from '@nestjs/microservices';
 import { ProvenanceEntity, RedComplianceEntity } from '@h2-trust/amqp';
 import { ProvenanceService } from '../../provenance/provenance.service';
 import { MatchedProductionPair } from './matched-production-pair';
+import { RedCompliancePairingService } from './red-compliance-pairing.service';
 import {
   areUnitsInSameBiddingZone,
   hasFinancialSupport,
   isWithinTimeCorrelation,
   meetsAdditionalityCriterion,
 } from './red-compliance.flags';
-import { RedCompliancePairingService } from './red-compliance-pairing.service';
 
 @Injectable()
 export class RedComplianceService {

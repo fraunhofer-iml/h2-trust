@@ -7,16 +7,17 @@
  */
 
 import {
-  ProofOfOriginHydrogenBatchEntity,
-  ProofOfOriginPowerBatchEntity,
   ProofOfOriginBatchEntity,
   ProofOfOriginClassificationEntity,
   ProofOfOriginEmissionEntity,
+  ProofOfOriginHydrogenBatchEntity,
+  ProofOfOriginPowerBatchEntity,
   ProofOfOriginSectionEntity,
   ProofOfOriginSubClassificationEntity,
   ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/amqp';
 import { BatchType } from '@h2-trust/domain';
+import { HydrogenComponentDto } from '../general-information';
 import { BatchDto } from './batch.dto';
 import { ClassificationDto } from './classification.dto';
 import { EmissionDto } from './emission.dto';
@@ -24,7 +25,6 @@ import { HydrogenBatchDto } from './hydrogen-batch.dto';
 import { PowerBatchDto } from './power-batch.dto';
 import { WaterBatchDto } from './water-batch.dto';
 import { WaterDetailsDto } from './water-details.dto';
-import { HydrogenComponentDto } from '../general-information';
 
 /**
  * top level sections of proof of origin
@@ -42,16 +42,15 @@ export class SectionDto {
   }
 
   static fromEntities(entities: ProofOfOriginSectionEntity[]): SectionDto[] {
-    return (entities ?? [])
-      .map((section) => SectionDto.fromEntity(section));
+    return (entities ?? []).map((section) => SectionDto.fromEntity(section));
   }
 
   private static fromEntity(section: ProofOfOriginSectionEntity): SectionDto {
-    const batches = (section.batches ?? [])
-      .map((batch) => SectionDto.fromBatchEntity(batch));
+    const batches = (section.batches ?? []).map((batch) => SectionDto.fromBatchEntity(batch));
 
-    const classifications = (section.classifications ?? [])
-      .map((classification) => SectionDto.fromClassificationEntity(classification));
+    const classifications = (section.classifications ?? []).map((classification) =>
+      SectionDto.fromClassificationEntity(classification),
+    );
 
     return new SectionDto(section.name, batches, classifications);
   }
@@ -89,7 +88,10 @@ export class SectionDto {
   private static fromWaterBatchEntity(batch: ProofOfOriginWaterBatchEntity): WaterBatchDto {
     const emission = this.fromEmissionEntity(batch.emission);
 
-    const waterDetails = new WaterDetailsDto(batch.deionizedWaterAmount ?? 0, this.fromEmissionEntity(batch.deionizedWaterEmission))
+    const waterDetails = new WaterDetailsDto(
+      batch.deionizedWaterAmount ?? 0,
+      this.fromEmissionEntity(batch.deionizedWaterEmission),
+    );
 
     return new WaterBatchDto(batch.id, emission, batch.createdAt, batch.amount, batch.unit, waterDetails);
   }
@@ -97,8 +99,7 @@ export class SectionDto {
   private static fromHydrogenBatchEntity(batch: ProofOfOriginHydrogenBatchEntity): HydrogenBatchDto {
     const emission = this.fromEmissionEntity(batch.emission);
 
-    const hydrogenComposition = (batch.hydrogenComposition ?? [])
-      .map(HydrogenComponentDto.fromEntity);
+    const hydrogenComposition = (batch.hydrogenComposition ?? []).map(HydrogenComponentDto.fromEntity);
 
     return new HydrogenBatchDto(
       batch.id,
@@ -109,7 +110,7 @@ export class SectionDto {
       batch.amount, // TODO-MP: will be removed in DUHGW-310
       batch.producer ?? '',
       batch.unitId ?? '',
-      0,  // TODO-MP: will be removed in DUHGW-312
+      0, // TODO-MP: will be removed in DUHGW-312
       '',
       hydrogenComposition,
       batch.color ?? '',
@@ -120,11 +121,11 @@ export class SectionDto {
   }
 
   private static fromClassificationEntity(classification: ProofOfOriginClassificationEntity): ClassificationDto {
-    const batches = (classification.batches ?? [])
-      .map((batch) => SectionDto.fromBatchEntity(batch));
+    const batches = (classification.batches ?? []).map((batch) => SectionDto.fromBatchEntity(batch));
 
-    const classifications = (classification.subClassifications ?? [])
-      .map((sub) => SectionDto.fromSubClassificationEntity(sub));
+    const classifications = (classification.subClassifications ?? []).map((sub) =>
+      SectionDto.fromSubClassificationEntity(sub),
+    );
 
     return new ClassificationDto(
       classification.name,
@@ -138,9 +139,10 @@ export class SectionDto {
     );
   }
 
-  private static fromSubClassificationEntity(subClassification: ProofOfOriginSubClassificationEntity): ClassificationDto {
-    const batches = (subClassification.batches ?? [])
-      .map((batch) => SectionDto.fromBatchEntity(batch));
+  private static fromSubClassificationEntity(
+    subClassification: ProofOfOriginSubClassificationEntity,
+  ): ClassificationDto {
+    const batches = (subClassification.batches ?? []).map((batch) => SectionDto.fromBatchEntity(batch));
 
     return new ClassificationDto(
       subClassification.name,
@@ -157,6 +159,6 @@ export class SectionDto {
   private static fromEmissionEntity(emission: ProofOfOriginEmissionEntity): EmissionDto {
     return emission
       ? new EmissionDto(emission.amountCO2 ?? 0, emission.amountCO2PerKgH2 ?? 0, emission.basisOfCalculation ?? [])
-      : new EmissionDto(0, 0, [])
+      : new EmissionDto(0, 0, []);
   }
 }

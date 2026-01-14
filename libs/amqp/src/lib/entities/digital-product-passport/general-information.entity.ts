@@ -30,7 +30,7 @@ export class GeneralInformationEntity {
     producer: string,
     hydrogenComposition: HydrogenComponentEntity[],
     attachedFiles: DocumentEntity[],
-    redCompliance: RedComplianceEntity
+    redCompliance: RedComplianceEntity,
   ) {
     this.id = id;
     this.filledAt = filledAt;

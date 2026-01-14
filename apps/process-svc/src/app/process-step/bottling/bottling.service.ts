@@ -37,7 +37,7 @@ export class BottlingService {
     private readonly storageService: StorageService,
     private readonly documentRepository: DocumentRepository,
     private readonly processStepService: ProcessStepService,
-  ) { }
+  ) {}
 
   async createHydrogenBottlingProcessStep(payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
     const allProcessStepsFromStorageUnit: ProcessStepEntity[] =
@@ -134,9 +134,8 @@ export class BottlingService {
   }
 
   async calculateHydrogenComposition(processStep: ProcessStepEntity): Promise<HydrogenComponentEntity[]> {
-    const hydrogenBottling: ProcessStepEntity = processStep.type === ProcessType.HYDROGEN_BOTTLING
-      ? processStep
-      : await this.readHydrogenBottling(processStep);
+    const hydrogenBottling: ProcessStepEntity =
+      processStep.type === ProcessType.HYDROGEN_BOTTLING ? processStep : await this.readHydrogenBottling(processStep);
 
     return HydrogenComponentAssembler.assemble(hydrogenBottling);
   }

@@ -7,16 +7,15 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  ProcessStepEntityFixture,
-  HydrogenComponentEntityFixture,
-  TransportationDetailsEntityFixture,
-} from '@h2-trust/fixtures/entities';
 import { ProofOfOriginHydrogenBatchEntity } from '@h2-trust/amqp';
 import { MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
-
-import { HydrogenTransportationSectionService } from './hydrogen-transportation-section.service';
+import {
+  HydrogenComponentEntityFixture,
+  ProcessStepEntityFixture,
+  TransportationDetailsEntityFixture,
+} from '@h2-trust/fixtures/entities';
 import { BottlingService } from '../../process-step/bottling/bottling.service';
+import { HydrogenTransportationSectionService } from './hydrogen-transportation-section.service';
 
 describe('HydrogenTransportationSectionService', () => {
   let service: HydrogenTransportationSectionService;

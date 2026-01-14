@@ -7,10 +7,9 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
 import { ProcessStepEntity, ProofOfOriginWaterBatchEntity } from '@h2-trust/amqp';
 import { BatchType, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
-
+import { ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
 import { WaterSupplyClassificationService } from './water-supply-classification.service';
 
 describe('WaterSupplyClassificationService', () => {
@@ -86,8 +85,9 @@ describe('WaterSupplyClassificationService', () => {
       const errorMessage = 'No process steps of type water supply found.';
 
       // Act & Assert
-      expect(() => service.buildWaterSupplyClassification(givenWaterSupplies, givenHydrogenAmount))
-        .toThrow(errorMessage);
+      expect(() => service.buildWaterSupplyClassification(givenWaterSupplies, givenHydrogenAmount)).toThrow(
+        errorMessage,
+      );
     });
 
     it('throws error when water supplies is undefined', () => {
@@ -98,8 +98,9 @@ describe('WaterSupplyClassificationService', () => {
       const errorMessage = 'No process steps of type water supply found.';
 
       // Act & Assert
-      expect(() => service.buildWaterSupplyClassification(givenWaterSupplies, givenHydrogenAmount))
-        .toThrow(errorMessage);
+      expect(() => service.buildWaterSupplyClassification(givenWaterSupplies, givenHydrogenAmount)).toThrow(
+        errorMessage,
+      );
     });
   });
 });

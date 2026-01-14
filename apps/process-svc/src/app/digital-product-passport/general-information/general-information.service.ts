@@ -9,12 +9,7 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import {
-  BrokerQueues,
-  GeneralInformationEntity,
-  ReadByIdPayload,
-  UserMessagePatterns,
-} from '@h2-trust/amqp';
+import { BrokerQueues, GeneralInformationEntity, ReadByIdPayload, UserMessagePatterns } from '@h2-trust/amqp';
 import { BottlingService } from '../../process-step/bottling/bottling.service';
 import { ProcessStepService } from '../../process-step/process-step.service';
 import { RedComplianceService } from './red-compliance/red-compliance.service';
@@ -26,7 +21,7 @@ export class GeneralInformationService {
     private readonly processStepService: ProcessStepService,
     private readonly bottlingService: BottlingService,
     private readonly redComplianceService: RedComplianceService,
-  ) { }
+  ) {}
 
   async readGeneralInformation(processStepId: string): Promise<GeneralInformationEntity> {
     const processStep = await this.processStepService.readProcessStep(processStepId);

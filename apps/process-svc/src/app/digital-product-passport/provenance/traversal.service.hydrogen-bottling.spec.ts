@@ -7,10 +7,10 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { BatchEntityFixture, ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
 import { ProcessType } from '@h2-trust/domain';
-import { TraversalService } from './traversal.service';
+import { BatchEntityFixture, ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
 import { ProcessStepService } from '../../process-step/process-step.service';
+import { TraversalService } from './traversal.service';
 
 describe('TraversalService', () => {
   let service: TraversalService;
@@ -45,8 +45,9 @@ describe('TraversalService', () => {
       const expectedErrorMessage = `All process steps must be of type [${ProcessType.HYDROGEN_BOTTLING}], but found invalid types: ${givenWrongProcessStep.id} (${givenWrongProcessStep.type})`;
 
       // Act & Assert
-      await expect(service.fetchHydrogenProductionsFromHydrogenBottling(givenWrongProcessStep))
-        .rejects.toThrow(expectedErrorMessage);
+      await expect(service.fetchHydrogenProductionsFromHydrogenBottling(givenWrongProcessStep)).rejects.toThrow(
+        expectedErrorMessage,
+      );
     });
 
     it('throws error when hydrogenBottling has no predecessors', async () => {
@@ -57,8 +58,9 @@ describe('TraversalService', () => {
       const expectedErrorMessage = `No predecessors found for process step [${givenHydrogenBottling.id}]`;
 
       // Act & Assert
-      await expect(service.fetchHydrogenProductionsFromHydrogenBottling(givenHydrogenBottling))
-        .rejects.toThrow(expectedErrorMessage);
+      await expect(service.fetchHydrogenProductionsFromHydrogenBottling(givenHydrogenBottling)).rejects.toThrow(
+        expectedErrorMessage,
+      );
     });
 
     it(`throws error when predecessor is not ${ProcessType.HYDROGEN_PRODUCTION} type`, async () => {
@@ -74,15 +76,22 @@ describe('TraversalService', () => {
       const expectedErrorMessage = `All process steps must be of type [${ProcessType.HYDROGEN_PRODUCTION}], but found invalid types: ${givenWrongPredecessor.id} (${givenWrongPredecessor.type})`;
 
       // Act & Assert
-      await expect(service.fetchHydrogenProductionsFromHydrogenBottling(givenHydrogenBottling))
-        .rejects.toThrow(expectedErrorMessage);
+      await expect(service.fetchHydrogenProductionsFromHydrogenBottling(givenHydrogenBottling)).rejects.toThrow(
+        expectedErrorMessage,
+      );
     });
 
     it('throws error when number of process steps does not match number of predecessor batches', async () => {
       // Arrange
       const givenHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction();
-      const givenHydrogenBatch1 = BatchEntityFixture.createHydrogenBatch({ id: 'batch-1', processStepId: givenHydrogenProduction.id });
-      const givenHydrogenBatch2 = BatchEntityFixture.createHydrogenBatch({ id: 'batch-2', processStepId: 'non-existent-step' });
+      const givenHydrogenBatch1 = BatchEntityFixture.createHydrogenBatch({
+        id: 'batch-1',
+        processStepId: givenHydrogenProduction.id,
+      });
+      const givenHydrogenBatch2 = BatchEntityFixture.createHydrogenBatch({
+        id: 'batch-2',
+        processStepId: 'non-existent-step',
+      });
 
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
       givenHydrogenBottling.batch.predecessors = [givenHydrogenBatch1, givenHydrogenBatch2];
@@ -95,8 +104,9 @@ describe('TraversalService', () => {
       const expectedErrorMessage = `Process steps of type [${ProcessType.HYDROGEN_PRODUCTION}] are missing.`;
 
       // Act & Assert
-      await expect(service.fetchHydrogenProductionsFromHydrogenBottling(givenHydrogenBottling))
-        .rejects.toThrow(expectedErrorMessage);
+      await expect(service.fetchHydrogenProductionsFromHydrogenBottling(givenHydrogenBottling)).rejects.toThrow(
+        expectedErrorMessage,
+      );
     });
 
     it('returns hydrogen production process steps from hydrogen bottling predecessors', async () => {
@@ -122,8 +132,14 @@ describe('TraversalService', () => {
       const givenHydrogenProduction1 = ProcessStepEntityFixture.createHydrogenProduction({ id: 'hydrogen-prod-1' });
       const givenHydrogenProduction2 = ProcessStepEntityFixture.createHydrogenProduction({ id: 'hydrogen-prod-2' });
 
-      const givenHydrogenBatch1 = BatchEntityFixture.createHydrogenBatch({ id: 'batch-1', processStepId: givenHydrogenProduction1.id });
-      const givenHydrogenBatch2 = BatchEntityFixture.createHydrogenBatch({ id: 'batch-2', processStepId: givenHydrogenProduction2.id });
+      const givenHydrogenBatch1 = BatchEntityFixture.createHydrogenBatch({
+        id: 'batch-1',
+        processStepId: givenHydrogenProduction1.id,
+      });
+      const givenHydrogenBatch2 = BatchEntityFixture.createHydrogenBatch({
+        id: 'batch-2',
+        processStepId: givenHydrogenProduction2.id,
+      });
 
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
       givenHydrogenBottling.batch.predecessors = [givenHydrogenBatch1, givenHydrogenBatch2];

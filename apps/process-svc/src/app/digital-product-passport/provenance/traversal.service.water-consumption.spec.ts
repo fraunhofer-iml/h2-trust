@@ -8,10 +8,10 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProcessStepEntity } from '@h2-trust/amqp';
-import { BatchEntityFixture, ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
 import { ProcessType } from '@h2-trust/domain';
-import { TraversalService } from './traversal.service';
+import { BatchEntityFixture, ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
 import { ProcessStepService } from '../../process-step/process-step.service';
+import { TraversalService } from './traversal.service';
 
 describe('TraversalService', () => {
   let service: TraversalService;
@@ -46,8 +46,9 @@ describe('TraversalService', () => {
       const expectedErrorMessage = `Process steps of type [${ProcessType.HYDROGEN_PRODUCTION}] are missing.`;
 
       // Act & Assert
-      await expect(service.fetchWaterConsumptionsFromHydrogenProductions(givenHydrogenProductions))
-        .rejects.toThrow(expectedErrorMessage);
+      await expect(service.fetchWaterConsumptionsFromHydrogenProductions(givenHydrogenProductions)).rejects.toThrow(
+        expectedErrorMessage,
+      );
     });
 
     it(`throws error when process step is not ${ProcessType.HYDROGEN_PRODUCTION} type`, async () => {
@@ -58,8 +59,9 @@ describe('TraversalService', () => {
       const expectedErrorMessage = `All process steps must be of type [${ProcessType.HYDROGEN_PRODUCTION}], but found invalid types: ${givenWrongProcessStep.id} (${givenWrongProcessStep.type})`;
 
       // Act & Assert
-      await expect(service.fetchWaterConsumptionsFromHydrogenProductions(givenHydrogenProductions))
-        .rejects.toThrow(expectedErrorMessage);
+      await expect(service.fetchWaterConsumptionsFromHydrogenProductions(givenHydrogenProductions)).rejects.toThrow(
+        expectedErrorMessage,
+      );
     });
 
     it('throws error when hydrogenProduction has no predecessors', async () => {
@@ -70,8 +72,9 @@ describe('TraversalService', () => {
       const expectedErrorMessage = `No predecessors found for process step [${givenHydrogenProduction.id}]`;
 
       // Act & Assert
-      await expect(service.fetchWaterConsumptionsFromHydrogenProductions([givenHydrogenProduction]))
-        .rejects.toThrow(expectedErrorMessage);
+      await expect(service.fetchWaterConsumptionsFromHydrogenProductions([givenHydrogenProduction])).rejects.toThrow(
+        expectedErrorMessage,
+      );
     });
 
     it('returns water consumption process steps from hydrogen production predecessors', async () => {
@@ -97,8 +100,14 @@ describe('TraversalService', () => {
       const givenWaterConsumption1 = ProcessStepEntityFixture.createWaterConsumption({ id: 'water-step-1' });
       const givenWaterConsumption2 = ProcessStepEntityFixture.createWaterConsumption({ id: 'water-step-2' });
 
-      const givenWaterBatch1 = BatchEntityFixture.createWaterBatch({ id: 'batch-1', processStepId: givenWaterConsumption1.id });
-      const givenWaterBatch2 = BatchEntityFixture.createWaterBatch({ id: 'batch-2', processStepId: givenWaterConsumption2.id });
+      const givenWaterBatch1 = BatchEntityFixture.createWaterBatch({
+        id: 'batch-1',
+        processStepId: givenWaterConsumption1.id,
+      });
+      const givenWaterBatch2 = BatchEntityFixture.createWaterBatch({
+        id: 'batch-2',
+        processStepId: givenWaterConsumption2.id,
+      });
 
       const givenHydrogenProduction1 = ProcessStepEntityFixture.createHydrogenProduction({ id: 'hydrogen-step-1' });
       const givenHydrogenProduction2 = ProcessStepEntityFixture.createHydrogenProduction({ id: 'hydrogen-step-2' });

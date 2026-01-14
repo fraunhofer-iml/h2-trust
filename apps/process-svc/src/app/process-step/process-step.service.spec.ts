@@ -8,15 +8,14 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import {
+  CreateManyProcessStepsPayload,
   ReadProcessStepsByPredecessorTypesAndCompanyPayload,
   ReadProcessStepsByTypesAndActiveAndCompanyPayload,
-  CreateManyProcessStepsPayload,
 } from '@h2-trust/amqp';
-import { ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
 import { ProcessType } from '@h2-trust/domain';
-
+import { ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
 import { ProcessStepService } from './process-step.service';
 
 describe('ProcessStepService', () => {
@@ -122,7 +121,7 @@ describe('ProcessStepService', () => {
       expect(actualResult.id).toBe(givenProcessStep.id);
       expect(actualResult.documents).toHaveLength(1);
       expect(actualResult.documents[0].location).toBe('http://localhost:9000/test-bucket/dummy-document.pdf');
-      expect(actualResult.documents[0].description).toBe('File #0')
+      expect(actualResult.documents[0].description).toBe('File #0');
     });
 
     it('returns transportation process step with documents from predecessor', async () => {
@@ -143,7 +142,7 @@ describe('ProcessStepService', () => {
       expect(actualResult.id).toBe(givenTransportationProcessStep.id);
       expect(actualResult.documents).toHaveLength(1);
       expect(actualResult.documents[0].location).toBe('http://localhost:9000/test-bucket/dummy-document.pdf');
-      expect(actualResult.documents[0].description).toBe('File #0')
+      expect(actualResult.documents[0].description).toBe('File #0');
     });
 
     it('throws error when transportation has no predecessor', async () => {
@@ -180,7 +179,10 @@ describe('ProcessStepService', () => {
     it('delegates to ProcessStepRepository', async () => {
       // Arrange
       const givenStorageUnitId = 'storage-unit-1';
-      const givenProcessSteps = [ProcessStepEntityFixture.createHydrogenProduction(), ProcessStepEntityFixture.createHydrogenProduction()];
+      const givenProcessSteps = [
+        ProcessStepEntityFixture.createHydrogenProduction(),
+        ProcessStepEntityFixture.createHydrogenProduction(),
+      ];
 
       processStepRepositoryMock.findAllProcessStepsFromStorageUnit.mockResolvedValue(givenProcessSteps);
 

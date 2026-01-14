@@ -9,8 +9,8 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
-  GeneralInformationEntity,
   DigitalProductPassportPatterns,
+  GeneralInformationEntity,
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEntity,
   ReadByIdPayload,

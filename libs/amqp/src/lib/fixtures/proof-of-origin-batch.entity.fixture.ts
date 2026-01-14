@@ -1,11 +1,19 @@
+/*
+ * Copyright Fraunhofer Institute for Material Flow and Logistics
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * For details on the licensing terms, see the LICENSE file.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import {
+  ProofOfOriginHydrogenBatchEntity,
   ProofOfOriginPowerBatchEntity,
   ProofOfOriginWaterBatchEntity,
-  ProofOfOriginHydrogenBatchEntity,
 } from '@h2-trust/amqp';
 import { EnergySource, HydrogenColor } from '@h2-trust/domain';
-import { ProofOfOriginEmissionEntityFixture } from './proof-of-origin-emission.entity.fixture';
 import { HydrogenComponentEntityFixture } from './hydrogen-component.entity.fixture';
+import { ProofOfOriginEmissionEntityFixture } from './proof-of-origin-emission.entity.fixture';
 
 export const ProofOfOriginPowerBatchEntityFixture = {
   create: (overrides: Partial<ProofOfOriginPowerBatchEntity> = {}): ProofOfOriginPowerBatchEntity =>

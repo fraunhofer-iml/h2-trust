@@ -6,7 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProofOfOriginBatchEntity, ProofOfOriginClassificationEntity, ProofOfOriginSubClassificationEntity, Util } from '@h2-trust/amqp';
+import {
+  ProofOfOriginBatchEntity,
+  ProofOfOriginClassificationEntity,
+  ProofOfOriginSubClassificationEntity,
+  Util,
+} from '@h2-trust/amqp';
 import { BatchType, MeasurementUnit } from '@h2-trust/domain';
 
 export class ClassificationAssembler {

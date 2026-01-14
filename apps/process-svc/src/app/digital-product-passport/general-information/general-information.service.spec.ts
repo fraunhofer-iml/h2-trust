@@ -6,19 +6,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
 import { of } from 'rxjs';
+import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, ReadByIdPayload, UserMessagePatterns } from '@h2-trust/amqp';
 import {
-  ProcessStepEntityFixture,
-  UserEntityFixture,
   HydrogenComponentEntityFixture,
+  ProcessStepEntityFixture,
   RedComplianceEntityFixture,
+  UserEntityFixture,
 } from '@h2-trust/fixtures/entities';
-
-import { GeneralInformationService } from './general-information.service';
-import { ProcessStepService } from '../../process-step/process-step.service';
 import { BottlingService } from '../../process-step/bottling/bottling.service';
+import { ProcessStepService } from '../../process-step/process-step.service';
+import { GeneralInformationService } from './general-information.service';
 import { RedComplianceService } from './red-compliance/red-compliance.service';
 
 describe('GeneralInformationService', () => {
@@ -88,7 +87,10 @@ describe('GeneralInformationService', () => {
 
       // Assert
       expect(processStepServiceMock.readProcessStep).toHaveBeenCalledWith(givenProcessStep.id);
-      expect(generalSvcMock.send).toHaveBeenCalledWith(UserMessagePatterns.READ, new ReadByIdPayload(givenProcessStep.recordedBy.id))
+      expect(generalSvcMock.send).toHaveBeenCalledWith(
+        UserMessagePatterns.READ,
+        new ReadByIdPayload(givenProcessStep.recordedBy.id),
+      );
       expect(bottlingServiceMock.calculateHydrogenComposition).toHaveBeenCalledWith(givenProcessStep);
       expect(redComplianceServiceMock.determineRedCompliance).toHaveBeenCalledWith(givenProcessStep.id);
 

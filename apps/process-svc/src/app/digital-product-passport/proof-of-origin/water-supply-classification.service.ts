@@ -11,8 +11,8 @@ import {
   ProcessStepEntity,
   ProofOfOriginClassificationEntity,
   ProofOfOriginEmissionEntity,
-  ProofOfSustainabilityEmissionCalculationEntity,
   ProofOfOriginWaterBatchEntity,
+  ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/amqp';
 import { BatchType, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
 import { BatchAssembler } from './batch.assembler';
@@ -31,23 +31,17 @@ export class WaterSupplyClassificationService {
     }
 
     const waterBatches: ProofOfOriginWaterBatchEntity[] = waterSupplies.map((waterSupply) => {
-      const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
-        EmissionAssembler.assembleWaterSupply(
-          waterSupply,
-          hydrogenAmount,
-        );
+      const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity = EmissionAssembler.assembleWaterSupply(
+        waterSupply,
+        hydrogenAmount,
+      );
 
-      const emission: ProofOfOriginEmissionEntity =
-        EmissionAssembler.assembleEmissionDto(
-          emissionCalculation,
-          hydrogenAmount,
-        );
+      const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionDto(
+        emissionCalculation,
+        hydrogenAmount,
+      );
 
-      const batch: ProofOfOriginWaterBatchEntity =
-        BatchAssembler.assembleWaterSupply(
-          waterSupply,
-          emission
-        );
+      const batch: ProofOfOriginWaterBatchEntity = BatchAssembler.assembleWaterSupply(waterSupply, emission);
 
       return batch;
     });

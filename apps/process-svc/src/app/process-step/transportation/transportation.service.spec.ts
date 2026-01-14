@@ -8,10 +8,10 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateHydrogenTransportationPayload } from '@h2-trust/amqp';
-import { ProcessStepEntityFixture, BatchEntityFixture } from '@h2-trust/fixtures/entities';
 import { BatchType, FuelType, ProcessType, TransportMode } from '@h2-trust/domain';
-import { TransportationService } from './transportation.service';
+import { BatchEntityFixture, ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
 import { ProcessStepService } from '../process-step.service';
+import { TransportationService } from './transportation.service';
 
 describe('TransportationService', () => {
   let service: TransportationService;
@@ -71,7 +71,7 @@ describe('TransportationService', () => {
           transportationDetails: expect.objectContaining({
             distance: givenPayload.distance,
             transportMode: givenPayload.transportMode,
-            fuelType: givenPayload.fuelType
+            fuelType: givenPayload.fuelType,
           }),
         }),
       );
@@ -109,7 +109,7 @@ describe('TransportationService', () => {
           transportationDetails: expect.objectContaining({
             distance: 0,
             transportMode: givenPayload.transportMode,
-            fuelType: givenPayload.fuelType
+            fuelType: givenPayload.fuelType,
           }),
         }),
       );
@@ -131,8 +131,7 @@ describe('TransportationService', () => {
       const expectedErrorMessage = `Distance is required for transport mode [${givenPayload.transportMode}].`;
 
       // Act & Assert
-      await expect(service.createHydrogenTransportationProcessStep(givenPayload))
-        .rejects.toThrow(expectedErrorMessage);
+      await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(expectedErrorMessage);
     });
 
     it('throws error when trailer transport mode has no fuel type', async () => {
@@ -150,8 +149,7 @@ describe('TransportationService', () => {
       const expectedErrorMessage = `Fuel type is required for transport mode [${givenPayload.transportMode}].`;
 
       // Act & Assert
-      await expect(service.createHydrogenTransportationProcessStep(givenPayload))
-        .rejects.toThrow(expectedErrorMessage);
+      await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(expectedErrorMessage);
     });
 
     it('throws error for invalid transport mode', async () => {
@@ -168,8 +166,7 @@ describe('TransportationService', () => {
       const expectedErrorMessage = `Invalid transport mode: ${givenPayload.transportMode}`;
 
       // Act & Assert
-      await expect(service.createHydrogenTransportationProcessStep(givenPayload))
-        .rejects.toThrow(expectedErrorMessage);
+      await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(expectedErrorMessage);
     });
   });
 });

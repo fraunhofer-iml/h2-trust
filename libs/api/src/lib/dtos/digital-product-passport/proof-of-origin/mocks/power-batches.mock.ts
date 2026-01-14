@@ -7,10 +7,10 @@
  */
 
 import { BatchType, EnergySource, MeasurementUnit } from '@h2-trust/domain';
-import { PowerBatchDto } from '../power-batch.dto';
-import { EmissionMock } from './emissions.mock';
 import { CompanyDtoMock } from '../../../company';
 import { PowerProductionUnitOverviewDtoMock } from '../../../unit';
+import { PowerBatchDto } from '../power-batch.dto';
+import { EmissionMock } from './emissions.mock';
 
 export const PowerBatchesMock: PowerBatchDto[] = [
   {

@@ -7,11 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import {
-  GeneralInformationEntity,
-  ProofOfOriginSectionEntity,
-  ProofOfSustainabilityEntity,
-} from '@h2-trust/amqp';
+import { GeneralInformationEntity, ProofOfOriginSectionEntity, ProofOfSustainabilityEntity } from '@h2-trust/amqp';
 import { GeneralInformationService } from './general-information/general-information.service';
 import { ProofOfOriginService } from './proof-of-origin/proof-of-origin.service';
 import { ProofOfSustainabilityService } from './proof-of-sustainability/proof-of-sustainability.service';

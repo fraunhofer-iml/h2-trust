@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RedComplianceDto } from "../red-compliance.dto";
+import { RedComplianceDto } from '../red-compliance.dto';
 
 export const RedComplianceDtoMock = <RedComplianceDto[]>[
   <RedComplianceDto>{

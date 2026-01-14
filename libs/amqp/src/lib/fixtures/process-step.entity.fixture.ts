@@ -1,11 +1,19 @@
+/*
+ * Copyright Fraunhofer Institute for Material Flow and Logistics
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * For details on the licensing terms, see the LICENSE file.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { BatchEntityFixture } from './batch.entity.fixture';
-import { UserEntityFixture } from './user.entity.fixture';
 import { DocumentEntityFixture } from './document.entity.fixture';
-import { PowerProductionUnitEntityFixture } from './power-production-unit.entity.fixture';
 import { HydrogenProductionUnitEntityFixture } from './hydrogen-production-unit.entity.fixture';
 import { HydrogenStorageUnitEntityFixture } from './hydrogen-storage-unit.entity.fixture';
+import { PowerProductionUnitEntityFixture } from './power-production-unit.entity.fixture';
+import { UserEntityFixture } from './user.entity.fixture';
 
 export const ProcessStepEntityFixture = {
   createPowerProduction: (overrides: Partial<ProcessStepEntity> = {}): ProcessStepEntity =>

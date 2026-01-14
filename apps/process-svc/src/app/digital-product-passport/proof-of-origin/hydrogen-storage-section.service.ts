@@ -8,11 +8,11 @@
 
 import { Injectable } from '@nestjs/common';
 import {
-  ProofOfOriginHydrogenBatchEntity,
   ProcessStepEntity,
   ProofOfOriginBatchEntity,
   ProofOfOriginClassificationEntity,
   ProofOfOriginEmissionEntity,
+  ProofOfOriginHydrogenBatchEntity,
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/amqp';
@@ -31,8 +31,9 @@ export class HydrogenStorageSectionService {
     const classifications: ProofOfOriginClassificationEntity[] = [];
 
     for (const hydrogenColor of Object.values(HydrogenColor)) {
-      const hydrogenProductionsByHydrogenColor = hydrogenProductions
-        .filter((hp) => hp.batch?.qualityDetails?.color === hydrogenColor);
+      const hydrogenProductionsByHydrogenColor = hydrogenProductions.filter(
+        (hp) => hp.batch?.qualityDetails?.color === hydrogenColor,
+      );
 
       if (hydrogenProductionsByHydrogenColor.length === 0) {
         continue;
@@ -43,27 +44,24 @@ export class HydrogenStorageSectionService {
           const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
             EmissionAssembler.assembleHydrogenStorage(hydrogenProduction);
 
-          const emission: ProofOfOriginEmissionEntity =
-            EmissionAssembler.assembleEmissionDto(
-              emissionCalculation,
-              hydrogenProduction.batch.amount,
-            );
+          const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionDto(
+            emissionCalculation,
+            hydrogenProduction.batch.amount,
+          );
 
-          const batch: ProofOfOriginHydrogenBatchEntity =
-            BatchAssembler.assembleHydrogenStorage(
-              hydrogenProduction,
-              emission
-            );
+          const batch: ProofOfOriginHydrogenBatchEntity = BatchAssembler.assembleHydrogenStorage(
+            hydrogenProduction,
+            emission,
+          );
 
           return batch;
         }),
       );
 
-      const classification: ProofOfOriginClassificationEntity =
-        ClassificationAssembler.assembleHydrogen(
-          hydrogenColor,
-          batchesForHydrogenColor,
-        );
+      const classification: ProofOfOriginClassificationEntity = ClassificationAssembler.assembleHydrogen(
+        hydrogenColor,
+        batchesForHydrogenColor,
+      );
 
       classifications.push(classification);
     }

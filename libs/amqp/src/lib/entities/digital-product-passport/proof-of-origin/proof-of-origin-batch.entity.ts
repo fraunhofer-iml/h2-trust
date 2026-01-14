@@ -10,7 +10,10 @@ import { BatchType, EnergySource } from '@h2-trust/domain';
 import { HydrogenComponentEntity } from '../../bottling';
 import { ProofOfOriginEmissionEntity } from './proof-of-origin-emission.entity';
 
-export type ProofOfOriginBatchEntity = ProofOfOriginPowerBatchEntity | ProofOfOriginWaterBatchEntity | ProofOfOriginHydrogenBatchEntity;
+export type ProofOfOriginBatchEntity =
+  | ProofOfOriginPowerBatchEntity
+  | ProofOfOriginWaterBatchEntity
+  | ProofOfOriginHydrogenBatchEntity;
 
 class ProofOfOriginBaseBatchEntity {
   id: string;
@@ -19,13 +22,7 @@ class ProofOfOriginBaseBatchEntity {
   amount: number;
   unit: string;
 
-  constructor(
-    id: string,
-    emission: ProofOfOriginEmissionEntity,
-    createdAt: Date,
-    amount: number,
-    unit: string,
-  ) {
+  constructor(id: string, emission: ProofOfOriginEmissionEntity, createdAt: Date, amount: number, unit: string) {
     this.id = id;
     this.emission = emission;
     this.createdAt = createdAt;

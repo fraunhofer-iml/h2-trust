@@ -14,12 +14,7 @@ export class ProofOfSustainabilityEmissionEntity {
   description: string;
   emissionType: ProofOfSustainabilityEmissionType;
 
-  constructor(
-    amount: number,
-    name: string,
-    description: string,
-    emissionType: ProofOfSustainabilityEmissionType,
-  ) {
+  constructor(amount: number, name: string, description: string, emissionType: ProofOfSustainabilityEmissionType) {
     this.amount = amount;
     this.name = name;
     this.description = description;
