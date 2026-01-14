@@ -18,8 +18,6 @@
           {{ batch().emission.amountCO2PerKgH2 | unit: FormattedUnits.CO2_PER_KG_H2 }}
         </span>
       </div>
-
-      <app-rfnbo-chip [isRFNBOready]="batch().rfnboReady"></app-rfnbo-chip>
     </div>
     <app-verified-chart
       [amount]="batch().amount"
@@ -40,7 +38,6 @@
               - {{ batch().accountingPeriodEnd | date: 'shortTime' }}
             }
           </h3>
-          <app-rfnbo-chip [isRFNBOready]="batch().rfnboReady"></app-rfnbo-chip>
         </div>
         <app-h2-color-chip [color]="batch().color"></app-h2-color-chip>
       </div>

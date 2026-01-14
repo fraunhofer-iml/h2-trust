@@ -1,58 +1,102 @@
-<!--
- 
-  <mat-tab-group
-    mat-align-tabs="start"
-    mat-stretch-tabs="false"
-    [selectedIndex]="selectedIndex"
-    (selectedIndexChange)="onTabChange($event)"
-  >
-    @if (powerProductionQuery.isSuccess() && powerProductionQuery.data().length !== 0) {
-      <mat-tab>
-        <ng-template mat-tab-label>
-          <span class="material-symbols-outlined mr-2 text-base"> {{ ICONS.POWER_PRODUCTION }} </span>
-          Power Production
-        </ng-template>
-        <app-power-production-table class="mt-8" [data]="powerProductionQuery.data()"></app-power-production-table
-      ></mat-tab>
-    }
-    @if (hydrogenProductionQuery.isSuccess() && hydrogenProductionQuery.data().length !== 0) {
-      <mat-tab>
-        <ng-template mat-tab-label>
-          <span class="material-symbols-outlined mr-2 text-base"> {{ ICONS.HYDROGEN_PRODUCTION }} </span>
-          Hydrogen Production
-        </ng-template>
-        <app-hydrogen-production-table
-          class="mt-8"
-          [data]="hydrogenProductionQuery.data()"
-        ></app-hydrogen-production-table>
-      </mat-tab>
-    }
-    @if (hydrogenStorageQuery.isSuccess() && hydrogenStorageQuery.data().length !== 0) {
-      <mat-tab>
-        <ng-template mat-tab-label>
-          <span class="material-symbols-outlined mr-2 text-base"> {{ ICONS.HYDROGEN_STORAGE }} </span>
-          Hydrogen Storage
-        </ng-template>
-        <app-hydrogen-storage-table class="mt-8" [data]="hydrogenStorageQuery.data()"></app-hydrogen-storage-table>
-      </mat-tab>
-    }
-  </mat-tab-group>
- -->
-@if (showTabs()) {
-  <div class="flex flex-col gap-4 p-8">
-    <div class="flex flex-row justify-between">
-      <h2 class="text-lg text-neutral-500">Units</h2>
-      <button mat-flat-button routerLink="create">Add Unit</button>
-    </div>
-    <nav mat-tab-nav-bar [tabPanel]="tabPanel">
-      @for (tab of tabs(); track tab) {
-        <a mat-tab-link [routerLink]="tab.route" [active]="router.url.includes(tab.route)">
-          {{ tab.label }}
+<div class="flex flex-col gap-4 p-8">
+  <h2 class="text-lg text-neutral-800">Units</h2>
+
+  <div class="flex w-full justify-between">
+    <mat-chip-set aria-label="List filter">
+      <mat-chip-option selectable [selected]="showHydrogenProduction" (click)="toggle(UnitType.HYDROGEN_PRODUCTION)">
+        Hydrogen Production
+      </mat-chip-option>
+
+      <mat-chip-option selectable [selected]="showPowerProduction" (click)="toggle(UnitType.POWER_PRODUCTION)">
+        Power Production
+      </mat-chip-option>
+
+      <mat-chip-option selectable [selected]="showHydrogenStorage" (click)="toggle(UnitType.HYDROGEN_STORAGE)">
+        Hydrogen Storage
+      </mat-chip-option>
+    </mat-chip-set>
+    <button mat-flat-button>add</button>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="grid grid-cols-4 gap-4 lg:grid-cols-3">
+    @if (showPowerProduction) {
+      @for (item of powerProductionQuery.data(); track $index) {
+        <a
+          class="hover:border-primary-200 flex flex-col gap-2 rounded-lg border-2 border-white bg-white p-4"
+          [routerLink]="['power-production', item.id]"
+        >
+          <span class="text-primary-800 bg-primary-200 flex w-14 items-center gap-4 rounded-md p-4">
+            <span class="material-symbols-outlined"> {{ ICONS.UNITS.POWER_PRODUCTION }}</span>
+          </span>
+          <div class="flex flex-col gap-1">
+            <span class="flex items-center gap-4 text-sm font-semibold"> {{ item.name }}</span>
+            <mat-chip-set aria-label="attributes">
+              <mat-chip
+                ><span matChipAvatar class="material-symbols-outlined">charger</span>
+                {{ item.ratedPower | unit: FormattedUnits.KWH }}</mat-chip
+              >
+              <mat-chip>
+                <span matChipAvatar class="material-symbols-outlined">category</span>{{ item.typeName }}</mat-chip
+              >
+            </mat-chip-set>
+          </div>
         </a>
       }
-    </nav>
-    <mat-tab-nav-panel #tabPanel> <router-outlet></router-outlet> </mat-tab-nav-panel>
+    }
+
+    @if (showHydrogenProduction) {
+      @for (item of hydrogenProductionQuery.data(); track $index) {
+        <a
+          class="hover:border-secondary-200 flex flex-col gap-2 rounded-lg border-2 border-white bg-white p-4"
+          [routerLink]="['hydrogen-production', item.id]"
+        >
+          <span class="text-secondary-800 bg-secondary-200 flex w-14 items-center gap-4 rounded-md p-4">
+            <span class="material-symbols-outlined"> {{ ICONS.UNITS.HYDROGEN_PRODUCTION }}</span>
+          </span>
+          <div class="flex flex-col gap-1">
+            <span class="flex items-center gap-4 text-sm font-semibold"> {{ item.name }}</span>
+            <mat-chip-set aria-label="attributes">
+              <mat-chip>
+                <span matChipAvatar class="material-symbols-outlined">charger</span>
+                {{ item.ratedPower | unit: FormattedUnits.KWH }}</mat-chip
+              >
+              <mat-chip>
+                <span matChipAvatar class="material-symbols-outlined">lab_panel</span>{{ item.technology }}</mat-chip
+              >
+            </mat-chip-set>
+          </div>
+        </a>
+      }
+    }
+
+    @if (showHydrogenStorage) {
+      @for (item of hydrogenStorageQuery.data(); track $index) {
+        <a
+          class="flex flex-col gap-2 rounded-lg border-2 border-white bg-white p-4 hover:border-neutral-200"
+          [routerLink]="['hydrogen-storage', item.id]"
+        >
+          <span class="flex w-14 items-center gap-4 rounded-md bg-neutral-200 p-4 text-neutral-600">
+            <span class="material-symbols-outlined"> {{ ICONS.UNITS.HYDROGEN_STORAGE }}</span>
+          </span>
+          <div class="flex flex-col gap-1">
+            <span class="flex items-center gap-4 text-sm font-semibold"> {{ item.name }}</span>
+
+            <mat-chip-set aria-label="attributes">
+              <mat-chip>
+                <span matChipAvatar class="material-symbols-outlined">bar_chart</span> {{ item.filling }}/{{
+                  item.capacity | unit: FormattedUnits.KG
+                }}</mat-chip
+              >
+              <mat-chip>
+                <span matChipAvatar class="material-symbols-outlined">label</span>
+                {{ item.storageType | prettyEnum | titlecase }}</mat-chip
+              >
+            </mat-chip-set>
+          </div>
+        </a>
+      }
+    }
   </div>
-} @else {
-  <router-outlet></router-outlet>
-}
+</div>

@@ -50,6 +50,7 @@ export class UnitService {
 
   async readPowerProductionUnits(userId: string): Promise<PowerProductionOverviewDto[]> {
     const companyId = await this.getCompanyIdFromUserId(userId);
+
     return firstValueFrom(
       this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS, new ReadByIdPayload(companyId)),
     ).then((entities) => entities.map(PowerProductionOverviewDto.fromEntity));
@@ -57,7 +58,6 @@ export class UnitService {
 
   async readHydrogenProductionUnits(userId: string): Promise<HydrogenProductionOverviewDto[]> {
     const companyId = await this.getCompanyIdFromUserId(userId);
-
     return firstValueFrom(
       this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS, new ReadByIdPayload(companyId)),
     ).then((entities) => entities.map(HydrogenProductionOverviewDto.fromEntity));

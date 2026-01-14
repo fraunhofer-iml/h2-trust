@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -19,7 +20,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
-import { injectQuery } from '@tanstack/angular-query-experimental';
+import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
 import {
   HydrogenProductionUnitCreateDto,
   HydrogenStorageUnitCreateDto,
@@ -42,7 +43,6 @@ import { ICONS } from '../../../shared/constants/icons';
 import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
-import { UnitQueryService } from '../unit-query.service';
 import {
   addValidatorsToFormGroup,
   HydrogenProductionFormGroup,
@@ -79,15 +79,13 @@ import {
 export class CreateUnitComponent {
   protected readonly RED_III_CRITERIA = RED_III_CRITERIA;
   protected readonly ICONS = ICONS.UNITS;
+  protected readonly UnitType = UnitType;
+  protected readonly HydrogenProductionMethod = HydrogenProductionMethod;
+  protected readonly HydrogenStorageType = HydrogenStorageType;
 
   unitsService = inject(UnitsService);
   companiesService = inject(CompaniesService);
   router = inject(Router);
-  queryService = inject(UnitQueryService);
-
-  UnitType = UnitType;
-  HydrogenProductionMethod = HydrogenProductionMethod;
-  HydrogenStorageType = HydrogenStorageType;
 
   availableBiddingZones = Object.values(BiddingZone);
   availableGridLevels = Object.entries(GridLevel);
@@ -103,15 +101,38 @@ export class CreateUnitComponent {
     | FormGroup<HydrogenStorageFormGroup>
     | FormGroup<HydrogenProductionFormGroup> = this.hydrogenProductionForm;
 
-  constructor() {
-    this.hydrogenProductionForm.controls.method.valueChanges.subscribe((value) => this.onH2ProductionTypeChange(value));
-    this.unitForm.controls.unitType.valueChanges.subscribe((value) => this.onUnitTypeChange(value));
-  }
-
   companiesQuery = injectQuery(() => ({
     queryKey: ['recipients'],
     queryFn: () => this.companiesService.getCompanies(),
   }));
+
+  createHydrogenStorageUnitMutation = injectMutation(() => ({
+    mutationFn: (dto: HydrogenStorageUnitCreateDto) => this.unitsService.createHydrogenStorageUnit(dto),
+    onError: (e) => toast.error(e.message),
+    onSuccess: () => this.onSuccess(),
+  }));
+
+  createPowerProductionUnitMutation = injectMutation(() => ({
+    mutationFn: (dto: PowerProductionUnitCreateDto) => this.unitsService.createPowerProductionUnit(dto),
+    onError: (e) => toast.error(e.message),
+    onSuccess: () => this.onSuccess(),
+  }));
+
+  createHydrogenProductionUnitMutation = injectMutation(() => ({
+    mutationFn: (dto: HydrogenProductionUnitCreateDto) => this.unitsService.createHydrogenProductionUnit(dto),
+    onError: (e) => toast.error(e.message),
+    onSuccess: () => this.onSuccess(),
+  }));
+
+  private onSuccess = () => {
+    this.router.navigateByUrl('units');
+    toast.success('Successfully created.');
+  };
+
+  constructor() {
+    this.hydrogenProductionForm.controls.method.valueChanges.subscribe((value) => this.onH2ProductionTypeChange(value));
+    this.unitForm.controls.unitType.valueChanges.subscribe((value) => this.onUnitTypeChange(value));
+  }
 
   get selectedType() {
     return this.unitForm.get('unitType') as FormControl;
@@ -135,7 +156,7 @@ export class CreateUnitComponent {
         method: additional.method,
         technology: additional.technology,
       } as HydrogenProductionUnitCreateDto;
-      return this.queryService.createHydrogenProductionUnitMutation.mutate(dto);
+      return this.createHydrogenProductionUnitMutation.mutate(dto);
     }
 
     if (type === UnitType.HYDROGEN_STORAGE) {
@@ -144,7 +165,7 @@ export class CreateUnitComponent {
         ...this.hydrogenStorageForm.value,
         storageType: this.hydrogenStorageForm.value.hydrogenStorageType,
       } as HydrogenStorageUnitCreateDto;
-      return this.queryService.createHydrogenStorageUnitMutation.mutate(dto);
+      return this.createHydrogenStorageUnitMutation.mutate(dto);
     }
 
     if (type === UnitType.POWER_PRODUCTION) {
@@ -152,7 +173,7 @@ export class CreateUnitComponent {
         ...baseDto,
         ...this.powerProductionForm.value,
       } as PowerProductionUnitCreateDto;
-      return this.queryService.createPowerProductionUnitMutation.mutate(dto);
+      return this.createPowerProductionUnitMutation.mutate(dto);
     }
   }
 

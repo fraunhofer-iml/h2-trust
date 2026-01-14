@@ -4,9 +4,9 @@
 @use 'sass:map';
 @use '@angular/material' as mat;
 
-// Note: Color palettes are generated from primary: #555574, secondary: #505077, tertiary: #2b685e, neutral: #505352
+// Note: Color palettes are generated from primary: #3b3b57, secondary: #2b685e, neutral: #505352
 $_palettes: (
-   primary: (
+  primary: (
     0: #000000,
     10: #191933,
     20: #2e2e49,
@@ -24,27 +24,24 @@ $_palettes: (
     99: #fffbff,
     100: #ffffff,
   ),
-
-  // NEW: grayish secondary (statt des grünen Originals)
   secondary: (
-    0:   #000000,
-    10:  #11191a,
-    20:  #1f2c2e,
-    25:  #263538,
-    30:  #2e3f42,
-    35:  #37494c,
-    40:  #415456,
-    50:  #53696c,
-    60:  #6b8285,
-    70:  #86a0a3,
-    80:  #a2bdc0,
-    90:  #c4dadd,
-    95:  #d7eaed,
-    98:  #edf6f7,
-    99:  #f6fbfc,
+    0: #000000,
+    10: #00201b,
+    20: #003730,
+    25: #00443b,
+    30: #0a5047,
+    35: #1d5c52,
+    40: #2b685e,
+    50: #468177,
+    60: #609c90,
+    70: #7ab6ab,
+    80: #95d2c6,
+    90: #b1efe2,
+    95: #bffdf0,
+    98: #e5fff8,
+    99: #f3fffb,
     100: #ffffff,
   ),
-
   tertiary: (
     0: #000000,
     10: #2c1324,
@@ -63,7 +60,6 @@ $_palettes: (
     99: #fffbff,
     100: #ffffff,
   ),
-
   neutral: (
     0: #000000,
     10: #191c1b,
@@ -92,7 +88,6 @@ $_palettes: (
     94: #eceeed,
     96: #f2f4f2,
   ),
-
   neutral-variant: (
     0: #000000,
     10: #1b1b21,
@@ -140,11 +135,3 @@ $_rest: (
 
 $primary-palette: map.merge(map.get($_palettes, primary), $_rest);
 $tertiary-palette: map.merge(map.get($_palettes, tertiary), $_rest);
-$h2-trust-theme: mat.define-theme(
-  (
-    color: (
-      primary: $primary_palette,
-      tertiary: $tertiary_palette,
-    ),
-  )
-);

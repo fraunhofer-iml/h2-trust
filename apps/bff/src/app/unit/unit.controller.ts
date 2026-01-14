@@ -2,6 +2,7 @@ import { AuthenticatedUser } from 'nest-keycloak-connect';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import {
+  HydrogenProductionOverviewDto,
   HydrogenProductionUnitCreateDto,
   HydrogenProductionUnitDto,
   HydrogenStorageOverviewDto,
@@ -79,7 +80,6 @@ export class UnitController {
     description: 'Returns power-production unit ',
   })
   getPowerProductionUnitById(@Param('id') id: string): Promise<PowerProductionUnitDto> {
-    console.log(id);
     return this.unitService.readPowerProductionUnit(id);
   }
 
@@ -105,8 +105,8 @@ export class UnitController {
   })
   getHydrogenProductionUnits(
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
-  ): Promise<HydrogenStorageOverviewDto[]> {
-    return this.unitService.readHydrogenStorageUnits(authenticatedUser.sub);
+  ): Promise<HydrogenProductionOverviewDto[]> {
+    return this.unitService.readHydrogenProductionUnits(authenticatedUser.sub);
   }
 
   @Get('hydrogen-production/:id')
@@ -118,7 +118,6 @@ export class UnitController {
     description: 'Returns hydrogen-storage unit ',
   })
   getHydrogenProductionUnitById(@Param('id') id: string): Promise<HydrogenProductionUnitDto> {
-    console.log(id);
     return this.unitService.readHydrogenProductionUnit(id);
   }
 

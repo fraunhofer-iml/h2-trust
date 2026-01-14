@@ -1,15 +1,15 @@
 <div class="flex h-full flex-col gap-4 overflow-auto p-8">
   <div class="flex flex-row items-center gap-2 text-lg text-neutral-500">
-    <a [routerLink]="'/units/hydrogen-storage'" class="cursor-pointer hover:underline">Units</a>
-    <span class="material-symbols-outlined"> keyboard_arrow_right </span
-    ><a [routerLink]="'/units/hydrogen-storage'" class="cursor-pointer hover:underline">Hydrogen Production</a
-    ><span class="material-symbols-outlined"> keyboard_arrow_right </span>
+    <a [routerLink]="'/units'" class="cursor-pointer hover:underline">Units</a>
+    <span class="material-symbols-outlined"> keyboard_arrow_right </span>
     {{ id() }}
   </div>
   @if (unitQuery.data(); as unit) {
     <app-unit-details [unit]="unit"></app-unit-details>
 
     <div class="rounded-lg bg-white p-4">
+      <h3 class="pb-4 font-semibold text-neutral-500">Additional Information</h3>
+
       <div class="grid grid-cols-4 gap-4">
         <div class="flex flex-col text-sm">
           <span class="text-sm text-neutral-400">Bidding Zone</span><span>{{ unit.biddingZone }}</span>

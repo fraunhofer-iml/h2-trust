@@ -28,7 +28,7 @@ export class HydrogenStorageDetailsComponent {
   unitsService = inject(UnitsService);
 
   unitQuery = injectQuery(() => ({
-    queryKey: ['unit', this.id()],
+    queryKey: ['hydrogen-storage-unit', this.id()],
     queryFn: () => this.unitsService.getHydrogenStorageUnit(this.id() ?? ''),
     enabled: !!this.id(),
   }));

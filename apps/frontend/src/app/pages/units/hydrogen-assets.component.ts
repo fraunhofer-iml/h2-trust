@@ -7,47 +7,76 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, computed, effect, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatTabsModule } from '@angular/material/tabs';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { TabVisibilityService } from './tab-visibility.service';
-import { UnitQueryService } from './unit-query.service';
+import { RouterModule } from '@angular/router';
+import { injectQuery } from '@tanstack/angular-query-experimental';
+import { UnitType } from '@h2-trust/domain';
+import { FormattedUnits } from '../../shared/constants/formatted-units';
+import { ICONS } from '../../shared/constants/icons';
+import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
+import { UnitPipe } from '../../shared/pipes/unit.pipe';
+import { UnitsService } from '../../shared/services/units/units.service';
 
 @Component({
   selector: 'app-hydrogen-assets',
-  imports: [ReactiveFormsModule, CommonModule, MatCardModule, MatTabsModule, RouterModule, MatButtonModule],
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    MatCardModule,
+    MatTabsModule,
+    RouterModule,
+    MatButtonModule,
+    UnitPipe,
+    MatChipsModule,
+    PrettyEnumPipe,
+    MatDividerModule,
+  ],
   providers: [],
   templateUrl: './hydrogen-assets.component.html',
 })
 export class HydrogenAssetsComponent {
-  protected readonly queryService = inject(UnitQueryService);
-  protected readonly router = inject(Router);
-  protected readonly route = inject(ActivatedRoute);
-  protected readonly visibilityService = inject(TabVisibilityService);
+  protected readonly ICONS = ICONS;
+  protected readonly FormattedUnits = FormattedUnits;
+  protected readonly UnitType = UnitType;
 
-  showTabs = this.visibilityService.showTabs;
+  protected readonly unitsService = inject(UnitsService);
 
-  tabs = computed(() => {
-    return [
-      { label: 'Power Production', route: 'power-production', data: this.queryService.powerProductionQuery.data() },
-      {
-        label: 'Hydrogen Production',
-        route: 'hydrogen-production',
-        data: this.queryService.hydrogenProductionQuery.data(),
-      },
-      { label: 'Hydrogen Storage', route: 'hydrogen-storage', data: this.queryService.hydrogenStorageQuery.data() },
-    ].filter((t) => !!t.data);
-  });
+  showPowerProduction = true;
+  showHydrogenProduction = true;
+  showHydrogenStorage = true;
 
-  constructor() {
-    effect(() => {
-      const tabs = this.tabs();
-      if (tabs.length > 0 && !this.route.firstChild) {
-        this.router.navigate([tabs[0].route], { relativeTo: this.route });
-      }
-    });
+  hydrogenStorageQuery = injectQuery(() => ({
+    queryKey: ['h2-storage'],
+    queryFn: () => this.unitsService.getHydrogenStorageUnits(),
+  }));
+
+  powerProductionQuery = injectQuery(() => ({
+    queryKey: ['power-production'],
+    queryFn: async () => this.unitsService.getPowerProductionUnits(),
+  }));
+
+  hydrogenProductionQuery = injectQuery(() => ({
+    queryKey: ['h2-production'],
+    queryFn: async () => this.unitsService.getHydrogenProductionUnits(),
+  }));
+
+  toggle(type: UnitType) {
+    switch (type) {
+      case UnitType.HYDROGEN_PRODUCTION:
+        this.showHydrogenProduction = !this.showHydrogenProduction;
+        break;
+      case UnitType.POWER_PRODUCTION:
+        this.showPowerProduction = !this.showPowerProduction;
+        break;
+      case UnitType.HYDROGEN_STORAGE:
+        this.showHydrogenStorage = !this.showHydrogenStorage;
+        break;
+    }
   }
 }

@@ -19,6 +19,7 @@ import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
 })
 export class UnitTypeChipComponent {
   protected readonly ICONS = ICONS.UNITS;
+  protected readonly UnitType = UnitType;
   unitType = input.required<UnitType>();
 
   getIcon() {

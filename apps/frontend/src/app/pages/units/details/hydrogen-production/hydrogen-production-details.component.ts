@@ -28,7 +28,7 @@ export class HydrogenProductionDetailsComponent {
   unitsService = inject(UnitsService);
 
   unitQuery = injectQuery(() => ({
-    queryKey: ['unit', this.id()],
+    queryKey: ['hydrogen-production-unit', this.id()],
     queryFn: () => this.unitsService.getHydrogenProductionUnit(this.id() ?? ''),
     enabled: !!this.id(),
   }));

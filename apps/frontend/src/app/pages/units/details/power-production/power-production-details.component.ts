@@ -31,7 +31,7 @@ export class PowerProductionDetailsComponent {
   unitsService = inject(UnitsService);
 
   unitQuery = injectQuery(() => ({
-    queryKey: ['unit', this.id()],
+    queryKey: ['power-production-unit', this.id()],
     queryFn: () => this.unitsService.getPowerProductionUnit(this.id() ?? ''),
     enabled: !!this.id(),
   }));
