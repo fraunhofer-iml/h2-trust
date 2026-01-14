@@ -7,6 +7,6 @@ export const UserEntityFixture = {
       overrides.id ?? 'user-1',
       overrides.name ?? 'Dummy User',
       overrides.email ?? 'dummy@example.com',
-      overrides.company ?? CompanyEntityFixture.create(),
+      overrides.company ?? CompanyEntityFixture.createHydrogenProducer(),
     ),
 } as const;

@@ -43,7 +43,7 @@ export function meetsAdditionalityCriterion(
   const powerCommissioning = DateTimeUtil.toValidDate(powerUnit?.commissionedOn, 'powerUnit.commissionedOn');
   const hydrogenCommissioning = DateTimeUtil.toValidDate(hydrogenUnit?.commissionedOn, 'hydrogenUnit.commissionedOn');
 
-  // Limit date: 36 months prior to commissioning of the electrolyzer
+  // Limit date: 36 months prior to commissioning of the hydrogen production unit
   const limitDate = DateTimeUtil.subtractMonthsSafe(hydrogenCommissioning, 36);
 
   // Power generation must not occur BEFORE this limit date (i.e., it must be >=).
@@ -52,7 +52,7 @@ export function meetsAdditionalityCriterion(
 
 export function hasFinancialSupport(powerUnit: PowerProductionUnitEntity): boolean {
   assertBoolean(powerUnit?.financialSupportReceived, 'powerUnit.financialSupportReceived');
-  return !powerUnit.financialSupportReceived; // TODO-MP: change in data model
+  return !powerUnit.financialSupportReceived;
 }
 
 function assertValidBiddingZone(zone: unknown, name: string): asserts zone is BiddingZone {

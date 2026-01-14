@@ -21,14 +21,14 @@ import { MatchedProductionPair } from './matched-production-pair';
 
 @Injectable()
 export class RedCompliancePairingService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) {}
+  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) { }
 
   async buildMatchedPairs(
-    powerProductions: ProcessStepEntity[],
-    hydrogenProductions: ProcessStepEntity[],
+    powerProcessSteps: ProcessStepEntity[],
+    hydrogenProcessSteps: ProcessStepEntity[],
     _processStepId: string,
   ): Promise<MatchedProductionPair[]> {
-    const pairs: MatchedProductionPair[] = this.buildMatchedPairsWithoutUnits(powerProductions, hydrogenProductions);
+    const pairs: MatchedProductionPair[] = this.buildMatchedPairsWithoutUnits(powerProcessSteps, hydrogenProcessSteps);
 
     if (!pairs?.length) {
       return [];
@@ -40,12 +40,12 @@ export class RedCompliancePairingService {
     return await this.enrichPairsWithUnits(pairs);
   }
   private buildMatchedPairsWithoutUnits(
-    powerProductions: ProcessStepEntity[],
-    hydrogenProductions: ProcessStepEntity[],
+    powerProcessSteps: ProcessStepEntity[],
+    hydrogenProcessSteps: ProcessStepEntity[],
   ): MatchedProductionPair[] {
-    const hydrogenProductionById = this.buildHydrogenProductionById(hydrogenProductions);
+    const hydrogenProductionById = this.buildHydrogenProcessStepsById(hydrogenProcessSteps);
     const pairs: MatchedProductionPair[] = [];
-    for (const powerProduction of powerProductions) {
+    for (const powerProduction of powerProcessSteps) {
       const successor = powerProduction.batch?.successors?.find((s) => hydrogenProductionById.has(s.processStepId));
       if (successor) {
         const hydrogenProduction = hydrogenProductionById.get(successor.processStepId)!;
@@ -58,10 +58,10 @@ export class RedCompliancePairingService {
     return pairs;
   }
 
-  private buildHydrogenProductionById(hydrogenProductions: ProcessStepEntity[]): Map<string, ProcessStepEntity> {
+  private buildHydrogenProcessStepsById(processSteps: ProcessStepEntity[]): Map<string, ProcessStepEntity> {
     const map = new Map<string, ProcessStepEntity>();
-    for (const hydrogenProduction of hydrogenProductions) {
-      map.set(hydrogenProduction.id, hydrogenProduction);
+    for (const processStep of processSteps) {
+      map.set(processStep.id, processStep);
     }
     return map;
   }

@@ -13,7 +13,7 @@ export const GeneralInformationEntityFixture = {
       overrides.filledAmount ?? 100,
       overrides.color ?? HydrogenColor.GREEN,
       overrides.producer ?? 'Dummy Producer',
-      overrides.hydrogenComposition ?? [HydrogenComponentEntityFixture.create()],
+      overrides.hydrogenComposition ?? [HydrogenComponentEntityFixture.createGreen()],
       overrides.attachedFiles ?? [DocumentEntityFixture.create()],
       overrides.redCompliance ?? RedComplianceEntityFixture.create(),
     ),

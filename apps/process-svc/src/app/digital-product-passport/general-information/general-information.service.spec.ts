@@ -83,9 +83,9 @@ describe('GeneralInformationService', () => {
   describe('readGeneralInformation', () => {
     it('returns GeneralInformationEntity with data from all services', async () => {
       // Arrange
-      const givenProcessStep = ProcessStepEntityFixture.create();
+      const givenProcessStep = ProcessStepEntityFixture.createHydrogenTransportation();
       const givenUser = UserEntityFixture.create();
-      const givenHydrogenComposition = [HydrogenComponentEntityFixture.create()];
+      const givenHydrogenComposition = [HydrogenComponentEntityFixture.createGreen()];
       const givenRedCompliance = RedComplianceEntityFixture.create();
 
       const expectedResult = GeneralInformationEntityFixture.create({

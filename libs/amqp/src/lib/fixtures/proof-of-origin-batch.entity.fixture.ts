@@ -43,7 +43,7 @@ export const ProofOfOriginHydrogenBatchEntityFixture = {
       overrides.createdAt ?? new Date('2026-01-01T01:00:00Z'),
       overrides.amount ?? 50,
       overrides.unit ?? 'kg',
-      overrides.hydrogenComposition ?? [HydrogenComponentEntityFixture.create()],
+      overrides.hydrogenComposition ?? [HydrogenComponentEntityFixture.createGreen()],
       overrides.producer ?? 'The Hydrogen Company',
       overrides.unitId ?? 'hydrogen-production-unit-1',
       overrides.color ?? HydrogenColor.GREEN,
