@@ -7,244 +7,203 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProcessStepEntity, ProvenanceEntity, ReadByIdPayload } from '@h2-trust/amqp';
-import { ProcessType } from '@h2-trust/domain';
-import { ProcessStepService } from '../../process-step/process-step.service';
+import { ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
 import { ProvenanceService } from './provenance.service';
+import { ProcessStepService } from '../../process-step/process-step.service';
 import { TraversalService } from './traversal.service';
-
-function createProcessStep(id: string, type: ProcessType): ProcessStepEntity {
-  return { id, type } as ProcessStepEntity;
-}
+import { ProcessType } from '@h2-trust/domain';
 
 describe('ProvenanceService', () => {
   let service: ProvenanceService;
-  let processStepServiceMock: Record<string, jest.Mock>;
-  let traversalServiceMock: Record<string, jest.Mock>;
+
+  const processStepServiceMock = {
+    readProcessStep: jest.fn(),
+  };
+
+  const traversalServiceMock = {
+    fetchWaterConsumptionsFromHydrogenProductions: jest.fn(),
+    fetchPowerProductionsFromHydrogenProductions: jest.fn(),
+    fetchHydrogenProductionsFromHydrogenBottling: jest.fn(),
+    fetchHydrogenBottlingFromHydrogenTransportation: jest.fn(),
+  };
 
   beforeEach(async () => {
-    processStepServiceMock = {
-      readProcessStep: jest.fn(),
-    };
-
-    traversalServiceMock = {
-      fetchPowerProductionsFromHydrogenProductions: jest.fn(),
-      fetchWaterConsumptionsFromHydrogenProductions: jest.fn(),
-      fetchHydrogenProductionsFromHydrogenBottling: jest.fn(),
-      fetchHydrogenBottlingFromHydrogenTransportation: jest.fn(),
-    };
-
-    const moduleRef: TestingModule = await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
       providers: [
         ProvenanceService,
-        { provide: ProcessStepService, useValue: processStepServiceMock },
-        { provide: TraversalService, useValue: traversalServiceMock },
+        {
+          provide: ProcessStepService,
+          useValue: processStepServiceMock,
+        },
+        {
+          provide: TraversalService,
+          useValue: traversalServiceMock,
+        },
       ],
     }).compile();
 
-    service = moduleRef.get(ProvenanceService);
+    service = module.get<ProvenanceService>(ProvenanceService);
   });
 
-  describe('buildProvenance error paths', () => {
-    it('throws when processStepId missing', async () => {
-      await expect(service.buildProvenance(new ReadByIdPayload(''))).rejects.toThrow('processStepId must be provided.');
-    });
-
-    it('throws when root step has no type', async () => {
-      processStepServiceMock['readProcessStep'].mockResolvedValue({ id: 'p1' });
-
-      await expect(service.buildProvenance(new ReadByIdPayload('p1'))).rejects.toThrow('Invalid process step.');
-    });
-
-    it('throws when unsupported process type', async () => {
-      const unknown = createProcessStep('p1', 'UNKNOWN' as ProcessType);
-
-      processStepServiceMock['readProcessStep'].mockResolvedValue(unknown);
-
-      await expect(service.buildProvenance(new ReadByIdPayload(unknown.id))).rejects.toThrow(
-        'Unsupported process type [UNKNOWN].',
-      );
-    });
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
-  describe('strategies', () => {
-    it(`builds provenance for ${ProcessType.POWER_PRODUCTION}`, async () => {
+  describe('buildProvenance', () => {
+    it('throws error when processStepId is not provided', async () => {
       // Arrange
-      const powerProduction = createProcessStep('pp1', ProcessType.POWER_PRODUCTION);
+      const givenProcessStepId = '';
 
-      processStepServiceMock['readProcessStep'].mockResolvedValue(powerProduction);
-
-      const expectedResult = new ProvenanceEntity(powerProduction, undefined, [], [], [powerProduction]);
-
-      // Act
-      const actualResult: ProvenanceEntity = await service.buildProvenance(new ReadByIdPayload(powerProduction.id));
-
-      // Assert
-      expect(actualResult.root).toBe(expectedResult.root);
-      expect(actualResult.powerProductions).toEqual(expectedResult.powerProductions);
-      expect(actualResult.waterConsumptions).toEqual(expectedResult.waterConsumptions);
-      expect(actualResult.hydrogenProductions).toEqual(expectedResult.hydrogenProductions);
-      expect(actualResult.hydrogenBottling).toBe(expectedResult.hydrogenBottling);
-
-      expect(traversalServiceMock['fetchPowerProductionsFromHydrogenProductions']).not.toHaveBeenCalled();
-      expect(traversalServiceMock['fetchWaterConsumptionsFromHydrogenProductions']).not.toHaveBeenCalled();
-      expect(traversalServiceMock['fetchHydrogenProductionsFromHydrogenBottling']).not.toHaveBeenCalled();
-      expect(traversalServiceMock['fetchHydrogenBottlingFromHydrogenTransportation']).not.toHaveBeenCalled();
+      const expectedErrorMessage = 'processStepId must be provided.';
+      // Act & Assert
+      await expect(service.buildProvenance(givenProcessStepId)).rejects.toThrow(expectedErrorMessage);
     });
 
-    it(`builds provenance for ${ProcessType.WATER_CONSUMPTION}`, async () => {
+    it('throws error when process step is not found', async () => {
       // Arrange
-      const waterConsumption = createProcessStep('wc1', ProcessType.WATER_CONSUMPTION);
+      const givenProcessStepId = 'process-step-1';
 
-      processStepServiceMock['readProcessStep'].mockResolvedValue(waterConsumption);
+      processStepServiceMock.readProcessStep.mockResolvedValue(null);
 
-      const expectedResult = new ProvenanceEntity(waterConsumption, undefined, [], [waterConsumption], []);
+      const expectedErrorMessage = 'Invalid process step.';
 
-      // Act
-      const actualResult: ProvenanceEntity = await service.buildProvenance(new ReadByIdPayload(waterConsumption.id));
-
-      // Assert
-      expect(actualResult.root).toBe(expectedResult.root);
-      expect(actualResult.powerProductions).toEqual(expectedResult.powerProductions);
-      expect(actualResult.waterConsumptions).toEqual(expectedResult.waterConsumptions);
-      expect(actualResult.hydrogenProductions).toEqual(expectedResult.hydrogenProductions);
-      expect(actualResult.hydrogenBottling).toBe(expectedResult.hydrogenBottling);
-
-      expect(traversalServiceMock['fetchPowerProductionsFromHydrogenProductions']).not.toHaveBeenCalled();
-      expect(traversalServiceMock['fetchWaterConsumptionsFromHydrogenProductions']).not.toHaveBeenCalled();
-      expect(traversalServiceMock['fetchHydrogenProductionsFromHydrogenBottling']).not.toHaveBeenCalled();
-      expect(traversalServiceMock['fetchHydrogenBottlingFromHydrogenTransportation']).not.toHaveBeenCalled();
+      // Act & Assert
+      await expect(service.buildProvenance(givenProcessStepId)).rejects.toThrow(expectedErrorMessage);
     });
 
-    it(`builds provenance for ${ProcessType.HYDROGEN_PRODUCTION}`, async () => {
+    it('throws error when process step type is invalid', async () => {
       // Arrange
-      const hydrogenProduction = createProcessStep('hp1', ProcessType.HYDROGEN_PRODUCTION);
-      const waterConsumptions = [createProcessStep('wc1', ProcessType.WATER_CONSUMPTION)];
-      const powerProductions = [createProcessStep('pp1', ProcessType.POWER_PRODUCTION)];
+      const givenProcessStep = ProcessStepEntityFixture.createPowerProduction();
+      givenProcessStep.type = 'INVALID_TYPE'
 
-      processStepServiceMock['readProcessStep'].mockResolvedValue(hydrogenProduction);
+      processStepServiceMock.readProcessStep.mockResolvedValue(givenProcessStep);
 
-      traversalServiceMock['fetchPowerProductionsFromHydrogenProductions'].mockResolvedValue(powerProductions);
-      traversalServiceMock['fetchWaterConsumptionsFromHydrogenProductions'].mockResolvedValue(waterConsumptions);
+      const expectedErrorMessage = `Unsupported process type [${givenProcessStep.type}].`;
 
-      const expectedResult = new ProvenanceEntity(
-        hydrogenProduction,
-        undefined,
-        [hydrogenProduction],
-        waterConsumptions,
-        powerProductions,
-      );
-
-      // Act
-      const actualResult: ProvenanceEntity = await service.buildProvenance(new ReadByIdPayload(hydrogenProduction.id));
-
-      // Assert
-      expect(actualResult.root).toBe(expectedResult.root);
-      expect(actualResult.powerProductions).toEqual(expectedResult.powerProductions);
-      expect(actualResult.waterConsumptions).toEqual(expectedResult.waterConsumptions);
-      expect(actualResult.hydrogenProductions).toEqual(expectedResult.hydrogenProductions);
-      expect(actualResult.hydrogenBottling).toBe(expectedResult.hydrogenBottling);
-
-      expect(traversalServiceMock['fetchPowerProductionsFromHydrogenProductions']).toHaveBeenCalledWith([
-        hydrogenProduction,
-      ]);
-      expect(traversalServiceMock['fetchWaterConsumptionsFromHydrogenProductions']).toHaveBeenCalledWith([
-        hydrogenProduction,
-      ]);
-      expect(traversalServiceMock['fetchHydrogenProductionsFromHydrogenBottling']).not.toHaveBeenCalled();
-      expect(traversalServiceMock['fetchHydrogenBottlingFromHydrogenTransportation']).not.toHaveBeenCalled();
+      // Act & Assert
+      await expect(service.buildProvenance(givenProcessStep.id)).rejects.toThrow(expectedErrorMessage);
     });
 
-    it(`builds provenance for ${ProcessType.HYDROGEN_BOTTLING}`, async () => {
+    it(`returns ProvenanceEntity for ${ProcessType.POWER_PRODUCTION} process type`, async () => {
       // Arrange
-      const hydrogenBottling = createProcessStep('hb1', ProcessType.HYDROGEN_BOTTLING);
-      const hydrogenProductions = [createProcessStep('hp1', ProcessType.HYDROGEN_PRODUCTION)];
-      const waterConsumptions = [createProcessStep('wc1', ProcessType.WATER_CONSUMPTION)];
-      const powerProductions = [createProcessStep('pp1', ProcessType.POWER_PRODUCTION)];
+      const givenProcessStep = ProcessStepEntityFixture.createPowerProduction();
 
-      processStepServiceMock['readProcessStep'].mockResolvedValue(hydrogenBottling);
-
-      traversalServiceMock['fetchPowerProductionsFromHydrogenProductions'].mockResolvedValue(powerProductions);
-      traversalServiceMock['fetchWaterConsumptionsFromHydrogenProductions'].mockResolvedValue(waterConsumptions);
-      traversalServiceMock['fetchHydrogenProductionsFromHydrogenBottling'].mockResolvedValue(hydrogenProductions);
-
-      const expectedResult = new ProvenanceEntity(
-        hydrogenBottling,
-        hydrogenBottling,
-        hydrogenProductions,
-        waterConsumptions,
-        powerProductions,
-      );
+      processStepServiceMock.readProcessStep.mockResolvedValue(givenProcessStep);
 
       // Act
-      const actualResult: ProvenanceEntity = await service.buildProvenance(new ReadByIdPayload(hydrogenBottling.id));
+      const actualResult = await service.buildProvenance(givenProcessStep.id);
 
       // Assert
-      expect(actualResult.root).toBe(expectedResult.root);
-      expect(actualResult.powerProductions).toEqual(expectedResult.powerProductions);
-      expect(actualResult.waterConsumptions).toEqual(expectedResult.waterConsumptions);
-      expect(actualResult.hydrogenProductions).toEqual(expectedResult.hydrogenProductions);
-      expect(actualResult.hydrogenBottling).toBe(expectedResult.hydrogenBottling);
+      expect(processStepServiceMock.readProcessStep).toHaveBeenCalledWith(givenProcessStep.id);
 
-      expect(traversalServiceMock['fetchPowerProductionsFromHydrogenProductions']).toHaveBeenCalledWith(
-        hydrogenProductions,
-      );
-      expect(traversalServiceMock['fetchWaterConsumptionsFromHydrogenProductions']).toHaveBeenCalledWith(
-        hydrogenProductions,
-      );
-      expect(traversalServiceMock['fetchHydrogenProductionsFromHydrogenBottling']).toHaveBeenCalledWith(
-        hydrogenBottling,
-      );
-      expect(traversalServiceMock['fetchHydrogenBottlingFromHydrogenTransportation']).not.toHaveBeenCalled();
+      expect(actualResult.root).toBe(givenProcessStep);
+      expect(actualResult.hydrogenBottling).toBeUndefined();
+      expect(actualResult.hydrogenProductions).toEqual([]);
+      expect(actualResult.waterConsumptions).toEqual([]);
+      expect(actualResult.powerProductions).toEqual([givenProcessStep]);
     });
 
-    it(`builds provenance for ${ProcessType.HYDROGEN_TRANSPORTATION}`, async () => {
+    it(`returns ProvenanceEntity for ${ProcessType.WATER_CONSUMPTION} process type`, async () => {
       // Arrange
-      const hydrogenTransportation = createProcessStep('ht1', ProcessType.HYDROGEN_TRANSPORTATION);
-      const powerProductions = [createProcessStep('pp1', ProcessType.POWER_PRODUCTION)];
-      const waterConsumptions = [createProcessStep('wc1', ProcessType.WATER_CONSUMPTION)];
-      const hydrogenProductions = [createProcessStep('hp1', ProcessType.HYDROGEN_PRODUCTION)];
-      const hydrogenBottling = createProcessStep('hb1', ProcessType.HYDROGEN_BOTTLING);
+      const givenProcessStep = ProcessStepEntityFixture.createWaterConsumption();
 
-      processStepServiceMock['readProcessStep'].mockResolvedValue(hydrogenTransportation);
-
-      traversalServiceMock['fetchPowerProductionsFromHydrogenProductions'].mockResolvedValue(powerProductions);
-      traversalServiceMock['fetchWaterConsumptionsFromHydrogenProductions'].mockResolvedValue(waterConsumptions);
-      traversalServiceMock['fetchHydrogenProductionsFromHydrogenBottling'].mockResolvedValue(hydrogenProductions);
-      traversalServiceMock['fetchHydrogenBottlingFromHydrogenTransportation'].mockResolvedValue(hydrogenBottling);
-
-      const expectedResult = new ProvenanceEntity(
-        hydrogenTransportation,
-        hydrogenBottling,
-        hydrogenProductions,
-        waterConsumptions,
-        powerProductions,
-      );
+      processStepServiceMock.readProcessStep.mockResolvedValue(givenProcessStep);
 
       // Act
-      const actualResult: ProvenanceEntity = await service.buildProvenance(
-        new ReadByIdPayload(hydrogenTransportation.id),
-      );
+      const actualResult = await service.buildProvenance(givenProcessStep.id);
 
       // Assert
-      expect(actualResult.root).toBe(expectedResult.root);
-      expect(actualResult.powerProductions).toEqual(expectedResult.powerProductions);
-      expect(actualResult.waterConsumptions).toEqual(expectedResult.waterConsumptions);
-      expect(actualResult.hydrogenProductions).toEqual(expectedResult.hydrogenProductions);
-      expect(actualResult.hydrogenBottling).toBe(expectedResult.hydrogenBottling);
+      expect(processStepServiceMock.readProcessStep).toHaveBeenCalledWith(givenProcessStep.id);
 
-      expect(traversalServiceMock['fetchPowerProductionsFromHydrogenProductions']).toHaveBeenCalledWith(
-        hydrogenProductions,
-      );
-      expect(traversalServiceMock['fetchWaterConsumptionsFromHydrogenProductions']).toHaveBeenCalledWith(
-        hydrogenProductions,
-      );
-      expect(traversalServiceMock['fetchHydrogenProductionsFromHydrogenBottling']).toHaveBeenCalledWith(
-        hydrogenBottling,
-      );
-      expect(traversalServiceMock['fetchHydrogenBottlingFromHydrogenTransportation']).toHaveBeenCalledWith(
-        hydrogenTransportation,
-      );
+      expect(actualResult.root).toBe(givenProcessStep);
+      expect(actualResult.hydrogenBottling).toBeUndefined();
+      expect(actualResult.hydrogenProductions).toEqual([]);
+      expect(actualResult.waterConsumptions).toEqual([givenProcessStep]);
+      expect(actualResult.powerProductions).toEqual([]);
+    });
+
+    it(`returns ProvenanceEntity for ${ProcessType.HYDROGEN_PRODUCTION} process type`, async () => {
+      // Arrange
+      const givenProcessStep = ProcessStepEntityFixture.createHydrogenProduction();
+      const givenWaterConsumptions = [ProcessStepEntityFixture.createWaterConsumption()];
+      const givenPowerProductions = [ProcessStepEntityFixture.createPowerProduction()];
+
+      processStepServiceMock.readProcessStep.mockResolvedValue(givenProcessStep);
+      traversalServiceMock.fetchWaterConsumptionsFromHydrogenProductions.mockResolvedValue(givenWaterConsumptions);
+      traversalServiceMock.fetchPowerProductionsFromHydrogenProductions.mockResolvedValue(givenPowerProductions);
+
+      // Act
+      const actualResult = await service.buildProvenance(givenProcessStep.id);
+
+      // Assert
+      expect(processStepServiceMock.readProcessStep).toHaveBeenCalledWith(givenProcessStep.id);
+      expect(traversalServiceMock.fetchWaterConsumptionsFromHydrogenProductions).toHaveBeenCalledWith([givenProcessStep]);
+      expect(traversalServiceMock.fetchPowerProductionsFromHydrogenProductions).toHaveBeenCalledWith([givenProcessStep]);
+
+      expect(actualResult.root).toBe(givenProcessStep);
+      expect(actualResult.hydrogenBottling).toBeUndefined();
+      expect(actualResult.hydrogenProductions).toEqual([givenProcessStep]);
+      expect(actualResult.waterConsumptions).toEqual(givenWaterConsumptions);
+      expect(actualResult.powerProductions).toEqual(givenPowerProductions);
+    });
+
+    it(`returns ProvenanceEntity for ${ProcessType.HYDROGEN_BOTTLING} process type`, async () => {
+      // Arrange
+      const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
+      const givenHydrogenProductions = [ProcessStepEntityFixture.createHydrogenProduction()];
+      const givenWaterConsumptions = [ProcessStepEntityFixture.createWaterConsumption()];
+      const givenPowerProductions = [ProcessStepEntityFixture.createPowerProduction()];
+
+      processStepServiceMock.readProcessStep.mockResolvedValue(givenProcessStep);
+      traversalServiceMock.fetchHydrogenProductionsFromHydrogenBottling.mockResolvedValue(givenHydrogenProductions);
+      traversalServiceMock.fetchWaterConsumptionsFromHydrogenProductions.mockResolvedValue(givenWaterConsumptions);
+      traversalServiceMock.fetchPowerProductionsFromHydrogenProductions.mockResolvedValue(givenPowerProductions);
+
+      // Act
+      const actualResult = await service.buildProvenance(givenProcessStep.id);
+
+      // Assert
+      expect(processStepServiceMock.readProcessStep).toHaveBeenCalledWith(givenProcessStep.id);
+      expect(traversalServiceMock.fetchHydrogenProductionsFromHydrogenBottling).toHaveBeenCalledWith(givenProcessStep);
+      expect(traversalServiceMock.fetchWaterConsumptionsFromHydrogenProductions).toHaveBeenCalledWith(givenHydrogenProductions);
+      expect(traversalServiceMock.fetchPowerProductionsFromHydrogenProductions).toHaveBeenCalledWith(givenHydrogenProductions);
+
+      expect(actualResult.root).toBe(givenProcessStep);
+      expect(actualResult.hydrogenBottling).toBe(givenProcessStep);
+      expect(actualResult.hydrogenProductions).toEqual(givenHydrogenProductions);
+      expect(actualResult.waterConsumptions).toEqual(givenWaterConsumptions);
+      expect(actualResult.powerProductions).toEqual(givenPowerProductions);
+    });
+
+    it(`returns ProvenanceEntity for ${ProcessType.HYDROGEN_TRANSPORTATION} process type`, async () => {
+      // Arrange
+      const givenProcessStep = ProcessStepEntityFixture.createHydrogenTransportation();
+      const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
+      const givenHydrogenProductions = [ProcessStepEntityFixture.createHydrogenProduction()];
+      const givenWaterConsumptions = [ProcessStepEntityFixture.createWaterConsumption()];
+      const givenPowerProductions = [ProcessStepEntityFixture.createPowerProduction()];
+
+      processStepServiceMock.readProcessStep.mockResolvedValue(givenProcessStep);
+      traversalServiceMock.fetchHydrogenBottlingFromHydrogenTransportation.mockResolvedValue(givenHydrogenBottling);
+      traversalServiceMock.fetchHydrogenProductionsFromHydrogenBottling.mockResolvedValue(givenHydrogenProductions);
+      traversalServiceMock.fetchWaterConsumptionsFromHydrogenProductions.mockResolvedValue(givenWaterConsumptions);
+      traversalServiceMock.fetchPowerProductionsFromHydrogenProductions.mockResolvedValue(givenPowerProductions);
+
+      // Act
+      const actualResult = await service.buildProvenance(givenProcessStep.id);
+
+      // Assert
+      expect(processStepServiceMock.readProcessStep).toHaveBeenCalledWith(givenProcessStep.id);
+      expect(traversalServiceMock.fetchHydrogenBottlingFromHydrogenTransportation).toHaveBeenCalledWith(givenProcessStep);
+      expect(traversalServiceMock.fetchHydrogenProductionsFromHydrogenBottling).toHaveBeenCalledWith(givenHydrogenBottling);
+      expect(traversalServiceMock.fetchWaterConsumptionsFromHydrogenProductions).toHaveBeenCalledWith(givenHydrogenProductions);
+      expect(traversalServiceMock.fetchPowerProductionsFromHydrogenProductions).toHaveBeenCalledWith(givenHydrogenProductions);
+
+      expect(actualResult.root).toBe(givenProcessStep);
+      expect(actualResult.hydrogenBottling).toBe(givenHydrogenBottling);
+      expect(actualResult.hydrogenProductions).toEqual(givenHydrogenProductions);
+      expect(actualResult.waterConsumptions).toEqual(givenWaterConsumptions);
+      expect(actualResult.powerProductions).toEqual(givenPowerProductions);
     });
   });
 });
