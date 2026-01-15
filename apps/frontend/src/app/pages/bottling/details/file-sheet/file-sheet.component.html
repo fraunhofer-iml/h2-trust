@@ -1,5 +1,0 @@
-@if (!sanitizedUrl$()) {
-  <app-error-card [message]="ERROR_MESSAGES.fileNotFound"></app-error-card>
-} @else {
-  <iframe [src]="sanitizedUrl$()" class="h-full w-full" type="application/pdf"> </iframe>
-}
