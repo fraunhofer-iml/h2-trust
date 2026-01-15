@@ -28,7 +28,7 @@ export class UnitController {
   constructor(private readonly service: UnitService) {}
 
   @MessagePattern(UnitMessagePatterns.READ)
-  async readHyrogenProductionUnitById(@Payload() payload: ReadByIdPayload): Promise<UnitEntity> {
+  async readUnit(@Payload() payload: ReadByIdPayload): Promise<UnitEntity> {
     return this.service.readUnitById(payload.id);
   }
 

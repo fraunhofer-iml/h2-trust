@@ -6,8 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './unit.type';
-export * from './unit-overview.type';
 export * from './file.type';
 export * from './authenticated-kc-user.type';
 export * from './classification-type.type';
