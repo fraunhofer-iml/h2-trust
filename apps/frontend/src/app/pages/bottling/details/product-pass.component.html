@@ -57,11 +57,13 @@
         <div class="flex max-h-60 flex-col gap-2 overflow-y-auto">
           @for (file of batchQuery.data().attachedFiles; track $index) {
             <div
-              class="flex flex-row items-center gap-2 rounded-lg border-[2px] border-solid border-neutral-100 p-2 hover:cursor-pointer hover:border-neutral-200 hover:border-neutral-200/80"
+              class="flex flex-row items-center gap-4 rounded-lg border-[2px] border-solid border-neutral-100 p-2 hover:cursor-pointer hover:border-neutral-200 hover:border-neutral-200/80"
               (click)="openFile(file.url)"
               role="none"
             >
-              <span class="material-symbols-outlined text-primary-300">attach_file </span>
+              <div class="bg-primary-400 rounded-lg p-2">
+                <span class="material-symbols-outlined p-1 text-white">attach_file </span>
+              </div>
               <span class="text-sm text-neutral-500">{{ file.description }}</span>
             </div>
           }
