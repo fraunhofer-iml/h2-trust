@@ -6,8 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export type UploadFormSelectType = {
-  key: string;
-  value: string;
-  file?: File;
-};
+export enum FileTypes {
+  PDF = 'application/pdf',
+  CSV = '.csv',
+}

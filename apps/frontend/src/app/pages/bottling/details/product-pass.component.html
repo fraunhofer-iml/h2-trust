@@ -60,12 +60,12 @@
         <div class="flex max-h-60 flex-col gap-2 overflow-y-auto">
           @for (file of batchQuery.data().attachedFiles; track $index) {
             <div
-              class="flex flex-row items-center gap-2 rounded-lg border-[2px] border-solid border-neutral-100 bg-neutral-50 p-2 hover:cursor-pointer hover:border-neutral-200 hover:border-neutral-200/80"
-              (click)="selectedUrl = file.url; sheet.open()"
+              class="flex flex-row items-center gap-2 rounded-lg border-[2px] border-solid border-neutral-100 p-2 hover:cursor-pointer hover:border-neutral-200 hover:border-neutral-200/80"
+              (click)="openFile(file.url)"
               role="none"
             >
-              <div class="bg-primary-200/60 flex items-center justify-center rounded-lg p-2">
-                <span class="material-symbols-outlined text-white">attach_file </span>
+              <div class="bg-primary-200/20 flex items-center justify-center rounded-full p-2">
+                <span class="material-symbols-outlined text-primary-100">attach_file </span>
               </div>
               <span class="text-sm text-neutral-500">{{ file.description }}</span>
             </div>
@@ -81,7 +81,3 @@
     </div>
   }
 </div>
-
-<app-base-sheet #sheet>
-  <app-file-sheet [url]="selectedUrl"></app-file-sheet>
-</app-base-sheet>
