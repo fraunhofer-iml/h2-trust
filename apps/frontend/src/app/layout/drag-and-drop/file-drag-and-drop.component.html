@@ -12,5 +12,12 @@
     <span class="group-hover:text-primary-400 font-semibold text-neutral-500">click </span>to upload
   </p>
 
-  <input id="dropzone-file" type="file" class="hidden" #fileInput (change)="onFileSelected($event)" accept=".csv" />
+  <input
+    id="dropzone-file"
+    type="file"
+    class="hidden"
+    #fileInput
+    (change)="onFileSelected($event)"
+    [accept]="acceptedFileTypes()"
+  />
 </div>

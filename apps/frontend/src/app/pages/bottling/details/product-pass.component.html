@@ -57,8 +57,8 @@
         <div class="flex max-h-60 flex-col gap-2 overflow-y-auto">
           @for (file of batchQuery.data().attachedFiles; track $index) {
             <div
-              class="flex flex-row items-center gap-2 rounded-lg border-2 border-neutral-100 p-4 hover:cursor-pointer hover:border-neutral-200 hover:border-neutral-200/80"
-              (click)="selectedUrl = file.url; sheet.open()"
+              class="flex flex-row items-center gap-2 rounded-lg border-[2px] border-solid border-neutral-100 p-2 hover:cursor-pointer hover:border-neutral-200 hover:border-neutral-200/80"
+              (click)="openFile(file.url)"
               role="none"
             >
               <span class="material-symbols-outlined text-primary-300">attach_file </span>
@@ -76,7 +76,3 @@
     ><app-proof-of-sustainability [id]="id()" class="col-span-6 2xl:col-span-3"></app-proof-of-sustainability>
   </div>
 </div>
-
-<app-base-sheet #sheet>
-  <app-file-sheet [url]="selectedUrl"></app-file-sheet>
-</app-base-sheet>
