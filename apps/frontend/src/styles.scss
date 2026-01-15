@@ -56,13 +56,16 @@ body {
       selected-state-background-color: #8686c06e,
     )
   );
-  @include mat.chips-overrides((
-    label-text-color: #252533,
-    disabled-label-text-color: #9b9ba8,
-    elevated-selected-container-color: #e0e0ea,  // selected
-    outline-color: #d3d3dd,
-       hover-state-layer-color: #ececf2,
-  ));
+  @include mat.chips-overrides(
+    (
+      label-text-color: #252533,
+      disabled-label-text-color: #9b9ba8,
+      elevated-selected-container-color: #e0e0ea,
+      // selected
+      outline-color: #d3d3dd,
+      hover-state-layer-color: #ececf2,
+    )
+  );
 }
 
 //--Materials--//

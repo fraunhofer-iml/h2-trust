@@ -17,7 +17,6 @@ import { FileSizePipe } from '../../shared/pipes/file-size.pipe';
 })
 export class FileCardComponent {
   file = input.required<File | null>();
-  showDeleteButton = input<boolean>(false);
 
   deleteEmitter = output<void>();
 }

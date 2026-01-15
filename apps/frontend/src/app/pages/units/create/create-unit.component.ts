@@ -152,7 +152,7 @@ export class CreateUnitComponent {
     const type = this.unitForm.controls.unitType.value;
     if (!type) return;
 
-    let baseDto: UnitCreateDto = {
+    const baseDto: UnitCreateDto = {
       ...this.unitForm.value,
       commissionedOn: this.unitForm.value.commissionedOn,
       unitType: type,
