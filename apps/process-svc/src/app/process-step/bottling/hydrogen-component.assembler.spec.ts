@@ -8,11 +8,7 @@
 
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
-import {
-  BatchEntityFixture,
-  ProcessStepEntityFixture,
-  QualityDetailsEntityFixture,
-} from '@h2-trust/fixtures/entities';
+import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures/entities';
 import { HydrogenComponentAssembler } from './hydrogen-component.assembler';
 
 describe('HydrogenComponentAssembler', () => {
@@ -94,27 +90,24 @@ describe('HydrogenComponentAssembler', () => {
       expect(actualResult.find((c) => c.color === HydrogenColor.YELLOW).amount).toBe(40);
     });
 
-
     it('throws error when process step is undefined', () => {
       // Arrange
       const givenProcessStep = undefined as unknown as ProcessStepEntity;
 
-      const expectedErrorMessage = 'The provided bottling process step is missing (undefined or null).'
+      const expectedErrorMessage = 'The provided bottling process step is missing (undefined or null).';
 
       // Act & Assert
-      expect(() => HydrogenComponentAssembler.assemble(givenProcessStep))
-        .toThrow(expectedErrorMessage);
+      expect(() => HydrogenComponentAssembler.assemble(givenProcessStep)).toThrow(expectedErrorMessage);
     });
 
     it('throws error when process step type is invalid', () => {
       // Arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenProduction();
 
-      const expectedErrorMessage = `ProcessStep ${givenProcessStep.id} should be type ${ProcessType.HYDROGEN_BOTTLING} or ${ProcessType.HYDROGEN_TRANSPORTATION}, but is ${ProcessType.HYDROGEN_PRODUCTION}.`
+      const expectedErrorMessage = `ProcessStep ${givenProcessStep.id} should be type ${ProcessType.HYDROGEN_BOTTLING} or ${ProcessType.HYDROGEN_TRANSPORTATION}, but is ${ProcessType.HYDROGEN_PRODUCTION}.`;
 
       // Act & Assert
-      expect(() => HydrogenComponentAssembler.assemble(givenProcessStep))
-        .toThrow(expectedErrorMessage);
+      expect(() => HydrogenComponentAssembler.assemble(givenProcessStep)).toThrow(expectedErrorMessage);
     });
 
     it('throws error when process step has no predecessors', () => {
@@ -125,11 +118,10 @@ describe('HydrogenComponentAssembler', () => {
         }),
       });
 
-      const expectedErrorMessage = `ProcessStep ${givenProcessStep.id} does not have predecessors.`
+      const expectedErrorMessage = `ProcessStep ${givenProcessStep.id} does not have predecessors.`;
 
       // Act & Assert
-      expect(() => HydrogenComponentAssembler.assemble(givenProcessStep))
-        .toThrow(expectedErrorMessage);
+      expect(() => HydrogenComponentAssembler.assemble(givenProcessStep)).toThrow(expectedErrorMessage);
     });
 
     it('throws BrokerException when predecessor batch type is not HYDROGEN', () => {
@@ -137,17 +129,14 @@ describe('HydrogenComponentAssembler', () => {
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling({
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
-          predecessors: [
-            BatchEntityFixture.createPowerBatch(),
-          ],
+          predecessors: [BatchEntityFixture.createPowerBatch()],
         }),
       });
 
-      const expectedErrorMessage = `Predecessor batch ${givenProcessStep.batch.predecessors[0].id} should be type ${BatchType.HYDROGEN}, but is ${BatchType.POWER}.`
+      const expectedErrorMessage = `Predecessor batch ${givenProcessStep.batch.predecessors[0].id} should be type ${BatchType.HYDROGEN}, but is ${BatchType.POWER}.`;
 
       // Act & Assert
-      expect(() => HydrogenComponentAssembler.assemble(givenProcessStep))
-        .toThrow(expectedErrorMessage);
+      expect(() => HydrogenComponentAssembler.assemble(givenProcessStep)).toThrow(expectedErrorMessage);
     });
   });
 });

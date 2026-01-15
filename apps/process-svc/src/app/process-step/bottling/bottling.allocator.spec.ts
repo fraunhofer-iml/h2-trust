@@ -29,12 +29,14 @@ describe('BottlingAllocator', () => {
           }),
         }),
       ];
-      const givenHydrogenComposition = [
-        HydrogenComponentEntityFixture.createGreen({ amount: 100 })
-      ];
+      const givenHydrogenComposition = [HydrogenComponentEntityFixture.createGreen({ amount: 100 })];
 
       // Act
-      const actualResult = BottlingAllocator.allocate(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
+      const actualResult = BottlingAllocator.allocate(
+        givenProcessSteps,
+        givenHydrogenComposition,
+        givenHydrogenStorageUnitId,
+      );
 
       // Assert
       expect(actualResult.batchesForBottle).toHaveLength(1);
@@ -68,7 +70,11 @@ describe('BottlingAllocator', () => {
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createGreen({ amount: 100 })];
 
       // Act
-      const actualResult = BottlingAllocator.allocate(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
+      const actualResult = BottlingAllocator.allocate(
+        givenProcessSteps,
+        givenHydrogenComposition,
+        givenHydrogenStorageUnitId,
+      );
 
       // Assert
       expect(actualResult.batchesForBottle).toHaveLength(2);
@@ -92,7 +98,11 @@ describe('BottlingAllocator', () => {
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createGreen({ amount: 100 })];
 
       // Act
-      const actualResult = BottlingAllocator.allocate(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
+      const actualResult = BottlingAllocator.allocate(
+        givenProcessSteps,
+        givenHydrogenComposition,
+        givenHydrogenStorageUnitId,
+      );
 
       // Assert
       expect(actualResult.batchesForBottle).toHaveLength(0);
@@ -121,7 +131,11 @@ describe('BottlingAllocator', () => {
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createGreen({ amount: 80 })];
 
       // Act
-      const actualResult = BottlingAllocator.allocate(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
+      const actualResult = BottlingAllocator.allocate(
+        givenProcessSteps,
+        givenHydrogenComposition,
+        givenHydrogenStorageUnitId,
+      );
 
       // Assert
       const consumedStep = actualResult.consumedSplitProcessSteps[0];
@@ -162,7 +176,11 @@ describe('BottlingAllocator', () => {
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createGreen({ amount: 100 })];
 
       // Act
-      const actualResult = BottlingAllocator.allocate(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
+      const actualResult = BottlingAllocator.allocate(
+        givenProcessSteps,
+        givenHydrogenComposition,
+        givenHydrogenStorageUnitId,
+      );
 
       // Assert
       expect(actualResult.batchesForBottle).toHaveLength(1);
@@ -185,8 +203,9 @@ describe('BottlingAllocator', () => {
       const expectedErrorMessage = `There is not enough hydrogen in storage unit ${givenHydrogenStorageUnitId} for the requested amount of 100 of quality ${HydrogenColor.GREEN}.`;
 
       // Act & Assert
-      expect(() => BottlingAllocator.allocate(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId))
-        .toThrow(expectedErrorMessage);
+      expect(() =>
+        BottlingAllocator.allocate(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId),
+      ).toThrow(expectedErrorMessage);
     });
 
     it('returns empty results when hydrogen composition is empty', () => {
@@ -203,7 +222,11 @@ describe('BottlingAllocator', () => {
       const givenHydrogenComposition: HydrogenComponentEntity[] = [];
 
       // Act
-      const actualResult = BottlingAllocator.allocate(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
+      const actualResult = BottlingAllocator.allocate(
+        givenProcessSteps,
+        givenHydrogenComposition,
+        givenHydrogenStorageUnitId,
+      );
 
       // Assert
       expect(actualResult.batchesForBottle).toHaveLength(0);

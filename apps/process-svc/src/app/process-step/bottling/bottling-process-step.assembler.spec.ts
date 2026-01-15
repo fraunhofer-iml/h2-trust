@@ -55,8 +55,14 @@ describe('BottlingProcessStepAssembler', () => {
         HydrogenColor.GREEN,
       );
       const givenBatchesForBottle = [
-        BatchEntityFixture.createHydrogenBatch({ id: 'batch-1', qualityDetails: QualityDetailsEntityFixture.createGreen() }),
-        BatchEntityFixture.createHydrogenBatch({ id: 'batch-2', qualityDetails: QualityDetailsEntityFixture.createGreen() }),
+        BatchEntityFixture.createHydrogenBatch({
+          id: 'batch-1',
+          qualityDetails: QualityDetailsEntityFixture.createGreen(),
+        }),
+        BatchEntityFixture.createHydrogenBatch({
+          id: 'batch-2',
+          qualityDetails: QualityDetailsEntityFixture.createGreen(),
+        }),
       ];
 
       // Act
@@ -80,8 +86,14 @@ describe('BottlingProcessStepAssembler', () => {
         HydrogenColor.YELLOW,
       );
       const givenBatchesForBottle = [
-        BatchEntityFixture.createHydrogenBatch({ id: 'batch-1', qualityDetails: QualityDetailsEntityFixture.createYellow() }),
-        BatchEntityFixture.createHydrogenBatch({ id: 'batch-2', qualityDetails: QualityDetailsEntityFixture.createYellow() }),
+        BatchEntityFixture.createHydrogenBatch({
+          id: 'batch-1',
+          qualityDetails: QualityDetailsEntityFixture.createYellow(),
+        }),
+        BatchEntityFixture.createHydrogenBatch({
+          id: 'batch-2',
+          qualityDetails: QualityDetailsEntityFixture.createYellow(),
+        }),
       ];
 
       // Act
@@ -101,8 +113,14 @@ describe('BottlingProcessStepAssembler', () => {
         HydrogenColor.GREEN,
       );
       const givenBatchesForBottle = [
-        BatchEntityFixture.createHydrogenBatch({ id: 'batch-1', qualityDetails: QualityDetailsEntityFixture.createGreen() }),
-        BatchEntityFixture.createHydrogenBatch({ id: 'batch-2', qualityDetails: QualityDetailsEntityFixture.createYellow() }),
+        BatchEntityFixture.createHydrogenBatch({
+          id: 'batch-1',
+          qualityDetails: QualityDetailsEntityFixture.createGreen(),
+        }),
+        BatchEntityFixture.createHydrogenBatch({
+          id: 'batch-2',
+          qualityDetails: QualityDetailsEntityFixture.createYellow(),
+        }),
       ];
 
       // Act
@@ -111,7 +129,6 @@ describe('BottlingProcessStepAssembler', () => {
       // Assert
       expect(actualResult.batch.qualityDetails.color).toBe(HydrogenColor.MIX);
     });
-
 
     it('throws exception when no predecessor batches provided', () => {
       // Arrange
@@ -128,8 +145,9 @@ describe('BottlingProcessStepAssembler', () => {
       const expectedErrorMessage = 'No predecessor colors specified';
 
       // Act & Assert
-      expect(() => BottlingProcessStepAssembler.assemble(givenPayload, givenBatchesForBottle))
-        .toThrow(expectedErrorMessage);
+      expect(() => BottlingProcessStepAssembler.assemble(givenPayload, givenBatchesForBottle)).toThrow(
+        expectedErrorMessage,
+      );
     });
   });
 });

@@ -6,16 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
 import { of } from 'rxjs';
+import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, CreateHydrogenBottlingPayload } from '@h2-trust/amqp';
 import { DocumentRepository } from '@h2-trust/database';
 import { HydrogenColor, ProcessType } from '@h2-trust/domain';
-import {
-  BatchEntityFixture,
-  ProcessStepEntityFixture,
-  QualityDetailsEntityFixture,
-} from '@h2-trust/fixtures/entities';
+import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures/entities';
 import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step.service';
 import { BottlingService } from './bottling.service';
@@ -102,7 +98,9 @@ describe('BottlingService', () => {
       const actualResult = await service.createHydrogenBottlingProcessStep(givenPayload);
 
       // Assert
-      expect(processStepServiceMock.readAllProcessStepsFromStorageUnit).toHaveBeenCalledWith(givenPayload.hydrogenStorageUnitId);
+      expect(processStepServiceMock.readAllProcessStepsFromStorageUnit).toHaveBeenCalledWith(
+        givenPayload.hydrogenStorageUnitId,
+      );
       expect(processStepServiceMock.setBatchesInactive).toHaveBeenCalled();
       expect(processStepServiceMock.createProcessStep).toHaveBeenCalled();
       expect(actualResult.id).toBe(givenCreatedBottlingProcessStep.id);
@@ -163,8 +161,7 @@ describe('BottlingService', () => {
       const expectedErrorMessage = `No process steps found in storage unit ${givenPayload.hydrogenStorageUnitId}`;
 
       // Act & Assert
-      await expect(service.createHydrogenBottlingProcessStep(givenPayload))
-        .rejects.toThrow(expectedErrorMessage);
+      await expect(service.createHydrogenBottlingProcessStep(givenPayload)).rejects.toThrow(expectedErrorMessage);
     });
 
     it('uploads files when provided in payload', async () => {
@@ -201,7 +198,11 @@ describe('BottlingService', () => {
       await service.createHydrogenBottlingProcessStep(givenPayload);
 
       // Assert
-      expect(storageServiceMock.uploadFileWithDeepPath).toHaveBeenCalledWith(givenFile, 'process-step', givenCreatedBottlingProcessStep.id);
+      expect(storageServiceMock.uploadFileWithDeepPath).toHaveBeenCalledWith(
+        givenFile,
+        'process-step',
+        givenCreatedBottlingProcessStep.id,
+      );
       expect(documentRepositoryMock.addDocumentToProcessStep).toHaveBeenCalledWith(
         { description: givenPayload.fileDescription, location: givenFile.originalname },
         givenCreatedBottlingProcessStep.id,
@@ -300,8 +301,9 @@ describe('BottlingService', () => {
       const expectedErrorMessage = `Predecessor process step ${givenPredecessorProcessStep.id} is not of type ${ProcessType.HYDROGEN_BOTTLING}`;
 
       // Act & Assert
-      await expect(service.calculateHydrogenComposition(givenTransportationProcessStep))
-        .rejects.toThrow(expectedErrorMessage);
+      await expect(service.calculateHydrogenComposition(givenTransportationProcessStep)).rejects.toThrow(
+        expectedErrorMessage,
+      );
     });
   });
 });
