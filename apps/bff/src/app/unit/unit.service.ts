@@ -31,10 +31,8 @@ export class UnitService {
   ) {}
 
   async readPowerProductionUnit(id: string): Promise<PowerProductionUnitDto> {
-    return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, new ReadByIdPayload(id))).then(
-      PowerProductionUnitDto.fromEntity,
-    );
-    return UnitService.mapEntityToDto(unit);
+    const unit = await firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, new ReadByIdPayload(id)));
+    return PowerProductionUnitDto.fromEntity(unit);
   }
 
   async readHydrogenProductionUnit(id: string): Promise<HydrogenProductionUnitDto> {
