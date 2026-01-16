@@ -7,15 +7,15 @@
  */
 
 import { TransportationDetailsDbType } from '@h2-trust/database';
-import { FuelType } from '@h2-trust/domain';
+import { FuelType, TransportMode } from '@h2-trust/domain';
 
 export class TransportationDetailsEntity {
   id: string;
   distance: number;
-  transportMode: string;
+  transportMode: TransportMode;
   fuelType: FuelType | null;
 
-  constructor(id: string, distance: number, transportMode: string, fuelType: FuelType | null) {
+  constructor(id: string, distance: number, transportMode: TransportMode, fuelType: FuelType | null) {
     this.id = id;
     this.distance = distance;
     this.transportMode = transportMode;
@@ -29,7 +29,7 @@ export class TransportationDetailsEntity {
     return new TransportationDetailsEntity(
       transportationDetails.id,
       transportationDetails.distance.toNumber() ?? 0,
-      transportationDetails.transportMode,
+      transportationDetails.transportMode as TransportMode,
       validFuelType,
     );
   }

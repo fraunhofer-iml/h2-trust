@@ -19,17 +19,16 @@ import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    ConfigurationModule,
-    UserModule,
-    UnitModule,
+    BottlingModule,
     CompanyModule,
     PowerAccessApprovalModule,
+    ProductionModule,
+    UnitModule,
+    UserModule,
     KeycloakConnectModule.registerAsync({
       useExisting: KeycloakConfigurationService,
       imports: [ConfigurationModule],
     }),
-    BottlingModule,
-    ProductionModule,
   ],
   controllers: [],
   providers: [{ provide: APP_GUARD, useClass: AuthGuard }],

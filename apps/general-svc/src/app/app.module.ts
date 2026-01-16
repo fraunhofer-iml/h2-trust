@@ -14,7 +14,7 @@ import { UnitModule } from './unit/unit.module';
 import { UserModule } from './user/user.module';
 
 @Module({
-  imports: [ConfigurationModule, UserModule, UnitModule, PowerAccessApprovalModule, CompanyModule],
+  imports: [ConfigurationModule, CompanyModule, PowerAccessApprovalModule, UnitModule, UserModule],
   controllers: [],
   providers: [],
 })

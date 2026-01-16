@@ -54,7 +54,6 @@ format:
 include:
   - 'apps/bff/.gitlab-ci.yml'
   - 'apps/general-svc/.gitlab-ci.yml'
-  - 'apps/batch-svc/.gitlab-ci.yml'
   - 'apps/process-svc/.gitlab-ci.yml'
   - 'apps/frontend/.gitlab-ci.yml'
   - 'libs/.gitlab-ci.yml'
@@ -74,7 +73,6 @@ all:deploy-staging:
     - git config --global user.name "GitLab CI/CD"
   script:
     - cd pipeline/kustomize/core/overlays/dev
-    - kustomize edit set image ${CRI_PATH}/batch-svc:$CI_COMMIT_TAG
     - kustomize edit set image ${CRI_PATH}/bff:$CI_COMMIT_TAG
     - kustomize edit set image ${CRI_PATH}/frontend:$CI_COMMIT_TAG
     - kustomize edit set image ${CRI_PATH}/general-svc:$CI_COMMIT_TAG
@@ -102,7 +100,6 @@ all:deploy-production:
     - git config --global user.name "GitLab CI/CD"
   script:
     - cd pipeline/kustomize/core/overlays/prod
-    - kustomize edit set image ${CRI_PATH}/batch-svc:$CI_COMMIT_TAG
     - kustomize edit set image ${CRI_PATH}/bff:$CI_COMMIT_TAG
     - kustomize edit set image ${CRI_PATH}/frontend:$CI_COMMIT_TAG
     - kustomize edit set image ${CRI_PATH}/general-svc:$CI_COMMIT_TAG

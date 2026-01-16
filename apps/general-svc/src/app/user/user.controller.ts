@@ -7,7 +7,7 @@
  */
 
 import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { MessagePattern } from '@nestjs/microservices';
 import { ReadByIdPayload, UserEntity, UserMessagePatterns } from '@h2-trust/amqp';
 import { UserService } from './user.service';
 
@@ -16,7 +16,7 @@ export class UserController {
   constructor(private readonly service: UserService) {}
 
   @MessagePattern(UserMessagePatterns.READ)
-  async readUserWithCompany(@Payload() payload: ReadByIdPayload): Promise<UserEntity> {
+  async readUserWithCompany(payload: ReadByIdPayload): Promise<UserEntity> {
     return this.service.readUserWithCompany(payload);
   }
 }

@@ -19,9 +19,6 @@ jobs:
       - name: Common Setup
         uses: ./.github/actions/common-setup
 
-      - name: Run Tests for batch-svc
-        run: npx nx run batch-svc:test
-
       - name: Run Tests for bff
         run: npx nx run bff:test
 
