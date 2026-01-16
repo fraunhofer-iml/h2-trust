@@ -10,6 +10,7 @@ import { PowerProductionUnitEntity } from '@h2-trust/amqp';
 import { BiddingZone, GridLevel, UnitType } from '@h2-trust/domain';
 import { AddressEntityFixture } from './address.entity.fixture';
 import { CompanyEntityFixture } from './company.entity.fixture';
+import { PowerProductionTypeEntityFixture } from './power-production-type.entity.fixture';
 
 export const PowerProductionUnitEntityFixture = {
   create: (overrides: Partial<PowerProductionUnitEntity> = {}): PowerProductionUnitEntity =>
@@ -35,6 +36,6 @@ export const PowerProductionUnitEntityFixture = {
       biddingZone: overrides.biddingZone ?? BiddingZone.DE_LU,
       gridConnectionNumber: overrides.gridConnectionNumber ?? 'GRID-001',
       financialSupportReceived: overrides.financialSupportReceived ?? false,
-      type: overrides.type ?? undefined,
+      type: overrides.type ?? PowerProductionTypeEntityFixture.createSolarEnergy(),
     }) as PowerProductionUnitEntity,
 } as const;

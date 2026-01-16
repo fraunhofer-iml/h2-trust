@@ -13,6 +13,7 @@ export * from './document.entity.fixture';
 export * from './general-information.entity.fixture';
 export * from './hydrogen-component.entity.fixture';
 export * from './hydrogen-production-unit.entity.fixture';
+export * from './power-production-type.entity.fixture';
 export * from './power-production-unit.entity.fixture';
 export * from './process-step.entity.fixture';
 export * from './proof-of-origin-batch.entity.fixture';
