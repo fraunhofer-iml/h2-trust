@@ -14,7 +14,9 @@ import {
   ProvenanceEntity,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
+import { CalculationTopic, EnergySource, POWER_EMISSION_FACTORS, UNIT_G_CO2_PER_KG_H2 } from '@h2-trust/domain';
 import {
+  BatchEntityFixture,
   PowerProductionTypeEntityFixture,
   PowerProductionUnitEntityFixture,
   ProcessStepEntityFixture,
@@ -141,7 +143,8 @@ describe('EmissionService', () => {
       const expectedErrorMessage = 'Provenance is undefined.';
 
       // Act & Assert
-      await expect(service.computeProvenanceEmissions(givenProvenance)).rejects.toThrow(expectedErrorMessage);
+      await expect(service.computeProvenanceEmissions(givenProvenance))
+        .rejects.toThrow(expectedErrorMessage);
     });
 
     it('throws error when provenance is missing hydrogen bottling', async () => {
@@ -152,7 +155,8 @@ describe('EmissionService', () => {
       const expectedErrorMessage = 'Provenance is missing hydrogen bottling process step.';
 
       // Act & Assert
-      await expect(service.computeProvenanceEmissions(givenProvenance)).rejects.toThrow(expectedErrorMessage);
+      await expect(service.computeProvenanceEmissions(givenProvenance))
+        .rejects.toThrow(expectedErrorMessage);
     });
   });
 
@@ -169,70 +173,135 @@ describe('EmissionService', () => {
       expect(actualResult).toEqual([]);
     });
 
-    it('computes emissions for single power production', async () => {
+    it('computes emissions for single power production with solar energy', async () => {
       // Arrange
-      const givenUnit = PowerProductionUnitEntityFixture.create();
-      const givenProcessStep = ProcessStepEntityFixture.createPowerProduction();
+      const givenUnit = PowerProductionUnitEntityFixture.create({
+        type: PowerProductionTypeEntityFixture.createSolarEnergy(),
+      });
+      const givenProcessStep = ProcessStepEntityFixture.createPowerProduction({
+        executedBy: givenUnit,
+        batch: BatchEntityFixture.createPowerBatch({ amount: 500 }),
+      });
       const givenHydrogenAmount = 100;
 
       generalSvcMock.send.mockReturnValue(of([givenUnit]));
+
+      const expectedEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.SOLAR_ENERGY];
+      const expectedResult = (givenProcessStep.batch.amount * expectedEmissionFactor.emissionFactor) / givenHydrogenAmount;
 
       // Act
       const actualResult = await service.computePowerSupplyEmissions([givenProcessStep], givenHydrogenAmount);
 
       // Assert
       expect(actualResult).toHaveLength(1);
+      expect(actualResult[0].name).toEqual(expectedEmissionFactor.label);
+      expect(actualResult[0].result).toEqual(expectedResult);
+      expect(actualResult[0].unit).toEqual(UNIT_G_CO2_PER_KG_H2);
+      expect(actualResult[0].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
+
       expect(generalSvcMock.send).toHaveBeenCalledWith(
         UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS_BY_IDS,
         expect.objectContaining({ ids: [givenProcessStep.executedBy.id] }),
       );
     });
 
-    it('computes emissions for multiple power productions with different units', async () => {
+    it('computes emissions for multiple power productions with different energy sources', async () => {
       // Arrange
-      const givenUnit1 = PowerProductionUnitEntityFixture.create({
-        type: PowerProductionTypeEntityFixture.createSolarEnergy(),
-      });
-      const givenUnit2 = PowerProductionUnitEntityFixture.create({
-        type: PowerProductionTypeEntityFixture.createWindEnergy(),
-      });
-      const givenProcessStep1 = ProcessStepEntityFixture.createPowerProduction({
-        executedBy: givenUnit1
-      });
-      const givenProcessStep2 = ProcessStepEntityFixture.createPowerProduction({
-        executedBy: givenUnit2
-      });
       const givenHydrogenAmount = 100;
 
-      generalSvcMock.send.mockReturnValue(of([givenUnit1, givenUnit2]));
+      const givenSolarUnit = PowerProductionUnitEntityFixture.create({
+        id: 'solar-unit',
+        type: PowerProductionTypeEntityFixture.createSolarEnergy(),
+      });
+      const givenGridUnit = PowerProductionUnitEntityFixture.create({
+        id: 'grid-unit',
+        type: PowerProductionTypeEntityFixture.createGrid(),
+      });
 
+      const givenSolarProcessStep = ProcessStepEntityFixture.createPowerProduction({
+        executedBy: givenSolarUnit,
+        batch: BatchEntityFixture.createPowerBatch({ amount: 300 }),
+      });
+      const givenGridProcessStep = ProcessStepEntityFixture.createPowerProduction({
+        executedBy: givenGridUnit,
+        batch: BatchEntityFixture.createPowerBatch({ amount: 200 }),
+      });
+
+      generalSvcMock.send.mockReturnValue(of([givenSolarUnit, givenGridUnit]));
+
+      const expectedSolarEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.SOLAR_ENERGY];
+      const expectedSolarResult = (givenSolarProcessStep.batch.amount * expectedSolarEmissionFactor.emissionFactor) / givenHydrogenAmount;
+
+      const expectedGridEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID];
+      const expectedGridResult = (givenGridProcessStep.batch.amount * expectedGridEmissionFactor.emissionFactor) / givenHydrogenAmount;
       // Act
-      const actualResult = await service.computePowerSupplyEmissions([givenProcessStep1, givenProcessStep2], givenHydrogenAmount);
+      const actualResult = await service.computePowerSupplyEmissions(
+        [givenSolarProcessStep, givenGridProcessStep],
+        givenHydrogenAmount,
+      );
 
       // Assert
       expect(actualResult).toHaveLength(2);
+
+      expect(actualResult[0].name).toEqual(expectedSolarEmissionFactor.label);
+      expect(actualResult[0].result).toEqual(expectedSolarResult);
+      expect(actualResult[0].unit).toEqual(UNIT_G_CO2_PER_KG_H2);
+      expect(actualResult[0].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
+
+      expect(actualResult[1].name).toEqual(expectedGridEmissionFactor.label);
+      expect(actualResult[1].result).toEqual(expectedGridResult);
+      expect(actualResult[1].unit).toEqual(UNIT_G_CO2_PER_KG_H2);
+      expect(actualResult[1].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
+
+
+      expect(generalSvcMock.send).toHaveBeenCalledWith(
+        UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS_BY_IDS,
+        expect.objectContaining({ ids: [givenSolarProcessStep.executedBy.id, givenGridProcessStep.executedBy.id] }),
+      );
     });
 
     it('deduplicates unit IDs when same unit is used multiple times', async () => {
       // Arrange
+      const givenHydrogenAmount = 100;
+
       const givenUnit = PowerProductionUnitEntityFixture.create({
         type: PowerProductionTypeEntityFixture.createGrid(),
       });
-      const givenPowerProduction1 = ProcessStepEntityFixture.createPowerProduction({
-        executedBy: givenUnit
+      const givenProcessStep1 = ProcessStepEntityFixture.createPowerProduction({
+        executedBy: givenUnit,
+        batch: BatchEntityFixture.createPowerBatch({ amount: 300 }),
       });
-      const givenPowerProduction2 = ProcessStepEntityFixture.createPowerProduction({
-        executedBy: givenUnit
+      const givenProcessStep2 = ProcessStepEntityFixture.createPowerProduction({
+        executedBy: givenUnit,
+        batch: BatchEntityFixture.createPowerBatch({ amount: 200 }),
       });
-      const givenHydrogenAmount = 100;
 
       generalSvcMock.send.mockReturnValue(of([givenUnit]));
 
+      const expectedEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID];
+      const expectedResult1 = (givenProcessStep1.batch.amount * expectedEmissionFactor.emissionFactor) / givenHydrogenAmount;
+      const expectedResult2 = (givenProcessStep2.batch.amount * expectedEmissionFactor.emissionFactor) / givenHydrogenAmount;
+
       // Act
-      const actualResult = await service.computePowerSupplyEmissions([givenPowerProduction1, givenPowerProduction2], givenHydrogenAmount);
+      const actualResult = await service.computePowerSupplyEmissions(
+        [givenProcessStep1, givenProcessStep2],
+        givenHydrogenAmount,
+      );
 
       // Assert
       expect(actualResult).toHaveLength(2);
+
+      expect(actualResult[0].name).toEqual(expectedEmissionFactor.label);
+      expect(actualResult[0].result).toEqual(expectedResult1);
+      expect(actualResult[0].unit).toEqual(UNIT_G_CO2_PER_KG_H2);
+      expect(actualResult[0].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
+
+
+      expect(actualResult[1].name).toEqual(expectedEmissionFactor.label);
+      expect(actualResult[1].result).toEqual(expectedResult2);
+      expect(actualResult[1].unit).toEqual(UNIT_G_CO2_PER_KG_H2);
+      expect(actualResult[1].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
+
       expect(generalSvcMock.send).toHaveBeenCalledWith(
         UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS_BY_IDS,
         expect.objectContaining({ ids: [givenUnit.id] }),
