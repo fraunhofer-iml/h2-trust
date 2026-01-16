@@ -8,12 +8,7 @@
 
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  BrokerQueues,
-  ProcessStepEntity,
-  ProvenanceEntity,
-  UnitMessagePatterns,
-} from '@h2-trust/amqp';
+import { BrokerQueues, ProcessStepEntity, ProvenanceEntity, UnitMessagePatterns } from '@h2-trust/amqp';
 import { CalculationTopic, EnergySource, POWER_EMISSION_FACTORS, UNIT_G_CO2_PER_KG_H2 } from '@h2-trust/domain';
 import {
   BatchEntityFixture,
@@ -48,10 +43,7 @@ describe('EmissionService', () => {
     it('computes emissions for provenance with hydrogen bottling only', async () => {
       // Arrange
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
-      const givenProvenance = new ProvenanceEntity(
-        givenHydrogenBottling,
-        givenHydrogenBottling
-      );
+      const givenProvenance = new ProvenanceEntity(givenHydrogenBottling, givenHydrogenBottling);
 
       // Act
       const actualResult = await service.computeProvenanceEmissions(givenProvenance);
@@ -66,11 +58,9 @@ describe('EmissionService', () => {
       // Arrange
       const givenWaterConsumption = ProcessStepEntityFixture.createWaterConsumption();
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
-      const givenProvenance = new ProvenanceEntity(
-        givenHydrogenBottling,
-        givenHydrogenBottling,
-        undefined,
-        [givenWaterConsumption]);
+      const givenProvenance = new ProvenanceEntity(givenHydrogenBottling, givenHydrogenBottling, undefined, [
+        givenWaterConsumption,
+      ]);
 
       // Act
       const actualResult = await service.computeProvenanceEmissions(givenProvenance);
@@ -84,11 +74,9 @@ describe('EmissionService', () => {
       // Arrange
       const givenHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction();
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
-      const givenProvenance = new ProvenanceEntity(
-        givenHydrogenBottling,
-        givenHydrogenBottling,
-        [givenHydrogenProduction]
-      );
+      const givenProvenance = new ProvenanceEntity(givenHydrogenBottling, givenHydrogenBottling, [
+        givenHydrogenProduction,
+      ]);
 
       // Act
       const actualResult = await service.computeProvenanceEmissions(givenProvenance);
@@ -104,10 +92,7 @@ describe('EmissionService', () => {
       const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation({
         transportationDetails: TransportationDetailsEntityFixture.createPipeline(),
       });
-      const givenProvenance = new ProvenanceEntity(
-        givenHydrogenTransportation,
-        givenHydrogenBottling
-      );
+      const givenProvenance = new ProvenanceEntity(givenHydrogenTransportation, givenHydrogenBottling);
 
       // Act
       const actualResult = await service.computeProvenanceEmissions(givenProvenance);
@@ -123,10 +108,7 @@ describe('EmissionService', () => {
       const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation({
         transportationDetails: TransportationDetailsEntityFixture.createTrailer(),
       });
-      const givenProvenance = new ProvenanceEntity(
-        givenHydrogenTransportation,
-        givenHydrogenBottling
-      );
+      const givenProvenance = new ProvenanceEntity(givenHydrogenTransportation, givenHydrogenBottling);
 
       // Act
       const actualResult = await service.computeProvenanceEmissions(givenProvenance);
@@ -143,8 +125,7 @@ describe('EmissionService', () => {
       const expectedErrorMessage = 'Provenance is undefined.';
 
       // Act & Assert
-      await expect(service.computeProvenanceEmissions(givenProvenance))
-        .rejects.toThrow(expectedErrorMessage);
+      await expect(service.computeProvenanceEmissions(givenProvenance)).rejects.toThrow(expectedErrorMessage);
     });
 
     it('throws error when provenance is missing hydrogen bottling', async () => {
@@ -155,8 +136,7 @@ describe('EmissionService', () => {
       const expectedErrorMessage = 'Provenance is missing hydrogen bottling process step.';
 
       // Act & Assert
-      await expect(service.computeProvenanceEmissions(givenProvenance))
-        .rejects.toThrow(expectedErrorMessage);
+      await expect(service.computeProvenanceEmissions(givenProvenance)).rejects.toThrow(expectedErrorMessage);
     });
   });
 
@@ -187,7 +167,8 @@ describe('EmissionService', () => {
       generalSvcMock.send.mockReturnValue(of([givenUnit]));
 
       const expectedEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.SOLAR_ENERGY];
-      const expectedResult = (givenProcessStep.batch.amount * expectedEmissionFactor.emissionFactor) / givenHydrogenAmount;
+      const expectedResult =
+        (givenProcessStep.batch.amount * expectedEmissionFactor.emissionFactor) / givenHydrogenAmount;
 
       // Act
       const actualResult = await service.computePowerSupplyEmissions([givenProcessStep], givenHydrogenAmount);
@@ -230,10 +211,12 @@ describe('EmissionService', () => {
       generalSvcMock.send.mockReturnValue(of([givenSolarUnit, givenGridUnit]));
 
       const expectedSolarEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.SOLAR_ENERGY];
-      const expectedSolarResult = (givenSolarProcessStep.batch.amount * expectedSolarEmissionFactor.emissionFactor) / givenHydrogenAmount;
+      const expectedSolarResult =
+        (givenSolarProcessStep.batch.amount * expectedSolarEmissionFactor.emissionFactor) / givenHydrogenAmount;
 
       const expectedGridEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID];
-      const expectedGridResult = (givenGridProcessStep.batch.amount * expectedGridEmissionFactor.emissionFactor) / givenHydrogenAmount;
+      const expectedGridResult =
+        (givenGridProcessStep.batch.amount * expectedGridEmissionFactor.emissionFactor) / givenHydrogenAmount;
       // Act
       const actualResult = await service.computePowerSupplyEmissions(
         [givenSolarProcessStep, givenGridProcessStep],
@@ -252,7 +235,6 @@ describe('EmissionService', () => {
       expect(actualResult[1].result).toEqual(expectedGridResult);
       expect(actualResult[1].unit).toEqual(UNIT_G_CO2_PER_KG_H2);
       expect(actualResult[1].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
-
 
       expect(generalSvcMock.send).toHaveBeenCalledWith(
         UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS_BY_IDS,
@@ -279,8 +261,10 @@ describe('EmissionService', () => {
       generalSvcMock.send.mockReturnValue(of([givenUnit]));
 
       const expectedEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID];
-      const expectedResult1 = (givenProcessStep1.batch.amount * expectedEmissionFactor.emissionFactor) / givenHydrogenAmount;
-      const expectedResult2 = (givenProcessStep2.batch.amount * expectedEmissionFactor.emissionFactor) / givenHydrogenAmount;
+      const expectedResult1 =
+        (givenProcessStep1.batch.amount * expectedEmissionFactor.emissionFactor) / givenHydrogenAmount;
+      const expectedResult2 =
+        (givenProcessStep2.batch.amount * expectedEmissionFactor.emissionFactor) / givenHydrogenAmount;
 
       // Act
       const actualResult = await service.computePowerSupplyEmissions(
@@ -295,7 +279,6 @@ describe('EmissionService', () => {
       expect(actualResult[0].result).toEqual(expectedResult1);
       expect(actualResult[0].unit).toEqual(UNIT_G_CO2_PER_KG_H2);
       expect(actualResult[0].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
-
 
       expect(actualResult[1].name).toEqual(expectedEmissionFactor.label);
       expect(actualResult[1].result).toEqual(expectedResult2);
@@ -318,8 +301,9 @@ describe('EmissionService', () => {
       const expectedErrorMessage = `PowerProductionUnit [${givenPowerProduction.executedBy.id}] not found.`;
 
       // Act & Assert
-      await expect(service.computePowerSupplyEmissions([givenPowerProduction], givenHydrogenAmount))
-        .rejects.toThrow(expectedErrorMessage);
+      await expect(service.computePowerSupplyEmissions([givenPowerProduction], givenHydrogenAmount)).rejects.toThrow(
+        expectedErrorMessage,
+      );
     });
   });
 });
