@@ -15,7 +15,6 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
   {
     id: 'hydrogen-batch-1',
     amount: 300,
-    amountVerified: 300,
     unit: MeasurementUnit.HYDROGEN,
     color: HydrogenColor.GREEN,
     createdAt: new Date(),
@@ -33,7 +32,6 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
   {
     id: 'hydrogen-batch-2',
     amount: 300,
-    amountVerified: 300,
     unit: MeasurementUnit.HYDROGEN,
     color: HydrogenColor.GREEN,
     createdAt: new Date(),
@@ -51,7 +49,6 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
   {
     id: 'hydrogen-batch-3',
     amount: 300,
-    amountVerified: 300,
     unit: MeasurementUnit.HYDROGEN,
     color: HydrogenColor.YELLOW,
     createdAt: new Date(),
@@ -69,7 +66,6 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
   {
     id: 'hydrogen-batch-4',
     amount: 600,
-    amountVerified: 300,
     unit: MeasurementUnit.HYDROGEN,
     color: HydrogenColor.MIX,
     createdAt: new Date(),

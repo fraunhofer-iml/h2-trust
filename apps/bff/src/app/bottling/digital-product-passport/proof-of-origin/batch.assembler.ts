@@ -22,7 +22,6 @@ export class BatchAssembler {
       powerProduction.startedAt,
       powerProduction.batch.amount,
       MeasurementUnit.POWER,
-      null, // TBA
       powerProduction.batch.owner.name,
       powerProduction.executedBy.id,
       energySource as EnergySource,
@@ -48,7 +47,6 @@ export class BatchAssembler {
       hydrogenStorage.startedAt,
       hydrogenStorage.batch.amount,
       MeasurementUnit.HYDROGEN,
-      null, // TBA
       hydrogenStorage.batch.owner.name,
       hydrogenStorage.executedBy.id,
       null, //TBA
@@ -78,7 +76,6 @@ export class BatchAssembler {
       hydrogenBottling.batch.amount,
       MeasurementUnit.HYDROGEN,
       null, // TBA
-      null,
       hydrogenBottling.executedBy.id,
       null, // TBA
       null,
@@ -102,7 +99,6 @@ export class BatchAssembler {
       hydrogenTransportation.batch.amount,
       MeasurementUnit.HYDROGEN,
       null, // TBA
-      null,
       hydrogenTransportation.executedBy.id,
       null, // TBA
       null,
