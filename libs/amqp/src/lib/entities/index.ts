@@ -17,3 +17,5 @@ export * from './address';
 export * from './production';
 export * from './power-access-approval';
 export * from './csv-import';
+export * from './compliance';
+export * from './digital-product-passport';

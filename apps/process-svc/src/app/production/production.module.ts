@@ -10,15 +10,21 @@ import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
 import { ConfigurationModule } from '@h2-trust/configuration';
 import { DatabaseModule } from '@h2-trust/database';
-import { AccountingPeriodMatchingService } from './accounting-period-matching.service';
+import { ProcessStepModule } from '../process-step/process-step.module';
 import { ProductionCreationService } from './production-creation.service';
 import { ProductionImportService } from './production-import.service';
 import { ProductionController } from './production.controller';
-import { ProductionService } from './production.service';
+import { StagedProductionCleanupModule } from './tasks/staged-production-cleanup.module';
 
 @Module({
-  imports: [ConfigurationModule, new Broker().getBatchSvcBroker(), new Broker().getGeneralSvcBroker(), DatabaseModule],
+  imports: [
+    ConfigurationModule,
+    DatabaseModule,
+    ProcessStepModule,
+    StagedProductionCleanupModule,
+    new Broker().getGeneralSvcBroker(),
+  ],
   controllers: [ProductionController],
-  providers: [ProductionService, ProductionCreationService, ProductionImportService, AccountingPeriodMatchingService],
+  providers: [ProductionCreationService, ProductionImportService],
 })
 export class ProductionModule {}

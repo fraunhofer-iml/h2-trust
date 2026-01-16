@@ -2,12 +2,12 @@
 
 # Array of directories to navigate to
 directories=(
-  "apps/batch-svc"
   "apps/bff"
   "apps/bff-e2e"
   "apps/frontend"
   "apps/frontend-e2e"
   "apps/general-svc"
+  "apps/process-svc"
   "libs/amqp"
   "libs/api"
   "libs/blockchain"

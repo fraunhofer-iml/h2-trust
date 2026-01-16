@@ -7,10 +7,9 @@
  */
 
 export * from './company.pattern';
-export * from './production.pattern';
+export * from './digital-product-passport.pattern';
+export * from './power-access-approval.pattern';
 export * from './process-step.pattern';
+export * from './production.pattern';
 export * from './unit.pattern';
 export * from './user.pattern';
-export * from './power-access-approval.pattern';
-export * from './provenance.pattern';
-export * from './sustainability.pattern';
