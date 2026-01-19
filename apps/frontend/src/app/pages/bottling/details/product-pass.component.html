@@ -64,9 +64,12 @@
               (click)="openFile(file.url)"
               role="none"
             >
-              <div class="bg-primary-200/20 flex items-center justify-center rounded-full p-2">
-                <span class="material-symbols-outlined text-primary-100">attach_file </span>
+              <div
+                class="bg-primary-300/20 border-primary-200/20 flex h-10 w-10 items-center justify-center rounded-full border-2"
+              >
+                <span class="material-symbols-outlined text-primary-200"> attach_file </span>
               </div>
+
               <span class="text-sm text-neutral-500">{{ file.description }}</span>
             </div>
           }

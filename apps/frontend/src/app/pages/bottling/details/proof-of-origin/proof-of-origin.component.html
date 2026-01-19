@@ -20,16 +20,18 @@
 
     @for (item of data$().sections; track $index; let sIndex = $index) {
       <div class="flex flex-row items-center gap-2">
-        <div class="bg-primary-200/30 flex h-12 w-12 items-center justify-center rounded-full">
-          <span class="material-symbols-outlined text-white"> arrow_downward </span>
+        <div
+          class="bg-primary-300/20 border-primary-200/20 flex h-12 w-12 items-center justify-center rounded-full border-2"
+        >
+          <span class="material-symbols-outlined text-primary-200"> arrow_downward </span>
         </div>
         <span class="py-2 text-neutral-500">{{ item.name | prettyEnum | titlecase }}</span>
       </div>
-      <div class="my-2 ml-6 flex flex-col border-l-[3px] border-solid border-neutral-200 pl-4">
+      <div class="my-2 ml-6 flex flex-col gap-1 border-l-[3px] border-solid border-neutral-200 pl-4">
         @for (class of item.classifications; track $index; let cIndex = $index) {
           <app-classification
             [classification]="class"
-            class="my-1 cursor-pointer"
+            class="cursor-pointer"
             (click)="setIndex(sIndex, cIndex)"
             role="none"
           ></app-classification>
