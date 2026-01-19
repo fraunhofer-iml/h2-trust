@@ -24,7 +24,7 @@ import { EmissionAssembler } from './emission.assembler';
 
 @Injectable()
 export class EmissionService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) {}
+  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) { }
 
   async computeProvenanceEmissions(provenance: ProvenanceEntity): Promise<ProofOfSustainabilityEntity> {
     if (!provenance) {
@@ -77,7 +77,7 @@ export class EmissionService {
 
   async computePowerSupplyEmissions(
     powerProductions: ProcessStepEntity[],
-    hydrogenAmount: number,
+    bottledKgHydrogen: number,
   ): Promise<ProofOfSustainabilityEmissionCalculationEntity[]> {
     if (!powerProductions.length) {
       return [];
@@ -98,7 +98,8 @@ export class EmissionService {
 
     return powerProductions.map((powerProduction) => {
       const unit = unitsById.get(powerProduction.executedBy.id)!;
-      return EmissionAssembler.assemblePowerSupply(powerProduction, unit.type.energySource, hydrogenAmount);
+      const producedKgHydrogen = powerProduction.batch?.successors[0]?.amount; // Every PowerBatch has exactly one successor: HydrogenProductionBatch
+      return EmissionAssembler.assemblePowerSupply(powerProduction, unit.type.energySource, bottledKgHydrogen, producedKgHydrogen);
     });
   }
 }

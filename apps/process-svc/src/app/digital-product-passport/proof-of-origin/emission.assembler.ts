@@ -26,14 +26,17 @@ import {
   TRAILER_PARAMETERS,
   TrailerParameter,
   TransportMode,
+  UNIT_G_CO2,
   UNIT_G_CO2_PER_KG_H2,
 } from '@h2-trust/domain';
 
+// TODO-MP: check preconditions!
 export class EmissionAssembler {
   static assemblePowerSupply(
     powerProduction: ProcessStepEntity,
     energySource: EnergySource,
-    hydrogenAmount: number,
+    bottledKgHydrogen: number,
+    producedKgHydrogen: number,
   ): ProofOfSustainabilityEmissionCalculationEntity {
     if (powerProduction?.type !== ProcessType.POWER_PRODUCTION) {
       throw new Error(`Invalid process step type [${powerProduction?.type}] for power supply emission calculation`);
@@ -41,19 +44,26 @@ export class EmissionAssembler {
 
     const label = POWER_EMISSION_FACTORS[energySource].label;
 
-    const powerInput = powerProduction.batch.amount;
-    const emissionFactor = POWER_EMISSION_FACTORS[energySource].emissionFactor;
-    const hydrogenOutput = hydrogenAmount;
-    const result = (powerInput * emissionFactor) / hydrogenOutput;
+    const consumedKwhPowerTotal = powerProduction.batch.amount;
+    const consumedKwhPowerTotalInput = `Consumed Power Total: ${consumedKwhPowerTotal} kWh`;
+
+    const bottledKgHydrogenInput = `Bottled Hydrogen: ${bottledKgHydrogen} kg H₂`;
+
+    const producedKgHydrogenInput = `Produced Hydrogen: ${producedKgHydrogen} kg H₂`;
+
+    const consumedKwhPowerShare = consumedKwhPowerTotal * (bottledKgHydrogen / producedKgHydrogen);
+    const consumedKwhPowerShareInput = `Consumed Power Share: ${consumedKwhPowerShare} kWh = Consumed Power Total * (Bottled Hydrogen / Produced Hydrogen)`;
 
     const emissionFactorLabel = EnumLabelMapper.getEnergySource(energySource);
-    const powerInputInput = `Power Input: ${powerInput} kWh`;
+    const emissionFactor = POWER_EMISSION_FACTORS[energySource].emissionFactor;
     const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} g CO₂,eq/kWh`;
-    const hydrogenOutputInput = `Hydrogen Output: ${hydrogenOutput} kg H₂`;
-    const formula = `E = (Power Input * Emission Factor ${emissionFactorLabel}) / Hydrogen Output`;
-    const basisOfCalculation = [powerInputInput, emissionFactorInput, hydrogenOutputInput, formula];
+    const formula = `E = Consumed Power Share * Emission Factor ${emissionFactorLabel}`;
 
-    const unit = UNIT_G_CO2_PER_KG_H2;
+    const result = consumedKwhPowerShare * emissionFactor;
+
+    const basisOfCalculation = [consumedKwhPowerTotalInput, bottledKgHydrogenInput, producedKgHydrogenInput, consumedKwhPowerShareInput, emissionFactorInput, formula];
+
+    const unit = UNIT_G_CO2;
     const calculationTopic = CalculationTopic.POWER_SUPPLY;
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
@@ -398,13 +408,13 @@ export class EmissionAssembler {
 
   static assembleEmissionDto(
     calc: ProofOfSustainabilityEmissionCalculationEntity,
-    hydrogenMassKg: number,
+    kgHydrogen: number,
   ): ProofOfOriginEmissionEntity {
-    const amountCO2PerKgH2 = calc?.result ?? 0;
-    const amountCO2 = amountCO2PerKgH2 * hydrogenMassKg;
+    const gCo2 = calc?.result ?? 0;
+    const gCo2PerKgHydrogen = gCo2 / kgHydrogen;
     return {
-      amountCO2,
-      amountCO2PerKgH2,
+      amountCO2: gCo2,
+      amountCO2PerKgH2: gCo2PerKgHydrogen,
       basisOfCalculation: calc?.basisOfCalculation ?? [],
     };
   }

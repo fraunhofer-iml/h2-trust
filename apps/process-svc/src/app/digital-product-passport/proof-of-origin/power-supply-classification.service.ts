@@ -33,11 +33,11 @@ export class PowerSupplyClassificationService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly emissionService: EmissionService,
-  ) {}
+  ) { }
 
   async buildPowerSupplySubClassifications(
     powerProductions: ProcessStepEntity[],
-    hydrogenAmount: number,
+    bottledKgHydrogen: number,
   ): Promise<ProofOfOriginSubClassificationEntity[]> {
     if (!powerProductions?.length) {
       return [];
@@ -59,11 +59,11 @@ export class PowerSupplyClassificationService {
         const productionPowerBatches: ProofOfOriginBatchEntity[] = await Promise.all(
           powerProductionsWithUnitsByEnergySource.map(async ([powerProduction]) => {
             const [powerSupplyEmission]: ProofOfSustainabilityEmissionCalculationEntity[] =
-              await this.emissionService.computePowerSupplyEmissions([powerProduction], hydrogenAmount);
+              await this.emissionService.computePowerSupplyEmissions([powerProduction], bottledKgHydrogen);
 
             const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionDto(
               powerSupplyEmission,
-              hydrogenAmount,
+              bottledKgHydrogen,
             );
 
             const batch: ProofOfOriginPowerBatchEntity = BatchAssembler.assemblePowerSupply(
