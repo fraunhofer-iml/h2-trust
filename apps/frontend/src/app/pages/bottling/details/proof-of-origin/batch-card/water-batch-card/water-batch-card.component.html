@@ -1,18 +1,12 @@
-<div class="flex cursor-pointer flex-row items-center gap-4" (click)="sheet.open()" role="none">
-  <div class="bg-primary-200/60 flex items-center justify-center rounded-full p-2">
-    <span class="material-symbols-outlined text-white"> water_drop </span>
+<app-proof-of-origin-card [icon]="'water_drop '" (click)="sheet.open()" class="cursor-pointer">
+  <div>
+    <h3 class="text-base">Water Supply</h3>
+    <p class="text-sm text-neutral-500">
+      {{ batch().emission.amountCO2PerKgH2 | unit: FormattedUnits.CO2_PER_KG_H2 }}
+    </p>
   </div>
-
-  <div class="flex w-full flex-col">
-    <div class="flex w-full justify-between text-sm text-neutral-500">
-      <h3 class="text-base">Water Supply</h3>
-      <span class="text-sm text-neutral-500">
-        {{ batch().emission.amountCO2PerKgH2 | unit: FormattedUnits.CO2_PER_KG_H2 }}
-      </span>
-    </div>
-    <app-verified-chart [amount]="batch().amount" [unit]="batch().unit"></app-verified-chart>
-  </div>
-</div>
+  <span>{{ batch().amount | unit: batch().unit }} </span>
+</app-proof-of-origin-card>
 
 <app-base-sheet #sheet>
   <div class="flex flex-col gap-4">
@@ -22,8 +16,6 @@
       </div>
       <span class="text-sm text-neutral-400"> Batch-Id: {{ batch().id }}</span>
     </div>
-
-    <app-verified-chart [amount]="batch().amount" [unit]="batch().unit"></app-verified-chart>
 
     <div class="grid grid-cols-2 gap-4 rounded-xl border-[2px] border-solid border-neutral-100 bg-neutral-50 p-4">
       <span class="col-span-2 text-neutral-600">Batch Details</span>
