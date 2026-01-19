@@ -61,13 +61,12 @@ Early-stage: foundational services present; emissions & sustainability logic inc
 
 ### 4.1 Apps
 
-- `apps/batch-svc` – Batch & process step domain operations
 - `apps/bff` – Backend-for-Frontend API aggregator
 - `apps/bff-e2e` – BFF end-to-end tests
 - `apps/frontend` – Angular SSR-enabled client
 - `apps/frontend-e2e` – Frontend end-to-end tests
 - `apps/general-svc` – Master data (companies, units, approvals, types)
-- `apps/process-svc` – Processing utilities (composition, step logic; WIP)
+- `apps/process-svc` – Batch & process step domain operations and processing utilities (composition, step logic; WIP)
 
 ### 4.2 Libraries
 

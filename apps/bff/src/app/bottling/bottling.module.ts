@@ -8,20 +8,13 @@
 
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
-import { UserService } from '../user/user.service';
+import { UserModule } from '../user/user.module';
 import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';
-import { DigitalProductPassportModule } from './digital-product-passport/digital-product-passport.module';
-import { RedComplianceModule } from './red-compliance/red-compliance.module';
 
 @Module({
-  imports: [
-    new Broker().getBatchSvcBroker(),
-    new Broker().getGeneralSvcBroker(),
-    DigitalProductPassportModule,
-    RedComplianceModule,
-  ],
+  imports: [UserModule, new Broker().getProcessSvcBroker()],
   controllers: [BottlingController],
-  providers: [BottlingService, UserService],
+  providers: [BottlingService],
 })
 export class BottlingModule {}

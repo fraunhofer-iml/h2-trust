@@ -46,14 +46,13 @@ export class ProductionService {
   };
 
   constructor(
-    @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly userService: UserService,
     private readonly csvParser: CsvParserService,
   ) {}
 
   async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    const payload: CreateProductionsPayload = new CreateProductionsPayload(
+    const payload = new CreateProductionsPayload(
       dto.productionStartedAt,
       dto.productionEndedAt,
       dto.powerProductionUnitId,
@@ -69,20 +68,23 @@ export class ProductionService {
     );
 
     return processSteps
-      .filter((step) => step.type === ProcessType.HYDROGEN_PRODUCTION)
+      .filter((processStep) => processStep.type === ProcessType.HYDROGEN_PRODUCTION)
       .map(ProductionOverviewDto.fromEntity);
   }
 
   async readHydrogenProductionsByCompany(userId: string): Promise<ProductionOverviewDto[]> {
-    const userDetailsDto: UserDetailsDto = await this.userService.readUserWithCompany(userId);
-    const companyIdOfUser = userDetailsDto.company.id;
+    const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
+    const companyIdOfUser = userDetails.company.id;
 
-    const payload: ReadProcessStepsByPredecessorTypesAndCompanyPayload =
-      new ReadProcessStepsByPredecessorTypesAndCompanyPayload([ProcessType.POWER_PRODUCTION], companyIdOfUser);
+    const payload = new ReadProcessStepsByPredecessorTypesAndCompanyPayload(
+      [ProcessType.POWER_PRODUCTION],
+      companyIdOfUser,
+    );
 
-    return firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_PREDECESSOR_TYPES_AND_COMPANY, payload),
-    ).then((processSteps) => processSteps.map(ProductionOverviewDto.fromEntity));
+    const productions: ProcessStepEntity[] = await firstValueFrom(
+      this.processSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_PREDECESSOR_TYPES_AND_COMPANY, payload),
+    );
+    return productions.map(ProductionOverviewDto.fromEntity);
   }
 
   async importCSV(
@@ -108,7 +110,6 @@ export class ProductionService {
     const matchingResult = await firstValueFrom(
       this.processSvc.send<ParsedProductionMatchingResultEntity>(ProductionMessagePatterns.STAGE, payload),
     );
-
     return AccountingPeriodMatchingResultDto.fromEntity(matchingResult);
   }
 
@@ -121,7 +122,6 @@ export class ProductionService {
     const processSteps: ProcessStepEntity[] = await firstValueFrom(
       this.processSvc.send<ProcessStepEntity[]>(ProductionMessagePatterns.FINALIZE, payload),
     );
-
     return processSteps.map(ProductionOverviewDto.fromEntity);
   }
 

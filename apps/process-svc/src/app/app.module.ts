@@ -7,13 +7,12 @@
  */
 
 import { Module } from '@nestjs/common';
-import { ConfigurationModule } from '@h2-trust/configuration';
+import { DigitalProductPassportModule } from './digital-product-passport/digital-product-passport.module';
+import { ProcessStepModule } from './process-step/process-step.module';
 import { ProductionModule } from './production/production.module';
-import { ProvenanceModule } from './provenance/provenance.module';
-import { StagedProductionCleanupModule } from './tasks/staged-production-cleanup.module';
 
 @Module({
-  imports: [ConfigurationModule, ProductionModule, ProvenanceModule, StagedProductionCleanupModule],
+  imports: [DigitalProductPassportModule, ProcessStepModule, ProductionModule],
   controllers: [],
   providers: [],
 })

@@ -7,7 +7,7 @@
  */
 
 import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { MessagePattern } from '@nestjs/microservices';
 import {
   CreateProductionsPayload,
   FinalizeStagedProductionsPayload,
@@ -27,17 +27,17 @@ export class ProductionController {
   ) {}
 
   @MessagePattern(ProductionMessagePatterns.CREATE)
-  async createProductions(@Payload() payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
-    return this.productionCreationService.createProductions(payload);
+  async createProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
+    return this.productionCreationService.createAndPersistProductions(payload);
   }
 
   @MessagePattern(ProductionMessagePatterns.STAGE)
-  async stageProductions(@Payload() payload: StageProductionsPayload): Promise<ParsedProductionMatchingResultEntity> {
+  async stageProductions(payload: StageProductionsPayload): Promise<ParsedProductionMatchingResultEntity> {
     return this.productionImportService.stageProductions(payload);
   }
 
   @MessagePattern(ProductionMessagePatterns.FINALIZE)
-  async finalizeStagedProductions(@Payload() payload: FinalizeStagedProductionsPayload): Promise<ProcessStepEntity[]> {
+  async finalizeStagedProductions(payload: FinalizeStagedProductionsPayload): Promise<ProcessStepEntity[]> {
     return this.productionImportService.finalizeStagedProductions(payload);
   }
 }

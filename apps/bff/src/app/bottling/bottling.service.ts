@@ -7,41 +7,43 @@
  */
 
 import { firstValueFrom } from 'rxjs';
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
   CreateHydrogenBottlingPayload,
   CreateHydrogenTransportationPayload,
-  HydrogenComponentEntity,
+  DigitalProductPassportPatterns,
+  GeneralInformationEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
+  ProofOfOriginSectionEntity,
+  ProofOfSustainabilityEntity,
   ReadByIdPayload,
   ReadProcessStepsByTypesAndActiveAndCompanyPayload,
-  TransportationDetailsEntity,
-  UserMessagePatterns,
 } from '@h2-trust/amqp';
 import {
   BottlingDto,
   BottlingOverviewDto,
   GeneralInformationDto,
-  HydrogenComponentDto,
-  UserDetailsDto,
+  ProofOfSustainabilityDto,
+  SectionDto,
 } from '@h2-trust/api';
-import { ProcessType, TransportMode } from '@h2-trust/domain';
+import { ProcessType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
-import { RedComplianceService } from './red-compliance/red-compliance.service';
 
 @Injectable()
 export class BottlingService {
   constructor(
-    @Inject(BrokerQueues.QUEUE_BATCH_SVC) private readonly batchSvc: ClientProxy,
-    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
+    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly userService: UserService,
-    private readonly redComplianceService: RedComplianceService,
   ) {}
 
-  async createBottling(dto: BottlingDto, files: Express.Multer.File[], userId: string): Promise<BottlingOverviewDto> {
+  async createBottlingAndTransportation(
+    dto: BottlingDto,
+    files: Express.Multer.File[],
+    userId: string,
+  ): Promise<BottlingOverviewDto> {
     const bottlingPayload: CreateHydrogenBottlingPayload = new CreateHydrogenBottlingPayload(
       dto.amount,
       dto.recipient,
@@ -53,108 +55,57 @@ export class BottlingService {
       files,
     );
 
-    const bottlingEntity: ProcessStepEntity = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_BOTTLING, bottlingPayload),
+    const persistedBottling: ProcessStepEntity = await firstValueFrom(
+      this.processSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_BOTTLING, bottlingPayload),
     );
-
-    if (bottlingEntity.transportationDetails) {
-      const message = `ProcessStep [${bottlingEntity.id}] of type [${bottlingEntity.type}] should not have transportation details upon creation.`;
-      throw new HttpException(message, HttpStatus.BAD_REQUEST);
-    }
 
     const transportationPayload: CreateHydrogenTransportationPayload = new CreateHydrogenTransportationPayload(
-      bottlingEntity,
-      bottlingEntity.batch,
-      this.buildTransportationDetailsEntity(dto),
+      persistedBottling,
+      persistedBottling.batch,
+      dto.transportMode,
+      dto.distance,
+      dto.fuelType,
     );
 
-    return firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION, transportationPayload),
-    ).then(BottlingOverviewDto.fromEntity);
+    const persistedTransportation: ProcessStepEntity = await firstValueFrom(
+      this.processSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION, transportationPayload),
+    );
+    return BottlingOverviewDto.fromEntity(persistedTransportation);
   }
 
-  async readBottlingsByCompany(userId: string): Promise<BottlingOverviewDto[]> {
-    const userDetailsDto: UserDetailsDto = await this.userService.readUserWithCompany(userId);
+  async readBottlingsAndTransportationsByCompany(userId: string): Promise<BottlingOverviewDto[]> {
+    const userDetails = await this.userService.readUserWithCompany(userId);
 
-    const payload: ReadProcessStepsByTypesAndActiveAndCompanyPayload =
-      new ReadProcessStepsByTypesAndActiveAndCompanyPayload(
-        [ProcessType.HYDROGEN_BOTTLING, ProcessType.HYDROGEN_TRANSPORTATION],
-        true,
-        userDetailsDto.company.id,
-      );
-
-    return firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_COMPANY, payload),
-    ).then((processSteps) => processSteps.map(BottlingOverviewDto.fromEntity));
-  }
-
-  async readGeneralInformation(processStepId: string): Promise<GeneralInformationDto> {
-    const processStep: ProcessStepEntity = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.READ_UNIQUE, new ReadByIdPayload(processStepId)),
+    const payload = new ReadProcessStepsByTypesAndActiveAndCompanyPayload(
+      [ProcessType.HYDROGEN_BOTTLING, ProcessType.HYDROGEN_TRANSPORTATION],
+      true,
+      userDetails.company.id,
     );
 
-    if (processStep.type != ProcessType.HYDROGEN_BOTTLING && processStep.type != ProcessType.HYDROGEN_TRANSPORTATION) {
-      const errorMessage = `ProcessStep with ID ${processStepId} should be of type ${ProcessType.HYDROGEN_BOTTLING} or ${ProcessType.HYDROGEN_TRANSPORTATION}, but is ${processStep.type}`;
-      throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
-    }
-
-    const generalInformationDto = GeneralInformationDto.fromEntityToDto(processStep);
-    generalInformationDto.producer = await this.fetchProducerName(generalInformationDto.producer);
-    generalInformationDto.hydrogenComposition = await this.fetchHydrogenComposition(processStep);
-    const redCompliance = await this.redComplianceService.determineRedCompliance(processStepId);
-    return { ...generalInformationDto, redCompliance: redCompliance };
-  }
-
-  private buildTransportationDetailsEntity(dto: BottlingDto): TransportationDetailsEntity {
-    let transportationDetails: TransportationDetailsEntity;
-
-    switch (dto.transportMode) {
-      case TransportMode.TRAILER:
-        if (!dto.distance) {
-          const message = `Distance is required for transport mode [${TransportMode.TRAILER}].`;
-          throw new HttpException(message, HttpStatus.BAD_REQUEST);
-        }
-        if (!dto.fuelType) {
-          const message = `Fuel type is required for transport mode [${TransportMode.TRAILER}].`;
-          throw new HttpException(message, HttpStatus.BAD_REQUEST);
-        }
-        transportationDetails = new TransportationDetailsEntity(
-          undefined,
-          dto.distance,
-          dto.transportMode,
-          dto.fuelType,
-        );
-        break;
-      case TransportMode.PIPELINE:
-        transportationDetails = new TransportationDetailsEntity(undefined, 0, dto.transportMode, undefined);
-        break;
-      default: {
-        const message = `Invalid transport mode: ${dto.transportMode}`;
-        throw new HttpException(message, HttpStatus.BAD_REQUEST);
-      }
-    }
-
-    return transportationDetails;
-  }
-
-  private async fetchProducerName(producerId: string): Promise<string> {
-    const producer: UserDetailsDto = await firstValueFrom(
-      this.generalSvc.send(UserMessagePatterns.READ, new ReadByIdPayload(producerId)),
+    const bottlingsAndTransportations: ProcessStepEntity[] = await firstValueFrom(
+      this.processSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_COMPANY, payload),
     );
-    return producer.company?.name;
+    return bottlingsAndTransportations.map(BottlingOverviewDto.fromEntity);
   }
 
-  private async fetchHydrogenComposition(processStep: ProcessStepEntity): Promise<HydrogenComponentDto[]> {
-    // if the process step is of type transportation, we need to get the composition from the predecessor bottling process step
-    const processStepId =
-      processStep.type === ProcessType.HYDROGEN_TRANSPORTATION
-        ? processStep.batch?.predecessors[0].processStepId
-        : processStep.id;
-
-    const hydrogenComposition: HydrogenComponentEntity[] = await firstValueFrom(
-      this.batchSvc.send(ProcessStepMessagePatterns.CALCULATE_HYDROGEN_COMPOSITION, new ReadByIdPayload(processStepId)),
+  async readGeneralInformation(id: string): Promise<GeneralInformationDto> {
+    const generalInformation: GeneralInformationEntity = await firstValueFrom(
+      this.processSvc.send(DigitalProductPassportPatterns.READ_GENERAL_INFORMATION, new ReadByIdPayload(id)),
     );
+    return GeneralInformationDto.fromEntity(generalInformation);
+  }
 
-    return hydrogenComposition.map(HydrogenComponentDto.of);
+  async readProofOfOrigin(id: string): Promise<SectionDto[]> {
+    const proofOfOrigin: ProofOfOriginSectionEntity[] = await firstValueFrom(
+      this.processSvc.send(DigitalProductPassportPatterns.READ_PROOF_OF_ORIGIN, new ReadByIdPayload(id)),
+    );
+    return SectionDto.fromEntities(proofOfOrigin);
+  }
+
+  async readProofOfSustainability(id: string): Promise<ProofOfSustainabilityDto> {
+    const proofOfSustainability: ProofOfSustainabilityEntity = await firstValueFrom(
+      this.processSvc.send(DigitalProductPassportPatterns.READ_PROOF_OF_SUSTAINABILITY, new ReadByIdPayload(id)),
+    );
+    return ProofOfSustainabilityDto.fromEntity(proofOfSustainability);
   }
 }
