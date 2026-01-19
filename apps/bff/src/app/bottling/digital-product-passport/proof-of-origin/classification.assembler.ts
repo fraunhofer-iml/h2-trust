@@ -50,7 +50,6 @@ export class ClassificationAssembler {
       classificationName,
       this.calculateClassificationEmission(batchDtos, nestedClassificationDtos),
       this.calculateClassificationAmount(batchDtos, nestedClassificationDtos),
-      null, // TBA
       batchDtos,
       nestedClassificationDtos,
       measurementUnit,
