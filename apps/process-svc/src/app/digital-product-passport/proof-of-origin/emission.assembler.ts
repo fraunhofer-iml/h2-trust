@@ -45,23 +45,19 @@ export class EmissionAssembler {
     const label = POWER_EMISSION_FACTORS[energySource].label;
 
     const consumedKwhPowerTotal = powerProduction.batch.amount;
-    const consumedKwhPowerTotalInput = `Consumed Power Total: ${consumedKwhPowerTotal} kWh`;
-
-    const bottledKgHydrogenInput = `Bottled Hydrogen: ${bottledKgHydrogen} kg H₂`;
-
-    const producedKgHydrogenInput = `Produced Hydrogen: ${producedKgHydrogen} kg H₂`;
-
     const consumedKwhPowerShare = consumedKwhPowerTotal * (bottledKgHydrogen / producedKgHydrogen);
-    const consumedKwhPowerShareInput = `Consumed Power Share: ${consumedKwhPowerShare} kWh = Consumed Power Total * (Bottled Hydrogen / Produced Hydrogen)`;
+    const consumedKwhPowerShareFormula = `Consumed Power Share = Consumed Power Total * (Bottled Hydrogen / Produced Hydrogen)`;
+    const consumedKwhPowerShareInput = `${consumedKwhPowerShare} kWh = ${consumedKwhPowerTotal} kWh * (${bottledKgHydrogen} kg H₂ / ${producedKgHydrogen} kg H₂)`;
 
     const emissionFactorLabel = EnumLabelMapper.getEnergySource(energySource);
     const emissionFactor = POWER_EMISSION_FACTORS[energySource].emissionFactor;
     const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} g CO₂,eq/kWh`;
-    const formula = `E = Consumed Power Share * Emission Factor ${emissionFactorLabel}`;
 
     const result = consumedKwhPowerShare * emissionFactor;
+    const totalEmissionsFormula = `Total Emissions = Consumed Power Share * Emission Factor ${emissionFactorLabel}`;
+    const totalEmissionsInput = `${result} g CO₂,eq = ${consumedKwhPowerShare} kWh * ${emissionFactor} g CO₂,eq/kWh`;
 
-    const basisOfCalculation = [consumedKwhPowerTotalInput, bottledKgHydrogenInput, producedKgHydrogenInput, consumedKwhPowerShareInput, emissionFactorInput, formula];
+    const basisOfCalculation = [consumedKwhPowerShareFormula, consumedKwhPowerShareInput, emissionFactorInput, totalEmissionsFormula, totalEmissionsInput];
 
     const unit = UNIT_G_CO2;
     const calculationTopic = CalculationTopic.POWER_SUPPLY;
