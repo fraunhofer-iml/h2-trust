@@ -10,7 +10,7 @@
         {{ batch().accountingPeriodEnd | date: 'shortTime' }}
       </h3>
       <span class="text-sm text-neutral-500">
-        {{ batch().emission.amountCO2PerKgH2 | unit: FormattedUnits.CO2_PER_KG_H2 }}
+        {{ batch().emission.amountCO2 | unit: FormattedUnits.G_CO2 }}
       </span>
     </div>
     <app-verified-chart

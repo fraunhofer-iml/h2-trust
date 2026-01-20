@@ -39,8 +39,7 @@ export class EmissionService {
 
     if (provenance.powerProductions) {
       const powerProductions: ProofOfSustainabilityEmissionCalculationEntity[] = await this.computePowerSupplyEmissions(
-        provenance.powerProductions,
-        provenance.hydrogenBottling.batch.amount,
+        provenance.powerProductions
       );
       emissionCalculations.push(...powerProductions);
     }
@@ -48,7 +47,7 @@ export class EmissionService {
     if (provenance.waterConsumptions) {
       const waterConsumptions: ProofOfSustainabilityEmissionCalculationEntity[] = provenance.waterConsumptions.map(
         (waterConsumption) =>
-          EmissionAssembler.assembleWaterSupply(waterConsumption, provenance.hydrogenBottling.batch.amount),
+          EmissionAssembler.assembleWaterSupply(waterConsumption),
       );
       emissionCalculations.push(...waterConsumptions);
     }
@@ -76,8 +75,7 @@ export class EmissionService {
   }
 
   async computePowerSupplyEmissions(
-    powerProductions: ProcessStepEntity[],
-    bottledKgHydrogen: number,
+    powerProductions: ProcessStepEntity[]
   ): Promise<ProofOfSustainabilityEmissionCalculationEntity[]> {
     if (!powerProductions.length) {
       return [];
@@ -98,8 +96,7 @@ export class EmissionService {
 
     return powerProductions.map((powerProduction) => {
       const unit = unitsById.get(powerProduction.executedBy.id)!;
-      const producedKgHydrogen = powerProduction.batch?.successors[0]?.amount; // Every PowerBatch has exactly one successor: HydrogenProductionBatch
-      return EmissionAssembler.assemblePowerSupply(powerProduction, unit.type.energySource, bottledKgHydrogen, producedKgHydrogen);
+      return EmissionAssembler.assemblePowerSupply(powerProduction, unit.type.energySource);
     });
   }
 }

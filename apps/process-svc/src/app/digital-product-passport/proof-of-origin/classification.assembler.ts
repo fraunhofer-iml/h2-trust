@@ -90,7 +90,7 @@ export class ClassificationAssembler {
   }
 
   private static calculateBatchEmission(batches: ProofOfOriginBatchEntity[]): number {
-    return (batches || []).map((b) => b.emission?.amountCO2PerKgH2 ?? 0).reduce((a, b) => a + b, 0);
+    return (batches || []).map((b) => b.emission?.amountCO2 ?? 0).reduce((a, b) => a + b, 0);
   }
 
   private static calculateAmount(

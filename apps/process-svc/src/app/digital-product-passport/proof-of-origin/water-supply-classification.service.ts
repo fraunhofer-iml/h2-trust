@@ -32,8 +32,7 @@ export class WaterSupplyClassificationService {
 
     const waterBatches: ProofOfOriginWaterBatchEntity[] = waterSupplies.map((waterSupply) => {
       const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity = EmissionAssembler.assembleWaterSupply(
-        waterSupply,
-        bottledKgHydrogen,
+        waterSupply
       );
 
       const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionDto(

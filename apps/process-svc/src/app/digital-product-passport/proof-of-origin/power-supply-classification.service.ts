@@ -59,7 +59,7 @@ export class PowerSupplyClassificationService {
         const productionPowerBatches: ProofOfOriginBatchEntity[] = await Promise.all(
           powerProductionsWithUnitsByEnergySource.map(async ([powerProduction]) => {
             const [powerSupplyEmission]: ProofOfSustainabilityEmissionCalculationEntity[] =
-              await this.emissionService.computePowerSupplyEmissions([powerProduction], bottledKgHydrogen);
+              await this.emissionService.computePowerSupplyEmissions([powerProduction]);
 
             const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionDto(
               powerSupplyEmission,

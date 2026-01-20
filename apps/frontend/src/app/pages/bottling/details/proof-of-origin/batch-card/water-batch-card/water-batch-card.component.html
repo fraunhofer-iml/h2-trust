@@ -7,7 +7,7 @@
     <div class="flex w-full justify-between text-sm text-neutral-500">
       <h3 class="text-base">Water Supply</h3>
       <span class="text-sm text-neutral-500">
-        {{ batch().emission.amountCO2PerKgH2 | unit: FormattedUnits.CO2_PER_KG_H2 }}
+        {{ batch().emission.amountCO2 | unit: FormattedUnits.G_CO2 }}
       </span>
     </div>
     <app-verified-chart [amount]="batch().amount" [unit]="batch().unit"></app-verified-chart>

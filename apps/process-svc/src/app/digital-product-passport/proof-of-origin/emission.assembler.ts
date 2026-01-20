@@ -27,7 +27,6 @@ import {
   TrailerParameter,
   TransportMode,
   UNIT_G_CO2,
-  UNIT_G_CO2_PER_KG_H2,
   UNIT_G_CO2_PER_KWH,
 } from '@h2-trust/domain';
 
@@ -35,74 +34,59 @@ import {
 export class EmissionAssembler {
   static assemblePowerSupply(
     powerProduction: ProcessStepEntity,
-    energySource: EnergySource,
-    bottledKgHydrogen: number,
-    producedKgHydrogen: number,
+    energySource: EnergySource
   ): ProofOfSustainabilityEmissionCalculationEntity {
     if (powerProduction?.type !== ProcessType.POWER_PRODUCTION) {
       throw new Error(`Invalid process step type [${powerProduction?.type}] for power supply emission calculation`);
     }
 
-    const label = POWER_EMISSION_FACTORS[energySource].label;
-
-    const consumedKwhPowerTotal = powerProduction.batch.amount;
-    const consumedKwhPowerShare = consumedKwhPowerTotal * (bottledKgHydrogen / producedKgHydrogen);
-    const consumedKwhPowerShareFormula = `Consumed Power Share = Consumed Power Total * (Bottled Hydrogen / Produced Hydrogen)`;
-    const consumedKwhPowerShareInput = `${consumedKwhPowerShare} kWh = ${consumedKwhPowerTotal} kWh * (${bottledKgHydrogen} kg H₂ / ${producedKgHydrogen} kg H₂)`;
+    const power = powerProduction.batch.amount;
+    const powerInput = `Power Input: ${power} kWh`;
 
     const emissionFactorLabel = EnumLabelMapper.getEnergySource(energySource);
     const emissionFactor = POWER_EMISSION_FACTORS[energySource].emissionFactor;
     const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} ${UNIT_G_CO2_PER_KWH}`;
 
-    const result = consumedKwhPowerShare * emissionFactor;
-    const totalEmissionsFormula = `Total Emissions = Consumed Power Share * Emission Factor ${emissionFactorLabel}`;
-    const totalEmissionsInput = `${result} ${UNIT_G_CO2}= ${consumedKwhPowerShare} kWh * ${emissionFactor} ${UNIT_G_CO2_PER_KWH}`;
+    const result = power * emissionFactor;
+    const formula = `E = Power Input * Emission Factor ${emissionFactorLabel}`;
+    const formulaResult = `${result} ${UNIT_G_CO2} = ${power} kWh * ${emissionFactor} ${UNIT_G_CO2_PER_KWH}`;
 
-    const basisOfCalculation = [consumedKwhPowerShareFormula, consumedKwhPowerShareInput, emissionFactorInput, totalEmissionsFormula, totalEmissionsInput];
-
-    const unit = UNIT_G_CO2;
-    const calculationTopic = CalculationTopic.POWER_SUPPLY;
+    const basisOfCalculation = [powerInput, emissionFactorInput, formula, formulaResult];
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      label,
+      POWER_EMISSION_FACTORS[energySource].label,
       basisOfCalculation,
       result,
-      unit,
-      calculationTopic,
+      UNIT_G_CO2,
+      CalculationTopic.POWER_SUPPLY,
     );
   }
 
   static assembleWaterSupply(
-    waterSupply: ProcessStepEntity,
-    hydrogenAmount: number,
+    waterSupply: ProcessStepEntity
   ): ProofOfSustainabilityEmissionCalculationEntity {
     if (waterSupply?.type !== ProcessType.WATER_CONSUMPTION) {
       throw new Error(`Invalid process step type [${waterSupply?.type}] for water supply emission calculation`);
     }
 
-    const label = 'Emissions (Water Supply)';
-
     const waterInput = waterSupply.batch.amount;
     const emissionFactorDeionizedWater = 0.43;
-    const hydrogenOutput = hydrogenAmount;
-    const result = (waterInput * emissionFactorDeionizedWater) / hydrogenOutput;
+    const result = (waterInput * emissionFactorDeionizedWater);
 
     const emissionFactorLabel = 'Deionized Water';
     const waterInputInput = `Water Input: ${waterInput} L`;
     const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactorDeionizedWater} g CO₂,eq/L`;
-    const hydrogenOutputInput = `Hydrogen Output: ${hydrogenOutput} kg H₂`;
-    const formula = `E = (Water Input * Emission Factor ${emissionFactorLabel}) / Hydrogen Output`;
-    const basisOfCalculation = [waterInputInput, emissionFactorInput, hydrogenOutputInput, formula];
+    const formula = `E = Water Input * Emission Factor ${emissionFactorLabel}`;
+    const formulaResult = `${result} ${UNIT_G_CO2} = ${waterInput} L * ${emissionFactorDeionizedWater} g CO₂,eq/L`;
 
-    const unit = UNIT_G_CO2_PER_KG_H2;
-    const calculationTopic = CalculationTopic.WATER_SUPPLY;
+    const basisOfCalculation = [waterInputInput, emissionFactorInput, formula, formulaResult];
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      label,
+      'Emissions (Water Supply)',
       basisOfCalculation,
       result,
-      unit,
-      calculationTopic,
+      UNIT_G_CO2,
+      CalculationTopic.WATER_SUPPLY,
     );
   }
 
@@ -115,27 +99,26 @@ export class EmissionAssembler {
       );
     }
 
-    const label = 'Emissions (Compression from 30 bar to 300 bar)';
-
     const energyDemand = 1.65; // 5.93 / 3.6 -> default values for compression from 30 bar to 300 bar
     const emissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID].emissionFactor;
-    const result = energyDemand * emissionFactor;
+    const result = energyDemand * emissionFactor * hydrogenProduction.batch.amount;
+
+    const hydrogenProducedKgInput = `Hydrogen Produced: ${hydrogenProduction.batch.amount} kg H₂`;
 
     const emissionFactorLabel = EnumLabelMapper.getEnergySource(EnergySource.GRID);
     const energyDemandInput = `Energy Demand: ${energyDemand} kWh/kg H₂`;
     const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} g CO₂,eq/kWh`;
-    const formula = `E = Energy Demand * Emission Factor ${emissionFactorLabel}`;
-    const basisOfCalculation = [energyDemandInput, emissionFactorInput, formula];
+    const formula = `E = Energy Demand * Emission Factor ${emissionFactorLabel} * Hydrogen Produced`;
+    const formulaResult = `${result} ${UNIT_G_CO2} = ${energyDemand} kWh/kg H₂ * ${emissionFactor} g CO₂,eq/kWh * ${hydrogenProduction.batch.amount} kg H₂`;
 
-    const unit = UNIT_G_CO2_PER_KG_H2;
-    const calculationTopic = CalculationTopic.HYDROGEN_STORAGE;
+    const basisOfCalculation = [energyDemandInput, emissionFactorInput, hydrogenProducedKgInput, formula, formulaResult];
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      label,
+      'Emissions (Compression from 30 bar to 300 bar)',
       basisOfCalculation,
       result,
-      unit,
-      calculationTopic,
+      UNIT_G_CO2,
+      CalculationTopic.HYDROGEN_STORAGE,
     );
   }
 
@@ -148,21 +131,16 @@ export class EmissionAssembler {
       );
     }
 
-    const label = 'Emissions (Hydrogen Bottling)';
-
     const result = 0;
 
     const basisOfCalculation = ['E = [TBD]'];
 
-    const unit = UNIT_G_CO2_PER_KG_H2;
-    const calculationTopic = CalculationTopic.HYDROGEN_BOTTLING;
-
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      label,
+      'Emissions (Hydrogen Bottling)',
       basisOfCalculation,
       result,
-      unit,
-      calculationTopic,
+      UNIT_G_CO2,
+      CalculationTopic.HYDROGEN_BOTTLING,
     );
   }
 
@@ -197,33 +175,26 @@ export class EmissionAssembler {
   }
 
   private static assemblePipeline(): ProofOfSustainabilityEmissionCalculationEntity {
-    const label = 'Emissions (Transportation with Pipeline)';
-
     const result = 0;
 
     const basisOfCalculation = ['E = 0 g CO₂,eq/kg H₂'];
 
-    const unit = UNIT_G_CO2_PER_KG_H2;
-    const calculationTopic = CalculationTopic.HYDROGEN_TRANSPORTATION;
-
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      label,
+      'Emissions (Transportation with Pipeline)',
       basisOfCalculation,
       result,
-      unit,
-      calculationTopic,
+      UNIT_G_CO2,
+      CalculationTopic.HYDROGEN_TRANSPORTATION,
     );
   }
 
   private static assembleTrailer(
-    amount: number,
+    hydrogenAmount: number,
     fuelType: FuelType,
     transportDistance: number,
   ): ProofOfSustainabilityEmissionCalculationEntity {
-    const label = 'Emissions (Transportation with Trailer)';
-
     const trailerParameter: TrailerParameter =
-      TRAILER_PARAMETERS.find((trailerEntry) => amount <= trailerEntry.capacityKg) ??
+      TRAILER_PARAMETERS.find((trailerEntry) => hydrogenAmount <= trailerEntry.capacityKg) ??
       TRAILER_PARAMETERS.at(TRAILER_PARAMETERS.length - 1);
 
     const tonPerKg = 0.001;
@@ -243,7 +214,7 @@ export class EmissionAssembler {
     const emissionFactorCh4AndN2O = trailerParameter.gEqEmissionsOfCH4AndN2OPerKmDistancePerTonneH2;
     const emissionCh4AndN2O = tonPerKg * transportDistance * emissionFactorCh4AndN2O;
 
-    const result = emissionsFuelCombustion + emissionCh4AndN2O;
+    const result = (emissionsFuelCombustion + emissionCh4AndN2O) * hydrogenAmount;
 
     const fuelTypeLabel = EnumLabelMapper.getFuelType(fuelType);
     const tonPerKgInput = `Ton per Kg: ${tonPerKg} ton/kg`;
@@ -251,29 +222,28 @@ export class EmissionAssembler {
     const transportEfficiencyInput = `Transport Efficiency: ${transportEfficiency} MJ fuel / (ton, km)`;
     const emissionFactorFuelInput = `Emission Factor ${fuelTypeLabel}: ${emissionFactorFuel} g CO₂,eq / MJ`;
     const emissionFactorCh4AndN2OInput = `Emission Factor CH₄ & N₂O: ${emissionFactorCh4AndN2O} g CO₂,eq / (ton, km)`;
+    const hydrogenTransportedInput = `Hydrogen Transported: ${hydrogenAmount} kg H₂`;
     const emissionFuelCombustionFormula = `Emission Fuel Combustion = Ton per Kg * Transport Distance * Transport Efficiency * Emission Factor ${fuelTypeLabel}`;
     const emissionCh4AndN2OFormula = `Emission CH₄ & N₂O = Ton per Kg * Transport Distance * Emission Factor CH₄ & N₂O`;
-    const formula = `E = Emission Fuel Combustion + Emission CH₄ & N₂O`;
+    const formula = `E = (Emission Fuel Combustion + Emission CH₄ & N₂O) * Hydrogen Transported`;
     const basisOfCalculation = [
       tonPerKgInput,
       transportDistanceInput,
       transportEfficiencyInput,
       emissionFactorFuelInput,
       emissionFactorCh4AndN2OInput,
+      hydrogenTransportedInput,
       emissionFuelCombustionFormula,
       emissionCh4AndN2OFormula,
       formula,
     ];
 
-    const unit = UNIT_G_CO2_PER_KG_H2;
-    const calculationTopic = CalculationTopic.HYDROGEN_TRANSPORTATION;
-
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      label,
+      'Emissions (Transportation with Trailer)',
       basisOfCalculation,
       result,
-      unit,
-      calculationTopic,
+      UNIT_G_CO2,
+      CalculationTopic.HYDROGEN_TRANSPORTATION,
     );
   }
 
