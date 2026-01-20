@@ -1,8 +1,8 @@
-<div class="flex h-[100svh] w-full flex-row bg-neutral-200">
-  <div mode="side" class="w-96 border-r border-neutral-200 bg-neutral-50">
+<div class="flex h-[100svh] w-full flex-row bg-neutral-50">
+  <div mode="side" class="w-96 border-r border-neutral-200 bg-white">
     <div class="flex h-full flex-col justify-between p-4">
       <div class="flex flex-col gap-2">
-        <h3 class="text-secondary-200 mb-4 text-2xl font-semibold">
+        <h3 class="text-secondary-500 mb-4 text-2xl font-semibold">
           <span>{{ ChemicalNames.H2 }}</span
           >-Trust
         </h3>
@@ -15,11 +15,11 @@
                 tabindex="0"
                 role="presentation"
                 [ngClass]="{
-                  'bg-primary-100/20': router.url.includes(option.route),
+                  'bg-primary-100': option.isActive(),
                 }"
               >
                 <span class="material-symbols-outlined text-neutral-600">{{ option.icon }}</span>
-                <span class="text-neutral-600">{{ option.title }}</span>
+                <span class="text-neutral-800">{{ option.title }}</span>
               </div>
             </a>
           }
@@ -27,7 +27,7 @@
       </div>
 
       <mat-expansion-panel
-        class="!bg-primary-100/20 p-2 !shadow-none"
+        class="!bg-primary-100 p-2 !shadow-none"
         [hideToggle]="!isAuthenticated"
         [disabled]="!isAuthenticated"
       >
@@ -35,7 +35,7 @@
           @if (isAuthenticated) {
             <mat-panel-title>
               <div class="flex !select-none flex-row items-center gap-4">
-                <div class="bg-primary-300 flex h-10 w-10 items-center justify-center rounded-xl">
+                <div class="bg-primary-400 flex h-10 w-10 items-center justify-center rounded-xl">
                   <span class="material-symbols-outlined text-2xl text-white">person </span>
                 </div>
                 <div class="flex flex-col">
@@ -54,14 +54,14 @@
         @if (isAuthenticated) {
           <div class="flex w-full flex-col gap-1 p-2">
             <a
-              class="hover:text-primary-100 hover:bg-primary-300/20 flex flex-row items-center gap-2 rounded-full p-4 text-neutral-500"
+              class="hover:text-primary-600 hover:bg-primary-200 border-primary-100 flex flex-row items-center gap-2 rounded-full border-2 p-4 text-neutral-500"
               routerLink="/"
             >
               <span class="material-symbols-outlined">settings</span>
               <span>account</span>
             </a>
             <button
-              class="hover:text-primary-100 hover:bg-primary-300/20 flex flex-row items-center gap-2 rounded-full p-4 text-neutral-500"
+              class="hover:text-primary-600 hover:bg-primary-200 border-primary-100 flex flex-row items-center gap-2 rounded-full border-2 p-4 text-neutral-500"
               (click)="logout()"
             >
               <span class="material-symbols-outlined">logout</span>

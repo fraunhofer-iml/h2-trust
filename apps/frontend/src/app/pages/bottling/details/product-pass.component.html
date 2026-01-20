@@ -13,46 +13,43 @@
     <app-error-card [message]="ERROR_MESSAGES.dppNotFound + id()"></app-error-card>
   }
 
-  @if (batchQuery.isLoading()) {
-    <div>
-      <span class="material-symbols-outlined animate-spin text-neutral-400"> progress_activity </span>
-    </div>
-  }
+  <div class="grid grid-cols-6 gap-4">
+    @if (batchQuery.isLoading()) {
+      <div class="col-span-4 h-[16rem] w-full animate-pulse rounded-md bg-neutral-50"></div>
+      <div class="col-span-2 h-[16rem] w-full animate-pulse rounded-md bg-neutral-50"></div>
+    }
 
-  @if (batchQuery.isSuccess()) {
-    <div class="grid grid-cols-6 gap-4">
+    @if (batchQuery.isSuccess()) {
       <div class="col-span-4 rounded-lg bg-white p-4">
         <div class="flex flex-row items-center justify-between">
           <h3 class="font-semibold text-neutral-500">General Information</h3>
           <app-red-compliance class="col-span-6" [redCompliance]="batchQuery.data().redCompliance"></app-red-compliance>
         </div>
 
-        @if (batchQuery.isSuccess()) {
-          <div class="flex flex-row">
-            <div class="mt-2 grid w-1/2 grid-cols-2 gap-2">
-              <div class="flex flex-col text-sm">
-                <span class="text-sm text-neutral-400">Batch Id</span><span>{{ batchQuery.data().id }}</span>
-              </div>
-              <div class="flex flex-col text-sm">
-                <span class="text-sm text-neutral-400">Date</span><span>{{ batchQuery.data().filledAt | date }}</span>
-              </div>
-              <div class="flex flex-col text-sm">
-                <span class="text-sm text-neutral-400">Producer</span><span>{{ batchQuery.data().producer }}</span>
-              </div>
-              <div class="flex flex-col text-sm">
-                <span class="text-sm text-neutral-400">Amount</span
-                ><span>{{ batchQuery.data().filledAmount | unit: FormattedUnits.KG }}</span>
-              </div>
-              <div class="flex flex-col text-sm">
-                <span class="text-sm text-neutral-400">Product</span><span>{{ batchQuery.data().product }}</span>
-              </div>
+        <div class="flex flex-row">
+          <div class="mt-2 grid w-1/2 grid-cols-2 gap-2">
+            <div class="flex flex-col text-sm">
+              <span class="text-sm text-neutral-400">Batch Id</span><span>{{ batchQuery.data().id }}</span>
             </div>
-            <app-h2-composition-chart
-              class="w-1/2"
-              [chartData]="batchQuery.data().hydrogenComposition"
-            ></app-h2-composition-chart>
+            <div class="flex flex-col text-sm">
+              <span class="text-sm text-neutral-400">Date</span><span>{{ batchQuery.data().filledAt | date }}</span>
+            </div>
+            <div class="flex flex-col text-sm">
+              <span class="text-sm text-neutral-400">Producer</span><span>{{ batchQuery.data().producer }}</span>
+            </div>
+            <div class="flex flex-col text-sm">
+              <span class="text-sm text-neutral-400">Amount</span
+              ><span>{{ batchQuery.data().filledAmount | unit: FormattedUnits.KG }}</span>
+            </div>
+            <div class="flex flex-col text-sm">
+              <span class="text-sm text-neutral-400">Product</span><span>{{ batchQuery.data().product }}</span>
+            </div>
           </div>
-        }
+          <app-h2-composition-chart
+            class="w-1/2"
+            [chartData]="batchQuery.data().hydrogenComposition"
+          ></app-h2-composition-chart>
+        </div>
       </div>
 
       <div class="col-span-2 rounded-lg bg-white p-4">
@@ -60,7 +57,7 @@
         <div class="flex max-h-60 flex-col gap-2 overflow-y-auto">
           @for (file of batchQuery.data().attachedFiles; track $index) {
             <div
-              class="flex flex-row items-center gap-2 rounded-lg border-[2px] border-solid border-neutral-100 p-2 hover:cursor-pointer hover:border-neutral-200 hover:border-neutral-200/80"
+              class="flex flex-row items-center gap-4 rounded-lg border-[2px] border-solid border-neutral-100 p-2 hover:cursor-pointer hover:border-neutral-200 hover:border-neutral-200/80"
               (click)="openFile(file.url)"
               role="none"
             >
@@ -76,9 +73,9 @@
           <span class="text-sm text-neutral-600">No files attached.</span>
         }
       </div>
+    }
 
-      <app-proof-of-origin [id]="id()" class="col-span-6 2xl:col-span-3"> </app-proof-of-origin
-      ><app-proof-of-sustainability [id]="id()" class="col-span-6 2xl:col-span-3"></app-proof-of-sustainability>
-    </div>
-  }
+    <app-proof-of-origin [id]="id()" class="col-span-6 2xl:col-span-3"> </app-proof-of-origin
+    ><app-proof-of-sustainability [id]="id()" class="col-span-6 2xl:col-span-3"></app-proof-of-sustainability>
+  </div>
 </div>

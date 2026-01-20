@@ -28,7 +28,7 @@ export class UnitService {
     private readonly powerProductionTypeRepository: PowerProductionTypeRepository,
   ) {}
 
-  async readUnit(id: string): Promise<UnitEntity> {
+  async readUnitById(id: string): Promise<UnitEntity> {
     return this.unitRepository.findUnitById(id);
   }
 

@@ -11,14 +11,17 @@ import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
+import { UnitType } from '@h2-trust/domain';
+import { FormattedUnits } from '../../shared/constants/formatted-units';
 import { ICONS } from '../../shared/constants/icons';
+import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
+import { UnitPipe } from '../../shared/pipes/unit.pipe';
 import { UnitsService } from '../../shared/services/units/units.service';
-import { HydrogenProductionTableComponent } from './tables/hydrogen-production-table/hydrogen-production-table.component';
-import { HydrogenStorageTableComponent } from './tables/hydrogen-storage-table/hydrogen-storage-table.component';
-import { PowerProductionTableComponent } from './tables/power-production-table/power-production-table.component';
 
 @Component({
   selector: 'app-hydrogen-assets',
@@ -27,18 +30,24 @@ import { PowerProductionTableComponent } from './tables/power-production-table/p
     CommonModule,
     MatCardModule,
     MatTabsModule,
-    HydrogenProductionTableComponent,
-    HydrogenStorageTableComponent,
-    PowerProductionTableComponent,
     RouterModule,
     MatButtonModule,
+    UnitPipe,
+    MatChipsModule,
+    PrettyEnumPipe,
+    MatDividerModule,
   ],
   providers: [],
   templateUrl: './hydrogen-assets.component.html',
 })
 export class HydrogenAssetsComponent {
-  protected readonly ICONS = ICONS.UNITS;
-  unitsService = inject(UnitsService);
+  protected readonly ICONS = ICONS;
+  protected readonly FormattedUnits = FormattedUnits;
+  protected readonly UnitType = UnitType;
+
+  protected readonly unitsService = inject(UnitsService);
+
+  typeToShow: UnitType | null = null;
 
   hydrogenStorageQuery = injectQuery(() => ({
     queryKey: ['h2-storage'],
@@ -54,4 +63,8 @@ export class HydrogenAssetsComponent {
     queryKey: ['h2-production'],
     queryFn: async () => this.unitsService.getHydrogenProductionUnits(),
   }));
+
+  toggle(type: UnitType | null) {
+    this.typeToShow = type;
+  }
 }

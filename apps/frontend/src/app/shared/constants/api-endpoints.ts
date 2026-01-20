@@ -21,8 +21,18 @@ export const API = {
     DETAILS: (id: string) => `${USERS_ENDPOINT}${id}`,
   },
   UNITS: {
-    BASE: UNITS_ENDPOINT,
-    DETAILS: (id: string) => `${UNITS_ENDPOINT}${id}`,
+    POWER_PRODUCTION: {
+      BASE: UNITS_ENDPOINT + 'power-production/',
+      DETAILS: (id: string) => `${API.UNITS.POWER_PRODUCTION.BASE}${id}`,
+    },
+    HYDROGEN_PRODUCTION: {
+      BASE: UNITS_ENDPOINT + 'hydrogen-production/',
+      DETAILS: (id: string) => `${API.UNITS.HYDROGEN_PRODUCTION.BASE}${id}`,
+    },
+    HYDROGEN_STORAGE: {
+      BASE: UNITS_ENDPOINT + 'hydrogen-storage/',
+      DETAILS: (id: string) => `${API.UNITS.HYDROGEN_STORAGE.BASE}${id}`,
+    },
   },
   COMPANIES: { BASE: COMPANIES_ENDPOINT },
   POWER_ACCESS_APPROVALS: { BASE: POWER_ACCESS_APPROVALS_ENDPOINT },

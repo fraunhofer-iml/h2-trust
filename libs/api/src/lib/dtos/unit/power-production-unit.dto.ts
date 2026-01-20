@@ -13,6 +13,7 @@ import { EnumLabelMapper } from '../../labels';
 import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
 import { PowerProductionTypeDto } from './power-production-type.dto';
+import { UnitOwnerDto } from './unit-owner.dto';
 
 export class PowerProductionUnitDto extends BaseUnitDto {
   electricityMeterNumber: string;
@@ -36,10 +37,7 @@ export class PowerProductionUnitDto extends BaseUnitDto {
     commissionedOn: Date,
     decommissioningPlannedOn: Date,
     address: AddressDto,
-    company: {
-      id: string;
-      hydrogenApprovals: { powerAccessApprovalStatus: string; powerProducerId: string }[];
-    },
+    company: UnitOwnerDto,
     ratedPower: number,
     gridOperator: string,
     gridLevel: string,

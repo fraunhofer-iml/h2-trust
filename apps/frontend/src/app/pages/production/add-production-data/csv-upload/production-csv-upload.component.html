@@ -22,35 +22,35 @@
         </span>
       </div>
 
-      <div class="bg-primary-100/10 flex flex-row items-center gap-4 rounded-xl p-4 text-sm text-neutral-500">
+      <div class="bg-primary-400/20 flex flex-row items-center gap-4 rounded-xl p-4 text-sm text-neutral-500">
         <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
-          <span class="material-symbols-outlined text-primary-200 text-4xl">humidity_low</span>
+          <span class="material-symbols-outlined text-primary-400 text-4xl">humidity_low</span>
         </div>
         <span>
           Hydrogen Produced <br />
-          <span class="text-primary-200 text-2xl">{{ mutation.data().hydrogenProduced | number }} </span>
-          <span class="text-primary-200">{{ FormattedUnits.KG }}</span></span
+          <span class="text-primary-600 text-2xl">{{ mutation.data().hydrogenProduced | number }} </span>
+          <span class="text-primary-600">{{ FormattedUnits.KG }}</span></span
         >
       </div>
 
-      <div class="bg-primary-100/10 flex flex-row items-center gap-4 rounded-xl p-4 text-sm text-neutral-500">
+      <div class="bg-primary-400/20 flex flex-row items-center gap-4 rounded-xl p-4 text-sm text-neutral-500">
         <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
-          <span class="material-symbols-outlined text-primary-200 text-4xl">electric_bolt</span>
+          <span class="material-symbols-outlined text-primary-400 text-4xl">electric_bolt</span>
         </div>
         <span>
           Power Used <br />
-          <span class="text-primary-200 text-2xl">{{ mutation.data().powerUsed | number }} </span>
-          <span class="text-primary-200">{{ FormattedUnits.KWH }}</span></span
+          <span class="text-primary-600 text-2xl">{{ mutation.data().powerUsed | number }} </span>
+          <span class="text-primary-600">{{ FormattedUnits.KWH }}</span></span
         >
       </div>
 
-      <div class="bg-primary-100/10 flex flex-row items-center gap-4 rounded-xl p-4 text-sm text-neutral-500">
+      <div class="bg-primary-400/20 flex flex-row items-center gap-4 rounded-xl p-4 text-sm text-neutral-500">
         <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
-          <span class="material-symbols-outlined text-primary-200 text-4xl">functions</span>
+          <span class="material-symbols-outlined text-primary-400 text-4xl">functions</span>
         </div>
         <span>
           Number of Batches <br />
-          <span class="text-primary-200 text-2xl">{{ mutation.data().numberOfBatches | number }} </span>
+          <span class="text-primary-600 text-2xl">{{ mutation.data().numberOfBatches | number }} </span>
         </span>
       </div>
     </div>
@@ -76,7 +76,7 @@
     </div>
   } @else {
     <!--FILE INPUT-->
-    <div class="bg-primary-200/20 col-span-2 rounded-lg p-4 text-neutral-600">
+    <div class="bg-primary-300/30 col-span-2 rounded-lg p-4 text-neutral-600">
       <span class="flex items-center gap-1 font-semibold">
         <span class="material-symbols-outlined">lightbulb_2</span>Hint</span
       >
