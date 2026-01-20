@@ -15,26 +15,45 @@
 
   <div
     [ngClass]="showComplianceInfo ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'"
-    class="absolute top-[3rem] z-20 flex w-[24rem] flex-col gap-2 rounded-xl border-2 border-neutral-100 bg-white p-4 shadow-2xl transition-opacity duration-300 2xl:left-[13rem] 2xl:top-0"
+    class="absolute left-[-16rem] top-[3rem] z-20 flex w-[46rem] flex-row gap-2 rounded-xl border-2 border-neutral-100 bg-white p-2 shadow-2xl transition-opacity duration-300 2xl:top-[3rem]"
   >
-    <app-red-check-card
-      [content]="RED_III_CRITERIA.TIME_CORRELATION"
-      [isValid]="redCompliance()?.isTimeCorrelationValid ?? false"
-    ></app-red-check-card>
+    <div
+      class="flex flex-col justify-center rounded-lg p-4 text-sm"
+      [ngClass]="
+        redCompliance()?.isRedCompliant ? 'bg-secondary-100 text-secondary-600' : 'bg-neutral-200 text-neutral-600'
+      "
+    >
+      <span class="material-symbols-outlined text-3xl">
+        {{ redCompliance()?.isRedCompliant ? 'editor_choice' : 'release_alert' }}</span
+      >
+      <span class="font-semibold">{{ redCompliance()?.isRedCompliant ? 'RFNBO Ready' : 'Non Certifiable' }}</span>
+      <p>The calculation is based on RED III</p>
+    </div>
+    <div class="flex flex-col gap-2 py-4 pr-4">
+      <app-red-check-card
+        [content]="RED_III_CRITERIA.TIME_CORRELATION"
+        [isValid]="redCompliance()?.isTimeCorrelationValid ?? false"
+      ></app-red-check-card>
 
-    <app-red-check-card
-      [content]="RED_III_CRITERIA.GEOGRAPHICAL_CORRELATION"
-      [isValid]="redCompliance()?.isGeoCorrelationValid ?? false"
-    ></app-red-check-card>
+      <app-red-check-card
+        [content]="RED_III_CRITERIA.GEOGRAPHICAL_CORRELATION"
+        [isValid]="redCompliance()?.isGeoCorrelationValid ?? false"
+      ></app-red-check-card>
 
-    <app-red-check-card
-      [content]="RED_III_CRITERIA.ADDITIONALITY_REQUIREMENT"
-      [isValid]="redCompliance()?.isAdditionalityFulfilled ?? false"
-    ></app-red-check-card>
+      <app-red-check-card
+        [content]="RED_III_CRITERIA.ADDITIONALITY_REQUIREMENT"
+        [isValid]="redCompliance()?.isAdditionalityFulfilled ?? false"
+      ></app-red-check-card>
 
-    <app-red-check-card
-      [content]="RED_III_CRITERIA.FINANCIAL_SUPPORT"
-      [isValid]="redCompliance()?.financialSupportReceived ?? false"
-    ></app-red-check-card>
+      <app-red-check-card
+        [content]="RED_III_CRITERIA.FINANCIAL_SUPPORT"
+        [isValid]="redCompliance()?.financialSupportReceived ?? false"
+      ></app-red-check-card>
+
+      <app-red-check-card
+        [content]="RED_III_CRITERIA.EMISSION_REDUCTION"
+        [isValid]="redCompliance()?.isReductionLargerThan70Percent ?? false"
+      ></app-red-check-card>
+    </div>
   </div>
 </div>

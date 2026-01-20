@@ -12,6 +12,8 @@ export class RedComplianceDto {
   isTimeCorrelationValid: boolean;
   isAdditionalityFulfilled: boolean;
   financialSupportReceived: boolean;
+  // TODO: Add isReductionLargerThan70Percent to constructor
+  isReductionLargerThan70Percent: boolean = false;
 
   constructor(
     isGeoCorrelationValid: boolean,

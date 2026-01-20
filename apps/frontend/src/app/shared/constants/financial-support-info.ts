@@ -16,12 +16,16 @@ export const RED_III_CRITERIA = {
     DESCRIPTION: 'Power Production Unit and Hydrogen Production Unit have to be located in the same bidding Zone.',
   },
   TIME_CORRELATION: {
-    TITLE: 'Time Correlation',
+    TITLE: 'Temporal Correlation',
     DESCRIPTION: 'Electricity and hydrogen must be generated within the same hour.',
   },
   ADDITIONALITY_REQUIREMENT: {
-    TITLE: 'Additionality Requirement',
+    TITLE: 'Additionality',
     DESCRIPTION:
       'The system must not have been in operation for more than 36 months prior to commissioning of the electrolyzer.',
+  },
+  EMISSION_REDUCTION: {
+    TITLE: 'Greenhouse gas emission reduction',
+    DESCRIPTION: 'Greenhouse gas emission reduction is larger than 70%',
   },
 };
