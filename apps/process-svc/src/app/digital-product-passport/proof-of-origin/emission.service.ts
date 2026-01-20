@@ -77,7 +77,7 @@ export class EmissionService {
 
       emissionCalculations.push(
         new ProofOfSustainabilityEmissionCalculationEntity(
-          'Emissions (Hydrogen Storage)',
+          'Emissions (Compression)',
           hydrogenStorages.flatMap((pp) => pp.basisOfCalculation.at(-1)),
           hydrogenStorages.reduce((sum, curr) => sum + curr.result, 0),
           UNIT_G_CO2,

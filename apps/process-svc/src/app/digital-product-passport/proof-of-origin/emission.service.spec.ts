@@ -9,7 +9,7 @@
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, ProcessStepEntity, ProvenanceEntity, UnitMessagePatterns } from '@h2-trust/amqp';
-import { CalculationTopic, EnergySource, POWER_EMISSION_FACTORS, UNIT_G_CO2_PER_KG_H2 } from '@h2-trust/domain';
+import { CalculationTopic, EnergySource, POWER_EMISSION_FACTORS, UNIT_G_CO2, UNIT_G_CO2_PER_KG_H2 } from '@h2-trust/domain';
 import {
   BatchEntityFixture,
   PowerProductionTypeEntityFixture,
@@ -144,10 +144,9 @@ describe('EmissionService', () => {
     it('returns empty array when power productions is empty', async () => {
       // Arrange
       const givenPowerProductions: ProcessStepEntity[] = [];
-      const givenHydrogenAmount = 100;
 
       // Act
-      const actualResult = await service.computePowerSupplyEmissions(givenPowerProductions, givenHydrogenAmount);
+      const actualResult = await service.computePowerSupplyEmissions(givenPowerProductions);
 
       // Assert
       expect(actualResult).toEqual([]);
@@ -171,13 +170,13 @@ describe('EmissionService', () => {
         (givenProcessStep.batch.amount * expectedEmissionFactor.emissionFactor) / givenHydrogenAmount;
 
       // Act
-      const actualResult = await service.computePowerSupplyEmissions([givenProcessStep], givenHydrogenAmount);
+      const actualResult = await service.computePowerSupplyEmissions([givenProcessStep]);
 
       // Assert
       expect(actualResult).toHaveLength(1);
       expect(actualResult[0].name).toEqual(expectedEmissionFactor.label);
       expect(actualResult[0].result).toEqual(expectedResult);
-      expect(actualResult[0].unit).toEqual(UNIT_G_CO2_PER_KG_H2);
+      expect(actualResult[0].unit).toEqual(UNIT_G_CO2);
       expect(actualResult[0].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
 
       expect(generalSvcMock.send).toHaveBeenCalledWith(
@@ -188,8 +187,6 @@ describe('EmissionService', () => {
 
     it('computes emissions for multiple power productions with different energy sources', async () => {
       // Arrange
-      const givenHydrogenAmount = 100;
-
       const givenSolarUnit = PowerProductionUnitEntityFixture.create({
         id: 'solar-unit',
         type: PowerProductionTypeEntityFixture.createSolarEnergy(),
@@ -211,16 +208,13 @@ describe('EmissionService', () => {
       generalSvcMock.send.mockReturnValue(of([givenSolarUnit, givenGridUnit]));
 
       const expectedSolarEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.SOLAR_ENERGY];
-      const expectedSolarResult =
-        (givenSolarProcessStep.batch.amount * expectedSolarEmissionFactor.emissionFactor) / givenHydrogenAmount;
+      const expectedSolarResult = givenSolarProcessStep.batch.amount * expectedSolarEmissionFactor.emissionFactor;
 
       const expectedGridEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID];
-      const expectedGridResult =
-        (givenGridProcessStep.batch.amount * expectedGridEmissionFactor.emissionFactor) / givenHydrogenAmount;
+      const expectedGridResult = givenGridProcessStep.batch.amount * expectedGridEmissionFactor.emissionFactor;
       // Act
       const actualResult = await service.computePowerSupplyEmissions(
-        [givenSolarProcessStep, givenGridProcessStep],
-        givenHydrogenAmount,
+        [givenSolarProcessStep, givenGridProcessStep]
       );
 
       // Assert
@@ -228,12 +222,12 @@ describe('EmissionService', () => {
 
       expect(actualResult[0].name).toEqual(expectedSolarEmissionFactor.label);
       expect(actualResult[0].result).toEqual(expectedSolarResult);
-      expect(actualResult[0].unit).toEqual(UNIT_G_CO2_PER_KG_H2);
+      expect(actualResult[0].unit).toEqual(UNIT_G_CO2);
       expect(actualResult[0].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
 
       expect(actualResult[1].name).toEqual(expectedGridEmissionFactor.label);
       expect(actualResult[1].result).toEqual(expectedGridResult);
-      expect(actualResult[1].unit).toEqual(UNIT_G_CO2_PER_KG_H2);
+      expect(actualResult[1].unit).toEqual(UNIT_G_CO2);
       expect(actualResult[1].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
 
       expect(generalSvcMock.send).toHaveBeenCalledWith(
@@ -244,8 +238,6 @@ describe('EmissionService', () => {
 
     it('deduplicates unit IDs when same unit is used multiple times', async () => {
       // Arrange
-      const givenHydrogenAmount = 100;
-
       const givenUnit = PowerProductionUnitEntityFixture.create({
         type: PowerProductionTypeEntityFixture.createGrid(),
       });
@@ -261,15 +253,12 @@ describe('EmissionService', () => {
       generalSvcMock.send.mockReturnValue(of([givenUnit]));
 
       const expectedEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID];
-      const expectedResult1 =
-        (givenProcessStep1.batch.amount * expectedEmissionFactor.emissionFactor) / givenHydrogenAmount;
-      const expectedResult2 =
-        (givenProcessStep2.batch.amount * expectedEmissionFactor.emissionFactor) / givenHydrogenAmount;
+      const expectedResult1 = givenProcessStep1.batch.amount * expectedEmissionFactor.emissionFactor;
+      const expectedResult2 = givenProcessStep2.batch.amount * expectedEmissionFactor.emissionFactor;
 
       // Act
       const actualResult = await service.computePowerSupplyEmissions(
-        [givenProcessStep1, givenProcessStep2],
-        givenHydrogenAmount,
+        [givenProcessStep1, givenProcessStep2]
       );
 
       // Assert
@@ -277,12 +266,12 @@ describe('EmissionService', () => {
 
       expect(actualResult[0].name).toEqual(expectedEmissionFactor.label);
       expect(actualResult[0].result).toEqual(expectedResult1);
-      expect(actualResult[0].unit).toEqual(UNIT_G_CO2_PER_KG_H2);
+      expect(actualResult[0].unit).toEqual(UNIT_G_CO2);
       expect(actualResult[0].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
 
       expect(actualResult[1].name).toEqual(expectedEmissionFactor.label);
       expect(actualResult[1].result).toEqual(expectedResult2);
-      expect(actualResult[1].unit).toEqual(UNIT_G_CO2_PER_KG_H2);
+      expect(actualResult[1].unit).toEqual(UNIT_G_CO2);
       expect(actualResult[1].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
 
       expect(generalSvcMock.send).toHaveBeenCalledWith(
@@ -294,14 +283,13 @@ describe('EmissionService', () => {
     it('throws error when power production unit is not found', async () => {
       // Arrange
       const givenPowerProduction = ProcessStepEntityFixture.createPowerProduction();
-      const givenHydrogenAmount = 100;
 
       generalSvcMock.send.mockReturnValue(of([]));
 
       const expectedErrorMessage = `PowerProductionUnit [${givenPowerProduction.executedBy.id}] not found.`;
 
       // Act & Assert
-      await expect(service.computePowerSupplyEmissions([givenPowerProduction], givenHydrogenAmount)).rejects.toThrow(
+      await expect(service.computePowerSupplyEmissions([givenPowerProduction])).rejects.toThrow(
         expectedErrorMessage,
       );
     });
