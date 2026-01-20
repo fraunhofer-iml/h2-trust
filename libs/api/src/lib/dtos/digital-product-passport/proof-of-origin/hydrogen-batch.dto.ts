@@ -14,7 +14,6 @@ import { EmissionDto } from './emission.dto';
 export class HydrogenBatchDto extends BatchDto {
   producer: string;
   unitId: string;
-  purity: number;
   typeOfProduction: string;
   hydrogenComposition: HydrogenComponentDto[];
   color: string;
@@ -32,7 +31,6 @@ export class HydrogenBatchDto extends BatchDto {
     unit: string,
     producer: string,
     unitId: string,
-    purity: number,
     typeOfProduction: string,
     hydrogenComposition: HydrogenComponentDto[],
     color: string,
@@ -43,7 +41,6 @@ export class HydrogenBatchDto extends BatchDto {
     super(id, emission, creationDate, amount, unit, BatchType.HYDROGEN);
     this.producer = producer;
     this.unitId = unitId;
-    this.purity = purity;
     this.typeOfProduction = typeOfProduction;
     this.hydrogenComposition = hydrogenComposition;
     this.color = color;

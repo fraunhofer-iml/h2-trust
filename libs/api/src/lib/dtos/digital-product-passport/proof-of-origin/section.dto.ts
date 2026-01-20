@@ -108,7 +108,6 @@ export class SectionDto {
       batch.unit,
       batch.producer ?? '',
       batch.unitId ?? '',
-      0, // TODO-MP: will be removed in DUHGW-312
       '',
       hydrogenComposition,
       batch.color ?? '',

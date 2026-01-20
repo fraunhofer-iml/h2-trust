@@ -49,9 +49,7 @@
           ><span>{{ batch().createdAt | date: 'mediumDate' }}, {{ batch().createdAt | date: 'shortTime' }}</span>
         </div>
       }
-      <div class="flex flex-col text-sm">
-        <span class="text-sm text-neutral-500">Purity:</span><span>{{ (batch().purity | percent) || '-' }}</span>
-      </div>
+
       <div class="flex flex-col text-sm">
         <span class="text-sm text-neutral-500">Process Step:</span
         ><span>{{ batch().processStep | prettyEnum | titlecase }}</span>
