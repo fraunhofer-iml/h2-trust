@@ -12,6 +12,7 @@ import { PowerEmissionFactor, TrailerParameter } from './types';
 
 export const UNIT_G_CO2 = 'g CO₂,eq';
 export const UNIT_G_CO2_PER_KG_H2 = 'g CO₂,eq/kg H₂';
+export const UNIT_G_CO2_PER_KWH = 'g CO₂,eq/kWh';
 export const GRAVIMETRIC_ENERGY_DENSITY_H2_MJ_PER_KG = 120;
 export const FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ = 94;
 

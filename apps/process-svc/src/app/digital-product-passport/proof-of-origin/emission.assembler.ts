@@ -28,6 +28,7 @@ import {
   TransportMode,
   UNIT_G_CO2,
   UNIT_G_CO2_PER_KG_H2,
+  UNIT_G_CO2_PER_KWH,
 } from '@h2-trust/domain';
 
 // TODO-MP: check preconditions!
@@ -51,11 +52,11 @@ export class EmissionAssembler {
 
     const emissionFactorLabel = EnumLabelMapper.getEnergySource(energySource);
     const emissionFactor = POWER_EMISSION_FACTORS[energySource].emissionFactor;
-    const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} g CO₂,eq/kWh`;
+    const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} ${UNIT_G_CO2_PER_KWH}`;
 
     const result = consumedKwhPowerShare * emissionFactor;
     const totalEmissionsFormula = `Total Emissions = Consumed Power Share * Emission Factor ${emissionFactorLabel}`;
-    const totalEmissionsInput = `${result} g CO₂,eq = ${consumedKwhPowerShare} kWh * ${emissionFactor} g CO₂,eq/kWh`;
+    const totalEmissionsInput = `${result} ${UNIT_G_CO2}= ${consumedKwhPowerShare} kWh * ${emissionFactor} ${UNIT_G_CO2_PER_KWH}`;
 
     const basisOfCalculation = [consumedKwhPowerShareFormula, consumedKwhPowerShareInput, emissionFactorInput, totalEmissionsFormula, totalEmissionsInput];
 
