@@ -19,7 +19,7 @@ import {
   ReadByIdsPayload,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
-import { ProcessType } from '@h2-trust/domain';
+import { CalculationTopic, ProcessType, UNIT_G_CO2 } from '@h2-trust/domain';
 import { EmissionAssembler } from './emission.assembler';
 
 @Injectable()
@@ -41,7 +41,16 @@ export class EmissionService {
       const powerProductions: ProofOfSustainabilityEmissionCalculationEntity[] = await this.computePowerSupplyEmissions(
         provenance.powerProductions
       );
-      emissionCalculations.push(...powerProductions);
+
+      emissionCalculations.push(
+        new ProofOfSustainabilityEmissionCalculationEntity(
+          'Emissions (Power Supply)',
+          powerProductions.flatMap((pp) => pp.basisOfCalculation.at(-1)),
+          powerProductions.reduce((sum, curr) => sum + curr.result, 0),
+          UNIT_G_CO2,
+          CalculationTopic.POWER_SUPPLY,
+        )
+      );
     }
 
     if (provenance.waterConsumptions) {
@@ -49,14 +58,32 @@ export class EmissionService {
         (waterConsumption) =>
           EmissionAssembler.assembleWaterSupply(waterConsumption),
       );
-      emissionCalculations.push(...waterConsumptions);
+
+      emissionCalculations.push(
+        new ProofOfSustainabilityEmissionCalculationEntity(
+          'Emissions (Water Supply)',
+          waterConsumptions.flatMap((pp) => pp.basisOfCalculation.at(-1)),
+          waterConsumptions.reduce((sum, curr) => sum + curr.result, 0),
+          UNIT_G_CO2,
+          CalculationTopic.WATER_SUPPLY,
+        )
+      );
     }
 
     if (provenance.hydrogenProductions) {
       const hydrogenStorages: ProofOfSustainabilityEmissionCalculationEntity[] = provenance.hydrogenProductions.map(
         (hydrogenProduction) => EmissionAssembler.assembleHydrogenStorage(hydrogenProduction),
       );
-      emissionCalculations.push(...hydrogenStorages);
+
+      emissionCalculations.push(
+        new ProofOfSustainabilityEmissionCalculationEntity(
+          'Emissions (Hydrogen Storage)',
+          hydrogenStorages.flatMap((pp) => pp.basisOfCalculation.at(-1)),
+          hydrogenStorages.reduce((sum, curr) => sum + curr.result, 0),
+          UNIT_G_CO2,
+          CalculationTopic.HYDROGEN_STORAGE,
+        )
+      );
     }
 
     if (provenance.hydrogenBottling) {
