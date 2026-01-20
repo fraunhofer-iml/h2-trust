@@ -33,7 +33,7 @@ export class PowerSupplyClassificationService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly emissionService: EmissionService,
-  ) { }
+  ) {}
 
   async buildPowerSupplySubClassifications(
     powerProductions: ProcessStepEntity[],

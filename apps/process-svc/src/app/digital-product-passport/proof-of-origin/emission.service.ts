@@ -24,7 +24,7 @@ import { EmissionAssembler } from './emission.assembler';
 
 @Injectable()
 export class EmissionService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) { }
+  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) {}
 
   async computeProvenanceEmissions(provenance: ProvenanceEntity): Promise<ProofOfSustainabilityEntity> {
     if (!provenance) {
@@ -39,7 +39,7 @@ export class EmissionService {
 
     if (provenance.powerProductions) {
       const powerProductions: ProofOfSustainabilityEmissionCalculationEntity[] = await this.computePowerSupplyEmissions(
-        provenance.powerProductions
+        provenance.powerProductions,
       );
 
       emissionCalculations.push(
@@ -49,14 +49,13 @@ export class EmissionService {
           powerProductions.reduce((sum, curr) => sum + curr.result, 0),
           UNIT_G_CO2,
           CalculationTopic.POWER_SUPPLY,
-        )
+        ),
       );
     }
 
     if (provenance.waterConsumptions) {
       const waterConsumptions: ProofOfSustainabilityEmissionCalculationEntity[] = provenance.waterConsumptions.map(
-        (waterConsumption) =>
-          EmissionAssembler.assembleWaterSupply(waterConsumption),
+        (waterConsumption) => EmissionAssembler.assembleWaterSupply(waterConsumption),
       );
 
       emissionCalculations.push(
@@ -66,7 +65,7 @@ export class EmissionService {
           waterConsumptions.reduce((sum, curr) => sum + curr.result, 0),
           UNIT_G_CO2,
           CalculationTopic.WATER_SUPPLY,
-        )
+        ),
       );
     }
 
@@ -82,7 +81,7 @@ export class EmissionService {
           hydrogenStorages.reduce((sum, curr) => sum + curr.result, 0),
           UNIT_G_CO2,
           CalculationTopic.HYDROGEN_STORAGE,
-        )
+        ),
       );
     }
 
@@ -98,11 +97,15 @@ export class EmissionService {
       emissionCalculations.push(hydrogenTransportation);
     }
 
-    return EmissionAssembler.assembleProofOfSustainability(provenance.root.id, emissionCalculations, provenance.hydrogenBottling.batch.amount);
+    return EmissionAssembler.assembleProofOfSustainability(
+      provenance.root.id,
+      emissionCalculations,
+      provenance.hydrogenBottling.batch.amount,
+    );
   }
 
   async computePowerSupplyEmissions(
-    powerProductions: ProcessStepEntity[]
+    powerProductions: ProcessStepEntity[],
   ): Promise<ProofOfSustainabilityEmissionCalculationEntity[]> {
     if (!powerProductions.length) {
       return [];

@@ -9,7 +9,13 @@
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, ProcessStepEntity, ProvenanceEntity, UnitMessagePatterns } from '@h2-trust/amqp';
-import { CalculationTopic, EnergySource, POWER_EMISSION_FACTORS, UNIT_G_CO2, UNIT_G_CO2_PER_KG_H2 } from '@h2-trust/domain';
+import {
+  CalculationTopic,
+  EnergySource,
+  POWER_EMISSION_FACTORS,
+  UNIT_G_CO2,
+  UNIT_G_CO2_PER_KG_H2,
+} from '@h2-trust/domain';
 import {
   BatchEntityFixture,
   PowerProductionTypeEntityFixture,
@@ -213,9 +219,7 @@ describe('EmissionService', () => {
       const expectedGridEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID];
       const expectedGridResult = givenGridProcessStep.batch.amount * expectedGridEmissionFactor.emissionFactor;
       // Act
-      const actualResult = await service.computePowerSupplyEmissions(
-        [givenSolarProcessStep, givenGridProcessStep]
-      );
+      const actualResult = await service.computePowerSupplyEmissions([givenSolarProcessStep, givenGridProcessStep]);
 
       // Assert
       expect(actualResult).toHaveLength(2);
@@ -257,9 +261,7 @@ describe('EmissionService', () => {
       const expectedResult2 = givenProcessStep2.batch.amount * expectedEmissionFactor.emissionFactor;
 
       // Act
-      const actualResult = await service.computePowerSupplyEmissions(
-        [givenProcessStep1, givenProcessStep2]
-      );
+      const actualResult = await service.computePowerSupplyEmissions([givenProcessStep1, givenProcessStep2]);
 
       // Assert
       expect(actualResult).toHaveLength(2);
@@ -289,9 +291,7 @@ describe('EmissionService', () => {
       const expectedErrorMessage = `PowerProductionUnit [${givenPowerProduction.executedBy.id}] not found.`;
 
       // Act & Assert
-      await expect(service.computePowerSupplyEmissions([givenPowerProduction])).rejects.toThrow(
-        expectedErrorMessage,
-      );
+      await expect(service.computePowerSupplyEmissions([givenPowerProduction])).rejects.toThrow(expectedErrorMessage);
     });
   });
 });

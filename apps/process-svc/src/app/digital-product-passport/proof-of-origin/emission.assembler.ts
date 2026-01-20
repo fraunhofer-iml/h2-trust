@@ -34,7 +34,7 @@ import {
 export class EmissionAssembler {
   static assemblePowerSupply(
     powerProduction: ProcessStepEntity,
-    energySource: EnergySource
+    energySource: EnergySource,
   ): ProofOfSustainabilityEmissionCalculationEntity {
     if (powerProduction?.type !== ProcessType.POWER_PRODUCTION) {
       throw new Error(`Invalid process step type [${powerProduction?.type}] for power supply emission calculation`);
@@ -62,16 +62,14 @@ export class EmissionAssembler {
     );
   }
 
-  static assembleWaterSupply(
-    waterSupply: ProcessStepEntity
-  ): ProofOfSustainabilityEmissionCalculationEntity {
+  static assembleWaterSupply(waterSupply: ProcessStepEntity): ProofOfSustainabilityEmissionCalculationEntity {
     if (waterSupply?.type !== ProcessType.WATER_CONSUMPTION) {
       throw new Error(`Invalid process step type [${waterSupply?.type}] for water supply emission calculation`);
     }
 
     const waterInput = waterSupply.batch.amount;
     const emissionFactorDeionizedWater = 0.43;
-    const result = (waterInput * emissionFactorDeionizedWater);
+    const result = waterInput * emissionFactorDeionizedWater;
 
     const emissionFactorLabel = 'Deionized Water';
     const waterInputInput = `Water Input: ${waterInput} L`;
@@ -111,7 +109,13 @@ export class EmissionAssembler {
     const formula = `E = Energy Demand * Emission Factor ${emissionFactorLabel} * Hydrogen Produced`;
     const formulaResult = `${result} ${UNIT_G_CO2} = ${energyDemand} kWh/kg H₂ * ${emissionFactor} g CO₂,eq/kWh * ${hydrogenProduction.batch.amount} kg H₂`;
 
-    const basisOfCalculation = [energyDemandInput, emissionFactorInput, hydrogenProducedKgInput, formula, formulaResult];
+    const basisOfCalculation = [
+      energyDemandInput,
+      emissionFactorInput,
+      hydrogenProducedKgInput,
+      formula,
+      formulaResult,
+    ];
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
       'Emissions (Compression from 30 bar to 300 bar)',

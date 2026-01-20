@@ -10,7 +10,7 @@
       <div class="flex w-full justify-between text-sm text-neutral-500">
         <h3 class="text-base">{{ classification().name | prettyEnum | titlecase }}</h3>
         <span class="text-sm text-neutral-500">
-          {{ (classification().emissionOfProcessStep || 0) | unit: FormattedUnits.G_CO2 }}
+          {{ classification().emissionOfProcessStep || 0 | unit: FormattedUnits.G_CO2 }}
         </span>
       </div>
       <app-verified-chart
