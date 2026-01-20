@@ -98,7 +98,7 @@ export class EmissionService {
       emissionCalculations.push(hydrogenTransportation);
     }
 
-    return EmissionAssembler.assembleProofOfSustainability(provenance.root.id, emissionCalculations);
+    return EmissionAssembler.assembleProofOfSustainability(provenance.root.id, emissionCalculations, provenance.hydrogenBottling.batch.amount);
   }
 
   async computePowerSupplyEmissions(

@@ -11,6 +11,8 @@ import { ProofOfSustainabilityEmissionEntity } from './proof-of-sustainability-e
 
 export class ProofOfSustainabilityEntity {
   batchId: string;
+  totalEmissions: number;
+  amountCO2PerKgH2: number;
   amountCO2PerMJH2: number;
   emissionReductionPercentage: number;
   calculations: ProofOfSustainabilityEmissionCalculationEntity[];
@@ -18,12 +20,16 @@ export class ProofOfSustainabilityEntity {
 
   constructor(
     batchId: string,
+    totalEmissions: number,
+    amountCO2PerKgH2: number,
     amountCO2PerMJH2: number,
     emissionReductionPercentage: number,
     calculations: ProofOfSustainabilityEmissionCalculationEntity[],
     emissions: ProofOfSustainabilityEmissionEntity[],
   ) {
     this.batchId = batchId;
+    this.totalEmissions = totalEmissions;
+    this.amountCO2PerKgH2 = amountCO2PerKgH2;
     this.amountCO2PerMJH2 = amountCO2PerMJH2;
     this.emissionReductionPercentage = emissionReductionPercentage;
     this.calculations = calculations;

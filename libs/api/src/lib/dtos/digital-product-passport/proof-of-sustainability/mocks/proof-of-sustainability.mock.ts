@@ -11,8 +11,10 @@ import { emissionCalculationMock } from './emission-calculation.mock';
 import { processStepEmissionsMock } from './process-step-emission.mock';
 
 export const proofOfSustainabilityMock: ProofOfSustainabilityDto = {
-  amountCO2PerMJH2: 20.7,
   batchId: 'batch-456123',
+  totalEmissions: 1500,
+  amountCO2PerKgH2: 75.3,
+  amountCO2PerMJH2: 20.7,
   calculations: emissionCalculationMock,
   emissionReductionPercentage: 87.6,
   processStepEmissions: processStepEmissionsMock,

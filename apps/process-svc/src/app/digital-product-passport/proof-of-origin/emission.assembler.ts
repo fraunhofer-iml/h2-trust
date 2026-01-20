@@ -250,6 +250,7 @@ export class EmissionAssembler {
   static assembleProofOfSustainability(
     batchId: string,
     emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
+    hydrogenAmountKg: number,
   ): ProofOfSustainabilityEntity {
     const applicationEmissions: ProofOfSustainabilityEmissionEntity[] =
       EmissionAssembler.assembleApplicationEmissions(emissionCalculations);
@@ -268,12 +269,17 @@ export class EmissionAssembler {
     );
     const emissions: ProofOfSustainabilityEmissionEntity[] = [...applicationEmissions, ...regulatoryEmissions];
 
-    const amountCO2PerMJH2: number = applicationEmissionAmount / GRAVIMETRIC_ENERGY_DENSITY_H2_MJ_PER_KG;
+    const totalEmissions: number = applicationEmissionAmount;
+    const amountCO2PerKgH2: number = applicationEmissionAmount / hydrogenAmountKg;
+    const amountCO2PerMJH2: number = amountCO2PerKgH2 / GRAVIMETRIC_ENERGY_DENSITY_H2_MJ_PER_KG;
+
     const emissionReductionPercentage: number =
       (Math.max(FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ - amountCO2PerMJH2, 0) / FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ) * 100;
 
     return new ProofOfSustainabilityEntity(
       batchId,
+      totalEmissions,
+      amountCO2PerKgH2,
       amountCO2PerMJH2,
       emissionReductionPercentage,
       emissionCalculations,

@@ -16,6 +16,8 @@ import { EmissionForProcessStepDto } from './process-step-emission.dto';
 
 export class ProofOfSustainabilityDto {
   batchId: string;
+  totalEmissions: number;
+  amountCO2PerKgH2: number;
   amountCO2PerMJH2: number;
   emissionReductionPercentage: number;
   calculations: EmissionCalculationDto[];
@@ -23,12 +25,16 @@ export class ProofOfSustainabilityDto {
 
   constructor(
     batchId: string,
+    totalEmissions: number,
+    amountCO2PerKgH2: number,
     amountCO2PerMJH2: number,
     emissionReductionPercentage: number,
     calculations: EmissionCalculationDto[],
     processStepEmissions: EmissionForProcessStepDto[],
   ) {
     this.batchId = batchId;
+    this.totalEmissions = totalEmissions;
+    this.amountCO2PerKgH2 = amountCO2PerKgH2;
     this.amountCO2PerMJH2 = amountCO2PerMJH2;
     this.emissionReductionPercentage = emissionReductionPercentage;
     this.calculations = calculations;
@@ -42,6 +48,8 @@ export class ProofOfSustainabilityDto {
 
     return new ProofOfSustainabilityDto(
       entity.batchId,
+      entity.totalEmissions,
+      entity.amountCO2PerKgH2,
       entity.amountCO2PerMJH2,
       entity.emissionReductionPercentage,
       calculations,
