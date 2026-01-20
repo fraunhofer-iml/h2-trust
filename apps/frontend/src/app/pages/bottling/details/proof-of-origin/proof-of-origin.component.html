@@ -21,9 +21,9 @@
     @for (item of data$().sections; track $index; let sIndex = $index) {
       <div class="flex flex-row items-center gap-2">
         <div
-          class="bg-primary-300/20 border-primary-200/20 flex h-12 w-12 items-center justify-center rounded-full border-2"
+          class="bg-primary-100 border-primary-200/30 flex h-12 w-12 items-center justify-center rounded-full border-2"
         >
-          <span class="material-symbols-outlined text-primary-200"> arrow_downward </span>
+          <span class="material-symbols-outlined text-primary-400"> arrow_downward </span>
         </div>
         <span class="py-2 text-neutral-500">{{ item.name | prettyEnum | titlecase }}</span>
       </div>
@@ -38,7 +38,7 @@
         }
         @for (batch of item.batches; track $index) {
           @if (isInstanceOfWaterBatch(batch); as waterBatch) {
-            <app-water-batch-card [batch]="waterBatch"> </app-water-batch-card>
+            <app-water-batch-card [batch]="waterBatch"></app-water-batch-card>
           }
           @if (isInstanceOfHydrogenBatch(batch); as hydrogenBatch) {
             <app-h2-batch-card [batch]="hydrogenBatch"></app-h2-batch-card>
