@@ -40,9 +40,24 @@ export class SidebarComponent implements OnInit {
   protected readonly router = inject(Router);
 
   sidebarOptions = [
-    { title: 'Units', icon: 'water_drop', route: ROUTES.UNITS },
-    { title: 'Production', icon: 'manufacturing', route: ROUTES.PRODUCTION },
-    { title: 'Bottling', icon: 'propane_tank', route: ROUTES.BOTTLING },
+    {
+      title: 'Units',
+      icon: 'water_drop',
+      route: ROUTES.UNITS,
+      isActive: () => this.router.url.split('/')[1] === ROUTES.UNITS,
+    },
+    {
+      title: 'Production',
+      icon: 'manufacturing',
+      route: ROUTES.PRODUCTION,
+      isActive: () => this.router.url.split('/')[1] === ROUTES.PRODUCTION,
+    },
+    {
+      title: 'Bottling',
+      icon: 'propane_tank',
+      route: ROUTES.BOTTLING,
+      isActive: () => this.router.url.split('/')[1] === ROUTES.BOTTLING,
+    },
   ];
 
   isAuthenticated = false;
