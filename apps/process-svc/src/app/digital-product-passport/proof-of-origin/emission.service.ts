@@ -131,13 +131,13 @@ export class EmissionService {
         EmissionAssembler.assembleHydrogenBottling(provenance.hydrogenBottling);
 
       const totalEmissions = hydrogenBottling.result.toString();
-      const calculations = hydrogenBottling.basisOfCalculation;
+      const totalEmissionsSummarized = [`${hydrogenBottling.result} ${UNIT_G_CO2}`];
       const totalEmissionsByKgHydrogen = hydrogenBottling.result / bottledHydrogenAmount;
 
       emissionCalculations.push(
         new ProofOfSustainabilityEmissionCalculationEntity(
           totalEmissions,
-          calculations,
+          totalEmissionsSummarized,
           totalEmissionsByKgHydrogen,
           UNIT_G_CO2_PER_KG_H2,
           CalculationTopic.HYDROGEN_BOTTLING,
@@ -150,13 +150,13 @@ export class EmissionService {
         EmissionAssembler.assembleHydrogenTransportation(provenance.root);
 
       const totalEmissions = hydrogenTransportation.result.toString();
-      const calculations = hydrogenTransportation.basisOfCalculation;
+      const totalEmissionsSummarized = [`${hydrogenTransportation.result} ${UNIT_G_CO2}`];
       const totalEmissionsByKgHydrogen = hydrogenTransportation.result / bottledHydrogenAmount;
 
       emissionCalculations.push(
         new ProofOfSustainabilityEmissionCalculationEntity(
           totalEmissions,
-          calculations,
+          totalEmissionsSummarized,
           totalEmissionsByKgHydrogen,
           UNIT_G_CO2_PER_KG_H2,
           CalculationTopic.HYDROGEN_TRANSPORTATION,
