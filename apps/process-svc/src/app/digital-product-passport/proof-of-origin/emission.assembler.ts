@@ -386,11 +386,11 @@ export class EmissionAssembler {
     emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity,
     kgHydrogen: number,
   ): ProofOfOriginEmissionEntity {
-    const gCo2 = emissionCalculation?.result ?? 0;
-    const gCo2PerKgHydrogen = gCo2 / kgHydrogen;
+    const totalEmissions = emissionCalculation?.result ?? 0;
+    const totalEmissionsPerKgHydrogen = totalEmissions / kgHydrogen;
     return {
-      amountCO2: gCo2,
-      amountCO2PerKgH2: gCo2PerKgHydrogen,
+      totalEmissions: totalEmissions,
+      totalEmissionsPerKgHydrogen: totalEmissionsPerKgHydrogen,
       basisOfCalculation: emissionCalculation?.basisOfCalculation ?? [],
     };
   }

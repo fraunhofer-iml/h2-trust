@@ -158,7 +158,7 @@ export class SectionDto {
 
   private static fromEmissionEntity(emission: ProofOfOriginEmissionEntity): EmissionDto {
     return emission
-      ? new EmissionDto(emission.amountCO2 ?? 0, emission.amountCO2PerKgH2 ?? 0, emission.basisOfCalculation ?? [])
+      ? new EmissionDto(emission.totalEmissions ?? 0, emission.totalEmissionsPerKgHydrogen ?? 0, emission.basisOfCalculation ?? [])
       : new EmissionDto(0, 0, []);
   }
 }
