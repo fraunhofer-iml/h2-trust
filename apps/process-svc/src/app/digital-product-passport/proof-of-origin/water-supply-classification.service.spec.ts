@@ -43,7 +43,7 @@ describe('WaterSupplyClassificationService', () => {
       const batch = actualResult.batches[0] as ProofOfOriginWaterBatchEntity;
       expect(batch.id).toBe(givenWaterConsumption.batch.id);
       expect(batch.emission).toBeDefined();
-      expect(batch.emission.amountCO2PerKgH2).toBeGreaterThan(0);
+      expect(batch.emission.totalEmissionsPerKgHydrogen).toBeGreaterThan(0);
       expect(batch.createdAt).toBe(givenWaterConsumption.startedAt);
       expect(batch.amount).toBe(givenWaterConsumption.batch.amount);
       expect(batch.unit).toBe(MeasurementUnit.WATER);

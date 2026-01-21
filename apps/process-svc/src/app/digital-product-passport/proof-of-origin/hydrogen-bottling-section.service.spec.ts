@@ -62,7 +62,7 @@ describe('HydrogenBottlingSectionService', () => {
       const batch = actualResult.batches[0] as ProofOfOriginHydrogenBatchEntity;
       expect(batch.id).toBe(givenHydrogenBottling.batch.id);
       expect(batch.emission).toBeDefined();
-      expect(batch.emission.amountCO2PerKgH2).toBe(0);
+      expect(batch.emission.totalEmissionsPerKgHydrogen).toBe(0);
       expect(batch.emission.basisOfCalculation).toEqual(['E = [TBD]']);
       expect(batch.createdAt).toBe(givenHydrogenBottling.startedAt);
       expect(batch.amount).toBe(givenHydrogenBottling.batch.amount);

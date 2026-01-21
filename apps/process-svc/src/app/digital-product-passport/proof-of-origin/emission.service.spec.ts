@@ -9,13 +9,7 @@
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, ProcessStepEntity, ProvenanceEntity, UnitMessagePatterns } from '@h2-trust/amqp';
-import {
-  CalculationTopic,
-  EnergySource,
-  POWER_EMISSION_FACTORS,
-  UNIT_G_CO2,
-  UNIT_G_CO2_PER_KG_H2,
-} from '@h2-trust/domain';
+import { CalculationTopic, EnergySource, POWER_EMISSION_FACTORS, UNIT_G_CO2 } from '@h2-trust/domain';
 import {
   BatchEntityFixture,
   PowerProductionTypeEntityFixture,
@@ -60,68 +54,56 @@ describe('EmissionService', () => {
       expect(actualResult.calculations.length).toBeGreaterThan(0);
     });
 
-    it('computes emissions including water consumptions', async () => {
+    it('computes emissions for entire provenance', async () => {
       // Arrange
+      const givenPowerProduction = ProcessStepEntityFixture.createPowerProduction();
       const givenWaterConsumption = ProcessStepEntityFixture.createWaterConsumption();
-      const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
-      const givenProvenance = new ProvenanceEntity(givenHydrogenBottling, givenHydrogenBottling, undefined, [
-        givenWaterConsumption,
-      ]);
-
-      // Act
-      const actualResult = await service.computeProvenanceEmissions(givenProvenance);
-
-      // Assert
-      expect(actualResult).toBeDefined();
-      expect(actualResult.calculations.some((c) => c.name?.includes('Water'))).toBe(true);
-    });
-
-    it('computes emissions including hydrogen productions', async () => {
-      // Arrange
       const givenHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction();
-      const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
-      const givenProvenance = new ProvenanceEntity(givenHydrogenBottling, givenHydrogenBottling, [
-        givenHydrogenProduction,
-      ]);
-
-      // Act
-      const actualResult = await service.computeProvenanceEmissions(givenProvenance);
-
-      // Assert
-      expect(actualResult).toBeDefined();
-      expect(actualResult.calculations.some((c) => c.name?.includes('Compression'))).toBe(true);
-    });
-
-    it('computes emissions including hydrogen transportation with pipeline', async () => {
-      // Arrange
-      const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
-      const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation({
-        transportationDetails: TransportationDetailsEntityFixture.createPipeline(),
-      });
-      const givenProvenance = new ProvenanceEntity(givenHydrogenTransportation, givenHydrogenBottling);
-
-      // Act
-      const actualResult = await service.computeProvenanceEmissions(givenProvenance);
-
-      // Assert
-      expect(actualResult).toBeDefined();
-      expect(actualResult.calculations.some((c) => c.name?.includes('Pipeline'))).toBe(true);
-    });
-
-    it('computes emissions including hydrogen transportation with trailer', async () => {
-      // Arrange
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
       const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation({
         transportationDetails: TransportationDetailsEntityFixture.createTrailer(),
       });
-      const givenProvenance = new ProvenanceEntity(givenHydrogenTransportation, givenHydrogenBottling);
+      const givenProvenance = new ProvenanceEntity(
+        givenHydrogenTransportation,
+        givenHydrogenBottling,
+        [givenHydrogenProduction],
+        [givenWaterConsumption],
+        [givenPowerProduction],
+      );
+
+      const givenUnit = PowerProductionUnitEntityFixture.create({
+        type: PowerProductionTypeEntityFixture.createSolarEnergy(),
+      });
+      generalSvcMock.send.mockReturnValue(of([givenUnit]));
 
       // Act
       const actualResult = await service.computeProvenanceEmissions(givenProvenance);
 
+      console.log(actualResult);
+
       // Assert
       expect(actualResult).toBeDefined();
-      expect(actualResult.calculations.some((c) => c.name?.includes('Trailer'))).toBe(true);
+      expect(actualResult.batchId).toBe(givenHydrogenTransportation.id);
+      expect(actualResult.calculations.length).toBe(5);
+      expect(actualResult.calculations.filter((c) => c.calculationTopic === CalculationTopic.POWER_SUPPLY).length).toBe(
+        1,
+      );
+      expect(actualResult.calculations.filter((c) => c.calculationTopic === CalculationTopic.WATER_SUPPLY).length).toBe(
+        1,
+      );
+      expect(
+        actualResult.calculations.filter((c) => c.calculationTopic === CalculationTopic.HYDROGEN_STORAGE).length,
+      ).toBe(1);
+      expect(
+        actualResult.calculations.filter((c) => c.calculationTopic === CalculationTopic.HYDROGEN_BOTTLING).length,
+      ).toBe(1);
+      expect(
+        actualResult.calculations.filter((c) => c.calculationTopic === CalculationTopic.HYDROGEN_TRANSPORTATION).length,
+      ).toBe(1);
+      expect(actualResult.emissions.length).toBe(8);
+      expect(actualResult.emissions.filter((e) => e.emissionType === 'APPLICATION').length).toBe(5);
+      expect(actualResult.emissions.filter((e) => e.emissionType === 'REGULATORY').length).toBe(3);
+      expect(generalSvcMock.send).toHaveBeenCalledTimes(1);
     });
 
     it('throws error when provenance is undefined', async () => {
