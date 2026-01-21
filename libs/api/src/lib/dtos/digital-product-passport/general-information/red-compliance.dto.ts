@@ -13,7 +13,7 @@ export class RedComplianceDto {
   isAdditionalityFulfilled: boolean;
   financialSupportReceived: boolean;
   // TODO: Add isReductionLargerThan70Percent to constructor
-  isReductionLargerThan70Percent: boolean = false;
+  isReductionLargerThan70Percent = false;
 
   constructor(
     isGeoCorrelationValid: boolean,
