@@ -22,7 +22,7 @@ import {
   ReadByIdPayload,
   ReadProcessStepsByTypesAndActiveAndCompanyPayload,
 } from '@h2-trust/amqp';
-import { BottlingDto, BottlingOverviewDto, GeneralInformationDto } from '@h2-trust/api';
+import { BottlingDto, BottlingOverviewDto, ProductPassportDto } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 
@@ -82,7 +82,7 @@ export class BottlingService {
     return bottlingsAndTransportations.map(BottlingOverviewDto.fromEntity);
   }
 
-  async readGeneralInformation(id: string): Promise<GeneralInformationDto> {
+  async readProductPassport(id: string): Promise<ProductPassportDto> {
     const generalInformation: GeneralInformationEntity = await firstValueFrom(
       this.processSvc.send(DigitalProductPassportPatterns.READ_GENERAL_INFORMATION, new ReadByIdPayload(id)),
     );
@@ -92,6 +92,6 @@ export class BottlingService {
     const proofOfSustainability: ProofOfSustainabilityEntity = await firstValueFrom(
       this.processSvc.send(DigitalProductPassportPatterns.READ_PROOF_OF_SUSTAINABILITY, new ReadByIdPayload(id)),
     );
-    return GeneralInformationDto.fromEnities(generalInformation, proofOfOrigin, proofOfSustainability);
+    return ProductPassportDto.fromEnities(generalInformation, proofOfOrigin, proofOfSustainability);
   }
 }

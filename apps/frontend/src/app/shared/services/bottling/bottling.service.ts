@@ -9,7 +9,7 @@
 import { lastValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BottlingOverviewDto, GeneralInformationDto, ProofOfSustainabilityDto, SectionDto } from '@h2-trust/api';
+import { BottlingOverviewDto, ProductPassportDto } from '@h2-trust/api';
 import { API } from '../../constants/api-endpoints';
 
 @Injectable()
@@ -24,14 +24,7 @@ export class BottlingService {
     return lastValueFrom(this.httpClient.post<BottlingOverviewDto>(API.BOTTLING.BASE, data));
   }
 
-  findBatchById(id: string): Promise<GeneralInformationDto> {
-    return lastValueFrom(this.httpClient.get<GeneralInformationDto>(API.BOTTLING.DETAILS(id)));
-  }
-
-  getProofOfOrigin(id: string): Promise<SectionDto[]> {
-    return lastValueFrom(this.httpClient.get<SectionDto[]>(API.BOTTLING.PROOF_OF_ORIGIN(id)));
-  }
-  getProofOfSustainability(id: string): Promise<ProofOfSustainabilityDto> {
-    return lastValueFrom(this.httpClient.get<ProofOfSustainabilityDto>(API.BOTTLING.PROOF_OF_SUSTAINABILITY(id)));
+  findBatchById(id: string): Promise<ProductPassportDto> {
+    return lastValueFrom(this.httpClient.get<ProductPassportDto>(API.BOTTLING.DETAILS(id)));
   }
 }
