@@ -44,24 +44,23 @@ export class EmissionService {
         provenance.powerProductions,
       );
 
-      const totalEmissions = powerProductions.reduce((sum, curr) => sum + curr.result, 0).toString();
+      const totalEmissions = powerProductions.reduce((sum, curr) => sum + curr.result, 0);
 
-      const emissionsByEnergySource = powerProductions.reduce(
-        (map, pp) => {
-          map.set(pp.name, (map.get(pp.name) ?? 0) + pp.result);
-          return map;
-        },
-        new Map<string, number>(),
-      );
       const totalEmissionsGrouped = Array
-        .from(emissionsByEnergySource.entries())
-        .map(([energySource, result]) => `${energySource} : ${result} ${UNIT_G_CO2}`);
+        .from(powerProductions
+          .reduce((map, entity) =>
+            map.set(entity.name, (map.get(entity.name) ?? 0) + entity.result),
+            new Map<string, number>())
+          .entries(),
+        ).map(([energySource, result]) =>
+          `${energySource} : ${result} ${UNIT_G_CO2}`
+        );
 
-      const totalEmissionsByKgHydrogen = powerProductions.reduce((sum, curr) => sum + curr.result, 0) / bottledHydrogenAmount;
+      const totalEmissionsByKgHydrogen = totalEmissions / bottledHydrogenAmount;
 
       emissionCalculations.push(
         new ProofOfSustainabilityEmissionCalculationEntity(
-          totalEmissions,
+          totalEmissions.toString(),
           totalEmissionsGrouped,
           totalEmissionsByKgHydrogen,
           UNIT_G_CO2_PER_KG_H2,
@@ -75,15 +74,13 @@ export class EmissionService {
         (waterConsumption) => EmissionAssembler.assembleWaterSupply(waterConsumption),
       );
 
-      const totalEmissions = waterConsumptions.reduce((acc, wc) => acc + wc.result, 0).toString();
-
+      const totalEmissions = waterConsumptions.reduce((acc, wc) => acc + wc.result, 0);
       const totalEmissionsGrouped = [`${totalEmissions} ${UNIT_G_CO2}`];
-
-      const totalEmissionsByKgHydrogen = waterConsumptions.reduce((sum, curr) => sum + curr.result, 0) / bottledHydrogenAmount;
+      const totalEmissionsByKgHydrogen = totalEmissions / bottledHydrogenAmount;
 
       emissionCalculations.push(
         new ProofOfSustainabilityEmissionCalculationEntity(
-          totalEmissions,
+          totalEmissions.toString(),
           totalEmissionsGrouped,
           totalEmissionsByKgHydrogen,
           UNIT_G_CO2_PER_KG_H2,
@@ -97,25 +94,24 @@ export class EmissionService {
         (hydrogenProduction) => EmissionAssembler.assembleHydrogenStorage(hydrogenProduction),
       );
 
-      const totalEmissions = hydrogenStorages.reduce((sum, curr) => sum + curr.result, 0).toString();
+      const totalEmissions = hydrogenStorages.reduce((sum, curr) => sum + curr.result, 0);
 
-      const emissionsByColor = provenance.hydrogenProductions.reduce(
-        (map, hp, index) => {
-          const color = EnumLabelMapper.getHydrogenColor(hp.batch.qualityDetails?.color as HydrogenColor);
-          map.set(color, (map.get(color) ?? 0) + hydrogenStorages[index].result);
-          return map;
-        },
-        new Map<string, number>(),
-      );
       const totalEmissionsGrouped = Array
-        .from(emissionsByColor.entries())
-        .map(([color, result]) => `${color} : ${result} ${UNIT_G_CO2}`);
+        .from(provenance.hydrogenProductions
+          .reduce((map, entity, index) => {
+            const color = EnumLabelMapper.getHydrogenColor(entity.batch.qualityDetails?.color as HydrogenColor);
+            return map.set(color, (map.get(color) ?? 0) + hydrogenStorages[index].result);
+          }, new Map<string, number>())
+          .entries()
+        ).map(([color, result]) =>
+          `${color} : ${result} ${UNIT_G_CO2}`
+        );
 
-      const totalEmissionsByKgHydrogen = hydrogenStorages.reduce((sum, curr) => sum + curr.result, 0) / bottledHydrogenAmount;
+      const totalEmissionsByKgHydrogen = totalEmissions / bottledHydrogenAmount;
 
       emissionCalculations.push(
         new ProofOfSustainabilityEmissionCalculationEntity(
-          totalEmissions,
+          totalEmissions.toString(),
           totalEmissionsGrouped,
           totalEmissionsByKgHydrogen,
           UNIT_G_CO2_PER_KG_H2,
@@ -128,13 +124,13 @@ export class EmissionService {
       const hydrogenBottling: ProofOfSustainabilityEmissionCalculationEntity =
         EmissionAssembler.assembleHydrogenBottling(provenance.hydrogenBottling);
 
-      const totalEmissions = hydrogenBottling.result.toString();
-      const totalEmissionsGrouped = [`${hydrogenBottling.result} ${UNIT_G_CO2}`];
-      const totalEmissionsByKgHydrogen = hydrogenBottling.result / bottledHydrogenAmount;
+      const totalEmissions = hydrogenBottling.result;
+      const totalEmissionsGrouped = [`${totalEmissions} ${UNIT_G_CO2}`];
+      const totalEmissionsByKgHydrogen = totalEmissions / bottledHydrogenAmount;
 
       emissionCalculations.push(
         new ProofOfSustainabilityEmissionCalculationEntity(
-          totalEmissions,
+          totalEmissions.toString(),
           totalEmissionsGrouped,
           totalEmissionsByKgHydrogen,
           UNIT_G_CO2_PER_KG_H2,
@@ -147,13 +143,13 @@ export class EmissionService {
       const hydrogenTransportation: ProofOfSustainabilityEmissionCalculationEntity =
         EmissionAssembler.assembleHydrogenTransportation(provenance.root);
 
-      const totalEmissions = hydrogenTransportation.result.toString();
-      const totalEmissionsGrouped = [`${hydrogenTransportation.result} ${UNIT_G_CO2}`];
-      const totalEmissionsByKgHydrogen = hydrogenTransportation.result / bottledHydrogenAmount;
+      const totalEmissions = hydrogenTransportation.result;
+      const totalEmissionsGrouped = [`${totalEmissions} ${UNIT_G_CO2}`];
+      const totalEmissionsByKgHydrogen = totalEmissions / bottledHydrogenAmount;
 
       emissionCalculations.push(
         new ProofOfSustainabilityEmissionCalculationEntity(
-          totalEmissions,
+          totalEmissions.toString(),
           totalEmissionsGrouped,
           totalEmissionsByKgHydrogen,
           UNIT_G_CO2_PER_KG_H2,
