@@ -6,19 +6,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ProofOfOriginCardComponent } from 'apps/frontend/src/app/layout/proof-of-origin-card/proof-of-origin-card.component';
 import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
 import { ICONS } from 'apps/frontend/src/app/shared/constants/icons';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { ClassificationDto } from '@h2-trust/api';
 import { BatchType } from '@h2-trust/domain';
-import { VerifiedChartComponent } from '../../../../../layout/verified-chart/verified-chart.component';
 import { PrettyEnumPipe } from '../../../../../shared/pipes/format-enum.pipe';
 import { UnitPipe } from '../../../../../shared/pipes/unit.pipe';
 
 @Component({
   selector: 'app-classification',
-  imports: [CommonModule, VerifiedChartComponent, PrettyEnumPipe, UnitPipe],
+  imports: [CommonModule, PrettyEnumPipe, UnitPipe, ProofOfOriginCardComponent],
   templateUrl: './classification.component.html',
 })
 export class ClassificationComponent {

@@ -38,13 +38,13 @@
     @if (!typeToShow || typeToShow === UnitType.HYDROGEN_PRODUCTION) {
       @for (item of hydrogenProductionQuery.data(); track $index) {
         <a class="group flex flex-col rounded-lg hover:shadow-lg" [routerLink]="['hydrogen-production', item.id]">
-          <div class="bg-secondary-100 group-hover:bg-secondary-200 flex flex-row gap-4 rounded-t-lg p-4">
+          <div class="bg-secondary-100 group-hover:bg-secondary-200/80 flex flex-row gap-4 rounded-t-lg p-4">
             <span class="text-secondary-600 flex items-center gap-4 rounded-xl bg-white p-2">
               <span class="material-symbols-outlined"> {{ ICONS.UNITS.HYDROGEN_PRODUCTION }}</span>
             </span>
             <div class="flex flex-col justify-center text-sm">
               <span class="font-semibold"> {{ item.name }}</span>
-              <span class="text-secondary-600">Hydrogen Production Unit</span>
+              <span class="text-secondary-700">Hydrogen Production Unit</span>
             </div>
           </div>
           <div class="h-full rounded-b-lg bg-white p-4">

@@ -1,23 +1,9 @@
-<div class="group flex flex-row gap-2">
-  <div
-    class="flex grow flex-row items-center gap-4 rounded-xl border-[3px] border-neutral-100 p-4 group-hover:border-neutral-200/80"
-  >
-    <div class="bg-primary-300 flex items-center justify-center rounded-full p-2">
-      <span class="material-symbols-outlined text-white"> {{ getIcon(classification().classificationType) }}</span>
-    </div>
-
-    <div class="flex w-full flex-col">
-      <div class="flex w-full justify-between text-sm text-neutral-500">
-        <h3 class="text-base">{{ classification().name | prettyEnum | titlecase }}</h3>
-        <span class="text-sm text-neutral-500">
-          {{ classification().emissionOfProcessStep || 0 | unit: FormattedUnits.CO2_PER_KG_H2 }}
-        </span>
-      </div>
-      <app-verified-chart
-        [amount]="classification().amount"
-        [verifiedAmount]="classification().amountVerified"
-        [unit]="classification().unit"
-      ></app-verified-chart>
-    </div>
+<app-proof-of-origin-card [icon]="getIcon(classification().classificationType)">
+  <div>
+    <h3 class="text-base">{{ classification().name | prettyEnum | titlecase }}</h3>
+    <p class="text-sm text-neutral-500">
+      {{ classification().emissionOfProcessStep || 0 | unit: FormattedUnits.CO2_PER_KG_H2 }}
+    </p>
   </div>
-</div>
+  <span>{{ classification().amount | unit: classification().unit }} </span>
+</app-proof-of-origin-card>

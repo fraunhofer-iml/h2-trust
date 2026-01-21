@@ -1,31 +1,17 @@
-<div class="flex cursor-pointer flex-row items-center gap-4" (click)="sheet.open()" role="none">
-  <div class="bg-primary-300 flex items-center justify-center rounded-full p-2">
-    <span class="material-symbols-outlined text-white">{{
-      batch().processStep !== 'BOTTLING' ? 'clock_loader_10' : 'bubble_chart'
-    }}</span>
+<app-proof-of-origin-card [icon]="'clock_loader_10 '" (click)="sheet.open()" class="cursor-pointer">
+  <div>
+    <h3 class="text-base">
+      {{ batch().createdAt | date: 'mediumDate' }}, {{ batch().createdAt | date: 'shortTime' }}
+      @if (batch().processStep !== 'BOTTLING') {
+        - {{ batch().accountingPeriodEnd | date: 'shortTime' }}
+      }
+    </h3>
+    <p class="text-sm text-neutral-500">
+      {{ batch().emission.amountCO2PerKgH2 | unit: FormattedUnits.CO2_PER_KG_H2 }}
+    </p>
   </div>
-
-  <div class="flex w-full flex-col">
-    <div class="mb-2 flex justify-between text-sm text-neutral-500">
-      <div class="flex w-full flex-row items-center justify-between gap-2">
-        <h3 class="text-base">
-          {{ batch().createdAt | date: 'mediumDate' }}, {{ batch().createdAt | date: 'shortTime' }}
-          @if (batch().processStep !== 'BOTTLING') {
-            - {{ batch().accountingPeriodEnd | date: 'shortTime' }}
-          }
-        </h3>
-        <span class="text-sm text-neutral-500">
-          {{ batch().emission.amountCO2PerKgH2 | unit: FormattedUnits.CO2_PER_KG_H2 }}
-        </span>
-      </div>
-    </div>
-    <app-verified-chart
-      [amount]="batch().amount"
-      [verifiedAmount]="batch().amountVerified"
-      [unit]="batch().unit"
-    ></app-verified-chart>
-  </div>
-</div>
+  <span>{{ batch().amount | unit: batch().unit }} </span>
+</app-proof-of-origin-card>
 
 <app-base-sheet #sheet>
   <div class="flex flex-col gap-4">
@@ -43,12 +29,6 @@
       </div>
       <span class="text-sm text-neutral-400"> Generation-Id: {{ batch().id }}</span>
     </div>
-
-    <app-verified-chart
-      [amount]="batch().amount"
-      [verifiedAmount]="batch().amountVerified"
-      [unit]="batch().unit"
-    ></app-verified-chart>
 
     <div class="grid grid-cols-2 gap-4 rounded-xl border-[2px] border-solid border-neutral-100 bg-neutral-50 p-4">
       <span class="col-span-2 text-neutral-600">Batch Details</span>
@@ -69,9 +49,7 @@
           ><span>{{ batch().createdAt | date: 'mediumDate' }}, {{ batch().createdAt | date: 'shortTime' }}</span>
         </div>
       }
-      <div class="flex flex-col text-sm">
-        <span class="text-sm text-neutral-500">Purity:</span><span>{{ (batch().purity | percent) || '-' }}</span>
-      </div>
+
       <div class="flex flex-col text-sm">
         <span class="text-sm text-neutral-500">Process Step:</span
         ><span>{{ batch().processStep | prettyEnum | titlecase }}</span>

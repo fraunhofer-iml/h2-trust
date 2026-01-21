@@ -77,7 +77,6 @@ export class SectionDto {
       batch.createdAt,
       batch.amount,
       batch.unit,
-      batch.amount, // TODO-MP: will be removed in DUHGW-310
       batch.producer ?? '',
       batch.unitId ?? '',
       batch.energySource,
@@ -107,10 +106,8 @@ export class SectionDto {
       batch.createdAt,
       batch.amount,
       batch.unit,
-      batch.amount, // TODO-MP: will be removed in DUHGW-310
       batch.producer ?? '',
       batch.unitId ?? '',
-      0, // TODO-MP: will be removed in DUHGW-312
       '',
       hydrogenComposition,
       batch.color ?? '',
@@ -131,7 +128,6 @@ export class SectionDto {
       classification.name,
       classification.emissionOfProcessStep,
       classification.amount,
-      classification.amount, // TODO-MP: will be removed in DUHGW-310
       batches,
       classifications,
       classification.unit,
@@ -148,7 +144,6 @@ export class SectionDto {
       subClassification.name,
       subClassification.emissionOfProcessStep,
       subClassification.amount,
-      subClassification.amount, // TODO-MP: will be removed in DUHGW-310
       batches,
       [], // Leaf classification has no nested classifications
       subClassification.unit,

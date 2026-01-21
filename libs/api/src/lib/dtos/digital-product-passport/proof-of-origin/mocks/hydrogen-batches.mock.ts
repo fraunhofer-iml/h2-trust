@@ -15,7 +15,6 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
   {
     id: 'hydrogen-batch-1',
     amount: 300,
-    amountVerified: 300,
     unit: MeasurementUnit.HYDROGEN,
     color: HydrogenColor.GREEN,
     createdAt: new Date(),
@@ -24,7 +23,6 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
     hydrogenComposition: [{ color: HydrogenColor.GREEN, amount: 300 }],
     processStep: ProcessType.HYDROGEN_PRODUCTION,
     producer: CompanyDtoMock[1].name,
-    purity: 99.9,
     rfnboReady: true,
     typeOfProduction: HydrogenProductionMethod.ELECTROLYSIS,
     unitId: 'hydrogen-production-unit-1',
@@ -33,7 +31,6 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
   {
     id: 'hydrogen-batch-2',
     amount: 300,
-    amountVerified: 300,
     unit: MeasurementUnit.HYDROGEN,
     color: HydrogenColor.GREEN,
     createdAt: new Date(),
@@ -42,7 +39,6 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
     hydrogenComposition: [{ color: HydrogenColor.GREEN, amount: 300 }],
     processStep: ProcessType.HYDROGEN_PRODUCTION,
     producer: CompanyDtoMock[1].name,
-    purity: 99.9,
     rfnboReady: true,
     typeOfProduction: HydrogenProductionMethod.ELECTROLYSIS,
     unitId: 'hydrogen-production-unit-1',
@@ -51,7 +47,6 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
   {
     id: 'hydrogen-batch-3',
     amount: 300,
-    amountVerified: 300,
     unit: MeasurementUnit.HYDROGEN,
     color: HydrogenColor.YELLOW,
     createdAt: new Date(),
@@ -60,7 +55,6 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
     hydrogenComposition: [{ color: HydrogenColor.YELLOW, amount: 300 }],
     processStep: ProcessType.HYDROGEN_PRODUCTION,
     producer: CompanyDtoMock[1].name,
-    purity: 99.9,
     rfnboReady: false,
     typeOfProduction: HydrogenProductionMethod.ELECTROLYSIS,
     unitId: 'hydrogen-production-unit-1',
@@ -69,7 +63,6 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
   {
     id: 'hydrogen-batch-4',
     amount: 600,
-    amountVerified: 300,
     unit: MeasurementUnit.HYDROGEN,
     color: HydrogenColor.MIX,
     createdAt: new Date(),
@@ -80,7 +73,6 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
     ],
     processStep: ProcessType.HYDROGEN_BOTTLING,
     producer: CompanyDtoMock[1].name,
-    purity: 99.9,
     rfnboReady: false,
     typeOfProduction: HydrogenProductionMethod.ELECTROLYSIS,
     unitId: 'hydrogen-production-unit-1',
