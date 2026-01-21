@@ -8,6 +8,7 @@
 
 import { CalculationTopic } from '@h2-trust/domain';
 
+// TODO-MP: we are currently misusing this entity and its fields for different contexts (improvement in DUHGW-322)
 export class ProofOfSustainabilityEmissionCalculationEntity {
   name: string;
   basisOfCalculation: string[];
