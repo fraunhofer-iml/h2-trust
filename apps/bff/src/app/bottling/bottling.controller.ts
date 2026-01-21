@@ -22,13 +22,11 @@ import {
   BottlingDtoMock,
   BottlingOverviewDto,
   GeneralInformationDto,
-  ProofOfSustainabilityDto,
-  SectionDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/api';
-import { BottlingService } from './bottling.service';
 import 'multer';
 import { AuthenticatedUser, Public } from 'nest-keycloak-connect';
+import { BottlingService } from './bottling.service';
 
 @Controller('bottlings')
 export class BottlingController {
@@ -139,35 +137,5 @@ export class BottlingController {
   })
   async readGeneralInformation(@Param('id') id: string): Promise<GeneralInformationDto> {
     return this.bottlingService.readGeneralInformation(id);
-  }
-
-  @Public()
-  @Get(':id/proof-of-origin')
-  @ApiBearerAuth()
-  @ApiOperation({
-    description: 'Retrieve the proof of origin by the corresponding process step ID.',
-  })
-  @ApiParam({
-    name: 'id',
-    description: 'Unique identifier of the process step.',
-    example: 'process-step-hydrogen-bottling-2',
-  })
-  async readProofOfOrigin(@Param('id') id: string): Promise<SectionDto[]> {
-    return this.bottlingService.readProofOfOrigin(id);
-  }
-
-  @Public()
-  @Get(':id/proof-of-sustainability')
-  @ApiBearerAuth()
-  @ApiOperation({
-    description: 'Retrieve the proof of sustainability by the corresponding process step ID.',
-  })
-  @ApiParam({
-    name: 'id',
-    description: 'Unique identifier of the process step.',
-    example: 'process-step-hydrogen-bottling-2',
-  })
-  async readProofOfSustainability(@Param('id') id: string): Promise<ProofOfSustainabilityDto> {
-    return this.bottlingService.readProofOfSustainability(id);
   }
 }

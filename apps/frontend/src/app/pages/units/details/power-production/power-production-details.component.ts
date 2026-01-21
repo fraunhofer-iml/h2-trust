@@ -24,7 +24,7 @@ import { UnitDetailsComponent } from '../unit-details.component';
   templateUrl: './power-production-details.component.html',
 })
 export class PowerProductionDetailsComponent {
-  protected readonly RED_III_CRITERIA = RFNBO_CRITERIA;
+  protected readonly RFNBO_CRITERIA = RFNBO_CRITERIA;
 
   id = input<string>();
 

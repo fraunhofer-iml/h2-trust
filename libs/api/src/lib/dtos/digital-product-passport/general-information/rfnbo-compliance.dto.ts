@@ -8,11 +8,11 @@
 
 export abstract class RfnboBaseDto {
   abstract gridPowerUsed: boolean;
-  isReductionOver70Percent: boolean;
+  isEmissionReductionOver70Percent: boolean;
   isRfnboReady = false;
 
   constructor(isReductionOver70Percent: boolean) {
-    this.isReductionOver70Percent = isReductionOver70Percent;
+    this.isEmissionReductionOver70Percent = isReductionOver70Percent;
   }
 }
 
@@ -38,7 +38,7 @@ export class RenewableEnergyRfnboDto extends RfnboBaseDto {
     this.financialSupportReceived = financialSupportReceived;
 
     this.isRfnboReady =
-      this.isReductionOver70Percent &&
+      this.isEmissionReductionOver70Percent &&
       this.isGeoCorrelationValid &&
       this.isTimeCorrelationValid &&
       this.isAdditionalityFulfilled &&
@@ -67,6 +67,6 @@ export class GridEnergyRfnboDto extends RfnboBaseDto {
     this.isCurtailmentAvoided = isCurtailmentAvoided;
 
     this.isRfnboReady =
-      this.isReductionOver70Percent && hasHighRenewableShare && isGridGHGIntensityLow && isCurtailmentAvoided;
+      this.isEmissionReductionOver70Percent && hasHighRenewableShare && isGridGHGIntensityLow && isCurtailmentAvoided;
   }
 }

@@ -22,13 +22,7 @@ import {
   ReadByIdPayload,
   ReadProcessStepsByTypesAndActiveAndCompanyPayload,
 } from '@h2-trust/amqp';
-import {
-  BottlingDto,
-  BottlingOverviewDto,
-  GeneralInformationDto,
-  ProofOfSustainabilityDto,
-  SectionDto,
-} from '@h2-trust/api';
+import { BottlingDto, BottlingOverviewDto, GeneralInformationDto } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 
@@ -92,20 +86,12 @@ export class BottlingService {
     const generalInformation: GeneralInformationEntity = await firstValueFrom(
       this.processSvc.send(DigitalProductPassportPatterns.READ_GENERAL_INFORMATION, new ReadByIdPayload(id)),
     );
-    return GeneralInformationDto.fromEntity(generalInformation);
-  }
-
-  async readProofOfOrigin(id: string): Promise<SectionDto[]> {
     const proofOfOrigin: ProofOfOriginSectionEntity[] = await firstValueFrom(
       this.processSvc.send(DigitalProductPassportPatterns.READ_PROOF_OF_ORIGIN, new ReadByIdPayload(id)),
     );
-    return SectionDto.fromEntities(proofOfOrigin);
-  }
-
-  async readProofOfSustainability(id: string): Promise<ProofOfSustainabilityDto> {
     const proofOfSustainability: ProofOfSustainabilityEntity = await firstValueFrom(
       this.processSvc.send(DigitalProductPassportPatterns.READ_PROOF_OF_SUSTAINABILITY, new ReadByIdPayload(id)),
     );
-    return ProofOfSustainabilityDto.fromEntity(proofOfSustainability);
+    return GeneralInformationDto.fromEnities(generalInformation, proofOfOrigin, proofOfSustainability);
   }
 }
