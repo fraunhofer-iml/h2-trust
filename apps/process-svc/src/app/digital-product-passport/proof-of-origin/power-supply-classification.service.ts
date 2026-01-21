@@ -37,7 +37,7 @@ export class PowerSupplyClassificationService {
 
   async buildPowerSupplySubClassifications(
     powerProductions: ProcessStepEntity[],
-    hydrogenAmount: number,
+    bottledKgHydrogen: number,
   ): Promise<ProofOfOriginSubClassificationEntity[]> {
     if (!powerProductions?.length) {
       return [];
@@ -59,11 +59,11 @@ export class PowerSupplyClassificationService {
         const productionPowerBatches: ProofOfOriginBatchEntity[] = await Promise.all(
           powerProductionsWithUnitsByEnergySource.map(async ([powerProduction]) => {
             const [powerSupplyEmission]: ProofOfSustainabilityEmissionCalculationEntity[] =
-              await this.emissionService.computePowerSupplyEmissions([powerProduction], hydrogenAmount);
+              await this.emissionService.computePowerSupplyEmissions([powerProduction]);
 
-            const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionDto(
+            const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionEntity(
               powerSupplyEmission,
-              hydrogenAmount,
+              bottledKgHydrogen,
             );
 
             const batch: ProofOfOriginPowerBatchEntity = BatchAssembler.assemblePowerSupply(

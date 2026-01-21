@@ -5,10 +5,6 @@
       <span class="text-sm text-neutral-500">Total Emissions</span
       ><span>{{ emissions().amountCO2 | unit: FormattedUnits.G_CO2 }} </span>
     </div>
-    <div class="flex flex-col text-sm">
-      <span class="text-sm text-neutral-500">Emissions per kg Hydrogen</span
-      ><span>{{ emissions().amountCO2PerKgH2 | unit: FormattedUnits.CO2_PER_KG_H2 }} </span>
-    </div>
   </div>
 
   <div class="flex flex-col gap-1 p-4 text-sm">

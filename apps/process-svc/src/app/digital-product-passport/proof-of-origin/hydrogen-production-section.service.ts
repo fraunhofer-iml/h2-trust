@@ -28,7 +28,7 @@ export class HydrogenProductionSectionService {
   async buildSection(
     powerProductions: ProcessStepEntity[],
     waterConsumptions: ProcessStepEntity[],
-    hydrogenAmount: number,
+    bottledKgHydrogen: number,
   ): Promise<ProofOfOriginSectionEntity> {
     const classifications: ProofOfOriginClassificationEntity[] = [];
 
@@ -36,7 +36,7 @@ export class HydrogenProductionSectionService {
       const energySourceSubClassifications: ProofOfOriginSubClassificationEntity[] =
         await this.powerSupplyClassificationService.buildPowerSupplySubClassifications(
           powerProductions,
-          hydrogenAmount,
+          bottledKgHydrogen,
         );
 
       const powerSupplyClassification: ProofOfOriginClassificationEntity = ClassificationAssembler.assemblePower(
@@ -50,7 +50,7 @@ export class HydrogenProductionSectionService {
 
     if (waterConsumptions?.length) {
       const waterSupplyClassification: ProofOfOriginClassificationEntity =
-        this.waterSupplyClassificationService.buildWaterSupplyClassification(waterConsumptions, hydrogenAmount);
+        this.waterSupplyClassificationService.buildWaterSupplyClassification(waterConsumptions, bottledKgHydrogen);
 
       classifications.push(waterSupplyClassification);
     }

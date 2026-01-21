@@ -48,7 +48,7 @@ export class BatchAssembler {
       unit: MeasurementUnit.WATER,
       batchType: BatchType.WATER,
       deionizedWaterAmount: waterConsumption.batch.amount,
-      deionizedWaterEmission: { amountCO2: 0, amountCO2PerKgH2: 0, basisOfCalculation: [] },
+      deionizedWaterEmission: { totalEmissions: 0, totalEmissionsPerKgHydrogen: 0, basisOfCalculation: [] },
     };
   }
 

@@ -47,15 +47,6 @@ export class ProofOfSustainabilityComponent {
   readonly ChemicalNames = ChemicalNames;
 
   calculations = computed(() => this.mapCalculations(this.proofQuery.data()?.calculations ?? []));
-  totalEmissions = computed(() => {
-    let sum = 0;
-    this.proofQuery.data()?.processStepEmissions.forEach((e) => {
-      if (e.processStepType === 'REGULATORY') {
-        sum += e.amount;
-      }
-    });
-    return sum;
-  });
 
   proofQuery = injectQuery(() => ({
     queryKey: ['proof-of-sustainability', this.id()],

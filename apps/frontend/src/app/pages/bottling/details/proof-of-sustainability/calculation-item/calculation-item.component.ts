@@ -13,6 +13,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { EmissionCalculationDto } from '@h2-trust/api';
 import { CalculationTopic } from '@h2-trust/domain';
 import { BaseSheetComponent } from '../../../../../layout/sheet/sheet.component';
+import { FormattedUnits } from '../../../../../shared/constants/formatted-units';
 import { PrettyEnumPipe } from '../../../../../shared/pipes/format-enum.pipe';
 import { UnitPipe } from '../../../../../shared/pipes/unit.pipe';
 
@@ -28,6 +29,7 @@ export class CalculationItemComponent {
   }>();
 
   closed = true;
+  FormattedUnits = FormattedUnits;
 
   getIcon(topic: string) {
     const map = new Map<string, string>([

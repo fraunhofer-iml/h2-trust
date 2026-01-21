@@ -9,7 +9,7 @@
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, ProcessStepEntity, ProvenanceEntity, UnitMessagePatterns } from '@h2-trust/amqp';
-import { CalculationTopic, EnergySource, POWER_EMISSION_FACTORS, UNIT_G_CO2_PER_KG_H2 } from '@h2-trust/domain';
+import { CalculationTopic, EnergySource, POWER_EMISSION_FACTORS, UNIT_G_CO2 } from '@h2-trust/domain';
 import {
   BatchEntityFixture,
   PowerProductionTypeEntityFixture,
@@ -54,68 +54,56 @@ describe('EmissionService', () => {
       expect(actualResult.calculations.length).toBeGreaterThan(0);
     });
 
-    it('computes emissions including water consumptions', async () => {
+    it('computes emissions for entire provenance', async () => {
       // Arrange
+      const givenPowerProduction = ProcessStepEntityFixture.createPowerProduction();
       const givenWaterConsumption = ProcessStepEntityFixture.createWaterConsumption();
-      const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
-      const givenProvenance = new ProvenanceEntity(givenHydrogenBottling, givenHydrogenBottling, undefined, [
-        givenWaterConsumption,
-      ]);
-
-      // Act
-      const actualResult = await service.computeProvenanceEmissions(givenProvenance);
-
-      // Assert
-      expect(actualResult).toBeDefined();
-      expect(actualResult.calculations.some((c) => c.name?.includes('Water'))).toBe(true);
-    });
-
-    it('computes emissions including hydrogen productions', async () => {
-      // Arrange
       const givenHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction();
-      const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
-      const givenProvenance = new ProvenanceEntity(givenHydrogenBottling, givenHydrogenBottling, [
-        givenHydrogenProduction,
-      ]);
-
-      // Act
-      const actualResult = await service.computeProvenanceEmissions(givenProvenance);
-
-      // Assert
-      expect(actualResult).toBeDefined();
-      expect(actualResult.calculations.some((c) => c.name?.includes('Compression'))).toBe(true);
-    });
-
-    it('computes emissions including hydrogen transportation with pipeline', async () => {
-      // Arrange
-      const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
-      const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation({
-        transportationDetails: TransportationDetailsEntityFixture.createPipeline(),
-      });
-      const givenProvenance = new ProvenanceEntity(givenHydrogenTransportation, givenHydrogenBottling);
-
-      // Act
-      const actualResult = await service.computeProvenanceEmissions(givenProvenance);
-
-      // Assert
-      expect(actualResult).toBeDefined();
-      expect(actualResult.calculations.some((c) => c.name?.includes('Pipeline'))).toBe(true);
-    });
-
-    it('computes emissions including hydrogen transportation with trailer', async () => {
-      // Arrange
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
       const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation({
         transportationDetails: TransportationDetailsEntityFixture.createTrailer(),
       });
-      const givenProvenance = new ProvenanceEntity(givenHydrogenTransportation, givenHydrogenBottling);
+      const givenProvenance = new ProvenanceEntity(
+        givenHydrogenTransportation,
+        givenHydrogenBottling,
+        [givenHydrogenProduction],
+        [givenWaterConsumption],
+        [givenPowerProduction],
+      );
+
+      const givenUnit = PowerProductionUnitEntityFixture.create({
+        type: PowerProductionTypeEntityFixture.createSolarEnergy(),
+      });
+      generalSvcMock.send.mockReturnValue(of([givenUnit]));
 
       // Act
       const actualResult = await service.computeProvenanceEmissions(givenProvenance);
 
+      console.log(actualResult);
+
       // Assert
       expect(actualResult).toBeDefined();
-      expect(actualResult.calculations.some((c) => c.name?.includes('Trailer'))).toBe(true);
+      expect(actualResult.batchId).toBe(givenHydrogenTransportation.id);
+      expect(actualResult.calculations.length).toBe(5);
+      expect(actualResult.calculations.filter((c) => c.calculationTopic === CalculationTopic.POWER_SUPPLY).length).toBe(
+        1,
+      );
+      expect(actualResult.calculations.filter((c) => c.calculationTopic === CalculationTopic.WATER_SUPPLY).length).toBe(
+        1,
+      );
+      expect(
+        actualResult.calculations.filter((c) => c.calculationTopic === CalculationTopic.HYDROGEN_STORAGE).length,
+      ).toBe(1);
+      expect(
+        actualResult.calculations.filter((c) => c.calculationTopic === CalculationTopic.HYDROGEN_BOTTLING).length,
+      ).toBe(1);
+      expect(
+        actualResult.calculations.filter((c) => c.calculationTopic === CalculationTopic.HYDROGEN_TRANSPORTATION).length,
+      ).toBe(1);
+      expect(actualResult.emissions.length).toBe(8);
+      expect(actualResult.emissions.filter((e) => e.emissionType === 'APPLICATION').length).toBe(5);
+      expect(actualResult.emissions.filter((e) => e.emissionType === 'REGULATORY').length).toBe(3);
+      expect(generalSvcMock.send).toHaveBeenCalledTimes(1);
     });
 
     it('throws error when provenance is undefined', async () => {
@@ -144,10 +132,9 @@ describe('EmissionService', () => {
     it('returns empty array when power productions is empty', async () => {
       // Arrange
       const givenPowerProductions: ProcessStepEntity[] = [];
-      const givenHydrogenAmount = 100;
 
       // Act
-      const actualResult = await service.computePowerSupplyEmissions(givenPowerProductions, givenHydrogenAmount);
+      const actualResult = await service.computePowerSupplyEmissions(givenPowerProductions);
 
       // Assert
       expect(actualResult).toEqual([]);
@@ -171,13 +158,13 @@ describe('EmissionService', () => {
         (givenProcessStep.batch.amount * expectedEmissionFactor.emissionFactor) / givenHydrogenAmount;
 
       // Act
-      const actualResult = await service.computePowerSupplyEmissions([givenProcessStep], givenHydrogenAmount);
+      const actualResult = await service.computePowerSupplyEmissions([givenProcessStep]);
 
       // Assert
       expect(actualResult).toHaveLength(1);
       expect(actualResult[0].name).toEqual(expectedEmissionFactor.label);
       expect(actualResult[0].result).toEqual(expectedResult);
-      expect(actualResult[0].unit).toEqual(UNIT_G_CO2_PER_KG_H2);
+      expect(actualResult[0].unit).toEqual(UNIT_G_CO2);
       expect(actualResult[0].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
 
       expect(generalSvcMock.send).toHaveBeenCalledWith(
@@ -188,8 +175,6 @@ describe('EmissionService', () => {
 
     it('computes emissions for multiple power productions with different energy sources', async () => {
       // Arrange
-      const givenHydrogenAmount = 100;
-
       const givenSolarUnit = PowerProductionUnitEntityFixture.create({
         id: 'solar-unit',
         type: PowerProductionTypeEntityFixture.createSolarEnergy(),
@@ -211,29 +196,24 @@ describe('EmissionService', () => {
       generalSvcMock.send.mockReturnValue(of([givenSolarUnit, givenGridUnit]));
 
       const expectedSolarEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.SOLAR_ENERGY];
-      const expectedSolarResult =
-        (givenSolarProcessStep.batch.amount * expectedSolarEmissionFactor.emissionFactor) / givenHydrogenAmount;
+      const expectedSolarResult = givenSolarProcessStep.batch.amount * expectedSolarEmissionFactor.emissionFactor;
 
       const expectedGridEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID];
-      const expectedGridResult =
-        (givenGridProcessStep.batch.amount * expectedGridEmissionFactor.emissionFactor) / givenHydrogenAmount;
+      const expectedGridResult = givenGridProcessStep.batch.amount * expectedGridEmissionFactor.emissionFactor;
       // Act
-      const actualResult = await service.computePowerSupplyEmissions(
-        [givenSolarProcessStep, givenGridProcessStep],
-        givenHydrogenAmount,
-      );
+      const actualResult = await service.computePowerSupplyEmissions([givenSolarProcessStep, givenGridProcessStep]);
 
       // Assert
       expect(actualResult).toHaveLength(2);
 
       expect(actualResult[0].name).toEqual(expectedSolarEmissionFactor.label);
       expect(actualResult[0].result).toEqual(expectedSolarResult);
-      expect(actualResult[0].unit).toEqual(UNIT_G_CO2_PER_KG_H2);
+      expect(actualResult[0].unit).toEqual(UNIT_G_CO2);
       expect(actualResult[0].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
 
       expect(actualResult[1].name).toEqual(expectedGridEmissionFactor.label);
       expect(actualResult[1].result).toEqual(expectedGridResult);
-      expect(actualResult[1].unit).toEqual(UNIT_G_CO2_PER_KG_H2);
+      expect(actualResult[1].unit).toEqual(UNIT_G_CO2);
       expect(actualResult[1].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
 
       expect(generalSvcMock.send).toHaveBeenCalledWith(
@@ -244,8 +224,6 @@ describe('EmissionService', () => {
 
     it('deduplicates unit IDs when same unit is used multiple times', async () => {
       // Arrange
-      const givenHydrogenAmount = 100;
-
       const givenUnit = PowerProductionUnitEntityFixture.create({
         type: PowerProductionTypeEntityFixture.createGrid(),
       });
@@ -261,28 +239,23 @@ describe('EmissionService', () => {
       generalSvcMock.send.mockReturnValue(of([givenUnit]));
 
       const expectedEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID];
-      const expectedResult1 =
-        (givenProcessStep1.batch.amount * expectedEmissionFactor.emissionFactor) / givenHydrogenAmount;
-      const expectedResult2 =
-        (givenProcessStep2.batch.amount * expectedEmissionFactor.emissionFactor) / givenHydrogenAmount;
+      const expectedResult1 = givenProcessStep1.batch.amount * expectedEmissionFactor.emissionFactor;
+      const expectedResult2 = givenProcessStep2.batch.amount * expectedEmissionFactor.emissionFactor;
 
       // Act
-      const actualResult = await service.computePowerSupplyEmissions(
-        [givenProcessStep1, givenProcessStep2],
-        givenHydrogenAmount,
-      );
+      const actualResult = await service.computePowerSupplyEmissions([givenProcessStep1, givenProcessStep2]);
 
       // Assert
       expect(actualResult).toHaveLength(2);
 
       expect(actualResult[0].name).toEqual(expectedEmissionFactor.label);
       expect(actualResult[0].result).toEqual(expectedResult1);
-      expect(actualResult[0].unit).toEqual(UNIT_G_CO2_PER_KG_H2);
+      expect(actualResult[0].unit).toEqual(UNIT_G_CO2);
       expect(actualResult[0].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
 
       expect(actualResult[1].name).toEqual(expectedEmissionFactor.label);
       expect(actualResult[1].result).toEqual(expectedResult2);
-      expect(actualResult[1].unit).toEqual(UNIT_G_CO2_PER_KG_H2);
+      expect(actualResult[1].unit).toEqual(UNIT_G_CO2);
       expect(actualResult[1].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
 
       expect(generalSvcMock.send).toHaveBeenCalledWith(
@@ -294,16 +267,13 @@ describe('EmissionService', () => {
     it('throws error when power production unit is not found', async () => {
       // Arrange
       const givenPowerProduction = ProcessStepEntityFixture.createPowerProduction();
-      const givenHydrogenAmount = 100;
 
       generalSvcMock.send.mockReturnValue(of([]));
 
       const expectedErrorMessage = `PowerProductionUnit [${givenPowerProduction.executedBy.id}] not found.`;
 
       // Act & Assert
-      await expect(service.computePowerSupplyEmissions([givenPowerProduction], givenHydrogenAmount)).rejects.toThrow(
-        expectedErrorMessage,
-      );
+      await expect(service.computePowerSupplyEmissions([givenPowerProduction])).rejects.toThrow(expectedErrorMessage);
     });
   });
 });
