@@ -9,7 +9,7 @@
 import { GeneralInformationEntity } from '@h2-trust/amqp';
 import { FileInfoDto } from '../../file/file-info.dto';
 import { HydrogenComponentDto } from './hydrogen-component.dto';
-import { RedComplianceDto } from './red-compliance.dto';
+import { GridEnergyRfnboDto, RenewableEnergyRfnboDto, RfnboBaseDto } from './rfnbo-compliance.dto';
 
 export class GeneralInformationDto {
   id: string;
@@ -21,7 +21,7 @@ export class GeneralInformationDto {
   product: string;
   hydrogenComposition: HydrogenComponentDto[];
   attachedFiles: FileInfoDto[];
-  redCompliance: RedComplianceDto;
+  rfnboCompliance: RfnboBaseDto;
 
   constructor(
     id: string,
@@ -32,7 +32,7 @@ export class GeneralInformationDto {
     producer: string,
     hydrogenComposition: HydrogenComponentDto[],
     attachedFiles: FileInfoDto[],
-    redCompliance: RedComplianceDto,
+    rfnboCompliance: RfnboBaseDto,
   ) {
     this.id = id;
     this.filledAt = timestamp;
@@ -43,7 +43,7 @@ export class GeneralInformationDto {
     this.hydrogenComposition = hydrogenComposition;
     this.product = 'Hydrogen';
     this.attachedFiles = attachedFiles;
-    this.redCompliance = redCompliance;
+    this.rfnboCompliance = rfnboCompliance;
   }
 
   static fromEntity(entity: GeneralInformationEntity): GeneralInformationDto {
@@ -51,14 +51,20 @@ export class GeneralInformationDto {
     const attachedFiles = (entity.attachedFiles ?? []).map(
       (document) => new FileInfoDto(document.description, document.location),
     );
-    const redCompliance = entity.redCompliance
-      ? new RedComplianceDto(
+
+    const gridPowerUsed = hydrogenComposition.find((element: HydrogenComponentDto) => element.color === 'YELLOW');
+    // TODO: use the emisisn reduction value here
+    const isReductionOver70Percent = true;
+
+    const rfnboCompliance = gridPowerUsed
+      ? new GridEnergyRfnboDto(isReductionOver70Percent, false, false, false)
+      : new RenewableEnergyRfnboDto(
+          isReductionOver70Percent,
           entity.redCompliance.isGeoCorrelationValid,
           entity.redCompliance.isTimeCorrelationValid,
           entity.redCompliance.isAdditionalityFulfilled,
           entity.redCompliance.financialSupportReceived,
-        )
-      : new RedComplianceDto(false, false, false, false);
+        );
 
     return new GeneralInformationDto(
       entity.id,
@@ -69,7 +75,7 @@ export class GeneralInformationDto {
       entity.producer ?? '',
       hydrogenComposition,
       attachedFiles,
-      redCompliance,
+      rfnboCompliance,
     );
   }
 }

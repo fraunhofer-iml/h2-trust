@@ -6,10 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RED_III_CRITERIA } from 'apps/frontend/src/app/shared/constants/financial-support-info';
+import { RFNBO_CRITERIA } from 'apps/frontend/src/app/shared/constants/financial-support-info';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
-import { RedComplianceDto } from '@h2-trust/api';
+import { GridEnergyRfnboDto, RenewableEnergyRfnboDto, RfnboBaseDto } from '@h2-trust/api';
 import { RedCheckCardComponent } from './red-check-card/red-check-card.component';
 
 @Component({
@@ -18,8 +18,16 @@ import { RedCheckCardComponent } from './red-check-card/red-check-card.component
   templateUrl: './red-compliance.component.html',
 })
 export class RedComplianceComponent {
-  protected readonly RED_III_CRITERIA = RED_III_CRITERIA;
+  protected readonly RED_III_CRITERIA = RFNBO_CRITERIA;
 
-  redCompliance = input<RedComplianceDto>();
+  redCompliance = input<RfnboBaseDto>();
   showComplianceInfo = false;
+
+  isGridDto(dto: RfnboBaseDto): dto is GridEnergyRfnboDto {
+    return dto.gridPowerUsed === true;
+  }
+
+  isRenewableDto(dto: RfnboBaseDto): dto is RenewableEnergyRfnboDto {
+    return dto.gridPowerUsed === false;
+  }
 }

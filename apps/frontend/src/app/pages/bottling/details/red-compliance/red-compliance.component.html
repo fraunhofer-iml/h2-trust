@@ -4,56 +4,74 @@
     (mouseleave)="showComplianceInfo = false"
     class="flex w-[12rem] flex-row items-center gap-2 rounded-md p-2 text-sm duration-300 ease-in-out hover:scale-105"
     [ngClass]="
-      redCompliance()?.isRedCompliant ? 'bg-secondary-100 text-secondary-600' : 'bg-neutral-200 text-neutral-600'
+      redCompliance()?.isRfnboReady ? 'bg-secondary-100 text-secondary-600' : 'bg-neutral-200 text-neutral-600'
     "
   >
-    <span class="material-symbols-outlined"> {{ redCompliance()?.isRedCompliant ? 'check' : 'close' }}</span>
+    <span class="material-symbols-outlined">
+      {{ redCompliance()?.isRfnboReady ? 'editor_choice' : 'release_alert' }}</span
+    >
     <span>
-      {{ redCompliance()?.isRedCompliant ? 'RED III Compliant' : 'not RED III Compliant' }}
+      {{ redCompliance()?.isRfnboReady ? 'RFNBO Ready' : 'Non Certifiable' }}
     </span>
   </button>
-
-  <div
-    [ngClass]="showComplianceInfo ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'"
-    class="absolute left-[-16rem] top-[3rem] z-20 flex w-[46rem] flex-row gap-2 rounded-xl border-2 border-neutral-100 bg-white p-2 shadow-2xl transition-opacity duration-300 2xl:top-[3rem]"
-  >
+  @if (redCompliance(); as redCompliance) {
     <div
-      class="flex flex-col justify-center rounded-lg p-4 text-sm"
-      [ngClass]="
-        redCompliance()?.isRedCompliant ? 'bg-secondary-100 text-secondary-600' : 'bg-neutral-200 text-neutral-600'
-      "
+      [ngClass]="showComplianceInfo ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'"
+      class="absolute left-[-16rem] top-[3rem] z-20 flex w-[46rem] flex-row gap-2 rounded-xl border-2 border-neutral-100 bg-white p-2 shadow-2xl transition-opacity duration-300 2xl:top-[3rem]"
     >
-      <span class="material-symbols-outlined text-3xl">
-        {{ redCompliance()?.isRedCompliant ? 'editor_choice' : 'release_alert' }}</span
+      <div
+        class="flex w-1/3 flex-col justify-center rounded-lg pl-4 pr-8 text-sm"
+        [ngClass]="
+          redCompliance.isRfnboReady ? 'bg-secondary-100 text-secondary-600' : 'bg-neutral-200 text-neutral-600'
+        "
       >
-      <span class="font-semibold">{{ redCompliance()?.isRedCompliant ? 'RFNBO Ready' : 'Non Certifiable' }}</span>
-      <p>The calculation is based on RED III</p>
+        <span class="material-symbols-outlined text-3xl">
+          {{ redCompliance.isRfnboReady ? 'editor_choice' : 'release_alert' }}</span
+        >
+        <span class="font-semibold">{{ redCompliance.isRfnboReady ? 'RFNBO Ready' : 'Non Certifiable' }}</span>
+        <p>The calculation is based on RED III</p>
+      </div>
+      <div class="flex w-2/3 flex-col gap-3 py-4 pr-4">
+        @if (isRenewableDto(redCompliance)) {
+          <app-red-check-card
+            [content]="RED_III_CRITERIA.RENEWABLE_ENERGY.TIME_CORRELATION"
+            [isValid]="redCompliance.isTimeCorrelationValid"
+          ></app-red-check-card>
+
+          <app-red-check-card
+            [content]="RED_III_CRITERIA.RENEWABLE_ENERGY.GEOGRAPHICAL_CORRELATION"
+            [isValid]="redCompliance.isGeoCorrelationValid"
+          ></app-red-check-card>
+
+          <app-red-check-card
+            [content]="RED_III_CRITERIA.RENEWABLE_ENERGY.ADDITIONALITY_REQUIREMENT"
+            [isValid]="redCompliance.isAdditionalityFulfilled"
+          ></app-red-check-card>
+
+          <app-red-check-card
+            [content]="RED_III_CRITERIA.RENEWABLE_ENERGY.FINANCIAL_SUPPORT"
+            [isValid]="redCompliance.financialSupportReceived"
+          ></app-red-check-card>
+        }
+        @if (isGridDto(redCompliance)) {
+          <app-red-check-card
+            [content]="RED_III_CRITERIA.GRID_ENERGY.CURTAILMENT_AVOIDED"
+            [isValid]="redCompliance.isCurtailmentAvoided"
+          ></app-red-check-card>
+          <app-red-check-card
+            [content]="RED_III_CRITERIA.GRID_ENERGY.GRID_GHG_INTENSITY"
+            [isValid]="redCompliance.isGridGHGIntensityLow"
+          ></app-red-check-card>
+          <app-red-check-card
+            [content]="RED_III_CRITERIA.GRID_ENERGY.RENEWABLES_IN_GRID"
+            [isValid]="redCompliance.hasHighRenewableShare"
+          ></app-red-check-card>
+        }
+        <app-red-check-card
+          [content]="RED_III_CRITERIA.EMISSION_REDUCTION"
+          [isValid]="redCompliance.isReductionOver70Percent"
+        ></app-red-check-card>
+      </div>
     </div>
-    <div class="flex flex-col gap-2 py-4 pr-4">
-      <app-red-check-card
-        [content]="RED_III_CRITERIA.TIME_CORRELATION"
-        [isValid]="redCompliance()?.isTimeCorrelationValid ?? false"
-      ></app-red-check-card>
-
-      <app-red-check-card
-        [content]="RED_III_CRITERIA.GEOGRAPHICAL_CORRELATION"
-        [isValid]="redCompliance()?.isGeoCorrelationValid ?? false"
-      ></app-red-check-card>
-
-      <app-red-check-card
-        [content]="RED_III_CRITERIA.ADDITIONALITY_REQUIREMENT"
-        [isValid]="redCompliance()?.isAdditionalityFulfilled ?? false"
-      ></app-red-check-card>
-
-      <app-red-check-card
-        [content]="RED_III_CRITERIA.FINANCIAL_SUPPORT"
-        [isValid]="redCompliance()?.financialSupportReceived ?? false"
-      ></app-red-check-card>
-
-      <app-red-check-card
-        [content]="RED_III_CRITERIA.EMISSION_REDUCTION"
-        [isValid]="redCompliance()?.isReductionLargerThan70Percent ?? false"
-      ></app-red-check-card>
-    </div>
-  </div>
+  }
 </div>

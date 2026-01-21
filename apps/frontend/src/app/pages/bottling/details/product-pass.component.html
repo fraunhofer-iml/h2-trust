@@ -23,7 +23,10 @@
       <div class="col-span-4 rounded-lg bg-white p-4">
         <div class="flex flex-row items-center justify-between">
           <h3 class="font-semibold text-neutral-500">General Information</h3>
-          <app-red-compliance class="col-span-6" [redCompliance]="batchQuery.data().redCompliance"></app-red-compliance>
+          <app-red-compliance
+            class="col-span-6"
+            [redCompliance]="batchQuery.data().rfnboCompliance"
+          ></app-red-compliance>
         </div>
 
         <div class="flex flex-row">

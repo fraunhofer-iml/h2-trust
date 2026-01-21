@@ -7,7 +7,7 @@
  */
 
 import { InfoTooltipComponent } from 'apps/frontend/src/app/layout/info-tooltip/info-tooltip.component';
-import { RED_III_CRITERIA } from 'apps/frontend/src/app/shared/constants/financial-support-info';
+import { RFNBO_CRITERIA } from 'apps/frontend/src/app/shared/constants/financial-support-info';
 import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
 import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
 import { CommonModule } from '@angular/common';
@@ -24,7 +24,7 @@ import { UnitDetailsComponent } from '../unit-details.component';
   templateUrl: './power-production-details.component.html',
 })
 export class PowerProductionDetailsComponent {
-  protected readonly RED_III_CRITERIA = RED_III_CRITERIA;
+  protected readonly RED_III_CRITERIA = RFNBO_CRITERIA;
 
   id = input<string>();
 
