@@ -53,7 +53,7 @@ export class EmissionService {
             new Map<string, number>(),
           )
           .entries(),
-      ).map(([energySource, result]) => `${energySource} : ${result} ${UNIT_G_CO2}`);
+      ).map(([energySource, result]) => `${energySource}: ${result} ${UNIT_G_CO2}`);
 
       const totalEmissionsPerKgHydrogen = totalEmissions / bottledHydrogenAmount;
 
@@ -102,7 +102,7 @@ export class EmissionService {
             return map.set(color, (map.get(color) ?? 0) + hydrogenStorages[index].result);
           }, new Map<string, number>())
           .entries(),
-      ).map(([color, result]) => `${color} : ${result} ${UNIT_G_CO2}`);
+      ).map(([color, result]) => `${color}: ${result} ${UNIT_G_CO2}`);
 
       const totalEmissionsPerKgHydrogen = totalEmissions / bottledHydrogenAmount;
 
