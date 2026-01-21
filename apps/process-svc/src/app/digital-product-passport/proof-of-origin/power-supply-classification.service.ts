@@ -61,7 +61,7 @@ export class PowerSupplyClassificationService {
             const [powerSupplyEmission]: ProofOfSustainabilityEmissionCalculationEntity[] =
               await this.emissionService.computePowerSupplyEmissions([powerProduction]);
 
-            const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionDto(
+            const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionEntity(
               powerSupplyEmission,
               bottledKgHydrogen,
             );

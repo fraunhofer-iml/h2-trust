@@ -34,7 +34,7 @@ export class HydrogenTransportationSectionService {
     const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
       EmissionAssembler.assembleHydrogenTransportation(hydrogenTransportation);
 
-    const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionDto(
+    const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionEntity(
       emissionCalculation,
       hydrogenTransportation.batch.amount,
     );

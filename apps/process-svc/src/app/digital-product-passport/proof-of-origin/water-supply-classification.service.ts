@@ -34,7 +34,7 @@ export class WaterSupplyClassificationService {
       const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
         EmissionAssembler.assembleWaterSupply(waterSupply);
 
-      const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionDto(
+      const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionEntity(
         emissionCalculation,
         bottledKgHydrogen,
       );

@@ -382,16 +382,16 @@ export class EmissionAssembler {
     return [ei, ep, etd];
   }
 
-  static assembleEmissionDto(
-    calc: ProofOfSustainabilityEmissionCalculationEntity,
+  static assembleEmissionEntity(
+    emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity,
     kgHydrogen: number,
   ): ProofOfOriginEmissionEntity {
-    const gCo2 = calc?.result ?? 0;
+    const gCo2 = emissionCalculation?.result ?? 0;
     const gCo2PerKgHydrogen = gCo2 / kgHydrogen;
     return {
       amountCO2: gCo2,
       amountCO2PerKgH2: gCo2PerKgHydrogen,
-      basisOfCalculation: calc?.basisOfCalculation ?? [],
+      basisOfCalculation: emissionCalculation?.basisOfCalculation ?? [],
     };
   }
 }
