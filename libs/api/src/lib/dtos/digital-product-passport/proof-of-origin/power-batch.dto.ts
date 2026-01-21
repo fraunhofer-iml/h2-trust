@@ -11,7 +11,6 @@ import { BatchDto } from './batch.dto';
 import { EmissionDto } from './emission.dto';
 
 export class PowerBatchDto extends BatchDto {
-  amountVerified: number;
   producer: string;
   unitId: string;
   energySource: EnergySource;
@@ -23,7 +22,6 @@ export class PowerBatchDto extends BatchDto {
     creationDate: Date,
     amount: number,
     unit: string,
-    amountVerified: number,
     producer: string,
     unitId: string,
     energySource: EnergySource,
@@ -32,7 +30,6 @@ export class PowerBatchDto extends BatchDto {
     super(id, emission, creationDate, amount, unit, BatchType.POWER);
     this.producer = producer;
     this.unitId = unitId;
-    this.amountVerified = amountVerified;
     this.energySource = energySource;
     this.accountingPeriodEnd = accountingPeriodEnd;
   }

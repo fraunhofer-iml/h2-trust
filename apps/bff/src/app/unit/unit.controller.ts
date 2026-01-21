@@ -7,73 +7,53 @@
  */
 
 import { AuthenticatedUser } from 'nest-keycloak-connect';
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { UnitCreateDto, UnitDto, UnitOverviewDto, type AuthenticatedKCUser } from '@h2-trust/api';
-import { UnitType } from '@h2-trust/domain';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import {
+  HydrogenProductionOverviewDto,
+  HydrogenProductionUnitCreateDto,
+  HydrogenProductionUnitDto,
+  HydrogenStorageOverviewDto,
+  HydrogenStorageUnitCreateDto,
+  HydrogenStorageUnitDto,
+  PowerProductionOverviewDto,
+  PowerProductionUnitCreateDto,
+  PowerProductionUnitDto,
+  type AuthenticatedKCUser,
+} from '@h2-trust/api';
 import { UnitService } from './unit.service';
 
 @Controller('units')
 export class UnitController {
   constructor(private readonly unitService: UnitService) {}
 
-  @Get()
+  @Get('hydrogen-storage')
   @ApiBearerAuth()
   @ApiOperation({
-    description: 'Retrieve all units of the authenticated user, optionally filtered by unit type.',
+    description: 'Retrieve all hydrogen-storage units of the authenticated user',
   })
   @ApiOkResponse({
-    description: 'Returns a list of all units of the authenticated user matching the filter criteria.',
+    description: 'Returns a list of all hydrogen-storage units of the authenticated user ',
   })
-  @ApiQuery({
-    name: 'unit-type',
-    enum: UnitType,
-    required: false,
-    examples: {
-      allTypes: {
-        value: null,
-        description: 'Get units of all types',
-      },
-      powerProduction: {
-        value: UnitType.POWER_PRODUCTION,
-        description: `Get all units with type "${UnitType.POWER_PRODUCTION}"`,
-      },
-      hydrogenProduction: {
-        value: UnitType.HYDROGEN_PRODUCTION,
-        description: `Get all units with type "${UnitType.HYDROGEN_PRODUCTION}"`,
-      },
-      hydrogenStorage: {
-        value: UnitType.HYDROGEN_STORAGE,
-        description: `Get all units with type "${UnitType.HYDROGEN_STORAGE}"`,
-      },
-    },
-  })
-  getUnits(
-    @Query('unit-type') unitType: UnitType,
+  getHydrogenStorageUnits(
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
-  ): Promise<UnitOverviewDto[]> {
-    return this.unitService.readUnits(authenticatedUser.sub, unitType);
+  ): Promise<HydrogenStorageOverviewDto[]> {
+    return this.unitService.readHydrogenStorageUnits(authenticatedUser.sub);
   }
 
-  @Get(':id')
+  @Get('hydrogen-storage/:id')
   @ApiBearerAuth()
   @ApiOperation({
-    description: 'Retrieve a specific unit by its ID.',
+    description: 'Retrieve hydrogen-storage unit ',
   })
   @ApiOkResponse({
-    description: 'Returns the requested unit.',
+    description: 'Returns hydrogen-storage unit ',
   })
-  @ApiParam({
-    name: 'id',
-    type: String,
-    description: 'Unique identifier of the unit.',
-    example: 'hydrogen-storage-unit-1',
-  })
-  async getUnit(@Param('id') id: string): Promise<UnitDto> {
-    return this.unitService.readUnit(id);
+  getHydrogenStorageUnitById(@Param('id') id: string): Promise<HydrogenStorageUnitDto> {
+    return this.unitService.readHydrogenStorageUnit(id);
   }
 
-  @Post()
+  @Post('hydrogen-storage')
   @ApiBearerAuth()
   @ApiOperation({
     description: 'Create new Unit.',
@@ -81,7 +61,83 @@ export class UnitController {
   @ApiOkResponse({
     description: 'Returns the created unit.',
   })
-  createUnit(@Body() dto: UnitCreateDto) {
-    return this.unitService.createUnit(dto);
+  createHydrogenStorageUnit(@Body() dto: HydrogenStorageUnitCreateDto): Promise<HydrogenStorageUnitDto> {
+    return this.unitService.createHydrogenStorageUnit(dto);
+  }
+
+  @Get('power-production')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Retrieve all power-production units of the authenticated user',
+  })
+  @ApiOkResponse({
+    description: 'Returns a list of all power-production units of the authenticated user ',
+  })
+  getPowerProductionUnits(
+    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+  ): Promise<PowerProductionOverviewDto[]> {
+    return this.unitService.readPowerProductionUnits(authenticatedUser.sub);
+  }
+
+  @Get('power-production/:id')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Retrieve power-production unit ',
+  })
+  @ApiOkResponse({
+    description: 'Returns power-production unit ',
+  })
+  getPowerProductionUnitById(@Param('id') id: string): Promise<PowerProductionUnitDto> {
+    return this.unitService.readPowerProductionUnit(id);
+  }
+
+  @Post('power-production')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Create new Unit.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the created unit.',
+  })
+  createPowerProductionUnit(@Body() dto: PowerProductionUnitCreateDto): Promise<PowerProductionUnitDto> {
+    return this.unitService.createPowerProductionUnit(dto);
+  }
+
+  @Get('hydrogen-production')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Retrieve all hydrogen-storage units of the authenticated user',
+  })
+  @ApiOkResponse({
+    description: 'Returns a list of all hydrogen-storage units of the authenticated user ',
+  })
+  getHydrogenProductionUnits(
+    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+  ): Promise<HydrogenProductionOverviewDto[]> {
+    return this.unitService.readHydrogenProductionUnits(authenticatedUser.sub);
+  }
+
+  @Get('hydrogen-production/:id')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Retrieve hydrogen-storage unit ',
+  })
+  @ApiOkResponse({
+    description: 'Returns hydrogen-storage unit ',
+  })
+  getHydrogenProductionUnitById(@Param('id') id: string): Promise<HydrogenProductionUnitDto> {
+    return this.unitService.readHydrogenProductionUnit(id);
+  }
+
+  @Post('hydrogen-production')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Create new Unit.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the created unit.',
+  })
+  createHydrogenProductionUnit(@Body() dto: HydrogenProductionUnitCreateDto): Promise<HydrogenProductionUnitDto> {
+    return this.unitService.createHydrogenProductionUnit(dto);
   }
 }

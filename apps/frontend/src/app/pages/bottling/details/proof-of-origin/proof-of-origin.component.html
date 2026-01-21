@@ -20,22 +20,32 @@
 
     @for (item of data$().sections; track $index; let sIndex = $index) {
       <div class="flex flex-row items-center gap-2">
-        <div class="bg-primary-200/30 flex h-12 w-12 items-center justify-center rounded-full">
-          <span class="material-symbols-outlined text-white"> arrow_downward </span>
+        <div
+          class="bg-primary-100 border-primary-200/30 flex h-12 w-12 items-center justify-center rounded-full border-2"
+        >
+          <span class="material-symbols-outlined text-primary-400"> arrow_downward </span>
         </div>
         <span class="py-2 text-neutral-500">{{ item.name | prettyEnum | titlecase }}</span>
       </div>
-      <div class="my-2 ml-6 flex flex-col border-l-[3px] border-solid border-neutral-200 pl-4">
+      <div class="my-2 ml-6 flex flex-col gap-1 border-l-[3px] border-solid border-neutral-200 pl-4">
         @for (class of item.classifications; track $index; let cIndex = $index) {
           <app-classification
             [classification]="class"
-            class="my-1 cursor-pointer"
+            class="cursor-pointer"
             (click)="setIndex(sIndex, cIndex)"
             role="none"
           ></app-classification>
         }
         @for (batch of item.batches; track $index) {
-          <app-batch-card [batch]="batch" class="my-1"> </app-batch-card>
+          @if (isInstanceOfWaterBatch(batch); as waterBatch) {
+            <app-water-batch-card [batch]="waterBatch"></app-water-batch-card>
+          }
+          @if (isInstanceOfHydrogenBatch(batch); as hydrogenBatch) {
+            <app-h2-batch-card [batch]="hydrogenBatch"></app-h2-batch-card>
+          }
+          @if (isInstanceOfPowerBatch(batch); as powerBatch) {
+            <app-power-batch-card [batch]="powerBatch"></app-power-batch-card>
+          }
         }
       </div>
     }

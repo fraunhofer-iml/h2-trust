@@ -8,13 +8,12 @@
 
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-rfnbo-chip',
-  imports: [CommonModule, MatIconModule],
-  templateUrl: './rfnbo-chip.component.html',
+  selector: 'app-proof-of-origin-card',
+  imports: [CommonModule],
+  templateUrl: './proof-of-origin-card.component.html',
 })
-export class RfnboChipComponent {
-  isRFNBOready = input<boolean>();
+export class ProofOfOriginCardComponent {
+  icon = input.required<string>();
 }

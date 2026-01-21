@@ -29,7 +29,7 @@ export class UnitController {
 
   @MessagePattern(UnitMessagePatterns.READ)
   async readUnit(payload: ReadByIdPayload): Promise<UnitEntity> {
-    return this.service.readUnit(payload.id);
+    return this.service.readUnitById(payload.id);
   }
 
   @MessagePattern(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS)

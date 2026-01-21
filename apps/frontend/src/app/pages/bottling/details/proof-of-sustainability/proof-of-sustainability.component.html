@@ -4,11 +4,11 @@
   <div class="flex flex-col gap-4 rounded-lg bg-white p-4">
     <h3 class="font-semibold text-neutral-500">Proof of Sustainability</h3>
     <div class="flex w-full flex-row gap-4 lg:flex-wrap">
-      <div class="bg-secondary-200/15 text-secondary-400 flex min-w-52 grow flex-row items-center gap-4 rounded-xl p-4">
+      <div class="bg-secondary-100 text-secondary-500 flex min-w-52 grow flex-row items-center gap-4 rounded-xl p-4">
         <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
-          <span class="material-symbols-outlined text-secondary-400 text-4xl">air</span>
+          <span class="material-symbols-outlined text-4xl">air</span>
         </div>
-        <div class="flex flex-col gap-1 text-neutral-500">
+        <div class="flex flex-col gap-1 text-neutral-600">
           <span class="flex w-full items-center justify-between gap-2 text-sm">
             Total {{ ChemicalNames.CO2 }} Emissions
             <app-info-tooltip [tooltip]="totalEmissionsTooltip" [position]="'above'"></app-info-tooltip>
@@ -23,15 +23,13 @@
           >
         </div>
       </div>
-      <div class="bg-secondary-200/15 text-secondary-400 flex min-w-96 grow flex-row items-center gap-4 rounded-xl p-4">
+      <div class="bg-secondary-100 flex min-w-96 grow flex-row items-center gap-4 rounded-xl p-4 text-neutral-600">
         <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
-          <span class="material-symbols-outlined text-secondary-400 text-4xl">percent</span>
+          <span class="material-symbols-outlined text-secondary-500 text-4xl">percent</span>
         </div>
         <div class="flex w-full flex-col">
-          <span class="grow text-xs text-neutral-500">Savings Potential</span
-          ><span class="text-xs text-neutral-500"
-            >(Reference for fossil fuels: {{ 94 | unit: FormattedUnits.CO2_PER_MJ_H2 }})</span
-          >
+          <span class="grow text-xs">Savings Potential</span
+          ><span class="text-xs">(Reference for fossil fuels: {{ 94 | unit: FormattedUnits.CO2_PER_MJ_H2 }})</span>
           <app-savings-potential-chart
             class="mt-2 w-full"
             [percentage]="proofQuery.data()?.emissionReductionPercentage ?? 0"

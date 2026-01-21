@@ -18,7 +18,6 @@ export class ClassificationDto {
   name: string;
   emissionOfProcessStep: number;
   amount: number;
-  amountVerified: number;
   batches: BatchDto[];
   classifications: ClassificationDto[];
   /**
@@ -31,7 +30,6 @@ export class ClassificationDto {
     name: string,
     emissionOfProcessStep: number,
     amount: number,
-    amountVerified: number,
     batches: BatchDto[],
     classifications: ClassificationDto[],
     unit: string,
@@ -40,7 +38,6 @@ export class ClassificationDto {
     this.name = name;
     this.emissionOfProcessStep = emissionOfProcessStep;
     this.amount = amount;
-    this.amountVerified = amountVerified;
     this.batches = batches;
     this.classifications = classifications;
     this.unit = unit;

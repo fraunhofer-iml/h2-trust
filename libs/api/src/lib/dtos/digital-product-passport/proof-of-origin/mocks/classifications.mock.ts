@@ -14,7 +14,6 @@ import { PowerBatchesMock } from './power-batches.mock';
 export const powerTypeClassificationsMock: ClassificationDto[] = [
   {
     amount: 60,
-    amountVerified: 30,
     batches: [PowerBatchesMock[0], PowerBatchesMock[1]],
     classifications: [],
     emissionOfProcessStep: 260,
@@ -24,7 +23,6 @@ export const powerTypeClassificationsMock: ClassificationDto[] = [
   },
   {
     amount: 60,
-    amountVerified: 30,
     batches: [PowerBatchesMock[2], PowerBatchesMock[3]],
     classifications: [],
     emissionOfProcessStep: 260,
@@ -37,7 +35,6 @@ export const powerTypeClassificationsMock: ClassificationDto[] = [
 export const powerSupplyClassificationsMock: ClassificationDto[] = [
   {
     amount: 60,
-    amountVerified: 30,
     batches: [],
     classifications: powerTypeClassificationsMock,
     emissionOfProcessStep: 260,
@@ -50,7 +47,6 @@ export const powerSupplyClassificationsMock: ClassificationDto[] = [
 export const hydrogenColorClassificationsMock: ClassificationDto[] = [
   {
     amount: 400,
-    amountVerified: 400,
     batches: [hydrogenBatchesMock[0], hydrogenBatchesMock[1]],
     classifications: [],
     emissionOfProcessStep: 260,
@@ -60,7 +56,6 @@ export const hydrogenColorClassificationsMock: ClassificationDto[] = [
   },
   {
     amount: 300,
-    amountVerified: 0,
     batches: [hydrogenBatchesMock[2]],
     classifications: [],
     emissionOfProcessStep: 260,

@@ -13,6 +13,7 @@ import { EnumLabelMapper } from '../../labels';
 import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
 import { FillingDto } from './filling.dto';
+import { UnitOwnerDto } from './unit-owner.dto';
 
 export class HydrogenStorageUnitDto extends BaseUnitDto {
   storageType: string;
@@ -30,13 +31,7 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
     certifiedBy: string,
     commissionedOn: Date,
     address: AddressDto,
-    company: {
-      id: string;
-      hydrogenApprovals: {
-        powerAccessApprovalStatus: string;
-        powerProducerId: string;
-      }[];
-    },
+    company: UnitOwnerDto,
     capacity: number,
     filling: FillingDto[],
     pressure: number,
