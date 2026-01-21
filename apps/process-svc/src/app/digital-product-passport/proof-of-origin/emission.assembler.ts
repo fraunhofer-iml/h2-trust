@@ -30,7 +30,6 @@ import {
   UNIT_G_CO2_PER_KWH,
 } from '@h2-trust/domain';
 
-// TODO-MP: check preconditions!
 export class EmissionAssembler {
   static assemblePowerSupply(
     powerProduction: ProcessStepEntity,
@@ -80,7 +79,7 @@ export class EmissionAssembler {
     const basisOfCalculation = [waterInputInput, emissionFactorInput, formula, formulaResult];
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      'Emissions (Water Supply)',
+      'Water Supply',
       basisOfCalculation,
       result,
       UNIT_G_CO2,
@@ -118,7 +117,7 @@ export class EmissionAssembler {
     ];
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      'Emissions (Compression from 30 bar to 300 bar)',
+      'Compression from 30 bar to 300 bar',
       basisOfCalculation,
       result,
       UNIT_G_CO2,
@@ -140,7 +139,7 @@ export class EmissionAssembler {
     const basisOfCalculation = ['E = [TBD]'];
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      'Emissions (Hydrogen Bottling)',
+      'Hydrogen Bottling',
       basisOfCalculation,
       result,
       UNIT_G_CO2,
@@ -184,7 +183,7 @@ export class EmissionAssembler {
     const basisOfCalculation = ['E = 0 g CO₂,eq/kg H₂'];
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      'Emissions (Transportation with Pipeline)',
+      'Transportation with Pipeline',
       basisOfCalculation,
       result,
       UNIT_G_CO2,
@@ -243,7 +242,7 @@ export class EmissionAssembler {
     ];
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      'Emissions (Transportation with Trailer)',
+      'Transportation with Trailer',
       basisOfCalculation,
       result,
       UNIT_G_CO2,
@@ -297,7 +296,7 @@ export class EmissionAssembler {
     const calculateTotalEmissionAmountByCalculationTopic = (calculationTopic: CalculationTopic): number =>
       emissionCalculations
         .filter((emissionCalculation) => emissionCalculation.calculationTopic === calculationTopic)
-        .reduce((acc, emissionCalculation) => acc + (emissionCalculation.result ?? 0), 0);
+        .reduce((acc, emissionCalculation) => acc + (Number(emissionCalculation.name) ?? 0), 0);
 
     const powerSupplyEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(CalculationTopic.POWER_SUPPLY);
     const powerSupplyEmission = new ProofOfSustainabilityEmissionEntity(

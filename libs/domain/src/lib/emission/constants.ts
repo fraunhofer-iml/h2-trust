@@ -17,10 +17,10 @@ export const GRAVIMETRIC_ENERGY_DENSITY_H2_MJ_PER_KG = 120;
 export const FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ = 94;
 
 export const POWER_EMISSION_FACTORS: Readonly<Record<EnergySource, PowerEmissionFactor>> = {
-  [EnergySource.SOLAR_ENERGY]: { emissionFactor: 0, label: 'Emissions (Solar Energy)' },
-  [EnergySource.WIND_ENERGY]: { emissionFactor: 0, label: 'Emissions (Wind Energy)' },
-  [EnergySource.HYDRO_POWER]: { emissionFactor: 0, label: 'Emissions (Hydro Energy)' },
-  [EnergySource.GRID]: { emissionFactor: 357.48, label: 'Emissions (Grid)' },
+  [EnergySource.SOLAR_ENERGY]: { emissionFactor: 0, label: 'Solar Energy' },
+  [EnergySource.WIND_ENERGY]: { emissionFactor: 0, label: 'Wind Energy' },
+  [EnergySource.HYDRO_POWER]: { emissionFactor: 0, label: 'Hydro Energy' },
+  [EnergySource.GRID]: { emissionFactor: 357.48, label: 'Grid' },
 };
 
 export const FUEL_EMISSION_FACTORS: Readonly<Record<FuelType, number>> = {

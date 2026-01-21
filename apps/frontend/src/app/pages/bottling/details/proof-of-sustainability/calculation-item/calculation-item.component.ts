@@ -15,6 +15,7 @@ import { CalculationTopic } from '@h2-trust/domain';
 import { BaseSheetComponent } from '../../../../../layout/sheet/sheet.component';
 import { PrettyEnumPipe } from '../../../../../shared/pipes/format-enum.pipe';
 import { UnitPipe } from '../../../../../shared/pipes/unit.pipe';
+import { FormattedUnits } from '../../../../../shared/constants/formatted-units';
 
 @Component({
   selector: 'app-calculation-item',
@@ -28,6 +29,7 @@ export class CalculationItemComponent {
   }>();
 
   closed = true;
+  FormattedUnits = FormattedUnits;
 
   getIcon(topic: string) {
     const map = new Map<string, string>([
