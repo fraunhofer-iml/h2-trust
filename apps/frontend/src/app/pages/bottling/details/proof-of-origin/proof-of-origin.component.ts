@@ -9,15 +9,25 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, input, signal } from '@angular/core';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { SectionDto } from '@h2-trust/api';
+import { BatchDto, HydrogenBatchDto, PowerBatchDto, SectionDto, WaterBatchDto } from '@h2-trust/api';
+import { BatchType } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
 import { BottlingService } from '../../../../shared/services/bottling/bottling.service';
-import { BatchCardComponent } from './batch-card/batch-card.component';
+import { H2BatchCardComponent } from './batch-card/h2-batch-card/h2-batch-card.component';
+import { PowerBatchCardComponent } from './batch-card/power-batch-card/power-batch-card.component';
+import { WaterBatchCardComponent } from './batch-card/water-batch-card/water-batch-card.component';
 import { ClassificationComponent } from './classification/classification.component';
 
 @Component({
   selector: 'app-proof-of-origin',
-  imports: [CommonModule, ClassificationComponent, BatchCardComponent, PrettyEnumPipe],
+  imports: [
+    CommonModule,
+    ClassificationComponent,
+    PrettyEnumPipe,
+    WaterBatchCardComponent,
+    H2BatchCardComponent,
+    PowerBatchCardComponent,
+  ],
   templateUrl: './proof-of-origin.component.html',
 })
 export class ProofOfOriginComponent {
@@ -79,5 +89,15 @@ export class ProofOfOriginComponent {
     const length = this.classificationIndex$().length;
     if (length === 0) return;
     this.navigate(length - 2);
+  }
+
+  isInstanceOfWaterBatch(batch: BatchDto): WaterBatchDto | null {
+    return batch.batchType === BatchType.WATER ? (batch as WaterBatchDto) : null;
+  }
+  isInstanceOfHydrogenBatch(batch: BatchDto): HydrogenBatchDto | null {
+    return batch.batchType === BatchType.HYDROGEN ? (batch as HydrogenBatchDto) : null;
+  }
+  isInstanceOfPowerBatch(batch: BatchDto): PowerBatchDto | null {
+    return batch.batchType === BatchType.POWER ? (batch as PowerBatchDto) : null;
   }
 }
