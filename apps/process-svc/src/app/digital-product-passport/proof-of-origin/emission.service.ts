@@ -19,13 +19,13 @@ import {
   ReadByIdsPayload,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
+import { EnumLabelMapper } from '@h2-trust/api';
 import { CalculationTopic, HydrogenColor, ProcessType, UNIT_G_CO2, UNIT_G_CO2_PER_KG_H2 } from '@h2-trust/domain';
 import { EmissionAssembler } from './emission.assembler';
-import { EnumLabelMapper } from '@h2-trust/api';
 
 @Injectable()
 export class EmissionService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) { }
+  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) {}
 
   async computeProvenanceEmissions(provenance: ProvenanceEntity): Promise<ProofOfSustainabilityEntity> {
     if (!provenance) {
@@ -46,15 +46,14 @@ export class EmissionService {
 
       const totalEmissions = powerProductions.reduce((sum, curr) => sum + curr.result, 0);
 
-      const totalEmissionsGrouped = Array
-        .from(powerProductions
-          .reduce((map, entity) =>
-            map.set(entity.name, (map.get(entity.name) ?? 0) + entity.result),
-            new Map<string, number>())
+      const totalEmissionsGrouped = Array.from(
+        powerProductions
+          .reduce(
+            (map, entity) => map.set(entity.name, (map.get(entity.name) ?? 0) + entity.result),
+            new Map<string, number>(),
+          )
           .entries(),
-        ).map(([energySource, result]) =>
-          `${energySource} : ${result} ${UNIT_G_CO2}`
-        );
+      ).map(([energySource, result]) => `${energySource} : ${result} ${UNIT_G_CO2}`);
 
       const totalEmissionsByKgHydrogen = totalEmissions / bottledHydrogenAmount;
 
@@ -96,16 +95,14 @@ export class EmissionService {
 
       const totalEmissions = hydrogenStorages.reduce((sum, curr) => sum + curr.result, 0);
 
-      const totalEmissionsGrouped = Array
-        .from(provenance.hydrogenProductions
+      const totalEmissionsGrouped = Array.from(
+        provenance.hydrogenProductions
           .reduce((map, entity, index) => {
             const color = EnumLabelMapper.getHydrogenColor(entity.batch.qualityDetails?.color as HydrogenColor);
             return map.set(color, (map.get(color) ?? 0) + hydrogenStorages[index].result);
           }, new Map<string, number>())
-          .entries()
-        ).map(([color, result]) =>
-          `${color} : ${result} ${UNIT_G_CO2}`
-        );
+          .entries(),
+      ).map(([color, result]) => `${color} : ${result} ${UNIT_G_CO2}`);
 
       const totalEmissionsByKgHydrogen = totalEmissions / bottledHydrogenAmount;
 

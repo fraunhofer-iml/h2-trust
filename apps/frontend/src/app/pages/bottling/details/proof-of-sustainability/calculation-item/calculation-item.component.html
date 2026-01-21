@@ -23,9 +23,7 @@
         <div
           class="flex w-full justify-between rounded-xl border-b-[2px] border-solid border-neutral-100 bg-neutral-50 p-4 text-neutral-800"
         >
-          <h2>
-            {{ item.name | number: '1.2-2' }} {{ FormattedUnits.G_CO2 }}
-          </h2>
+          <h2>{{ item.name | number: '1.2-2' }} {{ FormattedUnits.G_CO2 }}</h2>
           <span class="ml-2">{{ item.result | unit: item.unit }}</span>
         </div>
 

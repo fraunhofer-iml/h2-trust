@@ -296,7 +296,7 @@ export class EmissionAssembler {
     const calculateTotalEmissionAmountByCalculationTopic = (calculationTopic: CalculationTopic): number =>
       emissionCalculations
         .filter((emissionCalculation) => emissionCalculation.calculationTopic === calculationTopic)
-        .reduce((acc, emissionCalculation) => acc + (Number(emissionCalculation.name) ?? 0), 0);
+        .reduce((acc, emissionCalculation) => acc + Number(emissionCalculation.name), 0);
 
     const powerSupplyEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(CalculationTopic.POWER_SUPPLY);
     const powerSupplyEmission = new ProofOfSustainabilityEmissionEntity(
