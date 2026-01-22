@@ -33,9 +33,9 @@ export class ProcessStepRepository {
       .then(ProcessStepEntity.fromDatabase);
   }
 
-  async findProcessStepsByPredecessorTypesAndCompany(
+  async findProcessStepsByPredecessorTypesAndOwner(
     predecessorProcessTypes: string[],
-    companyId: string,
+    ownerId: string,
   ): Promise<ProcessStepEntity[]> {
     const predecessorsFilter =
       Array.isArray(predecessorProcessTypes) && predecessorProcessTypes.length > 0
@@ -57,7 +57,7 @@ export class ProcessStepRepository {
             ...predecessorsFilter,
           },
           executedBy: {
-            ownerId: companyId,
+            ownerId: ownerId,
           },
         },
         orderBy: {
@@ -68,10 +68,10 @@ export class ProcessStepRepository {
       .then((processSteps) => processSteps.map(ProcessStepEntity.fromDatabase));
   }
 
-  async findProcessStepsByTypesAndActiveAndCompany(
+  async findProcessStepsByTypesAndActiveAndOwner(
     processTypes: string[],
     active: boolean,
-    companyId: string,
+    ownerId: string,
   ): Promise<ProcessStepEntity[]> {
     return this.prismaService.processStep
       .findMany({
@@ -81,7 +81,7 @@ export class ProcessStepRepository {
             active: active,
           },
           executedBy: {
-            ownerId: companyId,
+            ownerId: ownerId,
           },
         },
         orderBy: {

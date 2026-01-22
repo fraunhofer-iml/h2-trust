@@ -11,8 +11,8 @@ import {
   CreateManyProcessStepsPayload,
   DocumentEntity,
   ProcessStepEntity,
-  ReadProcessStepsByPredecessorTypesAndCompanyPayload,
-  ReadProcessStepsByTypesAndActiveAndCompanyPayload,
+  ReadProcessStepsByPredecessorTypesAndOwnerPayload,
+  ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
 import { ConfigurationService, MinioConfiguration } from '@h2-trust/configuration';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
@@ -87,22 +87,22 @@ export class ProcessStepService {
     return this.processStepRepository.findAllProcessStepsFromStorageUnit(hydrogenStorageUnitId);
   }
 
-  async readProcessStepsByPredecessorTypesAndCompany(
-    payload: ReadProcessStepsByPredecessorTypesAndCompanyPayload,
+  async readProcessStepsByPredecessorTypesAndOwner(
+    payload: ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   ): Promise<ProcessStepEntity[]> {
-    return this.processStepRepository.findProcessStepsByPredecessorTypesAndCompany(
+    return this.processStepRepository.findProcessStepsByPredecessorTypesAndOwner(
       payload.predecessorProcessTypes,
-      payload.companyId,
+      payload.ownerId,
     );
   }
 
-  async readProcessStepsByTypesAndActiveAndCompany(
-    payload: ReadProcessStepsByTypesAndActiveAndCompanyPayload,
+  async readProcessStepsByTypesAndActiveAndOwner(
+    payload: ReadProcessStepsByTypesAndActiveAndOwnerPayload,
   ): Promise<ProcessStepEntity[]> {
-    return this.processStepRepository.findProcessStepsByTypesAndActiveAndCompany(
+    return this.processStepRepository.findProcessStepsByTypesAndActiveAndOwner(
       payload.processTypes,
       payload.active,
-      payload.companyId,
+      payload.ownerId,
     );
   }
 

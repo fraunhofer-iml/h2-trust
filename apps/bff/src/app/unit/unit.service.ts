@@ -48,27 +48,27 @@ export class UnitService {
   }
 
   async readPowerProductionUnits(userId: string): Promise<PowerProductionOverviewDto[]> {
-    const companyId = await this.getCompanyIdFromUserId(userId);
+    const ownerId = await this.getCompanyIdFromUserId(userId);
 
     const units = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS, new ReadByIdPayload(companyId)),
+      this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS, new ReadByIdPayload(ownerId)),
     );
     return units.map(PowerProductionOverviewDto.fromEntity);
   }
 
   async readHydrogenProductionUnits(userId: string): Promise<HydrogenProductionOverviewDto[]> {
-    const companyId = await this.getCompanyIdFromUserId(userId);
+    const ownerId = await this.getCompanyIdFromUserId(userId);
     const units = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS, new ReadByIdPayload(companyId)),
+      this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS, new ReadByIdPayload(ownerId)),
     );
     return units.map(HydrogenProductionOverviewDto.fromEntity);
   }
 
   async readHydrogenStorageUnits(userId: string): Promise<HydrogenStorageOverviewDto[]> {
-    const companyId = await this.getCompanyIdFromUserId(userId);
+    const ownerId = await this.getCompanyIdFromUserId(userId);
 
     const units = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_STORAGE_UNITS, new ReadByIdPayload(companyId)),
+      this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_STORAGE_UNITS, new ReadByIdPayload(ownerId)),
     );
     return units.map(HydrogenStorageOverviewDto.fromEntity);
   }

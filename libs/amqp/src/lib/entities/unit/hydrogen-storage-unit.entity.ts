@@ -30,7 +30,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     certifiedBy: string,
     commissionedOn: Date,
     address: AddressEntity,
-    company: {
+    owner: {
       id?: string;
       hydrogenApprovals?: {
         powerAccessApprovalStatus?: string;
@@ -56,7 +56,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       certifiedBy,
       commissionedOn,
       address,
-      company,
+      owner,
       operator,
       unitType,
     );

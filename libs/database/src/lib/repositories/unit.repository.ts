@@ -75,11 +75,11 @@ export class UnitRepository {
     throw new BrokerException(`Incompatible unit`, HttpStatus.BAD_REQUEST);
   }
 
-  async findPowerProductionUnitsByCompanyId(companyId: string): Promise<PowerProductionUnitEntity[]> {
+  async findPowerProductionUnitsByOwnerId(ownerId: string): Promise<PowerProductionUnitEntity[]> {
     return this.prismaService.unit
       .findMany({
         where: {
-          ownerId: companyId,
+          ownerId: ownerId,
           powerProductionUnit: {
             isNot: null,
           },
@@ -104,11 +104,11 @@ export class UnitRepository {
       });
   }
 
-  async findHydrogenProductionUnitsByCompanyId(companyId: string): Promise<HydrogenProductionUnitEntity[]> {
+  async findHydrogenProductionUnitsByOwnerId(ownerId: string): Promise<HydrogenProductionUnitEntity[]> {
     return this.prismaService.unit
       .findMany({
         where: {
-          ownerId: companyId,
+          ownerId: ownerId,
           hydrogenProductionUnit: {
             isNot: null,
           },
@@ -133,11 +133,11 @@ export class UnitRepository {
       });
   }
 
-  async findHydrogenStorageUnitsByCompanyId(companyId: string): Promise<HydrogenStorageUnitEntity[]> {
+  async findHydrogenStorageUnitsByOwnerId(ownerId: string): Promise<HydrogenStorageUnitEntity[]> {
     return this.prismaService.unit
       .findMany({
         where: {
-          ownerId: companyId,
+          ownerId: ownerId,
           hydrogenStorageUnit: {
             isNot: null,
           },

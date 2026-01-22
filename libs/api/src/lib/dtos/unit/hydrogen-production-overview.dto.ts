@@ -41,7 +41,7 @@ export class HydrogenProductionOverviewDto {
   }
 
   static fromEntity(unit: HydrogenProductionUnitEntity): HydrogenProductionOverviewDto {
-    const firstApproval = unit.company?.hydrogenApprovals?.[0];
+    const firstApproval = unit.owner?.hydrogenApprovals?.[0];
 
     return <HydrogenProductionOverviewDto>{
       id: unit.id,
@@ -56,6 +56,6 @@ export class HydrogenProductionOverviewDto {
   }
 
   private static existsPowerProducer(unit: HydrogenProductionUnitEntity) {
-    return unit.company?.hydrogenApprovals?.length ? unit.company.hydrogenApprovals.length !== 0 : false;
+    return unit.owner?.hydrogenApprovals?.length ? unit.owner.hydrogenApprovals.length !== 0 : false;
   }
 }

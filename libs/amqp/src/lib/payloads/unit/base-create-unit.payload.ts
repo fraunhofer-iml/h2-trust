@@ -51,7 +51,7 @@ export abstract class BaseCreateUnitPayload {
 
   @IsString()
   @IsNotEmpty()
-  companyId: string; // TODO-MP: should be ownerId
+  ownerId: string;
 
   @IsString()
   @IsOptional()
@@ -62,7 +62,7 @@ export abstract class BaseCreateUnitPayload {
     mastrNumber: string,
     commissionedOn: Date,
     address: AddressPayload,
-    companyId: string,
+    ownerId: string,
     manufacturer?: string,
     modelType?: string,
     modelNumber?: string,
@@ -74,7 +74,7 @@ export abstract class BaseCreateUnitPayload {
     this.mastrNumber = mastrNumber;
     this.commissionedOn = commissionedOn;
     this.address = address;
-    this.companyId = companyId;
+    this.ownerId = ownerId;
     this.manufacturer = manufacturer;
     this.modelType = modelType;
     this.modelNumber = modelNumber;

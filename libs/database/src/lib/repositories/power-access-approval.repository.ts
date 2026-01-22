@@ -16,11 +16,11 @@ import { powerAccessApprovalQueryArgs } from '../query-args/power-access-approva
 export class PowerAccessApprovalRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findAll(companyId: string, _status: PowerAccessApprovalStatus): Promise<PowerAccessApprovalEntity[]> {
+  async findAll(producerId: string, _status: PowerAccessApprovalStatus): Promise<PowerAccessApprovalEntity[]> {
     return this.prismaService.powerAccessApproval
       .findMany({
         where: {
-          OR: [{ powerProducerId: companyId }, { hydrogenProducerId: companyId }],
+          OR: [{ powerProducerId: producerId }, { hydrogenProducerId: producerId }],
           status: _status,
         },
         ...powerAccessApprovalQueryArgs,
