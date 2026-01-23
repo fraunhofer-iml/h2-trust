@@ -25,7 +25,6 @@ export class RenewableEnergyRfnboDto extends RfnboBaseDto {
   financialSupportReceived: boolean;
   constructor(
     isReductionOver70Percent: boolean,
-
     isGeoCorrelationValid: boolean,
     isTimeCorrelationValid: boolean,
     isAdditionalityFulfilled: boolean,

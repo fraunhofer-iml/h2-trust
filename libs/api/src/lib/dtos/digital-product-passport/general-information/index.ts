@@ -8,5 +8,4 @@
 
 export * from './hydrogen-component.dto';
 export * from './rfnbo-compliance.dto';
-export * from './red-compliance.dto';
 export * from './mocks';

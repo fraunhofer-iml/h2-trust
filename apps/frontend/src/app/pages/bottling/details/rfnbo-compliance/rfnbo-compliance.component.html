@@ -33,44 +33,44 @@
       </div>
       <div class="flex w-2/3 flex-col gap-3 p-4">
         @if (isRenewableDto(redCompliance)) {
-          <app-red-check-card
+          <app-rfnbo-check-card
             [content]="RED_III_CRITERIA.RENEWABLE_ENERGY.TIME_CORRELATION"
             [isValid]="redCompliance.isTimeCorrelationValid"
-          ></app-red-check-card>
+          ></app-rfnbo-check-card>
 
-          <app-red-check-card
+          <app-rfnbo-check-card
             [content]="RED_III_CRITERIA.RENEWABLE_ENERGY.GEOGRAPHICAL_CORRELATION"
             [isValid]="redCompliance.isGeoCorrelationValid"
-          ></app-red-check-card>
+          ></app-rfnbo-check-card>
 
-          <app-red-check-card
+          <app-rfnbo-check-card
             [content]="RED_III_CRITERIA.RENEWABLE_ENERGY.ADDITIONALITY_REQUIREMENT"
             [isValid]="redCompliance.isAdditionalityFulfilled"
-          ></app-red-check-card>
+          ></app-rfnbo-check-card>
 
-          <app-red-check-card
+          <app-rfnbo-check-card
             [content]="RED_III_CRITERIA.RENEWABLE_ENERGY.FINANCIAL_SUPPORT"
             [isValid]="redCompliance.financialSupportReceived"
-          ></app-red-check-card>
+          ></app-rfnbo-check-card>
         }
         @if (isGridDto(redCompliance)) {
-          <app-red-check-card
+          <app-rfnbo-check-card
             [content]="RED_III_CRITERIA.GRID_ENERGY.CURTAILMENT_AVOIDED"
             [isValid]="redCompliance.isCurtailmentAvoided"
-          ></app-red-check-card>
-          <app-red-check-card
+          ></app-rfnbo-check-card>
+          <app-rfnbo-check-card
             [content]="RED_III_CRITERIA.GRID_ENERGY.GRID_GHG_INTENSITY"
             [isValid]="redCompliance.isGridGHGIntensityLow"
-          ></app-red-check-card>
-          <app-red-check-card
+          ></app-rfnbo-check-card>
+          <app-rfnbo-check-card
             [content]="RED_III_CRITERIA.GRID_ENERGY.RENEWABLES_IN_GRID"
             [isValid]="redCompliance.hasHighRenewableShare"
-          ></app-red-check-card>
+          ></app-rfnbo-check-card>
         }
-        <app-red-check-card
+        <app-rfnbo-check-card
           [content]="RED_III_CRITERIA.EMISSION_REDUCTION"
           [isValid]="redCompliance.isEmissionReductionOver70Percent"
-        ></app-red-check-card>
+        ></app-rfnbo-check-card>
       </div>
     </div>
   }

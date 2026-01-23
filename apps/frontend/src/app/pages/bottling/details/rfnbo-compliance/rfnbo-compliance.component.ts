@@ -10,14 +10,14 @@ import { RFNBO_CRITERIA } from 'apps/frontend/src/app/shared/constants/financial
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { GridEnergyRfnboDto, RenewableEnergyRfnboDto, RfnboBaseDto } from '@h2-trust/api';
-import { RedCheckCardComponent } from './red-check-card/red-check-card.component';
+import { RfnboCheckCardComponent } from './rfnbo-check-card/rfnbo-check-card.component';
 
 @Component({
-  selector: 'app-red-compliance',
-  imports: [CommonModule, RedCheckCardComponent],
-  templateUrl: './red-compliance.component.html',
+  selector: 'app-rfnbo-compliance',
+  imports: [CommonModule, RfnboCheckCardComponent],
+  templateUrl: './rfnbo-compliance.component.html',
 })
-export class RedComplianceComponent {
+export class RfnboComplianceComponent {
   protected readonly RED_III_CRITERIA = RFNBO_CRITERIA;
 
   redCompliance = input<RfnboBaseDto>();
