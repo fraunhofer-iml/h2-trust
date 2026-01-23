@@ -48,15 +48,6 @@ export class ProofOfSustainabilityComponent {
   readonly ChemicalNames = ChemicalNames;
 
   calculations = computed(() => this.mapCalculations(this.proofOfSustainability$()?.calculations ?? []));
-  totalEmissions = computed(() => {
-    let sum = 0;
-    this.proofOfSustainability$()?.processStepEmissions.forEach((e) => {
-      if (e.processStepType === 'REGULATORY') {
-        sum += e.amount;
-      }
-    });
-    return sum;
-  });
 
   mapCalculations(calculations: EmissionCalculationDto[]) {
     const groupedObj: Record<string, EmissionCalculationDto[]> = {};

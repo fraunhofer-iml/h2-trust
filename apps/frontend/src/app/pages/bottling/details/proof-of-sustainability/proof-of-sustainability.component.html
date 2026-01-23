@@ -14,8 +14,10 @@
             <app-info-tooltip [tooltip]="totalEmissionsTooltip" [position]="'above'"></app-info-tooltip>
           </span>
           <span class="text-xs">
-            <span class="text-xl">{{ totalEmissions() | number: '1.2-2' }}</span> {{ FormattedUnits.CO2_PER_KG_H2 }}
-            <br />
+            <span class="text-xl">{{ proofOfSustainability$()?.totalEmissions | number: '1.2-2' }}</span>
+            {{ FormattedUnits.G_CO2 }} <br />
+            <span class="text-xl">{{ proofOfSustainability$()?.amountCO2PerKgH2 | number: '1.2-2' }}</span>
+            {{ FormattedUnits.CO2_PER_KG_H2 }} <br />
             <span class="text-xl">{{ proofOfSustainability$()?.amountCO2PerMJH2 | number: '1.2-2' }}</span>
             {{ FormattedUnits.CO2_PER_MJ_H2 }}</span
           >

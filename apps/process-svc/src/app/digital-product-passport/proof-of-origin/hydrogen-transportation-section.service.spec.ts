@@ -70,7 +70,7 @@ describe('HydrogenTransportationSectionService', () => {
       const batch = actualResult.batches[0] as ProofOfOriginHydrogenBatchEntity;
       expect(batch.id).toBe(givenHydrogenTransportation.batch.id);
       expect(batch.emission).toBeDefined();
-      expect(batch.emission.amountCO2PerKgH2).toBeGreaterThan(0);
+      expect(batch.emission.totalEmissionsPerKgHydrogen).toBeGreaterThan(0);
       expect(batch.createdAt).toBe(givenHydrogenTransportation.startedAt);
       expect(batch.amount).toBe(givenHydrogenTransportation.batch.amount);
       expect(batch.unit).toBe(MeasurementUnit.HYDROGEN);
@@ -102,7 +102,7 @@ describe('HydrogenTransportationSectionService', () => {
       const batch = actualResult.batches[0] as ProofOfOriginHydrogenBatchEntity;
       expect(batch.id).toBe(givenHydrogenTransportation.batch.id);
       expect(batch.emission).toBeDefined();
-      expect(batch.emission.amountCO2PerKgH2).toBe(0);
+      expect(batch.emission.totalEmissionsPerKgHydrogen).toBe(0);
       expect(batch.emission.basisOfCalculation).toEqual(['E = 0 g CO₂,eq/kg H₂']);
       expect(batch.createdAt).toBe(givenHydrogenTransportation.startedAt);
       expect(batch.amount).toBe(givenHydrogenTransportation.batch.amount);

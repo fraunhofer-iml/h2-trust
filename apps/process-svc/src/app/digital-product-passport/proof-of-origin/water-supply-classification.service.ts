@@ -23,7 +23,7 @@ import { EmissionAssembler } from './emission.assembler';
 export class WaterSupplyClassificationService {
   buildWaterSupplyClassification(
     waterSupplies: ProcessStepEntity[],
-    hydrogenAmount: number,
+    bottledKgHydrogen: number,
   ): ProofOfOriginClassificationEntity {
     if (!waterSupplies?.length) {
       const message = 'No process steps of type water supply found.';
@@ -31,14 +31,12 @@ export class WaterSupplyClassificationService {
     }
 
     const waterBatches: ProofOfOriginWaterBatchEntity[] = waterSupplies.map((waterSupply) => {
-      const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity = EmissionAssembler.assembleWaterSupply(
-        waterSupply,
-        hydrogenAmount,
-      );
+      const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
+        EmissionAssembler.assembleWaterSupply(waterSupply);
 
-      const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionDto(
+      const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionEntity(
         emissionCalculation,
-        hydrogenAmount,
+        bottledKgHydrogen,
       );
 
       const batch: ProofOfOriginWaterBatchEntity = BatchAssembler.assembleWaterSupply(waterSupply, emission);
