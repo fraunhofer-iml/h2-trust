@@ -3,15 +3,11 @@
     (mouseenter)="showComplianceInfo = true"
     (mouseleave)="showComplianceInfo = false"
     class="flex flex-row items-center gap-2 rounded-md p-2 pr-4 text-sm duration-300 ease-in-out hover:scale-105"
-    [ngClass]="
-      redCompliance()?.isRfnboReady ? 'bg-secondary-100 text-secondary-600' : 'bg-neutral-200 text-neutral-600'
-    "
+    [ngClass]="redCompliance()?.rfnboReady ? 'bg-secondary-100 text-secondary-600' : 'bg-neutral-200 text-neutral-600'"
   >
-    <span class="material-symbols-outlined">
-      {{ redCompliance()?.isRfnboReady ? 'editor_choice' : 'release_alert' }}</span
-    >
+    <span class="material-symbols-outlined"> {{ rfnboStatus().icon }}</span>
     <span>
-      {{ redCompliance()?.isRfnboReady ? 'RFNBO Ready' : 'Non Certifiable' }}
+      {{ rfnboStatus().text }}
     </span>
   </button>
   @if (redCompliance(); as redCompliance) {
@@ -21,55 +17,51 @@
     >
       <div
         class="flex w-1/3 flex-col justify-center rounded-lg pl-4 pr-8 text-sm"
-        [ngClass]="
-          redCompliance.isRfnboReady ? 'bg-secondary-100 text-secondary-600' : 'bg-neutral-200 text-neutral-600'
-        "
+        [ngClass]="redCompliance.rfnboReady ? 'bg-secondary-100 text-secondary-600' : 'bg-neutral-200 text-neutral-600'"
       >
-        <span class="material-symbols-outlined text-3xl">
-          {{ redCompliance.isRfnboReady ? 'editor_choice' : 'release_alert' }}</span
-        >
-        <span class="font-semibold">{{ redCompliance.isRfnboReady ? 'RFNBO Ready' : 'Non Certifiable' }}</span>
+        <span class="material-symbols-outlined text-3xl"> {{ rfnboStatus().icon }}</span>
+        <span class="font-semibold">{{ rfnboStatus().text }}</span>
         <p>The calculation is based on RED III</p>
       </div>
       <div class="flex w-2/3 flex-col gap-3 p-4">
         @if (isRenewableDto(redCompliance)) {
           <app-rfnbo-check-card
-            [content]="RED_III_CRITERIA.RENEWABLE_ENERGY.TIME_CORRELATION"
-            [isValid]="redCompliance.isTimeCorrelationValid"
+            [content]="RFNBO_CRITERIA.RENEWABLE_ENERGY.TIME_CORRELATION"
+            [isValid]="redCompliance.timeCorrelationValid"
           ></app-rfnbo-check-card>
 
           <app-rfnbo-check-card
-            [content]="RED_III_CRITERIA.RENEWABLE_ENERGY.GEOGRAPHICAL_CORRELATION"
-            [isValid]="redCompliance.isGeoCorrelationValid"
+            [content]="RFNBO_CRITERIA.RENEWABLE_ENERGY.GEOGRAPHICAL_CORRELATION"
+            [isValid]="redCompliance.geoCorrelationValid"
           ></app-rfnbo-check-card>
 
           <app-rfnbo-check-card
-            [content]="RED_III_CRITERIA.RENEWABLE_ENERGY.ADDITIONALITY_REQUIREMENT"
-            [isValid]="redCompliance.isAdditionalityFulfilled"
+            [content]="RFNBO_CRITERIA.RENEWABLE_ENERGY.ADDITIONALITY_REQUIREMENT"
+            [isValid]="redCompliance.additionalityFulfilled"
           ></app-rfnbo-check-card>
 
           <app-rfnbo-check-card
-            [content]="RED_III_CRITERIA.RENEWABLE_ENERGY.FINANCIAL_SUPPORT"
+            [content]="RFNBO_CRITERIA.RENEWABLE_ENERGY.FINANCIAL_SUPPORT"
             [isValid]="redCompliance.financialSupportReceived"
           ></app-rfnbo-check-card>
         }
         @if (isGridDto(redCompliance)) {
           <app-rfnbo-check-card
-            [content]="RED_III_CRITERIA.GRID_ENERGY.CURTAILMENT_AVOIDED"
-            [isValid]="redCompliance.isCurtailmentAvoided"
+            [content]="RFNBO_CRITERIA.GRID_ENERGY.CURTAILMENT_AVOIDED"
+            [isValid]="redCompliance.curtailmentAvoided"
           ></app-rfnbo-check-card>
           <app-rfnbo-check-card
-            [content]="RED_III_CRITERIA.GRID_ENERGY.GRID_GHG_INTENSITY"
-            [isValid]="redCompliance.isGridGHGIntensityLow"
+            [content]="RFNBO_CRITERIA.GRID_ENERGY.GRID_GHG_INTENSITY"
+            [isValid]="redCompliance.gridGHGIntensityLow"
           ></app-rfnbo-check-card>
           <app-rfnbo-check-card
-            [content]="RED_III_CRITERIA.GRID_ENERGY.RENEWABLES_IN_GRID"
-            [isValid]="redCompliance.hasHighRenewableShare"
+            [content]="RFNBO_CRITERIA.GRID_ENERGY.RENEWABLES_IN_GRID"
+            [isValid]="redCompliance.highRenewableShare"
           ></app-rfnbo-check-card>
         }
         <app-rfnbo-check-card
-          [content]="RED_III_CRITERIA.EMISSION_REDUCTION"
-          [isValid]="redCompliance.isEmissionReductionOver70Percent"
+          [content]="RFNBO_CRITERIA.EMISSION_REDUCTION"
+          [isValid]="redCompliance.emissionReductionOver70Percent"
         ></app-rfnbo-check-card>
       </div>
     </div>

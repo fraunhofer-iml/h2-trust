@@ -8,64 +8,64 @@
 
 export abstract class RfnboBaseDto {
   abstract gridPowerUsed: boolean;
-  isEmissionReductionOver70Percent: boolean;
-  isRfnboReady = false;
+  emissionReductionOver70Percent: boolean;
+  rfnboReady = false;
 
-  constructor(isReductionOver70Percent: boolean) {
-    this.isEmissionReductionOver70Percent = isReductionOver70Percent;
+  constructor(emissionReductionOver70Percent: boolean) {
+    this.emissionReductionOver70Percent = emissionReductionOver70Percent;
   }
 }
 
 export class RenewableEnergyRfnboDto extends RfnboBaseDto {
   readonly gridPowerUsed = false;
 
-  isGeoCorrelationValid: boolean;
-  isTimeCorrelationValid: boolean;
-  isAdditionalityFulfilled: boolean;
+  geoCorrelationValid: boolean;
+  timeCorrelationValid: boolean;
+  additionalityFulfilled: boolean;
   financialSupportReceived: boolean;
   constructor(
-    isReductionOver70Percent: boolean,
-    isGeoCorrelationValid: boolean,
-    isTimeCorrelationValid: boolean,
-    isAdditionalityFulfilled: boolean,
+    emissionReductionOver70Percent: boolean,
+    geoCorrelationValid: boolean,
+    timeCorrelationValid: boolean,
+    additionalityFulfilled: boolean,
     financialSupportReceived: boolean,
   ) {
-    super(isReductionOver70Percent);
-    this.isGeoCorrelationValid = isGeoCorrelationValid;
-    this.isTimeCorrelationValid = isTimeCorrelationValid;
-    this.isAdditionalityFulfilled = isAdditionalityFulfilled;
+    super(emissionReductionOver70Percent);
+    this.geoCorrelationValid = geoCorrelationValid;
+    this.timeCorrelationValid = timeCorrelationValid;
+    this.additionalityFulfilled = additionalityFulfilled;
     this.financialSupportReceived = financialSupportReceived;
 
-    this.isRfnboReady =
-      this.isEmissionReductionOver70Percent &&
-      this.isGeoCorrelationValid &&
-      this.isTimeCorrelationValid &&
-      this.isAdditionalityFulfilled &&
+    this.rfnboReady =
+      this.emissionReductionOver70Percent &&
+      this.geoCorrelationValid &&
+      this.timeCorrelationValid &&
+      this.additionalityFulfilled &&
       this.financialSupportReceived;
   }
 }
 export class GridEnergyRfnboDto extends RfnboBaseDto {
   readonly gridPowerUsed = true;
   // 90% or more renewables in grid mix
-  hasHighRenewableShare: boolean;
+  highRenewableShare: boolean;
 
   // GHG intensity of grid is 18 g CO₂eq/MJ or less
-  isGridGHGIntensityLow: boolean;
+  gridGHGIntensityLow: boolean;
 
   // Avoid curtailment / redispatchment
-  isCurtailmentAvoided: boolean;
+  curtailmentAvoided: boolean;
   constructor(
-    isReductionOver70Percent: boolean,
+    emissionReductionOver70Percent: boolean,
     hasHighRenewableShare: boolean,
     isGridGHGIntensityLow: boolean,
     isCurtailmentAvoided: boolean,
   ) {
-    super(isReductionOver70Percent);
-    this.hasHighRenewableShare = hasHighRenewableShare;
-    this.isGridGHGIntensityLow = isGridGHGIntensityLow;
-    this.isCurtailmentAvoided = isCurtailmentAvoided;
+    super(emissionReductionOver70Percent);
+    this.highRenewableShare = hasHighRenewableShare;
+    this.gridGHGIntensityLow = isGridGHGIntensityLow;
+    this.curtailmentAvoided = isCurtailmentAvoided;
 
-    this.isRfnboReady =
-      this.isEmissionReductionOver70Percent && hasHighRenewableShare && isGridGHGIntensityLow && isCurtailmentAvoided;
+    this.rfnboReady =
+      this.emissionReductionOver70Percent && hasHighRenewableShare && isGridGHGIntensityLow && isCurtailmentAvoided;
   }
 }

@@ -13,7 +13,7 @@ import { GridEnergyRfnboDto, RenewableEnergyRfnboDto, RfnboBaseDto } from './gen
 import { SectionDto } from './proof-of-origin';
 import { ProofOfSustainabilityDto } from './proof-of-sustainability';
 
-export class ProductPassportDto {
+export class DigitalProductPassportDto {
   id: string;
   filledAt: Date;
   owner?: string;
@@ -58,7 +58,7 @@ export class ProductPassportDto {
     generalInformationEntity: GeneralInformationEntity,
     proofOfOriginSections: ProofOfOriginSectionEntity[],
     proofOfSustainabilityEntity: ProofOfSustainabilityEntity,
-  ): ProductPassportDto {
+  ): DigitalProductPassportDto {
     const hydrogenComposition = (generalInformationEntity.hydrogenComposition ?? []).map(
       HydrogenComponentDto.fromEntity,
     );
@@ -81,7 +81,7 @@ export class ProductPassportDto {
           generalInformationEntity.redCompliance.financialSupportReceived,
         );
 
-    return new ProductPassportDto(
+    return new DigitalProductPassportDto(
       generalInformationEntity.id,
       generalInformationEntity.filledAt,
       generalInformationEntity.owner ?? '',

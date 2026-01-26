@@ -6,9 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RFNBO_CRITERIA } from 'apps/frontend/src/app/shared/constants/financial-support-info';
+import { RFNBO_CRITERIA } from 'apps/frontend/src/app/shared/constants/rfnbo-criteria';
+import { RfnboStatus } from 'apps/frontend/src/app/shared/constants/rfnbo-status';
 import { CommonModule } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { GridEnergyRfnboDto, RenewableEnergyRfnboDto, RfnboBaseDto } from '@h2-trust/api';
 import { RfnboCheckCardComponent } from './rfnbo-check-card/rfnbo-check-card.component';
 
@@ -18,7 +19,7 @@ import { RfnboCheckCardComponent } from './rfnbo-check-card/rfnbo-check-card.com
   templateUrl: './rfnbo-compliance.component.html',
 })
 export class RfnboComplianceComponent {
-  protected readonly RED_III_CRITERIA = RFNBO_CRITERIA;
+  protected readonly RFNBO_CRITERIA = RFNBO_CRITERIA;
 
   redCompliance = input<RfnboBaseDto>();
   showComplianceInfo = false;
@@ -30,4 +31,10 @@ export class RfnboComplianceComponent {
   isRenewableDto(dto: RfnboBaseDto): dto is RenewableEnergyRfnboDto {
     return dto.gridPowerUsed === false;
   }
+
+  rfnboStatus = computed(() =>
+    this.redCompliance()?.rfnboReady
+      ? { text: RfnboStatus.RFNBO_READY, icon: 'editor_choice' }
+      : { text: RfnboStatus.NON_CERTIFIABLE, icon: 'release_alert' },
+  );
 }

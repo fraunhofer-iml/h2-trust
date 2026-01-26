@@ -21,7 +21,7 @@ import {
   BottlingDto,
   BottlingDtoMock,
   BottlingOverviewDto,
-  ProductPassportDto,
+  DigitalProductPassportDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/api';
 import 'multer';
@@ -129,14 +129,14 @@ export class BottlingController {
   @ApiOkResponse({
     description:
       'Returns the requested product passport including general information, proof of origin and proof of sustainability of a bottling.',
-    type: ProductPassportDto,
+    type: DigitalProductPassportDto,
   })
   @ApiParam({
     name: 'id',
     description: 'Unique identifier of the bottling process step.',
     example: 'process-step-hydrogen-bottling-1',
   })
-  async readProductPassport(@Param('id') id: string): Promise<ProductPassportDto> {
-    return this.bottlingService.readProductPassport(id);
+  async readDigitalProductPassport(@Param('id') id: string): Promise<DigitalProductPassportDto> {
+    return this.bottlingService.readDigitalProductPassport(id);
   }
 }
