@@ -17,7 +17,7 @@ import {
 import { ConfigurationService, MinioConfiguration } from '@h2-trust/configuration';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
 import { ProcessType } from '@h2-trust/domain';
-import { DisplayLabels, ProcessStepErrorMessages } from '../constants';
+import { ProcessStepErrorMessages } from '../constants';
 
 @Injectable()
 export class ProcessStepService {
@@ -76,7 +76,7 @@ export class ProcessStepService {
         documents.push({
           id: document.id,
           location: `http://${minio.endPoint}:${minio.port}/${minio.bucketName}/${document.location}`,
-          description: DisplayLabels.FILE_DESCRIPTION(index),
+          description: `File #${index}`,
         });
       }
     });
