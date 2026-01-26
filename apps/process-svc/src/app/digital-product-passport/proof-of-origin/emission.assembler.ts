@@ -45,7 +45,7 @@ export class EmissionAssembler {
     const powerInput = `Power Input: ${power} ${MeasurementUnit.KWH}`;
 
     const emissionFactorLabel = EnumLabelMapper.getEnergySource(energySource);
-    const emissionFactor = POWER_EMISSION_FACTORS[energySource].emissionFactor;
+    const emissionFactor = POWER_EMISSION_FACTORS[energySource];
     const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} ${MeasurementUnit.G_CO2_PER_KWH}`;
 
     const result = power * emissionFactor;
@@ -55,7 +55,7 @@ export class EmissionAssembler {
     const basisOfCalculation = [powerInput, emissionFactorInput, formula, formulaResult];
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      POWER_EMISSION_FACTORS[energySource].label,
+      emissionFactorLabel,
       basisOfCalculation,
       result,
       MeasurementUnit.G_CO2,
@@ -96,7 +96,7 @@ export class EmissionAssembler {
     }
 
     const energyDemand = 1.65; // 5.93 / 3.6 -> default values for compression from 30 bar to 300 bar
-    const emissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID].emissionFactor;
+    const emissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID];
     const result = energyDemand * emissionFactor * hydrogenProduction.batch.amount;
 
     const hydrogenProducedKgInput = `Hydrogen Produced: ${hydrogenProduction.batch.amount} ${MeasurementUnit.KG_H2}`;

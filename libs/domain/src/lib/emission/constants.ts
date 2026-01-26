@@ -8,7 +8,7 @@
 
 import { FuelType } from '../enums';
 import { EnergySource } from '../enums/energy-source.enum';
-import { PowerEmissionFactor, TrailerParameter } from './types';
+import { TrailerParameter } from './types';
 
 export const CH4_N2O = 'CH₄ & N₂O';
 
@@ -16,11 +16,11 @@ export const EMISSION_FACTOR_DEIONIZED_WATER = 0.43;
 export const GRAVIMETRIC_ENERGY_DENSITY_H2_MJ_PER_KG = 120;
 export const FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ = 94;
 
-export const POWER_EMISSION_FACTORS: Readonly<Record<EnergySource, PowerEmissionFactor>> = {
-  [EnergySource.SOLAR_ENERGY]: { emissionFactor: 0, label: 'Solar Energy' },
-  [EnergySource.WIND_ENERGY]: { emissionFactor: 0, label: 'Wind Energy' },
-  [EnergySource.HYDRO_POWER]: { emissionFactor: 0, label: 'Hydro Energy' },
-  [EnergySource.GRID]: { emissionFactor: 357.48, label: 'Grid' },
+export const POWER_EMISSION_FACTORS: Readonly<Record<EnergySource, number>> = {
+  [EnergySource.SOLAR_ENERGY]: 0,
+  [EnergySource.WIND_ENERGY]: 0,
+  [EnergySource.HYDRO_POWER]: 0,
+  [EnergySource.GRID]: 357.48,
 };
 
 export const FUEL_EMISSION_FACTORS: Readonly<Record<FuelType, number>> = {

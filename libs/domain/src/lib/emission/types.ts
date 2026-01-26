@@ -6,11 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export interface PowerEmissionFactor {
-  emissionFactor: number;
-  label: string;
-}
-
 export interface TrailerParameter {
   capacity: number;
   transportEfficiency: number;

@@ -18,6 +18,7 @@ import {
   TransportationDetailsEntityFixture,
 } from '@h2-trust/fixtures/entities';
 import { EmissionService } from './emission.service';
+import { EnumLabelMapper } from '@h2-trust/api';
 
 describe('EmissionService', () => {
   let service: EmissionService;
@@ -151,16 +152,18 @@ describe('EmissionService', () => {
 
       generalSvcMock.send.mockReturnValue(of([givenUnit]));
 
+      const expectedEmissionFactorLabel = EnumLabelMapper.getEnergySource(EnergySource.SOLAR_ENERGY);
+
       const expectedEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.SOLAR_ENERGY];
       const expectedResult =
-        (givenProcessStep.batch.amount * expectedEmissionFactor.emissionFactor) / givenHydrogenAmount;
+        (givenProcessStep.batch.amount * expectedEmissionFactor) / givenHydrogenAmount;
 
       // Act
       const actualResult = await service.computePowerSupplyEmissions([givenProcessStep]);
 
       // Assert
       expect(actualResult).toHaveLength(1);
-      expect(actualResult[0].name).toEqual(expectedEmissionFactor.label);
+      expect(actualResult[0].name).toEqual(expectedEmissionFactorLabel);
       expect(actualResult[0].result).toEqual(expectedResult);
       expect(actualResult[0].unit).toEqual(MeasurementUnit.G_CO2);
       expect(actualResult[0].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
@@ -193,23 +196,25 @@ describe('EmissionService', () => {
 
       generalSvcMock.send.mockReturnValue(of([givenSolarUnit, givenGridUnit]));
 
+      const expectedSolarEmissionFactorLabel = EnumLabelMapper.getEnergySource(EnergySource.SOLAR_ENERGY);
       const expectedSolarEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.SOLAR_ENERGY];
-      const expectedSolarResult = givenSolarProcessStep.batch.amount * expectedSolarEmissionFactor.emissionFactor;
+      const expectedSolarResult = givenSolarProcessStep.batch.amount * expectedSolarEmissionFactor;
 
+      const expectedGridEmissionFactorLabel = EnumLabelMapper.getEnergySource(EnergySource.GRID);
       const expectedGridEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID];
-      const expectedGridResult = givenGridProcessStep.batch.amount * expectedGridEmissionFactor.emissionFactor;
+      const expectedGridResult = givenGridProcessStep.batch.amount * expectedGridEmissionFactor;
       // Act
       const actualResult = await service.computePowerSupplyEmissions([givenSolarProcessStep, givenGridProcessStep]);
 
       // Assert
       expect(actualResult).toHaveLength(2);
 
-      expect(actualResult[0].name).toEqual(expectedSolarEmissionFactor.label);
+      expect(actualResult[0].name).toEqual(expectedSolarEmissionFactorLabel);
       expect(actualResult[0].result).toEqual(expectedSolarResult);
       expect(actualResult[0].unit).toEqual(MeasurementUnit.G_CO2);
       expect(actualResult[0].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
 
-      expect(actualResult[1].name).toEqual(expectedGridEmissionFactor.label);
+      expect(actualResult[1].name).toEqual(expectedGridEmissionFactorLabel);
       expect(actualResult[1].result).toEqual(expectedGridResult);
       expect(actualResult[1].unit).toEqual(MeasurementUnit.G_CO2);
       expect(actualResult[1].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
@@ -236,9 +241,11 @@ describe('EmissionService', () => {
 
       generalSvcMock.send.mockReturnValue(of([givenUnit]));
 
+      const expectedEmissionFactorLabel = EnumLabelMapper.getEnergySource(EnergySource.GRID);
       const expectedEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID];
-      const expectedResult1 = givenProcessStep1.batch.amount * expectedEmissionFactor.emissionFactor;
-      const expectedResult2 = givenProcessStep2.batch.amount * expectedEmissionFactor.emissionFactor;
+
+      const expectedResult1 = givenProcessStep1.batch.amount * expectedEmissionFactor;
+      const expectedResult2 = givenProcessStep2.batch.amount * expectedEmissionFactor;
 
       // Act
       const actualResult = await service.computePowerSupplyEmissions([givenProcessStep1, givenProcessStep2]);
@@ -246,12 +253,12 @@ describe('EmissionService', () => {
       // Assert
       expect(actualResult).toHaveLength(2);
 
-      expect(actualResult[0].name).toEqual(expectedEmissionFactor.label);
+      expect(actualResult[0].name).toEqual(expectedEmissionFactorLabel);
       expect(actualResult[0].result).toEqual(expectedResult1);
       expect(actualResult[0].unit).toEqual(MeasurementUnit.G_CO2);
       expect(actualResult[0].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
 
-      expect(actualResult[1].name).toEqual(expectedEmissionFactor.label);
+      expect(actualResult[1].name).toEqual(expectedEmissionFactorLabel);
       expect(actualResult[1].result).toEqual(expectedResult2);
       expect(actualResult[1].unit).toEqual(MeasurementUnit.G_CO2);
       expect(actualResult[1].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
