@@ -124,7 +124,7 @@ export class BottlingController {
   @Get(':id')
   @ApiBearerAuth()
   @ApiOperation({
-    description: 'Retrieve the general information by the corresponding bottling process step ID.',
+    description: 'Retrieve the general information by the corresponding transportation process step ID.',
   })
   @ApiOkResponse({
     description:
