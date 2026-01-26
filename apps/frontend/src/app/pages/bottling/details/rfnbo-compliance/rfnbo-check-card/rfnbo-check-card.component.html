@@ -1,0 +1,14 @@
+<div
+  class="flex w-full flex-row rounded-lg text-sm"
+  [ngClass]="isValid() ? 'border-secondary-100' : 'border-neutral-200'"
+>
+  <div class="flex w-full flex-col">
+    <span
+      class="flex items-center font-semibold text-neutral-600"
+      [ngClass]="isValid() ? 'text-secondary-400' : 'text-neutral-400'"
+      ><span class="material-symbols-outlined mr-2 rounded-full"> {{ isValid() ? 'check' : 'close' }}</span>
+      {{ content()?.TITLE }}</span
+    >
+    <p class="pl-8 text-neutral-500">{{ content()?.DESCRIPTION }}</p>
+  </div>
+</div>

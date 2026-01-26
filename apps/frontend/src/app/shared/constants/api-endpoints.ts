@@ -39,8 +39,6 @@ export const API = {
   BOTTLING: {
     BASE: BOTTLING_ENDPOINT,
     DETAILS: (id: string) => `${BOTTLING_ENDPOINT}${id}`,
-    PROOF_OF_ORIGIN: (id: string) => `${BOTTLING_ENDPOINT}${id}/proof-of-origin`,
-    PROOF_OF_SUSTAINABILITY: (id: string) => `${BOTTLING_ENDPOINT}${id}/proof-of-sustainability`,
   },
   PRODUCTION: {
     BASE: PRODUCTION_ENDPOINT,
