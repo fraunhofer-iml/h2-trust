@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FuelType } from './enums';
-import { EnergySource } from './enums/energy-source.enum';
+import { FuelType } from '../enums';
+import { EnergySource } from '../enums/energy-source.enum';
 
 export interface TrailerParameter {
   capacity: number;
