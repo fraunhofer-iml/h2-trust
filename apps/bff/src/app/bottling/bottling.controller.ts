@@ -128,7 +128,7 @@ export class BottlingController {
   })
   @ApiOkResponse({
     description:
-      'Returns the requested product passport including general information, proof of origin and proof of sustainability of a bottling.',
+      'Returns the requested product passport including general information, proof of origin and proof of sustainability of a transportation process step.',
     type: ProductPassportDto,
   })
   @ApiParam({
