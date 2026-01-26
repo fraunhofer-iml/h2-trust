@@ -56,7 +56,7 @@ export class ProductPassportDto {
 
   static fromEnities(
     generalInformationEntity: GeneralInformationEntity,
-    proofOfOriginSections: ProofOfOriginSectionEntity[],
+    proofOfOriginSectionEntities: ProofOfOriginSectionEntity[],
     proofOfSustainabilityEntity: ProofOfSustainabilityEntity,
   ): ProductPassportDto {
     const hydrogenComposition = (generalInformationEntity.hydrogenComposition ?? []).map(
