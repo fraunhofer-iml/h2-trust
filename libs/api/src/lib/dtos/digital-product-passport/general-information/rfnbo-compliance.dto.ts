@@ -56,16 +56,16 @@ export class GridEnergyRfnboDto extends RfnboBaseDto {
   curtailmentAvoided: boolean;
   constructor(
     emissionReductionOver70Percent: boolean,
-    hasHighRenewableShare: boolean,
-    isGridGHGIntensityLow: boolean,
-    isCurtailmentAvoided: boolean,
+    highRenewableShare: boolean,
+    gridGHGIntensityLow: boolean,
+    curtailmentAvoided: boolean,
   ) {
     super(emissionReductionOver70Percent);
-    this.highRenewableShare = hasHighRenewableShare;
-    this.gridGHGIntensityLow = isGridGHGIntensityLow;
-    this.curtailmentAvoided = isCurtailmentAvoided;
+    this.highRenewableShare = highRenewableShare;
+    this.gridGHGIntensityLow = gridGHGIntensityLow;
+    this.curtailmentAvoided = curtailmentAvoided;
 
     this.rfnboReady =
-      this.emissionReductionOver70Percent && hasHighRenewableShare && isGridGHGIntensityLow && isCurtailmentAvoided;
+      this.emissionReductionOver70Percent && highRenewableShare && gridGHGIntensityLow && curtailmentAvoided;
   }
 }
