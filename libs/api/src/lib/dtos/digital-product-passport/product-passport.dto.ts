@@ -7,6 +7,7 @@
  */
 
 import { GeneralInformationEntity, ProofOfOriginSectionEntity, ProofOfSustainabilityEntity } from '@h2-trust/amqp';
+import { BatchType, HydrogenColor } from '@h2-trust/domain';
 import { FileInfoDto } from '../file/file-info.dto';
 import { HydrogenComponentDto } from './general-information/hydrogen-component.dto';
 import { GridEnergyRfnboDto, RenewableEnergyRfnboDto, RfnboBaseDto } from './general-information/rfnbo-compliance.dto';
@@ -67,9 +68,11 @@ export class DigitalProductPassportDto {
     );
 
     const proofOfSustainability = ProofOfSustainabilityDto.fromEntity(proofOfSustainabilityEntity);
-    const proofOfOrigin = SectionDto.fromEntities(proofOfOriginSections);
+    const proofOfOrigin = SectionDto.fromEntities(proofOfOriginSectionEntities);
 
-    const gridPowerUsed = hydrogenComposition.find((element: HydrogenComponentDto) => element.color ===  HydrogenColor.YELLOW);
+    const gridPowerUsed = hydrogenComposition.find(
+      (element: HydrogenComponentDto) => element.color === HydrogenColor.YELLOW,
+    );
     const isEmissionReductionAbove70Percent = proofOfSustainabilityEntity.emissionReductionPercentage > 70;
     const rfnboCompliance = gridPowerUsed
       ? new GridEnergyRfnboDto(isEmissionReductionAbove70Percent, false, false, false)
