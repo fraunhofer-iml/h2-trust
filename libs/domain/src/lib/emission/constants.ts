@@ -10,19 +10,6 @@ import { FuelType } from '../enums';
 import { EnergySource } from '../enums/energy-source.enum';
 import { PowerEmissionFactor, TrailerParameter } from './types';
 
-export const UNIT_KM = 'km';
-export const UNIT_KWH = 'kWh';
-export const UNIT_L = 'L';
-export const UNIT_KG_H2 = 'kg H₂';
-export const UNIT_KWH_PER_KG_H2 = 'kWh / kg H₂';
-export const UNIT_G_CO2 = 'g CO₂,eq';
-export const UNIT_G_CO2_PER_KG_H2 = 'g CO₂,eq / kg H₂';
-export const UNIT_G_CO2_PER_KWH = 'g CO₂,eq / kWh';
-export const UNIT_G_CO2_PER_L = 'g CO₂,eq / L';
-export const UNIT_G_CO2_PER_TON_KM = 'g CO₂,eq / (ton, km)';
-export const UNIT_G_CO2_PER_MJ = 'g CO₂,eq / MJ';
-export const UNIT_MJ_FUEL_PER_TON_KM = 'MJ fuel / (ton, km)';
-
 export const CH4_N2O = 'CH₄ & N₂O';
 
 export const EMISSION_FACTOR_DEIONIZED_WATER = 0.43;

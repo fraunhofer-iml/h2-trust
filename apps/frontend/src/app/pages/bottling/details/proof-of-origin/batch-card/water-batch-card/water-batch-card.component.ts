@@ -7,7 +7,7 @@
  */
 
 import { ProofOfOriginCardComponent } from 'apps/frontend/src/app/layout/proof-of-origin-card/proof-of-origin-card.component';
-import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
+import { MeasurementUnit } from '@h2-trust/domain';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { WaterBatchDto } from '@h2-trust/api';
@@ -23,5 +23,5 @@ import { BatchEmissionsComponent } from '../batch-emissions/batch-emissions.comp
 export class WaterBatchCardComponent {
   batch = input.required<WaterBatchDto>();
 
-  readonly FormattedUnits = FormattedUnits;
+  readonly MeasurementUnit = MeasurementUnit;
 }

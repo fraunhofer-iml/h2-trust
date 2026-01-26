@@ -15,11 +15,11 @@
           </span>
           <span class="text-xs">
             <span class="text-xl">{{ proofQuery.data()?.totalEmissions | number: '1.2-2' }}</span>
-            {{ FormattedUnits.G_CO2 }} <br />
+            {{ MeasurementUnit.G_CO2 }} <br />
             <span class="text-xl">{{ proofQuery.data()?.amountCO2PerKgH2 | number: '1.2-2' }}</span>
-            {{ FormattedUnits.CO2_PER_KG_H2 }} <br />
+            {{ MeasurementUnit.G_CO2_PER_KG_H2 }} <br />
             <span class="text-xl">{{ proofQuery.data()?.amountCO2PerMJH2 | number: '1.2-2' }}</span>
-            {{ FormattedUnits.CO2_PER_MJ_H2 }}</span
+            {{ MeasurementUnit.G_CO2_PER_MJ_H2 }}</span
           >
         </div>
       </div>
@@ -29,7 +29,7 @@
         </div>
         <div class="flex w-full flex-col">
           <span class="grow text-xs">Savings Potential</span
-          ><span class="text-xs">(Reference for fossil fuels: {{ 94 | unit: FormattedUnits.CO2_PER_MJ_H2 }})</span>
+          ><span class="text-xs">(Reference for fossil fuels: {{ 94 | unit: MeasurementUnit.G_CO2_PER_MJ_H2 }})</span>
           <app-savings-potential-chart
             class="mt-2 w-full"
             [percentage]="proofQuery.data()?.emissionReductionPercentage ?? 0"

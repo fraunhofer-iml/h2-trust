@@ -16,7 +16,7 @@
         </div>
         <div class="flex flex-col text-sm">
           <span class="text-sm text-neutral-400">Rated Power</span
-          ><span>{{ unit.ratedPower | unit: FormattedUnits.MW }}</span>
+          ><span>{{ unit.ratedPower | unit: MeasurementUnit.MW }}</span>
         </div>
         <div class="flex flex-col text-sm">
           <span class="text-sm text-neutral-400">Method</span><span>{{ unit.method || '--' }}</span>
@@ -26,11 +26,11 @@
         </div>
         <div class="flex flex-col text-sm">
           <span class="text-sm text-neutral-400">Pressure</span
-          ><span>{{ unit.pressure | unit: FormattedUnits.BAR }} </span>
+          ><span>{{ unit.pressure | unit: MeasurementUnit.BAR }} </span>
         </div>
         <div class="flex flex-col text-sm">
           <span class="text-sm text-neutral-400">Water Consumption</span
-          ><span>{{ unit.waterConsumptionLitersPerHour | unit: FormattedUnits.L_PER_H }}</span>
+          ><span>{{ unit.waterConsumptionLitersPerHour | unit: MeasurementUnit.L_PER_H }}</span>
         </div>
       </div>
     </div>

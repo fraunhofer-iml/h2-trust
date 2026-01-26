@@ -20,7 +20,7 @@ import {
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { EnumLabelMapper } from '@h2-trust/api';
-import { CalculationTopic, HydrogenColor, ProcessType, UNIT_G_CO2, UNIT_G_CO2_PER_KG_H2 } from '@h2-trust/domain';
+import { CalculationTopic, HydrogenColor, MeasurementUnit, ProcessType } from '@h2-trust/domain';
 import { EmissionAssembler } from './emission.assembler';
 import { EmissionErrorMessages } from '../../constants';
 
@@ -54,7 +54,7 @@ export class EmissionService {
             new Map<string, number>(),
           )
           .entries(),
-      ).map(([energySource, result]) => `${energySource}: ${result} ${UNIT_G_CO2}`);
+      ).map(([energySource, result]) => `${energySource}: ${result} ${MeasurementUnit.G_CO2}`);
 
       const totalEmissionsPerKgHydrogen = totalEmissions / bottledHydrogenAmount;
 
@@ -63,7 +63,7 @@ export class EmissionService {
           totalEmissions.toString(),
           totalEmissionsGrouped,
           totalEmissionsPerKgHydrogen,
-          UNIT_G_CO2_PER_KG_H2,
+          MeasurementUnit.G_CO2_PER_KG_H2,
           CalculationTopic.POWER_SUPPLY,
         ),
       );
@@ -75,7 +75,7 @@ export class EmissionService {
       );
 
       const totalEmissions = waterConsumptions.reduce((acc, wc) => acc + wc.result, 0);
-      const totalEmissionsGrouped = [`${totalEmissions} ${UNIT_G_CO2}`];
+      const totalEmissionsGrouped = [`${totalEmissions} ${MeasurementUnit.G_CO2}`];
       const totalEmissionsPerKgHydrogen = totalEmissions / bottledHydrogenAmount;
 
       emissionCalculations.push(
@@ -83,7 +83,7 @@ export class EmissionService {
           totalEmissions.toString(),
           totalEmissionsGrouped,
           totalEmissionsPerKgHydrogen,
-          UNIT_G_CO2_PER_KG_H2,
+          MeasurementUnit.G_CO2_PER_KG_H2,
           CalculationTopic.WATER_SUPPLY,
         ),
       );
@@ -103,7 +103,7 @@ export class EmissionService {
             return map.set(color, (map.get(color) ?? 0) + hydrogenStorages[index].result);
           }, new Map<string, number>())
           .entries(),
-      ).map(([color, result]) => `${color}: ${result} ${UNIT_G_CO2}`);
+      ).map(([color, result]) => `${color}: ${result} ${MeasurementUnit.G_CO2}`);
 
       const totalEmissionsPerKgHydrogen = totalEmissions / bottledHydrogenAmount;
 
@@ -112,7 +112,7 @@ export class EmissionService {
           totalEmissions.toString(),
           totalEmissionsGrouped,
           totalEmissionsPerKgHydrogen,
-          UNIT_G_CO2_PER_KG_H2,
+          MeasurementUnit.G_CO2_PER_KG_H2,
           CalculationTopic.HYDROGEN_STORAGE,
         ),
       );
@@ -123,7 +123,7 @@ export class EmissionService {
         EmissionAssembler.assembleHydrogenBottling(provenance.hydrogenBottling);
 
       const totalEmissions = hydrogenBottling.result;
-      const totalEmissionsGrouped = [`${totalEmissions} ${UNIT_G_CO2}`];
+      const totalEmissionsGrouped = [`${totalEmissions} ${MeasurementUnit.G_CO2}`];
       const totalEmissionsPerKgHydrogen = totalEmissions / bottledHydrogenAmount;
 
       emissionCalculations.push(
@@ -131,7 +131,7 @@ export class EmissionService {
           totalEmissions.toString(),
           totalEmissionsGrouped,
           totalEmissionsPerKgHydrogen,
-          UNIT_G_CO2_PER_KG_H2,
+          MeasurementUnit.G_CO2_PER_KG_H2,
           CalculationTopic.HYDROGEN_BOTTLING,
         ),
       );
@@ -142,7 +142,7 @@ export class EmissionService {
         EmissionAssembler.assembleHydrogenTransportation(provenance.root);
 
       const totalEmissions = hydrogenTransportation.result;
-      const totalEmissionsGrouped = [`${totalEmissions} ${UNIT_G_CO2}`];
+      const totalEmissionsGrouped = [`${totalEmissions} ${MeasurementUnit.G_CO2}`];
       const totalEmissionsPerKgHydrogen = totalEmissions / bottledHydrogenAmount;
 
       emissionCalculations.push(
@@ -150,7 +150,7 @@ export class EmissionService {
           totalEmissions.toString(),
           totalEmissionsGrouped,
           totalEmissionsPerKgHydrogen,
-          UNIT_G_CO2_PER_KG_H2,
+          MeasurementUnit.G_CO2_PER_KG_H2,
           CalculationTopic.HYDROGEN_TRANSPORTATION,
         ),
       );

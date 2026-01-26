@@ -8,7 +8,7 @@
 
 import { InfoTooltipComponent } from 'apps/frontend/src/app/layout/info-tooltip/info-tooltip.component';
 import { RED_III_CRITERIA } from 'apps/frontend/src/app/shared/constants/financial-support-info';
-import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
+import { MeasurementUnit } from '@h2-trust/domain';
 import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
@@ -36,5 +36,5 @@ export class PowerProductionDetailsComponent {
     enabled: !!this.id(),
   }));
 
-  readonly FormattedUnits = FormattedUnits;
+  readonly MeasurementUnit = MeasurementUnit;
 }

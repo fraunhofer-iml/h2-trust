@@ -29,7 +29,7 @@
         <span>
           Hydrogen Produced <br />
           <span class="text-primary-600 text-2xl">{{ mutation.data().hydrogenProduced | number }} </span>
-          <span class="text-primary-600">{{ FormattedUnits.KG }}</span></span
+          <span class="text-primary-600">{{ MeasurementUnit.KG }}</span></span
         >
       </div>
 
@@ -40,7 +40,7 @@
         <span>
           Power Used <br />
           <span class="text-primary-600 text-2xl">{{ mutation.data().powerUsed | number }} </span>
-          <span class="text-primary-600">{{ FormattedUnits.KWH }}</span></span
+          <span class="text-primary-600">{{ MeasurementUnit.KWH }}</span></span
         >
       </div>
 
@@ -63,7 +63,7 @@
         <mat-select [formControl]="storageUnit">
           @for (unit of hydrogenStorageUnits(); track unit) {
             <mat-option [value]="unit.id"
-              >{{ unit.name }} (Remaining Capacity: {{ unit.capacity - unit.filling | unit: FormattedUnits.KG }})
+              >{{ unit.name }} (Remaining Capacity: {{ unit.capacity - unit.filling | unit: MeasurementUnit.KG }})
             </mat-option>
           }
         </mat-select>

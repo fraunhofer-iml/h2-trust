@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
 import { UnitPipe } from 'apps/frontend/src/app/shared/pipes/unit.pipe';
+import { MeasurementUnit } from '@h2-trust/domain';
 import * as echarts from 'echarts';
 import { EChartsOption } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
@@ -75,6 +75,6 @@ export class H2CompositionChartComponent {
 
   private readonly labelFormatter = (params: any) => {
     const percentage = this.percentPipe.transform((params.percent ?? 0) / 100, '1.0-1');
-    return `${params.name}\n ${this.unitPipe.transform(params.value, FormattedUnits.KG)} (${percentage})`;
+    return `${params.name}\n ${this.unitPipe.transform(params.value, MeasurementUnit.KG)} (${percentage})`;
   };
 }

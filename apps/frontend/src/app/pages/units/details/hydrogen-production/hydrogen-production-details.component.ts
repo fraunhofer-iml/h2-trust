@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
+import { MeasurementUnit } from '@h2-trust/domain';
 import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
@@ -21,7 +21,7 @@ import { UnitDetailsComponent } from '../unit-details.component';
   templateUrl: './hydrogen-production-details.component.html',
 })
 export class HydrogenProductionDetailsComponent {
-  readonly FormattedUnits = FormattedUnits;
+  readonly MeasurementUnit = MeasurementUnit;
 
   id = input<string>();
 
