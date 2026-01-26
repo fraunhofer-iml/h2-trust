@@ -17,7 +17,6 @@ export * from './hydrogen-color.enum';
 export * from './hydrogen-production-method.enum';
 export * from './hydrogen-production-technology.enum';
 export * from './hydrogen-storage-type.enum';
-export * from './measurement-unit.enum';
 export * from './power-access-approval-status.enum';
 export * from './power-production-type.enum';
 export * from './process-type.enum';

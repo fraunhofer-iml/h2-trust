@@ -6,7 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType, EnergySource, HydrogenColor, MeasurementUnit } from '@h2-trust/domain';
+import { EnumLabelMapper } from '../../../../labels';
+import { BatchType, EnergySource, HydrogenColor } from '@h2-trust/domain';
 import { ClassificationDto } from '../classification.dto';
 import { hydrogenBatchesMock } from './hydrogen-batches.mock';
 import { PowerBatchesMock } from './power-batches.mock';
@@ -19,7 +20,7 @@ export const powerTypeClassificationsMock: ClassificationDto[] = [
     emissionOfProcessStep: 260,
     name: EnergySource.WIND_ENERGY,
     classificationType: BatchType.POWER,
-    unit: MeasurementUnit.POWER,
+    unit: EnumLabelMapper.getMeasurementUnit(BatchType.POWER),
   },
   {
     amount: 60,
@@ -28,7 +29,7 @@ export const powerTypeClassificationsMock: ClassificationDto[] = [
     emissionOfProcessStep: 260,
     name: EnergySource.SOLAR_ENERGY,
     classificationType: BatchType.POWER,
-    unit: MeasurementUnit.POWER,
+    unit: EnumLabelMapper.getMeasurementUnit(BatchType.POWER),
   },
 ];
 
@@ -40,7 +41,7 @@ export const powerSupplyClassificationsMock: ClassificationDto[] = [
     emissionOfProcessStep: 260,
     name: 'POWER SUPPLY',
     classificationType: BatchType.POWER,
-    unit: MeasurementUnit.POWER,
+    unit: EnumLabelMapper.getMeasurementUnit(BatchType.POWER),
   },
 ];
 
@@ -52,7 +53,7 @@ export const hydrogenColorClassificationsMock: ClassificationDto[] = [
     emissionOfProcessStep: 260,
     name: HydrogenColor.GREEN,
     classificationType: BatchType.HYDROGEN,
-    unit: MeasurementUnit.HYDROGEN,
+    unit: EnumLabelMapper.getMeasurementUnit(BatchType.HYDROGEN),
   },
   {
     amount: 300,
@@ -61,6 +62,6 @@ export const hydrogenColorClassificationsMock: ClassificationDto[] = [
     emissionOfProcessStep: 260,
     name: HydrogenColor.YELLOW,
     classificationType: BatchType.HYDROGEN,
-    unit: MeasurementUnit.HYDROGEN,
+    unit: EnumLabelMapper.getMeasurementUnit(BatchType.HYDROGEN),
   },
 ];

@@ -25,6 +25,7 @@ import { HydrogenBatchDto } from './hydrogen-batch.dto';
 import { PowerBatchDto } from './power-batch.dto';
 import { WaterBatchDto } from './water-batch.dto';
 import { WaterDetailsDto } from './water-details.dto';
+import { EnumLabelMapper } from '../../../labels';
 
 /**
  * top level sections of proof of origin
@@ -76,7 +77,7 @@ export class SectionDto {
       emission,
       batch.createdAt,
       batch.amount,
-      batch.unit,
+      EnumLabelMapper.getMeasurementUnit(batch.batchType),
       batch.producer ?? '',
       batch.unitId ?? '',
       batch.energySource,
@@ -92,7 +93,9 @@ export class SectionDto {
       this.fromEmissionEntity(batch.deionizedWaterEmission),
     );
 
-    return new WaterBatchDto(batch.id, emission, batch.createdAt, batch.amount, batch.unit, waterDetails);
+    const measurementUnit = EnumLabelMapper.getMeasurementUnit(batch.batchType);
+
+    return new WaterBatchDto(batch.id, emission, batch.createdAt, batch.amount, measurementUnit, waterDetails);
   }
 
   private static fromHydrogenBatchEntity(batch: ProofOfOriginHydrogenBatchEntity): HydrogenBatchDto {
@@ -105,7 +108,7 @@ export class SectionDto {
       emission,
       batch.createdAt,
       batch.amount,
-      batch.unit,
+      EnumLabelMapper.getMeasurementUnit(batch.batchType),
       batch.producer ?? '',
       batch.unitId ?? '',
       '',
@@ -130,7 +133,7 @@ export class SectionDto {
       classification.amount,
       batches,
       classifications,
-      classification.unit,
+      EnumLabelMapper.getMeasurementUnit(classification.classificationType),
       classification.classificationType,
     );
   }
@@ -146,7 +149,7 @@ export class SectionDto {
       subClassification.amount,
       batches,
       [], // Leaf classification has no nested classifications
-      subClassification.unit,
+      EnumLabelMapper.getMeasurementUnit(subClassification.classificationType),
       subClassification.classificationType,
     );
   }

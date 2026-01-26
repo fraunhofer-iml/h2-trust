@@ -12,7 +12,7 @@ import {
   ProofOfOriginSubClassificationEntity,
   Util,
 } from '@h2-trust/amqp';
-import { BatchType, MeasurementUnit } from '@h2-trust/domain';
+import { BatchType } from '@h2-trust/domain';
 
 export class ClassificationAssembler {
   static assemblePower(
@@ -22,7 +22,6 @@ export class ClassificationAssembler {
   ): ProofOfOriginClassificationEntity {
     return this.assembleClassification(
       classificationName,
-      MeasurementUnit.POWER,
       BatchType.POWER,
       batches,
       subClassifications,
@@ -36,7 +35,6 @@ export class ClassificationAssembler {
   ): ProofOfOriginClassificationEntity {
     return this.assembleClassification(
       classificationName,
-      MeasurementUnit.HYDROGEN,
       BatchType.HYDROGEN,
       batches,
       subClassifications,
@@ -45,7 +43,6 @@ export class ClassificationAssembler {
 
   static assembleClassification(
     classificationName: string,
-    measurementUnit: MeasurementUnit,
     classificationType: BatchType,
     batches: ProofOfOriginBatchEntity[] = [],
     subClassifications: ProofOfOriginSubClassificationEntity[] = [],
@@ -54,7 +51,6 @@ export class ClassificationAssembler {
       classificationName,
       this.calculateEmission(batches, subClassifications),
       this.calculateAmount(batches, subClassifications),
-      measurementUnit,
       classificationType,
       batches,
       subClassifications,
@@ -63,7 +59,6 @@ export class ClassificationAssembler {
 
   static assembleSubClassification(
     classificationName: string,
-    measurementUnit: MeasurementUnit,
     classificationType: BatchType,
     batches: ProofOfOriginBatchEntity[] = [],
   ): ProofOfOriginSubClassificationEntity {
@@ -72,7 +67,6 @@ export class ClassificationAssembler {
       emissionOfProcessStep: this.calculateBatchEmission(batches),
       amount: Util.sumAmounts(batches),
       batches,
-      unit: measurementUnit,
       classificationType,
     };
   }

@@ -20,14 +20,12 @@ class ProofOfOriginBaseBatchEntity {
   emission: ProofOfOriginEmissionEntity;
   createdAt: Date;
   amount: number;
-  unit: string;
 
-  constructor(id: string, emission: ProofOfOriginEmissionEntity, createdAt: Date, amount: number, unit: string) {
+  constructor(id: string, emission: ProofOfOriginEmissionEntity, createdAt: Date, amount: number) {
     this.id = id;
     this.emission = emission;
     this.createdAt = createdAt;
     this.amount = amount;
-    this.unit = unit;
   }
 }
 
@@ -43,13 +41,12 @@ export class ProofOfOriginPowerBatchEntity extends ProofOfOriginBaseBatchEntity 
     emission: ProofOfOriginEmissionEntity,
     createdAt: Date,
     amount: number,
-    unit: string,
     producer: string,
     unitId: string,
     energySource: EnergySource,
     accountingPeriodEnd: Date,
   ) {
-    super(id, emission, createdAt, amount, unit);
+    super(id, emission, createdAt, amount);
     this.producer = producer;
     this.unitId = unitId;
     this.energySource = energySource;
@@ -67,11 +64,10 @@ export class ProofOfOriginWaterBatchEntity extends ProofOfOriginBaseBatchEntity 
     emission: ProofOfOriginEmissionEntity,
     createdAt: Date,
     amount: number,
-    unit: string,
     deionizedWaterAmount: number,
     deionizedWaterEmission: ProofOfOriginEmissionEntity,
   ) {
-    super(id, emission, createdAt, amount, unit);
+    super(id, emission, createdAt, amount);
     this.deionizedWaterAmount = deionizedWaterAmount;
     this.deionizedWaterEmission = deionizedWaterEmission;
   }
@@ -91,7 +87,6 @@ export class ProofOfOriginHydrogenBatchEntity extends ProofOfOriginBaseBatchEnti
     emission: ProofOfOriginEmissionEntity,
     createdAt: Date,
     amount: number,
-    unit: string,
     hydrogenComposition: HydrogenComponentEntity[],
     producer?: string,
     unitId?: string,
@@ -99,7 +94,7 @@ export class ProofOfOriginHydrogenBatchEntity extends ProofOfOriginBaseBatchEnti
     processStep?: string,
     accountingPeriodEnd?: Date,
   ) {
-    super(id, emission, createdAt, amount, unit);
+    super(id, emission, createdAt, amount);
     this.hydrogenComposition = hydrogenComposition;
     this.producer = producer;
     this.unitId = unitId;

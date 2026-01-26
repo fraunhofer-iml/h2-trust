@@ -22,7 +22,7 @@ import {
   ReadByIdPayload,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
-import { BatchType, MeasurementUnit } from '@h2-trust/domain';
+import { BatchType } from '@h2-trust/domain';
 import { BatchAssembler } from './batch.assembler';
 import { ClassificationAssembler } from './classification.assembler';
 import { EmissionAssembler } from './emission.assembler';
@@ -79,7 +79,6 @@ export class PowerSupplyClassificationService {
         const subClassification: ProofOfOriginSubClassificationEntity =
           ClassificationAssembler.assembleSubClassification(
             energySource,
-            MeasurementUnit.POWER,
             BatchType.POWER,
             productionPowerBatches,
           );

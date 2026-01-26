@@ -6,7 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType, EnergySource, MeasurementUnit } from '@h2-trust/domain';
+import { EnumLabelMapper } from '../../../../labels';
+import { BatchType, EnergySource } from '@h2-trust/domain';
 import { CompanyDtoMock } from '../../../company';
 import { PowerProductionUnitOverviewDtoMock } from '../../../unit';
 import { PowerBatchDto } from '../power-batch.dto';
@@ -16,7 +17,7 @@ export const PowerBatchesMock: PowerBatchDto[] = [
   {
     id: 'power-batch-1-wind',
     amount: 30,
-    unit: MeasurementUnit.POWER,
+    unit: EnumLabelMapper.getMeasurementUnit(BatchType.POWER),
     accountingPeriodEnd: new Date(),
     createdAt: new Date(),
     emission: EmissionMock,
@@ -28,7 +29,7 @@ export const PowerBatchesMock: PowerBatchDto[] = [
   {
     id: 'power-batch-2-wind',
     amount: 30,
-    unit: MeasurementUnit.POWER,
+    unit: EnumLabelMapper.getMeasurementUnit(BatchType.POWER),
     accountingPeriodEnd: new Date(),
     createdAt: new Date(),
     emission: EmissionMock,
@@ -40,7 +41,7 @@ export const PowerBatchesMock: PowerBatchDto[] = [
   {
     id: 'power-batch-3-solar',
     amount: 30,
-    unit: MeasurementUnit.POWER,
+    unit: EnumLabelMapper.getMeasurementUnit(BatchType.POWER),
     accountingPeriodEnd: new Date(),
     createdAt: new Date(),
     emission: EmissionMock,
@@ -52,7 +53,7 @@ export const PowerBatchesMock: PowerBatchDto[] = [
   {
     id: 'power-batch-4-solar',
     amount: 30,
-    unit: MeasurementUnit.POWER,
+    unit: EnumLabelMapper.getMeasurementUnit(BatchType.POWER),
     accountingPeriodEnd: new Date(),
     createdAt: new Date(),
     emission: EmissionMock,

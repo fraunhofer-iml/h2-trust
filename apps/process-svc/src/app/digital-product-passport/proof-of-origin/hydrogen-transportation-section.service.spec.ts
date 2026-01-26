@@ -8,7 +8,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProofOfOriginHydrogenBatchEntity } from '@h2-trust/amqp';
-import { MeasurementUnit, ProofOfOrigin, UNIT_G_CO2_PER_KG_H2 } from '@h2-trust/domain';
+import { ProofOfOrigin, UNIT_G_CO2_PER_KG_H2 } from '@h2-trust/domain';
 import {
   HydrogenComponentEntityFixture,
   ProcessStepEntityFixture,
@@ -73,7 +73,6 @@ describe('HydrogenTransportationSectionService', () => {
       expect(batch.emission.totalEmissionsPerKgHydrogen).toBeGreaterThan(0);
       expect(batch.createdAt).toBe(givenHydrogenTransportation.startedAt);
       expect(batch.amount).toBe(givenHydrogenTransportation.batch.amount);
-      expect(batch.unit).toBe(MeasurementUnit.HYDROGEN);
       expect(batch.hydrogenComposition).toEqual(givenHydrogenCompositions);
       expect(batch.unitId).toBe(givenHydrogenTransportation.executedBy.id);
       expect(batch.color).toBe(givenHydrogenTransportation.batch.qualityDetails.color);
@@ -106,7 +105,6 @@ describe('HydrogenTransportationSectionService', () => {
       expect(batch.emission.basisOfCalculation).toEqual([`E = 0 ${UNIT_G_CO2_PER_KG_H2}`]);
       expect(batch.createdAt).toBe(givenHydrogenTransportation.startedAt);
       expect(batch.amount).toBe(givenHydrogenTransportation.batch.amount);
-      expect(batch.unit).toBe(MeasurementUnit.HYDROGEN);
       expect(batch.hydrogenComposition).toEqual(givenHydrogenCompositions);
       expect(batch.unitId).toBe(givenHydrogenTransportation.executedBy.id);
       expect(batch.color).toBe(givenHydrogenTransportation.batch.qualityDetails.color);

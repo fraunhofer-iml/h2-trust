@@ -14,7 +14,7 @@ import {
   ProofOfOriginPowerBatchEntity,
   ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/amqp';
-import { BatchType, EnergySource, MeasurementUnit } from '@h2-trust/domain';
+import { BatchType, EnergySource } from '@h2-trust/domain';
 
 export class BatchAssembler {
   static assemblePowerSupply(
@@ -27,7 +27,6 @@ export class BatchAssembler {
       emission,
       createdAt: powerProduction.startedAt,
       amount: powerProduction.batch.amount,
-      unit: MeasurementUnit.POWER,
       batchType: BatchType.POWER,
       producer: powerProduction.batch.owner.name,
       unitId: powerProduction.executedBy.id,
@@ -45,7 +44,6 @@ export class BatchAssembler {
       emission,
       createdAt: waterConsumption.startedAt,
       amount: waterConsumption.batch.amount,
-      unit: MeasurementUnit.WATER,
       batchType: BatchType.WATER,
       deionizedWaterAmount: waterConsumption.batch.amount,
       deionizedWaterEmission: { totalEmissions: 0, totalEmissionsPerKgHydrogen: 0, basisOfCalculation: [] },
@@ -61,7 +59,6 @@ export class BatchAssembler {
       emission,
       createdAt: hydrogenStorage.startedAt,
       amount: hydrogenStorage.batch.amount,
-      unit: MeasurementUnit.HYDROGEN,
       batchType: BatchType.HYDROGEN,
       hydrogenComposition: [
         {
@@ -87,7 +84,6 @@ export class BatchAssembler {
       emission,
       createdAt: hydrogenBottling.startedAt,
       amount: hydrogenBottling.batch.amount,
-      unit: MeasurementUnit.HYDROGEN,
       batchType: BatchType.HYDROGEN,
       hydrogenComposition,
       unitId: hydrogenBottling.executedBy.id,
@@ -107,7 +103,6 @@ export class BatchAssembler {
       emission,
       createdAt: hydrogenTransportation.startedAt,
       amount: hydrogenTransportation.batch.amount,
-      unit: MeasurementUnit.HYDROGEN,
       batchType: BatchType.HYDROGEN,
       hydrogenComposition,
       unitId: hydrogenTransportation.executedBy.id,
