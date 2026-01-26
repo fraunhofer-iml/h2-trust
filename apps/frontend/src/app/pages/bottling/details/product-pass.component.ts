@@ -20,7 +20,7 @@ import { BottlingService } from '../../../shared/services/bottling/bottling.serv
 import { H2CompositionChartComponent } from './chart/h2-composition-chart.component';
 import { ProofOfOriginComponent } from './proof-of-origin/proof-of-origin.component';
 import { ProofOfSustainabilityComponent } from './proof-of-sustainability/proof-of-sustainability.component';
-import { RedComplianceComponent } from './red-compliance/red-compliance.component';
+import { RfnboComplianceComponent } from './rfnbo-compliance/rfnbo-compliance.component';
 
 @Component({
   selector: 'app-product-pass',
@@ -33,7 +33,7 @@ import { RedComplianceComponent } from './red-compliance/red-compliance.componen
     ErrorCardComponent,
     ProofOfSustainabilityComponent,
     UnitPipe,
-    RedComplianceComponent,
+    RfnboComplianceComponent,
   ],
   templateUrl: './product-pass.component.html',
 })

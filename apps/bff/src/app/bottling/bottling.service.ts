@@ -22,13 +22,7 @@ import {
   ReadByIdPayload,
   ReadProcessStepsByTypesAndActiveAndCompanyPayload,
 } from '@h2-trust/amqp';
-import {
-  BottlingDto,
-  BottlingOverviewDto,
-  GeneralInformationDto,
-  ProofOfSustainabilityDto,
-  SectionDto,
-} from '@h2-trust/api';
+import { BottlingDto, BottlingOverviewDto, DigitalProductPassportDto } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 
@@ -88,24 +82,28 @@ export class BottlingService {
     return bottlingsAndTransportations.map(BottlingOverviewDto.fromEntity);
   }
 
-  async readGeneralInformation(id: string): Promise<GeneralInformationDto> {
-    const generalInformation: GeneralInformationEntity = await firstValueFrom(
-      this.processSvc.send(DigitalProductPassportPatterns.READ_GENERAL_INFORMATION, new ReadByIdPayload(id)),
-    );
-    return GeneralInformationDto.fromEntity(generalInformation);
-  }
-
-  async readProofOfOrigin(id: string): Promise<SectionDto[]> {
-    const proofOfOrigin: ProofOfOriginSectionEntity[] = await firstValueFrom(
-      this.processSvc.send(DigitalProductPassportPatterns.READ_PROOF_OF_ORIGIN, new ReadByIdPayload(id)),
-    );
-    return SectionDto.fromEntities(proofOfOrigin);
-  }
-
-  async readProofOfSustainability(id: string): Promise<ProofOfSustainabilityDto> {
-    const proofOfSustainability: ProofOfSustainabilityEntity = await firstValueFrom(
-      this.processSvc.send(DigitalProductPassportPatterns.READ_PROOF_OF_SUSTAINABILITY, new ReadByIdPayload(id)),
-    );
-    return ProofOfSustainabilityDto.fromEntity(proofOfSustainability);
+  // TODO: Merge these three calls into a single unified request (DUHGW-322)
+  async readDigitalProductPassport(id: string): Promise<DigitalProductPassportDto> {
+    const [generalInformation, proofOfOrigin, proofOfSustainability] = await Promise.all([
+      firstValueFrom(
+        this.processSvc.send<GeneralInformationEntity>(
+          DigitalProductPassportPatterns.READ_GENERAL_INFORMATION,
+          new ReadByIdPayload(id),
+        ),
+      ),
+      firstValueFrom(
+        this.processSvc.send<ProofOfOriginSectionEntity[]>(
+          DigitalProductPassportPatterns.READ_PROOF_OF_ORIGIN,
+          new ReadByIdPayload(id),
+        ),
+      ),
+      firstValueFrom(
+        this.processSvc.send<ProofOfSustainabilityEntity>(
+          DigitalProductPassportPatterns.READ_PROOF_OF_SUSTAINABILITY,
+          new ReadByIdPayload(id),
+        ),
+      ),
+    ]);
+    return DigitalProductPassportDto.fromEnities(generalInformation, proofOfOrigin, proofOfSustainability);
   }
 }
