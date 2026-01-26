@@ -7,12 +7,12 @@
  */
 
 export interface PowerEmissionFactor {
-  emissionFactor: number; // g CO₂,eq/kWh
-  label: string; // Human-readable name used in calculation names
+  emissionFactor: number;
+  label: string;
 }
 
 export interface TrailerParameter {
-  capacityKg: number; // nominal trailer capacity in kg H2
-  transportEfficiencyMJPerTonnePerKm: number; // MJ fuel / (km * tonne H2)
-  gEqEmissionsOfCH4AndN2OPerKmDistancePerTonneH2: number; // g CO2,eq / (km * tonne H2)
+  capacity: number;
+  transportEfficiency: number;
+  emissionFactor: number;
 }

@@ -205,14 +205,14 @@ export class EmissionAssembler {
     transportDistance: number,
   ): ProofOfSustainabilityEmissionCalculationEntity {
     const trailerParameter: TrailerParameter =
-      TRAILER_PARAMETERS.find((trailerEntry) => hydrogenAmount <= trailerEntry.capacityKg) ??
+      TRAILER_PARAMETERS.find((trailerEntry) => hydrogenAmount <= trailerEntry.capacity) ??
       TRAILER_PARAMETERS.at(TRAILER_PARAMETERS.length - 1);
 
     const tonPerKg = 0.001;
 
     // Amount of fuel used per ton of material transported = transport distance * transport efficiency
     // [MJ fuel / ton of H₂] = [km] * [MJ fuel / (ton, km)]
-    const transportEfficiency = trailerParameter.transportEfficiencyMJPerTonnePerKm;
+    const transportEfficiency = trailerParameter.transportEfficiency;
     const amountOfFuelPerTonOfHydrogen = transportDistance * transportEfficiency;
 
     // Emission = 0.001 * Amount of fuel used per ton of material transported * emission factor
@@ -222,7 +222,7 @@ export class EmissionAssembler {
 
     // Emission = 0.001 * transport distance * emission factor for CH4 and N2O emissions
     // [g CO₂,eq/kg of H₂] = [ton / kg] * [km] * [g CO₂,eq / (ton, km)]
-    const emissionFactorCh4AndN2O = trailerParameter.gEqEmissionsOfCH4AndN2OPerKmDistancePerTonneH2;
+    const emissionFactorCh4AndN2O = trailerParameter.emissionFactor;
     const emissionCh4AndN2O = tonPerKg * transportDistance * emissionFactorCh4AndN2O;
 
     const result = (emissionsFuelCombustion + emissionCh4AndN2O) * hydrogenAmount;
