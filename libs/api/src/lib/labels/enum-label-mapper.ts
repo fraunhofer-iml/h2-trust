@@ -14,6 +14,7 @@ import {
   HydrogenProductionMethod,
   HydrogenProductionTechnology,
   HydrogenStorageType,
+  MeasurementUnit,
   PowerProductionType,
 } from '@h2-trust/domain';
 
@@ -66,9 +67,9 @@ export class EnumLabelMapper {
   };
 
   private static readonly MEASUREMENT_UNIT_LABELS: Record<BatchType, string> = {
-    [BatchType.HYDROGEN]: 'kg',
-    [BatchType.POWER]: 'kWh',
-    [BatchType.WATER]: 'l',
+    [BatchType.HYDROGEN]: MeasurementUnit.KG,
+    [BatchType.POWER]: MeasurementUnit.KWH,
+    [BatchType.WATER]: MeasurementUnit.L,
   };
 
   public static getPowerProductionType(value: PowerProductionType): string {
