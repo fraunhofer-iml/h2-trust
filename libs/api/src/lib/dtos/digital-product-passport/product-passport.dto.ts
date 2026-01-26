@@ -47,7 +47,7 @@ export class ProductPassportDto {
     this.color = color;
     this.producer = producer;
     this.hydrogenComposition = hydrogenComposition;
-    this.product = 'Hydrogen';
+    this.product = BatchType.HYDROGEN;
     this.attachedFiles = attachedFiles;
     this.rfnboCompliance = rfnboCompliance;
     this.proofOfOrigin = proofOfOrigin;
