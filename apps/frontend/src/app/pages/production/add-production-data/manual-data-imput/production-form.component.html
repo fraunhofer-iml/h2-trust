@@ -113,10 +113,6 @@
         {{ ERROR_MESSAGES.amountIsGreaterThanRemainingCapacity }}
       </div>
     }
-
-    @if (mutation.isError()) {
-      <app-error-card class="col-span-2" [message]="mutation.error().message"></app-error-card>
-    }
   </div>
 </div>
 

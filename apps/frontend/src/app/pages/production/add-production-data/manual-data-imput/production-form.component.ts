@@ -93,6 +93,7 @@ export class ProductionFormComponent {
     onSuccess: () => {
       this.router.navigateByUrl(ROUTES.PRODUCTION);
     },
+    onError: (e) => toast(e.message),
   }));
 
   today = new Date();
