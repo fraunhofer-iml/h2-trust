@@ -7,6 +7,6 @@
  */
 
 export * from './lib/enums';
-export * from './lib/emission';
+export * from './lib/emission-constants';
 export * from './lib/time-constants';
 export * from './lib/units';

@@ -18,6 +18,7 @@ import {
   CalculationTopic,
   CH4_N2O,
   EMISSION_FACTOR_DEIONIZED_WATER,
+  ENERGY_DEMAND_FOR_COMPRESSION,
   EnergySource,
   FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ,
   FUEL_EMISSION_FACTORS,
@@ -95,17 +96,16 @@ export class EmissionAssembler {
       throw new Error(EmissionErrorMessages.INVALID_PROCESS_TYPE_FOR_HYDROGEN_STORAGE(hydrogenProduction?.type));
     }
 
-    const energyDemand = 1.65; // 5.93 / 3.6 -> default values for compression from 30 bar to 300 bar
     const emissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID];
-    const result = energyDemand * emissionFactor * hydrogenProduction.batch.amount;
+    const result = ENERGY_DEMAND_FOR_COMPRESSION * emissionFactor * hydrogenProduction.batch.amount;
 
     const hydrogenProducedKgInput = `Hydrogen Produced: ${hydrogenProduction.batch.amount} ${MeasurementUnit.KG_H2}`;
 
     const emissionFactorLabel = EnumLabelMapper.getEnergySource(EnergySource.GRID);
-    const energyDemandInput = `Energy Demand: ${energyDemand} ${MeasurementUnit.KWH_PER_KG_H2}`;
+    const energyDemandInput = `Energy Demand: ${ENERGY_DEMAND_FOR_COMPRESSION} ${MeasurementUnit.KWH_PER_KG_H2}`;
     const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} ${MeasurementUnit.G_CO2_PER_KWH}`;
     const formula = `E = Energy Demand * Emission Factor ${emissionFactorLabel} * Hydrogen Produced`;
-    const formulaResult = `${result} ${MeasurementUnit.G_CO2} = ${energyDemand} ${MeasurementUnit.KWH_PER_KG_H2} * ${emissionFactor} ${MeasurementUnit.G_CO2_PER_KWH} * ${hydrogenProduction.batch.amount} ${MeasurementUnit.KG_H2}`;
+    const formulaResult = `${result} ${MeasurementUnit.G_CO2} = ${ENERGY_DEMAND_FOR_COMPRESSION} ${MeasurementUnit.KWH_PER_KG_H2} * ${emissionFactor} ${MeasurementUnit.G_CO2_PER_KWH} * ${hydrogenProduction.batch.amount} ${MeasurementUnit.KG_H2}`;
 
     const basisOfCalculation = [
       energyDemandInput,

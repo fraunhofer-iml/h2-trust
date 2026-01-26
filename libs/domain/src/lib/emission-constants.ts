@@ -6,12 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FuelType } from '../enums';
-import { EnergySource } from '../enums/energy-source.enum';
-import { TrailerParameter } from './types';
+import { FuelType } from './enums';
+import { EnergySource } from './enums/energy-source.enum';
 
 export const CH4_N2O = 'CH₄ & N₂O';
 
+export const ENERGY_DEMAND_FOR_COMPRESSION = 1.65; // 5.93 / 3.6 -> default values for compression from 30 bar to 300 bar
 export const EMISSION_FACTOR_DEIONIZED_WATER = 0.43;
 export const GRAVIMETRIC_ENERGY_DENSITY_H2_MJ_PER_KG = 120;
 export const FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ = 94;
@@ -64,3 +64,10 @@ export const TRAILER_PARAMETERS: readonly TrailerParameter[] = [
     emissionFactor: 10.952,
   },
 ];
+
+export interface TrailerParameter {
+  capacity: number;
+  transportEfficiency: number;
+  emissionFactor: number;
+}
+
