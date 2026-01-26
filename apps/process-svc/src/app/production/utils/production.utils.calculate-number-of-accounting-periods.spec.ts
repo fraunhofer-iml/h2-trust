@@ -7,6 +7,7 @@
  */
 
 import { ProductionUtils } from './production.utils';
+import { ProductionErrorMessages } from '../../constants';
 
 describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
   it('should calculate correct number of periods (divisible)', () => {
@@ -46,15 +47,13 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenProductionEndedAtSeconds = 75;
     const givenAccountingPeriodSeconds = 15;
 
-    const expectedErrorMessage = 'startedAtInSeconds must be positive';
-
     expect(() =>
       ProductionUtils.calculateNumberOfAccountingPeriods(
         givenProductionStartedAtSeconds,
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
       ),
-    ).toThrow(expectedErrorMessage);
+    ).toThrow(ProductionErrorMessages.STARTED_AT_NOT_POSITIVE);
   });
 
   it('should throw if productionEndedAtSeconds is negative', () => {
@@ -62,15 +61,13 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenProductionEndedAtSeconds = -75;
     const givenAccountingPeriodSeconds = 15;
 
-    const expectedErrorMessage = 'endedAtInSeconds must be positive';
-
     expect(() =>
       ProductionUtils.calculateNumberOfAccountingPeriods(
         givenProductionStartedAtSeconds,
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
       ),
-    ).toThrow(expectedErrorMessage);
+    ).toThrow(ProductionErrorMessages.ENDED_AT_NOT_POSITIVE);
   });
 
   it('should throw if accountingPeriodInSeconds is negative', () => {
@@ -78,15 +75,13 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenProductionEndedAtSeconds = 10;
     const givenAccountingPeriodSeconds = -5;
 
-    const expectedErrorMessage = 'accountingPeriodInSeconds must be greater than zero';
-
     expect(() =>
       ProductionUtils.calculateNumberOfAccountingPeriods(
         givenProductionStartedAtSeconds,
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
       ),
-    ).toThrow(expectedErrorMessage);
+    ).toThrow(ProductionErrorMessages.ACCOUNTING_PERIOD_NOT_POSITIVE);
   });
 
   it('should throw if accountingPeriodInSeconds is zero', () => {
@@ -94,15 +89,13 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenProductionEndedAtSeconds = 10;
     const givenAccountingPeriodSeconds = 0;
 
-    const expectedErrorMessage = 'accountingPeriodInSeconds must be greater than zero';
-
     expect(() =>
       ProductionUtils.calculateNumberOfAccountingPeriods(
         givenProductionStartedAtSeconds,
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
       ),
-    ).toThrow(expectedErrorMessage);
+    ).toThrow(ProductionErrorMessages.ACCOUNTING_PERIOD_NOT_POSITIVE);
   });
 
   it('should throw if durationInSeconds is negative', () => {
@@ -110,15 +103,13 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenProductionEndedAtSeconds = 75;
     const givenAccountingPeriodSeconds = 15;
 
-    const expectedErrorMessage = 'endedAtInSeconds must be greater than startedAtInSeconds';
-
     expect(() =>
       ProductionUtils.calculateNumberOfAccountingPeriods(
         givenProductionStartedAtSeconds,
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
       ),
-    ).toThrow(expectedErrorMessage);
+    ).toThrow(ProductionErrorMessages.ENDED_AT_BEFORE_STARTED_AT);
   });
 
   it('should throw if durationInSeconds is zero', () => {
@@ -126,14 +117,12 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenProductionEndedAtSeconds = 75;
     const givenAccountingPeriodSeconds = 15;
 
-    const expectedErrorMessage = 'endedAtInSeconds must be greater than startedAtInSeconds';
-
     expect(() =>
       ProductionUtils.calculateNumberOfAccountingPeriods(
         givenProductionStartedAtSeconds,
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
       ),
-    ).toThrow(expectedErrorMessage);
+    ).toThrow(ProductionErrorMessages.ENDED_AT_BEFORE_STARTED_AT);
   });
 });

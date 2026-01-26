@@ -29,6 +29,7 @@ import {
   UNIT_G_CO2,
   UNIT_G_CO2_PER_KWH,
 } from '@h2-trust/domain';
+import { DisplayLabels, EmissionErrorMessages } from '../../constants';
 
 export class EmissionAssembler {
   static assemblePowerSupply(
@@ -36,7 +37,7 @@ export class EmissionAssembler {
     energySource: EnergySource,
   ): ProofOfSustainabilityEmissionCalculationEntity {
     if (powerProduction?.type !== ProcessType.POWER_PRODUCTION) {
-      throw new Error(`Invalid process step type [${powerProduction?.type}] for power supply emission calculation`);
+      throw new Error(EmissionErrorMessages.INVALID_PROCESS_TYPE_FOR_POWER_SUPPLY(powerProduction?.type));
     }
 
     const power = powerProduction.batch.amount;
@@ -63,14 +64,14 @@ export class EmissionAssembler {
 
   static assembleWaterSupply(waterSupply: ProcessStepEntity): ProofOfSustainabilityEmissionCalculationEntity {
     if (waterSupply?.type !== ProcessType.WATER_CONSUMPTION) {
-      throw new Error(`Invalid process step type [${waterSupply?.type}] for water supply emission calculation`);
+      throw new Error(EmissionErrorMessages.INVALID_PROCESS_TYPE_FOR_WATER_SUPPLY(waterSupply?.type));
     }
 
     const waterInput = waterSupply.batch.amount;
     const emissionFactorDeionizedWater = 0.43;
     const result = waterInput * emissionFactorDeionizedWater;
 
-    const emissionFactorLabel = 'Deionized Water';
+    const emissionFactorLabel = DisplayLabels.DEIONIZED_WATER;
     const waterInputInput = `Water Input: ${waterInput} L`;
     const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactorDeionizedWater} g CO₂,eq/L`;
     const formula = `E = Water Input * Emission Factor ${emissionFactorLabel}`;
@@ -79,7 +80,7 @@ export class EmissionAssembler {
     const basisOfCalculation = [waterInputInput, emissionFactorInput, formula, formulaResult];
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      'Water Supply',
+      DisplayLabels.WATER_SUPPLY,
       basisOfCalculation,
       result,
       UNIT_G_CO2,
@@ -91,9 +92,7 @@ export class EmissionAssembler {
     hydrogenProduction: ProcessStepEntity,
   ): ProofOfSustainabilityEmissionCalculationEntity {
     if (hydrogenProduction?.type !== ProcessType.HYDROGEN_PRODUCTION) {
-      throw new Error(
-        `Invalid process step type [${hydrogenProduction?.type}] for hydrogen storage emission calculation`,
-      );
+      throw new Error(EmissionErrorMessages.INVALID_PROCESS_TYPE_FOR_HYDROGEN_STORAGE(hydrogenProduction?.type));
     }
 
     const energyDemand = 1.65; // 5.93 / 3.6 -> default values for compression from 30 bar to 300 bar
@@ -117,7 +116,7 @@ export class EmissionAssembler {
     ];
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      'Compression from 30 bar to 300 bar',
+      DisplayLabels.COMPRESSION,
       basisOfCalculation,
       result,
       UNIT_G_CO2,
@@ -129,9 +128,7 @@ export class EmissionAssembler {
     _hydrogenBottling: ProcessStepEntity,
   ): ProofOfSustainabilityEmissionCalculationEntity {
     if (_hydrogenBottling?.type !== ProcessType.HYDROGEN_BOTTLING) {
-      throw new Error(
-        `Invalid process step type [${_hydrogenBottling?.type}] for hydrogen bottling emission calculation`,
-      );
+      throw new Error(EmissionErrorMessages.INVALID_PROCESS_TYPE_FOR_HYDROGEN_BOTTLING(_hydrogenBottling?.type));
     }
 
     const result = 0;
@@ -139,7 +136,7 @@ export class EmissionAssembler {
     const basisOfCalculation = ['E = [TBD]'];
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      'Hydrogen Bottling',
+      DisplayLabels.HYDROGEN_BOTTLING,
       basisOfCalculation,
       result,
       UNIT_G_CO2,
@@ -152,7 +149,7 @@ export class EmissionAssembler {
   ): ProofOfSustainabilityEmissionCalculationEntity {
     if (hydrogenTransportation?.type !== ProcessType.HYDROGEN_TRANSPORTATION) {
       throw new Error(
-        `Invalid process step type [${hydrogenTransportation?.type}] for hydrogen transportation emission calculation`,
+        EmissionErrorMessages.INVALID_PROCESS_TYPE_FOR_HYDROGEN_TRANSPORTATION(hydrogenTransportation?.type),
       );
     }
 
@@ -171,7 +168,7 @@ export class EmissionAssembler {
         );
         break;
       default:
-        throw new Error(`Unknown transport mode [${transportMode}] for process step [${hydrogenTransportation.id}]`);
+        throw new Error(EmissionErrorMessages.UNKNOWN_TRANSPORT_MODE(transportMode, hydrogenTransportation.id));
     }
 
     return emissionCalculation;
@@ -183,7 +180,7 @@ export class EmissionAssembler {
     const basisOfCalculation = ['E = 0 g CO₂,eq/kg H₂'];
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      'Transportation with Pipeline',
+      DisplayLabels.TRANSPORTATION_PIPELINE,
       basisOfCalculation,
       result,
       UNIT_G_CO2,
@@ -242,7 +239,7 @@ export class EmissionAssembler {
     ];
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      'Transportation with Trailer',
+      DisplayLabels.TRANSPORTATION_TRAILER,
       basisOfCalculation,
       result,
       UNIT_G_CO2,
@@ -302,7 +299,7 @@ export class EmissionAssembler {
     const powerSupplyEmission = new ProofOfSustainabilityEmissionEntity(
       powerSupplyEmissionAmount,
       'eps',
-      'Power Supply',
+      DisplayLabels.POWER_SUPPLY,
       'APPLICATION',
     );
 
@@ -310,7 +307,7 @@ export class EmissionAssembler {
     const waterSupplyEmission = new ProofOfSustainabilityEmissionEntity(
       waterSupplyEmissionAmount,
       'ews',
-      'Water Supply',
+      DisplayLabels.WATER_SUPPLY,
       'APPLICATION',
     );
 
@@ -320,7 +317,7 @@ export class EmissionAssembler {
     const hydrogenStorageEmission = new ProofOfSustainabilityEmissionEntity(
       hydrogenStorageEmissionAmount,
       'ehs',
-      'Hydrogen Storage',
+      DisplayLabels.HYDROGEN_STORAGE,
       'APPLICATION',
     );
 
@@ -330,7 +327,7 @@ export class EmissionAssembler {
     const hydrogenBottlingEmission = new ProofOfSustainabilityEmissionEntity(
       hydrogenBottlingEmissionAmount,
       'ehb',
-      'Hydrogen Bottling',
+      DisplayLabels.HYDROGEN_BOTTLING,
       'APPLICATION',
     );
 
@@ -340,7 +337,7 @@ export class EmissionAssembler {
     const hydrogenTransportationEmission = new ProofOfSustainabilityEmissionEntity(
       hydrogenTransportationEmissionAmount,
       'eht',
-      'Hydrogen Transportation',
+      DisplayLabels.HYDROGEN_TRANSPORTATION,
       'APPLICATION',
     );
 
@@ -361,21 +358,21 @@ export class EmissionAssembler {
     const ei = new ProofOfSustainabilityEmissionEntity(
       hydrogenProductionEmissionAmount,
       'ei',
-      'Supply of Inputs',
+      DisplayLabels.SUPPLY_OF_INPUTS,
       'REGULATORY',
     );
 
     const ep = new ProofOfSustainabilityEmissionEntity(
       applicationEmissionAmount - hydrogenProductionEmissionAmount - hydrogenTransportEmissionAmount,
       'ep',
-      'Processing',
+      DisplayLabels.PROCESSING,
       'REGULATORY',
     );
 
     const etd = new ProofOfSustainabilityEmissionEntity(
       hydrogenTransportEmissionAmount,
       'etd',
-      'Transport and Distribution',
+      DisplayLabels.TRANSPORT_AND_DISTRIBUTION,
       'REGULATORY',
     );
 

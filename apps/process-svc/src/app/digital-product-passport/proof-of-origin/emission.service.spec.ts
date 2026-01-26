@@ -79,8 +79,6 @@ describe('EmissionService', () => {
       // Act
       const actualResult = await service.computeProvenanceEmissions(givenProvenance);
 
-      console.log(actualResult);
-
       // Assert
       expect(actualResult).toBeDefined();
       expect(actualResult.batchId).toBe(givenHydrogenTransportation.id);

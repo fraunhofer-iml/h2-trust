@@ -17,6 +17,7 @@ import {
 import { ConfigurationService, MinioConfiguration } from '@h2-trust/configuration';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
 import { ProcessType } from '@h2-trust/domain';
+import { DisplayLabels, ProcessStepErrorMessages } from '../constants';
 
 @Injectable()
 export class ProcessStepService {
@@ -51,16 +52,16 @@ export class ProcessStepService {
 
   private async readPredecessorProcessStep(predecessorProcessStepId: string): Promise<ProcessStepEntity> {
     if (!predecessorProcessStepId) {
-      const errorMessage = 'ProcessStepId of predecessor is missing.';
-      throw new Error(errorMessage);
+      throw new Error(ProcessStepErrorMessages.PREDECESSOR_ID_MISSING);
     }
 
     const predecessorProcessStep: ProcessStepEntity =
       await this.processStepRepository.findProcessStep(predecessorProcessStepId);
 
     if (predecessorProcessStep.type !== ProcessType.HYDROGEN_BOTTLING) {
-      const errorMessage = `Expected process type of predecessor to be ${ProcessType.HYDROGEN_BOTTLING}, but got ${predecessorProcessStep.type}.`;
-      throw new Error(errorMessage);
+      throw new Error(
+        ProcessStepErrorMessages.UNEXPECTED_PREDECESSOR_TYPE(ProcessType.HYDROGEN_BOTTLING, predecessorProcessStep.type),
+      );
     }
 
     return predecessorProcessStep;
@@ -75,7 +76,7 @@ export class ProcessStepService {
         documents.push({
           id: document.id,
           location: `http://${minio.endPoint}:${minio.port}/${minio.bucketName}/${document.location}`,
-          description: `File #${index}`,
+          description: DisplayLabels.FILE_DESCRIPTION(index),
         });
       }
     });

@@ -10,6 +10,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateHydrogenTransportationPayload, ProcessStepEntity, TransportationDetailsEntity } from '@h2-trust/amqp';
 import { BatchType, FuelType, ProcessType, TransportMode } from '@h2-trust/domain';
 import { ProcessStepService } from '../process-step.service';
+import { TransportationErrorMessages } from '../../constants';
 
 @Injectable()
 export class TransportationService {
@@ -49,13 +50,11 @@ export class TransportationService {
     switch (transportMode) {
       case TransportMode.TRAILER:
         if (!distance) {
-          const message = `Distance is required for transport mode [${TransportMode.TRAILER}].`;
-          throw new HttpException(message, HttpStatus.BAD_REQUEST);
+          throw new HttpException(TransportationErrorMessages.DISTANCE_REQUIRED_FOR_TRAILER, HttpStatus.BAD_REQUEST);
         }
 
         if (!fuelType) {
-          const message = `Fuel type is required for transport mode [${TransportMode.TRAILER}].`;
-          throw new HttpException(message, HttpStatus.BAD_REQUEST);
+          throw new HttpException(TransportationErrorMessages.FUEL_TYPE_REQUIRED_FOR_TRAILER, HttpStatus.BAD_REQUEST);
         }
 
         output = new TransportationDetailsEntity(undefined, distance, transportMode, fuelType);
@@ -64,8 +63,7 @@ export class TransportationService {
         output = new TransportationDetailsEntity(undefined, 0, transportMode, undefined);
         break;
       default: {
-        const message = `Invalid transport mode: ${transportMode}`;
-        throw new HttpException(message, HttpStatus.BAD_REQUEST);
+        throw new HttpException(TransportationErrorMessages.INVALID_TRANSPORT_MODE(transportMode), HttpStatus.BAD_REQUEST);
       }
     }
 

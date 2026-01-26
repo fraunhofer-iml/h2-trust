@@ -10,6 +10,7 @@ import { Injectable } from '@nestjs/common';
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { ProcessStepService } from '../../process-step/process-step.service';
+import { TraversalErrorMessages } from '../../constants';
 
 @Injectable()
 export class TraversalService {
@@ -77,9 +78,7 @@ export class TraversalService {
     );
 
     if (hydrogenBottlings?.length !== 1) {
-      throw new Error(
-        `Expected exactly one predecessor ${ProcessType.HYDROGEN_BOTTLING} process step, but found [${hydrogenBottlings?.length}].`,
-      );
+      throw new Error(TraversalErrorMessages.EXPECTED_EXACTLY_ONE_BOTTLING(hydrogenBottlings?.length));
     }
 
     return hydrogenBottlings[0];
@@ -99,7 +98,10 @@ export class TraversalService {
 
     if (!processStepsOfPredecessorBatches || processStepsOfPredecessorBatches.length !== predecessorBatches.length) {
       throw new Error(
-        `Number of process steps must be [${predecessorBatches.length}], but found [${processStepsOfPredecessorBatches?.length ?? 0}].`,
+        TraversalErrorMessages.PROCESS_STEP_COUNT_MISMATCH(
+          predecessorBatches.length,
+          processStepsOfPredecessorBatches?.length ?? 0,
+        ),
       );
     }
 
@@ -110,7 +112,7 @@ export class TraversalService {
     const predecessorBatches: BatchEntity[] = processStep.batch?.predecessors;
 
     if (!Array.isArray(predecessorBatches) || predecessorBatches.length === 0) {
-      throw new Error(`No predecessors found for process step [${processStep.id}]`);
+      throw new Error(TraversalErrorMessages.NO_PREDECESSORS_FOUND(processStep.id));
     }
 
     return predecessorBatches;
@@ -123,7 +125,7 @@ export class TraversalService {
 
   private assertAllProcessStepsOfType(processSteps: ProcessStepEntity[], expectedProcessType: ProcessType): void {
     if (!processSteps || processSteps.length === 0 || processSteps.some((processStep) => !processStep)) {
-      throw new Error(`Process steps of type [${expectedProcessType}] are missing.`);
+      throw new Error(TraversalErrorMessages.PROCESS_STEPS_MISSING(expectedProcessType));
     }
 
     const invalidProcessSteps = processSteps
@@ -132,7 +134,7 @@ export class TraversalService {
 
     if (invalidProcessSteps.length > 0) {
       throw new Error(
-        `All process steps must be of type [${expectedProcessType}], but found invalid types: ${invalidProcessSteps.join(', ')}`,
+        TraversalErrorMessages.INVALID_PROCESS_STEP_TYPES(expectedProcessType, invalidProcessSteps.join(', ')),
       );
     }
   }

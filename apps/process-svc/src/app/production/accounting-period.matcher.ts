@@ -15,6 +15,8 @@ import {
   ParsedProductionEntity,
   UnitDataBundle,
 } from '@h2-trust/amqp';
+import { AccountingPeriodErrorMessages } from '../constants';
+import { BatchType } from '@h2-trust/domain';
 
 interface PowerItem {
   unitId: string;
@@ -29,8 +31,8 @@ interface HydrogenItem {
 
 export class AccountingPeriodMatcher {
   static matchAccountingPeriods(data: ParsedFileBundles, gridUnitId: string): ParsedProductionEntity[] {
-    this.validateBundles(data.hydrogenProduction, 'hydrogen');
-    this.validateBundles(data.powerProduction, 'power');
+    this.validateBundles(data.hydrogenProduction, BatchType.HYDROGEN);
+    this.validateBundles(data.powerProduction, BatchType.POWER);
 
     const powerItemsByDateHour: Map<string, PowerItem[]> = this.normalizePower(data.powerProduction);
     const hydrogenItemsByDateHour: Map<string, HydrogenItem[]> = this.normalizeHydrogen(data.hydrogenProduction);
@@ -89,10 +91,7 @@ export class AccountingPeriodMatcher {
     }
 
     if (parsedProductions.length === 0)
-      throw new BrokerException(
-        'The data on electricity production and hydrogen production are not in the same time frame.',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new BrokerException(AccountingPeriodErrorMessages.TIME_FRAME_MISMATCH, HttpStatus.BAD_REQUEST);
 
     return parsedProductions;
   }
@@ -156,13 +155,13 @@ export class AccountingPeriodMatcher {
     else map.get(key).push(value);
   }
 
-  private static validateBundles(bundles: UnitDataBundle<any>[] | undefined, type: 'hydrogen' | 'power') {
+  private static validateBundles(bundles: UnitDataBundle<any>[] | undefined, type: BatchType.POWER | BatchType.HYDROGEN) {
     if (!bundles || bundles.length === 0) {
-      throw new BrokerException(`Missing ${type} production data`, HttpStatus.BAD_REQUEST);
+      throw new BrokerException(AccountingPeriodErrorMessages.MISSING_PRODUCTION_DATA(type), HttpStatus.BAD_REQUEST);
     }
 
     if (bundles.some((bundle) => !bundle.unitId || bundle.data.length === 0)) {
-      throw new BrokerException(`Invalid unit data relation for ${type} production`, HttpStatus.BAD_REQUEST);
+      throw new BrokerException(AccountingPeriodErrorMessages.INVALID_UNIT_DATA_RELATION(type), HttpStatus.BAD_REQUEST);
     }
   }
 }

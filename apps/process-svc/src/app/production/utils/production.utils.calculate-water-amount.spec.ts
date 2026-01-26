@@ -7,6 +7,7 @@
  */
 
 import { ProductionUtils } from './production.utils';
+import { ProductionErrorMessages } from '../../constants';
 
 describe('ProductionUtils.calculateWaterAmount', () => {
   describe('valid inputs', () => {
@@ -143,12 +144,11 @@ describe('ProductionUtils.calculateWaterAmount', () => {
       const startedAt = new Date('2024-01-01T01:00:00Z');
       const endedAt = new Date('2024-01-01T00:00:00Z');
       const waterConsumptionPerHour = 100;
-      const expectedResult = 'endedAtInSeconds must be greater than startedAtInSeconds';
 
       // Act & Assert
       expect(() => {
         ProductionUtils.calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
-      }).toThrow(expectedResult);
+      }).toThrow(ProductionErrorMessages.ENDED_AT_BEFORE_STARTED_AT);
     });
 
     it('should throw error when startedAt equals endedAt', () => {
@@ -156,12 +156,11 @@ describe('ProductionUtils.calculateWaterAmount', () => {
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T00:00:00Z');
       const waterConsumptionPerHour = 100;
-      const expectedResult = 'endedAtInSeconds must be greater than startedAtInSeconds';
 
       // Act & Assert
       expect(() => {
         ProductionUtils.calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
-      }).toThrow(expectedResult);
+      }).toThrow(ProductionErrorMessages.ENDED_AT_BEFORE_STARTED_AT);
     });
 
     it('should throw error for negative water consumption rate', () => {
@@ -169,12 +168,11 @@ describe('ProductionUtils.calculateWaterAmount', () => {
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T01:00:00Z');
       const waterConsumptionPerHour = -100;
-      const expectedResult = `waterConsumptionPerHour must be non-negative: [${waterConsumptionPerHour}]`;
 
       // Act & Assert
       expect(() => {
         ProductionUtils.calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
-      }).toThrow(expectedResult);
+      }).toThrow(ProductionErrorMessages.WATER_CONSUMPTION_NEGATIVE(waterConsumptionPerHour));
     });
   });
 

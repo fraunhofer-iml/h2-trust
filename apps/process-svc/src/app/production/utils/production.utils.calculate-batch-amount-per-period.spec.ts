@@ -7,6 +7,7 @@
  */
 
 import { ProductionUtils } from './production.utils';
+import { ProductionErrorMessages } from '../../constants';
 
 describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
   it('should return the full amount if numberOfAccountingPeriods is less than 1', () => {
@@ -69,43 +70,35 @@ describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
     const givenBatchAmount = -10;
     const givenNumberOfAccountingPeriods = 1;
 
-    const expectedErrorMessage = 'batchAmount must be greater than zero';
-
     expect(() =>
       ProductionUtils.calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods),
-    ).toThrow(expectedErrorMessage);
+    ).toThrow(ProductionErrorMessages.BATCH_AMOUNT_NOT_POSITIVE);
   });
 
   it('should throw if batchAmount is zero', () => {
     const givenBatchAmount = 0;
     const givenNumberOfAccountingPeriods = 1;
 
-    const expectedErrorMessage = 'batchAmount must be greater than zero';
-
     expect(() =>
       ProductionUtils.calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods),
-    ).toThrow(expectedErrorMessage);
+    ).toThrow(ProductionErrorMessages.BATCH_AMOUNT_NOT_POSITIVE);
   });
 
   it('should throw if numberOfAccountingPeriods is negative', () => {
     const givenBatchAmount = 10;
     const givenNumberOfAccountingPeriods = -1;
 
-    const expectedErrorMessage = 'numberOfAccountingPeriods must be greater than zero';
-
     expect(() =>
       ProductionUtils.calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods),
-    ).toThrow(expectedErrorMessage);
+    ).toThrow(ProductionErrorMessages.NUMBER_OF_PERIODS_NOT_POSITIVE);
   });
 
   it('should throw if numberOfAccountingPeriods is zero', () => {
     const givenBatchAmount = 10;
     const givenNumberOfAccountingPeriods = 0;
 
-    const expectedErrorMessage = 'numberOfAccountingPeriods must be greater than zero';
-
     expect(() =>
       ProductionUtils.calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods),
-    ).toThrow(expectedErrorMessage);
+    ).toThrow(ProductionErrorMessages.NUMBER_OF_PERIODS_NOT_POSITIVE);
   });
 });

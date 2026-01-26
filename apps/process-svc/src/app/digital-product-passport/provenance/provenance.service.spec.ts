@@ -12,6 +12,7 @@ import { ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
 import { ProcessStepService } from '../../process-step/process-step.service';
 import { ProvenanceService } from './provenance.service';
 import { TraversalService } from './traversal.service';
+import { ProvenanceErrorMessages } from '../../constants';
 
 describe('ProvenanceService', () => {
   let service: ProvenanceService;
@@ -54,10 +55,10 @@ describe('ProvenanceService', () => {
       // Arrange
       const givenProcessStepId = '';
 
-      const expectedErrorMessage = 'processStepId must be provided.';
-
       // Act & Assert
-      await expect(service.buildProvenance(givenProcessStepId)).rejects.toThrow(expectedErrorMessage);
+      await expect(service.buildProvenance(givenProcessStepId)).rejects.toThrow(
+        ProvenanceErrorMessages.PROCESS_STEP_ID_REQUIRED,
+      );
     });
 
     it('throws error when process step is not found', async () => {
@@ -66,10 +67,10 @@ describe('ProvenanceService', () => {
 
       processStepServiceMock.readProcessStep.mockResolvedValue(null);
 
-      const expectedErrorMessage = 'Invalid process step.';
-
       // Act & Assert
-      await expect(service.buildProvenance(givenProcessStepId)).rejects.toThrow(expectedErrorMessage);
+      await expect(service.buildProvenance(givenProcessStepId)).rejects.toThrow(
+        ProvenanceErrorMessages.INVALID_PROCESS_STEP,
+      );
     });
 
     it('throws error when process step type is invalid', async () => {
@@ -79,10 +80,10 @@ describe('ProvenanceService', () => {
 
       processStepServiceMock.readProcessStep.mockResolvedValue(givenProcessStep);
 
-      const expectedErrorMessage = `Unsupported process type [${givenProcessStep.type}].`;
-
       // Act & Assert
-      await expect(service.buildProvenance(givenProcessStep.id)).rejects.toThrow(expectedErrorMessage);
+      await expect(service.buildProvenance(givenProcessStep.id)).rejects.toThrow(
+        ProvenanceErrorMessages.UNSUPPORTED_PROCESS_TYPE(givenProcessStep.type),
+      );
     });
 
     it(`returns ProvenanceEntity for ${ProcessType.POWER_PRODUCTION} process type`, async () => {
