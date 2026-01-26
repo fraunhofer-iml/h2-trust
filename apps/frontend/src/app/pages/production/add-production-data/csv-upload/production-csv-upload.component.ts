@@ -33,7 +33,7 @@ import {
   HydrogenProductionOverviewDto,
   HydrogenStorageOverviewDto,
   ImportSubmissionDto,
-  PowerProductionOverviewDto,
+  PowerProductionOverviewDto
 } from '@h2-trust/api';
 import { FileUploadKeys } from '@h2-trust/domain';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
@@ -74,7 +74,7 @@ export class ProductionCsvUploadComponent {
   hydrogenStorageUnits = input<HydrogenStorageOverviewDto[]>([]);
 
   form = new FormGroup({
-    h2ProductionFiles: new FormArray<FileForm>([], minFormArrayLength(1)),
+    hydrogenProductionFiles: new FormArray<FileForm>([], minFormArrayLength(1)),
     powerProductionFiles: new FormArray<FileForm>([], minFormArrayLength(1)),
   });
 
@@ -105,11 +105,11 @@ export class ProductionCsvUploadComponent {
     this.form.updateValueAndValidity();
   }
 
-  get h2ProductionFiles() {
-    return this.form.get('h2ProductionFiles') as FormArray<FileForm>;
+  get hydrogenProductionFiles() {
+    return this.form.get(FileUploadKeys.HYDROGEN_PRODUCTION) as FormArray<FileForm>;
   }
   get powerProductionFiles() {
-    return this.form.get('powerProductionFiles') as FormArray<FileForm>;
+    return this.form.get(FileUploadKeys.POWER_PRODUCTION) as FormArray<FileForm>;
   }
 
   onDragOver(event: DragEvent): void {
@@ -128,7 +128,7 @@ export class ProductionCsvUploadComponent {
       }
     });
 
-    this.form.controls.h2ProductionFiles.controls.forEach((control) => {
+    this.form.controls.hydrogenProductionFiles.controls.forEach((control) => {
       const file: File | null = control.controls.file.value;
       const unitId = control.value.unitId;
       if (file && unitId) {
