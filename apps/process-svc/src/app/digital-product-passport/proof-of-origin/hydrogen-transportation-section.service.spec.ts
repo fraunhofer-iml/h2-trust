@@ -8,7 +8,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProofOfOriginHydrogenBatchEntity } from '@h2-trust/amqp';
-import { MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
+import { MeasurementUnit, ProofOfOrigin, UNIT_G_CO2_PER_KG_H2 } from '@h2-trust/domain';
 import {
   HydrogenComponentEntityFixture,
   ProcessStepEntityFixture,
@@ -103,7 +103,7 @@ describe('HydrogenTransportationSectionService', () => {
       expect(batch.id).toBe(givenHydrogenTransportation.batch.id);
       expect(batch.emission).toBeDefined();
       expect(batch.emission.totalEmissionsPerKgHydrogen).toBe(0);
-      expect(batch.emission.basisOfCalculation).toEqual(['E = 0 g CO₂,eq/kg H₂']);
+      expect(batch.emission.basisOfCalculation).toEqual([`E = 0 ${UNIT_G_CO2_PER_KG_H2}`]);
       expect(batch.createdAt).toBe(givenHydrogenTransportation.startedAt);
       expect(batch.amount).toBe(givenHydrogenTransportation.batch.amount);
       expect(batch.unit).toBe(MeasurementUnit.HYDROGEN);

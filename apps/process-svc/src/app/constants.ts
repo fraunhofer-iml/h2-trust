@@ -87,6 +87,20 @@ export const DisplayLabels = {
   FILE_DESCRIPTION: (index: number) => `File #${index}`,
 } as const;
 
+export const EmissionTypes = {
+  APPLICATION: 'APPLICATION',
+  EPS: 'eps',
+  EWS: 'ews',
+  EHS: 'ehs',
+  EHB: 'ehb',
+  EHT: 'eht',
+
+  REGULATORY: 'REGULATORY',
+  EI: 'ei',
+  EP: 'ep',
+  ETD: 'etd',
+} as const;
+
 export const LogMessages = {
   FAILED_TO_CLEAN_OLD_RECORDS: 'Failed to clean old records:',
   FINALIZING_STAGED_PRODUCTIONS: (count: number, chunkSize: number) => `Finalizing ${count} staged productions in chunks of ${chunkSize}`,
