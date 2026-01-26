@@ -47,7 +47,7 @@ export class DigitalProductPassportDto {
     this.color = color;
     this.producer = producer;
     this.hydrogenComposition = hydrogenComposition;
-    this.product = 'Hydrogen';
+    this.product = BatchType.HYDROGEN;
     this.attachedFiles = attachedFiles;
     this.rfnboCompliance = rfnboCompliance;
     this.proofOfOrigin = proofOfOrigin;
@@ -56,7 +56,7 @@ export class DigitalProductPassportDto {
 
   static fromEnities(
     generalInformationEntity: GeneralInformationEntity,
-    proofOfOriginSections: ProofOfOriginSectionEntity[],
+    proofOfOriginSectionEntities: ProofOfOriginSectionEntity[],
     proofOfSustainabilityEntity: ProofOfSustainabilityEntity,
   ): DigitalProductPassportDto {
     const hydrogenComposition = (generalInformationEntity.hydrogenComposition ?? []).map(
@@ -69,7 +69,7 @@ export class DigitalProductPassportDto {
     const proofOfSustainability = ProofOfSustainabilityDto.fromEntity(proofOfSustainabilityEntity);
     const proofOfOrigin = SectionDto.fromEntities(proofOfOriginSections);
 
-    const gridPowerUsed = hydrogenComposition.find((element: HydrogenComponentDto) => element.color === 'YELLOW');
+    const gridPowerUsed = hydrogenComposition.find((element: HydrogenComponentDto) => element.color ===  HydrogenColor.YELLOW);
     const isEmissionReductionAbove70Percent = proofOfSustainabilityEntity.emissionReductionPercentage > 70;
     const rfnboCompliance = gridPowerUsed
       ? new GridEnergyRfnboDto(isEmissionReductionAbove70Percent, false, false, false)

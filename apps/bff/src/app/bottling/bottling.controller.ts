@@ -124,16 +124,16 @@ export class BottlingController {
   @Get(':id')
   @ApiBearerAuth()
   @ApiOperation({
-    description: 'Retrieve the general information by the corresponding bottling process step ID.',
+    description: 'Retrieve the general information by the corresponding transportation process step ID.',
   })
   @ApiOkResponse({
     description:
-      'Returns the requested product passport including general information, proof of origin and proof of sustainability of a bottling.',
+      'Returns the requested product passport including general information, proof of origin and proof of sustainability of a transportation process step.',
     type: DigitalProductPassportDto,
   })
   @ApiParam({
     name: 'id',
-    description: 'Unique identifier of the bottling process step.',
+    description: 'Unique identifier of the transportation process step.',
     example: 'process-step-hydrogen-bottling-1',
   })
   async readDigitalProductPassport(@Param('id') id: string): Promise<DigitalProductPassportDto> {
