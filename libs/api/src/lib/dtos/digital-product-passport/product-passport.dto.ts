@@ -69,7 +69,7 @@ export class ProductPassportDto {
     const proofOfSustainability = ProofOfSustainabilityDto.fromEntity(proofOfSustainabilityEntity);
     const proofOfOrigin = SectionDto.fromEntities(proofOfOriginSections);
 
-    const gridPowerUsed = hydrogenComposition.find((element: HydrogenComponentDto) => element.color === 'YELLOW');
+    const gridPowerUsed = hydrogenComposition.find((element: HydrogenComponentDto) => element.color ===  HydrogenColor.YELLOW);
     const isEmissionReductionAbove70Percent = proofOfSustainabilityEntity.emissionReductionPercentage > 70;
     const rfnboCompliance = gridPowerUsed
       ? new GridEnergyRfnboDto(isEmissionReductionAbove70Percent, false, false, false)
