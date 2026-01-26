@@ -133,7 +133,7 @@ export class BottlingController {
   })
   @ApiParam({
     name: 'id',
-    description: 'Unique identifier of the bottling process step.',
+    description: 'Unique identifier of the transportation process step.',
     example: 'process-step-hydrogen-bottling-1',
   })
   async readProductPassport(@Param('id') id: string): Promise<ProductPassportDto> {
