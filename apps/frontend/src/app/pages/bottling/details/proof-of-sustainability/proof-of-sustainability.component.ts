@@ -13,8 +13,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { injectQuery } from '@tanstack/angular-query-experimental';
-import { EmissionCalculationDto } from '@h2-trust/api';
+import { EmissionCalculationDto, ProofOfSustainabilityDto } from '@h2-trust/api';
 import { CalculationTopic } from '@h2-trust/domain';
 import { FormattedUnits } from '../../../../shared/constants/formatted-units';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
@@ -41,20 +40,14 @@ import { SavingsPotentialChartComponent } from './savings-potential/savings-pote
 export class ProofOfSustainabilityComponent {
   protected readonly EMISSIONS = EMISSIONS;
   bottlingService = inject(BottlingService);
-  id = input<string>('');
+
+  proofOfSustainability$ = input<ProofOfSustainabilityDto>();
+
   readonly FormattedUnits = FormattedUnits;
   readonly CalculationTopic = CalculationTopic;
   readonly ChemicalNames = ChemicalNames;
 
-  calculations = computed(() => this.mapCalculations(this.proofQuery.data()?.calculations ?? []));
-
-  proofQuery = injectQuery(() => ({
-    queryKey: ['proof-of-sustainability', this.id()],
-    queryFn: () => {
-      return this.bottlingService.getProofOfSustainability(this.id() ?? '');
-    },
-    enabled: !!this.id(),
-  }));
+  calculations = computed(() => this.mapCalculations(this.proofOfSustainability$()?.calculations ?? []));
 
   mapCalculations(calculations: EmissionCalculationDto[]) {
     const groupedObj: Record<string, EmissionCalculationDto[]> = {};

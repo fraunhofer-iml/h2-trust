@@ -10,11 +10,11 @@ import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 
 @Component({
-  selector: 'app-red-check-card',
+  selector: 'app-rfnbo-check-card',
   imports: [CommonModule],
-  templateUrl: './red-check-card.component.html',
+  templateUrl: './rfnbo-check-card.component.html',
 })
-export class RedCheckCardComponent {
+export class RfnboCheckCardComponent {
   content = input<{ TITLE: string; DESCRIPTION: string }>();
   isValid = input<boolean>(false);
 }

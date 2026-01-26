@@ -7,7 +7,6 @@
  */
 
 export class RedComplianceEntity {
-  isRedCompliant: boolean;
   isGeoCorrelationValid: boolean;
   isTimeCorrelationValid: boolean;
   isAdditionalityFulfilled: boolean;
@@ -23,11 +22,5 @@ export class RedComplianceEntity {
     this.isTimeCorrelationValid = isTimeCorrelationValid;
     this.isAdditionalityFulfilled = isAdditionalityFulfilled;
     this.financialSupportReceived = financialSupportReceived;
-
-    this.isRedCompliant =
-      this.isGeoCorrelationValid &&
-      this.isTimeCorrelationValid &&
-      this.isAdditionalityFulfilled &&
-      this.financialSupportReceived;
   }
 }

@@ -8,11 +8,9 @@
 
 import { CommonModule } from '@angular/common';
 import { Component, computed, input, signal } from '@angular/core';
-import { injectQuery } from '@tanstack/angular-query-experimental';
 import { BatchDto, HydrogenBatchDto, PowerBatchDto, SectionDto, WaterBatchDto } from '@h2-trust/api';
 import { BatchType } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
-import { BottlingService } from '../../../../shared/services/bottling/bottling.service';
 import { H2BatchCardComponent } from './batch-card/h2-batch-card/h2-batch-card.component';
 import { PowerBatchCardComponent } from './batch-card/power-batch-card/power-batch-card.component';
 import { WaterBatchCardComponent } from './batch-card/water-batch-card/water-batch-card.component';
@@ -31,8 +29,7 @@ import { ClassificationComponent } from './classification/classification.compone
   templateUrl: './proof-of-origin.component.html',
 })
 export class ProofOfOriginComponent {
-  id = input<string>('');
-  constructor(private readonly bottlingService: BottlingService) {}
+  proofOfOrigin$ = input<SectionDto[]>();
 
   sectionIndex$ = signal(-2);
   classificationIndex$ = signal<number[]>([0]);
@@ -40,7 +37,7 @@ export class ProofOfOriginComponent {
   data$ = computed((): { sections: SectionDto[]; breadcrumbs: string[] } => {
     const sectionIndex = this.sectionIndex$();
     const classificationIndexes = this.classificationIndex$();
-    const data = this.proofQuery.data();
+    const data = this.proofOfOrigin$();
     const breadcrumbs: string[] = [];
 
     if (sectionIndex > -1 && classificationIndexes.length > 0 && data) {
@@ -65,16 +62,6 @@ export class ProofOfOriginComponent {
 
     return { sections: data ?? [], breadcrumbs: breadcrumbs };
   });
-
-  proofQuery = injectQuery(() => ({
-    queryKey: ['proof-of-origin', this.id()],
-    queryFn: () => {
-      this.classificationIndex$.set([]);
-      this.sectionIndex$.set(-1);
-      return this.bottlingService.getProofOfOrigin(this.id() ?? '');
-    },
-    enabled: !!this.id(),
-  }));
 
   setIndex(sectionIndex: number, classificationIndex: number) {
     this.sectionIndex$.set(sectionIndex);

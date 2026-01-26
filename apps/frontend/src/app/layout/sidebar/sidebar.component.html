@@ -27,7 +27,7 @@
       </div>
 
       <mat-expansion-panel
-        class="!bg-primary-100 p-2 !shadow-none"
+        class="!bg-primary-200 p-2 !shadow-none"
         [hideToggle]="!isAuthenticated"
         [disabled]="!isAuthenticated"
       >
@@ -45,23 +45,27 @@
               </div>
             </mat-panel-title>
           } @else {
-            <div class="flex w-full flex-row items-center justify-between pl-2" (click)="signIn()" role="none">
-              <span class="text-primary-100 text-lg">Sign In</span>
-              <span class="material-symbols-outlined text-primary-100">login</span>
+            <div
+              class="text-primary-600 flex w-full flex-row items-center justify-between pl-2"
+              (click)="signIn()"
+              role="none"
+            >
+              <span class="text-lg">Sign In</span>
+              <span class="material-symbols-outlined">login</span>
             </div>
           }
         </mat-expansion-panel-header>
         @if (isAuthenticated) {
           <div class="flex w-full flex-col gap-1 p-2">
             <a
-              class="hover:text-primary-600 hover:bg-primary-200 border-primary-100 flex flex-row items-center gap-2 rounded-full border-2 p-4 text-neutral-500"
+              class="hover:text-primary-600 hover:bg-primary-300 border-primary-200 flex flex-row items-center gap-2 rounded-full border-2 p-4 text-neutral-500"
               routerLink="/"
             >
               <span class="material-symbols-outlined">settings</span>
               <span>account</span>
             </a>
             <button
-              class="hover:text-primary-600 hover:bg-primary-200 border-primary-100 flex flex-row items-center gap-2 rounded-full border-2 p-4 text-neutral-500"
+              class="hover:text-primary-600 hover:bg-primary-300 border-primary-200 flex flex-row items-center gap-2 rounded-full border-2 p-4 text-neutral-500"
               (click)="logout()"
             >
               <span class="material-symbols-outlined">logout</span>
