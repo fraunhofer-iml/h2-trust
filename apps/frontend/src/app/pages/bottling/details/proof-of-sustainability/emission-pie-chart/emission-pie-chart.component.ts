@@ -13,7 +13,7 @@ import { CommonModule, PercentPipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { EmissionForProcessStepDto, EmissionProcessStepType } from '@h2-trust/api';
-import { FormattedUnits } from '../../../../../shared/constants/formatted-units';
+import { MeasurementUnit } from '@h2-trust/domain';
 
 @Component({
   selector: 'app-emission-pie-chart',
@@ -85,7 +85,7 @@ export class EmissionPieChartComponent {
   private readonly tooltipFormatter = (params: any, dataTotal: EmissionForProcessStepDto[]): string => {
     const percent = this.percentPipe.transform((params.percent ?? 0) / 100, '1.0-1');
     const description = dataTotal.find((item) => item.name === params.name)?.description;
-    return `${params.marker} ${params.name} (${description}): ${params.value} ${FormattedUnits.G_CO2} (${percent})`;
+    return `${params.marker} ${params.name} (${description}): ${params.value} ${MeasurementUnit.G_CO2} (${percent})`;
   };
 
   private readonly getChartOption = (

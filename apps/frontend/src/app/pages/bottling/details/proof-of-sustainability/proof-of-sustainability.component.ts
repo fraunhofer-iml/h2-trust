@@ -14,8 +14,7 @@ import { Component, computed, inject, input } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { EmissionCalculationDto, ProofOfSustainabilityDto } from '@h2-trust/api';
-import { CalculationTopic } from '@h2-trust/domain';
-import { FormattedUnits } from '../../../../shared/constants/formatted-units';
+import { CalculationTopic, MeasurementUnit } from '@h2-trust/domain';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { BottlingService } from '../../../../shared/services/bottling/bottling.service';
 import { CalculationItemComponent } from './calculation-item/calculation-item.component';
@@ -43,7 +42,7 @@ export class ProofOfSustainabilityComponent {
 
   proofOfSustainability$ = input<ProofOfSustainabilityDto>();
 
-  readonly FormattedUnits = FormattedUnits;
+  readonly MeasurementUnit = MeasurementUnit;
   readonly CalculationTopic = CalculationTopic;
   readonly ChemicalNames = ChemicalNames;
 

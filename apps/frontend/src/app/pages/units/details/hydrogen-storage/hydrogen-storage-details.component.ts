@@ -6,24 +6,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ErrorCardComponent } from 'apps/frontend/src/app/layout/error-card/error-card.component';
 import { ERROR_MESSAGES } from 'apps/frontend/src/app/shared/constants/error.messages';
-import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
 import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
+import { MeasurementUnit } from '@h2-trust/domain';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { UnitDetailsComponent } from '../unit-details.component';
 
 @Component({
   selector: 'app-hydrogen-storage-details',
-  imports: [CommonModule, UnitPipe, UnitDetailsComponent, RouterModule, ErrorCardComponent],
+  imports: [CommonModule, UnitPipe, UnitDetailsComponent, RouterModule],
   templateUrl: './hydrogen-storage-details.component.html',
 })
 export class HydrogenStorageDetailsComponent {
-  readonly FormattedUnits = FormattedUnits;
+  readonly MeasurementUnit = MeasurementUnit;
 
   id = input<string>();
 

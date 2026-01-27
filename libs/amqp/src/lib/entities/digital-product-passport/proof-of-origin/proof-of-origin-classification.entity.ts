@@ -19,14 +19,12 @@ export class ProofOfOriginClassificationEntity {
   amount: number;
   batches: ProofOfOriginBatchEntity[];
   subClassifications: ProofOfOriginSubClassificationEntity[];
-  unit: string;
   classificationType: BatchType;
 
   constructor(
     name: string,
     emissionOfProcessStep: number,
     amount: number,
-    unit: string,
     classificationType: BatchType,
     batches: ProofOfOriginBatchEntity[] = [],
     subClassifications: ProofOfOriginSubClassificationEntity[] = [],
@@ -36,7 +34,6 @@ export class ProofOfOriginClassificationEntity {
     this.amount = amount;
     this.batches = batches;
     this.subClassifications = subClassifications;
-    this.unit = unit;
     this.classificationType = classificationType;
   }
 }
@@ -50,14 +47,12 @@ export class ProofOfOriginSubClassificationEntity {
   emissionOfProcessStep: number;
   amount: number;
   batches: ProofOfOriginBatchEntity[];
-  unit: string;
   classificationType: BatchType;
 
   constructor(
     name: string,
     emissionOfProcessStep: number,
     amount: number,
-    unit: string,
     classificationType: BatchType,
     batches: ProofOfOriginBatchEntity[] = [],
   ) {
@@ -65,7 +60,6 @@ export class ProofOfOriginSubClassificationEntity {
     this.emissionOfProcessStep = emissionOfProcessStep;
     this.amount = amount;
     this.batches = batches;
-    this.unit = unit;
     this.classificationType = classificationType;
   }
 }

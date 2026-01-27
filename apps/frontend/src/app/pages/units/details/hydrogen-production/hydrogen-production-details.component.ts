@@ -8,12 +8,12 @@
 
 import { ErrorCardComponent } from 'apps/frontend/src/app/layout/error-card/error-card.component';
 import { ERROR_MESSAGES } from 'apps/frontend/src/app/shared/constants/error.messages';
-import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
 import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
+import { MeasurementUnit } from '@h2-trust/domain';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { UnitDetailsComponent } from '../unit-details.component';
 
@@ -23,7 +23,7 @@ import { UnitDetailsComponent } from '../unit-details.component';
   templateUrl: './hydrogen-production-details.component.html',
 })
 export class HydrogenProductionDetailsComponent {
-  readonly FormattedUnits = FormattedUnits;
+  readonly MeasurementUnit = MeasurementUnit;
 
   id = input<string>();
 

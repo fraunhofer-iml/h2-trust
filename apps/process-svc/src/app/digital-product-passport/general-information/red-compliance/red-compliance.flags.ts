@@ -58,7 +58,6 @@ export function hasFinancialSupport(powerUnit: PowerProductionUnitEntity): boole
 function assertValidBiddingZone(zone: unknown, name: string): asserts zone is BiddingZone {
   assertDefined(zone, name);
   if (!Object.values(BiddingZone).includes(zone as BiddingZone)) {
-    const message = `Invalid BiddingZone: ${name}: ${zone}`;
-    throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);
+    throw new HttpException(`Invalid BiddingZone: ${name}: ${zone}`, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

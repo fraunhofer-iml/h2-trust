@@ -21,8 +21,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { PowerAccessApprovalStatus } from '@h2-trust/domain';
-import { FormattedUnits } from '../../../shared/constants/formatted-units';
+import { MeasurementUnit, PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { PowerAccessApprovalService } from '../../../shared/services/power-access-approvals/power-access-approvals.service';
 import { ProductionService } from '../../../shared/services/production/production.service';
@@ -54,7 +53,7 @@ import { ProductionFormComponent } from './manual-data-imput/production-form.com
 })
 export class AddProductionDataComponent {
   useCSV = true;
-  readonly FormattedUnits = FormattedUnits;
+  readonly MeasurementUnit = MeasurementUnit;
 
   approvalsQuery = injectQuery(() => ({
     queryKey: ['power-access-approvals'],

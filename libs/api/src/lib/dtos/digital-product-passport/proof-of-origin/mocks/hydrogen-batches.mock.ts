@@ -6,7 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType, HydrogenColor, HydrogenProductionMethod, MeasurementUnit, ProcessType } from '@h2-trust/domain';
+import { BatchType, HydrogenColor, HydrogenProductionMethod, ProcessType } from '@h2-trust/domain';
+import { EnumLabelMapper } from '../../../../labels';
 import { CompanyDtoMock } from '../../../company';
 import { HydrogenBatchDto } from '../hydrogen-batch.dto';
 import { EmissionMock } from './emissions.mock';
@@ -15,7 +16,7 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
   {
     id: 'hydrogen-batch-1',
     amount: 300,
-    unit: MeasurementUnit.HYDROGEN,
+    unit: EnumLabelMapper.getMeasurementUnit(BatchType.HYDROGEN),
     color: HydrogenColor.GREEN,
     createdAt: new Date(),
     accountingPeriodEnd: new Date(),
@@ -31,7 +32,7 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
   {
     id: 'hydrogen-batch-2',
     amount: 300,
-    unit: MeasurementUnit.HYDROGEN,
+    unit: EnumLabelMapper.getMeasurementUnit(BatchType.HYDROGEN),
     color: HydrogenColor.GREEN,
     createdAt: new Date(),
     accountingPeriodEnd: new Date(),
@@ -47,7 +48,7 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
   {
     id: 'hydrogen-batch-3',
     amount: 300,
-    unit: MeasurementUnit.HYDROGEN,
+    unit: EnumLabelMapper.getMeasurementUnit(BatchType.HYDROGEN),
     color: HydrogenColor.YELLOW,
     createdAt: new Date(),
     accountingPeriodEnd: new Date(),
@@ -63,7 +64,7 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
   {
     id: 'hydrogen-batch-4',
     amount: 600,
-    unit: MeasurementUnit.HYDROGEN,
+    unit: EnumLabelMapper.getMeasurementUnit(BatchType.HYDROGEN),
     color: HydrogenColor.MIX,
     createdAt: new Date(),
     emission: EmissionMock,

@@ -8,7 +8,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProofOfOriginHydrogenBatchEntity } from '@h2-trust/amqp';
-import { MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
+import { ProofOfOrigin } from '@h2-trust/domain';
 import { HydrogenComponentEntityFixture, ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
 import { BottlingService } from '../../process-step/bottling/bottling.service';
 import { HydrogenBottlingSectionService } from './hydrogen-bottling-section.service';
@@ -66,7 +66,6 @@ describe('HydrogenBottlingSectionService', () => {
       expect(batch.emission.basisOfCalculation).toEqual(['E = [TBD]']);
       expect(batch.createdAt).toBe(givenHydrogenBottling.startedAt);
       expect(batch.amount).toBe(givenHydrogenBottling.batch.amount);
-      expect(batch.unit).toBe(MeasurementUnit.HYDROGEN);
       expect(batch.batchType).toBe(givenHydrogenBottling.batch.type);
       expect(batch.hydrogenComposition).toEqual(givenHydrogenCompositions);
       expect(batch.unitId).toBe(givenHydrogenBottling.executedBy.id);

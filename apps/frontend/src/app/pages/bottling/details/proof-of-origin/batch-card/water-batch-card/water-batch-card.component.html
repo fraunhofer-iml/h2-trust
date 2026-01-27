@@ -2,7 +2,7 @@
   <div>
     <h3 class="text-base">Water Supply</h3>
     <p class="text-sm text-neutral-500">
-      {{ batch().emission.amountCO2 | unit: FormattedUnits.G_CO2 }}
+      {{ batch().emission.amountCO2 | unit: MeasurementUnit.G_CO2 }}
     </p>
   </div>
   <span>{{ batch().amount | unit: batch().unit }} </span>
@@ -21,7 +21,7 @@
       <span class="col-span-2 text-neutral-600">Batch Details</span>
       <div class="flex flex-col text-sm">
         <span class="text-sm text-neutral-500">Deionized Water:</span
-        ><span>{{ batch().deionizedWater.amount | unit: FormattedUnits.L }}</span>
+        ><span>{{ batch().deionizedWater.amount | unit: MeasurementUnit.L }}</span>
       </div>
     </div>
     <app-batch-emissions [emissions]="batch().emission"></app-batch-emissions>
