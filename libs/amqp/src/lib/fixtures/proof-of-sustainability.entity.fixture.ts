@@ -14,6 +14,8 @@ export const ProofOfSustainabilityEntityFixture = {
   create: (overrides: Partial<ProofOfSustainabilityEntity> = {}): ProofOfSustainabilityEntity =>
     new ProofOfSustainabilityEntity(
       overrides.batchId ?? 'batch-1',
+      overrides.totalEmissions ?? 1,
+      overrides.amountCO2PerKgH2 ?? 1,
       overrides.amountCO2PerMJH2 ?? 0.5,
       overrides.emissionReductionPercentage ?? 85,
       overrides.calculations ?? [ProofOfSustainabilityEmissionCalculationEntityFixture.create()],

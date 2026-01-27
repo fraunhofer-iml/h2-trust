@@ -8,7 +8,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProcessStepEntity, ProofOfOriginWaterBatchEntity } from '@h2-trust/amqp';
-import { BatchType, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
+import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
 import { ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
 import { WaterSupplyClassificationService } from './water-supply-classification.service';
 
@@ -35,7 +35,6 @@ describe('WaterSupplyClassificationService', () => {
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION);
-      expect(actualResult.unit).toBe(MeasurementUnit.WATER);
       expect(actualResult.classificationType).toBe(BatchType.WATER);
       expect(actualResult.batches).toHaveLength(1);
       expect(actualResult.subClassifications).toEqual([]);
@@ -46,7 +45,6 @@ describe('WaterSupplyClassificationService', () => {
       expect(batch.emission.totalEmissionsPerKgHydrogen).toBeGreaterThan(0);
       expect(batch.createdAt).toBe(givenWaterConsumption.startedAt);
       expect(batch.amount).toBe(givenWaterConsumption.batch.amount);
-      expect(batch.unit).toBe(MeasurementUnit.WATER);
       expect(batch.deionizedWaterAmount).toBe(givenWaterConsumption.batch.amount);
     });
 

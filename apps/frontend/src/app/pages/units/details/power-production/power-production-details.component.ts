@@ -7,13 +7,13 @@
  */
 
 import { InfoTooltipComponent } from 'apps/frontend/src/app/layout/info-tooltip/info-tooltip.component';
-import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
 import { RFNBO_CRITERIA } from 'apps/frontend/src/app/shared/constants/rfnbo-criteria';
 import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
+import { MeasurementUnit } from '@h2-trust/domain';
 import { BoolPipe } from '../../../../shared/pipes/bool-pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { UnitDetailsComponent } from '../unit-details.component';
@@ -36,5 +36,5 @@ export class PowerProductionDetailsComponent {
     enabled: !!this.id(),
   }));
 
-  readonly FormattedUnits = FormattedUnits;
+  readonly MeasurementUnit = MeasurementUnit;
 }

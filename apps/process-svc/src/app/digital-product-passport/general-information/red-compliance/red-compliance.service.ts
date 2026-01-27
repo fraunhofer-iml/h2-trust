@@ -30,8 +30,9 @@ export class RedComplianceService {
     const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStepId);
 
     if (!provenance || !provenance.powerProductions?.length || !provenance.hydrogenProductions?.length) {
-      const message = `Provenance or required productions (power/hydrogen) are missing for processStepId [${processStepId}]`;
-      throw new RpcException(message);
+      throw new RpcException(
+        `Provenance or required productions (power/hydrogen) are missing for processStepId [${processStepId}]`,
+      );
     }
 
     const pairs: MatchedProductionPair[] = await this.redCompliancePairingService.buildMatchedPairs(
@@ -56,8 +57,10 @@ export class RedComplianceService {
       if (!powerProductionUnit || !hydrogenProductionUnit) {
         const expectedPowerUnitId = pair.power.processStep.executedBy?.id;
         const expectedHydrogenUnitId = pair.hydrogen.processStep.executedBy?.id;
-        const message = `Production units not found: powerUnitId [${expectedPowerUnitId}] or hydrogenUnitId [${expectedHydrogenUnitId}]`;
-        throw new HttpException(message, HttpStatus.BAD_REQUEST);
+        throw new HttpException(
+          `Production units not found: powerUnitId [${expectedPowerUnitId}] or hydrogenUnitId [${expectedHydrogenUnitId}]`,
+          HttpStatus.BAD_REQUEST,
+        );
       }
 
       isGeoCorrelationValid &&= areUnitsInSameBiddingZone(powerProductionUnit, hydrogenProductionUnit);

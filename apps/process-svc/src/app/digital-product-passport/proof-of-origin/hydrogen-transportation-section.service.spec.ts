@@ -73,7 +73,6 @@ describe('HydrogenTransportationSectionService', () => {
       expect(batch.emission.totalEmissionsPerKgHydrogen).toBeGreaterThan(0);
       expect(batch.createdAt).toBe(givenHydrogenTransportation.startedAt);
       expect(batch.amount).toBe(givenHydrogenTransportation.batch.amount);
-      expect(batch.unit).toBe(MeasurementUnit.HYDROGEN);
       expect(batch.hydrogenComposition).toEqual(givenHydrogenCompositions);
       expect(batch.unitId).toBe(givenHydrogenTransportation.executedBy.id);
       expect(batch.color).toBe(givenHydrogenTransportation.batch.qualityDetails.color);
@@ -103,10 +102,9 @@ describe('HydrogenTransportationSectionService', () => {
       expect(batch.id).toBe(givenHydrogenTransportation.batch.id);
       expect(batch.emission).toBeDefined();
       expect(batch.emission.totalEmissionsPerKgHydrogen).toBe(0);
-      expect(batch.emission.basisOfCalculation).toEqual(['E = 0 g CO₂,eq/kg H₂']);
+      expect(batch.emission.basisOfCalculation).toEqual([`E = 0 ${MeasurementUnit.G_CO2_PER_KG_H2}`]);
       expect(batch.createdAt).toBe(givenHydrogenTransportation.startedAt);
       expect(batch.amount).toBe(givenHydrogenTransportation.batch.amount);
-      expect(batch.unit).toBe(MeasurementUnit.HYDROGEN);
       expect(batch.hydrogenComposition).toEqual(givenHydrogenCompositions);
       expect(batch.unitId).toBe(givenHydrogenTransportation.executedBy.id);
       expect(batch.color).toBe(givenHydrogenTransportation.batch.qualityDetails.color);

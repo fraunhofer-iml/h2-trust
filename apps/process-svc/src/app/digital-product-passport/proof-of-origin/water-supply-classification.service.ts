@@ -14,7 +14,7 @@ import {
   ProofOfOriginWaterBatchEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/amqp';
-import { BatchType, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
+import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
 import { BatchAssembler } from './batch.assembler';
 import { ClassificationAssembler } from './classification.assembler';
 import { EmissionAssembler } from './emission.assembler';
@@ -46,7 +46,6 @@ export class WaterSupplyClassificationService {
 
     return ClassificationAssembler.assembleClassification(
       ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION,
-      MeasurementUnit.WATER,
       BatchType.WATER,
       waterBatches,
       [],

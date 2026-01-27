@@ -7,10 +7,10 @@
  */
 
 import { ProofOfOriginCardComponent } from 'apps/frontend/src/app/layout/proof-of-origin-card/proof-of-origin-card.component';
-import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { PowerBatchDto } from '@h2-trust/api';
+import { MeasurementUnit } from '@h2-trust/domain';
 import { BaseSheetComponent } from '../../../../../../layout/sheet/sheet.component';
 import { UnitPipe } from '../../../../../../shared/pipes/unit.pipe';
 import { BatchEmissionsComponent } from '../batch-emissions/batch-emissions.component';
@@ -21,6 +21,6 @@ import { BatchEmissionsComponent } from '../batch-emissions/batch-emissions.comp
   templateUrl: './power-batch-card.component.html',
 })
 export class PowerBatchCardComponent {
-  protected readonly FormattedUnits = FormattedUnits;
+  protected readonly MeasurementUnit = MeasurementUnit;
   batch = input.required<PowerBatchDto>();
 }

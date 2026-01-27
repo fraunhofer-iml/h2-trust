@@ -29,7 +29,7 @@
         <span>
           Hydrogen Produced <br />
           <span class="text-primary-600 text-2xl">{{ mutation.data().hydrogenProduced | number }} </span>
-          <span class="text-primary-600">{{ FormattedUnits.KG }}</span></span
+          <span class="text-primary-600">{{ MeasurementUnit.KG }}</span></span
         >
       </div>
 
@@ -40,7 +40,7 @@
         <span>
           Power Used <br />
           <span class="text-primary-600 text-2xl">{{ mutation.data().powerUsed | number }} </span>
-          <span class="text-primary-600">{{ FormattedUnits.KWH }}</span></span
+          <span class="text-primary-600">{{ MeasurementUnit.KWH }}</span></span
         >
       </div>
 
@@ -63,7 +63,7 @@
         <mat-select [formControl]="storageUnit">
           @for (unit of hydrogenStorageUnits(); track unit) {
             <mat-option [value]="unit.id"
-              >{{ unit.name }} (Remaining Capacity: {{ unit.capacity - unit.filling | unit: FormattedUnits.KG }})
+              >{{ unit.name }} (Remaining Capacity: {{ unit.capacity - unit.filling | unit: MeasurementUnit.KG }})
             </mat-option>
           }
         </mat-select>
@@ -86,28 +86,28 @@
         <strong>time</strong>, <strong>amount</strong>, <strong>power</strong> for hydrogen data.
       </p>
     </div>
-    <div class="flex flex-col gap-4 rounded-lg bg-white p-4" formArrayName="h2ProductionFiles">
+    <div class="flex flex-col gap-4 rounded-lg bg-white p-4" formArrayName="hydrogenProductionFiles">
       <span>Hydrogen Production</span>
       <app-file-drag-and-drop
         [acceptedFileTypes]="FileTypes.CSV"
-        (fileSelected)="addHydrogenProductionFileWithUnit($event, h2ProductionFiles)"
+        (fileSelected)="addHydrogenProductionFileWithUnit($event, hydrogenProductionFiles)"
       ></app-file-drag-and-drop>
-      @if (h2ProductionFiles.controls.length !== 0) {
-        @for (file of h2ProductionFiles.controls; track file; let i = $index) {
+      @if (hydrogenProductionFiles.controls.length !== 0) {
+        @for (file of hydrogenProductionFiles.controls; track file; let i = $index) {
           <div [formGroupName]="i" class="rounded-md bg-neutral-100 p-4">
             <div class="flex flex-row justify-between pb-4">
               <div class="flex flex-col">
                 <span class="text-base text-neutral-600">
-                  {{ h2ProductionFiles.controls[i].controls.file.value?.name }}
+                  {{ hydrogenProductionFiles.controls[i].controls.file.value?.name }}
                 </span>
                 <span class="text-sm text-neutral-500">
-                  ({{ h2ProductionFiles.controls[i].controls.file.value?.size ?? 0 | fileSize }})</span
+                  ({{ hydrogenProductionFiles.controls[i].controls.file.value?.size ?? 0 | fileSize }})</span
                 >
               </div>
               <span
                 class="material-symbols-outlined text-neutral-500 hover:cursor-pointer"
                 role="none"
-                (click)="removeFile(i, h2ProductionFiles)"
+                (click)="removeFile(i, hydrogenProductionFiles)"
                 >close</span
               >
             </div>

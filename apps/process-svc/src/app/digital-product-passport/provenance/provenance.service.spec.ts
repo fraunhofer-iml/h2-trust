@@ -54,10 +54,8 @@ describe('ProvenanceService', () => {
       // Arrange
       const givenProcessStepId = '';
 
-      const expectedErrorMessage = 'processStepId must be provided.';
-
       // Act & Assert
-      await expect(service.buildProvenance(givenProcessStepId)).rejects.toThrow(expectedErrorMessage);
+      await expect(service.buildProvenance(givenProcessStepId)).rejects.toThrow('processStepId must be provided.');
     });
 
     it('throws error when process step is not found', async () => {
@@ -66,10 +64,8 @@ describe('ProvenanceService', () => {
 
       processStepServiceMock.readProcessStep.mockResolvedValue(null);
 
-      const expectedErrorMessage = 'Invalid process step.';
-
       // Act & Assert
-      await expect(service.buildProvenance(givenProcessStepId)).rejects.toThrow(expectedErrorMessage);
+      await expect(service.buildProvenance(givenProcessStepId)).rejects.toThrow('Invalid process step.');
     });
 
     it('throws error when process step type is invalid', async () => {
@@ -79,10 +75,10 @@ describe('ProvenanceService', () => {
 
       processStepServiceMock.readProcessStep.mockResolvedValue(givenProcessStep);
 
-      const expectedErrorMessage = `Unsupported process type [${givenProcessStep.type}].`;
-
       // Act & Assert
-      await expect(service.buildProvenance(givenProcessStep.id)).rejects.toThrow(expectedErrorMessage);
+      await expect(service.buildProvenance(givenProcessStep.id)).rejects.toThrow(
+        `Unsupported process type [${givenProcessStep.type}].`,
+      );
     });
 
     it(`returns ProvenanceEntity for ${ProcessType.POWER_PRODUCTION} process type`, async () => {

@@ -128,10 +128,10 @@ describe('TransportationService', () => {
         FuelType.DIESEL,
       );
 
-      const expectedErrorMessage = `Distance is required for transport mode [${givenPayload.transportMode}].`;
-
       // Act & Assert
-      await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(expectedErrorMessage);
+      await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(
+        `Distance is required for transport mode [${TransportMode.TRAILER}].`,
+      );
     });
 
     it('throws error when trailer transport mode has no fuel type', async () => {
@@ -146,10 +146,10 @@ describe('TransportationService', () => {
         undefined,
       );
 
-      const expectedErrorMessage = `Fuel type is required for transport mode [${givenPayload.transportMode}].`;
-
       // Act & Assert
-      await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(expectedErrorMessage);
+      await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(
+        `Fuel type is required for transport mode [${TransportMode.TRAILER}].`,
+      );
     });
 
     it('throws error for invalid transport mode', async () => {
@@ -163,10 +163,11 @@ describe('TransportationService', () => {
         100,
         FuelType.DIESEL,
       );
-      const expectedErrorMessage = `Invalid transport mode: ${givenPayload.transportMode}`;
 
       // Act & Assert
-      await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(expectedErrorMessage);
+      await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(
+        `Invalid transport mode: ${givenPayload.transportMode}`,
+      );
     });
   });
 });
