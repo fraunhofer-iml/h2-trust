@@ -77,7 +77,9 @@ export class TraversalService {
     );
 
     if (hydrogenBottlings?.length !== 1) {
-      throw new Error(`Expected exactly one predecessor ${ProcessType.HYDROGEN_BOTTLING} process step, but found [${hydrogenBottlings?.length}].`);
+      throw new Error(
+        `Expected exactly one predecessor ${ProcessType.HYDROGEN_BOTTLING} process step, but found [${hydrogenBottlings?.length}].`,
+      );
     }
 
     return hydrogenBottlings[0];
@@ -96,7 +98,9 @@ export class TraversalService {
     this.assertAllProcessStepsOfType(processStepsOfPredecessorBatches, predecessorProcessType);
 
     if (!processStepsOfPredecessorBatches || processStepsOfPredecessorBatches.length !== predecessorBatches.length) {
-      throw new Error(`Number of process steps must be [${predecessorBatches.length}], but found [${processStepsOfPredecessorBatches?.length ?? 0}].`);
+      throw new Error(
+        `Number of process steps must be [${predecessorBatches.length}], but found [${processStepsOfPredecessorBatches?.length ?? 0}].`,
+      );
     }
 
     return processStepsOfPredecessorBatches;
@@ -127,7 +131,9 @@ export class TraversalService {
       .map((processStep) => `${processStep.id} (${processStep.type})`);
 
     if (invalidProcessSteps.length > 0) {
-      throw new Error(`All process steps must be of type [${expectedProcessType}], but found invalid types: ${invalidProcessSteps.join(', ')}`);
+      throw new Error(
+        `All process steps must be of type [${expectedProcessType}], but found invalid types: ${invalidProcessSteps.join(', ')}`,
+      );
     }
   }
 }

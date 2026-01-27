@@ -7,13 +7,13 @@
  */
 
 import { UnitPipe } from 'apps/frontend/src/app/shared/pipes/unit.pipe';
-import { MeasurementUnit } from '@h2-trust/domain';
 import * as echarts from 'echarts';
 import { EChartsOption } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { CommonModule, PercentPipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { HydrogenStorageOverviewDto } from '@h2-trust/api';
+import { MeasurementUnit } from '@h2-trust/domain';
 import { CHART_COLORS } from '../../../../shared/constants/chart-colors';
 import { ERROR_MESSAGES } from '../../../../shared/constants/error.messages';
 import { formatNumberForChart } from '../../../../shared/util/number-format.util';

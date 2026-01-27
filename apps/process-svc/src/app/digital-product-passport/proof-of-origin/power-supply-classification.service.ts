@@ -77,11 +77,7 @@ export class PowerSupplyClassificationService {
         );
 
         const subClassification: ProofOfOriginSubClassificationEntity =
-          ClassificationAssembler.assembleSubClassification(
-            energySource,
-            BatchType.POWER,
-            productionPowerBatches,
-          );
+          ClassificationAssembler.assembleSubClassification(energySource, BatchType.POWER, productionPowerBatches);
 
         subClassifications.push(subClassification);
       }

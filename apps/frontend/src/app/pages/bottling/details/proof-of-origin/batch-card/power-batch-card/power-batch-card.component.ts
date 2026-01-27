@@ -7,10 +7,10 @@
  */
 
 import { ProofOfOriginCardComponent } from 'apps/frontend/src/app/layout/proof-of-origin-card/proof-of-origin-card.component';
-import { MeasurementUnit } from '@h2-trust/domain';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { PowerBatchDto } from '@h2-trust/api';
+import { MeasurementUnit } from '@h2-trust/domain';
 import { BaseSheetComponent } from '../../../../../../layout/sheet/sheet.component';
 import { UnitPipe } from '../../../../../../shared/pipes/unit.pipe';
 import { BatchEmissionsComponent } from '../batch-emissions/batch-emissions.component';

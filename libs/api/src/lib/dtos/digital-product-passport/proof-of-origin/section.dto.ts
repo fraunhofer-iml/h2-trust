@@ -17,6 +17,7 @@ import {
   ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/amqp';
 import { BatchType } from '@h2-trust/domain';
+import { EnumLabelMapper } from '../../../labels';
 import { HydrogenComponentDto } from '../general-information';
 import { BatchDto } from './batch.dto';
 import { ClassificationDto } from './classification.dto';
@@ -25,7 +26,6 @@ import { HydrogenBatchDto } from './hydrogen-batch.dto';
 import { PowerBatchDto } from './power-batch.dto';
 import { WaterBatchDto } from './water-batch.dto';
 import { WaterDetailsDto } from './water-details.dto';
-import { EnumLabelMapper } from '../../../labels';
 
 /**
  * top level sections of proof of origin

@@ -20,12 +20,7 @@ export class ClassificationAssembler {
     batches?: ProofOfOriginBatchEntity[],
     subClassifications?: ProofOfOriginSubClassificationEntity[],
   ): ProofOfOriginClassificationEntity {
-    return this.assembleClassification(
-      classificationName,
-      BatchType.POWER,
-      batches,
-      subClassifications,
-    );
+    return this.assembleClassification(classificationName, BatchType.POWER, batches, subClassifications);
   }
 
   static assembleHydrogen(
@@ -33,12 +28,7 @@ export class ClassificationAssembler {
     batches?: ProofOfOriginBatchEntity[],
     subClassifications?: ProofOfOriginSubClassificationEntity[],
   ): ProofOfOriginClassificationEntity {
-    return this.assembleClassification(
-      classificationName,
-      BatchType.HYDROGEN,
-      batches,
-      subClassifications,
-    );
+    return this.assembleClassification(classificationName, BatchType.HYDROGEN, batches, subClassifications);
   }
 
   static assembleClassification(

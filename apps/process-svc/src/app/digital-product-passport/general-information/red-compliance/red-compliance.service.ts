@@ -30,7 +30,9 @@ export class RedComplianceService {
     const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStepId);
 
     if (!provenance || !provenance.powerProductions?.length || !provenance.hydrogenProductions?.length) {
-      throw new RpcException(`Provenance or required productions (power/hydrogen) are missing for processStepId [${processStepId}]`);
+      throw new RpcException(
+        `Provenance or required productions (power/hydrogen) are missing for processStepId [${processStepId}]`,
+      );
     }
 
     const pairs: MatchedProductionPair[] = await this.redCompliancePairingService.buildMatchedPairs(

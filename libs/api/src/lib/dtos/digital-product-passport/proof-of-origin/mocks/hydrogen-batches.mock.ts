@@ -7,10 +7,10 @@
  */
 
 import { BatchType, HydrogenColor, HydrogenProductionMethod, ProcessType } from '@h2-trust/domain';
+import { EnumLabelMapper } from '../../../../labels';
 import { CompanyDtoMock } from '../../../company';
 import { HydrogenBatchDto } from '../hydrogen-batch.dto';
 import { EmissionMock } from './emissions.mock';
-import { EnumLabelMapper } from '../../../../labels';
 
 export const hydrogenBatchesMock: HydrogenBatchDto[] = [
   {

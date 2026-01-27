@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EnumLabelMapper } from '../../../../labels';
 import { BatchType, EnergySource } from '@h2-trust/domain';
+import { EnumLabelMapper } from '../../../../labels';
 import { CompanyDtoMock } from '../../../company';
 import { PowerProductionUnitOverviewDtoMock } from '../../../unit';
 import { PowerBatchDto } from '../power-batch.dto';

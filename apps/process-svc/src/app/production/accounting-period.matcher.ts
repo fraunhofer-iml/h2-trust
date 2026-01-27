@@ -90,7 +90,10 @@ export class AccountingPeriodMatcher {
     }
 
     if (parsedProductions.length === 0)
-      throw new BrokerException('The data on electricity production and hydrogen production are not in the same time frame.', HttpStatus.BAD_REQUEST);
+      throw new BrokerException(
+        'The data on electricity production and hydrogen production are not in the same time frame.',
+        HttpStatus.BAD_REQUEST,
+      );
 
     return parsedProductions;
   }
@@ -154,7 +157,10 @@ export class AccountingPeriodMatcher {
     else map.get(key).push(value);
   }
 
-  private static validateBundles(bundles: UnitDataBundle<any>[] | undefined, type: BatchType.POWER | BatchType.HYDROGEN) {
+  private static validateBundles(
+    bundles: UnitDataBundle<any>[] | undefined,
+    type: BatchType.POWER | BatchType.HYDROGEN,
+  ) {
     if (!bundles || bundles.length === 0) {
       throw new BrokerException(`Missing ${type} production data`, HttpStatus.BAD_REQUEST);
     }

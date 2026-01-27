@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EnumLabelMapper } from '../../../../labels';
 import { BatchType } from '@h2-trust/domain';
+import { EnumLabelMapper } from '../../../../labels';
 import { WaterBatchDto } from '../water-batch.dto';
 import { WaterDetailsDto } from '../water-details.dto';
 import { EmissionMock } from './emissions.mock';

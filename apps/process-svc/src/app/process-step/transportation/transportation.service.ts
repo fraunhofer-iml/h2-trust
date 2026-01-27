@@ -49,11 +49,17 @@ export class TransportationService {
     switch (transportMode) {
       case TransportMode.TRAILER:
         if (!distance) {
-          throw new HttpException(`Distance is required for transport mode [${TransportMode.TRAILER}].`, HttpStatus.BAD_REQUEST);
+          throw new HttpException(
+            `Distance is required for transport mode [${TransportMode.TRAILER}].`,
+            HttpStatus.BAD_REQUEST,
+          );
         }
 
         if (!fuelType) {
-          throw new HttpException(`Fuel type is required for transport mode [${TransportMode.TRAILER}].`, HttpStatus.BAD_REQUEST);
+          throw new HttpException(
+            `Fuel type is required for transport mode [${TransportMode.TRAILER}].`,
+            HttpStatus.BAD_REQUEST,
+          );
         }
 
         output = new TransportationDetailsEntity(undefined, distance, transportMode, fuelType);

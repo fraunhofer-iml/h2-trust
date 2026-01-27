@@ -32,7 +32,7 @@ import {
   HydrogenProductionOverviewDto,
   HydrogenStorageOverviewDto,
   ImportSubmissionDto,
-  PowerProductionOverviewDto
+  PowerProductionOverviewDto,
 } from '@h2-trust/api';
 import { FileUploadKeys, MeasurementUnit } from '@h2-trust/domain';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';

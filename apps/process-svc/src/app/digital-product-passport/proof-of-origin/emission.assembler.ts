@@ -17,13 +17,13 @@ import { EnumLabelMapper } from '@h2-trust/api';
 import {
   CalculationTopic,
   EmissionNumericConstants,
+  EmissionStringConstants,
   EnergySource,
   FuelType,
   MeasurementUnit,
   ProcessType,
   TrailerParameter,
   TransportMode,
-  EmissionStringConstants,
 } from '@h2-trust/domain';
 
 export class EmissionAssembler {
@@ -86,11 +86,16 @@ export class EmissionAssembler {
     hydrogenProduction: ProcessStepEntity,
   ): ProofOfSustainabilityEmissionCalculationEntity {
     if (hydrogenProduction?.type !== ProcessType.HYDROGEN_PRODUCTION) {
-      throw new Error(`Invalid process step type [${hydrogenProduction?.type}] for hydrogen storage emission calculation`);
+      throw new Error(
+        `Invalid process step type [${hydrogenProduction?.type}] for hydrogen storage emission calculation`,
+      );
     }
 
     const emissionFactor = EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[EnergySource.GRID];
-    const result = EmissionNumericConstants.ENERGY_DEMAND_COMPRESSION_KWH_PER_KG_H2 * emissionFactor * hydrogenProduction.batch.amount;
+    const result =
+      EmissionNumericConstants.ENERGY_DEMAND_COMPRESSION_KWH_PER_KG_H2 *
+      emissionFactor *
+      hydrogenProduction.batch.amount;
 
     const hydrogenProducedKgInput = `Hydrogen Produced: ${hydrogenProduction.batch.amount} ${MeasurementUnit.KG_H2}`;
 
@@ -121,7 +126,9 @@ export class EmissionAssembler {
     _hydrogenBottling: ProcessStepEntity,
   ): ProofOfSustainabilityEmissionCalculationEntity {
     if (_hydrogenBottling?.type !== ProcessType.HYDROGEN_BOTTLING) {
-      throw new Error(`Invalid process step type [${_hydrogenBottling?.type}] for hydrogen bottling emission calculation`);
+      throw new Error(
+        `Invalid process step type [${_hydrogenBottling?.type}] for hydrogen bottling emission calculation`,
+      );
     }
 
     const result = 0;
@@ -141,7 +148,9 @@ export class EmissionAssembler {
     hydrogenTransportation: ProcessStepEntity,
   ): ProofOfSustainabilityEmissionCalculationEntity {
     if (hydrogenTransportation?.type !== ProcessType.HYDROGEN_TRANSPORTATION) {
-      throw new Error(`Invalid process step type [${hydrogenTransportation?.type}] for hydrogen transportation emission calculation`);
+      throw new Error(
+        `Invalid process step type [${hydrogenTransportation?.type}] for hydrogen transportation emission calculation`,
+      );
     }
 
     const transportMode: string = hydrogenTransportation.transportationDetails?.transportMode;
@@ -251,7 +260,8 @@ export class EmissionAssembler {
       .reduce((sum, e) => sum + e.amount, 0);
 
     const applicationEmissionAmount: number = applicationEmissions.reduce((acc, emission) => acc + emission.amount, 0);
-    const hydrogenTransportEmissionAmount: number = applicationEmissions.find((e) => e.name === EmissionStringConstants.TYPES.EHT)?.amount ?? 0;
+    const hydrogenTransportEmissionAmount: number =
+      applicationEmissions.find((e) => e.name === EmissionStringConstants.TYPES.EHT)?.amount ?? 0;
     const regulatoryEmissions: ProofOfSustainabilityEmissionEntity[] = EmissionAssembler.assembleRegulatoryEmissions(
       hydrogenProductionEmissionAmount,
       applicationEmissionAmount,
@@ -264,7 +274,9 @@ export class EmissionAssembler {
     const amountCO2PerMJH2: number = amountCO2PerKgH2 / EmissionNumericConstants.H2_LOWER_HEATING_VALUE_MJ_PER_KG;
 
     const emissionReductionPercentage: number =
-      (Math.max(EmissionNumericConstants.FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ - amountCO2PerMJH2, 0) / EmissionNumericConstants.FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ) * 100;
+      (Math.max(EmissionNumericConstants.FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ - amountCO2PerMJH2, 0) /
+        EmissionNumericConstants.FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ) *
+      100;
 
     return new ProofOfSustainabilityEntity(
       batchId,

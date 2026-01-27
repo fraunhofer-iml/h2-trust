@@ -9,6 +9,7 @@
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, ProcessStepEntity, ProvenanceEntity, UnitMessagePatterns } from '@h2-trust/amqp';
+import { EnumLabelMapper } from '@h2-trust/api';
 import { CalculationTopic, EmissionNumericConstants, EnergySource, MeasurementUnit } from '@h2-trust/domain';
 import {
   BatchEntityFixture,
@@ -18,7 +19,6 @@ import {
   TransportationDetailsEntityFixture,
 } from '@h2-trust/fixtures/entities';
 import { EmissionService } from './emission.service';
-import { EnumLabelMapper } from '@h2-trust/api';
 
 describe('EmissionService', () => {
   let service: EmissionService;
@@ -155,8 +155,7 @@ describe('EmissionService', () => {
       const expectedEmissionFactorLabel = EnumLabelMapper.getEnergySource(EnergySource.SOLAR_ENERGY);
 
       const expectedEmissionFactor = EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[EnergySource.SOLAR_ENERGY];
-      const expectedResult =
-        (givenProcessStep.batch.amount * expectedEmissionFactor) / givenHydrogenAmount;
+      const expectedResult = (givenProcessStep.batch.amount * expectedEmissionFactor) / givenHydrogenAmount;
 
       // Act
       const actualResult = await service.computePowerSupplyEmissions([givenProcessStep]);
@@ -197,7 +196,8 @@ describe('EmissionService', () => {
       generalSvcMock.send.mockReturnValue(of([givenSolarUnit, givenGridUnit]));
 
       const expectedSolarEmissionFactorLabel = EnumLabelMapper.getEnergySource(EnergySource.SOLAR_ENERGY);
-      const expectedSolarEmissionFactor = EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[EnergySource.SOLAR_ENERGY];
+      const expectedSolarEmissionFactor =
+        EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[EnergySource.SOLAR_ENERGY];
       const expectedSolarResult = givenSolarProcessStep.batch.amount * expectedSolarEmissionFactor;
 
       const expectedGridEmissionFactorLabel = EnumLabelMapper.getEnergySource(EnergySource.GRID);
