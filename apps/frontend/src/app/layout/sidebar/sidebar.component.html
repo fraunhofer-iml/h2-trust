@@ -3,8 +3,10 @@
     <div class="flex h-full flex-col justify-between">
       <div class="">
         <div class="w-full px-24 py-2">
-          <!-- TODO: use public url-->
-          <img src="http://localhost:9000/h2-trust/H2-Trust-4c.png" alt="H2-Trust Logo" />
+          <img
+            src="https://minio.public.apps.blockchain-europe.iml.fraunhofer.de/api/v1/buckets/h2-trust/objects/download?prefix=H2-Trust-4c.png"
+            alt="H2-Trust Logo"
+          />
         </div>
 
         <div class="h-[1px] w-full bg-neutral-200"></div>
@@ -14,15 +16,15 @@
             @for (option of sidebarOptions; track $index) {
               <a class="" routerLink="{{ option.route }}">
                 <div
-                  class="flex w-full flex-row gap-2 rounded-lg p-4 hover:bg-neutral-200"
+                  class="hover:bg-primary-100 flex w-full flex-row gap-2 rounded-lg p-4"
                   tabindex="0"
                   role="presentation"
                   [ngClass]="{
-                    'bg-primary-100': option.isActive(),
+                    'bg-primary-100 text-primary-700': option.isActive(),
                   }"
                 >
-                  <span class="material-symbols-outlined text-neutral-600">{{ option.icon }}</span>
-                  <span class="text-neutral-800">{{ option.title }}</span>
+                  <span class="material-symbols-outlined">{{ option.icon }}</span>
+                  <span>{{ option.title }}</span>
                 </div>
               </a>
             }

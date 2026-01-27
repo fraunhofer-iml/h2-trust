@@ -76,9 +76,8 @@
           <div class="h-full rounded-b-lg bg-white p-4">
             <mat-chip-set aria-label="attributes">
               <mat-chip>
-                <span matChipAvatar class="material-symbols-outlined">bar_chart</span> {{ item.filling }}/{{
-                  item.capacity | unit: FormattedUnits.KG
-                }}</mat-chip
+                <span matChipAvatar class="material-symbols-outlined">bar_chart</span>
+                {{ item.filling | number: '1.2-2' }}/{{ item.capacity | unit: FormattedUnits.KG }}</mat-chip
               >
               <mat-chip>
                 <span matChipAvatar class="material-symbols-outlined">label</span>

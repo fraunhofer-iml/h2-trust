@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ErrorCardComponent } from 'apps/frontend/src/app/layout/error-card/error-card.component';
 import { ERROR_MESSAGES } from 'apps/frontend/src/app/shared/constants/error.messages';
 import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
 import { ROUTES } from 'apps/frontend/src/app/shared/constants/routes';
@@ -39,7 +38,6 @@ import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
   imports: [
     CommonModule,
     MatSelectModule,
-    ErrorCardComponent,
     MatDatepickerModule,
     MatTimepickerModule,
     FormsModule,
