@@ -43,7 +43,7 @@ export class EmissionPieChartComponent {
       chartOption.title = { text: 'Keine Daten' };
     } else {
       const outerColors = ['#d2e5eb', '#6aa7b4', '#1f6a79'];
-      const innerColors = ['#c9e0d9', '#a5c8c0', '#82afa7', '#4d7873', '#3c605c'];
+      const innerColors = ['#a8d0bf', '#85b8a6', '#689f8e', '#40665b', '#3c605c'];
 
       const outerPie = this.createPieSeries(['40%', '60%'], 'outer', regulatoryItems, outerColors, emissionItems);
       const innerPie = this.createPieSeries(['10%', '35%'], 'inner', applicationItems, innerColors, emissionItems);
