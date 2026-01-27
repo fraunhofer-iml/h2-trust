@@ -12,7 +12,6 @@ import { ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
 import { ProcessStepService } from '../../process-step/process-step.service';
 import { ProvenanceService } from './provenance.service';
 import { TraversalService } from './traversal.service';
-import { ProvenanceErrorMessages } from '../../constants';
 
 describe('ProvenanceService', () => {
   let service: ProvenanceService;
@@ -56,9 +55,7 @@ describe('ProvenanceService', () => {
       const givenProcessStepId = '';
 
       // Act & Assert
-      await expect(service.buildProvenance(givenProcessStepId)).rejects.toThrow(
-        ProvenanceErrorMessages.PROCESS_STEP_ID_REQUIRED,
-      );
+      await expect(service.buildProvenance(givenProcessStepId)).rejects.toThrow('processStepId must be provided.');
     });
 
     it('throws error when process step is not found', async () => {
@@ -68,9 +65,7 @@ describe('ProvenanceService', () => {
       processStepServiceMock.readProcessStep.mockResolvedValue(null);
 
       // Act & Assert
-      await expect(service.buildProvenance(givenProcessStepId)).rejects.toThrow(
-        ProvenanceErrorMessages.INVALID_PROCESS_STEP,
-      );
+      await expect(service.buildProvenance(givenProcessStepId)).rejects.toThrow('Invalid process step.');
     });
 
     it('throws error when process step type is invalid', async () => {
@@ -82,7 +77,7 @@ describe('ProvenanceService', () => {
 
       // Act & Assert
       await expect(service.buildProvenance(givenProcessStep.id)).rejects.toThrow(
-        ProvenanceErrorMessages.UNSUPPORTED_PROCESS_TYPE(givenProcessStep.type),
+        `Unsupported process type [${givenProcessStep.type}].`,
       );
     });
 

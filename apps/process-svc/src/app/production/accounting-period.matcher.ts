@@ -15,7 +15,6 @@ import {
   ParsedProductionEntity,
   UnitDataBundle,
 } from '@h2-trust/amqp';
-import { AccountingPeriodErrorMessages } from '../constants';
 import { BatchType } from '@h2-trust/domain';
 
 interface PowerItem {
@@ -91,7 +90,7 @@ export class AccountingPeriodMatcher {
     }
 
     if (parsedProductions.length === 0)
-      throw new BrokerException(AccountingPeriodErrorMessages.TIME_FRAME_MISMATCH, HttpStatus.BAD_REQUEST);
+      throw new BrokerException('The data on electricity production and hydrogen production are not in the same time frame.', HttpStatus.BAD_REQUEST);
 
     return parsedProductions;
   }
@@ -157,11 +156,11 @@ export class AccountingPeriodMatcher {
 
   private static validateBundles(bundles: UnitDataBundle<any>[] | undefined, type: BatchType.POWER | BatchType.HYDROGEN) {
     if (!bundles || bundles.length === 0) {
-      throw new BrokerException(AccountingPeriodErrorMessages.MISSING_PRODUCTION_DATA(type), HttpStatus.BAD_REQUEST);
+      throw new BrokerException(`Missing ${type} production data`, HttpStatus.BAD_REQUEST);
     }
 
     if (bundles.some((bundle) => !bundle.unitId || bundle.data.length === 0)) {
-      throw new BrokerException(AccountingPeriodErrorMessages.INVALID_UNIT_DATA_RELATION(type), HttpStatus.BAD_REQUEST);
+      throw new BrokerException(`Invalid unit data relation for ${type} production`, HttpStatus.BAD_REQUEST);
     }
   }
 }

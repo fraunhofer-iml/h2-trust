@@ -7,7 +7,6 @@
  */
 
 import { ProductionUtils } from './production.utils';
-import { ProductionErrorMessages } from '../../constants';
 
 describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
   it('should return the full amount if numberOfAccountingPeriods is less than 1', () => {
@@ -72,7 +71,7 @@ describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
 
     expect(() =>
       ProductionUtils.calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods),
-    ).toThrow(ProductionErrorMessages.BATCH_AMOUNT_NOT_POSITIVE);
+    ).toThrow('batchAmount must be greater than zero');
   });
 
   it('should throw if batchAmount is zero', () => {
@@ -81,7 +80,7 @@ describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
 
     expect(() =>
       ProductionUtils.calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods),
-    ).toThrow(ProductionErrorMessages.BATCH_AMOUNT_NOT_POSITIVE);
+    ).toThrow('batchAmount must be greater than zero');
   });
 
   it('should throw if numberOfAccountingPeriods is negative', () => {
@@ -90,7 +89,7 @@ describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
 
     expect(() =>
       ProductionUtils.calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods),
-    ).toThrow(ProductionErrorMessages.NUMBER_OF_PERIODS_NOT_POSITIVE);
+    ).toThrow('numberOfAccountingPeriods must be greater than zero');
   });
 
   it('should throw if numberOfAccountingPeriods is zero', () => {
@@ -99,6 +98,6 @@ describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
 
     expect(() =>
       ProductionUtils.calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods),
-    ).toThrow(ProductionErrorMessages.NUMBER_OF_PERIODS_NOT_POSITIVE);
+    ).toThrow('numberOfAccountingPeriods must be greater than zero');
   });
 });

@@ -22,7 +22,6 @@ import {
 import { EnumLabelMapper } from '@h2-trust/api';
 import { CalculationTopic, HydrogenColor, MeasurementUnit, ProcessType } from '@h2-trust/domain';
 import { EmissionAssembler } from './emission.assembler';
-import { EmissionErrorMessages } from '../../constants';
 
 @Injectable()
 export class EmissionService {
@@ -30,11 +29,11 @@ export class EmissionService {
 
   async computeProvenanceEmissions(provenance: ProvenanceEntity): Promise<ProofOfSustainabilityEntity> {
     if (!provenance) {
-      throw new Error(EmissionErrorMessages.PROVENANCE_UNDEFINED);
+      throw new Error('Provenance is undefined.');
     }
 
     if (!provenance.hydrogenBottling) {
-      throw new Error(EmissionErrorMessages.PROVENANCE_MISSING_BOTTLING);
+      throw new Error('Provenance is missing hydrogen bottling process step.');
     }
 
     const emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[] = [];
@@ -179,7 +178,7 @@ export class EmissionService {
     const unitsById = new Map<string, PowerProductionUnitEntity>(units.map((u) => [u.id, u]));
     for (const unitId of unitIds) {
       if (!unitsById.has(unitId)) {
-        throw new Error(EmissionErrorMessages.POWER_UNIT_NOT_FOUND(unitId));
+        throw new Error(`PowerProductionUnit [${unitId}] not found.`);
       }
     }
 

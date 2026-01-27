@@ -10,7 +10,6 @@ import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import { TimeInSeconds } from '@h2-trust/domain';
 import { DateTimeUtil } from '@h2-trust/utils';
 import { AccountingPeriod } from '../production.types';
-import { ProductionErrorMessages } from '../../constants';
 
 export class ProductionUtils {
   static calculateNumberOfAccountingPeriods(
@@ -21,11 +20,11 @@ export class ProductionUtils {
     const durationInSeconds = this.calculateDuration(startedAtInSeconds, endedAtInSeconds);
 
     if (!Number.isFinite(accountingPeriodInSeconds)) {
-      throw new Error(ProductionErrorMessages.ACCOUNTING_PERIOD_NOT_FINITE(accountingPeriodInSeconds));
+      throw new Error(`accountingPeriodInSeconds must be a finite number: ${accountingPeriodInSeconds}`);
     }
 
     if (accountingPeriodInSeconds <= 0) {
-      throw new Error(ProductionErrorMessages.ACCOUNTING_PERIOD_NOT_POSITIVE);
+      throw new Error('accountingPeriodInSeconds must be greater than zero');
     }
 
     return Math.ceil(durationInSeconds / accountingPeriodInSeconds);
@@ -35,15 +34,15 @@ export class ProductionUtils {
     const durationInSeconds = endedAtInSeconds - startedAtInSeconds;
 
     if (startedAtInSeconds < 0) {
-      throw new Error(ProductionErrorMessages.STARTED_AT_NOT_POSITIVE);
+      throw new Error('startedAtInSeconds must be positive');
     }
 
     if (endedAtInSeconds < 0) {
-      throw new Error(ProductionErrorMessages.ENDED_AT_NOT_POSITIVE);
+      throw new Error('endedAtInSeconds must be positive');
     }
 
     if (durationInSeconds <= 0) {
-      throw new Error(ProductionErrorMessages.ENDED_AT_BEFORE_STARTED_AT);
+      throw new Error('endedAtInSeconds must be greater than startedAtInSeconds');
     }
 
     return durationInSeconds;
@@ -51,11 +50,11 @@ export class ProductionUtils {
 
   static calculateBatchAmountPerAccountingPeriod(batchAmount: number, numberOfAccountingPeriods: number): number {
     if (batchAmount <= 0) {
-      throw new Error(ProductionErrorMessages.BATCH_AMOUNT_NOT_POSITIVE);
+      throw new Error('batchAmount must be greater than zero');
     }
 
     if (numberOfAccountingPeriods <= 0) {
-      throw new Error(ProductionErrorMessages.NUMBER_OF_PERIODS_NOT_POSITIVE);
+      throw new Error('numberOfAccountingPeriods must be greater than zero');
     }
 
     return batchAmount / Math.max(1, numberOfAccountingPeriods);
@@ -96,7 +95,7 @@ export class ProductionUtils {
 
   static calculateWaterAmount(startedAt: Date, endedAt: Date, waterConsumptionPerHour: number): number {
     if (waterConsumptionPerHour < 0) {
-      throw new Error(ProductionErrorMessages.WATER_CONSUMPTION_NEGATIVE(waterConsumptionPerHour));
+      throw new Error(`waterConsumptionPerHour must be non-negative: [${waterConsumptionPerHour}]`);
     }
 
     const startedAtInSeconds = DateTimeUtil.convertDateToSeconds(startedAt);

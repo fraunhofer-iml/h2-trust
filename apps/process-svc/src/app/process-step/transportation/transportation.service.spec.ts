@@ -12,7 +12,6 @@ import { BatchType, FuelType, ProcessType, TransportMode } from '@h2-trust/domai
 import { BatchEntityFixture, ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
 import { ProcessStepService } from '../process-step.service';
 import { TransportationService } from './transportation.service';
-import { TransportationErrorMessages } from '../../constants';
 
 describe('TransportationService', () => {
   let service: TransportationService;
@@ -131,7 +130,7 @@ describe('TransportationService', () => {
 
       // Act & Assert
       await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(
-        TransportationErrorMessages.DISTANCE_REQUIRED_FOR_TRAILER,
+        `Distance is required for transport mode [${TransportMode.TRAILER}].`,
       );
     });
 
@@ -149,7 +148,7 @@ describe('TransportationService', () => {
 
       // Act & Assert
       await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(
-        TransportationErrorMessages.FUEL_TYPE_REQUIRED_FOR_TRAILER,
+        `Fuel type is required for transport mode [${TransportMode.TRAILER}].`,
       );
     });
 
@@ -167,7 +166,7 @@ describe('TransportationService', () => {
 
       // Act & Assert
       await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(
-        TransportationErrorMessages.INVALID_TRANSPORT_MODE(givenPayload.transportMode),
+        `Invalid transport mode: ${givenPayload.transportMode}`,
       );
     });
   });

@@ -17,7 +17,6 @@ import {
 import { ConfigurationService, MinioConfiguration } from '@h2-trust/configuration';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
 import { ProcessType } from '@h2-trust/domain';
-import { ProcessStepErrorMessages } from '../constants';
 
 @Injectable()
 export class ProcessStepService {
@@ -52,16 +51,14 @@ export class ProcessStepService {
 
   private async readPredecessorProcessStep(predecessorProcessStepId: string): Promise<ProcessStepEntity> {
     if (!predecessorProcessStepId) {
-      throw new Error(ProcessStepErrorMessages.PREDECESSOR_ID_MISSING);
+      throw new Error('ProcessStepId of predecessor is missing.');
     }
 
     const predecessorProcessStep: ProcessStepEntity =
       await this.processStepRepository.findProcessStep(predecessorProcessStepId);
 
     if (predecessorProcessStep.type !== ProcessType.HYDROGEN_BOTTLING) {
-      throw new Error(
-        ProcessStepErrorMessages.UNEXPECTED_PREDECESSOR_TYPE(ProcessType.HYDROGEN_BOTTLING, predecessorProcessStep.type),
-      );
+      throw new Error(`Expected process type of predecessor to be ${ProcessType.HYDROGEN_BOTTLING}, but got ${predecessorProcessStep.type}.`);
     }
 
     return predecessorProcessStep;

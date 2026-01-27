@@ -18,7 +18,6 @@ import {
   isWithinTimeCorrelation,
   meetsAdditionalityCriterion,
 } from './red-compliance.flags';
-import { RedComplianceErrorMessages } from '../../../constants';
 
 @Injectable()
 export class RedComplianceService {
@@ -31,7 +30,7 @@ export class RedComplianceService {
     const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStepId);
 
     if (!provenance || !provenance.powerProductions?.length || !provenance.hydrogenProductions?.length) {
-      throw new RpcException(RedComplianceErrorMessages.PROVENANCE_OR_PRODUCTIONS_MISSING(processStepId));
+      throw new RpcException(`Provenance or required productions (power/hydrogen) are missing for processStepId [${processStepId}]`);
     }
 
     const pairs: MatchedProductionPair[] = await this.redCompliancePairingService.buildMatchedPairs(
@@ -57,7 +56,7 @@ export class RedComplianceService {
         const expectedPowerUnitId = pair.power.processStep.executedBy?.id;
         const expectedHydrogenUnitId = pair.hydrogen.processStep.executedBy?.id;
         throw new HttpException(
-          RedComplianceErrorMessages.PRODUCTION_UNITS_NOT_FOUND(expectedPowerUnitId, expectedHydrogenUnitId),
+          `Production units not found: powerUnitId [${expectedPowerUnitId}] or hydrogenUnitId [${expectedHydrogenUnitId}]`,
           HttpStatus.BAD_REQUEST,
         );
       }

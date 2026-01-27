@@ -10,7 +10,6 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { HydrogenProductionUnitEntity, PowerProductionUnitEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import { BiddingZone } from '@h2-trust/domain';
 import { assertBoolean, assertDefined, DateTimeUtil } from '@h2-trust/utils';
-import { RedComplianceErrorMessages } from '../../../constants';
 
 export function areUnitsInSameBiddingZone(
   powerUnit: PowerProductionUnitEntity,
@@ -59,6 +58,6 @@ export function hasFinancialSupport(powerUnit: PowerProductionUnitEntity): boole
 function assertValidBiddingZone(zone: unknown, name: string): asserts zone is BiddingZone {
   assertDefined(zone, name);
   if (!Object.values(BiddingZone).includes(zone as BiddingZone)) {
-    throw new HttpException(RedComplianceErrorMessages.INVALID_BIDDING_ZONE(name, zone), HttpStatus.INTERNAL_SERVER_ERROR);
+    throw new HttpException(`Invalid BiddingZone: ${name}: ${zone}`, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

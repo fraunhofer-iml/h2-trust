@@ -11,7 +11,6 @@ import { ProcessStepEntity, ProvenanceEntity } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { ProcessStepService } from '../../process-step/process-step.service';
 import { TraversalService } from './traversal.service';
-import { ProvenanceErrorMessages } from '../../constants';
 
 type ProvenanceBuilderFn = (root: ProcessStepEntity) => Promise<ProvenanceEntity>;
 
@@ -24,19 +23,19 @@ export class ProvenanceService {
 
   async buildProvenance(processStepId: string): Promise<ProvenanceEntity> {
     if (!processStepId) {
-      throw new Error(ProvenanceErrorMessages.PROCESS_STEP_ID_REQUIRED);
+      throw new Error('processStepId must be provided.');
     }
 
     const root: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
 
     if (!root || !root.type) {
-      throw new Error(ProvenanceErrorMessages.INVALID_PROCESS_STEP);
+      throw new Error('Invalid process step.');
     }
 
     const provenanceBuilder: ProvenanceBuilderFn = this.provenanceBuilders[root.type as ProcessType];
 
     if (!provenanceBuilder) {
-      throw new Error(ProvenanceErrorMessages.UNSUPPORTED_PROCESS_TYPE(root.type));
+      throw new Error(`Unsupported process type [${root.type}].`);
     }
 
     return provenanceBuilder(root);

@@ -7,7 +7,6 @@
  */
 
 import { ProductionUtils } from './production.utils';
-import { ProductionErrorMessages } from '../../constants';
 
 describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
   it('should calculate correct number of periods (divisible)', () => {
@@ -53,7 +52,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
       ),
-    ).toThrow(ProductionErrorMessages.STARTED_AT_NOT_POSITIVE);
+    ).toThrow('startedAtInSeconds must be positive');
   });
 
   it('should throw if productionEndedAtSeconds is negative', () => {
@@ -67,7 +66,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
       ),
-    ).toThrow(ProductionErrorMessages.ENDED_AT_NOT_POSITIVE);
+    ).toThrow('endedAtInSeconds must be positive');
   });
 
   it('should throw if accountingPeriodInSeconds is negative', () => {
@@ -81,7 +80,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
       ),
-    ).toThrow(ProductionErrorMessages.ACCOUNTING_PERIOD_NOT_POSITIVE);
+    ).toThrow('accountingPeriodInSeconds must be greater than zero');
   });
 
   it('should throw if accountingPeriodInSeconds is zero', () => {
@@ -95,7 +94,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
       ),
-    ).toThrow(ProductionErrorMessages.ACCOUNTING_PERIOD_NOT_POSITIVE);
+    ).toThrow('accountingPeriodInSeconds must be greater than zero');
   });
 
   it('should throw if durationInSeconds is negative', () => {
@@ -109,7 +108,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
       ),
-    ).toThrow(ProductionErrorMessages.ENDED_AT_BEFORE_STARTED_AT);
+    ).toThrow('endedAtInSeconds must be greater than startedAtInSeconds');
   });
 
   it('should throw if durationInSeconds is zero', () => {
@@ -123,6 +122,6 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
       ),
-    ).toThrow(ProductionErrorMessages.ENDED_AT_BEFORE_STARTED_AT);
+    ).toThrow('endedAtInSeconds must be greater than startedAtInSeconds');
   });
 });

@@ -7,7 +7,6 @@
  */
 
 import { ProductionUtils } from './production.utils';
-import { ProductionErrorMessages } from '../../constants';
 
 describe('ProductionUtils.calculateWaterAmount', () => {
   describe('valid inputs', () => {
@@ -148,7 +147,7 @@ describe('ProductionUtils.calculateWaterAmount', () => {
       // Act & Assert
       expect(() => {
         ProductionUtils.calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
-      }).toThrow(ProductionErrorMessages.ENDED_AT_BEFORE_STARTED_AT);
+      }).toThrow('endedAtInSeconds must be greater than startedAtInSeconds');
     });
 
     it('should throw error when startedAt equals endedAt', () => {
@@ -160,7 +159,7 @@ describe('ProductionUtils.calculateWaterAmount', () => {
       // Act & Assert
       expect(() => {
         ProductionUtils.calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
-      }).toThrow(ProductionErrorMessages.ENDED_AT_BEFORE_STARTED_AT);
+      }).toThrow('endedAtInSeconds must be greater than startedAtInSeconds');
     });
 
     it('should throw error for negative water consumption rate', () => {
@@ -172,7 +171,7 @@ describe('ProductionUtils.calculateWaterAmount', () => {
       // Act & Assert
       expect(() => {
         ProductionUtils.calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
-      }).toThrow(ProductionErrorMessages.WATER_CONSUMPTION_NEGATIVE(waterConsumptionPerHour));
+      }).toThrow(`waterConsumptionPerHour must be non-negative: [${waterConsumptionPerHour}]`);
     });
   });
 

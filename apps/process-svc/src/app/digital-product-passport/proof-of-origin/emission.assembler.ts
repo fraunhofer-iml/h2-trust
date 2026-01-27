@@ -25,7 +25,6 @@ import {
   TransportMode,
   EmissionStringConstants,
 } from '@h2-trust/domain';
-import { EmissionErrorMessages } from '../../constants';
 
 export class EmissionAssembler {
   static assemblePowerSupply(
@@ -33,7 +32,7 @@ export class EmissionAssembler {
     energySource: EnergySource,
   ): ProofOfSustainabilityEmissionCalculationEntity {
     if (powerProduction?.type !== ProcessType.POWER_PRODUCTION) {
-      throw new Error(EmissionErrorMessages.INVALID_PROCESS_TYPE_FOR_POWER_SUPPLY(powerProduction?.type));
+      throw new Error(`Invalid process step type [${powerProduction?.type}] for power supply emission calculation`);
     }
 
     const power = powerProduction.batch.amount;
@@ -60,7 +59,7 @@ export class EmissionAssembler {
 
   static assembleWaterSupply(waterSupply: ProcessStepEntity): ProofOfSustainabilityEmissionCalculationEntity {
     if (waterSupply?.type !== ProcessType.WATER_CONSUMPTION) {
-      throw new Error(EmissionErrorMessages.INVALID_PROCESS_TYPE_FOR_WATER_SUPPLY(waterSupply?.type));
+      throw new Error(`Invalid process step type [${waterSupply?.type}] for water supply emission calculation`);
     }
 
     const waterInput = waterSupply.batch.amount;
@@ -87,7 +86,7 @@ export class EmissionAssembler {
     hydrogenProduction: ProcessStepEntity,
   ): ProofOfSustainabilityEmissionCalculationEntity {
     if (hydrogenProduction?.type !== ProcessType.HYDROGEN_PRODUCTION) {
-      throw new Error(EmissionErrorMessages.INVALID_PROCESS_TYPE_FOR_HYDROGEN_STORAGE(hydrogenProduction?.type));
+      throw new Error(`Invalid process step type [${hydrogenProduction?.type}] for hydrogen storage emission calculation`);
     }
 
     const emissionFactor = EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[EnergySource.GRID];
@@ -122,7 +121,7 @@ export class EmissionAssembler {
     _hydrogenBottling: ProcessStepEntity,
   ): ProofOfSustainabilityEmissionCalculationEntity {
     if (_hydrogenBottling?.type !== ProcessType.HYDROGEN_BOTTLING) {
-      throw new Error(EmissionErrorMessages.INVALID_PROCESS_TYPE_FOR_HYDROGEN_BOTTLING(_hydrogenBottling?.type));
+      throw new Error(`Invalid process step type [${_hydrogenBottling?.type}] for hydrogen bottling emission calculation`);
     }
 
     const result = 0;
@@ -142,9 +141,7 @@ export class EmissionAssembler {
     hydrogenTransportation: ProcessStepEntity,
   ): ProofOfSustainabilityEmissionCalculationEntity {
     if (hydrogenTransportation?.type !== ProcessType.HYDROGEN_TRANSPORTATION) {
-      throw new Error(
-        EmissionErrorMessages.INVALID_PROCESS_TYPE_FOR_HYDROGEN_TRANSPORTATION(hydrogenTransportation?.type),
-      );
+      throw new Error(`Invalid process step type [${hydrogenTransportation?.type}] for hydrogen transportation emission calculation`);
     }
 
     const transportMode: string = hydrogenTransportation.transportationDetails?.transportMode;
@@ -162,7 +159,7 @@ export class EmissionAssembler {
         );
         break;
       default:
-        throw new Error(EmissionErrorMessages.UNKNOWN_TRANSPORT_MODE(transportMode, hydrogenTransportation.id));
+        throw new Error(`Unknown transport mode [${transportMode}] for process step [${hydrogenTransportation.id}]`);
     }
 
     return emissionCalculation;
