@@ -11,7 +11,6 @@ import { MINIO_CONNECTION } from 'nestjs-minio';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigurationService } from '@h2-trust/configuration';
 import 'multer';
-import { randomUUID } from 'crypto';
 
 @Injectable()
 export class StorageService {
@@ -24,24 +23,15 @@ export class StorageService {
     this.bucketName = this.configurationService.getGlobalConfiguration().minio.bucketName;
   }
 
-  async uploadFileWithDeepPath(file: Express.Multer.File, entityPath: string, entityId: string) {
-    const typeEnding = file.originalname.split('.').pop();
-    const fileName = `${entityPath}/${entityId}/${randomUUID()}.${typeEnding}`;
-    await this.uploadFile(fileName, Buffer.from(file.buffer));
-    return fileName;
+  async uploadFile(fileName: string, file: Buffer) {
+    return this.client.putObject(this.bucketName, fileName, file, file.length);
   }
 
-  uploadFile(fileName: string, file: Buffer) {
-    return this.client.putObject(this.bucketName, fileName, file, file.length, {
-      'Content-Type': 'application/pdf',
-    });
-  }
-
-  downloadFile(fileName: string) {
+  async downloadFile(fileName: string) {
     return this.client.getObject(this.bucketName, fileName);
   }
 
-  deleteFile(fileName: string) {
+  async deleteFile(fileName: string) {
     return this.client.removeObject(this.bucketName, fileName);
   }
 }

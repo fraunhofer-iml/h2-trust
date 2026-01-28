@@ -41,10 +41,6 @@ export class BottlingDto {
   @IsString()
   file?: string;
 
-  @IsOptional()
-  @IsString()
-  fileDescription?: string;
-
   @IsNotEmpty()
   @IsEnum(TransportMode)
   transportMode: TransportMode;
@@ -69,7 +65,6 @@ export class BottlingDto {
     hydrogenStorageUnit: string,
     color: HydrogenColor,
     file: string,
-    fileDescription: string,
     transportMode: TransportMode,
     distance: number,
     fuelType: FuelType,
@@ -81,7 +76,6 @@ export class BottlingDto {
     this.hydrogenStorageUnit = hydrogenStorageUnit;
     this.color = color;
     this.file = file;
-    this.fileDescription = fileDescription;
     this.transportMode = transportMode;
     this.distance = distance;
     this.fuelType = fuelType;
@@ -108,11 +102,6 @@ export class BottlingDto {
       executedBy: {
         id: dto.hydrogenStorageUnit,
       },
-      documents: [
-        {
-          description: dto.fileDescription,
-        },
-      ],
     };
   }
 }

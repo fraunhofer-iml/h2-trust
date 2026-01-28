@@ -45,7 +45,6 @@ export class BottlingService {
       userId,
       dto.hydrogenStorageUnit,
       dto.color,
-      dto.fileDescription,
       files,
     );
 

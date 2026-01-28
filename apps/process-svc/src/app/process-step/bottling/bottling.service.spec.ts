@@ -8,7 +8,7 @@
 
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues, CreateHydrogenBottlingPayload } from '@h2-trust/amqp';
+import { BrokerQueues, CreateHydrogenBottlingPayload, DocumentEntity } from '@h2-trust/amqp';
 import { DocumentRepository } from '@h2-trust/database';
 import { HydrogenColor, ProcessType } from '@h2-trust/domain';
 import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures/entities';
@@ -24,7 +24,7 @@ describe('BottlingService', () => {
   };
 
   const storageServiceMock = {
-    uploadFileWithDeepPath: jest.fn(),
+    uploadFile: jest.fn(),
   };
 
   const documentRepositoryMock = {
@@ -174,7 +174,6 @@ describe('BottlingService', () => {
         'recorder-1',
         'storage-unit-1',
         HydrogenColor.GREEN,
-        'Test description',
         [givenFile],
       );
 
@@ -191,20 +190,16 @@ describe('BottlingService', () => {
       processStepServiceMock.setBatchesInactive.mockResolvedValue({ count: 1 });
       processStepServiceMock.createProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
       processStepServiceMock.readProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
-      storageServiceMock.uploadFileWithDeepPath.mockResolvedValue(givenFile.originalname);
+      storageServiceMock.uploadFile.mockResolvedValue(givenFile.originalname);
       documentRepositoryMock.addDocumentToProcessStep.mockResolvedValue({});
 
       // Act
       await service.createHydrogenBottlingProcessStep(givenPayload);
 
       // Assert
-      expect(storageServiceMock.uploadFileWithDeepPath).toHaveBeenCalledWith(
-        givenFile,
-        'process-step',
-        givenCreatedBottlingProcessStep.id,
-      );
+      expect(storageServiceMock.uploadFile).toHaveBeenCalledWith(givenFile.originalname, Buffer.from(givenFile.buffer));
       expect(documentRepositoryMock.addDocumentToProcessStep).toHaveBeenCalledWith(
-        { description: givenPayload.fileDescription, location: givenFile.originalname },
+        new DocumentEntity(undefined, givenFile.originalname),
         givenCreatedBottlingProcessStep.id,
       );
     });

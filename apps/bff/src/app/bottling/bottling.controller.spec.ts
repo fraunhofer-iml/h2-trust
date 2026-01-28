@@ -82,7 +82,6 @@ describe('BottlingController', () => {
       recordedById: AuthenticatedUserMock.sub,
       hydrogenStorageUnitId: givenDto.hydrogenStorageUnit,
       color: givenDto.color,
-      fileDescription: givenDto.fileDescription,
       files: [] as Express.Multer.File[],
     };
 

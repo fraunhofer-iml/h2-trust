@@ -9,17 +9,19 @@
 import { DocumentDbType } from '@h2-trust/database';
 
 export class DocumentEntity {
-  id?: string;
-  description: string;
-  location: string;
+  id: string;
+  fileName: string;
+  transactionHash?: string;
+  storageUrl?: string;
 
-  constructor(id: string, description: string, location: string) {
+  constructor(id: string, fileName: string, transactionHash?: string, storageUrl?: string) {
     this.id = id;
-    this.description = description;
-    this.location = location;
+    this.fileName = fileName;
+    this.transactionHash = transactionHash;
+    this.storageUrl = storageUrl;
   }
 
   static fromDatabase(document: DocumentDbType): DocumentEntity {
-    return new DocumentEntity(document.id, document.description, document.location);
+    return new DocumentEntity(document.id, document.fileName, document.transactionHash ?? undefined);
   }
 }

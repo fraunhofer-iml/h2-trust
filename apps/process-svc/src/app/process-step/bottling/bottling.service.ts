@@ -86,9 +86,7 @@ export class BottlingService {
 
     if (payload.files) {
       await Promise.all(
-        payload.files.map((file) =>
-          this.addDocumentToProcessStep(file, persistedBottlingProcessStep.id, payload.fileDescription),
-        ),
+        payload.files.map((file) => this.addDocumentToProcessStep(file, persistedBottlingProcessStep.id)),
       );
     }
 
@@ -118,17 +116,11 @@ export class BottlingService {
     }
   }
 
-  private async addDocumentToProcessStep(
-    file: Express.Multer.File,
-    processStepId: string,
-    description: string,
-  ): Promise<DocumentEntity> {
-    const fileName = await this.storageService.uploadFileWithDeepPath(file, `process-step`, processStepId);
+  private async addDocumentToProcessStep(file: Express.Multer.File, processStepId: string): Promise<DocumentEntity> {
+    await this.storageService.uploadFile(file.originalname, Buffer.from(file.buffer));
+
     return this.documentRepository.addDocumentToProcessStep(
-      {
-        description: description,
-        location: fileName,
-      },
+      new DocumentEntity(undefined, file.originalname),
       processStepId,
     );
   }
