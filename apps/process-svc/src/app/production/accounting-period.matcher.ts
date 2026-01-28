@@ -15,6 +15,7 @@ import {
   ParsedProductionEntity,
   UnitDataBundle,
 } from '@h2-trust/amqp';
+import { BatchType } from '@h2-trust/domain';
 
 interface PowerItem {
   unitId: string;
@@ -29,8 +30,8 @@ interface HydrogenItem {
 
 export class AccountingPeriodMatcher {
   static matchAccountingPeriods(data: ParsedFileBundles, gridUnitId: string): ParsedProductionEntity[] {
-    this.validateBundles(data.hydrogenProduction, 'hydrogen');
-    this.validateBundles(data.powerProduction, 'power');
+    this.validateBundles(data.hydrogenProduction, BatchType.HYDROGEN);
+    this.validateBundles(data.powerProduction, BatchType.POWER);
 
     const powerItemsByDateHour: Map<string, PowerItem[]> = this.normalizePower(data.powerProduction);
     const hydrogenItemsByDateHour: Map<string, HydrogenItem[]> = this.normalizeHydrogen(data.hydrogenProduction);
@@ -156,7 +157,10 @@ export class AccountingPeriodMatcher {
     else map.get(key).push(value);
   }
 
-  private static validateBundles(bundles: UnitDataBundle<any>[] | undefined, type: 'hydrogen' | 'power') {
+  private static validateBundles(
+    bundles: UnitDataBundle<any>[] | undefined,
+    type: BatchType.POWER | BatchType.HYDROGEN,
+  ) {
     if (!bundles || bundles.length === 0) {
       throw new BrokerException(`Missing ${type} production data`, HttpStatus.BAD_REQUEST);
     }

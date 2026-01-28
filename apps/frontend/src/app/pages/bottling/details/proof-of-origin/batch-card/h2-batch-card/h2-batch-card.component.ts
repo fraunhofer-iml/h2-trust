@@ -10,9 +10,9 @@ import { ProofOfOriginCardComponent } from 'apps/frontend/src/app/layout/proof-o
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { HydrogenBatchDto } from '@h2-trust/api';
+import { MeasurementUnit } from '@h2-trust/domain';
 import { H2ColorChipComponent } from '../../../../../../layout/h2-color-chip/h2-color-chip.component';
 import { BaseSheetComponent } from '../../../../../../layout/sheet/sheet.component';
-import { FormattedUnits } from '../../../../../../shared/constants/formatted-units';
 import { PrettyEnumPipe } from '../../../../../../shared/pipes/format-enum.pipe';
 import { UnitPipe } from '../../../../../../shared/pipes/unit.pipe';
 import { H2CompositionChartComponent } from '../../../chart/h2-composition-chart.component';
@@ -33,6 +33,6 @@ import { BatchEmissionsComponent } from '../batch-emissions/batch-emissions.comp
   templateUrl: './h2-batch-card.component.html',
 })
 export class H2BatchCardComponent {
-  protected readonly FormattedUnits = FormattedUnits;
+  protected readonly MeasurementUnit = MeasurementUnit;
   batch = input.required<HydrogenBatchDto>();
 }

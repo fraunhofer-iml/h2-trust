@@ -51,16 +51,16 @@ export class ProcessStepService {
 
   private async readPredecessorProcessStep(predecessorProcessStepId: string): Promise<ProcessStepEntity> {
     if (!predecessorProcessStepId) {
-      const errorMessage = 'ProcessStepId of predecessor is missing.';
-      throw new Error(errorMessage);
+      throw new Error('ProcessStepId of predecessor is missing.');
     }
 
     const predecessorProcessStep: ProcessStepEntity =
       await this.processStepRepository.findProcessStep(predecessorProcessStepId);
 
     if (predecessorProcessStep.type !== ProcessType.HYDROGEN_BOTTLING) {
-      const errorMessage = `Expected process type of predecessor to be ${ProcessType.HYDROGEN_BOTTLING}, but got ${predecessorProcessStep.type}.`;
-      throw new Error(errorMessage);
+      throw new Error(
+        `Expected process type of predecessor to be ${ProcessType.HYDROGEN_BOTTLING}, but got ${predecessorProcessStep.type}.`,
+      );
     }
 
     return predecessorProcessStep;

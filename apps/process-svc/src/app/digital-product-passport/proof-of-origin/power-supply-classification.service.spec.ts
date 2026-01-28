@@ -14,7 +14,7 @@ import {
   ProcessStepEntity,
   ProofOfOriginPowerBatchEntity,
 } from '@h2-trust/amqp';
-import { BatchType, EnergySource, HydrogenColor, MeasurementUnit, PowerProductionType } from '@h2-trust/domain';
+import { BatchType, EnergySource, HydrogenColor, PowerProductionType } from '@h2-trust/domain';
 import {
   PowerProductionUnitEntityFixture,
   ProcessStepEntityFixture,
@@ -105,7 +105,6 @@ describe('PowerSupplyClassificationService', () => {
 
       const solarSubClassification = actualResult.find((sc) => sc.name === EnergySource.SOLAR_ENERGY);
       expect(solarSubClassification).toBeDefined();
-      expect(solarSubClassification.unit).toBe(MeasurementUnit.POWER);
       expect(solarSubClassification.classificationType).toBe(BatchType.POWER);
       expect(solarSubClassification.batches).toHaveLength(1);
 

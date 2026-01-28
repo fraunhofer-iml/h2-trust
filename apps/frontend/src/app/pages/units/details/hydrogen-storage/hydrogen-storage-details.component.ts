@@ -6,22 +6,24 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
+import { ErrorCardComponent } from 'apps/frontend/src/app/layout/error-card/error-card.component';
+import { ERROR_MESSAGES } from 'apps/frontend/src/app/shared/constants/error.messages';
 import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
+import { MeasurementUnit } from '@h2-trust/domain';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { UnitDetailsComponent } from '../unit-details.component';
 
 @Component({
   selector: 'app-hydrogen-storage-details',
-  imports: [CommonModule, UnitPipe, UnitDetailsComponent, RouterModule],
+  imports: [CommonModule, UnitPipe, UnitDetailsComponent, RouterModule, ErrorCardComponent],
   templateUrl: './hydrogen-storage-details.component.html',
 })
 export class HydrogenStorageDetailsComponent {
-  readonly FormattedUnits = FormattedUnits;
+  readonly MeasurementUnit = MeasurementUnit;
 
   id = input<string>();
 
@@ -29,7 +31,13 @@ export class HydrogenStorageDetailsComponent {
 
   unitQuery = injectQuery(() => ({
     queryKey: ['hydrogen-storage-unit', this.id()],
-    queryFn: () => this.unitsService.getHydrogenStorageUnit(this.id() ?? ''),
+    queryFn: async () => {
+      try {
+        return await this.unitsService.getHydrogenStorageUnit(this.id() ?? '');
+      } catch (err: any) {
+        throw new Error(err.status === 404 ? ERROR_MESSAGES.unitNotFound + this.id() : ERROR_MESSAGES.unknownError);
+      }
+    },
     enabled: !!this.id(),
   }));
 }

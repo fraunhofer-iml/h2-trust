@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
 import { UnitPipe } from 'apps/frontend/src/app/shared/pipes/unit.pipe';
 import * as echarts from 'echarts';
 import { EChartsOption } from 'echarts';
@@ -14,6 +13,7 @@ import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { CommonModule, DecimalPipe, PercentPipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { HydrogenComponentDto } from '@h2-trust/api';
+import { MeasurementUnit } from '@h2-trust/domain';
 import { CHART_COLORS } from '../../../../shared/constants/chart-colors';
 import { formatNumberForChart } from '../../../../shared/util/number-format.util';
 
@@ -75,6 +75,6 @@ export class H2CompositionChartComponent {
 
   private readonly labelFormatter = (params: any) => {
     const percentage = this.percentPipe.transform((params.percent ?? 0) / 100, '1.0-1');
-    return `${params.name}\n ${this.unitPipe.transform(params.value, FormattedUnits.KG)} (${percentage})`;
+    return `${params.name}\n ${this.unitPipe.transform(params.value, MeasurementUnit.KG)} (${percentage})`;
   };
 }

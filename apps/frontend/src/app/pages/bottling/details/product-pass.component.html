@@ -15,8 +15,10 @@
 
   <div class="grid grid-cols-6 gap-4">
     @if (batchQuery.isLoading()) {
-      <div class="col-span-4 h-[16rem] w-full animate-pulse rounded-md bg-neutral-50"></div>
-      <div class="col-span-2 h-[16rem] w-full animate-pulse rounded-md bg-neutral-50"></div>
+      <div class="col-span-4 h-[16rem] w-full animate-pulse rounded-md bg-white"></div>
+      <div class="col-span-2 h-[16rem] w-full animate-pulse rounded-md bg-white"></div>
+      <div class="col-span-3 h-[20rem] w-full animate-pulse rounded-md bg-white"></div>
+      <div class="col-span-3 h-[20rem] w-full animate-pulse rounded-md bg-white"></div>
     }
 
     @if (batchQuery.isSuccess()) {
@@ -42,7 +44,7 @@
             </div>
             <div class="flex flex-col text-sm">
               <span class="text-sm text-neutral-400">Amount</span
-              ><span>{{ batchQuery.data().filledAmount | unit: FormattedUnits.KG }}</span>
+              ><span>{{ batchQuery.data().filledAmount | unit: MeasurementUnit.KG }}</span>
             </div>
             <div class="flex flex-col text-sm">
               <span class="text-sm text-neutral-400">Product</span><span>{{ batchQuery.data().product }}</span>
@@ -75,13 +77,12 @@
           <span class="text-sm text-neutral-600">No files attached.</span>
         }
       </div>
+      <app-proof-of-origin class="col-span-6 2xl:col-span-3" [proofOfOrigin$]="batchQuery.data().proofOfOrigin">
+      </app-proof-of-origin
+      ><app-proof-of-sustainability
+        [proofOfSustainability$]="batchQuery.data().proofOfSustainability"
+        class="col-span-6 2xl:col-span-3"
+      ></app-proof-of-sustainability>
     }
-
-    <app-proof-of-origin class="col-span-6 2xl:col-span-3" [proofOfOrigin$]="batchQuery.data()?.proofOfOrigin">
-    </app-proof-of-origin
-    ><app-proof-of-sustainability
-      [proofOfSustainability$]="batchQuery.data()?.proofOfSustainability"
-      class="col-span-6 2xl:col-span-3"
-    ></app-proof-of-sustainability>
   </div>
 </div>

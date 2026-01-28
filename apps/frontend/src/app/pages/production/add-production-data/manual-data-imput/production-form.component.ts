@@ -6,9 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ErrorCardComponent } from 'apps/frontend/src/app/layout/error-card/error-card.component';
 import { ERROR_MESSAGES } from 'apps/frontend/src/app/shared/constants/error.messages';
-import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
 import { ROUTES } from 'apps/frontend/src/app/shared/constants/routes';
 import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
 import { toast } from 'ngx-sonner';
@@ -31,7 +29,7 @@ import {
   HydrogenStorageOverviewDto,
   PowerProductionOverviewDto,
 } from '@h2-trust/api';
-import { TimeInSeconds } from '@h2-trust/domain';
+import { MeasurementUnit, TimeInSeconds } from '@h2-trust/domain';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 
 @Component({
@@ -39,7 +37,6 @@ import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
   imports: [
     CommonModule,
     MatSelectModule,
-    ErrorCardComponent,
     MatDatepickerModule,
     MatTimepickerModule,
     FormsModule,
@@ -93,12 +90,13 @@ export class ProductionFormComponent {
     onSuccess: () => {
       this.router.navigateByUrl(ROUTES.PRODUCTION);
     },
+    onError: (e) => toast(e.message),
   }));
 
   today = new Date();
   isTimePeriodInvalid = false;
   ERROR_MESSAGES = ERROR_MESSAGES;
-  readonly FormattedUnits = FormattedUnits;
+  readonly MeasurementUnit = MeasurementUnit;
 
   constructor() {
     const minutes = new Date().getMinutes();

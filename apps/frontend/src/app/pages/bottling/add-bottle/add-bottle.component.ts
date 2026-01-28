@@ -23,11 +23,10 @@ import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
 import { HydrogenComponentDto, HydrogenStorageOverviewDto, UserDto } from '@h2-trust/api';
-import { FuelType, TransportMode } from '@h2-trust/domain';
+import { FuelType, MeasurementUnit, TransportMode } from '@h2-trust/domain';
 import { FileDragAndDropComponent } from '../../../layout/drag-and-drop/file-drag-and-drop.component';
 import { FileCardComponent } from '../../../layout/file-card/file-card.component';
 import { FileTypes } from '../../../shared/constants/file-types';
-import { FormattedUnits } from '../../../shared/constants/formatted-units';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
@@ -68,7 +67,7 @@ export class AddBottleComponent {
   protected readonly FileTypes = FileTypes;
   protected readonly TransportType = TransportMode;
   protected readonly FuelType = FuelType;
-  protected readonly FormattedUnits = FormattedUnits;
+  protected readonly MeasurementUnit = MeasurementUnit;
 
   dateDelimiter: Date = new Date();
   uploadedFiles: File[] = [];
