@@ -31,14 +31,13 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
     certifiedBy: string,
     commissionedOn: Date,
     address: AddressDto,
-    company: UnitOwnerDto,
     capacity: number,
     filling: FillingDto[],
     pressure: number,
     storageType: string,
     unitType: UnitType,
     modelNumber: string,
-    owner: string,
+    owner: UnitOwnerDto,
     operator: string,
   ) {
     super(
@@ -51,7 +50,6 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
       certifiedBy,
       commissionedOn,
       address,
-      company,
       modelNumber,
       owner,
       operator,

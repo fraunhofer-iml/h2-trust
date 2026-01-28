@@ -16,8 +16,8 @@ export class CreateProductionEntity {
   recordedBy: string;
   hydrogenColor: string;
   hydrogenStorageUnitId: string;
-  companyIdOfPowerProductionUnit: string;
-  companyIdOfHydrogenProductionUnit: string;
+  ownerIdOfPowerProductionUnit: string;
+  ownerIdOfHydrogenProductionUnit: string;
   waterConsumptionLitersPerHour: number;
 
   constructor(
@@ -30,8 +30,8 @@ export class CreateProductionEntity {
     recordedBy: string,
     hydrogenColor: string,
     hydrogenStorageUnitId: string,
-    companyOfPowerProductionUnitId: string,
-    companyOfHydrogenProductionUnitId: string,
+    ownerIdOfPowerProductionUnit: string,
+    ownerIdOfHydrogenProductionUnit: string,
     waterConsumptionLitersPerHour: number,
   ) {
     this.productionStartedAt = productionStartedAt;
@@ -43,8 +43,8 @@ export class CreateProductionEntity {
     this.recordedBy = recordedBy;
     this.hydrogenColor = hydrogenColor;
     this.hydrogenStorageUnitId = hydrogenStorageUnitId;
-    this.companyIdOfPowerProductionUnit = companyOfPowerProductionUnitId;
-    this.companyIdOfHydrogenProductionUnit = companyOfHydrogenProductionUnitId;
+    this.ownerIdOfPowerProductionUnit = ownerIdOfPowerProductionUnit;
+    this.ownerIdOfHydrogenProductionUnit = ownerIdOfHydrogenProductionUnit;
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 }

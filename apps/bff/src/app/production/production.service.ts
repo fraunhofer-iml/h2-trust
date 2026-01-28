@@ -22,7 +22,7 @@ import {
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
-  ReadProcessStepsByPredecessorTypesAndCompanyPayload,
+  ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   StageProductionsPayload,
   UnitDataBundle,
   UnitFileBundle,
@@ -72,17 +72,14 @@ export class ProductionService {
       .map(ProductionOverviewDto.fromEntity);
   }
 
-  async readHydrogenProductionsByCompany(userId: string): Promise<ProductionOverviewDto[]> {
+  async readHydrogenProductionsByOwner(userId: string): Promise<ProductionOverviewDto[]> {
     const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
-    const companyIdOfUser = userDetails.company.id;
+    const ownerId = userDetails.company.id;
 
-    const payload = new ReadProcessStepsByPredecessorTypesAndCompanyPayload(
-      [ProcessType.POWER_PRODUCTION],
-      companyIdOfUser,
-    );
+    const payload = new ReadProcessStepsByPredecessorTypesAndOwnerPayload([ProcessType.POWER_PRODUCTION], ownerId);
 
     const productions: ProcessStepEntity[] = await firstValueFrom(
-      this.processSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_PREDECESSOR_TYPES_AND_COMPANY, payload),
+      this.processSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_PREDECESSOR_TYPES_AND_OWNER, payload),
     );
     return productions.map(ProductionOverviewDto.fromEntity);
   }

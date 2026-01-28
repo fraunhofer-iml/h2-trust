@@ -25,7 +25,7 @@ export function buildBaseUnitCreateInput(payload: BaseCreateUnitPayload): Prisma
   assertDefined(payload.address.city, 'BaseCreateUnitPayload.address.city');
   assertDefined(payload.address.state, 'BaseCreateUnitPayload.address.state');
   assertDefined(payload.address.country, 'BaseCreateUnitPayload.address.country');
-  assertDefined(payload.companyId, 'BaseCreateUnitPayload.companyId');
+  assertDefined(payload.ownerId, 'BaseCreateUnitPayload.ownerId');
 
   return Prisma.validator<Prisma.UnitCreateInput>()({
     name: payload.name,
@@ -46,7 +46,7 @@ export function buildBaseUnitCreateInput(payload: BaseCreateUnitPayload): Prisma
       },
     },
     owner: {
-      connect: { id: payload.companyId },
+      connect: { id: payload.ownerId },
     },
     ...(payload.operatorId && {
       operator: {

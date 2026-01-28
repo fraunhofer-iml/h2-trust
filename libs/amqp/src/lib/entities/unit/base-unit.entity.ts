@@ -22,8 +22,7 @@ export abstract class BaseUnitEntity {
   certifiedBy?: string;
   commissionedOn?: Date;
   address?: AddressEntity;
-  company?: {
-    // TODO-MP: should be owner?
+  owner?: {
     id?: string;
     hydrogenApprovals?: {
       powerAccessApprovalStatus?: string;
@@ -45,7 +44,7 @@ export abstract class BaseUnitEntity {
     certifiedBy: string,
     commissionedOn: Date,
     address: AddressEntity,
-    company: {
+    owner: {
       id?: string;
       hydrogenApprovals?: {
         powerAccessApprovalStatus?: string;
@@ -66,7 +65,7 @@ export abstract class BaseUnitEntity {
     this.certifiedBy = certifiedBy;
     this.commissionedOn = commissionedOn;
     this.address = address;
-    this.company = company;
+    this.owner = owner;
     this.operator = operator;
     this.unitType = unitType;
   }
@@ -83,12 +82,12 @@ export abstract class BaseUnitEntity {
       certifiedBy: unit.certifiedBy,
       commissionedOn: unit.commissionedOn,
       address: AddressEntity.fromDatabase(unit.address),
-      company: BaseUnitEntity.mapCompany(unit),
+      owner: BaseUnitEntity.mapOwner(unit),
       operator: unit.operator ? CompanyEntity.fromDatabase(unit.operator) : undefined,
     };
   }
 
-  protected static mapCompany(unit: BaseUnitDbType) {
+  protected static mapOwner(unit: BaseUnitDbType) {
     return unit.owner
       ? {
           id: unit.ownerId,

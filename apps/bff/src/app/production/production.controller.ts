@@ -84,10 +84,10 @@ export class ProductionController {
     description: "Returns a list of all hydrogen productions belonging to the authenticated user's company.",
     type: [ProductionOverviewDto],
   })
-  async readHydrogenProductionsByCompany(
+  async readHydrogenProductionsByOwner(
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<ProductionOverviewDto[]> {
-    return this.service.readHydrogenProductionsByCompany(authenticatedUser.sub);
+    return this.service.readHydrogenProductionsByOwner(authenticatedUser.sub);
   }
 
   @Post('csv/import')

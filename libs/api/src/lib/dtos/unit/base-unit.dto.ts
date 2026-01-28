@@ -23,9 +23,8 @@ export abstract class BaseUnitDto {
   certifiedBy?: string;
   commissionedOn: Date;
   address: AddressDto;
-  owner: string;
+  owner: UnitOwnerDto;
   operator?: string;
-  company: UnitOwnerDto;
   unitType: UnitType;
 
   protected constructor(
@@ -38,9 +37,8 @@ export abstract class BaseUnitDto {
     certifiedBy: string,
     commissionedOn: Date,
     address: AddressDto,
-    company: UnitOwnerDto,
     modelNumber: string,
-    owner: string,
+    owner: UnitOwnerDto,
     operator: string,
     unitType: UnitType,
   ) {
@@ -54,7 +52,6 @@ export abstract class BaseUnitDto {
     this.certifiedBy = certifiedBy;
     this.commissionedOn = commissionedOn;
     this.address = address;
-    this.company = company;
     this.owner = owner;
     this.operator = operator;
     this.unitType = unitType;
@@ -78,15 +75,14 @@ export abstract class BaseUnitDto {
         state: requireDefined(unit.address?.state, 'state'),
         country: requireDefined(unit.address?.country, 'country'),
       },
-      company: {
-        id: requireDefined(unit.company?.id, 'company.id'),
+      owner: {
+        id: requireDefined(unit.owner?.id, 'owner.id'),
         hydrogenApprovals:
-          unit.company?.hydrogenApprovals?.map((approval) => ({
+          unit.owner?.hydrogenApprovals?.map((approval) => ({
             powerAccessApprovalStatus: requireDefined(approval.powerAccessApprovalStatus, 'powerAccessApprovalStatus'),
             powerProducerId: requireDefined(approval.powerProducerId, 'powerProducerId'),
           })) ?? [],
       },
-      owner: requireDefined(unit.company?.id, 'owner'),
       operator: unit.operator?.id,
       unitType: requireDefined(unit.unitType, 'unitType'),
     };

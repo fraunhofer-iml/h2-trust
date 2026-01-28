@@ -8,7 +8,7 @@
 
 import { ArrayNotEmpty, IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 
-export class ReadProcessStepsByTypesAndActiveAndCompanyPayload {
+export class ReadProcessStepsByTypesAndActiveAndOwnerPayload {
   @IsString({ each: true })
   @ArrayNotEmpty()
   @IsNotEmpty()
@@ -20,11 +20,11 @@ export class ReadProcessStepsByTypesAndActiveAndCompanyPayload {
 
   @IsString()
   @IsNotEmpty()
-  companyId: string;
+  ownerId: string;
 
-  constructor(processTypes: string[], active: boolean, companyId: string) {
+  constructor(processTypes: string[], active: boolean, ownerId: string) {
     this.processTypes = processTypes;
     this.active = active;
-    this.companyId = companyId;
+    this.ownerId = ownerId;
   }
 }

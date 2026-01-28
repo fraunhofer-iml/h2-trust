@@ -91,7 +91,7 @@ describe('UnitController', () => {
 
     jest.spyOn(prisma.unit, 'findMany').mockResolvedValue([expectedResponse]);
 
-    const actualResponse = await controller.readPowerProductionUnitsByCompanyId(
+    const actualResponse = await controller.readPowerProductionUnitsByOwnerId(
       new ReadByIdPayload(expectedResponse.ownerId),
     );
 
@@ -157,7 +157,7 @@ describe('UnitController', () => {
         PowerProductionUnitEntityMock[0].address.state,
         PowerProductionUnitEntityMock[0].address.country,
       ),
-      PowerProductionUnitEntityMock[0].company.id,
+      PowerProductionUnitEntityMock[0].owner.id,
       PowerProductionUnitEntityMock[0].electricityMeterNumber,
       PowerProductionUnitEntityMock[0].ratedPower,
       PowerProductionUnitEntityMock[0].gridLevel,
@@ -200,7 +200,7 @@ describe('UnitController', () => {
         HydrogenProductionUnitEntityMock[0].address.state,
         HydrogenProductionUnitEntityMock[0].address.country,
       ),
-      HydrogenProductionUnitEntityMock[0].company.id,
+      HydrogenProductionUnitEntityMock[0].owner.id,
       HydrogenProductionUnitEntityMock[0].method,
       HydrogenProductionUnitEntityMock[0].technology,
       HydrogenProductionUnitEntityMock[0].biddingZone,
@@ -241,7 +241,7 @@ describe('UnitController', () => {
         HydrogenStorageUnitEntityMock[0].address.state,
         HydrogenStorageUnitEntityMock[0].address.country,
       ),
-      HydrogenStorageUnitEntityMock[0].company.id,
+      HydrogenStorageUnitEntityMock[0].owner.id,
       HydrogenStorageUnitEntityMock[0].type,
       HydrogenStorageUnitEntityMock[0].capacity,
       HydrogenStorageUnitEntityMock[0].pressure,

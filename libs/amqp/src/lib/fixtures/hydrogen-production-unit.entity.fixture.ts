@@ -24,7 +24,7 @@ export const HydrogenProductionUnitEntityFixture = {
       certifiedBy: overrides.certifiedBy ?? 'TÜV',
       commissionedOn: overrides.commissionedOn ?? new Date('2025-01-01'),
       address: overrides.address ?? AddressEntityFixture.create(),
-      company: overrides.company ?? { id: 'company-1' },
+      owner: overrides.owner ?? { id: 'company-1' },
       operator: overrides.operator ?? CompanyEntityFixture.createHydrogenProducer(),
       unitType: overrides.unitType ?? UnitType.HYDROGEN_PRODUCTION,
       ratedPower: overrides.ratedPower ?? 500,
