@@ -37,7 +37,7 @@ export class BottlingService {
     private readonly storageService: StorageService,
     private readonly documentRepository: DocumentRepository,
     private readonly processStepService: ProcessStepService,
-  ) {}
+  ) { }
 
   async createHydrogenBottlingProcessStep(payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
     const allProcessStepsFromStorageUnit: ProcessStepEntity[] =
@@ -87,7 +87,7 @@ export class BottlingService {
     if (payload.files) {
       await Promise.all(
         payload.files.map((file) =>
-          this.addDocumentToProcessStep(file, persistedBottlingProcessStep.id, payload.fileDescription),
+          this.addDocumentToProcessStep(file, persistedBottlingProcessStep.id),
         ),
       );
     }
@@ -120,15 +120,15 @@ export class BottlingService {
 
   private async addDocumentToProcessStep(
     file: Express.Multer.File,
-    processStepId: string,
-    description: string,
+    processStepId: string
   ): Promise<DocumentEntity> {
-    const fileName = await this.storageService.uploadFileWithDeepPath(file, `process-step`, processStepId);
+    await this.storageService.uploadFile(file.originalname, Buffer.from(file.buffer));
+
     return this.documentRepository.addDocumentToProcessStep(
-      {
-        description: description,
-        location: fileName,
-      },
+      new DocumentEntity(
+        undefined,
+        file.originalname,
+      ),
       processStepId,
     );
   }

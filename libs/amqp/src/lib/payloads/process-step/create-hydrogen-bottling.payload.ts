@@ -37,10 +37,6 @@ export class CreateHydrogenBottlingPayload {
   @IsNotEmpty()
   color: HydrogenColor;
 
-  @IsString()
-  @IsOptional()
-  fileDescription?: string;
-
   @IsArray()
   @IsOptional()
   files?: Express.Multer.File[];
@@ -52,7 +48,6 @@ export class CreateHydrogenBottlingPayload {
     recordedById: string,
     hydrogenStorageUnitId: string,
     color: HydrogenColor,
-    fileDescription?: string,
     files?: Express.Multer.File[],
   ) {
     this.amount = amount;
@@ -61,7 +56,6 @@ export class CreateHydrogenBottlingPayload {
     this.recordedById = recordedById;
     this.hydrogenStorageUnitId = hydrogenStorageUnitId;
     this.color = color;
-    this.fileDescription = fileDescription;
     this.files = files;
   }
 }

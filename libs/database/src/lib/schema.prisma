@@ -28,9 +28,9 @@ model Address {
 }
 
 model Document {
-  id          String @id @default(uuid(7))
-  description String
-  location    String
+  id              String  @id @default(uuid(7))
+  fileName        String
+  transactionHash String? @unique
 
   unit   Unit?   @relation(fields: [unitId], references: [id])
   unitId String?
