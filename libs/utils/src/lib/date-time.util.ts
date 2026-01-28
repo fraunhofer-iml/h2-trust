@@ -89,21 +89,8 @@ export class DateTimeUtil {
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
   }
 
-  static createGermanDate(
-    ...args: [] | [string | number | Date] | [number, number, number, number?, number?, number?, number?]
-  ): Date {
-    let input: Date;
-    if (args.length === 0) {
-      input = new Date();
-    } else if (args.length === 1) {
-      const [value] = args;
-      input = new Date(value);
-    } else {
-      const [year, month, date, hours, minutes, seconds, ms] = args;
-      input = new Date(year, month, date, hours ?? 0, minutes ?? 0, seconds ?? 0, ms ?? 0);
-    }
-
-    const germanString = input.toLocaleString(undefined, { timeZone: 'Europe/Berlin' });
+  static toGermanDate(date: Date): Date {
+    const germanString = date.toLocaleString(undefined, { timeZone: 'Europe/Berlin' });
     return new Date(germanString);
   }
 }
