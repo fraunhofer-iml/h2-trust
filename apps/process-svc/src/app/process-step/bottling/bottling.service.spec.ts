@@ -197,10 +197,7 @@ describe('BottlingService', () => {
       await service.createHydrogenBottlingProcessStep(givenPayload);
 
       // Assert
-      expect(storageServiceMock.uploadFile).toHaveBeenCalledWith(
-        givenFile.originalname,
-        Buffer.from(givenFile.buffer),
-      );
+      expect(storageServiceMock.uploadFile).toHaveBeenCalledWith(givenFile.originalname, Buffer.from(givenFile.buffer));
       expect(documentRepositoryMock.addDocumentToProcessStep).toHaveBeenCalledWith(
         new DocumentEntity(undefined, givenFile.originalname),
         givenCreatedBottlingProcessStep.id,

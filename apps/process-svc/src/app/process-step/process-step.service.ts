@@ -24,7 +24,7 @@ export class ProcessStepService {
     private readonly configurationService: ConfigurationService,
     private readonly batchRepository: BatchRepository,
     private readonly processStepRepository: ProcessStepRepository,
-  ) { }
+  ) {}
 
   async createProcessStep(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
     return this.processStepRepository.insertProcessStep(processStep);
@@ -78,8 +78,8 @@ export class ProcessStepService {
             document.fileName,
             document.transactionHash,
             `http://${minio.endPoint}:${minio.port}/${minio.bucketName}/${document.fileName}`,
-          )
-        )
+          ),
+        );
       }
     });
 

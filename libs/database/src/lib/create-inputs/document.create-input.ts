@@ -20,4 +20,4 @@ export function buildDocumentCreateInput(document: DocumentEntity, processStepId
       },
     },
   });
-} 
+}
