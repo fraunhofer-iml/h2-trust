@@ -13,4 +13,6 @@ export enum ERROR_MESSAGES {
   amountIsGreaterThanRemainingCapacity = 'The amount entered exceeds the available storage capacity.',
   fileNotFound = 'File not found.',
   dppNotFound = 'No digital product passport was found for batch-id ',
+  unitNotFound = 'No unit found with unit-id ',
+  unknownError = 'Something went wrong. Please try again. ',
 }

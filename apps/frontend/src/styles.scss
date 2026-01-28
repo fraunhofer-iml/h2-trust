@@ -39,31 +39,31 @@ body {
   @include mat.tabs-overrides(
     (
       divider-color: #cecece,
-      active-label-text-color: #5f5f92,
-      active-indicator-color: #8686c0,
-      active-focus-indicator-color: #8686c0,
-      inactive-focus-label-text-color: #5f5f92,
-      active-focus-label-text-color: #5f5f92,
+      active-label-text-color: #0b3f4b,
+      active-indicator-color: #3f8796,
+      active-focus-indicator-color: #3f8796,
+      inactive-focus-label-text-color: #0b3f4b,
+      active-focus-label-text-color: #0b3f4b,
     )
   );
   @include mat.button-overrides(
     (
-      filled-container-color: #747495,
+      filled-container-color: #3f8796,
     )
   );
   @include mat.button-toggle-overrides(
     (
-      selected-state-background-color: #8686c06e,
+      selected-state-background-color: #0b3f4b,
     )
   );
   @include mat.chips-overrides(
     (
       label-text-color: #252533,
-      disabled-label-text-color: #9b9ba8,
-      elevated-selected-container-color: #e0e0ea,
+      disabled-label-text-color: #a4c9d3,
+      elevated-selected-container-color: #a4c9d3,
       // selected
-      outline-color: #d3d3dd,
-      hover-state-layer-color: #ececf2,
+      outline-color: #dbdbdb,
+      hover-state-layer-color: #3f8796,
     )
   );
 }
@@ -91,7 +91,7 @@ body {
 }
 
 .mat-mdc-row:hover {
-  background-color: #8686c018;
+  background-color: #d2e5eb;
   cursor: pointer;
 }
 

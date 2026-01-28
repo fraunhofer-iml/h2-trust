@@ -9,6 +9,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { ERROR_MESSAGES } from '../../shared/constants/error.messages';
 
 @Component({
   selector: 'app-error-card',
@@ -16,5 +17,5 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './error-card.component.html',
 })
 export class ErrorCardComponent {
-  message = input<string>();
+  message = input<string>(ERROR_MESSAGES.unknownError);
 }

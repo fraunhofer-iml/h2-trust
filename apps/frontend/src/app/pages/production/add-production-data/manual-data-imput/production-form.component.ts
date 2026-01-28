@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ErrorCardComponent } from 'apps/frontend/src/app/layout/error-card/error-card.component';
 import { ERROR_MESSAGES } from 'apps/frontend/src/app/shared/constants/error.messages';
 import { ROUTES } from 'apps/frontend/src/app/shared/constants/routes';
 import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
@@ -38,7 +37,6 @@ import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
   imports: [
     CommonModule,
     MatSelectModule,
-    ErrorCardComponent,
     MatDatepickerModule,
     MatTimepickerModule,
     FormsModule,
@@ -92,6 +90,7 @@ export class ProductionFormComponent {
     onSuccess: () => {
       this.router.navigateByUrl(ROUTES.PRODUCTION);
     },
+    onError: (e) => toast(e.message),
   }));
 
   today = new Date();

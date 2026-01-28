@@ -6,6 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ErrorCardComponent } from 'apps/frontend/src/app/layout/error-card/error-card.component';
+import { ERROR_MESSAGES } from 'apps/frontend/src/app/shared/constants/error.messages';
 import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
@@ -17,7 +19,7 @@ import { UnitDetailsComponent } from '../unit-details.component';
 
 @Component({
   selector: 'app-hydrogen-storage-details',
-  imports: [CommonModule, UnitPipe, UnitDetailsComponent, RouterModule],
+  imports: [CommonModule, UnitPipe, UnitDetailsComponent, RouterModule, ErrorCardComponent],
   templateUrl: './hydrogen-storage-details.component.html',
 })
 export class HydrogenStorageDetailsComponent {
@@ -29,7 +31,13 @@ export class HydrogenStorageDetailsComponent {
 
   unitQuery = injectQuery(() => ({
     queryKey: ['hydrogen-storage-unit', this.id()],
-    queryFn: () => this.unitsService.getHydrogenStorageUnit(this.id() ?? ''),
+    queryFn: async () => {
+      try {
+        return await this.unitsService.getHydrogenStorageUnit(this.id() ?? '');
+      } catch (err: any) {
+        throw new Error(err.status === 404 ? ERROR_MESSAGES.unitNotFound + this.id() : ERROR_MESSAGES.unknownError);
+      }
+    },
     enabled: !!this.id(),
   }));
 }
