@@ -88,4 +88,9 @@ export class DateTimeUtil {
     const seconds = String(date.getSeconds()).padStart(2, '0');
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
   }
+
+  static toGermanDate(date: Date): Date {
+    const germanString = date.toLocaleString(undefined, { timeZone: 'Europe/Berlin' });
+    return new Date(germanString);
+  }
 }

@@ -9,6 +9,7 @@
 import { parse } from 'csv-parse';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { AccountingPeriodHydrogen, AccountingPeriodPower, BrokerException } from '@h2-trust/amqp';
+import { DateTimeUtil } from '@h2-trust/utils';
 
 @Injectable()
 export class CsvParserService {
@@ -71,12 +72,12 @@ export class CsvParserService {
                 const [datePart, timePart] = value.split(/\s+/);
                 const [day, month, year] = datePart.split('.').map(Number);
                 const [hours, minutes, seconds = 0] = timePart.split(':').map(Number);
-                return new Date(year, month - 1, day, hours, minutes, seconds);
+                return DateTimeUtil.toGermanDate(new Date(year, month - 1, day, hours, minutes, seconds));
               } else if (!isNaN(Date.parse(value))) {
-                date = new Date(value);
+                date = DateTimeUtil.toGermanDate(new Date(value));
               } else if (!isNaN(Number(value))) {
                 const num = Number(value);
-                date = new Date((num - 25569) * 86400 * 1000);
+                date = DateTimeUtil.toGermanDate(new Date((num - 25569) * 86400 * 1000));
               }
               if (!date || isNaN(date.getTime())) {
                 invalid++;
