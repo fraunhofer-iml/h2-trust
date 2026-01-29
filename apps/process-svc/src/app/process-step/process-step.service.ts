@@ -70,13 +70,16 @@ export class ProcessStepService {
     const documents: DocumentEntity[] = [];
     const minio: MinioConfiguration = this.configurationService.getGlobalConfiguration().minio;
 
-    processStep.documents?.forEach((document, index) => {
-      if (document.location) {
-        documents.push({
-          id: document.id,
-          location: `http://${minio.endPoint}:${minio.port}/${minio.bucketName}/${document.location}`,
-          description: `File #${index}`,
-        });
+    processStep.documents?.forEach((document) => {
+      if (document.fileName) {
+        documents.push(
+          new DocumentEntity(
+            document.id,
+            document.fileName,
+            document.transactionHash,
+            `http://${minio.endPoint}:${minio.port}/${minio.bucketName}/${document.fileName}`,
+          ),
+        );
       }
     });
 

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import cuid from 'cuid';
+import { randomUUID } from 'crypto';
 import { Injectable } from '@nestjs/common';
 import { ParsedProductionEntity, StagedProductionEntity } from '@h2-trust/amqp';
 import { PrismaService } from '../prisma.service';
@@ -20,7 +20,7 @@ export class StagedProductionRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async stageParsedProductions(parsedProductions: ParsedProductionEntity[]): Promise<string> {
-    const importId = cuid();
+    const importId = randomUUID();
 
     await this.prismaService.stagedProduction.createMany({
       data: parsedProductions.map(
