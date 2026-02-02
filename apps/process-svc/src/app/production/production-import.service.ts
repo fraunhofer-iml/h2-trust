@@ -34,7 +34,7 @@ import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { AccountingPeriodMatcher } from './accounting-period.matcher';
 import { ProductionAssembler } from './production.assembler';
-import { CsvParserService } from './csv-parser.service';
+import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
 
 @Injectable()
 export class ProductionImportService {
@@ -49,7 +49,6 @@ export class ProductionImportService {
 
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
-    private readonly csvParser: CsvParserService,
     private readonly configurationService: ConfigurationService,
     private readonly stagedProductionRepository: StagedProductionRepository,
     private readonly processStepService: ProcessStepService,
@@ -88,7 +87,7 @@ export class ProductionImportService {
     return Promise.all(
       unitFileReferences.map(async (ufr) => {
         const stream = await this.storageService.downloadFile(ufr.fileName);
-        const accountingPeriods = await this.csvParser.parseStream<T>(stream, headers, ufr.fileName);
+        const accountingPeriods = await AccountingPeriodCsvParser.parseStream<T>(stream, headers, ufr.fileName);
 
         if (accountingPeriods.length < 1) {
           throw new BrokerException(

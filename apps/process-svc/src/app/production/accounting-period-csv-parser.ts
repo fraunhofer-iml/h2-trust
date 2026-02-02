@@ -7,17 +7,15 @@
  */
 
 import { parse } from 'csv-parse';
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Logger } from '@nestjs/common';
 import { AccountingPeriodHydrogen, AccountingPeriodPower, BrokerException } from '@h2-trust/amqp';
 import { DateTimeUtil } from '@h2-trust/utils';
 
-@Injectable()
-export class CsvParserService {
-  static readonly DATE_TIME_REGEX = /^\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2}(:\d{2})?$/;
+export class AccountingPeriodCsvParser {
+  private static readonly logger: Logger = new Logger(AccountingPeriodCsvParser.name);
+  private static readonly dateTimeRegex = /^\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2}(:\d{2})?$/;
 
-  private readonly logger: Logger = new Logger(CsvParserService.name);
-
-  async parseStream<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
+  static async parseStream<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
     stream: NodeJS.ReadableStream,
     columns: string[],
     fileName: string,
@@ -47,7 +45,7 @@ export class CsvParserService {
         if (context.column === 'time') {
           let date: Date | null = null;
 
-          if (CsvParserService.DATE_TIME_REGEX.test(value)) {
+          if (AccountingPeriodCsvParser.dateTimeRegex.test(value)) {
             const [datePart, timePart] = value.split(/\s+/);
             const [day, month, year] = datePart.split('.').map(Number);
             const [hours, minutes, seconds = 0] = timePart.split(':').map(Number);

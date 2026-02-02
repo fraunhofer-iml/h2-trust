@@ -16,7 +16,6 @@ import { ProductionCreationService } from './production-creation.service';
 import { ProductionImportService } from './production-import.service';
 import { ProductionController } from './production.controller';
 import { StagedProductionCleanupModule } from './tasks/staged-production-cleanup.module';
-import { CsvParserService } from './csv-parser.service';
 
 @Module({
   imports: [
@@ -28,6 +27,6 @@ import { CsvParserService } from './csv-parser.service';
     new Broker().getGeneralSvcBroker(),
   ],
   controllers: [ProductionController],
-  providers: [CsvParserService, ProductionCreationService, ProductionImportService],
+  providers: [ProductionCreationService, ProductionImportService],
 })
 export class ProductionModule {}
