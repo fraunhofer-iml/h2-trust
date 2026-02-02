@@ -13,6 +13,7 @@ import {
   AccountingPeriodMatchingResultDto,
   CreateProductionDto,
   ImportSubmissionDto,
+  ProcessedCsvDto,
   ProductionOverviewDto,
 } from '@h2-trust/api';
 import { API } from '../../constants/api-endpoints';
@@ -23,6 +24,10 @@ export class ProductionService {
 
   getProductions() {
     return lastValueFrom(this.httpClient.get<ProductionOverviewDto[]>(API.PRODUCTION.BASE));
+  }
+
+  getUploadedCsvFiles() {
+    return lastValueFrom(this.httpClient.get<ProcessedCsvDto[]>(API.PRODUCTION.CSV));
   }
 
   addProductionData(dto: CreateProductionDto) {

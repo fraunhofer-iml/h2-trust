@@ -13,6 +13,7 @@ import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation
 import {
   CreateProductionDto,
   ImportSubmissionDto,
+  ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   type AuthenticatedKCUser,
@@ -88,6 +89,37 @@ export class ProductionController {
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<ProductionOverviewDto[]> {
     return this.service.readHydrogenProductionsByCompany(authenticatedUser.sub);
+  }
+
+  @Get('csv')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: "Retrieve all csv files for the authenticated user's company.",
+  })
+  async readCsvFilesByUserCompany(
+    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+  ): Promise<ProcessedCsvDto[]> {
+    console.log(authenticatedUser);
+    return [
+      {
+        id: '550e8400-e29b-41d4-a716-446655440000',
+        csvContentType: 'HYDROGEN',
+        endedAt: new Date(),
+        startedAt: new Date(),
+        name: 'Hydrogen Test',
+        uploadedBy: 'Emils Hydrogen GmbH',
+        url: '',
+      },
+      {
+        id: '550e8400-446655440000e29b-41d4-a716',
+        csvContentType: 'POWER',
+        endedAt: new Date(),
+        startedAt: new Date(),
+        name: 'Hydrogen Test',
+        uploadedBy: 'Emils Hydrogen GmbH',
+        url: '',
+      },
+    ];
   }
 
   @Post('csv/import')

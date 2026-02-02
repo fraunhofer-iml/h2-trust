@@ -42,7 +42,8 @@ export const API = {
   },
   PRODUCTION: {
     BASE: PRODUCTION_ENDPOINT,
-    CSV: PRODUCTION_ENDPOINT + 'csv/import',
+    CSV: PRODUCTION_ENDPOINT + 'csv',
+    CSV_IMPORT: PRODUCTION_ENDPOINT + 'csv/import',
     CSV_SUBMIT: PRODUCTION_ENDPOINT + 'csv/submit',
   },
 };
