@@ -81,13 +81,13 @@ export class ProductionService {
     dto: ProductionCSVUploadDto,
     userId: string,
   ) {
-    const powerProductions: UnitFileBundle[] = await this.processFiles(
+    const powerProductions: UnitFileBundle[] = this.createUnitFileBundles(
       powerProductionFiles,
       dto.powerProductionUnitIds,
       BatchType.POWER,
     );
 
-    const hydrogenProductions: UnitFileBundle[] = await this.processFiles(
+    const hydrogenProductions: UnitFileBundle[] = this.createUnitFileBundles(
       hydrogenProductionFiles,
       dto.hydrogenProductionUnitIds,
       BatchType.HYDROGEN,
@@ -100,27 +100,22 @@ export class ProductionService {
     return AccountingPeriodMatchingResultDto.fromEntity(matchingResult);
   }
 
-  private async processFiles(
+  private createUnitFileBundles(
     files: Express.Multer.File[],
     unitIds: string | string[],
     type: BatchType,
-  ): Promise<UnitFileBundle[]> {
+  ): UnitFileBundle[] {
     if (!files || files.length === 0) {
       throw new BadRequestException(`Missing file for ${type} production.`);
     }
 
-    if (unitIds.length < files.length) {
-      throw new BadRequestException(`Missing related unit for ${type} production.`);
+    const normalizedUnitIds = Array.isArray(unitIds) ? unitIds : [unitIds];
+
+    if (normalizedUnitIds.length < files.length) {
+      throw new BadRequestException(`Not enough unit IDs provided for ${type} production files: expected ${files.length}, got ${normalizedUnitIds.length}.`);
     }
 
-    const productionData: UnitFileBundle[] = Array.isArray(unitIds)
-      ? files.map((file, i) => new UnitFileBundle(unitIds[i], file))
-      : files.length
-        ? [new UnitFileBundle(unitIds, files[0])]
-        : [];
-
-
-    return productionData;
+    return files.map((file, i) => new UnitFileBundle(normalizedUnitIds[i], file));
   }
 
   async submitCsvData(dto: ImportSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {

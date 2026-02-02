@@ -89,8 +89,6 @@ export class ProductionImportService {
   ): Promise<UnitDataBundle<T>[]> {
     const headers = this.headersMap[type];
 
-    console.log(bundle[0].file)
-
     const parsedFiles: UnitDataBundle<T>[] = await Promise.all(
       bundle.map(async (bundle) => {
         const parsedFile: T[] = await this.csvParser.parseFile<T>(bundle.file, headers);
