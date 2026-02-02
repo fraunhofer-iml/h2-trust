@@ -25,7 +25,7 @@ import {
   ReadPowerAccessApprovalsPayload,
   StagedProductionEntity,
   StageProductionsPayload,
-  UnitDataBundle,
+  UnitAccountingPeriods,
   UnitFileReference,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
@@ -75,19 +75,19 @@ export class ProductionImportService {
   private async parseUnitFileReferences<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
     unitFileReferences: UnitFileReference[],
     type: BatchType
-  ): Promise<UnitDataBundle<T>[]> {
+  ): Promise<UnitAccountingPeriods<T>[]> {
     const headers = this.headersMap[type];
 
     return Promise.all(
-      unitFileReferences.map(async (bundle) => {
-        const stream: NodeJS.ReadableStream = await this.storageService.downloadFile(bundle.fileName);
-        const data: T[] = await this.csvParser.parseStream<T>(stream, headers, bundle.fileName);
+      unitFileReferences.map(async (ufr) => {
+        const stream = await this.storageService.downloadFile(ufr.fileName);
+        const accountingPeriods = await this.csvParser.parseStream<T>(stream, headers, ufr.fileName);
 
-        if (data.length < 1) {
+        if (accountingPeriods.length < 1) {
           throw new BrokerException(`${type} production file does not contain any valid items.`, HttpStatus.BAD_REQUEST);
         }
 
-        return new UnitDataBundle<T>(bundle.unitId, data);
+        return new UnitAccountingPeriods<T>(ufr.unitId, accountingPeriods);
       }),
     );
   }

@@ -7,15 +7,15 @@
  */
 
 import { AccountingPeriodHydrogen, AccountingPeriodPower } from './accounting-period.entity';
-import { UnitDataBundle } from './unit-data-bundle.entity';
+import { UnitAccountingPeriods } from './unit-accounting-periods.entity';
 
 export class ParsedFileBundles {
-  powerProduction: UnitDataBundle<AccountingPeriodPower>[];
-  hydrogenProduction: UnitDataBundle<AccountingPeriodHydrogen>[];
+  powerProduction: UnitAccountingPeriods<AccountingPeriodPower>[];
+  hydrogenProduction: UnitAccountingPeriods<AccountingPeriodHydrogen>[];
 
   constructor(
-    powerProduction: UnitDataBundle<AccountingPeriodPower>[],
-    hydrogenProduction: UnitDataBundle<AccountingPeriodHydrogen>[],
+    powerProduction: UnitAccountingPeriods<AccountingPeriodPower>[],
+    hydrogenProduction: UnitAccountingPeriods<AccountingPeriodHydrogen>[],
   ) {
     this.powerProduction = powerProduction;
     this.hydrogenProduction = hydrogenProduction;
