@@ -11,9 +11,10 @@ import { Broker } from '@h2-trust/amqp';
 import { UserModule } from '../user/user.module';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
+import { StorageModule } from '@h2-trust/storage';
 
 @Module({
-  imports: [UserModule, new Broker().getGeneralSvcBroker(), new Broker().getProcessSvcBroker()],
+  imports: [StorageModule, UserModule, new Broker().getGeneralSvcBroker(), new Broker().getProcessSvcBroker()],
   controllers: [ProductionController],
   providers: [ProductionService],
 })

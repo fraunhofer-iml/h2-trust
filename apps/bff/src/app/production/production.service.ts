@@ -31,11 +31,14 @@ import {
 } from '@h2-trust/api';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
+import { StorageService } from '@h2-trust/storage';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class ProductionService {
   constructor(
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
+    private readonly storageService: StorageService,
     private readonly userService: UserService,
   ) { }
 
@@ -81,13 +84,13 @@ export class ProductionService {
     dto: ProductionCSVUploadDto,
     userId: string,
   ) {
-    const powerProductions: UnitFileBundle[] = this.createUnitFileBundles(
+    const powerProductions: UnitFileBundle[] = await this.createUnitFileBundles(
       powerProductionFiles,
       dto.powerProductionUnitIds,
       BatchType.POWER,
     );
 
-    const hydrogenProductions: UnitFileBundle[] = this.createUnitFileBundles(
+    const hydrogenProductions: UnitFileBundle[] = await this.createUnitFileBundles(
       hydrogenProductionFiles,
       dto.hydrogenProductionUnitIds,
       BatchType.HYDROGEN,
@@ -100,11 +103,11 @@ export class ProductionService {
     return AccountingPeriodMatchingResultDto.fromEntity(matchingResult);
   }
 
-  private createUnitFileBundles(
+  private async createUnitFileBundles(
     files: Express.Multer.File[],
     unitIds: string | string[],
     type: BatchType,
-  ): UnitFileBundle[] {
+  ): Promise<UnitFileBundle[]> {
     if (!files || files.length === 0) {
       throw new BadRequestException(`Missing file for ${type} production.`);
     }
@@ -115,7 +118,14 @@ export class ProductionService {
       throw new BadRequestException(`Not enough unit IDs provided for ${type} production files: expected ${files.length}, got ${normalizedUnitIds.length}.`);
     }
 
-    return files.map((file, i) => new UnitFileBundle(normalizedUnitIds[i], file));
+    return Promise.all(
+      files.map(async (file, i) => {
+        const fileExtension = file.originalname.split('.').pop().toLowerCase();
+        const fileName = `${randomUUID()}.${fileExtension}`;
+        this.storageService.uploadFile(fileName, file.buffer)
+        return new UnitFileBundle(normalizedUnitIds[i], fileName);
+      })
+    );
   }
 
   async submitCsvData(dto: ImportSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {

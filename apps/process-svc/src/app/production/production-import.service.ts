@@ -18,7 +18,6 @@ import {
   CreateProductionEntity,
   FinalizeStagedProductionsPayload,
   ParsedFileBundles,
-  ParsedProductionEntity,
   ParsedProductionMatchingResultEntity,
   PowerAccessApprovalEntity,
   PowerAccessApprovalPatterns,
@@ -36,6 +35,7 @@ import { ProcessStepService } from '../process-step/process-step.service';
 import { AccountingPeriodMatcher } from './accounting-period.matcher';
 import { ProductionAssembler } from './production.assembler';
 import { CsvParserService } from 'libs/csv-parser/src/lib/csv-parser.service';
+import { StorageService } from '@h2-trust/storage';
 
 @Injectable()
 export class ProductionImportService {
@@ -54,53 +54,42 @@ export class ProductionImportService {
     private readonly configurationService: ConfigurationService,
     private readonly stagedProductionRepository: StagedProductionRepository,
     private readonly processStepService: ProcessStepService,
+    private readonly storageService: StorageService,
   ) {
     this.productionChunkSize = this.configurationService.getProcessSvcConfiguration().productionChunkSize;
   }
 
   async stageProductions(payload: StageProductionsPayload): Promise<ParsedProductionMatchingResultEntity> {
-    // TODO-MP: upload to minio
-
-    const powerProductions = await this.parseBundles<AccountingPeriodPower>(
-      BatchType.POWER,
-      payload.powerProductions,
-    );
-
-    const hydrogenProductions = await this.parseBundles<AccountingPeriodHydrogen>(
-      BatchType.HYDROGEN,
-      payload.hydrogenProductions,
-    );
-
+    const powerProductions = await this.parseUnitFileBundles<AccountingPeriodPower>(payload.powerProductions, BatchType.POWER);
+    const hydrogenProductions = await this.parseUnitFileBundles<AccountingPeriodHydrogen>(payload.hydrogenProductions, BatchType.HYDROGEN);
     const parsedFileBundles = new ParsedFileBundles(powerProductions, hydrogenProductions);
 
     const gridUnitId = await this.fetchGridUnitId(payload.userId);
-    const parsedProductions: ParsedProductionEntity[] = AccountingPeriodMatcher.matchAccountingPeriods(
-      parsedFileBundles,
-      gridUnitId,
-    );
+    const parsedProductions = AccountingPeriodMatcher.matchAccountingPeriods(parsedFileBundles, gridUnitId);
 
     const importId = await this.stagedProductionRepository.stageParsedProductions(parsedProductions);
+
     return new ParsedProductionMatchingResultEntity(importId, parsedProductions);
   }
 
-  async parseBundles<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
-    type: BatchType,
-    bundle: UnitFileBundle[]
+  private async parseUnitFileBundles<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
+    unitFileBundles: UnitFileBundle[],
+    type: BatchType
   ): Promise<UnitDataBundle<T>[]> {
     const headers = this.headersMap[type];
 
-    const parsedFiles: UnitDataBundle<T>[] = await Promise.all(
-      bundle.map(async (bundle) => {
-        const parsedFile: T[] = await this.csvParser.parseFile<T>(bundle.file, headers);
-        return new UnitDataBundle<T>(bundle.unitId, parsedFile);
+    return Promise.all(
+      unitFileBundles.map(async (bundle) => {
+        const stream: NodeJS.ReadableStream = await this.storageService.downloadFile(bundle.fileName);
+        const data: T[] = await this.csvParser.parseStream<T>(stream, headers, bundle.fileName);
+
+        if (data.length < 1) {
+          throw new BrokerException(`${type} production file does not contain any valid items.`, HttpStatus.BAD_REQUEST);
+        }
+
+        return new UnitDataBundle<T>(bundle.unitId, data);
       }),
     );
-
-    if (parsedFiles.some((bundle) => bundle.data.length < 1)) {
-      throw new BrokerException(`${type} production file does not contain any valid items.`, HttpStatus.BAD_REQUEST);
-    }
-
-    return parsedFiles;
   }
 
   async finalizeStagedProductions(payload: FinalizeStagedProductionsPayload): Promise<ProcessStepEntity[]> {

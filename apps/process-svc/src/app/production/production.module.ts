@@ -16,6 +16,7 @@ import { ProductionImportService } from './production-import.service';
 import { ProductionController } from './production.controller';
 import { StagedProductionCleanupModule } from './tasks/staged-production-cleanup.module';
 import { CsvParserModule } from '@h2-trust/csv-parser';
+import { StorageModule } from '@h2-trust/storage';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { CsvParserModule } from '@h2-trust/csv-parser';
     DatabaseModule,
     ProcessStepModule,
     StagedProductionCleanupModule,
+    StorageModule,
     new Broker().getGeneralSvcBroker(),
   ],
   controllers: [ProductionController],
