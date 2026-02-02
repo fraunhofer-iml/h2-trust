@@ -23,10 +23,7 @@ export class CsvParserService {
     fileName: string,
   ): Promise<T[]> {
     if (!fileName.toLowerCase().endsWith('.csv')) {
-      throw new BrokerException(
-        `Invalid file type: expected .csv but got: ${fileName}`,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new BrokerException(`Invalid file type: expected .csv but got: ${fileName}`, HttpStatus.BAD_REQUEST);
     }
 
     let skipped = 0;

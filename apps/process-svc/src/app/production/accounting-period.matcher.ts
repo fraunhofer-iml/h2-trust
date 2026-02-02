@@ -31,7 +31,7 @@ export class AccountingPeriodMatcher {
   static matchAccountingPeriods(
     powerProductions: UnitAccountingPeriods<AccountingPeriodPower>[],
     hydrogenProductions: UnitAccountingPeriods<AccountingPeriodHydrogen>[],
-    gridUnitId: string
+    gridUnitId: string,
   ): ParsedProductionEntity[] {
     this.validateBundles(hydrogenProductions, BatchType.HYDROGEN);
     this.validateBundles(powerProductions, BatchType.POWER);
@@ -126,7 +126,9 @@ export class AccountingPeriodMatcher {
     return powerItemsByDateHour;
   }
 
-  private static normalizeHydrogen(data: UnitAccountingPeriods<AccountingPeriodHydrogen>[]): Map<string, HydrogenItem[]> {
+  private static normalizeHydrogen(
+    data: UnitAccountingPeriods<AccountingPeriodHydrogen>[],
+  ): Map<string, HydrogenItem[]> {
     const hydrogenItemsByDateHour = new Map<string, HydrogenItem[]>();
 
     data.forEach((bundle) => {

@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CsvParserService } from 'libs/csv-parser/src/lib/csv-parser.service';
 import { firstValueFrom } from 'rxjs';
 import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
@@ -30,11 +31,10 @@ import {
 import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
 import { BatchType, PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
+import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { AccountingPeriodMatcher } from './accounting-period.matcher';
 import { ProductionAssembler } from './production.assembler';
-import { CsvParserService } from 'libs/csv-parser/src/lib/csv-parser.service';
-import { StorageService } from '@h2-trust/storage';
 
 @Injectable()
 export class ProductionImportService {
@@ -44,7 +44,7 @@ export class ProductionImportService {
   private readonly headersMap: Record<BatchType, string[]> = {
     POWER: ['time', 'amount'],
     HYDROGEN: ['time', 'amount', 'power'],
-    WATER: []
+    WATER: [],
   };
 
   constructor(
@@ -59,10 +59,20 @@ export class ProductionImportService {
   }
 
   async stageProductions(payload: StageProductionsPayload): Promise<ParsedProductionMatchingResultEntity> {
-    const powerProductions = await this.parseUnitFileReferences<AccountingPeriodPower>(payload.powerProductions, BatchType.POWER);
-    const hydrogenProductions = await this.parseUnitFileReferences<AccountingPeriodHydrogen>(payload.hydrogenProductions, BatchType.HYDROGEN);
+    const powerProductions = await this.parseUnitFileReferences<AccountingPeriodPower>(
+      payload.powerProductions,
+      BatchType.POWER,
+    );
+    const hydrogenProductions = await this.parseUnitFileReferences<AccountingPeriodHydrogen>(
+      payload.hydrogenProductions,
+      BatchType.HYDROGEN,
+    );
     const gridUnitId = await this.fetchGridUnitId(payload.userId);
-    const parsedProductions = AccountingPeriodMatcher.matchAccountingPeriods(powerProductions, hydrogenProductions, gridUnitId);
+    const parsedProductions = AccountingPeriodMatcher.matchAccountingPeriods(
+      powerProductions,
+      hydrogenProductions,
+      gridUnitId,
+    );
 
     const importId = await this.stagedProductionRepository.stageParsedProductions(parsedProductions);
 
@@ -71,7 +81,7 @@ export class ProductionImportService {
 
   private async parseUnitFileReferences<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
     unitFileReferences: UnitFileReference[],
-    type: BatchType
+    type: BatchType,
   ): Promise<UnitAccountingPeriods<T>[]> {
     const headers = this.headersMap[type];
 
@@ -81,7 +91,10 @@ export class ProductionImportService {
         const accountingPeriods = await this.csvParser.parseStream<T>(stream, headers, ufr.fileName);
 
         if (accountingPeriods.length < 1) {
-          throw new BrokerException(`${type} production file does not contain any valid items.`, HttpStatus.BAD_REQUEST);
+          throw new BrokerException(
+            `${type} production file does not contain any valid items.`,
+            HttpStatus.BAD_REQUEST,
+          );
         }
 
         return new UnitAccountingPeriods<T>(ufr.unitId, accountingPeriods);

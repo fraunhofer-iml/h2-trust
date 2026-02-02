@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { randomUUID } from 'crypto';
 import { firstValueFrom } from 'rxjs';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
@@ -30,9 +31,8 @@ import {
   UserDetailsDto,
 } from '@h2-trust/api';
 import { BatchType, ProcessType } from '@h2-trust/domain';
-import { UserService } from '../user/user.service';
 import { StorageService } from '@h2-trust/storage';
-import { randomUUID } from 'crypto';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class ProductionService {
@@ -40,7 +40,7 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly storageService: StorageService,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
   async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
     const payload = new CreateProductionsPayload(
@@ -115,16 +115,18 @@ export class ProductionService {
     const normalizedUnitIds = Array.isArray(unitIds) ? unitIds : [unitIds];
 
     if (normalizedUnitIds.length < files.length) {
-      throw new BadRequestException(`Not enough unit IDs provided for ${type} production files: expected ${files.length}, got ${normalizedUnitIds.length}.`);
+      throw new BadRequestException(
+        `Not enough unit IDs provided for ${type} production files: expected ${files.length}, got ${normalizedUnitIds.length}.`,
+      );
     }
 
     return Promise.all(
       files.map(async (file, i) => {
         const fileExtension = file.originalname.split('.').pop().toLowerCase();
         const fileName = `${randomUUID()}.${fileExtension}`;
-        this.storageService.uploadFile(fileName, file.buffer)
+        this.storageService.uploadFile(fileName, file.buffer);
         return new UnitFileReference(normalizedUnitIds[i], fileName);
-      })
+      }),
     );
   }
 

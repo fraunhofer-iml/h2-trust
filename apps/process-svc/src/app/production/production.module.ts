@@ -9,14 +9,14 @@
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
 import { ConfigurationModule } from '@h2-trust/configuration';
+import { CsvParserModule } from '@h2-trust/csv-parser';
 import { DatabaseModule } from '@h2-trust/database';
+import { StorageModule } from '@h2-trust/storage';
 import { ProcessStepModule } from '../process-step/process-step.module';
 import { ProductionCreationService } from './production-creation.service';
 import { ProductionImportService } from './production-import.service';
 import { ProductionController } from './production.controller';
 import { StagedProductionCleanupModule } from './tasks/staged-production-cleanup.module';
-import { CsvParserModule } from '@h2-trust/csv-parser';
-import { StorageModule } from '@h2-trust/storage';
 
 @Module({
   imports: [

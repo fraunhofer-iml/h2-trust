@@ -8,10 +8,10 @@
 
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
+import { StorageModule } from '@h2-trust/storage';
 import { UserModule } from '../user/user.module';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
-import { StorageModule } from '@h2-trust/storage';
 
 @Module({
   imports: [StorageModule, UserModule, new Broker().getGeneralSvcBroker(), new Broker().getProcessSvcBroker()],
