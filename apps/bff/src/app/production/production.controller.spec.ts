@@ -26,7 +26,6 @@ import {
   ProductionOverviewDto,
   UserDetailsDtoMock,
 } from '@h2-trust/api';
-import { CsvParserModule } from '@h2-trust/csv-parser';
 import { EnergySource, HydrogenColor, PowerProductionType, ProcessType } from '@h2-trust/domain';
 import 'multer';
 import { of } from 'rxjs';
@@ -42,7 +41,7 @@ describe('ProductionController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [CsvParserModule],
+      imports: [],
       controllers: [ProductionController],
       providers: [
         ProductionService,

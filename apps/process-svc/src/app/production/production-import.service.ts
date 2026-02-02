@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CsvParserService } from 'libs/csv-parser/src/lib/csv-parser.service';
 import { firstValueFrom } from 'rxjs';
 import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
@@ -35,6 +34,7 @@ import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { AccountingPeriodMatcher } from './accounting-period.matcher';
 import { ProductionAssembler } from './production.assembler';
+import { CsvParserService } from './csv-parser.service';
 
 @Injectable()
 export class ProductionImportService {
