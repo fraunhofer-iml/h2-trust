@@ -19,7 +19,7 @@ import {
   ProductionMessagePatterns,
   ReadProcessStepsByPredecessorTypesAndCompanyPayload,
   StageProductionsPayload,
-  UnitFileBundle,
+  UnitFileReference,
 } from '@h2-trust/amqp';
 import {
   AccountingPeriodMatchingResultDto,
@@ -84,15 +84,15 @@ export class ProductionService {
     dto: ProductionCSVUploadDto,
     userId: string,
   ) {
-    const powerProductions: UnitFileBundle[] = await this.createUnitFileBundles(
-      powerProductionFiles,
+    const powerProductions: UnitFileReference[] = await this.createUnitFileReferences(
       dto.powerProductionUnitIds,
+      powerProductionFiles,
       BatchType.POWER,
     );
 
-    const hydrogenProductions: UnitFileBundle[] = await this.createUnitFileBundles(
-      hydrogenProductionFiles,
+    const hydrogenProductions: UnitFileReference[] = await this.createUnitFileReferences(
       dto.hydrogenProductionUnitIds,
+      hydrogenProductionFiles,
       BatchType.HYDROGEN,
     );
 
@@ -103,11 +103,11 @@ export class ProductionService {
     return AccountingPeriodMatchingResultDto.fromEntity(matchingResult);
   }
 
-  private async createUnitFileBundles(
-    files: Express.Multer.File[],
+  private async createUnitFileReferences(
     unitIds: string | string[],
+    files: Express.Multer.File[],
     type: BatchType,
-  ): Promise<UnitFileBundle[]> {
+  ): Promise<UnitFileReference[]> {
     if (!files || files.length === 0) {
       throw new BadRequestException(`Missing file for ${type} production.`);
     }
@@ -123,7 +123,7 @@ export class ProductionService {
         const fileExtension = file.originalname.split('.').pop().toLowerCase();
         const fileName = `${randomUUID()}.${fileExtension}`;
         this.storageService.uploadFile(fileName, file.buffer)
-        return new UnitFileBundle(normalizedUnitIds[i], fileName);
+        return new UnitFileReference(normalizedUnitIds[i], fileName);
       })
     );
   }

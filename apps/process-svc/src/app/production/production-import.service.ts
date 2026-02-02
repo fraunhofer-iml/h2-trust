@@ -26,7 +26,7 @@ import {
   StagedProductionEntity,
   StageProductionsPayload,
   UnitDataBundle,
-  UnitFileBundle,
+  UnitFileReference,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
@@ -60,8 +60,8 @@ export class ProductionImportService {
   }
 
   async stageProductions(payload: StageProductionsPayload): Promise<ParsedProductionMatchingResultEntity> {
-    const powerProductions = await this.parseUnitFileBundles<AccountingPeriodPower>(payload.powerProductions, BatchType.POWER);
-    const hydrogenProductions = await this.parseUnitFileBundles<AccountingPeriodHydrogen>(payload.hydrogenProductions, BatchType.HYDROGEN);
+    const powerProductions = await this.parseUnitFileReferences<AccountingPeriodPower>(payload.powerProductions, BatchType.POWER);
+    const hydrogenProductions = await this.parseUnitFileReferences<AccountingPeriodHydrogen>(payload.hydrogenProductions, BatchType.HYDROGEN);
     const parsedFileBundles = new ParsedFileBundles(powerProductions, hydrogenProductions);
 
     const gridUnitId = await this.fetchGridUnitId(payload.userId);
@@ -72,14 +72,14 @@ export class ProductionImportService {
     return new ParsedProductionMatchingResultEntity(importId, parsedProductions);
   }
 
-  private async parseUnitFileBundles<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
-    unitFileBundles: UnitFileBundle[],
+  private async parseUnitFileReferences<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
+    unitFileReferences: UnitFileReference[],
     type: BatchType
   ): Promise<UnitDataBundle<T>[]> {
     const headers = this.headersMap[type];
 
     return Promise.all(
-      unitFileBundles.map(async (bundle) => {
+      unitFileReferences.map(async (bundle) => {
         const stream: NodeJS.ReadableStream = await this.storageService.downloadFile(bundle.fileName);
         const data: T[] = await this.csvParser.parseStream<T>(stream, headers, bundle.fileName);
 

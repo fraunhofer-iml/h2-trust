@@ -8,7 +8,7 @@
 
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class UnitFileBundle {
+export class UnitFileReference {
   @IsString()
   @IsNotEmpty()
   unitId: string;

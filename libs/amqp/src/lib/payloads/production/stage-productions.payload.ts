@@ -8,26 +8,26 @@
 
 import { Type } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
-import { UnitFileBundle } from '../../entities';
+import { UnitFileReference } from '../../entities';
 
 export class StageProductionsPayload {
   @IsArray()
   @ArrayNotEmpty()
   @ValidateNested({ each: true })
-  @Type(() => UnitFileBundle)
-  powerProductions: UnitFileBundle[];
+  @Type(() => UnitFileReference)
+  powerProductions: UnitFileReference[];
 
   @IsArray()
   @ArrayNotEmpty()
   @ValidateNested({ each: true })
-  @Type(() => UnitFileBundle)
-  hydrogenProductions: UnitFileBundle[];
+  @Type(() => UnitFileReference)
+  hydrogenProductions: UnitFileReference[];
 
   @IsString()
   @IsNotEmpty()
   userId: string;
 
-  constructor(powerProductions: UnitFileBundle[], hydrogenProductions: UnitFileBundle[], userId: string) {
+  constructor(powerProductions: UnitFileReference[], hydrogenProductions: UnitFileReference[], userId: string) {
     this.powerProductions = powerProductions;
     this.hydrogenProductions = hydrogenProductions;
     this.userId = userId;
