@@ -17,7 +17,6 @@ import {
   CreateManyProcessStepsPayload,
   CreateProductionEntity,
   FinalizeStagedProductionsPayload,
-  ParsedFileBundles,
   ParsedProductionMatchingResultEntity,
   PowerAccessApprovalEntity,
   PowerAccessApprovalPatterns,
@@ -62,10 +61,8 @@ export class ProductionImportService {
   async stageProductions(payload: StageProductionsPayload): Promise<ParsedProductionMatchingResultEntity> {
     const powerProductions = await this.parseUnitFileReferences<AccountingPeriodPower>(payload.powerProductions, BatchType.POWER);
     const hydrogenProductions = await this.parseUnitFileReferences<AccountingPeriodHydrogen>(payload.hydrogenProductions, BatchType.HYDROGEN);
-    const parsedFileBundles = new ParsedFileBundles(powerProductions, hydrogenProductions);
-
     const gridUnitId = await this.fetchGridUnitId(payload.userId);
-    const parsedProductions = AccountingPeriodMatcher.matchAccountingPeriods(parsedFileBundles, gridUnitId);
+    const parsedProductions = AccountingPeriodMatcher.matchAccountingPeriods(powerProductions, hydrogenProductions, gridUnitId);
 
     const importId = await this.stagedProductionRepository.stageParsedProductions(parsedProductions);
 
