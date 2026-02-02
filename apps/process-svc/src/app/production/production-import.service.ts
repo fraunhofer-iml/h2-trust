@@ -10,11 +10,14 @@ import { firstValueFrom } from 'rxjs';
 import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
+  AccountingPeriodHydrogen,
+  AccountingPeriodPower,
   BrokerException,
   BrokerQueues,
   CreateManyProcessStepsPayload,
   CreateProductionEntity,
   FinalizeStagedProductionsPayload,
+  ParsedFileBundles,
   ParsedProductionEntity,
   ParsedProductionMatchingResultEntity,
   PowerAccessApprovalEntity,
@@ -23,21 +26,31 @@ import {
   ReadPowerAccessApprovalsPayload,
   StagedProductionEntity,
   StageProductionsPayload,
+  UnitDataBundle,
+  UnitFileBundle,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
-import { PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
+import { BatchType, PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { AccountingPeriodMatcher } from './accounting-period.matcher';
 import { ProductionAssembler } from './production.assembler';
+import { CsvParserService } from 'libs/csv-parser/src/lib/csv-parser.service';
 
 @Injectable()
 export class ProductionImportService {
   private readonly logger = new Logger(ProductionImportService.name);
   private readonly productionChunkSize: number;
 
+  private readonly headersMap: Record<BatchType, string[]> = {
+    POWER: ['time', 'amount'],
+    HYDROGEN: ['time', 'amount', 'power'],
+    WATER: []
+  };
+
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
+    private readonly csvParser: CsvParserService,
     private readonly configurationService: ConfigurationService,
     private readonly stagedProductionRepository: StagedProductionRepository,
     private readonly processStepService: ProcessStepService,
@@ -46,14 +59,50 @@ export class ProductionImportService {
   }
 
   async stageProductions(payload: StageProductionsPayload): Promise<ParsedProductionMatchingResultEntity> {
+    // TODO-MP: upload to minio
+
+    const powerProductions = await this.parseBundles<AccountingPeriodPower>(
+      BatchType.POWER,
+      payload.powerProductions,
+    );
+
+    const hydrogenProductions = await this.parseBundles<AccountingPeriodHydrogen>(
+      BatchType.HYDROGEN,
+      payload.hydrogenProductions,
+    );
+
+    const parsedFileBundles = new ParsedFileBundles(powerProductions, hydrogenProductions);
+
     const gridUnitId = await this.fetchGridUnitId(payload.userId);
     const parsedProductions: ParsedProductionEntity[] = AccountingPeriodMatcher.matchAccountingPeriods(
-      payload.data,
+      parsedFileBundles,
       gridUnitId,
     );
 
     const importId = await this.stagedProductionRepository.stageParsedProductions(parsedProductions);
     return new ParsedProductionMatchingResultEntity(importId, parsedProductions);
+  }
+
+  async parseBundles<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
+    type: BatchType,
+    bundle: UnitFileBundle[]
+  ): Promise<UnitDataBundle<T>[]> {
+    const headers = this.headersMap[type];
+
+    console.log(bundle[0].file)
+
+    const parsedFiles: UnitDataBundle<T>[] = await Promise.all(
+      bundle.map(async (bundle) => {
+        const parsedFile: T[] = await this.csvParser.parseFile<T>(bundle.file, headers);
+        return new UnitDataBundle<T>(bundle.unitId, parsedFile);
+      }),
+    );
+
+    if (parsedFiles.some((bundle) => bundle.data.length < 1)) {
+      throw new BrokerException(`${type} production file does not contain any valid items.`, HttpStatus.BAD_REQUEST);
+    }
+
+    return parsedFiles;
   }
 
   async finalizeStagedProductions(payload: FinalizeStagedProductionsPayload): Promise<ProcessStepEntity[]> {

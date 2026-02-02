@@ -15,10 +15,12 @@ import { ProductionCreationService } from './production-creation.service';
 import { ProductionImportService } from './production-import.service';
 import { ProductionController } from './production.controller';
 import { StagedProductionCleanupModule } from './tasks/staged-production-cleanup.module';
+import { CsvParserModule } from '@h2-trust/csv-parser';
 
 @Module({
   imports: [
     ConfigurationModule,
+    CsvParserModule,
     DatabaseModule,
     ProcessStepModule,
     StagedProductionCleanupModule,

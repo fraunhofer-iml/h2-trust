@@ -32,12 +32,13 @@ export class CsvParserService {
       );
     }
 
-    const buffer = file.buffer.toString();
+    const rawBuffer = this.toBuffer(file.buffer);
+    const buffer = rawBuffer.toString();
 
     const firstLine = buffer
       .split('\n')[0]
       .split(',')
-      .map((h) => h.trim());
+      .map((h) => h.trim().replace(/^\uFEFF/, ''));
     for (const column of columns) {
       if (!firstLine.includes(column)) {
         throw new BrokerException(`Missing required column: ${column}`, HttpStatus.BAD_REQUEST);
@@ -115,5 +116,24 @@ export class CsvParserService {
         },
       );
     });
+  }
+
+  private toBuffer(value: unknown): Buffer {
+    if (Buffer.isBuffer(value)) {
+      return value;
+    }
+
+    if (typeof value === 'string') {
+      return Buffer.from(value);
+    }
+
+    if (value && typeof value === 'object') {
+      const maybeBuffer = value as { type?: string; data?: number[] };
+      if (maybeBuffer.type === 'Buffer' && Array.isArray(maybeBuffer.data)) {
+        return Buffer.from(maybeBuffer.data);
+      }
+    }
+
+    return Buffer.from('');
   }
 }

@@ -7,9 +7,14 @@
  */
 
 import 'multer';
+import { IsDefined, IsNotEmpty, IsString } from 'class-validator';
 
 export class UnitFileBundle {
+  @IsString()
+  @IsNotEmpty()
   unitId: string;
+
+  @IsDefined()
   file: Express.Multer.File;
 
   constructor(unitId: string, file: Express.Multer.File) {
