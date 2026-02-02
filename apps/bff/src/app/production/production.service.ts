@@ -84,13 +84,13 @@ export class ProductionService {
     dto: ProductionCSVUploadDto,
     userId: string,
   ) {
-    const powerProductions: UnitFileReference[] = await this.createUnitFileReferences(
+    const powerProductions = await this.uploadAndMapFilesToUnits(
       dto.powerProductionUnitIds,
       powerProductionFiles,
       BatchType.POWER,
     );
 
-    const hydrogenProductions: UnitFileReference[] = await this.createUnitFileReferences(
+    const hydrogenProductions = await this.uploadAndMapFilesToUnits(
       dto.hydrogenProductionUnitIds,
       hydrogenProductionFiles,
       BatchType.HYDROGEN,
@@ -103,7 +103,7 @@ export class ProductionService {
     return AccountingPeriodMatchingResultDto.fromEntity(matchingResult);
   }
 
-  private async createUnitFileReferences(
+  private async uploadAndMapFilesToUnits(
     unitIds: string | string[],
     files: Express.Multer.File[],
     type: BatchType,
