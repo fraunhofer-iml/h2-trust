@@ -49,8 +49,22 @@ export class SidebarComponent implements OnInit {
     {
       title: 'Production',
       icon: 'manufacturing',
-      route: ROUTES.PRODUCTION,
-      isActive: () => this.router.url.split('/')[1] === ROUTES.PRODUCTION,
+      route: null,
+      isActive: () => false,
+      children: [
+        {
+          title: 'Uploads',
+          icon: 'files',
+          route: ROUTES.PRODUCTION_FILES,
+          isActive: () => this.router.url.split('/')[2] === 'files',
+        },
+        {
+          title: 'Generated Productions',
+          icon: 'table',
+          route: ROUTES.PRODUCTION_DATA,
+          isActive: () => this.router.url.split('/')[2] === 'data',
+        },
+      ],
     },
     {
       title: 'Bottling',
