@@ -94,7 +94,7 @@ export class ProductionController {
   @UseInterceptors(
     FileFieldsInterceptor([{ name: FileUploadKeys.POWER_PRODUCTION }, { name: FileUploadKeys.HYDROGEN_PRODUCTION }]),
   )
-  importCsv(
+  importCsvFile(
     @Body() dto: ProductionCSVUploadDto,
     @UploadedFiles()
     files: {
@@ -103,7 +103,7 @@ export class ProductionController {
     },
     @AuthenticatedUser() user: AuthenticatedKCUser,
   ) {
-    return this.service.importCSV(
+    return this.service.importCsvFiles(
       files[FileUploadKeys.POWER_PRODUCTION],
       files[FileUploadKeys.HYDROGEN_PRODUCTION],
       dto,
@@ -113,7 +113,7 @@ export class ProductionController {
 
   @Post('csv/submit')
   @ApiBearerAuth()
-  submitCsvImport(@Body() dto: ImportSubmissionDto, @AuthenticatedUser() user: AuthenticatedKCUser) {
+  submitCsvData(@Body() dto: ImportSubmissionDto, @AuthenticatedUser() user: AuthenticatedKCUser) {
     return this.service.submitCsvData(dto, user.sub);
   }
 }

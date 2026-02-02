@@ -75,7 +75,7 @@ export class ProductionService {
     return productions.map(ProductionOverviewDto.fromEntity);
   }
 
-  async importCSV(
+  async importCsvFiles(
     powerProductionFiles: Express.Multer.File[],
     hydrogenProductionFiles: Express.Multer.File[],
     dto: ProductionCSVUploadDto,
