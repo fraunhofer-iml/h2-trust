@@ -60,7 +60,7 @@ services:
 
   blockchain:
     build:
-      context: ./libs/blockchain/src/network
+      context: ./docker/blockchain
       dockerfile: Dockerfile
     depends_on:
       minio-setup:
