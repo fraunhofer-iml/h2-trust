@@ -1,4 +1,11 @@
-<div class="flex min-w-24 max-w-24 flex-row items-center gap-2 rounded-md px-2 py-1" [ngClass]="getChipColor()">
-  <div class="h-2 w-2 rounded-lg" [ngClass]="getDotColor()"></div>
-  <span class="text-center">{{ color() ?? 'unknown' | titlecase }}</span>
-</div>
+@if (color()) {
+  <div class="flex min-w-24 max-w-24 flex-row items-center gap-2 rounded-md px-2 py-1" [ngClass]="getChipColor()">
+    <div class="h-2 w-2 rounded-lg" [ngClass]="getDotColor()"></div>
+    <span class="text-center">{{ color() ?? 'unknown' | titlecase }}</span>
+  </div>
+} @else if (fileType()) {
+  <div class="flex w-fit flex-row items-center gap-2 rounded-md px-2 py-1" [ngClass]="getFileChipColor()">
+    <div class="h-2 w-2 rounded-lg" [ngClass]="getFileDotColor()"></div>
+    <span class="text-center">{{ fileType() ?? '' | titlecase }} Production</span>
+  </div>
+}

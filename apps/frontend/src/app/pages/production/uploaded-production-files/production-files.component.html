@@ -1,22 +1,20 @@
 <div class="flex flex-col gap-4 p-8">
-  <div class="flex-file flex justify-between">
-    <h2 class="text-lg text-neutral-500">Uploaded Files</h2>
-  </div>
+  <h2 class="text-lg text-neutral-500">Uploaded Files</h2>
 
-  <div class="flex-file flex w-full justify-between">
-    <mat-form-field appearance="outline" class="w-[28rem]">
-      <mat-label>Search by file or company name</mat-label>
-      <input matInput placeholder="Hydrog...." [formControl]="searchControl" />
-      @if (searchControl.value) {
-        <button matSuffix matIconButton aria-label="Clear" (click)="searchControl.patchValue(null)">
-          <span matSuffix class="material-symbols-outlined pr-2">close</span>
-        </button>
-      }
-    </mat-form-field>
-    <div class="flex items-center justify-end gap-2">
+  <div class="flex w-full items-center justify-between">
+    <div class="flex items-center gap-2">
+      <mat-form-field appearance="outline" class="w-[28rem]">
+        <mat-label>Search by file or company name</mat-label>
+        <input matInput placeholder="Hydrog...." [formControl]="searchControl" />
+        @if (searchControl.value) {
+          <button matSuffix matIconButton aria-label="Clear" (click)="searchControl.patchValue(null)">
+            <span class="material-symbols-outlined pr-2">close</span>
+          </button>
+        }
+      </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Type</mat-label>
-        <mat-select [value]="typeToShow$()" (selectionChange)="this.typeToShow$.set($event.value)">
+        <mat-select [value]="selecteType$()" (selectionChange)="this.selecteType$.set($event.value)">
           <mat-option *ngFor="let type of displayCsvContentTypes" [value]="type.value"> {{ type.name }} </mat-option>
         </mat-select>
       </mat-form-field>
@@ -27,16 +25,16 @@
           <input
             matStartDate
             placeholder="Start date"
-            [value]="startDate()"
-            (dateChange)="startDate.set($event.value)"
+            [value]="startDate$()"
+            (dateChange)="startDate$.set($event.value)"
           />
-          <input matEndDate placeholder="End date" [value]="endDate()" (dateChange)="endDate.set($event.value)" />
+          <input matEndDate placeholder="End date" [value]="endDate$()" (dateChange)="endDate$.set($event.value)" />
         </mat-date-range-input>
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-date-range-picker #picker></mat-date-range-picker>
       </mat-form-field>
-      <button mat-stroked-button (click)="clearFilters()">Clear</button>
     </div>
+    <button mat-flat-button (click)="clearFilters()" class="flex flex-row items-center">Clear filters</button>
   </div>
   <mat-divider></mat-divider>
 
@@ -47,7 +45,7 @@
           <th mat-header-cell *matHeaderCellDef><div class="bold">Name</div></th>
           <td mat-cell *matCellDef="let file">
             {{ file.name }}
-            <p class="text.sm text-neutral-500">{{ file.id }}</p>
+            <p class="text-sm text-neutral-500">{{ file.id }}</p>
           </td>
         </ng-container>
 
@@ -71,16 +69,7 @@
         <ng-container matColumnDef="type">
           <th mat-header-cell *matHeaderCellDef><div class="bold">Type</div></th>
           <td mat-cell *matCellDef="let file">
-            <div
-              class="flex-file flex w-fit items-center gap-2 rounded-lg border-[1px] px-2 py-1 text-sm"
-              [ngClass]="
-                file.csvContentType === 'HYDROGEN'
-                  ? '!bg-secondary-100 border-secondary-200 text-secondary-600'
-                  : '!bg-primary-100 border-primary-200 text-primary-600'
-              "
-            >
-              {{ file.csvContentType | titlecase }} Production
-            </div>
+            <app-h2-color-chip [fileType]="file.csvContentType"></app-h2-color-chip>
           </td>
         </ng-container>
 

@@ -17,6 +17,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { CsvContentType, ProcessedCsvDto } from '@h2-trust/api';
 import { MeasurementUnit } from '@h2-trust/domain';
+import { H2ColorChipComponent } from '../../../layout/h2-color-chip/h2-color-chip.component';
 import { ICONS } from '../../../shared/constants/icons';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { ProductionService } from '../../../shared/services/production/production.service';
@@ -40,6 +41,7 @@ import { ProductionService } from '../../../shared/services/production/productio
     MatSelectModule,
     UnitPipe,
     MatSortModule,
+    H2ColorChipComponent,
   ],
   providers: [ProductionService, provideNativeDateAdapter()],
   templateUrl: './production-files.component.html',
@@ -57,10 +59,10 @@ export class ProductionFilesComponent implements AfterViewInit {
   productionService = inject(ProductionService);
 
   dataSource: MatTableDataSource<ProcessedCsvDto> = new MatTableDataSource<ProcessedCsvDto>();
-  typeToShow$ = signal<CsvContentType | null>(null);
-  startDate = signal<Date | null>(null);
-  endDate = signal<Date | null>(null);
-  searchTerm = signal<string>('');
+  selecteType$ = signal<CsvContentType | null>(null);
+  startDate$ = signal<Date | null>(null);
+  endDate$ = signal<Date | null>(null);
+  searchValue$ = signal<string>('');
 
   searchControl = new FormControl<string>('');
 
@@ -77,10 +79,10 @@ export class ProductionFilesComponent implements AfterViewInit {
   datasource$ = computed(() => {
     let data = this.upoadsQuery.data() ?? [];
 
-    const typeToShow = this.typeToShow$();
-    const start = this.startDate();
-    const end = this.endDate();
-    const search = this.searchTerm();
+    const typeToShow = this.selecteType$();
+    const start = this.startDate$();
+    const end = this.endDate$();
+    const search = this.searchValue$();
 
     if (typeToShow) data = data.filter((item) => item.csvContentType === typeToShow);
 
@@ -101,7 +103,7 @@ export class ProductionFilesComponent implements AfterViewInit {
 
   constructor() {
     this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((value) => {
-      this.searchTerm.set((value ?? '').toLowerCase());
+      this.searchValue$.set((value ?? '').toLowerCase());
     });
     effect(() => {
       this.dataSource.data = this.datasource$();
@@ -115,8 +117,8 @@ export class ProductionFilesComponent implements AfterViewInit {
 
   clearFilters() {
     this.searchControl.patchValue(null);
-    this.startDate.set(null);
-    this.endDate.set(null);
-    this.typeToShow$.set(null);
+    this.startDate$.set(null);
+    this.endDate$.set(null);
+    this.selecteType$.set(null);
   }
 }

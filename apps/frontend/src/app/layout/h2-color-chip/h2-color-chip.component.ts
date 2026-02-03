@@ -9,6 +9,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { CsvContentType } from '@h2-trust/api';
 
 @Component({
   selector: 'app-h2-color-chip',
@@ -17,15 +18,12 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class H2ColorChipComponent {
   color = input<string>();
+  fileType = input<CsvContentType>();
 
   getChipColor(): string {
     switch (this.color()) {
       case 'GREEN':
         return 'text-h2-green-text bg-h2-green/20 border-h2-green/10';
-      case 'PINK':
-        return 'text-h2-pink-text bg-h2-pink/20 border-h2-pink/10';
-      case 'ORANGE':
-        return 'text-h2-orange-text bg-h2-orange/20 border-h2-orange/10';
       case 'YELLOW':
         return 'text-h2-yellow-text bg-h2-yellow/20 border-h2-yellow/10';
       default:
@@ -33,14 +31,32 @@ export class H2ColorChipComponent {
     }
   }
 
+  getFileChipColor(): string {
+    switch (this.fileType()) {
+      case 'HYDROGEN':
+        return 'text-primary-700 bg-primary-200 border-primary-200';
+      case 'POWER':
+        return 'text-secondary-700 bg-secondary-200 border-secondary-200';
+      default:
+        return ' text-neutral-600 bg-neutral-600/20 border-neutral-600/10';
+    }
+  }
+
+  getFileDotColor() {
+    switch (this.fileType()) {
+      case 'HYDROGEN':
+        return 'bg-primary-700';
+      case 'POWER':
+        return 'bg-secondary-700';
+      default:
+        return 'bg-neutral-600';
+    }
+  }
+
   getDotColor() {
     switch (this.color()) {
       case 'GREEN':
         return 'bg-h2-green-text';
-      case 'PINK':
-        return 'bg-h2-pink-text';
-      case 'ORANGE':
-        return 'bg-h2-orange-text';
       case 'YELLOW':
         return 'bg-h2-yellow-text';
       default:
