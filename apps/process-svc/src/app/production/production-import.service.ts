@@ -84,16 +84,18 @@ export class ProductionImportService {
 
     return Promise.all(
       unitFileReferences.map(async (ufr) => {
-        const stream = await this.storageService.downloadFile(ufr.fileName);
-        const passThrough = new PassThrough();
-        stream.pipe(passThrough);
+        const downloadingStream = await this.storageService.downloadFile(ufr.fileName);
+        const parsingStream = new PassThrough();
+        downloadingStream.on('error', (err) => parsingStream.destroy(err));
+        downloadingStream.pipe(parsingStream);
 
         const [hash, accountingPeriods] = await Promise.all([
-          HashUtil.hashStream(stream),
-          AccountingPeriodCsvParser.parseStream<T>(passThrough, headers, ufr.fileName),
+          HashUtil.hashStream(downloadingStream),
+          AccountingPeriodCsvParser.parseStream<T>(parsingStream, headers, ufr.fileName),
         ]);
 
-        this.logger.log('Computed hash:', hash); // TODO-MP: hash will be later stored in a smart contract
+        // TODO-MP: the hash will be later stored in a smart contract
+        this.logger.log(`Computed hash: ${hash}`);
 
         if (accountingPeriods.length < 1) {
           throw new BrokerException(
