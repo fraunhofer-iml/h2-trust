@@ -32,9 +32,9 @@ import { StagedProductionRepository } from '@h2-trust/database';
 import { BatchType, PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step/process-step.service';
+import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
 import { AccountingPeriodMatcher } from './accounting-period-matcher';
 import { ProductionAssembler } from './production.assembler';
-import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
 
 @Injectable()
 export class ProductionImportService {

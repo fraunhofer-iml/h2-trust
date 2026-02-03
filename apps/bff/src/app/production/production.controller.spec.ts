@@ -29,10 +29,10 @@ import {
 import { EnergySource, HydrogenColor, PowerProductionType, ProcessType } from '@h2-trust/domain';
 import 'multer';
 import { of } from 'rxjs';
+import { StorageModule } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
-import { StorageModule } from '@h2-trust/storage';
 
 describe('ProductionController', () => {
   let controller: ProductionController;
