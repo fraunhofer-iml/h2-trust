@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { PassThrough } from 'stream';
 import { firstValueFrom } from 'rxjs';
 import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
@@ -27,6 +28,7 @@ import {
   UnitAccountingPeriods,
   UnitFileReference,
 } from '@h2-trust/amqp';
+import { HashUtil } from '@h2-trust/blockchain';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
 import { BatchType, PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
@@ -82,8 +84,18 @@ export class ProductionImportService {
 
     return Promise.all(
       unitFileReferences.map(async (ufr) => {
-        const stream = await this.storageService.downloadFile(ufr.fileName);
-        const accountingPeriods = await AccountingPeriodCsvParser.parseStream<T>(stream, headers, ufr.fileName);
+        const downloadingStream = await this.storageService.downloadFile(ufr.fileName);
+        const parsingStream = new PassThrough();
+        downloadingStream.on('error', (err) => parsingStream.destroy(err));
+        downloadingStream.pipe(parsingStream);
+
+        const [hash, accountingPeriods] = await Promise.all([
+          HashUtil.hashStream(downloadingStream),
+          AccountingPeriodCsvParser.parseStream<T>(parsingStream, headers, ufr.fileName),
+        ]);
+
+        // TODO-MP: the hash will be later stored in a smart contract
+        this.logger.log(`Computed hash: ${hash}`);
 
         if (accountingPeriods.length < 1) {
           throw new BrokerException(
