@@ -1,4 +1,4 @@
-FROM hyperledger/besu:24.8.0-amd64
+FROM hyperledger/besu:26.1.0-amd64
 
 COPY genesis.json /opt/besu/data/
 
