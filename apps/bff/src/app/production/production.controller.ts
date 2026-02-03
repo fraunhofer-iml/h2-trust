@@ -104,20 +104,22 @@ export class ProductionController {
       {
         id: '550e8400-e29b-41d4-a716-446655440000',
         csvContentType: 'HYDROGEN',
-        endedAt: new Date(),
-        startedAt: new Date(),
+        endedAt: new Date(2026, 1, 4),
+        startedAt: new Date(2026, 1, 1),
         name: 'Hydrogen Test',
         uploadedBy: 'Emils Hydrogen GmbH',
         url: '',
+        amount: 30,
       },
       {
         id: '550e8400-446655440000e29b-41d4-a716',
         csvContentType: 'POWER',
-        endedAt: new Date(),
-        startedAt: new Date(),
+        endedAt: new Date(2026, 1, 2),
+        startedAt: new Date(2026, 1, 2),
         name: 'Hydrogen Test',
         uploadedBy: 'Emils Hydrogen GmbH',
         url: '',
+        amount: 415,
       },
     ];
   }

@@ -4,10 +4,11 @@ export class ProcessedCsvDto {
   id: string;
   url: string;
   name: string;
-  uploadedBy: string; // compnay name
+  uploadedBy: string; // company name
   startedAt: Date;
   endedAt: Date;
   csvContentType: CsvContentType;
+  amount: number;
 
   // TODO: add amount
   constructor(
@@ -18,6 +19,7 @@ export class ProcessedCsvDto {
     startedAt: Date,
     endedAt: Date,
     csvContentType: CsvContentType,
+    amount: number,
   ) {
     this.id = id;
     this.url = url;
@@ -26,5 +28,6 @@ export class ProcessedCsvDto {
     this.startedAt = startedAt;
     this.endedAt = endedAt;
     this.csvContentType = csvContentType;
+    this.amount = amount;
   }
 }
