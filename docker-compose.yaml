@@ -54,6 +54,21 @@ services:
         mc anonymous set download local/h2-trust
       fi && echo '### MinIO setup ended' "
 
+  ##############
+  # BLOCKCHAIN #
+  ##############
+
+  blockchain:
+    build:
+      context: ./libs/blockchain/src/network
+      dockerfile: Dockerfile
+    depends_on:
+      minio-setup:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    ports:
+      - '8545:8545'
+
   #########
   # UTILS #
   #########
