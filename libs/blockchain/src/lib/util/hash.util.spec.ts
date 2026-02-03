@@ -53,7 +53,7 @@ describe('HashUtil', () => {
       const givenStream = Readable.from(Buffer.from('hello world'));
       const givenStoredHash = 'b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9';
 
-      const actualResult = await HashUtil.verifyStreamWithHash(givenStream, givenStoredHash);
+      const actualResult = await HashUtil.verifyStreamWithStoredHash(givenStream, givenStoredHash);
 
       expect(actualResult).toBe(true);
     });
@@ -62,7 +62,7 @@ describe('HashUtil', () => {
       const givenStream = Readable.from(Buffer.from('hello world'));
       const givenStoredHash = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
 
-      const actualResult = await HashUtil.verifyStreamWithHash(givenStream, givenStoredHash);
+      const actualResult = await HashUtil.verifyStreamWithStoredHash(givenStream, givenStoredHash);
 
       expect(actualResult).toBe(false);
     });

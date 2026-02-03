@@ -21,7 +21,7 @@ export class HashUtil {
     });
   }
 
-  static async verifyStreamWithHash(stream: Readable, storedHash: string): Promise<boolean> {
+  static async verifyStreamWithStoredHash(stream: Readable, storedHash: string): Promise<boolean> {
     const computedHash = await HashUtil.hashStream(stream);
 
     if (computedHash.length !== storedHash.length) {
