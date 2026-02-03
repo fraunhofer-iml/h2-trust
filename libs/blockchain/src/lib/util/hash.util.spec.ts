@@ -44,8 +44,7 @@ describe('HashUtil', () => {
       });
 
       // act & assert
-      await expect(HashUtil.hashStream(givenStream))
-        .rejects.toThrow('stream error');
+      await expect(HashUtil.hashStream(givenStream)).rejects.toThrow('stream error');
     });
   });
 
