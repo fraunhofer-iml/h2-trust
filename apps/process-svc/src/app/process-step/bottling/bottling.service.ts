@@ -117,7 +117,7 @@ export class BottlingService {
   }
 
   private async addDocumentToProcessStep(file: Express.Multer.File, processStepId: string): Promise<DocumentEntity> {
-    await this.storageService.uploadFile(file.originalname, Buffer.from(file.buffer));
+    await this.storageService.uploadPdfFile(file.originalname, Buffer.from(file.buffer));
 
     return this.documentRepository.addDocumentToProcessStep(
       new DocumentEntity(undefined, file.originalname),

@@ -27,6 +27,12 @@ export class StorageService {
     return this.client.putObject(this.bucketName, fileName, file, file.length);
   }
 
+  async uploadPdfFile(fileName: string, file: Buffer) {
+    return this.client.putObject(this.bucketName, fileName, file, file.length, {
+      'Content-Type': 'application/pdf',
+    });
+  }
+
   async downloadFile(fileName: string) {
     return this.client.getObject(this.bucketName, fileName);
   }

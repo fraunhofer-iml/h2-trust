@@ -31,6 +31,8 @@ import {
   AccountingPeriodMatchingResultDto,
   CreateProductionDto,
   ImportSubmissionDto,
+  ProcessedCsvDto,
+  ProcessedCsvDtoMock,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   UserDetailsDto,
@@ -123,6 +125,11 @@ export class ProductionService {
       this.processSvc.send<ProcessStepEntity[]>(ProductionMessagePatterns.FINALIZE, payload),
     );
     return processSteps.map(ProductionOverviewDto.fromEntity);
+  }
+
+  async readCsvFilesByCompany(userId: string): Promise<ProcessedCsvDto[]> {
+    console.log(userId);
+    return ProcessedCsvDtoMock;
   }
 
   private mapToImportedFileBundles(unitIds: string | string[], files: Express.Multer.File[]): UnitFileBundle[] {

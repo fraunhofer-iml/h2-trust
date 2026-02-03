@@ -34,9 +34,9 @@ export class H2ColorChipComponent {
   getFileChipColor(): string {
     switch (this.fileType()) {
       case 'HYDROGEN':
-        return 'text-primary-700 bg-primary-200 border-primary-200';
+        return 'text-primary-700 bg-primary-100 border-primary-200';
       case 'POWER':
-        return 'text-secondary-700 bg-secondary-200 border-secondary-200';
+        return 'text-secondary-700 bg-secondary-100 border-secondary-200';
       default:
         return ' text-neutral-600 bg-neutral-600/20 border-neutral-600/10';
     }
