@@ -10,7 +10,7 @@ import { Injectable } from '@nestjs/common';
 import { PowerAccessApprovalEntity } from '@h2-trust/amqp';
 import { PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { PrismaService } from '../prisma.service';
-import { powerAccessApprovalQueryArgs } from '../query-args/power-access-approval.query-args';
+import { powerAccessApprovalDeepQueryArgs } from '../query-args/power-access-approval.query-args';
 
 @Injectable()
 export class PowerAccessApprovalRepository {
@@ -23,8 +23,8 @@ export class PowerAccessApprovalRepository {
           OR: [{ powerProducerId: producerId }, { hydrogenProducerId: producerId }],
           status: _status,
         },
-        ...powerAccessApprovalQueryArgs,
+        ...powerAccessApprovalDeepQueryArgs,
       })
-      .then((result) => result.map(PowerAccessApprovalEntity.fromDatabase));
+      .then((result) => result.map(PowerAccessApprovalEntity.fromDeepDatabase));
   }
 }

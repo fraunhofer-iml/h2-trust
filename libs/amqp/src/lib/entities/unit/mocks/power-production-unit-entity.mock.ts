@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerProductionUnitSeed, UnitSeed } from 'libs/database/src/seed';
+import { AddressSeed, CompanySeed, PowerProductionUnitSeed, UnitSeed } from 'libs/database/src/seed';
 import { BiddingZone, GridLevel, UnitType } from '@h2-trust/domain';
 import { AddressEntityPowerMock } from '../../address';
 import { CompanyEntityPowerMock } from '../../company';
@@ -26,7 +26,18 @@ export const PowerProductionUnitEntityMock: PowerProductionUnitEntity[] = [
     new Date(UnitSeed[0].commissionedOn),
     AddressEntityPowerMock,
     {
-      id: CompanyEntityPowerMock.id!,
+      id: CompanySeed[2].id!,
+      name: CompanySeed[2].name,
+      mastrNumber: CompanySeed[2].mastrNumber,
+      type: CompanySeed[2].type,
+      address: {
+        street: AddressSeed[2].street,
+        postalCode: AddressSeed[2].postalCode,
+        city: AddressSeed[2].city,
+        state: AddressSeed[2].state,
+        country: AddressSeed[2].country,
+      },
+      users: [],
       hydrogenApprovals: [],
     },
     CompanyEntityPowerMock,

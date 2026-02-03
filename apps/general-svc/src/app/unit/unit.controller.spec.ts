@@ -77,7 +77,7 @@ describe('UnitController', () => {
 
     const actualResponse = await controller.readUnit({ id: expectedResponse.id });
 
-    expect(actualResponse).toEqual(PowerProductionUnitEntity.fromDatabase(expectedResponse));
+    expect(actualResponse).toEqual(PowerProductionUnitEntity.fromDeepDatabase(expectedResponse));
     expect(prisma.unit.findUnique).toHaveBeenCalledWith({
       where: {
         id: expectedResponse.id,
@@ -95,7 +95,7 @@ describe('UnitController', () => {
       new ReadByIdPayload(expectedResponse.ownerId),
     );
 
-    expect(actualResponse).toEqual([PowerProductionUnitEntity.fromDatabase(expectedResponse)]);
+    expect(actualResponse).toEqual([PowerProductionUnitEntity.fromDeepDatabase(expectedResponse)]);
     expect(prisma.unit.findMany).toHaveBeenCalledWith({
       where: {
         ownerId: expectedResponse.operatorId,
@@ -114,7 +114,7 @@ describe('UnitController', () => {
 
     const actualResponse = await controller.readHydrogenProductionUnits(new ReadByIdPayload(expectedResponse.ownerId));
 
-    expect(actualResponse).toEqual([HydrogenProductionUnitEntity.fromDatabase(expectedResponse)]);
+    expect(actualResponse).toEqual([HydrogenProductionUnitEntity.fromDeepDatabase(expectedResponse)]);
     expect(prisma.unit.findMany).toHaveBeenCalledWith({
       where: {
         ownerId: expectedResponse.ownerId,
@@ -133,7 +133,7 @@ describe('UnitController', () => {
 
     const actualResponse = await controller.readHydrogenStorageUnits(new ReadByIdPayload(expectedResponse.ownerId));
 
-    expect(actualResponse).toEqual([HydrogenStorageUnitEntity.fromDatabase(expectedResponse)]);
+    expect(actualResponse).toEqual([HydrogenStorageUnitEntity.fromDeepDatabase(expectedResponse)]);
     expect(prisma.unit.findMany).toHaveBeenCalledWith({
       where: {
         ownerId: expectedResponse.ownerId,
@@ -175,7 +175,7 @@ describe('UnitController', () => {
       PowerProductionUnitEntityMock[0].gridConnectionNumber,
     );
     const mockedDbResponse: PowerProductionUnitDbType = PowerProductionUnitDbTypeMock[0];
-    const expectedResponse: PowerProductionUnitEntity = PowerProductionUnitEntity.fromDatabase(mockedDbResponse);
+    const expectedResponse: PowerProductionUnitEntity = PowerProductionUnitEntity.fromDeepDatabase(mockedDbResponse);
 
     const unitServiceSpy = jest.spyOn(unitService, 'createPowerProductionUnit');
 
@@ -216,7 +216,8 @@ describe('UnitController', () => {
     );
 
     const mockedDbResponse: HydrogenProductionUnitDbType = HydrogenProductionUnitDbTypeMock[0];
-    const expectedResponse: HydrogenProductionUnitEntity = HydrogenProductionUnitEntity.fromDatabase(mockedDbResponse);
+    const expectedResponse: HydrogenProductionUnitEntity =
+      HydrogenProductionUnitEntity.fromDeepDatabase(mockedDbResponse);
 
     const unitServiceSpy = jest.spyOn(unitService, 'createHydrogenProductionUnit');
 
@@ -254,7 +255,7 @@ describe('UnitController', () => {
     );
 
     const mockedDbResponse: HydrogenStorageUnitDbType = HydrogenStorageUnitDbTypeMock[0];
-    const expectedResponse: HydrogenStorageUnitEntity = HydrogenStorageUnitEntity.fromDatabase(mockedDbResponse);
+    const expectedResponse: HydrogenStorageUnitEntity = HydrogenStorageUnitEntity.fromDeepDatabase(mockedDbResponse);
 
     const unitServiceSpy = jest.spyOn(unitService, 'createHydrogenStorageUnit');
 

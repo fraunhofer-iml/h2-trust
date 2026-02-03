@@ -6,7 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenStorageUnitDbType } from '@h2-trust/database';
+import {
+  HydrogenStorageUnitDbType,
+  HydrogenStorageUnitRefDeepDbType,
+  HydrogenStorageUnitRefShallowDbType,
+  HydrogenStorageUnitRefSurfaceDbType,
+} from '@h2-trust/database';
 import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { HydrogenComponentEntity } from '../bottling';
@@ -14,10 +19,10 @@ import { CompanyEntity } from '../company';
 import { BaseUnitEntity } from './base-unit.entity';
 
 export class HydrogenStorageUnitEntity extends BaseUnitEntity {
-  capacity?: number;
-  pressure?: number;
-  type?: HydrogenStorageType;
-  filling?: HydrogenComponentEntity[];
+  capacity: number;
+  pressure: number;
+  type: HydrogenStorageType;
+  filling: HydrogenComponentEntity[];
 
   constructor(
     id: string,
@@ -30,14 +35,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     certifiedBy: string,
     commissionedOn: Date,
     address: AddressEntity,
-    owner: {
-      id?: string;
-      hydrogenApprovals?: {
-        powerAccessApprovalStatus?: string;
-        powerProducerId?: string;
-        powerProducerName?: string;
-      }[];
-    } | null,
+    owner: CompanyEntity,
     operator: CompanyEntity,
     unitType: UnitType,
     capacity: number,
@@ -66,9 +64,75 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     this.filling = filling;
   }
 
-  static override fromDatabase(unit: HydrogenStorageUnitDbType): HydrogenStorageUnitEntity {
+  static fromSurfaceDatabaseAsRef(unit: HydrogenStorageUnitRefSurfaceDbType): HydrogenStorageUnitEntity {
     return <HydrogenStorageUnitEntity>{
-      ...BaseUnitEntity.fromDatabase(unit),
+      id: unit.generalInfo.id,
+      name: unit.generalInfo?.name,
+      capacity: unit.capacity.toNumber(),
+      pressure: unit.pressure.toNumber(),
+      modelType: unit.generalInfo?.modelType,
+      filling: [],
+      mastrNumber: unit.generalInfo?.mastrNumber,
+      manufacturer: unit.generalInfo?.manufacturer,
+      modelNumber: unit.generalInfo?.modelNumber,
+      serialNumber: unit.generalInfo?.serialNumber,
+      certifiedBy: unit.generalInfo?.certifiedBy,
+      commissionedOn: unit.generalInfo?.commissionedOn,
+      owner: CompanyEntity.fromBaseDatabase(unit.generalInfo.owner),
+      operator: CompanyEntity.fromBaseDatabase(unit.generalInfo.operator),
+      address: unit.generalInfo.address,
+      unitType: UnitType.HYDROGEN_STORAGE,
+      type: unit.type as HydrogenStorageType,
+    };
+  }
+
+  static fromShallowDatabaseAsRef(unit: HydrogenStorageUnitRefShallowDbType): HydrogenStorageUnitEntity {
+    return {
+      id: unit.generalInfo.id,
+      name: unit.generalInfo?.name,
+      capacity: unit.capacity.toNumber(),
+      pressure: unit.pressure.toNumber(),
+      modelType: unit.generalInfo?.modelType,
+      filling: [],
+      mastrNumber: unit.generalInfo?.mastrNumber,
+      manufacturer: unit.generalInfo?.manufacturer,
+      modelNumber: unit.generalInfo?.modelNumber,
+      serialNumber: unit.generalInfo?.serialNumber,
+      certifiedBy: unit.generalInfo?.certifiedBy,
+      commissionedOn: unit.generalInfo?.commissionedOn,
+      owner: CompanyEntity.fromSurfaceDatabase(unit.generalInfo.owner),
+      operator: CompanyEntity.fromSurfaceDatabase(unit.generalInfo?.operator),
+      address: unit.generalInfo.address,
+      unitType: UnitType.HYDROGEN_STORAGE,
+      type: unit.type as HydrogenStorageType,
+    };
+  }
+
+  static fromDeepDatabaseAsRef(unit: HydrogenStorageUnitRefDeepDbType): HydrogenStorageUnitEntity {
+    return {
+      id: unit.generalInfo.id,
+      name: unit.generalInfo?.name,
+      capacity: unit.capacity.toNumber(),
+      pressure: unit.pressure.toNumber(),
+      modelType: unit.generalInfo?.modelType,
+      filling: [],
+      mastrNumber: unit.generalInfo?.mastrNumber,
+      manufacturer: unit.generalInfo?.manufacturer,
+      modelNumber: unit.generalInfo?.modelNumber,
+      serialNumber: unit.generalInfo?.serialNumber,
+      certifiedBy: unit.generalInfo?.certifiedBy,
+      commissionedOn: unit.generalInfo?.commissionedOn,
+      owner: CompanyEntity.fromShallowDatabase(unit.generalInfo.owner),
+      operator: CompanyEntity.fromShallowDatabase(unit.generalInfo?.operator),
+      address: unit.generalInfo.address,
+      unitType: UnitType.HYDROGEN_STORAGE,
+      type: unit.type as HydrogenStorageType,
+    };
+  }
+
+  static override fromDeepDatabase(unit: HydrogenStorageUnitDbType): HydrogenStorageUnitEntity {
+    return <HydrogenStorageUnitEntity>{
+      ...BaseUnitEntity.fromDeepDatabase(unit),
       capacity: unit.hydrogenStorageUnit?.capacity ?? 0,
       pressure: unit.hydrogenStorageUnit?.pressure ?? 0,
       type: unit.hydrogenStorageUnit?.type,

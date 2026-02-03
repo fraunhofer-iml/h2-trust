@@ -7,6 +7,23 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { hydrogenProductionUnitQueryArgs } from '../query-args';
+import {
+  hydrogenProductionUnitQueryArgs,
+  hydrogenProductionUnitRefDeepQueryArgs,
+  hydrogenProductionUnitRefShallowQueryArgs,
+  hydrogenProductionUnitRefSurfaceQueryArgs,
+} from '../query-args';
 
 export type HydrogenProductionUnitDbType = Prisma.UnitGetPayload<typeof hydrogenProductionUnitQueryArgs>;
+
+export type HydrogenProductionUnitRefDeepDbType = Prisma.HydrogenProductionUnitGetPayload<
+  typeof hydrogenProductionUnitRefDeepQueryArgs
+>;
+
+export type HydrogenProductionUnitRefShallowDbType = Prisma.HydrogenProductionUnitGetPayload<
+  typeof hydrogenProductionUnitRefShallowQueryArgs
+>;
+
+export type HydrogenProductionUnitRefSurfaceDbType = Prisma.HydrogenProductionUnitGetPayload<
+  typeof hydrogenProductionUnitRefSurfaceQueryArgs
+>;

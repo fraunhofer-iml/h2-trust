@@ -6,19 +6,86 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BaseUnitDbType } from '..';
-import { AddressSeed, CompanySeed, PowerAccessApprovalSeed, UnitSeed } from '../../../seed';
+import { BaseUnitDeepDbType, BaseUnitShallowDbType, BaseUnitSurfaceDbType } from '..';
+import { AddressSeed, CompanySeed, UnitSeed } from '../../../seed';
 
-export const BaseUnitDbTypeMock = <BaseUnitDbType[]>[
+export const BaseUnitSurfaceDbTypeMock: readonly BaseUnitSurfaceDbType[] = Object.freeze([
+  {
+    ...UnitSeed[0],
+    address: AddressSeed[0],
+    operator: {
+      ...CompanySeed[0],
+      address: AddressSeed[0],
+      hydrogenApprovals: [],
+      powerApprovals: [],
+      unitOwners: [],
+      unitOperators: [],
+      users: [],
+      batches: [],
+    },
+    owner: {
+      ...CompanySeed[0],
+      address: AddressSeed[0],
+      hydrogenApprovals: [],
+      powerApprovals: [],
+      unitOwners: [],
+      unitOperators: [],
+      users: [],
+      batches: [],
+    },
+  },
+]);
+
+export const BaseUnitShallowDbTypeMock: readonly BaseUnitShallowDbType[] = Object.freeze([
+  {
+    ...UnitSeed[0],
+    address: AddressSeed[0],
+    operator: {
+      ...CompanySeed[0],
+      address: AddressSeed[0],
+      hydrogenApprovals: [],
+      powerApprovals: [],
+      unitOwners: [],
+      unitOperators: [],
+      users: [],
+      batches: [],
+    },
+    owner: {
+      ...CompanySeed[0],
+      address: AddressSeed[0],
+      hydrogenApprovals: [],
+      powerApprovals: [],
+      unitOwners: [],
+      unitOperators: [],
+      users: [],
+      batches: [],
+    },
+  },
+]);
+
+export const BaseUnitDeepDbTypeMock = <BaseUnitDeepDbType[]>[
   {
     ...UnitSeed[0],
     address: AddressSeed[0],
     owner: {
       ...CompanySeed[0],
-      hydrogenApprovals: PowerAccessApprovalSeed.map((approval) => ({
-        ...approval,
-        powerProducer: CompanySeed[0],
-      })),
+      address: AddressSeed[0],
+      hydrogenApprovals: [],
+      powerApprovals: [],
+      unitOwners: [],
+      unitOperators: [],
+      users: [],
+      batches: [],
+    },
+    operator: {
+      ...CompanySeed[0],
+      address: AddressSeed[0],
+      hydrogenApprovals: [],
+      powerApprovals: [],
+      unitOwners: [],
+      unitOperators: [],
+      users: [],
+      batches: [],
     },
   },
 ];

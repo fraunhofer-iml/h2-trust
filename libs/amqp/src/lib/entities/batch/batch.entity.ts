@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchDbType } from '@h2-trust/database';
+import { BatchDeepDbType, BatchShallowDbType, BatchSurfaceDbType } from '@h2-trust/database';
 import { CompanyEntity } from '../company';
 import { HydrogenStorageUnitEntity } from '../unit';
 import { QualityDetailsEntity } from './quality-details.entity';
@@ -47,20 +47,51 @@ export class BatchEntity {
     this.processStepId = processStepId;
   }
 
-  static fromDatabase(batch: BatchDbType): BatchEntity {
+  static fromSurfaceDatabase(batch: BatchSurfaceDbType): BatchEntity {
     return new BatchEntity(
       batch.id,
       batch.active,
       batch.amount.toNumber(),
       batch.type,
-      batch.predecessors.map((pred) => BatchEntity.fromDatabase({ ...pred, predecessors: [], successors: [] })),
-      batch.successors.map((succ) => BatchEntity.fromDatabase({ ...succ, predecessors: [], successors: [] })),
-      CompanyEntity.fromDatabase(batch.owner),
+      [],
+      [],
+      CompanyEntity.fromBaseDatabase(batch.owner),
+      undefined,
+      undefined,
+      batch.processStep?.id,
+    );
+  }
+
+  static fromShallowDatabase(batch: BatchShallowDbType): BatchEntity {
+    return new BatchEntity(
+      batch.id,
+      batch.active,
+      batch.amount.toNumber(),
+      batch.type,
+      [],
+      [],
+      CompanyEntity.fromSurfaceDatabase(batch.owner),
       batch.hydrogenStorageUnit
-        ? {
-            id: batch.hydrogenStorageUnit.generalInfo.id,
-            name: batch.hydrogenStorageUnit.generalInfo?.name,
-          }
+        ? HydrogenStorageUnitEntity.fromSurfaceDatabaseAsRef(batch.hydrogenStorageUnit)
+        : undefined,
+      batch.batchDetails?.qualityDetails
+        ? QualityDetailsEntity.fromDatabase(batch.batchDetails.qualityDetails)
+        : undefined,
+      batch.processStep?.id,
+    );
+  }
+
+  static fromDeepDatabase(batch: BatchDeepDbType): BatchEntity {
+    return new BatchEntity(
+      batch.id,
+      batch.active,
+      batch.amount.toNumber(),
+      batch.type,
+      batch.predecessors.map((pred) => BatchEntity.fromShallowDatabase({ ...pred, predecessors: [], successors: [] })),
+      batch.successors.map((succ) => BatchEntity.fromShallowDatabase({ ...succ, predecessors: [], successors: [] })),
+      CompanyEntity.fromShallowDatabase(batch.owner),
+      batch.hydrogenStorageUnit
+        ? HydrogenStorageUnitEntity.fromShallowDatabaseAsRef(batch.hydrogenStorageUnit)
         : undefined,
       batch.batchDetails?.qualityDetails
         ? QualityDetailsEntity.fromDatabase(batch.batchDetails.qualityDetails)

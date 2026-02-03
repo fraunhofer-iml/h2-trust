@@ -35,12 +35,12 @@ export class CreateHydrogenStorageUnitPayload extends BaseCreateUnitPayload {
     storageType: HydrogenStorageType,
     capacity: number,
     pressure: number,
-    manufacturer?: string,
-    modelType?: string,
-    modelNumber?: string,
-    serialNumber?: string,
-    certifiedBy?: string,
-    operatorId?: string,
+    manufacturer: string,
+    modelType: string,
+    modelNumber: string,
+    serialNumber: string,
+    certifiedBy: string,
+    operatorId: string,
   ) {
     super(
       name,

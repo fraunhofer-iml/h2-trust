@@ -7,21 +7,32 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { companyQueryArgs } from './company.query.args';
-import { baseUnitQueryArgs } from './unit.query-args';
+import { companyShallowQueryArgs, companySurfaceQueryArgs } from './company.query.args';
+import { powerProductionUnitRefShallowQueryArgs, powerProductionUnitRefSurfaceQueryArgs } from './unit.query-args';
 
-export const powerAccessApprovalQueryArgs = Prisma.validator<Prisma.PowerAccessApprovalDefaultArgs>()({
+export const powerAccessApprovalDeepQueryArgs = Prisma.validator<Prisma.PowerAccessApprovalDefaultArgs>()({
   include: {
-    powerProducer: companyQueryArgs,
-    hydrogenProducer: companyQueryArgs,
     document: true,
-    powerProductionUnit: {
-      include: {
-        generalInfo: {
-          ...baseUnitQueryArgs,
-        },
-        type: true,
-      },
-    },
+    powerProducer: companyShallowQueryArgs,
+    hydrogenProducer: companyShallowQueryArgs,
+    powerProductionUnit: powerProductionUnitRefShallowQueryArgs,
+  },
+});
+
+export const powerAccessApprovalShallowQueryArgs = Prisma.validator<Prisma.PowerAccessApprovalDefaultArgs>()({
+  include: {
+    document: true,
+    powerProducer: companySurfaceQueryArgs,
+    hydrogenProducer: companySurfaceQueryArgs,
+    powerProductionUnit: powerProductionUnitRefSurfaceQueryArgs,
+  },
+});
+
+export const powerAccessApprovalSurfaceQueryArgs = Prisma.validator<Prisma.PowerAccessApprovalDefaultArgs>()({
+  include: {
+    document: true,
+    hydrogenProducer: true,
+    powerProducer: true,
+    powerProductionUnit: true,
   },
 });

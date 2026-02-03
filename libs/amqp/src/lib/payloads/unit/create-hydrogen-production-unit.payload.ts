@@ -51,12 +51,12 @@ export class CreateHydrogenProductionUnitPayload extends BaseCreateUnitPayload {
     ratedPower: number,
     pressure: number,
     waterConsumptionLitersPerHour: number,
-    manufacturer?: string,
-    modelType?: string,
-    modelNumber?: string,
-    serialNumber?: string,
-    certifiedBy?: string,
-    operatorId?: string,
+    manufacturer: string,
+    modelType: string,
+    modelNumber: string,
+    serialNumber: string,
+    certifiedBy: string,
+    operatorId: string,
   ) {
     super(
       name,

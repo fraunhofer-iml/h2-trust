@@ -7,9 +7,43 @@
  */
 
 import { Prisma } from '@prisma/client';
+import {
+  powerAccessApprovalShallowQueryArgs,
+  powerAccessApprovalSurfaceQueryArgs,
+} from './power-access-approval.query-args';
 
-export const companyQueryArgs = Prisma.validator<Prisma.CompanyDefaultArgs>()({
+export const companyDeepQueryArgs = Prisma.validator<Prisma.CompanyDefaultArgs>()({
   include: {
     address: true,
+    hydrogenApprovals: powerAccessApprovalShallowQueryArgs,
+    powerApprovals: powerAccessApprovalShallowQueryArgs,
+    unitOwners: true,
+    unitOperators: true,
+    users: true,
+    batches: true,
+  },
+});
+
+export const companyShallowQueryArgs = Prisma.validator<Prisma.CompanyDefaultArgs>()({
+  include: {
+    address: true,
+    hydrogenApprovals: powerAccessApprovalSurfaceQueryArgs,
+    powerApprovals: powerAccessApprovalSurfaceQueryArgs,
+    unitOwners: true,
+    unitOperators: true,
+    users: true,
+    batches: true,
+  },
+});
+
+export const companySurfaceQueryArgs = Prisma.validator<Prisma.CompanyDefaultArgs>()({
+  include: {
+    address: true,
+    hydrogenApprovals: true,
+    powerApprovals: true,
+    unitOwners: true,
+    unitOperators: true,
+    users: true,
+    batches: true,
   },
 });

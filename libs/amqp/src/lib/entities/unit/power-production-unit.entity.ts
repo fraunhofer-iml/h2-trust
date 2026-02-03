@@ -6,7 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerProductionUnitDbType } from '@h2-trust/database';
+import { PowerProductionType } from '@prisma/client';
+import {
+  PowerProductionRefUniRefDeepDbType,
+  PowerProductionUnitDbType,
+  PowerProductionUnitRefShallowDbType,
+  PowerProductionUnitRefSurfaceDbType,
+} from '@h2-trust/database';
 import { BiddingZone, GridLevel, UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
@@ -14,15 +20,15 @@ import { BaseUnitEntity } from './base-unit.entity';
 import { PowerProductionTypeEntity } from './power-production-type.entity';
 
 export class PowerProductionUnitEntity extends BaseUnitEntity {
-  decommissioningPlannedOn?: Date;
-  electricityMeterNumber?: string;
-  ratedPower?: number;
-  gridOperator?: string;
-  gridLevel?: GridLevel;
-  biddingZone?: BiddingZone;
-  gridConnectionNumber?: string;
-  financialSupportReceived?: boolean;
-  type?: PowerProductionTypeEntity;
+  decommissioningPlannedOn: Date;
+  electricityMeterNumber: string;
+  ratedPower: number;
+  gridOperator: string;
+  gridLevel: GridLevel;
+  biddingZone: BiddingZone;
+  gridConnectionNumber: string;
+  financialSupportReceived: boolean;
+  type: PowerProductionTypeEntity;
 
   constructor(
     id: string,
@@ -35,14 +41,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     certifiedBy: string,
     commissionedOn: Date,
     address: AddressEntity,
-    owner: {
-      id?: string;
-      hydrogenApprovals?: {
-        powerAccessApprovalStatus?: string;
-        powerProducerId?: string;
-        powerProducerName?: string;
-      }[];
-    } | null,
+    owner: CompanyEntity,
     operator: CompanyEntity,
     unitType: UnitType,
     decommissioningPlannedOn: Date,
@@ -81,9 +80,90 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     this.type = type;
   }
 
-  static override fromDatabase(unit: PowerProductionUnitDbType): PowerProductionUnitEntity {
+  static fromSurfaceDatabaseAsRef(unit: PowerProductionUnitRefSurfaceDbType): PowerProductionUnitEntity {
     return <PowerProductionUnitEntity>{
-      ...BaseUnitEntity.fromDatabase(unit),
+      id: unit.generalInfo.id,
+      name: unit.generalInfo?.name,
+      modelType: unit.generalInfo?.modelType,
+      mastrNumber: unit.generalInfo?.mastrNumber,
+      manufacturer: unit.generalInfo?.manufacturer,
+      modelNumber: unit.generalInfo?.modelNumber,
+      serialNumber: unit.generalInfo?.serialNumber,
+      certifiedBy: unit.generalInfo?.certifiedBy,
+      commissionedOn: unit.generalInfo?.commissionedOn,
+      owner: CompanyEntity.fromBaseDatabase(unit.generalInfo?.owner),
+      operator: CompanyEntity.fromBaseDatabase(unit.generalInfo?.operator),
+      address: unit.generalInfo.address,
+      unitType: UnitType.HYDROGEN_STORAGE,
+      decommissioningPlannedOn: unit.decommissioningPlannedOn,
+      electricityMeterNumber: unit.electricityMeterNumber,
+      ratedPower: unit.ratedPower.toNumber(),
+      gridOperator: unit.gridOperator,
+      gridLevel: unit.gridLevel,
+      biddingZone: unit.biddingZone,
+      gridConnectionNumber: unit.gridConnectionNumber,
+      financialSupportReceived: unit.financialSupportReceived,
+      type: unit.type as PowerProductionType,
+    };
+  }
+
+  static fromShallowDatabaseAsRef(unit: PowerProductionUnitRefShallowDbType): PowerProductionUnitEntity {
+    return <PowerProductionUnitEntity>{
+      id: unit.generalInfo.id,
+      name: unit.generalInfo?.name,
+      modelType: unit.generalInfo?.modelType,
+      mastrNumber: unit.generalInfo?.mastrNumber,
+      manufacturer: unit.generalInfo?.manufacturer,
+      modelNumber: unit.generalInfo?.modelNumber,
+      serialNumber: unit.generalInfo?.serialNumber,
+      certifiedBy: unit.generalInfo?.certifiedBy,
+      commissionedOn: unit.generalInfo?.commissionedOn,
+      owner: CompanyEntity.fromBaseDatabase(unit.generalInfo?.owner),
+      operator: CompanyEntity.fromBaseDatabase(unit.generalInfo?.operator),
+      address: unit.generalInfo.address,
+      unitType: UnitType.HYDROGEN_STORAGE,
+      decommissioningPlannedOn: unit.decommissioningPlannedOn,
+      electricityMeterNumber: unit.electricityMeterNumber,
+      ratedPower: unit.ratedPower.toNumber(),
+      gridOperator: unit.gridOperator,
+      gridLevel: unit.gridLevel,
+      biddingZone: unit.biddingZone,
+      gridConnectionNumber: unit.gridConnectionNumber,
+      financialSupportReceived: unit.financialSupportReceived,
+      type: unit.type as PowerProductionType,
+    };
+  }
+
+  static fromDeepDatabaseAsRef(unit: PowerProductionRefUniRefDeepDbType): PowerProductionUnitEntity {
+    return <PowerProductionUnitEntity>{
+      id: unit.generalInfo.id,
+      name: unit.generalInfo?.name,
+      modelType: unit.generalInfo?.modelType,
+      mastrNumber: unit.generalInfo?.mastrNumber,
+      manufacturer: unit.generalInfo?.manufacturer,
+      modelNumber: unit.generalInfo?.modelNumber,
+      serialNumber: unit.generalInfo?.serialNumber,
+      certifiedBy: unit.generalInfo?.certifiedBy,
+      commissionedOn: unit.generalInfo?.commissionedOn,
+      owner: CompanyEntity.fromBaseDatabase(unit.generalInfo?.owner),
+      operator: CompanyEntity.fromBaseDatabase(unit.generalInfo?.operator),
+      address: unit.generalInfo.address,
+      unitType: UnitType.HYDROGEN_STORAGE,
+      decommissioningPlannedOn: unit.decommissioningPlannedOn,
+      electricityMeterNumber: unit.electricityMeterNumber,
+      ratedPower: unit.ratedPower.toNumber(),
+      gridOperator: unit.gridOperator,
+      gridLevel: unit.gridLevel,
+      biddingZone: unit.biddingZone,
+      gridConnectionNumber: unit.gridConnectionNumber,
+      financialSupportReceived: unit.financialSupportReceived,
+      type: unit.type as PowerProductionType,
+    };
+  }
+
+  static override fromDeepDatabase(unit: PowerProductionUnitDbType): PowerProductionUnitEntity {
+    return <PowerProductionUnitEntity>{
+      ...BaseUnitEntity.fromDeepDatabase(unit),
       ...PowerProductionUnitEntity.mapPowerProductionUnitSpecials(unit),
       unitType: UnitType.POWER_PRODUCTION,
     };

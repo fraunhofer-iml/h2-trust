@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepDbType } from '@h2-trust/database';
+import { ProcessStepDeepDbType, ProcessStepShallowDbType } from '@h2-trust/database';
 import { BatchEntity } from '../batch';
 import { DocumentEntity } from '../document';
 import { BaseUnitEntity } from '../unit';
@@ -46,15 +46,31 @@ export class ProcessStepEntity {
     this.transportationDetails = transportationDetails;
   }
 
-  static fromDatabase(processStep: ProcessStepDbType): ProcessStepEntity {
+  static fromShallowDatabase(processStep: ProcessStepShallowDbType): ProcessStepEntity {
     return new ProcessStepEntity(
       processStep.id,
       processStep.startedAt,
       processStep.endedAt,
       processStep.type,
-      BatchEntity.fromDatabase(processStep.batch),
-      UserEntity.fromDatabase(processStep.recordedBy),
-      BaseUnitEntity.fromDatabase(processStep.executedBy),
+      BatchEntity.fromSurfaceDatabase(processStep.batch),
+      UserEntity.fromSurfaceDatabase(processStep.recordedBy),
+      BaseUnitEntity.fromSurfaceDatabase(processStep.executedBy),
+      processStep.documents.map((doc) => DocumentEntity.fromDatabase(doc)),
+      processStep.processStepDetails?.transportationDetails
+        ? TransportationDetailsEntity.fromDatabase(processStep.processStepDetails.transportationDetails)
+        : undefined,
+    );
+  }
+
+  static fromDeepDatabase(processStep: ProcessStepDeepDbType): ProcessStepEntity {
+    return new ProcessStepEntity(
+      processStep.id,
+      processStep.startedAt,
+      processStep.endedAt,
+      processStep.type,
+      BatchEntity.fromShallowDatabase(processStep.batch),
+      UserEntity.fromShallowDatabase(processStep.recordedBy),
+      BaseUnitEntity.fromSurfaceDatabase(processStep.executedBy),
       processStep.documents.map((doc) => DocumentEntity.fromDatabase(doc)),
       processStep.processStepDetails?.transportationDetails
         ? TransportationDetailsEntity.fromDatabase(processStep.processStepDetails.transportationDetails)

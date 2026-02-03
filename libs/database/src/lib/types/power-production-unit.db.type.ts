@@ -7,6 +7,23 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { powerProductionUnitQueryArgs } from '../query-args';
+import {
+  powerProductionUnitQueryArgs,
+  powerProductionUnitRefDeepQueryArgs,
+  powerProductionUnitRefShallowQueryArgs,
+  powerProductionUnitRefSurfaceQueryArgs,
+} from '../query-args';
 
 export type PowerProductionUnitDbType = Prisma.UnitGetPayload<typeof powerProductionUnitQueryArgs>;
+
+export type PowerProductionRefUniRefDeepDbType = Prisma.PowerProductionUnitGetPayload<
+  typeof powerProductionUnitRefDeepQueryArgs
+>;
+
+export type PowerProductionUnitRefShallowDbType = Prisma.PowerProductionUnitGetPayload<
+  typeof powerProductionUnitRefShallowQueryArgs
+>;
+
+export type PowerProductionUnitRefSurfaceDbType = Prisma.PowerProductionUnitGetPayload<
+  typeof powerProductionUnitRefSurfaceQueryArgs
+>;

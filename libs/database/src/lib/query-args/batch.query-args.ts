@@ -7,53 +7,59 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { companyQueryArgs } from './company.query.args';
+import { companyShallowQueryArgs, companySurfaceQueryArgs } from './company.query.args';
+import { hydrogenStorageUnitRefShallowQueryArgs, hydrogenStorageUnitRefSurfaceQueryArgs } from './unit.query-args';
 
-export const batchQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()({
+export const batchSurfaceQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()({
   include: {
-    owner: companyQueryArgs,
-    predecessors: {
-      include: {
-        owner: companyQueryArgs,
-        hydrogenStorageUnit: {
-          include: {
-            generalInfo: true,
-          },
-        },
-        batchDetails: {
-          include: {
-            qualityDetails: true,
-          },
-        },
-        processStep: true,
-      },
-    },
-    successors: {
-      include: {
-        owner: companyQueryArgs,
-        hydrogenStorageUnit: {
-          include: {
-            generalInfo: true,
-          },
-        },
-        batchDetails: {
-          include: {
-            qualityDetails: true,
-          },
-        },
-        processStep: true,
-      },
-    },
-    hydrogenStorageUnit: {
-      include: {
-        generalInfo: true,
-      },
-    },
+    owner: true,
+    predecessors: true,
+    successors: true,
+    hydrogenStorageUnit: true,
+    batchDetails: true,
+    processStep: true,
+  },
+});
+
+export const batchShallowQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()({
+  include: {
+    owner: companySurfaceQueryArgs,
+    predecessors: true,
+    successors: true,
+    hydrogenStorageUnit: hydrogenStorageUnitRefSurfaceQueryArgs,
     batchDetails: {
       include: {
         qualityDetails: true,
       },
     },
     processStep: true,
+  },
+});
+
+export const batchDeepQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()({
+  include: {
+    owner: companyShallowQueryArgs,
+    predecessors: batchShallowQueryArgs,
+    successors: batchShallowQueryArgs,
+    hydrogenStorageUnit: hydrogenStorageUnitRefShallowQueryArgs,
+    batchDetails: {
+      include: {
+        qualityDetails: true,
+      },
+    },
+    processStep: true,
+  },
+});
+
+export const activeBatchShallowQueryArgs = Prisma.validator<Prisma.BatchFindManyArgs>()({
+  include: {
+    batchDetails: {
+      include: {
+        qualityDetails: true,
+      },
+    },
+  },
+  where: {
+    active: true,
   },
 });

@@ -9,7 +9,7 @@
 import { Injectable } from '@nestjs/common';
 import { CompanyEntity } from '@h2-trust/amqp';
 import { PrismaService } from '../prisma.service';
-import { companyQueryArgs } from '../query-args';
+import { companyDeepQueryArgs } from '../query-args';
 
 @Injectable()
 export class CompanyRepository {
@@ -17,7 +17,7 @@ export class CompanyRepository {
 
   async findAll(): Promise<CompanyEntity[]> {
     return this.prismaService.company
-      .findMany({ ...companyQueryArgs })
-      .then((result) => result.map(CompanyEntity.fromDatabase));
+      .findMany({ ...companyDeepQueryArgs })
+      .then((result) => result.map(CompanyEntity.fromDeepDatabase));
   }
 }

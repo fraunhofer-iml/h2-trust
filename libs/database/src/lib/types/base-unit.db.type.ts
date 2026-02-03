@@ -7,6 +7,10 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { baseUnitQueryArgs } from '../query-args';
+import { baseUnitDeepQueryArgs, baseUnitShallowQueryArgs, baseUnitSurfaceQueryArgs } from '../query-args';
 
-export type BaseUnitDbType = Prisma.UnitGetPayload<typeof baseUnitQueryArgs>;
+export type BaseUnitDeepDbType = Prisma.UnitGetPayload<typeof baseUnitDeepQueryArgs>;
+
+export type BaseUnitShallowDbType = Prisma.UnitGetPayload<typeof baseUnitShallowQueryArgs>;
+
+export type BaseUnitSurfaceDbType = Prisma.UnitGetPayload<typeof baseUnitSurfaceQueryArgs>;

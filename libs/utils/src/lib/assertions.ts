@@ -21,9 +21,3 @@ export function assertBoolean(value: unknown, name: string): asserts value is bo
     throw new Error(message);
   }
 }
-
-export function requireDefined<T>(value: T | undefined | null, name: string): NonNullable<T> {
-  assertDefined(value, name);
-
-  return value;
-}

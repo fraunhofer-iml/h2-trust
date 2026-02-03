@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { UserDbType } from 'libs/database/src/lib/types';
+import { UserDeepDbType, UserShallowDbType, UserSurfaceDbType } from 'libs/database/src/lib/types';
 import { CompanyEntity } from '../company';
 
 export class UserEntity {
@@ -22,7 +22,15 @@ export class UserEntity {
     this.company = company;
   }
 
-  static fromDatabase(user: UserDbType): UserEntity {
-    return new UserEntity(user.id, user.name, user.email, CompanyEntity.fromDatabase(user.company));
+  static fromSurfaceDatabase(user: UserSurfaceDbType): UserEntity {
+    return new UserEntity(user.id, user.name, user.email, CompanyEntity.fromBaseDatabase(user.company));
+  }
+
+  static fromShallowDatabase(user: UserShallowDbType): UserEntity {
+    return new UserEntity(user.id, user.name, user.email, CompanyEntity.fromSurfaceDatabase(user.company));
+  }
+
+  static fromDeepDatabase(user: UserDeepDbType): UserEntity {
+    return new UserEntity(user.id, user.name, user.email, CompanyEntity.fromShallowDatabase(user.company));
   }
 }

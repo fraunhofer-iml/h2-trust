@@ -8,11 +8,11 @@
 
 import { HydrogenProductionUnitDbType } from '..';
 import { HydrogenProductionUnitSeed } from '../../../seed';
-import { BaseUnitDbTypeMock } from './base-unit-db-type.mock';
+import { BaseUnitDeepDbTypeMock } from './base-unit-db-type.mock';
 
 export const HydrogenProductionUnitDbTypeMock = <HydrogenProductionUnitDbType[]>[
   {
-    ...BaseUnitDbTypeMock[0],
+    ...BaseUnitDeepDbTypeMock[0],
     hydrogenProductionUnit: {
       ...HydrogenProductionUnitSeed[0],
     },

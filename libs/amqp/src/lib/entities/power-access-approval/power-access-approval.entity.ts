@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerAccessApprovalDbType } from 'libs/database/src/lib';
+import { PowerAccessApprovalDeepDbType, PowerAccessApprovalShallowType } from '@h2-trust/database';
 import { CompanyEntity } from '../company';
 import { DocumentEntity } from '../document';
 import { BaseUnitEntity, PowerProductionUnitEntity } from '../unit';
@@ -38,21 +38,30 @@ export class PowerAccessApprovalEntity {
     this.document = document;
   }
 
-  static fromDatabase(powerAccessApproval: PowerAccessApprovalDbType): PowerAccessApprovalEntity {
+  static fromShallowDatabase(approval: PowerAccessApprovalShallowType): PowerAccessApprovalEntity {
+    return <PowerAccessApprovalEntity>{
+      ...approval,
+      hydrogenProducer: CompanyEntity.fromSurfaceDatabase(approval.hydrogenProducer),
+      powerProducer: CompanyEntity.fromSurfaceDatabase(approval.powerProducer),
+      powerProductionUnit: PowerProductionUnitEntity.fromSurfaceDatabaseAsRef(approval.powerProductionUnit),
+    };
+  }
+
+  static fromDeepDatabase(powerAccessApproval: PowerAccessApprovalDeepDbType): PowerAccessApprovalEntity {
     return <PowerAccessApprovalEntity>{
       id: powerAccessApproval.id,
       decidedAt: powerAccessApproval.decidedAt,
       status: powerAccessApproval.status,
-      powerProducer: CompanyEntity.fromDatabase(powerAccessApproval.powerProducer),
+      powerProducer: CompanyEntity.fromShallowDatabase(powerAccessApproval.powerProducer),
       powerProductionUnit: {
-        ...BaseUnitEntity.fromDatabase(powerAccessApproval.powerProductionUnit.generalInfo),
+        ...BaseUnitEntity.fromShallowDatabase(powerAccessApproval.powerProductionUnit.generalInfo),
         ratedPower: powerAccessApproval.powerProductionUnit?.ratedPower?.toNumber() ?? 0,
         gridOperator: powerAccessApproval.powerProductionUnit?.gridOperator,
         gridLevel: powerAccessApproval.powerProductionUnit?.gridLevel,
         gridConnectionNumber: powerAccessApproval.powerProductionUnit?.gridConnectionNumber,
         type: powerAccessApproval.powerProductionUnit?.type,
       },
-      hydrogenProducer: CompanyEntity.fromDatabase(powerAccessApproval.hydrogenProducer),
+      hydrogenProducer: CompanyEntity.fromShallowDatabase(powerAccessApproval.hydrogenProducer),
       document: DocumentEntity.fromDatabase(powerAccessApproval.document),
     };
   }

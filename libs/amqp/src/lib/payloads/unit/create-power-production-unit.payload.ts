@@ -7,7 +7,7 @@
  */
 
 import { Type } from 'class-transformer';
-import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
 import { BiddingZone, GridLevel, PowerProductionType } from '@h2-trust/domain';
 import { AddressPayload } from '../common';
 import { BaseCreateUnitPayload } from './base-create-unit.payload';
@@ -18,12 +18,12 @@ export class CreatePowerProductionUnitPayload extends BaseCreateUnitPayload {
   electricityMeterNumber: string;
 
   @IsString()
-  @IsOptional()
-  gridOperator?: string;
+  @IsNotEmpty()
+  gridOperator: string;
 
   @IsString()
-  @IsOptional()
-  gridConnectionNumber?: string;
+  @IsNotEmpty()
+  gridConnectionNumber: string;
 
   @IsEnum(GridLevel)
   @IsNotEmpty()
@@ -39,9 +39,9 @@ export class CreatePowerProductionUnitPayload extends BaseCreateUnitPayload {
   ratedPower: number;
 
   @IsDate()
-  @IsOptional()
+  @IsNotEmpty()
   @Type(() => Date)
-  decommissioningPlannedOn?: Date;
+  decommissioningPlannedOn: Date;
 
   @IsBoolean()
   @IsNotEmpty()
@@ -63,15 +63,15 @@ export class CreatePowerProductionUnitPayload extends BaseCreateUnitPayload {
     biddingZone: BiddingZone,
     financialSupportReceived: boolean,
     powerProductionType: PowerProductionType,
-    manufacturer?: string,
-    modelType?: string,
-    modelNumber?: string,
-    serialNumber?: string,
-    certifiedBy?: string,
-    operatorId?: string,
-    decommissioningPlannedOn?: Date,
-    gridOperator?: string,
-    gridConnectionNumber?: string,
+    manufacturer: string,
+    modelType: string,
+    modelNumber: string,
+    serialNumber: string,
+    certifiedBy: string,
+    operatorId: string,
+    decommissioningPlannedOn: Date,
+    gridOperator: string,
+    gridConnectionNumber: string,
   ) {
     super(
       name,

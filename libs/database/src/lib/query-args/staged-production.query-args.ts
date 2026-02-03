@@ -7,27 +7,11 @@
  */
 
 import { Prisma } from '@prisma/client';
+import { hydrogenProductionUnitRefDeepQueryArgs, powerProductionUnitRefDeepQueryArgs } from './unit.query-args';
 
 export const stagedProductionQueryArgs = Prisma.validator<Prisma.StagedProductionDefaultArgs>()({
   include: {
-    hydrogenProductionUnit: {
-      include: {
-        generalInfo: {
-          include: {
-            owner: true,
-          },
-        },
-      },
-    },
-    powerProductionUnit: {
-      include: {
-        generalInfo: {
-          include: {
-            owner: true,
-          },
-        },
-        type: true,
-      },
-    },
+    hydrogenProductionUnit: hydrogenProductionUnitRefDeepQueryArgs,
+    powerProductionUnit: powerProductionUnitRefDeepQueryArgs,
   },
 });

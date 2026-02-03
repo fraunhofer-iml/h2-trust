@@ -7,20 +7,44 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { batchQueryArgs } from './batch.query-args';
-import { baseUnitQueryArgs } from './unit.query-args';
-import { userQueryArgs } from './user.query-args';
+import { batchShallowQueryArgs, batchSurfaceQueryArgs } from './batch.query-args';
+import { baseUnitSurfaceQueryArgs } from './unit.query-args';
+import { userShallowQueryArgs, userSurfaceQueryArgs } from './user.query-args';
 
-export const processStepQueryArgs = Prisma.validator<Prisma.ProcessStepDefaultArgs>()({
+export const processStepDeepQueryArgs = Prisma.validator<Prisma.ProcessStepDefaultArgs>()({
   include: {
-    batch: batchQueryArgs,
-    executedBy: baseUnitQueryArgs,
-    recordedBy: userQueryArgs,
+    batch: batchShallowQueryArgs,
+    executedBy: baseUnitSurfaceQueryArgs,
+    recordedBy: userShallowQueryArgs,
     documents: true,
     processStepDetails: {
       include: {
         transportationDetails: true,
       },
     },
+  },
+});
+
+export const processStepShallowQueryArgs = Prisma.validator<Prisma.ProcessStepDefaultArgs>()({
+  include: {
+    batch: batchSurfaceQueryArgs,
+    executedBy: baseUnitSurfaceQueryArgs,
+    recordedBy: userSurfaceQueryArgs,
+    documents: true,
+    processStepDetails: {
+      include: {
+        transportationDetails: true,
+      },
+    },
+  },
+});
+
+export const processStepSurfaceQueryArgs = Prisma.validator<Prisma.ProcessStepDefaultArgs>()({
+  include: {
+    batch: true,
+    executedBy: true,
+    recordedBy: true,
+    documents: true,
+    processStepDetails: true,
   },
 });

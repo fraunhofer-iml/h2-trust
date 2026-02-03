@@ -7,12 +7,22 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { companyQueryArgs } from './company.query.args';
+import { companyShallowQueryArgs, companySurfaceQueryArgs } from './company.query.args';
 
-export const userQueryArgs = Prisma.validator<Prisma.UserDefaultArgs>()({
+export const userDeepQueryArgs = Prisma.validator<Prisma.UserDefaultArgs>()({
   include: {
-    company: {
-      ...companyQueryArgs,
-    },
+    company: companyShallowQueryArgs,
+  },
+});
+
+export const userShallowQueryArgs = Prisma.validator<Prisma.UserDefaultArgs>()({
+  include: {
+    company: companySurfaceQueryArgs,
+  },
+});
+
+export const userSurfaceQueryArgs = Prisma.validator<Prisma.UserDefaultArgs>()({
+  include: {
+    company: true,
   },
 });

@@ -7,6 +7,18 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { companyQueryArgs } from '../query-args';
+import { companyDeepQueryArgs, companyShallowQueryArgs, companySurfaceQueryArgs } from '../query-args';
 
-export type CompanyDbType = Prisma.CompanyGetPayload<typeof companyQueryArgs>;
+export type CompanyDeepDbType = Prisma.CompanyGetPayload<typeof companyDeepQueryArgs>;
+
+export type CompanyDbShallowType = Prisma.CompanyGetPayload<typeof companyShallowQueryArgs>;
+
+export type CompanyDbSurfaceType = Prisma.CompanyGetPayload<typeof companySurfaceQueryArgs>;
+
+export type CompanyDbBaseType = {
+  id: string;
+  type: string;
+  name: string;
+  mastrNumber: string;
+  addressId: string;
+};
