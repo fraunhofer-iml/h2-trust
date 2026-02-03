@@ -6,14 +6,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import 'multer';
+import { IsNotEmpty, IsString } from 'class-validator';
 
-export class UnitFileBundle {
+export class UnitFileReference {
+  @IsString()
+  @IsNotEmpty()
   unitId: string;
-  file: Express.Multer.File;
 
-  constructor(unitId: string, file: Express.Multer.File) {
+  @IsString()
+  @IsNotEmpty()
+  fileName: string;
+
+  constructor(unitId: string, fileName: string) {
     this.unitId = unitId;
-    this.file = file;
+    this.fileName = fileName;
   }
 }

@@ -11,9 +11,8 @@ import {
   AccountingPeriodHydrogen,
   AccountingPeriodPower,
   BrokerException,
-  ParsedFileBundles,
   ParsedProductionEntity,
-  UnitDataBundle,
+  UnitAccountingPeriods,
 } from '@h2-trust/amqp';
 import { BatchType } from '@h2-trust/domain';
 
@@ -29,12 +28,16 @@ interface HydrogenItem {
 }
 
 export class AccountingPeriodMatcher {
-  static matchAccountingPeriods(data: ParsedFileBundles, gridUnitId: string): ParsedProductionEntity[] {
-    this.validateBundles(data.hydrogenProduction, BatchType.HYDROGEN);
-    this.validateBundles(data.powerProduction, BatchType.POWER);
+  static matchAccountingPeriods(
+    powerProductions: UnitAccountingPeriods<AccountingPeriodPower>[],
+    hydrogenProductions: UnitAccountingPeriods<AccountingPeriodHydrogen>[],
+    gridUnitId: string,
+  ): ParsedProductionEntity[] {
+    this.validateBundles(hydrogenProductions, BatchType.HYDROGEN);
+    this.validateBundles(powerProductions, BatchType.POWER);
 
-    const powerItemsByDateHour: Map<string, PowerItem[]> = this.normalizePower(data.powerProduction);
-    const hydrogenItemsByDateHour: Map<string, HydrogenItem[]> = this.normalizeHydrogen(data.hydrogenProduction);
+    const powerItemsByDateHour: Map<string, PowerItem[]> = this.normalizePower(powerProductions);
+    const hydrogenItemsByDateHour: Map<string, HydrogenItem[]> = this.normalizeHydrogen(hydrogenProductions);
 
     const parsedProductions: ParsedProductionEntity[] = [];
 
@@ -98,11 +101,11 @@ export class AccountingPeriodMatcher {
     return parsedProductions;
   }
 
-  private static normalizePower(data: UnitDataBundle<AccountingPeriodPower>[]): Map<string, PowerItem[]> {
+  private static normalizePower(data: UnitAccountingPeriods<AccountingPeriodPower>[]): Map<string, PowerItem[]> {
     const powerItemsByDateHour = new Map<string, PowerItem[]>();
 
     data.forEach((bundle) => {
-      const hourlyTotals = bundle.data.reduce(
+      const hourlyTotals = bundle.accountingPeriods.reduce(
         (acc, item) => {
           const date = new Date(item.time);
           const dateHourKey = date.toISOString().slice(0, 13);
@@ -123,11 +126,13 @@ export class AccountingPeriodMatcher {
     return powerItemsByDateHour;
   }
 
-  private static normalizeHydrogen(data: UnitDataBundle<AccountingPeriodHydrogen>[]): Map<string, HydrogenItem[]> {
+  private static normalizeHydrogen(
+    data: UnitAccountingPeriods<AccountingPeriodHydrogen>[],
+  ): Map<string, HydrogenItem[]> {
     const hydrogenItemsByDateHour = new Map<string, HydrogenItem[]>();
 
     data.forEach((bundle) => {
-      const hourlyTotals = bundle.data.reduce(
+      const hourlyTotals = bundle.accountingPeriods.reduce(
         (acc, item) => {
           const date = new Date(item.time);
           const dateHourKey = date.toISOString().slice(0, 13);
@@ -158,14 +163,14 @@ export class AccountingPeriodMatcher {
   }
 
   private static validateBundles(
-    bundles: UnitDataBundle<any>[] | undefined,
+    bundles: UnitAccountingPeriods<any>[] | undefined,
     type: BatchType.POWER | BatchType.HYDROGEN,
   ) {
     if (!bundles || bundles.length === 0) {
       throw new BrokerException(`Missing ${type} production data`, HttpStatus.BAD_REQUEST);
     }
 
-    if (bundles.some((bundle) => !bundle.unitId || bundle.data.length === 0)) {
+    if (bundles.some((bundle) => !bundle.unitId || bundle.accountingPeriods.length === 0)) {
       throw new BrokerException(`Invalid unit data relation for ${type} production`, HttpStatus.BAD_REQUEST);
     }
   }

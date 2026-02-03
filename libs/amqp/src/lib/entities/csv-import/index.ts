@@ -8,6 +8,5 @@
 
 export * from './accounting-period.entity';
 export * from './imported-files.entity';
-export * from './parsed-files.entity';
-export * from './unit-data-bundle.entity';
-export * from './unit-file-bundle.entity';
+export * from './unit-accounting-periods.entity';
+export * from './unit-file-reference.entity';
