@@ -61,12 +61,14 @@ services:
     build:
       context: ./docker/blockchain
       dockerfile: Dockerfile
-    depends_on:
-      minio-setup:
-        condition: service_completed_successfully
     restart: unless-stopped
     ports:
       - '8545:8545'
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8545/liveness"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   blockchain-setup:
     build:
@@ -74,9 +76,7 @@ services:
       dockerfile: docker/blockchain-setup/Dockerfile
     depends_on:
       blockchain:
-        condition: service_started
-    environment:
-      NETWORK_URL: 'http://blockchain:8545'
+        condition: service_healthy
 
   #########
   # UTILS #
@@ -88,7 +88,7 @@ services:
       - '5672:5672'
       - '15672:15672'
     environment:
-      RABBITMQ_LOGS: '-error'
+      RABBITMQ_LOGS: '-warn'
 
 networks:
   default:

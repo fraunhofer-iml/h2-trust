@@ -1,8 +1,6 @@
 #!/bin/sh
 echo "Starting deployment process of the ProofStorage smart contract"
 
-./wait-for-it.sh blockchain:8545 --timeout=20 --strict -- echo "blockchain:8545 is up"
-
 cd smart-contract || exit
 
 echo "Installing dependencies"
