@@ -1,6 +1,4 @@
-ARG NODE_VERSION=20.18.0
-
-FROM node:${NODE_VERSION}-alpine
+FROM node:22-alpine3.23
 
 ARG APP
 ENV NODE_ENV="production"
