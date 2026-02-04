@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { StagedProductionDbType } from '@h2-trust/database';
+import { StagedProductionDeepDbType } from '@h2-trust/database';
 
 export class StagedProductionEntity {
   startedAt: Date;
@@ -41,7 +41,7 @@ export class StagedProductionEntity {
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 
-  static fromDatabase(stagedProduction: StagedProductionDbType) {
+  static fromDeepDatabase(stagedProduction: StagedProductionDeepDbType) {
     return new StagedProductionEntity(
       stagedProduction.startedAt,
       stagedProduction.hydrogenAmount.toNumber(),

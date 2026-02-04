@@ -6,6 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './staged-production.deep.query-args';
-export * from './staged-production.shallow.query-args';
-export * from './staged-production.surface.query-args';
+import { Prisma } from '@prisma/client';
+
+export const stagedProductionSurfaceQueryArgs = Prisma.validator<Prisma.StagedProductionDefaultArgs>()({
+  include: {
+    hydrogenProductionUnit: true,
+    powerProductionUnit: true,
+  },
+});
