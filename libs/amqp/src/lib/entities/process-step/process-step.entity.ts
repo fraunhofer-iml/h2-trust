@@ -54,7 +54,7 @@ export class ProcessStepEntity {
       processStep.type,
       BatchEntity.fromSurfaceDatabase(processStep.batch),
       UserEntity.fromSurfaceDatabase(processStep.recordedBy),
-      BaseUnitEntity.fromSurfaceDatabase(processStep.executedBy),
+      BaseUnitEntity.fromSurfaceBaseUnit(processStep.executedBy),
       processStep.documents.map((doc) => DocumentEntity.fromDatabase(doc)),
       processStep.processStepDetails?.transportationDetails
         ? TransportationDetailsEntity.fromDatabase(processStep.processStepDetails.transportationDetails)
@@ -70,7 +70,7 @@ export class ProcessStepEntity {
       processStep.type,
       BatchEntity.fromShallowDatabase(processStep.batch),
       UserEntity.fromShallowDatabase(processStep.recordedBy),
-      BaseUnitEntity.fromShallowDatabase(processStep.executedBy),
+      BaseUnitEntity.fromShallowBaseUnit(processStep.executedBy),
       processStep.documents.map((doc) => DocumentEntity.fromDatabase(doc)),
       processStep.processStepDetails?.transportationDetails
         ? TransportationDetailsEntity.fromDatabase(processStep.processStepDetails.transportationDetails)

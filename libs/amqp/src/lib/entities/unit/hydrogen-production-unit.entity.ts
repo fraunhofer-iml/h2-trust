@@ -68,18 +68,9 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 
-  static fromShallowDatabaseAsRef(unit: HydrogenProductionUnitShallowDbType): HydrogenProductionUnitEntity {
+  static fromShallowDatabase(unit: HydrogenProductionUnitShallowDbType): HydrogenProductionUnitEntity {
     return <HydrogenProductionUnitEntity>{
-      id: unit.generalInfo.id,
-      name: unit.generalInfo?.name,
-      mastrNumber: unit.generalInfo?.mastrNumber,
-      manufacturer: unit.generalInfo?.manufacturer,
-      modelNumber: unit.generalInfo?.modelNumber,
-      serialNumber: unit.generalInfo?.serialNumber,
-      certifiedBy: unit.generalInfo?.certifiedBy,
-      commissionedOn: unit.generalInfo?.commissionedOn,
-      owner: CompanyEntity.fromBaseDatabase(unit.generalInfo.owner),
-      operator: CompanyEntity.fromBaseDatabase(unit.generalInfo?.operator),
+      ...BaseUnitEntity.fromShallowBaseUnit(unit.generalInfo),
       unitType: UnitType.HYDROGEN_PRODUCTION,
       ratedPower: unit.ratedPower.toNumber(),
       pressure: unit.pressure.toNumber(),
@@ -90,18 +81,9 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     };
   }
 
-  static fromDeepDatabaseAsRef(unit: HydrogenProductionUnitDeepDbType): HydrogenProductionUnitEntity {
+  static fromDeepDatabase(unit: HydrogenProductionUnitDeepDbType): HydrogenProductionUnitEntity {
     return <HydrogenProductionUnitEntity>{
-      id: unit.generalInfo.id,
-      name: unit.generalInfo?.name,
-      mastrNumber: unit.generalInfo?.mastrNumber,
-      manufacturer: unit.generalInfo?.manufacturer,
-      modelNumber: unit.generalInfo?.modelNumber,
-      serialNumber: unit.generalInfo?.serialNumber,
-      certifiedBy: unit.generalInfo?.certifiedBy,
-      commissionedOn: unit.generalInfo?.commissionedOn,
-      owner: CompanyEntity.fromShallowDatabase(unit.generalInfo.owner),
-      operator: CompanyEntity.fromShallowDatabase(unit.generalInfo?.operator),
+      ...BaseUnitEntity.fromDeepBaseUnit(unit.generalInfo),
       unitType: UnitType.HYDROGEN_PRODUCTION,
       ratedPower: unit.ratedPower.toNumber(),
       pressure: unit.pressure.toNumber(),
@@ -112,9 +94,10 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     };
   }
 
-  static override fromDeepDatabase(unit: HydrogenProductionUnitDbType): HydrogenProductionUnitEntity {
+  //TODO-LG: Replace with a deep, shallow or surface function if possible
+  static override fromDatabase(unit: HydrogenProductionUnitDbType): HydrogenProductionUnitEntity {
     return <HydrogenProductionUnitEntity>{
-      ...BaseUnitEntity.fromDeepDatabase(unit),
+      ...BaseUnitEntity.fromDatabase(unit),
       ratedPower: unit.hydrogenProductionUnit?.ratedPower.toNumber(),
       pressure: unit.hydrogenProductionUnit?.pressure.toNumber(),
       method: unit.hydrogenProductionUnit?.method,

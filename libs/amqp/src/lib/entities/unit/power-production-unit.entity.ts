@@ -80,19 +80,27 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     this.type = type;
   }
 
-  static fromSurfaceDatabaseAsRef(unit: PowerProductionUnitSurfaceDbType): PowerProductionUnitEntity {
+  static fromSurfaceDatabase(unit: PowerProductionUnitSurfaceDbType): PowerProductionUnitEntity {
     return <PowerProductionUnitEntity>{
-      id: unit.generalInfo.id,
-      name: unit.generalInfo?.name,
+      ...BaseUnitEntity.fromSurfaceBaseUnit(unit.generalInfo),
       modelType: unit.generalInfo?.modelType,
-      mastrNumber: unit.generalInfo?.mastrNumber,
-      manufacturer: unit.generalInfo?.manufacturer,
-      modelNumber: unit.generalInfo?.modelNumber,
-      serialNumber: unit.generalInfo?.serialNumber,
-      certifiedBy: unit.generalInfo?.certifiedBy,
-      commissionedOn: unit.generalInfo?.commissionedOn,
-      owner: CompanyEntity.fromBaseDatabase(unit.generalInfo?.owner),
-      operator: CompanyEntity.fromBaseDatabase(unit.generalInfo?.operator),
+      unitType: UnitType.HYDROGEN_STORAGE,
+      decommissioningPlannedOn: unit.decommissioningPlannedOn,
+      electricityMeterNumber: unit.electricityMeterNumber,
+      ratedPower: unit.ratedPower.toNumber(),
+      gridOperator: unit.gridOperator,
+      gridLevel: unit.gridLevel,
+      biddingZone: unit.biddingZone,
+      gridConnectionNumber: unit.gridConnectionNumber,
+      financialSupportReceived: unit.financialSupportReceived,
+      type: unit.type as PowerProductionType,
+    };
+  }
+
+  static fromShallowDatabase(unit: PowerProductionUnitShallowDbType): PowerProductionUnitEntity {
+    return <PowerProductionUnitEntity>{
+      ...BaseUnitEntity.fromShallowBaseUnit(unit.generalInfo),
+      modelType: unit.generalInfo?.modelType,
       address: unit.generalInfo.address,
       unitType: UnitType.HYDROGEN_STORAGE,
       decommissioningPlannedOn: unit.decommissioningPlannedOn,
@@ -107,19 +115,10 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     };
   }
 
-  static fromShallowDatabaseAsRef(unit: PowerProductionUnitShallowDbType): PowerProductionUnitEntity {
+  static fromDeepDatabase(unit: PowerProductionUniRefDeepDbType): PowerProductionUnitEntity {
     return <PowerProductionUnitEntity>{
-      id: unit.generalInfo.id,
-      name: unit.generalInfo?.name,
+      ...BaseUnitEntity.fromDeepBaseUnit(unit.generalInfo),
       modelType: unit.generalInfo?.modelType,
-      mastrNumber: unit.generalInfo?.mastrNumber,
-      manufacturer: unit.generalInfo?.manufacturer,
-      modelNumber: unit.generalInfo?.modelNumber,
-      serialNumber: unit.generalInfo?.serialNumber,
-      certifiedBy: unit.generalInfo?.certifiedBy,
-      commissionedOn: unit.generalInfo?.commissionedOn,
-      owner: CompanyEntity.fromBaseDatabase(unit.generalInfo?.owner),
-      operator: CompanyEntity.fromBaseDatabase(unit.generalInfo?.operator),
       address: unit.generalInfo.address,
       unitType: UnitType.HYDROGEN_STORAGE,
       decommissioningPlannedOn: unit.decommissioningPlannedOn,
@@ -134,41 +133,16 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     };
   }
 
-  static fromDeepDatabaseAsRef(unit: PowerProductionUniRefDeepDbType): PowerProductionUnitEntity {
+  //TODO-LG: Replace with a deep, shallow or surface function if possible
+  static override fromDatabase(unit: PowerProductionUnitDbType): PowerProductionUnitEntity {
     return <PowerProductionUnitEntity>{
-      id: unit.generalInfo.id,
-      name: unit.generalInfo?.name,
-      modelType: unit.generalInfo?.modelType,
-      mastrNumber: unit.generalInfo?.mastrNumber,
-      manufacturer: unit.generalInfo?.manufacturer,
-      modelNumber: unit.generalInfo?.modelNumber,
-      serialNumber: unit.generalInfo?.serialNumber,
-      certifiedBy: unit.generalInfo?.certifiedBy,
-      commissionedOn: unit.generalInfo?.commissionedOn,
-      owner: CompanyEntity.fromBaseDatabase(unit.generalInfo?.owner),
-      operator: CompanyEntity.fromBaseDatabase(unit.generalInfo?.operator),
-      address: unit.generalInfo.address,
-      unitType: UnitType.HYDROGEN_STORAGE,
-      decommissioningPlannedOn: unit.decommissioningPlannedOn,
-      electricityMeterNumber: unit.electricityMeterNumber,
-      ratedPower: unit.ratedPower.toNumber(),
-      gridOperator: unit.gridOperator,
-      gridLevel: unit.gridLevel,
-      biddingZone: unit.biddingZone,
-      gridConnectionNumber: unit.gridConnectionNumber,
-      financialSupportReceived: unit.financialSupportReceived,
-      type: unit.type as PowerProductionType,
-    };
-  }
-
-  static override fromDeepDatabase(unit: PowerProductionUnitDbType): PowerProductionUnitEntity {
-    return <PowerProductionUnitEntity>{
-      ...BaseUnitEntity.fromDeepDatabase(unit),
+      ...BaseUnitEntity.fromDatabase(unit),
       ...PowerProductionUnitEntity.mapPowerProductionUnitSpecials(unit),
       unitType: UnitType.POWER_PRODUCTION,
     };
   }
 
+  //TODO-LG: Replace with a deep, shallow or surface function if possible
   static mapPowerProductionUnitSpecials(unit: PowerProductionUnitDbType) {
     return {
       decommissioningPlannedOn: unit.powerProductionUnit?.decommissioningPlannedOn,

@@ -43,7 +43,7 @@ export class PowerAccessApprovalEntity {
       ...approval,
       hydrogenProducer: CompanyEntity.fromSurfaceDatabase(approval.hydrogenProducer),
       powerProducer: CompanyEntity.fromSurfaceDatabase(approval.powerProducer),
-      powerProductionUnit: PowerProductionUnitEntity.fromSurfaceDatabaseAsRef(approval.powerProductionUnit),
+      powerProductionUnit: PowerProductionUnitEntity.fromSurfaceDatabase(approval.powerProductionUnit),
     };
   }
 
@@ -54,7 +54,7 @@ export class PowerAccessApprovalEntity {
       status: powerAccessApproval.status,
       powerProducer: CompanyEntity.fromShallowDatabase(powerAccessApproval.powerProducer),
       powerProductionUnit: {
-        ...BaseUnitEntity.fromShallowDatabase(powerAccessApproval.powerProductionUnit.generalInfo),
+        ...BaseUnitEntity.fromShallowBaseUnit(powerAccessApproval.powerProductionUnit.generalInfo),
         ratedPower: powerAccessApproval.powerProductionUnit?.ratedPower?.toNumber() ?? 0,
         gridOperator: powerAccessApproval.powerProductionUnit?.gridOperator,
         gridLevel: powerAccessApproval.powerProductionUnit?.gridLevel,

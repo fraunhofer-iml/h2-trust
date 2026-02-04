@@ -56,7 +56,7 @@ export abstract class BaseUnitEntity {
     this.unitType = unitType;
   }
 
-  static fromSurfaceDatabase(unit: BaseUnitSurfaceDbType): BaseUnitEntity {
+  static fromSurfaceBaseUnit(unit: BaseUnitSurfaceDbType): BaseUnitEntity {
     return <BaseUnitEntity>{
       id: unit.id,
       name: unit.name,
@@ -73,7 +73,7 @@ export abstract class BaseUnitEntity {
     };
   }
 
-  static fromShallowDatabase(unit: BaseUnitShallowDbType): BaseUnitEntity {
+  static fromShallowBaseUnit(unit: BaseUnitShallowDbType): BaseUnitEntity {
     return <BaseUnitEntity>{
       id: unit.id,
       name: unit.name,
@@ -90,7 +90,25 @@ export abstract class BaseUnitEntity {
     };
   }
 
-  static fromDeepDatabase(unit: BaseUnitDeepDbType): BaseUnitEntity {
+  static fromDeepBaseUnit(unit: BaseUnitDeepDbType): BaseUnitEntity {
+    return <BaseUnitEntity>{
+      id: unit.id,
+      name: unit.name,
+      mastrNumber: unit.mastrNumber,
+      manufacturer: unit.manufacturer,
+      modelType: unit.modelType,
+      modelNumber: unit.modelNumber,
+      serialNumber: unit.serialNumber,
+      certifiedBy: unit.certifiedBy,
+      commissionedOn: unit.commissionedOn,
+      address: AddressEntity.fromDatabase(unit.address),
+      owner: CompanyEntity.fromShallowDatabase(unit.owner),
+      operator: CompanyEntity.fromShallowDatabase(unit.operator),
+    };
+  }
+
+  //TODO-LG: Replace with a deep, shallow or surface function if possible
+  static fromDatabase(unit: BaseUnitDeepDbType): BaseUnitEntity {
     return <BaseUnitEntity>{
       id: unit.id,
       name: unit.name,

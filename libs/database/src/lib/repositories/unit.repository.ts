@@ -52,21 +52,21 @@ export class UnitRepository {
     const { powerProductionUnit, hydrogenProductionUnit, hydrogenStorageUnit, ...unit } = _unit;
 
     if (powerProductionUnit) {
-      return PowerProductionUnitEntity.fromDeepDatabase({
+      return PowerProductionUnitEntity.fromDatabase({
         powerProductionUnit,
         ...unit,
       });
     }
 
     if (hydrogenProductionUnit) {
-      return HydrogenProductionUnitEntity.fromDeepDatabase({
+      return HydrogenProductionUnitEntity.fromDatabase({
         hydrogenProductionUnit,
         ...unit,
       });
     }
 
     if (hydrogenStorageUnit) {
-      return HydrogenStorageUnitEntity.fromDeepDatabase({
+      return HydrogenStorageUnitEntity.fromDatabase({
         hydrogenStorageUnit,
         ...unit,
       });
@@ -86,7 +86,7 @@ export class UnitRepository {
         },
         ...powerProductionUnitQueryArgs,
       })
-      .then((units) => units.map(PowerProductionUnitEntity.fromDeepDatabase));
+      .then((units) => units.map(PowerProductionUnitEntity.fromDatabase));
   }
 
   async findPowerProductionUnitsByIds(ids: string[]): Promise<PowerProductionUnitEntity[]> {
@@ -100,7 +100,7 @@ export class UnitRepository {
       })
       .then((units) => {
         assertAllIdsFound(units, ids, 'PowerProductionUnits');
-        return units.map(PowerProductionUnitEntity.fromDeepDatabase);
+        return units.map(PowerProductionUnitEntity.fromDatabase);
       });
   }
 
@@ -115,7 +115,7 @@ export class UnitRepository {
         },
         ...hydrogenProductionUnitQueryArgs,
       })
-      .then((units) => units.map(HydrogenProductionUnitEntity.fromDeepDatabase));
+      .then((units) => units.map(HydrogenProductionUnitEntity.fromDatabase));
   }
 
   async findHydrogenProductionUnitsByIds(ids: string[]): Promise<HydrogenProductionUnitEntity[]> {
@@ -129,7 +129,7 @@ export class UnitRepository {
       })
       .then((units) => {
         assertAllIdsFound(units, ids, 'HydrogenProductionUnits');
-        return units.map(HydrogenProductionUnitEntity.fromDeepDatabase);
+        return units.map(HydrogenProductionUnitEntity.fromDatabase);
       });
   }
 
@@ -144,7 +144,7 @@ export class UnitRepository {
         },
         ...hydrogenStorageUnitQueryArgs,
       })
-      .then((units) => units.map(HydrogenStorageUnitEntity.fromDeepDatabase));
+      .then((units) => units.map(HydrogenStorageUnitEntity.fromDatabase));
   }
 
   async insertPowerProductionUnit(payload: CreatePowerProductionUnitPayload): Promise<PowerProductionUnitEntity> {
@@ -153,7 +153,7 @@ export class UnitRepository {
         data: buildPowerProductionUnitCreateInput(payload),
         include: powerProductionUnitQueryArgs.include,
       })
-      .then(PowerProductionUnitEntity.fromDeepDatabase);
+      .then(PowerProductionUnitEntity.fromDatabase);
   }
 
   async insertHydrogenProductionUnit(
@@ -164,7 +164,7 @@ export class UnitRepository {
         data: buildHydrogenProductionUnitCreateInput(payload),
         include: hydrogenProductionUnitQueryArgs.include,
       })
-      .then(HydrogenProductionUnitEntity.fromDeepDatabase);
+      .then(HydrogenProductionUnitEntity.fromDatabase);
   }
 
   async insertHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
@@ -173,6 +173,6 @@ export class UnitRepository {
         data: buildHydrogenStorageUnitCreateInput(payload),
         include: hydrogenStorageUnitQueryArgs.include,
       })
-      .then(HydrogenStorageUnitEntity.fromDeepDatabase);
+      .then(HydrogenStorageUnitEntity.fromDatabase);
   }
 }

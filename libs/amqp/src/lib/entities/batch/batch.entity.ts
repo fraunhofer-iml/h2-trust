@@ -71,9 +71,7 @@ export class BatchEntity {
       batch.predecessors.map((pred) => BatchEntity.fromSurfaceDatabase({ ...pred, predecessors: [], successors: [] })),
       batch.successors.map((succ) => BatchEntity.fromSurfaceDatabase({ ...succ, predecessors: [], successors: [] })),
       CompanyEntity.fromSurfaceDatabase(batch.owner),
-      batch.hydrogenStorageUnit
-        ? HydrogenStorageUnitEntity.fromSurfaceDatabaseAsRef(batch.hydrogenStorageUnit)
-        : undefined,
+      batch.hydrogenStorageUnit ? HydrogenStorageUnitEntity.fromSurfaceDatabase(batch.hydrogenStorageUnit) : undefined,
       batch.batchDetails?.qualityDetails
         ? QualityDetailsEntity.fromDatabase(batch.batchDetails.qualityDetails)
         : undefined,
@@ -90,9 +88,7 @@ export class BatchEntity {
       batch.predecessors.map((pred) => BatchEntity.fromShallowDatabase({ ...pred, predecessors: [], successors: [] })),
       batch.successors.map((succ) => BatchEntity.fromShallowDatabase({ ...succ, predecessors: [], successors: [] })),
       CompanyEntity.fromShallowDatabase(batch.owner),
-      batch.hydrogenStorageUnit
-        ? HydrogenStorageUnitEntity.fromShallowDatabaseAsRef(batch.hydrogenStorageUnit)
-        : undefined,
+      batch.hydrogenStorageUnit ? HydrogenStorageUnitEntity.fromShallowDatabase(batch.hydrogenStorageUnit) : undefined,
       batch.batchDetails?.qualityDetails
         ? QualityDetailsEntity.fromDatabase(batch.batchDetails.qualityDetails)
         : undefined,

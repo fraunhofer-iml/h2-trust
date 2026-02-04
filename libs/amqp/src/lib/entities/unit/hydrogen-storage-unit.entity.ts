@@ -64,75 +64,49 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     this.filling = filling;
   }
 
-  static fromSurfaceDatabaseAsRef(unit: HydrogenStorageUnitSurfaceDbType): HydrogenStorageUnitEntity {
+  static fromSurfaceDatabase(unit: HydrogenStorageUnitSurfaceDbType): HydrogenStorageUnitEntity {
     return <HydrogenStorageUnitEntity>{
-      id: unit.generalInfo.id,
-      name: unit.generalInfo?.name,
+      ...BaseUnitEntity.fromSurfaceBaseUnit(unit.generalInfo),
       capacity: unit.capacity.toNumber(),
       pressure: unit.pressure.toNumber(),
       modelType: unit.generalInfo?.modelType,
       filling: [],
-      mastrNumber: unit.generalInfo?.mastrNumber,
-      manufacturer: unit.generalInfo?.manufacturer,
-      modelNumber: unit.generalInfo?.modelNumber,
-      serialNumber: unit.generalInfo?.serialNumber,
-      certifiedBy: unit.generalInfo?.certifiedBy,
-      commissionedOn: unit.generalInfo?.commissionedOn,
-      owner: CompanyEntity.fromBaseDatabase(unit.generalInfo.owner),
-      operator: CompanyEntity.fromBaseDatabase(unit.generalInfo.operator),
       address: unit.generalInfo.address,
       unitType: UnitType.HYDROGEN_STORAGE,
       type: unit.type as HydrogenStorageType,
     };
   }
 
-  static fromShallowDatabaseAsRef(unit: HydrogenStorageUnitShallowDbType): HydrogenStorageUnitEntity {
+  static fromShallowDatabase(unit: HydrogenStorageUnitShallowDbType): HydrogenStorageUnitEntity {
     return {
-      id: unit.generalInfo.id,
-      name: unit.generalInfo?.name,
+      ...BaseUnitEntity.fromShallowBaseUnit(unit.generalInfo),
       capacity: unit.capacity.toNumber(),
       pressure: unit.pressure.toNumber(),
       modelType: unit.generalInfo?.modelType,
-      filling: [],
-      mastrNumber: unit.generalInfo?.mastrNumber,
-      manufacturer: unit.generalInfo?.manufacturer,
-      modelNumber: unit.generalInfo?.modelNumber,
-      serialNumber: unit.generalInfo?.serialNumber,
-      certifiedBy: unit.generalInfo?.certifiedBy,
-      commissionedOn: unit.generalInfo?.commissionedOn,
-      owner: CompanyEntity.fromSurfaceDatabase(unit.generalInfo.owner),
-      operator: CompanyEntity.fromSurfaceDatabase(unit.generalInfo?.operator),
+      filling: HydrogenStorageUnitEntity.mapFillingForDeepAndShallow(unit),
       address: unit.generalInfo.address,
       unitType: UnitType.HYDROGEN_STORAGE,
       type: unit.type as HydrogenStorageType,
     };
   }
 
-  static fromDeepDatabaseAsRef(unit: HydrogenStorageUnitDeepDbType): HydrogenStorageUnitEntity {
+  static fromDeepDatabase(unit: HydrogenStorageUnitDeepDbType): HydrogenStorageUnitEntity {
     return {
-      id: unit.generalInfo.id,
-      name: unit.generalInfo?.name,
+      ...BaseUnitEntity.fromDeepBaseUnit(unit.generalInfo),
       capacity: unit.capacity.toNumber(),
       pressure: unit.pressure.toNumber(),
       modelType: unit.generalInfo?.modelType,
-      filling: [],
-      mastrNumber: unit.generalInfo?.mastrNumber,
-      manufacturer: unit.generalInfo?.manufacturer,
-      modelNumber: unit.generalInfo?.modelNumber,
-      serialNumber: unit.generalInfo?.serialNumber,
-      certifiedBy: unit.generalInfo?.certifiedBy,
-      commissionedOn: unit.generalInfo?.commissionedOn,
-      owner: CompanyEntity.fromShallowDatabase(unit.generalInfo.owner),
-      operator: CompanyEntity.fromShallowDatabase(unit.generalInfo?.operator),
+      filling: HydrogenStorageUnitEntity.mapFillingForDeepAndShallow(unit),
       address: unit.generalInfo.address,
       unitType: UnitType.HYDROGEN_STORAGE,
       type: unit.type as HydrogenStorageType,
     };
   }
 
-  static override fromDeepDatabase(unit: HydrogenStorageUnitDbType): HydrogenStorageUnitEntity {
+  //TODO-LG: Replace with a deep, shallow or surface function if possible
+  static override fromDatabase(unit: HydrogenStorageUnitDbType): HydrogenStorageUnitEntity {
     return <HydrogenStorageUnitEntity>{
-      ...BaseUnitEntity.fromDeepDatabase(unit),
+      ...BaseUnitEntity.fromDatabase(unit),
       capacity: unit.hydrogenStorageUnit?.capacity ?? 0,
       pressure: unit.hydrogenStorageUnit?.pressure ?? 0,
       type: unit.hydrogenStorageUnit?.type,
@@ -141,6 +115,23 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     };
   }
 
+  private static mapFillingForDeepAndShallow(
+    unit: HydrogenStorageUnitDeepDbType | HydrogenStorageUnitShallowDbType,
+  ): HydrogenComponentEntity[] {
+    return (
+      unit?.filling?.map((batch) => {
+        if (!batch.batchDetails?.qualityDetails?.color) {
+          throw new Error(`Hydrogen batch [${batch.id}] in storage unit is missing color information.`);
+        }
+        return {
+          color: batch.batchDetails.qualityDetails.color,
+          amount: batch.amount?.toNumber() ?? 0,
+        };
+      }) ?? []
+    );
+  }
+
+  //TODO-LG: Replace with a deep, shallow or surface function if possible
   private static mapFilling(unit: HydrogenStorageUnitDbType): HydrogenComponentEntity[] {
     return (
       unit.hydrogenStorageUnit?.filling?.map((batch) => {
