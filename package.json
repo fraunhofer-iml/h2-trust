@@ -26,6 +26,10 @@
   "license": "Apache-2.0",
   "contributors": [
     {
+      "name": "Lukas Grieger",
+      "email": "lukas.grieger@iml.fraunhofer.de"
+    },
+    {
       "name": "Maximilian Hegenbarth",
       "email": "maximilian.hegenbarth@iml.fraunhofer.de"
     },
