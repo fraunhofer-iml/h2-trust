@@ -68,8 +68,8 @@ export class BatchEntity {
       batch.active,
       batch.amount.toNumber(),
       batch.type,
-      [],
-      [],
+      batch.predecessors.map((pred) => BatchEntity.fromSurfaceDatabase({ ...pred, predecessors: [], successors: [] })),
+      batch.successors.map((succ) => BatchEntity.fromSurfaceDatabase({ ...succ, predecessors: [], successors: [] })),
       CompanyEntity.fromSurfaceDatabase(batch.owner),
       batch.hydrogenStorageUnit
         ? HydrogenStorageUnitEntity.fromSurfaceDatabaseAsRef(batch.hydrogenStorageUnit)

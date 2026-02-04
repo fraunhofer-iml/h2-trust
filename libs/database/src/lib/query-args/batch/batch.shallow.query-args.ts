@@ -9,12 +9,13 @@
 import { Prisma } from '@prisma/client';
 import { companySurfaceQueryArgs } from '../company/company.surface.query-args';
 import { hydrogenStorageUnitRefSurfaceQueryArgs } from '../unit/unit.surface.query-args';
+import { batchSurfaceQueryArgs } from './batch.surface.query-args';
 
 export const batchShallowQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()({
   include: {
     owner: companySurfaceQueryArgs,
-    predecessors: true,
-    successors: true,
+    predecessors: batchSurfaceQueryArgs,
+    successors: batchSurfaceQueryArgs,
     hydrogenStorageUnit: hydrogenStorageUnitRefSurfaceQueryArgs,
     batchDetails: {
       include: {

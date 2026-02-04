@@ -91,7 +91,6 @@ export abstract class BaseUnitEntity {
   }
 
   static fromDeepDatabase(unit: BaseUnitDeepDbType): BaseUnitEntity {
-    console.log(unit);
     return <BaseUnitEntity>{
       id: unit.id,
       name: unit.name,
