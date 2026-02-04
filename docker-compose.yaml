@@ -16,8 +16,6 @@ services:
         max-file: '3'
     ports:
       - '5432:5432'
-    #volumes:
-    #  - postgres-data:/var/lib/postgresql/data
 
   ###########
   # STORAGE #
@@ -29,11 +27,12 @@ services:
     environment:
       - MINIO_ROOT_USER=admin
       - MINIO_ROOT_PASSWORD=blockchain
+      - MINIO_UPDATE=off
     ports:
       - '9000:9000'
       - '9090:9090'
-    volumes:
-      - minio-data:/data
+    tmpfs:
+      - /data
     command:
       - server
       - /data
@@ -69,6 +68,16 @@ services:
     ports:
       - '8545:8545'
 
+  blockchain-setup:
+    build:
+      context: .
+      dockerfile: docker/blockchain-setup/Dockerfile
+    depends_on:
+      blockchain:
+        condition: service_started
+    environment:
+      NETWORK_URL: 'http://blockchain:8545'
+
   #########
   # UTILS #
   #########
@@ -85,7 +94,3 @@ networks:
   default:
     name: h2-trust
     driver: bridge
-
-volumes:
-  #  postgres-data:
-  minio-data:

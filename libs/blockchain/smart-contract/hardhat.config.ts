@@ -5,14 +5,6 @@ import "dotenv/config";
 const MNEMONIC = process.env.MNEMONIC || "";
 const ARBISCAN_API_KEY = process.env.ARBISCAN_API_KEY || "";
 
-if (!MNEMONIC) {
-  throw new Error("Missing MNEMONIC in .env");
-}
-
-if (!ARBISCAN_API_KEY) {
-  throw new Error("Missing ARBISCAN_API_KEY in .env");
-}
-
 export default defineConfig({
   plugins: [
     hardhatToolboxMochaEthersPlugin
@@ -22,6 +14,7 @@ export default defineConfig({
       default: {
         version: "0.8.28",
         settings: {
+          evmVersion: "paris",
           optimizer: {
             enabled: true,
             runs: 200,
@@ -34,6 +27,13 @@ export default defineConfig({
     local: {
       type: "edr-simulated",
       chainType: "l1",
+    },
+    private: {
+      type: "http",
+      accounts: ["0x8f2a55949038a9610f50fb23b5883af3b4ecb3c3bb792cbcefbd1542c692be63"],
+      chainId: 1337,
+      chainType: "l1",
+      url: "http://blockchain:8545",
     },
     arbitrumSepolia: {
       type: "http",

@@ -7,7 +7,7 @@
     "build": "npx hardhat compile",
     "test": "npx hardhat test",
     "deploy-local": "npx hardhat run scripts/deploy.ts --network local",
-    "deploy-private": "npx hardhat run scripts/deploy.ts --network <TBD>",
+    "deploy-private": "npx hardhat run scripts/deploy.ts --network private",
     "deploy-public": "npx hardhat run scripts/deploy.ts --network arbitrumSepolia"
   },
   "devDependencies": {
