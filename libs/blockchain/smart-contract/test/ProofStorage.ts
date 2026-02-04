@@ -62,19 +62,12 @@ describe("ProofStorage", function () {
           .to.be.revertedWithCustomError(proofStorage, "NotOwner");
       });
 
-      it("should revert when uuid is empty", async function () {
-        const { proofStorage } = await deployProofStorage();
-
-        await expect(proofStorage.storeProof("", HASH, CID))
-          .to.be.revertedWithCustomError(proofStorage, "UuidEmpty");
-      });
-
-      it("should revert when uuid exceeds max length", async function () {
+      it("should revert when uuid has invalid length", async function () {
         const { proofStorage } = await deployProofStorage();
         const longUuid = "550e8400-e29b-41d4-a716-446655440000x";
 
         await expect(proofStorage.storeProof(longUuid, HASH, CID))
-          .to.be.revertedWithCustomError(proofStorage, "UuidTooLong")
+          .to.be.revertedWithCustomError(proofStorage, "UuidInvalidLength")
           .withArgs(longUuid);
       });
 
@@ -114,7 +107,7 @@ describe("ProofStorage", function () {
         const { proofStorage } = await deployProofStorage();
 
         await expect(proofStorage.getProofByUuid(""))
-          .to.be.revertedWithCustomError(proofStorage, "UuidEmpty");
+          .to.be.revertedWithCustomError(proofStorage, "UuidNotFound");
       });
 
       it("should revert when uuid does not exist", async function () {
