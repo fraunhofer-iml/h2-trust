@@ -4,6 +4,9 @@ import { network } from "hardhat";
 const { ethers } = await network.connect();
 
 describe("ProofStorage", function () {
+  const SUCCESS = "success";
+  const FAILURE = "failure";
+
   const UUID = "550e8400-e29b-41d4-a716-446655440000";
   const HASH = "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2";
   const CID = "QmXnnyufdzAWL5CqZ2RnSNgPbvCc1ALT73s6epPrRnZ1Xy";
@@ -14,97 +17,113 @@ describe("ProofStorage", function () {
     return { proofStorage, alice, bob };
   }
 
-  describe("Deployment", function () {
-    it("should set the deployer as owner", async function () {
-      const { proofStorage, alice } = await deployProofStorage();
+  describe("deployment", function () {
+    describe(SUCCESS, function () {
+      it("should set the deployer as owner", async function () {
+        const { proofStorage, alice } = await deployProofStorage();
 
-      expect(await proofStorage.owner()).to.equal(alice.address);
+        expect(await proofStorage.owner()).to.equal(alice.address);
+      });
+    });
+
+    describe("failure", function () {
+      // no failure cases for deployment
     });
   });
 
   describe("storeProof", function () {
-    it("should store a proof and retrieve it", async function () {
-      const { proofStorage } = await deployProofStorage();
+    describe(SUCCESS, function () {
+      it("should store a proof and return it", async function () {
+        const { proofStorage } = await deployProofStorage();
 
-      await proofStorage.storeProof(UUID, HASH, CID);
+        await proofStorage.storeProof(UUID, HASH, CID);
 
-      const proof = await proofStorage.getProof(UUID);
-      expect(proof.hash).to.equal(HASH);
-      expect(proof.cid).to.equal(CID);
+        const proof = await proofStorage.getProof(UUID);
+        expect(proof.hash).to.equal(HASH);
+        expect(proof.cid).to.equal(CID);
+      });
+
+      it("should emit a ProofStored event", async function () {
+        const { proofStorage, alice } = await deployProofStorage();
+
+        await expect(proofStorage.storeProof(UUID, HASH, CID))
+          .to.emit(proofStorage, "ProofStored")
+          .withArgs(alice.address, UUID, HASH, CID);
+      });
     });
 
-    it("should emit a ProofStored event", async function () {
-      const { proofStorage, alice } = await deployProofStorage();
+    describe(FAILURE, function () {
+      it("should revert when called by non-owner", async function () {
+        const { proofStorage, bob } = await deployProofStorage();
 
-      await expect(proofStorage.storeProof(UUID, HASH, CID))
-        .to.emit(proofStorage, "ProofStored")
-        .withArgs(alice.address, UUID, HASH, CID);
-    });
+        const bobProofStorage = proofStorage.connect(bob) as typeof proofStorage;
 
-    it("should revert when called by non-owner", async function () {
-      const { proofStorage, bob } = await deployProofStorage();
+        await expect(bobProofStorage.storeProof(UUID, HASH, CID))
+          .to.be.revertedWithCustomError(proofStorage, "NotOwner");
+      });
 
-      const bobProofStorage = proofStorage.connect(bob) as typeof proofStorage;
+      it("should revert when uuid is empty", async function () {
+        const { proofStorage } = await deployProofStorage();
 
-      await expect(bobProofStorage.storeProof(UUID, HASH, CID))
-        .to.be.revertedWithCustomError(proofStorage, "NotOwner");
-    });
+        await expect(proofStorage.storeProof("", HASH, CID))
+          .to.be.revertedWithCustomError(proofStorage, "UuidEmpty");
+      });
 
-    it("should revert when uuid is empty", async function () {
-      const { proofStorage } = await deployProofStorage();
+      it("should revert when uuid exceeds max length", async function () {
+        const { proofStorage } = await deployProofStorage();
+        const longUuid = "550e8400-e29b-41d4-a716-446655440000x";
 
-      await expect(proofStorage.storeProof("", HASH, CID))
-        .to.be.revertedWithCustomError(proofStorage, "UuidEmpty");
-    });
+        await expect(proofStorage.storeProof(longUuid, HASH, CID))
+          .to.be.revertedWithCustomError(proofStorage, "UuidTooLong")
+          .withArgs(longUuid);
+      });
 
-    it("should revert when uuid exceeds max length", async function () {
-      const { proofStorage } = await deployProofStorage();
-      const longUuid = "550e8400-e29b-41d4-a716-446655440000x";
+      it("should revert when uuid already exists", async function () {
+        const { proofStorage } = await deployProofStorage();
 
-      await expect(proofStorage.storeProof(longUuid, HASH, CID))
-        .to.be.revertedWithCustomError(proofStorage, "UuidTooLong")
-        .withArgs(longUuid);
-    });
+        await proofStorage.storeProof(UUID, HASH, CID);
 
-    it("should revert when uuid already exists", async function () {
-      const { proofStorage } = await deployProofStorage();
+        await expect(proofStorage.storeProof(UUID, HASH, CID))
+          .to.be.revertedWithCustomError(proofStorage, "UuidAlreadyExists")
+          .withArgs(UUID);
+      });
 
-      await proofStorage.storeProof(UUID, HASH, CID);
+      it("should revert when hash is empty", async function () {
+        const { proofStorage } = await deployProofStorage();
 
-      await expect(proofStorage.storeProof(UUID, HASH, CID))
-        .to.be.revertedWithCustomError(proofStorage, "UuidAlreadyExists")
-        .withArgs(UUID);
-    });
+        await expect(proofStorage.storeProof(UUID, "", CID))
+          .to.be.revertedWithCustomError(proofStorage, "HashEmpty");
+      });
 
-    it("should revert when hash is empty", async function () {
-      const { proofStorage } = await deployProofStorage();
+      it("should revert when cid is empty", async function () {
+        const { proofStorage } = await deployProofStorage();
 
-      await expect(proofStorage.storeProof(UUID, "", CID))
-        .to.be.revertedWithCustomError(proofStorage, "HashEmpty");
-    });
-
-    it("should revert when cid is empty", async function () {
-      const { proofStorage } = await deployProofStorage();
-
-      await expect(proofStorage.storeProof(UUID, HASH, ""))
-        .to.be.revertedWithCustomError(proofStorage, "CidEmpty");
+        await expect(proofStorage.storeProof(UUID, HASH, ""))
+          .to.be.revertedWithCustomError(proofStorage, "CidEmpty");
+      });
     });
   });
 
   describe("getProof", function () {
-    it("should revert when uuid is empty", async function () {
-      const { proofStorage } = await deployProofStorage();
-
-      await expect(proofStorage.getProof(""))
-        .to.be.revertedWithCustomError(proofStorage, "UuidEmpty");
+    describe(SUCCESS, function () {
+      // see happy path test in "storeProof" section
     });
 
-    it("should revert when uuid does not exist", async function () {
-      const { proofStorage } = await deployProofStorage();
+    describe(FAILURE, function () {
+      it("should revert when uuid is empty", async function () {
+        const { proofStorage } = await deployProofStorage();
 
-      await expect(proofStorage.getProof(UUID))
-        .to.be.revertedWithCustomError(proofStorage, "UuidNotFound")
-        .withArgs(UUID);
+        await expect(proofStorage.getProof(""))
+          .to.be.revertedWithCustomError(proofStorage, "UuidEmpty");
+      });
+
+      it("should revert when uuid does not exist", async function () {
+        const { proofStorage } = await deployProofStorage();
+
+        await expect(proofStorage.getProof(UUID))
+          .to.be.revertedWithCustomError(proofStorage, "UuidNotFound")
+          .withArgs(UUID);
+      });
     });
   });
 });
