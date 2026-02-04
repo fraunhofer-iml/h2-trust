@@ -144,8 +144,8 @@ export class ProductionService {
     return processSteps.map(ProductionOverviewDto.fromEntity);
   }
 
-  async readCsvFilesByCompany(userId: string): Promise<ProcessedCsvDto[]> {
-    console.log(userId);
+  // TODO: remove mock implementation (subtask of DUHGW-299)
+  async readCsvFilesByCompany(_userId: string): Promise<ProcessedCsvDto[]> {
     return ProcessedCsvDtoMock;
   }
 }

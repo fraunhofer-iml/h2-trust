@@ -9,7 +9,7 @@ export const ProcessedCsvDtoMock = <ProcessedCsvDto[]>[
     endedAt: new Date(2026, 1, 4),
     name: 'Hydrogen Test',
     uploadedBy: CompanyDtoMock[1].name,
-    url: 'http://localhost:9000/h2-trust/Sommer_22%20(3).pdf',
+    url: '',
     amount: 30,
   },
   {
@@ -19,7 +19,7 @@ export const ProcessedCsvDtoMock = <ProcessedCsvDto[]>[
     endedAt: new Date(2026, 1, 12),
     name: 'Hydrogen Test',
     uploadedBy: CompanyDtoMock[1].name,
-    url: 'http://localhost:9000/h2-trust/Sommer_22%20(3).pdf',
+    url: '',
     amount: 415,
   },
   {
@@ -30,7 +30,7 @@ export const ProcessedCsvDtoMock = <ProcessedCsvDto[]>[
     name: 'Hydrogen Test',
     uploadedBy: CompanyDtoMock[0].name,
     url: '',
-    amount: 415,
+    amount: 28.6,
   },
   {
     id: '988e8400-48548418746414455b-41d4-a716',
@@ -40,6 +40,6 @@ export const ProcessedCsvDtoMock = <ProcessedCsvDto[]>[
     name: 'Hydrogen Test',
     uploadedBy: CompanyDtoMock[0].name,
     url: '',
-    amount: 415,
+    amount: 268.75,
   },
 ];

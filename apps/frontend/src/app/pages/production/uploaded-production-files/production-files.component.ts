@@ -6,7 +6,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDivider } from '@angular/material/divider';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -29,7 +28,6 @@ import { ProductionService } from '../../../shared/services/production/productio
     MatTableModule,
     MatPaginatorModule,
     MatTooltip,
-    MatDivider,
     MatChipsModule,
     MatDatepickerModule,
     MatFormFieldModule,
