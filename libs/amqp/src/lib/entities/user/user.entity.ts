@@ -23,7 +23,7 @@ export class UserEntity {
   }
 
   static fromSurfaceDatabase(user: UserSurfaceDbType): UserEntity {
-    return new UserEntity(user.id, user.name, user.email, CompanyEntity.fromBaseDatabase(user.company));
+    return new UserEntity(user.id, user.name, user.email, CompanyEntity.fromBaseType(user.company));
   }
 
   static fromShallowDatabase(user: UserShallowDbType): UserEntity {

@@ -68,8 +68,8 @@ export abstract class BaseUnitEntity {
       certifiedBy: unit.certifiedBy,
       commissionedOn: unit.commissionedOn,
       address: AddressEntity.fromDatabase(unit.address),
-      owner: CompanyEntity.fromBaseDatabase(unit.owner),
-      operator: CompanyEntity.fromBaseDatabase(unit.operator),
+      owner: CompanyEntity.fromBaseType(unit.owner),
+      operator: CompanyEntity.fromBaseType(unit.operator),
     };
   }
 

@@ -55,7 +55,7 @@ export class BatchEntity {
       batch.type,
       [],
       [],
-      CompanyEntity.fromBaseDatabase(batch.owner),
+      CompanyEntity.fromBaseType(batch.owner),
       undefined,
       undefined,
       batch.processStep?.id,

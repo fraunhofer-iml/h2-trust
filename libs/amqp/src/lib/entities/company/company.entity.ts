@@ -74,7 +74,7 @@ export class CompanyEntity {
     );
   }
 
-  static fromBaseDatabase(company: CompanyDbBaseType): CompanyEntity {
+  static fromBaseType(company: CompanyDbBaseType): CompanyEntity {
     return new CompanyEntity(
       company.id,
       company.name,
