@@ -8,13 +8,13 @@
 
 import { Prisma } from '@prisma/client';
 import { batchShallowQueryArgs, batchSurfaceQueryArgs } from './batch.query-args';
-import { baseUnitSurfaceQueryArgs } from './unit.query-args';
+import { baseUnitShallowQueryArgs, baseUnitSurfaceQueryArgs } from './unit.query-args';
 import { userShallowQueryArgs, userSurfaceQueryArgs } from './user.query-args';
 
 export const processStepDeepQueryArgs = Prisma.validator<Prisma.ProcessStepDefaultArgs>()({
   include: {
     batch: batchShallowQueryArgs,
-    executedBy: baseUnitSurfaceQueryArgs,
+    executedBy: baseUnitShallowQueryArgs,
     recordedBy: userShallowQueryArgs,
     documents: true,
     processStepDetails: {

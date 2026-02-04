@@ -35,15 +35,3 @@ export const companyShallowQueryArgs = Prisma.validator<Prisma.CompanyDefaultArg
     batches: true,
   },
 });
-
-export const companySurfaceQueryArgs = Prisma.validator<Prisma.CompanyDefaultArgs>()({
-  include: {
-    address: true,
-    hydrogenApprovals: true,
-    powerApprovals: true,
-    unitOwners: true,
-    unitOperators: true,
-    users: true,
-    batches: true,
-  },
-});

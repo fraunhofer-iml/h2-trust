@@ -7,7 +7,8 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { companyShallowQueryArgs, companySurfaceQueryArgs } from './company.query.args';
+import { companyShallowQueryArgs } from './company.query.args';
+import { companySurfaceQueryArgs } from './company.query.surface.args';
 import { hydrogenStorageUnitRefShallowQueryArgs, hydrogenStorageUnitRefSurfaceQueryArgs } from './unit.query-args';
 
 export const batchSurfaceQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()({
