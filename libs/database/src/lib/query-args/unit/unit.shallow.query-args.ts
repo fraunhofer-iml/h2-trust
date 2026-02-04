@@ -15,25 +15,24 @@ export const baseUnitShallowQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>
     address: true,
     owner: companySurfaceQueryArgs,
     operator: companySurfaceQueryArgs,
-    //hydrogenStorageUnit: true,
   },
 });
 
-export const hydrogenStorageUnitRefShallowQueryArgs = Prisma.validator<Prisma.HydrogenStorageUnitDefaultArgs>()({
+export const hydrogenStorageUnitShallowQueryArgs = Prisma.validator<Prisma.HydrogenStorageUnitDefaultArgs>()({
   include: {
     generalInfo: baseUnitShallowQueryArgs,
     filling: activeBatchShallowQueryArgs,
   },
 });
 
-export const powerProductionUnitRefShallowQueryArgs = Prisma.validator<Prisma.PowerProductionUnitDefaultArgs>()({
+export const powerProductionUnitShallowQueryArgs = Prisma.validator<Prisma.PowerProductionUnitDefaultArgs>()({
   include: {
     generalInfo: baseUnitShallowQueryArgs,
     type: true,
   },
 });
 
-export const hydrogenProductionUnitRefShallowQueryArgs = Prisma.validator<Prisma.HydrogenProductionUnitDefaultArgs>()({
+export const hydrogenProductionUnitShallowQueryArgs = Prisma.validator<Prisma.HydrogenProductionUnitDefaultArgs>()({
   include: {
     generalInfo: baseUnitShallowQueryArgs,
   },

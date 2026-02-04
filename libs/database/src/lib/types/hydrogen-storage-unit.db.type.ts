@@ -8,22 +8,23 @@
 
 import { Prisma } from '@prisma/client';
 import {
+  hydrogenStorageUnitDeepQueryArgs,
   hydrogenStorageUnitQueryArgs,
-  hydrogenStorageUnitRefDeepQueryArgs,
-  hydrogenStorageUnitRefShallowQueryArgs,
-  hydrogenStorageUnitRefSurfaceQueryArgs,
+  hydrogenStorageUnitShallowQueryArgs,
+  hydrogenStorageUnitSurfaceQueryArgs,
 } from '../query-args';
 
+//TODO-LG: Is it possible to replace every use of this type with one of the deep, shallow or surface types?
 export type HydrogenStorageUnitDbType = Prisma.UnitGetPayload<typeof hydrogenStorageUnitQueryArgs>;
 
-export type HydrogenStorageUnitRefDeepDbType = Prisma.HydrogenStorageUnitGetPayload<
-  typeof hydrogenStorageUnitRefDeepQueryArgs
+export type HydrogenStorageUnitDeepDbType = Prisma.HydrogenStorageUnitGetPayload<
+  typeof hydrogenStorageUnitDeepQueryArgs
 >;
 
-export type HydrogenStorageUnitRefShallowDbType = Prisma.HydrogenStorageUnitGetPayload<
-  typeof hydrogenStorageUnitRefShallowQueryArgs
+export type HydrogenStorageUnitShallowDbType = Prisma.HydrogenStorageUnitGetPayload<
+  typeof hydrogenStorageUnitShallowQueryArgs
 >;
 
-export type HydrogenStorageUnitRefSurfaceDbType = Prisma.HydrogenStorageUnitGetPayload<
-  typeof hydrogenStorageUnitRefSurfaceQueryArgs
+export type HydrogenStorageUnitSurfaceDbType = Prisma.HydrogenStorageUnitGetPayload<
+  typeof hydrogenStorageUnitSurfaceQueryArgs
 >;

@@ -7,11 +7,11 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { hydrogenProductionUnitRefShallowQueryArgs, powerProductionUnitRefShallowQueryArgs } from '../unit';
+import { hydrogenProductionUnitShallowQueryArgs, powerProductionUnitShallowQueryArgs } from '../unit';
 
 export const stagedProductionDeepQueryArgs = Prisma.validator<Prisma.StagedProductionDefaultArgs>()({
   include: {
-    hydrogenProductionUnit: hydrogenProductionUnitRefShallowQueryArgs,
-    powerProductionUnit: powerProductionUnitRefShallowQueryArgs,
+    hydrogenProductionUnit: hydrogenProductionUnitShallowQueryArgs,
+    powerProductionUnit: powerProductionUnitShallowQueryArgs,
   },
 });

@@ -10,12 +10,12 @@ import { HydrogenColor } from '@h2-trust/domain';
 import { HydrogenProductionBatchSeed, HydrogenStorageUnitSeed } from '../../../seed';
 import {
   HydrogenStorageUnitDbType,
-  HydrogenStorageUnitRefDeepDbType,
-  HydrogenStorageUnitRefShallowDbType,
+  HydrogenStorageUnitDeepDbType,
+  HydrogenStorageUnitShallowDbType,
 } from '../hydrogen-storage-unit.db.type';
 import { BaseUnitShallowDbTypeMock, BaseUnitSurfaceDbTypeMock } from './base-unit-db-type.mock';
 
-export const HydrogenStorageUnitRefShallowDbTypeMock = <HydrogenStorageUnitRefShallowDbType[]>[
+export const HydrogenStorageUnitRefShallowDbTypeMock = <HydrogenStorageUnitShallowDbType[]>[
   {
     generalInfo: {
       ...BaseUnitSurfaceDbTypeMock[0],
@@ -33,7 +33,7 @@ export const HydrogenStorageUnitRefShallowDbTypeMock = <HydrogenStorageUnitRefSh
   },
 ];
 
-export const HydrogenStorageUnitRefDeepDbTypeMock = <HydrogenStorageUnitRefDeepDbType[]>[
+export const HydrogenStorageUnitRefDeepDbTypeMock = <HydrogenStorageUnitDeepDbType[]>[
   {
     generalInfo: {
       ...BaseUnitShallowDbTypeMock[0],

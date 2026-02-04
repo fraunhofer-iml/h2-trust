@@ -8,10 +8,10 @@
 
 import { PowerProductionType } from '@prisma/client';
 import {
-  PowerProductionRefUniRefDeepDbType,
+  PowerProductionUniRefDeepDbType,
   PowerProductionUnitDbType,
-  PowerProductionUnitRefShallowDbType,
-  PowerProductionUnitRefSurfaceDbType,
+  PowerProductionUnitShallowDbType,
+  PowerProductionUnitSurfaceDbType,
 } from '@h2-trust/database';
 import { BiddingZone, GridLevel, UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
@@ -80,7 +80,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     this.type = type;
   }
 
-  static fromSurfaceDatabaseAsRef(unit: PowerProductionUnitRefSurfaceDbType): PowerProductionUnitEntity {
+  static fromSurfaceDatabaseAsRef(unit: PowerProductionUnitSurfaceDbType): PowerProductionUnitEntity {
     return <PowerProductionUnitEntity>{
       id: unit.generalInfo.id,
       name: unit.generalInfo?.name,
@@ -107,7 +107,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     };
   }
 
-  static fromShallowDatabaseAsRef(unit: PowerProductionUnitRefShallowDbType): PowerProductionUnitEntity {
+  static fromShallowDatabaseAsRef(unit: PowerProductionUnitShallowDbType): PowerProductionUnitEntity {
     return <PowerProductionUnitEntity>{
       id: unit.generalInfo.id,
       name: unit.generalInfo?.name,
@@ -134,7 +134,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     };
   }
 
-  static fromDeepDatabaseAsRef(unit: PowerProductionRefUniRefDeepDbType): PowerProductionUnitEntity {
+  static fromDeepDatabaseAsRef(unit: PowerProductionUniRefDeepDbType): PowerProductionUnitEntity {
     return <PowerProductionUnitEntity>{
       id: unit.generalInfo.id,
       name: unit.generalInfo?.name,

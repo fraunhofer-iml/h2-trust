@@ -13,25 +13,24 @@ export const baseUnitSurfaceQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>
     address: true,
     owner: true,
     operator: true,
-    //hydrogenStorageUnit: true,
   },
 });
 
-export const hydrogenStorageUnitRefSurfaceQueryArgs = Prisma.validator<Prisma.HydrogenStorageUnitDefaultArgs>()({
+export const hydrogenStorageUnitSurfaceQueryArgs = Prisma.validator<Prisma.HydrogenStorageUnitDefaultArgs>()({
   include: {
     generalInfo: baseUnitSurfaceQueryArgs,
     filling: true,
   },
 });
 
-export const powerProductionUnitRefSurfaceQueryArgs = Prisma.validator<Prisma.PowerProductionUnitDefaultArgs>()({
+export const powerProductionUnitSurfaceQueryArgs = Prisma.validator<Prisma.PowerProductionUnitDefaultArgs>()({
   include: {
     generalInfo: baseUnitSurfaceQueryArgs,
     type: true,
   },
 });
 
-export const hydrogenProductionUnitRefSurfaceQueryArgs = Prisma.validator<Prisma.HydrogenProductionUnitDefaultArgs>()({
+export const hydrogenProductionUnitSurfaceQueryArgs = Prisma.validator<Prisma.HydrogenProductionUnitDefaultArgs>()({
   include: {
     generalInfo: baseUnitSurfaceQueryArgs,
   },

@@ -8,7 +8,7 @@
 
 import { Prisma } from '@prisma/client';
 import { companyShallowQueryArgs } from '../company/company.shallow.query-args';
-import { hydrogenStorageUnitRefShallowQueryArgs } from '../unit/unit.shallow.query-args';
+import { hydrogenStorageUnitShallowQueryArgs } from '../unit/unit.shallow.query-args';
 import { batchShallowQueryArgs } from './batch.shallow.query-args';
 
 export const batchDeepQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()({
@@ -16,7 +16,7 @@ export const batchDeepQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()({
     owner: companyShallowQueryArgs,
     predecessors: batchShallowQueryArgs,
     successors: batchShallowQueryArgs,
-    hydrogenStorageUnit: hydrogenStorageUnitRefShallowQueryArgs,
+    hydrogenStorageUnit: hydrogenStorageUnitShallowQueryArgs,
     batchDetails: {
       include: {
         qualityDetails: true,

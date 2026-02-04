@@ -8,9 +8,9 @@
 
 import {
   HydrogenStorageUnitDbType,
-  HydrogenStorageUnitRefDeepDbType,
-  HydrogenStorageUnitRefShallowDbType,
-  HydrogenStorageUnitRefSurfaceDbType,
+  HydrogenStorageUnitDeepDbType,
+  HydrogenStorageUnitShallowDbType,
+  HydrogenStorageUnitSurfaceDbType,
 } from '@h2-trust/database';
 import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
@@ -64,7 +64,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     this.filling = filling;
   }
 
-  static fromSurfaceDatabaseAsRef(unit: HydrogenStorageUnitRefSurfaceDbType): HydrogenStorageUnitEntity {
+  static fromSurfaceDatabaseAsRef(unit: HydrogenStorageUnitSurfaceDbType): HydrogenStorageUnitEntity {
     return <HydrogenStorageUnitEntity>{
       id: unit.generalInfo.id,
       name: unit.generalInfo?.name,
@@ -86,7 +86,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     };
   }
 
-  static fromShallowDatabaseAsRef(unit: HydrogenStorageUnitRefShallowDbType): HydrogenStorageUnitEntity {
+  static fromShallowDatabaseAsRef(unit: HydrogenStorageUnitShallowDbType): HydrogenStorageUnitEntity {
     return {
       id: unit.generalInfo.id,
       name: unit.generalInfo?.name,
@@ -108,7 +108,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     };
   }
 
-  static fromDeepDatabaseAsRef(unit: HydrogenStorageUnitRefDeepDbType): HydrogenStorageUnitEntity {
+  static fromDeepDatabaseAsRef(unit: HydrogenStorageUnitDeepDbType): HydrogenStorageUnitEntity {
     return {
       id: unit.generalInfo.id,
       name: unit.generalInfo?.name,

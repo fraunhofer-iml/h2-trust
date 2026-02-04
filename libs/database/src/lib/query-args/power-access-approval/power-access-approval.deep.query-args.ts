@@ -8,13 +8,13 @@
 
 import { Prisma } from '@prisma/client';
 import { companyShallowQueryArgs } from '../company/company.shallow.query-args';
-import { powerProductionUnitRefShallowQueryArgs } from '../unit/unit.shallow.query-args';
+import { powerProductionUnitShallowQueryArgs } from '../unit/unit.shallow.query-args';
 
 export const powerAccessApprovalDeepQueryArgs = Prisma.validator<Prisma.PowerAccessApprovalDefaultArgs>()({
   include: {
     document: true,
     powerProducer: companyShallowQueryArgs,
     hydrogenProducer: companyShallowQueryArgs,
-    powerProductionUnit: powerProductionUnitRefShallowQueryArgs,
+    powerProductionUnit: powerProductionUnitShallowQueryArgs,
   },
 });

@@ -8,22 +8,23 @@
 
 import { Prisma } from '@prisma/client';
 import {
+  powerProductionUnitDeepQueryArgs,
   powerProductionUnitQueryArgs,
-  powerProductionUnitRefDeepQueryArgs,
-  powerProductionUnitRefShallowQueryArgs,
-  powerProductionUnitRefSurfaceQueryArgs,
+  powerProductionUnitShallowQueryArgs,
+  powerProductionUnitSurfaceQueryArgs,
 } from '../query-args';
 
+//TODO-LG: Is it possible to replace every use of this type with one of the deep, shallow or surface types?
 export type PowerProductionUnitDbType = Prisma.UnitGetPayload<typeof powerProductionUnitQueryArgs>;
 
-export type PowerProductionRefUniRefDeepDbType = Prisma.PowerProductionUnitGetPayload<
-  typeof powerProductionUnitRefDeepQueryArgs
+export type PowerProductionUniRefDeepDbType = Prisma.PowerProductionUnitGetPayload<
+  typeof powerProductionUnitDeepQueryArgs
 >;
 
-export type PowerProductionUnitRefShallowDbType = Prisma.PowerProductionUnitGetPayload<
-  typeof powerProductionUnitRefShallowQueryArgs
+export type PowerProductionUnitShallowDbType = Prisma.PowerProductionUnitGetPayload<
+  typeof powerProductionUnitShallowQueryArgs
 >;
 
-export type PowerProductionUnitRefSurfaceDbType = Prisma.PowerProductionUnitGetPayload<
-  typeof powerProductionUnitRefSurfaceQueryArgs
+export type PowerProductionUnitSurfaceDbType = Prisma.PowerProductionUnitGetPayload<
+  typeof powerProductionUnitSurfaceQueryArgs
 >;

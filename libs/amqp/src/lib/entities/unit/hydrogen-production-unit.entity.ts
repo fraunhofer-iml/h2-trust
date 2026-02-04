@@ -8,8 +8,8 @@
 
 import {
   HydrogenProductionUnitDbType,
-  HydrogenProductionUnitRefDeepDbType,
-  HydrogenProductionUnitRefShallowDbType,
+  HydrogenProductionUnitDeepDbType,
+  HydrogenProductionUnitShallowDbType,
 } from '@h2-trust/database';
 import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
@@ -67,30 +67,8 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     this.biddingZone = biddingZone;
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
-  /*
-  static fromSurfaceDatabaseAsRef(unit: HydrogenProductionUnitRefSurfaceDbType): HydrogenProductionUnitEntity {
-    return <HydrogenProductionUnitEntity>{
-      id: unit.generalInfo.id,
-      name: unit.generalInfo?.name,
-      mastrNumber: unit.generalInfo?.mastrNumber,
-      manufacturer: unit.generalInfo?.manufacturer,
-      modelNumber: unit.generalInfo?.modelNumber,
-      serialNumber: unit.generalInfo?.serialNumber,
-      certifiedBy: unit.generalInfo?.certifiedBy,
-      commissionedOn: unit.generalInfo?.commissionedOn,
-      owner: CompanyEntity.fromBaseDatabase(unit.generalInfo.owner),
-      operator: CompanyEntity.fromBaseDatabase(unit.generalInfo?.operator),
-      unitType: UnitType.HYDROGEN_PRODUCTION,
-      ratedPower: unit.ratedPower.toNumber(),
-      pressure: unit.pressure.toNumber(),
-      method: unit.method,
-      technology: unit.technology,
-      biddingZone: unit.biddingZone,
-      waterConsumptionLitersPerHour: unit.waterConsumptionLitersPerHour.toNumber(),
-    };
-  }*/
 
-  static fromShallowDatabaseAsRef(unit: HydrogenProductionUnitRefShallowDbType): HydrogenProductionUnitEntity {
+  static fromShallowDatabaseAsRef(unit: HydrogenProductionUnitShallowDbType): HydrogenProductionUnitEntity {
     return <HydrogenProductionUnitEntity>{
       id: unit.generalInfo.id,
       name: unit.generalInfo?.name,
@@ -112,7 +90,7 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     };
   }
 
-  static fromDeepDatabaseAsRef(unit: HydrogenProductionUnitRefDeepDbType): HydrogenProductionUnitEntity {
+  static fromDeepDatabaseAsRef(unit: HydrogenProductionUnitDeepDbType): HydrogenProductionUnitEntity {
     return <HydrogenProductionUnitEntity>{
       id: unit.generalInfo.id,
       name: unit.generalInfo?.name,
