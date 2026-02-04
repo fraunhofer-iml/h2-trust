@@ -14,7 +14,7 @@ import {
   hydrogenProductionUnitSurfaceQueryArgs,
 } from '../query-args';
 
-//TODO-LG: Is it possible to replace every use of this type with one of the deep, shallow or surface types?
+//TODO-LG: Replace with a deep, shallow or surface type if possible
 export type HydrogenProductionUnitDbType = Prisma.UnitGetPayload<typeof hydrogenProductionUnitQueryArgs>;
 
 export type HydrogenProductionUnitDeepDbType = Prisma.HydrogenProductionUnitGetPayload<

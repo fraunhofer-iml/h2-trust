@@ -22,7 +22,7 @@ const hydrogenStorageUnitChildQueryArgs = Prisma.validator<Prisma.HydrogenStorag
   },
 });
 
-//TODO-LG: is it possible to remove this query and replace it with one of the ref variants
+//TODO-LG: Replace with a deep, shallow or surface function if possible
 export const allUnitsQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
   ...baseUnitDeepQueryArgs,
   include: {
@@ -33,7 +33,7 @@ export const allUnitsQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
   },
 });
 
-//TODO-LG: is it possible to remove this query and replace it with one of the ref variants
+//TODO-LG: Replace with a deep, shallow or surface function if possible
 export const powerProductionUnitQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
   ...baseUnitDeepQueryArgs,
   include: {
@@ -42,7 +42,7 @@ export const powerProductionUnitQueryArgs = Prisma.validator<Prisma.UnitDefaultA
   },
 });
 
-//TODO-LG: is it possible to remove this query and replace it with one of the ref variants
+//TODO-LG: Replace with a deep, shallow or surface function if possible
 export const hydrogenProductionUnitQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
   ...baseUnitDeepQueryArgs,
   include: {
@@ -51,7 +51,7 @@ export const hydrogenProductionUnitQueryArgs = Prisma.validator<Prisma.UnitDefau
   },
 });
 
-//TODO-LG: is it possible to remove this query and replace it with one of the ref variants
+//TODO-LG: Replace with a deep, shallow or surface function if possible
 export const hydrogenStorageUnitQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
   ...baseUnitDeepQueryArgs,
   include: {
