@@ -16,8 +16,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { UnitType } from '@h2-trust/domain';
-import { FormattedUnits } from '../../shared/constants/formatted-units';
+import { MeasurementUnit, UnitType } from '@h2-trust/domain';
 import { ICONS } from '../../shared/constants/icons';
 import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
 import { UnitPipe } from '../../shared/pipes/unit.pipe';
@@ -42,7 +41,7 @@ import { UnitsService } from '../../shared/services/units/units.service';
 })
 export class HydrogenAssetsComponent {
   protected readonly ICONS = ICONS;
-  protected readonly FormattedUnits = FormattedUnits;
+  protected readonly MeasurementUnit = MeasurementUnit;
   protected readonly UnitType = UnitType;
 
   protected readonly unitsService = inject(UnitsService);

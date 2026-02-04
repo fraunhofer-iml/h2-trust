@@ -51,16 +51,16 @@ export class ProcessStepService {
 
   private async readPredecessorProcessStep(predecessorProcessStepId: string): Promise<ProcessStepEntity> {
     if (!predecessorProcessStepId) {
-      const errorMessage = 'ProcessStepId of predecessor is missing.';
-      throw new Error(errorMessage);
+      throw new Error('ProcessStepId of predecessor is missing.');
     }
 
     const predecessorProcessStep: ProcessStepEntity =
       await this.processStepRepository.findProcessStep(predecessorProcessStepId);
 
     if (predecessorProcessStep.type !== ProcessType.HYDROGEN_BOTTLING) {
-      const errorMessage = `Expected process type of predecessor to be ${ProcessType.HYDROGEN_BOTTLING}, but got ${predecessorProcessStep.type}.`;
-      throw new Error(errorMessage);
+      throw new Error(
+        `Expected process type of predecessor to be ${ProcessType.HYDROGEN_BOTTLING}, but got ${predecessorProcessStep.type}.`,
+      );
     }
 
     return predecessorProcessStep;
@@ -70,13 +70,16 @@ export class ProcessStepService {
     const documents: DocumentEntity[] = [];
     const minio: MinioConfiguration = this.configurationService.getGlobalConfiguration().minio;
 
-    processStep.documents?.forEach((document, index) => {
-      if (document.location) {
-        documents.push({
-          id: document.id,
-          location: `http://${minio.endPoint}:${minio.port}/${minio.bucketName}/${document.location}`,
-          description: `File #${index}`,
-        });
+    processStep.documents?.forEach((document) => {
+      if (document.fileName) {
+        documents.push(
+          new DocumentEntity(
+            document.id,
+            document.fileName,
+            document.transactionHash,
+            `http://${minio.endPoint}:${minio.port}/${minio.bucketName}/${document.fileName}`,
+          ),
+        );
       }
     });
 

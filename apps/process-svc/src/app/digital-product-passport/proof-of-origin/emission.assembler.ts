@@ -16,18 +16,14 @@ import {
 import { EnumLabelMapper } from '@h2-trust/api';
 import {
   CalculationTopic,
+  EmissionNumericConstants,
+  EmissionStringConstants,
   EnergySource,
-  FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ,
-  FUEL_EMISSION_FACTORS,
   FuelType,
-  GRAVIMETRIC_ENERGY_DENSITY_H2_MJ_PER_KG,
-  POWER_EMISSION_FACTORS,
+  MeasurementUnit,
   ProcessType,
-  TRAILER_PARAMETERS,
   TrailerParameter,
   TransportMode,
-  UNIT_G_CO2,
-  UNIT_G_CO2_PER_KWH,
 } from '@h2-trust/domain';
 
 export class EmissionAssembler {
@@ -40,23 +36,23 @@ export class EmissionAssembler {
     }
 
     const power = powerProduction.batch.amount;
-    const powerInput = `Power Input: ${power} kWh`;
+    const powerInput = `Power Input: ${power} ${MeasurementUnit.KWH}`;
 
     const emissionFactorLabel = EnumLabelMapper.getEnergySource(energySource);
-    const emissionFactor = POWER_EMISSION_FACTORS[energySource].emissionFactor;
-    const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} ${UNIT_G_CO2_PER_KWH}`;
+    const emissionFactor = EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[energySource];
+    const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} ${MeasurementUnit.G_CO2_PER_KWH}`;
 
     const result = power * emissionFactor;
     const formula = `E = Power Input * Emission Factor ${emissionFactorLabel}`;
-    const formulaResult = `${result} ${UNIT_G_CO2} = ${power} kWh * ${emissionFactor} ${UNIT_G_CO2_PER_KWH}`;
+    const formulaResult = `${result} ${MeasurementUnit.G_CO2} = ${power} ${MeasurementUnit.KWH} * ${emissionFactor} ${MeasurementUnit.G_CO2_PER_KWH}`;
 
     const basisOfCalculation = [powerInput, emissionFactorInput, formula, formulaResult];
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      POWER_EMISSION_FACTORS[energySource].label,
+      emissionFactorLabel,
       basisOfCalculation,
       result,
-      UNIT_G_CO2,
+      MeasurementUnit.G_CO2,
       CalculationTopic.POWER_SUPPLY,
     );
   }
@@ -67,22 +63,21 @@ export class EmissionAssembler {
     }
 
     const waterInput = waterSupply.batch.amount;
-    const emissionFactorDeionizedWater = 0.43;
-    const result = waterInput * emissionFactorDeionizedWater;
+    const result = waterInput * EmissionNumericConstants.EMISSION_FACTOR_DEIONIZED_WATER_G_CO2_PER_L;
 
-    const emissionFactorLabel = 'Deionized Water';
-    const waterInputInput = `Water Input: ${waterInput} L`;
-    const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactorDeionizedWater} g CO₂,eq/L`;
+    const emissionFactorLabel = EmissionStringConstants.DEIONIZED_WATER;
+    const waterInputInput = `Water Input: ${waterInput} ${MeasurementUnit.L}`;
+    const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${EmissionNumericConstants.EMISSION_FACTOR_DEIONIZED_WATER_G_CO2_PER_L} ${MeasurementUnit.G_CO2_PER_L}`;
     const formula = `E = Water Input * Emission Factor ${emissionFactorLabel}`;
-    const formulaResult = `${result} ${UNIT_G_CO2} = ${waterInput} L * ${emissionFactorDeionizedWater} g CO₂,eq/L`;
+    const formulaResult = `${result} ${MeasurementUnit.G_CO2} = ${waterInput} ${MeasurementUnit.L} * ${EmissionNumericConstants.EMISSION_FACTOR_DEIONIZED_WATER_G_CO2_PER_L} ${MeasurementUnit.G_CO2_PER_L}`;
 
     const basisOfCalculation = [waterInputInput, emissionFactorInput, formula, formulaResult];
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      'Water Supply',
+      EmissionStringConstants.WATER_SUPPLY,
       basisOfCalculation,
       result,
-      UNIT_G_CO2,
+      MeasurementUnit.G_CO2,
       CalculationTopic.WATER_SUPPLY,
     );
   }
@@ -96,17 +91,19 @@ export class EmissionAssembler {
       );
     }
 
-    const energyDemand = 1.65; // 5.93 / 3.6 -> default values for compression from 30 bar to 300 bar
-    const emissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID].emissionFactor;
-    const result = energyDemand * emissionFactor * hydrogenProduction.batch.amount;
+    const emissionFactor = EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[EnergySource.GRID];
+    const result =
+      EmissionNumericConstants.ENERGY_DEMAND_COMPRESSION_KWH_PER_KG_H2 *
+      emissionFactor *
+      hydrogenProduction.batch.amount;
 
-    const hydrogenProducedKgInput = `Hydrogen Produced: ${hydrogenProduction.batch.amount} kg H₂`;
+    const hydrogenProducedKgInput = `Hydrogen Produced: ${hydrogenProduction.batch.amount} ${MeasurementUnit.KG_H2}`;
 
     const emissionFactorLabel = EnumLabelMapper.getEnergySource(EnergySource.GRID);
-    const energyDemandInput = `Energy Demand: ${energyDemand} kWh/kg H₂`;
-    const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} g CO₂,eq/kWh`;
+    const energyDemandInput = `Energy Demand: ${EmissionNumericConstants.ENERGY_DEMAND_COMPRESSION_KWH_PER_KG_H2} ${MeasurementUnit.KWH_PER_KG_H2}`;
+    const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} ${MeasurementUnit.G_CO2_PER_KWH}`;
     const formula = `E = Energy Demand * Emission Factor ${emissionFactorLabel} * Hydrogen Produced`;
-    const formulaResult = `${result} ${UNIT_G_CO2} = ${energyDemand} kWh/kg H₂ * ${emissionFactor} g CO₂,eq/kWh * ${hydrogenProduction.batch.amount} kg H₂`;
+    const formulaResult = `${result} ${MeasurementUnit.G_CO2} = ${EmissionNumericConstants.ENERGY_DEMAND_COMPRESSION_KWH_PER_KG_H2} ${MeasurementUnit.KWH_PER_KG_H2} * ${emissionFactor} ${MeasurementUnit.G_CO2_PER_KWH} * ${hydrogenProduction.batch.amount} ${MeasurementUnit.KG_H2}`;
 
     const basisOfCalculation = [
       energyDemandInput,
@@ -117,10 +114,10 @@ export class EmissionAssembler {
     ];
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      'Compression from 30 bar to 300 bar',
+      EmissionStringConstants.COMPRESSION,
       basisOfCalculation,
       result,
-      UNIT_G_CO2,
+      MeasurementUnit.G_CO2,
       CalculationTopic.HYDROGEN_STORAGE,
     );
   }
@@ -139,10 +136,10 @@ export class EmissionAssembler {
     const basisOfCalculation = ['E = [TBD]'];
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      'Hydrogen Bottling',
+      EmissionStringConstants.HYDROGEN_BOTTLING,
       basisOfCalculation,
       result,
-      UNIT_G_CO2,
+      MeasurementUnit.G_CO2,
       CalculationTopic.HYDROGEN_BOTTLING,
     );
   }
@@ -180,13 +177,13 @@ export class EmissionAssembler {
   private static assemblePipeline(): ProofOfSustainabilityEmissionCalculationEntity {
     const result = 0;
 
-    const basisOfCalculation = ['E = 0 g CO₂,eq/kg H₂'];
+    const basisOfCalculation = [`E = 0 ${MeasurementUnit.G_CO2_PER_KG_H2}`];
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      'Transportation with Pipeline',
+      EmissionStringConstants.HYDROGEN_TRANSPORTATION_PIPELINE,
       basisOfCalculation,
       result,
-      UNIT_G_CO2,
+      MeasurementUnit.G_CO2,
       CalculationTopic.HYDROGEN_TRANSPORTATION,
     );
   }
@@ -197,38 +194,38 @@ export class EmissionAssembler {
     transportDistance: number,
   ): ProofOfSustainabilityEmissionCalculationEntity {
     const trailerParameter: TrailerParameter =
-      TRAILER_PARAMETERS.find((trailerEntry) => hydrogenAmount <= trailerEntry.capacityKg) ??
-      TRAILER_PARAMETERS.at(TRAILER_PARAMETERS.length - 1);
+      EmissionNumericConstants.TRAILER_PARAMETERS.find((trailerEntry) => hydrogenAmount <= trailerEntry.capacity) ??
+      EmissionNumericConstants.TRAILER_PARAMETERS.at(EmissionNumericConstants.TRAILER_PARAMETERS.length - 1);
 
     const tonPerKg = 0.001;
 
     // Amount of fuel used per ton of material transported = transport distance * transport efficiency
     // [MJ fuel / ton of H₂] = [km] * [MJ fuel / (ton, km)]
-    const transportEfficiency = trailerParameter.transportEfficiencyMJPerTonnePerKm;
+    const transportEfficiency = trailerParameter.transportEfficiency;
     const amountOfFuelPerTonOfHydrogen = transportDistance * transportEfficiency;
 
     // Emission = 0.001 * Amount of fuel used per ton of material transported * emission factor
     // [g CO₂,eq/kg of H₂] = [ton / kg] * [MJ fuel / ton of H₂] * [g CO₂,eq / MJ fuel]
-    const emissionFactorFuel = FUEL_EMISSION_FACTORS[fuelType];
+    const emissionFactorFuel = EmissionNumericConstants.FUEL_EMISSION_FACTORS[fuelType];
     const emissionsFuelCombustion = tonPerKg * amountOfFuelPerTonOfHydrogen * emissionFactorFuel;
 
     // Emission = 0.001 * transport distance * emission factor for CH4 and N2O emissions
     // [g CO₂,eq/kg of H₂] = [ton / kg] * [km] * [g CO₂,eq / (ton, km)]
-    const emissionFactorCh4AndN2O = trailerParameter.gEqEmissionsOfCH4AndN2OPerKmDistancePerTonneH2;
+    const emissionFactorCh4AndN2O = trailerParameter.emissionFactor;
     const emissionCh4AndN2O = tonPerKg * transportDistance * emissionFactorCh4AndN2O;
 
     const result = (emissionsFuelCombustion + emissionCh4AndN2O) * hydrogenAmount;
 
     const fuelTypeLabel = EnumLabelMapper.getFuelType(fuelType);
     const tonPerKgInput = `Ton per Kg: ${tonPerKg} ton/kg`;
-    const transportDistanceInput = `Transport Distance: ${transportDistance} km`;
-    const transportEfficiencyInput = `Transport Efficiency: ${transportEfficiency} MJ fuel / (ton, km)`;
-    const emissionFactorFuelInput = `Emission Factor ${fuelTypeLabel}: ${emissionFactorFuel} g CO₂,eq / MJ`;
-    const emissionFactorCh4AndN2OInput = `Emission Factor CH₄ & N₂O: ${emissionFactorCh4AndN2O} g CO₂,eq / (ton, km)`;
-    const hydrogenTransportedInput = `Hydrogen Transported: ${hydrogenAmount} kg H₂`;
+    const transportDistanceInput = `Transport Distance: ${transportDistance} ${MeasurementUnit.KM}`;
+    const transportEfficiencyInput = `Transport Efficiency: ${transportEfficiency} ${MeasurementUnit.MJ_FUEL_PER_TON_KM}`;
+    const emissionFactorFuelInput = `Emission Factor ${fuelTypeLabel}: ${emissionFactorFuel} ${MeasurementUnit.G_CO2_PER_MJ}`;
+    const emissionFactorCh4AndN2OInput = `Emission Factor ${EmissionStringConstants.CH4_N2O}: ${emissionFactorCh4AndN2O} ${MeasurementUnit.G_CO2_PER_TON_KM}`;
+    const hydrogenTransportedInput = `Hydrogen Transported: ${hydrogenAmount} ${MeasurementUnit.KG_H2}`;
     const emissionFuelCombustionFormula = `Emission Fuel Combustion = Ton per Kg * Transport Distance * Transport Efficiency * Emission Factor ${fuelTypeLabel}`;
-    const emissionCh4AndN2OFormula = `Emission CH₄ & N₂O = Ton per Kg * Transport Distance * Emission Factor CH₄ & N₂O`;
-    const formula = `E = (Emission Fuel Combustion + Emission CH₄ & N₂O) * Hydrogen Transported`;
+    const emissionCh4AndN2OFormula = `Emission ${EmissionStringConstants.CH4_N2O} = Ton per Kg * Transport Distance * Emission Factor ${EmissionStringConstants.CH4_N2O}`;
+    const formula = `E = (Emission Fuel Combustion + Emission ${EmissionStringConstants.CH4_N2O}) * Hydrogen Transported`;
     const basisOfCalculation = [
       tonPerKgInput,
       transportDistanceInput,
@@ -242,10 +239,10 @@ export class EmissionAssembler {
     ];
 
     return new ProofOfSustainabilityEmissionCalculationEntity(
-      'Transportation with Trailer',
+      EmissionStringConstants.HYDROGEN_TRANSPORTATION_TRAILER,
       basisOfCalculation,
       result,
-      UNIT_G_CO2,
+      MeasurementUnit.G_CO2,
       CalculationTopic.HYDROGEN_TRANSPORTATION,
     );
   }
@@ -259,12 +256,12 @@ export class EmissionAssembler {
       EmissionAssembler.assembleApplicationEmissions(emissionCalculations);
 
     const hydrogenProductionEmissionAmount: number = applicationEmissions
-      .filter((e) => e.name === 'eps' || e.name === 'ews')
+      .filter((e) => e.name === EmissionStringConstants.TYPES.EPS || e.name === EmissionStringConstants.TYPES.EWS)
       .reduce((sum, e) => sum + e.amount, 0);
 
     const applicationEmissionAmount: number = applicationEmissions.reduce((acc, emission) => acc + emission.amount, 0);
-    const hydrogenTransportEmissionAmount: number = applicationEmissions.find((e) => e.name === 'eht')?.amount ?? 0;
-
+    const hydrogenTransportEmissionAmount: number =
+      applicationEmissions.find((e) => e.name === EmissionStringConstants.TYPES.EHT)?.amount ?? 0;
     const regulatoryEmissions: ProofOfSustainabilityEmissionEntity[] = EmissionAssembler.assembleRegulatoryEmissions(
       hydrogenProductionEmissionAmount,
       applicationEmissionAmount,
@@ -274,10 +271,12 @@ export class EmissionAssembler {
 
     const totalEmissions: number = applicationEmissionAmount;
     const amountCO2PerKgH2: number = applicationEmissionAmount / hydrogenAmountKg;
-    const amountCO2PerMJH2: number = amountCO2PerKgH2 / GRAVIMETRIC_ENERGY_DENSITY_H2_MJ_PER_KG;
+    const amountCO2PerMJH2: number = amountCO2PerKgH2 / EmissionNumericConstants.H2_LOWER_HEATING_VALUE_MJ_PER_KG;
 
     const emissionReductionPercentage: number =
-      (Math.max(FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ - amountCO2PerMJH2, 0) / FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ) * 100;
+      (Math.max(EmissionNumericConstants.FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ - amountCO2PerMJH2, 0) /
+        EmissionNumericConstants.FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ) *
+      100;
 
     return new ProofOfSustainabilityEntity(
       batchId,
@@ -301,17 +300,17 @@ export class EmissionAssembler {
     const powerSupplyEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(CalculationTopic.POWER_SUPPLY);
     const powerSupplyEmission = new ProofOfSustainabilityEmissionEntity(
       powerSupplyEmissionAmount,
-      'eps',
-      'Power Supply',
-      'APPLICATION',
+      EmissionStringConstants.TYPES.EPS,
+      EmissionStringConstants.POWER_SUPPLY,
+      EmissionStringConstants.TYPES.APPLICATION,
     );
 
     const waterSupplyEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(CalculationTopic.WATER_SUPPLY);
     const waterSupplyEmission = new ProofOfSustainabilityEmissionEntity(
       waterSupplyEmissionAmount,
-      'ews',
-      'Water Supply',
-      'APPLICATION',
+      EmissionStringConstants.TYPES.EWS,
+      EmissionStringConstants.WATER_SUPPLY,
+      EmissionStringConstants.TYPES.APPLICATION,
     );
 
     const hydrogenStorageEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(
@@ -319,9 +318,9 @@ export class EmissionAssembler {
     );
     const hydrogenStorageEmission = new ProofOfSustainabilityEmissionEntity(
       hydrogenStorageEmissionAmount,
-      'ehs',
-      'Hydrogen Storage',
-      'APPLICATION',
+      EmissionStringConstants.TYPES.EHS,
+      EmissionStringConstants.HYDROGEN_STORAGE,
+      EmissionStringConstants.TYPES.APPLICATION,
     );
 
     const hydrogenBottlingEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(
@@ -329,9 +328,9 @@ export class EmissionAssembler {
     );
     const hydrogenBottlingEmission = new ProofOfSustainabilityEmissionEntity(
       hydrogenBottlingEmissionAmount,
-      'ehb',
-      'Hydrogen Bottling',
-      'APPLICATION',
+      EmissionStringConstants.TYPES.EHB,
+      EmissionStringConstants.HYDROGEN_BOTTLING,
+      EmissionStringConstants.TYPES.APPLICATION,
     );
 
     const hydrogenTransportationEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(
@@ -339,9 +338,9 @@ export class EmissionAssembler {
     );
     const hydrogenTransportationEmission = new ProofOfSustainabilityEmissionEntity(
       hydrogenTransportationEmissionAmount,
-      'eht',
-      'Hydrogen Transportation',
-      'APPLICATION',
+      EmissionStringConstants.TYPES.EHT,
+      EmissionStringConstants.HYDROGEN_TRANSPORTATION,
+      EmissionStringConstants.TYPES.APPLICATION,
     );
 
     return [
@@ -360,23 +359,23 @@ export class EmissionAssembler {
   ): ProofOfSustainabilityEmissionEntity[] {
     const ei = new ProofOfSustainabilityEmissionEntity(
       hydrogenProductionEmissionAmount,
-      'ei',
-      'Supply of Inputs',
-      'REGULATORY',
+      EmissionStringConstants.TYPES.EI,
+      EmissionStringConstants.SUPPLY_OF_INPUTS,
+      EmissionStringConstants.TYPES.REGULATORY,
     );
 
     const ep = new ProofOfSustainabilityEmissionEntity(
       applicationEmissionAmount - hydrogenProductionEmissionAmount - hydrogenTransportEmissionAmount,
-      'ep',
-      'Processing',
-      'REGULATORY',
+      EmissionStringConstants.TYPES.EP,
+      EmissionStringConstants.PROCESSING,
+      EmissionStringConstants.TYPES.REGULATORY,
     );
 
     const etd = new ProofOfSustainabilityEmissionEntity(
       hydrogenTransportEmissionAmount,
-      'etd',
-      'Transport and Distribution',
-      'REGULATORY',
+      EmissionStringConstants.TYPES.ETD,
+      EmissionStringConstants.TRANSPORT_AND_DISTRIBUTION,
+      EmissionStringConstants.TYPES.REGULATORY,
     );
 
     return [ei, ep, etd];

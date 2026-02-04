@@ -9,7 +9,8 @@
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, ProcessStepEntity, ProvenanceEntity, UnitMessagePatterns } from '@h2-trust/amqp';
-import { CalculationTopic, EnergySource, POWER_EMISSION_FACTORS, UNIT_G_CO2 } from '@h2-trust/domain';
+import { EnumLabelMapper } from '@h2-trust/api';
+import { CalculationTopic, EmissionNumericConstants, EnergySource, MeasurementUnit } from '@h2-trust/domain';
 import {
   BatchEntityFixture,
   PowerProductionTypeEntityFixture,
@@ -78,8 +79,6 @@ describe('EmissionService', () => {
 
       // Act
       const actualResult = await service.computeProvenanceEmissions(givenProvenance);
-
-      console.log(actualResult);
 
       // Assert
       expect(actualResult).toBeDefined();
@@ -153,18 +152,19 @@ describe('EmissionService', () => {
 
       generalSvcMock.send.mockReturnValue(of([givenUnit]));
 
-      const expectedEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.SOLAR_ENERGY];
-      const expectedResult =
-        (givenProcessStep.batch.amount * expectedEmissionFactor.emissionFactor) / givenHydrogenAmount;
+      const expectedEmissionFactorLabel = EnumLabelMapper.getEnergySource(EnergySource.SOLAR_ENERGY);
+
+      const expectedEmissionFactor = EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[EnergySource.SOLAR_ENERGY];
+      const expectedResult = (givenProcessStep.batch.amount * expectedEmissionFactor) / givenHydrogenAmount;
 
       // Act
       const actualResult = await service.computePowerSupplyEmissions([givenProcessStep]);
 
       // Assert
       expect(actualResult).toHaveLength(1);
-      expect(actualResult[0].name).toEqual(expectedEmissionFactor.label);
+      expect(actualResult[0].name).toEqual(expectedEmissionFactorLabel);
       expect(actualResult[0].result).toEqual(expectedResult);
-      expect(actualResult[0].unit).toEqual(UNIT_G_CO2);
+      expect(actualResult[0].unit).toEqual(MeasurementUnit.G_CO2);
       expect(actualResult[0].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
 
       expect(generalSvcMock.send).toHaveBeenCalledWith(
@@ -195,25 +195,28 @@ describe('EmissionService', () => {
 
       generalSvcMock.send.mockReturnValue(of([givenSolarUnit, givenGridUnit]));
 
-      const expectedSolarEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.SOLAR_ENERGY];
-      const expectedSolarResult = givenSolarProcessStep.batch.amount * expectedSolarEmissionFactor.emissionFactor;
+      const expectedSolarEmissionFactorLabel = EnumLabelMapper.getEnergySource(EnergySource.SOLAR_ENERGY);
+      const expectedSolarEmissionFactor =
+        EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[EnergySource.SOLAR_ENERGY];
+      const expectedSolarResult = givenSolarProcessStep.batch.amount * expectedSolarEmissionFactor;
 
-      const expectedGridEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID];
-      const expectedGridResult = givenGridProcessStep.batch.amount * expectedGridEmissionFactor.emissionFactor;
+      const expectedGridEmissionFactorLabel = EnumLabelMapper.getEnergySource(EnergySource.GRID);
+      const expectedGridEmissionFactor = EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[EnergySource.GRID];
+      const expectedGridResult = givenGridProcessStep.batch.amount * expectedGridEmissionFactor;
       // Act
       const actualResult = await service.computePowerSupplyEmissions([givenSolarProcessStep, givenGridProcessStep]);
 
       // Assert
       expect(actualResult).toHaveLength(2);
 
-      expect(actualResult[0].name).toEqual(expectedSolarEmissionFactor.label);
+      expect(actualResult[0].name).toEqual(expectedSolarEmissionFactorLabel);
       expect(actualResult[0].result).toEqual(expectedSolarResult);
-      expect(actualResult[0].unit).toEqual(UNIT_G_CO2);
+      expect(actualResult[0].unit).toEqual(MeasurementUnit.G_CO2);
       expect(actualResult[0].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
 
-      expect(actualResult[1].name).toEqual(expectedGridEmissionFactor.label);
+      expect(actualResult[1].name).toEqual(expectedGridEmissionFactorLabel);
       expect(actualResult[1].result).toEqual(expectedGridResult);
-      expect(actualResult[1].unit).toEqual(UNIT_G_CO2);
+      expect(actualResult[1].unit).toEqual(MeasurementUnit.G_CO2);
       expect(actualResult[1].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
 
       expect(generalSvcMock.send).toHaveBeenCalledWith(
@@ -238,9 +241,11 @@ describe('EmissionService', () => {
 
       generalSvcMock.send.mockReturnValue(of([givenUnit]));
 
-      const expectedEmissionFactor = POWER_EMISSION_FACTORS[EnergySource.GRID];
-      const expectedResult1 = givenProcessStep1.batch.amount * expectedEmissionFactor.emissionFactor;
-      const expectedResult2 = givenProcessStep2.batch.amount * expectedEmissionFactor.emissionFactor;
+      const expectedEmissionFactorLabel = EnumLabelMapper.getEnergySource(EnergySource.GRID);
+      const expectedEmissionFactor = EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[EnergySource.GRID];
+
+      const expectedResult1 = givenProcessStep1.batch.amount * expectedEmissionFactor;
+      const expectedResult2 = givenProcessStep2.batch.amount * expectedEmissionFactor;
 
       // Act
       const actualResult = await service.computePowerSupplyEmissions([givenProcessStep1, givenProcessStep2]);
@@ -248,14 +253,14 @@ describe('EmissionService', () => {
       // Assert
       expect(actualResult).toHaveLength(2);
 
-      expect(actualResult[0].name).toEqual(expectedEmissionFactor.label);
+      expect(actualResult[0].name).toEqual(expectedEmissionFactorLabel);
       expect(actualResult[0].result).toEqual(expectedResult1);
-      expect(actualResult[0].unit).toEqual(UNIT_G_CO2);
+      expect(actualResult[0].unit).toEqual(MeasurementUnit.G_CO2);
       expect(actualResult[0].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
 
-      expect(actualResult[1].name).toEqual(expectedEmissionFactor.label);
+      expect(actualResult[1].name).toEqual(expectedEmissionFactorLabel);
       expect(actualResult[1].result).toEqual(expectedResult2);
-      expect(actualResult[1].unit).toEqual(UNIT_G_CO2);
+      expect(actualResult[1].unit).toEqual(MeasurementUnit.G_CO2);
       expect(actualResult[1].calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
 
       expect(generalSvcMock.send).toHaveBeenCalledWith(

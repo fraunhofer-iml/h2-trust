@@ -1,79 +1,86 @@
 <div class="flex h-[100svh] w-full flex-row bg-neutral-50">
   <div mode="side" class="w-96 border-r border-neutral-200 bg-white">
-    <div class="flex h-full flex-col justify-between p-4">
-      <div class="flex flex-col gap-2">
-        <h3 class="text-secondary-500 mb-4 text-2xl font-semibold">
-          <span>{{ ChemicalNames.H2 }}</span
-          >-Trust
-        </h3>
+    <div class="flex h-full flex-col justify-between">
+      <div class="">
+        <div class="w-full px-24 py-2">
+          <img
+            src="https://minio.public.apps.blockchain-europe.iml.fraunhofer.de/api/v1/buckets/h2-trust/objects/download?prefix=H2-Trust-4c.png"
+            alt="H2-Trust Logo"
+          />
+        </div>
+
+        <div class="h-[1px] w-full bg-neutral-200"></div>
 
         @if (isAuthenticated) {
-          @for (option of sidebarOptions; track $index) {
-            <a class="" routerLink="{{ option.route }}">
-              <div
-                class="flex w-full flex-row gap-2 rounded-lg p-4 hover:bg-neutral-200"
-                tabindex="0"
-                role="presentation"
-                [ngClass]="{
-                  'bg-primary-100': option.isActive(),
-                }"
-              >
-                <span class="material-symbols-outlined text-neutral-600">{{ option.icon }}</span>
-                <span class="text-neutral-800">{{ option.title }}</span>
-              </div>
-            </a>
-          }
-        }
-      </div>
-
-      <mat-expansion-panel
-        class="!bg-primary-200 p-2 !shadow-none"
-        [hideToggle]="!isAuthenticated"
-        [disabled]="!isAuthenticated"
-      >
-        <mat-expansion-panel-header class="select-none !bg-transparent !pl-1 !pr-4">
-          @if (isAuthenticated) {
-            <mat-panel-title>
-              <div class="flex !select-none flex-row items-center gap-4">
-                <div class="bg-primary-400 flex h-10 w-10 items-center justify-center rounded-xl">
-                  <span class="material-symbols-outlined text-2xl text-white">person </span>
+          <div class="flex flex-col gap-2 p-4">
+            @for (option of sidebarOptions; track $index) {
+              <a class="" routerLink="{{ option.route }}">
+                <div
+                  class="hover:bg-primary-100 flex w-full flex-row gap-2 rounded-lg p-4"
+                  tabindex="0"
+                  role="presentation"
+                  [ngClass]="{
+                    'bg-primary-100 text-primary-700': option.isActive(),
+                  }"
+                >
+                  <span class="material-symbols-outlined">{{ option.icon }}</span>
+                  <span>{{ option.title }}</span>
                 </div>
-                <div class="flex flex-col">
-                  <span class="text-sm font-semibold text-neutral-500">{{ userFirstName }} {{ userLastName }}</span>
-                  <span class="text-sm text-neutral-500">{{ userEmail }}</span>
-                </div>
-              </div>
-            </mat-panel-title>
-          } @else {
-            <div
-              class="text-primary-600 flex w-full flex-row items-center justify-between pl-2"
-              (click)="signIn()"
-              role="none"
-            >
-              <span class="text-lg">Sign In</span>
-              <span class="material-symbols-outlined">login</span>
-            </div>
-          }
-        </mat-expansion-panel-header>
-        @if (isAuthenticated) {
-          <div class="flex w-full flex-col gap-1 p-2">
-            <a
-              class="hover:text-primary-600 hover:bg-primary-300 border-primary-200 flex flex-row items-center gap-2 rounded-full border-2 p-4 text-neutral-500"
-              routerLink="/"
-            >
-              <span class="material-symbols-outlined">settings</span>
-              <span>account</span>
-            </a>
-            <button
-              class="hover:text-primary-600 hover:bg-primary-300 border-primary-200 flex flex-row items-center gap-2 rounded-full border-2 p-4 text-neutral-500"
-              (click)="logout()"
-            >
-              <span class="material-symbols-outlined">logout</span>
-              <span>logout</span>
-            </button>
+              </a>
+            }
           </div>
         }
-      </mat-expansion-panel>
+      </div>
+      <div class="p-4">
+        <mat-expansion-panel
+          class="!bg-primary-100 p-2 !shadow-none"
+          [hideToggle]="!isAuthenticated"
+          [disabled]="!isAuthenticated"
+        >
+          <mat-expansion-panel-header class="select-none !bg-transparent !pl-1 !pr-4">
+            @if (isAuthenticated) {
+              <mat-panel-title>
+                <div class="flex !select-none flex-row items-center gap-4">
+                  <div class="bg-primary-400 flex h-10 w-10 items-center justify-center rounded-xl">
+                    <span class="material-symbols-outlined text-2xl text-white">person </span>
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="text-sm font-semibold text-neutral-500">{{ userFirstName }} {{ userLastName }}</span>
+                    <span class="text-sm text-neutral-500">{{ userEmail }}</span>
+                  </div>
+                </div>
+              </mat-panel-title>
+            } @else {
+              <div
+                class="text-primary-700 flex w-full flex-row items-center justify-between pl-2"
+                (click)="signIn()"
+                role="none"
+              >
+                <span class="text-lg">Sign In</span>
+                <span class="material-symbols-outlined">login</span>
+              </div>
+            }
+          </mat-expansion-panel-header>
+          @if (isAuthenticated) {
+            <div class="flex w-full flex-col gap-1 p-2">
+              <a
+                class="hover:text-primary-600 hover:bg-primary-200 border-primary-100 flex flex-row items-center gap-2 rounded-full border-2 p-4 text-neutral-500"
+                routerLink="/"
+              >
+                <span class="material-symbols-outlined">settings</span>
+                <span>account</span>
+              </a>
+              <button
+                class="hover:text-primary-600 hover:bg-primary-200 border-primary-100 flex flex-row items-center gap-2 rounded-full border-2 p-4 text-neutral-500"
+                (click)="logout()"
+              >
+                <span class="material-symbols-outlined">logout</span>
+                <span>Sign Out</span>
+              </button>
+            </div>
+          }
+        </mat-expansion-panel>
+      </div>
     </div>
   </div>
 

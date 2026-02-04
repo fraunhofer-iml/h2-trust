@@ -11,8 +11,9 @@ import { DocumentEntity } from '@h2-trust/amqp';
 
 export function buildDocumentCreateInput(document: DocumentEntity, processStepId: string): Prisma.DocumentCreateInput {
   return Prisma.validator<Prisma.DocumentCreateInput>()({
-    description: document.description ?? '',
-    location: document.location,
+    id: document.id,
+    fileName: document.fileName,
+    transactionHash: document.transactionHash,
     processStep: {
       connect: {
         id: processStepId,

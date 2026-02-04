@@ -23,7 +23,7 @@
       <mat-select formControlName="hydrogenStorageUnit">
         @for (unit of hydrogenStorageUnits(); track unit) {
           <mat-option [value]="unit"
-            >{{ unit.name }} (Remaining Capacity: {{ unit.capacity - unit.filling | unit: FormattedUnits.KG }})
+            >{{ unit.name }} (Remaining Capacity: {{ unit.capacity - unit.filling | unit: MeasurementUnit.KG }})
           </mat-option>
         }
       </mat-select>
@@ -112,10 +112,6 @@
         <span class="material-symbols-outlined">warning</span>
         {{ ERROR_MESSAGES.amountIsGreaterThanRemainingCapacity }}
       </div>
-    }
-
-    @if (mutation.isError()) {
-      <app-error-card class="col-span-2" [message]="mutation.error().message"></app-error-card>
     }
   </div>
 </div>

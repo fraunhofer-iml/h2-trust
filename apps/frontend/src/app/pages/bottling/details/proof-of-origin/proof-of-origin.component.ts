@@ -8,7 +8,7 @@
 
 import { CommonModule } from '@angular/common';
 import { Component, computed, input, signal } from '@angular/core';
-import { BatchDto, HydrogenBatchDto, PowerBatchDto, SectionDto, WaterBatchDto } from '@h2-trust/api';
+import { BatchDto, ClassificationDto, HydrogenBatchDto, PowerBatchDto, SectionDto, WaterBatchDto } from '@h2-trust/api';
 import { BatchType } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
 import { H2BatchCardComponent } from './batch-card/h2-batch-card/h2-batch-card.component';
@@ -31,36 +31,35 @@ import { ClassificationComponent } from './classification/classification.compone
 export class ProofOfOriginComponent {
   proofOfOrigin$ = input<SectionDto[]>();
 
-  sectionIndex$ = signal(-2);
-  classificationIndex$ = signal<number[]>([0]);
+  sectionIndex$ = signal(-1);
+  classificationIndex$ = signal<number[]>([]);
 
   data$ = computed((): { sections: SectionDto[]; breadcrumbs: string[] } => {
     const sectionIndex = this.sectionIndex$();
     const classificationIndexes = this.classificationIndex$();
-    const data = this.proofOfOrigin$();
+    const sections = this.proofOfOrigin$();
     const breadcrumbs: string[] = [];
 
-    if (sectionIndex > -1 && classificationIndexes.length > 0 && data) {
-      let classification = data[sectionIndex];
-      for (const index of classificationIndexes) {
-        classification = classification.classifications[index];
-        breadcrumbs.push(classification.name);
-      }
+    if (sectionIndex <= -1 || !sections || classificationIndexes.length <= 0)
+      return { sections: sections ?? [], breadcrumbs: breadcrumbs };
 
-      if (!classification) return { sections: data, breadcrumbs: breadcrumbs };
+    let item: ClassificationDto | SectionDto = sections[sectionIndex];
+    if (!item) return { sections: sections, breadcrumbs: breadcrumbs };
 
-      const result: SectionDto[] = [
-        {
-          name: classification.name,
-          batches: classification.batches,
-          classifications: classification.classifications,
-        },
-      ];
-
-      return { sections: result, breadcrumbs: breadcrumbs };
+    for (const index of classificationIndexes) {
+      item = item.classifications[index];
+      breadcrumbs.push(item.name);
     }
 
-    return { sections: data ?? [], breadcrumbs: breadcrumbs };
+    const sectionsToShow: SectionDto[] = [
+      {
+        name: item.name,
+        batches: item.batches,
+        classifications: item.classifications,
+      },
+    ];
+
+    return { sections: sectionsToShow, breadcrumbs: breadcrumbs };
   });
 
   setIndex(sectionIndex: number, classificationIndex: number) {
@@ -70,12 +69,6 @@ export class ProofOfOriginComponent {
 
   navigate(index: number) {
     this.classificationIndex$.set(this.classificationIndex$().slice(0, index + 1));
-  }
-
-  back() {
-    const length = this.classificationIndex$().length;
-    if (length === 0) return;
-    this.navigate(length - 2);
   }
 
   isInstanceOfWaterBatch(batch: BatchDto): WaterBatchDto | null {

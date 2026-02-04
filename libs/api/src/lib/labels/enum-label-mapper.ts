@@ -7,12 +7,14 @@
  */
 
 import {
+  BatchType,
   EnergySource,
   GridLevel,
   HydrogenColor,
   HydrogenProductionMethod,
   HydrogenProductionTechnology,
   HydrogenStorageType,
+  MeasurementUnit,
   PowerProductionType,
 } from '@h2-trust/domain';
 
@@ -64,6 +66,12 @@ export class EnumLabelMapper {
     [HydrogenColor.YELLOW]: 'Yellow',
   };
 
+  private static readonly MEASUREMENT_UNIT_LABELS: Record<BatchType, string> = {
+    [BatchType.HYDROGEN]: MeasurementUnit.KG,
+    [BatchType.POWER]: MeasurementUnit.KWH,
+    [BatchType.WATER]: MeasurementUnit.L,
+  };
+
   public static getPowerProductionType(value: PowerProductionType): string {
     return this.getLabel(value, this.POWER_PRODUCTION_TYPE_LABELS);
   }
@@ -94,6 +102,10 @@ export class EnumLabelMapper {
 
   public static getHydrogenColor(value: HydrogenColor): string {
     return this.getLabel(value, this.HYDROGEN_COLORS);
+  }
+
+  public static getMeasurementUnit(value: BatchType): string {
+    return this.getLabel(value, this.MEASUREMENT_UNIT_LABELS);
   }
 
   private static getLabel<T extends string>(value: T, labels: Record<T, string>): string {

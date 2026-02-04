@@ -8,7 +8,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProcessStepEntity, ProofOfOriginHydrogenBatchEntity } from '@h2-trust/amqp';
-import { BatchType, HydrogenColor, MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
+import { BatchType, HydrogenColor, ProofOfOrigin } from '@h2-trust/domain';
 import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures/entities';
 import { HydrogenStorageSectionService } from './hydrogen-storage-section.service';
 
@@ -54,7 +54,6 @@ describe('HydrogenStorageSectionService', () => {
 
       const greenClassification = actualResult.classifications.find((c) => c.name === HydrogenColor.GREEN);
       expect(greenClassification).toBeDefined();
-      expect(greenClassification.unit).toBe(MeasurementUnit.HYDROGEN);
       expect(greenClassification.classificationType).toBe(BatchType.HYDROGEN);
       expect(greenClassification.batches).toHaveLength(1);
 

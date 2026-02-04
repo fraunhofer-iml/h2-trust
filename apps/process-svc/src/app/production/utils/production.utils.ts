@@ -20,7 +20,7 @@ export class ProductionUtils {
     const durationInSeconds = this.calculateDuration(startedAtInSeconds, endedAtInSeconds);
 
     if (!Number.isFinite(accountingPeriodInSeconds)) {
-      throw new Error('accountingPeriodInSeconds must be a finite number: ' + accountingPeriodInSeconds);
+      throw new Error(`accountingPeriodInSeconds must be a finite number: ${accountingPeriodInSeconds}`);
     }
 
     if (accountingPeriodInSeconds <= 0) {

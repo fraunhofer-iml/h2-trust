@@ -26,10 +26,10 @@ import {
   ProductionOverviewDto,
   UserDetailsDtoMock,
 } from '@h2-trust/api';
-import { CsvParserModule } from '@h2-trust/csv-parser';
 import { EnergySource, HydrogenColor, PowerProductionType, ProcessType } from '@h2-trust/domain';
 import 'multer';
 import { of } from 'rxjs';
+import { StorageModule } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
@@ -42,7 +42,7 @@ describe('ProductionController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [CsvParserModule],
+      imports: [StorageModule],
       controllers: [ProductionController],
       providers: [
         ProductionService,
@@ -71,10 +71,6 @@ describe('ProductionController', () => {
     generalSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_GENERAL_SVC) as ClientProxy;
     processSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_PROCESS_SVC) as ClientProxy;
     userService = module.get<UserService>(UserService);
-  });
-
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
   });
 
   it('should create production', async () => {
@@ -172,7 +168,7 @@ describe('ProductionController', () => {
     const dto: ProductionCSVUploadDto = { hydrogenProductionUnitIds: [], powerProductionUnitIds: [] };
 
     await expect(
-      controller.importCsv(dto, { powerProductionFiles: [], hydrogenProductionFiles: [] }, givenAuthenticatedUser),
+      controller.importCsvFile(dto, { powerProductionFiles: [], hydrogenProductionFiles: [] }, givenAuthenticatedUser),
     ).rejects.toThrow(Error);
   });
 
@@ -233,7 +229,7 @@ describe('ProductionController', () => {
       powerProductionUnitIds: ['power-production-unit-1'],
     };
 
-    const actualResponse = await controller.importCsv(
+    const actualResponse = await controller.importCsvFile(
       dto,
       { powerProductionFiles: [powerFile], hydrogenProductionFiles: [h2File] },
       givenAuthenticatedUser,
@@ -275,11 +271,11 @@ describe('ProductionController', () => {
     };
 
     await expect(
-      controller.importCsv(
+      controller.importCsvFile(
         dto,
         { powerProductionFiles: [powerFile], hydrogenProductionFiles: [h2File] },
         givenAuthenticatedUser,
       ),
-    ).rejects.toThrow('Missing related unit for power production.');
+    ).rejects.toThrow('Not enough unit IDs provided for POWER production files: expected 1, got 0');
   });
 });

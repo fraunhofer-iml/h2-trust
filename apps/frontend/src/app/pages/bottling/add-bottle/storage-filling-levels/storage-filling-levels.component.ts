@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FormattedUnits } from 'apps/frontend/src/app/shared/constants/formatted-units';
 import { UnitPipe } from 'apps/frontend/src/app/shared/pipes/unit.pipe';
 import * as echarts from 'echarts';
 import { EChartsOption } from 'echarts';
@@ -14,6 +13,7 @@ import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { CommonModule, PercentPipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { HydrogenStorageOverviewDto } from '@h2-trust/api';
+import { MeasurementUnit } from '@h2-trust/domain';
 import { CHART_COLORS } from '../../../../shared/constants/chart-colors';
 import { ERROR_MESSAGES } from '../../../../shared/constants/error.messages';
 import { formatNumberForChart } from '../../../../shared/util/number-format.util';
@@ -138,7 +138,7 @@ export class StorageFillingLevelsComponent {
     const totalH2Amount = formatNumberForChart(
       item?.hydrogenComposition.reduce((sum, portion) => sum + portion.amount, 0),
     );
-    const capacity = this.unitPipe.transform(item?.capacity, FormattedUnits.KG);
+    const capacity = this.unitPipe.transform(item?.capacity, MeasurementUnit.KG);
     const capacityInPercent = this.percentPipe.transform(totalH2Amount / (item?.capacity ?? 0), '1.2-2');
 
     const label = `{name|${value}}\n{filling|Filling: ${totalH2Amount}/${capacity} (${capacityInPercent})}`;
@@ -170,7 +170,7 @@ export class StorageFillingLevelsComponent {
     if (!Array.isArray(params)) return '';
     let tooltip = '';
     params.forEach((item) => {
-      const valueWithUnit = this.unitPipe.transform(item.value, FormattedUnits.KG);
+      const valueWithUnit = this.unitPipe.transform(item.value, MeasurementUnit.KG);
       tooltip += `${item.marker} ${item.seriesName}: ${valueWithUnit}<br/>`;
     });
     return tooltip;

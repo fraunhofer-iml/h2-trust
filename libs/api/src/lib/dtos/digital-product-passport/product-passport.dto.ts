@@ -64,7 +64,7 @@ export class DigitalProductPassportDto {
       HydrogenComponentDto.fromEntity,
     );
     const attachedFiles = (generalInformationEntity.attachedFiles ?? []).map(
-      (document) => new FileInfoDto(document.description, document.location),
+      (document) => new FileInfoDto(document.fileName, `${document.storageUrl}`),
     );
 
     const proofOfSustainability = ProofOfSustainabilityDto.fromEntity(proofOfSustainabilityEntity);

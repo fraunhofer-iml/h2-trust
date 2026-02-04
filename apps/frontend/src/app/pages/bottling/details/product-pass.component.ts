@@ -11,9 +11,9 @@ import { Component, inject, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
+import { MeasurementUnit } from '@h2-trust/domain';
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
 import { ERROR_MESSAGES } from '../../../shared/constants/error.messages';
-import { FormattedUnits } from '../../../shared/constants/formatted-units';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
@@ -47,7 +47,7 @@ export class ProductPassComponent {
   id = input<string>('');
 
   readonly ERROR_MESSAGES = ERROR_MESSAGES;
-  readonly FormattedUnits = FormattedUnits;
+  readonly MeasurementUnit = MeasurementUnit;
 
   batchQuery = injectQuery(() => ({
     queryKey: ['batch', this.id()],

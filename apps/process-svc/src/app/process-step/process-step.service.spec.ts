@@ -120,8 +120,9 @@ describe('ProcessStepService', () => {
       expect(processStepRepositoryMock.findProcessStep).toHaveBeenCalledWith(givenProcessStep.id);
       expect(actualResult.id).toBe(givenProcessStep.id);
       expect(actualResult.documents).toHaveLength(1);
-      expect(actualResult.documents[0].location).toBe('http://localhost:9000/test-bucket/dummy-document.pdf');
-      expect(actualResult.documents[0].description).toBe('File #0');
+      expect(actualResult.documents[0].id).toBe('document-1');
+      expect(actualResult.documents[0].fileName).toBe('some.pdf');
+      expect(actualResult.documents[0].storageUrl).toBe('http://localhost:9000/test-bucket/some.pdf');
     });
 
     it('returns transportation process step with documents from predecessor', async () => {
@@ -141,8 +142,9 @@ describe('ProcessStepService', () => {
       expect(processStepRepositoryMock.findProcessStep).toHaveBeenCalledTimes(2);
       expect(actualResult.id).toBe(givenTransportationProcessStep.id);
       expect(actualResult.documents).toHaveLength(1);
-      expect(actualResult.documents[0].location).toBe('http://localhost:9000/test-bucket/dummy-document.pdf');
-      expect(actualResult.documents[0].description).toBe('File #0');
+      expect(actualResult.documents[0].id).toBe('document-1');
+      expect(actualResult.documents[0].fileName).toBe('some.pdf');
+      expect(actualResult.documents[0].storageUrl).toBe('http://localhost:9000/test-bucket/some.pdf');
     });
 
     it('throws error when transportation has no predecessor', async () => {

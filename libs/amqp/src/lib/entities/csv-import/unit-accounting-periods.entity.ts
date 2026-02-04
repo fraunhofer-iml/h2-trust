@@ -8,12 +8,12 @@
 
 import { AccountingPeriodHydrogen, AccountingPeriodPower } from './accounting-period.entity';
 
-export class UnitDataBundle<T extends AccountingPeriodPower | AccountingPeriodHydrogen> {
+export class UnitAccountingPeriods<T extends AccountingPeriodPower | AccountingPeriodHydrogen> {
   unitId: string;
-  data: T[];
+  accountingPeriods: T[];
 
-  constructor(unitId: string, data: T[]) {
+  constructor(unitId: string, accountingPeriods: T[]) {
     this.unitId = unitId;
-    this.data = data;
+    this.accountingPeriods = accountingPeriods;
   }
 }

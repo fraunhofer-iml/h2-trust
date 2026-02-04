@@ -13,7 +13,7 @@ import { CommonModule, PercentPipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { EmissionForProcessStepDto, EmissionProcessStepType } from '@h2-trust/api';
-import { FormattedUnits } from '../../../../../shared/constants/formatted-units';
+import { MeasurementUnit } from '@h2-trust/domain';
 
 @Component({
   selector: 'app-emission-pie-chart',
@@ -42,8 +42,8 @@ export class EmissionPieChartComponent {
     if (applicationItems.length === 0) {
       chartOption.title = { text: 'Keine Daten' };
     } else {
-      const outerColors = ['#7a7aad', '#9e9ed8', '#b6b6ff', '#c2c2ff', '#d1d1ff', '#eeeeff', '#e0e0ff'];
-      const innerColors = ['#004D40', '#00796B', '#009688', '#4DB6AC', '#80CBC4', '#B2DFDB', '#E0F2F1'];
+      const outerColors = ['#d2e5eb', '#6aa7b4', '#1f6a79'];
+      const innerColors = ['#a8d0bf', '#85b8a6', '#689f8e', '#40665b', '#3c605c'];
 
       const outerPie = this.createPieSeries(['40%', '60%'], 'outer', regulatoryItems, outerColors, emissionItems);
       const innerPie = this.createPieSeries(['10%', '35%'], 'inner', applicationItems, innerColors, emissionItems);
@@ -85,7 +85,7 @@ export class EmissionPieChartComponent {
   private readonly tooltipFormatter = (params: any, dataTotal: EmissionForProcessStepDto[]): string => {
     const percent = this.percentPipe.transform((params.percent ?? 0) / 100, '1.0-1');
     const description = dataTotal.find((item) => item.name === params.name)?.description;
-    return `${params.marker} ${params.name} (${description}): ${params.value} ${FormattedUnits.G_CO2} (${percent})`;
+    return `${params.marker} ${params.name} (${description}): ${params.value} ${MeasurementUnit.G_CO2} (${percent})`;
   };
 
   private readonly getChartOption = (
