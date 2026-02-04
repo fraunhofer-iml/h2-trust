@@ -22,6 +22,7 @@ import {
 } from '@h2-trust/amqp';
 import {
   allUnitsQueryArgs,
+  CompanySeed,
   DatabaseModule,
   HydrogenProductionUnitDbType,
   HydrogenProductionUnitDbTypeMock,
@@ -157,7 +158,7 @@ describe('UnitController', () => {
         PowerProductionUnitEntityMock[0].address.state,
         PowerProductionUnitEntityMock[0].address.country,
       ),
-      PowerProductionUnitEntityMock[0].owner.id,
+      CompanySeed[0].id,
       PowerProductionUnitEntityMock[0].electricityMeterNumber,
       PowerProductionUnitEntityMock[0].ratedPower,
       PowerProductionUnitEntityMock[0].gridLevel,
@@ -169,7 +170,7 @@ describe('UnitController', () => {
       PowerProductionUnitEntityMock[0].modelNumber,
       PowerProductionUnitEntityMock[0].serialNumber,
       PowerProductionUnitEntityMock[0].certifiedBy,
-      PowerProductionUnitEntityMock[0].operator.id,
+      CompanySeed[0].id,
       PowerProductionUnitEntityMock[0].decommissioningPlannedOn,
       PowerProductionUnitEntityMock[0].gridOperator,
       PowerProductionUnitEntityMock[0].gridConnectionNumber,
@@ -200,7 +201,7 @@ describe('UnitController', () => {
         HydrogenProductionUnitEntityMock[0].address.state,
         HydrogenProductionUnitEntityMock[0].address.country,
       ),
-      HydrogenProductionUnitEntityMock[0].owner.id,
+      CompanySeed[0].id,
       HydrogenProductionUnitEntityMock[0].method,
       HydrogenProductionUnitEntityMock[0].technology,
       HydrogenProductionUnitEntityMock[0].biddingZone,
@@ -212,7 +213,7 @@ describe('UnitController', () => {
       HydrogenProductionUnitEntityMock[0].modelNumber,
       HydrogenProductionUnitEntityMock[0].serialNumber,
       HydrogenProductionUnitEntityMock[0].certifiedBy,
-      HydrogenProductionUnitEntityMock[0].operator.id,
+      CompanySeed[0].id,
     );
 
     const mockedDbResponse: HydrogenProductionUnitDbType = HydrogenProductionUnitDbTypeMock[0];
@@ -242,7 +243,7 @@ describe('UnitController', () => {
         HydrogenStorageUnitEntityMock[0].address.state,
         HydrogenStorageUnitEntityMock[0].address.country,
       ),
-      HydrogenStorageUnitEntityMock[0].owner.id,
+      CompanySeed[0].id,
       HydrogenStorageUnitEntityMock[0].type,
       HydrogenStorageUnitEntityMock[0].capacity,
       HydrogenStorageUnitEntityMock[0].pressure,
@@ -251,7 +252,7 @@ describe('UnitController', () => {
       HydrogenStorageUnitEntityMock[0].modelNumber,
       HydrogenStorageUnitEntityMock[0].serialNumber,
       HydrogenStorageUnitEntityMock[0].certifiedBy,
-      HydrogenStorageUnitEntityMock[0].operator.id,
+      CompanySeed[0].id,
     );
 
     const mockedDbResponse: HydrogenStorageUnitDbType = HydrogenStorageUnitDbTypeMock[0];

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AddressSeed, CompanySeed, HydrogenStorageUnitSeed, UnitSeed } from 'libs/database/src/seed';
+import { HydrogenStorageUnitSeed, UnitSeed } from 'libs/database/src/seed';
 import { HydrogenColor, HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { AddressEntityPowerMock } from '../../address';
 import { HydrogenComponentEntity } from '../../bottling';
@@ -25,21 +25,7 @@ export const HydrogenStorageUnitEntityMock: HydrogenStorageUnitEntity[] = [
     UnitSeed[0].certifiedBy!,
     new Date(UnitSeed[0].commissionedOn),
     AddressEntityPowerMock,
-    {
-      id: CompanySeed[2].id!,
-      name: CompanySeed[2].name,
-      mastrNumber: CompanySeed[2].mastrNumber,
-      type: CompanySeed[2].type,
-      address: {
-        street: AddressSeed[2].street,
-        postalCode: AddressSeed[2].postalCode,
-        city: AddressSeed[2].city,
-        state: AddressSeed[2].state,
-        country: AddressSeed[2].country,
-      },
-      users: [],
-      hydrogenApprovals: [],
-    },
+    CompanyEntityHydrogenMock,
     CompanyEntityHydrogenMock,
     UnitType.HYDROGEN_STORAGE,
     HydrogenStorageUnitSeed[0].capacity.toNumber(),
