@@ -8,8 +8,7 @@
     "test": "npx hardhat test",
     "deploy-local": "npx hardhat run scripts/deploy.ts --network local",
     "deploy-private": "npx hardhat run scripts/deploy.ts --network <TBD>",
-    "deploy-public": "npx hardhat run scripts/deploy.ts --network arbitrumSepolia",
-    "verify-public": "npx hardhat verify --network arbitrumSepolia <CONTRACT_ADDRESS>"
+    "deploy-public": "npx hardhat run scripts/deploy.ts --network arbitrumSepolia"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-ethers": "^4.0.4",
