@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "clean": "rm -rf ./artifacts ./cache ./typechain",
+    "build": "npx hardhat compile",
+    "test": "npx hardhat test",
     "deploy-local": "npx hardhat run scripts/deploy.ts --network local",
     "deploy-private": "npx hardhat run scripts/deploy.ts --network <TBD>",
     "deploy-public": "npx hardhat run scripts/deploy.ts --network arbitrumSepolia",

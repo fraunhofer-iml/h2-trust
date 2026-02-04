@@ -38,7 +38,7 @@ describe("ProofStorage", function () {
 
         await proofStorage.storeProof(UUID, HASH, CID);
 
-        const proof = await proofStorage.getProof(UUID);
+        const proof = await proofStorage.getProofByUuid(UUID);
         expect(proof.hash).to.equal(HASH);
         expect(proof.cid).to.equal(CID);
       });
@@ -104,7 +104,7 @@ describe("ProofStorage", function () {
     });
   });
 
-  describe("getProof", function () {
+  describe("getProofByUuid", function () {
     describe(SUCCESS, function () {
       // see happy path test in "storeProof" section
     });
@@ -113,14 +113,14 @@ describe("ProofStorage", function () {
       it("should revert when uuid is empty", async function () {
         const { proofStorage } = await deployProofStorage();
 
-        await expect(proofStorage.getProof(""))
+        await expect(proofStorage.getProofByUuid(""))
           .to.be.revertedWithCustomError(proofStorage, "UuidEmpty");
       });
 
       it("should revert when uuid does not exist", async function () {
         const { proofStorage } = await deployProofStorage();
 
-        await expect(proofStorage.getProof(UUID))
+        await expect(proofStorage.getProofByUuid(UUID))
           .to.be.revertedWithCustomError(proofStorage, "UuidNotFound")
           .withArgs(UUID);
       });

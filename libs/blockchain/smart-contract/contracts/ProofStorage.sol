@@ -57,7 +57,7 @@ contract ProofStorage {
     emit ProofStored(msg.sender, uuid, hash, cid);
   }
 
-  function getProof(string memory uuid) external view returns (Proof memory) {
+  function getProofByUuid(string memory uuid) external view returns (Proof memory) {
     if (bytes(uuid).length == 0) {
       revert UuidEmpty();
     }
