@@ -10,7 +10,7 @@ import { Injectable } from '@nestjs/common';
 import { PowerAccessApprovalEntity } from '@h2-trust/amqp';
 import { PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { PrismaService } from '../prisma.service';
-import { powerAccessApprovalDeepQueryArgs } from '../query-args/power-access-approval.query-args';
+import { powerAccessApprovalDeepQueryArgs } from '../query-args/power-access-approval/power-access-approval.deep.query-args';
 
 @Injectable()
 export class PowerAccessApprovalRepository {

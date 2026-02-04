@@ -6,10 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './batch';
-export * from './company';
-export * from './power-access-approval';
-export * from './process-step';
-export * from './staged-production';
-export * from './unit';
-export * from './user';
+import { Prisma } from '@prisma/client';
+
+export const userSurfaceQueryArgs = Prisma.validator<Prisma.UserDefaultArgs>()({
+  include: {
+    company: true,
+  },
+});

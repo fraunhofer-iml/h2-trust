@@ -7,22 +7,7 @@
  */
 
 import { Prisma } from '@prisma/client';
-import {
-  powerAccessApprovalShallowQueryArgs,
-  powerAccessApprovalSurfaceQueryArgs,
-} from './power-access-approval.query-args';
-
-export const companyDeepQueryArgs = Prisma.validator<Prisma.CompanyDefaultArgs>()({
-  include: {
-    address: true,
-    hydrogenApprovals: powerAccessApprovalShallowQueryArgs,
-    powerApprovals: powerAccessApprovalShallowQueryArgs,
-    unitOwners: true,
-    unitOperators: true,
-    users: true,
-    batches: true,
-  },
-});
+import { powerAccessApprovalSurfaceQueryArgs } from '../power-access-approval/power-access-approval.surface.query-args';
 
 export const companyShallowQueryArgs = Prisma.validator<Prisma.CompanyDefaultArgs>()({
   include: {

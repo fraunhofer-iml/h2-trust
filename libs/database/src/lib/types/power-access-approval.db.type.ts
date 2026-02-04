@@ -11,7 +11,7 @@ import {
   powerAccessApprovalDeepQueryArgs,
   powerAccessApprovalShallowQueryArgs,
   powerAccessApprovalSurfaceQueryArgs,
-} from '../query-args/power-access-approval.query-args';
+} from '../query-args';
 
 export type PowerAccessApprovalDeepDbType = Prisma.PowerAccessApprovalGetPayload<
   typeof powerAccessApprovalDeepQueryArgs

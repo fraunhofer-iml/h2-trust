@@ -7,6 +7,10 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { stagedProductionQueryArgs } from '../query-args/staged-production/staged-production.query-args';
+import { companyShallowQueryArgs } from '../company/company.shallow.query-args';
 
-export type StagedProductionDbType = Prisma.StagedProductionGetPayload<typeof stagedProductionQueryArgs>;
+export const userDeepQueryArgs = Prisma.validator<Prisma.UserDefaultArgs>()({
+  include: {
+    company: companyShallowQueryArgs,
+  },
+});

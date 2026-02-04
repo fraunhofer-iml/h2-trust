@@ -6,10 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './batch';
-export * from './company';
-export * from './power-access-approval';
-export * from './process-step';
-export * from './staged-production';
-export * from './unit';
-export * from './user';
+export * from './power-access-approval.deep.query-args';
+export * from './power-access-approval.shallow.query-args';
+export * from './power-access-approval.surface.query-args';

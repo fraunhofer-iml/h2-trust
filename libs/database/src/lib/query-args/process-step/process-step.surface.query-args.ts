@@ -7,6 +7,13 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { stagedProductionQueryArgs } from '../query-args/staged-production/staged-production.query-args';
 
-export type StagedProductionDbType = Prisma.StagedProductionGetPayload<typeof stagedProductionQueryArgs>;
+export const processStepSurfaceQueryArgs = Prisma.validator<Prisma.ProcessStepDefaultArgs>()({
+  include: {
+    batch: true,
+    executedBy: true,
+    recordedBy: true,
+    documents: true,
+    processStepDetails: true,
+  },
+});
