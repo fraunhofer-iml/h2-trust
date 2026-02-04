@@ -35,7 +35,7 @@ export class ProductionService {
   }
 
   uploadCsv(data: FormData) {
-    return lastValueFrom(this.httpClient.post<AccountingPeriodMatchingResultDto>(API.PRODUCTION.CSV, data));
+    return lastValueFrom(this.httpClient.post<AccountingPeriodMatchingResultDto>(API.PRODUCTION.CSV_IMPORT, data));
   }
 
   submitCsv(dto: ImportSubmissionDto) {
