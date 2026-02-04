@@ -5,7 +5,8 @@
   "scripts": {
     "deploy-local": "npx hardhat run scripts/deploy.ts --network local",
     "deploy-private": "npx hardhat run scripts/deploy.ts --network TBD",
-    "deploy-public": "npx hardhat run scripts/deploy.ts --network arbitrumSepolia"
+    "deploy-public": "npx hardhat run scripts/deploy.ts --network arbitrumSepolia",
+    "verify-public": "npx hardhat verify --network arbitrumSepolia 0xa3fCB4AACb89f51B5ED6A8964b3F8958a8AfF427"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-ethers": "^4.0.4",
