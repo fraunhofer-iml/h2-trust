@@ -6,16 +6,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { PassThrough } from 'stream';
 import { firstValueFrom } from 'rxjs';
 import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
+  AccountingPeriodHydrogen,
+  AccountingPeriodPower,
   BrokerException,
   BrokerQueues,
   CreateManyProcessStepsPayload,
   CreateProductionEntity,
   FinalizeStagedProductionsPayload,
-  ParsedProductionEntity,
   ParsedProductionMatchingResultEntity,
   PowerAccessApprovalEntity,
   PowerAccessApprovalPatterns,
@@ -23,37 +25,108 @@ import {
   ReadPowerAccessApprovalsPayload,
   StagedProductionEntity,
   StageProductionsPayload,
+  UnitAccountingPeriods,
+  UnitFileReference,
 } from '@h2-trust/amqp';
+import { HashUtil } from '@h2-trust/blockchain';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
-import { PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
+import { BatchType, PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
+import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step/process-step.service';
-import { AccountingPeriodMatcher } from './accounting-period.matcher';
+import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
+import { AccountingPeriodMatcher } from './accounting-period-matcher';
 import { ProductionAssembler } from './production.assembler';
 
 @Injectable()
 export class ProductionImportService {
-  private readonly logger = new Logger(ProductionImportService.name);
+  private static readonly headersForBatchType: Record<BatchType, string[]> = {
+    POWER: ['time', 'amount'],
+    HYDROGEN: ['time', 'amount', 'power'],
+    WATER: [], // empty on purpose, no water import supported
+  };
+
+  private readonly logger = new Logger(this.constructor.name);
   private readonly productionChunkSize: number;
 
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly configurationService: ConfigurationService,
-    private readonly stagedProductionRepository: StagedProductionRepository,
     private readonly processStepService: ProcessStepService,
+    private readonly stagedProductionRepository: StagedProductionRepository,
+    private readonly storageService: StorageService,
   ) {
     this.productionChunkSize = this.configurationService.getProcessSvcConfiguration().productionChunkSize;
   }
 
   async stageProductions(payload: StageProductionsPayload): Promise<ParsedProductionMatchingResultEntity> {
-    const gridUnitId = await this.fetchGridUnitId(payload.userId);
-    const parsedProductions: ParsedProductionEntity[] = AccountingPeriodMatcher.matchAccountingPeriods(
-      payload.data,
+    const [powerProductions, hydrogenProductions, gridUnitId] = await Promise.all([
+      this.importAccountingPeriods<AccountingPeriodPower>(payload.powerProductions, BatchType.POWER),
+      this.importAccountingPeriods<AccountingPeriodHydrogen>(payload.hydrogenProductions, BatchType.HYDROGEN),
+      this.fetchGridUnitId(payload.userId),
+    ]);
+    const parsedProductions = AccountingPeriodMatcher.matchAccountingPeriods(
+      powerProductions,
+      hydrogenProductions,
       gridUnitId,
     );
 
     const importId = await this.stagedProductionRepository.stageParsedProductions(parsedProductions);
+
     return new ParsedProductionMatchingResultEntity(importId, parsedProductions);
+  }
+
+  private async importAccountingPeriods<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
+    unitFileReferences: UnitFileReference[],
+    type: BatchType,
+  ): Promise<UnitAccountingPeriods<T>[]> {
+    const headers = ProductionImportService.headersForBatchType[type];
+
+    return Promise.all(
+      unitFileReferences.map(async (ufr) => {
+        const downloadingStream = await this.storageService.downloadFile(ufr.fileName);
+        const parsingStream = new PassThrough();
+        downloadingStream.on('error', (err) => parsingStream.destroy(err));
+        downloadingStream.pipe(parsingStream);
+
+        const [hash, accountingPeriods] = await Promise.all([
+          HashUtil.hashStream(downloadingStream),
+          AccountingPeriodCsvParser.parseStream<T>(parsingStream, headers, ufr.fileName),
+        ]);
+
+        // TODO-MP: the hash will be later stored in a smart contract
+        this.logger.log(`Computed hash: ${hash}`);
+
+        if (accountingPeriods.length < 1) {
+          throw new BrokerException(
+            `${type} production file does not contain any valid items.`,
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+
+        return new UnitAccountingPeriods<T>(ufr.unitId, accountingPeriods);
+      }),
+    );
+  }
+
+  private async fetchGridUnitId(userId: string): Promise<string> {
+    const approvals: PowerAccessApprovalEntity[] = await firstValueFrom(
+      this.generalSvc.send(
+        PowerAccessApprovalPatterns.READ,
+        new ReadPowerAccessApprovalsPayload(userId, PowerAccessApprovalStatus.APPROVED),
+      ),
+    );
+    const approvalForGrid = approvals.find(
+      (approval) => approval.powerProductionUnit.type.name === PowerProductionType.GRID,
+    );
+
+    if (!approvalForGrid)
+      throw new BrokerException(
+        `No grid connection found for user with id ${userId}.`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+
+    return approvalForGrid.powerProductionUnit.id;
   }
 
   async finalizeStagedProductions(payload: FinalizeStagedProductionsPayload): Promise<ProcessStepEntity[]> {
@@ -81,26 +154,6 @@ export class ProductionImportService {
       `Finalizing ${createProductions.length} staged productions in chunks of ${this.productionChunkSize}`,
     );
     return this.createAndPersistProcessSteps(createProductions);
-  }
-
-  private async fetchGridUnitId(userId: string): Promise<string> {
-    const approvals: PowerAccessApprovalEntity[] = await firstValueFrom(
-      this.generalSvc.send(
-        PowerAccessApprovalPatterns.READ,
-        new ReadPowerAccessApprovalsPayload(userId, PowerAccessApprovalStatus.APPROVED),
-      ),
-    );
-    const powerAccessApprovalForGrid = approvals.find(
-      (approval) => approval.powerProductionUnit.type.name === PowerProductionType.GRID,
-    );
-
-    if (!powerAccessApprovalForGrid)
-      throw new BrokerException(
-        `No grid connection found for user with id ${userId}.`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-
-    return powerAccessApprovalForGrid.powerProductionUnit.id;
   }
 
   private async createAndPersistProcessSteps(

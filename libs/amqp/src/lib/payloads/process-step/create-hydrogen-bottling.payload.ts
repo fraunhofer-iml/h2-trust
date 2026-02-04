@@ -9,6 +9,7 @@
 import { Type } from 'class-transformer';
 import { IsArray, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 import { HydrogenColor } from '@h2-trust/domain';
+import 'multer';
 
 export class CreateHydrogenBottlingPayload {
   @IsNumber()
