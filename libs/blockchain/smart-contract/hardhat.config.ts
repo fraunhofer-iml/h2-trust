@@ -31,7 +31,7 @@ export default defineConfig({
     },
   },
   networks: {
-    hardhatMainnet: {
+    local: {
       type: "edr-simulated",
       chainType: "l1",
     },
