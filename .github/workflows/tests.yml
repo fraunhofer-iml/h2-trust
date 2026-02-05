@@ -36,6 +36,6 @@ jobs:
 
       - name: Run Tests for smart contract
         run: npm --prefix libs/blockchain/smart-contract test
-      
+
       - name: Run Tests for utils
         run: npx nx run utils:test

@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "clean": "rm -rf ./artifacts ./cache ./typechain",
     "build": "npx hardhat compile",
-    "test": "npx hardhat test",
+    "clean": "rm -rf ./artifacts ./cache ./typechain",
     "deploy-local": "npx hardhat run scripts/deploy.ts --network local",
     "deploy-private": "npx hardhat run scripts/deploy.ts --network private",
-    "deploy-public": "npx hardhat run scripts/deploy.ts --network arbitrumSepolia"
+    "deploy-public": "npx hardhat run scripts/deploy.ts --network arbitrumSepolia",
+    "test": "npx hardhat test"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-ethers": "^4.0.4",
@@ -19,11 +19,11 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.19.8",
     "chai": "^5.3.3",
+    "dotenv": "^17.2.3",
     "ethers": "^6.16.0",
     "forge-std": "github:foundry-rs/forge-std#v1.9.4",
     "hardhat": "^3.1.6",
     "mocha": "^11.7.5",
-    "typescript": "~5.8.0",
-    "dotenv": "^17.2.3"
+    "typescript": "~5.8.0"
   }
 }

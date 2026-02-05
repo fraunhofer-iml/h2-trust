@@ -31,7 +31,7 @@ services:
       - '9000:9000'
       - '9090:9090'
     healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
+      test: ['CMD', 'mc', 'ready', 'local']
       interval: 5s
       timeout: 5s
       retries: 5
@@ -46,7 +46,7 @@ services:
     depends_on:
       minio:
         condition: service_healthy
-    entrypoint: ["/bin/sh", "-c"]
+    entrypoint: ['/bin/sh', '-c']
     command:
       - |
         mc alias set local http://minio:9000 admin blockchain
@@ -65,7 +65,7 @@ services:
     ports:
       - '8545:8545'
     healthcheck:
-      test: ["CMD", "curl", "-sf", "http://localhost:8545/liveness"]
+      test: ['CMD', 'curl', '-sf', 'http://localhost:8545/liveness']
       interval: 5s
       timeout: 5s
       retries: 5
