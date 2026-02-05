@@ -22,7 +22,7 @@ const hydrogenStorageUnitChildQueryArgs = Prisma.validator<Prisma.HydrogenStorag
   },
 });
 
-//TODO-LG: Replace with a deep, nested or flat function if possible
+//TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
 export const allUnitsQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
   ...baseUnitDeepQueryArgs,
   include: {
@@ -33,7 +33,7 @@ export const allUnitsQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
   },
 });
 
-//TODO-LG: Replace with a deep, nested or flat function if possible
+//TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
 export const powerProductionUnitQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
   ...baseUnitDeepQueryArgs,
   include: {
@@ -42,7 +42,7 @@ export const powerProductionUnitQueryArgs = Prisma.validator<Prisma.UnitDefaultA
   },
 });
 
-//TODO-LG: Replace with a deep, nested or flat function if possible
+//TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
 export const hydrogenProductionUnitQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
   ...baseUnitDeepQueryArgs,
   include: {
@@ -51,7 +51,7 @@ export const hydrogenProductionUnitQueryArgs = Prisma.validator<Prisma.UnitDefau
   },
 });
 
-//TODO-LG: Replace with a deep, nested or flat function if possible
+//TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
 export const hydrogenStorageUnitQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
   ...baseUnitDeepQueryArgs,
   include: {

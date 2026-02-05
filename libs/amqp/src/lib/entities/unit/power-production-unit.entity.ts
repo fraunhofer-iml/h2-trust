@@ -132,7 +132,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     };
   }
 
-  //TODO-LG: Replace with a deep, nested or flat function if possible
+  //TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
   static override fromDatabase(unit: PowerProductionUnitDbType): PowerProductionUnitEntity {
     return <PowerProductionUnitEntity>{
       ...BaseUnitEntity.fromDatabase(unit),
@@ -141,7 +141,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     };
   }
 
-  //TODO-LG: Replace with a deep, nested or flat function if possible
+  //TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
   static mapPowerProductionUnitSpecials(unit: PowerProductionUnitDbType) {
     return {
       decommissioningPlannedOn: unit.powerProductionUnit?.decommissioningPlannedOn,

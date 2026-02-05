@@ -94,7 +94,7 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     };
   }
 
-  //TODO-LG: Replace with a deep, nested or flat function if possible
+  //TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
   static override fromDatabase(unit: HydrogenProductionUnitDbType): HydrogenProductionUnitEntity {
     return <HydrogenProductionUnitEntity>{
       ...BaseUnitEntity.fromDatabase(unit),

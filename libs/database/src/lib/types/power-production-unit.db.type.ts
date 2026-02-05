@@ -14,7 +14,7 @@ import {
   powerProductionUnitQueryArgs,
 } from '../query-args';
 
-//TODO-LG: Replace with a deep, nested or flat type if possible
+//TODO-LG (DUHGW-353): Replace with a deep, nested or flat type if possible
 export type PowerProductionUnitDbType = Prisma.UnitGetPayload<typeof powerProductionUnitQueryArgs>;
 
 export type PowerProductionUnitDeepDbType = Prisma.PowerProductionUnitGetPayload<

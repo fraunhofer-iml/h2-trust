@@ -103,7 +103,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     };
   }
 
-  //TODO-LG: Replace with a deep, nested or flat function if possible
+  //TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
   static override fromDatabase(unit: HydrogenStorageUnitDbType): HydrogenStorageUnitEntity {
     return <HydrogenStorageUnitEntity>{
       ...BaseUnitEntity.fromDatabase(unit),
@@ -131,7 +131,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     );
   }
 
-  //TODO-LG: Replace with a deep, nested or flat function if possible
+  //TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
   private static mapFilling(unit: HydrogenStorageUnitDbType): HydrogenComponentEntity[] {
     return (
       unit.hydrogenStorageUnit?.filling?.map((batch) => {

@@ -107,7 +107,7 @@ export abstract class BaseUnitEntity {
     };
   }
 
-  //TODO-LG: Replace with a deep, nested or flat function if possible
+  //TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
   static fromDatabase(unit: BaseUnitDeepDbType): BaseUnitEntity {
     return <BaseUnitEntity>{
       id: unit.id,

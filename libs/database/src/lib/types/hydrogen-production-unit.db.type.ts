@@ -14,7 +14,7 @@ import {
   hydrogenProductionUnitQueryArgs,
 } from '../query-args';
 
-//TODO-LG: Replace with a deep, nested or flat type if possible
+//TODO-LG (DUHGW-353): Replace with a deep, nested or flat type if possible
 export type HydrogenProductionUnitDbType = Prisma.UnitGetPayload<typeof hydrogenProductionUnitQueryArgs>;
 
 export type HydrogenProductionUnitDeepDbType = Prisma.HydrogenProductionUnitGetPayload<
