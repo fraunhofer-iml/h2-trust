@@ -32,6 +32,12 @@ describe('ProofStorage', function () {
 
         expect(await proofStorage.owner()).to.equal(alice.address);
       });
+
+      it('should have UUID_LENGTH constant set to 36', async function () {
+        const { proofStorage } = await deployProofStorage();
+
+        expect(await proofStorage.UUID_LENGTH()).to.equal(36);
+      });
     });
 
     describe('failure', function () {
@@ -71,10 +77,18 @@ describe('ProofStorage', function () {
           'NotOwner',
         );
       });
-
-      it('should revert when uuid has invalid length', async function () {
+      it('should revert when uuid is too short', async function () {
         const { proofStorage } = await deployProofStorage();
-        const longUuid = '550e8400-e29b-41d4-a716-446655440000x';
+        const shortUuid = '550e8400-e29b-41d4-a716-44665544000'; // 1 character short
+
+        await expect(proofStorage.storeProof(shortUuid, HASH, CID))
+          .to.be.revertedWithCustomError(proofStorage, 'UuidInvalidLength')
+          .withArgs(shortUuid);
+      });
+
+      it('should revert when uuid is too long', async function () {
+        const { proofStorage } = await deployProofStorage();
+        const longUuid = '550e8400-e29b-41d4-a716-446655440000x'; // 1 character long
 
         await expect(proofStorage.storeProof(longUuid, HASH, CID))
           .to.be.revertedWithCustomError(proofStorage, 'UuidInvalidLength')
