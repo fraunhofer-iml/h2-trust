@@ -53,7 +53,7 @@ export class SidebarComponent implements OnInit {
       isActive: () => false,
       children: [
         {
-          title: 'Uploads',
+          title: 'CSV Uploads',
           icon: 'files',
           route: ROUTES.PRODUCTION_FILES,
           isActive: () => this.router.url.split('/')[2] === 'files',

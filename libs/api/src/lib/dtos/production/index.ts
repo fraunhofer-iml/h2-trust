@@ -12,3 +12,4 @@ export * from './production-csv-upload.dto';
 export * from './accounting-period-matching-result.dto';
 export * from './import-submission.dto';
 export * from './processed-csv.dto';
+export * from './download-files.dto';

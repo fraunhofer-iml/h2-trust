@@ -15,9 +15,9 @@ export const ProcessedCsvDtoMock = <ProcessedCsvDto[]>[
     csvContentType: 'HYDROGEN',
     startedAt: new Date(2026, 1, 1),
     endedAt: new Date(2026, 1, 4),
-    name: 'Hydrogen Test',
+    name: 'test_2.csv',
     uploadedBy: CompanyDtoMock[1].name,
-    url: '',
+    url: 'http://localhost:9000/h2-trust/test_2.csv',
     amount: 30,
   },
   {
@@ -25,9 +25,9 @@ export const ProcessedCsvDtoMock = <ProcessedCsvDto[]>[
     csvContentType: 'HYDROGEN',
     startedAt: new Date(2026, 1, 5),
     endedAt: new Date(2026, 1, 12),
-    name: 'Hydrogen Test',
+    name: 'test_3.csv',
     uploadedBy: CompanyDtoMock[1].name,
-    url: '',
+    url: 'http://localhost:9000/h2-trust/test_3.csv',
     amount: 415,
   },
   {
@@ -37,7 +37,7 @@ export const ProcessedCsvDtoMock = <ProcessedCsvDto[]>[
     endedAt: new Date(2026, 1, 3),
     name: 'Hydrogen Test',
     uploadedBy: CompanyDtoMock[0].name,
-    url: '',
+    url: 'http://localhost:9000/h2-trust/test_2.csv',
     amount: 28.6,
   },
   {
@@ -47,7 +47,7 @@ export const ProcessedCsvDtoMock = <ProcessedCsvDto[]>[
     endedAt: new Date(2026, 1, 13),
     name: 'Hydrogen Test',
     uploadedBy: CompanyDtoMock[0].name,
-    url: '',
+    url: 'http://localhost:9000/h2-trust/test_2.csv',
     amount: 268.75,
   },
 ];

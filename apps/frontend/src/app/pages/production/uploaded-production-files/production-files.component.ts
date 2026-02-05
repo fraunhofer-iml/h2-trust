@@ -6,11 +6,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { saveAs } from 'file-saver';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { SelectionModel } from '@angular/cdk/collections';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, computed, effect, inject, signal, ViewChild } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -20,9 +24,8 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatTooltip } from '@angular/material/tooltip';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { CsvContentType, ProcessedCsvDto } from '@h2-trust/api';
+import { CsvContentType, DownloadFilesDto, ProcessedCsvDto } from '@h2-trust/api';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { H2ColorChipComponent } from '../../../layout/h2-color-chip/h2-color-chip.component';
 import { ICONS } from '../../../shared/constants/icons';
@@ -35,7 +38,6 @@ import { ProductionService } from '../../../shared/services/production/productio
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
-    MatTooltip,
     MatChipsModule,
     MatDatepickerModule,
     MatFormFieldModule,
@@ -48,6 +50,8 @@ import { ProductionService } from '../../../shared/services/production/productio
     UnitPipe,
     MatSortModule,
     H2ColorChipComponent,
+    MatCheckboxModule,
+    MatBadgeModule,
   ],
   providers: [ProductionService, provideNativeDateAdapter()],
   templateUrl: './production-files.component.html',
@@ -55,7 +59,7 @@ import { ProductionService } from '../../../shared/services/production/productio
 export class ProductionFilesComponent implements AfterViewInit {
   protected readonly ICONS = ICONS.UNITS;
   protected readonly MeasurementUnit = MeasurementUnit;
-  readonly displayedColumns = ['name', 'uploadedBy', 'startedAt', 'endedAt', 'type', 'amount', 'button'] as const;
+  readonly displayedColumns = ['select', 'name', 'uploadedBy', 'startedAt', 'endedAt', 'type', 'amount'] as const;
   readonly displayCsvContentTypes: { name: string; value: CsvContentType | null }[] = [
     { name: 'Hydrogen', value: 'HYDROGEN' },
     { name: 'Power', value: 'POWER' },
@@ -71,6 +75,7 @@ export class ProductionFilesComponent implements AfterViewInit {
   searchValue$ = signal<string>('');
 
   searchControl = new FormControl<string>('');
+  selection = new SelectionModel<ProcessedCsvDto>(true, []);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -126,5 +131,35 @@ export class ProductionFilesComponent implements AfterViewInit {
     this.startDate$.set(null);
     this.endDate$.set(null);
     this.selecteType$.set(null);
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      return;
+    }
+
+    this.selection.select(...this.dataSource.data);
+  }
+
+  async downloadSelected() {
+    const files = this.selection.selected;
+
+    if (!files || files.length === 0) return;
+
+    if (files.length === 1) {
+      const { url, name } = files[0];
+      saveAs(url, name);
+    } else {
+      const dto = new DownloadFilesDto(files.map((f) => f.name));
+      const downloadedZip: Blob = await this.productionService.downloadFiles(dto);
+      saveAs(downloadedZip);
+    }
   }
 }

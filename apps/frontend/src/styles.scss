@@ -66,6 +66,13 @@ body {
       hover-state-layer-color: #3f8796,
     )
   );
+
+  @include mat.badge-overrides(
+    (
+      background-color: #a4c9d3,
+      text-color: #0b3f4b,
+    )
+  );
 }
 
 //--Materials--//

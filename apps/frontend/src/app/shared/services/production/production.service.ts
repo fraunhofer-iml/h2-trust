@@ -12,6 +12,7 @@ import { Injectable } from '@angular/core';
 import {
   AccountingPeriodMatchingResultDto,
   CreateProductionDto,
+  DownloadFilesDto,
   ImportSubmissionDto,
   ProcessedCsvDto,
   ProductionOverviewDto,
@@ -40,5 +41,13 @@ export class ProductionService {
 
   submitCsv(dto: ImportSubmissionDto) {
     return lastValueFrom(this.httpClient.post<ProductionOverviewDto[]>(API.PRODUCTION.CSV_SUBMIT, dto));
+  }
+
+  downloadFiles(dto: DownloadFilesDto) {
+    return lastValueFrom(
+      this.httpClient.post<Blob>(API.FILE_DOWNLOAD.BASE, dto, {
+        responseType: 'blob' as 'json',
+      }),
+    );
   }
 }
