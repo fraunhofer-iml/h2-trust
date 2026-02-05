@@ -6,10 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerProductionType } from '@prisma/client';
 import {
-  PowerProductionUniRefDeepDbType,
   PowerProductionUnitDbType,
+  PowerProductionUnitDeepDbType,
   PowerProductionUnitShallowDbType,
   PowerProductionUnitSurfaceDbType,
 } from '@h2-trust/database';
@@ -84,7 +83,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     return <PowerProductionUnitEntity>{
       ...BaseUnitEntity.fromSurfaceBaseUnit(unit.generalInfo),
       modelType: unit.generalInfo?.modelType,
-      unitType: UnitType.HYDROGEN_STORAGE,
+      unitType: UnitType.POWER_PRODUCTION,
       decommissioningPlannedOn: unit.decommissioningPlannedOn,
       electricityMeterNumber: unit.electricityMeterNumber,
       ratedPower: unit.ratedPower.toNumber(),
@@ -93,7 +92,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
       biddingZone: unit.biddingZone,
       gridConnectionNumber: unit.gridConnectionNumber,
       financialSupportReceived: unit.financialSupportReceived,
-      type: unit.type as PowerProductionType,
+      type: unit.type,
     };
   }
 
@@ -102,7 +101,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
       ...BaseUnitEntity.fromShallowBaseUnit(unit.generalInfo),
       modelType: unit.generalInfo?.modelType,
       address: unit.generalInfo.address,
-      unitType: UnitType.HYDROGEN_STORAGE,
+      unitType: UnitType.POWER_PRODUCTION,
       decommissioningPlannedOn: unit.decommissioningPlannedOn,
       electricityMeterNumber: unit.electricityMeterNumber,
       ratedPower: unit.ratedPower.toNumber(),
@@ -111,16 +110,16 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
       biddingZone: unit.biddingZone,
       gridConnectionNumber: unit.gridConnectionNumber,
       financialSupportReceived: unit.financialSupportReceived,
-      type: unit.type as PowerProductionType,
+      type: unit.type,
     };
   }
 
-  static fromDeepDatabase(unit: PowerProductionUniRefDeepDbType): PowerProductionUnitEntity {
+  static fromDeepDatabase(unit: PowerProductionUnitDeepDbType): PowerProductionUnitEntity {
     return <PowerProductionUnitEntity>{
       ...BaseUnitEntity.fromDeepBaseUnit(unit.generalInfo),
       modelType: unit.generalInfo?.modelType,
       address: unit.generalInfo.address,
-      unitType: UnitType.HYDROGEN_STORAGE,
+      unitType: UnitType.POWER_PRODUCTION,
       decommissioningPlannedOn: unit.decommissioningPlannedOn,
       electricityMeterNumber: unit.electricityMeterNumber,
       ratedPower: unit.ratedPower.toNumber(),
@@ -129,7 +128,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
       biddingZone: unit.biddingZone,
       gridConnectionNumber: unit.gridConnectionNumber,
       financialSupportReceived: unit.financialSupportReceived,
-      type: unit.type as PowerProductionType,
+      type: unit.type,
     };
   }
 

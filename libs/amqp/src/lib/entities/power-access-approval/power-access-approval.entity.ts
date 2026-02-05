@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerAccessApprovalDeepDbType, PowerAccessApprovalShallowType } from '@h2-trust/database';
+import { PowerAccessApprovalDeepDbType, PowerAccessApprovalShallowDbType } from '@h2-trust/database';
 import { CompanyEntity } from '../company';
 import { DocumentEntity } from '../document';
 import { BaseUnitEntity, PowerProductionUnitEntity } from '../unit';
@@ -38,7 +38,7 @@ export class PowerAccessApprovalEntity {
     this.document = document;
   }
 
-  static fromShallowDatabase(approval: PowerAccessApprovalShallowType): PowerAccessApprovalEntity {
+  static fromShallowDatabase(approval: PowerAccessApprovalShallowDbType): PowerAccessApprovalEntity {
     return <PowerAccessApprovalEntity>{
       ...approval,
       hydrogenProducer: CompanyEntity.fromSurfaceDatabase(approval.hydrogenProducer),

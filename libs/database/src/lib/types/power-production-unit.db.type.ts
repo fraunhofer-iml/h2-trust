@@ -17,7 +17,7 @@ import {
 //TODO-LG: Replace with a deep, shallow or surface type if possible
 export type PowerProductionUnitDbType = Prisma.UnitGetPayload<typeof powerProductionUnitQueryArgs>;
 
-export type PowerProductionUniRefDeepDbType = Prisma.PowerProductionUnitGetPayload<
+export type PowerProductionUnitDeepDbType = Prisma.PowerProductionUnitGetPayload<
   typeof powerProductionUnitDeepQueryArgs
 >;
 

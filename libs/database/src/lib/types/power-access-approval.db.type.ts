@@ -17,7 +17,7 @@ export type PowerAccessApprovalDeepDbType = Prisma.PowerAccessApprovalGetPayload
   typeof powerAccessApprovalDeepQueryArgs
 >;
 
-export type PowerAccessApprovalShallowType = Prisma.PowerAccessApprovalGetPayload<
+export type PowerAccessApprovalShallowDbType = Prisma.PowerAccessApprovalGetPayload<
   typeof powerAccessApprovalShallowQueryArgs
 >;
 

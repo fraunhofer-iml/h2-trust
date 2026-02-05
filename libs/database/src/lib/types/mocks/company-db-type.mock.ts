@@ -6,10 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CompanyDbShallowType, CompanyDeepDbType } from '..';
+import { CompanyDeepDbType, CompanyShallowDbType } from '..';
 import { AddressSeed, CompanySeed } from '../../../seed';
 
-export const CompanyShallowDbTypeMock = <CompanyDbShallowType[]>[
+export const CompanyShallowDbTypeMock = <CompanyShallowDbType[]>[
   {
     ...CompanySeed[0],
     address: AddressSeed[0],

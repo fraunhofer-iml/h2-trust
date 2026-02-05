@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CompanyDbBaseType, CompanyDbShallowType, CompanyDbSurfaceType, CompanyDeepDbType } from '@h2-trust/database';
+import { CompanyDbBaseType, CompanyDeepDbType, CompanyShallowDbType, CompanySurfaceDbType } from '@h2-trust/database';
 import { AddressEntity } from '../address';
 import { PowerAccessApprovalEntity } from '../power-access-approval';
 import { UserEntity } from '../user';
@@ -50,7 +50,7 @@ export class CompanyEntity {
     );
   }
 
-  static fromShallowDatabase(company: CompanyDbShallowType): CompanyEntity {
+  static fromShallowDatabase(company: CompanyShallowDbType): CompanyEntity {
     return new CompanyEntity(
       company.id,
       company.name,
@@ -62,7 +62,7 @@ export class CompanyEntity {
     );
   }
 
-  static fromSurfaceDatabase(company: CompanyDbSurfaceType): CompanyEntity {
+  static fromSurfaceDatabase(company: CompanySurfaceDbType): CompanyEntity {
     return new CompanyEntity(
       company.id,
       company.name,
