@@ -7,10 +7,10 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { companyShallowQueryArgs } from '../company/company.shallow.query-args';
+import { companyNestedQueryArgs } from '../company/company.nested.query-args';
 
 export const userDeepQueryArgs = Prisma.validator<Prisma.UserDefaultArgs>()({
   include: {
-    company: companyShallowQueryArgs,
+    company: companyNestedQueryArgs,
   },
 });

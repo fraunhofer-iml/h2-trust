@@ -9,22 +9,22 @@
 import { Prisma } from '@prisma/client';
 import {
   hydrogenStorageUnitDeepQueryArgs,
+  hydrogenStorageUnitFlatQueryArgs,
+  hydrogenStorageUnitNestedQueryArgs,
   hydrogenStorageUnitQueryArgs,
-  hydrogenStorageUnitShallowQueryArgs,
-  hydrogenStorageUnitSurfaceQueryArgs,
 } from '../query-args';
 
-//TODO-LG: Replace with a deep, shallow or surface type if possible
+//TODO-LG: Replace with a deep, nested or flat type if possible
 export type HydrogenStorageUnitDbType = Prisma.UnitGetPayload<typeof hydrogenStorageUnitQueryArgs>;
 
 export type HydrogenStorageUnitDeepDbType = Prisma.HydrogenStorageUnitGetPayload<
   typeof hydrogenStorageUnitDeepQueryArgs
 >;
 
-export type HydrogenStorageUnitShallowDbType = Prisma.HydrogenStorageUnitGetPayload<
-  typeof hydrogenStorageUnitShallowQueryArgs
+export type HydrogenStorageUnitNestedDbType = Prisma.HydrogenStorageUnitGetPayload<
+  typeof hydrogenStorageUnitNestedQueryArgs
 >;
 
-export type HydrogenStorageUnitSurfaceDbType = Prisma.HydrogenStorageUnitGetPayload<
-  typeof hydrogenStorageUnitSurfaceQueryArgs
+export type HydrogenStorageUnitFlatDbType = Prisma.HydrogenStorageUnitGetPayload<
+  typeof hydrogenStorageUnitFlatQueryArgs
 >;

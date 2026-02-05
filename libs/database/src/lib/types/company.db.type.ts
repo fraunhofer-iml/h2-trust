@@ -8,14 +8,14 @@
 
 import { Prisma } from '@prisma/client';
 import { companyDeepQueryArgs } from '../query-args';
-import { companyShallowQueryArgs } from '../query-args/company/company.shallow.query-args';
-import { companySurfaceQueryArgs } from '../query-args/company/company.surface.query-args';
+import { companyFlatQueryArgs } from '../query-args/company/company.flat.query-args';
+import { companyNestedQueryArgs } from '../query-args/company/company.nested.query-args';
 
 export type CompanyDeepDbType = Prisma.CompanyGetPayload<typeof companyDeepQueryArgs>;
 
-export type CompanyShallowDbType = Prisma.CompanyGetPayload<typeof companyShallowQueryArgs>;
+export type CompanyNestedDbType = Prisma.CompanyGetPayload<typeof companyNestedQueryArgs>;
 
-export type CompanySurfaceDbType = Prisma.CompanyGetPayload<typeof companySurfaceQueryArgs>;
+export type CompanyFlatDbType = Prisma.CompanyGetPayload<typeof companyFlatQueryArgs>;
 
 export type CompanyDbBaseType = {
   id: string;

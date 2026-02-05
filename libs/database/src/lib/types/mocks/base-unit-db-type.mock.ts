@@ -6,10 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BaseUnitDeepDbType, BaseUnitShallowDbType, BaseUnitSurfaceDbType } from '..';
+import { BaseUnitDeepDbType, BaseUnitFlatDbType, BaseUnitNestedDbType } from '..';
 import { AddressSeed, CompanySeed, UnitSeed } from '../../../seed';
 
-export const BaseUnitSurfaceDbTypeMock: readonly BaseUnitSurfaceDbType[] = Object.freeze([
+export const BaseUnitFlatDbTypeMock: readonly BaseUnitFlatDbType[] = Object.freeze([
   {
     ...UnitSeed[0],
     address: AddressSeed[0],
@@ -36,7 +36,7 @@ export const BaseUnitSurfaceDbTypeMock: readonly BaseUnitSurfaceDbType[] = Objec
   },
 ]);
 
-export const BaseUnitShallowDbTypeMock: readonly BaseUnitShallowDbType[] = Object.freeze([
+export const BaseUnitNestedDbTypeMock: readonly BaseUnitNestedDbType[] = Object.freeze([
   {
     ...UnitSeed[0],
     address: AddressSeed[0],

@@ -7,5 +7,5 @@
  */
 
 export * from './staged-production.deep.query-args';
-export * from './staged-production.shallow.query-args';
-export * from './staged-production.surface.query-args';
+export * from './staged-production.nested.query-args';
+export * from './staged-production.flat.query-args';

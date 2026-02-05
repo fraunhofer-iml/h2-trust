@@ -11,14 +11,14 @@ import { HydrogenProductionBatchSeed, HydrogenStorageUnitSeed } from '../../../s
 import {
   HydrogenStorageUnitDbType,
   HydrogenStorageUnitDeepDbType,
-  HydrogenStorageUnitShallowDbType,
+  HydrogenStorageUnitNestedDbType,
 } from '../hydrogen-storage-unit.db.type';
-import { BaseUnitShallowDbTypeMock, BaseUnitSurfaceDbTypeMock } from './base-unit-db-type.mock';
+import { BaseUnitFlatDbTypeMock, BaseUnitNestedDbTypeMock } from './base-unit-db-type.mock';
 
-export const HydrogenStorageUnitRefShallowDbTypeMock = <HydrogenStorageUnitShallowDbType[]>[
+export const HydrogenStorageUnitNestedDbTypeMock = <HydrogenStorageUnitNestedDbType[]>[
   {
     generalInfo: {
-      ...BaseUnitSurfaceDbTypeMock[0],
+      ...BaseUnitFlatDbTypeMock[0],
     },
     filling: [
       {
@@ -36,7 +36,7 @@ export const HydrogenStorageUnitRefShallowDbTypeMock = <HydrogenStorageUnitShall
 export const HydrogenStorageUnitRefDeepDbTypeMock = <HydrogenStorageUnitDeepDbType[]>[
   {
     generalInfo: {
-      ...BaseUnitShallowDbTypeMock[0],
+      ...BaseUnitNestedDbTypeMock[0],
     },
     filling: [
       {
@@ -53,7 +53,7 @@ export const HydrogenStorageUnitRefDeepDbTypeMock = <HydrogenStorageUnitDeepDbTy
 
 export const HydrogenStorageUnitDbTypeMock = <HydrogenStorageUnitDbType[]>[
   {
-    ...BaseUnitShallowDbTypeMock[0],
+    ...BaseUnitNestedDbTypeMock[0],
     hydrogenStorageUnit: {
       ...HydrogenStorageUnitSeed[0],
       filling: [

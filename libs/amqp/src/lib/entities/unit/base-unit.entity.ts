@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BaseUnitDeepDbType, BaseUnitShallowDbType, BaseUnitSurfaceDbType } from '@h2-trust/database';
+import { BaseUnitDeepDbType, BaseUnitFlatDbType, BaseUnitNestedDbType } from '@h2-trust/database';
 import { UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
@@ -56,7 +56,41 @@ export abstract class BaseUnitEntity {
     this.unitType = unitType;
   }
 
-  static fromSurfaceBaseUnit(unit: BaseUnitSurfaceDbType): BaseUnitEntity {
+  static fromDeepBaseUnit(unit: BaseUnitDeepDbType): BaseUnitEntity {
+    return <BaseUnitEntity>{
+      id: unit.id,
+      name: unit.name,
+      mastrNumber: unit.mastrNumber,
+      manufacturer: unit.manufacturer,
+      modelType: unit.modelType,
+      modelNumber: unit.modelNumber,
+      serialNumber: unit.serialNumber,
+      certifiedBy: unit.certifiedBy,
+      commissionedOn: unit.commissionedOn,
+      address: AddressEntity.fromDatabase(unit.address),
+      owner: CompanyEntity.fromNestedDatabase(unit.owner),
+      operator: CompanyEntity.fromNestedDatabase(unit.operator),
+    };
+  }
+
+  static fromNestedBaseUnit(unit: BaseUnitNestedDbType): BaseUnitEntity {
+    return <BaseUnitEntity>{
+      id: unit.id,
+      name: unit.name,
+      mastrNumber: unit.mastrNumber,
+      manufacturer: unit.manufacturer,
+      modelType: unit.modelType,
+      modelNumber: unit.modelNumber,
+      serialNumber: unit.serialNumber,
+      certifiedBy: unit.certifiedBy,
+      commissionedOn: unit.commissionedOn,
+      address: AddressEntity.fromDatabase(unit.address),
+      owner: CompanyEntity.fromFlatDatabase(unit.owner),
+      operator: CompanyEntity.fromFlatDatabase(unit.operator),
+    };
+  }
+
+  static fromFlatBaseUnit(unit: BaseUnitFlatDbType): BaseUnitEntity {
     return <BaseUnitEntity>{
       id: unit.id,
       name: unit.name,
@@ -73,41 +107,7 @@ export abstract class BaseUnitEntity {
     };
   }
 
-  static fromShallowBaseUnit(unit: BaseUnitShallowDbType): BaseUnitEntity {
-    return <BaseUnitEntity>{
-      id: unit.id,
-      name: unit.name,
-      mastrNumber: unit.mastrNumber,
-      manufacturer: unit.manufacturer,
-      modelType: unit.modelType,
-      modelNumber: unit.modelNumber,
-      serialNumber: unit.serialNumber,
-      certifiedBy: unit.certifiedBy,
-      commissionedOn: unit.commissionedOn,
-      address: AddressEntity.fromDatabase(unit.address),
-      owner: CompanyEntity.fromSurfaceDatabase(unit.owner),
-      operator: CompanyEntity.fromSurfaceDatabase(unit.operator),
-    };
-  }
-
-  static fromDeepBaseUnit(unit: BaseUnitDeepDbType): BaseUnitEntity {
-    return <BaseUnitEntity>{
-      id: unit.id,
-      name: unit.name,
-      mastrNumber: unit.mastrNumber,
-      manufacturer: unit.manufacturer,
-      modelType: unit.modelType,
-      modelNumber: unit.modelNumber,
-      serialNumber: unit.serialNumber,
-      certifiedBy: unit.certifiedBy,
-      commissionedOn: unit.commissionedOn,
-      address: AddressEntity.fromDatabase(unit.address),
-      owner: CompanyEntity.fromShallowDatabase(unit.owner),
-      operator: CompanyEntity.fromShallowDatabase(unit.operator),
-    };
-  }
-
-  //TODO-LG: Replace with a deep, shallow or surface function if possible
+  //TODO-LG: Replace with a deep, nested or flat function if possible
   static fromDatabase(unit: BaseUnitDeepDbType): BaseUnitEntity {
     return <BaseUnitEntity>{
       id: unit.id,
@@ -120,8 +120,8 @@ export abstract class BaseUnitEntity {
       certifiedBy: unit.certifiedBy,
       commissionedOn: unit.commissionedOn,
       address: AddressEntity.fromDatabase(unit.address),
-      owner: CompanyEntity.fromShallowDatabase(unit.owner),
-      operator: CompanyEntity.fromShallowDatabase(unit.operator),
+      owner: CompanyEntity.fromNestedDatabase(unit.owner),
+      operator: CompanyEntity.fromNestedDatabase(unit.operator),
     };
   }
 

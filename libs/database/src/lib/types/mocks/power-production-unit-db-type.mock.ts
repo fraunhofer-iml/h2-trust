@@ -8,11 +8,11 @@
 
 import { PowerProductionUnitDbType } from '..';
 import { PowerProductionUnitSeed } from '../../../seed';
-import { BaseUnitShallowDbTypeMock } from './base-unit-db-type.mock';
+import { BaseUnitNestedDbTypeMock } from './base-unit-db-type.mock';
 
 export const PowerProductionUnitDbTypeMock = <PowerProductionUnitDbType[]>[
   {
-    ...BaseUnitShallowDbTypeMock[0],
+    ...BaseUnitNestedDbTypeMock[0],
     powerProductionUnit: PowerProductionUnitSeed[0],
   },
 ];

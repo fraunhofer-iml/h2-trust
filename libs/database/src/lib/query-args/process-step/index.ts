@@ -7,5 +7,5 @@
  */
 
 export * from './process-step.deep.query-args';
-export * from './process-step.shallow.query-args';
-export * from './process-step.surface.query-args';
+export * from './process-step.nested.query-args';
+export * from './process-step.flat.query-args';

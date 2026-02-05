@@ -7,5 +7,5 @@
  */
 
 export * from './company.deep.query-args';
-export * from './company.shallow.query-args';
-export * from './company.surface.query-args';
+export * from './company.nested.query-args';
+export * from './company.flat.query-args';

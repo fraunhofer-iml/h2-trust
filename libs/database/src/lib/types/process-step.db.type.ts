@@ -7,10 +7,10 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { processStepDeepQueryArgs, processStepShallowQueryArgs, processStepSurfaceQueryArgs } from '../query-args';
+import { processStepDeepQueryArgs, processStepFlatQueryArgs, processStepNestedQueryArgs } from '../query-args';
 
 export type ProcessStepDeepDbType = Prisma.ProcessStepGetPayload<typeof processStepDeepQueryArgs>;
 
-export type ProcessStepShallowDbType = Prisma.ProcessStepGetPayload<typeof processStepShallowQueryArgs>;
+export type ProcessStepNestedDbType = Prisma.ProcessStepGetPayload<typeof processStepNestedQueryArgs>;
 
-export type ProcessStepSurfaceDbType = Prisma.ProcessStepGetPayload<typeof processStepSurfaceQueryArgs>;
+export type ProcessStepFlatDbType = Prisma.ProcessStepGetPayload<typeof processStepFlatQueryArgs>;

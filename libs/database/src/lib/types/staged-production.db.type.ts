@@ -9,10 +9,10 @@
 import { Prisma } from '@prisma/client';
 import {
   stagedProductionDeepQueryArgs,
-  stagedProductionShallowQueryArgs,
-  stagedProductionSurfaceQueryArgs,
+  stagedProductionFlatQueryArgs,
+  stagedProductionNestedQueryArgs,
 } from '../query-args';
 
 export type StagedProductionDeepDbType = Prisma.StagedProductionGetPayload<typeof stagedProductionDeepQueryArgs>;
-export type StagedProductionShallowDbType = Prisma.StagedProductionGetPayload<typeof stagedProductionShallowQueryArgs>;
-export type StagedProductionSurfaceDbType = Prisma.StagedProductionGetPayload<typeof stagedProductionSurfaceQueryArgs>;
+export type StagedProductionNestedDbType = Prisma.StagedProductionGetPayload<typeof stagedProductionNestedQueryArgs>;
+export type StagedProductionFlatDbType = Prisma.StagedProductionGetPayload<typeof stagedProductionFlatQueryArgs>;

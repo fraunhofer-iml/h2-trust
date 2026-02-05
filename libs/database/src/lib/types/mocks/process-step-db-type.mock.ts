@@ -9,8 +9,8 @@
 import { AddressSeed, ProcessStepSeed, UnitSeed } from '../../../seed';
 import { ProcessStepDeepDbType } from '../process-step.db.type';
 import { BatchDeepDbTypeMock } from './batch-db-type.mock';
-import { CompanyShallowDbTypeMock } from './company-db-type.mock';
-import { UserShallowDbTypeMock } from './user-db-type.mock';
+import { CompanyNestedDbTypeMock } from './company-db-type.mock';
+import { UserNestedDbTypeMock } from './user-db-type.mock';
 
 export const ProcessStepDeepDbTypeMock = <ProcessStepDeepDbType[]>[
   {
@@ -19,10 +19,10 @@ export const ProcessStepDeepDbTypeMock = <ProcessStepDeepDbType[]>[
     executedBy: {
       ...UnitSeed[4],
       address: AddressSeed[1],
-      owner: CompanyShallowDbTypeMock[1],
-      operator: CompanyShallowDbTypeMock[1],
+      owner: CompanyNestedDbTypeMock[1],
+      operator: CompanyNestedDbTypeMock[1],
     },
-    recordedBy: UserShallowDbTypeMock[1],
+    recordedBy: UserNestedDbTypeMock[1],
     documents: [],
     processStepDetails: null,
   },

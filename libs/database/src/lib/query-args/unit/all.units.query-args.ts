@@ -7,7 +7,7 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { activeBatchShallowQueryArgs } from '../batch/batch.surface.query-args';
+import { activeBatchFlatQueryArgs } from '../batch/batch.flat.query-args';
 import { baseUnitDeepQueryArgs } from './unit.deep.query-args';
 
 const powerProductionUnitChildQueryArgs = Prisma.validator<Prisma.PowerProductionUnitDefaultArgs>()({
@@ -18,11 +18,11 @@ const powerProductionUnitChildQueryArgs = Prisma.validator<Prisma.PowerProductio
 
 const hydrogenStorageUnitChildQueryArgs = Prisma.validator<Prisma.HydrogenStorageUnitDefaultArgs>()({
   include: {
-    filling: activeBatchShallowQueryArgs,
+    filling: activeBatchFlatQueryArgs,
   },
 });
 
-//TODO-LG: Replace with a deep, shallow or surface function if possible
+//TODO-LG: Replace with a deep, nested or flat function if possible
 export const allUnitsQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
   ...baseUnitDeepQueryArgs,
   include: {
@@ -33,7 +33,7 @@ export const allUnitsQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
   },
 });
 
-//TODO-LG: Replace with a deep, shallow or surface function if possible
+//TODO-LG: Replace with a deep, nested or flat function if possible
 export const powerProductionUnitQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
   ...baseUnitDeepQueryArgs,
   include: {
@@ -42,7 +42,7 @@ export const powerProductionUnitQueryArgs = Prisma.validator<Prisma.UnitDefaultA
   },
 });
 
-//TODO-LG: Replace with a deep, shallow or surface function if possible
+//TODO-LG: Replace with a deep, nested or flat function if possible
 export const hydrogenProductionUnitQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
   ...baseUnitDeepQueryArgs,
   include: {
@@ -51,7 +51,7 @@ export const hydrogenProductionUnitQueryArgs = Prisma.validator<Prisma.UnitDefau
   },
 });
 
-//TODO-LG: Replace with a deep, shallow or surface function if possible
+//TODO-LG: Replace with a deep, nested or flat function if possible
 export const hydrogenStorageUnitQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
   ...baseUnitDeepQueryArgs,
   include: {

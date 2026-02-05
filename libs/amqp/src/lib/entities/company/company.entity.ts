@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CompanyDbBaseType, CompanyDeepDbType, CompanyShallowDbType, CompanySurfaceDbType } from '@h2-trust/database';
+import { CompanyDbBaseType, CompanyDeepDbType, CompanyFlatDbType, CompanyNestedDbType } from '@h2-trust/database';
 import { AddressEntity } from '../address';
 import { PowerAccessApprovalEntity } from '../power-access-approval';
 import { UserEntity } from '../user';
@@ -46,11 +46,11 @@ export class CompanyEntity {
       company.type,
       AddressEntity.fromDatabase(company.address),
       [],
-      company.hydrogenApprovals.map((approval) => PowerAccessApprovalEntity.fromShallowDatabase(approval)),
+      company.hydrogenApprovals.map((approval) => PowerAccessApprovalEntity.fromNestedDatabase(approval)),
     );
   }
 
-  static fromShallowDatabase(company: CompanyShallowDbType): CompanyEntity {
+  static fromNestedDatabase(company: CompanyNestedDbType): CompanyEntity {
     return new CompanyEntity(
       company.id,
       company.name,
@@ -62,7 +62,7 @@ export class CompanyEntity {
     );
   }
 
-  static fromSurfaceDatabase(company: CompanySurfaceDbType): CompanyEntity {
+  static fromFlatDatabase(company: CompanyFlatDbType): CompanyEntity {
     return new CompanyEntity(
       company.id,
       company.name,

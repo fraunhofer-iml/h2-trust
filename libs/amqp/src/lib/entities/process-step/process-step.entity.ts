@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepDeepDbType, ProcessStepShallowDbType } from '@h2-trust/database';
+import { ProcessStepDeepDbType, ProcessStepNestedDbType } from '@h2-trust/database';
 import { BatchEntity } from '../batch';
 import { DocumentEntity } from '../document';
 import { BaseUnitEntity } from '../unit';
@@ -46,15 +46,15 @@ export class ProcessStepEntity {
     this.transportationDetails = transportationDetails;
   }
 
-  static fromShallowDatabase(processStep: ProcessStepShallowDbType): ProcessStepEntity {
+  static fromDeepDatabase(processStep: ProcessStepDeepDbType): ProcessStepEntity {
     return new ProcessStepEntity(
       processStep.id,
       processStep.startedAt,
       processStep.endedAt,
       processStep.type,
-      BatchEntity.fromSurfaceDatabase(processStep.batch),
-      UserEntity.fromSurfaceDatabase(processStep.recordedBy),
-      BaseUnitEntity.fromSurfaceBaseUnit(processStep.executedBy),
+      BatchEntity.fromNestedDatabase(processStep.batch),
+      UserEntity.fromNestedDatabase(processStep.recordedBy),
+      BaseUnitEntity.fromNestedBaseUnit(processStep.executedBy),
       processStep.documents.map((doc) => DocumentEntity.fromDatabase(doc)),
       processStep.processStepDetails?.transportationDetails
         ? TransportationDetailsEntity.fromDatabase(processStep.processStepDetails.transportationDetails)
@@ -62,15 +62,15 @@ export class ProcessStepEntity {
     );
   }
 
-  static fromDeepDatabase(processStep: ProcessStepDeepDbType): ProcessStepEntity {
+  static fromNestedDatabase(processStep: ProcessStepNestedDbType): ProcessStepEntity {
     return new ProcessStepEntity(
       processStep.id,
       processStep.startedAt,
       processStep.endedAt,
       processStep.type,
-      BatchEntity.fromShallowDatabase(processStep.batch),
-      UserEntity.fromShallowDatabase(processStep.recordedBy),
-      BaseUnitEntity.fromShallowBaseUnit(processStep.executedBy),
+      BatchEntity.fromFlatDatabase(processStep.batch),
+      UserEntity.fromFlatDatabase(processStep.recordedBy),
+      BaseUnitEntity.fromFlatBaseUnit(processStep.executedBy),
       processStep.documents.map((doc) => DocumentEntity.fromDatabase(doc)),
       processStep.processStepDetails?.transportationDetails
         ? TransportationDetailsEntity.fromDatabase(processStep.processStepDetails.transportationDetails)

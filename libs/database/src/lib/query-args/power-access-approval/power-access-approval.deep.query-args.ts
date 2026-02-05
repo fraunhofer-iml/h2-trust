@@ -7,14 +7,14 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { companyShallowQueryArgs } from '../company/company.shallow.query-args';
-import { powerProductionUnitShallowQueryArgs } from '../unit/unit.shallow.query-args';
+import { companyNestedQueryArgs } from '../company/company.nested.query-args';
+import { powerProductionUnitNestedQueryArgs } from '../unit/unit.nested.query-args';
 
 export const powerAccessApprovalDeepQueryArgs = Prisma.validator<Prisma.PowerAccessApprovalDefaultArgs>()({
   include: {
     document: true,
-    powerProducer: companyShallowQueryArgs,
-    hydrogenProducer: companyShallowQueryArgs,
-    powerProductionUnit: powerProductionUnitShallowQueryArgs,
+    powerProducer: companyNestedQueryArgs,
+    hydrogenProducer: companyNestedQueryArgs,
+    powerProductionUnit: powerProductionUnitNestedQueryArgs,
   },
 });

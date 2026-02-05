@@ -7,5 +7,5 @@
  */
 
 export * from './power-access-approval.deep.query-args';
-export * from './power-access-approval.shallow.query-args';
-export * from './power-access-approval.surface.query-args';
+export * from './power-access-approval.nested.query-args';
+export * from './power-access-approval.flat.query-args';

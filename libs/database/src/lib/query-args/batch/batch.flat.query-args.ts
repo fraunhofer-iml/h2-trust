@@ -8,7 +8,7 @@
 
 import { Prisma } from '@prisma/client';
 
-export const batchSurfaceQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()({
+export const batchFlatQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()({
   include: {
     owner: true,
     predecessors: true,
@@ -19,7 +19,7 @@ export const batchSurfaceQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()
   },
 });
 
-export const activeBatchShallowQueryArgs = Prisma.validator<Prisma.BatchFindManyArgs>()({
+export const activeBatchFlatQueryArgs = Prisma.validator<Prisma.BatchFindManyArgs>()({
   include: {
     batchDetails: {
       include: {

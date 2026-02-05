@@ -7,9 +7,10 @@
  */
 
 import { Prisma } from '@prisma/client';
+import { companyFlatQueryArgs } from '../company/company.flat.query-args';
 
-export const userSurfaceQueryArgs = Prisma.validator<Prisma.UserDefaultArgs>()({
+export const userNestedQueryArgs = Prisma.validator<Prisma.UserDefaultArgs>()({
   include: {
-    company: true,
+    company: companyFlatQueryArgs,
   },
 });

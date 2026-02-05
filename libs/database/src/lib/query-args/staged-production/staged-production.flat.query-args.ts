@@ -8,14 +8,9 @@
 
 import { Prisma } from '@prisma/client';
 
-export const companySurfaceQueryArgs = Prisma.validator<Prisma.CompanyDefaultArgs>()({
+export const stagedProductionFlatQueryArgs = Prisma.validator<Prisma.StagedProductionDefaultArgs>()({
   include: {
-    address: true,
-    hydrogenApprovals: true,
-    powerApprovals: true,
-    unitOwners: true,
-    unitOperators: true,
-    users: true,
-    batches: true,
+    hydrogenProductionUnit: true,
+    powerProductionUnit: true,
   },
 });

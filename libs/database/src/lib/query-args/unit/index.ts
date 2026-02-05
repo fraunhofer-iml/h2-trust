@@ -8,5 +8,5 @@
 
 export * from './all.units.query-args';
 export * from './unit.deep.query-args';
-export * from './unit.shallow.query-args';
-export * from './unit.surface.query-args';
+export * from './unit.nested.query-args';
+export * from './unit.flat.query-args';

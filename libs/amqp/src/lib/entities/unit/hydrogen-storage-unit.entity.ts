@@ -9,8 +9,8 @@
 import {
   HydrogenStorageUnitDbType,
   HydrogenStorageUnitDeepDbType,
-  HydrogenStorageUnitShallowDbType,
-  HydrogenStorageUnitSurfaceDbType,
+  HydrogenStorageUnitFlatDbType,
+  HydrogenStorageUnitNestedDbType,
 } from '@h2-trust/database';
 import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
@@ -64,9 +64,35 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     this.filling = filling;
   }
 
-  static fromSurfaceDatabase(unit: HydrogenStorageUnitSurfaceDbType): HydrogenStorageUnitEntity {
+  static fromDeepDatabase(unit: HydrogenStorageUnitDeepDbType): HydrogenStorageUnitEntity {
+    return {
+      ...BaseUnitEntity.fromDeepBaseUnit(unit.generalInfo),
+      capacity: unit.capacity.toNumber(),
+      pressure: unit.pressure.toNumber(),
+      modelType: unit.generalInfo?.modelType,
+      filling: HydrogenStorageUnitEntity.mapFillingForDeepAndNested(unit),
+      address: unit.generalInfo.address,
+      unitType: UnitType.HYDROGEN_STORAGE,
+      type: unit.type as HydrogenStorageType,
+    };
+  }
+
+  static fromNestedDatabase(unit: HydrogenStorageUnitNestedDbType): HydrogenStorageUnitEntity {
+    return {
+      ...BaseUnitEntity.fromNestedBaseUnit(unit.generalInfo),
+      capacity: unit.capacity.toNumber(),
+      pressure: unit.pressure.toNumber(),
+      modelType: unit.generalInfo?.modelType,
+      filling: HydrogenStorageUnitEntity.mapFillingForDeepAndNested(unit),
+      address: unit.generalInfo.address,
+      unitType: UnitType.HYDROGEN_STORAGE,
+      type: unit.type as HydrogenStorageType,
+    };
+  }
+
+  static fromFlatDatabase(unit: HydrogenStorageUnitFlatDbType): HydrogenStorageUnitEntity {
     return <HydrogenStorageUnitEntity>{
-      ...BaseUnitEntity.fromSurfaceBaseUnit(unit.generalInfo),
+      ...BaseUnitEntity.fromFlatBaseUnit(unit.generalInfo),
       capacity: unit.capacity.toNumber(),
       pressure: unit.pressure.toNumber(),
       modelType: unit.generalInfo?.modelType,
@@ -77,33 +103,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     };
   }
 
-  static fromShallowDatabase(unit: HydrogenStorageUnitShallowDbType): HydrogenStorageUnitEntity {
-    return {
-      ...BaseUnitEntity.fromShallowBaseUnit(unit.generalInfo),
-      capacity: unit.capacity.toNumber(),
-      pressure: unit.pressure.toNumber(),
-      modelType: unit.generalInfo?.modelType,
-      filling: HydrogenStorageUnitEntity.mapFillingForDeepAndShallow(unit),
-      address: unit.generalInfo.address,
-      unitType: UnitType.HYDROGEN_STORAGE,
-      type: unit.type as HydrogenStorageType,
-    };
-  }
-
-  static fromDeepDatabase(unit: HydrogenStorageUnitDeepDbType): HydrogenStorageUnitEntity {
-    return {
-      ...BaseUnitEntity.fromDeepBaseUnit(unit.generalInfo),
-      capacity: unit.capacity.toNumber(),
-      pressure: unit.pressure.toNumber(),
-      modelType: unit.generalInfo?.modelType,
-      filling: HydrogenStorageUnitEntity.mapFillingForDeepAndShallow(unit),
-      address: unit.generalInfo.address,
-      unitType: UnitType.HYDROGEN_STORAGE,
-      type: unit.type as HydrogenStorageType,
-    };
-  }
-
-  //TODO-LG: Replace with a deep, shallow or surface function if possible
+  //TODO-LG: Replace with a deep, nested or flat function if possible
   static override fromDatabase(unit: HydrogenStorageUnitDbType): HydrogenStorageUnitEntity {
     return <HydrogenStorageUnitEntity>{
       ...BaseUnitEntity.fromDatabase(unit),
@@ -115,8 +115,8 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     };
   }
 
-  private static mapFillingForDeepAndShallow(
-    unit: HydrogenStorageUnitDeepDbType | HydrogenStorageUnitShallowDbType,
+  private static mapFillingForDeepAndNested(
+    unit: HydrogenStorageUnitDeepDbType | HydrogenStorageUnitNestedDbType,
   ): HydrogenComponentEntity[] {
     return (
       unit?.filling?.map((batch) => {
@@ -131,7 +131,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     );
   }
 
-  //TODO-LG: Replace with a deep, shallow or surface function if possible
+  //TODO-LG: Replace with a deep, nested or flat function if possible
   private static mapFilling(unit: HydrogenStorageUnitDbType): HydrogenComponentEntity[] {
     return (
       unit.hydrogenStorageUnit?.filling?.map((batch) => {

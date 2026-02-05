@@ -7,10 +7,13 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { companySurfaceQueryArgs } from '../company/company.surface.query-args';
 
-export const userShallowQueryArgs = Prisma.validator<Prisma.UserDefaultArgs>()({
+export const processStepFlatQueryArgs = Prisma.validator<Prisma.ProcessStepDefaultArgs>()({
   include: {
-    company: companySurfaceQueryArgs,
+    batch: true,
+    executedBy: true,
+    recordedBy: true,
+    documents: true,
+    processStepDetails: true,
   },
 });

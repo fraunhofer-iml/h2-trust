@@ -7,13 +7,12 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { powerAccessApprovalSurfaceQueryArgs } from '../power-access-approval/power-access-approval.surface.query-args';
 
-export const companyShallowQueryArgs = Prisma.validator<Prisma.CompanyDefaultArgs>()({
+export const companyFlatQueryArgs = Prisma.validator<Prisma.CompanyDefaultArgs>()({
   include: {
     address: true,
-    hydrogenApprovals: powerAccessApprovalSurfaceQueryArgs,
-    powerApprovals: powerAccessApprovalSurfaceQueryArgs,
+    hydrogenApprovals: true,
+    powerApprovals: true,
     unitOwners: true,
     unitOperators: true,
     users: true,

@@ -9,8 +9,8 @@
 import {
   PowerProductionUnitDbType,
   PowerProductionUnitDeepDbType,
-  PowerProductionUnitShallowDbType,
-  PowerProductionUnitSurfaceDbType,
+  PowerProductionUnitFlatDbType,
+  PowerProductionUnitNestedDbType,
 } from '@h2-trust/database';
 import { BiddingZone, GridLevel, UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
@@ -79,41 +79,6 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     this.type = type;
   }
 
-  static fromSurfaceDatabase(unit: PowerProductionUnitSurfaceDbType): PowerProductionUnitEntity {
-    return <PowerProductionUnitEntity>{
-      ...BaseUnitEntity.fromSurfaceBaseUnit(unit.generalInfo),
-      modelType: unit.generalInfo?.modelType,
-      unitType: UnitType.POWER_PRODUCTION,
-      decommissioningPlannedOn: unit.decommissioningPlannedOn,
-      electricityMeterNumber: unit.electricityMeterNumber,
-      ratedPower: unit.ratedPower.toNumber(),
-      gridOperator: unit.gridOperator,
-      gridLevel: unit.gridLevel,
-      biddingZone: unit.biddingZone,
-      gridConnectionNumber: unit.gridConnectionNumber,
-      financialSupportReceived: unit.financialSupportReceived,
-      type: unit.type,
-    };
-  }
-
-  static fromShallowDatabase(unit: PowerProductionUnitShallowDbType): PowerProductionUnitEntity {
-    return <PowerProductionUnitEntity>{
-      ...BaseUnitEntity.fromShallowBaseUnit(unit.generalInfo),
-      modelType: unit.generalInfo?.modelType,
-      address: unit.generalInfo.address,
-      unitType: UnitType.POWER_PRODUCTION,
-      decommissioningPlannedOn: unit.decommissioningPlannedOn,
-      electricityMeterNumber: unit.electricityMeterNumber,
-      ratedPower: unit.ratedPower.toNumber(),
-      gridOperator: unit.gridOperator,
-      gridLevel: unit.gridLevel,
-      biddingZone: unit.biddingZone,
-      gridConnectionNumber: unit.gridConnectionNumber,
-      financialSupportReceived: unit.financialSupportReceived,
-      type: unit.type,
-    };
-  }
-
   static fromDeepDatabase(unit: PowerProductionUnitDeepDbType): PowerProductionUnitEntity {
     return <PowerProductionUnitEntity>{
       ...BaseUnitEntity.fromDeepBaseUnit(unit.generalInfo),
@@ -132,7 +97,42 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     };
   }
 
-  //TODO-LG: Replace with a deep, shallow or surface function if possible
+  static fromNestedDatabase(unit: PowerProductionUnitNestedDbType): PowerProductionUnitEntity {
+    return <PowerProductionUnitEntity>{
+      ...BaseUnitEntity.fromNestedBaseUnit(unit.generalInfo),
+      modelType: unit.generalInfo?.modelType,
+      address: unit.generalInfo.address,
+      unitType: UnitType.POWER_PRODUCTION,
+      decommissioningPlannedOn: unit.decommissioningPlannedOn,
+      electricityMeterNumber: unit.electricityMeterNumber,
+      ratedPower: unit.ratedPower.toNumber(),
+      gridOperator: unit.gridOperator,
+      gridLevel: unit.gridLevel,
+      biddingZone: unit.biddingZone,
+      gridConnectionNumber: unit.gridConnectionNumber,
+      financialSupportReceived: unit.financialSupportReceived,
+      type: unit.type,
+    };
+  }
+
+  static fromFlatDatabase(unit: PowerProductionUnitFlatDbType): PowerProductionUnitEntity {
+    return <PowerProductionUnitEntity>{
+      ...BaseUnitEntity.fromFlatBaseUnit(unit.generalInfo),
+      modelType: unit.generalInfo?.modelType,
+      unitType: UnitType.POWER_PRODUCTION,
+      decommissioningPlannedOn: unit.decommissioningPlannedOn,
+      electricityMeterNumber: unit.electricityMeterNumber,
+      ratedPower: unit.ratedPower.toNumber(),
+      gridOperator: unit.gridOperator,
+      gridLevel: unit.gridLevel,
+      biddingZone: unit.biddingZone,
+      gridConnectionNumber: unit.gridConnectionNumber,
+      financialSupportReceived: unit.financialSupportReceived,
+      type: unit.type,
+    };
+  }
+
+  //TODO-LG: Replace with a deep, nested or flat function if possible
   static override fromDatabase(unit: PowerProductionUnitDbType): PowerProductionUnitEntity {
     return <PowerProductionUnitEntity>{
       ...BaseUnitEntity.fromDatabase(unit),
@@ -141,7 +141,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     };
   }
 
-  //TODO-LG: Replace with a deep, shallow or surface function if possible
+  //TODO-LG: Replace with a deep, nested or flat function if possible
   static mapPowerProductionUnitSpecials(unit: PowerProductionUnitDbType) {
     return {
       decommissioningPlannedOn: unit.powerProductionUnit?.decommissioningPlannedOn,

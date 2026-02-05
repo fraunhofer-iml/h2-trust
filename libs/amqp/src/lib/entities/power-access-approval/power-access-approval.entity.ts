@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerAccessApprovalDeepDbType, PowerAccessApprovalShallowDbType } from '@h2-trust/database';
+import { PowerAccessApprovalDeepDbType, PowerAccessApprovalNestedDbType } from '@h2-trust/database';
 import { CompanyEntity } from '../company';
 import { DocumentEntity } from '../document';
 import { BaseUnitEntity, PowerProductionUnitEntity } from '../unit';
@@ -38,31 +38,31 @@ export class PowerAccessApprovalEntity {
     this.document = document;
   }
 
-  static fromShallowDatabase(approval: PowerAccessApprovalShallowDbType): PowerAccessApprovalEntity {
-    return <PowerAccessApprovalEntity>{
-      ...approval,
-      hydrogenProducer: CompanyEntity.fromSurfaceDatabase(approval.hydrogenProducer),
-      powerProducer: CompanyEntity.fromSurfaceDatabase(approval.powerProducer),
-      powerProductionUnit: PowerProductionUnitEntity.fromSurfaceDatabase(approval.powerProductionUnit),
-    };
-  }
-
   static fromDeepDatabase(powerAccessApproval: PowerAccessApprovalDeepDbType): PowerAccessApprovalEntity {
     return <PowerAccessApprovalEntity>{
       id: powerAccessApproval.id,
       decidedAt: powerAccessApproval.decidedAt,
       status: powerAccessApproval.status,
-      powerProducer: CompanyEntity.fromShallowDatabase(powerAccessApproval.powerProducer),
+      powerProducer: CompanyEntity.fromNestedDatabase(powerAccessApproval.powerProducer),
       powerProductionUnit: {
-        ...BaseUnitEntity.fromShallowBaseUnit(powerAccessApproval.powerProductionUnit.generalInfo),
+        ...BaseUnitEntity.fromNestedBaseUnit(powerAccessApproval.powerProductionUnit.generalInfo),
         ratedPower: powerAccessApproval.powerProductionUnit?.ratedPower?.toNumber() ?? 0,
         gridOperator: powerAccessApproval.powerProductionUnit?.gridOperator,
         gridLevel: powerAccessApproval.powerProductionUnit?.gridLevel,
         gridConnectionNumber: powerAccessApproval.powerProductionUnit?.gridConnectionNumber,
         type: powerAccessApproval.powerProductionUnit?.type,
       },
-      hydrogenProducer: CompanyEntity.fromShallowDatabase(powerAccessApproval.hydrogenProducer),
+      hydrogenProducer: CompanyEntity.fromNestedDatabase(powerAccessApproval.hydrogenProducer),
       document: DocumentEntity.fromDatabase(powerAccessApproval.document),
+    };
+  }
+
+  static fromNestedDatabase(approval: PowerAccessApprovalNestedDbType): PowerAccessApprovalEntity {
+    return <PowerAccessApprovalEntity>{
+      ...approval,
+      hydrogenProducer: CompanyEntity.fromFlatDatabase(approval.hydrogenProducer),
+      powerProducer: CompanyEntity.fromFlatDatabase(approval.powerProducer),
+      powerProductionUnit: PowerProductionUnitEntity.fromFlatDatabase(approval.powerProductionUnit),
     };
   }
 }

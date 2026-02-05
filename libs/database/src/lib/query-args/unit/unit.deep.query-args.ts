@@ -7,21 +7,21 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { activeBatchShallowQueryArgs } from '../batch/batch.surface.query-args';
-import { companyShallowQueryArgs } from '../company/company.shallow.query-args';
+import { activeBatchFlatQueryArgs } from '../batch/batch.flat.query-args';
+import { companyNestedQueryArgs } from '../company/company.nested.query-args';
 
 export const baseUnitDeepQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
   include: {
     address: true,
-    owner: companyShallowQueryArgs,
-    operator: companyShallowQueryArgs,
+    owner: companyNestedQueryArgs,
+    operator: companyNestedQueryArgs,
   },
 });
 
 export const hydrogenStorageUnitDeepQueryArgs = Prisma.validator<Prisma.HydrogenStorageUnitDefaultArgs>()({
   include: {
     generalInfo: baseUnitDeepQueryArgs,
-    filling: activeBatchShallowQueryArgs,
+    filling: activeBatchFlatQueryArgs,
   },
 });
 

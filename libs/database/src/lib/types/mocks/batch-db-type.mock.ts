@@ -8,16 +8,16 @@
 
 import { BatchSeed } from '../../../seed';
 import { BatchDeepDbType } from '../batch.db.type';
-import { CompanyShallowDbTypeMock } from './company-db-type.mock';
-import { HydrogenStorageUnitRefShallowDbTypeMock } from './hydrogen-storage-unit-db-type.mock';
+import { CompanyNestedDbTypeMock } from './company-db-type.mock';
+import { HydrogenStorageUnitNestedDbTypeMock } from './hydrogen-storage-unit-db-type.mock';
 
 export const BatchDeepDbTypeMock = <BatchDeepDbType[]>[
   {
     ...BatchSeed[1],
-    owner: CompanyShallowDbTypeMock[1],
+    owner: CompanyNestedDbTypeMock[1],
     predecessors: [],
     successors: [],
-    hydrogenStorageUnit: HydrogenStorageUnitRefShallowDbTypeMock[0],
+    hydrogenStorageUnit: HydrogenStorageUnitNestedDbTypeMock[0],
     batchDetails: null,
     processStep: null,
   },

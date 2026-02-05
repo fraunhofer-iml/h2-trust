@@ -7,5 +7,5 @@
  */
 
 export * from './batch.deep.query-args';
-export * from './batch.shallow.query-args';
-export * from './batch.surface.query-args';
+export * from './batch.nested.query-args';
+export * from './batch.flat.query-args';

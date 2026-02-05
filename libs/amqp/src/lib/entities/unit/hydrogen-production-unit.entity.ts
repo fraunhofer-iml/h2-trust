@@ -9,7 +9,7 @@
 import {
   HydrogenProductionUnitDbType,
   HydrogenProductionUnitDeepDbType,
-  HydrogenProductionUnitShallowDbType,
+  HydrogenProductionUnitNestedDbType,
 } from '@h2-trust/database';
 import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
@@ -68,19 +68,6 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 
-  static fromShallowDatabase(unit: HydrogenProductionUnitShallowDbType): HydrogenProductionUnitEntity {
-    return <HydrogenProductionUnitEntity>{
-      ...BaseUnitEntity.fromShallowBaseUnit(unit.generalInfo),
-      unitType: UnitType.HYDROGEN_PRODUCTION,
-      ratedPower: unit.ratedPower.toNumber(),
-      pressure: unit.pressure.toNumber(),
-      method: unit.method,
-      technology: unit.technology,
-      biddingZone: unit.biddingZone,
-      waterConsumptionLitersPerHour: unit.waterConsumptionLitersPerHour.toNumber(),
-    };
-  }
-
   static fromDeepDatabase(unit: HydrogenProductionUnitDeepDbType): HydrogenProductionUnitEntity {
     return <HydrogenProductionUnitEntity>{
       ...BaseUnitEntity.fromDeepBaseUnit(unit.generalInfo),
@@ -94,7 +81,20 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     };
   }
 
-  //TODO-LG: Replace with a deep, shallow or surface function if possible
+  static fromNestedDatabase(unit: HydrogenProductionUnitNestedDbType): HydrogenProductionUnitEntity {
+    return <HydrogenProductionUnitEntity>{
+      ...BaseUnitEntity.fromNestedBaseUnit(unit.generalInfo),
+      unitType: UnitType.HYDROGEN_PRODUCTION,
+      ratedPower: unit.ratedPower.toNumber(),
+      pressure: unit.pressure.toNumber(),
+      method: unit.method,
+      technology: unit.technology,
+      biddingZone: unit.biddingZone,
+      waterConsumptionLitersPerHour: unit.waterConsumptionLitersPerHour.toNumber(),
+    };
+  }
+
+  //TODO-LG: Replace with a deep, nested or flat function if possible
   static override fromDatabase(unit: HydrogenProductionUnitDbType): HydrogenProductionUnitEntity {
     return <HydrogenProductionUnitEntity>{
       ...BaseUnitEntity.fromDatabase(unit),

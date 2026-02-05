@@ -7,15 +7,15 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { batchNestedQueryArgs } from '../batch/batch.nested.query-args';
-import { baseUnitNestedQueryArgs } from '../unit/unit.nested.query-args';
-import { userNestedQueryArgs } from '../user/user.nested.query-args';
+import { batchFlatQueryArgs } from '../batch/batch.flat.query-args';
+import { baseUnitFlatQueryArgs } from '../unit/unit.flat.query-args';
+import { userFlatQueryArgs } from '../user/user.flat.query-args';
 
-export const processStepDeepQueryArgs = Prisma.validator<Prisma.ProcessStepDefaultArgs>()({
+export const processStepNestedQueryArgs = Prisma.validator<Prisma.ProcessStepDefaultArgs>()({
   include: {
-    batch: batchNestedQueryArgs,
-    executedBy: baseUnitNestedQueryArgs,
-    recordedBy: userNestedQueryArgs,
+    batch: batchFlatQueryArgs,
+    executedBy: baseUnitFlatQueryArgs,
+    recordedBy: userFlatQueryArgs,
     documents: true,
     processStepDetails: {
       include: {

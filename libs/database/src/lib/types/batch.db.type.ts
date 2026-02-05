@@ -7,10 +7,10 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { batchDeepQueryArgs, batchShallowQueryArgs, batchSurfaceQueryArgs } from '../query-args';
+import { batchDeepQueryArgs, batchFlatQueryArgs, batchNestedQueryArgs } from '../query-args';
 
 export type BatchDeepDbType = Prisma.BatchGetPayload<typeof batchDeepQueryArgs>;
 
-export type BatchShallowDbType = Prisma.BatchGetPayload<typeof batchShallowQueryArgs>;
+export type BatchNestedDbType = Prisma.BatchGetPayload<typeof batchNestedQueryArgs>;
 
-export type BatchSurfaceDbType = Prisma.BatchGetPayload<typeof batchSurfaceQueryArgs>;
+export type BatchFlatDbType = Prisma.BatchGetPayload<typeof batchFlatQueryArgs>;

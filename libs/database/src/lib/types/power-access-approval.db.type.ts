@@ -9,18 +9,18 @@
 import { Prisma } from '@prisma/client';
 import {
   powerAccessApprovalDeepQueryArgs,
-  powerAccessApprovalShallowQueryArgs,
-  powerAccessApprovalSurfaceQueryArgs,
+  powerAccessApprovalFlatQueryArgs,
+  powerAccessApprovalNestedQueryArgs,
 } from '../query-args';
 
 export type PowerAccessApprovalDeepDbType = Prisma.PowerAccessApprovalGetPayload<
   typeof powerAccessApprovalDeepQueryArgs
 >;
 
-export type PowerAccessApprovalShallowDbType = Prisma.PowerAccessApprovalGetPayload<
-  typeof powerAccessApprovalShallowQueryArgs
+export type PowerAccessApprovalNestedDbType = Prisma.PowerAccessApprovalGetPayload<
+  typeof powerAccessApprovalNestedQueryArgs
 >;
 
-export type PowerAccessApprovalSurfaceDbType = Prisma.PowerAccessApprovalGetPayload<
-  typeof powerAccessApprovalSurfaceQueryArgs
+export type PowerAccessApprovalFlatDbType = Prisma.PowerAccessApprovalGetPayload<
+  typeof powerAccessApprovalFlatQueryArgs
 >;

@@ -9,22 +9,22 @@
 import { Prisma } from '@prisma/client';
 import {
   powerProductionUnitDeepQueryArgs,
+  powerProductionUnitFlatQueryArgs,
+  powerProductionUnitNestedQueryArgs,
   powerProductionUnitQueryArgs,
-  powerProductionUnitShallowQueryArgs,
-  powerProductionUnitSurfaceQueryArgs,
 } from '../query-args';
 
-//TODO-LG: Replace with a deep, shallow or surface type if possible
+//TODO-LG: Replace with a deep, nested or flat type if possible
 export type PowerProductionUnitDbType = Prisma.UnitGetPayload<typeof powerProductionUnitQueryArgs>;
 
 export type PowerProductionUnitDeepDbType = Prisma.PowerProductionUnitGetPayload<
   typeof powerProductionUnitDeepQueryArgs
 >;
 
-export type PowerProductionUnitShallowDbType = Prisma.PowerProductionUnitGetPayload<
-  typeof powerProductionUnitShallowQueryArgs
+export type PowerProductionUnitNestedDbType = Prisma.PowerProductionUnitGetPayload<
+  typeof powerProductionUnitNestedQueryArgs
 >;
 
-export type PowerProductionUnitSurfaceDbType = Prisma.PowerProductionUnitGetPayload<
-  typeof powerProductionUnitSurfaceQueryArgs
+export type PowerProductionUnitFlatDbType = Prisma.PowerProductionUnitGetPayload<
+  typeof powerProductionUnitFlatQueryArgs
 >;

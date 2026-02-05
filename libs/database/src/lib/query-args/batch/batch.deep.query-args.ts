@@ -7,16 +7,16 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { companyShallowQueryArgs } from '../company/company.shallow.query-args';
-import { hydrogenStorageUnitShallowQueryArgs } from '../unit/unit.shallow.query-args';
-import { batchShallowQueryArgs } from './batch.shallow.query-args';
+import { companyNestedQueryArgs } from '../company/company.nested.query-args';
+import { hydrogenStorageUnitNestedQueryArgs } from '../unit/unit.nested.query-args';
+import { batchNestedQueryArgs } from './batch.nested.query-args';
 
 export const batchDeepQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()({
   include: {
-    owner: companyShallowQueryArgs,
-    predecessors: batchShallowQueryArgs,
-    successors: batchShallowQueryArgs,
-    hydrogenStorageUnit: hydrogenStorageUnitShallowQueryArgs,
+    owner: companyNestedQueryArgs,
+    predecessors: batchNestedQueryArgs,
+    successors: batchNestedQueryArgs,
+    hydrogenStorageUnit: hydrogenStorageUnitNestedQueryArgs,
     batchDetails: {
       include: {
         qualityDetails: true,
