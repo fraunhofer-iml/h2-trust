@@ -1,14 +1,13 @@
-import type { Response } from 'express';
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { DownloadFilesDto } from '@h2-trust/api';
-import { FileDownloadService } from './file-download.service';
 
 @Controller('file-download')
 export class FileDownloadController {
-  constructor(private readonly fileDownloadService: FileDownloadService) {}
+  constructor() {}
 
   @Post()
-  findAll(@Body() dto: DownloadFilesDto, @Res() res: Response) {
-    return this.fileDownloadService.createZipStream(dto.ids, res);
+  findAll(@Body() dto: DownloadFilesDto) {
+    console.log(dto);
+    return 'test';
   }
 }
