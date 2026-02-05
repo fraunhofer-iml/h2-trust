@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { saveAs } from 'file-saver';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CommonModule } from '@angular/common';
@@ -155,11 +154,20 @@ export class ProductionFilesComponent implements AfterViewInit {
 
     if (files.length === 1) {
       const { url, name } = files[0];
-      saveAs(url, name);
+      this.triggerDownload(url, name);
     } else {
       const dto = new DownloadFilesDto(files.map((f) => f.name));
       const downloadedZip: Blob = await this.productionService.downloadFiles(dto);
-      saveAs(downloadedZip);
+      this.triggerDownload(URL.createObjectURL(downloadedZip), 'download.zip');
     }
+  }
+
+  triggerDownload(url: string, filename: string) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 }

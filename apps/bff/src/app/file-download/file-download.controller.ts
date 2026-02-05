@@ -9,6 +9,6 @@ export class FileDownloadController {
 
   @Post()
   findAll(@Body() dto: DownloadFilesDto, @Res() res: Response) {
-    return this.fileDownloadService.downloadItemsAsZip(dto.ids, res);
+    return this.fileDownloadService.createZipStream(dto.ids, res);
   }
 }

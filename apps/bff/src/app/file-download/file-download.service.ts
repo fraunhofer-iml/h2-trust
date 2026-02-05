@@ -1,31 +1,36 @@
-import archiver, { Archiver } from 'archiver';
 import { Response } from 'express';
-import { Injectable, Logger } from '@nestjs/common';
+import * as yazl from 'yazl';
+import { Injectable } from '@nestjs/common';
 import { StorageService } from '@h2-trust/storage';
 
 @Injectable()
 export class FileDownloadService {
-  private readonly logger: Logger = new Logger();
+  //private readonly logger: Logger = new Logger();
   constructor(private readonly storageService: StorageService) {}
 
-  async downloadItemsAsZip(items: string[], res: Response) {
+  async createZipStream(items: string[], res: Response) {
+    const fileList = items.map((f) => f.trim()).filter(Boolean);
+
+    const zipfile = new yazl.ZipFile();
+
+    // HTTP-Header setzen, bevor wir streamen
     res.setHeader('Content-Type', 'application/zip');
-    res.setHeader('Content-Disposition', 'attachment; ');
+    res.setHeader('Content-Disposition', 'attachment; filename="download.zip"');
 
-    const archive: Archiver = archiver('zip', { zlib: { level: 9 } });
-
-    archive.on('error', (err: Error) => {
-      this.logger.error(err.message);
-      res.status(500).end();
+    // ZIP-Output in die HTTP-Response streamen
+    zipfile.outputStream.pipe(res).on('close', () => {
+      // optional logging
     });
 
-    archive.pipe(res);
+    // Dateien aus MinIO als Streams hinzufügen
+    for (const filename of fileList) {
+      const stream = await this.storageService.downloadFile(filename);
 
-    for (const item of items) {
-      const stream = await this.storageService.downloadFile(item);
-      archive.append(stream, { name: item });
+      // addReadStream erwartet u.a. filename im ZIP
+      zipfile.addReadStream(stream, filename);
     }
 
-    archive.finalize();
+    // ZIP finalisieren
+    zipfile.end();
   }
 }
