@@ -25,10 +25,7 @@ export const HydrogenStorageUnitEntityMock: HydrogenStorageUnitEntity[] = [
     UnitSeed[0].certifiedBy!,
     new Date(UnitSeed[0].commissionedOn),
     AddressEntityPowerMock,
-    {
-      id: CompanyEntityHydrogenMock.id!,
-      hydrogenApprovals: [],
-    },
+    CompanyEntityHydrogenMock,
     CompanyEntityHydrogenMock,
     UnitType.HYDROGEN_STORAGE,
     HydrogenStorageUnitSeed[0].capacity.toNumber(),

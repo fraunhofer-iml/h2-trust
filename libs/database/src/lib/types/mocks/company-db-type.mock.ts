@@ -6,24 +6,91 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CompanyDbType } from '..';
+import { CompanyDeepDbType, CompanyNestedDbType } from '..';
 import { AddressSeed, CompanySeed } from '../../../seed';
 
-export const CompanyDbTypeMock = <CompanyDbType[]>[
+export const CompanyNestedDbTypeMock = <CompanyNestedDbType[]>[
   {
     ...CompanySeed[0],
     address: AddressSeed[0],
+    hydrogenApprovals: [],
+    powerApprovals: [],
+    unitOwners: [],
+    unitOperators: [],
+    users: [],
+    batches: [],
   },
   {
     ...CompanySeed[1],
     address: AddressSeed[1],
+    hydrogenApprovals: [],
+    powerApprovals: [],
+    unitOwners: [],
+    unitOperators: [],
+    users: [],
+    batches: [],
   },
   {
     ...CompanySeed[2],
     address: AddressSeed[2],
+    hydrogenApprovals: [],
+    powerApprovals: [],
+    unitOwners: [],
+    unitOperators: [],
+    users: [],
+    batches: [],
   },
   {
     ...CompanySeed[3],
     address: AddressSeed[3],
+    hydrogenApprovals: [],
+    powerApprovals: [],
+    unitOwners: [],
+    unitOperators: [],
+    users: [],
+    batches: [],
+  },
+];
+
+export const CompanyDbTypeMock = <CompanyDeepDbType[]>[
+  {
+    ...CompanySeed[0],
+    address: AddressSeed[0],
+    hydrogenApprovals: [],
+    powerApprovals: [],
+    unitOwners: [],
+    unitOperators: [],
+    users: [],
+    batches: [],
+  },
+  {
+    ...CompanySeed[1],
+    address: AddressSeed[1],
+    hydrogenApprovals: [],
+    powerApprovals: [],
+    unitOwners: [],
+    unitOperators: [],
+    users: [],
+    batches: [],
+  },
+  {
+    ...CompanySeed[2],
+    address: AddressSeed[2],
+    hydrogenApprovals: [],
+    powerApprovals: [],
+    unitOwners: [],
+    unitOperators: [],
+    users: [],
+    batches: [],
+  },
+  {
+    ...CompanySeed[3],
+    address: AddressSeed[3],
+    hydrogenApprovals: [],
+    powerApprovals: [],
+    unitOwners: [],
+    unitOperators: [],
+    users: [],
+    batches: [],
   },
 ];

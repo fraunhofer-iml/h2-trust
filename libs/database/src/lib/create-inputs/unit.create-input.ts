@@ -13,20 +13,8 @@ import {
   CreateHydrogenStorageUnitPayload,
   CreatePowerProductionUnitPayload,
 } from '@h2-trust/amqp';
-import { assertDefined } from '@h2-trust/utils';
 
 export function buildBaseUnitCreateInput(payload: BaseCreateUnitPayload): Prisma.UnitCreateInput {
-  assertDefined(payload.name, 'BaseCreateUnitPayload.name');
-  assertDefined(payload.mastrNumber, 'BaseCreateUnitPayload.mastrNumber');
-  assertDefined(payload.commissionedOn, 'BaseCreateUnitPayload.commissionedOn');
-  assertDefined(payload.address, 'BaseCreateUnitPayload.address');
-  assertDefined(payload.address.street, 'BaseCreateUnitPayload.address.street');
-  assertDefined(payload.address.postalCode, 'BaseCreateUnitPayload.address.postalCode');
-  assertDefined(payload.address.city, 'BaseCreateUnitPayload.address.city');
-  assertDefined(payload.address.state, 'BaseCreateUnitPayload.address.state');
-  assertDefined(payload.address.country, 'BaseCreateUnitPayload.address.country');
-  assertDefined(payload.companyId, 'BaseCreateUnitPayload.companyId');
-
   return Prisma.validator<Prisma.UnitCreateInput>()({
     name: payload.name,
     mastrNumber: payload.mastrNumber,
@@ -46,24 +34,15 @@ export function buildBaseUnitCreateInput(payload: BaseCreateUnitPayload): Prisma
       },
     },
     owner: {
-      connect: { id: payload.companyId },
+      connect: { id: payload.ownerId },
     },
-    ...(payload.operatorId && {
-      operator: {
-        connect: { id: payload.operatorId },
-      },
-    }),
+    operator: {
+      connect: { id: payload.operatorId },
+    },
   });
 }
 
 export function buildPowerProductionUnitCreateInput(payload: CreatePowerProductionUnitPayload): Prisma.UnitCreateInput {
-  assertDefined(payload.electricityMeterNumber, 'CreatePowerProductionUnitPayload.electricityMeterNumber');
-  assertDefined(payload.ratedPower, 'CreatePowerProductionUnitPayload.ratedPower');
-  assertDefined(payload.financialSupportReceived, 'CreatePowerProductionUnitPayload.financialSupportReceived');
-  assertDefined(payload.powerProductionType, 'CreatePowerProductionUnitPayload.powerProductionType');
-  assertDefined(payload.gridLevel, 'CreatePowerProductionUnitPayload.gridLevel');
-  assertDefined(payload.biddingZone, 'CreatePowerProductionUnitPayload.biddingZone');
-
   return Prisma.validator<Prisma.UnitCreateInput>()({
     ...buildBaseUnitCreateInput(payload),
     powerProductionUnit: {
@@ -85,16 +64,6 @@ export function buildPowerProductionUnitCreateInput(payload: CreatePowerProducti
 export function buildHydrogenProductionUnitCreateInput(
   payload: CreateHydrogenProductionUnitPayload,
 ): Prisma.UnitCreateInput {
-  assertDefined(payload.biddingZone, 'CreateHydrogenProductionUnitPayload.biddingZone');
-  assertDefined(payload.method, 'CreateHydrogenProductionUnitPayload.method');
-  assertDefined(payload.technology, 'CreateHydrogenProductionUnitPayload.technology');
-  assertDefined(payload.ratedPower, 'CreateHydrogenProductionUnitPayload.ratedPower');
-  assertDefined(payload.pressure, 'CreateHydrogenProductionUnitPayload.pressure');
-  assertDefined(
-    payload.waterConsumptionLitersPerHour,
-    'CreateHydrogenProductionUnitPayload.waterConsumptionLitersPerHour',
-  );
-
   return Prisma.validator<Prisma.UnitCreateInput>()({
     ...buildBaseUnitCreateInput(payload),
     hydrogenProductionUnit: {
@@ -111,10 +80,6 @@ export function buildHydrogenProductionUnitCreateInput(
 }
 
 export function buildHydrogenStorageUnitCreateInput(payload: CreateHydrogenStorageUnitPayload): Prisma.UnitCreateInput {
-  assertDefined(payload.storageType, 'CreateHydrogenStorageUnitPayload.storageType');
-  assertDefined(payload.capacity, 'CreateHydrogenStorageUnitPayload.capacity');
-  assertDefined(payload.pressure, 'CreateHydrogenStorageUnitPayload.pressure');
-
   return Prisma.validator<Prisma.UnitCreateInput>()({
     ...buildBaseUnitCreateInput(payload),
     hydrogenStorageUnit: {

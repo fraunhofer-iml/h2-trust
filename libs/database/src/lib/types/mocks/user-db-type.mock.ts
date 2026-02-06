@@ -7,10 +7,37 @@
  */
 
 import { UserSeed } from '../../../seed';
-import { UserDbType } from '../user.db.type';
-import { CompanyDbTypeMock } from './company-db-type.mock';
+import { UserDeepDbType, UserFlatDbType, UserNestedDbType } from '../user.db.type';
+import { CompanyDbTypeMock, CompanyNestedDbTypeMock } from './company-db-type.mock';
 
-export const UserDbTypeMock = <UserDbType[]>[
+export const UserFlatDbTypeMock = <UserFlatDbType[]>[
+  {
+    ...UserSeed[0],
+  },
+  {
+    ...UserSeed[1],
+  },
+  {
+    ...UserSeed[2],
+  },
+];
+
+export const UserNestedDbTypeMock = <UserNestedDbType[]>[
+  {
+    ...UserSeed[0],
+    company: CompanyNestedDbTypeMock[0],
+  },
+  {
+    ...UserSeed[1],
+    company: CompanyNestedDbTypeMock[2],
+  },
+  {
+    ...UserSeed[2],
+    company: CompanyNestedDbTypeMock[2],
+  },
+];
+
+export const UserDeepDbTypeMock = <UserDeepDbType[]>[
   {
     ...UserSeed[0],
     company: CompanyDbTypeMock[0],

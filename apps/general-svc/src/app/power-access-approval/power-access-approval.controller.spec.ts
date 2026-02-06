@@ -10,8 +10,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PowerAccessApprovalEntity, UserEntityHydrogenMock, UserEntityPowerMock } from '@h2-trust/amqp';
 import {
   DatabaseModule,
-  PowerAccessApprovalDbType,
   PowerAccessApprovalDbTypeMock,
+  PowerAccessApprovalDeepDbType,
   PrismaService,
   UserRepository,
 } from '@h2-trust/database';
@@ -52,7 +52,7 @@ describe('PowerAccessApprovalController', () => {
   });
 
   it('should get power access approvals ', async () => {
-    const mockedPowerAccessApprovals: PowerAccessApprovalDbType[] = PowerAccessApprovalDbTypeMock;
+    const mockedPowerAccessApprovals: PowerAccessApprovalDeepDbType[] = PowerAccessApprovalDbTypeMock;
 
     jest.spyOn(prismaService.powerAccessApproval, 'findMany').mockResolvedValue(mockedPowerAccessApprovals);
 

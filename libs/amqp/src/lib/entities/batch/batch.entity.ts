@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchDbType } from '@h2-trust/database';
+import { BatchDeepDbType, BatchFlatDbType, BatchNestedDbType } from '@h2-trust/database';
 import { CompanyEntity } from '../company';
 import { HydrogenStorageUnitEntity } from '../unit';
 import { QualityDetailsEntity } from './quality-details.entity';
@@ -47,24 +47,51 @@ export class BatchEntity {
     this.processStepId = processStepId;
   }
 
-  static fromDatabase(batch: BatchDbType): BatchEntity {
+  static fromDeepDatabase(batch: BatchDeepDbType): BatchEntity {
     return new BatchEntity(
       batch.id,
       batch.active,
       batch.amount.toNumber(),
       batch.type,
-      batch.predecessors.map((pred) => BatchEntity.fromDatabase({ ...pred, predecessors: [], successors: [] })),
-      batch.successors.map((succ) => BatchEntity.fromDatabase({ ...succ, predecessors: [], successors: [] })),
-      CompanyEntity.fromDatabase(batch.owner),
-      batch.hydrogenStorageUnit
-        ? {
-            id: batch.hydrogenStorageUnit.generalInfo.id,
-            name: batch.hydrogenStorageUnit.generalInfo?.name,
-          }
-        : undefined,
+      batch.predecessors.map((pred) => BatchEntity.fromNestedDatabase({ ...pred, predecessors: [], successors: [] })),
+      batch.successors.map((succ) => BatchEntity.fromNestedDatabase({ ...succ, predecessors: [], successors: [] })),
+      CompanyEntity.fromNestedDatabase(batch.owner),
+      batch.hydrogenStorageUnit ? HydrogenStorageUnitEntity.fromNestedDatabase(batch.hydrogenStorageUnit) : undefined,
       batch.batchDetails?.qualityDetails
         ? QualityDetailsEntity.fromDatabase(batch.batchDetails.qualityDetails)
         : undefined,
+      batch.processStep?.id,
+    );
+  }
+
+  static fromNestedDatabase(batch: BatchNestedDbType): BatchEntity {
+    return new BatchEntity(
+      batch.id,
+      batch.active,
+      batch.amount.toNumber(),
+      batch.type,
+      batch.predecessors.map((pred) => BatchEntity.fromFlatDatabase({ ...pred, predecessors: [], successors: [] })),
+      batch.successors.map((succ) => BatchEntity.fromFlatDatabase({ ...succ, predecessors: [], successors: [] })),
+      CompanyEntity.fromFlatDatabase(batch.owner),
+      batch.hydrogenStorageUnit ? HydrogenStorageUnitEntity.fromFlatDatabase(batch.hydrogenStorageUnit) : undefined,
+      batch.batchDetails?.qualityDetails
+        ? QualityDetailsEntity.fromDatabase(batch.batchDetails.qualityDetails)
+        : undefined,
+      batch.processStep?.id,
+    );
+  }
+
+  static fromFlatDatabase(batch: BatchFlatDbType): BatchEntity {
+    return new BatchEntity(
+      batch.id,
+      batch.active,
+      batch.amount.toNumber(),
+      batch.type,
+      [],
+      [],
+      CompanyEntity.fromBaseType(batch.owner),
+      undefined,
+      undefined,
       batch.processStep?.id,
     );
   }

@@ -33,7 +33,7 @@ export class ProductionAssembler {
       batchParams: {
         activity: false,
         type: BatchType.POWER,
-        owner: entity.companyIdOfPowerProductionUnit,
+        owner: entity.ownerIdOfPowerProductionUnit,
       },
     };
 
@@ -60,7 +60,7 @@ export class ProductionAssembler {
       batchParams: {
         activity: false,
         type: BatchType.WATER,
-        owner: entity.companyIdOfHydrogenProductionUnit,
+        owner: entity.ownerIdOfHydrogenProductionUnit,
       },
     };
 
@@ -79,7 +79,7 @@ export class ProductionAssembler {
       batchParams: {
         activity: true,
         type: BatchType.HYDROGEN,
-        owner: entity.companyIdOfHydrogenProductionUnit,
+        owner: entity.ownerIdOfHydrogenProductionUnit,
         quality: entity.hydrogenColor,
         hydrogenStorageUnitId: entity.hydrogenStorageUnitId,
       },

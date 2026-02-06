@@ -9,8 +9,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   CreateManyProcessStepsPayload,
-  ReadProcessStepsByPredecessorTypesAndCompanyPayload,
-  ReadProcessStepsByTypesAndActiveAndCompanyPayload,
+  ReadProcessStepsByPredecessorTypesAndOwnerPayload,
+  ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
@@ -40,8 +40,8 @@ describe('ProcessStepService', () => {
     insertManyProcessSteps: jest.fn(),
     findProcessStep: jest.fn(),
     findAllProcessStepsFromStorageUnit: jest.fn(),
-    findProcessStepsByPredecessorTypesAndCompany: jest.fn(),
-    findProcessStepsByTypesAndActiveAndCompany: jest.fn(),
+    findProcessStepsByPredecessorTypesAndOwner: jest.fn(),
+    findProcessStepsByTypesAndActiveAndOwner: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -197,49 +197,49 @@ describe('ProcessStepService', () => {
     });
   });
 
-  describe('readProcessStepsByPredecessorTypesAndCompany', () => {
+  describe('readProcessStepsByPredecessorTypesAndOwner', () => {
     it('delegates to ProcessStepRepository', async () => {
       // Arrange
-      const givenPayload = new ReadProcessStepsByPredecessorTypesAndCompanyPayload(
+      const givenPayload = new ReadProcessStepsByPredecessorTypesAndOwnerPayload(
         [ProcessType.HYDROGEN_PRODUCTION],
         'company-1',
       );
       const givenProcessSteps = [ProcessStepEntityFixture.createHydrogenBottling()];
 
-      processStepRepositoryMock.findProcessStepsByPredecessorTypesAndCompany.mockResolvedValue(givenProcessSteps);
+      processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner.mockResolvedValue(givenProcessSteps);
 
       // Act
-      const actualResult = await service.readProcessStepsByPredecessorTypesAndCompany(givenPayload);
+      const actualResult = await service.readProcessStepsByPredecessorTypesAndOwner(givenPayload);
 
       // Assert
-      expect(processStepRepositoryMock.findProcessStepsByPredecessorTypesAndCompany).toHaveBeenCalledWith(
+      expect(processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner).toHaveBeenCalledWith(
         givenPayload.predecessorProcessTypes,
-        givenPayload.companyId,
+        givenPayload.ownerId,
       );
       expect(actualResult).toEqual(givenProcessSteps);
     });
   });
 
-  describe('readProcessStepsByTypesAndActiveAndCompany', () => {
+  describe('readProcessStepsByTypesAndActiveAndOwner', () => {
     it('delegates to ProcessStepRepository', async () => {
       // Arrange
-      const givenPayload = new ReadProcessStepsByTypesAndActiveAndCompanyPayload(
+      const givenPayload = new ReadProcessStepsByTypesAndActiveAndOwnerPayload(
         [ProcessType.HYDROGEN_BOTTLING],
         true,
         'company-1',
       );
       const givenProcessSteps = [ProcessStepEntityFixture.createHydrogenBottling()];
 
-      processStepRepositoryMock.findProcessStepsByTypesAndActiveAndCompany.mockResolvedValue(givenProcessSteps);
+      processStepRepositoryMock.findProcessStepsByTypesAndActiveAndOwner.mockResolvedValue(givenProcessSteps);
 
       // Act
-      const actualResult = await service.readProcessStepsByTypesAndActiveAndCompany(givenPayload);
+      const actualResult = await service.readProcessStepsByTypesAndActiveAndOwner(givenPayload);
 
       // Assert
-      expect(processStepRepositoryMock.findProcessStepsByTypesAndActiveAndCompany).toHaveBeenCalledWith(
+      expect(processStepRepositoryMock.findProcessStepsByTypesAndActiveAndOwner).toHaveBeenCalledWith(
         givenPayload.processTypes,
         givenPayload.active,
-        givenPayload.companyId,
+        givenPayload.ownerId,
       );
       expect(actualResult).toEqual(givenProcessSteps);
     });

@@ -26,6 +26,10 @@
   "license": "Apache-2.0",
   "contributors": [
     {
+      "name": "Lukas Grieger",
+      "email": "lukas.grieger@iml.fraunhofer.de"
+    },
+    {
       "name": "Maximilian Hegenbarth",
       "email": "maximilian.hegenbarth@iml.fraunhofer.de"
     },
@@ -65,14 +69,15 @@
     "quality-tools": "npm run lint && npm run format",
     "set-up-db": "npx prisma db push --force-reset && npx prisma db seed",
     "test": "nx run-many --all --parallel 5 --target test",
-    "test-amqp-lib": "npx nx test amqp",
-    "test-backend": "npm run test-bff && npm run test-general-svc && npm run test-process-svc && npm run test-amqp-lib && npm run test-utils-lib",
+    "test-amqp": "npx nx test amqp",
+    "test-backend": "npm run test-bff && npm run test-general-svc && npm run test-process-svc && npm run test-amqp && npm run test-utils",
     "test-bff": "nx test bff",
     "test-bff-e2e": "nx test bff-e2e --skip-nx-cache --runInBand",
     "test-frontend": "nx test frontend",
     "test-general-svc": "nx test general-svc",
     "test-process-svc": "nx test process-svc",
-    "test-utils-lib": "npx nx test utils"
+    "test-smart-contract": "npm --prefix libs/blockchain/smart-contract test",
+    "test-utils": "npx nx test utils"
   },
   "dependencies": {
     "@angular/animations": "~19.1.0",

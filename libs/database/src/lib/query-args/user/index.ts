@@ -6,10 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Prisma } from '@prisma/client';
-
-export const companyQueryArgs = Prisma.validator<Prisma.CompanyDefaultArgs>()({
-  include: {
-    address: true,
-  },
-});
+export * from './user.deep.query-args';
+export * from './user.nested.query-args';
+export * from './user.flat.query-args';

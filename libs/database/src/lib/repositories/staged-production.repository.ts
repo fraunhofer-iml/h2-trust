@@ -10,8 +10,8 @@ import { randomUUID } from 'crypto';
 import { Injectable } from '@nestjs/common';
 import { ParsedProductionEntity, StagedProductionEntity } from '@h2-trust/amqp';
 import { PrismaService } from '../prisma.service';
-import { stagedProductionQueryArgs } from '../query-args';
-import { StagedProductionDbType } from '../types';
+import { stagedProductionDeepQueryArgs } from '../query-args';
+import { StagedProductionDeepDbType } from '../types';
 
 @Injectable()
 export class StagedProductionRepository {
@@ -39,10 +39,10 @@ export class StagedProductionRepository {
   }
 
   async getStagedProductionsByImportId(id: string): Promise<StagedProductionEntity[]> {
-    const stagedProductions: StagedProductionDbType[] = await this.prismaService.stagedProduction.findMany({
+    const stagedProductions: StagedProductionDeepDbType[] = await this.prismaService.stagedProduction.findMany({
       where: { importId: id },
       include: {
-        ...stagedProductionQueryArgs.include,
+        ...stagedProductionDeepQueryArgs.include,
       },
     });
 
@@ -50,7 +50,7 @@ export class StagedProductionRepository {
       throw new Error(`Could not find staged production for id ${id}`);
     }
 
-    return stagedProductions.map(StagedProductionEntity.fromDatabase);
+    return stagedProductions.map(StagedProductionEntity.fromDeepDatabase);
   }
 
   async deleteExpiredStagedProductions() {

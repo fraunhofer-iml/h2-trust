@@ -50,8 +50,8 @@ export class ProductionCreationService {
       payload.userId,
       powerProductionUnit.type.hydrogenColor,
       payload.hydrogenStorageUnitId,
-      powerProductionUnit.company.id,
-      hydrogenProductionUnit.company.id,
+      powerProductionUnit.owner.id,
+      hydrogenProductionUnit.owner.id,
       hydrogenProductionUnit.waterConsumptionLitersPerHour,
     );
 

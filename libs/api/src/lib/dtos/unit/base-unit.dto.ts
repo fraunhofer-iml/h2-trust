@@ -8,7 +8,6 @@
 
 import { BaseUnitEntity } from '@h2-trust/amqp';
 import { UnitType } from '@h2-trust/domain';
-import { requireDefined } from '@h2-trust/utils';
 import { AddressDto } from '../address';
 import { UnitOwnerDto } from './unit-owner.dto';
 
@@ -16,16 +15,15 @@ export abstract class BaseUnitDto {
   id: string;
   name: string;
   mastrNumber: string;
-  manufacturer?: string;
-  modelType?: string;
-  modelNumber?: string;
-  serialNumber?: string;
-  certifiedBy?: string;
+  manufacturer: string;
+  modelType: string;
+  modelNumber: string;
+  serialNumber: string;
+  certifiedBy: string;
   commissionedOn: Date;
   address: AddressDto;
-  owner: string;
-  operator?: string;
-  company: UnitOwnerDto;
+  owner: UnitOwnerDto;
+  operator: string;
   unitType: UnitType;
 
   protected constructor(
@@ -38,9 +36,8 @@ export abstract class BaseUnitDto {
     certifiedBy: string,
     commissionedOn: Date,
     address: AddressDto,
-    company: UnitOwnerDto,
     modelNumber: string,
-    owner: string,
+    owner: UnitOwnerDto,
     operator: string,
     unitType: UnitType,
   ) {
@@ -54,7 +51,6 @@ export abstract class BaseUnitDto {
     this.certifiedBy = certifiedBy;
     this.commissionedOn = commissionedOn;
     this.address = address;
-    this.company = company;
     this.owner = owner;
     this.operator = operator;
     this.unitType = unitType;
@@ -62,33 +58,32 @@ export abstract class BaseUnitDto {
 
   static fromEntity(unit: BaseUnitEntity): BaseUnitDto {
     return {
-      id: requireDefined(unit.id, 'id'),
-      name: requireDefined(unit.name, 'name'),
-      mastrNumber: requireDefined(unit.mastrNumber, 'mastrNumber'),
+      id: unit.id,
+      name: unit.name,
+      mastrNumber: unit.mastrNumber,
       manufacturer: unit.manufacturer,
       modelType: unit.modelType,
       modelNumber: unit.modelNumber,
       serialNumber: unit.serialNumber,
       certifiedBy: unit.certifiedBy,
-      commissionedOn: requireDefined(unit.commissionedOn, 'commissionedOn'),
+      commissionedOn: unit.commissionedOn,
       address: {
-        street: requireDefined(unit.address?.street, 'street'),
-        postalCode: requireDefined(unit.address?.postalCode, 'postalCode'),
-        city: requireDefined(unit.address?.city, 'city'),
-        state: requireDefined(unit.address?.state, 'state'),
-        country: requireDefined(unit.address?.country, 'country'),
+        street: unit.address.street,
+        postalCode: unit.address.postalCode,
+        city: unit.address.city,
+        state: unit.address.state,
+        country: unit.address.country,
       },
-      company: {
-        id: requireDefined(unit.company?.id, 'company.id'),
+      owner: {
+        id: unit.owner?.id,
         hydrogenApprovals:
-          unit.company?.hydrogenApprovals?.map((approval) => ({
-            powerAccessApprovalStatus: requireDefined(approval.powerAccessApprovalStatus, 'powerAccessApprovalStatus'),
-            powerProducerId: requireDefined(approval.powerProducerId, 'powerProducerId'),
+          unit.owner?.hydrogenApprovals?.map((approval) => ({
+            powerAccessApprovalStatus: approval.status,
+            powerProducerId: approval.powerProducer.id,
           })) ?? [],
       },
-      owner: requireDefined(unit.company?.id, 'owner'),
       operator: unit.operator?.id,
-      unitType: requireDefined(unit.unitType, 'unitType'),
+      unitType: unit.unitType,
     };
   }
 }

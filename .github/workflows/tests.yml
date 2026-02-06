@@ -19,6 +19,13 @@ jobs:
       - name: Common Setup
         uses: ./.github/actions/common-setup
 
+      - name: Install Smart Contract Dependencies
+        shell: bash
+        run: npm --prefix libs/blockchain/smart-contract install --no-audit --no-fund
+
+      - name: Run Tests for amqp
+        run: npx nx run amqp:test
+
       - name: Run Tests for bff
         run: npx nx run bff:test
 
@@ -30,3 +37,9 @@ jobs:
 
       - name: Run Tests for process-svc
         run: npx nx run process-svc:test
+
+      - name: Run Tests for smart contract
+        run: npm --prefix libs/blockchain/smart-contract test
+
+      - name: Run Tests for utils
+        run: npx nx run utils:test

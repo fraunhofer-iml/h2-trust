@@ -13,8 +13,8 @@ import {
   CreateHydrogenTransportationPayload,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
-  ReadProcessStepsByPredecessorTypesAndCompanyPayload,
-  ReadProcessStepsByTypesAndActiveAndCompanyPayload,
+  ReadProcessStepsByPredecessorTypesAndOwnerPayload,
+  ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
 import { BottlingService } from './bottling/bottling.service';
 import { ProcessStepService } from './process-step.service';
@@ -29,18 +29,18 @@ export class ProcessStepController {
     private readonly transportationService: TransportationService,
   ) {}
 
-  @MessagePattern(ProcessStepMessagePatterns.READ_ALL_BY_PREDECESSOR_TYPES_AND_COMPANY)
-  async readProcessStepsByPredecessorTypesAndCompany(
-    payload: ReadProcessStepsByPredecessorTypesAndCompanyPayload,
+  @MessagePattern(ProcessStepMessagePatterns.READ_ALL_BY_PREDECESSOR_TYPES_AND_OWNER)
+  async readProcessStepsByPredecessorTypesAndOwner(
+    payload: ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   ): Promise<ProcessStepEntity[]> {
-    return this.processStepService.readProcessStepsByPredecessorTypesAndCompany(payload);
+    return this.processStepService.readProcessStepsByPredecessorTypesAndOwner(payload);
   }
 
-  @MessagePattern(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_COMPANY)
-  async readProcessStepsByTypesAndActiveAndCompany(
-    payload: ReadProcessStepsByTypesAndActiveAndCompanyPayload,
+  @MessagePattern(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_OWNER)
+  async readProcessStepsByTypesAndActiveAndOwner(
+    payload: ReadProcessStepsByTypesAndActiveAndOwnerPayload,
   ): Promise<ProcessStepEntity[]> {
-    return this.processStepService.readProcessStepsByTypesAndActiveAndCompany(payload);
+    return this.processStepService.readProcessStepsByTypesAndActiveAndOwner(payload);
   }
 
   @MessagePattern(ProcessStepMessagePatterns.CREATE_HYDROGEN_BOTTLING)

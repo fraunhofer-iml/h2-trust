@@ -6,44 +6,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AddressSeed, BatchSeed, CompanySeed, HydrogenStorageUnitSeed, ProcessStepSeed, UnitSeed } from '../../../seed';
-import { ProcessStepDbType } from '../process-step.db.type';
-import { UserDbTypeMock } from './user-db-type.mock';
+import { AddressSeed, ProcessStepSeed, UnitSeed } from '../../../seed';
+import { ProcessStepDeepDbType } from '../process-step.db.type';
+import { BatchDeepDbTypeMock } from './batch-db-type.mock';
+import { CompanyNestedDbTypeMock } from './company-db-type.mock';
+import { UserNestedDbTypeMock } from './user-db-type.mock';
 
-export const ProcessStepDbTypeMock = <ProcessStepDbType[]>[
+export const ProcessStepDeepDbTypeMock = <ProcessStepDeepDbType[]>[
   {
     ...ProcessStepSeed[1],
-    batch: {
-      ...BatchSeed[1],
-      owner: {
-        ...CompanySeed[1],
-        address: AddressSeed[1],
-      },
-      predecessors: [],
-      successors: [],
-      hydrogenStorageUnit: {
-        generalInfo: {
-          ...UnitSeed[5],
-        },
-        ...HydrogenStorageUnitSeed[1],
-      },
-      batchDetails: null,
-      processStep: null,
-    },
+    batch: BatchDeepDbTypeMock[0],
     executedBy: {
       ...UnitSeed[4],
       address: AddressSeed[1],
-      owner: {
-        ...CompanySeed[1],
-        address: AddressSeed[1],
-        hydrogenApprovals: [],
-      },
-      operator: {
-        ...CompanySeed[1],
-        address: AddressSeed[1],
-      },
+      owner: CompanyNestedDbTypeMock[1],
+      operator: CompanyNestedDbTypeMock[1],
     },
-    recordedBy: UserDbTypeMock[1],
+    recordedBy: UserNestedDbTypeMock[1],
     documents: [],
     processStepDetails: null,
   },

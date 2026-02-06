@@ -7,7 +7,7 @@
  */
 
 import { Type } from 'class-transformer';
-import { IsDate, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsDate, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 
@@ -25,32 +25,32 @@ export abstract class UnitCreateDto {
   owner: string;
 
   @IsString()
-  @IsOptional()
-  operator?: string;
+  @IsNotEmpty()
+  operator: string;
 
   @IsString()
-  @IsOptional()
-  manufacturer?: string;
+  @IsNotEmpty()
+  manufacturer: string;
 
   @IsString()
-  @IsOptional()
-  modelType?: string;
+  @IsNotEmpty()
+  modelType: string;
 
   @IsString()
-  @IsOptional()
-  modelNumber?: string;
+  @IsNotEmpty()
+  modelNumber: string;
 
   @IsString()
-  @IsOptional()
-  serialNumber?: string;
+  @IsNotEmpty()
+  serialNumber: string;
 
   @IsString()
   @IsNotEmpty()
   mastrNumber: string;
 
   @IsString()
-  @IsOptional()
-  certifiedBy?: string;
+  @IsNotEmpty()
+  certifiedBy: string;
 
   @IsDate()
   @IsNotEmpty()
