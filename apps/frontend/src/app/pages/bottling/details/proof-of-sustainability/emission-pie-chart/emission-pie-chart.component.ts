@@ -9,7 +9,7 @@
 import * as echarts from 'echarts';
 import { EChartsOption, LegendComponentOption, PieSeriesOption } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
-import { CommonModule, PercentPipe } from '@angular/common';
+import { PercentPipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { EmissionForProcessStepDto, EmissionProcessStepType } from '@h2-trust/api';
@@ -17,7 +17,7 @@ import { MeasurementUnit } from '@h2-trust/domain';
 
 @Component({
   selector: 'app-emission-pie-chart',
-  imports: [CommonModule, NgxEchartsDirective, MatProgressSpinnerModule],
+  imports: [NgxEchartsDirective, MatProgressSpinnerModule],
   providers: [provideEchartsCore({ echarts }), PercentPipe],
 
   templateUrl: './emission-pie-chart.component.html',

@@ -10,7 +10,7 @@ import { UnitPipe } from 'apps/frontend/src/app/shared/pipes/unit.pipe';
 import * as echarts from 'echarts';
 import { EChartsOption } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
-import { CommonModule, PercentPipe } from '@angular/common';
+import { PercentPipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { HydrogenStorageOverviewDto } from '@h2-trust/api';
 import { MeasurementUnit } from '@h2-trust/domain';
@@ -20,7 +20,7 @@ import { formatNumberForChart } from '../../../../shared/util/number-format.util
 
 @Component({
   selector: 'app-storage-filling-levels',
-  imports: [CommonModule, NgxEchartsDirective],
+  imports: [NgxEchartsDirective],
   providers: [provideEchartsCore({ echarts }), UnitPipe, PercentPipe],
   templateUrl: './storage-filling-levels.component.html',
 })

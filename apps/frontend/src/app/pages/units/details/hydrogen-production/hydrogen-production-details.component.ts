@@ -9,7 +9,6 @@
 import { ErrorCardComponent } from 'apps/frontend/src/app/layout/error-card/error-card.component';
 import { ERROR_MESSAGES } from 'apps/frontend/src/app/shared/constants/error.messages';
 import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
-import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
@@ -19,7 +18,7 @@ import { UnitDetailsComponent } from '../unit-details.component';
 
 @Component({
   selector: 'app-hydrogen-production-details',
-  imports: [CommonModule, RouterModule, UnitPipe, UnitDetailsComponent, ErrorCardComponent],
+  imports: [RouterModule, UnitPipe, UnitDetailsComponent, ErrorCardComponent],
   templateUrl: './hydrogen-production-details.component.html',
 })
 export class HydrogenProductionDetailsComponent {
