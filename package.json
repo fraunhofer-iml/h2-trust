@@ -79,9 +79,6 @@
     "test-smart-contract": "npm --prefix libs/blockchain/smart-contract test",
     "test-utils": "npx nx test utils"
   },
-  "overrides": {
-    "confbox": "0.2.2"
-  },
   "dependencies": {
     "@angular/animations": "21.1.3",
     "@angular/cdk": "21.1.3",
