@@ -1,10 +1,9 @@
 {
   "compilerOptions": {
-    /*     "moduleResolution": "bundler", */
     "target": "es2022",
     "strict": true,
-    "module": "commonjs",
-    "moduleResolution": "node"
+    "module": "preserve",
+    "moduleResolution": "bundler"
   },
   "files": [],
   "include": [],
