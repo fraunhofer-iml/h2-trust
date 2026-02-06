@@ -1,8 +1,8 @@
 <div
   class="flex flex-row items-center gap-2 rounded-md p-2"
   [ngClass]="{
-    'text-primary-800 bg-primary-100': unitType() === UnitType.POWER_PRODUCTION,
-    'text-secondary-800 bg-secondary-100': unitType() === UnitType.HYDROGEN_PRODUCTION,
+    'bg-primary-100 text-primary-800': unitType() === UnitType.POWER_PRODUCTION,
+    'bg-secondary-100 text-secondary-800': unitType() === UnitType.HYDROGEN_PRODUCTION,
     'bg-neutral-200 text-neutral-800': unitType() === UnitType.HYDROGEN_STORAGE,
   }"
 >
