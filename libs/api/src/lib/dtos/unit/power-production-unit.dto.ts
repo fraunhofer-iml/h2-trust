@@ -8,7 +8,6 @@
 
 import { PowerProductionUnitEntity } from '@h2-trust/amqp';
 import { UnitType } from '@h2-trust/domain';
-import { requireDefined } from '@h2-trust/utils';
 import { EnumLabelMapper } from '../../labels';
 import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
@@ -17,12 +16,12 @@ import { UnitOwnerDto } from './unit-owner.dto';
 
 export class PowerProductionUnitDto extends BaseUnitDto {
   electricityMeterNumber: string;
-  gridOperator?: string;
-  gridConnectionNumber?: string;
+  gridOperator: string;
+  gridConnectionNumber: string;
   gridLevel: string;
   biddingZone: string;
   ratedPower: number;
-  decommissioningPlannedOn?: Date;
+  decommissioningPlannedOn: Date;
   type: PowerProductionTypeDto;
   financialSupportReceived: boolean;
 
@@ -37,7 +36,6 @@ export class PowerProductionUnitDto extends BaseUnitDto {
     commissionedOn: Date,
     decommissioningPlannedOn: Date,
     address: AddressDto,
-    company: UnitOwnerDto,
     ratedPower: number,
     gridOperator: string,
     gridLevel: string,
@@ -45,7 +43,7 @@ export class PowerProductionUnitDto extends BaseUnitDto {
     type: PowerProductionTypeDto,
     unitType: UnitType,
     modelNumber: string,
-    owner: string,
+    owner: UnitOwnerDto,
     operator: string,
     electricityMeterNumber: string,
     biddingZone: string,
@@ -61,7 +59,6 @@ export class PowerProductionUnitDto extends BaseUnitDto {
       certifiedBy,
       commissionedOn,
       address,
-      company,
       modelNumber,
       owner,
       operator,
@@ -81,19 +78,19 @@ export class PowerProductionUnitDto extends BaseUnitDto {
   static override fromEntity(unit: PowerProductionUnitEntity): PowerProductionUnitDto {
     return {
       ...BaseUnitDto.fromEntity(unit),
-      electricityMeterNumber: requireDefined(unit.electricityMeterNumber, 'electricityMeterNumber'),
+      electricityMeterNumber: unit.electricityMeterNumber,
       gridOperator: unit.gridOperator,
       gridConnectionNumber: unit.gridConnectionNumber,
-      gridLevel: EnumLabelMapper.getGridLevel(requireDefined(unit.gridLevel, 'gridLevel')),
-      biddingZone: requireDefined(unit.biddingZone, 'biddingZone'),
-      ratedPower: requireDefined(unit.ratedPower, 'ratedPower'),
+      gridLevel: EnumLabelMapper.getGridLevel(unit.gridLevel),
+      biddingZone: unit.biddingZone,
+      ratedPower: unit.ratedPower,
       decommissioningPlannedOn: unit.decommissioningPlannedOn,
       type: {
-        name: EnumLabelMapper.getPowerProductionType(requireDefined(unit.type?.name, 'type.name')),
-        energySource: requireDefined(unit.type?.energySource, 'type.energySource'),
-        hydrogenColor: requireDefined(unit.type?.hydrogenColor, 'type.hydrogenColor'),
+        name: unit.type.name,
+        energySource: unit.type.energySource,
+        hydrogenColor: unit.type.hydrogenColor,
       },
-      financialSupportReceived: requireDefined(unit.financialSupportReceived, 'financialSupportReceived'),
+      financialSupportReceived: unit.financialSupportReceived,
     };
   }
 }

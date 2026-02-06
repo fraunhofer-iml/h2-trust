@@ -157,7 +157,7 @@ describe('ProductionController', () => {
       .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(processStepEntityMocks));
 
     const actualResponse: ProductionOverviewDto[] =
-      await controller.readHydrogenProductionsByCompany(givenAuthenticatedUser);
+      await controller.readHydrogenProductionsByOwner(givenAuthenticatedUser);
 
     expect(actualResponse).toEqual(expectedResponse);
   });

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerAccessApprovalDbType } from 'libs/database/src/lib';
+import { PowerAccessApprovalDeepDbType, PowerAccessApprovalNestedDbType } from '@h2-trust/database';
 import { CompanyEntity } from '../company';
 import { DocumentEntity } from '../document';
 import { BaseUnitEntity, PowerProductionUnitEntity } from '../unit';
@@ -38,22 +38,31 @@ export class PowerAccessApprovalEntity {
     this.document = document;
   }
 
-  static fromDatabase(powerAccessApproval: PowerAccessApprovalDbType): PowerAccessApprovalEntity {
+  static fromDeepDatabase(powerAccessApproval: PowerAccessApprovalDeepDbType): PowerAccessApprovalEntity {
     return <PowerAccessApprovalEntity>{
       id: powerAccessApproval.id,
       decidedAt: powerAccessApproval.decidedAt,
       status: powerAccessApproval.status,
-      powerProducer: CompanyEntity.fromDatabase(powerAccessApproval.powerProducer),
+      powerProducer: CompanyEntity.fromNestedDatabase(powerAccessApproval.powerProducer),
       powerProductionUnit: {
-        ...BaseUnitEntity.fromDatabase(powerAccessApproval.powerProductionUnit.generalInfo),
+        ...BaseUnitEntity.fromNestedBaseUnit(powerAccessApproval.powerProductionUnit.generalInfo),
         ratedPower: powerAccessApproval.powerProductionUnit?.ratedPower?.toNumber() ?? 0,
         gridOperator: powerAccessApproval.powerProductionUnit?.gridOperator,
         gridLevel: powerAccessApproval.powerProductionUnit?.gridLevel,
         gridConnectionNumber: powerAccessApproval.powerProductionUnit?.gridConnectionNumber,
         type: powerAccessApproval.powerProductionUnit?.type,
       },
-      hydrogenProducer: CompanyEntity.fromDatabase(powerAccessApproval.hydrogenProducer),
+      hydrogenProducer: CompanyEntity.fromNestedDatabase(powerAccessApproval.hydrogenProducer),
       document: DocumentEntity.fromDatabase(powerAccessApproval.document),
+    };
+  }
+
+  static fromNestedDatabase(approval: PowerAccessApprovalNestedDbType): PowerAccessApprovalEntity {
+    return <PowerAccessApprovalEntity>{
+      ...approval,
+      hydrogenProducer: CompanyEntity.fromFlatDatabase(approval.hydrogenProducer),
+      powerProducer: CompanyEntity.fromFlatDatabase(approval.powerProducer),
+      powerProductionUnit: PowerProductionUnitEntity.fromFlatDatabase(approval.powerProductionUnit),
     };
   }
 }

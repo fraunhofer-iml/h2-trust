@@ -32,24 +32,24 @@ export class UnitService {
     return this.unitRepository.findUnitById(id);
   }
 
-  async readPowerProductionUnitsByCompanyId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity[]> {
-    return this.unitRepository.findPowerProductionUnitsByCompanyId(payload.id);
+  async readPowerProductionUnitsByOwnerId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity[]> {
+    return this.unitRepository.findPowerProductionUnitsByOwnerId(payload.id);
   }
 
   async readPowerProductionUnitsByIds(payload: ReadByIdsPayload): Promise<PowerProductionUnitEntity[]> {
     return this.unitRepository.findPowerProductionUnitsByIds(payload.ids);
   }
 
-  async readHydrogenProductionUnits(payload: ReadByIdPayload): Promise<HydrogenProductionUnitEntity[]> {
-    return this.unitRepository.findHydrogenProductionUnitsByCompanyId(payload.id);
+  async readHydrogenProductionUnitsByOwnerId(payload: ReadByIdPayload): Promise<HydrogenProductionUnitEntity[]> {
+    return this.unitRepository.findHydrogenProductionUnitsByOwnerId(payload.id);
   }
 
   async readHydrogenProductionUnitsByIds(payload: ReadByIdsPayload): Promise<HydrogenProductionUnitEntity[]> {
     return this.unitRepository.findHydrogenProductionUnitsByIds(payload.ids);
   }
 
-  async readHydrogenStorageUnits(payload: ReadByIdPayload): Promise<HydrogenStorageUnitEntity[]> {
-    return this.unitRepository.findHydrogenStorageUnitsByCompanyId(payload.id);
+  async readHydrogenStorageUnitsByOwnerId(payload: ReadByIdPayload): Promise<HydrogenStorageUnitEntity[]> {
+    return this.unitRepository.findHydrogenStorageUnitsByOwnerId(payload.id);
   }
 
   async readPowerProductionTypes(): Promise<PowerProductionTypeEntity[]> {

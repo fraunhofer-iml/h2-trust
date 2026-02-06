@@ -7,28 +7,8 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { companyQueryArgs } from './company.query.args';
-
-export const baseUnitQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
-  include: {
-    address: true,
-    owner: {
-      include: {
-        ...companyQueryArgs.include,
-        hydrogenApprovals: {
-          include: {
-            powerProducer: true,
-          },
-        },
-      },
-    },
-    operator: {
-      include: {
-        ...companyQueryArgs.include,
-      },
-    },
-  },
-});
+import { activeBatchFlatQueryArgs } from '../batch/batch.flat.query-args';
+import { baseUnitDeepQueryArgs } from './unit.deep.query-args';
 
 const powerProductionUnitChildQueryArgs = Prisma.validator<Prisma.PowerProductionUnitDefaultArgs>()({
   include: {
@@ -38,51 +18,44 @@ const powerProductionUnitChildQueryArgs = Prisma.validator<Prisma.PowerProductio
 
 const hydrogenStorageUnitChildQueryArgs = Prisma.validator<Prisma.HydrogenStorageUnitDefaultArgs>()({
   include: {
-    filling: {
-      include: {
-        batchDetails: {
-          include: {
-            qualityDetails: true,
-          },
-        },
-      },
-      where: {
-        active: true,
-      },
-    },
+    filling: activeBatchFlatQueryArgs,
   },
 });
 
+//TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
 export const allUnitsQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
-  ...baseUnitQueryArgs,
+  ...baseUnitDeepQueryArgs,
   include: {
-    ...baseUnitQueryArgs.include,
+    ...baseUnitDeepQueryArgs.include,
     powerProductionUnit: powerProductionUnitChildQueryArgs,
     hydrogenProductionUnit: true,
     hydrogenStorageUnit: hydrogenStorageUnitChildQueryArgs,
   },
 });
 
+//TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
 export const powerProductionUnitQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
-  ...baseUnitQueryArgs,
+  ...baseUnitDeepQueryArgs,
   include: {
-    ...baseUnitQueryArgs.include,
+    ...baseUnitDeepQueryArgs.include,
     powerProductionUnit: powerProductionUnitChildQueryArgs,
   },
 });
 
+//TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
 export const hydrogenProductionUnitQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
-  ...baseUnitQueryArgs,
+  ...baseUnitDeepQueryArgs,
   include: {
-    ...baseUnitQueryArgs.include,
+    ...baseUnitDeepQueryArgs.include,
     hydrogenProductionUnit: true,
   },
 });
 
+//TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
 export const hydrogenStorageUnitQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
-  ...baseUnitQueryArgs,
+  ...baseUnitDeepQueryArgs,
   include: {
-    ...baseUnitQueryArgs.include,
+    ...baseUnitDeepQueryArgs.include,
     hydrogenStorageUnit: hydrogenStorageUnitChildQueryArgs,
   },
 });

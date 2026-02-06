@@ -7,6 +7,20 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { companyQueryArgs } from '../query-args';
+import { companyDeepQueryArgs } from '../query-args';
+import { companyFlatQueryArgs } from '../query-args/company/company.flat.query-args';
+import { companyNestedQueryArgs } from '../query-args/company/company.nested.query-args';
 
-export type CompanyDbType = Prisma.CompanyGetPayload<typeof companyQueryArgs>;
+export type CompanyDeepDbType = Prisma.CompanyGetPayload<typeof companyDeepQueryArgs>;
+
+export type CompanyNestedDbType = Prisma.CompanyGetPayload<typeof companyNestedQueryArgs>;
+
+export type CompanyFlatDbType = Prisma.CompanyGetPayload<typeof companyFlatQueryArgs>;
+
+export type CompanyDbBaseType = {
+  id: string;
+  type: string;
+  name: string;
+  mastrNumber: string;
+  addressId: string;
+};

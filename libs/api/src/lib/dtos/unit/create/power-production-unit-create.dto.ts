@@ -7,7 +7,7 @@
  */
 
 import { Type } from 'class-transformer';
-import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
 import { AddressPayload, CreatePowerProductionUnitPayload } from '@h2-trust/amqp';
 import { BiddingZone, GridLevel, PowerProductionType, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
@@ -19,25 +19,25 @@ export class PowerProductionUnitCreateDto extends UnitCreateDto {
   powerProductionType: PowerProductionType;
 
   @IsDate()
-  @IsOptional()
+  @IsNotEmpty()
   @Type(() => Date)
-  decommissioningPlannedOn?: Date;
+  decommissioningPlannedOn: Date;
 
   @IsEnum(BiddingZone)
   @IsNotEmpty()
   biddingZone: BiddingZone;
 
   @IsString()
-  @IsOptional()
-  gridOperator?: string;
+  @IsNotEmpty()
+  gridOperator: string;
 
   @IsEnum(GridLevel)
   @IsNotEmpty()
   gridLevel: GridLevel;
 
   @IsString()
-  @IsOptional()
-  gridConnectionNumber?: string;
+  @IsNotEmpty()
+  gridConnectionNumber: string;
 
   @IsNumber()
   @IsPositive()
@@ -71,9 +71,9 @@ export class PowerProductionUnitCreateDto extends UnitCreateDto {
     ratedPower: number,
     electricityMeterNumber: string,
     financialSupportReceived: boolean,
-    gridOperator?: string,
-    gridConnectionNumber?: string,
-    decommissioningPlannedOn?: Date,
+    gridOperator: string,
+    gridConnectionNumber: string,
+    decommissioningPlannedOn: Date,
   ) {
     super(
       type,

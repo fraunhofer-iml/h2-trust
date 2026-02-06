@@ -6,8 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CompanyDbType } from '@h2-trust/database';
+import { CompanyDbBaseType, CompanyDeepDbType, CompanyFlatDbType, CompanyNestedDbType } from '@h2-trust/database';
 import { AddressEntity } from '../address';
+import { PowerAccessApprovalEntity } from '../power-access-approval';
 import { UserEntity } from '../user';
 
 export class CompanyEntity {
@@ -17,6 +18,7 @@ export class CompanyEntity {
   type: string;
   address: AddressEntity;
   users: UserEntity[];
+  hydrogenApprovals: PowerAccessApprovalEntity[];
 
   constructor(
     id: string,
@@ -25,6 +27,7 @@ export class CompanyEntity {
     type: string,
     address: AddressEntity,
     users: UserEntity[],
+    hydrogenApprovals: PowerAccessApprovalEntity[],
   ) {
     this.id = id;
     this.name = name;
@@ -32,15 +35,53 @@ export class CompanyEntity {
     this.type = type;
     this.address = address;
     this.users = users;
+    this.hydrogenApprovals = hydrogenApprovals;
   }
 
-  static fromDatabase(company: CompanyDbType): CompanyEntity {
+  static fromDeepDatabase(company: CompanyDeepDbType): CompanyEntity {
     return new CompanyEntity(
       company.id,
       company.name,
       company.mastrNumber,
       company.type,
       AddressEntity.fromDatabase(company.address),
+      [],
+      company.hydrogenApprovals.map((approval) => PowerAccessApprovalEntity.fromNestedDatabase(approval)),
+    );
+  }
+
+  static fromNestedDatabase(company: CompanyNestedDbType): CompanyEntity {
+    return new CompanyEntity(
+      company.id,
+      company.name,
+      company.mastrNumber,
+      company.type,
+      AddressEntity.fromDatabase(company.address),
+      [],
+      [],
+    );
+  }
+
+  static fromFlatDatabase(company: CompanyFlatDbType): CompanyEntity {
+    return new CompanyEntity(
+      company.id,
+      company.name,
+      company.mastrNumber,
+      company.type,
+      AddressEntity.fromDatabase(company.address),
+      [],
+      [],
+    );
+  }
+
+  static fromBaseType(company: CompanyDbBaseType): CompanyEntity {
+    return new CompanyEntity(
+      company.id,
+      company.name,
+      company.mastrNumber,
+      company.type,
+      new AddressEntity('', '', '', '', ''),
+      [],
       [],
     );
   }

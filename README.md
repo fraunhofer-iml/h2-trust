@@ -69,19 +69,15 @@ chain.
 The project consists of the following components:
 
 1. **Frontend (`frontend`)**
-
    - Allows users to manage units and track hydrogen batches.
 
 2. **API Gateway (`api`)**
-
    - Handles all incoming HTTP requests and routes them to the appropriate services via AMQP.
 
 3. **General Service (`general-svc`)**
-
    - Manages master data.
 
 4. **Process Service (`process-svc`)**
-
    - Manages hydrogen batches and their process steps and handles workflows.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

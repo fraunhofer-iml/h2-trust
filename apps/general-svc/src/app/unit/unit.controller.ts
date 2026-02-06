@@ -33,8 +33,8 @@ export class UnitController {
   }
 
   @MessagePattern(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS)
-  async readPowerProductionUnitsByCompanyId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity[]> {
-    return this.service.readPowerProductionUnitsByCompanyId(payload);
+  async readPowerProductionUnitsByOwnerId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity[]> {
+    return this.service.readPowerProductionUnitsByOwnerId(payload);
   }
 
   @MessagePattern(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS_BY_IDS)
@@ -44,7 +44,7 @@ export class UnitController {
 
   @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS)
   async readHydrogenProductionUnits(payload: ReadByIdPayload): Promise<HydrogenProductionUnitEntity[]> {
-    return this.service.readHydrogenProductionUnits(payload);
+    return this.service.readHydrogenProductionUnitsByOwnerId(payload);
   }
 
   @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS_BY_IDS)
@@ -54,7 +54,7 @@ export class UnitController {
 
   @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_STORAGE_UNITS)
   async readHydrogenStorageUnits(payload: ReadByIdPayload): Promise<HydrogenStorageUnitEntity[]> {
-    return this.service.readHydrogenStorageUnits(payload);
+    return this.service.readHydrogenStorageUnitsByOwnerId(payload);
   }
 
   @MessagePattern(UnitMessagePatterns.READ_POWER_PRODUCTION_TYPES)

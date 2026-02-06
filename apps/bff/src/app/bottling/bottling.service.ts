@@ -20,7 +20,7 @@ import {
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEntity,
   ReadByIdPayload,
-  ReadProcessStepsByTypesAndActiveAndCompanyPayload,
+  ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
 import { BottlingDto, BottlingOverviewDto, DigitalProductPassportDto } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
@@ -66,17 +66,17 @@ export class BottlingService {
     return BottlingOverviewDto.fromEntity(persistedTransportation);
   }
 
-  async readBottlingsAndTransportationsByCompany(userId: string): Promise<BottlingOverviewDto[]> {
+  async readBottlingsAndTransportationsByOwner(userId: string): Promise<BottlingOverviewDto[]> {
     const userDetails = await this.userService.readUserWithCompany(userId);
 
-    const payload = new ReadProcessStepsByTypesAndActiveAndCompanyPayload(
+    const payload = new ReadProcessStepsByTypesAndActiveAndOwnerPayload(
       [ProcessType.HYDROGEN_BOTTLING, ProcessType.HYDROGEN_TRANSPORTATION],
       true,
       userDetails.company.id,
     );
 
     const bottlingsAndTransportations: ProcessStepEntity[] = await firstValueFrom(
-      this.processSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_COMPANY, payload),
+      this.processSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_OWNER, payload),
     );
     return bottlingsAndTransportations.map(BottlingOverviewDto.fromEntity);
   }

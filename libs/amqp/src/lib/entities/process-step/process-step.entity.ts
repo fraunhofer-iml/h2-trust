@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepDbType } from '@h2-trust/database';
+import { ProcessStepDeepDbType, ProcessStepNestedDbType } from '@h2-trust/database';
 import { BatchEntity } from '../batch';
 import { DocumentEntity } from '../document';
 import { BaseUnitEntity } from '../unit';
@@ -46,15 +46,31 @@ export class ProcessStepEntity {
     this.transportationDetails = transportationDetails;
   }
 
-  static fromDatabase(processStep: ProcessStepDbType): ProcessStepEntity {
+  static fromDeepDatabase(processStep: ProcessStepDeepDbType): ProcessStepEntity {
     return new ProcessStepEntity(
       processStep.id,
       processStep.startedAt,
       processStep.endedAt,
       processStep.type,
-      BatchEntity.fromDatabase(processStep.batch),
-      UserEntity.fromDatabase(processStep.recordedBy),
-      BaseUnitEntity.fromDatabase(processStep.executedBy),
+      BatchEntity.fromNestedDatabase(processStep.batch),
+      UserEntity.fromNestedDatabase(processStep.recordedBy),
+      BaseUnitEntity.fromNestedBaseUnit(processStep.executedBy),
+      processStep.documents.map((doc) => DocumentEntity.fromDatabase(doc)),
+      processStep.processStepDetails?.transportationDetails
+        ? TransportationDetailsEntity.fromDatabase(processStep.processStepDetails.transportationDetails)
+        : undefined,
+    );
+  }
+
+  static fromNestedDatabase(processStep: ProcessStepNestedDbType): ProcessStepEntity {
+    return new ProcessStepEntity(
+      processStep.id,
+      processStep.startedAt,
+      processStep.endedAt,
+      processStep.type,
+      BatchEntity.fromFlatDatabase(processStep.batch),
+      UserEntity.fromFlatDatabase(processStep.recordedBy),
+      BaseUnitEntity.fromFlatBaseUnit(processStep.executedBy),
       processStep.documents.map((doc) => DocumentEntity.fromDatabase(doc)),
       processStep.processStepDetails?.transportationDetails
         ? TransportationDetailsEntity.fromDatabase(processStep.processStepDetails.transportationDetails)

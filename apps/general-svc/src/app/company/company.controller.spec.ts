@@ -8,7 +8,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { CompanyEntity } from '@h2-trust/amqp';
-import { CompanyDbType, CompanyDbTypeMock, DatabaseModule, PrismaService } from '@h2-trust/database';
+import { CompanyDbTypeMock, CompanyDeepDbType, DatabaseModule, PrismaService } from '@h2-trust/database';
 import { CompanyController } from './company.controller';
 import { CompanyService } from './company.service';
 
@@ -42,11 +42,11 @@ describe('CompanyController', () => {
   });
 
   it('should get companies ', async () => {
-    const mockedCompanies: CompanyDbType[] = CompanyDbTypeMock;
+    const mockedCompanies: CompanyDeepDbType[] = CompanyDbTypeMock;
 
     jest.spyOn(prismaService.company, 'findMany').mockResolvedValue(mockedCompanies);
 
-    const expectedResponse: CompanyEntity[] = mockedCompanies.map(CompanyEntity.fromDatabase);
+    const expectedResponse: CompanyEntity[] = mockedCompanies.map(CompanyEntity.fromDeepDatabase);
     const actualResponse: CompanyEntity[] = await controller.findAll();
 
     expect(prismaService.company.findMany).toHaveBeenCalledTimes(1);

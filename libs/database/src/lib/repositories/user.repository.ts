@@ -9,7 +9,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserEntity } from '@h2-trust/amqp';
 import { PrismaService } from '../prisma.service';
-import { userQueryArgs } from '../query-args';
+import { userDeepQueryArgs } from '../query-args';
 import { assertRecordFound } from './utils';
 
 @Injectable()
@@ -22,9 +22,9 @@ export class UserRepository {
         where: {
           id: id,
         },
-        ...userQueryArgs,
+        ...userDeepQueryArgs,
       })
       .then((result) => assertRecordFound(result, id, 'User'))
-      .then(UserEntity.fromDatabase);
+      .then(UserEntity.fromDeepDatabase);
   }
 }

@@ -12,7 +12,7 @@ import { ProcessStepEntity } from '@h2-trust/amqp';
 import { BatchType } from '@h2-trust/domain';
 import { buildProcessStepCreateInput } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
-import { processStepQueryArgs } from '../query-args';
+import { processStepDeepQueryArgs } from '../query-args';
 import { assertRecordFound } from './utils';
 
 @Injectable()
@@ -27,15 +27,15 @@ export class ProcessStepRepository {
         where: {
           id: id,
         },
-        ...processStepQueryArgs,
+        ...processStepDeepQueryArgs,
       })
       .then((record) => assertRecordFound(record, id, 'process-step'))
-      .then(ProcessStepEntity.fromDatabase);
+      .then(ProcessStepEntity.fromDeepDatabase);
   }
 
-  async findProcessStepsByPredecessorTypesAndCompany(
+  async findProcessStepsByPredecessorTypesAndOwner(
     predecessorProcessTypes: string[],
-    companyId: string,
+    ownerId: string,
   ): Promise<ProcessStepEntity[]> {
     const predecessorsFilter =
       Array.isArray(predecessorProcessTypes) && predecessorProcessTypes.length > 0
@@ -57,21 +57,21 @@ export class ProcessStepRepository {
             ...predecessorsFilter,
           },
           executedBy: {
-            ownerId: companyId,
+            ownerId: ownerId,
           },
         },
         orderBy: {
           endedAt: 'desc',
         },
-        ...processStepQueryArgs,
+        ...processStepDeepQueryArgs,
       })
-      .then((processSteps) => processSteps.map(ProcessStepEntity.fromDatabase));
+      .then((processSteps) => processSteps.map(ProcessStepEntity.fromDeepDatabase));
   }
 
-  async findProcessStepsByTypesAndActiveAndCompany(
+  async findProcessStepsByTypesAndActiveAndOwner(
     processTypes: string[],
     active: boolean,
-    companyId: string,
+    ownerId: string,
   ): Promise<ProcessStepEntity[]> {
     return this.prismaService.processStep
       .findMany({
@@ -81,15 +81,15 @@ export class ProcessStepRepository {
             active: active,
           },
           executedBy: {
-            ownerId: companyId,
+            ownerId: ownerId,
           },
         },
         orderBy: {
           endedAt: 'desc',
         },
-        ...processStepQueryArgs,
+        ...processStepDeepQueryArgs,
       })
-      .then((processSteps) => processSteps.map(ProcessStepEntity.fromDatabase));
+      .then((processSteps) => processSteps.map(ProcessStepEntity.fromDeepDatabase));
   }
 
   async findAllProcessStepsFromStorageUnit(storageUnitId: string): Promise<ProcessStepEntity[]> {
@@ -104,18 +104,18 @@ export class ProcessStepRepository {
         orderBy: {
           endedAt: 'asc',
         },
-        ...processStepQueryArgs,
+        ...processStepDeepQueryArgs,
       })
-      .then((batches) => batches.map(ProcessStepEntity.fromDatabase));
+      .then((batches) => batches.map(ProcessStepEntity.fromDeepDatabase));
   }
 
   async insertProcessStep(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
     return this.prismaService.processStep
       .create({
         data: buildProcessStepCreateInput(processStep),
-        ...processStepQueryArgs,
+        ...processStepDeepQueryArgs,
       })
-      .then(ProcessStepEntity.fromDatabase);
+      .then(ProcessStepEntity.fromDeepDatabase);
   }
 
   async insertManyProcessSteps(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
@@ -192,10 +192,10 @@ export class ProcessStepRepository {
 
     const fetchedProcessSteps = await tx.processStep.findMany({
       where: { id: { in: persistedProcessSteps.map((ps) => ps.id) } },
-      ...processStepQueryArgs,
+      ...processStepDeepQueryArgs,
     });
 
-    return fetchedProcessSteps.map(ProcessStepEntity.fromDatabase);
+    return fetchedProcessSteps.map(ProcessStepEntity.fromDeepDatabase);
   }
 
   private async persistProcessStepsIndividually(
@@ -209,9 +209,9 @@ export class ProcessStepRepository {
 
       const persistedProcessStep = await tx.processStep.create({
         data: buildProcessStepCreateInput(processStep),
-        ...processStepQueryArgs,
+        ...processStepDeepQueryArgs,
       });
-      persistedProcessSteps.push(ProcessStepEntity.fromDatabase(persistedProcessStep));
+      persistedProcessSteps.push(ProcessStepEntity.fromDeepDatabase(persistedProcessStep));
     }
 
     return persistedProcessSteps;

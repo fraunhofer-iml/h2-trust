@@ -7,6 +7,12 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { stagedProductionQueryArgs } from '../query-args/staged-production.query-args';
+import {
+  stagedProductionDeepQueryArgs,
+  stagedProductionFlatQueryArgs,
+  stagedProductionNestedQueryArgs,
+} from '../query-args';
 
-export type StagedProductionDbType = Prisma.StagedProductionGetPayload<typeof stagedProductionQueryArgs>;
+export type StagedProductionDeepDbType = Prisma.StagedProductionGetPayload<typeof stagedProductionDeepQueryArgs>;
+export type StagedProductionNestedDbType = Prisma.StagedProductionGetPayload<typeof stagedProductionNestedQueryArgs>;
+export type StagedProductionFlatDbType = Prisma.StagedProductionGetPayload<typeof stagedProductionFlatQueryArgs>;
