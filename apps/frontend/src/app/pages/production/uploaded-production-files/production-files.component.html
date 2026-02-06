@@ -35,20 +35,8 @@
       </mat-form-field>
       <button mat-button (click)="clearFilters()" class="flex flex-row items-center">Clear filters</button>
     </div>
-    <div class="flex flex-row gap-2">
-      <button
-        mat-flat-button
-        (click)="downloadSelected()"
-        [disabled]="selection.isEmpty()"
-        [matBadge]="selection.selected.length"
-        [matBadgeHidden]="selection.isEmpty()"
-        matBadgeSize="large"
-      >
-        <span class="flex flex-row items-center">
-          <span class="material-symbols-outlined pr-2">download</span> Download</span
-        >
-      </button>
-    </div>
+
+    <app-download-button [selectedFiles]="selection"></app-download-button>
   </div>
 
   <div class="flex w-full flex-col gap-2">

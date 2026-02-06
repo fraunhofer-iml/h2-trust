@@ -41,7 +41,7 @@ export class StorageService {
     return this.client.removeObject(this.bucketName, fileName);
   }
 
-  async checkFIleExists(fileName: string): Promise<boolean> {
+  async checkFileExists(fileName: string): Promise<boolean> {
     try {
       await this.client.statObject(this.bucketName, fileName);
       return true;

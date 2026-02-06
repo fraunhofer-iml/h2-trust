@@ -6,14 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { toast } from 'ngx-sonner';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
 import { AfterViewInit, Component, computed, effect, inject, signal, ViewChild } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
@@ -26,12 +23,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { CsvContentType, DownloadFilesDto, ProcessedCsvDto } from '@h2-trust/api';
+import { CsvContentType, ProcessedCsvDto } from '@h2-trust/api';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { H2ColorChipComponent } from '../../../layout/h2-color-chip/h2-color-chip.component';
 import { ICONS } from '../../../shared/constants/icons';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { ProductionService } from '../../../shared/services/production/production.service';
+import { DownloadButtonComponent } from './download-button/download-button.component';
 
 @Component({
   selector: 'app-production-files',
@@ -52,7 +50,7 @@ import { ProductionService } from '../../../shared/services/production/productio
     MatSortModule,
     H2ColorChipComponent,
     MatCheckboxModule,
-    MatBadgeModule,
+    DownloadButtonComponent,
   ],
   providers: [ProductionService, provideNativeDateAdapter()],
   templateUrl: './production-files.component.html',
@@ -83,9 +81,7 @@ export class ProductionFilesComponent implements AfterViewInit {
 
   upoadsQuery = injectQuery(() => ({
     queryKey: ['production'],
-    queryFn: async () => {
-      return await this.productionService.getUploadedCsvFiles();
-    },
+    queryFn: async () => await this.productionService.getUploadedCsvFiles(),
   }));
 
   datasource$ = computed(() => {
@@ -148,47 +144,5 @@ export class ProductionFilesComponent implements AfterViewInit {
     }
 
     this.selection.select(...this.dataSource.data);
-  }
-
-  async downloadSelected() {
-    const files = this.selection.selected;
-
-    if (!files || files.length === 0) return;
-
-    if (files.length === 1) {
-      const { url, name } = files[0];
-      this.saveFile(url, name);
-    } else {
-      const dto: DownloadFilesDto = { ids: files.map((f) => f.name) };
-      this.fetchFiles(dto);
-    }
-  }
-
-  private async fetchFiles(dto: DownloadFilesDto) {
-    const downloadPromise: Promise<Blob> = this.productionService.downloadFiles(dto);
-    toast.promise(downloadPromise, {
-      loading: 'Fetching Files...',
-      error: (error): string => {
-        if (error instanceof HttpErrorResponse) {
-          return `Failed to fetch files: ${error.statusText}`;
-        }
-        return 'Failed to fetch files';
-      },
-    });
-    const download: Blob = await downloadPromise;
-
-    const blobUrl = URL.createObjectURL(download);
-    this.saveFile(blobUrl, 'download.zip');
-    URL.revokeObjectURL(blobUrl);
-  }
-
-  private saveFile(url: string, filename: string): void {
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
   }
 }

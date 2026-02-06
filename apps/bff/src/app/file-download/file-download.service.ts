@@ -9,8 +9,9 @@ export class FileDownloadService {
 
   async downloadFilesAsZip(res: Response, files: string[]) {
     const missing: string[] = [];
+
     for (const file of files) {
-      const exists = await this.storage.checkFIleExists(file);
+      const exists = await this.storage.checkFileExists(file);
       if (!exists) {
         missing.push(file);
       }
