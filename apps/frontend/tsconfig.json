@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es2022",
     "strict": true,
     "module": "preserve",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "lib": ["es2024", "dom"]
   },
   "files": [],
   "include": [],
