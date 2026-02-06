@@ -40,4 +40,16 @@ export class StorageService {
   async deleteFile(fileName: string) {
     return this.client.removeObject(this.bucketName, fileName);
   }
+
+  async checkFIleExists(fileName: string): Promise<boolean> {
+    try {
+      await this.client.statObject(this.bucketName, fileName);
+      return true;
+    } catch (err: any) {
+      if (err.code === 'NoSuchKey' || err.code === 'NotFound') {
+        return false;
+      }
+      throw err;
+    }
+  }
 }

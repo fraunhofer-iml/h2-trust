@@ -6,10 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { saveAs } from 'file-saver';
+import { toast } from 'ngx-sonner';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AfterViewInit, Component, computed, effect, inject, signal, ViewChild } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -116,6 +117,7 @@ export class ProductionFilesComponent implements AfterViewInit {
     this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((value) => {
       this.searchValue$.set((value ?? '').toLowerCase());
     });
+
     effect(() => {
       this.dataSource.data = this.datasource$();
     });
@@ -155,11 +157,38 @@ export class ProductionFilesComponent implements AfterViewInit {
 
     if (files.length === 1) {
       const { url, name } = files[0];
-      saveAs(url, name);
+      this.saveFile(url, name);
     } else {
       const dto: DownloadFilesDto = { ids: files.map((f) => f.name) };
-      const downloadedZip: Blob = await this.productionService.downloadFiles(dto);
-      saveAs(downloadedZip, 'download.zip');
+      this.fetchFiles(dto);
     }
+  }
+
+  private async fetchFiles(dto: DownloadFilesDto) {
+    const downloadPromise: Promise<Blob> = this.productionService.downloadFiles(dto);
+    toast.promise(downloadPromise, {
+      loading: 'Fetching Files...',
+      error: (error): string => {
+        if (error instanceof HttpErrorResponse) {
+          return `Failed to fetch files: ${error.statusText}`;
+        }
+        return 'Failed to fetch files';
+      },
+    });
+    const download: Blob = await downloadPromise;
+
+    const blobUrl = URL.createObjectURL(download);
+    this.saveFile(blobUrl, 'download.zip');
+    URL.revokeObjectURL(blobUrl);
+  }
+
+  private saveFile(url: string, filename: string): void {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 }
