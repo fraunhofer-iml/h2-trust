@@ -10,7 +10,7 @@ import { UnitPipe } from 'apps/frontend/src/app/shared/pipes/unit.pipe';
 import * as echarts from 'echarts';
 import { EChartsOption } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
-import { CommonModule, DecimalPipe, PercentPipe } from '@angular/common';
+import { DecimalPipe, PercentPipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { HydrogenComponentDto } from '@h2-trust/api';
 import { MeasurementUnit } from '@h2-trust/domain';
@@ -19,7 +19,7 @@ import { formatNumberForChart } from '../../../../shared/util/number-format.util
 
 @Component({
   selector: 'app-h2-composition-chart',
-  imports: [CommonModule, NgxEchartsDirective],
+  imports: [NgxEchartsDirective],
   providers: [provideEchartsCore({ echarts }), PercentPipe, DecimalPipe, UnitPipe],
   templateUrl: './h2-composition-chart.component.html',
 })

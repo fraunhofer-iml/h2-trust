@@ -103,7 +103,8 @@
           "buildTarget": "frontend:build:development"
         }
       },
-      "defaultConfiguration": "development"
+      "defaultConfiguration": "development",
+      "continuous": true
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
@@ -119,7 +120,8 @@
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "apps/frontend/jest.config.ts",
-        "codeCoverage": true
+        "codeCoverage": true,
+        "tsConfig": "apps/frontend/tsconfig.spec.json"
       },
       "configurations": {
         "ci": {
@@ -158,7 +160,6 @@
       },
       "defaultConfiguration": "production"
     },
-
     "i18n": {
       "sourceLocale": "de",
       "locales": {
@@ -182,7 +183,8 @@
           "serverTarget": "frontend:server:production"
         }
       },
-      "defaultConfiguration": "development"
+      "defaultConfiguration": "development",
+      "continuous": true
     },
     "prerender": {
       "executor": "@angular-devkit/build-angular:prerender",

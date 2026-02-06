@@ -6,13 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CommonModule } from '@angular/common';
 import { Component, input, output } from '@angular/core';
 import { FileTypes } from '../../shared/constants/file-types';
 
 @Component({
   selector: 'app-file-drag-and-drop',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './file-drag-and-drop.component.html',
 })
 export class FileDragAndDropComponent {

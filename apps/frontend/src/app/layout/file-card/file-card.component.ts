@@ -6,13 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CommonModule } from '@angular/common';
 import { Component, input, output } from '@angular/core';
 import { FileSizePipe } from '../../shared/pipes/file-size.pipe';
 
 @Component({
   selector: 'app-file-card',
-  imports: [CommonModule, FileSizePipe],
+  imports: [FileSizePipe],
   templateUrl: './file-card.component.html',
 })
 export class FileCardComponent {
