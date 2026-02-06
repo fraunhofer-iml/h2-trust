@@ -93,7 +93,7 @@ export class ProductionCsvUploadComponent {
     mutationFn: (dto: ImportSubmissionDto) => {
       return this.productionService.submitCsv(dto);
     },
-    onSuccess: () => this.router.navigateByUrl(ROUTES.PRODUCTION),
+    onSuccess: () => this.router.navigateByUrl(ROUTES.PRODUCTION_DATA),
     onError: (e: HttpErrorResponse) => {
       console.error(e);
       toast.error(e.error.message);

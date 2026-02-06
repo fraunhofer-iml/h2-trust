@@ -33,13 +33,13 @@
     "lib": ["es2023", "dom"],
     "paths": {
       "@h2-trust/amqp": ["libs/amqp/src/index.ts"],
-      "@h2-trust/fixtures/entities": ["libs/amqp/src/lib/fixtures/index.ts"],
       "@h2-trust/api": ["libs/api/src/index.ts"],
       "@h2-trust/blockchain": ["libs/blockchain/src/index.ts"],
       "@h2-trust/configuration": ["libs/configuration/src/index.ts"],
       "@h2-trust/csv-parser": ["libs/csv-parser/src/index.ts"],
       "@h2-trust/database": ["libs/database/src/index.ts"],
       "@h2-trust/domain": ["libs/domain/src/index.ts"],
+      "@h2-trust/fixtures/entities": ["libs/amqp/src/lib/fixtures/index.ts"],
       "@h2-trust/storage": ["libs/storage/src/index.ts"],
       "@h2-trust/utils": ["libs/utils/src/index.ts"]
     }

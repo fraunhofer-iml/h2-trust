@@ -6,8 +6,4 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './file.type';
-export * from './authenticated-kc-user.type';
-export * from './classification-type.type';
-export * from './emission-process-step.type';
-export * from './csv-content.type';
+export type CsvContentType = 'HYDROGEN' | 'POWER';

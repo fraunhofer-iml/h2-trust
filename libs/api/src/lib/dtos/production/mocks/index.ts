@@ -7,3 +7,4 @@
  */
 
 export { CreateProductionDtoMock } from './create-production-dto.mock';
+export { ProcessedCsvDtoMock } from './processed-csv-dto.mock';

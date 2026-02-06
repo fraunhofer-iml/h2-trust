@@ -1,0 +1,10 @@
+<button
+  mat-flat-button
+  (click)="downloadSelected()"
+  [disabled]="selectedFiles().isEmpty()"
+  [matBadge]="selectedFiles().selected.length"
+  [matBadgeHidden]="selectedFiles().isEmpty()"
+  matBadgeSize="large"
+>
+  <span class="flex flex-row items-center"> <span class="material-symbols-outlined pr-2">download</span> Download</span>
+</button>

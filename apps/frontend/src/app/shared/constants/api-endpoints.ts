@@ -14,6 +14,7 @@ const COMPANIES_ENDPOINT = BASE_URL + '/companies/';
 const POWER_ACCESS_APPROVALS_ENDPOINT = BASE_URL + '/power-access-approvals/';
 const BOTTLING_ENDPOINT = BASE_URL + '/bottlings/';
 const PRODUCTION_ENDPOINT = BASE_URL + '/productions/';
+const FILE_DOWNLOAD_ENDPOINT = BASE_URL + '/file-download/';
 
 export const API = {
   USERS: {
@@ -42,7 +43,11 @@ export const API = {
   },
   PRODUCTION: {
     BASE: PRODUCTION_ENDPOINT,
-    CSV: PRODUCTION_ENDPOINT + 'csv/import',
+    CSV: PRODUCTION_ENDPOINT + 'csv',
+    CSV_IMPORT: PRODUCTION_ENDPOINT + 'csv/import',
     CSV_SUBMIT: PRODUCTION_ENDPOINT + 'csv/submit',
+  },
+  FILE_DOWNLOAD: {
+    BASE: FILE_DOWNLOAD_ENDPOINT,
   },
 };

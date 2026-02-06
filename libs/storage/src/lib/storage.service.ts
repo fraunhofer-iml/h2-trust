@@ -27,11 +27,29 @@ export class StorageService {
     return this.client.putObject(this.bucketName, fileName, file, file.length);
   }
 
+  async uploadPdfFile(fileName: string, file: Buffer) {
+    return this.client.putObject(this.bucketName, fileName, file, file.length, {
+      'Content-Type': 'application/pdf',
+    });
+  }
+
   async downloadFile(fileName: string) {
     return this.client.getObject(this.bucketName, fileName);
   }
 
   async deleteFile(fileName: string) {
     return this.client.removeObject(this.bucketName, fileName);
+  }
+
+  async checkFileExists(fileName: string): Promise<boolean> {
+    try {
+      await this.client.statObject(this.bucketName, fileName);
+      return true;
+    } catch (err: any) {
+      if (err.code === 'NoSuchKey' || err.code === 'NotFound') {
+        return false;
+      }
+      throw err;
+    }
   }
 }

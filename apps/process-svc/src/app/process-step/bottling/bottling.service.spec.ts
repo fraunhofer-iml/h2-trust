@@ -24,7 +24,7 @@ describe('BottlingService', () => {
   };
 
   const storageServiceMock = {
-    uploadFile: jest.fn(),
+    uploadPdfFile: jest.fn(),
   };
 
   const documentRepositoryMock = {
@@ -190,14 +190,17 @@ describe('BottlingService', () => {
       processStepServiceMock.setBatchesInactive.mockResolvedValue({ count: 1 });
       processStepServiceMock.createProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
       processStepServiceMock.readProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
-      storageServiceMock.uploadFile.mockResolvedValue(givenFile.originalname);
+      storageServiceMock.uploadPdfFile.mockResolvedValue(givenFile.originalname);
       documentRepositoryMock.addDocumentToProcessStep.mockResolvedValue({});
 
       // Act
       await service.createHydrogenBottlingProcessStep(givenPayload);
 
       // Assert
-      expect(storageServiceMock.uploadFile).toHaveBeenCalledWith(givenFile.originalname, Buffer.from(givenFile.buffer));
+      expect(storageServiceMock.uploadPdfFile).toHaveBeenCalledWith(
+        givenFile.originalname,
+        Buffer.from(givenFile.buffer),
+      );
       expect(documentRepositoryMock.addDocumentToProcessStep).toHaveBeenCalledWith(
         new DocumentEntity(undefined, givenFile.originalname),
         givenCreatedBottlingProcessStep.id,

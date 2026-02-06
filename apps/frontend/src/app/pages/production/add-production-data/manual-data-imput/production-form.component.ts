@@ -88,7 +88,7 @@ export class ProductionFormComponent {
       return result;
     },
     onSuccess: () => {
-      this.router.navigateByUrl(ROUTES.PRODUCTION);
+      this.router.navigateByUrl(ROUTES.PRODUCTION_DATA);
     },
     onError: (e) => toast(e.message),
   }));

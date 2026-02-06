@@ -9,5 +9,7 @@
 export enum ROUTES {
   UNITS = 'units',
   PRODUCTION = 'production',
+  PRODUCTION_FILES = 'production/files',
+  PRODUCTION_DATA = 'production/data',
   BOTTLING = 'bottling',
 }
