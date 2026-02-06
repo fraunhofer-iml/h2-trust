@@ -45,8 +45,8 @@ export class ProductionService {
 
   downloadFiles(dto: DownloadFilesDto) {
     return lastValueFrom(
-      this.httpClient.post<Blob>(API.FILE_DOWNLOAD.BASE, dto, {
-        responseType: 'blob' as 'json',
+      this.httpClient.post(API.FILE_DOWNLOAD.BASE, dto, {
+        responseType: 'blob',
       }),
     );
   }

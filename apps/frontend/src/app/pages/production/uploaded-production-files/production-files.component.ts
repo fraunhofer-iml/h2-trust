@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { saveAs } from 'file-saver';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CommonModule } from '@angular/common';
@@ -59,7 +60,7 @@ export class ProductionFilesComponent implements AfterViewInit {
   protected readonly ICONS = ICONS.UNITS;
   protected readonly MeasurementUnit = MeasurementUnit;
   readonly displayedColumns = ['select', 'name', 'uploadedBy', 'startedAt', 'endedAt', 'type', 'amount'] as const;
-  readonly displayCsvContentTypes: { name: string; value: CsvContentType | null }[] = [
+  readonly displayedCsvContentTypes: { name: string; value: CsvContentType | null }[] = [
     { name: 'Hydrogen', value: 'HYDROGEN' },
     { name: 'Power', value: 'POWER' },
     { name: 'All', value: null },
@@ -67,12 +68,12 @@ export class ProductionFilesComponent implements AfterViewInit {
 
   productionService = inject(ProductionService);
 
-  dataSource: MatTableDataSource<ProcessedCsvDto> = new MatTableDataSource<ProcessedCsvDto>();
   selecteType$ = signal<CsvContentType | null>(null);
   startDate$ = signal<Date | null>(null);
   endDate$ = signal<Date | null>(null);
   searchValue$ = signal<string>('');
 
+  dataSource: MatTableDataSource<ProcessedCsvDto> = new MatTableDataSource<ProcessedCsvDto>();
   searchControl = new FormControl<string>('');
   selection = new SelectionModel<ProcessedCsvDto>(true, []);
 
@@ -154,20 +155,11 @@ export class ProductionFilesComponent implements AfterViewInit {
 
     if (files.length === 1) {
       const { url, name } = files[0];
-      this.triggerDownload(url, name);
+      saveAs(url, name);
     } else {
-      const dto = new DownloadFilesDto(files.map((f) => f.name));
+      const dto: DownloadFilesDto = { ids: files.map((f) => f.name) };
       const downloadedZip: Blob = await this.productionService.downloadFiles(dto);
-      this.triggerDownload(URL.createObjectURL(downloadedZip), 'download.zip');
+      saveAs(downloadedZip, 'download.zip');
     }
-  }
-
-  triggerDownload(url: string, filename: string) {
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
   }
 }

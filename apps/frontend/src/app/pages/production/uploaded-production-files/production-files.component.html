@@ -15,7 +15,7 @@
       <mat-form-field appearance="outline">
         <mat-label>Type</mat-label>
         <mat-select [value]="selecteType$()" (selectionChange)="this.selecteType$.set($event.value)">
-          <mat-option *ngFor="let type of displayCsvContentTypes" [value]="type.value"> {{ type.name }} </mat-option>
+          <mat-option *ngFor="let type of displayedCsvContentTypes" [value]="type.value"> {{ type.name }} </mat-option>
         </mat-select>
       </mat-form-field>
 

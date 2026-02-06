@@ -1,6 +1,23 @@
+import { Response } from 'express';
+import { ZipFile } from 'yazl';
 import { Injectable } from '@nestjs/common';
+import { StorageService } from '@h2-trust/storage';
 
 @Injectable()
 export class FileDownloadService {
-  //private readonly logger: Logger = new Logger();
+  constructor(private readonly storage: StorageService) {}
+
+  async downloadFilesAsZip(res: Response, files: string[]) {
+    const zip = new ZipFile();
+    res.setHeader('Content-Type', 'application/zip');
+
+    zip.outputStream.pipe(res);
+
+    for (const file of files) {
+      const fileStream = await this.storage.downloadFile(file);
+      zip.addReadStream(fileStream, file);
+    }
+
+    zip.end();
+  }
 }
