@@ -8,7 +8,13 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserEntity } from '@h2-trust/amqp';
-import { DatabaseModule, PrismaService, UserDbType, UserDbTypeMock, userQueryArgs } from '@h2-trust/database';
+import {
+  DatabaseModule,
+  PrismaService,
+  UserDeepDbType,
+  UserDeepDbTypeMock,
+  userDeepQueryArgs,
+} from '@h2-trust/database';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
@@ -42,11 +48,11 @@ describe('UserController', () => {
   });
 
   it('should get an user and hist company by ID', async () => {
-    const mockedUsers: UserDbType[] = UserDbTypeMock;
+    const mockedUsers: UserDeepDbType[] = UserDeepDbTypeMock;
 
     jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(mockedUsers[0]);
 
-    const expectedResponse: UserEntity = UserEntity.fromDatabase(mockedUsers[0]);
+    const expectedResponse: UserEntity = UserEntity.fromDeepDatabase(mockedUsers[0]);
     const actualResponse = await controller.readUserWithCompany({ id: expectedResponse.id });
 
     expect(prisma.user.findUnique).toHaveBeenCalledTimes(1);
@@ -54,7 +60,7 @@ describe('UserController', () => {
       where: {
         id: mockedUsers[0].id,
       },
-      ...userQueryArgs,
+      ...userDeepQueryArgs,
     });
     expect(actualResponse).toEqual(expectedResponse);
   });

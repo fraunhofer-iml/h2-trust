@@ -7,12 +7,12 @@
  */
 
 import { PowerAccessApprovalSeed, PowerProductionTypeSeed } from '../../../seed';
-import { PowerAccessApprovalDbType } from '../power-access-approval.db.type';
+import { PowerAccessApprovalDeepDbType } from '../power-access-approval.db.type';
 import { CompanyDbTypeMock } from './company-db-type.mock';
 import { DocumentDbTypeMock } from './document-db-type.mock';
 import { PowerProductionUnitDbTypeMock } from './power-production-unit-db-type.mock';
 
-export const PowerAccessApprovalDbTypeMock = <PowerAccessApprovalDbType[]>[
+export const PowerAccessApprovalDbTypeMock = <PowerAccessApprovalDeepDbType[]>[
   {
     ...PowerAccessApprovalSeed[0],
     powerProducer: CompanyDbTypeMock[0],

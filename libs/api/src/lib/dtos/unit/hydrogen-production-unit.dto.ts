@@ -8,7 +8,6 @@
 
 import { HydrogenProductionUnitEntity } from '@h2-trust/amqp';
 import { UnitType } from '@h2-trust/domain';
-import { requireDefined } from '@h2-trust/utils';
 import { EnumLabelMapper } from '../../labels';
 import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
@@ -32,10 +31,9 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     certifiedBy: string,
     commissionedOn: Date,
     address: AddressDto,
-    company: UnitOwnerDto,
     ratedPower: number,
     modelNumber: string,
-    owner: string,
+    owner: UnitOwnerDto,
     operator: string,
     unitType: UnitType,
     biddingZone: string,
@@ -54,7 +52,6 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
       certifiedBy,
       commissionedOn,
       address,
-      company,
       modelNumber,
       owner,
       operator,
@@ -71,15 +68,12 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
   static override fromEntity(unit: HydrogenProductionUnitEntity): HydrogenProductionUnitDto {
     return {
       ...BaseUnitDto.fromEntity(unit),
-      method: EnumLabelMapper.getHydrogenProductionMethod(requireDefined(unit.method, 'method')),
-      technology: EnumLabelMapper.getHydrogenProductionTechnology(requireDefined(unit.technology, 'technology')),
-      biddingZone: requireDefined(unit.biddingZone, 'biddingZone'),
-      ratedPower: requireDefined(unit.ratedPower, 'ratedPower'),
-      pressure: requireDefined(unit.pressure, 'pressure'),
-      waterConsumptionLitersPerHour: requireDefined(
-        unit.waterConsumptionLitersPerHour,
-        'waterConsumptionLitersPerHour',
-      ),
+      method: EnumLabelMapper.getHydrogenProductionMethod(unit.method),
+      technology: EnumLabelMapper.getHydrogenProductionTechnology(unit.technology),
+      biddingZone: unit.biddingZone,
+      ratedPower: unit.ratedPower,
+      pressure: unit.pressure,
+      waterConsumptionLitersPerHour: unit.waterConsumptionLitersPerHour,
     };
   }
 }

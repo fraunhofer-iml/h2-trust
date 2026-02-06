@@ -6,7 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenStorageUnitDbType } from '@h2-trust/database';
+import {
+  HydrogenStorageUnitDbType,
+  HydrogenStorageUnitDeepDbType,
+  HydrogenStorageUnitFlatDbType,
+  HydrogenStorageUnitNestedDbType,
+} from '@h2-trust/database';
 import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { HydrogenComponentEntity } from '../bottling';
@@ -14,10 +19,10 @@ import { CompanyEntity } from '../company';
 import { BaseUnitEntity } from './base-unit.entity';
 
 export class HydrogenStorageUnitEntity extends BaseUnitEntity {
-  capacity?: number;
-  pressure?: number;
-  type?: HydrogenStorageType;
-  filling?: HydrogenComponentEntity[];
+  capacity: number;
+  pressure: number;
+  type: HydrogenStorageType;
+  filling: HydrogenComponentEntity[];
 
   constructor(
     id: string,
@@ -30,14 +35,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     certifiedBy: string,
     commissionedOn: Date,
     address: AddressEntity,
-    company: {
-      id?: string;
-      hydrogenApprovals?: {
-        powerAccessApprovalStatus?: string;
-        powerProducerId?: string;
-        powerProducerName?: string;
-      }[];
-    } | null,
+    owner: CompanyEntity,
     operator: CompanyEntity,
     unitType: UnitType,
     capacity: number,
@@ -56,7 +54,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       certifiedBy,
       commissionedOn,
       address,
-      company,
+      owner,
       operator,
       unitType,
     );
@@ -66,6 +64,46 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     this.filling = filling;
   }
 
+  static fromDeepDatabase(unit: HydrogenStorageUnitDeepDbType): HydrogenStorageUnitEntity {
+    return {
+      ...BaseUnitEntity.fromDeepBaseUnit(unit.generalInfo),
+      capacity: unit.capacity.toNumber(),
+      pressure: unit.pressure.toNumber(),
+      modelType: unit.generalInfo?.modelType,
+      filling: HydrogenStorageUnitEntity.mapFillingForDeepAndNested(unit),
+      address: unit.generalInfo.address,
+      unitType: UnitType.HYDROGEN_STORAGE,
+      type: unit.type as HydrogenStorageType,
+    };
+  }
+
+  static fromNestedDatabase(unit: HydrogenStorageUnitNestedDbType): HydrogenStorageUnitEntity {
+    return {
+      ...BaseUnitEntity.fromNestedBaseUnit(unit.generalInfo),
+      capacity: unit.capacity.toNumber(),
+      pressure: unit.pressure.toNumber(),
+      modelType: unit.generalInfo?.modelType,
+      filling: HydrogenStorageUnitEntity.mapFillingForDeepAndNested(unit),
+      address: unit.generalInfo.address,
+      unitType: UnitType.HYDROGEN_STORAGE,
+      type: unit.type as HydrogenStorageType,
+    };
+  }
+
+  static fromFlatDatabase(unit: HydrogenStorageUnitFlatDbType): HydrogenStorageUnitEntity {
+    return <HydrogenStorageUnitEntity>{
+      ...BaseUnitEntity.fromFlatBaseUnit(unit.generalInfo),
+      capacity: unit.capacity.toNumber(),
+      pressure: unit.pressure.toNumber(),
+      modelType: unit.generalInfo?.modelType,
+      filling: [],
+      address: unit.generalInfo.address,
+      unitType: UnitType.HYDROGEN_STORAGE,
+      type: unit.type as HydrogenStorageType,
+    };
+  }
+
+  //TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
   static override fromDatabase(unit: HydrogenStorageUnitDbType): HydrogenStorageUnitEntity {
     return <HydrogenStorageUnitEntity>{
       ...BaseUnitEntity.fromDatabase(unit),
@@ -77,6 +115,23 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     };
   }
 
+  private static mapFillingForDeepAndNested(
+    unit: HydrogenStorageUnitDeepDbType | HydrogenStorageUnitNestedDbType,
+  ): HydrogenComponentEntity[] {
+    return (
+      unit?.filling?.map((batch) => {
+        if (!batch.batchDetails?.qualityDetails?.color) {
+          throw new Error(`Hydrogen batch [${batch.id}] in storage unit is missing color information.`);
+        }
+        return {
+          color: batch.batchDetails.qualityDetails.color,
+          amount: batch.amount?.toNumber() ?? 0,
+        };
+      }) ?? []
+    );
+  }
+
+  //TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
   private static mapFilling(unit: HydrogenStorageUnitDbType): HydrogenComponentEntity[] {
     return (
       unit.hydrogenStorageUnit?.filling?.map((batch) => {

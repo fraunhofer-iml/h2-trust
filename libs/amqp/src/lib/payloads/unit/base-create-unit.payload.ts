@@ -7,7 +7,7 @@
  */
 
 import { Type } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { IsDate, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 import { AddressPayload } from '../common';
 
 export abstract class BaseCreateUnitPayload {
@@ -20,24 +20,24 @@ export abstract class BaseCreateUnitPayload {
   mastrNumber: string;
 
   @IsString()
-  @IsOptional()
-  manufacturer?: string;
+  @IsNotEmpty()
+  manufacturer: string;
 
   @IsString()
-  @IsOptional()
-  modelType?: string;
+  @IsNotEmpty()
+  modelType: string;
 
   @IsString()
-  @IsOptional()
-  modelNumber?: string;
+  @IsNotEmpty()
+  modelNumber: string;
 
   @IsString()
-  @IsOptional()
-  serialNumber?: string;
+  @IsNotEmpty()
+  serialNumber: string;
 
   @IsString()
-  @IsOptional()
-  certifiedBy?: string;
+  @IsNotEmpty()
+  certifiedBy: string;
 
   @IsDate()
   @IsNotEmpty()
@@ -51,30 +51,30 @@ export abstract class BaseCreateUnitPayload {
 
   @IsString()
   @IsNotEmpty()
-  companyId: string; // TODO-MP: should be ownerId
+  ownerId: string;
 
   @IsString()
-  @IsOptional()
-  operatorId?: string;
+  @IsNotEmpty()
+  operatorId: string;
 
   protected constructor(
     name: string,
     mastrNumber: string,
     commissionedOn: Date,
     address: AddressPayload,
-    companyId: string,
-    manufacturer?: string,
-    modelType?: string,
-    modelNumber?: string,
-    serialNumber?: string,
-    certifiedBy?: string,
-    operatorId?: string,
+    ownerId: string,
+    manufacturer: string,
+    modelType: string,
+    modelNumber: string,
+    serialNumber: string,
+    certifiedBy: string,
+    operatorId: string,
   ) {
     this.name = name;
     this.mastrNumber = mastrNumber;
     this.commissionedOn = commissionedOn;
     this.address = address;
-    this.companyId = companyId;
+    this.ownerId = ownerId;
     this.manufacturer = manufacturer;
     this.modelType = modelType;
     this.modelNumber = modelNumber;

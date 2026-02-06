@@ -6,7 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerProductionUnitDbType } from '@h2-trust/database';
+import {
+  PowerProductionUnitDbType,
+  PowerProductionUnitDeepDbType,
+  PowerProductionUnitFlatDbType,
+  PowerProductionUnitNestedDbType,
+} from '@h2-trust/database';
 import { BiddingZone, GridLevel, UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
@@ -14,15 +19,15 @@ import { BaseUnitEntity } from './base-unit.entity';
 import { PowerProductionTypeEntity } from './power-production-type.entity';
 
 export class PowerProductionUnitEntity extends BaseUnitEntity {
-  decommissioningPlannedOn?: Date;
-  electricityMeterNumber?: string;
-  ratedPower?: number;
-  gridOperator?: string;
-  gridLevel?: GridLevel;
-  biddingZone?: BiddingZone;
-  gridConnectionNumber?: string;
-  financialSupportReceived?: boolean;
-  type?: PowerProductionTypeEntity;
+  decommissioningPlannedOn: Date;
+  electricityMeterNumber: string;
+  ratedPower: number;
+  gridOperator: string;
+  gridLevel: GridLevel;
+  biddingZone: BiddingZone;
+  gridConnectionNumber: string;
+  financialSupportReceived: boolean;
+  type: PowerProductionTypeEntity;
 
   constructor(
     id: string,
@@ -35,14 +40,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     certifiedBy: string,
     commissionedOn: Date,
     address: AddressEntity,
-    company: {
-      id?: string;
-      hydrogenApprovals?: {
-        powerAccessApprovalStatus?: string;
-        powerProducerId?: string;
-        powerProducerName?: string;
-      }[];
-    } | null,
+    owner: CompanyEntity,
     operator: CompanyEntity,
     unitType: UnitType,
     decommissioningPlannedOn: Date,
@@ -66,7 +64,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
       certifiedBy,
       commissionedOn,
       address,
-      company,
+      owner,
       operator,
       unitType,
     );
@@ -81,6 +79,60 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     this.type = type;
   }
 
+  static fromDeepDatabase(unit: PowerProductionUnitDeepDbType): PowerProductionUnitEntity {
+    return <PowerProductionUnitEntity>{
+      ...BaseUnitEntity.fromDeepBaseUnit(unit.generalInfo),
+      modelType: unit.generalInfo?.modelType,
+      address: unit.generalInfo.address,
+      unitType: UnitType.POWER_PRODUCTION,
+      decommissioningPlannedOn: unit.decommissioningPlannedOn,
+      electricityMeterNumber: unit.electricityMeterNumber,
+      ratedPower: unit.ratedPower.toNumber(),
+      gridOperator: unit.gridOperator,
+      gridLevel: unit.gridLevel,
+      biddingZone: unit.biddingZone,
+      gridConnectionNumber: unit.gridConnectionNumber,
+      financialSupportReceived: unit.financialSupportReceived,
+      type: unit.type,
+    };
+  }
+
+  static fromNestedDatabase(unit: PowerProductionUnitNestedDbType): PowerProductionUnitEntity {
+    return <PowerProductionUnitEntity>{
+      ...BaseUnitEntity.fromNestedBaseUnit(unit.generalInfo),
+      modelType: unit.generalInfo?.modelType,
+      address: unit.generalInfo.address,
+      unitType: UnitType.POWER_PRODUCTION,
+      decommissioningPlannedOn: unit.decommissioningPlannedOn,
+      electricityMeterNumber: unit.electricityMeterNumber,
+      ratedPower: unit.ratedPower.toNumber(),
+      gridOperator: unit.gridOperator,
+      gridLevel: unit.gridLevel,
+      biddingZone: unit.biddingZone,
+      gridConnectionNumber: unit.gridConnectionNumber,
+      financialSupportReceived: unit.financialSupportReceived,
+      type: unit.type,
+    };
+  }
+
+  static fromFlatDatabase(unit: PowerProductionUnitFlatDbType): PowerProductionUnitEntity {
+    return <PowerProductionUnitEntity>{
+      ...BaseUnitEntity.fromFlatBaseUnit(unit.generalInfo),
+      modelType: unit.generalInfo?.modelType,
+      unitType: UnitType.POWER_PRODUCTION,
+      decommissioningPlannedOn: unit.decommissioningPlannedOn,
+      electricityMeterNumber: unit.electricityMeterNumber,
+      ratedPower: unit.ratedPower.toNumber(),
+      gridOperator: unit.gridOperator,
+      gridLevel: unit.gridLevel,
+      biddingZone: unit.biddingZone,
+      gridConnectionNumber: unit.gridConnectionNumber,
+      financialSupportReceived: unit.financialSupportReceived,
+      type: unit.type,
+    };
+  }
+
+  //TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
   static override fromDatabase(unit: PowerProductionUnitDbType): PowerProductionUnitEntity {
     return <PowerProductionUnitEntity>{
       ...BaseUnitEntity.fromDatabase(unit),
@@ -89,6 +141,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     };
   }
 
+  //TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
   static mapPowerProductionUnitSpecials(unit: PowerProductionUnitDbType) {
     return {
       decommissioningPlannedOn: unit.powerProductionUnit?.decommissioningPlannedOn,

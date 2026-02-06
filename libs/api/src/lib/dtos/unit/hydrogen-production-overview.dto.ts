@@ -7,7 +7,6 @@
  */
 
 import { HydrogenProductionUnitEntity } from '@h2-trust/amqp';
-import { requireDefined } from '@h2-trust/utils';
 import { EnumLabelMapper } from '../../labels';
 
 export class HydrogenProductionOverviewDto {
@@ -41,21 +40,21 @@ export class HydrogenProductionOverviewDto {
   }
 
   static fromEntity(unit: HydrogenProductionUnitEntity): HydrogenProductionOverviewDto {
-    const firstApproval = unit.company?.hydrogenApprovals?.[0];
+    const firstApproval = unit.owner?.hydrogenApprovals?.[0];
 
     return <HydrogenProductionOverviewDto>{
       id: unit.id,
       name: unit.name,
       ratedPower: unit.ratedPower,
-      technology: EnumLabelMapper.getHydrogenProductionTechnology(requireDefined(unit.technology, 'unit.technology')),
+      technology: EnumLabelMapper.getHydrogenProductionTechnology(unit.technology),
       producing: true,
       powerAccessApprovalStatus: HydrogenProductionOverviewDto.existsPowerProducer(unit),
-      powerProducerId: firstApproval?.powerProducerId ?? '',
-      powerProducerName: firstApproval?.powerProducerName ?? '',
+      powerProducerId: firstApproval?.powerProducer.id ?? '',
+      powerProducerName: firstApproval?.powerProducer.name ?? '',
     };
   }
 
   private static existsPowerProducer(unit: HydrogenProductionUnitEntity) {
-    return unit.company?.hydrogenApprovals?.length ? unit.company.hydrogenApprovals.length !== 0 : false;
+    return unit.owner?.hydrogenApprovals?.length ? unit.owner.hydrogenApprovals.length !== 0 : false;
   }
 }

@@ -25,10 +25,7 @@ export const PowerProductionUnitEntityMock: PowerProductionUnitEntity[] = [
     UnitSeed[0].certifiedBy!,
     new Date(UnitSeed[0].commissionedOn),
     AddressEntityPowerMock,
-    {
-      id: CompanyEntityPowerMock.id!,
-      hydrogenApprovals: [],
-    },
+    CompanyEntityPowerMock,
     CompanyEntityPowerMock,
     UnitType.POWER_PRODUCTION,
     new Date(PowerProductionUnitSeed[0].decommissioningPlannedOn!),

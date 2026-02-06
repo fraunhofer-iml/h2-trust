@@ -22,6 +22,7 @@ export const CompanyEntityPowerMock: CompanyEntity = new CompanyEntity(
   CompanySeed[0].type,
   AddressEntityPowerMock,
   [],
+  [],
 );
 export const CompanyEntityGridMock: CompanyEntity = new CompanyEntity(
   CompanySeed[1].id,
@@ -29,6 +30,7 @@ export const CompanyEntityGridMock: CompanyEntity = new CompanyEntity(
   CompanySeed[1].mastrNumber,
   CompanySeed[1].type,
   AddressEntityGridMock,
+  [],
   [],
 );
 export const CompanyEntityHydrogenMock: CompanyEntity = new CompanyEntity(
@@ -38,6 +40,7 @@ export const CompanyEntityHydrogenMock: CompanyEntity = new CompanyEntity(
   CompanySeed[2].type,
   AddressEntityHydrogenMock,
   [],
+  [],
 );
 export const CompanyEntityRecipientMock: CompanyEntity = new CompanyEntity(
   CompanySeed[3].id,
@@ -45,5 +48,6 @@ export const CompanyEntityRecipientMock: CompanyEntity = new CompanyEntity(
   CompanySeed[3].mastrNumber,
   CompanySeed[3].type,
   AddressEntityRecipientMock,
+  [],
   [],
 );

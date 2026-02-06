@@ -24,10 +24,7 @@ export const HydrogenProductionUnitEntityMock: HydrogenProductionUnitEntity[] = 
     UnitSeed[0].certifiedBy!,
     new Date(UnitSeed[0].commissionedOn),
     AddressEntityPowerMock,
-    {
-      id: CompanyEntityHydrogenMock.id!,
-      hydrogenApprovals: [],
-    },
+    CompanyEntityHydrogenMock,
     CompanyEntityHydrogenMock,
     UnitType.HYDROGEN_PRODUCTION,
     HydrogenProductionUnitSeed[0].ratedPower.toNumber(),

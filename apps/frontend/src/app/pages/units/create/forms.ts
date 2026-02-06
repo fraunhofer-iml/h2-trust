@@ -67,14 +67,14 @@ export type PowerProductionFormGroup = {
 export const newUnitForm = () =>
   new FormGroup<UnitFormGroup>({
     name: new FormControl<string | null>(null, Validators.required),
-    unitType: new FormControl<UnitType | null>(null),
+    unitType: new FormControl<UnitType | null>(null, Validators.required),
     owner: new FormControl<string | null>(null, Validators.required),
-    certifiedBy: new FormControl<string | null>(null),
-    operator: new FormControl<string | null>(null),
-    manufacturer: new FormControl<string | null>(null),
-    modelType: new FormControl<string | null>(null),
-    modelNumber: new FormControl<string | null>(null),
-    serialNumber: new FormControl<string | null>(null),
+    certifiedBy: new FormControl<string | null>(null, Validators.required),
+    operator: new FormControl<string | null>(null, Validators.required),
+    manufacturer: new FormControl<string | null>(null, Validators.required),
+    modelType: new FormControl<string | null>(null, Validators.required),
+    modelNumber: new FormControl<string | null>(null, Validators.required),
+    serialNumber: new FormControl<string | null>(null, Validators.required),
     commissionedOn: new FormControl<Date | null>(null, Validators.required),
     mastrNumber: new FormControl<string | null>(null, Validators.required),
     address: new FormGroup<{
@@ -102,13 +102,13 @@ export const newH2StorageForm = () =>
 export const newPowerProductionForm = () =>
   new FormGroup<PowerProductionFormGroup>({
     biddingZone: new FormControl<BiddingZone | null>(null, Validators.required),
-    gridOperator: new FormControl<string | null>(null),
+    gridOperator: new FormControl<string | null>(null, Validators.required),
     gridLevel: new FormControl<GridLevel | null>(null, Validators.required),
-    gridConnectionNumber: new FormControl<string | null>(null),
+    gridConnectionNumber: new FormControl<string | null>(null, Validators.required),
     ratedPower: new FormControl<number | null>(null, Validators.required),
     electricityMeterNumber: new FormControl<string | null>(null, Validators.required),
     powerProductionType: new FormControl<PowerProductionType | null>(null, Validators.required),
-    decommissioningPlannedOn: new FormControl<Date | null>(null),
+    decommissioningPlannedOn: new FormControl<Date | null>(null, Validators.required),
     financialSupportReceived: new FormControl<boolean | null>(false),
   });
 

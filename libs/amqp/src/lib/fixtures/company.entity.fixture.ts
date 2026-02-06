@@ -19,6 +19,7 @@ export const CompanyEntityFixture = {
       overrides.type ?? CompanyType.POWER_PRODUCER,
       overrides.address ?? AddressEntityFixture.create(),
       overrides.users ?? [],
+      overrides.hydrogenApprovals ?? [],
     ),
   createHydrogenProducer: (overrides: Partial<CompanyEntity> = {}): CompanyEntity =>
     new CompanyEntity(
@@ -28,5 +29,6 @@ export const CompanyEntityFixture = {
       overrides.type ?? CompanyType.HYDROGEN_PRODUCER,
       overrides.address ?? AddressEntityFixture.create(),
       overrides.users ?? [],
+      overrides.hydrogenApprovals ?? [],
     ),
 } as const;
