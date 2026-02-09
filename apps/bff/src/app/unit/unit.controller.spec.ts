@@ -31,7 +31,6 @@ import {
   PowerProductionUnitCreateDto,
   PowerProductionUnitCreateDtoMock,
   PowerProductionUnitDto,
-  UnitOverviewDto,
   UserDetailsDto,
 } from '@h2-trust/api';
 import { UserService } from '../user/user.service';
@@ -99,7 +98,7 @@ describe('UnitController', () => {
       return of(fixtureUnits);
     });
 
-    const actualResponse: UnitOverviewDto[] = await controller.getHydrogenProductionUnits({
+    const actualResponse: HydrogenProductionOverviewDto[] = await controller.getHydrogenProductionUnits({
       sub: givenUserId,
     });
     expect(readUserRequestSpy).toHaveBeenCalledTimes(1);
