@@ -86,6 +86,7 @@ export class ProductionImportService {
     const headers = ProductionImportService.headersForBatchType[type];
 
     // TODO-MP: do not send transactions in this loop one by one, but batch them together to reduce gas costs improve performance
+    // TODO-MP: create a new method, e.g. storeProofs: hash files -> write to db -> write to bc -> write to db
     return Promise.all(
       unitFileReferences.map(async (ufr) => {
         const downloadingStream = await this.storageService.downloadFile(ufr.fileName);
