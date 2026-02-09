@@ -22,13 +22,14 @@ import {
   PowerAccessApprovalEntity,
   PowerAccessApprovalPatterns,
   ProcessStepEntity,
+  ProofEntity,
   ReadPowerAccessApprovalsPayload,
   StagedProductionEntity,
   StageProductionsPayload,
   UnitAccountingPeriods,
   UnitFileReference,
 } from '@h2-trust/amqp';
-import { HashUtil } from '@h2-trust/blockchain';
+import { HashUtil, BlockchainService } from '@h2-trust/blockchain';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
 import { BatchType, PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
@@ -48,6 +49,7 @@ export class ProductionImportService {
 
   private readonly logger = new Logger(this.constructor.name);
   private readonly productionChunkSize: number;
+  private readonly minioUrl: string;
 
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
@@ -55,8 +57,10 @@ export class ProductionImportService {
     private readonly processStepService: ProcessStepService,
     private readonly stagedProductionRepository: StagedProductionRepository,
     private readonly storageService: StorageService,
+    private readonly blockchainService: BlockchainService,
   ) {
     this.productionChunkSize = this.configurationService.getProcessSvcConfiguration().productionChunkSize;
+    this.minioUrl = `${this.configurationService.getGlobalConfiguration().minio.endPoint}:${this.configurationService.getGlobalConfiguration().minio.port}/${this.configurationService.getGlobalConfiguration().minio.bucketName}`;
   }
 
   async stageProductions(payload: StageProductionsPayload): Promise<ParsedProductionMatchingResultEntity> {
@@ -94,8 +98,10 @@ export class ProductionImportService {
           AccountingPeriodCsvParser.parseStream<T>(parsingStream, headers, ufr.fileName),
         ]);
 
-        // TODO-MP: the hash will be later stored in a smart contract
-        this.logger.log(`Computed hash: ${hash}`);
+        const uuid = ufr.fileName.split('.').slice(0, -1).join('.'); // remove file extension
+        const cid = this.minioUrl + '/' + ufr.fileName; // temporary solution until we have implemented proper IPFS support
+        const proof = new ProofEntity(uuid, hash, cid);
+        await this.blockchainService.storeProof(proof);
 
         if (accountingPeriods.length < 1) {
           throw new BrokerException(
