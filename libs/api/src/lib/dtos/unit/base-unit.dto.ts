@@ -83,7 +83,7 @@ export abstract class BaseUnitDto {
             powerProducerId: approval.powerProducer.id,
           })) ?? [],
       },
-      operator: unit.operator.name,
+      operator: unit.operator?.name,
       unitType: unit.unitType,
     };
   }
