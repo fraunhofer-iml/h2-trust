@@ -89,19 +89,25 @@ export class ProductionImportService {
     return Promise.all(
       unitFileReferences.map(async (ufr) => {
         const downloadingStream = await this.storageService.downloadFile(ufr.fileName);
+        const hashingStream = new PassThrough();
         const parsingStream = new PassThrough();
-        downloadingStream.on('error', (err) => parsingStream.destroy(err));
+        downloadingStream.on('error', (err) => {
+          hashingStream.destroy(err);
+          parsingStream.destroy(err);
+        });
+        downloadingStream.pipe(hashingStream);
         downloadingStream.pipe(parsingStream);
 
         const [hash, accountingPeriods] = await Promise.all([
-          HashUtil.hashStream(downloadingStream),
+          HashUtil.hashStream(hashingStream),
           AccountingPeriodCsvParser.parseStream<T>(parsingStream, headers, ufr.fileName),
         ]);
 
         const uuid = ufr.fileName.split('.').slice(0, -1).join('.'); // remove file extension
         const cid = this.minioUrl + '/' + ufr.fileName; // temporary solution until we have implemented proper IPFS support
         const proof = new ProofEntity(uuid, hash, cid);
-        await this.blockchainService.storeProof(proof);
+        const txHash = await this.blockchainService.storeProof(proof);
+        this.logger.log(`Tx hash ${txHash}`);
 
         if (accountingPeriods.length < 1) {
           throw new BrokerException(

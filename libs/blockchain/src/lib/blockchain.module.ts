@@ -7,9 +7,11 @@
  */
 
 import { Module } from '@nestjs/common';
+import { ConfigurationModule } from '@h2-trust/configuration';
 import { BlockchainService } from './blockchain.service';
 
 @Module({
+  imports: [ConfigurationModule],
   controllers: [],
   providers: [BlockchainService],
   exports: [BlockchainService],

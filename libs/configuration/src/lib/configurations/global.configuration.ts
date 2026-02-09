@@ -20,10 +20,18 @@ export interface MinioConfiguration {
   bucketName: string;
 }
 
+export interface BlockchainConfiguration {
+  rpcUrl: string;
+  privateKey: string;
+  smartContractAddress: string;
+  artifactPath: string;
+}
+
 export interface GlobalConfiguration {
   logLevel: LogLevel[];
   amqpUri: string;
   blockchainEnabled: boolean;
+  blockchain: BlockchainConfiguration;
   minio: MinioConfiguration;
 }
 
@@ -31,6 +39,12 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
   logLevel: (process.env['LOG_LEVEL'] || 'fatal,error,warn,log,debug').split(','),
   amqpUri: process.env['AMQP_URI'] || 'amqp://localhost:5672',
   blockchainEnabled: process.env['BLOCKCHAIN_ENABLED'] === 'true',
+  blockchain: {
+    rpcUrl: process.env['BC_RPC_URL'] || '',
+    privateKey: process.env['BC_PRIVATE_KEY'] || '',
+    smartContractAddress: process.env['BC_SMART_CONTRACT'] || '',
+    artifactPath: process.env['BC_ARTIFACT_PATH'] || '',
+  },
   minio: {
     endPoint: process.env['MINIO_ENDPOINT'] || 'localhost',
     port: parseInt(process.env['MINIO_PORT'] || '9000'),
