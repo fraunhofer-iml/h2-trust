@@ -9,7 +9,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProofEntity } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { BlockchainService } from './blockchain.service';
+import { BlockchainService, ProofEntry } from './blockchain.service';
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
@@ -17,7 +17,7 @@ jest.mock('fs', () => ({
 }));
 
 const mockWait = jest.fn();
-const mockStoreProof = jest.fn();
+const mockStoreProofs = jest.fn();
 const mockGetProofByUuid = jest.fn();
 
 jest.mock('ethers', () => {
@@ -28,7 +28,7 @@ jest.mock('ethers', () => {
         Wallet: jest.fn(),
         NonceManager: jest.fn(),
         Contract: jest.fn().mockImplementation(() => ({
-            storeProof: mockStoreProof,
+            storeProofs: mockStoreProofs,
             getProofByUuid: mockGetProofByUuid,
         })),
     };
@@ -50,7 +50,7 @@ describe('BlockchainService', () => {
 
     beforeEach(async () => {
         mockWait.mockResolvedValue(undefined);
-        mockStoreProof.mockResolvedValue({ hash: 'txHash', wait: mockWait });
+        mockStoreProofs.mockResolvedValue({ hash: 'txHash', wait: mockWait });
         mockGetProofByUuid.mockResolvedValue({ hash: 'proofHash', cid: 'Qm123' });
 
         const module: TestingModule = await Test.createTestingModule({
@@ -90,43 +90,43 @@ describe('BlockchainService', () => {
 
         it('sets up provider, wallet and NonceManager', () => {
             // Assert
-            const { JsonRpcProvider, Wallet, NonceManager } = jest.requireMock('ethers');            
+            const { JsonRpcProvider, Wallet, NonceManager } = jest.requireMock('ethers');
             expect(JsonRpcProvider).toHaveBeenCalledWith('http://localhost:8545');
             expect(Wallet).toHaveBeenCalledWith('0xprivatekey', expect.anything());
             expect(NonceManager).toHaveBeenCalledWith(expect.anything());
         });
     });
 
-    describe('storeProof', () => {
+    describe('storeProofs', () => {
         it('calls contract with correct arguments and returns transaction hash', async () => {
             // Arrange
-            const givenProof = new ProofEntity('uuid-1', 'hash-1', 'cid-1');
+            const givenProof: ProofEntry = { uuid: 'uuid-1', hash: 'hash-1', cid: 'cid-1' };
 
             // Act
-            const actualResult = await service.storeProof(givenProof);
+            const actualResult = await service.storeProofs([givenProof]);
 
             // Assert
-            expect(mockStoreProof).toHaveBeenCalledWith('uuid-1', 'hash-1', 'cid-1');
+            expect(mockStoreProofs).toHaveBeenCalledWith([{ "cid": "cid-1", "hash": "hash-1", "uuid": "uuid-1" }]);
             expect(mockWait).toHaveBeenCalled();
             expect(actualResult).toBe('txHash');
         });
 
         it('propagates contract errors', async () => {
             // Arrange
-            mockStoreProof.mockRejectedValue(new Error('transaction reverted'));
-            const givenProof = new ProofEntity('uuid-1', 'hash-1', 'cid-1');
+            mockStoreProofs.mockRejectedValue(new Error('transaction reverted'));
+            const givenProof: ProofEntry = { uuid: 'uuid-1', hash: 'hash-1', cid: 'cid-1' };
 
             // Act & Assert
-            await expect(service.storeProof(givenProof)).rejects.toThrow('transaction reverted');
+            await expect(service.storeProofs([givenProof])).rejects.toThrow('transaction reverted');
         });
 
         it('propagates errors when waiting for tx confirmation', async () => {
             // Arrange
             mockWait.mockRejectedValue(new Error('tx not mined'));
-            const givenProof = new ProofEntity('uuid-1', 'hash-1', 'cid-1');
+            const givenProof: ProofEntry = { uuid: 'uuid-1', hash: 'hash-1', cid: 'cid-1' };
 
             // Act & Assert
-            await expect(service.storeProof(givenProof)).rejects.toThrow('tx not mined');
+            await expect(service.storeProofs([givenProof])).rejects.toThrow('tx not mined');
         });
     });
 

@@ -4,13 +4,19 @@ import { ConfigurationService } from '@h2-trust/configuration';
 import { Injectable, Logger } from '@nestjs/common';
 import { BaseContract, Contract, type ContractTransactionResponse, JsonRpcProvider, NonceManager, Wallet } from 'ethers';
 
+export interface ProofEntry {
+    uuid: string;
+    hash: string;
+    cid: string;
+}
+
 interface Proof {
     hash: string;
     cid: string;
 }
 
 interface ProofStorageContract extends BaseContract {
-    storeProof(uuid: string, hash: string, cid: string): Promise<ContractTransactionResponse>;
+    storeProofs(proofs: ProofEntry[]): Promise<ContractTransactionResponse>;
     getProofByUuid(uuid: string): Promise<Proof>;
 }
 
@@ -37,10 +43,10 @@ export class BlockchainService {
         return new Contract(smartContractAddress, abi, signer) as unknown as ProofStorageContract;
     }
 
-    async storeProof(proof: ProofEntity): Promise<String> {
-        this.logger.log(`Storing proof: ${JSON.stringify(proof)}`);
+    async storeProofs(proofEntries: ProofEntry[]): Promise<String> {
+        this.logger.log(`Storing proofs: ${JSON.stringify(proofEntries)}`);
 
-        const tx = await this.contract.storeProof(proof.uuid, proof.hash, proof.cid);
+        const tx = await this.contract.storeProofs(proofEntries);
         await tx.wait();
 
         this.logger.log(`Proof stored: ${tx.hash}`);

@@ -22,14 +22,13 @@ import {
   PowerAccessApprovalEntity,
   PowerAccessApprovalPatterns,
   ProcessStepEntity,
-  ProofEntity,
   ReadPowerAccessApprovalsPayload,
   StagedProductionEntity,
   StageProductionsPayload,
   UnitAccountingPeriods,
   UnitFileReference,
 } from '@h2-trust/amqp';
-import { HashUtil, BlockchainService } from '@h2-trust/blockchain';
+import { HashUtil, BlockchainService, ProofEntry } from '@h2-trust/blockchain';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
 import { BatchType, PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
@@ -86,6 +85,7 @@ export class ProductionImportService {
   ): Promise<UnitAccountingPeriods<T>[]> {
     const headers = ProductionImportService.headersForBatchType[type];
 
+    // TODO-MP: do not send transactions in this loop one by one, but batch them together to reduce gas costs improve performance
     return Promise.all(
       unitFileReferences.map(async (ufr) => {
         const downloadingStream = await this.storageService.downloadFile(ufr.fileName);
@@ -105,8 +105,8 @@ export class ProductionImportService {
 
         const uuid = ufr.fileName.split('.').slice(0, -1).join('.'); // remove file extension
         const cid = this.minioUrl + '/' + ufr.fileName; // temporary solution until we have implemented proper IPFS support
-        const proof = new ProofEntity(uuid, hash, cid);
-        const txHash = await this.blockchainService.storeProof(proof);
+        const proofEntry: ProofEntry = { uuid, hash, cid };
+        const txHash = await this.blockchainService.storeProofs([proofEntry]);
         this.logger.log(`Tx hash ${txHash}`);
 
         if (accountingPeriods.length < 1) {
