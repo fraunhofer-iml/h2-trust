@@ -75,14 +75,15 @@ export abstract class BaseUnitDto {
         country: unit.address.country,
       },
       owner: {
-        id: unit.owner?.id,
+        id: unit.owner.id,
+        name: unit.owner.name,
         hydrogenApprovals:
-          unit.owner?.hydrogenApprovals?.map((approval) => ({
+          unit.owner.hydrogenApprovals?.map((approval) => ({
             powerAccessApprovalStatus: approval.status,
             powerProducerId: approval.powerProducer.id,
           })) ?? [],
       },
-      operator: unit.operator?.id,
+      operator: unit.operator.name,
       unitType: unit.unitType,
     };
   }

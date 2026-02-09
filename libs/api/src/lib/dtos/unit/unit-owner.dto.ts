@@ -10,10 +10,12 @@ import { PowerAccessApprovalConnectionDto } from './power-access-approval-connec
 
 export class UnitOwnerDto {
   id: string;
+  name: string;
   hydrogenApprovals: PowerAccessApprovalConnectionDto[];
 
-  constructor(id: string, hydrogenApprovals: PowerAccessApprovalConnectionDto[]) {
+  constructor(id: string, name: string, hydrogenApprovals: PowerAccessApprovalConnectionDto[]) {
     this.id = id;
+    this.name = name;
     this.hydrogenApprovals = hydrogenApprovals;
   }
 }
