@@ -75,8 +75,8 @@ export abstract class BaseUnitDto {
         country: unit.address.country,
       },
       owner: {
-        id: unit.owner.id,
-        name: unit.owner.name,
+        id: unit.owner?.id,
+        name: unit.owner?.name,
         hydrogenApprovals:
           unit.owner.hydrogenApprovals?.map((approval) => ({
             powerAccessApprovalStatus: approval.status,
