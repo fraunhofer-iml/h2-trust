@@ -14,7 +14,7 @@ export const batchFlatQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()({
     predecessors: true,
     successors: true,
     hydrogenStorageUnit: true,
-    batchDetails: true,
+    batchDetails: { include: { qualityDetails: true } },
     processStep: true,
   },
 });
