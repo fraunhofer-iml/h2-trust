@@ -29,8 +29,8 @@ model Address {
 
 model Document {
   id              String  @id @default(uuid(7))
-  fileName        String
-  transactionHash String? @unique
+  fileName        String  @unique
+  transactionHash String?
 
   unit   Unit?   @relation(fields: [unitId], references: [id])
   unitId String?
@@ -76,7 +76,7 @@ model Unit {
   manufacturer   String
   modelType      String
   modelNumber    String
-  serialNumber   String  @unique
+  serialNumber   String   @unique
   certifiedBy    String
   commissionedOn DateTime
 
@@ -108,13 +108,13 @@ model PowerProductionType {
 }
 
 model PowerProductionUnit {
-  id                       String    @id
+  id                       String   @id
   electricityMeterNumber   String
   gridOperator             String
   gridConnectionNumber     String
   gridLevel                String
   biddingZone              String
-  ratedPower               Decimal   @db.Decimal(18, 6)
+  ratedPower               Decimal  @db.Decimal(18, 6)
   decommissioningPlannedOn DateTime
   financialSupportReceived Boolean
 
