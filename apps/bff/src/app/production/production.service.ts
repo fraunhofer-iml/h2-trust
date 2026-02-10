@@ -13,7 +13,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
   CreateProductionsPayload,
-  FinalizeStagedProductionsPayload,
+  FinalizeProductionsPayload,
   ParsedProductionMatchingResultEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
@@ -40,7 +40,7 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly storageService: StorageService,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
     const payload = new CreateProductionsPayload(
@@ -128,7 +128,7 @@ export class ProductionService {
   }
 
   async submitCsvData(dto: ImportSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    const payload: FinalizeStagedProductionsPayload = new FinalizeStagedProductionsPayload(
+    const payload: FinalizeProductionsPayload = new FinalizeProductionsPayload(
       userId,
       dto.storageUnitId,
       dto.importId,
