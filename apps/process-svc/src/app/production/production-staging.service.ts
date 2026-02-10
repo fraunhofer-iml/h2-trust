@@ -37,10 +37,9 @@ interface ImportResult<T extends AccountingPeriodPower | AccountingPeriodHydroge
 
 @Injectable()
 export class ProductionStagingService {
-  private static readonly headersForBatchType: Record<BatchType, string[]> = {
+  private static readonly validHeaders: Record<Exclude<BatchType, BatchType.WATER>, string[]> = {
     POWER: ['time', 'amount'],
     HYDROGEN: ['time', 'amount', 'power'],
-    WATER: [], // empty on purpose, no water import supported
   };
 
   private readonly logger = new Logger(this.constructor.name);
@@ -64,8 +63,6 @@ export class ProductionStagingService {
       this.importAccountingPeriods<AccountingPeriodHydrogen>(payload.hydrogenProductions, BatchType.HYDROGEN),
     ]);
 
-    await this.storeDocumentProofs([...powerResults, ...hydrogenResults]);
-
     const parsedProductions = AccountingPeriodMatcher.matchAccountingPeriods(
       powerResults.map((pr) => pr.periods),
       hydrogenResults.map((hr) => hr.periods),
@@ -73,15 +70,18 @@ export class ProductionStagingService {
     );
 
     const importId = await this.stagedProductionRepository.stageParsedProductions(parsedProductions);
+    const result = new ParsedProductionMatchingResultEntity(importId, parsedProductions);
 
-    return new ParsedProductionMatchingResultEntity(importId, parsedProductions);
+    await this.storeDocumentProofs([...powerResults, ...hydrogenResults]);
+
+    return result;
   }
 
   private async importAccountingPeriods<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
     unitFileReferences: UnitFileReference[],
-    type: BatchType,
+    type: Exclude<BatchType, BatchType.WATER>,
   ): Promise<ImportResult<T>[]> {
-    const headers = ProductionStagingService.headersForBatchType[type];
+    const headers = ProductionStagingService.validHeaders[type];
 
     return Promise.all(
       unitFileReferences.map(async (ufr) => {
@@ -100,19 +100,17 @@ export class ProductionStagingService {
           AccountingPeriodCsvParser.parseStream<T>(parsingStream, headers, ufr.fileName),
         ]);
 
-        if (accountingPeriods.length < 1) {
+        if (!accountingPeriods.length) {
           throw new BrokerException(
             `${type} production file does not contain any valid items.`,
             HttpStatus.BAD_REQUEST,
           );
         }
 
-        const cid = this.minioUrl + '/' + ufr.fileName; // temporary solution until we have uploaded file in bff to ipfs
-
         return {
           periods: new UnitAccountingPeriods<T>(ufr.unitId, accountingPeriods),
           fileName: ufr.fileName,
-          cid,
+          cid: `${this.minioUrl}/${ufr.fileName}`,
           hash,
         };
       }),
@@ -138,7 +136,7 @@ export class ProductionStagingService {
     });
 
     const txHash = await this.blockchainService.storeProofs(allProofs);
-    this.logger.log(`Stored ${allProofs.length} proofs in tx ${txHash}`);
+    this.logger.debug(`Stored ${allProofs.length} proofs in tx ${txHash}`);
 
     await this.documentRepository.updateDocumentsWithTransactionHash(
       documents.map((doc) => doc.id),

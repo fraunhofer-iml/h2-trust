@@ -44,20 +44,20 @@ export class BlockchainService {
     }
 
     async storeProofs(proofEntries: ProofEntry[]): Promise<string> {
-        this.logger.log(`Storing proofs: ${JSON.stringify(proofEntries)}`);
+        this.logger.debug(`Storing proofs: ${JSON.stringify(proofEntries)}`);
 
         const tx = await this.contract.storeProofs(proofEntries);
         await tx.wait();
 
-        this.logger.log(`Proof stored: ${tx.hash}`);
+        this.logger.debug(`Proof stored: ${tx.hash}`);
         return tx.hash;
     }
 
     async getProofByUuid(uuid: string): Promise<ProofEntity> {
-        this.logger.log(`Retrieving proof: ${uuid}`);
+        this.logger.debug(`Retrieving proof: ${uuid}`);
 
         const proof: Proof = await this.contract.getProofByUuid(uuid);
-        this.logger.log(`Retrieved proof: ${JSON.stringify(proof)}`);
+        this.logger.debug(`Retrieved proof: ${JSON.stringify(proof)}`);
 
         return new ProofEntity(uuid, proof.hash, proof.cid);
     }

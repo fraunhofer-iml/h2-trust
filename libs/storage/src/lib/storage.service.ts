@@ -10,7 +10,7 @@ import { Client } from 'minio';
 import { MINIO_CONNECTION } from 'nestjs-minio';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigurationService } from '@h2-trust/configuration';
-import 'multer';
+import Stream from 'stream';
 
 @Injectable()
 export class StorageService {
@@ -23,15 +23,11 @@ export class StorageService {
     this.bucketName = this.configurationService.getGlobalConfiguration().minio.bucketName;
   }
 
-  async uploadFile(fileName: string, file: Buffer) {
-    return this.client.putObject(this.bucketName, fileName, file, file.length);
+  async uploadFile(fileName: string, file: Buffer): Promise<void> {
+    this.client.putObject(this.bucketName, fileName, file, file.length);
   }
 
-  async downloadFile(fileName: string) {
+  async downloadFile(fileName: string): Promise<Stream.Readable> {
     return this.client.getObject(this.bucketName, fileName);
-  }
-
-  async deleteFile(fileName: string) {
-    return this.client.removeObject(this.bucketName, fileName);
   }
 }
