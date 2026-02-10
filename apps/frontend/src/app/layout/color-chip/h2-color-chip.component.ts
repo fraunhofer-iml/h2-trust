@@ -16,7 +16,7 @@ import { BaseChipComponent } from './base-chip/base-chip.comopnent';
   templateUrl: './base-chip/base-chip.comonent.html',
 })
 export class H2ColorChipComponent extends BaseChipComponent {
-  h2Color = input<string>();
+  h2Color = input.required<string>();
   private readonly chipColorByColor = new Map([
     ['GREEN', 'text-h2-green-text bg-h2-green/20 border-h2-green/10'],
     ['YELLOW', 'text-h2-yellow-text bg-h2-yellow/20 border-h2-yellow/10'],
@@ -26,13 +26,12 @@ export class H2ColorChipComponent extends BaseChipComponent {
     ['GREEN', 'bg-h2-green-text'],
     ['YELLOW', 'bg-h2-yellow-text'],
   ]);
+
   get chipColor(): string | undefined {
-    const h2Color = this.h2Color();
-    return h2Color ? this.chipColorByColor.get(h2Color) : undefined;
+    return this.chipColorByColor.get(this.h2Color());
   }
   get dotColor(): string | undefined {
-    const h2Color = this.h2Color();
-    return h2Color ? this.dotColorByColor.get(h2Color) : undefined;
+    return this.dotColorByColor.get(this.h2Color());
   }
   get label(): string {
     return this.h2Color() ?? 'unknown';

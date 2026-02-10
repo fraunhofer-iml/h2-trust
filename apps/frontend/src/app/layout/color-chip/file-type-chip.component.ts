@@ -17,7 +17,7 @@ import { BaseChipComponent } from './base-chip/base-chip.comopnent';
   templateUrl: './base-chip/base-chip.comonent.html',
 })
 export class FileTypeChipComponent extends BaseChipComponent {
-  fileType = input<CsvContentType>();
+  fileType = input.required<CsvContentType>();
 
   private readonly chipColorByFileType = {
     HYDROGEN: 'text-primary-700 bg-primary-100 border-primary-200',
@@ -25,13 +25,11 @@ export class FileTypeChipComponent extends BaseChipComponent {
   };
   private readonly dotColorByFileType = { HYDROGEN: 'bg-primary-700', POWER: 'bg-secondary-700' };
 
-  get chipColor(): string | undefined {
-    const fileType = this.fileType();
-    return fileType ? this.chipColorByFileType[fileType] : undefined;
+  get chipColor(): string {
+    return this.chipColorByFileType[this.fileType()];
   }
-  get dotColor(): string | undefined {
-    const fileType = this.fileType();
-    return fileType ? this.dotColorByFileType[fileType] : undefined;
+  get dotColor(): string {
+    return this.dotColorByFileType[this.fileType()];
   }
   get label(): string {
     const fileType = this.fileType();
