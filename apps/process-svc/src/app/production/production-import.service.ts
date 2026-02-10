@@ -38,6 +38,16 @@ import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
 import { AccountingPeriodMatcher } from './accounting-period-matcher';
 import { ProductionAssembler } from './production.assembler';
 
+interface FileProofData {
+  fileName: string;
+  cid: string;
+  hash: string;
+}
+
+interface ImportResult<T extends AccountingPeriodPower | AccountingPeriodHydrogen> extends FileProofData {
+  periods: UnitAccountingPeriods<T>;
+}
+
 @Injectable()
 export class ProductionImportService {
   private static readonly headersForBatchType: Record<BatchType, string[]> = {
@@ -70,38 +80,11 @@ export class ProductionImportService {
       this.fetchGridUnitId(payload.userId),
     ]);
 
-    const allResults = [...powerResults, ...hydrogenResults];
-
-    const documents = await this.documentRepository.createDocumentsWithFileName(allResults.map((r) => r.fileName));
-
-    allResults.forEach((result) => {
-      const document = documents.find((doc) => doc.fileName === result.fileName);
-      if (!document) {
-        throw new BrokerException(
-          `Document with file name ${result.fileName} not found in database after creation.`,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-      result.fileName = document.id;
-    })
-
-    const allProofs: ProofEntry[] = allResults.map((r) => ({
-      uuid: r.fileName,
-      hash: r.hash,
-      cid: r.cid,
-    }));
-
-    const txHash = await this.blockchainService.storeProofs(allProofs);
-    this.logger.log(`Stored ${allProofs.length} proofs in tx ${txHash}`);
-
-    await this.documentRepository.updateDocumentsWithTransactionHash(
-      documents.map((doc) => doc.id),
-      txHash,
-    );
+    await this.storeDocumentProofs([...powerResults, ...hydrogenResults]);
 
     const parsedProductions = AccountingPeriodMatcher.matchAccountingPeriods(
-      powerResults.map((r) => r.periods),
-      hydrogenResults.map((r) => r.periods),
+      powerResults.map((pr) => pr.periods),
+      hydrogenResults.map((hr) => hr.periods),
       gridUnitId,
     );
 
@@ -113,7 +96,7 @@ export class ProductionImportService {
   private async importAccountingPeriods<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
     unitFileReferences: UnitFileReference[],
     type: BatchType,
-  ): Promise<{ periods: UnitAccountingPeriods<T>; fileName: string; cid: string; hash: string }[]> {
+  ): Promise<ImportResult<T>[]> {
     const headers = ProductionImportService.headersForBatchType[type];
 
     return Promise.all(
@@ -170,6 +153,33 @@ export class ProductionImportService {
       );
 
     return approvalForGrid.powerProductionUnit.id;
+  }
+
+  private async storeDocumentProofs(fileProofData: FileProofData[]): Promise<void> {
+    const documents = await this.documentRepository.createDocumentsWithFileName(
+      fileProofData.map((r) => r.fileName),
+    );
+
+    const documentsByFileName = new Map(documents.map((doc) => [doc.fileName, doc]));
+
+    const allProofs: ProofEntry[] = fileProofData.map((r) => {
+      const document = documentsByFileName.get(r.fileName);
+      if (!document) {
+        throw new BrokerException(
+          `Document with file name ${r.fileName} not found in database after creation.`,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      return { uuid: document.id, hash: r.hash, cid: r.cid };
+    });
+
+    const txHash = await this.blockchainService.storeProofs(allProofs);
+    this.logger.log(`Stored ${allProofs.length} proofs in tx ${txHash}`);
+
+    await this.documentRepository.updateDocumentsWithTransactionHash(
+      documents.map((doc) => doc.id),
+      txHash,
+    );
   }
 
   async finalizeStagedProductions(payload: FinalizeStagedProductionsPayload): Promise<ProcessStepEntity[]> {
