@@ -6,6 +6,12 @@ contract ProofStorage {
 
   address public immutable owner;
 
+  struct ProofEntry {
+    string uuid;
+    string hash;
+    string cid;
+  }
+
   struct Proof {
     string hash;
     string cid;
@@ -26,11 +32,18 @@ contract ProofStorage {
     owner = msg.sender;
   }
 
-  function storeProof(string memory uuid, string memory hash, string memory cid) external {
+  function storeProofs(ProofEntry[] calldata proofEntries) external {
     if (msg.sender != owner) {
       revert NotOwner();
     }
 
+    for (uint256 i = 0; i < proofEntries.length; i++) {
+      ProofEntry calldata p = proofEntries[i];
+      storeProof(p.uuid, p.hash, p.cid);
+    }
+  }
+
+  function storeProof(string memory uuid, string memory hash, string memory cid) private {
     if (bytes(uuid).length != UUID_LENGTH) {
       revert UuidInvalidLength(uuid);
     }

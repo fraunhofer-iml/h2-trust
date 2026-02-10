@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export class ParsedProductionEntity {
+export class DistributedProductionEntity {
   startedAt: Date;
   hydrogenAmount: number;
   hydrogenProductionUnitId: string;

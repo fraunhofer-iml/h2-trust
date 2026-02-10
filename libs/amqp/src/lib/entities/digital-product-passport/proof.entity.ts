@@ -6,6 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './create-productions.payload';
-export * from './finalize-productions.payload';
-export * from './stage-productions.payload';
+export class ProofEntity {
+  uuid: string;
+  hash: string;
+  cid: string;
+
+  constructor(uuid: string, hash: string, cid: string) {
+    this.uuid = uuid;
+    this.hash = hash;
+    this.cid = cid;
+  }
+}

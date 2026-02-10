@@ -24,8 +24,8 @@ const contractAddress = await contract.getAddress();
 console.log(`getAddress(): ${contractAddress}\n`);
 
 console.log('\nstoring and retrieving a proof example\n');
-console.log(`storeProof(${uuid}, ${hash}, ${cid})\n`);
-const tx = await contract.storeProof(uuid, hash, cid);
+console.log(`storeProofs([${uuid}, ${hash}, ${cid}])\n`);
+const tx = await contract.storeProofs([{ uuid, hash, cid }]);
 await tx.wait();
 
 console.log(`getProofByUuid(${uuid}): ${await contract.getProofByUuid(uuid)}\n`);

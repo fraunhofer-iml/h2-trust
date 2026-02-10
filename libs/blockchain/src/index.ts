@@ -7,4 +7,5 @@
  */
 
 export * from './lib/blockchain.module';
+export * from './lib/blockchain.service';
 export * from './lib/util/hash.util';
