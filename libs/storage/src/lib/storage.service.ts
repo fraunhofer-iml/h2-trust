@@ -24,7 +24,7 @@ export class StorageService {
   }
 
   async uploadFile(fileName: string, file: Buffer): Promise<void> {
-    this.client.putObject(this.bucketName, fileName, file, file.length);
+    await this.client.putObject(this.bucketName, fileName, file, file.length);
   }
 
   async downloadFile(fileName: string): Promise<Stream.Readable> {
