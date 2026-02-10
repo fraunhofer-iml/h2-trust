@@ -7,18 +7,12 @@
  */
 
 import { PassThrough } from 'stream';
-import { firstValueFrom } from 'rxjs';
-import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
   AccountingPeriodHydrogen,
   AccountingPeriodPower,
   BrokerException,
-  BrokerQueues,
   ParsedProductionMatchingResultEntity,
-  PowerAccessApprovalEntity,
-  PowerAccessApprovalPatterns,
-  ReadPowerAccessApprovalsPayload,
   StageProductionsPayload,
   UnitAccountingPeriods,
   UnitFileReference,
@@ -26,7 +20,7 @@ import {
 import { HashUtil, BlockchainService, ProofEntry } from '@h2-trust/blockchain';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { DocumentRepository, StagedProductionRepository } from '@h2-trust/database';
-import { BatchType, PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
+import { BatchType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
 import { AccountingPeriodMatcher } from './accounting-period-matcher';
@@ -53,7 +47,6 @@ export class ProductionStagingService {
   private readonly minioUrl: string;
 
   constructor(
-    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly configurationService: ConfigurationService,
     private readonly stagedProductionRepository: StagedProductionRepository,
     private readonly storageService: StorageService,
@@ -66,10 +59,9 @@ export class ProductionStagingService {
   }
 
   async stageProductions(payload: StageProductionsPayload): Promise<ParsedProductionMatchingResultEntity> {
-    const [powerResults, hydrogenResults, gridUnitId] = await Promise.all([
+    const [powerResults, hydrogenResults] = await Promise.all([
       this.importAccountingPeriods<AccountingPeriodPower>(payload.powerProductions, BatchType.POWER),
       this.importAccountingPeriods<AccountingPeriodHydrogen>(payload.hydrogenProductions, BatchType.HYDROGEN),
-      this.fetchGridUnitId(payload.userId),
     ]);
 
     await this.storeDocumentProofs([...powerResults, ...hydrogenResults]);
@@ -77,7 +69,7 @@ export class ProductionStagingService {
     const parsedProductions = AccountingPeriodMatcher.matchAccountingPeriods(
       powerResults.map((pr) => pr.periods),
       hydrogenResults.map((hr) => hr.periods),
-      gridUnitId,
+      payload.gridPowerProductionUnitId,
     );
 
     const importId = await this.stagedProductionRepository.stageParsedProductions(parsedProductions);
@@ -125,26 +117,6 @@ export class ProductionStagingService {
         };
       }),
     );
-  }
-
-  private async fetchGridUnitId(userId: string): Promise<string> {
-    const approvals: PowerAccessApprovalEntity[] = await firstValueFrom(
-      this.generalSvc.send(
-        PowerAccessApprovalPatterns.READ,
-        new ReadPowerAccessApprovalsPayload(userId, PowerAccessApprovalStatus.APPROVED),
-      ),
-    );
-    const approvalForGrid = approvals.find(
-      (approval) => approval.powerProductionUnit.type.name === PowerProductionType.GRID,
-    );
-
-    if (!approvalForGrid)
-      throw new BrokerException(
-        `No grid connection found for user with id ${userId}.`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-
-    return approvalForGrid.powerProductionUnit.id;
   }
 
   private async storeDocumentProofs(fileProofData: FileProofData[]): Promise<void> {

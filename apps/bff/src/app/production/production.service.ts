@@ -15,9 +15,11 @@ import {
   CreateProductionsPayload,
   FinalizeProductionsPayload,
   ParsedProductionMatchingResultEntity,
+  PowerAccessApprovalPatterns,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
+  ReadByIdPayload,
   ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   StageProductionsPayload,
   UnitFileReference,
@@ -37,6 +39,7 @@ import { UserService } from '../user/user.service';
 @Injectable()
 export class ProductionService {
   constructor(
+    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly storageService: StorageService,
     private readonly userService: UserService,
@@ -93,7 +96,11 @@ export class ProductionService {
       BatchType.HYDROGEN,
     );
 
-    const payload = new StageProductionsPayload(powerProductions, hydrogenProductions, userId);
+    const gridPowerProductionUnit = await firstValueFrom(
+      this.generalSvc.send(PowerAccessApprovalPatterns.READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID, new ReadByIdPayload(userId)),
+    );
+
+    const payload = new StageProductionsPayload(powerProductions, hydrogenProductions, gridPowerProductionUnit.id);
     const matchingResult = await firstValueFrom(
       this.processSvc.send<ParsedProductionMatchingResultEntity>(ProductionMessagePatterns.STAGE, payload),
     );
