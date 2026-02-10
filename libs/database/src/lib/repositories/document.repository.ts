@@ -7,6 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { DocumentEntity } from '@h2-trust/amqp';
 import { buildDocumentCreateInput } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
@@ -21,8 +22,12 @@ export class DocumentRepository {
       .then(DocumentEntity.fromDatabase);
   }
 
-  async createDocumentsWithFileName(fileNames: string[]): Promise<DocumentEntity[]> {
-    const documents = await this.prismaService.document
+  async createDocumentsWithFileName(
+    fileNames: string[],
+    tx?: Prisma.TransactionClient,
+  ): Promise<DocumentEntity[]> {
+    const client = tx ?? this.prismaService;
+    const documents = await client.document
       .createManyAndReturn({
         data: fileNames.map((fileName) => ({ fileName }))
       });
@@ -30,8 +35,13 @@ export class DocumentRepository {
     return documents.map(DocumentEntity.fromDatabase);
   }
 
-  async updateDocumentsWithTransactionHash(documentIds: string[], transactionHash: string): Promise<DocumentEntity[]> {
-    const documents = await this.prismaService.document
+  async updateDocumentsWithTransactionHash(
+    documentIds: string[],
+    transactionHash: string,
+    tx?: Prisma.TransactionClient,
+  ): Promise<DocumentEntity[]> {
+    const client = tx ?? this.prismaService;
+    const documents = await client.document
       .updateManyAndReturn({
         where: { id: { in: documentIds } },
         data: { transactionHash },

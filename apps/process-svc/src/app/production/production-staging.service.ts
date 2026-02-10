@@ -12,6 +12,7 @@ import {
   AccountingPeriodHydrogen,
   AccountingPeriodPower,
   BrokerException,
+  DocumentEntity,
   ParsedProductionMatchingResultEntity,
   StageProductionsPayload,
   UnitAccountingPeriods,
@@ -19,7 +20,7 @@ import {
 } from '@h2-trust/amqp';
 import { HashUtil, BlockchainService } from '@h2-trust/blockchain';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { DocumentRepository, StagedProductionRepository } from '@h2-trust/database';
+import { DocumentRepository, PrismaService, StagedProductionRepository } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
@@ -50,7 +51,8 @@ export class ProductionStagingService {
     private readonly stagedProductionRepository: StagedProductionRepository,
     private readonly storageService: StorageService,
     private readonly blockchainService: BlockchainService,
-    private readonly documentRepository: DocumentRepository
+    private readonly documentRepository: DocumentRepository,
+    private readonly prismaService: PrismaService
   ) {
     // TODO-MP: temporary solution until we have the file upload in the BFF and can store the IPFS CID directly (DUHGW-341)
     const minio = this.configurationService.getGlobalConfiguration().minio;
@@ -69,12 +71,17 @@ export class ProductionStagingService {
       payload.gridPowerProductionUnitId,
     );
 
-    const importId = await this.stagedProductionRepository.stageParsedProductions(parsedProductions);
-    const result = new ParsedProductionMatchingResultEntity(importId, parsedProductions);
+    const powerAndHydrogenResults = [...powerResults, ...hydrogenResults];
 
-    await this.storeDocumentProofs([...powerResults, ...hydrogenResults]);
+    const { storedImportId, storedDocuments } = await this.prismaService.$transaction(async (tx) => {
+      const storedImportId = await this.stagedProductionRepository.stageParsedProductions(parsedProductions, tx);
+      const storedDocuments = await this.documentRepository.createDocumentsWithFileName(powerAndHydrogenResults.map((result) => result.fileName), tx);
+      return { storedImportId, storedDocuments };
+    });
 
-    return result;
+    await this.storeBlockchainProofs(powerAndHydrogenResults, storedDocuments);
+
+    return new ParsedProductionMatchingResultEntity(storedImportId, parsedProductions);
   }
 
   private async importAccountingPeriods<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
@@ -123,12 +130,8 @@ export class ProductionStagingService {
     );
   }
 
-  private async storeDocumentProofs(fileProofData: FileProofData[]): Promise<void> {
-    const documents = await this.documentRepository.createDocumentsWithFileName(
-      fileProofData.map((r) => r.fileName),
-    );
-
-    const documentsByFileName = new Map(documents.map((doc) => [doc.fileName, doc]));
+  private async storeBlockchainProofs(fileProofData: FileProofData[], storedDocuments: DocumentEntity[]): Promise<void> {
+    const documentsByFileName = new Map(storedDocuments.map((doc) => [doc.fileName, doc]));
 
     const allProofs = fileProofData.map((r) => {
       const document = documentsByFileName.get(r.fileName);
@@ -145,7 +148,7 @@ export class ProductionStagingService {
     this.logger.debug(`Stored ${allProofs.length} proofs in tx ${txHash}`);
 
     await this.documentRepository.updateDocumentsWithTransactionHash(
-      documents.map((doc) => doc.id),
+      storedDocuments.map((doc) => doc.id),
       txHash,
     );
   }
