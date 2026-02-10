@@ -25,7 +25,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { CsvContentType, ProcessedCsvDto } from '@h2-trust/api';
 import { MeasurementUnit } from '@h2-trust/domain';
-import { H2ColorChipComponent } from '../../../layout/h2-color-chip/h2-color-chip.component';
+import { FileTypeChipComponent } from '../../../layout/color-chip/file-type-chip.component';
 import { ICONS } from '../../../shared/constants/icons';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { ProductionService } from '../../../shared/services/production/production.service';
@@ -48,9 +48,9 @@ import { DownloadButtonComponent } from './download-button/download-button.compo
     MatSelectModule,
     UnitPipe,
     MatSortModule,
-    H2ColorChipComponent,
     MatCheckboxModule,
     DownloadButtonComponent,
+    FileTypeChipComponent,
   ],
   providers: [ProductionService, provideNativeDateAdapter()],
   templateUrl: './production-files.component.html',

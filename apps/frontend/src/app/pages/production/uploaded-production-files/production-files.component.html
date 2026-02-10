@@ -15,7 +15,11 @@
       <mat-form-field appearance="outline">
         <mat-label>Type</mat-label>
         <mat-select [value]="selecteType$()" (selectionChange)="this.selecteType$.set($event.value)">
-          <mat-option *ngFor="let type of displayedCsvContentTypes" [value]="type.value"> {{ type.name }} </mat-option>
+          @for (type of displayedCsvContentTypes; track $index) {
+            <mat-option [value]="type.value">
+              {{ type.name }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
 
@@ -33,7 +37,7 @@
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-date-range-picker #picker></mat-date-range-picker>
       </mat-form-field>
-      <button mat-button (click)="clearFilters()" class="flex flex-row items-center">Clear filters</button>
+      <button matButton="tonal" (click)="clearFilters()" class="flex flex-row items-center">Clear filters</button>
     </div>
 
     <app-download-button [selectedFiles]="selection"></app-download-button>
@@ -89,7 +93,7 @@
         <ng-container matColumnDef="type">
           <th mat-header-cell *matHeaderCellDef><div class="bold">Type</div></th>
           <td mat-cell *matCellDef="let file">
-            <app-h2-color-chip [fileType]="file.csvContentType"></app-h2-color-chip>
+            <app-file-type-color-chip [fileType]="file.csvContentType"></app-file-type-color-chip>
           </td>
         </ng-container>
 
