@@ -7,8 +7,16 @@
  */
 
 import { PowerAccessApprovalRepository, UserRepository } from 'libs/database/src/lib';
-import { Injectable } from '@nestjs/common';
-import { PowerAccessApprovalEntity, ReadPowerAccessApprovalsPayload, UserEntity } from '@h2-trust/amqp';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BrokerException,
+  PowerAccessApprovalEntity,
+  PowerProductionUnitEntity,
+  ReadByIdPayload,
+  ReadPowerAccessApprovalsPayload,
+  UserEntity,
+} from '@h2-trust/amqp';
+import { PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
 
 @Injectable()
 export class PowerAccessApprovalService {
@@ -20,5 +28,23 @@ export class PowerAccessApprovalService {
   async findAll(payload: ReadPowerAccessApprovalsPayload): Promise<PowerAccessApprovalEntity[]> {
     const user: UserEntity = await this.userRepository.findUser(payload.userId);
     return this.powerAccessApprovalRepository.findAll(user.company.id, payload.powerAccessApprovalStatus);
+  }
+
+  async findApprovedGridPowerProductionUnitByUserId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity> {
+    const approvals = await this.findAll(
+      new ReadPowerAccessApprovalsPayload(payload.id, PowerAccessApprovalStatus.APPROVED),
+    );
+
+    const approvalForGrid = approvals.find(
+      (approval) => approval.powerProductionUnit.type.name === PowerProductionType.GRID,
+    );
+
+    if (!approvalForGrid)
+      throw new BrokerException(
+        `No grid connection found for user with id ${payload.id}.`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+
+    return approvalForGrid.powerProductionUnit;
   }
 }

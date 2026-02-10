@@ -110,6 +110,7 @@
     "csv-parse": "^6.1.0",
     "danger": "^13.0.5",
     "echarts": "^6.0.0",
+    "ethers": "^6.16.0",
     "express": "^5.2.1",
     "keycloak-angular": "^21.0.0",
     "keycloak-connect": "^26.1.1",
