@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -34,7 +33,6 @@ import { ProductionFormComponent } from './manual-data-imput/production-form.com
   providers: [provideNativeDateAdapter(), CompaniesService, ProductionService, PowerAccessApprovalService],
   imports: [
     MatDialogModule,
-    CommonModule,
     ReactiveFormsModule,
     FormsModule,
     MatInputModule,

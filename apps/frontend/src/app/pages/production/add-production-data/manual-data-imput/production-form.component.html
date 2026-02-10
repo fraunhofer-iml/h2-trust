@@ -108,7 +108,7 @@
     </mat-form-field>
 
     @if (amountNotAvailable()) {
-      <div class="text-primary-200 col-span-2 flex flex-row items-center gap-2 text-sm">
+      <div class="col-span-2 flex flex-row items-center gap-2 text-sm text-primary-200">
         <span class="material-symbols-outlined">warning</span>
         {{ ERROR_MESSAGES.amountIsGreaterThanRemainingCapacity }}
       </div>

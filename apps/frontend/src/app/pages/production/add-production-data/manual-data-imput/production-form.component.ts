@@ -10,7 +10,6 @@ import { ERROR_MESSAGES } from 'apps/frontend/src/app/shared/constants/error.mes
 import { ROUTES } from 'apps/frontend/src/app/shared/constants/routes';
 import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
 import { toast } from 'ngx-sonner';
-import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -35,7 +34,6 @@ import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 @Component({
   selector: 'app-production-form',
   imports: [
-    CommonModule,
     MatSelectModule,
     MatDatepickerModule,
     MatTimepickerModule,

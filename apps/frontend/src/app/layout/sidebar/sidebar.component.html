@@ -32,7 +32,7 @@
                     @for (item of children; track $index) {
                       <a
                         [routerLink]="item.route"
-                        class="hover:bg-primary-100 flex w-full flex-row gap-2 rounded-lg p-3 text-neutral-700"
+                        class="flex w-full flex-row gap-2 rounded-lg p-3 text-neutral-700 hover:bg-primary-100"
                         tabindex="0"
                         role="presentation"
                         [ngClass]="{
@@ -60,7 +60,7 @@
             @if (isAuthenticated) {
               <mat-panel-title>
                 <div class="flex !select-none flex-row items-center gap-4">
-                  <div class="bg-primary-400 flex h-10 w-10 items-center justify-center rounded-xl">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-400">
                     <span class="material-symbols-outlined text-2xl text-white">person </span>
                   </div>
                   <div class="flex flex-col">
@@ -71,7 +71,7 @@
               </mat-panel-title>
             } @else {
               <div
-                class="text-primary-700 flex w-full flex-row items-center justify-between pl-2"
+                class="flex w-full flex-row items-center justify-between pl-2 text-primary-700"
                 (click)="signIn()"
                 role="none"
               >
@@ -83,14 +83,14 @@
           @if (isAuthenticated) {
             <div class="flex w-full flex-col gap-1 p-2">
               <a
-                class="hover:text-primary-600 hover:bg-primary-200 border-primary-100 flex flex-row items-center gap-2 rounded-full border-2 p-4 text-neutral-500"
+                class="flex flex-row items-center gap-2 rounded-full border-2 border-primary-100 p-4 text-neutral-500 hover:bg-primary-200 hover:text-primary-600"
                 routerLink="/"
               >
                 <span class="material-symbols-outlined">settings</span>
                 <span>account</span>
               </a>
               <button
-                class="hover:text-primary-600 hover:bg-primary-200 border-primary-100 flex flex-row items-center gap-2 rounded-full border-2 p-4 text-neutral-500"
+                class="flex flex-row items-center gap-2 rounded-full border-2 border-primary-100 p-4 text-neutral-500 hover:bg-primary-200 hover:text-primary-600"
                 (click)="logout()"
               >
                 <span class="material-symbols-outlined">logout</span>
