@@ -17,7 +17,7 @@ import { ProductionFinalizationService } from './production-finalization.service
 import { ProductionController } from './production.controller';
 import { StagedProductionCleanupModule } from './tasks/staged-production-cleanup.module';
 import { BlockchainModule } from '@h2-trust/blockchain';
-import { ProductionStagingService } from './production-stating.service';
+import { ProductionStagingService } from './production-staging.service';
 
 @Module({
   imports: [

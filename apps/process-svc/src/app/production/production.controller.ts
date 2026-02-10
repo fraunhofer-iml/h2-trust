@@ -18,7 +18,7 @@ import {
 } from '@h2-trust/amqp';
 import { ProductionCreationService } from './production-creation.service';
 import { ProductionFinalizationService } from './production-finalization.service';
-import { ProductionStagingService } from './production-stating.service';
+import { ProductionStagingService } from './production-staging.service';
 
 @Controller()
 export class ProductionController {
