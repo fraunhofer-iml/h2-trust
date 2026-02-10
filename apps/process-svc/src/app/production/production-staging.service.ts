@@ -17,7 +17,7 @@ import {
   UnitAccountingPeriods,
   UnitFileReference,
 } from '@h2-trust/amqp';
-import { HashUtil, BlockchainService, ProofEntry } from '@h2-trust/blockchain';
+import { HashUtil, BlockchainService } from '@h2-trust/blockchain';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { DocumentRepository, StagedProductionRepository } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
@@ -88,10 +88,16 @@ export class ProductionStagingService {
         const downloadingStream = await this.storageService.downloadFile(ufr.fileName);
         const hashingStream = new PassThrough();
         const parsingStream = new PassThrough();
-        downloadingStream.on('error', (err) => {
+
+        const cleanup = (err: Error) => {
+          downloadingStream.destroy(err);
           hashingStream.destroy(err);
           parsingStream.destroy(err);
-        });
+        };
+        downloadingStream.on('error', cleanup);
+        hashingStream.on('error', cleanup);
+        parsingStream.on('error', cleanup);
+
         downloadingStream.pipe(hashingStream);
         downloadingStream.pipe(parsingStream);
 
@@ -124,7 +130,7 @@ export class ProductionStagingService {
 
     const documentsByFileName = new Map(documents.map((doc) => [doc.fileName, doc]));
 
-    const allProofs: ProofEntry[] = fileProofData.map((r) => {
+    const allProofs = fileProofData.map((r) => {
       const document = documentsByFileName.get(r.fileName);
       if (!document) {
         throw new BrokerException(
