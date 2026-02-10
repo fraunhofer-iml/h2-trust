@@ -61,7 +61,7 @@ export class ProductionFilesComponent implements AfterViewInit {
   readonly displayedColumns = ['select', 'name', 'uploadedBy', 'startedAt', 'endedAt', 'type', 'amount'] as const;
   readonly displayedCsvContentTypes: { name: string; value: CsvContentType | null }[] = [
     { name: 'Hydrogen', value: BatchType.HYDROGEN },
-    { name: 'Power', value: BatchType.HYDROGEN },
+    { name: 'Power', value: BatchType.POWER },
     { name: 'All', value: null },
   ] as const;
 
