@@ -14,11 +14,11 @@ import {
   BrokerQueues,
   CreateProductionsPayload,
   FinalizeProductionsPayload,
-  ParsedProductionMatchingResultEntity,
   PowerAccessApprovalPatterns,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
+  ProductionStagingResultEntity,
   ReadByIdPayload,
   ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   StageProductionsPayload,
@@ -102,7 +102,7 @@ export class ProductionService {
 
     const payload = new StageProductionsPayload(powerProductions, hydrogenProductions, gridPowerProductionUnit.id);
     const matchingResult = await firstValueFrom(
-      this.processSvc.send<ParsedProductionMatchingResultEntity>(ProductionMessagePatterns.STAGE, payload),
+      this.processSvc.send<ProductionStagingResultEntity>(ProductionMessagePatterns.STAGE, payload),
     );
     return AccountingPeriodMatchingResultDto.fromEntity(matchingResult);
   }

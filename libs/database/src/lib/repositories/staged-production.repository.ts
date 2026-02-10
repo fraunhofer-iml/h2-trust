@@ -9,7 +9,7 @@
 import { randomUUID } from 'crypto';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { ParsedProductionEntity, StagedProductionEntity } from '@h2-trust/amqp';
+import { DistributedProductionEntity, StagedProductionEntity } from '@h2-trust/amqp';
 import { PrismaService } from '../prisma.service';
 import { stagedProductionDeepQueryArgs } from '../query-args';
 import { StagedProductionDeepDbType } from '../types';
@@ -21,7 +21,7 @@ export class StagedProductionRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async stageParsedProductions(
-    parsedProductions: ParsedProductionEntity[],
+    parsedProductions: DistributedProductionEntity[],
     tx?: Prisma.TransactionClient,
   ): Promise<string> {
     const client = tx ?? this.prismaService;

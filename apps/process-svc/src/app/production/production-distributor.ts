@@ -11,7 +11,7 @@ import {
   AccountingPeriodHydrogen,
   AccountingPeriodPower,
   BrokerException,
-  ParsedProductionEntity,
+  DistributedProductionEntity,
   UnitAccountingPeriods,
 } from '@h2-trust/amqp';
 import { BatchType } from '@h2-trust/domain';
@@ -27,19 +27,19 @@ interface HydrogenItem {
   powerConsumed: number;
 }
 
-export class AccountingPeriodMatcher {
-  static matchAccountingPeriods(
+export class ProductionDistributor {
+  static distributeProductions(
     powerProductions: UnitAccountingPeriods<AccountingPeriodPower>[],
     hydrogenProductions: UnitAccountingPeriods<AccountingPeriodHydrogen>[],
     gridUnitId: string,
-  ): ParsedProductionEntity[] {
+  ): DistributedProductionEntity[] {
     this.validateBundles(hydrogenProductions, BatchType.HYDROGEN);
     this.validateBundles(powerProductions, BatchType.POWER);
 
     const powerItemsByDateHour: Map<string, PowerItem[]> = this.normalizePower(powerProductions);
     const hydrogenItemsByDateHour: Map<string, HydrogenItem[]> = this.normalizeHydrogen(hydrogenProductions);
 
-    const parsedProductions: ParsedProductionEntity[] = [];
+    const parsedProductions: DistributedProductionEntity[] = [];
 
     for (const [dateHour, hydrogenItems] of hydrogenItemsByDateHour) {
       const powerItems: PowerItem[] = powerItemsByDateHour.get(dateHour);

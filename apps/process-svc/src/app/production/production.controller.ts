@@ -11,7 +11,7 @@ import { MessagePattern } from '@nestjs/microservices';
 import {
   CreateProductionsPayload,
   FinalizeProductionsPayload,
-  ParsedProductionMatchingResultEntity,
+  ProductionStagingResultEntity,
   ProcessStepEntity,
   ProductionMessagePatterns,
   StageProductionsPayload,
@@ -34,7 +34,7 @@ export class ProductionController {
   }
 
   @MessagePattern(ProductionMessagePatterns.STAGE)
-  async stageProductions(payload: StageProductionsPayload): Promise<ParsedProductionMatchingResultEntity> {
+  async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
     return this.productionStagingService.stageProductions(payload);
   }
 

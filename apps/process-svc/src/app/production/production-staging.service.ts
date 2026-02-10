@@ -13,26 +13,26 @@ import {
   AccountingPeriodPower,
   BrokerException,
   DocumentEntity,
-  ParsedProductionMatchingResultEntity,
+  ProductionStagingResultEntity,
   StageProductionsPayload,
   UnitAccountingPeriods,
   UnitFileReference,
 } from '@h2-trust/amqp';
-import { HashUtil, BlockchainService } from '@h2-trust/blockchain';
+import { HashUtil, BlockchainService, ProofEntry } from '@h2-trust/blockchain';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { DocumentRepository, PrismaService, StagedProductionRepository } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
-import { AccountingPeriodMatcher } from './accounting-period-matcher';
+import { ProductionDistributor } from './production-distributor';
 
-interface FileProofData {
+interface DocumentProofData {
   fileName: string;
-  cid: string;
   hash: string;
+  cid: string;
 }
 
-interface ImportResult<T extends AccountingPeriodPower | AccountingPeriodHydrogen> extends FileProofData {
+interface PreparedProductionData<T extends AccountingPeriodPower | AccountingPeriodHydrogen> extends DocumentProofData {
   periods: UnitAccountingPeriods<T>;
 }
 
@@ -59,35 +59,38 @@ export class ProductionStagingService {
     this.minioUrl = `${minio.endPoint}:${minio.port}/${minio.bucketName}`;
   }
 
-  async stageProductions(payload: StageProductionsPayload): Promise<ParsedProductionMatchingResultEntity> {
-    const [powerResults, hydrogenResults] = await Promise.all([
-      this.importAccountingPeriods<AccountingPeriodPower>(payload.powerProductions, BatchType.POWER),
-      this.importAccountingPeriods<AccountingPeriodHydrogen>(payload.hydrogenProductions, BatchType.HYDROGEN),
+  async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
+    const [preparedPowerProductionData, preparedHydrogenProductionData] = await Promise.all([
+      this.prepareProductionData<AccountingPeriodPower>(payload.powerProductions, BatchType.POWER),
+      this.prepareProductionData<AccountingPeriodHydrogen>(payload.hydrogenProductions, BatchType.HYDROGEN),
     ]);
 
-    const parsedProductions = AccountingPeriodMatcher.matchAccountingPeriods(
-      powerResults.map((pr) => pr.periods),
-      hydrogenResults.map((hr) => hr.periods),
+    const distributedProductions = ProductionDistributor.distributeProductions(
+      preparedPowerProductionData.map((pr) => pr.periods),
+      preparedHydrogenProductionData.map((hr) => hr.periods),
       payload.gridPowerProductionUnitId,
     );
 
-    const powerAndHydrogenResults = [...powerResults, ...hydrogenResults];
+    const preparedProductionData = [...preparedPowerProductionData, ...preparedHydrogenProductionData];
 
     const { storedImportId, storedDocuments } = await this.prismaService.$transaction(async (tx) => {
-      const storedImportId = await this.stagedProductionRepository.stageParsedProductions(parsedProductions, tx);
-      const storedDocuments = await this.documentRepository.createDocumentsWithFileName(powerAndHydrogenResults.map((result) => result.fileName), tx);
+      const storedImportId = await this.stagedProductionRepository.stageParsedProductions(distributedProductions, tx);
+
+      const fileNames = preparedProductionData.map((ppd) => ppd.fileName);
+      const storedDocuments = await this.documentRepository.createDocumentsWithFileName(fileNames, tx);
+
       return { storedImportId, storedDocuments };
     });
 
-    await this.storeBlockchainProofs(powerAndHydrogenResults, storedDocuments);
+    await this.storeBlockchainProofs(preparedProductionData, storedDocuments);
 
-    return new ParsedProductionMatchingResultEntity(storedImportId, parsedProductions);
+    return new ProductionStagingResultEntity(storedImportId, distributedProductions);
   }
 
-  private async importAccountingPeriods<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
+  private async prepareProductionData<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
     unitFileReferences: UnitFileReference[],
     type: Exclude<BatchType, BatchType.WATER>,
-  ): Promise<ImportResult<T>[]> {
+  ): Promise<PreparedProductionData<T>[]> {
     const headers = ProductionStagingService.validHeaders[type];
 
     return Promise.all(
@@ -123,29 +126,29 @@ export class ProductionStagingService {
         return {
           periods: new UnitAccountingPeriods<T>(ufr.unitId, accountingPeriods),
           fileName: ufr.fileName,
-          cid: `${this.minioUrl}/${ufr.fileName}`,
           hash,
+          cid: `${this.minioUrl}/${ufr.fileName}`,
         };
       }),
     );
   }
 
-  private async storeBlockchainProofs(fileProofData: FileProofData[], storedDocuments: DocumentEntity[]): Promise<void> {
-    const documentsByFileName = new Map(storedDocuments.map((doc) => [doc.fileName, doc]));
+  private async storeBlockchainProofs(documentProofData: DocumentProofData[], storedDocuments: DocumentEntity[]): Promise<void> {
+    const storedDocumentsByFileName = new Map(storedDocuments.map((sd) => [sd.fileName, sd]));
 
-    const allProofs = fileProofData.map((r) => {
-      const document = documentsByFileName.get(r.fileName);
-      if (!document) {
+    const proofEntries: ProofEntry[] = documentProofData.map((dpd) => {
+      const storedDocument = storedDocumentsByFileName.get(dpd.fileName);
+      if (!storedDocument) {
         throw new BrokerException(
-          `Document with file name ${r.fileName} not found in database after creation.`,
+          `Document with file name ${dpd.fileName} not found in database after creation.`,
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
-      return { uuid: document.id, hash: r.hash, cid: r.cid };
+      return { uuid: storedDocument.id, hash: dpd.hash, cid: dpd.cid };
     });
 
-    const txHash = await this.blockchainService.storeProofs(allProofs);
-    this.logger.debug(`Stored ${allProofs.length} proofs in tx ${txHash}`);
+    const txHash = await this.blockchainService.storeProofs(proofEntries);
+    this.logger.debug(`Stored ${proofEntries.length} proofs in tx ${txHash}`);
 
     await this.documentRepository.updateDocumentsWithTransactionHash(
       storedDocuments.map((doc) => doc.id),

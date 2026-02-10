@@ -44,7 +44,7 @@ export class BlockchainService {
     }
 
     async storeProofs(proofEntries: ProofEntry[]): Promise<string> {
-        this.logger.debug(`Storing proofs: ${JSON.stringify(proofEntries)}`);
+        this.logger.debug(`Storing proofs:\n${proofEntries.map((e) => JSON.stringify(e)).join('\n')}`);
 
         const tx = await this.contract.storeProofs(proofEntries);
         await tx.wait();
