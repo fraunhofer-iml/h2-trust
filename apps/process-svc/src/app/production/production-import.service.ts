@@ -30,7 +30,7 @@ import {
 } from '@h2-trust/amqp';
 import { HashUtil, BlockchainService, ProofEntry } from '@h2-trust/blockchain';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { StagedProductionRepository } from '@h2-trust/database';
+import { DocumentRepository, StagedProductionRepository } from '@h2-trust/database';
 import { BatchType, PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step/process-step.service';
@@ -57,20 +57,51 @@ export class ProductionImportService {
     private readonly stagedProductionRepository: StagedProductionRepository,
     private readonly storageService: StorageService,
     private readonly blockchainService: BlockchainService,
+    private readonly documentRepository: DocumentRepository
   ) {
     this.productionChunkSize = this.configurationService.getProcessSvcConfiguration().productionChunkSize;
     this.minioUrl = `${this.configurationService.getGlobalConfiguration().minio.endPoint}:${this.configurationService.getGlobalConfiguration().minio.port}/${this.configurationService.getGlobalConfiguration().minio.bucketName}`;
   }
 
   async stageProductions(payload: StageProductionsPayload): Promise<ParsedProductionMatchingResultEntity> {
-    const [powerProductions, hydrogenProductions, gridUnitId] = await Promise.all([
+    const [powerResults, hydrogenResults, gridUnitId] = await Promise.all([
       this.importAccountingPeriods<AccountingPeriodPower>(payload.powerProductions, BatchType.POWER),
       this.importAccountingPeriods<AccountingPeriodHydrogen>(payload.hydrogenProductions, BatchType.HYDROGEN),
       this.fetchGridUnitId(payload.userId),
     ]);
+
+    const allResults = [...powerResults, ...hydrogenResults];
+
+    const documents = await this.documentRepository.createDocumentsWithFileName(allResults.map((r) => r.fileName));
+
+    allResults.forEach((result) => {
+      const document = documents.find((doc) => doc.fileName === result.fileName);
+      if (!document) {
+        throw new BrokerException(
+          `Document with file name ${result.fileName} not found in database after creation.`,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      result.fileName = document.id;
+    })
+
+    const allProofs: ProofEntry[] = allResults.map((r) => ({
+      uuid: r.fileName,
+      hash: r.hash,
+      cid: r.cid,
+    }));
+
+    const txHash = await this.blockchainService.storeProofs(allProofs);
+    this.logger.log(`Stored ${allProofs.length} proofs in tx ${txHash}`);
+
+    await this.documentRepository.updateDocumentsWithTransactionHash(
+      documents.map((doc) => doc.id),
+      txHash,
+    );
+
     const parsedProductions = AccountingPeriodMatcher.matchAccountingPeriods(
-      powerProductions,
-      hydrogenProductions,
+      powerResults.map((r) => r.periods),
+      hydrogenResults.map((r) => r.periods),
       gridUnitId,
     );
 
@@ -82,11 +113,9 @@ export class ProductionImportService {
   private async importAccountingPeriods<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
     unitFileReferences: UnitFileReference[],
     type: BatchType,
-  ): Promise<UnitAccountingPeriods<T>[]> {
+  ): Promise<{ periods: UnitAccountingPeriods<T>; fileName: string; cid: string; hash: string }[]> {
     const headers = ProductionImportService.headersForBatchType[type];
 
-    // TODO-MP: do not send transactions in this loop one by one, but batch them together to reduce gas costs improve performance
-    // TODO-MP: create a new method, e.g. storeProofs: hash files -> write to db -> write to bc -> write to db
     return Promise.all(
       unitFileReferences.map(async (ufr) => {
         const downloadingStream = await this.storageService.downloadFile(ufr.fileName);
@@ -104,12 +133,6 @@ export class ProductionImportService {
           AccountingPeriodCsvParser.parseStream<T>(parsingStream, headers, ufr.fileName),
         ]);
 
-        const uuid = ufr.fileName.split('.').slice(0, -1).join('.'); // remove file extension
-        const cid = this.minioUrl + '/' + ufr.fileName; // temporary solution until we have implemented proper IPFS support
-        const proofEntry: ProofEntry = { uuid, hash, cid };
-        const txHash = await this.blockchainService.storeProofs([proofEntry]);
-        this.logger.log(`Tx hash ${txHash}`);
-
         if (accountingPeriods.length < 1) {
           throw new BrokerException(
             `${type} production file does not contain any valid items.`,
@@ -117,7 +140,14 @@ export class ProductionImportService {
           );
         }
 
-        return new UnitAccountingPeriods<T>(ufr.unitId, accountingPeriods);
+        const cid = this.minioUrl + '/' + ufr.fileName; // temporary solution until we have uploaded file in bff to ipfs
+
+        return {
+          periods: new UnitAccountingPeriods<T>(ufr.unitId, accountingPeriods),
+          fileName: ufr.fileName,
+          cid,
+          hash,
+        };
       }),
     );
   }

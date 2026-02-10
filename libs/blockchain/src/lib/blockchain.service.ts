@@ -43,7 +43,7 @@ export class BlockchainService {
         return new Contract(smartContractAddress, abi, signer) as unknown as ProofStorageContract;
     }
 
-    async storeProofs(proofEntries: ProofEntry[]): Promise<String> {
+    async storeProofs(proofEntries: ProofEntry[]): Promise<string> {
         this.logger.log(`Storing proofs: ${JSON.stringify(proofEntries)}`);
 
         const tx = await this.contract.storeProofs(proofEntries);
