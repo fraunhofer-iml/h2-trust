@@ -10,20 +10,22 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   CreateProductionsPayload,
-  FinalizeStagedProductionsPayload,
-  ParsedProductionMatchingResultEntity,
+  FinalizeProductionsPayload,
   ProcessStepEntity,
   ProductionMessagePatterns,
+  ProductionStagingResultEntity,
   StageProductionsPayload,
 } from '@h2-trust/amqp';
 import { ProductionCreationService } from './production-creation.service';
-import { ProductionImportService } from './production-import.service';
+import { ProductionFinalizationService } from './production-finalization.service';
+import { ProductionStagingService } from './production-staging.service';
 
 @Controller()
 export class ProductionController {
   constructor(
     private readonly productionCreationService: ProductionCreationService,
-    private readonly productionImportService: ProductionImportService,
+    private readonly productionStagingService: ProductionStagingService,
+    private readonly productionFinalizationService: ProductionFinalizationService,
   ) {}
 
   @MessagePattern(ProductionMessagePatterns.CREATE)
@@ -32,12 +34,12 @@ export class ProductionController {
   }
 
   @MessagePattern(ProductionMessagePatterns.STAGE)
-  async stageProductions(payload: StageProductionsPayload): Promise<ParsedProductionMatchingResultEntity> {
-    return this.productionImportService.stageProductions(payload);
+  async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
+    return this.productionStagingService.stageProductions(payload);
   }
 
   @MessagePattern(ProductionMessagePatterns.FINALIZE)
-  async finalizeStagedProductions(payload: FinalizeStagedProductionsPayload): Promise<ProcessStepEntity[]> {
-    return this.productionImportService.finalizeStagedProductions(payload);
+  async finalizeProductions(payload: FinalizeProductionsPayload): Promise<ProcessStepEntity[]> {
+    return this.productionFinalizationService.finalizeProductions(payload);
   }
 }

@@ -8,7 +8,7 @@
 
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class FinalizeStagedProductionsPayload {
+export class FinalizeProductionsPayload {
   @IsString()
   @IsNotEmpty()
   recordedBy: string;

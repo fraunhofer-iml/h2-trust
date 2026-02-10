@@ -6,17 +6,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ParsedProductionEntity } from './parsed-production.entity';
+import { DistributedProductionEntity } from './distributed-production.entity';
 
-export class ParsedProductionMatchingResultEntity {
+export class ProductionStagingResultEntity {
   id: string;
   createdAt: Date;
   powerUsed: number;
   hydrogenProduced: number;
   numberOfBatches: number;
 
-  constructor(id: string, parsedProductions: ParsedProductionEntity[]) {
-    const { powerAmount, hydrogenAmount } = (parsedProductions ?? []).reduce(
+  constructor(id: string, distributedProductions: DistributedProductionEntity[]) {
+    const { powerAmount, hydrogenAmount } = (distributedProductions ?? []).reduce(
       (acc, curr) => {
         acc.hydrogenAmount += curr.hydrogenAmount;
         acc.powerAmount += curr.powerAmount;
@@ -29,8 +29,8 @@ export class ParsedProductionMatchingResultEntity {
     );
 
     this.id = id;
-    this.createdAt = parsedProductions[0].startedAt;
-    this.numberOfBatches = parsedProductions.length;
+    this.createdAt = distributedProductions[0].startedAt;
+    this.numberOfBatches = distributedProductions.length;
     this.powerUsed = powerAmount;
     this.hydrogenProduced = hydrogenAmount;
   }
