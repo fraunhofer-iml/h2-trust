@@ -24,7 +24,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { CsvContentType, ProcessedCsvDto } from '@h2-trust/api';
-import { MeasurementUnit } from '@h2-trust/domain';
+import { BatchType, MeasurementUnit } from '@h2-trust/domain';
 import { FileTypeChipComponent } from '../../../layout/color-chip/file-type-chip.component';
 import { ICONS } from '../../../shared/constants/icons';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
@@ -60,8 +60,8 @@ export class ProductionFilesComponent implements AfterViewInit {
   protected readonly MeasurementUnit = MeasurementUnit;
   readonly displayedColumns = ['select', 'name', 'uploadedBy', 'startedAt', 'endedAt', 'type', 'amount'] as const;
   readonly displayedCsvContentTypes: { name: string; value: CsvContentType | null }[] = [
-    { name: 'Hydrogen', value: 'HYDROGEN' },
-    { name: 'Power', value: 'POWER' },
+    { name: 'Hydrogen', value: BatchType.HYDROGEN },
+    { name: 'Power', value: BatchType.HYDROGEN },
     { name: 'All', value: null },
   ] as const;
 

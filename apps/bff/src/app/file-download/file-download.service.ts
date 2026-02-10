@@ -15,12 +15,12 @@ import { StorageService } from '@h2-trust/storage';
 export class FileDownloadService {
   constructor(private readonly storage: StorageService) {}
 
-  async downloadFilesAsZip(res: Response, files: string[]) {
+  async downloadFilesAsZip(res: Response, fileNames: string[]) {
     const filesExist = await Promise.all(fileNames.map((f) => this.storage.fileExists(f)));
     const missingFiles = fileNames.filter((_, i) => !filesExist[i]);
 
-    if (missing.length > 0) {
-      throw new NotFoundException(`Missing files: ${missing.join(', ')}`);
+    if (missingFiles.length > 0) {
+      throw new NotFoundException(`Missing files: ${missingFiles.join(', ')}`);
     }
 
     const zip = new ZipFile();
@@ -28,7 +28,7 @@ export class FileDownloadService {
 
     zip.outputStream.pipe(res);
 
-    for (const file of files) {
+    for (const file of fileNames) {
       const fileStream = await this.storage.downloadFile(file);
       zip.addReadStream(fileStream, file);
     }

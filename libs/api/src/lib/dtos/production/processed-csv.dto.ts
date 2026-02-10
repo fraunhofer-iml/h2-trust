@@ -18,7 +18,6 @@ export class ProcessedCsvDto {
   csvContentType: CsvContentType;
   amount: number;
 
-  // TODO: add amount
   constructor(
     id: string,
     url: string,
