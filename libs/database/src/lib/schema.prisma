@@ -29,7 +29,7 @@ model Address {
 
 model Document {
   id              String  @id @default(uuid(7))
-  fileName        String  @unique
+  fileName        String
   transactionHash String?
 
   unit   Unit?   @relation(fields: [unitId], references: [id])
