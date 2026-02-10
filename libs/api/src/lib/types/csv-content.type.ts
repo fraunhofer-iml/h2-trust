@@ -6,4 +6,4 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export type CsvContentType = 'HYDROGEN' | 'POWER';
+export type CsvContentType = BatchType.HYDROGEN | BatchType.POWER;
