@@ -20,7 +20,6 @@ import { StagedProductionRepository } from '@h2-trust/database';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { ProductionAssembler } from './production.assembler';
 
-
 @Injectable()
 export class ProductionFinalizationService {
   private readonly logger = new Logger(this.constructor.name);

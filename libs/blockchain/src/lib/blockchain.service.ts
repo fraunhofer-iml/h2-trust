@@ -1,64 +1,79 @@
+/*
+ * Copyright Fraunhofer Institute for Material Flow and Logistics
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * For details on the licensing terms, see the LICENSE file.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { readFileSync } from 'fs';
+import {
+  BaseContract,
+  Contract,
+  JsonRpcProvider,
+  NonceManager,
+  Wallet,
+  type ContractTransactionResponse,
+} from 'ethers';
+import { Injectable, Logger } from '@nestjs/common';
 import { ProofEntity } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { Injectable, Logger } from '@nestjs/common';
-import { BaseContract, Contract, type ContractTransactionResponse, JsonRpcProvider, NonceManager, Wallet } from 'ethers';
 
 export interface ProofEntry {
-    uuid: string;
-    hash: string;
-    cid: string;
+  uuid: string;
+  hash: string;
+  cid: string;
 }
 
 interface Proof {
-    hash: string;
-    cid: string;
+  hash: string;
+  cid: string;
 }
 
 interface ProofStorageContract extends BaseContract {
-    storeProofs(proofs: ProofEntry[]): Promise<ContractTransactionResponse>;
-    getProofByUuid(uuid: string): Promise<Proof>;
+  storeProofs(proofs: ProofEntry[]): Promise<ContractTransactionResponse>;
+  getProofByUuid(uuid: string): Promise<Proof>;
 }
 
 @Injectable()
 export class BlockchainService {
-    private readonly logger = new Logger(this.constructor.name);
-    private readonly contract: ProofStorageContract;
+  private readonly logger = new Logger(this.constructor.name);
+  private readonly contract: ProofStorageContract;
 
-    constructor(private readonly configurationService: ConfigurationService) {
-        this.contract = this.createContract();
-    }
+  constructor(private readonly configurationService: ConfigurationService) {
+    this.contract = this.createContract();
+  }
 
-    private createContract(): ProofStorageContract {
-        const blockchainConfiguration = this.configurationService.getGlobalConfiguration().blockchain;
+  private createContract(): ProofStorageContract {
+    const blockchainConfiguration = this.configurationService.getGlobalConfiguration().blockchain;
 
-        const smartContractAddress = blockchainConfiguration.smartContractAddress;
+    const smartContractAddress = blockchainConfiguration.smartContractAddress;
 
-        const { abi } = JSON.parse(readFileSync(blockchainConfiguration.artifactPath, 'utf-8'));
+    const { abi } = JSON.parse(readFileSync(blockchainConfiguration.artifactPath, 'utf-8'));
 
-        const provider = new JsonRpcProvider(blockchainConfiguration.rpcUrl);
-        const wallet = new Wallet(blockchainConfiguration.privateKey, provider);
-        const signer = new NonceManager(wallet);
+    const provider = new JsonRpcProvider(blockchainConfiguration.rpcUrl);
+    const wallet = new Wallet(blockchainConfiguration.privateKey, provider);
+    const signer = new NonceManager(wallet);
 
-        return new Contract(smartContractAddress, abi, signer) as unknown as ProofStorageContract;
-    }
+    return new Contract(smartContractAddress, abi, signer) as unknown as ProofStorageContract;
+  }
 
-    async storeProofs(proofEntries: ProofEntry[]): Promise<string> {
-        this.logger.debug(`Storing proofs:\n${proofEntries.map((e) => JSON.stringify(e)).join('\n')}`);
+  async storeProofs(proofEntries: ProofEntry[]): Promise<string> {
+    this.logger.debug(`Storing proofs:\n${proofEntries.map((e) => JSON.stringify(e)).join('\n')}`);
 
-        const tx = await this.contract.storeProofs(proofEntries);
-        await tx.wait();
+    const tx = await this.contract.storeProofs(proofEntries);
+    await tx.wait();
 
-        this.logger.debug(`Proof stored: ${tx.hash}`);
-        return tx.hash;
-    }
+    this.logger.debug(`Proof stored: ${tx.hash}`);
+    return tx.hash;
+  }
 
-    async getProofByUuid(uuid: string): Promise<ProofEntity> {
-        this.logger.debug(`Retrieving proof: ${uuid}`);
+  async getProofByUuid(uuid: string): Promise<ProofEntity> {
+    this.logger.debug(`Retrieving proof: ${uuid}`);
 
-        const proof: Proof = await this.contract.getProofByUuid(uuid);
-        this.logger.debug(`Retrieved proof: ${JSON.stringify(proof)}`);
+    const proof: Proof = await this.contract.getProofByUuid(uuid);
+    this.logger.debug(`Retrieved proof: ${JSON.stringify(proof)}`);
 
-        return new ProofEntity(uuid, proof.hash, proof.cid);
-    }
+    return new ProofEntity(uuid, proof.hash, proof.cid);
+  }
 }

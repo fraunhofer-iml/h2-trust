@@ -57,7 +57,7 @@ describe('ProofStorage', function () {
   describe('storeProofs', function () {
     describe(SUCCESS, function () {
       it('should store a single proof', async function () {
-      // arrange
+        // arrange
         const { proofStorage } = await deployProofStorage();
 
         // act
@@ -87,13 +87,15 @@ describe('ProofStorage', function () {
       });
 
       it('should emit a ProofStored event for each proof', async function () {
-      // arrange
+        // arrange
         const { proofStorage, alice } = await deployProofStorage();
 
         // act & assert
         await expect(proofStorage.storeProofs([PROOF_ENTRY_1, PROOF_ENTRY_2]))
-          .to.emit(proofStorage, 'ProofStored').withArgs(alice.address, UUID_1, HASH_1, CID_1)
-          .and.to.emit(proofStorage, 'ProofStored').withArgs(alice.address, UUID_2, HASH_2, CID_2);
+          .to.emit(proofStorage, 'ProofStored')
+          .withArgs(alice.address, UUID_1, HASH_1, CID_1)
+          .and.to.emit(proofStorage, 'ProofStored')
+          .withArgs(alice.address, UUID_2, HASH_2, CID_2);
       });
     });
 
@@ -104,8 +106,10 @@ describe('ProofStorage', function () {
         const bobProofStorage = proofStorage.connect(bob) as typeof proofStorage;
 
         // act & assert
-        await expect(bobProofStorage.storeProofs([PROOF_ENTRY_1]))
-          .to.be.revertedWithCustomError(proofStorage, 'NotOwner');
+        await expect(bobProofStorage.storeProofs([PROOF_ENTRY_1])).to.be.revertedWithCustomError(
+          proofStorage,
+          'NotOwner',
+        );
       });
 
       it('should revert when uuid is too short', async function () {
@@ -137,7 +141,8 @@ describe('ProofStorage', function () {
 
         // act & assert
         await expect(proofStorage.storeProofs([PROOF_ENTRY_1]))
-          .to.be.revertedWithCustomError(proofStorage, 'UuidAlreadyExists').withArgs(UUID_1);
+          .to.be.revertedWithCustomError(proofStorage, 'UuidAlreadyExists')
+          .withArgs(UUID_1);
       });
 
       it('should revert when hash is empty', async function () {
@@ -145,8 +150,10 @@ describe('ProofStorage', function () {
         const { proofStorage } = await deployProofStorage();
 
         // act & assert
-        await expect(proofStorage.storeProofs([{ uuid: UUID_1, hash: '', cid: CID_1 }]))
-          .to.be.revertedWithCustomError(proofStorage, 'HashEmpty');
+        await expect(proofStorage.storeProofs([{ uuid: UUID_1, hash: '', cid: CID_1 }])).to.be.revertedWithCustomError(
+          proofStorage,
+          'HashEmpty',
+        );
       });
 
       it('should revert when cid is empty', async function () {
@@ -154,22 +161,23 @@ describe('ProofStorage', function () {
         const { proofStorage } = await deployProofStorage();
 
         // act & assert
-        await expect(proofStorage.storeProofs([{ uuid: UUID_1, hash: HASH_1, cid: '' }]))
-          .to.be.revertedWithCustomError(proofStorage, 'CidEmpty');
+        await expect(proofStorage.storeProofs([{ uuid: UUID_1, hash: HASH_1, cid: '' }])).to.be.revertedWithCustomError(
+          proofStorage,
+          'CidEmpty',
+        );
       });
 
       it('should revert entire batch when one entry is invalid', async function () {
-      // arrange
+        // arrange
         const { proofStorage } = await deployProofStorage();
 
         // act & assert
         await expect(
-          proofStorage.storeProofs([PROOF_ENTRY_1, { uuid: UUID_2, hash: '', cid: CID_2 }]))
-          .to.be.revertedWithCustomError(proofStorage, 'HashEmpty');
+          proofStorage.storeProofs([PROOF_ENTRY_1, { uuid: UUID_2, hash: '', cid: CID_2 }]),
+        ).to.be.revertedWithCustomError(proofStorage, 'HashEmpty');
 
         // first entry should not have been persisted
-        await expect(proofStorage.getProofByUuid(UUID_1))
-          .to.be.revertedWithCustomError(proofStorage, 'UuidNotFound');
+        await expect(proofStorage.getProofByUuid(UUID_1)).to.be.revertedWithCustomError(proofStorage, 'UuidNotFound');
       });
     });
   });
@@ -185,8 +193,7 @@ describe('ProofStorage', function () {
         const { proofStorage } = await deployProofStorage();
 
         // act & assert
-        await expect(proofStorage.getProofByUuid(''))
-          .to.be.revertedWithCustomError(proofStorage, 'UuidNotFound');
+        await expect(proofStorage.getProofByUuid('')).to.be.revertedWithCustomError(proofStorage, 'UuidNotFound');
       });
 
       it('should revert when uuid does not exist', async function () {
@@ -195,7 +202,8 @@ describe('ProofStorage', function () {
 
         // act & assert
         await expect(proofStorage.getProofByUuid(UUID_1))
-          .to.be.revertedWithCustomError(proofStorage, 'UuidNotFound').withArgs(UUID_1);
+          .to.be.revertedWithCustomError(proofStorage, 'UuidNotFound')
+          .withArgs(UUID_1);
       });
     });
   });

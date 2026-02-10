@@ -27,7 +27,11 @@ export class StageProductionsPayload {
   @IsNotEmpty()
   gridPowerProductionUnitId: string;
 
-  constructor(powerProductions: UnitFileReference[], hydrogenProductions: UnitFileReference[], gridPowerProductionUnitId: string) {
+  constructor(
+    powerProductions: UnitFileReference[],
+    hydrogenProductions: UnitFileReference[],
+    gridPowerProductionUnitId: string,
+  ) {
     this.powerProductions = powerProductions;
     this.hydrogenProductions = hydrogenProductions;
     this.gridPowerProductionUnitId = gridPowerProductionUnitId;

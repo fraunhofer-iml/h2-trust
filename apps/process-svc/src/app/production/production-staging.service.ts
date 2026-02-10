@@ -18,7 +18,7 @@ import {
   UnitAccountingPeriods,
   UnitFileReference,
 } from '@h2-trust/amqp';
-import { HashUtil, BlockchainService, ProofEntry } from '@h2-trust/blockchain';
+import { BlockchainService, HashUtil, ProofEntry } from '@h2-trust/blockchain';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { DocumentRepository, PrismaService, StagedProductionRepository } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
@@ -52,7 +52,7 @@ export class ProductionStagingService {
     private readonly storageService: StorageService,
     private readonly blockchainService: BlockchainService,
     private readonly documentRepository: DocumentRepository,
-    private readonly prismaService: PrismaService
+    private readonly prismaService: PrismaService,
   ) {
     // TODO-MP: temporary solution until we have the file upload in the BFF and can store the IPFS CID directly (DUHGW-341)
     const minio = this.configurationService.getGlobalConfiguration().minio;
@@ -133,7 +133,10 @@ export class ProductionStagingService {
     );
   }
 
-  private async storeBlockchainProofs(documentProofData: DocumentProofData[], storedDocuments: DocumentEntity[]): Promise<void> {
+  private async storeBlockchainProofs(
+    documentProofData: DocumentProofData[],
+    storedDocuments: DocumentEntity[],
+  ): Promise<void> {
     const storedDocumentsByFileName = new Map(storedDocuments.map((sd) => [sd.fileName, sd]));
 
     const proofEntries: ProofEntry[] = documentProofData.map((dpd) => {

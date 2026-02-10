@@ -8,7 +8,14 @@
 
 import { PowerAccessApprovalRepository, UserRepository } from 'libs/database/src/lib';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { BrokerException, PowerAccessApprovalEntity, PowerProductionUnitEntity, ReadByIdPayload, ReadPowerAccessApprovalsPayload, UserEntity } from '@h2-trust/amqp';
+import {
+  BrokerException,
+  PowerAccessApprovalEntity,
+  PowerProductionUnitEntity,
+  ReadByIdPayload,
+  ReadPowerAccessApprovalsPayload,
+  UserEntity,
+} from '@h2-trust/amqp';
 import { PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
 
 @Injectable()
@@ -16,7 +23,7 @@ export class PowerAccessApprovalService {
   constructor(
     private readonly powerAccessApprovalRepository: PowerAccessApprovalRepository,
     private readonly userRepository: UserRepository,
-  ) { }
+  ) {}
 
   async findAll(payload: ReadPowerAccessApprovalsPayload): Promise<PowerAccessApprovalEntity[]> {
     const user: UserEntity = await this.userRepository.findUser(payload.userId);
@@ -24,7 +31,9 @@ export class PowerAccessApprovalService {
   }
 
   async findApprovedGridPowerProductionUnitByUserId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity> {
-    const approvals = await this.findAll(new ReadPowerAccessApprovalsPayload(payload.id, PowerAccessApprovalStatus.APPROVED));
+    const approvals = await this.findAll(
+      new ReadPowerAccessApprovalsPayload(payload.id, PowerAccessApprovalStatus.APPROVED),
+    );
 
     const approvalForGrid = approvals.find(
       (approval) => approval.powerProductionUnit.type.name === PowerProductionType.GRID,

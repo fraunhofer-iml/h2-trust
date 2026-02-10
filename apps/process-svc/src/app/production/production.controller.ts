@@ -11,9 +11,9 @@ import { MessagePattern } from '@nestjs/microservices';
 import {
   CreateProductionsPayload,
   FinalizeProductionsPayload,
-  ProductionStagingResultEntity,
   ProcessStepEntity,
   ProductionMessagePatterns,
+  ProductionStagingResultEntity,
   StageProductionsPayload,
 } from '@h2-trust/amqp';
 import { ProductionCreationService } from './production-creation.service';
@@ -26,7 +26,7 @@ export class ProductionController {
     private readonly productionCreationService: ProductionCreationService,
     private readonly productionStagingService: ProductionStagingService,
     private readonly productionFinalizationService: ProductionFinalizationService,
-  ) { }
+  ) {}
 
   @MessagePattern(ProductionMessagePatterns.CREATE)
   async createProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {

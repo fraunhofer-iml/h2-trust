@@ -6,11 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import Stream from 'stream';
 import { Client } from 'minio';
 import { MINIO_CONNECTION } from 'nestjs-minio';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigurationService } from '@h2-trust/configuration';
-import Stream from 'stream';
 
 @Injectable()
 export class StorageService {
