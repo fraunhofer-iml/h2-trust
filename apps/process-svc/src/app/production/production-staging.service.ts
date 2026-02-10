@@ -60,7 +60,9 @@ export class ProductionStagingService {
     private readonly blockchainService: BlockchainService,
     private readonly documentRepository: DocumentRepository
   ) {
-    this.minioUrl = `${this.configurationService.getGlobalConfiguration().minio.endPoint}:${this.configurationService.getGlobalConfiguration().minio.port}/${this.configurationService.getGlobalConfiguration().minio.bucketName}`;
+    // TODO-MP: temporary solution until we have the file upload in the BFF and can store the IPFS CID directly (DUHGW-341)
+    const minio = this.configurationService.getGlobalConfiguration().minio;
+    this.minioUrl = `${minio.endPoint}:${minio.port}/${minio.bucketName}`;
   }
 
   async stageProductions(payload: StageProductionsPayload): Promise<ParsedProductionMatchingResultEntity> {
