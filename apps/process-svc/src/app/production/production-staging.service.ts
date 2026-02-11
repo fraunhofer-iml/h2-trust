@@ -50,8 +50,7 @@ export class ProductionStagingService {
     private readonly blockchainService: BlockchainService,
     private readonly documentRepository: DocumentRepository,
     private readonly prismaService: PrismaService,
-  ) {
-  }
+  ) {}
 
   async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
     const [preparedPowerProductions, preparedHydrogenProductions] = await Promise.all([
