@@ -19,7 +19,7 @@ async function bootstrap() {
   const appContext = await NestFactory.createApplicationContext(AppModule);
 
   const configuration = appContext.get(ConfigurationService);
-  const amqpUri = configuration.getGlobalConfiguration().amqpUri;
+  const amqpUri = configuration.getGlobalConfiguration().amqp.uri;
 
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
     transport: Transport.RMQ,

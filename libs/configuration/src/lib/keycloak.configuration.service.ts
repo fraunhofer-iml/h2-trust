@@ -17,16 +17,17 @@ import { ConfigurationService } from './configuration.service';
 
 @Injectable()
 export class KeycloakConfigurationService implements KeycloakConnectOptionsFactory {
-  constructor(private readonly configurationService: ConfigurationService) {}
+  constructor(private readonly configurationService: ConfigurationService) { }
 
   createKeycloakConnectOptions(): KeycloakConnectOptions {
     return {
-      authServerUrl: this.configurationService.getKeycloakConfiguration().url,
-      realm: this.configurationService.getKeycloakConfiguration().realm,
-      clientId: this.configurationService.getKeycloakConfiguration().clientId,
-      secret: this.configurationService.getKeycloakConfiguration().clientSecret,
+      authServerUrl: this.configurationService.getGlobalConfiguration().keycloak.url,
+      realm: this.configurationService.getGlobalConfiguration().keycloak.realm,
+      clientId: this.configurationService.getGlobalConfiguration().keycloak.clientId,
+      secret: this.configurationService.getGlobalConfiguration().keycloak.clientSecret,
       policyEnforcement: PolicyEnforcementMode.PERMISSIVE,
       tokenValidation: TokenValidation.ONLINE,
+      useNestLogger: true,
     };
   }
 }
