@@ -1,0 +1,22 @@
+/*
+ * Copyright Fraunhofer Institute for Material Flow and Logistics
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * For details on the licensing terms, see the LICENSE file.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import type { Response } from 'express';
+import { Body, Controller, Post, Res } from '@nestjs/common';
+import { DownloadFilesDto } from '@h2-trust/api';
+import { FileDownloadService } from './file-download.service';
+
+@Controller('file-download')
+export class FileDownloadController {
+  constructor(private service: FileDownloadService) {}
+
+  @Post()
+  findAll(@Body() dto: DownloadFilesDto, @Res() res: Response) {
+    return this.service.downloadFilesAsZip(res, dto.ids);
+  }
+}

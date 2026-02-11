@@ -13,6 +13,7 @@ import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation
 import {
   CreateProductionDto,
   ImportSubmissionDto,
+  ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   type AuthenticatedKCUser,
@@ -88,6 +89,17 @@ export class ProductionController {
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<ProductionOverviewDto[]> {
     return this.service.readHydrogenProductionsByOwner(authenticatedUser.sub);
+  }
+
+  @Get('csv')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: "Retrieve all csv files for the authenticated user's company.",
+  })
+  async readCsvFilesByUserCompany(
+    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+  ): Promise<ProcessedCsvDto[]> {
+    return this.service.readCsvFilesByCompany(authenticatedUser.sub);
   }
 
   @Post('csv/import')
