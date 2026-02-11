@@ -64,7 +64,7 @@ export class H2CompositionChartComponent {
             value: formatNumberForChart(composition.amount),
             name: composition.color,
             itemStyle: {
-              color: CHART_COLORS.get(composition.color),
+              color: CHART_COLORS.get(composition.color) ?? '#ababab',
               borderColor: '#fff',
             },
           })),

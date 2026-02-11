@@ -17,7 +17,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ProductionOverviewDto } from '@h2-trust/api';
-import { H2ColorChipComponent } from '../../layout/h2-color-chip/h2-color-chip.component';
+import { H2ColorChipComponent } from '../../layout/color-chip/h2-color-chip.component';
 import { ProductionService } from '../../shared/services/production/production.service';
 
 @Component({
