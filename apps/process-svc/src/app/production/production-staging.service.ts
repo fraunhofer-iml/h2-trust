@@ -153,7 +153,7 @@ export class ProductionStagingService {
     });
 
     const txHash = await this.blockchainService.storeProofs(proofEntries);
-    this.logger.debug(`Stored ${proofEntries.length} proofs in tx ${txHash}`);
+    this.logger.debug(`✅ Stored ${proofEntries.length} proofs in tx ${txHash}`);
 
     await this.documentRepository.updateDocuments(
       storedDocuments.map((doc) => doc.id),
