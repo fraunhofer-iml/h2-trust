@@ -26,13 +26,13 @@ import { StorageService } from '@h2-trust/storage';
 import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
 import { ProductionDistributor } from './production-distributor';
 
-interface DocumentProofData {
+interface DocumentProof {
   fileName: string;
   hash: string;
   cid: string;
 }
 
-interface PreparedProductionData<T extends AccountingPeriodPower | AccountingPeriodHydrogen> extends DocumentProofData {
+interface PreparedProduction<T extends AccountingPeriodPower | AccountingPeriodHydrogen> extends DocumentProof {
   periods: UnitAccountingPeriods<T>;
 }
 
@@ -60,37 +60,37 @@ export class ProductionStagingService {
   }
 
   async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
-    const [preparedPowerProductionData, preparedHydrogenProductionData] = await Promise.all([
-      this.prepareProductionData<AccountingPeriodPower>(payload.powerProductions, BatchType.POWER),
-      this.prepareProductionData<AccountingPeriodHydrogen>(payload.hydrogenProductions, BatchType.HYDROGEN),
+    const [preparedPowerProductions, preparedHydrogenProductions] = await Promise.all([
+      this.prepareProductions<AccountingPeriodPower>(payload.powerProductions, BatchType.POWER),
+      this.prepareProductions<AccountingPeriodHydrogen>(payload.hydrogenProductions, BatchType.HYDROGEN),
     ]);
 
     const distributedProductions = ProductionDistributor.distributeProductions(
-      preparedPowerProductionData.map((pr) => pr.periods),
-      preparedHydrogenProductionData.map((hr) => hr.periods),
+      preparedPowerProductions.map((ppp) => ppp.periods),
+      preparedHydrogenProductions.map((php) => php.periods),
       payload.gridPowerProductionUnitId,
     );
 
-    const preparedProductionData = [...preparedPowerProductionData, ...preparedHydrogenProductionData];
+    const preparedProductions = [...preparedPowerProductions, ...preparedHydrogenProductions];
 
     const { storedImportId, storedDocuments } = await this.prismaService.$transaction(async (tx) => {
-      const storedImportId = await this.stagedProductionRepository.stageParsedProductions(distributedProductions, tx);
+      const storedImportId = await this.stagedProductionRepository.stageDistributedProductions(distributedProductions, tx);
 
-      const fileNames = preparedProductionData.map((ppd) => ppd.fileName);
-      const storedDocuments = await this.documentRepository.createDocumentsWithFileName(fileNames, tx);
+      const fileNames = preparedProductions.map((pp) => pp.fileName);
+      const storedDocuments = await this.documentRepository.createDocuments(fileNames, tx);
 
       return { storedImportId, storedDocuments };
     });
 
-    await this.storeBlockchainProofs(preparedProductionData, storedDocuments);
+    await this.storeBlockchainProofs(preparedProductions, storedDocuments);
 
     return new ProductionStagingResultEntity(storedImportId, distributedProductions);
   }
 
-  private async prepareProductionData<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
+  private async prepareProductions<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
     unitFileReferences: UnitFileReference[],
     type: Exclude<BatchType, BatchType.WATER>,
-  ): Promise<PreparedProductionData<T>[]> {
+  ): Promise<PreparedProduction<T>[]> {
     const headers = ProductionStagingService.validHeaders[type];
 
     return Promise.all(
@@ -133,13 +133,10 @@ export class ProductionStagingService {
     );
   }
 
-  private async storeBlockchainProofs(
-    documentProofData: DocumentProofData[],
-    storedDocuments: DocumentEntity[],
-  ): Promise<void> {
+  private async storeBlockchainProofs(documentProofs: DocumentProof[], storedDocuments: DocumentEntity[]): Promise<void> {
     const storedDocumentsByFileName = new Map(storedDocuments.map((sd) => [sd.fileName, sd]));
 
-    const proofEntries: ProofEntry[] = documentProofData.map((dpd) => {
+    const proofEntries: ProofEntry[] = documentProofs.map((dpd) => {
       const storedDocument = storedDocumentsByFileName.get(dpd.fileName);
       if (!storedDocument) {
         throw new BrokerException(
@@ -153,7 +150,7 @@ export class ProductionStagingService {
     const txHash = await this.blockchainService.storeProofs(proofEntries);
     this.logger.debug(`Stored ${proofEntries.length} proofs in tx ${txHash}`);
 
-    await this.documentRepository.updateDocumentsWithTransactionHash(
+    await this.documentRepository.updateDocuments(
       storedDocuments.map((doc) => doc.id),
       txHash,
     );

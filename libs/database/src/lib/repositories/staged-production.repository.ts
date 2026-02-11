@@ -18,17 +18,17 @@ import { StagedProductionDeepDbType } from '../types';
 export class StagedProductionRepository {
   static readonly DAY_IN_MS = 24 * 60 * 60 * 1000;
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
-  async stageParsedProductions(
-    parsedProductions: DistributedProductionEntity[],
+  async stageDistributedProductions(
+    distributedProductions: DistributedProductionEntity[],
     tx?: Prisma.TransactionClient,
   ): Promise<string> {
     const client = tx ?? this.prismaService;
     const importId = randomUUID();
 
     await client.stagedProduction.createMany({
-      data: parsedProductions.map(
+      data: distributedProductions.map(
         ({ startedAt, hydrogenAmount, hydrogenProductionUnitId, powerAmount, powerProductionUnitId }) => ({
           startedAt,
           hydrogenAmount,

@@ -14,7 +14,7 @@ import { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class DocumentRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   async addDocumentToProcessStep(document: DocumentEntity, processStepId: string): Promise<DocumentEntity> {
     return this.prismaService.document
@@ -22,8 +22,9 @@ export class DocumentRepository {
       .then(DocumentEntity.fromDatabase);
   }
 
-  async createDocumentsWithFileName(fileNames: string[], tx?: Prisma.TransactionClient): Promise<DocumentEntity[]> {
+  async createDocuments(fileNames: string[], tx?: Prisma.TransactionClient): Promise<DocumentEntity[]> {
     const client = tx ?? this.prismaService;
+
     const documents = await client.document.createManyAndReturn({
       data: fileNames.map((fileName) => ({ fileName })),
     });
@@ -31,12 +32,9 @@ export class DocumentRepository {
     return documents.map(DocumentEntity.fromDatabase);
   }
 
-  async updateDocumentsWithTransactionHash(
-    documentIds: string[],
-    transactionHash: string,
-    tx?: Prisma.TransactionClient,
-  ): Promise<DocumentEntity[]> {
+  async updateDocuments(documentIds: string[], transactionHash: string, tx?: Prisma.TransactionClient): Promise<DocumentEntity[]> {
     const client = tx ?? this.prismaService;
+
     const documents = await client.document.updateManyAndReturn({
       where: { id: { in: documentIds } },
       data: { transactionHash },
