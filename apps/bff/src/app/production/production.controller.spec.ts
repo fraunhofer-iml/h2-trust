@@ -29,7 +29,7 @@ import {
 import { EnergySource, HydrogenColor, PowerProductionType, ProcessType } from '@h2-trust/domain';
 import 'multer';
 import { of } from 'rxjs';
-import { StorageModule } from '@h2-trust/storage';
+import { StorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
@@ -42,7 +42,6 @@ describe('ProductionController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [StorageModule],
       controllers: [ProductionController],
       providers: [
         ProductionService,
@@ -56,6 +55,12 @@ describe('ProductionController', () => {
           provide: BrokerQueues.QUEUE_PROCESS_SVC,
           useValue: {
             send: jest.fn(),
+          },
+        },
+        {
+          provide: StorageService,
+          useValue: {
+            uploadFileWithRandomFileName: jest.fn().mockResolvedValue('random-file-name.csv'),
           },
         },
         {
