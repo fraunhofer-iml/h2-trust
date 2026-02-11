@@ -63,7 +63,7 @@ export class DigitalProductPassportCalculationService {
       );
       const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStepIds[i]);
       const proofOfSustainability: ProofOfSustainabilityEntity =
-        await this.emissionService.computeProvenanceEmissionsForProvenanceWithoutBottling(provenance);
+        await this.emissionService.computeProvenanceEmissions(provenance);
       const isEmissionReductionAbove70Percent = proofOfSustainability.emissionReductionPercentage > 70;
       const rfnboReadyDto: RfnboBaseDto = new RenewableEnergyRfnboDto(
         isEmissionReductionAbove70Percent,
@@ -85,13 +85,14 @@ export class DigitalProductPassportCalculationService {
 
   async readDigitalProductPassport(processStepId: string): Promise<DigitalProductPassportDto> {
     const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
+    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStepId);
 
     const hydrogenComposition: HydrogenComponentEntity[] =
       await this.bottlingService.calculateHydrogenComposition(processStep);
 
     const redCompliance: RedComplianceEntity = await this.redComplianceService.determineRedCompliance(processStepId);
 
-    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStepId);
+    //TODO-LG: Simplify to the extent that they are no longer individual promises, if possible.
     const sectionPromises: Array<Promise<ProofOfOriginSectionEntity>> = [];
 
     const hydrogenProductionPromise =
