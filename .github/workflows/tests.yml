@@ -14,14 +14,14 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Common Setup
         uses: ./.github/actions/common-setup
 
       - name: Install Smart Contract Dependencies
         shell: bash
-        run: npm --prefix libs/blockchain/smart-contract install --no-audit --no-fund
+        run: npm --prefix libs/blockchain/smart-contract install --no-audit --no-fund --loglevel verbose
 
       - name: Run Tests for amqp
         run: npx nx run amqp:test
