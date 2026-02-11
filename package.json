@@ -56,7 +56,7 @@
   ],
   "main": "",
   "scripts": {
-    "clean": "rm -rf .angular .nx dist node_modules/.prisma apps/*/coverage apps/*/run-code-quality-tools.log libs/*/run-code-quality-tools.log",
+    "clean": "rm -rf .angular .nx dist node_modules/.prisma apps/*/coverage",
     "dev": "nx run-many --parallel 5 --target serve --outputStyle=stream-without-prefixes",
     "format": "npx prettier --write .",
     "init": "npm run clean && npm run set-up-db",
