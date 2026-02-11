@@ -31,6 +31,7 @@ async function bootstrap() {
   });
 
   app.useLogger(app.get(ConfigurationService).getGlobalConfiguration().logLevel);
+  app.useGlobalFilters(new RpcExceptionFilter());
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -38,7 +39,7 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-  app.useGlobalFilters(new RpcExceptionFilter());
+  app.enableShutdownHooks();
 
   await app.listen();
   Logger.log(`⚖️ Process microservice is up and running via RMQ: ${amqpUri}:${BrokerQueues.QUEUE_PROCESS_SVC}`);
