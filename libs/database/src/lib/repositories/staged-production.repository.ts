@@ -20,15 +20,15 @@ export class StagedProductionRepository {
 
   constructor(private readonly prismaService: PrismaService) {}
 
-  async stageParsedProductions(
-    parsedProductions: DistributedProductionEntity[],
+  async stageDistributedProductions(
+    distributedProductions: DistributedProductionEntity[],
     tx?: Prisma.TransactionClient,
   ): Promise<string> {
     const client = tx ?? this.prismaService;
     const importId = randomUUID();
 
     await client.stagedProduction.createMany({
-      data: parsedProductions.map(
+      data: distributedProductions.map(
         ({ startedAt, hydrogenAmount, hydrogenProductionUnitId, powerAmount, powerProductionUnitId }) => ({
           startedAt,
           hydrogenAmount,
