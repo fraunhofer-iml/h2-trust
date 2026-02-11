@@ -21,12 +21,7 @@ import { KeycloakConfigurationService } from './keycloak.configuration.service';
       envFilePath: ['../../.env'],
       isGlobal: true,
       cache: true,
-      load: [
-        bffConfiguration,
-        generalSvcConfiguration,
-        globalConfiguration,
-        processSvcConfiguration,
-      ],
+      load: [bffConfiguration, generalSvcConfiguration, globalConfiguration, processSvcConfiguration],
     }),
   ],
   controllers: [],

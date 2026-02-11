@@ -9,15 +9,21 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { BFF_CONFIGURATION_IDENTIFIER, BffConfiguration } from './configurations/bff.configuration';
-import { GENERAL_SVC_CONFIGURATION_IDENTIFIER, GeneralSvcConfiguration } from './configurations/general-svc.configuration';
+import {
+  GENERAL_SVC_CONFIGURATION_IDENTIFIER,
+  GeneralSvcConfiguration,
+} from './configurations/general-svc.configuration';
 import { GLOBAL_CONFIGURATION_IDENTIFIER, GlobalConfiguration } from './configurations/global.configuration';
-import { PROCESS_SVC_CONFIGURATION_IDENTIFIER, ProcessSvcConfiguration } from './configurations/process-svc.configuration';
+import {
+  PROCESS_SVC_CONFIGURATION_IDENTIFIER,
+  ProcessSvcConfiguration,
+} from './configurations/process-svc.configuration';
 
 @Injectable()
 export class ConfigurationService {
   logger = new Logger(ConfigurationService.name);
 
-  constructor(private readonly configService: ConfigService) { }
+  constructor(private readonly configService: ConfigService) {}
 
   public getBffConfiguration(): BffConfiguration {
     const bffConfiguration = this.configService.get<BffConfiguration>(BFF_CONFIGURATION_IDENTIFIER);

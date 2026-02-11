@@ -74,7 +74,10 @@ export class ProductionStagingService {
     const preparedProductions = [...preparedPowerProductions, ...preparedHydrogenProductions];
 
     const { storedImportId, storedDocuments } = await this.prismaService.$transaction(async (tx) => {
-      const storedImportId = await this.stagedProductionRepository.stageDistributedProductions(distributedProductions, tx);
+      const storedImportId = await this.stagedProductionRepository.stageDistributedProductions(
+        distributedProductions,
+        tx,
+      );
 
       const fileNames = preparedProductions.map((pp) => pp.fileName);
       const storedDocuments = await this.documentRepository.createDocuments(fileNames, tx);
@@ -133,7 +136,10 @@ export class ProductionStagingService {
     );
   }
 
-  private async storeBlockchainProofs(documentProofs: DocumentProof[], storedDocuments: DocumentEntity[]): Promise<void> {
+  private async storeBlockchainProofs(
+    documentProofs: DocumentProof[],
+    storedDocuments: DocumentEntity[],
+  ): Promise<void> {
     if (!this.blockchainService.blockchainEnabled) {
       this.logger.debug(`⏭️ Blockchain disabled, skipping proof storage of ${documentProofs.length} entries`);
       return;

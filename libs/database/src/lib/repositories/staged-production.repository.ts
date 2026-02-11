@@ -18,7 +18,7 @@ import { StagedProductionDeepDbType } from '../types';
 export class StagedProductionRepository {
   static readonly DAY_IN_MS = 24 * 60 * 60 * 1000;
 
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async stageDistributedProductions(
     distributedProductions: DistributedProductionEntity[],

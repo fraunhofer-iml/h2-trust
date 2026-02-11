@@ -18,7 +18,7 @@ async function bootstrap() {
   Logger.log('📡 BFF microservice is starting with REST API...');
 
   const app = await NestFactory.create(AppModule, {
-    bufferLogs: true
+    bufferLogs: true,
   });
 
   const configuration = app.get(ConfigurationService);

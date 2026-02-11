@@ -18,6 +18,7 @@ export interface GlobalConfiguration {
   blockchain: BlockchainConfiguration;
   keycloak: KeycloakConfiguration;
 }
+
 export interface AmqpConfiguration {
   uri: string;
   queuePrefix: string;
@@ -67,10 +68,14 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
   },
   blockchain: {
     enabled: process.env['BLOCKCHAIN_ENABLED'] === 'true',
-    rpcUrl: process.env['BLOCKCHAIN_RPC_URL'] || 'http://localhost:8545', // local blockchain
-    privateKey: process.env['BLOCKCHAIN_PRIVATE_KEY'] || '0x8f2a55949038a9610f50fb23b5883af3b4ecb3c3bb792cbcefbd1542c692be63', // genesis private key (account in docker/blockchain/genesis.json)
-    artifactPath: process.env['BLOCKCHAIN_ARTIFACT_PATH'] || 'libs/blockchain/smart-contract/artifacts/contracts/ProofStorage.sol/ProofStorage.json',
-    smartContractAddress: process.env['BLOCKCHAIN_SMART_CONTRACT_ADDRESS'] || '0x42699A7612A82f1d9C36148af9C77354759b210b', // deployed contract on local blockchain
+    rpcUrl: process.env['BLOCKCHAIN_RPC_URL'] || 'http://localhost:8545',
+    privateKey:
+      process.env['BLOCKCHAIN_PRIVATE_KEY'] || '0x8f2a55949038a9610f50fb23b5883af3b4ecb3c3bb792cbcefbd1542c692be63',
+    artifactPath:
+      process.env['BLOCKCHAIN_ARTIFACT_PATH'] ||
+      'libs/blockchain/smart-contract/artifacts/contracts/ProofStorage.sol/ProofStorage.json',
+    smartContractAddress:
+      process.env['BLOCKCHAIN_SMART_CONTRACT_ADDRESS'] || '0x42699A7612A82f1d9C36148af9C77354759b210b',
   },
   keycloak: {
     url: process.env['KEYCLOAK_URL'] || '',
