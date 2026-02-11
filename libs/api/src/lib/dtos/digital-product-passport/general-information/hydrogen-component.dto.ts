@@ -7,20 +7,61 @@
  */
 
 import { HydrogenComponentEntity } from '@h2-trust/amqp';
+import { RfnboBaseDto } from './rfnbo-compliance.dto';
 
 export class HydrogenComponentDto {
+  processId: string;
+  rfnboReady?: RfnboBaseDto;
   color: string;
   amount: number;
 
-  constructor(color: string, amount: number) {
+  constructor(processId: string, color: string, amount: number, rfnboReady?: RfnboBaseDto) {
+    this.processId = processId;
+    this.rfnboReady = rfnboReady;
     this.color = color;
     this.amount = amount;
   }
 
   static fromEntity(hydrogenComponentEntity: HydrogenComponentEntity): HydrogenComponentDto {
     return <HydrogenComponentDto>{
+      processId: hydrogenComponentEntity.processId,
       color: hydrogenComponentEntity.color,
       amount: hydrogenComponentEntity.amount,
     };
+  }
+
+  /**
+   * Should be used to merge all HydrogenComponents with the same RFNBO Status.
+   * @param hydrogenComponents The list of HydrogenComponents that should be merged.
+   * @returns A list of HydrogenComponents, but no two elements have the same RFNBO value.
+   */
+  public static mergeComponents(hydrogenComponents: HydrogenComponentDto[]): HydrogenComponentDto[] {
+    return hydrogenComponents.reduce<HydrogenComponentEntity[]>(HydrogenComponentDto.mergeSingleComponent, []);
+  }
+
+  private static mergeSingleComponent(
+    combinedComponents: HydrogenComponentDto[],
+    componentToMerge: HydrogenComponentDto,
+  ): HydrogenComponentDto[] {
+    const matchingComponent = combinedComponents.find(
+      (c) => c.rfnboReady?.rfnboReady === componentToMerge.rfnboReady?.rfnboReady,
+    );
+
+    if (matchingComponent) {
+      const updatedComponent = new HydrogenComponentDto(
+        '',
+        matchingComponent.color,
+        matchingComponent.amount + componentToMerge.amount,
+        matchingComponent.rfnboReady,
+      );
+      return combinedComponents.map((c) =>
+        c.rfnboReady?.rfnboReady === componentToMerge.rfnboReady?.rfnboReady ? updatedComponent : c,
+      );
+    }
+
+    return [
+      ...combinedComponents,
+      new HydrogenComponentDto('', componentToMerge.color, componentToMerge.amount, componentToMerge.rfnboReady),
+    ];
   }
 }

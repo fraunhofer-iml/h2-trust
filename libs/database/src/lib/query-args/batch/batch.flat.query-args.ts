@@ -21,6 +21,7 @@ export const batchFlatQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()({
 
 export const activeBatchFlatQueryArgs = Prisma.validator<Prisma.BatchFindManyArgs>()({
   include: {
+    processStep: true,
     batchDetails: {
       include: {
         qualityDetails: true,

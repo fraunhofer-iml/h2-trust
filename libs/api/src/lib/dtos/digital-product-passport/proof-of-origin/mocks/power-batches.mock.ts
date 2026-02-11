@@ -9,7 +9,6 @@
 import { BatchType, EnergySource } from '@h2-trust/domain';
 import { EnumLabelMapper } from '../../../../labels';
 import { CompanyDtoMock } from '../../../company';
-import { PowerProductionUnitOverviewDtoMock } from '../../../unit';
 import { PowerBatchDto } from '../power-batch.dto';
 import { EmissionMock } from './emissions.mock';
 
@@ -23,7 +22,7 @@ export const PowerBatchesMock: PowerBatchDto[] = [
     emission: EmissionMock,
     energySource: EnergySource.WIND_ENERGY,
     producer: CompanyDtoMock[0].name,
-    unitId: PowerProductionUnitOverviewDtoMock[0].id,
+    unitId: 'power-production-unit-1',
     batchType: BatchType.POWER,
   },
   {
@@ -35,7 +34,7 @@ export const PowerBatchesMock: PowerBatchDto[] = [
     emission: EmissionMock,
     energySource: EnergySource.WIND_ENERGY,
     producer: CompanyDtoMock[0].name,
-    unitId: PowerProductionUnitOverviewDtoMock[0].id,
+    unitId: 'power-production-unit-1',
     batchType: BatchType.POWER,
   },
   {
@@ -47,7 +46,7 @@ export const PowerBatchesMock: PowerBatchDto[] = [
     emission: EmissionMock,
     energySource: EnergySource.SOLAR_ENERGY,
     producer: CompanyDtoMock[0].name,
-    unitId: PowerProductionUnitOverviewDtoMock[0].id,
+    unitId: 'power-production-unit-1',
     batchType: BatchType.POWER,
   },
   {
@@ -59,7 +58,7 @@ export const PowerBatchesMock: PowerBatchDto[] = [
     emission: EmissionMock,
     energySource: EnergySource.SOLAR_ENERGY,
     producer: CompanyDtoMock[0].name,
-    unitId: PowerProductionUnitOverviewDtoMock[0].id,
+    unitId: 'power-production-unit-1',
     batchType: BatchType.POWER,
   },
 ];

@@ -124,6 +124,8 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
           throw new Error(`Hydrogen batch [${batch.id}] in storage unit is missing color information.`);
         }
         return {
+          processId: '',
+          rfnboReady: false,
           color: batch.batchDetails.qualityDetails.color,
           amount: batch.amount?.toNumber() ?? 0,
         };
@@ -139,6 +141,8 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
           throw new Error(`Hydrogen batch [${batch.id}] in storage unit is missing color information.`);
         }
         return {
+          processId: batch?.processStep?.id ?? '',
+          rfnboReady: false,
           color: batch.batchDetails.qualityDetails.color,
           amount: batch.amount?.toNumber() ?? 0,
         };

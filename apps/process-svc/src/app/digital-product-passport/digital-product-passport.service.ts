@@ -8,6 +8,8 @@
 
 import { Injectable } from '@nestjs/common';
 import { GeneralInformationEntity, ProofOfOriginSectionEntity, ProofOfSustainabilityEntity } from '@h2-trust/amqp';
+import { DigitalProductPassportDto } from '@h2-trust/api';
+import { DigitalProductPassportCalculationService } from './digital-product-passport.calculation.service';
 import { GeneralInformationService } from './general-information/general-information.service';
 import { ProofOfOriginService } from './proof-of-origin/proof-of-origin.service';
 import { ProofOfSustainabilityService } from './proof-of-sustainability/proof-of-sustainability.service';
@@ -18,7 +20,12 @@ export class DigitalProductPassportService {
     private readonly generalInformationService: GeneralInformationService,
     private readonly proofOfOriginService: ProofOfOriginService,
     private readonly proofOfSustainabilityService: ProofOfSustainabilityService,
+    private readonly digitalProductPassportCalculationService: DigitalProductPassportCalculationService,
   ) {}
+
+  async readDigitalProductPassport(processStepId: string): Promise<DigitalProductPassportDto> {
+    return this.digitalProductPassportCalculationService.readDigitalProductPassport(processStepId);
+  }
 
   async readGeneralInformation(processStepId: string): Promise<GeneralInformationEntity> {
     return this.generalInformationService.readGeneralInformation(processStepId);

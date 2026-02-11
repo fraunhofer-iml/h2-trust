@@ -10,6 +10,6 @@ import { HydrogenColor } from '@h2-trust/domain';
 import { HydrogenComponentDto } from '../hydrogen-component.dto';
 
 export const HydrogenCompositionDtoMock: HydrogenComponentDto[] = [
-  { color: HydrogenColor.GREEN, amount: 1 },
-  { color: HydrogenColor.YELLOW, amount: 4 },
+  { processId: '', color: HydrogenColor.GREEN, amount: 1 },
+  { processId: '', color: HydrogenColor.YELLOW, amount: 4 },
 ];

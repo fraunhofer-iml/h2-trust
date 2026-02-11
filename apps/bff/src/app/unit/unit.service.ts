@@ -9,8 +9,16 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BrokerQueues, ReadByIdPayload, UnitMessagePatterns } from '@h2-trust/amqp';
 import {
+  BrokerQueues,
+  DigitalProductPassportPatterns,
+  HydrogenStorageUnitEntity,
+  ReadByIdPayload,
+  ReadByIdsPayload,
+  UnitMessagePatterns,
+} from '@h2-trust/amqp';
+import {
+  HydrogenComponentDto,
   HydrogenProductionOverviewDto,
   HydrogenProductionUnitCreateDto,
   HydrogenProductionUnitDto,
@@ -27,6 +35,7 @@ import { UserService } from '../user/user.service';
 export class UnitService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
+    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processService: ClientProxy,
     private readonly userService: UserService,
   ) {}
 
@@ -67,10 +76,25 @@ export class UnitService {
   async readHydrogenStorageUnits(userId: string): Promise<HydrogenStorageOverviewDto[]> {
     const ownerId = await this.getCompanyIdFromUserId(userId);
 
-    const units = await firstValueFrom(
+    const units: HydrogenStorageUnitEntity[] = await firstValueFrom(
       this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_STORAGE_UNITS, new ReadByIdPayload(ownerId)),
     );
-    return units.map(HydrogenStorageOverviewDto.fromEntity);
+
+    const hydrogenStorageUnits: HydrogenStorageOverviewDto[] = units.map(HydrogenStorageOverviewDto.fromEntity);
+
+    for (let i = 0; i < hydrogenStorageUnits.length; i++) {
+      const fillingProcessStepIds = hydrogenStorageUnits[i].hydrogenComposition.map((batch) => batch.processId);
+
+      const dpps_for_fillings: HydrogenComponentDto[] = await firstValueFrom(
+        this.processService.send(
+          DigitalProductPassportPatterns.READ_DPPS_OF_FILLINGS,
+          new ReadByIdsPayload(fillingProcessStepIds),
+        ),
+      );
+      hydrogenStorageUnits[i].hydrogenComposition = HydrogenComponentDto.mergeComponents(dpps_for_fillings);
+    }
+
+    return hydrogenStorageUnits;
   }
 
   async createPowerProductionUnit(dto: PowerProductionUnitCreateDto): Promise<PowerProductionUnitDto> {

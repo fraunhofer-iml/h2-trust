@@ -99,7 +99,7 @@ export class BottlingService {
     executedById: string,
   ): Promise<HydrogenComponentEntity[]> {
     if (hydrogenColor === HydrogenColor.GREEN) {
-      return [new HydrogenComponentEntity(HydrogenColor.GREEN, batchAmount)];
+      return [new HydrogenComponentEntity('', HydrogenColor.GREEN, batchAmount)];
     }
 
     const hydrogenStorageUnit: HydrogenStorageUnitEntity = await firstValueFrom(

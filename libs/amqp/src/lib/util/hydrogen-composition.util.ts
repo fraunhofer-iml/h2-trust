@@ -24,7 +24,7 @@ export class HydrogenCompositionUtil {
     }
 
     return mergedHydrogenComponents.map(
-      ({ color, amount }) => new HydrogenComponentEntity(color, (bottleAmount * amount) / totalPredecessorAmount),
+      ({ color, amount }) => new HydrogenComponentEntity('', color, (bottleAmount * amount) / totalPredecessorAmount),
     );
   }
 
@@ -40,12 +40,13 @@ export class HydrogenCompositionUtil {
 
     if (matchingComponent) {
       const updatedComponent = new HydrogenComponentEntity(
+        '',
         matchingComponent.color,
         matchingComponent.amount + componentToMerge.amount,
       );
       return combinedComponents.map((c) => (c.color === componentToMerge.color ? updatedComponent : c));
     }
 
-    return [...combinedComponents, new HydrogenComponentEntity(componentToMerge.color, componentToMerge.amount)];
+    return [...combinedComponents, new HydrogenComponentEntity('', componentToMerge.color, componentToMerge.amount)];
   }
 }

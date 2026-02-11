@@ -14,11 +14,8 @@ import {
   CreateHydrogenBottlingPayload,
   CreateHydrogenTransportationPayload,
   DigitalProductPassportPatterns,
-  GeneralInformationEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
-  ProofOfOriginSectionEntity,
-  ProofOfSustainabilityEntity,
   ReadByIdPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
@@ -83,7 +80,7 @@ export class BottlingService {
 
   // TODO: Merge these three calls into a single unified request (DUHGW-322)
   async readDigitalProductPassport(id: string): Promise<DigitalProductPassportDto> {
-    const [generalInformation, proofOfOrigin, proofOfSustainability] = await Promise.all([
+    /*const [generalInformation, proofOfOrigin, proofOfSustainability] = await Promise.all([
       firstValueFrom(
         this.processSvc.send<GeneralInformationEntity>(
           DigitalProductPassportPatterns.READ_GENERAL_INFORMATION,
@@ -104,5 +101,12 @@ export class BottlingService {
       ),
     ]);
     return DigitalProductPassportDto.fromEnities(generalInformation, proofOfOrigin, proofOfSustainability);
+*/
+    return firstValueFrom(
+      this.processSvc.send<DigitalProductPassportDto>(
+        DigitalProductPassportPatterns.READ_DIGITAL_PRODUCT_PASSPORT,
+        new ReadByIdPayload(id),
+      ),
+    );
   }
 }

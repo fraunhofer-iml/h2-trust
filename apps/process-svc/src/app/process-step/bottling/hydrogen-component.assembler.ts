@@ -55,6 +55,6 @@ export class HydrogenComponentAssembler {
       throw new BrokerException(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
-    return new HydrogenComponentEntity(batch.qualityDetails?.color, batch.amount);
+    return new HydrogenComponentEntity('', batch.qualityDetails?.color, batch.amount);
   }
 }
