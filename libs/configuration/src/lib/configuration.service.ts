@@ -14,7 +14,6 @@ import {
   GeneralSvcConfiguration,
 } from './configurations/general-svc.configuration';
 import { GLOBAL_CONFIGURATION_IDENTIFIER, GlobalConfiguration } from './configurations/global.configuration';
-import { KEYCLOAK_CONFIGURATION_IDENTIFIER, KeycloakConfiguration } from './configurations/keycloak.configuration';
 import {
   PROCESS_SVC_CONFIGURATION_IDENTIFIER,
   ProcessSvcConfiguration,
@@ -25,20 +24,6 @@ export class ConfigurationService {
   logger = new Logger(ConfigurationService.name);
 
   constructor(private readonly configService: ConfigService) {}
-
-  public getProcessSvcConfiguration(): ProcessSvcConfiguration {
-    const processSvcConfiguration = this.configService.get<ProcessSvcConfiguration>(
-      PROCESS_SVC_CONFIGURATION_IDENTIFIER,
-    );
-
-    if (!processSvcConfiguration) {
-      const errorMessage = 'Environment variables for process service configuration missing.';
-      this.logger.error(errorMessage);
-      throw new Error(errorMessage);
-    }
-
-    return processSvcConfiguration;
-  }
 
   public getBffConfiguration(): BffConfiguration {
     const bffConfiguration = this.configService.get<BffConfiguration>(BFF_CONFIGURATION_IDENTIFIER);
@@ -78,15 +63,17 @@ export class ConfigurationService {
     return globalConfiguration;
   }
 
-  public getKeycloakConfiguration(): KeycloakConfiguration {
-    const keycloakConfiguration = this.configService.get<KeycloakConfiguration>(KEYCLOAK_CONFIGURATION_IDENTIFIER);
+  public getProcessSvcConfiguration(): ProcessSvcConfiguration {
+    const processSvcConfiguration = this.configService.get<ProcessSvcConfiguration>(
+      PROCESS_SVC_CONFIGURATION_IDENTIFIER,
+    );
 
-    if (!keycloakConfiguration) {
-      const msg = 'Environment variables for keycloak configuration missing.';
-      this.logger.error(msg);
-      throw new Error(msg);
+    if (!processSvcConfiguration) {
+      const errorMessage = 'Environment variables for process service configuration missing.';
+      this.logger.error(errorMessage);
+      throw new Error(errorMessage);
     }
 
-    return keycloakConfiguration;
+    return processSvcConfiguration;
   }
 }

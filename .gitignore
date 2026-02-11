@@ -1,6 +1,5 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
-**/run-code-quality-tools.log
 .env
 /.inbound-licenses
 

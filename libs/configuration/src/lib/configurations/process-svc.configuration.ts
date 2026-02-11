@@ -8,7 +8,7 @@
 
 import { registerAs } from '@nestjs/config';
 
-export const PROCESS_SVC_CONFIGURATION_IDENTIFIER = 'process-configuration';
+export const PROCESS_SVC_CONFIGURATION_IDENTIFIER = 'process-svc-configuration';
 
 export interface ProcessSvcConfiguration {
   productionChunkSize: number;
