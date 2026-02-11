@@ -42,7 +42,7 @@ import { UnitsService } from '../../../shared/services/units/units.service';
   templateUrl: './bottling-overview.component.html',
 })
 export class BottlingOverviewComponent implements AfterViewInit {
-  displayedColumns = ['filledAt', 'owner', 'filledAmount', 'color'];
+  displayedColumns = ['id', 'filledAt', 'owner', 'filledAmount', 'color'];
   dataSource: MatTableDataSource<BottlingOverviewDto> = new MatTableDataSource<BottlingOverviewDto>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
