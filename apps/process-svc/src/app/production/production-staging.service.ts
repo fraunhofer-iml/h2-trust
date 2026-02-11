@@ -19,7 +19,6 @@ import {
   UnitFileReference,
 } from '@h2-trust/amqp';
 import { BlockchainService, HashUtil, ProofEntry } from '@h2-trust/blockchain';
-import { ConfigurationService } from '@h2-trust/configuration';
 import { DocumentRepository, PrismaService, StagedProductionRepository } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
@@ -44,19 +43,14 @@ export class ProductionStagingService {
   };
 
   private readonly logger = new Logger(this.constructor.name);
-  private readonly minioUrl: string;
 
   constructor(
-    private readonly configurationService: ConfigurationService,
     private readonly stagedProductionRepository: StagedProductionRepository,
     private readonly storageService: StorageService,
     private readonly blockchainService: BlockchainService,
     private readonly documentRepository: DocumentRepository,
     private readonly prismaService: PrismaService,
   ) {
-    // TODO-MP: temporary solution until we have the file upload in the BFF and can store the IPFS CID directly (DUHGW-341)
-    const minio = this.configurationService.getGlobalConfiguration().minio;
-    this.minioUrl = `${minio.endPoint}:${minio.port}/${minio.bucketName}`;
   }
 
   async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
@@ -130,7 +124,7 @@ export class ProductionStagingService {
           periods: new UnitAccountingPeriods<T>(ufr.unitId, accountingPeriods),
           fileName: ufr.fileName,
           hash,
-          cid: `${this.minioUrl}/${ufr.fileName}`,
+          cid: ufr.fileName, // TODO-MP: in the future, store IPFS CID (DUHGW-341)
         };
       }),
     );
