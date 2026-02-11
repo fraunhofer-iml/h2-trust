@@ -37,8 +37,9 @@ interface ProofStorageContract extends BaseContract {
 
 @Injectable()
 export class BlockchainService {
-  private readonly logger = new Logger(this.constructor.name);
   readonly blockchainEnabled: boolean;
+
+  private readonly logger = new Logger(this.constructor.name);
   private readonly contract: ProofStorageContract | null;
 
   constructor(private readonly configurationService: ConfigurationService) {
@@ -75,14 +76,14 @@ export class BlockchainService {
 
     this.logger.debug(`📝 Storing proofs:\n${proofEntries.map((e) => JSON.stringify(e)).join('\n')}`);
 
-    const tx = await this.contract!.storeProofs(proofEntries);
+    const tx = await this.contract.storeProofs(proofEntries);
     await tx.wait();
 
     this.logger.debug(`✅ Proof stored: ${tx.hash}`);
     return tx.hash;
   }
 
-  async getProofByUuid(uuid: string): Promise<ProofEntity | null> {
+  async retrieveProof(uuid: string): Promise<ProofEntity | null> {
     if (!this.blockchainEnabled) {
       this.logger.debug(`⏭️ Blockchain disabled, skipping proof retrieval for ${uuid}`);
       return null;
@@ -90,7 +91,7 @@ export class BlockchainService {
 
     this.logger.debug(`🔍 Retrieving proof: ${uuid}`);
 
-    const proof: Proof = await this.contract!.getProofByUuid(uuid);
+    const proof: Proof = await this.contract.getProofByUuid(uuid);
     this.logger.debug(`✅ Proof retrieved: ${JSON.stringify(proof)}`);
 
     return new ProofEntity(uuid, proof.hash, proof.cid);
