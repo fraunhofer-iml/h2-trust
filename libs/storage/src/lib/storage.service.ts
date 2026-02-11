@@ -11,6 +11,7 @@ import { Client } from 'minio';
 import { MINIO_CONNECTION } from 'nestjs-minio';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigurationService } from '@h2-trust/configuration';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class StorageService {
@@ -25,6 +26,13 @@ export class StorageService {
 
   async uploadFile(fileName: string, file: Buffer): Promise<void> {
     await this.client.putObject(this.bucketName, fileName, file, file.length);
+  }
+
+  async uploadFileWithRandomFileName(originalFileName: string, file: Buffer): Promise<string> {
+    const fileExtension = originalFileName.split('.').pop().toLowerCase();
+    const randomFileName = `${randomUUID()}.${fileExtension}`;
+    await this.client.putObject(this.bucketName, randomFileName, file, file.length);
+    return randomFileName;
   }
 
   async downloadFile(fileName: string): Promise<Stream.Readable> {
