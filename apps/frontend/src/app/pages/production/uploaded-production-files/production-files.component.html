@@ -4,17 +4,17 @@
   <div class="flex w-full items-center justify-between rounded-md bg-white p-4">
     <div class="flex items-center gap-2">
       <mat-form-field appearance="outline" class="w-[28rem]">
-        <mat-label>Search by file or company name</mat-label>
-        <input matInput placeholder="Hydrog...." [formControl]="searchControl" />
-        @if (searchControl.value) {
-          <button matSuffix matIconButton aria-label="Clear" (click)="searchControl.patchValue(null)">
-            <span class="material-symbols-outlined pr-2">close</span>
+        <mat-label>Search by id, file name or company name</mat-label>
+        <input matInput placeholder="Hydrogen...." [formField]="searchForm.input" />
+        @if (searchForm.input().value()) {
+          <button matSuffix matIconButton aria-label="Clear" (click)="searchForm.input().value.set('')">
+            <span class="material-symbols-outlined">close</span>
           </button>
         }
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Type</mat-label>
-        <mat-select [value]="selecteType$()" (selectionChange)="this.selecteType$.set($event.value)">
+        <mat-select [formField]="searchForm.fileType">
           @for (type of displayedCsvContentTypes; track $index) {
             <mat-option [value]="type.value">
               {{ type.name }}
@@ -26,13 +26,8 @@
       <mat-form-field appearance="outline">
         <mat-label>Date range</mat-label>
         <mat-date-range-input [rangePicker]="picker">
-          <input
-            matStartDate
-            placeholder="Start date"
-            [value]="startDate$()"
-            (dateChange)="startDate$.set($event.value)"
-          />
-          <input matEndDate placeholder="End date" [value]="endDate$()" (dateChange)="endDate$.set($event.value)" />
+          <input readonly matStartDate placeholder="Start date" [formField]="searchForm.start" />
+          <input [formField]="searchForm.end" matEndDate readonly placeholder="End date" />
         </mat-date-range-input>
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-date-range-picker #picker></mat-date-range-picker>
