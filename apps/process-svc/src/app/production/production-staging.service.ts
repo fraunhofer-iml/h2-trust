@@ -134,6 +134,11 @@ export class ProductionStagingService {
   }
 
   private async storeBlockchainProofs(documentProofs: DocumentProof[], storedDocuments: DocumentEntity[]): Promise<void> {
+    if (!this.blockchainService.blockchainEnabled) {
+      this.logger.debug(`⏭️ Blockchain disabled, skipping proof storage of ${documentProofs.length} entries`);
+      return;
+    }
+
     const storedDocumentsByFileName = new Map(storedDocuments.map((sd) => [sd.fileName, sd]));
 
     const proofEntries: ProofEntry[] = documentProofs.map((dpd) => {
