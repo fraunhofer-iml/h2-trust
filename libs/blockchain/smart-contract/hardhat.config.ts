@@ -36,7 +36,7 @@ export default defineConfig({
     },
     private: {
       type: 'http',
-      accounts: ['0x8f2a55949038a9610f50fb23b5883af3b4ecb3c3bb792cbcefbd1542c692be63'],
+      accounts: ['0x8f2a55949038a9610f50fb23b5883af3b4ecb3c3bb792cbcefbd1542c692be63'], // genesis private key (account in docker/blockchain/genesis.json)
       chainId: 1337,
       chainType: 'l1',
       url: 'http://blockchain:8545',

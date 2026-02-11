@@ -46,10 +46,17 @@ export class BlockchainService {
     this.blockchainEnabled = this.configurationService.getGlobalConfiguration().blockchain.enabled;
 
     if (this.blockchainEnabled) {
-      this.logger.log('🔗 Blockchain is ENABLED. Proofs will be stored and retrieved.');
+      const rpcUrl = this.configurationService.getGlobalConfiguration().blockchain.rpcUrl;
+      const smartContractAddress = this.configurationService.getGlobalConfiguration().blockchain.smartContractAddress;
+
+      this.logger.debug('🔗 Blockchain is enabled. Proofs will be stored and retrieved.');
+      this.logger.debug(`🌐 RPC URL: ${rpcUrl}`);
+      this.logger.debug(`📄 Smart Contract Address: ${smartContractAddress}`);
+
       this.contract = this.createContract();
     } else {
-      this.logger.log('⛓️‍💥 Blockchain is DISABLED. Proofs will not be stored or retrieved.');
+      this.logger.debug('⛓️‍💥 Blockchain is disabled. Proofs will not be stored or retrieved.');
+
       this.contract = null;
     }
   }
