@@ -16,12 +16,10 @@ import { AppModule } from './app/app.module';
 async function bootstrap() {
   Logger.log('🧰 General microservice is starting with RMQ...');
 
-  const appContext = await NestFactory.createApplicationContext(AppModule);
-
-  const configuration = appContext.get(ConfigurationService);
-  const amqpUri = configuration.getGlobalConfiguration().amqp.uri;
+  const amqpUri = process.env['AMQP_URI'];
 
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
+    bufferLogs: true,
     transport: Transport.RMQ,
     options: {
       urls: [amqpUri],
@@ -32,6 +30,7 @@ async function bootstrap() {
     },
   });
 
+  app.useLogger(app.get(ConfigurationService).getGlobalConfiguration().logLevel);
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -40,13 +39,9 @@ async function bootstrap() {
     }),
   );
   app.useGlobalFilters(new RpcExceptionFilter());
-  app.useLogger(configuration.getGlobalConfiguration().logLevel);
 
-  await app
-    .listen()
-    .then(() =>
-      Logger.log(`🧰 General microservice is up and running via RMQ: ${amqpUri}:${BrokerQueues.QUEUE_GENERAL_SVC}`),
-    );
+  await app.listen();
+  Logger.log(`🧰 General microservice is up and running via RMQ: ${amqpUri}:${BrokerQueues.QUEUE_GENERAL_SVC}`);
 }
 
 bootstrap();
