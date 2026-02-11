@@ -28,6 +28,8 @@ import {
   AccountingPeriodMatchingResultDto,
   CreateProductionDto,
   ImportSubmissionDto,
+  ProcessedCsvDto,
+  ProcessedCsvDtoMock,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   UserDetailsDto,
@@ -143,5 +145,10 @@ export class ProductionService {
       this.processSvc.send<ProcessStepEntity[]>(ProductionMessagePatterns.FINALIZE, payload),
     );
     return processSteps.map(ProductionOverviewDto.fromEntity);
+  }
+
+  // TODO: remove mock implementation (subtask of DUHGW-299)
+  async readCsvFilesByCompany(_userId: string): Promise<ProcessedCsvDto[]> {
+    return ProcessedCsvDtoMock;
   }
 }

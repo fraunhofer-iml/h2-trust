@@ -27,7 +27,25 @@ export class StorageService {
     await this.client.putObject(this.bucketName, fileName, file, file.length);
   }
 
+  async uploadPdfFile(fileName: string, file: Buffer) {
+    return this.client.putObject(this.bucketName, fileName, file, file.length, {
+      'Content-Type': 'application/pdf',
+    });
+  }
+
   async downloadFile(fileName: string): Promise<Stream.Readable> {
     return this.client.getObject(this.bucketName, fileName);
+  }
+
+  async fileExists(fileName: string): Promise<boolean> {
+    try {
+      await this.client.statObject(this.bucketName, fileName);
+      return true;
+    } catch (err: any) {
+      if (err.code === 'NoSuchKey' || err.code === 'NotFound') {
+        return false;
+      }
+      throw err;
+    }
   }
 }
