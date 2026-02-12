@@ -10,5 +10,5 @@ import { DocumentSeed } from 'libs/database/src/seed';
 import { DocumentEntity } from '../document.entity';
 
 export const DocumentEntityMock: DocumentEntity[] = DocumentSeed.map(
-  (seed) => new DocumentEntity(seed.id, seed.fileName, seed.transactionHash ?? undefined),
+  (seed) => new DocumentEntity(seed.id, seed.fileName),
 );
