@@ -147,12 +147,11 @@ export class ProductionService {
 
   async readCsvDocumentsByCompany(userId: string): Promise<ProcessedCsvDto[]> {
     const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
-    const companyId = userDetails.company.id;
 
     const csvDocuments: CsvDocumentEntity[] = await firstValueFrom(
-      this.processSvc.send(ProductionMessagePatterns.READ_CSV_DOCUMENTS_BY_COMPANY, new ReadByIdPayload(companyId)),
+      this.processSvc.send(ProductionMessagePatterns.READ_CSV_DOCUMENTS_BY_COMPANY, new ReadByIdPayload(userDetails.company.id)),
     );
 
-    return csvDocuments.map(ProcessedCsvDto.fromEntity);
+    return csvDocuments.map((doc) => ProcessedCsvDto.fromEntity(doc, this.storageService.minioUrl, userDetails.company.name));
   }
 }

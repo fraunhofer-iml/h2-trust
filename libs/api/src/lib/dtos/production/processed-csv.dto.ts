@@ -39,12 +39,12 @@ export class ProcessedCsvDto {
     this.amount = amount;
   }
 
-  static fromEntity(entity: CsvDocumentEntity): ProcessedCsvDto {
+  static fromEntity(entity: CsvDocumentEntity, minioUrl: string, companyName: string): ProcessedCsvDto {
     return new ProcessedCsvDto(
       entity.id,
-      "tbd",
+      `${minioUrl}/${entity.fileName}`,
       entity.fileName,
-      "tbd",
+      companyName,
       entity.startedAt,
       entity.endedAt,
       entity.type as CsvContentType,
