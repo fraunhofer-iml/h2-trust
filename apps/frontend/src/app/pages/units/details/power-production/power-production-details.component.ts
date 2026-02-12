@@ -8,6 +8,7 @@
 
 import { ErrorCardComponent } from 'apps/frontend/src/app/layout/error-card/error-card.component';
 import { InfoTooltipComponent } from 'apps/frontend/src/app/layout/info-tooltip/info-tooltip.component';
+import { LoadingCardComponent } from 'apps/frontend/src/app/layout/loading-card/loading-card.component';
 import { ERROR_MESSAGES } from 'apps/frontend/src/app/shared/constants/error.messages';
 import { RFNBO_CRITERIA } from 'apps/frontend/src/app/shared/constants/rfnbo-criteria';
 import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
@@ -30,6 +31,7 @@ import { UnitDetailsComponent } from '../unit-details.component';
     UnitDetailsComponent,
     RouterModule,
     ErrorCardComponent,
+    LoadingCardComponent,
   ],
   templateUrl: './power-production-details.component.html',
 })

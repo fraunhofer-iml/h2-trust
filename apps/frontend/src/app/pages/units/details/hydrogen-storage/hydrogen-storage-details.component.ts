@@ -7,6 +7,7 @@
  */
 
 import { ErrorCardComponent } from 'apps/frontend/src/app/layout/error-card/error-card.component';
+import { LoadingCardComponent } from 'apps/frontend/src/app/layout/loading-card/loading-card.component';
 import { ERROR_MESSAGES } from 'apps/frontend/src/app/shared/constants/error.messages';
 import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
 import { Component, inject, input } from '@angular/core';
@@ -18,7 +19,7 @@ import { UnitDetailsComponent } from '../unit-details.component';
 
 @Component({
   selector: 'app-hydrogen-storage-details',
-  imports: [UnitPipe, UnitDetailsComponent, RouterModule, ErrorCardComponent],
+  imports: [UnitPipe, UnitDetailsComponent, RouterModule, ErrorCardComponent, LoadingCardComponent],
   templateUrl: './hydrogen-storage-details.component.html',
 })
 export class HydrogenStorageDetailsComponent {

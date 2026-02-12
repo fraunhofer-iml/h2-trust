@@ -22,17 +22,15 @@
     @if (!typeToShow || typeToShow === UnitType.HYDROGEN_PRODUCTION) {
       @for (item of hydrogenProductionQuery.data(); track $index) {
         <a [routerLink]="['hydrogen-production', item.id]">
-          <app-unit-card [name]="item.name" [unittype]="UnitType.HYDROGEN_PRODUCTION"
-            ><mat-chip-set aria-label="attributes">
-              <mat-chip>
-                <span matChipAvatar class="material-symbols-outlined">charger</span>
-                {{ item.ratedPower | unit: MeasurementUnit.KWH }}</mat-chip
-              >
-              <mat-chip>
-                <span matChipAvatar class="material-symbols-outlined">lab_panel</span>{{ item.technology }}</mat-chip
-              >
-            </mat-chip-set></app-unit-card
-          >
+          <app-unit-card [name]="item.name" [unittype]="UnitType.HYDROGEN_PRODUCTION">
+            <mat-chip>
+              <span matChipAvatar class="material-symbols-outlined">charger</span>
+              {{ item.ratedPower | unit: MeasurementUnit.KWH }}</mat-chip
+            >
+            <mat-chip>
+              <span matChipAvatar class="material-symbols-outlined">lab_panel</span>{{ item.technology }}</mat-chip
+            >
+          </app-unit-card>
         </a>
       }
     }
@@ -40,18 +38,16 @@
       @for (item of hydrogenStorageQuery.data(); track $index) {
         <a [routerLink]="['hydrogen-storage', item.id]">
           <app-unit-card [name]="item.name" [unittype]="UnitType.HYDROGEN_STORAGE">
-            <mat-chip-set aria-label="attributes">
-              <mat-chip>
-                <span matChipAvatar class="material-symbols-outlined">bar_chart</span> {{ item.filling }}/{{
-                  item.capacity | unit: MeasurementUnit.KG
-                }}</mat-chip
-              >
-              <mat-chip>
-                <span matChipAvatar class="material-symbols-outlined">label</span>
-                {{ item.storageType | prettyEnum | titlecase }}</mat-chip
-              >
-            </mat-chip-set></app-unit-card
-          >
+            <mat-chip>
+              <span matChipAvatar class="material-symbols-outlined">bar_chart</span> {{ item.filling }}/{{
+                item.capacity | unit: MeasurementUnit.KG
+              }}</mat-chip
+            >
+            <mat-chip>
+              <span matChipAvatar class="material-symbols-outlined">label</span>
+              {{ item.storageType | prettyEnum | titlecase }}</mat-chip
+            >
+          </app-unit-card>
         </a>
       }
     }
@@ -60,16 +56,14 @@
       @for (item of powerProductionQuery.data(); track $index) {
         <a [routerLink]="['power-production', item.id]">
           <app-unit-card [name]="item.name" [unittype]="UnitType.POWER_PRODUCTION">
-            <mat-chip-set aria-label="attributes">
-              <mat-chip
-                ><span matChipAvatar class="material-symbols-outlined">charger</span>
-                {{ item.ratedPower | unit: MeasurementUnit.KWH }}</mat-chip
-              >
-              <mat-chip>
-                <span matChipAvatar class="material-symbols-outlined">category</span>{{ item.typeName }}</mat-chip
-              >
-            </mat-chip-set></app-unit-card
-          >
+            <mat-chip
+              ><span matChipAvatar class="material-symbols-outlined">charger</span>
+              {{ item.ratedPower | unit: MeasurementUnit.KWH }}</mat-chip
+            >
+            <mat-chip>
+              <span matChipAvatar class="material-symbols-outlined">category</span>{{ item.typeName }}</mat-chip
+            >
+          </app-unit-card>
         </a>
       }
     }

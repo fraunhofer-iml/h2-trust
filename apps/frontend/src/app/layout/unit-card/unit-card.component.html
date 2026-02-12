@@ -8,5 +8,7 @@
       <span class="">{{ unittype() | prettyEnum | titlecase }} Unit</span>
     </div>
   </div>
-  <div class="h-full rounded-b-lg bg-white p-4"><ng-content></ng-content></div>
+  <div class="h-full rounded-b-lg bg-white p-4">
+    <mat-chip-set aria-label="attributes"><ng-content></ng-content> </mat-chip-set>
+  </div>
 </div>

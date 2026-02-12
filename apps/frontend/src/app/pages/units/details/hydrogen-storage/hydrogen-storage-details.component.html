@@ -6,7 +6,7 @@
   @if (unitQuery.error(); as err) {
     <app-error-card [message]="err.message"></app-error-card>
   } @else if (unitQuery.isLoading()) {
-    <div class="col-span-2 h-[16rem] w-full animate-pulse rounded-md bg-white"></div>
+    <app-loading-card class="col-span-2 h-[16rem]" />
   }
   @if (unitQuery.data(); as unit) {
     <app-unit-details [unit]="unit"></app-unit-details>
