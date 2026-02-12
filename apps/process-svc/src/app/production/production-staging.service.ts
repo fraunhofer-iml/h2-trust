@@ -50,7 +50,7 @@ export class ProductionStagingService {
     private readonly blockchainService: BlockchainService,
     private readonly documentRepository: DocumentRepository,
     private readonly prismaService: PrismaService,
-  ) {}
+  ) { }
 
   async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
     const [preparedPowerProductions, preparedHydrogenProductions] = await Promise.all([
@@ -67,13 +67,17 @@ export class ProductionStagingService {
     const preparedProductions = [...preparedPowerProductions, ...preparedHydrogenProductions];
 
     const { storedImportId, storedDocuments } = await this.prismaService.$transaction(async (tx) => {
+      const power = this.assembleProductionsForDatabase(preparedPowerProductions, payload.userId, BatchType.POWER);
+      const hydrogen = this.assembleProductionsForDatabase(preparedHydrogenProductions, payload.userId, BatchType.HYDROGEN);
+
+      const fileNames = preparedProductions.map((pp) => pp.fileName);
+      const storedDocuments = await this.documentRepository.createDocuments(fileNames, tx);
+
+
       const storedImportId = await this.stagedProductionRepository.stageDistributedProductions(
         distributedProductions,
         tx,
       );
-
-      const fileNames = preparedProductions.map((pp) => pp.fileName);
-      const storedDocuments = await this.documentRepository.createDocuments(fileNames, tx);
 
       return { storedImportId, storedDocuments };
     });
@@ -127,6 +131,50 @@ export class ProductionStagingService {
         };
       }),
     );
+  }
+  private assembleProductionsForDatabase<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
+    preparedProductions: PreparedProduction<T>[],
+    uploadedBy: string,
+    csvContentType: Exclude<BatchType, BatchType.WATER>,
+  ) {
+    return preparedProductions.map((ppp) => {
+      console.log(`Parsed ${ppp.periods.accountingPeriods.length} valid items from file ${ppp.fileName} with hash ${ppp.hash}`);
+      console.log(ppp.periods.accountingPeriods);
+
+      const startedAt = ppp.periods.accountingPeriods.reduce((earliest, ap) => {
+        const apTime = new Date(ap.time).getTime();
+        return apTime < earliest ? apTime : earliest;
+      }, Infinity);
+
+      const endedAt = ppp.periods.accountingPeriods.reduce((latest, ap) => {
+        const apTime = new Date(ap.time).getTime();
+        return apTime > latest ? apTime : latest;
+      }, -Infinity);
+
+      const fileName = ppp.fileName;
+
+      const url = `${this.storageService.minioUrl}/${fileName}`;
+
+      const amount = ppp.periods.accountingPeriods.reduce((sum, ap) => sum + ap.amount, 0);
+
+      console.log(`csvContentType: ${csvContentType}`);
+      console.log(`startedAt: ${new Date(startedAt).toISOString()}`);
+      console.log(`endedAt: ${new Date(endedAt).toISOString()}`);
+      console.log(`fileName: ${fileName}`);
+      console.log(`uploadedBy: ${uploadedBy}`);
+      console.log(`url: ${url}`);
+      console.log(`amount: ${amount}`);
+
+      return {
+        csvContentType,
+        startedAt: new Date(startedAt),
+        endedAt: new Date(endedAt),
+        fileName,
+        uploadedBy,
+        url,
+        amount,
+      };
+    });
   }
 
   private async storeBlockchainProofs(

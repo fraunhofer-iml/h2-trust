@@ -14,6 +14,7 @@ import {
   ProcessStepEntity,
   ProductionMessagePatterns,
   ProductionStagingResultEntity,
+  ReadByIdPayload,
   StageProductionsPayload,
 } from '@h2-trust/amqp';
 import { ProductionCreationService } from './production-creation.service';
@@ -26,7 +27,7 @@ export class ProductionController {
     private readonly productionCreationService: ProductionCreationService,
     private readonly productionStagingService: ProductionStagingService,
     private readonly productionFinalizationService: ProductionFinalizationService,
-  ) {}
+  ) { }
 
   @MessagePattern(ProductionMessagePatterns.CREATE)
   async createProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
@@ -41,5 +42,11 @@ export class ProductionController {
   @MessagePattern(ProductionMessagePatterns.FINALIZE)
   async finalizeProductions(payload: FinalizeProductionsPayload): Promise<ProcessStepEntity[]> {
     return this.productionFinalizationService.finalizeProductions(payload);
+  }
+
+  @MessagePattern(ProductionMessagePatterns.READ_CSV_FILES_BY_COMPANY)
+  async readCsvFilesByCompany(_payload: ReadByIdPayload): Promise<any[]> {
+    //this.csvService.readCsvFilesByCompany(payload.id);
+    return [];
   }
 }

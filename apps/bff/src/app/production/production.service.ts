@@ -14,6 +14,7 @@ import {
   CreateProductionsPayload,
   FinalizeProductionsPayload,
   PowerAccessApprovalPatterns,
+  PowerProductionUnitEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
@@ -44,7 +45,7 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly storageService: StorageService,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
     const payload = new CreateProductionsPayload(
@@ -97,14 +98,14 @@ export class ProductionService {
       BatchType.HYDROGEN,
     );
 
-    const gridPowerProductionUnit = await firstValueFrom(
+    const gridPowerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
       this.generalSvc.send(
         PowerAccessApprovalPatterns.READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID,
         new ReadByIdPayload(userId),
       ),
     );
 
-    const payload = new StageProductionsPayload(powerProductions, hydrogenProductions, gridPowerProductionUnit.id);
+    const payload = new StageProductionsPayload(powerProductions, hydrogenProductions, gridPowerProductionUnit.id, userId);
     const matchingResult = await firstValueFrom(
       this.processSvc.send<ProductionStagingResultEntity>(ProductionMessagePatterns.STAGE, payload),
     );
@@ -145,7 +146,14 @@ export class ProductionService {
   }
 
   // TODO: remove mock implementation (subtask of DUHGW-299)
-  async readCsvFilesByCompany(_userId: string): Promise<ProcessedCsvDto[]> {
+  async readCsvFilesByCompany(userId: string): Promise<ProcessedCsvDto[]> {
+    const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
+    const companyId = userDetails.company.id;
+
+    await firstValueFrom(
+      this.processSvc.send(ProductionMessagePatterns.READ_CSV_FILES_BY_COMPANY, new ReadByIdPayload(companyId)),
+    );
+
     return ProcessedCsvDtoMock;
   }
 }
