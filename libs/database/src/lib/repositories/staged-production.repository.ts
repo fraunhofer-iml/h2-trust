@@ -60,8 +60,8 @@ export class StagedProductionRepository {
 
     return await this.prismaService.stagedProduction.deleteMany({
       where: {
-        createdAt: {
-          lt: expirationThreshold,
+        csvImport: {
+          createdAt: { lt: expirationThreshold },
         },
       },
     });
