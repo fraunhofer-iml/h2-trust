@@ -33,6 +33,7 @@ interface DocumentProof {
 
 interface PreparedProduction<T extends AccountingPeriodPower | AccountingPeriodHydrogen> extends DocumentProof {
   periods: UnitAccountingPeriods<T>;
+  csvContentType: Exclude<BatchType, BatchType.WATER>;
 }
 
 @Injectable()
@@ -67,11 +68,8 @@ export class ProductionStagingService {
     const preparedProductions = [...preparedPowerProductions, ...preparedHydrogenProductions];
 
     const { storedImportId, storedDocuments } = await this.prismaService.$transaction(async (tx) => {
-      const power = this.assembleProductionsForDatabase(preparedPowerProductions, payload.userId, BatchType.POWER);
-      const hydrogen = this.assembleProductionsForDatabase(preparedHydrogenProductions, payload.userId, BatchType.HYDROGEN);
-
-      const storedDocuments = await this.documentRepository.createDocuments([...power, ...hydrogen], tx);
-
+      const documentInputs = this.assembleProductionsForDatabase(preparedProductions, payload.userId);
+      const storedDocuments = await this.documentRepository.createDocuments(documentInputs, tx);
 
       const storedImportId = await this.stagedProductionRepository.stageDistributedProductions(
         distributedProductions,
@@ -124,6 +122,7 @@ export class ProductionStagingService {
 
         return {
           periods: new UnitAccountingPeriods<T>(ufr.unitId, accountingPeriods),
+          csvContentType: type,
           fileName: ufr.fileName,
           hash,
           cid: ufr.fileName, // TODO-MP: in the future, store IPFS CID (DUHGW-341)
@@ -131,10 +130,9 @@ export class ProductionStagingService {
       }),
     );
   }
-  private assembleProductionsForDatabase<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
-    preparedProductions: PreparedProduction<T>[],
+  private assembleProductionsForDatabase(
+    preparedProductions: PreparedProduction<AccountingPeriodPower | AccountingPeriodHydrogen>[],
     uploadedBy: string,
-    csvContentType: Exclude<BatchType, BatchType.WATER>,
   ) {
     return preparedProductions.map((ppp) => {
       console.log(`Parsed ${ppp.periods.accountingPeriods.length} valid items from file ${ppp.fileName} with hash ${ppp.hash}`);
@@ -152,25 +150,14 @@ export class ProductionStagingService {
 
       const fileName = ppp.fileName;
 
-      const url = `${this.storageService.minioUrl}/${fileName}`;
-
       const amount = ppp.periods.accountingPeriods.reduce((sum, ap) => sum + ap.amount, 0);
 
-      console.log(`csvContentType: ${csvContentType}`);
-      console.log(`startedAt: ${new Date(startedAt).toISOString()}`);
-      console.log(`endedAt: ${new Date(endedAt).toISOString()}`);
-      console.log(`fileName: ${fileName}`);
-      console.log(`uploadedBy: ${uploadedBy}`);
-      console.log(`url: ${url}`);
-      console.log(`amount: ${amount}`);
-
       return {
-        csvContentType,
+        csvContentType: ppp.csvContentType,
         startedAt: new Date(startedAt),
         endedAt: new Date(endedAt),
         fileName,
         uploadedBy,
-        url,
         amount,
       };
     });
