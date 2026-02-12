@@ -60,8 +60,8 @@ export class ProductionStagingService {
     ]);
 
     const distributedProductions = ProductionDistributor.distributeProductions(
-      preparedPowerProductions.map((ppp) => ppp.periods),
-      preparedHydrogenProductions.map((php) => php.periods),
+      preparedPowerProductions.map((power) => power.periods),
+      preparedHydrogenProductions.map((hydrogen) => hydrogen.periods),
       payload.gridPowerProductionUnitId,
     );
 
@@ -133,24 +133,26 @@ export class ProductionStagingService {
   private assembleCsvDocumentInputs<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
     preparedProductions: PreparedProduction<T>[],
   ): CreateCsvDocumentInput[] {
-    return preparedProductions.map((ppp) => {
-      const { startedAt, endedAt, amount } = ppp.periods.accountingPeriods.reduce(
-        (acc, element) => {
-          const elementTime = new Date(element.time).getTime();
+    return preparedProductions.map((production) => {
+      const { startedAt, endedAt, amount } = production.periods.accountingPeriods.reduce(
+        (acc, accountingPeriod) => {
+          const time = accountingPeriod.time.getTime();
+          const amount = accountingPeriod.amount;
+
           return {
-            startedAt: Math.min(acc.startedAt, elementTime),
-            endedAt: Math.max(acc.endedAt, elementTime),
-            amount: acc.amount + element.amount,
+            startedAt: Math.min(acc.startedAt, time),
+            endedAt: Math.max(acc.endedAt, time),
+            amount: acc.amount + amount,
           };
         },
         { startedAt: Infinity, endedAt: -Infinity, amount: 0 },
       );
 
       return {
-        type: ppp.type,
+        type: production.type,
         startedAt: new Date(startedAt),
         endedAt: new Date(endedAt),
-        fileName: ppp.fileName,
+        fileName: production.fileName,
         amount,
       };
     });
@@ -165,25 +167,29 @@ export class ProductionStagingService {
       return;
     }
 
-    const csvDocumentsByFileName = new Map(csvDocuments.map((cd) => [cd.fileName, cd]));
+    const csvDocumentsByFileName = new Map(csvDocuments.map((csvDocument) => [csvDocument.fileName, csvDocument]));
 
-    const proofEntries: ProofEntry[] = documentProofs.map((dpd) => {
-      const csvDocument = csvDocumentsByFileName.get(dpd.fileName);
+    const proofEntries: ProofEntry[] = documentProofs.map((documentProof) => {
+      const csvDocument = csvDocumentsByFileName.get(documentProof.fileName);
       if (!csvDocument) {
         throw new BrokerException(
-          `CSV document with file name ${dpd.fileName} not found in database after creation.`,
+          `CSV document with file name ${documentProof.fileName} not found in database after creation.`,
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
-      return { uuid: csvDocument.id, hash: dpd.hash, cid: dpd.cid };
+      return { uuid: csvDocument.id, hash: documentProof.hash, cid: documentProof.cid };
     });
 
-    const txHash = await this.blockchainService.storeProofs(proofEntries);
-    this.logger.debug(`✅ Stored ${proofEntries.length} proofs in tx ${txHash}`);
+    try {
+      const txHash = await this.blockchainService.storeProofs(proofEntries);
+      this.logger.debug(`✅ Stored ${proofEntries.length} proofs in tx ${txHash}`);
 
-    await this.csvImportRepository.updateTransactionHash(
-      csvDocuments.map((doc) => doc.id),
-      txHash,
-    );
+      await this.csvImportRepository.updateTransactionHash(
+        csvDocuments.map((csvDocument) => csvDocument.id),
+        txHash,
+      );
+    } catch (error) {
+      this.logger.error(`Failed to store proofs for documents on-chain: ${documentProofs.map((d) => d.fileName).join(', ')}`, error);
+    }
   }
 }
