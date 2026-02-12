@@ -17,10 +17,10 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MeasurementUnit, UnitType } from '@h2-trust/domain';
-import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
-import { UnitPipe } from '../../shared/pipes/unit.pipe';
-import { UnitsService } from '../../shared/services/units/units.service';
-import { UnitCardComponent } from './unit-card/unit-card.component';
+import { UnitCardComponent } from '../../../layout/unit-card/unit-card.component';
+import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
+import { UnitPipe } from '../../../shared/pipes/unit.pipe';
+import { UnitsService } from '../../../shared/services/units/units.service';
 
 @Component({
   selector: 'app-hydrogen-assets',
