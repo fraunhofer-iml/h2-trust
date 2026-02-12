@@ -28,7 +28,7 @@ export class ProductionController {
     private readonly productionCreationService: ProductionCreationService,
     private readonly productionStagingService: ProductionStagingService,
     private readonly productionFinalizationService: ProductionFinalizationService,
-  ) { }
+  ) {}
 
   @MessagePattern(ProductionMessagePatterns.CREATE)
   async createProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {

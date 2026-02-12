@@ -20,7 +20,12 @@ import {
   UnitFileReference,
 } from '@h2-trust/amqp';
 import { BlockchainService, HashUtil, ProofEntry } from '@h2-trust/blockchain';
-import { CreateCsvDocumentInput, CsvImportRepository, PrismaService, StagedProductionRepository } from '@h2-trust/database';
+import {
+  CreateCsvDocumentInput,
+  CsvImportRepository,
+  PrismaService,
+  StagedProductionRepository,
+} from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
@@ -52,7 +57,7 @@ export class ProductionStagingService {
     private readonly blockchainService: BlockchainService,
     private readonly csvImportRepository: CsvImportRepository,
     private readonly prismaService: PrismaService,
-  ) { }
+  ) {}
 
   async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
     const [preparedPowerProductions, preparedHydrogenProductions] = await Promise.all([
@@ -190,7 +195,10 @@ export class ProductionStagingService {
         txHash,
       );
     } catch (error) {
-      this.logger.error(`Failed to store proofs for documents on-chain: ${documentProofs.map((d) => d.fileName).join(', ')}`, error);
+      this.logger.error(
+        `Failed to store proofs for documents on-chain: ${documentProofs.map((d) => d.fileName).join(', ')}`,
+        error,
+      );
     }
   }
 

@@ -21,7 +21,7 @@ export interface CreateCsvDocumentInput {
 
 @Injectable()
 export class CsvImportRepository {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async createCsvImport(uploadedById: string, tx?: Prisma.TransactionClient): Promise<string> {
     const client = tx ?? this.prismaService;
@@ -58,7 +58,6 @@ export class CsvImportRepository {
     return documents.map(CsvDocumentEntity.fromDatabase);
   }
 
-
   async findAllCsvDocumentsByCompanyId(id: string): Promise<CsvDocumentEntity[]> {
     const documents = await this.prismaService.csvDocument.findMany({
       where: {
@@ -77,7 +76,7 @@ export class CsvImportRepository {
               },
             },
           },
-        }
+        },
       },
     });
 

@@ -45,7 +45,7 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly storageService: StorageService,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
   async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
     const payload = new CreateProductionsPayload(
@@ -105,7 +105,12 @@ export class ProductionService {
       ),
     );
 
-    const payload = new StageProductionsPayload(powerProductions, hydrogenProductions, gridPowerProductionUnit.id, userId);
+    const payload = new StageProductionsPayload(
+      powerProductions,
+      hydrogenProductions,
+      gridPowerProductionUnit.id,
+      userId,
+    );
     const matchingResult = await firstValueFrom(
       this.processSvc.send<ProductionStagingResultEntity>(ProductionMessagePatterns.STAGE, payload),
     );
@@ -149,9 +154,14 @@ export class ProductionService {
     const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
 
     const csvDocuments: CsvDocumentEntity[] = await firstValueFrom(
-      this.processSvc.send(ProductionMessagePatterns.READ_CSV_DOCUMENTS_BY_COMPANY, new ReadByIdPayload(userDetails.company.id)),
+      this.processSvc.send(
+        ProductionMessagePatterns.READ_CSV_DOCUMENTS_BY_COMPANY,
+        new ReadByIdPayload(userDetails.company.id),
+      ),
     );
 
-    return csvDocuments.map((doc) => ProcessedCsvDto.fromEntity(doc, this.storageService.minioUrl, userDetails.company.name));
+    return csvDocuments.map((doc) =>
+      ProcessedCsvDto.fromEntity(doc, this.storageService.minioUrl, userDetails.company.name),
+    );
   }
 }
