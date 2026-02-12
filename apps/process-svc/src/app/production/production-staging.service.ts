@@ -33,7 +33,7 @@ interface DocumentProof {
 
 interface PreparedProduction<T extends AccountingPeriodPower | AccountingPeriodHydrogen> extends DocumentProof {
   periods: UnitAccountingPeriods<T>;
-  csvContentType: Exclude<BatchType, BatchType.WATER>;
+  type: Exclude<BatchType, BatchType.WATER>;
 }
 
 @Injectable()
@@ -122,7 +122,7 @@ export class ProductionStagingService {
 
         return {
           periods: new UnitAccountingPeriods<T>(ufr.unitId, accountingPeriods),
-          csvContentType: type,
+          type,
           fileName: ufr.fileName,
           hash,
           cid: ufr.fileName, // TODO-MP: in the future, store IPFS CID (DUHGW-341)
@@ -153,7 +153,7 @@ export class ProductionStagingService {
       const amount = ppp.periods.accountingPeriods.reduce((sum, ap) => sum + ap.amount, 0);
 
       return {
-        csvContentType: ppp.csvContentType,
+        type: ppp.type,
         startedAt: new Date(startedAt),
         endedAt: new Date(endedAt),
         fileName,

@@ -44,7 +44,7 @@ model Document {
 
 model CsvDetails {
   id        String   @id @default(uuid(7))
-  batchType String
+  type      String
   startedAt DateTime
   endedAt   DateTime
   amount    Decimal  @db.Decimal(18, 6)

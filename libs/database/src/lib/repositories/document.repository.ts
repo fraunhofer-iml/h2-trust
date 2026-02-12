@@ -14,7 +14,7 @@ import { PrismaService } from '../prisma.service';
 
 export interface CreateDocumentInput {
   fileName: string;
-  csvContentType: string;
+  type: string;
   startedAt: Date;
   endedAt: Date;
   uploadedBy: string;
@@ -41,7 +41,7 @@ export class DocumentRepository {
             fileName: input.fileName,
             csvDetails: {
               create: {
-                batchType: input.csvContentType,
+                type: input.type,
                 startedAt: input.startedAt,
                 endedAt: input.endedAt,
                 amount: input.amount,
