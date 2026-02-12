@@ -18,6 +18,7 @@ import {
   ReadByIdPayload,
   StageProductionsPayload,
 } from '@h2-trust/amqp';
+import { CsvDocumentService } from './csv-document.service';
 import { ProductionCreationService } from './production-creation.service';
 import { ProductionFinalizationService } from './production-finalization.service';
 import { ProductionStagingService } from './production-staging.service';
@@ -25,6 +26,7 @@ import { ProductionStagingService } from './production-staging.service';
 @Controller()
 export class ProductionController {
   constructor(
+    private readonly csvDocumentService: CsvDocumentService,
     private readonly productionCreationService: ProductionCreationService,
     private readonly productionStagingService: ProductionStagingService,
     private readonly productionFinalizationService: ProductionFinalizationService,
@@ -47,6 +49,6 @@ export class ProductionController {
 
   @MessagePattern(ProductionMessagePatterns.READ_CSV_DOCUMENTS_BY_COMPANY)
   async readCsvDocumentsByCompany(payload: ReadByIdPayload): Promise<CsvDocumentEntity[]> {
-    return this.productionStagingService.readCsvDocumentsByCompany(payload);
+    return this.csvDocumentService.findByCompany(payload);
   }
 }

@@ -14,7 +14,6 @@ import {
   BrokerException,
   CsvDocumentEntity,
   ProductionStagingResultEntity,
-  ReadByIdPayload,
   StageProductionsPayload,
   UnitAccountingPeriods,
   UnitFileReference,
@@ -202,7 +201,4 @@ export class ProductionStagingService {
     }
   }
 
-  async readCsvDocumentsByCompany(payload: ReadByIdPayload): Promise<CsvDocumentEntity[]> {
-    return this.csvImportRepository.findAllCsvDocumentsByCompanyId(payload.id);
-  }
 }
