@@ -10,6 +10,7 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   CreateProductionsPayload,
+  CsvDocumentEntity,
   FinalizeProductionsPayload,
   ProcessStepEntity,
   ProductionMessagePatterns,
@@ -44,9 +45,8 @@ export class ProductionController {
     return this.productionFinalizationService.finalizeProductions(payload);
   }
 
-  @MessagePattern(ProductionMessagePatterns.READ_CSV_FILES_BY_COMPANY)
-  async readCsvFilesByCompany(_payload: ReadByIdPayload): Promise<any[]> {
-    //this.csvService.readCsvFilesByCompany(payload.id);
-    return [];
+  @MessagePattern(ProductionMessagePatterns.READ_CSV_DOCUMENTS_BY_COMPANY)
+  async readCsvDocumentsByCompany(payload: ReadByIdPayload): Promise<CsvDocumentEntity[]> {
+    return this.productionStagingService.readCsvDocumentsByCompany(payload);
   }
 }

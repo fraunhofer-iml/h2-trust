@@ -14,6 +14,7 @@ import {
   BrokerException,
   CsvDocumentEntity,
   ProductionStagingResultEntity,
+  ReadByIdPayload,
   StageProductionsPayload,
   UnitAccountingPeriods,
   UnitFileReference,
@@ -191,5 +192,9 @@ export class ProductionStagingService {
     } catch (error) {
       this.logger.error(`Failed to store proofs for documents on-chain: ${documentProofs.map((d) => d.fileName).join(', ')}`, error);
     }
+  }
+
+  async readCsvDocumentsByCompany(payload: ReadByIdPayload): Promise<CsvDocumentEntity[]> {
+    return this.csvImportRepository.findAllCsvDocumentsByCompanyId(payload.id);
   }
 }

@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CsvDocumentEntity } from '@h2-trust/amqp';
 import { CsvContentType } from '../../types';
 
 export class ProcessedCsvDto {
@@ -36,5 +37,18 @@ export class ProcessedCsvDto {
     this.endedAt = endedAt;
     this.csvContentType = csvContentType;
     this.amount = amount;
+  }
+
+  static fromEntity(entity: CsvDocumentEntity): ProcessedCsvDto {
+    return new ProcessedCsvDto(
+      entity.id,
+      "tbd",
+      entity.fileName,
+      "tbd",
+      entity.startedAt,
+      entity.endedAt,
+      entity.type as CsvContentType,
+      entity.amount,
+    );
   }
 }

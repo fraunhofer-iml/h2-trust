@@ -12,6 +12,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
   CreateProductionsPayload,
+  CsvDocumentEntity,
   FinalizeProductionsPayload,
   PowerAccessApprovalPatterns,
   PowerProductionUnitEntity,
@@ -29,7 +30,6 @@ import {
   CreateProductionDto,
   ImportSubmissionDto,
   ProcessedCsvDto,
-  ProcessedCsvDtoMock,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   UserDetailsDto,
@@ -145,15 +145,14 @@ export class ProductionService {
     return processSteps.map(ProductionOverviewDto.fromEntity);
   }
 
-  // TODO: remove mock implementation (subtask of DUHGW-299)
-  async readCsvFilesByCompany(userId: string): Promise<ProcessedCsvDto[]> {
+  async readCsvDocumentsByCompany(userId: string): Promise<ProcessedCsvDto[]> {
     const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
     const companyId = userDetails.company.id;
 
-    await firstValueFrom(
-      this.processSvc.send(ProductionMessagePatterns.READ_CSV_FILES_BY_COMPANY, new ReadByIdPayload(companyId)),
+    const csvDocuments: CsvDocumentEntity[] = await firstValueFrom(
+      this.processSvc.send(ProductionMessagePatterns.READ_CSV_DOCUMENTS_BY_COMPANY, new ReadByIdPayload(companyId)),
     );
 
-    return ProcessedCsvDtoMock;
+    return csvDocuments.map(ProcessedCsvDto.fromEntity);
   }
 }
