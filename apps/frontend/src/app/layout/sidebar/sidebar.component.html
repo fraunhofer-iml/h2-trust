@@ -21,7 +21,7 @@
                   role="presentation"
                   [ngClass]="{
                     'bg-primary-100 text-primary-700': option.isActive(),
-                    'hover:bg-primary-100': option.route,
+                    'hover:bg-neutral-100': option.route,
                   }"
                 >
                   <span class="material-symbols-outlined">{{ option.icon }}</span>
@@ -32,7 +32,7 @@
                     @for (item of children; track $index) {
                       <a
                         [routerLink]="item.route"
-                        class="flex w-full flex-row gap-2 rounded-lg p-3 text-neutral-700 hover:bg-primary-100"
+                        class="flex w-full flex-row gap-2 rounded-lg p-3 text-neutral-700 hover:bg-neutral-100"
                         tabindex="0"
                         role="presentation"
                         [ngClass]="{
