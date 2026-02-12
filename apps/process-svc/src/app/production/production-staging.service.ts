@@ -70,8 +70,7 @@ export class ProductionStagingService {
       const power = this.assembleProductionsForDatabase(preparedPowerProductions, payload.userId, BatchType.POWER);
       const hydrogen = this.assembleProductionsForDatabase(preparedHydrogenProductions, payload.userId, BatchType.HYDROGEN);
 
-      const fileNames = preparedProductions.map((pp) => pp.fileName);
-      const storedDocuments = await this.documentRepository.createDocuments(fileNames, tx);
+      const storedDocuments = await this.documentRepository.createDocuments([...power, ...hydrogen], tx);
 
 
       const storedImportId = await this.stagedProductionRepository.stageDistributedProductions(

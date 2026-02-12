@@ -12,6 +12,15 @@ import { DocumentEntity } from '@h2-trust/amqp';
 import { buildDocumentCreateInput } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 
+export interface CreateDocumentInput {
+  fileName: string;
+  csvContentType: string;
+  startedAt: Date;
+  endedAt: Date;
+  uploadedBy: string;
+  amount: number;
+}
+
 @Injectable()
 export class DocumentRepository {
   constructor(private readonly prismaService: PrismaService) {}
@@ -22,12 +31,27 @@ export class DocumentRepository {
       .then(DocumentEntity.fromDatabase);
   }
 
-  async createDocuments(fileNames: string[], tx?: Prisma.TransactionClient): Promise<DocumentEntity[]> {
+  async createDocuments(inputs: CreateDocumentInput[], tx?: Prisma.TransactionClient): Promise<DocumentEntity[]> {
     const client = tx ?? this.prismaService;
 
-    const documents = await client.document.createManyAndReturn({
-      data: fileNames.map((fileName) => ({ fileName })),
-    });
+    const documents = await Promise.all(
+      inputs.map((input) =>
+        client.document.create({
+          data: {
+            fileName: input.fileName,
+            csvDetails: {
+              create: {
+                batchType: input.csvContentType,
+                startedAt: input.startedAt,
+                endedAt: input.endedAt,
+                amount: input.amount,
+                uploadedBy: { connect: { id: input.uploadedBy } },
+              },
+            },
+          },
+        }),
+      ),
+    );
 
     return documents.map(DocumentEntity.fromDatabase);
   }
