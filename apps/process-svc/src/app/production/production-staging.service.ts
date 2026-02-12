@@ -19,7 +19,7 @@ import {
   UnitFileReference,
 } from '@h2-trust/amqp';
 import { BlockchainService, HashUtil, ProofEntry } from '@h2-trust/blockchain';
-import { DocumentRepository, PrismaService, StagedProductionRepository } from '@h2-trust/database';
+import { CreateDocumentInput, DocumentRepository, PrismaService, StagedProductionRepository } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
@@ -125,38 +125,34 @@ export class ProductionStagingService {
           type,
           fileName: ufr.fileName,
           hash,
-          cid: ufr.fileName, // TODO-MP: in the future, store IPFS CID (DUHGW-341)
+          cid: ufr.fileName, // TODO-MP: store IPFS CID (DUHGW-341)
         };
       }),
     );
   }
-  private assembleProductionsForDatabase(
-    preparedProductions: PreparedProduction<AccountingPeriodPower | AccountingPeriodHydrogen>[],
+
+  private assembleProductionsForDatabase<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
+    preparedProductions: PreparedProduction<T>[],
     uploadedBy: string,
-  ) {
+  ): CreateDocumentInput[] {
     return preparedProductions.map((ppp) => {
-      console.log(`Parsed ${ppp.periods.accountingPeriods.length} valid items from file ${ppp.fileName} with hash ${ppp.hash}`);
-      console.log(ppp.periods.accountingPeriods);
-
-      const startedAt = ppp.periods.accountingPeriods.reduce((earliest, ap) => {
-        const apTime = new Date(ap.time).getTime();
-        return apTime < earliest ? apTime : earliest;
-      }, Infinity);
-
-      const endedAt = ppp.periods.accountingPeriods.reduce((latest, ap) => {
-        const apTime = new Date(ap.time).getTime();
-        return apTime > latest ? apTime : latest;
-      }, -Infinity);
-
-      const fileName = ppp.fileName;
-
-      const amount = ppp.periods.accountingPeriods.reduce((sum, ap) => sum + ap.amount, 0);
+      const { startedAt, endedAt, amount } = ppp.periods.accountingPeriods.reduce(
+        (acc, element) => {
+          const elementTime = new Date(element.time).getTime();
+          return {
+            startedAt: Math.min(acc.startedAt, elementTime),
+            endedAt: Math.max(acc.endedAt, elementTime),
+            amount: acc.amount + element.amount,
+          };
+        },
+        { startedAt: Infinity, endedAt: -Infinity, amount: 0 },
+      );
 
       return {
         type: ppp.type,
         startedAt: new Date(startedAt),
         endedAt: new Date(endedAt),
-        fileName,
+        fileName: ppp.fileName,
         uploadedBy,
         amount,
       };
