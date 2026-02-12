@@ -196,9 +196,8 @@ export class ProductionStagingService {
     } catch (error) {
       this.logger.error(
         `Failed to store proofs for documents on-chain: ${documentProofs.map((d) => d.fileName).join(', ')}`,
-        error,
+        error instanceof Error ? error.stack : undefined,
       );
     }
   }
-
 }

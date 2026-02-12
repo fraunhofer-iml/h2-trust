@@ -40,41 +40,26 @@ export class CsvImportRepository {
   ): Promise<CsvDocumentEntity[]> {
     const client = tx ?? this.prismaService;
 
-    const documents = await Promise.all(
-      inputs.map((input) =>
-        client.csvDocument.create({
-          data: {
-            fileName: input.fileName,
-            type: input.type,
-            startedAt: input.startedAt,
-            endedAt: input.endedAt,
-            amount: input.amount,
-            csvImportId,
-          },
-        }),
-      ),
-    );
+    const documents = await client.csvDocument.createManyAndReturn({
+      data: inputs.map((input) => ({
+        fileName: input.fileName,
+        type: input.type,
+        startedAt: input.startedAt,
+        endedAt: input.endedAt,
+        amount: input.amount,
+        csvImportId,
+      })),
+    });
 
     return documents.map(CsvDocumentEntity.fromDatabase);
   }
 
-  async findAllCsvDocumentsByCompanyId(id: string): Promise<CsvDocumentEntity[]> {
+  async findAllCsvDocumentsByCompanyId(companyId: string): Promise<CsvDocumentEntity[]> {
     const documents = await this.prismaService.csvDocument.findMany({
       where: {
         csvImport: {
           uploadedBy: {
-            companyId: id,
-          },
-        },
-      },
-      include: {
-        csvImport: {
-          include: {
-            uploadedBy: {
-              include: {
-                company: true,
-              },
-            },
+            companyId,
           },
         },
       },
