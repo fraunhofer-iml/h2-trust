@@ -7,19 +7,9 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { DocumentEntity } from '@h2-trust/amqp';
 import { buildDocumentCreateInput } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
-
-export interface CreateDocumentInput {
-  fileName: string;
-  type: string;
-  startedAt: Date;
-  endedAt: Date;
-  uploadedBy: string;
-  amount: number;
-}
 
 @Injectable()
 export class DocumentRepository {
@@ -29,45 +19,5 @@ export class DocumentRepository {
     return this.prismaService.document
       .create({ data: buildDocumentCreateInput(document, processStepId) })
       .then(DocumentEntity.fromDatabase);
-  }
-
-  async createDocuments(inputs: CreateDocumentInput[], tx?: Prisma.TransactionClient): Promise<DocumentEntity[]> {
-    const client = tx ?? this.prismaService;
-
-    const documents = await Promise.all(
-      inputs.map((input) =>
-        client.document.create({
-          data: {
-            fileName: input.fileName,
-            csvDetails: {
-              create: {
-                type: input.type,
-                startedAt: input.startedAt,
-                endedAt: input.endedAt,
-                amount: input.amount,
-                uploadedBy: { connect: { id: input.uploadedBy } },
-              },
-            },
-          },
-        }),
-      ),
-    );
-
-    return documents.map(DocumentEntity.fromDatabase);
-  }
-
-  async updateDocuments(
-    documentIds: string[],
-    transactionHash: string,
-    tx?: Prisma.TransactionClient,
-  ): Promise<DocumentEntity[]> {
-    const client = tx ?? this.prismaService;
-
-    const documents = await client.document.updateManyAndReturn({
-      where: { id: { in: documentIds } },
-      data: { transactionHash },
-    });
-
-    return documents.map(DocumentEntity.fromDatabase);
   }
 }

@@ -38,22 +38,31 @@ model Document {
   processStep   ProcessStep? @relation(fields: [processStepId], references: [id])
   processStepId String?
 
-  csvDetails           CsvDetails?
   powerAccessApprovals PowerAccessApproval[]
 }
 
-model CsvDetails {
+model CsvImport {
   id        String   @id @default(uuid(7))
-  type      String
-  startedAt DateTime
-  endedAt   DateTime
-  amount    Decimal  @db.Decimal(18, 6)
+  createdAt DateTime @default(now())
 
-  uploadedBy   User   @relation(fields: [uploadedById], references: [id])
+  uploadedBy   User @relation(fields: [uploadedById], references: [id])
   uploadedById String
 
-  document   Document @relation(fields: [documentId], references: [id])
-  documentId String   @unique
+  csvDocuments      CsvDocument[]
+  stagedProductions StagedProduction[]
+}
+
+model CsvDocument {
+  id              String   @id @default(uuid(7))
+  fileName        String
+  type            String
+  startedAt       DateTime
+  endedAt         DateTime
+  amount          Decimal  @db.Decimal(18, 6)
+  transactionHash String?
+
+  csvImport   CsvImport @relation(fields: [csvImportId], references: [id])
+  csvImportId String
 }
 
 model Company {
@@ -82,7 +91,7 @@ model User {
   companyId String
 
   processSteps ProcessStep[]
-  csvDetails   CsvDetails[]
+  csvImports   CsvImport[]
 }
 
 model Unit {
@@ -262,8 +271,10 @@ model PowerAccessApproval {
 
 model StagedProduction {
   id        String   @id @default(uuid(7))
-  importId  String
   createdAt DateTime @default(now())
+
+  csvImport   CsvImport @relation(fields: [csvImportId], references: [id])
+  csvImportId String
 
   powerProductionUnit   PowerProductionUnit @relation(fields: [powerProductionUnitId], references: [id])
   powerProductionUnitId String
