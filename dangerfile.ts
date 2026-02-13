@@ -9,6 +9,7 @@
 import { danger, fail, message } from 'danger';
 
 const pr = danger.github.pr;
+const isDependabot = pr.user.login === 'dependabot[bot]';
 
 // Ensure package-lock.json is updated when package.json is changed
 if (danger.git.modified_files.includes('package.json') && !danger.git.modified_files.includes('package-lock.json')) {
@@ -23,11 +24,11 @@ if (pr.draft) {
 }
 
 // Enforce assignee
-if (!pr.assignees || pr.assignees.length === 0) {
+if (!isDependabot && (!pr.assignees || pr.assignees.length === 0)) {
   fail('Pull request needs an assignee.');
 }
 
 // Enforce description
-if (!pr.body || pr.body.trim().length < 10) {
+if (!isDependabot && (!pr.body || pr.body.trim().length < 10)) {
   fail('Pull request needs a meaningful description.');
 }
