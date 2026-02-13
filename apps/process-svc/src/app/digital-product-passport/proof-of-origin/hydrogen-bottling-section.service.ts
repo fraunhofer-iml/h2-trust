@@ -16,18 +16,17 @@ import {
   ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/amqp';
 import { ProofOfOrigin } from '@h2-trust/domain';
-import { BottlingService } from '../../process-step/bottling/bottling.service';
 import { BatchAssembler } from './batch.assembler';
 import { EmissionAssembler } from './emission.assembler';
 
 @Injectable()
 export class HydrogenBottlingSectionService {
-  constructor(private readonly bottlingService: BottlingService) {}
+  constructor() {}
 
-  async buildSection(hydrogenBottling: ProcessStepEntity): Promise<ProofOfOriginSectionEntity> {
-    const hydrogenCompositions: HydrogenComponentEntity[] =
-      await this.bottlingService.calculateHydrogenComposition(hydrogenBottling);
-
+  async buildSection(
+    hydrogenBottling: ProcessStepEntity,
+    hydrogenCompositions: HydrogenComponentEntity[],
+  ): Promise<ProofOfOriginSectionEntity> {
     const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
       EmissionAssembler.assembleHydrogenBottling(hydrogenBottling);
 

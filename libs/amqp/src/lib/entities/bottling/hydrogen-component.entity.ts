@@ -10,10 +10,12 @@ export class HydrogenComponentEntity {
   processId: string;
   color: string;
   amount: number;
+  rfnbo: string;
 
-  constructor(processId: string, color: string, amount: number) {
+  constructor(processId: string, color: string, amount: number, rfnbo: string) {
     this.processId = processId;
     this.color = color;
     this.amount = amount;
+    this.rfnbo = rfnbo;
   }
 }

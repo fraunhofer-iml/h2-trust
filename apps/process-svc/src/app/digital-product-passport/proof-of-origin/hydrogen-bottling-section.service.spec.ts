@@ -10,7 +10,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProofOfOriginHydrogenBatchEntity } from '@h2-trust/amqp';
 import { ProofOfOrigin } from '@h2-trust/domain';
 import { HydrogenComponentEntityFixture, ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
-import { BottlingService } from '../../process-step/bottling/bottling.service';
 import { HydrogenBottlingSectionService } from './hydrogen-bottling-section.service';
 
 describe('HydrogenBottlingSectionService', () => {
@@ -22,13 +21,7 @@ describe('HydrogenBottlingSectionService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        HydrogenBottlingSectionService,
-        {
-          provide: BottlingService,
-          useValue: bottlingServiceMock,
-        },
-      ],
+      providers: [HydrogenBottlingSectionService],
     }).compile();
 
     service = module.get<HydrogenBottlingSectionService>(HydrogenBottlingSectionService);
@@ -50,7 +43,7 @@ describe('HydrogenBottlingSectionService', () => {
       bottlingServiceMock.calculateHydrogenComposition.mockResolvedValue(givenHydrogenCompositions);
 
       // Act
-      const actualResult = await service.buildSection(givenHydrogenBottling);
+      const actualResult = await service.buildSection(givenHydrogenBottling, []);
 
       // Assert
       expect(bottlingServiceMock.calculateHydrogenComposition).toHaveBeenCalledWith(givenHydrogenBottling);

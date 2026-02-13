@@ -42,6 +42,7 @@ export class BottlingService {
       userId,
       dto.hydrogenStorageUnit,
       dto.color,
+      dto.rfnboReady,
       files,
     );
 
@@ -80,28 +81,6 @@ export class BottlingService {
 
   // TODO: Merge these three calls into a single unified request (DUHGW-322)
   async readDigitalProductPassport(id: string): Promise<DigitalProductPassportDto> {
-    /*const [generalInformation, proofOfOrigin, proofOfSustainability] = await Promise.all([
-      firstValueFrom(
-        this.processSvc.send<GeneralInformationEntity>(
-          DigitalProductPassportPatterns.READ_GENERAL_INFORMATION,
-          new ReadByIdPayload(id),
-        ),
-      ),
-      firstValueFrom(
-        this.processSvc.send<ProofOfOriginSectionEntity[]>(
-          DigitalProductPassportPatterns.READ_PROOF_OF_ORIGIN,
-          new ReadByIdPayload(id),
-        ),
-      ),
-      firstValueFrom(
-        this.processSvc.send<ProofOfSustainabilityEntity>(
-          DigitalProductPassportPatterns.READ_PROOF_OF_SUSTAINABILITY,
-          new ReadByIdPayload(id),
-        ),
-      ),
-    ]);
-    return DigitalProductPassportDto.fromEnities(generalInformation, proofOfOrigin, proofOfSustainability);
-*/
     return firstValueFrom(
       this.processSvc.send<DigitalProductPassportDto>(
         DigitalProductPassportPatterns.READ_DIGITAL_PRODUCT_PASSPORT,

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenStorageUnitEntity } from '@h2-trust/amqp';
+import { HydrogenComponentEntity, HydrogenStorageUnitEntity } from '@h2-trust/amqp';
 import { HydrogenStorageType } from '@h2-trust/domain';
 import { HydrogenComponentDto } from '../digital-product-passport';
 
@@ -60,7 +60,7 @@ export class HydrogenStorageOverviewDto {
   //This function should be replaced by an alternative that combines the RFNBO status values instead of the colors.
   private static mapHydrogenComposition(unit: HydrogenStorageUnitEntity): HydrogenComponentDto[] {
     const compositionMap = new Map<string, number>();
-    unit.filling?.forEach((filling: HydrogenComponentDto) => {
+    unit.filling?.forEach((filling: HydrogenComponentEntity) => {
       if (filling.color == null || filling.amount == null) {
         throw new Error('One or more fillings contain undefined values.');
       }

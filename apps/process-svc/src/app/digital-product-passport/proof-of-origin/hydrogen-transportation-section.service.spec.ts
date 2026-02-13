@@ -14,7 +14,6 @@ import {
   ProcessStepEntityFixture,
   TransportationDetailsEntityFixture,
 } from '@h2-trust/fixtures/entities';
-import { BottlingService } from '../../process-step/bottling/bottling.service';
 import { HydrogenTransportationSectionService } from './hydrogen-transportation-section.service';
 
 describe('HydrogenTransportationSectionService', () => {
@@ -26,13 +25,7 @@ describe('HydrogenTransportationSectionService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        HydrogenTransportationSectionService,
-        {
-          provide: BottlingService,
-          useValue: bottlingServiceMock,
-        },
-      ],
+      providers: [HydrogenTransportationSectionService],
     }).compile();
 
     service = module.get<HydrogenTransportationSectionService>(HydrogenTransportationSectionService);
@@ -58,7 +51,7 @@ describe('HydrogenTransportationSectionService', () => {
       bottlingServiceMock.calculateHydrogenComposition.mockResolvedValue(givenHydrogenCompositions);
 
       // Act
-      const actualResult = await service.buildSection(givenHydrogenTransportation, givenHydrogenBottling);
+      const actualResult = await service.buildSection(givenHydrogenTransportation, []);
 
       // Assert
       expect(bottlingServiceMock.calculateHydrogenComposition).toHaveBeenCalledWith(givenHydrogenBottling);
@@ -86,13 +79,12 @@ describe('HydrogenTransportationSectionService', () => {
       const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation({
         transportationDetails: givenTransportationDetails,
       });
-      const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
       const givenHydrogenCompositions = [HydrogenComponentEntityFixture.createGreen()];
 
       bottlingServiceMock.calculateHydrogenComposition.mockResolvedValue(givenHydrogenCompositions);
 
       // Act
-      const actualResult = await service.buildSection(givenHydrogenTransportation, givenHydrogenBottling);
+      const actualResult = await service.buildSection(givenHydrogenTransportation, []);
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION);

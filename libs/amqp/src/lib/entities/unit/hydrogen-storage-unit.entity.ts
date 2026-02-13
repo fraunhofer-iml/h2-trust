@@ -12,7 +12,7 @@ import {
   HydrogenStorageUnitFlatDbType,
   HydrogenStorageUnitNestedDbType,
 } from '@h2-trust/database';
-import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
+import { HydrogenStorageType, RFNBOType, UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { HydrogenComponentEntity } from '../bottling';
 import { CompanyEntity } from '../company';
@@ -125,7 +125,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
         }
         return {
           processId: '',
-          rfnboReady: false,
+          rfnbo: RFNBOType.NON_CERTIFIABLE,
           color: batch.batchDetails.qualityDetails.color,
           amount: batch.amount?.toNumber() ?? 0,
         };
@@ -142,7 +142,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
         }
         return {
           processId: batch?.processStep?.id ?? '',
-          rfnboReady: false,
+          rfnbo: RFNBOType.NON_CERTIFIABLE,
           color: batch.batchDetails.qualityDetails.color,
           amount: batch.amount?.toNumber() ?? 0,
         };

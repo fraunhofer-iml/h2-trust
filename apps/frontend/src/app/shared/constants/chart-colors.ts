@@ -7,8 +7,8 @@
  */
 
 export const CHART_COLORS = new Map<string, string>([
-  ['GREEN', '#4F9C83'],
-  ['YELLOW', '#e3b040'],
+  ['RFNBO_READY', '#4F9C83'],
+  ['NON_CERTIFIABLE', '#e3b040'],
 ]);
 
 export const H2_TRUST_THEME = {

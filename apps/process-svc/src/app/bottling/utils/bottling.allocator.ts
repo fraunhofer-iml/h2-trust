@@ -8,7 +8,7 @@
 
 import { HttpStatus } from '@nestjs/common';
 import { BatchEntity, BrokerException, HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/amqp';
-import { BatchType, ProcessType } from '@h2-trust/domain';
+import { BatchType, ProcessType, RFNBOType } from '@h2-trust/domain';
 
 export interface BottlingAllocation {
   batchesForBottle: BatchEntity[];
@@ -19,8 +19,13 @@ export interface BottlingAllocation {
 
 export class BottlingAllocator {
   static allocate(
+    //The map that shows the RFNBO status of a batch.
+    batchIdToRfnboStatus: Map<string, RFNBOType>,
+    //All process steps (hydrogen production) of the hydrogen storage unit, i.e. all batches from which the bottling is to be created.
     processSteps: ProcessStepEntity[],
+    //The hydrogen compositions to be produced.
     hydrogenComposition: HydrogenComponentEntity[],
+    //The ID of the HydrogenStorage unit from which the required bottlings are to be filled.
     hydrogenStorageUnitId: string,
   ): BottlingAllocation {
     const aggregatedBatchesForBottle: BatchEntity[] = [];
@@ -30,9 +35,10 @@ export class BottlingAllocator {
 
     for (const hydrogenComponent of hydrogenComposition) {
       const { batchesForBottle, processStepsToBeSplit, consumedSplitProcessSteps, processStepsForRemainingAmount } =
-        BottlingAllocator.processBottlingForEachColor(
+        BottlingAllocator.processBottlingForEachRFNBO(
+          batchIdToRfnboStatus,
           processSteps,
-          hydrogenComponent.color,
+          hydrogenComponent.rfnbo as RFNBOType,
           hydrogenComponent.amount,
           hydrogenStorageUnitId,
         );
@@ -51,22 +57,29 @@ export class BottlingAllocator {
     };
   }
 
-  private static processBottlingForEachColor(
+  private static processBottlingForEachRFNBO(
+    //The map that shows the RFNBO status of a batch.
+    batchIdToRfnboStatus: Map<string, RFNBOType>,
+    //All process steps (hydrogen production) of the hydrogen storage unit, i.e. all batches from which the bottling is to be created.
     processSteps: ProcessStepEntity[],
-    color: string,
+    //The RFNBO value of one of the bottlings to be produced
+    rfnbo: RFNBOType,
+    //Number of units of the bottling to be produced
     amount: number,
+    //The hydrogen storage facility from which the bottlings are to be taken.
     hydrogenStorageUnitId: string,
   ): BottlingAllocation {
-    const processStepsFromHydrogenStorageWithRequestedColor = processSteps.filter(
-      (ps) => ps.batch.qualityDetails.color === color,
+    //filters out all HydrogenStorage batches that have the same RFNBO status as the filling to be created.
+    const processStepsFromHydrogenStorageWithRequestedRFNBOStatus = processSteps.filter(
+      (ps) => batchIdToRfnboStatus.get(ps.batch.id) === rfnbo,
     );
 
     const { selectedProcessSteps, remainingAmount } =
       BottlingAllocator.selectProcessStepsForBottlingAndCalculateRemainingAmount(
-        processStepsFromHydrogenStorageWithRequestedColor,
+        processStepsFromHydrogenStorageWithRequestedRFNBOStatus,
         amount,
         hydrogenStorageUnitId,
-        color,
+        rfnbo,
       );
 
     return BottlingAllocator.splitLastProcessStepIfNeeded(selectedProcessSteps, remainingAmount);
@@ -76,7 +89,7 @@ export class BottlingAllocator {
     availableProcessSteps: ProcessStepEntity[],
     requestedAmount: number,
     storageUnitId: string,
-    color: string,
+    rfnbo: string,
   ): { selectedProcessSteps: ProcessStepEntity[]; remainingAmount: number } {
     const selectedProcessSteps: ProcessStepEntity[] = [];
     let pendingAmount = requestedAmount;
@@ -92,7 +105,7 @@ export class BottlingAllocator {
       pendingAmount -= currentProcessStep.batch.amount;
     }
 
-    const message = `There is not enough hydrogen in storage unit ${storageUnitId} for the requested amount of ${requestedAmount} of quality ${color}.`;
+    const message = `There is not enough hydrogen in storage unit ${storageUnitId} for the requested amount of ${requestedAmount} of quality ${rfnbo}.`;
     throw new BrokerException(message, HttpStatus.BAD_REQUEST);
   }
 

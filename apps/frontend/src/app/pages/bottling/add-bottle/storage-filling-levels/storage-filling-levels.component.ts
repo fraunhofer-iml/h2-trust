@@ -122,7 +122,11 @@ export class StorageFillingLevelsComponent {
       stack: 'a',
       barMaxWidth: 80,
       data: data.map((dto) =>
-        formatNumberForChart(dto.hydrogenComposition.find((color) => color.color === h2color)?.amount),
+        formatNumberForChart(
+          dto.hydrogenComposition.find((hydrogenComponent) =>
+            h2color == 'RFNBO_READY' ? hydrogenComponent.rfnbo?.rfnboReady : !hydrogenComponent.rfnbo?.rfnboReady,
+          )?.amount,
+        ),
       ),
       itemStyle: {
         borderRadius: 8,

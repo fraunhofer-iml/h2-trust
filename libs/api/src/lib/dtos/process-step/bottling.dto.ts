@@ -9,7 +9,7 @@
 import { Transform } from 'class-transformer';
 import { IsEnum, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, ValidateIf } from 'class-validator';
 import { BatchEntity, CompanyEntity, ProcessStepEntity, QualityDetailsEntity } from '@h2-trust/amqp';
-import { FuelType, HydrogenColor, TransportMode } from '@h2-trust/domain';
+import { FuelType, HydrogenColor, RFNBOType, TransportMode } from '@h2-trust/domain';
 
 export class BottlingDto {
   @IsNotEmpty()
@@ -36,6 +36,10 @@ export class BottlingDto {
   @IsNotEmpty()
   @IsEnum(HydrogenColor)
   color: HydrogenColor;
+
+  @IsNotEmpty()
+  @IsEnum(RFNBOType)
+  rfnboReady: RFNBOType;
 
   @IsOptional()
   @IsString()
@@ -64,6 +68,7 @@ export class BottlingDto {
     recordedBy: string,
     hydrogenStorageUnit: string,
     color: HydrogenColor,
+    rfnboReady: RFNBOType,
     file: string,
     transportMode: TransportMode,
     distance: number,
@@ -75,6 +80,7 @@ export class BottlingDto {
     this.recordedBy = recordedBy;
     this.hydrogenStorageUnit = hydrogenStorageUnit;
     this.color = color;
+    this.rfnboReady = rfnboReady;
     this.file = file;
     this.transportMode = transportMode;
     this.distance = distance;

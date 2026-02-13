@@ -11,13 +11,13 @@ import { RfnboBaseDto } from './rfnbo-compliance.dto';
 
 export class HydrogenComponentDto {
   processId: string;
-  rfnboReady?: RfnboBaseDto;
+  rfnbo?: RfnboBaseDto;
   color: string;
   amount: number;
 
   constructor(processId: string, color: string, amount: number, rfnboReady?: RfnboBaseDto) {
     this.processId = processId;
-    this.rfnboReady = rfnboReady;
+    this.rfnbo = rfnboReady;
     this.color = color;
     this.amount = amount;
   }
@@ -36,7 +36,7 @@ export class HydrogenComponentDto {
    * @returns A list of HydrogenComponents, but no two elements have the same RFNBO value.
    */
   public static mergeComponents(hydrogenComponents: HydrogenComponentDto[]): HydrogenComponentDto[] {
-    return hydrogenComponents.reduce<HydrogenComponentEntity[]>(HydrogenComponentDto.mergeSingleComponent, []);
+    return hydrogenComponents.reduce<HydrogenComponentDto[]>(HydrogenComponentDto.mergeSingleComponent, []);
   }
 
   private static mergeSingleComponent(
@@ -44,7 +44,7 @@ export class HydrogenComponentDto {
     componentToMerge: HydrogenComponentDto,
   ): HydrogenComponentDto[] {
     const matchingComponent = combinedComponents.find(
-      (c) => c.rfnboReady?.rfnboReady === componentToMerge.rfnboReady?.rfnboReady,
+      (c) => c.rfnbo?.rfnboReady === componentToMerge.rfnbo?.rfnboReady,
     );
 
     if (matchingComponent) {
@@ -52,16 +52,16 @@ export class HydrogenComponentDto {
         '',
         matchingComponent.color,
         matchingComponent.amount + componentToMerge.amount,
-        matchingComponent.rfnboReady,
+        matchingComponent.rfnbo,
       );
       return combinedComponents.map((c) =>
-        c.rfnboReady?.rfnboReady === componentToMerge.rfnboReady?.rfnboReady ? updatedComponent : c,
+        c.rfnbo?.rfnboReady === componentToMerge.rfnbo?.rfnboReady ? updatedComponent : c,
       );
     }
 
     return [
       ...combinedComponents,
-      new HydrogenComponentDto('', componentToMerge.color, componentToMerge.amount, componentToMerge.rfnboReady),
+      new HydrogenComponentDto('', componentToMerge.color, componentToMerge.amount, componentToMerge.rfnbo),
     ];
   }
 }

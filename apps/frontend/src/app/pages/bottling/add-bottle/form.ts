@@ -16,7 +16,7 @@ export type BottlingForm = {
   amount: FormControl<number | undefined | null>;
   recipient: FormControl<UserDto | undefined | null>;
   storageUnit: FormControl<HydrogenStorageOverviewDto | undefined | null>;
-  type: FormControl<'MIX' | 'GREEN' | undefined | null>;
+  type: FormControl<'NON_CERTIFIABLE' | 'RFNBO_READY' | undefined | null>;
   transportMode: FormControl<TransportMode | null>;
   fuelType: FormControl<FuelType | null>;
   distance: FormControl<number | null>;

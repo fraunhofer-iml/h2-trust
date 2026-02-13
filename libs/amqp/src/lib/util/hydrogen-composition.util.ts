@@ -16,7 +16,8 @@ export class HydrogenCompositionUtil {
     predecessorHydrogenComponents: HydrogenComponentEntity[],
     bottleAmount: number,
   ): HydrogenComponentEntity[] {
-    const mergedHydrogenComponents = HydrogenCompositionUtil.mergeComponentsOfSameColor(predecessorHydrogenComponents);
+    const mergedHydrogenComponents =
+      HydrogenCompositionUtil.mergeComponentsOfSameRFNBOSStatus(predecessorHydrogenComponents);
 
     const totalPredecessorAmount = Util.sumAmounts(mergedHydrogenComponents);
     if (totalPredecessorAmount <= 0) {
@@ -24,11 +25,19 @@ export class HydrogenCompositionUtil {
     }
 
     return mergedHydrogenComponents.map(
-      ({ color, amount }) => new HydrogenComponentEntity('', color, (bottleAmount * amount) / totalPredecessorAmount),
+      ({ processId, color, amount, rfnbo }) =>
+        new HydrogenComponentEntity(processId, color, (bottleAmount * amount) / totalPredecessorAmount, rfnbo),
     );
   }
 
-  private static mergeComponentsOfSameColor(hydrogenComponents: HydrogenComponentEntity[]): HydrogenComponentEntity[] {
+  /**
+   * Should be used to merge all HydrogenComponents with the same RFNBO Status.
+   * @param hydrogenComponents The list of HydrogenComponents that should be merged.
+   * @returns A list of HydrogenComponents, but no two elements have the same RFNBO value.
+   */
+  public static mergeComponentsOfSameRFNBOSStatus(
+    hydrogenComponents: HydrogenComponentEntity[],
+  ): HydrogenComponentEntity[] {
     return hydrogenComponents.reduce<HydrogenComponentEntity[]>(HydrogenCompositionUtil.mergeSingleComponent, []);
   }
 
@@ -36,17 +45,21 @@ export class HydrogenCompositionUtil {
     combinedComponents: HydrogenComponentEntity[],
     componentToMerge: HydrogenComponentEntity,
   ): HydrogenComponentEntity[] {
-    const matchingComponent = combinedComponents.find((c) => c.color === componentToMerge.color);
+    const matchingComponent = combinedComponents.find((c) => c.rfnbo === componentToMerge.rfnbo);
 
     if (matchingComponent) {
       const updatedComponent = new HydrogenComponentEntity(
         '',
         matchingComponent.color,
         matchingComponent.amount + componentToMerge.amount,
+        matchingComponent.rfnbo,
       );
-      return combinedComponents.map((c) => (c.color === componentToMerge.color ? updatedComponent : c));
+      return combinedComponents.map((c) => (c.rfnbo === componentToMerge.rfnbo ? updatedComponent : c));
     }
 
-    return [...combinedComponents, new HydrogenComponentEntity('', componentToMerge.color, componentToMerge.amount)];
+    return [
+      ...combinedComponents,
+      new HydrogenComponentEntity('', componentToMerge.color, componentToMerge.amount, componentToMerge.rfnbo),
+    ];
   }
 }
