@@ -3,13 +3,8 @@
     <span class="flex flex-row items-center gap-2">
       <a routerLink="/production/data" class="cursor-pointer hover:underline">Production Data</a>
       <span class="material-symbols-outlined"> keyboard_arrow_right </span>
-      {{ useCSV ? 'Upload' : 'Enter' }}
+      {{ useCSV ? 'Upload' : 'Input' }}
     </span>
-    @if (useCSV) {
-      <button mat-stroked-button (click)="useCSV = false">Enter</button>
-    } @else {
-      <button mat-stroked-button (click)="useCSV = true">Upload</button>
-    }
   </div>
 
   @if (useCSV) {
@@ -17,6 +12,7 @@
       [hydrogenProductionUnits]="hydrogenProductionQuery.data() ?? []"
       [hydrogenStorageUnits]="hydrogenStorageQuery.data() ?? []"
       [powerAccessApprovals]="approvalsQuery.data() ?? []"
+      (switchToForm)="useCSV = false"
     >
     </app-production-csv-upload>
   } @else {
@@ -24,6 +20,7 @@
       [hydrogenProductionUnits]="hydrogenProductionQuery.data() ?? []"
       [hydrogenStorageUnits]="hydrogenStorageQuery.data() ?? []"
       [powerAccessApprovals]="approvalsQuery.data() ?? []"
+      (switchToUpload)="useCSV = true"
     ></app-production-form>
   }
 </div>
