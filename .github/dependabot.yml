@@ -6,7 +6,7 @@ updates:
       interval: 'weekly'
       day: 'friday'
       time: '08:00'
-      timeZone: 'Europe/Berlin'
+      timezone: 'Europe/Berlin'
     open-pull-requests-limit: 10
     labels:
       - 'dependencies'
@@ -63,7 +63,7 @@ updates:
       interval: 'weekly'
       day: 'friday'
       time: '08:00'
-      timeZone: 'Europe/Berlin'
+      timezone: 'Europe/Berlin'
     open-pull-requests-limit: 10
     labels:
       - 'dependencies'
@@ -94,7 +94,7 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
-      timeZone: 'Europe/Berlin'
+      timezone: 'Europe/Berlin'
     labels:
       - 'dependencies'
       - 'github-actions'
