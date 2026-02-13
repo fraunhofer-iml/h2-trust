@@ -1,0 +1,71 @@
+<div class="flex flex-col gap-4 p-8">
+  <h2 class="text-lg text-neutral-800">Units</h2>
+
+  <div class="flex w-full justify-between">
+    <mat-chip-set aria-label="List filter">
+      @for (
+        unitType of [UnitType.HYDROGEN_PRODUCTION, UnitType.POWER_PRODUCTION, UnitType.HYDROGEN_STORAGE];
+        track $index
+      ) {
+        <mat-chip-option selectable [selected]="typeToShow === unitType" (click)="typeToShow = unitType">
+          {{ unitType | prettyEnum | titlecase }}
+        </mat-chip-option>
+      }
+      <mat-chip-option selectable [selected]="!typeToShow" (click)="typeToShow = null"> All </mat-chip-option>
+    </mat-chip-set>
+    <button [routerLink]="'create'" mat-flat-button>Add Unit</button>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="grid grid-cols-3 gap-4 xl:grid-cols-4">
+    @if (!typeToShow || typeToShow === UnitType.HYDROGEN_PRODUCTION) {
+      @for (item of hydrogenProductionQuery.data(); track $index) {
+        <a [routerLink]="['hydrogen-production', item.id]">
+          <app-unit-card [name]="item.name" [unittype]="UnitType.HYDROGEN_PRODUCTION">
+            <mat-chip>
+              <span matChipAvatar class="material-symbols-outlined">charger</span>
+              {{ item.ratedPower | unit: MeasurementUnit.KWH }}</mat-chip
+            >
+            <mat-chip>
+              <span matChipAvatar class="material-symbols-outlined">lab_panel</span>{{ item.technology }}</mat-chip
+            >
+          </app-unit-card>
+        </a>
+      }
+    }
+    @if (!typeToShow || typeToShow === UnitType.HYDROGEN_STORAGE) {
+      @for (item of hydrogenStorageQuery.data(); track $index) {
+        <a [routerLink]="['hydrogen-storage', item.id]">
+          <app-unit-card [name]="item.name" [unittype]="UnitType.HYDROGEN_STORAGE">
+            <mat-chip>
+              <span matChipAvatar class="material-symbols-outlined">bar_chart</span> {{ item.filling }}/{{
+                item.capacity | unit: MeasurementUnit.KG
+              }}</mat-chip
+            >
+            <mat-chip>
+              <span matChipAvatar class="material-symbols-outlined">label</span>
+              {{ item.storageType | prettyEnum | titlecase }}</mat-chip
+            >
+          </app-unit-card>
+        </a>
+      }
+    }
+
+    @if (!typeToShow || typeToShow === UnitType.POWER_PRODUCTION) {
+      @for (item of powerProductionQuery.data(); track $index) {
+        <a [routerLink]="['power-production', item.id]">
+          <app-unit-card [name]="item.name" [unittype]="UnitType.POWER_PRODUCTION">
+            <mat-chip
+              ><span matChipAvatar class="material-symbols-outlined">charger</span>
+              {{ item.ratedPower | unit: MeasurementUnit.KWH }}</mat-chip
+            >
+            <mat-chip>
+              <span matChipAvatar class="material-symbols-outlined">category</span>{{ item.typeName }}</mat-chip
+            >
+          </app-unit-card>
+        </a>
+      }
+    }
+  </div>
+</div>

@@ -1,53 +1,49 @@
-@if (!proofOfOrigin$()) {
-  <div class="h-[16rem] w-full animate-pulse rounded-md bg-neutral-50"></div>
-} @else {
-  <div class="flex flex-col rounded-lg bg-white p-4">
-    <h3 class="font-semibold text-neutral-500">Proof of Origin</h3>
-    <div class="mb-4 flex flex-row gap-2 text-sm text-neutral-500">
-      <span class="cursor-pointer" (click)="sectionIndex$.set(-1); classificationIndex$.set([])" role="none">
-        @if (sectionIndex$() > -1 && proofOfOrigin$(); as data) {
-          {{ data[sectionIndex$()].name | titlecase }}
-        }
-      </span>
-
-      @for (item of data$().breadcrumbs; track $index) {
-        <span class="cursor-pointer" (click)="navigate($index)" role="none">
-          <span class="material-symbols-outlined text-sm"> keyboard_arrow_right </span>
-          {{ item | prettyEnum | titlecase }}</span
-        >
+<div class="flex flex-col rounded-lg bg-white p-4">
+  <h3 class="font-semibold text-neutral-500">Proof of Origin</h3>
+  <div class="mb-4 flex flex-row gap-2 text-sm text-neutral-500">
+    <span class="cursor-pointer" (click)="sectionIndex$.set(-1); classificationIndex$.set([])" role="none">
+      @if (sectionIndex$() > -1 && proofOfOrigin$(); as data) {
+        {{ data[sectionIndex$()].name | titlecase }}
       }
-    </div>
+    </span>
 
-    @for (section of data$().sections; track $index; let sIndex = $index) {
-      <div class="flex flex-row items-center gap-2">
-        <div
-          class="flex h-12 w-12 items-center justify-center rounded-full border-2 border-primary-200/30 bg-primary-100"
-        >
-          <span class="material-symbols-outlined text-primary-400"> arrow_downward </span>
-        </div>
-        <span class="py-2 text-neutral-500">{{ section.name | prettyEnum | titlecase }}</span>
-      </div>
-      <div class="my-2 ml-6 flex flex-col gap-1 border-l-[3px] border-solid border-neutral-200 pl-4">
-        @for (class of section.classifications; track $index; let cIndex = $index) {
-          <app-classification
-            [classification]="class"
-            class="cursor-pointer"
-            (click)="setIndex(sIndex, cIndex)"
-            role="none"
-          ></app-classification>
-        }
-        @for (batch of section.batches; track $index) {
-          @if (isInstanceOfWaterBatch(batch); as waterBatch) {
-            <app-water-batch-card [batch]="waterBatch"></app-water-batch-card>
-          }
-          @if (isInstanceOfHydrogenBatch(batch); as hydrogenBatch) {
-            <app-h2-batch-card [batch]="hydrogenBatch"></app-h2-batch-card>
-          }
-          @if (isInstanceOfPowerBatch(batch); as powerBatch) {
-            <app-power-batch-card [batch]="powerBatch"></app-power-batch-card>
-          }
-        }
-      </div>
+    @for (item of data$().breadcrumbs; track $index) {
+      <span class="cursor-pointer" (click)="navigate($index)" role="none">
+        <span class="material-symbols-outlined text-sm"> keyboard_arrow_right </span>
+        {{ item | prettyEnum | titlecase }}</span
+      >
     }
   </div>
-}
+
+  @for (section of data$().sections; track $index; let sIndex = $index) {
+    <div class="flex flex-row items-center gap-2">
+      <div
+        class="flex h-12 w-12 items-center justify-center rounded-full border-2 border-primary-200/30 bg-primary-100"
+      >
+        <span class="material-symbols-outlined text-primary-400"> arrow_downward </span>
+      </div>
+      <span class="py-2 text-neutral-500">{{ section.name | prettyEnum | titlecase }}</span>
+    </div>
+    <div class="my-2 ml-6 flex flex-col gap-1 border-l-[3px] border-solid border-neutral-200 pl-4">
+      @for (class of section.classifications; track $index; let cIndex = $index) {
+        <app-classification
+          [classification]="class"
+          class="cursor-pointer"
+          (click)="setIndex(sIndex, cIndex)"
+          role="none"
+        ></app-classification>
+      }
+      @for (batch of section.batches; track $index) {
+        @if (isInstanceOfWaterBatch(batch); as waterBatch) {
+          <app-water-batch-card [batch]="waterBatch"></app-water-batch-card>
+        }
+        @if (isInstanceOfHydrogenBatch(batch); as hydrogenBatch) {
+          <app-h2-batch-card [batch]="hydrogenBatch"></app-h2-batch-card>
+        }
+        @if (isInstanceOfPowerBatch(batch); as powerBatch) {
+          <app-power-batch-card [batch]="powerBatch"></app-power-batch-card>
+        }
+      }
+    </div>
+  }
+</div>

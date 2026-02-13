@@ -1,54 +1,50 @@
-@if (!proofOfSustainability$()) {
-  <div class="h-[16rem] w-full animate-pulse rounded-md bg-neutral-50"></div>
-} @else {
-  <div class="flex flex-col gap-4 rounded-lg bg-white p-4">
-    <h3 class="font-semibold text-neutral-500">Proof of Sustainability</h3>
-    <div class="flex w-full flex-row gap-4 lg:flex-wrap">
-      <div class="flex min-w-52 grow flex-row items-center gap-4 rounded-xl bg-secondary-100 p-4 text-secondary-500">
-        <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
-          <span class="material-symbols-outlined text-4xl">air</span>
-        </div>
-        <div class="flex flex-col gap-1 text-neutral-600">
-          <span class="flex w-full items-center justify-between gap-2 text-sm">
-            Total {{ ChemicalNames.CO2 }} Emissions
-            <app-info-tooltip [tooltip]="totalEmissionsTooltip" [position]="'above'"></app-info-tooltip>
-          </span>
-          <span class="text-xs">
-            <span class="text-xl">{{ proofOfSustainability$()?.totalEmissions | number: '1.2-2' }}</span>
-            {{ MeasurementUnit.G_CO2 }} <br />
-            <span class="text-xl">{{ proofOfSustainability$()?.amountCO2PerKgH2 | number: '1.2-2' }}</span>
-            {{ MeasurementUnit.G_CO2_PER_KG_H2 }} <br />
-            <span class="text-xl">{{ proofOfSustainability$()?.amountCO2PerMJH2 | number: '1.2-2' }}</span>
-            {{ MeasurementUnit.G_CO2_PER_MJ_H2 }}</span
-          >
-        </div>
+<div class="flex flex-col gap-4 rounded-lg bg-white p-4">
+  <h3 class="font-semibold text-neutral-500">Proof of Sustainability</h3>
+  <div class="flex w-full flex-row gap-4 lg:flex-wrap">
+    <div class="flex min-w-52 grow flex-row items-center gap-4 rounded-xl bg-secondary-100 p-4 text-secondary-500">
+      <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
+        <span class="material-symbols-outlined text-4xl">air</span>
       </div>
-      <div class="flex min-w-96 grow flex-row items-center gap-4 rounded-xl bg-secondary-100 p-4 text-neutral-600">
-        <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
-          <span class="material-symbols-outlined text-4xl text-secondary-500">percent</span>
-        </div>
-        <div class="flex w-full flex-col">
-          <span class="grow text-xs">Savings Potential</span
-          ><span class="text-xs">(Reference for fossil fuels: {{ 94 | unit: MeasurementUnit.G_CO2_PER_MJ_H2 }})</span>
-          <app-savings-potential-chart
-            class="mt-2 w-full"
-            [percentage]="proofOfSustainability$()?.emissionReductionPercentage ?? 0"
-          ></app-savings-potential-chart>
-        </div>
+      <div class="flex flex-col gap-1 text-neutral-600">
+        <span class="flex w-full items-center justify-between gap-2 text-sm">
+          Total {{ ChemicalNames.CO2 }} Emissions
+          <app-info-tooltip [tooltip]="totalEmissionsTooltip" [position]="'above'"></app-info-tooltip>
+        </span>
+        <span class="text-xs">
+          <span class="text-xl">{{ proofOfSustainability$()?.totalEmissions | number: '1.2-2' }}</span>
+          {{ MeasurementUnit.G_CO2 }} <br />
+          <span class="text-xl">{{ proofOfSustainability$()?.amountCO2PerKgH2 | number: '1.2-2' }}</span>
+          {{ MeasurementUnit.G_CO2_PER_KG_H2 }} <br />
+          <span class="text-xl">{{ proofOfSustainability$()?.amountCO2PerMJH2 | number: '1.2-2' }}</span>
+          {{ MeasurementUnit.G_CO2_PER_MJ_H2 }}</span
+        >
       </div>
     </div>
-
-    <!-- Emission Composition -->
-    <div class="rounded-xl border-neutral-100">
-      <span class="text-base text-neutral-400">Emission Composition </span>
-      <app-emission-pie-chart [data]="proofOfSustainability$()?.processStepEmissions ?? []"></app-emission-pie-chart>
-    </div>
-
-    <!-- Calculations -->
-    <div class="grid grid-cols-2 gap-4">
-      @for (topic of calculations(); track $index) {
-        <app-calculation-item [topic]="topic"></app-calculation-item>
-      }
+    <div class="flex min-w-96 grow flex-row items-center gap-4 rounded-xl bg-secondary-100 p-4 text-neutral-600">
+      <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
+        <span class="material-symbols-outlined text-4xl text-secondary-500">percent</span>
+      </div>
+      <div class="flex w-full flex-col">
+        <span class="grow text-xs">Savings Potential</span
+        ><span class="text-xs">(Reference for fossil fuels: {{ 94 | unit: MeasurementUnit.G_CO2_PER_MJ_H2 }})</span>
+        <app-savings-potential-chart
+          class="mt-2 w-full"
+          [percentage]="proofOfSustainability$()?.emissionReductionPercentage ?? 0"
+        ></app-savings-potential-chart>
+      </div>
     </div>
   </div>
-}
+
+  <!-- Emission Composition -->
+  <div class="rounded-xl border-neutral-100">
+    <span class="text-base text-neutral-400">Emission Composition </span>
+    <app-emission-pie-chart [data]="proofOfSustainability$()?.processStepEmissions ?? []"></app-emission-pie-chart>
+  </div>
+
+  <!-- Calculations -->
+  <div class="grid grid-cols-2 gap-4">
+    @for (topic of calculations(); track $index) {
+      <app-calculation-item [topic]="topic"></app-calculation-item>
+    }
+  </div>
+</div>

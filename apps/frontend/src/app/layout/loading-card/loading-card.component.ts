@@ -6,7 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const CHART_COLORS = new Map<string, string>([
-  ['GREEN', '#4F9C83'],
-  ['YELLOW', '#e3b040'],
-]);
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-loading-card',
+  template: `<div class="h-full w-full animate-pulse rounded-md bg-white"></div>`,
+})
+export class LoadingCardComponent {}
