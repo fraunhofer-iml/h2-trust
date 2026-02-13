@@ -15,10 +15,10 @@
 
   <div class="grid grid-cols-6 gap-4">
     @if (batchQuery.isLoading()) {
-      <div class="col-span-4 h-[16rem] w-full animate-pulse rounded-md bg-white"></div>
-      <div class="col-span-2 h-[16rem] w-full animate-pulse rounded-md bg-white"></div>
-      <div class="col-span-3 h-[20rem] w-full animate-pulse rounded-md bg-white"></div>
-      <div class="col-span-3 h-[20rem] w-full animate-pulse rounded-md bg-white"></div>
+      <app-loading-card class="col-span-4 h-[16rem]"></app-loading-card>
+      <app-loading-card class="col-span-2 h-[16rem]"></app-loading-card>
+      <app-loading-card class="col-span-3 h-[20rem]"></app-loading-card>
+      <app-loading-card class="col-span-3 h-[20rem]"></app-loading-card>
     }
 
     @if (batchQuery.isSuccess()) {
