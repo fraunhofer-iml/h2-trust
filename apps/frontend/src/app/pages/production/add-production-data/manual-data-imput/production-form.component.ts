@@ -10,7 +10,7 @@ import { ERROR_MESSAGES } from 'apps/frontend/src/app/shared/constants/error.mes
 import { ROUTES } from 'apps/frontend/src/app/shared/constants/routes';
 import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
 import { toast } from 'ngx-sonner';
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -57,6 +57,8 @@ export class ProductionFormComponent {
   powerAccessApprovals = input<{ value: PowerProductionOverviewDto; name: string }[]>([]);
   hydrogenProductionUnits = input<HydrogenProductionOverviewDto[]>([]);
   hydrogenStorageUnits = input<HydrogenStorageOverviewDto[]>([]);
+
+  switchToUpload = output();
 
   form = new FormGroup<{
     productionStartedAt: FormControl<Date | null>;

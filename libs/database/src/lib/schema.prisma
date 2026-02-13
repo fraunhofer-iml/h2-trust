@@ -28,9 +28,8 @@ model Address {
 }
 
 model Document {
-  id              String  @id @default(uuid(7))
-  fileName        String
-  transactionHash String?
+  id       String @id @default(uuid(7))
+  fileName String
 
   unit   Unit?   @relation(fields: [unitId], references: [id])
   unitId String?
@@ -39,6 +38,30 @@ model Document {
   processStepId String?
 
   powerAccessApprovals PowerAccessApproval[]
+}
+
+model CsvImport {
+  id        String   @id @default(uuid(7))
+  createdAt DateTime @default(now())
+
+  uploadedBy   User   @relation(fields: [uploadedById], references: [id])
+  uploadedById String
+
+  csvDocuments      CsvDocument[]
+  stagedProductions StagedProduction[]
+}
+
+model CsvDocument {
+  id              String   @id @default(uuid(7))
+  fileName        String
+  type            String
+  startedAt       DateTime
+  endedAt         DateTime
+  amount          Decimal  @db.Decimal(18, 6)
+  transactionHash String?
+
+  csvImport   CsvImport @relation(fields: [csvImportId], references: [id])
+  csvImportId String
 }
 
 model Company {
@@ -67,6 +90,7 @@ model User {
   companyId String
 
   processSteps ProcessStep[]
+  csvImports   CsvImport[]
 }
 
 model Unit {
@@ -245,17 +269,17 @@ model PowerAccessApproval {
 }
 
 model StagedProduction {
-  id        String   @id @default(uuid(7))
-  importId  String
-  createdAt DateTime @default(now())
+  id             String   @id @default(uuid(7))
+  powerAmount    Decimal  @db.Decimal(18, 6)
+  hydrogenAmount Decimal  @db.Decimal(18, 6)
+  startedAt      DateTime
+
+  csvImport   CsvImport @relation(fields: [csvImportId], references: [id])
+  csvImportId String
 
   powerProductionUnit   PowerProductionUnit @relation(fields: [powerProductionUnitId], references: [id])
   powerProductionUnitId String
 
   hydrogenProductionUnit   HydrogenProductionUnit @relation(fields: [hydrogenProductionUnitId], references: [id])
   hydrogenProductionUnitId String
-
-  powerAmount    Decimal  @db.Decimal(18, 6)
-  hydrogenAmount Decimal  @db.Decimal(18, 6)
-  startedAt      DateTime
 }

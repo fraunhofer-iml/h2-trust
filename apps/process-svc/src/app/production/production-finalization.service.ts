@@ -35,7 +35,7 @@ export class ProductionFinalizationService {
 
   async finalizeProductions(payload: FinalizeProductionsPayload): Promise<ProcessStepEntity[]> {
     const stagedProductions: StagedProductionEntity[] =
-      await this.stagedProductionRepository.getStagedProductionsByImportId(payload.importId);
+      await this.stagedProductionRepository.getStagedProductionsByCsvImportId(payload.importId);
 
     const createProductions: CreateProductionEntity[] = stagedProductions.map((stagedProduction) => {
       return new CreateProductionEntity(

@@ -14,6 +14,5 @@ export const DocumentEntityFixture = {
       overrides.id ?? 'document-1',
       overrides.fileName ?? 'some.pdf',
       overrides.storageUrl ?? 'Test Document',
-      overrides.transactionHash ?? '0xabc123',
     ),
 } as const;

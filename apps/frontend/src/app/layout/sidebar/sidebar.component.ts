@@ -52,14 +52,14 @@ export class SidebarComponent implements OnInit {
 
       children: [
         {
-          title: 'CSV Uploads',
-          icon: 'files',
-          route: ROUTES.PRODUCTION_FILES,
-        },
-        {
-          title: 'Generated Productions',
+          title: 'Data',
           icon: 'table',
           route: ROUTES.PRODUCTION_DATA,
+        },
+        {
+          title: 'Uploads',
+          icon: 'files',
+          route: ROUTES.PRODUCTION_FILES,
         },
       ],
     },

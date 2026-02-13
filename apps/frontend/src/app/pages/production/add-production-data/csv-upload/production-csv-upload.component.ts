@@ -15,7 +15,7 @@ import { minFormArrayLength } from 'apps/frontend/src/app/shared/util/form-array
 import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -71,6 +71,8 @@ export class ProductionCsvUploadComponent {
   powerAccessApprovals = input<{ value: PowerProductionOverviewDto; name: string }[]>([]);
   hydrogenProductionUnits = input<HydrogenProductionOverviewDto[]>([]);
   hydrogenStorageUnits = input<HydrogenStorageOverviewDto[]>([]);
+
+  switchToForm = output();
 
   form = new FormGroup({
     hydrogenProductionFiles: new FormArray<FileForm>([], minFormArrayLength(1)),

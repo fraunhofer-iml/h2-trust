@@ -10,4 +10,5 @@ export enum ProductionMessagePatterns {
   CREATE = 'production.create',
   STAGE = 'production.stage',
   FINALIZE = 'production.finalize',
+  READ_CSV_DOCUMENTS_BY_COMPANY = 'production.read-csv-documents-by-company',
 }

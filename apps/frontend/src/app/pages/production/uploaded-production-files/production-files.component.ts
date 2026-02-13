@@ -88,13 +88,13 @@ export class ProductionFilesComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  upoadsQuery = injectQuery(() => ({
+  uploadsQuery = injectQuery(() => ({
     queryKey: ['production'],
     queryFn: async () => await this.productionService.getUploadedCsvFiles(),
   }));
 
   datasource$ = computed(() => {
-    let data = this.upoadsQuery.data() ?? [];
+    let data = this.uploadsQuery.data() ?? [];
 
     const { input, start, end, fileType: type } = this.searchForm().value();
 

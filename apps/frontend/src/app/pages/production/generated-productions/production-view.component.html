@@ -1,18 +1,18 @@
 <div class="flex flex-col gap-4 p-8">
   <div class="flex flex-row justify-between">
-    <h2 class="text-lg text-neutral-500">Production</h2>
-    <button mat-flat-button routerLink="/production/add">Add Production</button>
+    <h2 class="text-lg text-neutral-500">Production Data</h2>
+    <button mat-flat-button routerLink="/production/add">Add Production Data</button>
   </div>
   <div class="flex w-full flex-col gap-2">
     <div class="flex flex-col gap-4 rounded-lg bg-white py-2">
       <table mat-table [dataSource]="dataSource" matSort>
         <ng-container matColumnDef="startedOn">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header="startedAt"><div class="bold">Started On</div></th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="startedAt"><div class="bold">Started At</div></th>
           <td mat-cell *matCellDef="let row">{{ row.startedAt | date }}, {{ row.startedAt | date: 'shortTime' }}</td>
         </ng-container>
         <ng-container matColumnDef="endedOn">
           <th mat-header-cell *matHeaderCellDef mat-sort-header="endedAt" class="table-font-size">
-            <div class="bold">Ended On</div>
+            <div class="bold">Ended At</div>
           </th>
           <td mat-cell *matCellDef="let row" class="table-font-size">
             {{ row.endedAt | date }}, {{ row.endedAt | date: 'shortTime' }}

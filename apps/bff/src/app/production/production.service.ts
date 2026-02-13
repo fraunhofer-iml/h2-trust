@@ -12,8 +12,10 @@ import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
   CreateProductionsPayload,
+  CsvDocumentEntity,
   FinalizeProductionsPayload,
   PowerAccessApprovalPatterns,
+  PowerProductionUnitEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
@@ -28,7 +30,6 @@ import {
   CreateProductionDto,
   ImportSubmissionDto,
   ProcessedCsvDto,
-  ProcessedCsvDtoMock,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   UserDetailsDto,
@@ -97,14 +98,19 @@ export class ProductionService {
       BatchType.HYDROGEN,
     );
 
-    const gridPowerProductionUnit = await firstValueFrom(
+    const gridPowerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
       this.generalSvc.send(
         PowerAccessApprovalPatterns.READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID,
         new ReadByIdPayload(userId),
       ),
     );
 
-    const payload = new StageProductionsPayload(powerProductions, hydrogenProductions, gridPowerProductionUnit.id);
+    const payload = new StageProductionsPayload(
+      powerProductions,
+      hydrogenProductions,
+      gridPowerProductionUnit.id,
+      userId,
+    );
     const matchingResult = await firstValueFrom(
       this.processSvc.send<ProductionStagingResultEntity>(ProductionMessagePatterns.STAGE, payload),
     );
@@ -144,8 +150,18 @@ export class ProductionService {
     return processSteps.map(ProductionOverviewDto.fromEntity);
   }
 
-  // TODO: remove mock implementation (subtask of DUHGW-299)
-  async readCsvFilesByCompany(_userId: string): Promise<ProcessedCsvDto[]> {
-    return ProcessedCsvDtoMock;
+  async readCsvDocumentsByCompany(userId: string): Promise<ProcessedCsvDto[]> {
+    const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
+
+    const csvDocuments: CsvDocumentEntity[] = await firstValueFrom(
+      this.processSvc.send(
+        ProductionMessagePatterns.READ_CSV_DOCUMENTS_BY_COMPANY,
+        new ReadByIdPayload(userDetails.company.id),
+      ),
+    );
+
+    return csvDocuments.map((doc) =>
+      ProcessedCsvDto.fromEntity(doc, this.storageService.minioUrl, userDetails.company.name),
+    );
   }
 }
