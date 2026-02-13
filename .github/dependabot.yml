@@ -25,6 +25,8 @@ updates:
       nx:
         patterns:
           - '@nx/*'
+          - '@swc/*'
+          - '@swc-node/*'
           - 'nx'
       prisma:
         patterns:
@@ -46,10 +48,6 @@ updates:
       babel:
         patterns:
           - '@babel/*'
-      swc:
-        patterns:
-          - '@swc/*'
-          - '@swc-node/*'
       types:
         patterns:
           - '@types/*'
