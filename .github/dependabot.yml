@@ -4,8 +4,97 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
-      day: 'thursday'
+      day: 'friday'
       time: '08:00'
+      timeZone: 'Europe/Berlin'
+    open-pull-requests-limit: 10
+    labels:
+      - 'dependencies'
+      - 'npm'
+    groups:
+      angular:
+        patterns:
+          - '@angular/*'
+          - '@angular-devkit/*'
+          - '@schematics/angular'
+          - 'angular-eslint'
+          - 'zone.js'
+      nestjs:
+        patterns:
+          - '@nestjs/*'
+      nx:
+        patterns:
+          - '@nx/*'
+          - 'nx'
+      prisma:
+        patterns:
+          - '@prisma/*'
+          - 'prisma'
+      keycloak:
+        patterns:
+          - '*keycloak*'
+      linting:
+        patterns:
+          - '@ianvs/prettier-plugin-sort-imports'
+          - '@typescript-eslint/*'
+          - '*eslint*'
+          - 'prettier*'
+      testing:
+        patterns:
+          - '@playwright/*'
+          - '*jest*'
+      babel:
+        patterns:
+          - '@babel/*'
+      swc:
+        patterns:
+          - '@swc/*'
+          - '@swc-node/*'
+      types:
+        patterns:
+          - '@types/*'
     ignore:
-      - dependency-name: 'npm'
+      - dependency-name: '*'
         update-types: ['version-update:semver-major']
+
+  - package-ecosystem: 'npm'
+    directory: '/libs/blockchain/smart-contract'
+    schedule:
+      interval: 'weekly'
+      day: 'friday'
+      time: '08:00'
+      timeZone: 'Europe/Berlin'
+    open-pull-requests-limit: 10
+    labels:
+      - 'dependencies'
+      - 'npm'
+    groups:
+      hardhat:
+        patterns:
+          - '@nomicfoundation/*'
+          - 'ethers'
+          - 'hardhat'
+      testing:
+        patterns:
+          - '@types/chai'
+          - '@types/chai-as-promised'
+          - '@types/mocha'
+          - 'chai'
+          - 'mocha'
+      typescript:
+        patterns:
+          - '@types/node'
+          - 'typescript'
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
+
+  # GitHub Actions
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      timeZone: 'Europe/Berlin'
+    labels:
+      - 'dependencies'
+      - 'github-actions'
