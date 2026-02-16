@@ -9,8 +9,8 @@ COPY --chown=node:node ./dist/apps/${APP} .
 COPY --chown=node:node ./libs/database/src/lib .
 COPY --chown=node:node ./docker/ProofStorage.json .
 
-RUN npm install --include=dev --no-audit --no-fund --loglevel verbose
-RUN npx prisma generate
+RUN npm install --no-audit --no-fund --loglevel verbose
+RUN npx prisma@^6.19.2 generate
 
 USER node
 
