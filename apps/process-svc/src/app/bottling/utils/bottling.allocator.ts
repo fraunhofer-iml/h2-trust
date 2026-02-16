@@ -19,8 +19,6 @@ export interface BottlingAllocation {
 
 export class BottlingAllocator {
   static allocate(
-    //The map that shows the RFNBO status of a batch.
-    batchIdToRfnboStatus: Map<string, RFNBOType>,
     //All process steps (hydrogen production) of the hydrogen storage unit, i.e. all batches from which the bottling is to be created.
     processSteps: ProcessStepEntity[],
     //The hydrogen compositions to be produced.
@@ -36,7 +34,6 @@ export class BottlingAllocator {
     for (const hydrogenComponent of hydrogenComposition) {
       const { batchesForBottle, processStepsToBeSplit, consumedSplitProcessSteps, processStepsForRemainingAmount } =
         BottlingAllocator.processBottlingForEachRFNBO(
-          batchIdToRfnboStatus,
           processSteps,
           hydrogenComponent.rfnbo as RFNBOType,
           hydrogenComponent.amount,
@@ -58,8 +55,6 @@ export class BottlingAllocator {
   }
 
   private static processBottlingForEachRFNBO(
-    //The map that shows the RFNBO status of a batch.
-    batchIdToRfnboStatus: Map<string, RFNBOType>,
     //All process steps (hydrogen production) of the hydrogen storage unit, i.e. all batches from which the bottling is to be created.
     processSteps: ProcessStepEntity[],
     //The RFNBO value of one of the bottlings to be produced
@@ -71,7 +66,7 @@ export class BottlingAllocator {
   ): BottlingAllocation {
     //filters out all HydrogenStorage batches that have the same RFNBO status as the filling to be created.
     const processStepsFromHydrogenStorageWithRequestedRFNBOStatus = processSteps.filter(
-      (ps) => batchIdToRfnboStatus.get(ps.batch.id) === rfnbo,
+      (ps) => ps.batch.rfnbo === rfnbo,
     );
 
     const { selectedProcessSteps, remainingAmount } =

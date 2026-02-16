@@ -6,23 +6,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { firstValueFrom } from 'rxjs';
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import {
   BatchEntity,
   BrokerException,
-  BrokerQueues,
   CreateHydrogenBottlingPayload,
   DocumentEntity,
   HydrogenComponentEntity,
   HydrogenCompositionUtil,
-  HydrogenStorageUnitEntity,
   ProcessStepEntity,
-  ReadByIdPayload,
-  UnitMessagePatterns,
+  ReadProcessStepsByPredecessorTypesAndOwnerPayload,
+  ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
-import { HydrogenComponentDto } from '@h2-trust/api';
 import { DocumentRepository } from '@h2-trust/database';
 import { HydrogenColor, RFNBOType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
@@ -34,44 +29,57 @@ import { BottlingAllocation, BottlingAllocator } from './utils/bottling.allocato
 @Injectable()
 export class BottlingService {
   constructor(
-    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly storageService: StorageService,
     private readonly documentRepository: DocumentRepository,
     private readonly processStepService: ProcessStepService,
     private readonly digitalProductPassportCalculationService: DigitalProductPassportCalculationService,
   ) {}
 
+  async readProcessStepsByTypesAndActiveAndOwner(
+    payload: ReadProcessStepsByTypesAndActiveAndOwnerPayload,
+  ): Promise<ProcessStepEntity[]> {
+    const processStepEntities: ProcessStepEntity[] =
+      await this.processStepService.readProcessStepsByTypesAndActiveAndOwner(payload);
+    return this.digitalProductPassportCalculationService.addRfnboToProcessStepList(processStepEntities);
+  }
+
+  async readProcessStepsByPredecessorTypesAndOwner(
+    payload: ReadProcessStepsByPredecessorTypesAndOwnerPayload,
+  ): Promise<ProcessStepEntity[]> {
+    return this.processStepService.readProcessStepsByPredecessorTypesAndOwner(payload);
+  }
+
   async createHydrogenBottlingProcessStep(payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
     //These are the current fillings of the selected hydrogen storage.
-    const allProcessStepsFromStorageUnit: ProcessStepEntity[] =
+    const rawallProcessStepsFromStorageUnit: ProcessStepEntity[] =
       await this.processStepService.readAllProcessStepsFromStorageUnit(payload.hydrogenStorageUnitId);
 
-    const batchIdToRfnboStatus: Map<string, RFNBOType> = new Map();
-    for (let i = 0; i < allProcessStepsFromStorageUnit.length; i++) {
-      const fillingWithRFNBO: HydrogenComponentDto =
-        await this.digitalProductPassportCalculationService.getDPPForFilling(allProcessStepsFromStorageUnit[i]);
-      batchIdToRfnboStatus.set(
-        allProcessStepsFromStorageUnit[i].batch.id,
-        fillingWithRFNBO.rfnbo.rfnboReady ? RFNBOType.RFNBO_READY : RFNBOType.NON_CERTIFIABLE,
-      );
-    }
-
-    if (allProcessStepsFromStorageUnit.length === 0) {
+    if (rawallProcessStepsFromStorageUnit.length === 0) {
       throw new BrokerException(
         `No process steps found in storage unit ${payload.hydrogenStorageUnitId}`,
         HttpStatus.BAD_REQUEST,
       );
     }
 
+    const allProcessStepsFromStorageUnit: ProcessStepEntity[] =
+      await this.digitalProductPassportCalculationService.addRfnboToProcessStepList(rawallProcessStepsFromStorageUnit);
+
+    const fillings: HydrogenComponentEntity[] = allProcessStepsFromStorageUnit.map((processStep) => ({
+      processId: processStep.id,
+      color: processStep.batch.qualityDetails.color,
+      amount: processStep.batch.amount,
+      rfnbo: processStep.batch.rfnbo,
+    }));
+
     //These are the required HydrogenComponents, i.e. the fillings that are needed and that are to be tapped.
     const hydrogenComposition: HydrogenComponentEntity[] = await this.determineHydrogenComposition(
       payload.amount,
       payload.rfnboReady,
+      fillings,
       payload.hydrogenStorageUnitId,
     );
 
     const allocation: BottlingAllocation = BottlingAllocator.allocate(
-      batchIdToRfnboStatus,
       allProcessStepsFromStorageUnit,
       hydrogenComposition,
       payload.hydrogenStorageUnitId,
@@ -113,23 +121,20 @@ export class BottlingService {
   private async determineHydrogenComposition(
     batchAmount: number,
     rfnboReady: RFNBOType,
-    executedById: string,
+    hydrogenStorageUnitFillings: HydrogenComponentEntity[],
+    hydrogenStorageUnitId: string,
   ): Promise<HydrogenComponentEntity[]> {
     //If RFNBO type RFNBO_READY is selected, then only one large filling is required, so there is only one element in the list.
     if (rfnboReady === RFNBOType.RFNBO_READY) {
       return [new HydrogenComponentEntity('', HydrogenColor.GREEN, batchAmount, RFNBOType.RFNBO_READY)];
     }
 
-    const hydrogenStorageUnit: HydrogenStorageUnitEntity = await firstValueFrom(
-      this.generalSvc.send(UnitMessagePatterns.READ, new ReadByIdPayload(executedById)),
-    );
-
     try {
       //If RFNBO Type NON_CERTIFIED is selected, then all fillings of the StorageUnit are taken and the appropriate quantity of units to be used is determined in order to ensure uniform emptying when green hydrogen is required.
-      return HydrogenCompositionUtil.computeHydrogenComposition(hydrogenStorageUnit.filling, batchAmount);
+      return HydrogenCompositionUtil.computeHydrogenComposition(hydrogenStorageUnitFillings, batchAmount);
     } catch (BrokerException) {
       throw new BrokerException(
-        `Total stored amount of ${hydrogenStorageUnit.id} is not greater than 0`,
+        `Total stored amount of ${hydrogenStorageUnitId} is not greater than 0`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

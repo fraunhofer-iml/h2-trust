@@ -14,13 +14,15 @@ export class BottlingOverviewDto {
   owner?: string;
   filledAmount?: number;
   color?: string;
+  rnfbo?: string;
 
-  constructor(id: string, filledAt: Date, owner: string, filledAmount: number, color: string) {
+  constructor(id: string, filledAt: Date, owner: string, filledAmount: number, color: string, rnfbo?: string) {
     this.id = id;
     this.filledAt = filledAt;
     this.owner = owner;
     this.filledAmount = filledAmount;
     this.color = color;
+    this.rnfbo = rnfbo;
   }
 
   static fromEntity(processStep: ProcessStepEntity): BottlingOverviewDto {
@@ -30,6 +32,7 @@ export class BottlingOverviewDto {
       owner: processStep.batch?.owner?.name,
       filledAmount: processStep.batch?.amount,
       color: processStep.batch?.qualityDetails?.color,
+      rnfbo: processStep.batch?.rfnbo,
     };
   }
 }

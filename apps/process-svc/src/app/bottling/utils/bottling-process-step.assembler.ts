@@ -8,7 +8,7 @@
 
 import { HttpStatus } from '@nestjs/common';
 import { BatchEntity, BrokerException, CreateHydrogenBottlingPayload, ProcessStepEntity } from '@h2-trust/amqp';
-import { BatchType, HydrogenColor, ProcessType } from '@h2-trust/domain';
+import { BatchType, HydrogenColor, ProcessType, RFNBOType } from '@h2-trust/domain';
 
 export class BottlingProcessStepAssembler {
   static assemble(payload: CreateHydrogenBottlingPayload, batchesForBottle: BatchEntity[]): ProcessStepEntity {
@@ -21,6 +21,7 @@ export class BottlingProcessStepAssembler {
         qualityDetails: {
           color: BottlingProcessStepAssembler.determineBottleQualityFromPredecessors(batchesForBottle),
         },
+        rfnbo: BottlingProcessStepAssembler.determineBottleRFNBOFromPredecessors(batchesForBottle),
         type: BatchType.HYDROGEN,
         predecessors: batchesForBottle.map((batch) => ({
           id: batch.id,
@@ -45,5 +46,20 @@ export class BottlingProcessStepAssembler {
     const allColorsAreEqual = colors.every((color) => color === firstColor);
 
     return allColorsAreEqual ? firstColor : HydrogenColor.MIX;
+  }
+
+  private static determineBottleRFNBOFromPredecessors(predecessors: BatchEntity[]): RFNBOType {
+    const rfnboTypes: RFNBOType[] = predecessors
+      .map((batch) => batch.rfnbo)
+      .map((rfnbo) => RFNBOType[rfnbo as keyof typeof RFNBOType]);
+
+    if (rfnboTypes.length === 0) {
+      throw new BrokerException(`No predecessor rfnbo status specified`, HttpStatus.BAD_REQUEST);
+    }
+
+    const firstRFNBOType = rfnboTypes[0];
+    const allColorsAreEqual = rfnboTypes.every((rfnboType) => rfnboType === firstRFNBOType);
+
+    return allColorsAreEqual ? firstRFNBOType : RFNBOType.NON_CERTIFIABLE;
   }
 }

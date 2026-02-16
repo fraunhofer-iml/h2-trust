@@ -10,6 +10,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import {
   BrokerException,
   HydrogenComponentEntity,
+  HydrogenStorageUnitEntity,
   ProcessStepEntity,
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEntity,
@@ -25,7 +26,7 @@ import {
   RfnboBaseDto,
   SectionDto,
 } from '@h2-trust/api';
-import { ProcessType } from '@h2-trust/domain';
+import { ProcessType, RFNBOType } from '@h2-trust/domain';
 import { HydrogenComponentAssembler } from '../process-step/hydrogenComponent/hydrogen-component.assembler';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { EmissionService } from './proof-of-origin/emission.service';
@@ -51,6 +52,18 @@ export class DigitalProductPassportCalculationService {
     private readonly provenanceService: ProvenanceService,
     private readonly emissionService: EmissionService,
   ) {}
+
+  async addDppToHydrogenStorage(
+    hydrogenStorageUnitEntity: HydrogenStorageUnitEntity,
+  ): Promise<HydrogenStorageUnitEntity> {
+    for (let i: number = 0; i < hydrogenStorageUnitEntity.filling.length; i++) {
+      const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(
+        hydrogenStorageUnitEntity.filling[i].processId,
+      );
+      hydrogenStorageUnitEntity.filling[i].rfnbo = await this.getRfnboForFilling(processStep);
+    }
+    return hydrogenStorageUnitEntity;
+  }
 
   async readDPPForFillings(processStepIds: string[]): Promise<HydrogenComponentDto[]> {
     const dppResults: HydrogenComponentDto[] = [];
@@ -83,26 +96,27 @@ export class DigitalProductPassportCalculationService {
     return dppResults;
   }
 
-  async getDPPForFilling(processStep: ProcessStepEntity): Promise<HydrogenComponentDto> {
+  async getRfnboForFilling(processStep: ProcessStepEntity): Promise<RFNBOType> {
     const redCompliance: RedComplianceEntity = await this.redComplianceService.determineRedCompliance(processStep.id);
     const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStep.id);
     const proofOfSustainability: ProofOfSustainabilityEntity =
       await this.emissionService.computeProvenanceEmissions(provenance);
     const isEmissionReductionAbove70Percent = proofOfSustainability.emissionReductionPercentage > 70;
-    const rfnboReadyDto: RfnboBaseDto = new RenewableEnergyRfnboDto(
+    const rfnbo = new RenewableEnergyRfnboDto(
       isEmissionReductionAbove70Percent,
       redCompliance.isGeoCorrelationValid,
       redCompliance.isTimeCorrelationValid,
       redCompliance.isAdditionalityFulfilled,
       redCompliance.financialSupportReceived,
     );
+    return rfnbo.rfnboReady ? RFNBOType.RFNBO_READY : RFNBOType.NON_CERTIFIABLE;
+  }
 
-    return {
-      processId: processStep.id,
-      rfnbo: rfnboReadyDto,
-      color: processStep.batch.qualityDetails.color,
-      amount: processStep.batch.amount,
-    };
+  async addRfnboToProcessStepList(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
+    for (let i: number = 0; i < processSteps.length; i++) {
+      processSteps[i].batch.rfnbo = await this.getRfnboForFilling(processSteps[i]);
+    }
+    return processSteps;
   }
 
   async readDigitalProductPassport(processStepId: string): Promise<DigitalProductPassportDto> {
