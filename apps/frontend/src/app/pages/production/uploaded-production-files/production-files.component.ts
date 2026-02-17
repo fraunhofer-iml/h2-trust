@@ -6,11 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, computed, effect, inject, signal, ViewChild } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { debounce, form, FormField } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
@@ -31,6 +30,13 @@ import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { ProductionService } from '../../../shared/services/production/production.service';
 import { DownloadButtonComponent } from './download-button/download-button.component';
 
+interface FilterModel {
+  input: string;
+  fileType: CsvContentType | null;
+  start: Date | null;
+  end: Date | null;
+}
+
 @Component({
   selector: 'app-production-files',
   imports: [
@@ -40,8 +46,6 @@ import { DownloadButtonComponent } from './download-button/download-button.compo
     MatChipsModule,
     MatDatepickerModule,
     MatFormFieldModule,
-    FormsModule,
-    ReactiveFormsModule,
     MatInputModule,
     MatButtonModule,
     MatLabel,
@@ -51,6 +55,7 @@ import { DownloadButtonComponent } from './download-button/download-button.compo
     MatCheckboxModule,
     DownloadButtonComponent,
     FileTypeChipComponent,
+    FormField,
   ],
   providers: [ProductionService, provideNativeDateAdapter()],
   templateUrl: './production-files.component.html',
@@ -67,32 +72,33 @@ export class ProductionFilesComponent implements AfterViewInit {
 
   productionService = inject(ProductionService);
 
-  selecteType$ = signal<CsvContentType | null>(null);
-  startDate$ = signal<Date | null>(null);
-  endDate$ = signal<Date | null>(null);
-  searchValue$ = signal<string>('');
+  searchModel = signal<FilterModel>({
+    input: '',
+    fileType: null,
+    start: null,
+    end: null,
+  });
+  searchForm = form(this.searchModel, (schemaPath) => {
+    debounce(schemaPath.input, 500);
+  });
 
   dataSource: MatTableDataSource<ProcessedCsvDto> = new MatTableDataSource<ProcessedCsvDto>();
-  searchControl = new FormControl<string>('');
   selection = new SelectionModel<ProcessedCsvDto>(true, []);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  upoadsQuery = injectQuery(() => ({
+  uploadsQuery = injectQuery(() => ({
     queryKey: ['production'],
     queryFn: async () => await this.productionService.getUploadedCsvFiles(),
   }));
 
   datasource$ = computed(() => {
-    let data = this.upoadsQuery.data() ?? [];
+    let data = this.uploadsQuery.data() ?? [];
 
-    const typeToShow = this.selecteType$();
-    const start = this.startDate$();
-    const end = this.endDate$();
-    const search = this.searchValue$();
+    const { input, start, end, fileType: type } = this.searchForm().value();
 
-    if (typeToShow) data = data.filter((item) => item.csvContentType === typeToShow);
+    if (type) data = data.filter((item) => item.csvContentType === type);
 
     if (start && end)
       data = data.filter((item) => {
@@ -101,19 +107,20 @@ export class ProductionFilesComponent implements AfterViewInit {
         return itemStart <= end && itemEnd >= start;
       });
 
-    if (search)
+    if (input) {
+      const val = input.toLowerCase();
       data = data.filter(
-        (item) => item.name.toLowerCase().includes(search) || item.uploadedBy.toLowerCase().includes(search),
+        (item) =>
+          item.name.toLowerCase().includes(val) ||
+          item.uploadedBy.toLowerCase().includes(val) ||
+          item.id.toLowerCase().includes(val),
       );
+    }
 
     return data;
   });
 
   constructor() {
-    this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((value) => {
-      this.searchValue$.set((value ?? '').toLowerCase());
-    });
-
     effect(() => {
       this.dataSource.data = this.datasource$();
     });
@@ -125,10 +132,7 @@ export class ProductionFilesComponent implements AfterViewInit {
   }
 
   clearFilters() {
-    this.searchControl.patchValue(null);
-    this.startDate$.set(null);
-    this.endDate$.set(null);
-    this.selecteType$.set(null);
+    this.searchModel.set({ input: '', start: null, end: null, fileType: null });
   }
 
   isAllSelected() {

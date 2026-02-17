@@ -94,12 +94,12 @@ export class ProductionController {
   @Get('csv')
   @ApiBearerAuth()
   @ApiOperation({
-    description: "Retrieve all csv files for the authenticated user's company.",
+    description: "Retrieve all csv documents for the authenticated user's company.",
   })
-  async readCsvFilesByUserCompany(
+  async readCsvDocumentsByCompany(
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<ProcessedCsvDto[]> {
-    return this.service.readCsvFilesByCompany(authenticatedUser.sub);
+    return this.service.readCsvDocumentsByCompany(authenticatedUser.sub);
   }
 
   @Post('csv/import')

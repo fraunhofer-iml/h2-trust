@@ -14,7 +14,6 @@ export const DocumentSeed: readonly Document[] = Object.freeze([
   {
     id: 'document-hydrogen-production-0',
     fileName: 'hydrogen-dummy.pdf',
-    transactionHash: '0x5c504ed432cb51138bcf09aa5e8a410dd4a1e204ef84bfed1be16dfba1b22060',
     unitId: UnitSeed[0].id,
     processStepId: HydrogenProductionProcessStepSeed[0].id,
   },

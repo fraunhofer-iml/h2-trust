@@ -11,6 +11,7 @@ export * from './address.db.type';
 export * from './base-unit.db.type';
 export * from './batch.db.type';
 export * from './company.db.type';
+export * from './csv-document.db.type';
 export * from './document.db.type';
 export * from './hydrogen-production-unit.db.type';
 export * from './hydrogen-storage-unit.db.type';

@@ -6,8 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './accounting-period.entity';
-export * from './csv-document.entity';
-export * from './imported-files.entity';
-export * from './unit-accounting-periods.entity';
-export * from './unit-file-reference.entity';
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-loading-card',
+  template: `<div class="h-full w-full animate-pulse rounded-md bg-white"></div>`,
+})
+export class LoadingCardComponent {}

@@ -17,11 +17,19 @@ import { FileUtil } from './file.util';
 export class StorageService {
   private readonly bucketName;
 
+  readonly minioUrl;
+
   constructor(
     @Inject(MINIO_CONNECTION) private readonly client: Client,
     private readonly configurationService: ConfigurationService,
   ) {
-    this.bucketName = this.configurationService.getGlobalConfiguration().minio.bucketName;
+    const minioConfig = this.configurationService.getGlobalConfiguration().minio;
+
+    this.bucketName = minioConfig.bucketName;
+
+    const { endPoint, port, useSSL } = minioConfig;
+    const protocol = useSSL ? 'https' : 'http';
+    this.minioUrl = `${protocol}://${endPoint}:${port}/${this.bucketName}`;
   }
 
   async uploadFile(fileName: string, file: Buffer): Promise<void> {

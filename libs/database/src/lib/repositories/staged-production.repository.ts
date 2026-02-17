@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { randomUUID } from 'crypto';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { DistributedProductionEntity, StagedProductionEntity } from '@h2-trust/amqp';
@@ -22,10 +21,10 @@ export class StagedProductionRepository {
 
   async stageDistributedProductions(
     distributedProductions: DistributedProductionEntity[],
+    csvImportId: string,
     tx?: Prisma.TransactionClient,
-  ): Promise<string> {
+  ): Promise<void> {
     const client = tx ?? this.prismaService;
-    const importId = randomUUID();
 
     await client.stagedProduction.createMany({
       data: distributedProductions.map(
@@ -33,26 +32,24 @@ export class StagedProductionRepository {
           startedAt,
           hydrogenAmount,
           hydrogenProductionUnitId,
-          importId,
+          csvImportId,
           powerAmount,
           powerProductionUnitId,
         }),
       ),
     });
-
-    return importId;
   }
 
-  async getStagedProductionsByImportId(id: string): Promise<StagedProductionEntity[]> {
+  async getStagedProductionsByCsvImportId(csvImportId: string): Promise<StagedProductionEntity[]> {
     const stagedProductions: StagedProductionDeepDbType[] = await this.prismaService.stagedProduction.findMany({
-      where: { importId: id },
+      where: { csvImportId },
       include: {
         ...stagedProductionDeepQueryArgs.include,
       },
     });
 
     if (!stagedProductions || stagedProductions.length === 0) {
-      throw new Error(`Could not find staged production for id ${id}`);
+      throw new Error(`Could not find staged production for csv import ${csvImportId}`);
     }
 
     return stagedProductions.map(StagedProductionEntity.fromDeepDatabase);
@@ -63,8 +60,8 @@ export class StagedProductionRepository {
 
     return await this.prismaService.stagedProduction.deleteMany({
       where: {
-        createdAt: {
-          lt: expirationThreshold,
+        csvImport: {
+          createdAt: { lt: expirationThreshold },
         },
       },
     });

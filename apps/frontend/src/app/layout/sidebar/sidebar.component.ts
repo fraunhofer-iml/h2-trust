@@ -44,25 +44,22 @@ export class SidebarComponent implements OnInit {
       title: 'Units',
       icon: 'water_drop',
       route: ROUTES.UNITS,
-      isActive: () => this.router.url.split('/')[1] === ROUTES.UNITS,
     },
     {
       title: 'Production',
       icon: 'manufacturing',
       route: null,
-      isActive: () => false,
+
       children: [
         {
-          title: 'CSV Uploads',
-          icon: 'files',
-          route: ROUTES.PRODUCTION_FILES,
-          isActive: () => this.router.url.split('/')[2] === 'files',
-        },
-        {
-          title: 'Generated Productions',
+          title: 'Data',
           icon: 'table',
           route: ROUTES.PRODUCTION_DATA,
-          isActive: () => this.router.url.split('/')[2] === 'data',
+        },
+        {
+          title: 'Uploads',
+          icon: 'files',
+          route: ROUTES.PRODUCTION_FILES,
         },
       ],
     },
@@ -70,7 +67,6 @@ export class SidebarComponent implements OnInit {
       title: 'Bottling',
       icon: 'propane_tank',
       route: ROUTES.BOTTLING,
-      isActive: () => this.router.url.split('/')[1] === ROUTES.BOTTLING,
     },
   ];
 
@@ -89,6 +85,11 @@ export class SidebarComponent implements OnInit {
       this.userLastName = userProfile.lastName;
       this.userEmail = userProfile.email;
     }
+  }
+
+  isActive(route: string | null): boolean {
+    if (!route) return false;
+    return this.router.url.includes(route);
   }
 
   logout() {

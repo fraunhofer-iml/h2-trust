@@ -13,7 +13,6 @@ export function buildDocumentCreateInput(document: DocumentEntity, processStepId
   return Prisma.validator<Prisma.DocumentCreateInput>()({
     id: document.id,
     fileName: document.fileName,
-    transactionHash: document.transactionHash,
     processStep: {
       connect: {
         id: processStepId,

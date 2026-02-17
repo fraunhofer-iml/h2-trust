@@ -11,6 +11,7 @@ import { PrismaService } from './prisma.service';
 import {
   BatchRepository,
   CompanyRepository,
+  CsvImportRepository,
   DocumentRepository,
   PowerAccessApprovalRepository,
   PowerProductionTypeRepository,
@@ -26,6 +27,7 @@ import {
     PrismaService,
     BatchRepository,
     CompanyRepository,
+    CsvImportRepository,
     DocumentRepository,
     PowerAccessApprovalRepository,
     PowerProductionTypeRepository,
@@ -38,6 +40,7 @@ import {
     PrismaService,
     BatchRepository,
     CompanyRepository,
+    CsvImportRepository,
     DocumentRepository,
     PowerAccessApprovalRepository,
     PowerProductionTypeRepository,

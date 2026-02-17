@@ -7,6 +7,7 @@
  */
 
 import { ErrorCardComponent } from 'apps/frontend/src/app/layout/error-card/error-card.component';
+import { LoadingCardComponent } from 'apps/frontend/src/app/layout/loading-card/loading-card.component';
 import { ERROR_MESSAGES } from 'apps/frontend/src/app/shared/constants/error.messages';
 import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
 import { Component, inject, input } from '@angular/core';
@@ -18,7 +19,7 @@ import { UnitDetailsComponent } from '../unit-details.component';
 
 @Component({
   selector: 'app-hydrogen-production-details',
-  imports: [RouterModule, UnitPipe, UnitDetailsComponent, ErrorCardComponent],
+  imports: [RouterModule, UnitPipe, UnitDetailsComponent, ErrorCardComponent, LoadingCardComponent],
   templateUrl: './hydrogen-production-details.component.html',
 })
 export class HydrogenProductionDetailsComponent {
