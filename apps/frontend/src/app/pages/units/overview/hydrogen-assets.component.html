@@ -46,7 +46,7 @@
         <a [routerLink]="['hydrogen-storage', item.id]">
           <app-unit-card [name]="item.name" [unittype]="UnitType.HYDROGEN_STORAGE">
             <mat-chip>
-              <span matChipAvatar class="material-symbols-outlined">bar_chart</span> {{ item.filling }}/{{
+              <span matChipAvatar class="material-symbols-outlined">bar_chart</span> {{ item.filling | number }}/{{
                 item.capacity | unit: MeasurementUnit.KG
               }}</mat-chip
             >
