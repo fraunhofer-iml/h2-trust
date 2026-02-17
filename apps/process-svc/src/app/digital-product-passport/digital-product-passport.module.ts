@@ -9,7 +9,6 @@
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
 import { ProcessStepModule } from '../process-step/process-step.module';
-import { DigitalProductPassportCalculationService } from './digital-product-passport.calculation.service';
 import { DigitalProductPassportController } from './digital-product-passport.controller';
 import { DigitalProductPassportService } from './digital-product-passport.service';
 import { EmissionService } from './proof-of-origin/emission.service';
@@ -35,7 +34,6 @@ import { RedComplianceModule } from './red-compliance/red-compliance.module';
   controllers: [DigitalProductPassportController],
   providers: [
     DigitalProductPassportService,
-    DigitalProductPassportCalculationService,
     EmissionService,
     HydrogenBottlingSectionService,
     HydrogenProductionSectionService,
@@ -44,6 +42,6 @@ import { RedComplianceModule } from './red-compliance/red-compliance.module';
     PowerSupplyClassificationService,
     WaterSupplyClassificationService,
   ],
-  exports: [DigitalProductPassportCalculationService],
+  exports: [DigitalProductPassportService],
 })
 export class DigitalProductPassportModule {}

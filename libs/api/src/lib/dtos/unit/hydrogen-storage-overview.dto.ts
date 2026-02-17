@@ -40,12 +40,12 @@ export class HydrogenStorageOverviewDto {
       name: unit.name,
       capacity: unit.capacity,
       storageType: unit.type,
-      filling: HydrogenStorageOverviewDto.mapFilling(unit),
+      filling: HydrogenStorageOverviewDto.addUpFillingAmounts(unit),
       hydrogenComposition: HydrogenStorageOverviewDto.mapHydrogenComposition(unit),
     };
   }
 
-  private static mapFilling(unit: HydrogenStorageUnitEntity): number {
+  private static addUpFillingAmounts(unit: HydrogenStorageUnitEntity): number {
     return (
       unit.filling?.reduce((sum, filling) => {
         if (filling.amount == null) {
@@ -61,18 +61,16 @@ export class HydrogenStorageOverviewDto {
   private static mapHydrogenComposition(unit: HydrogenStorageUnitEntity): HydrogenComponentDto[] {
     const compositionMap = new Map<string, number>();
     unit.filling?.forEach((filling: HydrogenComponentEntity) => {
-      if (filling.color == null || filling.amount == null) {
+      if (filling.rfnbo == null || filling.amount == null) {
         throw new Error('One or more fillings contain undefined values.');
       }
-      compositionMap.set(filling.color, (compositionMap.get(filling.color) ?? 0) + filling.amount);
+      compositionMap.set(filling.rfnbo, (compositionMap.get(filling.rfnbo) ?? 0) + filling.amount);
     });
-    /*return Array.from(compositionMap, ([color, amount]) => ({
-      color,
-      amount,
-    }));*/
-
-    return unit.filling?.map(
-      (activeEntity) => new HydrogenComponentDto(activeEntity.processId, activeEntity.color, activeEntity.amount),
-    );
+    return Array.from(compositionMap, ([rfnbo, amount]) => ({
+      processId: '',
+      rfnbo: rfnbo,
+      color: '',
+      amount: amount,
+    }));
   }
 }

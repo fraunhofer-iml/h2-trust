@@ -23,7 +23,7 @@ import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
 import { HydrogenComponentDto, HydrogenStorageOverviewDto, UserDto } from '@h2-trust/api';
-import { FuelType, MeasurementUnit, TransportMode } from '@h2-trust/domain';
+import { FuelType, MeasurementUnit, RFNBOType, TransportMode } from '@h2-trust/domain';
 import { FileDragAndDropComponent } from '../../../layout/drag-and-drop/file-drag-and-drop.component';
 import { FileCardComponent } from '../../../layout/file-card/file-card.component';
 import { FileTypes } from '../../../shared/constants/file-types';
@@ -194,6 +194,6 @@ export class AddBottleComponent {
   }
 
   getAvailableGreenAmount(hydrogenComposition: HydrogenComponentDto[]) {
-    return hydrogenComposition.find((item) => item.rfnbo?.rfnboReady)?.amount ?? 0;
+    return hydrogenComposition.find((item) => item.rfnbo == RFNBOType.RFNBO_READY)?.amount ?? 0;
   }
 }

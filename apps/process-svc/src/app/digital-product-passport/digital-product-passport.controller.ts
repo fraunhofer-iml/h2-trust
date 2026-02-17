@@ -8,23 +8,23 @@
 
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { DigitalProductPassportPatterns, ReadByIdPayload, ReadByIdsPayload } from '@h2-trust/amqp';
-import { DigitalProductPassportDto, HydrogenComponentDto } from '@h2-trust/api';
-import { DigitalProductPassportCalculationService } from './digital-product-passport.calculation.service';
+import { DigitalProductPassportPatterns, ReadByIdPayload } from '@h2-trust/amqp';
+import { DigitalProductPassportDto } from '@h2-trust/api';
 import { DigitalProductPassportService } from './digital-product-passport.service';
 
 @Controller()
 export class DigitalProductPassportController {
   constructor(
     private readonly digitalProductPassportService: DigitalProductPassportService,
-    private readonly digitalProductPassportCalculationService: DigitalProductPassportCalculationService,
+    private readonly digitalProductPassportCalculationService: DigitalProductPassportService,
   ) {}
 
-  @MessagePattern(DigitalProductPassportPatterns.READ_DPPS_OF_FILLINGS)
-  async getDPPForHydrogenStorage(payload: ReadByIdsPayload): Promise<HydrogenComponentDto[]> {
-    return this.digitalProductPassportCalculationService.readDPPForFillings(payload.ids);
+  @MessagePattern(DigitalProductPassportPatterns.READ_RFNBO_STATUS)
+  async getDPPForHydrogenStorage(payload: ReadByIdPayload): Promise<string> {
+    return this.digitalProductPassportCalculationService.getRfnboType(payload.id);
   }
 
+  //TODO-LG: change the return type to entity
   @MessagePattern(DigitalProductPassportPatterns.READ_DIGITAL_PRODUCT_PASSPORT)
   async readDigitalProductPassport(payload: ReadByIdPayload): Promise<DigitalProductPassportDto> {
     return this.digitalProductPassportService.readDigitalProductPassport(payload.id);

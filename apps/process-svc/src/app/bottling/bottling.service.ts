@@ -21,7 +21,7 @@ import {
 import { DocumentRepository } from '@h2-trust/database';
 import { HydrogenColor, RFNBOType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
-import { DigitalProductPassportCalculationService } from '../digital-product-passport/digital-product-passport.calculation.service';
+import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { BottlingProcessStepAssembler } from './utils/bottling-process-step.assembler';
 import { BottlingAllocation, BottlingAllocator } from './utils/bottling.allocator';
@@ -32,7 +32,7 @@ export class BottlingService {
     private readonly storageService: StorageService,
     private readonly documentRepository: DocumentRepository,
     private readonly processStepService: ProcessStepService,
-    private readonly digitalProductPassportCalculationService: DigitalProductPassportCalculationService,
+    private readonly digitalProductPassportCalculationService: DigitalProductPassportService,
   ) {}
 
   async readProcessStepsByTypesAndActiveAndOwner(
@@ -40,7 +40,7 @@ export class BottlingService {
   ): Promise<ProcessStepEntity[]> {
     const processStepEntities: ProcessStepEntity[] =
       await this.processStepService.readProcessStepsByTypesAndActiveAndOwner(payload);
-    return this.digitalProductPassportCalculationService.addRfnboToProcessStepList(processStepEntities);
+    return this.digitalProductPassportCalculationService.addRfnboTypeToProcessStepList(processStepEntities);
   }
 
   async readProcessStepsByPredecessorTypesAndOwner(
@@ -62,7 +62,9 @@ export class BottlingService {
     }
 
     const allProcessStepsFromStorageUnit: ProcessStepEntity[] =
-      await this.digitalProductPassportCalculationService.addRfnboToProcessStepList(rawallProcessStepsFromStorageUnit);
+      await this.digitalProductPassportCalculationService.addRfnboTypeToProcessStepList(
+        rawallProcessStepsFromStorageUnit,
+      );
 
     const fillings: HydrogenComponentEntity[] = allProcessStepsFromStorageUnit.map((processStep) => ({
       processId: processStep.id,

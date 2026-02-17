@@ -123,9 +123,7 @@ export class StorageFillingLevelsComponent {
       barMaxWidth: 80,
       data: data.map((dto) =>
         formatNumberForChart(
-          dto.hydrogenComposition.find((hydrogenComponent) =>
-            h2color == 'RFNBO_READY' ? hydrogenComponent.rfnbo?.rfnboReady : !hydrogenComponent.rfnbo?.rfnboReady,
-          )?.amount,
+          dto.hydrogenComposition.find((hydrogenComponent) => h2color == hydrogenComponent.rfnbo)?.amount,
         ),
       ),
       itemStyle: {
