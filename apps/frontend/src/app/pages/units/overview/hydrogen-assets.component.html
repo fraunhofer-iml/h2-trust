@@ -5,13 +5,20 @@
     <mat-chip-set aria-label="List filter">
       @for (
         unitType of [UnitType.HYDROGEN_PRODUCTION, UnitType.POWER_PRODUCTION, UnitType.HYDROGEN_STORAGE];
-        track $index
+        track unitType
       ) {
-        <mat-chip-option selectable [selected]="typeToShow === unitType" (click)="typeToShow = unitType">
+        <mat-chip-option selectable [selected]="typeToShow === unitType" (click)="toggle(unitType)">
           {{ unitType | prettyEnum | titlecase }}
         </mat-chip-option>
       }
-      <mat-chip-option selectable [selected]="!typeToShow" (click)="typeToShow = null"> All </mat-chip-option>
+      <mat-chip-option
+        selectable
+        [selected]="!typeToShow"
+        (click)="toggle(null)"
+        (selectionChange)="onAllChipSelection($event)"
+      >
+        All
+      </mat-chip-option>
     </mat-chip-set>
     <button [routerLink]="'create'" mat-flat-button>Add Unit</button>
   </div>
@@ -20,7 +27,7 @@
 
   <div class="grid grid-cols-3 gap-4 xl:grid-cols-4">
     @if (!typeToShow || typeToShow === UnitType.HYDROGEN_PRODUCTION) {
-      @for (item of hydrogenProductionQuery.data(); track $index) {
+      @for (item of hydrogenProductionQuery.data(); track item) {
         <a [routerLink]="['hydrogen-production', item.id]">
           <app-unit-card [name]="item.name" [unittype]="UnitType.HYDROGEN_PRODUCTION">
             <mat-chip>
@@ -35,7 +42,7 @@
       }
     }
     @if (!typeToShow || typeToShow === UnitType.HYDROGEN_STORAGE) {
-      @for (item of hydrogenStorageQuery.data(); track $index) {
+      @for (item of hydrogenStorageQuery.data(); track item) {
         <a [routerLink]="['hydrogen-storage', item.id]">
           <app-unit-card [name]="item.name" [unittype]="UnitType.HYDROGEN_STORAGE">
             <mat-chip>
@@ -53,7 +60,7 @@
     }
 
     @if (!typeToShow || typeToShow === UnitType.POWER_PRODUCTION) {
-      @for (item of powerProductionQuery.data(); track $index) {
+      @for (item of powerProductionQuery.data(); track item) {
         <a [routerLink]="['power-production', item.id]">
           <app-unit-card [name]="item.name" [unittype]="UnitType.POWER_PRODUCTION">
             <mat-chip
