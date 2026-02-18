@@ -8,10 +8,10 @@
 
 import { Readable } from 'stream';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CsvDocumentEntity, ProofEntity, ReadByIdPayload, VerifyCsvDocumentIntegrityStatus } from '@h2-trust/amqp';
+import { CsvDocumentEntity, ProofEntity, ReadByIdPayload } from '@h2-trust/amqp';
 import { BlockchainService, HashUtil } from '@h2-trust/blockchain';
 import { CsvImportRepository } from '@h2-trust/database';
-import { BatchType } from '@h2-trust/domain';
+import { BatchType, CsvDocumentIntegrityStatus } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { CsvDocumentService } from './csv-document.service';
 
@@ -29,15 +29,16 @@ describe('CsvDocumentService', () => {
   };
 
   const blockchainServiceMock = {
-    blockchainEnabled: true,
+    enabled: true,
+    rpcUrl: 'https://blockchain.io/rpc',
+    smartContractAddress: '0xFbf708eE4a5887E96Faea1DDFA6cF6C828695223',
+    explorerUrl: 'https://blockchain.io/tx',
     retrieveProof: jest.fn(),
-    retrieveTransactionTimestamp: jest.fn(),
-    getRpcUrl: jest.fn().mockReturnValue('https://sepolia-rollup.arbitrum.io/rpc'),
-    getSmartContractAddress: jest.fn().mockReturnValue('0xFbf708eE4a5887E96Faea1DDFA6cF6C828695223'),
+    retrieveBlockchainMetadata: jest.fn(),
   };
 
   beforeEach(async () => {
-    blockchainServiceMock.blockchainEnabled = true;
+    blockchainServiceMock.enabled = true;
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -87,7 +88,7 @@ describe('CsvDocumentService', () => {
   });
 
   describe('verifyCsvDocumentIntegrity', () => {
-    it('returns VERIFIED when file exists and hash verification succeeds', async () => {
+    it(`returns ${CsvDocumentIntegrityStatus.VERIFIED} when file exists and hash verification succeeds`, async () => {
       // Arrange
       const givenPayload = new ReadByIdPayload('doc-1');
       const givenDocument = new CsvDocumentEntity(
@@ -106,6 +107,10 @@ describe('CsvDocumentService', () => {
       storageServiceMock.fileExists.mockResolvedValue(true);
       storageServiceMock.downloadFile.mockResolvedValue(givenFileStream);
       blockchainServiceMock.retrieveProof.mockResolvedValue(givenProof);
+      blockchainServiceMock.retrieveBlockchainMetadata.mockResolvedValue({
+        blockNumber: 123,
+        blockTimestamp: new Date('2026-01-01T00:15:00.000Z'),
+      });
       jest.spyOn(HashUtil, 'verifyStreamWithStoredHash').mockResolvedValue(true);
 
       // Act
@@ -116,14 +121,21 @@ describe('CsvDocumentService', () => {
       expect(storageServiceMock.fileExists).toHaveBeenCalledWith(givenDocument.fileName);
       expect(storageServiceMock.downloadFile).toHaveBeenCalledWith(givenDocument.fileName);
       expect(blockchainServiceMock.retrieveProof).toHaveBeenCalledWith(givenDocument.id);
+      expect(blockchainServiceMock.retrieveBlockchainMetadata).toHaveBeenCalledWith(givenDocument.transactionHash);
       expect(HashUtil.verifyStreamWithStoredHash).toHaveBeenCalledWith(givenFileStream, givenProof.hash);
-      expect(actualResult.status).toBe(VerifyCsvDocumentIntegrityStatus.VERIFIED);
+      expect(actualResult.status).toBe(CsvDocumentIntegrityStatus.VERIFIED);
       expect(actualResult.documentId).toBe(givenDocument.id);
       expect(actualResult.fileName).toBe(givenDocument.fileName);
       expect(actualResult.transactionHash).toBe(givenDocument.transactionHash);
+      expect(actualResult.blockNumber).toBe(123);
+      expect(actualResult.blockTimestamp).toEqual(new Date('2026-01-01T00:15:00.000Z'));
+      expect(actualResult.network).toBe(blockchainServiceMock.rpcUrl);
+      expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
+      expect(actualResult.explorerUrl).toBe(`${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`);
+      expect(actualResult.message).toContain('verified successfully');
     });
 
-    it('returns MISMATCH when hash verification fails', async () => {
+    it(`returns ${CsvDocumentIntegrityStatus.MISMATCH} when hash verification fails`, async () => {
       // Arrange
       const givenPayload = new ReadByIdPayload('doc-2');
       const givenDocument = new CsvDocumentEntity(
@@ -142,16 +154,30 @@ describe('CsvDocumentService', () => {
       storageServiceMock.fileExists.mockResolvedValue(true);
       storageServiceMock.downloadFile.mockResolvedValue(givenFileStream);
       blockchainServiceMock.retrieveProof.mockResolvedValue(givenProof);
+      blockchainServiceMock.retrieveBlockchainMetadata.mockResolvedValue({
+        blockNumber: 456,
+        blockTimestamp: new Date('2026-01-01T00:15:00.000Z'),
+      });
       jest.spyOn(HashUtil, 'verifyStreamWithStoredHash').mockResolvedValue(false);
 
       // Act
       const actualResult = await service.verifyCsvDocumentIntegrity(givenPayload);
 
       // Assert
-      expect(actualResult.status).toBe(VerifyCsvDocumentIntegrityStatus.MISMATCH);
+      expect(actualResult.status).toBe(CsvDocumentIntegrityStatus.MISMATCH);
+      expect(actualResult.documentId).toBe(givenDocument.id);
+      expect(actualResult.fileName).toBe(givenDocument.fileName);
+      expect(actualResult.transactionHash).toBe(givenDocument.transactionHash);
+      expect(actualResult.blockNumber).toBe(456);
+      expect(actualResult.blockTimestamp).toEqual(new Date('2026-01-01T00:15:00.000Z'));
+      expect(actualResult.network).toBe(blockchainServiceMock.rpcUrl);
+      expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
+      expect(actualResult.explorerUrl).toBe(`${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`);
+      expect(actualResult.message).toContain('mismatch');
+      expect(blockchainServiceMock.retrieveBlockchainMetadata).toHaveBeenCalledWith(givenDocument.transactionHash);
     });
 
-    it('returns FAILED when blockchain integration is disabled', async () => {
+    it(`returns ${CsvDocumentIntegrityStatus.FAILED} when blockchain integration is disabled`, async () => {
       // Arrange
       const givenPayload = new ReadByIdPayload('doc-1');
       const givenDocument = new CsvDocumentEntity(
@@ -164,37 +190,61 @@ describe('CsvDocumentService', () => {
         'tx-hash',
       );
 
-      blockchainServiceMock.blockchainEnabled = false;
+      blockchainServiceMock.enabled = false;
       csvImportRepositoryMock.findCsvDocumentById.mockResolvedValue(givenDocument);
+      const hashVerifySpy = jest.spyOn(HashUtil, 'verifyStreamWithStoredHash');
 
       // Act
       const actualResult = await service.verifyCsvDocumentIntegrity(givenPayload);
 
       // Assert
-      expect(actualResult.status).toBe(VerifyCsvDocumentIntegrityStatus.FAILED);
+      expect(actualResult.status).toBe(CsvDocumentIntegrityStatus.FAILED);
+      expect(actualResult.documentId).toBe(givenDocument.id);
+      expect(actualResult.fileName).toBe(givenDocument.fileName);
+      expect(actualResult.transactionHash).toBe(givenDocument.transactionHash);
       expect(actualResult.message).toContain('Blockchain integration is disabled');
+      expect(actualResult.blockNumber).toBeNull();
+      expect(actualResult.blockTimestamp).toBeNull();
+      expect(actualResult.network).toBe(blockchainServiceMock.rpcUrl);
+      expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
+      expect(actualResult.explorerUrl).toBe(`${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`);
       expect(storageServiceMock.fileExists).not.toHaveBeenCalled();
       expect(storageServiceMock.downloadFile).not.toHaveBeenCalled();
       expect(blockchainServiceMock.retrieveProof).not.toHaveBeenCalled();
+      expect(blockchainServiceMock.retrieveBlockchainMetadata).not.toHaveBeenCalled();
+      expect(hashVerifySpy).not.toHaveBeenCalled();
     });
 
-    it('returns FAILED when document does not exist', async () => {
+    it(`returns ${CsvDocumentIntegrityStatus.FAILED} when document does not exist`, async () => {
       // Arrange
       const givenPayload = new ReadByIdPayload('missing-document-id');
       csvImportRepositoryMock.findCsvDocumentById.mockResolvedValue(null);
+      const hashVerifySpy = jest.spyOn(HashUtil, 'verifyStreamWithStoredHash');
 
-      // Act / Assert
+      // Act
       const actualResult = await service.verifyCsvDocumentIntegrity(givenPayload);
 
-      expect(actualResult.status).toBe(VerifyCsvDocumentIntegrityStatus.FAILED);
+      // Assert
+      expect(actualResult.status).toBe(CsvDocumentIntegrityStatus.FAILED);
+      expect(actualResult.documentId).toBe(givenPayload.id);
+      expect(actualResult.fileName).toBeNull();
+      expect(actualResult.transactionHash).toBeNull();
       expect(actualResult.message).toContain(`Document with id ${givenPayload.id} does not exist`);
+      expect(actualResult.blockNumber).toBeNull();
+      expect(actualResult.blockTimestamp).toBeNull();
+      expect(actualResult.network).toBe(blockchainServiceMock.rpcUrl);
+      expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
+      expect(actualResult.explorerUrl).toBe(`${blockchainServiceMock.explorerUrl}/null`);
 
+      expect(csvImportRepositoryMock.findCsvDocumentById).toHaveBeenCalledWith(givenPayload.id);
       expect(storageServiceMock.fileExists).not.toHaveBeenCalled();
       expect(storageServiceMock.downloadFile).not.toHaveBeenCalled();
       expect(blockchainServiceMock.retrieveProof).not.toHaveBeenCalled();
+      expect(blockchainServiceMock.retrieveBlockchainMetadata).not.toHaveBeenCalled();
+      expect(hashVerifySpy).not.toHaveBeenCalled();
     });
 
-    it('returns FAILED when document has no transaction hash', async () => {
+    it(`returns ${CsvDocumentIntegrityStatus.FAILED} when document has no transaction hash`, async () => {
       // Arrange
       const givenPayload = new ReadByIdPayload('doc-without-hash');
       const givenDocument = new CsvDocumentEntity(
@@ -207,19 +257,32 @@ describe('CsvDocumentService', () => {
       );
 
       csvImportRepositoryMock.findCsvDocumentById.mockResolvedValue(givenDocument);
+      const hashVerifySpy = jest.spyOn(HashUtil, 'verifyStreamWithStoredHash');
 
-      // Act / Assert
+      // Act
       const actualResult = await service.verifyCsvDocumentIntegrity(givenPayload);
 
-      expect(actualResult.status).toBe(VerifyCsvDocumentIntegrityStatus.FAILED);
+      // Assert
+      expect(actualResult.status).toBe(CsvDocumentIntegrityStatus.FAILED);
+      expect(actualResult.documentId).toBe(givenDocument.id);
+      expect(actualResult.fileName).toBe(givenDocument.fileName);
+      expect(actualResult.transactionHash).toBeUndefined();
       expect(actualResult.message).toContain(`Document with id ${givenPayload.id} has no transaction hash`);
+      expect(actualResult.blockNumber).toBeNull();
+      expect(actualResult.blockTimestamp).toBeNull();
+      expect(actualResult.network).toBe(blockchainServiceMock.rpcUrl);
+      expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
+      expect(actualResult.explorerUrl).toBe(`${blockchainServiceMock.explorerUrl}/undefined`);
 
+      expect(csvImportRepositoryMock.findCsvDocumentById).toHaveBeenCalledWith(givenPayload.id);
       expect(storageServiceMock.fileExists).not.toHaveBeenCalled();
       expect(storageServiceMock.downloadFile).not.toHaveBeenCalled();
       expect(blockchainServiceMock.retrieveProof).not.toHaveBeenCalled();
+      expect(blockchainServiceMock.retrieveBlockchainMetadata).not.toHaveBeenCalled();
+      expect(hashVerifySpy).not.toHaveBeenCalled();
     });
 
-    it('returns FAILED when file does not exist in storage', async () => {
+    it(`returns ${CsvDocumentIntegrityStatus.FAILED} when file does not exist in storage`, async () => {
       // Arrange
       const givenPayload = new ReadByIdPayload('doc-3');
       const givenDocument = new CsvDocumentEntity(
@@ -234,15 +297,28 @@ describe('CsvDocumentService', () => {
 
       csvImportRepositoryMock.findCsvDocumentById.mockResolvedValue(givenDocument);
       storageServiceMock.fileExists.mockResolvedValue(false);
+      const hashVerifySpy = jest.spyOn(HashUtil, 'verifyStreamWithStoredHash');
 
-      // Act / Assert
+      // Act
       const actualResult = await service.verifyCsvDocumentIntegrity(givenPayload);
 
-      expect(actualResult.status).toBe(VerifyCsvDocumentIntegrityStatus.FAILED);
+      // Assert
+      expect(actualResult.status).toBe(CsvDocumentIntegrityStatus.FAILED);
+      expect(actualResult.documentId).toBe(givenDocument.id);
+      expect(actualResult.fileName).toBe(givenDocument.fileName);
+      expect(actualResult.transactionHash).toBe(givenDocument.transactionHash);
       expect(actualResult.message).toContain(`File with name ${givenDocument.fileName} does not exist`);
+      expect(actualResult.blockNumber).toBeNull();
+      expect(actualResult.blockTimestamp).toBeNull();
+      expect(actualResult.network).toBe(blockchainServiceMock.rpcUrl);
+      expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
+      expect(actualResult.explorerUrl).toBe(`${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`);
 
+      expect(csvImportRepositoryMock.findCsvDocumentById).toHaveBeenCalledWith(givenPayload.id);
       expect(storageServiceMock.downloadFile).not.toHaveBeenCalled();
       expect(blockchainServiceMock.retrieveProof).not.toHaveBeenCalled();
+      expect(blockchainServiceMock.retrieveBlockchainMetadata).not.toHaveBeenCalled();
+      expect(hashVerifySpy).not.toHaveBeenCalled();
     });
   });
 });
