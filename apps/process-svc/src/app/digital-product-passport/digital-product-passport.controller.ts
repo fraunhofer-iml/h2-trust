@@ -8,8 +8,7 @@
 
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { DigitalProductPassportPatterns, ReadByIdPayload } from '@h2-trust/amqp';
-import { DigitalProductPassportDto } from '@h2-trust/api';
+import { DigitalProductPassportEntity, DigitalProductPassportPatterns, ReadByIdPayload } from '@h2-trust/amqp';
 import { DigitalProductPassportService } from './digital-product-passport.service';
 
 @Controller()
@@ -21,12 +20,11 @@ export class DigitalProductPassportController {
 
   @MessagePattern(DigitalProductPassportPatterns.READ_RFNBO_STATUS)
   async getDPPForHydrogenStorage(payload: ReadByIdPayload): Promise<string> {
-    return this.digitalProductPassportCalculationService.getRfnboType(payload.id);
+    return this.digitalProductPassportCalculationService.getRfnboTypeForProcessStepId(payload.id);
   }
 
-  //TODO-LG: change the return type to entity
   @MessagePattern(DigitalProductPassportPatterns.READ_DIGITAL_PRODUCT_PASSPORT)
-  async readDigitalProductPassport(payload: ReadByIdPayload): Promise<DigitalProductPassportDto> {
-    return this.digitalProductPassportService.readDigitalProductPassport(payload.id);
+  async readDigitalProductPassport(payload: ReadByIdPayload): Promise<DigitalProductPassportEntity> {
+    return this.digitalProductPassportService.getDppForProcessStepId(payload.id);
   }
 }

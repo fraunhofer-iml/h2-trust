@@ -40,7 +40,11 @@ export class BottlingService {
   ): Promise<ProcessStepEntity[]> {
     const processStepEntities: ProcessStepEntity[] =
       await this.processStepService.readProcessStepsByTypesAndActiveAndOwner(payload);
-    return this.digitalProductPassportCalculationService.addRfnboTypeToProcessStepList(processStepEntities);
+    for (let i: number = 0; i < processStepEntities.length; i++) {
+      processStepEntities[i].batch.rfnbo =
+        await this.digitalProductPassportCalculationService.getRfnboTypeForProcessStep(processStepEntities[i]);
+    }
+    return processStepEntities;
   }
 
   async readProcessStepsByPredecessorTypesAndOwner(
@@ -51,20 +55,22 @@ export class BottlingService {
 
   async createHydrogenBottlingProcessStep(payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
     //These are the current fillings of the selected hydrogen storage.
-    const rawallProcessStepsFromStorageUnit: ProcessStepEntity[] =
+    const allProcessStepsFromStorageUnit: ProcessStepEntity[] =
       await this.processStepService.readAllProcessStepsFromStorageUnit(payload.hydrogenStorageUnitId);
 
-    if (rawallProcessStepsFromStorageUnit.length === 0) {
+    if (allProcessStepsFromStorageUnit.length === 0) {
       throw new BrokerException(
         `No process steps found in storage unit ${payload.hydrogenStorageUnitId}`,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const allProcessStepsFromStorageUnit: ProcessStepEntity[] =
-      await this.digitalProductPassportCalculationService.addRfnboTypeToProcessStepList(
-        rawallProcessStepsFromStorageUnit,
-      );
+    for (let i: number = 0; i < allProcessStepsFromStorageUnit.length; i++) {
+      allProcessStepsFromStorageUnit[i].batch.rfnbo =
+        await this.digitalProductPassportCalculationService.getRfnboTypeForProcessStep(
+          allProcessStepsFromStorageUnit[i],
+        );
+    }
 
     const fillings: HydrogenComponentEntity[] = allProcessStepsFromStorageUnit.map((processStep) => ({
       processId: processStep.id,

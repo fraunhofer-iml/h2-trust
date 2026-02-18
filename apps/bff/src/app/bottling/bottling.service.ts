@@ -13,6 +13,7 @@ import {
   BrokerQueues,
   CreateHydrogenBottlingPayload,
   CreateHydrogenTransportationPayload,
+  DigitalProductPassportEntity,
   DigitalProductPassportPatterns,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
@@ -79,13 +80,12 @@ export class BottlingService {
     return bottlingsAndTransportations.map(BottlingOverviewDto.fromEntity);
   }
 
-  // TODO: Merge these three calls into a single unified request (DUHGW-322)
   async readDigitalProductPassport(id: string): Promise<DigitalProductPassportDto> {
     return firstValueFrom(
-      this.processSvc.send<DigitalProductPassportDto>(
+      this.processSvc.send<DigitalProductPassportEntity>(
         DigitalProductPassportPatterns.READ_DIGITAL_PRODUCT_PASSPORT,
         new ReadByIdPayload(id),
       ),
-    );
+    ).then((dppEntity) => DigitalProductPassportDto.fromEnitiy(dppEntity));
   }
 }

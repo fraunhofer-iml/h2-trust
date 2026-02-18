@@ -9,6 +9,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import {
   BrokerException,
+  DigitalProductPassportEntity,
   HydrogenComponentEntity,
   ProcessStepEntity,
   ProofOfOriginSectionEntity,
@@ -16,17 +17,7 @@ import {
   ProvenanceEntity,
   RedComplianceEntity,
 } from '@h2-trust/amqp';
-import {
-  DigitalProductPassportDto,
-  FileInfoDto,
-  GridEnergyRfnboDto,
-  HydrogenComponentDto,
-  ProofOfSustainabilityDto,
-  RenewableEnergyRfnboDto,
-  RfnboBaseDto,
-  SectionDto,
-} from '@h2-trust/api';
-import { HydrogenColor, ProcessType, RFNBOType } from '@h2-trust/domain';
+import { ProcessType, RFNBOType } from '@h2-trust/domain';
 import { HydrogenComponentAssembler } from '../process-step/hydrogenComponent/hydrogen-component.assembler';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { EmissionService } from './proof-of-origin/emission.service';
@@ -47,46 +38,27 @@ export class DigitalProductPassportService {
     private readonly emissionService: EmissionService,
   ) {}
 
-  async getRfnboType(processStepId: string): Promise<RFNBOType> {
+  async getRfnboTypeForProcessStepId(processStepId: string): Promise<RFNBOType> {
     const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
-    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStep);
-    const rfnbo: RfnboBaseDto = await this.getRfnboCompliance(processStep.id, provenance);
-    return rfnbo.rfnboReady ? RFNBOType.RFNBO_READY : RFNBOType.NON_CERTIFIABLE;
+    return this.getRfnboTypeForProcessStep(processStep);
   }
 
-  private async getRfnboCompliance(
-    processStepId: string,
-    provenance: ProvenanceEntity,
-  ): Promise<RenewableEnergyRfnboDto> {
+  async getRfnboTypeForProcessStep(processStep: ProcessStepEntity): Promise<RFNBOType> {
+    const dpp: DigitalProductPassportEntity = await this.readDigitalProductPassport(processStep);
+    return dpp.rfnboReady ? RFNBOType.RFNBO_READY : RFNBOType.NON_CERTIFIABLE;
+  }
+
+  async getDppForProcessStepId(processStepId: string): Promise<DigitalProductPassportEntity> {
+    const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
+    return this.readDigitalProductPassport(processStep);
+  }
+
+  private async readDigitalProductPassport(processStep: ProcessStepEntity): Promise<DigitalProductPassportEntity> {
+    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStep);
     const redCompliance: RedComplianceEntity = await this.redComplianceService.determineRedCompliance(
-      processStepId,
+      processStep.id,
       provenance,
     );
-    const proofOfSustainability: ProofOfSustainabilityEntity =
-      await this.emissionService.computeProvenanceEmissions(provenance);
-    const isEmissionReductionAbove70Percent = proofOfSustainability.emissionReductionPercentage > 70;
-    return new RenewableEnergyRfnboDto(
-      isEmissionReductionAbove70Percent,
-      redCompliance.isGeoCorrelationValid,
-      redCompliance.isTimeCorrelationValid,
-      redCompliance.isAdditionalityFulfilled,
-      redCompliance.financialSupportReceived,
-    );
-  }
-
-  async addRfnboTypeToProcessStepList(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
-    for (let i: number = 0; i < processSteps.length; i++) {
-      const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processSteps[i]);
-      const rfnbo: RfnboBaseDto = await this.getRfnboCompliance(processSteps[i].id, provenance);
-      processSteps[i].batch.rfnbo = rfnbo.rfnboReady ? RFNBOType.RFNBO_READY : RFNBOType.NON_CERTIFIABLE;
-    }
-    return processSteps;
-  }
-
-  async readDigitalProductPassport(processStepId: string): Promise<DigitalProductPassportDto> {
-    const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
-    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStep);
-    let rfnboCompliance: RfnboBaseDto = await this.getRfnboCompliance(processStepId, provenance);
 
     //the hydrogen composition of the provenance root and the hydrogen composition of the processStep are the same
     const hydrogenCompositionsForRootOfProvenence: HydrogenComponentEntity[] = await this.calculateHydrogenComposition(
@@ -96,17 +68,6 @@ export class DigitalProductPassportService {
     const hydrogenCompositionsForBottlingOfProvenence: HydrogenComponentEntity[] = provenance.hydrogenBottling
       ? await this.calculateHydrogenComposition(provenance.hydrogenBottling)
       : [];
-
-    const hydrogenCompositionDtos: HydrogenComponentDto[] = hydrogenCompositionsForRootOfProvenence.map((hc) =>
-      HydrogenComponentDto.fromEntity(hc),
-    );
-    const gridPowerUsed = hydrogenCompositionsForRootOfProvenence.find(
-      (element: HydrogenComponentDto) => element.color === HydrogenColor.YELLOW,
-    );
-
-    rfnboCompliance = gridPowerUsed
-      ? new GridEnergyRfnboDto(rfnboCompliance.emissionReductionOver70Percent, false, false, false)
-      : rfnboCompliance;
 
     const proofOfOrigin: ProofOfOriginSectionEntity[] = [];
 
@@ -158,25 +119,18 @@ export class DigitalProductPassportService {
     const proofOfSustainability: ProofOfSustainabilityEntity =
       await this.emissionService.computeProvenanceEmissions(provenance);
 
-    const attachedFiles = (processStep.documents ?? []).map(
-      (document) => new FileInfoDto(document.fileName, `${document.storageUrl}`),
-    );
-
-    const proofOfSustainabilityDto = ProofOfSustainabilityDto.fromEntity(proofOfSustainability);
-    const proofOfOriginDto = SectionDto.fromEntities(proofOfOrigin);
-
-    return new DigitalProductPassportDto(
+    return new DigitalProductPassportEntity(
       processStep.id,
       processStep.endedAt,
       processStep.batch.owner.name ?? '',
       processStep.batch.amount ?? 0,
       processStep.batch.qualityDetails.color ?? '',
       processStep.recordedBy.company.name ?? '',
-      hydrogenCompositionDtos,
-      attachedFiles,
-      rfnboCompliance,
-      proofOfSustainabilityDto,
-      proofOfOriginDto,
+      hydrogenCompositionsForRootOfProvenence,
+      processStep.documents ?? [],
+      redCompliance,
+      proofOfSustainability,
+      proofOfOrigin,
     );
   }
 

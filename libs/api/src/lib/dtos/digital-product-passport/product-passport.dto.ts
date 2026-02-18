@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { GeneralInformationEntity, ProofOfOriginSectionEntity, ProofOfSustainabilityEntity } from '@h2-trust/amqp';
-import { BatchType, HydrogenColor } from '@h2-trust/domain';
+import { DigitalProductPassportEntity } from '@h2-trust/amqp';
+import { BatchType } from '@h2-trust/domain';
 import { FileInfoDto } from '../file/file-info.dto';
 import { HydrogenComponentDto } from './general-information/hydrogen-component.dto';
 import { GridEnergyRfnboDto, RenewableEnergyRfnboDto, RfnboBaseDto } from './general-information/rfnbo-compliance.dto';
@@ -55,42 +55,36 @@ export class DigitalProductPassportDto {
     this.proofOfSustainability = proofOfSustainability;
   }
 
-  static fromEnities(
-    generalInformationEntity: GeneralInformationEntity,
-    proofOfOriginSectionEntities: ProofOfOriginSectionEntity[],
-    proofOfSustainabilityEntity: ProofOfSustainabilityEntity,
-  ): DigitalProductPassportDto {
-    const hydrogenComposition = (generalInformationEntity.hydrogenComposition ?? []).map(
+  static fromEnitiy(digitalProductPassportEntity: DigitalProductPassportEntity): DigitalProductPassportDto {
+    const hydrogenComposition = (digitalProductPassportEntity.hydrogenComposition ?? []).map(
       HydrogenComponentDto.fromEntity,
     );
-    const attachedFiles = (generalInformationEntity.attachedFiles ?? []).map(
+    const attachedFiles = (digitalProductPassportEntity.attachedFiles ?? []).map(
       (document) => new FileInfoDto(document.fileName, `${document.storageUrl}`),
     );
 
-    const proofOfSustainability = ProofOfSustainabilityDto.fromEntity(proofOfSustainabilityEntity);
-    const proofOfOrigin = SectionDto.fromEntities(proofOfOriginSectionEntities);
-
-    const gridPowerUsed = hydrogenComposition.find(
-      (element: HydrogenComponentDto) => element.color === HydrogenColor.YELLOW,
+    const proofOfSustainability = ProofOfSustainabilityDto.fromEntity(
+      digitalProductPassportEntity.proofOfSustainability,
     );
-    const isEmissionReductionAbove70Percent = proofOfSustainabilityEntity.emissionReductionPercentage > 70;
-    const rfnboCompliance = gridPowerUsed
-      ? new GridEnergyRfnboDto(isEmissionReductionAbove70Percent, false, false, false)
+    const proofOfOrigin = SectionDto.fromEntities(digitalProductPassportEntity.proofOfOrigin);
+
+    const rfnboCompliance = digitalProductPassportEntity.gridPowerUsed
+      ? new GridEnergyRfnboDto(digitalProductPassportEntity.isEmissionReductionAbove70Percent, false, false, false)
       : new RenewableEnergyRfnboDto(
-          isEmissionReductionAbove70Percent,
-          generalInformationEntity.redCompliance.isGeoCorrelationValid,
-          generalInformationEntity.redCompliance.isTimeCorrelationValid,
-          generalInformationEntity.redCompliance.isAdditionalityFulfilled,
-          generalInformationEntity.redCompliance.financialSupportReceived,
+          digitalProductPassportEntity.isEmissionReductionAbove70Percent,
+          digitalProductPassportEntity.redCompliance.isGeoCorrelationValid,
+          digitalProductPassportEntity.redCompliance.isTimeCorrelationValid,
+          digitalProductPassportEntity.redCompliance.isAdditionalityFulfilled,
+          digitalProductPassportEntity.redCompliance.financialSupportReceived,
         );
 
     return new DigitalProductPassportDto(
-      generalInformationEntity.id,
-      generalInformationEntity.filledAt,
-      generalInformationEntity.owner ?? '',
-      generalInformationEntity.filledAmount ?? 0,
-      generalInformationEntity.color ?? '',
-      generalInformationEntity.producer ?? '',
+      digitalProductPassportEntity.id,
+      digitalProductPassportEntity.filledAt,
+      digitalProductPassportEntity.owner ?? '',
+      digitalProductPassportEntity.filledAmount ?? 0,
+      digitalProductPassportEntity.color ?? '',
+      digitalProductPassportEntity.producer ?? '',
       hydrogenComposition,
       attachedFiles,
       rfnboCompliance,
