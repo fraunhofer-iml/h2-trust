@@ -131,7 +131,7 @@ export class ProductionController {
     return this.service.submitCsvData(dto, user.sub);
   }
 
-  @Post('csv/verify-integrity')
+  @Post('csv/verify')
   @ApiBearerAuth()
   @ApiOperation({
     description: 'Verify csv document integrity against the blockchain proof and return structured result details.',
