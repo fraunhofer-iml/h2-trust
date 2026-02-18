@@ -52,13 +52,19 @@ export class DigitalProductPassportService {
 
   async getRfnboType(processStepId: string): Promise<RFNBOType> {
     const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
-    const rfnbo: RfnboBaseDto = await this.getRfnboCompliance(processStep);
+    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStep);
+    const rfnbo: RfnboBaseDto = await this.getRfnboCompliance(processStep.id, provenance);
     return rfnbo.rfnboReady ? RFNBOType.RFNBO_READY : RFNBOType.NON_CERTIFIABLE;
   }
 
-  private async getRfnboCompliance(processStep: ProcessStepEntity): Promise<RenewableEnergyRfnboDto> {
-    const redCompliance: RedComplianceEntity = await this.redComplianceService.determineRedCompliance(processStep.id);
-    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStep.id);
+  private async getRfnboCompliance(
+    processStepId: string,
+    provenance: ProvenanceEntity,
+  ): Promise<RenewableEnergyRfnboDto> {
+    const redCompliance: RedComplianceEntity = await this.redComplianceService.determineRedCompliance(
+      processStepId,
+      provenance,
+    );
     const proofOfSustainability: ProofOfSustainabilityEntity =
       await this.emissionService.computeProvenanceEmissions(provenance);
     const isEmissionReductionAbove70Percent = proofOfSustainability.emissionReductionPercentage > 70;
@@ -73,7 +79,8 @@ export class DigitalProductPassportService {
 
   async addRfnboTypeToProcessStepList(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
     for (let i: number = 0; i < processSteps.length; i++) {
-      const rfnbo: RfnboBaseDto = await this.getRfnboCompliance(processSteps[i]);
+      const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processSteps[i]);
+      const rfnbo: RfnboBaseDto = await this.getRfnboCompliance(processSteps[i].id, provenance);
       processSteps[i].batch.rfnbo = rfnbo.rfnboReady ? RFNBOType.RFNBO_READY : RFNBOType.NON_CERTIFIABLE;
     }
     return processSteps;
@@ -81,63 +88,68 @@ export class DigitalProductPassportService {
 
   async readDigitalProductPassport(processStepId: string): Promise<DigitalProductPassportDto> {
     const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
-    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStepId);
+    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStep);
+    let rfnboCompliance: RfnboBaseDto = await this.getRfnboCompliance(processStepId, provenance);
 
     const hydrogenComposition: HydrogenComponentEntity[] = await this.calculateHydrogenComposition(processStep);
 
     const hydrogenCompositionDtos: HydrogenComponentDto[] = hydrogenComposition.map((hc) =>
       HydrogenComponentDto.fromEntity(hc),
     );
+    const gridPowerUsed = hydrogenComposition.find(
+      (element: HydrogenComponentDto) => element.color === HydrogenColor.YELLOW,
+    );
 
-    //const redCompliance: RedComplianceEntity = await this.redComplianceService.determineRedCompliance(processStepId);
+    rfnboCompliance = gridPowerUsed
+      ? new GridEnergyRfnboDto(rfnboCompliance.emissionReductionOver70Percent, false, false, false)
+      : rfnboCompliance;
 
     //TODO-LG: Simplify to the extent that they are no longer individual promises, if possible.
-    const sectionPromises: Array<Promise<ProofOfOriginSectionEntity>> = [];
 
-    const hydrogenProductionPromise =
-      provenance.powerProductions?.length || provenance.waterConsumptions?.length
-        ? this.hydrogenProductionSectionService.buildSection(
-            provenance.powerProductions,
-            provenance.waterConsumptions,
-            provenance.hydrogenBottling.batch.amount,
-          )
-        : Promise.resolve(undefined);
+    const proofOfOrigin: ProofOfOriginSectionEntity[] = [];
 
-    const hydrogenStoragePromise = provenance.hydrogenProductions?.length
-      ? this.hydrogenStorageSectionService.buildSection(provenance.hydrogenProductions)
-      : Promise.resolve(undefined);
+    if (provenance.powerProductions?.length || provenance.waterConsumptions?.length) {
+      const hydrogenProductionSection: ProofOfOriginSectionEntity =
+        await this.hydrogenProductionSectionService.buildSection(
+          provenance.powerProductions,
+          provenance.waterConsumptions,
+          provenance.hydrogenBottling.batch.amount,
+        );
+      proofOfOrigin.push(hydrogenProductionSection);
+    }
 
-    const hydrogenCompositionsForBottlingSections: HydrogenComponentEntity[] = await this.calculateHydrogenComposition(
-      provenance.hydrogenBottling ?? provenance.root,
-    );
+    if (provenance.hydrogenProductions?.length) {
+      const hydrogenStorageSection: ProofOfOriginSectionEntity = await this.hydrogenStorageSectionService.buildSection(
+        provenance.hydrogenProductions,
+      );
+      proofOfOrigin.push(hydrogenStorageSection);
+    }
 
-    const hydrogenBottlingPromise =
+    if (
       provenance.root.type === ProcessType.HYDROGEN_BOTTLING ||
       provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION
-        ? this.hydrogenBottlingSectionService.buildSection(
-            provenance.hydrogenBottling ?? provenance.root,
-            hydrogenCompositionsForBottlingSections,
-          )
-        : Promise.resolve(undefined);
+    ) {
+      const hydrogenCompositionsForBottlingSections: HydrogenComponentEntity[] =
+        await this.calculateHydrogenComposition(provenance.hydrogenBottling ?? provenance.root);
+      const hydrogenBottlingSection: ProofOfOriginSectionEntity =
+        await this.hydrogenBottlingSectionService.buildSection(
+          provenance.hydrogenBottling ?? provenance.root,
+          hydrogenCompositionsForBottlingSections,
+        );
+      proofOfOrigin.push(hydrogenBottlingSection);
+    }
 
-    const hydrogenCompositionsForTransportation: HydrogenComponentEntity[] = await this.calculateHydrogenComposition(
-      provenance.hydrogenBottling,
-    );
-
-    const hydrogenTransportationPromise =
-      provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION && provenance.hydrogenBottling
-        ? this.hydrogenTransportationSectionService.buildSection(provenance.root, hydrogenCompositionsForTransportation)
-        : Promise.resolve(undefined);
-
-    sectionPromises.push(
-      hydrogenProductionPromise,
-      hydrogenStoragePromise,
-      hydrogenBottlingPromise,
-      hydrogenTransportationPromise,
-    );
-
-    const sections = await Promise.all(sectionPromises);
-    const proofOfOrigin: ProofOfOriginSectionEntity[] = sections.filter((section) => section !== undefined);
+    if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION && provenance.hydrogenBottling) {
+      const hydrogenCompositionsForTransportation: HydrogenComponentEntity[] = await this.calculateHydrogenComposition(
+        provenance.hydrogenBottling,
+      );
+      const hydrogenTransportationSection: ProofOfOriginSectionEntity =
+        await this.hydrogenTransportationSectionService.buildSection(
+          provenance.root,
+          hydrogenCompositionsForTransportation,
+        );
+      proofOfOrigin.push(hydrogenTransportationSection);
+    }
 
     //TODO-LG: compute provenance emissions should be evaluated and be made more compact if that is possible
     const proofOfSustainability: ProofOfSustainabilityEntity =
@@ -149,16 +161,6 @@ export class DigitalProductPassportService {
 
     const proofOfSustainabilityDto = ProofOfSustainabilityDto.fromEntity(proofOfSustainability);
     const proofOfOriginDto = SectionDto.fromEntities(proofOfOrigin);
-
-    const gridPowerUsed = hydrogenComposition.find(
-      (element: HydrogenComponentDto) => element.color === HydrogenColor.YELLOW,
-    );
-
-    let rfnboCompliance: RfnboBaseDto = await this.getRfnboCompliance(processStep);
-
-    rfnboCompliance = gridPowerUsed
-      ? new GridEnergyRfnboDto(rfnboCompliance.emissionReductionOver70Percent, false, false, false)
-      : rfnboCompliance;
 
     return new DigitalProductPassportDto(
       processStep.id,
@@ -176,13 +178,10 @@ export class DigitalProductPassportService {
   }
 
   private async calculateHydrogenComposition(processStep: ProcessStepEntity): Promise<HydrogenComponentEntity[]> {
-    const hydrogenBottling: ProcessStepEntity =
-      processStep.type === ProcessType.HYDROGEN_BOTTLING ? processStep : await this.readHydrogenBottling(processStep);
+    if (processStep.type === ProcessType.HYDROGEN_BOTTLING) {
+      return HydrogenComponentAssembler.assemble(processStep);
+    }
 
-    return HydrogenComponentAssembler.assemble(hydrogenBottling);
-  }
-
-  private async readHydrogenBottling(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
     const predecessorId: string = processStep.batch?.predecessors[0]?.processStepId;
 
     if (!predecessorId) {
@@ -201,6 +200,6 @@ export class DigitalProductPassportService {
       );
     }
 
-    return predecessor;
+    return HydrogenComponentAssembler.assemble(predecessor);
   }
 }

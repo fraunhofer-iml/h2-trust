@@ -9,7 +9,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { ProvenanceEntity, RedComplianceEntity } from '@h2-trust/amqp';
-import { ProvenanceService } from '../provenance/provenance.service';
 import { MatchedProductionPair } from './matched-production-pair';
 import { RedCompliancePairingService } from './red-compliance-pairing.service';
 import {
@@ -21,14 +20,9 @@ import {
 
 @Injectable()
 export class RedComplianceService {
-  constructor(
-    private readonly redCompliancePairingService: RedCompliancePairingService,
-    private readonly provenanceService: ProvenanceService,
-  ) {}
+  constructor(private readonly redCompliancePairingService: RedCompliancePairingService) {}
 
-  async determineRedCompliance(processStepId: string): Promise<RedComplianceEntity> {
-    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStepId);
-
+  async determineRedCompliance(processStepId: string, provenance: ProvenanceEntity): Promise<RedComplianceEntity> {
     if (!provenance || !provenance.powerProductions?.length || !provenance.hydrogenProductions?.length) {
       throw new RpcException(
         `Provenance or required productions (power/hydrogen) are missing for processStepId [${processStepId}]`,
