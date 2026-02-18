@@ -15,18 +15,27 @@ import {
   PowerProductionTypeEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
+  ProductionMessagePatterns,
   UserEntityHydrogenMock,
+  VerifyCsvDocumentIntegrityResultEntity,
 } from '@h2-trust/amqp';
 import {
   AccountingPeriodMatchingResultDto,
   AuthenticatedKCUser,
   CreateProductionDto,
   CreateProductionDtoMock,
+  CsvDocumentIntegrityResultDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   UserDetailsDtoMock,
 } from '@h2-trust/api';
-import { EnergySource, HydrogenColor, PowerProductionType, ProcessType } from '@h2-trust/domain';
+import {
+  CsvDocumentIntegrityStatus,
+  EnergySource,
+  HydrogenColor,
+  PowerProductionType,
+  ProcessType,
+} from '@h2-trust/domain';
 import 'multer';
 import { of } from 'rxjs';
 import { StorageService } from '@h2-trust/storage';
@@ -282,5 +291,37 @@ describe('ProductionController', () => {
         givenAuthenticatedUser,
       ),
     ).rejects.toThrow('Not enough unit IDs provided for POWER production files: expected 1, got 0');
+  });
+
+  it('should verify csv document integrity and return verification details', async () => {
+    // arrange
+    const blockTimestamp = new Date('2026-02-18T10:26:29.000Z');
+
+    const givenVerificationEntity = new VerifyCsvDocumentIntegrityResultEntity(
+      'document-1',
+      'file.csv',
+      CsvDocumentIntegrityStatus.VERIFIED,
+      'File integrity verified successfully for document with id document-1.',
+      '0xhash',
+      123,
+      blockTimestamp,
+      'Arbitrum Sepolia',
+      '0xcontract',
+      'https://sepolia.arbiscan.io/tx/0xhash',
+    );
+
+    jest
+      .spyOn(processSvc, 'send')
+      .mockImplementation((_messagePattern: ProductionMessagePatterns, _data: any) => of(givenVerificationEntity));
+
+    // act
+    const actualResponse = await controller.verifyCsvDocumentIntegrity(givenVerificationEntity.documentId);
+
+    // assert
+    expect(actualResponse).toEqual(CsvDocumentIntegrityResultDto.fromEntity(givenVerificationEntity));
+    expect(processSvc.send).toHaveBeenCalledWith(
+      ProductionMessagePatterns.VERIFY_CSV_DOCUMENT_INTEGRITY,
+      expect.objectContaining({ id: givenVerificationEntity.documentId }),
+    );
   });
 });
