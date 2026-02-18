@@ -17,6 +17,7 @@ import {
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   VerifyCsvDocumentIntegrityDto,
+  VerifyCsvDocumentIntegrityResultDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/api';
 import { FileUploadKeys } from '@h2-trust/domain';
@@ -132,7 +133,14 @@ export class ProductionController {
 
   @Post('csv/verify-integrity')
   @ApiBearerAuth()
-  verifyCsvDocumentIntegrity(@Body() dto: VerifyCsvDocumentIntegrityDto): Promise<boolean> {
+  @ApiOperation({
+    description: 'Verify csv document integrity against the blockchain proof and return structured result details.',
+  })
+  @ApiOkResponse({
+    description: 'Returns verification status and technical details for the details pane.',
+    type: VerifyCsvDocumentIntegrityResultDto,
+  })
+  verifyCsvDocumentIntegrity(@Body() dto: VerifyCsvDocumentIntegrityDto): Promise<VerifyCsvDocumentIntegrityResultDto> {
     return this.service.verifyCsvDocumentIntegrity(dto);
   }
 }

@@ -8,6 +8,7 @@
 
 import {
   BatchType,
+  CsvDocumentIntegrityStatus,
   EnergySource,
   GridLevel,
   HydrogenColor,
@@ -72,6 +73,12 @@ export class EnumLabelMapper {
     [BatchType.WATER]: MeasurementUnit.L,
   };
 
+  private static readonly CSV_DOCUMENT_INTEGRITY_STATUS_LABELS: Record<CsvDocumentIntegrityStatus, string> = {
+    [CsvDocumentIntegrityStatus.VERIFIED]: 'Verified',
+    [CsvDocumentIntegrityStatus.MISMATCH]: 'Mismatch',
+    [CsvDocumentIntegrityStatus.FAILED]: 'Failed',
+  };
+
   public static getPowerProductionType(value: PowerProductionType): string {
     return this.getLabel(value, this.POWER_PRODUCTION_TYPE_LABELS);
   }
@@ -106,6 +113,10 @@ export class EnumLabelMapper {
 
   public static getMeasurementUnit(value: BatchType): string {
     return this.getLabel(value, this.MEASUREMENT_UNIT_LABELS);
+  }
+
+  public static getCsvDocumentIntegrityStatus(value: CsvDocumentIntegrityStatus): string {
+    return this.getLabel(value, this.CSV_DOCUMENT_INTEGRITY_STATUS_LABELS);
   }
 
   private static getLabel<T extends string>(value: T, labels: Record<T, string>): string {

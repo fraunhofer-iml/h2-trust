@@ -30,6 +30,12 @@ interface Proof {
   cid: string;
 }
 
+export interface BlockchainMetadata {
+  blockNumber: number;
+  blockTimestamp: Date;
+}
+
+
 interface ProofStorageContract extends BaseContract {
   storeProofs(proofs: ProofEntry[]): Promise<ContractTransactionResponse>;
   getProofByUuid(uuid: string): Promise<Proof>;
@@ -37,21 +43,25 @@ interface ProofStorageContract extends BaseContract {
 
 @Injectable()
 export class BlockchainService {
-  readonly blockchainEnabled: boolean;
+  readonly enabled: boolean;
+  readonly rpcUrl: string;
+  readonly smartContractAddress: string;
+  readonly explorerUrl: string;
 
   private readonly logger = new Logger(this.constructor.name);
-  private readonly contract: ProofStorageContract | null;
+  private readonly contract: ProofStorageContract;
 
   constructor(private readonly configurationService: ConfigurationService) {
-    this.blockchainEnabled = this.configurationService.getGlobalConfiguration().blockchain.enabled;
+    this.enabled = this.configurationService.getGlobalConfiguration().blockchain.enabled;
+    this.rpcUrl = this.enabled ? this.configurationService.getGlobalConfiguration().blockchain.rpcUrl : null;
+    this.smartContractAddress = this.enabled ? this.configurationService.getGlobalConfiguration().blockchain.smartContractAddress : null;
+    this.explorerUrl = this.enabled ? this.configurationService.getGlobalConfiguration().blockchain.explorerUrl : null;
 
-    if (this.blockchainEnabled) {
-      const rpcUrl = this.configurationService.getGlobalConfiguration().blockchain.rpcUrl;
-      const smartContractAddress = this.configurationService.getGlobalConfiguration().blockchain.smartContractAddress;
-
+    if (this.enabled) {
       this.logger.debug('🔗 Blockchain is enabled. Proofs will be stored and retrieved.');
-      this.logger.debug(`🌐 RPC URL: ${rpcUrl}`);
-      this.logger.debug(`📄 Smart Contract Address: ${smartContractAddress}`);
+      this.logger.debug(`🌐 RPC URL: ${this.rpcUrl}`);
+      this.logger.debug(`📄 Smart Contract Address: ${this.smartContractAddress}`);
+      this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
 
       this.contract = this.createContract();
     } else {
@@ -76,7 +86,7 @@ export class BlockchainService {
   }
 
   async storeProofs(proofEntries: ProofEntry[]): Promise<string | null> {
-    if (!this.blockchainEnabled) {
+    if (!this.enabled) {
       this.logger.debug(`⏭️ Blockchain disabled, skipping proof storage of ${proofEntries.length} entries`);
       return null;
     }
@@ -91,7 +101,7 @@ export class BlockchainService {
   }
 
   async retrieveProof(uuid: string): Promise<ProofEntity | null> {
-    if (!this.blockchainEnabled) {
+    if (!this.enabled) {
       this.logger.debug(`⏭️ Blockchain disabled, skipping proof retrieval for ${uuid}`);
       return null;
     }
@@ -102,5 +112,25 @@ export class BlockchainService {
     this.logger.debug(`✅ Proof retrieved: ${JSON.stringify(proof)}`);
 
     return new ProofEntity(uuid, proof.hash, proof.cid);
+  }
+
+  async retrieveBlockchainMetadata(transactionHash: string): Promise<BlockchainMetadata> {
+    if (!this.enabled || !this.contract) {
+      return null;
+    }
+
+    const receipt = await this.contract.runner.provider.getTransactionReceipt(transactionHash);
+
+    if (!receipt) {
+      return null;
+    }
+
+    const block = await this.contract.runner.provider.getBlock(receipt.blockNumber);
+
+    if (!block) {
+      return null;
+    }
+
+    return { blockNumber: receipt.blockNumber, blockTimestamp: new Date(Number(block.timestamp) * 1000) };
   }
 }

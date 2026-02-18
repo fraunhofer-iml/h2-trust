@@ -24,6 +24,7 @@ import {
   ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   StageProductionsPayload,
   UnitFileReference,
+  VerifyCsvDocumentIntegrityResultEntity,
 } from '@h2-trust/amqp';
 import {
   AccountingPeriodMatchingResultDto,
@@ -34,6 +35,7 @@ import {
   ProductionOverviewDto,
   UserDetailsDto,
   VerifyCsvDocumentIntegrityDto,
+  VerifyCsvDocumentIntegrityResultDto,
 } from '@h2-trust/api';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
@@ -166,14 +168,11 @@ export class ProductionService {
     );
   }
 
-  async verifyCsvDocumentIntegrity(dto: VerifyCsvDocumentIntegrityDto): Promise<boolean> {
-    const verified: boolean = await firstValueFrom(
-      this.processSvc.send(
-        ProductionMessagePatterns.VERIFY_CSV_DOCUMENT_INTEGRITY,
-        new ReadByIdPayload(dto.documentId),
-      )
+  async verifyCsvDocumentIntegrity(dto: VerifyCsvDocumentIntegrityDto): Promise<VerifyCsvDocumentIntegrityResultDto> {
+    const verificationResult: VerifyCsvDocumentIntegrityResultEntity = await firstValueFrom(
+      this.processSvc.send(ProductionMessagePatterns.VERIFY_CSV_DOCUMENT_INTEGRITY, new ReadByIdPayload(dto.documentId))
     );
 
-    return verified;
+    return VerifyCsvDocumentIntegrityResultDto.fromEntity(verificationResult);
   }
 }
