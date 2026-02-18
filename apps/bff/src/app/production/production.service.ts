@@ -33,7 +33,7 @@ import {
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   UserDetailsDto,
-  VerifyFileDto,
+  VerifyCsvDocumentIntegrityDto,
 } from '@h2-trust/api';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
@@ -166,9 +166,12 @@ export class ProductionService {
     );
   }
 
-  async verifyFile(dto: VerifyFileDto): Promise<boolean> {
+  async verifyCsvDocumentIntegrity(dto: VerifyCsvDocumentIntegrityDto): Promise<boolean> {
     const verified: boolean = await firstValueFrom(
-      this.processSvc.send(ProductionMessagePatterns.VERIFY_FILE, new ReadByIdPayload(dto.documentId))
+      this.processSvc.send(
+        ProductionMessagePatterns.VERIFY_CSV_DOCUMENT_INTEGRITY,
+        new ReadByIdPayload(dto.documentId),
+      )
     );
 
     return verified;

@@ -26,7 +26,7 @@ export class CsvDocumentService {
     return this.csvImportRepository.findAllCsvDocumentsByCompanyId(payload.id);
   }
 
-  async verifyFileIntegrity(payload: ReadByIdPayload): Promise<boolean> {
+  async verifyCsvDocumentIntegrity(payload: ReadByIdPayload): Promise<boolean> {
     const document = await this.csvImportRepository.findCsvDocumentById(payload.id);
 
     if (!document) {
@@ -47,7 +47,7 @@ export class CsvDocumentService {
     const proof = await this.blockchainService.retrieveProof(document.id);
     const isValid = await HashUtil.verifyStreamWithStoredHash(fileStream, proof.hash);
 
-    this.logger.debug(`➡️ Verification result for document ${document.id}: ${isValid ? '✅ Valid' : '❌ Invalid'}`);
+    this.logger.debug(`${isValid ? '✅ Valid' : '❌ Invalid'} integrity for document with id ${document.id} and file name ${document.fileName}`);
 
     return isValid;
   }

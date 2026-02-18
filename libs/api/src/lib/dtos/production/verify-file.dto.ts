@@ -8,7 +8,7 @@
 
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class VerifyFileDto {
+export class VerifyCsvDocumentIntegrityDto {
   @IsString()
   @IsNotEmpty()
   documentId: string;

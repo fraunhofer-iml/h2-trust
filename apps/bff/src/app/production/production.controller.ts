@@ -16,7 +16,7 @@ import {
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
-  VerifyFileDto,
+  VerifyCsvDocumentIntegrityDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/api';
 import { FileUploadKeys } from '@h2-trust/domain';
@@ -130,9 +130,9 @@ export class ProductionController {
     return this.service.submitCsvData(dto, user.sub);
   }
 
-  @Post('csv/verify')
+  @Post('csv/verify-integrity')
   @ApiBearerAuth()
-  verifyFile(@Body() dto: VerifyFileDto): Promise<boolean> {
-    return this.service.verifyFile(dto);
+  verifyCsvDocumentIntegrity(@Body() dto: VerifyCsvDocumentIntegrityDto): Promise<boolean> {
+    return this.service.verifyCsvDocumentIntegrity(dto);
   }
 }

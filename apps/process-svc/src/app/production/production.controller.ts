@@ -52,8 +52,8 @@ export class ProductionController {
     return this.csvDocumentService.findByCompany(payload);
   }
 
-  @MessagePattern(ProductionMessagePatterns.VERIFY_FILE)
-  async verifyFile(payload: ReadByIdPayload): Promise<boolean> {
-    return this.csvDocumentService.verifyFileIntegrity(payload);
+  @MessagePattern(ProductionMessagePatterns.VERIFY_CSV_DOCUMENT_INTEGRITY)
+  async verifyCsvDocumentIntegrity(payload: ReadByIdPayload): Promise<boolean> {
+    return this.csvDocumentService.verifyCsvDocumentIntegrity(payload);
   }
 }
