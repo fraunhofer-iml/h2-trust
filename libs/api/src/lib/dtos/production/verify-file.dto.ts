@@ -67,7 +67,7 @@ export class VerifyCsvDocumentIntegrityResultDto {
       entity.blockTimestamp,
       entity.network,
       entity.smartContractAddress,
-      entity.explorerUrl
+      entity.explorerUrl,
     );
   }
 }

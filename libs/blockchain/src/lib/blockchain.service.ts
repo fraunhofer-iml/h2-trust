@@ -35,7 +35,6 @@ export interface BlockchainMetadata {
   blockTimestamp: Date;
 }
 
-
 interface ProofStorageContract extends BaseContract {
   storeProofs(proofs: ProofEntry[]): Promise<ContractTransactionResponse>;
   getProofByUuid(uuid: string): Promise<Proof>;
@@ -54,7 +53,9 @@ export class BlockchainService {
   constructor(private readonly configurationService: ConfigurationService) {
     this.enabled = this.configurationService.getGlobalConfiguration().blockchain.enabled;
     this.rpcUrl = this.enabled ? this.configurationService.getGlobalConfiguration().blockchain.rpcUrl : null;
-    this.smartContractAddress = this.enabled ? this.configurationService.getGlobalConfiguration().blockchain.smartContractAddress : null;
+    this.smartContractAddress = this.enabled
+      ? this.configurationService.getGlobalConfiguration().blockchain.smartContractAddress
+      : null;
     this.explorerUrl = this.enabled ? this.configurationService.getGlobalConfiguration().blockchain.explorerUrl : null;
 
     if (this.enabled) {

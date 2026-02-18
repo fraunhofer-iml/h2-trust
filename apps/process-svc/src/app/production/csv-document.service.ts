@@ -7,15 +7,11 @@
  */
 
 import { Injectable, Logger } from '@nestjs/common';
-import {
-  CsvDocumentEntity,
-  ReadByIdPayload,
-  VerifyCsvDocumentIntegrityResultEntity
-} from '@h2-trust/amqp';
-import { CsvImportRepository } from '@h2-trust/database';
-import { StorageService } from '@h2-trust/storage';
+import { CsvDocumentEntity, ReadByIdPayload, VerifyCsvDocumentIntegrityResultEntity } from '@h2-trust/amqp';
 import { BlockchainService, HashUtil } from '@h2-trust/blockchain';
+import { CsvImportRepository } from '@h2-trust/database';
 import { CsvDocumentIntegrityStatus } from '@h2-trust/domain';
+import { StorageService } from '@h2-trust/storage';
 
 @Injectable()
 export class CsvDocumentService {
@@ -24,8 +20,8 @@ export class CsvDocumentService {
   constructor(
     private readonly blockchainService: BlockchainService,
     private readonly csvImportRepository: CsvImportRepository,
-    private readonly storageService: StorageService
-  ) { }
+    private readonly storageService: StorageService,
+  ) {}
 
   async findByCompany(payload: ReadByIdPayload): Promise<CsvDocumentEntity[]> {
     return this.csvImportRepository.findAllCsvDocumentsByCompanyId(payload.id);
@@ -65,7 +61,9 @@ export class CsvDocumentService {
 
       const validHash = await HashUtil.verifyStreamWithStoredHash(fileStream, proof.hash);
 
-      this.logger.debug(`${validHash ? '✅ Valid' : '❌ Invalid'} integrity for document with id ${document.id} and file name ${document.fileName}`);
+      this.logger.debug(
+        `${validHash ? '✅ Valid' : '❌ Invalid'} integrity for document with id ${document.id} and file name ${document.fileName}`,
+      );
 
       const blockchainMetadata = await this.blockchainService.retrieveBlockchainMetadata(document.transactionHash);
 
@@ -106,7 +104,7 @@ export class CsvDocumentService {
       blockTimestamp,
       this.blockchainService.rpcUrl,
       this.blockchainService.smartContractAddress,
-      `${this.blockchainService.explorerUrl}/${transactionHash}`
+      `${this.blockchainService.explorerUrl}/${transactionHash}`,
     );
   }
 
@@ -126,7 +124,7 @@ export class CsvDocumentService {
       null,
       this.blockchainService.rpcUrl,
       this.blockchainService.smartContractAddress,
-      `${this.blockchainService.explorerUrl}/${transactionHash}`
+      `${this.blockchainService.explorerUrl}/${transactionHash}`,
     );
   }
 }

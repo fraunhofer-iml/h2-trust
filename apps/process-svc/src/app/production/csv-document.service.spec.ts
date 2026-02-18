@@ -8,17 +8,12 @@
 
 import { Readable } from 'stream';
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  CsvDocumentEntity,
-  ProofEntity,
-  ReadByIdPayload,
-  VerifyCsvDocumentIntegrityStatus,
-} from '@h2-trust/amqp';
+import { CsvDocumentEntity, ProofEntity, ReadByIdPayload, VerifyCsvDocumentIntegrityStatus } from '@h2-trust/amqp';
 import { BlockchainService, HashUtil } from '@h2-trust/blockchain';
 import { CsvImportRepository } from '@h2-trust/database';
+import { BatchType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { CsvDocumentService } from './csv-document.service';
-import { BatchType } from '@h2-trust/domain';
 
 describe('CsvDocumentService', () => {
   let service: CsvDocumentService;

@@ -52,7 +52,7 @@ export class ProcessedCsvDto {
       entity.endedAt,
       entity.type as CsvContentType,
       entity.amount,
-      Boolean(entity.transactionHash)
+      Boolean(entity.transactionHash),
     );
   }
 }

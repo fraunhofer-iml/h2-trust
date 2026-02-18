@@ -48,7 +48,7 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly storageService: StorageService,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
   async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
     const payload = new CreateProductionsPayload(
@@ -170,7 +170,10 @@ export class ProductionService {
 
   async verifyCsvDocumentIntegrity(dto: VerifyCsvDocumentIntegrityDto): Promise<VerifyCsvDocumentIntegrityResultDto> {
     const verificationResult: VerifyCsvDocumentIntegrityResultEntity = await firstValueFrom(
-      this.processSvc.send(ProductionMessagePatterns.VERIFY_CSV_DOCUMENT_INTEGRITY, new ReadByIdPayload(dto.documentId))
+      this.processSvc.send(
+        ProductionMessagePatterns.VERIFY_CSV_DOCUMENT_INTEGRITY,
+        new ReadByIdPayload(dto.documentId),
+      ),
     );
 
     return VerifyCsvDocumentIntegrityResultDto.fromEntity(verificationResult);
