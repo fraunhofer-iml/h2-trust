@@ -29,10 +29,13 @@ describe('CsvDocumentService', () => {
   };
 
   const blockchainServiceMock = {
+      blockchainEnabled: true,
     retrieveProof: jest.fn(),
   };
 
   beforeEach(async () => {
+      blockchainServiceMock.blockchainEnabled = true;
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CsvDocumentService,
@@ -141,6 +144,22 @@ describe('CsvDocumentService', () => {
       // Assert
       expect(actualResult).toBe(false);
     });
+
+      it('throws when blockchain integration is disabled', async () => {
+          // Arrange
+          const givenPayload = new ReadByIdPayload('doc-1');
+          blockchainServiceMock.blockchainEnabled = false;
+
+          // Act / Assert
+          await expect(service.verifyCsvDocumentIntegrity(givenPayload)).rejects.toThrow(
+              'Blockchain integration is disabled, cannot verify file integrity.',
+          );
+
+          expect(csvImportRepositoryMock.findCsvDocumentById).not.toHaveBeenCalled();
+          expect(storageServiceMock.fileExists).not.toHaveBeenCalled();
+          expect(storageServiceMock.downloadFile).not.toHaveBeenCalled();
+          expect(blockchainServiceMock.retrieveProof).not.toHaveBeenCalled();
+      });
 
     it('throws when document does not exist', async () => {
       // Arrange

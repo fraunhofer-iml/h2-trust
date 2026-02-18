@@ -27,6 +27,10 @@ export class CsvDocumentService {
   }
 
   async verifyCsvDocumentIntegrity(payload: ReadByIdPayload): Promise<boolean> {
+    if (!this.blockchainService.blockchainEnabled) {
+      throw Error(`Blockchain integration is disabled, cannot verify file integrity.`);
+    }
+
     const document = await this.csvImportRepository.findCsvDocumentById(payload.id);
 
     if (!document) {
