@@ -33,6 +33,7 @@ import {
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   UserDetailsDto,
+  VerifyFileDto,
 } from '@h2-trust/api';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
@@ -45,7 +46,7 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly storageService: StorageService,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
     const payload = new CreateProductionsPayload(
@@ -163,5 +164,13 @@ export class ProductionService {
     return csvDocuments.map((doc) =>
       ProcessedCsvDto.fromEntity(doc, this.storageService.minioUrl, userDetails.company.name),
     );
+  }
+
+  async verifyFile(dto: VerifyFileDto): Promise<boolean> {
+    const verified: boolean = await firstValueFrom(
+      this.processSvc.send(ProductionMessagePatterns.VERIFY_FILE, new ReadByIdPayload(dto.documentId))
+    );
+
+    return verified;
   }
 }

@@ -80,4 +80,12 @@ export class CsvImportRepository {
       data: { transactionHash },
     });
   }
+
+  async findCsvDocumentById(id: string): Promise<CsvDocumentEntity | null> {
+    const document = await this.prismaService.csvDocument.findUnique({
+      where: { id },
+    });
+
+    return document ? CsvDocumentEntity.fromDatabase(document) : null;
+  }
 }

@@ -30,7 +30,7 @@ export class ProductionController {
     private readonly productionCreationService: ProductionCreationService,
     private readonly productionStagingService: ProductionStagingService,
     private readonly productionFinalizationService: ProductionFinalizationService,
-  ) {}
+  ) { }
 
   @MessagePattern(ProductionMessagePatterns.CREATE)
   async createProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
@@ -50,5 +50,10 @@ export class ProductionController {
   @MessagePattern(ProductionMessagePatterns.READ_CSV_DOCUMENTS_BY_COMPANY)
   async readCsvDocumentsByCompany(payload: ReadByIdPayload): Promise<CsvDocumentEntity[]> {
     return this.csvDocumentService.findByCompany(payload);
+  }
+
+  @MessagePattern(ProductionMessagePatterns.VERIFY_FILE)
+  async verifyFile(payload: ReadByIdPayload): Promise<boolean> {
+    return this.csvDocumentService.verifyFileIntegrity(payload);
   }
 }
