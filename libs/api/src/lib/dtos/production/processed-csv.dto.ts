@@ -18,6 +18,7 @@ export class ProcessedCsvDto {
   endedAt: Date;
   csvContentType: CsvContentType;
   amount: number;
+  verifiable: boolean;
 
   constructor(
     id: string,
@@ -28,6 +29,7 @@ export class ProcessedCsvDto {
     endedAt: Date,
     csvContentType: CsvContentType,
     amount: number,
+    verifiable: boolean,
   ) {
     this.id = id;
     this.url = url;
@@ -37,6 +39,7 @@ export class ProcessedCsvDto {
     this.endedAt = endedAt;
     this.csvContentType = csvContentType;
     this.amount = amount;
+    this.verifiable = verifiable;
   }
 
   static fromEntity(entity: CsvDocumentEntity, minioUrl: string, companyName: string): ProcessedCsvDto {
@@ -49,6 +52,7 @@ export class ProcessedCsvDto {
       entity.endedAt,
       entity.type as CsvContentType,
       entity.amount,
+      Boolean(entity.transactionHash)
     );
   }
 }
