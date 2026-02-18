@@ -60,59 +60,64 @@ export class DigitalProductPassportService {
       provenance,
     );
 
-    //the hydrogen composition of the provenance root and the hydrogen composition of the processStep are the same
-    const hydrogenCompositionsForRootOfProvenence: HydrogenComponentEntity[] = await this.calculateHydrogenComposition(
-      provenance.root,
-    );
-
-    const hydrogenCompositionsForBottlingOfProvenence: HydrogenComponentEntity[] = provenance.hydrogenBottling
-      ? await this.calculateHydrogenComposition(provenance.hydrogenBottling)
-      : [];
-
     const proofOfOrigin: ProofOfOriginSectionEntity[] = [];
+    let hydrogenCompositionsForRootOfProvenence: HydrogenComponentEntity[] = [];
 
-    //hydrogen Production Section
-    if (provenance.powerProductions?.length || provenance.waterConsumptions?.length) {
-      const hydrogenProductionSection: ProofOfOriginSectionEntity =
-        await this.hydrogenProductionSectionService.buildSection(
-          provenance.powerProductions,
-          provenance.waterConsumptions,
-          provenance.hydrogenBottling.batch.amount,
+    //If the process step is neither hydrogen bottling nor transport, then no poo should be calculated.
+    if (processStep.type == ProcessType.HYDROGEN_BOTTLING || processStep.type == ProcessType.HYDROGEN_TRANSPORTATION) {
+      //the hydrogen composition of the provenance root and the hydrogen composition of the processStep are the same
+      hydrogenCompositionsForRootOfProvenence = await this.calculateHydrogenComposition(provenance.root);
+
+      const hydrogenCompositionsForBottlingOfProvenence: HydrogenComponentEntity[] = provenance.hydrogenBottling
+        ? await this.calculateHydrogenComposition(provenance.hydrogenBottling)
+        : [];
+
+      //hydrogen Production Section
+      if (provenance.powerProductions?.length || provenance.waterConsumptions?.length) {
+        const hydrogenProductionSection: ProofOfOriginSectionEntity =
+          await this.hydrogenProductionSectionService.buildSection(
+            provenance.powerProductions,
+            provenance.waterConsumptions,
+            provenance.hydrogenBottling.batch.amount,
+          );
+        proofOfOrigin.push(hydrogenProductionSection);
+      }
+
+      //build Storage Section
+      if (provenance.hydrogenProductions?.length) {
+        const hydrogenStorageSection: ProofOfOriginSectionEntity = HydrogenStorageSectionService.buildSection(
+          provenance.hydrogenProductions,
         );
-      proofOfOrigin.push(hydrogenProductionSection);
-    }
+        proofOfOrigin.push(hydrogenStorageSection);
+      }
 
-    //build Storage Section
-    if (provenance.hydrogenProductions?.length) {
-      const hydrogenStorageSection: ProofOfOriginSectionEntity = HydrogenStorageSectionService.buildSection(
-        provenance.hydrogenProductions,
-      );
-      proofOfOrigin.push(hydrogenStorageSection);
-    }
+      //build Bottling Section for an rootType=HYDROGEN_BOTTLING
+      if (provenance.root.type === ProcessType.HYDROGEN_BOTTLING) {
+        const hydrogenBottlingSection: ProofOfOriginSectionEntity = HydrogenBottlingSectionService.buildSection(
+          provenance.root,
+          hydrogenCompositionsForRootOfProvenence,
+        );
+        proofOfOrigin.push(hydrogenBottlingSection);
+      }
 
-    //build Bottling Section for an rootType=HYDROGEN_BOTTLING
-    if (provenance.root.type === ProcessType.HYDROGEN_BOTTLING) {
-      const hydrogenBottlingSection: ProofOfOriginSectionEntity = HydrogenBottlingSectionService.buildSection(
-        provenance.root,
-        hydrogenCompositionsForRootOfProvenence,
-      );
-      proofOfOrigin.push(hydrogenBottlingSection);
-    }
+      //build Bottling Section for an rootType=HYDROGEN_TRANSPORTATION
+      if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION) {
+        const hydrogenBottlingSection: ProofOfOriginSectionEntity = HydrogenBottlingSectionService.buildSection(
+          provenance.hydrogenBottling,
+          hydrogenCompositionsForBottlingOfProvenence,
+        );
+        proofOfOrigin.push(hydrogenBottlingSection);
+      }
 
-    //build Bottling Section for an rootType=HYDROGEN_TRANSPORTATION
-    if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION) {
-      const hydrogenBottlingSection: ProofOfOriginSectionEntity = HydrogenBottlingSectionService.buildSection(
-        provenance.hydrogenBottling,
-        hydrogenCompositionsForBottlingOfProvenence,
-      );
-      proofOfOrigin.push(hydrogenBottlingSection);
-    }
-
-    //build Transport Section for an rootType=HYDROGEN_TRANSPORTATION
-    if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION && provenance.hydrogenBottling) {
-      const hydrogenTransportationSection: ProofOfOriginSectionEntity =
-        HydrogenTransportationSectionService.buildSection(provenance.root, hydrogenCompositionsForBottlingOfProvenence);
-      proofOfOrigin.push(hydrogenTransportationSection);
+      //build Transport Section for an rootType=HYDROGEN_TRANSPORTATION
+      if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION && provenance.hydrogenBottling) {
+        const hydrogenTransportationSection: ProofOfOriginSectionEntity =
+          HydrogenTransportationSectionService.buildSection(
+            provenance.root,
+            hydrogenCompositionsForBottlingOfProvenence,
+          );
+        proofOfOrigin.push(hydrogenTransportationSection);
+      }
     }
 
     //TODO-LG: compute provenance emissions should be evaluated and be made more compact if that is possible
