@@ -23,10 +23,10 @@ import { EmissionAssembler } from './emission.assembler';
 export class HydrogenTransportationSectionService {
   constructor() {}
 
-  async buildSection(
+  static buildSection(
     hydrogenTransportation: ProcessStepEntity,
     hydrogenCompositions: HydrogenComponentEntity[],
-  ): Promise<ProofOfOriginSectionEntity> {
+  ): ProofOfOriginSectionEntity {
     const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
       EmissionAssembler.assembleHydrogenTransportation(hydrogenTransportation);
 

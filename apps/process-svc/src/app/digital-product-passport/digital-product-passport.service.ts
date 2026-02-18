@@ -43,9 +43,6 @@ export class DigitalProductPassportService {
     private readonly processStepService: ProcessStepService,
     private readonly redComplianceService: RedComplianceService,
     private readonly hydrogenProductionSectionService: HydrogenProductionSectionService,
-    private readonly hydrogenStorageSectionService: HydrogenStorageSectionService,
-    private readonly hydrogenBottlingSectionService: HydrogenBottlingSectionService,
-    private readonly hydrogenTransportationSectionService: HydrogenTransportationSectionService,
     private readonly provenanceService: ProvenanceService,
     private readonly emissionService: EmissionService,
   ) {}
@@ -91,12 +88,19 @@ export class DigitalProductPassportService {
     const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStep);
     let rfnboCompliance: RfnboBaseDto = await this.getRfnboCompliance(processStepId, provenance);
 
-    const hydrogenComposition: HydrogenComponentEntity[] = await this.calculateHydrogenComposition(processStep);
+    //the hydrogen composition of the provenance root and the hydrogen composition of the processStep are the same
+    const hydrogenCompositionsForRootOfProvenence: HydrogenComponentEntity[] = await this.calculateHydrogenComposition(
+      provenance.root,
+    );
 
-    const hydrogenCompositionDtos: HydrogenComponentDto[] = hydrogenComposition.map((hc) =>
+    const hydrogenCompositionsForBottlingOfProvenence: HydrogenComponentEntity[] = provenance.hydrogenBottling
+      ? await this.calculateHydrogenComposition(provenance.hydrogenBottling)
+      : [];
+
+    const hydrogenCompositionDtos: HydrogenComponentDto[] = hydrogenCompositionsForRootOfProvenence.map((hc) =>
       HydrogenComponentDto.fromEntity(hc),
     );
-    const gridPowerUsed = hydrogenComposition.find(
+    const gridPowerUsed = hydrogenCompositionsForRootOfProvenence.find(
       (element: HydrogenComponentDto) => element.color === HydrogenColor.YELLOW,
     );
 
@@ -104,10 +108,9 @@ export class DigitalProductPassportService {
       ? new GridEnergyRfnboDto(rfnboCompliance.emissionReductionOver70Percent, false, false, false)
       : rfnboCompliance;
 
-    //TODO-LG: Simplify to the extent that they are no longer individual promises, if possible.
-
     const proofOfOrigin: ProofOfOriginSectionEntity[] = [];
 
+    //hydrogen Production Section
     if (provenance.powerProductions?.length || provenance.waterConsumptions?.length) {
       const hydrogenProductionSection: ProofOfOriginSectionEntity =
         await this.hydrogenProductionSectionService.buildSection(
@@ -118,36 +121,36 @@ export class DigitalProductPassportService {
       proofOfOrigin.push(hydrogenProductionSection);
     }
 
+    //build Storage Section
     if (provenance.hydrogenProductions?.length) {
-      const hydrogenStorageSection: ProofOfOriginSectionEntity = await this.hydrogenStorageSectionService.buildSection(
+      const hydrogenStorageSection: ProofOfOriginSectionEntity = HydrogenStorageSectionService.buildSection(
         provenance.hydrogenProductions,
       );
       proofOfOrigin.push(hydrogenStorageSection);
     }
 
-    if (
-      provenance.root.type === ProcessType.HYDROGEN_BOTTLING ||
-      provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION
-    ) {
-      const hydrogenCompositionsForBottlingSections: HydrogenComponentEntity[] =
-        await this.calculateHydrogenComposition(provenance.hydrogenBottling ?? provenance.root);
-      const hydrogenBottlingSection: ProofOfOriginSectionEntity =
-        await this.hydrogenBottlingSectionService.buildSection(
-          provenance.hydrogenBottling ?? provenance.root,
-          hydrogenCompositionsForBottlingSections,
-        );
+    //build Bottling Section for an rootType=HYDROGEN_BOTTLING
+    if (provenance.root.type === ProcessType.HYDROGEN_BOTTLING) {
+      const hydrogenBottlingSection: ProofOfOriginSectionEntity = HydrogenBottlingSectionService.buildSection(
+        provenance.root,
+        hydrogenCompositionsForRootOfProvenence,
+      );
       proofOfOrigin.push(hydrogenBottlingSection);
     }
 
-    if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION && provenance.hydrogenBottling) {
-      const hydrogenCompositionsForTransportation: HydrogenComponentEntity[] = await this.calculateHydrogenComposition(
+    //build Bottling Section for an rootType=HYDROGEN_TRANSPORTATION
+    if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION) {
+      const hydrogenBottlingSection: ProofOfOriginSectionEntity = HydrogenBottlingSectionService.buildSection(
         provenance.hydrogenBottling,
+        hydrogenCompositionsForBottlingOfProvenence,
       );
+      proofOfOrigin.push(hydrogenBottlingSection);
+    }
+
+    //build Transport Section for an rootType=HYDROGEN_TRANSPORTATION
+    if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION && provenance.hydrogenBottling) {
       const hydrogenTransportationSection: ProofOfOriginSectionEntity =
-        await this.hydrogenTransportationSectionService.buildSection(
-          provenance.root,
-          hydrogenCompositionsForTransportation,
-        );
+        HydrogenTransportationSectionService.buildSection(provenance.root, hydrogenCompositionsForBottlingOfProvenence);
       proofOfOrigin.push(hydrogenTransportationSection);
     }
 
