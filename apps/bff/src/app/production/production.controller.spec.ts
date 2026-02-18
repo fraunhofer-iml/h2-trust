@@ -24,11 +24,10 @@ import {
   AuthenticatedKCUser,
   CreateProductionDto,
   CreateProductionDtoMock,
+  CsvDocumentIntegrityResultDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   UserDetailsDtoMock,
-  VerifyCsvDocumentIntegrityDto,
-  VerifyCsvDocumentIntegrityResultDto,
 } from '@h2-trust/api';
 import {
   CsvDocumentIntegrityStatus,
@@ -296,7 +295,6 @@ describe('ProductionController', () => {
 
   it('should verify csv document integrity and return verification details', async () => {
     // arrange
-    const givenDto = new VerifyCsvDocumentIntegrityDto('document-1');
     const blockTimestamp = new Date('2026-02-18T10:26:29.000Z');
 
     const givenVerificationEntity = new VerifyCsvDocumentIntegrityResultEntity(
@@ -317,13 +315,13 @@ describe('ProductionController', () => {
       .mockImplementation((_messagePattern: ProductionMessagePatterns, _data: any) => of(givenVerificationEntity));
 
     // act
-    const actualResponse = await controller.verifyCsvDocumentIntegrity(givenDto);
+    const actualResponse = await controller.verifyCsvDocumentIntegrity(givenVerificationEntity.documentId);
 
     // assert
-    expect(actualResponse).toEqual(VerifyCsvDocumentIntegrityResultDto.fromEntity(givenVerificationEntity));
+    expect(actualResponse).toEqual(CsvDocumentIntegrityResultDto.fromEntity(givenVerificationEntity));
     expect(processSvc.send).toHaveBeenCalledWith(
       ProductionMessagePatterns.VERIFY_CSV_DOCUMENT_INTEGRITY,
-      expect.objectContaining({ id: givenDto.documentId }),
+      expect.objectContaining({ id: givenVerificationEntity.documentId }),
     );
   });
 });

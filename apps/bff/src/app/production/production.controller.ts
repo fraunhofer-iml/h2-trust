@@ -7,7 +7,7 @@
  */
 
 import { AuthenticatedUser } from 'nest-keycloak-connect';
-import { Body, Controller, Get, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import {
@@ -16,8 +16,7 @@ import {
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
-  VerifyCsvDocumentIntegrityDto,
-  VerifyCsvDocumentIntegrityResultDto,
+  CsvDocumentIntegrityResultDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/api';
 import { FileUploadKeys } from '@h2-trust/domain';
@@ -104,6 +103,19 @@ export class ProductionController {
     return this.service.readCsvDocumentsByCompany(authenticatedUser.sub);
   }
 
+  @Get('csv/:id')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Verify csv document integrity against the blockchain proof and return structured result details.',
+  })
+  @ApiOkResponse({
+    description: 'Returns verification status and technical details for the details pane.',
+    type: CsvDocumentIntegrityResultDto,
+  })
+  verifyCsvDocumentIntegrity(@Param('id') id: string): Promise<CsvDocumentIntegrityResultDto> {
+    return this.service.verifyCsvDocumentIntegrity(id);
+  }
+
   @Post('csv/import')
   @UseInterceptors(
     FileFieldsInterceptor([{ name: FileUploadKeys.POWER_PRODUCTION }, { name: FileUploadKeys.HYDROGEN_PRODUCTION }]),
@@ -129,18 +141,5 @@ export class ProductionController {
   @ApiBearerAuth()
   submitCsvData(@Body() dto: ImportSubmissionDto, @AuthenticatedUser() user: AuthenticatedKCUser) {
     return this.service.submitCsvData(dto, user.sub);
-  }
-
-  @Post('csv/verify')
-  @ApiBearerAuth()
-  @ApiOperation({
-    description: 'Verify csv document integrity against the blockchain proof and return structured result details.',
-  })
-  @ApiOkResponse({
-    description: 'Returns verification status and technical details for the details pane.',
-    type: VerifyCsvDocumentIntegrityResultDto,
-  })
-  verifyCsvDocumentIntegrity(@Body() dto: VerifyCsvDocumentIntegrityDto): Promise<VerifyCsvDocumentIntegrityResultDto> {
-    return this.service.verifyCsvDocumentIntegrity(dto);
   }
 }
