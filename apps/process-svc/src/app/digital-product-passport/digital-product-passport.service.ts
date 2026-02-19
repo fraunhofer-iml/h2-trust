@@ -17,7 +17,7 @@ import {
   ProvenanceEntity,
   RedComplianceEntity,
 } from '@h2-trust/amqp';
-import { ProcessType, RFNBOType } from '@h2-trust/domain';
+import { BatchType, ProcessType, RFNBOType } from '@h2-trust/domain';
 import { HydrogenComponentAssembler } from '../process-step/hydrogenComponent/hydrogen-component.assembler';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { EmissionService } from './proof-of-origin/emission.service';
@@ -53,7 +53,30 @@ export class DigitalProductPassportService {
     return this.readDigitalProductPassport(processStep);
   }
 
+  /**
+   * If the batch of a process step has a predecessor of type HYDROGEN (i.e. it originated from a previous batch), then this previous batch should be checked for RFNBO instead of the current one.
+   * @param processStep The process step to be examined.
+   * @returns A ProcessStep whose predecessor is not of type HYDROGEN.
+   */
+  private async prepareIfPredecessorIsOfTypeHydrogen(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
+    if (
+      processStep.type == ProcessType.HYDROGEN_PRODUCTION &&
+      processStep.batch.predecessors.length > 0 &&
+      processStep.batch.predecessors[0].type == BatchType.HYDROGEN
+    ) {
+      const processStepCandidate: ProcessStepEntity = await this.processStepService.readProcessStep(
+        processStep.batch.predecessors[0].processStepId,
+      );
+      if (processStep.batch.predecessors.length < 1 || processStep.batch.predecessors[0].type != BatchType.HYDROGEN) {
+        return processStepCandidate;
+      }
+      return this.prepareIfPredecessorIsOfTypeHydrogen(processStepCandidate);
+    }
+    return processStep;
+  }
+
   private async readDigitalProductPassport(processStep: ProcessStepEntity): Promise<DigitalProductPassportEntity> {
+    processStep = await this.prepareIfPredecessorIsOfTypeHydrogen(processStep);
     const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStep);
     const redCompliance: RedComplianceEntity = await this.redComplianceService.determineRedCompliance(
       processStep.id,

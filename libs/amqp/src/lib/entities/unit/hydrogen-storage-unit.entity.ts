@@ -142,7 +142,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
         }
         return {
           processId: batch?.processStep?.id ?? '',
-          rfnbo: RFNBOType.NON_CERTIFIABLE,
+          rfnbo: RFNBOType.NOT_SPECIFIED,
           color: batch.batchDetails.qualityDetails.color,
           amount: batch.amount?.toNumber() ?? 0,
         };
