@@ -24,9 +24,13 @@
       <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
         <span class="material-symbols-outlined text-4xl text-secondary-500">percent</span>
       </div>
-      <div class="flex w-full flex-col">
-        <span class="grow text-xs">Savings Potential</span
-        ><span class="text-xs">(Reference for fossil fuels: {{ 94 | unit: MeasurementUnit.G_CO2_PER_MJ_H2 }})</span>
+      <div class="flex w-full flex-col text-sm">
+        <span class="grow">Savings Potential</span>
+        <span
+          ><span class="text-lg">{{ proofOfSustainability$()?.emissionReductionPercentage | number: '1.1-1' }}</span>
+          %</span
+        >
+        <span class="text-xs">(Reference for fossil fuels: {{ 94 | unit: MeasurementUnit.G_CO2_PER_MJ_H2 }})</span>
         <app-savings-potential-chart
           class="mt-2 w-full"
           [percentage]="proofOfSustainability$()?.emissionReductionPercentage ?? 0"
