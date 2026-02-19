@@ -1,0 +1,8 @@
+<button matButton="tonal" (click)="verify()" [disabled]="verifying" class="w-36 enabled:!bg-primary-200">
+  <span class="flex flex-row items-center gap-2">
+    @if (verifying) {
+      <span class="material-symbols-outlined animate-spin" matButtonPrefix>progress_activity</span>
+    }
+    {{ verifying ? 'Verifiying...' : 'Verify' }}
+  </span>
+</button>

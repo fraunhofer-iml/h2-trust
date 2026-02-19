@@ -21,14 +21,16 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTooltip } from '@angular/material/tooltip';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { CsvContentType, ProcessedCsvDto } from '@h2-trust/api';
 import { BatchType, MeasurementUnit } from '@h2-trust/domain';
-import { FileTypeChipComponent } from '../../../layout/color-chip/file-type-chip.component';
 import { ICONS } from '../../../shared/constants/icons';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { ProductionService } from '../../../shared/services/production/production.service';
 import { DownloadButtonComponent } from './download-button/download-button.component';
+import { ValidationResult } from './validated-file';
+import { VerifyButtonComponent } from './verify-button.component';
 
 interface FilterModel {
   input: string;
@@ -54,8 +56,9 @@ interface FilterModel {
     MatSortModule,
     MatCheckboxModule,
     DownloadButtonComponent,
-    FileTypeChipComponent,
     FormField,
+    VerifyButtonComponent,
+    MatTooltip,
   ],
   providers: [ProductionService, provideNativeDateAdapter()],
   templateUrl: './production-files.component.html',
@@ -63,7 +66,18 @@ interface FilterModel {
 export class ProductionFilesComponent implements AfterViewInit {
   protected readonly ICONS = ICONS.UNITS;
   protected readonly MeasurementUnit = MeasurementUnit;
-  readonly displayedColumns = ['select', 'name', 'uploadedBy', 'startedAt', 'endedAt', 'type', 'amount'] as const;
+  protected readonly CsvContentType = BatchType;
+  readonly displayedColumns = [
+    'select',
+    'name',
+    'uploadedBy',
+    'startedAt',
+    'endedAt',
+    'type',
+    'amount',
+    'validationStatus',
+    'button',
+  ] as const;
   readonly displayedCsvContentTypes: { name: string; value: CsvContentType | null }[] = [
     { name: 'Hydrogen', value: BatchType.HYDROGEN },
     { name: 'Power', value: BatchType.POWER },
@@ -85,12 +99,19 @@ export class ProductionFilesComponent implements AfterViewInit {
   dataSource: MatTableDataSource<ProcessedCsvDto> = new MatTableDataSource<ProcessedCsvDto>();
   selection = new SelectionModel<ProcessedCsvDto>(true, []);
 
+  verifying = false;
+  verifingResults: Map<string, ValidationResult> = new Map();
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   uploadsQuery = injectQuery(() => ({
     queryKey: ['production'],
-    queryFn: async () => await this.productionService.getUploadedCsvFiles(),
+    queryFn: async (): Promise<ProcessedCsvDto[]> => {
+      const data = await this.productionService.getUploadedCsvFiles();
+      this.verifingResults = new Map();
+      return data.map((file) => ({ ...file }));
+    },
   }));
 
   datasource$ = computed(() => {
@@ -148,5 +169,14 @@ export class ProductionFilesComponent implements AfterViewInit {
     }
 
     this.selection.select(...this.dataSource.data);
+  }
+
+  setResult(e: ValidationResult) {
+    this.verifingResults.set(e.id, e);
+  }
+
+  openDetailsPane(id: string) {
+    const result = this.verifingResults.get(id);
+    console.log(result);
   }
 }

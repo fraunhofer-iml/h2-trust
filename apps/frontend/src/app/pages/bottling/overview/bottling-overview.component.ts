@@ -40,6 +40,7 @@ import { UnitsService } from '../../../shared/services/units/units.service';
   ],
   providers: [BottlingService],
   templateUrl: './bottling-overview.component.html',
+  styleUrl: './bottling-overview.component.scss',
 })
 export class BottlingOverviewComponent implements AfterViewInit {
   displayedColumns = ['id', 'filledAt', 'owner', 'filledAmount', 'color'];

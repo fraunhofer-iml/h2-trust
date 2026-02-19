@@ -63,8 +63,10 @@
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef><div class="bold">Name</div></th>
           <td mat-cell *matCellDef="let file">
-            {{ file.name }}
-            <p class="text-xs text-neutral-500">{{ file.id }}</p>
+            <div class="py-2">
+              {{ file.name }}
+              <p class="text-xs text-neutral-500">{{ file.id }}</p>
+            </div>
           </td>
         </ng-container>
 
@@ -88,7 +90,13 @@
         <ng-container matColumnDef="type">
           <th mat-header-cell *matHeaderCellDef><div class="bold">Type</div></th>
           <td mat-cell *matCellDef="let file">
-            <app-file-type-color-chip [fileType]="file.csvContentType"></app-file-type-color-chip>
+            <mat-chip>
+              <span matChipAvatar class="material-symbols-outlined">
+                {{
+                  file.csvContentType === CsvContentType.HYDROGEN ? ICONS.HYDROGEN_PRODUCTION : ICONS.POWER_PRODUCTION
+                }} </span
+              >{{ file.csvContentType | titlecase }} Production</mat-chip
+            >
           </td>
         </ng-container>
 
@@ -96,6 +104,37 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Amount</div></th>
           <td mat-cell *matCellDef="let file">
             {{ file.amount | unit: (file.csvContentType === 'HYDROGEN' ? MeasurementUnit.KG_H2 : MeasurementUnit.KWH) }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="validationStatus">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let file">
+            <div
+              [matTooltip]="verifingResults.get(file.id)?.tooltip"
+              [matTooltipPosition]="'above'"
+              class="flex flex-row items-center gap-2 rounded-md border-[1px] border-solid border-opacity-30 px-2 py-1 text-sm"
+              [ngClass]="{
+                'border-red-600 text-red-600': verifingResults.get(file.id)?.status === 'MISMATCHED',
+                'border-yellow-600 text-yellow-600': verifingResults.get(file.id)?.status === 'FAILED',
+                'border-secondary-600 text-secondary-600': verifingResults.get(file.id)?.status === 'VERIFIED',
+              }"
+            >
+              <span class="material-symbols-outlined text-sm">
+                {{ verifingResults.get(file.id) ? 'error' : 'circle' }} </span
+              >{{ verifingResults.get(file.id)?.status ?? 'open' | titlecase }}
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="button">
+          <th mat-header-cell *matHeaderCellDef>Validation</th>
+          <td mat-cell *matCellDef="let file">
+            @if (!verifingResults.get(file.id) || verifingResults.get(file.id)?.status === 'FAILED') {
+              <app-verify-button [file]="file" (verificationEMitter)="setResult($event)"></app-verify-button>
+            } @else {
+              <button matButton="tonal" class="w-36 !bg-neutral-200" (click)="openDetailsPane(file.id)">Details</button>
+            }
           </td>
         </ng-container>
 

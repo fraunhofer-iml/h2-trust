@@ -46,11 +46,7 @@ body {
       active-focus-label-text-color: #0b3f4b,
     )
   );
-  @include mat.button-overrides(
-    (
-      filled-container-color: #3f8796,
-    )
-  );
+
   @include mat.button-toggle-overrides(
     (
       selected-state-background-color: #0b3f4b,
@@ -95,11 +91,6 @@ body {
 
 .mat-mdc-dialog-content {
   overflow: scroll !important;
-}
-
-.mat-mdc-row:hover {
-  background-color: #f2fafc;
-  cursor: pointer;
 }
 
 // -- Custom Styles -- //
