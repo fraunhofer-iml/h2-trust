@@ -56,14 +56,15 @@ export class DigitalProductPassportEntity {
     this.proofOfOrigin = proofOfOrigin;
     this.proofOfSustainability = proofOfSustainability;
     this.isEmissionReductionAbove70Percent = proofOfSustainability.emissionReductionPercentage > 70;
+    this.gridPowerUsed = hydrogenComposition.some(
+      (element: HydrogenComponentEntity) => element.color === HydrogenColor.YELLOW,
+    );
     this.rfnboReady =
       this.isEmissionReductionAbove70Percent &&
       this.redCompliance.isGeoCorrelationValid &&
       this.redCompliance.isTimeCorrelationValid &&
       this.redCompliance.isAdditionalityFulfilled &&
-      this.redCompliance.financialSupportReceived;
-    this.gridPowerUsed = hydrogenComposition.some(
-      (element: HydrogenComponentEntity) => element.color === HydrogenColor.YELLOW,
-    );
+      this.redCompliance.financialSupportReceived &&
+      !this.gridPowerUsed;
   }
 }

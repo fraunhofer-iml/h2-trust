@@ -63,7 +63,7 @@ export class DigitalProductPassportService {
     const proofOfOrigin: ProofOfOriginSectionEntity[] = [];
     let hydrogenCompositionsForRootOfProvenence: HydrogenComponentEntity[] = [];
 
-    //If the process step is neither hydrogen bottling nor transport, then no poo should be calculated.
+    //If the process step is neither hydrogen bottling nor transport, then proof of origin should not be calculated.
     if (processStep.type == ProcessType.HYDROGEN_BOTTLING || processStep.type == ProcessType.HYDROGEN_TRANSPORTATION) {
       //the hydrogen composition of the provenance root and the hydrogen composition of the processStep are the same
       hydrogenCompositionsForRootOfProvenence = await this.calculateHydrogenComposition(provenance.root);
