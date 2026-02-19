@@ -11,7 +11,7 @@ import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatChipsModule } from '@angular/material/chips';
+import { MatChipSelectionChange, MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
@@ -62,4 +62,15 @@ export class HydrogenAssetsComponent {
     queryKey: ['h2-production'],
     queryFn: async () => this.unitsService.getHydrogenProductionUnits(),
   }));
+
+  toggle(unitType: UnitType | null) {
+    if (this.typeToShow === unitType) this.typeToShow = null;
+    else this.typeToShow = unitType;
+  }
+
+  onAllChipSelection(event: MatChipSelectionChange) {
+    if (!event.selected && !this.typeToShow) {
+      event.source.select();
+    }
+  }
 }
