@@ -18,13 +18,13 @@ import { BaseChipComponent } from './base-chip/base-chip.comopnent';
 export class H2ColorChipComponent extends BaseChipComponent {
   h2Color = input.required<string>();
   private readonly chipColorByColor = new Map([
-    ['GREEN', 'text-h2-green-text bg-h2-green/20 border-h2-green/10'],
-    ['YELLOW', 'text-h2-yellow-text bg-h2-yellow/20 border-h2-yellow/10'],
+    ['RFNBO_READY', 'text-h2-green-text bg-h2-green/20 border-h2-green/10'],
+    ['NON_CERTIFIABLE', 'text-h2-yellow-text bg-h2-yellow/20 border-h2-yellow/10'],
   ]);
 
   private readonly dotColorByColor = new Map([
-    ['GREEN', 'bg-h2-green-text'],
-    ['YELLOW', 'bg-h2-yellow-text'],
+    ['RFNBO_READY', 'bg-h2-green-text'],
+    ['NON_CERTIFIABLE', 'bg-h2-yellow-text'],
   ]);
 
   get chipColor(): string | undefined {
