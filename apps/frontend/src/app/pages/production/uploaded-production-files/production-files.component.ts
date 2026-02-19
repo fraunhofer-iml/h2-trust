@@ -10,6 +10,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, computed, effect, inject, signal, ViewChild } from '@angular/core';
 import { debounce, form, FormField } from '@angular/forms/signals';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
@@ -59,6 +60,7 @@ interface FilterModel {
     FormField,
     VerifyButtonComponent,
     MatTooltip,
+    MatBottomSheetModule,
   ],
   providers: [ProductionService, provideNativeDateAdapter()],
   templateUrl: './production-files.component.html',
@@ -92,6 +94,9 @@ export class ProductionFilesComponent implements AfterViewInit {
     start: null,
     end: null,
   });
+
+  expandedId = '';
+
   searchForm = form(this.searchModel, (schemaPath) => {
     debounce(schemaPath.input, 500);
   });
@@ -101,6 +106,7 @@ export class ProductionFilesComponent implements AfterViewInit {
 
   verifying = false;
   verifingResults: Map<string, ValidationResult> = new Map();
+  statusIcons = { ['MISMATCHED']: 'error', ['FAILED']: 'warning', ['VERIFIED']: 'check', ['OPEN']: 'circle' };
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;

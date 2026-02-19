@@ -121,7 +121,7 @@
               }"
             >
               <span class="material-symbols-outlined text-sm">
-                {{ verifingResults.get(file.id) ? 'error' : 'circle' }} </span
+                {{ statusIcons[verifingResults.get(file.id)?.status ?? 'OPEN'] }} </span
               >{{ verifingResults.get(file.id)?.status ?? 'open' | titlecase }}
             </div>
           </td>
