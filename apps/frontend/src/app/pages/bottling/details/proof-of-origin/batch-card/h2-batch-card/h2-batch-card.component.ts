@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { HydrogenBatchDto } from '@h2-trust/api';
 import { MeasurementUnit } from '@h2-trust/domain';
-import { H2ColorChipComponent } from '../../../../../../layout/h2-color-chip/h2-color-chip.component';
+import { H2ColorChipComponent } from '../../../../../../layout/color-chip/h2-color-chip.component';
 import { BaseSheetComponent } from '../../../../../../layout/sheet/sheet.component';
 import { PrettyEnumPipe } from '../../../../../../shared/pipes/format-enum.pipe';
 import { UnitPipe } from '../../../../../../shared/pipes/unit.pipe';

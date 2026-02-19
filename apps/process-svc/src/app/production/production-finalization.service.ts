@@ -6,132 +6,36 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PassThrough } from 'stream';
-import { firstValueFrom } from 'rxjs';
-import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
-  AccountingPeriodHydrogen,
-  AccountingPeriodPower,
   BrokerException,
-  BrokerQueues,
   CreateManyProcessStepsPayload,
   CreateProductionEntity,
-  FinalizeStagedProductionsPayload,
-  ParsedProductionMatchingResultEntity,
-  PowerAccessApprovalEntity,
-  PowerAccessApprovalPatterns,
+  FinalizeProductionsPayload,
   ProcessStepEntity,
-  ReadPowerAccessApprovalsPayload,
   StagedProductionEntity,
-  StageProductionsPayload,
-  UnitAccountingPeriods,
-  UnitFileReference,
 } from '@h2-trust/amqp';
-import { HashUtil } from '@h2-trust/blockchain';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
-import { BatchType, PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
-import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step/process-step.service';
-import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
-import { AccountingPeriodMatcher } from './accounting-period-matcher';
 import { ProductionAssembler } from './production.assembler';
 
 @Injectable()
-export class ProductionImportService {
-  private static readonly headersForBatchType: Record<BatchType, string[]> = {
-    POWER: ['time', 'amount'],
-    HYDROGEN: ['time', 'amount', 'power'],
-    WATER: [], // empty on purpose, no water import supported
-  };
-
+export class ProductionFinalizationService {
   private readonly logger = new Logger(this.constructor.name);
   private readonly productionChunkSize: number;
 
   constructor(
-    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly configurationService: ConfigurationService,
     private readonly processStepService: ProcessStepService,
     private readonly stagedProductionRepository: StagedProductionRepository,
-    private readonly storageService: StorageService,
   ) {
     this.productionChunkSize = this.configurationService.getProcessSvcConfiguration().productionChunkSize;
   }
 
-  async stageProductions(payload: StageProductionsPayload): Promise<ParsedProductionMatchingResultEntity> {
-    const [powerProductions, hydrogenProductions, gridUnitId] = await Promise.all([
-      this.importAccountingPeriods<AccountingPeriodPower>(payload.powerProductions, BatchType.POWER),
-      this.importAccountingPeriods<AccountingPeriodHydrogen>(payload.hydrogenProductions, BatchType.HYDROGEN),
-      this.fetchGridUnitId(payload.userId),
-    ]);
-    const parsedProductions = AccountingPeriodMatcher.matchAccountingPeriods(
-      powerProductions,
-      hydrogenProductions,
-      gridUnitId,
-    );
-
-    const importId = await this.stagedProductionRepository.stageParsedProductions(parsedProductions);
-
-    return new ParsedProductionMatchingResultEntity(importId, parsedProductions);
-  }
-
-  private async importAccountingPeriods<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
-    unitFileReferences: UnitFileReference[],
-    type: BatchType,
-  ): Promise<UnitAccountingPeriods<T>[]> {
-    const headers = ProductionImportService.headersForBatchType[type];
-
-    return Promise.all(
-      unitFileReferences.map(async (ufr) => {
-        const downloadingStream = await this.storageService.downloadFile(ufr.fileName);
-        const parsingStream = new PassThrough();
-        downloadingStream.on('error', (err) => parsingStream.destroy(err));
-        downloadingStream.pipe(parsingStream);
-
-        const [hash, accountingPeriods] = await Promise.all([
-          HashUtil.hashStream(downloadingStream),
-          AccountingPeriodCsvParser.parseStream<T>(parsingStream, headers, ufr.fileName),
-        ]);
-
-        // TODO-MP: the hash will be later stored in a smart contract
-        this.logger.log(`Computed hash: ${hash}`);
-
-        if (accountingPeriods.length < 1) {
-          throw new BrokerException(
-            `${type} production file does not contain any valid items.`,
-            HttpStatus.BAD_REQUEST,
-          );
-        }
-
-        return new UnitAccountingPeriods<T>(ufr.unitId, accountingPeriods);
-      }),
-    );
-  }
-
-  private async fetchGridUnitId(userId: string): Promise<string> {
-    const approvals: PowerAccessApprovalEntity[] = await firstValueFrom(
-      this.generalSvc.send(
-        PowerAccessApprovalPatterns.READ,
-        new ReadPowerAccessApprovalsPayload(userId, PowerAccessApprovalStatus.APPROVED),
-      ),
-    );
-    const approvalForGrid = approvals.find(
-      (approval) => approval.powerProductionUnit.type.name === PowerProductionType.GRID,
-    );
-
-    if (!approvalForGrid)
-      throw new BrokerException(
-        `No grid connection found for user with id ${userId}.`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-
-    return approvalForGrid.powerProductionUnit.id;
-  }
-
-  async finalizeStagedProductions(payload: FinalizeStagedProductionsPayload): Promise<ProcessStepEntity[]> {
+  async finalizeProductions(payload: FinalizeProductionsPayload): Promise<ProcessStepEntity[]> {
     const stagedProductions: StagedProductionEntity[] =
-      await this.stagedProductionRepository.getStagedProductionsByImportId(payload.importId);
+      await this.stagedProductionRepository.getStagedProductionsByCsvImportId(payload.importId);
 
     const createProductions: CreateProductionEntity[] = stagedProductions.map((stagedProduction) => {
       return new CreateProductionEntity(

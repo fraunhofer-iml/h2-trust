@@ -14,14 +14,12 @@ import { ConfigurationService } from '@h2-trust/configuration';
 import { AppModule } from './app/app.module';
 
 async function bootstrap() {
-  Logger.log('⚖️  Process microservice is starting with RMQ...');
+  Logger.log('⚖️ Process microservice is starting with RMQ...');
 
-  const appContext = await NestFactory.createApplicationContext(AppModule);
-
-  const configuration = appContext.get(ConfigurationService);
-  const amqpUri = configuration.getGlobalConfiguration().amqpUri;
+  const amqpUri = process.env['AMQP_URI'];
 
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
+    bufferLogs: true,
     transport: Transport.RMQ,
     options: {
       urls: [amqpUri],
@@ -32,6 +30,8 @@ async function bootstrap() {
     },
   });
 
+  app.useLogger(app.get(ConfigurationService).getGlobalConfiguration().logLevel);
+  app.useGlobalFilters(new RpcExceptionFilter());
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -39,14 +39,10 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-  app.useGlobalFilters(new RpcExceptionFilter());
-  app.useLogger(configuration.getGlobalConfiguration().logLevel);
+  app.enableShutdownHooks();
 
-  await app
-    .listen()
-    .then(() =>
-      Logger.log(`⚖️  Process microservice is up and running via RMQ: ${amqpUri}:${BrokerQueues.QUEUE_PROCESS_SVC}`),
-    );
+  await app.listen();
+  Logger.log(`⚖️ Process microservice is up and running via RMQ: ${amqpUri}:${BrokerQueues.QUEUE_PROCESS_SVC}`);
 }
 
 bootstrap();

@@ -76,7 +76,6 @@ export class ProcessStepService {
           new DocumentEntity(
             document.id,
             document.fileName,
-            document.transactionHash,
             `http://${minio.endPoint}:${minio.port}/${minio.bucketName}/${document.fileName}`,
           ),
         );

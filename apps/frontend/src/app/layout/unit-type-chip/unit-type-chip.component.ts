@@ -18,18 +18,11 @@ import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
   templateUrl: './unit-type-chip.component.html',
 })
 export class UnitTypeChipComponent {
-  protected readonly ICONS = ICONS.UNITS;
   protected readonly UnitType = UnitType;
   unitType = input.required<UnitType>();
 
   getIcon() {
-    switch (this.unitType()) {
-      case UnitType.HYDROGEN_PRODUCTION:
-        return this.ICONS.HYDROGEN_PRODUCTION;
-      case UnitType.POWER_PRODUCTION:
-        return this.ICONS.POWER_PRODUCTION;
-      case UnitType.HYDROGEN_STORAGE:
-        return this.ICONS.HYDROGEN_STORAGE;
-    }
+    const unitType = this.unitType();
+    return ICONS.UNITS[unitType];
   }
 }

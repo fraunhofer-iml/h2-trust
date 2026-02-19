@@ -19,7 +19,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { BottlingOverviewDto } from '@h2-trust/api';
-import { H2ColorChipComponent } from '../../../layout/h2-color-chip/h2-color-chip.component';
+import { H2ColorChipComponent } from '../../../layout/color-chip/h2-color-chip.component';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 
@@ -42,7 +42,7 @@ import { UnitsService } from '../../../shared/services/units/units.service';
   templateUrl: './bottling-overview.component.html',
 })
 export class BottlingOverviewComponent implements AfterViewInit {
-  displayedColumns = ['filledAt', 'owner', 'filledAmount', 'color'];
+  displayedColumns = ['id', 'filledAt', 'owner', 'filledAmount', 'color'];
   dataSource: MatTableDataSource<BottlingOverviewDto> = new MatTableDataSource<BottlingOverviewDto>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;

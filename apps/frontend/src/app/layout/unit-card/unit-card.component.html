@@ -1,0 +1,14 @@
+<div class="group flex h-full flex-col rounded-lg hover:shadow-lg">
+  <div class="flex flex-row gap-4 rounded-t-lg p-4" [class]="styles$()">
+    <span class="flex items-center gap-4 rounded-xl bg-white p-2">
+      <span class="material-symbols-outlined"> {{ icon$() }}</span>
+    </span>
+    <div class="flex flex-col justify-center text-sm">
+      <span class="font-semibold text-neutral-800"> {{ name() }}</span>
+      <span class="">{{ unittype() | prettyEnum | titlecase }} Unit</span>
+    </div>
+  </div>
+  <div class="h-full rounded-b-lg bg-white p-4">
+    <mat-chip-set aria-label="attributes"><ng-content></ng-content> </mat-chip-set>
+  </div>
+</div>

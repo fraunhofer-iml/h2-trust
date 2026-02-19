@@ -7,6 +7,7 @@
  */
 
 export * from './accounting-period.entity';
+export * from './csv-document.entity';
 export * from './imported-files.entity';
 export * from './unit-accounting-periods.entity';
 export * from './unit-file-reference.entity';

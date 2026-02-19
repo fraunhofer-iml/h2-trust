@@ -6,18 +6,21 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { randomUUID } from 'crypto';
 import { firstValueFrom } from 'rxjs';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
   CreateProductionsPayload,
-  FinalizeStagedProductionsPayload,
-  ParsedProductionMatchingResultEntity,
+  CsvDocumentEntity,
+  FinalizeProductionsPayload,
+  PowerAccessApprovalPatterns,
+  PowerProductionUnitEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
+  ProductionStagingResultEntity,
+  ReadByIdPayload,
   ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   StageProductionsPayload,
   UnitFileReference,
@@ -26,6 +29,7 @@ import {
   AccountingPeriodMatchingResultDto,
   CreateProductionDto,
   ImportSubmissionDto,
+  ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   UserDetailsDto,
@@ -37,6 +41,7 @@ import { UserService } from '../user/user.service';
 @Injectable()
 export class ProductionService {
   constructor(
+    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly storageService: StorageService,
     private readonly userService: UserService,
@@ -93,9 +98,21 @@ export class ProductionService {
       BatchType.HYDROGEN,
     );
 
-    const payload = new StageProductionsPayload(powerProductions, hydrogenProductions, userId);
+    const gridPowerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
+      this.generalSvc.send(
+        PowerAccessApprovalPatterns.READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID,
+        new ReadByIdPayload(userId),
+      ),
+    );
+
+    const payload = new StageProductionsPayload(
+      powerProductions,
+      hydrogenProductions,
+      gridPowerProductionUnit.id,
+      userId,
+    );
     const matchingResult = await firstValueFrom(
-      this.processSvc.send<ParsedProductionMatchingResultEntity>(ProductionMessagePatterns.STAGE, payload),
+      this.processSvc.send<ProductionStagingResultEntity>(ProductionMessagePatterns.STAGE, payload),
     );
     return AccountingPeriodMatchingResultDto.fromEntity(matchingResult);
   }
@@ -119,23 +136,32 @@ export class ProductionService {
 
     return Promise.all(
       files.map(async (file, i) => {
-        const fileExtension = file.originalname.split('.').pop().toLowerCase();
-        const fileName = `${randomUUID()}.${fileExtension}`;
-        this.storageService.uploadFile(fileName, file.buffer);
+        const fileName = await this.storageService.uploadFileWithRandomFileName(file.originalname, file.buffer);
         return new UnitFileReference(normalizedUnitIds[i], fileName);
       }),
     );
   }
 
   async submitCsvData(dto: ImportSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    const payload: FinalizeStagedProductionsPayload = new FinalizeStagedProductionsPayload(
-      userId,
-      dto.storageUnitId,
-      dto.importId,
-    );
+    const payload: FinalizeProductionsPayload = new FinalizeProductionsPayload(userId, dto.storageUnitId, dto.importId);
     const processSteps: ProcessStepEntity[] = await firstValueFrom(
       this.processSvc.send<ProcessStepEntity[]>(ProductionMessagePatterns.FINALIZE, payload),
     );
     return processSteps.map(ProductionOverviewDto.fromEntity);
+  }
+
+  async readCsvDocumentsByCompany(userId: string): Promise<ProcessedCsvDto[]> {
+    const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
+
+    const csvDocuments: CsvDocumentEntity[] = await firstValueFrom(
+      this.processSvc.send(
+        ProductionMessagePatterns.READ_CSV_DOCUMENTS_BY_COMPANY,
+        new ReadByIdPayload(userDetails.company.id),
+      ),
+    );
+
+    return csvDocuments.map((doc) =>
+      ProcessedCsvDto.fromEntity(doc, this.storageService.minioUrl, userDetails.company.name),
+    );
   }
 }

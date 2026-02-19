@@ -15,7 +15,7 @@ import { minFormArrayLength } from 'apps/frontend/src/app/shared/util/form-array
 import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -72,6 +72,8 @@ export class ProductionCsvUploadComponent {
   hydrogenProductionUnits = input<HydrogenProductionOverviewDto[]>([]);
   hydrogenStorageUnits = input<HydrogenStorageOverviewDto[]>([]);
 
+  switchToForm = output();
+
   form = new FormGroup({
     hydrogenProductionFiles: new FormArray<FileForm>([], minFormArrayLength(1)),
     powerProductionFiles: new FormArray<FileForm>([], minFormArrayLength(1)),
@@ -93,7 +95,7 @@ export class ProductionCsvUploadComponent {
     mutationFn: (dto: ImportSubmissionDto) => {
       return this.productionService.submitCsv(dto);
     },
-    onSuccess: () => this.router.navigateByUrl(ROUTES.PRODUCTION),
+    onSuccess: () => this.router.navigateByUrl(ROUTES.PRODUCTION_DATA),
     onError: (e: HttpErrorResponse) => {
       console.error(e);
       toast.error(e.error.message);

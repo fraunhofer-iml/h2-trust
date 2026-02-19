@@ -6,32 +6,61 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import Stream from 'stream';
 import { Client } from 'minio';
 import { MINIO_CONNECTION } from 'nestjs-minio';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigurationService } from '@h2-trust/configuration';
-import 'multer';
+import { FileUtil } from './file.util';
 
 @Injectable()
 export class StorageService {
   private readonly bucketName;
 
+  readonly minioUrl;
+
   constructor(
     @Inject(MINIO_CONNECTION) private readonly client: Client,
     private readonly configurationService: ConfigurationService,
   ) {
-    this.bucketName = this.configurationService.getGlobalConfiguration().minio.bucketName;
+    const minioConfig = this.configurationService.getGlobalConfiguration().minio;
+
+    this.bucketName = minioConfig.bucketName;
+
+    const { endPoint, port, useSSL } = minioConfig;
+    const protocol = useSSL ? 'https' : 'http';
+    this.minioUrl = `${protocol}://${endPoint}:${port}/${this.bucketName}`;
   }
 
-  async uploadFile(fileName: string, file: Buffer) {
-    return this.client.putObject(this.bucketName, fileName, file, file.length);
+  async uploadFile(fileName: string, file: Buffer): Promise<void> {
+    await this.client.putObject(this.bucketName, fileName, file, file.length);
   }
 
-  async downloadFile(fileName: string) {
+  async uploadFileWithRandomFileName(originalFileName: string, file: Buffer): Promise<string> {
+    const randomFileName = FileUtil.createRandomFileName(originalFileName);
+    await this.client.putObject(this.bucketName, randomFileName, file, file.length);
+    return randomFileName;
+  }
+
+  async uploadPdfFile(fileName: string, file: Buffer) {
+    return this.client.putObject(this.bucketName, fileName, file, file.length, {
+      'Content-Type': 'application/pdf',
+    });
+  }
+
+  async downloadFile(fileName: string): Promise<Stream.Readable> {
     return this.client.getObject(this.bucketName, fileName);
   }
 
-  async deleteFile(fileName: string) {
-    return this.client.removeObject(this.bucketName, fileName);
+  async fileExists(fileName: string): Promise<boolean> {
+    try {
+      await this.client.statObject(this.bucketName, fileName);
+      return true;
+    } catch (err: any) {
+      if (err.code === 'NoSuchKey' || err.code === 'NotFound') {
+        return false;
+      }
+      throw err;
+    }
   }
 }

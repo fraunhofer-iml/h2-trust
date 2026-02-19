@@ -17,10 +17,10 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MeasurementUnit, UnitType } from '@h2-trust/domain';
-import { ICONS } from '../../shared/constants/icons';
-import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
-import { UnitPipe } from '../../shared/pipes/unit.pipe';
-import { UnitsService } from '../../shared/services/units/units.service';
+import { UnitCardComponent } from '../../../layout/unit-card/unit-card.component';
+import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
+import { UnitPipe } from '../../../shared/pipes/unit.pipe';
+import { UnitsService } from '../../../shared/services/units/units.service';
 
 @Component({
   selector: 'app-hydrogen-assets',
@@ -35,12 +35,12 @@ import { UnitsService } from '../../shared/services/units/units.service';
     MatChipsModule,
     PrettyEnumPipe,
     MatDividerModule,
+    UnitCardComponent,
   ],
   providers: [],
   templateUrl: './hydrogen-assets.component.html',
 })
 export class HydrogenAssetsComponent {
-  protected readonly ICONS = ICONS;
   protected readonly MeasurementUnit = MeasurementUnit;
   protected readonly UnitType = UnitType;
 
@@ -62,8 +62,4 @@ export class HydrogenAssetsComponent {
     queryKey: ['h2-production'],
     queryFn: async () => this.unitsService.getHydrogenProductionUnits(),
   }));
-
-  toggle(type: UnitType | null) {
-    this.typeToShow = type;
-  }
 }

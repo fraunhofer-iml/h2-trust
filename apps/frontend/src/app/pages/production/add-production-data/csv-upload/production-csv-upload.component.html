@@ -81,9 +81,12 @@
         <span class="material-symbols-outlined">lightbulb_2</span>Hint</span
       >
       <p>
-        Drag and drop your CSV file here. The file must use a comma (,) as the delimiter and include a header as the
-        first row. Required columns are <strong>time</strong> and <strong>amount</strong> for power data, and
-        <strong>time</strong>, <strong>amount</strong>, <strong>power</strong> for hydrogen data.
+        Upload comma-delimited CSV files with a header row. Required columns: <strong>time</strong>,
+        <strong>amount</strong> for power data and <strong>time</strong>, <strong>amount</strong>,
+        <strong>power</strong> for hydrogen data.
+      </p>
+      <p class="pt-2">
+        Prefer to input data? <button mat-stroked-button class="ml-2" (click)="switchToForm.emit()">Input Data</button>
       </p>
     </div>
     <div class="flex flex-col gap-4 rounded-lg bg-white p-4" formArrayName="hydrogenProductionFiles">

@@ -8,12 +8,17 @@
 
 import { Route } from '@angular/router';
 import { AddProductionDataComponent } from './add-production-data/add-production-data.component';
-import { ProductionViewComponent } from './production-view.component';
+import { ProductionViewComponent } from './generated-productions/production-view.component';
+import { ProductionFilesComponent } from './uploaded-production-files/production-files.component';
 
 export const PRODUCTION_ROUTES: Route[] = [
   {
-    path: '',
+    path: 'data',
     component: ProductionViewComponent,
+  },
+  {
+    path: 'files',
+    component: ProductionFilesComponent,
   },
   {
     path: 'add',

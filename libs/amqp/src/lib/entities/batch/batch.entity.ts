@@ -94,7 +94,9 @@ export class BatchEntity {
       [],
       CompanyEntity.fromBaseType(batch.owner),
       undefined,
-      undefined,
+      batch.batchDetails?.qualityDetails
+        ? QualityDetailsEntity.fromDatabase(batch.batchDetails.qualityDetails)
+        : undefined,
       batch.processStep?.id,
     );
   }

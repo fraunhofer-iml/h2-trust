@@ -13,6 +13,7 @@ import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
+import { LoadingCardComponent } from '../../../layout/loading-card/loading-card.component';
 import { ERROR_MESSAGES } from '../../../shared/constants/error.messages';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { AuthService } from '../../../shared/services/auth/auth.service';
@@ -34,6 +35,7 @@ import { RfnboComplianceComponent } from './rfnbo-compliance/rfnbo-compliance.co
     ProofOfSustainabilityComponent,
     UnitPipe,
     RfnboComplianceComponent,
+    LoadingCardComponent,
   ],
   templateUrl: './product-pass.component.html',
 })

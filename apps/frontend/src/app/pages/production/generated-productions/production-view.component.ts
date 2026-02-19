@@ -10,15 +10,14 @@ import { DatePipe, DecimalPipe, TitleCasePipe } from '@angular/common';
 import { AfterViewInit, Component, inject, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ProductionOverviewDto } from '@h2-trust/api';
-import { H2ColorChipComponent } from '../../layout/h2-color-chip/h2-color-chip.component';
-import { ProductionService } from '../../shared/services/production/production.service';
+import { H2ColorChipComponent } from '../../../layout/color-chip/h2-color-chip.component';
+import { ProductionService } from '../../../shared/services/production/production.service';
 
 @Component({
   selector: 'app-production-view',
@@ -54,7 +53,6 @@ export class ProductionViewComponent implements AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   productionService = inject(ProductionService);
-  dialog = inject(MatDialog);
 
   productionQuery = injectQuery(() => ({
     queryKey: ['production'],

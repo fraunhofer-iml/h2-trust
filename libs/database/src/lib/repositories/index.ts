@@ -7,6 +7,7 @@
  */
 
 export * from './batch.repository';
+export * from './csv-import.repository';
 export * from './document.repository';
 export * from './process-step.repository';
 export * from './unit.repository';
