@@ -31,7 +31,7 @@ export class HydrogenCompositionUtil {
   }
 
   /**
-   * Should be used to merge all HydrogenComponents with the same RFNBO Status.
+   * Merges all HydrogenComponents with the same RFNBO Status.
    * @param hydrogenComponents The list of HydrogenComponents that should be merged.
    * @returns A list of HydrogenComponents, but no two elements have the same RFNBO value.
    */

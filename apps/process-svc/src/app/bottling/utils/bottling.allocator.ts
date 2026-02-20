@@ -18,12 +18,14 @@ export interface BottlingAllocation {
 }
 
 export class BottlingAllocator {
+  /**
+   * @param processSteps All process steps (hydrogen production) of the hydrogen storage unit, i.e. all batches from which the bottling is to be created.
+   * @param hydrogenComposition The hydrogen compositions to be produced.
+   * @param hydrogenStorageUnitId The ID of the HydrogenStorage unit from which the required bottlings are to be filled.
+   */
   static allocate(
-    //All process steps (hydrogen production) of the hydrogen storage unit, i.e. all batches from which the bottling is to be created.
     processSteps: ProcessStepEntity[],
-    //The hydrogen compositions to be produced.
     hydrogenComposition: HydrogenComponentEntity[],
-    //The ID of the HydrogenStorage unit from which the required bottlings are to be filled.
     hydrogenStorageUnitId: string,
   ): BottlingAllocation {
     const aggregatedBatchesForBottle: BatchEntity[] = [];
@@ -54,17 +56,18 @@ export class BottlingAllocator {
     };
   }
 
+  /**
+   * @param processSteps All process steps (hydrogen production) of the hydrogen storage unit, i.e. all batches from which the bottling is to be created.
+   * @param rfnboType The RFNBO value of one of the bottlings to be produced
+   * @param amount Number of units of the bottling to be produced
+   * @param hydrogenStorageUnitId The hydrogen storage facility from which the bottlings are to be taken.
+   */
   private static processBottlingForEachRFNBO(
-    //All process steps (hydrogen production) of the hydrogen storage unit, i.e. all batches from which the bottling is to be created.
     processSteps: ProcessStepEntity[],
-    //The RFNBO value of one of the bottlings to be produced
     rfnboType: RFNBOType,
-    //Number of units of the bottling to be produced
     amount: number,
-    //The hydrogen storage facility from which the bottlings are to be taken.
     hydrogenStorageUnitId: string,
   ): BottlingAllocation {
-    //filters out all HydrogenStorage batches that have the same RFNBO status as the filling to be created.
     const processStepsFromHydrogenStorageWithRequestedRFNBOStatus = processSteps.filter(
       (ps) => ps.batch.rfnboType === rfnboType,
     );

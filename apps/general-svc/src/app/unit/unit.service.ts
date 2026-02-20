@@ -59,8 +59,6 @@ export class UnitService {
 
     //TODO-LG: Increase efficiency
     for (let i = 0; i < hydrogenStorageUnits.length; i++) {
-      //const fillingProcessStepIds = hydrogenStorageUnits[i].filling.map((batch) => batch.processId);
-
       for (let j = 0; j < hydrogenStorageUnits[i].filling.length; j++) {
         const rfnboType: string = await firstValueFrom(
           this.processService.send(

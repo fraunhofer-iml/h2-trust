@@ -54,7 +54,6 @@ export class BottlingService {
   }
 
   async createHydrogenBottlingProcessStep(payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
-    //These are the current fillings of the selected hydrogen storage.
     const allProcessStepsFromStorageUnit: ProcessStepEntity[] =
       await this.processStepService.readAllProcessStepsFromStorageUnit(payload.hydrogenStorageUnitId);
 
@@ -79,7 +78,6 @@ export class BottlingService {
       rfnboType: processStep.batch.rfnboType,
     }));
 
-    //These are the required HydrogenComponents, i.e. the fillings that are needed and that are to be tapped.
     const hydrogenComposition: HydrogenComponentEntity[] = await this.determineHydrogenComposition(
       payload.amount,
       payload.rfnboType,
@@ -92,8 +90,6 @@ export class BottlingService {
       hydrogenComposition,
       payload.hydrogenStorageUnitId,
     );
-
-    //Since the allocation is independent of colour or RFNBO status, no adjustment should be necessary after the allocation has been created.
 
     const batchesToSetInactive: BatchEntity[] = [
       ...allocation.batchesForBottle,
@@ -132,13 +128,11 @@ export class BottlingService {
     hydrogenStorageUnitFillings: HydrogenComponentEntity[],
     hydrogenStorageUnitId: string,
   ): Promise<HydrogenComponentEntity[]> {
-    //If RFNBO type RFNBO_READY is selected, then only one large filling is required, so there is only one element in the list.
     if (rfnboType === RFNBOType.RFNBO_READY) {
       return [new HydrogenComponentEntity('', HydrogenColor.GREEN, batchAmount, RFNBOType.RFNBO_READY)];
     }
 
     try {
-      //If RFNBO Type NON_CERTIFIED is selected, then all fillings of the StorageUnit are taken and the appropriate quantity of units to be used is determined in order to ensure uniform emptying when green hydrogen is required.
       return HydrogenCompositionUtil.computeHydrogenComposition(hydrogenStorageUnitFillings, batchAmount);
     } catch (BrokerException) {
       throw new BrokerException(

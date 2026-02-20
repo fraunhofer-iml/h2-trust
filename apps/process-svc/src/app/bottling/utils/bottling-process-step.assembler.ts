@@ -21,7 +21,7 @@ export class BottlingProcessStepAssembler {
         qualityDetails: {
           color: BottlingProcessStepAssembler.determineBottleQualityFromPredecessors(batchesForBottle),
         },
-        rfnboType: BottlingProcessStepAssembler.determineBottleRFNBOFromPredecessors(batchesForBottle),
+        rfnboType: BottlingProcessStepAssembler.determineRfnboTypeOfPredecessors(batchesForBottle),
         type: BatchType.HYDROGEN,
         predecessors: batchesForBottle.map((batch) => ({
           id: batch.id,
@@ -48,7 +48,7 @@ export class BottlingProcessStepAssembler {
     return allColorsAreEqual ? firstColor : HydrogenColor.MIX;
   }
 
-  private static determineBottleRFNBOFromPredecessors(predecessors: BatchEntity[]): RFNBOType {
+  private static determineRfnboTypeOfPredecessors(predecessors: BatchEntity[]): RFNBOType {
     const rfnboTypes: RFNBOType[] = predecessors
       .map((batch) => batch.rfnboType)
       .map((rfnboType) => RFNBOType[rfnboType as keyof typeof RFNBOType]);
@@ -57,9 +57,7 @@ export class BottlingProcessStepAssembler {
       throw new BrokerException(`No predecessor rfnbo status specified`, HttpStatus.BAD_REQUEST);
     }
 
-    const firstRFNBOType = rfnboTypes[0];
-    const allColorsAreEqual = rfnboTypes.every((rfnboType) => rfnboType === firstRFNBOType);
-
-    return allColorsAreEqual ? firstRFNBOType : RFNBOType.NON_CERTIFIABLE;
+    const allColorsAreEqual = rfnboTypes.every((rfnboType) => rfnboType === rfnboTypes[0]);
+    return allColorsAreEqual ? rfnboTypes[0] : RFNBOType.NON_CERTIFIABLE;
   }
 }

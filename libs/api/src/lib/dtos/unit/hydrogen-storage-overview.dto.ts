@@ -56,8 +56,11 @@ export class HydrogenStorageOverviewDto {
     );
   }
 
-  //This function merges the fillings (HydrogenStorageUnits) with the same colors.
-  //This function should be replaced by an alternative that combines the RFNBO status values instead of the colors.
+  /**
+   * Merges the fillings of a HydrogenStorageUnit with the same RFNBO Type.
+   * @param unit The unit whose fillings are to be merged.
+   * @returns A list of fillings in which no RFNBO type occurs twice and in which the amounts of the fillings with the same RFNBO type have been added together.
+   */
   private static mapHydrogenComposition(unit: HydrogenStorageUnitEntity): HydrogenComponentDto[] {
     const compositionMap = new Map<string, number>();
     unit.filling?.forEach((filling: HydrogenComponentEntity) => {

@@ -88,14 +88,13 @@ export class DigitalProductPassportService {
 
     //If the process step is neither hydrogen bottling nor transport, then proof of origin should not be calculated.
     if (processStep.type == ProcessType.HYDROGEN_BOTTLING || processStep.type == ProcessType.HYDROGEN_TRANSPORTATION) {
-      //the hydrogen composition of the provenance root and the hydrogen composition of the processStep are the same
       hydrogenCompositionsForRootOfProvenence = await this.calculateHydrogenComposition(provenance.root);
 
       const hydrogenCompositionsForBottlingOfProvenence: HydrogenComponentEntity[] = provenance.hydrogenBottling
         ? await this.calculateHydrogenComposition(provenance.hydrogenBottling)
         : [];
 
-      //hydrogen Production Section
+      //build hydrogen production section
       if (provenance.powerProductions?.length || provenance.waterConsumptions?.length) {
         const hydrogenProductionSection: ProofOfOriginSectionEntity =
           await this.hydrogenProductionSectionService.buildSection(
@@ -106,7 +105,7 @@ export class DigitalProductPassportService {
         proofOfOrigin.push(hydrogenProductionSection);
       }
 
-      //build Storage Section
+      //build storage section
       if (provenance.hydrogenProductions?.length) {
         const hydrogenStorageSection: ProofOfOriginSectionEntity = HydrogenStorageSectionService.buildSection(
           provenance.hydrogenProductions,
@@ -114,7 +113,7 @@ export class DigitalProductPassportService {
         proofOfOrigin.push(hydrogenStorageSection);
       }
 
-      //build Bottling Section for an rootType=HYDROGEN_BOTTLING
+      //build bottling section for rootType=HYDROGEN_BOTTLING
       if (provenance.root.type === ProcessType.HYDROGEN_BOTTLING) {
         const hydrogenBottlingSection: ProofOfOriginSectionEntity = HydrogenBottlingSectionService.buildSection(
           provenance.root,
@@ -123,7 +122,7 @@ export class DigitalProductPassportService {
         proofOfOrigin.push(hydrogenBottlingSection);
       }
 
-      //build Bottling Section for an rootType=HYDROGEN_TRANSPORTATION
+      //build bottling section for rootType=HYDROGEN_TRANSPORTATION
       if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION) {
         const hydrogenBottlingSection: ProofOfOriginSectionEntity = HydrogenBottlingSectionService.buildSection(
           provenance.hydrogenBottling,
@@ -132,7 +131,7 @@ export class DigitalProductPassportService {
         proofOfOrigin.push(hydrogenBottlingSection);
       }
 
-      //build Transport Section for an rootType=HYDROGEN_TRANSPORTATION
+      //build transport section for rootType=HYDROGEN_TRANSPORTATION
       if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION && provenance.hydrogenBottling) {
         const hydrogenTransportationSection: ProofOfOriginSectionEntity =
           HydrogenTransportationSectionService.buildSection(
@@ -143,7 +142,6 @@ export class DigitalProductPassportService {
       }
     }
 
-    //TODO-LG: compute provenance emissions should be evaluated and be made more compact if that is possible
     const proofOfSustainability: ProofOfSustainabilityEntity =
       await this.emissionService.computeProvenanceEmissions(provenance);
 

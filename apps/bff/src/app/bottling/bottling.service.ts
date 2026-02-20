@@ -86,6 +86,6 @@ export class BottlingService {
         DigitalProductPassportPatterns.READ_DIGITAL_PRODUCT_PASSPORT,
         new ReadByIdPayload(id),
       ),
-    ).then((dppEntity) => DigitalProductPassportDto.fromEnitiy(dppEntity));
+    ).then(DigitalProductPassportDto.fromEnitiy);
   }
 }

@@ -70,7 +70,6 @@ export class UnitService {
     const units: HydrogenStorageUnitEntity[] = await firstValueFrom(
       this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_STORAGE_UNITS, new ReadByIdPayload(ownerId)),
     );
-
     return units.map(HydrogenStorageOverviewDto.fromEntity);
   }
 
