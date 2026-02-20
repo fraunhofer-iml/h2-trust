@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenStorageUnitEntity } from '@h2-trust/amqp';
+import { HydrogenComponentEntity, HydrogenStorageUnitEntity } from '@h2-trust/amqp';
 import { HydrogenStorageType } from '@h2-trust/domain';
 import { HydrogenComponentDto } from '../digital-product-passport';
 
@@ -40,12 +40,12 @@ export class HydrogenStorageOverviewDto {
       name: unit.name,
       capacity: unit.capacity,
       storageType: unit.type,
-      filling: HydrogenStorageOverviewDto.mapFilling(unit),
+      filling: HydrogenStorageOverviewDto.addUpFillingAmounts(unit),
       hydrogenComposition: HydrogenStorageOverviewDto.mapHydrogenComposition(unit),
     };
   }
 
-  private static mapFilling(unit: HydrogenStorageUnitEntity): number {
+  private static addUpFillingAmounts(unit: HydrogenStorageUnitEntity): number {
     return (
       unit.filling?.reduce((sum, filling) => {
         if (filling.amount == null) {
@@ -56,17 +56,24 @@ export class HydrogenStorageOverviewDto {
     );
   }
 
+  /**
+   * Merges the fillings of a HydrogenStorageUnit with the same RFNBO Type.
+   * @param unit The unit whose fillings are to be merged.
+   * @returns A list of fillings in which no RFNBO type occurs twice and in which the amounts of the fillings with the same RFNBO type have been added together.
+   */
   private static mapHydrogenComposition(unit: HydrogenStorageUnitEntity): HydrogenComponentDto[] {
     const compositionMap = new Map<string, number>();
-    unit.filling?.forEach((filling: HydrogenComponentDto) => {
-      if (filling.color == null || filling.amount == null) {
+    unit.filling?.forEach((filling: HydrogenComponentEntity) => {
+      if (filling.rfnboType == null || filling.amount == null) {
         throw new Error('One or more fillings contain undefined values.');
       }
-      compositionMap.set(filling.color, (compositionMap.get(filling.color) ?? 0) + filling.amount);
+      compositionMap.set(filling.rfnboType, (compositionMap.get(filling.rfnboType) ?? 0) + filling.amount);
     });
-    return Array.from(compositionMap, ([color, amount]) => ({
-      color,
-      amount,
+    return Array.from(compositionMap, ([rfnboType, amount]) => ({
+      processId: '',
+      rfnboType: rfnboType,
+      color: '',
+      amount: amount,
     }));
   }
 }

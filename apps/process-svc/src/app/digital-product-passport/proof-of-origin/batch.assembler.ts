@@ -14,7 +14,7 @@ import {
   ProofOfOriginPowerBatchEntity,
   ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/amqp';
-import { BatchType, EnergySource } from '@h2-trust/domain';
+import { BatchType, EnergySource, RFNBOType } from '@h2-trust/domain';
 
 export class BatchAssembler {
   static assemblePowerSupply(
@@ -62,8 +62,10 @@ export class BatchAssembler {
       batchType: BatchType.HYDROGEN,
       hydrogenComposition: [
         {
+          processId: '',
           color: hydrogenStorage.batch?.qualityDetails?.color,
           amount: hydrogenStorage.batch.amount,
+          rfnboType: RFNBOType.NOT_SPECIFIED,
         },
       ],
       producer: hydrogenStorage.batch.owner?.name,

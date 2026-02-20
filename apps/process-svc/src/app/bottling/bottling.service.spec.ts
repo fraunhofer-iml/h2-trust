@@ -10,10 +10,11 @@ import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, CreateHydrogenBottlingPayload, DocumentEntity } from '@h2-trust/amqp';
 import { DocumentRepository } from '@h2-trust/database';
-import { HydrogenColor, ProcessType } from '@h2-trust/domain';
+import { HydrogenColor, RFNBOType } from '@h2-trust/domain';
 import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures/entities';
 import { StorageService } from '@h2-trust/storage';
-import { ProcessStepService } from '../process-step.service';
+import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
+import { ProcessStepService } from '../process-step/process-step.service';
 import { BottlingService } from './bottling.service';
 
 describe('BottlingService', () => {
@@ -38,6 +39,13 @@ describe('BottlingService', () => {
     readProcessStep: jest.fn(),
   };
 
+  const dppServiceMock = {
+    getRfnboTypeForProcessStepId: jest.fn(),
+    getRfnboTypeForProcessStep: jest.fn(),
+    getDppForProcessStepId: jest.fn(),
+    readProcessStep: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -57,6 +65,10 @@ describe('BottlingService', () => {
         {
           provide: ProcessStepService,
           useValue: processStepServiceMock,
+        },
+        {
+          provide: DigitalProductPassportService,
+          useValue: dppServiceMock,
         },
       ],
     }).compile();
@@ -78,18 +90,21 @@ describe('BottlingService', () => {
         'recorder-1',
         'storage-unit-1',
         HydrogenColor.GREEN,
+        RFNBOType.RFNBO_READY,
       );
 
       const givenStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
           qualityDetails: QualityDetailsEntityFixture.createGreen(),
+          rfnboType: RFNBOType.RFNBO_READY,
         }),
       });
 
       const givenCreatedBottlingProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
 
       processStepServiceMock.readAllProcessStepsFromStorageUnit.mockResolvedValue([givenStorageProcessStep]);
+      dppServiceMock.getRfnboTypeForProcessStep.mockResolvedValue(RFNBOType.RFNBO_READY);
       processStepServiceMock.setBatchesInactive.mockResolvedValue({ count: 1 });
       processStepServiceMock.createProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
       processStepServiceMock.readProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
@@ -115,18 +130,20 @@ describe('BottlingService', () => {
         'recorder-1',
         'storage-unit-1',
         HydrogenColor.YELLOW,
+        RFNBOType.NON_CERTIFIABLE,
       );
 
       const givenStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
           qualityDetails: QualityDetailsEntityFixture.createGreen(),
+          rfnboType: RFNBOType.RFNBO_READY,
         }),
       });
 
       const givenHydrogenStorageUnit = {
         id: 'storage-unit-1',
-        filling: [{ color: HydrogenColor.GREEN, amount: 100 }],
+        filling: [{ color: HydrogenColor.GREEN, amount: 100, rfnboType: RFNBOType.RFNBO_READY }],
       };
 
       const givenCreatedBottlingProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
@@ -141,7 +158,6 @@ describe('BottlingService', () => {
       const actualResult = await service.createHydrogenBottlingProcessStep(givenPayload);
 
       // Assert
-      expect(generalSvcMock.send).toHaveBeenCalled();
       expect(actualResult.id).toBe(givenCreatedBottlingProcessStep.id);
     });
 
@@ -154,6 +170,7 @@ describe('BottlingService', () => {
         'recorder-1',
         'storage-unit-1',
         HydrogenColor.GREEN,
+        RFNBOType.RFNBO_READY,
       );
 
       processStepServiceMock.readAllProcessStepsFromStorageUnit.mockResolvedValue([]);
@@ -174,6 +191,7 @@ describe('BottlingService', () => {
         'recorder-1',
         'storage-unit-1',
         HydrogenColor.GREEN,
+        RFNBOType.RFNBO_READY,
         [givenFile],
       );
 
@@ -181,6 +199,7 @@ describe('BottlingService', () => {
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
           qualityDetails: QualityDetailsEntityFixture.createGreen(),
+          rfnboType: RFNBOType.RFNBO_READY,
         }),
       });
 
@@ -190,6 +209,7 @@ describe('BottlingService', () => {
       processStepServiceMock.setBatchesInactive.mockResolvedValue({ count: 1 });
       processStepServiceMock.createProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
       processStepServiceMock.readProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
+      dppServiceMock.getRfnboTypeForProcessStep.mockResolvedValue(RFNBOType.RFNBO_READY);
       storageServiceMock.uploadPdfFile.mockResolvedValue(givenFile.originalname);
       documentRepositoryMock.addDocumentToProcessStep.mockResolvedValue({});
 
@@ -204,103 +224,6 @@ describe('BottlingService', () => {
       expect(documentRepositoryMock.addDocumentToProcessStep).toHaveBeenCalledWith(
         new DocumentEntity(undefined, givenFile.originalname),
         givenCreatedBottlingProcessStep.id,
-      );
-    });
-  });
-
-  describe('calculateHydrogenComposition', () => {
-    it(`returns composition for ${ProcessType.HYDROGEN_BOTTLING} process step`, async () => {
-      // Arrange
-      const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling({
-        batch: BatchEntityFixture.createHydrogenBatch({
-          amount: 100,
-          predecessors: [
-            BatchEntityFixture.createHydrogenBatch({
-              amount: 100,
-              qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            }),
-          ],
-        }),
-      });
-
-      // Act
-      const actualResult = await service.calculateHydrogenComposition(givenProcessStep);
-
-      // Assert
-      expect(actualResult).toHaveLength(1);
-      expect(actualResult[0].color).toBe(HydrogenColor.GREEN);
-    });
-
-    it(`reads predecessor for ${ProcessType.HYDROGEN_TRANSPORTATION} process step`, async () => {
-      // Arrange
-      const givenBottlingProcessStep = ProcessStepEntityFixture.createHydrogenBottling({
-        batch: BatchEntityFixture.createHydrogenBatch({
-          amount: 100,
-          predecessors: [
-            BatchEntityFixture.createHydrogenBatch({
-              amount: 100,
-              qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            }),
-          ],
-        }),
-      });
-
-      const givenTransportationProcessStep = ProcessStepEntityFixture.createHydrogenTransportation({
-        batch: BatchEntityFixture.createHydrogenBatch({
-          predecessors: [
-            BatchEntityFixture.createHydrogenBatch({
-              processStepId: givenBottlingProcessStep.id,
-            }),
-          ],
-        }),
-      });
-
-      processStepServiceMock.readProcessStep.mockResolvedValue(givenBottlingProcessStep);
-
-      // Act
-      const actualResult = await service.calculateHydrogenComposition(givenTransportationProcessStep);
-
-      // Assert
-      expect(processStepServiceMock.readProcessStep).toHaveBeenCalledWith(givenBottlingProcessStep.id);
-      expect(actualResult).toHaveLength(1);
-      expect(actualResult[0].color).toBe(HydrogenColor.GREEN);
-    });
-
-    it('throws error when transportation has no predecessor', async () => {
-      // Arrange
-      const givenProcessStep = ProcessStepEntityFixture.createHydrogenTransportation({
-        batch: BatchEntityFixture.createHydrogenBatch({
-          predecessors: [],
-        }),
-      });
-
-      const expectedErrorMessage = `Process step ${givenProcessStep.id} has no predecessor to derive composition from`;
-
-      // Act & Assert
-      await expect(service.calculateHydrogenComposition(givenProcessStep)).rejects.toThrow(expectedErrorMessage);
-    });
-
-    it(`throws error when predecessor is not ${ProcessType.HYDROGEN_BOTTLING}`, async () => {
-      // Arrange
-      const givenPredecessorProcessStep = ProcessStepEntityFixture.createHydrogenProduction();
-
-      const givenTransportationProcessStep = ProcessStepEntityFixture.createHydrogenTransportation({
-        batch: BatchEntityFixture.createHydrogenBatch({
-          predecessors: [
-            BatchEntityFixture.createHydrogenBatch({
-              processStepId: givenPredecessorProcessStep.id,
-            }),
-          ],
-        }),
-      });
-
-      processStepServiceMock.readProcessStep.mockResolvedValue(givenPredecessorProcessStep);
-
-      const expectedErrorMessage = `Predecessor process step ${givenPredecessorProcessStep.id} is not of type ${ProcessType.HYDROGEN_BOTTLING}`;
-
-      // Act & Assert
-      await expect(service.calculateHydrogenComposition(givenTransportationProcessStep)).rejects.toThrow(
-        expectedErrorMessage,
       );
     });
   });

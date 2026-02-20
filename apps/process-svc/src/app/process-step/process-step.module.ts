@@ -11,15 +11,13 @@ import { Broker } from '@h2-trust/amqp';
 import { ConfigurationModule } from '@h2-trust/configuration';
 import { DatabaseModule } from '@h2-trust/database';
 import { StorageModule } from '@h2-trust/storage';
-import { BottlingService } from './bottling/bottling.service';
-import { ProcessStepController } from './process-step.controller';
+import { TransportationService } from '../transportation/transportation.service';
+import { HydrogenComponentAssembler } from './hydrogenComponent/hydrogen-component.assembler';
 import { ProcessStepService } from './process-step.service';
-import { TransportationService } from './transportation/transportation.service';
 
 @Module({
   imports: [ConfigurationModule, DatabaseModule, StorageModule, new Broker().getGeneralSvcBroker()],
-  controllers: [ProcessStepController],
-  providers: [BottlingService, ProcessStepService, TransportationService],
-  exports: [BottlingService, ProcessStepService],
+  providers: [ProcessStepService, TransportationService, HydrogenComponentAssembler],
+  exports: [ProcessStepService, HydrogenComponentAssembler],
 })
 export class ProcessStepModule {}

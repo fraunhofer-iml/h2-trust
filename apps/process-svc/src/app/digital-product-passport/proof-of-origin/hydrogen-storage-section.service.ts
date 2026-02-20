@@ -23,7 +23,7 @@ import { EmissionAssembler } from './emission.assembler';
 
 @Injectable()
 export class HydrogenStorageSectionService {
-  async buildSection(hydrogenProductions: ProcessStepEntity[]): Promise<ProofOfOriginSectionEntity> {
+  static buildSection(hydrogenProductions: ProcessStepEntity[]): ProofOfOriginSectionEntity {
     if (!hydrogenProductions?.length) {
       return new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_STORAGE_SECTION, [], []);
     }
@@ -39,8 +39,8 @@ export class HydrogenStorageSectionService {
         continue;
       }
 
-      const batchesForHydrogenColor: ProofOfOriginBatchEntity[] = await Promise.all(
-        hydrogenProductionsByHydrogenColor.map(async (hydrogenProduction) => {
+      const batchesForHydrogenColor: ProofOfOriginBatchEntity[] = hydrogenProductionsByHydrogenColor.map(
+        (hydrogenProduction) => {
           const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
             EmissionAssembler.assembleHydrogenStorage(hydrogenProduction);
 
@@ -55,7 +55,7 @@ export class HydrogenStorageSectionService {
           );
 
           return batch;
-        }),
+        },
       );
 
       const classification: ProofOfOriginClassificationEntity = ClassificationAssembler.assembleHydrogen(

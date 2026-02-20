@@ -23,6 +23,7 @@ import {
 } from '@h2-trust/api';
 import 'multer';
 import { of } from 'rxjs';
+import { RFNBOType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';
@@ -83,6 +84,7 @@ describe('BottlingController', () => {
       hydrogenStorageUnitId: givenDto.hydrogenStorageUnit,
       color: givenDto.color,
       files: [] as Express.Multer.File[],
+      rfnboType: RFNBOType.RFNBO_READY,
     };
 
     const expectedBatchSvcPayload2 = {

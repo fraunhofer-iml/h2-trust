@@ -6,4 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './hydrogen-composition-dto.mock';
+export enum RFNBOType {
+  RFNBO_READY = 'RFNBO_READY',
+  NON_CERTIFIABLE = 'NON_CERTIFIABLE',
+  NOT_SPECIFIED = 'NOT_SPECIFIED',
+}

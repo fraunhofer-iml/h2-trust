@@ -13,12 +13,10 @@ import {
   BrokerQueues,
   CreateHydrogenBottlingPayload,
   CreateHydrogenTransportationPayload,
+  DigitalProductPassportEntity,
   DigitalProductPassportPatterns,
-  GeneralInformationEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
-  ProofOfOriginSectionEntity,
-  ProofOfSustainabilityEntity,
   ReadByIdPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
@@ -45,6 +43,7 @@ export class BottlingService {
       userId,
       dto.hydrogenStorageUnit,
       dto.color,
+      dto.rfnboType,
       files,
     );
 
@@ -81,28 +80,12 @@ export class BottlingService {
     return bottlingsAndTransportations.map(BottlingOverviewDto.fromEntity);
   }
 
-  // TODO: Merge these three calls into a single unified request (DUHGW-322)
   async readDigitalProductPassport(id: string): Promise<DigitalProductPassportDto> {
-    const [generalInformation, proofOfOrigin, proofOfSustainability] = await Promise.all([
-      firstValueFrom(
-        this.processSvc.send<GeneralInformationEntity>(
-          DigitalProductPassportPatterns.READ_GENERAL_INFORMATION,
-          new ReadByIdPayload(id),
-        ),
+    return firstValueFrom(
+      this.processSvc.send<DigitalProductPassportEntity>(
+        DigitalProductPassportPatterns.READ_DIGITAL_PRODUCT_PASSPORT,
+        new ReadByIdPayload(id),
       ),
-      firstValueFrom(
-        this.processSvc.send<ProofOfOriginSectionEntity[]>(
-          DigitalProductPassportPatterns.READ_PROOF_OF_ORIGIN,
-          new ReadByIdPayload(id),
-        ),
-      ),
-      firstValueFrom(
-        this.processSvc.send<ProofOfSustainabilityEntity>(
-          DigitalProductPassportPatterns.READ_PROOF_OF_SUSTAINABILITY,
-          new ReadByIdPayload(id),
-        ),
-      ),
-    ]);
-    return DigitalProductPassportDto.fromEnities(generalInformation, proofOfOrigin, proofOfSustainability);
+    ).then(DigitalProductPassportDto.fromEnitiy);
   }
 }

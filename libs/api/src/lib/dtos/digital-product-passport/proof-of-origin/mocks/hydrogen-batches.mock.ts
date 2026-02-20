@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType, HydrogenColor, HydrogenProductionMethod, ProcessType } from '@h2-trust/domain';
+import { BatchType, HydrogenColor, HydrogenProductionMethod, ProcessType, RFNBOType } from '@h2-trust/domain';
 import { EnumLabelMapper } from '../../../../labels';
 import { CompanyDtoMock } from '../../../company';
 import { HydrogenBatchDto } from '../hydrogen-batch.dto';
@@ -21,10 +21,10 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
     createdAt: new Date(),
     accountingPeriodEnd: new Date(),
     emission: EmissionMock,
-    hydrogenComposition: [{ color: HydrogenColor.GREEN, amount: 300 }],
+    hydrogenComposition: [{ processId: '', color: HydrogenColor.GREEN, amount: 300, rfnboType: RFNBOType.RFNBO_READY }],
     processStep: ProcessType.HYDROGEN_PRODUCTION,
     producer: CompanyDtoMock[1].name,
-    rfnboReady: true,
+    rfnboType: true,
     typeOfProduction: HydrogenProductionMethod.ELECTROLYSIS,
     unitId: 'hydrogen-production-unit-1',
     batchType: BatchType.HYDROGEN,
@@ -37,10 +37,10 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
     createdAt: new Date(),
     accountingPeriodEnd: new Date(),
     emission: EmissionMock,
-    hydrogenComposition: [{ color: HydrogenColor.GREEN, amount: 300 }],
+    hydrogenComposition: [{ processId: '', color: HydrogenColor.GREEN, amount: 300, rfnboType: RFNBOType.RFNBO_READY }],
     processStep: ProcessType.HYDROGEN_PRODUCTION,
     producer: CompanyDtoMock[1].name,
-    rfnboReady: true,
+    rfnboType: true,
     typeOfProduction: HydrogenProductionMethod.ELECTROLYSIS,
     unitId: 'hydrogen-production-unit-1',
     batchType: BatchType.HYDROGEN,
@@ -53,10 +53,12 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
     createdAt: new Date(),
     accountingPeriodEnd: new Date(),
     emission: EmissionMock,
-    hydrogenComposition: [{ color: HydrogenColor.YELLOW, amount: 300 }],
+    hydrogenComposition: [
+      { processId: '', color: HydrogenColor.YELLOW, amount: 300, rfnboType: RFNBOType.NON_CERTIFIABLE },
+    ],
     processStep: ProcessType.HYDROGEN_PRODUCTION,
     producer: CompanyDtoMock[1].name,
-    rfnboReady: false,
+    rfnboType: false,
     typeOfProduction: HydrogenProductionMethod.ELECTROLYSIS,
     unitId: 'hydrogen-production-unit-1',
     batchType: BatchType.HYDROGEN,
@@ -69,12 +71,12 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
     createdAt: new Date(),
     emission: EmissionMock,
     hydrogenComposition: [
-      { color: HydrogenColor.GREEN, amount: 300 },
-      { color: HydrogenColor.YELLOW, amount: 300 },
+      { processId: '', color: HydrogenColor.GREEN, amount: 300, rfnboType: RFNBOType.RFNBO_READY },
+      { processId: '', color: HydrogenColor.YELLOW, amount: 300, rfnboType: RFNBOType.NON_CERTIFIABLE },
     ],
     processStep: ProcessType.HYDROGEN_BOTTLING,
     producer: CompanyDtoMock[1].name,
-    rfnboReady: false,
+    rfnboType: false,
     typeOfProduction: HydrogenProductionMethod.ELECTROLYSIS,
     unitId: 'hydrogen-production-unit-1',
     batchType: BatchType.HYDROGEN,

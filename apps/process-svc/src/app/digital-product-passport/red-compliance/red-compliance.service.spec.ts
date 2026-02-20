@@ -14,7 +14,7 @@ import {
   PowerProductionUnitEntityFixture,
   ProcessStepEntityFixture,
 } from '@h2-trust/fixtures/entities';
-import { ProvenanceService } from '../../provenance/provenance.service';
+import { ProvenanceService } from '../provenance/provenance.service';
 import { MatchedProductionPair } from './matched-production-pair';
 import { RedCompliancePairingService } from './red-compliance-pairing.service';
 import { RedComplianceService } from './red-compliance.service';
@@ -62,7 +62,7 @@ describe('RedComplianceService', () => {
       const expectedErrorMessage = `Provenance or required productions (power/hydrogen) are missing for processStepId [${givenProcessStepId}]`;
 
       // Act & Assert
-      await expect(service.determineRedCompliance(givenProcessStepId)).rejects.toThrow(expectedErrorMessage);
+      await expect(service.determineRedCompliance(givenProcessStepId, undefined)).rejects.toThrow(expectedErrorMessage);
     });
 
     it('throws RpcException when powerProductions is empty', async () => {
@@ -81,7 +81,9 @@ describe('RedComplianceService', () => {
       const expectedErrorMessage = `Provenance or required productions (power/hydrogen) are missing for processStepId [${givenProcessStepId}]`;
 
       // Act & Assert
-      await expect(service.determineRedCompliance(givenProcessStepId)).rejects.toThrow(expectedErrorMessage);
+      await expect(service.determineRedCompliance(givenProcessStepId, givenProvenance)).rejects.toThrow(
+        expectedErrorMessage,
+      );
     });
 
     it('throws RpcException when hydrogenProductions is empty', async () => {
@@ -100,7 +102,9 @@ describe('RedComplianceService', () => {
       const expectedErrorMessage = `Provenance or required productions (power/hydrogen) are missing for processStepId [${givenProcessStepId}]`;
 
       // Act & Assert
-      await expect(service.determineRedCompliance(givenProcessStepId)).rejects.toThrow(expectedErrorMessage);
+      await expect(service.determineRedCompliance(givenProcessStepId, givenProvenance)).rejects.toThrow(
+        expectedErrorMessage,
+      );
     });
 
     it('returns RedComplianceEntity with all flags true when all compliance criteria are met', async () => {
@@ -143,7 +147,7 @@ describe('RedComplianceService', () => {
       redCompliancePairingServiceMock.buildMatchedPairs.mockResolvedValue(givenMatchedPairs);
 
       // Act
-      const actualResult = await service.determineRedCompliance(givenProcessStepId);
+      const actualResult = await service.determineRedCompliance(givenProcessStepId, givenProvenance);
 
       // Assert
       expect(actualResult).toBeInstanceOf(RedComplianceEntity);
@@ -152,7 +156,6 @@ describe('RedComplianceService', () => {
       expect(actualResult.isAdditionalityFulfilled).toBe(true);
       expect(actualResult.financialSupportReceived).toBe(true);
 
-      expect(provenanceServiceMock.buildProvenance).toHaveBeenCalledWith(givenProcessStepId);
       expect(redCompliancePairingServiceMock.buildMatchedPairs).toHaveBeenCalledWith(
         givenProvenance.powerProductions,
         givenProvenance.hydrogenProductions,
@@ -200,7 +203,7 @@ describe('RedComplianceService', () => {
       redCompliancePairingServiceMock.buildMatchedPairs.mockResolvedValue(givenMatchedPairs);
 
       // Act
-      const actualResult = await service.determineRedCompliance(givenProcessStepId);
+      const actualResult = await service.determineRedCompliance(givenProcessStepId, givenProvenance);
 
       // Assert
       expect(actualResult.isGeoCorrelationValid).toBe(false);
@@ -246,7 +249,7 @@ describe('RedComplianceService', () => {
       redCompliancePairingServiceMock.buildMatchedPairs.mockResolvedValue(givenMatchedPairs);
 
       // Act
-      const actualResult = await service.determineRedCompliance(givenProcessStepId);
+      const actualResult = await service.determineRedCompliance(givenProcessStepId, givenProvenance);
 
       // Assert
       expect(actualResult.isTimeCorrelationValid).toBe(false);
@@ -292,7 +295,7 @@ describe('RedComplianceService', () => {
       redCompliancePairingServiceMock.buildMatchedPairs.mockResolvedValue(givenMatchedPairs);
 
       // Act
-      const actualResult = await service.determineRedCompliance(givenProcessStepId);
+      const actualResult = await service.determineRedCompliance(givenProcessStepId, givenProvenance);
 
       // Assert
       expect(actualResult.isAdditionalityFulfilled).toBe(false);
@@ -338,7 +341,7 @@ describe('RedComplianceService', () => {
       redCompliancePairingServiceMock.buildMatchedPairs.mockResolvedValue(givenMatchedPairs);
 
       // Act
-      const actualResult = await service.determineRedCompliance(givenProcessStepId);
+      const actualResult = await service.determineRedCompliance(givenProcessStepId, givenProvenance);
 
       // Assert
       expect(actualResult.financialSupportReceived).toBe(false);
@@ -373,7 +376,9 @@ describe('RedComplianceService', () => {
       const expectedErrorMessage = `Production units not found: powerUnitId [${givenPowerProcessStep.executedBy.id}] or hydrogenUnitId [${givenHydrogenProcessStep.executedBy.id}]`;
 
       // Act & Assert
-      await expect(service.determineRedCompliance(givenProcessStepId)).rejects.toThrow(expectedErrorMessage);
+      await expect(service.determineRedCompliance(givenProcessStepId, givenProvenance)).rejects.toThrow(
+        expectedErrorMessage,
+      );
     });
 
     it('throws HttpException when hydrogen production unit is missing', async () => {
@@ -405,7 +410,9 @@ describe('RedComplianceService', () => {
       const expectedErrorMessage = `Production units not found: powerUnitId [${givenPowerProcessStep.executedBy.id}] or hydrogenUnitId [${givenHydrogenProcessStep.executedBy.id}]`;
 
       // Act & Assert
-      await expect(service.determineRedCompliance(givenProcessStepId)).rejects.toThrow(expectedErrorMessage);
+      await expect(service.determineRedCompliance(givenProcessStepId, givenProvenance)).rejects.toThrow(
+        expectedErrorMessage,
+      );
     });
   });
 });

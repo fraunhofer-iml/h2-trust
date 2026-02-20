@@ -8,7 +8,7 @@
 
 import { HttpStatus } from '@nestjs/common';
 import { BatchEntity, BrokerException, HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/amqp';
-import { BatchType, ProcessType } from '@h2-trust/domain';
+import { BatchType, ProcessType, RFNBOType } from '@h2-trust/domain';
 
 export interface BottlingAllocation {
   batchesForBottle: BatchEntity[];
@@ -18,6 +18,11 @@ export interface BottlingAllocation {
 }
 
 export class BottlingAllocator {
+  /**
+   * @param processSteps All process steps (hydrogen production) of the hydrogen storage unit, i.e. all batches from which the bottling is to be created.
+   * @param hydrogenComposition The hydrogen compositions to be produced.
+   * @param hydrogenStorageUnitId The ID of the HydrogenStorage unit from which the required bottlings are to be filled.
+   */
   static allocate(
     processSteps: ProcessStepEntity[],
     hydrogenComposition: HydrogenComponentEntity[],
@@ -30,9 +35,9 @@ export class BottlingAllocator {
 
     for (const hydrogenComponent of hydrogenComposition) {
       const { batchesForBottle, processStepsToBeSplit, consumedSplitProcessSteps, processStepsForRemainingAmount } =
-        BottlingAllocator.processBottlingForEachColor(
+        BottlingAllocator.processBottlingForEachRFNBO(
           processSteps,
-          hydrogenComponent.color,
+          hydrogenComponent.rfnboType as RFNBOType,
           hydrogenComponent.amount,
           hydrogenStorageUnitId,
         );
@@ -51,22 +56,28 @@ export class BottlingAllocator {
     };
   }
 
-  private static processBottlingForEachColor(
+  /**
+   * @param processSteps All process steps (hydrogen production) of the hydrogen storage unit, i.e. all batches from which the bottling is to be created.
+   * @param rfnboType The RFNBO value of one of the bottlings to be produced
+   * @param amount Number of units of the bottling to be produced
+   * @param hydrogenStorageUnitId The hydrogen storage facility from which the bottlings are to be taken.
+   */
+  private static processBottlingForEachRFNBO(
     processSteps: ProcessStepEntity[],
-    color: string,
+    rfnboType: RFNBOType,
     amount: number,
     hydrogenStorageUnitId: string,
   ): BottlingAllocation {
-    const processStepsFromHydrogenStorageWithRequestedColor = processSteps.filter(
-      (ps) => ps.batch.qualityDetails.color === color,
+    const processStepsFromHydrogenStorageWithRequestedRFNBOStatus = processSteps.filter(
+      (ps) => ps.batch.rfnboType === rfnboType,
     );
 
     const { selectedProcessSteps, remainingAmount } =
       BottlingAllocator.selectProcessStepsForBottlingAndCalculateRemainingAmount(
-        processStepsFromHydrogenStorageWithRequestedColor,
+        processStepsFromHydrogenStorageWithRequestedRFNBOStatus,
         amount,
         hydrogenStorageUnitId,
-        color,
+        rfnboType,
       );
 
     return BottlingAllocator.splitLastProcessStepIfNeeded(selectedProcessSteps, remainingAmount);
@@ -76,7 +87,7 @@ export class BottlingAllocator {
     availableProcessSteps: ProcessStepEntity[],
     requestedAmount: number,
     storageUnitId: string,
-    color: string,
+    rfnboType: string,
   ): { selectedProcessSteps: ProcessStepEntity[]; remainingAmount: number } {
     const selectedProcessSteps: ProcessStepEntity[] = [];
     let pendingAmount = requestedAmount;
@@ -92,7 +103,7 @@ export class BottlingAllocator {
       pendingAmount -= currentProcessStep.batch.amount;
     }
 
-    const message = `There is not enough hydrogen in storage unit ${storageUnitId} for the requested amount of ${requestedAmount} of quality ${color}.`;
+    const message = `There is not enough hydrogen in storage unit ${storageUnitId} for the requested amount of ${requestedAmount} of quality ${rfnboType}.`;
     throw new BrokerException(message, HttpStatus.BAD_REQUEST);
   }
 

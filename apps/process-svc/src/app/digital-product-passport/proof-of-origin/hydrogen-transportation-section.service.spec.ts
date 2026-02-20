@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
 import { ProofOfOriginHydrogenBatchEntity } from '@h2-trust/amqp';
 import { MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
 import {
@@ -14,29 +13,12 @@ import {
   ProcessStepEntityFixture,
   TransportationDetailsEntityFixture,
 } from '@h2-trust/fixtures/entities';
-import { BottlingService } from '../../process-step/bottling/bottling.service';
 import { HydrogenTransportationSectionService } from './hydrogen-transportation-section.service';
 
 describe('HydrogenTransportationSectionService', () => {
-  let service: HydrogenTransportationSectionService;
-
   const bottlingServiceMock = {
     calculateHydrogenComposition: jest.fn(),
   };
-
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        HydrogenTransportationSectionService,
-        {
-          provide: BottlingService,
-          useValue: bottlingServiceMock,
-        },
-      ],
-    }).compile();
-
-    service = module.get<HydrogenTransportationSectionService>(HydrogenTransportationSectionService);
-  });
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -49,7 +31,6 @@ describe('HydrogenTransportationSectionService', () => {
       const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation({
         transportationDetails: givenTransportationDetails,
       });
-      const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
       const givenHydrogenCompositions = [
         HydrogenComponentEntityFixture.createGreen({ amount: 60 }),
         HydrogenComponentEntityFixture.createYellow({ amount: 40 }),
@@ -58,11 +39,12 @@ describe('HydrogenTransportationSectionService', () => {
       bottlingServiceMock.calculateHydrogenComposition.mockResolvedValue(givenHydrogenCompositions);
 
       // Act
-      const actualResult = await service.buildSection(givenHydrogenTransportation, givenHydrogenBottling);
+      const actualResult = await HydrogenTransportationSectionService.buildSection(
+        givenHydrogenTransportation,
+        givenHydrogenCompositions,
+      );
 
       // Assert
-      expect(bottlingServiceMock.calculateHydrogenComposition).toHaveBeenCalledWith(givenHydrogenBottling);
-
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION);
       expect(actualResult.batches).toHaveLength(1);
       expect(actualResult.classifications).toEqual([]);
@@ -86,13 +68,15 @@ describe('HydrogenTransportationSectionService', () => {
       const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation({
         transportationDetails: givenTransportationDetails,
       });
-      const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
       const givenHydrogenCompositions = [HydrogenComponentEntityFixture.createGreen()];
 
       bottlingServiceMock.calculateHydrogenComposition.mockResolvedValue(givenHydrogenCompositions);
 
       // Act
-      const actualResult = await service.buildSection(givenHydrogenTransportation, givenHydrogenBottling);
+      const actualResult = await HydrogenTransportationSectionService.buildSection(
+        givenHydrogenTransportation,
+        givenHydrogenCompositions,
+      );
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION);

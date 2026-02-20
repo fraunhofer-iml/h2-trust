@@ -6,11 +6,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Injectable } from '@nestjs/common';
+import { firstValueFrom } from 'rxjs';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import {
+  BrokerQueues,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
   CreatePowerProductionUnitPayload,
+  DigitalProductPassportPatterns,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
   PowerProductionTypeEntity,
@@ -24,6 +28,7 @@ import { PowerProductionTypeRepository, UnitRepository } from '@h2-trust/databas
 @Injectable()
 export class UnitService {
   constructor(
+    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processService: ClientProxy,
     private readonly unitRepository: UnitRepository,
     private readonly powerProductionTypeRepository: PowerProductionTypeRepository,
   ) {}
@@ -49,7 +54,22 @@ export class UnitService {
   }
 
   async readHydrogenStorageUnitsByOwnerId(payload: ReadByIdPayload): Promise<HydrogenStorageUnitEntity[]> {
-    return this.unitRepository.findHydrogenStorageUnitsByOwnerId(payload.id);
+    const hydrogenStorageUnits: HydrogenStorageUnitEntity[] =
+      await this.unitRepository.findHydrogenStorageUnitsByOwnerId(payload.id);
+
+    //TODO-LG: Increase efficiency
+    for (let i = 0; i < hydrogenStorageUnits.length; i++) {
+      for (let j = 0; j < hydrogenStorageUnits[i].filling.length; j++) {
+        const rfnboType: string = await firstValueFrom(
+          this.processService.send(
+            DigitalProductPassportPatterns.READ_RFNBO_STATUS,
+            new ReadByIdPayload(hydrogenStorageUnits[i].filling[j].processId),
+          ),
+        );
+        hydrogenStorageUnits[i].filling[j].rfnboType = rfnboType;
+      }
+    }
+    return hydrogenStorageUnits;
   }
 
   async readPowerProductionTypes(): Promise<PowerProductionTypeEntity[]> {

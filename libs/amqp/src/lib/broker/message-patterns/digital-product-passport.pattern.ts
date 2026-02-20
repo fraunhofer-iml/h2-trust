@@ -7,6 +7,8 @@
  */
 
 export enum DigitalProductPassportPatterns {
+  READ_RFNBO_STATUS = 'digital-product-passport.read-rfnbo-status',
+  READ_DIGITAL_PRODUCT_PASSPORT = 'digital-product-passport.read-digital-product-passport',
   READ_GENERAL_INFORMATION = 'digital-product-passport.read-general-information',
   READ_PROOF_OF_ORIGIN = 'digital-product-passport.read-proof-of-origin',
   READ_PROOF_OF_SUSTAINABILITY = 'digital-product-passport.read-proof-of-sustainability',
