@@ -24,7 +24,7 @@ export const BatchEntityFixture = {
       overrides.hydrogenStorageUnit ?? undefined,
       overrides.qualityDetails ?? QualityDetailsEntityFixture.createGreen(),
       overrides.processStepId ?? 'process-step-1',
-      overrides.rfnbo ?? RFNBOType.NOT_SPECIFIED,
+      overrides.rfnbo ?? RFNBOType.RFNBO_READY,
     ),
   createWaterBatch: (overrides: Partial<BatchEntity> = {}): BatchEntity =>
     new BatchEntity(
@@ -38,7 +38,7 @@ export const BatchEntityFixture = {
       overrides.hydrogenStorageUnit ?? undefined,
       overrides.qualityDetails ?? QualityDetailsEntityFixture.createGreen(),
       overrides.processStepId ?? 'process-step-2',
-      overrides.rfnbo ?? RFNBOType.NOT_SPECIFIED,
+      overrides.rfnbo ?? RFNBOType.RFNBO_READY,
     ),
   createHydrogenBatch: (overrides: Partial<BatchEntity> = {}): BatchEntity =>
     new BatchEntity(
@@ -52,6 +52,6 @@ export const BatchEntityFixture = {
       overrides.hydrogenStorageUnit ?? undefined,
       overrides.qualityDetails ?? QualityDetailsEntityFixture.createGreen(),
       overrides.processStepId ?? 'process-step-3',
-      overrides.rfnbo ?? RFNBOType.NOT_SPECIFIED,
+      overrides.rfnbo ?? RFNBOType.RFNBO_READY,
     ),
 } as const;

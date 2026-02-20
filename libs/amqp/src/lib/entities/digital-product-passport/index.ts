@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './general-information.entity';
 export * from './proof.entity';
 export * from './proof-of-origin';
 export * from './proof-of-sustainability';

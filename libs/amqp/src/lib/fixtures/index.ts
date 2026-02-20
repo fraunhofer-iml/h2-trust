@@ -10,7 +10,6 @@ export * from './address.entity.fixture';
 export * from './batch.entity.fixture';
 export * from './company.entity.fixture';
 export * from './document.entity.fixture';
-export * from './general-information.entity.fixture';
 export * from './hydrogen-component.entity.fixture';
 export * from './hydrogen-production-unit.entity.fixture';
 export * from './power-production-type.entity.fixture';

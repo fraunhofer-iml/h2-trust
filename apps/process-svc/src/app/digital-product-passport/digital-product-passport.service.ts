@@ -162,7 +162,7 @@ export class DigitalProductPassportService {
     );
   }
 
-  private async calculateHydrogenComposition(processStep: ProcessStepEntity): Promise<HydrogenComponentEntity[]> {
+  async calculateHydrogenComposition(processStep: ProcessStepEntity): Promise<HydrogenComponentEntity[]> {
     if (processStep.type === ProcessType.HYDROGEN_BOTTLING) {
       return HydrogenComponentAssembler.assemble(processStep);
     }
