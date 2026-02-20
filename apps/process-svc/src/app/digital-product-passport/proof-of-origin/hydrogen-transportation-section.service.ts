@@ -21,8 +21,6 @@ import { EmissionAssembler } from './emission.assembler';
 
 @Injectable()
 export class HydrogenTransportationSectionService {
-  constructor() {}
-
   static buildSection(
     hydrogenTransportation: ProcessStepEntity,
     hydrogenCompositions: HydrogenComponentEntity[],

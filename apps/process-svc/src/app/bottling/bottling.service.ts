@@ -40,7 +40,7 @@ export class BottlingService {
   ): Promise<ProcessStepEntity[]> {
     const processStepEntities: ProcessStepEntity[] =
       await this.processStepService.readProcessStepsByTypesAndActiveAndOwner(payload);
-    for (let i: number = 0; i < processStepEntities.length; i++) {
+    for (let i = 0; i < processStepEntities.length; i++) {
       processStepEntities[i].batch.rfnbo =
         await this.digitalProductPassportCalculationService.getRfnboTypeForProcessStep(processStepEntities[i]);
     }
@@ -65,7 +65,7 @@ export class BottlingService {
       );
     }
 
-    for (let i: number = 0; i < allProcessStepsFromStorageUnit.length; i++) {
+    for (let i = 0; i < allProcessStepsFromStorageUnit.length; i++) {
       allProcessStepsFromStorageUnit[i].batch.rfnbo =
         await this.digitalProductPassportCalculationService.getRfnboTypeForProcessStep(
           allProcessStepsFromStorageUnit[i],

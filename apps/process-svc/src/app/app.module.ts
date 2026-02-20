@@ -7,10 +7,10 @@
  */
 
 import { Module } from '@nestjs/common';
+import { BottlingModule } from './bottling/bottling.module';
 import { DigitalProductPassportModule } from './digital-product-passport/digital-product-passport.module';
 import { ProcessStepModule } from './process-step/process-step.module';
 import { ProductionModule } from './production/production.module';
-import { BottlingModule } from './bottling/bottling.module';
 import { TransportationModule } from './transportation/transportation.module';
 
 @Module({
