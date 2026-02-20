@@ -40,7 +40,7 @@ export class CreateHydrogenBottlingPayload {
 
   @IsEnum(RFNBOType)
   @IsNotEmpty()
-  rfnboReady: RFNBOType;
+  rfnboType: RFNBOType;
 
   @IsArray()
   @IsOptional()
@@ -53,7 +53,7 @@ export class CreateHydrogenBottlingPayload {
     recordedById: string,
     hydrogenStorageUnitId: string,
     color: HydrogenColor,
-    rfnboReady: RFNBOType,
+    rfnboType: RFNBOType,
     files?: Express.Multer.File[],
   ) {
     this.amount = amount;
@@ -62,7 +62,7 @@ export class CreateHydrogenBottlingPayload {
     this.recordedById = recordedById;
     this.hydrogenStorageUnitId = hydrogenStorageUnitId;
     this.color = color;
-    this.rfnboReady = rfnboReady;
+    this.rfnboType = rfnboType;
     this.files = files;
   }
 }

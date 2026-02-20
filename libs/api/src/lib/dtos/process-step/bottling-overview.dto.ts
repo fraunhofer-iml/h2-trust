@@ -32,7 +32,7 @@ export class BottlingOverviewDto {
       owner: processStep.batch?.owner?.name,
       filledAmount: processStep.batch?.amount,
       color: processStep.batch?.qualityDetails?.color,
-      rnfbo: processStep.batch?.rfnbo,
+      rnfbo: processStep.batch?.rfnboType,
     };
   }
 }

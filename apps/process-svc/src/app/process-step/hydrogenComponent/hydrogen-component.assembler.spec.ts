@@ -72,12 +72,12 @@ describe('HydrogenComponentAssembler', () => {
             BatchEntityFixture.createHydrogenBatch({
               amount: 60,
               qualityDetails: QualityDetailsEntityFixture.createGreen(),
-              rfnbo: RFNBOType.RFNBO_READY,
+              rfnboType: RFNBOType.RFNBO_READY,
             }),
             BatchEntityFixture.createHydrogenBatch({
               amount: 40,
               qualityDetails: QualityDetailsEntityFixture.createYellow(),
-              rfnbo: RFNBOType.NON_CERTIFIABLE,
+              rfnboType: RFNBOType.NON_CERTIFIABLE,
             }),
           ],
         }),
@@ -88,8 +88,8 @@ describe('HydrogenComponentAssembler', () => {
 
       // Assert
       expect(actualResult).toHaveLength(2);
-      expect(actualResult.find((c) => c.rfnbo === RFNBOType.RFNBO_READY).amount).toBe(60);
-      expect(actualResult.find((c) => c.rfnbo === RFNBOType.NON_CERTIFIABLE).amount).toBe(40);
+      expect(actualResult.find((c) => c.rfnboType === RFNBOType.RFNBO_READY).amount).toBe(60);
+      expect(actualResult.find((c) => c.rfnboType === RFNBOType.NON_CERTIFIABLE).amount).toBe(40);
     });
 
     it('throws error when process step is undefined', () => {

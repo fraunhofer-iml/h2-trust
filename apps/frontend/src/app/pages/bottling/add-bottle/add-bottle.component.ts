@@ -129,7 +129,7 @@ export class AddBottleComponent {
     data.append('recordedBy', '');
     data.append('hydrogenStorageUnit', this.bottleFormGroup.value.storageUnit?.id ?? '');
     data.append('color', 'MIX');
-    data.append('rfnboReady', this.bottleFormGroup.value.type ?? '');
+    data.append('rfnboType', this.bottleFormGroup.value.type ?? '');
     data.append('transportMode', this.bottleFormGroup.value.transportMode ?? '');
     data.append('fuelType', this.bottleFormGroup.value.fuelType ?? '');
     data.append('distance', this.bottleFormGroup.value.distance?.toString() ?? '');
@@ -194,6 +194,6 @@ export class AddBottleComponent {
   }
 
   getAvailableGreenAmount(hydrogenComposition: HydrogenComponentDto[]) {
-    return hydrogenComposition.find((item) => item.rfnbo == RFNBOType.RFNBO_READY)?.amount ?? 0;
+    return hydrogenComposition.find((item) => item.rfnboType == RFNBOType.RFNBO_READY)?.amount ?? 0;
   }
 }

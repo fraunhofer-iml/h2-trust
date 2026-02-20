@@ -35,7 +35,7 @@ export class BottlingAllocator {
       const { batchesForBottle, processStepsToBeSplit, consumedSplitProcessSteps, processStepsForRemainingAmount } =
         BottlingAllocator.processBottlingForEachRFNBO(
           processSteps,
-          hydrogenComponent.rfnbo as RFNBOType,
+          hydrogenComponent.rfnboType as RFNBOType,
           hydrogenComponent.amount,
           hydrogenStorageUnitId,
         );
@@ -58,7 +58,7 @@ export class BottlingAllocator {
     //All process steps (hydrogen production) of the hydrogen storage unit, i.e. all batches from which the bottling is to be created.
     processSteps: ProcessStepEntity[],
     //The RFNBO value of one of the bottlings to be produced
-    rfnbo: RFNBOType,
+    rfnboType: RFNBOType,
     //Number of units of the bottling to be produced
     amount: number,
     //The hydrogen storage facility from which the bottlings are to be taken.
@@ -66,7 +66,7 @@ export class BottlingAllocator {
   ): BottlingAllocation {
     //filters out all HydrogenStorage batches that have the same RFNBO status as the filling to be created.
     const processStepsFromHydrogenStorageWithRequestedRFNBOStatus = processSteps.filter(
-      (ps) => ps.batch.rfnbo === rfnbo,
+      (ps) => ps.batch.rfnboType === rfnboType,
     );
 
     const { selectedProcessSteps, remainingAmount } =
@@ -74,7 +74,7 @@ export class BottlingAllocator {
         processStepsFromHydrogenStorageWithRequestedRFNBOStatus,
         amount,
         hydrogenStorageUnitId,
-        rfnbo,
+        rfnboType,
       );
 
     return BottlingAllocator.splitLastProcessStepIfNeeded(selectedProcessSteps, remainingAmount);
@@ -84,7 +84,7 @@ export class BottlingAllocator {
     availableProcessSteps: ProcessStepEntity[],
     requestedAmount: number,
     storageUnitId: string,
-    rfnbo: string,
+    rfnboType: string,
   ): { selectedProcessSteps: ProcessStepEntity[]; remainingAmount: number } {
     const selectedProcessSteps: ProcessStepEntity[] = [];
     let pendingAmount = requestedAmount;
@@ -100,7 +100,7 @@ export class BottlingAllocator {
       pendingAmount -= currentProcessStep.batch.amount;
     }
 
-    const message = `There is not enough hydrogen in storage unit ${storageUnitId} for the requested amount of ${requestedAmount} of quality ${rfnbo}.`;
+    const message = `There is not enough hydrogen in storage unit ${storageUnitId} for the requested amount of ${requestedAmount} of quality ${rfnboType}.`;
     throw new BrokerException(message, HttpStatus.BAD_REQUEST);
   }
 

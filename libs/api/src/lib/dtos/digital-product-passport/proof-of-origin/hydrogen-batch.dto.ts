@@ -17,7 +17,7 @@ export class HydrogenBatchDto extends BatchDto {
   typeOfProduction: string;
   hydrogenComposition: HydrogenComponentDto[];
   color: string;
-  rfnboReady: boolean;
+  rfnboType: boolean;
   processStep: string;
 
   // optional for all bottled batches, since bottled batches only have a creation/bottling time and no accounting period
@@ -34,7 +34,7 @@ export class HydrogenBatchDto extends BatchDto {
     typeOfProduction: string,
     hydrogenComposition: HydrogenComponentDto[],
     color: string,
-    rfnboReady: boolean,
+    rfnboType: boolean,
     processStep: string,
     accountingPeriodEnd?: Date,
   ) {
@@ -44,7 +44,7 @@ export class HydrogenBatchDto extends BatchDto {
     this.typeOfProduction = typeOfProduction;
     this.hydrogenComposition = hydrogenComposition;
     this.color = color;
-    this.rfnboReady = rfnboReady;
+    this.rfnboType = rfnboType;
     this.processStep = processStep;
     this.accountingPeriodEnd = accountingPeriodEnd;
   }

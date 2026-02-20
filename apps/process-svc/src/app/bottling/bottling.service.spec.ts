@@ -97,7 +97,7 @@ describe('BottlingService', () => {
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
           qualityDetails: QualityDetailsEntityFixture.createGreen(),
-          rfnbo: RFNBOType.RFNBO_READY,
+          rfnboType: RFNBOType.RFNBO_READY,
         }),
       });
 
@@ -137,13 +137,13 @@ describe('BottlingService', () => {
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
           qualityDetails: QualityDetailsEntityFixture.createGreen(),
-          rfnbo: RFNBOType.RFNBO_READY,
+          rfnboType: RFNBOType.RFNBO_READY,
         }),
       });
 
       const givenHydrogenStorageUnit = {
         id: 'storage-unit-1',
-        filling: [{ color: HydrogenColor.GREEN, amount: 100, rfnbo: RFNBOType.RFNBO_READY }],
+        filling: [{ color: HydrogenColor.GREEN, amount: 100, rfnboType: RFNBOType.RFNBO_READY }],
       };
 
       const givenCreatedBottlingProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
@@ -199,7 +199,7 @@ describe('BottlingService', () => {
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
           qualityDetails: QualityDetailsEntityFixture.createGreen(),
-          rfnbo: RFNBOType.RFNBO_READY,
+          rfnboType: RFNBOType.RFNBO_READY,
         }),
       });
 

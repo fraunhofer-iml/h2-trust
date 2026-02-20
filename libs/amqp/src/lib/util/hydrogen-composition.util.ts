@@ -25,8 +25,8 @@ export class HydrogenCompositionUtil {
     }
 
     return mergedHydrogenComponents.map(
-      ({ processId, color, amount, rfnbo }) =>
-        new HydrogenComponentEntity(processId, color, (bottleAmount * amount) / totalPredecessorAmount, rfnbo),
+      ({ processId, color, amount, rfnboType }) =>
+        new HydrogenComponentEntity(processId, color, (bottleAmount * amount) / totalPredecessorAmount, rfnboType),
     );
   }
 
@@ -45,21 +45,21 @@ export class HydrogenCompositionUtil {
     combinedComponents: HydrogenComponentEntity[],
     componentToMerge: HydrogenComponentEntity,
   ): HydrogenComponentEntity[] {
-    const matchingComponent = combinedComponents.find((c) => c.rfnbo === componentToMerge.rfnbo);
+    const matchingComponent = combinedComponents.find((c) => c.rfnboType === componentToMerge.rfnboType);
 
     if (matchingComponent) {
       const updatedComponent = new HydrogenComponentEntity(
         '',
         matchingComponent.color,
         matchingComponent.amount + componentToMerge.amount,
-        matchingComponent.rfnbo,
+        matchingComponent.rfnboType,
       );
-      return combinedComponents.map((c) => (c.rfnbo === componentToMerge.rfnbo ? updatedComponent : c));
+      return combinedComponents.map((c) => (c.rfnboType === componentToMerge.rfnboType ? updatedComponent : c));
     }
 
     return [
       ...combinedComponents,
-      new HydrogenComponentEntity('', componentToMerge.color, componentToMerge.amount, componentToMerge.rfnbo),
+      new HydrogenComponentEntity('', componentToMerge.color, componentToMerge.amount, componentToMerge.rfnboType),
     ];
   }
 }

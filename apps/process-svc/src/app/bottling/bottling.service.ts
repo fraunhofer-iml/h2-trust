@@ -41,7 +41,7 @@ export class BottlingService {
     const processStepEntities: ProcessStepEntity[] =
       await this.processStepService.readProcessStepsByTypesAndActiveAndOwner(payload);
     for (let i = 0; i < processStepEntities.length; i++) {
-      processStepEntities[i].batch.rfnbo =
+      processStepEntities[i].batch.rfnboType =
         await this.digitalProductPassportCalculationService.getRfnboTypeForProcessStep(processStepEntities[i]);
     }
     return processStepEntities;
@@ -66,7 +66,7 @@ export class BottlingService {
     }
 
     for (let i = 0; i < allProcessStepsFromStorageUnit.length; i++) {
-      allProcessStepsFromStorageUnit[i].batch.rfnbo =
+      allProcessStepsFromStorageUnit[i].batch.rfnboType =
         await this.digitalProductPassportCalculationService.getRfnboTypeForProcessStep(
           allProcessStepsFromStorageUnit[i],
         );
@@ -76,13 +76,13 @@ export class BottlingService {
       processId: processStep.id,
       color: processStep.batch.qualityDetails.color,
       amount: processStep.batch.amount,
-      rfnbo: processStep.batch.rfnbo,
+      rfnboType: processStep.batch.rfnboType,
     }));
 
     //These are the required HydrogenComponents, i.e. the fillings that are needed and that are to be tapped.
     const hydrogenComposition: HydrogenComponentEntity[] = await this.determineHydrogenComposition(
       payload.amount,
-      payload.rfnboReady,
+      payload.rfnboType,
       fillings,
       payload.hydrogenStorageUnitId,
     );
@@ -128,12 +128,12 @@ export class BottlingService {
 
   private async determineHydrogenComposition(
     batchAmount: number,
-    rfnboReady: RFNBOType,
+    rfnboType: RFNBOType,
     hydrogenStorageUnitFillings: HydrogenComponentEntity[],
     hydrogenStorageUnitId: string,
   ): Promise<HydrogenComponentEntity[]> {
     //If RFNBO type RFNBO_READY is selected, then only one large filling is required, so there is only one element in the list.
-    if (rfnboReady === RFNBOType.RFNBO_READY) {
+    if (rfnboType === RFNBOType.RFNBO_READY) {
       return [new HydrogenComponentEntity('', HydrogenColor.GREEN, batchAmount, RFNBOType.RFNBO_READY)];
     }
 

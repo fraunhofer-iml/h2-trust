@@ -27,7 +27,7 @@ describe('BottlingAllocator', () => {
           batch: BatchEntityFixture.createHydrogenBatch({
             amount: 100,
             qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            rfnbo: RFNBOType.RFNBO_READY,
+            rfnboType: RFNBOType.RFNBO_READY,
           }),
         }),
       ];
@@ -58,7 +58,7 @@ describe('BottlingAllocator', () => {
             id: 'batch-1',
             amount: 50,
             qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            rfnbo: RFNBOType.RFNBO_READY,
+            rfnboType: RFNBOType.RFNBO_READY,
           }),
         }),
         ProcessStepEntityFixture.createHydrogenProduction({
@@ -67,7 +67,7 @@ describe('BottlingAllocator', () => {
             id: 'batch-2',
             amount: 50,
             qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            rfnbo: RFNBOType.RFNBO_READY,
+            rfnboType: RFNBOType.RFNBO_READY,
           }),
         }),
       ];
@@ -98,7 +98,7 @@ describe('BottlingAllocator', () => {
             hydrogenStorageUnit: HydrogenStorageUnitEntityFixture.create({
               id: givenHydrogenStorageUnitId,
             }),
-            rfnbo: RFNBOType.RFNBO_READY,
+            rfnboType: RFNBOType.RFNBO_READY,
           }),
         }),
       ];
@@ -134,7 +134,7 @@ describe('BottlingAllocator', () => {
             hydrogenStorageUnit: HydrogenStorageUnitEntityFixture.create({
               id: givenHydrogenStorageUnitId,
             }),
-            rfnbo: RFNBOType.RFNBO_READY,
+            rfnboType: RFNBOType.RFNBO_READY,
           }),
         }),
       ];
@@ -172,7 +172,7 @@ describe('BottlingAllocator', () => {
             id: 'batch-green',
             amount: 100,
             qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            rfnbo: RFNBOType.RFNBO_READY,
+            rfnboType: RFNBOType.RFNBO_READY,
           }),
         }),
         ProcessStepEntityFixture.createHydrogenProduction({
@@ -181,7 +181,7 @@ describe('BottlingAllocator', () => {
             id: 'batch-yellow',
             amount: 100,
             qualityDetails: QualityDetailsEntityFixture.createYellow(),
-            rfnbo: RFNBOType.NON_CERTIFIABLE,
+            rfnboType: RFNBOType.NON_CERTIFIABLE,
           }),
         }),
       ];
@@ -207,7 +207,7 @@ describe('BottlingAllocator', () => {
           batch: BatchEntityFixture.createHydrogenBatch({
             amount: 50,
             qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            rfnbo: RFNBOType.RFNBO_READY,
+            rfnboType: RFNBOType.RFNBO_READY,
           }),
         }),
       ];
@@ -229,7 +229,7 @@ describe('BottlingAllocator', () => {
           batch: BatchEntityFixture.createHydrogenBatch({
             amount: 100,
             qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            rfnbo: RFNBOType.RFNBO_READY,
+            rfnboType: RFNBOType.RFNBO_READY,
           }),
         }),
       ];

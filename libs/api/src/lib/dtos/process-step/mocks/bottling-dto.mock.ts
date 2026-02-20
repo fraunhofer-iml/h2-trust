@@ -13,7 +13,7 @@ export const BottlingDtoMock = <BottlingDto[]>[
   <BottlingDto>{
     amount: 1,
     color: HydrogenColor.GREEN,
-    rfnboReady: RFNBOType.RFNBO_READY,
+    rfnboType: RFNBOType.RFNBO_READY,
     recipient: 'company-recipient-1',
     filledAt: '2025-04-07T00:00:00.000Z',
     recordedBy: 'user-id-1',

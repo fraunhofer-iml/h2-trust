@@ -84,7 +84,7 @@ describe('BottlingController', () => {
       hydrogenStorageUnitId: givenDto.hydrogenStorageUnit,
       color: givenDto.color,
       files: [] as Express.Multer.File[],
-      rfnboReady: RFNBOType.RFNBO_READY,
+      rfnboType: RFNBOType.RFNBO_READY,
     };
 
     const expectedBatchSvcPayload2 = {

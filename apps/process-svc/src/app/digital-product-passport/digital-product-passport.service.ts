@@ -45,7 +45,7 @@ export class DigitalProductPassportService {
 
   async getRfnboTypeForProcessStep(processStep: ProcessStepEntity): Promise<RFNBOType> {
     const dpp: DigitalProductPassportEntity = await this.readDigitalProductPassport(processStep);
-    return dpp.rfnboReady ? RFNBOType.RFNBO_READY : RFNBOType.NON_CERTIFIABLE;
+    return dpp.rfnboType ? RFNBOType.RFNBO_READY : RFNBOType.NON_CERTIFIABLE;
   }
 
   async getDppForProcessStepId(processStepId: string): Promise<DigitalProductPassportEntity> {

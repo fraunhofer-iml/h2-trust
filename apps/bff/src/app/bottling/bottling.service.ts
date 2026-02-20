@@ -43,7 +43,7 @@ export class BottlingService {
       userId,
       dto.hydrogenStorageUnit,
       dto.color,
-      dto.rfnboReady,
+      dto.rfnboType,
       files,
     );
 

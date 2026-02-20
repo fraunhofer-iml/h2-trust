@@ -68,7 +68,7 @@ export class UnitService {
             new ReadByIdPayload(hydrogenStorageUnits[i].filling[j].processId),
           ),
         );
-        hydrogenStorageUnits[i].filling[j].rfnbo = rfnboType;
+        hydrogenStorageUnits[i].filling[j].rfnboType = rfnboType;
       }
     }
     return hydrogenStorageUnits;

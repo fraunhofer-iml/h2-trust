@@ -65,7 +65,7 @@ export class BatchAssembler {
           processId: '',
           color: hydrogenStorage.batch?.qualityDetails?.color,
           amount: hydrogenStorage.batch.amount,
-          rfnbo: RFNBOType.NOT_SPECIFIED,
+          rfnboType: RFNBOType.NOT_SPECIFIED,
         },
       ],
       producer: hydrogenStorage.batch.owner?.name,

@@ -25,7 +25,7 @@ export class DigitalProductPassportEntity {
   attachedFiles: DocumentEntity[];
   redCompliance: RedComplianceEntity;
   isEmissionReductionAbove70Percent: boolean;
-  rfnboReady: boolean;
+  rfnboType: boolean;
   proofOfSustainability: ProofOfSustainabilityEntity;
   proofOfOrigin: ProofOfOriginSectionEntity[];
   gridPowerUsed: boolean;
@@ -59,7 +59,7 @@ export class DigitalProductPassportEntity {
     this.gridPowerUsed = hydrogenComposition.some(
       (element: HydrogenComponentEntity) => element.color === HydrogenColor.YELLOW,
     );
-    this.rfnboReady =
+    this.rfnboType =
       this.isEmissionReductionAbove70Percent &&
       this.redCompliance.isGeoCorrelationValid &&
       this.redCompliance.isTimeCorrelationValid &&

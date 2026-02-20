@@ -39,7 +39,7 @@ export class BottlingDto {
 
   @IsNotEmpty()
   @IsEnum(RFNBOType)
-  rfnboReady: RFNBOType;
+  rfnboType: RFNBOType;
 
   @IsOptional()
   @IsString()
@@ -68,7 +68,7 @@ export class BottlingDto {
     recordedBy: string,
     hydrogenStorageUnit: string,
     color: HydrogenColor,
-    rfnboReady: RFNBOType,
+    rfnboType: RFNBOType,
     file: string,
     transportMode: TransportMode,
     distance: number,
@@ -80,7 +80,7 @@ export class BottlingDto {
     this.recordedBy = recordedBy;
     this.hydrogenStorageUnit = hydrogenStorageUnit;
     this.color = color;
-    this.rfnboReady = rfnboReady;
+    this.rfnboType = rfnboType;
     this.file = file;
     this.transportMode = transportMode;
     this.distance = distance;

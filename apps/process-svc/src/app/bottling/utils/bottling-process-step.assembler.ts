@@ -21,7 +21,7 @@ export class BottlingProcessStepAssembler {
         qualityDetails: {
           color: BottlingProcessStepAssembler.determineBottleQualityFromPredecessors(batchesForBottle),
         },
-        rfnbo: BottlingProcessStepAssembler.determineBottleRFNBOFromPredecessors(batchesForBottle),
+        rfnboType: BottlingProcessStepAssembler.determineBottleRFNBOFromPredecessors(batchesForBottle),
         type: BatchType.HYDROGEN,
         predecessors: batchesForBottle.map((batch) => ({
           id: batch.id,
@@ -50,8 +50,8 @@ export class BottlingProcessStepAssembler {
 
   private static determineBottleRFNBOFromPredecessors(predecessors: BatchEntity[]): RFNBOType {
     const rfnboTypes: RFNBOType[] = predecessors
-      .map((batch) => batch.rfnbo)
-      .map((rfnbo) => RFNBOType[rfnbo as keyof typeof RFNBOType]);
+      .map((batch) => batch.rfnboType)
+      .map((rfnboType) => RFNBOType[rfnboType as keyof typeof RFNBOType]);
 
     if (rfnboTypes.length === 0) {
       throw new BrokerException(`No predecessor rfnbo status specified`, HttpStatus.BAD_REQUEST);

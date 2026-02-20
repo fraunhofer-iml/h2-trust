@@ -61,14 +61,14 @@ export class HydrogenStorageOverviewDto {
   private static mapHydrogenComposition(unit: HydrogenStorageUnitEntity): HydrogenComponentDto[] {
     const compositionMap = new Map<string, number>();
     unit.filling?.forEach((filling: HydrogenComponentEntity) => {
-      if (filling.rfnbo == null || filling.amount == null) {
+      if (filling.rfnboType == null || filling.amount == null) {
         throw new Error('One or more fillings contain undefined values.');
       }
-      compositionMap.set(filling.rfnbo, (compositionMap.get(filling.rfnbo) ?? 0) + filling.amount);
+      compositionMap.set(filling.rfnboType, (compositionMap.get(filling.rfnboType) ?? 0) + filling.amount);
     });
-    return Array.from(compositionMap, ([rfnbo, amount]) => ({
+    return Array.from(compositionMap, ([rfnboType, amount]) => ({
       processId: '',
-      rfnbo: rfnbo,
+      rfnboType: rfnboType,
       color: '',
       amount: amount,
     }));

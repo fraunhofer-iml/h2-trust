@@ -33,7 +33,7 @@ export class RfnboComplianceComponent {
   }
 
   rfnboStatus = computed(() =>
-    this.redCompliance()?.rfnboReady
+    this.redCompliance()?.rfnboType
       ? { text: RfnboStatus.RFNBO_READY, icon: 'editor_choice' }
       : { text: RfnboStatus.NON_CERTIFIABLE, icon: 'release_alert' },
   );

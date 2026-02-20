@@ -15,20 +15,20 @@ export const HydrogenComponentEntityFixture = {
       '',
       overrides.color ?? HydrogenColor.GREEN,
       overrides.amount ?? 100,
-      overrides.rfnbo ?? RFNBOType.RFNBO_READY,
+      overrides.rfnboType ?? RFNBOType.RFNBO_READY,
     ),
   createYellow: (overrides: Partial<HydrogenComponentEntity> = {}): HydrogenComponentEntity =>
     new HydrogenComponentEntity(
       '',
       overrides.color ?? HydrogenColor.YELLOW,
       overrides.amount ?? 100,
-      overrides.rfnbo ?? RFNBOType.NON_CERTIFIABLE,
+      overrides.rfnboType ?? RFNBOType.NON_CERTIFIABLE,
     ),
   createMix: (overrides: Partial<HydrogenComponentEntity> = {}): HydrogenComponentEntity =>
     new HydrogenComponentEntity(
       '',
       overrides.color ?? HydrogenColor.MIX,
       overrides.amount ?? 100,
-      overrides.rfnbo ?? RFNBOType.NON_CERTIFIABLE,
+      overrides.rfnboType ?? RFNBOType.NON_CERTIFIABLE,
     ),
 } as const;
