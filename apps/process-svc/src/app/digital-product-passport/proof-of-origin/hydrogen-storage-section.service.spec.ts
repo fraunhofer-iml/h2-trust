@@ -45,7 +45,7 @@ describe('HydrogenStorageSectionService', () => {
       const givenHydrogenProductions = [givenGreenHydrogenProduction, givenYellowHydrogenProduction];
 
       // Act
-      const actualResult = await service.buildSection(givenHydrogenProductions);
+      const actualResult = HydrogenStorageSectionService.buildSection(givenHydrogenProductions);
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_STORAGE_SECTION);
@@ -78,7 +78,7 @@ describe('HydrogenStorageSectionService', () => {
       const givenHydrogenProductions: ProcessStepEntity[] = [];
 
       // Act
-      const actualResult = await service.buildSection(givenHydrogenProductions);
+      const actualResult = HydrogenStorageSectionService.buildSection(givenHydrogenProductions);
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_STORAGE_SECTION);
@@ -88,7 +88,7 @@ describe('HydrogenStorageSectionService', () => {
 
     it('returns empty section when hydrogen productions is undefined', async () => {
       // Act
-      const actualResult = await service.buildSection(undefined);
+      const actualResult = HydrogenStorageSectionService.buildSection(undefined);
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_STORAGE_SECTION);

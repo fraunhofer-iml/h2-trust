@@ -43,11 +43,12 @@ describe('HydrogenBottlingSectionService', () => {
       bottlingServiceMock.calculateHydrogenComposition.mockResolvedValue(givenHydrogenCompositions);
 
       // Act
-      const actualResult = await service.buildSection(givenHydrogenBottling, []);
+      const actualResult = HydrogenBottlingSectionService.buildSection(
+        givenHydrogenBottling,
+        givenHydrogenCompositions,
+      );
 
       // Assert
-      expect(bottlingServiceMock.calculateHydrogenComposition).toHaveBeenCalledWith(givenHydrogenBottling);
-
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_BOTTLING_SECTION);
       expect(actualResult.batches).toHaveLength(1);
       expect(actualResult.classifications).toEqual([]);
