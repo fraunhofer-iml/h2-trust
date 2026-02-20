@@ -6,9 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { of } from 'rxjs';
+import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   AddressPayload,
+  BrokerQueues,
   CompanyEntityPowerMock,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
@@ -35,6 +38,7 @@ import {
   powerProductionUnitQueryArgs,
   PrismaService,
 } from '@h2-trust/database';
+import { RFNBOType } from '@h2-trust/domain';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
 
@@ -42,6 +46,7 @@ describe('UnitController', () => {
   let controller: UnitController;
   let prisma: PrismaService;
   let unitService: UnitService;
+  let queue: ClientProxy;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -49,6 +54,12 @@ describe('UnitController', () => {
       controllers: [UnitController],
       providers: [
         UnitService,
+        {
+          provide: BrokerQueues.QUEUE_PROCESS_SVC,
+          useValue: {
+            send: jest.fn(),
+          },
+        },
         {
           provide: PrismaService,
           useValue: {
@@ -65,6 +76,7 @@ describe('UnitController', () => {
     controller = module.get<UnitController>(UnitController);
     unitService = module.get(UnitService);
     prisma = module.get<PrismaService>(PrismaService);
+    queue = module.get(BrokerQueues.QUEUE_PROCESS_SVC);
   });
 
   it('should be defined', () => {
@@ -129,6 +141,10 @@ describe('UnitController', () => {
 
   it('should get hydrogen storage units', async () => {
     const expectedResponse = HydrogenStorageUnitDbTypeMock[0];
+    const sendRequestSpy = jest.spyOn(queue, 'send');
+    sendRequestSpy.mockImplementation(() => {
+      return of(RFNBOType.NOT_SPECIFIED);
+    });
 
     jest.spyOn(prisma.unit, 'findMany').mockResolvedValue([expectedResponse]);
 
