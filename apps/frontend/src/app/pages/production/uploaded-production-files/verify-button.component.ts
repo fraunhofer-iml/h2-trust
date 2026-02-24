@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { injectQuery } from '@tanstack/angular-query-experimental';
@@ -9,7 +10,7 @@ import { VerificationDetailsComponent } from './verification-details/verificatio
 
 @Component({
   selector: 'app-verify-button',
-  imports: [MatButtonModule, BaseSheetComponent, VerificationDetailsComponent],
+  imports: [MatButtonModule, BaseSheetComponent, VerificationDetailsComponent, CommonModule],
   templateUrl: './verify-button.component.html',
 })
 export class VerifyButtonComponent {

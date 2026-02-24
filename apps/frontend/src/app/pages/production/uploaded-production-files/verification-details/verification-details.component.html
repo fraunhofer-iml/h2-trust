@@ -1,3 +1,15 @@
 <div class="flex h-full w-full flex-col gap-4">
+  <h1 class="font-semibold">Verification Result</h1>
+  <div
+    class="rounded-md border-2 p-4"
+    [ngClass]="{
+      'border-red-600 bg-red-600/20 text-red-600': result()?.status === 'MISMATCHED',
+      'border-yellow-600 bg-yellow-600/20 text-yellow-600': result()?.status === 'FAILED',
+      'border-secondary-500 bg-secondary-500/20 text-secondary-500': result()?.status === 'VERIFIED',
+    }"
+  >
+    <h2>{{ result()?.status }}</h2>
+    <p>Verification Failed due to mismatch</p>
+  </div>
   <h1>{{ result()?.id }}</h1>
 </div>
