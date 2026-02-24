@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { toast } from 'ngx-sonner';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, computed, effect, inject, signal, ViewChild } from '@angular/core';
@@ -177,7 +178,11 @@ export class ProductionFilesComponent implements AfterViewInit {
     this.selection.select(...this.dataSource.data);
   }
 
-  setResult(e: ValidationResult) {
+  setResult(e: ValidationResult | undefined) {
+    if (!e) {
+      toast.error('Unknown error. Vailed to Validate.');
+      return;
+    }
     this.verifingResults.set(e.id, e);
   }
 

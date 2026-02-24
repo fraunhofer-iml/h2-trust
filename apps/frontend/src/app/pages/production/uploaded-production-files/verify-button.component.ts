@@ -1,28 +1,34 @@
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ProcessedCsvDto } from '@h2-trust/api';
+import { BaseSheetComponent } from '../../../layout/sheet/sheet.component';
+import { ProductionService } from '../../../shared/services/production/production.service';
 import { ValidationResult } from './validated-file';
+import { VerificationDetailsComponent } from './verification-details/verification-details.component';
 
 @Component({
   selector: 'app-verify-button',
-  imports: [MatButtonModule],
+  imports: [MatButtonModule, BaseSheetComponent, VerificationDetailsComponent],
   templateUrl: './verify-button.component.html',
 })
 export class VerifyButtonComponent {
+  fileService = inject(ProductionService);
+
   file = input.required<ProcessedCsvDto>();
 
   verifying = false;
 
-  verificationEMitter = output<ValidationResult>();
+  verificationQuery = injectQuery(() => ({
+    queryKey: ['verify', this.file().id],
+    queryFn: async () => await this.fileService.validateFile(),
+    enabled: false,
+  }));
 
-  verify() {
-    this.verifying = true;
+  verificationEMitter = output<ValidationResult | undefined>();
 
-    this.verificationEMitter.emit({
-      status: 'MISMATCHED',
-      id: this.file().id,
-      tooltip: 'MISMATCHED',
-    });
-    this.verifying = false;
+  async verify() {
+    const res = await this.verificationQuery.refetch();
+    this.verificationEMitter.emit(res.data);
   }
 }

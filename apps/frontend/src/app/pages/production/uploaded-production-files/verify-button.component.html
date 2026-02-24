@@ -1,8 +1,16 @@
-<button matButton="tonal" (click)="verify()" [disabled]="verifying" class="w-36 enabled:!bg-primary-200">
-  <span class="flex flex-row items-center gap-2">
-    @if (verifying) {
+@if (verificationQuery.isFetching()) {
+  <button matButton (click)="verificationQuery.refetch()" disabled class="w-36 gap-1 enabled:!bg-primary-200">
+    <span class="flex flex-row items-center gap-2">
       <span class="material-symbols-outlined animate-spin" matButtonPrefix>progress_activity</span>
-    }
-    {{ verifying ? 'Verifiying...' : 'Verify' }}
-  </span>
-</button>
+      Verifiying...
+    </span>
+  </button>
+} @else if (!verificationQuery.data() || verificationQuery.data()?.status === 'FAILED') {
+  <button matButton="tonal" (click)="verificationQuery.refetch()" class="w-36 !bg-primary-200">Verifiy</button>
+} @else {
+  <button matButton="outlined" (click)="sheet.open()" class="w-36">Details</button>
+}
+
+<app-base-sheet #sheet>
+  <app-verification-details [result]="verificationQuery.data()"></app-verification-details>
+</app-base-sheet>

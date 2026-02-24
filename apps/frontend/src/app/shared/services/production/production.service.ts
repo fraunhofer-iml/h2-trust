@@ -17,6 +17,7 @@ import {
   ProcessedCsvDto,
   ProductionOverviewDto,
 } from '@h2-trust/api';
+import { ValidationResult } from '../../../pages/production/uploaded-production-files/validated-file';
 import { API } from '../../constants/api-endpoints';
 
 @Injectable()
@@ -49,5 +50,13 @@ export class ProductionService {
         responseType: 'blob',
       }),
     );
+  }
+
+  async validateFile(): Promise<ValidationResult> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ id: '123', status: 'VERIFIED', tooltip: 'string' });
+      }, 500);
+    });
   }
 }

@@ -130,11 +130,7 @@
         <ng-container matColumnDef="button">
           <th mat-header-cell *matHeaderCellDef>Validation</th>
           <td mat-cell *matCellDef="let file">
-            @if (!verifingResults.get(file.id) || verifingResults.get(file.id)?.status === 'FAILED') {
-              <app-verify-button [file]="file" (verificationEMitter)="setResult($event)"></app-verify-button>
-            } @else {
-              <button matButton="tonal" class="w-36 !bg-neutral-200" (click)="openDetailsPane(file.id)">Details</button>
-            }
+            <app-verify-button [file]="file" (verificationEMitter)="setResult($event)"></app-verify-button>
           </td>
         </ng-container>
 

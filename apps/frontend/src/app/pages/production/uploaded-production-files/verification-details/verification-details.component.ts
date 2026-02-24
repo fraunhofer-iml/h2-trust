@@ -1,8 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
+import { ValidationResult } from '../validated-file';
 
 @Component({
   selector: 'app-verification-details',
   imports: [],
   templateUrl: './verification-details.component.html',
 })
-export class VerificationDetailsComponent {}
+export class VerificationDetailsComponent {
+  result = input<ValidationResult>();
+}
