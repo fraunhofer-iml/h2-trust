@@ -7,7 +7,7 @@
  */
 
 import { AuthenticatedUser } from 'nest-keycloak-connect';
-import { Body, Controller, Get, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import {
@@ -127,5 +127,19 @@ export class ProductionController {
   @ApiBearerAuth()
   submitCsvData(@Body() dto: ImportSubmissionDto, @AuthenticatedUser() user: AuthenticatedKCUser) {
     return this.service.submitCsvData(dto, user.sub);
+  }
+
+  @Get('csv/:id')
+  verifyCsvDocumentIntegrity(@Param('id') id: string) {
+    const res = {
+      id: id,
+      status: 'VERIFIED',
+      message: 'verified',
+      timestamp: new Date().toTimeString(),
+      contractAddress: '0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE',
+      txHash: '0x767ebd2ca82dcaae8b7fe4fbbe4f154230d18ec93c8294caeebccfe29d4ce030',
+      network: 'Ethereum',
+    };
+    return res;
   }
 }

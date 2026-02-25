@@ -1,16 +1,16 @@
-@if (verificationQuery.isFetching()) {
-  <button matButton (click)="verificationQuery.refetch()" disabled class="w-36 gap-1 enabled:!bg-primary-200">
+@if (verifying) {
+  <button matMiniFab disabled class="!w-36 gap-1">
     <span class="flex flex-row items-center gap-2">
       <span class="material-symbols-outlined animate-spin" matButtonPrefix>progress_activity</span>
       Verifiying...
     </span>
   </button>
-} @else if (!verificationQuery.data() || verificationQuery.data()?.status === 'FAILED') {
-  <button matButton="tonal" (click)="verificationQuery.refetch()" class="w-36 !bg-primary-200">Verifiy</button>
+} @else if (!result || result.status === 'FAILED') {
+  <button matMiniFab (click)="verify()" class="!w-36 !bg-secondary-200">Verifiy</button>
 } @else {
-  <button matButton="outlined" (click)="sheet.open()" class="w-36">Details</button>
+  <button matMiniFab (click)="sheet.open()" class="!w-36 !bg-neutral-200">Details</button>
 }
 
 <app-base-sheet #sheet>
-  <app-verification-details [result]="verificationQuery.data()"></app-verification-details>
+  <app-verification-details [result]="result"></app-verification-details>
 </app-base-sheet>

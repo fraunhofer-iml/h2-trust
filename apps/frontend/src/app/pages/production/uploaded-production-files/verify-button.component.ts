@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ProcessedCsvDto } from '@h2-trust/api';
 import { BaseSheetComponent } from '../../../layout/sheet/sheet.component';
 import { ProductionService } from '../../../shared/services/production/production.service';
@@ -19,17 +18,16 @@ export class VerifyButtonComponent {
   file = input.required<ProcessedCsvDto>();
 
   verifying = false;
-
-  verificationQuery = injectQuery(() => ({
-    queryKey: ['verify', this.file().id],
-    queryFn: async () => await this.fileService.validateFile(),
-    enabled: false,
-  }));
+  result: ValidationResult | undefined;
 
   verificationEMitter = output<ValidationResult | undefined>();
 
   async verify() {
-    const res = await this.verificationQuery.refetch();
-    this.verificationEMitter.emit(res.data);
+    this.verifying = true;
+    const res = await this.fileService.validateFile(this.file().id);
+    console.log(res);
+    this.result = { ...res, id: this.file().name };
+    this.verificationEMitter.emit({ ...this.result, id: this.file().id });
+    this.verifying = false;
   }
 }

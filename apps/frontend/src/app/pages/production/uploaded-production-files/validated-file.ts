@@ -2,5 +2,9 @@ export interface ValidationResult {
   // TODO
   id: string;
   status: 'VERIFIED' | 'MISMATCHED' | 'FAILED';
-  tooltip: string;
+  message: string;
+  timestamp: string;
+  contractAddress: string;
+  txHash: string;
+  network: string;
 }

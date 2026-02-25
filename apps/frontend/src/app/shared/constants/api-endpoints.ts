@@ -43,7 +43,8 @@ export const API = {
   },
   PRODUCTION: {
     BASE: PRODUCTION_ENDPOINT,
-    CSV: PRODUCTION_ENDPOINT + 'csv',
+    CSV: PRODUCTION_ENDPOINT + 'csv/',
+    CSV_VERIFY: (id: string) => `${API.PRODUCTION.CSV}${id}`,
     CSV_IMPORT: PRODUCTION_ENDPOINT + 'csv/import',
     CSV_SUBMIT: PRODUCTION_ENDPOINT + 'csv/submit',
   },

@@ -96,8 +96,6 @@ export class ProductionFilesComponent implements AfterViewInit {
     end: null,
   });
 
-  expandedId = '';
-
   searchForm = form(this.searchModel, (schemaPath) => {
     debounce(schemaPath.input, 500);
   });
@@ -105,9 +103,8 @@ export class ProductionFilesComponent implements AfterViewInit {
   dataSource: MatTableDataSource<ProcessedCsvDto> = new MatTableDataSource<ProcessedCsvDto>();
   selection = new SelectionModel<ProcessedCsvDto>(true, []);
 
-  verifying = false;
   verifingResults: Map<string, ValidationResult> = new Map();
-  statusIcons = { ['MISMATCHED']: 'error', ['FAILED']: 'warning', ['VERIFIED']: 'check', ['OPEN']: 'circle' };
+  statusIcons = { ['MISMATCHED']: 'cancel', ['FAILED']: 'warning', ['VERIFIED']: 'check_circle', ['OPEN']: 'circle' };
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -180,14 +177,9 @@ export class ProductionFilesComponent implements AfterViewInit {
 
   setResult(e: ValidationResult | undefined) {
     if (!e) {
-      toast.error('Unknown error. Vailed to Validate.');
+      toast.error('Unknown error. Failed to Validate.');
       return;
     }
     this.verifingResults.set(e.id, e);
-  }
-
-  openDetailsPane(id: string) {
-    const result = this.verifingResults.get(id);
-    console.log(result);
   }
 }

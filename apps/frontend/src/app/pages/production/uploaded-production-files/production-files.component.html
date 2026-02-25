@@ -109,15 +109,15 @@
 
         <ng-container matColumnDef="validationStatus">
           <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let file">
+          <td mat-cell *matCellDef="let file" class="!w-44">
             <div
-              [matTooltip]="verifingResults.get(file.id)?.tooltip"
+              [matTooltip]="verifingResults.get(file.id)?.message"
               [matTooltipPosition]="'above'"
-              class="flex flex-row items-center gap-2 rounded-md border-[1px] border-solid border-opacity-30 px-2 py-1 text-sm"
+              class="flex w-fit flex-row items-center gap-2 rounded-md border-[1px] border-solid border-opacity-30 px-2 py-1 text-sm"
               [ngClass]="{
                 'border-red-600 text-red-600': verifingResults.get(file.id)?.status === 'MISMATCHED',
-                'border-yellow-600 text-yellow-600': verifingResults.get(file.id)?.status === 'FAILED',
-                'border-secondary-600 text-secondary-600': verifingResults.get(file.id)?.status === 'VERIFIED',
+                'border-yellow-600 text-yellow-700': verifingResults.get(file.id)?.status === 'FAILED',
+                'border-secondary-500 text-secondary-600': verifingResults.get(file.id)?.status === 'VERIFIED',
               }"
             >
               <span class="material-symbols-outlined text-sm">
@@ -129,7 +129,7 @@
 
         <ng-container matColumnDef="button">
           <th mat-header-cell *matHeaderCellDef>Validation</th>
-          <td mat-cell *matCellDef="let file">
+          <td mat-cell *matCellDef="let file" class="!py-4">
             <app-verify-button [file]="file" (verificationEMitter)="setResult($event)"></app-verify-button>
           </td>
         </ng-container>

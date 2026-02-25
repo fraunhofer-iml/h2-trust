@@ -52,11 +52,7 @@ export class ProductionService {
     );
   }
 
-  async validateFile(): Promise<ValidationResult> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({ id: '123', status: 'VERIFIED', tooltip: 'string' });
-      }, 500);
-    });
+  async validateFile(id: string): Promise<ValidationResult> {
+    return lastValueFrom(this.httpClient.get<ValidationResult>(API.PRODUCTION.CSV_VERIFY(id)));
   }
 }
