@@ -11,27 +11,27 @@ import { CsvDocumentIntegrityStatus } from '@h2-trust/domain';
 
 export class CsvDocumentIntegrityResultDto {
   documentId: string;
-  fileName: string;
+  fileName: string | null;
   status: CsvDocumentIntegrityStatus;
   message: string;
-  transactionHash: string;
-  blockNumber: number;
-  blockTimestamp: Date;
-  network: string;
-  smartContractAddress: string;
-  explorerUrl: string;
+  transactionHash: string | null;
+  blockNumber: number | null;
+  blockTimestamp: Date | null;
+  network: string | null;
+  smartContractAddress: string | null;
+  explorerUrl: string | null;
 
   constructor(
     documentId: string,
-    fileName: string,
+    fileName: string | null,
     status: CsvDocumentIntegrityStatus,
     message: string,
-    transactionHash: string,
-    blockNumber: number,
-    blockTimestamp: Date,
-    network: string,
-    smartContractAddress: string,
-    explorerUrl: string,
+    transactionHash: string | null,
+    blockNumber: number | null,
+    blockTimestamp: Date | null,
+    network: string | null,
+    smartContractAddress: string | null,
+    explorerUrl: string | null,
   ) {
     this.documentId = documentId;
     this.fileName = fileName;
