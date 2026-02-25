@@ -42,7 +42,7 @@ interface ProofStorageContract extends BaseContract {
 
 @Injectable()
 export class BlockchainService {
-  readonly enabled: boolean;
+  readonly blockchainEnabled: boolean;
   readonly rpcUrl?: string;
   readonly smartContractAddress?: string;
   readonly explorerUrl?: string;
@@ -53,9 +53,9 @@ export class BlockchainService {
   constructor(private readonly configurationService: ConfigurationService) {
     const blockchainConfiguration = this.configurationService.getGlobalConfiguration().blockchain;
 
-    this.enabled = blockchainConfiguration.enabled;
+    this.blockchainEnabled = blockchainConfiguration.enabled;
 
-    if (this.enabled) {
+    if (this.blockchainEnabled) {
       this.rpcUrl = blockchainConfiguration.rpcUrl;
       this.smartContractAddress = blockchainConfiguration.smartContractAddress;
       this.explorerUrl = blockchainConfiguration.explorerUrl;
@@ -82,7 +82,7 @@ export class BlockchainService {
   }
 
   async storeProofs(proofEntries: ProofEntry[]): Promise<string | null> {
-    if (!this.enabled) {
+    if (!this.blockchainEnabled) {
       this.logger.debug(`⏭️ Blockchain disabled, skipping proof storage of ${proofEntries.length} entries`);
       return null;
     }
@@ -97,7 +97,7 @@ export class BlockchainService {
   }
 
   async retrieveProof(uuid: string): Promise<ProofEntity | null> {
-    if (!this.enabled) {
+    if (!this.blockchainEnabled) {
       this.logger.debug(`⏭️ Blockchain disabled, skipping proof retrieval for ${uuid}`);
       return null;
     }
@@ -111,7 +111,7 @@ export class BlockchainService {
   }
 
   async retrieveBlockchainMetadata(transactionHash: string): Promise<BlockchainMetadata | null> {
-    if (!this.enabled) {
+    if (!this.blockchainEnabled) {
       this.logger.debug(`⏭️ Blockchain disabled, skipping metadata retrieval for ${transactionHash}`);
       return null;
     }

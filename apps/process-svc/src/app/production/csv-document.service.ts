@@ -35,7 +35,7 @@ export class CsvDocumentService {
       return this.createFailedResult(payload.id, null, message, null);
     }
 
-    if (!this.blockchainService.enabled) {
+    if (!this.blockchainService.blockchainEnabled) {
       const message = 'Blockchain integration is disabled, cannot verify file integrity.';
       return this.createFailedResult(document.id, document.fileName, message, document.transactionHash);
     }
@@ -143,10 +143,10 @@ export class CsvDocumentService {
     const explorerUrl = transactionHash
       ? `${this.blockchainService.explorerUrl}/${transactionHash}`
       : null;
-    const network = this.blockchainService.enabled
+    const network = this.blockchainService.blockchainEnabled
       ? this.blockchainService.rpcUrl
       : null;
-    const smartContractAddress = this.blockchainService.enabled
+    const smartContractAddress = this.blockchainService.blockchainEnabled
       ? this.blockchainService.smartContractAddress
       : null;
 
