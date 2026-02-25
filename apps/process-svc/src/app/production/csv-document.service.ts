@@ -46,15 +46,16 @@ export class CsvDocumentService {
     }
 
     try {
-      if (!(await this.storageService.fileExists(document.fileName))) {
+      const [fileStream, proof, blockchainMetadata] = await Promise.all([
+        this.storageService.downloadFile(document.fileName),
+        this.blockchainService.retrieveProof(document.id),
+        this.blockchainService.retrieveBlockchainMetadata(document.transactionHash),
+      ]);
+
+      if (!fileStream) {
         const message = `File with name ${document.fileName} does not exist in storage, cannot verify file.`;
         return this.createFailedResult(document.id, document.fileName, message, document.transactionHash);
       }
-
-      const [fileStream, proof] = await Promise.all([
-        this.storageService.downloadFile(document.fileName),
-        this.blockchainService.retrieveProof(document.id),
-      ]);
 
       if (!proof) {
         const message = `No blockchain proof found for document with id ${document.id}, cannot verify file.`;
@@ -67,15 +68,13 @@ export class CsvDocumentService {
         `${validHash ? '✅ Valid' : '❌ Invalid'} integrity for document with id ${document.id} and file name ${document.fileName}`,
       );
 
-      const blockchainMetadata = await this.blockchainService.retrieveBlockchainMetadata(document.transactionHash);
-
       return this.createSuccessfulResult(
         document.id,
         document.fileName,
         validHash,
         document.transactionHash,
-        blockchainMetadata.blockNumber,
-        blockchainMetadata.blockTimestamp
+        blockchainMetadata?.blockNumber ?? null,
+        blockchainMetadata?.blockTimestamp ?? null,
       );
     } catch (error) {
       this.logger.error(
@@ -93,8 +92,8 @@ export class CsvDocumentService {
     fileName: string,
     validHash: boolean,
     transactionHash: string,
-    blockNumber: number,
-    blockTimestamp: Date,
+    blockNumber: number | null,
+    blockTimestamp: Date | null,
   ): VerifyCsvDocumentIntegrityResultEntity {
     const status = validHash
       ? CsvDocumentIntegrityStatus.VERIFIED
@@ -140,15 +139,12 @@ export class CsvDocumentService {
     blockNumber: number | null,
     blockTimestamp: Date | null
   ): VerifyCsvDocumentIntegrityResultEntity {
-    const explorerUrl = transactionHash
+    const { blockchainEnabled } = this.blockchainService;
+    const explorerUrl = blockchainEnabled && transactionHash
       ? `${this.blockchainService.explorerUrl}/${transactionHash}`
       : null;
-    const network = this.blockchainService.blockchainEnabled
-      ? this.blockchainService.rpcUrl
-      : null;
-    const smartContractAddress = this.blockchainService.blockchainEnabled
-      ? this.blockchainService.smartContractAddress
-      : null;
+    const network = blockchainEnabled ? this.blockchainService.rpcUrl : null;
+    const smartContractAddress = blockchainEnabled ? this.blockchainService.smartContractAddress : null;
 
     return new VerifyCsvDocumentIntegrityResultEntity(
       documentId,
