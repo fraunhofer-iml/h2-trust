@@ -39,6 +39,7 @@ export interface BlockchainConfiguration {
   privateKey: string;
   artifactPath: string;
   smartContractAddress: string;
+  explorerUrl: string;
 }
 
 export interface KeycloakConfiguration {
@@ -76,6 +77,7 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
       'libs/blockchain/smart-contract/artifacts/contracts/ProofStorage.sol/ProofStorage.json',
     smartContractAddress:
       process.env['BLOCKCHAIN_SMART_CONTRACT_ADDRESS'] || '0x42699A7612A82f1d9C36148af9C77354759b210b',
+    explorerUrl: process.env['BLOCKCHAIN_EXPLORER_URL'] || 'http://localhost:8545/explorer/tx',
   },
   keycloak: {
     url: process.env['KEYCLOAK_URL'] || '',
