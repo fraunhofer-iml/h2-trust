@@ -13,8 +13,6 @@ import { ValidationResult } from '../validated-file';
 export class VerificationDetailsComponent {
   result = input<ValidationResult>();
 
-  statusIcons = { ['MISMATCHED']: 'cancel', ['VERIFIED']: 'check_circle' };
-
   onCopied(success: boolean) {
     if (success) {
       toast.success('Transaction hash copied to clipboard!');

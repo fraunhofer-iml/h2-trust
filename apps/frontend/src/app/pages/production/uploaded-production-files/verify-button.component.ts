@@ -25,7 +25,6 @@ export class VerifyButtonComponent {
   async verify() {
     this.verifying = true;
     const res = await this.fileService.validateFile(this.file().id);
-    console.log(res);
     this.result = { ...res, id: this.file().name };
     this.verificationEMitter.emit({ ...this.result, id: this.file().id });
     this.verifying = false;
