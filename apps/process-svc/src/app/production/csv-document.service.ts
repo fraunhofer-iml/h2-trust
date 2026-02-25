@@ -21,7 +21,7 @@ export class CsvDocumentService {
     private readonly blockchainService: BlockchainService,
     private readonly csvImportRepository: CsvImportRepository,
     private readonly storageService: StorageService,
-  ) { }
+  ) {}
 
   async findByCompany(payload: ReadByIdPayload): Promise<CsvDocumentEntity[]> {
     return this.csvImportRepository.findAllCsvDocumentsByCompanyId(payload.id);
@@ -95,22 +95,12 @@ export class CsvDocumentService {
     blockNumber: number | null,
     blockTimestamp: Date | null,
   ): VerifyCsvDocumentIntegrityResultEntity {
-    const status = validHash
-      ? CsvDocumentIntegrityStatus.VERIFIED
-      : CsvDocumentIntegrityStatus.MISMATCH;
+    const status = validHash ? CsvDocumentIntegrityStatus.VERIFIED : CsvDocumentIntegrityStatus.MISMATCH;
     const message = validHash
       ? `File integrity verified successfully for document with id ${documentId}.`
       : `File integrity mismatch for document with id ${documentId}.`;
 
-    return this.createResult(
-      documentId,
-      fileName,
-      status,
-      message,
-      transactionHash,
-      blockNumber,
-      blockTimestamp,
-    );
+    return this.createResult(documentId, fileName, status, message, transactionHash, blockNumber, blockTimestamp);
   }
 
   private createFailedResult(
@@ -137,12 +127,11 @@ export class CsvDocumentService {
     message: string,
     transactionHash: string | null,
     blockNumber: number | null,
-    blockTimestamp: Date | null
+    blockTimestamp: Date | null,
   ): VerifyCsvDocumentIntegrityResultEntity {
     const { blockchainEnabled } = this.blockchainService;
-    const explorerUrl = blockchainEnabled && transactionHash
-      ? `${this.blockchainService.explorerUrl}/${transactionHash}`
-      : null;
+    const explorerUrl =
+      blockchainEnabled && transactionHash ? `${this.blockchainService.explorerUrl}/${transactionHash}` : null;
     const network = blockchainEnabled ? this.blockchainService.rpcUrl : null;
     const smartContractAddress = blockchainEnabled ? this.blockchainService.smartContractAddress : null;
 

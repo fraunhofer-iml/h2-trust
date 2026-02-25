@@ -12,11 +12,11 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
 import {
   CreateProductionDto,
+  CsvDocumentIntegrityResultDto,
   ImportSubmissionDto,
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
-  CsvDocumentIntegrityResultDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/api';
 import { FileUploadKeys } from '@h2-trust/domain';
@@ -24,7 +24,7 @@ import { ProductionService } from './production.service';
 
 @Controller('productions')
 export class ProductionController {
-  constructor(private readonly service: ProductionService) { }
+  constructor(private readonly service: ProductionService) {}
 
   @Post()
   @ApiBearerAuth()

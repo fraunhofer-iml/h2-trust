@@ -29,12 +29,12 @@ import {
 import {
   AccountingPeriodMatchingResultDto,
   CreateProductionDto,
+  CsvDocumentIntegrityResultDto,
   ImportSubmissionDto,
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   UserDetailsDto,
-  CsvDocumentIntegrityResultDto,
 } from '@h2-trust/api';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
@@ -169,10 +169,7 @@ export class ProductionService {
 
   async verifyCsvDocumentIntegrity(id: string): Promise<CsvDocumentIntegrityResultDto> {
     const verificationResult: VerifyCsvDocumentIntegrityResultEntity = await firstValueFrom(
-      this.processSvc.send(
-        ProductionMessagePatterns.VERIFY_CSV_DOCUMENT_INTEGRITY,
-        new ReadByIdPayload(id),
-      ),
+      this.processSvc.send(ProductionMessagePatterns.VERIFY_CSV_DOCUMENT_INTEGRITY, new ReadByIdPayload(id)),
     );
 
     return CsvDocumentIntegrityResultDto.fromEntity(verificationResult);
