@@ -25,3 +25,4 @@ export * from './unit-type.enum';
 export * from './measurement-unit.enum';
 export * from './file-upload-keys.enum';
 export * from './proof-of-origin.enum';
+export * from './csv-document-integrity-status.enum';
