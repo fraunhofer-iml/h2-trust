@@ -24,12 +24,11 @@ describe('CsvDocumentService', () => {
   };
 
   const storageServiceMock = {
-    fileExists: jest.fn(),
     downloadFile: jest.fn(),
   };
 
   const blockchainServiceMock = {
-    enabled: true,
+    blockchainEnabled: true,
     rpcUrl: 'https://blockchain.io/rpc',
     smartContractAddress: '0xFbf708eE4a5887E96Faea1DDFA6cF6C828695223',
     explorerUrl: 'https://blockchain.io/tx',
@@ -38,7 +37,7 @@ describe('CsvDocumentService', () => {
   };
 
   beforeEach(async () => {
-    blockchainServiceMock.enabled = true;
+    blockchainServiceMock.blockchainEnabled = true;
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -62,7 +61,7 @@ describe('CsvDocumentService', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
     jest.restoreAllMocks();
   });
 
@@ -104,7 +103,6 @@ describe('CsvDocumentService', () => {
       const givenProof = new ProofEntity(givenDocument.id, 'stored-hash', 'cid-1');
 
       csvImportRepositoryMock.findCsvDocumentById.mockResolvedValue(givenDocument);
-      storageServiceMock.fileExists.mockResolvedValue(true);
       storageServiceMock.downloadFile.mockResolvedValue(givenFileStream);
       blockchainServiceMock.retrieveProof.mockResolvedValue(givenProof);
       blockchainServiceMock.retrieveBlockchainMetadata.mockResolvedValue({
@@ -118,7 +116,6 @@ describe('CsvDocumentService', () => {
 
       // Assert
       expect(csvImportRepositoryMock.findCsvDocumentById).toHaveBeenCalledWith(givenPayload.id);
-      expect(storageServiceMock.fileExists).toHaveBeenCalledWith(givenDocument.fileName);
       expect(storageServiceMock.downloadFile).toHaveBeenCalledWith(givenDocument.fileName);
       expect(blockchainServiceMock.retrieveProof).toHaveBeenCalledWith(givenDocument.id);
       expect(blockchainServiceMock.retrieveBlockchainMetadata).toHaveBeenCalledWith(givenDocument.transactionHash);
@@ -151,7 +148,6 @@ describe('CsvDocumentService', () => {
       const givenProof = new ProofEntity(givenDocument.id, 'stored-hash-2', 'cid-2');
 
       csvImportRepositoryMock.findCsvDocumentById.mockResolvedValue(givenDocument);
-      storageServiceMock.fileExists.mockResolvedValue(true);
       storageServiceMock.downloadFile.mockResolvedValue(givenFileStream);
       blockchainServiceMock.retrieveProof.mockResolvedValue(givenProof);
       blockchainServiceMock.retrieveBlockchainMetadata.mockResolvedValue({
@@ -190,7 +186,7 @@ describe('CsvDocumentService', () => {
         'tx-hash',
       );
 
-      blockchainServiceMock.enabled = false;
+      blockchainServiceMock.blockchainEnabled = false;
       csvImportRepositoryMock.findCsvDocumentById.mockResolvedValue(givenDocument);
       const hashVerifySpy = jest.spyOn(HashUtil, 'verifyStreamWithStoredHash');
 
@@ -205,10 +201,9 @@ describe('CsvDocumentService', () => {
       expect(actualResult.message).toContain('Blockchain integration is disabled');
       expect(actualResult.blockNumber).toBeNull();
       expect(actualResult.blockTimestamp).toBeNull();
-      expect(actualResult.network).toBe(blockchainServiceMock.rpcUrl);
-      expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
-      expect(actualResult.explorerUrl).toBe(`${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`);
-      expect(storageServiceMock.fileExists).not.toHaveBeenCalled();
+      expect(actualResult.network).toBeNull();
+      expect(actualResult.smartContractAddress).toBeNull();
+      expect(actualResult.explorerUrl).toBeNull();
       expect(storageServiceMock.downloadFile).not.toHaveBeenCalled();
       expect(blockchainServiceMock.retrieveProof).not.toHaveBeenCalled();
       expect(blockchainServiceMock.retrieveBlockchainMetadata).not.toHaveBeenCalled();
@@ -234,10 +229,9 @@ describe('CsvDocumentService', () => {
       expect(actualResult.blockTimestamp).toBeNull();
       expect(actualResult.network).toBe(blockchainServiceMock.rpcUrl);
       expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
-      expect(actualResult.explorerUrl).toBe(`${blockchainServiceMock.explorerUrl}/null`);
+      expect(actualResult.explorerUrl).toBeNull();
 
       expect(csvImportRepositoryMock.findCsvDocumentById).toHaveBeenCalledWith(givenPayload.id);
-      expect(storageServiceMock.fileExists).not.toHaveBeenCalled();
       expect(storageServiceMock.downloadFile).not.toHaveBeenCalled();
       expect(blockchainServiceMock.retrieveProof).not.toHaveBeenCalled();
       expect(blockchainServiceMock.retrieveBlockchainMetadata).not.toHaveBeenCalled();
@@ -272,10 +266,9 @@ describe('CsvDocumentService', () => {
       expect(actualResult.blockTimestamp).toBeNull();
       expect(actualResult.network).toBe(blockchainServiceMock.rpcUrl);
       expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
-      expect(actualResult.explorerUrl).toBe(`${blockchainServiceMock.explorerUrl}/undefined`);
+      expect(actualResult.explorerUrl).toBeNull();
 
       expect(csvImportRepositoryMock.findCsvDocumentById).toHaveBeenCalledWith(givenPayload.id);
-      expect(storageServiceMock.fileExists).not.toHaveBeenCalled();
       expect(storageServiceMock.downloadFile).not.toHaveBeenCalled();
       expect(blockchainServiceMock.retrieveProof).not.toHaveBeenCalled();
       expect(blockchainServiceMock.retrieveBlockchainMetadata).not.toHaveBeenCalled();
@@ -296,7 +289,12 @@ describe('CsvDocumentService', () => {
       );
 
       csvImportRepositoryMock.findCsvDocumentById.mockResolvedValue(givenDocument);
-      storageServiceMock.fileExists.mockResolvedValue(false);
+      storageServiceMock.downloadFile.mockResolvedValue(null);
+      blockchainServiceMock.retrieveProof.mockResolvedValue(new ProofEntity(givenDocument.id, 'hash-3', 'cid-3'));
+      blockchainServiceMock.retrieveBlockchainMetadata.mockResolvedValue({
+        blockNumber: 789,
+        blockTimestamp: new Date('2026-01-01T00:15:00.000Z'),
+      });
       const hashVerifySpy = jest.spyOn(HashUtil, 'verifyStreamWithStoredHash');
 
       // Act
@@ -315,9 +313,9 @@ describe('CsvDocumentService', () => {
       expect(actualResult.explorerUrl).toBe(`${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`);
 
       expect(csvImportRepositoryMock.findCsvDocumentById).toHaveBeenCalledWith(givenPayload.id);
-      expect(storageServiceMock.downloadFile).not.toHaveBeenCalled();
-      expect(blockchainServiceMock.retrieveProof).not.toHaveBeenCalled();
-      expect(blockchainServiceMock.retrieveBlockchainMetadata).not.toHaveBeenCalled();
+      expect(storageServiceMock.downloadFile).toHaveBeenCalledWith(givenDocument.fileName);
+      expect(blockchainServiceMock.retrieveProof).toHaveBeenCalledWith(givenDocument.id);
+      expect(blockchainServiceMock.retrieveBlockchainMetadata).toHaveBeenCalledWith(givenDocument.transactionHash);
       expect(hashVerifySpy).not.toHaveBeenCalled();
     });
   });
