@@ -43,47 +43,42 @@ interface ProofStorageContract extends BaseContract {
 @Injectable()
 export class BlockchainService {
   readonly enabled: boolean;
-  readonly rpcUrl: string;
-  readonly smartContractAddress: string;
-  readonly explorerUrl: string;
+  readonly rpcUrl?: string;
+  readonly smartContractAddress?: string;
+  readonly explorerUrl?: string;
 
+  private readonly contract?: ProofStorageContract;
   private readonly logger = new Logger(this.constructor.name);
-  private readonly contract: ProofStorageContract;
 
   constructor(private readonly configurationService: ConfigurationService) {
-    this.enabled = this.configurationService.getGlobalConfiguration().blockchain.enabled;
-    this.rpcUrl = this.enabled ? this.configurationService.getGlobalConfiguration().blockchain.rpcUrl : null;
-    this.smartContractAddress = this.enabled
-      ? this.configurationService.getGlobalConfiguration().blockchain.smartContractAddress
-      : null;
-    this.explorerUrl = this.enabled ? this.configurationService.getGlobalConfiguration().blockchain.explorerUrl : null;
+    const blockchainConfiguration = this.configurationService.getGlobalConfiguration().blockchain;
+
+    this.enabled = blockchainConfiguration.enabled;
 
     if (this.enabled) {
+      this.rpcUrl = blockchainConfiguration.rpcUrl;
+      this.smartContractAddress = blockchainConfiguration.smartContractAddress;
+      this.explorerUrl = blockchainConfiguration.explorerUrl;
+
       this.logger.debug('🔗 Blockchain is enabled. Proofs will be stored and retrieved.');
       this.logger.debug(`🌐 RPC URL: ${this.rpcUrl}`);
       this.logger.debug(`📄 Smart Contract Address: ${this.smartContractAddress}`);
       this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
 
-      this.contract = this.createContract();
+      this.contract = this.createContract(blockchainConfiguration.artifactPath, blockchainConfiguration.privateKey);
     } else {
       this.logger.debug('⛓️‍💥 Blockchain is disabled. Proofs will not be stored or retrieved.');
-
-      this.contract = null;
     }
   }
 
-  private createContract(): ProofStorageContract {
-    const blockchainConfiguration = this.configurationService.getGlobalConfiguration().blockchain;
+  private createContract(artifactPath: string, privateKey: string): ProofStorageContract {
+    const { abi } = JSON.parse(readFileSync(artifactPath, 'utf-8'));
 
-    const smartContractAddress = blockchainConfiguration.smartContractAddress;
-
-    const { abi } = JSON.parse(readFileSync(blockchainConfiguration.artifactPath, 'utf-8'));
-
-    const provider = new JsonRpcProvider(blockchainConfiguration.rpcUrl);
-    const wallet = new Wallet(blockchainConfiguration.privateKey, provider);
+    const provider = new JsonRpcProvider(this.rpcUrl);
+    const wallet = new Wallet(privateKey, provider);
     const signer = new NonceManager(wallet);
 
-    return new Contract(smartContractAddress, abi, signer) as unknown as ProofStorageContract;
+    return new Contract(this.smartContractAddress, abi, signer) as unknown as ProofStorageContract;
   }
 
   async storeProofs(proofEntries: ProofEntry[]): Promise<string | null> {
@@ -115,20 +110,23 @@ export class BlockchainService {
     return new ProofEntity(uuid, proof.hash, proof.cid);
   }
 
-  async retrieveBlockchainMetadata(transactionHash: string): Promise<BlockchainMetadata> {
-    if (!this.enabled || !this.contract) {
+  async retrieveBlockchainMetadata(transactionHash: string): Promise<BlockchainMetadata | null> {
+    if (!this.enabled) {
+      this.logger.debug(`⏭️ Blockchain disabled, skipping metadata retrieval for ${transactionHash}`);
       return null;
     }
 
     const receipt = await this.contract.runner.provider.getTransactionReceipt(transactionHash);
 
     if (!receipt) {
+      this.logger.debug(`⏭️ Transaction receipt not found for ${transactionHash}`);
       return null;
     }
 
     const block = await this.contract.runner.provider.getBlock(receipt.blockNumber);
 
     if (!block) {
+      this.logger.debug(`⏭️ Block not found for ${receipt.blockNumber}`);
       return null;
     }
 
