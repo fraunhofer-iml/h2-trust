@@ -64,8 +64,9 @@ export class HydrogenAssetsComponent {
   }));
 
   toggle(unitType: UnitType | null) {
-    if (this.typeToShow === unitType) this.typeToShow = null;
-    else this.typeToShow = unitType;
+    if (this.typeToShow === unitType) {
+      this.typeToShow = null;
+    } else this.typeToShow = unitType;
   }
 
   onAllChipSelection(event: MatChipSelectionChange) {
