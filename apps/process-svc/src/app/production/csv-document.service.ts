@@ -35,13 +35,13 @@ export class CsvDocumentService {
       return this.createFailedResult(payload.id, null, message, null);
     }
 
-    if (!this.blockchainService.blockchainEnabled) {
-      const message = 'Blockchain integration is disabled, cannot verify file integrity.';
+    if (!document.transactionHash) {
+      const message = `Document with id ${document.id} has no transaction hash, cannot verify file.`;
       return this.createFailedResult(document.id, document.fileName, message, document.transactionHash);
     }
 
-    if (!document.transactionHash) {
-      const message = `Document with id ${document.id} has no transaction hash, cannot verify file.`;
+    if (!this.blockchainService.blockchainEnabled) {
+      const message = 'Blockchain integration is disabled, cannot verify file integrity.';
       return this.createFailedResult(document.id, document.fileName, message, document.transactionHash);
     }
 
@@ -77,13 +77,13 @@ export class CsvDocumentService {
         blockchainMetadata?.blockTimestamp ?? null,
       );
     } catch (error) {
-      this.logger.error(
-        `Failed to verify integrity for document with id ${document.id} and file name ${document.fileName}`,
-        error instanceof Error ? error.stack : undefined,
-      );
+      const errorMessage = error instanceof Error ? error.message : String(error);
 
-      const message = 'Verification failed due to unexpected error.';
-      return this.createFailedResult(document.id, document.fileName, message, document.transactionHash);
+      const logMessage = `❌ Failed to verify integrity for document with id ${document.id} and file name ${document.fileName}: ${errorMessage}`;
+      this.logger.error(logMessage, error instanceof Error ? error.stack : undefined);
+
+      const resultMessage = `Verification failed due to unexpected error: ${errorMessage}`;
+      return this.createFailedResult(document.id, document.fileName, resultMessage, document.transactionHash);
     }
   }
 

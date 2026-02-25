@@ -104,10 +104,16 @@ export class BlockchainService {
 
     this.logger.debug(`🔍 Retrieving proof: ${uuid}`);
 
-    const proof: Proof = await this.contract.getProofByUuid(uuid);
-    this.logger.debug(`✅ Proof retrieved: ${JSON.stringify(proof)}`);
-
-    return new ProofEntity(uuid, proof.hash, proof.cid);
+    try {
+      const proof: Proof = await this.contract.getProofByUuid(uuid);
+      this.logger.debug(`✅ Proof retrieved: ${JSON.stringify(proof)}`);
+      return new ProofEntity(uuid, proof.hash, proof.cid);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const message = `❌ Error retrieving proof for ${uuid}: ${errorMessage}`;
+      this.logger.error(message, error instanceof Error ? error.stack : undefined);
+      return null;
+    }
   }
 
   async retrieveBlockchainMetadata(transactionHash: string): Promise<BlockchainMetadata | null> {
