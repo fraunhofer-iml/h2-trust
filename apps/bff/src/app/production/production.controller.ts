@@ -7,11 +7,12 @@
  */
 
 import { AuthenticatedUser } from 'nest-keycloak-connect';
-import { Body, Controller, Get, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
 import {
   CreateProductionDto,
+  CsvDocumentIntegrityResultDto,
   ImportSubmissionDto,
   ProcessedCsvDto,
   ProductionCSVUploadDto,
@@ -100,6 +101,24 @@ export class ProductionController {
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<ProcessedCsvDto[]> {
     return this.service.readCsvDocumentsByCompany(authenticatedUser.sub);
+  }
+
+  @Get('csv/:id')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Verify csv document integrity against the blockchain proof and return structured result details.',
+  })
+  @ApiOkResponse({
+    description: 'Returns verification status and technical details for the details pane.',
+    type: CsvDocumentIntegrityResultDto,
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Unique identifier of the CSV document to verify.',
+    example: '019c9492-adaa-7843-88db-2faaeea0de05',
+  })
+  verifyCsvDocumentIntegrity(@Param('id') id: string): Promise<CsvDocumentIntegrityResultDto> {
+    return this.service.verifyCsvDocumentIntegrity(id);
   }
 
   @Post('csv/import')
