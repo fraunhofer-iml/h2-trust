@@ -19,7 +19,7 @@ import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
 })
 export class UnitCardComponent {
   name = input.required<string>();
-  unittype = input.required<UnitType>();
+  unitType = input.required<UnitType>();
 
   private styles: Record<UnitType, string> = {
     [UnitType.HYDROGEN_PRODUCTION]: 'text-secondary-700  group-hover:bg-secondary-200/80 bg-secondary-100',
