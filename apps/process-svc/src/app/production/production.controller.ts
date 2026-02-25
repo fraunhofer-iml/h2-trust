@@ -17,6 +17,7 @@ import {
   ProductionStagingResultEntity,
   ReadByIdPayload,
   StageProductionsPayload,
+  VerifyCsvDocumentIntegrityResultEntity,
 } from '@h2-trust/amqp';
 import { CsvDocumentService } from './csv-document.service';
 import { ProductionCreationService } from './production-creation.service';
@@ -50,5 +51,10 @@ export class ProductionController {
   @MessagePattern(ProductionMessagePatterns.READ_CSV_DOCUMENTS_BY_COMPANY)
   async readCsvDocumentsByCompany(payload: ReadByIdPayload): Promise<CsvDocumentEntity[]> {
     return this.csvDocumentService.findByCompany(payload);
+  }
+
+  @MessagePattern(ProductionMessagePatterns.VERIFY_CSV_DOCUMENT_INTEGRITY)
+  async verifyCsvDocumentIntegrity(payload: ReadByIdPayload): Promise<VerifyCsvDocumentIntegrityResultEntity> {
+    return this.csvDocumentService.verifyCsvDocumentIntegrity(payload);
   }
 }
