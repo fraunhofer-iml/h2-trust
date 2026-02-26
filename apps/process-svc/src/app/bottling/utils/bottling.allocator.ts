@@ -35,7 +35,7 @@ export class BottlingAllocator {
 
     for (const hydrogenComponent of hydrogenComposition) {
       const { batchesForBottle, processStepsToBeSplit, consumedSplitProcessSteps, processStepsForRemainingAmount } =
-        BottlingAllocator.processBottlingForEachRFNBO(
+        BottlingAllocator.processBottlingForEachRfnboType(
           processSteps,
           hydrogenComponent.rfnboType as RfnboType,
           hydrogenComponent.amount,
@@ -58,23 +58,23 @@ export class BottlingAllocator {
 
   /**
    * @param processSteps All process steps (hydrogen production) of the hydrogen storage unit, i.e. all batches from which the bottling is to be created.
-   * @param rfnboType The RFNBO value of one of the bottlings to be produced
+   * @param rfnboType The RFNBO type of one of the bottlings to be produced
    * @param amount Number of units of the bottling to be produced
    * @param hydrogenStorageUnitId The hydrogen storage facility from which the bottlings are to be taken.
    */
-  private static processBottlingForEachRFNBO(
+  private static processBottlingForEachRfnboType(
     processSteps: ProcessStepEntity[],
     rfnboType: RfnboType,
     amount: number,
     hydrogenStorageUnitId: string,
   ): BottlingAllocation {
-    const processStepsFromHydrogenStorageWithRequestedRFNBOStatus = processSteps.filter(
+    const processStepsFromHydrogenStorageWithRequestedRFNBOType = processSteps.filter(
       (ps) => ps.batch.rfnboType === rfnboType,
     );
 
     const { selectedProcessSteps, remainingAmount } =
       BottlingAllocator.selectProcessStepsForBottlingAndCalculateRemainingAmount(
-        processStepsFromHydrogenStorageWithRequestedRFNBOStatus,
+        processStepsFromHydrogenStorageWithRequestedRFNBOType,
         amount,
         hydrogenStorageUnitId,
         rfnboType,
@@ -87,7 +87,7 @@ export class BottlingAllocator {
     availableProcessSteps: ProcessStepEntity[],
     requestedAmount: number,
     storageUnitId: string,
-    rfnboType: string,
+    rfnboType: RfnboType,
   ): { selectedProcessSteps: ProcessStepEntity[]; remainingAmount: number } {
     const selectedProcessSteps: ProcessStepEntity[] = [];
     let pendingAmount = requestedAmount;
