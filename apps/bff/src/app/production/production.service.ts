@@ -24,10 +24,12 @@ import {
   ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   StageProductionsPayload,
   UnitFileReference,
+  VerifyCsvDocumentIntegrityResultEntity,
 } from '@h2-trust/amqp';
 import {
   AccountingPeriodMatchingResultDto,
   CreateProductionDto,
+  CsvDocumentIntegrityResultDto,
   ImportSubmissionDto,
   ProcessedCsvDto,
   ProductionCSVUploadDto,
@@ -163,5 +165,13 @@ export class ProductionService {
     return csvDocuments.map((doc) =>
       ProcessedCsvDto.fromEntity(doc, this.storageService.minioUrl, userDetails.company.name),
     );
+  }
+
+  async verifyCsvDocumentIntegrity(id: string): Promise<CsvDocumentIntegrityResultDto> {
+    const verificationResult: VerifyCsvDocumentIntegrityResultEntity = await firstValueFrom(
+      this.processSvc.send(ProductionMessagePatterns.VERIFY_CSV_DOCUMENT_INTEGRITY, new ReadByIdPayload(id)),
+    );
+
+    return CsvDocumentIntegrityResultDto.fromEntity(verificationResult);
   }
 }

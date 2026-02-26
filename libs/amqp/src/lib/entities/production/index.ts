@@ -11,3 +11,4 @@ export * from './create-production.entity';
 export * from './distributed-production.entity';
 export * from './production-staging-result.entity';
 export * from './staged-production.entity';
+export * from './verify-csv-document-integrity-result.entity';
