@@ -10,13 +10,13 @@ import { ProductionService } from '../../../shared/services/production/productio
 import { VerificationStateService } from '../../../shared/services/verification-state/verification-state.service';
 
 @Component({
-  selector: 'app-verify-button',
+  selector: 'app-verify',
   imports: [MatButtonModule, BaseSheetComponent, ClipboardModule, CommonModule],
-  templateUrl: './verify-button.component.html',
+  templateUrl: './verify.component.html',
 })
-export class VerifyButtonComponent {
+export class VerifyComponent {
   protected readonly CsvDocumentIntegrityStatus = CsvDocumentIntegrityStatus;
-  disabled = input.required();
+  disabled = input.required<boolean>();
   file = input.required<ProcessedCsvDto>();
 
   fileService = inject(ProductionService);

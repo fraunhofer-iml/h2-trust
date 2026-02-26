@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { toast } from 'ngx-sonner';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, computed, effect, inject, signal, ViewChild } from '@angular/core';
@@ -25,14 +24,14 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { CsvContentType, CsvDocumentIntegrityResultDto, ProcessedCsvDto } from '@h2-trust/api';
+import { CsvContentType, ProcessedCsvDto } from '@h2-trust/api';
 import { BatchType, CsvDocumentIntegrityStatus, MeasurementUnit } from '@h2-trust/domain';
 import { ICONS } from '../../../shared/constants/icons';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { ProductionService } from '../../../shared/services/production/production.service';
 import { VerificationStateService } from '../../../shared/services/verification-state/verification-state.service';
 import { DownloadButtonComponent } from './download-button/download-button.component';
-import { VerifyButtonComponent } from './verify-button.component';
+import { VerifyComponent } from './verify.component';
 
 interface FilterModel {
   input: string;
@@ -59,9 +58,9 @@ interface FilterModel {
     MatCheckboxModule,
     DownloadButtonComponent,
     FormField,
-    VerifyButtonComponent,
     MatTooltip,
     MatBottomSheetModule,
+    VerifyComponent,
   ],
   providers: [ProductionService, provideNativeDateAdapter()],
   templateUrl: './production-files.component.html',
@@ -135,14 +134,17 @@ export class ProductionFilesComponent implements AfterViewInit {
 
     const { input, start, end, fileType: type } = this.searchForm().value();
 
-    if (type) data = data.filter((item) => item.csvContentType === type);
+    if (type) {
+      data = data.filter((item) => item.csvContentType === type);
+    }
 
-    if (start && end)
+    if (start && end) {
       data = data.filter((item) => {
         const itemStart = new Date(item.startedAt);
         const itemEnd = new Date(item.endedAt);
         return itemStart <= end && itemEnd >= start;
       });
+    }
 
     if (input) {
       const val = input.toLowerCase();
@@ -185,14 +187,6 @@ export class ProductionFilesComponent implements AfterViewInit {
     }
 
     this.selection.select(...this.dataSource.data);
-  }
-
-  setResult(e: CsvDocumentIntegrityResultDto | undefined) {
-    if (!e) {
-      toast.error('Unknown error. Failed to Validate.');
-      return;
-    }
-    this.stateService.setItem(e.documentId, e);
   }
 
   getStatus(id: string) {

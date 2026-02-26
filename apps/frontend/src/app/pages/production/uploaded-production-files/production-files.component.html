@@ -109,6 +109,8 @@
           </td>
         </ng-container>
 
+        <!-- VALIDATION STATUS -->
+
         <ng-container matColumnDef="validationStatus">
           <th mat-header-cell *matHeaderCellDef>Status</th>
           <td mat-cell *matCellDef="let file" class="!w-44">
@@ -134,10 +136,12 @@
           </td>
         </ng-container>
 
+        <!-- VALIDATION BUTTON -->
+
         <ng-container matColumnDef="button">
           <th mat-header-cell *matHeaderCellDef>Validation</th>
           <td mat-cell *matCellDef="let file" class="!w-44 !py-4">
-            <app-verify-button [disabled]="!file.verifiable" [file]="file"></app-verify-button>
+            <app-verify [disabled]="!file.verifiable" [file]="file"></app-verify>
           </td>
         </ng-container>
 
