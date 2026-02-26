@@ -55,7 +55,7 @@ export class DigitalProductPassportDto {
     this.proofOfSustainability = proofOfSustainability;
   }
 
-  static fromEnitiy(digitalProductPassportEntity: DigitalProductPassportEntity): DigitalProductPassportDto {
+  static fromEntity(digitalProductPassportEntity: DigitalProductPassportEntity): DigitalProductPassportDto {
     const hydrogenComposition = (digitalProductPassportEntity.hydrogenComposition ?? []).map(
       HydrogenComponentDto.fromEntity,
     );

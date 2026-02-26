@@ -29,7 +29,7 @@ export class BottlingService {
   constructor(
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   async createBottlingAndTransportation(
     dto: BottlingDto,
@@ -81,11 +81,13 @@ export class BottlingService {
   }
 
   async readDigitalProductPassport(id: string): Promise<DigitalProductPassportDto> {
-    return firstValueFrom(
+    const entity = await firstValueFrom(
       this.processSvc.send<DigitalProductPassportEntity>(
         DigitalProductPassportPatterns.READ_DIGITAL_PRODUCT_PASSPORT,
         new ReadByIdPayload(id),
       ),
-    ).then(DigitalProductPassportDto.fromEnitiy);
+    );
+
+    return DigitalProductPassportDto.fromEntity(entity);
   }
 }
