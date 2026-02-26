@@ -54,10 +54,10 @@ export class BottlingProcessStepAssembler {
       .map((rfnboType) => RfnboType[rfnboType as keyof typeof RfnboType]);
 
     if (rfnboTypes.length === 0) {
-      throw new BrokerException(`No predecessor rfnbo status specified`, HttpStatus.BAD_REQUEST);
+      throw new BrokerException(`No predecessor rfnbo type specified`, HttpStatus.BAD_REQUEST);
     }
 
-    const allColorsAreEqual = rfnboTypes.every((rfnboType) => rfnboType === rfnboTypes[0]);
-    return allColorsAreEqual ? rfnboTypes[0] : RfnboType.NON_CERTIFIABLE;
+    const allRfnboTypesAreEqual = rfnboTypes.every((rfnboType) => rfnboType === rfnboTypes[0]);
+    return allRfnboTypesAreEqual ? rfnboTypes[0] : RfnboType.NON_CERTIFIABLE;
   }
 }
