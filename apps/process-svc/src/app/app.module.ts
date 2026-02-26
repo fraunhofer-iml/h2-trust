@@ -14,7 +14,7 @@ import { ProductionModule } from './production/production.module';
 import { TransportationModule } from './transportation/transportation.module';
 
 @Module({
-  imports: [DigitalProductPassportModule, ProcessStepModule, ProductionModule, BottlingModule, TransportationModule],
+  imports: [BottlingModule, DigitalProductPassportModule, ProcessStepModule, ProductionModule, TransportationModule],
   controllers: [],
   providers: [],
 })

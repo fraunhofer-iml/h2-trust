@@ -8,7 +8,6 @@
 
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
-import { ConfigurationModule } from '@h2-trust/configuration';
 import { DatabaseModule } from '@h2-trust/database';
 import { StorageModule } from '@h2-trust/storage';
 import { DigitalProductPassportModule } from '../digital-product-passport/digital-product-passport.module';
@@ -18,7 +17,6 @@ import { BottlingService } from './bottling.service';
 
 @Module({
   imports: [
-    ConfigurationModule,
     DatabaseModule,
     ProcessStepModule,
     DigitalProductPassportModule,
@@ -28,4 +26,4 @@ import { BottlingService } from './bottling.service';
   controllers: [BottlingController],
   providers: [BottlingService],
 })
-export class BottlingModule {}
+export class BottlingModule { }
