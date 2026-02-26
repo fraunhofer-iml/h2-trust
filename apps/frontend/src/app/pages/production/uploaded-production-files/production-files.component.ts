@@ -30,7 +30,7 @@ import { BatchType, CsvDocumentIntegrityStatus, MeasurementUnit } from '@h2-trus
 import { ICONS } from '../../../shared/constants/icons';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { ProductionService } from '../../../shared/services/production/production.service';
-import { VerificationStateService } from '../../../shared/services/verification-state/verification-state.service';
+import { VerificationResultStore } from '../../../shared/services/verification-state/verification-result.service';
 import { DownloadButtonComponent } from './download-button/download-button.component';
 import { VerifyComponent } from './verification/verify.component';
 
@@ -91,7 +91,7 @@ export class ProductionFilesComponent implements AfterViewInit {
   ] as const;
 
   productionService = inject(ProductionService);
-  stateService = inject(VerificationStateService);
+  resultStore = inject(VerificationResultStore);
 
   searchModel = signal<FilterModel>({
     input: '',
@@ -192,6 +192,6 @@ export class ProductionFilesComponent implements AfterViewInit {
   }
 
   getStatus(id: string) {
-    return this.stateService.getItem(id)?.status;
+    return this.resultStore.getItem(id)?.status;
   }
 }

@@ -118,7 +118,7 @@
           <th mat-header-cell *matHeaderCellDef>Status</th>
           <td mat-cell *matCellDef="let file" class="!w-44">
             <div
-              [matTooltip]="stateService.getItem(file.id)?.message"
+              [matTooltip]="resultStore.getItem(file.id)?.message"
               [matTooltipPosition]="'above'"
               class="flex w-fit flex-row items-center gap-2 rounded-md border-[1px] border-solid border-opacity-30 px-2 py-1 text-sm"
               [ngClass]="{

@@ -4,7 +4,7 @@ import { CsvDocumentIntegrityResultDto } from '@h2-trust/api';
 @Injectable({
   providedIn: 'root',
 })
-export class VerificationStateService {
+export class VerificationResultStore {
   private verificationState: Map<string, CsvDocumentIntegrityResultDto> = new Map();
 
   setItem(key: string, value: CsvDocumentIntegrityResultDto) {
