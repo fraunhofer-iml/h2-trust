@@ -12,12 +12,8 @@ import { ProcessStepModule } from '../process-step/process-step.module';
 import { DigitalProductPassportController } from './digital-product-passport.controller';
 import { DigitalProductPassportService } from './digital-product-passport.service';
 import { EmissionService } from './proof-of-origin/emission.service';
-import { HydrogenBottlingSectionAssembler } from './proof-of-origin/hydrogen-bottling-section.assembler';
 import { HydrogenProductionSectionService } from './proof-of-origin/hydrogen-production-section.service';
-import { HydrogenStorageSectionAssembler } from './proof-of-origin/hydrogen-storage-section.assembler';
-import { HydrogenTransportationSectionAssembler } from './proof-of-origin/hydrogen-transportation-section.assembler';
 import { PowerSupplyClassificationService } from './proof-of-origin/power-supply-classification.service';
-import { WaterSupplyClassificationAssembler } from './proof-of-origin/water-supply-classification.assembler';
 import { ProvenanceModule } from './provenance/provenance.module';
 import { RedComplianceModule } from './red-compliance/red-compliance.module';
 
@@ -25,23 +21,19 @@ import { RedComplianceModule } from './red-compliance/red-compliance.module';
   imports: [
     ProcessStepModule,
     RedComplianceModule,
-    new Broker().getGeneralSvcBroker(),
     ProvenanceModule,
     ProcessStepModule,
     ProvenanceModule,
     RedComplianceModule,
+    new Broker().getGeneralSvcBroker(),
   ],
   controllers: [DigitalProductPassportController],
   providers: [
     DigitalProductPassportService,
     EmissionService,
-    HydrogenBottlingSectionAssembler,
     HydrogenProductionSectionService,
-    HydrogenStorageSectionAssembler,
-    HydrogenTransportationSectionAssembler,
     PowerSupplyClassificationService,
-    WaterSupplyClassificationAssembler,
   ],
   exports: [DigitalProductPassportService],
 })
-export class DigitalProductPassportModule {}
+export class DigitalProductPassportModule { }
