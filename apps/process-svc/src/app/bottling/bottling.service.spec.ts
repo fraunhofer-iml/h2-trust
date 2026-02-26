@@ -10,7 +10,7 @@ import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, CreateHydrogenBottlingPayload, DocumentEntity } from '@h2-trust/amqp';
 import { DocumentRepository } from '@h2-trust/database';
-import { HydrogenColor, RFNBOType } from '@h2-trust/domain';
+import { HydrogenColor, RfnboType } from '@h2-trust/domain';
 import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures/entities';
 import { StorageService } from '@h2-trust/storage';
 import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
@@ -90,21 +90,21 @@ describe('BottlingService', () => {
         'recorder-1',
         'storage-unit-1',
         HydrogenColor.GREEN,
-        RFNBOType.RFNBO_READY,
+        RfnboType.RFNBO_READY,
       );
 
       const givenStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
           qualityDetails: QualityDetailsEntityFixture.createGreen(),
-          rfnboType: RFNBOType.RFNBO_READY,
+          rfnboType: RfnboType.RFNBO_READY,
         }),
       });
 
       const givenCreatedBottlingProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
 
       processStepServiceMock.readAllProcessStepsFromStorageUnit.mockResolvedValue([givenStorageProcessStep]);
-      dppServiceMock.getRfnboTypeForProcessStep.mockResolvedValue(RFNBOType.RFNBO_READY);
+      dppServiceMock.getRfnboTypeForProcessStep.mockResolvedValue(RfnboType.RFNBO_READY);
       processStepServiceMock.setBatchesInactive.mockResolvedValue({ count: 1 });
       processStepServiceMock.createProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
       processStepServiceMock.readProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
@@ -130,20 +130,20 @@ describe('BottlingService', () => {
         'recorder-1',
         'storage-unit-1',
         HydrogenColor.YELLOW,
-        RFNBOType.NON_CERTIFIABLE,
+        RfnboType.NON_CERTIFIABLE,
       );
 
       const givenStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
           qualityDetails: QualityDetailsEntityFixture.createGreen(),
-          rfnboType: RFNBOType.RFNBO_READY,
+          rfnboType: RfnboType.RFNBO_READY,
         }),
       });
 
       const givenHydrogenStorageUnit = {
         id: 'storage-unit-1',
-        filling: [{ color: HydrogenColor.GREEN, amount: 100, rfnboType: RFNBOType.RFNBO_READY }],
+        filling: [{ color: HydrogenColor.GREEN, amount: 100, rfnboType: RfnboType.RFNBO_READY }],
       };
 
       const givenCreatedBottlingProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
@@ -170,7 +170,7 @@ describe('BottlingService', () => {
         'recorder-1',
         'storage-unit-1',
         HydrogenColor.GREEN,
-        RFNBOType.RFNBO_READY,
+        RfnboType.RFNBO_READY,
       );
 
       processStepServiceMock.readAllProcessStepsFromStorageUnit.mockResolvedValue([]);
@@ -191,7 +191,7 @@ describe('BottlingService', () => {
         'recorder-1',
         'storage-unit-1',
         HydrogenColor.GREEN,
-        RFNBOType.RFNBO_READY,
+        RfnboType.RFNBO_READY,
         [givenFile],
       );
 
@@ -199,7 +199,7 @@ describe('BottlingService', () => {
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
           qualityDetails: QualityDetailsEntityFixture.createGreen(),
-          rfnboType: RFNBOType.RFNBO_READY,
+          rfnboType: RfnboType.RFNBO_READY,
         }),
       });
 
@@ -209,7 +209,7 @@ describe('BottlingService', () => {
       processStepServiceMock.setBatchesInactive.mockResolvedValue({ count: 1 });
       processStepServiceMock.createProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
       processStepServiceMock.readProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
-      dppServiceMock.getRfnboTypeForProcessStep.mockResolvedValue(RFNBOType.RFNBO_READY);
+      dppServiceMock.getRfnboTypeForProcessStep.mockResolvedValue(RfnboType.RFNBO_READY);
       storageServiceMock.uploadPdfFile.mockResolvedValue(givenFile.originalname);
       documentRepositoryMock.addDocumentToProcessStep.mockResolvedValue({});
 

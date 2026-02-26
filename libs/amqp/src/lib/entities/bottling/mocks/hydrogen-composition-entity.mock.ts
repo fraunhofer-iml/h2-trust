@@ -6,11 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenColor, RFNBOType } from '@h2-trust/domain';
+import { HydrogenColor, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentEntity } from '../hydrogen-component.entity';
 
 export const HydrogenCompositionEntityMock: HydrogenComponentEntity[] = [
-  new HydrogenComponentEntity('', HydrogenColor.GREEN, 10, RFNBOType.RFNBO_READY),
-  new HydrogenComponentEntity('', HydrogenColor.YELLOW, 40, RFNBOType.NOT_SPECIFIED),
-  new HydrogenComponentEntity('', HydrogenColor.MIX, 50, RFNBOType.NOT_SPECIFIED),
+  new HydrogenComponentEntity('', HydrogenColor.GREEN, 10, RfnboType.RFNBO_READY),
+  new HydrogenComponentEntity('', HydrogenColor.YELLOW, 40, RfnboType.NOT_SPECIFIED),
+  new HydrogenComponentEntity('', HydrogenColor.MIX, 50, RfnboType.NOT_SPECIFIED),
 ];

@@ -7,7 +7,7 @@
  */
 
 import { BatchEntity, CreateHydrogenBottlingPayload } from '@h2-trust/amqp';
-import { HydrogenColor, ProcessType, RFNBOType } from '@h2-trust/domain';
+import { HydrogenColor, ProcessType, RfnboType } from '@h2-trust/domain';
 import { BatchEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures/entities';
 import { BottlingProcessStepAssembler } from './bottling-process-step.assembler';
 
@@ -22,7 +22,7 @@ describe('BottlingProcessStepAssembler', () => {
         'recorder-1',
         'storage-unit-1',
         HydrogenColor.GREEN,
-        RFNBOType.RFNBO_READY,
+        RfnboType.RFNBO_READY,
       );
       const givenBatchesForBottle = [
         BatchEntityFixture.createHydrogenBatch({ qualityDetails: QualityDetailsEntityFixture.createGreen() }),
@@ -54,7 +54,7 @@ describe('BottlingProcessStepAssembler', () => {
         'recorder-1',
         'storage-unit-1',
         HydrogenColor.GREEN,
-        RFNBOType.RFNBO_READY,
+        RfnboType.RFNBO_READY,
       );
       const givenBatchesForBottle = [
         BatchEntityFixture.createHydrogenBatch({
@@ -86,7 +86,7 @@ describe('BottlingProcessStepAssembler', () => {
         'recorder-1',
         'storage-unit-1',
         HydrogenColor.YELLOW,
-        RFNBOType.NON_CERTIFIABLE,
+        RfnboType.NON_CERTIFIABLE,
       );
       const givenBatchesForBottle = [
         BatchEntityFixture.createHydrogenBatch({
@@ -114,7 +114,7 @@ describe('BottlingProcessStepAssembler', () => {
         'recorder-1',
         'storage-unit-1',
         HydrogenColor.GREEN,
-        RFNBOType.RFNBO_READY,
+        RfnboType.RFNBO_READY,
       );
       const givenBatchesForBottle = [
         BatchEntityFixture.createHydrogenBatch({
@@ -143,7 +143,7 @@ describe('BottlingProcessStepAssembler', () => {
         'recorder-1',
         'storage-unit-1',
         HydrogenColor.GREEN,
-        RFNBOType.RFNBO_READY,
+        RfnboType.RFNBO_READY,
       );
       const givenBatchesForBottle: BatchEntity[] = [];
 

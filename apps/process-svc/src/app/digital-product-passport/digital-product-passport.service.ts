@@ -17,7 +17,7 @@ import {
   ProvenanceEntity,
   RedComplianceEntity,
 } from '@h2-trust/amqp';
-import { BatchType, ProcessType, RFNBOType } from '@h2-trust/domain';
+import { BatchType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentAssembler } from '../process-step/hydrogenComponent/hydrogen-component.assembler';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { EmissionService } from './proof-of-origin/emission.service';
@@ -38,14 +38,14 @@ export class DigitalProductPassportService {
     private readonly emissionService: EmissionService,
   ) {}
 
-  async getRfnboTypeForProcessStepId(processStepId: string): Promise<RFNBOType> {
+  async getRfnboTypeForProcessStepId(processStepId: string): Promise<RfnboType> {
     const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
     return this.getRfnboTypeForProcessStep(processStep);
   }
 
-  async getRfnboTypeForProcessStep(processStep: ProcessStepEntity): Promise<RFNBOType> {
+  async getRfnboTypeForProcessStep(processStep: ProcessStepEntity): Promise<RfnboType> {
     const dpp: DigitalProductPassportEntity = await this.readDigitalProductPassport(processStep);
-    return dpp.rfnboType ? RFNBOType.RFNBO_READY : RFNBOType.NON_CERTIFIABLE;
+    return dpp.rfnboType ? RfnboType.RFNBO_READY : RfnboType.NON_CERTIFIABLE;
   }
 
   async getDppForProcessStepId(processStepId: string): Promise<DigitalProductPassportEntity> {

@@ -8,7 +8,7 @@
 
 import { HttpStatus } from '@nestjs/common';
 import { BatchEntity, BrokerException, HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/amqp';
-import { BatchType, ProcessType, RFNBOType } from '@h2-trust/domain';
+import { BatchType, ProcessType, RfnboType } from '@h2-trust/domain';
 
 export interface BottlingAllocation {
   batchesForBottle: BatchEntity[];
@@ -37,7 +37,7 @@ export class BottlingAllocator {
       const { batchesForBottle, processStepsToBeSplit, consumedSplitProcessSteps, processStepsForRemainingAmount } =
         BottlingAllocator.processBottlingForEachRFNBO(
           processSteps,
-          hydrogenComponent.rfnboType as RFNBOType,
+          hydrogenComponent.rfnboType as RfnboType,
           hydrogenComponent.amount,
           hydrogenStorageUnitId,
         );
@@ -64,7 +64,7 @@ export class BottlingAllocator {
    */
   private static processBottlingForEachRFNBO(
     processSteps: ProcessStepEntity[],
-    rfnboType: RFNBOType,
+    rfnboType: RfnboType,
     amount: number,
     hydrogenStorageUnitId: string,
   ): BottlingAllocation {

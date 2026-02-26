@@ -19,7 +19,7 @@ import {
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
 import { DocumentRepository } from '@h2-trust/database';
-import { HydrogenColor, RFNBOType } from '@h2-trust/domain';
+import { HydrogenColor, RfnboType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
 import { ProcessStepService } from '../process-step/process-step.service';
@@ -124,12 +124,12 @@ export class BottlingService {
 
   private async determineHydrogenComposition(
     batchAmount: number,
-    rfnboType: RFNBOType,
+    rfnboType: RfnboType,
     hydrogenStorageUnitFillings: HydrogenComponentEntity[],
     hydrogenStorageUnitId: string,
   ): Promise<HydrogenComponentEntity[]> {
-    if (rfnboType === RFNBOType.RFNBO_READY) {
-      return [new HydrogenComponentEntity('', HydrogenColor.GREEN, batchAmount, RFNBOType.RFNBO_READY)];
+    if (rfnboType === RfnboType.RFNBO_READY) {
+      return [new HydrogenComponentEntity('', HydrogenColor.GREEN, batchAmount, RfnboType.RFNBO_READY)];
     }
 
     try {

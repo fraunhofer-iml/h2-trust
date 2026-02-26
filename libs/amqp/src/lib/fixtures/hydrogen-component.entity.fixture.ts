@@ -7,7 +7,7 @@
  */
 
 import { HydrogenComponentEntity } from '@h2-trust/amqp';
-import { HydrogenColor, RFNBOType } from '@h2-trust/domain';
+import { HydrogenColor, RfnboType } from '@h2-trust/domain';
 
 export const HydrogenComponentEntityFixture = {
   createGreen: (overrides: Partial<HydrogenComponentEntity> = {}): HydrogenComponentEntity =>
@@ -15,20 +15,20 @@ export const HydrogenComponentEntityFixture = {
       '',
       overrides.color ?? HydrogenColor.GREEN,
       overrides.amount ?? 100,
-      overrides.rfnboType ?? RFNBOType.RFNBO_READY,
+      overrides.rfnboType ?? RfnboType.RFNBO_READY,
     ),
   createYellow: (overrides: Partial<HydrogenComponentEntity> = {}): HydrogenComponentEntity =>
     new HydrogenComponentEntity(
       '',
       overrides.color ?? HydrogenColor.YELLOW,
       overrides.amount ?? 100,
-      overrides.rfnboType ?? RFNBOType.NON_CERTIFIABLE,
+      overrides.rfnboType ?? RfnboType.NON_CERTIFIABLE,
     ),
   createMix: (overrides: Partial<HydrogenComponentEntity> = {}): HydrogenComponentEntity =>
     new HydrogenComponentEntity(
       '',
       overrides.color ?? HydrogenColor.MIX,
       overrides.amount ?? 100,
-      overrides.rfnboType ?? RFNBOType.NON_CERTIFIABLE,
+      overrides.rfnboType ?? RfnboType.NON_CERTIFIABLE,
     ),
 } as const;

@@ -14,7 +14,7 @@ import {
   HydrogenCompositionUtil,
   ProcessStepEntity,
 } from '@h2-trust/amqp';
-import { BatchType, ProcessType, RFNBOType } from '@h2-trust/domain';
+import { BatchType, ProcessType, RfnboType } from '@h2-trust/domain';
 
 export class HydrogenComponentAssembler {
   static assemble(processStep: ProcessStepEntity): HydrogenComponentEntity[] {
@@ -59,7 +59,7 @@ export class HydrogenComponentAssembler {
       '',
       batch.qualityDetails?.color,
       batch.amount,
-      batch.rfnboType ?? RFNBOType.NOT_SPECIFIED,
+      batch.rfnboType ?? RfnboType.NOT_SPECIFIED,
     );
   }
 }

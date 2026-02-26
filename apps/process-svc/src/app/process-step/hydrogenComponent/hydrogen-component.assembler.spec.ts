@@ -7,7 +7,7 @@
  */
 
 import { ProcessStepEntity } from '@h2-trust/amqp';
-import { BatchType, HydrogenColor, ProcessType, RFNBOType } from '@h2-trust/domain';
+import { BatchType, HydrogenColor, ProcessType, RfnboType } from '@h2-trust/domain';
 import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures/entities';
 import { HydrogenComponentAssembler } from './hydrogen-component.assembler';
 
@@ -72,12 +72,12 @@ describe('HydrogenComponentAssembler', () => {
             BatchEntityFixture.createHydrogenBatch({
               amount: 60,
               qualityDetails: QualityDetailsEntityFixture.createGreen(),
-              rfnboType: RFNBOType.RFNBO_READY,
+              rfnboType: RfnboType.RFNBO_READY,
             }),
             BatchEntityFixture.createHydrogenBatch({
               amount: 40,
               qualityDetails: QualityDetailsEntityFixture.createYellow(),
-              rfnboType: RFNBOType.NON_CERTIFIABLE,
+              rfnboType: RfnboType.NON_CERTIFIABLE,
             }),
           ],
         }),
@@ -88,8 +88,8 @@ describe('HydrogenComponentAssembler', () => {
 
       // Assert
       expect(actualResult).toHaveLength(2);
-      expect(actualResult.find((c) => c.rfnboType === RFNBOType.RFNBO_READY).amount).toBe(60);
-      expect(actualResult.find((c) => c.rfnboType === RFNBOType.NON_CERTIFIABLE).amount).toBe(40);
+      expect(actualResult.find((c) => c.rfnboType === RfnboType.RFNBO_READY).amount).toBe(60);
+      expect(actualResult.find((c) => c.rfnboType === RfnboType.NON_CERTIFIABLE).amount).toBe(40);
     });
 
     it('throws error when process step is undefined', () => {

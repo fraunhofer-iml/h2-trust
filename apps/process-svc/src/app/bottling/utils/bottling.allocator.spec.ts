@@ -8,7 +8,7 @@
 
 import { HydrogenStorageUnitEntityFixture } from 'libs/amqp/src/lib/fixtures/hydrogen-storage-unit.entity.fixture';
 import { HydrogenComponentEntity } from '@h2-trust/amqp';
-import { BatchType, HydrogenColor, ProcessType, RFNBOType } from '@h2-trust/domain';
+import { BatchType, HydrogenColor, ProcessType, RfnboType } from '@h2-trust/domain';
 import {
   BatchEntityFixture,
   HydrogenComponentEntityFixture,
@@ -27,7 +27,7 @@ describe('BottlingAllocator', () => {
           batch: BatchEntityFixture.createHydrogenBatch({
             amount: 100,
             qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            rfnboType: RFNBOType.RFNBO_READY,
+            rfnboType: RfnboType.RFNBO_READY,
           }),
         }),
       ];
@@ -58,7 +58,7 @@ describe('BottlingAllocator', () => {
             id: 'batch-1',
             amount: 50,
             qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            rfnboType: RFNBOType.RFNBO_READY,
+            rfnboType: RfnboType.RFNBO_READY,
           }),
         }),
         ProcessStepEntityFixture.createHydrogenProduction({
@@ -67,7 +67,7 @@ describe('BottlingAllocator', () => {
             id: 'batch-2',
             amount: 50,
             qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            rfnboType: RFNBOType.RFNBO_READY,
+            rfnboType: RfnboType.RFNBO_READY,
           }),
         }),
       ];
@@ -98,7 +98,7 @@ describe('BottlingAllocator', () => {
             hydrogenStorageUnit: HydrogenStorageUnitEntityFixture.create({
               id: givenHydrogenStorageUnitId,
             }),
-            rfnboType: RFNBOType.RFNBO_READY,
+            rfnboType: RfnboType.RFNBO_READY,
           }),
         }),
       ];
@@ -134,7 +134,7 @@ describe('BottlingAllocator', () => {
             hydrogenStorageUnit: HydrogenStorageUnitEntityFixture.create({
               id: givenHydrogenStorageUnitId,
             }),
-            rfnboType: RFNBOType.RFNBO_READY,
+            rfnboType: RfnboType.RFNBO_READY,
           }),
         }),
       ];
@@ -172,7 +172,7 @@ describe('BottlingAllocator', () => {
             id: 'batch-green',
             amount: 100,
             qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            rfnboType: RFNBOType.RFNBO_READY,
+            rfnboType: RfnboType.RFNBO_READY,
           }),
         }),
         ProcessStepEntityFixture.createHydrogenProduction({
@@ -181,7 +181,7 @@ describe('BottlingAllocator', () => {
             id: 'batch-yellow',
             amount: 100,
             qualityDetails: QualityDetailsEntityFixture.createYellow(),
-            rfnboType: RFNBOType.NON_CERTIFIABLE,
+            rfnboType: RfnboType.NON_CERTIFIABLE,
           }),
         }),
       ];
@@ -207,13 +207,13 @@ describe('BottlingAllocator', () => {
           batch: BatchEntityFixture.createHydrogenBatch({
             amount: 50,
             qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            rfnboType: RFNBOType.RFNBO_READY,
+            rfnboType: RfnboType.RFNBO_READY,
           }),
         }),
       ];
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createGreen({ amount: 100 })];
 
-      const expectedErrorMessage = `There is not enough hydrogen in storage unit ${givenHydrogenStorageUnitId} for the requested amount of 100 of quality ${RFNBOType.RFNBO_READY}.`;
+      const expectedErrorMessage = `There is not enough hydrogen in storage unit ${givenHydrogenStorageUnitId} for the requested amount of 100 of quality ${RfnboType.RFNBO_READY}.`;
 
       // Act & Assert
       expect(() =>
@@ -229,7 +229,7 @@ describe('BottlingAllocator', () => {
           batch: BatchEntityFixture.createHydrogenBatch({
             amount: 100,
             qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            rfnboType: RFNBOType.RFNBO_READY,
+            rfnboType: RfnboType.RFNBO_READY,
           }),
         }),
       ];

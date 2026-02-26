@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export enum RFNBOType {
+export enum RfnboType {
   RFNBO_READY = 'RFNBO_READY',
   NON_CERTIFIABLE = 'NON_CERTIFIABLE',
   NOT_SPECIFIED = 'NOT_SPECIFIED',
