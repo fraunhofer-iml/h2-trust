@@ -42,7 +42,7 @@ export class BottlingService {
       await this.processStepService.readProcessStepsByTypesAndActiveAndOwner(payload);
     for (let i = 0; i < processStepEntities.length; i++) {
       processStepEntities[i].batch.rfnboType =
-        await this.digitalProductPassportCalculationService.getRfnboTypeForProcessStep(processStepEntities[i]);
+        await this.digitalProductPassportCalculationService.determineRfnboTypeForProcessStep(processStepEntities[i]);
     }
     return processStepEntities;
   }
@@ -66,7 +66,7 @@ export class BottlingService {
 
     for (let i = 0; i < allProcessStepsFromStorageUnit.length; i++) {
       allProcessStepsFromStorageUnit[i].batch.rfnboType =
-        await this.digitalProductPassportCalculationService.getRfnboTypeForProcessStep(
+        await this.digitalProductPassportCalculationService.determineRfnboTypeForProcessStep(
           allProcessStepsFromStorageUnit[i],
         );
     }

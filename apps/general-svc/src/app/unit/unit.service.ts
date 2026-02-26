@@ -62,7 +62,7 @@ export class UnitService {
       for (let j = 0; j < hydrogenStorageUnits[i].filling.length; j++) {
         const rfnboType: string = await firstValueFrom(
           this.processService.send(
-            DigitalProductPassportPatterns.READ_RFNBO_STATUS,
+            DigitalProductPassportPatterns.DETERMINE_RFNBO_TYPE,
             new ReadByIdPayload(hydrogenStorageUnits[i].filling[j].processId),
           ),
         );

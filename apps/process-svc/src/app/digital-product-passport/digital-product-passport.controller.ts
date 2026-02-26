@@ -18,9 +18,9 @@ export class DigitalProductPassportController {
     private readonly digitalProductPassportCalculationService: DigitalProductPassportService,
   ) {}
 
-  @MessagePattern(DigitalProductPassportPatterns.READ_RFNBO_STATUS)
-  async getDPPForHydrogenStorage(payload: ReadByIdPayload): Promise<string> {
-    return this.digitalProductPassportCalculationService.getRfnboTypeForProcessStepId(payload.id);
+  @MessagePattern(DigitalProductPassportPatterns.DETERMINE_RFNBO_TYPE)
+  async determineRfnboType(payload: ReadByIdPayload): Promise<string> {
+    return this.digitalProductPassportCalculationService.determineRfnboTypeForProcessStepId(payload.id);
   }
 
   @MessagePattern(DigitalProductPassportPatterns.READ_DIGITAL_PRODUCT_PASSPORT)

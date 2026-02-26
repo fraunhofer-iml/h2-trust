@@ -36,14 +36,14 @@ export class DigitalProductPassportService {
     private readonly hydrogenProductionSectionService: HydrogenProductionSectionService,
     private readonly provenanceService: ProvenanceService,
     private readonly emissionService: EmissionService,
-  ) {}
+  ) { }
 
-  async getRfnboTypeForProcessStepId(processStepId: string): Promise<RfnboType> {
+  async determineRfnboTypeForProcessStepId(processStepId: string): Promise<RfnboType> {
     const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
-    return this.getRfnboTypeForProcessStep(processStep);
+    return this.determineRfnboTypeForProcessStep(processStep);
   }
 
-  async getRfnboTypeForProcessStep(processStep: ProcessStepEntity): Promise<RfnboType> {
+  async determineRfnboTypeForProcessStep(processStep: ProcessStepEntity): Promise<RfnboType> {
     const dpp: DigitalProductPassportEntity = await this.readDigitalProductPassport(processStep);
     return dpp.rfnboType ? RfnboType.RFNBO_READY : RfnboType.NON_CERTIFIABLE;
   }
