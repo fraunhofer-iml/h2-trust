@@ -13,14 +13,11 @@ import { DigitalProductPassportService } from './digital-product-passport.servic
 
 @Controller()
 export class DigitalProductPassportController {
-  constructor(
-    private readonly digitalProductPassportService: DigitalProductPassportService,
-    private readonly digitalProductPassportCalculationService: DigitalProductPassportService,
-  ) {}
+  constructor(private readonly digitalProductPassportService: DigitalProductPassportService) { }
 
   @MessagePattern(DigitalProductPassportPatterns.DETERMINE_RFNBO_TYPE)
   async determineRfnboType(payload: ReadByIdPayload): Promise<string> {
-    return this.digitalProductPassportCalculationService.determineRfnboTypeForProcessStepId(payload.id);
+    return this.digitalProductPassportService.determineRfnboTypeForProcessStepId(payload.id);
   }
 
   @MessagePattern(DigitalProductPassportPatterns.READ_DIGITAL_PRODUCT_PASSPORT)
