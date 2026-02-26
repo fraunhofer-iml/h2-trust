@@ -113,26 +113,31 @@
           <th mat-header-cell *matHeaderCellDef>Status</th>
           <td mat-cell *matCellDef="let file" class="!w-44">
             <div
-              [matTooltip]="verifingResults.get(file.id)?.message"
+              [matTooltip]="stateService.getItem(file.id)?.message"
               [matTooltipPosition]="'above'"
               class="flex w-fit flex-row items-center gap-2 rounded-md border-[1px] border-solid border-opacity-30 px-2 py-1 text-sm"
               [ngClass]="{
-                'border-red-600 text-red-600': verifingResults.get(file.id)?.status === 'MISMATCHED',
-                'border-yellow-600 text-yellow-700': verifingResults.get(file.id)?.status === 'FAILED',
-                'border-secondary-500 text-secondary-600': verifingResults.get(file.id)?.status === 'VERIFIED',
+                'border-red-600 bg-red-100 text-red-700': getStatus(file.id) === CsvDocumentIntegrityStatus.MISMATCH,
+                'border-yellow-600 bg-yellow-100 text-yellow-700':
+                  getStatus(file.id) === CsvDocumentIntegrityStatus.FAILED,
+                'border-secondary-500 bg-secondary-100 text-secondary-700':
+                  getStatus(file.id) === CsvDocumentIntegrityStatus.VERIFIED,
               }"
             >
-              <span class="material-symbols-outlined text-sm">
-                {{ statusIcons[verifingResults.get(file.id)?.status ?? 'OPEN'] }} </span
-              >{{ verifingResults.get(file.id)?.status ?? 'open' | titlecase }}
+              @if (file.verifiable) {
+                <span class="material-symbols-outlined text-sm"> {{ getIcon(getStatus(file.id)) }} </span
+                >{{ getStatus(file.id) ?? 'open' | titlecase }}
+              } @else {
+                <span class="material-symbols-outlined text-sm"> block </span>Not verifiable
+              }
             </div>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="button">
           <th mat-header-cell *matHeaderCellDef>Validation</th>
-          <td mat-cell *matCellDef="let file" class="!py-4">
-            <app-verify-button [file]="file" (verificationEMitter)="setResult($event)"></app-verify-button>
+          <td mat-cell *matCellDef="let file" class="!w-44 !py-4">
+            <app-verify-button [disabled]="!file.verifiable" [file]="file"></app-verify-button>
           </td>
         </ng-container>
 

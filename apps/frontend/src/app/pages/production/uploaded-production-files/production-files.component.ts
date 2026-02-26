@@ -25,13 +25,13 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { CsvContentType, ProcessedCsvDto } from '@h2-trust/api';
-import { BatchType, MeasurementUnit } from '@h2-trust/domain';
+import { CsvContentType, CsvDocumentIntegrityResultDto, ProcessedCsvDto } from '@h2-trust/api';
+import { BatchType, CsvDocumentIntegrityStatus, MeasurementUnit } from '@h2-trust/domain';
 import { ICONS } from '../../../shared/constants/icons';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { ProductionService } from '../../../shared/services/production/production.service';
+import { VerificationStateService } from '../../../shared/services/verification-state/verification-state.service';
 import { DownloadButtonComponent } from './download-button/download-button.component';
-import { ValidationResult } from './validated-file';
 import { VerifyButtonComponent } from './verify-button.component';
 
 interface FilterModel {
@@ -70,6 +70,7 @@ export class ProductionFilesComponent implements AfterViewInit {
   protected readonly ICONS = ICONS.UNITS;
   protected readonly MeasurementUnit = MeasurementUnit;
   protected readonly CsvContentType = BatchType;
+  protected readonly CsvDocumentIntegrityStatus = CsvDocumentIntegrityStatus;
   readonly displayedColumns = [
     'select',
     'name',
@@ -81,6 +82,7 @@ export class ProductionFilesComponent implements AfterViewInit {
     'validationStatus',
     'button',
   ] as const;
+
   readonly displayedCsvContentTypes: { name: string; value: CsvContentType | null }[] = [
     { name: 'Hydrogen', value: BatchType.HYDROGEN },
     { name: 'Power', value: BatchType.POWER },
@@ -88,6 +90,7 @@ export class ProductionFilesComponent implements AfterViewInit {
   ] as const;
 
   productionService = inject(ProductionService);
+  stateService = inject(VerificationStateService);
 
   searchModel = signal<FilterModel>({
     input: '',
@@ -103,8 +106,18 @@ export class ProductionFilesComponent implements AfterViewInit {
   dataSource: MatTableDataSource<ProcessedCsvDto> = new MatTableDataSource<ProcessedCsvDto>();
   selection = new SelectionModel<ProcessedCsvDto>(true, []);
 
-  verifingResults: Map<string, ValidationResult> = new Map();
-  statusIcons = { ['MISMATCHED']: 'cancel', ['FAILED']: 'warning', ['VERIFIED']: 'check_circle', ['OPEN']: 'circle' };
+  getIcon(status: CsvDocumentIntegrityStatus | undefined) {
+    switch (status) {
+      case CsvDocumentIntegrityStatus.MISMATCH:
+        return 'cancel';
+      case CsvDocumentIntegrityStatus.FAILED:
+        return 'warning';
+      case CsvDocumentIntegrityStatus.VERIFIED:
+        return 'check_circle';
+      default:
+        return 'circle';
+    }
+  }
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -113,8 +126,7 @@ export class ProductionFilesComponent implements AfterViewInit {
     queryKey: ['production'],
     queryFn: async (): Promise<ProcessedCsvDto[]> => {
       const data = await this.productionService.getUploadedCsvFiles();
-      this.verifingResults = new Map();
-      return data.map((file) => ({ ...file }));
+      return data;
     },
   }));
 
@@ -175,11 +187,15 @@ export class ProductionFilesComponent implements AfterViewInit {
     this.selection.select(...this.dataSource.data);
   }
 
-  setResult(e: ValidationResult | undefined) {
+  setResult(e: CsvDocumentIntegrityResultDto | undefined) {
     if (!e) {
       toast.error('Unknown error. Failed to Validate.');
       return;
     }
-    this.verifingResults.set(e.id, e);
+    this.stateService.setItem(e.documentId, e);
+  }
+
+  getStatus(id: string) {
+    return this.stateService.getItem(id)?.status;
   }
 }

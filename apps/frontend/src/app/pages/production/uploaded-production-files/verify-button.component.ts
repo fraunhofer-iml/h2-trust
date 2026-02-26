@@ -1,32 +1,52 @@
+import { toast } from 'ngx-sonner';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CommonModule } from '@angular/common';
-import { Component, inject, input, output } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { ProcessedCsvDto } from '@h2-trust/api';
+import { CsvDocumentIntegrityStatus } from '@h2-trust/domain';
 import { BaseSheetComponent } from '../../../layout/sheet/sheet.component';
 import { ProductionService } from '../../../shared/services/production/production.service';
-import { ValidationResult } from './validated-file';
-import { VerificationDetailsComponent } from './verification-details/verification-details.component';
+import { VerificationStateService } from '../../../shared/services/verification-state/verification-state.service';
 
 @Component({
   selector: 'app-verify-button',
-  imports: [MatButtonModule, BaseSheetComponent, VerificationDetailsComponent, CommonModule],
+  imports: [MatButtonModule, BaseSheetComponent, ClipboardModule, CommonModule],
   templateUrl: './verify-button.component.html',
 })
 export class VerifyButtonComponent {
-  fileService = inject(ProductionService);
-
+  protected readonly CsvDocumentIntegrityStatus = CsvDocumentIntegrityStatus;
+  disabled = input.required();
   file = input.required<ProcessedCsvDto>();
 
-  verifying = false;
-  result: ValidationResult | undefined;
+  fileService = inject(ProductionService);
+  stateService = inject(VerificationStateService);
 
-  verificationEMitter = output<ValidationResult | undefined>();
+  verifying = false;
 
   async verify() {
     this.verifying = true;
     const res = await this.fileService.validateFile(this.file().id);
-    this.result = { ...res, id: this.file().name };
-    this.verificationEMitter.emit({ ...this.result, id: this.file().id });
+    this.stateService.setItem(this.file().id, res);
     this.verifying = false;
+  }
+
+  onCopied(success: boolean) {
+    if (success) {
+      toast.success('Transaction hash copied to clipboard!');
+    }
+  }
+
+  openArbiscan(url: string | null) {
+    if (!url) {
+      toast.error('Missing explorer url!');
+      return;
+    }
+
+    window.open(url, '_blank');
+  }
+
+  get result() {
+    return this.stateService.getItem(this.file().id);
   }
 }
