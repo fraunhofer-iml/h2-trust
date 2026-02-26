@@ -6,23 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
 import { ProcessStepEntity, ProofOfOriginWaterBatchEntity } from '@h2-trust/amqp';
 import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
 import { ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
-import { WaterSupplyClassificationService } from './water-supply-classification.service';
+import { WaterSupplyClassificationAssembler } from './water-supply-classification.assembler';
 
 describe('WaterSupplyClassificationService', () => {
-  let service: WaterSupplyClassificationService;
-
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [WaterSupplyClassificationService],
-    }).compile();
-
-    service = module.get<WaterSupplyClassificationService>(WaterSupplyClassificationService);
-  });
-
   describe('buildWaterSupplyClassification', () => {
     it('returns classification with water batches and emissions', () => {
       // Arrange
@@ -31,7 +20,7 @@ describe('WaterSupplyClassificationService', () => {
       const givenHydrogenAmount = 100;
 
       // Act
-      const actualResult = service.buildWaterSupplyClassification(givenWaterSupplies, givenHydrogenAmount);
+      const actualResult = WaterSupplyClassificationAssembler.assembleClassification(givenWaterSupplies, givenHydrogenAmount);
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION);
@@ -62,7 +51,7 @@ describe('WaterSupplyClassificationService', () => {
       const givenHydrogenAmount = 100;
 
       // Act
-      const actualResult = service.buildWaterSupplyClassification(givenWaterSupplies, givenHydrogenAmount);
+      const actualResult = WaterSupplyClassificationAssembler.assembleClassification(givenWaterSupplies, givenHydrogenAmount);
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION);
@@ -83,7 +72,7 @@ describe('WaterSupplyClassificationService', () => {
       const errorMessage = 'No process steps of type water supply found.';
 
       // Act & Assert
-      expect(() => service.buildWaterSupplyClassification(givenWaterSupplies, givenHydrogenAmount)).toThrow(
+      expect(() => WaterSupplyClassificationAssembler.assembleClassification(givenWaterSupplies, givenHydrogenAmount)).toThrow(
         errorMessage,
       );
     });
@@ -96,7 +85,7 @@ describe('WaterSupplyClassificationService', () => {
       const errorMessage = 'No process steps of type water supply found.';
 
       // Act & Assert
-      expect(() => service.buildWaterSupplyClassification(givenWaterSupplies, givenHydrogenAmount)).toThrow(
+      expect(() => WaterSupplyClassificationAssembler.assembleClassification(givenWaterSupplies, givenHydrogenAmount)).toThrow(
         errorMessage,
       );
     });

@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Injectable } from '@nestjs/common';
 import {
   ProcessStepEntity,
   ProofOfOriginClassificationEntity,
@@ -19,9 +18,8 @@ import { BatchAssembler } from './batch.assembler';
 import { ClassificationAssembler } from './classification.assembler';
 import { EmissionAssembler } from './emission.assembler';
 
-@Injectable()
-export class WaterSupplyClassificationService {
-  buildWaterSupplyClassification(
+export class WaterSupplyClassificationAssembler {
+  static assembleClassification(
     waterSupplies: ProcessStepEntity[],
     bottledKgHydrogen: number,
   ): ProofOfOriginClassificationEntity {

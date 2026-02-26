@@ -13,19 +13,11 @@ import {
   ProcessStepEntityFixture,
   TransportationDetailsEntityFixture,
 } from '@h2-trust/fixtures/entities';
-import { HydrogenTransportationSectionService } from './hydrogen-transportation-section.service';
+import { HydrogenTransportationSectionAssembler } from './hydrogen-transportation-section.assembler';
 
 describe('HydrogenTransportationSectionService', () => {
-  const bottlingServiceMock = {
-    calculateHydrogenComposition: jest.fn(),
-  };
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   describe('buildSection', () => {
-    it('returns section with hydrogen batch, composition and emissions for trailer transport', async () => {
+    it('returns section with hydrogen batch, composition and emissions for trailer transport', () => {
       // Arrange
       const givenTransportationDetails = TransportationDetailsEntityFixture.createTrailer();
       const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation({
@@ -36,10 +28,8 @@ describe('HydrogenTransportationSectionService', () => {
         HydrogenComponentEntityFixture.createYellow({ amount: 40 }),
       ];
 
-      bottlingServiceMock.calculateHydrogenComposition.mockResolvedValue(givenHydrogenCompositions);
-
       // Act
-      const actualResult = await HydrogenTransportationSectionService.buildSection(
+      const actualResult = HydrogenTransportationSectionAssembler.assembleSection(
         givenHydrogenTransportation,
         givenHydrogenCompositions,
       );
@@ -62,7 +52,7 @@ describe('HydrogenTransportationSectionService', () => {
       expect(batch.accountingPeriodEnd).toBe(givenHydrogenTransportation.endedAt);
     });
 
-    it('returns section with zero emissions for pipeline transport', async () => {
+    it('returns section with zero emissions for pipeline transport', () => {
       // Arrange
       const givenTransportationDetails = TransportationDetailsEntityFixture.createPipeline();
       const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation({
@@ -70,10 +60,8 @@ describe('HydrogenTransportationSectionService', () => {
       });
       const givenHydrogenCompositions = [HydrogenComponentEntityFixture.createGreen()];
 
-      bottlingServiceMock.calculateHydrogenComposition.mockResolvedValue(givenHydrogenCompositions);
-
       // Act
-      const actualResult = await HydrogenTransportationSectionService.buildSection(
+      const actualResult = HydrogenTransportationSectionAssembler.assembleSection(
         givenHydrogenTransportation,
         givenHydrogenCompositions,
       );

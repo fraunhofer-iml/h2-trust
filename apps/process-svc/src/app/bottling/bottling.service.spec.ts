@@ -40,8 +40,8 @@ describe('BottlingService', () => {
   };
 
   const dppServiceMock = {
-    getRfnboTypeForProcessStepId: jest.fn(),
-    getRfnboTypeForProcessStep: jest.fn(),
+    determineRfnboTypeForProcessStepId: jest.fn(),
+    determineRfnboTypeForProcessStep: jest.fn(),
     getDppForProcessStepId: jest.fn(),
     readProcessStep: jest.fn(),
   };
@@ -104,7 +104,7 @@ describe('BottlingService', () => {
       const givenCreatedBottlingProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
 
       processStepServiceMock.readAllProcessStepsFromStorageUnit.mockResolvedValue([givenStorageProcessStep]);
-      dppServiceMock.getRfnboTypeForProcessStep.mockResolvedValue(RfnboType.RFNBO_READY);
+      dppServiceMock.determineRfnboTypeForProcessStep.mockResolvedValue(RfnboType.RFNBO_READY);
       processStepServiceMock.setBatchesInactive.mockResolvedValue({ count: 1 });
       processStepServiceMock.createProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
       processStepServiceMock.readProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
@@ -209,7 +209,7 @@ describe('BottlingService', () => {
       processStepServiceMock.setBatchesInactive.mockResolvedValue({ count: 1 });
       processStepServiceMock.createProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
       processStepServiceMock.readProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
-      dppServiceMock.getRfnboTypeForProcessStep.mockResolvedValue(RfnboType.RFNBO_READY);
+      dppServiceMock.determineRfnboTypeForProcessStep.mockResolvedValue(RfnboType.RFNBO_READY);
       storageServiceMock.uploadPdfFile.mockResolvedValue(givenFile.originalname);
       documentRepositoryMock.addDocumentToProcessStep.mockResolvedValue({});
 

@@ -16,17 +16,13 @@ import {
 } from '@h2-trust/fixtures/entities';
 import { HydrogenProductionSectionService } from './hydrogen-production-section.service';
 import { PowerSupplyClassificationService } from './power-supply-classification.service';
-import { WaterSupplyClassificationService } from './water-supply-classification.service';
+import { WaterSupplyClassificationAssembler } from './water-supply-classification.assembler';
 
 describe('HydrogenProductionSectionService', () => {
   let service: HydrogenProductionSectionService;
 
   const powerSupplyClassificationServiceMock = {
     buildPowerSupplySubClassifications: jest.fn(),
-  };
-
-  const waterSupplyClassificationServiceMock = {
-    buildWaterSupplyClassification: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -36,11 +32,7 @@ describe('HydrogenProductionSectionService', () => {
         {
           provide: PowerSupplyClassificationService,
           useValue: powerSupplyClassificationServiceMock,
-        },
-        {
-          provide: WaterSupplyClassificationService,
-          useValue: waterSupplyClassificationServiceMock,
-        },
+        }
       ],
     }).compile();
 
@@ -49,6 +41,7 @@ describe('HydrogenProductionSectionService', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    jest.restoreAllMocks();
   });
 
   describe('buildSection', () => {
@@ -66,9 +59,7 @@ describe('HydrogenProductionSectionService', () => {
       powerSupplyClassificationServiceMock.buildPowerSupplySubClassifications.mockResolvedValue(
         givenPowerSubClassifications,
       );
-      waterSupplyClassificationServiceMock.buildWaterSupplyClassification.mockReturnValue(
-        givenWaterSupplyClassification,
-      );
+      jest.spyOn(WaterSupplyClassificationAssembler, 'assembleClassification').mockReturnValue(givenWaterSupplyClassification);
 
       // Act
       const actualResult = await service.buildSection(
@@ -82,7 +73,7 @@ describe('HydrogenProductionSectionService', () => {
         givenPowerProductions,
         givenHydrogenAmount,
       );
-      expect(waterSupplyClassificationServiceMock.buildWaterSupplyClassification).toHaveBeenCalledWith(
+      expect(WaterSupplyClassificationAssembler.assembleClassification).toHaveBeenCalledWith(
         givenWaterConsumptions,
         givenHydrogenAmount,
       );
@@ -119,7 +110,6 @@ describe('HydrogenProductionSectionService', () => {
         givenPowerProductions,
         givenHydrogenAmount,
       );
-      expect(waterSupplyClassificationServiceMock.buildWaterSupplyClassification).not.toHaveBeenCalled();
 
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
       expect(actualResult.classifications).toHaveLength(1);
@@ -135,10 +125,7 @@ describe('HydrogenProductionSectionService', () => {
       const givenWaterSupplyClassification = ProofOfOriginClassificationEntityFixture.create({
         name: ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION,
       });
-
-      waterSupplyClassificationServiceMock.buildWaterSupplyClassification.mockReturnValue(
-        givenWaterSupplyClassification,
-      );
+      jest.spyOn(WaterSupplyClassificationAssembler, 'assembleClassification').mockReturnValue(givenWaterSupplyClassification);
 
       // Act
       const actualResult = await service.buildSection(
@@ -149,7 +136,7 @@ describe('HydrogenProductionSectionService', () => {
 
       // Assert
       expect(powerSupplyClassificationServiceMock.buildPowerSupplySubClassifications).not.toHaveBeenCalled();
-      expect(waterSupplyClassificationServiceMock.buildWaterSupplyClassification).toHaveBeenCalledWith(
+      expect(WaterSupplyClassificationAssembler.assembleClassification).toHaveBeenCalledWith(
         givenWaterConsumptions,
         givenHydrogenAmount,
       );
@@ -174,7 +161,6 @@ describe('HydrogenProductionSectionService', () => {
 
       // Assert
       expect(powerSupplyClassificationServiceMock.buildPowerSupplySubClassifications).not.toHaveBeenCalled();
-      expect(waterSupplyClassificationServiceMock.buildWaterSupplyClassification).not.toHaveBeenCalled();
 
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
       expect(actualResult.batches).toEqual([]);

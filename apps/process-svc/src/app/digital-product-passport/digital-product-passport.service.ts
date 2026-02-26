@@ -21,10 +21,10 @@ import { BatchType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentAssembler } from '../process-step/hydrogenComponent/hydrogen-component.assembler';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { EmissionService } from './proof-of-origin/emission.service';
-import { HydrogenBottlingSectionService } from './proof-of-origin/hydrogen-bottling-section.service';
+import { HydrogenBottlingSectionAssembler } from './proof-of-origin/hydrogen-bottling-section.assembler';
 import { HydrogenProductionSectionService } from './proof-of-origin/hydrogen-production-section.service';
-import { HydrogenStorageSectionService } from './proof-of-origin/hydrogen-storage-section.service';
-import { HydrogenTransportationSectionService } from './proof-of-origin/hydrogen-transportation-section.service';
+import { HydrogenStorageSectionAssembler } from './proof-of-origin/hydrogen-storage-section.assembler';
+import { HydrogenTransportationSectionAssembler } from './proof-of-origin/hydrogen-transportation-section.assembler';
 import { ProvenanceService } from './provenance/provenance.service';
 import { RedComplianceService } from './red-compliance/red-compliance.service';
 
@@ -107,7 +107,7 @@ export class DigitalProductPassportService {
 
       //build storage section
       if (provenance.hydrogenProductions?.length) {
-        const hydrogenStorageSection: ProofOfOriginSectionEntity = HydrogenStorageSectionService.buildSection(
+        const hydrogenStorageSection: ProofOfOriginSectionEntity = HydrogenStorageSectionAssembler.assembleSection(
           provenance.hydrogenProductions,
         );
         proofOfOrigin.push(hydrogenStorageSection);
@@ -115,7 +115,7 @@ export class DigitalProductPassportService {
 
       //build bottling section for rootType=HYDROGEN_BOTTLING
       if (provenance.root.type === ProcessType.HYDROGEN_BOTTLING) {
-        const hydrogenBottlingSection: ProofOfOriginSectionEntity = HydrogenBottlingSectionService.buildSection(
+        const hydrogenBottlingSection: ProofOfOriginSectionEntity = HydrogenBottlingSectionAssembler.assembleSection(
           provenance.root,
           hydrogenCompositionsForRootOfProvenence,
         );
@@ -124,7 +124,7 @@ export class DigitalProductPassportService {
 
       //build bottling section for rootType=HYDROGEN_TRANSPORTATION
       if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION) {
-        const hydrogenBottlingSection: ProofOfOriginSectionEntity = HydrogenBottlingSectionService.buildSection(
+        const hydrogenBottlingSection: ProofOfOriginSectionEntity = HydrogenBottlingSectionAssembler.assembleSection(
           provenance.hydrogenBottling,
           hydrogenCompositionsForBottlingOfProvenence,
         );
@@ -134,7 +134,7 @@ export class DigitalProductPassportService {
       //build transport section for rootType=HYDROGEN_TRANSPORTATION
       if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION && provenance.hydrogenBottling) {
         const hydrogenTransportationSection: ProofOfOriginSectionEntity =
-          HydrogenTransportationSectionService.buildSection(
+          HydrogenTransportationSectionAssembler.assembleSection(
             provenance.root,
             hydrogenCompositionsForBottlingOfProvenence,
           );

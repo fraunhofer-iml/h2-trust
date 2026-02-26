@@ -6,32 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
 import { ProofOfOriginHydrogenBatchEntity } from '@h2-trust/amqp';
 import { ProofOfOrigin } from '@h2-trust/domain';
 import { HydrogenComponentEntityFixture, ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
-import { HydrogenBottlingSectionService } from './hydrogen-bottling-section.service';
+import { HydrogenBottlingSectionAssembler } from './hydrogen-bottling-section.assembler';
 
-describe('HydrogenBottlingSectionService', () => {
-  let service: HydrogenBottlingSectionService;
+describe('HydrogenBottlingSectionAssembler', () => {
 
-  const bottlingServiceMock = {
-    calculateHydrogenComposition: jest.fn(),
-  };
-
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [HydrogenBottlingSectionService],
-    }).compile();
-
-    service = module.get<HydrogenBottlingSectionService>(HydrogenBottlingSectionService);
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  describe('buildSection', () => {
+  describe('assembleSection', () => {
     it('returns section with hydrogen batch, composition and emissions', async () => {
       // Arrange
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
@@ -40,10 +22,8 @@ describe('HydrogenBottlingSectionService', () => {
         HydrogenComponentEntityFixture.createYellow({ amount: 40 }),
       ];
 
-      bottlingServiceMock.calculateHydrogenComposition.mockResolvedValue(givenHydrogenCompositions);
-
       // Act
-      const actualResult = HydrogenBottlingSectionService.buildSection(
+      const actualResult = HydrogenBottlingSectionAssembler.assembleSection(
         givenHydrogenBottling,
         givenHydrogenCompositions,
       );

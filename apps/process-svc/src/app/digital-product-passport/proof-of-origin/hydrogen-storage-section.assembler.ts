@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Injectable } from '@nestjs/common';
 import {
   ProcessStepEntity,
   ProofOfOriginBatchEntity,
@@ -21,9 +20,8 @@ import { BatchAssembler } from './batch.assembler';
 import { ClassificationAssembler } from './classification.assembler';
 import { EmissionAssembler } from './emission.assembler';
 
-@Injectable()
-export class HydrogenStorageSectionService {
-  static buildSection(hydrogenProductions: ProcessStepEntity[]): ProofOfOriginSectionEntity {
+export class HydrogenStorageSectionAssembler {
+  static assembleSection(hydrogenProductions: ProcessStepEntity[]): ProofOfOriginSectionEntity {
     if (!hydrogenProductions?.length) {
       return new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_STORAGE_SECTION, [], []);
     }
