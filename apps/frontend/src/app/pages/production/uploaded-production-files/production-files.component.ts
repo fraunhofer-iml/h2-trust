@@ -23,6 +23,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
+import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { CsvContentType, ProcessedCsvDto } from '@h2-trust/api';
 import { BatchType, CsvDocumentIntegrityStatus, MeasurementUnit } from '@h2-trust/domain';
@@ -31,7 +32,7 @@ import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { ProductionService } from '../../../shared/services/production/production.service';
 import { VerificationStateService } from '../../../shared/services/verification-state/verification-state.service';
 import { DownloadButtonComponent } from './download-button/download-button.component';
-import { VerifyComponent } from './verify.component';
+import { VerifyComponent } from './verification/verify.component';
 
 interface FilterModel {
   input: string;
@@ -61,6 +62,7 @@ interface FilterModel {
     MatTooltip,
     MatBottomSheetModule,
     VerifyComponent,
+    RouterModule,
   ],
   providers: [ProductionService, provideNativeDateAdapter()],
   templateUrl: './production-files.component.html',

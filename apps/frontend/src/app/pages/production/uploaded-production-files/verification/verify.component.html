@@ -2,13 +2,13 @@
   <button matButton="filled" disabled class="gap-1">
     <span class="flex flex-row items-center gap-2">
       <span class="material-symbols-outlined animate-spin" matButtonPrefix>progress_activity</span>
-      Verifiying
+      Verifiying...
     </span>
   </button>
 } @else if (!result || result.status === CsvDocumentIntegrityStatus.FAILED) {
   <button matButton="filled" (click)="verify()" [disabled]="disabled()">Verifiy</button>
 } @else {
-  <button matButton="outlined" (click)="sheet.open()" class="!bg-neutral-200">Details</button>
+  <button matButton="outlined" (click)="sheet.open()" class="!bg-neutral-200">See Details</button>
 }
 
 <!-- DETAILS SHEET -->
@@ -23,7 +23,7 @@
         <div
           class="rounded-xl border-2 p-4"
           [ngClass]="{
-            'border-red-100 bg-red-200/20 text-red-600': res.status === CsvDocumentIntegrityStatus.FAILED,
+            'border-red-100 bg-red-200/20 text-red-600': res.status === CsvDocumentIntegrityStatus.MISMATCH,
             'border-secondary-100 bg-secondary-200/20 text-secondary-600':
               res.status === CsvDocumentIntegrityStatus.VERIFIED,
           }"
@@ -77,7 +77,7 @@
           <span class="text-md font-semibold">Actions</span>
           <p>You can view the full verification details on Arbiscan or copy the transaction hash for your records.</p>
           <div class="mt-4 flex flex-row gap-4">
-            <button matButton="outlined" (click)="openArbiscan(res.explorerUrl)">
+            <button matButton="outlined" (click)="openExplorer(res.explorerUrl)">
               <span class="flex flex-row items-center gap-2">
                 <span class="material-symbols-outlined">token</span>
                 Arbiscan

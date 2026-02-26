@@ -5,9 +5,9 @@ import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { ProcessedCsvDto } from '@h2-trust/api';
 import { CsvDocumentIntegrityStatus } from '@h2-trust/domain';
-import { BaseSheetComponent } from '../../../layout/sheet/sheet.component';
-import { ProductionService } from '../../../shared/services/production/production.service';
-import { VerificationStateService } from '../../../shared/services/verification-state/verification-state.service';
+import { BaseSheetComponent } from '../../../../layout/sheet/sheet.component';
+import { ProductionService } from '../../../../shared/services/production/production.service';
+import { VerificationStateService } from '../../../../shared/services/verification-state/verification-state.service';
 
 @Component({
   selector: 'app-verify',
@@ -37,7 +37,7 @@ export class VerifyComponent {
     }
   }
 
-  openArbiscan(url: string | null) {
+  openExplorer(url: string | null) {
     if (!url) {
       toast.error('Missing explorer url!');
       return;
