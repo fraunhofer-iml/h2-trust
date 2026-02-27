@@ -13,7 +13,7 @@ import { DigitalProductPassportService } from './digital-product-passport.servic
 
 @Controller()
 export class DigitalProductPassportController {
-  constructor(private readonly digitalProductPassportService: DigitalProductPassportService) { }
+  constructor(private readonly digitalProductPassportService: DigitalProductPassportService) {}
 
   @MessagePattern(DigitalProductPassportPatterns.DETERMINE_RFNBO_TYPE)
   async determineRfnboType(payload: ReadByIdPayload): Promise<string> {

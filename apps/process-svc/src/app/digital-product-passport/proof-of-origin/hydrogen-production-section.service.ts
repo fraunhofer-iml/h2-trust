@@ -20,9 +20,7 @@ import { WaterSupplyClassificationAssembler } from './water-supply-classificatio
 
 @Injectable()
 export class HydrogenProductionSectionService {
-  constructor(
-    private readonly powerSupplyClassificationService: PowerSupplyClassificationService
-  ) { }
+  constructor(private readonly powerSupplyClassificationService: PowerSupplyClassificationService) {}
 
   async buildSection(
     powerProductions: ProcessStepEntity[],

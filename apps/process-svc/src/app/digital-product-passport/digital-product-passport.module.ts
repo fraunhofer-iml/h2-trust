@@ -36,4 +36,4 @@ import { RedComplianceModule } from './red-compliance/red-compliance.module';
   ],
   exports: [DigitalProductPassportService],
 })
-export class DigitalProductPassportModule { }
+export class DigitalProductPassportModule {}

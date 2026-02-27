@@ -20,7 +20,10 @@ describe('WaterSupplyClassificationService', () => {
       const givenHydrogenAmount = 100;
 
       // Act
-      const actualResult = WaterSupplyClassificationAssembler.assembleClassification(givenWaterSupplies, givenHydrogenAmount);
+      const actualResult = WaterSupplyClassificationAssembler.assembleClassification(
+        givenWaterSupplies,
+        givenHydrogenAmount,
+      );
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION);
@@ -51,7 +54,10 @@ describe('WaterSupplyClassificationService', () => {
       const givenHydrogenAmount = 100;
 
       // Act
-      const actualResult = WaterSupplyClassificationAssembler.assembleClassification(givenWaterSupplies, givenHydrogenAmount);
+      const actualResult = WaterSupplyClassificationAssembler.assembleClassification(
+        givenWaterSupplies,
+        givenHydrogenAmount,
+      );
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION);
@@ -72,9 +78,9 @@ describe('WaterSupplyClassificationService', () => {
       const errorMessage = 'No process steps of type water supply found.';
 
       // Act & Assert
-      expect(() => WaterSupplyClassificationAssembler.assembleClassification(givenWaterSupplies, givenHydrogenAmount)).toThrow(
-        errorMessage,
-      );
+      expect(() =>
+        WaterSupplyClassificationAssembler.assembleClassification(givenWaterSupplies, givenHydrogenAmount),
+      ).toThrow(errorMessage);
     });
 
     it('throws error when water supplies is undefined', () => {
@@ -85,9 +91,9 @@ describe('WaterSupplyClassificationService', () => {
       const errorMessage = 'No process steps of type water supply found.';
 
       // Act & Assert
-      expect(() => WaterSupplyClassificationAssembler.assembleClassification(givenWaterSupplies, givenHydrogenAmount)).toThrow(
-        errorMessage,
-      );
+      expect(() =>
+        WaterSupplyClassificationAssembler.assembleClassification(givenWaterSupplies, givenHydrogenAmount),
+      ).toThrow(errorMessage);
     });
   });
 });

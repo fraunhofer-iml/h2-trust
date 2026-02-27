@@ -56,29 +56,25 @@ export class DigitalProductPassportDto {
   }
 
   static fromEntity(entity: DigitalProductPassportEntity): DigitalProductPassportDto {
-    const hydrogenComposition = (entity.hydrogenComposition ?? []).map(
-      HydrogenComponentDto.fromEntity,
-    );
+    const hydrogenComposition = (entity.hydrogenComposition ?? []).map(HydrogenComponentDto.fromEntity);
 
     const attachedFiles = (entity.attachedFiles ?? []).map(
       (document) => new FileInfoDto(document.fileName, `${document.storageUrl}`),
     );
 
-    const proofOfSustainability = ProofOfSustainabilityDto.fromEntity(
-      entity.proofOfSustainability,
-    );
+    const proofOfSustainability = ProofOfSustainabilityDto.fromEntity(entity.proofOfSustainability);
 
     const proofOfOrigin = SectionDto.fromEntities(entity.proofOfOrigin);
 
     const rfnboCompliance = entity.gridPowerUsed
       ? new GridEnergyRfnboDto(entity.isEmissionReductionAbove70Percent, false, false, false)
       : new RenewableEnergyRfnboDto(
-        entity.isEmissionReductionAbove70Percent,
-        entity.redCompliance.isGeoCorrelationValid,
-        entity.redCompliance.isTimeCorrelationValid,
-        entity.redCompliance.isAdditionalityFulfilled,
-        entity.redCompliance.financialSupportReceived,
-      );
+          entity.isEmissionReductionAbove70Percent,
+          entity.redCompliance.isGeoCorrelationValid,
+          entity.redCompliance.isTimeCorrelationValid,
+          entity.redCompliance.isAdditionalityFulfilled,
+          entity.redCompliance.financialSupportReceived,
+        );
 
     return new DigitalProductPassportDto(
       entity.id,

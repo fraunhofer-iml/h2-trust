@@ -16,7 +16,10 @@ export class HydrogenCompositionUtil {
     hydrogenComponents: HydrogenComponentEntity[],
     bottleAmount: number,
   ): HydrogenComponentEntity[] {
-    const mergedHydrogenComponents = hydrogenComponents.reduce<HydrogenComponentEntity[]>(HydrogenCompositionUtil.mergeSingleComponent, []);
+    const mergedHydrogenComponents = hydrogenComponents.reduce<HydrogenComponentEntity[]>(
+      HydrogenCompositionUtil.mergeSingleComponent,
+      [],
+    );
 
     const totalAmount = Util.sumAmounts(mergedHydrogenComponents);
     if (totalAmount <= 0) {

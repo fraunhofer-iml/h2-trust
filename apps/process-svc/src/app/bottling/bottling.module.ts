@@ -26,4 +26,4 @@ import { BottlingService } from './bottling.service';
   controllers: [BottlingController],
   providers: [BottlingService],
 })
-export class BottlingModule { }
+export class BottlingModule {}

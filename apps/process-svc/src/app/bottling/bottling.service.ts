@@ -33,21 +33,26 @@ export class BottlingService {
     private readonly documentRepository: DocumentRepository,
     private readonly processStepService: ProcessStepService,
     private readonly digitalProductPassportService: DigitalProductPassportService,
-  ) { }
+  ) {}
 
   async readProcessStepsByTypesAndActiveAndOwner(
     payload: ReadProcessStepsByTypesAndActiveAndOwnerPayload,
   ): Promise<ProcessStepEntity[]> {
-    const processSteps: ProcessStepEntity[] = await this.processStepService.readProcessStepsByTypesAndActiveAndOwner(payload);
+    const processSteps: ProcessStepEntity[] =
+      await this.processStepService.readProcessStepsByTypesAndActiveAndOwner(payload);
 
     for (let i = 0; i < processSteps.length; i++) {
-      processSteps[i].batch.rfnboType = await this.digitalProductPassportService.determineRfnboTypeForProcessStep(processSteps[i]);
+      processSteps[i].batch.rfnboType = await this.digitalProductPassportService.determineRfnboTypeForProcessStep(
+        processSteps[i],
+      );
     }
 
     return processSteps;
   }
 
-  async readProcessStepsByPredecessorTypesAndOwner(payload: ReadProcessStepsByPredecessorTypesAndOwnerPayload): Promise<ProcessStepEntity[]> {
+  async readProcessStepsByPredecessorTypesAndOwner(
+    payload: ReadProcessStepsByPredecessorTypesAndOwnerPayload,
+  ): Promise<ProcessStepEntity[]> {
     return this.processStepService.readProcessStepsByPredecessorTypesAndOwner(payload);
   }
 
@@ -64,9 +69,7 @@ export class BottlingService {
 
     for (let i = 0; i < processStepsFromStorageUnit.length; i++) {
       processStepsFromStorageUnit[i].batch.rfnboType =
-        await this.digitalProductPassportService.determineRfnboTypeForProcessStep(
-          processStepsFromStorageUnit[i],
-        );
+        await this.digitalProductPassportService.determineRfnboTypeForProcessStep(processStepsFromStorageUnit[i]);
     }
 
     const fillings: HydrogenComponentEntity[] = processStepsFromStorageUnit.map((processStep) => ({

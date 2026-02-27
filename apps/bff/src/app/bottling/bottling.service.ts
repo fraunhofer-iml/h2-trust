@@ -29,7 +29,7 @@ export class BottlingService {
   constructor(
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
   async createBottlingAndTransportation(
     dto: BottlingDto,

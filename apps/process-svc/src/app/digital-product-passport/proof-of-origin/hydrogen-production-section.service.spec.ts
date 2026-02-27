@@ -32,7 +32,7 @@ describe('HydrogenProductionSectionService', () => {
         {
           provide: PowerSupplyClassificationService,
           useValue: powerSupplyClassificationServiceMock,
-        }
+        },
       ],
     }).compile();
 
@@ -59,7 +59,9 @@ describe('HydrogenProductionSectionService', () => {
       powerSupplyClassificationServiceMock.buildPowerSupplySubClassifications.mockResolvedValue(
         givenPowerSubClassifications,
       );
-      jest.spyOn(WaterSupplyClassificationAssembler, 'assembleClassification').mockReturnValue(givenWaterSupplyClassification);
+      jest
+        .spyOn(WaterSupplyClassificationAssembler, 'assembleClassification')
+        .mockReturnValue(givenWaterSupplyClassification);
 
       // Act
       const actualResult = await service.buildSection(
@@ -125,7 +127,9 @@ describe('HydrogenProductionSectionService', () => {
       const givenWaterSupplyClassification = ProofOfOriginClassificationEntityFixture.create({
         name: ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION,
       });
-      jest.spyOn(WaterSupplyClassificationAssembler, 'assembleClassification').mockReturnValue(givenWaterSupplyClassification);
+      jest
+        .spyOn(WaterSupplyClassificationAssembler, 'assembleClassification')
+        .mockReturnValue(givenWaterSupplyClassification);
 
       // Act
       const actualResult = await service.buildSection(

@@ -12,7 +12,6 @@ import { HydrogenComponentEntityFixture, ProcessStepEntityFixture } from '@h2-tr
 import { HydrogenBottlingSectionAssembler } from './hydrogen-bottling-section.assembler';
 
 describe('HydrogenBottlingSectionAssembler', () => {
-
   describe('assembleSection', () => {
     it('returns section with hydrogen batch, composition and emissions', async () => {
       // Arrange

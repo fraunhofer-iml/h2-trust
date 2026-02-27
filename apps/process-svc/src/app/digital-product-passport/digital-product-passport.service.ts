@@ -36,7 +36,7 @@ export class DigitalProductPassportService {
     private readonly hydrogenProductionSectionService: HydrogenProductionSectionService,
     private readonly provenanceService: ProvenanceService,
     private readonly emissionService: EmissionService,
-  ) { }
+  ) {}
 
   async determineRfnboTypeForProcessStepId(processStepId: string): Promise<RfnboType> {
     const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
@@ -65,7 +65,10 @@ export class DigitalProductPassportService {
     let hydrogenCompositionsForRootOfProvenance: HydrogenComponentEntity[] = [];
 
     //If the process step is neither hydrogen bottling nor transport, then proof of origin should not be calculated.
-    if (rootHydrogen.type == ProcessType.HYDROGEN_BOTTLING || rootHydrogen.type == ProcessType.HYDROGEN_TRANSPORTATION) {
+    if (
+      rootHydrogen.type == ProcessType.HYDROGEN_BOTTLING ||
+      rootHydrogen.type == ProcessType.HYDROGEN_TRANSPORTATION
+    ) {
       hydrogenCompositionsForRootOfProvenance = await this.calculateHydrogenComposition(provenance.root);
 
       const hydrogenCompositionsForBottlingOfProvenance: HydrogenComponentEntity[] = provenance.hydrogenBottling
