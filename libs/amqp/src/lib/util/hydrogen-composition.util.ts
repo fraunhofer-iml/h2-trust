@@ -13,32 +13,20 @@ import { Util } from './util';
 
 export class HydrogenCompositionUtil {
   static computeHydrogenComposition(
-    predecessorHydrogenComponents: HydrogenComponentEntity[],
+    hydrogenComponents: HydrogenComponentEntity[],
     bottleAmount: number,
   ): HydrogenComponentEntity[] {
-    const mergedHydrogenComponents =
-      HydrogenCompositionUtil.mergeComponentsOfSameRFNBOSStatus(predecessorHydrogenComponents);
+    const mergedHydrogenComponents = hydrogenComponents.reduce<HydrogenComponentEntity[]>(HydrogenCompositionUtil.mergeSingleComponent, []);
 
-    const totalPredecessorAmount = Util.sumAmounts(mergedHydrogenComponents);
-    if (totalPredecessorAmount <= 0) {
+    const totalAmount = Util.sumAmounts(mergedHydrogenComponents);
+    if (totalAmount <= 0) {
       throw new BrokerException(`Total stored amount is not greater than 0`, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return mergedHydrogenComponents.map(
       ({ processId, color, amount, rfnboType }) =>
-        new HydrogenComponentEntity(processId, color, (bottleAmount * amount) / totalPredecessorAmount, rfnboType),
+        new HydrogenComponentEntity(processId, color, (bottleAmount * amount) / totalAmount, rfnboType),
     );
-  }
-
-  /**
-   * Merges all HydrogenComponents with the same RFNBO Status.
-   * @param hydrogenComponents The list of HydrogenComponents that should be merged.
-   * @returns A list of HydrogenComponents, but no two elements have the same RFNBO value.
-   */
-  public static mergeComponentsOfSameRFNBOSStatus(
-    hydrogenComponents: HydrogenComponentEntity[],
-  ): HydrogenComponentEntity[] {
-    return hydrogenComponents.reduce<HydrogenComponentEntity[]>(HydrogenCompositionUtil.mergeSingleComponent, []);
   }
 
   private static mergeSingleComponent(

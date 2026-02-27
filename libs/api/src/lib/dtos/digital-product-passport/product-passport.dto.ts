@@ -55,36 +55,38 @@ export class DigitalProductPassportDto {
     this.proofOfSustainability = proofOfSustainability;
   }
 
-  static fromEntity(digitalProductPassportEntity: DigitalProductPassportEntity): DigitalProductPassportDto {
-    const hydrogenComposition = (digitalProductPassportEntity.hydrogenComposition ?? []).map(
+  static fromEntity(entity: DigitalProductPassportEntity): DigitalProductPassportDto {
+    const hydrogenComposition = (entity.hydrogenComposition ?? []).map(
       HydrogenComponentDto.fromEntity,
     );
-    const attachedFiles = (digitalProductPassportEntity.attachedFiles ?? []).map(
+
+    const attachedFiles = (entity.attachedFiles ?? []).map(
       (document) => new FileInfoDto(document.fileName, `${document.storageUrl}`),
     );
 
     const proofOfSustainability = ProofOfSustainabilityDto.fromEntity(
-      digitalProductPassportEntity.proofOfSustainability,
+      entity.proofOfSustainability,
     );
-    const proofOfOrigin = SectionDto.fromEntities(digitalProductPassportEntity.proofOfOrigin);
 
-    const rfnboCompliance = digitalProductPassportEntity.gridPowerUsed
-      ? new GridEnergyRfnboDto(digitalProductPassportEntity.isEmissionReductionAbove70Percent, false, false, false)
+    const proofOfOrigin = SectionDto.fromEntities(entity.proofOfOrigin);
+
+    const rfnboCompliance = entity.gridPowerUsed
+      ? new GridEnergyRfnboDto(entity.isEmissionReductionAbove70Percent, false, false, false)
       : new RenewableEnergyRfnboDto(
-          digitalProductPassportEntity.isEmissionReductionAbove70Percent,
-          digitalProductPassportEntity.redCompliance.isGeoCorrelationValid,
-          digitalProductPassportEntity.redCompliance.isTimeCorrelationValid,
-          digitalProductPassportEntity.redCompliance.isAdditionalityFulfilled,
-          digitalProductPassportEntity.redCompliance.financialSupportReceived,
-        );
+        entity.isEmissionReductionAbove70Percent,
+        entity.redCompliance.isGeoCorrelationValid,
+        entity.redCompliance.isTimeCorrelationValid,
+        entity.redCompliance.isAdditionalityFulfilled,
+        entity.redCompliance.financialSupportReceived,
+      );
 
     return new DigitalProductPassportDto(
-      digitalProductPassportEntity.id,
-      digitalProductPassportEntity.filledAt,
-      digitalProductPassportEntity.owner ?? '',
-      digitalProductPassportEntity.filledAmount ?? 0,
-      digitalProductPassportEntity.color ?? '',
-      digitalProductPassportEntity.producer ?? '',
+      entity.id,
+      entity.filledAt,
+      entity.owner ?? '',
+      entity.filledAmount ?? 0,
+      entity.color ?? '',
+      entity.producer ?? '',
       hydrogenComposition,
       attachedFiles,
       rfnboCompliance,
