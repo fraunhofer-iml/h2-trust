@@ -168,7 +168,7 @@
     "@types/yazl": "^3.3.0",
     "@typescript-eslint/utils": "^8.56.1",
     "angular-eslint": "21.2.0",
-    "autoprefixer": "^10.4.24",
+    "autoprefixer": "^10.4.27",
     "babel-jest": "30.2.0",
     "browser-sync": "^3.0.4",
     "eslint": "^9.39.3",
