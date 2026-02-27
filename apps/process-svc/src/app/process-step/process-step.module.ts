@@ -9,13 +9,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigurationModule } from '@h2-trust/configuration';
 import { DatabaseModule } from '@h2-trust/database';
-import { StorageModule } from '@h2-trust/storage';
 import { TransportationService } from '../transportation/transportation.service';
 import { HydrogenComponentAssembler } from './hydrogenComponent/hydrogen-component.assembler';
 import { ProcessStepService } from './process-step.service';
 
 @Module({
-  imports: [ConfigurationModule, DatabaseModule, StorageModule],
+  imports: [ConfigurationModule, DatabaseModule],
   providers: [ProcessStepService, TransportationService, HydrogenComponentAssembler],
   exports: [ProcessStepService, HydrogenComponentAssembler],
 })
