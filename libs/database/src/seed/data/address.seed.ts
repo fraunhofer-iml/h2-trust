@@ -11,11 +11,11 @@ import { Address, Prisma } from '@prisma/client';
 export const AddressSeed: readonly Address[] = Object.freeze([
   {
     id: 'address-power-0',
-    street: 'Energieweg 1',
-    postalCode: '12345',
-    city: 'Energietown',
-    state: 'Energieland',
-    country: 'Energieland',
+    street: 'Joseph-von-Fraunhofer-Str. 2-4',
+    postalCode: '44227 ',
+    city: 'Dortmund',
+    state: 'Nordrhein-Westfalen',
+    country: 'Deutschland',
     latitude: new Prisma.Decimal(12.345678),
     longitude: new Prisma.Decimal(98.765432),
   },
