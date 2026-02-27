@@ -37,7 +37,7 @@ export class HydrogenCompositionUtil {
 
     if (matchingComponent) {
       const updatedComponent = new HydrogenComponentEntity(
-        '',
+        null,
         matchingComponent.color,
         matchingComponent.amount + componentToMerge.amount,
         matchingComponent.rfnboType,
@@ -47,7 +47,7 @@ export class HydrogenCompositionUtil {
 
     return [
       ...combinedComponents,
-      new HydrogenComponentEntity('', componentToMerge.color, componentToMerge.amount, componentToMerge.rfnboType),
+      new HydrogenComponentEntity(null, componentToMerge.color, componentToMerge.amount, componentToMerge.rfnboType),
     ];
   }
 }

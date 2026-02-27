@@ -21,7 +21,9 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
     createdAt: new Date(),
     accountingPeriodEnd: new Date(),
     emission: EmissionMock,
-    hydrogenComposition: [{ processId: '', color: HydrogenColor.GREEN, amount: 300, rfnboType: RfnboType.RFNBO_READY }],
+    hydrogenComposition: [
+      { processId: null, color: HydrogenColor.GREEN, amount: 300, rfnboType: RfnboType.RFNBO_READY },
+    ],
     processStep: ProcessType.HYDROGEN_PRODUCTION,
     producer: CompanyDtoMock[1].name,
     rfnboType: true,
@@ -37,7 +39,9 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
     createdAt: new Date(),
     accountingPeriodEnd: new Date(),
     emission: EmissionMock,
-    hydrogenComposition: [{ processId: '', color: HydrogenColor.GREEN, amount: 300, rfnboType: RfnboType.RFNBO_READY }],
+    hydrogenComposition: [
+      { processId: null, color: HydrogenColor.GREEN, amount: 300, rfnboType: RfnboType.RFNBO_READY },
+    ],
     processStep: ProcessType.HYDROGEN_PRODUCTION,
     producer: CompanyDtoMock[1].name,
     rfnboType: true,
@@ -54,7 +58,7 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
     accountingPeriodEnd: new Date(),
     emission: EmissionMock,
     hydrogenComposition: [
-      { processId: '', color: HydrogenColor.YELLOW, amount: 300, rfnboType: RfnboType.NON_CERTIFIABLE },
+      { processId: null, color: HydrogenColor.YELLOW, amount: 300, rfnboType: RfnboType.NON_CERTIFIABLE },
     ],
     processStep: ProcessType.HYDROGEN_PRODUCTION,
     producer: CompanyDtoMock[1].name,
@@ -71,8 +75,8 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
     createdAt: new Date(),
     emission: EmissionMock,
     hydrogenComposition: [
-      { processId: '', color: HydrogenColor.GREEN, amount: 300, rfnboType: RfnboType.RFNBO_READY },
-      { processId: '', color: HydrogenColor.YELLOW, amount: 300, rfnboType: RfnboType.NON_CERTIFIABLE },
+      { processId: null, color: HydrogenColor.GREEN, amount: 300, rfnboType: RfnboType.RFNBO_READY },
+      { processId: null, color: HydrogenColor.YELLOW, amount: 300, rfnboType: RfnboType.NON_CERTIFIABLE },
     ],
     processStep: ProcessType.HYDROGEN_BOTTLING,
     producer: CompanyDtoMock[1].name,

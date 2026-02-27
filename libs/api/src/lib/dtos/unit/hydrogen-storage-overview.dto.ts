@@ -61,11 +61,6 @@ export class HydrogenStorageOverviewDto {
       compositionMap.set(filling.rfnboType, (compositionMap.get(filling.rfnboType) ?? 0) + filling.amount);
     });
 
-    return Array.from(compositionMap, ([rfnboType, amount]) => ({
-      processId: '',
-      rfnboType: rfnboType,
-      color: '',
-      amount: amount,
-    }));
+    return Array.from(compositionMap, ([rfnboType, amount]) => new HydrogenComponentDto(null, '', amount, rfnboType));
   }
 }

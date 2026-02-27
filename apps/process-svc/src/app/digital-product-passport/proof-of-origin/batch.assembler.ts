@@ -62,7 +62,7 @@ export class BatchAssembler {
       batchType: BatchType.HYDROGEN,
       hydrogenComposition: [
         {
-          processId: '',
+          processId: null,
           color: hydrogenStorage.batch?.qualityDetails?.color,
           amount: hydrogenStorage.batch.amount,
           rfnboType: RfnboType.NOT_SPECIFIED,

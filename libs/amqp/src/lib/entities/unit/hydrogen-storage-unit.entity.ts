@@ -123,12 +123,12 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
         if (!batch.batchDetails?.qualityDetails?.color) {
           throw new Error(`Hydrogen batch [${batch.id}] in storage unit is missing color information.`);
         }
-        return {
-          processId: '',
-          rfnboType: RfnboType.NON_CERTIFIABLE,
-          color: batch.batchDetails.qualityDetails.color,
-          amount: batch.amount?.toNumber() ?? 0,
-        };
+        return new HydrogenComponentEntity(
+          null,
+          batch.batchDetails.qualityDetails.color,
+          batch.amount?.toNumber() ?? 0,
+          RfnboType.NON_CERTIFIABLE,
+        );
       }) ?? []
     );
   }
@@ -140,12 +140,12 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
         if (!batch.batchDetails?.qualityDetails?.color) {
           throw new Error(`Hydrogen batch [${batch.id}] in storage unit is missing color information.`);
         }
-        return {
-          processId: batch?.processStep?.id ?? '',
-          rfnboType: RfnboType.NOT_SPECIFIED,
-          color: batch.batchDetails.qualityDetails.color,
-          amount: batch.amount?.toNumber() ?? 0,
-        };
+        return new HydrogenComponentEntity(
+          batch?.processStep?.id ?? null,
+          batch.batchDetails.qualityDetails.color,
+          batch.amount?.toNumber() ?? 0,
+          RfnboType.NOT_SPECIFIED,
+        );
       }) ?? []
     );
   }

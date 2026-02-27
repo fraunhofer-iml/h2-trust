@@ -127,7 +127,7 @@ export class BottlingService {
     hydrogenStorageUnitId: string,
   ): Promise<HydrogenComponentEntity[]> {
     if (rfnboType === RfnboType.RFNBO_READY) {
-      return [new HydrogenComponentEntity('', HydrogenColor.GREEN, batchAmount, RfnboType.RFNBO_READY)];
+      return [new HydrogenComponentEntity(null, HydrogenColor.GREEN, batchAmount, RfnboType.RFNBO_READY)];
     }
 
     try {
