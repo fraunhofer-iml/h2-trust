@@ -7,11 +7,15 @@
  */
 
 export class HydrogenComponentEntity {
+  processId: string | null;
   color: string;
   amount: number;
+  rfnboType: string;
 
-  constructor(color: string, amount: number) {
+  constructor(processId: string | null, color: string, amount: number, rfnboType: string) {
+    this.processId = processId;
     this.color = color;
     this.amount = amount;
+    this.rfnboType = rfnboType;
   }
 }

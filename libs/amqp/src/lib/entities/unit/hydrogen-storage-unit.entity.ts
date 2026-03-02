@@ -12,7 +12,7 @@ import {
   HydrogenStorageUnitFlatDbType,
   HydrogenStorageUnitNestedDbType,
 } from '@h2-trust/database';
-import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
+import { HydrogenStorageType, RfnboType, UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { HydrogenComponentEntity } from '../bottling';
 import { CompanyEntity } from '../company';
@@ -123,10 +123,12 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
         if (!batch.batchDetails?.qualityDetails?.color) {
           throw new Error(`Hydrogen batch [${batch.id}] in storage unit is missing color information.`);
         }
-        return {
-          color: batch.batchDetails.qualityDetails.color,
-          amount: batch.amount?.toNumber() ?? 0,
-        };
+        return new HydrogenComponentEntity(
+          null,
+          batch.batchDetails.qualityDetails.color,
+          batch.amount?.toNumber() ?? 0,
+          RfnboType.NON_CERTIFIABLE,
+        );
       }) ?? []
     );
   }
@@ -138,10 +140,12 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
         if (!batch.batchDetails?.qualityDetails?.color) {
           throw new Error(`Hydrogen batch [${batch.id}] in storage unit is missing color information.`);
         }
-        return {
-          color: batch.batchDetails.qualityDetails.color,
-          amount: batch.amount?.toNumber() ?? 0,
-        };
+        return new HydrogenComponentEntity(
+          batch?.processStep?.id ?? null,
+          batch.batchDetails.qualityDetails.color,
+          batch.amount?.toNumber() ?? 0,
+          RfnboType.NOT_SPECIFIED,
+        );
       }) ?? []
     );
   }

@@ -9,25 +9,15 @@
 import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity, ProvenanceEntity } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
-import { ProcessStepService } from '../../process-step/process-step.service';
 import { TraversalService } from './traversal.service';
 
 type ProvenanceBuilderFn = (root: ProcessStepEntity) => Promise<ProvenanceEntity>;
 
 @Injectable()
 export class ProvenanceService {
-  constructor(
-    private readonly processStepService: ProcessStepService,
-    private readonly traversalService: TraversalService,
-  ) {}
+  constructor(private readonly traversalService: TraversalService) {}
 
-  async buildProvenance(processStepId: string): Promise<ProvenanceEntity> {
-    if (!processStepId) {
-      throw new Error('processStepId must be provided.');
-    }
-
-    const root: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
-
+  async buildProvenance(root: ProcessStepEntity): Promise<ProvenanceEntity> {
     if (!root || !root.type) {
       throw new Error('Invalid process step.');
     }

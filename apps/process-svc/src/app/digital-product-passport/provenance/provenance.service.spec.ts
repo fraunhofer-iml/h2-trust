@@ -50,22 +50,15 @@ describe('ProvenanceService', () => {
   });
 
   describe('buildProvenance', () => {
-    it('throws error when processStepId is not provided', async () => {
-      // Arrange
-      const givenProcessStepId = '';
-
-      // Act & Assert
-      await expect(service.buildProvenance(givenProcessStepId)).rejects.toThrow('processStepId must be provided.');
-    });
-
     it('throws error when process step is not found', async () => {
       // Arrange
-      const givenProcessStepId = 'process-step-1';
+      const givenProcessStep = ProcessStepEntityFixture.createPowerProduction();
+      givenProcessStep.type = undefined;
 
       processStepServiceMock.readProcessStep.mockResolvedValue(null);
 
       // Act & Assert
-      await expect(service.buildProvenance(givenProcessStepId)).rejects.toThrow('Invalid process step.');
+      await expect(service.buildProvenance(givenProcessStep)).rejects.toThrow('Invalid process step.');
     });
 
     it('throws error when process step type is invalid', async () => {
@@ -76,7 +69,7 @@ describe('ProvenanceService', () => {
       processStepServiceMock.readProcessStep.mockResolvedValue(givenProcessStep);
 
       // Act & Assert
-      await expect(service.buildProvenance(givenProcessStep.id)).rejects.toThrow(
+      await expect(service.buildProvenance(givenProcessStep)).rejects.toThrow(
         `Unsupported process type [${givenProcessStep.type}].`,
       );
     });
@@ -88,11 +81,9 @@ describe('ProvenanceService', () => {
       processStepServiceMock.readProcessStep.mockResolvedValue(givenProcessStep);
 
       // Act
-      const actualResult = await service.buildProvenance(givenProcessStep.id);
+      const actualResult = await service.buildProvenance(givenProcessStep);
 
       // Assert
-      expect(processStepServiceMock.readProcessStep).toHaveBeenCalledWith(givenProcessStep.id);
-
       expect(actualResult.root).toBe(givenProcessStep);
       expect(actualResult.hydrogenBottling).toBeUndefined();
       expect(actualResult.hydrogenProductions).toEqual([]);
@@ -107,11 +98,9 @@ describe('ProvenanceService', () => {
       processStepServiceMock.readProcessStep.mockResolvedValue(givenProcessStep);
 
       // Act
-      const actualResult = await service.buildProvenance(givenProcessStep.id);
+      const actualResult = await service.buildProvenance(givenProcessStep);
 
       // Assert
-      expect(processStepServiceMock.readProcessStep).toHaveBeenCalledWith(givenProcessStep.id);
-
       expect(actualResult.root).toBe(givenProcessStep);
       expect(actualResult.hydrogenBottling).toBeUndefined();
       expect(actualResult.hydrogenProductions).toEqual([]);
@@ -130,10 +119,9 @@ describe('ProvenanceService', () => {
       traversalServiceMock.fetchPowerProductionsFromHydrogenProductions.mockResolvedValue(givenPowerProductions);
 
       // Act
-      const actualResult = await service.buildProvenance(givenProcessStep.id);
+      const actualResult = await service.buildProvenance(givenProcessStep);
 
       // Assert
-      expect(processStepServiceMock.readProcessStep).toHaveBeenCalledWith(givenProcessStep.id);
       expect(traversalServiceMock.fetchWaterConsumptionsFromHydrogenProductions).toHaveBeenCalledWith([
         givenProcessStep,
       ]);
@@ -161,10 +149,9 @@ describe('ProvenanceService', () => {
       traversalServiceMock.fetchPowerProductionsFromHydrogenProductions.mockResolvedValue(givenPowerProductions);
 
       // Act
-      const actualResult = await service.buildProvenance(givenProcessStep.id);
+      const actualResult = await service.buildProvenance(givenProcessStep);
 
       // Assert
-      expect(processStepServiceMock.readProcessStep).toHaveBeenCalledWith(givenProcessStep.id);
       expect(traversalServiceMock.fetchHydrogenProductionsFromHydrogenBottling).toHaveBeenCalledWith(givenProcessStep);
       expect(traversalServiceMock.fetchWaterConsumptionsFromHydrogenProductions).toHaveBeenCalledWith(
         givenHydrogenProductions,
@@ -195,10 +182,9 @@ describe('ProvenanceService', () => {
       traversalServiceMock.fetchPowerProductionsFromHydrogenProductions.mockResolvedValue(givenPowerProductions);
 
       // Act
-      const actualResult = await service.buildProvenance(givenProcessStep.id);
+      const actualResult = await service.buildProvenance(givenProcessStep);
 
       // Assert
-      expect(processStepServiceMock.readProcessStep).toHaveBeenCalledWith(givenProcessStep.id);
       expect(traversalServiceMock.fetchHydrogenBottlingFromHydrogenTransportation).toHaveBeenCalledWith(
         givenProcessStep,
       );
