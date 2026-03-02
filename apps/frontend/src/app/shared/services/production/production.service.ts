@@ -6,12 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { lastValueFrom } from 'rxjs';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   AccountingPeriodMatchingResultDto,
   CreateProductionDto,
+  CsvDocumentIntegrityResultDto,
   DownloadFilesDto,
   ImportSubmissionDto,
   ProcessedCsvDto,
@@ -49,5 +50,9 @@ export class ProductionService {
         responseType: 'blob',
       }),
     );
+  }
+
+  async validateFile(id: string): Promise<CsvDocumentIntegrityResultDto> {
+    return firstValueFrom(this.httpClient.get<CsvDocumentIntegrityResultDto>(API.PRODUCTION.CSV_VERIFY(id)));
   }
 }

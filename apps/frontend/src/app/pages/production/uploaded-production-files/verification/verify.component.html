@@ -1,0 +1,103 @@
+@if (verifying) {
+  <button matButton="filled" disabled class="gap-1">
+    <span class="flex flex-row items-center gap-2">
+      <span class="material-symbols-outlined animate-spin" matButtonPrefix>progress_activity</span>
+      Verifiying...
+    </span>
+  </button>
+} @else if (!result || result.status === CsvDocumentIntegrityStatus.FAILED) {
+  <button matButton="filled" (click)="verify()" [disabled]="disabled()">Verifiy</button>
+} @else {
+  <button matButton="outlined" (click)="sheet.open()" class="!bg-neutral-200">See Details</button>
+}
+
+<!-- DETAILS SHEET -->
+
+<app-base-sheet #sheet>
+  <div class="w-full">
+    <h1 class="font-semibold">Verification Result</h1>
+
+    @if (result; as res) {
+      <p class="">File: {{ res.fileName }}</p>
+      <div class="mt-4 flex flex-col gap-4">
+        <div
+          class="rounded-xl border-2 p-4"
+          [ngClass]="{
+            'border-red-100 bg-red-200/20 text-red-600': res.status === CsvDocumentIntegrityStatus.MISMATCH,
+            'border-secondary-100 bg-secondary-200/20 text-secondary-600':
+              res.status === CsvDocumentIntegrityStatus.VERIFIED,
+          }"
+        >
+          <span class="flex items-center gap-2">
+            <span class="material-symbols-outlined">
+              {{ res.status === CsvDocumentIntegrityStatus.MISMATCH ? 'cancel' : 'check_circle' }}
+            </span>
+            {{ res.status | titlecase }}</span
+          >
+          <p class="pl-8 text-neutral-700">{{ res.message }}</p>
+        </div>
+
+        <div
+          class="flex flex-col gap-4 rounded-xl border-[2px] border-solid border-neutral-100 bg-neutral-50 p-4 text-sm text-neutral-600"
+        >
+          <span class="text-md font-semibold">Details</span>
+
+          <span>
+            File-Id
+            <p class="truncate text-black">{{ res.documentId }}</p>
+          </span>
+
+          <span class="">
+            Transaction Hash
+            <p class="truncate text-black">{{ res.transactionHash }}</p>
+          </span>
+
+          <span>
+            Block Timestamp
+            <p class="text-black">{{ res.blockTimestamp }}</p>
+          </span>
+
+          <span>
+            Block Number
+            <p class="text-black">{{ 12 }}</p>
+          </span>
+
+          <span>
+            Network
+            <p class="text-black">{{ res.network }}</p>
+          </span>
+
+          <span>
+            Smart Contract Address
+            <p class="truncate text-black">{{ res.smartContractAddress }}</p>
+          </span>
+        </div>
+
+        <div class="rounded-xl border-[2px] border-neutral-100 bg-neutral-50 p-4 text-sm text-neutral-600">
+          <span class="text-md font-semibold">Actions</span>
+          <p>You can view the full verification details on Arbiscan or copy the transaction hash for your records.</p>
+          <div class="mt-4 flex flex-row gap-4">
+            <button matButton="outlined" (click)="openExplorer(res.explorerUrl)">
+              <span class="flex flex-row items-center gap-2">
+                <span class="material-symbols-outlined">token</span>
+                Arbiscan
+              </span>
+            </button>
+            <button
+              matButton="outlined"
+              [cdkCopyToClipboard]="res.documentId"
+              (cdkCopyToClipboardCopied)="onCopied($event)"
+            >
+              <span class="flex flex-row items-center gap-2">
+                <span class="material-symbols-outlined">content_copy</span>
+                Transaction Hash
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <p>No Verification details available.</p>
+    }
+  </div>
+</app-base-sheet>

@@ -10,6 +10,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, computed, effect, inject, signal, ViewChild } from '@angular/core';
 import { debounce, form, FormField } from '@angular/forms/signals';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
@@ -21,14 +22,17 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTooltip } from '@angular/material/tooltip';
+import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { CsvContentType, ProcessedCsvDto } from '@h2-trust/api';
-import { BatchType, MeasurementUnit } from '@h2-trust/domain';
-import { FileTypeChipComponent } from '../../../layout/color-chip/file-type-chip.component';
+import { BatchType, CsvDocumentIntegrityStatus, MeasurementUnit } from '@h2-trust/domain';
 import { ICONS } from '../../../shared/constants/icons';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { ProductionService } from '../../../shared/services/production/production.service';
+import { VerificationResultStore } from '../../../shared/services/verification-state/verification-result.service';
 import { DownloadButtonComponent } from './download-button/download-button.component';
+import { VerifyComponent } from './verification/verify.component';
 
 interface FilterModel {
   input: string;
@@ -54,8 +58,11 @@ interface FilterModel {
     MatSortModule,
     MatCheckboxModule,
     DownloadButtonComponent,
-    FileTypeChipComponent,
     FormField,
+    MatTooltip,
+    MatBottomSheetModule,
+    VerifyComponent,
+    RouterModule,
   ],
   providers: [ProductionService, provideNativeDateAdapter()],
   templateUrl: './production-files.component.html',
@@ -63,7 +70,20 @@ interface FilterModel {
 export class ProductionFilesComponent implements AfterViewInit {
   protected readonly ICONS = ICONS.UNITS;
   protected readonly MeasurementUnit = MeasurementUnit;
-  readonly displayedColumns = ['select', 'name', 'uploadedBy', 'startedAt', 'endedAt', 'type', 'amount'] as const;
+  protected readonly CsvContentType = BatchType;
+  protected readonly CsvDocumentIntegrityStatus = CsvDocumentIntegrityStatus;
+  readonly displayedColumns = [
+    'select',
+    'name',
+    'uploadedBy',
+    'startedAt',
+    'endedAt',
+    'type',
+    'amount',
+    'validationStatus',
+    'button',
+  ] as const;
+
   readonly displayedCsvContentTypes: { name: string; value: CsvContentType | null }[] = [
     { name: 'Hydrogen', value: BatchType.HYDROGEN },
     { name: 'Power', value: BatchType.POWER },
@@ -71,6 +91,7 @@ export class ProductionFilesComponent implements AfterViewInit {
   ] as const;
 
   productionService = inject(ProductionService);
+  resultStore = inject(VerificationResultStore);
 
   searchModel = signal<FilterModel>({
     input: '',
@@ -78,6 +99,7 @@ export class ProductionFilesComponent implements AfterViewInit {
     start: null,
     end: null,
   });
+
   searchForm = form(this.searchModel, (schemaPath) => {
     debounce(schemaPath.input, 500);
   });
@@ -85,12 +107,28 @@ export class ProductionFilesComponent implements AfterViewInit {
   dataSource: MatTableDataSource<ProcessedCsvDto> = new MatTableDataSource<ProcessedCsvDto>();
   selection = new SelectionModel<ProcessedCsvDto>(true, []);
 
+  getIcon(status: CsvDocumentIntegrityStatus | undefined) {
+    switch (status) {
+      case CsvDocumentIntegrityStatus.MISMATCH:
+        return 'cancel';
+      case CsvDocumentIntegrityStatus.FAILED:
+        return 'warning';
+      case CsvDocumentIntegrityStatus.VERIFIED:
+        return 'check_circle';
+      default:
+        return 'circle';
+    }
+  }
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   uploadsQuery = injectQuery(() => ({
     queryKey: ['production'],
-    queryFn: async () => await this.productionService.getUploadedCsvFiles(),
+    queryFn: async (): Promise<ProcessedCsvDto[]> => {
+      const data = await this.productionService.getUploadedCsvFiles();
+      return data;
+    },
   }));
 
   datasource$ = computed(() => {
@@ -98,14 +136,17 @@ export class ProductionFilesComponent implements AfterViewInit {
 
     const { input, start, end, fileType: type } = this.searchForm().value();
 
-    if (type) data = data.filter((item) => item.csvContentType === type);
+    if (type) {
+      data = data.filter((item) => item.csvContentType === type);
+    }
 
-    if (start && end)
+    if (start && end) {
       data = data.filter((item) => {
         const itemStart = new Date(item.startedAt);
         const itemEnd = new Date(item.endedAt);
         return itemStart <= end && itemEnd >= start;
       });
+    }
 
     if (input) {
       const val = input.toLowerCase();
@@ -148,5 +189,9 @@ export class ProductionFilesComponent implements AfterViewInit {
     }
 
     this.selection.select(...this.dataSource.data);
+  }
+
+  getStatus(id: string) {
+    return this.resultStore.getItem(id)?.status;
   }
 }
