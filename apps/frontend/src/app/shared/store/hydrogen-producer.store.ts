@@ -3,7 +3,7 @@ import { HydrogenProductionOverviewDto } from '@h2-trust/api';
 import { UnitsService } from '../services/units/units.service';
 
 @Injectable()
-export class HydrogenProducerService {
+export class HydrogenProducerStore {
   unitsService = inject(UnitsService);
 
   private readonly hydrogenProductionUnits$ = signal<HydrogenProductionOverviewDto[]>([]);
