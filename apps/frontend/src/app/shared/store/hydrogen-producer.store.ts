@@ -22,6 +22,10 @@ export class HydrogenProducerStore {
     return this.isHydrogenProducer$;
   }
 
+  get units() {
+    return this.hydrogenProductionUnits$;
+  }
+
   async loadUnits(): Promise<void> {
     const units = await this.unitsService.getHydrogenProductionUnits();
     this.hydrogenProductionUnits$.set(units);

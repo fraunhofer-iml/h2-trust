@@ -60,14 +60,11 @@ export class HydrogenAssetsComponent {
     queryFn: async () => this.unitsService.getPowerProductionUnits(),
   }));
 
-  hydrogenProductionQuery = injectQuery(() => ({
-    queryKey: ['h2-production'],
-    queryFn: async () => {
-      const units = await this.unitsService.getHydrogenProductionUnits();
-      this.state.setUnits(units);
-      return units;
-    },
-  }));
+  hydrogenProductionUnits$ = this.state.units;
+
+  ngOnInit() {
+    this.state.loadUnits();
+  }
 
   toggle(unitType: UnitType | null) {
     if (this.typeToShow === unitType) {
