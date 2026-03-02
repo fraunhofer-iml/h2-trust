@@ -13,7 +13,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ProductionOverviewDto } from '@h2-trust/api';
 import { H2ColorChipComponent } from '../../../layout/color-chip/h2-color-chip.component';
@@ -31,7 +30,6 @@ import { ProductionService } from '../../../shared/services/production/productio
     MatButtonModule,
     MatSortModule,
     H2ColorChipComponent,
-    RouterModule,
   ],
   providers: [ProductionService],
   templateUrl: './production-view.component.html',
