@@ -62,6 +62,10 @@ export class BottlingController {
           type: 'string',
           default: BottlingDtoMock[0].color,
         },
+        rfnboType: {
+          type: 'string',
+          default: BottlingDtoMock[0].rfnboType,
+        },
         recipient: {
           type: 'string',
           default: BottlingDtoMock[0].recipient,

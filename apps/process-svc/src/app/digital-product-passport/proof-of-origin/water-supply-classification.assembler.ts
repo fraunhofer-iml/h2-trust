@@ -1,0 +1,52 @@
+/*
+ * Copyright Fraunhofer Institute for Material Flow and Logistics
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * For details on the licensing terms, see the LICENSE file.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import {
+  ProcessStepEntity,
+  ProofOfOriginClassificationEntity,
+  ProofOfOriginEmissionEntity,
+  ProofOfOriginWaterBatchEntity,
+  ProofOfSustainabilityEmissionCalculationEntity,
+} from '@h2-trust/amqp';
+import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
+import { BatchAssembler } from './batch.assembler';
+import { ClassificationAssembler } from './classification.assembler';
+import { EmissionAssembler } from './emission.assembler';
+
+export class WaterSupplyClassificationAssembler {
+  static assembleClassification(
+    waterSupplies: ProcessStepEntity[],
+    bottledKgHydrogen: number,
+  ): ProofOfOriginClassificationEntity {
+    if (!waterSupplies?.length) {
+      const message = 'No process steps of type water supply found.';
+      throw new Error(message);
+    }
+
+    const waterBatches: ProofOfOriginWaterBatchEntity[] = waterSupplies.map((waterSupply) => {
+      const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
+        EmissionAssembler.assembleWaterSupply(waterSupply);
+
+      const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionEntity(
+        emissionCalculation,
+        bottledKgHydrogen,
+      );
+
+      const batch: ProofOfOriginWaterBatchEntity = BatchAssembler.assembleWaterSupply(waterSupply, emission);
+
+      return batch;
+    });
+
+    return ClassificationAssembler.assembleClassification(
+      ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION,
+      BatchType.WATER,
+      waterBatches,
+      [],
+    );
+  }
+}

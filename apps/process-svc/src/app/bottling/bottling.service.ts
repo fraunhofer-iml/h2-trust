@@ -1,0 +1,154 @@
+/*
+ * Copyright Fraunhofer Institute for Material Flow and Logistics
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * For details on the licensing terms, see the LICENSE file.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BatchEntity,
+  BrokerException,
+  CreateHydrogenBottlingPayload,
+  DocumentEntity,
+  HydrogenComponentEntity,
+  HydrogenCompositionUtil,
+  ProcessStepEntity,
+  ReadProcessStepsByPredecessorTypesAndOwnerPayload,
+  ReadProcessStepsByTypesAndActiveAndOwnerPayload,
+} from '@h2-trust/amqp';
+import { DocumentRepository } from '@h2-trust/database';
+import { HydrogenColor, RfnboType } from '@h2-trust/domain';
+import { StorageService } from '@h2-trust/storage';
+import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
+import { ProcessStepService } from '../process-step/process-step.service';
+import { BottlingProcessStepAssembler } from './utils/bottling-process-step.assembler';
+import { BottlingAllocation, BottlingAllocator } from './utils/bottling.allocator';
+
+@Injectable()
+export class BottlingService {
+  constructor(
+    private readonly storageService: StorageService,
+    private readonly documentRepository: DocumentRepository,
+    private readonly processStepService: ProcessStepService,
+    private readonly digitalProductPassportService: DigitalProductPassportService,
+  ) {}
+
+  async readProcessStepsByTypesAndActiveAndOwner(
+    payload: ReadProcessStepsByTypesAndActiveAndOwnerPayload,
+  ): Promise<ProcessStepEntity[]> {
+    const processSteps: ProcessStepEntity[] =
+      await this.processStepService.readProcessStepsByTypesAndActiveAndOwner(payload);
+
+    for (let i = 0; i < processSteps.length; i++) {
+      processSteps[i].batch.rfnboType = await this.digitalProductPassportService.determineRfnboTypeForProcessStep(
+        processSteps[i],
+      );
+    }
+
+    return processSteps;
+  }
+
+  async readProcessStepsByPredecessorTypesAndOwner(
+    payload: ReadProcessStepsByPredecessorTypesAndOwnerPayload,
+  ): Promise<ProcessStepEntity[]> {
+    return this.processStepService.readProcessStepsByPredecessorTypesAndOwner(payload);
+  }
+
+  async createHydrogenBottlingProcessStep(payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
+    const processStepsFromStorageUnit: ProcessStepEntity[] =
+      await this.processStepService.readAllProcessStepsFromStorageUnit(payload.hydrogenStorageUnitId);
+
+    if (processStepsFromStorageUnit.length === 0) {
+      throw new BrokerException(
+        `No process steps found in storage unit ${payload.hydrogenStorageUnitId}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    for (let i = 0; i < processStepsFromStorageUnit.length; i++) {
+      processStepsFromStorageUnit[i].batch.rfnboType =
+        await this.digitalProductPassportService.determineRfnboTypeForProcessStep(processStepsFromStorageUnit[i]);
+    }
+
+    const fillings: HydrogenComponentEntity[] = processStepsFromStorageUnit.map((processStep) => ({
+      processId: processStep.id,
+      color: processStep.batch.qualityDetails.color,
+      amount: processStep.batch.amount,
+      rfnboType: processStep.batch.rfnboType,
+    }));
+
+    const hydrogenComposition: HydrogenComponentEntity[] = await this.determineHydrogenComposition(
+      payload.amount,
+      payload.rfnboType,
+      fillings,
+      payload.hydrogenStorageUnitId,
+    );
+
+    const allocation: BottlingAllocation = BottlingAllocator.allocate(
+      processStepsFromStorageUnit,
+      hydrogenComposition,
+      payload.hydrogenStorageUnitId,
+    );
+
+    const batchesToSetInactive: BatchEntity[] = [
+      ...allocation.batchesForBottle,
+      ...allocation.processStepsToBeSplit.map((ps) => ps.batch),
+    ];
+    await this.processStepService.setBatchesInactive(batchesToSetInactive.map((batch) => batch.id));
+
+    const persistedConsumedSplitProcessSteps: ProcessStepEntity[] = await Promise.all(
+      allocation.consumedSplitProcessSteps.map((step) => this.processStepService.createProcessStep(step)),
+    );
+    const persistedConsumedSplitBatches: BatchEntity[] = persistedConsumedSplitProcessSteps.map((ps) => ps.batch);
+
+    await Promise.all(
+      allocation.processStepsForRemainingAmount.map((ps) => this.processStepService.createProcessStep(ps)),
+    );
+
+    const bottlingProcessStep: ProcessStepEntity = BottlingProcessStepAssembler.assemble(payload, [
+      ...allocation.batchesForBottle,
+      ...persistedConsumedSplitBatches,
+    ]);
+    const persistedBottlingProcessStep: ProcessStepEntity =
+      await this.processStepService.createProcessStep(bottlingProcessStep);
+
+    if (payload.files) {
+      await Promise.all(
+        payload.files.map((file) => this.addDocumentToProcessStep(file, persistedBottlingProcessStep.id)),
+      );
+    }
+
+    return this.processStepService.readProcessStep(persistedBottlingProcessStep.id);
+  }
+
+  private async determineHydrogenComposition(
+    batchAmount: number,
+    rfnboType: RfnboType,
+    hydrogenStorageUnitFillings: HydrogenComponentEntity[],
+    hydrogenStorageUnitId: string,
+  ): Promise<HydrogenComponentEntity[]> {
+    if (rfnboType === RfnboType.RFNBO_READY) {
+      return [new HydrogenComponentEntity(null, HydrogenColor.GREEN, batchAmount, RfnboType.RFNBO_READY)];
+    }
+
+    try {
+      return HydrogenCompositionUtil.computeHydrogenComposition(hydrogenStorageUnitFillings, batchAmount);
+    } catch (BrokerException) {
+      throw new BrokerException(
+        `Total stored amount of ${hydrogenStorageUnitId} is not greater than 0`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  private async addDocumentToProcessStep(file: Express.Multer.File, processStepId: string): Promise<DocumentEntity> {
+    await this.storageService.uploadPdfFile(file.originalname, Buffer.from(file.buffer));
+
+    return this.documentRepository.addDocumentToProcessStep(
+      new DocumentEntity(undefined, file.originalname),
+      processStepId,
+    );
+  }
+}

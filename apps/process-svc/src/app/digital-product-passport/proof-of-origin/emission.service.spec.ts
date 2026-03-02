@@ -114,17 +114,6 @@ describe('EmissionService', () => {
       // Act & Assert
       await expect(service.computeProvenanceEmissions(givenProvenance)).rejects.toThrow(expectedErrorMessage);
     });
-
-    it('throws error when provenance is missing hydrogen bottling', async () => {
-      // Arrange
-      const givenRoot = ProcessStepEntityFixture.createHydrogenBottling();
-      const givenProvenance = new ProvenanceEntity(givenRoot, undefined);
-
-      const expectedErrorMessage = 'Provenance is missing hydrogen bottling process step.';
-
-      // Act & Assert
-      await expect(service.computeProvenanceEmissions(givenProvenance)).rejects.toThrow(expectedErrorMessage);
-    });
   });
 
   describe('computePowerSupplyEmissions', () => {

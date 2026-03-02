@@ -101,6 +101,6 @@ export const PowerProductionProcessStepSeed: readonly ProcessStep[] = Object.fre
     endedAt: new Date('2025-10-03T17:09:48.000Z'),
     batchId: PowerProductionBatchSeed[9].id,
     userId: UserSeed[1].id,
-    unitId: PowerProductionUnitSeed[3].id,
+    unitId: PowerProductionUnitSeed[2].id,
   },
 ]);
