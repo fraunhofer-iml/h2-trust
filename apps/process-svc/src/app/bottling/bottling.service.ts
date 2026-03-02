@@ -21,7 +21,6 @@ import {
 import { DocumentRepository } from '@h2-trust/database';
 import { HydrogenColor, RfnboType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
-import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { BottlingProcessStepAssembler } from './utils/bottling-process-step.assembler';
 import { BottlingAllocation, BottlingAllocator } from './utils/bottling.allocator';
@@ -32,22 +31,12 @@ export class BottlingService {
     private readonly storageService: StorageService,
     private readonly documentRepository: DocumentRepository,
     private readonly processStepService: ProcessStepService,
-    private readonly digitalProductPassportService: DigitalProductPassportService,
   ) {}
 
   async readProcessStepsByTypesAndActiveAndOwner(
     payload: ReadProcessStepsByTypesAndActiveAndOwnerPayload,
   ): Promise<ProcessStepEntity[]> {
-    const processSteps: ProcessStepEntity[] =
-      await this.processStepService.readProcessStepsByTypesAndActiveAndOwner(payload);
-
-    for (let i = 0; i < processSteps.length; i++) {
-      processSteps[i].batch.rfnboType = await this.digitalProductPassportService.determineRfnboTypeForProcessStep(
-        processSteps[i],
-      );
-    }
-
-    return processSteps;
+    return this.processStepService.readProcessStepsByTypesAndActiveAndOwner(payload);
   }
 
   async readProcessStepsByPredecessorTypesAndOwner(
@@ -67,16 +56,11 @@ export class BottlingService {
       );
     }
 
-    for (let i = 0; i < processStepsFromStorageUnit.length; i++) {
-      processStepsFromStorageUnit[i].batch.rfnboType =
-        await this.digitalProductPassportService.determineRfnboTypeForProcessStep(processStepsFromStorageUnit[i]);
-    }
-
     const fillings: HydrogenComponentEntity[] = processStepsFromStorageUnit.map((processStep) => ({
       processId: processStep.id,
       color: processStep.batch.qualityDetails.color,
       amount: processStep.batch.amount,
-      rfnboType: processStep.batch.rfnboType,
+      rfnboType: processStep.batch.qualityDetails.rfnbo,
     }));
 
     const hydrogenComposition: HydrogenComponentEntity[] = await this.determineHydrogenComposition(
@@ -123,6 +107,16 @@ export class BottlingService {
     return this.processStepService.readProcessStep(persistedBottlingProcessStep.id);
   }
 
+  /**
+   * Return the set of HydorgenComponents that should be created as new bottling.
+   * If the rfnbo type that should be bottled is RFNBO ready, the returned list only contains a single HydrogenComponent with the whole amount of hydrogen and the RFNBO_READY type.
+   * If the rfnbo type ist non_certified, it should return a mix of RFNBO_ready HCs and non-certified HCs.
+   * @param batchAmount
+   * @param rfnboType
+   * @param hydrogenStorageUnitFillings
+   * @param hydrogenStorageUnitId
+   * @returns
+   */
   private async determineHydrogenComposition(
     batchAmount: number,
     rfnboType: RfnboType,

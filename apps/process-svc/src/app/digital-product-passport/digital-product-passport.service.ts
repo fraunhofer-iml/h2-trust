@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
   BrokerException,
   DigitalProductPassportEntity,
@@ -30,6 +30,7 @@ import { RedComplianceService } from './red-compliance/red-compliance.service';
 
 @Injectable()
 export class DigitalProductPassportService {
+  private readonly logger = new Logger(DigitalProductPassportService.name);
   constructor(
     private readonly processStepService: ProcessStepService,
     private readonly redComplianceService: RedComplianceService,
@@ -51,6 +52,12 @@ export class DigitalProductPassportService {
   async readDigitalProductPassportForProcessStepId(processStepId: string): Promise<DigitalProductPassportEntity> {
     const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
     return this.readDigitalProductPassport(processStep);
+  }
+
+  async updateRfnboStatus(processStep: ProcessStepEntity): Promise<{ id: string; batchId: string }> {
+    const dpp: DigitalProductPassportEntity = await this.readDigitalProductPassport(processStep);
+    this.logger.log('Update RFNBO status of process step ', processStep.id);
+    return this.processStepService.updateRfnboStatus(processStep, dpp.rfnboType);
   }
 
   private async readDigitalProductPassport(processStep: ProcessStepEntity): Promise<DigitalProductPassportEntity> {

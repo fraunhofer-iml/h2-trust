@@ -206,6 +206,7 @@ model BatchDetails {
 model QualityDetails {
   id    String @id
   color String
+  rfnbo String?
 
   batchDetails BatchDetails @relation(fields: [id], references: [id])
 }

@@ -7,6 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import { RfnboType } from '@h2-trust/domain';
 import { PrismaService } from '../prisma.service';
 
 @Injectable()
@@ -22,6 +23,19 @@ export class BatchRepository {
       },
       data: {
         active: false,
+      },
+    });
+  }
+
+  async setRfnboStatus(batchId: string, rfnboType: RfnboType): Promise<{ id: string; batchId: string }> {
+    return this.prismaService.batchDetails.update({
+      where: {
+        batchId: batchId,
+      },
+      data: {
+        qualityDetails: {
+          update: { rfnbo: rfnboType },
+        },
       },
     });
   }
