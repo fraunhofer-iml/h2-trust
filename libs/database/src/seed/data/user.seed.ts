@@ -11,7 +11,7 @@ import { CompanySeed } from './company.seed';
 
 export const UserSeed: readonly User[] = Object.freeze([
   {
-    id: 'user-power-0',
+    id: '5ee626b0-0b41-4986-bfe9-65cfd064d0a1',
     name: 'Petra Power',
     email: 'petra@power.de',
     companyId: CompanySeed[0].id,

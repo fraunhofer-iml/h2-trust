@@ -13,8 +13,8 @@ import { AddressSeed } from './address.seed';
 export const CompanySeed: readonly Company[] = Object.freeze([
   {
     id: 'company-power-0',
-    name: 'Power Generation AG',
-    mastrNumber: 'P12345',
+    name: 'GreenPower GmbH',
+    mastrNumber: 'ABR900000187654',
     type: CompanyType.POWER_PRODUCER,
     addressId: AddressSeed[0].id,
   },
