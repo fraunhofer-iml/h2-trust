@@ -192,6 +192,6 @@ export class ProductionFilesComponent implements AfterViewInit {
   }
 
   getStatus(id: string) {
-    return this.resultStore.getItem(id)?.status;
+    return this.resultStore.getVerificationResult(id)?.status;
   }
 }

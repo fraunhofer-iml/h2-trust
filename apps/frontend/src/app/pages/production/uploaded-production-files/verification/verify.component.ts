@@ -28,14 +28,14 @@ export class VerifyComponent {
   file = input.required<ProcessedCsvDto>();
 
   fileService = inject(ProductionService);
-  resultStore = inject(VerificationResultStore);
+  verificationResultStore = inject(VerificationResultStore);
 
   verifying = false;
 
   async verify() {
     this.verifying = true;
     const res = await this.fileService.validateFile(this.file().id);
-    this.resultStore.setItem(this.file().id, res);
+    this.verificationResultStore.setVerificationResult(this.file().id, res);
     this.verifying = false;
   }
 
@@ -55,6 +55,6 @@ export class VerifyComponent {
   }
 
   get result() {
-    return this.resultStore.getItem(this.file().id);
+    return this.verificationResultStore.getVerificationResult(this.file().id);
   }
 }

@@ -13,17 +13,17 @@ import { CsvDocumentIntegrityResultDto } from '@h2-trust/api';
   providedIn: 'root',
 })
 export class VerificationResultStore {
-  private verificationStore: Map<string, CsvDocumentIntegrityResultDto> = new Map();
+  private verificationResults: Map<string, CsvDocumentIntegrityResultDto> = new Map();
 
-  setItem(key: string, value: CsvDocumentIntegrityResultDto) {
-    this.verificationStore.set(key, value);
+  setVerificationResult(key: string, value: CsvDocumentIntegrityResultDto) {
+    this.verificationResults.set(key, value);
   }
 
-  getItem(key: string): CsvDocumentIntegrityResultDto | undefined {
-    return this.verificationStore.get(key);
+  getVerificationResult(key: string): CsvDocumentIntegrityResultDto | undefined {
+    return this.verificationResults.get(key);
   }
 
   clear() {
-    this.verificationStore.clear();
+    this.verificationResults.clear();
   }
 }
