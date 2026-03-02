@@ -1,5 +1,4 @@
-import { toast } from 'ngx-sonner';
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { HydrogenProductionOverviewDto } from '@h2-trust/api';
 import { UnitsService } from '../services/units/units.service';
 
@@ -9,24 +8,15 @@ export class AppStateService {
 
   private readonly hydrogenProductionUnits$ = signal<HydrogenProductionOverviewDto[]>([]);
 
-  private loaded = signal(false);
+  private isHydrogenProducer$ = computed(() => this.hydrogenProductionUnits$().length > 0);
 
-  get hydrogenProductionUnits() {
-    return this.hydrogenProductionUnits$;
+  get isHydrogenProducer() {
+    return this.isHydrogenProducer$;
   }
 
-  async ensureLoaded() {
-    if (this.loaded()) {
-      return;
-    }
-
-    try {
-      const units = await this.unitsService.getHydrogenProductionUnits();
-      this.setUnits(units);
-      this.loaded.set(true);
-    } catch (error: any) {
-      toast.error(error.message);
-    }
+  async loadUnits(): Promise<void> {
+    const units = await this.unitsService.getHydrogenProductionUnits();
+    this.hydrogenProductionUnits$.set(units);
   }
 
   setUnits(units: HydrogenProductionOverviewDto[]) {

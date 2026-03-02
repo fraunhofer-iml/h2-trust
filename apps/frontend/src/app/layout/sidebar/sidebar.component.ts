@@ -8,7 +8,7 @@
 
 import { A11yModule } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, OnInit, signal, Signal } from '@angular/core';
+import { Component, inject, OnInit, signal, Signal } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -47,7 +47,7 @@ export class SidebarComponent implements OnInit {
   protected readonly router = inject(Router);
   protected readonly state = inject(AppStateService);
 
-  isHydrogenProducer = computed<boolean>(() => this.state.hydrogenProductionUnits().length > 0);
+  isHydrogenProducer$ = this.state.isHydrogenProducer;
 
   sidebarOptions: SidebarOption[] = [
     {
@@ -66,7 +66,7 @@ export class SidebarComponent implements OnInit {
           title: 'Data',
           icon: 'table',
           route: ROUTES.PRODUCTION_DATA,
-          visible: this.isHydrogenProducer,
+          visible: this.isHydrogenProducer$,
         },
         {
           title: 'Uploads',
@@ -80,7 +80,7 @@ export class SidebarComponent implements OnInit {
       title: 'Bottling',
       icon: 'propane_tank',
       route: ROUTES.BOTTLING,
-      visible: this.isHydrogenProducer,
+      visible: this.isHydrogenProducer$,
     },
   ];
 
@@ -94,7 +94,7 @@ export class SidebarComponent implements OnInit {
   async ngOnInit() {
     this.isAuthenticated = this.authService.isAuthenticated();
     if (this.isAuthenticated) {
-      this.state.ensureLoaded();
+      this.state.loadUnits();
 
       const userProfile = await this.authService.getCurrentUserDetails();
       this.userFirstName = userProfile.firstName;
