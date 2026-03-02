@@ -6,9 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { A11yModule } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal, Signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, Signal } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -18,7 +17,7 @@ import { Router, RouterModule } from '@angular/router';
 import { ROUTES } from '../../shared/constants/routes';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { UsersService } from '../../shared/services/users/users.service';
-import { HydrogenProducerStore } from '../../shared/store/hydrogen-producer.store';
+import { HydrogenProductionUnitsStore } from '../../shared/store/hydrogen-production-units.store';
 
 interface SidebarOption {
   title: string;
@@ -38,16 +37,15 @@ interface SidebarOption {
     RouterModule,
     MatExpansionModule,
     MatSelectModule,
-    A11yModule,
   ],
   providers: [UsersService],
   templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent implements OnInit {
   protected readonly router = inject(Router);
-  protected readonly hydrogenProducerStore = inject(HydrogenProducerStore);
+  protected readonly hydrogenProducerStore = inject(HydrogenProductionUnitsStore);
 
-  isHydrogenProducer$ = this.hydrogenProducerStore.isHydrogenProducer;
+  visible$ = computed(() => this.hydrogenProducerStore.hydrogenProductionUnits$().length > 0);
 
   sidebarOptions: SidebarOption[] = [
     {
@@ -66,7 +64,7 @@ export class SidebarComponent implements OnInit {
           title: 'Data',
           icon: 'table',
           route: ROUTES.PRODUCTION_DATA,
-          visible: this.isHydrogenProducer$,
+          visible: this.visible$,
         },
         {
           title: 'Uploads',
@@ -80,7 +78,7 @@ export class SidebarComponent implements OnInit {
       title: 'Bottling',
       icon: 'propane_tank',
       route: ROUTES.BOTTLING,
-      visible: this.isHydrogenProducer$,
+      visible: this.visible$,
     },
   ];
 

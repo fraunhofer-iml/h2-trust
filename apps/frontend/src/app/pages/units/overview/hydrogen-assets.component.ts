@@ -21,7 +21,7 @@ import { UnitCardComponent } from '../../../layout/unit-card/unit-card.component
 import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { UnitsService } from '../../../shared/services/units/units.service';
-import { HydrogenProducerStore } from '../../../shared/store/hydrogen-producer.store';
+import { HydrogenProductionUnitsStore } from '../../../shared/store/hydrogen-production-units.store';
 
 @Component({
   selector: 'app-hydrogen-assets',
@@ -46,7 +46,7 @@ export class HydrogenAssetsComponent {
   protected readonly UnitType = UnitType;
 
   protected readonly unitsService = inject(UnitsService);
-  protected readonly state = inject(HydrogenProducerStore);
+  protected readonly state = inject(HydrogenProductionUnitsStore);
 
   typeToShow: UnitType | null = null;
 
@@ -60,7 +60,7 @@ export class HydrogenAssetsComponent {
     queryFn: async () => this.unitsService.getPowerProductionUnits(),
   }));
 
-  hydrogenProductionUnits$ = this.state.units;
+  hydrogenProductionUnits$ = this.state.hydrogenProductionUnits$;
 
   ngOnInit() {
     this.state.loadUnits();
