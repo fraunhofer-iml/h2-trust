@@ -21,7 +21,7 @@ import { UnitCardComponent } from '../../../layout/unit-card/unit-card.component
 import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { UnitsService } from '../../../shared/services/units/units.service';
-import { AppStateService } from '../../../shared/state/app-state.service';
+import { HydrogenProducerService } from '../../../shared/state/app-state.service';
 
 @Component({
   selector: 'app-hydrogen-assets',
@@ -46,7 +46,7 @@ export class HydrogenAssetsComponent {
   protected readonly UnitType = UnitType;
 
   protected readonly unitsService = inject(UnitsService);
-  protected readonly state = inject(AppStateService);
+  protected readonly state = inject(HydrogenProducerService);
 
   typeToShow: UnitType | null = null;
 

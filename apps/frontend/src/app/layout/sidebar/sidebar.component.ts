@@ -18,7 +18,7 @@ import { Router, RouterModule } from '@angular/router';
 import { ROUTES } from '../../shared/constants/routes';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { UsersService } from '../../shared/services/users/users.service';
-import { AppStateService } from '../../shared/state/app-state.service';
+import { HydrogenProducerService } from '../../shared/state/app-state.service';
 
 interface SidebarOption {
   title: string;
@@ -45,7 +45,7 @@ interface SidebarOption {
 })
 export class SidebarComponent implements OnInit {
   protected readonly router = inject(Router);
-  protected readonly state = inject(AppStateService);
+  protected readonly state = inject(HydrogenProducerService);
 
   isHydrogenProducer$ = this.state.isHydrogenProducer;
 
