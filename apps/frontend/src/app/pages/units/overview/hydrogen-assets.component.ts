@@ -21,7 +21,7 @@ import { UnitCardComponent } from '../../../layout/unit-card/unit-card.component
 import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { UnitsService } from '../../../shared/services/units/units.service';
-import { HydrogenProducerService } from '../../../shared/state/app-state.service';
+import { HydrogenProducerService } from '../../../shared/store/hydrogen-producer.store';
 
 @Component({
   selector: 'app-hydrogen-assets',

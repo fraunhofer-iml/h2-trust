@@ -18,7 +18,7 @@ import { Router, RouterModule } from '@angular/router';
 import { ROUTES } from '../../shared/constants/routes';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { UsersService } from '../../shared/services/users/users.service';
-import { HydrogenProducerService } from '../../shared/state/app-state.service';
+import { HydrogenProducerService } from '../../shared/store/hydrogen-producer.store';
 
 interface SidebarOption {
   title: string;
@@ -45,9 +45,9 @@ interface SidebarOption {
 })
 export class SidebarComponent implements OnInit {
   protected readonly router = inject(Router);
-  protected readonly state = inject(HydrogenProducerService);
+  protected readonly hydrogenProducerStore = inject(HydrogenProducerService);
 
-  isHydrogenProducer$ = this.state.isHydrogenProducer;
+  isHydrogenProducer$ = this.hydrogenProducerStore.isHydrogenProducer;
 
   sidebarOptions: SidebarOption[] = [
     {
@@ -94,7 +94,7 @@ export class SidebarComponent implements OnInit {
   async ngOnInit() {
     this.isAuthenticated = this.authService.isAuthenticated();
     if (this.isAuthenticated) {
-      this.state.loadUnits();
+      this.hydrogenProducerStore.loadUnits();
 
       const userProfile = await this.authService.getCurrentUserDetails();
       this.userFirstName = userProfile.firstName;

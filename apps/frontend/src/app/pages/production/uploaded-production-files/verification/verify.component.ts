@@ -15,7 +15,7 @@ import { ProcessedCsvDto } from '@h2-trust/api';
 import { CsvDocumentIntegrityStatus } from '@h2-trust/domain';
 import { BaseSheetComponent } from '../../../../layout/sheet/sheet.component';
 import { ProductionService } from '../../../../shared/services/production/production.service';
-import { VerificationResultStore } from '../../../../shared/services/verification-state/verification-result.service';
+import { VerificationResultStore } from '../../../../shared/store/verification-result.store';
 
 @Component({
   selector: 'app-verify',

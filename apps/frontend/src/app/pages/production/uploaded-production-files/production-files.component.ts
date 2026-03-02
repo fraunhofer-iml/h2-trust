@@ -30,7 +30,7 @@ import { BatchType, CsvDocumentIntegrityStatus, MeasurementUnit } from '@h2-trus
 import { ICONS } from '../../../shared/constants/icons';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { ProductionService } from '../../../shared/services/production/production.service';
-import { VerificationResultStore } from '../../../shared/services/verification-state/verification-result.service';
+import { VerificationResultStore } from '../../../shared/store/verification-result.store';
 import { DownloadButtonComponent } from './download-button/download-button.component';
 import { VerifyComponent } from './verification/verify.component';
 

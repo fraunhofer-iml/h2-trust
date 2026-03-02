@@ -20,7 +20,7 @@ import { AuthService } from './shared/services/auth/auth.service';
 import { BottlingService } from './shared/services/bottling/bottling.service';
 import { UnitsService } from './shared/services/units/units.service';
 import { UsersService } from './shared/services/users/users.service';
-import { HydrogenProducerService } from './shared/state/app-state.service';
+import { HydrogenProducerService } from './shared/store/hydrogen-producer.store';
 
 export const appConfig: ApplicationConfig = {
   providers: [
