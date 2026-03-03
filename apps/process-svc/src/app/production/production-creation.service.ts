@@ -20,6 +20,7 @@ import {
   ReadByIdPayload,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
+import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { ProductionAssembler } from './production.assembler';
 
@@ -28,6 +29,7 @@ export class ProductionCreationService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly processStepService: ProcessStepService,
+    private readonly digitalProductPassportService: DigitalProductPassportService,
   ) {}
 
   // TODO-MP: almost identical method exists in ProductionImportService - refactor to avoid code duplication
@@ -87,6 +89,11 @@ export class ProductionCreationService {
     // Step 5: Persist hydrogen
     const persistedHydrogen: ProcessStepEntity[] =
       await this.processStepService.createManyProcessSteps(hydrogenPayload);
+
+    // Step 6: Determine and save the RFNBO Type
+    persistedHydrogen.forEach(async (hydrogenProcessStep) => {
+      await this.digitalProductPassportService.updateRfnboStatus(hydrogenProcessStep);
+    });
 
     return [...persistedPowerAndWater, ...persistedHydrogen];
   }
