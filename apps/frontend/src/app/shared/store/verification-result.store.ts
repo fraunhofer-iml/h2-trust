@@ -9,9 +9,7 @@
 import { Injectable } from '@angular/core';
 import { CsvDocumentIntegrityResultDto } from '@h2-trust/api';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class VerificationResultStore {
   private verificationResults: Map<string, CsvDocumentIntegrityResultDto> = new Map();
 
