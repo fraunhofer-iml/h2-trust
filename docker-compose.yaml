@@ -39,9 +39,10 @@ services:
       - '9090:9090'
     healthcheck:
       test: ['CMD', 'mc', 'ready', 'local']
+      start_period: 10s
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
     command:
       - server
       - /data
@@ -73,9 +74,10 @@ services:
       - '8545:8545'
     healthcheck:
       test: ['CMD', 'curl', '-sf', 'http://localhost:8545/liveness']
+      start_period: 10s
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
 
   blockchain-setup:
     build:
