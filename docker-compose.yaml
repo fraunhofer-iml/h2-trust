@@ -1,8 +1,4 @@
 services:
-  ############
-  # DATABASE #
-  ############
-
   postgres:
     image: postgres:17.7-alpine3.23
     restart: unless-stopped
@@ -16,17 +12,14 @@ services:
         max-file: '3'
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U admin -d h2_trust']
+      start_period: 10s
       interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 5
     ports:
       - '5432:5432'
     volumes:
       - './docker/postgres/init:/docker-entrypoint-initdb.d'
-
-  ###########
-  # STORAGE #
-  ###########
 
   minio:
     image: minio/minio:RELEASE.2025-09-07T16-13-09Z
@@ -42,7 +35,7 @@ services:
       start_period: 10s
       interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 5
     command:
       - server
       - /data
@@ -52,7 +45,13 @@ services:
   minio-setup:
     image: minio/mc:RELEASE.2025-08-13T08-35-41Z
     depends_on:
+      postgres:
+        condition: service_healthy
       minio:
+        condition: service_healthy
+      blockchain:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     entrypoint: ['/bin/sh', '-c']
     command:
@@ -60,10 +59,6 @@ services:
         mc alias set local http://minio:9000 admin admin12345
         mc mb --ignore-existing local/h2-trust
         mc anonymous set download local/h2-trust
-
-  ##############
-  # BLOCKCHAIN #
-  ##############
 
   blockchain:
     build:
@@ -77,22 +72,25 @@ services:
       start_period: 10s
       interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 5
 
   blockchain-setup:
     build:
       context: .
       dockerfile: docker/blockchain-setup/Dockerfile
     depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
       blockchain:
         condition: service_healthy
-
-  #########
-  # UTILS #
-  #########
+      rabbitmq:
+        condition: service_healthy
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.5
+    restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
@@ -134,15 +132,22 @@ services:
       start_period: 10s
       interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 5
 
   rabbitmq:
     image: rabbitmq:4.2.3-management-alpine
+    restart: unless-stopped
     ports:
       - '5672:5672'
       - '15672:15672'
     environment:
       RABBITMQ_LOGS: '-warn'
+    healthcheck:
+      test: ['CMD', 'rabbitmq-diagnostics', '-q', 'ping']
+      start_period: 10s
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 networks:
   default:
