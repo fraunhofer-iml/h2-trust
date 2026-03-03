@@ -69,7 +69,7 @@ export class DigitalProductPassportService {
 
     const proofOfOrigin: ProofOfOriginSectionEntity[] = [];
 
-    let hydrogenCompositionsForRootOfProvenance: HydrogenComponentEntity[] = await this.calculateHydrogenComposition(
+    const hydrogenCompositionsForRootOfProvenance: HydrogenComponentEntity[] = await this.calculateHydrogenComposition(
       provenance.root,
     );
 
