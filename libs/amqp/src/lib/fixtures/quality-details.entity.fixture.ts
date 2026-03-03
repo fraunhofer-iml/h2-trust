@@ -7,13 +7,25 @@
  */
 
 import { QualityDetailsEntity } from '@h2-trust/amqp';
-import { HydrogenColor } from '@h2-trust/domain';
+import { HydrogenColor, RfnboType } from '@h2-trust/domain';
 
 export const QualityDetailsEntityFixture = {
   createGreen: (overrides: Partial<QualityDetailsEntity> = {}): QualityDetailsEntity =>
-    new QualityDetailsEntity(overrides.id ?? 'quality-details-1', overrides.color ?? HydrogenColor.GREEN),
+    new QualityDetailsEntity(
+      overrides.id ?? 'quality-details-1',
+      overrides.color ?? HydrogenColor.GREEN,
+      overrides.rfnbo ?? RfnboType.RFNBO_READY,
+    ),
   createYellow: (overrides: Partial<QualityDetailsEntity> = {}): QualityDetailsEntity =>
-    new QualityDetailsEntity(overrides.id ?? 'quality-details-1', overrides.color ?? HydrogenColor.YELLOW),
+    new QualityDetailsEntity(
+      overrides.id ?? 'quality-details-1',
+      overrides.color ?? HydrogenColor.YELLOW,
+      overrides.rfnbo ?? RfnboType.NON_CERTIFIABLE,
+    ),
   createMix: (overrides: Partial<QualityDetailsEntity> = {}): QualityDetailsEntity =>
-    new QualityDetailsEntity(overrides.id ?? 'quality-details-1', overrides.color ?? HydrogenColor.MIX),
+    new QualityDetailsEntity(
+      overrides.id ?? 'quality-details-1',
+      overrides.color ?? HydrogenColor.MIX,
+      overrides.rfnbo ?? RfnboType.NON_CERTIFIABLE,
+    ),
 } as const;

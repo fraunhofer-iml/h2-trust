@@ -72,12 +72,10 @@ describe('HydrogenComponentAssembler', () => {
             BatchEntityFixture.createHydrogenBatch({
               amount: 60,
               qualityDetails: QualityDetailsEntityFixture.createGreen(),
-              rfnboType: RfnboType.RFNBO_READY,
             }),
             BatchEntityFixture.createHydrogenBatch({
               amount: 40,
               qualityDetails: QualityDetailsEntityFixture.createYellow(),
-              rfnboType: RfnboType.NON_CERTIFIABLE,
             }),
           ],
         }),
@@ -96,7 +94,8 @@ describe('HydrogenComponentAssembler', () => {
       // Arrange
       const givenProcessStep = undefined as unknown as ProcessStepEntity;
 
-      const expectedErrorMessage = 'The provided bottling process step is missing (undefined or null).';
+      const expectedErrorMessage =
+        'The provided bottling process step is missing (undefined or null) or does not have a batch.';
 
       // Act & Assert
       expect(() => HydrogenComponentAssembler.assemble(givenProcessStep)).toThrow(expectedErrorMessage);
@@ -104,9 +103,9 @@ describe('HydrogenComponentAssembler', () => {
 
     it('throws error when process step type is invalid', () => {
       // Arrange
-      const givenProcessStep = ProcessStepEntityFixture.createHydrogenProduction();
+      const givenProcessStep = ProcessStepEntityFixture.createPowerProduction();
 
-      const expectedErrorMessage = `ProcessStep ${givenProcessStep.id} should be type ${ProcessType.HYDROGEN_BOTTLING} or ${ProcessType.HYDROGEN_TRANSPORTATION}, but is ${ProcessType.HYDROGEN_PRODUCTION}.`;
+      const expectedErrorMessage = `The specified process step ${givenProcessStep.id} is neither ${ProcessType.HYDROGEN_BOTTLING}, ${ProcessType.HYDROGEN_TRANSPORTATION} nor ${ProcessType.HYDROGEN_PRODUCTION}, but of type ${ProcessType.POWER_PRODUCTION}`;
 
       // Act & Assert
       expect(() => HydrogenComponentAssembler.assemble(givenProcessStep)).toThrow(expectedErrorMessage);
