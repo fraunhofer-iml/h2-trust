@@ -63,17 +63,17 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
   {
     id: 'quality-details-10',
     color: HydrogenColor.GREEN,
-    rfnbo: RfnboType.NOT_SPECIFIED,
+    rfnbo: RfnboType.RFNBO_READY,
   },
   {
     id: 'quality-details-11',
     color: HydrogenColor.MIX,
-    rfnbo: RfnboType.NOT_SPECIFIED,
+    rfnbo: RfnboType.NON_CERTIFIABLE,
   },
   {
     id: 'quality-details-12',
     color: HydrogenColor.MIX,
-    rfnbo: RfnboType.NOT_SPECIFIED,
+    rfnbo: RfnboType.NON_CERTIFIABLE,
   },
   {
     id: 'quality-details-13',
