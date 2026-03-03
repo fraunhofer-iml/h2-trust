@@ -17,13 +17,26 @@ export class VerificationResultStore {
 
   setVerificationResult(key: string, value: CsvDocumentIntegrityResultDto) {
     this.verificationResults.set(key, value);
+    sessionStorage.setItem(`verify_${key}`, JSON.stringify(value));
   }
 
   getVerificationResult(key: string): CsvDocumentIntegrityResultDto | undefined {
-    return this.verificationResults.get(key);
+    let result = this.verificationResults.get(key);
+
+    if (!result) {
+      const stored = sessionStorage.getItem(`verify_${key}`);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        this.verificationResults.set(key, parsed);
+        result = parsed;
+      }
+    }
+
+    return result;
   }
 
   clear() {
     this.verificationResults.clear();
+    sessionStorage.clear();
   }
 }
