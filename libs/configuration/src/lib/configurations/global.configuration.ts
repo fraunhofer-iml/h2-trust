@@ -45,12 +45,8 @@ export interface BlockchainConfiguration {
 export interface KeycloakConfiguration {
   url: string;
   realm: string;
-  tokenUri: string;
   clientId: string;
   clientSecret: string;
-  grantType: string;
-  username: string;
-  password: string;
 }
 
 export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
@@ -80,13 +76,9 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
     explorerUrl: process.env['BLOCKCHAIN_EXPLORER_URL'] || 'http://localhost:8545/explorer/tx',
   },
   keycloak: {
-    url: process.env['KEYCLOAK_URL'] || '',
-    realm: process.env['KEYCLOAK_REALM'] || '',
-    tokenUri: process.env['KEYCLOAK_TOKEN_URI'] || 'protocol/openid-connect/token',
-    clientId: process.env['KEYCLOAK_CLIENT_ID'] || '',
-    clientSecret: process.env['KEYCLOAK_SECRET'] || '',
-    username: process.env['KEYCLOAK_USER'] || '',
-    password: process.env['KEYCLOAK_PASSWORD'] || '',
-    grantType: process.env['KEYCLOAK_GRANT_TYPE'] || 'client_credentials',
+    url: process.env['KEYCLOAK_URL'] || 'http://localhost:8080',
+    realm: process.env['KEYCLOAK_REALM'] || 'h2-trust',
+    clientId: process.env['KEYCLOAK_CLIENT_ID'] || 'h2-trust-bff',
+    clientSecret: process.env['KEYCLOAK_CLIENT_SECRET'] || 'GumKpHmJsY5KCIe6e5TVi5gm1ALvykWY',
   },
 }));
