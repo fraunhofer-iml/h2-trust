@@ -10,19 +10,12 @@ import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
 import { DatabaseModule } from '@h2-trust/database';
 import { StorageModule } from '@h2-trust/storage';
-import { DigitalProductPassportModule } from '../digital-product-passport/digital-product-passport.module';
 import { ProcessStepModule } from '../process-step/process-step.module';
 import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';
 
 @Module({
-  imports: [
-    DatabaseModule,
-    ProcessStepModule,
-    DigitalProductPassportModule,
-    StorageModule,
-    new Broker().getGeneralSvcBroker(),
-  ],
+  imports: [DatabaseModule, ProcessStepModule, StorageModule, new Broker().getGeneralSvcBroker()],
   controllers: [BottlingController],
   providers: [BottlingService],
 })

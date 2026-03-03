@@ -23,37 +23,37 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
   {
     id: 'quality-details-2',
     color: HydrogenColor.GREEN,
-    rfnbo: RfnboType.NOT_SPECIFIED,
+    rfnbo: RfnboType.NON_CERTIFIABLE,
   },
   {
     id: 'quality-details-3',
     color: HydrogenColor.GREEN,
-    rfnbo: RfnboType.NOT_SPECIFIED,
+    rfnbo: RfnboType.NON_CERTIFIABLE,
   },
   {
     id: 'quality-details-4',
     color: HydrogenColor.GREEN,
-    rfnbo: RfnboType.NOT_SPECIFIED,
+    rfnbo: RfnboType.NON_CERTIFIABLE,
   },
   {
     id: 'quality-details-5',
     color: HydrogenColor.GREEN,
-    rfnbo: RfnboType.NOT_SPECIFIED,
+    rfnbo: RfnboType.NON_CERTIFIABLE,
   },
   {
     id: 'quality-details-6',
     color: HydrogenColor.YELLOW,
-    rfnbo: RfnboType.NOT_SPECIFIED,
+    rfnbo: RfnboType.NON_CERTIFIABLE,
   },
   {
     id: 'quality-details-7',
     color: HydrogenColor.YELLOW,
-    rfnbo: RfnboType.NOT_SPECIFIED,
+    rfnbo: RfnboType.NON_CERTIFIABLE,
   },
   {
     id: 'quality-details-8',
     color: HydrogenColor.YELLOW,
-    rfnbo: RfnboType.NOT_SPECIFIED,
+    rfnbo: RfnboType.NON_CERTIFIABLE,
   },
   {
     id: 'quality-details-9',
