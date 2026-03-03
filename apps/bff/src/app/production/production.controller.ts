@@ -17,6 +17,7 @@ import {
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
+  ProductionStatisticsDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/api';
 import { FileUploadKeys } from '@h2-trust/domain';
@@ -90,6 +91,32 @@ export class ProductionController {
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<ProductionOverviewDto[]> {
     return this.service.readHydrogenProductionsByOwner(authenticatedUser.sub);
+  }
+
+  @Get('/statistics')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description:
+      "Retrieve statistics for all hydrogen productions for the authenticated user's company inthe selected month for the specified unit.",
+  })
+  @ApiOkResponse({
+    description:
+      "Returns a list of all statistics for all hydrogen productions for the authenticated user's company inthe selected month for the specified unit.",
+    type: [ProductionStatisticsDto],
+  })
+  async readHydrogenProductionsStatisticyByOwner(@AuthenticatedUser() _authenticatedUser: AuthenticatedKCUser) {
+    return {
+      hydrogen: {
+        total: 351.56,
+        nonCertifiable: 151.56,
+        rfnboReady: 200,
+      },
+      power: {
+        nonRenewable: 25.47,
+        renewable: 28.1,
+        total: 53.57,
+      },
+    } as ProductionStatisticsDto;
   }
 
   @Get('csv')
