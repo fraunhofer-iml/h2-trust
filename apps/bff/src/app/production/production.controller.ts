@@ -113,7 +113,8 @@ export class ProductionController {
       },
       power: {
         nonRenewable: 25.47,
-        renewable: 28.1,
+        partlyRenewable: 10,
+        renewable: 18.154,
         total: 53.57,
       },
     } as ProductionStatisticsDto;

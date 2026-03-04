@@ -17,6 +17,7 @@ import {
   ImportSubmissionDto,
   ProcessedCsvDto,
   ProductionOverviewDto,
+  ProductionStatisticsDto,
 } from '@h2-trust/api';
 import { API } from '../../constants/api-endpoints';
 
@@ -26,6 +27,10 @@ export class ProductionService {
 
   getProductions() {
     return lastValueFrom(this.httpClient.get<ProductionOverviewDto[]>(API.PRODUCTION.BASE));
+  }
+
+  getStatistics() {
+    return lastValueFrom(this.httpClient.get<ProductionStatisticsDto>(API.PRODUCTION.STATISTICS));
   }
 
   getUploadedCsvFiles() {

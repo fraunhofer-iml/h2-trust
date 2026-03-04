@@ -17,6 +17,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ProductionOverviewDto } from '@h2-trust/api';
 import { H2ColorChipComponent } from '../../../layout/color-chip/h2-color-chip.component';
 import { ProductionService } from '../../../shared/services/production/production.service';
+import { ProductionStatisticsComponent } from '../statistics/production-statistics.component';
 
 @Component({
   selector: 'app-production-view',
@@ -30,6 +31,7 @@ import { ProductionService } from '../../../shared/services/production/productio
     MatButtonModule,
     MatSortModule,
     H2ColorChipComponent,
+    ProductionStatisticsComponent,
   ],
   providers: [ProductionService],
   templateUrl: './production-view.component.html',
