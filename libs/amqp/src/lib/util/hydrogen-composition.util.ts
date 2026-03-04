@@ -34,7 +34,6 @@ export class HydrogenCompositionUtil {
       throw new BrokerException(`Total stored amount is not greater than 0`, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    //Set the Amount of the Hydrogen Entities according to their amount
     return mergedHydrogenComponents.map(
       ({ processId, color, amount, rfnboType }) =>
         new HydrogenComponentEntity(processId, color, (bottleAmount * amount) / totalAmount, rfnboType),
