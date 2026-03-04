@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "npx hardhat compile",
-    "clean": "rm -rf ./artifacts ./cache ./typechain",
+    "clean": "rm -rf ./artifacts ./cache ./typechain ./types",
     "deploy-local": "npx hardhat run scripts/deploy.ts --network local",
     "deploy-private": "npx hardhat run scripts/deploy.ts --network private",
     "deploy-public": "npx hardhat run scripts/deploy.ts --network arbitrumSepolia",
