@@ -127,7 +127,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
           null,
           batch.batchDetails.qualityDetails.color,
           batch.amount?.toNumber() ?? 0,
-          batch.batchDetails.qualityDetails.rfnbo ?? RfnboType.NON_CERTIFIABLE,
+          batch.batchDetails.qualityDetails.rfnboType ?? RfnboType.NON_CERTIFIABLE,
         );
       }) ?? []
     );
@@ -144,7 +144,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
           batch?.processStep?.id ?? null,
           batch.batchDetails.qualityDetails.color,
           batch.amount?.toNumber() ?? 0,
-          batch.batchDetails.qualityDetails.rfnbo ?? RfnboType.NON_CERTIFIABLE,
+          batch.batchDetails.qualityDetails.rfnboType ?? RfnboType.NON_CERTIFIABLE,
         );
       }) ?? []
     );

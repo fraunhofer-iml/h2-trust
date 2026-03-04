@@ -34,7 +34,7 @@ export class BatchRepository {
       },
       data: {
         qualityDetails: {
-          update: { rfnbo: rfnboType },
+          update: { rfnboType: rfnboType },
         },
       },
     });

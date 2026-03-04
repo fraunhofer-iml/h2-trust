@@ -12,19 +12,15 @@ import { RfnboType } from '@h2-trust/domain';
 export class QualityDetailsEntity {
   id?: string;
   color: string;
-  rfnbo: string;
+  rfnboType: string;
 
-  constructor(id: string | undefined, color: string, rfnbo?: string) {
+  constructor(id: string | undefined, color: string, rfnboType?: string) {
     this.id = id;
     this.color = color;
-    this.rfnbo = rfnbo ?? RfnboType.NOT_SPECIFIED;
+    this.rfnboType = rfnboType ?? RfnboType.NOT_SPECIFIED;
   }
 
   static fromDatabase(qualityDetails: QualityDetailsDbType): QualityDetailsEntity {
-    return new QualityDetailsEntity(
-      qualityDetails.id,
-      qualityDetails.color,
-      qualityDetails.rfnbo ?? RfnboType.NOT_SPECIFIED,
-    );
+    return new QualityDetailsEntity(qualityDetails.id, qualityDetails.color, qualityDetails.rfnboType);
   }
 }

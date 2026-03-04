@@ -49,7 +49,7 @@ export class ProductionOverviewDto {
       productionUnit: processStep.executedBy?.name,
       producedAmount: processStep.batch?.amount,
       color: processStep.batch?.qualityDetails?.color,
-      rfnboType: processStep.batch?.qualityDetails?.rfnbo,
+      rfnboType: processStep.batch?.qualityDetails?.rfnboType,
       powerProducer: processStep.batch?.predecessors?.[0]?.owner?.name,
       powerConsumed: ProductionOverviewDto.determinePowerConsumed(processStep),
       storageUnit: processStep.batch?.hydrogenStorageUnit?.name,

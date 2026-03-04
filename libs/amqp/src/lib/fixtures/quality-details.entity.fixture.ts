@@ -14,18 +14,18 @@ export const QualityDetailsEntityFixture = {
     new QualityDetailsEntity(
       overrides.id ?? 'quality-details-1',
       overrides.color ?? HydrogenColor.GREEN,
-      overrides.rfnbo ?? RfnboType.RFNBO_READY,
+      overrides.rfnboType ?? RfnboType.RFNBO_READY,
     ),
   createYellow: (overrides: Partial<QualityDetailsEntity> = {}): QualityDetailsEntity =>
     new QualityDetailsEntity(
       overrides.id ?? 'quality-details-1',
       overrides.color ?? HydrogenColor.YELLOW,
-      overrides.rfnbo ?? RfnboType.NON_CERTIFIABLE,
+      overrides.rfnboType ?? RfnboType.NON_CERTIFIABLE,
     ),
   createMix: (overrides: Partial<QualityDetailsEntity> = {}): QualityDetailsEntity =>
     new QualityDetailsEntity(
       overrides.id ?? 'quality-details-1',
       overrides.color ?? HydrogenColor.MIX,
-      overrides.rfnbo ?? RfnboType.NON_CERTIFIABLE,
+      overrides.rfnboType ?? RfnboType.NON_CERTIFIABLE,
     ),
 } as const;

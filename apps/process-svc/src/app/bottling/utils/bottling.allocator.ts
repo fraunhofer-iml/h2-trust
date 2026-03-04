@@ -69,7 +69,7 @@ export class BottlingAllocator {
     hydrogenStorageUnitId: string,
   ): BottlingAllocation {
     const processStepsFromHydrogenStorageWithRequestedRFNBOType = processSteps.filter(
-      (ps) => ps.batch.qualityDetails.rfnbo === rfnboType,
+      (ps) => ps.batch.qualityDetails.rfnboType === rfnboType,
     );
 
     const { selectedProcessSteps, remainingAmount } =
@@ -158,7 +158,7 @@ export class BottlingAllocator {
         amount: remainingAmount,
         qualityDetails: {
           color: predecessorProcessStep.batch.qualityDetails.color,
-          rfnbo: predecessorProcessStep.batch.qualityDetails.rfnbo,
+          rfnboType: predecessorProcessStep.batch.qualityDetails.rfnboType,
         },
         type: BatchType.HYDROGEN,
         predecessors: [

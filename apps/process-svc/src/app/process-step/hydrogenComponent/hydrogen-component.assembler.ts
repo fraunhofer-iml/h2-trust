@@ -87,7 +87,7 @@ export class HydrogenComponentAssembler {
       '',
       batch.qualityDetails?.color,
       batch.amount,
-      batch.qualityDetails.rfnbo ?? RfnboType.NOT_SPECIFIED,
+      batch.qualityDetails.rfnboType ?? RfnboType.NOT_SPECIFIED,
     );
   }
 }

@@ -60,7 +60,7 @@ export class BottlingService {
       processId: processStep.id,
       color: processStep.batch.qualityDetails.color,
       amount: processStep.batch.amount,
-      rfnboType: processStep.batch.qualityDetails.rfnbo,
+      rfnboType: processStep.batch.qualityDetails.rfnboType,
     }));
 
     const hydrogenComposition: HydrogenComponentEntity[] = await this.determineHydrogenComposition(
