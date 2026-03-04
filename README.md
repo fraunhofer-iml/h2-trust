@@ -78,14 +78,14 @@ The project consists of the following components:
    - Manages master data.
 
 4. **Process Service (`process-svc`)**
-   - Manages hydrogen batches and their process steps and handles workflows.
+   - Manages power, water and hydrogen batches with their process steps and handles workflows.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## 🚀 Getting Started <a id="getting-started"></a>
 
 TLDR: open two terminal windows and run in one terminal window `docker-compose up` and in the other terminal window
-`npm install && npm run init && npm run dev`.
+`npm run setup && npm run dev`.
 
 For a more detailed explanation of how to get a development environment running, including all prerequisites, please
 consult the chapters [Deployment View](./documentation/04-deployment-view.adoc) and
