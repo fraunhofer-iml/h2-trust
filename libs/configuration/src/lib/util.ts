@@ -6,11 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const BASE_URL = 'http://localhost:3000';
+export function requireEnv(name: string): string {
+  const value = process.env[name];
 
-export const environment = {
-  production: false,
-  KEYCLOAK_URL: 'http://localhost:8080',
-  KEYCLOAK_REALM: 'h2-trust',
-  KEYCLOAK_CLIENT_ID: 'h2-trust-frontend',
-};
+  if (!value) {
+    throw new Error(`Required environment variable "${name}" is not set`);
+  }
+
+  return value;
+}

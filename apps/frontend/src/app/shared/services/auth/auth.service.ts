@@ -8,11 +8,13 @@
 
 import { KeycloakService } from 'keycloak-angular';
 import { KeycloakProfile } from 'keycloak-js';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { VerificationResultStore } from '../../store/verification-result.store';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly keycloak: KeycloakService) {}
+  readonly keycloak = inject(KeycloakService);
+  protected readonly verificationStore = inject(VerificationResultStore);
 
   async getUserId(): Promise<string> {
     const profile: KeycloakProfile = await this.keycloak.loadUserProfile();
@@ -33,6 +35,7 @@ export class AuthService {
   }
 
   logout() {
+    this.verificationStore.clear();
     this.keycloak.logout();
   }
 

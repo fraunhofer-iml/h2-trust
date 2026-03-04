@@ -7,6 +7,7 @@
  */
 
 import { registerAs } from '@nestjs/config';
+import { requireEnv } from '../util';
 
 export const BFF_CONFIGURATION_IDENTIFIER = 'bff-configuration';
 
@@ -16,6 +17,6 @@ export interface BffConfiguration {
 }
 
 export default registerAs(BFF_CONFIGURATION_IDENTIFIER, () => ({
-  port: process.env['API_PORT'] || '3000',
-  swaggerPath: process.env['SWAGGER_PATH'] || 'api',
+  port: parseInt(requireEnv('API_PORT')),
+  swaggerPath: requireEnv('SWAGGER_PATH'),
 }));

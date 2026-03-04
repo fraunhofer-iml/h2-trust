@@ -15,7 +15,7 @@ import { ProcessedCsvDto } from '@h2-trust/api';
 import { CsvDocumentIntegrityStatus } from '@h2-trust/domain';
 import { BaseSheetComponent } from '../../../../layout/sheet/sheet.component';
 import { ProductionService } from '../../../../shared/services/production/production.service';
-import { VerificationResultStore } from '../../../../shared/services/verification-state/verification-result.service';
+import { VerificationResultStore } from '../../../../shared/store/verification-result.store';
 
 @Component({
   selector: 'app-verify',
@@ -28,14 +28,14 @@ export class VerifyComponent {
   file = input.required<ProcessedCsvDto>();
 
   fileService = inject(ProductionService);
-  resultStore = inject(VerificationResultStore);
+  verificationResultStore = inject(VerificationResultStore);
 
   verifying = false;
 
   async verify() {
     this.verifying = true;
     const res = await this.fileService.validateFile(this.file().id);
-    this.resultStore.setItem(this.file().id, res);
+    this.verificationResultStore.setVerificationResult(this.file().id, res);
     this.verifying = false;
   }
 
@@ -55,6 +55,6 @@ export class VerifyComponent {
   }
 
   get result() {
-    return this.resultStore.getItem(this.file().id);
+    return this.verificationResultStore.getVerificationResult(this.file().id);
   }
 }
