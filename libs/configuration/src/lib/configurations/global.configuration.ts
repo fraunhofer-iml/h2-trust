@@ -8,6 +8,7 @@
 
 import { LogLevel } from '@nestjs/common';
 import { registerAs } from '@nestjs/config';
+import { requireEnv } from '../util';
 
 export const GLOBAL_CONFIGURATION_IDENTIFIER = 'global-configuration';
 
@@ -50,35 +51,31 @@ export interface KeycloakConfiguration {
 }
 
 export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
-  logLevel: (process.env['LOG_LEVEL'] || 'fatal,error,warn,log,debug').split(','),
+  logLevel: requireEnv('LOG_LEVEL').split(','),
   amqp: {
-    uri: process.env['AMQP_URI'] || 'amqp://guest:guest@localhost:5672',
-    queuePrefix: process.env['AMQP_QUEUE_PREFIX'] || 'h2-trust-dev-',
+    uri: requireEnv('AMQP_URI'),
+    queuePrefix: requireEnv('AMQP_QUEUE_PREFIX'),
   },
   minio: {
-    useSSL: process.env['MINIO_USE_SSL'] === 'true',
-    endPoint: process.env['MINIO_ENDPOINT'] || 'localhost',
-    port: parseInt(process.env['MINIO_PORT'] || '9000'),
-    accessKey: process.env['MINIO_ACCESS_KEY'] || 'admin',
-    secretKey: process.env['MINIO_SECRET_KEY'] || 'admin12345',
-    bucketName: process.env['MINIO_BUCKET_NAME'] || 'h2-trust',
+    useSSL: requireEnv('MINIO_USE_SSL') === 'true',
+    endPoint: requireEnv('MINIO_ENDPOINT'),
+    port: parseInt(requireEnv('MINIO_PORT')),
+    accessKey: requireEnv('MINIO_ACCESS_KEY'),
+    secretKey: requireEnv('MINIO_SECRET_KEY'),
+    bucketName: requireEnv('MINIO_BUCKET_NAME'),
   },
   blockchain: {
-    enabled: process.env['BLOCKCHAIN_ENABLED'] === 'true',
-    rpcUrl: process.env['BLOCKCHAIN_RPC_URL'] || 'http://localhost:8545',
-    privateKey:
-      process.env['BLOCKCHAIN_PRIVATE_KEY'] || '0x8f2a55949038a9610f50fb23b5883af3b4ecb3c3bb792cbcefbd1542c692be63',
-    artifactPath:
-      process.env['BLOCKCHAIN_ARTIFACT_PATH'] ||
-      'libs/blockchain/smart-contract/artifacts/contracts/ProofStorage.sol/ProofStorage.json',
-    smartContractAddress:
-      process.env['BLOCKCHAIN_SMART_CONTRACT_ADDRESS'] || '0x42699A7612A82f1d9C36148af9C77354759b210b',
-    explorerUrl: process.env['BLOCKCHAIN_EXPLORER_URL'] || 'http://localhost:8545/explorer/tx',
+    enabled: requireEnv('BLOCKCHAIN_ENABLED') === 'true',
+    rpcUrl: requireEnv('BLOCKCHAIN_RPC_URL'),
+    privateKey: requireEnv('BLOCKCHAIN_PRIVATE_KEY'),
+    artifactPath: requireEnv('BLOCKCHAIN_ARTIFACT_PATH'),
+    smartContractAddress: requireEnv('BLOCKCHAIN_SMART_CONTRACT_ADDRESS'),
+    explorerUrl: requireEnv('BLOCKCHAIN_EXPLORER_URL'),
   },
   keycloak: {
-    url: process.env['KEYCLOAK_URL'] || 'http://localhost:8080',
-    realm: process.env['KEYCLOAK_REALM'] || 'h2-trust',
-    clientId: process.env['KEYCLOAK_CLIENT_ID'] || 'h2-trust-bff',
-    clientSecret: process.env['KEYCLOAK_CLIENT_SECRET'] || 'GumKpHmJsY5KCIe6e5TVi5gm1ALvykWY',
+    url: requireEnv('KEYCLOAK_URL'),
+    realm: requireEnv('KEYCLOAK_REALM'),
+    clientId: requireEnv('KEYCLOAK_CLIENT_ID'),
+    clientSecret: requireEnv('KEYCLOAK_CLIENT_SECRET'),
   },
 }));
