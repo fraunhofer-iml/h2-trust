@@ -19,8 +19,8 @@ import { BatchType, ProcessType, RfnboType } from '@h2-trust/domain';
 export class HydrogenComponentAssembler {
   /**
    * Retrieves the batches of the predecessor of a BOTTLING or TRANSPORTATION or the batch of a PRODUCTION. Converts these into HydrogenComponents, then combines them into HydrogenComponents with the same RFNBO status and changes their amount to the proportion of the amount to be filled.
-   * @param processStep
-   * @returns
+   * @param processStep The process step whose batch (or whose predecessor batch) is to be returned as grouped HydrogenComponents.
+   * @returns The grouped HydrogenComponents of the process step batch or its predecessors.
    */
   static assemble(processStep: ProcessStepEntity): HydrogenComponentEntity[] {
     if (!processStep || !processStep.batch) {
@@ -53,11 +53,6 @@ export class HydrogenComponentAssembler {
     return HydrogenCompositionUtil.computeHydrogenComposition(predecessorHydrogenComponents, processStep.batch.amount);
   }
 
-  /**
-   * If the type of the process step is Hydrogen Production, we can not use the assemble function because this only works for Bottlings and Transportations.
-   * @param processStep
-   * @returns
-   */
   private static assembleForHydrogenProduction(processStep: ProcessStepEntity): HydrogenComponentEntity[] {
     if (processStep.type != ProcessType.HYDROGEN_PRODUCTION) {
       const errorMessage = `The specified process step is not of type HYDROGEN_PRODUCTION, but of type ${processStep.type}`;

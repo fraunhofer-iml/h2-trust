@@ -111,11 +111,11 @@ export class BottlingService {
    * Return the set of HydorgenComponents that should be created as new bottling.
    * If the rfnbo type that should be bottled is RFNBO ready, the returned list only contains a single HydrogenComponent with the whole amount of hydrogen and the RFNBO_READY type.
    * If the rfnbo type ist non_certified, it should return a mix of RFNBO_ready HCs and non-certified HCs.
-   * @param batchAmount
-   * @param rfnboType
-   * @param hydrogenStorageUnitFillings
-   * @param hydrogenStorageUnitId
-   * @returns
+   * @param batchAmount The total amount of hydrogen to be filled.
+   * @param rfnboType The RFNBO type that the bottled hydrogen should have.
+   * @param hydrogenStorageUnitFillings The list of all fillings of the hydrogen storage from which filling is to take place.
+   * @param hydrogenStorageUnitId The ID of the hydrogen storage from which filling is to take place.
+   * @returns The list of HydrogenEntities that make up the new bottling.
    */
   private async determineHydrogenComposition(
     batchAmount: number,

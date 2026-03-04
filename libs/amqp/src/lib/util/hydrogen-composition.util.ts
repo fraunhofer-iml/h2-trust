@@ -17,7 +17,7 @@ export class HydrogenCompositionUtil {
    * Then sets the amount of each grouped HydrogenComponent to an amount value according to the requested bottleAmount.
    * @param hydrogenComponents The HydrogenComponents, that should be grouped.
    * @param bottleAmount The requested bottle Amount.
-   * @returns
+   * @returns The merged list of HydrogenComponents, where each RFNBO type only exists once.
    */
   static computeHydrogenComposition(
     hydrogenComponents: HydrogenComponentEntity[],
