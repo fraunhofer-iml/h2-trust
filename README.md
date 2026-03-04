@@ -85,7 +85,7 @@ The project consists of the following components:
 ## 🚀 Getting Started <a id="getting-started"></a>
 
 TLDR: open two terminal windows and run in one terminal window `docker-compose up` and in the other terminal window
-`npm run setup && npm run dev`.
+`cp .env.example .env && npm run setup && npm run dev`.
 
 For a more detailed explanation of how to get a development environment running, including all prerequisites, please
 consult the chapters [Deployment View](./documentation/04-deployment-view.adoc) and
