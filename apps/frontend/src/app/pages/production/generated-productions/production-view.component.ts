@@ -6,10 +6,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { DateTime } from 'luxon';
 import { DatePipe, DecimalPipe, TitleCasePipe } from '@angular/common';
-import { AfterViewInit, Component, inject, ViewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { AfterViewInit, Component, inject, signal, ViewChild } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { debounce, form, FormField } from '@angular/forms/signals';
+import { provideLuxonDateAdapter } from '@angular/material-luxon-adapter';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -19,10 +25,26 @@ import { H2ColorChipComponent } from '../../../layout/color-chip/h2-color-chip.c
 import { ProductionService } from '../../../shared/services/production/production.service';
 import { ProductionStatisticsComponent } from '../statistics/production-statistics.component';
 
+interface FilterModel {
+  unit: string;
+  month: DateTime;
+}
+
+export const H2_TRUST_FORMATS = {
+  parse: {
+    dateInput: 'MM/yyyy',
+  },
+  display: {
+    dateInput: 'MM/yyyy',
+    monthYearLabel: 'MMM yyyy',
+    dateA11yLabel: 'DD',
+    monthYearA11yLabel: 'MMMM yyyy',
+  },
+};
+
 @Component({
   selector: 'app-production-view',
   imports: [
-    FormsModule,
     MatPaginatorModule,
     MatTableModule,
     DatePipe,
@@ -32,8 +54,11 @@ import { ProductionStatisticsComponent } from '../statistics/production-statisti
     MatSortModule,
     H2ColorChipComponent,
     ProductionStatisticsComponent,
+    MatInputModule,
+    FormField,
+    MatDatepickerModule,
   ],
-  providers: [ProductionService],
+  providers: [ProductionService, MatFormFieldModule, ReactiveFormsModule, provideLuxonDateAdapter(H2_TRUST_FORMATS)],
   templateUrl: './production-view.component.html',
 })
 export class ProductionViewComponent implements AfterViewInit {
@@ -62,6 +87,29 @@ export class ProductionViewComponent implements AfterViewInit {
       return data;
     },
   }));
+
+  filterModel = signal<FilterModel>({
+    unit: '',
+    month: DateTime.now(),
+  });
+
+  filterForm = form(this.filterModel, (schemaPath) => {
+    debounce(schemaPath.unit, 500);
+  });
+
+  maxDate = new Date();
+
+  setMonthAndYear(normalizedMonthAndYear: DateTime, datepicker: MatDatepicker<DateTime>) {
+    const ctrlValue = DateTime.fromObject({
+      month: normalizedMonthAndYear.month,
+      year: normalizedMonthAndYear.year,
+    });
+    this.filterModel.update((form) => ({
+      ...form,
+      month: ctrlValue,
+    }));
+    datepicker.close();
+  }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;

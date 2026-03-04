@@ -88,6 +88,7 @@
     "@angular/forms": "21.2.0",
     "@angular/localize": "21.2.0",
     "@angular/material": "21.2.0",
+    "@angular/material-luxon-adapter": "^21.2.0",
     "@angular/platform-browser": "21.2.0",
     "@angular/platform-browser-dynamic": "21.2.0",
     "@angular/platform-server": "21.2.0",

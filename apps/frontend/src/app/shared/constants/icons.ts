@@ -20,4 +20,15 @@ export const ICONS = {
     HYDROGEN_STORAGE: 'propane',
     HYDROGEN_PRODUCTION: 'water_ec',
   },
+  HYDROGEN: {
+    BASE: 'water_ec',
+    RFNBO_READY: 'verified',
+    NON_CERTIFIABLE: 'release_alert',
+  },
+  POWER: {
+    BASE: 'electric_bolt',
+    RENEWABLE: 'nest_eco_leaf',
+    PARTLY_RENEWABLE: 'donut_large',
+    NOT_RENEWABLE: 'oil_barrel',
+  },
 };
