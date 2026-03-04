@@ -6,7 +6,7 @@ x-healthcheck-defaults: &healthcheck-defaults
 
 services:
   postgres:
-    image: postgres:17.7-alpine3.23
+    image: postgres:17.9-alpine
     restart: unless-stopped
     command: ['postgres', '-c', 'log_min_messages=ERROR']
     environment:
@@ -120,7 +120,7 @@ services:
       <<: *healthcheck-defaults
 
   rabbitmq:
-    image: rabbitmq:4.2.3-management-alpine
+    image: rabbitmq:4.2-management-alpine
     restart: unless-stopped
     volumes:
       - './docker/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf'
