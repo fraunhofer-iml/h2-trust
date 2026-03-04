@@ -31,7 +31,7 @@ git --version
 
 === Docker
 
-Docker is required to manage the backing services: PostgreSQL, MinIO, Besu, Keycloak, and RabbitMQ .
+Docker is required to manage the backing services: PostgreSQL, MinIO, Besu, Keycloak, and RabbitMQ.
 
 1. *Visit* https://docs.docker.com/get-docker/[Docker's official installation guide].
 2. *Follow* the installation instructions for your operating system.
