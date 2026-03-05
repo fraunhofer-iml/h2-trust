@@ -6,13 +6,26 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { KeycloakService } from 'keycloak-angular';
+import { AuthGuardData, createAuthGuard } from 'keycloak-angular';
+import Keycloak from 'keycloak-js';
 import { inject } from '@angular/core';
-import { CanActivateFn } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot, UrlTree } from '@angular/router';
 
-export const AUTH_GUARD: CanActivateFn = async () => {
-  const keycloakService: KeycloakService = inject(KeycloakService);
-  const isLoggedIn = keycloakService.isLoggedIn();
-  if (!isLoggedIn) keycloakService.login();
-  return isLoggedIn;
+const isAccessAllowed = async (
+  _route: ActivatedRouteSnapshot,
+  _: RouterStateSnapshot,
+  authData: AuthGuardData,
+): Promise<boolean | UrlTree> => {
+  const { authenticated } = authData;
+  console.log(authenticated);
+
+  const keycloak = inject(Keycloak);
+
+  if (!authenticated) {
+    keycloak.login();
+  }
+
+  return authenticated;
 };
+
+export const canActivateAuth = createAuthGuard<CanActivateFn>(isAccessAllowed);
