@@ -125,7 +125,7 @@ export class ProductionController {
     description: 'Search by production unit name or ID. Omit for all units',
     required: false,
   })
-  readHydrogenProductionsStatisticyByOwner(
+  readHydrogenProductionsStatisticsByOwner(
     @AuthenticatedUser() _authenticatedUser: AuthenticatedKCUser,
     @Query('month') _month: Date,
     @Query('unit') _unit: string,
