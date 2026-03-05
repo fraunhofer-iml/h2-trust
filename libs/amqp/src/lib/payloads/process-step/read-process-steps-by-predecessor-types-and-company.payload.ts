@@ -7,6 +7,7 @@
  */
 
 import { ArrayNotEmpty, IsNotEmpty, IsString } from 'class-validator';
+import { ProductionDataFilter } from './production-data-filter';
 
 export class ReadProcessStepsByPredecessorTypesAndOwnerPayload {
   @IsString({ each: true })
@@ -18,8 +19,11 @@ export class ReadProcessStepsByPredecessorTypesAndOwnerPayload {
   @IsNotEmpty()
   ownerId: string;
 
-  constructor(predecessorProcessTypes: string[], ownerId: string) {
+  filter: ProductionDataFilter;
+
+  constructor(predecessorProcessTypes: string[], ownerId: string, filter: ProductionDataFilter) {
     this.predecessorProcessTypes = predecessorProcessTypes;
     this.ownerId = ownerId;
+    this.filter = filter;
   }
 }

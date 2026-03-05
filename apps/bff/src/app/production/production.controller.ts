@@ -7,9 +7,17 @@
  */
 
 import { AuthenticatedUser } from 'nest-keycloak-connect';
-import { Body, Controller, Get, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+} from '@nestjs/swagger';
 import {
   CreateProductionDto,
   CsvDocumentIntegrityResultDto,
@@ -86,10 +94,34 @@ export class ProductionController {
     description: "Returns a list of all hydrogen productions belonging to the authenticated user's company.",
     type: [ProductionOverviewDto],
   })
+  @ApiQuery({
+    name: 'page',
+    type: Number,
+    description: 'Used to get a specific page of pagination',
+    required: true,
+    example: '1',
+  })
+  @ApiQuery({
+    name: 'hydrogenProductionUnitId',
+    type: String,
+    description: 'Used to filter for a specific hydrogen-production unit',
+    required: false,
+    example: 'production-unit-1',
+  })
+  @ApiQuery({
+    name: 'period',
+    type: Date,
+    description: 'Used to filter for a specific time period, in this case month and year',
+    required: false,
+    example: '2024-09-20T07:55:55.695Z',
+  })
   async readHydrogenProductionsByOwner(
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+    @Query('orderNumber') page: number,
+    @Query('creditorId') hydrogenProductionUnitId: string,
+    @Query('debtorId') period: Date,
   ): Promise<ProductionOverviewDto[]> {
-    return this.service.readHydrogenProductionsByOwner(authenticatedUser.sub);
+    return this.service.readHydrogenProductionsByOwner(authenticatedUser.sub, page, hydrogenProductionUnitId, period);
   }
 
   @Get('csv')

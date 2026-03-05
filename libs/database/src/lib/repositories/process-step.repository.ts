@@ -36,6 +36,9 @@ export class ProcessStepRepository {
   async findProcessStepsByPredecessorTypesAndOwner(
     predecessorProcessTypes: string[],
     ownerId: string,
+    page: number,
+    hydrogenProductionUnitId: string,
+    period: Date,
   ): Promise<ProcessStepEntity[]> {
     const predecessorsFilter =
       Array.isArray(predecessorProcessTypes) && predecessorProcessTypes.length > 0
@@ -50,6 +53,18 @@ export class ProcessStepRepository {
           }
         : {};
 
+    const userFilters =
+      Array.isArray(predecessorProcessTypes) && predecessorProcessTypes.length > 0
+        ? {
+            predecessors: {
+              some: {
+                processStep: {
+                  type: { in: predecessorProcessTypes },
+                },
+              },
+            },
+          }
+        : {};
     return this.prismaService.processStep
       .findMany({
         where: {
