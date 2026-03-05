@@ -7,13 +7,12 @@
  */
 
 import { Module } from '@nestjs/common';
-import { Broker } from '@h2-trust/amqp';
 import { DatabaseModule } from '@h2-trust/database';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
 
 @Module({
-  imports: [DatabaseModule, new Broker().getProcessSvcBroker()],
+  imports: [DatabaseModule],
   controllers: [UnitController],
   providers: [UnitService],
 })

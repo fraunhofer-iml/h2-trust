@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
   BrokerException,
   DigitalProductPassportEntity,
@@ -17,7 +17,7 @@ import {
   ProvenanceEntity,
   RedComplianceEntity,
 } from '@h2-trust/amqp';
-import { BatchType, ProcessType, RfnboType } from '@h2-trust/domain';
+import { ProcessType, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentAssembler } from '../process-step/hydrogenComponent/hydrogen-component.assembler';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { EmissionService } from './proof-of-origin/emission.service';
@@ -30,6 +30,7 @@ import { RedComplianceService } from './red-compliance/red-compliance.service';
 
 @Injectable()
 export class DigitalProductPassportService {
+  private readonly logger = new Logger(DigitalProductPassportService.name);
   constructor(
     private readonly processStepService: ProcessStepService,
     private readonly redComplianceService: RedComplianceService,
@@ -53,24 +54,27 @@ export class DigitalProductPassportService {
     return this.readDigitalProductPassport(processStep);
   }
 
+  async updateRfnboStatus(processStep: ProcessStepEntity): Promise<{ id: string; batchId: string }> {
+    const dpp: DigitalProductPassportEntity = await this.readDigitalProductPassport(processStep);
+    this.logger.debug(`Set RFNBO status of process step ${processStep.id} to ${dpp.rfnboType}`);
+    return this.processStepService.updateRfnboStatus(processStep, dpp.rfnboType);
+  }
+
   private async readDigitalProductPassport(processStep: ProcessStepEntity): Promise<DigitalProductPassportEntity> {
-    const rootHydrogen = await this.findRootHydrogenProcessStep(processStep);
-    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(rootHydrogen);
+    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStep);
     const redCompliance: RedComplianceEntity = await this.redComplianceService.determineRedCompliance(
-      rootHydrogen.id,
+      processStep.id,
       provenance,
     );
 
     const proofOfOrigin: ProofOfOriginSectionEntity[] = [];
-    let hydrogenCompositionsForRootOfProvenance: HydrogenComponentEntity[] = [];
+
+    const hydrogenCompositionsForRootOfProvenance: HydrogenComponentEntity[] = await this.calculateHydrogenComposition(
+      provenance.root,
+    );
 
     //If the process step is neither hydrogen bottling nor transport, then proof of origin should not be calculated.
-    if (
-      rootHydrogen.type == ProcessType.HYDROGEN_BOTTLING ||
-      rootHydrogen.type == ProcessType.HYDROGEN_TRANSPORTATION
-    ) {
-      hydrogenCompositionsForRootOfProvenance = await this.calculateHydrogenComposition(provenance.root);
-
+    if (processStep.type == ProcessType.HYDROGEN_BOTTLING || processStep.type == ProcessType.HYDROGEN_TRANSPORTATION) {
       const hydrogenCompositionsForBottlingOfProvenance: HydrogenComponentEntity[] = provenance.hydrogenBottling
         ? await this.calculateHydrogenComposition(provenance.hydrogenBottling)
         : [];
@@ -127,43 +131,22 @@ export class DigitalProductPassportService {
       await this.emissionService.computeProvenanceEmissions(provenance);
 
     return new DigitalProductPassportEntity(
-      rootHydrogen.id,
-      rootHydrogen.endedAt,
-      rootHydrogen.batch.owner.name ?? '',
-      rootHydrogen.batch.amount ?? 0,
-      rootHydrogen.batch.qualityDetails.color ?? '',
-      rootHydrogen.recordedBy.company.name ?? '',
+      processStep.id,
+      processStep.endedAt,
+      processStep.batch.owner.name ?? '',
+      processStep.batch.amount ?? 0,
+      processStep.batch.qualityDetails.color ?? '',
+      processStep.recordedBy.company.name ?? '',
       hydrogenCompositionsForRootOfProvenance,
-      rootHydrogen.documents ?? [],
+      processStep.documents ?? [],
       redCompliance,
       proofOfSustainability,
       proofOfOrigin,
     );
   }
 
-  /**
-   * If the batch of a process step has a predecessor of type HYDROGEN (i.e. it originated from a previous batch), then this previous batch should be checked for RFNBO instead of the current one.
-   * @param processStep The process step to be examined.
-   * @returns A ProcessStep whose predecessor is not of type HYDROGEN.
-   */
-  private async findRootHydrogenProcessStep(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
-    if (
-      processStep.type == ProcessType.HYDROGEN_PRODUCTION &&
-      processStep.batch.predecessors.length > 0 &&
-      processStep.batch.predecessors[0].type == BatchType.HYDROGEN
-    ) {
-      const predecessor: ProcessStepEntity = await this.processStepService.readProcessStep(
-        processStep.batch.predecessors[0].processStepId,
-      );
-
-      return this.findRootHydrogenProcessStep(predecessor);
-    }
-
-    return processStep;
-  }
-
   async calculateHydrogenComposition(processStep: ProcessStepEntity): Promise<HydrogenComponentEntity[]> {
-    if (processStep.type === ProcessType.HYDROGEN_BOTTLING) {
+    if (processStep.type === ProcessType.HYDROGEN_BOTTLING || processStep.type === ProcessType.HYDROGEN_PRODUCTION) {
       return HydrogenComponentAssembler.assemble(processStep);
     }
 
