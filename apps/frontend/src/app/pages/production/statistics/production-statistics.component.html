@@ -1,11 +1,80 @@
-<div class="flex w-full flex-row gap-2">
-  @for (item of data(); track $index) {
-    <div class="flex w-full grow flex-col rounded-lg p-4" [ngClass]="themes[item.theme].bg">
-      <span class="material-symbols-outlined mb-4 w-fit rounded-full border p-2" [ngClass]="themes[item.theme].icon">
-        {{ item.icon }}
-      </span>
-      <span class="text-base">{{ item.value | unit: item.unit }}</span>
-      <span class="text-xs text-neutral-600">{{ item.label }}</span>
-    </div>
-  }
+<div class="grid w-full grid-cols-7 gap-2">
+  <div class="col-span-4 flex w-full flex-row items-center gap-2 rounded-md bg-white p-2">
+    <app-statistics-card
+      class="grow"
+      [config]="{
+        icon: ICONS.POWER.BASE,
+        value: this.productionQuery.data()?.power?.total,
+        unit: MeasurementUnit.KWH,
+        label: 'Total power used',
+        theme: 'power-total',
+      }"
+    ></app-statistics-card>
+    <app-statistics-card
+      class="grow"
+      [config]="{
+        icon: ICONS.POWER.RENEWABLE,
+        value: this.productionQuery.data()?.power?.renewable,
+        unit: MeasurementUnit.KWH,
+        label: 'Renewable power',
+        theme: 'power-fraction',
+      }"
+    ></app-statistics-card>
+    <div class="h-[80%] w-[1px] bg-neutral-200"></div>
+    <app-statistics-card
+      class="grow"
+      [config]="{
+        icon: ICONS.POWER.PARTLY_RENEWABLE,
+        value: this.productionQuery.data()?.power?.partlyRenewable,
+        unit: MeasurementUnit.KWH,
+        label: 'Partly-renewable power',
+        theme: 'power-fraction',
+      }"
+    ></app-statistics-card>
+    <div class="h-[80%] w-[1px] bg-neutral-200"></div>
+    <app-statistics-card
+      class="grow"
+      [config]="{
+        icon: ICONS.POWER.NOT_RENEWABLE,
+        value: this.productionQuery.data()?.power?.nonRenewable,
+        unit: MeasurementUnit.KWH,
+        label: 'Non-renewable power',
+        theme: 'power-fraction',
+      }"
+    ></app-statistics-card>
+  </div>
+
+  <div class="col-span-3 flex w-full flex-row items-center gap-2 rounded-md bg-white p-2">
+    <app-statistics-card
+      class="grow"
+      [config]="{
+        icon: ICONS.HYDROGEN.BASE,
+        value: this.productionQuery.data()?.hydrogen?.total,
+        unit: MeasurementUnit.KG_H2,
+        label: 'Total hydrogen used',
+        theme: 'hydrogen-total',
+      }"
+    ></app-statistics-card>
+    <app-statistics-card
+      class="grow"
+      [config]="{
+        icon: ICONS.HYDROGEN.RFNBO_READY,
+        value: this.productionQuery.data()?.hydrogen?.rfnboReady,
+        unit: MeasurementUnit.KG_H2,
+        label: 'Hydrogen RFNBO-ready',
+        theme: 'hydrogen-fraction',
+      }"
+    ></app-statistics-card>
+    <div class="h-[80%] w-[1px] bg-neutral-200"></div>
+    <app-statistics-card
+      class="grow"
+      [config]="{
+        icon: ICONS.HYDROGEN.NON_CERTIFIABLE,
+        value: this.productionQuery.data()?.hydrogen?.nonCertifiable,
+        unit: MeasurementUnit.KG_H2,
+        label: 'Non-certifiable Hydrogen',
+        theme: 'hydrogen-fraction',
+      }"
+    ></app-statistics-card>
+  </div>
 </div>
