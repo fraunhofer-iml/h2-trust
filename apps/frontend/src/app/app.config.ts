@@ -21,6 +21,7 @@ import { BottlingService } from './shared/services/bottling/bottling.service';
 import { UnitsService } from './shared/services/units/units.service';
 import { UsersService } from './shared/services/users/users.service';
 import { HydrogenProductionUnitsStore } from './shared/store/hydrogen-production-units.store';
+import { VerificationResultStore } from './shared/store/verification-result.store';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -42,6 +43,7 @@ export const appConfig: ApplicationConfig = {
     UnitsService,
     BottlingService,
     HydrogenProductionUnitsStore,
+    VerificationResultStore,
     { provide: LOCALE_ID, useValue: 'en-GB' },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
