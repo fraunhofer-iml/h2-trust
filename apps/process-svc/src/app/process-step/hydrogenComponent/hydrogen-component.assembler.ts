@@ -17,8 +17,41 @@ import {
 import { BatchType, ProcessType, RfnboType } from '@h2-trust/domain';
 
 export class HydrogenComponentAssembler {
+  /**
+   * Retrieves the batches of the predecessor of a BOTTLING or TRANSPORTATION or the batch of a PRODUCTION. Converts these into HydrogenComponents, then combines them into HydrogenComponents with the same RFNBO status and changes their amount to the proportion of the amount to be filled.
+   * @param processStep The process step whose batch (or whose predecessor batch) is to be returned as grouped HydrogenComponents.
+   * @returns The grouped HydrogenComponents of the process step batch or its predecessors.
+   */
   static assemble(processStep: ProcessStepEntity): HydrogenComponentEntity[] {
-    this.validateProcessStep(processStep);
+    if (!processStep?.batch) {
+      const errorMessage = 'The provided process step is missing (undefined or null) or does not have a batch.';
+      throw Error(errorMessage);
+    }
+
+    let hydrogenComponents: HydrogenComponentEntity[];
+
+    switch (processStep.type) {
+      case ProcessType.HYDROGEN_BOTTLING:
+      case ProcessType.HYDROGEN_TRANSPORTATION:
+        hydrogenComponents = this.assembleForBottlingAndTransportation(processStep);
+        break;
+      case ProcessType.HYDROGEN_PRODUCTION:
+        hydrogenComponents = this.assembleForHydrogenProduction(processStep);
+        break;
+      default: {
+        const errorMessage = `The specified process step ${processStep.id} is neither HYDROGEN_BOTTLING, HYDROGEN_TRANSPORTATION nor HYDROGEN_PRODUCTION, but of type ${processStep.type}`;
+        throw Error(errorMessage);
+      }
+    }
+
+    return hydrogenComponents;
+  }
+
+  private static assembleForBottlingAndTransportation(processStep: ProcessStepEntity): HydrogenComponentEntity[] {
+    if (processStep.batch.predecessors?.length === 0) {
+      const errorMessage = `ProcessStep ${processStep.id} does not have predecessors.`;
+      throw Error(errorMessage);
+    }
 
     const predecessorHydrogenComponents = processStep.batch.predecessors.map(
       HydrogenComponentAssembler.createHydrogenComponentFromBatch,
@@ -27,26 +60,18 @@ export class HydrogenComponentAssembler {
     return HydrogenCompositionUtil.computeHydrogenComposition(predecessorHydrogenComponents, processStep.batch.amount);
   }
 
-  private static validateProcessStep(processStep: ProcessStepEntity): void {
-    if (!processStep) {
-      const errorMessage = 'The provided bottling process step is missing (undefined or null).';
-      throw Error(errorMessage);
-    }
-
-    if (processStep.type != ProcessType.HYDROGEN_BOTTLING && processStep.type != ProcessType.HYDROGEN_TRANSPORTATION) {
-      const errorMessage = `ProcessStep ${processStep.id} should be type ${ProcessType.HYDROGEN_BOTTLING} or ${ProcessType.HYDROGEN_TRANSPORTATION}, but is ${processStep.type}.`;
-      throw Error(errorMessage);
-    }
-
+  private static assembleForHydrogenProduction(processStep: ProcessStepEntity): HydrogenComponentEntity[] {
     if (!processStep.batch) {
       const errorMessage = `ProcessStep ${processStep.id} does not have a batch.`;
       throw Error(errorMessage);
     }
 
-    if (processStep.batch.predecessors?.length === 0) {
-      const errorMessage = `ProcessStep ${processStep.id} does not have predecessors.`;
-      throw Error(errorMessage);
-    }
+    //Since the processStep is a Hydrogen Production its predecessors are WATER and POWER and therefore its batch is the only batch we have to take in account here.
+    const batchHydrogenComponent: HydrogenComponentEntity = HydrogenComponentAssembler.createHydrogenComponentFromBatch(
+      processStep.batch,
+    );
+
+    return HydrogenCompositionUtil.computeHydrogenComposition([batchHydrogenComponent], processStep.batch.amount);
   }
 
   private static createHydrogenComponentFromBatch(batch: BatchEntity): HydrogenComponentEntity {
@@ -59,7 +84,7 @@ export class HydrogenComponentAssembler {
       '',
       batch.qualityDetails?.color,
       batch.amount,
-      batch.rfnboType ?? RfnboType.NOT_SPECIFIED,
+      batch.qualityDetails?.rfnboType ?? RfnboType.NOT_SPECIFIED,
     );
   }
 }

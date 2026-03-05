@@ -22,7 +22,6 @@ export class BatchEntity {
   hydrogenStorageUnit?: HydrogenStorageUnitEntity;
   qualityDetails?: QualityDetailsEntity;
   processStepId?: string;
-  rfnboType?: string;
 
   constructor(
     id: string | undefined,
@@ -35,7 +34,6 @@ export class BatchEntity {
     hydrogenStorageUnit: HydrogenStorageUnitEntity | undefined,
     qualityDetails?: QualityDetailsEntity,
     processStepId?: string,
-    rfnboType?: string,
   ) {
     this.id = id;
     this.active = active;
@@ -47,7 +45,6 @@ export class BatchEntity {
     this.hydrogenStorageUnit = hydrogenStorageUnit;
     this.qualityDetails = qualityDetails;
     this.processStepId = processStepId;
-    this.rfnboType = rfnboType;
   }
 
   static fromDeepDatabase(batch: BatchDeepDbType): BatchEntity {
