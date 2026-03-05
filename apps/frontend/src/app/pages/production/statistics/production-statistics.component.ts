@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, Signal } from '@angular/core';
+import { Component, computed, inject, input, Signal } from '@angular/core';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { ICONS } from '../../../shared/constants/icons';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { ProductionService } from '../../../shared/services/production/production.service';
+import { FilterModel } from '../model/generated-productions-filter.model';
 
 interface StatCardConfig {
   icon: string;
@@ -25,9 +26,11 @@ export class ProductionStatisticsComponent {
 
   productionService = inject(ProductionService);
 
+  filterValue = input.required<FilterModel>();
+
   productionQuery = injectQuery(() => ({
-    queryKey: ['production-statistics'],
-    queryFn: () => this.productionService.getStatistics(),
+    queryKey: ['production-statistics', this.filterValue()],
+    queryFn: () => this.productionService.getStatistics(this.filterValue()),
   }));
 
   data: Signal<StatCardConfig[]> = computed(() => {

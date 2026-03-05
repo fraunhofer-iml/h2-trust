@@ -23,12 +23,8 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ProductionOverviewDto } from '@h2-trust/api';
 import { H2ColorChipComponent } from '../../../layout/color-chip/h2-color-chip.component';
 import { ProductionService } from '../../../shared/services/production/production.service';
+import { FilterModel } from '../model/generated-productions-filter.model';
 import { ProductionStatisticsComponent } from '../statistics/production-statistics.component';
-
-interface FilterModel {
-  unit: string;
-  month: DateTime;
-}
 
 export const H2_TRUST_FORMATS = {
   parse: {
@@ -90,7 +86,7 @@ export class ProductionViewComponent implements AfterViewInit {
 
   filterModel = signal<FilterModel>({
     unit: '',
-    month: DateTime.now(),
+    month: new Date(),
   });
 
   filterForm = form(this.filterModel, (schemaPath) => {
@@ -103,10 +99,15 @@ export class ProductionViewComponent implements AfterViewInit {
     const ctrlValue = DateTime.fromObject({
       month: normalizedMonthAndYear.month,
       year: normalizedMonthAndYear.year,
-    });
+    }).toISO();
+
+    if (!ctrlValue) {
+      return;
+    }
+
     this.filterModel.update((form) => ({
       ...form,
-      month: ctrlValue,
+      month: new Date(ctrlValue),
     }));
     datepicker.close();
   }

@@ -7,7 +7,7 @@
  */
 
 import { firstValueFrom, lastValueFrom } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   AccountingPeriodMatchingResultDto,
@@ -19,6 +19,7 @@ import {
   ProductionOverviewDto,
   ProductionStatisticsDto,
 } from '@h2-trust/api';
+import { FilterModel } from '../../../pages/production/model/generated-productions-filter.model';
 import { API } from '../../constants/api-endpoints';
 
 @Injectable()
@@ -29,8 +30,12 @@ export class ProductionService {
     return lastValueFrom(this.httpClient.get<ProductionOverviewDto[]>(API.PRODUCTION.BASE));
   }
 
-  getStatistics() {
-    return lastValueFrom(this.httpClient.get<ProductionStatisticsDto>(API.PRODUCTION.STATISTICS));
+  getStatistics({ month, unit }: FilterModel) {
+    let params = new HttpParams();
+    params = params.set('month', month.toLocaleDateString());
+    params = params.set('unit', unit);
+
+    return lastValueFrom(this.httpClient.get<ProductionStatisticsDto>(API.PRODUCTION.STATISTICS, { params }));
   }
 
   getUploadedCsvFiles() {

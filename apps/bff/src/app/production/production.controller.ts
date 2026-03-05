@@ -7,9 +7,17 @@
  */
 
 import { AuthenticatedUser } from 'nest-keycloak-connect';
-import { Body, Controller, Get, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+} from '@nestjs/swagger';
 import {
   CreateProductionDto,
   CsvDocumentIntegrityResultDto,
@@ -93,6 +101,7 @@ export class ProductionController {
     return this.service.readHydrogenProductionsByOwner(authenticatedUser.sub);
   }
 
+  // TODO: Calculate statistics and remove mock imlementation (DUHGW-376)
   @Get('/statistics')
   @ApiBearerAuth()
   @ApiOperation({
@@ -104,7 +113,23 @@ export class ProductionController {
       "Returns a list of all statistics for all hydrogen productions for the authenticated user's company inthe selected month for the specified unit.",
     type: [ProductionStatisticsDto],
   })
-  async readHydrogenProductionsStatisticyByOwner(@AuthenticatedUser() _authenticatedUser: AuthenticatedKCUser) {
+  @ApiQuery({
+    name: 'month',
+    type: Date,
+    description:
+      'Statistics period (YYYY-MM-DD). Only year and month are evaluated; day is ignored. Defaults to current month.',
+  })
+  @ApiQuery({
+    name: 'unit',
+    type: String,
+    description: 'Search by production unit name or ID. Omit for all units',
+    required: false,
+  })
+  readHydrogenProductionsStatisticyByOwner(
+    @AuthenticatedUser() _authenticatedUser: AuthenticatedKCUser,
+    @Query('month') _month: Date,
+    @Query('unit') _unit: string,
+  ): ProductionStatisticsDto {
     return {
       hydrogen: {
         total: 351.56,
