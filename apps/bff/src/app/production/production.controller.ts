@@ -106,7 +106,7 @@ export class ProductionController {
   @ApiBearerAuth()
   @ApiOperation({
     description:
-      "Retrieve statistics for all hydrogen productions for the authenticated user's company inthe selected month for the specified unit.",
+      "Retrieve statistics for all hydrogen productions for the authenticated user's company in the selected month for the specified unit.",
   })
   @ApiOkResponse({
     description:
