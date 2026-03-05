@@ -110,7 +110,7 @@ export class ProductionController {
   })
   @ApiOkResponse({
     description:
-      "Returns a list of all statistics for all hydrogen productions for the authenticated user's company inthe selected month for the specified unit.",
+      "Returns a list of all statistics for all hydrogen productions for the authenticated user's company in the selected month for the specified unit.",
     type: [ProductionStatisticsDto],
   })
   @ApiQuery({
