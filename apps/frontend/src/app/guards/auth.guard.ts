@@ -16,10 +16,9 @@ const isAccessAllowed = async (
   _: RouterStateSnapshot,
   authData: AuthGuardData,
 ): Promise<boolean | UrlTree> => {
-  const { authenticated } = authData;
-  console.log(authenticated);
-
   const keycloak = inject(Keycloak);
+
+  const { authenticated } = authData;
 
   if (!authenticated) {
     keycloak.login();
