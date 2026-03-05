@@ -26,7 +26,7 @@ import { ProductionService } from '../../../shared/services/production/productio
 import { FilterModel } from '../model/generated-productions-filter.model';
 import { ProductionStatisticsComponent } from '../statistics/production-statistics.component';
 
-export const H2_TRUST_FORMATS = {
+export const DATE_FORMATS = {
   parse: {
     dateInput: 'MM/yyyy',
   },

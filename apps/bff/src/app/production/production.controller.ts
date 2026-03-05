@@ -106,11 +106,11 @@ export class ProductionController {
   @ApiBearerAuth()
   @ApiOperation({
     description:
-      "Retrieve statistics for all hydrogen productions for the authenticated user's company inthe selected month for the specified unit.",
+      "Retrieve statistics for all hydrogen productions for the authenticated user's company in the selected month for the specified unit.",
   })
   @ApiOkResponse({
     description:
-      "Returns a list of all statistics for all hydrogen productions for the authenticated user's company inthe selected month for the specified unit.",
+      "Returns a list of all statistics for all hydrogen productions for the authenticated user's company in the selected month for the specified unit.",
     type: [ProductionStatisticsDto],
   })
   @ApiQuery({
@@ -125,7 +125,7 @@ export class ProductionController {
     description: 'Search by production unit name or ID. Omit for all units',
     required: false,
   })
-  readHydrogenProductionsStatisticyByOwner(
+  readHydrogenProductionsStatisticsByOwner(
     @AuthenticatedUser() _authenticatedUser: AuthenticatedKCUser,
     @Query('month') _month: Date,
     @Query('unit') _unit: string,
