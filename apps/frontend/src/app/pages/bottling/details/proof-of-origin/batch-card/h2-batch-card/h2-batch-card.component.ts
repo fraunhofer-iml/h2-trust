@@ -10,7 +10,7 @@ import { ProofOfOriginCardComponent } from 'apps/frontend/src/app/layout/proof-o
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { HydrogenBatchDto } from '@h2-trust/api';
-import { MeasurementUnit } from '@h2-trust/domain';
+import { MeasurementUnit, RfnboType } from '@h2-trust/domain';
 import { H2ColorChipComponent } from '../../../../../../layout/color-chip/h2-color-chip.component';
 import { BaseSheetComponent } from '../../../../../../layout/sheet/sheet.component';
 import { PrettyEnumPipe } from '../../../../../../shared/pipes/format-enum.pipe';
@@ -34,5 +34,7 @@ import { BatchEmissionsComponent } from '../batch-emissions/batch-emissions.comp
 })
 export class H2BatchCardComponent {
   protected readonly MeasurementUnit = MeasurementUnit;
+  protected readonly RfnboType = RfnboType;
+
   batch = input.required<HydrogenBatchDto>();
 }

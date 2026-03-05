@@ -6,6 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Signal } from '@angular/core';
+
 export abstract class BaseChipComponent {
   protected readonly defaultChipColor = 'text-neutral-600 bg-neutral-600/20 border-neutral-600/10 rounded-md';
   protected readonly defaultDotColor = 'bg-neutral-600';
@@ -13,6 +15,8 @@ export abstract class BaseChipComponent {
   abstract readonly chipColor: string | undefined;
   abstract readonly dotColor: string | undefined;
   abstract readonly label: string;
+
+  abstract readonly icon: Signal<string>;
 
   get resolvedChipClasses(): string {
     return this.chipColor ?? this.defaultChipColor;
