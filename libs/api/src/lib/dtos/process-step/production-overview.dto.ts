@@ -15,6 +15,7 @@ export class ProductionOverviewDto {
   productionUnit: string;
   producedAmount: number;
   color: string;
+  rfnboType: string;
   powerProducer: string;
   powerConsumed: number;
   storageUnit: string;
@@ -25,6 +26,7 @@ export class ProductionOverviewDto {
     productionUnit: string,
     producedAmount: number,
     color: string,
+    rfnboType: string,
     powerProducer: string,
     powerConsumed: number,
     storageUnit: string,
@@ -34,6 +36,7 @@ export class ProductionOverviewDto {
     this.productionUnit = productionUnit;
     this.producedAmount = producedAmount;
     this.color = color;
+    this.rfnboType = rfnboType;
     this.powerProducer = powerProducer;
     this.powerConsumed = powerConsumed;
     this.storageUnit = storageUnit;
@@ -46,6 +49,7 @@ export class ProductionOverviewDto {
       productionUnit: processStep.executedBy?.name,
       producedAmount: processStep.batch?.amount,
       color: processStep.batch?.qualityDetails?.color,
+      rfnboType: processStep.batch?.qualityDetails?.rfnboType,
       powerProducer: processStep.batch?.predecessors?.[0]?.owner?.name,
       powerConsumed: ProductionOverviewDto.determinePowerConsumed(processStep),
       storageUnit: processStep.batch?.hydrogenStorageUnit?.name,

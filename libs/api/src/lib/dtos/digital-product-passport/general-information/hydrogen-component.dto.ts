@@ -10,11 +10,11 @@ import { HydrogenComponentEntity } from '@h2-trust/amqp';
 
 export class HydrogenComponentDto {
   processId: string | null;
-  rfnboType?: string;
+  rfnboType: string;
   color: string;
   amount: number;
 
-  constructor(processId: string | null, color: string, amount: number, rfnboType?: string) {
+  constructor(processId: string | null, color: string, amount: number, rfnboType: string) {
     this.processId = processId;
     this.rfnboType = rfnboType;
     this.color = color;
@@ -24,6 +24,7 @@ export class HydrogenComponentDto {
   static fromEntity(hydrogenComponentEntity: HydrogenComponentEntity): HydrogenComponentDto {
     return <HydrogenComponentDto>{
       processId: hydrogenComponentEntity.processId,
+      rfnboType: hydrogenComponentEntity.rfnboType,
       color: hydrogenComponentEntity.color,
       amount: hydrogenComponentEntity.amount,
     };

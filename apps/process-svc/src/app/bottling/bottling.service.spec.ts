@@ -97,7 +97,6 @@ describe('BottlingService', () => {
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
           qualityDetails: QualityDetailsEntityFixture.createGreen(),
-          rfnboType: RfnboType.RFNBO_READY,
         }),
       });
 
@@ -137,7 +136,6 @@ describe('BottlingService', () => {
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
           qualityDetails: QualityDetailsEntityFixture.createGreen(),
-          rfnboType: RfnboType.RFNBO_READY,
         }),
       });
 
@@ -199,7 +197,6 @@ describe('BottlingService', () => {
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
           qualityDetails: QualityDetailsEntityFixture.createGreen(),
-          rfnboType: RfnboType.RFNBO_READY,
         }),
       });
 
