@@ -56,7 +56,7 @@ export class DigitalProductPassportService {
 
   async updateRfnboStatus(processStep: ProcessStepEntity): Promise<{ id: string; batchId: string }> {
     const dpp: DigitalProductPassportEntity = await this.readDigitalProductPassport(processStep);
-    this.logger.log(`Set RFNBO status of process step ${processStep.id} to ${dpp.rfnboType}`);
+    this.logger.debug(`Set RFNBO status of process step ${processStep.id} to ${dpp.rfnboType}`);
     return this.processStepService.updateRfnboStatus(processStep, dpp.rfnboType);
   }
 

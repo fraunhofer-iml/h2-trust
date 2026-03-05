@@ -91,9 +91,11 @@ export class ProductionCreationService {
       await this.processStepService.createManyProcessSteps(hydrogenPayload);
 
     // Step 6: Determine and save the RFNBO Type
-    persistedHydrogen.forEach(async (hydrogenProcessStep) => {
-      await this.digitalProductPassportService.updateRfnboStatus(hydrogenProcessStep);
-    });
+    await Promise.all(
+      persistedHydrogen.map((hydrogenProcessStep) =>
+        this.digitalProductPassportService.updateRfnboStatus(hydrogenProcessStep),
+      ),
+    );
 
     return [...persistedPowerAndWater, ...persistedHydrogen];
   }

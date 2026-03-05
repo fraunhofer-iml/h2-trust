@@ -23,21 +23,28 @@ export class HydrogenComponentAssembler {
    * @returns The grouped HydrogenComponents of the process step batch or its predecessors.
    */
   static assemble(processStep: ProcessStepEntity): HydrogenComponentEntity[] {
-    if (!processStep || !processStep.batch) {
-      const errorMessage =
-        'The provided bottling process step is missing (undefined or null) or does not have a batch.';
-      throw Error(errorMessage);
-    } else if (
-      processStep.type == ProcessType.HYDROGEN_BOTTLING ||
-      processStep.type == ProcessType.HYDROGEN_TRANSPORTATION
-    ) {
-      return this.assembleForBottlingAndTransportation(processStep);
-    } else if (processStep.type == ProcessType.HYDROGEN_PRODUCTION) {
-      return this.assembleForHydrogenProduction(processStep);
-    } else {
-      const errorMessage = `The specified process step ${processStep.id} is neither HYDROGEN_BOTTLING, HYDROGEN_TRANSPORTATION nor HYDROGEN_PRODUCTION, but of type ${processStep.type}`;
+    if (!processStep?.batch) {
+      const errorMessage = 'The provided process step is missing (undefined or null) or does not have a batch.';
       throw Error(errorMessage);
     }
+
+    let hydrogenComponents: HydrogenComponentEntity[];
+
+    switch (processStep.type) {
+      case ProcessType.HYDROGEN_BOTTLING:
+      case ProcessType.HYDROGEN_TRANSPORTATION:
+        hydrogenComponents = this.assembleForBottlingAndTransportation(processStep);
+        break;
+      case ProcessType.HYDROGEN_PRODUCTION:
+        hydrogenComponents = this.assembleForHydrogenProduction(processStep);
+        break;
+      default: {
+        const errorMessage = `The specified process step ${processStep.id} is neither HYDROGEN_BOTTLING, HYDROGEN_TRANSPORTATION nor HYDROGEN_PRODUCTION, but of type ${processStep.type}`;
+        throw Error(errorMessage);
+      }
+    }
+
+    return hydrogenComponents;
   }
 
   private static assembleForBottlingAndTransportation(processStep: ProcessStepEntity): HydrogenComponentEntity[] {
@@ -54,11 +61,6 @@ export class HydrogenComponentAssembler {
   }
 
   private static assembleForHydrogenProduction(processStep: ProcessStepEntity): HydrogenComponentEntity[] {
-    if (processStep.type != ProcessType.HYDROGEN_PRODUCTION) {
-      const errorMessage = `The specified process step is not of type HYDROGEN_PRODUCTION, but of type ${processStep.type}`;
-      throw Error(errorMessage);
-    }
-
     if (!processStep.batch) {
       const errorMessage = `ProcessStep ${processStep.id} does not have a batch.`;
       throw Error(errorMessage);
@@ -82,7 +84,7 @@ export class HydrogenComponentAssembler {
       '',
       batch.qualityDetails?.color,
       batch.amount,
-      batch.qualityDetails.rfnboType ?? RfnboType.NOT_SPECIFIED,
+      batch.qualityDetails?.rfnboType ?? RfnboType.NOT_SPECIFIED,
     );
   }
 }

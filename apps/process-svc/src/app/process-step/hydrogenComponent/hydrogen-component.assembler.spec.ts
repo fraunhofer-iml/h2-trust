@@ -94,8 +94,7 @@ describe('HydrogenComponentAssembler', () => {
       // Arrange
       const givenProcessStep = undefined as unknown as ProcessStepEntity;
 
-      const expectedErrorMessage =
-        'The provided bottling process step is missing (undefined or null) or does not have a batch.';
+      const expectedErrorMessage = 'The provided process step is missing (undefined or null) or does not have a batch.';
 
       // Act & Assert
       expect(() => HydrogenComponentAssembler.assemble(givenProcessStep)).toThrow(expectedErrorMessage);

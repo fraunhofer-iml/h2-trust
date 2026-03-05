@@ -17,6 +17,7 @@ import {
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
+import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { ProductionAssembler } from './production.assembler';
 
@@ -29,6 +30,7 @@ export class ProductionFinalizationService {
     private readonly configurationService: ConfigurationService,
     private readonly processStepService: ProcessStepService,
     private readonly stagedProductionRepository: StagedProductionRepository,
+    private readonly digitalProductPassportService: DigitalProductPassportService,
   ) {
     this.productionChunkSize = this.configurationService.getProcessSvcConfiguration().productionChunkSize;
   }
@@ -104,6 +106,13 @@ export class ProductionFinalizationService {
       // Step 5: Persist hydrogen
       const persistedHydrogen: ProcessStepEntity[] = await this.processStepService.createManyProcessSteps(
         new CreateManyProcessStepsPayload(hydrogen),
+      );
+
+      // Step 6: Determine and save the RFNBO Type
+      await Promise.all(
+        persistedHydrogen.map((hydrogenProcessStep) =>
+          this.digitalProductPassportService.updateRfnboStatus(hydrogenProcessStep),
+        ),
       );
 
       persistedProcessSteps.push(...persistedPowerAndWater, ...persistedHydrogen);
