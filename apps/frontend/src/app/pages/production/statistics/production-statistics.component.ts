@@ -89,7 +89,7 @@ export class ProductionStatisticsComponent {
         icon: ICONS.HYDROGEN.NON_CERTIFIABLE,
         value: this.productionQuery.data()?.hydrogen?.nonCertifiable,
         unit: MeasurementUnit.KG_H2,
-        label: 'Non-certifiable Hydrogen',
+        label: 'Non-certifiable hydrogen',
         theme: 'hydrogen-fraction',
       },
     ];
