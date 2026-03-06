@@ -6,8 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './bottling.dto';
-export * from './bottling-overview.dto';
-export * from './production-overview.dto';
-export * from './production-statistics.dto';
-export * from './mocks';
+export interface FilterModel {
+  unit: string;
+  month: Date;
+}
