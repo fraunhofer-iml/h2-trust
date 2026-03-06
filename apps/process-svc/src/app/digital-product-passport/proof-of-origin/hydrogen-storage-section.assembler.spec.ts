@@ -7,31 +7,31 @@
  */
 
 import { ProcessStepEntity, ProofOfOriginHydrogenBatchEntity } from '@h2-trust/amqp';
-import { BatchType, HydrogenColor, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
+import { BatchType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
 import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures/entities';
 import { HydrogenStorageSectionAssembler } from './hydrogen-storage-section.assembler';
 
 describe('HydrogenStorageSectionAssembler', () => {
   describe('assembleSection', () => {
-    it('returns section with classifications grouped by hydrogen color', async () => {
+    it('returns section with classifications grouped by hydrogen rfnbo type', async () => {
       // Arrange
-      const givenGreenHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction({
-        id: 'green-production-1',
+      const givenRfnboReadyHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction({
+        id: 'rfnbo-production-1',
         batch: BatchEntityFixture.createHydrogenBatch({
-          id: 'green-batch-1',
+          id: 'rfnbo-batch-1',
           amount: 10,
           qualityDetails: QualityDetailsEntityFixture.createGreen(),
         }),
       });
-      const givenYellowHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction({
-        id: 'yellow-production-1',
+      const givenNonCertifiableHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction({
+        id: 'non-certifiable-production-1',
         batch: BatchEntityFixture.createHydrogenBatch({
-          id: 'yellow-batch-1',
+          id: 'non-certifiable-batch-1',
           amount: 20,
           qualityDetails: QualityDetailsEntityFixture.createYellow(),
         }),
       });
-      const givenHydrogenProductions = [givenGreenHydrogenProduction, givenYellowHydrogenProduction];
+      const givenHydrogenProductions = [givenRfnboReadyHydrogenProduction, givenNonCertifiableHydrogenProduction];
 
       // Act
       const actualResult = HydrogenStorageSectionAssembler.assembleSection(givenHydrogenProductions);
@@ -41,25 +41,27 @@ describe('HydrogenStorageSectionAssembler', () => {
       expect(actualResult.batches).toEqual([]);
       expect(actualResult.classifications).toHaveLength(2);
 
-      const greenClassification = actualResult.classifications.find((c) => c.name === RfnboType.RFNBO_READY);
-      expect(greenClassification).toBeDefined();
-      expect(greenClassification.classificationType).toBe(BatchType.HYDROGEN);
-      expect(greenClassification.batches).toHaveLength(1);
+      const rfnboReadyClassification = actualResult.classifications.find((c) => c.name === RfnboType.RFNBO_READY);
+      expect(rfnboReadyClassification).toBeDefined();
+      expect(rfnboReadyClassification.classificationType).toBe(BatchType.HYDROGEN);
+      expect(rfnboReadyClassification.batches).toHaveLength(1);
 
-      const greenBatch = greenClassification.batches[0] as ProofOfOriginHydrogenBatchEntity;
-      expect(greenBatch.id).toBe(givenGreenHydrogenProduction.batch.id);
-      expect(greenBatch.amount).toBe(givenGreenHydrogenProduction.batch.amount);
-      expect(greenBatch.emission).toBeDefined();
-      expect(greenBatch.color).toBe(HydrogenColor.GREEN);
+      const rfnboReadyBatch = rfnboReadyClassification.batches[0] as ProofOfOriginHydrogenBatchEntity;
+      expect(rfnboReadyBatch.id).toBe(givenRfnboReadyHydrogenProduction.batch.id);
+      expect(rfnboReadyBatch.amount).toBe(givenRfnboReadyHydrogenProduction.batch.amount);
+      expect(rfnboReadyBatch.emission).toBeDefined();
+      expect(rfnboReadyBatch.rfnboType).toBe(RfnboType.RFNBO_READY);
 
-      const yellowClassification = actualResult.classifications.find((c) => c.name === RfnboType.NON_CERTIFIABLE);
-      expect(yellowClassification).toBeDefined();
-      expect(yellowClassification.batches).toHaveLength(1);
+      const nonCertifiableClassification = actualResult.classifications.find(
+        (c) => c.name === RfnboType.NON_CERTIFIABLE,
+      );
+      expect(nonCertifiableClassification).toBeDefined();
+      expect(nonCertifiableClassification.batches).toHaveLength(1);
 
-      const yellowBatch = yellowClassification.batches[0] as ProofOfOriginHydrogenBatchEntity;
-      expect(yellowBatch.id).toBe(givenYellowHydrogenProduction.batch.id);
-      expect(yellowBatch.amount).toBe(givenYellowHydrogenProduction.batch.amount);
-      expect(yellowBatch.color).toBe(HydrogenColor.YELLOW);
+      const nonCertifiableBatch = nonCertifiableClassification.batches[0] as ProofOfOriginHydrogenBatchEntity;
+      expect(nonCertifiableBatch.id).toBe(givenNonCertifiableHydrogenProduction.batch.id);
+      expect(nonCertifiableBatch.amount).toBe(givenNonCertifiableHydrogenProduction.batch.amount);
+      expect(nonCertifiableBatch.rfnboType).toBe(RfnboType.NON_CERTIFIABLE);
     });
 
     it('returns empty section when no hydrogen productions provided', async () => {
