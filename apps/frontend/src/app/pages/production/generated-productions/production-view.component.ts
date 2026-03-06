@@ -21,7 +21,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ProductionOverviewDto } from '@h2-trust/api';
-import { H2ColorChipComponent } from '../../../layout/color-chip/h2-color-chip.component';
+import { RfnboChipComponent } from '../../../layout/rfnbo-chip/rfnbo-chip.component';
 import { ProductionService } from '../../../shared/services/production/production.service';
 import { FilterModel } from '../model/generated-productions-filter.model';
 import { ProductionStatisticsComponent } from '../statistics/production-statistics.component';
@@ -48,11 +48,11 @@ export const DATE_FORMATS = {
     TitleCasePipe,
     MatButtonModule,
     MatSortModule,
-    H2ColorChipComponent,
     ProductionStatisticsComponent,
     MatInputModule,
     FormField,
     MatDatepickerModule,
+    RfnboChipComponent,
   ],
   providers: [ProductionService, MatFormFieldModule, ReactiveFormsModule, provideLuxonDateAdapter(DATE_FORMATS)],
   templateUrl: './production-view.component.html',
