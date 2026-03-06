@@ -95,11 +95,18 @@ export class ProductionController {
     type: [ProductionOverviewDto],
   })
   @ApiQuery({
-    name: 'page',
+    name: 'pageNumber',
     type: Number,
     description: 'Used to get a specific page of pagination',
-    required: true,
+    required: false,
     example: '1',
+  })
+  @ApiQuery({
+    name: 'pageSize',
+    type: Number,
+    description: 'Used to define the amount of data retrieved',
+    required: false,
+    example: '5',
   })
   @ApiQuery({
     name: 'hydrogenProductionUnitId',
@@ -117,11 +124,18 @@ export class ProductionController {
   })
   async readHydrogenProductionsByOwner(
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
-    @Query('orderNumber') page: number,
-    @Query('creditorId') hydrogenProductionUnitId: string,
-    @Query('debtorId') period: Date,
+    @Query('pageNumber') pageNumber: number,
+    @Query('pageSize') pageSize: number,
+    @Query('hydrogenProductionUnitId') hydrogenProductionUnitId: string,
+    @Query('period') period: Date,
   ): Promise<ProductionOverviewDto[]> {
-    return this.service.readHydrogenProductionsByOwner(authenticatedUser.sub, page, hydrogenProductionUnitId, period);
+    return this.service.readHydrogenProductionsByOwner(
+      authenticatedUser.sub,
+      pageNumber,
+      pageSize,
+      hydrogenProductionUnitId,
+      period,
+    );
   }
 
   @Get('csv')

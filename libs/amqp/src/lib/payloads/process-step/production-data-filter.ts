@@ -1,10 +1,12 @@
 export class ProductionDataFilter {
-  page: number;
-  hydrogenProductionUnitId: string;
-  period: Date;
+  pageNumber?: number;
+  pageSize?: number;
+  hydrogenProductionUnitId?: string;
+  period?: Date;
 
-  constructor(page: number, hydrogenProductionUnitId: string, period: Date) {
-    this.page = page;
+  constructor(pageNumber?: number, pageSize?: number, hydrogenProductionUnitId?: string, period?: Date) {
+    this.pageNumber = pageNumber;
+    this.pageSize = pageSize;
     this.hydrogenProductionUnitId = hydrogenProductionUnitId;
     this.period = period;
   }

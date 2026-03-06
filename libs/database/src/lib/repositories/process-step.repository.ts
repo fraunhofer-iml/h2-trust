@@ -6,6 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { skip } from 'node:test';
+import { take } from 'rxjs';
 import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { ProcessStepEntity } from '@h2-trust/amqp';
@@ -36,10 +38,14 @@ export class ProcessStepRepository {
   async findProcessStepsByPredecessorTypesAndOwner(
     predecessorProcessTypes: string[],
     ownerId: string,
-    page: number,
+    pageNumber: number,
+    pageSize: number,
     hydrogenProductionUnitId: string,
     period: Date,
   ): Promise<ProcessStepEntity[]> {
+    const start = period;
+    const end = new Date(period.getFullYear(), period.getMonth() + 1, 1);
+
     const predecessorsFilter =
       Array.isArray(predecessorProcessTypes) && predecessorProcessTypes.length > 0
         ? {
@@ -53,26 +59,31 @@ export class ProcessStepRepository {
           }
         : {};
 
-    const userFilters =
-      Array.isArray(predecessorProcessTypes) && predecessorProcessTypes.length > 0
+    const paginationFilter =
+      pageNumber && pageSize
         ? {
-            predecessors: {
-              some: {
-                processStep: {
-                  type: { in: predecessorProcessTypes },
-                },
-              },
-            },
+            skip: pageNumber * pageSize,
+            take: pageSize,
           }
         : {};
+    const hydrogenUnitWhereFilter = hydrogenProductionUnitId ? { id: hydrogenProductionUnitId } : {};
+    const periodFilter = period
+      ? {
+          gte: start,
+          lt: end,
+        }
+      : {};
     return this.prismaService.processStep
       .findMany({
         where: {
+          ...paginationFilter,
           batch: {
             ...predecessorsFilter,
           },
+          startedAt: { ...periodFilter },
           executedBy: {
             ownerId: ownerId,
+            ...hydrogenUnitWhereFilter,
           },
         },
         orderBy: {

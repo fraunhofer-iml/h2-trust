@@ -95,7 +95,8 @@ export class ProcessStepService {
     return this.processStepRepository.findProcessStepsByPredecessorTypesAndOwner(
       payload.predecessorProcessTypes,
       payload.ownerId,
-      payload.filter.page,
+      payload.filter.pageNumber,
+      payload.filter.pageSize,
       payload.filter.hydrogenProductionUnitId,
       payload.filter.period,
     );

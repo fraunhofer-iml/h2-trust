@@ -18,7 +18,7 @@ export class ReadProcessStepsByPredecessorTypesAndOwnerPayload {
   @IsString()
   @IsNotEmpty()
   ownerId: string;
-
+  @IsNotEmpty()
   filter: ProductionDataFilter;
 
   constructor(predecessorProcessTypes: string[], ownerId: string, filter: ProductionDataFilter) {
