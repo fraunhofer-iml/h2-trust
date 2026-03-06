@@ -2,18 +2,12 @@ name: Images
 
 on:
   push:
-    branches:
-      - main
     tags:
       - 'v*.*.*'
 
 jobs:
   build-and-push-images:
     runs-on: ubuntu-latest
-    if: >
-      startsWith(github.ref, 'refs/tags/') || (github.ref == 'refs/heads/main' &&
-      !startsWith(github.event.head_commit.message, 'chore'))
-
     permissions:
       contents: read
       packages: write
@@ -28,12 +22,11 @@ jobs:
       - name: Determine Version Tag
         id: vars
         run: |
-          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
-            echo "version=$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
-            echo "frontend_config=production" >> "$GITHUB_OUTPUT"
-          else
-            echo "version=" >> "$GITHUB_OUTPUT"
+          echo "version=$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
+          if [[ "$GITHUB_REF_NAME" =~ -rc\. ]]; then
             echo "frontend_config=staging" >> "$GITHUB_OUTPUT"
+          else
+            echo "frontend_config=production" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Build Artifacts
@@ -61,7 +54,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository }}/bff:latest
-            ${{ steps.vars.outputs.version && format('ghcr.io/{0}/bff:{1}', github.repository, steps.vars.outputs.version) || '' }}
+            ghcr.io/${{ github.repository }}/bff:${{ steps.vars.outputs.version }}
 
       - name: Build & Push frontend
         uses: docker/build-push-action@v6
@@ -72,7 +65,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository }}/frontend:latest
-            ${{ steps.vars.outputs.version && format('ghcr.io/{0}/frontend:{1}', github.repository, steps.vars.outputs.version) || '' }}
+            ghcr.io/${{ github.repository }}/frontend:${{ steps.vars.outputs.version }}
 
       - name: Build & Push general-svc
         uses: docker/build-push-action@v6
@@ -83,7 +76,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository }}/general-svc:latest
-            ${{ steps.vars.outputs.version && format('ghcr.io/{0}/general-svc:{1}', github.repository, steps.vars.outputs.version) || '' }}
+            ghcr.io/${{ github.repository }}/general-svc:${{ steps.vars.outputs.version }}
 
       - name: Build & Push process-svc
         uses: docker/build-push-action@v6
@@ -94,4 +87,4 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository }}/process-svc:latest
-            ${{ steps.vars.outputs.version && format('ghcr.io/{0}/process-svc:{1}', github.repository, steps.vars.outputs.version) || '' }}
+            ghcr.io/${{ github.repository }}/process-svc:${{ steps.vars.outputs.version }}
