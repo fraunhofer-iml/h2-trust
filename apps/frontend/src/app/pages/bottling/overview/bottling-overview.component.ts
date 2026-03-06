@@ -19,7 +19,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { BottlingOverviewDto } from '@h2-trust/api';
-import { H2ColorChipComponent } from '../../../layout/color-chip/h2-color-chip.component';
+import { RfnboChipComponent } from '../../../layout/rfnbo-chip/rfnbo-chip.component';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 
@@ -36,7 +36,7 @@ import { UnitsService } from '../../../shared/services/units/units.service';
     MatDialogModule,
     MatSortModule,
     RouterModule,
-    H2ColorChipComponent,
+    RfnboChipComponent,
   ],
   providers: [BottlingService],
   templateUrl: './bottling-overview.component.html',

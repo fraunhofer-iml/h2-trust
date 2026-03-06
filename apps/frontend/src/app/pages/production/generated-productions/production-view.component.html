@@ -61,7 +61,7 @@
         </ng-container>
         <ng-container matColumnDef="color">
           <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">RFNBO Type</div></th>
-          <td mat-cell *matCellDef="let row"><app-h2-color-chip [h2Color]="row.rfnboType"></app-h2-color-chip></td>
+          <td mat-cell *matCellDef="let row"><app-rfnbo-chip [rfnboType]="row.rfnboType"></app-rfnbo-chip></td>
         </ng-container>
         <ng-container matColumnDef="powerProducer">
           <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Power Producer</div></th>

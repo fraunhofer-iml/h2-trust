@@ -12,7 +12,7 @@ import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { StatCardConfig } from '../model/statistics-card-config.model';
 
 @Component({
-  template: `<div class="flex grow flex-col p-4" [ngClass]="themes[config().theme].bg">
+  template: `<div class="flex flex-col p-4" [ngClass]="themes[config().theme].bg">
     <span class="material-symbols-outlined mb-4 w-fit rounded-full border p-2" [ngClass]="themes[config().theme].icon">
       {{ config().icon }}
     </span>
@@ -31,7 +31,7 @@ export class StatisticsCardComponent {
       icon: 'border-secondary-200 bg-white text-secondary-500',
     },
     'power-fraction': {
-      bg: 'bg-white  ',
+      bg: 'bg-white',
       icon: 'border-secondary-200 bg-secondary-100 text-secondary-500',
     },
     'hydrogen-total': {
@@ -39,8 +39,8 @@ export class StatisticsCardComponent {
       icon: 'border-primary-200 bg-white text-primary-500',
     },
     'hydrogen-fraction': {
-      bg: 'bg-white ',
-      icon: 'border-primary-200 bg-primary-100 text-primary-500',
+      bg: 'bg-white',
+      icon: 'border-primary-200 bg-primary-100 text-primary-500 ',
     },
   };
 }
