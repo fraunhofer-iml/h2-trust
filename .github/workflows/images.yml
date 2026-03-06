@@ -30,12 +30,17 @@ jobs:
         run: |
           if [[ "$GITHUB_REF" == refs/tags/* ]]; then
             echo "version=$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
+            echo "frontend_config=production" >> "$GITHUB_OUTPUT"
           else
             echo "version=" >> "$GITHUB_OUTPUT"
+            echo "frontend_config=staging" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Build Artifacts
-        run: npx nx run-many --all -t build --parallel
+        run: npx nx run-many -t build --projects=bff,general-svc,process-svc --parallel
+
+      - name: Build Frontend
+        run: npx nx run frontend:build --configuration=${{ steps.vars.outputs.frontend_config }} --verbose
 
       - name: Setup Buildx
         uses: docker/setup-buildx-action@v3
