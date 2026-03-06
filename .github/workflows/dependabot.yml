@@ -11,8 +11,8 @@ jobs:
   auto-merge-and-approve:
     runs-on: ubuntu-latest
     if: >
-      github.actor == 'dependabot[bot]' && github.event.pull_request.user.login ==
-      'dependabot[bot]' && github.event.pull_request.head.repo.fork == false
+      github.actor == 'dependabot[bot]' && github.event.pull_request.user.login == 'dependabot[bot]' &&
+      github.event.pull_request.head.repo.fork == false
     steps:
       - name: Fetch Dependabot metadata
         id: metadata
