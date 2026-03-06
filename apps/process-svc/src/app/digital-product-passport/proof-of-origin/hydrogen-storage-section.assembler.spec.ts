@@ -7,7 +7,7 @@
  */
 
 import { ProcessStepEntity, ProofOfOriginHydrogenBatchEntity } from '@h2-trust/amqp';
-import { BatchType, HydrogenColor, ProofOfOrigin } from '@h2-trust/domain';
+import { BatchType, HydrogenColor, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
 import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures/entities';
 import { HydrogenStorageSectionAssembler } from './hydrogen-storage-section.assembler';
 
@@ -41,7 +41,7 @@ describe('HydrogenStorageSectionAssembler', () => {
       expect(actualResult.batches).toEqual([]);
       expect(actualResult.classifications).toHaveLength(2);
 
-      const greenClassification = actualResult.classifications.find((c) => c.name === HydrogenColor.GREEN);
+      const greenClassification = actualResult.classifications.find((c) => c.name === RfnboType.RFNBO_READY);
       expect(greenClassification).toBeDefined();
       expect(greenClassification.classificationType).toBe(BatchType.HYDROGEN);
       expect(greenClassification.batches).toHaveLength(1);
@@ -52,7 +52,7 @@ describe('HydrogenStorageSectionAssembler', () => {
       expect(greenBatch.emission).toBeDefined();
       expect(greenBatch.color).toBe(HydrogenColor.GREEN);
 
-      const yellowClassification = actualResult.classifications.find((c) => c.name === HydrogenColor.YELLOW);
+      const yellowClassification = actualResult.classifications.find((c) => c.name === RfnboType.NON_CERTIFIABLE);
       expect(yellowClassification).toBeDefined();
       expect(yellowClassification.batches).toHaveLength(1);
 
