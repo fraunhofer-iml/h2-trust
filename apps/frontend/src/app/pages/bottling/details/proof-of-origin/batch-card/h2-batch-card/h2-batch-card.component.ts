@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { HydrogenBatchDto } from '@h2-trust/api';
 import { MeasurementUnit, RfnboType } from '@h2-trust/domain';
-import { H2ColorChipComponent } from '../../../../../../layout/color-chip/h2-color-chip.component';
+import { RfnboChipComponent } from '../../../../../../layout/rfnbo-chip/rfnbo-chip.component';
 import { BaseSheetComponent } from '../../../../../../layout/sheet/sheet.component';
 import { PrettyEnumPipe } from '../../../../../../shared/pipes/format-enum.pipe';
 import { UnitPipe } from '../../../../../../shared/pipes/unit.pipe';
@@ -23,7 +23,7 @@ import { BatchEmissionsComponent } from '../batch-emissions/batch-emissions.comp
   imports: [
     CommonModule,
     BaseSheetComponent,
-    H2ColorChipComponent,
+    RfnboChipComponent,
     H2CompositionChartComponent,
     PrettyEnumPipe,
     BatchEmissionsComponent,

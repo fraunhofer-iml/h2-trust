@@ -9,17 +9,24 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 import { RfnboType } from '@h2-trust/domain';
-import { BaseChipComponent } from './base-chip/base-chip.comopnent';
+import { ICONS } from '../../shared/constants/icons';
+import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
 
 @Component({
-  selector: 'app-h2-color-chip',
-  imports: [CommonModule],
-  templateUrl: './base-chip/base-chip.comonent.html',
+  selector: 'app-rfnbo-chip',
+  imports: [CommonModule, PrettyEnumPipe],
+  template: `<div class="flex w-fit min-w-40 flex-row items-center gap-2 rounded-md px-2 py-1" [ngClass]="chipColor">
+    <span class="material-symbols-outlined text-lg" [ngClass]="iconColor"> {{ icon() }} </span>
+    {{ this.normalizedStatus() | prettyEnum | titlecase }}
+  </div>`,
 })
-export class H2ColorChipComponent extends BaseChipComponent {
+export class RfnboChipComponent {
+  protected readonly defaultChipColor = 'text-neutral-600 bg-neutral-600/20 border-neutral-600/10 rounded-md';
+  protected readonly defaultIconColor = 'bg-neutral-600';
+
   rfnboType = input.required<string | boolean>();
 
-  private normalizedStatus = computed((): string => {
+  normalizedStatus = computed((): string => {
     const status = this.rfnboType();
 
     if (typeof status === 'boolean') {
@@ -29,8 +36,10 @@ export class H2ColorChipComponent extends BaseChipComponent {
     return status;
   });
 
-  override icon = computed(() => {
-    return this.normalizedStatus() === RfnboType.NON_CERTIFIABLE ? 'release_alert' : 'editor_choice';
+  icon = computed(() => {
+    return this.normalizedStatus() === RfnboType.NON_CERTIFIABLE
+      ? ICONS.HYDROGEN.NON_CERTIFIABLE
+      : ICONS.HYDROGEN.RFNBO_READY;
   });
 
   private readonly chipColorByRFNBO = new Map([
@@ -46,10 +55,7 @@ export class H2ColorChipComponent extends BaseChipComponent {
   get chipColor(): string | undefined {
     return this.chipColorByRFNBO.get(this.normalizedStatus());
   }
-  get dotColor(): string | undefined {
+  get iconColor(): string | undefined {
     return this.iconColorByRFNBO.get(this.normalizedStatus());
-  }
-  get label(): string {
-    return this.normalizedStatus() ?? 'unknown';
   }
 }
