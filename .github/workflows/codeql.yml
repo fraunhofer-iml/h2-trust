@@ -16,9 +16,6 @@ jobs:
         language: ['javascript']
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v6
-
       - name: Common Setup
         uses: ./.github/actions/common-setup
 
