@@ -15,7 +15,7 @@ import {
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/amqp';
-import { HydrogenColor, ProofOfOrigin } from '@h2-trust/domain';
+import { ProofOfOrigin, RfnboType } from '@h2-trust/domain';
 import { BatchAssembler } from './batch.assembler';
 import { ClassificationAssembler } from './classification.assembler';
 import { EmissionAssembler } from './emission.assembler';
@@ -28,16 +28,16 @@ export class HydrogenStorageSectionAssembler {
 
     const classifications: ProofOfOriginClassificationEntity[] = [];
 
-    for (const hydrogenColor of Object.values(HydrogenColor)) {
-      const hydrogenProductionsByHydrogenColor = hydrogenProductions.filter(
-        (hp) => hp.batch?.qualityDetails?.color === hydrogenColor,
+    for (const rfnboType of Object.values(RfnboType)) {
+      const hydrogenProductionsByRfnboType = hydrogenProductions.filter(
+        (hp) => hp.batch?.qualityDetails?.rfnboType === rfnboType,
       );
 
-      if (hydrogenProductionsByHydrogenColor.length === 0) {
+      if (hydrogenProductionsByRfnboType.length === 0) {
         continue;
       }
 
-      const batchesForHydrogenColor: ProofOfOriginBatchEntity[] = hydrogenProductionsByHydrogenColor.map(
+      const batchesForHydrogenRfnboType: ProofOfOriginBatchEntity[] = hydrogenProductionsByRfnboType.map(
         (hydrogenProduction) => {
           const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
             EmissionAssembler.assembleHydrogenStorage(hydrogenProduction);
@@ -57,8 +57,8 @@ export class HydrogenStorageSectionAssembler {
       );
 
       const classification: ProofOfOriginClassificationEntity = ClassificationAssembler.assembleHydrogen(
-        hydrogenColor,
-        batchesForHydrogenColor,
+        rfnboType,
+        batchesForHydrogenRfnboType,
       );
 
       classifications.push(classification);

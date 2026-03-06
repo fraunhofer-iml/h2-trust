@@ -79,6 +79,7 @@ export class ProofOfOriginHydrogenBatchEntity extends ProofOfOriginBaseBatchEnti
   producer?: string;
   unitId?: string;
   color?: string;
+  rfnboType?: string;
   processStep?: string;
   accountingPeriodEnd?: Date;
 
@@ -91,6 +92,7 @@ export class ProofOfOriginHydrogenBatchEntity extends ProofOfOriginBaseBatchEnti
     producer?: string,
     unitId?: string,
     color?: string,
+    rfnboType?: string,
     processStep?: string,
     accountingPeriodEnd?: Date,
   ) {
@@ -99,6 +101,7 @@ export class ProofOfOriginHydrogenBatchEntity extends ProofOfOriginBaseBatchEnti
     this.producer = producer;
     this.unitId = unitId;
     this.color = color;
+    this.rfnboType = rfnboType;
     this.processStep = processStep;
     this.accountingPeriodEnd = accountingPeriodEnd;
   }

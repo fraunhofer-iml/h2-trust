@@ -114,7 +114,7 @@ export class SectionDto {
       '',
       hydrogenComposition,
       batch.color ?? '',
-      false,
+      batch.rfnboType ?? '',
       batch.processStep ?? '',
       batch.accountingPeriodEnd,
     );
