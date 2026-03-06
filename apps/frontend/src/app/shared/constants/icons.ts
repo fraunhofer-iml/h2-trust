@@ -22,7 +22,7 @@ export const ICONS = {
   },
   HYDROGEN: {
     BASE: 'water_ec',
-    RFNBO_READY: 'verified',
+    RFNBO_READY: 'editor_choice',
     NON_CERTIFIABLE: 'release_alert',
   },
   POWER: {

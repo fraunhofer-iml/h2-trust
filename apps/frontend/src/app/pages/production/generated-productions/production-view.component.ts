@@ -54,7 +54,7 @@ export const DATE_FORMATS = {
     FormField,
     MatDatepickerModule,
   ],
-  providers: [ProductionService, MatFormFieldModule, ReactiveFormsModule, provideLuxonDateAdapter(H2_TRUST_FORMATS)],
+  providers: [ProductionService, MatFormFieldModule, ReactiveFormsModule, provideLuxonDateAdapter(DATE_FORMATS)],
   templateUrl: './production-view.component.html',
 })
 export class ProductionViewComponent implements AfterViewInit {

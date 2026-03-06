@@ -10,7 +10,7 @@ export const BASE_URL = 'http://localhost:3000';
 
 export const environment = {
   production: false,
-  KEYCLOAK_URL: 'http://localhost:8080',
+  KEYCLOAK_URL: 'https://kc.public.apps.blockchain-europe.iml.fraunhofer.de', // 'http://localhost:8080',
   KEYCLOAK_REALM: 'h2-trust',
   KEYCLOAK_CLIENT_ID: 'h2-trust-frontend',
 };
