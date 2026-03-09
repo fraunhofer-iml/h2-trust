@@ -1,6 +1,12 @@
 name: Common Setup
 description: Setup Node.js, install dependencies
 
+inputs:
+  install-smart-contract-deps:
+    description: Install dependencies for libs/blockchain/smart-contract
+    required: false
+    default: 'false'
+
 runs:
   using: composite
   steps:
@@ -21,3 +27,8 @@ runs:
     - name: Install Dependencies
       shell: bash
       run: npm install --no-audit --no-fund --loglevel verbose
+
+    - name: Install Smart Contract Dependencies
+      if: ${{ inputs.install-smart-contract-deps == 'true' }}
+      shell: bash
+      run: npm --prefix libs/blockchain/smart-contract install --no-audit --no-fund --loglevel verbose
