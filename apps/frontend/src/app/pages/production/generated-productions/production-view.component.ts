@@ -21,7 +21,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ProductionOverviewDto } from '@h2-trust/api';
-import { RfnboChipComponent } from '../../../layout/rfnbo-chip/rfnbo-chip.component';
+import { RfnboChipComponent } from '../../../layout/chips/rfnbo-chip.component';
 import { ProductionService } from '../../../shared/services/production/production.service';
 import { FilterModel } from '../model/generated-productions-filter.model';
 import { ProductionStatisticsComponent } from '../statistics/production-statistics.component';
