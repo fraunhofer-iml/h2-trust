@@ -53,7 +53,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build & Push bff
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: docker/nest.dockerfile
@@ -64,7 +64,7 @@ jobs:
             ghcr.io/${{ github.repository }}/bff:${{ steps.release.outputs.version }}
 
       - name: Build & Push frontend
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: docker/angular.dockerfile
@@ -75,7 +75,7 @@ jobs:
             ghcr.io/${{ github.repository }}/frontend:${{ steps.release.outputs.version }}
 
       - name: Build & Push general-svc
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: docker/nest.dockerfile
@@ -86,7 +86,7 @@ jobs:
             ghcr.io/${{ github.repository }}/general-svc:${{ steps.release.outputs.version }}
 
       - name: Build & Push process-svc
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: docker/nest.dockerfile
