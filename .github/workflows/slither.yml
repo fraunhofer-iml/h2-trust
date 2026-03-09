@@ -13,6 +13,7 @@ jobs:
   analyze:
     if: false # Temporarily disable Slither analysis until we can address the current issues
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     permissions:
       contents: read
