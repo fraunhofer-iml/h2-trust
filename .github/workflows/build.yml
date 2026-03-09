@@ -1,0 +1,32 @@
+name: Build
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+
+concurrency:
+  group: build-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Common Setup
+        uses: ./.github/actions/common-setup
+        with:
+          install-smart-contract-deps: 'true'
+
+      - name: Build Backend Services and Frontend
+        run: npx nx run-many -t build --projects=bff,frontend,general-svc,process-svc --parallel
+
+      - name: Build Smart Contract
+        run: npm --prefix libs/blockchain/smart-contract run build
