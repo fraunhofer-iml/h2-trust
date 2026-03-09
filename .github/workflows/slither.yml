@@ -6,7 +6,7 @@ on:
       - 'libs/blockchain/smart-contract/**'
 
 concurrency:
-  group: slither-${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -32,7 +32,7 @@ jobs:
           sarif: results.sarif
           fail-on: none
 
-      - name: Upload SARIF file
+      - name: Upload SARIF File
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: ${{ steps.slither.outputs.sarif }}
