@@ -4,19 +4,19 @@
   "type": "module",
   "scripts": {
     "build": "npx hardhat compile",
-    "clean": "rm -rf ./artifacts ./cache ./typechain",
+    "clean": "rm -rf ./artifacts ./cache ./typechain ./types",
     "deploy-local": "npx hardhat run scripts/deploy.ts --network local",
     "deploy-private": "npx hardhat run scripts/deploy.ts --network private",
     "deploy-public": "npx hardhat run scripts/deploy.ts --network arbitrumSepolia",
     "test": "npx hardhat test"
   },
   "devDependencies": {
-    "@nomicfoundation/hardhat-ethers": "^4.0.5",
+    "@nomicfoundation/hardhat-ethers": "^4.0.6",
     "@nomicfoundation/hardhat-toolbox-mocha-ethers": "^3.0.3",
     "@types/chai": "^4.3.20",
     "@types/chai-as-promised": "^8.0.2",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^22.19.13",
+    "@types/node": "^22.19.15",
     "chai": "^5.3.3",
     "dotenv": "^17.3.1",
     "ethers": "^6.16.0",

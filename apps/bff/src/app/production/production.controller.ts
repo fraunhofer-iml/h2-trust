@@ -25,6 +25,7 @@ import {
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
+  ProductionStatisticsDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/api';
 import { FileUploadKeys } from '@h2-trust/domain';
@@ -136,6 +137,50 @@ export class ProductionController {
       hydrogenProductionUnitId,
       period,
     );
+  }
+
+  // TODO: Calculate statistics and remove mock imlementation (DUHGW-376)
+  @Get('/statistics')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description:
+      "Retrieve statistics for all hydrogen productions for the authenticated user's company in the selected month for the specified unit.",
+  })
+  @ApiOkResponse({
+    description:
+      "Returns a list of all statistics for all hydrogen productions for the authenticated user's company in the selected month for the specified unit.",
+    type: [ProductionStatisticsDto],
+  })
+  @ApiQuery({
+    name: 'month',
+    type: Date,
+    description:
+      'Statistics period (YYYY-MM-DD). Only year and month are evaluated; day is ignored. Defaults to current month.',
+  })
+  @ApiQuery({
+    name: 'unit',
+    type: String,
+    description: 'Search by production unit name or ID. Omit for all units',
+    required: false,
+  })
+  readHydrogenProductionsStatisticsByOwner(
+    @AuthenticatedUser() _authenticatedUser: AuthenticatedKCUser,
+    @Query('month') _month: Date,
+    @Query('unit') _unit: string,
+  ): ProductionStatisticsDto {
+    return {
+      hydrogen: {
+        total: 351.56,
+        nonCertifiable: 151.56,
+        rfnboReady: 200,
+      },
+      power: {
+        nonRenewable: 25.47,
+        partlyRenewable: 10,
+        renewable: 18.154,
+        total: 53.57,
+      },
+    } as ProductionStatisticsDto;
   }
 
   @Get('csv')

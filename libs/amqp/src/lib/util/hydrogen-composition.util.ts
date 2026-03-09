@@ -12,10 +12,18 @@ import { HydrogenComponentEntity } from '../entities';
 import { Util } from './util';
 
 export class HydrogenCompositionUtil {
+  /**
+   * Merges a list of HydrogenComponents, so that all components are grouped together with the same RFNBO type.
+   * Then sets the amount of each grouped HydrogenComponent to an amount value according to the requested bottleAmount.
+   * @param hydrogenComponents The HydrogenComponents, that should be grouped.
+   * @param bottleAmount The requested bottle Amount.
+   * @returns The merged list of HydrogenComponents, where each RFNBO type only exists once.
+   */
   static computeHydrogenComposition(
     hydrogenComponents: HydrogenComponentEntity[],
     bottleAmount: number,
   ): HydrogenComponentEntity[] {
+    //The list of HydrogenComponents merged according to their RFNBO Type
     const mergedHydrogenComponents = hydrogenComponents.reduce<HydrogenComponentEntity[]>(
       HydrogenCompositionUtil.mergeSingleComponent,
       [],
@@ -32,6 +40,12 @@ export class HydrogenCompositionUtil {
     );
   }
 
+  /**
+   * Merges a new HydrogenComponent into a list of HydrogenComponents according to the RFNBO status.
+   * @param combinedComponents The list of combined HydrogenComponents.
+   * @param componentToMerge The new HydrogenComponent that should be added.
+   * @returns The updated list including the new HydrogenComponent.
+   */
   private static mergeSingleComponent(
     combinedComponents: HydrogenComponentEntity[],
     componentToMerge: HydrogenComponentEntity,

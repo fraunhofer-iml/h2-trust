@@ -7,6 +7,7 @@
  */
 
 import { registerAs } from '@nestjs/config';
+import { requireEnv } from '../util';
 
 export const PROCESS_SVC_CONFIGURATION_IDENTIFIER = 'process-svc-configuration';
 
@@ -15,5 +16,5 @@ export interface ProcessSvcConfiguration {
 }
 
 export default registerAs(PROCESS_SVC_CONFIGURATION_IDENTIFIER, () => ({
-  productionChunkSize: parseInt(process.env['PRODUCTION_CHUNK_SIZE'] || '50'),
+  productionChunkSize: parseInt(requireEnv('PRODUCTION_CHUNK_SIZE')),
 }));

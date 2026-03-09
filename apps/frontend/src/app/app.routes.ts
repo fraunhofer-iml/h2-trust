@@ -7,18 +7,18 @@
  */
 
 import { Route } from '@angular/router';
-import { AUTH_GUARD } from './guards/auth.guard';
+import { canActivateAuth } from './guards/auth.guard';
 import { ROUTES } from './shared/constants/routes';
 
 export const appRoutes: Route[] = [
   {
     path: '',
-    canActivate: [AUTH_GUARD],
+    canActivate: [canActivateAuth],
     loadChildren: () => import('./pages/account/routes').then((m) => m.ACCOUNT_ROUTES),
   },
   {
     path: ROUTES.UNITS,
-    canActivate: [AUTH_GUARD],
+    canActivate: [canActivateAuth],
     loadChildren: () => import('./pages/units/routes').then((m) => m.HYDROGEN_ASSETS_ROUTES),
   },
   {
@@ -27,7 +27,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: ROUTES.PRODUCTION,
-    canActivate: [AUTH_GUARD],
+    canActivate: [canActivateAuth],
     loadChildren: () => import('./pages/production/routes').then((m) => m.PRODUCTION_ROUTES),
   },
 ];

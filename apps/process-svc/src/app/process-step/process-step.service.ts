@@ -16,7 +16,7 @@ import {
 } from '@h2-trust/amqp';
 import { ConfigurationService, MinioConfiguration } from '@h2-trust/configuration';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
-import { ProcessType } from '@h2-trust/domain';
+import { ProcessType, RfnboType } from '@h2-trust/domain';
 
 @Injectable()
 export class ProcessStepService {
@@ -25,6 +25,13 @@ export class ProcessStepService {
     private readonly batchRepository: BatchRepository,
     private readonly processStepRepository: ProcessStepRepository,
   ) {}
+
+  async updateRfnboStatus(
+    processStep: ProcessStepEntity,
+    rfnboType: RfnboType,
+  ): Promise<{ id: string; batchId: string }> {
+    return this.batchRepository.setRfnboStatus(processStep.batch.id, rfnboType);
+  }
 
   async createProcessStep(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
     return this.processStepRepository.insertProcessStep(processStep);
