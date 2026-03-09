@@ -217,6 +217,10 @@ describe('ProcessStepService', () => {
       expect(processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner).toHaveBeenCalledWith(
         givenPayload.predecessorProcessTypes,
         givenPayload.ownerId,
+        givenPayload.filter.pageNumber,
+        givenPayload.filter.pageSize,
+        givenPayload.filter.hydrogenProductionUnitId,
+        givenPayload.filter.period,
       );
       expect(actualResult).toEqual(givenProcessSteps);
     });
