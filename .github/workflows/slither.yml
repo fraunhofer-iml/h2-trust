@@ -1,11 +1,15 @@
 name: Slither
 
 on:
+  workflow_dispatch:
   pull_request:
+    paths:
+      - 'libs/blockchain/smart-contract/**'
 
 jobs:
   analyze:
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
       security-events: write
