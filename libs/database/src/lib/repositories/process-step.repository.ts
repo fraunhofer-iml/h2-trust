@@ -6,8 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { skip } from 'node:test';
-import { take } from 'rxjs';
 import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { ProcessStepEntity } from '@h2-trust/amqp';
@@ -43,9 +41,6 @@ export class ProcessStepRepository {
     hydrogenProductionUnitId: string,
     period: Date,
   ): Promise<ProcessStepEntity[]> {
-    const start = period;
-    const end = new Date(period.getFullYear(), period.getMonth() + 1, 1);
-
     const predecessorsFilter =
       Array.isArray(predecessorProcessTypes) && predecessorProcessTypes.length > 0
         ? {
@@ -59,24 +54,18 @@ export class ProcessStepRepository {
           }
         : {};
 
-    const paginationFilter =
-      pageNumber && pageSize
-        ? {
-            skip: pageNumber * pageSize,
-            take: pageSize,
-          }
-        : {};
     const hydrogenUnitWhereFilter = hydrogenProductionUnitId ? { id: hydrogenProductionUnitId } : {};
     const periodFilter = period
       ? {
-          gte: start,
-          lt: end,
+          gte: period,
+          lt: new Date(period.getFullYear(), period.getMonth() + 1, 1),
         }
       : {};
     return this.prismaService.processStep
       .findMany({
+        ...(pageNumber && pageSize ? { skip: (pageNumber - 1) * pageSize, take: pageSize } : {}),
+
         where: {
-          ...paginationFilter,
           batch: {
             ...predecessorsFilter,
           },

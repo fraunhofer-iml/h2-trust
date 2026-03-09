@@ -98,7 +98,7 @@ export class ProcessStepService {
       payload.filter.pageNumber,
       payload.filter.pageSize,
       payload.filter.hydrogenProductionUnitId,
-      payload.filter.period,
+      payload.filter.period ? new Date(payload.filter.period) : payload.filter.period,
     );
   }
 
