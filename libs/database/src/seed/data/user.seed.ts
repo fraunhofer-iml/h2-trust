@@ -17,7 +17,7 @@ export const UserSeed: readonly User[] = Object.freeze([
     companyId: CompanySeed[0].id,
   },
   {
-    id: '6f63a1a9-6cc5-4a7a-98b2-79a0460910f4',
+    id: 'e341b634-8f14-466a-8ae9-de41d07ce707',
     name: 'Hannes Hydrogen',
     email: 'hannes@h2-trust.de',
     companyId: CompanySeed[2].id,
