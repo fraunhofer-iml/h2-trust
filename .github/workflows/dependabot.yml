@@ -10,11 +10,12 @@ permissions:
 jobs:
   auto-merge-and-approve:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: >
       github.actor == 'dependabot[bot]' && github.event.pull_request.user.login == 'dependabot[bot]' &&
       github.event.pull_request.head.repo.fork == false
     steps:
-      - name: Fetch Dependabot metadata
+      - name: Fetch Dependabot Metadata
         id: metadata
         uses: dependabot/fetch-metadata@v2
         with:
@@ -29,7 +30,7 @@ jobs:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Auto-merge patch and minor updates
+      - name: Auto-Merge Patch and Minor Updates
         if: >
           steps.metadata.outputs.update-type == 'version-update:semver-patch' || steps.metadata.outputs.update-type ==
           'version-update:semver-minor'

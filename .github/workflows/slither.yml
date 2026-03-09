@@ -1,0 +1,38 @@
+name: Slither
+
+on:
+  pull_request:
+    paths:
+      - 'libs/blockchain/smart-contract/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    if: false # Temporarily disable Slither analysis until we can address the current issues
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Run Slither
+        id: slither
+        uses: crytic/slither-action@v0.4.2
+        with:
+          node-version: 22
+          target: 'libs/blockchain/smart-contract'
+          sarif: results.sarif
+          fail-on: none
+
+      - name: Upload SARIF File
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: ${{ steps.slither.outputs.sarif }}
