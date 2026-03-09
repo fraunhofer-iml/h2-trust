@@ -5,6 +5,10 @@ on:
     paths:
       - 'libs/blockchain/smart-contract/**'
 
+concurrency:
+  group: slither-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   analyze:
     if: false # Temporarily disable Slither analysis until we can address the current issues
