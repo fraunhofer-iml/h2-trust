@@ -17,6 +17,7 @@ import {
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
+import { PowerProductionClass } from '@h2-trust/domain';
 import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { ProductionAssembler } from './production.assembler';
@@ -44,6 +45,7 @@ export class ProductionFinalizationService {
         stagedProduction.startedAt,
         new Date(new Date(stagedProduction.startedAt).setMinutes(59, 59, 999)),
         stagedProduction.powerProductionUnitId,
+        PowerProductionClass.RENEWABLE,
         stagedProduction.powerAmount,
         stagedProduction.hydrogenProductionUnitId,
         stagedProduction.hydrogenAmount,

@@ -13,14 +13,21 @@ export class QualityDetailsEntity {
   id?: string;
   color: string;
   rfnboType: string;
+  powerProductionClass?: string;
 
-  constructor(id: string | undefined, color: string, rfnboType?: string) {
+  constructor(id: string | undefined, color: string, rfnboType?: string, powerProductionClass?: string) {
     this.id = id;
     this.color = color;
     this.rfnboType = rfnboType ?? RfnboType.NOT_SPECIFIED;
+    this.powerProductionClass = powerProductionClass;
   }
 
   static fromDatabase(qualityDetails: QualityDetailsDbType): QualityDetailsEntity {
-    return new QualityDetailsEntity(qualityDetails.id, qualityDetails.color, qualityDetails.rfnboType);
+    return new QualityDetailsEntity(
+      qualityDetails.id,
+      qualityDetails.color,
+      qualityDetails.rfnboType,
+      qualityDetails.powerProductionClass ?? undefined,
+    );
   }
 }

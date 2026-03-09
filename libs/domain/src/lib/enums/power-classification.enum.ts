@@ -6,7 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './emission-numeric-constants';
-export * from './emission-string-constants';
-export * from './time-constants';
-export * from './grid-mix-constants';
+export enum PowerProductionClass {
+  RENEWABLE = 'RENEWABLE',
+  RENEWABLE_GRID = 'RENEWABLE_GRID',
+  NOT_RENEWABLE_GRID = 'NOT_RENEWABLE_GRID',
+}

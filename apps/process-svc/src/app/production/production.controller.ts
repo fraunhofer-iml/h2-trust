@@ -35,7 +35,7 @@ export class ProductionController {
 
   @MessagePattern(ProductionMessagePatterns.CREATE)
   async createProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
-    return this.productionCreationService.createAndPersistProductions(payload);
+    return this.productionCreationService.createProductions(payload);
   }
 
   @MessagePattern(ProductionMessagePatterns.STAGE)

@@ -7,7 +7,7 @@
  */
 
 import { DigitalProductPassportEntity } from '@h2-trust/amqp';
-import { BatchType } from '@h2-trust/domain';
+import { BatchType, PowerProductionClass } from '@h2-trust/domain';
 import { FileInfoDto } from '../file/file-info.dto';
 import { HydrogenComponentDto } from './general-information/hydrogen-component.dto';
 import { GridEnergyRfnboDto, RenewableEnergyRfnboDto, RfnboBaseDto } from './general-information/rfnbo-compliance.dto';
@@ -66,15 +66,16 @@ export class DigitalProductPassportDto {
 
     const proofOfOrigin = SectionDto.fromEntities(entity.proofOfOrigin);
 
-    const rfnboCompliance = entity.gridPowerUsed
-      ? new GridEnergyRfnboDto(entity.isEmissionReductionAbove70Percent, false, false, false)
-      : new RenewableEnergyRfnboDto(
-          entity.isEmissionReductionAbove70Percent,
-          entity.redCompliance.isGeoCorrelationValid,
-          entity.redCompliance.isTimeCorrelationValid,
-          entity.redCompliance.isAdditionalityFulfilled,
-          entity.redCompliance.financialSupportReceived,
-        );
+    const rfnboCompliance =
+      entity.powerProductionClass == PowerProductionClass.NOT_RENEWABLE_GRID
+        ? new GridEnergyRfnboDto(entity.isEmissionReductionAbove70Percent, false, false, false)
+        : new RenewableEnergyRfnboDto(
+            entity.isEmissionReductionAbove70Percent,
+            entity.redCompliance.isGeoCorrelationValid,
+            entity.redCompliance.isTimeCorrelationValid,
+            entity.redCompliance.isAdditionalityFulfilled,
+            entity.redCompliance.financialSupportReceived,
+          );
 
     return new DigitalProductPassportDto(
       entity.id,

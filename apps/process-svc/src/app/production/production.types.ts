@@ -22,6 +22,7 @@ export interface BatchParams {
   owner: string;
   quality?: string;
   hydrogenStorageUnitId?: string;
+  powerProductionClass?: string;
 }
 
 export interface ProcessStepParams {

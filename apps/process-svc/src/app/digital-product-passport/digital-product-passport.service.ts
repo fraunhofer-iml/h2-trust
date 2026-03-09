@@ -17,7 +17,7 @@ import {
   ProvenanceEntity,
   RedComplianceEntity,
 } from '@h2-trust/amqp';
-import { ProcessType, RfnboType } from '@h2-trust/domain';
+import { PowerProductionClass, ProcessType, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentAssembler } from '../process-step/hydrogenComponent/hydrogen-component.assembler';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { EmissionService } from './proof-of-origin/emission.service';
@@ -66,6 +66,8 @@ export class DigitalProductPassportService {
       processStep.id,
       provenance,
     );
+    const powerProductionClass: PowerProductionClass =
+      DigitalProductPassportService.getPowerProductionClass(provenance);
 
     const proofOfOrigin: ProofOfOriginSectionEntity[] = [];
 
@@ -142,7 +144,27 @@ export class DigitalProductPassportService {
       redCompliance,
       proofOfSustainability,
       proofOfOrigin,
+      powerProductionClass,
     );
+  }
+
+  private static getPowerProductionClass(provenance: ProvenanceEntity): PowerProductionClass {
+    const nonRenewablePowerProductionExits: boolean = provenance.powerProductions
+      .map((powerProductions) => powerProductions.batch?.qualityDetails?.powerClass)
+      .some((powerClassification) => powerClassification == PowerProductionClass.NOT_RENEWABLE_GRID);
+    const renewablePowerProductionExits: boolean = provenance.powerProductions
+      .map((powerProductions) => powerProductions.batch?.qualityDetails?.powerClass)
+      .some((powerClassification) => powerClassification == PowerProductionClass.RENEWABLE);
+
+    if (nonRenewablePowerProductionExits) {
+      return PowerProductionClass.NOT_RENEWABLE_GRID;
+    }
+
+    if (renewablePowerProductionExits) {
+      return PowerProductionClass.RENEWABLE_GRID;
+    }
+
+    return PowerProductionClass.RENEWABLE;
   }
 
   async calculateHydrogenComposition(processStep: ProcessStepEntity): Promise<HydrogenComponentEntity[]> {

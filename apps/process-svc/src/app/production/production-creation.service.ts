@@ -23,6 +23,7 @@ import {
 import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { ProductionAssembler } from './production.assembler';
+import { ProductionUtils } from './utils/production.utils';
 
 @Injectable()
 export class ProductionCreationService {
@@ -32,8 +33,7 @@ export class ProductionCreationService {
     private readonly digitalProductPassportService: DigitalProductPassportService,
   ) {}
 
-  // TODO-MP: almost identical method exists in ProductionImportService - refactor to avoid code duplication
-  async createAndPersistProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
+  async createProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
     const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
       this.generalSvc.send(UnitMessagePatterns.READ, new ReadByIdPayload(payload.powerProductionUnitId)),
     );
@@ -41,25 +41,25 @@ export class ProductionCreationService {
     const hydrogenProductionUnit: HydrogenProductionUnitEntity = await firstValueFrom(
       this.generalSvc.send(UnitMessagePatterns.READ, new ReadByIdPayload(payload.hydrogenProductionUnitId)),
     );
-
-    const entity: CreateProductionEntity = new CreateProductionEntity(
-      payload.productionStartedAt,
-      payload.productionEndedAt,
-      payload.powerProductionUnitId,
-      payload.powerAmountKwh,
-      payload.hydrogenProductionUnitId,
-      payload.hydrogenAmountKg,
-      payload.userId,
-      powerProductionUnit.type.hydrogenColor,
-      payload.hydrogenStorageUnitId,
-      powerProductionUnit.owner.id,
-      hydrogenProductionUnit.owner.id,
-      hydrogenProductionUnit.waterConsumptionLitersPerHour,
+    const createProductionEntities: CreateProductionEntity[] = ProductionUtils.splitGridPowerProduction(
+      payload,
+      powerProductionUnit,
+      hydrogenProductionUnit,
     );
 
+    const createdProcessSteps = await Promise.all(
+      createProductionEntities.map((createProductionEntity) =>
+        this.createAndPersistProductions(createProductionEntity),
+      ),
+    );
+    return createdProcessSteps.flat();
+  }
+
+  // TODO-MP: almost identical method exists in ProductionImportService - refactor to avoid code duplication
+  async createAndPersistProductions(createProductionEntity: CreateProductionEntity): Promise<ProcessStepEntity[]> {
     // Step 1: Create power and water
-    const power: ProcessStepEntity[] = ProductionAssembler.assemblePowerProductions(entity);
-    const water: ProcessStepEntity[] = ProductionAssembler.assembleWaterConsumptions(entity);
+    const power: ProcessStepEntity[] = ProductionAssembler.assemblePowerProductions(createProductionEntity);
+    const water: ProcessStepEntity[] = ProductionAssembler.assembleWaterConsumptions(createProductionEntity);
 
     if (power.length !== water.length) {
       throw new Error(
@@ -79,7 +79,7 @@ export class ProductionCreationService {
 
     // Step 4: Create hydrogen with persisted predecessors
     const hydrogen: ProcessStepEntity[] = ProductionAssembler.assembleHydrogenProductions(
-      entity,
+      createProductionEntity,
       persistedPower,
       persistedWater,
     );

@@ -9,7 +9,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { ProcessStepEntity } from '@h2-trust/amqp';
-import { BatchType } from '@h2-trust/domain';
+//import { BatchType } from '@h2-trust/domain';
 import { buildProcessStepCreateInput } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 import { processStepDeepQueryArgs } from '../query-args';
@@ -133,10 +133,8 @@ export class ProcessStepRepository {
       const persistedProcessSteps: ProcessStepEntity[] = [];
 
       if (processStepsWithoutPredecessors.length > 0) {
-        const persistedProcessStepsWithoutPredecessors: ProcessStepEntity[] = await this.persistProcessStepsInBulk(
-          tx,
-          processStepsWithoutPredecessors,
-        );
+        const persistedProcessStepsWithoutPredecessors: ProcessStepEntity[] =
+          await this.persistProcessStepsIndividually(tx, processStepsWithoutPredecessors);
         persistedProcessSteps.push(...persistedProcessStepsWithoutPredecessors);
       }
 
@@ -149,7 +147,7 @@ export class ProcessStepRepository {
       return persistedProcessSteps;
     });
   }
-
+  /*
   private async persistProcessStepsInBulk(
     tx: Prisma.TransactionClient,
     processSteps: ProcessStepEntity[],
@@ -197,7 +195,7 @@ export class ProcessStepRepository {
 
     return fetchedProcessSteps.map(ProcessStepEntity.fromDeepDatabase);
   }
-
+*/
   private async persistProcessStepsIndividually(
     tx: Prisma.TransactionClient,
     processSteps: ProcessStepEntity[],
@@ -205,8 +203,9 @@ export class ProcessStepRepository {
     const persistedProcessSteps: ProcessStepEntity[] = [];
 
     for (const processStep of processSteps) {
-      this.logger.debug(`Inserting 1 process step with type [${processStep.type}] individually.`);
-
+      this.logger.debug(
+        `Inserting 1 process step with type [${processStep.type}] individually with POWER CLASSIFICATION ${processStep.batch?.qualityDetails?.powerProductionClass}.`,
+      );
       const persistedProcessStep = await tx.processStep.create({
         data: buildProcessStepCreateInput(processStep),
         ...processStepDeepQueryArgs,
