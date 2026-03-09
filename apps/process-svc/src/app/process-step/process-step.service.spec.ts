@@ -9,6 +9,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   CreateManyProcessStepsPayload,
+  ProductionDataFilter,
   ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
@@ -203,6 +204,7 @@ describe('ProcessStepService', () => {
       const givenPayload = new ReadProcessStepsByPredecessorTypesAndOwnerPayload(
         [ProcessType.HYDROGEN_PRODUCTION],
         'company-1',
+        new ProductionDataFilter(),
       );
       const givenProcessSteps = [ProcessStepEntityFixture.createHydrogenBottling()];
 
