@@ -34,6 +34,6 @@ export class PowerBatchDto extends BatchDto {
     this.energySource = energySource;
     this.accountingPeriodEnd = accountingPeriodEnd;
     // TODO: replace with actual value (DUHGW-266)
-    this.powerType = PowerType.RENEWABLE;
+    this.powerType = PowerType.PARTLY_RENEWABLE;
   }
 }

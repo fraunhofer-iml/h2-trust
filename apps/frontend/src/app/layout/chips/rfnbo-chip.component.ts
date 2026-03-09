@@ -43,7 +43,7 @@ export class RfnboChipComponent {
   });
 
   private readonly chipColorByRFNBO = new Map([
-    ['RFNBO_READY', 'bg-secondary-100 text-secondary-600 border-secondary-200'],
+    ['RFNBO_READY', 'bg-secondary-100/60 text-secondary-600 border-secondary-100'],
     ['NON_CERTIFIABLE', 'text-neutral-600 bg-neutral-100 border-neutral-200'],
   ]);
 
