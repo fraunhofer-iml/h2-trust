@@ -30,8 +30,10 @@ jobs:
           echo "version=$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
           if [[ "$GITHUB_REF_NAME" =~ -rc\. ]]; then
             echo "frontend_config=staging" >> "$GITHUB_OUTPUT"
+            echo "push_latest=false" >> "$GITHUB_OUTPUT"
           else
             echo "frontend_config=production" >> "$GITHUB_OUTPUT"
+            echo "push_latest=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Build Artifacts
@@ -58,7 +60,7 @@ jobs:
           build-args: APP=bff
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/bff:latest
+            ${{ steps.vars.outputs.push_latest == 'true' && format('ghcr.io/{0}/bff:latest', github.repository) || '' }}
             ghcr.io/${{ github.repository }}/bff:${{ steps.vars.outputs.version }}
 
       - name: Build & Push frontend
@@ -69,7 +71,7 @@ jobs:
           build-args: APP=frontend
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/frontend:latest
+            ${{ steps.vars.outputs.push_latest == 'true' && format('ghcr.io/{0}/frontend:latest', github.repository) || '' }}
             ghcr.io/${{ github.repository }}/frontend:${{ steps.vars.outputs.version }}
 
       - name: Build & Push general-svc
@@ -80,7 +82,7 @@ jobs:
           build-args: APP=general-svc
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/general-svc:latest
+            ${{ steps.vars.outputs.push_latest == 'true' && format('ghcr.io/{0}/general-svc:latest', github.repository) || '' }}
             ghcr.io/${{ github.repository }}/general-svc:${{ steps.vars.outputs.version }}
 
       - name: Build & Push process-svc
@@ -91,5 +93,5 @@ jobs:
           build-args: APP=process-svc
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/process-svc:latest
+            ${{ steps.vars.outputs.push_latest == 'true' && format('ghcr.io/{0}/process-svc:latest', github.repository) || '' }}
             ghcr.io/${{ github.repository }}/process-svc:${{ steps.vars.outputs.version }}
