@@ -22,7 +22,7 @@ jobs:
         id: slither
         uses: crytic/slither-action@v0.4.2
         with:
-          node-version: 24
+          node-version: 22
           target: 'libs/blockchain/smart-contract'
           sarif: results.sarif
           fail-on: none
