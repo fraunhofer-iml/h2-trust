@@ -63,14 +63,25 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">RFNBO Type</div></th>
           <td mat-cell *matCellDef="let row"><app-rfnbo-chip [rfnboType]="row.rfnboType"></app-rfnbo-chip></td>
         </ng-container>
-        <ng-container matColumnDef="powerProducer">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Power Producer</div></th>
-          <td mat-cell *matCellDef="let row">{{ row.powerProducer }}</td>
+
+        <ng-container matColumnDef="powerProductionUnit">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Power Production Unit</div></th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.powerProductionUnit }}
+            <p class="text-sm text-neutral-500">{{ row.powerProducer }}</p>
+          </td>
         </ng-container>
         <ng-container matColumnDef="powerConsumed">
           <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Power Consumed (kWh)</div></th>
-          <td mat-cell *matCellDef="let row">{{ row.powerConsumed | number }}</td> </ng-container
-        ><ng-container matColumnDef="storageUnit">
+          <td mat-cell *matCellDef="let row">{{ row.powerConsumed | number }}</td>
+        </ng-container>
+        <ng-container matColumnDef="powerType">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Power Type</div></th>
+          <td mat-cell *matCellDef="let row">
+            <app-power-type-chip [powerType]="row.powerType"></app-power-type-chip>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="storageUnit">
           <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Hydrogen Storage Unit</div></th>
           <td mat-cell *matCellDef="let row">{{ row.storageUnit }}</td>
         </ng-container>
