@@ -18,6 +18,7 @@ export class ReadProcessStepsByPredecessorTypesAndOwnerPayload {
   @IsString()
   @IsNotEmpty()
   ownerId: string;
+
   @IsNotEmpty()
   filter: ProductionDataFilter;
 

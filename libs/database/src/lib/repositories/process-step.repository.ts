@@ -54,8 +54,8 @@ export class ProcessStepRepository {
           }
         : {};
 
-    const hydrogenUnitWhereFilter = hydrogenProductionUnitId ? { id: hydrogenProductionUnitId } : {};
-    const periodFilter = period
+    const hydrogenUnitWhereInput = hydrogenProductionUnitId ? { id: hydrogenProductionUnitId } : {};
+    const periodWhereInput = period
       ? {
           gte: period,
           lt: new Date(period.getFullYear(), period.getMonth() + 1, 1),
@@ -69,10 +69,10 @@ export class ProcessStepRepository {
           batch: {
             ...predecessorsFilter,
           },
-          startedAt: { ...periodFilter },
+          startedAt: { ...periodWhereInput },
           executedBy: {
             ownerId: ownerId,
-            ...hydrogenUnitWhereFilter,
+            ...hydrogenUnitWhereInput,
           },
         },
         orderBy: {

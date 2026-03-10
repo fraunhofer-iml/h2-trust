@@ -75,7 +75,7 @@ export class ProductionService {
     userId: string,
     pageNumber?: number,
     pageSize?: number,
-    hydrogenProductionUnit?: string,
+    hydrogenProductionUnitId?: string,
     period?: Date,
   ): Promise<ProductionOverviewDto[]> {
     const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
@@ -84,7 +84,7 @@ export class ProductionService {
     const payload = new ReadProcessStepsByPredecessorTypesAndOwnerPayload(
       [ProcessType.POWER_PRODUCTION],
       ownerId,
-      new ProductionDataFilter(pageNumber, pageSize, hydrogenProductionUnit, period),
+      new ProductionDataFilter(pageNumber, pageSize, hydrogenProductionUnitId, period),
     );
 
     const productions: ProcessStepEntity[] = await firstValueFrom(

@@ -6,10 +6,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { IsDate, IsNumber, IsString } from 'class-validator';
+
 export class ProductionDataFilter {
+  @IsNumber()
   pageNumber?: number;
+
+  @IsNumber()
   pageSize?: number;
+
+  @IsString()
   hydrogenProductionUnitId?: string;
+
+  @IsDate()
   period?: Date;
 
   constructor(pageNumber?: number, pageSize?: number, hydrogenProductionUnitId?: string, period?: Date) {
