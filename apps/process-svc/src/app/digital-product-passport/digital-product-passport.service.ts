@@ -150,10 +150,16 @@ export class DigitalProductPassportService {
 
   private static getPowerProductionClass(provenance: ProvenanceEntity): PowerProductionClass {
     const nonRenewablePowerProductionExits: boolean = provenance.powerProductions
-      .map((powerProductions) => powerProductions.batch?.qualityDetails?.powerProductionClass)
+      .map(
+        (powerProductions) =>
+          powerProductions.batch?.qualityDetails?.powerProductionClass ?? PowerProductionClass.NOT_SPECIFIED,
+      )
       .some((powerClassification) => powerClassification == PowerProductionClass.NOT_RENEWABLE_GRID);
     const renewablePowerProductionExits: boolean = provenance.powerProductions
-      .map((powerProductions) => powerProductions.batch?.qualityDetails?.powerProductionClass)
+      .map(
+        (powerProductions) =>
+          powerProductions.batch?.qualityDetails?.powerProductionClass ?? PowerProductionClass.NOT_SPECIFIED,
+      )
       .some((powerClassification) => powerClassification == PowerProductionClass.RENEWABLE);
 
     if (nonRenewablePowerProductionExits) {

@@ -7,7 +7,7 @@
  */
 
 import { QualityDetailsDbType } from '@h2-trust/database';
-import { RfnboType } from '@h2-trust/domain';
+import { PowerProductionClass, RfnboType } from '@h2-trust/domain';
 
 export class QualityDetailsEntity {
   id?: string;
@@ -19,7 +19,7 @@ export class QualityDetailsEntity {
     this.id = id;
     this.color = color;
     this.rfnboType = rfnboType ?? RfnboType.NOT_SPECIFIED;
-    this.powerProductionClass = powerProductionClass;
+    this.powerProductionClass = powerProductionClass ?? PowerProductionClass.NOT_SPECIFIED;
   }
 
   static fromDatabase(qualityDetails: QualityDetailsDbType): QualityDetailsEntity {
@@ -27,7 +27,7 @@ export class QualityDetailsEntity {
       qualityDetails.id,
       qualityDetails.color,
       qualityDetails.rfnboType,
-      qualityDetails.powerProductionClass ?? undefined,
+      qualityDetails.powerProductionClass ?? PowerProductionClass.NOT_SPECIFIED,
     );
   }
 }

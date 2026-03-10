@@ -17,7 +17,7 @@ import {
   QualityDetailsEntity,
   UserEntity,
 } from '@h2-trust/amqp';
-import { BatchType, HydrogenColor, ProcessType, RfnboType } from '@h2-trust/domain';
+import { BatchType, HydrogenColor, PowerProductionClass, ProcessType, RfnboType } from '@h2-trust/domain';
 import { DateTimeUtil } from '@h2-trust/utils';
 import { AccountingPeriod, ProcessStepParams } from './production.types';
 import { ProductionUtils } from './utils/production.utils';
@@ -83,6 +83,8 @@ export class ProductionAssembler {
         owner: entity.ownerIdOfHydrogenProductionUnit,
         quality: entity.hydrogenColor,
         hydrogenStorageUnitId: entity.hydrogenStorageUnitId,
+        powerProductionClass:
+          powerProductions[0]?.batch?.qualityDetails?.powerProductionClass ?? PowerProductionClass.NOT_SPECIFIED,
       },
     };
 

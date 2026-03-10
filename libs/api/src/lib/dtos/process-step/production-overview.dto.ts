@@ -7,7 +7,7 @@
  */
 
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
-import { BatchType } from '@h2-trust/domain';
+import { BatchType, PowerProductionClass } from '@h2-trust/domain';
 
 export class ProductionOverviewDto {
   startedAt: string;
@@ -19,6 +19,7 @@ export class ProductionOverviewDto {
   powerProducer: string;
   powerConsumed: number;
   storageUnit: string;
+  powerProductionClass: string;
 
   constructor(
     startedAt: string,
@@ -30,6 +31,7 @@ export class ProductionOverviewDto {
     powerProducer: string,
     powerConsumed: number,
     storageUnit: string,
+    powerProductionClass: string,
   ) {
     this.startedAt = startedAt;
     this.endedAt = endedAt;
@@ -40,6 +42,7 @@ export class ProductionOverviewDto {
     this.powerProducer = powerProducer;
     this.powerConsumed = powerConsumed;
     this.storageUnit = storageUnit;
+    this.powerProductionClass = powerProductionClass;
   }
 
   static fromEntity(processStep: ProcessStepEntity): ProductionOverviewDto {
@@ -53,6 +56,8 @@ export class ProductionOverviewDto {
       powerProducer: processStep.batch?.predecessors?.[0]?.owner?.name,
       powerConsumed: ProductionOverviewDto.determinePowerConsumed(processStep),
       storageUnit: processStep.batch?.hydrogenStorageUnit?.name,
+      powerProductionClass:
+        processStep.batch?.qualityDetails?.powerProductionClass ?? PowerProductionClass.NOT_SPECIFIED,
     };
   }
 
