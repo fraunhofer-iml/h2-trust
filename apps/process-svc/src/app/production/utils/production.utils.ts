@@ -6,15 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { BatchEntity, CreateProductionEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import {
-  BatchEntity,
-  CreateProductionEntity,
-  CreateProductionsPayload,
-  HydrogenProductionUnitEntity,
-  PowerProductionUnitEntity,
-  ProcessStepEntity,
-} from '@h2-trust/amqp';
-import { EnergySource, PowerProductionClass, RenewableShareInGridMix, TimeInSeconds } from '@h2-trust/domain';
+  EnergySource,
+  HydrogenColor,
+  PowerProductionClass,
+  RenewableShareInGridMix,
+  TimeInSeconds,
+} from '@h2-trust/domain';
 import { DateTimeUtil } from '@h2-trust/utils';
 import { AccountingPeriod } from '../production.types';
 
@@ -184,65 +183,48 @@ export class ProductionUtils {
    * @returns In the Grid Electricity case, a list of the productions to be created for the two electricity options is returned. In the case of renewable electricity, nothing is done and the original payload is returned.
    */
   static splitGridPowerProduction(
-    createProductionsPayload: CreateProductionsPayload,
-    powerProductionUnit: PowerProductionUnitEntity,
-    hydrogenProductionUnit: HydrogenProductionUnitEntity,
+    createProductionsEntity: CreateProductionEntity,
+    powerProductionUnitEnergySource: EnergySource,
   ): CreateProductionEntity[] {
-    if (powerProductionUnit.type.energySource != EnergySource.GRID) {
-      return [
-        new CreateProductionEntity(
-          createProductionsPayload.productionStartedAt,
-          createProductionsPayload.productionEndedAt,
-          createProductionsPayload.powerProductionUnitId,
-          PowerProductionClass.RENEWABLE,
-          createProductionsPayload.powerAmountKwh,
-          createProductionsPayload.hydrogenProductionUnitId,
-          createProductionsPayload.hydrogenAmountKg,
-          createProductionsPayload.userId,
-          powerProductionUnit.type.hydrogenColor,
-          createProductionsPayload.hydrogenStorageUnitId,
-          powerProductionUnit.owner.id,
-          hydrogenProductionUnit.owner.id,
-          hydrogenProductionUnit.waterConsumptionLitersPerHour,
-        ),
-      ];
+    if (powerProductionUnitEnergySource != EnergySource.GRID) {
+      return [createProductionsEntity];
     }
 
-    const renewablePowerAmountKwh = (createProductionsPayload.powerAmountKwh * RenewableShareInGridMix.DE) / 100;
-    const renewableHydrogenAmountKg = (createProductionsPayload.hydrogenAmountKg * RenewableShareInGridMix.DE) / 100;
+    const renewablePowerAmountKwh = (createProductionsEntity.powerAmountKwh * RenewableShareInGridMix.DE) / 100;
+    const renewableHydrogenAmountKg = (createProductionsEntity.hydrogenAmountKg * RenewableShareInGridMix.DE) / 100;
     const renewableWaterConsumption =
-      (hydrogenProductionUnit.waterConsumptionLitersPerHour * RenewableShareInGridMix.DE) / 100;
+      (createProductionsEntity.waterConsumptionLitersPerHour * RenewableShareInGridMix.DE) / 100;
 
     const renewableCreateProductionEntity: CreateProductionEntity = new CreateProductionEntity(
-      createProductionsPayload.productionStartedAt,
-      createProductionsPayload.productionEndedAt,
-      createProductionsPayload.powerProductionUnitId,
+      createProductionsEntity.productionStartedAt,
+      createProductionsEntity.productionEndedAt,
+      createProductionsEntity.powerProductionUnitId,
       PowerProductionClass.RENEWABLE_GRID,
       renewablePowerAmountKwh,
-      createProductionsPayload.hydrogenProductionUnitId,
+      createProductionsEntity.hydrogenProductionUnitId,
       renewableHydrogenAmountKg,
-      createProductionsPayload.userId,
-      powerProductionUnit.type.hydrogenColor,
-      createProductionsPayload.hydrogenStorageUnitId,
-      powerProductionUnit.owner.id,
-      hydrogenProductionUnit.owner.id,
+      createProductionsEntity.recordedBy,
+      HydrogenColor.GREEN,
+      createProductionsEntity.hydrogenStorageUnitId,
+      createProductionsEntity.ownerIdOfPowerProductionUnit,
+      createProductionsEntity.ownerIdOfHydrogenProductionUnit,
       renewableWaterConsumption,
     );
 
     const notRenewableCreateProductionEntity: CreateProductionEntity = new CreateProductionEntity(
-      createProductionsPayload.productionStartedAt,
-      createProductionsPayload.productionEndedAt,
-      createProductionsPayload.powerProductionUnitId,
+      createProductionsEntity.productionStartedAt,
+      createProductionsEntity.productionEndedAt,
+      createProductionsEntity.powerProductionUnitId,
       PowerProductionClass.NOT_RENEWABLE_GRID,
-      createProductionsPayload.powerAmountKwh - renewablePowerAmountKwh,
-      createProductionsPayload.hydrogenProductionUnitId,
-      createProductionsPayload.hydrogenAmountKg - renewableHydrogenAmountKg,
-      createProductionsPayload.userId,
-      powerProductionUnit.type.hydrogenColor,
-      createProductionsPayload.hydrogenStorageUnitId,
-      powerProductionUnit.owner.id,
-      hydrogenProductionUnit.owner.id,
-      hydrogenProductionUnit.waterConsumptionLitersPerHour - renewableWaterConsumption,
+      createProductionsEntity.powerAmountKwh - renewablePowerAmountKwh,
+      createProductionsEntity.hydrogenProductionUnitId,
+      createProductionsEntity.hydrogenAmountKg - renewableHydrogenAmountKg,
+      createProductionsEntity.recordedBy,
+      HydrogenColor.YELLOW,
+      createProductionsEntity.hydrogenStorageUnitId,
+      createProductionsEntity.ownerIdOfPowerProductionUnit,
+      createProductionsEntity.ownerIdOfHydrogenProductionUnit,
+      createProductionsEntity.waterConsumptionLitersPerHour - renewableWaterConsumption,
     );
 
     return [renewableCreateProductionEntity, notRenewableCreateProductionEntity];
