@@ -5,6 +5,7 @@
  * For details on the licensing terms, see the LICENSE file.
  * SPDX-License-Identifier: Apache-2.0
  */
+
 export class ProductionDataFilter {
   pageNumber?: number;
   pageSize?: number;
