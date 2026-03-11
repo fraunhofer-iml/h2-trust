@@ -1,13 +1,18 @@
-name: Tests
+name: Test
 
 on:
   push:
     branches: ['main']
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     permissions:
       contents: read
@@ -18,10 +23,8 @@ jobs:
 
       - name: Common Setup
         uses: ./.github/actions/common-setup
-
-      - name: Install Smart Contract Dependencies
-        shell: bash
-        run: npm --prefix libs/blockchain/smart-contract install --no-audit --no-fund --loglevel verbose
+        with:
+          install-smart-contract-deps: 'true'
 
       - name: Run Tests for amqp
         run: npx nx run amqp:test

@@ -27,7 +27,7 @@ export class UserController {
   @ApiParam({
     name: 'id',
     description: 'Unique identifier of the user.',
-    example: '6f63a1a9-6cc5-4a7a-98b2-79a0460910f4',
+    example: 'e341b634-8f14-466a-8ae9-de41d07ce707',
   })
   readUserWithCompany(@Param('id') id: string): Promise<UserDetailsDto> {
     return this.userService.readUserWithCompany(id);
