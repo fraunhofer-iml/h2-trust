@@ -14,7 +14,7 @@ import {
   ProofOfOriginPowerBatchEntity,
   ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/amqp';
-import { BatchType, EnergySource, PowerProductionClass, RfnboType } from '@h2-trust/domain';
+import { BatchType, EnergySource, PowerProductionClass } from '@h2-trust/domain';
 
 export class BatchAssembler {
   static assemblePowerSupply(

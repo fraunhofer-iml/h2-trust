@@ -149,28 +149,21 @@ export class DigitalProductPassportService {
   }
 
   private static getPowerProductionClass(provenance: ProvenanceEntity): PowerProductionClass {
-    const nonRenewablePowerProductionExits: boolean = provenance.powerProductions
-      .map(
-        (powerProductions) =>
-          powerProductions.batch?.qualityDetails?.powerProductionClass ?? PowerProductionClass.NOT_SPECIFIED,
-      )
-      .some((powerClassification) => powerClassification == PowerProductionClass.NOT_RENEWABLE_GRID);
-    const renewablePowerProductionExits: boolean = provenance.powerProductions
-      .map(
-        (powerProductions) =>
-          powerProductions.batch?.qualityDetails?.powerProductionClass ?? PowerProductionClass.NOT_SPECIFIED,
-      )
-      .some((powerClassification) => powerClassification == PowerProductionClass.RENEWABLE);
+    let powerProductionClass: PowerProductionClass = provenance.powerProductions.some(
+      (powerProduction) =>
+        powerProduction.batch?.qualityDetails?.powerProductionClass == PowerProductionClass.RENEWABLE_GRID,
+    )
+      ? PowerProductionClass.RENEWABLE_GRID
+      : PowerProductionClass.RENEWABLE;
 
-    if (nonRenewablePowerProductionExits) {
-      return PowerProductionClass.NOT_RENEWABLE_GRID;
-    }
+    powerProductionClass = provenance.powerProductions.some(
+      (powerProduction) =>
+        powerProduction.batch?.qualityDetails?.powerProductionClass == PowerProductionClass.NOT_RENEWABLE_GRID,
+    )
+      ? PowerProductionClass.NOT_RENEWABLE_GRID
+      : powerProductionClass;
 
-    if (renewablePowerProductionExits) {
-      return PowerProductionClass.RENEWABLE_GRID;
-    }
-
-    return PowerProductionClass.RENEWABLE;
+    return powerProductionClass;
   }
 
   async calculateHydrogenComposition(processStep: ProcessStepEntity): Promise<HydrogenComponentEntity[]> {
