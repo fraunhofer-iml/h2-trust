@@ -206,9 +206,8 @@ export class ProcessStepRepository {
     const persistedProcessSteps: ProcessStepEntity[] = [];
 
     for (const processStep of processSteps) {
-      this.logger.debug(
-        `Inserting 1 process step with type [${processStep.type}] individually with POWER CLASSIFICATION ${processStep.batch?.qualityDetails?.powerProductionClass}.`,
-      );
+      this.logger.debug(`Inserting 1 process step with type [${processStep.type}] individually.`);
+
       const persistedProcessStep = await tx.processStep.create({
         data: buildProcessStepCreateInput(processStep),
         ...processStepDeepQueryArgs,

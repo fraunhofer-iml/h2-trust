@@ -106,7 +106,6 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     rfnboType: RfnboType.NON_CERTIFIABLE,
     powerProductionClass: PowerProductionClass.NOT_SPECIFIED,
   },
-
   {
     id: 'quality-details-power-0',
     color: HydrogenColor.GREEN,
