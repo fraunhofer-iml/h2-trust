@@ -25,7 +25,7 @@ import {
   StagedProductionRepository,
 } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
-//import { StorageService } from '@h2-trust/storage';
+import { StorageService } from '@h2-trust/storage';
 import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
 import { ProductionDistributor } from './production-distributor';
 
@@ -51,7 +51,7 @@ export class ProductionStagingService {
 
   constructor(
     private readonly stagedProductionRepository: StagedProductionRepository,
-    //private readonly storageService: StorageService,
+    private readonly storageService: StorageService,
     private readonly blockchainService: BlockchainService,
     private readonly csvImportRepository: CsvImportRepository,
     private readonly prismaService: PrismaService,
@@ -98,7 +98,6 @@ export class ProductionStagingService {
 
     return Promise.all(
       unitFileImports.map(async (ufi) => {
-
         const buffer = Buffer.from(ufi.encodedFileBuffer, 'base64');
         const computedHash = HashUtil.hashBuffer(buffer);
         const fileHash = ufi.hashedFileBuffer;
@@ -113,10 +112,13 @@ export class ProductionStagingService {
           throw new Error(`${type} production file does not contain any valid items.`);
         }
 
+        const fileName = `${fileHash}.csv`;
+        await this.storageService.uploadFile(fileName, buffer);
+
         return {
           periods: new UnitAccountingPeriods<T>(ufi.unitId, accountingPeriods),
           type,
-          fileName: fileHash,
+          fileName: fileName,
           hash: fileHash,
           cid: "tbd", // TODO-MP: store IPFS CID (DUHGW-341)
         };

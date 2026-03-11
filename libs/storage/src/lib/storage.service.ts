@@ -33,7 +33,7 @@ export class StorageService {
   }
 
   async uploadFile(fileName: string, file: Buffer): Promise<void> {
-    await this.client.putObject(this.bucketName, fileName, file, file.length);
+    this.client.putObject(this.bucketName, fileName, file, file.length);
   }
 
   async uploadFileWithRandomFileName(originalFileName: string, file: Buffer): Promise<string> {
@@ -42,8 +42,8 @@ export class StorageService {
     return randomFileName;
   }
 
-  async uploadPdfFile(fileName: string, file: Buffer) {
-    return this.client.putObject(this.bucketName, fileName, file, file.length, {
+  async uploadPdfFile(fileName: string, file: Buffer): Promise<void> {
+    this.client.putObject(this.bucketName, fileName, file, file.length, {
       'Content-Type': 'application/pdf',
     });
   }
