@@ -6,14 +6,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsDate, IsNumber, IsString } from 'class-validator';
+import { IsDate, IsNumber, IsString, Min } from 'class-validator';
 
 export class ProductionDataFilter {
   @IsNumber()
-  pageNumber?: number;
+  @Min(0, { message: 'page number must start at minimum 0' })
+  pageNumber: number;
 
   @IsNumber()
-  pageSize?: number;
+  @Min(1, { message: 'page size must be at lest 1' })
+  pageSize: number;
 
   @IsString()
   hydrogenProductionUnitId?: string;
@@ -21,7 +23,7 @@ export class ProductionDataFilter {
   @IsDate()
   period?: Date;
 
-  constructor(pageNumber?: number, pageSize?: number, hydrogenProductionUnitId?: string, period?: Date) {
+  constructor(pageNumber: number, pageSize: number, hydrogenProductionUnitId?: string, period?: Date) {
     this.pageNumber = pageNumber;
     this.pageSize = pageSize;
     this.hydrogenProductionUnitId = hydrogenProductionUnitId;

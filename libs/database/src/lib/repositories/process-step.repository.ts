@@ -36,10 +36,8 @@ export class ProcessStepRepository {
   async findProcessStepsByPredecessorTypesAndOwner(
     predecessorProcessTypes: string[],
     ownerId: string,
-    pageNumber: number,
-    pageSize: number,
-    hydrogenProductionUnitId: string,
-    period: Date,
+    hydrogenProductionUnitId?: string,
+    period?: Date,
   ): Promise<ProcessStepEntity[]> {
     const predecessorsFilter =
       Array.isArray(predecessorProcessTypes) && predecessorProcessTypes.length > 0
@@ -63,8 +61,6 @@ export class ProcessStepRepository {
       : {};
     return this.prismaService.processStep
       .findMany({
-        ...(pageNumber && pageSize ? { skip: (pageNumber - 1) * pageSize, take: pageSize } : {}),
-
         where: {
           batch: {
             ...predecessorsFilter,

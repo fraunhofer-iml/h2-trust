@@ -22,6 +22,7 @@ import {
   CreateProductionDto,
   CsvDocumentIntegrityResultDto,
   ImportSubmissionDto,
+  PaginatedProductionDataDto,
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
@@ -129,7 +130,7 @@ export class ProductionController {
     @Query('pageSize') pageSize: number,
     @Query('hydrogenProductionUnitId') hydrogenProductionUnitId: string,
     @Query('period') period: Date,
-  ): Promise<ProductionOverviewDto[]> {
+  ): Promise<PaginatedProductionDataDto> {
     return this.service.readHydrogenProductionsByOwner(
       authenticatedUser.sub,
       pageNumber,

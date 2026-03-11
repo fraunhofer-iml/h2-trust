@@ -10,7 +10,9 @@ import { Injectable } from '@nestjs/common';
 import {
   CreateManyProcessStepsPayload,
   DocumentEntity,
+  PaginatedProcessStepEntity,
   ProcessStepEntity,
+  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
@@ -102,10 +104,30 @@ export class ProcessStepService {
     return this.processStepRepository.findProcessStepsByPredecessorTypesAndOwner(
       payload.predecessorProcessTypes,
       payload.ownerId,
-      payload.filter.pageNumber,
-      payload.filter.pageSize,
+    );
+  }
+
+  async readPaginatedProcessStepsByPredecessorTypesAndOwner(
+    payload: ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
+  ): Promise<PaginatedProcessStepEntity> {
+    const processes: ProcessStepEntity[] = await this.processStepRepository.findProcessStepsByPredecessorTypesAndOwner(
+      payload.predecessorProcessTypes,
+      payload.ownerId,
       payload.filter.hydrogenProductionUnitId,
       payload.filter.period ? new Date(payload.filter.period) : payload.filter.period,
+    );
+    return this.createProcessStepsPagination(processes, payload.filter.pageSize, payload.filter.pageNumber);
+  }
+
+  private createProcessStepsPagination(processes: ProcessStepEntity[], pageSize: number, pageNumber: number) {
+    const paginationStart: number = (pageNumber - 1) * pageSize;
+    const paginationEnd: number = pageNumber * pageSize;
+
+    return new PaginatedProcessStepEntity(
+      processes.slice(paginationStart, paginationEnd),
+      pageNumber,
+      pageSize,
+      processes.length,
     );
   }
 

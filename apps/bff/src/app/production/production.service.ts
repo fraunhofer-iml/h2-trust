@@ -14,6 +14,7 @@ import {
   CreateProductionsPayload,
   CsvDocumentEntity,
   FinalizeProductionsPayload,
+  PaginatedProcessStepEntity,
   PowerAccessApprovalPatterns,
   PowerProductionUnitEntity,
   ProcessStepEntity,
@@ -22,6 +23,7 @@ import {
   ProductionMessagePatterns,
   ProductionStagingResultEntity,
   ReadByIdPayload,
+  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   StageProductionsPayload,
   UnitFileReference,
@@ -32,6 +34,7 @@ import {
   CreateProductionDto,
   CsvDocumentIntegrityResultDto,
   ImportSubmissionDto,
+  PaginatedProductionDataDto,
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
@@ -77,20 +80,20 @@ export class ProductionService {
     pageSize?: number,
     hydrogenProductionUnitId?: string,
     period?: Date,
-  ): Promise<ProductionOverviewDto[]> {
+  ): Promise<PaginatedProductionDataDto> {
     const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
     const ownerId = userDetails.company.id;
 
-    const payload = new ReadProcessStepsByPredecessorTypesAndOwnerPayload(
+    const payload = new ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload(
       [ProcessType.POWER_PRODUCTION],
       ownerId,
       new ProductionDataFilter(pageNumber, pageSize, hydrogenProductionUnitId, period),
     );
 
-    const productions: ProcessStepEntity[] = await firstValueFrom(
-      this.processSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_PREDECESSOR_TYPES_AND_OWNER, payload),
+    const paginatedProcessStep: PaginatedProcessStepEntity = await firstValueFrom(
+      this.processSvc.send(ProcessStepMessagePatterns.READ_PAGINATION_BY_PREDECESSOR_TYPES_AND_OWNER, payload),
     );
-    return productions.map(ProductionOverviewDto.fromEntity);
+    return PaginatedProductionDataDto.fromEntity(paginatedProcessStep);
   }
 
   async importCsvFiles(
