@@ -189,6 +189,10 @@ export class ProductionUtils {
     const renewableWaterConsumption =
       (createProduction.waterConsumptionLitersPerHour * RenewableShareInGridMix.DE) / 100;
 
+    const notRenewablePowerAmountKwh = createProduction.powerAmountKwh - renewablePowerAmountKwh;
+    const notRenewableHydrogenAmountKg = createProduction.hydrogenAmountKg - renewableHydrogenAmountKg;
+    const notRenewableWaterConsumption = createProduction.waterConsumptionLitersPerHour - renewableWaterConsumption;
+
     return [
       ProductionUtils.getEntityForNewAmounts(
         createProduction,
@@ -199,9 +203,9 @@ export class ProductionUtils {
       ),
       ProductionUtils.getEntityForNewAmounts(
         createProduction,
-        createProduction.hydrogenAmountKg - renewableHydrogenAmountKg,
-        createProduction.powerAmountKwh - renewablePowerAmountKwh,
-        createProduction.waterConsumptionLitersPerHour - renewableWaterConsumption,
+        notRenewableHydrogenAmountKg,
+        notRenewablePowerAmountKwh,
+        notRenewableWaterConsumption,
         PowerType.NON_RENEWABLE,
       ),
     ];

@@ -77,7 +77,7 @@ export class ProductionService {
     this.logger.debug(
       `Finalizing ${createProductions.length} staged productions in chunks of ${this.productionChunkSize}`,
     );
-    return this.productionCreationService.createAndPersistProcessSteps(createProductions);
+    return this.productionCreationService.createAndPersistProductions(createProductions);
   }
 
   async createProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
@@ -110,6 +110,6 @@ export class ProductionService {
       powerProductionUnit.type.energySource,
     );
 
-    return this.productionCreationService.createAndPersistProcessSteps(createProductionEntities);
+    return this.productionCreationService.createAndPersistProductions(createProductionEntities);
   }
 }

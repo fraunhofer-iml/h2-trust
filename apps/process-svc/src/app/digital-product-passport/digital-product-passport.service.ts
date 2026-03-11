@@ -148,18 +148,19 @@ export class DigitalProductPassportService {
   }
 
   private static getPowerType(provenance: ProvenanceEntity): PowerType {
-    let powerType: PowerType = provenance.powerProductions.some(
-      (powerProduction) => powerProduction.batch?.qualityDetails?.powerType == PowerType.PARTLY_RENEWABLE,
-    )
-      ? PowerType.PARTLY_RENEWABLE
-      : PowerType.RENEWABLE;
-
-    powerType = provenance.powerProductions.some(
-      (powerProduction) => powerProduction.batch?.qualityDetails?.powerType == PowerType.NON_RENEWABLE,
-    )
-      ? PowerType.NON_RENEWABLE
-      : powerType;
-
+    let powerType = PowerType.RENEWABLE;
+    const hasRenewableGridPower = provenance.powerProductions.some(
+      (pp) => pp.batch?.qualityDetails?.powerType == PowerType.PARTLY_RENEWABLE,
+    );
+    if (hasRenewableGridPower) {
+      powerType = PowerType.PARTLY_RENEWABLE;
+    }
+    const hasNotRenewableGrid = provenance.powerProductions.some(
+      (pp) => pp.batch?.qualityDetails?.powerType == PowerType.NON_RENEWABLE,
+    );
+    if (hasNotRenewableGrid) {
+      powerType = PowerType.NON_RENEWABLE;
+    }
     return powerType;
   }
 

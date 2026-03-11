@@ -31,7 +31,7 @@ export class ProductionCreationService {
     this.productionChunkSize = this.configurationService.getProcessSvcConfiguration().productionChunkSize;
   }
 
-  public async createAndPersistProcessSteps(createProductions: CreateProductionEntity[]): Promise<ProcessStepEntity[]> {
+  public async createAndPersistProductions(createProductions: CreateProductionEntity[]): Promise<ProcessStepEntity[]> {
     const persistedProcessSteps: ProcessStepEntity[] = [];
 
     for (let i = 0; i < createProductions.length; i += this.productionChunkSize) {
