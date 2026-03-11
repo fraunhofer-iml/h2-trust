@@ -9,7 +9,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { ProcessStepEntity } from '@h2-trust/amqp';
-//import { BatchType } from '@h2-trust/domain';
+import { BatchType } from '@h2-trust/domain';
 import { buildProcessStepCreateInput } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 import { processStepDeepQueryArgs } from '../query-args';
@@ -122,32 +122,35 @@ export class ProcessStepRepository {
     // Separate insertion of process steps for efficiency:
     // those without predecessors can use bulk insert
     // those with predecessors need individual inserts
-    const processStepsWithoutPredecessors: ProcessStepEntity[] = processSteps.filter(
-      (ps) => !ps.batch?.predecessors?.length,
+    // since water process types are the only ones that do not have batch quality, they are the only process steps that can be stored in bulk
+    const waterConsumptionProcessSteps: ProcessStepEntity[] = processSteps.filter(
+      (ps) => ps.batch?.type == BatchType.WATER,
     );
-    const processStepsWithPredecessors: ProcessStepEntity[] = processSteps.filter(
-      (ps) => ps.batch?.predecessors?.length,
+    const powerOrHydrogenProcessSteps: ProcessStepEntity[] = processSteps.filter(
+      (ps) => ps.batch?.type != BatchType.WATER,
     );
 
     return this.prismaService.$transaction(async (tx) => {
       const persistedProcessSteps: ProcessStepEntity[] = [];
 
-      if (processStepsWithoutPredecessors.length > 0) {
-        const persistedProcessStepsWithoutPredecessors: ProcessStepEntity[] =
-          await this.persistProcessStepsIndividually(tx, processStepsWithoutPredecessors);
+      if (waterConsumptionProcessSteps.length > 0) {
+        const persistedProcessStepsWithoutPredecessors: ProcessStepEntity[] = await this.persistProcessStepsInBulk(
+          tx,
+          waterConsumptionProcessSteps,
+        );
         persistedProcessSteps.push(...persistedProcessStepsWithoutPredecessors);
       }
 
       const persistedProcessStepsWithPredecessors: ProcessStepEntity[] = await this.persistProcessStepsIndividually(
         tx,
-        processStepsWithPredecessors,
+        powerOrHydrogenProcessSteps,
       );
       persistedProcessSteps.push(...persistedProcessStepsWithPredecessors);
 
       return persistedProcessSteps;
     });
   }
-  /*
+
   private async persistProcessStepsInBulk(
     tx: Prisma.TransactionClient,
     processSteps: ProcessStepEntity[],
@@ -195,7 +198,7 @@ export class ProcessStepRepository {
 
     return fetchedProcessSteps.map(ProcessStepEntity.fromDeepDatabase);
   }
-*/
+
   private async persistProcessStepsIndividually(
     tx: Prisma.TransactionClient,
     processSteps: ProcessStepEntity[],
