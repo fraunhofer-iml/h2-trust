@@ -1,14 +1,6 @@
 <div class="relative">
-  <button
-    (mouseenter)="showComplianceInfo = true"
-    (mouseleave)="showComplianceInfo = false"
-    class="flex flex-row items-center gap-2 rounded-md p-2 pr-4 text-sm duration-300 ease-in-out hover:scale-105"
-    [ngClass]="redCompliance()?.rfnboType ? 'bg-secondary-100 text-secondary-600' : 'bg-neutral-200 text-neutral-600'"
-  >
-    <span class="material-symbols-outlined"> {{ rfnboStatus().icon }}</span>
-    <span>
-      {{ rfnboStatus().text }}
-    </span>
+  <button (mouseenter)="showComplianceInfo = true" (mouseleave)="showComplianceInfo = false">
+    <app-rfnbo-chip [rfnboType]="redCompliance()?.rfnboType ?? 'unknown'"></app-rfnbo-chip>
   </button>
   @if (redCompliance(); as redCompliance) {
     <div
@@ -16,8 +8,12 @@
       class="absolute left-[-16rem] top-[3rem] z-20 flex w-[46rem] flex-row gap-2 rounded-xl border-2 border-neutral-100 bg-white p-2 shadow-2xl transition-opacity duration-300 2xl:top-[3rem]"
     >
       <div
-        class="flex w-1/3 flex-col justify-center rounded-lg pl-4 pr-8 text-sm"
-        [ngClass]="redCompliance.rfnboType ? 'bg-secondary-100 text-secondary-600' : 'bg-neutral-200 text-neutral-600'"
+        class="flex w-1/3 flex-col justify-center rounded-lg border pl-4 pr-8 text-sm"
+        [ngClass]="
+          redCompliance.rfnboType
+            ? 'border-secondary-100 bg-secondary-100/60 text-secondary-600'
+            : 'border-neutral-200 bg-neutral-100 text-neutral-600'
+        "
       >
         <span class="material-symbols-outlined text-3xl"> {{ rfnboStatus().icon }}</span>
         <span class="font-semibold">{{ rfnboStatus().text }}</span>

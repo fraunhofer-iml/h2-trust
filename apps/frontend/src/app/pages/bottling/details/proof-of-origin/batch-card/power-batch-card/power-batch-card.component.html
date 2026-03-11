@@ -16,6 +16,7 @@
     <div>
       <div class="flex w-full items-center justify-between">
         <h3>Power Batch</h3>
+        <app-power-type-chip [powerType]="batch().powerType"></app-power-type-chip>
       </div>
       <span class="text-sm text-neutral-400"> Generation-Id: {{ batch().id }}</span>
     </div>

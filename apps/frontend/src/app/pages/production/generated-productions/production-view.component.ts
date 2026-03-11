@@ -7,7 +7,7 @@
  */
 
 import { DateTime } from 'luxon';
-import { DatePipe, DecimalPipe, TitleCasePipe } from '@angular/common';
+import { DatePipe, TitleCasePipe } from '@angular/common';
 import { AfterViewInit, Component, inject, signal, ViewChild } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { debounce, form, FormField } from '@angular/forms/signals';
@@ -21,7 +21,10 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ProductionOverviewDto } from '@h2-trust/api';
-import { RfnboChipComponent } from '../../../layout/rfnbo-chip/rfnbo-chip.component';
+import { MeasurementUnit } from '@h2-trust/domain';
+import { PowerTypeChipComponent } from '../../../layout/chips/power-type-chip.component';
+import { RfnboChipComponent } from '../../../layout/chips/rfnbo-chip.component';
+import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { ProductionService } from '../../../shared/services/production/production.service';
 import { FilterModel } from '../model/generated-productions-filter.model';
 import { ProductionStatisticsComponent } from '../statistics/production-statistics.component';
@@ -44,7 +47,6 @@ export const DATE_FORMATS = {
     MatPaginatorModule,
     MatTableModule,
     DatePipe,
-    DecimalPipe,
     TitleCasePipe,
     MatButtonModule,
     MatSortModule,
@@ -53,21 +55,24 @@ export const DATE_FORMATS = {
     FormField,
     MatDatepickerModule,
     RfnboChipComponent,
+    PowerTypeChipComponent,
+    UnitPipe,
   ],
   providers: [ProductionService, MatFormFieldModule, ReactiveFormsModule, provideLuxonDateAdapter(DATE_FORMATS)],
   templateUrl: './production-view.component.html',
 })
 export class ProductionViewComponent implements AfterViewInit {
   displayedColumns = [
-    'startedOn',
-    'endedOn',
-    'productionUnit',
-    'producedAmount',
-    'color',
+    'producedAt',
     'powerProducer',
     'powerConsumed',
+    'powerType',
+    'productionUnit',
+    'producedAmount',
+    'rfnboType',
     'storageUnit',
   ];
+  protected readonly MeasurementUnit = MeasurementUnit;
   dataSource: MatTableDataSource<ProductionOverviewDto> = new MatTableDataSource<ProductionOverviewDto>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
