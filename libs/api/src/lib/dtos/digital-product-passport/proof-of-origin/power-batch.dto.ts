@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType, EnergySource, PowerProductionClass } from '@h2-trust/domain';
+import { BatchType, EnergySource, PowerType, PowerProductionClass } from '@h2-trust/domain';
 import { BatchDto } from './batch.dto';
 import { EmissionDto } from './emission.dto';
 
@@ -15,7 +15,7 @@ export class PowerBatchDto extends BatchDto {
   unitId: string;
   energySource: EnergySource;
   accountingPeriodEnd: Date;
-  powerProductionClass: PowerProductionClass;
+  powerType: PowerType;
 
   constructor(
     id: string,
@@ -34,6 +34,7 @@ export class PowerBatchDto extends BatchDto {
     this.unitId = unitId;
     this.energySource = energySource;
     this.accountingPeriodEnd = accountingPeriodEnd;
-    this.powerProductionClass = powerProductionClass;
+    // TODO: replace with actual value (DUHGW-266)
+    this.powerType = PowerType.PARTLY_RENEWABLE;
   }
 }

@@ -29,6 +29,6 @@ export const ICONS = {
     BASE: 'electric_bolt',
     RENEWABLE: 'nest_eco_leaf',
     PARTLY_RENEWABLE: 'donut_large',
-    NOT_RENEWABLE: 'oil_barrel',
+    NON_RENEWABLE: 'oil_barrel',
   },
 };

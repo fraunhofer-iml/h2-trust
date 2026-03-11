@@ -28,3 +28,4 @@ export * from './file-upload-keys.enum';
 export * from './proof-of-origin.enum';
 export * from './csv-document-integrity-status.enum';
 export * from './rfnbo-type.enum';
+export * from './power-type.enum';

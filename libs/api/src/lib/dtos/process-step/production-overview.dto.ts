@@ -7,7 +7,7 @@
  */
 
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
-import { BatchType, PowerProductionClass } from '@h2-trust/domain';
+import { BatchType, PowerType, PowerProductionClass } from '@h2-trust/domain';
 
 export class ProductionOverviewDto {
   startedAt: string;
@@ -19,7 +19,8 @@ export class ProductionOverviewDto {
   powerProducer: string;
   powerConsumed: number;
   storageUnit: string;
-  powerProductionClass: string;
+  powerType: PowerType;
+  powerProductionUnit: string;
 
   constructor(
     startedAt: string,
@@ -42,7 +43,9 @@ export class ProductionOverviewDto {
     this.powerProducer = powerProducer;
     this.powerConsumed = powerConsumed;
     this.storageUnit = storageUnit;
-    this.powerProductionClass = powerProductionClass;
+    // TODO: replace powerProductionUnit & powerType with actual values (DUHGW-271)
+    this.powerType = PowerType.PARTLY_RENEWABLE;
+    this.powerProductionUnit = 'power-production-unit';
   }
 
   static fromEntity(processStep: ProcessStepEntity): ProductionOverviewDto {
@@ -56,8 +59,10 @@ export class ProductionOverviewDto {
       powerProducer: processStep.batch?.predecessors?.[0]?.owner?.name,
       powerConsumed: ProductionOverviewDto.determinePowerConsumed(processStep),
       storageUnit: processStep.batch?.hydrogenStorageUnit?.name,
-      powerProductionClass:
-        processStep.batch?.qualityDetails?.powerProductionClass ?? PowerProductionClass.NOT_SPECIFIED,
+      // TODO: replace powerProductionUnit & powerType with actual values (DUHGW-271)
+      powerProductionUnit: 'power-production-unit',
+      powerType: PowerType.PARTLY_RENEWABLE,
+      //powerProductionClass: processStep.batch?.qualityDetails?.powerProductionClass ?? PowerProductionClass.NOT_SPECIFIED,
     };
   }
 
