@@ -15,15 +15,10 @@ export class AccountingPeriodCsvParser {
   private static readonly logger: Logger = new Logger(AccountingPeriodCsvParser.name);
   private static readonly dateTimeRegex = /^\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2}(:\d{2})?$/;
 
-  static async parseStream<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
-    stream: NodeJS.ReadableStream,
-    columns: string[],
-    fileName: string,
+  static async parseBuffer<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
+    buffer: Buffer,
+    columns: string[]
   ): Promise<T[]> {
-    if (!fileName.toLowerCase().endsWith('.csv')) {
-      throw new BrokerException(`Invalid file type: expected .csv but got: ${fileName}`, HttpStatus.BAD_REQUEST);
-    }
-
     let skipped = 0;
     let invalid = 0;
 
@@ -102,7 +97,8 @@ export class AccountingPeriodCsvParser {
         resolve(records.filter((row) => Object.values(row).every((val) => val !== null)));
       });
 
-      stream.pipe(parser);
+      parser.write(buffer);
+      parser.end();
     });
   }
 }

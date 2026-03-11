@@ -23,7 +23,7 @@ import {
   ReadByIdPayload,
   ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   StageProductionsPayload,
-  UnitFileReference,
+  UnitFileImport,
   VerifyCsvDocumentIntegrityResultEntity,
 } from '@h2-trust/amqp';
 import {
@@ -39,6 +39,7 @@ import {
 import { BatchType, ProcessType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
+import { HashUtil } from '@h2-trust/blockchain';
 
 @Injectable()
 export class ProductionService {
@@ -47,7 +48,7 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly storageService: StorageService,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
     const payload = new CreateProductionsPayload(
@@ -88,13 +89,13 @@ export class ProductionService {
     dto: ProductionCSVUploadDto,
     userId: string,
   ) {
-    const powerProductions = await this.uploadAndMapFilesToUnits(
+    const powerProductions = await this.mapUnitsToFiles(
       dto.powerProductionUnitIds,
       powerProductionFiles,
       BatchType.POWER,
     );
 
-    const hydrogenProductions = await this.uploadAndMapFilesToUnits(
+    const hydrogenProductions = await this.mapUnitsToFiles(
       dto.hydrogenProductionUnitIds,
       hydrogenProductionFiles,
       BatchType.HYDROGEN,
@@ -119,11 +120,11 @@ export class ProductionService {
     return AccountingPeriodMatchingResultDto.fromEntity(matchingResult);
   }
 
-  private async uploadAndMapFilesToUnits(
+  private async mapUnitsToFiles(
     unitIds: string | string[],
     files: Express.Multer.File[],
     type: BatchType,
-  ): Promise<UnitFileReference[]> {
+  ): Promise<UnitFileImport[]> {
     if (!files || files.length === 0) {
       throw new BadRequestException(`Missing file for ${type} production.`);
     }
@@ -136,12 +137,17 @@ export class ProductionService {
       );
     }
 
-    return Promise.all(
-      files.map(async (file, i) => {
-        const fileName = await this.storageService.uploadFileWithRandomFileName(file.originalname, file.buffer);
-        return new UnitFileReference(normalizedUnitIds[i], fileName);
-      }),
-    );
+    console.log('### mapUnitsToFiles ###');
+
+    return files.map((file, i) => {
+      const unitId = normalizedUnitIds[i];
+      const hashedFileBuffer = HashUtil.hashBuffer(file.buffer);
+      const encodedFileBuffer = file.buffer.toString('base64');
+      console.log(unitId);
+      console.log(hashedFileBuffer);
+      console.log(encodedFileBuffer);
+      return new UnitFileImport(unitId, hashedFileBuffer, encodedFileBuffer);
+    });
   }
 
   async submitCsvData(dto: ImportSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {

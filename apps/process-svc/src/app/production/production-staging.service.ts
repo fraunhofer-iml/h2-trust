@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PassThrough } from 'stream';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
   AccountingPeriodHydrogen,
@@ -16,7 +15,7 @@ import {
   ProductionStagingResultEntity,
   StageProductionsPayload,
   UnitAccountingPeriods,
-  UnitFileReference,
+  UnitFileImport,
 } from '@h2-trust/amqp';
 import { BlockchainService, HashUtil, ProofEntry } from '@h2-trust/blockchain';
 import {
@@ -26,7 +25,7 @@ import {
   StagedProductionRepository,
 } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
-import { StorageService } from '@h2-trust/storage';
+//import { StorageService } from '@h2-trust/storage';
 import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
 import { ProductionDistributor } from './production-distributor';
 
@@ -52,17 +51,20 @@ export class ProductionStagingService {
 
   constructor(
     private readonly stagedProductionRepository: StagedProductionRepository,
-    private readonly storageService: StorageService,
+    //private readonly storageService: StorageService,
     private readonly blockchainService: BlockchainService,
     private readonly csvImportRepository: CsvImportRepository,
     private readonly prismaService: PrismaService,
-  ) {}
+  ) { }
 
   async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
     const [preparedPowerProductions, preparedHydrogenProductions] = await Promise.all([
-      this.prepareProductions<AccountingPeriodPower>(payload.powerProductions, BatchType.POWER),
-      this.prepareProductions<AccountingPeriodHydrogen>(payload.hydrogenProductions, BatchType.HYDROGEN),
+      this.prepareProductions<AccountingPeriodPower>(payload.powerProductionImports, BatchType.POWER),
+      this.prepareProductions<AccountingPeriodHydrogen>(payload.hydrogenProductionImports, BatchType.HYDROGEN),
     ]);
+
+    console.log(preparedPowerProductions);
+    console.log(preparedHydrogenProductions);
 
     const distributedProductions = ProductionDistributor.distributeProductions(
       preparedPowerProductions.map((power) => power.periods),
@@ -89,47 +91,34 @@ export class ProductionStagingService {
   }
 
   private async prepareProductions<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
-    unitFileReferences: UnitFileReference[],
+    unitFileImports: UnitFileImport[],
     type: Exclude<BatchType, BatchType.WATER>,
   ): Promise<PreparedProduction<T>[]> {
     const headers = ProductionStagingService.validHeaders[type];
 
     return Promise.all(
-      unitFileReferences.map(async (ufr) => {
-        const downloadingStream = await this.storageService.downloadFile(ufr.fileName);
-        const hashingStream = new PassThrough();
-        const parsingStream = new PassThrough();
+      unitFileImports.map(async (ufi) => {
 
-        const cleanup = (err: Error) => {
-          downloadingStream.destroy(err);
-          hashingStream.destroy(err);
-          parsingStream.destroy(err);
-        };
-        downloadingStream.on('error', cleanup);
-        hashingStream.on('error', cleanup);
-        parsingStream.on('error', cleanup);
+        const buffer = Buffer.from(ufi.encodedFileBuffer, 'base64');
+        const computedHash = HashUtil.hashBuffer(buffer);
+        const fileHash = ufi.hashedFileBuffer;
 
-        downloadingStream.pipe(hashingStream);
-        downloadingStream.pipe(parsingStream);
+        if (computedHash !== fileHash) {
+          throw new Error(`File integrity check failed for unit ${ufi.unitId}: expected hash ${fileHash} but computed ${computedHash}`);
+        }
 
-        const [hash, accountingPeriods] = await Promise.all([
-          HashUtil.hashStream(hashingStream),
-          AccountingPeriodCsvParser.parseStream<T>(parsingStream, headers, ufr.fileName),
-        ]);
+        const accountingPeriods = await AccountingPeriodCsvParser.parseBuffer<T>(buffer, headers);
 
         if (!accountingPeriods.length) {
-          throw new BrokerException(
-            `${type} production file does not contain any valid items.`,
-            HttpStatus.BAD_REQUEST,
-          );
+          throw new Error(`${type} production file does not contain any valid items.`);
         }
 
         return {
-          periods: new UnitAccountingPeriods<T>(ufr.unitId, accountingPeriods),
+          periods: new UnitAccountingPeriods<T>(ufi.unitId, accountingPeriods),
           type,
-          fileName: ufr.fileName,
-          hash,
-          cid: ufr.fileName, // TODO-MP: store IPFS CID (DUHGW-341)
+          fileName: fileHash,
+          hash: fileHash,
+          cid: "tbd", // TODO-MP: store IPFS CID (DUHGW-341)
         };
       }),
     );

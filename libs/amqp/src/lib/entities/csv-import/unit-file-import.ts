@@ -8,17 +8,22 @@
 
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class UnitFileReference {
+export class UnitFileImport {
   @IsString()
   @IsNotEmpty()
   unitId: string;
 
   @IsString()
   @IsNotEmpty()
-  fileName: string;
+  hashedFileBuffer: string;
 
-  constructor(unitId: string, fileName: string) {
+  @IsString()
+  @IsNotEmpty()
+  encodedFileBuffer: string;
+
+  constructor(unitId: string, hashedFileBuffer: string, encodedFileBuffer: string) {
     this.unitId = unitId;
-    this.fileName = fileName;
+    this.hashedFileBuffer = hashedFileBuffer;
+    this.encodedFileBuffer = encodedFileBuffer;
   }
 }
