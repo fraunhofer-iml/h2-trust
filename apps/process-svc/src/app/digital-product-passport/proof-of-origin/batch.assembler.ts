@@ -14,7 +14,7 @@ import {
   ProofOfOriginPowerBatchEntity,
   ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/amqp';
-import { BatchType, EnergySource, PowerProductionClass } from '@h2-trust/domain';
+import { BatchType, EnergySource, PowerType } from '@h2-trust/domain';
 
 export class BatchAssembler {
   static assemblePowerSupply(
@@ -32,8 +32,7 @@ export class BatchAssembler {
       unitId: powerProduction.executedBy.id,
       energySource: energySource as EnergySource,
       accountingPeriodEnd: powerProduction.endedAt,
-      powerProductionClass: (powerProduction.batch?.qualityDetails?.powerProductionClass ??
-        PowerProductionClass.NOT_SPECIFIED) as PowerProductionClass,
+      powerType: (powerProduction.batch?.qualityDetails?.powerType ?? PowerType.NOT_SPECIFIED) as PowerType,
     };
   }
 

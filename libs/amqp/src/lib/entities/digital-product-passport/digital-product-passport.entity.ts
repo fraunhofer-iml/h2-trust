@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType, PowerProductionClass, RfnboType } from '@h2-trust/domain';
+import { BatchType, PowerType, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentEntity } from '../bottling';
 import { RedComplianceEntity } from '../compliance';
 import { DocumentEntity } from '../document';
@@ -28,7 +28,7 @@ export class DigitalProductPassportEntity {
   rfnboType: RfnboType;
   proofOfSustainability: ProofOfSustainabilityEntity;
   proofOfOrigin: ProofOfOriginSectionEntity[];
-  powerProductionClass: PowerProductionClass;
+  powerType: PowerType;
 
   constructor(
     id: string,
@@ -42,7 +42,7 @@ export class DigitalProductPassportEntity {
     redCompliance: RedComplianceEntity,
     proofOfSustainability: ProofOfSustainabilityEntity,
     proofOfOrigin: ProofOfOriginSectionEntity[],
-    powerProductionClass: PowerProductionClass,
+    powerType: PowerType,
   ) {
     this.id = id;
     this.filledAt = timestamp;
@@ -57,14 +57,14 @@ export class DigitalProductPassportEntity {
     this.proofOfOrigin = proofOfOrigin;
     this.proofOfSustainability = proofOfSustainability;
     this.isEmissionReductionAbove70Percent = proofOfSustainability.emissionReductionPercentage > 70;
-    this.powerProductionClass = powerProductionClass;
+    this.powerType = powerType;
     this.rfnboType =
       this.isEmissionReductionAbove70Percent &&
       this.redCompliance.isGeoCorrelationValid &&
       this.redCompliance.isTimeCorrelationValid &&
       this.redCompliance.isAdditionalityFulfilled &&
       this.redCompliance.financialSupportReceived &&
-      this.powerProductionClass != PowerProductionClass.NOT_RENEWABLE_GRID
+      this.powerType != PowerType.NON_RENEWABLE
         ? RfnboType.RFNBO_READY
         : RfnboType.NON_CERTIFIABLE;
   }

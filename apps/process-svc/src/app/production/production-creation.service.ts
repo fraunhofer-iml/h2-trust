@@ -14,6 +14,7 @@ import {
   ProcessStepEntity,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
+import { BatchType } from '@h2-trust/domain';
 import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { ProductionAssembler } from './production.assembler';
@@ -61,8 +62,12 @@ export class ProductionCreationService {
       // Step 3: Split response back into power and water
       // We use chunk.length because there is a 1:1 relation between productions and process steps,
       // so each production creates exactly one power step and one water step.
-      const persistedPower: ProcessStepEntity[] = persistedPowerAndWater.slice(0, createProductionsChunk.length);
-      const persistedWater: ProcessStepEntity[] = persistedPowerAndWater.slice(createProductionsChunk.length);
+      const persistedPower: ProcessStepEntity[] = persistedPowerAndWater.filter(
+        (processStep) => processStep.batch.type == BatchType.POWER,
+      );
+      const persistedWater: ProcessStepEntity[] = persistedPowerAndWater.filter(
+        (processStep) => processStep.batch.type == BatchType.WATER,
+      );
 
       // Step 4: Create hydrogen with persisted predecessors
       const hydrogen: ProcessStepEntity[] = createProductionsChunk.flatMap((production, index) =>

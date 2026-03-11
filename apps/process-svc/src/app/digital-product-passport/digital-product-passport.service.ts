@@ -17,7 +17,7 @@ import {
   ProvenanceEntity,
   RedComplianceEntity,
 } from '@h2-trust/amqp';
-import { PowerProductionClass, ProcessType, RfnboType } from '@h2-trust/domain';
+import { PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentAssembler } from '../process-step/hydrogenComponent/hydrogen-component.assembler';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { EmissionService } from './proof-of-origin/emission.service';
@@ -66,8 +66,7 @@ export class DigitalProductPassportService {
       processStep.id,
       provenance,
     );
-    const powerProductionClass: PowerProductionClass =
-      DigitalProductPassportService.getPowerProductionClass(provenance);
+    const powerType: PowerType = DigitalProductPassportService.getPowerType(provenance);
 
     const proofOfOrigin: ProofOfOriginSectionEntity[] = [];
 
@@ -144,26 +143,24 @@ export class DigitalProductPassportService {
       redCompliance,
       proofOfSustainability,
       proofOfOrigin,
-      powerProductionClass,
+      powerType,
     );
   }
 
-  private static getPowerProductionClass(provenance: ProvenanceEntity): PowerProductionClass {
-    let powerProductionClass: PowerProductionClass = provenance.powerProductions.some(
-      (powerProduction) =>
-        powerProduction.batch?.qualityDetails?.powerProductionClass == PowerProductionClass.RENEWABLE_GRID,
+  private static getPowerType(provenance: ProvenanceEntity): PowerType {
+    let powerType: PowerType = provenance.powerProductions.some(
+      (powerProduction) => powerProduction.batch?.qualityDetails?.powerType == PowerType.PARTLY_RENEWABLE,
     )
-      ? PowerProductionClass.RENEWABLE_GRID
-      : PowerProductionClass.RENEWABLE;
+      ? PowerType.PARTLY_RENEWABLE
+      : PowerType.RENEWABLE;
 
-    powerProductionClass = provenance.powerProductions.some(
-      (powerProduction) =>
-        powerProduction.batch?.qualityDetails?.powerProductionClass == PowerProductionClass.NOT_RENEWABLE_GRID,
+    powerType = provenance.powerProductions.some(
+      (powerProduction) => powerProduction.batch?.qualityDetails?.powerType == PowerType.NON_RENEWABLE,
     )
-      ? PowerProductionClass.NOT_RENEWABLE_GRID
-      : powerProductionClass;
+      ? PowerType.NON_RENEWABLE
+      : powerType;
 
-    return powerProductionClass;
+    return powerType;
   }
 
   async calculateHydrogenComposition(processStep: ProcessStepEntity): Promise<HydrogenComponentEntity[]> {

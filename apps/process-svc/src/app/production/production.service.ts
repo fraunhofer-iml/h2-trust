@@ -23,7 +23,7 @@ import {
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
-import { PowerProductionClass } from '@h2-trust/domain';
+import { PowerType } from '@h2-trust/domain';
 import { ProductionCreationService } from './production-creation.service';
 import { ProductionUtils } from './utils/production.utils';
 
@@ -55,7 +55,7 @@ export class ProductionService {
             stagedProduction.startedAt,
             new Date(new Date(stagedProduction.startedAt).setMinutes(59, 59, 999)),
             stagedProduction.powerProductionUnitId,
-            PowerProductionClass.NOT_SPECIFIED,
+            PowerType.RENEWABLE,
             stagedProduction.powerAmount,
             stagedProduction.hydrogenProductionUnitId,
             stagedProduction.hydrogenAmount,
@@ -93,7 +93,7 @@ export class ProductionService {
       payload.productionStartedAt,
       payload.productionEndedAt,
       payload.powerProductionUnitId,
-      PowerProductionClass.NOT_SPECIFIED,
+      PowerType.RENEWABLE,
       payload.powerAmountKwh,
       payload.hydrogenProductionUnitId,
       payload.hydrogenAmountKg,

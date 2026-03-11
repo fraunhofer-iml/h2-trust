@@ -10,7 +10,7 @@ export class CreateProductionEntity {
   productionStartedAt: Date;
   productionEndedAt: Date;
   powerProductionUnitId: string;
-  powerProductionClass: string;
+  powerType: string;
   powerAmountKwh: number;
   hydrogenProductionUnitId: string;
   hydrogenAmountKg: number;
@@ -25,7 +25,7 @@ export class CreateProductionEntity {
     productionStartedAt: Date,
     productionEndedAt: Date,
     powerProductionUnitId: string,
-    powerProductionClass: string,
+    powerType: string,
     powerAmountKwh: number,
     hydrogenProductionUnitId: string,
     hydrogenAmountKg: number,
@@ -39,7 +39,7 @@ export class CreateProductionEntity {
     this.productionStartedAt = productionStartedAt;
     this.productionEndedAt = productionEndedAt;
     this.powerProductionUnitId = powerProductionUnitId;
-    this.powerProductionClass = powerProductionClass;
+    this.powerType = powerType;
     this.powerAmountKwh = powerAmountKwh;
     this.hydrogenProductionUnitId = hydrogenProductionUnitId;
     this.hydrogenAmountKg = hydrogenAmountKg;
