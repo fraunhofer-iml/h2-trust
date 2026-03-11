@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const CHART_COLORS = new Map<string, string>([
-  ['RFNBO_READY', '#4F9C83'],
-  ['NON_CERTIFIABLE', '#bfbfbf'],
-]);
+export interface FilterModel {
+  unit: string;
+  month: Date;
+}

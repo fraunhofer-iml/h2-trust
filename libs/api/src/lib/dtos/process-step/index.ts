@@ -9,4 +9,5 @@
 export * from './bottling.dto';
 export * from './bottling-overview.dto';
 export * from './production-overview.dto';
+export * from './production-statistics.dto';
 export * from './mocks';
