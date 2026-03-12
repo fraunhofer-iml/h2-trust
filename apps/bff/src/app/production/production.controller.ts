@@ -121,7 +121,7 @@ export class ProductionController {
     required: false,
   })
   @ApiQuery({
-    name: 'unit',
+    name: 'name',
     type: String,
     description: 'Search by production unit name or ID. Omit for all units',
     required: false,
@@ -129,7 +129,7 @@ export class ProductionController {
   readHydrogenProductionsStatisticsByOwner(
     @AuthenticatedUser() _authenticatedUser: AuthenticatedKCUser,
     @Query('month') _month: Date,
-    @Query('unit') _unit: string,
+    @Query('name') _name: string,
   ): ProductionStatisticsDto {
     return {
       hydrogen: {
