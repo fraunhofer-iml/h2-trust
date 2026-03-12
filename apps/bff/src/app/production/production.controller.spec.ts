@@ -38,7 +38,7 @@ import {
 } from '@h2-trust/domain';
 import 'multer';
 import { of } from 'rxjs';
-import { StorageService } from '@h2-trust/storage';
+import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
@@ -67,7 +67,7 @@ describe('ProductionController', () => {
           },
         },
         {
-          provide: StorageService,
+          provide: CentralizedStorageService,
           useValue: {
             uploadFileWithRandomFileName: jest.fn().mockResolvedValue('random-file-name.csv'),
           },

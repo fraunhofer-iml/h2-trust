@@ -1,0 +1,53 @@
+/*
+ * Copyright Fraunhofer Institute for Material Flow and Logistics
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * For details on the licensing terms, see the LICENSE file.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import Stream from 'stream';
+import { GetObjectCommand, HeadObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigurationService } from '@h2-trust/configuration';
+import { CENTRALIZED_STORAGE_CLIENT } from './storage.tokens';
+
+@Injectable()
+export class CentralizedStorageService {
+  private readonly bucketName: string;
+  
+  readonly url: string;
+
+  constructor(
+    @Inject(CENTRALIZED_STORAGE_CLIENT) private readonly client: S3Client,
+    configurationService: ConfigurationService,
+  ) {
+    const config = configurationService.getGlobalConfiguration().centralizedStorage;
+
+    this.bucketName = config.bucketName;
+
+    const protocol = config.useSSL ? 'https' : 'http';
+    this.url = `${protocol}://${config.endPoint}:${config.port}/${this.bucketName}`;
+  }
+
+  async uploadPdfFile(fileName: string, file: Buffer): Promise<void> {
+    await this.client.send(new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: 'application/pdf' }));
+  }
+
+  async downloadPdfFile(fileName: string): Promise<Stream.Readable> {
+    const response = await this.client.send(new GetObjectCommand({ Bucket: this.bucketName, Key: fileName }));
+    return response.Body as Stream.Readable;
+  }
+
+  async pdfFileExists(fileName: string): Promise<boolean> {
+    try {
+      await this.client.send(new HeadObjectCommand({ Bucket: this.bucketName, Key: fileName }));
+      return true;
+    } catch (err: any) {
+      if (err.name === 'NoSuchKey' || err.name === 'NotFound' || err.$metadata?.httpStatusCode === 404) {
+        return false;
+      }
+      throw err;
+    }
+  }
+}

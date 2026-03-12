@@ -25,7 +25,7 @@ import {
   StagedProductionRepository,
 } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
-import { StorageService } from '@h2-trust/storage';
+import { DecentralizedStorageService } from '@h2-trust/storage';
 import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
 import { ProductionDistributor } from './production-distributor';
 
@@ -51,7 +51,7 @@ export class ProductionStagingService {
 
   constructor(
     private readonly stagedProductionRepository: StagedProductionRepository,
-    private readonly storageService: StorageService,
+    private readonly storageService: DecentralizedStorageService,
     private readonly blockchainService: BlockchainService,
     private readonly csvImportRepository: CsvImportRepository,
     private readonly prismaService: PrismaService,

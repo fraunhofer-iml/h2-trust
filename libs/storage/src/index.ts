@@ -7,4 +7,5 @@
  */
 
 export * from './lib/storage.module';
-export * from './lib/storage.service';
+export * from './lib/centralized-storage.service';
+export * from './lib/decentralized-storage.service';

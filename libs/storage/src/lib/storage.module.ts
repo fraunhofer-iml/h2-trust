@@ -9,7 +9,8 @@
 import { S3Client } from '@aws-sdk/client-s3';
 import { Module } from '@nestjs/common';
 import { ConfigurationModule, ConfigurationService, StorageConfiguration } from '@h2-trust/configuration';
-import { StorageService } from './storage.service';
+import { CentralizedStorageService } from './centralized-storage.service';
+import { DecentralizedStorageService } from './decentralized-storage.service';
 import { DECENTRALIZED_STORAGE_CLIENT, CENTRALIZED_STORAGE_CLIENT } from './storage.tokens';
 
 function createCentralizedStorageClient(configService: ConfigurationService): S3Client {
@@ -46,8 +47,9 @@ function createS3Client(config: StorageConfiguration, forcePathStyle: boolean): 
       inject: [ConfigurationService],
       useFactory: createDecentralizedStorageClient,
     },
-    StorageService,
+    CentralizedStorageService,
+    DecentralizedStorageService,
   ],
-  exports: [StorageService],
+  exports: [CentralizedStorageService, DecentralizedStorageService],
 })
 export class StorageModule { }

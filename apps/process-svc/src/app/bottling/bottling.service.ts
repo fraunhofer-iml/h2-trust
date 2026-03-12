@@ -20,7 +20,7 @@ import {
 } from '@h2-trust/amqp';
 import { DocumentRepository } from '@h2-trust/database';
 import { HydrogenColor, RfnboType } from '@h2-trust/domain';
-import { StorageService } from '@h2-trust/storage';
+import { CentralizedStorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { BottlingProcessStepAssembler } from './utils/bottling-process-step.assembler';
 import { BottlingAllocation, BottlingAllocator } from './utils/bottling.allocator';
@@ -28,7 +28,7 @@ import { BottlingAllocation, BottlingAllocator } from './utils/bottling.allocato
 @Injectable()
 export class BottlingService {
   constructor(
-    private readonly storageService: StorageService,
+    private readonly storageService: CentralizedStorageService,
     private readonly documentRepository: DocumentRepository,
     private readonly processStepService: ProcessStepService,
   ) {}

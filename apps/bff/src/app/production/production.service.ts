@@ -37,7 +37,7 @@ import {
   UserDetailsDto,
 } from '@h2-trust/api';
 import { BatchType, ProcessType } from '@h2-trust/domain';
-import { StorageService } from '@h2-trust/storage';
+import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 import { HashUtil } from '@h2-trust/blockchain';
 
@@ -46,7 +46,7 @@ export class ProductionService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
-    private readonly storageService: StorageService,
+    private readonly storageService: CentralizedStorageService,
     private readonly userService: UserService,
   ) { }
 
@@ -169,7 +169,7 @@ export class ProductionService {
     );
 
     return csvDocuments.map((doc) =>
-      ProcessedCsvDto.fromEntity(doc, this.storageService.centralizedStorageUrl, userDetails.company.name),
+      ProcessedCsvDto.fromEntity(doc, this.storageService.url, userDetails.company.name),
     );
   }
 

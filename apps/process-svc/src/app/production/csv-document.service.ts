@@ -11,7 +11,7 @@ import { CsvDocumentEntity, ReadByIdPayload, VerifyCsvDocumentIntegrityResultEnt
 import { BlockchainService, HashUtil } from '@h2-trust/blockchain';
 import { CsvImportRepository } from '@h2-trust/database';
 import { CsvDocumentIntegrityStatus } from '@h2-trust/domain';
-import { StorageService } from '@h2-trust/storage';
+import { DecentralizedStorageService } from '@h2-trust/storage';
 
 @Injectable()
 export class CsvDocumentService {
@@ -20,7 +20,7 @@ export class CsvDocumentService {
   constructor(
     private readonly blockchainService: BlockchainService,
     private readonly csvImportRepository: CsvImportRepository,
-    private readonly storageService: StorageService,
+    private readonly storageService: DecentralizedStorageService,
   ) {}
 
   async findByCompany(payload: ReadByIdPayload): Promise<CsvDocumentEntity[]> {
