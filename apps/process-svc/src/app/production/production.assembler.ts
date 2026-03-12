@@ -34,7 +34,7 @@ export class ProductionAssembler {
         activity: false,
         type: BatchType.POWER,
         owner: entity.ownerIdOfPowerProductionUnit,
-        powerType: entity.powerType,
+        powerType: entity.powerType as PowerType,
       },
     };
 
@@ -83,7 +83,7 @@ export class ProductionAssembler {
         owner: entity.ownerIdOfHydrogenProductionUnit,
         quality: entity.hydrogenColor,
         hydrogenStorageUnitId: entity.hydrogenStorageUnitId,
-        powerType: powerProductions[0]?.batch?.qualityDetails?.powerType ?? PowerType.NOT_SPECIFIED,
+        powerType: (powerProductions[0]?.batch?.qualityDetails?.powerType as PowerType) ?? PowerType.NOT_SPECIFIED,
       },
     };
 

@@ -69,6 +69,13 @@ export class ProductionCreationService {
         (processStep) => processStep.batch.type == BatchType.WATER,
       );
 
+      if (persistedPower.length !== persistedWater.length) {
+        throw new BrokerException(
+          `Expected 1:1 relation between power and water process steps, but got ${persistedPower.length} power and ${persistedWater.length} water.`,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
       // Step 4: Create hydrogen with persisted predecessors
       const hydrogen: ProcessStepEntity[] = createProductionsChunk.flatMap((production, index) =>
         ProductionAssembler.assembleHydrogenProductions(production, [persistedPower[index]], [persistedWater[index]]),

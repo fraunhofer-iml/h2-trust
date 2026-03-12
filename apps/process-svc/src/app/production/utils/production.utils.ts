@@ -194,14 +194,14 @@ export class ProductionUtils {
     const notRenewableWaterConsumption = createProduction.waterConsumptionLitersPerHour - renewableWaterConsumption;
 
     return [
-      ProductionUtils.getEntityForNewAmounts(
+      ProductionUtils.createEntityForNewAmounts(
         createProduction,
         renewableHydrogenAmountKg,
         renewablePowerAmountKwh,
         renewableWaterConsumption,
         PowerType.PARTLY_RENEWABLE,
       ),
-      ProductionUtils.getEntityForNewAmounts(
+      ProductionUtils.createEntityForNewAmounts(
         createProduction,
         notRenewableHydrogenAmountKg,
         notRenewablePowerAmountKwh,
@@ -211,7 +211,7 @@ export class ProductionUtils {
     ];
   }
 
-  private static getEntityForNewAmounts(
+  private static createEntityForNewAmounts(
     createProductionEntity: CreateProductionEntity,
     hydrogenAmount: number,
     powerAmount: number,
