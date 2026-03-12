@@ -113,8 +113,8 @@ export class ProcessStepService {
     const processes: ProcessStepEntity[] = await this.processStepRepository.findProcessStepsByPredecessorTypesAndOwner(
       payload.predecessorProcessTypes,
       payload.ownerId,
-      payload.filter.hydrogenProductionUnitName,
-      payload.filter.period ? new Date(payload.filter.period) : payload.filter.period,
+      payload.filter.unitName,
+      payload.filter.month ? new Date(payload.filter.month) : payload.filter.month,
     );
     return this.createProcessStepsPagination(processes, payload.filter.pageSize, payload.filter.pageNumber);
   }

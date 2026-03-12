@@ -18,15 +18,15 @@ export class ProductionDataFilter {
   pageSize: number;
 
   @IsString()
-  hydrogenProductionUnitName?: string;
+  unitName?: string;
 
   @IsDate()
-  period?: Date;
+  month?: Date;
 
-  constructor(pageNumber: number, pageSize: number, hydrogenProductionUnitName?: string, period?: Date) {
+  constructor(pageNumber: number, pageSize: number, unitName?: string, month?: Date) {
     this.pageNumber = pageNumber;
     this.pageSize = pageSize;
-    this.hydrogenProductionUnitName = hydrogenProductionUnitName;
-    this.period = period;
+    this.unitName = unitName;
+    this.month = month;
   }
 }

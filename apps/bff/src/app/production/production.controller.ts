@@ -111,14 +111,14 @@ export class ProductionController {
     example: '5',
   })
   @ApiQuery({
-    name: 'hydrogenProductionUnitName',
+    name: 'unitName',
     type: String,
     description: 'Used to filter for a specific hydrogen-production unit',
     required: false,
     example: 'Hydrogen Electrolyzer Dortmund 001',
   })
   @ApiQuery({
-    name: 'period',
+    name: 'month',
     type: Date,
     description: 'Used to filter for a specific time period, in this case month and year',
     required: false,
@@ -128,16 +128,10 @@ export class ProductionController {
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
     @Query('pageNumber') pageNumber: number,
     @Query('pageSize') pageSize: number,
-    @Query('hydrogenProductionUnitName') hydrogenProductionUnitName: string,
-    @Query('period') period: Date,
+    @Query('unitName') unitName: string,
+    @Query('month') month: Date,
   ): Promise<PaginatedProductionDataDto> {
-    return this.service.readHydrogenProductionsByOwner(
-      authenticatedUser.sub,
-      pageNumber,
-      pageSize,
-      hydrogenProductionUnitName,
-      period,
-    );
+    return this.service.readHydrogenProductionsByOwner(authenticatedUser.sub, pageNumber, pageSize, unitName, month);
   }
 
   // TODO: Calculate statistics and remove mock implementation (DUHGW-376)
@@ -159,7 +153,7 @@ export class ProductionController {
       'Statistics period (YYYY-MM-DD). Only year and month are evaluated; day is ignored. Defaults to current month.',
   })
   @ApiQuery({
-    name: 'unit',
+    name: 'unitName',
     type: String,
     description: 'Search by production unit name or ID. Omit for all units',
     required: false,
@@ -167,7 +161,7 @@ export class ProductionController {
   readHydrogenProductionsStatisticsByOwner(
     @AuthenticatedUser() _authenticatedUser: AuthenticatedKCUser,
     @Query('month') _month: Date,
-    @Query('unit') _unit: string,
+    @Query('unitName') _unitName: string,
   ): ProductionStatisticsDto {
     return {
       hydrogen: {
