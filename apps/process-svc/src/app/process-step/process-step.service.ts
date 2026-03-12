@@ -110,6 +110,7 @@ export class ProcessStepService {
   async readPaginatedProcessStepsByPredecessorTypesAndOwner(
     payload: ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ): Promise<PaginatedProcessStepEntity> {
+    console.log('Arrived at the process service');
     const processes: ProcessStepEntity[] = await this.processStepRepository.findProcessStepsByPredecessorTypesAndOwner(
       payload.predecessorProcessTypes,
       payload.ownerId,

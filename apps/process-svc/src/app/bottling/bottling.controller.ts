@@ -10,9 +10,10 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   CreateHydrogenBottlingPayload,
+  PaginatedProcessStepEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
-  ReadProcessStepsByPredecessorTypesAndOwnerPayload,
+  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
 import { BottlingService } from './bottling.service';
@@ -33,10 +34,11 @@ export class BottlingController {
     return this.bottlingService.readProcessStepsByTypesAndActiveAndOwner(payload);
   }
 
-  @MessagePattern(ProcessStepMessagePatterns.READ_ALL_BY_PREDECESSOR_TYPES_AND_OWNER)
+  @MessagePattern(ProcessStepMessagePatterns.READ_PAGINATION_BY_PREDECESSOR_TYPES_AND_OWNER)
   async readProcessStepsByPredecessorTypesAndOwner(
-    payload: ReadProcessStepsByPredecessorTypesAndOwnerPayload,
-  ): Promise<ProcessStepEntity[]> {
+    payload: ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
+  ): Promise<PaginatedProcessStepEntity> {
+    console.log('Arrived at the bottling controller');
     return this.bottlingService.readProcessStepsByPredecessorTypesAndOwner(payload);
   }
 }

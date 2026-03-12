@@ -80,6 +80,7 @@ export class ProductionService {
     hydrogenProductionUnitId?: string,
     period?: Date,
   ): Promise<PaginatedProductionDataDto> {
+    console.log("BFF Service readHydrogenProductionsByOwner")
     const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
     const ownerId = userDetails.company.id;
 
@@ -88,7 +89,7 @@ export class ProductionService {
       ownerId,
       new ProductionDataFilter(pageNumber, pageSize, hydrogenProductionUnitId, period),
     );
-
+  console.log("BFF Service pre paginate")
     const paginatedProcessStep: PaginatedProcessStepEntity = await firstValueFrom(
       this.processSvc.send(ProcessStepMessagePatterns.READ_PAGINATION_BY_PREDECESSOR_TYPES_AND_OWNER, payload),
     );
