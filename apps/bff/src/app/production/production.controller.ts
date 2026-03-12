@@ -118,6 +118,7 @@ export class ProductionController {
     type: Date,
     description:
       'Statistics period (YYYY-MM-DD). Only year and month are evaluated; day is ignored. Defaults to current month.',
+    required: false,
   })
   @ApiQuery({
     name: 'unit',

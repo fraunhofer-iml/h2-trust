@@ -174,4 +174,8 @@ export class ProductionService {
 
     return CsvDocumentIntegrityResultDto.fromEntity(verificationResult);
   }
+
+  async readProductionStatistics(productionUnitNameOrId:string, ){
+
+  }
 }
