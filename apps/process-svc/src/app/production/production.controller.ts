@@ -20,22 +20,20 @@ import {
   VerifyCsvDocumentIntegrityResultEntity,
 } from '@h2-trust/amqp';
 import { CsvDocumentService } from './csv-document.service';
-import { ProductionCreationService } from './production-creation.service';
-import { ProductionFinalizationService } from './production-finalization.service';
 import { ProductionStagingService } from './production-staging.service';
+import { ProductionService } from './production.service';
 
 @Controller()
 export class ProductionController {
   constructor(
     private readonly csvDocumentService: CsvDocumentService,
-    private readonly productionCreationService: ProductionCreationService,
     private readonly productionStagingService: ProductionStagingService,
-    private readonly productionFinalizationService: ProductionFinalizationService,
+    private readonly productionService: ProductionService,
   ) {}
 
   @MessagePattern(ProductionMessagePatterns.CREATE)
   async createProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
-    return this.productionCreationService.createAndPersistProductions(payload);
+    return this.productionService.createProductions(payload);
   }
 
   @MessagePattern(ProductionMessagePatterns.STAGE)
@@ -45,7 +43,7 @@ export class ProductionController {
 
   @MessagePattern(ProductionMessagePatterns.FINALIZE)
   async finalizeProductions(payload: FinalizeProductionsPayload): Promise<ProcessStepEntity[]> {
-    return this.productionFinalizationService.finalizeProductions(payload);
+    return this.productionService.finalizeProductions(payload);
   }
 
   @MessagePattern(ProductionMessagePatterns.READ_CSV_DOCUMENTS_BY_COMPANY)

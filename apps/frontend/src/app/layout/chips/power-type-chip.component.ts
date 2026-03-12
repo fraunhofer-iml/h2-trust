@@ -30,6 +30,8 @@ export class PowerTypeChipComponent {
     const type = this.powerType();
 
     switch (type) {
+      case PowerType.NOT_SPECIFIED:
+        return ICONS.POWER.NON_RENEWABLE;
       case PowerType.NON_RENEWABLE:
         return ICONS.POWER.NON_RENEWABLE;
       case PowerType.PARTLY_RENEWABLE:
@@ -40,6 +42,7 @@ export class PowerTypeChipComponent {
   });
 
   private readonly chipColorByPowerType = {
+    [PowerType.NOT_SPECIFIED]: 'text-neutral-700 bg-neutral-100 ',
     [PowerType.NON_RENEWABLE]: 'text-neutral-700 bg-neutral-100 ',
     [PowerType.PARTLY_RENEWABLE]:
       'bg-gradient-to-r from-neutral-100 to-secondary-100 text-neutral-700 border-r-secondary-100 ',
