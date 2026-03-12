@@ -10,16 +10,16 @@ import { S3Client } from '@aws-sdk/client-s3';
 import { Module } from '@nestjs/common';
 import { ConfigurationModule, ConfigurationService } from '@h2-trust/configuration';
 import { StorageService } from './storage.service';
-import { FILEBASE_CLIENT, MINIO_CLIENT } from './storage.tokens';
+import { DECENTRALIZED_STORAGE, CENTRALIZED_STORAGE } from './storage.tokens';
 
 @Module({
   imports: [ConfigurationModule],
   providers: [
     {
-      provide: MINIO_CLIENT,
+      provide: CENTRALIZED_STORAGE,
       inject: [ConfigurationService],
       useFactory: (configService: ConfigurationService) => {
-        const config = configService.getGlobalConfiguration().minio;
+        const config = configService.getGlobalConfiguration().centralizedStorage;
         const protocol = config.useSSL ? 'https' : 'http';
         return new S3Client({
           endpoint: `${protocol}://${config.endPoint}:${config.port}`,
@@ -33,10 +33,10 @@ import { FILEBASE_CLIENT, MINIO_CLIENT } from './storage.tokens';
       },
     },
     {
-      provide: FILEBASE_CLIENT,
+      provide: DECENTRALIZED_STORAGE,
       inject: [ConfigurationService],
       useFactory: (configService: ConfigurationService) => {
-        const config = configService.getGlobalConfiguration().filebase;
+        const config = configService.getGlobalConfiguration().decentralizedStorage;
         const protocol = config.useSSL ? 'https' : 'http';
         return new S3Client({
           endpoint: `${protocol}://${config.endPoint}:${config.port}`,

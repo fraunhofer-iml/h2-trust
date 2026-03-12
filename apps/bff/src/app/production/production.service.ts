@@ -169,7 +169,7 @@ export class ProductionService {
     );
 
     return csvDocuments.map((doc) =>
-      ProcessedCsvDto.fromEntity(doc, this.storageService.minioUrl, userDetails.company.name),
+      ProcessedCsvDto.fromEntity(doc, this.storageService.centralizedStorageUrl, userDetails.company.name),
     );
   }
 

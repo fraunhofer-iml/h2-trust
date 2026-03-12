@@ -15,8 +15,8 @@ export const GLOBAL_CONFIGURATION_IDENTIFIER = 'global-configuration';
 export interface GlobalConfiguration {
   logLevel: LogLevel[];
   amqp: AmqpConfiguration;
-  minio: MinioConfiguration;
-  filebase: FilebaseConfiguration;
+  centralizedStorage: StorageConfiguration;
+  decentralizedStorage: StorageConfiguration;
   blockchain: BlockchainConfiguration;
   keycloak: KeycloakConfiguration;
 }
@@ -26,17 +26,7 @@ export interface AmqpConfiguration {
   queuePrefix: string;
 }
 
-export interface MinioConfiguration {
-  useSSL: boolean;
-  endPoint: string;
-  port: number;
-  region: string;
-  accessKey: string;
-  secretKey: string;
-  bucketName: string;
-}
-
-export interface FilebaseConfiguration {
+export interface StorageConfiguration {
   useSSL: boolean;
   endPoint: string;
   port: number;
@@ -67,25 +57,25 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
   amqp: {
     uri: requireEnv('AMQP_URI'),
     queuePrefix: requireEnv('AMQP_QUEUE_PREFIX'),
-  },
-  minio: {
-    useSSL: requireEnv('MINIO_USE_SSL') === 'true',
-    endPoint: requireEnv('MINIO_ENDPOINT'),
-    port: parseInt(requireEnv('MINIO_PORT')),
-    region: requireEnv('MINIO_REGION'),
-    accessKey: requireEnv('MINIO_ACCESS_KEY'),
-    secretKey: requireEnv('MINIO_SECRET_KEY'),
-    bucketName: requireEnv('MINIO_BUCKET_NAME'),
-  },
-  filebase: {
-    useSSL: requireEnv('FILEBASE_USE_SSL') === 'true',
-    endPoint: requireEnv('FILEBASE_ENDPOINT'),
-    port: parseInt(requireEnv('FILEBASE_PORT')),
-    region: requireEnv('FILEBASE_REGION'),
-    accessKey: requireEnv('FILEBASE_ACCESS_KEY'),
-    secretKey: requireEnv('FILEBASE_SECRET_KEY'),
-    bucketName: requireEnv('FILEBASE_BUCKET_NAME'),
-  },
+  } as AmqpConfiguration,
+  centralizedStorage: {
+    useSSL: requireEnv('CENTRALIZED_STORAGE_USE_SSL') === 'true',
+    endPoint: requireEnv('CENTRALIZED_STORAGE_ENDPOINT'),
+    port: parseInt(requireEnv('CENTRALIZED_STORAGE_PORT')),
+    region: requireEnv('CENTRALIZED_STORAGE_REGION'),
+    accessKey: requireEnv('CENTRALIZED_STORAGE_ACCESS_KEY'),
+    secretKey: requireEnv('CENTRALIZED_STORAGE_SECRET_KEY'),
+    bucketName: requireEnv('CENTRALIZED_STORAGE_BUCKET_NAME'),
+  } as StorageConfiguration,
+  decentralizedStorage: {
+    useSSL: requireEnv('DECENTRALIZED_STORAGE_USE_SSL') === 'true',
+    endPoint: requireEnv('DECENTRALIZED_STORAGE_ENDPOINT'),
+    port: parseInt(requireEnv('DECENTRALIZED_STORAGE_PORT')),
+    region: requireEnv('DECENTRALIZED_STORAGE_REGION'),
+    accessKey: requireEnv('DECENTRALIZED_STORAGE_ACCESS_KEY'),
+    secretKey: requireEnv('DECENTRALIZED_STORAGE_SECRET_KEY'),
+    bucketName: requireEnv('DECENTRALIZED_STORAGE_BUCKET_NAME'),
+  } as StorageConfiguration,
   blockchain: {
     enabled: requireEnv('BLOCKCHAIN_ENABLED') === 'true',
     rpcUrl: requireEnv('BLOCKCHAIN_RPC_URL'),
@@ -93,11 +83,11 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
     artifactPath: requireEnv('BLOCKCHAIN_ARTIFACT_PATH'),
     smartContractAddress: requireEnv('BLOCKCHAIN_SMART_CONTRACT_ADDRESS'),
     explorerUrl: requireEnv('BLOCKCHAIN_EXPLORER_URL'),
-  },
+  } as BlockchainConfiguration,
   keycloak: {
     url: requireEnv('KEYCLOAK_URL'),
     realm: requireEnv('KEYCLOAK_REALM'),
     clientId: requireEnv('KEYCLOAK_CLIENT_ID'),
     clientSecret: requireEnv('KEYCLOAK_CLIENT_SECRET'),
-  },
+  } as KeycloakConfiguration,
 }));

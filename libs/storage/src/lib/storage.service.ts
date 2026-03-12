@@ -11,43 +11,43 @@ import { GetObjectCommand, HeadObjectCommand, PutObjectCommand } from '@aws-sdk/
 import { S3Client } from '@aws-sdk/client-s3';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { FILEBASE_CLIENT, MINIO_CLIENT } from './storage.tokens';
+import { DECENTRALIZED_STORAGE, CENTRALIZED_STORAGE } from './storage.tokens';
 
 @Injectable()
 export class StorageService {
-  private readonly minioBucketName: string;
-  private readonly filebaseBucketName: string;
+  private readonly centralizedStorageBucketName: string;
+  private readonly decentralizedStorageBucketName: string;
 
-  readonly minioUrl: string;
+  readonly centralizedStorageUrl: string;
 
   constructor(
-    @Inject(MINIO_CLIENT) private readonly minioClient: S3Client,
-    @Inject(FILEBASE_CLIENT) private readonly filebaseClient: S3Client,
+    @Inject(CENTRALIZED_STORAGE) private readonly centralizedStorage: S3Client,
+    @Inject(DECENTRALIZED_STORAGE) private readonly decentralizedStorage: S3Client,
     private readonly configurationService: ConfigurationService,
   ) {
-    const minioConfig = this.configurationService.getGlobalConfiguration().minio;
-    const filebaseConfig = this.configurationService.getGlobalConfiguration().filebase;
+    const centralized = this.configurationService.getGlobalConfiguration().centralizedStorage;
+    const decentralized = this.configurationService.getGlobalConfiguration().decentralizedStorage;
 
-    this.minioBucketName = minioConfig.bucketName;
-    this.filebaseBucketName = filebaseConfig.bucketName;
+    this.centralizedStorageBucketName = centralized.bucketName;
+    this.decentralizedStorageBucketName = decentralized.bucketName;
 
-    const { endPoint, port, useSSL } = minioConfig;
+    const { endPoint, port, useSSL } = centralized;
     const protocol = useSSL ? 'https' : 'http';
-    this.minioUrl = `${protocol}://${endPoint}:${port}/${this.minioBucketName}`;
+    this.centralizedStorageUrl = `${protocol}://${endPoint}:${port}/${this.centralizedStorageBucketName}`;
   }
 
   async uploadPdfFile(fileName: string, file: Buffer): Promise<string | undefined> {
-    return this.putObject(this.minioClient, this.minioBucketName, fileName, file, 'application/pdf');
+    return this.putObject(this.centralizedStorage, this.centralizedStorageBucketName, fileName, file, 'application/pdf');
   }
 
   async downloadPdfFile(fileName: string): Promise<Stream.Readable> {
-    const response = await this.minioClient.send(new GetObjectCommand({ Bucket: this.minioBucketName, Key: fileName }));
+    const response = await this.centralizedStorage.send(new GetObjectCommand({ Bucket: this.centralizedStorageBucketName, Key: fileName }));
     return response.Body as Stream.Readable;
   }
 
   async pdfFileExists(fileName: string): Promise<boolean> {
     try {
-      await this.minioClient.send(new HeadObjectCommand({ Bucket: this.minioBucketName, Key: fileName }));
+      await this.centralizedStorage.send(new HeadObjectCommand({ Bucket: this.centralizedStorageBucketName, Key: fileName }));
       return true;
     } catch (err: any) {
       if (err.name === 'NoSuchKey' || err.name === 'NotFound' || err.$metadata?.httpStatusCode === 404) {
@@ -58,11 +58,11 @@ export class StorageService {
   }
 
   async uploadCsvFile(fileName: string, file: Buffer): Promise<string | undefined> {
-    return this.putObject(this.filebaseClient, this.filebaseBucketName, fileName, file, 'text/csv');
+    return this.putObject(this.decentralizedStorage, this.decentralizedStorageBucketName, fileName, file, 'text/csv');
   }
 
   async downloadCsvFile(fileName: string): Promise<Stream.Readable> {
-    const response = await this.filebaseClient.send(new GetObjectCommand({ Bucket: this.filebaseBucketName, Key: fileName }));
+    const response = await this.decentralizedStorage.send(new GetObjectCommand({ Bucket: this.decentralizedStorageBucketName, Key: fileName }));
     return response.Body as Stream.Readable;
   }
 

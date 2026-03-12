@@ -6,5 +6,5 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const MINIO_CLIENT = 'MINIO_CLIENT';
-export const FILEBASE_CLIENT = 'FILEBASE_CLIENT';
+export const CENTRALIZED_STORAGE = 'CENTRALIZED_STORAGE';
+export const DECENTRALIZED_STORAGE = 'DECENTRALIZED_STORAGE';

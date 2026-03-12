@@ -14,7 +14,7 @@ import {
   ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
-import { ConfigurationService, MinioConfiguration } from '@h2-trust/configuration';
+import { ConfigurationService, StorageConfiguration } from '@h2-trust/configuration';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
 import { ProcessType, RfnboType } from '@h2-trust/domain';
 
@@ -75,7 +75,7 @@ export class ProcessStepService {
 
   private assembleDocuments(processStep: ProcessStepEntity): DocumentEntity[] {
     const documents: DocumentEntity[] = [];
-    const minio: MinioConfiguration = this.configurationService.getGlobalConfiguration().minio;
+    const configuration: StorageConfiguration = this.configurationService.getGlobalConfiguration().centralizedStorage;
 
     processStep.documents?.forEach((document) => {
       if (document.fileName) {
@@ -83,7 +83,7 @@ export class ProcessStepService {
           new DocumentEntity(
             document.id,
             document.fileName,
-            `http://${minio.endPoint}:${minio.port}/${minio.bucketName}/${document.fileName}`,
+            `http://${configuration.endPoint}:${configuration.port}/${configuration.bucketName}/${document.fileName}`,
           ),
         );
       }

@@ -55,8 +55,8 @@ services:
     command:
       - |
         mc alias set local http://minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD}
-        mc mb --ignore-existing local/${MINIO_BUCKET_NAME}
-        mc anonymous set download local/${MINIO_BUCKET_NAME}
+        mc mb --ignore-existing local/${CENTRALIZED_STORAGE_BUCKET_NAME}
+        mc anonymous set download local/${CENTRALIZED_STORAGE_BUCKET_NAME}
 
   blockchain:
     build:
