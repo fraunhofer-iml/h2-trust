@@ -32,6 +32,8 @@ export class ProductionOverviewDto {
     powerProducer: string,
     powerConsumed: number,
     storageUnit: string,
+    powerType: string,
+    powerProductionUnit: string,
   ) {
     this.startedAt = startedAt;
     this.endedAt = endedAt;
@@ -42,9 +44,8 @@ export class ProductionOverviewDto {
     this.powerProducer = powerProducer;
     this.powerConsumed = powerConsumed;
     this.storageUnit = storageUnit;
-    // TODO: replace powerProductionUnit & powerType with actual values (DUHGW-271)
-    this.powerType = PowerType.PARTLY_RENEWABLE;
-    this.powerProductionUnit = 'power-production-unit';
+    this.powerType = powerType as PowerType;
+    this.powerProductionUnit = powerProductionUnit;
   }
 
   static fromEntity(processStep: ProcessStepEntity): ProductionOverviewDto {
@@ -60,7 +61,7 @@ export class ProductionOverviewDto {
       storageUnit: processStep.batch?.hydrogenStorageUnit?.name,
       // TODO: replace powerProductionUnit & powerType with actual values (DUHGW-271)
       powerProductionUnit: 'power-production-unit',
-      powerType: PowerType.PARTLY_RENEWABLE,
+      powerType: processStep.batch?.qualityDetails?.powerType ?? PowerType.NOT_SPECIFIED,
     };
   }
 
