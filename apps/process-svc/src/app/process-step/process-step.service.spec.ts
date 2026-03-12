@@ -204,7 +204,6 @@ describe('ProcessStepService', () => {
       const givenPayload = new ReadProcessStepsByPredecessorTypesAndOwnerPayload(
         [ProcessType.HYDROGEN_PRODUCTION],
         'company-1',
-        new ProductionDataFilter(),
       );
       const givenProcessSteps = [ProcessStepEntityFixture.createHydrogenBottling()];
 
@@ -217,10 +216,6 @@ describe('ProcessStepService', () => {
       expect(processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner).toHaveBeenCalledWith(
         givenPayload.predecessorProcessTypes,
         givenPayload.ownerId,
-        givenPayload.filter.pageNumber,
-        givenPayload.filter.pageSize,
-        givenPayload.filter.hydrogenProductionUnitId,
-        givenPayload.filter.period,
       );
       expect(actualResult).toEqual(givenProcessSteps);
     });
