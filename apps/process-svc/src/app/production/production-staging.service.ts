@@ -113,14 +113,15 @@ export class ProductionStagingService {
         }
 
         const fileName = `${fileHash}.csv`;
-        await this.storageService.uploadFile(fileName, buffer);
+        const cid = await this.storageService.uploadCsvFile(fileName, buffer);
+        console.log(`Uploaded file for unit ${ufi.unitId} with hash ${fileHash} to storage, received CID: ${cid}`);
 
         return {
           periods: new UnitAccountingPeriods<T>(ufi.unitId, accountingPeriods),
           type,
           fileName: fileName,
           hash: fileHash,
-          cid: "tbd", // TODO-MP: store IPFS CID (DUHGW-341)
+          cid: cid
         };
       }),
     );

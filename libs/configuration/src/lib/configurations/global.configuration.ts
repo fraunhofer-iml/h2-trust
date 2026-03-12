@@ -29,6 +29,7 @@ export interface MinioConfiguration {
   useSSL: boolean;
   endPoint: string;
   port: number;
+  region: string;
   accessKey: string;
   secretKey: string;
   bucketName: string;
@@ -60,6 +61,7 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
     useSSL: requireEnv('MINIO_USE_SSL') === 'true',
     endPoint: requireEnv('MINIO_ENDPOINT'),
     port: parseInt(requireEnv('MINIO_PORT')),
+    region: requireEnv('MINIO_REGION'),
     accessKey: requireEnv('MINIO_ACCESS_KEY'),
     secretKey: requireEnv('MINIO_SECRET_KEY'),
     bucketName: requireEnv('MINIO_BUCKET_NAME'),

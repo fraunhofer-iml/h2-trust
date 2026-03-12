@@ -7,20 +7,20 @@
  */
 
 import Stream from 'stream';
-import { Client } from 'minio';
-import { MINIO_CONNECTION } from 'nestjs-minio';
+import { GetObjectCommand, HeadObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client } from '@aws-sdk/client-s3';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { FileUtil } from './file.util';
+import { S3_CLIENT } from './storage.tokens';
 
 @Injectable()
 export class StorageService {
-  private readonly bucketName;
+  private readonly bucketName: string;
 
-  readonly minioUrl;
+  readonly minioUrl: string;
 
   constructor(
-    @Inject(MINIO_CONNECTION) private readonly client: Client,
+    @Inject(S3_CLIENT) private readonly client: S3Client,
     private readonly configurationService: ConfigurationService,
   ) {
     const minioConfig = this.configurationService.getGlobalConfiguration().minio;
@@ -32,35 +32,50 @@ export class StorageService {
     this.minioUrl = `${protocol}://${endPoint}:${port}/${this.bucketName}`;
   }
 
-  async uploadFile(fileName: string, file: Buffer): Promise<void> {
-    this.client.putObject(this.bucketName, fileName, file, file.length);
+  async uploadPdfFile(fileName: string, file: Buffer): Promise<string | undefined> {
+    return this.putObject(fileName, file, 'application/pdf');
   }
 
-  async uploadFileWithRandomFileName(originalFileName: string, file: Buffer): Promise<string> {
-    const randomFileName = FileUtil.createRandomFileName(originalFileName);
-    await this.client.putObject(this.bucketName, randomFileName, file, file.length);
-    return randomFileName;
-  }
-
-  async uploadPdfFile(fileName: string, file: Buffer): Promise<void> {
-    this.client.putObject(this.bucketName, fileName, file, file.length, {
-      'Content-Type': 'application/pdf',
-    });
+  async uploadCsvFile(fileName: string, file: Buffer): Promise<string | undefined> {
+    return this.putObject(fileName, file, 'text/csv');
   }
 
   async downloadFile(fileName: string): Promise<Stream.Readable> {
-    return this.client.getObject(this.bucketName, fileName);
+    const response = await this.client.send(new GetObjectCommand({ Bucket: this.bucketName, Key: fileName }));
+    return response.Body as Stream.Readable;
   }
 
   async fileExists(fileName: string): Promise<boolean> {
     try {
-      await this.client.statObject(this.bucketName, fileName);
+      await this.client.send(new HeadObjectCommand({ Bucket: this.bucketName, Key: fileName }));
       return true;
     } catch (err: any) {
-      if (err.code === 'NoSuchKey' || err.code === 'NotFound') {
+      if (err.name === 'NoSuchKey' || err.name === 'NotFound' || err.$metadata?.httpStatusCode === 404) {
         return false;
       }
       throw err;
     }
+  }
+
+  private async putObject(key: string, body: Buffer, contentType: string): Promise<string | undefined> {
+    let cid: string | undefined;
+    const middlewareName = `cid-capture-${key}-${Date.now()}`;
+
+    this.client.middlewareStack.add(
+      (next) => async (args) => {
+        const result = await next(args);
+        cid = (result.response as any).headers?.['x-amz-meta-cid'];
+        return result;
+      },
+      { step: 'deserialize', name: middlewareName },
+    );
+
+    try {
+      await this.client.send(new PutObjectCommand({ Bucket: this.bucketName, Key: key, Body: body, ContentType: contentType }));
+    } finally {
+      this.client.middlewareStack.remove(middlewareName);
+    }
+
+    return cid;
   }
 }

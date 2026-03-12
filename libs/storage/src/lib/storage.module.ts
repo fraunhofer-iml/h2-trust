@@ -6,27 +6,34 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { NestMinioModule, NestMinioOptions } from 'nestjs-minio';
+import { S3Client } from '@aws-sdk/client-s3';
 import { Module } from '@nestjs/common';
 import { ConfigurationModule, ConfigurationService } from '@h2-trust/configuration';
 import { StorageService } from './storage.service';
+import { S3_CLIENT } from './storage.tokens';
 
 @Module({
-  imports: [
-    ConfigurationModule,
-    NestMinioModule.registerAsync({
-      imports: [ConfigurationModule],
+  imports: [ConfigurationModule],
+  providers: [
+    {
+      provide: S3_CLIENT,
       inject: [ConfigurationService],
-      useFactory: async (configService: ConfigurationService): Promise<NestMinioOptions> => ({
-        endPoint: configService.getGlobalConfiguration().minio.endPoint,
-        port: configService.getGlobalConfiguration().minio.port,
-        useSSL: configService.getGlobalConfiguration().minio.useSSL,
-        accessKey: configService.getGlobalConfiguration().minio.accessKey,
-        secretKey: configService.getGlobalConfiguration().minio.secretKey,
-      }),
-    }),
+      useFactory: (configService: ConfigurationService) => {
+        const config = configService.getGlobalConfiguration().minio;
+        const protocol = config.useSSL ? 'https' : 'http';
+        return new S3Client({
+          endpoint: `${protocol}://${config.endPoint}:${config.port}`,
+          region: config.region,
+          credentials: {
+            accessKeyId: config.accessKey,
+            secretAccessKey: config.secretKey,
+          },
+          forcePathStyle: true,
+        });
+      },
+    },
+    StorageService,
   ],
-  providers: [StorageService],
   exports: [StorageService],
 })
-export class StorageModule {}
+export class StorageModule { }
