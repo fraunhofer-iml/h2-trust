@@ -10,19 +10,19 @@ import { PaginatedProcessStepEntity } from '@h2-trust/amqp';
 import { ProductionOverviewDto } from './production-overview.dto';
 
 export class PaginatedProductionDataDto {
-  tableData: ProductionOverviewDto[];
+  data: ProductionOverviewDto[];
   totalItems: number;
   currentPage: number;
 
-  constructor(tableData: ProductionOverviewDto[], totalItems: number, currentPage: number) {
-    this.tableData = tableData;
+  constructor(data: ProductionOverviewDto[], totalItems: number, currentPage: number) {
+    this.data = data;
     this.totalItems = totalItems;
     this.currentPage = currentPage;
   }
 
   static fromEntity(entity: PaginatedProcessStepEntity): PaginatedProductionDataDto {
     return {
-      tableData: entity.processSteps.map(ProductionOverviewDto.fromEntity),
+      data: entity.processSteps.map(ProductionOverviewDto.fromEntity),
       totalItems: entity.totalAmountOfItems,
       currentPage: entity.currentPage,
     };

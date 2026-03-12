@@ -164,7 +164,7 @@ describe('ProductionController', () => {
       },
     ];
     const paginatedProductionDataDtoMock: PaginatedProductionDataDto = {
-      tableData: processStepEntityMocks.map(ProductionOverviewDto.fromEntity),
+      data: processStepEntityMocks.map(ProductionOverviewDto.fromEntity),
       totalItems: 1,
       currentPage: 1,
     };
