@@ -19,7 +19,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { BottlingOverviewDto } from '@h2-trust/api';
-import { RfnboChipComponent } from '../../../layout/rfnbo-chip/rfnbo-chip.component';
+import { RfnboChipComponent } from '../../../layout/chips/rfnbo-chip.component';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 

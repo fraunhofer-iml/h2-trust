@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType, EnergySource } from '@h2-trust/domain';
+import { BatchType, EnergySource, PowerType } from '@h2-trust/domain';
 import { EnumLabelMapper } from '../../../../labels';
 import { CompanyDtoMock } from '../../../company';
 import { PowerBatchDto } from '../power-batch.dto';
@@ -24,6 +24,7 @@ export const PowerBatchesMock: PowerBatchDto[] = [
     producer: CompanyDtoMock[0].name,
     unitId: 'power-production-unit-1',
     batchType: BatchType.POWER,
+    powerType: PowerType.RENEWABLE,
   },
   {
     id: 'power-batch-2-wind',
@@ -36,6 +37,7 @@ export const PowerBatchesMock: PowerBatchDto[] = [
     producer: CompanyDtoMock[0].name,
     unitId: 'power-production-unit-1',
     batchType: BatchType.POWER,
+    powerType: PowerType.RENEWABLE,
   },
   {
     id: 'power-batch-3-solar',
@@ -48,6 +50,7 @@ export const PowerBatchesMock: PowerBatchDto[] = [
     producer: CompanyDtoMock[0].name,
     unitId: 'power-production-unit-1',
     batchType: BatchType.POWER,
+    powerType: PowerType.RENEWABLE,
   },
   {
     id: 'power-batch-4-solar',
@@ -60,5 +63,6 @@ export const PowerBatchesMock: PowerBatchDto[] = [
     producer: CompanyDtoMock[0].name,
     unitId: 'power-production-unit-1',
     batchType: BatchType.POWER,
+    powerType: PowerType.RENEWABLE,
   },
 ];

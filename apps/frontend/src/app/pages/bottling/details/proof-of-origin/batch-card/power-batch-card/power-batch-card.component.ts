@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { PowerTypeChipComponent } from 'apps/frontend/src/app/layout/chips/power-type-chip.component';
 import { ProofOfOriginCardComponent } from 'apps/frontend/src/app/layout/proof-of-origin-card/proof-of-origin-card.component';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
@@ -17,7 +18,14 @@ import { BatchEmissionsComponent } from '../batch-emissions/batch-emissions.comp
 
 @Component({
   selector: 'app-power-batch-card',
-  imports: [CommonModule, BaseSheetComponent, BatchEmissionsComponent, UnitPipe, ProofOfOriginCardComponent],
+  imports: [
+    CommonModule,
+    BaseSheetComponent,
+    BatchEmissionsComponent,
+    UnitPipe,
+    ProofOfOriginCardComponent,
+    PowerTypeChipComponent,
+  ],
   templateUrl: './power-batch-card.component.html',
 })
 export class PowerBatchCardComponent {
