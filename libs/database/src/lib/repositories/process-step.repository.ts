@@ -36,7 +36,7 @@ export class ProcessStepRepository {
   async findProcessStepsByPredecessorTypesAndOwner(
     predecessorProcessTypes: string[],
     ownerId: string,
-    hydrogenProductionUnitId?: string,
+    hydrogenProductionUnitName?: string,
     period?: Date,
   ): Promise<ProcessStepEntity[]> {
     const predecessorsFilter =
@@ -52,10 +52,10 @@ export class ProcessStepRepository {
           }
         : {};
 
-    const hydrogenUnitWhereInput = hydrogenProductionUnitId ? { id: hydrogenProductionUnitId } : {};
+    const hydrogenUnitWhereInput = hydrogenProductionUnitName ? { name: hydrogenProductionUnitName } : {};
     const periodWhereInput = period
       ? {
-          gte: period,
+          gte: new Date(period.getFullYear(), period.getMonth(), 1),
           lt: new Date(period.getFullYear(), period.getMonth() + 1, 1),
         }
       : {};

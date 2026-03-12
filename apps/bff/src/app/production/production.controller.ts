@@ -111,11 +111,11 @@ export class ProductionController {
     example: '5',
   })
   @ApiQuery({
-    name: 'hydrogenProductionUnitId',
+    name: 'hydrogenProductionUnitName',
     type: String,
     description: 'Used to filter for a specific hydrogen-production unit',
     required: false,
-    example: 'production-unit-1',
+    example: 'Hydrogen Electrolyzer Dortmund 001',
   })
   @ApiQuery({
     name: 'period',
@@ -128,19 +128,19 @@ export class ProductionController {
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
     @Query('pageNumber') pageNumber: number,
     @Query('pageSize') pageSize: number,
-    @Query('hydrogenProductionUnitId') hydrogenProductionUnitId: string,
+    @Query('hydrogenProductionUnitName') hydrogenProductionUnitName: string,
     @Query('period') period: Date,
   ): Promise<PaginatedProductionDataDto> {
     return this.service.readHydrogenProductionsByOwner(
       authenticatedUser.sub,
       pageNumber,
       pageSize,
-      hydrogenProductionUnitId,
+      hydrogenProductionUnitName,
       period,
     );
   }
 
-  // TODO: Calculate statistics and remove mock imlementation (DUHGW-376)
+  // TODO: Calculate statistics and remove mock implementation (DUHGW-376)
   @Get('/statistics')
   @ApiBearerAuth()
   @ApiOperation({

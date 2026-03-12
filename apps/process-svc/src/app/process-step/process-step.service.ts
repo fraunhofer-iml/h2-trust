@@ -110,11 +110,10 @@ export class ProcessStepService {
   async readPaginatedProcessStepsByPredecessorTypesAndOwner(
     payload: ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ): Promise<PaginatedProcessStepEntity> {
-    console.log('Arrived at the process service');
     const processes: ProcessStepEntity[] = await this.processStepRepository.findProcessStepsByPredecessorTypesAndOwner(
       payload.predecessorProcessTypes,
       payload.ownerId,
-      payload.filter.hydrogenProductionUnitId,
+      payload.filter.hydrogenProductionUnitName,
       payload.filter.period ? new Date(payload.filter.period) : payload.filter.period,
     );
     return this.createProcessStepsPagination(processes, payload.filter.pageSize, payload.filter.pageNumber);

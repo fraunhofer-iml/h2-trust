@@ -38,7 +38,6 @@ export class BottlingController {
   async readProcessStepsByPredecessorTypesAndOwner(
     payload: ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ): Promise<PaginatedProcessStepEntity> {
-    console.log('Arrived at the bottling controller');
     return this.bottlingService.readProcessStepsByPredecessorTypesAndOwner(payload);
   }
 }

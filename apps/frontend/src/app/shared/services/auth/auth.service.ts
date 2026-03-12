@@ -25,7 +25,6 @@ export class AuthService {
     email: string;
   }> {
     const profile: KeycloakProfile = await this.keycloak.loadUserProfile();
-    console.log(this.keycloak.token);
     return {
       firstName: profile.firstName ?? '',
       lastName: profile.lastName ?? '',
