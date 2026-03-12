@@ -10,13 +10,13 @@ import { S3Client } from '@aws-sdk/client-s3';
 import { Module } from '@nestjs/common';
 import { ConfigurationModule, ConfigurationService } from '@h2-trust/configuration';
 import { StorageService } from './storage.service';
-import { S3_CLIENT } from './storage.tokens';
+import { FILEBASE_CLIENT, MINIO_CLIENT } from './storage.tokens';
 
 @Module({
   imports: [ConfigurationModule],
   providers: [
     {
-      provide: S3_CLIENT,
+      provide: MINIO_CLIENT,
       inject: [ConfigurationService],
       useFactory: (configService: ConfigurationService) => {
         const config = configService.getGlobalConfiguration().minio;
@@ -32,8 +32,25 @@ import { S3_CLIENT } from './storage.tokens';
         });
       },
     },
+    {
+      provide: FILEBASE_CLIENT,
+      inject: [ConfigurationService],
+      useFactory: (configService: ConfigurationService) => {
+        const config = configService.getGlobalConfiguration().filebase;
+        const protocol = config.useSSL ? 'https' : 'http';
+        return new S3Client({
+          endpoint: `${protocol}://${config.endPoint}:${config.port}`,
+          region: config.region,
+          credentials: {
+            accessKeyId: config.accessKey,
+            secretAccessKey: config.secretKey,
+          },
+          forcePathStyle: false,
+        });
+      },
+    },
     StorageService,
   ],
   exports: [StorageService],
 })
-export class StorageModule { }
+export class StorageModule {}

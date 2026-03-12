@@ -16,7 +16,7 @@ export class FileDownloadService {
   constructor(private readonly storage: StorageService) {}
 
   async downloadFilesAsZip(res: Response, fileNames: string[]) {
-    const filesExist = await Promise.all(fileNames.map((f) => this.storage.fileExists(f)));
+    const filesExist = await Promise.all(fileNames.map((f) => this.storage.pdfFileExists(f)));
     const missingFiles = fileNames.filter((_, i) => !filesExist[i]);
 
     if (missingFiles.length > 0) {
@@ -29,7 +29,7 @@ export class FileDownloadService {
     zip.outputStream.pipe(res);
 
     for (const file of fileNames) {
-      const fileStream = await this.storage.downloadFile(file);
+      const fileStream = await this.storage.downloadPdfFile(file);
       zip.addReadStream(fileStream, file);
     }
 

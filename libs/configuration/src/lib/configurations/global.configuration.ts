@@ -16,6 +16,7 @@ export interface GlobalConfiguration {
   logLevel: LogLevel[];
   amqp: AmqpConfiguration;
   minio: MinioConfiguration;
+  filebase: FilebaseConfiguration;
   blockchain: BlockchainConfiguration;
   keycloak: KeycloakConfiguration;
 }
@@ -26,6 +27,16 @@ export interface AmqpConfiguration {
 }
 
 export interface MinioConfiguration {
+  useSSL: boolean;
+  endPoint: string;
+  port: number;
+  region: string;
+  accessKey: string;
+  secretKey: string;
+  bucketName: string;
+}
+
+export interface FilebaseConfiguration {
   useSSL: boolean;
   endPoint: string;
   port: number;
@@ -65,6 +76,15 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
     accessKey: requireEnv('MINIO_ACCESS_KEY'),
     secretKey: requireEnv('MINIO_SECRET_KEY'),
     bucketName: requireEnv('MINIO_BUCKET_NAME'),
+  },
+  filebase: {
+    useSSL: requireEnv('FILEBASE_USE_SSL') === 'true',
+    endPoint: requireEnv('FILEBASE_ENDPOINT'),
+    port: parseInt(requireEnv('FILEBASE_PORT')),
+    region: requireEnv('FILEBASE_REGION'),
+    accessKey: requireEnv('FILEBASE_ACCESS_KEY'),
+    secretKey: requireEnv('FILEBASE_SECRET_KEY'),
+    bucketName: requireEnv('FILEBASE_BUCKET_NAME'),
   },
   blockchain: {
     enabled: requireEnv('BLOCKCHAIN_ENABLED') === 'true',

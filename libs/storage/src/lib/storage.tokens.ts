@@ -6,4 +6,5 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const S3_CLIENT = 'S3_CLIENT';
+export const MINIO_CLIENT = 'MINIO_CLIENT';
+export const FILEBASE_CLIENT = 'FILEBASE_CLIENT';
