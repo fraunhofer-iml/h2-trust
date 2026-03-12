@@ -11,7 +11,7 @@ import { GetObjectCommand, HeadObjectCommand, PutObjectCommand } from '@aws-sdk/
 import { S3Client } from '@aws-sdk/client-s3';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { DECENTRALIZED_STORAGE, CENTRALIZED_STORAGE } from './storage.tokens';
+import { DECENTRALIZED_STORAGE_CLIENT, CENTRALIZED_STORAGE_CLIENT } from './storage.tokens';
 
 @Injectable()
 export class StorageService {
@@ -21,8 +21,8 @@ export class StorageService {
   readonly centralizedStorageUrl: string;
 
   constructor(
-    @Inject(CENTRALIZED_STORAGE) private readonly centralizedStorage: S3Client,
-    @Inject(DECENTRALIZED_STORAGE) private readonly decentralizedStorage: S3Client,
+    @Inject(CENTRALIZED_STORAGE_CLIENT) private readonly centralizedStorage: S3Client,
+    @Inject(DECENTRALIZED_STORAGE_CLIENT) private readonly decentralizedStorage: S3Client,
     private readonly configurationService: ConfigurationService,
   ) {
     const centralized = this.configurationService.getGlobalConfiguration().centralizedStorage;

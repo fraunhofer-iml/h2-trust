@@ -8,49 +8,46 @@
 
 import { S3Client } from '@aws-sdk/client-s3';
 import { Module } from '@nestjs/common';
-import { ConfigurationModule, ConfigurationService } from '@h2-trust/configuration';
+import { ConfigurationModule, ConfigurationService, StorageConfiguration } from '@h2-trust/configuration';
 import { StorageService } from './storage.service';
-import { DECENTRALIZED_STORAGE, CENTRALIZED_STORAGE } from './storage.tokens';
+import { DECENTRALIZED_STORAGE_CLIENT, CENTRALIZED_STORAGE_CLIENT } from './storage.tokens';
+
+function createCentralizedStorageClient(configService: ConfigurationService): S3Client {
+  return createS3Client(configService.getGlobalConfiguration().centralizedStorage, true);
+}
+
+function createDecentralizedStorageClient(configService: ConfigurationService): S3Client {
+  return createS3Client(configService.getGlobalConfiguration().decentralizedStorage, false);
+}
+
+function createS3Client(config: StorageConfiguration, forcePathStyle: boolean): S3Client {
+  const protocol = config.useSSL ? 'https' : 'http';
+  return new S3Client({
+    endpoint: `${protocol}://${config.endPoint}:${config.port}`,
+    region: config.region,
+    credentials: {
+      accessKeyId: config.accessKey,
+      secretAccessKey: config.secretKey,
+    },
+    forcePathStyle,
+  });
+}
 
 @Module({
   imports: [ConfigurationModule],
   providers: [
     {
-      provide: CENTRALIZED_STORAGE,
+      provide: CENTRALIZED_STORAGE_CLIENT,
       inject: [ConfigurationService],
-      useFactory: (configService: ConfigurationService) => {
-        const config = configService.getGlobalConfiguration().centralizedStorage;
-        const protocol = config.useSSL ? 'https' : 'http';
-        return new S3Client({
-          endpoint: `${protocol}://${config.endPoint}:${config.port}`,
-          region: config.region,
-          credentials: {
-            accessKeyId: config.accessKey,
-            secretAccessKey: config.secretKey,
-          },
-          forcePathStyle: true,
-        });
-      },
+      useFactory: createCentralizedStorageClient,
     },
     {
-      provide: DECENTRALIZED_STORAGE,
+      provide: DECENTRALIZED_STORAGE_CLIENT,
       inject: [ConfigurationService],
-      useFactory: (configService: ConfigurationService) => {
-        const config = configService.getGlobalConfiguration().decentralizedStorage;
-        const protocol = config.useSSL ? 'https' : 'http';
-        return new S3Client({
-          endpoint: `${protocol}://${config.endPoint}:${config.port}`,
-          region: config.region,
-          credentials: {
-            accessKeyId: config.accessKey,
-            secretAccessKey: config.secretKey,
-          },
-          forcePathStyle: false,
-        });
-      },
+      useFactory: createDecentralizedStorageClient,
     },
     StorageService,
   ],
   exports: [StorageService],
 })
-export class StorageModule {}
+export class StorageModule { }
