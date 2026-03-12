@@ -52,6 +52,7 @@ export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Pri
                 create: {
                   color: processStep.batch.qualityDetails.color,
                   rfnboType: processStep.batch.qualityDetails.rfnboType,
+                  powerType: processStep.batch.qualityDetails.powerType,
                 },
               },
             },

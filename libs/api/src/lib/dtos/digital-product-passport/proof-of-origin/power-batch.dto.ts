@@ -27,13 +27,13 @@ export class PowerBatchDto extends BatchDto {
     unitId: string,
     energySource: EnergySource,
     accountingPeriodEnd: Date,
+    powerType: PowerType,
   ) {
     super(id, emission, creationDate, amount, unit, BatchType.POWER);
     this.producer = producer;
     this.unitId = unitId;
     this.energySource = energySource;
     this.accountingPeriodEnd = accountingPeriodEnd;
-    // TODO: replace with actual value (DUHGW-266)
-    this.powerType = PowerType.PARTLY_RENEWABLE;
+    this.powerType = powerType;
   }
 }
