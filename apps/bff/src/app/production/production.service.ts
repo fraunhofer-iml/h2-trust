@@ -24,7 +24,6 @@ import {
   ProductionStagingResultEntity,
   ReadByIdPayload,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
-  ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   StageProductionsPayload,
   UnitFileReference,
   VerifyCsvDocumentIntegrityResultEntity,
