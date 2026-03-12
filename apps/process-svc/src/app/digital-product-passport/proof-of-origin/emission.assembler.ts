@@ -38,9 +38,12 @@ export class EmissionAssembler {
 
     const power = powerProduction.batch.amount;
     const powerInput = `Power Input: ${power} ${MeasurementUnit.KWH}`;
+    const renewableGridPower = powerProduction.batch.qualityDetails.powerType == PowerType.PARTLY_RENEWABLE;
 
     const emissionFactorLabel = EnumLabelMapper.getEnergySource(energySource);
-    const emissionFactor = EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[energySource];
+    const emissionFactor = renewableGridPower
+      ? EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[EnergySource.SOLAR_ENERGY]
+      : EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[energySource];
     const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} ${MeasurementUnit.G_CO2_PER_KWH}`;
 
     const result = power * emissionFactor;
