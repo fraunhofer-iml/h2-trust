@@ -21,6 +21,7 @@ import {
   EnergySource,
   FuelType,
   MeasurementUnit,
+  PowerType,
   ProcessType,
   TrailerParameter,
   TransportMode,
@@ -91,7 +92,12 @@ export class EmissionAssembler {
       );
     }
 
-    const emissionFactor = EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[EnergySource.GRID];
+    //why was the emission factor always the one for GRID power?
+    const emissionFactor =
+      hydrogenProduction.batch.qualityDetails.powerType == PowerType.NON_RENEWABLE
+        ? EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[EnergySource.GRID]
+        : EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[EnergySource.SOLAR_ENERGY];
+
     const result =
       EmissionNumericConstants.ENERGY_DEMAND_COMPRESSION_KWH_PER_KG_H2 *
       emissionFactor *

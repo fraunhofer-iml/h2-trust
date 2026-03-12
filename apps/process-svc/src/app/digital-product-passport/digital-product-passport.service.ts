@@ -8,6 +8,7 @@
 
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
+  BatchEntity,
   BrokerException,
   DigitalProductPassportEntity,
   HydrogenComponentEntity,
@@ -17,7 +18,7 @@ import {
   ProvenanceEntity,
   RedComplianceEntity,
 } from '@h2-trust/amqp';
-import { PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
+import { BatchType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentAssembler } from '../process-step/hydrogenComponent/hydrogen-component.assembler';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { EmissionService } from './proof-of-origin/emission.service';
@@ -61,7 +62,10 @@ export class DigitalProductPassportService {
   }
 
   private async readDigitalProductPassport(processStep: ProcessStepEntity): Promise<DigitalProductPassportEntity> {
-    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStep);
+    const provenanceWithHydrogenStorageChain: ProvenanceEntity =
+      await this.provenanceService.buildProvenance(processStep);
+    const provenance = await this.updateProvenance(provenanceWithHydrogenStorageChain);
+
     const redCompliance: RedComplianceEntity = await this.redComplianceService.determineRedCompliance(
       processStep.id,
       provenance,
@@ -144,6 +148,45 @@ export class DigitalProductPassportService {
       proofOfSustainability,
       proofOfOrigin,
       powerType,
+    );
+  }
+
+  /**
+   * Updates a provenence and sets the hydrogen production list to the list of the root hydrogen production elements (the ones that only have POWER and WATER as predecessor).
+   * @param provenance
+   * @returns
+   */
+  private async updateProvenance(provenance: ProvenanceEntity): Promise<ProvenanceEntity> {
+    const processStep: ProcessStepEntity[] = await this.getRootHydrogenProductionsForProvenance(provenance);
+    provenance.hydrogenProductions = processStep.filter((ps) => ps.batch.type == BatchType.HYDROGEN);
+    provenance.waterConsumptions = processStep.filter((ps) => ps.batch.type == BatchType.WATER);
+    provenance.powerProductions = processStep.filter((ps) => ps.batch.type == BatchType.POWER);
+    return provenance;
+  }
+
+  private async getRootHydrogenProductionsForProvenance(provenance: ProvenanceEntity): Promise<ProcessStepEntity[]> {
+    const hydrogenProduction: ProcessStepEntity[] = provenance.hydrogenProductions;
+    return (await Promise.all(hydrogenProduction.map((ps) => this.getRootHydrogenProductions(ps)))).flatMap((x) => x);
+  }
+
+  private async getRootHydrogenProductions(processStep: ProcessStepEntity): Promise<ProcessStepEntity[]> {
+    if (this.isProcessStepRootHydrogenProduction(processStep)) {
+      const waterAndPowerPS = await this.getPredecessorsForBatch(processStep.batch);
+      return [processStep, ...waterAndPowerPS];
+    }
+    const predecessors: ProcessStepEntity[] = await this.getPredecessorsForBatch(processStep.batch);
+    return (await Promise.all(predecessors.map((pred) => this.getRootHydrogenProductions(pred)))).flatMap((x) => x);
+  }
+
+  private isProcessStepRootHydrogenProduction(processStep: ProcessStepEntity): boolean {
+    return processStep.batch.predecessors.every((pred) => pred.type == BatchType.POWER || pred.type == BatchType.WATER);
+  }
+
+  private async getPredecessorsForBatch(batch: BatchEntity): Promise<ProcessStepEntity[]> {
+    return Promise.all(
+      batch.predecessors.map((predecessor) => {
+        return this.processStepService.readProcessStep(predecessor.processStepId);
+      }),
     );
   }
 
