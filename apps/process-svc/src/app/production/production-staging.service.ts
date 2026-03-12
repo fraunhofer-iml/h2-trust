@@ -17,7 +17,7 @@ import {
   UnitAccountingPeriods,
   UnitFileImport,
 } from '@h2-trust/amqp';
-import { BlockchainService, HashUtil, ProofEntry } from '@h2-trust/blockchain';
+import { BlockchainService, HashUtil, Proof } from '@h2-trust/blockchain';
 import {
   CreateCsvDocumentInput,
   CsvImportRepository,
@@ -29,8 +29,7 @@ import { DecentralizedStorageService } from '@h2-trust/storage';
 import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
 import { ProductionDistributor } from './production-distributor';
 
-interface DocumentProof {
-  fileName: string;
+export interface DocumentProof {
   hash: string;
   cid: string;
 }
@@ -100,10 +99,10 @@ export class ProductionStagingService {
       unitFileImports.map(async (ufi) => {
         const buffer = Buffer.from(ufi.encodedFileBuffer, 'base64');
         const computedHash = HashUtil.hashBuffer(buffer);
-        const fileHash = ufi.hashedFileBuffer;
+        const originalHash = ufi.hashedFileBuffer;
 
-        if (computedHash !== fileHash) {
-          throw new Error(`File integrity check failed for unit ${ufi.unitId}: expected hash ${fileHash} but computed ${computedHash}`);
+        if (computedHash !== originalHash) {
+          throw new Error(`File integrity check failed for unit ${ufi.unitId}: expected hash ${originalHash} but computed ${computedHash}`);
         }
 
         const accountingPeriods = await AccountingPeriodCsvParser.parseBuffer<T>(buffer, headers);
@@ -112,15 +111,14 @@ export class ProductionStagingService {
           throw new Error(`${type} production file does not contain any valid items.`);
         }
 
-        const fileName = `${fileHash}.csv`;
+        const fileName = `${originalHash}.csv`;
         const cid = await this.storageService.uploadCsvFile(fileName, buffer);
-        console.log(`Uploaded file for unit ${ufi.unitId} with hash ${fileHash} to storage, received CID: ${cid}`);
+        console.log(`Uploaded file for unit ${ufi.unitId} with fileName ${fileName} to storage, received CID: ${cid}`);
 
         return {
           periods: new UnitAccountingPeriods<T>(ufi.unitId, accountingPeriods),
           type,
-          fileName: fileName,
-          hash: fileHash,
+          hash: originalHash,
           cid: cid
         };
       }),
@@ -149,7 +147,7 @@ export class ProductionStagingService {
         type: production.type,
         startedAt: new Date(startedAt),
         endedAt: new Date(endedAt),
-        fileName: production.fileName,
+        fileHash: production.hash,
         amount,
       };
     });
@@ -164,13 +162,13 @@ export class ProductionStagingService {
       return;
     }
 
-    const csvDocumentsByFileName = new Map(csvDocuments.map((csvDocument) => [csvDocument.fileName, csvDocument]));
+    const csvDocumentsByFileHash = new Map(csvDocuments.map((csvDocument) => [csvDocument.fileHash, csvDocument]));
 
-    const proofEntries: ProofEntry[] = documentProofs.map((documentProof) => {
-      const csvDocument = csvDocumentsByFileName.get(documentProof.fileName);
+    const proofs: Proof[] = documentProofs.map((documentProof) => {
+      const csvDocument = csvDocumentsByFileHash.get(documentProof.hash);
       if (!csvDocument) {
         throw new BrokerException(
-          `CSV document with file name ${documentProof.fileName} not found in database after creation.`,
+          `CSV document with hash ${documentProof.hash} not found in database after creation.`,
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
@@ -178,8 +176,8 @@ export class ProductionStagingService {
     });
 
     try {
-      const txHash = await this.blockchainService.storeProofs(proofEntries);
-      this.logger.debug(`✅ Stored ${proofEntries.length} proofs in tx ${txHash}`);
+      const txHash = await this.blockchainService.storeProofs(proofs);
+      this.logger.debug(`✅ Stored ${proofs.length} proofs in tx ${txHash}`);
 
       await this.csvImportRepository.updateTransactionHash(
         csvDocuments.map((csvDocument) => csvDocument.id),
@@ -187,7 +185,7 @@ export class ProductionStagingService {
       );
     } catch (error) {
       this.logger.error(
-        `Failed to store proofs for documents on-chain: ${documentProofs.map((d) => d.fileName).join(', ')}`,
+        `Failed to store proofs for documents on-chain: ${documentProofs.map((d) => d.hash).join(', ')}`,
         error instanceof Error ? error.stack : undefined,
       );
     }

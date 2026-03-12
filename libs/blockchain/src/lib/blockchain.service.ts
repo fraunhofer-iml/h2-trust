@@ -19,24 +19,18 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ProofEntity } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 
-export interface ProofEntry {
-  uuid: string;
+export interface Proof {
   hash: string;
   cid: string;
 }
 
-interface Proof {
-  hash: string;
-  cid: string;
-}
-
-export interface BlockchainMetadata {
+interface BlockchainMetadata {
   blockNumber: number;
   blockTimestamp: Date;
 }
 
 interface ProofStorageContract extends BaseContract {
-  storeProofs(proofs: ProofEntry[]): Promise<ContractTransactionResponse>;
+  storeProofs(proofs: Proof[]): Promise<ContractTransactionResponse>;
   getProofByUuid(uuid: string): Promise<Proof>;
 }
 
@@ -81,15 +75,15 @@ export class BlockchainService {
     return new Contract(this.smartContractAddress, abi, signer) as unknown as ProofStorageContract;
   }
 
-  async storeProofs(proofEntries: ProofEntry[]): Promise<string | null> {
+  async storeProofs(proofs: Proof[]): Promise<string | null> {
     if (!this.blockchainEnabled) {
-      this.logger.debug(`⏭️ Blockchain disabled, skipping proof storage of ${proofEntries.length} entries`);
+      this.logger.debug(`⏭️ Blockchain disabled, skipping proof storage of ${proofs.length} entries`);
       return null;
     }
 
-    this.logger.debug(`📝 Storing proofs:\n${proofEntries.map((e) => JSON.stringify(e)).join('\n')}`);
+    this.logger.debug(`📝 Storing proofs:\n${proofs.map((e) => JSON.stringify(e)).join('\n')}`);
 
-    const tx = await this.contract.storeProofs(proofEntries);
+    const tx = await this.contract.storeProofs(proofs);
     await tx.wait();
 
     this.logger.debug(`✅ Proof stored: ${tx.hash}`);

@@ -12,7 +12,7 @@ import { CsvDocumentEntity } from '@h2-trust/amqp';
 import { PrismaService } from '../prisma.service';
 
 export interface CreateCsvDocumentInput {
-  fileName: string;
+  fileHash: string;
   type: string;
   startedAt: Date;
   endedAt: Date;
@@ -42,7 +42,7 @@ export class CsvImportRepository {
 
     const documents = await client.csvDocument.createManyAndReturn({
       data: inputs.map((input) => ({
-        fileName: input.fileName,
+        fileHash: input.fileHash,
         type: input.type,
         startedAt: input.startedAt,
         endedAt: input.endedAt,
@@ -89,3 +89,4 @@ export class CsvImportRepository {
     return document ? CsvDocumentEntity.fromDatabase(document) : null;
   }
 }
+0

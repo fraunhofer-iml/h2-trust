@@ -10,7 +10,7 @@ import { CsvDocumentDbType } from '@h2-trust/database';
 
 export class CsvDocumentEntity {
   id: string;
-  fileName: string;
+  fileHash: string;
   type: string;
   startedAt: Date;
   endedAt: Date;
@@ -19,7 +19,7 @@ export class CsvDocumentEntity {
 
   constructor(
     id: string,
-    fileName: string,
+    fileHash: string,
     type: string,
     startedAt: Date,
     endedAt: Date,
@@ -27,7 +27,7 @@ export class CsvDocumentEntity {
     transactionHash?: string,
   ) {
     this.id = id;
-    this.fileName = fileName;
+    this.fileHash = fileHash;
     this.type = type;
     this.startedAt = startedAt;
     this.endedAt = endedAt;
@@ -38,7 +38,7 @@ export class CsvDocumentEntity {
   static fromDatabase(csvDocument: CsvDocumentDbType): CsvDocumentEntity {
     return new CsvDocumentEntity(
       csvDocument.id,
-      csvDocument.fileName,
+      csvDocument.fileHash,
       csvDocument.type,
       csvDocument.startedAt,
       csvDocument.endedAt,

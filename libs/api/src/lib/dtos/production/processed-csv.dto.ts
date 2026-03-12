@@ -45,8 +45,8 @@ export class ProcessedCsvDto {
   static fromEntity(entity: CsvDocumentEntity, storageUrl: string, companyName: string): ProcessedCsvDto {
     return new ProcessedCsvDto(
       entity.id,
-      `${storageUrl}/${entity.fileName}`,
-      entity.fileName,
+      `${storageUrl}/${entity.fileHash}.csv`,
+      `${entity.fileHash}.csv`,
       companyName,
       entity.startedAt,
       entity.endedAt,
