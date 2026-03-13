@@ -30,7 +30,7 @@ export const BatchEntityFixture = {
       overrides.id ?? 'batch-2',
       overrides.active ?? true,
       overrides.amount ?? 4,
-      overrides.type ?? BatchType.POWER,
+      overrides.type ?? BatchType.WATER,
       overrides.predecessors ?? [],
       overrides.successors ?? [],
       overrides.owner ?? CompanyEntityFixture.createPowerProducer(),
