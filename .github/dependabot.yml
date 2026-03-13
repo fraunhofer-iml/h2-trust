@@ -95,6 +95,7 @@ updates:
       day: 'friday'
       time: '07:00'
       timezone: 'Europe/Berlin'
+    open-pull-requests-limit: 0
     labels:
       - 'dependencies'
       - 'github-actions'
