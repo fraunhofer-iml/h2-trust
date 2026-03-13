@@ -52,34 +52,46 @@ export class ProvenanceService {
     },
 
     [ProcessType.HYDROGEN_BOTTLING]: async (root) => {
-      //storedHydrogen are the direct predecessors of the bottling (but not necessarily the root hydrogen production)
-      const directPredecessorsOfBottling: ProcessStepEntity[] =
-        await this.traversalService.fetchHydrogenProductionsFromHydrogenBottling(root);
-      //the rootProcessSteps are the POWER and WATER ProcessSteps and the direct successor of these ProcessSteps (the root hydrogen productions)
-      const rootProcessSteps =
-        await this.getRootHydrogenProductionsForHydrogenProductions(directPredecessorsOfBottling);
-      const rootHydrogenProductions = rootProcessSteps.filter((ps) => ps.batch.type == BatchType.HYDROGEN);
-      const waterConsumptions = rootProcessSteps.filter((ps) => ps.batch.type == BatchType.WATER);
-      const powerProductions = rootProcessSteps.filter((ps) => ps.batch.type == BatchType.POWER);
-      return new ProvenanceEntity(root, root, rootHydrogenProductions, waterConsumptions, powerProductions);
+      const provenanceEntriesOfBottling = await this.getProvenanceEntriesOfBottling(root);
+      return new ProvenanceEntity(
+        root,
+        root,
+        provenanceEntriesOfBottling.rootHydrogenProductions,
+        provenanceEntriesOfBottling.waterConsumptions,
+        provenanceEntriesOfBottling.powerProductions,
+      );
     },
 
     [ProcessType.HYDROGEN_TRANSPORTATION]: async (root) => {
       //since we are assuming the TRANSPORT type here, we must first retrieve the BOTTLING element of the TRANSPORT and then proceed as if the root type were BOTTLING.
       const hydrogenBottling: ProcessStepEntity =
         await this.traversalService.fetchHydrogenBottlingFromHydrogenTransportation(root);
-      //storedHydrogen are the direct predecessors of the bottling (but not necessarily the root hydrogen production)
-      const directPredecessorsOfBottling: ProcessStepEntity[] =
-        await this.traversalService.fetchHydrogenProductionsFromHydrogenBottling(hydrogenBottling);
-      //the rootProcessSteps are the POWER and WATER ProcessSteps and the direct successor of these ProcessSteps (the root hydrogen productions)
-      const rootProcessSteps =
-        await this.getRootHydrogenProductionsForHydrogenProductions(directPredecessorsOfBottling);
-      const rootHydrogenProductions = rootProcessSteps.filter((ps) => ps.batch.type == BatchType.HYDROGEN);
-      const waterConsumptions = rootProcessSteps.filter((ps) => ps.batch.type == BatchType.WATER);
-      const powerProductions = rootProcessSteps.filter((ps) => ps.batch.type == BatchType.POWER);
-      return new ProvenanceEntity(root, hydrogenBottling, rootHydrogenProductions, waterConsumptions, powerProductions);
+      const provenanceEntriesOfBottling = await this.getProvenanceEntriesOfBottling(hydrogenBottling);
+      return new ProvenanceEntity(
+        root,
+        hydrogenBottling,
+        provenanceEntriesOfBottling.rootHydrogenProductions,
+        provenanceEntriesOfBottling.waterConsumptions,
+        provenanceEntriesOfBottling.powerProductions,
+      );
     },
   };
+
+  private async getProvenanceEntriesOfBottling(bottlingProcessStep: ProcessStepEntity): Promise<{
+    rootHydrogenProductions: ProcessStepEntity[];
+    waterConsumptions: ProcessStepEntity[];
+    powerProductions: ProcessStepEntity[];
+  }> {
+    //storedHydrogen are the direct predecessors of the bottling (but not necessarily the root hydrogen production)
+    const directPredecessorsOfBottling: ProcessStepEntity[] =
+      await this.traversalService.fetchHydrogenProductionsFromHydrogenBottling(bottlingProcessStep);
+    //the rootProcessSteps are the POWER and WATER ProcessSteps and the direct successor of these ProcessSteps (the root hydrogen productions)
+    const rootProcessSteps = await this.getRootHydrogenProductionsForHydrogenProductions(directPredecessorsOfBottling);
+    const rootHydrogenProductions = rootProcessSteps.filter((ps) => ps.batch.type == BatchType.HYDROGEN);
+    const waterConsumptions = rootProcessSteps.filter((ps) => ps.batch.type == BatchType.WATER);
+    const powerProductions = rootProcessSteps.filter((ps) => ps.batch.type == BatchType.POWER);
+    return { rootHydrogenProductions, waterConsumptions, powerProductions };
+  }
 
   private async getRootHydrogenProductionsForHydrogenProductions(
     hydrogenProductions: ProcessStepEntity[],
