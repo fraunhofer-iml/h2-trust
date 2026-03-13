@@ -106,7 +106,6 @@ export class TraversalService {
     return processStepsOfPredecessorBatches;
   }
 
-  //may be combined with fetchPredecessorProcessSteps
   async getPredecessorsForBatch(batch: BatchEntity): Promise<ProcessStepEntity[]> {
     return Promise.all(
       batch.predecessors.map((predecessor) => {
