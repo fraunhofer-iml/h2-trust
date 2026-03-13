@@ -7,7 +7,7 @@
  */
 
 import { BatchEntity } from '@h2-trust/amqp';
-import { BatchType, RfnboType } from '@h2-trust/domain';
+import { BatchType } from '@h2-trust/domain';
 import { CompanyEntityFixture } from './company.entity.fixture';
 import { QualityDetailsEntityFixture } from './quality-details.entity.fixture';
 
@@ -24,7 +24,6 @@ export const BatchEntityFixture = {
       overrides.hydrogenStorageUnit ?? undefined,
       overrides.qualityDetails ?? QualityDetailsEntityFixture.createGreen(),
       overrides.processStepId ?? 'process-step-1',
-      overrides.rfnboType ?? RfnboType.RFNBO_READY,
     ),
   createWaterBatch: (overrides: Partial<BatchEntity> = {}): BatchEntity =>
     new BatchEntity(
@@ -38,7 +37,6 @@ export const BatchEntityFixture = {
       overrides.hydrogenStorageUnit ?? undefined,
       overrides.qualityDetails ?? QualityDetailsEntityFixture.createGreen(),
       overrides.processStepId ?? 'process-step-2',
-      overrides.rfnboType ?? RfnboType.RFNBO_READY,
     ),
   createHydrogenBatch: (overrides: Partial<BatchEntity> = {}): BatchEntity =>
     new BatchEntity(
@@ -52,6 +50,5 @@ export const BatchEntityFixture = {
       overrides.hydrogenStorageUnit ?? undefined,
       overrides.qualityDetails ?? QualityDetailsEntityFixture.createGreen(),
       overrides.processStepId ?? 'process-step-3',
-      overrides.rfnboType ?? RfnboType.RFNBO_READY,
     ),
 } as const;
