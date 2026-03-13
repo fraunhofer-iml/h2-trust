@@ -87,7 +87,34 @@ updates:
       - dependency-name: '*'
         update-types: ['version-update:semver-major']
 
-  # GitHub Actions
+  - package-ecosystem: 'docker'
+    directories:
+      - '/'
+      - '/docker'
+      - '/docker/blockchain'
+      - '/docker/blockchain-setup'
+    schedule:
+      interval: 'weekly'
+      day: 'friday'
+      time: '07:00'
+      timezone: 'Europe/Berlin'
+    open-pull-requests-limit: 5
+    labels:
+      - 'dependencies'
+      - 'docker'
+
+  - package-ecosystem: 'docker-compose'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'friday'
+      time: '07:00'
+      timezone: 'Europe/Berlin'
+    open-pull-requests-limit: 5
+    labels:
+      - 'dependencies'
+      - 'docker'
+
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
@@ -95,6 +122,7 @@ updates:
       day: 'friday'
       time: '07:00'
       timezone: 'Europe/Berlin'
+    open-pull-requests-limit: 0
     labels:
       - 'dependencies'
       - 'github-actions'
