@@ -14,8 +14,9 @@ import {
   DocumentEntity,
   HydrogenComponentEntity,
   HydrogenCompositionUtil,
+  PaginatedProcessStepEntity,
   ProcessStepEntity,
-  ReadProcessStepsByPredecessorTypesAndOwnerPayload,
+  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
 import { DocumentRepository } from '@h2-trust/database';
@@ -40,9 +41,9 @@ export class BottlingService {
   }
 
   async readProcessStepsByPredecessorTypesAndOwner(
-    payload: ReadProcessStepsByPredecessorTypesAndOwnerPayload,
-  ): Promise<ProcessStepEntity[]> {
-    return this.processStepService.readProcessStepsByPredecessorTypesAndOwner(payload);
+    payload: ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
+  ): Promise<PaginatedProcessStepEntity> {
+    return this.processStepService.readPaginatedProcessStepsByPredecessorTypesAndOwner(payload);
   }
 
   async createHydrogenBottlingProcessStep(payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
