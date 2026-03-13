@@ -25,6 +25,7 @@ describe('ProvenanceService', () => {
     fetchPowerProductionsFromHydrogenProductions: jest.fn(),
     fetchHydrogenProductionsFromHydrogenBottling: jest.fn(),
     fetchHydrogenBottlingFromHydrogenTransportation: jest.fn(),
+    getPredecessorsForBatch: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -147,18 +148,16 @@ describe('ProvenanceService', () => {
       traversalServiceMock.fetchHydrogenProductionsFromHydrogenBottling.mockResolvedValue(givenHydrogenProductions);
       traversalServiceMock.fetchWaterConsumptionsFromHydrogenProductions.mockResolvedValue(givenWaterConsumptions);
       traversalServiceMock.fetchPowerProductionsFromHydrogenProductions.mockResolvedValue(givenPowerProductions);
+      traversalServiceMock.getPredecessorsForBatch.mockResolvedValue([
+        ...givenWaterConsumptions,
+        ...givenPowerProductions,
+      ]);
 
       // Act
       const actualResult = await service.buildProvenance(givenProcessStep);
 
       // Assert
       expect(traversalServiceMock.fetchHydrogenProductionsFromHydrogenBottling).toHaveBeenCalledWith(givenProcessStep);
-      expect(traversalServiceMock.fetchWaterConsumptionsFromHydrogenProductions).toHaveBeenCalledWith(
-        givenHydrogenProductions,
-      );
-      expect(traversalServiceMock.fetchPowerProductionsFromHydrogenProductions).toHaveBeenCalledWith(
-        givenHydrogenProductions,
-      );
 
       expect(actualResult.root).toBe(givenProcessStep);
       expect(actualResult.hydrogenBottling).toBe(givenProcessStep);
@@ -180,6 +179,10 @@ describe('ProvenanceService', () => {
       traversalServiceMock.fetchHydrogenProductionsFromHydrogenBottling.mockResolvedValue(givenHydrogenProductions);
       traversalServiceMock.fetchWaterConsumptionsFromHydrogenProductions.mockResolvedValue(givenWaterConsumptions);
       traversalServiceMock.fetchPowerProductionsFromHydrogenProductions.mockResolvedValue(givenPowerProductions);
+      traversalServiceMock.getPredecessorsForBatch.mockResolvedValue([
+        ...givenWaterConsumptions,
+        ...givenPowerProductions,
+      ]);
 
       // Act
       const actualResult = await service.buildProvenance(givenProcessStep);
@@ -190,12 +193,6 @@ describe('ProvenanceService', () => {
       );
       expect(traversalServiceMock.fetchHydrogenProductionsFromHydrogenBottling).toHaveBeenCalledWith(
         givenHydrogenBottling,
-      );
-      expect(traversalServiceMock.fetchWaterConsumptionsFromHydrogenProductions).toHaveBeenCalledWith(
-        givenHydrogenProductions,
-      );
-      expect(traversalServiceMock.fetchPowerProductionsFromHydrogenProductions).toHaveBeenCalledWith(
-        givenHydrogenProductions,
       );
 
       expect(actualResult.root).toBe(givenProcessStep);
