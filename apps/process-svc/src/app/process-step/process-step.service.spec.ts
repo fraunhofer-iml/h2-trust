@@ -9,6 +9,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   CreateManyProcessStepsPayload,
+  ProductionDataFilter,
   ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
