@@ -97,7 +97,6 @@ export class ProductionViewComponent implements AfterViewInit {
     queryKey: ['production', this.filterModel(), this.pagination()],
     queryFn: async () => {
       const paginatedData = await this.productionService.getProductions(this.filterModel(), this.pagination());
-      console.log(paginatedData);
       this.dataSource.data = paginatedData.data;
       this.totalItems = paginatedData.totalItems;
       return paginatedData;

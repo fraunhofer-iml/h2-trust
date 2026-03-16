@@ -29,7 +29,6 @@ export class ProductionService {
   constructor(private readonly httpClient: HttpClient) {}
 
   getProductions({ month, unit }: FilterModel, { pageIndex, pageSize }: PaginationModel) {
-    console.log(unit);
     let params = new HttpParams();
     if (month) params = params.set('month', month.toISOString());
     params = params.set('unitName', unit);
