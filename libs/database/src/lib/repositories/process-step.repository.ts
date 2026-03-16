@@ -39,7 +39,7 @@ export class ProcessStepRepository {
     hydrogenProductionUnitName?: string,
     period?: Date,
   ): Promise<ProcessStepEntity[]> {
-    const predecessorsFilter =
+    const predecessorsFilter: Prisma.BatchWhereInput =
       Array.isArray(predecessorProcessTypes) && predecessorProcessTypes.length > 0
         ? {
             predecessors: {
@@ -52,20 +52,27 @@ export class ProcessStepRepository {
           }
         : {};
 
-    const hydrogenUnitWhereInput = hydrogenProductionUnitName ? { name: hydrogenProductionUnitName } : {};
-    const periodWhereInput = period
+    const hydrogenUnitWhereInput: Prisma.UnitWhereInput = hydrogenProductionUnitName
+      ? {
+          name: {
+            contains: hydrogenProductionUnitName,
+            mode: 'insensitive',
+          },
+        }
+      : {};
+
+    const periodWhereInput: Prisma.DateTimeFilter = period
       ? {
           gte: new Date(period.getFullYear(), period.getMonth(), 1),
           lt: new Date(period.getFullYear(), period.getMonth() + 1, 1),
         }
       : {};
+
     return this.prismaService.processStep
       .findMany({
         where: {
-          batch: {
-            ...predecessorsFilter,
-          },
-          startedAt: { ...periodWhereInput },
+          batch: predecessorsFilter,
+          startedAt: periodWhereInput,
           executedBy: {
             ownerId: ownerId,
             ...hydrogenUnitWhereInput,

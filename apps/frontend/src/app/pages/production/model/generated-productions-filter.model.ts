@@ -8,5 +8,5 @@
 
 export interface FilterModel {
   unit: string;
-  month: Date;
+  month: Date | null;
 }

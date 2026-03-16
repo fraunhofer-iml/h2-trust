@@ -86,8 +86,8 @@ export class ProductionViewComponent implements AfterViewInit {
   });
 
   pagination = signal<PaginationModel>({
-    pageNumber: 0,
-    pageSize: 0,
+    pageIndex: 0,
+    pageSize: 5,
   });
 
   filterForm = form(this.filterModel, (schemaPath) => {
@@ -96,10 +96,11 @@ export class ProductionViewComponent implements AfterViewInit {
   productionQuery = injectQuery(() => ({
     queryKey: ['production', this.filterModel(), this.pagination()],
     queryFn: async () => {
-      const data = await this.productionService.getProductions(this.filterModel(), this.pagination());
-      this.dataSource.data = data;
-      this.totalItems = data.length;
-      return data;
+      const paginatedData = await this.productionService.getProductions(this.filterModel(), this.pagination());
+      console.log(paginatedData);
+      this.dataSource.data = paginatedData.data;
+      this.totalItems = paginatedData.totalItems;
+      return paginatedData;
     },
   }));
 
@@ -127,8 +128,6 @@ export class ProductionViewComponent implements AfterViewInit {
       switch (sortHeaderId) {
         case 'startedAt':
           return new Date(data.startedAt).getTime();
-        case 'endedAt':
-          return new Date(data.endedAt).getTime();
         default:
           return data[sortHeaderId as keyof ProductionOverviewDto];
       }
@@ -137,7 +136,6 @@ export class ProductionViewComponent implements AfterViewInit {
   }
 
   onPageChange(e: PageEvent) {
-    console.log(e);
-    this.pagination.set({ pageNumber: e.pageIndex, pageSize: e.pageSize });
+    this.pagination.set({ pageIndex: e.pageIndex, pageSize: e.pageSize });
   }
 }

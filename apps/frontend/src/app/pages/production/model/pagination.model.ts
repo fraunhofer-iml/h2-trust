@@ -1,4 +1,4 @@
 export interface PaginationModel {
-  pageNumber: number;
+  pageIndex: number;
   pageSize: number;
 }

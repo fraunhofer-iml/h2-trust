@@ -15,6 +15,7 @@ import {
   CsvDocumentIntegrityResultDto,
   DownloadFilesDto,
   ImportSubmissionDto,
+  PaginatedProductionDataDto,
   ProcessedCsvDto,
   ProductionOverviewDto,
   ProductionStatisticsDto,
@@ -27,19 +28,20 @@ import { API } from '../../constants/api-endpoints';
 export class ProductionService {
   constructor(private readonly httpClient: HttpClient) {}
 
-  getProductions({ month, unit }: FilterModel, { pageNumber, pageSize }: PaginationModel) {
+  getProductions({ month, unit }: FilterModel, { pageIndex, pageSize }: PaginationModel) {
+    console.log(unit);
     let params = new HttpParams();
-    params = params.set('period', month.toISOString());
-    params = params.set('hydrogenProductionUnitName', unit);
-    params = params.set('pageNumber', pageNumber);
+    if (month) params = params.set('month', month.toISOString());
+    params = params.set('unitName', unit);
+    params = params.set('pageNumber', pageIndex + 1);
     params = params.set('pageSize', pageSize);
 
-    return lastValueFrom(this.httpClient.get<ProductionOverviewDto[]>(API.PRODUCTION.BASE, { params }));
+    return lastValueFrom(this.httpClient.get<PaginatedProductionDataDto>(API.PRODUCTION.BASE, { params }));
   }
 
   getStatistics({ month, unit }: FilterModel) {
     let params = new HttpParams();
-    params = params.set('month', month.toISOString());
+    if (month) params = params.set('month', month.toISOString());
     params = params.set('unit', unit);
 
     return lastValueFrom(this.httpClient.get<ProductionStatisticsDto>(API.PRODUCTION.STATISTICS, { params }));
