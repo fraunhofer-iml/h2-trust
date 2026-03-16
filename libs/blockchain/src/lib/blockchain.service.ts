@@ -86,7 +86,7 @@ export class BlockchainService {
     const tx = await this.contract.storeProofs(proofs);
     await tx.wait();
 
-    this.logger.debug(`✅ Proof stored: ${tx.hash}`);
+    this.logger.debug(`✅ Stored ${proofs.length} proofs in tx ${tx.hash}`);
     return tx.hash;
   }
 
