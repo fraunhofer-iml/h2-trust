@@ -82,7 +82,6 @@ export class ProductionService {
   ): Promise<PaginatedProductionDataDto> {
     const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
     const ownerId = userDetails.company.id;
-
     const payload = new ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload(
       [ProcessType.POWER_PRODUCTION],
       ownerId,
