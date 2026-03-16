@@ -21,6 +21,7 @@ import {
   EnergySource,
   FuelType,
   MeasurementUnit,
+  PowerType,
   ProcessType,
   TrailerParameter,
   TransportMode,
@@ -37,9 +38,10 @@ export class EmissionAssembler {
 
     const power = powerProduction.batch.amount;
     const powerInput = `Power Input: ${power} ${MeasurementUnit.KWH}`;
+    const powerType: PowerType = powerProduction.batch.qualityDetails.powerType as PowerType;
 
     const emissionFactorLabel = EnumLabelMapper.getEnergySource(energySource);
-    const emissionFactor = EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[energySource];
+    const emissionFactor = EmissionNumericConstants.POWER_TYPE_EMISSION_FACTORS[powerType];
     const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} ${MeasurementUnit.G_CO2_PER_KWH}`;
 
     const result = power * emissionFactor;
@@ -90,8 +92,9 @@ export class EmissionAssembler {
         `Invalid process step type [${hydrogenProduction?.type}] for hydrogen storage emission calculation`,
       );
     }
+    const powerType: PowerType = hydrogenProduction.batch.qualityDetails.powerType as PowerType;
+    const emissionFactor = EmissionNumericConstants.POWER_TYPE_EMISSION_FACTORS[powerType];
 
-    const emissionFactor = EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[EnergySource.GRID];
     const result =
       EmissionNumericConstants.ENERGY_DEMAND_COMPRESSION_KWH_PER_KG_H2 *
       emissionFactor *
