@@ -101,7 +101,7 @@ export class ProductionController {
     return this.service.readHydrogenProductionsByOwner(authenticatedUser.sub);
   }
 
-  // TODO: Calculate statistics and remove mock imlementation (DUHGW-376)
+  // TODO: Calculate statistics and remove mock implementation (DUHGW-376)
   @Get('/statistics')
   @ApiBearerAuth()
   @ApiOperation({

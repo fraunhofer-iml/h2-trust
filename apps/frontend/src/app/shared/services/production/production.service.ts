@@ -20,19 +20,26 @@ import {
   ProductionStatisticsDto,
 } from '@h2-trust/api';
 import { FilterModel } from '../../../pages/production/model/generated-productions-filter.model';
+import { PaginationModel } from '../../../pages/production/model/pagination.model';
 import { API } from '../../constants/api-endpoints';
 
 @Injectable()
 export class ProductionService {
   constructor(private readonly httpClient: HttpClient) {}
 
-  getProductions() {
-    return lastValueFrom(this.httpClient.get<ProductionOverviewDto[]>(API.PRODUCTION.BASE));
+  getProductions({ month, unit }: FilterModel, { pageNumber, pageSize }: PaginationModel) {
+    let params = new HttpParams();
+    params = params.set('period', month.toISOString());
+    params = params.set('hydrogenProductionUnitName', unit);
+    params = params.set('pageNumber', pageNumber);
+    params = params.set('pageSize', pageSize);
+
+    return lastValueFrom(this.httpClient.get<ProductionOverviewDto[]>(API.PRODUCTION.BASE, { params }));
   }
 
   getStatistics({ month, unit }: FilterModel) {
     let params = new HttpParams();
-    params = params.set('month', month.toLocaleDateString());
+    params = params.set('month', month.toISOString());
     params = params.set('unit', unit);
 
     return lastValueFrom(this.httpClient.get<ProductionStatisticsDto>(API.PRODUCTION.STATISTICS, { params }));
