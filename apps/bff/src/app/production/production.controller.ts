@@ -101,6 +101,7 @@ export class ProductionController {
     type: Number,
     description: 'Used to get a specific page of pagination',
     required: false,
+    minimum: 1,
     example: '1',
   })
   @ApiQuery({
@@ -108,6 +109,7 @@ export class ProductionController {
     type: Number,
     description: 'Used to define the amount of data retrieved',
     required: false,
+    minimum: 5,
     example: '5',
   })
   @ApiQuery({

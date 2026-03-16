@@ -43,6 +43,18 @@ export class BottlingService {
   async readProcessStepsByPredecessorTypesAndOwner(
     payload: ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ): Promise<PaginatedProcessStepEntity> {
+    if (payload.filter.pageNumber <= 0) {
+      throw new BrokerException(
+        `No process steps found in storage unit ${payload.filter.pageNumber}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (payload.filter.pageSize <= 0) {
+      throw new BrokerException(
+        `No process steps found in storage unit ${payload.filter.pageSize}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return this.processStepService.readPaginatedProcessStepsByPredecessorTypesAndOwner(payload);
   }
 
