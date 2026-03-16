@@ -6,8 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FuelType } from '../enums';
-import { EnergySource } from '../enums/energy-source.enum';
+import { FuelType, PowerType } from '../enums';
 
 export interface TrailerParameter {
   capacity: number;
@@ -21,12 +20,12 @@ export const EmissionNumericConstants = {
   H2_LOWER_HEATING_VALUE_MJ_PER_KG: 120,
   FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ: 94,
 
-  ENERGY_SOURCE_EMISSION_FACTORS: {
-    [EnergySource.SOLAR_ENERGY]: 0,
-    [EnergySource.WIND_ENERGY]: 0,
-    [EnergySource.HYDRO_POWER]: 0,
-    [EnergySource.GRID]: 357.48,
-  } as Readonly<Record<EnergySource, number>>,
+  POWER_TYPE_EMISSION_FACTORS: {
+    [PowerType.RENEWABLE]: 0,
+    [PowerType.PARTLY_RENEWABLE]: 0,
+    [PowerType.NOT_SPECIFIED]: 0,
+    [PowerType.NON_RENEWABLE]: 357.48,
+  } as Readonly<Record<PowerType, number>>,
 
   FUEL_EMISSION_FACTORS: {
     [FuelType.DIESEL]: 95.1,
