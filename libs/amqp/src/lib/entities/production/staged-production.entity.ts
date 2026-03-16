@@ -8,6 +8,7 @@
 
 import { StagedProductionDeepDbType } from '@h2-trust/database';
 import { HydrogenColor } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 
 export class StagedProductionEntity {
   startedAt: Date;
@@ -43,6 +44,7 @@ export class StagedProductionEntity {
   }
 
   static fromDeepDatabase(stagedProduction: StagedProductionDeepDbType) {
+    assertValidEnum(stagedProduction.powerProductionUnit.type.hydrogenColor, HydrogenColor);
     return new StagedProductionEntity(
       stagedProduction.startedAt,
       stagedProduction.hydrogenAmount.toNumber(),
@@ -51,7 +53,7 @@ export class StagedProductionEntity {
       stagedProduction.powerAmount.toNumber(),
       stagedProduction.powerProductionUnitId,
       stagedProduction.powerProductionUnit.generalInfo.owner.id,
-      stagedProduction.powerProductionUnit.type.hydrogenColor as HydrogenColor,
+      stagedProduction.powerProductionUnit.type.hydrogenColor,
       stagedProduction.hydrogenProductionUnit.waterConsumptionLitersPerHour.toNumber(),
     );
   }

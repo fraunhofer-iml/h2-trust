@@ -8,6 +8,7 @@
 
 import { QualityDetailsDbType } from '@h2-trust/database';
 import { HydrogenColor, PowerType, RfnboType } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 
 export class QualityDetailsEntity {
   id?: string;
@@ -23,11 +24,15 @@ export class QualityDetailsEntity {
   }
 
   static fromDatabase(qualityDetails: QualityDetailsDbType): QualityDetailsEntity {
+    assertValidEnum(qualityDetails.color, HydrogenColor);
+    assertValidEnum(qualityDetails.rfnboType, RfnboType);
+    assertValidEnum(qualityDetails.powerType, PowerType);
+
     return new QualityDetailsEntity(
       qualityDetails.id,
-      qualityDetails.color as HydrogenColor,
-      qualityDetails.rfnboType as RfnboType,
-      qualityDetails.powerType as PowerType,
+      qualityDetails.color,
+      qualityDetails.rfnboType,
+      qualityDetails.powerType,
     );
   }
 }

@@ -13,6 +13,7 @@ import {
   HydrogenStorageUnitNestedDbType,
 } from '@h2-trust/database';
 import { HydrogenColor, HydrogenStorageType, RfnboType, UnitType } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 import { AddressEntity } from '../address';
 import { HydrogenComponentEntity } from '../bottling';
 import { CompanyEntity } from '../company';
@@ -123,11 +124,13 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
         if (!batch.batchDetails?.qualityDetails?.color) {
           throw new Error(`Hydrogen batch [${batch.id}] in storage unit is missing color information.`);
         }
+        assertValidEnum(batch.batchDetails.qualityDetails.color, HydrogenColor);
+        assertValidEnum(batch.batchDetails.qualityDetails.rfnboType, RfnboType);
         return new HydrogenComponentEntity(
           null,
-          batch.batchDetails.qualityDetails.color as HydrogenColor,
+          batch.batchDetails.qualityDetails.color,
           batch.amount?.toNumber() ?? 0,
-          batch.batchDetails.qualityDetails.rfnboType as RfnboType,
+          batch.batchDetails.qualityDetails.rfnboType,
         );
       }) ?? []
     );
@@ -140,11 +143,13 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
         if (!batch.batchDetails?.qualityDetails?.color) {
           throw new Error(`Hydrogen batch [${batch.id}] in storage unit is missing color information.`);
         }
+        assertValidEnum(batch.batchDetails.qualityDetails.color, HydrogenColor);
+        assertValidEnum(batch.batchDetails.qualityDetails.rfnboType, RfnboType);
         return new HydrogenComponentEntity(
           batch?.processStep?.id ?? null,
-          batch.batchDetails.qualityDetails.color as HydrogenColor,
+          batch.batchDetails.qualityDetails.color,
           batch.amount?.toNumber() ?? 0,
-          batch.batchDetails.qualityDetails.rfnboType as RfnboType,
+          batch.batchDetails.qualityDetails.rfnboType,
         );
       }) ?? []
     );

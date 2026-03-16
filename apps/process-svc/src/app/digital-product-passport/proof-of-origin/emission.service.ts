@@ -21,6 +21,7 @@ import {
 } from '@h2-trust/amqp';
 import { EnumLabelMapper } from '@h2-trust/api';
 import { CalculationTopic, HydrogenColor, MeasurementUnit, ProcessType } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 import { EmissionAssembler } from './emission.assembler';
 
 //TODO-LG: refactor the computeProvenenceEmission functions
@@ -97,7 +98,8 @@ export class EmissionService {
       const totalEmissionsGrouped = Array.from(
         provenance.hydrogenProductions
           .reduce((map, entity, index) => {
-            const color = EnumLabelMapper.getHydrogenColor(entity.batch.qualityDetails?.color as HydrogenColor);
+            assertValidEnum(entity.batch.qualityDetails?.color, HydrogenColor);
+            const color = EnumLabelMapper.getHydrogenColor(entity.batch.qualityDetails?.color);
             return map.set(color, (map.get(color) ?? 0) + hydrogenStorages[index].result);
           }, new Map<string, number>())
           .entries(),

@@ -26,6 +26,7 @@ import {
   TrailerParameter,
   TransportMode,
 } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 
 export class EmissionAssembler {
   static assemblePowerSupply(
@@ -35,10 +36,11 @@ export class EmissionAssembler {
     if (powerProduction?.type !== ProcessType.POWER_PRODUCTION) {
       throw new Error(`Invalid process step type [${powerProduction?.type}] for power supply emission calculation`);
     }
+    assertValidEnum(powerProduction.batch.qualityDetails.powerType, PowerType);
 
     const power = powerProduction.batch.amount;
     const powerInput = `Power Input: ${power} ${MeasurementUnit.KWH}`;
-    const powerType: PowerType = powerProduction.batch.qualityDetails.powerType as PowerType;
+    const powerType: PowerType = powerProduction.batch.qualityDetails.powerType;
 
     const emissionFactorLabel = EnumLabelMapper.getEnergySource(energySource);
     const emissionFactor = EmissionNumericConstants.POWER_TYPE_EMISSION_FACTORS[powerType];
@@ -92,7 +94,8 @@ export class EmissionAssembler {
         `Invalid process step type [${hydrogenProduction?.type}] for hydrogen storage emission calculation`,
       );
     }
-    const powerType: PowerType = hydrogenProduction.batch.qualityDetails.powerType as PowerType;
+    assertValidEnum(hydrogenProduction.batch.qualityDetails.powerType, PowerType);
+    const powerType: PowerType = hydrogenProduction.batch.qualityDetails.powerType;
     const emissionFactor = EmissionNumericConstants.POWER_TYPE_EMISSION_FACTORS[powerType];
 
     const result =

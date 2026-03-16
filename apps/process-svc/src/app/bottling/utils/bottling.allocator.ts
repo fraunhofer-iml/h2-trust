@@ -9,6 +9,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { BatchEntity, BrokerException, HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import { BatchType, ProcessType, RfnboType } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 
 export interface BottlingAllocation {
   batchesForBottle: BatchEntity[];
@@ -34,10 +35,11 @@ export class BottlingAllocator {
     const aggregatedProcessStepsForRemainingAmount: ProcessStepEntity[] = [];
 
     for (const hydrogenComponent of hydrogenComposition) {
+      assertValidEnum(hydrogenComponent.rfnboType, RfnboType);
       const { batchesForBottle, processStepsToBeSplit, consumedSplitProcessSteps, processStepsForRemainingAmount } =
         BottlingAllocator.processBottlingForEachRfnboType(
           processSteps,
-          hydrogenComponent.rfnboType as RfnboType,
+          hydrogenComponent.rfnboType,
           hydrogenComponent.amount,
           hydrogenStorageUnitId,
         );

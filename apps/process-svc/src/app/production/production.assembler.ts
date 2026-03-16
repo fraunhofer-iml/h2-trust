@@ -18,7 +18,7 @@ import {
   UserEntity,
 } from '@h2-trust/amqp';
 import { BatchType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
-import { DateTimeUtil } from '@h2-trust/utils';
+import { assertValidEnum, DateTimeUtil } from '@h2-trust/utils';
 import { AccountingPeriod, ProcessStepParams } from './production.types';
 import { ProductionUtils } from './utils/production.utils';
 
@@ -26,6 +26,7 @@ export class ProductionAssembler {
   private static readonly logger = new Logger(ProductionAssembler.name);
 
   static assemblePowerProductions(entity: CreateProductionEntity): ProcessStepEntity[] {
+    assertValidEnum(entity.powerType, PowerType);
     const params: ProcessStepParams = {
       type: ProcessType.POWER_PRODUCTION,
       executedBy: entity.powerProductionUnitId,
@@ -34,7 +35,7 @@ export class ProductionAssembler {
         activity: false,
         type: BatchType.POWER,
         owner: entity.ownerIdOfPowerProductionUnit,
-        powerType: entity.powerType as PowerType,
+        powerType: entity.powerType,
       },
     };
 
@@ -73,6 +74,7 @@ export class ProductionAssembler {
     powerProductions: ProcessStepEntity[],
     waterConsumptions: ProcessStepEntity[],
   ): ProcessStepEntity[] {
+    assertValidEnum(powerProductions[0]?.batch?.qualityDetails?.powerType, PowerType);
     const params: ProcessStepParams = {
       type: ProcessType.HYDROGEN_PRODUCTION,
       executedBy: entity.hydrogenProductionUnitId,
@@ -83,7 +85,7 @@ export class ProductionAssembler {
         owner: entity.ownerIdOfHydrogenProductionUnit,
         color: entity.hydrogenColor,
         hydrogenStorageUnitId: entity.hydrogenStorageUnitId,
-        powerType: (powerProductions[0]?.batch?.qualityDetails?.powerType as PowerType) ?? PowerType.NOT_SPECIFIED,
+        powerType: powerProductions[0]?.batch?.qualityDetails?.powerType,
       },
     };
 

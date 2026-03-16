@@ -15,6 +15,7 @@ import {
   ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/amqp';
 import { BatchType, EnergySource, PowerType } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 
 export class BatchAssembler {
   static assemblePowerSupply(
@@ -22,6 +23,7 @@ export class BatchAssembler {
     energySource: string,
     emission?: ProofOfOriginEmissionEntity,
   ): ProofOfOriginPowerBatchEntity {
+    assertValidEnum(powerProduction.batch?.qualityDetails?.powerType, PowerType);
     return {
       id: powerProduction.batch.id,
       emission,
@@ -32,7 +34,7 @@ export class BatchAssembler {
       unitId: powerProduction.executedBy.id,
       energySource: energySource as EnergySource,
       accountingPeriodEnd: powerProduction.endedAt,
-      powerType: (powerProduction.batch?.qualityDetails?.powerType ?? PowerType.NOT_SPECIFIED) as PowerType,
+      powerType: powerProduction.batch?.qualityDetails?.powerType,
     };
   }
 

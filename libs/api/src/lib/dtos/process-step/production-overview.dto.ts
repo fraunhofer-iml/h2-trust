@@ -8,6 +8,7 @@
 
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import { BatchType, PowerType } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 
 export class ProductionOverviewDto {
   startedAt: string;
@@ -35,6 +36,7 @@ export class ProductionOverviewDto {
     powerType: string,
     powerProductionUnit: string,
   ) {
+    assertValidEnum(powerType, PowerType);
     this.startedAt = startedAt;
     this.endedAt = endedAt;
     this.productionUnit = productionUnit;
@@ -44,7 +46,7 @@ export class ProductionOverviewDto {
     this.powerProducer = powerProducer;
     this.powerConsumed = powerConsumed;
     this.storageUnit = storageUnit;
-    this.powerType = powerType as PowerType;
+    this.powerType = powerType;
     this.powerProductionUnit = powerProductionUnit;
   }
 
