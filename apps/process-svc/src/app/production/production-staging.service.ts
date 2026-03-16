@@ -73,20 +73,20 @@ export class ProductionStagingService {
 
     const preparedProductions = [...preparedPowerProductions, ...preparedHydrogenProductions];
 
-    const { csvImportId, csvDocuments } = await this.prismaService.$transaction(async (tx) => {
-      const csvImportId = await this.csvImportRepository.createCsvImport(payload.userId, tx);
+    const { savedCsvImportId, savedCsvDocuments } = await this.prismaService.$transaction(async (tx) => {
+      const savedCsvImportId = await this.csvImportRepository.saveCsvImport(payload.userId, tx);
 
       const documentInputs = this.assembleCsvDocumentInputs(preparedProductions);
-      const csvDocuments = await this.csvImportRepository.createCsvDocuments(csvImportId, documentInputs, tx);
+      const savedCsvDocuments = await this.csvImportRepository.saveCsvDocuments(savedCsvImportId, documentInputs, tx);
 
-      await this.stagedProductionRepository.stageDistributedProductions(distributedProductions, csvImportId, tx);
+      await this.stagedProductionRepository.stageDistributedProductions(distributedProductions, savedCsvImportId, tx);
 
-      return { csvImportId, csvDocuments };
+      return { savedCsvImportId, savedCsvDocuments };
     });
 
-    await this.storeBlockchainProofs(preparedProductions, csvDocuments);
+    await this.storeBlockchainProofs(preparedProductions, savedCsvDocuments);
 
-    return new ProductionStagingResultEntity(csvImportId, distributedProductions);
+    return new ProductionStagingResultEntity(savedCsvImportId, distributedProductions);
   }
 
   private async prepareProductions<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
