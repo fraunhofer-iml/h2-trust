@@ -14,14 +14,16 @@ import {
   CreateProductionsPayload,
   CsvDocumentEntity,
   FinalizeProductionsPayload,
+  PaginatedProcessStepEntity,
   PowerAccessApprovalPatterns,
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
+  ProductionDataFilter,
   ProductionMessagePatterns,
   ProductionStagingResultEntity,
   ReadByIdPayload,
-  ReadProcessStepsByPredecessorTypesAndOwnerPayload,
+  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   StageProductionsPayload,
   UnitFileReference,
   VerifyCsvDocumentIntegrityResultEntity,
@@ -31,6 +33,7 @@ import {
   CreateProductionDto,
   CsvDocumentIntegrityResultDto,
   ImportSubmissionDto,
+  PaginatedProductionDataDto,
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
@@ -70,16 +73,25 @@ export class ProductionService {
       .map(ProductionOverviewDto.fromEntity);
   }
 
-  async readHydrogenProductionsByOwner(userId: string): Promise<ProductionOverviewDto[]> {
+  async readHydrogenProductionsByOwner(
+    userId: string,
+    pageNumber?: number,
+    pageSize?: number,
+    unitName?: string,
+    month?: Date,
+  ): Promise<PaginatedProductionDataDto> {
     const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
     const ownerId = userDetails.company.id;
 
-    const payload = new ReadProcessStepsByPredecessorTypesAndOwnerPayload([ProcessType.POWER_PRODUCTION], ownerId);
-
-    const productions: ProcessStepEntity[] = await firstValueFrom(
-      this.processSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_PREDECESSOR_TYPES_AND_OWNER, payload),
+    const payload = new ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload(
+      [ProcessType.POWER_PRODUCTION],
+      ownerId,
+      new ProductionDataFilter(pageNumber, pageSize, unitName, month),
     );
-    return productions.map(ProductionOverviewDto.fromEntity);
+    const paginatedProcessStep: PaginatedProcessStepEntity = await firstValueFrom(
+      this.processSvc.send(ProcessStepMessagePatterns.READ_PAGINATION_BY_PREDECESSOR_TYPES_AND_OWNER, payload),
+    );
+    return PaginatedProductionDataDto.fromEntity(paginatedProcessStep);
   }
 
   async importCsvFiles(
