@@ -7,6 +7,7 @@
  */
 
 import { StagedProductionDeepDbType } from '@h2-trust/database';
+import { HydrogenColor } from '@h2-trust/domain';
 
 export class StagedProductionEntity {
   startedAt: Date;
@@ -16,7 +17,7 @@ export class StagedProductionEntity {
   powerAmount: number;
   powerProductionUnitId: string;
   powerProductionUnitOwnerId: string;
-  hydrogenColor: string;
+  hydrogenColor: HydrogenColor;
   waterConsumptionLitersPerHour: number;
 
   constructor(
@@ -27,7 +28,7 @@ export class StagedProductionEntity {
     powerAmount: number,
     powerProductionUnitId: string,
     powerProductionUnitOwnerId: string,
-    hydrogenColor: string,
+    hydrogenColor: HydrogenColor,
     waterConsumptionLitersPerHour: number,
   ) {
     this.startedAt = startedAt;
@@ -50,7 +51,7 @@ export class StagedProductionEntity {
       stagedProduction.powerAmount.toNumber(),
       stagedProduction.powerProductionUnitId,
       stagedProduction.powerProductionUnit.generalInfo.owner.id,
-      stagedProduction.powerProductionUnit.type.hydrogenColor,
+      stagedProduction.powerProductionUnit.type.hydrogenColor as HydrogenColor,
       stagedProduction.hydrogenProductionUnit.waterConsumptionLitersPerHour.toNumber(),
     );
   }

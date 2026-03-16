@@ -7,6 +7,7 @@
  */
 
 import { WaterConsumptionBatchSeed } from 'libs/database/src/seed';
+import { BatchType } from '@h2-trust/domain';
 import { CompanyEntityHydrogenMock } from '../../company/mocks';
 import { BatchEntity } from '../batch.entity';
 
@@ -16,7 +17,7 @@ export const BatchEntityWaterConsumedMock: BatchEntity[] = WaterConsumptionBatch
       seed.id,
       seed.active,
       seed.amount.toNumber(),
-      seed.type,
+      seed.type as BatchType,
       [],
       [],
       CompanyEntityHydrogenMock,

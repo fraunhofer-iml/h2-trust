@@ -7,10 +7,20 @@
  */
 
 import { PowerProductionBatchSeed } from 'libs/database/src/seed';
+import { BatchType } from '@h2-trust/domain';
 import { CompanyEntityPowerMock } from '../../company/mocks';
 import { BatchEntity } from '../batch.entity';
 
 export const BatchEntityPowerProducedMock: BatchEntity[] = PowerProductionBatchSeed.map(
   (seed) =>
-    new BatchEntity(seed.id, seed.active, seed.amount.toNumber(), seed.type, [], [], CompanyEntityPowerMock, undefined),
+    new BatchEntity(
+      seed.id,
+      seed.active,
+      seed.amount.toNumber(),
+      seed.type as BatchType,
+      [],
+      [],
+      CompanyEntityPowerMock,
+      undefined,
+    ),
 );

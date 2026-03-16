@@ -7,7 +7,7 @@
  */
 
 import { PowerProductionTypeSeed } from 'libs/database/src/seed';
-import { EnergySource, PowerProductionType } from '@h2-trust/domain';
+import { EnergySource, HydrogenColor, PowerProductionType } from '@h2-trust/domain';
 import { PowerProductionTypeEntity } from '../power-production-type.entity';
 
 export const PowerProductionTypeEntityMock: PowerProductionTypeEntity[] = PowerProductionTypeSeed.map(
@@ -15,6 +15,6 @@ export const PowerProductionTypeEntityMock: PowerProductionTypeEntity[] = PowerP
     new PowerProductionTypeEntity(
       seed.name as PowerProductionType,
       seed.energySource as EnergySource,
-      seed.hydrogenColor,
+      seed.hydrogenColor as HydrogenColor,
     ),
 );

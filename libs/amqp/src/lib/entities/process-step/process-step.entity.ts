@@ -7,6 +7,7 @@
  */
 
 import { ProcessStepDeepDbType, ProcessStepNestedDbType } from '@h2-trust/database';
+import { ProcessType } from '@h2-trust/domain';
 import { BatchEntity } from '../batch';
 import { DocumentEntity } from '../document';
 import { BaseUnitEntity } from '../unit';
@@ -17,7 +18,7 @@ export class ProcessStepEntity {
   id?: string;
   startedAt: Date;
   endedAt: Date;
-  type: string;
+  type: ProcessType;
   batch: BatchEntity;
   recordedBy: UserEntity;
   executedBy: BaseUnitEntity;
@@ -28,7 +29,7 @@ export class ProcessStepEntity {
     id: string | undefined,
     startedAt: Date,
     endedAt: Date,
-    type: string,
+    type: ProcessType,
     batch: BatchEntity,
     recordedBy: UserEntity,
     executedBy: BaseUnitEntity,
@@ -51,7 +52,7 @@ export class ProcessStepEntity {
       processStep.id,
       processStep.startedAt,
       processStep.endedAt,
-      processStep.type,
+      processStep.type as ProcessType,
       BatchEntity.fromNestedDatabase(processStep.batch),
       UserEntity.fromNestedDatabase(processStep.recordedBy),
       BaseUnitEntity.fromNestedBaseUnit(processStep.executedBy),
@@ -67,7 +68,7 @@ export class ProcessStepEntity {
       processStep.id,
       processStep.startedAt,
       processStep.endedAt,
-      processStep.type,
+      processStep.type as ProcessType,
       BatchEntity.fromFlatDatabase(processStep.batch),
       UserEntity.fromFlatDatabase(processStep.recordedBy),
       BaseUnitEntity.fromFlatBaseUnit(processStep.executedBy),

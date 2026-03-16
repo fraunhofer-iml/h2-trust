@@ -12,7 +12,7 @@ import {
   HydrogenStorageUnitFlatDbType,
   HydrogenStorageUnitNestedDbType,
 } from '@h2-trust/database';
-import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
+import { HydrogenColor, HydrogenStorageType, RfnboType, UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { HydrogenComponentEntity } from '../bottling';
 import { CompanyEntity } from '../company';
@@ -125,9 +125,9 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
         }
         return new HydrogenComponentEntity(
           null,
-          batch.batchDetails.qualityDetails.color,
+          batch.batchDetails.qualityDetails.color as HydrogenColor,
           batch.amount?.toNumber() ?? 0,
-          batch.batchDetails.qualityDetails.rfnboType,
+          batch.batchDetails.qualityDetails.rfnboType as RfnboType,
         );
       }) ?? []
     );
@@ -142,9 +142,9 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
         }
         return new HydrogenComponentEntity(
           batch?.processStep?.id ?? null,
-          batch.batchDetails.qualityDetails.color,
+          batch.batchDetails.qualityDetails.color as HydrogenColor,
           batch.amount?.toNumber() ?? 0,
-          batch.batchDetails.qualityDetails.rfnboType,
+          batch.batchDetails.qualityDetails.rfnboType as RfnboType,
         );
       }) ?? []
     );

@@ -136,7 +136,7 @@ export class DigitalProductPassportService {
       processStep.endedAt,
       processStep.batch.owner.name ?? '',
       processStep.batch.amount ?? 0,
-      processStep.batch.qualityDetails.color ?? '',
+      processStep.batch.qualityDetails.color,
       processStep.recordedBy.company.name ?? '',
       hydrogenCompositionsForRootOfProvenance,
       processStep.documents ?? [],

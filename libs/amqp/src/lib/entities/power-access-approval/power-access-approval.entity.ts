@@ -7,6 +7,7 @@
  */
 
 import { PowerAccessApprovalDeepDbType, PowerAccessApprovalNestedDbType } from '@h2-trust/database';
+import { PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { CompanyEntity } from '../company';
 import { DocumentEntity } from '../document';
 import { BaseUnitEntity, PowerProductionUnitEntity } from '../unit';
@@ -14,7 +15,7 @@ import { BaseUnitEntity, PowerProductionUnitEntity } from '../unit';
 export class PowerAccessApprovalEntity {
   id: string;
   decidedAt: Date;
-  status: string;
+  status: PowerAccessApprovalStatus;
   powerProducer: CompanyEntity;
   powerProductionUnit: PowerProductionUnitEntity;
   hydrogenProducer: CompanyEntity;
@@ -23,7 +24,7 @@ export class PowerAccessApprovalEntity {
   constructor(
     id: string,
     decidedAt: Date,
-    status: string,
+    status: PowerAccessApprovalStatus,
     powerProducer: CompanyEntity,
     powerProductionUnit: PowerProductionUnitEntity,
     hydrogenProducer: CompanyEntity,
@@ -42,7 +43,7 @@ export class PowerAccessApprovalEntity {
     return <PowerAccessApprovalEntity>{
       id: powerAccessApproval.id,
       decidedAt: powerAccessApproval.decidedAt,
-      status: powerAccessApproval.status,
+      status: powerAccessApproval.status as PowerAccessApprovalStatus,
       powerProducer: CompanyEntity.fromNestedDatabase(powerAccessApproval.powerProducer),
       powerProductionUnit: {
         ...BaseUnitEntity.fromNestedBaseUnit(powerAccessApproval.powerProductionUnit.generalInfo),

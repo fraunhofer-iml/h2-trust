@@ -7,6 +7,7 @@
  */
 
 import { WaterConsumptionProcessStepSeed } from 'libs/database/src/seed';
+import { ProcessType } from '@h2-trust/domain';
 import { BatchEntityWaterConsumedMock } from '../../batch/mocks';
 import { DocumentEntityMock } from '../../document/mocks';
 import { HydrogenProductionUnitEntityMock } from '../../unit/mocks';
@@ -19,7 +20,7 @@ export const ProcessStepEntityWaterConsumptionMock: ProcessStepEntity[] = WaterC
       seed.id,
       seed.startedAt,
       seed.endedAt,
-      seed.type,
+      seed.type as ProcessType,
       BatchEntityWaterConsumedMock[index],
       UserEntityHydrogenMock,
       HydrogenProductionUnitEntityMock[0],

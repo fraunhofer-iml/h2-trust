@@ -7,6 +7,7 @@
  */
 
 import { CompanyDbBaseType, CompanyDeepDbType, CompanyFlatDbType, CompanyNestedDbType } from '@h2-trust/database';
+import { CompanyType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { PowerAccessApprovalEntity } from '../power-access-approval';
 import { UserEntity } from '../user';
@@ -15,7 +16,7 @@ export class CompanyEntity {
   id: string;
   name: string;
   mastrNumber: string;
-  type: string;
+  type: CompanyType;
   address: AddressEntity;
   users: UserEntity[];
   hydrogenApprovals: PowerAccessApprovalEntity[];
@@ -24,7 +25,7 @@ export class CompanyEntity {
     id: string,
     name: string,
     mastrNumber: string,
-    type: string,
+    type: CompanyType,
     address: AddressEntity,
     users: UserEntity[],
     hydrogenApprovals: PowerAccessApprovalEntity[],
@@ -43,7 +44,7 @@ export class CompanyEntity {
       company.id,
       company.name,
       company.mastrNumber,
-      company.type,
+      company.type as CompanyType,
       AddressEntity.fromDatabase(company.address),
       [],
       company.hydrogenApprovals.map((approval) => PowerAccessApprovalEntity.fromNestedDatabase(approval)),
@@ -55,7 +56,7 @@ export class CompanyEntity {
       company.id,
       company.name,
       company.mastrNumber,
-      company.type,
+      company.type as CompanyType,
       AddressEntity.fromDatabase(company.address),
       [],
       [],
@@ -67,7 +68,7 @@ export class CompanyEntity {
       company.id,
       company.name,
       company.mastrNumber,
-      company.type,
+      company.type as CompanyType,
       AddressEntity.fromDatabase(company.address),
       [],
       [],
@@ -79,7 +80,7 @@ export class CompanyEntity {
       company.id,
       company.name,
       company.mastrNumber,
-      company.type,
+      company.type as CompanyType,
       new AddressEntity('', '', '', '', ''),
       [],
       [],

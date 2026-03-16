@@ -7,6 +7,7 @@
  */
 
 import { CompanySeed } from 'libs/database/src/seed';
+import { CompanyType } from '@h2-trust/domain';
 import {
   AddressEntityGridMock,
   AddressEntityHydrogenMock,
@@ -19,7 +20,7 @@ export const CompanyEntityPowerMock: CompanyEntity = new CompanyEntity(
   CompanySeed[0].id,
   CompanySeed[0].name,
   CompanySeed[0].mastrNumber,
-  CompanySeed[0].type,
+  CompanySeed[0].type as CompanyType,
   AddressEntityPowerMock,
   [],
   [],
@@ -28,7 +29,7 @@ export const CompanyEntityGridMock: CompanyEntity = new CompanyEntity(
   CompanySeed[1].id,
   CompanySeed[1].name,
   CompanySeed[1].mastrNumber,
-  CompanySeed[1].type,
+  CompanySeed[1].type as CompanyType,
   AddressEntityGridMock,
   [],
   [],
@@ -37,7 +38,7 @@ export const CompanyEntityHydrogenMock: CompanyEntity = new CompanyEntity(
   CompanySeed[2].id,
   CompanySeed[2].name,
   CompanySeed[2].mastrNumber,
-  CompanySeed[2].type,
+  CompanySeed[2].type as CompanyType,
   AddressEntityHydrogenMock,
   [],
   [],
@@ -46,7 +47,7 @@ export const CompanyEntityRecipientMock: CompanyEntity = new CompanyEntity(
   CompanySeed[3].id,
   CompanySeed[3].name,
   CompanySeed[3].mastrNumber,
-  CompanySeed[3].type,
+  CompanySeed[3].type as CompanyType,
   AddressEntityRecipientMock,
   [],
   [],

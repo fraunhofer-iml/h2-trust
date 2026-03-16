@@ -6,11 +6,21 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenColor } from '@h2-trust/domain';
+import { HydrogenColor, PowerType, RfnboType } from '@h2-trust/domain';
 import { QualityDetailsEntity } from '../quality-details.entity';
 
 export const QualityDetailsEntityMock: QualityDetailsEntity[] = [
-  new QualityDetailsEntity('quality-details-0', HydrogenColor.GREEN),
-  new QualityDetailsEntity('quality-details-1', HydrogenColor.YELLOW),
-  new QualityDetailsEntity('quality-details-2', HydrogenColor.MIX),
+  new QualityDetailsEntity('quality-details-0', HydrogenColor.GREEN, RfnboType.RFNBO_READY, PowerType.RENEWABLE),
+  new QualityDetailsEntity(
+    'quality-details-1',
+    HydrogenColor.YELLOW,
+    RfnboType.NON_CERTIFIABLE,
+    PowerType.NON_RENEWABLE,
+  ),
+  new QualityDetailsEntity(
+    'quality-details-2',
+    HydrogenColor.MIX,
+    RfnboType.NON_CERTIFIABLE,
+    PowerType.PARTLY_RENEWABLE,
+  ),
 ];

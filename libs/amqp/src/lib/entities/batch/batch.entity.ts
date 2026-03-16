@@ -7,6 +7,7 @@
  */
 
 import { BatchDeepDbType, BatchFlatDbType, BatchNestedDbType } from '@h2-trust/database';
+import { BatchType } from '@h2-trust/domain';
 import { CompanyEntity } from '../company';
 import { HydrogenStorageUnitEntity } from '../unit';
 import { QualityDetailsEntity } from './quality-details.entity';
@@ -15,7 +16,7 @@ export class BatchEntity {
   id?: string;
   active?: boolean;
   amount: number;
-  type: string;
+  type: BatchType;
   predecessors?: BatchEntity[];
   successors?: BatchEntity[];
   owner: CompanyEntity;
@@ -27,7 +28,7 @@ export class BatchEntity {
     id: string | undefined,
     active: boolean | undefined,
     amount: number,
-    type: string,
+    type: BatchType,
     predecessors: BatchEntity[] | undefined,
     successors: BatchEntity[] | undefined,
     owner: CompanyEntity,
@@ -52,7 +53,7 @@ export class BatchEntity {
       batch.id,
       batch.active,
       batch.amount.toNumber(),
-      batch.type,
+      batch.type as BatchType,
       batch.predecessors.map((pred) => BatchEntity.fromNestedDatabase({ ...pred, predecessors: [], successors: [] })),
       batch.successors.map((succ) => BatchEntity.fromNestedDatabase({ ...succ, predecessors: [], successors: [] })),
       CompanyEntity.fromNestedDatabase(batch.owner),
@@ -69,7 +70,7 @@ export class BatchEntity {
       batch.id,
       batch.active,
       batch.amount.toNumber(),
-      batch.type,
+      batch.type as BatchType,
       batch.predecessors.map((pred) => BatchEntity.fromFlatDatabase({ ...pred, predecessors: [], successors: [] })),
       batch.successors.map((succ) => BatchEntity.fromFlatDatabase({ ...succ, predecessors: [], successors: [] })),
       CompanyEntity.fromFlatDatabase(batch.owner),
@@ -86,7 +87,7 @@ export class BatchEntity {
       batch.id,
       batch.active,
       batch.amount.toNumber(),
-      batch.type,
+      batch.type as BatchType,
       [],
       [],
       CompanyEntity.fromBaseType(batch.owner),

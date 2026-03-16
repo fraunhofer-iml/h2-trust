@@ -6,16 +6,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { HydrogenColor, PowerType } from '@h2-trust/domain';
+
 export class CreateProductionEntity {
   productionStartedAt: Date;
   productionEndedAt: Date;
   powerProductionUnitId: string;
-  powerType: string;
+  powerType: PowerType;
   powerAmountKwh: number;
   hydrogenProductionUnitId: string;
   hydrogenAmountKg: number;
   recordedBy: string;
-  hydrogenColor: string;
+  hydrogenColor: HydrogenColor;
   hydrogenStorageUnitId: string;
   ownerIdOfPowerProductionUnit: string;
   ownerIdOfHydrogenProductionUnit: string;
@@ -25,12 +27,12 @@ export class CreateProductionEntity {
     productionStartedAt: Date,
     productionEndedAt: Date,
     powerProductionUnitId: string,
-    powerType: string,
+    powerType: PowerType,
     powerAmountKwh: number,
     hydrogenProductionUnitId: string,
     hydrogenAmountKg: number,
     recordedBy: string,
-    hydrogenColor: string,
+    hydrogenColor: HydrogenColor,
     hydrogenStorageUnitId: string,
     ownerIdOfPowerProductionUnit: string,
     ownerIdOfHydrogenProductionUnit: string,

@@ -7,6 +7,7 @@
  */
 
 import { PowerAccessApprovalSeed } from 'libs/database/src/seed';
+import { PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { CompanyEntityHydrogenMock, CompanyEntityPowerMock } from '../../company';
 import { DocumentEntityMock } from '../../document';
 import { PowerProductionUnitEntityMock } from '../../unit';
@@ -17,7 +18,7 @@ export const PowerAccessApprovalEntityMock: PowerAccessApprovalEntity[] = PowerA
     new PowerAccessApprovalEntity(
       seed.id,
       seed.decidedAt,
-      seed.status,
+      seed.status as PowerAccessApprovalStatus,
       CompanyEntityPowerMock,
       PowerProductionUnitEntityMock[0],
       CompanyEntityHydrogenMock,

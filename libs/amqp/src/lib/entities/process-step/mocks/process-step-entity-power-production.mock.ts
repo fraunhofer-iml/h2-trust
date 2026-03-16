@@ -7,6 +7,7 @@
  */
 
 import { PowerProductionProcessStepSeed } from 'libs/database/src/seed';
+import { ProcessType } from '@h2-trust/domain';
 import { BatchEntityPowerProducedMock } from '../../batch/mocks';
 import { DocumentEntityMock } from '../../document/mocks';
 import { PowerProductionUnitEntityMock } from '../../unit/mocks';
@@ -19,7 +20,7 @@ export const ProcessStepEntityPowerProductionMock: ProcessStepEntity[] = PowerPr
       seed.id,
       seed.startedAt,
       seed.endedAt,
-      seed.type,
+      seed.type as ProcessType,
       BatchEntityPowerProducedMock[index],
       UserEntityPowerMock,
       PowerProductionUnitEntityMock[0],
