@@ -93,6 +93,7 @@ export class ProvenanceService {
     return { rootHydrogenProductions, waterConsumptions, powerProductions };
   }
 
+  //TODO-LG: Improve performance (DUHGW-391)
   private async getRootHydrogenProductionsForHydrogenProductions(
     hydrogenProductions: ProcessStepEntity[],
   ): Promise<ProcessStepEntity[]> {
@@ -104,8 +105,8 @@ export class ProvenanceService {
    */
   private async getRootHydrogenProductions(processStep: ProcessStepEntity): Promise<ProcessStepEntity[]> {
     if (this.isProcessStepRootHydrogenProduction(processStep)) {
-      const waterAndPowerPS = await this.traversalService.getPredecessorsForBatch(processStep.batch);
-      return [processStep, ...waterAndPowerPS];
+      const rootHydrogenProductionPredecessors = await this.traversalService.getPredecessorsForBatch(processStep.batch);
+      return [processStep, ...rootHydrogenProductionPredecessors];
     }
     const predecessors: ProcessStepEntity[] = await this.traversalService.getPredecessorsForBatch(processStep.batch);
     return (await Promise.all(predecessors.map((pred) => this.getRootHydrogenProductions(pred)))).flatMap((x) => x);
