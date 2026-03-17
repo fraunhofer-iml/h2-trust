@@ -71,6 +71,14 @@ body {
   );
 }
 
+.delete-button {
+  @include mat.button-overrides(
+    (
+      filled-container-color: #bd554f,
+    )
+  );
+}
+
 //--Materials--//
 
 .mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field

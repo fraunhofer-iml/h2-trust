@@ -19,6 +19,7 @@ import {
   PowerProductionUnitCreateDto,
   PowerProductionUnitDto,
   UnitCreateDto,
+  UnitUpdateActiveDto,
 } from '@h2-trust/api';
 import { API } from '../../constants/api-endpoints';
 
@@ -60,5 +61,10 @@ export class UnitsService {
 
   getHydrogenProductionUnit(id: string) {
     return lastValueFrom(this.httpClient.get<HydrogenProductionUnitDto>(API.UNITS.HYDROGEN_PRODUCTION.DETAILS(id)));
+  }
+
+  deactivate(id: string) {
+    const dto: UnitUpdateActiveDto = { active: false };
+    return lastValueFrom(this.httpClient.patch<void>(API.UNITS.DEACTIVATE(id), dto));
   }
 }

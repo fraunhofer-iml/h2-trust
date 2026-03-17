@@ -15,11 +15,19 @@ import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
+import { UnitActionsComponent } from '../unit-actions/unit-actions.component';
 import { UnitDetailsComponent } from '../unit-details.component';
 
 @Component({
   selector: 'app-hydrogen-production-details',
-  imports: [RouterModule, UnitPipe, UnitDetailsComponent, ErrorCardComponent, LoadingCardComponent],
+  imports: [
+    RouterModule,
+    UnitPipe,
+    UnitDetailsComponent,
+    ErrorCardComponent,
+    LoadingCardComponent,
+    UnitActionsComponent,
+  ],
   templateUrl: './hydrogen-production-details.component.html',
 })
 export class HydrogenProductionDetailsComponent {

@@ -31,6 +31,10 @@
         <a [routerLink]="['hydrogen-production', item.id]">
           <app-unit-card [name]="item.name" [unittype]="UnitType.HYDROGEN_PRODUCTION">
             <mat-chip>
+              <span matChipAvatar class="material-symbols-outlined animate-spin !text-secondary-500"> atr </span>
+              <span class="!text-secondary-500">{{ item.active ? 'Active' : 'Inactive' }}</span>
+            </mat-chip>
+            <mat-chip>
               <span matChipAvatar class="material-symbols-outlined">charger</span>
               {{ item.ratedPower | unit: MeasurementUnit.KWH }}</mat-chip
             >
@@ -45,6 +49,16 @@
       @for (item of hydrogenStorageQuery.data(); track item) {
         <a [routerLink]="['hydrogen-storage', item.id]">
           <app-unit-card [name]="item.name" [unittype]="UnitType.HYDROGEN_STORAGE">
+            <mat-chip>
+              <span
+                matChipAvatar
+                class="material-symbols-outlined !text-neutral-500"
+                [ngClass]="{ 'animate-spin': item.active }"
+              >
+                {{ item.active ? 'atr' : 'block' }}
+              </span>
+              <span class="!text-neutral-500">{{ item.active ? 'Active' : 'Inactive' }}</span>
+            </mat-chip>
             <mat-chip>
               <span matChipAvatar class="material-symbols-outlined">bar_chart</span> {{ item.filling | number }}/{{
                 item.capacity | unit: MeasurementUnit.KG
@@ -63,6 +77,10 @@
       @for (item of powerProductionQuery.data(); track item) {
         <a [routerLink]="['power-production', item.id]">
           <app-unit-card [name]="item.name" [unittype]="UnitType.POWER_PRODUCTION">
+            <mat-chip>
+              <span matChipAvatar class="material-symbols-outlined animate-spin !text-secondary-500"> atr </span>
+              <span class="!text-secondary-500">{{ item.active ? 'Active' : 'Inactive' }}</span>
+            </mat-chip>
             <mat-chip
               ><span matChipAvatar class="material-symbols-outlined">charger</span>
               {{ item.ratedPower | unit: MeasurementUnit.KWH }}</mat-chip

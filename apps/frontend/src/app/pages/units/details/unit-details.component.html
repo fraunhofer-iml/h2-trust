@@ -1,8 +1,16 @@
 @if (unit(); as data) {
-  <div class="col-span-3 grid grid-cols-4 gap-4 rounded-lg bg-white p-4">
-    <div class="col-span-4 flex items-center justify-between">
+  <div class="col-span-3 grid grid-cols-3 gap-4 rounded-lg bg-white p-4 xl:grid-cols-4">
+    <div class="col-span-3 flex items-center justify-between xl:col-span-4">
       <h3 class="font-semibold text-neutral-500">Details</h3>
-      <app-unit-type-chip [unitType]="data.unitType"></app-unit-type-chip>
+      <div class="flex gap-2">
+        <mat-chip>
+          <span matChipAvatar class="material-symbols-outlined animate-spin !text-secondary-500" [ngClass]="">
+            atr
+          </span>
+          <span class="!text-secondary-500">{{ data.active ? 'Active' : 'Inactive' }}</span>
+        </mat-chip>
+        <app-unit-type-chip [unitType]="data.unitType"></app-unit-type-chip>
+      </div>
     </div>
 
     <div class="flex flex-col text-sm">

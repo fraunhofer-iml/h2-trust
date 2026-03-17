@@ -17,6 +17,7 @@ export class HydrogenStorageOverviewDto {
   filling: number;
   storageType: HydrogenStorageType;
   hydrogenComposition: HydrogenComponentDto[];
+  active: boolean;
 
   constructor(
     id: string,
@@ -25,6 +26,7 @@ export class HydrogenStorageOverviewDto {
     filling: number,
     storageType: HydrogenStorageType,
     hydrogenComposition: HydrogenComponentDto[],
+    active: boolean,
   ) {
     this.id = id;
     this.name = name;
@@ -32,6 +34,7 @@ export class HydrogenStorageOverviewDto {
     this.filling = filling;
     this.storageType = storageType;
     this.hydrogenComposition = hydrogenComposition;
+    this.active = active;
   }
 
   static fromEntity(unit: HydrogenStorageUnitEntity): HydrogenStorageOverviewDto {
@@ -42,6 +45,7 @@ export class HydrogenStorageOverviewDto {
       storageType: unit.type,
       filling: HydrogenStorageOverviewDto.addUpFillingAmounts(unit),
       hydrogenComposition: HydrogenStorageOverviewDto.mapHydrogenComposition(unit),
+      active: unit.active,
     };
   }
 

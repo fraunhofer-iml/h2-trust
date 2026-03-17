@@ -38,6 +38,7 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
     modelNumber: string,
     owner: UnitOwnerDto,
     operator: string,
+    active: boolean,
   ) {
     super(
       id,
@@ -53,6 +54,7 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
       owner,
       operator,
       unitType,
+      active,
     );
     this.capacity = capacity;
     this.filling = filling;

@@ -48,6 +48,7 @@ export class PowerProductionUnitDto extends BaseUnitDto {
     electricityMeterNumber: string,
     biddingZone: string,
     financialSupportReceived: boolean,
+    active: boolean,
   ) {
     super(
       id,
@@ -63,6 +64,7 @@ export class PowerProductionUnitDto extends BaseUnitDto {
       owner,
       operator,
       unitType,
+      active,
     );
     this.ratedPower = ratedPower;
     this.gridOperator = gridOperator;

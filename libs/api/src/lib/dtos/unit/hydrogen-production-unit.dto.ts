@@ -41,6 +41,7 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     method: string,
     technology: string,
     waterConsumptionLitersPerHour: number,
+    active: boolean,
   ) {
     super(
       id,
@@ -56,6 +57,7 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
       owner,
       operator,
       unitType,
+      active,
     );
     this.method = method;
     this.technology = technology;

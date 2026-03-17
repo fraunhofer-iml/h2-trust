@@ -42,6 +42,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     pressure: number,
     type: HydrogenStorageType,
     filling: HydrogenComponentEntity[],
+    active: boolean,
   ) {
     super(
       id,
@@ -57,6 +58,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       owner,
       operator,
       unitType,
+      active,
     );
     this.capacity = capacity;
     this.pressure = pressure;

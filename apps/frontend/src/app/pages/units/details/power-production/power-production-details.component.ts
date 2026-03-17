@@ -14,11 +14,13 @@ import { RFNBO_CRITERIA } from 'apps/frontend/src/app/shared/constants/rfnbo-cri
 import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { BoolPipe } from '../../../../shared/pipes/bool-pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
+import { UnitActionsComponent } from '../unit-actions/unit-actions.component';
 import { UnitDetailsComponent } from '../unit-details.component';
 
 @Component({
@@ -32,6 +34,8 @@ import { UnitDetailsComponent } from '../unit-details.component';
     RouterModule,
     ErrorCardComponent,
     LoadingCardComponent,
+    MatButtonModule,
+    UnitActionsComponent,
   ],
   templateUrl: './power-production-details.component.html',
 })

@@ -24,6 +24,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     addressId: AddressSeed[2].id,
     ownerId: CompanySeed[2].id,
     operatorId: CompanySeed[2].id,
+    active: true,
   },
   {
     id: 'power-production-unit-1',
@@ -38,6 +39,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     addressId: AddressSeed[2].id,
     ownerId: CompanySeed[2].id,
     operatorId: CompanySeed[2].id,
+    active: true,
   },
   {
     id: 'power-production-unit-2',
@@ -52,6 +54,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     addressId: AddressSeed[4].id,
     ownerId: CompanySeed[0].id,
     operatorId: CompanySeed[0].id,
+    active: true,
   },
   {
     id: 'power-production-unit-3',
@@ -66,6 +69,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     addressId: AddressSeed[1].id,
     ownerId: CompanySeed[1].id,
     operatorId: CompanySeed[1].id,
+    active: true,
   },
   {
     id: 'hydrogen-production-unit-0',
@@ -80,6 +84,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     addressId: AddressSeed[5].id,
     ownerId: CompanySeed[2].id,
     operatorId: CompanySeed[2].id,
+    active: true,
   },
   {
     id: 'hydrogen-storage-unit-0',
@@ -94,5 +99,6 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     addressId: AddressSeed[5].id,
     ownerId: CompanySeed[2].id,
     operatorId: CompanySeed[2].id,
+    active: true,
   },
 ]);

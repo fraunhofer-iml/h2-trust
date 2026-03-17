@@ -1,11 +1,11 @@
 <div
-  class="flex flex-row items-center gap-2 rounded-md p-2"
+  class="flex w-fit min-w-40 flex-row items-center gap-2 rounded-lg border px-2"
   [ngClass]="{
-    'bg-primary-100 text-primary-800': unitType() === UnitType.POWER_PRODUCTION,
-    'bg-secondary-100 text-secondary-800': unitType() === UnitType.HYDROGEN_PRODUCTION,
-    'bg-neutral-200 text-neutral-800': unitType() === UnitType.HYDROGEN_STORAGE,
+    'border-primary-200 bg-primary-100 text-primary-800': unitType() === UnitType.POWER_PRODUCTION,
+    'border-secondary-200 bg-secondary-100 text-secondary-800': unitType() === UnitType.HYDROGEN_PRODUCTION,
+    'border-neutral-200 bg-neutral-200 text-neutral-800': unitType() === UnitType.HYDROGEN_STORAGE,
   }"
 >
-  <span class="material-symbols-outlined"> {{ getIcon() }} </span>
-  <span class="pr-2 text-center text-sm">{{ unitType() | prettyEnum | titlecase }}</span>
+  <span class="material-symbols-outlined text-lg"> {{ getIcon() }} </span>
+  {{ unitType() | prettyEnum | titlecase }}
 </div>

@@ -25,6 +25,7 @@ export abstract class BaseUnitDto {
   owner: UnitOwnerDto;
   operator: string;
   unitType: UnitType;
+  active: boolean;
 
   protected constructor(
     id: string,
@@ -40,6 +41,7 @@ export abstract class BaseUnitDto {
     owner: UnitOwnerDto,
     operator: string,
     unitType: UnitType,
+    active: boolean,
   ) {
     this.id = id;
     this.name = name;
@@ -54,6 +56,7 @@ export abstract class BaseUnitDto {
     this.owner = owner;
     this.operator = operator;
     this.unitType = unitType;
+    this.active = active;
   }
 
   static fromEntity(unit: BaseUnitEntity): BaseUnitDto {
@@ -85,6 +88,7 @@ export abstract class BaseUnitDto {
       },
       operator: unit.operator?.name,
       unitType: unit.unitType,
+      active: unit.active,
     };
   }
 }

@@ -33,5 +33,6 @@ export const HydrogenProductionUnitEntityMock: HydrogenProductionUnitEntity[] = 
     HydrogenProductionUnitSeed[0].technology as HydrogenProductionTechnology,
     HydrogenProductionUnitSeed[0].biddingZone as BiddingZone,
     HydrogenProductionUnitSeed[0].waterConsumptionLitersPerHour.toNumber(),
+    true,
   ),
 ];
