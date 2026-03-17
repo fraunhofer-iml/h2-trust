@@ -26,7 +26,7 @@ export class UnitCardComponent {
 
   private styles: Record<UnitType, string> = {
     [UnitType.HYDROGEN_PRODUCTION]: 'text-secondary-700 group-hover:bg-secondary-200/80 bg-secondary-100',
-    [UnitType.HYDROGEN_STORAGE]: 'text-neutral-700 group-hover:bg-neutral-200/80 bg-neutral-200',
+    [UnitType.HYDROGEN_STORAGE]: 'text-tertiary-700 group-hover:bg-tertiary-200/80 bg-tertiary-100',
     [UnitType.POWER_PRODUCTION]: 'text-primary-700 group-hover:bg-primary-200/80 bg-primary-100',
   };
 
