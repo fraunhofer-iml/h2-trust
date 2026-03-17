@@ -24,7 +24,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     addressId: AddressSeed[2].id,
     ownerId: CompanySeed[2].id,
     operatorId: CompanySeed[2].id,
-    active: true,
+    active: false,
   },
   {
     id: 'power-production-unit-1',

@@ -11,11 +11,12 @@ import { Component, input } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { RouterModule } from '@angular/router';
 import { BaseUnitDto } from '@h2-trust/api';
+import { UnitStatusChipComponent } from '../../../layout/chips/unit-status-chip.component';
 import { UnitTypeChipComponent } from '../../../layout/unit-type-chip/unit-type-chip.component';
 
 @Component({
   selector: 'app-unit-details',
-  imports: [CommonModule, RouterModule, UnitTypeChipComponent, MatChipsModule],
+  imports: [CommonModule, RouterModule, UnitTypeChipComponent, MatChipsModule, UnitStatusChipComponent],
   templateUrl: './unit-details.component.html',
 })
 export class UnitDetailsComponent {

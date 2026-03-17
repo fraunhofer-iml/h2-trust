@@ -57,7 +57,6 @@ body {
       label-text-color: #252533,
       disabled-label-text-color: #a4c9d3,
       elevated-selected-container-color: #a4c9d3,
-      // selected
       outline-color: #dbdbdb,
       hover-state-layer-color: #3f8796,
     )
@@ -75,6 +74,18 @@ body {
   @include mat.button-overrides(
     (
       filled-container-color: #bd554f,
+    )
+  );
+}
+
+.status-filter {
+  @include mat.chips-overrides(
+    (
+      label-text-color: #252533,
+      disabled-label-text-color: #a8d0bf,
+      elevated-selected-container-color: #a8d0bf,
+      outline-color: #dbdbdb,
+      hover-state-layer-color: #82b1a0,
     )
   );
 }

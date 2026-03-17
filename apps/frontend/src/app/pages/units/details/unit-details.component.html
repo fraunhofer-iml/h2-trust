@@ -3,12 +3,7 @@
     <div class="col-span-3 flex items-center justify-between xl:col-span-4">
       <h3 class="font-semibold text-neutral-500">Details</h3>
       <div class="flex gap-2">
-        <mat-chip>
-          <span matChipAvatar class="material-symbols-outlined animate-spin !text-secondary-500" [ngClass]="">
-            atr
-          </span>
-          <span class="!text-secondary-500">{{ data.active ? 'Active' : 'Inactive' }}</span>
-        </mat-chip>
+        <app-unit-status-chip [unit]="{ unitType: data.unitType, active: data.active }"></app-unit-status-chip>
         <app-unit-type-chip [unitType]="data.unitType"></app-unit-type-chip>
       </div>
     </div>

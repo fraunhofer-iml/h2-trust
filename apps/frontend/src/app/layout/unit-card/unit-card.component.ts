@@ -12,15 +12,17 @@ import { MatChipsModule } from '@angular/material/chips';
 import { UnitType } from '@h2-trust/domain';
 import { ICONS } from '../../shared/constants/icons';
 import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
+import { UnitStatusChipComponent } from '../chips/unit-status-chip.component';
 
 @Component({
   selector: 'app-unit-card',
-  imports: [TitleCasePipe, PrettyEnumPipe, MatChipsModule],
+  imports: [TitleCasePipe, PrettyEnumPipe, MatChipsModule, UnitStatusChipComponent],
   templateUrl: './unit-card.component.html',
 })
 export class UnitCardComponent {
   name = input.required<string>();
   unittype = input.required<UnitType>();
+  active = input.required<boolean>();
 
   private styles: Record<UnitType, string> = {
     [UnitType.HYDROGEN_PRODUCTION]: 'text-secondary-700 group-hover:bg-secondary-200/80 bg-secondary-100',
