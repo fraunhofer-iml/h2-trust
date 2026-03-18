@@ -11,6 +11,7 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
+  CreateHydrogenProductionStatisticsPayload,
   CreateProductionsPayload,
   CsvDocumentEntity,
   FinalizeProductionsPayload,
@@ -22,6 +23,7 @@ import {
   ProductionDataFilter,
   ProductionMessagePatterns,
   ProductionStagingResultEntity,
+  ProductionStatisticsEntity,
   ReadByIdPayload,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   StageProductionsPayload,
@@ -37,6 +39,7 @@ import {
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
+  ProductionStatisticsDto,
   UserDetailsDto,
 } from '@h2-trust/api';
 import { BatchType, ProcessType } from '@h2-trust/domain';
@@ -92,6 +95,21 @@ export class ProductionService {
       this.processSvc.send(ProcessStepMessagePatterns.READ_PAGINATION_BY_PREDECESSOR_TYPES_AND_OWNER, payload),
     );
     return PaginatedProductionDataDto.fromEntity(paginatedProcessStep);
+  }
+
+  async readHydrogenProductionStatistics(
+    userId: string,
+    unitName: string,
+    month: Date,
+  ): Promise<ProductionStatisticsDto> {
+    const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
+    const ownerId = userDetails.company.id;
+
+    const payload = new CreateHydrogenProductionStatisticsPayload(ownerId, month, unitName);
+    const productionstatisticsEntity: ProductionStatisticsEntity = await firstValueFrom(
+      this.processSvc.send(ProcessStepMessagePatterns.CREATE_PRODUCTION_STATISTICS, payload),
+    );
+    return ProductionStatisticsDto.fromEntity(productionstatisticsEntity);
   }
 
   async importCsvFiles(
@@ -185,9 +203,5 @@ export class ProductionService {
     );
 
     return CsvDocumentIntegrityResultDto.fromEntity(verificationResult);
-  }
-
-  async readProductionStatistics(productionUnitNameOrId:string, ){
-
   }
 }

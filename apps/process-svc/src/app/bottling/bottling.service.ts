@@ -6,21 +6,25 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
   BatchEntity,
   BrokerException,
   CreateHydrogenBottlingPayload,
+  CreateHydrogenProductionStatisticsPayload,
   DocumentEntity,
   HydrogenComponentEntity,
   HydrogenCompositionUtil,
+  HydrogenStatisticsEntity,
   PaginatedProcessStepEntity,
+  PowerStatisticsEntity,
   ProcessStepEntity,
+  ProductionStatisticsEntity,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
 import { DocumentRepository } from '@h2-trust/database';
-import { HydrogenColor, RfnboType } from '@h2-trust/domain';
+import { BatchType, HydrogenColor, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { BottlingProcessStepAssembler } from './utils/bottling-process-step.assembler';
@@ -28,6 +32,7 @@ import { BottlingAllocation, BottlingAllocator } from './utils/bottling.allocato
 
 @Injectable()
 export class BottlingService {
+  logger = new Logger('BottlingService');
   constructor(
     private readonly storageService: StorageService,
     private readonly documentRepository: DocumentRepository,
@@ -56,6 +61,29 @@ export class BottlingService {
       );
     }
     return this.processStepService.readPaginatedProcessStepsByPredecessorTypesAndOwner(payload);
+  }
+
+  async createProductionStatistics(
+    payload: CreateHydrogenProductionStatisticsPayload,
+  ): Promise<ProductionStatisticsEntity> {
+    const hydrogenProcesses: ProcessStepEntity[] =
+      await this.processStepService.readProcessStepsByPredecessorTypesAndUnitAndDate(
+        [ProcessType.POWER_PRODUCTION],
+        payload,
+      );
+
+    const hydrogenStatistics = this.createHydrogenStatistics(hydrogenProcesses);
+
+    const powerProcesses: BatchEntity[] = hydrogenProcesses
+      .map((process) =>
+        process.batch.predecessors.filter((batch) => {
+          return batch.type == BatchType.POWER;
+        }),
+      )
+      .flat();
+    const powerStatistics = this.createPowerStatistics(powerProcesses);
+
+    return new ProductionStatisticsEntity(hydrogenStatistics, powerStatistics);
   }
 
   async createHydrogenBottlingProcessStep(payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
@@ -157,5 +185,38 @@ export class BottlingService {
       new DocumentEntity(undefined, file.originalname),
       processStepId,
     );
+  }
+
+  private createHydrogenStatistics(hydrogenProcesses: ProcessStepEntity[]): HydrogenStatisticsEntity {
+    const rfnboReadyHydrogenProcesses: ProcessStepEntity[] = hydrogenProcesses.filter((entity) => {
+      return entity.batch.active ? entity.batch.qualityDetails.rfnboType == RfnboType.RFNBO_READY : false;
+    });
+    const nonCertifiableHydrogenProcesses: ProcessStepEntity[] = hydrogenProcesses.filter((entity) => {
+      return entity.batch.active ? entity.batch.qualityDetails.rfnboType == RfnboType.NON_CERTIFIABLE : false;
+    });
+
+    const hydrogenRFNBOReady = rfnboReadyHydrogenProcesses.reduce((sum, process) => sum + process.batch.amount, 0);
+    const hydrogenNonCertifiable = nonCertifiableHydrogenProcesses.reduce(
+      (sum, process) => sum + process.batch.amount,
+      0,
+    );
+    return new HydrogenStatisticsEntity(hydrogenNonCertifiable, hydrogenRFNBOReady);
+  }
+
+  private createPowerStatistics(batch: BatchEntity[]): PowerStatisticsEntity {
+    const renewableProcesses: BatchEntity[] = batch.filter((entity) => {
+      return entity.qualityDetails.powerType == PowerType.RENEWABLE;
+    });
+    const partlyRenewableProcesses: BatchEntity[] = batch.filter((entity) => {
+      return entity.qualityDetails.powerType == PowerType.PARTLY_RENEWABLE;
+    });
+    const notRenewableProcesses: BatchEntity[] = batch.filter((entity) => {
+      return entity.qualityDetails.powerType == PowerType.NON_RENEWABLE;
+    });
+
+    const powerRenewable = renewableProcesses.reduce((sum, batch) => sum + batch.amount, 0);
+    const powerPartlyRenewable = partlyRenewableProcesses.reduce((sum, batch) => sum + batch.amount, 0);
+    const powerNotRenewable = notRenewableProcesses.reduce((sum, batch) => sum + batch.amount, 0);
+    return new PowerStatisticsEntity(powerRenewable, powerPartlyRenewable, powerNotRenewable);
   }
 }
