@@ -51,7 +51,6 @@ export class HydrogenAssetsComponent {
   protected readonly state = inject(HydrogenProductionUnitsStore);
 
   typeToShow: UnitType | null = null;
-  showActive: boolean | null = null;
 
   hydrogenStorageQuery = injectQuery(() => ({
     queryKey: ['h2-storage'],
@@ -73,12 +72,6 @@ export class HydrogenAssetsComponent {
     if (this.typeToShow === unitType) {
       this.typeToShow = null;
     } else this.typeToShow = unitType;
-  }
-
-  toggleStatus(active: boolean | null) {
-    if (this.showActive === active) {
-      this.showActive = null;
-    } else this.showActive = active;
   }
 
   onAllChipSelection(event: MatChipSelectionChange) {

@@ -1,7 +1,7 @@
 <div class="flex flex-col gap-4 p-8">
   <h2 class="text-lg text-neutral-800">Units</h2>
 
-  <div class="flex w-full items-center justify-between rounded-md bg-white p-4">
+  <div class="flex w-full items-center justify-between">
     <div class="flex flex-row gap-4">
       <div>
         <p class="text-sm text-neutral-500">Filter by type</p>
@@ -24,26 +24,12 @@
           </mat-chip-option>
         </mat-chip-set>
       </div>
-      <mat-divider vertical></mat-divider>
-      <div>
-        <p class="text-sm text-neutral-500">Filter by status</p>
-        <mat-chip-set class="status-filter">
-          <mat-chip-option selectable [selected]="showActive === false" (click)="toggleStatus(false)">
-            Inactive
-          </mat-chip-option>
-          <mat-chip-option selectable [selected]="showActive === true" (click)="toggleStatus(true)">
-            Active
-          </mat-chip-option>
-          <mat-chip-option selectable [selected]="showActive === null" (click)="toggleStatus(null)">
-            Both
-          </mat-chip-option>
-        </mat-chip-set>
-      </div>
     </div>
     <button [routerLink]="'create'" mat-flat-button>Add Unit</button>
   </div>
+  <mat-divider></mat-divider>
 
-  <div class="sd:grid-cols-4 grid grid-cols-3 gap-4">
+  <div class="grid grid-cols-3 gap-4 xl:grid-cols-4">
     @if (!typeToShow || typeToShow === UnitType.HYDROGEN_PRODUCTION) {
       @for (item of hydrogenProductionUnits$(); track item) {
         <a [routerLink]="['hydrogen-production', item.id]">

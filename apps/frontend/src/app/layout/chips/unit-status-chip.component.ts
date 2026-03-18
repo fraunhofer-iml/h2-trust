@@ -12,7 +12,7 @@ import { UnitType } from '@h2-trust/domain';
         'border-primary-400 text-primary-500': unit().unitType === UnitType.POWER_PRODUCTION && unit().active,
         'border-secondary-400 text-secondary-500': unit().unitType === UnitType.HYDROGEN_PRODUCTION && unit().active,
         'border-tertiary-200 text-tertiary-500': unit().unitType === UnitType.HYDROGEN_STORAGE && unit().active,
-        'text-neutral-400': !unit().active,
+        'border-neutral-400 text-neutral-500': !unit().active,
       }"
     >
       <span
