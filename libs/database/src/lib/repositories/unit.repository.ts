@@ -48,6 +48,19 @@ export class UnitRepository {
       .then(this.mapToActualUnitEntity);
   }
 
+  async findUnitsByIds(ids: string[]): Promise<UnitEntity[]> {
+    return this.prismaService.unit
+      .findMany({
+        where: {
+          id: {
+            in: ids,
+          },
+        },
+        ...allUnitsQueryArgs,
+      })
+      .then((units) => units.map(this.mapToActualUnitEntity));
+  }
+
   mapToActualUnitEntity(_unit: Prisma.UnitGetPayload<typeof allUnitsQueryArgs>): UnitEntity {
     const { powerProductionUnit, hydrogenProductionUnit, hydrogenStorageUnit, ...unit } = _unit;
 
