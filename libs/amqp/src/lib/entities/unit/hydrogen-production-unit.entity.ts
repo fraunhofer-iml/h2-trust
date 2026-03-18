@@ -6,11 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  HydrogenProductionUnitDbType,
-  HydrogenProductionUnitDeepDbType,
-  HydrogenProductionUnitNestedDbType,
-} from '@h2-trust/database';
+import { BaseUnitDeepDbType, BaseUnitNestedDbType } from '@h2-trust/database';
 import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
@@ -68,43 +64,35 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 
-  static fromDeepDatabase(unit: HydrogenProductionUnitDeepDbType): HydrogenProductionUnitEntity {
+  //TODO-LG: combine the fromDatabase functions
+  static fromDeepDatabase(baseUnit: BaseUnitDeepDbType): HydrogenProductionUnitEntity {
+    //TODO-LG: add assertion that the given baseUnit has a Hydrogen Production Object
     return <HydrogenProductionUnitEntity>{
-      ...BaseUnitEntity.fromDeepBaseUnit(unit.generalInfo),
+      ...BaseUnitEntity.fromDeepBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_PRODUCTION,
-      ratedPower: unit.ratedPower.toNumber(),
-      pressure: unit.pressure.toNumber(),
-      method: unit.method,
-      technology: unit.technology,
-      biddingZone: unit.biddingZone,
-      waterConsumptionLitersPerHour: unit.waterConsumptionLitersPerHour.toNumber(),
+
+      ratedPower: baseUnit.hydrogenProductionUnit.ratedPower.toNumber(),
+      pressure: baseUnit.hydrogenProductionUnit.pressure.toNumber(),
+      method: baseUnit.hydrogenProductionUnit.method,
+      technology: baseUnit.hydrogenProductionUnit.technology,
+      biddingZone: baseUnit.hydrogenProductionUnit.biddingZone,
+      waterConsumptionLitersPerHour: baseUnit.hydrogenProductionUnit.waterConsumptionLitersPerHour.toNumber(),
     };
   }
 
-  static fromNestedDatabase(unit: HydrogenProductionUnitNestedDbType): HydrogenProductionUnitEntity {
-    return <HydrogenProductionUnitEntity>{
-      ...BaseUnitEntity.fromNestedBaseUnit(unit.generalInfo),
-      unitType: UnitType.HYDROGEN_PRODUCTION,
-      ratedPower: unit.ratedPower.toNumber(),
-      pressure: unit.pressure.toNumber(),
-      method: unit.method,
-      technology: unit.technology,
-      biddingZone: unit.biddingZone,
-      waterConsumptionLitersPerHour: unit.waterConsumptionLitersPerHour.toNumber(),
-    };
-  }
+  static fromNestedDatabase(baseUnit: BaseUnitNestedDbType): HydrogenProductionUnitEntity {
+    //TODO-LG: add assertion that the given baseUnit has a Hydrogen Production Object
 
-  //TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
-  static override fromDatabase(unit: HydrogenProductionUnitDbType): HydrogenProductionUnitEntity {
     return <HydrogenProductionUnitEntity>{
-      ...BaseUnitEntity.fromDatabase(unit),
-      ratedPower: unit.hydrogenProductionUnit?.ratedPower.toNumber(),
-      pressure: unit.hydrogenProductionUnit?.pressure.toNumber(),
-      method: unit.hydrogenProductionUnit?.method,
-      technology: unit.hydrogenProductionUnit?.technology,
-      biddingZone: unit.hydrogenProductionUnit?.biddingZone,
+      ...BaseUnitEntity.fromNestedBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_PRODUCTION,
-      waterConsumptionLitersPerHour: unit.hydrogenProductionUnit?.waterConsumptionLitersPerHour.toNumber(),
+
+      ratedPower: baseUnit.hydrogenProductionUnit.ratedPower.toNumber(),
+      pressure: baseUnit.hydrogenProductionUnit.pressure.toNumber(),
+      method: baseUnit.hydrogenProductionUnit.method,
+      technology: baseUnit.hydrogenProductionUnit.technology,
+      biddingZone: baseUnit.hydrogenProductionUnit.biddingZone,
+      waterConsumptionLitersPerHour: baseUnit.hydrogenProductionUnit.waterConsumptionLitersPerHour.toNumber(),
     };
   }
 }

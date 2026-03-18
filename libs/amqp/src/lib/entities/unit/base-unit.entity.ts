@@ -107,24 +107,6 @@ export abstract class BaseUnitEntity {
     };
   }
 
-  //TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
-  static fromDatabase(unit: BaseUnitDeepDbType): BaseUnitEntity {
-    return <BaseUnitEntity>{
-      id: unit.id,
-      name: unit.name,
-      mastrNumber: unit.mastrNumber,
-      manufacturer: unit.manufacturer,
-      modelType: unit.modelType,
-      modelNumber: unit.modelNumber,
-      serialNumber: unit.serialNumber,
-      certifiedBy: unit.certifiedBy,
-      commissionedOn: unit.commissionedOn,
-      address: AddressEntity.fromDatabase(unit.address),
-      owner: CompanyEntity.fromNestedDatabase(unit.owner),
-      operator: CompanyEntity.fromNestedDatabase(unit.operator),
-    };
-  }
-
   protected static mapOwner(unit: BaseUnitDeepDbType) {
     return unit.owner
       ? {
