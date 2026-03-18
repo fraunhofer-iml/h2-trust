@@ -161,11 +161,11 @@ export class ProductionController {
     required: false,
   })
   readHydrogenProductionsStatisticsByOwner(
-    @AuthenticatedUser() _authenticatedUser: AuthenticatedKCUser,
-    @Query('month') _month: Date,
-    @Query('unitName') _unitName: string,
+    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+    @Query('month') month: Date,
+    @Query('unitName') unitName: string,
   ): Promise<ProductionStatisticsDto> {
-    return this.service.readHydrogenProductionStatistics(_authenticatedUser.sub, _unitName, _month);
+    return this.service.readHydrogenProductionStatistics(authenticatedUser.sub, unitName, month);
   }
 
   @Get('csv')

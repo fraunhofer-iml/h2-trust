@@ -6,13 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateHydrogenProductionStatisticsPayload {
-  @IsNotEmpty()
+  @IsOptional()
   month?: Date;
 
-  @IsNotEmpty()
+  @IsOptional()
   unitName?: string;
 
   @IsString()
