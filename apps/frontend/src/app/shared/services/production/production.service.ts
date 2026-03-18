@@ -15,24 +15,32 @@ import {
   CsvDocumentIntegrityResultDto,
   DownloadFilesDto,
   ImportSubmissionDto,
+  PaginatedProductionDataDto,
   ProcessedCsvDto,
   ProductionOverviewDto,
   ProductionStatisticsDto,
 } from '@h2-trust/api';
 import { FilterModel } from '../../../pages/production/model/generated-productions-filter.model';
+import { PaginationModel } from '../../../pages/production/model/pagination.model';
 import { API } from '../../constants/api-endpoints';
 
 @Injectable()
 export class ProductionService {
   constructor(private readonly httpClient: HttpClient) {}
 
-  getProductions() {
-    return lastValueFrom(this.httpClient.get<ProductionOverviewDto[]>(API.PRODUCTION.BASE));
+  getProductions({ month, unit }: FilterModel, { pageIndex, pageSize }: PaginationModel) {
+    let params = new HttpParams();
+    if (month) params = params.set('month', month.toISOString());
+    params = params.set('unitName', unit);
+    params = params.set('pageNumber', pageIndex + 1);
+    params = params.set('pageSize', pageSize);
+
+    return lastValueFrom(this.httpClient.get<PaginatedProductionDataDto>(API.PRODUCTION.BASE, { params }));
   }
 
   getStatistics({ month, unit }: FilterModel) {
     let params = new HttpParams();
-    params = params.set('month', month.toLocaleDateString());
+    if (month) params = params.set('month', month.toISOString());
     params = params.set('unit', unit);
 
     return lastValueFrom(this.httpClient.get<ProductionStatisticsDto>(API.PRODUCTION.STATISTICS, { params }));
