@@ -20,6 +20,7 @@ import {
   PowerProductionOverviewDto,
   PowerProductionUnitCreateDto,
   PowerProductionUnitDto,
+  UnitUpdateActiveDto,
 } from '@h2-trust/api';
 import { UserService } from '../user/user.service';
 
@@ -98,6 +99,13 @@ export class UnitService {
         HydrogenStorageUnitCreateDto.toPayload(dto),
       ),
     ).then(HydrogenStorageUnitDto.fromEntity);
+  }
+
+  async updateUnitStatus(id: string, active: boolean): Promise<void> {
+    return await firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.UPDATE_UNIT_STATUS, UnitUpdateActiveDto.toPayload(id, active)),
+      { defaultValue: undefined },
+    );
   }
 
   private async getCompanyIdFromUserId(id: string): Promise<string> {

@@ -20,6 +20,7 @@ import {
   ReadByIdsPayload,
   UnitEntity,
   UnitMessagePatterns,
+  UpdateUnitStatusPayload,
 } from '@h2-trust/amqp';
 import { UnitService } from './unit.service';
 
@@ -77,5 +78,10 @@ export class UnitController {
   @MessagePattern(UnitMessagePatterns.CREATE_HYDROGEN_STORAGE_UNIT)
   async createHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
     return this.service.createHydrogenStorageUnit(payload);
+  }
+
+  @MessagePattern(UnitMessagePatterns.UPDATE_UNIT_STATUS)
+  async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<void> {
+    return this.service.updateUnitStatus(payload);
   }
 }

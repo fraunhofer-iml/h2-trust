@@ -17,6 +17,7 @@ import {
   HydrogenStorageUnitEntity,
   PowerProductionUnitEntity,
   UnitEntity,
+  UpdateUnitStatusPayload,
 } from '@h2-trust/amqp';
 import {
   buildHydrogenProductionUnitCreateInput,
@@ -174,5 +175,14 @@ export class UnitRepository {
         include: hydrogenStorageUnitQueryArgs.include,
       })
       .then(HydrogenStorageUnitEntity.fromDatabase);
+  }
+
+  async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<void> {
+    await this.prismaService.unit.update({
+      where: {
+        id: payload.id,
+      },
+      data: { active: payload.active },
+    });
   }
 }

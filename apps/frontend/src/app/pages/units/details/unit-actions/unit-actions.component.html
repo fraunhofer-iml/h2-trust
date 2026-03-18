@@ -6,14 +6,20 @@
       <p class="text-sm">Edit all properties of this unit</p>
       <button matButton="outlined" class="w-fit">Edit</button>
     </div>
-    <div class="flex flex-col gap-2 rounded-lg border border-error-red/30 p-4">
+    <div class="flex flex-col gap-2 rounded-lg border border-error-red/20 p-4">
       <span class="text-neutral-500">Status</span>
       <p class="text-sm">
-        You can set this unit to inactive at any time. Please note that this action is permanent and cannot be undone.
+        You can set this unit to inactive at any time. Please note that you cannot edit inactive units.
       </p>
-      <button matButton="filled" class="delete-button w-fit" (click)="mutation.mutate()">Set inactive</button>
+      <button matButton="filled" class="delete-button w-fit" (click)="mutation.mutate(false)">Set inactive</button>
     </div>
   } @else {
-    <p class="text-sm">You can no longer edit this unit since it was set to inactive.</p>
+    <div class="flex flex-col gap-2 rounded-lg border p-4">
+      <span class="text-neutral-500">Status</span>
+      <p class="text-sm">
+        You can no longer edit this unit since it was set to inactive. To edit this unit, set it to active.
+      </p>
+      <button matButton="outlined" class="w-fit" (click)="mutation.mutate(true)">Activate</button>
+    </div>
   }
 </div>

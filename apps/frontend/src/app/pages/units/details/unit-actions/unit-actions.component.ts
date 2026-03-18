@@ -18,9 +18,9 @@ export class UnitActionsComponent {
   router = inject(Router);
 
   mutation = injectMutation(() => ({
-    mutationFn: () => this.unitsService.deactivate(this.unit().id),
+    mutationFn: (active: boolean) => this.unitsService.deactivate(this.unit().id, active),
     onSuccess: () => {
-      this.router.navigateByUrl('units');
+      location.reload();
     },
     onError: () => toast.error('Failed to update unit.'),
     enabled: this.unit().active,

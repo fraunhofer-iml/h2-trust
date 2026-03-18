@@ -18,6 +18,7 @@ import {
   ReadByIdPayload,
   ReadByIdsPayload,
   UnitEntity,
+  UpdateUnitStatusPayload,
 } from '@h2-trust/amqp';
 import { PowerProductionTypeRepository, UnitRepository } from '@h2-trust/database';
 
@@ -68,5 +69,9 @@ export class UnitService {
 
   async createHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
     return this.unitRepository.insertHydrogenStorageUnit(payload);
+  }
+
+  async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<void> {
+    return this.unitRepository.updateUnitStatus(payload);
   }
 }

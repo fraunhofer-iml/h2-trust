@@ -63,8 +63,8 @@ export class UnitsService {
     return lastValueFrom(this.httpClient.get<HydrogenProductionUnitDto>(API.UNITS.HYDROGEN_PRODUCTION.DETAILS(id)));
   }
 
-  deactivate(id: string) {
-    const dto: UnitUpdateActiveDto = { active: false };
+  deactivate(id: string, active: boolean) {
+    const dto: UnitUpdateActiveDto = { active };
     return lastValueFrom(this.httpClient.patch<void>(API.UNITS.DEACTIVATE(id), dto));
   }
 }

@@ -7,7 +7,7 @@
  */
 
 import { AuthenticatedUser } from 'nest-keycloak-connect';
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import {
   HydrogenProductionOverviewDto,
@@ -19,6 +19,7 @@ import {
   PowerProductionOverviewDto,
   PowerProductionUnitCreateDto,
   PowerProductionUnitDto,
+  UnitUpdateActiveDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/api';
 import { UnitService } from './unit.service';
@@ -139,5 +140,12 @@ export class UnitController {
   })
   createHydrogenProductionUnit(@Body() dto: HydrogenProductionUnitCreateDto): Promise<HydrogenProductionUnitDto> {
     return this.unitService.createHydrogenProductionUnit(dto);
+  }
+
+  @Patch(':id/active')
+  @ApiBearerAuth()
+  @ApiOperation({ description: 'Update the property active' })
+  async updateUnitStatus(@Param('id') id: string, @Body() dto: UnitUpdateActiveDto): Promise<void> {
+    return await this.unitService.updateUnitStatus(id, dto.active);
   }
 }
