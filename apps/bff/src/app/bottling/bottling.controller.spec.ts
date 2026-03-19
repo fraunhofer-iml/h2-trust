@@ -9,7 +9,7 @@
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
-  BottlingPatterns,
+  BottlingMessagePatterns,
   BrokerQueues,
   ProcessStepEntity,
   ProcessStepEntityHydrogenBottlingMock,
@@ -106,7 +106,7 @@ describe('BottlingController', () => {
     expect(processSvcSpy).toHaveBeenCalledTimes(2);
     expect(processSvcSpy).toHaveBeenNthCalledWith(
       1,
-      BottlingPatterns.CREATE_HYDROGEN_BOTTLING,
+      BottlingMessagePatterns.CREATE_HYDROGEN_BOTTLING,
       expectedBatchSvcPayload1,
     );
     expect(processSvcSpy).toHaveBeenNthCalledWith(

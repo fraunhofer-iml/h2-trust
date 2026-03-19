@@ -9,7 +9,7 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
-  BottlingPatterns,
+  BottlingMessagePatterns,
   CreateHydrogenBottlingPayload,
   ProcessStepEntity,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
@@ -20,12 +20,12 @@ import { BottlingService } from './bottling.service';
 export class BottlingController {
   constructor(private readonly bottlingService: BottlingService) {}
 
-  @MessagePattern(BottlingPatterns.CREATE_HYDROGEN_BOTTLING)
+  @MessagePattern(BottlingMessagePatterns.CREATE_HYDROGEN_BOTTLING)
   async createHydrogenBottlingProcessStep(payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
     return this.bottlingService.createHydrogenBottlingProcessStep(payload);
   }
 
-  @MessagePattern(BottlingPatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_OWNER)
+  @MessagePattern(BottlingMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_OWNER)
   async readBottlingsAndTransportationsByOwner(
     payload: ReadProcessStepsByTypesAndActiveAndOwnerPayload,
   ): Promise<ProcessStepEntity[]> {

@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export enum BottlingMessagePatterns {
-  CREATE_HYDROGEN_BOTTLING = 'bottling.create-hydrogen-bottling',
-  READ_ALL_BY_TYPES_AND_ACTIVE_AND_OWNER = 'bottling.read-all-by-types-and-active-and-owner',
+export enum TransportationMessagePatterns {
+  CREATE_HYDROGEN_TRANSPORTATION = 'process-step.create-hydrogen-transportation',
 }

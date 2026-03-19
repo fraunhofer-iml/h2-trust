@@ -14,3 +14,4 @@ export * from './production.pattern';
 export * from './unit.pattern';
 export * from './user.pattern';
 export * from './bottling.pattern';
+export * from './transportation.pattern';
