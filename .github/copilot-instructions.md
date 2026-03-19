@@ -12,46 +12,46 @@
 
 - CI and this repo expect Node `24.13.x`, npm `11.x`, and Nx `22.5.4`.
 - Package manager is `npm`; the root lockfile is
-  [package-lock.json](/home/mpichura/projects/duh-it/h2-trust/core/package-lock.json).
-- Backing services come from [docker-compose.yaml](/home/mpichura/projects/duh-it/h2-trust/core/docker-compose.yaml):
+  [package-lock.json](./package-lock.json).
+- Backing services come from [docker-compose.yaml](./docker-compose.yaml):
   PostgreSQL, MinIO, blockchain, Keycloak, RabbitMQ.
 - Prisma schema is
-  [libs/database/src/lib/schema.prisma](/home/mpichura/projects/duh-it/h2-trust/core/libs/database/src/lib/schema.prisma).
+  [libs/database/src/lib/schema.prisma](./libs/database/src/lib/schema.prisma).
 
 ## Layout Quick Map
 
 - Apps:
-  - [apps/frontend](/home/mpichura/projects/duh-it/h2-trust/core/apps/frontend): Angular 21 app, main entry
-    [apps/frontend/src/main.ts](/home/mpichura/projects/duh-it/h2-trust/core/apps/frontend/src/main.ts)
-  - [apps/bff](/home/mpichura/projects/duh-it/h2-trust/core/apps/bff): NestJS REST gateway with Swagger, entry
-    [apps/bff/src/main.ts](/home/mpichura/projects/duh-it/h2-trust/core/apps/bff/src/main.ts)
-  - [apps/general-svc](/home/mpichura/projects/duh-it/h2-trust/core/apps/general-svc): NestJS RMQ microservice for
+  - [apps/frontend](./apps/frontend): Angular 21 app, main entry
+    [apps/frontend/src/main.ts](./apps/frontend/src/main.ts)
+  - [apps/bff](./apps/bff): NestJS REST gateway with Swagger, entry
+    [apps/bff/src/main.ts](./apps/bff/src/main.ts)
+  - [apps/general-svc](./apps/general-svc): NestJS RMQ microservice for
     master data
-  - [apps/process-svc](/home/mpichura/projects/duh-it/h2-trust/core/apps/process-svc): NestJS RMQ microservice for
+  - [apps/process-svc](./apps/process-svc): NestJS RMQ microservice for
     production, bottling, provenance, DPP logic
-  - [apps/bff-e2e](/home/mpichura/projects/duh-it/h2-trust/core/apps/bff-e2e): Jest-based backend e2e; currently not a
+  - [apps/bff-e2e](./apps/bff-e2e): Jest-based backend e2e; currently not a
     reliable default validation target
-  - [apps/frontend-e2e](/home/mpichura/projects/duh-it/h2-trust/core/apps/frontend-e2e): Playwright setup for frontend
+  - [apps/frontend-e2e](./apps/frontend-e2e): Playwright setup for frontend
     e2e
 - Shared libs:
-  - [libs/api](/home/mpichura/projects/duh-it/h2-trust/core/libs/api): DTOs, labels, shared API types
-  - [libs/amqp](/home/mpichura/projects/duh-it/h2-trust/core/libs/amqp): broker queues, payloads, entities, RMQ helpers
-  - [libs/configuration](/home/mpichura/projects/duh-it/h2-trust/core/libs/configuration): env/config access used by
+  - [libs/api](./libs/api): DTOs, labels, shared API types
+  - [libs/amqp](./libs/amqp): broker queues, payloads, entities, RMQ helpers
+  - [libs/configuration](./libs/configuration): env/config access used by
     apps
-  - [libs/database](/home/mpichura/projects/duh-it/h2-trust/core/libs/database): Prisma schema, query args, seed data
-  - [libs/domain](/home/mpichura/projects/duh-it/h2-trust/core/libs/domain): enums and domain-only types
-  - [libs/storage](/home/mpichura/projects/duh-it/h2-trust/core/libs/storage): file/object storage abstraction
-  - [libs/blockchain](/home/mpichura/projects/duh-it/h2-trust/core/libs/blockchain): blockchain utilities plus separate
+  - [libs/database](./libs/database): Prisma schema, query args, seed data
+  - [libs/domain](./libs/domain): enums and domain-only types
+  - [libs/storage](./libs/storage): file/object storage abstraction
+  - [libs/blockchain](./libs/blockchain): blockchain utilities plus separate
     Hardhat package in `libs/blockchain/smart-contract`
-  - [libs/utils](/home/mpichura/projects/duh-it/h2-trust/core/libs/utils): generic helpers
-- Key repo-level config: [package.json](/home/mpichura/projects/duh-it/h2-trust/core/package.json),
-  [nx.json](/home/mpichura/projects/duh-it/h2-trust/core/nx.json),
-  [tsconfig.base.json](/home/mpichura/projects/duh-it/h2-trust/core/tsconfig.base.json),
-  [eslint.config.mjs](/home/mpichura/projects/duh-it/h2-trust/core/eslint.config.mjs),
-  [jest.config.ts](/home/mpichura/projects/duh-it/h2-trust/core/jest.config.ts),
-  [.prettierrc](/home/mpichura/projects/duh-it/h2-trust/core/.prettierrc),
-  [.editorconfig](/home/mpichura/projects/duh-it/h2-trust/core/.editorconfig),
-  [.license-header](/home/mpichura/projects/duh-it/h2-trust/core/.license-header)
+  - [libs/utils](./libs/utils): generic helpers
+- Key repo-level config: [package.json](./package.json),
+  [nx.json](./nx.json),
+  [tsconfig.base.json](./tsconfig.base.json),
+  [eslint.config.mjs](./eslint.config.mjs),
+  [jest.config.ts](./jest.config.ts),
+  [.prettierrc](./.prettierrc),
+  [.editorconfig](./.editorconfig),
+  [.license-header](./.license-header)
 
 ## Coding Guidelines
 
