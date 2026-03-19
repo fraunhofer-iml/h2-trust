@@ -73,10 +73,10 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       ...BaseUnitEntity.fromDeepBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_STORAGE,
 
-      capacity: baseUnit.hydrogenStorageUnit.capacity.toNumber(),
-      pressure: baseUnit.hydrogenStorageUnit.pressure.toNumber(),
-      filling: HydrogenStorageUnitEntity.mapFilling(baseUnit.hydrogenStorageUnit),
-      type: baseUnit.hydrogenStorageUnit.type as HydrogenStorageType,
+      capacity: baseUnit.hydrogenStorageUnit?.capacity.toNumber() ?? 0,
+      pressure: baseUnit.hydrogenStorageUnit?.pressure.toNumber() ?? 0,
+      filling: baseUnit.hydrogenStorageUnit ? HydrogenStorageUnitEntity.mapFilling(baseUnit.hydrogenStorageUnit) : [],
+      type: baseUnit.hydrogenStorageUnit?.type as HydrogenStorageType,
     };
   }
 
@@ -87,10 +87,26 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       ...BaseUnitEntity.fromNestedBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_STORAGE,
 
-      capacity: baseUnit.hydrogenStorageUnit.capacity.toNumber(),
-      pressure: baseUnit.hydrogenStorageUnit.pressure.toNumber(),
-      filling: HydrogenStorageUnitEntity.mapFilling(baseUnit.hydrogenStorageUnit),
-      type: baseUnit.hydrogenStorageUnit.type as HydrogenStorageType,
+      capacity: baseUnit.hydrogenStorageUnit?.capacity.toNumber() ?? 0,
+      pressure: baseUnit.hydrogenStorageUnit?.pressure.toNumber() ?? 0,
+      filling: baseUnit.hydrogenStorageUnit ? HydrogenStorageUnitEntity.mapFilling(baseUnit.hydrogenStorageUnit) : [],
+      type: baseUnit.hydrogenStorageUnit?.type as HydrogenStorageType,
+    };
+  }
+
+  static fromNestedHydrogenStorageUnit(
+    nestedHydrogenStorageUnit: HydrogenStorageUnitNestedDbType,
+  ): HydrogenStorageUnitEntity {
+    //TODO-LG: add assertion that the given baseUnit has a HydrogenStorageUnitEntity Object
+
+    return {
+      ...BaseUnitEntity.fromFlatBaseUnit(nestedHydrogenStorageUnit.generalInfo),
+      unitType: UnitType.HYDROGEN_STORAGE,
+
+      capacity: nestedHydrogenStorageUnit.capacity.toNumber() ?? 0,
+      pressure: nestedHydrogenStorageUnit.pressure.toNumber() ?? 0,
+      filling: HydrogenStorageUnitEntity.mapFilling(nestedHydrogenStorageUnit),
+      type: nestedHydrogenStorageUnit.type as HydrogenStorageType,
     };
   }
 
@@ -101,10 +117,10 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       ...BaseUnitEntity.fromFlatBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_STORAGE,
 
-      capacity: baseUnit.hydrogenStorageUnit.capacity.toNumber(),
-      pressure: baseUnit.hydrogenStorageUnit.pressure.toNumber(),
+      capacity: baseUnit.hydrogenStorageUnit?.capacity.toNumber() ?? 0,
+      pressure: baseUnit.hydrogenStorageUnit?.pressure.toNumber() ?? 0,
       filling: [],
-      type: baseUnit.hydrogenStorageUnit.type as HydrogenStorageType,
+      type: (baseUnit.hydrogenStorageUnit?.type ?? HydrogenStorageType.LIQUID_HYDROGEN) as HydrogenStorageType,
     };
   }
 

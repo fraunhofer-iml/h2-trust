@@ -8,14 +8,22 @@
 
 import { Prisma } from '@prisma/client';
 
+export const hydrogenProductionUnitFlatQueryArgs = Prisma.validator<Prisma.HydrogenProductionUnitDefaultArgs>()({
+  include: {
+    generalInfo: true,
+  },
+});
+
 export const hydrogenStorageUnitFlatQueryArgs = Prisma.validator<Prisma.HydrogenStorageUnitDefaultArgs>()({
   include: {
+    generalInfo: true,
     filling: true,
   },
 });
 
 export const powerProductionUnitFlatQueryArgs = Prisma.validator<Prisma.PowerProductionUnitDefaultArgs>()({
   include: {
+    generalInfo: true,
     type: true,
   },
 });

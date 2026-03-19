@@ -71,12 +71,12 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
       ...BaseUnitEntity.fromDeepBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_PRODUCTION,
 
-      ratedPower: baseUnit.hydrogenProductionUnit.ratedPower.toNumber(),
-      pressure: baseUnit.hydrogenProductionUnit.pressure.toNumber(),
-      method: baseUnit.hydrogenProductionUnit.method,
-      technology: baseUnit.hydrogenProductionUnit.technology,
-      biddingZone: baseUnit.hydrogenProductionUnit.biddingZone,
-      waterConsumptionLitersPerHour: baseUnit.hydrogenProductionUnit.waterConsumptionLitersPerHour.toNumber(),
+      ratedPower: baseUnit.hydrogenProductionUnit?.ratedPower.toNumber(),
+      pressure: baseUnit.hydrogenProductionUnit?.pressure.toNumber(),
+      method: baseUnit.hydrogenProductionUnit?.method,
+      technology: baseUnit.hydrogenProductionUnit?.technology,
+      biddingZone: baseUnit.hydrogenProductionUnit?.biddingZone,
+      waterConsumptionLitersPerHour: baseUnit.hydrogenProductionUnit?.waterConsumptionLitersPerHour.toNumber(),
     };
   }
 
@@ -87,12 +87,12 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
       ...BaseUnitEntity.fromNestedBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_PRODUCTION,
 
-      ratedPower: baseUnit.hydrogenProductionUnit.ratedPower.toNumber(),
-      pressure: baseUnit.hydrogenProductionUnit.pressure.toNumber(),
-      method: baseUnit.hydrogenProductionUnit.method,
-      technology: baseUnit.hydrogenProductionUnit.technology,
-      biddingZone: baseUnit.hydrogenProductionUnit.biddingZone,
-      waterConsumptionLitersPerHour: baseUnit.hydrogenProductionUnit.waterConsumptionLitersPerHour.toNumber(),
+      ratedPower: baseUnit.hydrogenProductionUnit?.ratedPower.toNumber(),
+      pressure: baseUnit.hydrogenProductionUnit?.pressure.toNumber(),
+      method: baseUnit.hydrogenProductionUnit?.method,
+      technology: baseUnit.hydrogenProductionUnit?.technology,
+      biddingZone: baseUnit.hydrogenProductionUnit?.biddingZone,
+      waterConsumptionLitersPerHour: baseUnit.hydrogenProductionUnit?.waterConsumptionLitersPerHour.toNumber(),
     };
   }
 }

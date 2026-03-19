@@ -9,15 +9,24 @@
 import { Prisma } from '@prisma/client';
 import { activeBatchFlatQueryArgs } from '../batch/batch.flat.query-args';
 import { companyFlatQueryArgs } from '../company/company.flat.query-args';
+import { baseUnitFlatQueryArgs } from './unit.flat.query-args';
+
+export const hydrogenProductionUnitNestedQueryArgs = Prisma.validator<Prisma.HydrogenProductionUnitDefaultArgs>()({
+  include: {
+    generalInfo: baseUnitFlatQueryArgs,
+  },
+});
 
 export const hydrogenStorageUnitNestedQueryArgs = Prisma.validator<Prisma.HydrogenStorageUnitDefaultArgs>()({
   include: {
+    generalInfo: baseUnitFlatQueryArgs,
     filling: activeBatchFlatQueryArgs,
   },
 });
 
 export const powerProductionUnitNestedQueryArgs = Prisma.validator<Prisma.PowerProductionUnitDefaultArgs>()({
   include: {
+    generalInfo: baseUnitFlatQueryArgs,
     type: true,
   },
 });

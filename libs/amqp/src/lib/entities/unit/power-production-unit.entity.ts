@@ -6,7 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BaseUnitDeepDbType, BaseUnitFlatDbType, BaseUnitNestedDbType } from '@h2-trust/database';
+import {
+  BaseUnitDeepDbType,
+  BaseUnitFlatDbType,
+  BaseUnitNestedDbType,
+  PowerProductionUnitNestedDbType,
+} from '@h2-trust/database';
 import { BiddingZone, GridLevel, UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
@@ -110,6 +115,25 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
       gridConnectionNumber: baseUnit.powerProductionUnit?.gridConnectionNumber,
       financialSupportReceived: baseUnit.powerProductionUnit?.financialSupportReceived,
       type: baseUnit.powerProductionUnit?.type,
+    };
+  }
+
+  static fromNestedPowerProductionUnit(
+    powerProductionUnit: PowerProductionUnitNestedDbType,
+  ): PowerProductionUnitEntity {
+    return <PowerProductionUnitEntity>{
+      ...BaseUnitEntity.fromFlatBaseUnit(powerProductionUnit.generalInfo),
+      unitType: UnitType.POWER_PRODUCTION,
+
+      decommissioningPlannedOn: powerProductionUnit.generalInfo.powerProductionUnit?.decommissioningPlannedOn,
+      electricityMeterNumber: powerProductionUnit.generalInfo.powerProductionUnit?.electricityMeterNumber,
+      ratedPower: powerProductionUnit.generalInfo.powerProductionUnit?.ratedPower?.toNumber() ?? 0,
+      gridOperator: powerProductionUnit.generalInfo.powerProductionUnit?.gridOperator,
+      gridLevel: powerProductionUnit.generalInfo.powerProductionUnit?.gridLevel,
+      biddingZone: powerProductionUnit.generalInfo.powerProductionUnit?.biddingZone,
+      gridConnectionNumber: powerProductionUnit.generalInfo.powerProductionUnit?.gridConnectionNumber,
+      financialSupportReceived: powerProductionUnit.generalInfo.powerProductionUnit?.financialSupportReceived,
+      type: powerProductionUnit.generalInfo.powerProductionUnit?.type,
     };
   }
 

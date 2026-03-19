@@ -11,11 +11,7 @@ import {
   hydrogenStorageUnitDeepQueryArgs,
   hydrogenStorageUnitFlatQueryArgs,
   hydrogenStorageUnitNestedQueryArgs,
-  hydrogenStorageUnitQueryArgs,
 } from '../query-args';
-
-//TODO-LG (DUHGW-353): Replace with a deep, nested or flat type if possible
-export type HydrogenStorageUnitDbType = Prisma.UnitGetPayload<typeof hydrogenStorageUnitQueryArgs>;
 
 export type HydrogenStorageUnitDeepDbType = Prisma.HydrogenStorageUnitGetPayload<
   typeof hydrogenStorageUnitDeepQueryArgs

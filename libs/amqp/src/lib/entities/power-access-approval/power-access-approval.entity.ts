@@ -9,7 +9,7 @@
 import { PowerAccessApprovalDeepDbType, PowerAccessApprovalNestedDbType } from '@h2-trust/database';
 import { CompanyEntity } from '../company';
 import { DocumentEntity } from '../document';
-import { BaseUnitEntity, PowerProductionUnitEntity } from '../unit';
+import { PowerProductionUnitEntity } from '../unit';
 
 export class PowerAccessApprovalEntity {
   id: string;
@@ -44,14 +44,9 @@ export class PowerAccessApprovalEntity {
       decidedAt: powerAccessApproval.decidedAt,
       status: powerAccessApproval.status,
       powerProducer: CompanyEntity.fromNestedDatabase(powerAccessApproval.powerProducer),
-      powerProductionUnit: {
-        ...BaseUnitEntity.fromNestedBaseUnit(powerAccessApproval.powerProductionUnit.generalInfo),
-        ratedPower: powerAccessApproval.powerProductionUnit?.ratedPower?.toNumber() ?? 0,
-        gridOperator: powerAccessApproval.powerProductionUnit?.gridOperator,
-        gridLevel: powerAccessApproval.powerProductionUnit?.gridLevel,
-        gridConnectionNumber: powerAccessApproval.powerProductionUnit?.gridConnectionNumber,
-        type: powerAccessApproval.powerProductionUnit?.type,
-      },
+      powerProductionUnit: PowerProductionUnitEntity.fromNestedPowerProductionUnit(
+        powerAccessApproval.powerProductionUnit,
+      ),
       hydrogenProducer: CompanyEntity.fromNestedDatabase(powerAccessApproval.hydrogenProducer),
       document: DocumentEntity.fromDatabase(powerAccessApproval.document),
     };
@@ -62,7 +57,7 @@ export class PowerAccessApprovalEntity {
       ...approval,
       hydrogenProducer: CompanyEntity.fromFlatDatabase(approval.hydrogenProducer),
       powerProducer: CompanyEntity.fromFlatDatabase(approval.powerProducer),
-      powerProductionUnit: PowerProductionUnitEntity.fromFlatDatabase(approval.powerProductionUnit),
+      powerProductionUnit: PowerProductionUnitEntity.fromNestedPowerProductionUnit(approval.powerProductionUnit),
     };
   }
 }

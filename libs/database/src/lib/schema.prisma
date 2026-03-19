@@ -184,7 +184,7 @@ model Batch {
   owner   Company @relation(fields: [ownerId], references: [id])
   ownerId String
 
-  hydrogenStorageUnit   Unit? @relation(fields: [hydrogenStorageUnitId], references: [id])
+  hydrogenStorageUnit   HydrogenStorageUnit? @relation(fields: [hydrogenStorageUnitId], references: [id])
   hydrogenStorageUnitId String?
 
   batchDetails BatchDetails?
