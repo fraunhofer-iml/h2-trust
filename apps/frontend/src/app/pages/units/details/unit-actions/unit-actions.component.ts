@@ -18,7 +18,7 @@ export class UnitActionsComponent {
   router = inject(Router);
 
   mutation = injectMutation(() => ({
-    mutationFn: (active: boolean) => this.unitsService.deactivate(this.unit().id, active),
+    mutationFn: (active: boolean) => this.unitsService.updateActive(this.unit().id, active),
     onSuccess: () => {
       location.reload();
     },

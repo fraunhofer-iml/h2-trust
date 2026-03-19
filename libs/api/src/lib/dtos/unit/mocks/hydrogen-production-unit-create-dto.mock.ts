@@ -6,10 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenProductionUnitCreateDto } from '@h2-trust/api';
+import { HydrogenProductionUnitInputDto } from '@h2-trust/api';
 import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
 
-export const HydrogenProductionUnitCreateDtoMock = <HydrogenProductionUnitCreateDto[]>[
+export const HydrogenProductionUnitCreateDtoMock = <HydrogenProductionUnitInputDto[]>[
   {
     unitType: UnitType.HYDROGEN_PRODUCTION,
     name: 'Hydrogen Production Unit 1',

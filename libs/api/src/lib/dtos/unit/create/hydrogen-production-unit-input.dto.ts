@@ -7,25 +7,38 @@
  */
 
 import { IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
-import { AddressPayload, CreateHydrogenStorageUnitPayload } from '@h2-trust/amqp';
-import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
+import { AddressPayload, CreateHydrogenProductionUnitPayload } from '@h2-trust/amqp';
+import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
-import { UnitUpdateDto } from './unit-update..dto';
+import { UnitInputDto } from './unit-input.dto';
 
-export class HydrogenStorageUnitUpdateDto extends UnitUpdateDto {
-  @IsEnum(HydrogenStorageType)
+export class HydrogenProductionUnitInputDto extends UnitInputDto {
+  @IsEnum(HydrogenProductionMethod)
   @IsNotEmpty()
-  storageType: HydrogenStorageType;
+  method: HydrogenProductionMethod;
+
+  @IsEnum(HydrogenProductionTechnology)
+  @IsNotEmpty()
+  technology: HydrogenProductionTechnology;
+
+  @IsEnum(BiddingZone)
+  @IsNotEmpty()
+  biddingZone: BiddingZone;
 
   @IsNumber()
   @IsPositive()
   @IsNotEmpty()
-  capacity: number;
+  ratedPower: number;
 
   @IsNumber()
   @IsPositive()
   @IsNotEmpty()
   pressure: number;
+
+  @IsNumber()
+  @IsPositive()
+  @IsNotEmpty()
+  waterConsumptionLitersPerHour: number;
 
   constructor(
     type: UnitType,
@@ -40,9 +53,12 @@ export class HydrogenStorageUnitUpdateDto extends UnitUpdateDto {
     certifiedBy: string,
     commissionedOn: Date,
     address: AddressDto,
-    storageType: HydrogenStorageType,
-    capacity: number,
+    technology: HydrogenProductionTechnology,
+    method: HydrogenProductionMethod,
+    biddingZone: BiddingZone,
+    ratedPower: number,
     pressure: number,
+    waterConsumptionLitersPerHour: number,
   ) {
     super(
       type,
@@ -58,13 +74,16 @@ export class HydrogenStorageUnitUpdateDto extends UnitUpdateDto {
       commissionedOn,
       address,
     );
-    this.storageType = storageType;
-    this.capacity = capacity;
+    this.method = method;
+    this.technology = technology;
+    this.biddingZone = biddingZone;
+    this.ratedPower = ratedPower;
     this.pressure = pressure;
+    this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 
-  static toPayload(dto: HydrogenStorageUnitUpdateDto): CreateHydrogenStorageUnitPayload {
-    return new CreateHydrogenStorageUnitPayload(
+  static toPayload(dto: HydrogenProductionUnitInputDto): CreateHydrogenProductionUnitPayload {
+    return new CreateHydrogenProductionUnitPayload(
       dto.name,
       dto.mastrNumber,
       dto.commissionedOn,
@@ -76,9 +95,12 @@ export class HydrogenStorageUnitUpdateDto extends UnitUpdateDto {
         dto.address.country,
       ),
       dto.owner,
-      dto.storageType,
-      dto.capacity,
+      dto.method,
+      dto.technology,
+      dto.biddingZone,
+      dto.ratedPower,
       dto.pressure,
+      dto.waterConsumptionLitersPerHour,
       dto.manufacturer,
       dto.modelType,
       dto.modelNumber,

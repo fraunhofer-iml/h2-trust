@@ -22,10 +22,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import {
-  HydrogenProductionUnitCreateDto,
-  HydrogenStorageUnitCreateDto,
-  PowerProductionUnitCreateDto,
-  UnitCreateDto,
+  HydrogenProductionUnitInputDto,
+  HydrogenStorageUnitInputDto,
+  PowerProductionUnitInputDto,
+  UnitInputDto,
 } from '@h2-trust/api';
 import {
   BiddingZone,
@@ -105,19 +105,19 @@ export class CreateUnitComponent {
     | FormGroup<HydrogenProductionFormGroup> = this.hydrogenProductionForm;
 
   createHydrogenStorageUnitMutation = injectMutation(() => ({
-    mutationFn: (dto: HydrogenStorageUnitCreateDto) => this.unitsService.createHydrogenStorageUnit(dto),
+    mutationFn: (dto: HydrogenStorageUnitInputDto) => this.unitsService.createHydrogenStorageUnit(dto),
     onError: (e) => toast.error(e.message),
     onSuccess: () => this.onSuccess(),
   }));
 
   createPowerProductionUnitMutation = injectMutation(() => ({
-    mutationFn: (dto: PowerProductionUnitCreateDto) => this.unitsService.createPowerProductionUnit(dto),
+    mutationFn: (dto: PowerProductionUnitInputDto) => this.unitsService.createPowerProductionUnit(dto),
     onError: (e) => toast.error(e.message),
     onSuccess: () => this.onSuccess(),
   }));
 
   createHydrogenProductionUnitMutation = injectMutation(() => ({
-    mutationFn: (dto: HydrogenProductionUnitCreateDto) => this.unitsService.createHydrogenProductionUnit(dto),
+    mutationFn: (dto: HydrogenProductionUnitInputDto) => this.unitsService.createHydrogenProductionUnit(dto),
     onError: (e) => toast.error(e.message),
     onSuccess: () => this.onSuccess(),
   }));
@@ -151,11 +151,11 @@ export class CreateUnitComponent {
     const type = this.unitForm.controls.unitType.value;
     if (!type) return;
 
-    const baseDto: UnitCreateDto = {
+    const baseDto: UnitInputDto = {
       ...this.unitForm.value,
       commissionedOn: this.unitForm.value.commissionedOn,
       unitType: type,
-    } as UnitCreateDto;
+    } as UnitInputDto;
 
     if (type === UnitType.HYDROGEN_PRODUCTION) {
       const additional = this.hydrogenProductionForm.value;
@@ -164,7 +164,7 @@ export class CreateUnitComponent {
         ...additional,
         method: additional.method,
         technology: additional.technology,
-      } as HydrogenProductionUnitCreateDto;
+      } as HydrogenProductionUnitInputDto;
       return this.createHydrogenProductionUnitMutation.mutate(dto);
     }
 
@@ -173,7 +173,7 @@ export class CreateUnitComponent {
         ...baseDto,
         ...this.hydrogenStorageForm.value,
         storageType: this.hydrogenStorageForm.value.hydrogenStorageType,
-      } as HydrogenStorageUnitCreateDto;
+      } as HydrogenStorageUnitInputDto;
       return this.createHydrogenStorageUnitMutation.mutate(dto);
     }
 
@@ -181,7 +181,7 @@ export class CreateUnitComponent {
       const dto = {
         ...baseDto,
         ...this.powerProductionForm.value,
-      } as PowerProductionUnitCreateDto;
+      } as PowerProductionUnitInputDto;
       return this.createPowerProductionUnitMutation.mutate(dto);
     }
   }
