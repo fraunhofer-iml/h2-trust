@@ -3,12 +3,12 @@ import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { injectMutation } from '@tanstack/angular-query-experimental';
 
 @Component({
   selector: 'app-unit-actions',
-  imports: [MatButtonModule, CommonModule],
+  imports: [MatButtonModule, CommonModule, RouterModule],
   templateUrl: './unit-actions.component.html',
 })
 export class UnitActionsComponent {

@@ -12,6 +12,7 @@ import { HydrogenProductionDetailsComponent } from './details/hydrogen-productio
 import { HydrogenStorageDetailsComponent } from './details/hydrogen-storage/hydrogen-storage-details.component';
 import { PowerProductionDetailsComponent } from './details/power-production/power-production-details.component';
 import { HydrogenAssetsComponent } from './overview/hydrogen-assets.component';
+import { PowerProductionUnitUpdateComponent } from './update/power-production-unit-update.component';
 
 export const HYDROGEN_ASSETS_ROUTES: Route[] = [
   {
@@ -21,6 +22,6 @@ export const HYDROGEN_ASSETS_ROUTES: Route[] = [
   { path: 'power-production/:id', component: PowerProductionDetailsComponent },
   { path: 'hydrogen-storage/:id', component: HydrogenStorageDetailsComponent },
   { path: 'hydrogen-production/:id', component: HydrogenProductionDetailsComponent },
-
   { path: 'create', component: CreateUnitComponent },
+  { path: 'power-production/:id/edit', component: PowerProductionUnitUpdateComponent },
 ];

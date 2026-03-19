@@ -20,7 +20,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
-import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
+import { injectMutation } from '@tanstack/angular-query-experimental';
 import {
   HydrogenProductionUnitCreateDto,
   HydrogenStorageUnitCreateDto,
@@ -36,13 +36,15 @@ import {
   PowerProductionType,
   UnitType,
 } from '@h2-trust/domain';
-import { InfoTooltipComponent } from '../../../layout/info-tooltip/info-tooltip.component';
 import { H2_PRODUCTION_TYPES } from '../../../shared/constants/hydrogen-production-types';
 import { ICONS } from '../../../shared/constants/icons';
-import { RFNBO_CRITERIA } from '../../../shared/constants/rfnbo-criteria';
 import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
+import { BaseUnitFormComponent } from '../forms/base-unit/base-unit-form-component';
+import { HydrogenProductionUnitFormComponent } from '../forms/hydrogen-production/hydrogen-production-unit-form.component';
+import { HydrogenUnitFormComponent } from '../forms/hydrogen-storage/hydrogen-storage-unit-form.component';
+import { PowerProductionUnitFormComponent } from '../forms/power-production/power-production-unit-form.component';
 import {
   addValidatorsToFormGroup,
   HydrogenProductionFormGroup,
@@ -71,13 +73,15 @@ import {
     MatSelectModule,
     PrettyEnumPipe,
     MatCheckboxModule,
-    InfoTooltipComponent,
+    BaseUnitFormComponent,
+    HydrogenProductionUnitFormComponent,
+    PowerProductionUnitFormComponent,
+    HydrogenUnitFormComponent,
   ],
   providers: [provideNativeDateAdapter(), CompaniesService],
   templateUrl: './create-unit.component.html',
 })
 export class CreateUnitComponent {
-  protected readonly RED_III_CRITERIA = RFNBO_CRITERIA;
   protected readonly UnitType = UnitType;
   protected readonly HydrogenProductionMethod = HydrogenProductionMethod;
   protected readonly HydrogenStorageType = HydrogenStorageType;
@@ -99,11 +103,6 @@ export class CreateUnitComponent {
     | FormGroup<PowerProductionFormGroup>
     | FormGroup<HydrogenStorageFormGroup>
     | FormGroup<HydrogenProductionFormGroup> = this.hydrogenProductionForm;
-
-  companiesQuery = injectQuery(() => ({
-    queryKey: ['recipients'],
-    queryFn: () => this.companiesService.getCompanies(),
-  }));
 
   createHydrogenStorageUnitMutation = injectMutation(() => ({
     mutationFn: (dto: HydrogenStorageUnitCreateDto) => this.unitsService.createHydrogenStorageUnit(dto),
