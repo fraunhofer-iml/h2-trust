@@ -58,7 +58,7 @@
 - Always preserve the Apache license header in new `.ts`, `.js`, and `.mjs` files; ESLint enforces it.
 - Use 2-space indentation, single quotes, and `printWidth: 120`.
 - Imports are auto-sorted by Prettier; prefer existing `@h2-trust/*` path aliases from
-  [tsconfig.base.json](/home/mpichura/projects/duh-it/h2-trust/core/tsconfig.base.json) over deep relative imports.
+  [tsconfig.base.json](./tsconfig.base.json) over deep relative imports.
 - Keep changes inside the existing app/lib boundaries; Nx module-boundary checks run in ESLint.
 - Frontend uses Angular standalone bootstrap and Tailwind; component selector prefix is `app`.
 - Do not weaken validation behavior casually: `general-svc` and `process-svc` use strict `ValidationPipe`, while `bff`
@@ -70,7 +70,7 @@
   1. `npm ci --no-audit --no-fund`
   2. `npm --prefix libs/blockchain/smart-contract ci --no-audit --no-fund`
 - If local env is missing or stale, sync it from
-  [\.env.example](/home/mpichura/projects/duh-it/h2-trust/core/.env.example) before debugging anything else. A stale
+  [\.env.example](./.env.example) before debugging anything else. A stale
   `.env` caused two real failures during validation: `docker compose` warned `MINIO_BUCKET_NAME` was unset and Prisma
   pointed to `h2-trust-dev` instead of the compose database.
 - For one-off agent validation, the safest pattern is to load the checked-in env explicitly instead of trusting a
@@ -107,7 +107,7 @@
 - Do not use root `npm test` as your default validation command. It currently expands to inferred Jest targets for libs
   with no tests and also includes `bff-e2e`; this failed during validation even though the CI-covered suites passed.
 - `bff-e2e` is currently not a reliable default gate. It failed during validation because
-  [apps/bff-e2e/src/bff/test-utils/test.utils.ts](/home/mpichura/projects/duh-it/h2-trust/core/apps/bff-e2e/src/bff/test-utils/test.utils.ts)
+  [apps/bff-e2e/src/bff/test-utils/test.utils.ts](./apps/bff-e2e/src/bff/test-utils/test.utils.ts)
   truncates tables (`ProcessType`, `EnergySource`) that are not present in the current Prisma schema.
 - `npm ci` at root emits a non-fatal peer warning from `@nestjs/swagger` / `@nestjs/mapped-types` about
   `class-validator`; do not treat that as a repo failure.
@@ -116,7 +116,7 @@
 
 ## CI and Validation Pipelines
 
-- Main workflows live in [\.github/workflows](/home/mpichura/projects/duh-it/h2-trust/core/.github/workflows):
+- Main workflows live in [\.github/workflows](./.github/workflows):
   - `build.yml`: builds `bff`, `frontend`, `general-svc`, `process-svc`, then smart contracts
   - `test.yml`: runs `amqp`, `bff`, `frontend`, `general-svc`, `process-svc`, `utils`, plus smart-contract tests
   - `lint-and-format.yml`: runs root ESLint and Prettier checks
@@ -124,18 +124,18 @@
     `package.json` changes
   - `codeql.yml`: JavaScript CodeQL analysis
   - `images.yml`: release-tag image builds using
-    [docker/angular.dockerfile](/home/mpichura/projects/duh-it/h2-trust/core/docker/angular.dockerfile) and
-    [docker/nest.dockerfile](/home/mpichura/projects/duh-it/h2-trust/core/docker/nest.dockerfile)
+    [docker/angular.dockerfile](./docker/angular.dockerfile) and
+    [docker/nest.dockerfile](./docker/nest.dockerfile)
   - `slither.yml`: currently disabled (`if: false`)
 - If you change `package.json`, also update
-  [package-lock.json](/home/mpichura/projects/duh-it/h2-trust/core/package-lock.json) or Danger will flag the PR.
+  [package-lock.json](./package-lock.json) or Danger will flag the PR.
 
 ## Existing Documentation and Resources
 
-- [README.md](/home/mpichura/projects/duh-it/h2-trust/core/README.md) is the high-level product overview.
-- [documentation/04-deployment-view.adoc](/home/mpichura/projects/duh-it/h2-trust/core/documentation/04-deployment-view.adoc)
+- [README.md](./README.md) is the high-level product overview.
+- [documentation/04-deployment-view.adoc](./documentation/04-deployment-view.adoc)
   describes intended local setup, but it does not mention the stale-`.env` failure mode discovered during validation.
-- [documentation/05-tutorial.adoc](/home/mpichura/projects/duh-it/h2-trust/core/documentation/05-tutorial.adoc) is
+- [documentation/05-tutorial.adoc](./documentation/05-tutorial.adoc) is
   effectively empty; do not rely on it.
 
 ## Working Rule for Future Agents
