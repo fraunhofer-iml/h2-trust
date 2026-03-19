@@ -12,7 +12,7 @@ import {
   PowerProductionType,
 } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
-import { HydrogenProductionFormGroup } from '../../create/forms';
+import { HydrogenProductionFormGroup } from '../forms';
 
 @Component({
   selector: 'app-hydrogen-production-unit-form',

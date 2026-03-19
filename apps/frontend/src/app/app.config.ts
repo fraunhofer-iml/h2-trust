@@ -21,6 +21,7 @@ import { appRoutes } from './app.routes';
 import { apiCondition, keycloakOptions } from './init/keycloak-config';
 import { AuthService } from './shared/services/auth/auth.service';
 import { BottlingService } from './shared/services/bottling/bottling.service';
+import { CompaniesService } from './shared/services/companies/companies.service';
 import { UnitsService } from './shared/services/units/units.service';
 import { UsersService } from './shared/services/users/users.service';
 import { HydrogenProductionUnitsStore } from './shared/store/hydrogen-production-units.store';
@@ -39,6 +40,7 @@ export const appConfig: ApplicationConfig = {
     BottlingService,
     HydrogenProductionUnitsStore,
     VerificationResultStore,
+    CompaniesService,
     { provide: LOCALE_ID, useValue: 'en-GB' },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,

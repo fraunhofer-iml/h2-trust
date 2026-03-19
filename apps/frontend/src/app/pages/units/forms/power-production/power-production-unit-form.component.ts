@@ -5,12 +5,13 @@ import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { BiddingZone, GridLevel, PowerProductionType } from '@h2-trust/domain';
-import { PowerProductionFormGroup } from '../../create/forms';
+import { PowerProductionFormGroup } from '../forms';
 
 @Component({
   selector: 'app-power-production-unit-form',
@@ -26,6 +27,8 @@ import { PowerProductionFormGroup } from '../../create/forms';
     MatInputModule,
     MatCheckboxModule,
   ],
+  providers: [provideNativeDateAdapter()],
+
   templateUrl: './power-production-unit-form.component.html',
 })
 export class PowerProductionUnitFormComponent {

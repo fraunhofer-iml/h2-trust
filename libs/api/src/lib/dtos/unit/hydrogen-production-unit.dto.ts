@@ -8,7 +8,6 @@
 
 import { HydrogenProductionUnitEntity } from '@h2-trust/amqp';
 import { UnitType } from '@h2-trust/domain';
-import { EnumLabelMapper } from '../../labels';
 import { AddressDto } from '../address';
 import { BaseUnitDto } from './base-unit.dto';
 import { UnitOwnerDto } from './unit-owner.dto';
@@ -70,8 +69,8 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
   static override fromEntity(unit: HydrogenProductionUnitEntity): HydrogenProductionUnitDto {
     return {
       ...BaseUnitDto.fromEntity(unit),
-      method: EnumLabelMapper.getHydrogenProductionMethod(unit.method),
-      technology: EnumLabelMapper.getHydrogenProductionTechnology(unit.technology),
+      method: unit.method,
+      technology: unit.technology,
       biddingZone: unit.biddingZone,
       ratedPower: unit.ratedPower,
       pressure: unit.pressure,

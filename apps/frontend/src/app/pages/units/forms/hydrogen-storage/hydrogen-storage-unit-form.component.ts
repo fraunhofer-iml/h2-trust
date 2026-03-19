@@ -6,7 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { HydrogenStorageType } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
-import { HydrogenStorageFormGroup } from '../../create/forms';
+import { HydrogenStorageFormGroup } from '../forms';
 
 @Component({
   selector: 'app-hydrogen-storage-unit-form',

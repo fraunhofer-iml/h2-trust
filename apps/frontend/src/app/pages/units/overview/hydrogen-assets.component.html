@@ -34,17 +34,13 @@
       @for (item of hydrogenProductionUnits$(); track item) {
         <a [routerLink]="['hydrogen-production', item.id]">
           <app-unit-card [name]="item.name" [unittype]="UnitType.HYDROGEN_PRODUCTION" [active]="item.active">
-            <div class="flex flex-col text-sm">
-              <mat-chip-set>
-                <mat-chip>
-                  <span matChipAvatar class="material-symbols-outlined">charger</span>
-                  {{ item.ratedPower | unit: MeasurementUnit.KWH }}</mat-chip
-                >
-                <mat-chip>
-                  <span matChipAvatar class="material-symbols-outlined">lab_panel</span>{{ item.technology }}</mat-chip
-                >
-              </mat-chip-set>
-            </div>
+            <mat-chip>
+              <span matChipAvatar class="material-symbols-outlined">charger</span>
+              {{ item.ratedPower | unit: MeasurementUnit.KWH }}</mat-chip
+            >
+            <mat-chip>
+              <span matChipAvatar class="material-symbols-outlined">lab_panel</span>{{ item.technology }}</mat-chip
+            >
           </app-unit-card>
         </a>
       }

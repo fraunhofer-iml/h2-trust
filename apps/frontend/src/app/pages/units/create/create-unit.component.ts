@@ -42,9 +42,6 @@ import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { BaseUnitFormComponent } from '../forms/base-unit/base-unit-form-component';
-import { HydrogenProductionUnitFormComponent } from '../forms/hydrogen-production/hydrogen-production-unit-form.component';
-import { HydrogenUnitFormComponent } from '../forms/hydrogen-storage/hydrogen-storage-unit-form.component';
-import { PowerProductionUnitFormComponent } from '../forms/power-production/power-production-unit-form.component';
 import {
   addValidatorsToFormGroup,
   HydrogenProductionFormGroup,
@@ -55,7 +52,10 @@ import {
   newUnitForm,
   PowerProductionFormGroup,
   UnitFormGroup,
-} from './forms';
+} from '../forms/forms';
+import { HydrogenProductionUnitFormComponent } from '../forms/hydrogen-production/hydrogen-production-unit-form.component';
+import { HydrogenUnitFormComponent } from '../forms/hydrogen-storage/hydrogen-storage-unit-form.component';
+import { PowerProductionUnitFormComponent } from '../forms/power-production/power-production-unit-form.component';
 
 @Component({
   selector: 'app-create-unit',
@@ -78,7 +78,7 @@ import {
     PowerProductionUnitFormComponent,
     HydrogenUnitFormComponent,
   ],
-  providers: [provideNativeDateAdapter(), CompaniesService],
+  providers: [provideNativeDateAdapter()],
   templateUrl: './create-unit.component.html',
 })
 export class CreateUnitComponent {
