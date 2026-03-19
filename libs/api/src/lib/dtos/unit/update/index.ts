@@ -7,3 +7,7 @@
  */
 
 export * from './unit-update-active.dto';
+export * from './hydrogen-storage-update..dto';
+export * from './power-production-unit-update..dto';
+export * from './unit-update..dto';
+export * from './hydrogen-production-unit-update.dto';
