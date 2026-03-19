@@ -11,46 +11,34 @@
 ## Toolchain and Runtime
 
 - CI and this repo expect Node `24.13.x`, npm `11.x`, and Nx `22.5.4`.
-- Package manager is `npm`; the root lockfile is
-  [package-lock.json](./package-lock.json).
-- Backing services come from [docker-compose.yaml](./docker-compose.yaml):
-  PostgreSQL, MinIO, blockchain, Keycloak, RabbitMQ.
-- Prisma schema is
-  [libs/database/src/lib/schema.prisma](./libs/database/src/lib/schema.prisma).
+- Package manager is `npm`; the root lockfile is [package-lock.json](./package-lock.json).
+- Backing services come from [docker-compose.yaml](./docker-compose.yaml): PostgreSQL, MinIO, blockchain, Keycloak,
+  RabbitMQ.
+- Prisma schema is [libs/database/src/lib/schema.prisma](./libs/database/src/lib/schema.prisma).
 
 ## Layout Quick Map
 
 - Apps:
   - [apps/frontend](./apps/frontend): Angular 21 app, main entry
     [apps/frontend/src/main.ts](./apps/frontend/src/main.ts)
-  - [apps/bff](./apps/bff): NestJS REST gateway with Swagger, entry
-    [apps/bff/src/main.ts](./apps/bff/src/main.ts)
-  - [apps/general-svc](./apps/general-svc): NestJS RMQ microservice for
-    master data
-  - [apps/process-svc](./apps/process-svc): NestJS RMQ microservice for
-    production, bottling, provenance, DPP logic
-  - [apps/bff-e2e](./apps/bff-e2e): Jest-based backend e2e; currently not a
-    reliable default validation target
-  - [apps/frontend-e2e](./apps/frontend-e2e): Playwright setup for frontend
-    e2e
+  - [apps/bff](./apps/bff): NestJS REST gateway with Swagger, entry [apps/bff/src/main.ts](./apps/bff/src/main.ts)
+  - [apps/general-svc](./apps/general-svc): NestJS RMQ microservice for master data
+  - [apps/process-svc](./apps/process-svc): NestJS RMQ microservice for production, bottling, provenance, DPP logic
+  - [apps/bff-e2e](./apps/bff-e2e): Jest-based backend e2e; currently not a reliable default validation target
+  - [apps/frontend-e2e](./apps/frontend-e2e): Playwright setup for frontend e2e
 - Shared libs:
   - [libs/api](./libs/api): DTOs, labels, shared API types
   - [libs/amqp](./libs/amqp): broker queues, payloads, entities, RMQ helpers
-  - [libs/configuration](./libs/configuration): env/config access used by
-    apps
+  - [libs/configuration](./libs/configuration): env/config access used by apps
   - [libs/database](./libs/database): Prisma schema, query args, seed data
   - [libs/domain](./libs/domain): enums and domain-only types
   - [libs/storage](./libs/storage): file/object storage abstraction
-  - [libs/blockchain](./libs/blockchain): blockchain utilities plus separate
-    Hardhat package in `libs/blockchain/smart-contract`
+  - [libs/blockchain](./libs/blockchain): blockchain utilities plus separate Hardhat package in
+    `libs/blockchain/smart-contract`
   - [libs/utils](./libs/utils): generic helpers
-- Key repo-level config: [package.json](./package.json),
-  [nx.json](./nx.json),
-  [tsconfig.base.json](./tsconfig.base.json),
-  [eslint.config.mjs](./eslint.config.mjs),
-  [jest.config.ts](./jest.config.ts),
-  [.prettierrc](./.prettierrc),
-  [.editorconfig](./.editorconfig),
+- Key repo-level config: [package.json](./package.json), [nx.json](./nx.json),
+  [tsconfig.base.json](./tsconfig.base.json), [eslint.config.mjs](./eslint.config.mjs),
+  [jest.config.ts](./jest.config.ts), [.prettierrc](./.prettierrc), [.editorconfig](./.editorconfig),
   [.license-header](./.license-header)
 
 ## Coding Guidelines
@@ -69,8 +57,7 @@
 - Fresh bootstrap always starts with:
   1. `npm ci --no-audit --no-fund`
   2. `npm --prefix libs/blockchain/smart-contract ci --no-audit --no-fund`
-- If local env is missing or stale, sync it from
-  [\.env.example](./.env.example) before debugging anything else. A stale
+- If local env is missing or stale, sync it from [\.env.example](./.env.example) before debugging anything else. A stale
   `.env` caused two real failures during validation: `docker compose` warned `MINIO_BUCKET_NAME` was unset and Prisma
   pointed to `h2-trust-dev` instead of the compose database.
 - For one-off agent validation, the safest pattern is to load the checked-in env explicitly instead of trusting a
@@ -107,8 +94,8 @@
 - Do not use root `npm test` as your default validation command. It currently expands to inferred Jest targets for libs
   with no tests and also includes `bff-e2e`; this failed during validation even though the CI-covered suites passed.
 - `bff-e2e` is currently not a reliable default gate. It failed during validation because
-  [apps/bff-e2e/src/bff/test-utils/test.utils.ts](./apps/bff-e2e/src/bff/test-utils/test.utils.ts)
-  truncates tables (`ProcessType`, `EnergySource`) that are not present in the current Prisma schema.
+  [apps/bff-e2e/src/bff/test-utils/test.utils.ts](./apps/bff-e2e/src/bff/test-utils/test.utils.ts) truncates tables
+  (`ProcessType`, `EnergySource`) that are not present in the current Prisma schema.
 - `npm ci` at root emits a non-fatal peer warning from `@nestjs/swagger` / `@nestjs/mapped-types` about
   `class-validator`; do not treat that as a repo failure.
 - Smart-contract dependencies are not covered by the root install. Always run the separate
@@ -123,20 +110,17 @@
   - `danger.yml`: PR hygiene only; checks assignee, non-draft status, PR description, and lockfile updates when
     `package.json` changes
   - `codeql.yml`: JavaScript CodeQL analysis
-  - `images.yml`: release-tag image builds using
-    [docker/angular.dockerfile](./docker/angular.dockerfile) and
+  - `images.yml`: release-tag image builds using [docker/angular.dockerfile](./docker/angular.dockerfile) and
     [docker/nest.dockerfile](./docker/nest.dockerfile)
   - `slither.yml`: currently disabled (`if: false`)
-- If you change `package.json`, also update
-  [package-lock.json](./package-lock.json) or Danger will flag the PR.
+- If you change `package.json`, also update [package-lock.json](./package-lock.json) or Danger will flag the PR.
 
 ## Existing Documentation and Resources
 
 - [README.md](./README.md) is the high-level product overview.
-- [documentation/04-deployment-view.adoc](./documentation/04-deployment-view.adoc)
-  describes intended local setup, but it does not mention the stale-`.env` failure mode discovered during validation.
-- [documentation/05-tutorial.adoc](./documentation/05-tutorial.adoc) is
-  effectively empty; do not rely on it.
+- [documentation/04-deployment-view.adoc](./documentation/04-deployment-view.adoc) describes intended local setup, but
+  it does not mention the stale-`.env` failure mode discovered during validation.
+- [documentation/05-tutorial.adoc](./documentation/05-tutorial.adoc) is effectively empty; do not rely on it.
 
 ## Working Rule for Future Agents
 
