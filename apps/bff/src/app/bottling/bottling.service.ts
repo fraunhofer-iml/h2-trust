@@ -10,6 +10,7 @@ import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
+  BottlingPatterns,
   BrokerQueues,
   CreateHydrogenBottlingPayload,
   CreateHydrogenTransportationPayload,
@@ -48,7 +49,7 @@ export class BottlingService {
     );
 
     const persistedBottling: ProcessStepEntity = await firstValueFrom(
-      this.processSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_BOTTLING, bottlingPayload),
+      this.processSvc.send(BottlingPatterns.CREATE_HYDROGEN_BOTTLING, bottlingPayload),
     );
 
     const transportationPayload: CreateHydrogenTransportationPayload = new CreateHydrogenTransportationPayload(
@@ -75,7 +76,7 @@ export class BottlingService {
     );
 
     const bottlingsAndTransportations: ProcessStepEntity[] = await firstValueFrom(
-      this.processSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_OWNER, payload),
+      this.processSvc.send(BottlingPatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_OWNER, payload),
     );
     return bottlingsAndTransportations.map(BottlingOverviewDto.fromEntity);
   }

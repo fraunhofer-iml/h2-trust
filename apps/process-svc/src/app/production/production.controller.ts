@@ -12,10 +12,12 @@ import {
   CreateProductionsPayload,
   CsvDocumentEntity,
   FinalizeProductionsPayload,
+  PaginatedProcessStepEntity,
   ProcessStepEntity,
   ProductionMessagePatterns,
   ProductionStagingResultEntity,
   ReadByIdPayload,
+  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   StageProductionsPayload,
   VerifyCsvDocumentIntegrityResultEntity,
 } from '@h2-trust/amqp';
@@ -54,5 +56,12 @@ export class ProductionController {
   @MessagePattern(ProductionMessagePatterns.VERIFY_CSV_DOCUMENT_INTEGRITY)
   async verifyCsvDocumentIntegrity(payload: ReadByIdPayload): Promise<VerifyCsvDocumentIntegrityResultEntity> {
     return this.csvDocumentService.verifyCsvDocumentIntegrity(payload);
+  }
+
+  @MessagePattern(ProductionMessagePatterns.READ_PAGINATED_HYDROGEN_PRODUCTION_DATA_BY_PREDECESSOR_TYPES_AND_OWNER)
+  async readPaginatedHydrogenProduction(
+    payload: ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
+  ): Promise<PaginatedProcessStepEntity> {
+    return this.productionService.readPaginatedHydrogenProduction(payload);
   }
 }

@@ -18,7 +18,6 @@ import {
   PowerAccessApprovalPatterns,
   PowerProductionUnitEntity,
   ProcessStepEntity,
-  ProcessStepMessagePatterns,
   ProductionDataFilter,
   ProductionMessagePatterns,
   ProductionStagingResultEntity,
@@ -88,7 +87,10 @@ export class ProductionService {
       new ProductionDataFilter(pageNumber, pageSize, unitName, month),
     );
     const paginatedProcessStep: PaginatedProcessStepEntity = await firstValueFrom(
-      this.processSvc.send(ProcessStepMessagePatterns.READ_PAGINATION_BY_PREDECESSOR_TYPES_AND_OWNER, payload),
+      this.processSvc.send(
+        ProductionMessagePatterns.READ_PAGINATED_HYDROGEN_PRODUCTION_DATA_BY_PREDECESSOR_TYPES_AND_OWNER,
+        payload,
+      ),
     );
     return PaginatedProductionDataDto.fromEntity(paginatedProcessStep);
   }

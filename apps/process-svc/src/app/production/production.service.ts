@@ -7,24 +7,28 @@
  */
 
 import { firstValueFrom } from 'rxjs';
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
+  BrokerException,
   BrokerQueues,
   CreateProductionEntity,
   CreateProductionsPayload,
   FinalizeProductionsPayload,
   HydrogenProductionUnitEntity,
+  PaginatedProcessStepEntity,
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ReadByIdPayload,
   ReadByIdsPayload,
+  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   StagedProductionEntity,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
 import { PowerType } from '@h2-trust/domain';
+import { ProcessStepService } from '../process-step/process-step.service';
 import { ProductionCreationService } from './production-creation.service';
 import { ProductionUtils } from './utils/production.utils';
 
@@ -38,6 +42,7 @@ export class ProductionService {
     private readonly configurationService: ConfigurationService,
     private readonly productionCreationService: ProductionCreationService,
     private readonly stagedProductionRepository: StagedProductionRepository,
+    private readonly processStepService: ProcessStepService,
   ) {
     this.productionChunkSize = this.configurationService.getProcessSvcConfiguration().productionChunkSize;
   }
@@ -121,5 +126,23 @@ export class ProductionService {
     );
 
     return this.productionCreationService.createAndPersistProductions(createProductionEntities);
+  }
+
+  async readPaginatedHydrogenProduction(
+    payload: ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
+  ): Promise<PaginatedProcessStepEntity> {
+    if (payload.filter.pageNumber <= 0) {
+      throw new BrokerException(
+        `No process steps found in storage unit ${payload.filter.pageNumber}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (payload.filter.pageSize <= 0) {
+      throw new BrokerException(
+        `No process steps found in storage unit ${payload.filter.pageSize}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return this.processStepService.readPaginatedProcessStepsByPredecessorTypesAndOwner(payload);
   }
 }
