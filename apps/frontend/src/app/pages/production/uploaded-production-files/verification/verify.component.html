@@ -88,7 +88,7 @@
             </button>
             <button
               matButton="outlined"
-              [cdkCopyToClipboard]="res.documentId"
+              [cdkCopyToClipboard]="res.transactionHash ?? ''"
               (cdkCopyToClipboardCopied)="onCopied($event)"
             >
               <span class="flex flex-row items-center gap-2">
