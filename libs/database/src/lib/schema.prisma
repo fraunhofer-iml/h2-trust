@@ -53,7 +53,7 @@ model CsvImport {
 
 model CsvDocument {
   id              String   @id @default(uuid(7))
-  fileHash        String
+  fileName        String
   type            String
   startedAt       DateTime
   endedAt         DateTime
@@ -204,8 +204,8 @@ model BatchDetails {
 }
 
 model QualityDetails {
-  id        String @id
-  color     String
+  id    String @id
+  color String
   rfnboType String
 
   batchDetails BatchDetails @relation(fields: [id], references: [id])
