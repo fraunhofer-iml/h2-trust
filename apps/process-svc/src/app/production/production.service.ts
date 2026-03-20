@@ -18,6 +18,7 @@ import {
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ReadByIdPayload,
+  ReadByIdsPayload,
   StagedProductionEntity,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
@@ -45,34 +46,43 @@ export class ProductionService {
     const stagedProductions: StagedProductionEntity[] =
       await this.stagedProductionRepository.getStagedProductionsByCsvImportId(payload.importId);
 
-    const createProductions: CreateProductionEntity[] = (
-      await Promise.all(
-        stagedProductions.map(async (stagedProduction) => {
-          const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
-            this.generalSvc.send(UnitMessagePatterns.READ, new ReadByIdPayload(stagedProduction.powerProductionUnitId)),
-          );
-          const createProductionEntity: CreateProductionEntity = new CreateProductionEntity(
-            stagedProduction.startedAt,
-            new Date(new Date(stagedProduction.startedAt).setMinutes(59, 59, 999)),
-            stagedProduction.powerProductionUnitId,
-            PowerType.RENEWABLE,
-            stagedProduction.powerAmount,
-            stagedProduction.hydrogenProductionUnitId,
-            stagedProduction.hydrogenAmount,
-            payload.recordedBy,
-            stagedProduction.hydrogenColor,
-            payload.hydrogenStorageUnitId,
-            stagedProduction.powerProductionUnitOwnerId,
-            stagedProduction.hydrogenProductionUnitOwnerId,
-            stagedProduction.waterConsumptionLitersPerHour,
-          );
-          return ProductionUtils.splitGridPowerProduction(
-            createProductionEntity,
-            powerProductionUnit.type.energySource,
-          );
-        }),
-      )
-    ).flatMap((x) => x);
+    const powerProductionUnits: PowerProductionUnitEntity[] = await firstValueFrom(
+      this.generalSvc.send(
+        UnitMessagePatterns.READ_MANY,
+        new ReadByIdsPayload(
+          Array.from(new Set(stagedProductions.map((stagedProduction) => stagedProduction.powerProductionUnitId))),
+        ),
+      ),
+    );
+
+    const powerProductionUnitById = new Map<string, PowerProductionUnitEntity>(
+      powerProductionUnits.map((powerProductionUnit) => [powerProductionUnit.id, powerProductionUnit]),
+    );
+
+    const createProductions: CreateProductionEntity[] = stagedProductions
+      .map((stagedProduction) => {
+        const powerProductionUnit: PowerProductionUnitEntity = powerProductionUnitById.get(
+          stagedProduction.powerProductionUnitId,
+        );
+
+        const createProductionEntity: CreateProductionEntity = new CreateProductionEntity(
+          stagedProduction.startedAt,
+          new Date(new Date(stagedProduction.startedAt).setMinutes(59, 59, 999)),
+          stagedProduction.powerProductionUnitId,
+          PowerType.RENEWABLE,
+          stagedProduction.powerAmount,
+          stagedProduction.hydrogenProductionUnitId,
+          stagedProduction.hydrogenAmount,
+          payload.recordedBy,
+          stagedProduction.hydrogenColor,
+          payload.hydrogenStorageUnitId,
+          stagedProduction.powerProductionUnitOwnerId,
+          stagedProduction.hydrogenProductionUnitOwnerId,
+          stagedProduction.waterConsumptionLitersPerHour,
+        );
+        return ProductionUtils.splitGridPowerProduction(createProductionEntity, powerProductionUnit.type.energySource);
+      })
+      .flatMap((x) => x);
 
     this.logger.debug(
       `Finalizing ${createProductions.length} staged productions in chunks of ${this.productionChunkSize}`,

@@ -33,6 +33,10 @@ export class UnitService {
     return this.unitRepository.findUnitById(id);
   }
 
+  async readUnitsByIds(ids: string[]): Promise<UnitEntity[]> {
+    return this.unitRepository.findUnitsByIds(ids);
+  }
+
   async readPowerProductionUnitsByOwnerId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity[]> {
     return this.unitRepository.findPowerProductionUnitsByOwnerId(payload.id);
   }
