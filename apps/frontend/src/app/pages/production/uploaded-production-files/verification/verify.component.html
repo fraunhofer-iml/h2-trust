@@ -6,9 +6,9 @@
     </span>
   </button>
 } @else if (!result || result.status === CsvDocumentIntegrityStatus.FAILED) {
-  <button matButton="filled" (click)="verify()" [disabled]="disabled()">Verifiy</button>
+  <button matButton="filled" (click)="verify()" [disabled]="disabled()">Verify</button>
 } @else {
-  <button matButton="outlined" (click)="sheet.open()" class="!bg-neutral-200">See Details</button>
+  <button matButton="outlined" (click)="sheet.open()" class="!bg-neutral-200">Inspect</button>
 }
 
 <!-- DETAILS SHEET -->
