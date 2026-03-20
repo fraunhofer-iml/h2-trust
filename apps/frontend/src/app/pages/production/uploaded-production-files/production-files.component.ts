@@ -80,7 +80,7 @@ export class ProductionFilesComponent implements AfterViewInit {
     'endedAt',
     'type',
     'amount',
-    'validationStatus',
+    'verificationStatus',
     'button',
   ] as const;
 
