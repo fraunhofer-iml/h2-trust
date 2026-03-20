@@ -8,14 +8,14 @@
 
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { CreateHydrogenTransportationPayload, ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
+import { CreateHydrogenTransportationPayload, ProcessStepEntity, TransportationMessagePatterns } from '@h2-trust/amqp';
 import { TransportationService } from './transportation.service';
 
 @Controller()
 export class TransportationController {
   constructor(private readonly transportationService: TransportationService) {}
 
-  @MessagePattern(ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION)
+  @MessagePattern(TransportationMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION)
   async createHydrogenTransportationProcessStep(
     payload: CreateHydrogenTransportationPayload,
   ): Promise<ProcessStepEntity> {

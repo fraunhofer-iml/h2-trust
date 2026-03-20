@@ -9,11 +9,9 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
+  BottlingMessagePatterns,
   CreateHydrogenBottlingPayload,
-  PaginatedProcessStepEntity,
   ProcessStepEntity,
-  ProcessStepMessagePatterns,
-  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
 import { BottlingService } from './bottling.service';
@@ -22,22 +20,15 @@ import { BottlingService } from './bottling.service';
 export class BottlingController {
   constructor(private readonly bottlingService: BottlingService) {}
 
-  @MessagePattern(ProcessStepMessagePatterns.CREATE_HYDROGEN_BOTTLING)
+  @MessagePattern(BottlingMessagePatterns.CREATE_HYDROGEN_BOTTLING)
   async createHydrogenBottlingProcessStep(payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
     return this.bottlingService.createHydrogenBottlingProcessStep(payload);
   }
 
-  @MessagePattern(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_OWNER)
-  async readProcessStepsByTypesAndActiveAndOwner(
+  @MessagePattern(BottlingMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_OWNER)
+  async readBottlingsAndTransportationsByOwner(
     payload: ReadProcessStepsByTypesAndActiveAndOwnerPayload,
   ): Promise<ProcessStepEntity[]> {
     return this.bottlingService.readProcessStepsByTypesAndActiveAndOwner(payload);
-  }
-
-  @MessagePattern(ProcessStepMessagePatterns.READ_PAGINATION_BY_PREDECESSOR_TYPES_AND_OWNER)
-  async readProcessStepsByPredecessorTypesAndOwner(
-    payload: ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
-  ): Promise<PaginatedProcessStepEntity> {
-    return this.bottlingService.readProcessStepsByPredecessorTypesAndOwner(payload);
   }
 }

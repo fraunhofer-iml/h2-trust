@@ -10,15 +10,16 @@ import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
+  BottlingMessagePatterns,
   BrokerQueues,
   CreateHydrogenBottlingPayload,
   CreateHydrogenTransportationPayload,
   DigitalProductPassportEntity,
   DigitalProductPassportPatterns,
   ProcessStepEntity,
-  ProcessStepMessagePatterns,
   ReadByIdPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
+  TransportationMessagePatterns,
 } from '@h2-trust/amqp';
 import { BottlingDto, BottlingOverviewDto, DigitalProductPassportDto } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
@@ -48,7 +49,7 @@ export class BottlingService {
     );
 
     const persistedBottling: ProcessStepEntity = await firstValueFrom(
-      this.processSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_BOTTLING, bottlingPayload),
+      this.processSvc.send(BottlingMessagePatterns.CREATE_HYDROGEN_BOTTLING, bottlingPayload),
     );
 
     const transportationPayload: CreateHydrogenTransportationPayload = new CreateHydrogenTransportationPayload(
@@ -60,7 +61,7 @@ export class BottlingService {
     );
 
     const persistedTransportation: ProcessStepEntity = await firstValueFrom(
-      this.processSvc.send(ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION, transportationPayload),
+      this.processSvc.send(TransportationMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION, transportationPayload),
     );
     return BottlingOverviewDto.fromEntity(persistedTransportation);
   }
@@ -75,7 +76,7 @@ export class BottlingService {
     );
 
     const bottlingsAndTransportations: ProcessStepEntity[] = await firstValueFrom(
-      this.processSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_OWNER, payload),
+      this.processSvc.send(BottlingMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_OWNER, payload),
     );
     return bottlingsAndTransportations.map(BottlingOverviewDto.fromEntity);
   }
