@@ -4,8 +4,8 @@ import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
-import { HydrogenProductionUnitDto, HydrogenProductionUnitInputDto, UnitInputDto } from '@h2-trust/api';
-import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
+import { HydrogenProductionUnitDto, HydrogenProductionUnitInputDto } from '@h2-trust/api';
+import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology } from '@h2-trust/domain';
 import { UnitTypeChipComponent } from '../../../layout/unit-type-chip/unit-type-chip.component';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { BaseUnitFormComponent } from '../forms/base-unit/base-unit-form-component';
@@ -55,13 +55,8 @@ export class HydrogenProductionUnitUpdateComponent {
   }));
 
   onSave() {
-    const baseDto: UnitInputDto = {
-      ...this.unitForm.value,
-      unitType: UnitType.POWER_PRODUCTION,
-    } as UnitInputDto;
-
     const dto = {
-      ...baseDto,
+      ...this.unitForm.value,
       ...this.hydrogenProductionForm.value,
     } as HydrogenProductionUnitInputDto;
 

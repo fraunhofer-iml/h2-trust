@@ -4,8 +4,8 @@ import { FormGroup } from '@angular/forms';
 import { MatAnchor, MatButtonModule } from '@angular/material/button';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
-import { PowerProductionUnitDto, PowerProductionUnitInputDto, UnitInputDto } from '@h2-trust/api';
-import { PowerProductionType, UnitType } from '@h2-trust/domain';
+import { PowerProductionUnitDto, PowerProductionUnitInputDto } from '@h2-trust/api';
+import { PowerProductionType } from '@h2-trust/domain';
 import { UnitTypeChipComponent } from '../../../layout/unit-type-chip/unit-type-chip.component';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { BaseUnitFormComponent } from '../forms/base-unit/base-unit-form-component';
@@ -50,13 +50,8 @@ export class PowerProductionUnitUpdateComponent {
   }));
 
   onSave() {
-    const baseDto: UnitInputDto = {
-      ...this.unitForm.value,
-      unitType: UnitType.POWER_PRODUCTION,
-    } as UnitInputDto;
-
     const dto = {
-      ...baseDto,
+      ...this.unitForm.value,
       ...this.powerProductionForm.value,
     } as PowerProductionUnitInputDto;
 
