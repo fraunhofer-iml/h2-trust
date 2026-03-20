@@ -39,7 +39,12 @@
 
     <div class="flex gap-2">
       <app-download-button [selectedFiles]="selection"></app-download-button>
-      <button mat-flat-button routerLink="/production/add">Add Data</button>
+      <button mat-flat-button routerLink="/production/add">
+        <span class="flex flex-row items-center">
+          <span class="material-symbols-outlined pr-2">upload</span>
+          Upload
+        </span>
+      </button>
     </div>
   </div>
 
