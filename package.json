@@ -109,7 +109,7 @@
     "axios": "^1.13.6",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
-    "csv-parse": "^6.1.0",
+    "csv-parse": "^6.2.0",
     "danger": "^13.0.7",
     "echarts": "^6.0.0",
     "ethers": "^6.16.0",
