@@ -74,10 +74,10 @@ export class UnitsService {
   }
 
   updateHydrogenStorageUnit(dto: HydrogenStorageUnitInputDto) {
-    return lastValueFrom(this.httpClient.put<HydrogenStorageUnitDto>(API.UNITS.POWER_PRODUCTION.BASE, dto));
+    return lastValueFrom(this.httpClient.put<HydrogenStorageUnitDto>(API.UNITS.HYDROGEN_STORAGE.BASE, dto));
   }
 
   updateHydrogenProductionUnit(dto: HydrogenProductionUnitInputDto) {
-    return lastValueFrom(this.httpClient.put<HydrogenProductionUnitDto>(API.UNITS.POWER_PRODUCTION.BASE, dto));
+    return lastValueFrom(this.httpClient.put<HydrogenProductionUnitDto>(API.UNITS.HYDROGEN_PRODUCTION.BASE, dto));
   }
 }

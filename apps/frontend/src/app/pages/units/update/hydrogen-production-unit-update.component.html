@@ -20,7 +20,8 @@
       [hydrogenProductionForm]="hydrogenProductionForm"
     ></app-hydrogen-production-unit-form>
     <div class="relative flex w-full justify-end gap-2 rounded-md bg-white p-4">
-      <button matButton="outlined">Cancel</button> <button matButton="filled">Save</button>
+      <button matButton="outlined" (click)="navigateToDetailsView()">Cancel</button>
+      <button matButton="filled" (click)="onSave()">Save</button>
     </div>
   }
 </div>

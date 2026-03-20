@@ -14,11 +14,14 @@
 
       <app-unit-type-chip [unitType]="unit.unitType" class="absolute right-4 top-4"></app-unit-type-chip>
     </div>
+
     <app-base-unit-form [unitForm]="unitForm"></app-base-unit-form>
 
     <app-hydrogen-storage-unit-form [hydrogenStorageForm]="hydrogenStorageUnitForm"></app-hydrogen-storage-unit-form>
+
     <div class="relative flex w-full justify-end gap-2 rounded-md bg-white p-4">
-      <button matButton="outlined">Cancel</button> <button matButton="filled">Save</button>
+      <button matButton="outlined" (click)="navigateToDetailsView()">Cancel</button>
+      <button matButton="filled" (click)="onSave()">Save</button>
     </div>
   }
 </div>

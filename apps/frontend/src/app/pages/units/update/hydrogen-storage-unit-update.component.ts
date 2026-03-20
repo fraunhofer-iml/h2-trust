@@ -1,14 +1,21 @@
+import { toast } from 'ngx-sonner';
 import { Component, inject, input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { RouterModule } from '@angular/router';
-import { injectQuery } from '@tanstack/angular-query-experimental';
-import { HydrogenStorageUnitDto } from '@h2-trust/api';
-import { HydrogenStorageType } from '@h2-trust/domain';
+import { Router, RouterModule } from '@angular/router';
+import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
+import { HydrogenStorageUnitDto, HydrogenStorageUnitInputDto, UnitInputDto } from '@h2-trust/api';
+import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { UnitTypeChipComponent } from '../../../layout/unit-type-chip/unit-type-chip.component';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { BaseUnitFormComponent } from '../forms/base-unit/base-unit-form-component';
-import { HydrogenStorageFormGroup, newH2StorageForm, newUnitForm, UnitFormGroup } from '../forms/forms';
+import {
+  addValidatorsToFormGroup,
+  HydrogenStorageFormGroup,
+  newH2StorageForm,
+  newUnitForm,
+  UnitFormGroup,
+} from '../forms/forms';
 import { HydrogenUnitFormComponent } from '../forms/hydrogen-storage/hydrogen-storage-unit-form.component';
 
 @Component({
@@ -23,6 +30,7 @@ export class HydrogenStorageUnitUpdateComponent {
   id = input<string>();
 
   unitsService = inject(UnitsService);
+  router = inject(Router);
 
   unitQuery = injectQuery(() => ({
     queryKey: ['power-production-unit', this.id()],
@@ -34,11 +42,37 @@ export class HydrogenStorageUnitUpdateComponent {
     enabled: !!this.id(),
   }));
 
+  unitMutation = injectMutation(() => ({
+    mutationFn: (dto: HydrogenStorageUnitInputDto) => this.unitsService.updateHydrogenStorageUnit(dto),
+    onSuccess: () => this.navigateToDetailsView(),
+    onError: () => toast.error('Failed to update unit.'),
+  }));
+
+  onSave() {
+    const baseDto: UnitInputDto = {
+      ...this.unitForm.value,
+      unitType: UnitType.HYDROGEN_STORAGE,
+    } as UnitInputDto;
+
+    const dto = {
+      ...baseDto,
+      ...this.hydrogenStorageUnitForm.value,
+      storageType: this.hydrogenStorageUnitForm.value.hydrogenStorageType,
+    } as HydrogenStorageUnitInputDto;
+
+    this.unitMutation.mutate(dto);
+  }
+
+  protected navigateToDetailsView() {
+    this.router.navigateByUrl(`units/hydrogen-storage/${this.id()}`);
+  }
+
   private setFormData(unit: HydrogenStorageUnitDto) {
     this.unitForm.patchValue({ ...unit, owner: unit.owner.id, operator: unit.operator });
     this.hydrogenStorageUnitForm.patchValue({
       ...unit,
       hydrogenStorageType: unit.storageType as HydrogenStorageType,
     });
+    addValidatorsToFormGroup(this.hydrogenStorageUnitForm);
   }
 }
