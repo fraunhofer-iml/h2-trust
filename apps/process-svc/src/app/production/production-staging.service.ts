@@ -62,6 +62,9 @@ export class ProductionStagingService {
       this.prepareProductions<AccountingPeriodHydrogen>(payload.hydrogenProductionImports, BatchType.HYDROGEN),
     ]);
 
+    console.log(preparedPowerProductions);
+    console.log(preparedHydrogenProductions);
+
     const distributedProductions = ProductionDistributor.distributeProductions(
       preparedPowerProductions.map((power) => power.periods),
       preparedHydrogenProductions.map((hydrogen) => hydrogen.periods),
@@ -110,6 +113,7 @@ export class ProductionStagingService {
 
         const fileName = `${originalHash}.csv`;
         const cid = await this.storageService.uploadCsvFile(fileName, buffer);
+        console.log(`Uploaded file for unit ${ufi.unitId} with fileName ${fileName} to storage, received CID: ${cid}`);
 
         return {
           periods: new UnitAccountingPeriods<T>(ufi.unitId, accountingPeriods),
@@ -168,11 +172,12 @@ export class ProductionStagingService {
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
-      return { hash: documentProof.hash, cid: documentProof.cid };
+      return { uuid: csvDocument.id, hash: documentProof.hash, cid: documentProof.cid };
     });
 
     try {
       const txHash = await this.blockchainService.storeProofs(proofs);
+      this.logger.debug(`✅ Stored ${proofs.length} proofs in tx ${txHash}`);
 
       await this.csvImportRepository.updateTransactionHash(
         csvDocuments.map((csvDocument) => csvDocument.id),
