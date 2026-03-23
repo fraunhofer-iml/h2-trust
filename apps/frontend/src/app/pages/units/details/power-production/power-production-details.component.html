@@ -8,8 +8,7 @@
     <app-error-card [message]="err.message"></app-error-card>
   } @else if (unitQuery.isLoading()) {
     <app-loading-card class="col-span-2 h-[16rem]" />
-  }
-  @if (unitQuery.data(); as unit) {
+  } @else if (unitQuery.data(); as unit) {
     <div class="grid grid-cols-4 gap-4">
       <div class="col-span-3 flex flex-col gap-4">
         <app-unit-details [unit]="unit"></app-unit-details>

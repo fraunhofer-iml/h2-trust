@@ -29,7 +29,7 @@
   </div>
   <mat-divider></mat-divider>
 
-  <div class="grid grid-cols-3 gap-4 xl:grid-cols-4">
+  <div class="3xl:grid-cols-4 grid grid-cols-3 gap-4">
     @if (!typeToShow || typeToShow === UnitType.HYDROGEN_PRODUCTION) {
       @for (item of hydrogenProductionUnits$(); track item) {
         <a [routerLink]="['hydrogen-production', item.id]">

@@ -26,7 +26,8 @@
               ><span>{{ unit.pressure | unit: MeasurementUnit.BAR }}</span>
             </div>
             <div class="flex flex-col text-sm">
-              <span class="text-sm text-neutral-400">Storage Type</span><span>{{ unit.storageType || '--' }}</span>
+              <span class="text-sm text-neutral-400">Storage Type</span
+              ><span>{{ unit.storageType || '--' | prettyEnum | titlecase }}</span>
             </div>
           </div>
         </div>

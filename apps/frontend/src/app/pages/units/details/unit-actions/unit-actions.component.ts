@@ -22,7 +22,7 @@ export class UnitActionsComponent {
     onSuccess: () => {
       location.reload();
     },
-    onError: () => toast.error('Failed to update unit.'),
+    onError: () => toast.error('Failed to update unit status.'),
     enabled: this.unit().active,
   }));
 }

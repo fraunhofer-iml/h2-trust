@@ -66,7 +66,7 @@ export class UnitsService {
 
   updateActive(id: string, active: boolean) {
     const dto: UnitUpdateActiveDto = { active };
-    return lastValueFrom(this.httpClient.patch<void>(API.UNITS.DEACTIVATE(id), dto));
+    return lastValueFrom(this.httpClient.patch<void>(API.UNITS.ACTIVE(id), dto));
   }
 
   updatePowerProductionUnit(dto: PowerProductionUnitInputDto) {
