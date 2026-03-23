@@ -23,7 +23,6 @@ export const PowerProductionUnitSeed: readonly PowerProductionUnit[] = Object.fr
     decommissioningPlannedOn: new Date('2045-04-01'),
     financialSupportReceived: false,
     typeName: PowerProductionTypeSeed[0].name,
-    type: PowerProductionTypeSeed[0],
   },
   {
     id: UnitSeed[1].id,
@@ -36,7 +35,6 @@ export const PowerProductionUnitSeed: readonly PowerProductionUnit[] = Object.fr
     decommissioningPlannedOn: new Date('2043-06-15'),
     financialSupportReceived: true,
     typeName: PowerProductionTypeSeed[1].name,
-    type: PowerProductionTypeSeed[1],
   },
   {
     id: UnitSeed[2].id,
@@ -49,7 +47,6 @@ export const PowerProductionUnitSeed: readonly PowerProductionUnit[] = Object.fr
     decommissioningPlannedOn: new Date('2040-09-01'),
     financialSupportReceived: false,
     typeName: PowerProductionTypeSeed[2].name,
-    type: PowerProductionTypeSeed[2],
   },
   {
     id: UnitSeed[3].id,
@@ -62,6 +59,5 @@ export const PowerProductionUnitSeed: readonly PowerProductionUnit[] = Object.fr
     decommissioningPlannedOn: new Date('2045-08-14'),
     financialSupportReceived: false,
     typeName: PowerProductionTypeSeed[3].name,
-    type: PowerProductionTypeSeed[3],
   },
 ]);

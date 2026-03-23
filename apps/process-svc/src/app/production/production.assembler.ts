@@ -8,11 +8,12 @@
 
 import { Logger } from '@nestjs/common';
 import {
-  BaseUnitEntity,
   BatchEntity,
   CompanyEntity,
   CreateProductionEntity,
+  HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
+  PowerProductionUnitEntity,
   ProcessStepEntity,
   QualityDetailsEntity,
   UserEntity,
@@ -149,7 +150,7 @@ export class ProductionAssembler {
       params.type,
       batch,
       { id: params.recordedBy } as UserEntity,
-      { id: params.executedBy } as BaseUnitEntity,
+      { id: params.executedBy } as HydrogenStorageUnitEntity | HydrogenProductionUnitEntity | PowerProductionUnitEntity,
       null,
     );
   }

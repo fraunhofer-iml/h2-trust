@@ -7,9 +7,8 @@
  */
 
 import { Batch, Prisma } from '@prisma/client';
-import { BatchType, HydrogenColor } from '@h2-trust/domain';
+import { BatchType } from '@h2-trust/domain';
 import { CompanySeed } from '../company.seed';
-import { ProcessStepSeed } from '../process-step';
 import { HydrogenStorageUnitSeed } from '../unit/hydrogen-storage-unit.seed';
 
 export const HydrogenProductionBatchSeed: readonly Batch[] = Object.freeze([
@@ -19,16 +18,7 @@ export const HydrogenProductionBatchSeed: readonly Batch[] = Object.freeze([
     amount: new Prisma.Decimal(50),
     active: true,
     ownerId: CompanySeed[2].id,
-    owner: CompanySeed[2],
     hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
-    hydrogenStorageUnit: HydrogenStorageUnitSeed[0],
-    batchDetails: {
-      color: HydrogenColor.GREEN,
-    },
-    predecessors: [],
-    successors: [],
-    processStepId: ProcessStepSeed[0].id,
-    processStep: ProcessStepSeed[0],
   },
   {
     id: 'batch-hydrogen-produced-1',
