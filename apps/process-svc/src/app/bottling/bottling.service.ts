@@ -72,16 +72,19 @@ export class BottlingService {
         payload,
       );
 
+    const invalidProcessTypes = [...new Set(
+      hydrogenProcesses
+        .filter((processStep) => processStep.type !== ProcessType.HYDROGEN_PRODUCTION)
+        .map((processStep) => processStep.type),
+    )];
+
+    if (invalidProcessTypes.length > 0) {
+      throw new Error(`Expected only ${ProcessType.HYDROGEN_PRODUCTION} process steps, but received: ${invalidProcessTypes.join(', ')}`);
+    }
+
     const hydrogenStatistics = this.createHydrogenStatistics(hydrogenProcesses);
 
-    const powerProcesses: BatchEntity[] = hydrogenProcesses
-      .map((process) =>
-        process.batch.predecessors.filter((batch) => {
-          return batch.type == BatchType.POWER;
-        }),
-      )
-      .flat();
-    const powerStatistics = this.createPowerStatistics(powerProcesses);
+    const powerStatistics = this.createPowerStatistics(hydrogenProcesses);
 
     return new ProductionStatisticsEntity(hydrogenStatistics, powerStatistics);
   }
@@ -187,36 +190,61 @@ export class BottlingService {
     );
   }
 
-  private createHydrogenStatistics(hydrogenProcesses: ProcessStepEntity[]): HydrogenStatisticsEntity {
-    const rfnboReadyHydrogenProcesses: ProcessStepEntity[] = hydrogenProcesses.filter((entity) => {
-      return entity.batch.active ? entity.batch.qualityDetails.rfnboType == RfnboType.RFNBO_READY : false;
-    });
-    const nonCertifiableHydrogenProcesses: ProcessStepEntity[] = hydrogenProcesses.filter((entity) => {
-      return entity.batch.active ? entity.batch.qualityDetails.rfnboType == RfnboType.NON_CERTIFIABLE : false;
-    });
-
-    const hydrogenRFNBOReady = rfnboReadyHydrogenProcesses.reduce((sum, process) => sum + process.batch.amount, 0);
-    const hydrogenNonCertifiable = nonCertifiableHydrogenProcesses.reduce(
-      (sum, process) => sum + process.batch.amount,
-      0,
+  private createHydrogenStatistics(processSteps: ProcessStepEntity[]): HydrogenStatisticsEntity {
+    const {
+      nonCertifiable,
+      rfnboReady,
+    }: {
+      nonCertifiable: number;
+      rfnboReady: number;
+    } = processSteps.reduce(
+      (statistics, processStep) => {
+        const qualityDetails = processStep.batch.qualityDetails;
+        if (!processStep.batch.active || !qualityDetails) {
+          return statistics;
+        }
+        switch (qualityDetails.rfnboType) {
+          case RfnboType.RFNBO_READY:
+            statistics.rfnboReady += processStep.batch.amount;
+            break;
+          case RfnboType.NON_CERTIFIABLE:
+            statistics.nonCertifiable += processStep.batch.amount;
+            break;
+          default:
+            throw new Error(`Rfnbotype of ${processStep.id} not defined`);
+        }
+        return statistics;
+      },
+      { nonCertifiable: 0, rfnboReady: 0 },
     );
-    return new HydrogenStatisticsEntity(hydrogenNonCertifiable, hydrogenRFNBOReady);
+    return new HydrogenStatisticsEntity(nonCertifiable, rfnboReady);
   }
 
-  private createPowerStatistics(batch: BatchEntity[]): PowerStatisticsEntity {
-    const renewableProcesses: BatchEntity[] = batch.filter((entity) => {
-      return entity.qualityDetails.powerType == PowerType.RENEWABLE;
-    });
-    const partlyRenewableProcesses: BatchEntity[] = batch.filter((entity) => {
-      return entity.qualityDetails.powerType == PowerType.PARTLY_RENEWABLE;
-    });
-    const notRenewableProcesses: BatchEntity[] = batch.filter((entity) => {
-      return entity.qualityDetails.powerType == PowerType.NON_RENEWABLE;
-    });
-
-    const powerRenewable = renewableProcesses.reduce((sum, batch) => sum + batch.amount, 0);
-    const powerPartlyRenewable = partlyRenewableProcesses.reduce((sum, batch) => sum + batch.amount, 0);
-    const powerNotRenewable = notRenewableProcesses.reduce((sum, batch) => sum + batch.amount, 0);
-    return new PowerStatisticsEntity(powerRenewable, powerPartlyRenewable, powerNotRenewable);
+  private createPowerStatistics(processSteps: ProcessStepEntity[]): PowerStatisticsEntity {
+    const batches: BatchEntity[] = processSteps
+      .map((ps) => (ps.batch.predecessors ?? []).filter((batch) => batch.type === BatchType.POWER))
+      .flat();
+    const { renewable, partlyRenewable, nonRenewable } = batches.reduce(
+      (statistics, batch) => {
+        const qualityDetails = batch.qualityDetails;
+        if (!qualityDetails) {
+          return statistics;
+        }
+        switch (qualityDetails.powerType) {
+          case PowerType.RENEWABLE:
+            statistics.renewable += batch.amount;
+            break;
+          case PowerType.PARTLY_RENEWABLE:
+            statistics.partlyRenewable += batch.amount;
+            break;
+          case PowerType.NON_RENEWABLE:
+            statistics.nonRenewable += batch.amount;
+            break;
+        }
+        return statistics;
+      },
+      { renewable: 0, partlyRenewable: 0, nonRenewable: 0 },
+    );
+    return new PowerStatisticsEntity(renewable, partlyRenewable, nonRenewable);
   }
 }

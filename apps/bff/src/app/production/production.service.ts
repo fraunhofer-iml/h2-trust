@@ -105,10 +105,10 @@ export class ProductionService {
     const ownerId = userDetails.company.id;
 
     const payload = new CreateHydrogenProductionStatisticsPayload(ownerId, month, unitName);
-    const productionstatisticsEntity: ProductionStatisticsEntity = await firstValueFrom(
+    const productionStatistics: ProductionStatisticsEntity = await firstValueFrom(
       this.processSvc.send(ProcessStepMessagePatterns.CREATE_PRODUCTION_STATISTICS, payload),
     );
-    return ProductionStatisticsDto.fromEntity(productionstatisticsEntity);
+    return ProductionStatisticsDto.fromEntity(productionStatistics);
   }
 
   async importCsvFiles(

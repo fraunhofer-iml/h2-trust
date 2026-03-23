@@ -19,8 +19,8 @@ export class CreateHydrogenProductionStatisticsPayload {
   @IsNotEmpty()
   ownerId: string;
 
-  constructor(userId: string, month?: Date, unitName?: string) {
-    this.ownerId = userId;
+  constructor(ownerId: string, month?: Date, unitName?: string) {
+    this.ownerId = ownerId;
     this.month = month;
     this.unitName = unitName;
   }
