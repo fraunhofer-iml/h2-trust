@@ -13,7 +13,6 @@ import { DigitalProductPassportController } from './digital-product-passport.con
 import { DigitalProductPassportService } from './digital-product-passport.service';
 import { EmissionService } from './proof-of-origin/emission.service';
 import { HydrogenProductionSectionService } from './proof-of-origin/hydrogen-production-section.service';
-import { PowerSupplyClassificationService } from './proof-of-origin/power-supply-classification.service';
 import { ProvenanceModule } from './provenance/provenance.module';
 import { RedComplianceModule } from './red-compliance/red-compliance.module';
 
@@ -28,12 +27,7 @@ import { RedComplianceModule } from './red-compliance/red-compliance.module';
     new Broker().getGeneralSvcBroker(),
   ],
   controllers: [DigitalProductPassportController],
-  providers: [
-    DigitalProductPassportService,
-    EmissionService,
-    HydrogenProductionSectionService,
-    PowerSupplyClassificationService,
-  ],
+  providers: [DigitalProductPassportService, EmissionService, HydrogenProductionSectionService],
   exports: [DigitalProductPassportService],
 })
 export class DigitalProductPassportModule {}

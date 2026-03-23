@@ -77,7 +77,7 @@ export class DigitalProductPassportService {
       //build hydrogen production section
       if (provenance.powerProductions?.length || provenance.waterConsumptions?.length) {
         const hydrogenProductionSection: ProofOfOriginSectionEntity =
-          await this.hydrogenProductionSectionService.buildSection(
+          this.hydrogenProductionSectionService.buildSection(
             provenance.powerProductions,
             provenance.waterConsumptions,
             provenance.hydrogenBottling.batch.amount,

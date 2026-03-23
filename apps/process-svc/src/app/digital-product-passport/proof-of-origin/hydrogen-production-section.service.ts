@@ -8,33 +8,37 @@
 
 import { Injectable } from '@nestjs/common';
 import {
+  PowerProductionUnitEntity,
   ProcessStepEntity,
+  ProofOfOriginBatchEntity,
   ProofOfOriginClassificationEntity,
+  ProofOfOriginEmissionEntity,
+  ProofOfOriginPowerBatchEntity,
   ProofOfOriginSectionEntity,
   ProofOfOriginSubClassificationEntity,
+  ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/amqp';
-import { ProofOfOrigin } from '@h2-trust/domain';
+import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
+import { BatchAssembler } from './batch.assembler';
 import { ClassificationAssembler } from './classification.assembler';
-import { PowerSupplyClassificationService } from './power-supply-classification.service';
+import { EmissionAssembler } from './emission.assembler';
+import { EmissionService } from './emission.service';
 import { WaterSupplyClassificationAssembler } from './water-supply-classification.assembler';
 
 @Injectable()
 export class HydrogenProductionSectionService {
-  constructor(private readonly powerSupplyClassificationService: PowerSupplyClassificationService) {}
+  constructor(private readonly emissionService: EmissionService) {}
 
-  async buildSection(
+  buildSection(
     powerProductions: ProcessStepEntity[],
     waterConsumptions: ProcessStepEntity[],
     bottledKgHydrogen: number,
-  ): Promise<ProofOfOriginSectionEntity> {
+  ): ProofOfOriginSectionEntity {
     const classifications: ProofOfOriginClassificationEntity[] = [];
 
     if (powerProductions?.length) {
       const energySourceSubClassifications: ProofOfOriginSubClassificationEntity[] =
-        await this.powerSupplyClassificationService.buildPowerSupplySubClassifications(
-          powerProductions,
-          bottledKgHydrogen,
-        );
+        this.buildPowerSupplySubClassifications(powerProductions, bottledKgHydrogen);
 
       const powerSupplyClassification: ProofOfOriginClassificationEntity = ClassificationAssembler.assemblePower(
         ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION,
@@ -53,5 +57,59 @@ export class HydrogenProductionSectionService {
     }
 
     return new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION, [], classifications);
+  }
+
+  buildPowerSupplySubClassifications(
+    powerProductions: ProcessStepEntity[],
+    bottledKgHydrogen: number,
+  ): ProofOfOriginSubClassificationEntity[] {
+    if (!powerProductions?.length) {
+      return [];
+    }
+
+    const occuringEnergySources = [
+      ...new Set(
+        powerProductions.map(
+          (powerProduction) => (powerProduction.executedBy as PowerProductionUnitEntity).type?.energySource,
+        ),
+      ),
+    ];
+
+    const subClassifications: ProofOfOriginSubClassificationEntity[] = [];
+
+    for (const energySource of occuringEnergySources) {
+      const powerProductionsByEnergySource: ProcessStepEntity[] = powerProductions.filter(
+        (powerProduction) =>
+          (powerProduction.executedBy as PowerProductionUnitEntity).type?.energySource === energySource,
+      );
+
+      if (powerProductionsByEnergySource.length > 0) {
+        const productionPowerBatches: ProofOfOriginBatchEntity[] = powerProductionsByEnergySource.map(
+          (powerProduction) => {
+            const [powerSupplyEmission]: ProofOfSustainabilityEmissionCalculationEntity[] =
+              this.emissionService.computePowerSupplyEmissions([powerProduction]);
+
+            const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionEntity(
+              powerSupplyEmission,
+              bottledKgHydrogen,
+            );
+
+            const batch: ProofOfOriginPowerBatchEntity = BatchAssembler.assemblePowerSupply(
+              powerProduction,
+              energySource,
+              emission,
+            );
+
+            return batch;
+          },
+        );
+
+        const subClassification: ProofOfOriginSubClassificationEntity =
+          ClassificationAssembler.assembleSubClassification(energySource, BatchType.POWER, productionPowerBatches);
+
+        subClassifications.push(subClassification);
+      }
+    }
+    return subClassifications;
   }
 }

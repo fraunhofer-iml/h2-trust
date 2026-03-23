@@ -45,7 +45,9 @@ export class ProvenanceService {
     [ProcessType.HYDROGEN_PRODUCTION]: async (root) => {
       const hydrogenProductions = [root];
       //calculates the hydrogen root production for a given hydrogen production element
-      const hydrogenRootProduction = await this.getRootHydrogenProductionsForHydrogenProductions(hydrogenProductions);
+      const hydrogenRootProductions = await this.getRootHydrogenProductionsForHydrogenProductions(hydrogenProductions);
+      const rootHydrogenProductions = hydrogenRootProductions.filter((ps) => ps.batch.type == BatchType.HYDROGEN);
+
       const waterConsumptions =
         await this.traversalService.fetchWaterConsumptionsFromHydrogenProductions(hydrogenProductions);
       const powerProductions =
@@ -56,7 +58,7 @@ export class ProvenanceService {
         hydrogenProductions,
         waterConsumptions,
         powerProductions,
-        hydrogenRootProduction,
+        rootHydrogenProductions,
       );
     },
 
