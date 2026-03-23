@@ -160,15 +160,13 @@ export class ProductionController {
     description: 'Search by production unit name or ID. Omit for all units',
     required: false,
   })
-  async readHydrogenProductionsStatisticsByOwner(
+  readHydrogenProductionsStatisticsByOwner(
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
     @Query('month') month: Date,
     @Query('unitName') unitName: string,
   ): Promise<ProductionStatisticsDto> {
     console.log(unitName);
-    const res = await this.service.readHydrogenProductionStatistics(authenticatedUser.sub, unitName, month);
-    console.log(res);
-    return res;
+    return this.service.readHydrogenProductionStatistics(authenticatedUser.sub, unitName, month);
   }
 
   @Get('csv')

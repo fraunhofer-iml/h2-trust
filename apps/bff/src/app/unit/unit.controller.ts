@@ -50,7 +50,7 @@ export class UnitController {
   @ApiOkResponse({
     description: 'Returns hydrogen-storage unit ',
   })
-  async getHydrogenStorageUnitById(@Param('id') id: string): Promise<HydrogenStorageUnitDto> {
+  getHydrogenStorageUnitById(@Param('id') id: string): Promise<HydrogenStorageUnitDto> {
     return this.unitService.readHydrogenStorageUnit(id);
   }
 

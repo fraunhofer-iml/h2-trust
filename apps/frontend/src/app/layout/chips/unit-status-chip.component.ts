@@ -9,6 +9,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { UnitType } from '@h2-trust/domain';
+import { ICONS } from '../../shared/constants/icons';
 
 @Component({
   selector: 'app-unit-status-chip',
@@ -33,7 +34,7 @@ import { UnitType } from '@h2-trust/domain';
           'animate-spin': unit().active,
         }"
       >
-        {{ unit().active ? 'atr' : 'bedtime' }}
+        {{ unit().active ? ICONS.STATUS.ACTIVE : ICONS.STATUS.INACTIVE }}
       </span>
       {{ unit().active ? 'Active' : 'Inactive' }}
     </div>
@@ -42,4 +43,5 @@ import { UnitType } from '@h2-trust/domain';
 export class UnitStatusChipComponent {
   unit = input.required<{ unitType: UnitType; active: boolean }>();
   protected readonly UnitType = UnitType;
+  ICONS = ICONS;
 }
