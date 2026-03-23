@@ -8,17 +8,18 @@
 
 import { ErrorCardComponent } from 'apps/frontend/src/app/layout/error-card/error-card.component';
 import { LoadingCardComponent } from 'apps/frontend/src/app/layout/loading-card/loading-card.component';
-import { ERROR_MESSAGES } from 'apps/frontend/src/app/shared/constants/error.messages';
 import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { injectQuery } from '@tanstack/angular-query-experimental';
-import { MeasurementUnit } from '@h2-trust/domain';
+import { QueryClient } from '@tanstack/angular-query-experimental';
+import { HydrogenProductionUnitDto } from '@h2-trust/api';
+import { MeasurementUnit, UnitType } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
-import { UnitActionsComponent } from '../unit-actions/unit-actions.component';
-import { UnitDetailsComponent } from '../unit-details.component';
+import { UnitActionsComponent } from '../shared/unit-actions/unit-actions.component';
+import { UnitDetailsComponent } from '../shared/unit-details/unit-details.component';
+import { injectUnitQuery, useQueryInvalidation } from '../shared/unit-query.util';
 
 @Component({
   selector: 'app-hydrogen-production-details',
@@ -40,16 +41,11 @@ export class HydrogenProductionDetailsComponent {
   id = input<string>();
 
   unitsService = inject(UnitsService);
+  queryClient = inject(QueryClient);
 
-  unitQuery = injectQuery(() => ({
-    queryKey: ['hydrogen-production-unit', this.id()],
-    queryFn: async () => {
-      try {
-        return await this.unitsService.getHydrogenProductionUnit(this.id() ?? '');
-      } catch (err: any) {
-        throw new Error(err.status === 404 ? ERROR_MESSAGES.unitNotFound + this.id() : ERROR_MESSAGES.unknownError);
-      }
-    },
-    enabled: !!this.id(),
-  }));
+  unitQuery = injectUnitQuery<HydrogenProductionUnitDto>(UnitType.HYDROGEN_PRODUCTION, this.id, (id) =>
+    this.unitsService.getHydrogenProductionUnit(id),
+  );
+
+  onUnitStatusChange = useQueryInvalidation(this.queryClient, UnitType.HYDROGEN_PRODUCTION, this.id);
 }

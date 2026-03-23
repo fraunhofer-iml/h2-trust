@@ -32,7 +32,7 @@
           </div>
         </div>
       </div>
-      <app-unit-actions [unit]="{ id: unit.id, active: unit.active }" />
+      <app-unit-actions [unit]="{ id: unit.id, active: unit.active }" (invalidate)="setInvalid()" />
     </div>
   }
 </div>
