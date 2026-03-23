@@ -8,6 +8,7 @@
 
 import { Injectable } from '@nestjs/common';
 import {
+  CreateHydrogenProductionStatisticsPayload,
   CreateManyProcessStepsPayload,
   DocumentEntity,
   PaginatedProcessStepEntity,
@@ -104,6 +105,18 @@ export class ProcessStepService {
     return this.processStepRepository.findProcessStepsByPredecessorTypesAndOwner(
       payload.predecessorProcessTypes,
       payload.ownerId,
+    );
+  }
+
+  async readProcessStepsByPredecessorTypesAndUnitAndDate(
+    predecessorProcessType: string[],
+    payload: CreateHydrogenProductionStatisticsPayload,
+  ): Promise<ProcessStepEntity[]> {
+    return this.processStepRepository.findProcessStepsByPredecessorTypesAndOwner(
+      predecessorProcessType,
+      payload.ownerId,
+      payload.unitName,
+      payload.month ? new Date(payload.month) : payload.month,
     );
   }
 
