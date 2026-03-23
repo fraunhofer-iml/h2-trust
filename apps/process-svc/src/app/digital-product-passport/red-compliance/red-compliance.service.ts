@@ -6,15 +6,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import {
+  BatchEntity,
   HydrogenProductionUnitEntity,
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ProvenanceEntity,
   RedComplianceEntity,
 } from '@h2-trust/amqp';
+import { BatchType } from '@h2-trust/domain';
 import {
   areUnitsInSameBiddingZone,
   hasFinancialSupport,
@@ -22,120 +24,43 @@ import {
   meetsAdditionalityCriterion,
 } from './red-compliance.flags';
 
-interface MatchedProductionPair {
-  power: {
-    processStep: ProcessStepEntity;
-  };
-  hydrogen: {
-    processStep: ProcessStepEntity;
-  };
-}
-
 @Injectable()
 export class RedComplianceService {
-  determineRedCompliance(processStepId: string, provenance: ProvenanceEntity): RedComplianceEntity {
-    if (!provenance || !provenance.powerProductions?.length || !provenance.hydrogenProductions?.length) {
+  determineRedCompliance(provenance: ProvenanceEntity): RedComplianceEntity {
+    if (!provenance || !provenance.powerProductions?.length || !provenance.hydrogenRootProductions?.length) {
       throw new RpcException(
-        `Provenance or required productions (power/hydrogen) are missing for processStepId [${processStepId}]`,
+        `Provenance or required productions (power/hydrogen) are missing for processStepId [${provenance.root.id}]`,
       );
     }
 
-    const pairs: MatchedProductionPair[] = this.buildMatchedPairs(
-      provenance.powerProductions,
-      provenance.hydrogenProductions,
-      processStepId,
-    );
-
-    return this.evaluateCompliance(pairs);
-  }
-
-  private evaluateCompliance(pairs: MatchedProductionPair[]): RedComplianceEntity {
     let isGeoCorrelationValid = true;
     let isTimeCorrelationValid = true;
     let isAdditionalityFulfilled = true;
     let isFinancialSupportReceived = true;
 
-    for (const pair of pairs) {
-      const powerProductionUnit = pair.power.processStep.executedBy as PowerProductionUnitEntity;
-      const hydrogenProductionUnit = pair.hydrogen.processStep.executedBy as HydrogenProductionUnitEntity;
+    for (const hydrogenProductionProcessStep of provenance.hydrogenRootProductions) {
+      const powerProductionBatch: BatchEntity = hydrogenProductionProcessStep.batch.predecessors.find(
+        (pred) => pred.type == BatchType.POWER,
+      );
+      const powerProductionProcessStep: ProcessStepEntity = provenance.powerProductions.find(
+        (powerProduction) => powerProduction.id === powerProductionBatch.processStepId,
+      );
 
-      if (!powerProductionUnit || !hydrogenProductionUnit) {
-        throw new HttpException(
-          `Production units not found: power production ps [${pair.power.processStep.id}] or hydrogen production ps [${pair.hydrogen.processStep.id}]`,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
+      const powerProductionUnit: PowerProductionUnitEntity =
+        powerProductionProcessStep.executedBy as PowerProductionUnitEntity;
+      const hydrogenProductionUnit: HydrogenProductionUnitEntity =
+        hydrogenProductionProcessStep.executedBy as HydrogenProductionUnitEntity;
 
       isGeoCorrelationValid &&= areUnitsInSameBiddingZone(powerProductionUnit, hydrogenProductionUnit);
-      isTimeCorrelationValid &&= isWithinTimeCorrelation(pair.power.processStep, pair.hydrogen.processStep);
+      isTimeCorrelationValid &&= isWithinTimeCorrelation(powerProductionProcessStep, hydrogenProductionProcessStep);
       isAdditionalityFulfilled &&= meetsAdditionalityCriterion(powerProductionUnit, hydrogenProductionUnit);
       isFinancialSupportReceived &&= hasFinancialSupport(powerProductionUnit);
-
-      if (
-        !isGeoCorrelationValid &&
-        !isTimeCorrelationValid &&
-        !isAdditionalityFulfilled &&
-        !isFinancialSupportReceived
-      ) {
-        break;
-      }
     }
-
     return new RedComplianceEntity(
       isGeoCorrelationValid,
       isTimeCorrelationValid,
       isAdditionalityFulfilled,
       isFinancialSupportReceived,
     );
-  }
-
-  buildMatchedPairs(
-    powerProcessSteps: ProcessStepEntity[],
-    hydrogenProcessSteps: ProcessStepEntity[],
-    _processStepId: string,
-  ): MatchedProductionPair[] {
-    const pairs: MatchedProductionPair[] = this.buildMatchedPairsWithoutUnits(powerProcessSteps, hydrogenProcessSteps);
-
-    if (!pairs?.length) {
-      return [];
-      // TODO throw exception when matching is solved in long chains
-      // const message = `No matching power↔hydrogen production pairs found for processStepId [${processStepId}]`;
-      // throw new HttpException(message, HttpStatus.BAD_REQUEST);
-    }
-
-    return pairs.map((pair) => ({
-      power: {
-        processStep: pair.power.processStep,
-      },
-      hydrogen: {
-        processStep: pair.hydrogen.processStep,
-      },
-    }));
-  }
-  private buildMatchedPairsWithoutUnits(
-    powerProcessSteps: ProcessStepEntity[],
-    hydrogenProcessSteps: ProcessStepEntity[],
-  ): MatchedProductionPair[] {
-    const hydrogenProductionById = this.buildHydrogenProcessStepsById(hydrogenProcessSteps);
-    const pairs: MatchedProductionPair[] = [];
-    for (const powerProduction of powerProcessSteps) {
-      const successor = powerProduction.batch?.successors?.find((s) => hydrogenProductionById.has(s.processStepId));
-      if (successor) {
-        const hydrogenProduction = hydrogenProductionById.get(successor.processStepId)!;
-        pairs.push({
-          power: { processStep: powerProduction },
-          hydrogen: { processStep: hydrogenProduction },
-        });
-      }
-    }
-    return pairs;
-  }
-
-  private buildHydrogenProcessStepsById(processSteps: ProcessStepEntity[]): Map<string, ProcessStepEntity> {
-    const map = new Map<string, ProcessStepEntity>();
-    for (const processStep of processSteps) {
-      map.set(processStep.id, processStep);
-    }
-    return map;
   }
 }

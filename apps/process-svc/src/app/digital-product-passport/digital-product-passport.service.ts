@@ -61,10 +61,7 @@ export class DigitalProductPassportService {
 
   private async readDigitalProductPassport(processStep: ProcessStepEntity): Promise<DigitalProductPassportEntity> {
     const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStep);
-    const redCompliance: RedComplianceEntity = this.redComplianceService.determineRedCompliance(
-      processStep.id,
-      provenance,
-    );
+    const redCompliance: RedComplianceEntity = this.redComplianceService.determineRedCompliance(provenance);
     const powerType: PowerType = DigitalProductPassportService.getPowerType(provenance);
 
     const proofOfOrigin: ProofOfOriginSectionEntity[] = [];
