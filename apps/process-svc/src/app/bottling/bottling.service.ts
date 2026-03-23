@@ -72,14 +72,18 @@ export class BottlingService {
         payload,
       );
 
-    const invalidProcessTypes = [...new Set(
-      hydrogenProcesses
-        .filter((processStep) => processStep.type !== ProcessType.HYDROGEN_PRODUCTION)
-        .map((processStep) => processStep.type),
-    )];
+    const invalidProcessTypes = [
+      ...new Set(
+        hydrogenProcesses
+          .filter((processStep) => processStep.type !== ProcessType.HYDROGEN_PRODUCTION)
+          .map((processStep) => processStep.type),
+      ),
+    ];
 
     if (invalidProcessTypes.length > 0) {
-      throw new Error(`Expected only ${ProcessType.HYDROGEN_PRODUCTION} process steps, but received: ${invalidProcessTypes.join(', ')}`);
+      throw new Error(
+        `Expected only ${ProcessType.HYDROGEN_PRODUCTION} process steps, but received: ${invalidProcessTypes.join(', ')}`,
+      );
     }
 
     const hydrogenStatistics = this.createHydrogenStatistics(hydrogenProcesses);
