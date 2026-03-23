@@ -12,7 +12,7 @@ import {
   BrokerException,
   HydrogenComponentEntity,
   HydrogenCompositionUtil,
-  ProcessStepEntity,
+  ProvenanceEntity,
 } from '@h2-trust/amqp';
 import { BatchType, ProcessType, RfnboType } from '@h2-trust/domain';
 
@@ -22,24 +22,19 @@ export class HydrogenComponentAssembler {
    * @param processStep The process step whose batch (or whose predecessor batch) is to be returned as grouped HydrogenComponents.
    * @returns The grouped HydrogenComponents of the process step batch or its predecessors.
    */
-  static assemble(processStep: ProcessStepEntity): HydrogenComponentEntity[] {
-    if (!processStep?.batch) {
-      const errorMessage = 'The provided process step is missing (undefined or null) or does not have a batch.';
-      throw Error(errorMessage);
-    }
-
+  static assemble(provenance: ProvenanceEntity): HydrogenComponentEntity[] {
     let hydrogenComponents: HydrogenComponentEntity[];
 
-    switch (processStep.type) {
+    switch (provenance.root.type) {
       case ProcessType.HYDROGEN_BOTTLING:
       case ProcessType.HYDROGEN_TRANSPORTATION:
-        hydrogenComponents = this.assembleForBottlingAndTransportation(processStep);
+        hydrogenComponents = this.assembleForBottling(provenance);
         break;
       case ProcessType.HYDROGEN_PRODUCTION:
-        hydrogenComponents = this.assembleForHydrogenProduction(processStep);
+        hydrogenComponents = this.assembleForHydrogenRootProduction(provenance);
         break;
       default: {
-        const errorMessage = `The specified process step ${processStep.id} is neither HYDROGEN_BOTTLING, HYDROGEN_TRANSPORTATION nor HYDROGEN_PRODUCTION, but of type ${processStep.type}`;
+        const errorMessage = `The specified process step ${provenance.root.id} is neither HYDROGEN_BOTTLING, HYDROGEN_TRANSPORTATION nor HYDROGEN_PRODUCTION, but of type ${provenance.root.type}`;
         throw Error(errorMessage);
       }
     }
@@ -47,33 +42,39 @@ export class HydrogenComponentAssembler {
     return hydrogenComponents;
   }
 
-  private static assembleForBottlingAndTransportation(processStep: ProcessStepEntity): HydrogenComponentEntity[] {
-    if (processStep.batch.predecessors?.length === 0) {
-      const errorMessage = `ProcessStep ${processStep.id} does not have predecessors.`;
+  private static assembleForBottling(provenance: ProvenanceEntity): HydrogenComponentEntity[] {
+    if (!provenance.hydrogenBottling) {
+      const errorMessage = `There is no hydrogen bottling in provenance.`;
+      throw Error(errorMessage);
+    }
+    if (provenance.hydrogenProductions?.length === 0) {
+      const errorMessage = `There are no Hydrogen Root Productions in Provenance.`;
       throw Error(errorMessage);
     }
 
-    const predecessorHydrogenComponents = processStep.batch.predecessors.map(
-      HydrogenComponentAssembler.createHydrogenComponentFromBatch,
+    //Since we are calculating the Hydrogen Components for the bottling we use the bottled amount here.
+    const bottlingBatchAmount = provenance.hydrogenBottling.batch.amount;
+
+    const hydrogenComponentsOfProductions = provenance.hydrogenProductions.map((hydrogenRootProduction) =>
+      HydrogenComponentAssembler.createHydrogenComponentFromBatch(hydrogenRootProduction.batch),
     );
 
-    return HydrogenCompositionUtil.computeHydrogenComposition(predecessorHydrogenComponents, processStep.batch.amount);
+    return HydrogenCompositionUtil.computeHydrogenComposition(hydrogenComponentsOfProductions, bottlingBatchAmount);
   }
 
-  private static assembleForHydrogenProduction(processStep: ProcessStepEntity): HydrogenComponentEntity[] {
-    if (!processStep.batch) {
-      const errorMessage = `ProcessStep ${processStep.id} does not have a batch.`;
+  private static assembleForHydrogenRootProduction(provenance: ProvenanceEntity): HydrogenComponentEntity[] {
+    if (provenance.hydrogenRootProductions?.length !== 1) {
+      const errorMessage = `There should only be 1 hydrogen root production in the provenance.`;
       throw Error(errorMessage);
     }
 
     //Since the processStep is a Hydrogen Production its predecessors are WATER and POWER and therefore its batch is the only batch we have to take in account here.
     const batchHydrogenComponent: HydrogenComponentEntity = HydrogenComponentAssembler.createHydrogenComponentFromBatch(
-      processStep.batch,
+      provenance.hydrogenRootProductions[0].batch,
     );
 
-    return HydrogenCompositionUtil.computeHydrogenComposition([batchHydrogenComponent], processStep.batch.amount);
+    return HydrogenCompositionUtil.computeHydrogenComposition([batchHydrogenComponent], batchHydrogenComponent.amount);
   }
-
   private static createHydrogenComponentFromBatch(batch: BatchEntity): HydrogenComponentEntity {
     if (batch.type !== BatchType.HYDROGEN) {
       const errorMessage = `Predecessor batch ${batch.id} should be type ${BatchType.HYDROGEN}, but is ${batch.type}.`;

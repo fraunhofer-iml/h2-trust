@@ -11,7 +11,10 @@ import { ProcessStepEntity } from './process-step.entity';
 export class ProvenanceEntity {
   root: ProcessStepEntity;
   hydrogenBottling?: ProcessStepEntity;
+  //The direct predecessors of the bottling
   hydrogenProductions?: ProcessStepEntity[];
+  //The predecessors of the bottling that have only POWER and WATER as predecessors
+  hydrogenRootProductions?: ProcessStepEntity[];
   waterConsumptions?: ProcessStepEntity[];
   powerProductions?: ProcessStepEntity[];
 
@@ -21,11 +24,13 @@ export class ProvenanceEntity {
     hydrogenProductions?: ProcessStepEntity[],
     waterConsumptions?: ProcessStepEntity[],
     powerProductions?: ProcessStepEntity[],
+    hydrogenRootProductions?: ProcessStepEntity[],
   ) {
     this.root = root;
     this.hydrogenBottling = hydrogenBottling;
     this.hydrogenProductions = hydrogenProductions;
     this.waterConsumptions = waterConsumptions;
     this.powerProductions = powerProductions;
+    this.hydrogenRootProductions = hydrogenRootProductions;
   }
 }

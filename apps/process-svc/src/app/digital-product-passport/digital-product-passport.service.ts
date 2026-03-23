@@ -6,9 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
-  BrokerException,
   DigitalProductPassportEntity,
   HydrogenComponentEntity,
   ProcessStepEntity,
@@ -70,16 +69,11 @@ export class DigitalProductPassportService {
 
     const proofOfOrigin: ProofOfOriginSectionEntity[] = [];
 
-    const hydrogenCompositionsForRootOfProvenance: HydrogenComponentEntity[] = await this.calculateHydrogenComposition(
-      provenance.root,
-    );
+    const hydrogenCompositionsForRootOfProvenance: HydrogenComponentEntity[] =
+      HydrogenComponentAssembler.assemble(provenance);
 
     //If the process step is neither hydrogen bottling nor transport, then proof of origin should not be calculated.
     if (processStep.type == ProcessType.HYDROGEN_BOTTLING || processStep.type == ProcessType.HYDROGEN_TRANSPORTATION) {
-      const hydrogenCompositionsForBottlingOfProvenance: HydrogenComponentEntity[] = provenance.hydrogenBottling
-        ? await this.calculateHydrogenComposition(provenance.hydrogenBottling)
-        : [];
-
       //build hydrogen production section
       if (provenance.powerProductions?.length || provenance.waterConsumptions?.length) {
         const hydrogenProductionSection: ProofOfOriginSectionEntity =
@@ -112,7 +106,7 @@ export class DigitalProductPassportService {
       if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION) {
         const hydrogenBottlingSection: ProofOfOriginSectionEntity = HydrogenBottlingSectionAssembler.assembleSection(
           provenance.hydrogenBottling,
-          hydrogenCompositionsForBottlingOfProvenance,
+          hydrogenCompositionsForRootOfProvenance,
         );
         proofOfOrigin.push(hydrogenBottlingSection);
       }
@@ -122,7 +116,7 @@ export class DigitalProductPassportService {
         const hydrogenTransportationSection: ProofOfOriginSectionEntity =
           HydrogenTransportationSectionAssembler.assembleSection(
             provenance.root,
-            hydrogenCompositionsForBottlingOfProvenance,
+            hydrogenCompositionsForRootOfProvenance,
           );
         proofOfOrigin.push(hydrogenTransportationSection);
       }
@@ -162,31 +156,5 @@ export class DigitalProductPassportService {
       powerType = PowerType.NON_RENEWABLE;
     }
     return powerType;
-  }
-
-  async calculateHydrogenComposition(processStep: ProcessStepEntity): Promise<HydrogenComponentEntity[]> {
-    if (processStep.type === ProcessType.HYDROGEN_BOTTLING || processStep.type === ProcessType.HYDROGEN_PRODUCTION) {
-      return HydrogenComponentAssembler.assemble(processStep);
-    }
-
-    const predecessorId: string = processStep.batch?.predecessors[0]?.processStepId;
-
-    if (!predecessorId) {
-      throw new BrokerException(
-        `Process step ${processStep.id} has no predecessor to derive composition from`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-
-    const predecessor: ProcessStepEntity = await this.processStepService.readProcessStep(predecessorId);
-
-    if (predecessor.type !== ProcessType.HYDROGEN_BOTTLING) {
-      throw new BrokerException(
-        `Predecessor process step ${predecessor.id} is not of type ${ProcessType.HYDROGEN_BOTTLING}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-
-    return HydrogenComponentAssembler.assemble(predecessor);
   }
 }

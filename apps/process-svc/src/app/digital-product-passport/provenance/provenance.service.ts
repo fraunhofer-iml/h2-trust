@@ -44,11 +44,20 @@ export class ProvenanceService {
 
     [ProcessType.HYDROGEN_PRODUCTION]: async (root) => {
       const hydrogenProductions = [root];
+      //calculates the hydrogen root production for a given hydrogen production element
+      const hydrogenRootProduction = await this.getRootHydrogenProductionsForHydrogenProductions(hydrogenProductions);
       const waterConsumptions =
         await this.traversalService.fetchWaterConsumptionsFromHydrogenProductions(hydrogenProductions);
       const powerProductions =
         await this.traversalService.fetchPowerProductionsFromHydrogenProductions(hydrogenProductions);
-      return new ProvenanceEntity(root, undefined, hydrogenProductions, waterConsumptions, powerProductions);
+      return new ProvenanceEntity(
+        root,
+        undefined,
+        hydrogenProductions,
+        waterConsumptions,
+        powerProductions,
+        hydrogenRootProduction,
+      );
     },
 
     [ProcessType.HYDROGEN_BOTTLING]: async (root) => {
@@ -56,9 +65,10 @@ export class ProvenanceService {
       return new ProvenanceEntity(
         root,
         root,
-        provenanceEntriesOfBottling.rootHydrogenProductions,
+        provenanceEntriesOfBottling.directPredecessorsOfBottling,
         provenanceEntriesOfBottling.waterConsumptions,
         provenanceEntriesOfBottling.powerProductions,
+        provenanceEntriesOfBottling.rootHydrogenProductions,
       );
     },
 
@@ -70,15 +80,17 @@ export class ProvenanceService {
       return new ProvenanceEntity(
         root,
         hydrogenBottling,
-        provenanceEntriesOfBottling.rootHydrogenProductions,
+        provenanceEntriesOfBottling.directPredecessorsOfBottling,
         provenanceEntriesOfBottling.waterConsumptions,
         provenanceEntriesOfBottling.powerProductions,
+        provenanceEntriesOfBottling.rootHydrogenProductions,
       );
     },
   };
 
   private async getProvenanceEntriesOfBottling(bottlingProcessStep: ProcessStepEntity): Promise<{
     rootHydrogenProductions: ProcessStepEntity[];
+    directPredecessorsOfBottling: ProcessStepEntity[];
     waterConsumptions: ProcessStepEntity[];
     powerProductions: ProcessStepEntity[];
   }> {
@@ -86,11 +98,12 @@ export class ProvenanceService {
     const directPredecessorsOfBottling: ProcessStepEntity[] =
       await this.traversalService.fetchHydrogenProductionsFromHydrogenBottling(bottlingProcessStep);
     //the rootProcessSteps are the POWER and WATER ProcessSteps and the direct successor of these ProcessSteps (the root hydrogen productions)
-    const rootProcessSteps = await this.getRootHydrogenProductionsForHydrogenProductions(directPredecessorsOfBottling);
-    const rootHydrogenProductions = rootProcessSteps.filter((ps) => ps.batch.type == BatchType.HYDROGEN);
-    const waterConsumptions = rootProcessSteps.filter((ps) => ps.batch.type == BatchType.WATER);
-    const powerProductions = rootProcessSteps.filter((ps) => ps.batch.type == BatchType.POWER);
-    return { rootHydrogenProductions, waterConsumptions, powerProductions };
+    const hydrogenRootProductions =
+      await this.getRootHydrogenProductionsForHydrogenProductions(directPredecessorsOfBottling);
+    const rootHydrogenProductions = hydrogenRootProductions.filter((ps) => ps.batch.type == BatchType.HYDROGEN);
+    const waterConsumptions = hydrogenRootProductions.filter((ps) => ps.batch.type == BatchType.WATER);
+    const powerProductions = hydrogenRootProductions.filter((ps) => ps.batch.type == BatchType.POWER);
+    return { rootHydrogenProductions, directPredecessorsOfBottling, waterConsumptions, powerProductions };
   }
 
   //TODO-LG: Improve performance (DUHGW-391)
