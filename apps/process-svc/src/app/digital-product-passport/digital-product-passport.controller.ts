@@ -15,11 +15,6 @@ import { DigitalProductPassportService } from './digital-product-passport.servic
 export class DigitalProductPassportController {
   constructor(private readonly digitalProductPassportService: DigitalProductPassportService) {}
 
-  @MessagePattern(DigitalProductPassportPatterns.DETERMINE_RFNBO_TYPE)
-  async determineRfnboType(payload: ReadByIdPayload): Promise<string> {
-    return this.digitalProductPassportService.determineRfnboTypeForProcessStepId(payload.id);
-  }
-
   @MessagePattern(DigitalProductPassportPatterns.READ_DIGITAL_PRODUCT_PASSPORT)
   async readDigitalProductPassport(payload: ReadByIdPayload): Promise<DigitalProductPassportEntity> {
     return this.digitalProductPassportService.readDigitalProductPassportForProcessStepId(payload.id);
