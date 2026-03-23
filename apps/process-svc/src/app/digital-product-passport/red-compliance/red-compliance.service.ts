@@ -15,13 +15,21 @@ import {
   ProvenanceEntity,
   RedComplianceEntity,
 } from '@h2-trust/amqp';
-import { MatchedProductionPair } from './matched-production-pair';
 import {
   areUnitsInSameBiddingZone,
   hasFinancialSupport,
   isWithinTimeCorrelation,
   meetsAdditionalityCriterion,
 } from './red-compliance.flags';
+
+interface MatchedProductionPair {
+  power: {
+    processStep: ProcessStepEntity;
+  };
+  hydrogen: {
+    processStep: ProcessStepEntity;
+  };
+}
 
 @Injectable()
 export class RedComplianceService {
@@ -52,10 +60,8 @@ export class RedComplianceService {
       const hydrogenProductionUnit = pair.hydrogen.processStep.executedBy as HydrogenProductionUnitEntity;
 
       if (!powerProductionUnit || !hydrogenProductionUnit) {
-        const expectedPowerUnitId = pair.power.processStep.executedBy?.id;
-        const expectedHydrogenUnitId = pair.hydrogen.processStep.executedBy?.id;
         throw new HttpException(
-          `Production units not found: powerUnitId [${expectedPowerUnitId}] or hydrogenUnitId [${expectedHydrogenUnitId}]`,
+          `Production units not found: power production ps [${pair.power.processStep.id}] or hydrogen production ps [${pair.hydrogen.processStep.id}]`,
           HttpStatus.BAD_REQUEST,
         );
       }
