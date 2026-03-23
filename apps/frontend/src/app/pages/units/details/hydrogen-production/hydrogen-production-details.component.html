@@ -44,7 +44,7 @@
         </div>
       </div>
 
-      <app-unit-actions [unit]="{ id: unit.id, active: unit.active }" (invalidate)="setInvalid()" />
+      <app-unit-actions [unit]="{ id: unit.id, active: unit.active }" (statusChange)="onUnitStatusChange()" />
     </div>
   }
 </div>

@@ -3,7 +3,7 @@ import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
 import { Component, inject, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { injectMutation } from '@tanstack/angular-query-experimental';
 
 @Component({
@@ -17,12 +17,10 @@ export class UnitActionsComponent {
   statusChange = output<void>();
 
   unitsService = inject(UnitsService);
-  router = inject(Router);
 
   mutation = injectMutation(() => ({
     mutationFn: (active: boolean) => this.unitsService.updateActive(this.unit().id, active),
     onSuccess: () => this.statusChange.emit(),
     onError: () => toast.error('Failed to update unit status.'),
-    enabled: this.unit().active,
   }));
 }

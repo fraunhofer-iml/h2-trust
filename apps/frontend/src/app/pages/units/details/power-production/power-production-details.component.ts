@@ -45,6 +45,7 @@ import { injectUnitQuery, useQueryInvalidation } from '../shared/unit-query.util
 export class PowerProductionDetailsComponent {
   protected readonly RFNBO_CRITERIA = RFNBO_CRITERIA;
   protected readonly MeasurementUnit = MeasurementUnit;
+
   id = input<string>();
 
   private unitsService = inject(UnitsService);
