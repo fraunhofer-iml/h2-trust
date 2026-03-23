@@ -145,6 +145,9 @@ export class UnitController {
   @Patch(':id/active')
   @ApiBearerAuth()
   @ApiOperation({ description: 'Update the property active' })
+  @ApiOkResponse({
+    description: 'Returns void if status update was successful.',
+  })
   async updateUnitStatus(@Param('id') id: string, @Body() dto: UnitUpdateActiveDto): Promise<void> {
     return await this.unitService.updateUnitStatus(id, dto.active);
   }
