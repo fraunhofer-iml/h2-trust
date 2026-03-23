@@ -9,6 +9,7 @@
 import { PowerProductionUnitEntity } from '@h2-trust/amqp';
 import { BiddingZone, GridLevel, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../address';
+import { CompanyIdentifierDto } from '../company';
 import { BaseUnitDto } from './base-unit.dto';
 import { PowerProductionTypeDto } from './power-production-type.dto';
 import { UnitOwnerDto } from './unit-owner.dto';
@@ -43,7 +44,7 @@ export class PowerProductionUnitDto extends BaseUnitDto {
     unitType: UnitType,
     modelNumber: string,
     owner: UnitOwnerDto,
-    operator: string,
+    operator: CompanyIdentifierDto,
     electricityMeterNumber: string,
     biddingZone: BiddingZone,
     financialSupportReceived: boolean,

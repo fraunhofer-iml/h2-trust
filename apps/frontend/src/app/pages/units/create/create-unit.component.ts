@@ -36,7 +36,6 @@ import {
   PowerProductionType,
   UnitType,
 } from '@h2-trust/domain';
-import { H2_PRODUCTION_TYPES } from '../../../shared/constants/hydrogen-production-types';
 import { ICONS } from '../../../shared/constants/icons';
 import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
@@ -128,7 +127,6 @@ export class CreateUnitComponent {
   };
 
   constructor() {
-    this.hydrogenProductionForm.controls.method.valueChanges.subscribe((value) => this.onH2ProductionTypeChange(value));
     this.unitForm.controls.unitType.valueChanges.subscribe((value) => this.onUnitTypeChange(value));
   }
 
@@ -183,15 +181,6 @@ export class CreateUnitComponent {
         ...this.powerProductionForm.value,
       } as PowerProductionUnitInputDto;
       return this.createPowerProductionUnitMutation.mutate(dto);
-    }
-  }
-
-  private onH2ProductionTypeChange(value: HydrogenProductionMethod | null) {
-    if (!value) this.hydrogenProductionForm.controls.technology.disable();
-    else {
-      this.hydrogenProductionForm.controls.technology.enable();
-      const method = H2_PRODUCTION_TYPES.get(value);
-      this.availableTechnologies = method ? Object.entries(method) : [];
     }
   }
 

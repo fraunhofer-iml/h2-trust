@@ -63,7 +63,7 @@ export class HydrogenStorageUnitUpdateComponent {
   }
 
   private setFormData(unit: HydrogenStorageUnitDto) {
-    this.unitForm.patchValue({ ...unit, owner: unit.owner.id, operator: unit.operator });
+    this.unitForm.patchValue({ ...unit, owner: unit.owner.id, operator: unit.operator.id });
     this.hydrogenStorageUnitForm.patchValue({
       ...unit,
       hydrogenStorageType: unit.storageType as HydrogenStorageType,

@@ -9,6 +9,7 @@
 import { BaseUnitEntity } from '@h2-trust/amqp';
 import { UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../address';
+import { CompanyIdentifierDto } from '../company';
 import { UnitOwnerDto } from './unit-owner.dto';
 
 export abstract class BaseUnitDto {
@@ -23,7 +24,7 @@ export abstract class BaseUnitDto {
   commissionedOn: Date;
   address: AddressDto;
   owner: UnitOwnerDto;
-  operator: string;
+  operator: CompanyIdentifierDto;
   unitType: UnitType;
   active: boolean;
 
@@ -39,7 +40,7 @@ export abstract class BaseUnitDto {
     address: AddressDto,
     modelNumber: string,
     owner: UnitOwnerDto,
-    operator: string,
+    operator: CompanyIdentifierDto,
     unitType: UnitType,
     active: boolean,
   ) {
@@ -86,7 +87,7 @@ export abstract class BaseUnitDto {
             powerProducerId: approval.powerProducer.id,
           })) ?? [],
       },
-      operator: unit.operator?.name,
+      operator: new CompanyIdentifierDto(unit.operator.id, unit.operator.name),
       unitType: unit.unitType,
       active: unit.active,
     };

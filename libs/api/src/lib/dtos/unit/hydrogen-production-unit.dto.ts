@@ -9,6 +9,7 @@
 import { HydrogenProductionUnitEntity } from '@h2-trust/amqp';
 import { UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../address';
+import { CompanyIdentifierDto } from '../company';
 import { BaseUnitDto } from './base-unit.dto';
 import { UnitOwnerDto } from './unit-owner.dto';
 
@@ -33,7 +34,7 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     ratedPower: number,
     modelNumber: string,
     owner: UnitOwnerDto,
-    operator: string,
+    operator: CompanyIdentifierDto,
     unitType: UnitType,
     biddingZone: string,
     pressure: number,

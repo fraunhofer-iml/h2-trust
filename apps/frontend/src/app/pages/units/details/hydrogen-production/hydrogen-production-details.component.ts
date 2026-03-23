@@ -10,10 +10,12 @@ import { ErrorCardComponent } from 'apps/frontend/src/app/layout/error-card/erro
 import { LoadingCardComponent } from 'apps/frontend/src/app/layout/loading-card/loading-card.component';
 import { ERROR_MESSAGES } from 'apps/frontend/src/app/shared/constants/error.messages';
 import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
+import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MeasurementUnit } from '@h2-trust/domain';
+import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { UnitActionsComponent } from '../unit-actions/unit-actions.component';
 import { UnitDetailsComponent } from '../unit-details.component';
@@ -27,6 +29,8 @@ import { UnitDetailsComponent } from '../unit-details.component';
     ErrorCardComponent,
     LoadingCardComponent,
     UnitActionsComponent,
+    PrettyEnumPipe,
+    CommonModule,
   ],
   templateUrl: './hydrogen-production-details.component.html',
 })

@@ -26,7 +26,8 @@
               ><span>{{ unit.ratedPower | unit: MeasurementUnit.MW }}</span>
             </div>
             <div class="flex flex-col text-sm">
-              <span class="text-sm text-neutral-400">Method</span><span>{{ unit.method || '--' }}</span>
+              <span class="text-sm text-neutral-400">Method</span
+              ><span>{{ unit.method || '--' | prettyEnum | titlecase }}</span>
             </div>
             <div class="flex flex-col text-sm">
               <span class="text-sm text-neutral-400">Technology</span><span>{{ unit.technology || '--' }}</span>

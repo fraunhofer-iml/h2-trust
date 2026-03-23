@@ -68,7 +68,7 @@ export class HydrogenProductionUnitUpdateComponent {
   }
 
   private setFormData(unit: HydrogenProductionUnitDto) {
-    this.unitForm.patchValue({ ...unit, owner: unit.owner.id, operator: unit.operator });
+    this.unitForm.patchValue({ ...unit, owner: unit.owner.id, operator: unit.operator.id });
     this.hydrogenProductionForm.patchValue({
       ...unit,
       biddingZone: unit.biddingZone as BiddingZone,

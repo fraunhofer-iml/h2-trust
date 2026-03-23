@@ -19,6 +19,7 @@ import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { BoolPipe } from '../../../../shared/pipes/bool-pipe';
+import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { UnitActionsComponent } from '../unit-actions/unit-actions.component';
 import { UnitDetailsComponent } from '../unit-details.component';
@@ -36,6 +37,7 @@ import { UnitDetailsComponent } from '../unit-details.component';
     LoadingCardComponent,
     MatButtonModule,
     UnitActionsComponent,
+    PrettyEnumPipe,
   ],
   templateUrl: './power-production-details.component.html',
 })

@@ -63,7 +63,7 @@ export class PowerProductionUnitUpdateComponent {
   }
 
   private setFormData(unit: PowerProductionUnitDto) {
-    this.unitForm.patchValue({ ...unit, owner: unit.owner.id, operator: unit.operator });
+    this.unitForm.patchValue({ ...unit, owner: unit.owner.id, operator: unit.operator.id });
     this.powerProductionForm.patchValue({
       ...unit,
       biddingZone: unit.biddingZone,
