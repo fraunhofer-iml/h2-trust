@@ -165,7 +165,6 @@ export class ProductionController {
     @Query('month') month: Date,
     @Query('unitName') unitName: string,
   ): Promise<ProductionStatisticsDto> {
-    console.log(unitName);
     return this.service.readHydrogenProductionStatistics(authenticatedUser.sub, unitName, month);
   }
 
