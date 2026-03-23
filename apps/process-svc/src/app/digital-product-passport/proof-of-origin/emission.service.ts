@@ -6,18 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { firstValueFrom } from 'rxjs';
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Injectable } from '@nestjs/common';
 import {
-  BrokerQueues,
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
   ProofOfSustainabilityEntity,
   ProvenanceEntity,
-  ReadByIdsPayload,
-  UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { EnumLabelMapper } from '@h2-trust/api';
 import { CalculationTopic, HydrogenColor, MeasurementUnit, ProcessType } from '@h2-trust/domain';
@@ -26,9 +21,7 @@ import { EmissionAssembler } from './emission.assembler';
 //TODO-LG: refactor the computeProvenenceEmission functions
 @Injectable()
 export class EmissionService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy) {}
-
-  async computeProvenanceEmissions(provenance: ProvenanceEntity): Promise<ProofOfSustainabilityEntity> {
+  computeProvenanceEmissions(provenance: ProvenanceEntity): ProofOfSustainabilityEntity {
     if (!provenance) {
       throw new Error('Provenance is undefined.');
     }
@@ -39,7 +32,7 @@ export class EmissionService {
       : provenance.root.batch.amount;
 
     if (provenance.powerProductions) {
-      const powerProductions: ProofOfSustainabilityEmissionCalculationEntity[] = await this.computePowerSupplyEmissions(
+      const powerProductions: ProofOfSustainabilityEmissionCalculationEntity[] = this.computePowerSupplyEmissions(
         provenance.powerProductions,
       );
 
@@ -157,28 +150,16 @@ export class EmissionService {
     return EmissionAssembler.assembleProofOfSustainability(provenance.root.id, emissionCalculations, hydrogenAmount);
   }
 
-  async computePowerSupplyEmissions(
-    powerProductions: ProcessStepEntity[],
-  ): Promise<ProofOfSustainabilityEmissionCalculationEntity[]> {
+  computePowerSupplyEmissions(powerProductions: ProcessStepEntity[]): ProofOfSustainabilityEmissionCalculationEntity[] {
     if (!powerProductions.length) {
       return [];
     }
 
-    const unitIds = Array.from(new Set(powerProductions.map((p) => p.executedBy.id)));
-
-    const units: PowerProductionUnitEntity[] = await firstValueFrom(
-      this.generalSvc.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS_BY_IDS, new ReadByIdsPayload(unitIds)),
-    );
-
-    const unitsById = new Map<string, PowerProductionUnitEntity>(units.map((u) => [u.id, u]));
-    for (const unitId of unitIds) {
-      if (!unitsById.has(unitId)) {
-        throw new Error(`PowerProductionUnit [${unitId}] not found.`);
-      }
-    }
-
     return powerProductions.map((powerProduction) => {
-      const unit = unitsById.get(powerProduction.executedBy.id)!;
+      if (!powerProduction.executedBy) {
+        throw new Error(`PowerProductionUnit for process step ${powerProduction} not found.`);
+      }
+      const unit = powerProduction.executedBy as PowerProductionUnitEntity;
       return EmissionAssembler.assemblePowerSupply(powerProduction, unit.type.energySource);
     });
   }

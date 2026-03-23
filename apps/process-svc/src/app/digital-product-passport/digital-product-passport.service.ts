@@ -129,7 +129,7 @@ export class DigitalProductPassportService {
     }
 
     const proofOfSustainability: ProofOfSustainabilityEntity =
-      await this.emissionService.computeProvenanceEmissions(provenance);
+      this.emissionService.computeProvenanceEmissions(provenance);
 
     return new DigitalProductPassportEntity(
       processStep.id,
