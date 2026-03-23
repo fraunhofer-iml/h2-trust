@@ -8,9 +8,14 @@
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
-import { ProvenanceEntity, RedComplianceEntity } from '@h2-trust/amqp';
+import {
+  HydrogenProductionUnitEntity,
+  PowerProductionUnitEntity,
+  ProcessStepEntity,
+  ProvenanceEntity,
+  RedComplianceEntity,
+} from '@h2-trust/amqp';
 import { MatchedProductionPair } from './matched-production-pair';
-import { RedCompliancePairingService } from './red-compliance-pairing.service';
 import {
   areUnitsInSameBiddingZone,
   hasFinancialSupport,
@@ -20,16 +25,14 @@ import {
 
 @Injectable()
 export class RedComplianceService {
-  constructor(private readonly redCompliancePairingService: RedCompliancePairingService) {}
-
-  async determineRedCompliance(processStepId: string, provenance: ProvenanceEntity): Promise<RedComplianceEntity> {
+  determineRedCompliance(processStepId: string, provenance: ProvenanceEntity): RedComplianceEntity {
     if (!provenance || !provenance.powerProductions?.length || !provenance.hydrogenProductions?.length) {
       throw new RpcException(
         `Provenance or required productions (power/hydrogen) are missing for processStepId [${processStepId}]`,
       );
     }
 
-    const pairs: MatchedProductionPair[] = await this.redCompliancePairingService.buildMatchedPairs(
+    const pairs: MatchedProductionPair[] = this.buildMatchedPairs(
       provenance.powerProductions,
       provenance.hydrogenProductions,
       processStepId,
@@ -45,8 +48,8 @@ export class RedComplianceService {
     let isFinancialSupportReceived = true;
 
     for (const pair of pairs) {
-      const powerProductionUnit = pair.power.unit;
-      const hydrogenProductionUnit = pair.hydrogen.unit;
+      const powerProductionUnit = pair.power.processStep.executedBy as PowerProductionUnitEntity;
+      const hydrogenProductionUnit = pair.hydrogen.processStep.executedBy as HydrogenProductionUnitEntity;
 
       if (!powerProductionUnit || !hydrogenProductionUnit) {
         const expectedPowerUnitId = pair.power.processStep.executedBy?.id;
@@ -78,5 +81,55 @@ export class RedComplianceService {
       isAdditionalityFulfilled,
       isFinancialSupportReceived,
     );
+  }
+
+  buildMatchedPairs(
+    powerProcessSteps: ProcessStepEntity[],
+    hydrogenProcessSteps: ProcessStepEntity[],
+    _processStepId: string,
+  ): MatchedProductionPair[] {
+    const pairs: MatchedProductionPair[] = this.buildMatchedPairsWithoutUnits(powerProcessSteps, hydrogenProcessSteps);
+
+    if (!pairs?.length) {
+      return [];
+      // TODO throw exception when matching is solved in long chains
+      // const message = `No matching power↔hydrogen production pairs found for processStepId [${processStepId}]`;
+      // throw new HttpException(message, HttpStatus.BAD_REQUEST);
+    }
+
+    return pairs.map((pair) => ({
+      power: {
+        processStep: pair.power.processStep,
+      },
+      hydrogen: {
+        processStep: pair.hydrogen.processStep,
+      },
+    }));
+  }
+  private buildMatchedPairsWithoutUnits(
+    powerProcessSteps: ProcessStepEntity[],
+    hydrogenProcessSteps: ProcessStepEntity[],
+  ): MatchedProductionPair[] {
+    const hydrogenProductionById = this.buildHydrogenProcessStepsById(hydrogenProcessSteps);
+    const pairs: MatchedProductionPair[] = [];
+    for (const powerProduction of powerProcessSteps) {
+      const successor = powerProduction.batch?.successors?.find((s) => hydrogenProductionById.has(s.processStepId));
+      if (successor) {
+        const hydrogenProduction = hydrogenProductionById.get(successor.processStepId)!;
+        pairs.push({
+          power: { processStep: powerProduction },
+          hydrogen: { processStep: hydrogenProduction },
+        });
+      }
+    }
+    return pairs;
+  }
+
+  private buildHydrogenProcessStepsById(processSteps: ProcessStepEntity[]): Map<string, ProcessStepEntity> {
+    const map = new Map<string, ProcessStepEntity>();
+    for (const processStep of processSteps) {
+      map.set(processStep.id, processStep);
+    }
+    return map;
   }
 }

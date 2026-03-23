@@ -8,12 +8,11 @@
 
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
-import { RedCompliancePairingService } from './red-compliance-pairing.service';
 import { RedComplianceService } from './red-compliance.service';
 
 @Module({
   imports: [new Broker().getGeneralSvcBroker()],
-  providers: [RedCompliancePairingService, RedComplianceService],
+  providers: [RedComplianceService],
   exports: [RedComplianceService],
 })
 export class RedComplianceModule {}

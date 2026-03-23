@@ -6,15 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenProductionUnitEntity, PowerProductionUnitEntity, ProcessStepEntity } from '@h2-trust/amqp';
+import { ProcessStepEntity } from '@h2-trust/amqp';
 
 export interface MatchedProductionPair {
   power: {
     processStep: ProcessStepEntity;
-    unit?: PowerProductionUnitEntity;
   };
   hydrogen: {
     processStep: ProcessStepEntity;
-    unit?: HydrogenProductionUnitEntity;
   };
 }
