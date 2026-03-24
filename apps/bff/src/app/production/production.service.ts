@@ -137,15 +137,10 @@ export class ProductionService {
       );
     }
 
-    console.log('### mapUnitsToFiles ###');
-
     return files.map((file, i) => {
       const unitId = normalizedUnitIds[i];
       const hashedFileBuffer = HashUtil.hashBuffer(file.buffer);
       const encodedFileBuffer = file.buffer.toString('base64');
-      console.log(unitId);
-      console.log(hashedFileBuffer);
-      console.log(encodedFileBuffer);
       return new UnitFileImport(unitId, hashedFileBuffer, encodedFileBuffer);
     });
   }

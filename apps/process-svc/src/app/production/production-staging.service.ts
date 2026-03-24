@@ -63,9 +63,6 @@ export class ProductionStagingService {
       this.prepareProductions<AccountingPeriodHydrogen>(payload.hydrogenProductionImports, BatchType.HYDROGEN),
     ]);
 
-    console.log(preparedPowerProductions);
-    console.log(preparedHydrogenProductions);
-
     const distributedProductions = ProductionDistributor.distributeProductions(
       preparedPowerProductions.map((power) => power.periods),
       preparedHydrogenProductions.map((hydrogen) => hydrogen.periods),
@@ -75,10 +72,10 @@ export class ProductionStagingService {
     const preparedProductions = [...preparedPowerProductions, ...preparedHydrogenProductions];
 
     const { csvImportId, csvDocuments } = await this.prismaService.$transaction(async (tx) => {
-      const csvImportId = await this.csvImportRepository.createCsvImport(payload.userId, tx);
+      const csvImportId = await this.csvImportRepository.saveCsvImport(payload.userId, tx);
 
-      const documentInputs = this.assembleCsvDocumentInputs(preparedProductions);
-      const csvDocuments = await this.csvImportRepository.createCsvDocuments(csvImportId, documentInputs, tx);
+      const documentInputs = this.createCsvDocumentInputs(preparedProductions);
+      const csvDocuments = await this.csvImportRepository.saveCsvDocuments(csvImportId, documentInputs, tx);
 
       await this.stagedProductionRepository.stageDistributedProductions(distributedProductions, csvImportId, tx);
 
@@ -114,7 +111,6 @@ export class ProductionStagingService {
 
         const fileName = `${fileHash}.csv`;
         const cid = await this.storageService.uploadCsvFile(fileName, buffer);
-        console.log(`Uploaded file for unit ${ufi.unitId} with hash ${fileHash} to storage, received CID: ${cid}`);
 
         return {
           periods: new UnitAccountingPeriods<T>(ufi.unitId, accountingPeriods),
@@ -127,7 +123,7 @@ export class ProductionStagingService {
     );
   }
 
-  private assembleCsvDocumentInputs<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
+  private createCsvDocumentInputs<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
     preparedProductions: PreparedProduction<T>[],
   ): CreateCsvDocumentInput[] {
     return preparedProductions.map((production) => {
