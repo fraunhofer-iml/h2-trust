@@ -27,7 +27,6 @@ describe('BottlingAllocator', () => {
           batch: BatchEntityFixture.createHydrogenBatch({
             amount: 100,
             qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            rfnboType: RfnboType.RFNBO_READY,
           }),
         }),
       ];
@@ -58,7 +57,6 @@ describe('BottlingAllocator', () => {
             id: 'batch-1',
             amount: 50,
             qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            rfnboType: RfnboType.RFNBO_READY,
           }),
         }),
         ProcessStepEntityFixture.createHydrogenProduction({
@@ -67,7 +65,6 @@ describe('BottlingAllocator', () => {
             id: 'batch-2',
             amount: 50,
             qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            rfnboType: RfnboType.RFNBO_READY,
           }),
         }),
       ];
@@ -98,7 +95,6 @@ describe('BottlingAllocator', () => {
             hydrogenStorageUnit: HydrogenStorageUnitEntityFixture.create({
               id: givenHydrogenStorageUnitId,
             }),
-            rfnboType: RfnboType.RFNBO_READY,
           }),
         }),
       ];
@@ -134,7 +130,6 @@ describe('BottlingAllocator', () => {
             hydrogenStorageUnit: HydrogenStorageUnitEntityFixture.create({
               id: givenHydrogenStorageUnitId,
             }),
-            rfnboType: RfnboType.RFNBO_READY,
           }),
         }),
       ];
@@ -172,7 +167,6 @@ describe('BottlingAllocator', () => {
             id: 'batch-green',
             amount: 100,
             qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            rfnboType: RfnboType.RFNBO_READY,
           }),
         }),
         ProcessStepEntityFixture.createHydrogenProduction({
@@ -181,7 +175,6 @@ describe('BottlingAllocator', () => {
             id: 'batch-yellow',
             amount: 100,
             qualityDetails: QualityDetailsEntityFixture.createYellow(),
-            rfnboType: RfnboType.NON_CERTIFIABLE,
           }),
         }),
       ];
@@ -207,7 +200,6 @@ describe('BottlingAllocator', () => {
           batch: BatchEntityFixture.createHydrogenBatch({
             amount: 50,
             qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            rfnboType: RfnboType.RFNBO_READY,
           }),
         }),
       ];
@@ -229,7 +221,6 @@ describe('BottlingAllocator', () => {
           batch: BatchEntityFixture.createHydrogenBatch({
             amount: 100,
             qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            rfnboType: RfnboType.RFNBO_READY,
           }),
         }),
       ];

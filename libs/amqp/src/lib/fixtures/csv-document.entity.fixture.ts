@@ -13,7 +13,7 @@ export const CsvDocumentEntityFixture = {
     new CsvDocumentEntity(
       overrides.id ?? 'document-1',
       overrides.fileName ?? 'document-1',
-      overrides.type ?? typeof(String),
+      overrides.type ?? typeof String,
       overrides.startedAt ?? new Date('2026-01-01T00:00:00.000Z'),
       overrides.endedAt ?? new Date('2026-01-01T00:15:00.000Z'),
       overrides.amount ?? 100,

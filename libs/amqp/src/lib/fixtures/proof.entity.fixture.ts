@@ -6,13 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProofEntity } from "@h2-trust/amqp";
+import { ProofEntity } from '@h2-trust/amqp';
 
 export const ProofEntityFixture = {
   create: (overrides: Partial<ProofEntity> = {}): ProofEntity =>
-    new ProofEntity(
-      overrides.uuid ?? 'uuid-1',
-      overrides.hash ?? 'hash-1',
-      overrides.cid ?? 'cid-1'
-    ),
+    new ProofEntity(overrides.uuid ?? 'uuid-1', overrides.hash ?? 'hash-1', overrides.cid ?? 'cid-1'),
 } as const;

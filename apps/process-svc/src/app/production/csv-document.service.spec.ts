@@ -12,9 +12,9 @@ import { CsvDocumentEntity, ProofEntity, ReadByIdPayload } from '@h2-trust/amqp'
 import { BlockchainService, HashUtil } from '@h2-trust/blockchain';
 import { CsvImportRepository } from '@h2-trust/database';
 import { BatchType, CsvDocumentIntegrityStatus } from '@h2-trust/domain';
+import { CsvDocumentEntityFixture, ProofEntityFixture } from '@h2-trust/fixtures/entities';
 import { StorageService } from '@h2-trust/storage';
 import { CsvDocumentService } from './csv-document.service';
-import { CsvDocumentEntityFixture, ProofEntityFixture } from '@h2-trust/fixtures/entities';
 
 describe('CsvDocumentService', () => {
   let service: CsvDocumentService;
@@ -78,7 +78,7 @@ describe('CsvDocumentService', () => {
           type: BatchType.POWER,
           startedAt: new Date(),
           endedAt: new Date(),
-          amount: 10
+          amount: 10,
         }),
         CsvDocumentEntityFixture.create({
           id: 'doc-2',
@@ -86,7 +86,7 @@ describe('CsvDocumentService', () => {
           type: BatchType.HYDROGEN,
           startedAt: new Date(),
           endedAt: new Date(),
-          amount: 5
+          amount: 5,
         }),
       ];
 
@@ -110,7 +110,7 @@ describe('CsvDocumentService', () => {
         fileName: 'production.csv',
         type: BatchType.POWER,
         amount: 42,
-        transactionHash: 'tx-hash'
+        transactionHash: 'tx-hash',
       });
 
       const givenFileStream = Readable.from(['csv-content']);
@@ -158,7 +158,7 @@ describe('CsvDocumentService', () => {
         fileName: 'hydrogen.csv',
         type: BatchType.HYDROGEN,
         amount: 7,
-        transactionHash: 'tx-hash-2'
+        transactionHash: 'tx-hash-2',
       });
 
       const givenFileStream = Readable.from(['csv-content']);
@@ -202,7 +202,7 @@ describe('CsvDocumentService', () => {
         fileName: 'production.csv',
         type: BatchType.POWER,
         amount: 42,
-        transactionHash: 'tx-hash'
+        transactionHash: 'tx-hash',
       });
 
       blockchainServiceMock.blockchainEnabled = false;
@@ -260,7 +260,14 @@ describe('CsvDocumentService', () => {
     it(`returns ${CsvDocumentIntegrityStatus.FAILED} when document has no transaction hash`, async () => {
       // Arrange
       const givenPayload = new ReadByIdPayload('doc-without-hash');
-      const givenDocument = new CsvDocumentEntity(givenPayload.id, 'production.csv', BatchType.POWER, new Date(), new Date(), 1);
+      const givenDocument = new CsvDocumentEntity(
+        givenPayload.id,
+        'production.csv',
+        BatchType.POWER,
+        new Date(),
+        new Date(),
+        1,
+      );
 
       csvImportRepositoryMock.findCsvDocumentById.mockResolvedValue(givenDocument);
       const hashVerifySpy = jest.spyOn(HashUtil, 'verifyStreamWithStoredHash');
@@ -296,7 +303,7 @@ describe('CsvDocumentService', () => {
         type: BatchType.POWER,
         amount: 3,
         transactionHash: 'tx-hash-3',
-      })
+      });
 
       csvImportRepositoryMock.findCsvDocumentById.mockResolvedValue(givenDocument);
       storageServiceMock.downloadFile.mockResolvedValue(null);

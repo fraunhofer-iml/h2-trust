@@ -8,8 +8,8 @@
 
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
-import { ProductionUtils } from './production.utils';
 import { BatchEntityFixture, CompanyEntityFixture } from '@h2-trust/fixtures/entities';
+import { ProductionUtils } from './production.utils';
 
 describe('ProductionUtils.calculateAccountingPeriods', () => {
   const emptyBatchEntityArray: readonly BatchEntity[] = [];
@@ -140,13 +140,13 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
         id: 'batch-1',
         amount: 50,
         type: ProcessType.POWER_PRODUCTION,
-        owner: CompanyEntityFixture.createPowerProducer({name: 'owner-1'}),
+        owner: CompanyEntityFixture.createPowerProducer({ name: 'owner-1' }),
       });
       const batch2 = BatchEntityFixture.createPowerBatch({
         id: 'batch-2',
         amount: 50,
         type: ProcessType.POWER_PRODUCTION,
-        owner: CompanyEntityFixture.createPowerProducer({name: 'owner-2'}),
+        owner: CompanyEntityFixture.createPowerProducer({ name: 'owner-2' }),
       });
       const predecessors: ProcessStepEntity[] = [
         {
@@ -192,15 +192,14 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
         id: 'batch-1',
         amount: 30,
         type: ProcessType.POWER_PRODUCTION,
-        owner: CompanyEntityFixture.createPowerProducer({name: 'owner-1'})
+        owner: CompanyEntityFixture.createPowerProducer({ name: 'owner-1' }),
       });
       const batch2 = BatchEntityFixture.createPowerBatch({
         id: 'batch-2',
         amount: 20,
         type: ProcessType.POWER_PRODUCTION,
-        owner: CompanyEntityFixture.createPowerProducer({name: 'owner-2'})
+        owner: CompanyEntityFixture.createPowerProducer({ name: 'owner-2' }),
       });
-
 
       const predecessors: ProcessStepEntity[] = [
         {
@@ -399,7 +398,7 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
         id: 'batch-1',
         amount: 50,
         type: ProcessType.POWER_PRODUCTION,
-        owner: CompanyEntityFixture.createPowerProducer({name: 'owner-1'})
+        owner: CompanyEntityFixture.createPowerProducer({ name: 'owner-1' }),
       });
 
       const predecessors: ProcessStepEntity[] = [
