@@ -10,7 +10,7 @@ import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, ProcessStepEntity, ProvenanceEntity, UnitMessagePatterns } from '@h2-trust/amqp';
 import { EnumLabelMapper } from '@h2-trust/api';
-import { CalculationTopic, EmissionNumericConstants, EnergySource, MeasurementUnit } from '@h2-trust/domain';
+import { CalculationTopic, EmissionNumericConstants, EnergySource, MeasurementUnit, PowerType } from '@h2-trust/domain';
 import {
   BatchEntityFixture,
   PowerProductionTypeEntityFixture,
@@ -143,7 +143,7 @@ describe('EmissionService', () => {
 
       const expectedEmissionFactorLabel = EnumLabelMapper.getEnergySource(EnergySource.SOLAR_ENERGY);
 
-      const expectedEmissionFactor = EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[EnergySource.SOLAR_ENERGY];
+      const expectedEmissionFactor = EmissionNumericConstants.POWER_TYPE_EMISSION_FACTORS[PowerType.RENEWABLE];
       const expectedResult = (givenProcessStep.batch.amount * expectedEmissionFactor) / givenHydrogenAmount;
 
       // Act
@@ -185,12 +185,12 @@ describe('EmissionService', () => {
       generalSvcMock.send.mockReturnValue(of([givenSolarUnit, givenGridUnit]));
 
       const expectedSolarEmissionFactorLabel = EnumLabelMapper.getEnergySource(EnergySource.SOLAR_ENERGY);
-      const expectedSolarEmissionFactor =
-        EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[EnergySource.SOLAR_ENERGY];
+      const expectedSolarEmissionFactor = EmissionNumericConstants.POWER_TYPE_EMISSION_FACTORS[PowerType.RENEWABLE];
       const expectedSolarResult = givenSolarProcessStep.batch.amount * expectedSolarEmissionFactor;
 
       const expectedGridEmissionFactorLabel = EnumLabelMapper.getEnergySource(EnergySource.GRID);
-      const expectedGridEmissionFactor = EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[EnergySource.GRID];
+      const expectedGridEmissionFactor =
+        EmissionNumericConstants.POWER_TYPE_EMISSION_FACTORS[PowerType.PARTLY_RENEWABLE];
       const expectedGridResult = givenGridProcessStep.batch.amount * expectedGridEmissionFactor;
       // Act
       const actualResult = await service.computePowerSupplyEmissions([givenSolarProcessStep, givenGridProcessStep]);
@@ -231,7 +231,7 @@ describe('EmissionService', () => {
       generalSvcMock.send.mockReturnValue(of([givenUnit]));
 
       const expectedEmissionFactorLabel = EnumLabelMapper.getEnergySource(EnergySource.GRID);
-      const expectedEmissionFactor = EmissionNumericConstants.ENERGY_SOURCE_EMISSION_FACTORS[EnergySource.GRID];
+      const expectedEmissionFactor = EmissionNumericConstants.POWER_TYPE_EMISSION_FACTORS[PowerType.PARTLY_RENEWABLE];
 
       const expectedResult1 = givenProcessStep1.batch.amount * expectedEmissionFactor;
       const expectedResult2 = givenProcessStep2.batch.amount * expectedEmissionFactor;

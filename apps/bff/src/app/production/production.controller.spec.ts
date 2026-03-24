@@ -12,6 +12,7 @@ import {
   BatchEntityHydrogenProducedMock,
   BrokerQueues,
   HydrogenProductionUnitEntityMock,
+  PaginatedProcessStepEntity,
   PowerProductionTypeEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
@@ -25,6 +26,7 @@ import {
   CreateProductionDto,
   CreateProductionDtoMock,
   CsvDocumentIntegrityResultDto,
+  PaginatedProductionDataDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   UserDetailsDtoMock,
@@ -161,17 +163,35 @@ describe('ProductionController', () => {
         executedBy: HydrogenProductionUnitEntityMock[0],
       },
     ];
+    const paginatedProductionDataDtoMock: PaginatedProductionDataDto = {
+      data: processStepEntityMocks.map(ProductionOverviewDto.fromEntity),
+      totalItems: 1,
+      currentPage: 1,
+    };
+    const paginatedProcessStepEntityMock: PaginatedProcessStepEntity = {
+      processSteps: processStepEntityMocks,
+      totalAmountOfItems: 1,
+      currentPage: 1,
+      pageSize: 1,
+    };
 
-    const expectedResponse: ProductionOverviewDto[] = processStepEntityMocks.map(ProductionOverviewDto.fromEntity);
+    const expectedResponse: PaginatedProductionDataDto = paginatedProductionDataDtoMock;
 
     jest.spyOn(userService, 'readUserWithCompany').mockResolvedValue(UserDetailsDtoMock[0]);
 
     jest
       .spyOn(processSvc, 'send')
-      .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(processStepEntityMocks));
+      .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) =>
+        of(paginatedProcessStepEntityMock),
+      );
 
-    const actualResponse: ProductionOverviewDto[] =
-      await controller.readHydrogenProductionsByOwner(givenAuthenticatedUser);
+    const actualResponse: PaginatedProductionDataDto = await controller.readHydrogenProductionsByOwner(
+      givenAuthenticatedUser,
+      1,
+      1,
+      HydrogenProductionUnitEntityMock[0].name,
+      CreateProductionDtoMock.productionStartedAt,
+    );
 
     expect(actualResponse).toEqual(expectedResponse);
   });

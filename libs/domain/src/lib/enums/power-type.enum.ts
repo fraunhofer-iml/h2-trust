@@ -6,7 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export interface FilterModel {
-  unit: string;
-  month: Date | null;
+export enum PowerType {
+  RENEWABLE = 'RENEWABLE',
+  PARTLY_RENEWABLE = 'PARTLY_RENEWABLE',
+  NON_RENEWABLE = 'NON_RENEWABLE',
+  NOT_SPECIFIED = 'NOT_SPECIFIED',
 }

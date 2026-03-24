@@ -17,7 +17,7 @@ import {
   ProvenanceEntity,
   RedComplianceEntity,
 } from '@h2-trust/amqp';
-import { ProcessType, RfnboType } from '@h2-trust/domain';
+import { PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentAssembler } from '../process-step/hydrogenComponent/hydrogen-component.assembler';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { EmissionService } from './proof-of-origin/emission.service';
@@ -66,6 +66,7 @@ export class DigitalProductPassportService {
       processStep.id,
       provenance,
     );
+    const powerType: PowerType = DigitalProductPassportService.getPowerType(provenance);
 
     const proofOfOrigin: ProofOfOriginSectionEntity[] = [];
 
@@ -142,7 +143,25 @@ export class DigitalProductPassportService {
       redCompliance,
       proofOfSustainability,
       proofOfOrigin,
+      powerType,
     );
+  }
+
+  private static getPowerType(provenance: ProvenanceEntity): PowerType {
+    let powerType = PowerType.RENEWABLE;
+    const hasRenewableGridPower = provenance.powerProductions.some(
+      (pp) => pp.batch?.qualityDetails?.powerType == PowerType.PARTLY_RENEWABLE,
+    );
+    if (hasRenewableGridPower) {
+      powerType = PowerType.PARTLY_RENEWABLE;
+    }
+    const hasNotRenewableGrid = provenance.powerProductions.some(
+      (pp) => pp.batch?.qualityDetails?.powerType == PowerType.NON_RENEWABLE,
+    );
+    if (hasNotRenewableGrid) {
+      powerType = PowerType.NON_RENEWABLE;
+    }
+    return powerType;
   }
 
   async calculateHydrogenComposition(processStep: ProcessStepEntity): Promise<HydrogenComponentEntity[]> {

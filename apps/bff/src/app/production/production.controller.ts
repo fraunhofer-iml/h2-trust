@@ -22,6 +22,7 @@ import {
   CreateProductionDto,
   CsvDocumentIntegrityResultDto,
   ImportSubmissionDto,
+  PaginatedProductionDataDto,
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
@@ -95,13 +96,46 @@ export class ProductionController {
     description: "Returns a list of all hydrogen productions belonging to the authenticated user's company.",
     type: [ProductionOverviewDto],
   })
+  @ApiQuery({
+    name: 'pageNumber',
+    type: Number,
+    description: 'Used to get a specific page of pagination',
+    required: false,
+    minimum: 1,
+    example: '1',
+  })
+  @ApiQuery({
+    name: 'pageSize',
+    type: Number,
+    description: 'Used to define the amount of data retrieved',
+    required: false,
+    minimum: 5,
+    example: '5',
+  })
+  @ApiQuery({
+    name: 'unitName',
+    type: String,
+    description: 'Used to filter for a specific hydrogen-production unit',
+    required: false,
+    example: 'Hydrogen Electrolyzer Dortmund 001',
+  })
+  @ApiQuery({
+    name: 'month',
+    type: Date,
+    description: 'Used to filter for a specific time period, in this case month and year',
+    required: false,
+    example: '2024-09-20T07:55:55.695Z',
+  })
   async readHydrogenProductionsByOwner(
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
-  ): Promise<ProductionOverviewDto[]> {
-    return this.service.readHydrogenProductionsByOwner(authenticatedUser.sub);
+    @Query('pageNumber') pageNumber: number,
+    @Query('pageSize') pageSize: number,
+    @Query('unitName') unitName: string,
+    @Query('month') month: Date,
+  ): Promise<PaginatedProductionDataDto> {
+    return this.service.readHydrogenProductionsByOwner(authenticatedUser.sub, pageNumber, pageSize, unitName, month);
   }
 
-  // TODO: Calculate statistics and remove mock imlementation (DUHGW-376)
   @Get('/statistics')
   @ApiBearerAuth()
   @ApiOperation({
@@ -118,31 +152,20 @@ export class ProductionController {
     type: Date,
     description:
       'Statistics period (YYYY-MM-DD). Only year and month are evaluated; day is ignored. Defaults to current month.',
+    required: false,
   })
   @ApiQuery({
-    name: 'unit',
+    name: 'unitName',
     type: String,
     description: 'Search by production unit name or ID. Omit for all units',
     required: false,
   })
   readHydrogenProductionsStatisticsByOwner(
-    @AuthenticatedUser() _authenticatedUser: AuthenticatedKCUser,
-    @Query('month') _month: Date,
-    @Query('unit') _unit: string,
-  ): ProductionStatisticsDto {
-    return {
-      hydrogen: {
-        total: 351.56,
-        nonCertifiable: 151.56,
-        rfnboReady: 200,
-      },
-      power: {
-        nonRenewable: 25.47,
-        partlyRenewable: 10,
-        renewable: 18.154,
-        total: 53.57,
-      },
-    } as ProductionStatisticsDto;
+    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+    @Query('month') month: Date,
+    @Query('unitName') unitName: string,
+  ): Promise<ProductionStatisticsDto> {
+    return this.service.readHydrogenProductionStatistics(authenticatedUser.sub, unitName, month);
   }
 
   @Get('csv')

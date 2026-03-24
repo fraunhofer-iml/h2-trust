@@ -36,8 +36,10 @@ export class ProcessStepRepository {
   async findProcessStepsByPredecessorTypesAndOwner(
     predecessorProcessTypes: string[],
     ownerId: string,
+    hydrogenProductionUnitName?: string,
+    period?: Date,
   ): Promise<ProcessStepEntity[]> {
-    const predecessorsFilter =
+    const predecessorsFilter: Prisma.BatchWhereInput =
       Array.isArray(predecessorProcessTypes) && predecessorProcessTypes.length > 0
         ? {
             predecessors: {
@@ -50,14 +52,30 @@ export class ProcessStepRepository {
           }
         : {};
 
+    const hydrogenUnitWhereInput: Prisma.UnitWhereInput = hydrogenProductionUnitName
+      ? {
+          name: {
+            contains: hydrogenProductionUnitName,
+            mode: 'insensitive',
+          },
+        }
+      : {};
+
+    const periodWhereInput: Prisma.DateTimeFilter = period
+      ? {
+          gte: new Date(period.getFullYear(), period.getMonth(), 1),
+          lt: new Date(period.getFullYear(), period.getMonth() + 1, 1),
+        }
+      : {};
+
     return this.prismaService.processStep
       .findMany({
         where: {
-          batch: {
-            ...predecessorsFilter,
-          },
+          batch: predecessorsFilter,
+          startedAt: periodWhereInput,
           executedBy: {
             ownerId: ownerId,
+            ...hydrogenUnitWhereInput,
           },
         },
         orderBy: {
@@ -122,27 +140,28 @@ export class ProcessStepRepository {
     // Separate insertion of process steps for efficiency:
     // those without predecessors can use bulk insert
     // those with predecessors need individual inserts
-    const processStepsWithoutPredecessors: ProcessStepEntity[] = processSteps.filter(
-      (ps) => !ps.batch?.predecessors?.length,
+    // since water process types are the only ones that do not have batch quality, they are the only process steps that can be stored in bulk
+    const waterConsumptionProcessSteps: ProcessStepEntity[] = processSteps.filter(
+      (ps) => ps.batch?.type == BatchType.WATER,
     );
-    const processStepsWithPredecessors: ProcessStepEntity[] = processSteps.filter(
-      (ps) => ps.batch?.predecessors?.length,
+    const powerOrHydrogenProcessSteps: ProcessStepEntity[] = processSteps.filter(
+      (ps) => ps.batch?.type != BatchType.WATER,
     );
 
     return this.prismaService.$transaction(async (tx) => {
       const persistedProcessSteps: ProcessStepEntity[] = [];
 
-      if (processStepsWithoutPredecessors.length > 0) {
+      if (waterConsumptionProcessSteps.length > 0) {
         const persistedProcessStepsWithoutPredecessors: ProcessStepEntity[] = await this.persistProcessStepsInBulk(
           tx,
-          processStepsWithoutPredecessors,
+          waterConsumptionProcessSteps,
         );
         persistedProcessSteps.push(...persistedProcessStepsWithoutPredecessors);
       }
 
       const persistedProcessStepsWithPredecessors: ProcessStepEntity[] = await this.persistProcessStepsIndividually(
         tx,
-        processStepsWithPredecessors,
+        powerOrHydrogenProcessSteps,
       );
       persistedProcessSteps.push(...persistedProcessStepsWithPredecessors);
 

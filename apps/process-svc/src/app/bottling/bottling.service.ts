@@ -6,20 +6,25 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
   BatchEntity,
   BrokerException,
   CreateHydrogenBottlingPayload,
+  CreateHydrogenProductionStatisticsPayload,
   DocumentEntity,
   HydrogenComponentEntity,
   HydrogenCompositionUtil,
+  HydrogenStatisticsEntity,
+  PaginatedProcessStepEntity,
+  PowerStatisticsEntity,
   ProcessStepEntity,
-  ReadProcessStepsByPredecessorTypesAndOwnerPayload,
+  ProductionStatisticsEntity,
+  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
 import { DocumentRepository } from '@h2-trust/database';
-import { HydrogenColor, RfnboType } from '@h2-trust/domain';
+import { BatchType, HydrogenColor, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { CentralizedStorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { BottlingProcessStepAssembler } from './utils/bottling-process-step.assembler';
@@ -27,6 +32,7 @@ import { BottlingAllocation, BottlingAllocator } from './utils/bottling.allocato
 
 @Injectable()
 export class BottlingService {
+  logger = new Logger('BottlingService');
   constructor(
     private readonly storageService: CentralizedStorageService,
     private readonly documentRepository: DocumentRepository,
@@ -40,9 +46,51 @@ export class BottlingService {
   }
 
   async readProcessStepsByPredecessorTypesAndOwner(
-    payload: ReadProcessStepsByPredecessorTypesAndOwnerPayload,
-  ): Promise<ProcessStepEntity[]> {
-    return this.processStepService.readProcessStepsByPredecessorTypesAndOwner(payload);
+    payload: ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
+  ): Promise<PaginatedProcessStepEntity> {
+    if (payload.filter.pageNumber <= 0) {
+      throw new BrokerException(
+        `No process steps found in storage unit ${payload.filter.pageNumber}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (payload.filter.pageSize <= 0) {
+      throw new BrokerException(
+        `No process steps found in storage unit ${payload.filter.pageSize}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return this.processStepService.readPaginatedProcessStepsByPredecessorTypesAndOwner(payload);
+  }
+
+  async createProductionStatistics(
+    payload: CreateHydrogenProductionStatisticsPayload,
+  ): Promise<ProductionStatisticsEntity> {
+    const hydrogenProcesses: ProcessStepEntity[] =
+      await this.processStepService.readProcessStepsByPredecessorTypesAndUnitAndDate(
+        [ProcessType.POWER_PRODUCTION],
+        payload,
+      );
+
+    const invalidProcessTypes = [
+      ...new Set(
+        hydrogenProcesses
+          .filter((processStep) => processStep.type !== ProcessType.HYDROGEN_PRODUCTION)
+          .map((processStep) => processStep.type),
+      ),
+    ];
+
+    if (invalidProcessTypes.length > 0) {
+      throw new Error(
+        `Expected only ${ProcessType.HYDROGEN_PRODUCTION} process steps, but received: ${invalidProcessTypes.join(', ')}`,
+      );
+    }
+
+    const hydrogenStatistics = this.createHydrogenStatistics(hydrogenProcesses);
+
+    const powerStatistics = this.createPowerStatistics(hydrogenProcesses);
+
+    return new ProductionStatisticsEntity(hydrogenStatistics, powerStatistics);
   }
 
   async createHydrogenBottlingProcessStep(payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
@@ -144,5 +192,63 @@ export class BottlingService {
       new DocumentEntity(undefined, file.originalname),
       processStepId,
     );
+  }
+
+  private createHydrogenStatistics(processSteps: ProcessStepEntity[]): HydrogenStatisticsEntity {
+    const {
+      nonCertifiable,
+      rfnboReady,
+    }: {
+      nonCertifiable: number;
+      rfnboReady: number;
+    } = processSteps.reduce(
+      (statistics, processStep) => {
+        const qualityDetails = processStep.batch.qualityDetails;
+        if (!processStep.batch.active || !qualityDetails) {
+          return statistics;
+        }
+        switch (qualityDetails.rfnboType) {
+          case RfnboType.RFNBO_READY:
+            statistics.rfnboReady += processStep.batch.amount;
+            break;
+          case RfnboType.NON_CERTIFIABLE:
+            statistics.nonCertifiable += processStep.batch.amount;
+            break;
+          default:
+            throw new Error(`Rfnbotype of ${processStep.id} not defined`);
+        }
+        return statistics;
+      },
+      { nonCertifiable: 0, rfnboReady: 0 },
+    );
+    return new HydrogenStatisticsEntity(nonCertifiable, rfnboReady);
+  }
+
+  private createPowerStatistics(processSteps: ProcessStepEntity[]): PowerStatisticsEntity {
+    const batches: BatchEntity[] = processSteps
+      .map((ps) => (ps.batch.predecessors ?? []).filter((batch) => batch.type === BatchType.POWER))
+      .flat();
+    const { renewable, partlyRenewable, nonRenewable } = batches.reduce(
+      (statistics, batch) => {
+        const qualityDetails = batch.qualityDetails;
+        if (!qualityDetails) {
+          return statistics;
+        }
+        switch (qualityDetails.powerType) {
+          case PowerType.RENEWABLE:
+            statistics.renewable += batch.amount;
+            break;
+          case PowerType.PARTLY_RENEWABLE:
+            statistics.partlyRenewable += batch.amount;
+            break;
+          case PowerType.NON_RENEWABLE:
+            statistics.nonRenewable += batch.amount;
+            break;
+        }
+        return statistics;
+      },
+      { renewable: 0, partlyRenewable: 0, nonRenewable: 0 },
+    );
+    return new PowerStatisticsEntity(renewable, partlyRenewable, nonRenewable);
   }
 }

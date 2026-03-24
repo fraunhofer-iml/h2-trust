@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export interface FilterModel {
-  unit: string;
-  month: Date | null;
+export interface PaginationModel {
+  pageIndex: number;
+  pageSize: number;
 }

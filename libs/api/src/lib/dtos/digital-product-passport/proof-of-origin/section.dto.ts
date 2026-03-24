@@ -82,6 +82,7 @@ export class SectionDto {
       batch.unitId ?? '',
       batch.energySource,
       batch.accountingPeriodEnd,
+      batch.powerType,
     );
   }
 

@@ -1,4 +1,4 @@
-FROM hyperledger/besu:26.1.0-amd64
+FROM hyperledger/besu:26.2.0-amd64
 
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*

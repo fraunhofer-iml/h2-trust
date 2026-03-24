@@ -11,17 +11,21 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
+  CreateHydrogenProductionStatisticsPayload,
   CreateProductionsPayload,
   CsvDocumentEntity,
   FinalizeProductionsPayload,
+  PaginatedProcessStepEntity,
   PowerAccessApprovalPatterns,
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
+  ProductionDataFilter,
   ProductionMessagePatterns,
   ProductionStagingResultEntity,
+  ProductionStatisticsEntity,
   ReadByIdPayload,
-  ReadProcessStepsByPredecessorTypesAndOwnerPayload,
+  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   StageProductionsPayload,
   UnitFileImport,
   VerifyCsvDocumentIntegrityResultEntity,
@@ -31,9 +35,11 @@ import {
   CreateProductionDto,
   CsvDocumentIntegrityResultDto,
   ImportSubmissionDto,
+  PaginatedProductionDataDto,
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
+  ProductionStatisticsDto,
   UserDetailsDto,
 } from '@h2-trust/api';
 import { BatchType, ProcessType } from '@h2-trust/domain';
@@ -71,16 +77,39 @@ export class ProductionService {
       .map(ProductionOverviewDto.fromEntity);
   }
 
-  async readHydrogenProductionsByOwner(userId: string): Promise<ProductionOverviewDto[]> {
+  async readHydrogenProductionsByOwner(
+    userId: string,
+    pageNumber?: number,
+    pageSize?: number,
+    unitName?: string,
+    month?: Date,
+  ): Promise<PaginatedProductionDataDto> {
+    const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
+    const ownerId = userDetails.company.id;
+    const payload = new ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload(
+      [ProcessType.POWER_PRODUCTION],
+      ownerId,
+      new ProductionDataFilter(pageNumber, pageSize, unitName, month),
+    );
+    const paginatedProcessStep: PaginatedProcessStepEntity = await firstValueFrom(
+      this.processSvc.send(ProcessStepMessagePatterns.READ_PAGINATION_BY_PREDECESSOR_TYPES_AND_OWNER, payload),
+    );
+    return PaginatedProductionDataDto.fromEntity(paginatedProcessStep);
+  }
+
+  async readHydrogenProductionStatistics(
+    userId: string,
+    unitName: string,
+    month: Date,
+  ): Promise<ProductionStatisticsDto> {
     const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
     const ownerId = userDetails.company.id;
 
-    const payload = new ReadProcessStepsByPredecessorTypesAndOwnerPayload([ProcessType.POWER_PRODUCTION], ownerId);
-
-    const productions: ProcessStepEntity[] = await firstValueFrom(
-      this.processSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_PREDECESSOR_TYPES_AND_OWNER, payload),
+    const payload = new CreateHydrogenProductionStatisticsPayload(ownerId, month, unitName);
+    const productionStatistics: ProductionStatisticsEntity = await firstValueFrom(
+      this.processSvc.send(ProcessStepMessagePatterns.CREATE_PRODUCTION_STATISTICS, payload),
     );
-    return productions.map(ProductionOverviewDto.fromEntity);
+    return ProductionStatisticsDto.fromEntity(productionStatistics);
   }
 
   async importCsvFiles(

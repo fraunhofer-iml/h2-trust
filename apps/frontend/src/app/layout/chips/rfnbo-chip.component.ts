@@ -15,8 +15,8 @@ import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
 @Component({
   selector: 'app-rfnbo-chip',
   imports: [CommonModule, PrettyEnumPipe],
-  template: `<div class="flex w-fit min-w-40 flex-row items-center gap-2 rounded-md px-2 py-1" [ngClass]="chipColor">
-    <span class="material-symbols-outlined text-lg" [ngClass]="iconColor"> {{ icon() }} </span>
+  template: `<div class="flex w-fit min-w-40 flex-row items-center gap-2 rounded-lg border px-2" [ngClass]="chipColor">
+    <span class="material-symbols-outlined text-lg"> {{ icon() }} </span>
     {{ this.normalizedStatus() | prettyEnum | titlecase }}
   </div>`,
 })
@@ -43,19 +43,11 @@ export class RfnboChipComponent {
   });
 
   private readonly chipColorByRFNBO = new Map([
-    ['RFNBO_READY', 'bg-secondary-100 text-secondary-600 '],
-    ['NON_CERTIFIABLE', 'text-neutral-600 bg-neutral-200 '],
-  ]);
-
-  private readonly iconColorByRFNBO = new Map([
-    ['RFNBO_READY', 'text-secondary-600'],
-    ['NON_CERTIFIABLE', 'text-neutral-600'],
+    ['RFNBO_READY', 'bg-secondary-100/60 text-secondary-600 border-secondary-100'],
+    ['NON_CERTIFIABLE', 'text-neutral-600 bg-neutral-100 border-neutral-200'],
   ]);
 
   get chipColor(): string | undefined {
     return this.chipColorByRFNBO.get(this.normalizedStatus());
-  }
-  get iconColor(): string | undefined {
-    return this.iconColorByRFNBO.get(this.normalizedStatus());
   }
 }

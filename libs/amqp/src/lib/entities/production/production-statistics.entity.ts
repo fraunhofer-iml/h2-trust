@@ -6,35 +6,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProductionStatisticsEntity } from '@h2-trust/amqp';
+export class ProductionStatisticsEntity {
+  hydrogen: HydrogenStatisticsEntity;
+  power: PowerStatisticsEntity;
 
-export class ProductionStatisticsDto {
-  hydrogen: HydrogenStatisticsDto;
-  power: PowerStatisticsDto;
-
-  constructor(hydrogen: HydrogenStatisticsDto, power: PowerStatisticsDto) {
+  constructor(hydrogen: HydrogenStatisticsEntity, power: PowerStatisticsEntity) {
     this.hydrogen = hydrogen;
     this.power = power;
   }
-
-  public static fromEntity(entity: ProductionStatisticsEntity): ProductionStatisticsDto {
-    return {
-      hydrogen: {
-        total: entity.hydrogen.total,
-        nonCertifiable: entity.hydrogen.nonCertifiable,
-        rfnboReady: entity.hydrogen.rfnboReady,
-      } as HydrogenStatisticsDto,
-      power: {
-        total: entity.power.total,
-        nonRenewable: entity.power.nonRenewable,
-        partlyRenewable: entity.power.partlyRenewable,
-        renewable: entity.power.renewable,
-      },
-    } as ProductionStatisticsDto;
-  }
 }
 
-export class HydrogenStatisticsDto {
+export class HydrogenStatisticsEntity {
   total: number;
   nonCertifiable: number;
   rfnboReady: number;
@@ -46,7 +28,7 @@ export class HydrogenStatisticsDto {
   }
 }
 
-export class PowerStatisticsDto {
+export class PowerStatisticsEntity {
   total: number;
   renewable: number;
   partlyRenewable: number;

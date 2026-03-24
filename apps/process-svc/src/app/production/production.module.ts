@@ -17,9 +17,9 @@ import { ProcessStepModule } from '../process-step/process-step.module';
 import { CsvDocumentService } from './csv-document.service';
 import { CsvImportProcessingService } from './csv-import-processing.service';
 import { ProductionCreationService } from './production-creation.service';
-import { ProductionFinalizationService } from './production-finalization.service';
 import { ProductionStagingService } from './production-staging.service';
 import { ProductionController } from './production.controller';
+import { ProductionService } from './production.service';
 import { StagedProductionCleanupModule } from './tasks/staged-production-cleanup.module';
 
 @Module({
@@ -34,6 +34,6 @@ import { StagedProductionCleanupModule } from './tasks/staged-production-cleanup
     new Broker().getGeneralSvcBroker(),
   ],
   controllers: [ProductionController],
-  providers: [CsvDocumentService, CsvImportProcessingService, ProductionCreationService, ProductionFinalizationService, ProductionStagingService],
+  providers: [CsvDocumentService, CsvImportProcessingService, ProductionCreationService, ProductionService, ProductionStagingService],
 })
 export class ProductionModule {}

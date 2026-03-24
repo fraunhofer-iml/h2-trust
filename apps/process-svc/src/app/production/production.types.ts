@@ -7,7 +7,7 @@
  */
 
 import { AccountingPeriodHydrogen, AccountingPeriodPower, BatchEntity, UnitAccountingPeriods } from '@h2-trust/amqp';
-import { BatchType, ProcessType } from '@h2-trust/domain';
+import { BatchType, PowerType, ProcessType } from '@h2-trust/domain';
 
 export interface AccountingPeriod {
   startedAt: Date;
@@ -22,6 +22,7 @@ export interface BatchParams {
   owner: string;
   quality?: string;
   hydrogenStorageUnitId?: string;
+  powerType?: PowerType;
 }
 
 export interface ProcessStepParams {

@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export interface FilterModel {
-  unit: string;
-  month: Date | null;
-}
+export const RenewableShareInGridMix = {
+  DE: 54.1,
+} as const;
