@@ -22,7 +22,7 @@ export class HydrogenComponentAssembler {
    * @param processStep The process step whose batch (or whose predecessor batch) is to be returned as grouped HydrogenComponents.
    * @returns The grouped HydrogenComponents of the process step batch or its predecessors.
    */
-  static assemble(provenance: ProvenanceEntity): HydrogenComponentEntity[] {
+  public static assemble(provenance: ProvenanceEntity): HydrogenComponentEntity[] {
     let hydrogenComponents: HydrogenComponentEntity[];
 
     switch (provenance.root.type) {
