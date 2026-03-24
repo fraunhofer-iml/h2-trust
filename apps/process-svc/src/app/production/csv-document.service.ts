@@ -11,7 +11,7 @@ import { CsvDocumentEntity, ReadByIdPayload, VerifyCsvDocumentIntegrityResultEnt
 import { BlockchainService, HashUtil } from '@h2-trust/blockchain';
 import { CsvImportRepository } from '@h2-trust/database';
 import { CsvDocumentIntegrityStatus } from '@h2-trust/domain';
-import { DecentralizedStorageService } from '@h2-trust/storage';
+import { CentralizedStorageService, DecentralizedStorageService } from '@h2-trust/storage';
 
 @Injectable()
 export class CsvDocumentService {
@@ -20,7 +20,8 @@ export class CsvDocumentService {
   constructor(
     private readonly blockchainService: BlockchainService,
     private readonly csvImportRepository: CsvImportRepository,
-    private readonly storageService: DecentralizedStorageService,
+    private readonly centralizedStorageService: CentralizedStorageService,
+    private readonly decentralizedStorageService: DecentralizedStorageService,
   ) { }
 
   async findByCompany(payload: ReadByIdPayload): Promise<CsvDocumentEntity[]> {
@@ -47,7 +48,7 @@ export class CsvDocumentService {
 
     try {
       const [fileStream, proof, blockchainMetadata] = await Promise.all([
-        this.storageService.downloadFile(csvDocument.fileName),
+        this.centralizedStorageService.downloadFile(csvDocument.fileName),
         this.blockchainService.retrieveProof(csvDocument.id),
         this.blockchainService.retrieveBlockchainMetadata(csvDocument.transactionHash),
       ]);
@@ -139,7 +140,7 @@ export class CsvDocumentService {
     cid: string | null,
   ): VerifyCsvDocumentIntegrityResultEntity {
     const { blockchainEnabled } = this.blockchainService;
-    const ipfsExplorerUrl = blockchainEnabled && cid ? `${this.storageService.explorerUrl}/${cid}` : null;
+    const ipfsExplorerUrl = blockchainEnabled && cid ? `${this.decentralizedStorageService.explorerUrl}/${cid}` : null;
     const blockchainExplorerUrl = blockchainEnabled && transactionHash ? `${this.blockchainService.explorerUrl}/${transactionHash}` : null;
     const network = blockchainEnabled ? this.blockchainService.rpcUrl : null;
     const smartContractAddress = blockchainEnabled ? this.blockchainService.smartContractAddress : null;
