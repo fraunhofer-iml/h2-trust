@@ -82,7 +82,7 @@ export class ProductionStagingService {
       return { csvImportId, csvDocuments };
     });
 
-    await this.storeBlockchainProofs(preparedProductions, csvDocuments);
+    await this.storeProofsOnBlockchain(preparedProductions, csvDocuments);
 
     return new ProductionStagingResultEntity(csvImportId, distributedProductions);
   }
@@ -151,7 +151,7 @@ export class ProductionStagingService {
     });
   }
 
-  private async storeBlockchainProofs(
+  private async storeProofsOnBlockchain(
     documentProofs: DocumentProof[],
     csvDocuments: CsvDocumentEntity[],
   ): Promise<void> {
