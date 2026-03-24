@@ -8,8 +8,8 @@
 
 import { HydrogenProductionUnitSeed, UnitSeed } from 'libs/database/src/seed';
 import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
-import { CompanyEntityHydrogenMock } from '../..';
 import { AddressEntityPowerMock } from '../../address';
+import { CompanyEntityHydrogenMock } from '../../company';
 import { HydrogenProductionUnitEntity } from '../hydrogen-production-unit.entity';
 
 export const HydrogenProductionUnitEntityMock: HydrogenProductionUnitEntity[] = [
