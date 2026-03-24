@@ -75,41 +75,62 @@
 
         <div class="rounded-xl border-[2px] border-neutral-100 bg-neutral-50 p-4 text-sm text-neutral-600">
           <span class="text-md font-semibold">Actions</span>
-          <p>
-            You can view the full verification details on the blockchain explorer or copy the transaction hash for your
-            records.
+          <p class="mt-1">
+            Open the IPFS or blockchain explorer, or copy the content identifier and transaction hash for your records.
           </p>
-          <div class="mt-4 flex flex-row gap-4">
-            <button matButton="outlined" (click)="openUrl(res.ipfsExplorerUrl)">
-              <span class="flex flex-row items-center gap-2">
-                <span class="material-symbols-outlined">description</span>
-                IPFS Explorer
+          <div class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+            <button
+              matButton="outlined"
+              (click)="openUrl(res.ipfsExplorerUrl)"
+              class="!flex !h-auto !items-start !justify-start !rounded-xl px-4 py-3 text-left"
+            >
+              <span class="flex w-full items-start gap-3">
+                <span class="material-symbols-outlined mt-0.5">description</span>
+                <span class="flex min-w-0 flex-col">
+                  <span class="font-medium">IPFS Explorer</span>
+                  <span class="text-xs text-neutral-500">Inspect the IPFS data.</span>
+                </span>
               </span>
             </button>
             <button
               matButton="outlined"
               [cdkCopyToClipboard]="res.cid ?? ''"
               (cdkCopyToClipboardCopied)="onCopied($event)"
+              class="!flex !h-auto !items-start !justify-start !rounded-xl px-4 py-3 text-left"
             >
-              <span class="flex flex-row items-center gap-2">
-                <span class="material-symbols-outlined">content_copy</span>
-                Content Identifier
+              <span class="flex w-full items-start gap-3">
+                <span class="material-symbols-outlined mt-0.5">content_copy</span>
+                <span class="flex min-w-0 flex-col">
+                  <span class="font-medium">Content Identifier</span>
+                  <span class="text-xs text-neutral-500">Copy the content identifier.</span>
+                </span>
               </span>
             </button>
-            <button matButton="outlined" (click)="openUrl(res.blockchainExplorerUrl)">
-              <span class="flex flex-row items-center gap-2">
-                <span class="material-symbols-outlined">token</span>
-                Blockchain Explorer
+            <button
+              matButton="outlined"
+              (click)="openUrl(res.blockchainExplorerUrl)"
+              class="!flex !h-auto !items-start !justify-start !rounded-xl px-4 py-3 text-left"
+            >
+              <span class="flex w-full items-start gap-3">
+                <span class="material-symbols-outlined mt-0.5">token</span>
+                <span class="flex min-w-0 flex-col">
+                  <span class="font-medium">Blockchain Explorer</span>
+                  <span class="text-xs text-neutral-500">Inspect the blockchain data.</span>
+                </span>
               </span>
             </button>
             <button
               matButton="outlined"
               [cdkCopyToClipboard]="res.transactionHash ?? ''"
               (cdkCopyToClipboardCopied)="onCopied($event)"
+              class="!flex !h-auto !items-start !justify-start !rounded-xl px-4 py-3 text-left"
             >
-              <span class="flex flex-row items-center gap-2">
-                <span class="material-symbols-outlined">content_copy</span>
-                Transaction Hash
+              <span class="flex w-full items-start gap-3">
+                <span class="material-symbols-outlined mt-0.5">content_copy</span>
+                <span class="flex min-w-0 flex-col">
+                  <span class="font-medium">Transaction Hash</span>
+                  <span class="text-xs text-neutral-500">Copy the transaction hash.</span>
+                </span>
               </span>
             </button>
           </div>
