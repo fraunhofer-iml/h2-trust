@@ -19,6 +19,7 @@ export class VerifyCsvDocumentIntegrityResultEntity {
   network: string | null;
   smartContractAddress: string | null;
   blockchainExplorerUrl: string | null;
+  cid: string | null;
   ipfsExplorerUrl: string | null;
 
   constructor(
@@ -32,6 +33,7 @@ export class VerifyCsvDocumentIntegrityResultEntity {
     network: string | null,
     smartContractAddress: string | null,
     blockchainExplorerUrl: string | null,
+    cid: string | null,
     ipfsExplorerUrl: string | null,
   ) {
     this.documentId = documentId;
@@ -44,6 +46,7 @@ export class VerifyCsvDocumentIntegrityResultEntity {
     this.network = network;
     this.smartContractAddress = smartContractAddress;
     this.blockchainExplorerUrl = blockchainExplorerUrl;
+    this.cid = cid;
     this.ipfsExplorerUrl = ipfsExplorerUrl;
   }
 }

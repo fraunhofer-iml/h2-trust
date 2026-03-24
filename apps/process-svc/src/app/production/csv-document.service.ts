@@ -80,7 +80,7 @@ export class CsvDocumentService {
         csvDocument.transactionHash,
         blockchainMetadata.blockNumber,
         blockchainMetadata.blockTimestamp,
-        `${this.storageService.explorerUrl}/${proof.cid}`,
+        proof.cid,
       );
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -100,14 +100,14 @@ export class CsvDocumentService {
     transactionHash: string,
     blockNumber: number,
     blockTimestamp: Date,
-    ipfsUrl: string,
+    cid: string,
   ): VerifyCsvDocumentIntegrityResultEntity {
     const status = validHash ? CsvDocumentIntegrityStatus.VERIFIED : CsvDocumentIntegrityStatus.MISMATCH;
     const message = validHash
       ? `File integrity verified successfully for CsvDocument with id ${documentId}.`
       : `File integrity mismatch for CsvDocument with id ${documentId}.`;
 
-    return this.createResult(documentId, fileName, status, message, transactionHash, blockNumber, blockTimestamp, ipfsUrl);
+    return this.createResult(documentId, fileName, status, message, transactionHash, blockNumber, blockTimestamp, cid);
   }
 
   private createFailedResult(
@@ -136,11 +136,11 @@ export class CsvDocumentService {
     transactionHash: string | null,
     blockNumber: number | null,
     blockTimestamp: Date | null,
-    ipfsUrl: string | null,
+    cid: string | null,
   ): VerifyCsvDocumentIntegrityResultEntity {
     const { blockchainEnabled } = this.blockchainService;
-    const explorerUrl =
-      blockchainEnabled && transactionHash ? `${this.blockchainService.explorerUrl}/${transactionHash}` : null;
+    const ipfsExplorerUrl = blockchainEnabled && cid ? `${this.storageService.explorerUrl}/${cid}` : null;
+    const blockchainExplorerUrl = blockchainEnabled && transactionHash ? `${this.blockchainService.explorerUrl}/${transactionHash}` : null;
     const network = blockchainEnabled ? this.blockchainService.rpcUrl : null;
     const smartContractAddress = blockchainEnabled ? this.blockchainService.smartContractAddress : null;
 
@@ -154,8 +154,9 @@ export class CsvDocumentService {
       blockTimestamp,
       network,
       smartContractAddress,
-      explorerUrl,
-      ipfsUrl,
+      blockchainExplorerUrl,
+      cid,
+      ipfsExplorerUrl,
     );
   }
 }

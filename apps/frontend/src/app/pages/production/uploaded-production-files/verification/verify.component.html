@@ -86,6 +86,16 @@
                 IPFS Explorer
               </span>
             </button>
+            <button
+              matButton="outlined"
+              [cdkCopyToClipboard]="res.cid ?? ''"
+              (cdkCopyToClipboardCopied)="onCopied($event)"
+            >
+              <span class="flex flex-row items-center gap-2">
+                <span class="material-symbols-outlined">content_copy</span>
+                Content Identifier
+              </span>
+            </button>
             <button matButton="outlined" (click)="openUrl(res.blockchainExplorerUrl)">
               <span class="flex flex-row items-center gap-2">
                 <span class="material-symbols-outlined">token</span>

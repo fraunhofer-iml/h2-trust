@@ -20,6 +20,7 @@ export class CsvDocumentIntegrityResultDto {
   network: string | null;
   smartContractAddress: string | null;
   blockchainExplorerUrl: string | null;
+  cid: string | null;
   ipfsExplorerUrl: string | null;
 
   constructor(
@@ -33,6 +34,7 @@ export class CsvDocumentIntegrityResultDto {
     network: string | null,
     smartContractAddress: string | null,
     blockchainExplorerUrl: string | null,
+    cid: string | null,
     ipfsExplorerUrl: string | null,
   ) {
     this.documentId = documentId;
@@ -45,6 +47,7 @@ export class CsvDocumentIntegrityResultDto {
     this.network = network;
     this.smartContractAddress = smartContractAddress;
     this.blockchainExplorerUrl = blockchainExplorerUrl;
+    this.cid = cid;
     this.ipfsExplorerUrl = ipfsExplorerUrl;
   }
 
@@ -60,6 +63,7 @@ export class CsvDocumentIntegrityResultDto {
       entity.network,
       entity.smartContractAddress,
       entity.blockchainExplorerUrl,
+      entity.cid,
       entity.ipfsExplorerUrl,
     );
   }
