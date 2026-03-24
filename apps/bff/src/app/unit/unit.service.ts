@@ -102,13 +102,8 @@ export class UnitService {
   }
 
   async updateUnitStatus(id: string, active: boolean): Promise<void> {
-    return new Promise<void>((resolve, reject) =>
-      this.generalService
-        .send<void>(UnitMessagePatterns.UPDATE_UNIT_STATUS, UnitUpdateActiveDto.toPayload(id, active))
-        .subscribe({
-          complete: () => resolve(),
-          error: (err) => reject(err),
-        }),
+    await firstValueFrom(
+      this.generalService.send<void>(UnitMessagePatterns.UPDATE_UNIT_STATUS, UnitUpdateActiveDto.toPayload(id, active)),
     );
   }
 

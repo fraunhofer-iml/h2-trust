@@ -148,8 +148,8 @@ export class UnitController {
   @ApiOkResponse({
     description: 'Returns void if status update was successful.',
   })
-  async updateUnitStatus(@Param('id') id: string, @Body() dto: UnitUpdateActiveDto): Promise<void> {
-    return await this.unitService.updateUnitStatus(id, dto.active);
+  updateUnitStatus(@Param('id') id: string, @Body() dto: UnitUpdateActiveDto): Promise<void> {
+    return this.unitService.updateUnitStatus(id, dto.active);
   }
 
   @Put('hydrogen-production')
@@ -161,7 +161,7 @@ export class UnitController {
     description: 'Returns the updated unit.',
   })
   updateHydrogenProductionUnit(@Body() _dto: HydrogenProductionUnitInputDto): Promise<HydrogenProductionUnitDto> {
-    throw new NotImplementedException(9);
+    throw new NotImplementedException();
   }
 
   @Put('power-production')

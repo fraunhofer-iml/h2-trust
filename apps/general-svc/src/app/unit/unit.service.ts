@@ -8,6 +8,7 @@
 
 import { Injectable } from '@nestjs/common';
 import {
+  BaseUnitEntity,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
   CreatePowerProductionUnitPayload,
@@ -75,7 +76,7 @@ export class UnitService {
     return this.unitRepository.insertHydrogenStorageUnit(payload);
   }
 
-  async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<void> {
+  async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<BaseUnitEntity> {
     return this.unitRepository.updateUnitStatus(payload);
   }
 }

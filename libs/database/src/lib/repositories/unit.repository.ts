@@ -9,6 +9,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import {
+  BaseUnitEntity,
   BrokerException,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
@@ -27,6 +28,7 @@ import {
 import { PrismaService } from '../prisma.service';
 import {
   allUnitsQueryArgs,
+  baseUnitDeepQueryArgs,
   hydrogenProductionUnitQueryArgs,
   hydrogenStorageUnitQueryArgs,
   powerProductionUnitQueryArgs,
@@ -190,12 +192,15 @@ export class UnitRepository {
       .then(HydrogenStorageUnitEntity.fromDatabase);
   }
 
-  async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<void> {
-    await this.prismaService.unit.update({
+  async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<BaseUnitEntity> {
+    const unit = await this.prismaService.unit.update({
       where: {
         id: payload.id,
       },
       data: { active: payload.active },
+      include: baseUnitDeepQueryArgs.include,
     });
+
+    return BaseUnitEntity.fromDatabase(unit);
   }
 }

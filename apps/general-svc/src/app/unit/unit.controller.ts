@@ -9,6 +9,7 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
+  BaseUnitEntity,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
   CreatePowerProductionUnitPayload,
@@ -86,7 +87,7 @@ export class UnitController {
   }
 
   @MessagePattern(UnitMessagePatterns.UPDATE_UNIT_STATUS)
-  async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<void> {
+  async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<BaseUnitEntity> {
     return this.service.updateUnitStatus(payload);
   }
 }
