@@ -26,7 +26,7 @@ export const ProofOfOriginPowerBatchEntityFixture = {
       overrides.unitId ?? 'power-production-unit-1',
       overrides.energySource ?? EnergySource.SOLAR_ENERGY,
       overrides.accountingPeriodEnd ?? new Date('2026-12-31T23:59:59Z'),
-      overrides.powerType ?? PowerType.RENEWABLE
+      overrides.powerType ?? PowerType.RENEWABLE,
     ),
 } as const;
 
@@ -53,8 +53,8 @@ export const ProofOfOriginHydrogenBatchEntityFixture = {
       overrides.producer ?? 'The Hydrogen Company',
       overrides.unitId ?? 'hydrogen-production-unit-1',
       overrides.color ?? HydrogenColor.GREEN,
-      overrides.rfnboType ??  'type-1',
+      overrides.rfnboType ?? 'type-1',
       overrides.processStep ?? 'process-step-1',
-      overrides.accountingPeriodEnd ?? new Date('2026-12-31T23:59:59Z')
+      overrides.accountingPeriodEnd ?? new Date('2026-12-31T23:59:59Z'),
     ),
 } as const;
