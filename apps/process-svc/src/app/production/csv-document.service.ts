@@ -62,6 +62,11 @@ export class CsvDocumentService {
         return this.createFailedResult(csvDocument.id, csvDocument.fileName, message, csvDocument.transactionHash);
       }
 
+      if (!blockchainMetadata) {
+        const message = `No blockchain metadata found for CsvDocument with id ${csvDocument.id}, cannot verify file.`;
+        return this.createFailedResult(csvDocument.id, csvDocument.fileName, message, csvDocument.transactionHash);
+      }
+
       const validHash = await HashUtil.verifyStreamWithStoredHash(fileStream, proof.hash);
 
       this.logger.debug(
@@ -73,8 +78,9 @@ export class CsvDocumentService {
         csvDocument.fileName,
         validHash,
         csvDocument.transactionHash,
-        blockchainMetadata?.blockNumber ?? null,
-        blockchainMetadata?.blockTimestamp ?? null,
+        blockchainMetadata.blockNumber,
+        blockchainMetadata.blockTimestamp,
+        `${this.storageService.ipfsGatewayUrl}/${proof.cid}`,
       );
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -92,15 +98,16 @@ export class CsvDocumentService {
     fileName: string,
     validHash: boolean,
     transactionHash: string,
-    blockNumber: number | null,
-    blockTimestamp: Date | null,
+    blockNumber: number,
+    blockTimestamp: Date,
+    ipfsUrl: string,
   ): VerifyCsvDocumentIntegrityResultEntity {
     const status = validHash ? CsvDocumentIntegrityStatus.VERIFIED : CsvDocumentIntegrityStatus.MISMATCH;
     const message = validHash
       ? `File integrity verified successfully for CsvDocument with id ${documentId}.`
       : `File integrity mismatch for CsvDocument with id ${documentId}.`;
 
-    return this.createResult(documentId, fileName, status, message, transactionHash, blockNumber, blockTimestamp);
+    return this.createResult(documentId, fileName, status, message, transactionHash, blockNumber, blockTimestamp, ipfsUrl);
   }
 
   private createFailedResult(
@@ -117,6 +124,7 @@ export class CsvDocumentService {
       transactionHash,
       null,
       null,
+      null,
     );
   }
 
@@ -128,6 +136,7 @@ export class CsvDocumentService {
     transactionHash: string | null,
     blockNumber: number | null,
     blockTimestamp: Date | null,
+    ipfsUrl: string | null,
   ): VerifyCsvDocumentIntegrityResultEntity {
     const { blockchainEnabled } = this.blockchainService;
     const explorerUrl =
@@ -146,6 +155,7 @@ export class CsvDocumentService {
       network,
       smartContractAddress,
       explorerUrl,
+      ipfsUrl,
     );
   }
 }

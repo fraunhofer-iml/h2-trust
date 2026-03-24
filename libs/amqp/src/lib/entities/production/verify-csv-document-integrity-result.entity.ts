@@ -19,6 +19,7 @@ export class VerifyCsvDocumentIntegrityResultEntity {
   network: string | null;
   smartContractAddress: string | null;
   explorerUrl: string | null;
+  ipfsUrl: string | null;
 
   constructor(
     documentId: string,
@@ -31,6 +32,7 @@ export class VerifyCsvDocumentIntegrityResultEntity {
     network: string | null,
     smartContractAddress: string | null,
     explorerUrl: string | null,
+    ipfsUrl: string | null,
   ) {
     this.documentId = documentId;
     this.fileName = fileName;
@@ -42,5 +44,6 @@ export class VerifyCsvDocumentIntegrityResultEntity {
     this.network = network;
     this.smartContractAddress = smartContractAddress;
     this.explorerUrl = explorerUrl;
+    this.ipfsUrl = ipfsUrl;
   }
 }

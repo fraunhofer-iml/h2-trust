@@ -16,7 +16,7 @@ export interface GlobalConfiguration {
   logLevel: LogLevel[];
   amqp: AmqpConfiguration;
   centralizedStorage: StorageConfiguration;
-  decentralizedStorage: StorageConfiguration;
+  decentralizedStorage: DecentralizedStorageConfiguration;
   blockchain: BlockchainConfiguration;
   keycloak: KeycloakConfiguration;
 }
@@ -34,6 +34,10 @@ export interface StorageConfiguration {
   accessKey: string;
   secretKey: string;
   bucketName: string;
+}
+
+export interface DecentralizedStorageConfiguration extends StorageConfiguration {
+  ipfsGatewayUrl: string;
 }
 
 export interface BlockchainConfiguration {
@@ -75,7 +79,8 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
     accessKey: requireEnv('DECENTRALIZED_STORAGE_ACCESS_KEY'),
     secretKey: requireEnv('DECENTRALIZED_STORAGE_SECRET_KEY'),
     bucketName: requireEnv('DECENTRALIZED_STORAGE_BUCKET_NAME'),
-  } as StorageConfiguration,
+    ipfsGatewayUrl: requireEnv('DECENTRALIZED_STORAGE_IPFS_GATEWAY_URL'),
+  } as DecentralizedStorageConfiguration,
   blockchain: {
     enabled: requireEnv('BLOCKCHAIN_ENABLED') === 'true',
     rpcUrl: requireEnv('BLOCKCHAIN_RPC_URL'),
