@@ -91,9 +91,9 @@ export class AccountingPeriodCsvParser {
       });
 
       parser.on('end', () => {
-        this.logger.log(`Parsed records: ${records.length}`);
-        this.logger.log(`Skipped records: ${skipped}`);
-        this.logger.log(`Invalid records: ${invalid}`);
+        this.logger.debug(`Parsed records: ${records.length}`);
+        this.logger.debug(`Skipped records: ${skipped}`);
+        this.logger.debug(`Invalid records: ${invalid}`);
         resolve(records.filter((row) => Object.values(row).every((val) => val !== null)));
       });
 

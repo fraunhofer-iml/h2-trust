@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchEntity } from '@h2-trust/amqp';
+import { AccountingPeriodHydrogen, AccountingPeriodPower, BatchEntity, UnitAccountingPeriods } from '@h2-trust/amqp';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 
 export interface AccountingPeriod {
@@ -29,4 +29,15 @@ export interface ProcessStepParams {
   executedBy: string;
   recordedBy: string;
   batchParams: BatchParams;
+}
+
+export interface DocumentProof {
+  fileName: string;
+  hash: string;
+  cid: string;
+}
+
+export interface ParsedImport<T extends AccountingPeriodPower | AccountingPeriodHydrogen> extends DocumentProof {
+  periods: UnitAccountingPeriods<T>;
+  type: Exclude<BatchType, BatchType.WATER>;
 }

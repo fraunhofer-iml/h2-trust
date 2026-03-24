@@ -15,6 +15,7 @@ import { StorageModule } from '@h2-trust/storage';
 import { DigitalProductPassportModule } from '../digital-product-passport/digital-product-passport.module';
 import { ProcessStepModule } from '../process-step/process-step.module';
 import { CsvDocumentService } from './csv-document.service';
+import { CsvImportProcessingService } from './csv-import-processing.service';
 import { ProductionCreationService } from './production-creation.service';
 import { ProductionFinalizationService } from './production-finalization.service';
 import { ProductionStagingService } from './production-staging.service';
@@ -33,6 +34,6 @@ import { StagedProductionCleanupModule } from './tasks/staged-production-cleanup
     new Broker().getGeneralSvcBroker(),
   ],
   controllers: [ProductionController],
-  providers: [CsvDocumentService, ProductionCreationService, ProductionFinalizationService, ProductionStagingService],
+  providers: [CsvDocumentService, CsvImportProcessingService, ProductionCreationService, ProductionFinalizationService, ProductionStagingService],
 })
 export class ProductionModule {}
