@@ -16,7 +16,7 @@ import {
 import { HashUtil } from '@h2-trust/blockchain';
 import { CreateCsvDocumentInput } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
-import { DecentralizedStorageService } from '@h2-trust/storage';
+import { CentralizedStorageService, DecentralizedStorageService } from '@h2-trust/storage';
 import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
 import { ParsedImport } from './production.types';
 
@@ -27,7 +27,10 @@ export class CsvImportProcessingService {
     HYDROGEN: ['time', 'amount', 'power'],
   };
 
-  constructor(private readonly storageService: DecentralizedStorageService) {}
+  constructor(
+    private readonly centralizedStorageService: CentralizedStorageService,
+    private readonly decentralizedStorageService: DecentralizedStorageService
+  ) { }
 
   async parseAndUploadImports<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
     unitFileImports: UnitFileImport[],
@@ -52,7 +55,8 @@ export class CsvImportProcessingService {
         }
 
         const fileName = `${fileHash}.csv`;
-        const cid = await this.storageService.uploadCsvFile(fileName, buffer);
+        await this.centralizedStorageService.uploadCsvFile(fileName, buffer);
+        const cid = await this.decentralizedStorageService.uploadCsvFile(fileName, buffer);
 
         return {
           periods: new UnitAccountingPeriods<T>(ufi.unitId, accountingPeriods),

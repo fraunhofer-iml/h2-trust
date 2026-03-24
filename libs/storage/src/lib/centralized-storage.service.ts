@@ -15,8 +15,8 @@ import { CENTRALIZED_STORAGE_CLIENT } from './storage.tokens';
 @Injectable()
 export class CentralizedStorageService {
   private readonly bucketName: string;
-  
-  readonly url: string;
+
+  public readonly storageUrl: string;
 
   constructor(
     @Inject(CENTRALIZED_STORAGE_CLIENT) private readonly client: S3Client,
@@ -27,19 +27,23 @@ export class CentralizedStorageService {
     this.bucketName = config.bucketName;
 
     const protocol = config.useSSL ? 'https' : 'http';
-    this.url = `${protocol}://${config.endPoint}:${config.port}/${this.bucketName}`;
+    this.storageUrl = `${protocol}://${config.endPoint}:${config.port}/${this.bucketName}`;
+  }
+
+  async uploadCsvFile(fileName: string, file: Buffer): Promise<void> {
+    await this.client.send(new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: 'text/csv' }));
   }
 
   async uploadPdfFile(fileName: string, file: Buffer): Promise<void> {
     await this.client.send(new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: 'application/pdf' }));
   }
 
-  async downloadPdfFile(fileName: string): Promise<Stream.Readable> {
+  async downloadFile(fileName: string): Promise<Stream.Readable> {
     const response = await this.client.send(new GetObjectCommand({ Bucket: this.bucketName, Key: fileName }));
     return response.Body as Stream.Readable;
   }
 
-  async pdfFileExists(fileName: string): Promise<boolean> {
+  async fileExists(fileName: string): Promise<boolean> {
     try {
       await this.client.send(new HeadObjectCommand({ Bucket: this.bucketName, Key: fileName }));
       return true;

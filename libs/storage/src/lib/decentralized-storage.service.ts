@@ -48,7 +48,7 @@ export class DecentralizedStorageService {
     return cid;
   }
 
-  async downloadCsvFile(fileName: string): Promise<Stream.Readable> {
+  async downloadFile(fileName: string): Promise<Stream.Readable> {
     const response = await this.client.send(new GetObjectCommand({ Bucket: this.bucketName, Key: fileName }));
     return response.Body as Stream.Readable;
   }

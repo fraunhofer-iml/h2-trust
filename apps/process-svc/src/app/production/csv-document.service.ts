@@ -47,7 +47,7 @@ export class CsvDocumentService {
 
     try {
       const [fileStream, proof, blockchainMetadata] = await Promise.all([
-        this.storageService.downloadCsvFile(csvDocument.fileName),
+        this.storageService.downloadFile(csvDocument.fileName),
         this.blockchainService.retrieveProof(csvDocument.id),
         this.blockchainService.retrieveBlockchainMetadata(csvDocument.transactionHash),
       ]);

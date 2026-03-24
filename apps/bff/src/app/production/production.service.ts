@@ -193,7 +193,7 @@ export class ProductionService {
     );
 
     return csvDocuments.map((doc) =>
-      ProcessedCsvDto.fromEntity(doc, this.storageService.url, userDetails.company.name),
+      ProcessedCsvDto.fromEntity(doc, this.storageService.storageUrl, userDetails.company.name),
     );
   }
 
