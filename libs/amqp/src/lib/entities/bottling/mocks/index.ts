@@ -6,4 +6,4 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './hydrogen-composition-entity.mock';
+// export * from './hydrogen-composition-entity.mock';

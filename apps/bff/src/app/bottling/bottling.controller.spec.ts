@@ -11,7 +11,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import {
   BrokerQueues,
   ProcessStepEntity,
-  ProcessStepEntityHydrogenBottlingMock,
+  ProcessStepEntityFixture,
   ProcessStepMessagePatterns,
 } from '@h2-trust/amqp';
 import {
@@ -67,8 +67,7 @@ describe('BottlingController', () => {
 
   it('should create a bottling and transportation batch', async () => {
     const givenDto: BottlingDto = BottlingDtoMock[0];
-
-    const returnedProcessStep: ProcessStepEntity = structuredClone(ProcessStepEntityHydrogenBottlingMock[0]);
+    const returnedProcessStep: ProcessStepEntity = structuredClone(ProcessStepEntityFixture.createHydrogenBottling());
     returnedProcessStep.startedAt = new Date(givenDto.filledAt);
     returnedProcessStep.endedAt = new Date(givenDto.filledAt);
 

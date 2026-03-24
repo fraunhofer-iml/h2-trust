@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './mocks';
+// export * from './mocks';
 export * from './base-unit.entity';
 export * from './hydrogen-production-unit.entity';
 export * from './hydrogen-storage-unit.entity';

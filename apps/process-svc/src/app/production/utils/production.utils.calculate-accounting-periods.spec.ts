@@ -9,6 +9,7 @@
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { ProductionUtils } from './production.utils';
+import { BatchEntityFixture, CompanyEntityFixture } from '@h2-trust/fixtures/entities';
 
 describe('ProductionUtils.calculateAccountingPeriods', () => {
   const emptyBatchEntityArray: readonly BatchEntity[] = [];
@@ -134,18 +135,19 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T02:00:00Z');
       const totalAmount = 200;
-      const batch1: BatchEntity = {
+
+      const batch1 = BatchEntityFixture.createPowerBatch({
         id: 'batch-1',
         amount: 50,
         type: ProcessType.POWER_PRODUCTION,
-        owner: 'owner-1',
-      } as BatchEntity;
-      const batch2: BatchEntity = {
+        owner: CompanyEntityFixture.createPowerProducer({name: 'owner-1'}),
+      });
+      const batch2 = BatchEntityFixture.createPowerBatch({
         id: 'batch-2',
         amount: 50,
         type: ProcessType.POWER_PRODUCTION,
-        owner: 'owner-2',
-      } as BatchEntity;
+        owner: CompanyEntityFixture.createPowerProducer({name: 'owner-2'}),
+      });
       const predecessors: ProcessStepEntity[] = [
         {
           id: 'step-1',
@@ -186,18 +188,20 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T01:00:00Z');
       const totalAmount = 100;
-      const batch1: BatchEntity = {
+      const batch1 = BatchEntityFixture.createPowerBatch({
         id: 'batch-1',
         amount: 30,
         type: ProcessType.POWER_PRODUCTION,
-        owner: 'owner-1',
-      } as BatchEntity;
-      const batch2: BatchEntity = {
+        owner: CompanyEntityFixture.createPowerProducer({name: 'owner-1'})
+      });
+      const batch2 = BatchEntityFixture.createPowerBatch({
         id: 'batch-2',
         amount: 20,
         type: ProcessType.POWER_PRODUCTION,
-        owner: 'owner-2',
-      } as BatchEntity;
+        owner: CompanyEntityFixture.createPowerProducer({name: 'owner-2'})
+      });
+
+
       const predecessors: ProcessStepEntity[] = [
         {
           id: 'step-1',
@@ -391,12 +395,13 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T02:00:00Z');
       const totalAmount = 200;
-      const batch1: BatchEntity = {
+      const batch1 = BatchEntityFixture.createPowerBatch({
         id: 'batch-1',
         amount: 50,
         type: ProcessType.POWER_PRODUCTION,
-        owner: 'owner-1',
-      } as BatchEntity;
+        owner: CompanyEntityFixture.createPowerProducer({name: 'owner-1'})
+      });
+
       const predecessors: ProcessStepEntity[] = [
         {
           id: 'step-1',

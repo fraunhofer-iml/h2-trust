@@ -6,4 +6,4 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './document-entity.mock';
+// export * from './document-entity.mock';

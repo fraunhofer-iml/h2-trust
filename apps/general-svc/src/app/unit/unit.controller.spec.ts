@@ -12,17 +12,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 import {
   AddressPayload,
   BrokerQueues,
-  CompanyEntityPowerMock,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
   CreatePowerProductionUnitPayload,
   HydrogenProductionUnitEntity,
-  HydrogenProductionUnitEntityMock,
   HydrogenStorageUnitEntity,
-  HydrogenStorageUnitEntityMock,
   PowerProductionUnitEntity,
-  PowerProductionUnitEntityMock,
   ReadByIdPayload,
+  PowerProductionUnitEntityFixture,
+  HydrogenProductionUnitEntityFixture,
+  CompanyEntityFixture,
 } from '@h2-trust/amqp';
 import {
   allUnitsQueryArgs,
@@ -41,6 +40,7 @@ import {
 import { RfnboType } from '@h2-trust/domain';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
+import { HydrogenStorageUnitEntityFixture } from 'libs/amqp/src/lib/fixtures/hydrogen-storage-unit.entity.fixture';
 
 describe('UnitController', () => {
   let controller: UnitController;
@@ -163,33 +163,35 @@ describe('UnitController', () => {
   });
 
   it('should create power production unit', async () => {
+    const givenPowerProduction = PowerProductionUnitEntityFixture.create();
+    const giveCompanyEntityPower = CompanyEntityFixture.createPowerProducer();
     const givenPayload: CreatePowerProductionUnitPayload = new CreatePowerProductionUnitPayload(
-      PowerProductionUnitEntityMock[0].name,
-      PowerProductionUnitEntityMock[0].mastrNumber,
-      PowerProductionUnitEntityMock[0].commissionedOn,
+      givenPowerProduction.name,
+      givenPowerProduction.mastrNumber,
+      givenPowerProduction.commissionedOn,
       new AddressPayload(
-        PowerProductionUnitEntityMock[0].address.street,
-        PowerProductionUnitEntityMock[0].address.postalCode,
-        PowerProductionUnitEntityMock[0].address.city,
-        PowerProductionUnitEntityMock[0].address.state,
-        PowerProductionUnitEntityMock[0].address.country,
+        givenPowerProduction.address.street,
+        givenPowerProduction.address.postalCode,
+        givenPowerProduction.address.city,
+        givenPowerProduction.address.state,
+        givenPowerProduction.address.country,
       ),
-      CompanyEntityPowerMock.id,
-      PowerProductionUnitEntityMock[0].electricityMeterNumber,
-      PowerProductionUnitEntityMock[0].ratedPower,
-      PowerProductionUnitEntityMock[0].gridLevel,
-      PowerProductionUnitEntityMock[0].biddingZone,
-      PowerProductionUnitEntityMock[0].financialSupportReceived,
-      PowerProductionUnitEntityMock[0].type.name,
-      PowerProductionUnitEntityMock[0].manufacturer,
-      PowerProductionUnitEntityMock[0].modelType,
-      PowerProductionUnitEntityMock[0].modelNumber,
-      PowerProductionUnitEntityMock[0].serialNumber,
-      PowerProductionUnitEntityMock[0].certifiedBy,
-      CompanyEntityPowerMock.id,
-      PowerProductionUnitEntityMock[0].decommissioningPlannedOn,
-      PowerProductionUnitEntityMock[0].gridOperator,
-      PowerProductionUnitEntityMock[0].gridConnectionNumber,
+      giveCompanyEntityPower.id,
+      givenPowerProduction.electricityMeterNumber,
+      givenPowerProduction.ratedPower,
+      givenPowerProduction.gridLevel,
+      givenPowerProduction.biddingZone,
+      givenPowerProduction.financialSupportReceived,
+      givenPowerProduction.type.name,
+      givenPowerProduction.manufacturer,
+      givenPowerProduction.modelType,
+      givenPowerProduction.modelNumber,
+      givenPowerProduction.serialNumber,
+      givenPowerProduction.certifiedBy,
+      giveCompanyEntityPower.id,
+      givenPowerProduction.decommissioningPlannedOn,
+      givenPowerProduction.gridOperator,
+      givenPowerProduction.gridConnectionNumber,
     );
     const mockedDbResponse: PowerProductionUnitDbType = PowerProductionUnitDbTypeMock[0];
     const expectedResponse: PowerProductionUnitEntity = PowerProductionUnitEntity.fromDatabase(mockedDbResponse);
@@ -206,30 +208,32 @@ describe('UnitController', () => {
   });
 
   it('should create hydrogen production unit', async () => {
+    const givenHydrogenProduction = HydrogenProductionUnitEntityFixture.create();
+    const giveCompanyEntityPower = CompanyEntityFixture.createPowerProducer();
     const givenPayload: CreateHydrogenProductionUnitPayload = new CreateHydrogenProductionUnitPayload(
-      HydrogenProductionUnitEntityMock[0].name,
-      HydrogenProductionUnitEntityMock[0].mastrNumber,
-      HydrogenProductionUnitEntityMock[0].commissionedOn,
+      givenHydrogenProduction.name,
+      givenHydrogenProduction.mastrNumber,
+      givenHydrogenProduction.commissionedOn,
       new AddressPayload(
-        HydrogenProductionUnitEntityMock[0].address.street,
-        HydrogenProductionUnitEntityMock[0].address.postalCode,
-        HydrogenProductionUnitEntityMock[0].address.city,
-        HydrogenProductionUnitEntityMock[0].address.state,
-        HydrogenProductionUnitEntityMock[0].address.country,
+        givenHydrogenProduction.address.street,
+        givenHydrogenProduction.address.postalCode,
+        givenHydrogenProduction.address.city,
+        givenHydrogenProduction.address.state,
+        givenHydrogenProduction.address.country,
       ),
-      CompanyEntityPowerMock.id,
-      HydrogenProductionUnitEntityMock[0].method,
-      HydrogenProductionUnitEntityMock[0].technology,
-      HydrogenProductionUnitEntityMock[0].biddingZone,
-      HydrogenProductionUnitEntityMock[0].ratedPower,
-      HydrogenProductionUnitEntityMock[0].pressure,
-      HydrogenProductionUnitEntityMock[0].waterConsumptionLitersPerHour,
-      HydrogenProductionUnitEntityMock[0].manufacturer,
-      HydrogenProductionUnitEntityMock[0].modelType,
-      HydrogenProductionUnitEntityMock[0].modelNumber,
-      HydrogenProductionUnitEntityMock[0].serialNumber,
-      HydrogenProductionUnitEntityMock[0].certifiedBy,
-      CompanyEntityPowerMock.id,
+      giveCompanyEntityPower.id,
+      givenHydrogenProduction.method,
+      givenHydrogenProduction.technology,
+      givenHydrogenProduction.biddingZone,
+      givenHydrogenProduction.ratedPower,
+      givenHydrogenProduction.pressure,
+      givenHydrogenProduction.waterConsumptionLitersPerHour,
+      givenHydrogenProduction.manufacturer,
+      givenHydrogenProduction.modelType,
+      givenHydrogenProduction.modelNumber,
+      givenHydrogenProduction.serialNumber,
+      givenHydrogenProduction.certifiedBy,
+      giveCompanyEntityPower.id,
     );
 
     const mockedDbResponse: HydrogenProductionUnitDbType = HydrogenProductionUnitDbTypeMock[0];
@@ -247,27 +251,29 @@ describe('UnitController', () => {
   });
 
   it('should create hydrogen storage unit', async () => {
+    const givenHydrogenStorage = HydrogenStorageUnitEntityFixture.create();
+    const giveCompanyEntityPower = CompanyEntityFixture.createPowerProducer();
     const givenPayload: CreateHydrogenStorageUnitPayload = new CreateHydrogenStorageUnitPayload(
-      HydrogenStorageUnitEntityMock[0].name,
-      HydrogenStorageUnitEntityMock[0].mastrNumber,
-      HydrogenStorageUnitEntityMock[0].commissionedOn,
+      givenHydrogenStorage.name,
+      givenHydrogenStorage.mastrNumber,
+      givenHydrogenStorage.commissionedOn,
       new AddressPayload(
-        HydrogenStorageUnitEntityMock[0].address.street,
-        HydrogenStorageUnitEntityMock[0].address.postalCode,
-        HydrogenStorageUnitEntityMock[0].address.city,
-        HydrogenStorageUnitEntityMock[0].address.state,
-        HydrogenStorageUnitEntityMock[0].address.country,
+        givenHydrogenStorage.address.street,
+        givenHydrogenStorage.address.postalCode,
+        givenHydrogenStorage.address.city,
+        givenHydrogenStorage.address.state,
+        givenHydrogenStorage.address.country,
       ),
-      CompanyEntityPowerMock.id,
-      HydrogenStorageUnitEntityMock[0].type,
-      HydrogenStorageUnitEntityMock[0].capacity,
-      HydrogenStorageUnitEntityMock[0].pressure,
-      HydrogenStorageUnitEntityMock[0].manufacturer,
-      HydrogenStorageUnitEntityMock[0].modelType,
-      HydrogenStorageUnitEntityMock[0].modelNumber,
-      HydrogenStorageUnitEntityMock[0].serialNumber,
-      HydrogenStorageUnitEntityMock[0].certifiedBy,
-      CompanyEntityPowerMock.id,
+      giveCompanyEntityPower.id,
+      givenHydrogenStorage.type,
+      givenHydrogenStorage.capacity,
+      givenHydrogenStorage.pressure,
+      givenHydrogenStorage.manufacturer,
+      givenHydrogenStorage.modelType,
+      givenHydrogenStorage.modelNumber,
+      givenHydrogenStorage.serialNumber,
+      givenHydrogenStorage.certifiedBy,
+      giveCompanyEntityPower.id,
     );
 
     const mockedDbResponse: HydrogenStorageUnitDbType = HydrogenStorageUnitDbTypeMock[0];
