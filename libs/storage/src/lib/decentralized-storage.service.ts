@@ -16,14 +16,14 @@ import { ConfigurationService } from '@h2-trust/configuration';
 export class DecentralizedStorageService {
   private readonly bucketName: string;
 
-  public readonly ipfsGatewayUrl: string;
+  public readonly explorerUrl: string;
 
   constructor(
     @Inject(DECENTRALIZED_STORAGE_CLIENT) private readonly client: S3Client,
     configurationService: ConfigurationService,
   ) {
     this.bucketName = configurationService.getGlobalConfiguration().decentralizedStorage.bucketName;
-    this.ipfsGatewayUrl = configurationService.getGlobalConfiguration().decentralizedStorage.ipfsGatewayUrl;
+    this.explorerUrl = configurationService.getGlobalConfiguration().decentralizedStorage.explorerUrl;
   }
 
   async uploadCsvFile(fileName: string, file: Buffer): Promise<string | undefined> {

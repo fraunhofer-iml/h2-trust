@@ -45,9 +45,9 @@ export class VerifyComponent {
     }
   }
 
-  openExplorer(url: string | null) {
+  openUrl(url: string | null) {
     if (!url) {
-      toast.error('Missing explorer url!');
+      toast.error('Missing url!');
       return;
     }
 

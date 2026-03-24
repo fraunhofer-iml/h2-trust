@@ -80,7 +80,7 @@ export class CsvDocumentService {
         csvDocument.transactionHash,
         blockchainMetadata.blockNumber,
         blockchainMetadata.blockTimestamp,
-        `${this.storageService.ipfsGatewayUrl}/${proof.cid}`,
+        `${this.storageService.explorerUrl}/${proof.cid}`,
       );
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);

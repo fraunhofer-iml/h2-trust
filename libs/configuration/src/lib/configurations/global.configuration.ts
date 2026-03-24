@@ -37,7 +37,7 @@ export interface StorageConfiguration {
 }
 
 export interface DecentralizedStorageConfiguration extends StorageConfiguration {
-  ipfsGatewayUrl: string;
+  explorerUrl: string;
 }
 
 export interface BlockchainConfiguration {
@@ -79,7 +79,7 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
     accessKey: requireEnv('DECENTRALIZED_STORAGE_ACCESS_KEY'),
     secretKey: requireEnv('DECENTRALIZED_STORAGE_SECRET_KEY'),
     bucketName: requireEnv('DECENTRALIZED_STORAGE_BUCKET_NAME'),
-    ipfsGatewayUrl: requireEnv('DECENTRALIZED_STORAGE_IPFS_GATEWAY_URL'),
+    explorerUrl: requireEnv('DECENTRALIZED_STORAGE_EXPLORER_URL'),
   } as DecentralizedStorageConfiguration,
   blockchain: {
     enabled: requireEnv('BLOCKCHAIN_ENABLED') === 'true',
