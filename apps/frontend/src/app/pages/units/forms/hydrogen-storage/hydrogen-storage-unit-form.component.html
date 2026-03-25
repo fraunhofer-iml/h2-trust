@@ -1,0 +1,24 @@
+<div class="flex flex-col gap-2 rounded-lg bg-white p-4">
+  <span>Additional Information</span>
+
+  <div class="grid grid-cols-3 gap-2" [formGroup]="hydrogenStorageForm()">
+    <mat-form-field appearance="outline">
+      <mat-label>Type</mat-label>
+      <mat-select formControlName="hydrogenStorageType">
+        <mat-option [value]="HydrogenStorageType.LIQUID_HYDROGEN">{{
+          HydrogenStorageType.LIQUID_HYDROGEN | prettyEnum | titlecase
+        }}</mat-option>
+        <mat-option [value]="HydrogenStorageType.COMPRESSED_GASEOUS_HYDROGEN">{{
+          HydrogenStorageType.COMPRESSED_GASEOUS_HYDROGEN | prettyEnum | titlecase
+        }}</mat-option>
+      </mat-select> </mat-form-field
+    ><mat-form-field appearance="outline">
+      <mat-label>Capacity (kg)</mat-label>
+      <input matInput formControlName="capacity" type="number" min="0" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Pressure</mat-label>
+      <input matInput formControlName="pressure" type="number" min="0" />
+    </mat-form-field>
+  </div>
+</div>

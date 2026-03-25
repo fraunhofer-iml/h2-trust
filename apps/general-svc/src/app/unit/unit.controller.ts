@@ -9,6 +9,7 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
+  BaseUnitEntity,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
   CreatePowerProductionUnitPayload,
@@ -20,6 +21,7 @@ import {
   ReadByIdsPayload,
   UnitEntity,
   UnitMessagePatterns,
+  UpdateUnitStatusPayload,
 } from '@h2-trust/amqp';
 import { UnitService } from './unit.service';
 
@@ -82,5 +84,10 @@ export class UnitController {
   @MessagePattern(UnitMessagePatterns.CREATE_HYDROGEN_STORAGE_UNIT)
   async createHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
     return this.service.createHydrogenStorageUnit(payload);
+  }
+
+  @MessagePattern(UnitMessagePatterns.UPDATE_UNIT_STATUS)
+  async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<BaseUnitEntity> {
+    return this.service.updateUnitStatus(payload);
   }
 }

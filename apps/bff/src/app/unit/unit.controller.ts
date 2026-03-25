@@ -7,18 +7,19 @@
  */
 
 import { AuthenticatedUser } from 'nest-keycloak-connect';
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, NotImplementedException, Param, Patch, Post, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import {
   HydrogenProductionOverviewDto,
-  HydrogenProductionUnitCreateDto,
   HydrogenProductionUnitDto,
+  HydrogenProductionUnitInputDto,
   HydrogenStorageOverviewDto,
-  HydrogenStorageUnitCreateDto,
   HydrogenStorageUnitDto,
+  HydrogenStorageUnitInputDto,
   PowerProductionOverviewDto,
-  PowerProductionUnitCreateDto,
   PowerProductionUnitDto,
+  PowerProductionUnitInputDto,
+  UnitUpdateActiveDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/api';
 import { UnitService } from './unit.service';
@@ -61,7 +62,7 @@ export class UnitController {
   @ApiOkResponse({
     description: 'Returns the created unit.',
   })
-  createHydrogenStorageUnit(@Body() dto: HydrogenStorageUnitCreateDto): Promise<HydrogenStorageUnitDto> {
+  createHydrogenStorageUnit(@Body() dto: HydrogenStorageUnitInputDto): Promise<HydrogenStorageUnitDto> {
     return this.unitService.createHydrogenStorageUnit(dto);
   }
 
@@ -99,7 +100,7 @@ export class UnitController {
   @ApiOkResponse({
     description: 'Returns the created unit.',
   })
-  createPowerProductionUnit(@Body() dto: PowerProductionUnitCreateDto): Promise<PowerProductionUnitDto> {
+  createPowerProductionUnit(@Body() dto: PowerProductionUnitInputDto): Promise<PowerProductionUnitDto> {
     return this.unitService.createPowerProductionUnit(dto);
   }
 
@@ -137,7 +138,53 @@ export class UnitController {
   @ApiOkResponse({
     description: 'Returns the created unit.',
   })
-  createHydrogenProductionUnit(@Body() dto: HydrogenProductionUnitCreateDto): Promise<HydrogenProductionUnitDto> {
+  createHydrogenProductionUnit(@Body() dto: HydrogenProductionUnitInputDto): Promise<HydrogenProductionUnitDto> {
     return this.unitService.createHydrogenProductionUnit(dto);
+  }
+
+  @Patch(':id/active')
+  @ApiBearerAuth()
+  @ApiOperation({ description: 'Update the property active' })
+  @ApiOkResponse({
+    description: 'Returns void if status update was successful.',
+  })
+  updateUnitStatus(@Param('id') id: string, @Body() dto: UnitUpdateActiveDto): Promise<void> {
+    return this.unitService.updateUnitStatus(id, dto.active);
+  }
+
+  @Put('hydrogen-production')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Update a hydrogen production  Unit.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the updated unit.',
+  })
+  updateHydrogenProductionUnit(@Body() _dto: HydrogenProductionUnitInputDto): Promise<HydrogenProductionUnitDto> {
+    throw new NotImplementedException();
+  }
+
+  @Put('power-production')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Update a power production Unit.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the updated unit.',
+  })
+  updatePowerProductionUnit(@Body() _dto: PowerProductionUnitInputDto): Promise<PowerProductionUnitDto> {
+    throw new NotImplementedException();
+  }
+
+  @Put('hydrogen-storage')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Update a Unit.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the hydrogen storage updated unit.',
+  })
+  updateHydrogenStorageUnit(@Body() _dto: HydrogenStorageUnitInputDto): Promise<HydrogenStorageUnitDto> {
+    throw new NotImplementedException();
   }
 }

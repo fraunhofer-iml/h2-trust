@@ -31,4 +31,8 @@ export const ICONS = {
     PARTLY_RENEWABLE: 'donut_large',
     NON_RENEWABLE: 'oil_barrel',
   },
+  STATUS: {
+    ACTIVE: 'atr',
+    INACTIVE: 'bedtime',
+  },
 };

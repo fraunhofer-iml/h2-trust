@@ -37,5 +37,6 @@ export const PowerProductionUnitEntityMock: PowerProductionUnitEntity[] = [
     PowerProductionUnitSeed[0].gridConnectionNumber!,
     PowerProductionUnitSeed[0].financialSupportReceived,
     PowerProductionTypeEntityMock[1],
+    true,
   ),
 ];

@@ -10,9 +10,9 @@ import { IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
 import { AddressPayload, CreateHydrogenStorageUnitPayload } from '@h2-trust/amqp';
 import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
-import { UnitCreateDto } from './unit-create.dto';
+import { UnitInputDto } from './unit-input.dto';
 
-export class HydrogenStorageUnitCreateDto extends UnitCreateDto {
+export class HydrogenStorageUnitInputDto extends UnitInputDto {
   @IsEnum(HydrogenStorageType)
   @IsNotEmpty()
   storageType: HydrogenStorageType;
@@ -63,7 +63,7 @@ export class HydrogenStorageUnitCreateDto extends UnitCreateDto {
     this.pressure = pressure;
   }
 
-  static toPayload(dto: HydrogenStorageUnitCreateDto): CreateHydrogenStorageUnitPayload {
+  static toPayload(dto: HydrogenStorageUnitInputDto): CreateHydrogenStorageUnitPayload {
     return new CreateHydrogenStorageUnitPayload(
       dto.name,
       dto.mastrNumber,
