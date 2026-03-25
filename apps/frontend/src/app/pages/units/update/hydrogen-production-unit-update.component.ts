@@ -11,10 +11,11 @@ import { Component, inject, input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterModule } from '@angular/router';
-import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
+import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { HydrogenProductionUnitDto, HydrogenProductionUnitInputDto } from '@h2-trust/api';
 import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology } from '@h2-trust/domain';
 import { UnitTypeChipComponent } from '../../../layout/unit-type-chip/unit-type-chip.component';
+import { QUERY_KEYS } from '../../../shared/queries/shared-query-keys';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { BaseUnitFormComponent } from '../forms/base-unit/base-unit-form-component';
 import {
@@ -29,11 +30,11 @@ import { HydrogenProductionUnitFormComponent } from '../forms/hydrogen-productio
 @Component({
   selector: 'app-hydrogen-production-unit-update',
   imports: [
-    BaseUnitFormComponent,
-    HydrogenProductionUnitFormComponent,
-    UnitTypeChipComponent,
     RouterModule,
     MatButtonModule,
+    UnitTypeChipComponent,
+    BaseUnitFormComponent,
+    HydrogenProductionUnitFormComponent,
   ],
   templateUrl: './hydrogen-production-unit-update.component.html',
 })
@@ -45,6 +46,7 @@ export class HydrogenProductionUnitUpdateComponent {
 
   unitsService = inject(UnitsService);
   router = inject(Router);
+  queryClient = inject(QueryClient);
 
   unitQuery = injectQuery(() => ({
     queryKey: ['hydrogen-production-unit', this.id()],
@@ -58,7 +60,7 @@ export class HydrogenProductionUnitUpdateComponent {
 
   unitMutation = injectMutation(() => ({
     mutationFn: (dto: HydrogenProductionUnitInputDto) => this.unitsService.updateHydrogenProductionUnit(dto),
-    onSuccess: () => this.navigateToDetailsView(),
+    onSuccess: () => this.onSuccess(),
     onError: () => toast.error('Failed to update unit.'),
   }));
 
@@ -69,6 +71,11 @@ export class HydrogenProductionUnitUpdateComponent {
     } as HydrogenProductionUnitInputDto;
 
     this.unitMutation.mutate(dto);
+  }
+
+  private onSuccess() {
+    this.queryClient.invalidateQueries({ queryKey: QUERY_KEYS.HYDROGEN_PRODUCTION_UNITS.ALL });
+    this.navigateToDetailsView();
   }
 
   protected navigateToDetailsView() {
