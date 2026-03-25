@@ -16,14 +16,11 @@ import {
   ProvenanceEntity,
   RedComplianceEntity,
 } from '@h2-trust/amqp';
-import { PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
+import { PowerType, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentAssembler } from '../process-step/hydrogenComponent/hydrogen-component.assembler';
 import { ProcessStepService } from '../process-step/process-step.service';
-import { EmissionService } from './proof-of-origin/emission.service';
-import { HydrogenBottlingSectionAssembler } from './proof-of-origin/hydrogen-bottling-section.assembler';
-import { HydrogenProductionSectionService } from './proof-of-origin/hydrogen-production-section.service';
-import { HydrogenStorageSectionAssembler } from './proof-of-origin/hydrogen-storage-section.assembler';
-import { HydrogenTransportationSectionAssembler } from './proof-of-origin/hydrogen-transportation-section.assembler';
+import { ProofOfOriginService } from './proof-of-origin/proof-of-origin.service';
+import { ProofOfSustainabilityService } from './proof-of-origin/proof-of-sustainability.service';
 import { ProvenanceService } from './provenance/provenance.service';
 import { RedComplianceService } from './red-compliance/red-compliance.service';
 
@@ -33,9 +30,9 @@ export class DigitalProductPassportService {
   constructor(
     private readonly processStepService: ProcessStepService,
     private readonly redComplianceService: RedComplianceService,
-    private readonly hydrogenProductionSectionService: HydrogenProductionSectionService,
+    private readonly proofOfOriginService: ProofOfOriginService,
     private readonly provenanceService: ProvenanceService,
-    private readonly emissionService: EmissionService,
+    private readonly emissionService: ProofOfSustainabilityService,
   ) {}
 
   async determineRfnboTypeForProcessStepId(processStepId: string): Promise<RfnboType> {
@@ -64,63 +61,14 @@ export class DigitalProductPassportService {
     const redCompliance: RedComplianceEntity = this.redComplianceService.determineRedCompliance(provenance);
     const powerType: PowerType = DigitalProductPassportService.getPowerType(provenance);
 
-    const proofOfOrigin: ProofOfOriginSectionEntity[] = [];
+    const proofOfOrigin: ProofOfOriginSectionEntity[] =
+      this.proofOfOriginService.createProofOfSustainability(provenance);
 
     const hydrogenCompositionsForRootOfProvenance: HydrogenComponentEntity[] =
       HydrogenComponentAssembler.assemble(provenance);
 
-    //If the process step is neither hydrogen bottling nor transport, then proof of origin should not be calculated.
-    if (processStep.type == ProcessType.HYDROGEN_BOTTLING || processStep.type == ProcessType.HYDROGEN_TRANSPORTATION) {
-      //build hydrogen production section
-      if (provenance.powerProductions?.length || provenance.waterConsumptions?.length) {
-        const hydrogenProductionSection: ProofOfOriginSectionEntity =
-          this.hydrogenProductionSectionService.buildSection(
-            provenance.powerProductions,
-            provenance.waterConsumptions,
-            provenance.hydrogenBottling.batch.amount,
-          );
-        proofOfOrigin.push(hydrogenProductionSection);
-      }
-
-      //build storage section
-      if (provenance.hydrogenProductions?.length) {
-        const hydrogenStorageSection: ProofOfOriginSectionEntity = HydrogenStorageSectionAssembler.assembleSection(
-          provenance.hydrogenProductions,
-        );
-        proofOfOrigin.push(hydrogenStorageSection);
-      }
-
-      //build bottling section for rootType=HYDROGEN_BOTTLING
-      if (provenance.root.type === ProcessType.HYDROGEN_BOTTLING) {
-        const hydrogenBottlingSection: ProofOfOriginSectionEntity = HydrogenBottlingSectionAssembler.assembleSection(
-          provenance.root,
-          hydrogenCompositionsForRootOfProvenance,
-        );
-        proofOfOrigin.push(hydrogenBottlingSection);
-      }
-
-      //build bottling section for rootType=HYDROGEN_TRANSPORTATION
-      if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION) {
-        const hydrogenBottlingSection: ProofOfOriginSectionEntity = HydrogenBottlingSectionAssembler.assembleSection(
-          provenance.hydrogenBottling,
-          hydrogenCompositionsForRootOfProvenance,
-        );
-        proofOfOrigin.push(hydrogenBottlingSection);
-      }
-
-      //build transport section for rootType=HYDROGEN_TRANSPORTATION
-      if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION && provenance.hydrogenBottling) {
-        const hydrogenTransportationSection: ProofOfOriginSectionEntity =
-          HydrogenTransportationSectionAssembler.assembleSection(
-            provenance.root,
-            hydrogenCompositionsForRootOfProvenance,
-          );
-        proofOfOrigin.push(hydrogenTransportationSection);
-      }
-    }
-
     const proofOfSustainability: ProofOfSustainabilityEntity =
-      this.emissionService.computeProvenanceEmissions(provenance);
+      this.emissionService.createProofOfSustainability(provenance);
 
     return new DigitalProductPassportEntity(
       processStep.id,

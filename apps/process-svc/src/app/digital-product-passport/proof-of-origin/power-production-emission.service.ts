@@ -9,11 +9,19 @@
 import { Injectable } from '@nestjs/common';
 import {
   PowerProductionUnitEntity,
+  ProcessStepEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
   ProvenanceEntity,
 } from '@h2-trust/amqp';
-import { CalculationTopic, MeasurementUnit } from '@h2-trust/domain';
-import { EmissionAssembler } from './emission.assembler';
+import { EnumLabelMapper } from '@h2-trust/api';
+import {
+  CalculationTopic,
+  EmissionNumericConstants,
+  EnergySource,
+  MeasurementUnit,
+  PowerType,
+  ProcessType,
+} from '@h2-trust/domain';
 
 @Injectable()
 export class PowerProductionEmissionService {
@@ -34,7 +42,7 @@ export class PowerProductionEmissionService {
           throw new Error(`PowerProductionUnit for process step ${powerProduction} not found.`);
         }
         const unit = powerProduction.executedBy as PowerProductionUnitEntity;
-        return EmissionAssembler.assemblePowerSupply(powerProduction, unit.type.energySource);
+        return this.assemblePowerSupply(powerProduction, unit.type.energySource);
       },
     );
 
@@ -56,6 +64,37 @@ export class PowerProductionEmissionService {
       totalEmissionsGrouped,
       totalEmissionsPerKgHydrogen,
       MeasurementUnit.G_CO2_PER_KG_H2,
+      CalculationTopic.POWER_SUPPLY,
+    );
+  }
+
+  public static assemblePowerSupply(
+    powerProduction: ProcessStepEntity,
+    energySource: EnergySource,
+  ): ProofOfSustainabilityEmissionCalculationEntity {
+    if (powerProduction?.type !== ProcessType.POWER_PRODUCTION) {
+      throw new Error(`Invalid process step type [${powerProduction?.type}] for power supply emission calculation`);
+    }
+
+    const power = powerProduction.batch.amount;
+    const powerInput = `Power Input: ${power} ${MeasurementUnit.KWH}`;
+    const powerType: PowerType = powerProduction.batch.qualityDetails.powerType as PowerType;
+
+    const emissionFactorLabel = EnumLabelMapper.getEnergySource(energySource);
+    const emissionFactor = EmissionNumericConstants.POWER_TYPE_EMISSION_FACTORS[powerType];
+    const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} ${MeasurementUnit.G_CO2_PER_KWH}`;
+
+    const result = power * emissionFactor;
+    const formula = `E = Power Input * Emission Factor ${emissionFactorLabel}`;
+    const formulaResult = `${result} ${MeasurementUnit.G_CO2} = ${power} ${MeasurementUnit.KWH} * ${emissionFactor} ${MeasurementUnit.G_CO2_PER_KWH}`;
+
+    const basisOfCalculation = [powerInput, emissionFactorInput, formula, formulaResult];
+
+    return new ProofOfSustainabilityEmissionCalculationEntity(
+      emissionFactorLabel,
+      basisOfCalculation,
+      result,
+      MeasurementUnit.G_CO2,
       CalculationTopic.POWER_SUPPLY,
     );
   }

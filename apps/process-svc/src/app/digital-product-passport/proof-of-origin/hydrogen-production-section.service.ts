@@ -16,16 +16,15 @@ import {
   ProofOfOriginPowerBatchEntity,
   ProofOfOriginSectionEntity,
   ProofOfOriginSubClassificationEntity,
+  ProofOfOriginWaterBatchEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/amqp';
 import { BatchType, EnergySource, PowerType, ProofOfOrigin } from '@h2-trust/domain';
-import { EmissionService } from './emission.service';
-import { WaterSupplyClassificationAssembler } from './water-supply-classification.assembler';
+import { WaterConsumptionEmissionService } from './emission-services/water-consumption-emission.service';
+import { PowerProductionEmissionService } from './power-production-emission.service';
 
 @Injectable()
 export class HydrogenProductionSectionService {
-  constructor(private readonly emissionService: EmissionService) {}
-
   buildSection(
     powerProductions: ProcessStepEntity[],
     waterConsumptions: ProcessStepEntity[],
@@ -48,8 +47,10 @@ export class HydrogenProductionSectionService {
     }
 
     if (waterConsumptions?.length) {
-      const waterSupplyClassification: ProofOfOriginClassificationEntity =
-        WaterSupplyClassificationAssembler.assembleClassification(waterConsumptions, bottledKgHydrogen);
+      const waterSupplyClassification: ProofOfOriginClassificationEntity = this.assembleWaterSupplyClassification(
+        waterConsumptions,
+        bottledKgHydrogen,
+      );
 
       classifications.push(waterSupplyClassification);
     }
@@ -85,7 +86,7 @@ export class HydrogenProductionSectionService {
         const productionPowerBatches: ProofOfOriginBatchEntity[] = powerProductionsByEnergySource.map(
           (powerProduction) => {
             const [powerSupplyEmission]: ProofOfSustainabilityEmissionCalculationEntity[] =
-              this.emissionService.computePowerSupplyEmissions([powerProduction]);
+              this.computePowerSupplyEmissions([powerProduction]);
 
             const emission: ProofOfOriginEmissionEntity = ProofOfOriginEmissionEntity.fromEmissionCalculation(
               bottledKgHydrogen,
@@ -130,6 +131,66 @@ export class HydrogenProductionSectionService {
       energySource: energySource as EnergySource,
       accountingPeriodEnd: powerProduction.endedAt,
       powerType: (powerProduction.batch?.qualityDetails?.powerType ?? PowerType.NOT_SPECIFIED) as PowerType,
+    };
+  }
+
+  computePowerSupplyEmissions(powerProductions: ProcessStepEntity[]): ProofOfSustainabilityEmissionCalculationEntity[] {
+    if (!powerProductions.length) {
+      return [];
+    }
+
+    return powerProductions.map((powerProduction) => {
+      if (!powerProduction.executedBy) {
+        throw new Error(`PowerProductionUnit for process step ${powerProduction} not found.`);
+      }
+      const unit = powerProduction.executedBy as PowerProductionUnitEntity;
+      return PowerProductionEmissionService.assemblePowerSupply(powerProduction, unit.type.energySource);
+    });
+  }
+
+  private assembleWaterSupplyClassification(
+    waterSupplies: ProcessStepEntity[],
+    bottledKgHydrogen: number,
+  ): ProofOfOriginClassificationEntity {
+    if (!waterSupplies?.length) {
+      const message = 'No process steps of type water supply found.';
+      throw new Error(message);
+    }
+
+    const waterBatches: ProofOfOriginWaterBatchEntity[] = waterSupplies.map((waterSupply) => {
+      const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
+        WaterConsumptionEmissionService.assembleWaterSupply(waterSupply);
+
+      const emission: ProofOfOriginEmissionEntity = ProofOfOriginEmissionEntity.fromEmissionCalculation(
+        bottledKgHydrogen,
+        emissionCalculation.result,
+      );
+
+      const batch: ProofOfOriginWaterBatchEntity = this.assembleWaterSupply(waterSupply, emission);
+
+      return batch;
+    });
+
+    return ProofOfOriginClassificationEntity.assemble(
+      ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION,
+      BatchType.WATER,
+      waterBatches,
+      [],
+    );
+  }
+
+  private assembleWaterSupply(
+    waterConsumption: ProcessStepEntity,
+    emission?: ProofOfOriginEmissionEntity,
+  ): ProofOfOriginWaterBatchEntity {
+    return {
+      id: waterConsumption.batch.id,
+      emission,
+      createdAt: waterConsumption.startedAt,
+      amount: waterConsumption.batch.amount,
+      batchType: BatchType.WATER,
+      deionizedWaterAmount: waterConsumption.batch.amount,
+      deionizedWaterEmission: { totalEmissions: 0, totalEmissionsPerKgHydrogen: 0, basisOfCalculation: [] },
     };
   }
 }

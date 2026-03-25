@@ -11,8 +11,9 @@ import { Broker } from '@h2-trust/amqp';
 import { ProcessStepModule } from '../process-step/process-step.module';
 import { DigitalProductPassportController } from './digital-product-passport.controller';
 import { DigitalProductPassportService } from './digital-product-passport.service';
-import { EmissionService } from './proof-of-origin/emission.service';
 import { HydrogenProductionSectionService } from './proof-of-origin/hydrogen-production-section.service';
+import { ProofOfOriginService } from './proof-of-origin/proof-of-origin.service';
+import { ProofOfSustainabilityService } from './proof-of-origin/proof-of-sustainability.service';
 import { ProvenanceModule } from './provenance/provenance.module';
 import { RedComplianceModule } from './red-compliance/red-compliance.module';
 
@@ -27,7 +28,12 @@ import { RedComplianceModule } from './red-compliance/red-compliance.module';
     new Broker().getGeneralSvcBroker(),
   ],
   controllers: [DigitalProductPassportController],
-  providers: [DigitalProductPassportService, EmissionService, HydrogenProductionSectionService],
+  providers: [
+    DigitalProductPassportService,
+    ProofOfSustainabilityService,
+    HydrogenProductionSectionService,
+    ProofOfOriginService,
+  ],
   exports: [DigitalProductPassportService],
 })
 export class DigitalProductPassportModule {}
