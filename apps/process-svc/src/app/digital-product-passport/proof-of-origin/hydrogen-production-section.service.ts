@@ -19,7 +19,6 @@ import {
   ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/amqp';
 import { BatchType, EnergySource, PowerType, ProofOfOrigin } from '@h2-trust/domain';
-import { EmissionAssembler } from './emission.assembler';
 import { EmissionService } from './emission.service';
 import { WaterSupplyClassificationAssembler } from './water-supply-classification.assembler';
 
@@ -88,9 +87,9 @@ export class HydrogenProductionSectionService {
             const [powerSupplyEmission]: ProofOfSustainabilityEmissionCalculationEntity[] =
               this.emissionService.computePowerSupplyEmissions([powerProduction]);
 
-            const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionEntity(
-              powerSupplyEmission,
+            const emission: ProofOfOriginEmissionEntity = ProofOfOriginEmissionEntity.fromEmissionCalculation(
               bottledKgHydrogen,
+              powerSupplyEmission.result,
             );
 
             const batch: ProofOfOriginPowerBatchEntity = this.assemblePowerSupply(

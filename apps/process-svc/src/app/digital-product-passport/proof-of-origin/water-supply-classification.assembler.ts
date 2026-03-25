@@ -30,9 +30,9 @@ export class WaterSupplyClassificationAssembler {
       const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
         EmissionAssembler.assembleWaterSupply(waterSupply);
 
-      const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionEntity(
-        emissionCalculation,
+      const emission: ProofOfOriginEmissionEntity = ProofOfOriginEmissionEntity.fromEmissionCalculation(
         bottledKgHydrogen,
+        emissionCalculation.result,
       );
 
       const batch: ProofOfOriginWaterBatchEntity = this.assembleWaterSupply(waterSupply, emission);

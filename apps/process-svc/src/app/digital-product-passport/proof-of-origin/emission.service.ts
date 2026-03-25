@@ -17,6 +17,7 @@ import {
 import { EnumLabelMapper } from '@h2-trust/api';
 import { CalculationTopic, HydrogenColor, MeasurementUnit, ProcessType } from '@h2-trust/domain';
 import { EmissionAssembler } from './emission.assembler';
+import { PowerProductionEmissionService } from './power-production-emission.service';
 
 //TODO-LG: refactor the computeProvenenceEmission functions
 @Injectable()
@@ -31,34 +32,7 @@ export class EmissionService {
       ? provenance.hydrogenBottling.batch.amount
       : provenance.root.batch.amount;
 
-    if (provenance.powerProductions) {
-      const powerProductions: ProofOfSustainabilityEmissionCalculationEntity[] = this.computePowerSupplyEmissions(
-        provenance.powerProductions,
-      );
-
-      const totalEmissions = powerProductions.reduce((sum, curr) => sum + curr.result, 0);
-
-      const totalEmissionsGrouped = Array.from(
-        powerProductions
-          .reduce(
-            (map, entity) => map.set(entity.name, (map.get(entity.name) ?? 0) + entity.result),
-            new Map<string, number>(),
-          )
-          .entries(),
-      ).map(([energySource, result]) => `${energySource}: ${result} ${MeasurementUnit.G_CO2}`);
-
-      const totalEmissionsPerKgHydrogen = totalEmissions / hydrogenAmount;
-
-      emissionCalculations.push(
-        new ProofOfSustainabilityEmissionCalculationEntity(
-          totalEmissions.toString(),
-          totalEmissionsGrouped,
-          totalEmissionsPerKgHydrogen,
-          MeasurementUnit.G_CO2_PER_KG_H2,
-          CalculationTopic.POWER_SUPPLY,
-        ),
-      );
-    }
+    emissionCalculations.push(PowerProductionEmissionService.computeProvenanceEmissionsForPowerProduction(provenance));
 
     if (provenance.waterConsumptions) {
       const waterConsumptions: ProofOfSustainabilityEmissionCalculationEntity[] = provenance.waterConsumptions.map(

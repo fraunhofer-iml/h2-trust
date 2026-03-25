@@ -25,9 +25,9 @@ export class HydrogenBottlingSectionAssembler {
     const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
       EmissionAssembler.assembleHydrogenBottling(hydrogenBottling);
 
-    const emission: ProofOfOriginEmissionEntity = EmissionAssembler.assembleEmissionEntity(
-      emissionCalculation,
+    const emission: ProofOfOriginEmissionEntity = ProofOfOriginEmissionEntity.fromEmissionCalculation(
       hydrogenBottling.batch.amount,
+      emissionCalculation.result,
     );
 
     const batch: ProofOfOriginHydrogenBatchEntity = this.assembleHydrogenBottling(

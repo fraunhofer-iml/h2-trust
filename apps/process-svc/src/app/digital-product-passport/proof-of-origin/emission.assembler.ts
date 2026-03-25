@@ -8,7 +8,6 @@
 
 import {
   ProcessStepEntity,
-  ProofOfOriginEmissionEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
   ProofOfSustainabilityEmissionEntity,
   ProofOfSustainabilityEntity,
@@ -382,18 +381,5 @@ export class EmissionAssembler {
     );
 
     return [ei, ep, etd];
-  }
-
-  static assembleEmissionEntity(
-    emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity,
-    kgHydrogen: number,
-  ): ProofOfOriginEmissionEntity {
-    const totalEmissions = emissionCalculation?.result ?? 0;
-    const totalEmissionsPerKgHydrogen = totalEmissions / kgHydrogen;
-    return {
-      totalEmissions: totalEmissions,
-      totalEmissionsPerKgHydrogen: totalEmissionsPerKgHydrogen,
-      basisOfCalculation: emissionCalculation?.basisOfCalculation ?? [],
-    };
   }
 }

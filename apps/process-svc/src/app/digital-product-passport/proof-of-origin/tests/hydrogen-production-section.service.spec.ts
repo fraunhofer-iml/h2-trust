@@ -14,9 +14,9 @@ import {
   ProofOfOriginClassificationEntityFixture,
   ProofOfOriginSubClassificationEntityFixture,
 } from '@h2-trust/fixtures/entities';
-import { HydrogenProductionSectionService } from './hydrogen-production-section.service';
+import { HydrogenProductionSectionService } from '../hydrogen-production-section.service';
+import { WaterSupplyClassificationAssembler } from '../water-supply-classification.assembler';
 import { PowerSupplyClassificationService } from './power-supply-classification.service';
-import { WaterSupplyClassificationAssembler } from './water-supply-classification.assembler';
 
 describe('HydrogenProductionSectionService', () => {
   let service: HydrogenProductionSectionService;
