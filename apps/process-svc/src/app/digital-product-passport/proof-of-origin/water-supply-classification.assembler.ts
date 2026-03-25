@@ -14,8 +14,6 @@ import {
   ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/amqp';
 import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
-import { BatchAssembler } from './batch.assembler';
-import { ClassificationAssembler } from './classification.assembler';
 import { EmissionAssembler } from './emission.assembler';
 
 export class WaterSupplyClassificationAssembler {
@@ -37,16 +35,31 @@ export class WaterSupplyClassificationAssembler {
         bottledKgHydrogen,
       );
 
-      const batch: ProofOfOriginWaterBatchEntity = BatchAssembler.assembleWaterSupply(waterSupply, emission);
+      const batch: ProofOfOriginWaterBatchEntity = this.assembleWaterSupply(waterSupply, emission);
 
       return batch;
     });
 
-    return ClassificationAssembler.assembleClassification(
+    return ProofOfOriginClassificationEntity.assemble(
       ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION,
       BatchType.WATER,
       waterBatches,
       [],
     );
+  }
+
+  static assembleWaterSupply(
+    waterConsumption: ProcessStepEntity,
+    emission?: ProofOfOriginEmissionEntity,
+  ): ProofOfOriginWaterBatchEntity {
+    return {
+      id: waterConsumption.batch.id,
+      emission,
+      createdAt: waterConsumption.startedAt,
+      amount: waterConsumption.batch.amount,
+      batchType: BatchType.WATER,
+      deionizedWaterAmount: waterConsumption.batch.amount,
+      deionizedWaterEmission: { totalEmissions: 0, totalEmissionsPerKgHydrogen: 0, basisOfCalculation: [] },
+    };
   }
 }

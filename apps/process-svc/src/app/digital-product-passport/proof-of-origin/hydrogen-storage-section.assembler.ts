@@ -15,9 +15,7 @@ import {
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/amqp';
-import { ProofOfOrigin, RfnboType } from '@h2-trust/domain';
-import { BatchAssembler } from './batch.assembler';
-import { ClassificationAssembler } from './classification.assembler';
+import { BatchType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
 import { EmissionAssembler } from './emission.assembler';
 
 export class HydrogenStorageSectionAssembler {
@@ -47,23 +45,49 @@ export class HydrogenStorageSectionAssembler {
             hydrogenProduction.batch.amount,
           );
 
-          const batch: ProofOfOriginHydrogenBatchEntity = BatchAssembler.assembleHydrogenStorage(
-            hydrogenProduction,
-            emission,
-          );
+          const batch: ProofOfOriginHydrogenBatchEntity = this.assembleHydrogenStorage(hydrogenProduction, emission);
 
           return batch;
         },
       );
 
-      const classification: ProofOfOriginClassificationEntity = ClassificationAssembler.assembleHydrogen(
+      const classification: ProofOfOriginClassificationEntity = ProofOfOriginClassificationEntity.assemble(
         rfnboType,
+        BatchType.HYDROGEN,
         batchesForHydrogenRfnboType,
+        [],
       );
 
       classifications.push(classification);
     }
 
     return new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_STORAGE_SECTION, [], classifications);
+  }
+
+  static assembleHydrogenStorage(
+    hydrogenStorage: ProcessStepEntity,
+    emission?: ProofOfOriginEmissionEntity,
+  ): ProofOfOriginHydrogenBatchEntity {
+    return {
+      id: hydrogenStorage.batch.id,
+      emission,
+      createdAt: hydrogenStorage.startedAt,
+      amount: hydrogenStorage.batch.amount,
+      batchType: BatchType.HYDROGEN,
+      hydrogenComposition: [
+        {
+          processId: null,
+          color: hydrogenStorage.batch?.qualityDetails?.color,
+          amount: hydrogenStorage.batch.amount,
+          rfnboType: hydrogenStorage.batch?.qualityDetails?.rfnboType,
+        },
+      ],
+      producer: hydrogenStorage.batch.owner?.name,
+      unitId: hydrogenStorage.executedBy.id,
+      color: hydrogenStorage.batch?.qualityDetails?.color,
+      rfnboType: hydrogenStorage.batch?.qualityDetails?.rfnboType,
+      processStep: hydrogenStorage.type,
+      accountingPeriodEnd: hydrogenStorage.endedAt,
+    };
   }
 }

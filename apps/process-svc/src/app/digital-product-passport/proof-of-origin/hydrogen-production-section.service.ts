@@ -18,9 +18,7 @@ import {
   ProofOfOriginSubClassificationEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/amqp';
-import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
-import { BatchAssembler } from './batch.assembler';
-import { ClassificationAssembler } from './classification.assembler';
+import { BatchType, EnergySource, PowerType, ProofOfOrigin } from '@h2-trust/domain';
 import { EmissionAssembler } from './emission.assembler';
 import { EmissionService } from './emission.service';
 import { WaterSupplyClassificationAssembler } from './water-supply-classification.assembler';
@@ -40,8 +38,9 @@ export class HydrogenProductionSectionService {
       const energySourceSubClassifications: ProofOfOriginSubClassificationEntity[] =
         this.buildPowerSupplySubClassifications(powerProductions, bottledKgHydrogen);
 
-      const powerSupplyClassification: ProofOfOriginClassificationEntity = ClassificationAssembler.assemblePower(
+      const powerSupplyClassification: ProofOfOriginClassificationEntity = ProofOfOriginClassificationEntity.assemble(
         ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION,
+        BatchType.POWER,
         [],
         energySourceSubClassifications,
       );
@@ -94,7 +93,7 @@ export class HydrogenProductionSectionService {
               bottledKgHydrogen,
             );
 
-            const batch: ProofOfOriginPowerBatchEntity = BatchAssembler.assemblePowerSupply(
+            const batch: ProofOfOriginPowerBatchEntity = this.assemblePowerSupply(
               powerProduction,
               energySource,
               emission,
@@ -104,12 +103,34 @@ export class HydrogenProductionSectionService {
           },
         );
 
-        const subClassification: ProofOfOriginSubClassificationEntity =
-          ClassificationAssembler.assembleSubClassification(energySource, BatchType.POWER, productionPowerBatches);
+        const subClassification: ProofOfOriginSubClassificationEntity = ProofOfOriginSubClassificationEntity.assemble(
+          energySource,
+          BatchType.POWER,
+          productionPowerBatches,
+        );
 
         subClassifications.push(subClassification);
       }
     }
     return subClassifications;
+  }
+
+  private assemblePowerSupply(
+    powerProduction: ProcessStepEntity,
+    energySource: string,
+    emission?: ProofOfOriginEmissionEntity,
+  ): ProofOfOriginPowerBatchEntity {
+    return {
+      id: powerProduction.batch.id,
+      emission,
+      createdAt: powerProduction.startedAt,
+      amount: powerProduction.batch.amount,
+      batchType: BatchType.POWER,
+      producer: powerProduction.batch.owner.name,
+      unitId: powerProduction.executedBy.id,
+      energySource: energySource as EnergySource,
+      accountingPeriodEnd: powerProduction.endedAt,
+      powerType: (powerProduction.batch?.qualityDetails?.powerType ?? PowerType.NOT_SPECIFIED) as PowerType,
+    };
   }
 }

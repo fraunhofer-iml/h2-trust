@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Util } from '@h2-trust/amqp';
 import { BatchType } from '@h2-trust/domain';
 import { ProofOfOriginBatchEntity } from './proof-of-origin-batch.entity';
 
@@ -36,6 +37,22 @@ export class ProofOfOriginClassificationEntity {
     this.subClassifications = subClassifications;
     this.classificationType = classificationType;
   }
+
+  static assemble(
+    classificationName: string,
+    classificationType: BatchType,
+    batches: ProofOfOriginBatchEntity[],
+    subClassifications: ProofOfOriginSubClassificationEntity[],
+  ): ProofOfOriginClassificationEntity {
+    return new ProofOfOriginClassificationEntity(
+      classificationName,
+      Util.calculateEmission(batches, subClassifications),
+      Util.calculateAmount(batches, subClassifications),
+      classificationType,
+      batches,
+      subClassifications,
+    );
+  }
 }
 
 /**
@@ -61,5 +78,19 @@ export class ProofOfOriginSubClassificationEntity {
     this.amount = amount;
     this.batches = batches;
     this.classificationType = classificationType;
+  }
+
+  static assemble(
+    classificationName: string,
+    classificationType: BatchType,
+    batches: ProofOfOriginBatchEntity[] = [],
+  ): ProofOfOriginSubClassificationEntity {
+    return {
+      name: classificationName,
+      emissionOfProcessStep: Util.calculateBatchEmission(batches),
+      amount: Util.sumAmounts(batches),
+      batches,
+      classificationType,
+    };
   }
 }

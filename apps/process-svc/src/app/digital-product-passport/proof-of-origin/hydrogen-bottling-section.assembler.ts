@@ -14,8 +14,7 @@ import {
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/amqp';
-import { ProofOfOrigin } from '@h2-trust/domain';
-import { BatchAssembler } from './batch.assembler';
+import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
 import { EmissionAssembler } from './emission.assembler';
 
 export class HydrogenBottlingSectionAssembler {
@@ -31,12 +30,32 @@ export class HydrogenBottlingSectionAssembler {
       hydrogenBottling.batch.amount,
     );
 
-    const batch: ProofOfOriginHydrogenBatchEntity = BatchAssembler.assembleHydrogenBottling(
+    const batch: ProofOfOriginHydrogenBatchEntity = this.assembleHydrogenBottling(
       hydrogenBottling,
       hydrogenCompositions,
       emission,
     );
 
     return new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_BOTTLING_SECTION, [batch], []);
+  }
+
+  static assembleHydrogenBottling(
+    hydrogenBottling: ProcessStepEntity,
+    hydrogenComposition: HydrogenComponentEntity[],
+    emission?: ProofOfOriginEmissionEntity,
+  ): ProofOfOriginHydrogenBatchEntity {
+    return {
+      id: hydrogenBottling.batch.id,
+      emission,
+      createdAt: hydrogenBottling.startedAt,
+      amount: hydrogenBottling.batch.amount,
+      batchType: BatchType.HYDROGEN,
+      hydrogenComposition,
+      unitId: hydrogenBottling.executedBy.id,
+      color: hydrogenBottling.batch?.qualityDetails?.color,
+      rfnboType: hydrogenBottling.batch?.qualityDetails?.rfnboType,
+      processStep: hydrogenBottling.type,
+      accountingPeriodEnd: hydrogenBottling.endedAt,
+    };
   }
 }
