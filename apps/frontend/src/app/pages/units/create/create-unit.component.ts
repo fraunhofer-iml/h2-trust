@@ -111,7 +111,7 @@ export class CreateUnitComponent {
   }));
 
   private onSuccess = () => {
-    this.queryClient.invalidateQueries({ queryKey: QUERY_KEYS.HYDROGEN_PRODUCTION_UNITS.ALL });
+    this.queryClient.invalidateQueries({ queryKey: QUERY_KEYS.HYDROGEN_PRODUCTION_UNITS });
     this.router.navigateByUrl('units');
     toast.success('Successfully created.');
   };
