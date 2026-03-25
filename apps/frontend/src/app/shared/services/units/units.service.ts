@@ -27,6 +27,7 @@ export class UnitsService {
   constructor(private readonly httpClient: HttpClient) {}
 
   getHydrogenProductionUnits() {
+    console.log('called');
     return lastValueFrom(this.httpClient.get<HydrogenProductionOverviewDto[]>(API.UNITS.HYDROGEN_PRODUCTION.BASE));
   }
 

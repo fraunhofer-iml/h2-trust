@@ -27,7 +27,7 @@
 
   <div class="grid grid-cols-3 gap-4 xl:grid-cols-4">
     @if (!typeToShow || typeToShow === UnitType.HYDROGEN_PRODUCTION) {
-      @for (item of hydrogenProductionUnits$(); track item) {
+      @for (item of hydrogenProductionUnitsQuery.data(); track item) {
         <a [routerLink]="['hydrogen-production', item.id]">
           <app-unit-card [name]="item.name" [unittype]="UnitType.HYDROGEN_PRODUCTION">
             <mat-chip>

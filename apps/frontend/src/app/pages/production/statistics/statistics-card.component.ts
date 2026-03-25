@@ -23,7 +23,7 @@ import { StatCardConfig } from '../model/statistics-card-config.model';
       </div>
 
       @if (config().percentage) {
-        <div class="relative h-14 w-14 rounded-full" [ngStyle]="chartStyle()">
+        <div class="relative h-14 w-14 min-w-14 rounded-full" [ngStyle]="chartStyle()">
           <div class="absolute left-2 top-2 flex h-10 w-10 items-center justify-center rounded-full bg-white">
             <p class="text-sm">{{ config().percentage | percent }}</p>
           </div>
@@ -40,6 +40,8 @@ export class StatisticsCardComponent {
   chartStyle = computed(() => {
     const percent = (this.config().percentage ?? 0) * 100;
     const color = this.themes[this.config().theme].chart;
+
+    console.log(percent);
 
     return {
       background: `conic-gradient(${color} ${percent}%, #efefef 0)`,

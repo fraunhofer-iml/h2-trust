@@ -20,7 +20,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
-import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
+import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import {
   HydrogenProductionUnitCreateDto,
   HydrogenStorageUnitCreateDto,
@@ -85,6 +85,7 @@ export class CreateUnitComponent {
   unitsService = inject(UnitsService);
   companiesService = inject(CompaniesService);
   router = inject(Router);
+  queryClient = inject(QueryClient);
 
   availableBiddingZones = Object.values(BiddingZone);
   availableGridLevels = Object.entries(GridLevel);
