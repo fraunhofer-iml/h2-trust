@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Injectable } from '@nestjs/common';
 import {
   PowerProductionUnitEntity,
   ProcessStepEntity,
@@ -23,8 +22,7 @@ import {
   ProcessType,
 } from '@h2-trust/domain';
 
-@Injectable()
-export class PowerProductionEmissionService {
+export class PowerProductionPosService {
   public static computeProvenanceEmissionsForPowerProduction(
     provenance: ProvenanceEntity,
   ): ProofOfSustainabilityEmissionCalculationEntity {
@@ -97,5 +95,21 @@ export class PowerProductionEmissionService {
       MeasurementUnit.G_CO2,
       CalculationTopic.POWER_SUPPLY,
     );
+  }
+
+  public static computePowerSupplyEmissions(
+    powerProductions: ProcessStepEntity[],
+  ): ProofOfSustainabilityEmissionCalculationEntity[] {
+    if (!powerProductions.length) {
+      return [];
+    }
+
+    return powerProductions.map((powerProduction) => {
+      if (!powerProduction.executedBy) {
+        throw new Error(`PowerProductionUnit for process step ${powerProduction} not found.`);
+      }
+      const unit = powerProduction.executedBy as PowerProductionUnitEntity;
+      return PowerProductionPosService.assemblePowerSupply(powerProduction, unit.type.energySource);
+    });
   }
 }

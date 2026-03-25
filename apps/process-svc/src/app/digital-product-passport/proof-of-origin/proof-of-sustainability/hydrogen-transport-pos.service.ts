@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity, ProofOfSustainabilityEmissionCalculationEntity, ProvenanceEntity } from '@h2-trust/amqp';
 import { EnumLabelMapper } from '@h2-trust/api';
 import {
@@ -20,8 +19,7 @@ import {
   TransportMode,
 } from '@h2-trust/domain';
 
-@Injectable()
-export class HydrogenTransportEmissionService {
+export class HydrogenTransportPosService {
   public static computeProvenanceEmissionsForTransport(
     provenance: ProvenanceEntity,
   ): ProofOfSustainabilityEmissionCalculationEntity {

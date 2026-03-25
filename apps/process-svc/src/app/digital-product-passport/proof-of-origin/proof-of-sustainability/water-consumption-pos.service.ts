@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity, ProofOfSustainabilityEmissionCalculationEntity, ProvenanceEntity } from '@h2-trust/amqp';
 import {
   CalculationTopic,
@@ -16,8 +15,7 @@ import {
   ProcessType,
 } from '@h2-trust/domain';
 
-@Injectable()
-export class WaterConsumptionEmissionService {
+export class WaterConsumptionPosService {
   public static computeProvenanceEmissionsForWaterConsumption(
     provenance: ProvenanceEntity,
   ): ProofOfSustainabilityEmissionCalculationEntity {
@@ -46,7 +44,7 @@ export class WaterConsumptionEmissionService {
     );
   }
 
-  static assembleWaterSupply(waterSupply: ProcessStepEntity): ProofOfSustainabilityEmissionCalculationEntity {
+  public static assembleWaterSupply(waterSupply: ProcessStepEntity): ProofOfSustainabilityEmissionCalculationEntity {
     if (waterSupply?.type !== ProcessType.WATER_CONSUMPTION) {
       throw new Error(`Invalid process step type [${waterSupply?.type}] for water supply emission calculation`);
     }

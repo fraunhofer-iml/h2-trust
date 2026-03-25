@@ -14,11 +14,11 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/amqp';
 import { CalculationTopic, EmissionNumericConstants, EmissionStringConstants, ProcessType } from '@h2-trust/domain';
-import { HydrogenBottlingEmissionService } from './emission-services/hydrogen-bottling-emission.service';
-import { HydrogenProductionEmissionService } from './emission-services/hydrogen-production-emission.service';
-import { HydrogenTransportEmissionService } from './emission-services/hydrogen-transport-emission.service';
-import { WaterConsumptionEmissionService } from './emission-services/water-consumption-emission.service';
-import { PowerProductionEmissionService } from './power-production-emission.service';
+import { HydrogenBottlingPosService } from './proof-of-sustainability/hydrogen-bottling-pos.service';
+import { HydrogenProductionPosService } from './proof-of-sustainability/hydrogen-production-pos.service';
+import { HydrogenTransportPosService } from './proof-of-sustainability/hydrogen-transport-pos.service';
+import { PowerProductionPosService } from './proof-of-sustainability/power-production-pos.service';
+import { WaterConsumptionPosService } from './proof-of-sustainability/water-consumption-pos.service';
 
 @Injectable()
 export class ProofOfSustainabilityService {
@@ -32,22 +32,16 @@ export class ProofOfSustainabilityService {
       ? provenance.hydrogenBottling.batch.amount
       : provenance.root.batch.amount;
 
-    emissionCalculations.push(PowerProductionEmissionService.computeProvenanceEmissionsForPowerProduction(provenance));
-    emissionCalculations.push(
-      WaterConsumptionEmissionService.computeProvenanceEmissionsForWaterConsumption(provenance),
-    );
-    emissionCalculations.push(
-      HydrogenProductionEmissionService.computeProvenanceEmissionsForHydrogenProduction(provenance),
-    );
+    emissionCalculations.push(PowerProductionPosService.computeProvenanceEmissionsForPowerProduction(provenance));
+    emissionCalculations.push(WaterConsumptionPosService.computeProvenanceEmissionsForWaterConsumption(provenance));
+    emissionCalculations.push(HydrogenProductionPosService.computeProvenanceEmissionsForHydrogenProduction(provenance));
 
     if (
       provenance.root.type == ProcessType.HYDROGEN_BOTTLING ||
       provenance.root.type == ProcessType.HYDROGEN_TRANSPORTATION
     ) {
-      emissionCalculations.push(
-        HydrogenBottlingEmissionService.computeProvenanceEmissionsForHydrogenBottling(provenance),
-      );
-      emissionCalculations.push(HydrogenTransportEmissionService.computeProvenanceEmissionsForTransport(provenance));
+      emissionCalculations.push(HydrogenBottlingPosService.computeProvenanceEmissionsForHydrogenBottling(provenance));
+      emissionCalculations.push(HydrogenTransportPosService.computeProvenanceEmissionsForTransport(provenance));
     }
     return this.assembleProofOfSustainability(provenance.root.id, emissionCalculations, hydrogenAmount);
   }

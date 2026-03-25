@@ -6,60 +6,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { ProcessStepEntity, ProofOfSustainabilityEmissionCalculationEntity, ProvenanceEntity } from '@h2-trust/amqp';
+import { ProcessStepEntity, ProofOfSustainabilityEmissionCalculationEntity } from '@h2-trust/amqp';
 import { EnumLabelMapper } from '@h2-trust/api';
 import {
   CalculationTopic,
   EmissionNumericConstants,
   EmissionStringConstants,
   EnergySource,
-  HydrogenColor,
   MeasurementUnit,
   PowerType,
   ProcessType,
 } from '@h2-trust/domain';
 
-@Injectable()
-export class HydrogenProductionEmissionService {
-  public static computeProvenanceEmissionsForHydrogenProduction(
-    provenance: ProvenanceEntity,
-  ): ProofOfSustainabilityEmissionCalculationEntity {
-    if (!provenance || !provenance.hydrogenProductions) {
-      throw new Error('Provenance or hydrogen productions is undefined.');
-    }
-
-    const hydrogenAmount = provenance.hydrogenBottling
-      ? provenance.hydrogenBottling.batch.amount
-      : provenance.root.batch.amount;
-
-    const hydrogenStorages: ProofOfSustainabilityEmissionCalculationEntity[] = provenance.hydrogenProductions.map(
-      (hydrogenProduction) => this.assembleHydrogenStorage(hydrogenProduction),
-    );
-
-    const totalEmissions = hydrogenStorages.reduce((sum, curr) => sum + curr.result, 0);
-
-    const totalEmissionsGrouped = Array.from(
-      provenance.hydrogenProductions
-        .reduce((map, entity, index) => {
-          const color = EnumLabelMapper.getHydrogenColor(entity.batch.qualityDetails?.color as HydrogenColor);
-          return map.set(color, (map.get(color) ?? 0) + hydrogenStorages[index].result);
-        }, new Map<string, number>())
-        .entries(),
-    ).map(([color, result]) => `${color}: ${result} ${MeasurementUnit.G_CO2}`);
-
-    const totalEmissionsPerKgHydrogen = totalEmissions / hydrogenAmount;
-
-    return new ProofOfSustainabilityEmissionCalculationEntity(
-      totalEmissions.toString(),
-      totalEmissionsGrouped,
-      totalEmissionsPerKgHydrogen,
-      MeasurementUnit.G_CO2_PER_KG_H2,
-      CalculationTopic.HYDROGEN_STORAGE,
-    );
-  }
-
-  static assembleHydrogenStorage(
+export class HydrogenStoragePosService {
+  public static assembleHydrogenStorage(
     hydrogenProduction: ProcessStepEntity,
   ): ProofOfSustainabilityEmissionCalculationEntity {
     if (hydrogenProduction?.type !== ProcessType.HYDROGEN_PRODUCTION) {
