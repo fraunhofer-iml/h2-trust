@@ -1,35 +1,39 @@
 <div class="flex flex-col gap-4 p-8">
   <h2 class="text-lg text-neutral-800">Units</h2>
 
-  <div class="flex w-full justify-between">
-    <mat-chip-set aria-label="List filter">
-      @for (
-        unitType of [UnitType.HYDROGEN_PRODUCTION, UnitType.POWER_PRODUCTION, UnitType.HYDROGEN_STORAGE];
-        track unitType
-      ) {
-        <mat-chip-option selectable [selected]="typeToShow === unitType" (click)="toggle(unitType)">
-          {{ unitType | prettyEnum | titlecase }}
-        </mat-chip-option>
-      }
-      <mat-chip-option
-        selectable
-        [selected]="!typeToShow"
-        (click)="toggle(null)"
-        (selectionChange)="onAllChipSelection($event)"
-      >
-        All
-      </mat-chip-option>
-    </mat-chip-set>
+  <div class="flex w-full items-center justify-between">
+    <div class="flex flex-row gap-4">
+      <div>
+        <p class="text-sm text-neutral-500">Filter by type</p>
+        <mat-chip-set aria-label="List filter">
+          @for (
+            unitType of [UnitType.HYDROGEN_PRODUCTION, UnitType.POWER_PRODUCTION, UnitType.HYDROGEN_STORAGE];
+            track unitType
+          ) {
+            <mat-chip-option selectable [selected]="typeToShow === unitType" (click)="toggle(unitType)">
+              {{ unitType | prettyEnum | titlecase }}
+            </mat-chip-option>
+          }
+          <mat-chip-option
+            selectable
+            [selected]="!typeToShow"
+            (click)="toggle(null)"
+            (selectionChange)="onAllChipSelection($event)"
+          >
+            All
+          </mat-chip-option>
+        </mat-chip-set>
+      </div>
+    </div>
     <button [routerLink]="'create'" mat-flat-button>Add Unit</button>
   </div>
-
   <mat-divider></mat-divider>
 
-  <div class="grid grid-cols-3 gap-4 xl:grid-cols-4">
+  <div class="3xl:grid-cols-4 grid grid-cols-3 gap-4">
     @if (!typeToShow || typeToShow === UnitType.HYDROGEN_PRODUCTION) {
       @for (item of hydrogenProductionUnitsQuery.data(); track item) {
         <a [routerLink]="['hydrogen-production', item.id]">
-          <app-unit-card [name]="item.name" [unittype]="UnitType.HYDROGEN_PRODUCTION">
+          <app-unit-card [name]="item.name" [unittype]="UnitType.HYDROGEN_PRODUCTION" [active]="item.active">
             <mat-chip>
               <span matChipAvatar class="material-symbols-outlined">charger</span>
               {{ item.ratedPower | unit: MeasurementUnit.KWH }}</mat-chip
@@ -44,7 +48,7 @@
     @if (!typeToShow || typeToShow === UnitType.HYDROGEN_STORAGE) {
       @for (item of hydrogenStorageQuery.data(); track item) {
         <a [routerLink]="['hydrogen-storage', item.id]">
-          <app-unit-card [name]="item.name" [unittype]="UnitType.HYDROGEN_STORAGE">
+          <app-unit-card [name]="item.name" [unittype]="UnitType.HYDROGEN_STORAGE" [active]="item.active">
             <mat-chip>
               <span matChipAvatar class="material-symbols-outlined">bar_chart</span> {{ item.filling | number }}/{{
                 item.capacity | unit: MeasurementUnit.KG
@@ -62,7 +66,7 @@
     @if (!typeToShow || typeToShow === UnitType.POWER_PRODUCTION) {
       @for (item of powerProductionQuery.data(); track item) {
         <a [routerLink]="['power-production', item.id]">
-          <app-unit-card [name]="item.name" [unittype]="UnitType.POWER_PRODUCTION">
+          <app-unit-card [name]="item.name" [unittype]="UnitType.POWER_PRODUCTION" [active]="item.active">
             <mat-chip
               ><span matChipAvatar class="material-symbols-outlined">charger</span>
               {{ item.ratedPower | unit: MeasurementUnit.KWH }}</mat-chip

@@ -7,9 +7,9 @@
  */
 
 import { PowerProductionUnitEntity } from '@h2-trust/amqp';
-import { UnitType } from '@h2-trust/domain';
-import { EnumLabelMapper } from '../../labels';
+import { BiddingZone, GridLevel, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../address';
+import { CompanyBaseDto } from '../company';
 import { BaseUnitDto } from './base-unit.dto';
 import { PowerProductionTypeDto } from './power-production-type.dto';
 import { UnitOwnerDto } from './unit-owner.dto';
@@ -18,8 +18,8 @@ export class PowerProductionUnitDto extends BaseUnitDto {
   electricityMeterNumber: string;
   gridOperator: string;
   gridConnectionNumber: string;
-  gridLevel: string;
-  biddingZone: string;
+  gridLevel: GridLevel;
+  biddingZone: BiddingZone;
   ratedPower: number;
   decommissioningPlannedOn: Date;
   type: PowerProductionTypeDto;
@@ -38,16 +38,17 @@ export class PowerProductionUnitDto extends BaseUnitDto {
     address: AddressDto,
     ratedPower: number,
     gridOperator: string,
-    gridLevel: string,
+    gridLevel: GridLevel,
     gridConnectionNumber: string,
     type: PowerProductionTypeDto,
     unitType: UnitType,
     modelNumber: string,
     owner: UnitOwnerDto,
-    operator: string,
+    operator: CompanyBaseDto,
     electricityMeterNumber: string,
-    biddingZone: string,
+    biddingZone: BiddingZone,
     financialSupportReceived: boolean,
+    active: boolean,
   ) {
     super(
       id,
@@ -63,6 +64,7 @@ export class PowerProductionUnitDto extends BaseUnitDto {
       owner,
       operator,
       unitType,
+      active,
     );
     this.ratedPower = ratedPower;
     this.gridOperator = gridOperator;
@@ -81,7 +83,7 @@ export class PowerProductionUnitDto extends BaseUnitDto {
       electricityMeterNumber: unit.electricityMeterNumber,
       gridOperator: unit.gridOperator,
       gridConnectionNumber: unit.gridConnectionNumber,
-      gridLevel: EnumLabelMapper.getGridLevel(unit.gridLevel),
+      gridLevel: unit.gridLevel,
       biddingZone: unit.biddingZone,
       ratedPower: unit.ratedPower,
       decommissioningPlannedOn: unit.decommissioningPlannedOn,

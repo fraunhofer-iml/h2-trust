@@ -8,13 +8,14 @@
 
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
+import { MatChipsModule } from '@angular/material/chips';
 import { UnitType } from '@h2-trust/domain';
 import { ICONS } from '../../shared/constants/icons';
 import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
 
 @Component({
   selector: 'app-unit-type-chip',
-  imports: [CommonModule, PrettyEnumPipe],
+  imports: [CommonModule, PrettyEnumPipe, MatChipsModule],
   templateUrl: './unit-type-chip.component.html',
 })
 export class UnitTypeChipComponent {

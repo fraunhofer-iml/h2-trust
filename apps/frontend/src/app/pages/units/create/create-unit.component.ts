@@ -22,10 +22,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import {
-  HydrogenProductionUnitCreateDto,
-  HydrogenStorageUnitCreateDto,
-  PowerProductionUnitCreateDto,
-  UnitCreateDto,
+  HydrogenProductionUnitInputDto,
+  HydrogenStorageUnitInputDto,
+  PowerProductionUnitInputDto,
+  UnitInputDto,
 } from '@h2-trust/api';
 import {
   BiddingZone,
@@ -36,13 +36,11 @@ import {
   PowerProductionType,
   UnitType,
 } from '@h2-trust/domain';
-import { InfoTooltipComponent } from '../../../layout/info-tooltip/info-tooltip.component';
-import { H2_PRODUCTION_TYPES } from '../../../shared/constants/hydrogen-production-types';
 import { ICONS } from '../../../shared/constants/icons';
-import { RFNBO_CRITERIA } from '../../../shared/constants/rfnbo-criteria';
 import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
+import { BaseUnitFormComponent } from '../forms/base-unit/base-unit-form-component';
 import {
   addValidatorsToFormGroup,
   HydrogenProductionFormGroup,
@@ -53,7 +51,10 @@ import {
   newUnitForm,
   PowerProductionFormGroup,
   UnitFormGroup,
-} from './forms';
+} from '../forms/forms';
+import { HydrogenProductionUnitFormComponent } from '../forms/hydrogen-production/hydrogen-production-unit-form.component';
+import { HydrogenUnitFormComponent } from '../forms/hydrogen-storage/hydrogen-storage-unit-form.component';
+import { PowerProductionUnitFormComponent } from '../forms/power-production/power-production-unit-form.component';
 
 @Component({
   selector: 'app-create-unit',
@@ -71,13 +72,15 @@ import {
     MatSelectModule,
     PrettyEnumPipe,
     MatCheckboxModule,
-    InfoTooltipComponent,
+    BaseUnitFormComponent,
+    HydrogenProductionUnitFormComponent,
+    PowerProductionUnitFormComponent,
+    HydrogenUnitFormComponent,
   ],
-  providers: [provideNativeDateAdapter(), CompaniesService],
+  providers: [provideNativeDateAdapter()],
   templateUrl: './create-unit.component.html',
 })
 export class CreateUnitComponent {
-  protected readonly RED_III_CRITERIA = RFNBO_CRITERIA;
   protected readonly UnitType = UnitType;
   protected readonly HydrogenProductionMethod = HydrogenProductionMethod;
   protected readonly HydrogenStorageType = HydrogenStorageType;
@@ -101,25 +104,20 @@ export class CreateUnitComponent {
     | FormGroup<HydrogenStorageFormGroup>
     | FormGroup<HydrogenProductionFormGroup> = this.hydrogenProductionForm;
 
-  companiesQuery = injectQuery(() => ({
-    queryKey: ['recipients'],
-    queryFn: () => this.companiesService.getCompanies(),
-  }));
-
   createHydrogenStorageUnitMutation = injectMutation(() => ({
-    mutationFn: (dto: HydrogenStorageUnitCreateDto) => this.unitsService.createHydrogenStorageUnit(dto),
+    mutationFn: (dto: HydrogenStorageUnitInputDto) => this.unitsService.createHydrogenStorageUnit(dto),
     onError: (e) => toast.error(e.message),
     onSuccess: () => this.onSuccess(),
   }));
 
   createPowerProductionUnitMutation = injectMutation(() => ({
-    mutationFn: (dto: PowerProductionUnitCreateDto) => this.unitsService.createPowerProductionUnit(dto),
+    mutationFn: (dto: PowerProductionUnitInputDto) => this.unitsService.createPowerProductionUnit(dto),
     onError: (e) => toast.error(e.message),
     onSuccess: () => this.onSuccess(),
   }));
 
   createHydrogenProductionUnitMutation = injectMutation(() => ({
-    mutationFn: (dto: HydrogenProductionUnitCreateDto) => this.unitsService.createHydrogenProductionUnit(dto),
+    mutationFn: (dto: HydrogenProductionUnitInputDto) => this.unitsService.createHydrogenProductionUnit(dto),
     onError: (e) => toast.error(e.message),
     onSuccess: () => this.onSuccess(),
   }));
@@ -130,7 +128,6 @@ export class CreateUnitComponent {
   };
 
   constructor() {
-    this.hydrogenProductionForm.controls.method.valueChanges.subscribe((value) => this.onH2ProductionTypeChange(value));
     this.unitForm.controls.unitType.valueChanges.subscribe((value) => this.onUnitTypeChange(value));
   }
 
@@ -153,11 +150,11 @@ export class CreateUnitComponent {
     const type = this.unitForm.controls.unitType.value;
     if (!type) return;
 
-    const baseDto: UnitCreateDto = {
+    const baseDto: UnitInputDto = {
       ...this.unitForm.value,
       commissionedOn: this.unitForm.value.commissionedOn,
       unitType: type,
-    } as UnitCreateDto;
+    } as UnitInputDto;
 
     if (type === UnitType.HYDROGEN_PRODUCTION) {
       const additional = this.hydrogenProductionForm.value;
@@ -166,7 +163,7 @@ export class CreateUnitComponent {
         ...additional,
         method: additional.method,
         technology: additional.technology,
-      } as HydrogenProductionUnitCreateDto;
+      } as HydrogenProductionUnitInputDto;
       return this.createHydrogenProductionUnitMutation.mutate(dto);
     }
 
@@ -175,7 +172,7 @@ export class CreateUnitComponent {
         ...baseDto,
         ...this.hydrogenStorageForm.value,
         storageType: this.hydrogenStorageForm.value.hydrogenStorageType,
-      } as HydrogenStorageUnitCreateDto;
+      } as HydrogenStorageUnitInputDto;
       return this.createHydrogenStorageUnitMutation.mutate(dto);
     }
 
@@ -183,17 +180,8 @@ export class CreateUnitComponent {
       const dto = {
         ...baseDto,
         ...this.powerProductionForm.value,
-      } as PowerProductionUnitCreateDto;
+      } as PowerProductionUnitInputDto;
       return this.createPowerProductionUnitMutation.mutate(dto);
-    }
-  }
-
-  private onH2ProductionTypeChange(value: HydrogenProductionMethod | null) {
-    if (!value) this.hydrogenProductionForm.controls.technology.disable();
-    else {
-      this.hydrogenProductionForm.controls.technology.enable();
-      const method = H2_PRODUCTION_TYPES.get(value);
-      this.availableTechnologies = method ? Object.entries(method) : [];
     }
   }
 

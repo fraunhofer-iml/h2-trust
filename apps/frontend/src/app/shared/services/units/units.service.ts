@@ -11,14 +11,16 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   HydrogenProductionOverviewDto,
-  HydrogenProductionUnitCreateDto,
   HydrogenProductionUnitDto,
+  HydrogenProductionUnitInputDto,
   HydrogenStorageOverviewDto,
   HydrogenStorageUnitDto,
+  HydrogenStorageUnitInputDto,
   PowerProductionOverviewDto,
-  PowerProductionUnitCreateDto,
   PowerProductionUnitDto,
-  UnitCreateDto,
+  PowerProductionUnitInputDto,
+  UnitInputDto,
+  UnitUpdateActiveDto,
 } from '@h2-trust/api';
 import { API } from '../../constants/api-endpoints';
 
@@ -39,15 +41,15 @@ export class UnitsService {
     return lastValueFrom(this.httpClient.get<HydrogenStorageOverviewDto[]>(API.UNITS.HYDROGEN_STORAGE.BASE));
   }
 
-  createHydrogenStorageUnit(dto: UnitCreateDto) {
+  createHydrogenStorageUnit(dto: UnitInputDto) {
     return lastValueFrom(this.httpClient.post<HydrogenStorageOverviewDto[]>(API.UNITS.HYDROGEN_STORAGE.BASE, dto));
   }
 
-  createPowerProductionUnit(dto: PowerProductionUnitCreateDto) {
+  createPowerProductionUnit(dto: PowerProductionUnitInputDto) {
     return lastValueFrom(this.httpClient.post<PowerProductionOverviewDto[]>(API.UNITS.POWER_PRODUCTION.BASE, dto));
   }
 
-  createHydrogenProductionUnit(dto: HydrogenProductionUnitCreateDto) {
+  createHydrogenProductionUnit(dto: HydrogenProductionUnitInputDto) {
     return lastValueFrom(this.httpClient.post<PowerProductionOverviewDto[]>(API.UNITS.HYDROGEN_PRODUCTION.BASE, dto));
   }
 
@@ -61,5 +63,22 @@ export class UnitsService {
 
   getHydrogenProductionUnit(id: string) {
     return lastValueFrom(this.httpClient.get<HydrogenProductionUnitDto>(API.UNITS.HYDROGEN_PRODUCTION.DETAILS(id)));
+  }
+
+  updateActive(id: string, active: boolean) {
+    const dto: UnitUpdateActiveDto = { active };
+    return lastValueFrom(this.httpClient.patch<void>(API.UNITS.ACTIVE(id), dto));
+  }
+
+  updatePowerProductionUnit(dto: PowerProductionUnitInputDto) {
+    return lastValueFrom(this.httpClient.put<PowerProductionUnitDto>(API.UNITS.POWER_PRODUCTION.BASE, dto));
+  }
+
+  updateHydrogenStorageUnit(dto: HydrogenStorageUnitInputDto) {
+    return lastValueFrom(this.httpClient.put<HydrogenStorageUnitDto>(API.UNITS.HYDROGEN_STORAGE.BASE, dto));
+  }
+
+  updateHydrogenProductionUnit(dto: HydrogenProductionUnitInputDto) {
+    return lastValueFrom(this.httpClient.put<HydrogenProductionUnitDto>(API.UNITS.HYDROGEN_PRODUCTION.BASE, dto));
   }
 }
