@@ -6,8 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenStorageUnitEntityFixture } from 'libs/amqp/src/lib/fixtures/hydrogen-storage-unit.entity.fixture';
-import { HydrogenStorageUnitEntityFixture } from 'libs/amqp/src/lib/fixtures/hydrogen-storage-unit.entity.fixture';
 import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -16,6 +14,7 @@ import {
   HydrogenProductionUnitEntity,
   HydrogenProductionUnitEntityFixture,
   HydrogenStorageUnitEntity,
+  HydrogenStorageUnitEntityFixture,
   PowerProductionUnitEntity,
   PowerProductionUnitEntityFixture,
   ReadByIdPayload,
@@ -34,7 +33,6 @@ import {
   PowerProductionUnitInputDto,
   UserDetailsDto,
 } from '@h2-trust/api';
-import { HydrogenProductionUnitEntityFixture, PowerProductionUnitEntityFixture } from '@h2-trust/fixtures/entities';
 import { UserService } from '../user/user.service';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
@@ -71,8 +69,6 @@ describe('UnitController', () => {
   it('should find a unit', async () => {
     const givenUserId = 'unit-id-1';
     const fixtureUnit: HydrogenProductionUnitEntity = HydrogenProductionUnitEntityFixture.create();
-
-    const fixtureUnit: HydrogenProductionUnitEntity = HydrogenProductionUnitEntityFixture.create();
     const expectedResponse: HydrogenProductionUnitDto = HydrogenProductionUnitDto.fromEntity(fixtureUnit);
 
     const sendRequestSpy = jest.spyOn(queue, 'send');
@@ -91,7 +87,6 @@ describe('UnitController', () => {
     const givenUserId = 'user-id-1';
     const fixtureUser = { company: { id: 'companyId' } } as UserDetailsDto;
     const fixtureUnits: HydrogenProductionUnitEntity[] = [HydrogenProductionUnitEntityFixture.create()];
-    const fixtureUnits: HydrogenProductionUnitEntity[] = [];
     const expectedResponse: HydrogenProductionOverviewDto[] = fixtureUnits.map(
       HydrogenProductionOverviewDto.fromEntity,
     );
@@ -120,8 +115,6 @@ describe('UnitController', () => {
   it('should create power production unit', async () => {
     const givenDto: PowerProductionUnitInputDto = PowerProductionUnitCreateDtoMock[0];
     const fixtureUnit: PowerProductionUnitEntity = PowerProductionUnitEntityFixture.create();
-    const givenDto: PowerProductionUnitCreateDto = PowerProductionUnitCreateDtoMock[0];
-    const fixtureUnit: PowerProductionUnitEntity = PowerProductionUnitEntityFixture.create();
     const expectedResponse: PowerProductionUnitDto = PowerProductionUnitDto.fromEntity(fixtureUnit);
 
     const sendRequestSpy = jest.spyOn(queue, 'send');
@@ -142,8 +135,6 @@ describe('UnitController', () => {
   it('should create hydrogen production unit', async () => {
     const givenDto: HydrogenProductionUnitInputDto = HydrogenProductionUnitCreateDtoMock[0];
     const fixtureUnit: HydrogenProductionUnitEntity = HydrogenProductionUnitEntityFixture.create();
-    const givenDto: HydrogenProductionUnitCreateDto = HydrogenProductionUnitCreateDtoMock[0];
-    const fixtureUnit: HydrogenProductionUnitEntity = HydrogenProductionUnitEntityFixture.create();
     const expectedResponse: HydrogenProductionUnitDto = HydrogenProductionUnitDto.fromEntity(fixtureUnit);
 
     const sendRequestSpy = jest.spyOn(queue, 'send');
@@ -163,8 +154,6 @@ describe('UnitController', () => {
 
   it('should create hydrogen storage unit', async () => {
     const givenDto: HydrogenStorageUnitInputDto = HydrogenStorageUnitCreateDtoMock[0];
-    const fixtureUnit: HydrogenStorageUnitEntity = HydrogenStorageUnitEntityFixture.create();
-    const givenDto: HydrogenStorageUnitCreateDto = HydrogenStorageUnitCreateDtoMock[0];
     const fixtureUnit: HydrogenStorageUnitEntity = HydrogenStorageUnitEntityFixture.create();
     const expectedResponse: HydrogenStorageUnitDto = HydrogenStorageUnitDto.fromEntity(fixtureUnit);
 
