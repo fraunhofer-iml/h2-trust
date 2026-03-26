@@ -100,7 +100,7 @@
           "fileReplacements": [
             {
               "replace": "apps/frontend/src/environments/environment.ts",
-              "with": "apps/frontend/src/environments/environment.prod.ts"
+              "with": "apps/frontend/src/environments/environment.production.ts"
             }
           ],
           "outputHashing": "all"
