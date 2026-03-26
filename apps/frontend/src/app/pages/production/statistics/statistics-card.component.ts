@@ -40,9 +40,6 @@ export class StatisticsCardComponent {
   chartStyle = computed(() => {
     const percent = (this.config().percentage ?? 0) * 100;
     const color = this.themes[this.config().theme].chart;
-
-    console.log(percent);
-
     return {
       background: `conic-gradient(${color} ${percent}%, #efefef 0)`,
     };
