@@ -15,6 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { UsersService } from '../../../shared/services/users/users.service';
+import { PpaRequestsComponent } from '../ppa-requests/ppa-requests.component';
 
 @Component({
   selector: 'app-account-overview',
@@ -26,6 +27,7 @@ import { UsersService } from '../../../shared/services/users/users.service';
     MatCardModule,
     MatInputModule,
     MatButtonModule,
+    PpaRequestsComponent,
   ],
   templateUrl: './account-overview.component.html',
 })
