@@ -1,11 +1,20 @@
 <div
-  class="flex flex-row items-center gap-2 rounded-md p-2"
+  class="flex w-fit min-w-40 flex-row items-center gap-2 rounded-lg border px-2 text-sm"
   [ngClass]="{
-    'bg-primary-100 text-primary-800': unitType() === UnitType.POWER_PRODUCTION,
-    'bg-secondary-100 text-secondary-800': unitType() === UnitType.HYDROGEN_PRODUCTION,
-    'bg-neutral-200 text-neutral-800': unitType() === UnitType.HYDROGEN_STORAGE,
+    'border-primary-400 text-primary-500': unitType() === UnitType.POWER_PRODUCTION,
+    'border-secondary-400 text-secondary-500': unitType() === UnitType.HYDROGEN_PRODUCTION,
+    'border-tertiary-200 text-tertiary-500': unitType() === UnitType.HYDROGEN_STORAGE,
   }"
 >
-  <span class="material-symbols-outlined"> {{ getIcon() }} </span>
-  <span class="pr-2 text-center text-sm">{{ unitType() | prettyEnum | titlecase }}</span>
+  <span
+    class="material-symbols-outlined text-lg"
+    [ngClass]="{
+      'text-primary-400': unitType() === UnitType.POWER_PRODUCTION,
+      'text-secondary-400': unitType() === UnitType.HYDROGEN_PRODUCTION,
+      'text-tertiary-400': unitType() === UnitType.HYDROGEN_STORAGE,
+    }"
+  >
+    {{ getIcon() }}
+  </span>
+  {{ unitType() | prettyEnum | titlecase }}
 </div>

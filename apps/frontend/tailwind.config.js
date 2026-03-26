@@ -54,6 +54,7 @@ module.exports = {
 
         'rfnbo-green': '#4F9C83',
         'rfnbo-gray': '#a1a3a6',
+        'error-red': '#bd554f',
       },
     },
   },

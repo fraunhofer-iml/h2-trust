@@ -117,10 +117,7 @@ export const newH2ProductionForm = () =>
     biddingZone: new FormControl<BiddingZone | null>(null, Validators.required),
     ratedPower: new FormControl<number | null>(null, Validators.required),
     method: new FormControl<HydrogenProductionMethod | null>(null, Validators.required),
-    technology: new FormControl<HydrogenProductionTechnology | null>(
-      { value: null, disabled: true },
-      Validators.required,
-    ),
+    technology: new FormControl<HydrogenProductionTechnology | null>(null, Validators.required),
     pressure: new FormControl<number | null>(null, Validators.required),
     waterConsumptionLitersPerHour: new FormControl<number | null>(null, Validators.required),
   });

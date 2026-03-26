@@ -18,6 +18,7 @@ export class HydrogenProductionOverviewDto {
   powerAccessApprovalStatus: boolean;
   powerProducerId: string;
   powerProducerName: string;
+  active: boolean;
 
   constructor(
     id: string,
@@ -28,6 +29,7 @@ export class HydrogenProductionOverviewDto {
     powerAccessApprovalStatus: boolean,
     powerProducerId: string,
     powerProducerName: string,
+    active: boolean,
   ) {
     this.id = id;
     this.name = name;
@@ -37,6 +39,7 @@ export class HydrogenProductionOverviewDto {
     this.powerAccessApprovalStatus = powerAccessApprovalStatus;
     this.powerProducerId = powerProducerId;
     this.powerProducerName = powerProducerName;
+    this.active = active;
   }
 
   static fromEntity(unit: HydrogenProductionUnitEntity): HydrogenProductionOverviewDto {
@@ -51,6 +54,7 @@ export class HydrogenProductionOverviewDto {
       powerAccessApprovalStatus: HydrogenProductionOverviewDto.existsPowerProducer(unit),
       powerProducerId: firstApproval?.powerProducer.id ?? '',
       powerProducerName: firstApproval?.powerProducer.name ?? '',
+      active: unit.active,
     };
   }
 

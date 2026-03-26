@@ -1,8 +1,11 @@
 @if (unit(); as data) {
-  <div class="col-span-3 grid grid-cols-4 gap-4 rounded-lg bg-white p-4">
-    <div class="col-span-4 flex items-center justify-between">
+  <div class="col-span-3 grid grid-cols-3 gap-4 rounded-lg bg-white p-4 xl:grid-cols-4">
+    <div class="col-span-3 flex items-center justify-between xl:col-span-4">
       <h3 class="font-semibold text-neutral-500">Details</h3>
-      <app-unit-type-chip [unitType]="data.unitType"></app-unit-type-chip>
+      <div class="flex gap-2">
+        <app-unit-status-chip [unit]="{ unitType: data.unitType, active: data.active }"></app-unit-status-chip>
+        <app-unit-type-chip [unitType]="data.unitType"></app-unit-type-chip>
+      </div>
     </div>
 
     <div class="flex flex-col text-sm">
@@ -12,7 +15,7 @@
       <span class="text-sm text-neutral-400">Owner</span><span>{{ data.owner.name }}</span>
     </div>
     <div class="flex flex-col text-sm">
-      <span class="text-sm text-neutral-400">Operator</span><span>{{ data.operator }}</span>
+      <span class="text-sm text-neutral-400">Operator</span><span>{{ data.operator.name }}</span>
     </div>
     <div class="flex flex-col text-sm">
       <span class="text-sm text-neutral-400">Manufacturer</span><span>{{ data.manufacturer }}</span>

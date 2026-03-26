@@ -13,6 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipSelectionChange, MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
@@ -37,6 +38,7 @@ import { HydrogenProductionUnitsStore } from '../../../shared/store/hydrogen-pro
     PrettyEnumPipe,
     MatDividerModule,
     UnitCardComponent,
+    MatSlideToggleModule,
   ],
   providers: [],
   templateUrl: './hydrogen-assets.component.html',

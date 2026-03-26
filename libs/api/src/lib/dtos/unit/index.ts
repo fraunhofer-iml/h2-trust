@@ -17,3 +17,4 @@ export * from './power-production-type.dto';
 export * from './power-production-unit.dto';
 export * from './mocks';
 export * from './create';
+export * from './update';

@@ -1,0 +1,25 @@
+<div class="flex h-full w-full grow flex-col gap-4 rounded-lg bg-white p-4">
+  <h3 class="font-semibold text-neutral-500">Actions</h3>
+  @if (unit().active) {
+    <div class="flex flex-col gap-2 rounded-lg border p-4">
+      <span class="text-neutral-500">Update</span>
+      <p class="text-sm">Edit all properties of this unit.</p>
+      <a matButton="outlined" class="w-fit" routerLink="edit"> Edit</a>
+    </div>
+    <div class="flex flex-col gap-2 rounded-lg border border-error-red/20 p-4">
+      <span class="text-neutral-500">Status</span>
+      <p class="text-sm">
+        You can set this unit to inactive at any time. Please note that you cannot edit inactive units.
+      </p>
+      <button matButton="filled" class="delete-button w-fit" (click)="mutation.mutate(false)">Deactivate</button>
+    </div>
+  } @else {
+    <div class="flex flex-col gap-2 rounded-lg border p-4">
+      <span class="text-neutral-500">Status</span>
+      <p class="text-sm">
+        You can no longer edit this unit since it was set to inactive. To edit this unit, set it back to active.
+      </p>
+      <button matButton="outlined" class="w-fit" (click)="mutation.mutate(true)">Activate</button>
+    </div>
+  }
+</div>

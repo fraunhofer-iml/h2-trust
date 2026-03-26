@@ -12,14 +12,15 @@ import { ClientProxy } from '@nestjs/microservices';
 import { BrokerQueues, HydrogenStorageUnitEntity, ReadByIdPayload, UnitMessagePatterns } from '@h2-trust/amqp';
 import {
   HydrogenProductionOverviewDto,
-  HydrogenProductionUnitCreateDto,
   HydrogenProductionUnitDto,
+  HydrogenProductionUnitInputDto,
   HydrogenStorageOverviewDto,
-  HydrogenStorageUnitCreateDto,
   HydrogenStorageUnitDto,
+  HydrogenStorageUnitInputDto,
   PowerProductionOverviewDto,
-  PowerProductionUnitCreateDto,
   PowerProductionUnitDto,
+  PowerProductionUnitInputDto,
+  UnitUpdateActiveDto,
 } from '@h2-trust/api';
 import { UserService } from '../user/user.service';
 
@@ -73,31 +74,37 @@ export class UnitService {
     return units.map(HydrogenStorageOverviewDto.fromEntity);
   }
 
-  async createPowerProductionUnit(dto: PowerProductionUnitCreateDto): Promise<PowerProductionUnitDto> {
+  async createPowerProductionUnit(dto: PowerProductionUnitInputDto): Promise<PowerProductionUnitDto> {
     return firstValueFrom(
       this.generalService.send(
         UnitMessagePatterns.CREATE_POWER_PRODUCTION_UNIT,
-        PowerProductionUnitCreateDto.toPayload(dto),
+        PowerProductionUnitInputDto.toPayload(dto),
       ),
     ).then(PowerProductionUnitDto.fromEntity);
   }
 
-  async createHydrogenProductionUnit(dto: HydrogenProductionUnitCreateDto): Promise<HydrogenProductionUnitDto> {
+  async createHydrogenProductionUnit(dto: HydrogenProductionUnitInputDto): Promise<HydrogenProductionUnitDto> {
     return firstValueFrom(
       this.generalService.send(
         UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION_UNIT,
-        HydrogenProductionUnitCreateDto.toPayload(dto),
+        HydrogenProductionUnitInputDto.toPayload(dto),
       ),
     ).then(HydrogenProductionUnitDto.fromEntity);
   }
 
-  async createHydrogenStorageUnit(dto: HydrogenStorageUnitCreateDto): Promise<HydrogenStorageUnitDto> {
+  async createHydrogenStorageUnit(dto: HydrogenStorageUnitInputDto): Promise<HydrogenStorageUnitDto> {
     return firstValueFrom(
       this.generalService.send(
         UnitMessagePatterns.CREATE_HYDROGEN_STORAGE_UNIT,
-        HydrogenStorageUnitCreateDto.toPayload(dto),
+        HydrogenStorageUnitInputDto.toPayload(dto),
       ),
     ).then(HydrogenStorageUnitDto.fromEntity);
+  }
+
+  async updateUnitStatus(id: string, active: boolean): Promise<void> {
+    await firstValueFrom(
+      this.generalService.send<void>(UnitMessagePatterns.UPDATE_UNIT_STATUS, UnitUpdateActiveDto.toPayload(id, active)),
+    );
   }
 
   private async getCompanyIdFromUserId(id: string): Promise<string> {
