@@ -2,7 +2,7 @@ name: Images
 
 on:
   push:
-    branches: 
+    branches:
       - 'main'
     tags:
       - 'v*.*.*'
@@ -30,7 +30,7 @@ jobs:
         id: release
         run: |
           if [[ "$GITHUB_REF_NAME" == 'main' ]]; then
-            echo "version=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+            echo "version=dev-$GITHUB_SHA" >> "$GITHUB_OUTPUT"
             echo "frontend_config=dev" >> "$GITHUB_OUTPUT"
             echo "push_latest=true" >> "$GITHUB_OUTPUT"
           elif [[ "$GITHUB_REF_NAME" =~ -rc\. ]]; then
