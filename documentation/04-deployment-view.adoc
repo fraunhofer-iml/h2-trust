@@ -31,17 +31,17 @@ git --version
 
 === Docker
 
-Docker is required to manage the backing services: PostgreSQL, MinIO, Besu, RabbitMQ, and Keycloak.
+Docker is required to manage the backing services: PostgreSQL, MinIO, Besu, Keycloak, and RabbitMQ.
 
 1. *Visit* https://docs.docker.com/get-docker/[Docker's official installation guide].
 2. *Follow* the installation instructions for your operating system.
-3. *Verify* the installation with following command:
+3. *Verify* the installation with the following command:
 [source,shell]
 docker --version
 
 === Node.js
 
-Node.js is required to manage dependencies and execute application.
+Node.js is required to manage dependencies and execute the application.
 
 1. *Visit* https://nodejs.org/en/download/[Node.js's official website].
 2. *Follow* the installation instructions for your operating system.
@@ -87,6 +87,8 @@ Refer to the inline comments in the `.env.example` file for explanations of the 
 
 In this section, you will build the necessary components and launch the application for the first time.
 
+*Terminal 1* - Start the backing services:
+
 1. *Build* the Docker images:
 [source,shell]
 docker compose build
@@ -95,15 +97,13 @@ docker compose build
 [source,shell]
 docker compose up
 
-3. *Install* the application dependencies:
-[source,shell]
-npm install
+*Terminal 2* - Set up and start the application:
 
-4. *Set up* the application database:
+1. *Set up* the application (installs dependencies, resets the database, and builds the smart contracts):
 [source,shell]
-npm run set-up-database
+npm run setup
 
-5. *Start* the application in development mode:
+2. *Start* the application in development mode:
 [source,shell]
 npm run dev
 
@@ -117,14 +117,18 @@ After completing the setup, the application can be accessed in your browser.
 [source,shell]
 http://localhost:4200
 
-2. *Log in* with the default credentials:
-[source,shell]
-Username: admin
-Password: admin
+2. *Log in* with one of the default user accounts:
++
+[cols="1,1,1", options="header"]
+|===
+| Role | Username | Password
+| Power Producer | petra | petra
+| Hydrogen Producer | hannes | hannes
+|===
 
 For detailed instructions on how to use the application, refer to the xref:05-tutorial.adoc#chapter-tutorial[Tutorial] chapter in this documentation.
 
 [NOTE]
 ====
-If you encounter issues during setup, check the application logs.
+If you encounter issues during setup, check the Docker logs (`docker compose logs`) or the application output of `npm run dev`.
 ====

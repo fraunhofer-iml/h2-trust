@@ -22,6 +22,7 @@ export const API = {
     DETAILS: (id: string) => `${USERS_ENDPOINT}${id}`,
   },
   UNITS: {
+    ACTIVE: (id: string) => `${UNITS_ENDPOINT}${id}/active`,
     POWER_PRODUCTION: {
       BASE: UNITS_ENDPOINT + 'power-production/',
       DETAILS: (id: string) => `${API.UNITS.POWER_PRODUCTION.BASE}${id}`,
@@ -43,6 +44,7 @@ export const API = {
   },
   PRODUCTION: {
     BASE: PRODUCTION_ENDPOINT,
+    STATISTICS: PRODUCTION_ENDPOINT + 'statistics',
     CSV: PRODUCTION_ENDPOINT + 'csv/',
     CSV_VERIFY: (id: string) => `${API.PRODUCTION.CSV}${id}`,
     CSV_IMPORT: PRODUCTION_ENDPOINT + 'csv/import',

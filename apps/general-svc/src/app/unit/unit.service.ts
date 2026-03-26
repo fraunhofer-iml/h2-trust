@@ -6,15 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { firstValueFrom } from 'rxjs';
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Injectable } from '@nestjs/common';
 import {
-  BrokerQueues,
+  BaseUnitEntity,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
   CreatePowerProductionUnitPayload,
-  DigitalProductPassportPatterns,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
   PowerProductionTypeEntity,
@@ -22,19 +19,23 @@ import {
   ReadByIdPayload,
   ReadByIdsPayload,
   UnitEntity,
+  UpdateUnitStatusPayload,
 } from '@h2-trust/amqp';
 import { PowerProductionTypeRepository, UnitRepository } from '@h2-trust/database';
 
 @Injectable()
 export class UnitService {
   constructor(
-    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processService: ClientProxy,
     private readonly unitRepository: UnitRepository,
     private readonly powerProductionTypeRepository: PowerProductionTypeRepository,
   ) {}
 
   async readUnitById(id: string): Promise<UnitEntity> {
     return this.unitRepository.findUnitById(id);
+  }
+
+  async readUnitsByIds(ids: string[]): Promise<UnitEntity[]> {
+    return this.unitRepository.findUnitsByIds(ids);
   }
 
   async readPowerProductionUnitsByOwnerId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity[]> {
@@ -54,22 +55,7 @@ export class UnitService {
   }
 
   async readHydrogenStorageUnitsByOwnerId(payload: ReadByIdPayload): Promise<HydrogenStorageUnitEntity[]> {
-    const hydrogenStorageUnits: HydrogenStorageUnitEntity[] =
-      await this.unitRepository.findHydrogenStorageUnitsByOwnerId(payload.id);
-
-    //TODO-LG: Increase efficiency
-    for (let i = 0; i < hydrogenStorageUnits.length; i++) {
-      for (let j = 0; j < hydrogenStorageUnits[i].filling.length; j++) {
-        const rfnboType: string = await firstValueFrom(
-          this.processService.send(
-            DigitalProductPassportPatterns.DETERMINE_RFNBO_TYPE,
-            new ReadByIdPayload(hydrogenStorageUnits[i].filling[j].processId),
-          ),
-        );
-        hydrogenStorageUnits[i].filling[j].rfnboType = rfnboType;
-      }
-    }
-    return hydrogenStorageUnits;
+    return this.unitRepository.findHydrogenStorageUnitsByOwnerId(payload.id);
   }
 
   async readPowerProductionTypes(): Promise<PowerProductionTypeEntity[]> {
@@ -88,5 +74,9 @@ export class UnitService {
 
   async createHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
     return this.unitRepository.insertHydrogenStorageUnit(payload);
+  }
+
+  async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<BaseUnitEntity> {
+    return this.unitRepository.updateUnitStatus(payload);
   }
 }

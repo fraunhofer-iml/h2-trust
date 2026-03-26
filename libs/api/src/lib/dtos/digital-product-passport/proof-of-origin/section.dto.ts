@@ -82,6 +82,7 @@ export class SectionDto {
       batch.unitId ?? '',
       batch.energySource,
       batch.accountingPeriodEnd,
+      batch.powerType,
     );
   }
 
@@ -114,7 +115,7 @@ export class SectionDto {
       '',
       hydrogenComposition,
       batch.color ?? '',
-      false,
+      batch.rfnboType ?? '',
       batch.processStep ?? '',
       batch.accountingPeriodEnd,
     );

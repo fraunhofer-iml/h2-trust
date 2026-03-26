@@ -6,42 +6,41 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { KeycloakBearerInterceptor, KeycloakService } from 'keycloak-angular';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { ApplicationConfig, inject, LOCALE_ID, provideAppInitializer, provideZoneChangeDetection } from '@angular/core';
+import {
+  INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
+  includeBearerTokenInterceptor,
+  provideKeycloak,
+} from 'keycloak-angular';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { ApplicationConfig, LOCALE_ID, provideZoneChangeDetection } from '@angular/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideTanStackQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { appRoutes } from './app.routes';
-import { initializeKeycloak } from './init/keycloak-initializer';
+import { apiCondition, keycloakOptions } from './init/keycloak-config';
 import { AuthService } from './shared/services/auth/auth.service';
 import { BottlingService } from './shared/services/bottling/bottling.service';
+import { CompaniesService } from './shared/services/companies/companies.service';
 import { UnitsService } from './shared/services/units/units.service';
 import { UsersService } from './shared/services/users/users.service';
 import { HydrogenProductionUnitsStore } from './shared/store/hydrogen-production-units.store';
+import { VerificationResultStore } from './shared/store/verification-result.store';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideAnimations(),
-    provideAppInitializer(() => {
-      const initializerFn = initializeKeycloak(inject(KeycloakService));
-      return initializerFn();
-    }),
-    KeycloakBearerInterceptor,
+    provideKeycloak(keycloakOptions),
     {
-      provide: HTTP_INTERCEPTORS,
-      useClass: KeycloakBearerInterceptor,
-      multi: true,
-      deps: [KeycloakService],
+      provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
+      useValue: [apiCondition],
     },
-    KeycloakService,
     AuthService,
     UsersService,
     UnitsService,
     BottlingService,
     HydrogenProductionUnitsStore,
+    VerificationResultStore,
+    CompaniesService,
     { provide: LOCALE_ID, useValue: 'en-GB' },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
@@ -49,7 +48,7 @@ export const appConfig: ApplicationConfig = {
         subscriptSizing: 'dynamic',
       },
     },
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withInterceptors([includeBearerTokenInterceptor])),
     provideClientHydration(withEventReplay()),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(appRoutes, withComponentInputBinding()),

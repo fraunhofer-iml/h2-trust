@@ -12,7 +12,7 @@ import {
   HydrogenStorageUnitFlatDbType,
   HydrogenStorageUnitNestedDbType,
 } from '@h2-trust/database';
-import { HydrogenStorageType, RfnboType, UnitType } from '@h2-trust/domain';
+import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { HydrogenComponentEntity } from '../bottling';
 import { CompanyEntity } from '../company';
@@ -42,6 +42,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     pressure: number,
     type: HydrogenStorageType,
     filling: HydrogenComponentEntity[],
+    active: boolean,
   ) {
     super(
       id,
@@ -57,6 +58,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       owner,
       operator,
       unitType,
+      active,
     );
     this.capacity = capacity;
     this.pressure = pressure;
@@ -107,8 +109,8 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   static override fromDatabase(unit: HydrogenStorageUnitDbType): HydrogenStorageUnitEntity {
     return <HydrogenStorageUnitEntity>{
       ...BaseUnitEntity.fromDatabase(unit),
-      capacity: unit.hydrogenStorageUnit?.capacity ?? 0,
-      pressure: unit.hydrogenStorageUnit?.pressure ?? 0,
+      capacity: unit.hydrogenStorageUnit?.capacity.toNumber() ?? 0,
+      pressure: unit.hydrogenStorageUnit?.pressure.toNumber() ?? 0,
       type: unit.hydrogenStorageUnit?.type,
       filling: HydrogenStorageUnitEntity.mapFilling(unit),
       unitType: UnitType.HYDROGEN_STORAGE,
@@ -127,7 +129,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
           null,
           batch.batchDetails.qualityDetails.color,
           batch.amount?.toNumber() ?? 0,
-          RfnboType.NON_CERTIFIABLE,
+          batch.batchDetails.qualityDetails.rfnboType,
         );
       }) ?? []
     );
@@ -144,7 +146,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
           batch?.processStep?.id ?? null,
           batch.batchDetails.qualityDetails.color,
           batch.amount?.toNumber() ?? 0,
-          RfnboType.NOT_SPECIFIED,
+          batch.batchDetails.qualityDetails.rfnboType,
         );
       }) ?? []
     );

@@ -31,6 +31,6 @@ export const HydrogenStorageUnitEntityFixture = {
       capacity: overrides.capacity ?? 1000,
       pressure: overrides.pressure ?? 2,
       type: overrides.type ?? HydrogenStorageType.LIQUID_HYDROGEN,
-      filling: overrides.filling ?? HydrogenComponentEntityFixture.createGreen(),
+      filling: overrides.filling ?? [HydrogenComponentEntityFixture.createGreen()],
     }) as HydrogenStorageUnitEntity,
 } as const;

@@ -6,9 +6,9 @@
     </span>
   </button>
 } @else if (!result || result.status === CsvDocumentIntegrityStatus.FAILED) {
-  <button matButton="filled" (click)="verify()" [disabled]="disabled()">Verifiy</button>
+  <button matButton="filled" (click)="verify()" [disabled]="disabled()">Verify</button>
 } @else {
-  <button matButton="outlined" (click)="sheet.open()" class="!bg-neutral-200">See Details</button>
+  <button matButton="outlined" (click)="sheet.open()" class="!bg-neutral-200">Inspect</button>
 }
 
 <!-- DETAILS SHEET -->
@@ -18,7 +18,7 @@
     <h1 class="font-semibold">Verification Result</h1>
 
     @if (result; as res) {
-      <p class="">File: {{ res.fileName }}</p>
+      <p class="">File-Id: {{ res.documentId }}</p>
       <div class="mt-4 flex flex-col gap-4">
         <div
           class="rounded-xl border-2 p-4"
@@ -43,8 +43,8 @@
           <span class="text-md font-semibold">Details</span>
 
           <span>
-            File-Id
-            <p class="truncate text-black">{{ res.documentId }}</p>
+            File Name
+            <p class="truncate text-black">{{ res.fileName }}</p>
           </span>
 
           <span class="">
@@ -53,39 +53,42 @@
           </span>
 
           <span>
+            Block Number
+            <p class="text-black">{{ res.blockNumber }}</p>
+          </span>
+
+          <span>
             Block Timestamp
             <p class="text-black">{{ res.blockTimestamp }}</p>
-          </span>
-
-          <span>
-            Block Number
-            <p class="text-black">{{ 12 }}</p>
-          </span>
-
-          <span>
-            Network
-            <p class="text-black">{{ res.network }}</p>
           </span>
 
           <span>
             Smart Contract Address
             <p class="truncate text-black">{{ res.smartContractAddress }}</p>
           </span>
+
+          <span>
+            Network
+            <p class="text-black">{{ res.network }}</p>
+          </span>
         </div>
 
         <div class="rounded-xl border-[2px] border-neutral-100 bg-neutral-50 p-4 text-sm text-neutral-600">
           <span class="text-md font-semibold">Actions</span>
-          <p>You can view the full verification details on Arbiscan or copy the transaction hash for your records.</p>
+          <p>
+            You can view the full verification details on the blockchain explorer or copy the transaction hash for your
+            records.
+          </p>
           <div class="mt-4 flex flex-row gap-4">
             <button matButton="outlined" (click)="openExplorer(res.explorerUrl)">
               <span class="flex flex-row items-center gap-2">
                 <span class="material-symbols-outlined">token</span>
-                Arbiscan
+                Blockchain Explorer
               </span>
             </button>
             <button
               matButton="outlined"
-              [cdkCopyToClipboard]="res.documentId"
+              [cdkCopyToClipboard]="res.transactionHash ?? ''"
               (cdkCopyToClipboardCopied)="onCopied($event)"
             >
               <span class="flex flex-row items-center gap-2">

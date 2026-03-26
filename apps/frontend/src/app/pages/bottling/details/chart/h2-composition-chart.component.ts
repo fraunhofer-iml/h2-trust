@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { PrettyEnumPipe } from 'apps/frontend/src/app/shared/pipes/format-enum.pipe';
 import { UnitPipe } from 'apps/frontend/src/app/shared/pipes/unit.pipe';
 import * as echarts from 'echarts';
 import { EChartsOption } from 'echarts';
@@ -20,7 +21,7 @@ import { formatNumberForChart } from '../../../../shared/util/number-format.util
 @Component({
   selector: 'app-h2-composition-chart',
   imports: [NgxEchartsDirective],
-  providers: [provideEchartsCore({ echarts }), PercentPipe, DecimalPipe, UnitPipe],
+  providers: [provideEchartsCore({ echarts }), PercentPipe, DecimalPipe, UnitPipe, PrettyEnumPipe],
   templateUrl: './h2-composition-chart.component.html',
 })
 export class H2CompositionChartComponent {
@@ -29,8 +30,8 @@ export class H2CompositionChartComponent {
   chartOption$ = computed(() => this.getOption(this.chartData() ?? []));
 
   percentPipe = inject(PercentPipe);
-  decimalPipe = inject(DecimalPipe);
   unitPipe = inject(UnitPipe);
+  prettyEnumPipe = inject(PrettyEnumPipe);
 
   private getOption(chartData: HydrogenComponentDto[]): EChartsOption {
     return {
@@ -62,10 +63,10 @@ export class H2CompositionChartComponent {
           },
           data: chartData.map((composition) => ({
             value: formatNumberForChart(composition.amount),
-            name: composition.color,
+            name: composition.rfnboType,
             itemStyle: {
-              color: CHART_COLORS.get(composition.color) ?? '#ababab',
-              borderColor: '#fff',
+              color: CHART_COLORS.get(composition.rfnboType) ?? '#ededed',
+              borderColor: CHART_COLORS.get(composition.rfnboType) ? '#fff' : '#bfbfbf',
             },
           })),
         },
@@ -75,6 +76,6 @@ export class H2CompositionChartComponent {
 
   private readonly labelFormatter = (params: any) => {
     const percentage = this.percentPipe.transform((params.percent ?? 0) / 100, '1.0-1');
-    return `${params.name}\n ${this.unitPipe.transform(params.value, MeasurementUnit.KG)} (${percentage})`;
+    return `${this.prettyEnumPipe.transform(params.name).toLowerCase()}\n ${this.unitPipe.transform(params.value, MeasurementUnit.KG)} (${percentage})`;
   };
 }

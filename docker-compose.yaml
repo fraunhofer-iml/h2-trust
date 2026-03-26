@@ -1,61 +1,62 @@
-services:
-  ############
-  # DATABASE #
-  ############
+x-healthcheck-defaults: &healthcheck-defaults
+  start_period: 10s
+  interval: 5s
+  timeout: 5s
+  retries: 5
 
+services:
   postgres:
-    image: postgres:17.7-alpine3.23
+    image: postgres:17.9-alpine
     restart: unless-stopped
+    command: ['postgres', '-c', 'log_min_messages=ERROR']
     environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=blockchain
-      - POSTGRES_DB=h2_trust
-    logging:
-      options:
-        max-size: 10m
-        max-file: '3'
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     ports:
       - '5432:5432'
-
-  ###########
-  # STORAGE #
-  ###########
+    volumes:
+      - './docker/postgres:/docker-entrypoint-initdb.d'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      <<: *healthcheck-defaults
 
   minio:
     image: minio/minio:RELEASE.2025-09-07T16-13-09Z
     restart: unless-stopped
-    environment:
-      - MINIO_ROOT_USER=admin
-      - MINIO_ROOT_PASSWORD=blockchain
-    ports:
-      - '9000:9000'
-      - '9090:9090'
-    healthcheck:
-      test: ['CMD', 'mc', 'ready', 'local']
-      interval: 5s
-      timeout: 5s
-      retries: 5
     command:
       - server
       - /data
       - --address=:9000
       - --console-address=:9090
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - MINIO_LOG_LEVEL=ERROR
+    ports:
+      - '9000:9000'
+      - '9090:9090'
+    healthcheck:
+      test: ['CMD', 'curl', '-sf', 'http://localhost:9000/minio/health/live']
+      <<: *healthcheck-defaults
 
   minio-setup:
     image: minio/mc:RELEASE.2025-08-13T08-35-41Z
     depends_on:
+      postgres:
+        condition: service_healthy
       minio:
+        condition: service_healthy
+      blockchain:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     entrypoint: ['/bin/sh', '-c']
     command:
       - |
-        mc alias set local http://minio:9000 admin blockchain
-        mc mb --ignore-existing local/h2-trust
-        mc anonymous set download local/h2-trust
-
-  ##############
-  # BLOCKCHAIN #
-  ##############
+        mc alias set local http://minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD}
+        mc mb --ignore-existing local/${MINIO_BUCKET_NAME}
+        mc anonymous set download local/${MINIO_BUCKET_NAME}
 
   blockchain:
     build:
@@ -66,29 +67,69 @@ services:
       - '8545:8545'
     healthcheck:
       test: ['CMD', 'curl', '-sf', 'http://localhost:8545/liveness']
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      <<: *healthcheck-defaults
 
   blockchain-setup:
     build:
       context: .
       dockerfile: docker/blockchain-setup/Dockerfile
     depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
       blockchain:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
-  #########
-  # UTILS #
-  #########
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.5
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command:
+      - start-dev
+      - --import-realm
+    environment:
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgres
+      KC_DB_URL_PORT: 5432
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_SCHEMA: public
+      KC_DB_USERNAME: '${POSTGRES_USER}'
+      KC_DB_PASSWORD: '${POSTGRES_PASSWORD}'
+      KC_BOOTSTRAP_ADMIN_USERNAME: '${KC_BOOTSTRAP_ADMIN_USERNAME}'
+      KC_BOOTSTRAP_ADMIN_PASSWORD: '${KC_BOOTSTRAP_ADMIN_PASSWORD}'
+      KC_HTTP_ENABLED: 'true'
+      KC_HTTP_PORT: 8080
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_STRICT: 'false'
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: 'false'
+      KC_PROXY_HEADERS: xforwarded
+      KC_HEALTH_ENABLED: 'true'
+      KC_METRICS_ENABLED: 'true'
+      KC_LOG_LEVEL: ERROR
+    ports:
+      - '8080:8080'
+    volumes:
+      - './libs/configuration/src/keycloak/realm.json:/opt/keycloak/data/import/realm.json'
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -sf http://localhost:8080/health/ready']
+      <<: *healthcheck-defaults
 
   rabbitmq:
-    image: rabbitmq:4.2.3-management-alpine
+    image: rabbitmq:4.2-management-alpine
+    restart: unless-stopped
+    volumes:
+      - './docker/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf'
     ports:
       - '5672:5672'
       - '15672:15672'
-    environment:
-      RABBITMQ_LOGS: '-warn'
+    healthcheck:
+      test: ['CMD', 'rabbitmq-diagnostics', '-q', 'ping']
+      <<: *healthcheck-defaults
 
 networks:
   default:

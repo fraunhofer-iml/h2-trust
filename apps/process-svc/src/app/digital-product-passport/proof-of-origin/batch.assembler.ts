@@ -14,7 +14,7 @@ import {
   ProofOfOriginPowerBatchEntity,
   ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/amqp';
-import { BatchType, EnergySource, RfnboType } from '@h2-trust/domain';
+import { BatchType, EnergySource, PowerType } from '@h2-trust/domain';
 
 export class BatchAssembler {
   static assemblePowerSupply(
@@ -32,6 +32,7 @@ export class BatchAssembler {
       unitId: powerProduction.executedBy.id,
       energySource: energySource as EnergySource,
       accountingPeriodEnd: powerProduction.endedAt,
+      powerType: (powerProduction.batch?.qualityDetails?.powerType ?? PowerType.NOT_SPECIFIED) as PowerType,
     };
   }
 
@@ -65,12 +66,13 @@ export class BatchAssembler {
           processId: null,
           color: hydrogenStorage.batch?.qualityDetails?.color,
           amount: hydrogenStorage.batch.amount,
-          rfnboType: RfnboType.NOT_SPECIFIED,
+          rfnboType: hydrogenStorage.batch?.qualityDetails?.rfnboType,
         },
       ],
       producer: hydrogenStorage.batch.owner?.name,
       unitId: hydrogenStorage.executedBy.id,
       color: hydrogenStorage.batch?.qualityDetails?.color,
+      rfnboType: hydrogenStorage.batch?.qualityDetails?.rfnboType,
       processStep: hydrogenStorage.type,
       accountingPeriodEnd: hydrogenStorage.endedAt,
     };
@@ -90,6 +92,7 @@ export class BatchAssembler {
       hydrogenComposition,
       unitId: hydrogenBottling.executedBy.id,
       color: hydrogenBottling.batch?.qualityDetails?.color,
+      rfnboType: hydrogenBottling.batch?.qualityDetails?.rfnboType,
       processStep: hydrogenBottling.type,
       accountingPeriodEnd: hydrogenBottling.endedAt,
     };
@@ -109,6 +112,7 @@ export class BatchAssembler {
       hydrogenComposition,
       unitId: hydrogenTransportation.executedBy.id,
       color: hydrogenTransportation.batch?.qualityDetails?.color,
+      rfnboType: hydrogenTransportation.batch?.qualityDetails?.rfnboType,
       processStep: hydrogenTransportation.type,
       accountingPeriodEnd: hydrogenTransportation.endedAt,
     };

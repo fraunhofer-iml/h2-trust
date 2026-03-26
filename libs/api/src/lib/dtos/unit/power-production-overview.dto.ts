@@ -15,13 +15,15 @@ export class PowerProductionOverviewDto {
   ratedPower: number;
   typeName: string;
   producing: boolean;
+  active: boolean;
 
-  constructor(id: string, name: string, ratedPower: number, typeName: string, producing: boolean) {
+  constructor(id: string, name: string, ratedPower: number, typeName: string, producing: boolean, active: boolean) {
     this.id = id;
     this.name = name;
     this.ratedPower = ratedPower;
     this.typeName = typeName;
     this.producing = producing;
+    this.active = active;
   }
 
   static fromEntity(unit: PowerProductionUnitEntity): PowerProductionOverviewDto {
@@ -31,6 +33,7 @@ export class PowerProductionOverviewDto {
       ratedPower: unit.ratedPower,
       typeName: unit.type?.name ? EnumLabelMapper.getPowerProductionType(unit.type.name) : undefined,
       producing: true,
+      active: unit.active,
     };
   }
 }

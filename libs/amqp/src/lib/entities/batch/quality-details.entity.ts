@@ -7,17 +7,27 @@
  */
 
 import { QualityDetailsDbType } from '@h2-trust/database';
+import { PowerType, RfnboType } from '@h2-trust/domain';
 
 export class QualityDetailsEntity {
   id?: string;
   color: string;
+  rfnboType: string;
+  powerType?: string;
 
-  constructor(id: string | undefined, color: string) {
+  constructor(id: string | undefined, color: string, rfnboType?: string, powerType?: string) {
     this.id = id;
     this.color = color;
+    this.rfnboType = rfnboType ?? RfnboType.NOT_SPECIFIED;
+    this.powerType = powerType ?? PowerType.NOT_SPECIFIED;
   }
 
   static fromDatabase(qualityDetails: QualityDetailsDbType): QualityDetailsEntity {
-    return new QualityDetailsEntity(qualityDetails.id, qualityDetails.color);
+    return new QualityDetailsEntity(
+      qualityDetails.id,
+      qualityDetails.color,
+      qualityDetails.rfnboType,
+      qualityDetails.powerType ?? PowerType.NOT_SPECIFIED,
+    );
   }
 }

@@ -7,7 +7,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { StorageModule } from '@h2-trust/storage';
+import { StorageService } from '@h2-trust/storage';
 import { FileDownloadController } from './file-download.controller';
 import { FileDownloadService } from './file-download.service';
 
@@ -16,9 +16,14 @@ describe('FileDownloadController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [StorageModule],
       controllers: [FileDownloadController],
-      providers: [FileDownloadService],
+      providers: [
+        FileDownloadService,
+        {
+          provide: StorageService,
+          useValue: {},
+        },
+      ],
     }).compile();
 
     controller = module.get<FileDownloadController>(FileDownloadController);

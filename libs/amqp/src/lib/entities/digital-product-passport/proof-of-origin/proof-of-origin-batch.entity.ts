@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType, EnergySource } from '@h2-trust/domain';
+import { BatchType, EnergySource, PowerType } from '@h2-trust/domain';
 import { HydrogenComponentEntity } from '../../bottling';
 import { ProofOfOriginEmissionEntity } from './proof-of-origin-emission.entity';
 
@@ -35,6 +35,7 @@ export class ProofOfOriginPowerBatchEntity extends ProofOfOriginBaseBatchEntity 
   unitId: string;
   energySource: EnergySource;
   accountingPeriodEnd: Date;
+  powerType: PowerType;
 
   constructor(
     id: string,
@@ -45,12 +46,14 @@ export class ProofOfOriginPowerBatchEntity extends ProofOfOriginBaseBatchEntity 
     unitId: string,
     energySource: EnergySource,
     accountingPeriodEnd: Date,
+    powerType: PowerType,
   ) {
     super(id, emission, createdAt, amount);
     this.producer = producer;
     this.unitId = unitId;
     this.energySource = energySource;
     this.accountingPeriodEnd = accountingPeriodEnd;
+    this.powerType = powerType;
   }
 }
 
@@ -79,6 +82,7 @@ export class ProofOfOriginHydrogenBatchEntity extends ProofOfOriginBaseBatchEnti
   producer?: string;
   unitId?: string;
   color?: string;
+  rfnboType?: string;
   processStep?: string;
   accountingPeriodEnd?: Date;
 
@@ -91,6 +95,7 @@ export class ProofOfOriginHydrogenBatchEntity extends ProofOfOriginBaseBatchEnti
     producer?: string,
     unitId?: string,
     color?: string,
+    rfnboType?: string,
     processStep?: string,
     accountingPeriodEnd?: Date,
   ) {
@@ -99,6 +104,7 @@ export class ProofOfOriginHydrogenBatchEntity extends ProofOfOriginBaseBatchEnti
     this.producer = producer;
     this.unitId = unitId;
     this.color = color;
+    this.rfnboType = rfnboType;
     this.processStep = processStep;
     this.accountingPeriodEnd = accountingPeriodEnd;
   }

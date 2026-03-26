@@ -7,7 +7,7 @@
  */
 
 import { Route } from '@angular/router';
-import { AUTH_GUARD } from '../../guards/auth.guard';
+import { canActivateAuth } from '../../guards/auth.guard';
 import { AddBottleComponent } from './add-bottle/add-bottle.component';
 import { ProductPassComponent } from './details/product-pass.component';
 import { BottlingOverviewComponent } from './overview/bottling-overview.component';
@@ -15,12 +15,12 @@ import { BottlingOverviewComponent } from './overview/bottling-overview.componen
 export const BOTTLING_ROUTES: Route[] = [
   {
     path: '',
-    canActivate: [AUTH_GUARD],
+    canActivate: [canActivateAuth],
     component: BottlingOverviewComponent,
   },
   {
     path: 'create',
-    canActivate: [AUTH_GUARD],
+    canActivate: [canActivateAuth],
     component: AddBottleComponent,
   },
   {

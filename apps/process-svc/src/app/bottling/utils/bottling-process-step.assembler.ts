@@ -20,8 +20,8 @@ export class BottlingProcessStepAssembler {
         amount: payload.amount,
         qualityDetails: {
           color: BottlingProcessStepAssembler.determineBottleQualityFromPredecessors(batchesForBottle),
+          rfnboType: BottlingProcessStepAssembler.determineRfnboTypeOfPredecessors(batchesForBottle),
         },
-        rfnboType: BottlingProcessStepAssembler.determineRfnboTypeOfPredecessors(batchesForBottle),
         type: BatchType.HYDROGEN,
         predecessors: batchesForBottle.map((batch) => ({
           id: batch.id,
@@ -50,7 +50,7 @@ export class BottlingProcessStepAssembler {
 
   private static determineRfnboTypeOfPredecessors(predecessors: BatchEntity[]): RfnboType {
     const rfnboTypes: RfnboType[] = predecessors
-      .map((batch) => batch.rfnboType)
+      .map((batch) => batch.qualityDetails.rfnboType)
       .map((rfnboType) => RfnboType[rfnboType as keyof typeof RfnboType]);
 
     if (rfnboTypes.length === 0) {

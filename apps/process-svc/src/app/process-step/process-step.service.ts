@@ -8,15 +8,18 @@
 
 import { Injectable } from '@nestjs/common';
 import {
+  CreateHydrogenProductionStatisticsPayload,
   CreateManyProcessStepsPayload,
   DocumentEntity,
+  PaginatedProcessStepEntity,
   ProcessStepEntity,
+  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
 import { ConfigurationService, MinioConfiguration } from '@h2-trust/configuration';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
-import { ProcessType } from '@h2-trust/domain';
+import { ProcessType, RfnboType } from '@h2-trust/domain';
 
 @Injectable()
 export class ProcessStepService {
@@ -25,6 +28,13 @@ export class ProcessStepService {
     private readonly batchRepository: BatchRepository,
     private readonly processStepRepository: ProcessStepRepository,
   ) {}
+
+  async updateRfnboStatus(
+    processStep: ProcessStepEntity,
+    rfnboType: RfnboType,
+  ): Promise<{ id: string; batchId: string }> {
+    return this.batchRepository.setRfnboStatus(processStep.batch.id, rfnboType);
+  }
 
   async createProcessStep(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
     return this.processStepRepository.insertProcessStep(processStep);
@@ -95,6 +105,42 @@ export class ProcessStepService {
     return this.processStepRepository.findProcessStepsByPredecessorTypesAndOwner(
       payload.predecessorProcessTypes,
       payload.ownerId,
+    );
+  }
+
+  async readProcessStepsByPredecessorTypesAndUnitAndDate(
+    predecessorProcessType: string[],
+    payload: CreateHydrogenProductionStatisticsPayload,
+  ): Promise<ProcessStepEntity[]> {
+    return this.processStepRepository.findProcessStepsByPredecessorTypesAndOwner(
+      predecessorProcessType,
+      payload.ownerId,
+      payload.unitName,
+      payload.month ? new Date(payload.month) : payload.month,
+    );
+  }
+
+  async readPaginatedProcessStepsByPredecessorTypesAndOwner(
+    payload: ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
+  ): Promise<PaginatedProcessStepEntity> {
+    const processes: ProcessStepEntity[] = await this.processStepRepository.findProcessStepsByPredecessorTypesAndOwner(
+      payload.predecessorProcessTypes,
+      payload.ownerId,
+      payload.filter.unitName,
+      payload.filter.month ? new Date(payload.filter.month) : payload.filter.month,
+    );
+    return this.createProcessStepsPagination(processes, payload.filter.pageSize, payload.filter.pageNumber);
+  }
+
+  private createProcessStepsPagination(processes: ProcessStepEntity[], pageSize: number, pageNumber: number) {
+    const paginationStart: number = (pageNumber - 1) * pageSize;
+    const paginationEnd: number = pageNumber * pageSize;
+
+    return new PaginatedProcessStepEntity(
+      processes.slice(paginationStart, paginationEnd),
+      pageNumber,
+      pageSize,
+      processes.length,
     );
   }
 

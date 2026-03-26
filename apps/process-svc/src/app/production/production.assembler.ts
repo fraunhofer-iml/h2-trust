@@ -17,7 +17,7 @@ import {
   QualityDetailsEntity,
   UserEntity,
 } from '@h2-trust/amqp';
-import { BatchType, ProcessType } from '@h2-trust/domain';
+import { BatchType, HydrogenColor, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { DateTimeUtil } from '@h2-trust/utils';
 import { AccountingPeriod, ProcessStepParams } from './production.types';
 import { ProductionUtils } from './utils/production.utils';
@@ -34,6 +34,7 @@ export class ProductionAssembler {
         activity: false,
         type: BatchType.POWER,
         owner: entity.ownerIdOfPowerProductionUnit,
+        powerType: entity.powerType as PowerType,
       },
     };
 
@@ -82,6 +83,7 @@ export class ProductionAssembler {
         owner: entity.ownerIdOfHydrogenProductionUnit,
         quality: entity.hydrogenColor,
         hydrogenStorageUnitId: entity.hydrogenStorageUnitId,
+        powerType: (powerProductions[0]?.batch?.qualityDetails?.powerType as PowerType) ?? PowerType.NOT_SPECIFIED,
       },
     };
 
@@ -121,7 +123,12 @@ export class ProductionAssembler {
       ? ({ id: batchParams.hydrogenStorageUnitId } as HydrogenStorageUnitEntity)
       : null;
 
-    const qualityDetails = batchParams.quality ? new QualityDetailsEntity(null, batchParams.quality) : null;
+    const qualityDetails: QualityDetailsEntity = new QualityDetailsEntity(
+      null,
+      batchParams.quality ?? HydrogenColor.MIX,
+      RfnboType.NOT_SPECIFIED,
+      batchParams.powerType,
+    );
 
     const batch = new BatchEntity(
       null,

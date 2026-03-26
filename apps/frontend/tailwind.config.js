@@ -52,15 +52,9 @@ module.exports = {
           900: '#4a3300',
         },
 
-        'h2-yellow': '#F0D354',
-        'h2-pink': '#BD608B',
-        'h2-green': '#4F9C83',
-        'h2-orange': '#CF9153',
-
-        'h2-yellow-text': '#9c7f02',
-        'h2-pink-text': '#731f46',
-        'h2-green-text': '#1f5c52',
-        'h2-orange-text': '#8f571f',
+        'rfnbo-green': '#4F9C83',
+        'rfnbo-gray': '#a1a3a6',
+        'error-red': '#bd554f',
       },
     },
   },

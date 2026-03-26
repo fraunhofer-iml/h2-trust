@@ -1,13 +1,18 @@
-name: Lint & Format
+name: Lint and Format
 
 on:
   push:
     branches: ['main']
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint-format:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     permissions:
       contents: read
