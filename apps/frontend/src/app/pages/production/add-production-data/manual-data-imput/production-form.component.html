@@ -19,7 +19,7 @@
       <mat-label>Hydrogen Production Unit</mat-label>
       <mat-select formControlName="hydrogenProductionUnit">
         @for (unit of hydrogenProductionUnits(); track unit) {
-          <mat-option [value]="unit">{{ unit.name }}</mat-option>
+          <mat-option [value]="unit" [disabled]="!unit.active">{{ unit.name }} </mat-option>
         }
       </mat-select>
     </mat-form-field>
@@ -27,7 +27,7 @@
       <mat-label>Power Production</mat-label>
       <mat-select formControlName="powerProductionUnit">
         @for (approval of powerAccessApprovals(); track approval) {
-          <mat-option [value]="approval.value">{{ approval.name }}</mat-option>
+          <mat-option [value]="approval.value" [disabled]="!approval.value.active">{{ approval.name }}</mat-option>
         }
       </mat-select>
     </mat-form-field>
@@ -36,7 +36,7 @@
       <mat-label>Hydrogen Storage Unit</mat-label>
       <mat-select formControlName="hydrogenStorageUnit">
         @for (unit of hydrogenStorageUnits(); track unit) {
-          <mat-option [value]="unit"
+          <mat-option [value]="unit" [disabled]="!unit.active"
             >{{ unit.name }} (Remaining Capacity: {{ unit.capacity - unit.filling | unit: MeasurementUnit.KG }})
           </mat-option>
         }
