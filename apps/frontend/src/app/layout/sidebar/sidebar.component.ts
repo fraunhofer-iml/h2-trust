@@ -8,6 +8,7 @@
 
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnInit, signal, Signal } from '@angular/core';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -15,9 +16,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { Router, RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
+import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
 import { ROUTES } from '../../shared/constants/routes';
 import { hydrogenProductionUnitsQueryOptions } from '../../shared/queries/hydrogen-production-units.query';
 import { AuthService } from '../../shared/services/auth/auth.service';
+import { PowerAccessApprovalService } from '../../shared/services/power-access-approvals/power-access-approvals.service';
 import { UnitsService } from '../../shared/services/units/units.service';
 import { UsersService } from '../../shared/services/users/users.service';
 
@@ -39,6 +42,7 @@ interface SidebarOption {
     RouterModule,
     MatExpansionModule,
     MatSelectModule,
+    MatBadgeModule,
   ],
   providers: [UsersService],
   templateUrl: './sidebar.component.html',
@@ -46,10 +50,17 @@ interface SidebarOption {
 export class SidebarComponent implements OnInit {
   protected readonly router = inject(Router);
   protected readonly unitsService = inject(UnitsService);
+  protected readonly ppaService = inject(PowerAccessApprovalService);
 
   hydrogenProductionUnitsQuery = injectQuery(() => hydrogenProductionUnitsQueryOptions(this.unitsService));
+  ppaRequestsQuery = injectQuery(() => ({
+    queryKey: ['ppa-requests'],
+    queryFn: () => this.ppaService.getPpaRequests(PpaRequestRole.RECEIVER, PowerAccessApprovalStatus.PENDING),
+  }));
 
   visible$ = computed(() => (this.hydrogenProductionUnitsQuery.data()?.length ?? 0) > 0);
+
+  showBadge$ = computed(() => (this.ppaRequestsQuery.data()?.length ?? 0) > 0);
 
   sidebarOptions: SidebarOption[] = [
     {

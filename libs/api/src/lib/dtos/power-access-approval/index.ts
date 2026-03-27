@@ -7,4 +7,5 @@
  */
 
 export * from './power-access-approval.dto';
+export * from './ppa-request.dto';
 export * from './mocks';

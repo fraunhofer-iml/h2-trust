@@ -1,0 +1,52 @@
+<div class="rounded-lg border bg-white">
+  <div class="flex flex-col gap-2 py-4">
+    <div class="flex flex-row justify-between px-4">
+      <div>
+        Request by {{ request().sender.company.name }}
+        <p class="text-xs text-neutral-400">{{ request().sender.name }} • {{ request().timestamp | date: 'medium' }}</p>
+      </div>
+      <app-ppa-status-chip [status]="request().status"></app-ppa-status-chip>
+    </div>
+
+    <mat-divider />
+
+    <div class="flex flex-col gap-1 px-4">
+      <span class="flex flex-row justify-between text-sm">
+        <span>Requested Power Type:</span> {{ request().powerType | prettyEnum | titlecase }}
+      </span>
+
+      @if (request().status !== PowerAccessApprovalStatus.PENDING) {
+        <span class="flex flex-row justify-between text-sm">
+          <span>Power Production Unit:</span> {{ request().powerProductionUnit?.name }}
+        </span>
+      }
+    </div>
+
+    @if (request().status !== PowerAccessApprovalStatus.PENDING) {
+      <mat-divider />
+      <div class="px-4 text-sm text-neutral-600">
+        <p class="text-neutral-500">Comment from {{ request().receiver.name }}:</p>
+        <p>{{ request().comment ?? 'No comment available.' }}</p>
+      </div>
+    }
+
+    @if (request().status === PowerAccessApprovalStatus.PENDING && role() === PpaRequestRole.RECEIVER) {
+      <mat-divider />
+
+      <div class="px-4 text-sm text-neutral-600">
+        <p>You can approve or reject this request. You can as well add a comment in the next step if you like.</p>
+
+        <div class="flex flex-row justify-end gap-2 pt-2">
+          <button
+            matButton="outlined"
+            class="delete-button-outlined"
+            (click)="openDialog(PowerAccessApprovalStatus.REJECTED)"
+          >
+            Reject
+          </button>
+          <button matButton="filled" (click)="openDialog(PowerAccessApprovalStatus.APPROVED)">Approve</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

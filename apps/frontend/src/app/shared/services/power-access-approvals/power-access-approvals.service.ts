@@ -9,7 +9,7 @@
 import { lastValueFrom } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { PowerAccessApprovalDto } from '@h2-trust/api';
+import { PowerAccessApprovalDto, PpaRequestDto } from '@h2-trust/api';
 import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
 import { API } from '../../constants/api-endpoints';
 
@@ -35,6 +35,6 @@ export class PowerAccessApprovalService {
       params = params.append('role', role);
     }
 
-    return lastValueFrom(this.httpClient.get<PowerAccessApprovalDto[]>(API.PPA_REQUESTS.BASE, { params }));
+    return lastValueFrom(this.httpClient.get<PpaRequestDto[]>(API.PPA_REQUESTS.BASE, { params }));
   }
 }
