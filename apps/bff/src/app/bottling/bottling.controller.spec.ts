@@ -8,12 +8,7 @@
 
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  BrokerQueues,
-  ProcessStepEntity,
-  ProcessStepEntityHydrogenBottlingMock,
-  ProcessStepMessagePatterns,
-} from '@h2-trust/amqp';
+import { BrokerQueues, ProcessStepEntity, ProcessStepEntityFixture, ProcessStepMessagePatterns } from '@h2-trust/amqp';
 import {
   AuthenticatedUserMock,
   BottlingDto,
@@ -67,8 +62,7 @@ describe('BottlingController', () => {
 
   it('should create a bottling and transportation batch', async () => {
     const givenDto: BottlingDto = BottlingDtoMock[0];
-
-    const returnedProcessStep: ProcessStepEntity = structuredClone(ProcessStepEntityHydrogenBottlingMock[0]);
+    const returnedProcessStep: ProcessStepEntity = structuredClone(ProcessStepEntityFixture.createHydrogenBottling());
     returnedProcessStep.startedAt = new Date(givenDto.filledAt);
     returnedProcessStep.endedAt = new Date(givenDto.filledAt);
 

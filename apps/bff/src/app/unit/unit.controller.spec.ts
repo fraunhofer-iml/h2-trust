@@ -6,18 +6,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenStorageUnitEntityFixture } from 'libs/amqp/src/lib/fixtures/hydrogen-storage-unit.entity.fixture';
 import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   BrokerQueues,
   HydrogenProductionUnitEntity,
-  HydrogenProductionUnitEntityMock,
+  HydrogenProductionUnitEntityFixture,
   HydrogenStorageUnitEntity,
-  HydrogenStorageUnitEntityMock,
+  HydrogenStorageUnitEntityFixture,
   PowerProductionUnitEntity,
-  PowerProductionUnitEntityMock,
+  PowerProductionUnitEntityFixture,
   ReadByIdPayload,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
@@ -34,7 +33,6 @@ import {
   PowerProductionUnitInputDto,
   UserDetailsDto,
 } from '@h2-trust/api';
-import { HydrogenProductionUnitEntityFixture, PowerProductionUnitEntityFixture } from '@h2-trust/fixtures/entities';
 import { UserService } from '../user/user.service';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
@@ -71,7 +69,6 @@ describe('UnitController', () => {
   it('should find a unit', async () => {
     const givenUserId = 'unit-id-1';
     const fixtureUnit: HydrogenProductionUnitEntity = HydrogenProductionUnitEntityFixture.create();
-
     const expectedResponse: HydrogenProductionUnitDto = HydrogenProductionUnitDto.fromEntity(fixtureUnit);
 
     const sendRequestSpy = jest.spyOn(queue, 'send');

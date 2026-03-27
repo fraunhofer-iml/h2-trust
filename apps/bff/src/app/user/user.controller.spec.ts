@@ -9,7 +9,7 @@
 import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues, ReadByIdPayload, UserEntity, UserEntityPowerMock, UserMessagePatterns } from '@h2-trust/amqp';
+import { BrokerQueues, ReadByIdPayload, UserEntity, UserEntityFixture, UserMessagePatterns } from '@h2-trust/amqp';
 import { UserDetailsDto } from '@h2-trust/api';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
@@ -45,7 +45,7 @@ describe('UserController', () => {
   });
 
   it('readUserWithCompany should request user and map dto', async () => {
-    const mockedUser: UserEntity = UserEntityPowerMock;
+    const mockedUser: UserEntity = UserEntityFixture.create({});
     const expectedResponse = UserDetailsDto.fromEntity(mockedUser);
 
     const generalServiceSpy = jest
