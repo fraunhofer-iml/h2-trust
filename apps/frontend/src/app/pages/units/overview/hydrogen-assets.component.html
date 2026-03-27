@@ -31,7 +31,7 @@
 
   <div class="3xl:grid-cols-4 grid grid-cols-3 gap-4">
     @if (!typeToShow || typeToShow === UnitType.HYDROGEN_PRODUCTION) {
-      @for (item of hydrogenProductionUnits$(); track item) {
+      @for (item of hydrogenProductionUnitsQuery.data(); track item.id) {
         <a [routerLink]="['hydrogen-production', item.id]">
           <app-unit-card [name]="item.name" [unittype]="UnitType.HYDROGEN_PRODUCTION" [active]="item.active">
             <mat-chip>
@@ -46,7 +46,7 @@
       }
     }
     @if (!typeToShow || typeToShow === UnitType.HYDROGEN_STORAGE) {
-      @for (item of hydrogenStorageQuery.data(); track item) {
+      @for (item of hydrogenStorageQuery.data(); track item.id) {
         <a [routerLink]="['hydrogen-storage', item.id]">
           <app-unit-card [name]="item.name" [unittype]="UnitType.HYDROGEN_STORAGE" [active]="item.active">
             <mat-chip>
@@ -64,7 +64,7 @@
     }
 
     @if (!typeToShow || typeToShow === UnitType.POWER_PRODUCTION) {
-      @for (item of powerProductionQuery.data(); track item) {
+      @for (item of powerProductionQuery.data(); track item.id) {
         <a [routerLink]="['power-production', item.id]">
           <app-unit-card [name]="item.name" [unittype]="UnitType.POWER_PRODUCTION" [active]="item.active">
             <mat-chip
