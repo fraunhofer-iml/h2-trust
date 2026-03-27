@@ -6,6 +6,9 @@ import { Component } from '@angular/core';
   templateUrl: './ppa-requests.component.html',
 })
 export class PpaRequestsComponent {
+  isPowerProducer = true;
+  isHydrogenProducer = true;
+
   requestsReceivedPending = [];
   requestsReceived = [];
 

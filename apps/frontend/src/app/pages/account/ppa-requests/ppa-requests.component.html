@@ -1,61 +1,64 @@
-<div class="flex w-full flex-col gap-4 lg:flex-row">
-  <div class="flex w-full flex-col gap-4 rounded-lg bg-white p-4">
-    <h3 class="font-semibold text-neutral-500">My received PPA Requests</h3>
-    <div class="text-neutral-700">
-      <span>open</span>
-      <div class="my-1 h-px w-full bg-neutral-200"></div>
-
-      @if (requestsSentPending.length === 0) {
-        <div class="flex flex-col items-center p-8 text-center text-sm">
-          <div class="rounded-lg bg-neutral-300 p-2">
-            <span class="material-symbols-outlined p-2"> check_circle </span>
+<div class="flex w-full flex-col gap-4 rounded-lg bg-white py-4">
+  <h3 class="px-4 font-semibold text-neutral-500">My PPA Requests</h3>
+  @if (isPowerProducer) {
+    <div class="h-px w-full bg-neutral-200"></div>
+    <span class="px-4 text-xs text-neutral-400">INCOMMING</span>
+    <div class="3xl:flex-row flex w-full flex-col gap-4 px-4 text-neutral-600">
+      <div class="flex w-full flex-col rounded-md border p-4">
+        <span class="text-xs text-neutral-400"> PENDING</span>
+        @if (requestsSentPending.length === 0) {
+          <div class="flex flex-col items-center p-8 text-center text-sm">
+            <div class="rounded-lg bg-neutral-300 p-2">
+              <span class="material-symbols-outlined p-2"> screenshot_frame_2 </span>
+            </div>
+            <p><strong>No pending requests</strong></p>
+            <p>There are no requests that require an action from you.</p>
           </div>
-          <p><strong>No pending requests</strong></p>
-          <p>There are no requests that require an action from you.</p>
-        </div>
-      }
-
-      <span>closed</span>
-      <div class="my-1 h-px w-full bg-neutral-200"></div>
-      @if (requestsReceived.length === 0) {
-        <div class="flex flex-col items-center p-8 text-center text-sm">
-          <div class="rounded-lg bg-neutral-300 p-2">
-            <span class="material-symbols-outlined p-2"> screenshot_frame_2 </span>
+        }
+      </div>
+      <div class="flex w-full flex-col rounded-md border p-4">
+        <span class="text-xs text-neutral-400">COMPLETED</span>
+        @if (requestsReceived.length === 0) {
+          <div class="flex flex-col items-center p-8 text-center text-sm">
+            <div class="rounded-lg bg-neutral-300 p-2">
+              <span class="material-symbols-outlined p-2"> screenshot_frame_2 </span>
+            </div>
+            <p><strong>No closed requests</strong></p>
+            <p>There are no closed ppa requests for you.</p>
           </div>
-          <p><strong>No closed requests</strong></p>
-          <p>There are no closed ppa requests for you.</p>
-        </div>
-      }
+        }
+      </div>
     </div>
-  </div>
+  }
 
-  <div class="flex w-full flex-col gap-4 rounded-lg bg-white p-4">
-    <h3 class="font-semibold text-neutral-500">My send PPA Requests</h3>
-    <div class="text-neutral-600">
-      <span>Pending requests</span>
-      <div class="my-1 h-px w-full bg-neutral-200"></div>
-
-      @if (requestsReceivedPending.length === 0) {
-        <div class="flex flex-col items-center p-8 text-center text-sm">
-          <div class="rounded-lg bg-neutral-300 p-2">
-            <span class="material-symbols-outlined p-2"> screenshot_frame_2 </span>
+  @if (isHydrogenProducer) {
+    <div class="h-px w-full bg-neutral-200"></div>
+    <span class="px-4 text-xs text-neutral-400">OUTGOING</span>
+    <div class="3xl:flex-row flex w-full flex-col gap-4 px-4 text-neutral-600">
+      <div class="flex w-full flex-col rounded-md border p-4">
+        <span class="text-xs text-neutral-400"> PENDING</span>
+        @if (requestsSentPending.length === 0) {
+          <div class="flex flex-col items-center p-8 text-center text-sm">
+            <div class="rounded-lg bg-neutral-300 p-2">
+              <span class="material-symbols-outlined p-2"> screenshot_frame_2 </span>
+            </div>
+            <p><strong>No pending requests</strong></p>
+            <p>There are no open requests.</p>
           </div>
-          <p><strong>No pending requests</strong></p>
-          <p>There are no pending requests for you.</p>
-        </div>
-      }
-
-      <span>Closed Requests</span>
-      <div class="my-1 h-px w-full bg-neutral-200"></div>
-      @if (requestsReceived.length === 0) {
-        <div class="flex flex-col items-center p-8 text-center text-sm">
-          <div class="rounded-lg bg-neutral-300 p-2">
-            <span class="material-symbols-outlined p-2"> screenshot_frame_2 </span>
+        }
+      </div>
+      <div class="flex w-full flex-col rounded-md border p-4">
+        <span class="text-xs text-neutral-400">COMPLETED</span>
+        @if (requestsReceived.length === 0) {
+          <div class="flex flex-col items-center p-8 text-center text-sm">
+            <div class="rounded-lg bg-neutral-300 p-2">
+              <span class="material-symbols-outlined p-2"> screenshot_frame_2 </span>
+            </div>
+            <p><strong>No closed requests</strong></p>
+            <p>There are no closed ppa requests for you.</p>
           </div>
-          <p><strong>No closed requests</strong></p>
-          <p>There are no closed ppa requests for you.</p>
-        </div>
-      }
+        }
+      </div>
     </div>
-  </div>
+  }
 </div>

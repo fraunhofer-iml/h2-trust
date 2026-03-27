@@ -15,6 +15,7 @@ import { CompanyModule } from './company/company.module';
 import { FileDownloadModule } from './file-download/file-download.module';
 import { PowerAccessApprovalModule } from './power-access-approval/power-access-approval.module';
 import { ProductionModule } from './production/production.module';
+import { PpaRequestModule } from './request/ppa-request.module';
 import { UnitModule } from './unit/unit.module';
 import { UserModule } from './user/user.module';
 
@@ -31,6 +32,7 @@ import { UserModule } from './user/user.module';
       imports: [ConfigurationModule],
     }),
     FileDownloadModule,
+    PpaRequestModule,
   ],
   controllers: [],
   providers: [{ provide: APP_GUARD, useClass: AuthGuard }],
