@@ -6,10 +6,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { HydrogenComponentEntity, ProofOfOriginSectionEntity, ProvenanceEntity } from '@h2-trust/amqp';
-import { ProcessType } from '@h2-trust/domain';
-import { HydrogenComponentAssembler } from './hydrogenComponent/hydrogen-component.assembler';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BrokerException,
+  HydrogenComponentEntity,
+  HydrogenCompositionUtil,
+  ProofOfOriginHydrogenBatchEntity,
+  ProofOfOriginSectionEntity,
+  ProvenanceEntity,
+} from '@h2-trust/amqp';
+import { ProcessType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
 import { HydrogenBottlingProofOfOriginService } from './proof-of-origin/hydrogen-bottling-proof-of-origin.service';
 import { HydrogenProductionProofOfOriginService } from './proof-of-origin/hydrogen-production-proof-of-origin.service';
 import { HydrogenStorageroofOfOriginService } from './proof-of-origin/hydrogen-storage-proof-of-origin.service';
@@ -28,8 +34,7 @@ export class ProofOfOriginService {
 
     const proofOfOrigin: ProofOfOriginSectionEntity[] = [];
 
-    let hydrogenComponentsOfBottling: HydrogenComponentEntity[] =
-      HydrogenComponentAssembler.assembleCompositionForBottling(provenance);
+    let hydrogenComponentsOfBottling: HydrogenComponentEntity[] = this.assembleCompositionForBottling(provenance);
 
     //build hydrogen production section
     if (provenance.powerProductions?.length || provenance.waterConsumptions?.length) {
@@ -80,5 +85,48 @@ export class ProofOfOriginService {
     }
 
     return proofOfOrigin;
+  }
+
+  public getHydrogenBottling(proofOfOrigin: ProofOfOriginSectionEntity[]): ProofOfOriginHydrogenBatchEntity {
+    return proofOfOrigin.find((section) => section.name == ProofOfOrigin.HYDROGEN_BOTTLING_SECTION)
+      .batches[0] as ProofOfOriginHydrogenBatchEntity;
+  }
+
+  /**
+   * Create Hydrogen components from the root Hydrogen productions.
+   * @param provenance
+   * @returns
+   */
+  private assembleCompositionForBottling(provenance: ProvenanceEntity): HydrogenComponentEntity[] {
+    if (!provenance.hydrogenBottling) {
+      const errorMessage = `There is no hydrogen bottling in provenance.`;
+      throw Error(errorMessage);
+    }
+    if (provenance.hydrogenProductions?.length === 0) {
+      const errorMessage = `There are no Hydrogen Root Productions in Provenance.`;
+      throw Error(errorMessage);
+    }
+    if (
+      provenance.root.type !== ProcessType.HYDROGEN_BOTTLING &&
+      provenance.root.type !== ProcessType.HYDROGEN_TRANSPORTATION
+    ) {
+      const errorMessage = `The process step ${provenance.root.id} should be type ${ProcessType.HYDROGEN_BOTTLING} or ${ProcessType.HYDROGEN_TRANSPORTATION}, but is ${provenance.root.type}.`;
+      throw new BrokerException(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    //Since we are calculating the Hydrogen Components for the bottling we use the bottled amount here.
+    const bottlingBatchAmount = provenance.hydrogenBottling.batch.amount;
+
+    const hydrogenComponentsOfProductions = provenance.hydrogenProductions.map(
+      (hydrogenRootProduction) =>
+        new HydrogenComponentEntity(
+          '',
+          hydrogenRootProduction.batch.qualityDetails?.color,
+          hydrogenRootProduction.batch.amount,
+          hydrogenRootProduction.batch.qualityDetails?.rfnboType ?? RfnboType.NOT_SPECIFIED,
+        ),
+    );
+
+    return HydrogenCompositionUtil.computeHydrogenComposition(hydrogenComponentsOfProductions, bottlingBatchAmount);
   }
 }

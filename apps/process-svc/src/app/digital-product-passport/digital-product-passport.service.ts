@@ -18,7 +18,6 @@ import {
 } from '@h2-trust/amqp';
 import { PowerType, ProcessType } from '@h2-trust/domain';
 import { ProcessStepService } from '../process-step/process-step.service';
-import { HydrogenComponentAssembler } from './proof-of-origin/hydrogenComponent/hydrogen-component.assembler';
 import { ProofOfOriginService } from './proof-of-origin/proof-of-origin.service';
 import { ProofOfSustainabilityService } from './proof-of-origin/proof-of-sustainability.service';
 import { ProvenanceService } from './provenance/provenance.service';
@@ -58,9 +57,7 @@ export class DigitalProductPassportService {
         : [];
 
     let hydrogenComponentsForProvenanceRoot: HydrogenComponentEntity[] =
-      provenance.root.type == ProcessType.HYDROGEN_BOTTLING || ProcessType.HYDROGEN_TRANSPORTATION
-        ? HydrogenComponentAssembler.assembleCompositionForBottling(provenance)
-        : [];
+      this.proofOfOriginService.getHydrogenBottling(proofOfOrigin).hydrogenComposition;
 
     const proofOfSustainability: ProofOfSustainabilityEntity =
       this.emissionService.createProofOfSustainability(provenance);
