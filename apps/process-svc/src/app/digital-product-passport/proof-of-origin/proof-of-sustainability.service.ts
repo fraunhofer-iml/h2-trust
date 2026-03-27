@@ -22,6 +22,7 @@ import { WaterConsumptionPosService } from './proof-of-sustainability/water-cons
 
 @Injectable()
 export class ProofOfSustainabilityService {
+  //TODO-LG: reqrite createProofOfSustainability so that it works for persisted Power and Water PS and non persisted Hydrogen PS
   createProofOfSustainability(provenance: ProvenanceEntity): ProofOfSustainabilityEntity {
     if (!provenance) {
       throw new Error('Provenance is undefined.');

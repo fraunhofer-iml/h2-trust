@@ -11,11 +11,10 @@ import {
   BatchEntity,
   CompanyEntity,
   CreateProductionEntity,
-  HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
-  PowerProductionUnitEntity,
   ProcessStepEntity,
   QualityDetailsEntity,
+  UnitEntity,
   UserEntity,
 } from '@h2-trust/amqp';
 import { BatchType, HydrogenColor, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
@@ -26,7 +25,10 @@ import { ProductionUtils } from './utils/production.utils';
 export class ProductionAssembler {
   private static readonly logger = new Logger(ProductionAssembler.name);
 
-  static assemblePowerProductions(entity: CreateProductionEntity): ProcessStepEntity[] {
+  static assemblePowerProductions(
+    entity: CreateProductionEntity,
+    productionUnitsForId: Map<string, UnitEntity>,
+  ): ProcessStepEntity[] {
     const params: ProcessStepParams = {
       type: ProcessType.POWER_PRODUCTION,
       executedBy: entity.powerProductionUnitId,
@@ -45,10 +47,14 @@ export class ProductionAssembler {
       entity.powerAmountKwh,
       params,
       [],
+      productionUnitsForId,
     );
   }
 
-  static assembleWaterConsumptions(entity: CreateProductionEntity): ProcessStepEntity[] {
+  static assembleWaterConsumptions(
+    entity: CreateProductionEntity,
+    productionUnitsForId: Map<string, UnitEntity>,
+  ): ProcessStepEntity[] {
     const waterAmountLiters = ProductionUtils.calculateWaterAmount(
       entity.productionStartedAt,
       entity.productionEndedAt,
@@ -66,13 +72,21 @@ export class ProductionAssembler {
       },
     };
 
-    return this.createProcessSteps(entity.productionStartedAt, entity.productionEndedAt, waterAmountLiters, params, []);
+    return this.createProcessSteps(
+      entity.productionStartedAt,
+      entity.productionEndedAt,
+      waterAmountLiters,
+      params,
+      [],
+      productionUnitsForId,
+    );
   }
 
   static assembleHydrogenProductions(
     entity: CreateProductionEntity,
     powerProductions: ProcessStepEntity[],
     waterConsumptions: ProcessStepEntity[],
+    productionUnitsForId: Map<string, UnitEntity>,
   ): ProcessStepEntity[] {
     const params: ProcessStepParams = {
       type: ProcessType.HYDROGEN_PRODUCTION,
@@ -94,6 +108,7 @@ export class ProductionAssembler {
       entity.hydrogenAmountKg,
       params,
       [...powerProductions, ...waterConsumptions],
+      productionUnitsForId,
     );
   }
 
@@ -103,6 +118,7 @@ export class ProductionAssembler {
     totalAmount: number,
     params: ProcessStepParams,
     predecessors: ProcessStepEntity[],
+    productionUnitsForId: Map<string, UnitEntity>,
   ): ProcessStepEntity[] {
     const accountingPeriods: AccountingPeriod[] = ProductionUtils.calculateAccountingPeriods(
       startedAt,
@@ -110,10 +126,17 @@ export class ProductionAssembler {
       totalAmount,
       predecessors,
     );
-    return accountingPeriods.map((accountingPeriod) => this.createProcessStep(accountingPeriod, params));
+
+    const executedBy: UnitEntity = productionUnitsForId.get(params.executedBy);
+
+    return accountingPeriods.map((accountingPeriod) => this.createProcessStep(accountingPeriod, params, executedBy));
   }
 
-  private static createProcessStep(accountingPeriod: AccountingPeriod, params: ProcessStepParams): ProcessStepEntity {
+  private static createProcessStep(
+    accountingPeriod: AccountingPeriod,
+    params: ProcessStepParams,
+    executedBy: UnitEntity,
+  ): ProcessStepEntity {
     this.logger.debug(
       `${DateTimeUtil.formatDate(accountingPeriod.startedAt)} | ${DateTimeUtil.formatDate(accountingPeriod.endedAt)} | ${params.type} | ${params.executedBy} | ${accountingPeriod.amount}`,
     );
@@ -150,7 +173,7 @@ export class ProductionAssembler {
       params.type,
       batch,
       { id: params.recordedBy } as UserEntity,
-      { id: params.executedBy } as HydrogenStorageUnitEntity | HydrogenProductionUnitEntity | PowerProductionUnitEntity,
+      executedBy as UnitEntity,
       null,
     );
   }

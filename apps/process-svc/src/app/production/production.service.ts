@@ -20,6 +20,7 @@ import {
   ReadByIdPayload,
   ReadByIdsPayload,
   StagedProductionEntity,
+  UnitEntity,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
@@ -87,7 +88,20 @@ export class ProductionService {
     this.logger.debug(
       `Finalizing ${createProductions.length} staged productions in chunks of ${this.productionChunkSize}`,
     );
-    return this.productionCreationService.createAndPersistProductions(createProductions);
+    const productionUnitForId: Map<string, UnitEntity> = await this.getProductionUnits(createProductions);
+    return this.productionCreationService.createAndPersistProductions(createProductions, productionUnitForId);
+  }
+
+  private async getProductionUnits(createProductions: CreateProductionEntity[]): Promise<Map<string, UnitEntity>> {
+    const productionUnitIds: string[] = createProductions.flatMap((production) => [
+      production.hydrogenStorageUnitId,
+      production.powerProductionUnitId,
+      production.hydrogenProductionUnitId,
+    ]);
+    const productionUnits: UnitEntity[] = await firstValueFrom(
+      this.generalSvc.send(UnitMessagePatterns.READ_MANY, new ReadByIdsPayload(productionUnitIds)),
+    );
+    return new Map<string, UnitEntity>(productionUnits.map((productionUnit) => [productionUnit.id, productionUnit]));
   }
 
   async createProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
@@ -119,7 +133,7 @@ export class ProductionService {
       createProductionEntity,
       powerProductionUnit.type.energySource,
     );
-
-    return this.productionCreationService.createAndPersistProductions(createProductionEntities);
+    const productionUnitForId: Map<string, UnitEntity> = await this.getProductionUnits(createProductionEntities);
+    return this.productionCreationService.createAndPersistProductions(createProductionEntities, productionUnitForId);
   }
 }

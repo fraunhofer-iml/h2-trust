@@ -13,7 +13,6 @@ import {
   HydrogenProductionUnitEntity,
   PowerProductionUnitEntity,
   ProcessStepEntity,
-  ProvenanceEntity,
   RedComplianceEntity,
 } from '@h2-trust/amqp';
 import { BatchType, BiddingZone } from '@h2-trust/domain';
@@ -21,10 +20,13 @@ import { assertBoolean, assertDefined, DateTimeUtil } from '@h2-trust/utils';
 
 @Injectable()
 export class RedComplianceService {
-  public determineRedCompliance(provenance: ProvenanceEntity): RedComplianceEntity {
-    if (!provenance || !provenance.powerProductions?.length || !provenance.hydrogenRootProductions?.length) {
+  public determineRedCompliance(
+    powerProductions: ProcessStepEntity[],
+    hydrogenRootProductions: ProcessStepEntity[],
+  ): RedComplianceEntity {
+    if (!powerProductions?.length || !hydrogenRootProductions?.length) {
       throw new RpcException(
-        `Provenance or required productions (power/hydrogen) are missing for processStepId [${provenance.root.id}]`,
+        `The required productions (power/hydrogen) for the Red compliance calculation are missing.`,
       );
     }
 
@@ -33,11 +35,11 @@ export class RedComplianceService {
     let isAdditionalityFulfilled = true;
     let isFinancialSupportReceived = true;
 
-    for (const hydrogenProductionProcessStep of provenance.hydrogenRootProductions) {
+    for (const hydrogenProductionProcessStep of hydrogenRootProductions) {
       const powerProductionBatch: BatchEntity = hydrogenProductionProcessStep.batch.predecessors.find(
         (pred) => pred.type == BatchType.POWER,
       );
-      const powerProductionProcessStep: ProcessStepEntity = provenance.powerProductions.find(
+      const powerProductionProcessStep: ProcessStepEntity = powerProductions.find(
         (powerProduction) => powerProduction.id === powerProductionBatch.processStepId,
       );
 

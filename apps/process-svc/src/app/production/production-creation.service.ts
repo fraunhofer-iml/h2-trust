@@ -12,6 +12,8 @@ import {
   CreateManyProcessStepsPayload,
   CreateProductionEntity,
   ProcessStepEntity,
+  RedComplianceEntity,
+  UnitEntity,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { BatchType } from '@h2-trust/domain';
@@ -31,7 +33,10 @@ export class ProductionCreationService {
     this.productionChunkSize = this.configurationService.getProcessSvcConfiguration().productionChunkSize;
   }
 
-  public async createAndPersistProductions(createProductions: CreateProductionEntity[]): Promise<ProcessStepEntity[]> {
+  public async createAndPersistProductions(
+    createProductions: CreateProductionEntity[],
+    productionUnitsForId: Map<string, UnitEntity>,
+  ): Promise<ProcessStepEntity[]> {
     const persistedProcessSteps: ProcessStepEntity[] = [];
 
     for (let i = 0; i < createProductions.length; i += this.productionChunkSize) {
@@ -41,10 +46,10 @@ export class ProductionCreationService {
 
       // Step 1: Create power and water (each returns array with 1 element due to 1:1 relation)
       const power: ProcessStepEntity[] = createProductionsChunk.flatMap((production) =>
-        ProductionAssembler.assemblePowerProductions(production),
+        ProductionAssembler.assemblePowerProductions(production, productionUnitsForId),
       );
       const water: ProcessStepEntity[] = createProductionsChunk.flatMap((production) =>
-        ProductionAssembler.assembleWaterConsumptions(production),
+        ProductionAssembler.assembleWaterConsumptions(production, productionUnitsForId),
       );
 
       if (power.length !== createProductionsChunk.length || water.length !== createProductionsChunk.length) {
@@ -78,19 +83,25 @@ export class ProductionCreationService {
 
       // Step 4: Create hydrogen with persisted predecessors
       const hydrogen: ProcessStepEntity[] = createProductionsChunk.flatMap((production, index) =>
-        ProductionAssembler.assembleHydrogenProductions(production, [persistedPower[index]], [persistedWater[index]]),
+        ProductionAssembler.assembleHydrogenProductions(
+          production,
+          [persistedPower[index]],
+          [persistedWater[index]],
+          productionUnitsForId,
+        ),
       );
+
+      const redcompliance: RedComplianceEntity = this.digitalProductPassportService.getRedCompliance(
+        persistedPower,
+        hydrogen,
+      );
+      console.log(redcompliance);
+      //TODO-LG: add a createPOS call here to generate and use a pos to get the RFNBO Value
+      //TODO-LG: use the generated RFNBO Value to add it to the new hydrogen PS
 
       // Step 5: Persist hydrogen
       const persistedHydrogen: ProcessStepEntity[] = await this.processStepService.createManyProcessSteps(
         new CreateManyProcessStepsPayload(hydrogen),
-      );
-
-      // Step 6: Determine and save the RFNBO Type
-      await Promise.all(
-        persistedHydrogen.map((hydrogenProcessStep) =>
-          this.digitalProductPassportService.updateRfnboStatus(hydrogenProcessStep),
-        ),
       );
 
       persistedProcessSteps.push(...persistedPowerAndWater, ...persistedHydrogen);
