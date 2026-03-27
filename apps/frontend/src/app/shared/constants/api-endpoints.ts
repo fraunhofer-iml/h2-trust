@@ -16,6 +16,8 @@ const BOTTLING_ENDPOINT = BASE_URL + '/bottlings/';
 const PRODUCTION_ENDPOINT = BASE_URL + '/productions/';
 const FILE_DOWNLOAD_ENDPOINT = BASE_URL + '/file-download/';
 
+const PPA_REQUEST_ENDPOINT = BASE_URL + '/ppa-request/';
+
 export const API = {
   USERS: {
     BASE: USERS_ENDPOINT,
@@ -52,5 +54,8 @@ export const API = {
   },
   FILE_DOWNLOAD: {
     BASE: FILE_DOWNLOAD_ENDPOINT,
+  },
+  PPA_REQUESTS: {
+    BASE: PPA_REQUEST_ENDPOINT,
   },
 };
