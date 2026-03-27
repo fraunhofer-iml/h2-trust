@@ -2,6 +2,7 @@ name: Images
 
 on:
   push:
+    branches: ['main']
     tags:
       - 'v*.*.*'
 
@@ -11,6 +12,7 @@ concurrency:
 
 jobs:
   build-and-push-images:
+    if: ${{ github.ref_type == 'tag' || !startsWith(github.event.head_commit.message, 'chore') }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -27,11 +29,16 @@ jobs:
       - name: Determine Release Variables
         id: release
         run: |
-          echo "version=$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
-          if [[ "$GITHUB_REF_NAME" =~ -rc\. ]]; then
+          if [[ "$GITHUB_REF_NAME" == 'main' ]]; then
+            echo "version=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+            echo "frontend_config=dev" >> "$GITHUB_OUTPUT"
+            echo "push_latest=false" >> "$GITHUB_OUTPUT"
+          elif [[ "$GITHUB_REF_NAME" =~ -rc\. ]]; then
+            echo "version=$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
             echo "frontend_config=staging" >> "$GITHUB_OUTPUT"
             echo "push_latest=false" >> "$GITHUB_OUTPUT"
           else
+            echo "version=$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
             echo "frontend_config=production" >> "$GITHUB_OUTPUT"
             echo "push_latest=true" >> "$GITHUB_OUTPUT"
           fi
