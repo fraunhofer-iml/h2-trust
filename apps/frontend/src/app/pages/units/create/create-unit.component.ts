@@ -20,24 +20,17 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
-import { injectMutation } from '@tanstack/angular-query-experimental';
+import { injectMutation, QueryClient } from '@tanstack/angular-query-experimental';
 import {
   HydrogenProductionUnitInputDto,
   HydrogenStorageUnitInputDto,
   PowerProductionUnitInputDto,
   UnitInputDto,
 } from '@h2-trust/api';
-import {
-  BiddingZone,
-  GridLevel,
-  HydrogenProductionMethod,
-  HydrogenProductionTechnology,
-  HydrogenStorageType,
-  PowerProductionType,
-  UnitType,
-} from '@h2-trust/domain';
+import { HydrogenProductionMethod, HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { ICONS } from '../../../shared/constants/icons';
 import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
+import { QUERY_KEYS } from '../../../shared/queries/shared-query-keys';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { BaseUnitFormComponent } from '../forms/base-unit/base-unit-form-component';
@@ -88,11 +81,7 @@ export class CreateUnitComponent {
   unitsService = inject(UnitsService);
   companiesService = inject(CompaniesService);
   router = inject(Router);
-
-  availableBiddingZones = Object.values(BiddingZone);
-  availableGridLevels = Object.entries(GridLevel);
-  availableTechnologies: [string, HydrogenProductionTechnology][] = [];
-  availablePowerProductionType = Object.entries(PowerProductionType);
+  queryClient = inject(QueryClient);
 
   unitForm: FormGroup<UnitFormGroup> = newUnitForm();
   hydrogenProductionForm: FormGroup<HydrogenProductionFormGroup> = newH2ProductionForm();
@@ -122,6 +111,7 @@ export class CreateUnitComponent {
   }));
 
   private onSuccess = () => {
+    this.queryClient.invalidateQueries({ queryKey: QUERY_KEYS.HYDROGEN_PRODUCTION_UNITS });
     this.router.navigateByUrl('units');
     toast.success('Successfully created.');
   };

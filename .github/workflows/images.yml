@@ -12,6 +12,7 @@ concurrency:
 
 jobs:
   build-and-push-images:
+    if: ${{ github.ref_type == 'tag' || !startsWith(github.event.head_commit.message, 'chore') }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -29,7 +30,7 @@ jobs:
         id: release
         run: |
           if [[ "$GITHUB_REF_NAME" == 'main' ]]; then
-            echo "version=dev-$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+            echo "version=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
             echo "frontend_config=dev" >> "$GITHUB_OUTPUT"
             echo "push_latest=true" >> "$GITHUB_OUTPUT"
           elif [[ "$GITHUB_REF_NAME" =~ -rc\. ]]; then
