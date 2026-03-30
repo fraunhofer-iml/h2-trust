@@ -54,7 +54,7 @@ export class SidebarComponent implements OnInit {
 
   hydrogenProductionUnitsQuery = injectQuery(() => hydrogenProductionUnitsQueryOptions(this.unitsService));
   ppaRequestsQuery = injectQuery(() => ({
-    queryKey: ['ppa-requests'],
+    queryKey: ['ppa-requests', PowerAccessApprovalStatus.PENDING],
     queryFn: () => this.ppaService.getPpaRequests(PpaRequestRole.RECEIVER, PowerAccessApprovalStatus.PENDING),
   }));
 

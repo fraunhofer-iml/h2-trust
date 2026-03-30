@@ -1,0 +1,24 @@
+import { Component, input } from '@angular/core';
+import { MatDividerModule } from '@angular/material/divider';
+import { PpaRequestDto } from '@h2-trust/api';
+import { PpaRequestRole } from '@h2-trust/domain';
+import { PpaRequestCardComponent } from '../card/ppa-request-card.component';
+import { EmptyRequestsComponent } from '../empty-requests/empty-requests.component';
+
+interface PpaRequestsData {
+  pending: PpaRequestDto[];
+  closed: PpaRequestDto[];
+}
+
+@Component({
+  selector: 'app-ppa-requests-list',
+  standalone: true,
+  imports: [MatDividerModule, PpaRequestCardComponent, EmptyRequestsComponent],
+  templateUrl: './ppa-requests-list.component.html',
+})
+export class PpaRequestsListComponent {
+  role = input.required<PpaRequestRole>();
+  data = input.required<PpaRequestsData | undefined>();
+
+  protected readonly PpaRequestRole = PpaRequestRole;
+}

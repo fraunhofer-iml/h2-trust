@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-2 py-4">
     <div class="flex flex-row justify-between px-4">
       <div>
-        Request by {{ request().sender.company.name }}
+        Request by <strong>{{ request().sender.company.name }}</strong>
         <p class="text-xs text-neutral-400">{{ request().sender.name }} • {{ request().timestamp | date: 'medium' }}</p>
       </div>
       <app-ppa-status-chip [status]="request().status"></app-ppa-status-chip>

@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { PpaRequestDto, UserDetailsDto } from '@h2-trust/api';
 import { PowerAccessApprovalStatus, PowerType, PpaRequestRole } from '@h2-trust/domain';
 
@@ -6,13 +6,10 @@ import { PowerAccessApprovalStatus, PowerType, PpaRequestRole } from '@h2-trust/
 export class PpaRequestController {
   @Get()
   getPPARequest(
-    @Param('role') role: PpaRequestRole,
-    @Param('status') status: PowerAccessApprovalStatus,
+    @Query('role') _role: PpaRequestRole,
+    @Query('status') _status: PowerAccessApprovalStatus,
   ): PpaRequestDto[] {
-    console.log(role);
-    console.log(status);
-
-    return [
+    const requests = [
       {
         id: '123',
         timestamp: new Date().toDateString(),
@@ -62,6 +59,24 @@ export class PpaRequestController {
           ratedPower: 200,
         },
       },
+      {
+        id: '456',
+        timestamp: new Date().toDateString(),
+        sender: { name: 'Petra Power', company: { name: 'GreenPower company' } } as UserDetailsDto,
+        receiver: { name: 'Hannes', company: { name: 'hannes company' } } as UserDetailsDto,
+        powerType: PowerType.PARTLY_RENEWABLE,
+        status: PowerAccessApprovalStatus.APPROVED,
+        powerProductionUnit: {
+          id: '123456',
+          name: 'test unit',
+          typeName: 'type',
+          active: true,
+          producing: true,
+          ratedPower: 200,
+        },
+      },
     ];
+
+    return requests;
   }
 }
