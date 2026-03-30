@@ -36,6 +36,6 @@ export class PowerAccessApprovalService {
       params = params.append('role', role);
     }
 
-    return lastValueFrom(this.httpClient.get<PpaRequestDto[]>(API.PPA_REQUESTS.BASE, { params }));
+    return lastValueFrom(this.httpClient.get<PpaRequestDto[]>(API.POWER_ACCESS_APPROVALS.REQUESTS, { params }));
   }
 }

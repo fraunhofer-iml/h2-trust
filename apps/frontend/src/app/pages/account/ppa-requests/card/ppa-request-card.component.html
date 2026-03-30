@@ -12,7 +12,7 @@
 
     <div class="flex flex-col gap-1 px-4">
       <span class="flex flex-row justify-between text-sm">
-        <span>Requested Power Type:</span> {{ request().powerType | prettyEnum | titlecase }}
+        <span>Requested power production type:</span> {{ request().powerProductionType | prettyEnum | titlecase }}
       </span>
 
       @if (request().status !== PowerAccessApprovalStatus.PENDING) {

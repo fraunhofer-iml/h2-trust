@@ -16,8 +16,6 @@ const BOTTLING_ENDPOINT = BASE_URL + '/bottlings/';
 const PRODUCTION_ENDPOINT = BASE_URL + '/productions/';
 const FILE_DOWNLOAD_ENDPOINT = BASE_URL + '/file-download/';
 
-const PPA_REQUEST_ENDPOINT = BASE_URL + '/ppa-requests/';
-
 export const API = {
   USERS: {
     BASE: USERS_ENDPOINT,
@@ -39,7 +37,10 @@ export const API = {
     },
   },
   COMPANIES: { BASE: COMPANIES_ENDPOINT },
-  POWER_ACCESS_APPROVALS: { BASE: POWER_ACCESS_APPROVALS_ENDPOINT },
+  POWER_ACCESS_APPROVALS: {
+    BASE: POWER_ACCESS_APPROVALS_ENDPOINT,
+    REQUESTS: POWER_ACCESS_APPROVALS_ENDPOINT + 'requests',
+  },
   BOTTLING: {
     BASE: BOTTLING_ENDPOINT,
     DETAILS: (id: string) => `${BOTTLING_ENDPOINT}${id}`,
@@ -54,8 +55,5 @@ export const API = {
   },
   FILE_DOWNLOAD: {
     BASE: FILE_DOWNLOAD_ENDPOINT,
-  },
-  PPA_REQUESTS: {
-    BASE: PPA_REQUEST_ENDPOINT,
   },
 };

@@ -7,9 +7,12 @@
     <textarea matInput placeholder="Since we have..." [(ngModel)]="comment"></textarea>
   </mat-form-field>
 </div>
+
+<!-- TODO: remove disabled and add functionality and endpoint (DUHGW-301) -->
+
 <mat-dialog-actions>
-  <button matButton (click)="close(false)">Cancel</button>
-  <button matButton (click)="close(true)" cdkFocusInitial>
+  <button matButton (click)="close(false)" disabled>Cancel</button>
+  <button matButton (click)="close(true)" cdkFocusInitial disabled>
     {{ data === PowerAccessApprovalStatus.APPROVED ? 'Approve' : 'Reject' }}
   </button>
 </mat-dialog-actions>

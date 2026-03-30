@@ -1,4 +1,4 @@
-import { PowerAccessApprovalStatus, PowerType } from '@h2-trust/domain';
+import { PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
 import { PowerProductionOverviewDto } from '../unit';
 import { UserDetailsDto } from '../user';
 
@@ -7,7 +7,7 @@ export class PpaRequestDto {
   timestamp: string;
   sender: UserDetailsDto;
   receiver: UserDetailsDto;
-  powerType: PowerType;
+  powerProductionType: PowerProductionType;
   powerProductionUnit?: PowerProductionOverviewDto;
   status: PowerAccessApprovalStatus;
   comment?: string;
@@ -17,7 +17,7 @@ export class PpaRequestDto {
     timestammp: string,
     sender: UserDetailsDto,
     receiver: UserDetailsDto,
-    powerType: PowerType,
+    powerType: PowerProductionType,
     powerProductionUnit: PowerProductionOverviewDto,
     status: PowerAccessApprovalStatus,
     comment?: string,
@@ -26,7 +26,7 @@ export class PpaRequestDto {
     this.timestamp = timestammp;
     this.sender = sender;
     this.receiver = receiver;
-    this.powerType = powerType;
+    this.powerProductionType = powerType;
     this.powerProductionUnit = powerProductionUnit;
     this.status = status;
     this.comment = comment;
