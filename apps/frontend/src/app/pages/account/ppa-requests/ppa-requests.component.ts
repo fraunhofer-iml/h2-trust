@@ -1,5 +1,13 @@
+/*
+ * Copyright Fraunhofer Institute for Material Flow and Logistics
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * For details on the licensing terms, see the LICENSE file.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -8,12 +16,9 @@ import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PpaRequestDto } from '@h2-trust/api';
 import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
-import {
-  hydrogenProductionUnitsQueryOptions,
-  powerProductionUnitsQueryOptions,
-} from '../../../shared/queries/hydrogen-production-units.query';
 import { PowerAccessApprovalService } from '../../../shared/services/power-access-approvals/power-access-approvals.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
+import { UserRolesStore } from '../../../shared/store/user-role.store';
 import { PpaRequestsListComponent } from './ppa-requests-list/ppa-requests-list.component';
 
 @Component({
@@ -35,9 +40,7 @@ export class PpaRequestsComponent {
 
   protected readonly unitsService = inject(UnitsService);
   protected readonly ppaService = inject(PowerAccessApprovalService);
-
-  hydrogenProductionUnitsQuery = injectQuery(() => hydrogenProductionUnitsQueryOptions(this.unitsService));
-  powerProductionUnitsQuery = injectQuery(() => powerProductionUnitsQueryOptions(this.unitsService));
+  protected roles = inject(UserRolesStore);
 
   ppaRequestsSentQuery = injectQuery(() => ({
     queryKey: ['ppa-requests', PpaRequestRole.SENDER],
@@ -62,9 +65,6 @@ export class PpaRequestsComponent {
     );
     return result;
   }
-
-  isPowerProducer = computed(() => (this.powerProductionUnitsQuery.data()?.length ?? 0) > 0);
-  isHydrogenProducer = computed(() => (this.hydrogenProductionUnitsQuery.data()?.length ?? 0) > 0);
 
   showCommentInput = false;
 

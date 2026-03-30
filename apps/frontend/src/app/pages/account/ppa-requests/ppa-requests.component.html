@@ -6,7 +6,7 @@
   </div>
 
   <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="rounded-md" dynamicHeight>
-    <mat-tab [disabled]="!isPowerProducer()">
+    <mat-tab [disabled]="!roles.isPowerProducer()">
       <ng-template mat-tab-label>
         <span class="material-symbols-outlined p-2">markunread_mailbox</span>
         Requests received
@@ -15,7 +15,7 @@
       <app-ppa-requests-list [role]="PpaRequestRole.RECEIVER" [data]="ppaRequestsReceivedQuery.data()" />
     </mat-tab>
 
-    <mat-tab [disabled]="!isHydrogenProducer()">
+    <mat-tab [disabled]="!roles.isHydrogenProducer()">
       <ng-template mat-tab-label>
         <span class="material-symbols-outlined p-2">outgoing_mail</span>
         Requests sent

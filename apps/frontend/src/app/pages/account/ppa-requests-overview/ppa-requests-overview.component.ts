@@ -1,12 +1,16 @@
+/*
+ * Copyright Fraunhofer Institute for Material Flow and Logistics
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * For details on the licensing terms, see the LICENSE file.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, input, Signal } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
-import {
-  hydrogenProductionUnitsQueryOptions,
-  powerProductionUnitsQueryOptions,
-} from '../../../shared/queries/hydrogen-production-units.query';
 import { PowerAccessApprovalService } from '../../../shared/services/power-access-approvals/power-access-approvals.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 
@@ -27,9 +31,6 @@ export class PpaRequestsOverviewComponent {
   protected readonly ppaService = inject(PowerAccessApprovalService);
   protected readonly unitsService = inject(UnitsService);
 
-  hydrogenProductionUnitsQuery = injectQuery(() => hydrogenProductionUnitsQueryOptions(this.unitsService));
-  powerProductionUnitsQuery = injectQuery(() => powerProductionUnitsQueryOptions(this.unitsService));
-
   ppaRequestsQuery = injectQuery(() => ({
     queryKey: ['ppa-requests', this.role()],
     queryFn: async () => {
@@ -49,9 +50,6 @@ export class PpaRequestsOverviewComponent {
       return statistics;
     },
   }));
-
-  isPowerProducer = computed(() => (this.powerProductionUnitsQuery.data()?.length ?? 0) > 0);
-  isHydrogenProducer = computed(() => (this.hydrogenProductionUnitsQuery.data()?.length ?? 0) > 0);
 
   labels: Signal<RequestLabels> = computed(() => {
     const labelsReceiver: RequestLabels = {

@@ -24,6 +24,7 @@ import {
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { UsersService } from '../../../shared/services/users/users.service';
+import { UserRolesStore } from '../../../shared/store/user-role.store';
 import { PpaRequestsOverviewComponent } from '../ppa-requests-overview/ppa-requests-overview.component';
 
 @Component({
@@ -54,11 +55,7 @@ export class AccountOverviewComponent implements OnInit {
 
   userId$ = signal<string | undefined>(undefined);
 
-  hydrogenProductionUnitsQuery = injectQuery(() => hydrogenProductionUnitsQueryOptions(this.unitsService));
-  powerProductionUnitsQuery = injectQuery(() => powerProductionUnitsQueryOptions(this.unitsService));
-
-  isPowerProducer = computed(() => (this.powerProductionUnitsQuery.data()?.length ?? 0) > 0);
-  isHydrogenProducer = computed(() => (this.hydrogenProductionUnitsQuery.data()?.length ?? 0) > 0);
+  protected roles = inject(UserRolesStore);
 
   accountQuery = injectQuery(() => ({
     queryKey: ['account-info', this.userId$()],
