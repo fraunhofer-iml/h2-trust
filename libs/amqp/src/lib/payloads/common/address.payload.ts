@@ -11,6 +11,10 @@ import { IsNotEmpty, IsString } from 'class-validator';
 export class AddressPayload {
   @IsString()
   @IsNotEmpty()
+  id: string;
+
+  @IsString()
+  @IsNotEmpty()
   street: string;
 
   @IsString()
@@ -29,7 +33,8 @@ export class AddressPayload {
   @IsNotEmpty()
   country: string;
 
-  constructor(street: string, postalCode: string, city: string, state: string, country: string) {
+  constructor(id: string, street: string, postalCode: string, city: string, state: string, country: string) {
+    this.id = id;
     this.street = street;
     this.postalCode = postalCode;
     this.city = city;

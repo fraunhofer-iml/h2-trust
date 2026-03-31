@@ -100,12 +100,13 @@ export class PowerProductionUnitInputDto extends UnitInputDto {
     this.decommissioningPlannedOn = decommissioningPlannedOn;
   }
 
-  static toPayload(dto: PowerProductionUnitInputDto): CreatePowerProductionUnitPayload {
+  static toPayload(dto: PowerProductionUnitInputDto, id?: string): CreatePowerProductionUnitPayload {
     return new CreatePowerProductionUnitPayload(
       dto.name,
       dto.mastrNumber,
       dto.commissionedOn,
       new AddressPayload(
+        dto.address.id,
         dto.address.street,
         dto.address.postalCode,
         dto.address.city,
@@ -128,6 +129,7 @@ export class PowerProductionUnitInputDto extends UnitInputDto {
       dto.decommissioningPlannedOn,
       dto.gridOperator,
       dto.gridConnectionNumber,
+      id,
     );
   }
 }

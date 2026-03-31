@@ -72,6 +72,7 @@ export abstract class BaseUnitDto {
       certifiedBy: unit.certifiedBy,
       commissionedOn: unit.commissionedOn,
       address: {
+        id: unit.address.id,
         street: unit.address.street,
         postalCode: unit.address.postalCode,
         city: unit.address.city,

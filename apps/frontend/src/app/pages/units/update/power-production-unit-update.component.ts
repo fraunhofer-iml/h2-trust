@@ -52,7 +52,7 @@ export class PowerProductionUnitUpdateComponent {
   }));
 
   unitMutation = injectMutation(() => ({
-    mutationFn: (dto: PowerProductionUnitInputDto) => this.unitsService.updatePowerProductionUnit(dto),
+    mutationFn: (dto: PowerProductionUnitInputDto) => this.unitsService.updatePowerProductionUnit(this.id() ?? '', dto),
     onSuccess: () => this.navigateToDetailsView(),
     onError: () => toast.error('Failed to update unit.'),
   }));
@@ -62,7 +62,7 @@ export class PowerProductionUnitUpdateComponent {
       ...this.unitForm.value,
       ...this.powerProductionForm.value,
     } as PowerProductionUnitInputDto;
-
+    dto.address.id = this.unitQuery.data()?.address.id ?? '';
     this.unitMutation.mutate(dto);
   }
 

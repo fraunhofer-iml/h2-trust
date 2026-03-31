@@ -76,6 +76,20 @@ export class UnitService {
     return this.unitRepository.insertHydrogenStorageUnit(payload);
   }
 
+  async updateHydrogenProductionUnit(
+    payload: CreateHydrogenProductionUnitPayload,
+  ): Promise<HydrogenProductionUnitEntity> {
+    return this.unitRepository.updateOrCreateHydrogenProductionUnit(payload);
+  }
+
+  async updatePowerProductionUnit(payload: CreatePowerProductionUnitPayload): Promise<PowerProductionUnitEntity> {
+    return this.unitRepository.updateOrCreatePowerProductionUnit(payload);
+  }
+
+  async updateHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
+    return this.unitRepository.updateOrCreateHydrogenStorageUnit(payload);
+  }
+
   async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<BaseUnitEntity> {
     return this.unitRepository.updateUnitStatus(payload);
   }

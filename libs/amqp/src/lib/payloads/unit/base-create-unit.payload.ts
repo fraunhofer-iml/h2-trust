@@ -57,6 +57,10 @@ export abstract class BaseCreateUnitPayload {
   @IsNotEmpty()
   operatorId: string;
 
+  @IsString()
+  @IsNotEmpty()
+  id?: string;
+
   protected constructor(
     name: string,
     mastrNumber: string,
@@ -69,6 +73,7 @@ export abstract class BaseCreateUnitPayload {
     serialNumber: string,
     certifiedBy: string,
     operatorId: string,
+    id?: string,
   ) {
     this.name = name;
     this.mastrNumber = mastrNumber;
@@ -81,5 +86,6 @@ export abstract class BaseCreateUnitPayload {
     this.serialNumber = serialNumber;
     this.certifiedBy = certifiedBy;
     this.operatorId = operatorId;
+    this.id = id;
   }
 }
