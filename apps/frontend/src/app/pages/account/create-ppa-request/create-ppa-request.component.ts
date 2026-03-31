@@ -52,7 +52,7 @@ export class CreatePpaRequestComponent {
   }));
 
   mutation = injectMutation(() => ({
-    mutationFn: (dto: PpaRequestCreateDto) => this.ppaService.createPPaRequest(dto),
+    mutationFn: (dto: PpaRequestCreateDto) => this.ppaService.createPpaRequest(dto),
     onError: () => toast.error('Failed to create PPA Request'),
     onSuccess: () => {
       this.queryClient.invalidateQueries({ queryKey: [...QUERY_KEYS.PPA_REQUESTS, PpaRequestRole.SENDER] });
@@ -67,7 +67,9 @@ export class CreatePpaRequestComponent {
   save() {
     const val = this.form.value;
     if (!val.companyId || !val.powerProductionType) return;
+
     const dto: PpaRequestCreateDto = val as PpaRequestCreateDto;
+
     this.mutation.mutate(dto);
     this.close();
   }

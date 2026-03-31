@@ -32,9 +32,9 @@ export class PpaRequestCardComponent {
 
   readonly dialog = inject(MatDialog);
 
-  openDialog(status: PowerAccessApprovalStatus): void {
+  openDialog(status: PowerAccessApprovalStatus.APPROVED | PowerAccessApprovalStatus.REJECTED): void {
     const dialogRef = this.dialog.open(RequestConfirmationDialogComponent, {
-      data: status,
+      data: { status, request: this.request() },
     });
 
     dialogRef.afterClosed().subscribe((result: ConfirmationResult) => {
