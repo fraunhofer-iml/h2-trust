@@ -9,8 +9,8 @@
 import { AuthenticatedUser } from 'nest-keycloak-connect';
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
-import { PowerAccessApprovalDto, PpaRequestDto, UserDetailsDto, type AuthenticatedKCUser } from '@h2-trust/api';
-import { PowerAccessApprovalStatus, PowerProductionType, PpaRequestRole } from '@h2-trust/domain';
+import { PowerAccessApprovalDto, PpaRequestDto, type AuthenticatedKCUser } from '@h2-trust/api';
+import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PowerAccessApprovalService } from './power-access-approval.service';
 
 @Controller('power-access-approvals')
@@ -57,80 +57,52 @@ export class PowerAccessApprovalController {
   }
 
   @Get('requests')
+  @ApiQuery({
+    name: 'status',
+    enum: PowerAccessApprovalStatus,
+    required: false,
+    examples: {
+      allTypes: {
+        value: null,
+        description: 'Get requests of all status',
+      },
+      APPROVED: {
+        value: PowerAccessApprovalStatus.APPROVED,
+        description: `Get all PPA Requests with status "${PowerAccessApprovalStatus.APPROVED}"`,
+      },
+      PENDING: {
+        value: PowerAccessApprovalStatus.PENDING,
+        description: `Get all PPA Requests with status "${PowerAccessApprovalStatus.PENDING}"`,
+      },
+      REJECTED: {
+        value: PowerAccessApprovalStatus.REJECTED,
+        description: `Get all  PPA Requests with status "${PowerAccessApprovalStatus.REJECTED}"`,
+      },
+    },
+  })
+  @ApiQuery({
+    name: 'role',
+    enum: PpaRequestRole,
+    required: false,
+    examples: {
+      allTypes: {
+        value: null,
+        description: 'Get requests of all status',
+      },
+      SENDER: {
+        value: PpaRequestRole.SENDER,
+        description: `Get all PPA Requests where the authenticated user is the sender"`,
+      },
+      RECEIVER: {
+        value: PpaRequestRole.RECEIVER,
+        description: `Get all PPA Requests where the authenticated user is the receiver"`,
+      },
+    },
+  })
   getPPARequest(
     @Query('role') _role: PpaRequestRole,
     @Query('status') _status: PowerAccessApprovalStatus,
   ): PpaRequestDto[] {
-    const requests: PpaRequestDto[] = [
-      {
-        id: '123',
-        timestamp: new Date().toDateString(),
-        sender: { name: 'Petra', company: { name: 'petra company' } } as UserDetailsDto,
-        receiver: { name: 'Hannes', company: { name: 'hannes company' } } as UserDetailsDto,
-        powerProductionType: PowerProductionType.HYDRO_POWER_PLANT,
-        status: PowerAccessApprovalStatus.PENDING,
-        powerProductionUnit: {
-          id: '123456',
-          name: 'test unit',
-          typeName: 'type',
-          active: true,
-          producing: true,
-          ratedPower: 200,
-        },
-      },
-      {
-        id: '45687',
-        timestamp: new Date().toDateString(),
-        sender: { name: 'Petra', company: { name: 'petra company' } } as UserDetailsDto,
-        receiver: { name: 'Hannes', company: { name: 'hannes company' } } as UserDetailsDto,
-        powerProductionType: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
-        status: PowerAccessApprovalStatus.REJECTED,
-        powerProductionUnit: {
-          id: '123456',
-          name: 'test unit',
-          typeName: 'type',
-          active: true,
-          producing: true,
-          ratedPower: 200,
-        },
-        comment: 'Unfortunately we have come to the decision th move in other directions.',
-      },
-      {
-        id: '456',
-        timestamp: new Date().toDateString(),
-        sender: { name: 'Petra Power', company: { name: 'GreenPower company' } } as UserDetailsDto,
-        receiver: { name: 'Hannes', company: { name: 'hannes company' } } as UserDetailsDto,
-        powerProductionType: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
-        status: PowerAccessApprovalStatus.APPROVED,
-        powerProductionUnit: {
-          id: '123456',
-          name: 'test unit',
-          typeName: 'type',
-          active: true,
-          producing: true,
-          ratedPower: 200,
-        },
-      },
-      {
-        id: '45456416',
-        timestamp: new Date().toDateString(),
-        sender: { name: 'Petra Power', company: { name: 'GreenPower company' } } as UserDetailsDto,
-        receiver: { name: 'Hannes', company: { name: 'hannes company' } } as UserDetailsDto,
-        powerProductionType: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
-        status: PowerAccessApprovalStatus.APPROVED,
-        powerProductionUnit: {
-          id: '123456',
-          name: 'test unit',
-          typeName: 'type',
-          active: true,
-          producing: true,
-          ratedPower: 200,
-        },
-      },
-    ];
-
-    if (_role === PpaRequestRole.RECEIVER && _status === PowerAccessApprovalStatus.PENDING) return [requests[0]];
-
-    return requests;
+    return [];
   }
 }
