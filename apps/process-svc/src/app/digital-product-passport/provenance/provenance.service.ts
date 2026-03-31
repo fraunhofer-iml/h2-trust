@@ -7,7 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { ProcessStepEntity, ProvenanceEntity } from '@h2-trust/amqp';
+import { ProcessStepEntity, ProvenanceEntity, RootProductionEntity } from '@h2-trust/amqp';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 import { TraversalService } from './traversal.service';
 
@@ -29,6 +29,17 @@ export class ProvenanceService {
     }
 
     return provenanceBuilder(root);
+  }
+
+  public buildProvenanceForHydrogenRootProduction(rootProductionEntity: RootProductionEntity): ProvenanceEntity {
+    return new ProvenanceEntity(
+      rootProductionEntity.hydrogenProduction,
+      undefined,
+      [rootProductionEntity.hydrogenProduction],
+      [rootProductionEntity.waterConsumption],
+      [rootProductionEntity.powerProduction],
+      [rootProductionEntity.hydrogenProduction],
+    );
   }
 
   private readonly provenanceBuilders: Record<ProcessType, ProvenanceBuilderFn> = {

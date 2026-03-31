@@ -29,9 +29,15 @@ export class ProductionAssembler {
     entity: CreateProductionEntity,
     productionUnitsForId: Map<string, UnitEntity>,
   ): ProcessStepEntity[] {
+    if (!entity.powerProductionUnitId || !productionUnitsForId.has(entity.powerProductionUnitId)) {
+      throw new Error(`Power Production Unit ${entity.powerProductionUnitId} does not exist in productionUnits: `);
+    }
+
+    const executedBy: UnitEntity = productionUnitsForId.get(entity.powerProductionUnitId);
+
     const params: ProcessStepParams = {
       type: ProcessType.POWER_PRODUCTION,
-      executedBy: entity.powerProductionUnitId,
+      executedBy: executedBy,
       recordedBy: entity.recordedBy,
       batchParams: {
         activity: false,
@@ -47,14 +53,10 @@ export class ProductionAssembler {
       entity.powerAmountKwh,
       params,
       [],
-      productionUnitsForId,
     );
   }
 
-  static assembleWaterConsumptions(
-    entity: CreateProductionEntity,
-    productionUnitsForId: Map<string, UnitEntity>,
-  ): ProcessStepEntity[] {
+  static assembleWaterConsumptions(entity: CreateProductionEntity, executedBy: UnitEntity): ProcessStepEntity[] {
     const waterAmountLiters = ProductionUtils.calculateWaterAmount(
       entity.productionStartedAt,
       entity.productionEndedAt,
@@ -63,7 +65,7 @@ export class ProductionAssembler {
 
     const params: ProcessStepParams = {
       type: ProcessType.WATER_CONSUMPTION,
-      executedBy: entity.hydrogenProductionUnitId,
+      executedBy: executedBy,
       recordedBy: entity.recordedBy,
       batchParams: {
         activity: false,
@@ -72,14 +74,7 @@ export class ProductionAssembler {
       },
     };
 
-    return this.createProcessSteps(
-      entity.productionStartedAt,
-      entity.productionEndedAt,
-      waterAmountLiters,
-      params,
-      [],
-      productionUnitsForId,
-    );
+    return this.createProcessSteps(entity.productionStartedAt, entity.productionEndedAt, waterAmountLiters, params, []);
   }
 
   static assembleHydrogenProductions(
@@ -88,9 +83,16 @@ export class ProductionAssembler {
     waterConsumptions: ProcessStepEntity[],
     productionUnitsForId: Map<string, UnitEntity>,
   ): ProcessStepEntity[] {
+    if (!entity.hydrogenProductionUnitId || !productionUnitsForId.has(entity.hydrogenProductionUnitId)) {
+      throw new Error(
+        `Hydrogen Production Unit ${entity.hydrogenProductionUnitId} does not exist in productionUnits: `,
+      );
+    }
+
+    const executedBy: UnitEntity = productionUnitsForId.get(entity.powerProductionUnitId);
     const params: ProcessStepParams = {
       type: ProcessType.HYDROGEN_PRODUCTION,
-      executedBy: entity.hydrogenProductionUnitId,
+      executedBy: executedBy,
       recordedBy: entity.recordedBy,
       batchParams: {
         activity: true,
@@ -108,7 +110,6 @@ export class ProductionAssembler {
       entity.hydrogenAmountKg,
       params,
       [...powerProductions, ...waterConsumptions],
-      productionUnitsForId,
     );
   }
 
@@ -118,7 +119,6 @@ export class ProductionAssembler {
     totalAmount: number,
     params: ProcessStepParams,
     predecessors: ProcessStepEntity[],
-    productionUnitsForId: Map<string, UnitEntity>,
   ): ProcessStepEntity[] {
     const accountingPeriods: AccountingPeriod[] = ProductionUtils.calculateAccountingPeriods(
       startedAt,
@@ -127,16 +127,10 @@ export class ProductionAssembler {
       predecessors,
     );
 
-    const executedBy: UnitEntity = productionUnitsForId.get(params.executedBy);
-
-    return accountingPeriods.map((accountingPeriod) => this.createProcessStep(accountingPeriod, params, executedBy));
+    return accountingPeriods.map((accountingPeriod) => this.createProcessStep(accountingPeriod, params));
   }
 
-  private static createProcessStep(
-    accountingPeriod: AccountingPeriod,
-    params: ProcessStepParams,
-    executedBy: UnitEntity,
-  ): ProcessStepEntity {
+  private static createProcessStep(accountingPeriod: AccountingPeriod, params: ProcessStepParams): ProcessStepEntity {
     this.logger.debug(
       `${DateTimeUtil.formatDate(accountingPeriod.startedAt)} | ${DateTimeUtil.formatDate(accountingPeriod.endedAt)} | ${params.type} | ${params.executedBy} | ${accountingPeriod.amount}`,
     );
@@ -173,7 +167,7 @@ export class ProductionAssembler {
       params.type,
       batch,
       { id: params.recordedBy } as UserEntity,
-      executedBy as UnitEntity,
+      params.executedBy,
       null,
     );
   }
