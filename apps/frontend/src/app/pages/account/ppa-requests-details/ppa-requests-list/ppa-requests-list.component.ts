@@ -10,8 +10,8 @@ import { Component, input } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { PpaRequestDto } from '@h2-trust/api';
 import { PpaRequestRole } from '@h2-trust/domain';
-import { PpaRequestCardComponent } from '../card/ppa-request-card.component';
-import { EmptyRequestsComponent } from '../empty-requests/empty-requests.component';
+import { EmptyRequestsComponent } from '../empty-requests-list/empty-requests.component';
+import { PpaRequestCardComponent } from '../ppa-request-card/ppa-request-card.component';
 
 interface PpaRequestsData {
   pending: PpaRequestDto[];

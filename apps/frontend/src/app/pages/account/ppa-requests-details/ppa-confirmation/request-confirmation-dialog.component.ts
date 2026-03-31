@@ -19,7 +19,7 @@ import {
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { PowerAccessApprovalStatus } from '@h2-trust/domain';
-import { ConfirmationResult } from '../dialog-data';
+import { ConfirmationResult } from '../../dialog-data';
 
 @Component({
   selector: 'app-request-confirmation-dialog',

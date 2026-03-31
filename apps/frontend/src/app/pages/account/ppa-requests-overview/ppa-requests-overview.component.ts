@@ -34,7 +34,7 @@ export class PpaRequestsOverviewComponent {
 
   ppaRequestsQuery = injectQuery(() => ppaRequestsQueryOptions(this.ppaService, this.role()));
 
-  statistics = computed(() => {
+  overview = computed(() => {
     const statistics = this.ppaRequestsQuery.data()?.reduce(
       (acc, item) => {
         acc[item.status]++;
