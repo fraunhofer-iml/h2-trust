@@ -6,26 +6,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import {
-  BrokerException,
-  CreateManyProcessStepsPayload,
-  CreateProductionEntity,
-  HydrogenProductionUnitEntity,
-  PowerProductionUnitEntity,
-  ProcessStepEntity,
-  RootProductionEntity,
-  UnitEntity,
-} from '@h2-trust/amqp';
+import { Injectable } from '@nestjs/common';
+import { CreateProductionEntity, ProcessStepEntity, RootProductionEntity, UnitEntity } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { BatchType, RfnboType } from '@h2-trust/domain';
+import { RfnboType } from '@h2-trust/domain';
 import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { ProductionAssembler } from './production.assembler';
 
 @Injectable()
 export class ProductionCreationService {
-  private readonly logger = new Logger(this.constructor.name);
   private readonly productionChunkSize: number;
   constructor(
     private readonly configurationService: ConfigurationService,
@@ -41,91 +31,27 @@ export class ProductionCreationService {
   ): Promise<ProcessStepEntity[]> {
     const persistedProcessSteps: ProcessStepEntity[] = [];
 
-    for (let i = 0; i < createProductions.length; i += this.productionChunkSize) {
-      const createProductionsChunk = createProductions.slice(i, i + this.productionChunkSize);
+    const rootProductionsToCreate: RootProductionEntity[] = createProductions.map((createProduction) =>
+      ProductionAssembler.assembleRootProductions(createProduction, productionUnitsForId),
+    );
 
-      /*
-      if (!entity.hydrogenProductionUnitId || !productionUnitsForId.has(entity.hydrogenProductionUnitId)) {
-        throw new Error(
-          `Hydrogen Production Unit ${entity.hydrogenProductionUnitId} does not exist in productionUnits: `,
-        );
-      }*/
-
-      const hydrogenProductionUnit: UnitEntity = productionUnitsForId.get(createProductions[0].powerProductionUnitId);
-
-      this.logger.debug(`Processing ${i + 1} to ${Math.min(i + this.productionChunkSize, createProductions.length)}`);
-
-      // Step 1: Create power and water (each returns array with 1 element due to 1:1 relation)
-      const power: ProcessStepEntity[] = createProductionsChunk.flatMap((production) =>
-        ProductionAssembler.assemblePowerProductions(production, productionUnitsForId),
-      );
-      const water: ProcessStepEntity[] = createProductionsChunk.flatMap((production) =>
-        ProductionAssembler.assembleWaterConsumptions(production, hydrogenProductionUnit),
+    for (let i = 0; i < rootProductionsToCreate.length; i += this.productionChunkSize) {
+      const createRootProductionsChunk: RootProductionEntity[] = rootProductionsToCreate.slice(
+        i,
+        i + this.productionChunkSize,
       );
 
-      if (power.length !== createProductionsChunk.length || water.length !== createProductionsChunk.length) {
-        throw new BrokerException(
-          `Expected 1:1 relation between given productions and created process steps, but got ${power.length} power and ${water.length} water for ${createProductionsChunk.length} productions.`,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-
-      // Step 2: Persist power and water
-      const persistedPowerAndWater: ProcessStepEntity[] = await this.processStepService.createManyProcessSteps(
-        new CreateManyProcessStepsPayload([...power, ...water]),
-      );
-
-      // Step 3: Split response back into power and water
-      // We use chunk.length because there is a 1:1 relation between productions and process steps,
-      // so each production creates exactly one power step and one water step.
-      const persistedPower: ProcessStepEntity[] = persistedPowerAndWater.filter(
-        (processStep) => processStep.batch.type == BatchType.POWER,
-      );
-      const persistedWater: ProcessStepEntity[] = persistedPowerAndWater.filter(
-        (processStep) => processStep.batch.type == BatchType.WATER,
-      );
-
-      if (persistedPower.length !== persistedWater.length) {
-        throw new BrokerException(
-          `Expected 1:1 relation between power and water process steps, but got ${persistedPower.length} power and ${persistedWater.length} water.`,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-
-      // Step 4: Create hydrogen with persisted predecessors
-      const hydrogen: ProcessStepEntity[] = createProductionsChunk.flatMap((production, index) => {
-        const hydrogenProductionToCreate: ProcessStepEntity[] = ProductionAssembler.assembleHydrogenProductions(
-          production,
-          [persistedPower[index]],
-          [persistedWater[index]],
-          productionUnitsForId,
-        );
-
-        hydrogenProductionToCreate.map((hydrogenProduction) => {
-          const rootProduction: RootProductionEntity = new RootProductionEntity(
-            hydrogenProduction,
-            persistedPower[index],
-            persistedWater[index],
-            persistedPower[index].executedBy as PowerProductionUnitEntity,
-            persistedWater[index].executedBy as HydrogenProductionUnitEntity,
-          );
-
-          const rfnboType: RfnboType =
-            this.digitalProductPassportService.getRfnboForHydrogenRootProduction(rootProduction);
-          hydrogenProduction.batch.qualityDetails.rfnboType = rfnboType;
-
-          return hydrogenProduction;
-        });
-
-        return hydrogenProductionToCreate;
+      createRootProductionsChunk.map((rootProduction) => {
+        const rfnboType: RfnboType =
+          this.digitalProductPassportService.getRfnboForHydrogenRootProduction(rootProduction);
+        rootProduction.hydrogenProduction.batch.qualityDetails.rfnboType = rfnboType;
+        return rootProduction;
       });
 
-      // Step 5: Persist hydrogen
-      const persistedHydrogen: ProcessStepEntity[] = await this.processStepService.createManyProcessSteps(
-        new CreateManyProcessStepsPayload(hydrogen),
-      );
+      const persistedProcessSteps: ProcessStepEntity[] =
+        await this.processStepService.createRootProductionProcessSteps(createRootProductionsChunk);
 
-      persistedProcessSteps.push(...persistedPowerAndWater, ...persistedHydrogen);
+      persistedProcessSteps.push(...persistedProcessSteps);
     }
 
     return persistedProcessSteps;

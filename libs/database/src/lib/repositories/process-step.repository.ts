@@ -8,7 +8,7 @@
 
 import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { ProcessStepEntity } from '@h2-trust/amqp';
+import { ProcessStepEntity, RootProductionEntity } from '@h2-trust/amqp';
 import { BatchType } from '@h2-trust/domain';
 import { buildProcessStepCreateInput } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
@@ -141,6 +141,24 @@ export class ProcessStepRepository {
         ...processStepDeepQueryArgs,
       })
       .then(ProcessStepEntity.fromDeepDatabase);
+  }
+
+  async insertRootProductionProcessSteps(rootProductions: RootProductionEntity[]): Promise<ProcessStepEntity[]> {
+    return (
+      await Promise.all(rootProductions.map((rootProduction) => this.insertRootProductionProcessStep(rootProduction)))
+    ).flatMap((x) => x);
+  }
+
+  //TODO-LG: improve performance of this function so, that the 3 process steps are created in bulk.
+  private async insertRootProductionProcessStep(rootProduction: RootProductionEntity): Promise<ProcessStepEntity[]> {
+    const persistedPowerPs: ProcessStepEntity = await this.insertProcessStep(rootProduction.powerProduction);
+    const persistedWaterPs: ProcessStepEntity = await this.insertProcessStep(rootProduction.waterConsumption);
+
+    const newHydrogenProduction: ProcessStepEntity = rootProduction.hydrogenProduction;
+    newHydrogenProduction.batch.predecessors = [persistedPowerPs.batch, persistedWaterPs.batch];
+
+    const persistedHydrogenProduction: ProcessStepEntity = await this.insertProcessStep(newHydrogenProduction);
+    return [persistedPowerPs, persistedWaterPs, persistedHydrogenProduction];
   }
 
   async insertManyProcessSteps(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {

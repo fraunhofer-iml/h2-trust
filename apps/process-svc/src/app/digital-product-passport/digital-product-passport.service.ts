@@ -47,10 +47,8 @@ export class DigitalProductPassportService {
   }
 
   getRfnboForHydrogenRootProduction(rootProduction: RootProductionEntity): RfnboType {
-    const redCompliance: RedComplianceEntity = this.redComplianceService.determineRedCompliance(
-      [rootProduction.powerProduction],
-      [rootProduction.hydrogenProduction],
-    );
+    const redCompliance: RedComplianceEntity =
+      this.redComplianceService.determineRedComplianceForRootProduction(rootProduction);
 
     const powerType: PowerType = rootProduction.powerProduction.batch.qualityDetails.powerType as PowerType;
 

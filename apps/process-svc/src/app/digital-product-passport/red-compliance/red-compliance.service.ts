@@ -14,12 +14,33 @@ import {
   PowerProductionUnitEntity,
   ProcessStepEntity,
   RedComplianceEntity,
+  RootProductionEntity,
 } from '@h2-trust/amqp';
 import { BatchType, BiddingZone } from '@h2-trust/domain';
 import { assertBoolean, assertDefined, DateTimeUtil } from '@h2-trust/utils';
 
 @Injectable()
 export class RedComplianceService {
+  public determineRedComplianceForRootProduction(rootProduction: RootProductionEntity): RedComplianceEntity {
+    const powerProductionUnit: PowerProductionUnitEntity = rootProduction.powerProductionUnit;
+    const hydrogenProductionUnit: HydrogenProductionUnitEntity = rootProduction.hydrogenProductionUnit;
+
+    const isGeoCorrelationValid = this.areUnitsInSameBiddingZone(powerProductionUnit, hydrogenProductionUnit);
+    const isTimeCorrelationValid = this.isWithinTimeCorrelation(
+      rootProduction.powerProduction,
+      rootProduction.hydrogenProduction,
+    );
+    const isAdditionalityFulfilled = this.meetsAdditionalityCriterion(powerProductionUnit, hydrogenProductionUnit);
+    const isFinancialSupportReceived = this.hasFinancialSupport(powerProductionUnit);
+
+    return new RedComplianceEntity(
+      isGeoCorrelationValid,
+      isTimeCorrelationValid,
+      isAdditionalityFulfilled,
+      isFinancialSupportReceived,
+    );
+  }
+
   public determineRedCompliance(
     powerProductions: ProcessStepEntity[],
     hydrogenRootProductions: ProcessStepEntity[],
