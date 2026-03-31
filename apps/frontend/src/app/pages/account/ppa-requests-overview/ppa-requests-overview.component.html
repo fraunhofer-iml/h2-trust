@@ -1,7 +1,7 @@
 <div class="flex flex-row gap-2 pt-4 text-neutral-600">
   <div class="flex flex-1 grow flex-col gap-2 rounded-md border border-tertiary-100 p-4">
     <span class="text-sm">PENDING • {{ labels().heading }} </span>
-    <span class="text-3xl text-tertiary-500">{{ ppaRequestsQuery.data()?.[PowerAccessApprovalStatus.PENDING] }}</span>
+    <span class="text-3xl text-tertiary-500">{{ statistics()?.[PowerAccessApprovalStatus.PENDING] }}</span>
     <span>
       {{ labels().description[PowerAccessApprovalStatus.PENDING] }}
     </span>
@@ -9,7 +9,7 @@
 
   <div class="flex flex-1 flex-col gap-2 rounded-md border border-error-red/30 p-4">
     <span class="text-sm">REJECTED • {{ labels().heading }}</span>
-    <span class="text-3xl text-error-red">{{ ppaRequestsQuery.data()?.[PowerAccessApprovalStatus.REJECTED] }}</span>
+    <span class="text-3xl text-error-red">{{ statistics()?.[PowerAccessApprovalStatus.REJECTED] }}</span>
     <span>
       {{ labels().description[PowerAccessApprovalStatus.REJECTED] }}
     </span>
@@ -17,7 +17,7 @@
 
   <div class="flex flex-1 flex-col gap-2 rounded-md border border-secondary-200 p-4">
     <span class="text-sm">APPROVED • {{ labels().heading }}</span>
-    <span class="text-3xl text-secondary-600">{{ ppaRequestsQuery.data()?.[PowerAccessApprovalStatus.APPROVED] }}</span>
+    <span class="text-3xl text-secondary-600">{{ statistics()?.[PowerAccessApprovalStatus.APPROVED] }}</span>
     <span>
       {{ labels().description[PowerAccessApprovalStatus.APPROVED] }}
     </span>

@@ -25,8 +25,7 @@ export class PowerAccessApprovalService {
     return lastValueFrom(this.httpClient.get<PowerAccessApprovalDto[]>(API.POWER_ACCESS_APPROVALS.BASE, { params }));
   }
 
-  getPpaRequests(role?: PpaRequestRole, status?: PowerAccessApprovalStatus) {
-    console.log(status);
+  getPpaRequests(role: PpaRequestRole, status?: PowerAccessApprovalStatus) {
     let params = new HttpParams();
     if (status) {
       params = params.append('status', status);

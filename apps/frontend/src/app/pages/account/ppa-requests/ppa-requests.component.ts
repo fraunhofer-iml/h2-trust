@@ -7,7 +7,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -16,6 +16,7 @@ import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PpaRequestDto } from '@h2-trust/api';
 import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
+import { ppaRequestsQueryOptions } from '../../../shared/queries/ppa-requests.query';
 import { PowerAccessApprovalService } from '../../../shared/services/power-access-approvals/power-access-approvals.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { UserRolesStore } from '../../../shared/store/user-role.store';
@@ -42,21 +43,19 @@ export class PpaRequestsComponent {
   protected readonly ppaService = inject(PowerAccessApprovalService);
   protected roles = inject(UserRolesStore);
 
-  ppaRequestsSentQuery = injectQuery(() => ({
-    queryKey: ['ppa-requests', PpaRequestRole.SENDER],
-    queryFn: async () => {
-      const requests = await this.ppaService.getPpaRequests(PpaRequestRole.SENDER);
-      return this.mapByStatus(requests);
-    },
-  }));
+  ppaRequestsSentQuery = injectQuery(() => ppaRequestsQueryOptions(this.ppaService, PpaRequestRole.SENDER));
 
-  ppaRequestsReceivedQuery = injectQuery(() => ({
-    queryKey: ['ppa-requests', PpaRequestRole.RECEIVER],
-    queryFn: async () => {
-      const requests = await this.ppaService.getPpaRequests(PpaRequestRole.RECEIVER);
-      return this.mapByStatus(requests);
-    },
-  }));
+  ppaRequestsSent = computed(() => {
+    const requests = this.ppaRequestsSentQuery.data();
+    return this.mapByStatus(requests ?? []);
+  });
+
+  ppaRequestsReceivedQuery = injectQuery(() => ppaRequestsQueryOptions(this.ppaService, PpaRequestRole.RECEIVER));
+
+  ppaRequestsReceived = computed(() => {
+    const requests = this.ppaRequestsReceivedQuery.data();
+    return this.mapByStatus(requests ?? []);
+  });
 
   mapByStatus(requests: PpaRequestDto[]): { pending: PpaRequestDto[]; closed: PpaRequestDto[] } {
     const result: { pending: PpaRequestDto[]; closed: PpaRequestDto[] } = { pending: [], closed: [] };
@@ -65,9 +64,4 @@ export class PpaRequestsComponent {
     );
     return result;
   }
-
-  showCommentInput = false;
-
-  requestsSentPending = [];
-  requestsSent = [];
 }

@@ -79,7 +79,7 @@ export class PowerAccessApprovalController {
         },
       },
       {
-        id: '456',
+        id: '45687',
         timestamp: new Date().toDateString(),
         sender: { name: 'Petra', company: { name: 'petra company' } } as UserDetailsDto,
         receiver: { name: 'Hannes', company: { name: 'hannes company' } } as UserDetailsDto,
@@ -112,7 +112,7 @@ export class PowerAccessApprovalController {
         },
       },
       {
-        id: '456',
+        id: '45456416',
         timestamp: new Date().toDateString(),
         sender: { name: 'Petra Power', company: { name: 'GreenPower company' } } as UserDetailsDto,
         receiver: { name: 'Hannes', company: { name: 'hannes company' } } as UserDetailsDto,

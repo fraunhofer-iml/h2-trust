@@ -7,7 +7,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -17,10 +17,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { RouterLink } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PpaRequestRole } from '@h2-trust/domain';
-import {
-  hydrogenProductionUnitsQueryOptions,
-  powerProductionUnitsQueryOptions,
-} from '../../../shared/queries/hydrogen-production-units.query';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { UsersService } from '../../../shared/services/users/users.service';

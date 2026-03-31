@@ -9,4 +9,5 @@
 export const QUERY_KEYS = {
   HYDROGEN_PRODUCTION_UNITS: ['hydrogen-production-units'],
   POWER_PRODUCTION_UNITS: ['power-production-units'],
+  PPA_REQUESTS: ['ppa-requests'],
 };

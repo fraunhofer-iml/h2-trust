@@ -1,9 +1,6 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import {
-  hydrogenProductionUnitsQueryOptions,
-  powerProductionUnitsQueryOptions,
-} from '../queries/hydrogen-production-units.query';
+import { hydrogenProductionUnitsQueryOptions, powerProductionUnitsQueryOptions } from '../queries/units.query';
 import { UnitsService } from '../services/units/units.service';
 
 @Injectable({

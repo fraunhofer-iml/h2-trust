@@ -11,6 +11,7 @@ import { Component, computed, inject, input, Signal } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
+import { ppaRequestsQueryOptions } from '../../../shared/queries/ppa-requests.query';
 import { PowerAccessApprovalService } from '../../../shared/services/power-access-approvals/power-access-approvals.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 
@@ -31,25 +32,23 @@ export class PpaRequestsOverviewComponent {
   protected readonly ppaService = inject(PowerAccessApprovalService);
   protected readonly unitsService = inject(UnitsService);
 
-  ppaRequestsQuery = injectQuery(() => ({
-    queryKey: ['ppa-requests', this.role()],
-    queryFn: async () => {
-      const requests = await this.ppaService.getPpaRequests(this.role());
-      const statistics = requests.reduce(
-        (acc, item) => {
-          acc[item.status]++;
-          return acc;
-        },
-        {
-          [PowerAccessApprovalStatus.APPROVED]: 0,
-          [PowerAccessApprovalStatus.REJECTED]: 0,
-          [PowerAccessApprovalStatus.PENDING]: 0,
-        },
-      );
+  ppaRequestsQuery = injectQuery(() => ppaRequestsQueryOptions(this.ppaService, this.role()));
 
-      return statistics;
-    },
-  }));
+  statistics = computed(() => {
+    const statistics = this.ppaRequestsQuery.data()?.reduce(
+      (acc, item) => {
+        acc[item.status]++;
+        return acc;
+      },
+      {
+        [PowerAccessApprovalStatus.APPROVED]: 0,
+        [PowerAccessApprovalStatus.REJECTED]: 0,
+        [PowerAccessApprovalStatus.PENDING]: 0,
+      },
+    );
+
+    return statistics;
+  });
 
   labels: Signal<RequestLabels> = computed(() => {
     const labelsReceiver: RequestLabels = {

@@ -12,7 +12,7 @@
         Requests received
       </ng-template>
 
-      <app-ppa-requests-list [role]="PpaRequestRole.RECEIVER" [data]="ppaRequestsReceivedQuery.data()" />
+      <app-ppa-requests-list [role]="PpaRequestRole.RECEIVER" [data]="ppaRequestsReceived()" />
     </mat-tab>
 
     <mat-tab [disabled]="!roles.isHydrogenProducer()">
@@ -21,7 +21,7 @@
         Requests sent
       </ng-template>
 
-      <app-ppa-requests-list [role]="PpaRequestRole.SENDER" [data]="ppaRequestsSentQuery.data()" />
+      <app-ppa-requests-list [role]="PpaRequestRole.SENDER" [data]="ppaRequestsSent()" />
     </mat-tab>
   </mat-tab-group>
 </div>
