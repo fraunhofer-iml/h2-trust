@@ -164,7 +164,6 @@ export class UnitController {
     @Param('unitId') unitId: string,
     @Body() dto: HydrogenProductionUnitInputDto,
   ): Promise<void> {
-    console.log(unitId);
     return this.unitService.updateHydrogenProductionUnit(unitId, dto);
   }
 
@@ -177,7 +176,6 @@ export class UnitController {
     description: 'Returns the updated unit.',
   })
   updatePowerProductionUnit(@Param('unitId') unitId: string, @Body() dto: PowerProductionUnitInputDto): Promise<void> {
-    console.log(unitId);
     return this.unitService.updatePowerProductionUnit(unitId, dto);
   }
 
@@ -190,7 +188,6 @@ export class UnitController {
     description: 'Returns the hydrogen storage updated unit.',
   })
   updateHydrogenStorageUnit(@Param('unitId') unitId: string, @Body() dto: HydrogenStorageUnitInputDto): Promise<void> {
-    console.log(unitId);
     return this.unitService.updateHydrogenStorageUnit(unitId, dto);
   }
 }
