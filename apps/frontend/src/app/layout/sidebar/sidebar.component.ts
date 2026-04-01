@@ -14,10 +14,12 @@ import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { Router, RouterModule } from '@angular/router';
+import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ROUTES } from '../../shared/constants/routes';
+import { hydrogenProductionUnitsQueryOptions } from '../../shared/queries/hydrogen-production-units.query';
 import { AuthService } from '../../shared/services/auth/auth.service';
+import { UnitsService } from '../../shared/services/units/units.service';
 import { UsersService } from '../../shared/services/users/users.service';
-import { HydrogenProductionUnitsStore } from '../../shared/store/hydrogen-production-units.store';
 
 interface SidebarOption {
   title: string;
@@ -43,9 +45,11 @@ interface SidebarOption {
 })
 export class SidebarComponent implements OnInit {
   protected readonly router = inject(Router);
-  protected readonly hydrogenProducerStore = inject(HydrogenProductionUnitsStore);
+  protected readonly unitsService = inject(UnitsService);
 
-  visible$ = computed(() => this.hydrogenProducerStore.hydrogenProductionUnits$().length > 0);
+  hydrogenProductionUnitsQuery = injectQuery(() => hydrogenProductionUnitsQueryOptions(this.unitsService));
+
+  visible$ = computed(() => (this.hydrogenProductionUnitsQuery.data()?.length ?? 0) > 0);
 
   sidebarOptions: SidebarOption[] = [
     {
@@ -92,8 +96,6 @@ export class SidebarComponent implements OnInit {
   async ngOnInit() {
     this.isAuthenticated = this.authService.isAuthenticated();
     if (this.isAuthenticated) {
-      this.hydrogenProducerStore.loadUnits();
-
       const userProfile = await this.authService.getCurrentUserDetails();
       this.userFirstName = userProfile.firstName;
       this.userLastName = userProfile.lastName;
