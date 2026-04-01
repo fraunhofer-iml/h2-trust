@@ -59,7 +59,8 @@ export class HydrogenProductionUnitUpdateComponent {
   }));
 
   unitMutation = injectMutation(() => ({
-    mutationFn: (dto: HydrogenProductionUnitInputDto) => this.unitsService.updateHydrogenProductionUnit(this.id() ?? '',dto),
+    mutationFn: (dto: HydrogenProductionUnitInputDto) =>
+      this.unitsService.updateHydrogenProductionUnit(this.id() ?? '', dto),
     onSuccess: () => this.onSuccess(),
     onError: () => toast.error('Failed to update unit.'),
   }));
