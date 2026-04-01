@@ -9,21 +9,32 @@
 import { ProcessStepEntity } from '../process-step';
 import { HydrogenProductionUnitEntity, PowerProductionUnitEntity } from '../unit';
 
-export class RootProductionEntity {
-  hydrogenProduction: ProcessStepEntity;
+/**
+ * This entity holds the process steps and the units of a hydrogen production.
+ * hydrogenRootProduction: The hydrogen production process step that only have PP and WC as predecessors.
+ * hydrogenLeafProduction: The hydrogen production process step that dont have a hydrogen production as successor.
+ * (if the hydrogenRootProduction does not have any HP successors it is the root and leaf HP)
+ *
+ * ProductionChain: PP/WC -> rootHP -> ... -> HP -> ... -> leafHP
+ */
+export class ProductionChainEntity {
+  hydrogenLeafProduction: ProcessStepEntity;
+  hydrogenRootProduction: ProcessStepEntity;
   powerProduction: ProcessStepEntity;
   waterConsumption: ProcessStepEntity;
   powerProductionUnit: PowerProductionUnitEntity;
   hydrogenProductionUnit: HydrogenProductionUnitEntity;
 
   constructor(
-    hydrogenProduction: ProcessStepEntity,
+    hydrogenLeafProduction: ProcessStepEntity,
+    hydrogenRootProduction: ProcessStepEntity,
     powerProduction: ProcessStepEntity,
     waterConsumption: ProcessStepEntity,
     powerProductionUnit: PowerProductionUnitEntity,
     hydrogenProductionUnit: HydrogenProductionUnitEntity,
   ) {
-    this.hydrogenProduction = hydrogenProduction;
+    this.hydrogenLeafProduction = hydrogenLeafProduction;
+    this.hydrogenRootProduction = hydrogenRootProduction;
     this.powerProduction = powerProduction;
     this.waterConsumption = waterConsumption;
     this.powerProductionUnit = powerProductionUnit;

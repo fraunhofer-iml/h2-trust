@@ -37,20 +37,20 @@ export class ProofOfOriginService {
     let hydrogenComponentsOfBottling: HydrogenComponentEntity[] = this.assembleCompositionForBottling(provenance);
 
     //build hydrogen production section
-    if (provenance.powerProductions?.length || provenance.waterConsumptions?.length) {
+    if (provenance.getAllPowerProductions()?.length || provenance.getAllWaterConsumptions()?.length) {
       const hydrogenProductionSection: ProofOfOriginSectionEntity =
         HydrogenProductionProofOfOriginService.buildHydrogenProductionSection(
-          provenance.powerProductions,
-          provenance.waterConsumptions,
+          provenance.getAllPowerProductions(),
+          provenance.getAllWaterConsumptions(),
           provenance.hydrogenBottling.batch.amount,
         );
       proofOfOrigin.push(hydrogenProductionSection);
     }
 
     //build storage section
-    if (provenance.hydrogenProductions?.length) {
+    if (provenance.getAllHydrogenLeafProductions()?.length) {
       const hydrogenStorageSection: ProofOfOriginSectionEntity =
-        HydrogenStorageroofOfOriginService.assembleHydrogenStorageSection(provenance.hydrogenProductions);
+        HydrogenStorageroofOfOriginService.assembleHydrogenStorageSection(provenance.getAllHydrogenLeafProductions());
       proofOfOrigin.push(hydrogenStorageSection);
     }
 
@@ -102,7 +102,7 @@ export class ProofOfOriginService {
       const errorMessage = `There is no hydrogen bottling in provenance.`;
       throw Error(errorMessage);
     }
-    if (provenance.hydrogenProductions?.length === 0) {
+    if (provenance.getAllHydrogenLeafProductions()?.length === 0) {
       const errorMessage = `There are no Hydrogen Root Productions in Provenance.`;
       throw Error(errorMessage);
     }
@@ -117,15 +117,17 @@ export class ProofOfOriginService {
     //Since we are calculating the Hydrogen Components for the bottling we use the bottled amount here.
     const bottlingBatchAmount = provenance.hydrogenBottling.batch.amount;
 
-    const hydrogenComponentsOfProductions = provenance.hydrogenProductions.map(
-      (hydrogenRootProduction) =>
-        new HydrogenComponentEntity(
-          '',
-          hydrogenRootProduction.batch.qualityDetails?.color,
-          hydrogenRootProduction.batch.amount,
-          hydrogenRootProduction.batch.qualityDetails?.rfnboType ?? RfnboType.NOT_SPECIFIED,
-        ),
-    );
+    const hydrogenComponentsOfProductions = provenance
+      .getAllHydrogenLeafProductions()
+      .map(
+        (hydrogenRootProduction) =>
+          new HydrogenComponentEntity(
+            '',
+            hydrogenRootProduction.batch.qualityDetails?.color,
+            hydrogenRootProduction.batch.amount,
+            hydrogenRootProduction.batch.qualityDetails?.rfnboType ?? RfnboType.NOT_SPECIFIED,
+          ),
+      );
 
     return HydrogenCompositionUtil.computeHydrogenComposition(hydrogenComponentsOfProductions, bottlingBatchAmount);
   }

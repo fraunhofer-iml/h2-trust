@@ -15,8 +15,8 @@ import {
   HydrogenStorageUnitEntity,
   PowerProductionUnitEntity,
   ProcessStepEntity,
+  ProductionChainEntity,
   QualityDetailsEntity,
-  RootProductionEntity,
   UnitEntity,
   UserEntity,
 } from '@h2-trust/amqp';
@@ -77,7 +77,7 @@ export class ProductionAssembler {
   public static assembleRootProductions(
     createProduction: CreateProductionEntity,
     productionUnitsForId: Map<string, UnitEntity>,
-  ): RootProductionEntity {
+  ): ProductionChainEntity {
     if (!createProduction.powerProductionUnitId || !productionUnitsForId.has(createProduction.powerProductionUnitId)) {
       throw new Error(
         `Power Production Unit ${createProduction.powerProductionUnitId} does not exist in productionUnits: `,
@@ -114,7 +114,8 @@ export class ProductionAssembler {
       waterConsumption,
       hydrogenProductionUnit,
     );
-    return new RootProductionEntity(
+    return new ProductionChainEntity(
+      hydrogenProductionToCreate,
       hydrogenProductionToCreate,
       powerProduction,
       waterConsumption,

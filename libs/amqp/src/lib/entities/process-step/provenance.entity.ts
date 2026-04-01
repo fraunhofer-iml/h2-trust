@@ -6,31 +6,37 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ProductionChainEntity } from '../production';
 import { ProcessStepEntity } from './process-step.entity';
 
 export class ProvenanceEntity {
   root: ProcessStepEntity;
   hydrogenBottling?: ProcessStepEntity;
-  //The direct predecessors of the bottling
-  hydrogenProductions?: ProcessStepEntity[];
-  //The predecessors of the bottling that have only POWER and WATER as predecessors
-  hydrogenRootProductions?: ProcessStepEntity[];
-  waterConsumptions?: ProcessStepEntity[];
-  powerProductions?: ProcessStepEntity[];
+  productionChains: ProductionChainEntity[];
 
-  constructor(
-    root: ProcessStepEntity,
-    hydrogenBottling?: ProcessStepEntity,
-    hydrogenProductions?: ProcessStepEntity[],
-    waterConsumptions?: ProcessStepEntity[],
-    powerProductions?: ProcessStepEntity[],
-    hydrogenRootProductions?: ProcessStepEntity[],
-  ) {
+  constructor(root: ProcessStepEntity, productionChain: ProductionChainEntity[], hydrogenBottling?: ProcessStepEntity) {
     this.root = root;
     this.hydrogenBottling = hydrogenBottling;
-    this.hydrogenProductions = hydrogenProductions;
-    this.waterConsumptions = waterConsumptions;
-    this.powerProductions = powerProductions;
-    this.hydrogenRootProductions = hydrogenRootProductions;
+    this.productionChains = productionChain;
+  }
+
+  public static fromProductionChain(productionChain: ProductionChainEntity): ProvenanceEntity {
+    return new ProvenanceEntity(productionChain.hydrogenRootProduction, [productionChain]);
+  }
+
+  public getAllPowerProductions(): ProcessStepEntity[] {
+    return this.productionChains.map((productionChain) => productionChain.powerProduction);
+  }
+
+  public getAllWaterConsumptions(): ProcessStepEntity[] {
+    return this.productionChains.map((productionChain) => productionChain.waterConsumption);
+  }
+
+  public getAllHydrogenRootProductions(): ProcessStepEntity[] {
+    return this.productionChains.map((productionChain) => productionChain.hydrogenRootProduction);
+  }
+
+  public getAllHydrogenLeafProductions(): ProcessStepEntity[] {
+    return this.productionChains.map((productionChain) => productionChain.hydrogenLeafProduction);
   }
 }

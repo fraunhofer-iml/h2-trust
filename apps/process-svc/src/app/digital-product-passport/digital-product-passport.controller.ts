@@ -17,6 +17,6 @@ export class DigitalProductPassportController {
 
   @MessagePattern(DigitalProductPassportPatterns.READ_DIGITAL_PRODUCT_PASSPORT)
   async readDigitalProductPassport(payload: ReadByIdPayload): Promise<DigitalProductPassportEntity> {
-    return this.digitalProductPassportService.readDigitalProductPassportForProcessStepId(payload.id);
+    return this.digitalProductPassportService.readDigitalProductPassport(payload.id);
   }
 }

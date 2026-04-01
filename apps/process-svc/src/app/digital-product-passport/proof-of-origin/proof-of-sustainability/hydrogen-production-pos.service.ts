@@ -15,7 +15,7 @@ export class HydrogenProductionPosService {
   public static computeProvenanceEmissionsForHydrogenProduction(
     provenance: ProvenanceEntity,
   ): ProofOfSustainabilityEmissionCalculationEntity {
-    if (!provenance || !provenance.hydrogenProductions) {
+    if (!provenance || !provenance.getAllHydrogenLeafProductions()) {
       throw new Error('Provenance or hydrogen productions is undefined.');
     }
 
@@ -23,14 +23,15 @@ export class HydrogenProductionPosService {
       ? provenance.hydrogenBottling.batch.amount
       : provenance.root.batch.amount;
 
-    const hydrogenStorages: ProofOfSustainabilityEmissionCalculationEntity[] = provenance.hydrogenProductions.map(
-      (hydrogenProduction) => HydrogenStoragePosService.assembleHydrogenStorage(hydrogenProduction),
-    );
+    const hydrogenStorages: ProofOfSustainabilityEmissionCalculationEntity[] = provenance
+      .getAllHydrogenLeafProductions()
+      .map((hydrogenProduction) => HydrogenStoragePosService.assembleHydrogenStorage(hydrogenProduction));
 
     const totalEmissions = hydrogenStorages.reduce((sum, curr) => sum + curr.result, 0);
 
     const totalEmissionsGrouped = Array.from(
-      provenance.hydrogenProductions
+      provenance
+        .getAllHydrogenLeafProductions()
         .reduce((map, entity, index) => {
           const color = EnumLabelMapper.getHydrogenColor(entity.batch.qualityDetails?.color as HydrogenColor);
           return map.set(color, (map.get(color) ?? 0) + hydrogenStorages[index].result);

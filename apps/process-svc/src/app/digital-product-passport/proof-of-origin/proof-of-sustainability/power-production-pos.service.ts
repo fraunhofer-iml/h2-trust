@@ -26,7 +26,7 @@ export class PowerProductionPosService {
   public static computeProvenanceEmissionsForPowerProduction(
     provenance: ProvenanceEntity,
   ): ProofOfSustainabilityEmissionCalculationEntity {
-    if (!provenance || !provenance.powerProductions) {
+    if (!provenance.getAllPowerProductions()) {
       throw new Error('Provenance or powerProduction is undefined.');
     }
 
@@ -34,20 +34,20 @@ export class PowerProductionPosService {
       ? provenance.hydrogenBottling.batch.amount
       : provenance.root.batch.amount;
 
-    const powerProductions: ProofOfSustainabilityEmissionCalculationEntity[] = provenance.powerProductions.map(
-      (powerProduction) => {
+    const powerProductionsPos: ProofOfSustainabilityEmissionCalculationEntity[] = provenance
+      .getAllPowerProductions()
+      .map((powerProduction) => {
         if (!powerProduction.executedBy) {
           throw new Error(`PowerProductionUnit for process step ${powerProduction} not found.`);
         }
         const unit = powerProduction.executedBy as PowerProductionUnitEntity;
         return this.assemblePowerSupply(powerProduction, unit.type.energySource);
-      },
-    );
+      });
 
-    const totalEmissions = powerProductions.reduce((sum, curr) => sum + curr.result, 0);
+    const totalEmissions = powerProductionsPos.reduce((sum, curr) => sum + curr.result, 0);
 
     const totalEmissionsGrouped = Array.from(
-      powerProductions
+      powerProductionsPos
         .reduce(
           (map, entity) => map.set(entity.name, (map.get(entity.name) ?? 0) + entity.result),
           new Map<string, number>(),

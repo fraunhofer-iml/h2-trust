@@ -9,27 +9,32 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import {
-  BatchEntity,
   HydrogenProductionUnitEntity,
   PowerProductionUnitEntity,
   ProcessStepEntity,
+  ProductionChainEntity,
   RedComplianceEntity,
-  RootProductionEntity,
 } from '@h2-trust/amqp';
-import { BatchType, BiddingZone } from '@h2-trust/domain';
+import { BiddingZone } from '@h2-trust/domain';
 import { assertBoolean, assertDefined, DateTimeUtil } from '@h2-trust/utils';
 
 @Injectable()
 export class RedComplianceService {
-  public determineRedComplianceForRootProduction(rootProduction: RootProductionEntity): RedComplianceEntity {
-    const powerProductionUnit: PowerProductionUnitEntity = rootProduction.powerProductionUnit;
-    const hydrogenProductionUnit: HydrogenProductionUnitEntity = rootProduction.hydrogenProductionUnit;
+  public determineRedCompliance(
+    hydrogenProdution: ProcessStepEntity,
+    powerProduction: ProcessStepEntity,
+  ): RedComplianceEntity {
+    if (!hydrogenProdution?.executedBy || !powerProduction?.executedBy) {
+      throw new RpcException(
+        `The passed-in power production or hydrogen production do not have an executedBy unit specified.`,
+      );
+    }
+    const powerProductionUnit: PowerProductionUnitEntity = powerProduction.executedBy as PowerProductionUnitEntity;
+    const hydrogenProductionUnit: HydrogenProductionUnitEntity =
+      hydrogenProdution.executedBy as HydrogenProductionUnitEntity;
 
     const isGeoCorrelationValid = this.areUnitsInSameBiddingZone(powerProductionUnit, hydrogenProductionUnit);
-    const isTimeCorrelationValid = this.isWithinTimeCorrelation(
-      rootProduction.powerProduction,
-      rootProduction.hydrogenProduction,
-    );
+    const isTimeCorrelationValid = this.isWithinTimeCorrelation(powerProduction, hydrogenProdution);
     const isAdditionalityFulfilled = this.meetsAdditionalityCriterion(powerProductionUnit, hydrogenProductionUnit);
     const isFinancialSupportReceived = this.hasFinancialSupport(powerProductionUnit);
 
@@ -41,41 +46,26 @@ export class RedComplianceService {
     );
   }
 
-  public determineRedCompliance(
-    powerProductions: ProcessStepEntity[],
-    hydrogenRootProductions: ProcessStepEntity[],
-  ): RedComplianceEntity {
-    if (!powerProductions?.length || !hydrogenRootProductions?.length) {
-      throw new RpcException(
-        `The required productions (power/hydrogen) for the Red compliance calculation are missing.`,
-      );
-    }
-
+  public determineTotalRedCompliance(productionChains: ProductionChainEntity[]): RedComplianceEntity {
     let isGeoCorrelationValid = true;
     let isTimeCorrelationValid = true;
     let isAdditionalityFulfilled = true;
     let isFinancialSupportReceived = true;
 
-    for (const hydrogenProductionProcessStep of hydrogenRootProductions) {
-      const powerProductionBatch: BatchEntity = hydrogenProductionProcessStep.batch.predecessors.find(
-        (pred) => pred.type == BatchType.POWER,
+    for (const productionChain of productionChains) {
+      isGeoCorrelationValid &&= this.areUnitsInSameBiddingZone(
+        productionChain.powerProductionUnit,
+        productionChain.hydrogenProductionUnit,
       );
-      const powerProductionProcessStep: ProcessStepEntity = powerProductions.find(
-        (powerProduction) => powerProduction.id === powerProductionBatch.processStepId,
-      );
-
-      const powerProductionUnit: PowerProductionUnitEntity =
-        powerProductionProcessStep.executedBy as PowerProductionUnitEntity;
-      const hydrogenProductionUnit: HydrogenProductionUnitEntity =
-        hydrogenProductionProcessStep.executedBy as HydrogenProductionUnitEntity;
-
-      isGeoCorrelationValid &&= this.areUnitsInSameBiddingZone(powerProductionUnit, hydrogenProductionUnit);
       isTimeCorrelationValid &&= this.isWithinTimeCorrelation(
-        powerProductionProcessStep,
-        hydrogenProductionProcessStep,
+        productionChain.powerProduction,
+        productionChain.hydrogenRootProduction,
       );
-      isAdditionalityFulfilled &&= this.meetsAdditionalityCriterion(powerProductionUnit, hydrogenProductionUnit);
-      isFinancialSupportReceived &&= this.hasFinancialSupport(powerProductionUnit);
+      isAdditionalityFulfilled &&= this.meetsAdditionalityCriterion(
+        productionChain.powerProductionUnit,
+        productionChain.hydrogenProductionUnit,
+      );
+      isFinancialSupportReceived &&= this.hasFinancialSupport(productionChain.powerProductionUnit);
     }
     return new RedComplianceEntity(
       isGeoCorrelationValid,

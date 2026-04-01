@@ -7,7 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { CreateProductionEntity, ProcessStepEntity, RootProductionEntity, UnitEntity } from '@h2-trust/amqp';
+import { CreateProductionEntity, ProcessStepEntity, ProductionChainEntity, UnitEntity } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { RfnboType } from '@h2-trust/domain';
 import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
@@ -31,20 +31,19 @@ export class ProductionCreationService {
   ): Promise<ProcessStepEntity[]> {
     const persistedProcessSteps: ProcessStepEntity[] = [];
 
-    const rootProductionsToCreate: RootProductionEntity[] = createProductions.map((createProduction) =>
+    const rootProductionsToCreate: ProductionChainEntity[] = createProductions.map((createProduction) =>
       ProductionAssembler.assembleRootProductions(createProduction, productionUnitsForId),
     );
 
     for (let i = 0; i < rootProductionsToCreate.length; i += this.productionChunkSize) {
-      const createRootProductionsChunk: RootProductionEntity[] = rootProductionsToCreate.slice(
+      const createRootProductionsChunk: ProductionChainEntity[] = rootProductionsToCreate.slice(
         i,
         i + this.productionChunkSize,
       );
 
       createRootProductionsChunk.map((rootProduction) => {
-        const rfnboType: RfnboType =
-          this.digitalProductPassportService.getRfnboForHydrogenRootProduction(rootProduction);
-        rootProduction.hydrogenProduction.batch.qualityDetails.rfnboType = rfnboType;
+        const rfnboType: RfnboType = this.digitalProductPassportService.getRfnboType(rootProduction);
+        rootProduction.hydrogenRootProduction.batch.qualityDetails.rfnboType = rfnboType;
         return rootProduction;
       });
 

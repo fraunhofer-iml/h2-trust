@@ -6,16 +6,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
   DigitalProductPassportEntity,
   HydrogenComponentEntity,
   ProcessStepEntity,
+  ProductionChainEntity,
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEntity,
   ProvenanceEntity,
   RedComplianceEntity,
-  RootProductionEntity,
 } from '@h2-trust/amqp';
 import { PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { ProcessStepService } from '../process-step/process-step.service';
@@ -26,7 +26,6 @@ import { RedComplianceService } from './red-compliance/red-compliance.service';
 
 @Injectable()
 export class DigitalProductPassportService {
-  private readonly logger = new Logger(DigitalProductPassportService.name);
   constructor(
     private readonly processStepService: ProcessStepService,
     private readonly redComplianceService: RedComplianceService,
@@ -35,51 +34,27 @@ export class DigitalProductPassportService {
     private readonly emissionService: ProofOfSustainabilityService,
   ) {}
 
-  async readDigitalProductPassportForProcessStepId(processStepId: string): Promise<DigitalProductPassportEntity> {
-    const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
-    return this.readDigitalProductPassport(processStep);
-  }
-
-  async updateRfnboStatus(processStep: ProcessStepEntity): Promise<{ id: string; batchId: string }> {
-    const dpp: DigitalProductPassportEntity = await this.readDigitalProductPassport(processStep);
-    this.logger.debug(`Set RFNBO status of process step ${processStep.id} to ${dpp.rfnboType}`);
-    return this.processStepService.updateRfnboStatus(processStep, dpp.rfnboType);
-  }
-
-  getRfnboForHydrogenRootProduction(rootProduction: RootProductionEntity): RfnboType {
-    const redCompliance: RedComplianceEntity =
-      this.redComplianceService.determineRedComplianceForRootProduction(rootProduction);
-
-    const powerType: PowerType = rootProduction.powerProduction.batch.qualityDetails.powerType as PowerType;
-
-    const pos: ProofOfSustainabilityEntity = this.getProofOfSustainability(rootProduction);
-
-    const isEmissionReductionAbove70Percent = pos.emissionReductionPercentage > 70;
-
-    return isEmissionReductionAbove70Percent &&
-      redCompliance.isGeoCorrelationValid &&
-      redCompliance.isTimeCorrelationValid &&
-      redCompliance.isAdditionalityFulfilled &&
-      redCompliance.financialSupportReceived &&
-      powerType != PowerType.NON_RENEWABLE
-      ? RfnboType.RFNBO_READY
-      : RfnboType.NON_CERTIFIABLE;
-  }
-
-  public getProofOfSustainability(rootProductionEntity: RootProductionEntity): ProofOfSustainabilityEntity {
-    const provenance: ProvenanceEntity =
-      this.provenanceService.buildProvenanceForHydrogenRootProduction(rootProductionEntity);
-
-    return this.emissionService.createProofOfSustainability(provenance);
-  }
-
-  public async readDigitalProductPassport(processStep: ProcessStepEntity): Promise<DigitalProductPassportEntity> {
-    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStep);
+  public getRfnboType(productionChain: ProductionChainEntity): RfnboType {
     const redCompliance: RedComplianceEntity = this.redComplianceService.determineRedCompliance(
-      provenance.powerProductions,
-      provenance.hydrogenRootProductions,
+      productionChain.hydrogenRootProduction,
+      productionChain.powerProduction,
     );
-    const powerType: PowerType = DigitalProductPassportService.getPowerType(provenance.powerProductions);
+
+    const powerType: PowerType = productionChain.powerProduction.batch.qualityDetails.powerType as PowerType;
+    const provenance: ProvenanceEntity = ProvenanceEntity.fromProductionChain(productionChain);
+    const proofOfSustainability: ProofOfSustainabilityEntity =
+      this.emissionService.createProofOfSustainability(provenance);
+    return this.determineRfnboType(redCompliance, powerType, proofOfSustainability);
+  }
+
+  public async readDigitalProductPassport(processStepId: string): Promise<DigitalProductPassportEntity> {
+    const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
+
+    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStep);
+    const redCompliance: RedComplianceEntity = this.redComplianceService.determineTotalRedCompliance(
+      provenance.productionChains,
+    );
+    const powerType: PowerType = DigitalProductPassportService.getPowerType(provenance.productionChains);
 
     //Proof of origin is only for Bottlings
     const proofOfOrigin: ProofOfOriginSectionEntity[] =
@@ -94,6 +69,8 @@ export class DigitalProductPassportService {
     const proofOfSustainability: ProofOfSustainabilityEntity =
       this.emissionService.createProofOfSustainability(provenance);
 
+    const rfnboType: RfnboType = this.determineRfnboType(redCompliance, powerType, proofOfSustainability);
+
     return new DigitalProductPassportEntity(
       processStep.id,
       processStep.endedAt,
@@ -107,10 +84,14 @@ export class DigitalProductPassportService {
       proofOfSustainability,
       proofOfOrigin,
       powerType,
+      rfnboType,
     );
   }
 
-  private static getPowerType(powerProductions: ProcessStepEntity[]): PowerType {
+  private static getPowerType(productionChains: ProductionChainEntity[]): PowerType {
+    const powerProductions: ProcessStepEntity[] = productionChains.map(
+      (productionChain) => productionChain.powerProduction,
+    );
     let powerType = PowerType.RENEWABLE;
     const hasRenewableGridPower = powerProductions.some(
       (pp) => pp.batch?.qualityDetails?.powerType == PowerType.PARTLY_RENEWABLE,
@@ -125,5 +106,22 @@ export class DigitalProductPassportService {
       powerType = PowerType.NON_RENEWABLE;
     }
     return powerType;
+  }
+
+  private determineRfnboType(
+    redCompliance: RedComplianceEntity,
+    powerType: PowerType,
+    proofOfSustainability: ProofOfSustainabilityEntity,
+  ): RfnboType {
+    const isEmissionReductionAbove70Percent = proofOfSustainability.emissionReductionPercentage > 70;
+
+    return isEmissionReductionAbove70Percent &&
+      redCompliance.isGeoCorrelationValid &&
+      redCompliance.isTimeCorrelationValid &&
+      redCompliance.isAdditionalityFulfilled &&
+      redCompliance.financialSupportReceived &&
+      powerType != PowerType.NON_RENEWABLE
+      ? RfnboType.RFNBO_READY
+      : RfnboType.NON_CERTIFIABLE;
   }
 }

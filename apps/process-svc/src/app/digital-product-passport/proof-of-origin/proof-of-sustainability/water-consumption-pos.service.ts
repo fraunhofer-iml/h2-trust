@@ -19,7 +19,7 @@ export class WaterConsumptionPosService {
   public static computeProvenanceEmissionsForWaterConsumption(
     provenance: ProvenanceEntity,
   ): ProofOfSustainabilityEmissionCalculationEntity {
-    if (!provenance || !provenance.waterConsumptions) {
+    if (!provenance.getAllWaterConsumptions()) {
       throw new Error('Provenance or water consumption is undefined.');
     }
 
@@ -27,11 +27,11 @@ export class WaterConsumptionPosService {
       ? provenance.hydrogenBottling.batch.amount
       : provenance.root.batch.amount;
 
-    const waterConsumptions: ProofOfSustainabilityEmissionCalculationEntity[] = provenance.waterConsumptions.map(
-      (waterConsumption) => this.assembleWaterSupply(waterConsumption),
-    );
+    const waterConsumptionPos: ProofOfSustainabilityEmissionCalculationEntity[] = provenance
+      .getAllWaterConsumptions()
+      .map((waterConsumption) => this.assembleWaterSupply(waterConsumption));
 
-    const totalEmissions = waterConsumptions.reduce((acc, wc) => acc + wc.result, 0);
+    const totalEmissions = waterConsumptionPos.reduce((acc, wc) => acc + wc.result, 0);
     const totalEmissionsGrouped = [`${totalEmissions} ${MeasurementUnit.G_CO2}`];
     const totalEmissionsPerKgHydrogen = totalEmissions / hydrogenAmount;
 

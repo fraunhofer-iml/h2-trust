@@ -12,10 +12,10 @@ import {
   DocumentEntity,
   PaginatedProcessStepEntity,
   ProcessStepEntity,
+  ProductionChainEntity,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
-  RootProductionEntity,
 } from '@h2-trust/amqp';
 import { ConfigurationService, MinioConfiguration } from '@h2-trust/configuration';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
@@ -44,7 +44,7 @@ export class ProcessStepService {
     return this.processStepRepository.insertManyProcessSteps(payload.processSteps);
   }
 
-  async createRootProductionProcessSteps(rootProductions: RootProductionEntity[]): Promise<ProcessStepEntity[]> {
+  async createRootProductionProcessSteps(rootProductions: ProductionChainEntity[]): Promise<ProcessStepEntity[]> {
     return this.processStepRepository.insertRootProductionProcessSteps(rootProductions);
   }
 
