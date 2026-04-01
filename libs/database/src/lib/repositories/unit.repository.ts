@@ -163,35 +163,6 @@ export class UnitRepository {
       .then((units) => units.map(HydrogenStorageUnitEntity.fromDatabase));
   }
 
-  async insertPowerProductionUnit(payload: CreatePowerProductionUnitPayload): Promise<PowerProductionUnitEntity> {
-    return this.prismaService.unit
-      .create({
-        data: buildPowerProductionUnitCreateInput(payload),
-        include: powerProductionUnitQueryArgs.include,
-      })
-      .then(PowerProductionUnitEntity.fromDatabase);
-  }
-
-  async insertHydrogenProductionUnit(
-    payload: CreateHydrogenProductionUnitPayload,
-  ): Promise<HydrogenProductionUnitEntity> {
-    return this.prismaService.unit
-      .create({
-        data: buildHydrogenProductionUnitCreateInput(payload),
-        include: hydrogenProductionUnitQueryArgs.include,
-      })
-      .then(HydrogenProductionUnitEntity.fromDatabase);
-  }
-
-  async insertHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
-    return this.prismaService.unit
-      .create({
-        data: buildHydrogenStorageUnitCreateInput(payload),
-        include: hydrogenStorageUnitQueryArgs.include,
-      })
-      .then(HydrogenStorageUnitEntity.fromDatabase);
-  }
-
   async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<BaseUnitEntity> {
     const unit = await this.prismaService.unit.update({
       where: {

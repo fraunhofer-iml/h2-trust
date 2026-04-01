@@ -7,14 +7,14 @@
  */
 
 export class AddressDto {
-  id: string;
+  id?: string;
   street: string;
   postalCode: string;
   city: string;
   state: string;
   country: string;
 
-  constructor(id: string, street: string, postalCode: string, city: string, state: string, country: string) {
+  constructor(street: string, postalCode: string, city: string, state: string, country: string, id?: string) {
     this.id = id;
     this.street = street;
     this.postalCode = postalCode;

@@ -62,31 +62,21 @@ export class UnitService {
     return this.powerProductionTypeRepository.findPowerProductionTypes();
   }
 
-  async createPowerProductionUnit(payload: CreatePowerProductionUnitPayload): Promise<PowerProductionUnitEntity> {
-    return this.unitRepository.insertPowerProductionUnit(payload);
-  }
-
-  async createHydrogenProductionUnit(
-    payload: CreateHydrogenProductionUnitPayload,
-  ): Promise<HydrogenProductionUnitEntity> {
-    return this.unitRepository.insertHydrogenProductionUnit(payload);
-  }
-
-  async createHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
-    return this.unitRepository.insertHydrogenStorageUnit(payload);
-  }
-
-  async updateHydrogenProductionUnit(
+  async updateOrCreateHydrogenProductionUnit(
     payload: CreateHydrogenProductionUnitPayload,
   ): Promise<HydrogenProductionUnitEntity> {
     return this.unitRepository.updateOrCreateHydrogenProductionUnit(payload);
   }
 
-  async updatePowerProductionUnit(payload: CreatePowerProductionUnitPayload): Promise<PowerProductionUnitEntity> {
+  async updateOrCreatePowerProductionUnit(
+    payload: CreatePowerProductionUnitPayload,
+  ): Promise<PowerProductionUnitEntity> {
     return this.unitRepository.updateOrCreatePowerProductionUnit(payload);
   }
 
-  async updateHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
+  async updateOrCreateHydrogenStorageUnit(
+    payload: CreateHydrogenStorageUnitPayload,
+  ): Promise<HydrogenStorageUnitEntity> {
     return this.unitRepository.updateOrCreateHydrogenStorageUnit(payload);
   }
 

@@ -7,7 +7,7 @@
  */
 
 import { Type } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { IsDate, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { AddressPayload } from '../common';
 
 export abstract class BaseCreateUnitPayload {
@@ -58,7 +58,7 @@ export abstract class BaseCreateUnitPayload {
   operatorId: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   id?: string;
 
   protected constructor(

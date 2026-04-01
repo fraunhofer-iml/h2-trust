@@ -106,12 +106,12 @@ export class PowerProductionUnitInputDto extends UnitInputDto {
       dto.mastrNumber,
       dto.commissionedOn,
       new AddressPayload(
-        dto.address.id,
         dto.address.street,
         dto.address.postalCode,
         dto.address.city,
         dto.address.state,
         dto.address.country,
+        dto.address.id,
       ),
       dto.owner,
       dto.electricityMeterNumber,
