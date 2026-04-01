@@ -6,13 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class AddressPayload {
-  @IsString()
-  @IsOptional()
-  id?: string;
-
   @IsString()
   @IsNotEmpty()
   street: string;
@@ -33,8 +29,7 @@ export class AddressPayload {
   @IsNotEmpty()
   country: string;
 
-  constructor(street: string, postalCode: string, city: string, state: string, country: string, id?: string) {
-    this.id = id;
+  constructor(street: string, postalCode: string, city: string, state: string, country: string) {
     this.street = street;
     this.postalCode = postalCode;
     this.city = city;

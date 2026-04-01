@@ -194,7 +194,6 @@ export class UnitRepository {
           operator: { connect: { id: payload.operatorId } },
           address: {
             update: {
-              where: { id: payload.address.id },
               data: {
                 street: payload.address.street,
                 state: payload.address.state,
@@ -243,7 +242,6 @@ export class UnitRepository {
           operator: { connect: { id: payload.operatorId } },
           address: {
             update: {
-              where: { id: payload.address.id },
               data: {
                 street: payload.address.street,
                 state: payload.address.state,
@@ -294,7 +292,6 @@ export class UnitRepository {
           operator: { connect: { id: payload.operatorId } },
           address: {
             update: {
-              where: { id: payload.address.id },
               data: {
                 street: payload.address.street,
                 state: payload.address.state,

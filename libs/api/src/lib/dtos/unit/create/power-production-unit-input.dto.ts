@@ -111,7 +111,6 @@ export class PowerProductionUnitInputDto extends UnitInputDto {
         dto.address.city,
         dto.address.state,
         dto.address.country,
-        dto.address.id,
       ),
       dto.owner,
       dto.electricityMeterNumber,

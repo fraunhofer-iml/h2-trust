@@ -62,7 +62,6 @@ export class HydrogenStorageUnitUpdateComponent {
       ...this.hydrogenStorageUnitForm.value,
       storageType: this.hydrogenStorageUnitForm.value.hydrogenStorageType,
     } as HydrogenStorageUnitInputDto;
-    dto.address.id = this.unitQuery.data()?.address.id ?? '';
     this.unitMutation.mutate(dto);
   }
 

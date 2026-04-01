@@ -62,7 +62,6 @@ export class PowerProductionUnitUpdateComponent {
       ...this.unitForm.value,
       ...this.powerProductionForm.value,
     } as PowerProductionUnitInputDto;
-    dto.address.id = this.unitQuery.data()?.address.id ?? '';
     this.unitMutation.mutate(dto);
   }
 

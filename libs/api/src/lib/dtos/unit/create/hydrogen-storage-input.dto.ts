@@ -74,7 +74,6 @@ export class HydrogenStorageUnitInputDto extends UnitInputDto {
         dto.address.city,
         dto.address.state,
         dto.address.country,
-        dto.address.id,
       ),
       dto.owner,
       dto.storageType,

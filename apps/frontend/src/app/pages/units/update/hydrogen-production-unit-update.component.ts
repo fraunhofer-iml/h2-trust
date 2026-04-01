@@ -70,7 +70,6 @@ export class HydrogenProductionUnitUpdateComponent {
       ...this.unitForm.value,
       ...this.hydrogenProductionForm.value,
     } as HydrogenProductionUnitInputDto;
-    dto.address.id = this.unitQuery.data()?.address.id ?? '';
     this.unitMutation.mutate(dto);
   }
 
