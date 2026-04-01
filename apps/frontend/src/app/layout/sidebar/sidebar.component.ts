@@ -12,6 +12,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { Router, RouterModule } from '@angular/router';
@@ -43,6 +44,7 @@ interface SidebarOption {
     MatExpansionModule,
     MatSelectModule,
     MatBadgeModule,
+    MatMenuModule,
   ],
   providers: [UsersService],
   templateUrl: './sidebar.component.html',

@@ -7,6 +7,7 @@
  */
 
 import { PpaStatusChipComponent } from 'apps/frontend/src/app/layout/chips/ppa-status-chip.component';
+import { A11yModule } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,7 +21,15 @@ import { RequestConfirmationDialogComponent } from '../ppa-confirmation/request-
 
 @Component({
   selector: 'app-ppa-request-card',
-  imports: [PpaStatusChipComponent, PrettyEnumPipe, CommonModule, MatDivider, MatButtonModule, MatDialogModule],
+  imports: [
+    PpaStatusChipComponent,
+    PrettyEnumPipe,
+    CommonModule,
+    MatDivider,
+    MatButtonModule,
+    MatDialogModule,
+    A11yModule,
+  ],
   templateUrl: './ppa-request-card.component.html',
 })
 export class PpaRequestCardComponent {
