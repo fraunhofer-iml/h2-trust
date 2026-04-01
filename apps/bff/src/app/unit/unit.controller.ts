@@ -7,7 +7,7 @@
  */
 
 import { AuthenticatedUser } from 'nest-keycloak-connect';
-import { Body, Controller, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import {
   HydrogenProductionOverviewDto,
@@ -152,7 +152,7 @@ export class UnitController {
     return this.unitService.updateUnitStatus(id, dto.active);
   }
 
-  @Put('hydrogen-production')
+  @Put('hydrogen-production/:unitId')
   @ApiBearerAuth()
   @ApiOperation({
     description: 'Update a hydrogen production  Unit.',
@@ -161,13 +161,14 @@ export class UnitController {
     description: 'Returns the updated unit.',
   })
   updateHydrogenProductionUnit(
-    @Query('unitId') unitId: string,
+    @Param('unitId') unitId: string,
     @Body() dto: HydrogenProductionUnitInputDto,
   ): Promise<void> {
+    console.log(unitId);
     return this.unitService.updateHydrogenProductionUnit(unitId, dto);
   }
 
-  @Put('power-production')
+  @Put('power-production/:unitId')
   @ApiBearerAuth()
   @ApiOperation({
     description: 'Update a power production Unit.',
@@ -175,11 +176,12 @@ export class UnitController {
   @ApiOkResponse({
     description: 'Returns the updated unit.',
   })
-  updatePowerProductionUnit(@Query('unitId') unitId: string, @Body() dto: PowerProductionUnitInputDto): Promise<void> {
+  updatePowerProductionUnit(@Param('unitId') unitId: string, @Body() dto: PowerProductionUnitInputDto): Promise<void> {
+    console.log(unitId);
     return this.unitService.updatePowerProductionUnit(unitId, dto);
   }
 
-  @Put('hydrogen-storage')
+  @Put('hydrogen-storage/:unitId')
   @ApiBearerAuth()
   @ApiOperation({
     description: 'Update a Unit.',
@@ -187,7 +189,8 @@ export class UnitController {
   @ApiOkResponse({
     description: 'Returns the hydrogen storage updated unit.',
   })
-  updateHydrogenStorageUnit(@Query('unitId') unitId: string, @Body() dto: HydrogenStorageUnitInputDto): Promise<void> {
+  updateHydrogenStorageUnit(@Param('unitId') unitId: string, @Body() dto: HydrogenStorageUnitInputDto): Promise<void> {
+    console.log(unitId);
     return this.unitService.updateHydrogenStorageUnit(unitId, dto);
   }
 }

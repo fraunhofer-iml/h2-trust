@@ -7,7 +7,7 @@
  */
 
 import { lastValueFrom } from 'rxjs';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   HydrogenProductionOverviewDto,
@@ -70,21 +70,14 @@ export class UnitsService {
   }
 
   updatePowerProductionUnit(id: string, dto: PowerProductionUnitInputDto) {
-    const params = new HttpParams().set('unitId', id);
-    return lastValueFrom(this.httpClient.put<PowerProductionUnitDto>(API.UNITS.POWER_PRODUCTION.BASE, dto, { params }));
+    return lastValueFrom(this.httpClient.put<PowerProductionUnitDto>(API.UNITS.POWER_PRODUCTION.UPDATE(id), dto));
   }
 
   updateHydrogenStorageUnit(id: string, dto: HydrogenStorageUnitInputDto) {
-    const params = new HttpParams().set('unitId', id);
-    return lastValueFrom(this.httpClient.put<HydrogenStorageUnitDto>(API.UNITS.HYDROGEN_STORAGE.BASE, dto, { params }));
+    return lastValueFrom(this.httpClient.put<HydrogenStorageUnitDto>(API.UNITS.HYDROGEN_STORAGE.UPDATE(id), dto));
   }
 
   updateHydrogenProductionUnit(id: string, dto: HydrogenProductionUnitInputDto) {
-    const params = new HttpParams().set('unitId', id);
-    return lastValueFrom(
-      this.httpClient.put<HydrogenProductionUnitDto>(API.UNITS.HYDROGEN_PRODUCTION.BASE, dto, {
-        params,
-      }),
-    );
+    return lastValueFrom(this.httpClient.put<HydrogenProductionUnitDto>(API.UNITS.HYDROGEN_PRODUCTION.UPDATE(id), dto));
   }
 }
