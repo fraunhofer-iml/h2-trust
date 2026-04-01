@@ -10,6 +10,7 @@ import { AuthenticatedUser } from 'nest-keycloak-connect';
 import { Body, Controller, Get, NotImplementedException, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import {
+  CompanyDto,
   PowerAccessApprovalDto,
   PpaRequestCreateDto,
   PpaRequestDto,
@@ -70,9 +71,12 @@ export class PowerAccessApprovalController {
     const requests: PpaRequestDto[] = [
       {
         id: '123',
-        timestamp: new Date().toDateString(),
+        createdAt: new Date(),
+        decidedAt: new Date(),
+        validFrom: new Date(),
+        validTo: new Date(),
         sender: { name: 'Petra', company: { name: 'petra company' } } as UserDetailsDto,
-        receiver: { name: 'Hannes', company: { name: 'hannes company' } } as UserDetailsDto,
+        receiver: { name: 'hannes company' } as CompanyDto,
         powerProductionType: PowerProductionType.HYDRO_POWER_PLANT,
         status: PowerAccessApprovalStatus.PENDING,
         powerProductionUnit: {
@@ -86,9 +90,13 @@ export class PowerAccessApprovalController {
       },
       {
         id: '45687',
-        timestamp: new Date().toDateString(),
+        createdAt: new Date(),
+        decidedAt: new Date(),
+        decidedBy: 'Hans Peter',
+        validFrom: new Date(),
+        validTo: new Date(),
         sender: { name: 'Petra', company: { name: 'petra company' } } as UserDetailsDto,
-        receiver: { name: 'Hannes', company: { name: 'hannes company' } } as UserDetailsDto,
+        receiver: { name: 'hannes company' } as CompanyDto,
         powerProductionType: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
         status: PowerAccessApprovalStatus.REJECTED,
         powerProductionUnit: {
@@ -103,9 +111,13 @@ export class PowerAccessApprovalController {
       },
       {
         id: '456',
-        timestamp: new Date().toDateString(),
+        createdAt: new Date(),
+        decidedAt: new Date(),
+        decidedBy: 'Jürgen Hydrogen',
+        validFrom: new Date(),
+        validTo: new Date(),
         sender: { name: 'Petra Power', company: { name: 'GreenPower company' } } as UserDetailsDto,
-        receiver: { name: 'Hannes', company: { name: 'hannes company' } } as UserDetailsDto,
+        receiver: { name: 'hannes company' } as CompanyDto,
         powerProductionType: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
         status: PowerAccessApprovalStatus.APPROVED,
         powerProductionUnit: {
@@ -119,9 +131,12 @@ export class PowerAccessApprovalController {
       },
       {
         id: '45456416',
-        timestamp: new Date().toDateString(),
+        createdAt: new Date(),
+        decidedAt: new Date(),
+        validFrom: new Date(),
+        validTo: new Date(),
         sender: { name: 'Petra Power', company: { name: 'GreenPower company' } } as UserDetailsDto,
-        receiver: { name: 'Hannes', company: { name: 'hannes company' } } as UserDetailsDto,
+        receiver: { name: 'hannes company' } as CompanyDto,
         powerProductionType: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
         status: PowerAccessApprovalStatus.APPROVED,
         powerProductionUnit: {
