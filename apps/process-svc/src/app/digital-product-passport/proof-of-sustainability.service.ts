@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Injectable } from '@nestjs/common';
 import {
   ProofOfSustainabilityEmissionCalculationEntity,
   ProofOfSustainabilityEmissionEntity,
@@ -20,9 +19,8 @@ import { HydrogenTransportPosService } from './proof-of-sustainability/hydrogen-
 import { PowerProductionPosService } from './proof-of-sustainability/power-production-pos.service';
 import { WaterConsumptionPosService } from './proof-of-sustainability/water-consumption-pos.service';
 
-@Injectable()
 export class ProofOfSustainabilityService {
-  createProofOfSustainability(provenance: ProvenanceEntity): ProofOfSustainabilityEntity {
+  public static createProofOfSustainability(provenance: ProvenanceEntity): ProofOfSustainabilityEntity {
     if (!provenance) {
       throw new Error('Provenance is undefined.');
     }
@@ -46,7 +44,7 @@ export class ProofOfSustainabilityService {
     return this.assembleProofOfSustainability(provenance.root.id, emissionCalculations, hydrogenAmount);
   }
 
-  private assembleProofOfSustainability(
+  private static assembleProofOfSustainability(
     batchId: string,
     emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
     hydrogenAmountKg: number,
@@ -88,7 +86,7 @@ export class ProofOfSustainabilityService {
     );
   }
 
-  private assembleApplicationEmissions(
+  private static assembleApplicationEmissions(
     emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
   ): ProofOfSustainabilityEmissionEntity[] {
     const calculateTotalEmissionAmountByCalculationTopic = (calculationTopic: CalculationTopic): number =>
@@ -151,7 +149,7 @@ export class ProofOfSustainabilityService {
     ];
   }
 
-  private assembleRegulatoryEmissions(
+  private static assembleRegulatoryEmissions(
     hydrogenProductionEmissionAmount: number,
     applicationEmissionAmount: number,
     hydrogenTransportEmissionAmount: number,

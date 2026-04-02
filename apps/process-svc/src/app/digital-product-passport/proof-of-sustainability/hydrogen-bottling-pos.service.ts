@@ -38,7 +38,7 @@ export class HydrogenBottlingPosService {
     );
   }
 
-  static assembleHydrogenBottling(
+  public static assembleHydrogenBottling(
     _hydrogenBottling: ProcessStepEntity,
   ): ProofOfSustainabilityEmissionCalculationEntity {
     if (_hydrogenBottling?.type !== ProcessType.HYDROGEN_BOTTLING) {

@@ -13,10 +13,10 @@ import {
   ProcessStepEntityFixture,
   TransportationDetailsEntityFixture,
 } from '@h2-trust/fixtures/entities';
-import { HydrogenTransportationSectionAssembler } from './hydrogen-transportation-section.assembler';
+import { HydrogenTransportationProofOfOriginService } from '../hydrogen-transportation-proof-of-origin.service';
 
-describe('HydrogenTransportationSectionService', () => {
-  describe('buildSection', () => {
+describe('HydrogenTransportationProofOfOriginService', () => {
+  describe('assembleHydrogenTransportationSection', () => {
     it('returns section with hydrogen batch, composition and emissions for trailer transport', () => {
       // Arrange
       const givenTransportationDetails = TransportationDetailsEntityFixture.createTrailer();
@@ -29,7 +29,7 @@ describe('HydrogenTransportationSectionService', () => {
       ];
 
       // Act
-      const actualResult = HydrogenTransportationSectionAssembler.assembleSection(
+      const actualResult = HydrogenTransportationProofOfOriginService.assembleHydrogenTransportationSection(
         givenHydrogenTransportation,
         givenHydrogenCompositions,
       );
@@ -61,7 +61,7 @@ describe('HydrogenTransportationSectionService', () => {
       const givenHydrogenCompositions = [HydrogenComponentEntityFixture.createGreen()];
 
       // Act
-      const actualResult = HydrogenTransportationSectionAssembler.assembleSection(
+      const actualResult = HydrogenTransportationProofOfOriginService.assembleHydrogenTransportationSection(
         givenHydrogenTransportation,
         givenHydrogenCompositions,
       );

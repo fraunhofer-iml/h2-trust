@@ -11,8 +11,8 @@ import { Broker } from '@h2-trust/amqp';
 import { ProcessStepModule } from '../process-step/process-step.module';
 import { DigitalProductPassportController } from './digital-product-passport.controller';
 import { DigitalProductPassportService } from './digital-product-passport.service';
-import { ProofOfOriginService } from './proof-of-origin/proof-of-origin.service';
-import { ProofOfSustainabilityService } from './proof-of-origin/proof-of-sustainability.service';
+import { ProofOfOriginService } from './proof-of-origin.service';
+import { ProofOfSustainabilityService } from './proof-of-sustainability.service';
 import { ProvenanceModule } from './provenance/provenance.module';
 import { RedComplianceModule } from './red-compliance/red-compliance.module';
 

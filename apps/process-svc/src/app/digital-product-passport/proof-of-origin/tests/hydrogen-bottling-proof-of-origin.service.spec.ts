@@ -6,13 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProofOfOriginHydrogenBatchEntity } from '@h2-trust/amqp';
+import { ProofOfOriginHydrogenBatchEntity, ProofOfOriginSectionEntity } from '@h2-trust/amqp';
 import { ProofOfOrigin } from '@h2-trust/domain';
 import { HydrogenComponentEntityFixture, ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
-import { HydrogenBottlingSectionAssembler } from './hydrogen-bottling-section.assembler';
+import { HydrogenBottlingProofOfOriginService } from '../hydrogen-bottling-proof-of-origin.service';
 
 describe('HydrogenBottlingSectionAssembler', () => {
-  describe('assembleSection', () => {
+  describe('assembleHydrogenBottlingSection', () => {
     it('returns section with hydrogen batch, composition and emissions', async () => {
       // Arrange
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
@@ -22,10 +22,11 @@ describe('HydrogenBottlingSectionAssembler', () => {
       ];
 
       // Act
-      const actualResult = HydrogenBottlingSectionAssembler.assembleSection(
-        givenHydrogenBottling,
-        givenHydrogenCompositions,
-      );
+      const actualResult: ProofOfOriginSectionEntity =
+        HydrogenBottlingProofOfOriginService.assembleHydrogenBottlingSection(
+          givenHydrogenBottling,
+          givenHydrogenCompositions,
+        );
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_BOTTLING_SECTION);

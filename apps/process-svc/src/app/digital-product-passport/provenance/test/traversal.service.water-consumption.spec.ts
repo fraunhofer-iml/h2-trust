@@ -10,8 +10,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { BatchEntityFixture, ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
-import { ProcessStepService } from '../../process-step/process-step.service';
-import { TraversalService } from './traversal.service';
+import { ProcessStepService } from '../../../process-step/process-step.service';
+import { TraversalService } from '../traversal.service';
 
 describe('TraversalService', () => {
   let service: TraversalService;

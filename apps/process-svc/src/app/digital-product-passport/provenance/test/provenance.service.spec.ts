@@ -7,11 +7,12 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
+import { ProvenanceEntity } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
 import { ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
-import { ProcessStepService } from '../../process-step/process-step.service';
-import { ProvenanceService } from './provenance.service';
-import { TraversalService } from './traversal.service';
+import { ProcessStepService } from '../../../process-step/process-step.service';
+import { ProvenanceService } from '../provenance.service';
+import { TraversalService } from '../traversal.service';
 
 describe('ProvenanceService', () => {
   let service: ProvenanceService;
@@ -82,14 +83,14 @@ describe('ProvenanceService', () => {
       processStepServiceMock.readProcessStep.mockResolvedValue(givenProcessStep);
 
       // Act
-      const actualResult = await service.buildProvenance(givenProcessStep);
+      const actualResult: ProvenanceEntity = await service.buildProvenance(givenProcessStep);
 
       // Assert
       expect(actualResult.root).toBe(givenProcessStep);
       expect(actualResult.hydrogenBottling).toBeUndefined();
-      expect(actualResult.hydrogenProductions).toEqual([]);
-      expect(actualResult.waterConsumptions).toEqual([]);
-      expect(actualResult.powerProductions).toEqual([givenProcessStep]);
+      expect(actualResult.getAllHydrogenRootProductions()).toEqual([]);
+      expect(actualResult.getAllWaterConsumptions()).toEqual([]);
+      expect(actualResult.getAllPowerProductions()).toEqual([givenProcessStep]);
     });
 
     it(`returns ProvenanceEntity for ${ProcessType.WATER_CONSUMPTION} process type`, async () => {
@@ -104,9 +105,9 @@ describe('ProvenanceService', () => {
       // Assert
       expect(actualResult.root).toBe(givenProcessStep);
       expect(actualResult.hydrogenBottling).toBeUndefined();
-      expect(actualResult.hydrogenProductions).toEqual([]);
-      expect(actualResult.waterConsumptions).toEqual([givenProcessStep]);
-      expect(actualResult.powerProductions).toEqual([]);
+      expect(actualResult.getAllHydrogenRootProductions()).toEqual([]);
+      expect(actualResult.getAllWaterConsumptions()).toEqual([givenProcessStep]);
+      expect(actualResult.getAllPowerProductions()).toEqual([]);
     });
 
     it(`returns ProvenanceEntity for ${ProcessType.HYDROGEN_PRODUCTION} process type`, async () => {
@@ -132,9 +133,9 @@ describe('ProvenanceService', () => {
 
       expect(actualResult.root).toBe(givenProcessStep);
       expect(actualResult.hydrogenBottling).toBeUndefined();
-      expect(actualResult.hydrogenProductions).toEqual([givenProcessStep]);
-      expect(actualResult.waterConsumptions).toEqual(givenWaterConsumptions);
-      expect(actualResult.powerProductions).toEqual(givenPowerProductions);
+      expect(actualResult.getAllHydrogenRootProductions()).toEqual([givenProcessStep]);
+      expect(actualResult.getAllWaterConsumptions()).toEqual(givenWaterConsumptions);
+      expect(actualResult.getAllPowerProductions()).toEqual(givenPowerProductions);
     });
 
     it(`returns ProvenanceEntity for ${ProcessType.HYDROGEN_BOTTLING} process type`, async () => {
@@ -161,9 +162,9 @@ describe('ProvenanceService', () => {
 
       expect(actualResult.root).toBe(givenProcessStep);
       expect(actualResult.hydrogenBottling).toBe(givenProcessStep);
-      expect(actualResult.hydrogenProductions).toEqual(givenHydrogenProductions);
-      expect(actualResult.waterConsumptions).toEqual(givenWaterConsumptions);
-      expect(actualResult.powerProductions).toEqual(givenPowerProductions);
+      expect(actualResult.getAllHydrogenRootProductions()).toEqual(givenHydrogenProductions);
+      expect(actualResult.getAllWaterConsumptions()).toEqual(givenWaterConsumptions);
+      expect(actualResult.getAllPowerProductions()).toEqual(givenPowerProductions);
     });
 
     it(`returns ProvenanceEntity for ${ProcessType.HYDROGEN_TRANSPORTATION} process type`, async () => {
@@ -197,9 +198,9 @@ describe('ProvenanceService', () => {
 
       expect(actualResult.root).toBe(givenProcessStep);
       expect(actualResult.hydrogenBottling).toBe(givenHydrogenBottling);
-      expect(actualResult.hydrogenProductions).toEqual(givenHydrogenProductions);
-      expect(actualResult.waterConsumptions).toEqual(givenWaterConsumptions);
-      expect(actualResult.powerProductions).toEqual(givenPowerProductions);
+      expect(actualResult.getAllHydrogenRootProductions()).toEqual(givenHydrogenProductions);
+      expect(actualResult.getAllWaterConsumptions()).toEqual(givenWaterConsumptions);
+      expect(actualResult.getAllPowerProductions()).toEqual(givenPowerProductions);
     });
   });
 });

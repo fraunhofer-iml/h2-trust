@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { ProofOfOrigin } from '@h2-trust/domain';
 import {
@@ -14,38 +13,11 @@ import {
   ProofOfOriginClassificationEntityFixture,
   ProofOfOriginSubClassificationEntityFixture,
 } from '@h2-trust/fixtures/entities';
-import { HydrogenProductionSectionService } from '../hydrogen-production-section.service';
-import { WaterSupplyClassificationAssembler } from '../water-supply-classification.assembler';
-import { PowerSupplyClassificationService } from './power-supply-classification.service';
+import { HydrogenProductionProofOfOriginService } from '../hydrogen-production-proof-of-origin.service';
 
-describe('HydrogenProductionSectionService', () => {
-  let service: HydrogenProductionSectionService;
-
-  const powerSupplyClassificationServiceMock = {
-    buildPowerSupplySubClassifications: jest.fn(),
-  };
-
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        HydrogenProductionSectionService,
-        {
-          provide: PowerSupplyClassificationService,
-          useValue: powerSupplyClassificationServiceMock,
-        },
-      ],
-    }).compile();
-
-    service = module.get<HydrogenProductionSectionService>(HydrogenProductionSectionService);
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
-  });
-
-  describe('buildSection', () => {
-    it('returns section with power supply and water supply classifications', async () => {
+describe('HydrogenProductionProofOfOriginService', () => {
+  describe('buildHydrogenProductionSection', () => {
+    it('returns section with power supply and water supply classifications', () => {
       // Arrange
       const givenPowerProductions = [ProcessStepEntityFixture.createPowerProduction()];
       const givenWaterConsumptions = [ProcessStepEntityFixture.createWaterConsumption()];
@@ -56,29 +28,14 @@ describe('HydrogenProductionSectionService', () => {
         name: ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION,
       });
 
-      powerSupplyClassificationServiceMock.buildPowerSupplySubClassifications.mockResolvedValue(
-        givenPowerSubClassifications,
-      );
-      jest
-        .spyOn(WaterSupplyClassificationAssembler, 'assembleClassification')
-        .mockReturnValue(givenWaterSupplyClassification);
-
       // Act
-      const actualResult = await service.buildSection(
+      const actualResult = HydrogenProductionProofOfOriginService.buildHydrogenProductionSection(
         givenPowerProductions,
         givenWaterConsumptions,
         givenHydrogenAmount,
       );
 
       // Assert
-      expect(powerSupplyClassificationServiceMock.buildPowerSupplySubClassifications).toHaveBeenCalledWith(
-        givenPowerProductions,
-        givenHydrogenAmount,
-      );
-      expect(WaterSupplyClassificationAssembler.assembleClassification).toHaveBeenCalledWith(
-        givenWaterConsumptions,
-        givenHydrogenAmount,
-      );
 
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
       expect(actualResult.batches).toEqual([]);
@@ -88,37 +45,27 @@ describe('HydrogenProductionSectionService', () => {
       expect(actualResult.classifications[1]).toEqual(givenWaterSupplyClassification);
     });
 
-    it('returns section with only power supply classification when no water consumptions', async () => {
+    it('returns section with only power supply classification when no water consumptions', () => {
       // Arrange
       const givenPowerProductions = [ProcessStepEntityFixture.createPowerProduction()];
       const givenWaterConsumptions: ProcessStepEntity[] = [];
       const givenHydrogenAmount = 100;
 
-      const givenPowerSubClassifications = [ProofOfOriginSubClassificationEntityFixture.create()];
-
-      powerSupplyClassificationServiceMock.buildPowerSupplySubClassifications.mockResolvedValue(
-        givenPowerSubClassifications,
-      );
-
       // Act
-      const actualResult = await service.buildSection(
+      const actualResult = HydrogenProductionProofOfOriginService.buildHydrogenProductionSection(
         givenPowerProductions,
         givenWaterConsumptions,
         givenHydrogenAmount,
       );
 
       // Assert
-      expect(powerSupplyClassificationServiceMock.buildPowerSupplySubClassifications).toHaveBeenCalledWith(
-        givenPowerProductions,
-        givenHydrogenAmount,
-      );
 
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
       expect(actualResult.classifications).toHaveLength(1);
       expect(actualResult.classifications[0].name).toBe(ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION);
     });
 
-    it('returns section with only water supply classification when no power productions', async () => {
+    it('returns section with only water supply classification when no power productions', () => {
       // Arrange
       const givenPowerProductions: ProcessStepEntity[] = [];
       const givenWaterConsumptions = [ProcessStepEntityFixture.createWaterConsumption()];
@@ -127,44 +74,35 @@ describe('HydrogenProductionSectionService', () => {
       const givenWaterSupplyClassification = ProofOfOriginClassificationEntityFixture.create({
         name: ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION,
       });
-      jest
-        .spyOn(WaterSupplyClassificationAssembler, 'assembleClassification')
-        .mockReturnValue(givenWaterSupplyClassification);
 
       // Act
-      const actualResult = await service.buildSection(
+      const actualResult = HydrogenProductionProofOfOriginService.buildHydrogenProductionSection(
         givenPowerProductions,
         givenWaterConsumptions,
         givenHydrogenAmount,
       );
 
       // Assert
-      expect(powerSupplyClassificationServiceMock.buildPowerSupplySubClassifications).not.toHaveBeenCalled();
-      expect(WaterSupplyClassificationAssembler.assembleClassification).toHaveBeenCalledWith(
-        givenWaterConsumptions,
-        givenHydrogenAmount,
-      );
 
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
       expect(actualResult.classifications).toHaveLength(1);
       expect(actualResult.classifications[0]).toEqual(givenWaterSupplyClassification);
     });
 
-    it('returns section with empty classifications when no power productions and no water consumptions', async () => {
+    it('returns section with empty classifications when no power productions and no water consumptions', () => {
       // Arrange
       const givenPowerProductions: ProcessStepEntity[] = [];
       const givenWaterConsumptions: ProcessStepEntity[] = [];
       const givenHydrogenAmount = 100;
 
       // Act
-      const actualResult = await service.buildSection(
+      const actualResult = HydrogenProductionProofOfOriginService.buildHydrogenProductionSection(
         givenPowerProductions,
         givenWaterConsumptions,
         givenHydrogenAmount,
       );
 
       // Assert
-      expect(powerSupplyClassificationServiceMock.buildPowerSupplySubClassifications).not.toHaveBeenCalled();
 
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
       expect(actualResult.batches).toEqual([]);

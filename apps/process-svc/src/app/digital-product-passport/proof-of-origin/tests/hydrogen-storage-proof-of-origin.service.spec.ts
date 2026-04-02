@@ -9,11 +9,11 @@
 import { ProcessStepEntity, ProofOfOriginHydrogenBatchEntity } from '@h2-trust/amqp';
 import { BatchType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
 import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures/entities';
-import { HydrogenStorageSectionAssembler } from './hydrogen-storage-section.assembler';
+import { HydrogenStorageroofOfOriginService } from '../hydrogen-storage-proof-of-origin.service';
 
 describe('HydrogenStorageSectionAssembler', () => {
-  describe('assembleSection', () => {
-    it('returns section with classifications grouped by hydrogen rfnbo type', async () => {
+  describe('assembleHydrogenStorageSection', () => {
+    it('returns section with classifications grouped by hydrogen rfnbo type', () => {
       // Arrange
       const givenRfnboReadyHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction({
         id: 'rfnbo-production-1',
@@ -34,7 +34,7 @@ describe('HydrogenStorageSectionAssembler', () => {
       const givenHydrogenProductions = [givenRfnboReadyHydrogenProduction, givenNonCertifiableHydrogenProduction];
 
       // Act
-      const actualResult = HydrogenStorageSectionAssembler.assembleSection(givenHydrogenProductions);
+      const actualResult = HydrogenStorageroofOfOriginService.assembleHydrogenStorageSection(givenHydrogenProductions);
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_STORAGE_SECTION);
@@ -69,7 +69,7 @@ describe('HydrogenStorageSectionAssembler', () => {
       const givenHydrogenProductions: ProcessStepEntity[] = [];
 
       // Act
-      const actualResult = HydrogenStorageSectionAssembler.assembleSection(givenHydrogenProductions);
+      const actualResult = HydrogenStorageroofOfOriginService.assembleHydrogenStorageSection(givenHydrogenProductions);
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_STORAGE_SECTION);
@@ -79,7 +79,7 @@ describe('HydrogenStorageSectionAssembler', () => {
 
     it('returns empty section when hydrogen productions is undefined', async () => {
       // Act
-      const actualResult = HydrogenStorageSectionAssembler.assembleSection(undefined);
+      const actualResult = HydrogenStorageroofOfOriginService.assembleHydrogenStorageSection(undefined);
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_STORAGE_SECTION);

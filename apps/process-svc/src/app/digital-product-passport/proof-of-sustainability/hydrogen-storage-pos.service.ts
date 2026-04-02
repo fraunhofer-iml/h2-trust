@@ -19,7 +19,7 @@ import {
 } from '@h2-trust/domain';
 
 export class HydrogenStoragePosService {
-  public static assembleHydrogenStorage(
+  public static computeEmissionsForHydrogenStorage(
     hydrogenProduction: ProcessStepEntity,
   ): ProofOfSustainabilityEmissionCalculationEntity {
     if (hydrogenProduction?.type !== ProcessType.HYDROGEN_PRODUCTION) {

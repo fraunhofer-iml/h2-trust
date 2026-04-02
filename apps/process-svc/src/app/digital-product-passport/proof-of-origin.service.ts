@@ -97,7 +97,7 @@ export class ProofOfOriginService {
    * @param provenance
    * @returns
    */
-  private assembleCompositionForBottling(provenance: ProvenanceEntity): HydrogenComponentEntity[] {
+  public assembleCompositionForBottling(provenance: ProvenanceEntity): HydrogenComponentEntity[] {
     if (!provenance.hydrogenBottling) {
       const errorMessage = `There is no hydrogen bottling in provenance.`;
       throw Error(errorMessage);

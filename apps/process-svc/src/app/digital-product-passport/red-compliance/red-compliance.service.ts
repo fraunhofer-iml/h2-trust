@@ -75,7 +75,7 @@ export class RedComplianceService {
     );
   }
 
-  private areUnitsInSameBiddingZone(
+  public areUnitsInSameBiddingZone(
     powerUnit: PowerProductionUnitEntity,
     hydrogenUnit: HydrogenProductionUnitEntity,
   ): boolean {
@@ -86,7 +86,7 @@ export class RedComplianceService {
     return powerUnitZone === hydrogenUnitZone;
   }
 
-  private isWithinTimeCorrelation(powerProduction: ProcessStepEntity, hydrogenProduction: ProcessStepEntity): boolean {
+  public isWithinTimeCorrelation(powerProduction: ProcessStepEntity, hydrogenProduction: ProcessStepEntity): boolean {
     const powerStartedAt = DateTimeUtil.toValidDate(powerProduction?.startedAt, 'powerProduction.startedAt');
     const hydrogenStartedAt = DateTimeUtil.toValidDate(hydrogenProduction?.startedAt, 'hydrogenProduction.startedAt');
 
@@ -97,7 +97,7 @@ export class RedComplianceService {
     return powerHour === hydrogenHour;
   }
 
-  private meetsAdditionalityCriterion(
+  public meetsAdditionalityCriterion(
     powerUnit: PowerProductionUnitEntity,
     hydrogenUnit: HydrogenProductionUnitEntity,
   ): boolean {
@@ -111,7 +111,7 @@ export class RedComplianceService {
     return powerCommissioning >= limitDate;
   }
 
-  private hasFinancialSupport(powerUnit: PowerProductionUnitEntity): boolean {
+  public hasFinancialSupport(powerUnit: PowerProductionUnitEntity): boolean {
     assertBoolean(powerUnit?.financialSupportReceived, 'powerUnit.financialSupportReceived');
     return !powerUnit.financialSupportReceived;
   }

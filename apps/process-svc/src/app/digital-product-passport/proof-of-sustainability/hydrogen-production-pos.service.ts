@@ -25,7 +25,7 @@ export class HydrogenProductionPosService {
 
     const hydrogenStorages: ProofOfSustainabilityEmissionCalculationEntity[] = provenance
       .getAllHydrogenLeafProductions()
-      .map((hydrogenProduction) => HydrogenStoragePosService.assembleHydrogenStorage(hydrogenProduction));
+      .map((hydrogenProduction) => HydrogenStoragePosService.computeEmissionsForHydrogenStorage(hydrogenProduction));
 
     const totalEmissions = hydrogenStorages.reduce((sum, curr) => sum + curr.result, 0);
 

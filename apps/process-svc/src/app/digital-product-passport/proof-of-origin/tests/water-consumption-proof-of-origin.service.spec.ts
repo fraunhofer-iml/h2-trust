@@ -9,10 +9,10 @@
 import { ProcessStepEntity, ProofOfOriginWaterBatchEntity } from '@h2-trust/amqp';
 import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
 import { ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
-import { WaterSupplyClassificationAssembler } from '../water-supply-classification.assembler';
+import { WaterConsumptionProofOfOriginService } from '../water-consumption-proof-of-origin.service';
 
-describe('WaterSupplyClassificationService', () => {
-  describe('buildWaterSupplyClassification', () => {
+describe('WaterConsumptionProofOfOriginService', () => {
+  describe('assembleWaterSupplyClassification', () => {
     it('returns classification with water batches and emissions', () => {
       // Arrange
       const givenWaterConsumption = ProcessStepEntityFixture.createWaterConsumption();
@@ -20,7 +20,7 @@ describe('WaterSupplyClassificationService', () => {
       const givenHydrogenAmount = 100;
 
       // Act
-      const actualResult = WaterSupplyClassificationAssembler.assembleClassification(
+      const actualResult = WaterConsumptionProofOfOriginService.assembleWaterSupplyClassification(
         givenWaterSupplies,
         givenHydrogenAmount,
       );
@@ -54,7 +54,7 @@ describe('WaterSupplyClassificationService', () => {
       const givenHydrogenAmount = 100;
 
       // Act
-      const actualResult = WaterSupplyClassificationAssembler.assembleClassification(
+      const actualResult = WaterConsumptionProofOfOriginService.assembleWaterSupplyClassification(
         givenWaterSupplies,
         givenHydrogenAmount,
       );
@@ -79,7 +79,7 @@ describe('WaterSupplyClassificationService', () => {
 
       // Act & Assert
       expect(() =>
-        WaterSupplyClassificationAssembler.assembleClassification(givenWaterSupplies, givenHydrogenAmount),
+        WaterConsumptionProofOfOriginService.assembleWaterSupplyClassification(givenWaterSupplies, givenHydrogenAmount),
       ).toThrow(errorMessage);
     });
 
@@ -92,7 +92,7 @@ describe('WaterSupplyClassificationService', () => {
 
       // Act & Assert
       expect(() =>
-        WaterSupplyClassificationAssembler.assembleClassification(givenWaterSupplies, givenHydrogenAmount),
+        WaterConsumptionProofOfOriginService.assembleWaterSupplyClassification(givenWaterSupplies, givenHydrogenAmount),
       ).toThrow(errorMessage);
     });
   });

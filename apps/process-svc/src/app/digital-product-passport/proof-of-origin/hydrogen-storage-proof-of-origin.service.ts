@@ -38,7 +38,7 @@ export class HydrogenStorageroofOfOriginService {
       const batchesForHydrogenRfnboType: ProofOfOriginBatchEntity[] = hydrogenProductionsByRfnboType.map(
         (hydrogenProduction) => {
           const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
-            HydrogenStoragePosService.assembleHydrogenStorage(hydrogenProduction);
+            HydrogenStoragePosService.computeEmissionsForHydrogenStorage(hydrogenProduction);
 
           const emission: ProofOfOriginEmissionEntity = ProofOfOriginEmissionEntity.fromEmissionCalculation(
             hydrogenProduction.batch.amount,

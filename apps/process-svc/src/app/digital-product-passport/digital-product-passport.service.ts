@@ -19,8 +19,8 @@ import {
 } from '@h2-trust/amqp';
 import { PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { ProcessStepService } from '../process-step/process-step.service';
-import { ProofOfOriginService } from './proof-of-origin/proof-of-origin.service';
-import { ProofOfSustainabilityService } from './proof-of-origin/proof-of-sustainability.service';
+import { ProofOfOriginService } from './proof-of-origin.service';
+import { ProofOfSustainabilityService } from './proof-of-sustainability.service';
 import { ProvenanceService } from './provenance/provenance.service';
 import { RedComplianceService } from './red-compliance/red-compliance.service';
 
@@ -31,7 +31,6 @@ export class DigitalProductPassportService {
     private readonly redComplianceService: RedComplianceService,
     private readonly proofOfOriginService: ProofOfOriginService,
     private readonly provenanceService: ProvenanceService,
-    private readonly emissionService: ProofOfSustainabilityService,
   ) {}
 
   public getRfnboType(productionChain: ProductionChainEntity): RfnboType {
@@ -43,7 +42,7 @@ export class DigitalProductPassportService {
     const powerType: PowerType = productionChain.powerProduction.batch.qualityDetails.powerType as PowerType;
     const provenance: ProvenanceEntity = ProvenanceEntity.fromProductionChain(productionChain);
     const proofOfSustainability: ProofOfSustainabilityEntity =
-      this.emissionService.createProofOfSustainability(provenance);
+      ProofOfSustainabilityService.createProofOfSustainability(provenance);
     return this.determineRfnboType(redCompliance, powerType, proofOfSustainability);
   }
 
@@ -67,7 +66,7 @@ export class DigitalProductPassportService {
       proofOfOrigin.length > 0 ? this.proofOfOriginService.getHydrogenBottling(proofOfOrigin).hydrogenComposition : [];
 
     const proofOfSustainability: ProofOfSustainabilityEntity =
-      this.emissionService.createProofOfSustainability(provenance);
+      ProofOfSustainabilityService.createProofOfSustainability(provenance);
 
     const rfnboType: RfnboType = this.determineRfnboType(redCompliance, powerType, proofOfSustainability);
 
