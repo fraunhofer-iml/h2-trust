@@ -7,7 +7,7 @@
  */
 
 import { AuthenticatedUser } from 'nest-keycloak-connect';
-import { Body, Controller, Get, NotImplementedException, Param, Patch, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import {
   HydrogenProductionOverviewDto,
@@ -152,7 +152,7 @@ export class UnitController {
     return this.unitService.updateUnitStatus(id, dto.active);
   }
 
-  @Put('hydrogen-production')
+  @Put('hydrogen-production/:unitId')
   @ApiBearerAuth()
   @ApiOperation({
     description: 'Update a hydrogen production  Unit.',
@@ -160,11 +160,14 @@ export class UnitController {
   @ApiOkResponse({
     description: 'Returns the updated unit.',
   })
-  updateHydrogenProductionUnit(@Body() _dto: HydrogenProductionUnitInputDto): Promise<HydrogenProductionUnitDto> {
-    throw new NotImplementedException();
+  updateHydrogenProductionUnit(
+    @Param('unitId') unitId: string,
+    @Body() dto: HydrogenProductionUnitInputDto,
+  ): Promise<void> {
+    return this.unitService.updateHydrogenProductionUnit(unitId, dto);
   }
 
-  @Put('power-production')
+  @Put('power-production/:unitId')
   @ApiBearerAuth()
   @ApiOperation({
     description: 'Update a power production Unit.',
@@ -172,11 +175,11 @@ export class UnitController {
   @ApiOkResponse({
     description: 'Returns the updated unit.',
   })
-  updatePowerProductionUnit(@Body() _dto: PowerProductionUnitInputDto): Promise<PowerProductionUnitDto> {
-    throw new NotImplementedException();
+  updatePowerProductionUnit(@Param('unitId') unitId: string, @Body() dto: PowerProductionUnitInputDto): Promise<void> {
+    return this.unitService.updatePowerProductionUnit(unitId, dto);
   }
 
-  @Put('hydrogen-storage')
+  @Put('hydrogen-storage/:unitId')
   @ApiBearerAuth()
   @ApiOperation({
     description: 'Update a Unit.',
@@ -184,7 +187,7 @@ export class UnitController {
   @ApiOkResponse({
     description: 'Returns the hydrogen storage updated unit.',
   })
-  updateHydrogenStorageUnit(@Body() _dto: HydrogenStorageUnitInputDto): Promise<HydrogenStorageUnitDto> {
-    throw new NotImplementedException();
+  updateHydrogenStorageUnit(@Param('unitId') unitId: string, @Body() dto: HydrogenStorageUnitInputDto): Promise<void> {
+    return this.unitService.updateHydrogenStorageUnit(unitId, dto);
   }
 }

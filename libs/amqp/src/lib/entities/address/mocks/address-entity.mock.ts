@@ -10,6 +10,7 @@ import { AddressSeed } from 'libs/database/src/seed';
 import { AddressEntity } from '../address.entity';
 
 export const AddressEntityPowerMock: AddressEntity = new AddressEntity(
+  AddressSeed[0].id,
   AddressSeed[0].street,
   AddressSeed[0].postalCode,
   AddressSeed[0].city,
@@ -18,6 +19,7 @@ export const AddressEntityPowerMock: AddressEntity = new AddressEntity(
 );
 
 export const AddressEntityGridMock: AddressEntity = new AddressEntity(
+  AddressSeed[1].id,
   AddressSeed[1].street,
   AddressSeed[1].postalCode,
   AddressSeed[1].city,
@@ -26,6 +28,7 @@ export const AddressEntityGridMock: AddressEntity = new AddressEntity(
 );
 
 export const AddressEntityHydrogenMock: AddressEntity = new AddressEntity(
+  AddressSeed[2].id,
   AddressSeed[2].street,
   AddressSeed[2].postalCode,
   AddressSeed[2].city,
@@ -34,6 +37,7 @@ export const AddressEntityHydrogenMock: AddressEntity = new AddressEntity(
 );
 
 export const AddressEntityRecipientMock: AddressEntity = new AddressEntity(
+  AddressSeed[3].id,
   AddressSeed[3].street,
   AddressSeed[3].postalCode,
   AddressSeed[3].city,

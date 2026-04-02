@@ -49,7 +49,7 @@ export class CreatePowerProductionUnitPayload extends BaseCreateUnitPayload {
 
   @IsEnum(PowerProductionType)
   @IsNotEmpty()
-  powerProductionType: PowerProductionType; // TODO-MP: rename to type
+  powerProductionType: PowerProductionType;
 
   constructor(
     name: string,
@@ -72,6 +72,7 @@ export class CreatePowerProductionUnitPayload extends BaseCreateUnitPayload {
     decommissioningPlannedOn: Date,
     gridOperator: string,
     gridConnectionNumber: string,
+    id?: string,
   ) {
     super(
       name,
@@ -85,6 +86,7 @@ export class CreatePowerProductionUnitPayload extends BaseCreateUnitPayload {
       serialNumber,
       certifiedBy,
       operatorId,
+      id,
     );
     this.electricityMeterNumber = electricityMeterNumber;
     this.ratedPower = ratedPower;
