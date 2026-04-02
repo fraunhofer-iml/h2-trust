@@ -25,18 +25,15 @@ export const API = {
     ACTIVE: (id: string) => `${UNITS_ENDPOINT}${id}/active`,
     POWER_PRODUCTION: {
       BASE: UNITS_ENDPOINT + 'power-production/',
-      DETAILS: (id: string) => `${API.UNITS.POWER_PRODUCTION.BASE}${id}`,
-      UPDATE: (id: string) => `${API.UNITS.POWER_PRODUCTION.BASE}${id}`,
+      BY_ID: (id: string) => `${API.UNITS.POWER_PRODUCTION.BASE}${id}`,
     },
     HYDROGEN_PRODUCTION: {
       BASE: UNITS_ENDPOINT + 'hydrogen-production/',
-      DETAILS: (id: string) => `${API.UNITS.HYDROGEN_PRODUCTION.BASE}${id}`,
-      UPDATE: (id: string) => `${API.UNITS.HYDROGEN_PRODUCTION.BASE}${id}`,
+      BY_ID: (id: string) => `${API.UNITS.HYDROGEN_PRODUCTION.BASE}${id}`,
     },
     HYDROGEN_STORAGE: {
       BASE: UNITS_ENDPOINT + 'hydrogen-storage/',
-      DETAILS: (id: string) => `${API.UNITS.HYDROGEN_STORAGE.BASE}${id}`,
-      UPDATE: (id: string) => `${API.UNITS.HYDROGEN_STORAGE.BASE}${id}`,
+      BY_ID: (id: string) => `${API.UNITS.HYDROGEN_STORAGE.BASE}${id}`,
     },
   },
   COMPANIES: { BASE: COMPANIES_ENDPOINT },
