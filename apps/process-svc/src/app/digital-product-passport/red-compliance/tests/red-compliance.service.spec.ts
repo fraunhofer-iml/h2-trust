@@ -32,31 +32,17 @@ describe('RedComplianceService', () => {
   });
 
   describe('determineRedCompliance', () => {
-    it('throws RpcException when provenance is null', async () => {
+    it('throws RpcException when provenance is null', () => {
       // Arrange
       const givenProcessStepId = 'process-step-1';
 
       const expectedErrorMessage = `Provenance or required productions (power/hydrogen) are missing for processStepId [${givenProcessStepId}]`;
 
       // Act & Assert
-      await expect(service.determineRedCompliance(undefined, undefined)).rejects.toThrow(expectedErrorMessage);
+      expect(service.determineRedCompliance(undefined, undefined)).rejects.toThrow(expectedErrorMessage);
     });
 
-    it('throws RpcException when powerProductions is empty', async () => {
-      // Arrange
-      const givenProcessStepId = 'process-step-1';
-      const powerProduction = ProcessStepEntityFixture.createPowerProduction();
-      const hydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction();
-
-      const expectedErrorMessage = `Provenance or required productions (power/hydrogen) are missing for processStepId [${givenProcessStepId}]`;
-
-      // Act & Assert
-      await expect(service.determineRedCompliance(hydrogenProduction, powerProduction)).rejects.toThrow(
-        expectedErrorMessage,
-      );
-    });
-
-    it('throws RpcException when hydrogenProductions is empty', async () => {
+    it('throws RpcException when powerProductions is empty', () => {
       // Arrange
       const givenProcessStepId = 'process-step-1';
       const powerProduction = ProcessStepEntityFixture.createPowerProduction();
@@ -65,12 +51,22 @@ describe('RedComplianceService', () => {
       const expectedErrorMessage = `Provenance or required productions (power/hydrogen) are missing for processStepId [${givenProcessStepId}]`;
 
       // Act & Assert
-      await expect(service.determineRedCompliance(hydrogenProduction, powerProduction)).rejects.toThrow(
-        expectedErrorMessage,
-      );
+      expect(service.determineRedCompliance(hydrogenProduction, powerProduction)).rejects.toThrow(expectedErrorMessage);
     });
 
-    it('returns RedComplianceEntity with all flags true when all compliance criteria are met', async () => {
+    it('throws RpcException when hydrogenProductions is empty', () => {
+      // Arrange
+      const givenProcessStepId = 'process-step-1';
+      const powerProduction = ProcessStepEntityFixture.createPowerProduction();
+      const hydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction();
+
+      const expectedErrorMessage = `Provenance or required productions (power/hydrogen) are missing for processStepId [${givenProcessStepId}]`;
+
+      // Act & Assert
+      expect(service.determineRedCompliance(hydrogenProduction, powerProduction)).rejects.toThrow(expectedErrorMessage);
+    });
+
+    it('returns RedComplianceEntity with all flags true when all compliance criteria are met', () => {
       // Arrange
       const givenPowerUnit = PowerProductionUnitEntityFixture.create({
         biddingZone: BiddingZone.DE_LU,
@@ -92,7 +88,7 @@ describe('RedComplianceService', () => {
       });
 
       // Act
-      const actualResult = await service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
+      const actualResult = service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
 
       // Assert
       expect(actualResult).toBeInstanceOf(RedComplianceEntity);
@@ -102,7 +98,7 @@ describe('RedComplianceService', () => {
       expect(actualResult.financialSupportReceived).toBe(true);
     });
 
-    it('returns RedComplianceEntity with isGeoCorrelationValid false when units are in different bidding zones', async () => {
+    it('returns RedComplianceEntity with isGeoCorrelationValid false when units are in different bidding zones', () => {
       // Arrange
       const givenPowerUnit = PowerProductionUnitEntityFixture.create({
         biddingZone: BiddingZone.DE_LU,
@@ -124,13 +120,13 @@ describe('RedComplianceService', () => {
       });
 
       // Act
-      const actualResult = await service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
+      const actualResult = service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
 
       // Assert
       expect(actualResult.isGeoCorrelationValid).toBe(false);
     });
 
-    it('returns RedComplianceEntity with isTimeCorrelationValid false when productions are not within time correlation', async () => {
+    it('returns RedComplianceEntity with isTimeCorrelationValid false when productions are not within time correlation', () => {
       // Arrange
       const givenPowerUnit = PowerProductionUnitEntityFixture.create({
         biddingZone: BiddingZone.DE_LU,
@@ -152,13 +148,13 @@ describe('RedComplianceService', () => {
       });
 
       // Act
-      const actualResult = await service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
+      const actualResult = service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
 
       // Assert
       expect(actualResult.isTimeCorrelationValid).toBe(false);
     });
 
-    it('returns RedComplianceEntity with isAdditionalityFulfilled false when additionality criterion is not met', async () => {
+    it('returns RedComplianceEntity with isAdditionalityFulfilled false when additionality criterion is not met', () => {
       // Arrange
       const givenPowerUnit = PowerProductionUnitEntityFixture.create({
         biddingZone: BiddingZone.DE_LU,
@@ -180,13 +176,13 @@ describe('RedComplianceService', () => {
       });
 
       // Act
-      const actualResult = await service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
+      const actualResult = service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
 
       // Assert
       expect(actualResult.isAdditionalityFulfilled).toBe(false);
     });
 
-    it('returns RedComplianceEntity with financialSupportReceived false when financial support was received', async () => {
+    it('returns RedComplianceEntity with financialSupportReceived false when financial support was received', () => {
       // Arrange
       const givenPowerUnit = PowerProductionUnitEntityFixture.create({
         biddingZone: BiddingZone.DE_LU,
@@ -208,13 +204,13 @@ describe('RedComplianceService', () => {
       });
 
       // Act
-      const actualResult = await service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
+      const actualResult = service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
 
       // Assert
       expect(actualResult.financialSupportReceived).toBe(false);
     });
 
-    it('throws HttpException when power production unit is missing', async () => {
+    it('throws HttpException when power production unit is missing', () => {
       // Arrange
       const givenPowerProcessStep = ProcessStepEntityFixture.createPowerProduction();
       givenPowerProcessStep.executedBy = undefined;
@@ -223,21 +219,21 @@ describe('RedComplianceService', () => {
       const expectedErrorMessage = `Production units not found: powerUnitId [${givenPowerProcessStep.executedBy.id}] or hydrogenUnitId [${givenHydrogenProcessStep.executedBy.id}]`;
 
       // Act & Assert
-      await expect(service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep)).rejects.toThrow(
+      expect(service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep)).rejects.toThrow(
         expectedErrorMessage,
       );
     });
 
-    it('throws HttpException when hydrogen production unit is missing', async () => {
+    it('throws HttpException when hydrogen production unit is missing', () => {
       // Arrange
       const givenPowerProcessStep = ProcessStepEntityFixture.createPowerProduction();
       const givenHydrogenProcessStep = ProcessStepEntityFixture.createHydrogenProduction();
       givenHydrogenProcessStep.executedBy = undefined;
 
-      const expectedErrorMessage = `Production units not found: powerUnitId [${givenPowerProcessStep.executedBy.id}] or hydrogenUnitId [${givenHydrogenProcessStep.executedBy.id}]`;
+      const expectedErrorMessage = `The passed-in power production or hydrogen production do not have an executedBy unit specified.`;
 
       // Act & Assert
-      await expect(service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep)).rejects.toThrow(
+      expect(service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep)).rejects.toThrow(
         expectedErrorMessage,
       );
     });

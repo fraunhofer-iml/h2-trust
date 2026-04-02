@@ -74,6 +74,7 @@ export class PowerProductionProofOfOriginService {
       const emission: ProofOfOriginEmissionEntity = ProofOfOriginEmissionEntity.fromEmissionCalculation(
         bottledKgHydrogen,
         powerSupplyEmission.result,
+        powerSupplyEmission.basisOfCalculation,
       );
 
       return {

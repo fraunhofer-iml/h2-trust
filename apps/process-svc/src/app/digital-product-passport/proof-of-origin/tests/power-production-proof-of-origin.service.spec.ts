@@ -8,18 +8,30 @@
 
 import { ProcessStepEntity, ProofOfOriginPowerBatchEntity } from '@h2-trust/amqp';
 import { BatchType, EnergySource } from '@h2-trust/domain';
-import { ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
+import {
+  PowerProductionTypeEntityFixture,
+  PowerProductionUnitEntityFixture,
+  ProcessStepEntityFixture,
+} from '@h2-trust/fixtures/entities';
 import { PowerProductionProofOfOriginService } from '../power-production-proof-of-origin.service';
 
 describe('PowerProductionProofOfOriginService', () => {
   describe('buildPowerSupplySubClassifications', () => {
     it('returns sub-classifications grouped by energy source', async () => {
       // Arrange
-      const givenSolarPowerProduction = ProcessStepEntityFixture.createPowerProduction();
+      const givenSolarPowerProduction = ProcessStepEntityFixture.createPowerProduction({
+        executedBy: PowerProductionUnitEntityFixture.create({
+          type: PowerProductionTypeEntityFixture.createSolarEnergy(),
+        }),
+      });
       givenSolarPowerProduction.id = 'solar-production';
       givenSolarPowerProduction.executedBy.id = 'solar-unit';
 
-      const givenWindPowerProduction = ProcessStepEntityFixture.createPowerProduction();
+      const givenWindPowerProduction = ProcessStepEntityFixture.createPowerProduction({
+        executedBy: PowerProductionUnitEntityFixture.create({
+          type: PowerProductionTypeEntityFixture.createWindEnergy(),
+        }),
+      });
       givenWindPowerProduction.id = 'wind-production';
       givenWindPowerProduction.executedBy.id = 'wind-unit';
 

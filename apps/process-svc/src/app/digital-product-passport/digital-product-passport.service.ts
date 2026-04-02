@@ -30,6 +30,7 @@ export class DigitalProductPassportService {
     private readonly processStepService: ProcessStepService,
     private readonly redComplianceService: RedComplianceService,
     private readonly proofOfOriginService: ProofOfOriginService,
+    private readonly proofOfSustainabilityService: ProofOfSustainabilityService,
     private readonly provenanceService: ProvenanceService,
   ) {}
 
@@ -42,7 +43,7 @@ export class DigitalProductPassportService {
     const powerType: PowerType = productionChain.powerProduction.batch.qualityDetails.powerType as PowerType;
     const provenance: ProvenanceEntity = ProvenanceEntity.fromProductionChain(productionChain);
     const proofOfSustainability: ProofOfSustainabilityEntity =
-      ProofOfSustainabilityService.createProofOfSustainability(provenance);
+      this.proofOfSustainabilityService.createProofOfSustainability(provenance);
     return this.determineRfnboType(redCompliance, powerType, proofOfSustainability);
   }
 
@@ -66,7 +67,7 @@ export class DigitalProductPassportService {
       proofOfOrigin.length > 0 ? this.proofOfOriginService.getHydrogenBottling(proofOfOrigin).hydrogenComposition : [];
 
     const proofOfSustainability: ProofOfSustainabilityEntity =
-      ProofOfSustainabilityService.createProofOfSustainability(provenance);
+      this.proofOfSustainabilityService.createProofOfSustainability(provenance);
 
     const rfnboType: RfnboType = this.determineRfnboType(redCompliance, powerType, proofOfSustainability);
 

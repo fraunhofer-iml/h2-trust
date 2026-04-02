@@ -28,6 +28,7 @@ export class HydrogenTransportationProofOfOriginService {
     const emission: ProofOfOriginEmissionEntity = ProofOfOriginEmissionEntity.fromEmissionCalculation(
       hydrogenTransportation.batch.amount,
       emissionCalculation.result,
+      emissionCalculation.basisOfCalculation,
     );
 
     const batch: ProofOfOriginHydrogenBatchEntity = this.assembleHydrogenTransportation(

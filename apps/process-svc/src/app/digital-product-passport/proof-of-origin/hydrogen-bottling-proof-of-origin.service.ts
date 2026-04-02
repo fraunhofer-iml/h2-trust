@@ -34,6 +34,7 @@ export class HydrogenBottlingProofOfOriginService {
     const emission: ProofOfOriginEmissionEntity = ProofOfOriginEmissionEntity.fromEmissionCalculation(
       hydrogenBottling.batch.amount,
       emissionCalculation.result,
+      emissionCalculation.basisOfCalculation,
     );
 
     const batch: ProofOfOriginHydrogenBatchEntity = {

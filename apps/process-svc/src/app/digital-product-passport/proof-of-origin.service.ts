@@ -118,7 +118,7 @@ export class ProofOfOriginService {
     const bottlingBatchAmount = provenance.hydrogenBottling.batch.amount;
 
     const hydrogenComponentsOfProductions = provenance
-      .getAllHydrogenLeafProductions()
+      .getAllHydrogenRootProductions()
       .map(
         (hydrogenRootProduction) =>
           new HydrogenComponentEntity(

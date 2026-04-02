@@ -26,3 +26,4 @@ export * from './quality-details.entity.fixture';
 export * from './red-compliance.entity.fixture';
 export * from './transportation-details.entity.fixture';
 export * from './user.entity.fixture';
+export * from './production-chain.entity.fixture';

@@ -7,11 +7,25 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { DigitalProductPassportEntity, ProcessStepEntity } from '@h2-trust/amqp';
-import { ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
+import {
+  DigitalProductPassportEntity,
+  ProcessStepEntity,
+  ProductionChainEntity,
+  ProofOfOriginSectionEntity,
+  ProofOfSustainabilityEntity,
+  ProvenanceEntity,
+  RedComplianceEntity,
+} from '@h2-trust/amqp';
+import {
+  ProcessStepEntityFixture,
+  ProductionChainEntityFixture,
+  ProofOfOriginSectionEntityFixture,
+  ProofOfSustainabilityEntityFixture,
+} from '@h2-trust/fixtures/entities';
 import { ProcessStepService } from '../../process-step/process-step.service';
 import { DigitalProductPassportService } from '../digital-product-passport.service';
 import { ProofOfOriginService } from '../proof-of-origin.service';
+import { ProofOfSustainabilityService } from '../proof-of-sustainability.service';
 import { ProvenanceService } from '../provenance/provenance.service';
 import { RedComplianceService } from '../red-compliance/red-compliance.service';
 
@@ -26,11 +40,16 @@ describe('DigitalProductPassService', () => {
   };
 
   const redComplianceServiceMock = {
-    determineRedCompliance: jest.fn(),
+    determineTotalRedCompliance: jest.fn(),
   };
 
   const proofOfOriginServiceMock = {
-    buildSection: jest.fn(),
+    createProofOfOrigin: jest.fn(),
+    getHydrogenBottling: jest.fn(),
+  };
+
+  const proofOfSustainabilityServiceMock = {
+    createProofOfSustainability: jest.fn(),
   };
 
   const provenanceServiceMock = {
@@ -54,6 +73,10 @@ describe('DigitalProductPassService', () => {
           useValue: proofOfOriginServiceMock,
         },
         {
+          provide: ProofOfSustainabilityService,
+          useValue: proofOfSustainabilityServiceMock,
+        },
+        {
           provide: ProvenanceService,
           useValue: provenanceServiceMock,
         },
@@ -70,23 +93,30 @@ describe('DigitalProductPassService', () => {
   describe('readDigitalProductPassport', () => {
     it(`returns the DigitalProductPassport`, async () => {
       // Arrange
-      /*
-      const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling({
-        batch: BatchEntityFixture.createHydrogenBatch({
-          amount: 100,
-          predecessors: [
-            BatchEntityFixture.createHydrogenBatch({
-              amount: 100,
-              qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            }),
-          ],
-        }),
-      });*/
+      const givenHydrogenBottling: ProcessStepEntity = ProcessStepEntityFixture.createHydrogenBottling();
+      const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
 
-      const hydrogenBottling: ProcessStepEntity = ProcessStepEntityFixture.createHydrogenBottling();
+      const givenProvenance = new ProvenanceEntity(
+        givenHydrogenBottling,
+        [givenProductionChain],
+        givenHydrogenBottling,
+      );
 
+      const givenRedCompliance = new RedComplianceEntity(true, true, true, true);
+
+      const proofOfOrigin: ProofOfOriginSectionEntity[] = [ProofOfOriginSectionEntityFixture.create()];
+      const proofOfSustainability: ProofOfSustainabilityEntity = ProofOfSustainabilityEntityFixture.create();
+
+      processStepServiceMock.readProcessStep.mockReturnValue(givenProductionChain.hydrogenRootProduction);
+      provenanceServiceMock.buildProvenance.mockReturnValue(Promise.resolve(givenProvenance));
+      redComplianceServiceMock.determineTotalRedCompliance.mockReturnValue(givenRedCompliance);
+      proofOfOriginServiceMock.createProofOfOrigin.mockReturnValue(proofOfOrigin);
+      proofOfOriginServiceMock.getHydrogenBottling.mockReturnValue([]);
+      proofOfSustainabilityServiceMock.createProofOfSustainability.mockReturnValue(proofOfSustainability);
       // Act
-      const actualResult: DigitalProductPassportEntity = await service.readDigitalProductPassport(hydrogenBottling.id);
+      const actualResult: DigitalProductPassportEntity = await service.readDigitalProductPassport(
+        givenHydrogenBottling.id,
+      );
 
       // Assert
       expect(actualResult).toBeDefined();

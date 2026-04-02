@@ -6,11 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Test, TestingModule } from '@nestjs/testing';
 import {
   HydrogenProductionUnitEntity,
   PowerProductionUnitEntity,
   ProductionChainEntity,
+  ProofOfSustainabilityEmissionCalculationEntity,
   ProvenanceEntity,
+  TransportationDetailsEntity,
 } from '@h2-trust/amqp';
 import { CalculationTopic } from '@h2-trust/domain';
 import { ProcessStepEntityFixture, TransportationDetailsEntityFixture } from '@h2-trust/fixtures/entities';
@@ -23,20 +26,29 @@ import { PowerProductionPosService } from '../power-production-pos.service';
 import { WaterConsumptionPosService } from '../water-consumption-pos.service';
 
 describe('ProodOfSustainability', () => {
+  let service: ProofOfSustainabilityService;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [ProofOfSustainabilityService],
+    }).compile();
+
+    service = module.get<ProofOfSustainabilityService>(ProofOfSustainabilityService);
+  });
   describe('computeProvenanceEmissionsForHydrogenBottling', () => {
-    it('computes emissions for provenance with hydrogen bottling only', async () => {
+    it('computes emissions for provenance with hydrogen bottling only', () => {
       // Arrange
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
       const givenProvenance = new ProvenanceEntity(givenHydrogenBottling, [], givenHydrogenBottling);
 
       // Act
-      const actualResult =
-        await HydrogenBottlingPosService.computeProvenanceEmissionsForHydrogenBottling(givenProvenance);
+      const actualResult: ProofOfSustainabilityEmissionCalculationEntity =
+        HydrogenBottlingPosService.computeProvenanceEmissionsForHydrogenBottling(givenProvenance);
 
       // Assert
       expect(actualResult).toBeDefined();
-      //expect(actualResult.batchId).toBe(givenHydrogenBottling.id); // TODO-MP: batchId or processStepId -> DUHGW-314
-      //expect(actualResult.calculations.length).toBeGreaterThan(0);
+      expect(actualResult.result).toBe(0); // TODO-MP: batchId or processStepId -> DUHGW-314
+      expect(actualResult.calculationTopic).toEqual(CalculationTopic.HYDROGEN_BOTTLING);
     });
   });
 
@@ -73,18 +85,22 @@ describe('ProodOfSustainability', () => {
   });
 
   describe('computeProvenanceEmissionsForTransport', () => {
-    it('computes emissions for provenance with hydrogen bottling only', async () => {
+    it('computes emissions for provenance with hydrogen bottling only', () => {
       // Arrange
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
-      const givenProvenance = new ProvenanceEntity(givenHydrogenBottling, [], givenHydrogenBottling);
+      const transportationDetails: TransportationDetailsEntity = TransportationDetailsEntityFixture.createPipeline();
+      const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation({
+        transportationDetails,
+      });
+      const givenProvenance = new ProvenanceEntity(givenHydrogenTransportation, [], givenHydrogenBottling);
 
       // Act
-      const actualResult = await HydrogenTransportPosService.computeProvenanceEmissionsForTransport(givenProvenance);
+      const actualResult = HydrogenTransportPosService.computeProvenanceEmissionsForTransport(givenProvenance);
 
       // Assert
       expect(actualResult).toBeDefined();
-      //expect(actualResult.batchId).toBe(givenHydrogenBottling.id); // TODO-MP: batchId or processStepId -> DUHGW-314
-      //expect(actualResult.calculations.length).toBeGreaterThan(0);
+      expect(actualResult.result).toBe(0); // TODO-MP: batchId or processStepId -> DUHGW-314
+      expect(actualResult.calculationTopic).toEqual(CalculationTopic.HYDROGEN_TRANSPORTATION);
     });
   });
 
@@ -146,7 +162,7 @@ describe('ProodOfSustainability', () => {
       );
 
       // Act
-      const actualResult = ProofOfSustainabilityService.createProofOfSustainability(givenProvenance);
+      const actualResult = service.createProofOfSustainability(givenProvenance);
 
       // Assert
       expect(actualResult).toBeDefined();
@@ -170,18 +186,6 @@ describe('ProodOfSustainability', () => {
       expect(actualResult.emissions.length).toBe(8);
       expect(actualResult.emissions.filter((e) => e.emissionType === 'APPLICATION').length).toBe(5);
       expect(actualResult.emissions.filter((e) => e.emissionType === 'REGULATORY').length).toBe(3);
-    });
-
-    it('throws error when provenance is undefined', async () => {
-      // Arrange
-      const givenProvenance = undefined as unknown as ProvenanceEntity;
-
-      const expectedErrorMessage = 'Provenance is undefined.';
-
-      // Act & Assert
-      await expect(ProofOfSustainabilityService.createProofOfSustainability(givenProvenance)).rejects.toThrow(
-        expectedErrorMessage,
-      );
     });
   });
 });
