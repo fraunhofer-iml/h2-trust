@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './power-access-approval.dto';
-export * from './ppa-request.dto';
-export * from './mocks';
+export interface ConfirmationResult {
+  confirmed: boolean;
+  comment: string | undefined;
+}

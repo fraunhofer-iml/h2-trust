@@ -31,4 +31,27 @@
       </div>
     </div>
   }
+
+  <div class="flex flex-col gap-2 rounded-lg bg-white p-4">
+    <h3 class="flex justify-between font-semibold text-neutral-500">
+      <span>My PPA Requests</span> <a [routerLink]="'/ppa-requests'" matButton="filled">View all</a>
+    </h3>
+
+    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+      <mat-tab [disabled]="!roles.isPowerProducer()">
+        <ng-template mat-tab-label>
+          <span class="material-symbols-outlined p-2">markunread_mailbox</span>
+          Requests received
+        </ng-template>
+        <app-ppa-requests-overview [role]="PpaRequestRole.RECEIVER"></app-ppa-requests-overview>
+      </mat-tab>
+      <mat-tab [disabled]="!roles.isHydrogenProducer()"
+        ><ng-template mat-tab-label>
+          <span class="material-symbols-outlined p-2" matIconPrefix>outgoing_mail</span>
+          Requests sent
+        </ng-template>
+        <app-ppa-requests-overview [role]="PpaRequestRole.SENDER"></app-ppa-requests-overview
+      ></mat-tab>
+    </mat-tab-group>
+  </div>
 </div>

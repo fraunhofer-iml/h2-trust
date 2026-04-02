@@ -1,0 +1,27 @@
+<div class="flex flex-col gap-4 p-8">
+  <div class="flx-row flex gap-2 text-neutral-500">
+    <a class="text-lg hover:underline" routerLink="">My Account</a>
+    <span class="material-symbols-outlined"> keyboard_arrow_right </span>
+    <h2 class="text-lg">PPA Requests</h2>
+  </div>
+
+  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="rounded-md" dynamicHeight>
+    <mat-tab [disabled]="!roles.isPowerProducer()">
+      <ng-template mat-tab-label>
+        <span class="material-symbols-outlined p-2">markunread_mailbox</span>
+        Requests received
+      </ng-template>
+
+      <app-ppa-requests-list [role]="PpaRequestRole.RECEIVER" [data]="ppaRequestsReceived()" />
+    </mat-tab>
+
+    <mat-tab [disabled]="!roles.isHydrogenProducer()">
+      <ng-template mat-tab-label>
+        <span class="material-symbols-outlined p-2">outgoing_mail</span>
+        Requests sent
+      </ng-template>
+
+      <app-ppa-requests-list [role]="PpaRequestRole.SENDER" [data]="ppaRequestsSent()" />
+    </mat-tab>
+  </mat-tab-group>
+</div>
