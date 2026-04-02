@@ -34,36 +34,30 @@ describe('RedComplianceService', () => {
   describe('determineRedCompliance', () => {
     it('throws RpcException when provenance is null', () => {
       // Arrange
-      const givenProcessStepId = 'process-step-1';
-
-      const expectedErrorMessage = `Provenance or required productions (power/hydrogen) are missing for processStepId [${givenProcessStepId}]`;
+      const expectedErrorMessage = `The passed-in power production or hydrogen production do not have an executedBy unit specified.`;
 
       // Act & Assert
-      expect(service.determineRedCompliance(undefined, undefined)).rejects.toThrow(expectedErrorMessage);
+      expect(() => service.determineRedCompliance(undefined, undefined)).toThrow(expectedErrorMessage);
     });
 
     it('throws RpcException when powerProductions is empty', () => {
       // Arrange
-      const givenProcessStepId = 'process-step-1';
-      const powerProduction = ProcessStepEntityFixture.createPowerProduction();
       const hydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction();
 
-      const expectedErrorMessage = `Provenance or required productions (power/hydrogen) are missing for processStepId [${givenProcessStepId}]`;
+      const expectedErrorMessage = `The passed-in power production or hydrogen production do not have an executedBy unit specified.`;
 
       // Act & Assert
-      expect(service.determineRedCompliance(hydrogenProduction, powerProduction)).rejects.toThrow(expectedErrorMessage);
+      expect(() => service.determineRedCompliance(hydrogenProduction, undefined)).toThrow(expectedErrorMessage);
     });
 
     it('throws RpcException when hydrogenProductions is empty', () => {
       // Arrange
-      const givenProcessStepId = 'process-step-1';
       const powerProduction = ProcessStepEntityFixture.createPowerProduction();
-      const hydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction();
 
-      const expectedErrorMessage = `Provenance or required productions (power/hydrogen) are missing for processStepId [${givenProcessStepId}]`;
+      const expectedErrorMessage = `The passed-in power production or hydrogen production do not have an executedBy unit specified.`;
 
       // Act & Assert
-      expect(service.determineRedCompliance(hydrogenProduction, powerProduction)).rejects.toThrow(expectedErrorMessage);
+      expect(() => service.determineRedCompliance(undefined, powerProduction)).toThrow(expectedErrorMessage);
     });
 
     it('returns RedComplianceEntity with all flags true when all compliance criteria are met', () => {
@@ -216,10 +210,10 @@ describe('RedComplianceService', () => {
       givenPowerProcessStep.executedBy = undefined;
       const givenHydrogenProcessStep = ProcessStepEntityFixture.createHydrogenProduction();
 
-      const expectedErrorMessage = `Production units not found: powerUnitId [${givenPowerProcessStep.executedBy.id}] or hydrogenUnitId [${givenHydrogenProcessStep.executedBy.id}]`;
+      const expectedErrorMessage = `The passed-in power production or hydrogen production do not have an executedBy unit specified.`;
 
       // Act & Assert
-      expect(service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep)).rejects.toThrow(
+      expect(() => service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep)).toThrow(
         expectedErrorMessage,
       );
     });
@@ -233,7 +227,7 @@ describe('RedComplianceService', () => {
       const expectedErrorMessage = `The passed-in power production or hydrogen production do not have an executedBy unit specified.`;
 
       // Act & Assert
-      expect(service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep)).rejects.toThrow(
+      expect(() => service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep)).toThrow(
         expectedErrorMessage,
       );
     });
