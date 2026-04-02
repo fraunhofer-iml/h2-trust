@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { filter } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnInit, signal, Signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -15,7 +16,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { Router, RouterModule } from '@angular/router';
+import { NavigationStart, Router, RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
 import { ROUTES } from '../../shared/constants/routes';
@@ -53,6 +54,14 @@ export class SidebarComponent implements OnInit {
   protected readonly router = inject(Router);
   protected readonly unitsService = inject(UnitsService);
   protected readonly ppaService = inject(PowerAccessApprovalService);
+
+  protected isMenuOpen = false;
+
+  constructor(readonly authService: AuthService) {
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationStart))
+      .subscribe(() => (this.isMenuOpen = false));
+  }
 
   ppaRequestsQuery = injectQuery(() => ({
     queryKey: ['ppa-requests', PowerAccessApprovalStatus.PENDING],
@@ -105,8 +114,6 @@ export class SidebarComponent implements OnInit {
   userLastName = '';
   userEmail = '';
 
-  constructor(readonly authService: AuthService) {}
-
   async ngOnInit() {
     this.isAuthenticated = this.authService.isAuthenticated();
     if (this.isAuthenticated) {
@@ -128,5 +135,9 @@ export class SidebarComponent implements OnInit {
 
   signIn() {
     this.authService.logIn();
+  }
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
   }
 }

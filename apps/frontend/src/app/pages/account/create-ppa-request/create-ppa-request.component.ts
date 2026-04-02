@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAnchor } from '@angular/material/button';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -17,6 +19,8 @@ import { PowerAccessApprovalService } from '../../../shared/services/power-acces
 interface RequestForm {
   companyId: FormControl<string | null>;
   powerProductionType: FormControl<PowerProductionType | null>;
+  validFrom: FormControl<Date | null>;
+  validTo: FormControl<Date | null>;
 }
 
 @Component({
@@ -29,7 +33,9 @@ interface RequestForm {
     ReactiveFormsModule,
     PrettyEnumPipe,
     CommonModule,
+    MatDatepickerModule,
   ],
+  providers: [provideNativeDateAdapter()],
   templateUrl: './create-ppa-request.component.html',
 })
 export class CreatePpaRequestComponent {
@@ -41,9 +47,13 @@ export class CreatePpaRequestComponent {
 
   protected readonly availablePowerProductionType = Object.entries(PowerProductionType);
 
+  protected today = new Date();
+
   form = new FormGroup<RequestForm>({
     companyId: new FormControl('', Validators.required),
-    powerProductionType: new FormControl(null, Validators.required),
+    powerProductionType: new FormControl<PowerProductionType | null>(null, Validators.required),
+    validFrom: new FormControl<Date | null>(null, Validators.required),
+    validTo: new FormControl<Date | null>(null, Validators.required),
   });
 
   companiesQuery = injectQuery(() => ({
@@ -65,10 +75,7 @@ export class CreatePpaRequestComponent {
   }
 
   save() {
-    const val = this.form.value;
-    if (!val.companyId || !val.powerProductionType) return;
-
-    const dto: PpaRequestCreateDto = val as PpaRequestCreateDto;
+    const dto: PpaRequestCreateDto = this.form.value as PpaRequestCreateDto;
 
     this.mutation.mutate(dto);
     this.close();

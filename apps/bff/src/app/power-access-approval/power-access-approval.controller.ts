@@ -9,15 +9,8 @@
 import { AuthenticatedUser } from 'nest-keycloak-connect';
 import { Body, Controller, Get, NotImplementedException, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
-import {
-  CompanyDto,
-  PowerAccessApprovalDto,
-  PpaRequestCreateDto,
-  PpaRequestDto,
-  UserDetailsDto,
-  type AuthenticatedKCUser,
-} from '@h2-trust/api';
-import { PowerAccessApprovalStatus, PowerProductionType, PpaRequestRole } from '@h2-trust/domain';
+import { PowerAccessApprovalDto, PpaRequestCreateDto, PpaRequestDto, type AuthenticatedKCUser } from '@h2-trust/api';
+import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PowerAccessApprovalService } from './power-access-approval.service';
 
 @Controller('power-access-approvals')
@@ -68,91 +61,7 @@ export class PowerAccessApprovalController {
     @Query('role') _role: PpaRequestRole,
     @Query('status') _status: PowerAccessApprovalStatus,
   ): PpaRequestDto[] {
-    const requests: PpaRequestDto[] = [
-      {
-        id: '123',
-        createdAt: new Date(),
-        decidedAt: new Date(),
-        validFrom: new Date(),
-        validTo: new Date(),
-        sender: { name: 'Petra', company: { name: 'petra company' } } as UserDetailsDto,
-        receiver: { name: 'hannes company' } as CompanyDto,
-        powerProductionType: PowerProductionType.HYDRO_POWER_PLANT,
-        status: PowerAccessApprovalStatus.PENDING,
-        powerProductionUnit: {
-          id: '123456',
-          name: 'test unit',
-          typeName: 'type',
-          active: true,
-          producing: true,
-          ratedPower: 200,
-        },
-      },
-      {
-        id: '45687',
-        createdAt: new Date(),
-        decidedAt: new Date(),
-        decidedBy: 'Hans Peter',
-        validFrom: new Date(),
-        validTo: new Date(),
-        sender: { name: 'Petra', company: { name: 'petra company' } } as UserDetailsDto,
-        receiver: { name: 'hannes company' } as CompanyDto,
-        powerProductionType: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
-        status: PowerAccessApprovalStatus.REJECTED,
-        powerProductionUnit: {
-          id: '123456',
-          name: 'test unit',
-          typeName: 'type',
-          active: true,
-          producing: true,
-          ratedPower: 200,
-        },
-        comment: 'Unfortunately we have come to the decision th move in other directions.',
-      },
-      {
-        id: '456',
-        createdAt: new Date(),
-        decidedAt: new Date(),
-        decidedBy: 'Jürgen Hydrogen',
-        validFrom: new Date(),
-        validTo: new Date(),
-        sender: { name: 'Petra Power', company: { name: 'GreenPower company' } } as UserDetailsDto,
-        receiver: { name: 'hannes company' } as CompanyDto,
-        powerProductionType: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
-        status: PowerAccessApprovalStatus.APPROVED,
-        powerProductionUnit: {
-          id: '123456',
-          name: 'test unit',
-          typeName: 'type',
-          active: true,
-          producing: true,
-          ratedPower: 200,
-        },
-      },
-      {
-        id: '45456416',
-        createdAt: new Date(),
-        decidedAt: new Date(),
-        validFrom: new Date(),
-        validTo: new Date(),
-        sender: { name: 'Petra Power', company: { name: 'GreenPower company' } } as UserDetailsDto,
-        receiver: { name: 'hannes company' } as CompanyDto,
-        powerProductionType: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
-        status: PowerAccessApprovalStatus.APPROVED,
-        powerProductionUnit: {
-          id: '123456',
-          name: 'test unit',
-          typeName: 'type',
-          active: true,
-          producing: true,
-          ratedPower: 200,
-        },
-      },
-    ];
-
-    if (_role === PpaRequestRole.RECEIVER && _status === PowerAccessApprovalStatus.PENDING) return [requests[0]];
-
-    return requests;
+    return [];
   }
 
   @Post('requests')
