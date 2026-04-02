@@ -51,24 +51,75 @@
         }
       </div>
       <div class="p-4">
-        <mat-expansion-panel
-          class="!bg-primary-100 p-2 !shadow-none"
-          [hideToggle]="!isAuthenticated"
-          [disabled]="!isAuthenticated"
+        <div
+          [matBadge]="ppaRequestsQuery.data()?.length"
+          matBadgeSize="large"
+          [matBadgeHidden]="ppaRequestsQuery.data()?.length === 0"
         >
-          <mat-expansion-panel-header class="select-none !bg-transparent !pl-1 !pr-4">
+          <button class="relative w-full cursor-pointer rounded-lg bg-primary-100 p-2" (click)="toggleMenu()">
             @if (isAuthenticated) {
-              <mat-panel-title>
-                <div class="flex flex-row items-center gap-4">
-                  <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-400">
-                    <span class="material-symbols-outlined text-2xl text-white">person </span>
+              <div class="flex flex-row items-center justify-between gap-4">
+                <div class="flex flex-row items-center gap-2">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-xl border border-primary-200 bg-white">
+                    <span class="material-symbols-outlined text-2xl text-primary-400">person</span>
                   </div>
-                  <div class="flex flex-col text-sm text-neutral-500">
+                  <div class="flex flex-col text-left text-sm text-neutral-600">
                     <span class="font-semibold">{{ userFirstName }} {{ userLastName }}</span>
-                    <span>{{ userEmail }}</span>
+                    <span class="text-xs">{{ userEmail }}</span>
                   </div>
                 </div>
-              </mat-panel-title>
+
+                <span class="material-symbols-outlined pr-2 text-neutral-600">expand_all</span>
+              </div>
+
+              <div
+                class="absolute -top-[10rem] left-0 z-50 mt-2 w-full origin-bottom transition-all duration-200"
+                [class]="
+                  isMenuOpen
+                    ? 'visible translate-y-0 scale-100 opacity-100'
+                    : 'pointer-events-none invisible -translate-y-1 scale-95 opacity-0'
+                "
+              >
+                <div class="rounded-lg border border-neutral-200 bg-white">
+                  <!-- Account -->
+                  <a
+                    routerLink="/"
+                    class="flex items-center gap-3 rounded-t-lg bg-primary-100 px-4 py-3 text-neutral-600 hover:bg-primary-100/70"
+                  >
+                    <span class="material-symbols-outlined">person</span>
+                    <span>Account</span>
+                  </a>
+
+                  <div class="h-px bg-white"></div>
+
+                  <!-- PPA Requests -->
+                  <a
+                    routerLink="/ppa-requests"
+                    class="flex items-center gap-3 bg-primary-100 px-4 py-3 text-neutral-600 hover:bg-primary-100/70"
+                  >
+                    <span
+                      class="material-symbols-outlined relative"
+                      [matBadge]="ppaRequestsQuery.data()?.length"
+                      matBadgeSize="large"
+                      [matBadgeHidden]="ppaRequestsQuery.data()?.length === 0"
+                    >
+                      mail
+                    </span>
+                    <span>PPA Requests</span>
+                  </a>
+
+                  <div class="h-px bg-white"></div>
+
+                  <!-- Sign Out -->
+                  <button
+                    (click)="logout(); isMenuOpen = false"
+                    class="flex w-full items-center gap-3 rounded-b-lg bg-primary-100 px-4 py-3 text-neutral-600 hover:bg-primary-100/70"
+                  >
+                    <span class="material-symbols-outlined">logout</span>
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              </div>
             } @else {
               <div
                 class="flex w-full flex-row items-center justify-between pl-2 text-primary-700"
@@ -79,26 +130,8 @@
                 <span class="material-symbols-outlined">login</span>
               </div>
             }
-          </mat-expansion-panel-header>
-          @if (isAuthenticated) {
-            <div class="flex w-full flex-col gap-1 p-2">
-              <a
-                class="flex flex-row items-center gap-2 rounded-full border-2 border-primary-100 p-4 text-neutral-500 hover:bg-primary-200 hover:text-primary-600"
-                routerLink="/"
-              >
-                <span class="material-symbols-outlined">settings</span>
-                <span>account</span>
-              </a>
-              <button
-                class="flex flex-row items-center gap-2 rounded-full border-2 border-primary-100 p-4 text-neutral-500 hover:bg-primary-200 hover:text-primary-600"
-                (click)="logout()"
-              >
-                <span class="material-symbols-outlined">logout</span>
-                <span>Sign Out</span>
-              </button>
-            </div>
-          }
-        </mat-expansion-panel>
+          </button>
+        </div>
       </div>
     </div>
   </div>

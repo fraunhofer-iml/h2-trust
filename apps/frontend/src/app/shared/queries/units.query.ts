@@ -14,3 +14,9 @@ export const hydrogenProductionUnitsQueryOptions = (unitsService: UnitsService) 
   queryFn: () => unitsService.getHydrogenProductionUnits(),
   staleTime: 60 * 1000,
 });
+
+export const powerProductionUnitsQueryOptions = (unitsService: UnitsService) => ({
+  queryKey: QUERY_KEYS.POWER_PRODUCTION_UNITS,
+  queryFn: () => unitsService.getPowerProductionUnits(),
+  staleTime: 60 * 1000,
+});

@@ -7,10 +7,10 @@
  */
 
 import { AuthenticatedUser } from 'nest-keycloak-connect';
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, NotImplementedException, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
-import { PowerAccessApprovalDto, type AuthenticatedKCUser } from '@h2-trust/api';
-import { PowerAccessApprovalStatus } from '@h2-trust/domain';
+import { PowerAccessApprovalDto, PpaRequestCreateDto, PpaRequestDto, type AuthenticatedKCUser } from '@h2-trust/api';
+import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PowerAccessApprovalService } from './power-access-approval.service';
 
 @Controller('power-access-approvals')
@@ -54,5 +54,29 @@ export class PowerAccessApprovalController {
     @Query('status') powerAccessApprovalStatus: PowerAccessApprovalStatus,
   ): Promise<PowerAccessApprovalDto[]> {
     return this.powerAccessApprovalService.readByUserAndStatus(authenticatedUser.sub, powerAccessApprovalStatus);
+  }
+
+  @Get('requests')
+  getPPARequest(
+    @Query('role') _role: PpaRequestRole,
+    @Query('status') _status: PowerAccessApprovalStatus,
+  ): PpaRequestDto[] {
+    return [];
+  }
+
+  @Post('requests')
+  @ApiOkResponse({ description: 'Returns created Request', type: PpaRequestDto })
+  createPpaRequest(@Body() _dto: PpaRequestCreateDto, @AuthenticatedUser() _user: AuthenticatedKCUser): PpaRequestDto {
+    throw new NotImplementedException();
+  }
+
+  @Patch('requests/:id')
+  @ApiOkResponse({ description: 'Returns created Request', type: PpaRequestDto })
+  closePpaRequest(
+    @Body() _dto: PpaRequestDto,
+    @Param('id') _id: string,
+    @AuthenticatedUser() _user: AuthenticatedKCUser,
+  ): PpaRequestDto {
+    throw new NotImplementedException();
   }
 }
