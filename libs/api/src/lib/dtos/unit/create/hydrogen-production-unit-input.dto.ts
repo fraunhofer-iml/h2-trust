@@ -82,7 +82,7 @@ export class HydrogenProductionUnitInputDto extends UnitInputDto {
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 
-  static toPayload(dto: HydrogenProductionUnitInputDto): CreateHydrogenProductionUnitPayload {
+  static toPayload(dto: HydrogenProductionUnitInputDto, id?: string): CreateHydrogenProductionUnitPayload {
     return new CreateHydrogenProductionUnitPayload(
       dto.name,
       dto.mastrNumber,
@@ -107,6 +107,7 @@ export class HydrogenProductionUnitInputDto extends UnitInputDto {
       dto.serialNumber,
       dto.certifiedBy,
       dto.operator,
+      id,
     );
   }
 }

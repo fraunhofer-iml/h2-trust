@@ -71,19 +71,36 @@ export class UnitController {
 
   @MessagePattern(UnitMessagePatterns.CREATE_POWER_PRODUCTION_UNIT)
   async createPowerProductionUnit(payload: CreatePowerProductionUnitPayload): Promise<PowerProductionUnitEntity> {
-    return this.service.createPowerProductionUnit(payload);
+    return this.service.updateOrCreatePowerProductionUnit(payload);
   }
 
   @MessagePattern(UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION_UNIT)
   async createHydrogenProductionUnit(
     payload: CreateHydrogenProductionUnitPayload,
   ): Promise<HydrogenProductionUnitEntity> {
-    return this.service.createHydrogenProductionUnit(payload);
+    return this.service.updateOrCreateHydrogenProductionUnit(payload);
   }
 
   @MessagePattern(UnitMessagePatterns.CREATE_HYDROGEN_STORAGE_UNIT)
   async createHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
-    return this.service.createHydrogenStorageUnit(payload);
+    return this.service.updateOrCreateHydrogenStorageUnit(payload);
+  }
+
+  @MessagePattern(UnitMessagePatterns.UPDATE_HYDROGEN_PRODUCTION_UNIT)
+  async updateHydrogenProductionUnit(
+    payload: CreateHydrogenProductionUnitPayload,
+  ): Promise<HydrogenProductionUnitEntity> {
+    return this.service.updateOrCreateHydrogenProductionUnit(payload);
+  }
+
+  @MessagePattern(UnitMessagePatterns.UPDATE_POWER_PRODUCTION_UNIT)
+  async updatePowerProductionUnit(payload: CreatePowerProductionUnitPayload): Promise<PowerProductionUnitEntity> {
+    return this.service.updateOrCreatePowerProductionUnit(payload);
+  }
+
+  @MessagePattern(UnitMessagePatterns.UPDATE_HYDROGEN_STORAGE_UNIT)
+  async updateHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
+    return this.service.updateOrCreateHydrogenStorageUnit(payload);
   }
 
   @MessagePattern(UnitMessagePatterns.UPDATE_UNIT_STATUS)
