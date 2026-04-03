@@ -103,7 +103,7 @@
     "@nestjs/schedule": "^6.1.1",
     "@nestjs/swagger": "^8.1.1",
     "@prisma/client": "^6.19.2",
-    "@tanstack/angular-query-experimental": "^5.95.2",
+    "@tanstack/angular-query-experimental": "^5.96.1",
     "amqp-connection-manager": "^5.0.0",
     "amqplib": "^0.10.9",
     "axios": "^1.13.6",
