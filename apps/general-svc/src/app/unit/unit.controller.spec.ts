@@ -40,7 +40,7 @@ import {
   HydrogenProductionUnitEntityFixture,
   HydrogenStorageUnitEntityFixture,
   PowerProductionUnitEntityFixture,
-} from '@h2-trust/fixtures/entities';
+} from '@h2-trust/fixtures';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
 

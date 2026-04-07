@@ -8,7 +8,7 @@
 
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
 import { ProcessType } from '@h2-trust/domain';
-import { BatchEntityFixture, CompanyEntityFixture } from '@h2-trust/fixtures/entities';
+import { BatchEntityFixture, CompanyEntityFixture } from '@h2-trust/fixtures';
 import { ProductionUtils } from './production.utils';
 
 describe('ProductionUtils.calculateAccountingPeriods', () => {

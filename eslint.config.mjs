@@ -1,4 +1,3 @@
-;
 /*
  * Copyright Fraunhofer Institute for Material Flow and Logistics
  *
@@ -9,7 +8,6 @@
 
 import licenseHeader from 'eslint-plugin-license-header';
 import nx from '@nx/eslint-plugin';
-
 
 export default [
   ...nx.configs['flat/base'],
@@ -45,7 +43,7 @@ export default [
         {
           paths: [
             {
-              name: '@h2-trust/fixtures/entities',
+              name: '@h2-trust/fixtures',
               message: 'Fixtures are test-only. Do not import them from production code.',
             },
           ],
@@ -63,7 +61,7 @@ export default [
             {
               group: ['@h2-trust/amqp'],
               importNamePattern: 'Fixture$',
-              message: 'Import fixtures from @h2-trust/fixtures/entities.',
+              message: 'Import fixtures from @h2-trust/fixtures.',
             },
           ],
         },

@@ -12,7 +12,7 @@ import { CsvDocumentEntity, ProofEntity, ReadByIdPayload } from '@h2-trust/amqp'
 import { BlockchainService, HashUtil } from '@h2-trust/blockchain';
 import { CsvImportRepository } from '@h2-trust/database';
 import { BatchType, CsvDocumentIntegrityStatus } from '@h2-trust/domain';
-import { CsvDocumentEntityFixture, ProofEntityFixture } from '@h2-trust/fixtures/entities';
+import { CsvDocumentEntityFixture, ProofEntityFixture } from '@h2-trust/fixtures';
 import { StorageService } from '@h2-trust/storage';
 import { CsvDocumentService } from './csv-document.service';
 

@@ -11,7 +11,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, ReadByIdPayload, UserEntity, UserMessagePatterns } from '@h2-trust/amqp';
 import { UserDetailsDto } from '@h2-trust/api';
-import { UserEntityFixture } from '@h2-trust/fixtures/entities';
+import { UserEntityFixture } from '@h2-trust/fixtures';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 

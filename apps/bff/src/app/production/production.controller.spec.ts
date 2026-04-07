@@ -35,11 +35,7 @@ import {
   PowerProductionType,
   ProcessType,
 } from '@h2-trust/domain';
-import {
-  BatchEntityFixture,
-  HydrogenProductionUnitEntityFixture,
-  UserEntityFixture,
-} from '@h2-trust/fixtures/entities';
+import { BatchEntityFixture, HydrogenProductionUnitEntityFixture, UserEntityFixture } from '@h2-trust/fixtures';
 import 'multer';
 import { of } from 'rxjs';
 import { StorageService } from '@h2-trust/storage';
