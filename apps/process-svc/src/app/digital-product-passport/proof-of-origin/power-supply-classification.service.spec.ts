@@ -109,7 +109,7 @@ describe('PowerSupplyClassificationService', () => {
       expect(solarSubClassification.batches).toHaveLength(1);
 
       const solarBatch = solarSubClassification.batches[0] as ProofOfOriginPowerBatchEntity;
-      expect(solarBatch.id).toBe(givenSolarPowerProduction.batch.id);
+      expect(solarBatch.id).toBe(givenSolarPowerProduction.id);
       expect(solarBatch.energySource).toBe(EnergySource.SOLAR_ENERGY);
 
       const windSubClassification = actualResult.find((sc) => sc.name === EnergySource.WIND_ENERGY);
@@ -117,7 +117,7 @@ describe('PowerSupplyClassificationService', () => {
       expect(windSubClassification.batches).toHaveLength(1);
 
       const windBatch = windSubClassification.batches[0] as ProofOfOriginPowerBatchEntity;
-      expect(windBatch.id).toBe(givenWindPowerProduction.batch.id);
+      expect(windBatch.id).toBe(givenWindPowerProduction.id);
       expect(windBatch.energySource).toBe(EnergySource.WIND_ENERGY);
     });
 

@@ -32,7 +32,7 @@ describe('WaterSupplyClassificationService', () => {
       expect(actualResult.subClassifications).toEqual([]);
 
       const batch = actualResult.batches[0] as ProofOfOriginWaterBatchEntity;
-      expect(batch.id).toBe(givenWaterConsumption.batch.id);
+      expect(batch.id).toBe(givenWaterConsumption.id);
       expect(batch.emission).toBeDefined();
       expect(batch.emission.totalEmissionsPerKgHydrogen).toBeGreaterThan(0);
       expect(batch.createdAt).toBe(givenWaterConsumption.startedAt);
@@ -64,10 +64,10 @@ describe('WaterSupplyClassificationService', () => {
       expect(actualResult.batches).toHaveLength(2);
 
       const batch1 = actualResult.batches[0] as ProofOfOriginWaterBatchEntity;
-      expect(batch1.id).toBe(givenWaterConsumption1.batch.id);
+      expect(batch1.id).toBe(givenWaterConsumption1.id);
 
       const batch2 = actualResult.batches[1] as ProofOfOriginWaterBatchEntity;
-      expect(batch2.id).toBe(givenWaterConsumption2.batch.id);
+      expect(batch2.id).toBe(givenWaterConsumption2.id);
     });
 
     it('throws error when no water supplies provided', () => {
