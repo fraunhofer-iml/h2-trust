@@ -8,7 +8,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { HydrogenColor, ProcessType } from '@h2-trust/domain';
-import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures/entities';
+import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { DigitalProductPassportService } from './digital-product-passport.service';
 import { EmissionService } from './proof-of-origin/emission.service';

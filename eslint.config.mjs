@@ -35,6 +35,40 @@ export default [
     },
   },
   {
+    files: ['**/*.ts', '**/*.js'],
+    ignores: ['**/*.spec.ts', '**/*.test.ts', '**/fixtures/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@h2-trust/fixtures',
+              message: 'Fixtures are test-only. Do not import them from production code.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['**/*.spec.ts', '**/*.test.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@h2-trust/amqp'],
+              importNamePattern: 'Fixture$',
+              message: 'Import fixtures from @h2-trust/fixtures.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ['**/*.ts', '**/*.js', '**/*.mjs'],
     plugins: {
       'license-header': licenseHeader,

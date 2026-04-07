@@ -9,7 +9,7 @@
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, ProcessStepEntity, ReadByIdsPayload, UnitMessagePatterns } from '@h2-trust/amqp';
-import { ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
+import { ProcessStepEntityFixture } from '@h2-trust/fixtures';
 import { MatchedProductionPair } from './matched-production-pair';
 import { RedCompliancePairingService } from './red-compliance-pairing.service';
 

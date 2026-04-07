@@ -8,7 +8,7 @@
 
 import { ProcessStepEntity, ProofOfOriginHydrogenBatchEntity } from '@h2-trust/amqp';
 import { BatchType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
-import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures/entities';
+import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures';
 import { HydrogenStorageSectionAssembler } from './hydrogen-storage-section.assembler';
 
 describe('HydrogenStorageSectionAssembler', () => {

@@ -11,7 +11,7 @@ import {
   ProofOfOriginPowerBatchEntity,
   ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/amqp';
-import { EnergySource, HydrogenColor } from '@h2-trust/domain';
+import { EnergySource, HydrogenColor, PowerType } from '@h2-trust/domain';
 import { HydrogenComponentEntityFixture } from './hydrogen-component.entity.fixture';
 import { ProofOfOriginEmissionEntityFixture } from './proof-of-origin-emission.entity.fixture';
 
@@ -26,6 +26,7 @@ export const ProofOfOriginPowerBatchEntityFixture = {
       overrides.unitId ?? 'power-production-unit-1',
       overrides.energySource ?? EnergySource.SOLAR_ENERGY,
       overrides.accountingPeriodEnd ?? new Date('2026-12-31T23:59:59Z'),
+      overrides.powerType ?? PowerType.RENEWABLE,
     ),
 } as const;
 
@@ -52,6 +53,7 @@ export const ProofOfOriginHydrogenBatchEntityFixture = {
       overrides.producer ?? 'The Hydrogen Company',
       overrides.unitId ?? 'hydrogen-production-unit-1',
       overrides.color ?? HydrogenColor.GREEN,
+      overrides.rfnboType ?? 'type-1',
       overrides.processStep ?? 'process-step-1',
       overrides.accountingPeriodEnd ?? new Date('2026-12-31T23:59:59Z'),
     ),

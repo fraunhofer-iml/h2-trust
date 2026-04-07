@@ -19,7 +19,7 @@ import {
   PowerProductionUnitEntityFixture,
   ProcessStepEntityFixture,
   ProofOfSustainabilityEmissionCalculationEntityFixture,
-} from '@h2-trust/fixtures/entities';
+} from '@h2-trust/fixtures';
 import { EmissionService } from './emission.service';
 import { PowerSupplyClassificationService } from './power-supply-classification.service';
 
