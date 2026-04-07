@@ -189,7 +189,7 @@ describe('ProductionController', () => {
       givenAuthenticatedUser,
       1,
       1,
-      HydrogenProductionUnitEntityFixture.create().name,
+      processStepEntityMocks[0].executedBy.name,
       CreateProductionDtoMock.productionStartedAt,
     );
 

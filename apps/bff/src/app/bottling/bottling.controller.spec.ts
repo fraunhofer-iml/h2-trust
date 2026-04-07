@@ -8,7 +8,7 @@
 
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues, ProcessStepEntity, ProcessStepEntityFixture, ProcessStepMessagePatterns } from '@h2-trust/amqp';
+import { BrokerQueues, ProcessStepEntityFixture, ProcessStepMessagePatterns } from '@h2-trust/amqp';
 import {
   AuthenticatedUserMock,
   BottlingDto,
@@ -62,13 +62,14 @@ describe('BottlingController', () => {
 
   it('should create a bottling and transportation batch', async () => {
     const givenDto: BottlingDto = BottlingDtoMock[0];
-    const returnedProcessStep: ProcessStepEntity = structuredClone(ProcessStepEntityFixture.createHydrogenBottling());
-    returnedProcessStep.startedAt = new Date(givenDto.filledAt);
-    returnedProcessStep.endedAt = new Date(givenDto.filledAt);
+    const processStepFixture = ProcessStepEntityFixture.createHydrogenBottling({
+      startedAt: new Date(givenDto.filledAt),
+      endedAt: new Date(givenDto.filledAt),
+    });
 
     const processSvcSpy = jest
       .spyOn(processSvc, 'send')
-      .mockImplementation((_messagePattern, _data) => of(returnedProcessStep));
+      .mockImplementation((_messagePattern, _data) => of(processStepFixture));
 
     const expectedBatchSvcPayload1 = {
       amount: givenDto.amount,
@@ -82,14 +83,14 @@ describe('BottlingController', () => {
     };
 
     const expectedBatchSvcPayload2 = {
-      processStep: returnedProcessStep,
-      predecessorBatch: returnedProcessStep.batch,
+      processStep: processStepFixture,
+      predecessorBatch: processStepFixture.batch,
       distance: givenDto.distance,
       transportMode: givenDto.transportMode,
       fuelType: givenDto.fuelType,
     };
 
-    const expectedResponse: BottlingOverviewDto = BottlingOverviewDto.fromEntity(returnedProcessStep);
+    const expectedResponse: BottlingOverviewDto = BottlingOverviewDto.fromEntity(processStepFixture);
     const actualResponse: BottlingOverviewDto = await controller.createBottlingAndTransportation(
       givenDto,
       [],
