@@ -34,7 +34,7 @@ export class ProofOfOriginService {
 
     const proofOfOrigin: ProofOfOriginSectionEntity[] = [];
 
-    let hydrogenComponentsOfBottling: HydrogenComponentEntity[] = this.assembleCompositionForBottling(provenance);
+    const hydrogenComponentsOfBottling: HydrogenComponentEntity[] = this.assembleCompositionForBottling(provenance);
 
     //build hydrogen production section
     if (provenance.getAllPowerProductions()?.length || provenance.getAllWaterConsumptions()?.length) {

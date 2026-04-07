@@ -63,7 +63,7 @@ export class DigitalProductPassportService {
         ? this.proofOfOriginService.createProofOfOrigin(provenance)
         : [];
 
-    let hydrogenComponentsForBottling: HydrogenComponentEntity[] =
+    const hydrogenComponentsForBottling: HydrogenComponentEntity[] =
       proofOfOrigin.length > 0 ? this.proofOfOriginService.getHydrogenBottling(proofOfOrigin).hydrogenComposition : [];
 
     const proofOfSustainability: ProofOfSustainabilityEntity =
