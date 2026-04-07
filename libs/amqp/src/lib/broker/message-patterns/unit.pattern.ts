@@ -18,5 +18,8 @@ export enum UnitMessagePatterns {
   CREATE_POWER_PRODUCTION_UNIT = 'unit.create-power-production',
   CREATE_HYDROGEN_PRODUCTION_UNIT = 'unit.create-hydrogen-production',
   CREATE_HYDROGEN_STORAGE_UNIT = 'unit.create-hydrogen-storage',
+  UPDATE_HYDROGEN_PRODUCTION_UNIT = 'unit.update-hydrogen-production',
+  UPDATE_POWER_PRODUCTION_UNIT = 'unit.update-power-production',
+  UPDATE_HYDROGEN_STORAGE_UNIT = 'unit.update-hydrogen-storage',
   UPDATE_UNIT_STATUS = 'unit.update-status',
 }

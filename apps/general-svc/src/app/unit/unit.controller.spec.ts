@@ -196,9 +196,9 @@ describe('UnitController', () => {
     const mockedDbResponse: PowerProductionUnitDbType = PowerProductionUnitDbTypeMock[0];
     const expectedResponse: PowerProductionUnitEntity = PowerProductionUnitEntity.fromDatabase(mockedDbResponse);
 
-    const unitServiceSpy = jest.spyOn(unitService, 'createPowerProductionUnit');
+    const unitServiceSpy = jest.spyOn(unitService, 'updateOrCreatePowerProductionUnit');
 
-    const prismaSpy = jest.spyOn(prisma.unit, 'create').mockResolvedValue(mockedDbResponse);
+    const prismaSpy = jest.spyOn(prisma.unit, 'upsert').mockResolvedValue(mockedDbResponse);
 
     const actualResponse = await controller.createPowerProductionUnit(givenPayload);
 
@@ -239,9 +239,9 @@ describe('UnitController', () => {
     const mockedDbResponse: HydrogenProductionUnitDbType = HydrogenProductionUnitDbTypeMock[0];
     const expectedResponse: HydrogenProductionUnitEntity = HydrogenProductionUnitEntity.fromDatabase(mockedDbResponse);
 
-    const unitServiceSpy = jest.spyOn(unitService, 'createHydrogenProductionUnit');
+    const unitServiceSpy = jest.spyOn(unitService, 'updateOrCreateHydrogenProductionUnit');
 
-    const prismaSpy = jest.spyOn(prisma.unit, 'create').mockResolvedValue(mockedDbResponse);
+    const prismaSpy = jest.spyOn(prisma.unit, 'upsert').mockResolvedValue(mockedDbResponse);
 
     const actualResponse = await controller.createHydrogenProductionUnit(givenPayload);
 
@@ -279,9 +279,9 @@ describe('UnitController', () => {
     const mockedDbResponse: HydrogenStorageUnitDbType = HydrogenStorageUnitDbTypeMock[0];
     const expectedResponse: HydrogenStorageUnitEntity = HydrogenStorageUnitEntity.fromDatabase(mockedDbResponse);
 
-    const unitServiceSpy = jest.spyOn(unitService, 'createHydrogenStorageUnit');
+    const unitServiceSpy = jest.spyOn(unitService, 'updateOrCreateHydrogenStorageUnit');
 
-    const prismaSpy = jest.spyOn(prisma.unit, 'create').mockResolvedValue(mockedDbResponse);
+    const prismaSpy = jest.spyOn(prisma.unit, 'upsert').mockResolvedValue(mockedDbResponse);
 
     const actualResponse = await controller.createHydrogenStorageUnit(givenPayload);
 

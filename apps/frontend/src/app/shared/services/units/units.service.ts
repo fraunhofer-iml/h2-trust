@@ -53,15 +53,15 @@ export class UnitsService {
   }
 
   getHydrogenStorageUnit(id: string) {
-    return lastValueFrom(this.httpClient.get<HydrogenStorageUnitDto>(API.UNITS.HYDROGEN_STORAGE.DETAILS(id)));
+    return lastValueFrom(this.httpClient.get<HydrogenStorageUnitDto>(API.UNITS.HYDROGEN_STORAGE.BY_ID(id)));
   }
 
   getPowerProductionUnit(id: string) {
-    return lastValueFrom(this.httpClient.get<PowerProductionUnitDto>(API.UNITS.POWER_PRODUCTION.DETAILS(id)));
+    return lastValueFrom(this.httpClient.get<PowerProductionUnitDto>(API.UNITS.POWER_PRODUCTION.BY_ID(id)));
   }
 
   getHydrogenProductionUnit(id: string) {
-    return lastValueFrom(this.httpClient.get<HydrogenProductionUnitDto>(API.UNITS.HYDROGEN_PRODUCTION.DETAILS(id)));
+    return lastValueFrom(this.httpClient.get<HydrogenProductionUnitDto>(API.UNITS.HYDROGEN_PRODUCTION.BY_ID(id)));
   }
 
   updateActive(id: string, active: boolean) {
@@ -69,15 +69,15 @@ export class UnitsService {
     return lastValueFrom(this.httpClient.patch<void>(API.UNITS.ACTIVE(id), dto));
   }
 
-  updatePowerProductionUnit(dto: PowerProductionUnitInputDto) {
-    return lastValueFrom(this.httpClient.put<PowerProductionUnitDto>(API.UNITS.POWER_PRODUCTION.BASE, dto));
+  updatePowerProductionUnit(id: string, dto: PowerProductionUnitInputDto) {
+    return lastValueFrom(this.httpClient.put<PowerProductionUnitDto>(API.UNITS.POWER_PRODUCTION.BY_ID(id), dto));
   }
 
-  updateHydrogenStorageUnit(dto: HydrogenStorageUnitInputDto) {
-    return lastValueFrom(this.httpClient.put<HydrogenStorageUnitDto>(API.UNITS.HYDROGEN_STORAGE.BASE, dto));
+  updateHydrogenStorageUnit(id: string, dto: HydrogenStorageUnitInputDto) {
+    return lastValueFrom(this.httpClient.put<HydrogenStorageUnitDto>(API.UNITS.HYDROGEN_STORAGE.BY_ID(id), dto));
   }
 
-  updateHydrogenProductionUnit(dto: HydrogenProductionUnitInputDto) {
-    return lastValueFrom(this.httpClient.put<HydrogenProductionUnitDto>(API.UNITS.HYDROGEN_PRODUCTION.BASE, dto));
+  updateHydrogenProductionUnit(id: string, dto: HydrogenProductionUnitInputDto) {
+    return lastValueFrom(this.httpClient.put<HydrogenProductionUnitDto>(API.UNITS.HYDROGEN_PRODUCTION.BY_ID(id), dto));
   }
 }

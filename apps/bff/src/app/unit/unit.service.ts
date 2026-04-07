@@ -107,6 +107,31 @@ export class UnitService {
     );
   }
 
+  async updateHydrogenProductionUnit(id: string, dto: HydrogenProductionUnitInputDto): Promise<void> {
+    return await firstValueFrom(
+      this.generalService.send<void>(
+        UnitMessagePatterns.UPDATE_HYDROGEN_PRODUCTION_UNIT,
+        HydrogenProductionUnitInputDto.toPayload(dto, id),
+      ),
+    );
+  }
+
+  async updatePowerProductionUnit(id: string, dto: PowerProductionUnitInputDto): Promise<void> {
+    return await firstValueFrom(
+      this.generalService.send<void>(
+        UnitMessagePatterns.UPDATE_POWER_PRODUCTION_UNIT,
+        PowerProductionUnitInputDto.toPayload(dto, id),
+      ),
+    );
+  }
+  async updateHydrogenStorageUnit(id: string, dto: HydrogenStorageUnitInputDto): Promise<void> {
+    return await firstValueFrom(
+      this.generalService.send<void>(
+        UnitMessagePatterns.UPDATE_HYDROGEN_STORAGE_UNIT,
+        HydrogenStorageUnitInputDto.toPayload(dto, id),
+      ),
+    );
+  }
   private async getCompanyIdFromUserId(id: string): Promise<string> {
     const userDetails = await this.userService.readUserWithCompany(id);
     return userDetails.company.id;

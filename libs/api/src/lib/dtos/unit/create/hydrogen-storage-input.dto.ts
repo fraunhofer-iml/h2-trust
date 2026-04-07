@@ -63,7 +63,7 @@ export class HydrogenStorageUnitInputDto extends UnitInputDto {
     this.pressure = pressure;
   }
 
-  static toPayload(dto: HydrogenStorageUnitInputDto): CreateHydrogenStorageUnitPayload {
+  static toPayload(dto: HydrogenStorageUnitInputDto, id?: string): CreateHydrogenStorageUnitPayload {
     return new CreateHydrogenStorageUnitPayload(
       dto.name,
       dto.mastrNumber,
@@ -85,6 +85,7 @@ export class HydrogenStorageUnitInputDto extends UnitInputDto {
       dto.serialNumber,
       dto.certifiedBy,
       dto.operator,
+      id,
     );
   }
 }
