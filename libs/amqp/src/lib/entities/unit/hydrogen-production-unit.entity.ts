@@ -40,6 +40,7 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     technology: HydrogenProductionTechnology,
     biddingZone: BiddingZone,
     waterConsumptionLitersPerHour: number,
+    active: boolean,
   ) {
     super(
       id,
@@ -55,6 +56,7 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
       owner,
       operator,
       unitType,
+      active,
     );
     this.method = method;
     this.technology = technology;

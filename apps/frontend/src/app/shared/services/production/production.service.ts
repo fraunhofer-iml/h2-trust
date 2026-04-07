@@ -41,7 +41,7 @@ export class ProductionService {
   getStatistics({ month, unit }: FilterModel) {
     let params = new HttpParams();
     if (month) params = params.set('month', month.toISOString());
-    params = params.set('unit', unit);
+    params = params.set('unitName', unit);
 
     return lastValueFrom(this.httpClient.get<ProductionStatisticsDto>(API.PRODUCTION.STATISTICS, { params }));
   }

@@ -33,6 +33,7 @@ export const CompanyEntityGridMock: CompanyEntity = new CompanyEntity(
   [],
   [],
 );
+
 export const CompanyEntityHydrogenMock: CompanyEntity = new CompanyEntity(
   CompanySeed[2].id,
   CompanySeed[2].name,

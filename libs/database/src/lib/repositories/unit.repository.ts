@@ -9,6 +9,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import {
+  BaseUnitEntity,
   BrokerException,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
@@ -17,6 +18,7 @@ import {
   HydrogenStorageUnitEntity,
   PowerProductionUnitEntity,
   UnitEntity,
+  UpdateUnitStatusPayload,
 } from '@h2-trust/amqp';
 import {
   buildHydrogenProductionUnitCreateInput,
@@ -24,7 +26,13 @@ import {
   buildPowerProductionUnitCreateInput,
 } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
-import { baseUnitDeepQueryArgs } from '../query-args';
+import {
+  allUnitsQueryArgs,
+  baseUnitDeepQueryArgs,
+  hydrogenProductionUnitQueryArgs,
+  hydrogenStorageUnitQueryArgs,
+  powerProductionUnitQueryArgs,
+} from '../query-args';
 import { assertAllIdsFound, assertRecordFound } from './utils';
 
 @Injectable()
@@ -144,32 +152,158 @@ export class UnitRepository {
       .then((units) => units.map(HydrogenStorageUnitEntity.fromDeepDatabase));
   }
 
-  async insertPowerProductionUnit(payload: CreatePowerProductionUnitPayload): Promise<PowerProductionUnitEntity> {
-    return this.prismaService.unit
-      .create({
-        data: buildPowerProductionUnitCreateInput(payload),
-        include: baseUnitDeepQueryArgs.include,
-      })
-      .then(PowerProductionUnitEntity.fromDeepDatabase);
+  async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<BaseUnitEntity> {
+    const unit = await this.prismaService.unit.update({
+      where: {
+        id: payload.id,
+      },
+      data: { active: payload.active },
+      include: baseUnitDeepQueryArgs.include,
+    });
+
+    return BaseUnitEntity.fromDatabase(unit);
   }
 
-  async insertHydrogenProductionUnit(
+  async updateOrCreateHydrogenProductionUnit(
     payload: CreateHydrogenProductionUnitPayload,
   ): Promise<HydrogenProductionUnitEntity> {
     return this.prismaService.unit
-      .create({
-        data: buildHydrogenProductionUnitCreateInput(payload),
-        include: baseUnitDeepQueryArgs.include,
+      .upsert({
+        where: { id: payload.id ?? '' },
+        update: {
+          name: payload.name,
+          mastrNumber: payload.mastrNumber,
+          commissionedOn: payload.commissionedOn,
+          owner: { connect: { id: payload.ownerId } },
+          manufacturer: payload.manufacturer,
+          modelType: payload.modelType,
+          modelNumber: payload.modelNumber,
+          serialNumber: payload.serialNumber,
+          certifiedBy: payload.certifiedBy,
+          operator: { connect: { id: payload.operatorId } },
+          address: {
+            update: {
+              data: {
+                street: payload.address.street,
+                state: payload.address.state,
+                postalCode: payload.address.postalCode,
+                country: payload.address.country,
+                city: payload.address.postalCode,
+              },
+            },
+          },
+          hydrogenProductionUnit: {
+            update: {
+              where: { id: payload.id },
+              data: {
+                method: payload.method,
+                technology: payload.technology,
+                biddingZone: payload.biddingZone,
+                ratedPower: payload.ratedPower,
+                pressure: payload.pressure,
+                waterConsumptionLitersPerHour: payload.waterConsumptionLitersPerHour,
+              },
+            },
+          },
+        },
+        create: buildHydrogenProductionUnitCreateInput(payload),
+        include: hydrogenProductionUnitQueryArgs.include,
       })
-      .then(HydrogenProductionUnitEntity.fromDeepDatabase);
+      .then(HydrogenProductionUnitEntity.fromDatabase);
   }
 
-  async insertHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
+  async updateOrCreatePowerProductionUnit(
+    payload: CreatePowerProductionUnitPayload,
+  ): Promise<PowerProductionUnitEntity> {
     return this.prismaService.unit
-      .create({
-        data: buildHydrogenStorageUnitCreateInput(payload),
-        include: baseUnitDeepQueryArgs.include,
+      .upsert({
+        where: { id: payload.id ?? '' },
+        update: {
+          name: payload.name,
+          mastrNumber: payload.mastrNumber,
+          commissionedOn: payload.commissionedOn,
+          owner: { connect: { id: payload.ownerId } },
+          manufacturer: payload.manufacturer,
+          modelType: payload.modelType,
+          modelNumber: payload.modelNumber,
+          serialNumber: payload.serialNumber,
+          certifiedBy: payload.certifiedBy,
+          operator: { connect: { id: payload.operatorId } },
+          address: {
+            update: {
+              data: {
+                street: payload.address.street,
+                state: payload.address.state,
+                postalCode: payload.address.postalCode,
+                country: payload.address.country,
+                city: payload.address.postalCode,
+              },
+            },
+          },
+          powerProductionUnit: {
+            update: {
+              where: { id: payload.id },
+              data: {
+                electricityMeterNumber: payload.electricityMeterNumber,
+                gridOperator: payload.gridOperator,
+                gridConnectionNumber: payload.gridConnectionNumber,
+                gridLevel: payload.gridLevel,
+                biddingZone: payload.biddingZone,
+                ratedPower: payload.ratedPower,
+                decommissioningPlannedOn: payload.decommissioningPlannedOn,
+                financialSupportReceived: payload.financialSupportReceived,
+              },
+            },
+          },
+        },
+        create: buildPowerProductionUnitCreateInput(payload),
+        include: powerProductionUnitQueryArgs.include,
       })
-      .then(HydrogenStorageUnitEntity.fromDeepDatabase);
+      .then(PowerProductionUnitEntity.fromDatabase);
+  }
+
+  async updateOrCreateHydrogenStorageUnit(
+    payload: CreateHydrogenStorageUnitPayload,
+  ): Promise<HydrogenStorageUnitEntity> {
+    return this.prismaService.unit
+      .upsert({
+        where: { id: payload.id ?? '' },
+        update: {
+          name: payload.name,
+          mastrNumber: payload.mastrNumber,
+          commissionedOn: payload.commissionedOn,
+          owner: { connect: { id: payload.ownerId } },
+          manufacturer: payload.manufacturer,
+          modelType: payload.modelType,
+          modelNumber: payload.modelNumber,
+          serialNumber: payload.serialNumber,
+          certifiedBy: payload.certifiedBy,
+          operator: { connect: { id: payload.operatorId } },
+          address: {
+            update: {
+              data: {
+                street: payload.address.street,
+                state: payload.address.state,
+                postalCode: payload.address.postalCode,
+                country: payload.address.country,
+                city: payload.address.postalCode,
+              },
+            },
+          },
+          hydrogenStorageUnit: {
+            update: {
+              where: { id: payload.id },
+              data: {
+                type: payload.modelType,
+                capacity: payload.capacity,
+                pressure: payload.pressure,
+              },
+            },
+          },
+        },
+        create: buildHydrogenStorageUnitCreateInput(payload),
+        include: hydrogenStorageUnitQueryArgs.include,
+      })
+      .then(HydrogenStorageUnitEntity.fromDatabase);
   }
 }

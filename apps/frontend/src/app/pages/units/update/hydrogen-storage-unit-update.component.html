@@ -1,0 +1,27 @@
+<div class="flex flex-col gap-4 overflow-auto p-8">
+  <div class="flex flex-row items-center gap-2 text-lg text-neutral-500">
+    <a routerLink="/units" class="cursor-pointer hover:underline">Units</a>
+    <span class="material-symbols-outlined"> keyboard_arrow_right </span>
+    <a [routerLink]="['/units/hydrogen-storage', id()]" class="cursor-pointer hover:underline">
+      {{ unitQuery.data()?.name ?? id() }} </a
+    ><span class="material-symbols-outlined"> keyboard_arrow_right </span>
+    Edit
+  </div>
+  @if (unitQuery.data(); as unit) {
+    <div class="relative w-full rounded-md bg-white p-4">
+      <h3>{{ unit.name }}</h3>
+      <p class="text-sm text-neutral-400">Unit-Id: {{ id() }}</p>
+
+      <app-unit-type-chip [unitType]="unit.unitType" class="absolute right-4 top-4"></app-unit-type-chip>
+    </div>
+
+    <app-base-unit-form [unitForm]="unitForm"></app-base-unit-form>
+
+    <app-hydrogen-storage-unit-form [hydrogenStorageForm]="hydrogenStorageUnitForm"></app-hydrogen-storage-unit-form>
+
+    <div class="relative flex w-full justify-end gap-2 rounded-md bg-white p-4">
+      <button matButton="outlined" (click)="navigateToDetailsView()">Cancel</button>
+      <button matButton="filled" (click)="onSave()">Save</button>
+    </div>
+  }
+</div>

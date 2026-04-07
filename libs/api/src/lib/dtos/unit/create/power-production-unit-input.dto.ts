@@ -11,9 +11,9 @@ import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsPositive, IsString }
 import { AddressPayload, CreatePowerProductionUnitPayload } from '@h2-trust/amqp';
 import { BiddingZone, GridLevel, PowerProductionType, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
-import { UnitCreateDto } from './unit-create.dto';
+import { UnitInputDto } from './unit-input.dto';
 
-export class PowerProductionUnitCreateDto extends UnitCreateDto {
+export class PowerProductionUnitInputDto extends UnitInputDto {
   @IsEnum(PowerProductionType)
   @IsNotEmpty()
   powerProductionType: PowerProductionType;
@@ -100,7 +100,7 @@ export class PowerProductionUnitCreateDto extends UnitCreateDto {
     this.decommissioningPlannedOn = decommissioningPlannedOn;
   }
 
-  static toPayload(dto: PowerProductionUnitCreateDto): CreatePowerProductionUnitPayload {
+  static toPayload(dto: PowerProductionUnitInputDto, id?: string): CreatePowerProductionUnitPayload {
     return new CreatePowerProductionUnitPayload(
       dto.name,
       dto.mastrNumber,
@@ -128,6 +128,7 @@ export class PowerProductionUnitCreateDto extends UnitCreateDto {
       dto.decommissioningPlannedOn,
       dto.gridOperator,
       dto.gridConnectionNumber,
+      id,
     );
   }
 }
