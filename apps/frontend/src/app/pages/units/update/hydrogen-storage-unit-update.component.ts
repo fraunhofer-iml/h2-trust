@@ -51,7 +51,7 @@ export class HydrogenStorageUnitUpdateComponent {
   }));
 
   unitMutation = injectMutation(() => ({
-    mutationFn: (dto: HydrogenStorageUnitInputDto) => this.unitsService.updateHydrogenStorageUnit(dto),
+    mutationFn: (dto: HydrogenStorageUnitInputDto) => this.unitsService.updateHydrogenStorageUnit(this.id() ?? '', dto),
     onSuccess: () => this.navigateToDetailsView(),
     onError: () => toast.error('Failed to update unit.'),
   }));
@@ -62,7 +62,6 @@ export class HydrogenStorageUnitUpdateComponent {
       ...this.hydrogenStorageUnitForm.value,
       storageType: this.hydrogenStorageUnitForm.value.hydrogenStorageType,
     } as HydrogenStorageUnitInputDto;
-
     this.unitMutation.mutate(dto);
   }
 

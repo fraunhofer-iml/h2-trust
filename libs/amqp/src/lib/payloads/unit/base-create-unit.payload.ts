@@ -7,7 +7,7 @@
  */
 
 import { Type } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { IsDate, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { AddressPayload } from '../common';
 
 export abstract class BaseCreateUnitPayload {
@@ -57,6 +57,10 @@ export abstract class BaseCreateUnitPayload {
   @IsNotEmpty()
   operatorId: string;
 
+  @IsString()
+  @IsOptional()
+  id?: string;
+
   protected constructor(
     name: string,
     mastrNumber: string,
@@ -69,6 +73,7 @@ export abstract class BaseCreateUnitPayload {
     serialNumber: string,
     certifiedBy: string,
     operatorId: string,
+    id?: string,
   ) {
     this.name = name;
     this.mastrNumber = mastrNumber;
@@ -81,5 +86,6 @@ export abstract class BaseCreateUnitPayload {
     this.serialNumber = serialNumber;
     this.certifiedBy = certifiedBy;
     this.operatorId = operatorId;
+    this.id = id;
   }
 }

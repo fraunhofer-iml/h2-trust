@@ -57,6 +57,7 @@ export class CreateHydrogenProductionUnitPayload extends BaseCreateUnitPayload {
     serialNumber: string,
     certifiedBy: string,
     operatorId: string,
+    id?: string,
   ) {
     super(
       name,
@@ -70,6 +71,7 @@ export class CreateHydrogenProductionUnitPayload extends BaseCreateUnitPayload {
       serialNumber,
       certifiedBy,
       operatorId,
+      id,
     );
     this.method = method;
     this.technology = technology;
