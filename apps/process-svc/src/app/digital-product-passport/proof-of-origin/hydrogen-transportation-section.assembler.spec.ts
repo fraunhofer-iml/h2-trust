@@ -12,7 +12,7 @@ import {
   HydrogenComponentEntityFixture,
   ProcessStepEntityFixture,
   TransportationDetailsEntityFixture,
-} from '@h2-trust/fixtures/entities';
+} from '@h2-trust/fixtures';
 import { HydrogenTransportationSectionAssembler } from './hydrogen-transportation-section.assembler';
 
 describe('HydrogenTransportationSectionService', () => {
