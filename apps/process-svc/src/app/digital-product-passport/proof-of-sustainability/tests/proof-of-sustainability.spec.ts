@@ -16,7 +16,7 @@ import {
   TransportationDetailsEntity,
 } from '@h2-trust/amqp';
 import { CalculationTopic } from '@h2-trust/domain';
-import { ProcessStepEntityFixture, TransportationDetailsEntityFixture } from '@h2-trust/fixtures/entities';
+import { ProcessStepEntityFixture, TransportationDetailsEntityFixture } from '@h2-trust/fixtures';
 import { HydrogenBottlingPosService } from '../hydrogen-bottling-pos.service';
 import { HydrogenProductionPosService } from '../hydrogen-production-pos.service';
 import { HydrogenStoragePosService } from '../hydrogen-storage-pos.service';

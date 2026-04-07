@@ -13,7 +13,7 @@ import {
   HydrogenProductionUnitEntityFixture,
   PowerProductionUnitEntityFixture,
   ProcessStepEntityFixture,
-} from '@h2-trust/fixtures/entities';
+} from '@h2-trust/fixtures';
 import { RedComplianceService } from '../red-compliance.service';
 
 describe('RedComplianceService', () => {

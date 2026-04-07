@@ -12,7 +12,7 @@ import {
   ProcessStepEntityFixture,
   ProofOfOriginPowerBatchEntityFixture,
   ProofOfOriginSubClassificationEntityFixture,
-} from '@h2-trust/fixtures/entities';
+} from '@h2-trust/fixtures';
 import { HydrogenProductionProofOfOriginService } from '../hydrogen-production-proof-of-origin.service';
 
 describe('HydrogenProductionProofOfOriginService', () => {

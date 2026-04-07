@@ -8,7 +8,7 @@
 
 import { ProofOfOriginHydrogenBatchEntity, ProofOfOriginSectionEntity } from '@h2-trust/amqp';
 import { ProofOfOrigin } from '@h2-trust/domain';
-import { HydrogenComponentEntityFixture, ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
+import { HydrogenComponentEntityFixture, ProcessStepEntityFixture } from '@h2-trust/fixtures';
 import { HydrogenBottlingProofOfOriginService } from '../hydrogen-bottling-proof-of-origin.service';
 
 describe('HydrogenBottlingSectionAssembler', () => {

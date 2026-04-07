@@ -12,7 +12,7 @@ import {
   PowerProductionTypeEntityFixture,
   PowerProductionUnitEntityFixture,
   ProcessStepEntityFixture,
-} from '@h2-trust/fixtures/entities';
+} from '@h2-trust/fixtures';
 import { PowerProductionProofOfOriginService } from '../power-production-proof-of-origin.service';
 
 describe('PowerProductionProofOfOriginService', () => {

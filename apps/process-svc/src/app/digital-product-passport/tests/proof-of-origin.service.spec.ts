@@ -14,7 +14,7 @@ import {
   ProcessStepEntityFixture,
   ProductionChainEntityFixture,
   QualityDetailsEntityFixture,
-} from '@h2-trust/fixtures/entities';
+} from '@h2-trust/fixtures';
 import { ProofOfOriginService } from '../proof-of-origin/proof-of-origin.service';
 
 describe('ProofOfOriginService', () => {
