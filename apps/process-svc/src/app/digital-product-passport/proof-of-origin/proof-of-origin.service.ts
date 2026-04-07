@@ -16,25 +16,30 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/amqp';
 import { ProcessType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
-import { HydrogenBottlingProofOfOriginService } from './proof-of-origin/hydrogen-bottling-proof-of-origin.service';
-import { HydrogenProductionProofOfOriginService } from './proof-of-origin/hydrogen-production-proof-of-origin.service';
-import { HydrogenStorageroofOfOriginService } from './proof-of-origin/hydrogen-storage-proof-of-origin.service';
-import { HydrogenTransportationProofOfOriginService } from './proof-of-origin/hydrogen-transportation-proof-of-origin.service';
+import { HydrogenBottlingProofOfOriginService } from './hydrogen-bottling-proof-of-origin.service';
+import { HydrogenProductionProofOfOriginService } from './hydrogen-production-proof-of-origin.service';
+import { HydrogenStorageroofOfOriginService } from './hydrogen-storage-proof-of-origin.service';
+import { HydrogenTransportationProofOfOriginService } from './hydrogen-transportation-proof-of-origin.service';
 
 @Injectable()
 export class ProofOfOriginService {
+  /**
+   * If the provided provenance relates to hydrogen bottling or hydrogen transport, the ProofOfOrigin sections for all nodes must be returned.
+   * If the root of the provenance is something other than a bottling or a transport, then a PoO cannot be calculated and an empty list is returned.
+   * @param provenance The provenance, which tracks the entire production chain of a BOTTLING or a TRANSPORTATION.
+   * @returns A list of the ProofOfOrigin sections for all production steps shown in the provenance or an empty list if it is not a bottling or a transport.
+   */
   public createProofOfOrigin(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {
     if (
       provenance.root.type != ProcessType.HYDROGEN_BOTTLING &&
       provenance.root.type != ProcessType.HYDROGEN_TRANSPORTATION
     ) {
-      const errorMessage = `The specified process step ${provenance.root.id} is neither HYDROGEN_BOTTLING nor HYDROGEN_TRANSPORTATION, but of type ${provenance.root.type}`;
-      throw Error(errorMessage);
+      return [];
     }
 
     const proofOfOrigin: ProofOfOriginSectionEntity[] = [];
 
-    let hydrogenComponentsOfBottling: HydrogenComponentEntity[] = this.assembleCompositionForBottling(provenance);
+    const hydrogenComponentsOfBottling: HydrogenComponentEntity[] = this.assembleCompositionForBottling(provenance);
 
     //build hydrogen production section
     if (provenance.getAllPowerProductions()?.length || provenance.getAllWaterConsumptions()?.length) {
@@ -87,15 +92,17 @@ export class ProofOfOriginService {
     return proofOfOrigin;
   }
 
-  public getHydrogenBottling(proofOfOrigin: ProofOfOriginSectionEntity[]): ProofOfOriginHydrogenBatchEntity {
-    return proofOfOrigin.find((section) => section.name == ProofOfOrigin.HYDROGEN_BOTTLING_SECTION)
-      .batches[0] as ProofOfOriginHydrogenBatchEntity;
+  public getHydrogenBottlingCompositions(proofOfOrigin: ProofOfOriginSectionEntity[]): HydrogenComponentEntity[] {
+    const bottling: ProofOfOriginSectionEntity = proofOfOrigin.find(
+      (section) => section.name == ProofOfOrigin.HYDROGEN_BOTTLING_SECTION,
+    );
+    return bottling ? (bottling.batches[0] as ProofOfOriginHydrogenBatchEntity).hydrogenComposition : [];
   }
 
   /**
-   * Create Hydrogen components from the root Hydrogen productions.
-   * @param provenance
-   * @returns
+   * Calculates the hydrogen components of the bottling as a proportion of the total volume bottled.
+   * @param provenance The provenance, which covers the entire production chain from power, water and hydrogen production right through to bottling and transportation.
+   * @returns The volume of HydrogenComponents filled in relation to the total volume filled.
    */
   public assembleCompositionForBottling(provenance: ProvenanceEntity): HydrogenComponentEntity[] {
     if (!provenance.hydrogenBottling) {
@@ -103,7 +110,7 @@ export class ProofOfOriginService {
       throw Error(errorMessage);
     }
     if (provenance.getAllHydrogenLeafProductions()?.length === 0) {
-      const errorMessage = `There are no Hydrogen Root Productions in Provenance.`;
+      const errorMessage = `There are no hydrogen productions in Provenance.`;
       throw Error(errorMessage);
     }
     if (

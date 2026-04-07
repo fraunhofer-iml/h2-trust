@@ -15,7 +15,7 @@ import {
   ProductionChainEntityFixture,
   QualityDetailsEntityFixture,
 } from '@h2-trust/fixtures/entities';
-import { ProofOfOriginService } from '../proof-of-origin.service';
+import { ProofOfOriginService } from '../proof-of-origin/proof-of-origin.service';
 
 describe('ProofOfOriginService', () => {
   let service: ProofOfOriginService;
@@ -154,7 +154,7 @@ describe('ProofOfOriginService', () => {
       // Arrange
       const givenProcessStep = ProcessStepEntityFixture.createPowerProduction();
 
-      const expectedErrorMessage = `There are no Hydrogen Root Productions in Provenance.`;
+      const expectedErrorMessage = `There are no hydrogen productions in Provenance.`;
       const givenProvenance = new ProvenanceEntity(givenProcessStep, [], givenProcessStep);
 
       // Act & Assert

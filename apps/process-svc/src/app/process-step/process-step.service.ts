@@ -13,7 +13,6 @@ import {
   DocumentEntity,
   PaginatedProcessStepEntity,
   ProcessStepEntity,
-  ProductionChainEntity,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
@@ -43,10 +42,6 @@ export class ProcessStepService {
 
   async createManyProcessSteps(payload: CreateManyProcessStepsPayload): Promise<ProcessStepEntity[]> {
     return this.processStepRepository.insertManyProcessSteps(payload.processSteps);
-  }
-
-  async createRootProductionProcessSteps(rootProductions: ProductionChainEntity[]): Promise<ProcessStepEntity[]> {
-    return this.processStepRepository.insertRootProductionProcessSteps(rootProductions);
   }
 
   async readProcessStep(processStepId: string): Promise<ProcessStepEntity> {

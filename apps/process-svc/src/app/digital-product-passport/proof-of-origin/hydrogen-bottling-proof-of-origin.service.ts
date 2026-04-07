@@ -19,8 +19,8 @@ import { HydrogenBottlingPosService } from '../proof-of-sustainability/hydrogen-
 
 export class HydrogenBottlingProofOfOriginService {
   /**
-   * Forms the Hydrogen Bottling Section for the Proof of Origin.
-   * @param hydrogenBottling
+   * Generates a Proof of Origin section based on the ProcessStep of a bottling and the total hydrogen components it contains.
+   * @param hydrogenBottling The process step of the BOTTLING.
    * @param hydrogenComposition
    * @returns
    */

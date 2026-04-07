@@ -17,12 +17,12 @@ import {
 } from '@h2-trust/amqp';
 import { CalculationTopic } from '@h2-trust/domain';
 import { ProcessStepEntityFixture, TransportationDetailsEntityFixture } from '@h2-trust/fixtures/entities';
-import { ProofOfSustainabilityService } from '../../proof-of-sustainability.service';
 import { HydrogenBottlingPosService } from '../hydrogen-bottling-pos.service';
 import { HydrogenProductionPosService } from '../hydrogen-production-pos.service';
 import { HydrogenStoragePosService } from '../hydrogen-storage-pos.service';
 import { HydrogenTransportPosService } from '../hydrogen-transport-pos.service';
 import { PowerProductionPosService } from '../power-production-pos.service';
+import { ProofOfSustainabilityService } from '../proof-of-sustainability.service';
 import { WaterConsumptionPosService } from '../water-consumption-pos.service';
 
 describe('ProodOfSustainability', () => {

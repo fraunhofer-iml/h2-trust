@@ -17,10 +17,10 @@ import {
   ProvenanceEntity,
   RedComplianceEntity,
 } from '@h2-trust/amqp';
-import { PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
+import { PowerType, RfnboType } from '@h2-trust/domain';
 import { ProcessStepService } from '../process-step/process-step.service';
-import { ProofOfOriginService } from './proof-of-origin.service';
-import { ProofOfSustainabilityService } from './proof-of-sustainability.service';
+import { ProofOfOriginService } from './proof-of-origin/proof-of-origin.service';
+import { ProofOfSustainabilityService } from './proof-of-sustainability/proof-of-sustainability.service';
 import { ProvenanceService } from './provenance/provenance.service';
 import { RedComplianceService } from './red-compliance/red-compliance.service';
 
@@ -34,6 +34,11 @@ export class DigitalProductPassportService {
     private readonly provenanceService: ProvenanceService,
   ) {}
 
+  /**
+   * Calculates the RFNBO type for an existing production chain.
+   * @param productionChain The production chain element to be checked against the RFNBO type.
+   * @returns The calculated RFNBO type.
+   */
   public getRfnboType(productionChain: ProductionChainEntity): RfnboType {
     const redCompliance: RedComplianceEntity = this.redComplianceService.determineRedCompliance(
       productionChain.hydrogenRootProduction,
@@ -47,6 +52,11 @@ export class DigitalProductPassportService {
     return this.determineRfnboType(redCompliance, powerType, proofOfSustainability);
   }
 
+  /**
+   * Calculates all the dpp metrics for a process step, namely the RFNBO type, the ProofOfOrigin and the ProofOfSustainability.
+   * @param processStepId The ID of the process step for which the DPP is to be calculated.
+   * @returns The calculated dpp.
+   */
   public async readDigitalProductPassport(processStepId: string): Promise<DigitalProductPassportEntity> {
     const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
 
@@ -54,21 +64,16 @@ export class DigitalProductPassportService {
     const redCompliance: RedComplianceEntity = this.redComplianceService.determineTotalRedCompliance(
       provenance.productionChains,
     );
-    const powerType: PowerType = DigitalProductPassportService.getPowerType(provenance.productionChains);
 
-    //Proof of origin is only for Bottlings
-    const proofOfOrigin: ProofOfOriginSectionEntity[] =
-      provenance.root.type === ProcessType.HYDROGEN_BOTTLING ||
-      provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION
-        ? this.proofOfOriginService.createProofOfOrigin(provenance)
-        : [];
+    const proofOfOrigin: ProofOfOriginSectionEntity[] = this.proofOfOriginService.createProofOfOrigin(provenance);
 
-    let hydrogenComponentsForBottling: HydrogenComponentEntity[] =
-      proofOfOrigin.length > 0 ? this.proofOfOriginService.getHydrogenBottling(proofOfOrigin).hydrogenComposition : [];
+    const hydrogenComponentsForBottling: HydrogenComponentEntity[] =
+      this.proofOfOriginService.getHydrogenBottlingCompositions(proofOfOrigin);
 
     const proofOfSustainability: ProofOfSustainabilityEntity =
       this.proofOfSustainabilityService.createProofOfSustainability(provenance);
 
+    const powerType: PowerType = this.determinePowerType(provenance.productionChains);
     const rfnboType: RfnboType = this.determineRfnboType(redCompliance, powerType, proofOfSustainability);
 
     return new DigitalProductPassportEntity(
@@ -88,7 +93,7 @@ export class DigitalProductPassportService {
     );
   }
 
-  private static getPowerType(productionChains: ProductionChainEntity[]): PowerType {
+  private determinePowerType(productionChains: ProductionChainEntity[]): PowerType {
     const powerProductions: ProcessStepEntity[] = productionChains.map(
       (productionChain) => productionChain.powerProduction,
     );
