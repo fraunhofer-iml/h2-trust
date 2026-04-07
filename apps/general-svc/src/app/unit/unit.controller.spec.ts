@@ -165,35 +165,35 @@ describe('UnitController', () => {
   });
 
   it('should create power production unit', async () => {
-    const givenPowerProduction = PowerProductionUnitEntityFixture.create();
-    const giveCompanyEntityPower = CompanyEntityFixture.createPowerProducer();
-    const givenPayload: CreatePowerProductionUnitPayload = new CreatePowerProductionUnitPayload(
-      givenPowerProduction.name,
-      givenPowerProduction.mastrNumber,
-      givenPowerProduction.commissionedOn,
+    const givenPowerProductionUnit = PowerProductionUnitEntityFixture.create();
+    const givenPowerCompany = CompanyEntityFixture.createPowerProducer();
+    const givenPayload = new CreatePowerProductionUnitPayload(
+      givenPowerProductionUnit.name,
+      givenPowerProductionUnit.mastrNumber,
+      givenPowerProductionUnit.commissionedOn,
       new AddressPayload(
-        givenPowerProduction.address.street,
-        givenPowerProduction.address.postalCode,
-        givenPowerProduction.address.city,
-        givenPowerProduction.address.state,
-        givenPowerProduction.address.country,
+        givenPowerProductionUnit.address.street,
+        givenPowerProductionUnit.address.postalCode,
+        givenPowerProductionUnit.address.city,
+        givenPowerProductionUnit.address.state,
+        givenPowerProductionUnit.address.country,
       ),
-      giveCompanyEntityPower.id,
-      givenPowerProduction.electricityMeterNumber,
-      givenPowerProduction.ratedPower,
-      givenPowerProduction.gridLevel,
-      givenPowerProduction.biddingZone,
-      givenPowerProduction.financialSupportReceived,
-      givenPowerProduction.type.name,
-      givenPowerProduction.manufacturer,
-      givenPowerProduction.modelType,
-      givenPowerProduction.modelNumber,
-      givenPowerProduction.serialNumber,
-      givenPowerProduction.certifiedBy,
-      giveCompanyEntityPower.id,
-      givenPowerProduction.decommissioningPlannedOn,
-      givenPowerProduction.gridOperator,
-      givenPowerProduction.gridConnectionNumber,
+      givenPowerCompany.id,
+      givenPowerProductionUnit.electricityMeterNumber,
+      givenPowerProductionUnit.ratedPower,
+      givenPowerProductionUnit.gridLevel,
+      givenPowerProductionUnit.biddingZone,
+      givenPowerProductionUnit.financialSupportReceived,
+      givenPowerProductionUnit.type.name,
+      givenPowerProductionUnit.manufacturer,
+      givenPowerProductionUnit.modelType,
+      givenPowerProductionUnit.modelNumber,
+      givenPowerProductionUnit.serialNumber,
+      givenPowerProductionUnit.certifiedBy,
+      givenPowerCompany.id,
+      givenPowerProductionUnit.decommissioningPlannedOn,
+      givenPowerProductionUnit.gridOperator,
+      givenPowerProductionUnit.gridConnectionNumber,
     );
     const mockedDbResponse: PowerProductionUnitDbType = PowerProductionUnitDbTypeMock[0];
     const expectedResponse: PowerProductionUnitEntity = PowerProductionUnitEntity.fromDatabase(mockedDbResponse);
@@ -210,32 +210,32 @@ describe('UnitController', () => {
   });
 
   it('should create hydrogen production unit', async () => {
-    const givenHydrogenProduction = HydrogenProductionUnitEntityFixture.create();
-    const giveCompanyEntityPower = CompanyEntityFixture.createPowerProducer();
-    const givenPayload: CreateHydrogenProductionUnitPayload = new CreateHydrogenProductionUnitPayload(
-      givenHydrogenProduction.name,
-      givenHydrogenProduction.mastrNumber,
-      givenHydrogenProduction.commissionedOn,
+    const givenHydrogenProductionUnit = HydrogenProductionUnitEntityFixture.create();
+    const givenHydrogenCompany = CompanyEntityFixture.createHydrogenProducer();
+    const givenPayload = new CreateHydrogenProductionUnitPayload(
+      givenHydrogenProductionUnit.name,
+      givenHydrogenProductionUnit.mastrNumber,
+      givenHydrogenProductionUnit.commissionedOn,
       new AddressPayload(
-        givenHydrogenProduction.address.street,
-        givenHydrogenProduction.address.postalCode,
-        givenHydrogenProduction.address.city,
-        givenHydrogenProduction.address.state,
-        givenHydrogenProduction.address.country,
+        givenHydrogenProductionUnit.address.street,
+        givenHydrogenProductionUnit.address.postalCode,
+        givenHydrogenProductionUnit.address.city,
+        givenHydrogenProductionUnit.address.state,
+        givenHydrogenProductionUnit.address.country,
       ),
-      giveCompanyEntityPower.id,
-      givenHydrogenProduction.method,
-      givenHydrogenProduction.technology,
-      givenHydrogenProduction.biddingZone,
-      givenHydrogenProduction.ratedPower,
-      givenHydrogenProduction.pressure,
-      givenHydrogenProduction.waterConsumptionLitersPerHour,
-      givenHydrogenProduction.manufacturer,
-      givenHydrogenProduction.modelType,
-      givenHydrogenProduction.modelNumber,
-      givenHydrogenProduction.serialNumber,
-      givenHydrogenProduction.certifiedBy,
-      giveCompanyEntityPower.id,
+      givenHydrogenCompany.id,
+      givenHydrogenProductionUnit.method,
+      givenHydrogenProductionUnit.technology,
+      givenHydrogenProductionUnit.biddingZone,
+      givenHydrogenProductionUnit.ratedPower,
+      givenHydrogenProductionUnit.pressure,
+      givenHydrogenProductionUnit.waterConsumptionLitersPerHour,
+      givenHydrogenProductionUnit.manufacturer,
+      givenHydrogenProductionUnit.modelType,
+      givenHydrogenProductionUnit.modelNumber,
+      givenHydrogenProductionUnit.serialNumber,
+      givenHydrogenProductionUnit.certifiedBy,
+      givenHydrogenCompany.id,
     );
 
     const mockedDbResponse: HydrogenProductionUnitDbType = HydrogenProductionUnitDbTypeMock[0];
@@ -253,29 +253,29 @@ describe('UnitController', () => {
   });
 
   it('should create hydrogen storage unit', async () => {
-    const givenHydrogenStorage = HydrogenStorageUnitEntityFixture.create();
-    const giveCompanyEntityPower = CompanyEntityFixture.createPowerProducer();
-    const givenPayload: CreateHydrogenStorageUnitPayload = new CreateHydrogenStorageUnitPayload(
-      givenHydrogenStorage.name,
-      givenHydrogenStorage.mastrNumber,
-      givenHydrogenStorage.commissionedOn,
+    const givenHydrogenStorageUnit = HydrogenStorageUnitEntityFixture.create();
+    const givenHydrogenCompany = CompanyEntityFixture.createHydrogenProducer();
+    const givenPayload = new CreateHydrogenStorageUnitPayload(
+      givenHydrogenStorageUnit.name,
+      givenHydrogenStorageUnit.mastrNumber,
+      givenHydrogenStorageUnit.commissionedOn,
       new AddressPayload(
-        givenHydrogenStorage.address.street,
-        givenHydrogenStorage.address.postalCode,
-        givenHydrogenStorage.address.city,
-        givenHydrogenStorage.address.state,
-        givenHydrogenStorage.address.country,
+        givenHydrogenStorageUnit.address.street,
+        givenHydrogenStorageUnit.address.postalCode,
+        givenHydrogenStorageUnit.address.city,
+        givenHydrogenStorageUnit.address.state,
+        givenHydrogenStorageUnit.address.country,
       ),
-      giveCompanyEntityPower.id,
-      givenHydrogenStorage.type,
-      givenHydrogenStorage.capacity,
-      givenHydrogenStorage.pressure,
-      givenHydrogenStorage.manufacturer,
-      givenHydrogenStorage.modelType,
-      givenHydrogenStorage.modelNumber,
-      givenHydrogenStorage.serialNumber,
-      givenHydrogenStorage.certifiedBy,
-      giveCompanyEntityPower.id,
+      givenHydrogenCompany.id,
+      givenHydrogenStorageUnit.type,
+      givenHydrogenStorageUnit.capacity,
+      givenHydrogenStorageUnit.pressure,
+      givenHydrogenStorageUnit.manufacturer,
+      givenHydrogenStorageUnit.modelType,
+      givenHydrogenStorageUnit.modelNumber,
+      givenHydrogenStorageUnit.serialNumber,
+      givenHydrogenStorageUnit.certifiedBy,
+      givenHydrogenCompany.id,
     );
 
     const mockedDbResponse: HydrogenStorageUnitDbType = HydrogenStorageUnitDbTypeMock[0];
