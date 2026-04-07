@@ -26,13 +26,7 @@ import {
   buildPowerProductionUnitCreateInput,
 } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
-import {
-  allUnitsQueryArgs,
-  baseUnitDeepQueryArgs,
-  hydrogenProductionUnitQueryArgs,
-  hydrogenStorageUnitQueryArgs,
-  powerProductionUnitQueryArgs,
-} from '../query-args';
+import { baseUnitDeepQueryArgs } from '../query-args';
 import { assertAllIdsFound, assertRecordFound } from './utils';
 
 @Injectable()
@@ -207,9 +201,9 @@ export class UnitRepository {
           },
         },
         create: buildHydrogenProductionUnitCreateInput(payload),
-        include: hydrogenProductionUnitQueryArgs.include,
+        include: baseUnitDeepQueryArgs.include,
       })
-      .then(HydrogenProductionUnitEntity.fromDatabase);
+      .then(HydrogenProductionUnitEntity.fromDeepDatabase);
   }
 
   async updateOrCreatePowerProductionUnit(
@@ -257,9 +251,9 @@ export class UnitRepository {
           },
         },
         create: buildPowerProductionUnitCreateInput(payload),
-        include: powerProductionUnitQueryArgs.include,
+        include: baseUnitDeepQueryArgs.include,
       })
-      .then(PowerProductionUnitEntity.fromDatabase);
+      .then(PowerProductionUnitEntity.fromDeepDatabase);
   }
 
   async updateOrCreateHydrogenStorageUnit(
@@ -302,8 +296,8 @@ export class UnitRepository {
           },
         },
         create: buildHydrogenStorageUnitCreateInput(payload),
-        include: hydrogenStorageUnitQueryArgs.include,
+        include: baseUnitDeepQueryArgs.include,
       })
-      .then(HydrogenStorageUnitEntity.fromDatabase);
+      .then(HydrogenStorageUnitEntity.fromDeepDatabase);
   }
 }
