@@ -23,8 +23,9 @@ import { ProductionAssembler } from './production.assembler';
 
 @Injectable()
 export class ProductionCreationService {
-  private readonly productionChunkSize: number;
   private readonly logger = new Logger(this.constructor.name);
+  private readonly productionChunkSize: number;
+
   constructor(
     private readonly configurationService: ConfigurationService,
     private readonly processStepService: ProcessStepService,

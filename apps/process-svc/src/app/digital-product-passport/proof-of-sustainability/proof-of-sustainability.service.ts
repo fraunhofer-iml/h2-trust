@@ -14,14 +14,19 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/amqp';
 import { CalculationTopic, EmissionNumericConstants, EmissionStringConstants, ProcessType } from '@h2-trust/domain';
-import { HydrogenBottlingPosService } from './proof-of-sustainability/hydrogen-bottling-pos.service';
-import { HydrogenProductionPosService } from './proof-of-sustainability/hydrogen-production-pos.service';
-import { HydrogenTransportPosService } from './proof-of-sustainability/hydrogen-transport-pos.service';
-import { PowerProductionPosService } from './proof-of-sustainability/power-production-pos.service';
-import { WaterConsumptionPosService } from './proof-of-sustainability/water-consumption-pos.service';
+import { HydrogenBottlingPosService } from './hydrogen-bottling-pos.service';
+import { HydrogenProductionPosService } from './hydrogen-production-pos.service';
+import { HydrogenTransportPosService } from './hydrogen-transport-pos.service';
+import { PowerProductionPosService } from './power-production-pos.service';
+import { WaterConsumptionPosService } from './water-consumption-pos.service';
 
 @Injectable()
 export class ProofOfSustainabilityService {
+  /**
+   * Calculates the emissions figures for the individual process steps in a production chain based on a provenance. It then compiles the results into a Proof of Sustainability.
+   * @param provenance The provenance, which covers the entire production chain.
+   * @returns The generated ProofOfSustainability.
+   */
   public createProofOfSustainability(provenance: ProvenanceEntity): ProofOfSustainabilityEntity {
     if (!provenance) {
       throw new Error('Provenance is undefined.');
