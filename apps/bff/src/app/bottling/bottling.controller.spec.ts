@@ -8,7 +8,7 @@
 
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues, ProcessStepEntityFixture, ProcessStepMessagePatterns } from '@h2-trust/amqp';
+import { BrokerQueues, ProcessStepMessagePatterns } from '@h2-trust/amqp';
 import {
   AuthenticatedUserMock,
   BottlingDto,
@@ -16,6 +16,7 @@ import {
   BottlingOverviewDto,
   UserDetailsDtoMock,
 } from '@h2-trust/api';
+import { ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
 import 'multer';
 import { of } from 'rxjs';
 import { RfnboType } from '@h2-trust/domain';

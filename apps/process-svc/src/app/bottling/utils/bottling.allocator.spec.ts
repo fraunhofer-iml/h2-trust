@@ -6,12 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenStorageUnitEntityFixture } from 'libs/amqp/src/lib/fixtures/hydrogen-storage-unit.entity.fixture';
 import { HydrogenComponentEntity } from '@h2-trust/amqp';
 import { BatchType, HydrogenColor, ProcessType, RfnboType } from '@h2-trust/domain';
 import {
   BatchEntityFixture,
   HydrogenComponentEntityFixture,
+  HydrogenStorageUnitEntityFixture,
   ProcessStepEntityFixture,
   QualityDetailsEntityFixture,
 } from '@h2-trust/fixtures/entities';

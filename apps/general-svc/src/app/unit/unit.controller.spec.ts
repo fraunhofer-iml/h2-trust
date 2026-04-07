@@ -6,22 +6,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenStorageUnitEntityFixture } from 'libs/amqp/src/lib/fixtures/hydrogen-storage-unit.entity.fixture';
 import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   AddressPayload,
   BrokerQueues,
-  CompanyEntityFixture,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
   CreatePowerProductionUnitPayload,
   HydrogenProductionUnitEntity,
-  HydrogenProductionUnitEntityFixture,
   HydrogenStorageUnitEntity,
   PowerProductionUnitEntity,
-  PowerProductionUnitEntityFixture,
   ReadByIdPayload,
 } from '@h2-trust/amqp';
 import {
@@ -39,6 +35,12 @@ import {
   PrismaService,
 } from '@h2-trust/database';
 import { RfnboType } from '@h2-trust/domain';
+import {
+  CompanyEntityFixture,
+  HydrogenProductionUnitEntityFixture,
+  HydrogenStorageUnitEntityFixture,
+  PowerProductionUnitEntityFixture,
+} from '@h2-trust/fixtures/entities';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
 

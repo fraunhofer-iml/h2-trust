@@ -7,7 +7,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { PowerAccessApprovalEntity, UserEntityFixture } from '@h2-trust/amqp';
+import { PowerAccessApprovalEntity } from '@h2-trust/amqp';
 import {
   DatabaseModule,
   PowerAccessApprovalDbTypeMock,
@@ -16,6 +16,7 @@ import {
   UserRepository,
 } from '@h2-trust/database';
 import { PowerAccessApprovalStatus } from '@h2-trust/domain';
+import { UserEntityFixture } from '@h2-trust/fixtures/entities';
 import { PowerAccessApprovalController } from './power-access-approval.controller';
 import { PowerAccessApprovalService } from './power-access-approval.service';
 

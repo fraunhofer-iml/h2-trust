@@ -12,11 +12,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import {
   BrokerQueues,
   HydrogenProductionUnitEntity,
-  HydrogenProductionUnitEntityFixture,
   HydrogenStorageUnitEntity,
-  HydrogenStorageUnitEntityFixture,
   PowerProductionUnitEntity,
-  PowerProductionUnitEntityFixture,
   ReadByIdPayload,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
@@ -33,6 +30,11 @@ import {
   PowerProductionUnitInputDto,
   UserDetailsDto,
 } from '@h2-trust/api';
+import {
+  HydrogenProductionUnitEntityFixture,
+  HydrogenStorageUnitEntityFixture,
+  PowerProductionUnitEntityFixture,
+} from '@h2-trust/fixtures/entities';
 import { UserService } from '../user/user.service';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
