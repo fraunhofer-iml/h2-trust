@@ -124,7 +124,7 @@ describe('ProductionController', () => {
         endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
         type: ProcessType.HYDROGEN_PRODUCTION,
         batch: BatchEntityFixture.createHydrogenBatch(),
-        recordedBy: UserEntityFixture.create(),
+        recordedBy: UserEntityFixture.createHydrogenUser(),
         executedBy: HydrogenProductionUnitEntityFixture.create(),
       },
       {
@@ -133,7 +133,7 @@ describe('ProductionController', () => {
         endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
         type: ProcessType.HYDROGEN_PRODUCTION,
         batch: BatchEntityFixture.createHydrogenBatch(),
-        recordedBy: UserEntityFixture.create(),
+        recordedBy: UserEntityFixture.createHydrogenUser(),
         executedBy: HydrogenProductionUnitEntityFixture.create(),
       },
     ];
@@ -157,7 +157,7 @@ describe('ProductionController', () => {
         endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
         type: ProcessType.HYDROGEN_PRODUCTION,
         batch: BatchEntityFixture.createHydrogenBatch(),
-        recordedBy: UserEntityFixture.create(),
+        recordedBy: UserEntityFixture.createHydrogenUser(),
         executedBy: HydrogenProductionUnitEntityFixture.create(),
       },
     ];

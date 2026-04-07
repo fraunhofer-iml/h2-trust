@@ -46,7 +46,7 @@ describe('UserController', () => {
   });
 
   it('readUserWithCompany should request user and map dto', async () => {
-    const mockedUser: UserEntity = UserEntityFixture.create({});
+    const mockedUser: UserEntity = UserEntityFixture.createPowerUser({});
     const expectedResponse = UserDetailsDto.fromEntity(mockedUser);
 
     const generalServiceSpy = jest

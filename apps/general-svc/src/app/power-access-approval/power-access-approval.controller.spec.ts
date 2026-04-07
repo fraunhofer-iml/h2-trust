@@ -33,7 +33,7 @@ describe('PowerAccessApprovalController', () => {
     })
       .overrideProvider(UserRepository)
       .useValue({
-        findUser: jest.fn().mockResolvedValue(UserEntityFixture.create()),
+        findUser: jest.fn().mockResolvedValue(UserEntityFixture.createHydrogenUser()),
       })
       .overrideProvider(PrismaService)
       .useValue({
@@ -58,7 +58,7 @@ describe('PowerAccessApprovalController', () => {
     jest.spyOn(prismaService.powerAccessApproval, 'findMany').mockResolvedValue(mockedPowerAccessApprovals);
 
     const actualResponse: PowerAccessApprovalEntity[] = await controller.findAll({
-      userId: UserEntityFixture.create().id,
+      userId: UserEntityFixture.createPowerUser().id,
       powerAccessApprovalStatus: PowerAccessApprovalStatus.APPROVED,
     });
 
