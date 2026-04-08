@@ -19,7 +19,7 @@
                   [routerLink]="option.route"
                   class="flex w-full flex-row gap-2 rounded-lg p-3 text-neutral-700"
                   [ngClass]="{
-                    'bg-primary-100 text-primary-700': isActive(option.route),
+                    'bg-primary-100 text-primary-700 hover:bg-primary-100': isActive(option.route),
                     'hover:bg-neutral-100': option.route,
                   }"
                 >
@@ -36,7 +36,7 @@
                         [routerLink]="item.route"
                         class="flex w-full flex-row gap-2 rounded-lg p-3 text-neutral-700 hover:bg-neutral-100"
                         [ngClass]="{
-                          'bg-primary-100 text-primary-700': isActive(item.route),
+                          'bg-primary-100 text-primary-700 hover:bg-primary-100': isActive(item.route),
                         }"
                       >
                         <span class="material-symbols-outlined">{{ item.icon }}</span>
@@ -56,7 +56,7 @@
           matBadgeSize="large"
           [matBadgeHidden]="ppaRequestsQuery.data()?.length === 0"
         >
-          <button class="w-full cursor-pointer rounded-lg border p-2 shadow-md" (click)="toggleMenu()">
+          <button class="w-full cursor-pointer rounded-lg border p-3 shadow-md" (click)="toggleMenu()">
             @if (isAuthenticated) {
               <div class="flex flex-row items-center justify-between gap-4">
                 <div class="flex flex-row items-center gap-2">
@@ -65,8 +65,8 @@
                   >
 
                   <div class="flex flex-col text-left text-sm text-neutral-600">
-                    <span class="text-xs font-semibold">{{ userFirstName }} {{ userLastName }}</span>
-                    <span class="text-xs">{{ userEmail }}</span>
+                    <span class="text-xs font-semibold">{{ profile.firstName }} {{ profile.lastName }}</span>
+                    <span class="text-xs">{{ profile.email }}</span>
                   </div>
                 </div>
 
@@ -84,17 +84,17 @@
                 <!-- Account -->
                 <a
                   routerLink="/"
-                  class="flex items-center gap-3 rounded-lg p-3 text-neutral-600 hover:bg-primary-100 hover:text-primary-500"
+                  class="flex items-center gap-3 rounded-lg p-3 text-neutral-600 hover:bg-primary-500 hover:text-white"
                   (click)="closeMenu(); $event.stopPropagation()"
                 >
                   <span class="material-symbols-outlined">person</span>
-                  <span>Account</span>
+                  <span>My account</span>
                 </a>
 
                 <!-- PPA Requests -->
                 <a
                   routerLink="/ppa-requests"
-                  class="flex items-center gap-3 rounded-lg p-3 text-neutral-600 hover:bg-primary-100 hover:text-primary-500"
+                  class="flex items-center gap-3 rounded-lg p-3 text-neutral-600 hover:bg-primary-500 hover:text-white"
                   (click)="closeMenu(); $event.stopPropagation()"
                 >
                   <span
@@ -111,7 +111,7 @@
                 <!-- Sign Out -->
                 <button
                   (click)="logout(); $event.stopPropagation()"
-                  class="flex w-full items-center gap-3 rounded-lg p-3 text-neutral-600 hover:bg-primary-100 hover:text-primary-500"
+                  class="flex w-full items-center gap-3 rounded-lg p-3 text-neutral-600 hover:bg-primary-500 hover:text-white"
                 >
                   <span class="material-symbols-outlined">logout</span>
                   <span>Sign Out</span>

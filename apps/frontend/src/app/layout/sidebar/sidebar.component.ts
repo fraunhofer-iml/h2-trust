@@ -20,7 +20,7 @@ import { Router, RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
 import { ROUTES } from '../../shared/constants/routes';
-import { AuthService } from '../../shared/services/auth/auth.service';
+import { AuthService, UserProfile } from '../../shared/services/auth/auth.service';
 import { PowerAccessApprovalService } from '../../shared/services/power-access-approvals/power-access-approvals.service';
 import { UnitsService } from '../../shared/services/units/units.service';
 import { UsersService } from '../../shared/services/users/users.service';
@@ -105,21 +105,12 @@ export class SidebarComponent implements OnInit {
   ];
 
   isAuthenticated = false;
-  userFirstName = '';
-  userLastName = '';
-  userEmail = '';
-
-  closeMenu(): void {
-    this.isMenuOpen = false;
-  }
+  profile: UserProfile = {} as UserProfile;
 
   async ngOnInit() {
     this.isAuthenticated = this.authService.isAuthenticated();
     if (this.isAuthenticated) {
-      const userProfile = await this.authService.getCurrentUserDetails();
-      this.userFirstName = userProfile.firstName;
-      this.userLastName = userProfile.lastName;
-      this.userEmail = userProfile.email;
+      this.profile = await this.authService.getCurrentUserDetails();
     }
 
     this.router.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
@@ -138,6 +129,10 @@ export class SidebarComponent implements OnInit {
 
   signIn() {
     this.authService.logIn();
+  }
+
+  closeMenu(): void {
+    this.isMenuOpen = false;
   }
 
   toggleMenu() {
