@@ -6,7 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepEntity, ProofOfSustainabilityEmissionCalculationEntity, ProvenanceEntity } from '@h2-trust/amqp';
+import {
+  ProcessStepEntity,
+  ProofOfSustainabilityEmissionCalculationEntity,
+  ProofOfSustainabilityEmissionEntity,
+  ProvenanceEntity,
+} from '@h2-trust/amqp';
 import {
   CalculationTopic,
   EmissionNumericConstants,
@@ -68,5 +73,20 @@ export class WaterConsumptionPosService implements ProofOfSustainabilityAssemble
       MeasurementUnit.G_CO2,
       CalculationTopic.WATER_SUPPLY,
     );
+  }
+
+  public calculateEmission(
+    emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
+  ): ProofOfSustainabilityEmissionEntity[] {
+    const waterSupplyEmissionAmount = emissionCalculations
+      .filter((emissionCalculation) => emissionCalculation.calculationTopic === CalculationTopic.WATER_SUPPLY)
+      .reduce((acc, emissionCalculation) => acc + Number(emissionCalculation.name), 0);
+    const waterSupplyEmission = new ProofOfSustainabilityEmissionEntity(
+      waterSupplyEmissionAmount,
+      EmissionStringConstants.TYPES.EWS,
+      EmissionStringConstants.WATER_SUPPLY,
+      EmissionStringConstants.TYPES.APPLICATION,
+    );
+    return [waterSupplyEmission];
   }
 }

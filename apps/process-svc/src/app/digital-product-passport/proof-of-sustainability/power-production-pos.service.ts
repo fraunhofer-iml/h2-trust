@@ -10,12 +10,14 @@ import {
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
+  ProofOfSustainabilityEmissionEntity,
   ProvenanceEntity,
 } from '@h2-trust/amqp';
 import { EnumLabelMapper } from '@h2-trust/api';
 import {
   CalculationTopic,
   EmissionNumericConstants,
+  EmissionStringConstants,
   EnergySource,
   MeasurementUnit,
   PowerType,
@@ -112,5 +114,20 @@ export class PowerProductionPosService implements ProofOfSustainabilityAssembler
       const unit = powerProduction.executedBy as PowerProductionUnitEntity;
       return this.assemblePowerSupply(powerProduction, unit.type.energySource);
     });
+  }
+
+  public calculateEmission(
+    emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
+  ): ProofOfSustainabilityEmissionEntity[] {
+    const powerSupplyEmissionAmount = emissionCalculations
+      .filter((emissionCalculation) => emissionCalculation.calculationTopic === CalculationTopic.POWER_SUPPLY)
+      .reduce((acc, emissionCalculation) => acc + Number(emissionCalculation.name), 0);
+    const powerSupplyEmission = new ProofOfSustainabilityEmissionEntity(
+      powerSupplyEmissionAmount,
+      EmissionStringConstants.TYPES.EPS,
+      EmissionStringConstants.POWER_SUPPLY,
+      EmissionStringConstants.TYPES.APPLICATION,
+    );
+    return [powerSupplyEmission];
   }
 }

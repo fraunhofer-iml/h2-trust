@@ -22,8 +22,10 @@ import { WaterConsumptionProofOfOriginService } from './water-consumption-proof-
 export class HydrogenProductionProofOfOriginService implements ProofOfOriginAssembler {
   private powerProductionProofOfOriginService: PowerProductionProofOfOriginService =
     new PowerProductionProofOfOriginService();
+
   private waterConsumptionProofOfOriginService: WaterConsumptionProofOfOriginService =
     new WaterConsumptionProofOfOriginService();
+
   public assembleSection(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {
     if (provenance.getAllPowerProductions()?.length == 0 && provenance.getAllWaterConsumptions()?.length == 0) {
       return [];

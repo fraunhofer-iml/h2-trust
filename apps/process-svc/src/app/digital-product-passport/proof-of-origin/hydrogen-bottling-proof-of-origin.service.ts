@@ -23,6 +23,7 @@ import { ProofOfOriginAssembler } from './proof-of-origin-assembler.interface';
 
 export class HydrogenBottlingProofOfOriginService implements ProofOfOriginAssembler {
   private hydrogenBottlingPosService: HydrogenBottlingPosService = new HydrogenBottlingPosService();
+
   public assembleSection(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {
     if (!provenance.hydrogenBottling) {
       return [];

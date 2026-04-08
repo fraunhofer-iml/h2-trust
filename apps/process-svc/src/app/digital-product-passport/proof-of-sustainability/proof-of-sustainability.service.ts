@@ -13,7 +13,7 @@ import {
   ProofOfSustainabilityEntity,
   ProvenanceEntity,
 } from '@h2-trust/amqp';
-import { CalculationTopic, EmissionNumericConstants, EmissionStringConstants } from '@h2-trust/domain';
+import { EmissionNumericConstants, EmissionStringConstants } from '@h2-trust/domain';
 import { PROOF_OF_SUSTAINABILITY_ASSEMBLERS } from './proof-of-origin-assembler.registry.const';
 
 @Injectable()
@@ -82,64 +82,9 @@ export class ProofOfSustainabilityService {
   private assembleApplicationEmissions(
     emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
   ): ProofOfSustainabilityEmissionEntity[] {
-    const calculateTotalEmissionAmountByCalculationTopic = (calculationTopic: CalculationTopic): number =>
-      emissionCalculations
-        .filter((emissionCalculation) => emissionCalculation.calculationTopic === calculationTopic)
-        .reduce((acc, emissionCalculation) => acc + Number(emissionCalculation.name), 0);
-
-    const powerSupplyEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(CalculationTopic.POWER_SUPPLY);
-    const powerSupplyEmission = new ProofOfSustainabilityEmissionEntity(
-      powerSupplyEmissionAmount,
-      EmissionStringConstants.TYPES.EPS,
-      EmissionStringConstants.POWER_SUPPLY,
-      EmissionStringConstants.TYPES.APPLICATION,
+    return PROOF_OF_SUSTAINABILITY_ASSEMBLERS.flatMap((posAssembler) =>
+      posAssembler.calculateEmission(emissionCalculations),
     );
-
-    const waterSupplyEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(CalculationTopic.WATER_SUPPLY);
-    const waterSupplyEmission = new ProofOfSustainabilityEmissionEntity(
-      waterSupplyEmissionAmount,
-      EmissionStringConstants.TYPES.EWS,
-      EmissionStringConstants.WATER_SUPPLY,
-      EmissionStringConstants.TYPES.APPLICATION,
-    );
-
-    const hydrogenStorageEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(
-      CalculationTopic.HYDROGEN_STORAGE,
-    );
-    const hydrogenStorageEmission = new ProofOfSustainabilityEmissionEntity(
-      hydrogenStorageEmissionAmount,
-      EmissionStringConstants.TYPES.EHS,
-      EmissionStringConstants.HYDROGEN_STORAGE,
-      EmissionStringConstants.TYPES.APPLICATION,
-    );
-
-    const hydrogenBottlingEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(
-      CalculationTopic.HYDROGEN_BOTTLING,
-    );
-    const hydrogenBottlingEmission = new ProofOfSustainabilityEmissionEntity(
-      hydrogenBottlingEmissionAmount,
-      EmissionStringConstants.TYPES.EHB,
-      EmissionStringConstants.HYDROGEN_BOTTLING,
-      EmissionStringConstants.TYPES.APPLICATION,
-    );
-
-    const hydrogenTransportationEmissionAmount = calculateTotalEmissionAmountByCalculationTopic(
-      CalculationTopic.HYDROGEN_TRANSPORTATION,
-    );
-    const hydrogenTransportationEmission = new ProofOfSustainabilityEmissionEntity(
-      hydrogenTransportationEmissionAmount,
-      EmissionStringConstants.TYPES.EHT,
-      EmissionStringConstants.HYDROGEN_TRANSPORTATION,
-      EmissionStringConstants.TYPES.APPLICATION,
-    );
-
-    return [
-      powerSupplyEmission,
-      waterSupplyEmission,
-      hydrogenStorageEmission,
-      hydrogenBottlingEmission,
-      hydrogenTransportationEmission,
-    ];
   }
 
   private assembleRegulatoryEmissions(

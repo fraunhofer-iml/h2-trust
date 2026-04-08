@@ -6,7 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepEntity, ProofOfSustainabilityEmissionCalculationEntity, ProvenanceEntity } from '@h2-trust/amqp';
+import {
+  ProcessStepEntity,
+  ProofOfSustainabilityEmissionCalculationEntity,
+  ProofOfSustainabilityEmissionEntity,
+  ProvenanceEntity,
+} from '@h2-trust/amqp';
 import { EnumLabelMapper } from '@h2-trust/api';
 import {
   CalculationTopic,
@@ -150,5 +155,22 @@ export class HydrogenTransportPosService implements ProofOfSustainabilityAssembl
       MeasurementUnit.G_CO2,
       CalculationTopic.HYDROGEN_TRANSPORTATION,
     );
+  }
+
+  public calculateEmission(
+    emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
+  ): ProofOfSustainabilityEmissionEntity[] {
+    const hydrogenTransportationEmissionAmount = emissionCalculations
+      .filter(
+        (emissionCalculation) => emissionCalculation.calculationTopic === CalculationTopic.HYDROGEN_TRANSPORTATION,
+      )
+      .reduce((acc, emissionCalculation) => acc + Number(emissionCalculation.name), 0);
+    const hydrogenTransportationEmission = new ProofOfSustainabilityEmissionEntity(
+      hydrogenTransportationEmissionAmount,
+      EmissionStringConstants.TYPES.EHT,
+      EmissionStringConstants.HYDROGEN_TRANSPORTATION,
+      EmissionStringConstants.TYPES.APPLICATION,
+    );
+    return [hydrogenTransportationEmission];
   }
 }

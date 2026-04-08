@@ -6,7 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepEntity, ProofOfSustainabilityEmissionCalculationEntity, ProvenanceEntity } from '@h2-trust/amqp';
+import {
+  ProcessStepEntity,
+  ProofOfSustainabilityEmissionCalculationEntity,
+  ProofOfSustainabilityEmissionEntity,
+  ProvenanceEntity,
+} from '@h2-trust/amqp';
 import { CalculationTopic, EmissionStringConstants, MeasurementUnit, ProcessType } from '@h2-trust/domain';
 import { ProofOfSustainabilityAssembler } from './proof-of-sustainability-assembler.interface';
 
@@ -59,5 +64,21 @@ export class HydrogenBottlingPosService implements ProofOfSustainabilityAssemble
       MeasurementUnit.G_CO2,
       CalculationTopic.HYDROGEN_BOTTLING,
     );
+  }
+
+  public calculateEmission(
+    emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
+  ): ProofOfSustainabilityEmissionEntity[] {
+    const hydrogenBottlingEmissionAmount = emissionCalculations
+      .filter((emissionCalculation) => emissionCalculation.calculationTopic === CalculationTopic.HYDROGEN_BOTTLING)
+      .reduce((acc, emissionCalculation) => acc + Number(emissionCalculation.name), 0);
+
+    const hydrogenBottlingEmission = new ProofOfSustainabilityEmissionEntity(
+      hydrogenBottlingEmissionAmount,
+      EmissionStringConstants.TYPES.EHB,
+      EmissionStringConstants.HYDROGEN_BOTTLING,
+      EmissionStringConstants.TYPES.APPLICATION,
+    );
+    return [hydrogenBottlingEmission];
   }
 }

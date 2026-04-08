@@ -20,6 +20,7 @@ import { ProofOfOriginAssembler } from './proof-of-origin-assembler.interface';
 
 export class HydrogenTransportationProofOfOriginService implements ProofOfOriginAssembler {
   private hydrogenTransportPosService: HydrogenTransportPosService = new HydrogenTransportPosService();
+
   public assembleSection(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {
     if (provenance.root.type !== ProcessType.HYDROGEN_TRANSPORTATION) {
       return [];

@@ -6,9 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProofOfSustainabilityEmissionCalculationEntity, ProvenanceEntity } from '@h2-trust/amqp';
+import {
+  ProofOfSustainabilityEmissionCalculationEntity,
+  ProofOfSustainabilityEmissionEntity,
+  ProvenanceEntity,
+} from '@h2-trust/amqp';
 import { EnumLabelMapper } from '@h2-trust/api';
-import { CalculationTopic, HydrogenColor, MeasurementUnit } from '@h2-trust/domain';
+import { CalculationTopic, EmissionStringConstants, HydrogenColor, MeasurementUnit } from '@h2-trust/domain';
 import { HydrogenStoragePosService } from './hydrogen-storage-pos.service';
 import { ProofOfSustainabilityAssembler } from './proof-of-sustainability-assembler.interface';
 
@@ -51,5 +55,20 @@ export class HydrogenProductionPosService implements ProofOfSustainabilityAssemb
         CalculationTopic.HYDROGEN_STORAGE,
       ),
     ];
+  }
+
+  public calculateEmission(
+    emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
+  ): ProofOfSustainabilityEmissionEntity[] {
+    const hydrogenStorageEmissionAmount = emissionCalculations
+      .filter((emissionCalculation) => emissionCalculation.calculationTopic === CalculationTopic.HYDROGEN_STORAGE)
+      .reduce((acc, emissionCalculation) => acc + Number(emissionCalculation.name), 0);
+    const hydrogenStorageEmission = new ProofOfSustainabilityEmissionEntity(
+      hydrogenStorageEmissionAmount,
+      EmissionStringConstants.TYPES.EHS,
+      EmissionStringConstants.HYDROGEN_STORAGE,
+      EmissionStringConstants.TYPES.APPLICATION,
+    );
+    return [hydrogenStorageEmission];
   }
 }

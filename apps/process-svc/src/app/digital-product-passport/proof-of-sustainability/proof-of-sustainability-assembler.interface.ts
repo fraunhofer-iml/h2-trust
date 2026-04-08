@@ -6,8 +6,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProofOfSustainabilityEmissionCalculationEntity, ProvenanceEntity } from '@h2-trust/amqp';
+import {
+  ProofOfSustainabilityEmissionCalculationEntity,
+  ProofOfSustainabilityEmissionEntity,
+  ProvenanceEntity,
+} from '@h2-trust/amqp';
 
 export interface ProofOfSustainabilityAssembler {
   assembleEmissions(provenance: ProvenanceEntity): ProofOfSustainabilityEmissionCalculationEntity[];
+  calculateEmission(
+    emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
+  ): ProofOfSustainabilityEmissionEntity[];
 }

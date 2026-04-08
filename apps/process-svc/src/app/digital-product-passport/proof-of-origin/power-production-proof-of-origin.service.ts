@@ -21,6 +21,7 @@ import { Util } from '../util';
 
 export class PowerProductionProofOfOriginService {
   private powerProductionPosService: PowerProductionPosService = new PowerProductionPosService();
+
   public buildPowerSupplySubClassifications(
     powerProductions: ProcessStepEntity[],
     bottledKgHydrogen: number,

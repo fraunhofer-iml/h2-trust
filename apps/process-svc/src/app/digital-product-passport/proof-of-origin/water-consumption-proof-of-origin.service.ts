@@ -19,6 +19,7 @@ import { Util } from '../util';
 
 export class WaterConsumptionProofOfOriginService {
   private waterConsumptionPosService: WaterConsumptionPosService = new WaterConsumptionPosService();
+
   public assembleWaterSupplyClassification(
     waterConsumptionProcess: ProcessStepEntity[],
     bottledKgHydrogen: number,
