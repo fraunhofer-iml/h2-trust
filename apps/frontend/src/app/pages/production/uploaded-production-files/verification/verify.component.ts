@@ -54,6 +54,7 @@ export class VerifyComponent {
     window.open(url, '_blank');
   }
 
+  // TODO-MP: use DateTimeUtil instead of this method and handle "Not available" case in template
   formatDateTime(value: string | Date | null) {
     if (!value) {
       return 'Not available';

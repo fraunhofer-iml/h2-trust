@@ -5,7 +5,7 @@
       Verifying...
     </span>
   </button>
-} @else if (!result || result.status === CsvDocumentIntegrityStatus.FAILED) {
+} @else if (!result || result.status !== CsvDocumentIntegrityStatus.VERIFIED) {
   <button matButton="filled" (click)="verify()" [disabled]="disabled()">Verify</button>
 } @else {
   <button matButton="outlined" (click)="sheet.open()" class="!bg-neutral-200">Inspect</button>
@@ -31,11 +31,39 @@
         >
           <span class="flex items-center gap-2">
             <span class="material-symbols-outlined">
-              {{ res.status === CsvDocumentIntegrityStatus.MISMATCH ? 'cancel' : 'check_circle' }}
+              check_circle
             </span>
             {{ res.status | titlecase }}</span
           >
           <p class="pl-8 text-neutral-700">{{ res.message }}</p>
+        </div>
+
+        <div class="flex flex-col gap-3 rounded-lg border border-neutral-100 bg-white px-4 py-3 text-sm text-neutral-600">
+          <div>
+            <span class="font-semibold text-neutral-900">Checked Steps</span>
+            <p class="mt-1 text-xs text-neutral-500">This verification process compares the file from centralized storage with the proof registered on the blockchain.</p>
+          </div>
+
+          <div class="flex items-center gap-3 text-neutral-800">
+            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-neutral-100 text-[11px] font-semibold text-neutral-600">
+              1
+            </span>
+            <span>File loaded from centralized storage</span>
+          </div>
+
+          <div class="flex items-center gap-3 text-neutral-800">
+            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-neutral-100 text-[11px] font-semibold text-neutral-600">
+              2
+            </span>
+            <span>Proof loaded from blockchain</span>
+          </div>
+
+          <div class="flex items-center gap-3 text-neutral-800">
+            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-neutral-100 text-[11px] font-semibold text-neutral-600">
+              3
+            </span>
+            <span>File matches the registered proof</span>
+          </div>
         </div>
 
         <div
@@ -43,7 +71,7 @@
         >
           <div>
             <span class="text-md font-semibold text-black">Blockchain Proof</span>
-            <p class="mt-1 text-xs text-neutral-500">On-chain proof reference for independent verification and traceability.</p>
+            <p class="mt-1 text-xs text-neutral-500">Shows the blockchain record used to verify this file.</p>
           </div>
 
           <span>
@@ -79,7 +107,7 @@
             >
               <span class="flex items-center gap-2 text-center">
                 <span class="material-symbols-outlined">token</span>
-                <span class="font-medium">Open Explorer</span>
+                <span class="font-medium">Open Blockchain Explorer</span>
               </span>
             </button>
             <button
@@ -100,8 +128,8 @@
           class="flex flex-col gap-4 rounded-xl border-[2px] border-solid border-neutral-100 bg-neutral-50 p-4 text-sm text-neutral-600"
         >
           <div>
-            <span class="text-md font-semibold text-black">Decentralized Storage</span>
-            <p class="mt-1 text-xs text-neutral-500">Content-addressed storage reference for independent retrieval.</p>
+            <span class="text-md font-semibold text-black">IPFS Reference</span>
+            <p class="mt-1 text-xs text-neutral-500">Shows where the file can be independently retrieved.</p>
           </div>
 
           <span>
@@ -117,7 +145,7 @@
             >
               <span class="flex items-center gap-2 text-center">
                 <span class="material-symbols-outlined">description</span>
-                <span class="font-medium">Open Explorer</span>
+                <span class="font-medium">Open IPFS Explorer</span>
               </span>
             </button>
             <button
