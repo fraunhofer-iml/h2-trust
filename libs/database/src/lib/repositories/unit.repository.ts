@@ -17,7 +17,7 @@ import {
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
   PowerProductionUnitEntity,
-  UnitEntity,
+  UnitEntityType,
   UpdateUnitStatusPayload,
 } from '@h2-trust/amqp';
 import {
@@ -33,7 +33,7 @@ import { assertAllIdsFound, assertRecordFound } from './utils';
 export class UnitRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findUnitById(id: string): Promise<UnitEntity> {
+  async findUnitById(id: string): Promise<UnitEntityType> {
     return this.prismaService.unit
       .findUnique({
         where: {
@@ -45,7 +45,7 @@ export class UnitRepository {
       .then(this.mapToActualUnitEntity);
   }
 
-  async findUnitsByIds(ids: string[]): Promise<UnitEntity[]> {
+  async findUnitsByIds(ids: string[]): Promise<UnitEntityType[]> {
     return this.prismaService.unit
       .findMany({
         where: {
@@ -58,7 +58,7 @@ export class UnitRepository {
       .then((units) => units.map(this.mapToActualUnitEntity));
   }
 
-  mapToActualUnitEntity(baseUnit: Prisma.UnitGetPayload<typeof baseUnitDeepQueryArgs>): UnitEntity {
+  mapToActualUnitEntity(baseUnit: Prisma.UnitGetPayload<typeof baseUnitDeepQueryArgs>): UnitEntityType {
     if (baseUnit.powerProductionUnit) {
       return PowerProductionUnitEntity.fromDeepDatabase(baseUnit);
     }

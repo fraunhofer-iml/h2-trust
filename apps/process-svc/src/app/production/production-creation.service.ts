@@ -15,7 +15,7 @@ import {
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ProductionChainEntity,
-  UnitEntity,
+  UnitEntityType,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { BatchType, RfnboType } from '@h2-trust/domain';
@@ -37,7 +37,7 @@ export class ProductionCreationService {
 
   public async createAndPersistProductions(
     createProductions: CreateProductionEntity[],
-    productionUnitsForId: Map<string, UnitEntity>,
+    productionUnitsForId: Map<string, UnitEntityType>,
   ): Promise<ProcessStepEntity[]> {
     const persistedProcessSteps: ProcessStepEntity[] = [];
 

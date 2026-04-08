@@ -7,9 +7,9 @@
  */
 
 import { ProcessStepDeepDbType } from '@h2-trust/database';
+import { UnitEntityType } from '../../types';
 import { BatchEntity } from '../batch';
 import { DocumentEntity } from '../document';
-import { HydrogenProductionUnitEntity, HydrogenStorageUnitEntity, PowerProductionUnitEntity } from '../unit';
 import { EntityUtils } from '../unit/entity-utils';
 import { UserEntity } from '../user';
 import { TransportationDetailsEntity } from './transportation-details.entity';
@@ -21,7 +21,7 @@ export class ProcessStepEntity {
   type: string;
   batch: BatchEntity;
   recordedBy: UserEntity;
-  executedBy: HydrogenProductionUnitEntity | PowerProductionUnitEntity | HydrogenStorageUnitEntity;
+  executedBy: UnitEntityType;
   documents?: DocumentEntity[];
   transportationDetails?: TransportationDetailsEntity;
 
@@ -32,7 +32,7 @@ export class ProcessStepEntity {
     type: string,
     batch: BatchEntity,
     recordedBy: UserEntity,
-    executedBy: HydrogenProductionUnitEntity | PowerProductionUnitEntity | HydrogenStorageUnitEntity,
+    executedBy: UnitEntityType,
     documents?: DocumentEntity[],
     transportationDetails?: TransportationDetailsEntity,
   ) {

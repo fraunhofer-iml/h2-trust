@@ -18,7 +18,7 @@ import {
   PowerProductionUnitEntity,
   ReadByIdPayload,
   ReadByIdsPayload,
-  UnitEntity,
+  UnitEntityType,
   UpdateUnitStatusPayload,
 } from '@h2-trust/amqp';
 import { PowerProductionTypeRepository, UnitRepository } from '@h2-trust/database';
@@ -30,11 +30,11 @@ export class UnitService {
     private readonly powerProductionTypeRepository: PowerProductionTypeRepository,
   ) {}
 
-  async readUnitById(id: string): Promise<UnitEntity> {
+  async readUnitById(id: string): Promise<UnitEntityType> {
     return this.unitRepository.findUnitById(id);
   }
 
-  async readUnitsByIds(ids: string[]): Promise<UnitEntity[]> {
+  async readUnitsByIds(ids: string[]): Promise<UnitEntityType[]> {
     return this.unitRepository.findUnitsByIds(ids);
   }
 

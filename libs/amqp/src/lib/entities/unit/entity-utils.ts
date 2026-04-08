@@ -9,13 +9,13 @@
 import { HttpStatus } from '@nestjs/common';
 import { BaseUnitNestedDbType } from '@h2-trust/database';
 import { BrokerException } from '../../broker';
-import { UnitEntity } from '../../types';
+import { UnitEntityType } from '../../types';
 import { HydrogenProductionUnitEntity } from './hydrogen-production-unit.entity';
 import { HydrogenStorageUnitEntity } from './hydrogen-storage-unit.entity';
 import { PowerProductionUnitEntity } from './power-production-unit.entity';
 
 export class EntityUtils {
-  static getSpecificUnit(unit: BaseUnitNestedDbType): UnitEntity {
+  static getSpecificUnit(unit: BaseUnitNestedDbType): UnitEntityType {
     if (unit.hydrogenProductionUnit) {
       return HydrogenProductionUnitEntity.fromNestedDatabase(unit);
     }

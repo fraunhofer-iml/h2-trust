@@ -19,7 +19,7 @@ import {
   PowerProductionUnitEntity,
   ReadByIdPayload,
   ReadByIdsPayload,
-  UnitEntity,
+  UnitEntityType,
   UnitMessagePatterns,
   UpdateUnitStatusPayload,
 } from '@h2-trust/amqp';
@@ -30,12 +30,12 @@ export class UnitController {
   constructor(private readonly service: UnitService) {}
 
   @MessagePattern(UnitMessagePatterns.READ)
-  async readUnit(payload: ReadByIdPayload): Promise<UnitEntity> {
+  async readUnit(payload: ReadByIdPayload): Promise<UnitEntityType> {
     return this.service.readUnitById(payload.id);
   }
 
   @MessagePattern(UnitMessagePatterns.READ_MANY)
-  async readUnits(payload: ReadByIdsPayload): Promise<UnitEntity[]> {
+  async readUnits(payload: ReadByIdsPayload): Promise<UnitEntityType[]> {
     return this.service.readUnitsByIds(payload.ids);
   }
 
