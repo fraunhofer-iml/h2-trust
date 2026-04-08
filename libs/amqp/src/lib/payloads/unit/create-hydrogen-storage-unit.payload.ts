@@ -41,6 +41,7 @@ export class CreateHydrogenStorageUnitPayload extends BaseCreateUnitPayload {
     serialNumber: string,
     certifiedBy: string,
     operatorId: string,
+    id?: string,
   ) {
     super(
       name,
@@ -54,6 +55,7 @@ export class CreateHydrogenStorageUnitPayload extends BaseCreateUnitPayload {
       serialNumber,
       certifiedBy,
       operatorId,
+      id,
     );
     this.storageType = storageType;
     this.capacity = capacity;

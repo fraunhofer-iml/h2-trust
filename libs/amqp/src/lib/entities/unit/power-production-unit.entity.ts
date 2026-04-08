@@ -52,6 +52,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     gridConnectionNumber: string,
     financialSupportReceived: boolean,
     type: PowerProductionTypeEntity,
+    active: boolean,
   ) {
     super(
       id,
@@ -67,6 +68,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
       owner,
       operator,
       unitType,
+      active,
     );
     this.decommissioningPlannedOn = decommissioningPlannedOn;
     this.electricityMeterNumber = electricityMeterNumber;

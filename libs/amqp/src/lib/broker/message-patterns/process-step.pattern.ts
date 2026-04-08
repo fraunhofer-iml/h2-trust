@@ -9,4 +9,5 @@
 export enum ProcessStepMessagePatterns {
   READ_ALL_BY_PREDECESSOR_TYPES_AND_OWNER = 'process-step.read-all-by-predecessor-types-and-owner',
   CREATE_HYDROGEN_TRANSPORTATION = 'process-step.create-hydrogen-transportation',
+  CREATE_PRODUCTION_STATISTICS = 'process-step.create-hydrogen-production-statistics',
 }

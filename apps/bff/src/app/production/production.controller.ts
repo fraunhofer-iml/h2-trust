@@ -136,7 +136,6 @@ export class ProductionController {
     return this.service.readHydrogenProductionsByOwner(authenticatedUser.sub, pageNumber, pageSize, unitName, month);
   }
 
-  // TODO: Calculate statistics and remove mock implementation (DUHGW-376)
   @Get('/statistics')
   @ApiBearerAuth()
   @ApiOperation({
@@ -153,6 +152,7 @@ export class ProductionController {
     type: Date,
     description:
       'Statistics period (YYYY-MM-DD). Only year and month are evaluated; day is ignored. Defaults to current month.',
+    required: false,
   })
   @ApiQuery({
     name: 'unitName',
@@ -161,23 +161,11 @@ export class ProductionController {
     required: false,
   })
   readHydrogenProductionsStatisticsByOwner(
-    @AuthenticatedUser() _authenticatedUser: AuthenticatedKCUser,
-    @Query('month') _month: Date,
-    @Query('unitName') _unitName: string,
-  ): ProductionStatisticsDto {
-    return {
-      hydrogen: {
-        total: 351.56,
-        nonCertifiable: 151.56,
-        rfnboReady: 200,
-      },
-      power: {
-        nonRenewable: 25.47,
-        partlyRenewable: 10,
-        renewable: 18.154,
-        total: 53.57,
-      },
-    } as ProductionStatisticsDto;
+    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+    @Query('month') month: Date,
+    @Query('unitName') unitName: string,
+  ): Promise<ProductionStatisticsDto> {
+    return this.service.readHydrogenProductionStatistics(authenticatedUser.sub, unitName, month);
   }
 
   @Get('csv')

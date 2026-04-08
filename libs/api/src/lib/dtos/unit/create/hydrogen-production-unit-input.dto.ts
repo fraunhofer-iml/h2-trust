@@ -10,9 +10,9 @@ import { IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
 import { AddressPayload, CreateHydrogenProductionUnitPayload } from '@h2-trust/amqp';
 import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
-import { UnitCreateDto } from './unit-create.dto';
+import { UnitInputDto } from './unit-input.dto';
 
-export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
+export class HydrogenProductionUnitInputDto extends UnitInputDto {
   @IsEnum(HydrogenProductionMethod)
   @IsNotEmpty()
   method: HydrogenProductionMethod;
@@ -82,7 +82,7 @@ export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 
-  static toPayload(dto: HydrogenProductionUnitCreateDto): CreateHydrogenProductionUnitPayload {
+  static toPayload(dto: HydrogenProductionUnitInputDto, id?: string): CreateHydrogenProductionUnitPayload {
     return new CreateHydrogenProductionUnitPayload(
       dto.name,
       dto.mastrNumber,
@@ -107,6 +107,7 @@ export class HydrogenProductionUnitCreateDto extends UnitCreateDto {
       dto.serialNumber,
       dto.certifiedBy,
       dto.operator,
+      id,
     );
   }
 }

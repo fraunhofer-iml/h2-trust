@@ -8,6 +8,7 @@
 
 import { Injectable } from '@nestjs/common';
 import {
+  BaseUnitEntity,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
   CreatePowerProductionUnitPayload,
@@ -18,6 +19,7 @@ import {
   ReadByIdPayload,
   ReadByIdsPayload,
   UnitEntity,
+  UpdateUnitStatusPayload,
 } from '@h2-trust/amqp';
 import { PowerProductionTypeRepository, UnitRepository } from '@h2-trust/database';
 
@@ -60,17 +62,25 @@ export class UnitService {
     return this.powerProductionTypeRepository.findPowerProductionTypes();
   }
 
-  async createPowerProductionUnit(payload: CreatePowerProductionUnitPayload): Promise<PowerProductionUnitEntity> {
-    return this.unitRepository.insertPowerProductionUnit(payload);
-  }
-
-  async createHydrogenProductionUnit(
+  async updateOrCreateHydrogenProductionUnit(
     payload: CreateHydrogenProductionUnitPayload,
   ): Promise<HydrogenProductionUnitEntity> {
-    return this.unitRepository.insertHydrogenProductionUnit(payload);
+    return this.unitRepository.updateOrCreateHydrogenProductionUnit(payload);
   }
 
-  async createHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
-    return this.unitRepository.insertHydrogenStorageUnit(payload);
+  async updateOrCreatePowerProductionUnit(
+    payload: CreatePowerProductionUnitPayload,
+  ): Promise<PowerProductionUnitEntity> {
+    return this.unitRepository.updateOrCreatePowerProductionUnit(payload);
+  }
+
+  async updateOrCreateHydrogenStorageUnit(
+    payload: CreateHydrogenStorageUnitPayload,
+  ): Promise<HydrogenStorageUnitEntity> {
+    return this.unitRepository.updateOrCreateHydrogenStorageUnit(payload);
+  }
+
+  async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<BaseUnitEntity> {
+    return this.unitRepository.updateUnitStatus(payload);
   }
 }

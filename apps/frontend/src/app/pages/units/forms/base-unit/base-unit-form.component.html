@@ -1,0 +1,80 @@
+<div class="flex flex-col gap-2 rounded-lg bg-white p-4">
+  <span>Unit details</span>
+
+  <div class="grid grid-cols-3 gap-2" [formGroup]="unitForm()">
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput placeholder="Unit 45-944" formControlName="name" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Owner</mat-label>
+
+      <mat-select formControlName="owner">
+        @for (company of companiesQuery.data(); track company) {
+          <mat-option [value]="company.id">{{ company.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Operator</mat-label>
+
+      <mat-select formControlName="operator">
+        @for (company of companiesQuery.data(); track company) {
+          <mat-option [value]="company.id">{{ company.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Manufacturer</mat-label>
+      <input matInput placeholder="HydroNova Technologies GmbH" formControlName="manufacturer" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Model Type</mat-label>
+      <input matInput placeholder="HN-Elektrolyser Pro X" formControlName="modelType" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Model Number</mat-label>
+      <input matInput placeholder="HN-EL-PX500" formControlName="modelNumber" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Serial Number</mat-label>
+      <input matInput placeholder="PX500-00034872" formControlName="serialNumber" /> </mat-form-field
+    ><mat-form-field appearance="outline">
+      <mat-label>Mastr Number</mat-label>
+      <input matInput placeholder="SEE900000198765" formControlName="mastrNumber" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Certified by</mat-label>
+      <input matInput placeholder="EnergieControl Cert GmbH" formControlName="certifiedBy" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Commissioned on</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="commissionedOn" readonly />
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </div>
+</div>
+
+<div class="mt-4 flex flex-col gap-2 rounded-lg bg-white p-4">
+  <span>Address</span>
+
+  <div class="grid grid-cols-3 gap-2" [formGroup]="unitForm().controls.address">
+    <mat-form-field appearance="outline" class="col-span-2">
+      <mat-label>Street</mat-label>
+      <input matInput placeholder="Joseph-von-Fraunhofer-Straße 2-5" formControlName="street" /> </mat-form-field
+    ><mat-form-field appearance="outline">
+      <mat-label>Postcode</mat-label>
+      <input matInput placeholder="44227" formControlName="postalCode" /> </mat-form-field
+    ><mat-form-field appearance="outline">
+      <mat-label>City</mat-label>
+      <input matInput placeholder="Dortmund" formControlName="city" /> </mat-form-field
+    ><mat-form-field appearance="outline">
+      <mat-label>State</mat-label>
+      <input matInput placeholder="NRW" formControlName="state" /> </mat-form-field
+    ><mat-form-field appearance="outline">
+      <mat-label>Country</mat-label>
+      <input matInput placeholder="Germany" formControlName="country" />
+    </mat-form-field>
+  </div>
+</div>

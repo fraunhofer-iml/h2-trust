@@ -6,33 +6,32 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { HydrogenStorageUnitEntityFixture } from 'libs/amqp/src/lib/fixtures/hydrogen-storage-unit.entity.fixture';
 import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   BrokerQueues,
   HydrogenProductionUnitEntity,
-  HydrogenProductionUnitEntityMock,
   HydrogenStorageUnitEntity,
-  HydrogenStorageUnitEntityMock,
   PowerProductionUnitEntity,
-  PowerProductionUnitEntityMock,
   ReadByIdPayload,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import {
   HydrogenProductionOverviewDto,
-  HydrogenProductionUnitCreateDto,
   HydrogenProductionUnitCreateDtoMock,
   HydrogenProductionUnitDto,
-  HydrogenStorageUnitCreateDto,
+  HydrogenProductionUnitInputDto,
   HydrogenStorageUnitCreateDtoMock,
   HydrogenStorageUnitDto,
-  PowerProductionUnitCreateDto,
+  HydrogenStorageUnitInputDto,
   PowerProductionUnitCreateDtoMock,
   PowerProductionUnitDto,
+  PowerProductionUnitInputDto,
   UserDetailsDto,
 } from '@h2-trust/api';
+import { HydrogenProductionUnitEntityFixture, PowerProductionUnitEntityFixture } from '@h2-trust/fixtures/entities';
 import { UserService } from '../user/user.service';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
@@ -68,7 +67,8 @@ describe('UnitController', () => {
 
   it('should find a unit', async () => {
     const givenUserId = 'unit-id-1';
-    const fixtureUnit: HydrogenProductionUnitEntity = HydrogenProductionUnitEntityMock[0];
+    const fixtureUnit: HydrogenProductionUnitEntity = HydrogenProductionUnitEntityFixture.create();
+
     const expectedResponse: HydrogenProductionUnitDto = HydrogenProductionUnitDto.fromEntity(fixtureUnit);
 
     const sendRequestSpy = jest.spyOn(queue, 'send');
@@ -86,7 +86,7 @@ describe('UnitController', () => {
   it('should find all units', async () => {
     const givenUserId = 'user-id-1';
     const fixtureUser = { company: { id: 'companyId' } } as UserDetailsDto;
-    const fixtureUnits: HydrogenProductionUnitEntity[] = HydrogenProductionUnitEntityMock;
+    const fixtureUnits: HydrogenProductionUnitEntity[] = [HydrogenProductionUnitEntityFixture.create()];
     const expectedResponse: HydrogenProductionOverviewDto[] = fixtureUnits.map(
       HydrogenProductionOverviewDto.fromEntity,
     );
@@ -101,6 +101,7 @@ describe('UnitController', () => {
     const actualResponse: HydrogenProductionOverviewDto[] = await controller.getHydrogenProductionUnits({
       sub: givenUserId,
     });
+
     expect(readUserRequestSpy).toHaveBeenCalledTimes(1);
     expect(readUserRequestSpy).toHaveBeenCalledWith(givenUserId);
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
@@ -112,8 +113,8 @@ describe('UnitController', () => {
   });
 
   it('should create power production unit', async () => {
-    const givenDto: PowerProductionUnitCreateDto = PowerProductionUnitCreateDtoMock[0];
-    const fixtureUnit: PowerProductionUnitEntity = PowerProductionUnitEntityMock[0];
+    const givenDto: PowerProductionUnitInputDto = PowerProductionUnitCreateDtoMock[0];
+    const fixtureUnit: PowerProductionUnitEntity = PowerProductionUnitEntityFixture.create();
     const expectedResponse: PowerProductionUnitDto = PowerProductionUnitDto.fromEntity(fixtureUnit);
 
     const sendRequestSpy = jest.spyOn(queue, 'send');
@@ -126,14 +127,14 @@ describe('UnitController', () => {
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
     expect(sendRequestSpy).toHaveBeenCalledWith(
       UnitMessagePatterns.CREATE_POWER_PRODUCTION_UNIT,
-      PowerProductionUnitCreateDto.toPayload(givenDto as PowerProductionUnitCreateDto),
+      PowerProductionUnitInputDto.toPayload(givenDto as PowerProductionUnitInputDto),
     );
     expect(actualResponse).toEqual(expectedResponse);
   });
 
   it('should create hydrogen production unit', async () => {
-    const givenDto: HydrogenProductionUnitCreateDto = HydrogenProductionUnitCreateDtoMock[0];
-    const fixtureUnit: HydrogenProductionUnitEntity = HydrogenProductionUnitEntityMock[0];
+    const givenDto: HydrogenProductionUnitInputDto = HydrogenProductionUnitCreateDtoMock[0];
+    const fixtureUnit: HydrogenProductionUnitEntity = HydrogenProductionUnitEntityFixture.create();
     const expectedResponse: HydrogenProductionUnitDto = HydrogenProductionUnitDto.fromEntity(fixtureUnit);
 
     const sendRequestSpy = jest.spyOn(queue, 'send');
@@ -146,14 +147,14 @@ describe('UnitController', () => {
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
     expect(sendRequestSpy).toHaveBeenCalledWith(
       UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION_UNIT,
-      HydrogenProductionUnitCreateDto.toPayload(givenDto as HydrogenProductionUnitCreateDto),
+      HydrogenProductionUnitInputDto.toPayload(givenDto as HydrogenProductionUnitInputDto),
     );
     expect(actualResponse).toEqual(expectedResponse);
   });
 
   it('should create hydrogen storage unit', async () => {
-    const givenDto: HydrogenStorageUnitCreateDto = HydrogenStorageUnitCreateDtoMock[0];
-    const fixtureUnit: HydrogenStorageUnitEntity = HydrogenStorageUnitEntityMock[0];
+    const givenDto: HydrogenStorageUnitInputDto = HydrogenStorageUnitCreateDtoMock[0];
+    const fixtureUnit: HydrogenStorageUnitEntity = HydrogenStorageUnitEntityFixture.create();
     const expectedResponse: HydrogenStorageUnitDto = HydrogenStorageUnitDto.fromEntity(fixtureUnit);
 
     const sendRequestSpy = jest.spyOn(queue, 'send');
@@ -166,7 +167,7 @@ describe('UnitController', () => {
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
     expect(sendRequestSpy).toHaveBeenCalledWith(
       UnitMessagePatterns.CREATE_HYDROGEN_STORAGE_UNIT,
-      HydrogenStorageUnitCreateDto.toPayload(givenDto as HydrogenStorageUnitCreateDto),
+      HydrogenStorageUnitInputDto.toPayload(givenDto as HydrogenStorageUnitInputDto),
     );
     expect(actualResponse).toEqual(expectedResponse);
   });

@@ -80,7 +80,7 @@ export class CompanyEntity {
       company.name,
       company.mastrNumber,
       company.type,
-      new AddressEntity('', '', '', '', ''),
+      new AddressEntity('', '', '', '', '', ''),
       [],
       [],
     );
