@@ -15,7 +15,6 @@ import {
   HydrogenStorageUnitEntity,
   PowerProductionUnitEntity,
   ProcessStepEntity,
-  ProductionChainEntity,
   QualityDetailsEntity,
   UnitEntity,
   UserEntity,
@@ -30,8 +29,12 @@ export class ProductionAssembler {
 
   static assemblePowerProductions(
     entity: CreateProductionEntity,
-    powerProductionUnit: PowerProductionUnitEntity,
+    productionUnitsForId: Map<string, UnitEntity>,
   ): ProcessStepEntity[] {
+    const powerProductionUnit: PowerProductionUnitEntity = productionUnitsForId.get(
+      entity.powerProductionUnitId,
+    ) as PowerProductionUnitEntity;
+
     const params: ProcessStepParams = {
       type: ProcessType.POWER_PRODUCTION,
       executedBy: powerProductionUnit,
@@ -53,7 +56,13 @@ export class ProductionAssembler {
     );
   }
 
-  static assembleWaterConsumptions(entity: CreateProductionEntity, executedBy: UnitEntity): ProcessStepEntity[] {
+  static assembleWaterConsumptions(
+    entity: CreateProductionEntity,
+    productionUnitsForId: Map<string, UnitEntity>,
+  ): ProcessStepEntity[] {
+    const hydrogenProductionUnit: HydrogenProductionUnitEntity = productionUnitsForId.get(
+      entity.hydrogenProductionUnitId,
+    ) as HydrogenProductionUnitEntity;
     const waterAmountLiters = ProductionUtils.calculateWaterAmount(
       entity.productionStartedAt,
       entity.productionEndedAt,
@@ -62,7 +71,7 @@ export class ProductionAssembler {
 
     const params: ProcessStepParams = {
       type: ProcessType.WATER_CONSUMPTION,
-      executedBy: executedBy,
+      executedBy: hydrogenProductionUnit,
       recordedBy: entity.recordedBy,
       batchParams: {
         activity: false,
@@ -74,62 +83,15 @@ export class ProductionAssembler {
     return this.createProcessSteps(entity.productionStartedAt, entity.productionEndedAt, waterAmountLiters, params, []);
   }
 
-  public static assembleRootProductions(
-    createProduction: CreateProductionEntity,
-    productionUnitsForId: Map<string, UnitEntity>,
-  ): ProductionChainEntity {
-    if (!createProduction.powerProductionUnitId || !productionUnitsForId.has(createProduction.powerProductionUnitId)) {
-      throw new Error(
-        `Power Production Unit ${createProduction.powerProductionUnitId} does not exist in productionUnits: `,
-      );
-    }
-
-    if (
-      !createProduction.hydrogenProductionUnitId ||
-      !productionUnitsForId.has(createProduction.hydrogenProductionUnitId)
-    ) {
-      throw new Error(
-        `Hydrogen Production Unit ${createProduction.hydrogenProductionUnitId} does not exist in productionUnits: `,
-      );
-    }
-
-    const powerProductionUnit: PowerProductionUnitEntity = productionUnitsForId.get(
-      createProduction.powerProductionUnitId,
-    ) as PowerProductionUnitEntity;
-    const hydrogenProductionUnit: HydrogenProductionUnitEntity = productionUnitsForId.get(
-      createProduction.hydrogenProductionUnitId,
-    ) as HydrogenProductionUnitEntity;
-
-    const powerProduction: ProcessStepEntity = this.createPowerProductionProcessStep(
-      createProduction,
-      powerProductionUnit,
-    );
-    const waterConsumption: ProcessStepEntity = this.createWaterConsumptionProcessStep(
-      createProduction,
-      hydrogenProductionUnit,
-    );
-    const hydrogenProductionToCreate: ProcessStepEntity = ProductionAssembler.createHydrogenProductionProcessStep(
-      createProduction,
-      powerProduction,
-      waterConsumption,
-      hydrogenProductionUnit,
-    );
-    return new ProductionChainEntity(
-      hydrogenProductionToCreate,
-      hydrogenProductionToCreate,
-      powerProduction,
-      waterConsumption,
-      powerProductionUnit,
-      hydrogenProductionUnit,
-    );
-  }
-
   static assembleHydrogenProductions(
     entity: CreateProductionEntity,
     powerProductions: ProcessStepEntity[],
     waterConsumptions: ProcessStepEntity[],
-    hydrogenProductionUnit: HydrogenProductionUnitEntity,
+    productionUnitsForId: Map<string, UnitEntity>,
   ): ProcessStepEntity[] {
+    const hydrogenProductionUnit: HydrogenProductionUnitEntity = productionUnitsForId.get(
+      entity.hydrogenProductionUnitId,
+    ) as HydrogenProductionUnitEntity;
     const params: ProcessStepParams = {
       type: ProcessType.HYDROGEN_PRODUCTION,
       executedBy: hydrogenProductionUnit,
@@ -166,121 +128,7 @@ export class ProductionAssembler {
       totalAmount,
       predecessors,
     );
-
     return accountingPeriods.map((accountingPeriod) => this.createProcessStep(accountingPeriod, params));
-  }
-
-  private static createPowerProductionProcessStep(
-    entity: CreateProductionEntity,
-    powerProductionUnit: PowerProductionUnitEntity,
-  ): ProcessStepEntity {
-    const qualityDetails: QualityDetailsEntity = new QualityDetailsEntity(
-      null,
-      HydrogenColor.MIX,
-      RfnboType.NOT_SPECIFIED,
-      entity.powerType as PowerType,
-    );
-
-    const batch = new BatchEntity(
-      null,
-      false,
-      entity.powerAmountKwh,
-      BatchType.POWER,
-      [],
-      [],
-      { id: entity.ownerIdOfPowerProductionUnit } as CompanyEntity,
-      null,
-      qualityDetails,
-    );
-
-    return new ProcessStepEntity(
-      null,
-      entity.productionStartedAt,
-      entity.productionEndedAt,
-      ProcessType.POWER_PRODUCTION,
-      batch,
-      { id: entity.recordedBy } as UserEntity,
-      powerProductionUnit,
-      null,
-    );
-  }
-
-  private static createWaterConsumptionProcessStep(
-    entity: CreateProductionEntity,
-    executedBy: HydrogenProductionUnitEntity,
-  ): ProcessStepEntity {
-    const waterAmountLiters = ProductionUtils.calculateWaterAmount(
-      entity.productionStartedAt,
-      entity.productionEndedAt,
-      entity.waterConsumptionLitersPerHour,
-    );
-
-    const qualityDetails: QualityDetailsEntity = new QualityDetailsEntity(
-      null,
-      HydrogenColor.MIX,
-      RfnboType.NOT_SPECIFIED,
-      PowerType.NOT_SPECIFIED,
-    );
-
-    const batch = new BatchEntity(
-      null,
-      false,
-      waterAmountLiters,
-      BatchType.WATER,
-      [],
-      [],
-      { id: entity.ownerIdOfHydrogenProductionUnit } as CompanyEntity,
-      null,
-      qualityDetails,
-    );
-
-    return new ProcessStepEntity(
-      null,
-      entity.productionStartedAt,
-      entity.productionEndedAt,
-      ProcessType.WATER_CONSUMPTION,
-      batch,
-      { id: entity.recordedBy } as UserEntity,
-      executedBy,
-      null,
-    );
-  }
-
-  private static createHydrogenProductionProcessStep(
-    entity: CreateProductionEntity,
-    powerProduction: ProcessStepEntity,
-    waterConsumption: ProcessStepEntity,
-    hydrogenProductionUnit: HydrogenProductionUnitEntity,
-  ): ProcessStepEntity {
-    const qualityDetails: QualityDetailsEntity = new QualityDetailsEntity(
-      null,
-      HydrogenColor.MIX,
-      RfnboType.NOT_SPECIFIED,
-      (powerProduction?.batch?.qualityDetails?.powerType as PowerType) ?? PowerType.NOT_SPECIFIED,
-    );
-
-    const batch = new BatchEntity(
-      null,
-      true,
-      entity.hydrogenAmountKg,
-      BatchType.HYDROGEN,
-      [powerProduction.batch, waterConsumption.batch],
-      [],
-      { id: entity.ownerIdOfHydrogenProductionUnit } as CompanyEntity,
-      { id: entity.hydrogenStorageUnitId } as HydrogenStorageUnitEntity,
-      qualityDetails,
-    );
-
-    return new ProcessStepEntity(
-      null,
-      entity.productionStartedAt,
-      entity.productionEndedAt,
-      ProcessType.HYDROGEN_PRODUCTION,
-      batch,
-      { id: entity.recordedBy } as UserEntity,
-      hydrogenProductionUnit,
-      null,
-    );
   }
 
   private static createProcessStep(accountingPeriod: AccountingPeriod, params: ProcessStepParams): ProcessStepEntity {
