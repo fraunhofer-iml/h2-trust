@@ -19,6 +19,7 @@ import {
   PowerAccessApprovalPatterns,
   PowerProductionUnitEntity,
   ProcessStepEntity,
+  ProcessStepMessagePatterns,
   ProductionDataFilter,
   ProductionMessagePatterns,
   ProductionStagingResultEntity,
