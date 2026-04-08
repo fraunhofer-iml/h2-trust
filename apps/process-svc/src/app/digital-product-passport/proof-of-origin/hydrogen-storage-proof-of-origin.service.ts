@@ -17,6 +17,7 @@ import {
 } from '@h2-trust/amqp';
 import { BatchType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
 import { HydrogenStoragePosService } from '../proof-of-sustainability/hydrogen-storage-pos.service';
+import { Util } from '../util';
 
 export class HydrogenStorageroofOfOriginService {
   public static assembleHydrogenStorageSection(hydrogenProductions: ProcessStepEntity[]): ProofOfOriginSectionEntity {
@@ -51,7 +52,7 @@ export class HydrogenStorageroofOfOriginService {
         },
       );
 
-      const classification: ProofOfOriginClassificationEntity = ProofOfOriginClassificationEntity.assemble(
+      const classification: ProofOfOriginClassificationEntity = Util.assembleClassification(
         rfnboType,
         BatchType.HYDROGEN,
         batchesForHydrogenRfnboType,

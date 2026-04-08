@@ -17,6 +17,7 @@ import {
 } from '@h2-trust/amqp';
 import { BatchType, EnergySource, PowerType } from '@h2-trust/domain';
 import { PowerProductionPosService } from '../proof-of-sustainability/power-production-pos.service';
+import { Util } from '../util';
 
 export class PowerProductionProofOfOriginService {
   public static buildPowerSupplySubClassifications(
@@ -50,7 +51,7 @@ export class PowerProductionProofOfOriginService {
           energySource,
         );
 
-        const subClassification: ProofOfOriginSubClassificationEntity = ProofOfOriginSubClassificationEntity.assemble(
+        const subClassification: ProofOfOriginSubClassificationEntity = Util.assembleSubClassification(
           energySource,
           BatchType.POWER,
           productionPowerBatches,

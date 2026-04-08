@@ -13,6 +13,7 @@ import {
   ProofOfOriginSubClassificationEntity,
 } from '@h2-trust/amqp';
 import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
+import { Util } from '../util';
 import { PowerProductionProofOfOriginService } from './power-production-proof-of-origin.service';
 import { WaterConsumptionProofOfOriginService } from './water-consumption-proof-of-origin.service';
 
@@ -28,7 +29,7 @@ export class HydrogenProductionProofOfOriginService {
       const energySourceSubClassifications: ProofOfOriginSubClassificationEntity[] =
         PowerProductionProofOfOriginService.buildPowerSupplySubClassifications(powerProductions, bottledKgHydrogen);
 
-      const powerSupplyClassification: ProofOfOriginClassificationEntity = ProofOfOriginClassificationEntity.assemble(
+      const powerSupplyClassification: ProofOfOriginClassificationEntity = Util.assembleClassification(
         ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION,
         BatchType.POWER,
         [],

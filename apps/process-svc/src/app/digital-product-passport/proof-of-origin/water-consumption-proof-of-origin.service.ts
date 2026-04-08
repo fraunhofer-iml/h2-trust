@@ -15,6 +15,7 @@ import {
 } from '@h2-trust/amqp';
 import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
 import { WaterConsumptionPosService } from '../proof-of-sustainability/water-consumption-pos.service';
+import { Util } from '../util';
 
 export class WaterConsumptionProofOfOriginService {
   public static assembleWaterSupplyClassification(
@@ -31,12 +32,7 @@ export class WaterConsumptionProofOfOriginService {
       bottledKgHydrogen,
     );
 
-    return ProofOfOriginClassificationEntity.assemble(
-      ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION,
-      BatchType.WATER,
-      waterBatches,
-      [],
-    );
+    return Util.assembleClassification(ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION, BatchType.WATER, waterBatches, []);
   }
 
   private static getWaterBatchEntities(
