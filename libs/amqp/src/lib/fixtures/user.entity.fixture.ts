@@ -10,11 +10,18 @@ import { UserEntity } from '@h2-trust/amqp';
 import { CompanyEntityFixture } from './company.entity.fixture';
 
 export const UserEntityFixture = {
-  create: (overrides: Partial<UserEntity> = {}): UserEntity =>
+  createPowerUser: (overrides: Partial<UserEntity> = {}): UserEntity =>
     new UserEntity(
       overrides.id ?? 'user-1',
-      overrides.name ?? 'Dummy User',
-      overrides.email ?? 'dummy@example.com',
+      overrides.name ?? 'Power User',
+      overrides.email ?? 'user@power.com',
+      overrides.company ?? CompanyEntityFixture.createPowerProducer(),
+    ),
+  createHydrogenUser: (overrides: Partial<UserEntity> = {}): UserEntity =>
+    new UserEntity(
+      overrides.id ?? 'user-2',
+      overrides.name ?? 'Hydrogen User',
+      overrides.email ?? 'user@hydrogen.com',
       overrides.company ?? CompanyEntityFixture.createHydrogenProducer(),
     ),
 } as const;

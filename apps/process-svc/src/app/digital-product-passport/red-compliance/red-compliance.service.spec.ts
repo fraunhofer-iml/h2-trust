@@ -13,7 +13,7 @@ import {
   HydrogenProductionUnitEntityFixture,
   PowerProductionUnitEntityFixture,
   ProcessStepEntityFixture,
-} from '@h2-trust/fixtures/entities';
+} from '@h2-trust/fixtures';
 import { ProvenanceService } from '../provenance/provenance.service';
 import { MatchedProductionPair } from './matched-production-pair';
 import { RedCompliancePairingService } from './red-compliance-pairing.service';

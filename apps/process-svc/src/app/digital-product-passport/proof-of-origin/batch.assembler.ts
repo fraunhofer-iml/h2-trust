@@ -23,7 +23,7 @@ export class BatchAssembler {
     emission?: ProofOfOriginEmissionEntity,
   ): ProofOfOriginPowerBatchEntity {
     return {
-      id: powerProduction.batch.id,
+      id: powerProduction.id,
       emission,
       createdAt: powerProduction.startedAt,
       amount: powerProduction.batch.amount,
@@ -41,7 +41,7 @@ export class BatchAssembler {
     emission?: ProofOfOriginEmissionEntity,
   ): ProofOfOriginWaterBatchEntity {
     return {
-      id: waterConsumption.batch.id,
+      id: waterConsumption.id,
       emission,
       createdAt: waterConsumption.startedAt,
       amount: waterConsumption.batch.amount,
@@ -56,7 +56,7 @@ export class BatchAssembler {
     emission?: ProofOfOriginEmissionEntity,
   ): ProofOfOriginHydrogenBatchEntity {
     return {
-      id: hydrogenStorage.batch.id,
+      id: hydrogenStorage.id,
       emission,
       createdAt: hydrogenStorage.startedAt,
       amount: hydrogenStorage.batch.amount,
@@ -84,7 +84,7 @@ export class BatchAssembler {
     emission?: ProofOfOriginEmissionEntity,
   ): ProofOfOriginHydrogenBatchEntity {
     return {
-      id: hydrogenBottling.batch.id,
+      id: hydrogenBottling.id,
       emission,
       createdAt: hydrogenBottling.startedAt,
       amount: hydrogenBottling.batch.amount,
@@ -104,7 +104,7 @@ export class BatchAssembler {
     emission?: ProofOfOriginEmissionEntity,
   ): ProofOfOriginHydrogenBatchEntity {
     return {
-      id: hydrogenTransportation.batch.id,
+      id: hydrogenTransportation.id,
       emission,
       createdAt: hydrogenTransportation.startedAt,
       amount: hydrogenTransportation.batch.amount,

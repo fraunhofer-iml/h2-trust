@@ -11,6 +11,7 @@ import { AddressEntity } from '@h2-trust/amqp';
 export const AddressEntityFixture = {
   create: (overrides: Partial<AddressEntity> = {}): AddressEntity =>
     new AddressEntity(
+      overrides.id ?? 'address-1',
       overrides.street ?? 'Musterstraße 1',
       overrides.postalCode ?? '12345',
       overrides.city ?? 'Musterstadt',
