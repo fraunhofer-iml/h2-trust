@@ -20,7 +20,8 @@ import { PowerProductionPosService } from '../proof-of-sustainability/power-prod
 import { Util } from '../util';
 
 export class PowerProductionProofOfOriginService {
-  public static buildPowerSupplySubClassifications(
+  private powerProductionPosService: PowerProductionPosService = new PowerProductionPosService();
+  public buildPowerSupplySubClassifications(
     powerProductions: ProcessStepEntity[],
     bottledKgHydrogen: number,
   ): ProofOfOriginSubClassificationEntity[] {
@@ -63,14 +64,14 @@ export class PowerProductionProofOfOriginService {
     return subClassifications;
   }
 
-  static getPowerBatchEntities(
+  getPowerBatchEntities(
     powerProductionProcesses: ProcessStepEntity[],
     bottledKgHydrogen: number,
     energySource: EnergySource,
   ): ProofOfOriginPowerBatchEntity[] {
     return powerProductionProcesses.map((powerProduction) => {
       const [powerSupplyEmission]: ProofOfSustainabilityEmissionCalculationEntity[] =
-        PowerProductionPosService.computePowerSupplyEmissions([powerProduction]);
+        this.powerProductionPosService.computePowerSupplyEmissions([powerProduction]);
 
       const emission: ProofOfOriginEmissionEntity = ProofOfOriginEmissionEntity.fromEmissionCalculation(
         bottledKgHydrogen,

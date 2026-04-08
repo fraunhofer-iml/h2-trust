@@ -11,23 +11,36 @@ import {
   ProofOfOriginClassificationEntity,
   ProofOfOriginSectionEntity,
   ProofOfOriginSubClassificationEntity,
+  ProvenanceEntity,
 } from '@h2-trust/amqp';
 import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
 import { Util } from '../util';
 import { PowerProductionProofOfOriginService } from './power-production-proof-of-origin.service';
+import { ProofOfOriginAssembler } from './proof-of-origin-assembler.interface';
 import { WaterConsumptionProofOfOriginService } from './water-consumption-proof-of-origin.service';
 
-export class HydrogenProductionProofOfOriginService {
-  public static buildHydrogenProductionSection(
-    powerProductions: ProcessStepEntity[],
-    waterConsumptions: ProcessStepEntity[],
-    bottledKgHydrogen: number,
-  ): ProofOfOriginSectionEntity {
+export class HydrogenProductionProofOfOriginService implements ProofOfOriginAssembler {
+  private powerProductionProofOfOriginService: PowerProductionProofOfOriginService =
+    new PowerProductionProofOfOriginService();
+  private waterConsumptionProofOfOriginService: WaterConsumptionProofOfOriginService =
+    new WaterConsumptionProofOfOriginService();
+  public assembleSection(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {
+    if (provenance.getAllPowerProductions()?.length == 0 && provenance.getAllWaterConsumptions()?.length == 0) {
+      return [];
+    }
+
+    const powerProductions: ProcessStepEntity[] = provenance.getAllPowerProductions();
+    const waterConsumptions: ProcessStepEntity[] = provenance.getAllWaterConsumptions();
+    const bottledKgHydrogen: number = provenance.hydrogenBottling.batch.amount;
+
     const classifications: ProofOfOriginClassificationEntity[] = [];
 
     if (powerProductions?.length) {
       const energySourceSubClassifications: ProofOfOriginSubClassificationEntity[] =
-        PowerProductionProofOfOriginService.buildPowerSupplySubClassifications(powerProductions, bottledKgHydrogen);
+        this.powerProductionProofOfOriginService.buildPowerSupplySubClassifications(
+          powerProductions,
+          bottledKgHydrogen,
+        );
 
       const powerSupplyClassification: ProofOfOriginClassificationEntity = Util.assembleClassification(
         ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION,
@@ -41,11 +54,14 @@ export class HydrogenProductionProofOfOriginService {
 
     if (waterConsumptions?.length) {
       const waterSupplyClassification: ProofOfOriginClassificationEntity =
-        WaterConsumptionProofOfOriginService.assembleWaterSupplyClassification(waterConsumptions, bottledKgHydrogen);
+        this.waterConsumptionProofOfOriginService.assembleWaterSupplyClassification(
+          waterConsumptions,
+          bottledKgHydrogen,
+        );
 
       classifications.push(waterSupplyClassification);
     }
 
-    return new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION, [], classifications);
+    return [new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION, [], classifications)];
   }
 }

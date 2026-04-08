@@ -18,7 +18,8 @@ import { WaterConsumptionPosService } from '../proof-of-sustainability/water-con
 import { Util } from '../util';
 
 export class WaterConsumptionProofOfOriginService {
-  public static assembleWaterSupplyClassification(
+  private waterConsumptionPosService: WaterConsumptionPosService = new WaterConsumptionPosService();
+  public assembleWaterSupplyClassification(
     waterConsumptionProcess: ProcessStepEntity[],
     bottledKgHydrogen: number,
   ): ProofOfOriginClassificationEntity {
@@ -35,13 +36,13 @@ export class WaterConsumptionProofOfOriginService {
     return Util.assembleClassification(ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION, BatchType.WATER, waterBatches, []);
   }
 
-  private static getWaterBatchEntities(
+  private getWaterBatchEntities(
     waterConsumptionProcesses: ProcessStepEntity[],
     bottledKgHydrogen: number,
   ): ProofOfOriginWaterBatchEntity[] {
     return waterConsumptionProcesses.map((waterConsumptionProcess) => {
       const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
-        WaterConsumptionPosService.assembleWaterSupply(waterConsumptionProcess);
+        this.waterConsumptionPosService.assembleWaterSupply(waterConsumptionProcess);
 
       const emission: ProofOfOriginEmissionEntity = ProofOfOriginEmissionEntity.fromEmissionCalculation(
         bottledKgHydrogen,

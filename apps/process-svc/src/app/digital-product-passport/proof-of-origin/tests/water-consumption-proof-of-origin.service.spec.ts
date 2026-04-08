@@ -12,6 +12,8 @@ import { ProcessStepEntityFixture } from '@h2-trust/fixtures';
 import { WaterConsumptionProofOfOriginService } from '../water-consumption-proof-of-origin.service';
 
 describe('WaterConsumptionProofOfOriginService', () => {
+  const waterConsumptionProofOfOriginService: WaterConsumptionProofOfOriginService =
+    new WaterConsumptionProofOfOriginService();
   describe('assembleWaterSupplyClassification', () => {
     it('returns classification with water batches and emissions', () => {
       // Arrange
@@ -20,7 +22,7 @@ describe('WaterConsumptionProofOfOriginService', () => {
       const givenHydrogenAmount = 100;
 
       // Act
-      const actualResult = WaterConsumptionProofOfOriginService.assembleWaterSupplyClassification(
+      const actualResult = waterConsumptionProofOfOriginService.assembleWaterSupplyClassification(
         givenWaterSupplies,
         givenHydrogenAmount,
       );
@@ -54,7 +56,7 @@ describe('WaterConsumptionProofOfOriginService', () => {
       const givenHydrogenAmount = 100;
 
       // Act
-      const actualResult = WaterConsumptionProofOfOriginService.assembleWaterSupplyClassification(
+      const actualResult = waterConsumptionProofOfOriginService.assembleWaterSupplyClassification(
         givenWaterSupplies,
         givenHydrogenAmount,
       );
@@ -79,7 +81,7 @@ describe('WaterConsumptionProofOfOriginService', () => {
 
       // Act & Assert
       expect(() =>
-        WaterConsumptionProofOfOriginService.assembleWaterSupplyClassification(givenWaterSupplies, givenHydrogenAmount),
+        waterConsumptionProofOfOriginService.assembleWaterSupplyClassification(givenWaterSupplies, givenHydrogenAmount),
       ).toThrow(errorMessage);
     });
 
@@ -92,7 +94,7 @@ describe('WaterConsumptionProofOfOriginService', () => {
 
       // Act & Assert
       expect(() =>
-        WaterConsumptionProofOfOriginService.assembleWaterSupplyClassification(givenWaterSupplies, givenHydrogenAmount),
+        waterConsumptionProofOfOriginService.assembleWaterSupplyClassification(givenWaterSupplies, givenHydrogenAmount),
       ).toThrow(errorMessage);
     });
   });

@@ -10,13 +10,12 @@ import { ProofOfSustainabilityEmissionCalculationEntity, ProvenanceEntity } from
 import { EnumLabelMapper } from '@h2-trust/api';
 import { CalculationTopic, HydrogenColor, MeasurementUnit } from '@h2-trust/domain';
 import { HydrogenStoragePosService } from './hydrogen-storage-pos.service';
+import { ProofOfSustainabilityAssembler } from './proof-of-sustainability-assembler.interface';
 
-export class HydrogenProductionPosService {
-  public static computeProvenanceEmissionsForHydrogenProduction(
-    provenance: ProvenanceEntity,
-  ): ProofOfSustainabilityEmissionCalculationEntity {
+export class HydrogenProductionPosService implements ProofOfSustainabilityAssembler {
+  public assembleEmissions(provenance: ProvenanceEntity): ProofOfSustainabilityEmissionCalculationEntity[] {
     if (!provenance || !provenance.getAllHydrogenLeafProductions()) {
-      throw new Error('Provenance or hydrogen productions is undefined.');
+      return [];
     }
 
     const hydrogenAmount = provenance.hydrogenBottling
@@ -25,7 +24,9 @@ export class HydrogenProductionPosService {
 
     const hydrogenStorages: ProofOfSustainabilityEmissionCalculationEntity[] = provenance
       .getAllHydrogenLeafProductions()
-      .map((hydrogenProduction) => HydrogenStoragePosService.computeEmissionsForHydrogenStorage(hydrogenProduction));
+      .flatMap((hydrogenProduction) =>
+        HydrogenStoragePosService.computeEmissionsForHydrogenStorage(hydrogenProduction),
+      );
 
     const totalEmissions = hydrogenStorages.reduce((sum, curr) => sum + curr.result, 0);
 
@@ -41,12 +42,14 @@ export class HydrogenProductionPosService {
 
     const totalEmissionsPerKgHydrogen = totalEmissions / hydrogenAmount;
 
-    return new ProofOfSustainabilityEmissionCalculationEntity(
-      totalEmissions.toString(),
-      totalEmissionsGrouped,
-      totalEmissionsPerKgHydrogen,
-      MeasurementUnit.G_CO2_PER_KG_H2,
-      CalculationTopic.HYDROGEN_STORAGE,
-    );
+    return [
+      new ProofOfSustainabilityEmissionCalculationEntity(
+        totalEmissions.toString(),
+        totalEmissionsGrouped,
+        totalEmissionsPerKgHydrogen,
+        MeasurementUnit.G_CO2_PER_KG_H2,
+        CalculationTopic.HYDROGEN_STORAGE,
+      ),
+    ];
   }
 }

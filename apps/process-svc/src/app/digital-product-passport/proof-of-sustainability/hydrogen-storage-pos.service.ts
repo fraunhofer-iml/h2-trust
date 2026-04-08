@@ -21,11 +21,9 @@ import {
 export class HydrogenStoragePosService {
   public static computeEmissionsForHydrogenStorage(
     hydrogenProduction: ProcessStepEntity,
-  ): ProofOfSustainabilityEmissionCalculationEntity {
+  ): ProofOfSustainabilityEmissionCalculationEntity[] {
     if (hydrogenProduction?.type !== ProcessType.HYDROGEN_PRODUCTION) {
-      throw new Error(
-        `Invalid process step type [${hydrogenProduction?.type}] for hydrogen storage emission calculation`,
-      );
+      return [];
     }
     const powerType: PowerType = hydrogenProduction.batch.qualityDetails.powerType as PowerType;
     const emissionFactor = EmissionNumericConstants.POWER_TYPE_EMISSION_FACTORS[powerType];
@@ -51,12 +49,14 @@ export class HydrogenStoragePosService {
       formulaResult,
     ];
 
-    return new ProofOfSustainabilityEmissionCalculationEntity(
-      EmissionStringConstants.COMPRESSION,
-      basisOfCalculation,
-      result,
-      MeasurementUnit.G_CO2,
-      CalculationTopic.HYDROGEN_STORAGE,
-    );
+    return [
+      new ProofOfSustainabilityEmissionCalculationEntity(
+        EmissionStringConstants.COMPRESSION,
+        basisOfCalculation,
+        result,
+        MeasurementUnit.G_CO2,
+        CalculationTopic.HYDROGEN_STORAGE,
+      ),
+    ];
   }
 }

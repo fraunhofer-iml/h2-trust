@@ -14,16 +14,19 @@ import {
   ProofOfOriginHydrogenBatchEntity,
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
+  ProvenanceEntity,
 } from '@h2-trust/amqp';
 import { BatchType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
 import { HydrogenStoragePosService } from '../proof-of-sustainability/hydrogen-storage-pos.service';
 import { Util } from '../util';
+import { ProofOfOriginAssembler } from './proof-of-origin-assembler.interface';
 
-export class HydrogenStorageroofOfOriginService {
-  public static assembleHydrogenStorageSection(hydrogenProductions: ProcessStepEntity[]): ProofOfOriginSectionEntity {
-    if (!hydrogenProductions?.length) {
-      return new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_STORAGE_SECTION, [], []);
+export class HydrogenStorageProofOfOriginService implements ProofOfOriginAssembler {
+  public assembleSection(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {
+    if (!provenance || !provenance.getAllHydrogenLeafProductions()?.length) {
+      return [];
     }
+    const hydrogenProductions: ProcessStepEntity[] = provenance.getAllHydrogenLeafProductions();
 
     const classifications: ProofOfOriginClassificationEntity[] = [];
 
@@ -38,13 +41,16 @@ export class HydrogenStorageroofOfOriginService {
 
       const batchesForHydrogenRfnboType: ProofOfOriginBatchEntity[] = hydrogenProductionsByRfnboType.map(
         (hydrogenProduction) => {
-          const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
+          const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity[] =
             HydrogenStoragePosService.computeEmissionsForHydrogenStorage(hydrogenProduction);
 
-          const emission: ProofOfOriginEmissionEntity = ProofOfOriginEmissionEntity.fromEmissionCalculation(
-            hydrogenProduction.batch.amount,
-            emissionCalculation.result,
-          );
+          const emission: ProofOfOriginEmissionEntity =
+            emissionCalculation.length > 0
+              ? ProofOfOriginEmissionEntity.fromEmissionCalculation(
+                  hydrogenProduction.batch.amount,
+                  emissionCalculation[0].result,
+                )
+              : undefined;
 
           const batch: ProofOfOriginHydrogenBatchEntity = this.assembleHydrogenStorage(hydrogenProduction, emission);
 
@@ -62,10 +68,10 @@ export class HydrogenStorageroofOfOriginService {
       classifications.push(classification);
     }
 
-    return new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_STORAGE_SECTION, [], classifications);
+    return [new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_STORAGE_SECTION, [], classifications)];
   }
 
-  private static assembleHydrogenStorage(
+  private assembleHydrogenStorage(
     hydrogenStorage: ProcessStepEntity,
     emission?: ProofOfOriginEmissionEntity,
   ): ProofOfOriginHydrogenBatchEntity {

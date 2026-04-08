@@ -16,6 +16,8 @@ import {
 import { PowerProductionProofOfOriginService } from '../power-production-proof-of-origin.service';
 
 describe('PowerProductionProofOfOriginService', () => {
+  const powerProductionProofOfOriginService: PowerProductionProofOfOriginService =
+    new PowerProductionProofOfOriginService();
   describe('buildPowerSupplySubClassifications', () => {
     it('returns sub-classifications grouped by energy source', async () => {
       // Arrange
@@ -39,7 +41,7 @@ describe('PowerProductionProofOfOriginService', () => {
       const givenHydrogenAmount = 100;
 
       // Act
-      const actualResult = await PowerProductionProofOfOriginService.buildPowerSupplySubClassifications(
+      const actualResult = powerProductionProofOfOriginService.buildPowerSupplySubClassifications(
         givenPowerProductions,
         givenHydrogenAmount,
       );
@@ -71,7 +73,7 @@ describe('PowerProductionProofOfOriginService', () => {
       const givenHydrogenAmount = 100;
 
       // Act
-      const actualResult = await PowerProductionProofOfOriginService.buildPowerSupplySubClassifications(
+      const actualResult = powerProductionProofOfOriginService.buildPowerSupplySubClassifications(
         givenPowerProductions,
         givenHydrogenAmount,
       );
@@ -85,7 +87,7 @@ describe('PowerProductionProofOfOriginService', () => {
       const givenHydrogenAmount = 100;
 
       // Act
-      const actualResult = await PowerProductionProofOfOriginService.buildPowerSupplySubClassifications(
+      const actualResult = powerProductionProofOfOriginService.buildPowerSupplySubClassifications(
         undefined,
         givenHydrogenAmount,
       );

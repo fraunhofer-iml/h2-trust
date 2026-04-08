@@ -8,13 +8,12 @@
 
 import { ProcessStepEntity, ProofOfSustainabilityEmissionCalculationEntity, ProvenanceEntity } from '@h2-trust/amqp';
 import { CalculationTopic, EmissionStringConstants, MeasurementUnit, ProcessType } from '@h2-trust/domain';
+import { ProofOfSustainabilityAssembler } from './proof-of-sustainability-assembler.interface';
 
-export class HydrogenBottlingPosService {
-  public static computeProvenanceEmissionsForHydrogenBottling(
-    provenance: ProvenanceEntity,
-  ): ProofOfSustainabilityEmissionCalculationEntity {
+export class HydrogenBottlingPosService implements ProofOfSustainabilityAssembler {
+  public assembleEmissions(provenance: ProvenanceEntity): ProofOfSustainabilityEmissionCalculationEntity[] {
     if (!provenance || !provenance.hydrogenBottling) {
-      throw new Error('Provenance or hydrogen bottling is undefined.');
+      return [];
     }
 
     const hydrogenAmount = provenance.hydrogenBottling
@@ -29,16 +28,18 @@ export class HydrogenBottlingPosService {
     const totalEmissionsGrouped = [`${totalEmissions} ${MeasurementUnit.G_CO2}`];
     const totalEmissionsPerKgHydrogen = totalEmissions / hydrogenAmount;
 
-    return new ProofOfSustainabilityEmissionCalculationEntity(
-      totalEmissions.toString(),
-      totalEmissionsGrouped,
-      totalEmissionsPerKgHydrogen,
-      MeasurementUnit.G_CO2_PER_KG_H2,
-      CalculationTopic.HYDROGEN_BOTTLING,
-    );
+    return [
+      new ProofOfSustainabilityEmissionCalculationEntity(
+        totalEmissions.toString(),
+        totalEmissionsGrouped,
+        totalEmissionsPerKgHydrogen,
+        MeasurementUnit.G_CO2_PER_KG_H2,
+        CalculationTopic.HYDROGEN_BOTTLING,
+      ),
+    ];
   }
 
-  public static assembleHydrogenBottling(
+  public assembleHydrogenBottling(
     _hydrogenBottling: ProcessStepEntity,
   ): ProofOfSustainabilityEmissionCalculationEntity {
     if (_hydrogenBottling?.type !== ProcessType.HYDROGEN_BOTTLING) {

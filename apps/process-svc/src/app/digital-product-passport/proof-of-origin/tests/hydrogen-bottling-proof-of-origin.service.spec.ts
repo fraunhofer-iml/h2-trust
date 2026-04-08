@@ -6,27 +6,38 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProofOfOriginHydrogenBatchEntity, ProofOfOriginSectionEntity } from '@h2-trust/amqp';
-import { ProofOfOrigin } from '@h2-trust/domain';
-import { HydrogenComponentEntityFixture, ProcessStepEntityFixture } from '@h2-trust/fixtures';
+import {
+  ProcessStepEntity,
+  ProductionChainEntity,
+  ProofOfOriginHydrogenBatchEntity,
+  ProofOfOriginSectionEntity,
+  ProvenanceEntity,
+} from '@h2-trust/amqp';
+import { HydrogenColor, ProcessType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
+import {
+  BatchEntityFixture,
+  ProcessStepEntityFixture,
+  ProductionChainEntityFixture,
+  QualityDetailsEntityFixture,
+} from '@h2-trust/fixtures';
 import { HydrogenBottlingProofOfOriginService } from '../hydrogen-bottling-proof-of-origin.service';
 
 describe('HydrogenBottlingSectionAssembler', () => {
+  const hydrogenBottlingProofOfOriginService: HydrogenBottlingProofOfOriginService =
+    new HydrogenBottlingProofOfOriginService();
   describe('assembleHydrogenBottlingSection', () => {
     it('returns section with hydrogen batch, composition and emissions', async () => {
       // Arrange
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
-      const givenHydrogenCompositions = [
-        HydrogenComponentEntityFixture.createGreen({ amount: 60 }),
-        HydrogenComponentEntityFixture.createYellow({ amount: 40 }),
-      ];
+      const givenProvenance = new ProvenanceEntity(
+        givenHydrogenBottling,
+        [ProductionChainEntityFixture.create()],
+        givenHydrogenBottling,
+      );
 
       // Act
       const actualResult: ProofOfOriginSectionEntity =
-        HydrogenBottlingProofOfOriginService.assembleHydrogenBottlingSection(
-          givenHydrogenBottling,
-          givenHydrogenCompositions,
-        );
+        hydrogenBottlingProofOfOriginService.assembleSection(givenProvenance)[0];
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_BOTTLING_SECTION);
@@ -41,11 +52,149 @@ describe('HydrogenBottlingSectionAssembler', () => {
       expect(batch.createdAt).toBe(givenHydrogenBottling.startedAt);
       expect(batch.amount).toBe(givenHydrogenBottling.batch.amount);
       expect(batch.batchType).toBe(givenHydrogenBottling.batch.type);
-      expect(batch.hydrogenComposition).toEqual(givenHydrogenCompositions);
       expect(batch.unitId).toBe(givenHydrogenBottling.executedBy.id);
       expect(batch.color).toBe(givenHydrogenBottling.batch.qualityDetails.color);
       expect(batch.processStep).toBe(givenHydrogenBottling.type);
       expect(batch.accountingPeriodEnd).toBe(givenHydrogenBottling.endedAt);
+    });
+  });
+
+  describe('calculateHydrogenComposition', () => {
+    it(`returns composition for ${ProcessType.HYDROGEN_BOTTLING} process step`, () => {
+      // Arrange
+      const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling({
+        batch: BatchEntityFixture.createHydrogenBatch({
+          amount: 100,
+          predecessors: [
+            BatchEntityFixture.createHydrogenBatch({
+              amount: 100,
+              qualityDetails: QualityDetailsEntityFixture.createGreen(),
+            }),
+          ],
+        }),
+      });
+      const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
+      const givenProvenance = new ProvenanceEntity(givenProcessStep, [givenProductionChain], givenProcessStep);
+
+      // Act
+      const actualResult = hydrogenBottlingProofOfOriginService.assembleCompositionForBottling(givenProvenance);
+
+      // Assert
+      expect(actualResult).toHaveLength(1);
+      expect(actualResult[0].color).toBe(HydrogenColor.GREEN);
+    });
+    it('assembles amount from one predecessor', () => {
+      // Arrange
+      const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling({
+        batch: BatchEntityFixture.createHydrogenBatch({
+          amount: 100,
+          predecessors: [
+            BatchEntityFixture.createHydrogenBatch({
+              amount: 100,
+              qualityDetails: QualityDetailsEntityFixture.createGreen(),
+            }),
+          ],
+        }),
+      });
+
+      const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
+      const givenProvenance = new ProvenanceEntity(givenProcessStep, [givenProductionChain], givenProcessStep);
+
+      // Act
+      const actualResult = hydrogenBottlingProofOfOriginService.assembleCompositionForBottling(givenProvenance);
+
+      // Assert
+      expect(actualResult).toHaveLength(1);
+      expect(actualResult[0].color).toBe(HydrogenColor.GREEN);
+      expect(actualResult[0].amount).toBe(100);
+    });
+
+    it('assembles amount from two predecessors with same color', () => {
+      // Arrange
+      const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling({
+        batch: BatchEntityFixture.createHydrogenBatch({
+          amount: 100,
+          predecessors: [
+            BatchEntityFixture.createHydrogenBatch({
+              amount: 50,
+              qualityDetails: QualityDetailsEntityFixture.createGreen(),
+            }),
+            BatchEntityFixture.createHydrogenBatch({
+              amount: 50,
+              qualityDetails: QualityDetailsEntityFixture.createGreen(),
+            }),
+          ],
+        }),
+      });
+
+      const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
+      const givenProvenance = new ProvenanceEntity(givenProcessStep, [givenProductionChain], givenProcessStep);
+
+      // Act
+      const actualResult = hydrogenBottlingProofOfOriginService.assembleCompositionForBottling(givenProvenance);
+
+      // Assert
+      expect(actualResult).toHaveLength(1);
+      expect(actualResult[0].color).toBe(HydrogenColor.GREEN);
+      expect(actualResult[0].amount).toBe(100);
+    });
+
+    it('assembles amount from two predecessors with different colors', () => {
+      // Arrange
+      const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling({
+        batch: BatchEntityFixture.createHydrogenBatch({
+          amount: 100,
+          predecessors: [
+            BatchEntityFixture.createHydrogenBatch({
+              amount: 60,
+              qualityDetails: QualityDetailsEntityFixture.createGreen(),
+            }),
+            BatchEntityFixture.createHydrogenBatch({
+              amount: 40,
+              qualityDetails: QualityDetailsEntityFixture.createYellow(),
+            }),
+          ],
+        }),
+      });
+
+      const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
+      givenProductionChain.hydrogenLeafProduction = givenProcessStep;
+      givenProductionChain.hydrogenRootProduction = givenProcessStep;
+      const givenProvenance = new ProvenanceEntity(givenProcessStep, [givenProductionChain], givenProcessStep);
+
+      // Act
+      const actualResult = hydrogenBottlingProofOfOriginService.assembleCompositionForBottling(givenProvenance);
+
+      // Assert
+      expect(actualResult).toHaveLength(1);
+      expect(actualResult.find((c) => c.rfnboType === RfnboType.RFNBO_READY).amount).toBe(100);
+    });
+
+    it('throws error when process step is undefined', () => {
+      // Arrange
+      const givenProcessStep = undefined as unknown as ProcessStepEntity;
+
+      const expectedErrorMessage = 'There is no hydrogen bottling in provenance.';
+      const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
+      const givenProvenance = new ProvenanceEntity(givenProcessStep, [givenProductionChain], givenProcessStep);
+
+      // Act & Assert
+      expect(() => hydrogenBottlingProofOfOriginService.assembleCompositionForBottling(givenProvenance)).toThrow(
+        expectedErrorMessage,
+      );
+    });
+
+    it('throws error when process step type is invalid', () => {
+      // Arrange
+      const givenProcessStep = ProcessStepEntityFixture.createPowerProduction();
+
+      const expectedErrorMessage = `There are no hydrogen productions in Provenance.`;
+      const givenProvenance = new ProvenanceEntity(givenProcessStep, [], givenProcessStep);
+
+      // Act & Assert
+      expect(() => hydrogenBottlingProofOfOriginService.assembleCompositionForBottling(givenProvenance)).toThrow(
+        expectedErrorMessage,
+      );
     });
   });
 });

@@ -7,23 +7,26 @@
  */
 
 import {
-  HydrogenComponentEntity,
   ProcessStepEntity,
   ProofOfOriginEmissionEntity,
   ProofOfOriginHydrogenBatchEntity,
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
+  ProvenanceEntity,
 } from '@h2-trust/amqp';
-import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
+import { BatchType, ProcessType, ProofOfOrigin } from '@h2-trust/domain';
 import { HydrogenTransportPosService } from '../proof-of-sustainability/hydrogen-transport-pos.service';
+import { ProofOfOriginAssembler } from './proof-of-origin-assembler.interface';
 
-export class HydrogenTransportationProofOfOriginService {
-  public static assembleHydrogenTransportationSection(
-    hydrogenTransportation: ProcessStepEntity,
-    hydrogenCompositions: HydrogenComponentEntity[],
-  ): ProofOfOriginSectionEntity {
+export class HydrogenTransportationProofOfOriginService implements ProofOfOriginAssembler {
+  private hydrogenTransportPosService: HydrogenTransportPosService = new HydrogenTransportPosService();
+  public assembleSection(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {
+    if (provenance.root.type !== ProcessType.HYDROGEN_TRANSPORTATION) {
+      return [];
+    }
+    const hydrogenTransportation: ProcessStepEntity = provenance.root;
     const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
-      HydrogenTransportPosService.assembleHydrogenTransportation(hydrogenTransportation);
+      this.hydrogenTransportPosService.assembleHydrogenTransportation(hydrogenTransportation);
 
     const emission: ProofOfOriginEmissionEntity = ProofOfOriginEmissionEntity.fromEmissionCalculation(
       hydrogenTransportation.batch.amount,
@@ -33,16 +36,14 @@ export class HydrogenTransportationProofOfOriginService {
 
     const batch: ProofOfOriginHydrogenBatchEntity = this.assembleHydrogenTransportation(
       hydrogenTransportation,
-      hydrogenCompositions,
       emission,
     );
 
-    return new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION, [batch], []);
+    return [new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION, [batch], [])];
   }
 
-  private static assembleHydrogenTransportation(
+  private assembleHydrogenTransportation(
     hydrogenTransportation: ProcessStepEntity,
-    hydrogenComposition: HydrogenComponentEntity[],
     emission?: ProofOfOriginEmissionEntity,
   ): ProofOfOriginHydrogenBatchEntity {
     return {
@@ -51,7 +52,7 @@ export class HydrogenTransportationProofOfOriginService {
       createdAt: hydrogenTransportation.startedAt,
       amount: hydrogenTransportation.batch.amount,
       batchType: BatchType.HYDROGEN,
-      hydrogenComposition,
+      hydrogenComposition: [],
       unitId: hydrogenTransportation.executedBy.id,
       color: hydrogenTransportation.batch?.qualityDetails?.color,
       rfnboType: hydrogenTransportation.batch?.qualityDetails?.rfnboType,

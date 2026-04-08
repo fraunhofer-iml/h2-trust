@@ -21,13 +21,12 @@ import {
   PowerType,
   ProcessType,
 } from '@h2-trust/domain';
+import { ProofOfSustainabilityAssembler } from './proof-of-sustainability-assembler.interface';
 
-export class PowerProductionPosService {
-  public static computeProvenanceEmissionsForPowerProduction(
-    provenance: ProvenanceEntity,
-  ): ProofOfSustainabilityEmissionCalculationEntity {
+export class PowerProductionPosService implements ProofOfSustainabilityAssembler {
+  public assembleEmissions(provenance: ProvenanceEntity): ProofOfSustainabilityEmissionCalculationEntity[] {
     if (!provenance.getAllPowerProductions()) {
-      throw new Error('Provenance or powerProduction is undefined.');
+      return [];
     }
 
     const hydrogenAmount = provenance.hydrogenBottling
@@ -57,16 +56,18 @@ export class PowerProductionPosService {
 
     const totalEmissionsPerKgHydrogen = totalEmissions / hydrogenAmount;
 
-    return new ProofOfSustainabilityEmissionCalculationEntity(
-      totalEmissions.toString(),
-      totalEmissionsGrouped,
-      totalEmissionsPerKgHydrogen,
-      MeasurementUnit.G_CO2_PER_KG_H2,
-      CalculationTopic.POWER_SUPPLY,
-    );
+    return [
+      new ProofOfSustainabilityEmissionCalculationEntity(
+        totalEmissions.toString(),
+        totalEmissionsGrouped,
+        totalEmissionsPerKgHydrogen,
+        MeasurementUnit.G_CO2_PER_KG_H2,
+        CalculationTopic.POWER_SUPPLY,
+      ),
+    ];
   }
 
-  public static assemblePowerSupply(
+  public assemblePowerSupply(
     powerProduction: ProcessStepEntity,
     energySource: EnergySource,
   ): ProofOfSustainabilityEmissionCalculationEntity {
@@ -97,7 +98,7 @@ export class PowerProductionPosService {
     );
   }
 
-  public static computePowerSupplyEmissions(
+  public computePowerSupplyEmissions(
     powerProductions: ProcessStepEntity[],
   ): ProofOfSustainabilityEmissionCalculationEntity[] {
     if (!powerProductions.length) {
@@ -109,7 +110,7 @@ export class PowerProductionPosService {
         throw new Error(`PowerProductionUnit for process step ${powerProduction} not found.`);
       }
       const unit = powerProduction.executedBy as PowerProductionUnitEntity;
-      return PowerProductionPosService.assemblePowerSupply(powerProduction, unit.type.energySource);
+      return this.assemblePowerSupply(powerProduction, unit.type.energySource);
     });
   }
 }

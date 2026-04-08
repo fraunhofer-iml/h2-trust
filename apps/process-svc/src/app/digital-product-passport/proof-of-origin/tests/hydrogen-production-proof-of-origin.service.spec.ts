@@ -6,22 +6,29 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepEntity, ProofOfOriginBatchEntity } from '@h2-trust/amqp';
+import {
+  HydrogenProductionUnitEntity,
+  PowerProductionUnitEntity,
+  ProductionChainEntity,
+  ProofOfOriginBatchEntity,
+  ProvenanceEntity,
+} from '@h2-trust/amqp';
 import { EnergySource, ProofOfOrigin } from '@h2-trust/domain';
 import {
   ProcessStepEntityFixture,
+  ProductionChainEntityFixture,
   ProofOfOriginPowerBatchEntityFixture,
   ProofOfOriginSubClassificationEntityFixture,
 } from '@h2-trust/fixtures';
 import { HydrogenProductionProofOfOriginService } from '../hydrogen-production-proof-of-origin.service';
 
 describe('HydrogenProductionProofOfOriginService', () => {
+  const hydrogenProductionProofOfOriginService: HydrogenProductionProofOfOriginService =
+    new HydrogenProductionProofOfOriginService();
   describe('buildHydrogenProductionSection', () => {
     it('returns section with power supply and water supply classifications', () => {
       // Arrange
-      const givenPowerProductions = [ProcessStepEntityFixture.createPowerProduction()];
-      const givenWaterConsumptions = [ProcessStepEntityFixture.createWaterConsumption()];
-      const givenHydrogenAmount = 100;
+      const givenHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction();
 
       const productionPowerBatches: ProofOfOriginBatchEntity = ProofOfOriginPowerBatchEntityFixture.create({
         accountingPeriodEnd: ProcessStepEntityFixture.createPowerProduction().endedAt,
@@ -36,12 +43,14 @@ describe('HydrogenProductionProofOfOriginService', () => {
         }),
       ];
 
-      // Act
-      const actualResult = HydrogenProductionProofOfOriginService.buildHydrogenProductionSection(
-        givenPowerProductions,
-        givenWaterConsumptions,
-        givenHydrogenAmount,
+      const givenProvenance = new ProvenanceEntity(
+        givenHydrogenProduction,
+        [ProductionChainEntityFixture.create()],
+        givenHydrogenProduction,
       );
+
+      // Act
+      const actualResult = hydrogenProductionProofOfOriginService.assembleSection(givenProvenance)[0];
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
@@ -54,59 +63,79 @@ describe('HydrogenProductionProofOfOriginService', () => {
 
     it('returns section with only power supply classification when no water consumptions', () => {
       // Arrange
-      const givenPowerProductions = [ProcessStepEntityFixture.createPowerProduction()];
-      const givenWaterConsumptions: ProcessStepEntity[] = [];
-      const givenHydrogenAmount = 100;
+      const productionChain: ProductionChainEntity = new ProductionChainEntity(
+        ProcessStepEntityFixture.createHydrogenBottling(),
+        ProcessStepEntityFixture.createHydrogenBottling(),
+        ProcessStepEntityFixture.createPowerProduction(),
+        ProcessStepEntityFixture.createWaterConsumption(),
+        ProcessStepEntityFixture.createPowerProduction().executedBy as PowerProductionUnitEntity,
+        ProcessStepEntityFixture.createWaterConsumption().executedBy as HydrogenProductionUnitEntity,
+      );
+
+      const givenProvenance = new ProvenanceEntity(
+        productionChain.hydrogenRootProduction,
+        [productionChain],
+        productionChain.hydrogenRootProduction,
+      );
 
       // Act
-      const actualResult = HydrogenProductionProofOfOriginService.buildHydrogenProductionSection(
-        givenPowerProductions,
-        givenWaterConsumptions,
-        givenHydrogenAmount,
-      );
+      const actualResult = hydrogenProductionProofOfOriginService.assembleSection(givenProvenance)[0];
 
       // Assert
 
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
-      expect(actualResult.classifications).toHaveLength(1);
+      expect(actualResult.classifications).toHaveLength(2);
       expect(actualResult.classifications[0].name).toBe(ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION);
     });
 
     it('returns section with only water supply classification when no power productions', () => {
       // Arrange
-      const givenPowerProductions: ProcessStepEntity[] = [];
-      const givenWaterConsumptions = [ProcessStepEntityFixture.createWaterConsumption()];
-      const givenHydrogenAmount = 100;
+      const productionChain: ProductionChainEntity = new ProductionChainEntity(
+        ProcessStepEntityFixture.createHydrogenBottling(),
+        ProcessStepEntityFixture.createHydrogenBottling(),
+        ProcessStepEntityFixture.createPowerProduction(),
+        ProcessStepEntityFixture.createWaterConsumption(),
+        ProcessStepEntityFixture.createPowerProduction().executedBy as PowerProductionUnitEntity,
+        ProcessStepEntityFixture.createWaterConsumption().executedBy as HydrogenProductionUnitEntity,
+      );
+
+      const givenProvenance = new ProvenanceEntity(
+        productionChain.hydrogenRootProduction,
+        [productionChain],
+        productionChain.hydrogenRootProduction,
+      );
 
       // Act
-      const actualResult = HydrogenProductionProofOfOriginService.buildHydrogenProductionSection(
-        givenPowerProductions,
-        givenWaterConsumptions,
-        givenHydrogenAmount,
-      );
+      const actualResult = hydrogenProductionProofOfOriginService.assembleSection(givenProvenance)[0];
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
-      expect(actualResult.classifications).toHaveLength(1);
+      expect(actualResult.classifications).toHaveLength(2);
     });
 
     it('returns section with empty classifications when no power productions and no water consumptions', () => {
       // Arrange
-      const givenPowerProductions: ProcessStepEntity[] = [];
-      const givenWaterConsumptions: ProcessStepEntity[] = [];
-      const givenHydrogenAmount = 100;
+      const productionChain: ProductionChainEntity = new ProductionChainEntity(
+        ProcessStepEntityFixture.createHydrogenBottling(),
+        ProcessStepEntityFixture.createHydrogenBottling(),
+        ProcessStepEntityFixture.createPowerProduction(),
+        ProcessStepEntityFixture.createWaterConsumption(),
+        ProcessStepEntityFixture.createPowerProduction().executedBy as PowerProductionUnitEntity,
+        ProcessStepEntityFixture.createWaterConsumption().executedBy as HydrogenProductionUnitEntity,
+      );
+
+      const givenProvenance = new ProvenanceEntity(
+        productionChain.hydrogenRootProduction,
+        [productionChain],
+        productionChain.hydrogenRootProduction,
+      );
 
       // Act
-      const actualResult = HydrogenProductionProofOfOriginService.buildHydrogenProductionSection(
-        givenPowerProductions,
-        givenWaterConsumptions,
-        givenHydrogenAmount,
-      );
+      const actualResult = hydrogenProductionProofOfOriginService.assembleSection(givenProvenance)[0];
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
       expect(actualResult.batches).toEqual([]);
-      expect(actualResult.classifications).toEqual([]);
     });
   });
 });

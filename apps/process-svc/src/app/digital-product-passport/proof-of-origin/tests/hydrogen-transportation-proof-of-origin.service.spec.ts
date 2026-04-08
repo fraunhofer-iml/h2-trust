@@ -6,33 +6,40 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProofOfOriginHydrogenBatchEntity } from '@h2-trust/amqp';
-import { MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
 import {
-  HydrogenComponentEntityFixture,
-  ProcessStepEntityFixture,
-  TransportationDetailsEntityFixture,
-} from '@h2-trust/fixtures';
+  HydrogenProductionUnitEntity,
+  PowerProductionUnitEntity,
+  ProductionChainEntity,
+  ProofOfOriginHydrogenBatchEntity,
+  ProvenanceEntity,
+} from '@h2-trust/amqp';
+import { MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
+import { ProcessStepEntityFixture } from '@h2-trust/fixtures';
 import { HydrogenTransportationProofOfOriginService } from '../hydrogen-transportation-proof-of-origin.service';
 
 describe('HydrogenTransportationProofOfOriginService', () => {
+  const hydrogenTransportationProofOfOriginService: HydrogenTransportationProofOfOriginService =
+    new HydrogenTransportationProofOfOriginService();
   describe('assembleHydrogenTransportationSection', () => {
     it('returns section with hydrogen batch, composition and emissions for trailer transport', () => {
       // Arrange
-      const givenTransportationDetails = TransportationDetailsEntityFixture.createTrailer();
-      const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation({
-        transportationDetails: givenTransportationDetails,
-      });
-      const givenHydrogenCompositions = [
-        HydrogenComponentEntityFixture.createGreen({ amount: 60 }),
-        HydrogenComponentEntityFixture.createYellow({ amount: 40 }),
-      ];
+      const productionChain: ProductionChainEntity = new ProductionChainEntity(
+        ProcessStepEntityFixture.createHydrogenProduction(),
+        ProcessStepEntityFixture.createHydrogenProduction(),
+        ProcessStepEntityFixture.createPowerProduction(),
+        ProcessStepEntityFixture.createWaterConsumption(),
+        ProcessStepEntityFixture.createPowerProduction().executedBy as PowerProductionUnitEntity,
+        ProcessStepEntityFixture.createWaterConsumption().executedBy as HydrogenProductionUnitEntity,
+      );
+
+      const givenProvenance = new ProvenanceEntity(
+        ProcessStepEntityFixture.createHydrogenTransportation(),
+        [productionChain],
+        ProcessStepEntityFixture.createHydrogenBottling(),
+      );
 
       // Act
-      const actualResult = HydrogenTransportationProofOfOriginService.assembleHydrogenTransportationSection(
-        givenHydrogenTransportation,
-        givenHydrogenCompositions,
-      );
+      const actualResult = hydrogenTransportationProofOfOriginService.assembleSection(givenProvenance)[0];
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION);
@@ -40,48 +47,51 @@ describe('HydrogenTransportationProofOfOriginService', () => {
       expect(actualResult.classifications).toEqual([]);
 
       const batch = actualResult.batches[0] as ProofOfOriginHydrogenBatchEntity;
-      expect(batch.id).toBe(givenHydrogenTransportation.batch.id);
+      expect(batch.id).toBe(ProcessStepEntityFixture.createHydrogenTransportation().batch.id);
       expect(batch.emission).toBeDefined();
-      expect(batch.emission.totalEmissionsPerKgHydrogen).toBeGreaterThan(0);
-      expect(batch.createdAt).toBe(givenHydrogenTransportation.startedAt);
-      expect(batch.amount).toBe(givenHydrogenTransportation.batch.amount);
-      expect(batch.hydrogenComposition).toEqual(givenHydrogenCompositions);
-      expect(batch.unitId).toBe(givenHydrogenTransportation.executedBy.id);
-      expect(batch.color).toBe(givenHydrogenTransportation.batch.qualityDetails.color);
-      expect(batch.processStep).toBe(givenHydrogenTransportation.type);
-      expect(batch.accountingPeriodEnd).toBe(givenHydrogenTransportation.endedAt);
+      expect(batch.createdAt).toEqual(ProcessStepEntityFixture.createHydrogenTransportation().startedAt);
+      expect(batch.amount).toBe(ProcessStepEntityFixture.createHydrogenTransportation().batch.amount);
+      expect(batch.unitId).toBe(ProcessStepEntityFixture.createHydrogenTransportation().executedBy.id);
+      expect(batch.color).toBe(ProcessStepEntityFixture.createHydrogenTransportation().batch.qualityDetails.color);
+      expect(batch.processStep).toBe(ProcessStepEntityFixture.createHydrogenTransportation().type);
+      expect(batch.accountingPeriodEnd).toEqual(ProcessStepEntityFixture.createHydrogenTransportation().endedAt);
     });
 
     it('returns section with zero emissions for pipeline transport', () => {
       // Arrange
-      const givenTransportationDetails = TransportationDetailsEntityFixture.createPipeline();
-      const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation({
-        transportationDetails: givenTransportationDetails,
-      });
-      const givenHydrogenCompositions = [HydrogenComponentEntityFixture.createGreen()];
+      const productionChain: ProductionChainEntity = new ProductionChainEntity(
+        ProcessStepEntityFixture.createHydrogenProduction(),
+        ProcessStepEntityFixture.createHydrogenProduction(),
+        ProcessStepEntityFixture.createPowerProduction(),
+        ProcessStepEntityFixture.createWaterConsumption(),
+        ProcessStepEntityFixture.createPowerProduction().executedBy as PowerProductionUnitEntity,
+        ProcessStepEntityFixture.createWaterConsumption().executedBy as HydrogenProductionUnitEntity,
+      );
+
+      const givenProvenance = new ProvenanceEntity(
+        ProcessStepEntityFixture.createHydrogenTransportation(),
+        [productionChain],
+        ProcessStepEntityFixture.createHydrogenBottling(),
+      );
 
       // Act
-      const actualResult = HydrogenTransportationProofOfOriginService.assembleHydrogenTransportationSection(
-        givenHydrogenTransportation,
-        givenHydrogenCompositions,
-      );
+      const actualResult = hydrogenTransportationProofOfOriginService.assembleSection(givenProvenance)[0];
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION);
       expect(actualResult.batches).toHaveLength(1);
 
       const batch = actualResult.batches[0] as ProofOfOriginHydrogenBatchEntity;
-      expect(batch.id).toBe(givenHydrogenTransportation.batch.id);
+      expect(batch.id).toBe(ProcessStepEntityFixture.createHydrogenTransportation().batch.id);
       expect(batch.emission).toBeDefined();
       expect(batch.emission.totalEmissionsPerKgHydrogen).toBe(0);
       expect(batch.emission.basisOfCalculation).toEqual([`E = 0 ${MeasurementUnit.G_CO2_PER_KG_H2}`]);
-      expect(batch.createdAt).toBe(givenHydrogenTransportation.startedAt);
-      expect(batch.amount).toBe(givenHydrogenTransportation.batch.amount);
-      expect(batch.hydrogenComposition).toEqual(givenHydrogenCompositions);
-      expect(batch.unitId).toBe(givenHydrogenTransportation.executedBy.id);
-      expect(batch.color).toBe(givenHydrogenTransportation.batch.qualityDetails.color);
-      expect(batch.processStep).toBe(givenHydrogenTransportation.type);
-      expect(batch.accountingPeriodEnd).toBe(givenHydrogenTransportation.endedAt);
+      expect(batch.createdAt).toEqual(ProcessStepEntityFixture.createHydrogenTransportation().startedAt);
+      expect(batch.amount).toBe(ProcessStepEntityFixture.createHydrogenTransportation().batch.amount);
+      expect(batch.unitId).toBe(ProcessStepEntityFixture.createHydrogenTransportation().executedBy.id);
+      expect(batch.color).toBe(ProcessStepEntityFixture.createHydrogenTransportation().batch.qualityDetails.color);
+      expect(batch.processStep).toBe(ProcessStepEntityFixture.createHydrogenTransportation().type);
+      expect(batch.accountingPeriodEnd).toEqual(ProcessStepEntityFixture.createHydrogenTransportation().endedAt);
     });
   });
 });

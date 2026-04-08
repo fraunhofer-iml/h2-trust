@@ -14,13 +14,12 @@ import {
   MeasurementUnit,
   ProcessType,
 } from '@h2-trust/domain';
+import { ProofOfSustainabilityAssembler } from './proof-of-sustainability-assembler.interface';
 
-export class WaterConsumptionPosService {
-  public static computeProvenanceEmissionsForWaterConsumption(
-    provenance: ProvenanceEntity,
-  ): ProofOfSustainabilityEmissionCalculationEntity {
+export class WaterConsumptionPosService implements ProofOfSustainabilityAssembler {
+  public assembleEmissions(provenance: ProvenanceEntity): ProofOfSustainabilityEmissionCalculationEntity[] {
     if (!provenance.getAllWaterConsumptions()) {
-      throw new Error('Provenance or water consumption is undefined.');
+      return [];
     }
 
     const hydrogenAmount = provenance.hydrogenBottling
@@ -35,16 +34,18 @@ export class WaterConsumptionPosService {
     const totalEmissionsGrouped = [`${totalEmissions} ${MeasurementUnit.G_CO2}`];
     const totalEmissionsPerKgHydrogen = totalEmissions / hydrogenAmount;
 
-    return new ProofOfSustainabilityEmissionCalculationEntity(
-      totalEmissions.toString(),
-      totalEmissionsGrouped,
-      totalEmissionsPerKgHydrogen,
-      MeasurementUnit.G_CO2_PER_KG_H2,
-      CalculationTopic.WATER_SUPPLY,
-    );
+    return [
+      new ProofOfSustainabilityEmissionCalculationEntity(
+        totalEmissions.toString(),
+        totalEmissionsGrouped,
+        totalEmissionsPerKgHydrogen,
+        MeasurementUnit.G_CO2_PER_KG_H2,
+        CalculationTopic.WATER_SUPPLY,
+      ),
+    ];
   }
 
-  public static assembleWaterSupply(waterSupply: ProcessStepEntity): ProofOfSustainabilityEmissionCalculationEntity {
+  public assembleWaterSupply(waterSupply: ProcessStepEntity): ProofOfSustainabilityEmissionCalculationEntity {
     if (waterSupply?.type !== ProcessType.WATER_CONSUMPTION) {
       throw new Error(`Invalid process step type [${waterSupply?.type}] for water supply emission calculation`);
     }

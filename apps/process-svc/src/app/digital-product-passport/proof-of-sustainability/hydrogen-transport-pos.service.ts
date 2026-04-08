@@ -18,13 +18,12 @@ import {
   TrailerParameter,
   TransportMode,
 } from '@h2-trust/domain';
+import { ProofOfSustainabilityAssembler } from './proof-of-sustainability-assembler.interface';
 
-export class HydrogenTransportPosService {
-  public static computeProvenanceEmissionsForTransport(
-    provenance: ProvenanceEntity,
-  ): ProofOfSustainabilityEmissionCalculationEntity {
+export class HydrogenTransportPosService implements ProofOfSustainabilityAssembler {
+  public assembleEmissions(provenance: ProvenanceEntity): ProofOfSustainabilityEmissionCalculationEntity[] {
     if (!provenance || provenance.root.type !== ProcessType.HYDROGEN_TRANSPORTATION) {
-      throw new Error('Provenance is undefined or root is not HYDROGEN_TRANSPORTATION.');
+      return [];
     }
 
     const hydrogenAmount = provenance.hydrogenBottling
@@ -39,16 +38,18 @@ export class HydrogenTransportPosService {
     const totalEmissionsGrouped = [`${totalEmissions} ${MeasurementUnit.G_CO2}`];
     const totalEmissionsPerKgHydrogen = totalEmissions / hydrogenAmount;
 
-    return new ProofOfSustainabilityEmissionCalculationEntity(
-      totalEmissions.toString(),
-      totalEmissionsGrouped,
-      totalEmissionsPerKgHydrogen,
-      MeasurementUnit.G_CO2_PER_KG_H2,
-      CalculationTopic.HYDROGEN_TRANSPORTATION,
-    );
+    return [
+      new ProofOfSustainabilityEmissionCalculationEntity(
+        totalEmissions.toString(),
+        totalEmissionsGrouped,
+        totalEmissionsPerKgHydrogen,
+        MeasurementUnit.G_CO2_PER_KG_H2,
+        CalculationTopic.HYDROGEN_TRANSPORTATION,
+      ),
+    ];
   }
 
-  static assembleHydrogenTransportation(
+  public assembleHydrogenTransportation(
     hydrogenTransportation: ProcessStepEntity,
   ): ProofOfSustainabilityEmissionCalculationEntity {
     if (hydrogenTransportation?.type !== ProcessType.HYDROGEN_TRANSPORTATION) {
@@ -78,7 +79,7 @@ export class HydrogenTransportPosService {
     return emissionCalculation;
   }
 
-  private static assemblePipeline(): ProofOfSustainabilityEmissionCalculationEntity {
+  private assemblePipeline(): ProofOfSustainabilityEmissionCalculationEntity {
     const result = 0;
 
     const basisOfCalculation = [`E = 0 ${MeasurementUnit.G_CO2_PER_KG_H2}`];
@@ -92,7 +93,7 @@ export class HydrogenTransportPosService {
     );
   }
 
-  private static assembleTrailer(
+  private assembleTrailer(
     hydrogenAmount: number,
     fuelType: FuelType,
     transportDistance: number,

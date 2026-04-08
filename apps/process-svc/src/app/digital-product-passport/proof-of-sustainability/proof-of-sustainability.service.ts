@@ -13,12 +13,8 @@ import {
   ProofOfSustainabilityEntity,
   ProvenanceEntity,
 } from '@h2-trust/amqp';
-import { CalculationTopic, EmissionNumericConstants, EmissionStringConstants, ProcessType } from '@h2-trust/domain';
-import { HydrogenBottlingPosService } from './hydrogen-bottling-pos.service';
-import { HydrogenProductionPosService } from './hydrogen-production-pos.service';
-import { HydrogenTransportPosService } from './hydrogen-transport-pos.service';
-import { PowerProductionPosService } from './power-production-pos.service';
-import { WaterConsumptionPosService } from './water-consumption-pos.service';
+import { CalculationTopic, EmissionNumericConstants, EmissionStringConstants } from '@h2-trust/domain';
+import { PROOF_OF_SUSTAINABILITY_ASSEMBLERS } from './proof-of-origin-assembler.registry.const';
 
 @Injectable()
 export class ProofOfSustainabilityService {
@@ -32,22 +28,12 @@ export class ProofOfSustainabilityService {
       throw new Error('Provenance is undefined.');
     }
 
-    const emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[] = [];
+    const emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[] =
+      PROOF_OF_SUSTAINABILITY_ASSEMBLERS.flatMap((posAssembler) => posAssembler.assembleEmissions(provenance));
     const hydrogenAmount = provenance.hydrogenBottling
       ? provenance.hydrogenBottling.batch.amount
       : provenance.root.batch.amount;
 
-    emissionCalculations.push(PowerProductionPosService.computeProvenanceEmissionsForPowerProduction(provenance));
-    emissionCalculations.push(WaterConsumptionPosService.computeProvenanceEmissionsForWaterConsumption(provenance));
-    emissionCalculations.push(HydrogenProductionPosService.computeProvenanceEmissionsForHydrogenProduction(provenance));
-
-    if (
-      provenance.root.type == ProcessType.HYDROGEN_BOTTLING ||
-      provenance.root.type == ProcessType.HYDROGEN_TRANSPORTATION
-    ) {
-      emissionCalculations.push(HydrogenBottlingPosService.computeProvenanceEmissionsForHydrogenBottling(provenance));
-      emissionCalculations.push(HydrogenTransportPosService.computeProvenanceEmissionsForTransport(provenance));
-    }
     return this.assembleProofOfSustainability(provenance.root.id, emissionCalculations, hydrogenAmount);
   }
 
