@@ -86,7 +86,13 @@
 
           <span>
             Block Timestamp
-            <p class="text-black">{{ formatDateTime(res.blockTimestamp) || 'Not available' }}</p>
+            <p class="text-black">
+              {{
+                res.blockTimestamp
+                  ? DateTimeUtil.toGermanDate(DateTimeUtil.toValidDate(res.blockTimestamp, 'blockTimestamp'))
+                  : 'Not available'
+              }}
+            </p>
           </span>
 
           <span>

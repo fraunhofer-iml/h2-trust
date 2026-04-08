@@ -13,6 +13,7 @@ import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { ProcessedCsvDto } from '@h2-trust/api';
 import { CsvDocumentIntegrityStatus } from '@h2-trust/domain';
+import { DateTimeUtil } from '@h2-trust/utils';
 import { BaseSheetComponent } from '../../../../layout/sheet/sheet.component';
 import { ProductionService } from '../../../../shared/services/production/production.service';
 import { VerificationResultStore } from '../../../../shared/store/verification-result.store';
@@ -24,6 +25,7 @@ import { VerificationResultStore } from '../../../../shared/store/verification-r
 })
 export class VerifyComponent {
   protected readonly CsvDocumentIntegrityStatus = CsvDocumentIntegrityStatus;
+  protected readonly DateTimeUtil = DateTimeUtil;
   disabled = input.required<boolean>();
   file = input.required<ProcessedCsvDto>();
 
@@ -52,19 +54,6 @@ export class VerifyComponent {
     }
 
     window.open(url, '_blank');
-  }
-
-  // TODO-MP: use DateTimeUtil instead of this method and handle "Not available" case in template
-  formatDateTime(value: string | Date | null) {
-    if (!value) {
-      return 'Not available';
-    }
-
-    return new Intl.DateTimeFormat('en-US', {
-      dateStyle: 'medium',
-      timeStyle: 'medium',
-      timeZone: 'UTC',
-    }).format(new Date(value));
   }
 
   get result() {
