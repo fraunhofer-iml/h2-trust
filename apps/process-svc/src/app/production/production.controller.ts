@@ -38,12 +38,12 @@ export class ProductionController {
     return this.productionService.createProductions(payload);
   }
 
-    @MessagePattern(ProductionMessagePatterns.CREATE_PRODUCTION_STATISTICS)
-    async createProductionStatistics(
-      payload: CreateHydrogenProductionStatisticsPayload,
-    ): Promise<ProductionStatisticsEntity> {
-      return this.productionService.createProductionStatistics(payload);
-    }
+  @MessagePattern(ProductionMessagePatterns.CREATE_PRODUCTION_STATISTICS)
+  async createProductionStatistics(
+    payload: CreateHydrogenProductionStatisticsPayload,
+  ): Promise<ProductionStatisticsEntity> {
+    return this.productionService.createProductionStatistics(payload);
+  }
 
   @MessagePattern(ProductionMessagePatterns.STAGE)
   async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
