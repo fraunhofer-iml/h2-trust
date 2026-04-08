@@ -57,14 +57,14 @@
           [matBadgeHidden]="ppaRequestsQuery.data()?.length === 0"
         >
           @if (!authenticated) {
-            <div
-              class="flex w-full flex-row items-center justify-between p-3 text-primary-700"
+            <button
+              class="flex w-full flex-row items-center justify-between rounded-lg border border-neutral-200 bg-white p-3 text-primary-700 shadow-md"
               (click)="signIn()"
               role="none"
             >
-              <span class="text-lg">Sign In</span>
+              <span class="">Sign In</span>
               <span class="material-symbols-outlined">login</span>
-            </div>
+            </button>
           } @else {
             <div
               class="mb-2 flex w-full origin-bottom flex-col rounded-lg border border-neutral-200 bg-white p-2 shadow-md transition-all duration-200"
