@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BaseUnitDeepDbType, BaseUnitFlatDbType, BaseUnitNestedDbType } from '@h2-trust/database';
+import { BaseUnitDeepDbType, BaseUnitNestedDbType } from '@h2-trust/database';
 import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
@@ -66,9 +66,7 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 
-  //TODO-LG: combine the fromDatabase functions
   static fromDeepDatabase(baseUnit: BaseUnitDeepDbType): HydrogenProductionUnitEntity {
-    //TODO-LG: add assertion that the given baseUnit has a Hydrogen Production Object
     return <HydrogenProductionUnitEntity>{
       ...BaseUnitEntity.fromDeepBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_PRODUCTION,
@@ -83,26 +81,8 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
   }
 
   static fromNestedDatabase(baseUnit: BaseUnitNestedDbType): HydrogenProductionUnitEntity {
-    //TODO-LG: add assertion that the given baseUnit has a Hydrogen Production Object
-
     return <HydrogenProductionUnitEntity>{
       ...BaseUnitEntity.fromNestedBaseUnit(baseUnit),
-      unitType: UnitType.HYDROGEN_PRODUCTION,
-
-      ratedPower: baseUnit.hydrogenProductionUnit?.ratedPower.toNumber(),
-      pressure: baseUnit.hydrogenProductionUnit?.pressure.toNumber(),
-      method: baseUnit.hydrogenProductionUnit?.method,
-      technology: baseUnit.hydrogenProductionUnit?.technology,
-      biddingZone: baseUnit.hydrogenProductionUnit?.biddingZone,
-      waterConsumptionLitersPerHour: baseUnit.hydrogenProductionUnit?.waterConsumptionLitersPerHour.toNumber(),
-    };
-  }
-
-  static fromFlatDatabase(baseUnit: BaseUnitFlatDbType): HydrogenProductionUnitEntity {
-    //TODO-LG: add assertion that the given baseUnit has a Hydrogen Production Object
-
-    return <HydrogenProductionUnitEntity>{
-      ...BaseUnitEntity.fromFlatBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_PRODUCTION,
 
       ratedPower: baseUnit.hydrogenProductionUnit?.ratedPower.toNumber(),

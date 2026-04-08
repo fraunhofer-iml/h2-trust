@@ -8,7 +8,6 @@
 
 import {
   BaseUnitDeepDbType,
-  BaseUnitFlatDbType,
   BaseUnitNestedDbType,
   HydrogenStorageUnitDeepDbType,
   HydrogenStorageUnitNestedDbType,
@@ -67,10 +66,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     this.filling = filling;
   }
 
-  //TODO-LG: combine the fromDatabase functions
   static fromDeepDatabase(baseUnit: BaseUnitDeepDbType): HydrogenStorageUnitEntity {
-    //TODO-LG: add assertion that the given baseUnit has a HydrogenStorageUnitEntity Object
-
     return {
       ...BaseUnitEntity.fromDeepBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_STORAGE,
@@ -83,8 +79,6 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   }
 
   static fromNestedDatabase(baseUnit: BaseUnitNestedDbType): HydrogenStorageUnitEntity {
-    //TODO-LG: add assertion that the given baseUnit has a HydrogenStorageUnitEntity Object
-
     return {
       ...BaseUnitEntity.fromNestedBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_STORAGE,
@@ -99,8 +93,6 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   static fromNestedHydrogenStorageUnit(
     nestedHydrogenStorageUnit: HydrogenStorageUnitNestedDbType,
   ): HydrogenStorageUnitEntity {
-    //TODO-LG: add assertion that the given baseUnit has a HydrogenStorageUnitEntity Object
-
     return {
       ...BaseUnitEntity.fromFlatBaseUnit(nestedHydrogenStorageUnit.generalInfo),
       unitType: UnitType.HYDROGEN_STORAGE,
@@ -109,20 +101,6 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       pressure: nestedHydrogenStorageUnit.pressure.toNumber() ?? 0,
       filling: HydrogenStorageUnitEntity.mapFilling(nestedHydrogenStorageUnit),
       type: nestedHydrogenStorageUnit.type as HydrogenStorageType,
-    };
-  }
-
-  static fromFlatDatabase(baseUnit: BaseUnitFlatDbType): HydrogenStorageUnitEntity {
-    //TODO-LG: add assertion that the given baseUnit has a HydrogenStorageUnitEntity Object
-
-    return <HydrogenStorageUnitEntity>{
-      ...BaseUnitEntity.fromFlatBaseUnit(baseUnit),
-      unitType: UnitType.HYDROGEN_STORAGE,
-
-      capacity: baseUnit.hydrogenStorageUnit?.capacity.toNumber() ?? 0,
-      pressure: baseUnit.hydrogenStorageUnit?.pressure.toNumber() ?? 0,
-      filling: [],
-      type: (baseUnit.hydrogenStorageUnit?.type ?? HydrogenStorageType.LIQUID_HYDROGEN) as HydrogenStorageType,
     };
   }
 

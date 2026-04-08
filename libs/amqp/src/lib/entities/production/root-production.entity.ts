@@ -14,8 +14,6 @@ import { HydrogenProductionUnitEntity, PowerProductionUnitEntity } from '../unit
  * hydrogenRootProduction: The hydrogen production process step that only have PP and WC as predecessors.
  * hydrogenLeafProduction: The hydrogen production process step that dont have a hydrogen production as successor.
  * (if the hydrogenRootProduction does not have any HP successors it is the root and leaf HP)
- *
- * ProductionChain: PP/WC -> rootHP -> ... -> HP -> ... -> leafHP
  */
 export class ProductionChainEntity {
   hydrogenLeafProduction: ProcessStepEntity;

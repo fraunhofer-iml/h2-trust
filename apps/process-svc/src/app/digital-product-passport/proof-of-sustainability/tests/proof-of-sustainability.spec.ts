@@ -53,19 +53,19 @@ describe('ProodOfSustainability', () => {
   });
 
   describe('computeProvenanceEmissionsForHydrogenProduction', () => {
-    it('computes emissions for provenance with hydrogen bottling only', async () => {
+    it('computes emissions for provenance with hydrogen bottling only', () => {
       // Arrange
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
       const givenProvenance = new ProvenanceEntity(givenHydrogenBottling, [], givenHydrogenBottling);
 
       // Act
-      const actualResult =
-        await HydrogenProductionPosService.computeProvenanceEmissionsForHydrogenProduction(givenProvenance);
+      const actualResult: ProofOfSustainabilityEmissionCalculationEntity =
+        HydrogenProductionPosService.computeProvenanceEmissionsForHydrogenProduction(givenProvenance);
 
       // Assert
       expect(actualResult).toBeDefined();
-      //expect(actualResult.batchId).toBe(givenHydrogenBottling.id); // TODO-MP: batchId or processStepId -> DUHGW-314
-      //expect(actualResult.calculations.length).toBeGreaterThan(0);
+      expect(actualResult.result).toBe(0); // TODO-MP: batchId or processStepId -> DUHGW-314
+      expect(actualResult.calculationTopic).toEqual(CalculationTopic.HYDROGEN_STORAGE);
     });
   });
 
@@ -79,8 +79,8 @@ describe('ProodOfSustainability', () => {
 
       // Assert
       expect(actualResult).toBeDefined();
-      //expect(actualResult.batchId).toBe(givenHydrogenBottling.id); // TODO-MP: batchId or processStepId -> DUHGW-314
-      //expect(actualResult.calculations.length).toBeGreaterThan(0);
+      expect(actualResult.result).toBe(0); // TODO-MP: batchId or processStepId -> DUHGW-314
+      expect(actualResult.calculationTopic).toEqual(CalculationTopic.HYDROGEN_STORAGE);
     });
   });
 
@@ -116,8 +116,8 @@ describe('ProodOfSustainability', () => {
 
       // Assert
       expect(actualResult).toBeDefined();
-      //expect(actualResult.batchId).toBe(givenHydrogenBottling.id); // TODO-MP: batchId or processStepId -> DUHGW-314
-      //expect(actualResult.calculations.length).toBeGreaterThan(0);
+      expect(actualResult.result).toBe(0); // TODO-MP: batchId or processStepId -> DUHGW-314
+      expect(actualResult.calculationTopic).toEqual(CalculationTopic.POWER_SUPPLY);
     });
   });
 
@@ -133,8 +133,8 @@ describe('ProodOfSustainability', () => {
 
       // Assert
       expect(actualResult).toBeDefined();
-      //expect(actualResult.batchId).toBe(givenHydrogenBottling.id); // TODO-MP: batchId or processStepId -> DUHGW-314
-      //expect(actualResult.calculations.length).toBeGreaterThan(0);
+      expect(actualResult.result).toBe(0); // TODO-MP: batchId or processStepId -> DUHGW-314
+      expect(actualResult.calculationTopic).toEqual(CalculationTopic.WATER_SUPPLY);
     });
 
     it('createProofOfSustainability', () => {

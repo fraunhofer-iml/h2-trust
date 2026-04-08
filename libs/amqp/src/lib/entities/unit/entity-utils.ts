@@ -7,16 +7,15 @@
  */
 
 import { HttpStatus } from '@nestjs/common';
-import { BaseUnitFlatDbType, BaseUnitNestedDbType } from '@h2-trust/database';
+import { BaseUnitNestedDbType } from '@h2-trust/database';
 import { BrokerException } from '../../broker';
+import { UnitEntity } from '../../types';
 import { HydrogenProductionUnitEntity } from './hydrogen-production-unit.entity';
 import { HydrogenStorageUnitEntity } from './hydrogen-storage-unit.entity';
 import { PowerProductionUnitEntity } from './power-production-unit.entity';
 
 export class EntityUtils {
-  static getSpecificUnit(
-    unit: BaseUnitNestedDbType,
-  ): HydrogenProductionUnitEntity | PowerProductionUnitEntity | HydrogenStorageUnitEntity {
+  static getSpecificUnit(unit: BaseUnitNestedDbType): UnitEntity {
     if (unit.hydrogenProductionUnit) {
       return HydrogenProductionUnitEntity.fromNestedDatabase(unit);
     }
@@ -25,21 +24,6 @@ export class EntityUtils {
     }
     if (unit.hydrogenStorageUnit) {
       return HydrogenStorageUnitEntity.fromNestedDatabase(unit);
-    }
-    throw new BrokerException('', HttpStatus.INTERNAL_SERVER_ERROR);
-  }
-
-  static getSpecificUnitForFlatBaseUnit(
-    unit: BaseUnitFlatDbType,
-  ): HydrogenProductionUnitEntity | PowerProductionUnitEntity | HydrogenStorageUnitEntity {
-    if (unit.hydrogenProductionUnit) {
-      return HydrogenProductionUnitEntity.fromFlatDatabase(unit);
-    }
-    if (unit.powerProductionUnit) {
-      return PowerProductionUnitEntity.fromFlatDatabase(unit);
-    }
-    if (unit.hydrogenStorageUnit) {
-      return HydrogenStorageUnitEntity.fromFlatDatabase(unit);
     }
     throw new BrokerException('', HttpStatus.INTERNAL_SERVER_ERROR);
   }

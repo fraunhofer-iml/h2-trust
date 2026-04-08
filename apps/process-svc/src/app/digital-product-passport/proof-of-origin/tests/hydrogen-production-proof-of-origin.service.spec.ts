@@ -44,16 +44,12 @@ describe('HydrogenProductionProofOfOriginService', () => {
       );
 
       // Assert
-
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
-      //expect(actualResult.batches).toEqual([]);
       expect(actualResult.classifications).toHaveLength(2);
       expect(actualResult.classifications[0].name).toBe(ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION);
-      //expect(actualResult.classifications[0].name).toEqual(givenPowerSubClassifications[0].name);
       expect(actualResult.classifications[0].emissionOfProcessStep).toEqual(
         givenPowerSubClassifications[0].emissionOfProcessStep,
       );
-      //expect(actualResult.classifications[1]).toEqual(givenWaterSupplyClassification);
     });
 
     it('returns section with only power supply classification when no water consumptions', () => {
@@ -82,10 +78,6 @@ describe('HydrogenProductionProofOfOriginService', () => {
       const givenWaterConsumptions = [ProcessStepEntityFixture.createWaterConsumption()];
       const givenHydrogenAmount = 100;
 
-      /*const givenWaterSupplyClassification = ProofOfOriginClassificationEntityFixture.create({
-        name: ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION,
-      });*/
-
       // Act
       const actualResult = HydrogenProductionProofOfOriginService.buildHydrogenProductionSection(
         givenPowerProductions,
@@ -94,10 +86,8 @@ describe('HydrogenProductionProofOfOriginService', () => {
       );
 
       // Assert
-
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
       expect(actualResult.classifications).toHaveLength(1);
-      //expect(actualResult.classifications[0]).toEqual(givenWaterSupplyClassification);
     });
 
     it('returns section with empty classifications when no power productions and no water consumptions', () => {
@@ -114,7 +104,6 @@ describe('HydrogenProductionProofOfOriginService', () => {
       );
 
       // Assert
-
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
       expect(actualResult.batches).toEqual([]);
       expect(actualResult.classifications).toEqual([]);

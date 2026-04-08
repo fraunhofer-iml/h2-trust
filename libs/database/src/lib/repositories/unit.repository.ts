@@ -155,7 +155,7 @@ export class UnitRepository {
       include: baseUnitDeepQueryArgs.include,
     });
 
-    return BaseUnitEntity.fromDatabase(unit);
+    return BaseUnitEntity.fromDeepBaseUnit(unit);
   }
 
   async updateOrCreateHydrogenProductionUnit(

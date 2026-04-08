@@ -18,12 +18,6 @@ import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
 import { HydrogenBottlingPosService } from '../proof-of-sustainability/hydrogen-bottling-pos.service';
 
 export class HydrogenBottlingProofOfOriginService {
-  /**
-   * Generates a Proof of Origin section based on the ProcessStep of a bottling and the total hydrogen components it contains.
-   * @param hydrogenBottling The process step of the BOTTLING.
-   * @param hydrogenComposition
-   * @returns
-   */
   public static assembleHydrogenBottlingSection(
     hydrogenBottling: ProcessStepEntity,
     hydrogenComposition: HydrogenComponentEntity[],

@@ -6,12 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  BaseUnitDeepDbType,
-  BaseUnitFlatDbType,
-  BaseUnitNestedDbType,
-  PowerProductionUnitNestedDbType,
-} from '@h2-trust/database';
+import { BaseUnitDeepDbType, BaseUnitNestedDbType, PowerProductionUnitNestedDbType } from '@h2-trust/database';
 import { BiddingZone, GridLevel, UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
@@ -81,10 +76,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     this.type = type;
   }
 
-  //TODO-LG: combine the fromDatabase functions
   static fromDeepDatabase(baseUnit: BaseUnitDeepDbType): PowerProductionUnitEntity {
-    //TODO-LG: add assertion that the given baseUnit has a powerProductionUnit Object
-
     return <PowerProductionUnitEntity>{
       ...BaseUnitEntity.fromDeepBaseUnit(baseUnit),
       unitType: UnitType.POWER_PRODUCTION,
@@ -102,8 +94,6 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
   }
 
   static fromNestedDatabase(baseUnit: BaseUnitNestedDbType): PowerProductionUnitEntity {
-    //TODO-LG: add assertion that the given baseUnit has a powerProductionUnit Object
-
     return <PowerProductionUnitEntity>{
       ...BaseUnitEntity.fromNestedBaseUnit(baseUnit),
       unitType: UnitType.POWER_PRODUCTION,
@@ -136,25 +126,6 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
       gridConnectionNumber: powerProductionUnit.generalInfo.powerProductionUnit?.gridConnectionNumber,
       financialSupportReceived: powerProductionUnit.generalInfo.powerProductionUnit?.financialSupportReceived,
       type: powerProductionUnit.generalInfo.powerProductionUnit?.type,
-    };
-  }
-
-  static fromFlatDatabase(baseUnit: BaseUnitFlatDbType): PowerProductionUnitEntity {
-    //TODO-LG: add assertion that the given baseUnit has a powerProductionUnit Object
-
-    return <PowerProductionUnitEntity>{
-      ...BaseUnitEntity.fromFlatBaseUnit(baseUnit),
-      unitType: UnitType.POWER_PRODUCTION,
-
-      decommissioningPlannedOn: baseUnit.powerProductionUnit?.decommissioningPlannedOn,
-      electricityMeterNumber: baseUnit.powerProductionUnit?.electricityMeterNumber,
-      ratedPower: baseUnit.powerProductionUnit?.ratedPower?.toNumber() ?? 0,
-      gridOperator: baseUnit.powerProductionUnit?.gridOperator,
-      gridLevel: baseUnit.powerProductionUnit?.gridLevel,
-      biddingZone: baseUnit.powerProductionUnit?.biddingZone,
-      gridConnectionNumber: baseUnit.powerProductionUnit?.gridConnectionNumber,
-      financialSupportReceived: baseUnit.powerProductionUnit?.financialSupportReceived,
-      type: baseUnit.powerProductionUnit?.type,
     };
   }
 }
