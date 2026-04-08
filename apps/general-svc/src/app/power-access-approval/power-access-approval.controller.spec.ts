@@ -7,7 +7,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { PowerAccessApprovalEntity, UserEntityHydrogenMock, UserEntityPowerMock } from '@h2-trust/amqp';
+import { PowerAccessApprovalEntity } from '@h2-trust/amqp';
 import {
   DatabaseModule,
   PowerAccessApprovalDbTypeMock,
@@ -16,6 +16,7 @@ import {
   UserRepository,
 } from '@h2-trust/database';
 import { PowerAccessApprovalStatus } from '@h2-trust/domain';
+import { UserEntityFixture } from '@h2-trust/fixtures';
 import { PowerAccessApprovalController } from './power-access-approval.controller';
 import { PowerAccessApprovalService } from './power-access-approval.service';
 
@@ -32,7 +33,7 @@ describe('PowerAccessApprovalController', () => {
     })
       .overrideProvider(UserRepository)
       .useValue({
-        findUser: jest.fn().mockResolvedValue(UserEntityHydrogenMock),
+        findUser: jest.fn().mockResolvedValue(UserEntityFixture.createHydrogenUser()),
       })
       .overrideProvider(PrismaService)
       .useValue({
@@ -57,7 +58,7 @@ describe('PowerAccessApprovalController', () => {
     jest.spyOn(prismaService.powerAccessApproval, 'findMany').mockResolvedValue(mockedPowerAccessApprovals);
 
     const actualResponse: PowerAccessApprovalEntity[] = await controller.findAll({
-      userId: UserEntityPowerMock.id,
+      userId: UserEntityFixture.createPowerUser().id,
       powerAccessApprovalStatus: PowerAccessApprovalStatus.APPROVED,
     });
 

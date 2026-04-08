@@ -8,7 +8,7 @@
 
 import { ProcessStepEntity } from '@h2-trust/amqp';
 import { BatchType, HydrogenColor, ProcessType, RfnboType } from '@h2-trust/domain';
-import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures/entities';
+import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures';
 import { HydrogenComponentAssembler } from './hydrogen-component.assembler';
 
 describe('HydrogenComponentAssembler', () => {

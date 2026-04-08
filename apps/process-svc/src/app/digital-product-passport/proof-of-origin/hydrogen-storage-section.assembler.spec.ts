@@ -8,7 +8,7 @@
 
 import { ProcessStepEntity, ProofOfOriginHydrogenBatchEntity } from '@h2-trust/amqp';
 import { BatchType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
-import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures/entities';
+import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures';
 import { HydrogenStorageSectionAssembler } from './hydrogen-storage-section.assembler';
 
 describe('HydrogenStorageSectionAssembler', () => {
@@ -47,7 +47,7 @@ describe('HydrogenStorageSectionAssembler', () => {
       expect(rfnboReadyClassification.batches).toHaveLength(1);
 
       const rfnboReadyBatch = rfnboReadyClassification.batches[0] as ProofOfOriginHydrogenBatchEntity;
-      expect(rfnboReadyBatch.id).toBe(givenRfnboReadyHydrogenProduction.batch.id);
+      expect(rfnboReadyBatch.id).toBe(givenRfnboReadyHydrogenProduction.id);
       expect(rfnboReadyBatch.amount).toBe(givenRfnboReadyHydrogenProduction.batch.amount);
       expect(rfnboReadyBatch.emission).toBeDefined();
       expect(rfnboReadyBatch.rfnboType).toBe(RfnboType.RFNBO_READY);
@@ -59,7 +59,7 @@ describe('HydrogenStorageSectionAssembler', () => {
       expect(nonCertifiableClassification.batches).toHaveLength(1);
 
       const nonCertifiableBatch = nonCertifiableClassification.batches[0] as ProofOfOriginHydrogenBatchEntity;
-      expect(nonCertifiableBatch.id).toBe(givenNonCertifiableHydrogenProduction.batch.id);
+      expect(nonCertifiableBatch.id).toBe(givenNonCertifiableHydrogenProduction.id);
       expect(nonCertifiableBatch.amount).toBe(givenNonCertifiableHydrogenProduction.batch.amount);
       expect(nonCertifiableBatch.rfnboType).toBe(RfnboType.NON_CERTIFIABLE);
     });

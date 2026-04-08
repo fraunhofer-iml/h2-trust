@@ -11,8 +11,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import {
   BottlingMessagePatterns,
   BrokerQueues,
-  ProcessStepEntity,
-  ProcessStepEntityHydrogenBottlingMock,
   ProcessStepMessagePatterns,
 } from '@h2-trust/amqp';
 import {
@@ -22,6 +20,7 @@ import {
   BottlingOverviewDto,
   UserDetailsDtoMock,
 } from '@h2-trust/api';
+import { ProcessStepEntityFixture } from '@h2-trust/fixtures';
 import 'multer';
 import { of } from 'rxjs';
 import { RfnboType } from '@h2-trust/domain';
@@ -68,14 +67,14 @@ describe('BottlingController', () => {
 
   it('should create a bottling and transportation batch', async () => {
     const givenDto: BottlingDto = BottlingDtoMock[0];
-
-    const returnedProcessStep: ProcessStepEntity = structuredClone(ProcessStepEntityHydrogenBottlingMock[0]);
-    returnedProcessStep.startedAt = new Date(givenDto.filledAt);
-    returnedProcessStep.endedAt = new Date(givenDto.filledAt);
+    const processStepFixture = ProcessStepEntityFixture.createHydrogenBottling({
+      startedAt: new Date(givenDto.filledAt),
+      endedAt: new Date(givenDto.filledAt),
+    });
 
     const processSvcSpy = jest
       .spyOn(processSvc, 'send')
-      .mockImplementation((_messagePattern, _data) => of(returnedProcessStep));
+      .mockImplementation((_messagePattern, _data) => of(processStepFixture));
 
     const expectedBatchSvcPayload1 = {
       amount: givenDto.amount,
@@ -89,14 +88,14 @@ describe('BottlingController', () => {
     };
 
     const expectedBatchSvcPayload2 = {
-      processStep: returnedProcessStep,
-      predecessorBatch: returnedProcessStep.batch,
+      processStep: processStepFixture,
+      predecessorBatch: processStepFixture.batch,
       distance: givenDto.distance,
       transportMode: givenDto.transportMode,
       fuelType: givenDto.fuelType,
     };
 
-    const expectedResponse: BottlingOverviewDto = BottlingOverviewDto.fromEntity(returnedProcessStep);
+    const expectedResponse: BottlingOverviewDto = BottlingOverviewDto.fromEntity(processStepFixture);
     const actualResponse: BottlingOverviewDto = await controller.createBottlingAndTransportation(
       givenDto,
       [],
