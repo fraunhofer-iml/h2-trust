@@ -30,6 +30,6 @@ export class ProductionStatisticsComponent {
 
   productionQuery = injectQuery(() => ({
     queryKey: ['production-statistics', this.filterValue()],
-    queryFn: () => this.productionService.getStatistics(this.filterValue()),
+    queryFn: async () => this.productionService.getStatistics(this.filterValue()),
   }));
 }

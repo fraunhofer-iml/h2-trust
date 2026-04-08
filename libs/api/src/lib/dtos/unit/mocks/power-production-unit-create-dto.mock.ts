@@ -6,10 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerProductionUnitCreateDto } from '@h2-trust/api';
+import { PowerProductionUnitInputDto } from '@h2-trust/api';
 import { BiddingZone, GridLevel, PowerProductionType, UnitType } from '@h2-trust/domain';
 
-export const PowerProductionUnitCreateDtoMock = <PowerProductionUnitCreateDto[]>[
+export const PowerProductionUnitCreateDtoMock = <PowerProductionUnitInputDto[]>[
   {
     unitType: UnitType.POWER_PRODUCTION,
     name: 'Onshore Wind Turbine 3000',

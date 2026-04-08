@@ -12,6 +12,7 @@ import { CsvDocumentEntity, ProofEntity, ReadByIdPayload } from '@h2-trust/amqp'
 import { BlockchainService, HashUtil } from '@h2-trust/blockchain';
 import { CsvImportRepository } from '@h2-trust/database';
 import { BatchType, CsvDocumentIntegrityStatus } from '@h2-trust/domain';
+import { CsvDocumentEntityFixture, ProofEntityFixture } from '@h2-trust/fixtures';
 import { DecentralizedStorageService } from '@h2-trust/storage';
 import { CsvDocumentService } from './csv-document.service';
 
@@ -71,8 +72,22 @@ describe('CsvDocumentService', () => {
       const givenCompanyId = 'company-1';
       const givenPayload = new ReadByIdPayload(givenCompanyId);
       const givenDocuments = [
-        new CsvDocumentEntity('doc-1', 'file-1.csv', BatchType.POWER, new Date(), new Date(), 10),
-        new CsvDocumentEntity('doc-2', 'file-2.csv', BatchType.HYDROGEN, new Date(), new Date(), 5),
+        CsvDocumentEntityFixture.create({
+          id: 'doc-1',
+          fileName: 'file-1.csv',
+          type: BatchType.POWER,
+          startedAt: new Date(),
+          endedAt: new Date(),
+          amount: 10,
+        }),
+        CsvDocumentEntityFixture.create({
+          id: 'doc-2',
+          fileName: 'file-2.csv',
+          type: BatchType.HYDROGEN,
+          startedAt: new Date(),
+          endedAt: new Date(),
+          amount: 5,
+        }),
       ];
 
       csvImportRepositoryMock.findAllCsvDocumentsByCompanyId.mockResolvedValue(givenDocuments);
@@ -90,17 +105,20 @@ describe('CsvDocumentService', () => {
     it(`returns ${CsvDocumentIntegrityStatus.VERIFIED} when file exists and hash verification succeeds`, async () => {
       // Arrange
       const givenPayload = new ReadByIdPayload('doc-1');
-      const givenDocument = new CsvDocumentEntity(
-        givenPayload.id,
-        'production.csv',
-        BatchType.POWER,
-        new Date('2026-01-01T00:00:00.000Z'),
-        new Date('2026-01-01T00:15:00.000Z'),
-        42,
-        'tx-hash',
-      );
+      const givenDocument = CsvDocumentEntityFixture.create({
+        id: givenPayload.id,
+        fileName: 'production.csv',
+        type: BatchType.POWER,
+        amount: 42,
+        transactionHash: 'tx-hash',
+      });
+
       const givenFileStream = Readable.from(['csv-content']);
-      const givenProof = new ProofEntity(givenDocument.id, 'stored-hash', 'cid-1');
+      const givenProof = ProofEntityFixture.create({
+        uuid: givenDocument.id,
+        hash: 'stored-hash',
+        cid: 'cid-1',
+      });
 
       csvImportRepositoryMock.findCsvDocumentById.mockResolvedValue(givenDocument);
       storageServiceMock.downloadFile.mockResolvedValue(givenFileStream);
@@ -135,17 +153,20 @@ describe('CsvDocumentService', () => {
     it(`returns ${CsvDocumentIntegrityStatus.MISMATCH} when hash verification fails`, async () => {
       // Arrange
       const givenPayload = new ReadByIdPayload('doc-2');
-      const givenDocument = new CsvDocumentEntity(
-        givenPayload.id,
-        'hydrogen.csv',
-        BatchType.HYDROGEN,
-        new Date('2026-01-01T00:00:00.000Z'),
-        new Date('2026-01-01T00:15:00.000Z'),
-        7,
-        'tx-hash-2',
-      );
+      const givenDocument = CsvDocumentEntityFixture.create({
+        id: givenPayload.id,
+        fileName: 'hydrogen.csv',
+        type: BatchType.HYDROGEN,
+        amount: 7,
+        transactionHash: 'tx-hash-2',
+      });
+
       const givenFileStream = Readable.from(['csv-content']);
-      const givenProof = new ProofEntity(givenDocument.id, 'stored-hash-2', 'cid-2');
+      const givenProof = ProofEntityFixture.create({
+        uuid: givenDocument.id,
+        hash: 'stored-hash-2',
+        cid: 'cid-2',
+      });
 
       csvImportRepositoryMock.findCsvDocumentById.mockResolvedValue(givenDocument);
       storageServiceMock.downloadFile.mockResolvedValue(givenFileStream);
@@ -176,15 +197,13 @@ describe('CsvDocumentService', () => {
     it(`returns ${CsvDocumentIntegrityStatus.FAILED} when blockchain integration is disabled`, async () => {
       // Arrange
       const givenPayload = new ReadByIdPayload('doc-1');
-      const givenDocument = new CsvDocumentEntity(
-        givenPayload.id,
-        'production.csv',
-        BatchType.POWER,
-        new Date('2026-01-01T00:00:00.000Z'),
-        new Date('2026-01-01T00:15:00.000Z'),
-        42,
-        'tx-hash',
-      );
+      const givenDocument = CsvDocumentEntityFixture.create({
+        id: givenPayload.id,
+        fileName: 'production.csv',
+        type: BatchType.POWER,
+        amount: 42,
+        transactionHash: 'tx-hash',
+      });
 
       blockchainServiceMock.blockchainEnabled = false;
       csvImportRepositoryMock.findCsvDocumentById.mockResolvedValue(givenDocument);
@@ -245,8 +264,8 @@ describe('CsvDocumentService', () => {
         givenPayload.id,
         'production.csv',
         BatchType.POWER,
-        new Date('2026-01-01T00:00:00.000Z'),
-        new Date('2026-01-01T00:15:00.000Z'),
+        new Date(),
+        new Date(),
         1,
       );
 
@@ -278,15 +297,13 @@ describe('CsvDocumentService', () => {
     it(`returns ${CsvDocumentIntegrityStatus.FAILED} when file does not exist in storage`, async () => {
       // Arrange
       const givenPayload = new ReadByIdPayload('doc-3');
-      const givenDocument = new CsvDocumentEntity(
-        givenPayload.id,
-        'missing-file.csv',
-        BatchType.POWER,
-        new Date('2026-01-01T00:00:00.000Z'),
-        new Date('2026-01-01T00:15:00.000Z'),
-        3,
-        'tx-hash-3',
-      );
+      const givenDocument = CsvDocumentEntityFixture.create({
+        id: givenPayload.id,
+        fileName: 'missing-file.csv',
+        type: BatchType.POWER,
+        amount: 3,
+        transactionHash: 'tx-hash-3',
+      });
 
       csvImportRepositoryMock.findCsvDocumentById.mockResolvedValue(givenDocument);
       storageServiceMock.downloadFile.mockResolvedValue(null);

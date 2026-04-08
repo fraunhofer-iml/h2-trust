@@ -1,0 +1,49 @@
+@if (unit(); as data) {
+  <div class="col-span-3 grid grid-cols-3 gap-4 rounded-lg bg-white p-4 xl:grid-cols-4">
+    <div class="col-span-3 flex items-center justify-between xl:col-span-4">
+      <h3 class="font-semibold text-neutral-500">Details</h3>
+      <div class="flex gap-2">
+        <app-unit-status-chip [unit]="{ unitType: data.unitType, active: data.active }"></app-unit-status-chip>
+        <app-unit-type-chip [unitType]="data.unitType"></app-unit-type-chip>
+      </div>
+    </div>
+
+    <div class="flex flex-col text-sm">
+      <span class="text-sm text-neutral-400">Name</span><span>{{ data.name }}</span>
+    </div>
+    <div class="flex flex-col text-sm">
+      <span class="text-sm text-neutral-400">Owner</span><span>{{ data.owner.name }}</span>
+    </div>
+    <div class="flex flex-col text-sm">
+      <span class="text-sm text-neutral-400">Operator</span><span>{{ data.operator.name }}</span>
+    </div>
+    <div class="flex flex-col text-sm">
+      <span class="text-sm text-neutral-400">Manufacturer</span><span>{{ data.manufacturer }}</span>
+    </div>
+    <div class="flex flex-col text-sm">
+      <span class="text-sm text-neutral-400">Model Type</span><span>{{ data.modelType }}</span>
+    </div>
+    <div class="flex flex-col text-sm">
+      <span class="text-sm text-neutral-400">Model Number</span><span>{{ data.modelNumber }}</span>
+    </div>
+    <div class="flex flex-col text-sm">
+      <span class="text-sm text-neutral-400">Serial Number</span><span>{{ data.serialNumber }}</span>
+    </div>
+    <div class="flex flex-col text-sm">
+      <span class="text-sm text-neutral-400">Commissioned on</span><span>{{ data.commissionedOn | date }}</span>
+    </div>
+    <div class="flex flex-col text-sm">
+      <span class="text-sm text-neutral-400">MaStrNumber</span><span>{{ data.mastrNumber }}</span>
+    </div>
+    <div class="flex flex-col text-sm">
+      <span class="text-sm text-neutral-400">Certified By</span><span>{{ data.certifiedBy }}</span>
+    </div>
+    <div class="flex flex-col text-sm">
+      <span class="text-sm text-neutral-400">Address</span
+      ><span
+        >{{ data.address.street }} {{ data.address.postalCode }} {{ data.address.city }}, {{ data.address.state }}
+        {{ data.address.country }}</span
+      >
+    </div>
+  </div>
+}
