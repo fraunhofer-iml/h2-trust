@@ -39,19 +39,31 @@ export class VerifyComponent {
     this.verifying = false;
   }
 
-  onCopied(success: boolean) {
+  onCopied(success: boolean, label: string) {
     if (success) {
-      toast.success('Transaction hash copied to clipboard!');
+      toast.success(`${label} copied to clipboard.`);
     }
   }
 
   openUrl(url: string | null) {
     if (!url) {
-      toast.error('Missing url!');
+      toast.error('Link is not available.');
       return;
     }
 
     window.open(url, '_blank');
+  }
+
+  formatDateTime(value: string | Date | null) {
+    if (!value) {
+      return 'Not available';
+    }
+
+    return new Intl.DateTimeFormat('en-US', {
+      dateStyle: 'medium',
+      timeStyle: 'medium',
+      timeZone: 'UTC',
+    }).format(new Date(value));
   }
 
   get result() {

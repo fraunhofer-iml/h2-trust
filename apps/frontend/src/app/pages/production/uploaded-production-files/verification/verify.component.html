@@ -2,7 +2,7 @@
   <button matButton="filled" disabled class="gap-1">
     <span class="flex flex-row items-center gap-2">
       <span class="material-symbols-outlined animate-spin" matButtonPrefix>progress_activity</span>
-      Verifiying...
+      Verifying...
     </span>
   </button>
 } @else if (!result || result.status === CsvDocumentIntegrityStatus.FAILED) {
@@ -18,7 +18,8 @@
     <h1 class="font-semibold">Verification Result</h1>
 
     @if (result; as res) {
-      <p class="">File-Id: {{ res.documentId }}</p>
+      <p class="text-sm text-neutral-600">File ID: {{ res.documentId }}</p>
+      <p class="text-sm text-neutral-600">File Name: {{ res.fileName || 'Not available' }}</p>
       <div class="mt-4 flex flex-col gap-4">
         <div
           class="rounded-xl border-2 p-4"
@@ -40,66 +41,37 @@
         <div
           class="flex flex-col gap-4 rounded-xl border-[2px] border-solid border-neutral-100 bg-neutral-50 p-4 text-sm text-neutral-600"
         >
-          <span class="text-md font-semibold">Details</span>
+          <div>
+            <span class="text-md font-semibold text-black">Blockchain Proof</span>
+            <p class="mt-1 text-xs text-neutral-500">On-chain proof reference for independent verification and traceability.</p>
+          </div>
 
           <span>
-            File Name
-            <p class="truncate text-black">{{ res.fileName }}</p>
-          </span>
-
-          <span class="">
             Transaction Hash
-            <p class="truncate text-black">{{ res.transactionHash }}</p>
+            <p class="truncate text-black">{{ res.transactionHash || 'Not available' }}</p>
           </span>
 
           <span>
             Block Number
-            <p class="text-black">{{ res.blockNumber }}</p>
+            <p class="text-black">{{ res.blockNumber || 'Not available' }}</p>
           </span>
 
           <span>
             Block Timestamp
-            <p class="text-black">{{ res.blockTimestamp }}</p>
+            <p class="text-black">{{ formatDateTime(res.blockTimestamp) || 'Not available' }}</p>
           </span>
 
           <span>
             Smart Contract Address
-            <p class="truncate text-black">{{ res.smartContractAddress }}</p>
+            <p class="truncate text-black">{{ res.smartContractAddress || 'Not available' }}</p>
           </span>
 
           <span>
             Network
-            <p class="text-black">{{ res.network }}</p>
+            <p class="text-black">{{ res.network || 'Not available' }}</p>
           </span>
-        </div>
 
-        <div class="rounded-xl border-[2px] border-neutral-100 bg-neutral-50 p-4 text-sm text-neutral-600">
-          <span class="text-md font-semibold">Actions</span>
-          <p class="mt-1">
-            Open the IPFS or blockchain explorer, or copy the content identifier and transaction hash for your records.
-          </p>
           <div class="mt-4 grid max-w-4xl grid-cols-1 gap-3 sm:grid-cols-2">
-            <button
-              matButton="outlined"
-              (click)="openUrl(res.ipfsExplorerUrl)"
-              class="!inline-flex !min-h-0 !w-full !items-center !justify-center !rounded-xl px-4 py-2"
-            >
-              <span class="flex items-center gap-2 text-center">
-                <span class="material-symbols-outlined">description</span>
-                <span class="font-medium">Open IPFS explorer</span>
-              </span>
-            </button>
-            <button
-              matButton="outlined"
-              [cdkCopyToClipboard]="res.cid ?? ''"
-              (cdkCopyToClipboardCopied)="onCopied($event)"
-              class="!inline-flex !min-h-0 !w-full !items-center !justify-center !rounded-xl px-4 py-2"
-            >
-              <span class="flex items-center gap-2 text-center">
-                <span class="material-symbols-outlined">content_copy</span>
-                <span class="font-medium">Copy Content Identifier</span>
-              </span>
-            </button>
             <button
               matButton="outlined"
               (click)="openUrl(res.blockchainExplorerUrl)"
@@ -107,18 +79,56 @@
             >
               <span class="flex items-center gap-2 text-center">
                 <span class="material-symbols-outlined">token</span>
-                <span class="font-medium">Open Blockchain Explorer</span>
+                <span class="font-medium">Open Explorer</span>
               </span>
             </button>
             <button
               matButton="outlined"
               [cdkCopyToClipboard]="res.transactionHash ?? ''"
-              (cdkCopyToClipboardCopied)="onCopied($event)"
+              (cdkCopyToClipboardCopied)="onCopied($event, 'Transaction hash')"
               class="!inline-flex !min-h-0 !w-full !items-center !justify-center !rounded-xl px-4 py-2"
             >
               <span class="flex items-center gap-2 text-center">
                 <span class="material-symbols-outlined">content_copy</span>
                 <span class="font-medium">Copy Transaction Hash</span>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="flex flex-col gap-4 rounded-xl border-[2px] border-solid border-neutral-100 bg-neutral-50 p-4 text-sm text-neutral-600"
+        >
+          <div>
+            <span class="text-md font-semibold text-black">Decentralized Storage</span>
+            <p class="mt-1 text-xs text-neutral-500">Content-addressed storage reference for independent retrieval.</p>
+          </div>
+
+          <span>
+            Content Identifier
+            <p class="truncate text-black">{{ res.cid || 'Not available' }}</p>
+          </span>
+
+          <div class="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <button
+              matButton="outlined"
+              (click)="openUrl(res.ipfsExplorerUrl)"
+              class="!inline-flex !min-h-0 !w-full !items-center !justify-center !rounded-xl px-4 py-2"
+            >
+              <span class="flex items-center gap-2 text-center">
+                <span class="material-symbols-outlined">description</span>
+                <span class="font-medium">Open Explorer</span>
+              </span>
+            </button>
+            <button
+              matButton="outlined"
+              [cdkCopyToClipboard]="res.cid ?? ''"
+              (cdkCopyToClipboardCopied)="onCopied($event, 'Content identifier')"
+              class="!inline-flex !min-h-0 !w-full !items-center !justify-center !rounded-xl px-4 py-2"
+            >
+              <span class="flex items-center gap-2 text-center">
+                <span class="material-symbols-outlined">content_copy</span>
+                <span class="font-medium">Copy Content Identifier</span>
               </span>
             </button>
           </div>

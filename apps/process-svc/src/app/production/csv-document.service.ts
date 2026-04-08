@@ -105,8 +105,8 @@ export class CsvDocumentService {
   ): VerifyCsvDocumentIntegrityResultEntity {
     const status = validHash ? CsvDocumentIntegrityStatus.VERIFIED : CsvDocumentIntegrityStatus.MISMATCH;
     const message = validHash
-      ? `File integrity verified successfully for CsvDocument with id ${documentId}.`
-      : `File integrity mismatch for CsvDocument with id ${documentId}.`;
+      ? 'The file matches the registered proof.'
+      : 'The file does not match the registered proof.';
 
     return this.createResult(documentId, fileName, status, message, transactionHash, blockNumber, blockTimestamp, cid);
   }
