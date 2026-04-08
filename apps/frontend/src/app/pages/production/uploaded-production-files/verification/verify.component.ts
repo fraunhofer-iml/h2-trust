@@ -56,6 +56,21 @@ export class VerifyComponent {
     window.open(url, '_blank');
   }
 
+  compactValue(value: string | null) {
+    if (!value) {
+      return 'Not available';
+    }
+
+    const leadingChars = 6;
+    const trailingChars = 4;
+
+    if (value.length <= leadingChars + trailingChars + 3) {
+      return value;
+    }
+
+    return `${value.slice(0, leadingChars)}...${value.slice(-trailingChars)}`;
+  }
+
   get result() {
     return this.verificationResultStore.getVerificationResult(this.file().id);
   }

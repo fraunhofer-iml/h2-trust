@@ -76,7 +76,9 @@
 
           <span>
             Transaction Hash
-            <p class="truncate text-black">{{ res.transactionHash || 'Not available' }}</p>
+            <p class="font-mono text-black" [attr.title]="res.transactionHash || null">
+              {{ compactValue(res.transactionHash) }}
+            </p>
           </span>
 
           <span>
@@ -97,7 +99,9 @@
 
           <span>
             Smart Contract Address
-            <p class="truncate text-black">{{ res.smartContractAddress || 'Not available' }}</p>
+            <p class="font-mono text-black" [attr.title]="res.smartContractAddress || null">
+              {{ compactValue(res.smartContractAddress) }}
+            </p>
           </span>
 
           <span>
@@ -140,7 +144,7 @@
 
           <span>
             Content Identifier
-            <p class="truncate text-black">{{ res.cid || 'Not available' }}</p>
+            <p class="font-mono text-black" [attr.title]="res.cid || null">{{ compactValue(res.cid) }}</p>
           </span>
 
           <div class="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
