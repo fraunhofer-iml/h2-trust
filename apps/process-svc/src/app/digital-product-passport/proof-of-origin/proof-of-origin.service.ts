@@ -14,7 +14,7 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/amqp';
 import { ProofOfOrigin } from '@h2-trust/domain';
-import { PROOF_OF_ORIGIN_ASSEMBLERS } from './proof-of-origin-assembler.registry.const';
+import { proofOfOriginAssemblers } from './proof-of-origin-assembler.registry.const';
 
 @Injectable()
 export class ProofOfOriginService {
@@ -25,7 +25,7 @@ export class ProofOfOriginService {
    * @returns A list of the ProofOfOrigin sections for all production steps shown in the provenance or an empty list if it is not a bottling or a transport.
    */
   public createProofOfOrigin(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {
-    return PROOF_OF_ORIGIN_ASSEMBLERS.flatMap((proofOfOriginAssembler) =>
+    return proofOfOriginAssemblers.flatMap((proofOfOriginAssembler) =>
       proofOfOriginAssembler.assembleSection(provenance),
     );
   }

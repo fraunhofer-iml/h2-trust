@@ -12,7 +12,7 @@ import { HydrogenStorageProofOfOriginService } from './hydrogen-storage-proof-of
 import { HydrogenTransportationProofOfOriginService } from './hydrogen-transportation-proof-of-origin.service';
 import { ProofOfOriginAssembler } from './proof-of-origin-assembler.interface';
 
-export const PROOF_OF_ORIGIN_ASSEMBLERS: ProofOfOriginAssembler[] = [
+export const proofOfOriginAssemblers: ProofOfOriginAssembler[] = [
   new HydrogenProductionProofOfOriginService(),
   new HydrogenStorageProofOfOriginService(),
   new HydrogenTransportationProofOfOriginService(),
