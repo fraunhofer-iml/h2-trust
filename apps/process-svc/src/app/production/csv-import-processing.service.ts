@@ -32,7 +32,7 @@ export class CsvImportProcessingService {
     private readonly decentralizedStorageService: DecentralizedStorageService
   ) { }
 
-  async parseAndUploadImports<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
+  async parseAndUploadFiles<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
     unitFileImports: UnitFileImport[],
     type: Exclude<BatchType, BatchType.WATER>,
   ): Promise<ParsedImport<T>[]> {
@@ -42,10 +42,10 @@ export class CsvImportProcessingService {
       unitFileImports.map(async (ufi) => {
         const buffer = Buffer.from(ufi.encodedFileBuffer, 'base64');
         const computedHash = HashUtil.hashBuffer(buffer);
-        const fileHash = ufi.hashedFileBuffer;
+        const expectedHash = ufi.hashedFileBuffer;
 
-        if (computedHash !== fileHash) {
-          throw new Error(`File integrity check failed for unit ${ufi.unitId}: expected hash ${fileHash} but computed ${computedHash}`);
+        if (computedHash !== expectedHash) {
+          throw new Error(`File integrity check failed for unit ${ufi.unitId}: expected hash ${expectedHash} but computed ${computedHash}`);
         }
 
         const accountingPeriods = await AccountingPeriodCsvParser.parseBuffer<T>(buffer, headers);
@@ -54,7 +54,7 @@ export class CsvImportProcessingService {
           throw new Error(`${type} production file does not contain any valid items.`);
         }
 
-        const fileName = `${fileHash}.csv`;
+        const fileName = `${expectedHash}.csv`;
         await this.centralizedStorageService.uploadCsvFile(fileName, buffer);
         const cid = await this.decentralizedStorageService.uploadCsvFile(fileName, buffer);
 
@@ -62,7 +62,7 @@ export class CsvImportProcessingService {
           periods: new UnitAccountingPeriods<T>(ufi.unitId, accountingPeriods),
           type,
           fileName,
-          hash: fileHash,
+          hash: expectedHash,
           cid,
         };
       }),

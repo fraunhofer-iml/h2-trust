@@ -40,8 +40,8 @@ export class ProductionStagingService {
 
   async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
     const [parsedPowerImports, parsedHydrogenImports] = await Promise.all([
-      this.csvImportProcessingService.parseAndUploadImports<AccountingPeriodPower>(payload.powerProductionImports, BatchType.POWER),
-      this.csvImportProcessingService.parseAndUploadImports<AccountingPeriodHydrogen>(payload.hydrogenProductionImports, BatchType.HYDROGEN),
+      this.csvImportProcessingService.parseAndUploadFiles<AccountingPeriodPower>(payload.powerProductionImports, BatchType.POWER),
+      this.csvImportProcessingService.parseAndUploadFiles<AccountingPeriodHydrogen>(payload.hydrogenProductionImports, BatchType.HYDROGEN),
     ]);
 
     const distributedProductions = ProductionDistributor.distributeProductions(
