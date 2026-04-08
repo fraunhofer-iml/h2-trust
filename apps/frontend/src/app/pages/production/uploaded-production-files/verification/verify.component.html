@@ -5,7 +5,7 @@
       Verifying...
     </span>
   </button>
-} @else if (!result || result.status !== CsvDocumentIntegrityStatus.VERIFIED) {
+} @else if (!result || result.status === CsvDocumentIntegrityStatus.FAILED) {
   <button matButton="filled" (click)="verify()" [disabled]="disabled()">Verify</button>
 } @else {
   <button matButton="outlined" (click)="sheet.open()" class="!bg-neutral-200">Inspect</button>
@@ -31,7 +31,7 @@
         >
           <span class="flex items-center gap-2">
             <span class="material-symbols-outlined">
-              check_circle
+              {{ res.status === CsvDocumentIntegrityStatus.MISMATCH ? 'cancel' : 'check_circle' }}
             </span>
             {{ res.status | titlecase }}</span
           >
