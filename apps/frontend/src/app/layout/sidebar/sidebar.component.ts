@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { filter } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, OnInit, signal, Signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal, Signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,7 +16,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { NavigationStart, Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
 import { ROUTES } from '../../shared/constants/routes';
@@ -54,14 +54,9 @@ export class SidebarComponent implements OnInit {
   protected readonly router = inject(Router);
   protected readonly unitsService = inject(UnitsService);
   protected readonly ppaService = inject(PowerAccessApprovalService);
-
+  protected readonly authService = inject(AuthService);
+  private destroyRef = inject(DestroyRef);
   protected isMenuOpen = false;
-
-  constructor(readonly authService: AuthService) {
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationStart))
-      .subscribe(() => (this.isMenuOpen = false));
-  }
 
   ppaRequestsQuery = injectQuery(() => ({
     queryKey: ['ppa-requests', PowerAccessApprovalStatus.PENDING],
@@ -114,6 +109,10 @@ export class SidebarComponent implements OnInit {
   userLastName = '';
   userEmail = '';
 
+  closeMenu(): void {
+    this.isMenuOpen = false;
+  }
+
   async ngOnInit() {
     this.isAuthenticated = this.authService.isAuthenticated();
     if (this.isAuthenticated) {
@@ -122,6 +121,10 @@ export class SidebarComponent implements OnInit {
       this.userLastName = userProfile.lastName;
       this.userEmail = userProfile.email;
     }
+
+    this.router.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      this.isMenuOpen = false;
+    });
   }
 
   isActive(route: string | null): boolean {
