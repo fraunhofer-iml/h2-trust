@@ -106,7 +106,7 @@ export class ProductionService {
 
     const payload = new CreateHydrogenProductionStatisticsPayload(ownerId, month, unitName);
     const productionStatistics: ProductionStatisticsEntity = await firstValueFrom(
-      this.processSvc.send(ProcessStepMessagePatterns.CREATE_PRODUCTION_STATISTICS, payload),
+      this.processSvc.send(ProductionMessagePatterns.CREATE_PRODUCTION_STATISTICS, payload),
     );
     return ProductionStatisticsDto.fromEntity(productionStatistics);
   }
