@@ -8,7 +8,7 @@
 
 import { ProofOfOriginHydrogenBatchEntity } from '@h2-trust/amqp';
 import { ProofOfOrigin } from '@h2-trust/domain';
-import { HydrogenComponentEntityFixture, ProcessStepEntityFixture } from '@h2-trust/fixtures/entities';
+import { HydrogenComponentEntityFixture, ProcessStepEntityFixture } from '@h2-trust/fixtures';
 import { HydrogenBottlingSectionAssembler } from './hydrogen-bottling-section.assembler';
 
 describe('HydrogenBottlingSectionAssembler', () => {
@@ -33,7 +33,7 @@ describe('HydrogenBottlingSectionAssembler', () => {
       expect(actualResult.classifications).toEqual([]);
 
       const batch = actualResult.batches[0] as ProofOfOriginHydrogenBatchEntity;
-      expect(batch.id).toBe(givenHydrogenBottling.batch.id);
+      expect(batch.id).toBe(givenHydrogenBottling.id);
       expect(batch.emission).toBeDefined();
       expect(batch.emission.totalEmissionsPerKgHydrogen).toBe(0);
       expect(batch.emission.basisOfCalculation).toEqual(['E = [TBD]']);

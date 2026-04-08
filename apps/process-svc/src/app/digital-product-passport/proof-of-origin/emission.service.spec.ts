@@ -17,7 +17,7 @@ import {
   PowerProductionUnitEntityFixture,
   ProcessStepEntityFixture,
   TransportationDetailsEntityFixture,
-} from '@h2-trust/fixtures/entities';
+} from '@h2-trust/fixtures';
 import { EmissionService } from './emission.service';
 
 describe('EmissionService', () => {

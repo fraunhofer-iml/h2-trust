@@ -13,7 +13,7 @@ import {
   ProcessStepEntityFixture,
   ProofOfOriginClassificationEntityFixture,
   ProofOfOriginSubClassificationEntityFixture,
-} from '@h2-trust/fixtures/entities';
+} from '@h2-trust/fixtures';
 import { HydrogenProductionSectionService } from './hydrogen-production-section.service';
 import { PowerSupplyClassificationService } from './power-supply-classification.service';
 import { WaterSupplyClassificationAssembler } from './water-supply-classification.assembler';
