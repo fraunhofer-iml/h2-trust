@@ -20,7 +20,8 @@ import { Router, RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
 import { ROUTES } from '../../shared/constants/routes';
-import { AuthService, UserProfile } from '../../shared/services/auth/auth.service';
+import { UserProfile } from '../../shared/model/user-profile.model';
+import { AuthService } from '../../shared/services/auth/auth.service';
 import { PowerAccessApprovalService } from '../../shared/services/power-access-approvals/power-access-approvals.service';
 import { UnitsService } from '../../shared/services/units/units.service';
 import { UsersService } from '../../shared/services/users/users.service';
@@ -104,12 +105,12 @@ export class SidebarComponent implements OnInit {
     },
   ];
 
-  isAuthenticated = false;
+  authenticated = false;
   profile: UserProfile = {} as UserProfile;
 
   async ngOnInit() {
-    this.isAuthenticated = this.authService.isAuthenticated();
-    if (this.isAuthenticated) {
+    this.authenticated = this.authService.isAuthenticated();
+    if (this.authenticated) {
       this.profile = await this.authService.getCurrentUserDetails();
     }
 

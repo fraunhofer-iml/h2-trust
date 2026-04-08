@@ -8,7 +8,7 @@
 
 import { AuthenticatedUser } from 'nest-keycloak-connect';
 import { Body, Controller, Get, NotImplementedException, Param, Patch, Post, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { PowerAccessApprovalDto, PpaRequestCreateDto, PpaRequestDto, type AuthenticatedKCUser } from '@h2-trust/api';
 import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PowerAccessApprovalService } from './power-access-approval.service';
@@ -71,7 +71,8 @@ export class PowerAccessApprovalController {
   }
 
   @Patch('requests/:id')
-  @ApiOkResponse({ description: 'Returns created Request', type: PpaRequestDto })
+  @ApiOkResponse({ description: 'Returns Request that war rejected or denied', type: PpaRequestDto })
+  @ApiParam({ name: 'id', description: 'Id of PPA Request to update' })
   closePpaRequest(
     @Body() _dto: PpaRequestDto,
     @Param('id') _id: string,

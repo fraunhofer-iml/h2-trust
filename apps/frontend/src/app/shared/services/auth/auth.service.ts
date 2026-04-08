@@ -8,13 +8,8 @@
 
 import Keycloak, { KeycloakProfile } from 'keycloak-js';
 import { inject, Injectable } from '@angular/core';
+import { UserProfile } from '../../model/user-profile.model';
 import { VerificationResultStore } from '../../store/verification-result.store';
-
-export interface UserProfile {
-  firstName: string;
-  lastName: string;
-  email: string;
-}
 
 @Injectable()
 export class AuthService {
