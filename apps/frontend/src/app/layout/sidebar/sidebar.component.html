@@ -50,14 +50,67 @@
           </div>
         }
       </div>
-      <div class="relative p-4">
+      <div class="p-4">
         <div
           [matBadge]="ppaRequestsQuery.data()?.length"
           matBadgeSize="large"
           [matBadgeHidden]="ppaRequestsQuery.data()?.length === 0"
         >
-          <button class="w-full cursor-pointer rounded-lg border p-3 shadow-md" (click)="toggleMenu()">
-            @if (authenticated) {
+          @if (!authenticated) {
+            <div
+              class="flex w-full flex-row items-center justify-between p-3 text-primary-700"
+              (click)="signIn()"
+              role="none"
+            >
+              <span class="text-lg">Sign In</span>
+              <span class="material-symbols-outlined">login</span>
+            </div>
+          } @else {
+            <div
+              class="mb-2 flex w-full origin-bottom flex-col rounded-lg border border-neutral-200 bg-white p-2 shadow-md transition-all duration-200"
+              [class]="
+                isMenuOpen
+                  ? 'visible translate-y-0 scale-100 opacity-100'
+                  : 'pointer-events-none invisible -translate-y-1 scale-95 opacity-0'
+              "
+            >
+              <!-- Account -->
+              <a
+                routerLink="/"
+                class="flex items-center gap-3 rounded-lg p-3 text-neutral-600 hover:bg-primary-500 hover:text-white"
+                (click)="closeMenu(); $event.stopPropagation()"
+              >
+                <span class="material-symbols-outlined">person</span>
+                <span>My account</span>
+              </a>
+
+              <!-- PPA Requests -->
+              <a
+                routerLink="/ppa-requests"
+                class="flex items-center gap-3 rounded-lg p-3 text-neutral-600 hover:bg-primary-500 hover:text-white"
+                (click)="closeMenu(); $event.stopPropagation()"
+              >
+                <span
+                  class="material-symbols-outlined relative"
+                  [matBadge]="ppaRequestsQuery.data()?.length"
+                  matBadgeSize="large"
+                  [matBadgeHidden]="ppaRequestsQuery.data()?.length === 0"
+                >
+                  mail
+                </span>
+                <span>PPA Requests</span>
+              </a>
+
+              <!-- Sign Out -->
+              <button
+                (click)="logout(); $event.stopPropagation()"
+                class="flex w-full items-center gap-3 rounded-lg p-3 text-neutral-600 hover:bg-primary-500 hover:text-white"
+              >
+                <span class="material-symbols-outlined">logout</span>
+                <span>Sign Out</span>
+              </button>
+            </div>
+            <button class="w-full cursor-pointer rounded-lg border p-3 shadow-md" (click)="toggleMenu()">
               <div class="flex flex-row items-center justify-between gap-4">
                 <div class="flex flex-row items-center gap-2">
                   <span class="material-symbols-outlined rounded-full border bg-primary-50 p-1 text-primary-400"
@@ -72,62 +125,8 @@
 
                 <span class="material-symbols-outlined pr-2 text-lg text-neutral-600">expand_all</span>
               </div>
-
-              <div
-                class="absolute -top-[11rem] left-0 flex w-full origin-bottom flex-col rounded-lg border border-neutral-200 bg-white p-2 shadow-md transition-all duration-200"
-                [class]="
-                  isMenuOpen
-                    ? 'visible translate-y-0 scale-100 opacity-100'
-                    : 'pointer-events-none invisible -translate-y-1 scale-95 opacity-0'
-                "
-              >
-                <!-- Account -->
-                <a
-                  routerLink="/"
-                  class="flex items-center gap-3 rounded-lg p-3 text-neutral-600 hover:bg-primary-500 hover:text-white"
-                  (click)="closeMenu(); $event.stopPropagation()"
-                >
-                  <span class="material-symbols-outlined">person</span>
-                  <span>My account</span>
-                </a>
-
-                <!-- PPA Requests -->
-                <a
-                  routerLink="/ppa-requests"
-                  class="flex items-center gap-3 rounded-lg p-3 text-neutral-600 hover:bg-primary-500 hover:text-white"
-                  (click)="closeMenu(); $event.stopPropagation()"
-                >
-                  <span
-                    class="material-symbols-outlined relative"
-                    [matBadge]="ppaRequestsQuery.data()?.length"
-                    matBadgeSize="large"
-                    [matBadgeHidden]="ppaRequestsQuery.data()?.length === 0"
-                  >
-                    mail
-                  </span>
-                  <span>PPA Requests</span>
-                </a>
-
-                <!-- Sign Out -->
-                <button
-                  (click)="logout(); $event.stopPropagation()"
-                  class="flex w-full items-center gap-3 rounded-lg p-3 text-neutral-600 hover:bg-primary-500 hover:text-white"
-                >
-                  <span class="material-symbols-outlined">logout</span>
-                  <span>Sign Out</span>
-                </button>
-              </div>
-            } @else {
-              <div
-                class="flex w-full flex-row items-center justify-between p-3 text-primary-700"
-                (click)="signIn()"
-                role="none"
-              >
-                <span class="text-lg">Sign In</span>
-                <span class="material-symbols-outlined">login</span>
-              </div>
-            }
-          </button>
+            </button>
+          }
         </div>
       </div>
     </div>
