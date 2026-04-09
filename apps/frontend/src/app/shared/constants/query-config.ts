@@ -6,6 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './power-access-approval.dto';
-export * from './ppa-request.dto';
-export * from './mocks';
+export const QUERY_CONFIG = {
+  STALE_TIME: 60 * 1000,
+};

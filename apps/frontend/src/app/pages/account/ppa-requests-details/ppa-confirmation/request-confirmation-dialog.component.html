@@ -1,0 +1,18 @@
+<h3 mat-dialog-title>{{ data === PowerAccessApprovalStatus.APPROVED ? 'Approve' : 'Reject' }} Request</h3>
+<div class="!w-[28rem] px-6 text-sm text-neutral-500">
+  <p>Are you sure you want to {{ data === PowerAccessApprovalStatus.APPROVED ? 'approve' : 'reject' }} this request?</p>
+  <p>You can optionally add a comment below.</p>
+  <mat-form-field appearance="outline" class="w-full pt-2">
+    <mat-label>Leave a comment</mat-label>
+    <textarea matInput placeholder="Since we have..." [(ngModel)]="comment"></textarea>
+  </mat-form-field>
+</div>
+
+<!-- TODO: remove disabled and add functionality and endpoint (DUHGW-301) -->
+
+<mat-dialog-actions>
+  <button matButton (click)="close(false)" disabled>Cancel</button>
+  <button matButton (click)="close(true)" cdkFocusInitial disabled>
+    {{ data === PowerAccessApprovalStatus.APPROVED ? 'Approve' : 'Reject' }}
+  </button>
+</mat-dialog-actions>
