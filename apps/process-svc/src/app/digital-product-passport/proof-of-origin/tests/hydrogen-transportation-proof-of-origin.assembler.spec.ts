@@ -15,11 +15,9 @@ import {
 } from '@h2-trust/amqp';
 import { MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
 import { ProcessStepEntityFixture } from '@h2-trust/fixtures';
-import { HydrogenTransportationProofOfOriginService } from '../hydrogen-transportation-proof-of-origin.service';
+import { assembleHydrogenTransportationSection } from '../hydrogen-transportation-proof-of-origin.assembler';
 
-describe('HydrogenTransportationProofOfOriginService', () => {
-  const hydrogenTransportationProofOfOriginService: HydrogenTransportationProofOfOriginService =
-    new HydrogenTransportationProofOfOriginService();
+describe('HydrogenTransportationProofOfOriginAssembler', () => {
   describe('assembleHydrogenTransportationSection', () => {
     it('returns section with hydrogen batch, composition and emissions for trailer transport', () => {
       // Arrange
@@ -39,7 +37,7 @@ describe('HydrogenTransportationProofOfOriginService', () => {
       );
 
       // Act
-      const actualResult = hydrogenTransportationProofOfOriginService.assembleSection(givenProvenance)[0];
+      const actualResult = assembleHydrogenTransportationSection(givenProvenance)[0];
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION);
@@ -75,7 +73,7 @@ describe('HydrogenTransportationProofOfOriginService', () => {
       );
 
       // Act
-      const actualResult = hydrogenTransportationProofOfOriginService.assembleSection(givenProvenance)[0];
+      const actualResult = assembleHydrogenTransportationSection(givenProvenance)[0];
 
       // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION);

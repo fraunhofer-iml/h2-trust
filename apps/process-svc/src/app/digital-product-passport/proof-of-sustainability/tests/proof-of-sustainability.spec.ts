@@ -17,21 +17,16 @@ import {
 } from '@h2-trust/amqp';
 import { CalculationTopic } from '@h2-trust/domain';
 import { ProcessStepEntityFixture, TransportationDetailsEntityFixture } from '@h2-trust/fixtures';
-import { HydrogenBottlingPosService } from '../hydrogen-bottling-pos.service';
-import { HydrogenProductionPosService } from '../hydrogen-production-pos.service';
-import { HydrogenStoragePosService } from '../hydrogen-storage-pos.service';
-import { HydrogenTransportPosService } from '../hydrogen-transport-pos.service';
-import { PowerProductionPosService } from '../power-production-pos.service';
+import { assembleHydrogenBottlingEmissions } from '../hydrogen-bottling-proof-of-sustainability.assembler';
+import { assembleHydrogenProductionEmissions } from '../hydrogen-production-proof-of-sustainability.assembler';
+import { computeHydrogenStorageEmissionCalculations } from '../hydrogen-storage-proof-of-sustainability.calculator';
+import { assembleHydrogenTransportationEmissions } from '../hydrogen-transportation-proof-of-sustainability.assembler';
+import { assemblePowerProductionEmissions } from '../power-production-proof-of-sustainability.assembler';
 import { ProofOfSustainabilityService } from '../proof-of-sustainability.service';
-import { WaterConsumptionPosService } from '../water-consumption-pos.service';
+import { assembleWaterConsumptionEmissions } from '../water-consumption-proof-of-sustainability.assembler';
 
-describe('ProodOfSustainability', () => {
+describe('ProofOfSustainability', () => {
   let service: ProofOfSustainabilityService;
-  const hydrogenBottlingPosService: HydrogenBottlingPosService = new HydrogenBottlingPosService();
-  const hydrogenProductionPosService: HydrogenProductionPosService = new HydrogenProductionPosService();
-  const hydrogenTransportPosService: HydrogenTransportPosService = new HydrogenTransportPosService();
-  const powerProductionPosService: PowerProductionPosService = new PowerProductionPosService();
-  const waterConsumptionPosService: WaterConsumptionPosService = new WaterConsumptionPosService();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -48,7 +43,7 @@ describe('ProodOfSustainability', () => {
 
       // Act
       const actualResult: ProofOfSustainabilityEmissionCalculationEntity =
-        hydrogenBottlingPosService.assembleEmissions(givenProvenance)[0];
+        assembleHydrogenBottlingEmissions(givenProvenance)[0];
 
       // Assert
       expect(actualResult).toBeDefined();
@@ -65,7 +60,7 @@ describe('ProodOfSustainability', () => {
 
       // Act
       const actualResult: ProofOfSustainabilityEmissionCalculationEntity =
-        hydrogenProductionPosService.assembleEmissions(givenProvenance)[0];
+        assembleHydrogenProductionEmissions(givenProvenance)[0];
 
       // Assert
       expect(actualResult).toBeDefined();
@@ -80,7 +75,7 @@ describe('ProodOfSustainability', () => {
       const givenHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction();
 
       // Act
-      const actualResult = HydrogenStoragePosService.computeEmissionsForHydrogenStorage(givenHydrogenProduction)[0];
+      const actualResult = computeHydrogenStorageEmissionCalculations(givenHydrogenProduction)[0];
 
       // Assert
       expect(actualResult).toBeDefined();
@@ -100,7 +95,7 @@ describe('ProodOfSustainability', () => {
       const givenProvenance = new ProvenanceEntity(givenHydrogenTransportation, [], givenHydrogenBottling);
 
       // Act
-      const actualResult = hydrogenTransportPosService.assembleEmissions(givenProvenance)[0];
+      const actualResult = assembleHydrogenTransportationEmissions(givenProvenance)[0];
 
       // Assert
       expect(actualResult).toBeDefined();
@@ -116,7 +111,7 @@ describe('ProodOfSustainability', () => {
       const givenProvenance = new ProvenanceEntity(givenHydrogenBottling, [], givenHydrogenBottling);
 
       // Act
-      const actualResult = powerProductionPosService.assembleEmissions(givenProvenance)[0];
+      const actualResult = assemblePowerProductionEmissions(givenProvenance)[0];
 
       // Assert
       expect(actualResult).toBeDefined();
@@ -132,7 +127,7 @@ describe('ProodOfSustainability', () => {
       const givenProvenance = new ProvenanceEntity(givenHydrogenBottling, [], givenHydrogenBottling);
 
       // Act
-      const actualResult = waterConsumptionPosService.assembleEmissions(givenProvenance)[0];
+      const actualResult = assembleWaterConsumptionEmissions(givenProvenance)[0];
 
       // Assert
       expect(actualResult).toBeDefined();

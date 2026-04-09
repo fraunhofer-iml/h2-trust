@@ -20,14 +20,14 @@ import {
   ProductionChainEntityFixture,
   QualityDetailsEntityFixture,
 } from '@h2-trust/fixtures';
-import { HydrogenBottlingProofOfOriginService } from '../hydrogen-bottling-proof-of-origin.service';
+import {
+  assembleCompositionForBottling,
+  assembleHydrogenBottlingSection,
+} from '../hydrogen-bottling-proof-of-origin.assembler';
 
-describe('HydrogenBottlingSectionAssembler', () => {
-  const hydrogenBottlingProofOfOriginService: HydrogenBottlingProofOfOriginService =
-    new HydrogenBottlingProofOfOriginService();
+describe('HydrogenBottlingProofOfOriginAssembler', () => {
   describe('assembleHydrogenBottlingSection', () => {
     it('returns section with hydrogen batch, composition and emissions', async () => {
-      // Arrange
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
       const givenProvenance = new ProvenanceEntity(
         givenHydrogenBottling,
@@ -35,11 +35,8 @@ describe('HydrogenBottlingSectionAssembler', () => {
         givenHydrogenBottling,
       );
 
-      // Act
-      const actualResult: ProofOfOriginSectionEntity =
-        hydrogenBottlingProofOfOriginService.assembleSection(givenProvenance)[0];
+      const actualResult: ProofOfOriginSectionEntity = assembleHydrogenBottlingSection(givenProvenance)[0];
 
-      // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_BOTTLING_SECTION);
       expect(actualResult.batches).toHaveLength(1);
       expect(actualResult.classifications).toEqual([]);
@@ -61,7 +58,6 @@ describe('HydrogenBottlingSectionAssembler', () => {
 
   describe('calculateHydrogenComposition', () => {
     it(`returns composition for ${ProcessType.HYDROGEN_BOTTLING} process step`, () => {
-      // Arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling({
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
@@ -76,15 +72,13 @@ describe('HydrogenBottlingSectionAssembler', () => {
       const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
       const givenProvenance = new ProvenanceEntity(givenProcessStep, [givenProductionChain], givenProcessStep);
 
-      // Act
-      const actualResult = hydrogenBottlingProofOfOriginService.assembleCompositionForBottling(givenProvenance);
+      const actualResult = assembleCompositionForBottling(givenProvenance);
 
-      // Assert
       expect(actualResult).toHaveLength(1);
       expect(actualResult[0].color).toBe(HydrogenColor.GREEN);
     });
+
     it('assembles amount from one predecessor', () => {
-      // Arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling({
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
@@ -100,17 +94,14 @@ describe('HydrogenBottlingSectionAssembler', () => {
       const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
       const givenProvenance = new ProvenanceEntity(givenProcessStep, [givenProductionChain], givenProcessStep);
 
-      // Act
-      const actualResult = hydrogenBottlingProofOfOriginService.assembleCompositionForBottling(givenProvenance);
+      const actualResult = assembleCompositionForBottling(givenProvenance);
 
-      // Assert
       expect(actualResult).toHaveLength(1);
       expect(actualResult[0].color).toBe(HydrogenColor.GREEN);
       expect(actualResult[0].amount).toBe(100);
     });
 
     it('assembles amount from two predecessors with same color', () => {
-      // Arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling({
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
@@ -130,17 +121,14 @@ describe('HydrogenBottlingSectionAssembler', () => {
       const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
       const givenProvenance = new ProvenanceEntity(givenProcessStep, [givenProductionChain], givenProcessStep);
 
-      // Act
-      const actualResult = hydrogenBottlingProofOfOriginService.assembleCompositionForBottling(givenProvenance);
+      const actualResult = assembleCompositionForBottling(givenProvenance);
 
-      // Assert
       expect(actualResult).toHaveLength(1);
       expect(actualResult[0].color).toBe(HydrogenColor.GREEN);
       expect(actualResult[0].amount).toBe(100);
     });
 
     it('assembles amount from two predecessors with different colors', () => {
-      // Arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling({
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
@@ -162,39 +150,27 @@ describe('HydrogenBottlingSectionAssembler', () => {
       givenProductionChain.hydrogenRootProduction = givenProcessStep;
       const givenProvenance = new ProvenanceEntity(givenProcessStep, [givenProductionChain], givenProcessStep);
 
-      // Act
-      const actualResult = hydrogenBottlingProofOfOriginService.assembleCompositionForBottling(givenProvenance);
+      const actualResult = assembleCompositionForBottling(givenProvenance);
 
-      // Assert
       expect(actualResult).toHaveLength(1);
       expect(actualResult.find((c) => c.rfnboType === RfnboType.RFNBO_READY).amount).toBe(100);
     });
 
     it('throws error when process step is undefined', () => {
-      // Arrange
       const givenProcessStep = undefined as unknown as ProcessStepEntity;
-
       const expectedErrorMessage = 'There is no hydrogen bottling in provenance.';
       const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
       const givenProvenance = new ProvenanceEntity(givenProcessStep, [givenProductionChain], givenProcessStep);
 
-      // Act & Assert
-      expect(() => hydrogenBottlingProofOfOriginService.assembleCompositionForBottling(givenProvenance)).toThrow(
-        expectedErrorMessage,
-      );
+      expect(() => assembleCompositionForBottling(givenProvenance)).toThrow(expectedErrorMessage);
     });
 
     it('throws error when process step type is invalid', () => {
-      // Arrange
       const givenProcessStep = ProcessStepEntityFixture.createPowerProduction();
-
       const expectedErrorMessage = `There are no hydrogen productions in Provenance.`;
       const givenProvenance = new ProvenanceEntity(givenProcessStep, [], givenProcessStep);
 
-      // Act & Assert
-      expect(() => hydrogenBottlingProofOfOriginService.assembleCompositionForBottling(givenProvenance)).toThrow(
-        expectedErrorMessage,
-      );
+      expect(() => assembleCompositionForBottling(givenProvenance)).toThrow(expectedErrorMessage);
     });
   });
 });

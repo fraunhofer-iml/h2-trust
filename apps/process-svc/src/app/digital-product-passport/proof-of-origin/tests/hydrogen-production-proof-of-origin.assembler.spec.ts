@@ -20,14 +20,11 @@ import {
   ProofOfOriginPowerBatchEntityFixture,
   ProofOfOriginSubClassificationEntityFixture,
 } from '@h2-trust/fixtures';
-import { HydrogenProductionProofOfOriginService } from '../hydrogen-production-proof-of-origin.service';
+import { assembleHydrogenProductionSection } from '../hydrogen-production-proof-of-origin.assembler';
 
-describe('HydrogenProductionProofOfOriginService', () => {
-  const hydrogenProductionProofOfOriginService: HydrogenProductionProofOfOriginService =
-    new HydrogenProductionProofOfOriginService();
-  describe('buildHydrogenProductionSection', () => {
+describe('HydrogenProductionProofOfOriginAssembler', () => {
+  describe('assembleHydrogenProductionSection', () => {
     it('returns section with power supply and water supply classifications', () => {
-      // Arrange
       const givenHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction();
 
       const productionPowerBatches: ProofOfOriginBatchEntity = ProofOfOriginPowerBatchEntityFixture.create({
@@ -49,10 +46,8 @@ describe('HydrogenProductionProofOfOriginService', () => {
         givenHydrogenProduction,
       );
 
-      // Act
-      const actualResult = hydrogenProductionProofOfOriginService.assembleSection(givenProvenance)[0];
+      const actualResult = assembleHydrogenProductionSection(givenProvenance)[0];
 
-      // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
       expect(actualResult.classifications).toHaveLength(2);
       expect(actualResult.classifications[0].name).toBe(ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION);
@@ -62,7 +57,6 @@ describe('HydrogenProductionProofOfOriginService', () => {
     });
 
     it('returns section with only power supply classification when no water consumptions', () => {
-      // Arrange
       const productionChain: ProductionChainEntity = new ProductionChainEntity(
         ProcessStepEntityFixture.createHydrogenBottling(),
         ProcessStepEntityFixture.createHydrogenBottling(),
@@ -78,10 +72,7 @@ describe('HydrogenProductionProofOfOriginService', () => {
         productionChain.hydrogenRootProduction,
       );
 
-      // Act
-      const actualResult = hydrogenProductionProofOfOriginService.assembleSection(givenProvenance)[0];
-
-      // Assert
+      const actualResult = assembleHydrogenProductionSection(givenProvenance)[0];
 
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
       expect(actualResult.classifications).toHaveLength(2);
@@ -89,7 +80,6 @@ describe('HydrogenProductionProofOfOriginService', () => {
     });
 
     it('returns section with only water supply classification when no power productions', () => {
-      // Arrange
       const productionChain: ProductionChainEntity = new ProductionChainEntity(
         ProcessStepEntityFixture.createHydrogenBottling(),
         ProcessStepEntityFixture.createHydrogenBottling(),
@@ -105,16 +95,13 @@ describe('HydrogenProductionProofOfOriginService', () => {
         productionChain.hydrogenRootProduction,
       );
 
-      // Act
-      const actualResult = hydrogenProductionProofOfOriginService.assembleSection(givenProvenance)[0];
+      const actualResult = assembleHydrogenProductionSection(givenProvenance)[0];
 
-      // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
       expect(actualResult.classifications).toHaveLength(2);
     });
 
     it('returns section with empty classifications when no power productions and no water consumptions', () => {
-      // Arrange
       const productionChain: ProductionChainEntity = new ProductionChainEntity(
         ProcessStepEntityFixture.createHydrogenBottling(),
         ProcessStepEntityFixture.createHydrogenBottling(),
@@ -130,10 +117,8 @@ describe('HydrogenProductionProofOfOriginService', () => {
         productionChain.hydrogenRootProduction,
       );
 
-      // Act
-      const actualResult = hydrogenProductionProofOfOriginService.assembleSection(givenProvenance)[0];
+      const actualResult = assembleHydrogenProductionSection(givenProvenance)[0];
 
-      // Assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
       expect(actualResult.batches).toEqual([]);
     });

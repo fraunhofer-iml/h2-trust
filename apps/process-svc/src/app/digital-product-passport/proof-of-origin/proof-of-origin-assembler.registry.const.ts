@@ -6,15 +6,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenBottlingProofOfOriginService } from './hydrogen-bottling-proof-of-origin.service';
-import { HydrogenProductionProofOfOriginService } from './hydrogen-production-proof-of-origin.service';
-import { HydrogenStorageProofOfOriginService } from './hydrogen-storage-proof-of-origin.service';
-import { HydrogenTransportationProofOfOriginService } from './hydrogen-transportation-proof-of-origin.service';
+import { hydrogenBottlingProofOfOriginAssembler } from './hydrogen-bottling-proof-of-origin.assembler';
+import { hydrogenProductionProofOfOriginAssembler } from './hydrogen-production-proof-of-origin.assembler';
+import { hydrogenStorageProofOfOriginAssembler } from './hydrogen-storage-proof-of-origin.assembler';
+import { hydrogenTransportationProofOfOriginAssembler } from './hydrogen-transportation-proof-of-origin.assembler';
 import { ProofOfOriginAssembler } from './proof-of-origin-assembler.interface';
 
 export const proofOfOriginAssemblers: ProofOfOriginAssembler[] = [
-  new HydrogenProductionProofOfOriginService(),
-  new HydrogenStorageProofOfOriginService(),
-  new HydrogenTransportationProofOfOriginService(),
-  new HydrogenBottlingProofOfOriginService(),
+  hydrogenProductionProofOfOriginAssembler,
+  hydrogenStorageProofOfOriginAssembler,
+  hydrogenTransportationProofOfOriginAssembler,
+  hydrogenBottlingProofOfOriginAssembler,
 ];

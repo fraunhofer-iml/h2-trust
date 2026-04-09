@@ -13,14 +13,11 @@ import {
   PowerProductionUnitEntityFixture,
   ProcessStepEntityFixture,
 } from '@h2-trust/fixtures';
-import { PowerProductionProofOfOriginService } from '../power-production-proof-of-origin.service';
+import { buildPowerSupplySubClassifications } from '../power-production-proof-of-origin.assembler';
 
-describe('PowerProductionProofOfOriginService', () => {
-  const powerProductionProofOfOriginService: PowerProductionProofOfOriginService =
-    new PowerProductionProofOfOriginService();
+describe('PowerProductionProofOfOriginAssembler', () => {
   describe('buildPowerSupplySubClassifications', () => {
     it('returns sub-classifications grouped by energy source', async () => {
-      // Arrange
       const givenSolarPowerProduction = ProcessStepEntityFixture.createPowerProduction({
         executedBy: PowerProductionUnitEntityFixture.create({
           type: PowerProductionTypeEntityFixture.createSolarEnergy(),
@@ -40,13 +37,8 @@ describe('PowerProductionProofOfOriginService', () => {
       const givenPowerProductions = [givenSolarPowerProduction, givenWindPowerProduction];
       const givenHydrogenAmount = 100;
 
-      // Act
-      const actualResult = powerProductionProofOfOriginService.buildPowerSupplySubClassifications(
-        givenPowerProductions,
-        givenHydrogenAmount,
-      );
+      const actualResult = buildPowerSupplySubClassifications(givenPowerProductions, givenHydrogenAmount);
 
-      // Assert
       expect(actualResult).toHaveLength(2);
 
       const solarSubClassification = actualResult.find((sc) => sc.name === EnergySource.SOLAR_ENERGY);
@@ -68,31 +60,19 @@ describe('PowerProductionProofOfOriginService', () => {
     });
 
     it('returns empty array when no power productions provided', async () => {
-      // Arrange
       const givenPowerProductions: ProcessStepEntity[] = [];
       const givenHydrogenAmount = 100;
 
-      // Act
-      const actualResult = powerProductionProofOfOriginService.buildPowerSupplySubClassifications(
-        givenPowerProductions,
-        givenHydrogenAmount,
-      );
+      const actualResult = buildPowerSupplySubClassifications(givenPowerProductions, givenHydrogenAmount);
 
-      // Assert
       expect(actualResult).toEqual([]);
     });
 
     it('returns empty array when power productions is undefined', async () => {
-      // Arrange
       const givenHydrogenAmount = 100;
 
-      // Act
-      const actualResult = powerProductionProofOfOriginService.buildPowerSupplySubClassifications(
-        undefined,
-        givenHydrogenAmount,
-      );
+      const actualResult = buildPowerSupplySubClassifications(undefined, givenHydrogenAmount);
 
-      // Assert
       expect(actualResult).toEqual([]);
     });
   });
