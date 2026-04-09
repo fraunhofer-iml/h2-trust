@@ -178,6 +178,10 @@ export class UnitRepository {
   async updateOrCreateHydrogenProductionUnit(
     payload: CreateHydrogenProductionUnitPayload,
   ): Promise<HydrogenProductionUnitEntity> {
+    if (payload.id) {
+      await this.validateUnitIsActive(payload.id);
+    }
+
     return this.prismaService.unit
       .upsert({
         where: { id: payload.id ?? '' },
@@ -226,6 +230,10 @@ export class UnitRepository {
   async updateOrCreatePowerProductionUnit(
     payload: CreatePowerProductionUnitPayload,
   ): Promise<PowerProductionUnitEntity> {
+    if (payload.id) {
+      await this.validateUnitIsActive(payload.id);
+    }
+
     return this.prismaService.unit
       .upsert({
         where: { id: payload.id ?? '' },
@@ -277,6 +285,10 @@ export class UnitRepository {
   async updateOrCreateHydrogenStorageUnit(
     payload: CreateHydrogenStorageUnitPayload,
   ): Promise<HydrogenStorageUnitEntity> {
+    if (payload.id) {
+      await this.validateUnitIsActive(payload.id);
+    }
+
     return this.prismaService.unit
       .upsert({
         where: { id: payload.id ?? '' },
@@ -317,5 +329,14 @@ export class UnitRepository {
         include: hydrogenStorageUnitQueryArgs.include,
       })
       .then(HydrogenStorageUnitEntity.fromDatabase);
+  }
+
+  private async validateUnitIsActive(id: string): Promise<void> {
+    const { active } = await this.prismaService.unit.findUnique({
+      where: { id: id },
+      select: { active: true },
+    });
+
+    if (!active) throw new Error(`Unit with Id ${id} is inactive.`);
   }
 }
