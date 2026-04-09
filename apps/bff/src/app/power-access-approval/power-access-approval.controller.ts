@@ -9,8 +9,15 @@
 import { AuthenticatedUser } from 'nest-keycloak-connect';
 import { Body, Controller, Get, NotImplementedException, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { PowerAccessApprovalDto, PpaRequestCreateDto, PpaRequestDto, type AuthenticatedKCUser } from '@h2-trust/api';
-import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
+import {
+  CompanyDto,
+  PowerAccessApprovalDto,
+  PpaRequestCreateDto,
+  PpaRequestDto,
+  UserDetailsDto,
+  type AuthenticatedKCUser,
+} from '@h2-trust/api';
+import { PowerAccessApprovalStatus, PowerProductionType, PpaRequestRole } from '@h2-trust/domain';
 import { PowerAccessApprovalService } from './power-access-approval.service';
 
 @Controller('power-access-approvals')
@@ -61,7 +68,18 @@ export class PowerAccessApprovalController {
     @Query('role') _role: PpaRequestRole,
     @Query('status') _status: PowerAccessApprovalStatus,
   ): PpaRequestDto[] {
-    return [];
+    return [
+      {
+        createdAt: new Date(),
+        id: '456867',
+        powerProductionType: PowerProductionType.HYDRO_POWER_PLANT,
+        receiver: { name: 'Test' } as CompanyDto,
+        sender: { name: 'hans ', company: { name: 'testo test ' } } as UserDetailsDto,
+        status: PowerAccessApprovalStatus.PENDING,
+        validFrom: new Date(),
+        validTo: new Date(),
+      },
+    ];
   }
 
   @Post('requests')
