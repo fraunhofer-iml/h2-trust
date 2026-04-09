@@ -57,7 +57,7 @@ export function buildPowerSupplySubClassifications(
     return [];
   }
 
-  const occuringEnergySources = [
+  const occurringEnergySources = [
     ...new Set(
       powerProductions.map(
         (powerProduction) => (powerProduction.executedBy as PowerProductionUnitEntity).type?.energySource,
@@ -67,7 +67,7 @@ export function buildPowerSupplySubClassifications(
 
   const subClassifications: ProofOfOriginSubClassificationEntity[] = [];
 
-  for (const energySource of occuringEnergySources) {
+  for (const energySource of occurringEnergySources) {
     const powerProductionsByEnergySource: ProcessStepEntity[] = powerProductions.filter(
       (powerProduction) =>
         (powerProduction.executedBy as PowerProductionUnitEntity).type?.energySource === energySource,
