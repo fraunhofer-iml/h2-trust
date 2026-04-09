@@ -263,6 +263,7 @@ export class UnitRepository {
                 ratedPower: payload.ratedPower,
                 decommissioningPlannedOn: payload.decommissioningPlannedOn,
                 financialSupportReceived: payload.financialSupportReceived,
+                type: { connect: { name: payload.powerProductionType } },
               },
             },
           },
