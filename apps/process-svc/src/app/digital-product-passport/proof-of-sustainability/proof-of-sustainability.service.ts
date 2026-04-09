@@ -14,7 +14,7 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/amqp';
 import { EmissionNumericConstants, EmissionStringConstants } from '@h2-trust/domain';
-import { PROOF_OF_SUSTAINABILITY_ASSEMBLERS } from './proof-of-origin-assembler.registry.const';
+import { proofOfSustainabilityAssemblers } from './proof-of-origin-assembler.registry.const';
 
 @Injectable()
 export class ProofOfSustainabilityService {
@@ -29,7 +29,7 @@ export class ProofOfSustainabilityService {
     }
 
     const emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[] =
-      PROOF_OF_SUSTAINABILITY_ASSEMBLERS.flatMap((posAssembler) => posAssembler.assembleEmissions(provenance));
+      proofOfSustainabilityAssemblers.flatMap((posAssembler) => posAssembler.assembleEmissions(provenance));
     const hydrogenAmount = provenance.hydrogenBottling
       ? provenance.hydrogenBottling.batch.amount
       : provenance.root.batch.amount;
@@ -82,7 +82,7 @@ export class ProofOfSustainabilityService {
   private assembleApplicationEmissions(
     emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
   ): ProofOfSustainabilityEmissionEntity[] {
-    return PROOF_OF_SUSTAINABILITY_ASSEMBLERS.flatMap((posAssembler) =>
+    return proofOfSustainabilityAssemblers.flatMap((posAssembler) =>
       posAssembler.calculateEmission(emissionCalculations),
     );
   }

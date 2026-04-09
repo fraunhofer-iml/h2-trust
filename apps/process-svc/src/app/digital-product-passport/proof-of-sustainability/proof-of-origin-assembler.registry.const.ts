@@ -13,7 +13,7 @@ import { PowerProductionPosService } from './power-production-pos.service';
 import { ProofOfSustainabilityAssembler } from './proof-of-sustainability-assembler.interface';
 import { WaterConsumptionPosService } from './water-consumption-pos.service';
 
-export const PROOF_OF_SUSTAINABILITY_ASSEMBLERS: ProofOfSustainabilityAssembler[] = [
+export const proofOfSustainabilityAssemblers: ProofOfSustainabilityAssembler[] = [
   new PowerProductionPosService(),
   new WaterConsumptionPosService(),
   new HydrogenProductionPosService(),
