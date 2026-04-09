@@ -6,13 +6,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { QUERY_CONFIG } from '../constants/query-config';
 import { UnitsService } from '../services/units/units.service';
 import { QUERY_KEYS } from './shared-query-keys';
 
 export const hydrogenProductionUnitsQueryOptions = (unitsService: UnitsService) => ({
   queryKey: QUERY_KEYS.HYDROGEN_PRODUCTION_UNITS,
   queryFn: () => unitsService.getHydrogenProductionUnits(),
-  staleTime: 60 * 1000,
+  staleTime: QUERY_CONFIG.STALE_TIME,
+});
+
+export const powerProductionUnitsQueryOptions = (unitsService: UnitsService) => ({
+  queryKey: QUERY_KEYS.POWER_PRODUCTION_UNITS,
+  queryFn: () => unitsService.getPowerProductionUnits(),
+  staleTime: QUERY_CONFIG.STALE_TIME,
 });
 
 export const powerProductionUnitsQueryOptions = (unitsService: UnitsService) => ({
