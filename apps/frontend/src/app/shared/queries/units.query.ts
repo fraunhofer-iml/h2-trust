@@ -21,9 +21,3 @@ export const powerProductionUnitsQueryOptions = (unitsService: UnitsService) => 
   queryFn: () => unitsService.getPowerProductionUnits(),
   staleTime: QUERY_CONFIG.STALE_TIME,
 });
-
-export const powerProductionUnitsQueryOptions = (unitsService: UnitsService) => ({
-  queryKey: QUERY_KEYS.POWER_PRODUCTION_UNITS,
-  queryFn: () => unitsService.getPowerProductionUnits(),
-  staleTime: 60 * 1000,
-});
