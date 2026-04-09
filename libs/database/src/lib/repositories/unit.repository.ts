@@ -332,11 +332,11 @@ export class UnitRepository {
   }
 
   private async validateUnitIsActive(id: string): Promise<void> {
-    const { active } = await this.prismaService.unit.findUnique({
+    const unit = await this.prismaService.unit.findUnique({
       where: { id: id },
       select: { active: true },
     });
 
-    if (!active) throw new Error(`Unit with Id ${id} is inactive.`);
+    if (!unit?.active) throw new Error(`Unit with Id ${id} is inactive.`);
   }
 }
