@@ -19,7 +19,7 @@ import { BatchType, EnergySource, PowerType } from '@h2-trust/domain';
 import { computePowerSupplyEmissionCalculations } from '../proof-of-sustainability/power-production-proof-of-sustainability.assembler';
 import { Util } from '../util';
 
-export function getPowerBatchEntities(
+function getPowerBatchEntities(
   powerProductionProcesses: ProcessStepEntity[],
   bottledKgHydrogen: number,
   energySource: EnergySource,
