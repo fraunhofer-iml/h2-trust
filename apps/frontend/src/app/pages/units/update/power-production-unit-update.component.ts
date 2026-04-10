@@ -62,6 +62,7 @@ export class PowerProductionUnitUpdateComponent {
       ...this.unitForm.value,
       ...this.powerProductionForm.value,
     } as PowerProductionUnitInputDto;
+
     this.unitMutation.mutate(dto);
   }
 
