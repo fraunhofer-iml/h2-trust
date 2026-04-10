@@ -26,7 +26,7 @@ import { ProofOfOriginAssembler } from './proof-of-origin-assembler.interface';
  * @param provenance The provenance, which covers the entire production chain from power, water and hydrogen production right through to bottling and transportation.
  * @returns The volume of HydrogenComponents filled in relation to the total volume filled.
  */
-export function assembleCompositionForBottling(provenance: ProvenanceEntity): HydrogenComponentEntity[] {
+function assembleCompositionForBottling(provenance: ProvenanceEntity): HydrogenComponentEntity[] {
   if (!provenance.hydrogenBottling) {
     const errorMessage = `There is no hydrogen bottling in provenance.`;
     throw Error(errorMessage);
