@@ -7,7 +7,7 @@
  */
 
 import { ProcessStepDeepDbType } from '@h2-trust/database';
-import { UnitEntityType } from '../../types';
+import { ConcreteUnitEntity } from '../../types';
 import { BatchEntity } from '../batch';
 import { DocumentEntity } from '../document';
 import { EntityUtils } from '../unit/entity-utils';
@@ -21,7 +21,7 @@ export class ProcessStepEntity {
   type: string;
   batch: BatchEntity;
   recordedBy: UserEntity;
-  executedBy: UnitEntityType;
+  executedBy: ConcreteUnitEntity;
   documents?: DocumentEntity[];
   transportationDetails?: TransportationDetailsEntity;
 
@@ -32,7 +32,7 @@ export class ProcessStepEntity {
     type: string,
     batch: BatchEntity,
     recordedBy: UserEntity,
-    executedBy: UnitEntityType,
+    executedBy: ConcreteUnitEntity,
     documents?: DocumentEntity[],
     transportationDetails?: TransportationDetailsEntity,
   ) {

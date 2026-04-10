@@ -9,6 +9,7 @@
 import { Injectable } from '@nestjs/common';
 import {
   BaseUnitEntity,
+  ConcreteUnitEntity,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
   CreatePowerProductionUnitPayload,
@@ -18,7 +19,6 @@ import {
   PowerProductionUnitEntity,
   ReadByIdPayload,
   ReadByIdsPayload,
-  UnitEntityType,
   UpdateUnitStatusPayload,
 } from '@h2-trust/amqp';
 import { PowerProductionTypeRepository, UnitRepository } from '@h2-trust/database';
@@ -30,11 +30,11 @@ export class UnitService {
     private readonly powerProductionTypeRepository: PowerProductionTypeRepository,
   ) {}
 
-  async readUnitById(id: string): Promise<UnitEntityType> {
+  async readUnitById(id: string): Promise<ConcreteUnitEntity> {
     return this.unitRepository.findUnitById(id);
   }
 
-  async readUnitsByIds(ids: string[]): Promise<UnitEntityType[]> {
+  async readUnitsByIds(ids: string[]): Promise<ConcreteUnitEntity[]> {
     return this.unitRepository.findUnitsByIds(ids);
   }
 

@@ -11,6 +11,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
+  ConcreteUnitEntity,
   CreateProductionEntity,
   CreateProductionsPayload,
   FinalizeProductionsPayload,
@@ -20,7 +21,6 @@ import {
   ReadByIdPayload,
   ReadByIdsPayload,
   StagedProductionEntity,
-  UnitEntityType,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
@@ -88,20 +88,22 @@ export class ProductionService {
     this.logger.debug(
       `Finalizing ${createProductions.length} staged productions in chunks of ${this.productionChunkSize}`,
     );
-    const productionUnitForId: Map<string, UnitEntityType> = await this.getProductionUnits(createProductions);
+    const productionUnitForId: Map<string, ConcreteUnitEntity> = await this.getProductionUnits(createProductions);
     return this.productionCreationService.createAndPersistProductions(createProductions, productionUnitForId);
   }
 
-  private async getProductionUnits(createProductions: CreateProductionEntity[]): Promise<Map<string, UnitEntityType>> {
+  private async getProductionUnits(
+    createProductions: CreateProductionEntity[],
+  ): Promise<Map<string, ConcreteUnitEntity>> {
     const productionUnitIds: string[] = createProductions.flatMap((production) => [
       production.hydrogenStorageUnitId,
       production.powerProductionUnitId,
       production.hydrogenProductionUnitId,
     ]);
-    const productionUnits: UnitEntityType[] = await firstValueFrom(
+    const productionUnits: ConcreteUnitEntity[] = await firstValueFrom(
       this.generalSvc.send(UnitMessagePatterns.READ_MANY, new ReadByIdsPayload(productionUnitIds)),
     );
-    return new Map<string, UnitEntityType>(
+    return new Map<string, ConcreteUnitEntity>(
       productionUnits.map((productionUnit) => [productionUnit.id, productionUnit]),
     );
   }
@@ -135,7 +137,8 @@ export class ProductionService {
       createProductionEntity,
       powerProductionUnit.type.energySource,
     );
-    const productionUnitForId: Map<string, UnitEntityType> = await this.getProductionUnits(createProductionEntities);
+    const productionUnitForId: Map<string, ConcreteUnitEntity> =
+      await this.getProductionUnits(createProductionEntities);
     return this.productionCreationService.createAndPersistProductions(createProductionEntities, productionUnitForId);
   }
 }

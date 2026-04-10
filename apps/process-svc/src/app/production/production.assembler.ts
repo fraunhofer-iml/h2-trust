@@ -10,13 +10,13 @@ import { Logger } from '@nestjs/common';
 import {
   BatchEntity,
   CompanyEntity,
+  ConcreteUnitEntity,
   CreateProductionEntity,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
   PowerProductionUnitEntity,
   ProcessStepEntity,
   QualityDetailsEntity,
-  UnitEntityType,
   UserEntity,
 } from '@h2-trust/amqp';
 import { BatchType, HydrogenColor, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
@@ -29,7 +29,7 @@ export class ProductionAssembler {
 
   static assemblePowerProductions(
     entity: CreateProductionEntity,
-    productionUnitsForId: Map<string, UnitEntityType>,
+    productionUnitsForId: Map<string, ConcreteUnitEntity>,
   ): ProcessStepEntity[] {
     const powerProductionUnit: PowerProductionUnitEntity = productionUnitsForId.get(
       entity.powerProductionUnitId,
@@ -58,7 +58,7 @@ export class ProductionAssembler {
 
   static assembleWaterConsumptions(
     entity: CreateProductionEntity,
-    productionUnitsForId: Map<string, UnitEntityType>,
+    productionUnitsForId: Map<string, ConcreteUnitEntity>,
   ): ProcessStepEntity[] {
     const hydrogenProductionUnit: HydrogenProductionUnitEntity = productionUnitsForId.get(
       entity.hydrogenProductionUnitId,
@@ -87,7 +87,7 @@ export class ProductionAssembler {
     entity: CreateProductionEntity,
     powerProductions: ProcessStepEntity[],
     waterConsumptions: ProcessStepEntity[],
-    productionUnitsForId: Map<string, UnitEntityType>,
+    productionUnitsForId: Map<string, ConcreteUnitEntity>,
   ): ProcessStepEntity[] {
     const hydrogenProductionUnit: HydrogenProductionUnitEntity = productionUnitsForId.get(
       entity.hydrogenProductionUnitId,

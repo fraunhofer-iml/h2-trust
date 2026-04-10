@@ -9,13 +9,13 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
   BrokerException,
+  ConcreteUnitEntity,
   CreateManyProcessStepsPayload,
   CreateProductionEntity,
   HydrogenProductionUnitEntity,
   PowerProductionUnitEntity,
   ProcessStepEntity,
   ProductionChainEntity,
-  UnitEntityType,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { BatchType, RfnboType } from '@h2-trust/domain';
@@ -37,7 +37,7 @@ export class ProductionCreationService {
 
   public async createAndPersistProductions(
     createProductions: CreateProductionEntity[],
-    productionUnitsForId: Map<string, UnitEntityType>,
+    productionUnitsForId: Map<string, ConcreteUnitEntity>,
   ): Promise<ProcessStepEntity[]> {
     const persistedProcessSteps: ProcessStepEntity[] = [];
 

@@ -11,13 +11,13 @@ import { Prisma } from '@prisma/client';
 import {
   BaseUnitEntity,
   BrokerException,
+  ConcreteUnitEntity,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
   CreatePowerProductionUnitPayload,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
   PowerProductionUnitEntity,
-  UnitEntityType,
   UpdateUnitStatusPayload,
 } from '@h2-trust/amqp';
 import {
@@ -33,7 +33,7 @@ import { assertAllIdsFound, assertRecordFound } from './utils';
 export class UnitRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findUnitById(id: string): Promise<UnitEntityType> {
+  async findUnitById(id: string): Promise<ConcreteUnitEntity> {
     return this.prismaService.unit
       .findUnique({
         where: {
@@ -45,7 +45,7 @@ export class UnitRepository {
       .then(this.mapToActualUnitEntity);
   }
 
-  async findUnitsByIds(ids: string[]): Promise<UnitEntityType[]> {
+  async findUnitsByIds(ids: string[]): Promise<ConcreteUnitEntity[]> {
     return this.prismaService.unit
       .findMany({
         where: {
@@ -58,7 +58,7 @@ export class UnitRepository {
       .then((units) => units.map(this.mapToActualUnitEntity));
   }
 
-  mapToActualUnitEntity(baseUnit: Prisma.UnitGetPayload<typeof baseUnitDeepQueryArgs>): UnitEntityType {
+  mapToActualUnitEntity(baseUnit: Prisma.UnitGetPayload<typeof baseUnitDeepQueryArgs>): ConcreteUnitEntity {
     if (baseUnit.powerProductionUnit) {
       return PowerProductionUnitEntity.fromDeepDatabase(baseUnit);
     }
