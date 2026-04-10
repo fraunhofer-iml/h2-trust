@@ -72,11 +72,5 @@ describe('HydrogenStorageProofOfOriginAssembler', () => {
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_STORAGE_SECTION);
       expect(actualResult.batches).toEqual([]);
     });
-
-    it('returns empty section when hydrogen productions is undefined', async () => {
-      const actualResult = assembleHydrogenStorageSection(undefined);
-
-      expect(actualResult).toEqual([]);
-    });
   });
 });

@@ -12,8 +12,8 @@ import { ProcessStepEntityFixture } from './process-step.entity.fixture';
 export const ProductionChainEntityFixture = {
   create: (): ProductionChainEntity =>
     new ProductionChainEntity(
-      ProcessStepEntityFixture.createHydrogenBottling(),
-      ProcessStepEntityFixture.createHydrogenBottling(),
+      ProcessStepEntityFixture.createHydrogenProduction(),
+      ProcessStepEntityFixture.createHydrogenProduction(),
       ProcessStepEntityFixture.createPowerProduction(),
       ProcessStepEntityFixture.createWaterConsumption(),
       ProcessStepEntityFixture.createPowerProduction().executedBy as PowerProductionUnitEntity,

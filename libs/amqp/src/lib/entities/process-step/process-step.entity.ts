@@ -10,7 +10,7 @@ import { ProcessStepDeepDbType } from '@h2-trust/database';
 import { ConcreteUnitEntity } from '../../types';
 import { BatchEntity } from '../batch';
 import { DocumentEntity } from '../document';
-import { EntityUtils } from '../unit/entity-utils';
+import { getSpecificUnit } from '../unit/entity-utils';
 import { UserEntity } from '../user';
 import { TransportationDetailsEntity } from './transportation-details.entity';
 
@@ -55,7 +55,7 @@ export class ProcessStepEntity {
       processStep.type,
       BatchEntity.fromNestedDatabase(processStep.batch),
       UserEntity.fromNestedDatabase(processStep.recordedBy),
-      EntityUtils.getSpecificUnit(processStep.executedBy),
+      getSpecificUnit(processStep.executedBy),
       processStep.documents.map((doc) => DocumentEntity.fromDatabase(doc)),
       processStep.processStepDetails?.transportationDetails
         ? TransportationDetailsEntity.fromDatabase(processStep.processStepDetails.transportationDetails)

@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
 import {
   HydrogenProductionUnitEntity,
   PowerProductionUnitEntity,
@@ -22,19 +21,10 @@ import { assembleHydrogenProductionEmissions } from '../hydrogen-production-proo
 import { computeHydrogenStorageEmissionCalculations } from '../hydrogen-storage-proof-of-sustainability.calculator';
 import { assembleHydrogenTransportationEmissions } from '../hydrogen-transportation-proof-of-sustainability.assembler';
 import { assemblePowerProductionEmissions } from '../power-production-proof-of-sustainability.assembler';
-import { ProofOfSustainabilityService } from '../proof-of-sustainability.service';
+import { createProofOfSustainability } from '../proof-of-sustainability.service';
 import { assembleWaterConsumptionEmissions } from '../water-consumption-proof-of-sustainability.assembler';
 
 describe('ProofOfSustainability', () => {
-  let service: ProofOfSustainabilityService;
-
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [ProofOfSustainabilityService],
-    }).compile();
-
-    service = module.get<ProofOfSustainabilityService>(ProofOfSustainabilityService);
-  });
   describe('computeProvenanceEmissionsForHydrogenBottling', () => {
     it('computes emissions for provenance with hydrogen bottling only', () => {
       // Arrange
@@ -160,7 +150,7 @@ describe('ProofOfSustainability', () => {
       );
 
       // Act
-      const actualResult = service.createProofOfSustainability(givenProvenance);
+      const actualResult = createProofOfSustainability(givenProvenance);
 
       // Assert
       expect(actualResult).toBeDefined();

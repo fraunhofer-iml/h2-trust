@@ -14,17 +14,15 @@ import { HydrogenProductionUnitEntity } from './hydrogen-production-unit.entity'
 import { HydrogenStorageUnitEntity } from './hydrogen-storage-unit.entity';
 import { PowerProductionUnitEntity } from './power-production-unit.entity';
 
-export class EntityUtils {
-  static getSpecificUnit(unit: BaseUnitNestedDbType): ConcreteUnitEntity {
-    if (unit.hydrogenProductionUnit) {
-      return HydrogenProductionUnitEntity.fromNestedDatabase(unit);
-    }
-    if (unit.powerProductionUnit) {
-      return PowerProductionUnitEntity.fromNestedDatabase(unit);
-    }
-    if (unit.hydrogenStorageUnit) {
-      return HydrogenStorageUnitEntity.fromNestedDatabase(unit);
-    }
-    throw new BrokerException('', HttpStatus.INTERNAL_SERVER_ERROR);
+export function getSpecificUnit(unit: BaseUnitNestedDbType): ConcreteUnitEntity {
+  if (unit.hydrogenProductionUnit) {
+    return HydrogenProductionUnitEntity.fromNestedDatabase(unit);
   }
+  if (unit.powerProductionUnit) {
+    return PowerProductionUnitEntity.fromNestedDatabase(unit);
+  }
+  if (unit.hydrogenStorageUnit) {
+    return HydrogenStorageUnitEntity.fromNestedDatabase(unit);
+  }
+  throw new BrokerException('', HttpStatus.INTERNAL_SERVER_ERROR);
 }

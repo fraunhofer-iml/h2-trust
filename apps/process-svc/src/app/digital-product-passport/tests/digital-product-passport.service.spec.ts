@@ -24,10 +24,7 @@ import {
 } from '@h2-trust/fixtures';
 import { ProcessStepService } from '../../process-step/process-step.service';
 import { DigitalProductPassportService } from '../digital-product-passport.service';
-import { ProofOfOriginService } from '../proof-of-origin/proof-of-origin.service';
-import { ProofOfSustainabilityService } from '../proof-of-sustainability/proof-of-sustainability.service';
 import { ProvenanceService } from '../provenance/provenance.service';
-import { RedComplianceService } from '../red-compliance/red-compliance.service';
 
 describe('DigitalProductPassService', () => {
   let service: DigitalProductPassportService;
@@ -63,18 +60,6 @@ describe('DigitalProductPassService', () => {
         {
           provide: ProcessStepService,
           useValue: processStepServiceMock,
-        },
-        {
-          provide: RedComplianceService,
-          useValue: redComplianceServiceMock,
-        },
-        {
-          provide: ProofOfOriginService,
-          useValue: proofOfOriginServiceMock,
-        },
-        {
-          provide: ProofOfSustainabilityService,
-          useValue: proofOfSustainabilityServiceMock,
         },
         {
           provide: ProvenanceService,

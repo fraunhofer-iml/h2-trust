@@ -13,7 +13,7 @@ import {
   ProofOfOriginWaterBatchEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/amqp';
-import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
+import { BatchType, ProcessType, ProofOfOrigin } from '@h2-trust/domain';
 import { assembleWaterSupplyEmissionCalculation } from '../proof-of-sustainability/water-consumption-proof-of-sustainability.assembler';
 import { Util } from '../util';
 
@@ -42,11 +42,15 @@ function getWaterBatchEntities(
   });
 }
 
+function onlyWaterConsumption(processSteps: ProcessStepEntity[]) {
+  return !processSteps.some((processStep) => processStep.type != ProcessType.WATER_CONSUMPTION);
+}
+
 export function assembleWaterSupplyClassification(
   waterConsumptionProcess: ProcessStepEntity[],
   bottledKgHydrogen: number,
 ): ProofOfOriginClassificationEntity {
-  if (!waterConsumptionProcess?.length) {
+  if (!waterConsumptionProcess?.length || bottledKgHydrogen === 0 || !onlyWaterConsumption(waterConsumptionProcess)) {
     const message = 'No process steps of type water supply found.';
     throw new Error(message);
   }

@@ -49,7 +49,7 @@ function assembleHydrogenStorageBatch(
 }
 
 export function assembleHydrogenStorageSection(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {
-  if (!provenance || !provenance.getAllHydrogenLeafProductions()?.length) {
+  if (!provenance.getAllHydrogenLeafProductions()?.length) {
     return [];
   }
 

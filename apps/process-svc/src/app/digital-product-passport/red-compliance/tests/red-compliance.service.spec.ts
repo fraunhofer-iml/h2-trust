@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
 import { RedComplianceEntity } from '@h2-trust/amqp';
 import { BiddingZone } from '@h2-trust/domain';
 import {
@@ -14,30 +13,22 @@ import {
   PowerProductionUnitEntityFixture,
   ProcessStepEntityFixture,
 } from '@h2-trust/fixtures';
-import { RedComplianceService } from '../red-compliance.service';
+import {
+  areUnitsInSameBiddingZone,
+  determineRedCompliance,
+  hasFinancialSupport,
+  isWithinTimeCorrelation,
+  meetsAdditionalityCriterion,
+} from '../red-compliance.service';
 
 describe('RedComplianceService', () => {
-  let service: RedComplianceService;
-
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [RedComplianceService],
-    }).compile();
-
-    service = module.get<RedComplianceService>(RedComplianceService);
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   describe('determineRedCompliance', () => {
     it('throws RpcException when provenance is null', () => {
       // Arrange
       const expectedErrorMessage = `The passed-in power production or hydrogen production do not have an executedBy unit specified.`;
 
       // Act & Assert
-      expect(() => service.determineRedCompliance(undefined, undefined)).toThrow(expectedErrorMessage);
+      expect(() => determineRedCompliance(undefined, undefined)).toThrow(expectedErrorMessage);
     });
 
     it('throws RpcException when powerProductions is empty', () => {
@@ -47,7 +38,7 @@ describe('RedComplianceService', () => {
       const expectedErrorMessage = `The passed-in power production or hydrogen production do not have an executedBy unit specified.`;
 
       // Act & Assert
-      expect(() => service.determineRedCompliance(hydrogenProduction, undefined)).toThrow(expectedErrorMessage);
+      expect(() => determineRedCompliance(hydrogenProduction, undefined)).toThrow(expectedErrorMessage);
     });
 
     it('throws RpcException when hydrogenProductions is empty', () => {
@@ -57,7 +48,7 @@ describe('RedComplianceService', () => {
       const expectedErrorMessage = `The passed-in power production or hydrogen production do not have an executedBy unit specified.`;
 
       // Act & Assert
-      expect(() => service.determineRedCompliance(undefined, powerProduction)).toThrow(expectedErrorMessage);
+      expect(() => determineRedCompliance(undefined, powerProduction)).toThrow(expectedErrorMessage);
     });
 
     it('returns RedComplianceEntity with all flags true when all compliance criteria are met', () => {
@@ -82,7 +73,7 @@ describe('RedComplianceService', () => {
       });
 
       // Act
-      const actualResult = service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
+      const actualResult = determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
 
       // Assert
       expect(actualResult).toBeInstanceOf(RedComplianceEntity);
@@ -114,7 +105,7 @@ describe('RedComplianceService', () => {
       });
 
       // Act
-      const actualResult = service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
+      const actualResult = determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
 
       // Assert
       expect(actualResult.isGeoCorrelationValid).toBe(false);
@@ -142,7 +133,7 @@ describe('RedComplianceService', () => {
       });
 
       // Act
-      const actualResult = service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
+      const actualResult = determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
 
       // Assert
       expect(actualResult.isTimeCorrelationValid).toBe(false);
@@ -170,7 +161,7 @@ describe('RedComplianceService', () => {
       });
 
       // Act
-      const actualResult = service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
+      const actualResult = determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
 
       // Assert
       expect(actualResult.isAdditionalityFulfilled).toBe(false);
@@ -198,7 +189,7 @@ describe('RedComplianceService', () => {
       });
 
       // Act
-      const actualResult = service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
+      const actualResult = determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
 
       // Assert
       expect(actualResult.financialSupportReceived).toBe(false);
@@ -213,7 +204,7 @@ describe('RedComplianceService', () => {
       const expectedErrorMessage = `The passed-in power production or hydrogen production do not have an executedBy unit specified.`;
 
       // Act & Assert
-      expect(() => service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep)).toThrow(
+      expect(() => determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep)).toThrow(
         expectedErrorMessage,
       );
     });
@@ -227,7 +218,7 @@ describe('RedComplianceService', () => {
       const expectedErrorMessage = `The passed-in power production or hydrogen production do not have an executedBy unit specified.`;
 
       // Act & Assert
-      expect(() => service.determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep)).toThrow(
+      expect(() => determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep)).toThrow(
         expectedErrorMessage,
       );
     });
@@ -237,19 +228,19 @@ describe('RedComplianceService', () => {
     it('returns true for same zone', () => {
       const powerUnit: any = { biddingZone: BiddingZone.DE_LU };
       const hydrogenUnit: any = { biddingZone: BiddingZone.DE_LU };
-      expect(service.areUnitsInSameBiddingZone(powerUnit, hydrogenUnit)).toBe(true);
+      expect(areUnitsInSameBiddingZone(powerUnit, hydrogenUnit)).toBe(true);
     });
 
     it('returns false for different zones', () => {
       const powerUnit: any = { biddingZone: BiddingZone.DE_LU };
       const hydrogenUnit: any = { biddingZone: BiddingZone.AT };
-      expect(service.areUnitsInSameBiddingZone(powerUnit, hydrogenUnit)).toBe(false);
+      expect(areUnitsInSameBiddingZone(powerUnit, hydrogenUnit)).toBe(false);
     });
 
     it('throws error when a biddingZone is missing', () => {
       const powerUnit: any = { biddingZone: null };
       const hydrogenUnit: any = { biddingZone: BiddingZone.DE_LU };
-      expect(() => service.areUnitsInSameBiddingZone(powerUnit, hydrogenUnit)).toThrow(Error);
+      expect(() => areUnitsInSameBiddingZone(powerUnit, hydrogenUnit)).toThrow(Error);
     });
   });
 
@@ -257,19 +248,19 @@ describe('RedComplianceService', () => {
     it('returns true if both started within the same rounded hour', () => {
       const power: any = { startedAt: '2025-01-01T10:15:00.000Z' };
       const hydrogen: any = { startedAt: '2025-01-01T10:59:59.000Z' };
-      expect(service.isWithinTimeCorrelation(power, hydrogen)).toBe(true);
+      expect(isWithinTimeCorrelation(power, hydrogen)).toBe(true);
     });
 
     it('returns false if started within different hours', () => {
       const power: any = { startedAt: '2025-01-01T10:00:00.000Z' };
       const hydrogen: any = { startedAt: '2025-01-01T11:00:00.000Z' };
-      expect(service.isWithinTimeCorrelation(power, hydrogen)).toBe(false);
+      expect(isWithinTimeCorrelation(power, hydrogen)).toBe(false);
     });
 
     it('throws error for invalid dates', () => {
       const power: any = { startedAt: 'invalid-date' };
       const hydrogen: any = { startedAt: '2025-01-01T10:00:00.000Z' };
-      expect(() => service.isWithinTimeCorrelation(power, hydrogen)).toThrow(Error);
+      expect(() => isWithinTimeCorrelation(power, hydrogen)).toThrow(Error);
     });
   });
 
@@ -277,26 +268,26 @@ describe('RedComplianceService', () => {
     it('returns true if power commissionedOn is within 36 months before hydrogen unit', () => {
       const hydrogen: any = { commissionedOn: '2024-01-01T00:00:00.000Z' };
       const power: any = { commissionedOn: '2022-02-01T00:00:00.000Z' }; // 23 months before
-      expect(service.meetsAdditionalityCriterion(power, hydrogen)).toBe(true);
+      expect(meetsAdditionalityCriterion(power, hydrogen)).toBe(true);
     });
 
     it('returns false if power commissionedOn is before the 36-month limit', () => {
       const hydrogen: any = { commissionedOn: '2024-01-01T00:00:00.000Z' };
       const power: any = { commissionedOn: '2019-12-31T00:00:00.000Z' }; // > 36 months before
-      expect(service.meetsAdditionalityCriterion(power, hydrogen)).toBe(false);
+      expect(meetsAdditionalityCriterion(power, hydrogen)).toBe(false);
     });
 
     it('throws error for invalid commissionedOn dates', () => {
       const hydrogen: any = { commissionedOn: 'invalid-date' };
       const power: any = { commissionedOn: '2023-01-01T00:00:00.000Z' };
-      expect(() => service.meetsAdditionalityCriterion(power, hydrogen)).toThrow(Error);
+      expect(() => meetsAdditionalityCriterion(power, hydrogen)).toThrow(Error);
     });
   });
 
   describe('hasFinancialSupport', () => {
     it('reflects financialSupportReceived field', () => {
-      expect(service.hasFinancialSupport({ financialSupportReceived: true } as any)).toBe(false);
-      expect(service.hasFinancialSupport({ financialSupportReceived: false } as any)).toBe(true);
+      expect(hasFinancialSupport({ financialSupportReceived: true } as any)).toBe(false);
+      expect(hasFinancialSupport({ financialSupportReceived: false } as any)).toBe(true);
     });
   });
 });
