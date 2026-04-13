@@ -9,7 +9,7 @@
 import { Readable } from 'stream';
 import { Logger } from '@nestjs/common';
 import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { ConfigurationService } from '@h2-trust/configuration';
+import { ConfigurationService, DECENTRALIZED_STORAGE_PROVIDERS } from '@h2-trust/configuration';
 import { DecentralizedStorageService } from './decentralized-storage.service';
 
 export class FilebaseStorageService extends DecentralizedStorageService {
@@ -26,7 +26,7 @@ export class FilebaseStorageService extends DecentralizedStorageService {
 
     const config = configurationService.getGlobalConfiguration().decentralizedStorage;
 
-    if (config.provider !== 'filebase') {
+    if (config.provider !== DECENTRALIZED_STORAGE_PROVIDERS.FILEBASE) {
       throw new Error('FilebaseStorageService requires provider "filebase"');
     }
 

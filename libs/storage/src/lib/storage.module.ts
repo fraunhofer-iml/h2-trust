@@ -8,7 +8,7 @@
 
 import { S3Client } from '@aws-sdk/client-s3';
 import { Module } from '@nestjs/common';
-import { ConfigurationModule, ConfigurationService, StorageConfiguration } from '@h2-trust/configuration';
+import { ConfigurationModule, ConfigurationService, DECENTRALIZED_STORAGE_PROVIDERS, StorageConfiguration } from '@h2-trust/configuration';
 import { CentralizedStorageService } from './centralized/centralized-storage.service';
 import { MinioStorageService } from './centralized/minio-storage.service';
 import { DecentralizedStorageService } from './decentralized/decentralized-storage.service';
@@ -26,12 +26,12 @@ function createDecentralizedStorageService(configService: ConfigurationService):
   const config = configService.getGlobalConfiguration().decentralizedStorage;
 
   switch (config.provider) {
-    case 'filebase':
+    case DECENTRALIZED_STORAGE_PROVIDERS.KUBO:
+      service = new KuboStorageService(configService);
+      break;
+    case DECENTRALIZED_STORAGE_PROVIDERS.FILEBASE:
       const s3Client = createS3Client(config, false);
       service = new FilebaseStorageService(s3Client, configService);
-      break;
-    case 'kubo':
-      service = new KuboStorageService(configService);
       break;
     default: {
       throw new Error('Unsupported decentralized storage provider');

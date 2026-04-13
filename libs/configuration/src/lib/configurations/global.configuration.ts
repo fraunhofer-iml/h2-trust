@@ -11,6 +11,10 @@ import { registerAs } from '@nestjs/config';
 import { requireEnv } from '../util';
 
 export const GLOBAL_CONFIGURATION_IDENTIFIER = 'global-configuration';
+export const DECENTRALIZED_STORAGE_PROVIDERS = {
+  KUBO: 'kubo',
+  FILEBASE: 'filebase',
+} as const;
 
 export interface GlobalConfiguration {
   logLevel: LogLevel[];
@@ -35,21 +39,19 @@ export interface StorageConfiguration {
 }
 
 export interface KuboStorageConfiguration {
-  provider: 'kubo';
+  provider: typeof DECENTRALIZED_STORAGE_PROVIDERS.KUBO;
   endpointUrl: string;
   explorerUrl: string;
 }
 
 export interface FilebaseStorageConfiguration extends StorageConfiguration {
-  provider: 'filebase';
+  provider: typeof DECENTRALIZED_STORAGE_PROVIDERS.FILEBASE;
   explorerUrl: string;
 }
 
 export type DecentralizedStorageConfiguration =
   | KuboStorageConfiguration
   | FilebaseStorageConfiguration;
-
-export type DecentralizedStorageProvider = 'kubo' | 'filebase';
 
 export interface BlockchainConfiguration {
   enabled: boolean;

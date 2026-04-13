@@ -8,7 +8,7 @@
 
 import { Readable } from 'stream';
 import { Logger } from '@nestjs/common';
-import { ConfigurationService } from '@h2-trust/configuration';
+import { ConfigurationService, DECENTRALIZED_STORAGE_PROVIDERS } from '@h2-trust/configuration';
 import { DecentralizedStorageService } from './decentralized-storage.service';
 
 export class KuboStorageService extends DecentralizedStorageService {
@@ -22,7 +22,7 @@ export class KuboStorageService extends DecentralizedStorageService {
 
     const config = configurationService.getGlobalConfiguration().decentralizedStorage;
 
-    if (config.provider !== 'kubo') {
+    if (config.provider !== DECENTRALIZED_STORAGE_PROVIDERS.KUBO) {
       throw new Error('KuboStorageService requires provider "kubo"');
     }
 
