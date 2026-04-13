@@ -14,20 +14,20 @@ import { ContentType } from '../content-types';
 
 export class FilebaseStorageService extends DecentralizedStorageService {
   private readonly logger = new Logger(this.constructor.name);
-  private readonly downloadClient: S3Client;
+  private readonly client: S3Client;
 
   constructor(
     private readonly clientConfig: S3ClientConfig,
     private readonly bucketName: string,
-    private readonly endpointUrl: string,
+    endpointUrl: string,
     public readonly explorerUrl: string,
   ) {
     super();
 
-    this.downloadClient = new S3Client(clientConfig);
+    this.client = new S3Client(clientConfig);
 
     this.logger.debug('🔗 Filebase is used for decentralized file storage.');
-    this.logger.debug(`🌐 Endpoint URL: ${this.endpointUrl}`);
+    this.logger.debug(`🌐 Endpoint URL: ${endpointUrl}`);
     this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
   }
 
@@ -57,7 +57,7 @@ export class FilebaseStorageService extends DecentralizedStorageService {
   }
 
   async downloadFile(fileName: string): Promise<Readable> {
-    const response = await this.downloadClient.send(new GetObjectCommand({ Bucket: this.bucketName, Key: fileName }));
+    const response = await this.client.send(new GetObjectCommand({ Bucket: this.bucketName, Key: fileName }));
     return response.Body as Readable;
   }
 }

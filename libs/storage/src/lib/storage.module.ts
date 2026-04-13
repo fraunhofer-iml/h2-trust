@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
+import { S3ClientConfig } from '@aws-sdk/client-s3';
 import { Module } from '@nestjs/common';
 import { ConfigurationModule, ConfigurationService, DECENTRALIZED_STORAGE_PROVIDERS, StorageConfiguration } from '@h2-trust/configuration';
 import { CentralizedStorageService } from './centralized/centralized-storage.service';
@@ -18,8 +18,7 @@ import { KuboStorageService } from './decentralized/kubo-storage.service';
 function createCentralizedStorageService(configService: ConfigurationService): CentralizedStorageService {
   const config = configService.getGlobalConfiguration().centralizedStorage;
   const clientConfig = buildS3ClientConfig(config, true);
-  const client = new S3Client(clientConfig);
-  return new S3StorageService(client, config.bucketName, `${config.endpointUrl}/${config.bucketName}`);
+  return new S3StorageService(clientConfig, config.bucketName, config.endpointUrl);
 }
 
 function createDecentralizedStorageService(configService: ConfigurationService): DecentralizedStorageService {

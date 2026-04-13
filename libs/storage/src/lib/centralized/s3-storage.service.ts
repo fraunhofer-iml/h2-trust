@@ -7,20 +7,26 @@
  */
 
 import Stream from 'stream';
-import { GetObjectCommand, HeadObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { GetObjectCommand, HeadObjectCommand, PutObjectCommand, S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
 import { CentralizedStorageService } from './centralized-storage.service';
 import { ContentType } from '../content-types';
 import { Logger } from '@nestjs/common';
 
 export class S3StorageService extends CentralizedStorageService {
   private readonly logger = new Logger(this.constructor.name);
+  private readonly client: S3Client;
+
+  public readonly baseUrl: string;
 
   constructor(
-    private readonly client: S3Client,
+    clientConfig: S3ClientConfig,
     private readonly bucketName: string,
-    public readonly baseUrl: string,
+    private readonly endpointUrl: string,
   ) {
     super();
+
+    this.client = new S3Client(clientConfig);
+    this.baseUrl = `${this.endpointUrl}/${this.bucketName}`;
 
     this.logger.debug('🔗 S3 is used for centralized file storage.');
     this.logger.debug(`🌐 Base URL: ${this.baseUrl}`);
