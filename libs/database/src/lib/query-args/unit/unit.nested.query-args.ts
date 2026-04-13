@@ -9,31 +9,35 @@
 import { Prisma } from '@prisma/client';
 import { activeBatchFlatQueryArgs } from '../batch/batch.flat.query-args';
 import { companyFlatQueryArgs } from '../company/company.flat.query-args';
+import { baseUnitFlatQueryArgs } from './unit.flat.query-args';
 
-export const baseUnitNestedQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
+export const hydrogenProductionUnitNestedQueryArgs = Prisma.validator<Prisma.HydrogenProductionUnitDefaultArgs>()({
   include: {
-    address: true,
-    owner: companyFlatQueryArgs,
-    operator: companyFlatQueryArgs,
+    generalInfo: baseUnitFlatQueryArgs,
   },
 });
 
 export const hydrogenStorageUnitNestedQueryArgs = Prisma.validator<Prisma.HydrogenStorageUnitDefaultArgs>()({
   include: {
-    generalInfo: baseUnitNestedQueryArgs,
+    generalInfo: baseUnitFlatQueryArgs,
     filling: activeBatchFlatQueryArgs,
   },
 });
 
 export const powerProductionUnitNestedQueryArgs = Prisma.validator<Prisma.PowerProductionUnitDefaultArgs>()({
   include: {
-    generalInfo: baseUnitNestedQueryArgs,
+    generalInfo: baseUnitFlatQueryArgs,
     type: true,
   },
 });
 
-export const hydrogenProductionUnitNestedQueryArgs = Prisma.validator<Prisma.HydrogenProductionUnitDefaultArgs>()({
+export const baseUnitNestedQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
   include: {
-    generalInfo: baseUnitNestedQueryArgs,
+    address: true,
+    owner: companyFlatQueryArgs,
+    operator: companyFlatQueryArgs,
+    hydrogenProductionUnit: true,
+    powerProductionUnit: powerProductionUnitNestedQueryArgs,
+    hydrogenStorageUnit: hydrogenStorageUnitNestedQueryArgs,
   },
 });

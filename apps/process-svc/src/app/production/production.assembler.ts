@@ -8,11 +8,13 @@
 
 import { Logger } from '@nestjs/common';
 import {
-  BaseUnitEntity,
   BatchEntity,
   CompanyEntity,
+  ConcreteUnitEntity,
   CreateProductionEntity,
+  HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
+  PowerProductionUnitEntity,
   ProcessStepEntity,
   QualityDetailsEntity,
   UserEntity,
@@ -25,10 +27,17 @@ import { ProductionUtils } from './utils/production.utils';
 export class ProductionAssembler {
   private static readonly logger = new Logger(ProductionAssembler.name);
 
-  static assemblePowerProductions(entity: CreateProductionEntity): ProcessStepEntity[] {
+  static assemblePowerProductions(
+    entity: CreateProductionEntity,
+    productionUnitsForId: Map<string, ConcreteUnitEntity>,
+  ): ProcessStepEntity[] {
+    const powerProductionUnit: PowerProductionUnitEntity = productionUnitsForId.get(
+      entity.powerProductionUnitId,
+    ) as PowerProductionUnitEntity;
+
     const params: ProcessStepParams = {
       type: ProcessType.POWER_PRODUCTION,
-      executedBy: entity.powerProductionUnitId,
+      executedBy: powerProductionUnit,
       recordedBy: entity.recordedBy,
       batchParams: {
         activity: false,
@@ -47,7 +56,13 @@ export class ProductionAssembler {
     );
   }
 
-  static assembleWaterConsumptions(entity: CreateProductionEntity): ProcessStepEntity[] {
+  static assembleWaterConsumptions(
+    entity: CreateProductionEntity,
+    productionUnitsForId: Map<string, ConcreteUnitEntity>,
+  ): ProcessStepEntity[] {
+    const hydrogenProductionUnit: HydrogenProductionUnitEntity = productionUnitsForId.get(
+      entity.hydrogenProductionUnitId,
+    ) as HydrogenProductionUnitEntity;
     const waterAmountLiters = ProductionUtils.calculateWaterAmount(
       entity.productionStartedAt,
       entity.productionEndedAt,
@@ -56,7 +71,7 @@ export class ProductionAssembler {
 
     const params: ProcessStepParams = {
       type: ProcessType.WATER_CONSUMPTION,
-      executedBy: entity.hydrogenProductionUnitId,
+      executedBy: hydrogenProductionUnit,
       recordedBy: entity.recordedBy,
       batchParams: {
         activity: false,
@@ -72,10 +87,14 @@ export class ProductionAssembler {
     entity: CreateProductionEntity,
     powerProductions: ProcessStepEntity[],
     waterConsumptions: ProcessStepEntity[],
+    productionUnitsForId: Map<string, ConcreteUnitEntity>,
   ): ProcessStepEntity[] {
+    const hydrogenProductionUnit: HydrogenProductionUnitEntity = productionUnitsForId.get(
+      entity.hydrogenProductionUnitId,
+    ) as HydrogenProductionUnitEntity;
     const params: ProcessStepParams = {
       type: ProcessType.HYDROGEN_PRODUCTION,
-      executedBy: entity.hydrogenProductionUnitId,
+      executedBy: hydrogenProductionUnit,
       recordedBy: entity.recordedBy,
       batchParams: {
         activity: true,
@@ -149,7 +168,7 @@ export class ProductionAssembler {
       params.type,
       batch,
       { id: params.recordedBy } as UserEntity,
-      { id: params.executedBy } as BaseUnitEntity,
+      params.executedBy,
       null,
     );
   }

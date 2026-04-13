@@ -16,4 +16,18 @@ export class ProofOfOriginEmissionEntity {
     this.totalEmissionsPerKgHydrogen = totalEmissionsPerKgHydrogen;
     this.basisOfCalculation = basisOfCalculation;
   }
+
+  public static fromEmissionCalculation(
+    kgHydrogen: number,
+    emissionCalculationResult?: number,
+    emissionCalculationBasisOfCalculation?: string[],
+  ): ProofOfOriginEmissionEntity {
+    const totalEmissions = emissionCalculationResult ?? 0;
+    const totalEmissionsPerKgHydrogen = totalEmissions / kgHydrogen;
+    return new ProofOfOriginEmissionEntity(
+      totalEmissions,
+      totalEmissionsPerKgHydrogen,
+      emissionCalculationBasisOfCalculation ?? [],
+    );
+  }
 }

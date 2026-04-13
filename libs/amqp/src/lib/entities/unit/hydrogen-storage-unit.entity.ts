@@ -7,9 +7,9 @@
  */
 
 import {
-  HydrogenStorageUnitDbType,
+  BaseUnitDeepDbType,
+  BaseUnitNestedDbType,
   HydrogenStorageUnitDeepDbType,
-  HydrogenStorageUnitFlatDbType,
   HydrogenStorageUnitNestedDbType,
 } from '@h2-trust/database';
 import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
@@ -66,79 +66,49 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     this.filling = filling;
   }
 
-  static fromDeepDatabase(unit: HydrogenStorageUnitDeepDbType): HydrogenStorageUnitEntity {
+  static fromDeepDatabase(baseUnit: BaseUnitDeepDbType): HydrogenStorageUnitEntity {
     return {
-      ...BaseUnitEntity.fromDeepBaseUnit(unit.generalInfo),
-      capacity: unit.capacity.toNumber(),
-      pressure: unit.pressure.toNumber(),
-      modelType: unit.generalInfo?.modelType,
-      filling: HydrogenStorageUnitEntity.mapFillingForDeepAndNested(unit),
-      address: unit.generalInfo.address,
+      ...BaseUnitEntity.fromDeepBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_STORAGE,
-      type: unit.type as HydrogenStorageType,
+
+      capacity: baseUnit.hydrogenStorageUnit?.capacity.toNumber() ?? 0,
+      pressure: baseUnit.hydrogenStorageUnit?.pressure.toNumber() ?? 0,
+      filling: baseUnit.hydrogenStorageUnit ? HydrogenStorageUnitEntity.mapFilling(baseUnit.hydrogenStorageUnit) : [],
+      type: baseUnit.hydrogenStorageUnit?.type as HydrogenStorageType,
     };
   }
 
-  static fromNestedDatabase(unit: HydrogenStorageUnitNestedDbType): HydrogenStorageUnitEntity {
+  static fromNestedDatabase(baseUnit: BaseUnitNestedDbType): HydrogenStorageUnitEntity {
     return {
-      ...BaseUnitEntity.fromNestedBaseUnit(unit.generalInfo),
-      capacity: unit.capacity.toNumber(),
-      pressure: unit.pressure.toNumber(),
-      modelType: unit.generalInfo?.modelType,
-      filling: HydrogenStorageUnitEntity.mapFillingForDeepAndNested(unit),
-      address: unit.generalInfo.address,
+      ...BaseUnitEntity.fromNestedBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_STORAGE,
-      type: unit.type as HydrogenStorageType,
+
+      capacity: baseUnit.hydrogenStorageUnit?.capacity.toNumber() ?? 0,
+      pressure: baseUnit.hydrogenStorageUnit?.pressure.toNumber() ?? 0,
+      filling: baseUnit.hydrogenStorageUnit ? HydrogenStorageUnitEntity.mapFilling(baseUnit.hydrogenStorageUnit) : [],
+      type: baseUnit.hydrogenStorageUnit?.type as HydrogenStorageType,
     };
   }
 
-  static fromFlatDatabase(unit: HydrogenStorageUnitFlatDbType): HydrogenStorageUnitEntity {
-    return <HydrogenStorageUnitEntity>{
-      ...BaseUnitEntity.fromFlatBaseUnit(unit.generalInfo),
-      capacity: unit.capacity.toNumber(),
-      pressure: unit.pressure.toNumber(),
-      modelType: unit.generalInfo?.modelType,
-      filling: [],
-      address: unit.generalInfo.address,
+  static fromNestedHydrogenStorageUnit(
+    nestedHydrogenStorageUnit: HydrogenStorageUnitNestedDbType,
+  ): HydrogenStorageUnitEntity {
+    return {
+      ...BaseUnitEntity.fromFlatBaseUnit(nestedHydrogenStorageUnit.generalInfo),
       unitType: UnitType.HYDROGEN_STORAGE,
-      type: unit.type as HydrogenStorageType,
+
+      capacity: nestedHydrogenStorageUnit.capacity.toNumber() ?? 0,
+      pressure: nestedHydrogenStorageUnit.pressure.toNumber() ?? 0,
+      filling: HydrogenStorageUnitEntity.mapFilling(nestedHydrogenStorageUnit),
+      type: nestedHydrogenStorageUnit.type as HydrogenStorageType,
     };
   }
 
-  //TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
-  static override fromDatabase(unit: HydrogenStorageUnitDbType): HydrogenStorageUnitEntity {
-    return <HydrogenStorageUnitEntity>{
-      ...BaseUnitEntity.fromDatabase(unit),
-      capacity: unit.hydrogenStorageUnit?.capacity.toNumber() ?? 0,
-      pressure: unit.hydrogenStorageUnit?.pressure.toNumber() ?? 0,
-      type: unit.hydrogenStorageUnit?.type,
-      filling: HydrogenStorageUnitEntity.mapFilling(unit),
-      unitType: UnitType.HYDROGEN_STORAGE,
-    };
-  }
-
-  private static mapFillingForDeepAndNested(
+  private static mapFilling(
     unit: HydrogenStorageUnitDeepDbType | HydrogenStorageUnitNestedDbType,
   ): HydrogenComponentEntity[] {
     return (
       unit?.filling?.map((batch) => {
-        if (!batch.batchDetails?.qualityDetails?.color) {
-          throw new Error(`Hydrogen batch [${batch.id}] in storage unit is missing color information.`);
-        }
-        return new HydrogenComponentEntity(
-          null,
-          batch.batchDetails.qualityDetails.color,
-          batch.amount?.toNumber() ?? 0,
-          batch.batchDetails.qualityDetails.rfnboType,
-        );
-      }) ?? []
-    );
-  }
-
-  //TODO-LG (DUHGW-353): Replace with a deep, nested or flat function if possible
-  private static mapFilling(unit: HydrogenStorageUnitDbType): HydrogenComponentEntity[] {
-    return (
-      unit.hydrogenStorageUnit?.filling?.map((batch) => {
         if (!batch.batchDetails?.qualityDetails?.color) {
           throw new Error(`Hydrogen batch [${batch.id}] in storage unit is missing color information.`);
         }

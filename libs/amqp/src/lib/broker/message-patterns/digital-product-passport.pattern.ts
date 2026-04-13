@@ -7,7 +7,6 @@
  */
 
 export enum DigitalProductPassportPatterns {
-  DETERMINE_RFNBO_TYPE = 'digital-product-passport.determine-rfnbo-type',
   READ_DIGITAL_PRODUCT_PASSPORT = 'digital-product-passport.read-digital-product-passport',
   READ_GENERAL_INFORMATION = 'digital-product-passport.read-general-information',
   READ_PROOF_OF_ORIGIN = 'digital-product-passport.read-proof-of-origin',

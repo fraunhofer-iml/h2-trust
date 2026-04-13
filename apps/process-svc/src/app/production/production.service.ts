@@ -12,6 +12,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import {
   BatchEntity,
   BrokerQueues,
+  ConcreteUnitEntity,
   CreateHydrogenProductionStatisticsPayload,
   CreateProductionEntity,
   CreateProductionsPayload,
@@ -94,7 +95,24 @@ export class ProductionService {
     this.logger.debug(
       `Finalizing ${createProductions.length} staged productions in chunks of ${this.productionChunkSize}`,
     );
-    return this.productionCreationService.createAndPersistProductions(createProductions);
+    const productionUnitForId: Map<string, ConcreteUnitEntity> = await this.getProductionUnits(createProductions);
+    return this.productionCreationService.createAndPersistProductions(createProductions, productionUnitForId);
+  }
+
+  private async getProductionUnits(
+    createProductions: CreateProductionEntity[],
+  ): Promise<Map<string, ConcreteUnitEntity>> {
+    const productionUnitIds: string[] = createProductions.flatMap((production) => [
+      production.hydrogenStorageUnitId,
+      production.powerProductionUnitId,
+      production.hydrogenProductionUnitId,
+    ]);
+    const productionUnits: ConcreteUnitEntity[] = await firstValueFrom(
+      this.generalSvc.send(UnitMessagePatterns.READ_MANY, new ReadByIdsPayload(productionUnitIds)),
+    );
+    return new Map<string, ConcreteUnitEntity>(
+      productionUnits.map((productionUnit) => [productionUnit.id, productionUnit]),
+    );
   }
 
   async createProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
@@ -127,7 +145,9 @@ export class ProductionService {
       powerProductionUnit.type.energySource,
     );
 
-    return this.productionCreationService.createAndPersistProductions(createProductionEntities);
+    const productionUnitForId: Map<string, ConcreteUnitEntity> =
+      await this.getProductionUnits(createProductionEntities);
+    return this.productionCreationService.createAndPersistProductions(createProductionEntities, productionUnitForId);
   }
 
   async assembleProductionStatistics(
