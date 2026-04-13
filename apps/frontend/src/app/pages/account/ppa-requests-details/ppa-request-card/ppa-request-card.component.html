@@ -1,23 +1,106 @@
-<div class="rounded-lg border bg-white">
-  <div class="flex flex-col gap-2 py-4">
-    <div class="flex flex-row justify-between px-4">
+<div
+  class="flex flex-col gap-2 rounded-lg border bg-gradient-to-bl to-white to-40% py-4"
+  [ngClass]="{
+    'from-tertiary-50': request().status === PowerAccessApprovalStatus.PENDING,
+    'from-error-red/20': request().status === PowerAccessApprovalStatus.REJECTED,
+    'from-secondary-100': request().status === PowerAccessApprovalStatus.APPROVED,
+    'cursor-pointer hover:-translate-y-1': request().status !== PowerAccessApprovalStatus.PENDING,
+  }"
+  (click)="request().status !== PowerAccessApprovalStatus.PENDING && sheet.open()"
+  role="none"
+>
+  <div class="flex justify-between px-4">
+    <div>
+      <strong>{{ request().sender.company.name }}</strong>
+      <p class="text-xs text-neutral-400">{{ request().sender.name }} • {{ dateLable }}</p>
+    </div>
+    <app-ppa-status-chip [status]="request().status"></app-ppa-status-chip>
+  </div>
+
+  <mat-divider />
+
+  <div class="flex flex-col gap-1 px-4 text-sm">
+    <span class="flex justify-between">
+      <span class="text-neutral-500">Created on</span> {{ request().decidedAt | date }}
+    </span>
+    <span class="flex justify-between">
+      <span class="text-neutral-500">Valid</span>
+      <span>{{ request().validFrom | date: 'shortDate' }} - {{ request().validTo | date: 'shortDate' }}</span>
+    </span>
+    @if (request().status === PowerAccessApprovalStatus.PENDING) {
+      <span class="flex justify-between">
+        <span class="text-neutral-500">Requested type</span>
+        {{ request().powerProductionType | prettyEnum | titlecase }}
+      </span>
+    }
+  </div>
+
+  @if (request().status === PowerAccessApprovalStatus.PENDING && role() === PpaRequestRole.RECEIVER) {
+    <div class="dash border border-dashed border-neutral-200"></div>
+    <div class="flex gap-2 px-4 pt-2">
+      <button
+        matButton="outlined"
+        class="delete-button-outlined flex-1"
+        (click)="openDialog(PowerAccessApprovalStatus.REJECTED)"
+      >
+        <span class="flex items-center gap-2 pr-2"
+          ><span class="material-symbols-outlined text-xl">close</span> Reject</span
+        >
+      </button>
+      <button matButton="outlined" class="flex-1" (click)="openDialog(PowerAccessApprovalStatus.APPROVED)">
+        <span class="flex items-center gap-2 pr-2"
+          ><span class="material-symbols-outlined text-xl">check</span> Approve</span
+        >
+      </button>
+    </div>
+  }
+</div>
+
+<app-base-sheet #sheet>
+  <div
+    class="flex flex-col gap-2 rounded-lg border bg-gradient-to-bl to-white to-40% py-4"
+    [ngClass]="{
+      'from-tertiary-50': request().status === PowerAccessApprovalStatus.PENDING,
+      'from-error-red/20': request().status === PowerAccessApprovalStatus.REJECTED,
+      'from-secondary-100': request().status === PowerAccessApprovalStatus.APPROVED,
+    }"
+  >
+    <div class="flex justify-between px-4">
       <div>
-        Request by <strong>{{ request().sender.company.name }}</strong>
-        <p class="text-xs text-neutral-400">{{ request().sender.name }} • {{ request().timestamp | date: 'medium' }}</p>
+        <strong>{{ request().sender.company.name }}</strong>
+        <p class="text-xs text-neutral-400">{{ request().sender.name }} • {{ dateLable }}</p>
       </div>
       <app-ppa-status-chip [status]="request().status"></app-ppa-status-chip>
     </div>
 
     <mat-divider />
 
-    <div class="flex flex-col gap-1 px-4">
-      <span class="flex flex-row justify-between text-sm">
-        <span>Requested power production type:</span> {{ request().powerProductionType | prettyEnum | titlecase }}
+    <div class="flex flex-col gap-1 px-4 text-sm">
+      <span class="flex justify-between">
+        <span class="text-neutral-500">Created on</span> {{ request().createdAt | date }}
+      </span>
+      <span class="flex justify-between">
+        <span class="text-neutral-500">Created by</span> {{ request().sender.name }}
       </span>
 
+      <span class="flex justify-between">
+        <span class="text-neutral-500">Valid</span>
+        <span>{{ request().validFrom | date: 'shortDate' }} - {{ request().validTo | date: 'shortDate' }}</span>
+      </span>
+      <span class="flex justify-between">
+        <span class="text-neutral-500">Requested type</span>
+        {{ request().powerProductionType | prettyEnum | titlecase }}
+      </span>
       @if (request().status !== PowerAccessApprovalStatus.PENDING) {
-        <span class="flex flex-row justify-between text-sm">
-          <span>Power Production Unit:</span> {{ request().powerProductionUnit?.name }}
+        <span class="flex justify-between">
+          <span class="text-neutral-500">Power Production Unit</span> {{ request().powerProductionUnit?.name }}
+        </span>
+
+        <span class="flex justify-between">
+          <span class="text-neutral-500">Decided on</span> {{ request().decidedAt | date }}
+        </span>
+        <span class="flex justify-between">
+          <span class="text-neutral-500">Decided by</span> {{ request().decidedBy }}
         </span>
       }
     </div>
@@ -25,28 +108,15 @@
     @if (request().status !== PowerAccessApprovalStatus.PENDING) {
       <mat-divider />
       <div class="px-4 text-sm text-neutral-600">
-        <p class="text-neutral-500">Comment from {{ request().receiver.name }}:</p>
+        <p class="text-neutral-500">
+          @if (role() === PpaRequestRole.RECEIVER) {
+            Your Comment
+          } @else {
+            Comment from {{ request().receiver.name }}
+          }
+        </p>
         <p>{{ request().comment ?? 'No comment available.' }}</p>
       </div>
     }
-
-    @if (request().status === PowerAccessApprovalStatus.PENDING && role() === PpaRequestRole.RECEIVER) {
-      <mat-divider />
-
-      <div class="px-4 text-sm text-neutral-600">
-        <p>You can approve or reject this request. You can as well add a comment in the next step if you like.</p>
-
-        <div class="flex flex-row justify-end gap-2 pt-2">
-          <button
-            matButton="outlined"
-            class="delete-button-outlined"
-            (click)="openDialog(PowerAccessApprovalStatus.REJECTED)"
-          >
-            Reject
-          </button>
-          <button matButton="filled" (click)="openDialog(PowerAccessApprovalStatus.APPROVED)">Approve</button>
-        </div>
-      </div>
-    }
   </div>
-</div>
+</app-base-sheet>

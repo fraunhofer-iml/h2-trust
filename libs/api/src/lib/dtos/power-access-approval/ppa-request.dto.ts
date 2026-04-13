@@ -7,14 +7,19 @@
  */
 
 import { PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
+import { CompanyDto } from '../company';
 import { PowerProductionOverviewDto } from '../unit';
 import { UserDetailsDto } from '../user';
 
 export class PpaRequestDto {
   id: string;
-  timestamp: string;
+  createdAt: Date;
+  decidedAt?: Date;
+  decidedBy?: string;
+  validFrom: Date;
+  validTo: Date;
   sender: UserDetailsDto;
-  receiver: UserDetailsDto;
+  receiver: CompanyDto;
   powerProductionType: PowerProductionType;
   powerProductionUnit?: PowerProductionOverviewDto;
   status: PowerAccessApprovalStatus;
@@ -22,21 +27,30 @@ export class PpaRequestDto {
 
   constructor(
     id: string,
-    timestammp: string,
+    createdAt: Date,
+    validFrom: Date,
+    validTo: Date,
     sender: UserDetailsDto,
-    receiver: UserDetailsDto,
+    receiver: CompanyDto,
     powerType: PowerProductionType,
     powerProductionUnit: PowerProductionOverviewDto,
     status: PowerAccessApprovalStatus,
+    decidedAt?: Date,
+    decidedBy?: string,
     comment?: string,
   ) {
     this.id = id;
-    this.timestamp = timestammp;
+    this.createdAt = createdAt;
+    this.decidedAt = decidedAt;
+    this.validFrom = validFrom;
+    this.validTo = validTo;
     this.sender = sender;
     this.receiver = receiver;
     this.powerProductionType = powerType;
     this.powerProductionUnit = powerProductionUnit;
     this.status = status;
+    this.decidedBy = decidedBy;
+    this.decidedAt = decidedAt;
     this.comment = comment;
   }
 }

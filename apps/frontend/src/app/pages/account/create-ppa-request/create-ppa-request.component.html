@@ -1,0 +1,39 @@
+<h3 mat-dialog-title>Request PPA</h3>
+<div class="flex !w-[32rem] flex-col gap-4 px-6 text-sm text-neutral-500">
+  <p>Please select a Company and the desired Power production type.</p>
+
+  <form [formGroup]="form" class="flex flex-col gap-4">
+    <mat-form-field appearance="outline">
+      <mat-label>Company</mat-label>
+      <mat-select formControlName="companyId" name="company">
+        @for (company of companiesQuery.data(); track company.id) {
+          <mat-option [value]="company.id">{{ company.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Type</mat-label>
+      <mat-select formControlName="powerProductionType">
+        @for (type of availablePowerProductionType; track type) {
+          <mat-option [value]="type[1]">{{ type[0] | prettyEnum | titlecase }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Date range</mat-label>
+      <mat-date-range-input [rangePicker]="picker" [min]="today">
+        <input readonly matStartDate placeholder="Start date" formControlName="validFrom" />
+        <input formControlName="validTo" matEndDate readonly placeholder="End date" />
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+  </form>
+</div>
+
+<mat-dialog-actions>
+  <button matButton (click)="close()">Cancel</button>
+  <button matButton (click)="save()" cdkFocusInitial [disabled]="form.invalid">Send</button>
+</mat-dialog-actions>

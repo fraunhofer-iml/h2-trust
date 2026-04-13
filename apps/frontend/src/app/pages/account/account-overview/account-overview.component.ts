@@ -11,6 +11,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -21,6 +22,7 @@ import { AuthService } from '../../../shared/services/auth/auth.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { UsersService } from '../../../shared/services/users/users.service';
 import { UserRolesStore } from '../../../shared/store/user-role.store';
+import { CreatePpaRequestComponent } from '../create-ppa-request/create-ppa-request.component';
 import { PpaRequestsOverviewComponent } from '../ppa-requests-overview/ppa-requests-overview.component';
 
 @Component({
@@ -42,7 +44,9 @@ import { PpaRequestsOverviewComponent } from '../ppa-requests-overview/ppa-reque
 })
 export class AccountOverviewComponent implements OnInit {
   protected readonly PpaRequestRole = PpaRequestRole;
+
   protected readonly unitsService = inject(UnitsService);
+  dialog = inject(MatDialog);
 
   constructor(
     private readonly authService: AuthService,
@@ -62,5 +66,9 @@ export class AccountOverviewComponent implements OnInit {
   async ngOnInit() {
     const userId = await this.authService.getUserId();
     this.userId$.set(userId);
+  }
+
+  openDialog() {
+    this.dialog.open(CreatePpaRequestComponent);
   }
 }

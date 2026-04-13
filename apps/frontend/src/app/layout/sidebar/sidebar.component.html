@@ -11,7 +11,7 @@
 
         <div class="h-[1px] w-full bg-neutral-200"></div>
 
-        @if (isAuthenticated) {
+        @if (authenticated) {
           <div class="flex flex-col gap-2 p-4">
             @for (option of sidebarOptions; track $index) {
               @if (option.visible()) {
@@ -19,7 +19,7 @@
                   [routerLink]="option.route"
                   class="flex w-full flex-row gap-2 rounded-lg p-3 text-neutral-700"
                   [ngClass]="{
-                    'bg-primary-100 text-primary-700': isActive(option.route),
+                    'bg-primary-100 text-primary-700 hover:bg-primary-100': isActive(option.route),
                     'hover:bg-neutral-100': option.route,
                   }"
                 >
@@ -36,7 +36,7 @@
                         [routerLink]="item.route"
                         class="flex w-full flex-row gap-2 rounded-lg p-3 text-neutral-700 hover:bg-neutral-100"
                         [ngClass]="{
-                          'bg-primary-100 text-primary-700': isActive(item.route),
+                          'bg-primary-100 text-primary-700 hover:bg-primary-100': isActive(item.route),
                         }"
                       >
                         <span class="material-symbols-outlined">{{ item.icon }}</span>
@@ -51,59 +51,84 @@
         }
       </div>
       <div class="p-4">
-        <div
-          [matBadge]="ppaRequestsQuery.data()?.length"
-          matBadgeSize="large"
-          [matBadgeHidden]="ppaRequestsQuery.data()?.length === 0"
-        >
-          <mat-expansion-panel
-            class="!bg-primary-100 p-2 !shadow-none"
-            [hideToggle]="!isAuthenticated"
-            [disabled]="!isAuthenticated"
-          >
-            <mat-expansion-panel-header class="select-none !bg-transparent !pl-1 !pr-4">
-              @if (isAuthenticated) {
-                <mat-panel-title>
-                  <div class="flex flex-row items-center gap-4">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-400">
-                      <span class="material-symbols-outlined text-2xl text-white">person </span>
-                    </div>
-                    <div class="flex flex-col text-sm text-neutral-500">
-                      <span class="font-semibold">{{ userFirstName }} {{ userLastName }}</span>
-                      <span>{{ userEmail }}</span>
-                    </div>
+        <div>
+          @if (!authenticated) {
+            <button
+              class="flex w-full flex-row items-center justify-between rounded-lg border border-neutral-200 bg-white p-3 text-primary-700 shadow-md"
+              (click)="signIn()"
+              role="none"
+            >
+              <span class="">Sign In</span>
+              <span class="material-symbols-outlined">login</span>
+            </button>
+          } @else {
+            <div
+              class="mb-2 flex w-full origin-bottom flex-col rounded-lg border border-neutral-200 bg-white p-2 shadow-md transition-all duration-200"
+              [class]="
+                isMenuOpen
+                  ? 'visible translate-y-0 scale-100 opacity-100'
+                  : 'pointer-events-none invisible -translate-y-1 scale-95 opacity-0'
+              "
+            >
+              <!-- Account -->
+              <a
+                routerLink="/"
+                class="flex items-center gap-3 rounded-lg p-3 text-neutral-600 hover:bg-primary-100 hover:text-primary-600"
+                (click)="closeMenu(); $event.stopPropagation()"
+              >
+                <span class="material-symbols-outlined">person</span>
+                <span>My account</span>
+              </a>
+
+              <!-- PPA Requests -->
+              <a
+                routerLink="/ppa-requests"
+                class="flex items-center gap-3 rounded-lg p-3 text-neutral-600 hover:bg-primary-100 hover:text-primary-600"
+                (click)="closeMenu(); $event.stopPropagation()"
+              >
+                <span
+                  class="material-symbols-outlined relative"
+                  [matBadge]="ppaRequestsQuery.data()?.length"
+                  matBadgeSize="large"
+                  [matBadgeHidden]="ppaRequestsQuery.data()?.length === 0"
+                >
+                  mail
+                </span>
+                <span>PPA Requests</span>
+              </a>
+
+              <!-- Sign Out -->
+              <button
+                (click)="logout(); $event.stopPropagation()"
+                class="flex w-full items-center gap-3 rounded-lg p-3 text-neutral-600 hover:bg-primary-100 hover:text-primary-600"
+              >
+                <span class="material-symbols-outlined">logout</span>
+                <span>Sign Out</span>
+              </button>
+            </div>
+            <button
+              class="w-full cursor-pointer rounded-lg border p-3 shadow-md"
+              (click)="toggleMenu()"
+              [matBadge]="ppaRequestsQuery.data()?.length"
+              matBadgeSize="large"
+              [matBadgeHidden]="ppaRequestsQuery.data()?.length === 0"
+            >
+              <div class="flex flex-row items-center justify-between gap-4">
+                <div class="flex flex-row items-center gap-2">
+                  <span class="material-symbols-outlined rounded-full border bg-primary-50 p-1 text-primary-400"
+                    >person</span
+                  >
+
+                  <div class="flex flex-col text-left text-sm text-neutral-600">
+                    <span class="text-xs font-semibold">{{ profile.firstName }} {{ profile.lastName }}</span>
+                    <span class="text-xs">{{ profile.email }}</span>
                   </div>
-                </mat-panel-title>
-              } @else {
-                <div
-                  class="flex w-full flex-row items-center justify-between pl-2 text-primary-700"
-                  (click)="signIn()"
-                  role="none"
-                >
-                  <span class="text-lg">Sign In</span>
-                  <span class="material-symbols-outlined">login</span>
                 </div>
-              }
-            </mat-expansion-panel-header>
-            @if (isAuthenticated) {
-              <div class="flex w-full flex-col gap-1 p-2">
-                <a
-                  class="flex flex-row items-center gap-2 rounded-full border-2 border-primary-100 p-4 text-neutral-500 hover:bg-primary-200 hover:text-primary-600"
-                  routerLink="/"
-                >
-                  <span class="material-symbols-outlined">settings</span>
-                  <span>account</span>
-                </a>
-                <button
-                  class="flex flex-row items-center gap-2 rounded-full border-2 border-primary-100 p-4 text-neutral-500 hover:bg-primary-200 hover:text-primary-600"
-                  (click)="logout()"
-                >
-                  <span class="material-symbols-outlined">logout</span>
-                  <span>Sign Out</span>
-                </button>
+
+                <span class="material-symbols-outlined pr-2 text-lg text-neutral-600">expand_all</span>
               </div>
-            }
-          </mat-expansion-panel>
+            </button>
+          }
         </div>
       </div>
     </div>

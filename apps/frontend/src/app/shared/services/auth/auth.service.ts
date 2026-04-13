@@ -8,6 +8,7 @@
 
 import Keycloak, { KeycloakProfile } from 'keycloak-js';
 import { inject, Injectable } from '@angular/core';
+import { UserProfile } from '../../model/user-profile.model';
 import { VerificationResultStore } from '../../store/verification-result.store';
 
 @Injectable()
@@ -19,11 +20,7 @@ export class AuthService {
     return profile.id ?? '';
   }
 
-  async getCurrentUserDetails(): Promise<{
-    firstName: string;
-    lastName: string;
-    email: string;
-  }> {
+  async getCurrentUserDetails(): Promise<UserProfile> {
     const profile: KeycloakProfile = await this.keycloak.loadUserProfile();
     return {
       firstName: profile.firstName ?? '',
