@@ -7,7 +7,17 @@
  */
 
 import { AuthenticatedUser } from 'nest-keycloak-connect';
-import { Body, Controller, Get, Param, Post, Query, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotImplementedException,
+  Param,
+  Post,
+  Query,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
@@ -202,20 +212,12 @@ export class ProductionController {
     FileFieldsInterceptor([{ name: FileUploadKeys.POWER_PRODUCTION }, { name: FileUploadKeys.HYDROGEN_PRODUCTION }]),
   )
   importCsvFile(
-    @Body() dto: ProductionCSVUploadDto,
+    @Body() _dto: ProductionCSVUploadDto,
     @UploadedFiles()
-    files: {
-      [FileUploadKeys.POWER_PRODUCTION]: Express.Multer.File[];
-      [FileUploadKeys.HYDROGEN_PRODUCTION]: Express.Multer.File[];
-    },
-    @AuthenticatedUser() user: AuthenticatedKCUser,
+    _files: Express.Multer.File[],
+    @AuthenticatedUser() _user: AuthenticatedKCUser,
   ) {
-    return this.service.importCsvFiles(
-      files[FileUploadKeys.POWER_PRODUCTION],
-      files[FileUploadKeys.HYDROGEN_PRODUCTION],
-      dto,
-      user.sub,
-    );
+    throw new NotImplementedException();
   }
 
   @Post('csv/submit')

@@ -117,14 +117,10 @@ export class ProductionService {
     dto: ProductionCSVUploadDto,
     userId: string,
   ) {
-    const powerProductions = await this.uploadAndMapFilesToUnits(
-      dto.powerProductionUnitIds,
-      powerProductionFiles,
-      BatchType.POWER,
-    );
+    const powerProductions = await this.uploadAndMapFilesToUnits(dto.unitIds, powerProductionFiles, BatchType.POWER);
 
     const hydrogenProductions = await this.uploadAndMapFilesToUnits(
-      dto.hydrogenProductionUnitIds,
+      dto.unitIds,
       hydrogenProductionFiles,
       BatchType.HYDROGEN,
     );

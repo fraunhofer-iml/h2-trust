@@ -5,6 +5,10 @@
   (drop)="onDrop($event)"
   (dragover)="onDragOver($event)"
   class="group flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-md border-2 border-dashed border-neutral-400 hover:border-primary-300 hover:bg-primary-100/30"
+  [ngClass]="{
+    'cursor-pointer border-neutral-400 hover:border-primary-300 hover:bg-primary-100/30': !disabled(),
+    'pointer-events-none cursor-not-allowed border-neutral-300 opacity-50': disabled(),
+  }"
 >
   <span class="material-symbols-outlined text-4xl text-neutral-400 group-hover:text-primary-400">cloud_upload</span>
   <p class="mb-2 text-center text-sm text-neutral-500 group-hover:text-primary-400">
@@ -13,6 +17,7 @@
   </p>
 
   <input
+    [disabled]="disabled()"
     id="dropzone-file"
     type="file"
     class="hidden"
