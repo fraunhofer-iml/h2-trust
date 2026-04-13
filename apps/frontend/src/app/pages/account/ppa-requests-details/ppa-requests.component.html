@@ -1,8 +1,13 @@
 <div class="flex flex-col gap-4 p-8">
-  <div class="flx-row flex gap-2 text-neutral-500">
-    <a class="text-lg hover:underline" routerLink="">My Account</a>
-    <span class="material-symbols-outlined"> keyboard_arrow_right </span>
-    <h2 class="text-lg">PPA Requests</h2>
+  <div class="flex justify-between">
+    <div class="flx-row flex gap-2 text-neutral-500">
+      <a class="text-lg hover:underline" routerLink="">My Account</a>
+      <span class="material-symbols-outlined"> keyboard_arrow_right </span>
+      <h2 class="text-lg">PPA Requests</h2>
+    </div>
+    @if (roles.isHydrogenProducer()) {
+      <button matButton="filled" (click)="openDialog()">Request PPA</button>
+    }
   </div>
 
   <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="rounded-md" dynamicHeight>

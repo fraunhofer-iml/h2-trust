@@ -9,6 +9,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -20,6 +21,7 @@ import { ppaRequestsQueryOptions } from '../../../shared/queries/ppa-requests.qu
 import { PowerAccessApprovalService } from '../../../shared/services/power-access-approvals/power-access-approvals.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { UserRolesStore } from '../../../shared/store/user-role.store';
+import { CreatePpaRequestComponent } from '../create-ppa-request/create-ppa-request.component';
 import { PpaRequestsListComponent } from './ppa-requests-list/ppa-requests-list.component';
 
 @Component({
@@ -42,6 +44,7 @@ export class PpaRequestsComponent {
   protected readonly unitsService = inject(UnitsService);
   protected readonly ppaService = inject(PowerAccessApprovalService);
   protected roles = inject(UserRolesStore);
+  dialog = inject(MatDialog);
 
   ppaRequestsSentQuery = injectQuery(() => ppaRequestsQueryOptions(this.ppaService, PpaRequestRole.SENDER));
 
@@ -63,5 +66,9 @@ export class PpaRequestsComponent {
       val.status === PowerAccessApprovalStatus.PENDING ? result.pending.push(val) : result.closed.push(val),
     );
     return result;
+  }
+
+  openDialog() {
+    this.dialog.open(CreatePpaRequestComponent);
   }
 }

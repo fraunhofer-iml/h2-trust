@@ -8,4 +8,4 @@
 
 import { HydrogenProductionUnitEntity, HydrogenStorageUnitEntity, PowerProductionUnitEntity } from '../entities';
 
-export type UnitEntity = PowerProductionUnitEntity | HydrogenProductionUnitEntity | HydrogenStorageUnitEntity;
+export type ConcreteUnitEntity = PowerProductionUnitEntity | HydrogenProductionUnitEntity | HydrogenStorageUnitEntity;

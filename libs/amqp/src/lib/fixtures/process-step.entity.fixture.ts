@@ -13,6 +13,7 @@ import { DocumentEntityFixture } from './document.entity.fixture';
 import { HydrogenProductionUnitEntityFixture } from './hydrogen-production-unit.entity.fixture';
 import { HydrogenStorageUnitEntityFixture } from './hydrogen-storage-unit.entity.fixture';
 import { PowerProductionUnitEntityFixture } from './power-production-unit.entity.fixture';
+import { TransportationDetailsEntityFixture } from './transportation-details.entity.fixture';
 import { UserEntityFixture } from './user.entity.fixture';
 
 export const ProcessStepEntityFixture = {
@@ -74,6 +75,6 @@ export const ProcessStepEntityFixture = {
       overrides.recordedBy ?? UserEntityFixture.createHydrogenUser(),
       overrides.executedBy ?? HydrogenStorageUnitEntityFixture.create(),
       overrides.documents ?? [DocumentEntityFixture.create()],
-      overrides.transportationDetails ?? undefined,
+      overrides.transportationDetails ?? TransportationDetailsEntityFixture.createPipeline(),
     ),
 } as const;

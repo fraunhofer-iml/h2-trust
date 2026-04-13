@@ -6,11 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerAccessApprovalSeed, PowerProductionTypeSeed } from '../../../seed';
+import { PowerAccessApprovalSeed } from '../../../seed';
 import { PowerAccessApprovalDeepDbType } from '../power-access-approval.db.type';
 import { CompanyDbTypeMock } from './company-db-type.mock';
 import { DocumentDbTypeMock } from './document-db-type.mock';
-import { PowerProductionUnitDbTypeMock } from './power-production-unit-db-type.mock';
+import { PowerProductionUnitDeepDbTypeMock } from './power-production-unit-db-type.mock';
 
 export const PowerAccessApprovalDbTypeMock = <PowerAccessApprovalDeepDbType[]>[
   {
@@ -18,10 +18,6 @@ export const PowerAccessApprovalDbTypeMock = <PowerAccessApprovalDeepDbType[]>[
     powerProducer: CompanyDbTypeMock[0],
     hydrogenProducer: CompanyDbTypeMock[1],
     document: DocumentDbTypeMock[0],
-    powerProductionUnit: {
-      generalInfo: { ...PowerProductionUnitDbTypeMock[0] },
-      type: PowerProductionTypeSeed[0],
-      ...PowerProductionUnitDbTypeMock[0].powerProductionUnit,
-    },
+    powerProductionUnit: PowerProductionUnitDeepDbTypeMock[0],
   },
 ];
