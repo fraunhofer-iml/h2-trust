@@ -42,9 +42,8 @@ function createDecentralizedStorageService(configService: ConfigurationService):
 }
 
 function createS3Client(config: StorageConfiguration, forcePathStyle: boolean): S3Client {
-  const protocol = config.useSSL ? 'https' : 'http';
   return new S3Client({
-    endpoint: `${protocol}://${config.endPoint}:${config.port}`,
+    endpoint: config.endpoint,
     region: config.region,
     credentials: {
       accessKeyId: config.accessKey,

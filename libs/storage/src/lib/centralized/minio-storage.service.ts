@@ -26,8 +26,7 @@ export class MinioStorageService extends CentralizedStorageService {
 
     this.bucketName = config.bucketName;
 
-    const protocol = config.useSSL ? 'https' : 'http';
-    this.storageUrl = `${protocol}://${config.endPoint}:${config.port}/${this.bucketName}`;
+    this.storageUrl = `${config.endpoint}/${this.bucketName}`;
   }
 
   async uploadCsvFile(fileName: string, file: Buffer): Promise<void> {

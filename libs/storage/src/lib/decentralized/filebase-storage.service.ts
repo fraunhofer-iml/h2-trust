@@ -21,10 +21,13 @@ export class FilebaseStorageService extends DecentralizedStorageService {
     configurationService: ConfigurationService,
   ) {
     super();
+
     const config = configurationService.getGlobalConfiguration().decentralizedStorage;
+
     if (config.provider !== 'filebase') {
       throw new Error('FilebaseStorageService requires provider "filebase"');
     }
+
     this.bucketName = config.bucketName;
     this.explorerUrl = config.explorerUrl;
   }

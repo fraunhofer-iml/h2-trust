@@ -27,9 +27,7 @@ export interface AmqpConfiguration {
 }
 
 export interface StorageConfiguration {
-  useSSL: boolean;
-  endPoint: string;
-  port: number;
+  endpoint: string;
   region: string;
   accessKey: string;
   secretKey: string;
@@ -76,9 +74,7 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
     queuePrefix: requireEnv('AMQP_QUEUE_PREFIX'),
   } as AmqpConfiguration,
   centralizedStorage: {
-    useSSL: requireEnv('CENTRALIZED_STORAGE_USE_SSL') === 'true',
-    endPoint: requireEnv('CENTRALIZED_STORAGE_ENDPOINT'),
-    port: parseInt(requireEnv('CENTRALIZED_STORAGE_PORT')),
+    endpoint: requireEnv('CENTRALIZED_STORAGE_ENDPOINT'),
     region: requireEnv('CENTRALIZED_STORAGE_REGION'),
     accessKey: requireEnv('CENTRALIZED_STORAGE_ACCESS_KEY'),
     secretKey: requireEnv('CENTRALIZED_STORAGE_SECRET_KEY'),
@@ -95,9 +91,7 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
     }
     return {
       provider,
-      useSSL: requireEnv('DECENTRALIZED_STORAGE_USE_SSL') === 'true',
-      endPoint: requireEnv('DECENTRALIZED_STORAGE_ENDPOINT'),
-      port: parseInt(requireEnv('DECENTRALIZED_STORAGE_PORT')),
+      endpoint: requireEnv('DECENTRALIZED_STORAGE_ENDPOINT'),
       region: requireEnv('DECENTRALIZED_STORAGE_REGION'),
       accessKey: requireEnv('DECENTRALIZED_STORAGE_ACCESS_KEY'),
       secretKey: requireEnv('DECENTRALIZED_STORAGE_SECRET_KEY'),

@@ -86,7 +86,7 @@ export class ProcessStepService {
           new DocumentEntity(
             document.id,
             document.fileName,
-            `http://${configuration.endPoint}:${configuration.port}/${configuration.bucketName}/${document.fileName}`,
+            `${configuration.endpoint}/${configuration.bucketName}/${document.fileName}`,
           ),
         );
       }

@@ -19,10 +19,13 @@ export class KuboStorageService extends DecentralizedStorageService {
 
   constructor(configurationService: ConfigurationService) {
     super();
+
     const config = configurationService.getGlobalConfiguration().decentralizedStorage;
+
     if (config.provider !== 'kubo') {
       throw new Error('KuboStorageService requires provider "kubo"');
     }
+
     this.apiUrl = config.apiUrl;
     this.explorerUrl = config.gatewayUrl;
   }
