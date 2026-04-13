@@ -11,14 +11,12 @@ import { Module } from '@nestjs/common';
 import { ConfigurationModule, ConfigurationService, StorageConfiguration } from '@h2-trust/configuration';
 import { CentralizedStorageService } from './centralized-storage.service';
 import { DecentralizedStorageService } from './decentralized-storage.service';
-import { DECENTRALIZED_STORAGE_CLIENT, CENTRALIZED_STORAGE_CLIENT } from './storage.tokens';
+import { FilebaseStorageService } from './filebase-storage.service';
+import { KuboStorageService } from './kubo-storage.service';
+import { CENTRALIZED_STORAGE_CLIENT } from './storage.tokens';
 
 function createCentralizedStorageClient(configService: ConfigurationService): S3Client {
   return createS3Client(configService.getGlobalConfiguration().centralizedStorage, true);
-}
-
-function createDecentralizedStorageClient(configService: ConfigurationService): S3Client {
-  return createS3Client(configService.getGlobalConfiguration().decentralizedStorage, false);
 }
 
 function createS3Client(config: StorageConfiguration, forcePathStyle: boolean): S3Client {
@@ -34,6 +32,15 @@ function createS3Client(config: StorageConfiguration, forcePathStyle: boolean): 
   });
 }
 
+function createDecentralizedStorageService(configService: ConfigurationService): DecentralizedStorageService {
+  const config = configService.getGlobalConfiguration().decentralizedStorage;
+  if (config.provider === 'kubo') {
+    return new KuboStorageService(configService);
+  }
+  const s3Client = createS3Client(config, false);
+  return new FilebaseStorageService(s3Client, configService);
+}
+
 @Module({
   imports: [ConfigurationModule],
   providers: [
@@ -43,13 +50,12 @@ function createS3Client(config: StorageConfiguration, forcePathStyle: boolean): 
       useFactory: createCentralizedStorageClient,
     },
     {
-      provide: DECENTRALIZED_STORAGE_CLIENT,
+      provide: DecentralizedStorageService,
       inject: [ConfigurationService],
-      useFactory: createDecentralizedStorageClient,
+      useFactory: createDecentralizedStorageService,
     },
     CentralizedStorageService,
-    DecentralizedStorageService,
   ],
   exports: [CentralizedStorageService, DecentralizedStorageService],
 })
-export class StorageModule { }
+export class StorageModule {}

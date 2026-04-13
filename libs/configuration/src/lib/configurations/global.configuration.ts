@@ -36,9 +36,22 @@ export interface StorageConfiguration {
   bucketName: string;
 }
 
-export interface DecentralizedStorageConfiguration extends StorageConfiguration {
+export type DecentralizedStorageProvider = 'filebase' | 'kubo';
+
+export interface FilebaseStorageConfiguration extends StorageConfiguration {
+  provider: 'filebase';
   explorerUrl: string;
 }
+
+export interface KuboStorageConfiguration {
+  provider: 'kubo';
+  apiUrl: string;
+  gatewayUrl: string;
+}
+
+export type DecentralizedStorageConfiguration =
+  | FilebaseStorageConfiguration
+  | KuboStorageConfiguration;
 
 export interface BlockchainConfiguration {
   enabled: boolean;
@@ -71,16 +84,27 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
     secretKey: requireEnv('CENTRALIZED_STORAGE_SECRET_KEY'),
     bucketName: requireEnv('CENTRALIZED_STORAGE_BUCKET_NAME'),
   } as StorageConfiguration,
-  decentralizedStorage: {
-    useSSL: requireEnv('DECENTRALIZED_STORAGE_USE_SSL') === 'true',
-    endPoint: requireEnv('DECENTRALIZED_STORAGE_ENDPOINT'),
-    port: parseInt(requireEnv('DECENTRALIZED_STORAGE_PORT')),
-    region: requireEnv('DECENTRALIZED_STORAGE_REGION'),
-    accessKey: requireEnv('DECENTRALIZED_STORAGE_ACCESS_KEY'),
-    secretKey: requireEnv('DECENTRALIZED_STORAGE_SECRET_KEY'),
-    bucketName: requireEnv('DECENTRALIZED_STORAGE_BUCKET_NAME'),
-    explorerUrl: requireEnv('DECENTRALIZED_STORAGE_EXPLORER_URL'),
-  } as DecentralizedStorageConfiguration,
+  decentralizedStorage: (() => {
+    const provider = (process.env['DECENTRALIZED_STORAGE_PROVIDER'] ?? 'filebase') as DecentralizedStorageProvider;
+    if (provider === 'kubo') {
+      return {
+        provider,
+        apiUrl: requireEnv('DECENTRALIZED_STORAGE_API_URL'),
+        gatewayUrl: requireEnv('DECENTRALIZED_STORAGE_GATEWAY_URL'),
+      } satisfies KuboStorageConfiguration;
+    }
+    return {
+      provider,
+      useSSL: requireEnv('DECENTRALIZED_STORAGE_USE_SSL') === 'true',
+      endPoint: requireEnv('DECENTRALIZED_STORAGE_ENDPOINT'),
+      port: parseInt(requireEnv('DECENTRALIZED_STORAGE_PORT')),
+      region: requireEnv('DECENTRALIZED_STORAGE_REGION'),
+      accessKey: requireEnv('DECENTRALIZED_STORAGE_ACCESS_KEY'),
+      secretKey: requireEnv('DECENTRALIZED_STORAGE_SECRET_KEY'),
+      bucketName: requireEnv('DECENTRALIZED_STORAGE_BUCKET_NAME'),
+      explorerUrl: requireEnv('DECENTRALIZED_STORAGE_EXPLORER_URL'),
+    } satisfies FilebaseStorageConfiguration;
+  })(),
   blockchain: {
     enabled: requireEnv('BLOCKCHAIN_ENABLED') === 'true',
     rpcUrl: requireEnv('BLOCKCHAIN_RPC_URL'),

@@ -58,6 +58,16 @@ services:
         mc mb --ignore-existing local/${CENTRALIZED_STORAGE_BUCKET_NAME}
         mc anonymous set download local/${CENTRALIZED_STORAGE_BUCKET_NAME}
 
+  ipfs:
+    image: ipfs/kubo:v0.34.1
+    restart: unless-stopped
+    ports:
+      - '5001:5001'
+      - '8081:8080'
+    healthcheck:
+      test: ['CMD-SHELL', 'ipfs id']
+      <<: *healthcheck-defaults
+
   blockchain:
     build:
       context: ./docker/blockchain
