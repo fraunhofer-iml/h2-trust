@@ -11,6 +11,8 @@ import {
   ProofOfSustainabilityEmissionEntity,
   ProofOfSustainabilityEntity,
 } from '@h2-trust/amqp';
+import { MeasurementUnit } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 import { EmissionCalculationDto } from './emission-calculation.dto';
 import { EmissionForProcessStepDto } from './process-step-emission.dto';
 
@@ -60,11 +62,12 @@ export class ProofOfSustainabilityDto {
   private static fromEmissionCalculationEntity(
     calculation: ProofOfSustainabilityEmissionCalculationEntity,
   ): EmissionCalculationDto {
+    assertValidEnum(calculation.unit, MeasurementUnit);
     return new EmissionCalculationDto(
       calculation.name,
       calculation.basisOfCalculation,
       calculation.result,
-      calculation.unit,
+      calculation.unit as MeasurementUnit,
       calculation.calculationTopic,
     );
   }
