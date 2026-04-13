@@ -9,7 +9,6 @@
 import { HttpStatus } from '@nestjs/common';
 import { BrokerException } from '../broker/broker-exception';
 import { HydrogenComponentEntity } from '../entities';
-import { Util } from './util';
 
 export class HydrogenCompositionUtil {
   /**
@@ -29,7 +28,7 @@ export class HydrogenCompositionUtil {
       [],
     );
 
-    const totalAmount = Util.sumAmounts(mergedHydrogenComponents);
+    const totalAmount = mergedHydrogenComponents.reduce((sum, item) => sum + item.amount, 0);
     if (totalAmount <= 0) {
       throw new BrokerException(`Total stored amount is not greater than 0`, HttpStatus.INTERNAL_SERVER_ERROR);
     }

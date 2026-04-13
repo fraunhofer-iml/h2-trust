@@ -7,10 +7,17 @@
  */
 
 import { AuthenticatedUser } from 'nest-keycloak-connect';
-import { Controller, Get, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
-import { PowerAccessApprovalDto, PpaRequestDto, type AuthenticatedKCUser } from '@h2-trust/api';
-import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
+import { Body, Controller, Get, NotImplementedException, Param, Patch, Post, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
+import {
+  CompanyDto,
+  PowerAccessApprovalDto,
+  PpaRequestCreateDto,
+  PpaRequestDto,
+  UserDetailsDto,
+  type AuthenticatedKCUser,
+} from '@h2-trust/api';
+import { PowerAccessApprovalStatus, PowerProductionType, PpaRequestRole } from '@h2-trust/domain';
 import { PowerAccessApprovalService } from './power-access-approval.service';
 
 @Controller('power-access-approvals')
@@ -57,52 +64,38 @@ export class PowerAccessApprovalController {
   }
 
   @Get('requests')
-  @ApiQuery({
-    name: 'status',
-    enum: PowerAccessApprovalStatus,
-    required: false,
-    examples: {
-      allTypes: {
-        value: null,
-        description: 'Get requests of all status',
-      },
-      APPROVED: {
-        value: PowerAccessApprovalStatus.APPROVED,
-        description: `Get all PPA Requests with status "${PowerAccessApprovalStatus.APPROVED}"`,
-      },
-      PENDING: {
-        value: PowerAccessApprovalStatus.PENDING,
-        description: `Get all PPA Requests with status "${PowerAccessApprovalStatus.PENDING}"`,
-      },
-      REJECTED: {
-        value: PowerAccessApprovalStatus.REJECTED,
-        description: `Get all  PPA Requests with status "${PowerAccessApprovalStatus.REJECTED}"`,
-      },
-    },
-  })
-  @ApiQuery({
-    name: 'role',
-    enum: PpaRequestRole,
-    required: false,
-    examples: {
-      allTypes: {
-        value: null,
-        description: 'Get requests of all status',
-      },
-      SENDER: {
-        value: PpaRequestRole.SENDER,
-        description: `Get all PPA Requests where the authenticated user is the sender"`,
-      },
-      RECEIVER: {
-        value: PpaRequestRole.RECEIVER,
-        description: `Get all PPA Requests where the authenticated user is the receiver"`,
-      },
-    },
-  })
   getPPARequest(
     @Query('role') _role: PpaRequestRole,
     @Query('status') _status: PowerAccessApprovalStatus,
   ): PpaRequestDto[] {
-    return [];
+    return [
+      {
+        createdAt: new Date(),
+        id: '456867',
+        powerProductionType: PowerProductionType.HYDRO_POWER_PLANT,
+        receiver: { name: 'Test' } as CompanyDto,
+        sender: { name: 'hans ', company: { name: 'testo test ' } } as UserDetailsDto,
+        status: PowerAccessApprovalStatus.PENDING,
+        validFrom: new Date(),
+        validTo: new Date(),
+      },
+    ];
+  }
+
+  @Post('requests')
+  @ApiOkResponse({ description: 'Returns created Request', type: PpaRequestDto })
+  createPpaRequest(@Body() _dto: PpaRequestCreateDto, @AuthenticatedUser() _user: AuthenticatedKCUser): PpaRequestDto {
+    throw new NotImplementedException();
+  }
+
+  @Patch('requests/:id')
+  @ApiOkResponse({ description: 'Returns Request that war rejected or denied', type: PpaRequestDto })
+  @ApiParam({ name: 'id', description: 'Id of PPA Request to update' })
+  closePpaRequest(
+    @Body() _dto: PpaRequestDto,
+    @Param('id') _id: string,
+    @AuthenticatedUser() _user: AuthenticatedKCUser,
+  ): PpaRequestDto {
+    throw new NotImplementedException();
   }
 }

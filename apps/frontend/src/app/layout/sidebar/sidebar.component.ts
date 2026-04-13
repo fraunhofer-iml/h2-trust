@@ -7,17 +7,20 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, OnInit, signal, Signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal, Signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { Router, RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
 import { ROUTES } from '../../shared/constants/routes';
+import { UserProfile } from '../../shared/model/user-profile.model';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { PowerAccessApprovalService } from '../../shared/services/power-access-approvals/power-access-approvals.service';
 import { UnitsService } from '../../shared/services/units/units.service';
@@ -43,6 +46,7 @@ interface SidebarOption {
     MatExpansionModule,
     MatSelectModule,
     MatBadgeModule,
+    MatMenuModule,
   ],
   providers: [UsersService],
   templateUrl: './sidebar.component.html',
@@ -51,6 +55,9 @@ export class SidebarComponent implements OnInit {
   protected readonly router = inject(Router);
   protected readonly unitsService = inject(UnitsService);
   protected readonly ppaService = inject(PowerAccessApprovalService);
+  protected readonly authService = inject(AuthService);
+  private destroyRef = inject(DestroyRef);
+  protected isMenuOpen = false;
 
   ppaRequestsQuery = injectQuery(() => ({
     queryKey: ['ppa-requests', PowerAccessApprovalStatus.PENDING],
@@ -98,21 +105,18 @@ export class SidebarComponent implements OnInit {
     },
   ];
 
-  isAuthenticated = false;
-  userFirstName = '';
-  userLastName = '';
-  userEmail = '';
-
-  constructor(readonly authService: AuthService) {}
+  authenticated = false;
+  profile: UserProfile = {} as UserProfile;
 
   async ngOnInit() {
-    this.isAuthenticated = this.authService.isAuthenticated();
-    if (this.isAuthenticated) {
-      const userProfile = await this.authService.getCurrentUserDetails();
-      this.userFirstName = userProfile.firstName;
-      this.userLastName = userProfile.lastName;
-      this.userEmail = userProfile.email;
+    this.authenticated = this.authService.isAuthenticated();
+    if (this.authenticated) {
+      this.profile = await this.authService.getCurrentUserDetails();
     }
+
+    this.router.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      this.isMenuOpen = false;
+    });
   }
 
   isActive(route: string | null): boolean {
@@ -126,5 +130,13 @@ export class SidebarComponent implements OnInit {
 
   signIn() {
     this.authService.logIn();
+  }
+
+  closeMenu(): void {
+    this.isMenuOpen = false;
+  }
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
   }
 }
