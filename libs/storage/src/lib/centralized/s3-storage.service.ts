@@ -9,6 +9,7 @@
 import Stream from 'stream';
 import { GetObjectCommand, HeadObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { CentralizedStorageService } from './centralized-storage.service';
+import { ContentType } from '../content-types';
 
 export class S3StorageService extends CentralizedStorageService {
   constructor(
@@ -19,7 +20,7 @@ export class S3StorageService extends CentralizedStorageService {
     super();
   }
 
-  async uploadFile(fileName: string, file: Buffer, contentType: string): Promise<void> {
+  async uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<void> {
     await this.client.send(new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: contentType }));
   }
 

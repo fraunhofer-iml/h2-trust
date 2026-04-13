@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import Stream from 'stream';
+import { Readable } from 'stream';
 import { ContentType } from '../content-types';
 
 export abstract class CentralizedStorageService {
@@ -14,7 +14,7 @@ export abstract class CentralizedStorageService {
 
   abstract uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<void>;
 
-  abstract downloadFile(fileName: string): Promise<Stream.Readable>;
+  abstract downloadFile(fileName: string): Promise<Readable>;
 
   abstract fileExists(fileName: string): Promise<boolean>;
 }

@@ -9,6 +9,7 @@
 import { Readable } from 'stream';
 import { Logger } from '@nestjs/common';
 import { DecentralizedStorageService } from './decentralized-storage.service';
+import { ContentType } from '../content-types';
 
 export class KuboStorageService extends DecentralizedStorageService {
   private readonly logger = new Logger(this.constructor.name);
@@ -23,7 +24,7 @@ export class KuboStorageService extends DecentralizedStorageService {
     this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
   }
 
-  async uploadFile(fileName: string, file: Buffer, contentType: string): Promise<string | undefined> {
+  async uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<string> {
     const formData = new FormData();
     formData.append('file', new Blob([new Uint8Array(file)], { type: contentType }), fileName);
 

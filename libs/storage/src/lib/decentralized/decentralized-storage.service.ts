@@ -6,13 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import Stream from 'stream';
+import { Readable } from 'stream';
 import { ContentType } from '../content-types';
 
 export abstract class DecentralizedStorageService {
   abstract readonly explorerUrl: string;
 
-  abstract uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<string | undefined>;
+  abstract uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<string>;
 
-  abstract downloadFile(fileName: string): Promise<Stream.Readable>;
+  abstract downloadFile(fileName: string): Promise<Readable>;
 }
