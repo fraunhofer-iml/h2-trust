@@ -23,8 +23,10 @@ export class FilebaseStorageService extends DecentralizedStorageService {
     public readonly explorerUrl: string,
   ) {
     super();
+
     this.downloadClient = new S3Client(clientConfig);
-    this.logger.debug('🔗 Filebase is enabled. Files will be stored and retrieved.');
+
+    this.logger.debug('🔗 Filebase is used for decentralized file storage.');
     this.logger.debug(`🌐 Endpoint URL: ${this.endpointUrl}`);
     this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
   }

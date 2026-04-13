@@ -19,7 +19,8 @@ export class KuboStorageService extends DecentralizedStorageService {
     public readonly explorerUrl: string,
   ) {
     super();
-    this.logger.debug('🔗 Kubo is enabled. Files will be stored and retrieved.');
+
+    this.logger.debug('🔗 Kubo is used for decentralized file storage.');
     this.logger.debug(`🌐 Endpoint URL: ${this.endpointUrl}`);
     this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
   }

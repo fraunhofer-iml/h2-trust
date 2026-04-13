@@ -10,14 +10,20 @@ import Stream from 'stream';
 import { GetObjectCommand, HeadObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { CentralizedStorageService } from './centralized-storage.service';
 import { ContentType } from '../content-types';
+import { Logger } from '@nestjs/common';
 
 export class S3StorageService extends CentralizedStorageService {
+  private readonly logger = new Logger(this.constructor.name);
+
   constructor(
     private readonly client: S3Client,
     private readonly bucketName: string,
     public readonly baseUrl: string,
   ) {
     super();
+
+    this.logger.debug('🔗 S3 is used for centralized file storage.');
+    this.logger.debug(`🌐 Base URL: ${this.baseUrl}`);
   }
 
   async uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<void> {
