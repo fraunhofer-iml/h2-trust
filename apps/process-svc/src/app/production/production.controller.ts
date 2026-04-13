@@ -9,12 +9,14 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
+  CreateHydrogenProductionStatisticsPayload,
   CreateProductionsPayload,
   CsvDocumentEntity,
   FinalizeProductionsPayload,
   ProcessStepEntity,
   ProductionMessagePatterns,
   ProductionStagingResultEntity,
+  ProductionStatisticsEntity,
   ReadByIdPayload,
   StageProductionsPayload,
   VerifyCsvDocumentIntegrityResultEntity,
@@ -34,6 +36,13 @@ export class ProductionController {
   @MessagePattern(ProductionMessagePatterns.CREATE)
   async createProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
     return this.productionService.createProductions(payload);
+  }
+
+  @MessagePattern(ProductionMessagePatterns.CREATE_PRODUCTION_STATISTICS)
+  async createProductionStatistics(
+    payload: CreateHydrogenProductionStatisticsPayload,
+  ): Promise<ProductionStatisticsEntity> {
+    return this.productionService.createProductionStatistics(payload);
   }
 
   @MessagePattern(ProductionMessagePatterns.STAGE)

@@ -11,20 +11,16 @@ import {
   BatchEntity,
   BrokerException,
   CreateHydrogenBottlingPayload,
-  CreateHydrogenProductionStatisticsPayload,
   DocumentEntity,
   HydrogenComponentEntity,
   HydrogenCompositionUtil,
-  HydrogenStatisticsEntity,
   PaginatedProcessStepEntity,
-  PowerStatisticsEntity,
   ProcessStepEntity,
-  ProductionStatisticsEntity,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
 import { DocumentRepository } from '@h2-trust/database';
-import { BatchType, HydrogenColor, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
+import { HydrogenColor, RfnboType } from '@h2-trust/domain';
 import { StorageService } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { BottlingProcessStepAssembler } from './utils/bottling-process-step.assembler';
@@ -61,36 +57,6 @@ export class BottlingService {
       );
     }
     return this.processStepService.readPaginatedProcessStepsByPredecessorTypesAndOwner(payload);
-  }
-
-  async createProductionStatistics(
-    payload: CreateHydrogenProductionStatisticsPayload,
-  ): Promise<ProductionStatisticsEntity> {
-    const hydrogenProcesses: ProcessStepEntity[] =
-      await this.processStepService.readProcessStepsByPredecessorTypesAndUnitAndDate(
-        [ProcessType.POWER_PRODUCTION],
-        payload,
-      );
-
-    const invalidProcessTypes = [
-      ...new Set(
-        hydrogenProcesses
-          .filter((processStep) => processStep.type !== ProcessType.HYDROGEN_PRODUCTION)
-          .map((processStep) => processStep.type),
-      ),
-    ];
-
-    if (invalidProcessTypes.length > 0) {
-      throw new Error(
-        `Expected only ${ProcessType.HYDROGEN_PRODUCTION} process steps, but received: ${invalidProcessTypes.join(', ')}`,
-      );
-    }
-
-    const hydrogenStatistics = this.createHydrogenStatistics(hydrogenProcesses);
-
-    const powerStatistics = this.createPowerStatistics(hydrogenProcesses);
-
-    return new ProductionStatisticsEntity(hydrogenStatistics, powerStatistics);
   }
 
   async createHydrogenBottlingProcessStep(payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
@@ -192,63 +158,5 @@ export class BottlingService {
       new DocumentEntity(undefined, file.originalname),
       processStepId,
     );
-  }
-
-  private createHydrogenStatistics(processSteps: ProcessStepEntity[]): HydrogenStatisticsEntity {
-    const {
-      nonCertifiable,
-      rfnboReady,
-    }: {
-      nonCertifiable: number;
-      rfnboReady: number;
-    } = processSteps.reduce(
-      (statistics, processStep) => {
-        const qualityDetails = processStep.batch.qualityDetails;
-        if (!processStep.batch.active || !qualityDetails) {
-          return statistics;
-        }
-        switch (qualityDetails.rfnboType) {
-          case RfnboType.RFNBO_READY:
-            statistics.rfnboReady += processStep.batch.amount;
-            break;
-          case RfnboType.NON_CERTIFIABLE:
-            statistics.nonCertifiable += processStep.batch.amount;
-            break;
-          default:
-            throw new Error(`Rfnbotype of ${processStep.id} not defined`);
-        }
-        return statistics;
-      },
-      { nonCertifiable: 0, rfnboReady: 0 },
-    );
-    return new HydrogenStatisticsEntity(nonCertifiable, rfnboReady);
-  }
-
-  private createPowerStatistics(processSteps: ProcessStepEntity[]): PowerStatisticsEntity {
-    const batches: BatchEntity[] = processSteps
-      .map((ps) => (ps.batch.predecessors ?? []).filter((batch) => batch.type === BatchType.POWER))
-      .flat();
-    const { renewable, partlyRenewable, nonRenewable } = batches.reduce(
-      (statistics, batch) => {
-        const qualityDetails = batch.qualityDetails;
-        if (!qualityDetails) {
-          return statistics;
-        }
-        switch (qualityDetails.powerType) {
-          case PowerType.RENEWABLE:
-            statistics.renewable += batch.amount;
-            break;
-          case PowerType.PARTLY_RENEWABLE:
-            statistics.partlyRenewable += batch.amount;
-            break;
-          case PowerType.NON_RENEWABLE:
-            statistics.nonRenewable += batch.amount;
-            break;
-        }
-        return statistics;
-      },
-      { renewable: 0, partlyRenewable: 0, nonRenewable: 0 },
-    );
-    return new PowerStatisticsEntity(renewable, partlyRenewable, nonRenewable);
   }
 }
