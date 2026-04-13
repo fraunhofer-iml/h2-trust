@@ -8,6 +8,7 @@
 
 import { PowerAccessApprovalDeepDbType, PowerAccessApprovalNestedDbType } from '@h2-trust/database';
 import { PowerAccessApprovalStatus } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 import { CompanyEntity } from '../company';
 import { DocumentEntity } from '../document';
 import { PowerProductionUnitEntity } from '../unit';
@@ -40,6 +41,7 @@ export class PowerAccessApprovalEntity {
   }
 
   static fromDeepDatabase(powerAccessApproval: PowerAccessApprovalDeepDbType): PowerAccessApprovalEntity {
+    assertValidEnum(powerAccessApproval.status, PowerAccessApprovalStatus);
     return <PowerAccessApprovalEntity>{
       id: powerAccessApproval.id,
       decidedAt: powerAccessApproval.decidedAt,

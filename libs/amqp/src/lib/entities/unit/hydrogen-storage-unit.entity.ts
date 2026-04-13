@@ -13,6 +13,7 @@ import {
   HydrogenStorageUnitNestedDbType,
 } from '@h2-trust/database';
 import { HydrogenColor, HydrogenStorageType, RfnboType, UnitType } from '@h2-trust/domain';
+import { assertDefined, assertValidEnum } from '@h2-trust/utils';
 import { AddressEntity } from '../address';
 import { HydrogenComponentEntity } from '../bottling';
 import { CompanyEntity } from '../company';
@@ -67,6 +68,8 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   }
 
   static fromDeepDatabase(baseUnit: BaseUnitDeepDbType): HydrogenStorageUnitEntity {
+    assertValidEnum(baseUnit.hydrogenStorageUnit?.type, HydrogenStorageType);
+
     return {
       ...BaseUnitEntity.fromDeepBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_STORAGE,
@@ -79,6 +82,8 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   }
 
   static fromNestedDatabase(baseUnit: BaseUnitNestedDbType): HydrogenStorageUnitEntity {
+    assertValidEnum(baseUnit.hydrogenStorageUnit?.type, HydrogenStorageType);
+
     return {
       ...BaseUnitEntity.fromNestedBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_STORAGE,
@@ -93,6 +98,8 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   static fromNestedHydrogenStorageUnit(
     nestedHydrogenStorageUnit: HydrogenStorageUnitNestedDbType,
   ): HydrogenStorageUnitEntity {
+    assertValidEnum(nestedHydrogenStorageUnit.type, HydrogenStorageType);
+
     return {
       ...BaseUnitEntity.fromFlatBaseUnit(nestedHydrogenStorageUnit.generalInfo),
       unitType: UnitType.HYDROGEN_STORAGE,
@@ -109,9 +116,10 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   ): HydrogenComponentEntity[] {
     return (
       unit?.filling?.map((batch) => {
-        if (!batch.batchDetails?.qualityDetails?.color) {
-          throw new Error(`Hydrogen batch [${batch.id}] in storage unit is missing color information.`);
-        }
+        assertDefined(batch.batchDetails?.qualityDetails?.color, batch.id);
+        assertValidEnum(batch.batchDetails?.qualityDetails?.color, HydrogenColor);
+        assertValidEnum(batch.batchDetails.qualityDetails.rfnboType, RfnboType);
+
         return new HydrogenComponentEntity(
           batch?.processStep?.id ?? null,
           batch.batchDetails.qualityDetails.color as HydrogenColor,

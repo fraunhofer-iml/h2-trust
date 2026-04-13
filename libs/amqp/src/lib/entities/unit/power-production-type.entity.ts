@@ -8,6 +8,7 @@
 
 import { PowerProductionTypeDbType } from '@h2-trust/database';
 import { EnergySource, HydrogenColor, PowerProductionType } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 
 export class PowerProductionTypeEntity {
   name: PowerProductionType;
@@ -21,6 +22,9 @@ export class PowerProductionTypeEntity {
   }
 
   static fromDatabase(powerProductionUnitDbType: PowerProductionTypeDbType): PowerProductionTypeEntity {
+    assertValidEnum(powerProductionUnitDbType.energySource?.toUpperCase(), EnergySource);
+    assertValidEnum(powerProductionUnitDbType.hydrogenColor, HydrogenColor);
+
     const energySource = powerProductionUnitDbType.energySource?.toUpperCase() as EnergySource;
     const validEnergySource = Object.values(EnergySource).includes(energySource) ? energySource : null;
 

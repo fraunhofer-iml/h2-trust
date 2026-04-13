@@ -8,6 +8,7 @@
 
 import { BatchDeepDbType, BatchFlatDbType, BatchNestedDbType } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 import { CompanyEntity } from '../company';
 import { HydrogenStorageUnitEntity } from '../unit';
 import { QualityDetailsEntity } from './quality-details.entity';
@@ -49,6 +50,7 @@ export class BatchEntity {
   }
 
   static fromDeepDatabase(batch: BatchDeepDbType): BatchEntity {
+    assertValidEnum(batch.type, BatchType);
     return new BatchEntity(
       batch.id,
       batch.active,
@@ -68,6 +70,7 @@ export class BatchEntity {
   }
 
   static fromNestedDatabase(batch: BatchNestedDbType): BatchEntity {
+    assertValidEnum(batch.type, BatchType);
     return new BatchEntity(
       batch.id,
       batch.active,
@@ -87,6 +90,7 @@ export class BatchEntity {
   }
 
   static fromFlatDatabase(batch: BatchFlatDbType): BatchEntity {
+    assertValidEnum(batch.type, BatchType);
     return new BatchEntity(
       batch.id,
       batch.active,

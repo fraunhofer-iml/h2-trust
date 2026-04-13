@@ -16,6 +16,7 @@ import {
   ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/amqp';
 import { BatchType, EnergySource, PowerType, ProcessType } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 import { computePowerSupplyEmissionCalculations } from '../proof-of-sustainability/power-production-proof-of-sustainability.assembler';
 import { Util } from '../util';
 
@@ -33,6 +34,9 @@ function getPowerBatchEntities(
       powerSupplyEmission.result,
       powerSupplyEmission.basisOfCalculation,
     );
+    const powerType: PowerType = powerProduction.batch?.qualityDetails?.powerType ?? PowerType.NOT_SPECIFIED;
+    assertValidEnum(powerType, PowerType);
+    assertValidEnum(energySource, EnergySource);
 
     return {
       id: powerProduction.batch.id,
@@ -44,7 +48,7 @@ function getPowerBatchEntities(
       unitId: powerProduction.executedBy.id,
       energySource: energySource as EnergySource,
       accountingPeriodEnd: powerProduction.endedAt,
-      powerType: (powerProduction.batch?.qualityDetails?.powerType ?? PowerType.NOT_SPECIFIED) as PowerType,
+      powerType: powerType as PowerType,
     };
   });
 }

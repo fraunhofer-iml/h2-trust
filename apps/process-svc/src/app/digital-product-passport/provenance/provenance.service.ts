@@ -15,6 +15,7 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/amqp';
 import { BatchType, ProcessType } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 import { TraversalService } from './traversal.service';
 
 type ProvenanceBuilderFn = (root: ProcessStepEntity) => Promise<ProvenanceEntity>;
@@ -27,7 +28,7 @@ export class ProvenanceService {
     if (!root || !root.type) {
       throw new Error('Invalid process step.');
     }
-
+    assertValidEnum(root.type, ProcessType);
     const provenanceBuilder: ProvenanceBuilderFn = this.provenanceBuilders[root.type as ProcessType];
 
     if (!provenanceBuilder) {
