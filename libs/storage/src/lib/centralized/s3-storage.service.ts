@@ -10,7 +10,7 @@ import Stream from 'stream';
 import { GetObjectCommand, HeadObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { CentralizedStorageService } from './centralized-storage.service';
 
-export class MinioStorageService extends CentralizedStorageService {
+export class S3StorageService extends CentralizedStorageService {
   constructor(
     private readonly client: S3Client,
     private readonly bucketName: string,

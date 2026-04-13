@@ -10,16 +10,16 @@ import { S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
 import { Module } from '@nestjs/common';
 import { ConfigurationModule, ConfigurationService, DECENTRALIZED_STORAGE_PROVIDERS, StorageConfiguration } from '@h2-trust/configuration';
 import { CentralizedStorageService } from './centralized/centralized-storage.service';
-import { MinioStorageService } from './centralized/minio-storage.service';
+import { S3StorageService } from './centralized/s3-storage.service';
 import { DecentralizedStorageService } from './decentralized/decentralized-storage.service';
 import { FilebaseStorageService } from './decentralized/filebase-storage.service';
 import { KuboStorageService } from './decentralized/kubo-storage.service';
 
 function createCentralizedStorageService(configService: ConfigurationService): CentralizedStorageService {
   const config = configService.getGlobalConfiguration().centralizedStorage;
-  const s3ClientConfig = buildS3ClientConfig(config, true);
-  const s3Client = new S3Client(s3ClientConfig);
-  return new MinioStorageService(s3Client, config.bucketName, `${config.endpointUrl}/${config.bucketName}`);
+  const clientConfig = buildS3ClientConfig(config, true);
+  const client = new S3Client(clientConfig);
+  return new S3StorageService(client, config.bucketName, `${config.endpointUrl}/${config.bucketName}`);
 }
 
 function createDecentralizedStorageService(configService: ConfigurationService): DecentralizedStorageService {
@@ -32,8 +32,8 @@ function createDecentralizedStorageService(configService: ConfigurationService):
       break;
     }
     case DECENTRALIZED_STORAGE_PROVIDERS.FILEBASE: {
-      const s3ClientConfig = buildS3ClientConfig(config, false);
-      service = new FilebaseStorageService(s3ClientConfig, config.bucketName, config.endpointUrl, config.explorerUrl);
+      const clientConfig = buildS3ClientConfig(config, false);
+      service = new FilebaseStorageService(clientConfig, config.bucketName, config.endpointUrl, config.explorerUrl);
       break;
     }
     default:
