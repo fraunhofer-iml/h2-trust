@@ -13,11 +13,12 @@ import { CentralizedStorageService } from './centralized-storage.service';
 import { DecentralizedStorageService } from './decentralized-storage.service';
 import { FilebaseStorageService } from './filebase-storage.service';
 import { KuboStorageService } from './kubo-storage.service';
+import { MinioStorageService } from './minio-storage.service';
 
 function createCentralizedStorageService(configService: ConfigurationService): CentralizedStorageService {
   const config = configService.getGlobalConfiguration().centralizedStorage;
   const s3Client = createS3Client(config, true);
-  return new CentralizedStorageService(s3Client, configService);
+  return new MinioStorageService(s3Client, configService);
 }
 
 function createDecentralizedStorageService(configService: ConfigurationService): DecentralizedStorageService {
