@@ -8,10 +8,15 @@
 
 import { Route } from '@angular/router';
 import { AccountOverviewComponent } from './account-overview/account-overview.component';
+import { PpaRequestsComponent } from './ppa-requests-details/ppa-requests.component';
 
 export const ACCOUNT_ROUTES: Route[] = [
   {
     path: '',
     component: AccountOverviewComponent,
+  },
+  {
+    path: 'ppa-requests',
+    component: PpaRequestsComponent,
   },
 ];

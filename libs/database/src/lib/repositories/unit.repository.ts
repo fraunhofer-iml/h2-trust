@@ -161,6 +161,10 @@ export class UnitRepository {
   async updateOrCreateHydrogenProductionUnit(
     payload: CreateHydrogenProductionUnitPayload,
   ): Promise<HydrogenProductionUnitEntity> {
+    if (payload.id) {
+      await this.validateUnitIsActive(payload.id);
+    }
+
     return this.prismaService.unit
       .upsert({
         where: { id: payload.id ?? '' },
@@ -209,6 +213,10 @@ export class UnitRepository {
   async updateOrCreatePowerProductionUnit(
     payload: CreatePowerProductionUnitPayload,
   ): Promise<PowerProductionUnitEntity> {
+    if (payload.id) {
+      await this.validateUnitIsActive(payload.id);
+    }
+
     return this.prismaService.unit
       .upsert({
         where: { id: payload.id ?? '' },
@@ -246,6 +254,7 @@ export class UnitRepository {
                 ratedPower: payload.ratedPower,
                 decommissioningPlannedOn: payload.decommissioningPlannedOn,
                 financialSupportReceived: payload.financialSupportReceived,
+                type: { connect: { name: payload.powerProductionType } },
               },
             },
           },
@@ -259,6 +268,10 @@ export class UnitRepository {
   async updateOrCreateHydrogenStorageUnit(
     payload: CreateHydrogenStorageUnitPayload,
   ): Promise<HydrogenStorageUnitEntity> {
+    if (payload.id) {
+      await this.validateUnitIsActive(payload.id);
+    }
+
     return this.prismaService.unit
       .upsert({
         where: { id: payload.id ?? '' },
@@ -299,5 +312,14 @@ export class UnitRepository {
         include: baseUnitDeepQueryArgs.include,
       })
       .then(HydrogenStorageUnitEntity.fromDeepDatabase);
+  }
+
+  private async validateUnitIsActive(id: string): Promise<void> {
+    const unit = await this.prismaService.unit.findUnique({
+      where: { id: id },
+      select: { active: true },
+    });
+
+    if (!unit?.active) throw new Error(`Unit with Id ${id} is inactive.`);
   }
 }

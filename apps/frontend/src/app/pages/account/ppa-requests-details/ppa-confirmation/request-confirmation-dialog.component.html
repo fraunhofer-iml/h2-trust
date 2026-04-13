@@ -1,0 +1,38 @@
+<h3 mat-dialog-title>{{ data.status === PowerAccessApprovalStatus.APPROVED ? 'Approve' : 'Reject' }} Request</h3>
+<form [formGroup]="form" class="flex !w-[32rem] flex-col gap-2 px-6 text-sm text-neutral-500">
+  @if (data.status === PowerAccessApprovalStatus.APPROVED) {
+    <p>
+      Please select a power production unit. The desired Power Production Type is
+      <strong>{{ data.request.powerProductionType | prettyEnum | titlecase }}</strong
+      >.
+    </p>
+    <mat-form-field appearance="outline" class="col-span-2">
+      <mat-label>Power Production</mat-label>
+      <mat-select formControlName="unit">
+        @for (unit of unitsQuery.data(); track unit) {
+          <mat-option [value]="unit" [disabled]="!unit.active">{{ unit.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    @if (form.value.unit && !(form.value.unit.typeName === data.request.powerProductionType)) {
+      <div class="flex flex-row gap-2 rounded-md bg-primary-100 px-4 py-2 text-neutral-700">
+        <span class="material-symbols-outlined text-sm">warning</span>
+        This unit does not match the desired power production type!
+      </div>
+    }
+  } @else {
+    <p>Are you sure you want to reject this request?</p>
+  }
+  <p class="pt-2">You can optionally add a comment below.</p>
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Leave a comment</mat-label>
+    <textarea matInput placeholder="Since we have..."></textarea>
+  </mat-form-field>
+</form>
+
+<mat-dialog-actions>
+  <button matButton (click)="close()">Cancel</button>
+  <button matButton (click)="confirm()" cdkFocusInitial [disabled]="form.invalid">
+    {{ data.status === PowerAccessApprovalStatus.APPROVED ? 'Approve' : 'Reject' }}
+  </button>
+</mat-dialog-actions>
