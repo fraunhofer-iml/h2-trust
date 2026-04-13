@@ -9,32 +9,20 @@
 import { Readable } from 'stream';
 import { Logger } from '@nestjs/common';
 import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { ConfigurationService, DECENTRALIZED_STORAGE_PROVIDERS } from '@h2-trust/configuration';
 import { DecentralizedStorageService } from './decentralized-storage.service';
 
 export class FilebaseStorageService extends DecentralizedStorageService {
   private readonly logger = new Logger(this.constructor.name);
-  private readonly bucketName: string;
-
-  public readonly explorerUrl: string;
 
   constructor(
     private readonly client: S3Client,
-    configurationService: ConfigurationService,
+    private readonly bucketName: string,
+    private readonly endpointUrl: string,
+    public readonly explorerUrl: string,
   ) {
     super();
-
-    const config = configurationService.getGlobalConfiguration().decentralizedStorage;
-
-    if (config.provider !== DECENTRALIZED_STORAGE_PROVIDERS.FILEBASE) {
-      throw new Error('FilebaseStorageService requires provider "filebase"');
-    }
-
-    this.bucketName = config.bucketName;
-    this.explorerUrl = config.explorerUrl;
-
     this.logger.debug('🔗 Filebase is enabled. Files will be stored and retrieved.');
-    this.logger.debug(`🌐 Endpoint URL: ${config.endpointUrl}`);
+    this.logger.debug(`🌐 Endpoint URL: ${this.endpointUrl}`);
     this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
   }
 

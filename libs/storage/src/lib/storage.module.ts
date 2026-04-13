@@ -18,27 +18,22 @@ import { KuboStorageService } from './decentralized/kubo-storage.service';
 function createCentralizedStorageService(configService: ConfigurationService): CentralizedStorageService {
   const config = configService.getGlobalConfiguration().centralizedStorage;
   const s3Client = createS3Client(config, true);
-  return new MinioStorageService(s3Client, configService);
+  return new MinioStorageService(s3Client, config.bucketName, `${config.endpointUrl}/${config.bucketName}`);
 }
 
 function createDecentralizedStorageService(configService: ConfigurationService): DecentralizedStorageService {
-  let service: DecentralizedStorageService;
   const config = configService.getGlobalConfiguration().decentralizedStorage;
 
   switch (config.provider) {
     case DECENTRALIZED_STORAGE_PROVIDERS.KUBO:
-      service = new KuboStorageService(configService);
-      break;
-    case DECENTRALIZED_STORAGE_PROVIDERS.FILEBASE:
+      return new KuboStorageService(config.endpointUrl, config.explorerUrl);
+    case DECENTRALIZED_STORAGE_PROVIDERS.FILEBASE: {
       const s3Client = createS3Client(config, false);
-      service = new FilebaseStorageService(s3Client, configService);
-      break;
-    default: {
-      throw new Error('Unsupported decentralized storage provider');
+      return new FilebaseStorageService(s3Client, config.bucketName, config.endpointUrl, config.explorerUrl);
     }
+    default:
+      throw new Error('Unsupported decentralized storage provider');
   }
-
-  return service;
 }
 
 function createS3Client(config: StorageConfiguration, forcePathStyle: boolean): S3Client {

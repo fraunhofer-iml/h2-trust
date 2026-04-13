@@ -8,27 +8,16 @@
 
 import { Readable } from 'stream';
 import { Logger } from '@nestjs/common';
-import { ConfigurationService, DECENTRALIZED_STORAGE_PROVIDERS } from '@h2-trust/configuration';
 import { DecentralizedStorageService } from './decentralized-storage.service';
 
 export class KuboStorageService extends DecentralizedStorageService {
   private readonly logger = new Logger(this.constructor.name);
-  private readonly endpointUrl: string;
 
-  readonly explorerUrl: string;
-
-  constructor(configurationService: ConfigurationService) {
+  constructor(
+    private readonly endpointUrl: string,
+    public readonly explorerUrl: string,
+  ) {
     super();
-
-    const config = configurationService.getGlobalConfiguration().decentralizedStorage;
-
-    if (config.provider !== DECENTRALIZED_STORAGE_PROVIDERS.KUBO) {
-      throw new Error('KuboStorageService requires provider "kubo"');
-    }
-
-    this.endpointUrl = config.endpointUrl;
-    this.explorerUrl = config.explorerUrl;
-
     this.logger.debug('🔗 Kubo is enabled. Files will be stored and retrieved.');
     this.logger.debug(`🌐 Endpoint URL: ${this.endpointUrl}`);
     this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
