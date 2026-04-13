@@ -130,7 +130,7 @@ export class ProductionService {
     return this.productionCreationService.createAndPersistProductions(createProductionEntities);
   }
 
-  async createProductionStatistics(
+  async assembleProductionStatistics(
     payload: CreateHydrogenProductionStatisticsPayload,
   ): Promise<ProductionStatisticsEntity> {
     const hydrogenProcesses: ProcessStepEntity[] =
@@ -153,14 +153,14 @@ export class ProductionService {
       );
     }
 
-    const hydrogenStatistics = this.createHydrogenStatistics(hydrogenProcesses);
+    const hydrogenStatistics = this.assembleHydrogenStatistics(hydrogenProcesses);
 
-    const powerStatistics = this.createPowerStatistics(hydrogenProcesses);
+    const powerStatistics = this.assemblePowerStatistics(hydrogenProcesses);
 
     return new ProductionStatisticsEntity(hydrogenStatistics, powerStatistics);
   }
 
-  private createHydrogenStatistics(processSteps: ProcessStepEntity[]): HydrogenStatisticsEntity {
+  private assembleHydrogenStatistics(processSteps: ProcessStepEntity[]): HydrogenStatisticsEntity {
     const {
       nonCertifiable,
       rfnboReady,
@@ -190,7 +190,7 @@ export class ProductionService {
     return new HydrogenStatisticsEntity(nonCertifiable, rfnboReady);
   }
 
-  private createPowerStatistics(processSteps: ProcessStepEntity[]): PowerStatisticsEntity {
+  private assemblePowerStatistics(processSteps: ProcessStepEntity[]): PowerStatisticsEntity {
     const batches: BatchEntity[] = processSteps
       .map((ps) => (ps.batch.predecessors ?? []).filter((batch) => batch.type === BatchType.POWER))
       .flat();
