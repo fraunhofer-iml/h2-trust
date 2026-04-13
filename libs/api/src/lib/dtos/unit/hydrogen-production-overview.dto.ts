@@ -7,13 +7,14 @@
  */
 
 import { HydrogenProductionUnitEntity } from '@h2-trust/amqp';
+import { HydrogenProductionTechnology } from '@h2-trust/domain';
 import { EnumLabelMapper } from '../../labels';
 
 export class HydrogenProductionOverviewDto {
   id: string;
   name: string;
   ratedPower: number;
-  technology: string;
+  technology: HydrogenProductionTechnology;
   producing: boolean;
   powerAccessApprovalStatus: boolean;
   powerProducerId: string;
@@ -24,7 +25,7 @@ export class HydrogenProductionOverviewDto {
     id: string,
     name: string,
     ratedPower: number,
-    technology: string,
+    technology: HydrogenProductionTechnology,
     producing: boolean,
     powerAccessApprovalStatus: boolean,
     powerProducerId: string,

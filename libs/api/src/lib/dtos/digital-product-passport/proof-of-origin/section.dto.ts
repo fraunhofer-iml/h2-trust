@@ -16,7 +16,7 @@ import {
   ProofOfOriginSubClassificationEntity,
   ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/amqp';
-import { BatchType } from '@h2-trust/domain';
+import { BatchType, HydrogenColor, HydrogenProductionMethod, RfnboType } from '@h2-trust/domain';
 import { EnumLabelMapper } from '../../../labels';
 import { HydrogenComponentDto } from '../general-information';
 import { BatchDto } from './batch.dto';
@@ -112,10 +112,10 @@ export class SectionDto {
       EnumLabelMapper.getMeasurementUnit(batch.batchType),
       batch.producer ?? '',
       batch.unitId ?? '',
-      '',
+      HydrogenProductionMethod.ELECTROLYSIS,
       hydrogenComposition,
-      batch.color ?? '',
-      batch.rfnboType ?? '',
+      batch.color ?? HydrogenColor.MIX,
+      batch.rfnboType ?? RfnboType.NOT_SPECIFIED,
       batch.processStep ?? '',
       batch.accountingPeriodEnd,
     );

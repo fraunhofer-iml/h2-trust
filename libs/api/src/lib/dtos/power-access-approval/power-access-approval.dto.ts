@@ -7,7 +7,7 @@
  */
 
 import { PowerAccessApprovalEntity } from '@h2-trust/amqp';
-import { PowerAccessApprovalStatus } from '@h2-trust/domain';
+import { PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
 import { CompanyDto } from '../company';
 import { PowerProductionOverviewDto } from '../unit';
 
@@ -17,7 +17,7 @@ export class PowerAccessApprovalDto {
   powerProducer: CompanyDto;
   powerProductionUnit: PowerProductionOverviewDto;
   status: PowerAccessApprovalStatus;
-  energySource: string;
+  energySource: PowerProductionType;
 
   constructor(
     id: string,
@@ -25,7 +25,7 @@ export class PowerAccessApprovalDto {
     powerProducer: CompanyDto,
     powerProductionUnit: PowerProductionOverviewDto,
     status: PowerAccessApprovalStatus,
-    energySource: string,
+    energySource: PowerProductionType,
   ) {
     this.id = id;
     this.hydrogenProducer = hydrogenProducer;

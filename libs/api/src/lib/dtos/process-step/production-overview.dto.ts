@@ -7,7 +7,7 @@
  */
 
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
-import { BatchType, PowerType } from '@h2-trust/domain';
+import { BatchType, HydrogenColor, PowerType, RfnboType } from '@h2-trust/domain';
 import { assertValidEnum } from '@h2-trust/utils';
 
 export class ProductionOverviewDto {
@@ -15,8 +15,8 @@ export class ProductionOverviewDto {
   endedAt: string;
   productionUnit: string;
   producedAmount: number;
-  color: string;
-  rfnboType: string;
+  color: HydrogenColor;
+  rfnboType: RfnboType;
   powerProducer: string;
   powerConsumed: number;
   storageUnit: string;
@@ -28,8 +28,8 @@ export class ProductionOverviewDto {
     endedAt: string,
     productionUnit: string,
     producedAmount: number,
-    color: string,
-    rfnboType: string,
+    color: HydrogenColor,
+    rfnboType: RfnboType,
     powerProducer: string,
     powerConsumed: number,
     storageUnit: string,
