@@ -12,7 +12,7 @@ import { BrokerQueues, CreateHydrogenBottlingPayload, DocumentEntity } from '@h2
 import { DocumentRepository } from '@h2-trust/database';
 import { HydrogenColor, RfnboType } from '@h2-trust/domain';
 import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures';
-import { CentralizedStorageService } from '@h2-trust/storage';
+import { CentralizedStorageService, CONTENT_TYPES } from '@h2-trust/storage';
 import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { BottlingService } from './bottling.service';
@@ -25,7 +25,7 @@ describe('BottlingService', () => {
   };
 
   const storageServiceMock = {
-    uploadPdfFile: jest.fn(),
+    uploadFile: jest.fn(),
   };
 
   const documentRepositoryMock = {
@@ -207,16 +207,17 @@ describe('BottlingService', () => {
       processStepServiceMock.createProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
       processStepServiceMock.readProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
       dppServiceMock.determineRfnboTypeForProcessStep.mockResolvedValue(RfnboType.RFNBO_READY);
-      storageServiceMock.uploadPdfFile.mockResolvedValue(givenFile.originalname);
+      storageServiceMock.uploadFile.mockResolvedValue(givenFile.originalname);
       documentRepositoryMock.addDocumentToProcessStep.mockResolvedValue({});
 
       // Act
       await service.createHydrogenBottlingProcessStep(givenPayload);
 
       // Assert
-      expect(storageServiceMock.uploadPdfFile).toHaveBeenCalledWith(
+      expect(storageServiceMock.uploadFile).toHaveBeenCalledWith(
         givenFile.originalname,
         Buffer.from(givenFile.buffer),
+        CONTENT_TYPES.PDF,
       );
       expect(documentRepositoryMock.addDocumentToProcessStep).toHaveBeenCalledWith(
         new DocumentEntity(undefined, givenFile.originalname),

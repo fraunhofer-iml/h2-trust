@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './lib/storage.module';
-export * from './lib/content-types';
-export * from './lib/centralized/index';
-export * from './lib/decentralized/index';
+export const CONTENT_TYPES = {
+  CSV: 'text/csv',
+  PDF: 'application/pdf',
+} as const;

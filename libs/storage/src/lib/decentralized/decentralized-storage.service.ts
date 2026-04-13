@@ -11,7 +11,7 @@ import Stream from 'stream';
 export abstract class DecentralizedStorageService {
   abstract readonly explorerUrl: string;
 
-  abstract uploadCsvFile(fileName: string, file: Buffer): Promise<string | undefined>;
+  abstract uploadFile(fileName: string, file: Buffer, contentType: string): Promise<string | undefined>;
 
   abstract downloadFile(fileName: string): Promise<Stream.Readable>;
 }

@@ -19,12 +19,8 @@ export class MinioStorageService extends CentralizedStorageService {
     super();
   }
 
-  async uploadCsvFile(fileName: string, file: Buffer): Promise<void> {
-    await this.client.send(new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: 'text/csv' }));
-  }
-
-  async uploadPdfFile(fileName: string, file: Buffer): Promise<void> {
-    await this.client.send(new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: 'application/pdf' }));
+  async uploadFile(fileName: string, file: Buffer, contentType: string): Promise<void> {
+    await this.client.send(new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: contentType }));
   }
 
   async downloadFile(fileName: string): Promise<Stream.Readable> {

@@ -26,7 +26,7 @@ export class FilebaseStorageService extends DecentralizedStorageService {
     this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
   }
 
-  async uploadCsvFile(fileName: string, file: Buffer): Promise<string | undefined> {
+  async uploadFile(fileName: string, file: Buffer, contentType: string): Promise<string | undefined> {
     let cid: string | undefined;
     const middlewareName = `cid-capture-${fileName}-${Date.now()}`;
 
@@ -40,7 +40,7 @@ export class FilebaseStorageService extends DecentralizedStorageService {
     );
 
     try {
-      await this.client.send(new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: 'text/csv' }));
+      await this.client.send(new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: contentType }));
       this.logger.debug(`Added file ${fileName} to Filebase with CID: ${cid}`);
     } finally {
       this.client.middlewareStack.remove(middlewareName);

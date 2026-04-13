@@ -23,9 +23,9 @@ export class KuboStorageService extends DecentralizedStorageService {
     this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
   }
 
-  async uploadCsvFile(fileName: string, file: Buffer): Promise<string | undefined> {
+  async uploadFile(fileName: string, file: Buffer, contentType: string): Promise<string | undefined> {
     const formData = new FormData();
-    formData.append('file', new Blob([new Uint8Array(file)], { type: 'text/csv' }), fileName);
+    formData.append('file', new Blob([new Uint8Array(file)], { type: contentType }), fileName);
 
     const addResponse = await fetch(`${this.endpointUrl}/api/v0/add?pin=true`, {
       method: 'POST',

@@ -11,9 +11,7 @@ import Stream from 'stream';
 export abstract class CentralizedStorageService {
   abstract readonly baseUrl: string;
 
-  abstract uploadCsvFile(fileName: string, file: Buffer): Promise<void>;
-
-  abstract uploadPdfFile(fileName: string, file: Buffer): Promise<void>;
+  abstract uploadFile(fileName: string, file: Buffer, contentType: string): Promise<void>;
 
   abstract downloadFile(fileName: string): Promise<Stream.Readable>;
 

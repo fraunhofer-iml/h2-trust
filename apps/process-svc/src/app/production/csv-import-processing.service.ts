@@ -16,7 +16,7 @@ import {
 import { HashUtil } from '@h2-trust/blockchain';
 import { CreateCsvDocumentInput } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
-import { CentralizedStorageService, DecentralizedStorageService } from '@h2-trust/storage';
+import { CentralizedStorageService, CONTENT_TYPES, DecentralizedStorageService } from '@h2-trust/storage';
 import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
 import { ParsedImport } from './production.types';
 
@@ -55,8 +55,8 @@ export class CsvImportProcessingService {
         }
 
         const fileName = `${expectedHash}.csv`;
-        await this.centralizedStorageService.uploadCsvFile(fileName, buffer);
-        const cid = await this.decentralizedStorageService.uploadCsvFile(fileName, buffer);
+        await this.centralizedStorageService.uploadFile(fileName, buffer, CONTENT_TYPES.CSV);
+        const cid = await this.decentralizedStorageService.uploadFile(fileName, buffer, CONTENT_TYPES.CSV);
 
         return {
           periods: new UnitAccountingPeriods<T>(ufi.unitId, accountingPeriods),
