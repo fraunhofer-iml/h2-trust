@@ -10,11 +10,9 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   CreateHydrogenBottlingPayload,
-  CreateHydrogenProductionStatisticsPayload,
   PaginatedProcessStepEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
-  ProductionStatisticsEntity,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
@@ -29,12 +27,6 @@ export class BottlingController {
     return this.bottlingService.createHydrogenBottlingProcessStep(payload);
   }
 
-  @MessagePattern(ProcessStepMessagePatterns.CREATE_PRODUCTION_STATISTICS)
-  async createProductionStatistics(
-    payload: CreateHydrogenProductionStatisticsPayload,
-  ): Promise<ProductionStatisticsEntity> {
-    return this.bottlingService.createProductionStatistics(payload);
-  }
   @MessagePattern(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_OWNER)
   async readProcessStepsByTypesAndActiveAndOwner(
     payload: ReadProcessStepsByTypesAndActiveAndOwnerPayload,

@@ -11,13 +11,13 @@ import { Prisma } from '@prisma/client';
 import {
   BaseUnitEntity,
   BrokerException,
+  ConcreteUnitEntity,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
   CreatePowerProductionUnitPayload,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
   PowerProductionUnitEntity,
-  UnitEntity,
   UpdateUnitStatusPayload,
 } from '@h2-trust/amqp';
 import {
@@ -26,32 +26,26 @@ import {
   buildPowerProductionUnitCreateInput,
 } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
-import {
-  allUnitsQueryArgs,
-  baseUnitDeepQueryArgs,
-  hydrogenProductionUnitQueryArgs,
-  hydrogenStorageUnitQueryArgs,
-  powerProductionUnitQueryArgs,
-} from '../query-args';
+import { baseUnitDeepQueryArgs } from '../query-args';
 import { assertAllIdsFound, assertRecordFound } from './utils';
 
 @Injectable()
 export class UnitRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findUnitById(id: string): Promise<UnitEntity> {
+  async findUnitById(id: string): Promise<ConcreteUnitEntity> {
     return this.prismaService.unit
       .findUnique({
         where: {
           id: id,
         },
-        ...allUnitsQueryArgs,
+        ...baseUnitDeepQueryArgs,
       })
       .then((result) => assertRecordFound(result, id, 'Unit'))
       .then(this.mapToActualUnitEntity);
   }
 
-  async findUnitsByIds(ids: string[]): Promise<UnitEntity[]> {
+  async findUnitsByIds(ids: string[]): Promise<ConcreteUnitEntity[]> {
     return this.prismaService.unit
       .findMany({
         where: {
@@ -59,33 +53,22 @@ export class UnitRepository {
             in: ids,
           },
         },
-        ...allUnitsQueryArgs,
+        ...baseUnitDeepQueryArgs,
       })
       .then((units) => units.map(this.mapToActualUnitEntity));
   }
 
-  mapToActualUnitEntity(_unit: Prisma.UnitGetPayload<typeof allUnitsQueryArgs>): UnitEntity {
-    const { powerProductionUnit, hydrogenProductionUnit, hydrogenStorageUnit, ...unit } = _unit;
-
-    if (powerProductionUnit) {
-      return PowerProductionUnitEntity.fromDatabase({
-        powerProductionUnit,
-        ...unit,
-      });
+  mapToActualUnitEntity(baseUnit: Prisma.UnitGetPayload<typeof baseUnitDeepQueryArgs>): ConcreteUnitEntity {
+    if (baseUnit.powerProductionUnit) {
+      return PowerProductionUnitEntity.fromDeepDatabase(baseUnit);
     }
 
-    if (hydrogenProductionUnit) {
-      return HydrogenProductionUnitEntity.fromDatabase({
-        hydrogenProductionUnit,
-        ...unit,
-      });
+    if (baseUnit.hydrogenProductionUnit) {
+      return HydrogenProductionUnitEntity.fromDeepDatabase(baseUnit);
     }
 
-    if (hydrogenStorageUnit) {
-      return HydrogenStorageUnitEntity.fromDatabase({
-        hydrogenStorageUnit,
-        ...unit,
-      });
+    if (baseUnit.hydrogenStorageUnit) {
+      return HydrogenStorageUnitEntity.fromDeepDatabase(baseUnit);
     }
 
     throw new BrokerException(`Incompatible unit`, HttpStatus.BAD_REQUEST);
@@ -100,9 +83,9 @@ export class UnitRepository {
             isNot: null,
           },
         },
-        ...powerProductionUnitQueryArgs,
+        ...baseUnitDeepQueryArgs,
       })
-      .then((units) => units.map(PowerProductionUnitEntity.fromDatabase));
+      .then((units) => units.map(PowerProductionUnitEntity.fromDeepDatabase));
   }
 
   async findPowerProductionUnitsByIds(ids: string[]): Promise<PowerProductionUnitEntity[]> {
@@ -112,11 +95,11 @@ export class UnitRepository {
           id: { in: ids },
           powerProductionUnit: { isNot: null },
         },
-        ...powerProductionUnitQueryArgs,
+        ...baseUnitDeepQueryArgs,
       })
       .then((units) => {
         assertAllIdsFound(units, ids, 'PowerProductionUnits');
-        return units.map(PowerProductionUnitEntity.fromDatabase);
+        return units.map(PowerProductionUnitEntity.fromDeepDatabase);
       });
   }
 
@@ -129,9 +112,9 @@ export class UnitRepository {
             isNot: null,
           },
         },
-        ...hydrogenProductionUnitQueryArgs,
+        ...baseUnitDeepQueryArgs,
       })
-      .then((units) => units.map(HydrogenProductionUnitEntity.fromDatabase));
+      .then((units) => units.map(HydrogenProductionUnitEntity.fromDeepDatabase));
   }
 
   async findHydrogenProductionUnitsByIds(ids: string[]): Promise<HydrogenProductionUnitEntity[]> {
@@ -141,11 +124,11 @@ export class UnitRepository {
           id: { in: ids },
           hydrogenProductionUnit: { isNot: null },
         },
-        ...hydrogenProductionUnitQueryArgs,
+        ...baseUnitDeepQueryArgs,
       })
       .then((units) => {
         assertAllIdsFound(units, ids, 'HydrogenProductionUnits');
-        return units.map(HydrogenProductionUnitEntity.fromDatabase);
+        return units.map(HydrogenProductionUnitEntity.fromDeepDatabase);
       });
   }
 
@@ -158,9 +141,9 @@ export class UnitRepository {
             isNot: null,
           },
         },
-        ...hydrogenStorageUnitQueryArgs,
+        ...baseUnitDeepQueryArgs,
       })
-      .then((units) => units.map(HydrogenStorageUnitEntity.fromDatabase));
+      .then((units) => units.map(HydrogenStorageUnitEntity.fromDeepDatabase));
   }
 
   async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<BaseUnitEntity> {
@@ -172,12 +155,16 @@ export class UnitRepository {
       include: baseUnitDeepQueryArgs.include,
     });
 
-    return BaseUnitEntity.fromDatabase(unit);
+    return BaseUnitEntity.fromDeepBaseUnit(unit);
   }
 
   async updateOrCreateHydrogenProductionUnit(
     payload: CreateHydrogenProductionUnitPayload,
   ): Promise<HydrogenProductionUnitEntity> {
+    if (payload.id) {
+      await this.validateUnitIsActive(payload.id);
+    }
+
     return this.prismaService.unit
       .upsert({
         where: { id: payload.id ?? '' },
@@ -218,14 +205,18 @@ export class UnitRepository {
           },
         },
         create: buildHydrogenProductionUnitCreateInput(payload),
-        include: hydrogenProductionUnitQueryArgs.include,
+        include: baseUnitDeepQueryArgs.include,
       })
-      .then(HydrogenProductionUnitEntity.fromDatabase);
+      .then(HydrogenProductionUnitEntity.fromDeepDatabase);
   }
 
   async updateOrCreatePowerProductionUnit(
     payload: CreatePowerProductionUnitPayload,
   ): Promise<PowerProductionUnitEntity> {
+    if (payload.id) {
+      await this.validateUnitIsActive(payload.id);
+    }
+
     return this.prismaService.unit
       .upsert({
         where: { id: payload.id ?? '' },
@@ -263,19 +254,24 @@ export class UnitRepository {
                 ratedPower: payload.ratedPower,
                 decommissioningPlannedOn: payload.decommissioningPlannedOn,
                 financialSupportReceived: payload.financialSupportReceived,
+                type: { connect: { name: payload.powerProductionType } },
               },
             },
           },
         },
         create: buildPowerProductionUnitCreateInput(payload),
-        include: powerProductionUnitQueryArgs.include,
+        include: baseUnitDeepQueryArgs.include,
       })
-      .then(PowerProductionUnitEntity.fromDatabase);
+      .then(PowerProductionUnitEntity.fromDeepDatabase);
   }
 
   async updateOrCreateHydrogenStorageUnit(
     payload: CreateHydrogenStorageUnitPayload,
   ): Promise<HydrogenStorageUnitEntity> {
+    if (payload.id) {
+      await this.validateUnitIsActive(payload.id);
+    }
+
     return this.prismaService.unit
       .upsert({
         where: { id: payload.id ?? '' },
@@ -313,8 +309,17 @@ export class UnitRepository {
           },
         },
         create: buildHydrogenStorageUnitCreateInput(payload),
-        include: hydrogenStorageUnitQueryArgs.include,
+        include: baseUnitDeepQueryArgs.include,
       })
-      .then(HydrogenStorageUnitEntity.fromDatabase);
+      .then(HydrogenStorageUnitEntity.fromDeepDatabase);
+  }
+
+  private async validateUnitIsActive(id: string): Promise<void> {
+    const unit = await this.prismaService.unit.findUnique({
+      where: { id: id },
+      select: { active: true },
+    });
+
+    if (!unit?.active) throw new Error(`Unit with Id ${id} is inactive.`);
   }
 }

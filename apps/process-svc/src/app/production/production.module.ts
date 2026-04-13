@@ -30,6 +30,7 @@ import { StagedProductionCleanupModule } from './tasks/staged-production-cleanup
     ProcessStepModule,
     StagedProductionCleanupModule,
     StorageModule,
+    ProcessStepModule,
     DigitalProductPassportModule,
     new Broker().getGeneralSvcBroker(),
   ],

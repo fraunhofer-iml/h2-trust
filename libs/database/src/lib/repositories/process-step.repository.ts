@@ -52,6 +52,14 @@ export class ProcessStepRepository {
           }
         : {};
 
+    const batchOwnerFilter: Prisma.BatchWhereInput = {
+      ownerId: ownerId,
+    };
+
+    const batchFilter: Prisma.BatchWhereInput = {
+      AND: [predecessorsFilter, batchOwnerFilter],
+    };
+
     const hydrogenUnitWhereInput: Prisma.UnitWhereInput = hydrogenProductionUnitName
       ? {
           name: {
@@ -71,10 +79,9 @@ export class ProcessStepRepository {
     return this.prismaService.processStep
       .findMany({
         where: {
-          batch: predecessorsFilter,
+          batch: batchFilter,
           startedAt: periodWhereInput,
           executedBy: {
-            ownerId: ownerId,
             ...hydrogenUnitWhereInput,
           },
         },

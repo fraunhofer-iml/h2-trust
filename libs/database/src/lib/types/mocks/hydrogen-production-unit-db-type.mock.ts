@@ -6,15 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenProductionUnitDbType } from '..';
 import { HydrogenProductionUnitSeed } from '../../../seed';
-import { BaseUnitDeepDbTypeMock } from './base-unit-db-type.mock';
+import { HydrogenProductionUnitDeepDbType } from '../hydrogen-production-unit.db.type';
+import { BaseUnitNestedDbTypeMock } from './base-unit-db-type.mock';
 
-export const HydrogenProductionUnitDbTypeMock = <HydrogenProductionUnitDbType[]>[
+export const HydrogenProductionUnitDeepDbTypeMock = <HydrogenProductionUnitDeepDbType[]>[
   {
-    ...BaseUnitDeepDbTypeMock[0],
-    hydrogenProductionUnit: {
-      ...HydrogenProductionUnitSeed[0],
-    },
+    generalInfo: BaseUnitNestedDbTypeMock[0],
+    ...HydrogenProductionUnitSeed[0],
   },
 ];
