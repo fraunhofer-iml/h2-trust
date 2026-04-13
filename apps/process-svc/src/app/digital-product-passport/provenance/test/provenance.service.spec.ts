@@ -72,7 +72,7 @@ describe('ProvenanceService', () => {
 
       // Act & Assert
       await expect(service.buildProvenance(givenProcessStep)).rejects.toThrow(
-        `Unsupported process type [${givenProcessStep.type}].`,
+        `The value INVALID_TYPE is not a valid enum`,
       );
     });
 
