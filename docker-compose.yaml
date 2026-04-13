@@ -47,6 +47,8 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
+      kubo:
+        condition: service_healthy
       blockchain:
         condition: service_healthy
       rabbitmq:
@@ -58,9 +60,12 @@ services:
         mc mb --ignore-existing local/${CENTRALIZED_STORAGE_BUCKET_NAME}
         mc anonymous set download local/${CENTRALIZED_STORAGE_BUCKET_NAME}
 
-  ipfs:
-    image: ipfs/kubo:v0.34.1
+  kubo:
+    image: ipfs/kubo:v0.40.1
     restart: unless-stopped
+    command: ['daemon']
+    environment:
+      - IPFS_TELEMETRY=off
     ports:
       - '5001:5001'
       - '8081:8080'
@@ -87,6 +92,8 @@ services:
       postgres:
         condition: service_healthy
       minio:
+        condition: service_healthy
+      kubo:
         condition: service_healthy
       blockchain:
         condition: service_healthy
