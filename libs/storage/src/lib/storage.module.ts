@@ -14,6 +14,32 @@ import { DecentralizedStorageService } from './decentralized-storage.service';
 import { FilebaseStorageService } from './filebase-storage.service';
 import { KuboStorageService } from './kubo-storage.service';
 
+function createCentralizedStorageService(configService: ConfigurationService): CentralizedStorageService {
+  const config = configService.getGlobalConfiguration().centralizedStorage;
+  const s3Client = createS3Client(config, true);
+  return new CentralizedStorageService(s3Client, configService);
+}
+
+function createDecentralizedStorageService(configService: ConfigurationService): DecentralizedStorageService {
+  let service: DecentralizedStorageService;
+  const config = configService.getGlobalConfiguration().decentralizedStorage;
+
+  switch (config.provider) {
+    case 'filebase':
+      const s3Client = createS3Client(config, false);
+      service = new FilebaseStorageService(s3Client, configService);
+      break;
+    case 'kubo':
+      service = new KuboStorageService(configService);
+      break;
+    default: {
+      throw new Error('Unsupported decentralized storage provider');
+    }
+  }
+
+  return service;
+}
+
 function createS3Client(config: StorageConfiguration, forcePathStyle: boolean): S3Client {
   const protocol = config.useSSL ? 'https' : 'http';
   return new S3Client({
@@ -25,19 +51,6 @@ function createS3Client(config: StorageConfiguration, forcePathStyle: boolean): 
     },
     forcePathStyle,
   });
-}
-
-function createCentralizedStorageService(configService: ConfigurationService): CentralizedStorageService {
-  const config = configService.getGlobalConfiguration().centralizedStorage;
-  return new CentralizedStorageService(createS3Client(config, true), configService);
-}
-
-function createDecentralizedStorageService(configService: ConfigurationService): DecentralizedStorageService {
-  const config = configService.getGlobalConfiguration().decentralizedStorage;
-  if (config.provider === 'kubo') {
-    return new KuboStorageService(configService);
-  }
-  return new FilebaseStorageService(createS3Client(config, false), configService);
 }
 
 @Module({
@@ -56,4 +69,4 @@ function createDecentralizedStorageService(configService: ConfigurationService):
   ],
   exports: [CentralizedStorageService, DecentralizedStorageService],
 })
-export class StorageModule {}
+export class StorageModule { }
