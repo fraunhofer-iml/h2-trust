@@ -8,49 +8,48 @@
 
 import { Readable } from 'stream';
 import { Logger } from '@nestjs/common';
-import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { GetObjectCommand, PutObjectCommand, S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
 import { DecentralizedStorageService } from './decentralized-storage.service';
 
 export class FilebaseStorageService extends DecentralizedStorageService {
   private readonly logger = new Logger(this.constructor.name);
+  private readonly downloadClient: S3Client;
 
   constructor(
-    private readonly client: S3Client,
+    private readonly clientConfig: S3ClientConfig,
     private readonly bucketName: string,
     private readonly endpointUrl: string,
     public readonly explorerUrl: string,
   ) {
     super();
+    this.downloadClient = new S3Client(clientConfig);
     this.logger.debug('🔗 Filebase is enabled. Files will be stored and retrieved.');
     this.logger.debug(`🌐 Endpoint URL: ${this.endpointUrl}`);
     this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
   }
 
   async uploadFile(fileName: string, file: Buffer, contentType: string): Promise<string | undefined> {
+    // Fresh client per upload: each call gets an isolated middleware stack, preventing CID captures from interfering across concurrent uploads.
+    const uploadClient = new S3Client(this.clientConfig);
     let cid: string | undefined;
-    const middlewareName = `cid-capture-${fileName}-${Date.now()}`;
 
-    this.client.middlewareStack.add(
+    uploadClient.middlewareStack.add(
       (next) => async (args) => {
         const result = await next(args);
         cid = (result.response as any).headers?.['x-amz-meta-cid'];
         return result;
       },
-      { step: 'deserialize', name: middlewareName },
+      { step: 'deserialize' },
     );
 
-    try {
-      await this.client.send(new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: contentType }));
-      this.logger.debug(`Added file ${fileName} to Filebase with CID: ${cid}`);
-    } finally {
-      this.client.middlewareStack.remove(middlewareName);
-    }
+    await uploadClient.send(new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: contentType }));
+    this.logger.debug(`Added file ${fileName} to Filebase with CID: ${cid}`);
 
     return cid;
   }
 
   async downloadFile(fileName: string): Promise<Readable> {
-    const response = await this.client.send(new GetObjectCommand({ Bucket: this.bucketName, Key: fileName }));
+    const response = await this.downloadClient.send(new GetObjectCommand({ Bucket: this.bucketName, Key: fileName }));
     return response.Body as Readable;
   }
 }
