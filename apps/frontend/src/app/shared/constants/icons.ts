@@ -35,4 +35,9 @@ export const ICONS = {
     ACTIVE: 'atr',
     INACTIVE: 'bedtime',
   },
+  PPA_STATUS: {
+    PENDING: 'pending',
+    APPROVED: 'check_circle',
+    REJECTED: 'cancel',
+  },
 };
