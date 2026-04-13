@@ -142,7 +142,7 @@ export class CsvDocumentService {
     const { blockchainEnabled } = this.blockchainService;
     const ipfsExplorerUrl = blockchainEnabled && cid ? `${this.decentralizedStorageService.explorerUrl}/${cid}` : null;
     const blockchainExplorerUrl = blockchainEnabled && transactionHash ? `${this.blockchainService.explorerUrl}/${transactionHash}` : null;
-    const network = blockchainEnabled ? this.blockchainService.rpcUrl : null;
+    const network = blockchainEnabled ? this.blockchainService.endpointUrl : null;
     const smartContractAddress = blockchainEnabled ? this.blockchainService.smartContractAddress : null;
 
     return new VerifyCsvDocumentIntegrityResultEntity(

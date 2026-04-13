@@ -30,7 +30,7 @@ describe('CsvDocumentService', () => {
 
   const blockchainServiceMock = {
     blockchainEnabled: true,
-    rpcUrl: 'https://blockchain.io/rpc',
+    endpointUrl: 'https://blockchain.io/rpc',
     smartContractAddress: '0xFbf708eE4a5887E96Faea1DDFA6cF6C828695223',
     explorerUrl: 'https://blockchain.io/tx',
     retrieveProof: jest.fn(),
@@ -144,9 +144,9 @@ describe('CsvDocumentService', () => {
       expect(actualResult.transactionHash).toBe(givenDocument.transactionHash);
       expect(actualResult.blockNumber).toBe(123);
       expect(actualResult.blockTimestamp).toEqual(new Date('2026-01-01T00:15:00.000Z'));
-      expect(actualResult.network).toBe(blockchainServiceMock.rpcUrl);
+      expect(actualResult.network).toBe(blockchainServiceMock.endpointUrl);
       expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
-      expect(actualResult.explorerUrl).toBe(`${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`);
+      expect(actualResult.blockchainExplorerUrl).toBe(`${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`);
       expect(actualResult.message).toContain('verified successfully');
     });
 
@@ -187,9 +187,9 @@ describe('CsvDocumentService', () => {
       expect(actualResult.transactionHash).toBe(givenDocument.transactionHash);
       expect(actualResult.blockNumber).toBe(456);
       expect(actualResult.blockTimestamp).toEqual(new Date('2026-01-01T00:15:00.000Z'));
-      expect(actualResult.network).toBe(blockchainServiceMock.rpcUrl);
+      expect(actualResult.network).toBe(blockchainServiceMock.endpointUrl);
       expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
-      expect(actualResult.explorerUrl).toBe(`${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`);
+      expect(actualResult.blockchainExplorerUrl).toBe(`${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`);
       expect(actualResult.message).toContain('mismatch');
       expect(blockchainServiceMock.retrieveBlockchainMetadata).toHaveBeenCalledWith(givenDocument.transactionHash);
     });
@@ -222,7 +222,7 @@ describe('CsvDocumentService', () => {
       expect(actualResult.blockTimestamp).toBeNull();
       expect(actualResult.network).toBeNull();
       expect(actualResult.smartContractAddress).toBeNull();
-      expect(actualResult.explorerUrl).toBeNull();
+      expect(actualResult.blockchainExplorerUrl).toBeNull();
       expect(storageServiceMock.downloadFile).not.toHaveBeenCalled();
       expect(blockchainServiceMock.retrieveProof).not.toHaveBeenCalled();
       expect(blockchainServiceMock.retrieveBlockchainMetadata).not.toHaveBeenCalled();
@@ -246,9 +246,9 @@ describe('CsvDocumentService', () => {
       expect(actualResult.message).toContain(`Document with id ${givenPayload.id} does not exist`);
       expect(actualResult.blockNumber).toBeNull();
       expect(actualResult.blockTimestamp).toBeNull();
-      expect(actualResult.network).toBe(blockchainServiceMock.rpcUrl);
+      expect(actualResult.network).toBe(blockchainServiceMock.endpointUrl);
       expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
-      expect(actualResult.explorerUrl).toBeNull();
+      expect(actualResult.blockchainExplorerUrl).toBeNull();
 
       expect(csvImportRepositoryMock.findCsvDocumentById).toHaveBeenCalledWith(givenPayload.id);
       expect(storageServiceMock.downloadFile).not.toHaveBeenCalled();
@@ -283,9 +283,9 @@ describe('CsvDocumentService', () => {
       expect(actualResult.message).toContain(`Document with id ${givenPayload.id} has no transaction hash`);
       expect(actualResult.blockNumber).toBeNull();
       expect(actualResult.blockTimestamp).toBeNull();
-      expect(actualResult.network).toBe(blockchainServiceMock.rpcUrl);
+      expect(actualResult.network).toBe(blockchainServiceMock.endpointUrl);
       expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
-      expect(actualResult.explorerUrl).toBeNull();
+      expect(actualResult.blockchainExplorerUrl).toBeNull();
 
       expect(csvImportRepositoryMock.findCsvDocumentById).toHaveBeenCalledWith(givenPayload.id);
       expect(storageServiceMock.downloadFile).not.toHaveBeenCalled();
@@ -325,9 +325,9 @@ describe('CsvDocumentService', () => {
       expect(actualResult.message).toContain(`File with name ${givenDocument.fileName} does not exist`);
       expect(actualResult.blockNumber).toBeNull();
       expect(actualResult.blockTimestamp).toBeNull();
-      expect(actualResult.network).toBe(blockchainServiceMock.rpcUrl);
+      expect(actualResult.network).toBe(blockchainServiceMock.endpointUrl);
       expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
-      expect(actualResult.explorerUrl).toBe(`${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`);
+      expect(actualResult.blockchainExplorerUrl).toBe(`${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`);
 
       expect(csvImportRepositoryMock.findCsvDocumentById).toHaveBeenCalledWith(givenPayload.id);
       expect(storageServiceMock.downloadFile).toHaveBeenCalledWith(givenDocument.fileName);

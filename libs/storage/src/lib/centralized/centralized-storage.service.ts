@@ -9,7 +9,7 @@
 import Stream from 'stream';
 
 export abstract class CentralizedStorageService {
-  abstract readonly storageUrl: string;
+  abstract readonly baseUrl: string;
 
   abstract uploadCsvFile(fileName: string, file: Buffer): Promise<void>;
 

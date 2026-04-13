@@ -6,12 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import Stream from 'stream';
+import { Readable } from 'stream';
+import { Logger } from '@nestjs/common';
 import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { DecentralizedStorageService } from './decentralized-storage.service';
 
 export class FilebaseStorageService extends DecentralizedStorageService {
+  private readonly logger = new Logger(this.constructor.name);
   private readonly bucketName: string;
 
   public readonly explorerUrl: string;
@@ -30,6 +32,10 @@ export class FilebaseStorageService extends DecentralizedStorageService {
 
     this.bucketName = config.bucketName;
     this.explorerUrl = config.explorerUrl;
+
+    this.logger.debug('🔗 Filebase is enabled. Files will be stored and retrieved.');
+    this.logger.debug(`🌐 Endpoint URL: ${config.endpointUrl}`);
+    this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
   }
 
   async uploadCsvFile(fileName: string, file: Buffer): Promise<string | undefined> {
@@ -47,6 +53,7 @@ export class FilebaseStorageService extends DecentralizedStorageService {
 
     try {
       await this.client.send(new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: 'text/csv' }));
+      this.logger.debug(`Added file ${fileName} to Filebase with CID: ${cid}`);
     } finally {
       this.client.middlewareStack.remove(middlewareName);
     }
@@ -54,8 +61,8 @@ export class FilebaseStorageService extends DecentralizedStorageService {
     return cid;
   }
 
-  async downloadFile(fileName: string): Promise<Stream.Readable> {
+  async downloadFile(fileName: string): Promise<Readable> {
     const response = await this.client.send(new GetObjectCommand({ Bucket: this.bucketName, Key: fileName }));
-    return response.Body as Stream.Readable;
+    return response.Body as Readable;
   }
 }

@@ -14,7 +14,7 @@ import { CentralizedStorageService } from './centralized-storage.service';
 export class MinioStorageService extends CentralizedStorageService {
   private readonly bucketName: string;
   
-  public readonly storageUrl: string;
+  public readonly baseUrl: string;
 
   constructor(
     private readonly client: S3Client,
@@ -26,7 +26,7 @@ export class MinioStorageService extends CentralizedStorageService {
 
     this.bucketName = config.bucketName;
 
-    this.storageUrl = `${config.endpoint}/${this.bucketName}`;
+    this.baseUrl = `${config.endpointUrl}/${this.bucketName}`;
   }
 
   async uploadCsvFile(fileName: string, file: Buffer): Promise<void> {

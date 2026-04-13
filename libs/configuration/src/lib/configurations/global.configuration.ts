@@ -27,33 +27,33 @@ export interface AmqpConfiguration {
 }
 
 export interface StorageConfiguration {
-  endpoint: string;
+  endpointUrl: string;
   region: string;
   accessKey: string;
   secretKey: string;
   bucketName: string;
 }
 
-export type DecentralizedStorageProvider = 'filebase' | 'kubo';
+export interface KuboStorageConfiguration {
+  provider: 'kubo';
+  endpointUrl: string;
+  explorerUrl: string;
+}
 
 export interface FilebaseStorageConfiguration extends StorageConfiguration {
   provider: 'filebase';
   explorerUrl: string;
 }
 
-export interface KuboStorageConfiguration {
-  provider: 'kubo';
-  apiUrl: string;
-  gatewayUrl: string;
-}
-
 export type DecentralizedStorageConfiguration =
-  | FilebaseStorageConfiguration
-  | KuboStorageConfiguration;
+  | KuboStorageConfiguration
+  | FilebaseStorageConfiguration;
+
+export type DecentralizedStorageProvider = 'kubo' | 'filebase';
 
 export interface BlockchainConfiguration {
   enabled: boolean;
-  rpcUrl: string;
+  endpointUrl: string;
   privateKey: string;
   artifactPath: string;
   smartContractAddress: string;
@@ -74,38 +74,41 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
     queuePrefix: requireEnv('AMQP_QUEUE_PREFIX'),
   } as AmqpConfiguration,
   centralizedStorage: {
-    endpoint: requireEnv('CENTRALIZED_STORAGE_ENDPOINT'),
+    endpointUrl: requireEnv('CENTRALIZED_STORAGE_ENDPOINT_URL'),
     region: requireEnv('CENTRALIZED_STORAGE_REGION'),
     accessKey: requireEnv('CENTRALIZED_STORAGE_ACCESS_KEY'),
     secretKey: requireEnv('CENTRALIZED_STORAGE_SECRET_KEY'),
     bucketName: requireEnv('CENTRALIZED_STORAGE_BUCKET_NAME'),
   } as StorageConfiguration,
   decentralizedStorage: (() => {
-    const provider = (process.env['DECENTRALIZED_STORAGE_PROVIDER'] ?? 'filebase') as DecentralizedStorageProvider;
+    const provider = requireEnv('DECENTRALIZED_STORAGE_PROVIDER');
     if (provider === 'kubo') {
       return {
         provider,
-        apiUrl: requireEnv('DECENTRALIZED_STORAGE_API_URL'),
-        gatewayUrl: requireEnv('DECENTRALIZED_STORAGE_GATEWAY_URL'),
+        endpointUrl: requireEnv('DECENTRALIZED_STORAGE_ENDPOINT_URL'),
+        explorerUrl: requireEnv('DECENTRALIZED_STORAGE_EXPLORER_URL'),
       } satisfies KuboStorageConfiguration;
     }
-    return {
-      provider,
-      endpoint: requireEnv('DECENTRALIZED_STORAGE_ENDPOINT'),
-      region: requireEnv('DECENTRALIZED_STORAGE_REGION'),
-      accessKey: requireEnv('DECENTRALIZED_STORAGE_ACCESS_KEY'),
-      secretKey: requireEnv('DECENTRALIZED_STORAGE_SECRET_KEY'),
-      bucketName: requireEnv('DECENTRALIZED_STORAGE_BUCKET_NAME'),
-      explorerUrl: requireEnv('DECENTRALIZED_STORAGE_EXPLORER_URL'),
-    } satisfies FilebaseStorageConfiguration;
+    if (provider === 'filebase') {
+      return {
+        provider,
+        endpointUrl: requireEnv('DECENTRALIZED_STORAGE_ENDPOINT_URL'),
+        explorerUrl: requireEnv('DECENTRALIZED_STORAGE_EXPLORER_URL'),
+        region: requireEnv('DECENTRALIZED_STORAGE_REGION'),
+        accessKey: requireEnv('DECENTRALIZED_STORAGE_ACCESS_KEY'),
+        secretKey: requireEnv('DECENTRALIZED_STORAGE_SECRET_KEY'),
+        bucketName: requireEnv('DECENTRALIZED_STORAGE_BUCKET_NAME'),
+      } satisfies FilebaseStorageConfiguration;
+    }
+    throw new Error(`Unsupported DECENTRALIZED_STORAGE_PROVIDER: ${provider}`);
   })(),
   blockchain: {
     enabled: requireEnv('BLOCKCHAIN_ENABLED') === 'true',
-    rpcUrl: requireEnv('BLOCKCHAIN_RPC_URL'),
+    endpointUrl: requireEnv('BLOCKCHAIN_ENDPOINT_URL'),
+    explorerUrl: requireEnv('BLOCKCHAIN_EXPLORER_URL'),
     privateKey: requireEnv('BLOCKCHAIN_PRIVATE_KEY'),
     artifactPath: requireEnv('BLOCKCHAIN_ARTIFACT_PATH'),
     smartContractAddress: requireEnv('BLOCKCHAIN_SMART_CONTRACT_ADDRESS'),
-    explorerUrl: requireEnv('BLOCKCHAIN_EXPLORER_URL'),
   } as BlockchainConfiguration,
   keycloak: {
     url: requireEnv('KEYCLOAK_URL'),

@@ -43,7 +43,7 @@ function createDecentralizedStorageService(configService: ConfigurationService):
 
 function createS3Client(config: StorageConfiguration, forcePathStyle: boolean): S3Client {
   return new S3Client({
-    endpoint: config.endpoint,
+    endpoint: config.endpointUrl,
     region: config.region,
     credentials: {
       accessKeyId: config.accessKey,

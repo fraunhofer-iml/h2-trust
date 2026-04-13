@@ -43,7 +43,7 @@ interface ProofStorageContract extends BaseContract {
 @Injectable()
 export class BlockchainService {
   readonly blockchainEnabled: boolean;
-  readonly rpcUrl?: string;
+  readonly endpointUrl?: string;
   readonly smartContractAddress?: string;
   readonly explorerUrl?: string;
 
@@ -56,14 +56,14 @@ export class BlockchainService {
     this.blockchainEnabled = blockchainConfiguration.enabled;
 
     if (this.blockchainEnabled) {
-      this.rpcUrl = blockchainConfiguration.rpcUrl;
+      this.endpointUrl = blockchainConfiguration.endpointUrl;
       this.smartContractAddress = blockchainConfiguration.smartContractAddress;
       this.explorerUrl = blockchainConfiguration.explorerUrl;
 
       this.logger.debug('🔗 Blockchain is enabled. Proofs will be stored and retrieved.');
-      this.logger.debug(`🌐 RPC URL: ${this.rpcUrl}`);
-      this.logger.debug(`📄 Smart Contract Address: ${this.smartContractAddress}`);
+      this.logger.debug(`🌐 Endpoint URL: ${this.endpointUrl}`);
       this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
+      this.logger.debug(`📄 Smart Contract Address: ${this.smartContractAddress}`);
 
       this.contract = this.createContract(blockchainConfiguration.artifactPath, blockchainConfiguration.privateKey);
     } else {
@@ -74,7 +74,7 @@ export class BlockchainService {
   private createContract(artifactPath: string, privateKey: string): ProofStorageContract {
     const { abi } = JSON.parse(readFileSync(artifactPath, 'utf-8'));
 
-    const provider = new JsonRpcProvider(this.rpcUrl);
+    const provider = new JsonRpcProvider(this.endpointUrl);
     const wallet = new Wallet(privateKey, provider);
     const signer = new NonceManager(wallet);
 

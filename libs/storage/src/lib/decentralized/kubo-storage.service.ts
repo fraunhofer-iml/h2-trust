@@ -12,10 +12,10 @@ import { ConfigurationService } from '@h2-trust/configuration';
 import { DecentralizedStorageService } from './decentralized-storage.service';
 
 export class KuboStorageService extends DecentralizedStorageService {
-  readonly explorerUrl: string;
-
-  private readonly apiUrl: string;
   private readonly logger = new Logger(this.constructor.name);
+  private readonly endpointUrl: string;
+
+  readonly explorerUrl: string;
 
   constructor(configurationService: ConfigurationService) {
     super();
@@ -26,15 +26,19 @@ export class KuboStorageService extends DecentralizedStorageService {
       throw new Error('KuboStorageService requires provider "kubo"');
     }
 
-    this.apiUrl = config.apiUrl;
-    this.explorerUrl = config.gatewayUrl;
+    this.endpointUrl = config.endpointUrl;
+    this.explorerUrl = config.explorerUrl;
+
+    this.logger.debug('🔗 Kubo is enabled. Files will be stored and retrieved.');
+    this.logger.debug(`🌐 Endpoint URL: ${this.endpointUrl}`);
+    this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
   }
 
   async uploadCsvFile(fileName: string, file: Buffer): Promise<string | undefined> {
     const formData = new FormData();
     formData.append('file', new Blob([new Uint8Array(file)], { type: 'text/csv' }), fileName);
 
-    const addResponse = await fetch(`${this.apiUrl}/api/v0/add?pin=true`, {
+    const addResponse = await fetch(`${this.endpointUrl}/api/v0/add?pin=true`, {
       method: 'POST',
       body: formData,
     });
@@ -44,10 +48,10 @@ export class KuboStorageService extends DecentralizedStorageService {
     }
 
     const { Hash: cid } = (await addResponse.json()) as { Hash: string };
-    this.logger.debug(`Added file ${fileName} to IPFS with CID: ${cid}`);
+    this.logger.debug(`Added file ${fileName} to Kubo with CID: ${cid}`);
 
     const cpResponse = await fetch(
-      `${this.apiUrl}/api/v0/files/cp?arg=/ipfs/${cid}&arg=/${fileName}`,
+      `${this.endpointUrl}/api/v0/files/cp?arg=/ipfs/${cid}&arg=/${fileName}`,
       { method: 'POST' },
     );
 
@@ -62,7 +66,7 @@ export class KuboStorageService extends DecentralizedStorageService {
   }
 
   async downloadFile(fileName: string): Promise<Readable> {
-    const response = await fetch(`${this.apiUrl}/api/v0/files/read?arg=/${fileName}`, {
+    const response = await fetch(`${this.endpointUrl}/api/v0/files/read?arg=/${fileName}`, {
       method: 'POST',
     });
 
