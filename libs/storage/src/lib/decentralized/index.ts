@@ -1,0 +1,1 @@
+export * from './decentralized-storage.service';

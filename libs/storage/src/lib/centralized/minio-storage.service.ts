@@ -13,6 +13,7 @@ import { CentralizedStorageService } from './centralized-storage.service';
 
 export class MinioStorageService extends CentralizedStorageService {
   private readonly bucketName: string;
+  
   public readonly storageUrl: string;
 
   constructor(

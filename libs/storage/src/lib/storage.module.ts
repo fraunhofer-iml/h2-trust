@@ -9,11 +9,11 @@
 import { S3Client } from '@aws-sdk/client-s3';
 import { Module } from '@nestjs/common';
 import { ConfigurationModule, ConfigurationService, StorageConfiguration } from '@h2-trust/configuration';
-import { CentralizedStorageService } from './centralized-storage.service';
-import { DecentralizedStorageService } from './decentralized-storage.service';
-import { FilebaseStorageService } from './filebase-storage.service';
-import { KuboStorageService } from './kubo-storage.service';
-import { MinioStorageService } from './minio-storage.service';
+import { CentralizedStorageService } from './centralized/centralized-storage.service';
+import { MinioStorageService } from './centralized/minio-storage.service';
+import { DecentralizedStorageService } from './decentralized/decentralized-storage.service';
+import { FilebaseStorageService } from './decentralized/filebase-storage.service';
+import { KuboStorageService } from './decentralized/kubo-storage.service';
 
 function createCentralizedStorageService(configService: ConfigurationService): CentralizedStorageService {
   const config = configService.getGlobalConfiguration().centralizedStorage;
