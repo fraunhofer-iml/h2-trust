@@ -6,11 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import Stream from 'stream';
+import { Readable } from 'stream';
+import { Logger } from '@nestjs/common';
 import { GetObjectCommand, HeadObjectCommand, PutObjectCommand, S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
 import { CentralizedStorageService } from './centralized-storage.service';
 import { ContentType } from '../content-types';
-import { Logger } from '@nestjs/common';
 
 export class S3StorageService extends CentralizedStorageService {
   private readonly logger = new Logger(this.constructor.name);
@@ -36,9 +36,14 @@ export class S3StorageService extends CentralizedStorageService {
     await this.client.send(new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: contentType }));
   }
 
-  async downloadFile(fileName: string): Promise<Stream.Readable> {
+  async downloadFile(fileName: string): Promise<Readable> {
     const response = await this.client.send(new GetObjectCommand({ Bucket: this.bucketName, Key: fileName }));
-    return response.Body as Stream.Readable;
+
+    if (!response.Body) {
+      throw new Error(`Download failed: empty response body for file: ${fileName}`);
+    }
+
+    return response.Body as Readable;
   }
 
   async fileExists(fileName: string): Promise<boolean> {

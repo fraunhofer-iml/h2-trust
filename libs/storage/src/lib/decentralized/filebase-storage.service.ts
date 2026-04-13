@@ -58,6 +58,11 @@ export class FilebaseStorageService extends DecentralizedStorageService {
 
   async downloadFile(fileName: string): Promise<Readable> {
     const response = await this.client.send(new GetObjectCommand({ Bucket: this.bucketName, Key: fileName }));
+
+    if (!response.Body) {
+      throw new Error(`Download failed: empty response body for file: ${fileName}`);
+    }
+
     return response.Body as Readable;
   }
 }
