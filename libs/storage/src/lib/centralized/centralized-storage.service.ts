@@ -7,11 +7,12 @@
  */
 
 import Stream from 'stream';
+import { ContentType } from '../content-types';
 
 export abstract class CentralizedStorageService {
   abstract readonly baseUrl: string;
 
-  abstract uploadFile(fileName: string, file: Buffer, contentType: string): Promise<void>;
+  abstract uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<void>;
 
   abstract downloadFile(fileName: string): Promise<Stream.Readable>;
 

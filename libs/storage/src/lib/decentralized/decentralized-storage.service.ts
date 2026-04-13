@@ -7,11 +7,12 @@
  */
 
 import Stream from 'stream';
+import { ContentType } from '../content-types';
 
 export abstract class DecentralizedStorageService {
   abstract readonly explorerUrl: string;
 
-  abstract uploadFile(fileName: string, file: Buffer, contentType: string): Promise<string | undefined>;
+  abstract uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<string | undefined>;
 
   abstract downloadFile(fileName: string): Promise<Stream.Readable>;
 }

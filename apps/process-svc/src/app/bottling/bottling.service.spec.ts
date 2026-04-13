@@ -12,7 +12,7 @@ import { BrokerQueues, CreateHydrogenBottlingPayload, DocumentEntity } from '@h2
 import { DocumentRepository } from '@h2-trust/database';
 import { HydrogenColor, RfnboType } from '@h2-trust/domain';
 import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures';
-import { CentralizedStorageService, CONTENT_TYPES } from '@h2-trust/storage';
+import { CentralizedStorageService, ContentType } from '@h2-trust/storage';
 import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { BottlingService } from './bottling.service';
@@ -217,7 +217,7 @@ describe('BottlingService', () => {
       expect(storageServiceMock.uploadFile).toHaveBeenCalledWith(
         givenFile.originalname,
         Buffer.from(givenFile.buffer),
-        CONTENT_TYPES.PDF,
+        ContentType.PDF,
       );
       expect(documentRepositoryMock.addDocumentToProcessStep).toHaveBeenCalledWith(
         new DocumentEntity(undefined, givenFile.originalname),

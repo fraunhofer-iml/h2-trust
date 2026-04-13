@@ -25,7 +25,7 @@ import {
 } from '@h2-trust/amqp';
 import { DocumentRepository } from '@h2-trust/database';
 import { BatchType, HydrogenColor, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
-import { CentralizedStorageService, CONTENT_TYPES } from '@h2-trust/storage';
+import { CentralizedStorageService, ContentType } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { BottlingProcessStepAssembler } from './utils/bottling-process-step.assembler';
 import { BottlingAllocation, BottlingAllocator } from './utils/bottling.allocator';
@@ -186,7 +186,7 @@ export class BottlingService {
   }
 
   private async addDocumentToProcessStep(file: Express.Multer.File, processStepId: string): Promise<DocumentEntity> {
-    await this.storageService.uploadFile(file.originalname, Buffer.from(file.buffer), CONTENT_TYPES.PDF);
+    await this.storageService.uploadFile(file.originalname, Buffer.from(file.buffer), ContentType.PDF);
 
     return this.documentRepository.addDocumentToProcessStep(
       new DocumentEntity(undefined, file.originalname),

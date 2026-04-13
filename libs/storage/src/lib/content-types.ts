@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const CONTENT_TYPES = {
-  CSV: 'text/csv',
-  PDF: 'application/pdf',
-} as const;
+export enum ContentType {
+  CSV = 'text/csv',
+  PDF = 'application/pdf',
+}
