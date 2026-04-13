@@ -33,6 +33,9 @@ export const BaseUnitFlatDbTypeMock: readonly BaseUnitFlatDbType[] = Object.free
       users: [],
       batches: [],
     },
+    hydrogenProductionUnit: null,
+    powerProductionUnit: null,
+    hydrogenStorageUnit: null,
   },
 ]);
 
@@ -60,6 +63,9 @@ export const BaseUnitNestedDbTypeMock: readonly BaseUnitNestedDbType[] = Object.
       users: [],
       batches: [],
     },
+    hydrogenProductionUnit: null,
+    powerProductionUnit: null,
+    hydrogenStorageUnit: null,
   },
 ]);
 
@@ -87,5 +93,8 @@ export const BaseUnitDeepDbTypeMock = <BaseUnitDeepDbType[]>[
       users: [],
       batches: [],
     },
+    hydrogenProductionUnit: null,
+    powerProductionUnit: null,
+    hydrogenStorageUnit: null,
   },
 ];

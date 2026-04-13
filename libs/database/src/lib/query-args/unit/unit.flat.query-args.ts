@@ -8,30 +8,33 @@
 
 import { Prisma } from '@prisma/client';
 
-export const baseUnitFlatQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
+export const hydrogenProductionUnitFlatQueryArgs = Prisma.validator<Prisma.HydrogenProductionUnitDefaultArgs>()({
   include: {
-    address: true,
-    owner: true,
-    operator: true,
+    generalInfo: true,
   },
 });
 
 export const hydrogenStorageUnitFlatQueryArgs = Prisma.validator<Prisma.HydrogenStorageUnitDefaultArgs>()({
   include: {
-    generalInfo: baseUnitFlatQueryArgs,
+    generalInfo: true,
     filling: true,
   },
 });
 
 export const powerProductionUnitFlatQueryArgs = Prisma.validator<Prisma.PowerProductionUnitDefaultArgs>()({
   include: {
-    generalInfo: baseUnitFlatQueryArgs,
+    generalInfo: true,
     type: true,
   },
 });
 
-export const hydrogenProductionUnitFlatQueryArgs = Prisma.validator<Prisma.HydrogenProductionUnitDefaultArgs>()({
+export const baseUnitFlatQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
   include: {
-    generalInfo: baseUnitFlatQueryArgs,
+    address: true,
+    owner: true,
+    operator: true,
+    hydrogenProductionUnit: true,
+    powerProductionUnit: powerProductionUnitFlatQueryArgs,
+    hydrogenStorageUnit: hydrogenStorageUnitFlatQueryArgs,
   },
 });

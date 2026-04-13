@@ -56,7 +56,9 @@ export class BatchEntity {
       batch.predecessors.map((pred) => BatchEntity.fromNestedDatabase({ ...pred, predecessors: [], successors: [] })),
       batch.successors.map((succ) => BatchEntity.fromNestedDatabase({ ...succ, predecessors: [], successors: [] })),
       CompanyEntity.fromNestedDatabase(batch.owner),
-      batch.hydrogenStorageUnit ? HydrogenStorageUnitEntity.fromNestedDatabase(batch.hydrogenStorageUnit) : undefined,
+      batch.hydrogenStorageUnit
+        ? HydrogenStorageUnitEntity.fromNestedHydrogenStorageUnit(batch.hydrogenStorageUnit)
+        : undefined,
       batch.batchDetails?.qualityDetails
         ? QualityDetailsEntity.fromDatabase(batch.batchDetails.qualityDetails)
         : undefined,
@@ -73,7 +75,9 @@ export class BatchEntity {
       batch.predecessors.map((pred) => BatchEntity.fromFlatDatabase({ ...pred, predecessors: [], successors: [] })),
       batch.successors.map((succ) => BatchEntity.fromFlatDatabase({ ...succ, predecessors: [], successors: [] })),
       CompanyEntity.fromFlatDatabase(batch.owner),
-      batch.hydrogenStorageUnit ? HydrogenStorageUnitEntity.fromFlatDatabase(batch.hydrogenStorageUnit) : undefined,
+      batch.hydrogenStorageUnit
+        ? HydrogenStorageUnitEntity.fromNestedHydrogenStorageUnit(batch.hydrogenStorageUnit)
+        : undefined,
       batch.batchDetails?.qualityDetails
         ? QualityDetailsEntity.fromDatabase(batch.batchDetails.qualityDetails)
         : undefined,
