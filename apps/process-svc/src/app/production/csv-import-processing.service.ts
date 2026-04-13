@@ -7,12 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import {
-  AccountingPeriodHydrogen,
-  AccountingPeriodPower,
-  UnitAccountingPeriods,
-  UnitFileImport,
-} from '@h2-trust/amqp';
+import { AccountingPeriodHydrogen, AccountingPeriodPower, UnitAccountingPeriods, UnitFileImport } from '@h2-trust/amqp';
 import { HashUtil } from '@h2-trust/blockchain';
 import { CreateCsvDocumentInput } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
@@ -29,8 +24,8 @@ export class CsvImportProcessingService {
 
   constructor(
     private readonly centralizedStorageService: CentralizedStorageService,
-    private readonly decentralizedStorageService: DecentralizedStorageService
-  ) { }
+    private readonly decentralizedStorageService: DecentralizedStorageService,
+  ) {}
 
   async parseAndUploadFiles<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
     unitFileImports: UnitFileImport[],
@@ -45,7 +40,9 @@ export class CsvImportProcessingService {
         const expectedHash = ufi.hashedFileBuffer;
 
         if (computedHash !== expectedHash) {
-          throw new Error(`File integrity check failed for unit ${ufi.unitId}: expected hash ${expectedHash} but computed ${computedHash}`);
+          throw new Error(
+            `File integrity check failed for unit ${ufi.unitId}: expected hash ${expectedHash} but computed ${computedHash}`,
+          );
         }
 
         const accountingPeriods = await AccountingPeriodCsvParser.parseBuffer<T>(buffer, headers);

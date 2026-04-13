@@ -16,11 +16,7 @@ import {
   StageProductionsPayload,
 } from '@h2-trust/amqp';
 import { BlockchainService, ProofEntry } from '@h2-trust/blockchain';
-import {
-  CsvImportRepository,
-  PrismaService,
-  StagedProductionRepository,
-} from '@h2-trust/database';
+import { CsvImportRepository, PrismaService, StagedProductionRepository } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
 import { CsvImportProcessingService } from './csv-import-processing.service';
 import { ProductionDistributor } from './production-distributor';
@@ -36,12 +32,18 @@ export class ProductionStagingService {
     private readonly csvImportRepository: CsvImportRepository,
     private readonly prismaService: PrismaService,
     private readonly stagedProductionRepository: StagedProductionRepository,
-  ) { }
+  ) {}
 
   async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
     const [parsedPowerImports, parsedHydrogenImports] = await Promise.all([
-      this.csvImportProcessingService.parseAndUploadFiles<AccountingPeriodPower>(payload.powerProductionImports, BatchType.POWER),
-      this.csvImportProcessingService.parseAndUploadFiles<AccountingPeriodHydrogen>(payload.hydrogenProductionImports, BatchType.HYDROGEN),
+      this.csvImportProcessingService.parseAndUploadFiles<AccountingPeriodPower>(
+        payload.powerProductionImports,
+        BatchType.POWER,
+      ),
+      this.csvImportProcessingService.parseAndUploadFiles<AccountingPeriodHydrogen>(
+        payload.hydrogenProductionImports,
+        BatchType.HYDROGEN,
+      ),
     ]);
 
     const distributedProductions = ProductionDistributor.distributeProductions(

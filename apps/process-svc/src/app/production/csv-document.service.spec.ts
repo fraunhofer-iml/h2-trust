@@ -146,7 +146,9 @@ describe('CsvDocumentService', () => {
       expect(actualResult.blockTimestamp).toEqual(new Date('2026-01-01T00:15:00.000Z'));
       expect(actualResult.network).toBe(blockchainServiceMock.endpointUrl);
       expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
-      expect(actualResult.blockchainExplorerUrl).toBe(`${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`);
+      expect(actualResult.blockchainExplorerUrl).toBe(
+        `${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`,
+      );
       expect(actualResult.message).toContain('verified successfully');
     });
 
@@ -189,7 +191,9 @@ describe('CsvDocumentService', () => {
       expect(actualResult.blockTimestamp).toEqual(new Date('2026-01-01T00:15:00.000Z'));
       expect(actualResult.network).toBe(blockchainServiceMock.endpointUrl);
       expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
-      expect(actualResult.blockchainExplorerUrl).toBe(`${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`);
+      expect(actualResult.blockchainExplorerUrl).toBe(
+        `${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`,
+      );
       expect(actualResult.message).toContain('mismatch');
       expect(blockchainServiceMock.retrieveBlockchainMetadata).toHaveBeenCalledWith(givenDocument.transactionHash);
     });
@@ -327,7 +331,9 @@ describe('CsvDocumentService', () => {
       expect(actualResult.blockTimestamp).toBeNull();
       expect(actualResult.network).toBe(blockchainServiceMock.endpointUrl);
       expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
-      expect(actualResult.blockchainExplorerUrl).toBe(`${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`);
+      expect(actualResult.blockchainExplorerUrl).toBe(
+        `${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`,
+      );
 
       expect(csvImportRepositoryMock.findCsvDocumentById).toHaveBeenCalledWith(givenPayload.id);
       expect(storageServiceMock.downloadFile).toHaveBeenCalledWith(givenDocument.fileName);

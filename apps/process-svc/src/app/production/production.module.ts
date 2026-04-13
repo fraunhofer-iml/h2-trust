@@ -34,6 +34,12 @@ import { StagedProductionCleanupModule } from './tasks/staged-production-cleanup
     new Broker().getGeneralSvcBroker(),
   ],
   controllers: [ProductionController],
-  providers: [CsvDocumentService, CsvImportProcessingService, ProductionCreationService, ProductionService, ProductionStagingService],
+  providers: [
+    CsvDocumentService,
+    CsvImportProcessingService,
+    ProductionCreationService,
+    ProductionService,
+    ProductionStagingService,
+  ],
 })
 export class ProductionModule {}

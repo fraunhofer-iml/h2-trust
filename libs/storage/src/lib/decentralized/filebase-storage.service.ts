@@ -7,10 +7,10 @@
  */
 
 import { Readable } from 'stream';
-import { Logger } from '@nestjs/common';
 import { GetObjectCommand, PutObjectCommand, S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
-import { DecentralizedStorageService } from './decentralized-storage.service';
+import { Logger } from '@nestjs/common';
 import { ContentType } from '../content-types';
+import { DecentralizedStorageService } from './decentralized-storage.service';
 
 export class FilebaseStorageService extends DecentralizedStorageService {
   private readonly logger = new Logger(this.constructor.name);
@@ -45,7 +45,9 @@ export class FilebaseStorageService extends DecentralizedStorageService {
       { step: 'deserialize' },
     );
 
-    await uploadClient.send(new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: contentType }));
+    await uploadClient.send(
+      new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: contentType }),
+    );
 
     if (!cid) {
       throw new Error(`Filebase did not return a CID for file: ${fileName}`);

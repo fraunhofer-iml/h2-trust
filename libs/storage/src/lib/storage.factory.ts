@@ -11,8 +11,8 @@ import { ConfigurationService, DECENTRALIZED_STORAGE_PROVIDERS, S3StorageConfigu
 import { CentralizedStorageService } from './centralized/centralized-storage.service';
 import { S3StorageService } from './centralized/s3-storage.service';
 import { DecentralizedStorageService } from './decentralized/decentralized-storage.service';
-import { KuboStorageService } from './decentralized/kubo-storage.service';
 import { FilebaseStorageService } from './decentralized/filebase-storage.service';
+import { KuboStorageService } from './decentralized/kubo-storage.service';
 
 export function createCentralizedStorageService(configService: ConfigurationService): CentralizedStorageService {
   const config = configService.getGlobalConfiguration().centralizedStorage;

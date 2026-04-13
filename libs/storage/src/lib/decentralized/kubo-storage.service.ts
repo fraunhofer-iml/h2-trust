@@ -8,8 +8,8 @@
 
 import { Readable } from 'stream';
 import { Logger } from '@nestjs/common';
-import { DecentralizedStorageService } from './decentralized-storage.service';
 import { ContentType } from '../content-types';
+import { DecentralizedStorageService } from './decentralized-storage.service';
 
 export class KuboStorageService extends DecentralizedStorageService {
   private readonly logger = new Logger(this.constructor.name);
@@ -41,10 +41,9 @@ export class KuboStorageService extends DecentralizedStorageService {
     const { Hash: cid } = (await addResponse.json()) as { Hash: string };
     this.logger.debug(`Added file ${fileName} to Kubo with CID: ${cid}`);
 
-    const cpResponse = await fetch(
-      `${this.endpointUrl}/api/v0/files/cp?arg=/ipfs/${cid}&arg=/${fileName}`,
-      { method: 'POST' },
-    );
+    const cpResponse = await fetch(`${this.endpointUrl}/api/v0/files/cp?arg=/ipfs/${cid}&arg=/${fileName}`, {
+      method: 'POST',
+    });
 
     if (!cpResponse.ok) {
       const text = await cpResponse.text();

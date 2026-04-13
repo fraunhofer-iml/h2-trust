@@ -17,7 +17,7 @@ export class AccountingPeriodCsvParser {
 
   static async parseBuffer<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
     buffer: Buffer,
-    columns: string[]
+    columns: string[],
   ): Promise<T[]> {
     let skipped = 0;
     let invalid = 0;

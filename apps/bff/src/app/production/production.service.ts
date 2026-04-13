@@ -42,10 +42,10 @@ import {
   ProductionStatisticsDto,
   UserDetailsDto,
 } from '@h2-trust/api';
+import { HashUtil } from '@h2-trust/blockchain';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
-import { HashUtil } from '@h2-trust/blockchain';
 
 @Injectable()
 export class ProductionService {
@@ -54,7 +54,7 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly storageService: CentralizedStorageService,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
   async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
     const payload = new CreateProductionsPayload(

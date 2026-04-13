@@ -7,10 +7,10 @@
  */
 
 import { Readable } from 'stream';
-import { Logger } from '@nestjs/common';
 import { GetObjectCommand, HeadObjectCommand, PutObjectCommand, S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
-import { CentralizedStorageService } from './centralized-storage.service';
+import { Logger } from '@nestjs/common';
 import { ContentType } from '../content-types';
+import { CentralizedStorageService } from './centralized-storage.service';
 
 export class S3StorageService extends CentralizedStorageService {
   private readonly logger = new Logger(this.constructor.name);
@@ -33,7 +33,9 @@ export class S3StorageService extends CentralizedStorageService {
   }
 
   async uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<void> {
-    await this.client.send(new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: contentType }));
+    await this.client.send(
+      new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: contentType }),
+    );
   }
 
   async downloadFile(fileName: string): Promise<Readable> {

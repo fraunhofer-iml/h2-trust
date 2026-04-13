@@ -49,9 +49,7 @@ export interface FilebaseStorageConfiguration extends S3StorageConfiguration {
   explorerUrl: string;
 }
 
-export type DecentralizedStorageConfiguration =
-  | KuboStorageConfiguration
-  | FilebaseStorageConfiguration;
+export type DecentralizedStorageConfiguration = KuboStorageConfiguration | FilebaseStorageConfiguration;
 
 export interface BlockchainConfiguration {
   enabled: boolean;
@@ -98,7 +96,6 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
     clientSecret: requireEnv('KEYCLOAK_CLIENT_SECRET'),
   } satisfies KeycloakConfiguration,
 }));
-
 
 function buildDecentralizedStorageConfig(): DecentralizedStorageConfiguration {
   const provider = requireEnv('DECENTRALIZED_STORAGE_PROVIDER');
