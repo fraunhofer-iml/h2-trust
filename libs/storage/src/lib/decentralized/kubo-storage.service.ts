@@ -65,6 +65,10 @@ export class KuboStorageService extends DecentralizedStorageService {
       throw new Error(`Kubo files/read failed: ${response.status} ${await response.text()}`);
     }
 
-    return Readable.fromWeb(response.body as any);
+    if (!response.body) {
+      throw new Error(`Kubo files/read failed: response body is empty for file: ${fileName}`);
+    }
+
+    return Readable.fromWeb(response.body as ReadableStream<Uint8Array>);
   }
 }
