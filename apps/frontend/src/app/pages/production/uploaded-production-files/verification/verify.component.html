@@ -18,8 +18,7 @@
     <h1 class="font-semibold">Verification Result</h1>
 
     @if (result; as res) {
-      <p class="text-sm text-neutral-600">File ID: {{ res.documentId }}</p>
-      <p class="text-sm text-neutral-600">File Name: {{ res.fileName || 'Not available' }}</p>
+      <p class="text-sm text-neutral-600">{{ res.fileName || 'Not available' }}</p>
       <div class="mt-4 flex flex-col gap-4">
         <div
           class="rounded-xl border-2 p-4"
@@ -36,34 +35,6 @@
             {{ res.status | titlecase }}</span
           >
           <p class="pl-8 text-neutral-700">{{ res.message }}</p>
-        </div>
-
-        <div class="flex flex-col gap-3 rounded-lg border border-neutral-100 bg-white px-4 py-3 text-sm text-neutral-600">
-          <div>
-            <span class="font-semibold text-neutral-900">Checked Steps</span>
-            <p class="mt-1 text-xs text-neutral-500">This verification process compares the file from centralized storage with the proof registered on the blockchain.</p>
-          </div>
-
-          <div class="flex items-center gap-3 text-neutral-800">
-            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-neutral-100 text-[11px] font-semibold text-neutral-600">
-              1
-            </span>
-            <span>File loaded from centralized storage</span>
-          </div>
-
-          <div class="flex items-center gap-3 text-neutral-800">
-            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-neutral-100 text-[11px] font-semibold text-neutral-600">
-              2
-            </span>
-            <span>Proof loaded from blockchain</span>
-          </div>
-
-          <div class="flex items-center gap-3 text-neutral-800">
-            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-neutral-100 text-[11px] font-semibold text-neutral-600">
-              3
-            </span>
-            <span>File matches the registered proof</span>
-          </div>
         </div>
 
         <div
@@ -169,6 +140,45 @@
                 <span class="font-medium">Copy Content Identifier</span>
               </span>
             </button>
+          </div>
+        </div>
+
+        <div
+          class="flex flex-col gap-3 rounded-lg border border-neutral-100 bg-white px-4 py-3 text-sm text-neutral-600"
+        >
+          <div>
+            <span class="font-semibold text-neutral-900">Checked Steps</span>
+            <p class="mt-1 text-xs text-neutral-500">
+              This verification process compares the file from centralized storage with the proof registered on the
+              blockchain.
+            </p>
+          </div>
+
+          <div class="flex items-center gap-3 text-neutral-800">
+            <span
+              class="flex h-5 w-5 items-center justify-center rounded-full bg-neutral-100 text-[11px] font-semibold text-neutral-600"
+            >
+              1
+            </span>
+            <span>File loaded from centralized storage</span>
+          </div>
+
+          <div class="flex items-center gap-3 text-neutral-800">
+            <span
+              class="flex h-5 w-5 items-center justify-center rounded-full bg-neutral-100 text-[11px] font-semibold text-neutral-600"
+            >
+              2
+            </span>
+            <span>Proof loaded from blockchain</span>
+          </div>
+
+          <div class="flex items-center gap-3 text-neutral-800">
+            <span
+              class="flex h-5 w-5 items-center justify-center rounded-full bg-neutral-100 text-[11px] font-semibold text-neutral-600"
+            >
+              3
+            </span>
+            <span>File matches the registered proof</span>
           </div>
         </div>
       </div>
