@@ -12,4 +12,5 @@ export enum ProductionMessagePatterns {
   FINALIZE = 'production.finalize',
   READ_CSV_DOCUMENTS_BY_COMPANY = 'production.read-csv-documents-by-company',
   VERIFY_CSV_DOCUMENT_INTEGRITY = 'production.verify-csv-document-integrity',
+  ASSEMBLE_PRODUCTION_STATISTICS = 'production.assemble-production-statistics',
 }
