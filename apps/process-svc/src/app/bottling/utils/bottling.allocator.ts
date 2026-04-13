@@ -161,6 +161,7 @@ export class BottlingAllocator {
         qualityDetails: {
           color: predecessorProcessStep.batch.qualityDetails.color,
           rfnboType: predecessorProcessStep.batch.qualityDetails.rfnboType,
+          powerType: predecessorProcessStep.batch.qualityDetails.powerType,
         },
         type: BatchType.HYDROGEN,
         predecessors: [

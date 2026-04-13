@@ -8,7 +8,7 @@
 
 import { HttpStatus } from '@nestjs/common';
 import { BatchEntity, BrokerException, CreateHydrogenBottlingPayload, ProcessStepEntity } from '@h2-trust/amqp';
-import { BatchType, HydrogenColor, ProcessType, RfnboType } from '@h2-trust/domain';
+import { BatchType, HydrogenColor, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 
 export class BottlingProcessStepAssembler {
   static assemble(payload: CreateHydrogenBottlingPayload, batchesForBottle: BatchEntity[]): ProcessStepEntity {
@@ -21,6 +21,7 @@ export class BottlingProcessStepAssembler {
         qualityDetails: {
           color: BottlingProcessStepAssembler.determineBottleQualityFromPredecessors(batchesForBottle),
           rfnboType: BottlingProcessStepAssembler.determineRfnboTypeOfPredecessors(batchesForBottle),
+          powerType: BottlingProcessStepAssembler.determinePowerTypeOfPredecessors(batchesForBottle),
         },
         type: BatchType.HYDROGEN,
         predecessors: batchesForBottle.map((batch) => ({
@@ -59,5 +60,18 @@ export class BottlingProcessStepAssembler {
 
     const allRfnboTypesAreEqual = rfnboTypes.every((rfnboType) => rfnboType === rfnboTypes[0]);
     return allRfnboTypesAreEqual ? rfnboTypes[0] : RfnboType.NON_CERTIFIABLE;
+  }
+
+  private static determinePowerTypeOfPredecessors(predecessors: BatchEntity[]): PowerType {
+    const powerTypes: PowerType[] = predecessors
+      .map((batch) => batch.qualityDetails.powerType)
+      .map((powerType) => PowerType[powerType as keyof typeof PowerType]);
+
+    if (powerTypes.length === 0) {
+      throw new BrokerException(`No predecessor power type specified`, HttpStatus.BAD_REQUEST);
+    }
+
+    const allPowerTypesAreEqual = powerTypes.every((powerType) => powerType === powerTypes[0]);
+    return allPowerTypesAreEqual ? powerTypes[0] : PowerType.NOT_SPECIFIED;
   }
 }
