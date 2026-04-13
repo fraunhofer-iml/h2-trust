@@ -49,7 +49,7 @@ export interface FilebaseStorageConfiguration extends StorageConfiguration {
   explorerUrl: string;
 }
 
-export type DecentralizedStorageConfiguration =
+type DecentralizedStorageConfiguration =
   | KuboStorageConfiguration
   | FilebaseStorageConfiguration;
 
@@ -74,24 +74,24 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
   amqp: {
     uri: requireEnv('AMQP_URI'),
     queuePrefix: requireEnv('AMQP_QUEUE_PREFIX'),
-  } as AmqpConfiguration,
+  } satisfies AmqpConfiguration,
   centralizedStorage: {
     endpointUrl: requireEnv('CENTRALIZED_STORAGE_ENDPOINT_URL'),
     region: requireEnv('CENTRALIZED_STORAGE_REGION'),
     accessKey: requireEnv('CENTRALIZED_STORAGE_ACCESS_KEY'),
     secretKey: requireEnv('CENTRALIZED_STORAGE_SECRET_KEY'),
     bucketName: requireEnv('CENTRALIZED_STORAGE_BUCKET_NAME'),
-  } as StorageConfiguration,
+  } satisfies StorageConfiguration,
   decentralizedStorage: (() => {
     const provider = requireEnv('DECENTRALIZED_STORAGE_PROVIDER');
-    if (provider === 'kubo') {
+    if (provider === DECENTRALIZED_STORAGE_PROVIDERS.KUBO) {
       return {
         provider,
         endpointUrl: requireEnv('DECENTRALIZED_STORAGE_ENDPOINT_URL'),
         explorerUrl: requireEnv('DECENTRALIZED_STORAGE_EXPLORER_URL'),
       } satisfies KuboStorageConfiguration;
     }
-    if (provider === 'filebase') {
+    if (provider === DECENTRALIZED_STORAGE_PROVIDERS.FILEBASE) {
       return {
         provider,
         endpointUrl: requireEnv('DECENTRALIZED_STORAGE_ENDPOINT_URL'),
@@ -111,11 +111,11 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
     privateKey: requireEnv('BLOCKCHAIN_PRIVATE_KEY'),
     artifactPath: requireEnv('BLOCKCHAIN_ARTIFACT_PATH'),
     smartContractAddress: requireEnv('BLOCKCHAIN_SMART_CONTRACT_ADDRESS'),
-  } as BlockchainConfiguration,
+  } satisfies BlockchainConfiguration,
   keycloak: {
     url: requireEnv('KEYCLOAK_URL'),
     realm: requireEnv('KEYCLOAK_REALM'),
     clientId: requireEnv('KEYCLOAK_CLIENT_ID'),
     clientSecret: requireEnv('KEYCLOAK_CLIENT_SECRET'),
-  } as KeycloakConfiguration,
+  } satisfies KeycloakConfiguration,
 }));
