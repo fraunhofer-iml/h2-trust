@@ -8,9 +8,8 @@
 
 import Stream from 'stream';
 import { GetObjectCommand, HeadObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { CENTRALIZED_STORAGE_CLIENT } from './storage.tokens';
 
 @Injectable()
 export class CentralizedStorageService {
@@ -19,7 +18,7 @@ export class CentralizedStorageService {
   public readonly storageUrl: string;
 
   constructor(
-    @Inject(CENTRALIZED_STORAGE_CLIENT) private readonly client: S3Client,
+    private readonly client: S3Client,
     configurationService: ConfigurationService,
   ) {
     const config = configurationService.getGlobalConfiguration().centralizedStorage;

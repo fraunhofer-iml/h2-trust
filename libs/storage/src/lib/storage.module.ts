@@ -13,11 +13,6 @@ import { CentralizedStorageService } from './centralized-storage.service';
 import { DecentralizedStorageService } from './decentralized-storage.service';
 import { FilebaseStorageService } from './filebase-storage.service';
 import { KuboStorageService } from './kubo-storage.service';
-import { CENTRALIZED_STORAGE_CLIENT } from './storage.tokens';
-
-function createCentralizedStorageClient(configService: ConfigurationService): S3Client {
-  return createS3Client(configService.getGlobalConfiguration().centralizedStorage, true);
-}
 
 function createS3Client(config: StorageConfiguration, forcePathStyle: boolean): S3Client {
   const protocol = config.useSSL ? 'https' : 'http';
@@ -32,29 +27,32 @@ function createS3Client(config: StorageConfiguration, forcePathStyle: boolean): 
   });
 }
 
+function createCentralizedStorageService(configService: ConfigurationService): CentralizedStorageService {
+  const config = configService.getGlobalConfiguration().centralizedStorage;
+  return new CentralizedStorageService(createS3Client(config, true), configService);
+}
+
 function createDecentralizedStorageService(configService: ConfigurationService): DecentralizedStorageService {
   const config = configService.getGlobalConfiguration().decentralizedStorage;
   if (config.provider === 'kubo') {
     return new KuboStorageService(configService);
   }
-  const s3Client = createS3Client(config, false);
-  return new FilebaseStorageService(s3Client, configService);
+  return new FilebaseStorageService(createS3Client(config, false), configService);
 }
 
 @Module({
   imports: [ConfigurationModule],
   providers: [
     {
-      provide: CENTRALIZED_STORAGE_CLIENT,
+      provide: CentralizedStorageService,
       inject: [ConfigurationService],
-      useFactory: createCentralizedStorageClient,
+      useFactory: createCentralizedStorageService,
     },
     {
       provide: DecentralizedStorageService,
       inject: [ConfigurationService],
       useFactory: createDecentralizedStorageService,
     },
-    CentralizedStorageService,
   ],
   exports: [CentralizedStorageService, DecentralizedStorageService],
 })
