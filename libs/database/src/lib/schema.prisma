@@ -103,6 +103,7 @@ model Unit {
   serialNumber   String   @unique
   certifiedBy    String
   commissionedOn DateTime
+  active         Boolean  @default(true)
 
   address   Address @relation(fields: [addressId], references: [id])
   addressId String
@@ -204,8 +205,8 @@ model BatchDetails {
 }
 
 model QualityDetails {
-  id    String @id
-  color String
+  id        String  @id
+  color     String
   rfnboType String
   powerType String
 

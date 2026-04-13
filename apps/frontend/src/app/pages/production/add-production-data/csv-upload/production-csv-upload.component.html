@@ -118,7 +118,7 @@
               <mat-label>Hydrogen Production Unit</mat-label>
               <mat-select formControlName="unitId">
                 @for (unit of hydrogenProductionUnits(); track unit) {
-                  <mat-option [value]="unit.id">{{ unit.name }}</mat-option>
+                  <mat-option [value]="unit.id" [disabled]="!unit.active">{{ unit.name }} </mat-option>
                 }
               </mat-select></mat-form-field
             >
@@ -158,7 +158,9 @@
               <mat-label>Power Production Unit</mat-label>
               <mat-select formControlName="unitId">
                 @for (unit of powerAccessApprovals(); track unit) {
-                  <mat-option [value]="unit.value.id">{{ unit.name }}</mat-option>
+                  <mat-option [value]="unit.value.id" [disabled]="!unit.value.active"
+                    >{{ unit.value.name }}
+                  </mat-option>
                 }
               </mat-select></mat-form-field
             >

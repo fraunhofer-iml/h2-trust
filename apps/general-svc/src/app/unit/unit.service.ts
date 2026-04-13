@@ -8,6 +8,8 @@
 
 import { Injectable } from '@nestjs/common';
 import {
+  BaseUnitEntity,
+  ConcreteUnitEntity,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
   CreatePowerProductionUnitPayload,
@@ -17,7 +19,7 @@ import {
   PowerProductionUnitEntity,
   ReadByIdPayload,
   ReadByIdsPayload,
-  UnitEntity,
+  UpdateUnitStatusPayload,
 } from '@h2-trust/amqp';
 import { PowerProductionTypeRepository, UnitRepository } from '@h2-trust/database';
 
@@ -28,8 +30,12 @@ export class UnitService {
     private readonly powerProductionTypeRepository: PowerProductionTypeRepository,
   ) {}
 
-  async readUnitById(id: string): Promise<UnitEntity> {
+  async readUnitById(id: string): Promise<ConcreteUnitEntity> {
     return this.unitRepository.findUnitById(id);
+  }
+
+  async readUnitsByIds(ids: string[]): Promise<ConcreteUnitEntity[]> {
+    return this.unitRepository.findUnitsByIds(ids);
   }
 
   async readPowerProductionUnitsByOwnerId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity[]> {
@@ -56,17 +62,25 @@ export class UnitService {
     return this.powerProductionTypeRepository.findPowerProductionTypes();
   }
 
-  async createPowerProductionUnit(payload: CreatePowerProductionUnitPayload): Promise<PowerProductionUnitEntity> {
-    return this.unitRepository.insertPowerProductionUnit(payload);
-  }
-
-  async createHydrogenProductionUnit(
+  async updateOrCreateHydrogenProductionUnit(
     payload: CreateHydrogenProductionUnitPayload,
   ): Promise<HydrogenProductionUnitEntity> {
-    return this.unitRepository.insertHydrogenProductionUnit(payload);
+    return this.unitRepository.updateOrCreateHydrogenProductionUnit(payload);
   }
 
-  async createHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
-    return this.unitRepository.insertHydrogenStorageUnit(payload);
+  async updateOrCreatePowerProductionUnit(
+    payload: CreatePowerProductionUnitPayload,
+  ): Promise<PowerProductionUnitEntity> {
+    return this.unitRepository.updateOrCreatePowerProductionUnit(payload);
+  }
+
+  async updateOrCreateHydrogenStorageUnit(
+    payload: CreateHydrogenStorageUnitPayload,
+  ): Promise<HydrogenStorageUnitEntity> {
+    return this.unitRepository.updateOrCreateHydrogenStorageUnit(payload);
+  }
+
+  async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<BaseUnitEntity> {
+    return this.unitRepository.updateUnitStatus(payload);
   }
 }

@@ -1,0 +1,43 @@
+<div class="flex flex-col gap-2 rounded-lg bg-white p-4">
+  <span>Additional Information</span>
+
+  <div class="grid grid-cols-3 gap-2" [formGroup]="hydrogenProductionForm()">
+    <mat-form-field appearance="outline">
+      <mat-label>Method</mat-label>
+      <mat-select formControlName="method">
+        <mat-option [value]="HydrogenProductionMethod.ELECTROLYSIS">{{
+          HydrogenProductionMethod.ELECTROLYSIS | prettyEnum | titlecase
+        }}</mat-option>
+      </mat-select> </mat-form-field
+    ><mat-form-field appearance="outline">
+      <mat-label>Technology</mat-label>
+      <mat-select formControlName="technology" [disabled]="!hydrogenProductionForm().value.method">
+        @for (technology of availableTechnologies; track $index) {
+          <mat-option [value]="technology[0]">{{ technology[1] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Bidding Zone</mat-label>
+      <mat-select formControlName="biddingZone">
+        @for (zone of availableBiddingZones; track zone) {
+          <mat-option [value]="zone">{{ zone }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Rated Power (MW) </mat-label>
+      <input matInput placeholder="1000" formControlName="ratedPower" type="number" min="0" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Pressure</mat-label>
+      <input matInput placeholder="1000" formControlName="pressure" type="number" min="0" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Water Consumption</mat-label>
+      <input matInput placeholder="1000" formControlName="waterConsumptionLitersPerHour" type="number" min="0" />
+    </mat-form-field>
+  </div>
+</div>

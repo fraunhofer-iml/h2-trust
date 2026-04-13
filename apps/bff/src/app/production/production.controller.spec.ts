@@ -9,15 +9,12 @@
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
-  BatchEntityHydrogenProducedMock,
   BrokerQueues,
-  HydrogenProductionUnitEntityMock,
   PaginatedProcessStepEntity,
   PowerProductionTypeEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
-  UserEntityHydrogenMock,
   VerifyCsvDocumentIntegrityResultEntity,
 } from '@h2-trust/amqp';
 import {
@@ -38,6 +35,7 @@ import {
   PowerProductionType,
   ProcessType,
 } from '@h2-trust/domain';
+import { BatchEntityFixture, HydrogenProductionUnitEntityFixture, UserEntityFixture } from '@h2-trust/fixtures';
 import 'multer';
 import { of } from 'rxjs';
 import { StorageService } from '@h2-trust/storage';
@@ -125,18 +123,18 @@ describe('ProductionController', () => {
         startedAt: new Date(CreateProductionDtoMock.productionStartedAt),
         endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
         type: ProcessType.HYDROGEN_PRODUCTION,
-        batch: BatchEntityHydrogenProducedMock[0],
-        recordedBy: UserEntityHydrogenMock,
-        executedBy: HydrogenProductionUnitEntityMock[0],
+        batch: BatchEntityFixture.createHydrogenBatch(),
+        recordedBy: UserEntityFixture.createHydrogenUser(),
+        executedBy: HydrogenProductionUnitEntityFixture.create(),
       },
       {
         id: 'hydrogen-production-process-step-2',
         startedAt: new Date(CreateProductionDtoMock.productionEndedAt),
         endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
         type: ProcessType.HYDROGEN_PRODUCTION,
-        batch: BatchEntityHydrogenProducedMock[0],
-        recordedBy: UserEntityHydrogenMock,
-        executedBy: HydrogenProductionUnitEntityMock[0],
+        batch: BatchEntityFixture.createHydrogenBatch(),
+        recordedBy: UserEntityFixture.createHydrogenUser(),
+        executedBy: HydrogenProductionUnitEntityFixture.create(),
       },
     ];
 
@@ -158,9 +156,9 @@ describe('ProductionController', () => {
         startedAt: new Date(CreateProductionDtoMock.productionStartedAt),
         endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
         type: ProcessType.HYDROGEN_PRODUCTION,
-        batch: BatchEntityHydrogenProducedMock[0],
-        recordedBy: UserEntityHydrogenMock,
-        executedBy: HydrogenProductionUnitEntityMock[0],
+        batch: BatchEntityFixture.createHydrogenBatch(),
+        recordedBy: UserEntityFixture.createHydrogenUser(),
+        executedBy: HydrogenProductionUnitEntityFixture.create(),
       },
     ];
     const paginatedProductionDataDtoMock: PaginatedProductionDataDto = {
@@ -189,7 +187,7 @@ describe('ProductionController', () => {
       givenAuthenticatedUser,
       1,
       1,
-      HydrogenProductionUnitEntityMock[0].name,
+      processStepEntityMocks[0].executedBy.name,
       CreateProductionDtoMock.productionStartedAt,
     );
 

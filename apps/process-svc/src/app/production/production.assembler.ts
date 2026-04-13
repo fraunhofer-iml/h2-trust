@@ -8,34 +8,42 @@
 
 import { Logger } from '@nestjs/common';
 import {
-  BaseUnitEntity,
   BatchEntity,
   CompanyEntity,
+  ConcreteUnitEntity,
   CreateProductionEntity,
+  HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
+  PowerProductionUnitEntity,
   ProcessStepEntity,
   QualityDetailsEntity,
   UserEntity,
 } from '@h2-trust/amqp';
-import { BatchType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
-import { assertValidEnum, DateTimeUtil } from '@h2-trust/utils';
+import { BatchType, HydrogenColor, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
+import { DateTimeUtil } from '@h2-trust/utils';
 import { AccountingPeriod, ProcessStepParams } from './production.types';
 import { ProductionUtils } from './utils/production.utils';
 
 export class ProductionAssembler {
   private static readonly logger = new Logger(ProductionAssembler.name);
 
-  static assemblePowerProductions(entity: CreateProductionEntity): ProcessStepEntity[] {
-    assertValidEnum(entity.powerType, PowerType);
+  static assemblePowerProductions(
+    entity: CreateProductionEntity,
+    productionUnitsForId: Map<string, ConcreteUnitEntity>,
+  ): ProcessStepEntity[] {
+    const powerProductionUnit: PowerProductionUnitEntity = productionUnitsForId.get(
+      entity.powerProductionUnitId,
+    ) as PowerProductionUnitEntity;
+
     const params: ProcessStepParams = {
       type: ProcessType.POWER_PRODUCTION,
-      executedBy: entity.powerProductionUnitId,
+      executedBy: powerProductionUnit,
       recordedBy: entity.recordedBy,
       batchParams: {
         activity: false,
         type: BatchType.POWER,
         owner: entity.ownerIdOfPowerProductionUnit,
-        powerType: entity.powerType,
+        powerType: entity.powerType as PowerType,
       },
     };
 
@@ -48,7 +56,13 @@ export class ProductionAssembler {
     );
   }
 
-  static assembleWaterConsumptions(entity: CreateProductionEntity): ProcessStepEntity[] {
+  static assembleWaterConsumptions(
+    entity: CreateProductionEntity,
+    productionUnitsForId: Map<string, ConcreteUnitEntity>,
+  ): ProcessStepEntity[] {
+    const hydrogenProductionUnit: HydrogenProductionUnitEntity = productionUnitsForId.get(
+      entity.hydrogenProductionUnitId,
+    ) as HydrogenProductionUnitEntity;
     const waterAmountLiters = ProductionUtils.calculateWaterAmount(
       entity.productionStartedAt,
       entity.productionEndedAt,
@@ -57,7 +71,7 @@ export class ProductionAssembler {
 
     const params: ProcessStepParams = {
       type: ProcessType.WATER_CONSUMPTION,
-      executedBy: entity.hydrogenProductionUnitId,
+      executedBy: hydrogenProductionUnit,
       recordedBy: entity.recordedBy,
       batchParams: {
         activity: false,
@@ -73,19 +87,22 @@ export class ProductionAssembler {
     entity: CreateProductionEntity,
     powerProductions: ProcessStepEntity[],
     waterConsumptions: ProcessStepEntity[],
+    productionUnitsForId: Map<string, ConcreteUnitEntity>,
   ): ProcessStepEntity[] {
-    assertValidEnum(powerProductions[0]?.batch?.qualityDetails?.powerType, PowerType);
+    const hydrogenProductionUnit: HydrogenProductionUnitEntity = productionUnitsForId.get(
+      entity.hydrogenProductionUnitId,
+    ) as HydrogenProductionUnitEntity;
     const params: ProcessStepParams = {
       type: ProcessType.HYDROGEN_PRODUCTION,
-      executedBy: entity.hydrogenProductionUnitId,
+      executedBy: hydrogenProductionUnit,
       recordedBy: entity.recordedBy,
       batchParams: {
         activity: true,
         type: BatchType.HYDROGEN,
         owner: entity.ownerIdOfHydrogenProductionUnit,
-        color: entity.hydrogenColor,
+        quality: entity.hydrogenColor,
         hydrogenStorageUnitId: entity.hydrogenStorageUnitId,
-        powerType: powerProductions[0]?.batch?.qualityDetails?.powerType,
+        powerType: (powerProductions[0]?.batch?.qualityDetails?.powerType as PowerType) ?? PowerType.NOT_SPECIFIED,
       },
     };
 
@@ -127,7 +144,7 @@ export class ProductionAssembler {
 
     const qualityDetails: QualityDetailsEntity = new QualityDetailsEntity(
       null,
-      batchParams.color,
+      batchParams.quality ?? HydrogenColor.MIX,
       RfnboType.NOT_SPECIFIED,
       batchParams.powerType,
     );
@@ -151,7 +168,7 @@ export class ProductionAssembler {
       params.type,
       batch,
       { id: params.recordedBy } as UserEntity,
-      { id: params.executedBy } as BaseUnitEntity,
+      params.executedBy,
       null,
     );
   }

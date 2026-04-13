@@ -8,8 +8,8 @@
 
 import { HydrogenStorageUnitEntity } from '@h2-trust/amqp';
 import { UnitType } from '@h2-trust/domain';
-import { EnumLabelMapper } from '../../labels';
 import { AddressDto } from '../address';
+import { CompanyBaseDto } from '../company';
 import { BaseUnitDto } from './base-unit.dto';
 import { FillingDto } from './filling.dto';
 import { UnitOwnerDto } from './unit-owner.dto';
@@ -37,7 +37,8 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
     unitType: UnitType,
     modelNumber: string,
     owner: UnitOwnerDto,
-    operator: string,
+    operator: CompanyBaseDto,
+    active: boolean,
   ) {
     super(
       id,
@@ -53,6 +54,7 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
       owner,
       operator,
       unitType,
+      active,
     );
     this.capacity = capacity;
     this.filling = filling;
@@ -63,7 +65,7 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
   static override fromEntity(unit: HydrogenStorageUnitEntity): HydrogenStorageUnitDto {
     return {
       ...BaseUnitDto.fromEntity(unit),
-      storageType: EnumLabelMapper.getHydrogenStorageType(unit.type),
+      storageType: unit.type,
       capacity: unit.capacity!,
       pressure: unit.pressure!,
       filling:

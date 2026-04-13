@@ -16,7 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { injectQuery } from '@tanstack/angular-query-experimental';
@@ -27,6 +27,7 @@ import { RfnboChipComponent } from '../../../layout/chips/rfnbo-chip.component';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { ProductionService } from '../../../shared/services/production/production.service';
 import { FilterModel } from '../model/generated-productions-filter.model';
+import { PaginationModel } from '../model/pagination.model';
 import { ProductionStatisticsComponent } from '../statistics/production-statistics.component';
 
 export const DATE_FORMATS = {
@@ -74,29 +75,33 @@ export class ProductionViewComponent implements AfterViewInit {
   ];
   protected readonly MeasurementUnit = MeasurementUnit;
   dataSource: MatTableDataSource<ProductionOverviewDto> = new MatTableDataSource<ProductionOverviewDto>();
+  totalItems = 0;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   productionService = inject(ProductionService);
-
-  productionQuery = injectQuery(() => ({
-    queryKey: ['production'],
-    queryFn: async () => {
-      const data = await this.productionService.getProductions();
-      this.dataSource.data = data;
-      return data;
-    },
-  }));
-
   filterModel = signal<FilterModel>({
     unit: '',
     month: new Date(),
   });
 
+  pagination = signal<PaginationModel>({
+    pageIndex: 0,
+    pageSize: 5,
+  });
+
   filterForm = form(this.filterModel, (schemaPath) => {
     debounce(schemaPath.unit, 500);
   });
+  productionQuery = injectQuery(() => ({
+    queryKey: ['production', this.filterModel(), this.pagination()],
+    queryFn: async () => {
+      const paginatedData = await this.productionService.getProductions(this.filterModel(), this.pagination());
+      this.dataSource.data = paginatedData.data;
+      this.totalItems = paginatedData.totalItems;
+      return paginatedData;
+    },
+  }));
 
   maxDate = new Date();
 
@@ -118,17 +123,18 @@ export class ProductionViewComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
     this.dataSource.sortingDataAccessor = (data: ProductionOverviewDto, sortHeaderId: string) => {
       switch (sortHeaderId) {
         case 'startedAt':
           return new Date(data.startedAt).getTime();
-        case 'endedAt':
-          return new Date(data.endedAt).getTime();
         default:
           return data[sortHeaderId as keyof ProductionOverviewDto];
       }
     };
     this.dataSource.sort = this.sort;
+  }
+
+  onPageChange(e: PageEvent) {
+    this.pagination.set({ pageIndex: e.pageIndex, pageSize: e.pageSize });
   }
 }

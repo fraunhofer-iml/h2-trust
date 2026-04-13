@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchEntity } from '@h2-trust/amqp';
-import { BatchType, HydrogenColor, PowerType, ProcessType } from '@h2-trust/domain';
+import { BatchEntity, ConcreteUnitEntity } from '@h2-trust/amqp';
+import { BatchType, PowerType, ProcessType } from '@h2-trust/domain';
 
 export interface AccountingPeriod {
   startedAt: Date;
@@ -20,14 +20,14 @@ export interface BatchParams {
   activity: boolean;
   type: BatchType;
   owner: string;
-  color?: HydrogenColor;
+  quality?: string;
   hydrogenStorageUnitId?: string;
   powerType?: PowerType;
 }
 
 export interface ProcessStepParams {
   type: ProcessType;
-  executedBy: string;
+  executedBy: ConcreteUnitEntity;
   recordedBy: string;
   batchParams: BatchParams;
 }

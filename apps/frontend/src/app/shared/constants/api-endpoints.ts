@@ -22,21 +22,26 @@ export const API = {
     DETAILS: (id: string) => `${USERS_ENDPOINT}${id}`,
   },
   UNITS: {
+    ACTIVE: (id: string) => `${UNITS_ENDPOINT}${id}/active`,
     POWER_PRODUCTION: {
       BASE: UNITS_ENDPOINT + 'power-production/',
-      DETAILS: (id: string) => `${API.UNITS.POWER_PRODUCTION.BASE}${id}`,
+      BY_ID: (id: string) => `${API.UNITS.POWER_PRODUCTION.BASE}${id}`,
     },
     HYDROGEN_PRODUCTION: {
       BASE: UNITS_ENDPOINT + 'hydrogen-production/',
-      DETAILS: (id: string) => `${API.UNITS.HYDROGEN_PRODUCTION.BASE}${id}`,
+      BY_ID: (id: string) => `${API.UNITS.HYDROGEN_PRODUCTION.BASE}${id}`,
     },
     HYDROGEN_STORAGE: {
       BASE: UNITS_ENDPOINT + 'hydrogen-storage/',
-      DETAILS: (id: string) => `${API.UNITS.HYDROGEN_STORAGE.BASE}${id}`,
+      BY_ID: (id: string) => `${API.UNITS.HYDROGEN_STORAGE.BASE}${id}`,
     },
   },
   COMPANIES: { BASE: COMPANIES_ENDPOINT },
-  POWER_ACCESS_APPROVALS: { BASE: POWER_ACCESS_APPROVALS_ENDPOINT },
+  POWER_ACCESS_APPROVALS: {
+    BASE: POWER_ACCESS_APPROVALS_ENDPOINT,
+    REQUESTS: POWER_ACCESS_APPROVALS_ENDPOINT + 'requests/',
+    REQUESTS_SINGLE: (id: string) => `${API.POWER_ACCESS_APPROVALS.REQUESTS}${id}`,
+  },
   BOTTLING: {
     BASE: BOTTLING_ENDPOINT,
     DETAILS: (id: string) => `${BOTTLING_ENDPOINT}${id}`,

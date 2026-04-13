@@ -6,66 +6,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenColor } from '@h2-trust/domain';
-import { HydrogenProductionBatchSeed, HydrogenStorageUnitSeed } from '../../../seed';
-import {
-  HydrogenStorageUnitDbType,
-  HydrogenStorageUnitDeepDbType,
-  HydrogenStorageUnitNestedDbType,
-} from '../hydrogen-storage-unit.db.type';
-import { BaseUnitFlatDbTypeMock, BaseUnitNestedDbTypeMock } from './base-unit-db-type.mock';
+import { HydrogenStorageUnitSeed } from '../../../seed';
+import { HydrogenStorageUnitNestedDbType } from '../hydrogen-storage-unit.db.type';
+import { BaseUnitFlatDbTypeMock } from './base-unit-db-type.mock';
+import { BatchFlatDbTypeMock } from './batch-db-type.mock';
 
 export const HydrogenStorageUnitNestedDbTypeMock = <HydrogenStorageUnitNestedDbType[]>[
   {
-    generalInfo: {
-      ...BaseUnitFlatDbTypeMock[0],
-    },
-    filling: [
-      {
-        ...HydrogenProductionBatchSeed[0],
-        batchDetails: {
-          qualityDetails: {
-            color: HydrogenColor.GREEN,
-          },
-        },
-      },
-    ],
-  },
-];
-
-export const HydrogenStorageUnitRefDeepDbTypeMock = <HydrogenStorageUnitDeepDbType[]>[
-  {
-    generalInfo: {
-      ...BaseUnitNestedDbTypeMock[0],
-    },
-    filling: [
-      {
-        ...HydrogenProductionBatchSeed[0],
-        batchDetails: {
-          qualityDetails: {
-            color: HydrogenColor.GREEN,
-          },
-        },
-      },
-    ],
-  },
-];
-
-export const HydrogenStorageUnitDbTypeMock = <HydrogenStorageUnitDbType[]>[
-  {
-    ...BaseUnitNestedDbTypeMock[0],
-    hydrogenStorageUnit: {
-      ...HydrogenStorageUnitSeed[0],
-      filling: [
-        {
-          ...HydrogenProductionBatchSeed[0],
-          batchDetails: {
-            qualityDetails: {
-              color: HydrogenColor.GREEN,
-            },
-          },
-        },
-      ],
-    },
+    generalInfo: BaseUnitFlatDbTypeMock[0],
+    ...HydrogenStorageUnitSeed[0],
+    filling: [BatchFlatDbTypeMock],
   },
 ];

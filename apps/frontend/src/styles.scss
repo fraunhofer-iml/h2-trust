@@ -57,7 +57,6 @@ body {
       label-text-color: #252533,
       disabled-label-text-color: #a4c9d3,
       elevated-selected-container-color: #a4c9d3,
-      // selected
       outline-color: #dbdbdb,
       hover-state-layer-color: #3f8796,
     )
@@ -65,8 +64,44 @@ body {
 
   @include mat.badge-overrides(
     (
-      background-color: #a4c9d3,
-      text-color: #0b3f4b,
+      background-color: #0b3f4b,
+      text-color: #a4c9d3,
+    )
+  );
+
+  @include mat.divider-overrides(
+    (
+      color: #e5e5e5,
+    )
+  );
+}
+
+.delete-button {
+  @include mat.button-overrides(
+    (
+      filled-container-color: #bd554f,
+    )
+  );
+}
+
+.delete-button-outlined {
+  @include mat.button-overrides(
+    (
+      outlined-label-text-color: #bd554f,
+      outlined-outline-color: #bd554f,
+      outlined-state-layer-color: #bd554f,
+    )
+  );
+}
+
+.status-filter {
+  @include mat.chips-overrides(
+    (
+      label-text-color: #252533,
+      disabled-label-text-color: #a8d0bf,
+      elevated-selected-container-color: #a8d0bf,
+      outline-color: #dbdbdb,
+      hover-state-layer-color: #82b1a0,
     )
   );
 }

@@ -43,6 +43,7 @@ export class DigitalProductPassportEntity {
     proofOfSustainability: ProofOfSustainabilityEntity,
     proofOfOrigin: ProofOfOriginSectionEntity[],
     powerType: PowerType,
+    rfnboType: RfnboType,
   ) {
     this.id = id;
     this.filledAt = timestamp;
@@ -58,14 +59,6 @@ export class DigitalProductPassportEntity {
     this.proofOfSustainability = proofOfSustainability;
     this.isEmissionReductionAbove70Percent = proofOfSustainability.emissionReductionPercentage > 70;
     this.powerType = powerType;
-    this.rfnboType =
-      this.isEmissionReductionAbove70Percent &&
-      this.redCompliance.isGeoCorrelationValid &&
-      this.redCompliance.isTimeCorrelationValid &&
-      this.redCompliance.isAdditionalityFulfilled &&
-      this.redCompliance.financialSupportReceived &&
-      this.powerType != PowerType.NON_RENEWABLE
-        ? RfnboType.RFNBO_READY
-        : RfnboType.NON_CERTIFIABLE;
+    this.rfnboType = rfnboType;
   }
 }

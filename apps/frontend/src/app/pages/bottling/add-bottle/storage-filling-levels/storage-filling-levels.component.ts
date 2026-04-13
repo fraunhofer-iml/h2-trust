@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { PrettyEnumPipe } from 'apps/frontend/src/app/shared/pipes/format-enum.pipe';
 import { UnitPipe } from 'apps/frontend/src/app/shared/pipes/unit.pipe';
 import * as echarts from 'echarts';
 import { EChartsOption } from 'echarts';
@@ -21,12 +22,14 @@ import { formatNumberForChart } from '../../../../shared/util/number-format.util
 @Component({
   selector: 'app-storage-filling-levels',
   imports: [NgxEchartsDirective],
-  providers: [provideEchartsCore({ echarts }), UnitPipe, PercentPipe],
+  providers: [provideEchartsCore({ echarts }), UnitPipe, PercentPipe, PrettyEnumPipe],
   templateUrl: './storage-filling-levels.component.html',
 })
 export class StorageFillingLevelsComponent {
   unitPipe = inject(UnitPipe);
   percentPipe = inject(PercentPipe);
+  prettyEnumPipe = inject(PrettyEnumPipe);
+
   chartData = input<HydrogenStorageOverviewDto[]>();
   chartOption$ = computed(() => this.getOption(this.chartData() ?? []));
 
@@ -173,7 +176,7 @@ export class StorageFillingLevelsComponent {
     let tooltip = '';
     params.forEach((item) => {
       const valueWithUnit = this.unitPipe.transform(item.value, MeasurementUnit.KG);
-      tooltip += `${item.marker} ${item.seriesName}: ${valueWithUnit}<br/>`;
+      tooltip += `${item.marker} ${this.prettyEnumPipe.transform(item.seriesName).toLowerCase()}: ${valueWithUnit}<br/>`;
     });
     return tooltip;
   };

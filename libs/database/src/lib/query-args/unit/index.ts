@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './all.units.query-args';
 export * from './unit.deep.query-args';
 export * from './unit.nested.query-args';
 export * from './unit.flat.query-args';

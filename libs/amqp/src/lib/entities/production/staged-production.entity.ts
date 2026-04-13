@@ -49,10 +49,10 @@ export class StagedProductionEntity {
       stagedProduction.startedAt,
       stagedProduction.hydrogenAmount.toNumber(),
       stagedProduction.hydrogenProductionUnitId,
-      stagedProduction.hydrogenProductionUnit.generalInfo.owner.id,
+      stagedProduction.hydrogenProductionUnit.generalInfo.ownerId,
       stagedProduction.powerAmount.toNumber(),
       stagedProduction.powerProductionUnitId,
-      stagedProduction.powerProductionUnit.generalInfo.owner.id,
+      stagedProduction.powerProductionUnit.generalInfo.ownerId,
       stagedProduction.powerProductionUnit.type.hydrogenColor,
       stagedProduction.hydrogenProductionUnit.waterConsumptionLitersPerHour.toNumber(),
     );

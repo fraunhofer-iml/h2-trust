@@ -6,130 +6,67 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
-  BrokerException,
   DigitalProductPassportEntity,
   HydrogenComponentEntity,
   ProcessStepEntity,
+  ProductionChainEntity,
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEntity,
   ProvenanceEntity,
   RedComplianceEntity,
 } from '@h2-trust/amqp';
-import { PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
-import { HydrogenComponentAssembler } from '../process-step/hydrogenComponent/hydrogen-component.assembler';
+import { PowerType, RfnboType } from '@h2-trust/domain';
 import { ProcessStepService } from '../process-step/process-step.service';
-import { EmissionService } from './proof-of-origin/emission.service';
-import { HydrogenBottlingSectionAssembler } from './proof-of-origin/hydrogen-bottling-section.assembler';
-import { HydrogenProductionSectionService } from './proof-of-origin/hydrogen-production-section.service';
-import { HydrogenStorageSectionAssembler } from './proof-of-origin/hydrogen-storage-section.assembler';
-import { HydrogenTransportationSectionAssembler } from './proof-of-origin/hydrogen-transportation-section.assembler';
+import { createProofOfOrigin, getHydrogenBottlingCompositions } from './proof-of-origin/proof-of-origin.service';
+import { createProofOfSustainability } from './proof-of-sustainability/proof-of-sustainability.service';
 import { ProvenanceService } from './provenance/provenance.service';
-import { RedComplianceService } from './red-compliance/red-compliance.service';
+import { determineRedCompliance, determineTotalRedCompliance } from './red-compliance/red-compliance.service';
 
 @Injectable()
 export class DigitalProductPassportService {
-  private readonly logger = new Logger(DigitalProductPassportService.name);
   constructor(
     private readonly processStepService: ProcessStepService,
-    private readonly redComplianceService: RedComplianceService,
-    private readonly hydrogenProductionSectionService: HydrogenProductionSectionService,
     private readonly provenanceService: ProvenanceService,
-    private readonly emissionService: EmissionService,
   ) {}
 
-  async determineRfnboTypeForProcessStepId(processStepId: string): Promise<RfnboType> {
+  /**
+   * Calculates the RFNBO type for an existing production chain.
+   * @param productionChain The production chain element to be checked against the RFNBO type.
+   * @returns The calculated RFNBO type.
+   */
+  public getRfnboType(productionChain: ProductionChainEntity): RfnboType {
+    const redCompliance: RedComplianceEntity = determineRedCompliance(
+      productionChain.hydrogenRootProduction,
+      productionChain.powerProduction,
+    );
+
+    const powerType: PowerType = productionChain.powerProduction.batch.qualityDetails.powerType as PowerType;
+    const provenance: ProvenanceEntity = ProvenanceEntity.fromProductionChain(productionChain);
+    const proofOfSustainability: ProofOfSustainabilityEntity = createProofOfSustainability(provenance);
+    return this.determineRfnboType(redCompliance, powerType, proofOfSustainability);
+  }
+
+  /**
+   * Calculates all the dpp metrics for a process step, namely the RFNBO type, the ProofOfOrigin and the ProofOfSustainability.
+   * @param processStepId The ID of the process step for which the DPP is to be calculated.
+   * @returns The calculated dpp.
+   */
+  public async readDigitalProductPassport(processStepId: string): Promise<DigitalProductPassportEntity> {
     const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
-    return this.determineRfnboTypeForProcessStep(processStep);
-  }
 
-  async determineRfnboTypeForProcessStep(processStep: ProcessStepEntity): Promise<RfnboType> {
-    const dpp: DigitalProductPassportEntity = await this.readDigitalProductPassport(processStep);
-    return dpp.rfnboType ? RfnboType.RFNBO_READY : RfnboType.NON_CERTIFIABLE;
-  }
-
-  async readDigitalProductPassportForProcessStepId(processStepId: string): Promise<DigitalProductPassportEntity> {
-    const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
-    return this.readDigitalProductPassport(processStep);
-  }
-
-  async updateRfnboStatus(processStep: ProcessStepEntity): Promise<{ id: string; batchId: string }> {
-    const dpp: DigitalProductPassportEntity = await this.readDigitalProductPassport(processStep);
-    this.logger.debug(`Set RFNBO status of process step ${processStep.id} to ${dpp.rfnboType}`);
-    return this.processStepService.updateRfnboStatus(processStep, dpp.rfnboType);
-  }
-
-  private async readDigitalProductPassport(processStep: ProcessStepEntity): Promise<DigitalProductPassportEntity> {
     const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStep);
-    const redCompliance: RedComplianceEntity = await this.redComplianceService.determineRedCompliance(
-      processStep.id,
-      provenance,
-    );
-    const powerType: PowerType = DigitalProductPassportService.getPowerType(provenance);
+    const redCompliance: RedComplianceEntity = determineTotalRedCompliance(provenance.productionChains);
 
-    const proofOfOrigin: ProofOfOriginSectionEntity[] = [];
+    const proofOfOrigin: ProofOfOriginSectionEntity[] = createProofOfOrigin(provenance);
 
-    const hydrogenCompositionsForRootOfProvenance: HydrogenComponentEntity[] = await this.calculateHydrogenComposition(
-      provenance.root,
-    );
+    const hydrogenComponentsForBottling: HydrogenComponentEntity[] = getHydrogenBottlingCompositions(proofOfOrigin);
 
-    //If the process step is neither hydrogen bottling nor transport, then proof of origin should not be calculated.
-    if (processStep.type == ProcessType.HYDROGEN_BOTTLING || processStep.type == ProcessType.HYDROGEN_TRANSPORTATION) {
-      const hydrogenCompositionsForBottlingOfProvenance: HydrogenComponentEntity[] = provenance.hydrogenBottling
-        ? await this.calculateHydrogenComposition(provenance.hydrogenBottling)
-        : [];
+    const proofOfSustainability: ProofOfSustainabilityEntity = createProofOfSustainability(provenance);
 
-      //build hydrogen production section
-      if (provenance.powerProductions?.length || provenance.waterConsumptions?.length) {
-        const hydrogenProductionSection: ProofOfOriginSectionEntity =
-          await this.hydrogenProductionSectionService.buildSection(
-            provenance.powerProductions,
-            provenance.waterConsumptions,
-            provenance.hydrogenBottling.batch.amount,
-          );
-        proofOfOrigin.push(hydrogenProductionSection);
-      }
-
-      //build storage section
-      if (provenance.hydrogenProductions?.length) {
-        const hydrogenStorageSection: ProofOfOriginSectionEntity = HydrogenStorageSectionAssembler.assembleSection(
-          provenance.hydrogenProductions,
-        );
-        proofOfOrigin.push(hydrogenStorageSection);
-      }
-
-      //build bottling section for rootType=HYDROGEN_BOTTLING
-      if (provenance.root.type === ProcessType.HYDROGEN_BOTTLING) {
-        const hydrogenBottlingSection: ProofOfOriginSectionEntity = HydrogenBottlingSectionAssembler.assembleSection(
-          provenance.root,
-          hydrogenCompositionsForRootOfProvenance,
-        );
-        proofOfOrigin.push(hydrogenBottlingSection);
-      }
-
-      //build bottling section for rootType=HYDROGEN_TRANSPORTATION
-      if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION) {
-        const hydrogenBottlingSection: ProofOfOriginSectionEntity = HydrogenBottlingSectionAssembler.assembleSection(
-          provenance.hydrogenBottling,
-          hydrogenCompositionsForBottlingOfProvenance,
-        );
-        proofOfOrigin.push(hydrogenBottlingSection);
-      }
-
-      //build transport section for rootType=HYDROGEN_TRANSPORTATION
-      if (provenance.root.type === ProcessType.HYDROGEN_TRANSPORTATION && provenance.hydrogenBottling) {
-        const hydrogenTransportationSection: ProofOfOriginSectionEntity =
-          HydrogenTransportationSectionAssembler.assembleSection(
-            provenance.root,
-            hydrogenCompositionsForBottlingOfProvenance,
-          );
-        proofOfOrigin.push(hydrogenTransportationSection);
-      }
-    }
-
-    const proofOfSustainability: ProofOfSustainabilityEntity =
-      await this.emissionService.computeProvenanceEmissions(provenance);
+    const powerType: PowerType = this.determinePowerType(provenance.productionChains);
+    const rfnboType: RfnboType = this.determineRfnboType(redCompliance, powerType, proofOfSustainability);
 
     return new DigitalProductPassportEntity(
       processStep.id,
@@ -138,24 +75,28 @@ export class DigitalProductPassportService {
       processStep.batch.amount ?? 0,
       processStep.batch.qualityDetails.color,
       processStep.recordedBy.company.name ?? '',
-      hydrogenCompositionsForRootOfProvenance,
+      hydrogenComponentsForBottling,
       processStep.documents ?? [],
       redCompliance,
       proofOfSustainability,
       proofOfOrigin,
       powerType,
+      rfnboType,
     );
   }
 
-  private static getPowerType(provenance: ProvenanceEntity): PowerType {
+  private determinePowerType(productionChains: ProductionChainEntity[]): PowerType {
+    const powerProductions: ProcessStepEntity[] = productionChains.map(
+      (productionChain) => productionChain.powerProduction,
+    );
     let powerType = PowerType.RENEWABLE;
-    const hasRenewableGridPower = provenance.powerProductions.some(
+    const hasRenewableGridPower = powerProductions.some(
       (pp) => pp.batch?.qualityDetails?.powerType == PowerType.PARTLY_RENEWABLE,
     );
     if (hasRenewableGridPower) {
       powerType = PowerType.PARTLY_RENEWABLE;
     }
-    const hasNotRenewableGrid = provenance.powerProductions.some(
+    const hasNotRenewableGrid = powerProductions.some(
       (pp) => pp.batch?.qualityDetails?.powerType == PowerType.NON_RENEWABLE,
     );
     if (hasNotRenewableGrid) {
@@ -164,29 +105,20 @@ export class DigitalProductPassportService {
     return powerType;
   }
 
-  async calculateHydrogenComposition(processStep: ProcessStepEntity): Promise<HydrogenComponentEntity[]> {
-    if (processStep.type === ProcessType.HYDROGEN_BOTTLING || processStep.type === ProcessType.HYDROGEN_PRODUCTION) {
-      return HydrogenComponentAssembler.assemble(processStep);
-    }
+  private determineRfnboType(
+    redCompliance: RedComplianceEntity,
+    powerType: PowerType,
+    proofOfSustainability: ProofOfSustainabilityEntity,
+  ): RfnboType {
+    const isEmissionReductionAbove70Percent = proofOfSustainability.emissionReductionPercentage > 70;
 
-    const predecessorId: string = processStep.batch?.predecessors[0]?.processStepId;
-
-    if (!predecessorId) {
-      throw new BrokerException(
-        `Process step ${processStep.id} has no predecessor to derive composition from`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-
-    const predecessor: ProcessStepEntity = await this.processStepService.readProcessStep(predecessorId);
-
-    if (predecessor.type !== ProcessType.HYDROGEN_BOTTLING) {
-      throw new BrokerException(
-        `Predecessor process step ${predecessor.id} is not of type ${ProcessType.HYDROGEN_BOTTLING}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-
-    return HydrogenComponentAssembler.assemble(predecessor);
+    return isEmissionReductionAbove70Percent &&
+      redCompliance.isGeoCorrelationValid &&
+      redCompliance.isTimeCorrelationValid &&
+      redCompliance.isAdditionalityFulfilled &&
+      redCompliance.financialSupportReceived &&
+      powerType != PowerType.NON_RENEWABLE
+      ? RfnboType.RFNBO_READY
+      : RfnboType.NON_CERTIFIABLE;
   }
 }

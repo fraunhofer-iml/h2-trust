@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
   BatchEntity,
   BrokerException,
@@ -28,6 +28,7 @@ import { BottlingAllocation, BottlingAllocator } from './utils/bottling.allocato
 
 @Injectable()
 export class BottlingService {
+  logger = new Logger('BottlingService');
   constructor(
     private readonly storageService: StorageService,
     private readonly documentRepository: DocumentRepository,
