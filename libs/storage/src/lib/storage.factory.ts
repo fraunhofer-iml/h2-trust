@@ -7,7 +7,7 @@
  */
 
 import { S3ClientConfig } from '@aws-sdk/client-s3';
-import { ConfigurationService, DECENTRALIZED_STORAGE_PROVIDERS, StorageConfiguration } from '@h2-trust/configuration';
+import { ConfigurationService, DECENTRALIZED_STORAGE_PROVIDERS, S3StorageConfiguration } from '@h2-trust/configuration';
 import { CentralizedStorageService } from './centralized/centralized-storage.service';
 import { S3StorageService } from './centralized/s3-storage.service';
 import { DecentralizedStorageService } from './decentralized/decentralized-storage.service';
@@ -31,11 +31,11 @@ export function createDecentralizedStorageService(configService: ConfigurationSe
       return new FilebaseStorageService(clientConfig, config.bucketName, config.endpointUrl, config.explorerUrl);
     }
     default:
-      throw new Error('Unsupported decentralized storage provider');
+      throw new Error(`Unsupported decentralized storage provider: ${(config as any).provider}`);
   }
 }
 
-function buildS3ClientConfig(config: StorageConfiguration, forcePathStyle: boolean): S3ClientConfig {
+function buildS3ClientConfig(config: S3StorageConfiguration, forcePathStyle: boolean): S3ClientConfig {
   return {
     endpoint: config.endpointUrl,
     region: config.region,

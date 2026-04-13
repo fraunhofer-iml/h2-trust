@@ -19,7 +19,7 @@ export const DECENTRALIZED_STORAGE_PROVIDERS = {
 export interface GlobalConfiguration {
   logLevel: LogLevel[];
   amqp: AmqpConfiguration;
-  centralizedStorage: StorageConfiguration;
+  centralizedStorage: S3StorageConfiguration;
   decentralizedStorage: DecentralizedStorageConfiguration;
   blockchain: BlockchainConfiguration;
   keycloak: KeycloakConfiguration;
@@ -30,7 +30,7 @@ export interface AmqpConfiguration {
   queuePrefix: string;
 }
 
-export interface StorageConfiguration {
+export interface S3StorageConfiguration {
   endpointUrl: string;
   region: string;
   accessKey: string;
@@ -44,12 +44,12 @@ export interface KuboStorageConfiguration {
   explorerUrl: string;
 }
 
-export interface FilebaseStorageConfiguration extends StorageConfiguration {
+export interface FilebaseStorageConfiguration extends S3StorageConfiguration {
   provider: typeof DECENTRALIZED_STORAGE_PROVIDERS.FILEBASE;
   explorerUrl: string;
 }
 
-type DecentralizedStorageConfiguration =
+export type DecentralizedStorageConfiguration =
   | KuboStorageConfiguration
   | FilebaseStorageConfiguration;
 
@@ -81,29 +81,8 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
     accessKey: requireEnv('CENTRALIZED_STORAGE_ACCESS_KEY'),
     secretKey: requireEnv('CENTRALIZED_STORAGE_SECRET_KEY'),
     bucketName: requireEnv('CENTRALIZED_STORAGE_BUCKET_NAME'),
-  } satisfies StorageConfiguration,
-  decentralizedStorage: (() => {
-    const provider = requireEnv('DECENTRALIZED_STORAGE_PROVIDER');
-    if (provider === DECENTRALIZED_STORAGE_PROVIDERS.KUBO) {
-      return {
-        provider,
-        endpointUrl: requireEnv('DECENTRALIZED_STORAGE_ENDPOINT_URL'),
-        explorerUrl: requireEnv('DECENTRALIZED_STORAGE_EXPLORER_URL'),
-      } satisfies KuboStorageConfiguration;
-    }
-    if (provider === DECENTRALIZED_STORAGE_PROVIDERS.FILEBASE) {
-      return {
-        provider,
-        endpointUrl: requireEnv('DECENTRALIZED_STORAGE_ENDPOINT_URL'),
-        explorerUrl: requireEnv('DECENTRALIZED_STORAGE_EXPLORER_URL'),
-        region: requireEnv('DECENTRALIZED_STORAGE_REGION'),
-        accessKey: requireEnv('DECENTRALIZED_STORAGE_ACCESS_KEY'),
-        secretKey: requireEnv('DECENTRALIZED_STORAGE_SECRET_KEY'),
-        bucketName: requireEnv('DECENTRALIZED_STORAGE_BUCKET_NAME'),
-      } satisfies FilebaseStorageConfiguration;
-    }
-    throw new Error(`Unsupported DECENTRALIZED_STORAGE_PROVIDER: ${provider}`);
-  })(),
+  } satisfies S3StorageConfiguration,
+  decentralizedStorage: buildDecentralizedStorageConfig(),
   blockchain: {
     enabled: requireEnv('BLOCKCHAIN_ENABLED') === 'true',
     endpointUrl: requireEnv('BLOCKCHAIN_ENDPOINT_URL'),
@@ -119,3 +98,30 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
     clientSecret: requireEnv('KEYCLOAK_CLIENT_SECRET'),
   } satisfies KeycloakConfiguration,
 }));
+
+
+function buildDecentralizedStorageConfig(): DecentralizedStorageConfiguration {
+  const provider = requireEnv('DECENTRALIZED_STORAGE_PROVIDER');
+
+  if (provider === DECENTRALIZED_STORAGE_PROVIDERS.KUBO) {
+    return {
+      provider,
+      endpointUrl: requireEnv('DECENTRALIZED_STORAGE_ENDPOINT_URL'),
+      explorerUrl: requireEnv('DECENTRALIZED_STORAGE_EXPLORER_URL'),
+    } satisfies KuboStorageConfiguration;
+  }
+
+  if (provider === DECENTRALIZED_STORAGE_PROVIDERS.FILEBASE) {
+    return {
+      provider,
+      endpointUrl: requireEnv('DECENTRALIZED_STORAGE_ENDPOINT_URL'),
+      explorerUrl: requireEnv('DECENTRALIZED_STORAGE_EXPLORER_URL'),
+      region: requireEnv('DECENTRALIZED_STORAGE_REGION'),
+      accessKey: requireEnv('DECENTRALIZED_STORAGE_ACCESS_KEY'),
+      secretKey: requireEnv('DECENTRALIZED_STORAGE_SECRET_KEY'),
+      bucketName: requireEnv('DECENTRALIZED_STORAGE_BUCKET_NAME'),
+    } satisfies FilebaseStorageConfiguration;
+  }
+
+  throw new Error(`Unsupported decentralized storage provider: ${provider}`);
+}
