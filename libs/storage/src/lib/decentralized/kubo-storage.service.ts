@@ -29,10 +29,12 @@ export class KuboStorageService extends DecentralizedStorageService {
     const formData = new FormData();
     formData.append('file', new Blob([new Uint8Array(file)], { type: contentType }), fileName);
 
-    const addResponse = await fetch(`${this.endpointUrl}/api/v0/add?pin=true`, {
+    const addUrl = this.buildUrlWithPath('add?pin=true');
+    const addResponse = await fetch(addUrl, {
       method: 'POST',
       body: formData,
     });
+
 
     if (!addResponse.ok) {
       throw new Error(`Kubo add failed: ${addResponse.status} ${await addResponse.text()}`);
@@ -41,7 +43,8 @@ export class KuboStorageService extends DecentralizedStorageService {
     const { Hash: cid } = (await addResponse.json()) as { Hash: string };
     this.logger.debug(`Added file ${fileName} to Kubo with CID: ${cid}`);
 
-    const cpResponse = await fetch(`${this.endpointUrl}/api/v0/files/cp?arg=/ipfs/${cid}&arg=/${fileName}`, {
+    const cpUrl = this.buildUrlWithPath(`files/cp?arg=/ipfs/${cid}&arg=/${fileName}`);
+    const cpResponse = await fetch(cpUrl, {
       method: 'POST',
     });
 
@@ -56,7 +59,8 @@ export class KuboStorageService extends DecentralizedStorageService {
   }
 
   async downloadFile(fileName: string): Promise<Readable> {
-    const response = await fetch(`${this.endpointUrl}/api/v0/files/read?arg=/${fileName}`, {
+    const url = this.buildUrlWithPath(`files/read?arg=/${fileName}`);
+    const response = await fetch(url, {
       method: 'POST',
     });
 
@@ -69,5 +73,9 @@ export class KuboStorageService extends DecentralizedStorageService {
     }
 
     return Readable.fromWeb(response.body as ReadableStream<Uint8Array>);
+  }
+
+  private buildUrlWithPath(path: string): string {
+    return `${this.endpointUrl}/api/v0/${path}`;
   }
 }
