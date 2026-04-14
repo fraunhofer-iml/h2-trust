@@ -37,10 +37,9 @@ import {
   ProcessType,
 } from '@h2-trust/domain';
 import { BatchEntityFixture, HydrogenProductionUnitEntityFixture, UserEntityFixture } from '@h2-trust/fixtures';
+import { StorageService } from '@h2-trust/storage';
 import 'multer';
 import { of } from 'rxjs';
-import { BadRequestException } from '@nestjs/common';
-import { StorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
