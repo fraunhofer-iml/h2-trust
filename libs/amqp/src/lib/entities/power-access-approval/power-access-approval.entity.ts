@@ -11,7 +11,7 @@ import { CompanyEntity } from '../company';
 import { DocumentEntity } from '../document';
 import { PowerProductionUnitEntity } from '../unit';
 
-export class PowerAccessApprovalEntity {
+export class PowerPurchaseAgreementEntity {
   id: string;
   decidedAt: Date;
   status: string;
@@ -38,8 +38,8 @@ export class PowerAccessApprovalEntity {
     this.document = document;
   }
 
-  static fromDeepDatabase(powerAccessApproval: PowerAccessApprovalDeepDbType): PowerAccessApprovalEntity {
-    return <PowerAccessApprovalEntity>{
+  static fromDeepDatabase(powerAccessApproval: PowerAccessApprovalDeepDbType): PowerPurchaseAgreementEntity {
+    return <PowerPurchaseAgreementEntity>{
       id: powerAccessApproval.id,
       decidedAt: powerAccessApproval.decidedAt,
       status: powerAccessApproval.status,
@@ -52,8 +52,8 @@ export class PowerAccessApprovalEntity {
     };
   }
 
-  static fromNestedDatabase(approval: PowerAccessApprovalNestedDbType): PowerAccessApprovalEntity {
-    return <PowerAccessApprovalEntity>{
+  static fromNestedDatabase(approval: PowerAccessApprovalNestedDbType): PowerPurchaseAgreementEntity {
+    return <PowerPurchaseAgreementEntity>{
       ...approval,
       hydrogenProducer: CompanyEntity.fromFlatDatabase(approval.hydrogenProducer),
       powerProducer: CompanyEntity.fromFlatDatabase(approval.powerProducer),

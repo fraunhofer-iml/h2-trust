@@ -6,17 +6,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerAccessApprovalEntity } from '@h2-trust/amqp';
-import { PowerAccessApprovalStatus } from '@h2-trust/domain';
+import { PowerPurchaseAgreementEntity } from '@h2-trust/amqp';
+import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { CompanyDto } from '../company';
 import { PowerProductionOverviewDto } from '../unit';
 
-export class PowerAccessApprovalDto {
+export class PowerPurchaseAgreementDto {
   id: string;
   hydrogenProducer: CompanyDto;
   powerProducer: CompanyDto;
   powerProductionUnit: PowerProductionOverviewDto;
-  status: PowerAccessApprovalStatus;
+  status: PowerPurchaseAgreementStatus;
   energySource: string;
 
   constructor(
@@ -24,7 +24,7 @@ export class PowerAccessApprovalDto {
     hydrogenProducer: CompanyDto,
     powerProducer: CompanyDto,
     powerProductionUnit: PowerProductionOverviewDto,
-    status: PowerAccessApprovalStatus,
+    status: PowerPurchaseAgreementStatus,
     energySource: string,
   ) {
     this.id = id;
@@ -35,8 +35,8 @@ export class PowerAccessApprovalDto {
     this.energySource = energySource;
   }
 
-  static fromEntity(powerAccessApproval: PowerAccessApprovalEntity): PowerAccessApprovalDto {
-    return <PowerAccessApprovalDto>{
+  static fromEntity(powerAccessApproval: PowerPurchaseAgreementEntity): PowerPurchaseAgreementDto {
+    return <PowerPurchaseAgreementDto>{
       id: powerAccessApproval.id,
       hydrogenProducer: powerAccessApproval.hydrogenProducer,
       powerProducer: powerAccessApproval.powerProducer,

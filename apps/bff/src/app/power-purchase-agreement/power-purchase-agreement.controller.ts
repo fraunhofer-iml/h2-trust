@@ -11,31 +11,31 @@ import { Body, Controller, Get, NotImplementedException, Param, Patch, Post, Que
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
 import {
   CompanyDto,
-  PowerAccessApprovalDto,
+  PowerPurchaseAgreementDto,
   PpaRequestCreateDto,
   PpaRequestDto,
   UserDetailsDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/api';
-import { PowerAccessApprovalStatus, PowerProductionType, PpaRequestRole } from '@h2-trust/domain';
-import { PowerAccessApprovalService } from './power-access-approval.service';
+import { PowerProductionType, PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
+import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 
-@Controller('power-access-approvals')
-export class PowerAccessApprovalController {
-  constructor(private readonly powerAccessApprovalService: PowerAccessApprovalService) {}
+@Controller('power-purchase-agreement')
+export class PowerPurchaseAgreementController {
+  constructor(private readonly powerPurchaseAgreementService: PowerPurchaseAgreementService) {}
 
   @Get()
   @ApiBearerAuth()
   @ApiOperation({
-    description: 'Retrieve all companies with their power access approval. Optionally filter by approval status.',
+    description: 'Retrieve all companies with their power purchase agreement. Optionally filter by approval status.',
   })
   @ApiOkResponse({
-    description: 'Returns a list of all companies with their power access approval matching the filter criteria.',
-    type: [PowerAccessApprovalDto],
+    description: 'Returns a list of all companies with their power purchase agreement matching the filter criteria.',
+    type: [PowerPurchaseAgreementDto],
   })
   @ApiQuery({
     name: 'status',
-    enum: PowerAccessApprovalStatus,
+    enum: PowerPurchaseAgreementStatus,
     required: false,
     examples: {
       allTypes: {
@@ -43,30 +43,31 @@ export class PowerAccessApprovalController {
         description: 'Get approvals of all status',
       },
       APPROVED: {
-        value: PowerAccessApprovalStatus.APPROVED,
-        description: `Get all Power Access Approvals with status "${PowerAccessApprovalStatus.APPROVED}"`,
+        value: PowerPurchaseAgreementStatus.APPROVED,
+        description: `Get all Power Agreements Approvals with status "${PowerPurchaseAgreementStatus.APPROVED}"`,
       },
       PENDING: {
-        value: PowerAccessApprovalStatus.PENDING,
-        description: `Get all Power Access Approvals with status "${PowerAccessApprovalStatus.PENDING}"`,
+        value: PowerPurchaseAgreementStatus.PENDING,
+        description: `Get all Power Agreements Approvals with status "${PowerPurchaseAgreementStatus.PENDING}"`,
       },
       REJECTED: {
-        value: PowerAccessApprovalStatus.REJECTED,
-        description: `Get all Power Access Approvals with status "${PowerAccessApprovalStatus.REJECTED}"`,
+        value: PowerPurchaseAgreementStatus.REJECTED,
+        description: `Get all Power Agreements Approvals with status "${PowerPurchaseAgreementStatus.REJECTED}"`,
       },
     },
   })
-  getCompaniesWithPowerAccessApproval(
+  getCompaniesWithPowerPurchaseAgreement(
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
-    @Query('status') powerAccessApprovalStatus: PowerAccessApprovalStatus,
-  ): Promise<PowerAccessApprovalDto[]> {
-    return this.powerAccessApprovalService.readByUserAndStatus(authenticatedUser.sub, powerAccessApprovalStatus);
+    @Query('status') powerPurchaseAgreementStatus: PowerPurchaseAgreementStatus,
+  ): Promise<PowerPurchaseAgreementDto[]> {
+    return this.powerPurchaseAgreementService.readByUserAndStatus(authenticatedUser.sub, powerPurchaseAgreementStatus);
   }
 
+  //TODO: Add id to query params since only ppas that are meant for you should be retrieved
   @Get('requests')
   getPPARequest(
     @Query('role') _role: PpaRequestRole,
-    @Query('status') _status: PowerAccessApprovalStatus,
+    @Query('status') _status: PowerPurchaseAgreementStatus,
   ): PpaRequestDto[] {
     return [
       {
@@ -75,7 +76,7 @@ export class PowerAccessApprovalController {
         powerProductionType: PowerProductionType.HYDRO_POWER_PLANT,
         receiver: { name: 'Test' } as CompanyDto,
         sender: { name: 'hans ', company: { name: 'testo test ' } } as UserDetailsDto,
-        status: PowerAccessApprovalStatus.PENDING,
+        status: PowerPurchaseAgreementStatus.PENDING,
         validFrom: new Date(),
         validTo: new Date(),
       },

@@ -8,17 +8,17 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues } from '@h2-trust/amqp';
-import { PowerAccessApprovalController } from './power-access-approval.controller';
-import { PowerAccessApprovalService } from './power-access-approval.service';
+import { PowerPurchaseAgreementController } from './power-purchase-agreement.controller';
+import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 
 describe('PowerAccessApprovalController', () => {
-  let controller: PowerAccessApprovalController;
+  let controller: PowerPurchaseAgreementController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [PowerAccessApprovalController],
+      controllers: [PowerPurchaseAgreementController],
       providers: [
-        PowerAccessApprovalService,
+        PowerPurchaseAgreementService,
         {
           provide: BrokerQueues.QUEUE_GENERAL_SVC,
           useValue: {
@@ -28,7 +28,7 @@ describe('PowerAccessApprovalController', () => {
       ],
     }).compile();
 
-    controller = module.get<PowerAccessApprovalController>(PowerAccessApprovalController);
+    controller = module.get<PowerPurchaseAgreementController>(PowerPurchaseAgreementController);
   });
 
   it('should be defined', () => {

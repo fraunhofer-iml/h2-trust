@@ -6,18 +6,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EnergySource, PowerAccessApprovalStatus } from '@h2-trust/domain';
+import { EnergySource, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { CompanyDtoMock } from '../../company';
 import { PowerProductionUnitOverviewDtoMock } from '../../unit/mocks/power-production-unit-overview-dto.mock';
-import { PowerAccessApprovalDto } from '../power-access-approval.dto';
+import { PowerPurchaseAgreementDto } from '../power-purchase-agreement.dto';
 
-export const PowerAccessApprovalDtoMock = <PowerAccessApprovalDto[]>[
-  <PowerAccessApprovalDto>{
+export const PowerAccessApprovalDtoMock = <PowerPurchaseAgreementDto[]>[
+  <PowerPurchaseAgreementDto>{
     id: 'paa-1',
     hydrogenProducer: CompanyDtoMock[1],
     powerProducer: CompanyDtoMock[0],
     powerProductionUnit: PowerProductionUnitOverviewDtoMock[0],
-    status: PowerAccessApprovalStatus.APPROVED,
+    status: PowerPurchaseAgreementStatus.APPROVED,
     energySource: EnergySource.WIND_ENERGY,
   },
 ];

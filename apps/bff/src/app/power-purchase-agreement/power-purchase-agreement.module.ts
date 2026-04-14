@@ -8,12 +8,12 @@
 
 import { Module } from '@nestjs/common';
 import { Broker } from '@h2-trust/amqp';
-import { PowerAccessApprovalController } from './power-access-approval.controller';
-import { PowerAccessApprovalService } from './power-access-approval.service';
+import { PowerPurchaseAgreementController } from './power-purchase-agreement.controller';
+import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 
 @Module({
   imports: [new Broker().getGeneralSvcBroker()],
-  controllers: [PowerAccessApprovalController],
-  providers: [PowerAccessApprovalService],
+  controllers: [PowerPurchaseAgreementController],
+  providers: [PowerPurchaseAgreementService],
 })
-export class PowerAccessApprovalModule {}
+export class PowerPurchaseAgreementModule {}

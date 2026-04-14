@@ -10,19 +10,24 @@ import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { BrokerQueues, PowerAccessApprovalPatterns, ReadPowerAccessApprovalsPayload } from '@h2-trust/amqp';
-import { PowerAccessApprovalDto } from '@h2-trust/api';
-import { PowerAccessApprovalStatus } from '@h2-trust/domain';
+import { PowerPurchaseAgreementDto } from '@h2-trust/api';
+import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 
 @Injectable()
-export class PowerAccessApprovalService {
+export class PowerPurchaseAgreementService {
   constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
 
-  async readByUserAndStatus(userId: string, status: PowerAccessApprovalStatus): Promise<PowerAccessApprovalDto[]> {
+  async readByUserAndStatus(
+    userId: string,
+    status: PowerPurchaseAgreementStatus,
+  ): Promise<PowerPurchaseAgreementDto[]> {
     const payload = new ReadPowerAccessApprovalsPayload(userId, status);
 
     const powerAccessApprovals = await firstValueFrom(
       this.generalService.send(PowerAccessApprovalPatterns.READ, payload),
     );
-    return powerAccessApprovals.map(PowerAccessApprovalDto.fromEntity);
+    return powerAccessApprovals.map(PowerPurchaseAgreementDto.fromEntity);
   }
+
+  getPowerPurchaseAggrements() {}
 }

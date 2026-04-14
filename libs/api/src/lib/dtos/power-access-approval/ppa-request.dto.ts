@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
+import { PowerProductionType, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { CompanyDto } from '../company';
 import { PowerProductionOverviewDto } from '../unit';
 import { UserDetailsDto } from '../user';
@@ -22,7 +22,7 @@ export class PpaRequestDto {
   receiver: CompanyDto;
   powerProductionType: PowerProductionType;
   powerProductionUnit?: PowerProductionOverviewDto;
-  status: PowerAccessApprovalStatus;
+  status: PowerPurchaseAgreementStatus;
   comment?: string;
 
   constructor(
@@ -34,7 +34,7 @@ export class PpaRequestDto {
     receiver: CompanyDto,
     powerType: PowerProductionType,
     powerProductionUnit: PowerProductionOverviewDto,
-    status: PowerAccessApprovalStatus,
+    status: PowerPurchaseAgreementStatus,
     decidedAt?: Date,
     decidedBy?: string,
     comment?: string,

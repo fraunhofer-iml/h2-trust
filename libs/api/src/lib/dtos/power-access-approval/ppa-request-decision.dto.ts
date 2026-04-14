@@ -7,16 +7,16 @@
  */
 
 import { IsIn, IsNotEmpty, IsOptional, IsString, ValidateIf } from 'class-validator';
-import { PowerAccessApprovalStatus } from '@h2-trust/domain';
+import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 
-export type DecisionStatus = PowerAccessApprovalStatus.APPROVED | PowerAccessApprovalStatus.REJECTED;
+export type DecisionStatus = PowerPurchaseAgreementStatus.APPROVED | PowerPurchaseAgreementStatus.REJECTED;
 
 export class PpaRequestDecisionDto {
   @IsNotEmpty()
-  @IsIn([PowerAccessApprovalStatus.APPROVED, PowerAccessApprovalStatus.REJECTED])
-  decision: PowerAccessApprovalStatus.APPROVED | PowerAccessApprovalStatus.REJECTED;
+  @IsIn([PowerPurchaseAgreementStatus.APPROVED, PowerPurchaseAgreementStatus.REJECTED])
+  decision: PowerPurchaseAgreementStatus.APPROVED | PowerPurchaseAgreementStatus.REJECTED;
 
-  @ValidateIf((dto) => dto.decision === PowerAccessApprovalStatus.APPROVED)
+  @ValidateIf((dto) => dto.decision === PowerPurchaseAgreementStatus.APPROVED)
   @IsString()
   @IsNotEmpty({ message: 'Unit is required when approving' })
   powerProductionUnitId?: string;
@@ -27,7 +27,7 @@ export class PpaRequestDecisionDto {
   comment?: string;
 
   constructor(
-    decision: PowerAccessApprovalStatus.APPROVED | PowerAccessApprovalStatus.REJECTED,
+    decision: PowerPurchaseAgreementStatus.APPROVED | PowerPurchaseAgreementStatus.REJECTED,
     powerProductionUnitId?: string,
     comment?: string,
   ) {

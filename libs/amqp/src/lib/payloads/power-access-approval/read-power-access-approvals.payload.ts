@@ -7,18 +7,18 @@
  */
 
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { PowerAccessApprovalStatus } from '@h2-trust/domain';
+import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 
 export class ReadPowerAccessApprovalsPayload {
   @IsString()
   @IsNotEmpty()
   userId: string;
 
-  @IsEnum(PowerAccessApprovalStatus)
+  @IsEnum(PowerPurchaseAgreementStatus)
   @IsNotEmpty()
-  powerAccessApprovalStatus: PowerAccessApprovalStatus;
+  powerAccessApprovalStatus: PowerPurchaseAgreementStatus;
 
-  constructor(userId: string, powerAccessApprovalStatus: PowerAccessApprovalStatus) {
+  constructor(userId: string, powerAccessApprovalStatus: PowerPurchaseAgreementStatus) {
     this.userId = userId;
     this.powerAccessApprovalStatus = powerAccessApprovalStatus;
   }
