@@ -17,23 +17,15 @@ export class IpfsNativeStorageService extends DecentralizedStorageService {
   constructor(
     private readonly endpointUrl: string,
     public readonly explorerUrl: string,
-    private readonly verificationEnabled: boolean,
   ) {
     super();
 
-    if (this.verificationEnabled) {
-      this.logger.debug('🔗 IPFS native node is used for decentralized file storage.');
-      this.logger.debug(`🌐 Endpoint URL: ${this.endpointUrl}`);
-      this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
-    }
+    this.logger.debug('🔗 IPFS native node is used for decentralized file storage.');
+    this.logger.debug(`🌐 Endpoint URL: ${this.endpointUrl}`);
+    this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
   }
 
-  async uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<string | null> {
-    if (!this.verificationEnabled) {
-      this.logger.debug(`⏭️ Verification feature disabled, skipping upload to IPFS native node for file: ${fileName}`);
-      return null;
-    }
-
+  async uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<string> {
     const formData = new FormData();
     formData.append('file', new Blob([new Uint8Array(file)], { type: contentType }), fileName);
 
@@ -65,12 +57,7 @@ export class IpfsNativeStorageService extends DecentralizedStorageService {
     return cid;
   }
 
-  async downloadFile(fileName: string): Promise<Readable | null> {
-    if (!this.verificationEnabled) {
-      this.logger.debug(`⏭️ Verification feature disabled, skipping download from IPFS native node for file: ${fileName}`);
-      return null;
-    }
-
+  async downloadFile(fileName: string): Promise<Readable> {
     const url = this.buildUrlWithPath(`files/read?arg=/${fileName}`);
     const response = await fetch(url, {
       method: 'POST',

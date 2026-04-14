@@ -7,6 +7,7 @@
  */
 
 export * from './lib/configuration.module';
+export * from './lib/feature-flag.service';
 export * from './lib/util';
 export * from './lib/configuration.service';
 export * from './lib/configurations/bff.configuration';

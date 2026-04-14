@@ -16,6 +16,7 @@ import {
   StageProductionsPayload,
 } from '@h2-trust/amqp';
 import { BlockchainService, ProofEntry } from '@h2-trust/blockchain';
+import { FeatureFlagService } from '@h2-trust/configuration';
 import { CsvImportRepository, PrismaService, StagedProductionRepository } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
 import { CsvImportProcessingService } from './csv-import-processing.service';
@@ -28,6 +29,7 @@ export class ProductionStagingService {
 
   constructor(
     private readonly blockchainService: BlockchainService,
+    private readonly featureFlagService: FeatureFlagService,
     private readonly csvImportProcessingService: CsvImportProcessingService,
     private readonly csvImportRepository: CsvImportRepository,
     private readonly prismaService: PrismaService,
@@ -74,7 +76,7 @@ export class ProductionStagingService {
     documentProofs: DocumentProof[],
     csvDocuments: CsvDocumentEntity[],
   ): Promise<void> {
-    if (!this.blockchainService.verificationEnabled) {
+    if (!this.featureFlagService.verificationEnabled) {
       this.logger.debug(`⏭️ Verification disabled, skipping proof storage of ${documentProofs.length} entries`);
       return;
     }

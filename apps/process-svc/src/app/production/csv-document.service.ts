@@ -9,6 +9,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CsvDocumentEntity, ReadByIdPayload, VerifyCsvDocumentIntegrityResultEntity } from '@h2-trust/amqp';
 import { BlockchainService, HashUtil } from '@h2-trust/blockchain';
+import { FeatureFlagService } from '@h2-trust/configuration';
 import { CsvImportRepository } from '@h2-trust/database';
 import { CsvDocumentIntegrityStatus } from '@h2-trust/domain';
 import { CentralizedStorageService, DecentralizedStorageService } from '@h2-trust/storage';
@@ -19,6 +20,7 @@ export class CsvDocumentService {
 
   constructor(
     private readonly blockchainService: BlockchainService,
+    private readonly featureFlagService: FeatureFlagService,
     private readonly csvImportRepository: CsvImportRepository,
     private readonly centralizedStorageService: CentralizedStorageService,
     private readonly decentralizedStorageService: DecentralizedStorageService,
@@ -41,7 +43,7 @@ export class CsvDocumentService {
       return this.createFailedResult(csvDocument.id, csvDocument.fileName, message, csvDocument.transactionHash);
     }
 
-    if (!this.blockchainService.verificationEnabled) {
+    if (!this.featureFlagService.verificationEnabled) {
       const message = 'Verification feature is disabled, cannot verify file integrity.';
       return this.createFailedResult(csvDocument.id, csvDocument.fileName, message, csvDocument.transactionHash);
     }
@@ -139,7 +141,7 @@ export class CsvDocumentService {
     blockTimestamp: Date | null,
     cid: string | null,
   ): VerifyCsvDocumentIntegrityResultEntity {
-    const { verificationEnabled } = this.blockchainService;
+    const { verificationEnabled } = this.featureFlagService;
     const ipfsExplorerUrl = verificationEnabled && cid ? `${this.decentralizedStorageService.explorerUrl}/${cid}` : null;
     const blockchainExplorerUrl =
       verificationEnabled && transactionHash ? `${this.blockchainService.explorerUrl}/${transactionHash}` : null;

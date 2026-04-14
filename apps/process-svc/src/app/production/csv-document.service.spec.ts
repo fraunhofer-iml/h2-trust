@@ -10,6 +10,7 @@ import { Readable } from 'stream';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CsvDocumentEntity, ProofEntity, ReadByIdPayload } from '@h2-trust/amqp';
 import { BlockchainService, HashUtil } from '@h2-trust/blockchain';
+import { FeatureFlagService } from '@h2-trust/configuration';
 import { CsvImportRepository } from '@h2-trust/database';
 import { BatchType, CsvDocumentIntegrityStatus } from '@h2-trust/domain';
 import { CsvDocumentEntityFixture, ProofEntityFixture } from '@h2-trust/fixtures';
@@ -29,7 +30,6 @@ describe('CsvDocumentService', () => {
   };
 
   const blockchainServiceMock = {
-    blockchainEnabled: true,
     endpointUrl: 'https://blockchain.io/rpc',
     smartContractAddress: '0xFbf708eE4a5887E96Faea1DDFA6cF6C828695223',
     explorerUrl: 'https://blockchain.io/tx',
@@ -37,8 +37,12 @@ describe('CsvDocumentService', () => {
     retrieveBlockchainMetadata: jest.fn(),
   };
 
+  const featureFlagServiceMock = {
+    verificationEnabled: true,
+  };
+
   beforeEach(async () => {
-    blockchainServiceMock.blockchainEnabled = true;
+    featureFlagServiceMock.verificationEnabled = true;
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -54,6 +58,10 @@ describe('CsvDocumentService', () => {
         {
           provide: BlockchainService,
           useValue: blockchainServiceMock,
+        },
+        {
+          provide: FeatureFlagService,
+          useValue: featureFlagServiceMock,
         },
       ],
     }).compile();
@@ -209,7 +217,7 @@ describe('CsvDocumentService', () => {
         transactionHash: 'tx-hash',
       });
 
-      blockchainServiceMock.blockchainEnabled = false;
+      featureFlagServiceMock.verificationEnabled = false;
       csvImportRepositoryMock.findCsvDocumentById.mockResolvedValue(givenDocument);
       const hashVerifySpy = jest.spyOn(HashUtil, 'verifyStreamWithStoredHash');
 

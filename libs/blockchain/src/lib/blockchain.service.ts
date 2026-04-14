@@ -42,33 +42,29 @@ interface ProofStorageContract extends BaseContract {
 
 @Injectable()
 export class BlockchainService {
-  readonly verificationEnabled: boolean;
   readonly endpointUrl?: string;
-  readonly smartContractAddress?: string;
   readonly explorerUrl?: string;
+  readonly smartContractAddress?: string;
 
   private readonly contract?: ProofStorageContract;
   private readonly logger = new Logger(this.constructor.name);
 
-  constructor(private readonly configurationService: ConfigurationService) {
-    const blockchainConfiguration = this.configurationService.getGlobalConfiguration().blockchain;
-    const featureFlags = this.configurationService.getGlobalConfiguration().featureFlags;
+  constructor(configurationService: ConfigurationService) {
+    const { featureFlags, blockchain } = configurationService.getGlobalConfiguration();
 
-    this.verificationEnabled = featureFlags.verificationEnabled;
+    if (featureFlags.verificationEnabled) {
+      this.endpointUrl = blockchain.endpointUrl;
+      this.explorerUrl = blockchain.explorerUrl;
+      this.smartContractAddress = blockchain.smartContractAddress;
 
-    if (this.verificationEnabled) {
-      this.endpointUrl = blockchainConfiguration.endpointUrl;
-      this.smartContractAddress = blockchainConfiguration.smartContractAddress;
-      this.explorerUrl = blockchainConfiguration.explorerUrl;
-
-      this.logger.debug('🔗 Verification feature is enabled. Proofs will be stored and retrieved.');
+      this.logger.debug('🔗 Blockchain service initialized. Proofs will be stored and retrieved.');
       this.logger.debug(`🌐 Endpoint URL: ${this.endpointUrl}`);
       this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
       this.logger.debug(`📄 Smart Contract Address: ${this.smartContractAddress}`);
 
-      this.contract = this.createContract(blockchainConfiguration.artifactPath, blockchainConfiguration.privateKey);
+      this.contract = this.createContract(blockchain.artifactPath, blockchain.privateKey);
     } else {
-      this.logger.debug('⛓️‍💥 Verification feature is disabled. Proofs will not be stored on a blockchain.');
+      this.logger.debug('⛓️‍💥 Blockchain service not initialized: verification is disabled.');
     }
   }
 
@@ -83,9 +79,8 @@ export class BlockchainService {
   }
 
   async storeProofs(proofEntries: ProofEntry[]): Promise<string | null> {
-    if (!this.verificationEnabled) {
-      this.logger.debug(`⏭️ Verification feature disabled, skipping proof storage of ${proofEntries.length} entries`);
-      return null;
+    if (!this.contract) {
+      throw new Error('BlockchainService not initialized: verification is disabled.');
     }
 
     this.logger.debug(`📝 Storing proofs:\n${proofEntries.map((e) => JSON.stringify(e)).join('\n')}`);
@@ -98,9 +93,8 @@ export class BlockchainService {
   }
 
   async retrieveProof(uuid: string): Promise<ProofEntity | null> {
-    if (!this.verificationEnabled) {
-      this.logger.debug(`⏭️ Verification feature disabled, skipping proof retrieval for ${uuid}`);
-      return null;
+    if (!this.contract) {
+      throw new Error('BlockchainService not initialized: verification is disabled.');
     }
 
     this.logger.debug(`🔍 Retrieving proof: ${uuid}`);
@@ -118,9 +112,8 @@ export class BlockchainService {
   }
 
   async retrieveBlockchainMetadata(transactionHash: string): Promise<BlockchainMetadata | null> {
-    if (!this.verificationEnabled) {
-      this.logger.debug(`⏭️ Verification feature disabled, skipping metadata retrieval for ${transactionHash}`);
-      return null;
+    if (!this.contract) {
+      throw new Error('BlockchainService not initialized: verification is disabled.');
     }
 
     const receipt = await this.contract.runner.provider.getTransactionReceipt(transactionHash);
