@@ -58,12 +58,14 @@ export class BlockchainService {
       this.explorerUrl = blockchain!.explorerUrl;
       this.smartContractAddress = blockchain!.smartContractAddress;
 
-      this.logger.debug('🔗 Blockchain service initialized. Proofs will be stored and retrieved.');
+      this.logger.debug('🔗 Blockchain is used for proof storage and retrieval.');
       this.logger.debug(`🌐 Endpoint URL: ${this.endpointUrl}`);
       this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
       this.logger.debug(`📄 Smart Contract Address: ${this.smartContractAddress}`);
 
       this.contract = this.createContract(blockchain!.artifactPath, blockchain!.privateKey);
+    } else {
+      this.logger.debug('⛓️‍💥 Blockchain is disabled. Proofs will not be stored or retrieved.');
     }
   }
 
