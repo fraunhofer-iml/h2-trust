@@ -22,7 +22,7 @@ export class CsvDocumentService {
     private readonly csvImportRepository: CsvImportRepository,
     private readonly centralizedStorageService: CentralizedStorageService,
     private readonly decentralizedStorageService: DecentralizedStorageService,
-  ) {}
+  ) { }
 
   async findByCompany(payload: ReadByIdPayload): Promise<CsvDocumentEntity[]> {
     return this.csvImportRepository.findAllCsvDocumentsByCompanyId(payload.id);
@@ -41,8 +41,8 @@ export class CsvDocumentService {
       return this.createFailedResult(csvDocument.id, csvDocument.fileName, message, csvDocument.transactionHash);
     }
 
-    if (!this.blockchainService.blockchainEnabled) {
-      const message = 'Blockchain integration is disabled, cannot verify file integrity.';
+    if (!this.blockchainService.verificationEnabled) {
+      const message = 'Verification feature is disabled, cannot verify file integrity.';
       return this.createFailedResult(csvDocument.id, csvDocument.fileName, message, csvDocument.transactionHash);
     }
 
@@ -139,12 +139,12 @@ export class CsvDocumentService {
     blockTimestamp: Date | null,
     cid: string | null,
   ): VerifyCsvDocumentIntegrityResultEntity {
-    const { blockchainEnabled } = this.blockchainService;
-    const ipfsExplorerUrl = blockchainEnabled && cid ? `${this.decentralizedStorageService.explorerUrl}/${cid}` : null;
+    const { verificationEnabled } = this.blockchainService;
+    const ipfsExplorerUrl = verificationEnabled && cid ? `${this.decentralizedStorageService.explorerUrl}/${cid}` : null;
     const blockchainExplorerUrl =
-      blockchainEnabled && transactionHash ? `${this.blockchainService.explorerUrl}/${transactionHash}` : null;
-    const network = blockchainEnabled ? this.blockchainService.endpointUrl : null;
-    const smartContractAddress = blockchainEnabled ? this.blockchainService.smartContractAddress : null;
+      verificationEnabled && transactionHash ? `${this.blockchainService.explorerUrl}/${transactionHash}` : null;
+    const network = verificationEnabled ? this.blockchainService.endpointUrl : null;
+    const smartContractAddress = verificationEnabled ? this.blockchainService.smartContractAddress : null;
 
     return new VerifyCsvDocumentIntegrityResultEntity(
       documentId,

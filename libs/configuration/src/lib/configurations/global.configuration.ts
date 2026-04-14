@@ -23,6 +23,7 @@ export interface GlobalConfiguration {
   decentralizedStorage: DecentralizedStorageConfiguration;
   blockchain: BlockchainConfiguration;
   keycloak: KeycloakConfiguration;
+  featureFlags: FeatureFlags;
 }
 
 export interface AmqpConfiguration {
@@ -52,7 +53,6 @@ export interface IpfsPinningStorageConfiguration extends S3StorageConfiguration 
 export type DecentralizedStorageConfiguration = IpfsNativeStorageConfiguration | IpfsPinningStorageConfiguration;
 
 export interface BlockchainConfiguration {
-  enabled: boolean;
   endpointUrl: string;
   privateKey: string;
   artifactPath: string;
@@ -65,6 +65,10 @@ export interface KeycloakConfiguration {
   realm: string;
   clientId: string;
   clientSecret: string;
+}
+
+export interface FeatureFlags {
+  verificationEnabled: boolean;
 }
 
 export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
@@ -82,7 +86,6 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
   } satisfies S3StorageConfiguration,
   decentralizedStorage: buildDecentralizedStorageConfig(),
   blockchain: {
-    enabled: requireEnv('BLOCKCHAIN_ENABLED') === 'true',
     endpointUrl: requireEnv('BLOCKCHAIN_ENDPOINT_URL'),
     explorerUrl: requireEnv('BLOCKCHAIN_EXPLORER_URL'),
     privateKey: requireEnv('BLOCKCHAIN_PRIVATE_KEY'),
@@ -95,6 +98,9 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
     clientId: requireEnv('KEYCLOAK_CLIENT_ID'),
     clientSecret: requireEnv('KEYCLOAK_CLIENT_SECRET'),
   } satisfies KeycloakConfiguration,
+  featureFlags: {
+    verificationEnabled: requireEnv('FEATURE_VERIFICATION_ENABLED') === 'true',
+  } satisfies FeatureFlags,
 }));
 
 function buildDecentralizedStorageConfig(): DecentralizedStorageConfiguration {

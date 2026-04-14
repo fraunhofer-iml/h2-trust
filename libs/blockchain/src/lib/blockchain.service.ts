@@ -42,7 +42,7 @@ interface ProofStorageContract extends BaseContract {
 
 @Injectable()
 export class BlockchainService {
-  readonly blockchainEnabled: boolean;
+  readonly verificationEnabled: boolean;
   readonly endpointUrl?: string;
   readonly smartContractAddress?: string;
   readonly explorerUrl?: string;
@@ -52,22 +52,23 @@ export class BlockchainService {
 
   constructor(private readonly configurationService: ConfigurationService) {
     const blockchainConfiguration = this.configurationService.getGlobalConfiguration().blockchain;
+    const featureFlags = this.configurationService.getGlobalConfiguration().featureFlags;
 
-    this.blockchainEnabled = blockchainConfiguration.enabled;
+    this.verificationEnabled = featureFlags.verificationEnabled;
 
-    if (this.blockchainEnabled) {
+    if (this.verificationEnabled) {
       this.endpointUrl = blockchainConfiguration.endpointUrl;
       this.smartContractAddress = blockchainConfiguration.smartContractAddress;
       this.explorerUrl = blockchainConfiguration.explorerUrl;
 
-      this.logger.debug('🔗 Blockchain is enabled. Proofs will be stored and retrieved.');
+      this.logger.debug('🔗 Verification feature is enabled. Proofs will be stored and retrieved.');
       this.logger.debug(`🌐 Endpoint URL: ${this.endpointUrl}`);
       this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
       this.logger.debug(`📄 Smart Contract Address: ${this.smartContractAddress}`);
 
       this.contract = this.createContract(blockchainConfiguration.artifactPath, blockchainConfiguration.privateKey);
     } else {
-      this.logger.debug('⛓️‍💥 Blockchain is disabled. Proofs will not be stored or retrieved.');
+      this.logger.debug('⛓️‍💥 Verification feature is disabled. Proofs will not be stored on a blockchain.');
     }
   }
 
@@ -82,8 +83,8 @@ export class BlockchainService {
   }
 
   async storeProofs(proofEntries: ProofEntry[]): Promise<string | null> {
-    if (!this.blockchainEnabled) {
-      this.logger.debug(`⏭️ Blockchain disabled, skipping proof storage of ${proofEntries.length} entries`);
+    if (!this.verificationEnabled) {
+      this.logger.debug(`⏭️ Verification feature disabled, skipping proof storage of ${proofEntries.length} entries`);
       return null;
     }
 
@@ -97,8 +98,8 @@ export class BlockchainService {
   }
 
   async retrieveProof(uuid: string): Promise<ProofEntity | null> {
-    if (!this.blockchainEnabled) {
-      this.logger.debug(`⏭️ Blockchain disabled, skipping proof retrieval for ${uuid}`);
+    if (!this.verificationEnabled) {
+      this.logger.debug(`⏭️ Verification feature disabled, skipping proof retrieval for ${uuid}`);
       return null;
     }
 
@@ -117,8 +118,8 @@ export class BlockchainService {
   }
 
   async retrieveBlockchainMetadata(transactionHash: string): Promise<BlockchainMetadata | null> {
-    if (!this.blockchainEnabled) {
-      this.logger.debug(`⏭️ Blockchain disabled, skipping metadata retrieval for ${transactionHash}`);
+    if (!this.verificationEnabled) {
+      this.logger.debug(`⏭️ Verification feature disabled, skipping metadata retrieval for ${transactionHash}`);
       return null;
     }
 

@@ -20,17 +20,24 @@ export class IpfsPinningStorageService extends DecentralizedStorageService {
     private readonly s3ClientConfig: S3ClientConfig,
     private readonly bucketName: string,
     public readonly explorerUrl: string,
-  ) {
+    private readonly verificationEnabled: boolean,) {
     super();
 
     this.client = new S3Client(s3ClientConfig);
 
-    this.logger.debug('🔗 IPFS pinning service is used for decentralized file storage.');
-    this.logger.debug(`🌐 Endpoint URL: ${this.s3ClientConfig.endpoint}`);
-    this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
+    if (this.verificationEnabled) {
+      this.logger.debug('🔗 IPFS pinning service is used for decentralized file storage.');
+      this.logger.debug(`🌐 Endpoint URL: ${this.s3ClientConfig.endpoint}`);
+      this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
+    }
   }
 
-  async uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<string> {
+  async uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<string | null> {
+    if (!this.verificationEnabled) {
+      this.logger.debug(`⏭️ Verification feature disabled, skipping upload to IPFS pinning service for file: ${fileName}`);
+      return null;
+    }
+
     // Fresh client per upload: each call gets an isolated middleware stack, preventing CID captures from interfering across concurrent uploads.
     const uploadClient = new S3Client(this.s3ClientConfig);
     let cid: string | undefined;
@@ -57,7 +64,12 @@ export class IpfsPinningStorageService extends DecentralizedStorageService {
     return cid;
   }
 
-  async downloadFile(fileName: string): Promise<Readable> {
+  async downloadFile(fileName: string): Promise<Readable | null> {
+    if (!this.verificationEnabled) {
+      this.logger.debug(`⏭️ Verification feature disabled, skipping download from IPFS pinning service for file: ${fileName}`);
+      return null;
+    }
+
     const response = await this.client.send(new GetObjectCommand({ Bucket: this.bucketName, Key: fileName }));
 
     if (!response.Body) {

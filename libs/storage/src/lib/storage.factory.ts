@@ -13,6 +13,7 @@ import { S3StorageService } from './centralized/s3-storage.service';
 import { DecentralizedStorageService } from './decentralized/decentralized-storage.service';
 import { IpfsNativeStorageService } from './decentralized/ipfs-native-storage.service';
 import { IpfsPinningStorageService } from './decentralized/ipfs-pinning-storage.service';
+import { Logger } from '@nestjs/common';
 
 export function createCentralizedStorageService(configService: ConfigurationService): CentralizedStorageService {
   const config = configService.getGlobalConfiguration().centralizedStorage;
@@ -22,13 +23,20 @@ export function createCentralizedStorageService(configService: ConfigurationServ
 
 export function createDecentralizedStorageService(configService: ConfigurationService): DecentralizedStorageService {
   const config = configService.getGlobalConfiguration().decentralizedStorage;
+  const verificationEnabled = configService.getGlobalConfiguration().featureFlags.verificationEnabled;
+
+  if (verificationEnabled) {
+    Logger.debug('🔗 Verification feature is enabled. Files will be stored on IPFS.', 'StorageFactory');
+  } else {
+    Logger.debug('⛓️‍💥 Verification feature is disabled. Files will not be stored on IPFS.', 'StorageFactory');
+  }
 
   switch (config.provider) {
     case DECENTRALIZED_STORAGE_PROVIDERS.IPFS_NATIVE:
-      return new IpfsNativeStorageService(config.endpointUrl, config.explorerUrl);
+      return new IpfsNativeStorageService(config.endpointUrl, config.explorerUrl, verificationEnabled);
     case DECENTRALIZED_STORAGE_PROVIDERS.IPFS_PINNING: {
       const s3ClientConfig = buildS3ClientConfig(config, false);
-      return new IpfsPinningStorageService(s3ClientConfig, config.bucketName, config.explorerUrl);
+      return new IpfsPinningStorageService(s3ClientConfig, config.bucketName, config.explorerUrl, verificationEnabled);
     }
     default:
       throw new Error(`Unreachable: unhandled provider '${(config as any).provider}'`);
