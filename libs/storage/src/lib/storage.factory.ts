@@ -7,13 +7,13 @@
  */
 
 import { S3ClientConfig } from '@aws-sdk/client-s3';
-import { ConfigurationService, DECENTRALIZED_STORAGE_PROVIDERS, S3StorageConfiguration } from '@h2-trust/configuration';
+import { ConfigurationService, DECENTRALIZED_STORAGE_PROVIDERS, S3Configuration } from '@h2-trust/configuration';
 import { CentralizedStorageService } from './centralized/centralized-storage.service';
 import { S3StorageService } from './centralized/s3-storage.service';
 import { DecentralizedStorageService } from './decentralized/decentralized-storage.service';
+import { DisabledDecentralizedStorageService } from './decentralized/disabled-decentralized-storage.service';
 import { IpfsNativeStorageService } from './decentralized/ipfs-native-storage.service';
 import { IpfsPinningStorageService } from './decentralized/ipfs-pinning-storage.service';
-import { DisabledDecentralizedStorageService } from './decentralized/disabled-decentralized-storage.service';
 
 export function createCentralizedStorageService(configService: ConfigurationService): CentralizedStorageService {
   const config = configService.getGlobalConfiguration().centralizedStorage;
@@ -22,11 +22,13 @@ export function createCentralizedStorageService(configService: ConfigurationServ
 }
 
 export function createDecentralizedStorageService(configService: ConfigurationService): DecentralizedStorageService {
-  const { featureFlags, decentralizedStorage } = configService.getGlobalConfiguration();
+  const { featureFlags, verification } = configService.getGlobalConfiguration();
 
-  if (!featureFlags.verificationEnabled) {
+  if (!featureFlags.verificationEnabled || !verification) {
     return new DisabledDecentralizedStorageService();
   }
+
+  const { decentralizedStorage } = verification;
 
   switch (decentralizedStorage.provider) {
     case DECENTRALIZED_STORAGE_PROVIDERS.IPFS_NATIVE:
@@ -40,7 +42,7 @@ export function createDecentralizedStorageService(configService: ConfigurationSe
   }
 }
 
-function buildS3ClientConfig(config: S3StorageConfiguration, forcePathStyle: boolean): S3ClientConfig {
+function buildS3ClientConfig(config: S3Configuration, forcePathStyle: boolean): S3ClientConfig {
   return {
     endpoint: config.endpointUrl,
     region: config.region,

@@ -9,21 +9,17 @@
 import { LogLevel } from '@nestjs/common';
 import { registerAs } from '@nestjs/config';
 import { requireEnv } from '../util';
+import { buildVerificationConfiguration, S3Configuration, VerificationConfiguration } from './features/verification.configuration';
 
 export const GLOBAL_CONFIGURATION_IDENTIFIER = 'global-configuration';
-export const DECENTRALIZED_STORAGE_PROVIDERS = {
-  IPFS_NATIVE: 'ipfs-native',
-  IPFS_PINNING: 'ipfs-pinning',
-} as const;
 
 export interface GlobalConfiguration {
   logLevel: LogLevel[];
   amqp: AmqpConfiguration;
-  centralizedStorage: S3StorageConfiguration;
-  decentralizedStorage?: DecentralizedStorageConfiguration;
-  blockchain?: BlockchainConfiguration;
+  centralizedStorage: CentralizedStorageConfiguration;
   keycloak: KeycloakConfiguration;
-  featureFlags: FeatureFlags;
+  featureFlags: FeatureFlagsConfiguration;
+  verification?: VerificationConfiguration;
 }
 
 export interface AmqpConfiguration {
@@ -31,34 +27,7 @@ export interface AmqpConfiguration {
   queuePrefix: string;
 }
 
-export interface S3StorageConfiguration {
-  endpointUrl: string;
-  region: string;
-  accessKey: string;
-  secretKey: string;
-  bucketName: string;
-}
-
-export interface IpfsNativeStorageConfiguration {
-  provider: typeof DECENTRALIZED_STORAGE_PROVIDERS.IPFS_NATIVE;
-  endpointUrl: string;
-  explorerUrl: string;
-}
-
-export interface IpfsPinningStorageConfiguration extends S3StorageConfiguration {
-  provider: typeof DECENTRALIZED_STORAGE_PROVIDERS.IPFS_PINNING;
-  explorerUrl: string;
-}
-
-export type DecentralizedStorageConfiguration = IpfsNativeStorageConfiguration | IpfsPinningStorageConfiguration;
-
-export interface BlockchainConfiguration {
-  endpointUrl: string;
-  privateKey: string;
-  artifactPath: string;
-  smartContractAddress: string;
-  explorerUrl: string;
-}
+export interface CentralizedStorageConfiguration extends S3Configuration {}
 
 export interface KeycloakConfiguration {
   url: string;
@@ -67,7 +36,7 @@ export interface KeycloakConfiguration {
   clientSecret: string;
 }
 
-export interface FeatureFlags {
+export interface FeatureFlagsConfiguration {
   verificationEnabled: boolean;
 }
 
@@ -86,9 +55,7 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => {
       accessKey: requireEnv('CENTRALIZED_STORAGE_ACCESS_KEY'),
       secretKey: requireEnv('CENTRALIZED_STORAGE_SECRET_KEY'),
       bucketName: requireEnv('CENTRALIZED_STORAGE_BUCKET_NAME'),
-    } satisfies S3StorageConfiguration,
-    decentralizedStorage: verificationEnabled ? buildDecentralizedStorageConfig() : undefined,
-    blockchain: verificationEnabled ? buildBlockchainConfig() : undefined,
+    } satisfies CentralizedStorageConfiguration,
     keycloak: {
       url: requireEnv('KEYCLOAK_URL'),
       realm: requireEnv('KEYCLOAK_REALM'),
@@ -97,42 +64,7 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => {
     } satisfies KeycloakConfiguration,
     featureFlags: {
       verificationEnabled,
-    } satisfies FeatureFlags,
+    } satisfies FeatureFlagsConfiguration,
+    verification: verificationEnabled ? buildVerificationConfiguration() : undefined,
   };
 });
-
-function buildDecentralizedStorageConfig(): DecentralizedStorageConfiguration {
-  const provider = requireEnv('DECENTRALIZED_STORAGE_PROVIDER');
-
-  if (provider === DECENTRALIZED_STORAGE_PROVIDERS.IPFS_NATIVE) {
-    return {
-      provider,
-      endpointUrl: requireEnv('DECENTRALIZED_STORAGE_ENDPOINT_URL'),
-      explorerUrl: requireEnv('DECENTRALIZED_STORAGE_EXPLORER_URL'),
-    } satisfies IpfsNativeStorageConfiguration;
-  }
-
-  if (provider === DECENTRALIZED_STORAGE_PROVIDERS.IPFS_PINNING) {
-    return {
-      provider,
-      endpointUrl: requireEnv('DECENTRALIZED_STORAGE_ENDPOINT_URL'),
-      explorerUrl: requireEnv('DECENTRALIZED_STORAGE_EXPLORER_URL'),
-      region: requireEnv('DECENTRALIZED_STORAGE_REGION'),
-      accessKey: requireEnv('DECENTRALIZED_STORAGE_ACCESS_KEY'),
-      secretKey: requireEnv('DECENTRALIZED_STORAGE_SECRET_KEY'),
-      bucketName: requireEnv('DECENTRALIZED_STORAGE_BUCKET_NAME'),
-    } satisfies IpfsPinningStorageConfiguration;
-  }
-
-  throw new Error(`Unsupported decentralized storage provider: ${provider}`);
-}
-
-function buildBlockchainConfig(): BlockchainConfiguration {
-  return {
-    endpointUrl: requireEnv('BLOCKCHAIN_ENDPOINT_URL'),
-    explorerUrl: requireEnv('BLOCKCHAIN_EXPLORER_URL'),
-    privateKey: requireEnv('BLOCKCHAIN_PRIVATE_KEY'),
-    artifactPath: requireEnv('BLOCKCHAIN_ARTIFACT_PATH'),
-    smartContractAddress: requireEnv('BLOCKCHAIN_SMART_CONTRACT_ADDRESS'),
-  } satisfies BlockchainConfiguration;
-}

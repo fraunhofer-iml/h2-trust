@@ -50,20 +50,20 @@ export class BlockchainService {
   private readonly logger = new Logger(this.constructor.name);
 
   constructor(configurationService: ConfigurationService) {
-    const { featureFlags, blockchain } = configurationService.getGlobalConfiguration();
+    const { featureFlags, verification } = configurationService.getGlobalConfiguration();
 
     if (featureFlags.verificationEnabled) {
-      // blockchain is guaranteed to be defined when verificationEnabled is true (set together in config)
-      this.endpointUrl = blockchain!.endpointUrl;
-      this.explorerUrl = blockchain!.explorerUrl;
-      this.smartContractAddress = blockchain!.smartContractAddress;
+      // verification is guaranteed to be defined when verificationEnabled is true (set together in config)
+      this.endpointUrl = verification!.blockchain.endpointUrl;
+      this.explorerUrl = verification!.blockchain.explorerUrl;
+      this.smartContractAddress = verification!.blockchain.smartContractAddress;
 
       this.logger.debug('🔗 Blockchain is used for proof storage and retrieval.');
       this.logger.debug(`🌐 Endpoint URL: ${this.endpointUrl}`);
       this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
       this.logger.debug(`📄 Smart Contract Address: ${this.smartContractAddress}`);
 
-      this.contract = this.createContract(blockchain!.artifactPath, blockchain!.privateKey);
+      this.contract = this.createContract(verification!.blockchain.artifactPath, verification!.blockchain.privateKey);
     } else {
       this.logger.debug('⛓️‍💥 Blockchain is disabled. Proofs will not be stored or retrieved.');
     }

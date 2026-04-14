@@ -13,5 +13,6 @@ export * from './lib/configuration.service';
 export * from './lib/configurations/bff.configuration';
 export * from './lib/configurations/general-svc.configuration';
 export * from './lib/configurations/global.configuration';
+export * from './lib/configurations/features/verification.configuration';
 export * from './lib/configurations/process-svc.configuration';
 export * from './lib/keycloak.configuration.service';
