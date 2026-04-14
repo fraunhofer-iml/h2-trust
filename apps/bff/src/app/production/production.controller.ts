@@ -39,7 +39,6 @@ import {
   ProductionStatisticsDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/api';
-import { FileUploadKeys } from '@h2-trust/domain';
 import { ProductionService } from './production.service';
 
 @Controller('productions')
@@ -208,9 +207,7 @@ export class ProductionController {
   }
 
   @Post('csv/import')
-  @UseInterceptors(
-    FileFieldsInterceptor([{ name: FileUploadKeys.POWER_PRODUCTION }, { name: FileUploadKeys.HYDROGEN_PRODUCTION }]),
-  )
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'files' }]))
   importCsvFile(
     @Body() _dto: ProductionCSVUploadDto,
     @UploadedFiles()

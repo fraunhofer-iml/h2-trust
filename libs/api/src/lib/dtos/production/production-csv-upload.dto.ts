@@ -6,21 +6,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ArrayNotEmpty, IsArray, IsIn, IsNotEmpty, IsString, ValidateIf } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { ArrayNotEmpty, IsArray, IsIn, IsString } from 'class-validator';
 import { BatchType } from '@h2-trust/domain';
 import { type CsvContentType } from '../../types';
 
 export class ProductionCSVUploadDto {
-  @ValidateIf((o) => typeof o.powerProductionUnitIds === 'string')
-  @IsString()
-  @IsNotEmpty()
-  @ValidateIf((o) => Array.isArray(o.powerProductionUnitIds))
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
   unitIds: string | string[];
 
-  @IsNotEmpty()
   @IsIn([BatchType.POWER, BatchType.HYDROGEN])
   csvContentType: CsvContentType;
 

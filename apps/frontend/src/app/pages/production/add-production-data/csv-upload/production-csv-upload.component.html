@@ -1,59 +1,59 @@
 <div class="flex w-full flex-col gap-4" [formGroup]="form">
   <!--FILE INPUT-->
-  <div class="col-span-2 rounded-lg bg-primary-300/30 p-4 text-neutral-600">
-    <span class="flex items-center gap-1 font-semibold">
-      <span class="material-symbols-outlined">lightbulb_2</span>Hint</span
-    >
-    <p>
-      Upload comma-delimited CSV files with a header row. Required columns: <strong>time</strong>,
-      <strong>amount</strong> for power data and <strong>time</strong>, <strong>amount</strong>,
-      <strong>power</strong> for hydrogen data.
-    </p>
-  </div>
 
   @if (roles.isHydrogenProducer() && roles.isPowerProducer()) {
     <div class="grid grid-cols-2 gap-2 rounded-lg bg-white p-4">
-      <span class="col-span-2">Selection</span>
-      <p class="col-span-2 text-sm">Choose a production type to add: Power or Hydrogen.</p>
+      <span class="col-span-2">Type Selection</span>
 
       @for (unitType of availableUnitTypes; track $index) {
         <div
-          class="flex cursor-pointer flex-col rounded-md border-[2px] border-solid p-2"
+          class="group flex cursor-pointer flex-col gap-2 rounded-md border-2 p-4 hover:border-primary-200 hover:shadow-lg"
+          [ngClass]="
+            type() === unitType ? 'border-primary-200 text-primary-100' : 'border-neutral-300 text-neutral-500'
+          "
           (click)="selectedTypeControl.setValue(unitType)"
           role="none"
-          [ngClass]="
-            type() === unitType ? 'border-primary-400 text-primary-100' : 'border-neutral-300 text-neutral-500'
-          "
         >
-          <div class="flex w-full items-center justify-between">
-            <div class="flex flex-row items-center gap-2">
-              <div
-                class="h-10 w-10 rounded-full p-2 text-center"
-                [ngClass]="type() === unitType ? 'bg-primary-200' : 'bg-neutral-200/80'"
-              >
-                <span
-                  class="material-symbols-outlined"
-                  [ngClass]="type() === unitType ? 'text-primary-700' : 'bg-neutral-200/20'"
-                  >{{ unitType === BatchType.HYDROGEN ? ICONS.HYDROGEN_PRODUCTION : ICONS.POWER_PRODUCTION }}</span
-                >
-              </div>
-              <span class="text-base text-neutral-700">{{ unitType | prettyEnum | titlecase }}</span>
-            </div>
+          <div
+            class="flex size-10 items-center justify-center rounded-full border group-hover:border-primary-200 group-hover:bg-primary-100"
+            [ngClass]="type() === unitType ? 'border-primary-200 bg-primary-100' : 'border-neutral-200 bg-neutral-100'"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary-600"
+              [ngClass]="type() === unitType ? 'text-primary-600' : 'text-neutral-400'"
+            >
+              {{ unitType === BatchType.HYDROGEN ? ICONS.HYDROGEN_PRODUCTION : ICONS.POWER_PRODUCTION }}
+            </span>
           </div>
+          <span class="text-base text-neutral-700">{{ unitType | prettyEnum | titlecase }} production data</span>
         </div>
       }
     </div>
   }
 
-  @if (type(); as type) {
-    <div class="flex flex-col gap-4 rounded-lg bg-white p-4" formArrayName="files">
-      <span>CSV files</span>
+  <div class="flex flex-col gap-4 rounded-lg bg-white p-4" formArrayName="files">
+    <span>CSV files</span>
 
-      <app-file-drag-and-drop
-        [acceptedFileTypes]="FileTypes.CSV"
-        (fileSelected)="addFileFormWithUnit($event, files)"
-        [disabled]="!selectedTypeControl.value"
-      ></app-file-drag-and-drop>
+    <div
+      class="flex rounded-lg p-4"
+      [ngClass]="!type() ? 'bg-neutral-100 text-neutral-400' : 'bg-primary-100 text-neutral-600'"
+    >
+      <span class="material-symbols-outlined pr-2">lightbulb_2</span>
+
+      <span>
+        Upload comma-delimited CSV files with a header row. Required columns: <strong>time</strong>,
+        <strong>amount</strong> for power data and <strong>time</strong>, <strong>amount</strong>,
+        <strong>power</strong> for hydrogen data.
+      </span>
+    </div>
+
+    <app-file-drag-and-drop
+      [acceptedFileTypes]="FileTypes.CSV"
+      (fileSelected)="addFileFormWithUnit($event, files)"
+      [disabled]="!type()"
+    ></app-file-drag-and-drop>
+
+    @if (type(); as type) {
       @if (files.controls.length !== 0) {
         @for (file of files.controls; track file; let i = $index) {
           <div [formGroupName]="i" class="rounded-md bg-neutral-100 p-4">
@@ -86,8 +86,8 @@
       } @else {
         <span class="text-sm text-neutral-500">No file selected.</span>
       }
-    </div>
-  }
+    }
+  </div>
 
   <div class="col-span-2 flex justify-end gap-4 rounded-lg bg-white p-4">
     <button mat-flat-button (click)="submit()" [disabled]="form.invalid">Submit</button>

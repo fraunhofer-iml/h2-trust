@@ -36,7 +36,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
 import { CsvContentType } from '@h2-trust/api';
-import { BatchType, FileUploadKeys } from '@h2-trust/domain';
+import { BatchType } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
 import { FileForm } from './file-upload.form';
 
@@ -131,9 +131,10 @@ export class ProductionCsvUploadComponent {
     this.form.controls.files.controls.forEach((control) => {
       const file: File | null = control.controls.file.value;
       const unitId = control.value.unitId;
+
       if (file && unitId) {
-        data.append(FileUploadKeys.POWER_PRODUCTION, file);
-        data.append('powerProductionUnitIds', unitId);
+        data.append('files', file);
+        data.append('unitIds', unitId);
       }
     });
 
