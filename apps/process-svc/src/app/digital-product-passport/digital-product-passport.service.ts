@@ -18,7 +18,6 @@ import {
   RedComplianceEntity,
 } from '@h2-trust/amqp';
 import { PowerType, RfnboType } from '@h2-trust/domain';
-import { assertValidEnum } from '@h2-trust/utils';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { createProofOfOrigin, getHydrogenBottlingCompositions } from './proof-of-origin/proof-of-origin.service';
 import { createProofOfSustainability } from './proof-of-sustainability/proof-of-sustainability.service';
@@ -38,8 +37,6 @@ export class DigitalProductPassportService {
    * @returns The calculated RFNBO type.
    */
   public getRfnboType(productionChain: ProductionChainEntity): RfnboType {
-    assertValidEnum(productionChain.powerProduction.batch.qualityDetails.powerType, PowerType);
-
     const redCompliance: RedComplianceEntity = determineRedCompliance(
       productionChain.hydrogenRootProduction,
       productionChain.powerProduction,

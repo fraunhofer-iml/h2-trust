@@ -20,7 +20,7 @@ import {
   UserEntity,
 } from '@h2-trust/amqp';
 import { BatchType, HydrogenColor, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
-import { assertValidEnum, DateTimeUtil } from '@h2-trust/utils';
+import { DateTimeUtil } from '@h2-trust/utils';
 import { AccountingPeriod, ProcessStepParams } from './production.types';
 import { ProductionUtils } from './utils/production.utils';
 
@@ -31,7 +31,6 @@ export class ProductionAssembler {
     entity: CreateProductionEntity,
     productionUnitsForId: Map<string, ConcreteUnitEntity>,
   ): ProcessStepEntity[] {
-    assertValidEnum(entity.powerType, PowerType);
     const powerProductionUnit: PowerProductionUnitEntity = productionUnitsForId.get(
       entity.powerProductionUnitId,
     ) as PowerProductionUnitEntity;
@@ -90,7 +89,6 @@ export class ProductionAssembler {
     waterConsumptions: ProcessStepEntity[],
     productionUnitsForId: Map<string, ConcreteUnitEntity>,
   ): ProcessStepEntity[] {
-    assertValidEnum(powerProductions[0]?.batch?.qualityDetails?.powerType, PowerType);
     const hydrogenProductionUnit: HydrogenProductionUnitEntity = productionUnitsForId.get(
       entity.hydrogenProductionUnitId,
     ) as HydrogenProductionUnitEntity;

@@ -17,7 +17,6 @@ import {
   PowerType,
   ProcessType,
 } from '@h2-trust/domain';
-import { assertValidEnum } from '@h2-trust/utils';
 
 export function computeHydrogenStorageEmissionCalculations(
   hydrogenProduction: ProcessStepEntity,
@@ -25,8 +24,6 @@ export function computeHydrogenStorageEmissionCalculations(
   if (hydrogenProduction?.type !== ProcessType.HYDROGEN_PRODUCTION) {
     return [];
   }
-  assertValidEnum(hydrogenProduction.batch.qualityDetails.powerType, PowerType);
-
   const powerType: PowerType = hydrogenProduction.batch.qualityDetails.powerType as PowerType;
   const emissionFactor = EmissionNumericConstants.POWER_TYPE_EMISSION_FACTORS[powerType];
 
