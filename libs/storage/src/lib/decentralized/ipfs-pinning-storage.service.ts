@@ -12,7 +12,7 @@ import { Logger } from '@nestjs/common';
 import { ContentType } from '../content-types';
 import { DecentralizedStorageService } from './decentralized-storage.service';
 
-export class FilebaseStorageService extends DecentralizedStorageService {
+export class IpfsPinningStorageService extends DecentralizedStorageService {
   private readonly logger = new Logger(this.constructor.name);
   private readonly client: S3Client;
 
@@ -25,7 +25,7 @@ export class FilebaseStorageService extends DecentralizedStorageService {
 
     this.client = new S3Client(s3ClientConfig);
 
-    this.logger.debug('🔗 Filebase is used for decentralized file storage.');
+    this.logger.debug('🔗 IPFS pinning service is used for decentralized file storage.');
     this.logger.debug(`🌐 Endpoint URL: ${this.s3ClientConfig.endpoint}`);
     this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
   }
@@ -49,10 +49,10 @@ export class FilebaseStorageService extends DecentralizedStorageService {
     );
 
     if (!cid) {
-      throw new Error(`Filebase did not return a CID for file: ${fileName}`);
+      throw new Error(`IPFS pinning service did not return a CID for file: ${fileName}`);
     }
 
-    this.logger.debug(`Added file ${fileName} to Filebase with CID: ${cid}`);
+    this.logger.debug(`Added file ${fileName} to IPFS pinning service with CID: ${cid}`);
 
     return cid;
   }

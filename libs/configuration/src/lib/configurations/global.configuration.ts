@@ -12,8 +12,8 @@ import { requireEnv } from '../util';
 
 export const GLOBAL_CONFIGURATION_IDENTIFIER = 'global-configuration';
 export const DECENTRALIZED_STORAGE_PROVIDERS = {
-  KUBO: 'kubo',
-  FILEBASE: 'filebase',
+  IPFS_NATIVE: 'ipfs-native',
+  IPFS_PINNING: 'ipfs-pinning',
 } as const;
 
 export interface GlobalConfiguration {
@@ -38,18 +38,18 @@ export interface S3StorageConfiguration {
   bucketName: string;
 }
 
-export interface KuboStorageConfiguration {
-  provider: typeof DECENTRALIZED_STORAGE_PROVIDERS.KUBO;
+export interface IpfsNativeStorageConfiguration {
+  provider: typeof DECENTRALIZED_STORAGE_PROVIDERS.IPFS_NATIVE;
   endpointUrl: string;
   explorerUrl: string;
 }
 
-export interface FilebaseStorageConfiguration extends S3StorageConfiguration {
-  provider: typeof DECENTRALIZED_STORAGE_PROVIDERS.FILEBASE;
+export interface IpfsPinningStorageConfiguration extends S3StorageConfiguration {
+  provider: typeof DECENTRALIZED_STORAGE_PROVIDERS.IPFS_PINNING;
   explorerUrl: string;
 }
 
-export type DecentralizedStorageConfiguration = KuboStorageConfiguration | FilebaseStorageConfiguration;
+export type DecentralizedStorageConfiguration = IpfsNativeStorageConfiguration | IpfsPinningStorageConfiguration;
 
 export interface BlockchainConfiguration {
   enabled: boolean;
@@ -100,15 +100,15 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
 function buildDecentralizedStorageConfig(): DecentralizedStorageConfiguration {
   const provider = requireEnv('DECENTRALIZED_STORAGE_PROVIDER');
 
-  if (provider === DECENTRALIZED_STORAGE_PROVIDERS.KUBO) {
+  if (provider === DECENTRALIZED_STORAGE_PROVIDERS.IPFS_NATIVE) {
     return {
       provider,
       endpointUrl: requireEnv('DECENTRALIZED_STORAGE_ENDPOINT_URL'),
       explorerUrl: requireEnv('DECENTRALIZED_STORAGE_EXPLORER_URL'),
-    } satisfies KuboStorageConfiguration;
+    } satisfies IpfsNativeStorageConfiguration;
   }
 
-  if (provider === DECENTRALIZED_STORAGE_PROVIDERS.FILEBASE) {
+  if (provider === DECENTRALIZED_STORAGE_PROVIDERS.IPFS_PINNING) {
     return {
       provider,
       endpointUrl: requireEnv('DECENTRALIZED_STORAGE_ENDPOINT_URL'),
@@ -117,7 +117,7 @@ function buildDecentralizedStorageConfig(): DecentralizedStorageConfiguration {
       accessKey: requireEnv('DECENTRALIZED_STORAGE_ACCESS_KEY'),
       secretKey: requireEnv('DECENTRALIZED_STORAGE_SECRET_KEY'),
       bucketName: requireEnv('DECENTRALIZED_STORAGE_BUCKET_NAME'),
-    } satisfies FilebaseStorageConfiguration;
+    } satisfies IpfsPinningStorageConfiguration;
   }
 
   throw new Error(`Unsupported decentralized storage provider: ${provider}`);

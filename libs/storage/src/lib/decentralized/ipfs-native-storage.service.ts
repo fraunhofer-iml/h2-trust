@@ -11,7 +11,7 @@ import { Logger } from '@nestjs/common';
 import { ContentType } from '../content-types';
 import { DecentralizedStorageService } from './decentralized-storage.service';
 
-export class KuboStorageService extends DecentralizedStorageService {
+export class IpfsNativeStorageService extends DecentralizedStorageService {
   private readonly logger = new Logger(this.constructor.name);
 
   constructor(
@@ -20,7 +20,7 @@ export class KuboStorageService extends DecentralizedStorageService {
   ) {
     super();
 
-    this.logger.debug('🔗 Kubo is used for decentralized file storage.');
+    this.logger.debug('🔗 IPFS native node is used for decentralized file storage.');
     this.logger.debug(`🌐 Endpoint URL: ${this.endpointUrl}`);
     this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
   }
@@ -35,13 +35,12 @@ export class KuboStorageService extends DecentralizedStorageService {
       body: formData,
     });
 
-
     if (!addResponse.ok) {
-      throw new Error(`Kubo add failed: ${addResponse.status} ${await addResponse.text()}`);
+      throw new Error(`IPFS add failed: ${addResponse.status} ${await addResponse.text()}`);
     }
 
     const { Hash: cid } = (await addResponse.json()) as { Hash: string };
-    this.logger.debug(`Added file ${fileName} to Kubo with CID: ${cid}`);
+    this.logger.debug(`Added file ${fileName} to IPFS with CID: ${cid}`);
 
     const cpUrl = this.buildUrlWithPath(`files/cp?arg=/ipfs/${cid}&arg=/${fileName}`);
     const cpResponse = await fetch(cpUrl, {
@@ -51,7 +50,7 @@ export class KuboStorageService extends DecentralizedStorageService {
     if (!cpResponse.ok) {
       const text = await cpResponse.text();
       if (!text.includes('already has entry')) {
-        throw new Error(`Kubo files/cp failed: ${cpResponse.status} ${text}`);
+        throw new Error(`IPFS files/cp failed: ${cpResponse.status} ${text}`);
       }
     }
 
@@ -65,11 +64,11 @@ export class KuboStorageService extends DecentralizedStorageService {
     });
 
     if (!response.ok) {
-      throw new Error(`Kubo files/read failed: ${response.status} ${await response.text()}`);
+      throw new Error(`IPFS files/read failed: ${response.status} ${await response.text()}`);
     }
 
     if (!response.body) {
-      throw new Error(`Kubo files/read failed: response body is empty for file: ${fileName}`);
+      throw new Error(`IPFS files/read failed: response body is empty for file: ${fileName}`);
     }
 
     return Readable.fromWeb(response.body as ReadableStream<Uint8Array>);

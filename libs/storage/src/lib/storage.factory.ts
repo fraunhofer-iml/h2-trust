@@ -11,8 +11,8 @@ import { ConfigurationService, DECENTRALIZED_STORAGE_PROVIDERS, S3StorageConfigu
 import { CentralizedStorageService } from './centralized/centralized-storage.service';
 import { S3StorageService } from './centralized/s3-storage.service';
 import { DecentralizedStorageService } from './decentralized/decentralized-storage.service';
-import { FilebaseStorageService } from './decentralized/filebase-storage.service';
-import { KuboStorageService } from './decentralized/kubo-storage.service';
+import { IpfsNativeStorageService } from './decentralized/ipfs-native-storage.service';
+import { IpfsPinningStorageService } from './decentralized/ipfs-pinning-storage.service';
 
 export function createCentralizedStorageService(configService: ConfigurationService): CentralizedStorageService {
   const config = configService.getGlobalConfiguration().centralizedStorage;
@@ -24,14 +24,14 @@ export function createDecentralizedStorageService(configService: ConfigurationSe
   const config = configService.getGlobalConfiguration().decentralizedStorage;
 
   switch (config.provider) {
-    case DECENTRALIZED_STORAGE_PROVIDERS.KUBO:
-      return new KuboStorageService(config.endpointUrl, config.explorerUrl);
-    case DECENTRALIZED_STORAGE_PROVIDERS.FILEBASE: {
+    case DECENTRALIZED_STORAGE_PROVIDERS.IPFS_NATIVE:
+      return new IpfsNativeStorageService(config.endpointUrl, config.explorerUrl);
+    case DECENTRALIZED_STORAGE_PROVIDERS.IPFS_PINNING: {
       const s3ClientConfig = buildS3ClientConfig(config, false);
-      return new FilebaseStorageService(s3ClientConfig, config.bucketName, config.explorerUrl);
+      return new IpfsPinningStorageService(s3ClientConfig, config.bucketName, config.explorerUrl);
     }
     default:
-      throw new Error(`Unsupported decentralized storage provider: ${(config as any).provider}`);
+      throw new Error(`Unreachable: unhandled provider '${(config as any).provider}'`);
   }
 }
 
