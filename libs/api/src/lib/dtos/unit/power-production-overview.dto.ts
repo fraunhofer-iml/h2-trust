@@ -7,7 +7,6 @@
  */
 
 import { PowerProductionUnitEntity } from '@h2-trust/amqp';
-import { EnumLabelMapper } from '../../labels';
 
 export class PowerProductionOverviewDto {
   id: string;
@@ -27,11 +26,11 @@ export class PowerProductionOverviewDto {
   }
 
   static fromEntity(unit: PowerProductionUnitEntity): PowerProductionOverviewDto {
-    return <PowerProductionOverviewDto>{
+    return {
       id: unit.id,
       name: unit.name,
       ratedPower: unit.ratedPower,
-      typeName: unit.type?.name ? EnumLabelMapper.getPowerProductionType(unit.type.name) : undefined,
+      typeName: unit.type?.name ?? undefined,
       producing: true,
       active: unit.active,
     };
