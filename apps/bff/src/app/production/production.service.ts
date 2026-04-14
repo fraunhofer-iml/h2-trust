@@ -153,7 +153,7 @@ export class ProductionService {
       throw new BadRequestException(`Missing file for ${type} production.`);
     }
 
-    const normalizedUnitIds = Array.isArray(unitIds) ? unitIds : [unitIds];
+    const normalizedUnitIds: string[] = Array.isArray(unitIds) ? unitIds : [unitIds];
 
     if (normalizedUnitIds.length < files.length) {
       throw new BadRequestException(
