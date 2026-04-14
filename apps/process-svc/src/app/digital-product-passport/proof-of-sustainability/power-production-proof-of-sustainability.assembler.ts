@@ -32,6 +32,7 @@ export function assemblePowerSupplyEmissionCalculation(
   if (powerProduction?.type !== ProcessType.POWER_PRODUCTION) {
     throw new Error(`Invalid process step type [${powerProduction?.type}] for power supply emission calculation`);
   }
+
   const power = powerProduction.batch.amount;
   const powerInput = `Power Input: ${power} ${MeasurementUnit.KWH}`;
   const powerType: PowerType = powerProduction.batch.qualityDetails.powerType as PowerType;
