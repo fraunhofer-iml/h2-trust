@@ -84,7 +84,7 @@ services:
         condition: service_healthy
 
   keycloak:
-    image: quay.io/keycloak/keycloak:26.5
+    image: quay.io/keycloak/keycloak:26.6
     restart: unless-stopped
     depends_on:
       postgres:

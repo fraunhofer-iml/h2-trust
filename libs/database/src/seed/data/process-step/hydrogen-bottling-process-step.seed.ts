@@ -8,7 +8,6 @@
 
 import { ProcessStep } from '@prisma/client';
 import { ProcessType } from '@h2-trust/domain';
-import { HydrogenBottlingBatchSeed } from '../batch';
 import { HydrogenStorageUnitSeed } from '../unit';
 import { UserSeed } from '../user.seed';
 
@@ -18,7 +17,7 @@ export const HydrogenBottlingProcessStepSeed: readonly ProcessStep[] = Object.fr
     type: ProcessType.HYDROGEN_BOTTLING,
     startedAt: new Date('2025-10-01T20:01:02.000Z'),
     endedAt: new Date('2025-10-01T20:01:02.000Z'),
-    batchId: HydrogenBottlingBatchSeed[0].id,
+    batchId: 'batch-hydrogen-bottled-0',
     userId: UserSeed[1].id,
     unitId: HydrogenStorageUnitSeed[0].id,
   },
@@ -27,7 +26,7 @@ export const HydrogenBottlingProcessStepSeed: readonly ProcessStep[] = Object.fr
     type: ProcessType.HYDROGEN_BOTTLING,
     startedAt: new Date('2025-10-03T13:11:41.000Z'),
     endedAt: new Date('2025-10-03T13:11:41.000Z'),
-    batchId: HydrogenBottlingBatchSeed[1].id,
+    batchId: 'batch-hydrogen-bottled-1',
     userId: UserSeed[1].id,
     unitId: HydrogenStorageUnitSeed[0].id,
   },
@@ -36,7 +35,7 @@ export const HydrogenBottlingProcessStepSeed: readonly ProcessStep[] = Object.fr
     type: ProcessType.HYDROGEN_BOTTLING,
     startedAt: new Date('2025-10-03T14:12:13.000Z'),
     endedAt: new Date('2025-10-03T14:12:13.000Z'),
-    batchId: HydrogenBottlingBatchSeed[2].id,
+    batchId: 'batch-hydrogen-bottled-2',
     userId: UserSeed[1].id,
     unitId: HydrogenStorageUnitSeed[0].id,
   },

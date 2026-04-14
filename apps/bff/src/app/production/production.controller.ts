@@ -159,12 +159,12 @@ export class ProductionController {
     description: 'Search by production unit name or ID. Omit for all units',
     required: false,
   })
-  readHydrogenProductionsStatisticsByOwner(
+  assembleHydrogenProductionsStatisticsByOwner(
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
     @Query('month') month: Date,
     @Query('unitName') unitName: string,
   ): Promise<ProductionStatisticsDto> {
-    return this.service.readHydrogenProductionStatistics(authenticatedUser.sub, unitName, month);
+    return this.service.assembleHydrogenProductionStatistics(authenticatedUser.sub, unitName, month);
   }
 
   @Get('csv')

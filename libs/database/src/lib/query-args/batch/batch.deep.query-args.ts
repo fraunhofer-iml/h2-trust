@@ -8,7 +8,7 @@
 
 import { Prisma } from '@prisma/client';
 import { companyNestedQueryArgs } from '../company/company.nested.query-args';
-import { hydrogenStorageUnitNestedQueryArgs } from '../unit/unit.nested.query-args';
+import { hydrogenStorageUnitNestedQueryArgs } from '../unit';
 import { batchNestedQueryArgs } from './batch.nested.query-args';
 
 export const batchDeepQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()({

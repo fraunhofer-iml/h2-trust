@@ -6,77 +6,120 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
-import { ProvenanceEntity, RedComplianceEntity } from '@h2-trust/amqp';
-import { MatchedProductionPair } from './matched-production-pair';
-import { RedCompliancePairingService } from './red-compliance-pairing.service';
 import {
-  areUnitsInSameBiddingZone,
-  hasFinancialSupport,
-  isWithinTimeCorrelation,
-  meetsAdditionalityCriterion,
-} from './red-compliance.flags';
+  HydrogenProductionUnitEntity,
+  PowerProductionUnitEntity,
+  ProcessStepEntity,
+  ProductionChainEntity,
+  RedComplianceEntity,
+} from '@h2-trust/amqp';
+import { BiddingZone } from '@h2-trust/domain';
+import { assertBoolean, assertDefined, DateTimeUtil } from '@h2-trust/utils';
 
-@Injectable()
-export class RedComplianceService {
-  constructor(private readonly redCompliancePairingService: RedCompliancePairingService) {}
-
-  async determineRedCompliance(processStepId: string, provenance: ProvenanceEntity): Promise<RedComplianceEntity> {
-    if (!provenance || !provenance.powerProductions?.length || !provenance.hydrogenProductions?.length) {
-      throw new RpcException(
-        `Provenance or required productions (power/hydrogen) are missing for processStepId [${processStepId}]`,
-      );
-    }
-
-    const pairs: MatchedProductionPair[] = await this.redCompliancePairingService.buildMatchedPairs(
-      provenance.powerProductions,
-      provenance.hydrogenProductions,
-      processStepId,
+export function determineRedCompliance(
+  hydrogenProdution: ProcessStepEntity,
+  powerProduction: ProcessStepEntity,
+): RedComplianceEntity {
+  if (!hydrogenProdution?.executedBy || !powerProduction?.executedBy) {
+    throw new RpcException(
+      `The passed-in power production or hydrogen production do not have an executedBy unit specified.`,
     );
-
-    return this.evaluateCompliance(pairs);
   }
+  const powerProductionUnit: PowerProductionUnitEntity = powerProduction.executedBy as PowerProductionUnitEntity;
+  const hydrogenProductionUnit: HydrogenProductionUnitEntity =
+    hydrogenProdution.executedBy as HydrogenProductionUnitEntity;
 
-  private evaluateCompliance(pairs: MatchedProductionPair[]): RedComplianceEntity {
-    let isGeoCorrelationValid = true;
-    let isTimeCorrelationValid = true;
-    let isAdditionalityFulfilled = true;
-    let isFinancialSupportReceived = true;
+  const isGeoCorrelationValid = areUnitsInSameBiddingZone(powerProductionUnit, hydrogenProductionUnit);
+  const isTimeCorrelationValid = isWithinTimeCorrelation(powerProduction, hydrogenProdution);
+  const isAdditionalityFulfilled = meetsAdditionalityCriterion(powerProductionUnit, hydrogenProductionUnit);
+  const isFinancialSupportReceived = hasFinancialSupport(powerProductionUnit);
 
-    for (const pair of pairs) {
-      const powerProductionUnit = pair.power.unit;
-      const hydrogenProductionUnit = pair.hydrogen.unit;
+  return new RedComplianceEntity(
+    isGeoCorrelationValid,
+    isTimeCorrelationValid,
+    isAdditionalityFulfilled,
+    isFinancialSupportReceived,
+  );
+}
 
-      if (!powerProductionUnit || !hydrogenProductionUnit) {
-        const expectedPowerUnitId = pair.power.processStep.executedBy?.id;
-        const expectedHydrogenUnitId = pair.hydrogen.processStep.executedBy?.id;
-        throw new HttpException(
-          `Production units not found: powerUnitId [${expectedPowerUnitId}] or hydrogenUnitId [${expectedHydrogenUnitId}]`,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
+export function determineTotalRedCompliance(productionChains: ProductionChainEntity[]): RedComplianceEntity {
+  let isGeoCorrelationValid = true;
+  let isTimeCorrelationValid = true;
+  let isAdditionalityFulfilled = true;
+  let isFinancialSupportReceived = true;
 
-      isGeoCorrelationValid &&= areUnitsInSameBiddingZone(powerProductionUnit, hydrogenProductionUnit);
-      isTimeCorrelationValid &&= isWithinTimeCorrelation(pair.power.processStep, pair.hydrogen.processStep);
-      isAdditionalityFulfilled &&= meetsAdditionalityCriterion(powerProductionUnit, hydrogenProductionUnit);
-      isFinancialSupportReceived &&= hasFinancialSupport(powerProductionUnit);
-
-      if (
-        !isGeoCorrelationValid &&
-        !isTimeCorrelationValid &&
-        !isAdditionalityFulfilled &&
-        !isFinancialSupportReceived
-      ) {
-        break;
-      }
-    }
-
-    return new RedComplianceEntity(
-      isGeoCorrelationValid,
-      isTimeCorrelationValid,
-      isAdditionalityFulfilled,
-      isFinancialSupportReceived,
+  for (const productionChain of productionChains) {
+    isGeoCorrelationValid &&= areUnitsInSameBiddingZone(
+      productionChain.powerProductionUnit,
+      productionChain.hydrogenProductionUnit,
     );
+    isTimeCorrelationValid &&= isWithinTimeCorrelation(
+      productionChain.powerProduction,
+      productionChain.hydrogenRootProduction,
+    );
+    isAdditionalityFulfilled &&= meetsAdditionalityCriterion(
+      productionChain.powerProductionUnit,
+      productionChain.hydrogenProductionUnit,
+    );
+    isFinancialSupportReceived &&= hasFinancialSupport(productionChain.powerProductionUnit);
+  }
+  return new RedComplianceEntity(
+    isGeoCorrelationValid,
+    isTimeCorrelationValid,
+    isAdditionalityFulfilled,
+    isFinancialSupportReceived,
+  );
+}
+
+export function areUnitsInSameBiddingZone(
+  powerUnit: PowerProductionUnitEntity,
+  hydrogenUnit: HydrogenProductionUnitEntity,
+): boolean {
+  const powerUnitZone: BiddingZone = powerUnit?.biddingZone;
+  const hydrogenUnitZone: BiddingZone = hydrogenUnit?.biddingZone;
+  assertValidBiddingZone(powerUnitZone, 'powerUnit.biddingZone');
+  assertValidBiddingZone(hydrogenUnitZone, 'hydrogenUnit.biddingZone');
+  return powerUnitZone === hydrogenUnitZone;
+}
+
+export function isWithinTimeCorrelation(
+  powerProduction: ProcessStepEntity,
+  hydrogenProduction: ProcessStepEntity,
+): boolean {
+  const powerStartedAt = DateTimeUtil.toValidDate(powerProduction?.startedAt, 'powerProduction.startedAt');
+  const hydrogenStartedAt = DateTimeUtil.toValidDate(hydrogenProduction?.startedAt, 'hydrogenProduction.startedAt');
+
+  // Rounding to the same hour and comparing
+  const msPerHour = 60 * 60 * 1000;
+  const powerHour = Math.floor(powerStartedAt.getTime() / msPerHour);
+  const hydrogenHour = Math.floor(hydrogenStartedAt.getTime() / msPerHour);
+  return powerHour === hydrogenHour;
+}
+
+export function meetsAdditionalityCriterion(
+  powerUnit: PowerProductionUnitEntity,
+  hydrogenUnit: HydrogenProductionUnitEntity,
+): boolean {
+  const powerCommissioning = DateTimeUtil.toValidDate(powerUnit?.commissionedOn, 'powerUnit.commissionedOn');
+  const hydrogenCommissioning = DateTimeUtil.toValidDate(hydrogenUnit?.commissionedOn, 'hydrogenUnit.commissionedOn');
+
+  // Limit date: 36 months prior to commissioning of the hydrogen production unit
+  const limitDate = DateTimeUtil.subtractMonthsSafe(hydrogenCommissioning, 36);
+
+  // Power generation must not occur BEFORE this limit date (i.e., it must be >=).
+  return powerCommissioning >= limitDate;
+}
+
+export function hasFinancialSupport(powerUnit: PowerProductionUnitEntity): boolean {
+  assertBoolean(powerUnit?.financialSupportReceived, 'powerUnit.financialSupportReceived');
+  return !powerUnit.financialSupportReceived;
+}
+
+export function assertValidBiddingZone(zone: unknown, name: string): asserts zone is BiddingZone {
+  assertDefined(zone, name);
+  if (!Object.values(BiddingZone).includes(zone as BiddingZone)) {
+    throw new HttpException(`Invalid BiddingZone: ${name}: ${zone}`, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }
