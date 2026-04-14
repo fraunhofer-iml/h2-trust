@@ -13,6 +13,7 @@ import { S3StorageService } from './centralized/s3-storage.service';
 import { DecentralizedStorageService } from './decentralized/decentralized-storage.service';
 import { IpfsNativeStorageService } from './decentralized/ipfs-native-storage.service';
 import { IpfsPinningStorageService } from './decentralized/ipfs-pinning-storage.service';
+import { DisabledDecentralizedStorageService } from './decentralized/disabled-decentralized-storage.service';
 
 export function createCentralizedStorageService(configService: ConfigurationService): CentralizedStorageService {
   const config = configService.getGlobalConfiguration().centralizedStorage;
@@ -21,17 +22,21 @@ export function createCentralizedStorageService(configService: ConfigurationServ
 }
 
 export function createDecentralizedStorageService(configService: ConfigurationService): DecentralizedStorageService {
-  const config = configService.getGlobalConfiguration().decentralizedStorage;
+  const { featureFlags, decentralizedStorage } = configService.getGlobalConfiguration();
 
-  switch (config.provider) {
+  if (!featureFlags.verificationEnabled) {
+    return new DisabledDecentralizedStorageService();
+  }
+
+  switch (decentralizedStorage.provider) {
     case DECENTRALIZED_STORAGE_PROVIDERS.IPFS_NATIVE:
-      return new IpfsNativeStorageService(config.endpointUrl, config.explorerUrl);
+      return new IpfsNativeStorageService(decentralizedStorage.endpointUrl, decentralizedStorage.explorerUrl);
     case DECENTRALIZED_STORAGE_PROVIDERS.IPFS_PINNING: {
-      const s3ClientConfig = buildS3ClientConfig(config, false);
-      return new IpfsPinningStorageService(s3ClientConfig, config.bucketName, config.explorerUrl);
+      const s3ClientConfig = buildS3ClientConfig(decentralizedStorage, false);
+      return new IpfsPinningStorageService(s3ClientConfig, decentralizedStorage.bucketName, decentralizedStorage.explorerUrl);
     }
     default:
-      throw new Error(`Unreachable: unhandled provider '${(config as any).provider}'`);
+      throw new Error(`Unreachable: unhandled provider '${(decentralizedStorage as any).provider}'`);
   }
 }
 

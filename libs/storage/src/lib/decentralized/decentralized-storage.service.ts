@@ -10,7 +10,7 @@ import { Readable } from 'stream';
 import { ContentType } from '../content-types';
 
 export abstract class DecentralizedStorageService {
-  abstract readonly explorerUrl: string;
+  abstract readonly explorerUrl: string | null;
 
   abstract uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<string>;
 

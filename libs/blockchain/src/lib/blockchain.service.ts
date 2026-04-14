@@ -53,18 +53,17 @@ export class BlockchainService {
     const { featureFlags, blockchain } = configurationService.getGlobalConfiguration();
 
     if (featureFlags.verificationEnabled) {
-      this.endpointUrl = blockchain.endpointUrl;
-      this.explorerUrl = blockchain.explorerUrl;
-      this.smartContractAddress = blockchain.smartContractAddress;
+      // blockchain is guaranteed to be defined when verificationEnabled is true (set together in config)
+      this.endpointUrl = blockchain!.endpointUrl;
+      this.explorerUrl = blockchain!.explorerUrl;
+      this.smartContractAddress = blockchain!.smartContractAddress;
 
       this.logger.debug('🔗 Blockchain service initialized. Proofs will be stored and retrieved.');
       this.logger.debug(`🌐 Endpoint URL: ${this.endpointUrl}`);
       this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
       this.logger.debug(`📄 Smart Contract Address: ${this.smartContractAddress}`);
 
-      this.contract = this.createContract(blockchain.artifactPath, blockchain.privateKey);
-    } else {
-      this.logger.debug('⛓️‍💥 Blockchain service not initialized: verification is disabled.');
+      this.contract = this.createContract(blockchain!.artifactPath, blockchain!.privateKey);
     }
   }
 
