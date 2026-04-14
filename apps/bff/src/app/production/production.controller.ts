@@ -18,7 +18,7 @@ import {
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -207,14 +207,15 @@ export class ProductionController {
   }
 
   @Post('csv/import')
-  @UseInterceptors(FileFieldsInterceptor([{ name: 'files' }]))
+  @UseInterceptors(FilesInterceptor('files'))
   importCsvFile(
-    @Body() _dto: ProductionCSVUploadDto,
+    @Body() dto: ProductionCSVUploadDto,
     @UploadedFiles()
-    _files: Express.Multer.File[],
-    @AuthenticatedUser() _user: AuthenticatedKCUser,
+    files: Express.Multer.File[],
+    @AuthenticatedUser() user: AuthenticatedKCUser,
   ) {
-    throw new NotImplementedException();
+    // TODO-LG: adjust this endpoint (DUHGW-421)
+    return this.service.importCsvFiles(files, files, dto, user.sub);
   }
 
   @Post('csv/submit')
