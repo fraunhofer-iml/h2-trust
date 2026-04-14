@@ -112,16 +112,28 @@ export class ProductionService {
   }
 
   async importCsvFiles(
-    powerProductionFiles: Express.Multer.File[],
-    hydrogenProductionFiles: Express.Multer.File[],
+    powerProductionFiles: Express.Multer.File[] | Express.Multer.File,
+    hydrogenProductionFiles: Express.Multer.File[] | Express.Multer.File,
     dto: ProductionCSVUploadDto,
     userId: string,
   ) {
-    const powerProductions = await this.uploadAndMapFilesToUnits(dto.unitIds, powerProductionFiles, BatchType.POWER);
+    const normalizedPowerProductionFiles = Array.isArray(powerProductionFiles)
+      ? powerProductionFiles
+      : [powerProductionFiles];
+
+    const powerProductions = await this.uploadAndMapFilesToUnits(
+      dto.unitIds,
+      normalizedPowerProductionFiles,
+      BatchType.POWER,
+    );
+
+    const normalizedHydrogenProductionFiles = Array.isArray(hydrogenProductionFiles)
+      ? hydrogenProductionFiles
+      : [hydrogenProductionFiles];
 
     const hydrogenProductions = await this.uploadAndMapFilesToUnits(
       dto.unitIds,
-      hydrogenProductionFiles,
+      normalizedHydrogenProductionFiles,
       BatchType.HYDROGEN,
     );
 
