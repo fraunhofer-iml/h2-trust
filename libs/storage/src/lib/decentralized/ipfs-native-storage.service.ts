@@ -20,7 +20,7 @@ export class IpfsNativeStorageService extends DecentralizedStorageService {
   ) {
     super();
 
-    this.logger.debug('🔗 IPFS native node is used for decentralized file storage.');
+    this.logger.debug('🔗 Feature verification is enabled: IPFS native node is used for decentralized file storage.');
     this.logger.debug(`🌐 Endpoint URL: ${this.endpointUrl}`);
     this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
   }

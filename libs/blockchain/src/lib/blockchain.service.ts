@@ -58,14 +58,14 @@ export class BlockchainService {
       this.explorerUrl = verification!.blockchain.explorerUrl;
       this.smartContractAddress = verification!.blockchain.smartContractAddress;
 
-      this.logger.debug('🔗 Blockchain is used for proof storage and retrieval.');
+      this.logger.debug('🔗 Feature verification is enabled: Blockchain is used for proof storage.');
       this.logger.debug(`🌐 Endpoint URL: ${this.endpointUrl}`);
       this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
       this.logger.debug(`📄 Smart Contract Address: ${this.smartContractAddress}`);
 
       this.contract = this.createContract(verification!.blockchain.artifactPath, verification!.blockchain.privateKey);
     } else {
-      this.logger.debug('⛓️‍💥 Blockchain is disabled. Proofs will not be stored or retrieved.');
+      this.logger.debug('⛓️‍💥 Feature verification is disabled: Blockchain will not be used.');
     }
   }
 
@@ -81,7 +81,7 @@ export class BlockchainService {
 
   async storeProofs(proofEntries: ProofEntry[]): Promise<string | null> {
     if (!this.contract) {
-      throw new Error('BlockchainService not initialized: verification is disabled.');
+      throw new Error('Feature verification is disabled: BlockchainService not initialized.');
     }
 
     this.logger.debug(`📝 Storing proofs:\n${proofEntries.map((e) => JSON.stringify(e)).join('\n')}`);
@@ -95,7 +95,7 @@ export class BlockchainService {
 
   async retrieveProof(uuid: string): Promise<ProofEntity | null> {
     if (!this.contract) {
-      throw new Error('BlockchainService not initialized: verification is disabled.');
+      throw new Error('Feature verification is disabled: BlockchainService not initialized.');
     }
 
     this.logger.debug(`🔍 Retrieving proof: ${uuid}`);
@@ -114,7 +114,7 @@ export class BlockchainService {
 
   async retrieveBlockchainMetadata(transactionHash: string): Promise<BlockchainMetadata | null> {
     if (!this.contract) {
-      throw new Error('BlockchainService not initialized: verification is disabled.');
+      throw new Error('Feature verification is disabled: BlockchainService not initialized.');
     }
 
     const receipt = await this.contract.runner.provider.getTransactionReceipt(transactionHash);

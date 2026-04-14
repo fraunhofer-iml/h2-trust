@@ -25,7 +25,7 @@ export class IpfsPinningStorageService extends DecentralizedStorageService {
 
     this.client = new S3Client(s3ClientConfig);
 
-    this.logger.debug('🔗 IPFS pinning service is used for decentralized file storage.');
+    this.logger.debug('🔗 Feature verification is enabled: IPFS pinning service is used for decentralized file storage.');
     this.logger.debug(`🌐 Endpoint URL: ${this.s3ClientConfig.endpoint}`);
     this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
   }
