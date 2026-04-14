@@ -75,7 +75,7 @@ export class ProductionStagingService {
     csvDocuments: CsvDocumentEntity[],
   ): Promise<void> {
     if (!this.blockchainService.verificationEnabled) {
-      this.logger.debug(`⏭️ Blockchain disabled, skipping proof storage of ${documentProofs.length} entries`);
+      this.logger.debug(`⏭️ Verification disabled, skipping proof storage of ${documentProofs.length} entries`);
       return;
     }
 
