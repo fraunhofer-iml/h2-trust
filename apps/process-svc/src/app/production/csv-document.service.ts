@@ -24,7 +24,7 @@ export class CsvDocumentService {
     private readonly csvImportRepository: CsvImportRepository,
     private readonly centralizedStorageService: CentralizedStorageService,
     private readonly decentralizedStorageService: DecentralizedStorageService,
-  ) { }
+  ) {}
 
   async findByCompany(payload: ReadByIdPayload): Promise<CsvDocumentEntity[]> {
     return this.csvImportRepository.findAllCsvDocumentsByCompanyId(payload.id);
@@ -142,7 +142,8 @@ export class CsvDocumentService {
     cid: string | null,
   ): VerifyCsvDocumentIntegrityResultEntity {
     const { verificationEnabled } = this.featureFlagService;
-    const ipfsExplorerUrl = verificationEnabled && cid ? `${this.decentralizedStorageService.explorerUrl}/${cid}` : null;
+    const ipfsExplorerUrl =
+      verificationEnabled && cid ? `${this.decentralizedStorageService.explorerUrl}/${cid}` : null;
     const blockchainExplorerUrl =
       verificationEnabled && transactionHash ? `${this.blockchainService.explorerUrl}/${transactionHash}` : null;
     const network = verificationEnabled ? this.blockchainService.endpointUrl : null;

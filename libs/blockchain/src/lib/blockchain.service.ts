@@ -104,7 +104,10 @@ export class BlockchainService {
       return new ProofEntity(uuid, proof.hash, proof.cid);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      this.logger.error(`Retrieve failed for '${uuid}': ${errorMessage}`, error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        `Retrieve failed for '${uuid}': ${errorMessage}`,
+        error instanceof Error ? error.stack : undefined,
+      );
       return null;
     }
   }

@@ -338,7 +338,9 @@ describe('CsvDocumentService', () => {
       expect(actualResult.documentId).toBe(givenDocument.id);
       expect(actualResult.fileName).toBe(givenDocument.fileName);
       expect(actualResult.transactionHash).toBe(givenDocument.transactionHash);
-      expect(actualResult.message).toContain(`Csv file with name ${givenDocument.fileName} does not exist in storage, cannot verify file.`);
+      expect(actualResult.message).toContain(
+        `Csv file with name ${givenDocument.fileName} does not exist in storage, cannot verify file.`,
+      );
       expect(actualResult.blockNumber).toBeNull();
       expect(actualResult.blockTimestamp).toBeNull();
       expect(actualResult.network).toBe(blockchainServiceMock.endpointUrl);

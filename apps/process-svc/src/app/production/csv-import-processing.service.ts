@@ -9,12 +9,12 @@
 import { Injectable } from '@nestjs/common';
 import { AccountingPeriodHydrogen, AccountingPeriodPower, UnitAccountingPeriods, UnitFileImport } from '@h2-trust/amqp';
 import { HashUtil } from '@h2-trust/blockchain';
+import { ConfigurationService } from '@h2-trust/configuration';
 import { CreateCsvDocumentInput } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
 import { CentralizedStorageService, ContentType, DecentralizedStorageService } from '@h2-trust/storage';
 import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
 import { ParsedImport } from './production.types';
-import { ConfigurationService } from '@h2-trust/configuration';
 
 @Injectable()
 export class CsvImportProcessingService {

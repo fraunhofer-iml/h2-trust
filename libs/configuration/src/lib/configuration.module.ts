@@ -9,11 +9,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ConfigurationService } from './configuration.service';
-import { FeatureFlagService } from './feature-flag.service';
 import bffConfiguration from './configurations/bff.configuration';
 import generalSvcConfiguration from './configurations/general-svc.configuration';
 import globalConfiguration from './configurations/global.configuration';
 import processSvcConfiguration from './configurations/process-svc.configuration';
+import { FeatureFlagService } from './feature-flag.service';
 import { KeycloakConfigurationService } from './keycloak.configuration.service';
 
 @Module({

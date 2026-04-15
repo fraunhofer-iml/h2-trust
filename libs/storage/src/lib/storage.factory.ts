@@ -35,7 +35,11 @@ export function createDecentralizedStorageService(configService: ConfigurationSe
       return new IpfsNativeStorageService(decentralizedStorage.endpointUrl, decentralizedStorage.explorerUrl);
     case DECENTRALIZED_STORAGE_PROVIDERS.IPFS_PINNING: {
       const s3ClientConfig = buildS3ClientConfig(decentralizedStorage, false);
-      return new IpfsPinningStorageService(s3ClientConfig, decentralizedStorage.bucketName, decentralizedStorage.explorerUrl);
+      return new IpfsPinningStorageService(
+        s3ClientConfig,
+        decentralizedStorage.bucketName,
+        decentralizedStorage.explorerUrl,
+      );
     }
     default:
       throw new Error(`Unreachable: unhandled provider '${(decentralizedStorage as any).provider}'`);

@@ -17,7 +17,7 @@ import {
   ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
-import { ConfigurationService, CentralizedStorageConfiguration } from '@h2-trust/configuration';
+import { CentralizedStorageConfiguration, ConfigurationService } from '@h2-trust/configuration';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
 import { ProcessType, RfnboType } from '@h2-trust/domain';
 
@@ -78,7 +78,8 @@ export class ProcessStepService {
 
   private assembleDocuments(processStep: ProcessStepEntity): DocumentEntity[] {
     const documents: DocumentEntity[] = [];
-    const configuration: CentralizedStorageConfiguration = this.configurationService.getGlobalConfiguration().centralizedStorage;
+    const configuration: CentralizedStorageConfiguration =
+      this.configurationService.getGlobalConfiguration().centralizedStorage;
 
     processStep.documents?.forEach((document) => {
       if (document.fileName) {

@@ -9,7 +9,11 @@
 import { LogLevel } from '@nestjs/common';
 import { registerAs } from '@nestjs/config';
 import { requireEnv } from '../util';
-import { buildVerificationConfiguration, S3Configuration, VerificationConfiguration } from './features/verification.configuration';
+import {
+  buildVerificationConfiguration,
+  S3Configuration,
+  VerificationConfiguration,
+} from './features/verification.configuration';
 
 export const GLOBAL_CONFIGURATION_IDENTIFIER = 'global-configuration';
 
@@ -27,7 +31,7 @@ export interface AmqpConfiguration {
   queuePrefix: string;
 }
 
-export interface CentralizedStorageConfiguration extends S3Configuration {}
+export type CentralizedStorageConfiguration = S3Configuration
 
 export interface KeycloakConfiguration {
   url: string;

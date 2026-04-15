@@ -12,20 +12,20 @@ import { ContentType } from '../content-types';
 import { DecentralizedStorageService } from './decentralized-storage.service';
 
 export class DisabledDecentralizedStorageService extends DecentralizedStorageService {
-    private readonly logger = new Logger(this.constructor.name);
+  private readonly logger = new Logger(this.constructor.name);
 
-    readonly explorerUrl: string | null = null;
+  readonly explorerUrl: string | null = null;
 
-    constructor() {
-        super();
-        this.logger.debug('⛓️‍💥 Decentralized storage disabled.');
-    }
+  constructor() {
+    super();
+    this.logger.debug('⛓️‍💥 Decentralized storage disabled.');
+  }
 
-    async uploadFile(_fileName: string, _file: Buffer, _contentType: ContentType): Promise<string> {
-        throw new Error('Upload failed: decentralized storage service not initialized.');
-    }
+  async uploadFile(_fileName: string, _file: Buffer, _contentType: ContentType): Promise<string> {
+    throw new Error('Upload failed: decentralized storage service not initialized.');
+  }
 
-    async downloadFile(_fileName: string): Promise<Readable> {
-        throw new Error('Download failed: decentralized storage service not initialized.');
-    }
+  async downloadFile(_fileName: string): Promise<Readable> {
+    throw new Error('Download failed: decentralized storage service not initialized.');
+  }
 }

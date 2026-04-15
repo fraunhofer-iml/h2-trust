@@ -48,20 +48,21 @@ export class IpfsNativeStorageService extends DecentralizedStorageService {
 
     const { Hash: cid } = (await response.json()) as { Hash: string };
     this.logger.debug(`Uploaded '${fileName}', CID: ${cid}`);
-    
+
     return cid;
   }
 
   private async copyToMfs(fileName: string, cid: string): Promise<void> {
     // Copy the file to the MFS (Mutable File System) path for name-based lookup in downloadFile.
-    const response = await this.fetchWithTimeout(
-      this.buildUrlWithPath(`files/cp?arg=/ipfs/${cid}&arg=/${fileName}`),
-      { method: 'POST' },
-    );
+    const response = await this.fetchWithTimeout(this.buildUrlWithPath(`files/cp?arg=/ipfs/${cid}&arg=/${fileName}`), {
+      method: 'POST',
+    });
 
     if (!response.ok) {
       const text = await response.text();
-      this.logger.warn(`MFS copy failed (${response.status}) for '${fileName}', file may already exist. Response: ${text}`);
+      this.logger.warn(
+        `MFS copy failed (${response.status}) for '${fileName}', file may already exist. Response: ${text}`,
+      );
     }
   }
 
