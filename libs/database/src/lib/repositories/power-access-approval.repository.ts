@@ -13,7 +13,7 @@ import { PrismaService } from '../prisma.service';
 import { powerAccessApprovalDeepQueryArgs } from '../query-args/power-access-approval/power-access-approval.deep.query-args';
 
 @Injectable()
-export class PowerAccessApprovalRepository {
+export class PowerPurchaseAgreementRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findAll(producerId: string, _status: PowerPurchaseAgreementStatus): Promise<PowerPurchaseAgreementEntity[]> {

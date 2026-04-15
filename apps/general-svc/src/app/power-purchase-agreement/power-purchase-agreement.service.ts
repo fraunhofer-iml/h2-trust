@@ -6,33 +6,33 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerAccessApprovalRepository, UserRepository } from 'libs/database/src/lib';
+import { PowerPurchaseAgreementRepository, UserRepository } from 'libs/database/src/lib';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import {
   BrokerException,
-  PowerAccessApprovalEntity,
   PowerProductionUnitEntity,
+  PowerPurchaseAgreementEntity,
   ReadByIdPayload,
   ReadPowerAccessApprovalsPayload,
   UserEntity,
 } from '@h2-trust/amqp';
-import { PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
+import { PowerProductionType, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 
 @Injectable()
-export class PowerAccessApprovalService {
+export class PowerPurchaseAgreementService {
   constructor(
-    private readonly powerAccessApprovalRepository: PowerAccessApprovalRepository,
+    private readonly powerPurchaseAgreementRepository: PowerPurchaseAgreementRepository,
     private readonly userRepository: UserRepository,
   ) {}
 
-  async findAll(payload: ReadPowerAccessApprovalsPayload): Promise<PowerAccessApprovalEntity[]> {
+  async findAll(payload: ReadPowerAccessApprovalsPayload): Promise<PowerPurchaseAgreementEntity[]> {
     const user: UserEntity = await this.userRepository.findUser(payload.userId);
-    return this.powerAccessApprovalRepository.findAll(user.company.id, payload.powerAccessApprovalStatus);
+    return this.powerPurchaseAgreementRepository.findAll(user.company.id, payload.powerAccessApprovalStatus);
   }
 
   async findApprovedGridPowerProductionUnitByUserId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity> {
     const approvals = await this.findAll(
-      new ReadPowerAccessApprovalsPayload(payload.id, PowerAccessApprovalStatus.APPROVED),
+      new ReadPowerAccessApprovalsPayload(payload.id, PowerPurchaseAgreementStatus.APPROVED),
     );
 
     const approvalForGrid = approvals.find(

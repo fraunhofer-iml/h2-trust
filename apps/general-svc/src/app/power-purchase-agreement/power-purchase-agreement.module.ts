@@ -8,12 +8,12 @@
 
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '@h2-trust/database';
-import { PowerAccessApprovalController } from './power-access-approval.controller';
-import { PowerAccessApprovalService } from './power-access-approval.service';
+import { PowerPurchaseAgreementController } from './power-purchase-agreement.controller';
+import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 
 @Module({
   imports: [DatabaseModule],
-  controllers: [PowerAccessApprovalController],
-  providers: [PowerAccessApprovalService],
+  controllers: [PowerPurchaseAgreementController],
+  providers: [PowerPurchaseAgreementService],
 })
-export class PowerAccessApprovalModule {}
+export class PowerPurchaseAgreementModule {}
