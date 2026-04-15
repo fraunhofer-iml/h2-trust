@@ -79,7 +79,7 @@ export class BlockchainService {
     return new Contract(this.smartContractAddress, abi, signer) as unknown as ProofStorageContract;
   }
 
-  async storeProofs(proofEntries: ProofEntry[]): Promise<string | null> {
+  async storeProofs(proofEntries: ProofEntry[]): Promise<string> {
     if (!this.contract) {
       throw new Error('Store failed: blockchain service not initialized.');
     }
