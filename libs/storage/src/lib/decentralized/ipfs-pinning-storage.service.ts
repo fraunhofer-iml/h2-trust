@@ -25,9 +25,9 @@ export class IpfsPinningStorageService extends DecentralizedStorageService {
 
     this.client = new S3Client(s3ClientConfig);
 
-    this.logger.debug('🔗 Feature verification is enabled: IPFS pinning service is used for decentralized file storage.');
-    this.logger.debug(`🌐 Endpoint URL: ${this.s3ClientConfig.endpoint}`);
-    this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
+    this.logger.debug('🔗 IPFS pinning service initialized.');
+    this.logger.debug(`🌐 Endpoint: ${this.s3ClientConfig.endpoint}`);
+    this.logger.debug(`🧭 Explorer: ${this.explorerUrl}`);
   }
 
   async uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<string> {
@@ -55,10 +55,10 @@ export class IpfsPinningStorageService extends DecentralizedStorageService {
     }
 
     if (!cid) {
-      throw new Error(`IPFS pinning service did not return a CID for file: ${fileName}`);
+      throw new Error(`Upload failed: no CID returned for '${fileName}'`);
     }
 
-    this.logger.debug(`Added file ${fileName} to IPFS pinning service with CID: ${cid}`);
+    this.logger.debug(`Uploaded '${fileName}', CID: ${cid}`);
 
     return cid;
   }
@@ -67,7 +67,7 @@ export class IpfsPinningStorageService extends DecentralizedStorageService {
     const response = await this.client.send(new GetObjectCommand({ Bucket: this.bucketName, Key: fileName }));
 
     if (!response.Body) {
-      throw new Error(`Download failed: empty response body for file: ${fileName}`);
+      throw new Error(`Download failed: empty response body for '${fileName}'`);
     }
 
     return Readable.fromWeb(response.Body.transformToWebStream() as ReadableStream<Uint8Array>);
