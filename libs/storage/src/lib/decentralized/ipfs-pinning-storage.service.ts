@@ -32,21 +32,27 @@ export class IpfsPinningStorageService extends DecentralizedStorageService {
 
   async uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<string> {
     // Fresh client per upload: each call gets an isolated middleware stack, preventing CID captures from interfering across concurrent uploads.
+    // Download uses the shared this.client because no middleware is needed there.
     const uploadClient = new S3Client(this.s3ClientConfig);
     let cid: string | undefined;
 
     uploadClient.middlewareStack.add(
       (next) => async (args) => {
         const result = await next(args);
+        // The pinning service returns the IPFS CID in the x-amz-meta-cid response header after a successful upload.
         cid = (result.response as any).headers?.['x-amz-meta-cid'];
         return result;
       },
       { step: 'deserialize' },
     );
 
-    await uploadClient.send(
-      new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: contentType }),
-    );
+    try {
+      await uploadClient.send(
+        new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: contentType }),
+      );
+    } finally {
+      uploadClient.destroy();
+    }
 
     if (!cid) {
       throw new Error(`IPFS pinning service did not return a CID for file: ${fileName}`);
@@ -64,6 +70,6 @@ export class IpfsPinningStorageService extends DecentralizedStorageService {
       throw new Error(`Download failed: empty response body for file: ${fileName}`);
     }
 
-    return response.Body as Readable;
+    return Readable.fromWeb(response.Body.transformToWebStream() as ReadableStream<Uint8Array>);
   }
 }
