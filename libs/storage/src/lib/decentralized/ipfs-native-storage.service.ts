@@ -12,6 +12,7 @@ import { ContentType } from '../content-types';
 import { DecentralizedStorageService } from './decentralized-storage.service';
 
 export class IpfsNativeStorageService extends DecentralizedStorageService {
+  private static readonly API_BASE = '/api/v0';
   private readonly logger = new Logger(this.constructor.name);
 
   constructor(
@@ -26,11 +27,14 @@ export class IpfsNativeStorageService extends DecentralizedStorageService {
   }
 
   async uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<string> {
+    // Convert the file buffer to a Uint8Array for IPFS upload
+    const fileView = new Uint8Array(file.buffer as ArrayBuffer, file.byteOffset, file.byteLength);
     const formData = new FormData();
-    formData.append('file', new Blob([new Uint8Array(file)], { type: contentType }), fileName);
+    formData.append('file', new Blob([fileView], { type: contentType }), fileName);
 
+    // Add the file to IPFS and get the CID (Content Identifier)
     const addUrl = this.buildUrlWithPath('add?pin=true');
-    const addResponse = await fetch(addUrl, {
+    const addResponse = await this.fetchWithTimeout(addUrl, {
       method: 'POST',
       body: formData,
     });
@@ -42,16 +46,15 @@ export class IpfsNativeStorageService extends DecentralizedStorageService {
     const { Hash: cid } = (await addResponse.json()) as { Hash: string };
     this.logger.debug(`Added file ${fileName} to IPFS with CID: ${cid}`);
 
+    // Copy the file to the MFS (Mutable File System) path
     const cpUrl = this.buildUrlWithPath(`files/cp?arg=/ipfs/${cid}&arg=/${fileName}`);
-    const cpResponse = await fetch(cpUrl, {
+    const cpResponse = await this.fetchWithTimeout(cpUrl, {
       method: 'POST',
     });
 
     if (!cpResponse.ok) {
       const text = await cpResponse.text();
-      if (!text.includes('already has entry')) {
-        throw new Error(`IPFS files/cp failed: ${cpResponse.status} ${text}`);
-      }
+      this.logger.warn(`IPFS files/cp failed: ${cpResponse.status}, file with CID ${cid} may already exist. Response: ${text}`);
     }
 
     return cid;
@@ -59,7 +62,7 @@ export class IpfsNativeStorageService extends DecentralizedStorageService {
 
   async downloadFile(fileName: string): Promise<Readable> {
     const url = this.buildUrlWithPath(`files/read?arg=/${fileName}`);
-    const response = await fetch(url, {
+    const response = await this.fetchWithTimeout(url, {
       method: 'POST',
     });
 
@@ -67,14 +70,27 @@ export class IpfsNativeStorageService extends DecentralizedStorageService {
       throw new Error(`IPFS files/read failed: ${response.status} ${await response.text()}`);
     }
 
-    if (!response.body) {
-      throw new Error(`IPFS files/read failed: response body is empty for file: ${fileName}`);
-    }
-
     return Readable.fromWeb(response.body as ReadableStream<Uint8Array>);
   }
 
   private buildUrlWithPath(path: string): string {
-    return `${this.endpointUrl}/api/v0/${path}`;
+    return `${this.endpointUrl}${IpfsNativeStorageService.API_BASE}/${path}`;
+  }
+
+  private async fetchWithTimeout(url: string, init: RequestInit): Promise<Response> {
+    const controller = new AbortController();
+    const timeoutMs = 15_000; // 15 seconds
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+      return await fetch(url, { ...init, signal: controller.signal });
+    } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error(`IPFS request timed out after ${timeoutMs}ms: ${url}`);
+      }
+      throw error;
+    } finally {
+      clearTimeout(timer);
+    }
   }
 }
