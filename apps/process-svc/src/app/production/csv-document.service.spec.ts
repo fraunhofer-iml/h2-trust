@@ -14,7 +14,7 @@ import { FeatureFlagService } from '@h2-trust/configuration';
 import { CsvImportRepository } from '@h2-trust/database';
 import { BatchType, CsvDocumentIntegrityStatus } from '@h2-trust/domain';
 import { CsvDocumentEntityFixture, ProofEntityFixture } from '@h2-trust/fixtures';
-import { DecentralizedStorageService } from '@h2-trust/storage';
+import { CentralizedStorageService, DecentralizedStorageService } from '@h2-trust/storage';
 import { CsvDocumentService } from './csv-document.service';
 
 describe('CsvDocumentService', () => {
@@ -50,6 +50,10 @@ describe('CsvDocumentService', () => {
         {
           provide: CsvImportRepository,
           useValue: csvImportRepositoryMock,
+        },
+        {
+          provide: CentralizedStorageService,
+          useValue: storageServiceMock,
         },
         {
           provide: DecentralizedStorageService,
@@ -157,7 +161,7 @@ describe('CsvDocumentService', () => {
       expect(actualResult.blockchainExplorerUrl).toBe(
         `${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`,
       );
-      expect(actualResult.message).toContain('verified successfully');
+      expect(actualResult.message).toContain('The file matches the registered proof.');
     });
 
     it(`returns ${CsvDocumentIntegrityStatus.MISMATCH} when hash verification fails`, async () => {
@@ -202,7 +206,7 @@ describe('CsvDocumentService', () => {
       expect(actualResult.blockchainExplorerUrl).toBe(
         `${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`,
       );
-      expect(actualResult.message).toContain('mismatch');
+      expect(actualResult.message).toContain('The file does not match the registered proof.');
       expect(blockchainServiceMock.retrieveBlockchainMetadata).toHaveBeenCalledWith(givenDocument.transactionHash);
     });
 
@@ -229,7 +233,7 @@ describe('CsvDocumentService', () => {
       expect(actualResult.documentId).toBe(givenDocument.id);
       expect(actualResult.fileName).toBe(givenDocument.fileName);
       expect(actualResult.transactionHash).toBe(givenDocument.transactionHash);
-      expect(actualResult.message).toContain('Blockchain integration is disabled');
+      expect(actualResult.message).toContain('Blockchain integration disabled, cannot verify file integrity.');
       expect(actualResult.blockNumber).toBeNull();
       expect(actualResult.blockTimestamp).toBeNull();
       expect(actualResult.network).toBeNull();
@@ -334,7 +338,7 @@ describe('CsvDocumentService', () => {
       expect(actualResult.documentId).toBe(givenDocument.id);
       expect(actualResult.fileName).toBe(givenDocument.fileName);
       expect(actualResult.transactionHash).toBe(givenDocument.transactionHash);
-      expect(actualResult.message).toContain(`File with name ${givenDocument.fileName} does not exist`);
+      expect(actualResult.message).toContain(`Csv file with name ${givenDocument.fileName} does not exist in storage, cannot verify file.`);
       expect(actualResult.blockNumber).toBeNull();
       expect(actualResult.blockTimestamp).toBeNull();
       expect(actualResult.network).toBe(blockchainServiceMock.endpointUrl);

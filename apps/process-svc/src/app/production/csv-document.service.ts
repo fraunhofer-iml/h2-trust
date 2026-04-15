@@ -44,7 +44,7 @@ export class CsvDocumentService {
     }
 
     if (!this.featureFlagService.verificationEnabled) {
-      const message = 'Verification feature is disabled, cannot verify file integrity.';
+      const message = 'Blockchain integration disabled, cannot verify file integrity.';
       return this.createFailedResult(csvDocument.id, csvDocument.fileName, message, csvDocument.transactionHash);
     }
 
