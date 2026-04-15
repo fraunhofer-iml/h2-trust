@@ -50,7 +50,7 @@ export class BatchEntity {
   }
 
   static fromDeepDatabase(batch: BatchDeepDbType): BatchEntity {
-    assertValidEnum(batch.type, BatchType);
+    assertValidEnum(batch.type, BatchType, 'BatchType');
     return new BatchEntity(
       batch.id,
       batch.active,
@@ -70,7 +70,7 @@ export class BatchEntity {
   }
 
   static fromNestedDatabase(batch: BatchNestedDbType): BatchEntity {
-    assertValidEnum(batch.type, BatchType);
+    assertValidEnum(batch.type, BatchType, 'BatchType');
     return new BatchEntity(
       batch.id,
       batch.active,
@@ -90,7 +90,7 @@ export class BatchEntity {
   }
 
   static fromFlatDatabase(batch: BatchFlatDbType): BatchEntity {
-    assertValidEnum(batch.type, BatchType);
+    assertValidEnum(batch.type, BatchType, 'BatchType');
     return new BatchEntity(
       batch.id,
       batch.active,

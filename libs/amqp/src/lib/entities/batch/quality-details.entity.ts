@@ -24,9 +24,9 @@ export class QualityDetailsEntity {
   }
 
   static fromDatabase(qualityDetails: QualityDetailsDbType): QualityDetailsEntity {
-    assertValidEnum(qualityDetails.color, HydrogenColor);
-    assertValidEnum(qualityDetails.rfnboType, RfnboType);
-    assertValidEnum(qualityDetails.powerType, PowerType);
+    assertValidEnum(qualityDetails.color, HydrogenColor, 'HydrogenColor');
+    assertValidEnum(qualityDetails.rfnboType, RfnboType, 'RfnboType');
+    assertValidEnum(qualityDetails.powerType, PowerType, 'PowerType');
 
     return new QualityDetailsEntity(
       qualityDetails.id,

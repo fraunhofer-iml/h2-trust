@@ -16,6 +16,7 @@ import {
   ProofOfOriginSubClassificationEntity,
   ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/amqp';
+import { EnumLabelMapper } from '@h2-trust/api';
 import { BatchType, HydrogenColor, HydrogenProductionMethod, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentDto } from '../general-information';
 import { BatchDto } from './batch.dto';
@@ -93,7 +94,7 @@ export class SectionDto {
       this.fromEmissionEntity(batch.deionizedWaterEmission),
     );
 
-    const measurementUnit = batch.batchType;
+    const measurementUnit = EnumLabelMapper.getMeasurementUnit(batch.batchType);
 
     return new WaterBatchDto(batch.id, emission, batch.createdAt, batch.amount, measurementUnit, waterDetails);
   }
@@ -108,7 +109,7 @@ export class SectionDto {
       emission,
       batch.createdAt,
       batch.amount,
-      batch.batchType,
+      EnumLabelMapper.getMeasurementUnit(batch.batchType),
       batch.producer ?? '',
       batch.unitId ?? '',
       HydrogenProductionMethod.ELECTROLYSIS,
@@ -133,7 +134,7 @@ export class SectionDto {
       classification.amount,
       batches,
       classifications,
-      classification.classificationType,
+      EnumLabelMapper.getMeasurementUnit(classification.classificationType),
       classification.classificationType,
     );
   }

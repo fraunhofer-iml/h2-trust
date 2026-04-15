@@ -41,7 +41,7 @@ export class CompanyEntity {
   }
 
   static fromDeepDatabase(company: CompanyDeepDbType): CompanyEntity {
-    assertValidEnum(company.type, CompanyType);
+    assertValidEnum(company.type, CompanyType, 'CompanyType');
     return new CompanyEntity(
       company.id,
       company.name,
@@ -54,7 +54,7 @@ export class CompanyEntity {
   }
 
   static fromNestedDatabase(company: CompanyNestedDbType): CompanyEntity {
-    assertValidEnum(company.type, CompanyType);
+    assertValidEnum(company.type, CompanyType, 'CompanyType');
     return new CompanyEntity(
       company.id,
       company.name,
@@ -67,7 +67,7 @@ export class CompanyEntity {
   }
 
   static fromFlatDatabase(company: CompanyFlatDbType): CompanyEntity {
-    assertValidEnum(company.type, CompanyType);
+    assertValidEnum(company.type, CompanyType, 'CompanyType');
     return new CompanyEntity(
       company.id,
       company.name,
@@ -80,7 +80,7 @@ export class CompanyEntity {
   }
 
   static fromBaseType(company: CompanyDbBaseType): CompanyEntity {
-    assertValidEnum(company.type, CompanyType);
+    assertValidEnum(company.type, CompanyType, 'CompanyType');
     return new CompanyEntity(
       company.id,
       company.name,

@@ -50,7 +50,7 @@ export class ProcessStepEntity {
   }
 
   static fromDeepDatabase(processStep: ProcessStepDeepDbType): ProcessStepEntity {
-    assertValidEnum(processStep.type, ProcessType);
+    assertValidEnum(processStep.type, ProcessType, 'ProcessType');
     return new ProcessStepEntity(
       processStep.id,
       processStep.startedAt,

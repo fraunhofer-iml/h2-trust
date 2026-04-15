@@ -44,7 +44,7 @@ export class StagedProductionEntity {
   }
 
   static fromDeepDatabase(stagedProduction: StagedProductionDeepDbType) {
-    assertValidEnum(stagedProduction.powerProductionUnit.type.hydrogenColor, HydrogenColor);
+    assertValidEnum(stagedProduction.powerProductionUnit.type.hydrogenColor, HydrogenColor, 'HydrogenColor');
     return new StagedProductionEntity(
       stagedProduction.startedAt,
       stagedProduction.hydrogenAmount.toNumber(),

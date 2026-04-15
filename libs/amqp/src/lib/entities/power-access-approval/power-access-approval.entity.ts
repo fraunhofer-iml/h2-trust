@@ -41,7 +41,7 @@ export class PowerAccessApprovalEntity {
   }
 
   static fromDeepDatabase(powerAccessApproval: PowerAccessApprovalDeepDbType): PowerAccessApprovalEntity {
-    assertValidEnum(powerAccessApproval.status, PowerAccessApprovalStatus);
+    assertValidEnum(powerAccessApproval.status, PowerAccessApprovalStatus, 'PowerAccessApprovalStatus');
     return <PowerAccessApprovalEntity>{
       id: powerAccessApproval.id,
       decidedAt: powerAccessApproval.decidedAt,

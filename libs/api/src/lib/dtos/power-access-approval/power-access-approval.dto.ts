@@ -42,7 +42,7 @@ export class PowerAccessApprovalDto {
       powerProducer: powerAccessApproval.powerProducer,
       powerProductionUnit: PowerProductionOverviewDto.fromEntity(powerAccessApproval.powerProductionUnit),
       status: powerAccessApproval.status,
-      energySource: powerAccessApproval.powerProductionUnit.type?.energySource,
+      energySource: powerAccessApproval.powerProductionUnit.type.energySource,
     };
   }
 }

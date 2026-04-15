@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType, EnergySource, PowerType } from '@h2-trust/domain';
+import { BatchType, EnergySource, MeasurementUnit, PowerType } from '@h2-trust/domain';
 import { CompanyDtoMock } from '../../../company';
 import { PowerBatchDto } from '../power-batch.dto';
 import { EmissionMock } from './emissions.mock';
@@ -15,7 +15,7 @@ export const PowerBatchesMock: PowerBatchDto[] = [
   {
     id: 'power-batch-1-wind',
     amount: 30,
-    unit: BatchType.POWER,
+    unit: MeasurementUnit.KWH,
     accountingPeriodEnd: new Date(),
     createdAt: new Date(),
     emission: EmissionMock,
@@ -28,7 +28,7 @@ export const PowerBatchesMock: PowerBatchDto[] = [
   {
     id: 'power-batch-2-wind',
     amount: 30,
-    unit: BatchType.POWER,
+    unit: MeasurementUnit.KWH,
     accountingPeriodEnd: new Date(),
     createdAt: new Date(),
     emission: EmissionMock,
@@ -41,7 +41,7 @@ export const PowerBatchesMock: PowerBatchDto[] = [
   {
     id: 'power-batch-3-solar',
     amount: 30,
-    unit: BatchType.POWER,
+    unit: MeasurementUnit.KWH,
     accountingPeriodEnd: new Date(),
     createdAt: new Date(),
     emission: EmissionMock,
@@ -54,7 +54,7 @@ export const PowerBatchesMock: PowerBatchDto[] = [
   {
     id: 'power-batch-4-solar',
     amount: 30,
-    unit: BatchType.POWER,
+    unit: MeasurementUnit.KWH,
     accountingPeriodEnd: new Date(),
     createdAt: new Date(),
     emission: EmissionMock,

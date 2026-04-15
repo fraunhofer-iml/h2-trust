@@ -27,7 +27,7 @@ export class TransportationDetailsEntity {
     const fuelType = transportationDetails.fuelType?.toUpperCase() as FuelType;
     const validFuelType = Object.values(FuelType).includes(fuelType) ? fuelType : null;
 
-    assertValidEnum(transportationDetails.transportMode, TransportMode);
+    assertValidEnum(transportationDetails.transportMode, TransportMode, 'TransportMode');
 
     return new TransportationDetailsEntity(
       transportationDetails.id,

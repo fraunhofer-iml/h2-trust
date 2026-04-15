@@ -68,7 +68,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   }
 
   static fromDeepDatabase(baseUnit: BaseUnitDeepDbType): HydrogenStorageUnitEntity {
-    assertValidEnum(baseUnit.hydrogenStorageUnit?.type, HydrogenStorageType);
+    assertValidEnum(baseUnit.hydrogenStorageUnit?.type, HydrogenStorageType, 'HydrogenStorageType');
 
     return {
       ...BaseUnitEntity.fromDeepBaseUnit(baseUnit),
@@ -82,7 +82,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   }
 
   static fromNestedDatabase(baseUnit: BaseUnitNestedDbType): HydrogenStorageUnitEntity {
-    assertValidEnum(baseUnit.hydrogenStorageUnit?.type, HydrogenStorageType);
+    assertValidEnum(baseUnit.hydrogenStorageUnit?.type, HydrogenStorageType, 'HydrogenStorageType');
 
     return {
       ...BaseUnitEntity.fromNestedBaseUnit(baseUnit),
@@ -98,7 +98,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   static fromNestedHydrogenStorageUnit(
     nestedHydrogenStorageUnit: HydrogenStorageUnitNestedDbType,
   ): HydrogenStorageUnitEntity {
-    assertValidEnum(nestedHydrogenStorageUnit.type, HydrogenStorageType);
+    assertValidEnum(nestedHydrogenStorageUnit.type, HydrogenStorageType, 'HydrogenStorageType');
 
     return {
       ...BaseUnitEntity.fromFlatBaseUnit(nestedHydrogenStorageUnit.generalInfo),
@@ -116,9 +116,12 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   ): HydrogenComponentEntity[] {
     return (
       unit?.filling?.map((batch) => {
-        assertDefined(batch.batchDetails?.qualityDetails?.color, batch.id);
-        assertValidEnum(batch.batchDetails?.qualityDetails?.color, HydrogenColor);
-        assertValidEnum(batch.batchDetails.qualityDetails.rfnboType, RfnboType);
+        assertDefined(
+          batch.batchDetails?.qualityDetails?.color,
+          `batch.batchDetails.qualityDetails.color for batch ${batch.id}`,
+        );
+        assertValidEnum(batch.batchDetails?.qualityDetails?.color, HydrogenColor, 'HydrogenColor');
+        assertValidEnum(batch.batchDetails.qualityDetails.rfnboType, RfnboType, 'RfnboType');
 
         return new HydrogenComponentEntity(
           batch?.processStep?.id ?? null,
