@@ -18,7 +18,7 @@ export class DisabledDecentralizedStorageService extends DecentralizedStorageSer
 
     constructor() {
         super();
-        this.logger.debug('⛓️‍💥 Decentralized storage service disabled.');
+        this.logger.debug('⛓️‍💥 Decentralized storage disabled.');
     }
 
     async uploadFile(_fileName: string, _file: Buffer, _contentType: ContentType): Promise<string> {

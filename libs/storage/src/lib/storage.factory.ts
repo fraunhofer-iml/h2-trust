@@ -18,7 +18,7 @@ import { IpfsPinningStorageService } from './decentralized/ipfs-pinning-storage.
 export function createCentralizedStorageService(configService: ConfigurationService): CentralizedStorageService {
   const config = configService.getGlobalConfiguration().centralizedStorage;
   const s3ClientConfig = buildS3ClientConfig(config, true);
-  return new S3StorageService(s3ClientConfig, config.bucketName, config.endpointUrl);
+  return new S3StorageService(s3ClientConfig, config.bucketName);
 }
 
 export function createDecentralizedStorageService(configService: ConfigurationService): DecentralizedStorageService {

@@ -58,14 +58,14 @@ export class BlockchainService {
       this.explorerUrl = verification!.blockchain.explorerUrl;
       this.smartContractAddress = verification!.blockchain.smartContractAddress;
 
-      this.logger.debug('🔗 Blockchain service initialized.');
+      this.logger.debug('🔗 Blockchain initialized.');
       this.logger.debug(`🌐 Endpoint: ${this.endpointUrl}`);
       this.logger.debug(`🧭 Explorer: ${this.explorerUrl}`);
       this.logger.debug(`📄 Contract: ${this.smartContractAddress}`);
 
       this.contract = this.createContract(verification!.blockchain.artifactPath, verification!.blockchain.privateKey);
     } else {
-      this.logger.debug('⛓️‍💥 Blockchain service disabled.');
+      this.logger.debug('⛓️‍💥 Blockchain disabled.');
     }
   }
 

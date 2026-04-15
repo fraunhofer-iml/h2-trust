@@ -21,7 +21,7 @@ export class IpfsNativeStorageService extends DecentralizedStorageService {
   ) {
     super();
 
-    this.logger.debug('🔗 IPFS native node initialized.');
+    this.logger.debug('🔗 IPFS native initialized.');
     this.logger.debug(`🌐 Endpoint: ${this.endpointUrl}`);
     this.logger.debug(`🧭 Explorer: ${this.explorerUrl}`);
   }

@@ -19,17 +19,16 @@ export class S3StorageService extends CentralizedStorageService {
   public readonly baseUrl: string;
 
   constructor(
-    clientConfig: S3ClientConfig,
+    s3ClientConfig: S3ClientConfig,
     private readonly bucketName: string,
-    private readonly endpointUrl: string,
   ) {
     super();
 
-    this.client = new S3Client(clientConfig);
-    this.baseUrl = `${this.endpointUrl}/${this.bucketName}`;
+    this.client = new S3Client(s3ClientConfig);
+    this.baseUrl = `${s3ClientConfig.endpoint}/${this.bucketName}`;
 
-    this.logger.debug('🔗 S3 is used for centralized file storage.');
-    this.logger.debug(`🌐 Base URL: ${this.baseUrl}`);
+    this.logger.debug('🔗 S3 initialized.');
+    this.logger.debug(`🌐 Endpoint: ${this.baseUrl}`);
   }
 
   async uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<void> {
@@ -42,10 +41,10 @@ export class S3StorageService extends CentralizedStorageService {
     const response = await this.client.send(new GetObjectCommand({ Bucket: this.bucketName, Key: fileName }));
 
     if (!response.Body) {
-      throw new Error(`Download failed: empty response body for file: ${fileName}`);
+      throw new Error(`Download failed: empty response body for '${fileName}'`);
     }
 
-    return response.Body as Readable;
+    return Readable.fromWeb(response.Body.transformToWebStream() as ReadableStream<Uint8Array>);
   }
 
   async fileExists(fileName: string): Promise<boolean> {
