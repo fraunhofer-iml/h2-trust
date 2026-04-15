@@ -7,20 +7,10 @@
     </span>
   </div>
 
-  @if (useCSV) {
-    <app-production-csv-upload
-      [hydrogenProductionUnits]="hydrogenProductionQuery.data() ?? []"
-      [hydrogenStorageUnits]="hydrogenStorageQuery.data() ?? []"
-      [powerAccessApprovals]="approvalsQuery.data() ?? []"
-      (switchToForm)="useCSV = false"
-    >
-    </app-production-csv-upload>
-  } @else {
-    <app-production-form
-      [hydrogenProductionUnits]="hydrogenProductionQuery.data() ?? []"
-      [hydrogenStorageUnits]="hydrogenStorageQuery.data() ?? []"
-      [powerAccessApprovals]="approvalsQuery.data() ?? []"
-      (switchToUpload)="useCSV = true"
-    ></app-production-form>
-  }
+  <app-production-csv-upload
+    [hydrogenProductionUnits]="hydrogenProductionQuery.data() ?? []"
+    [hydrogenStorageUnits]="hydrogenStorageQuery.data() ?? []"
+    [powerAccessApprovals]="approvalsQuery.data() ?? []"
+  >
+  </app-production-csv-upload>
 </div>
