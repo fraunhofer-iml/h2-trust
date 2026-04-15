@@ -29,10 +29,12 @@ export class UnitsService {
   constructor(private readonly httpClient: HttpClient) {}
 
   getHydrogenProductionUnits() {
+    console.log('h2');
     return lastValueFrom(this.httpClient.get<HydrogenProductionOverviewDto[]>(API.UNITS.HYDROGEN_PRODUCTION.BASE));
   }
 
   getPowerProductionUnits() {
+    console.log('power');
     return lastValueFrom(this.httpClient.get<PowerProductionOverviewDto[]>(API.UNITS.POWER_PRODUCTION.BASE));
   }
 

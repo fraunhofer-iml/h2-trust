@@ -24,9 +24,7 @@ import { MeasurementUnit, PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { PowerAccessApprovalService } from '../../../shared/services/power-access-approvals/power-access-approvals.service';
 import { ProductionService } from '../../../shared/services/production/production.service';
-import { UnitsService } from '../../../shared/services/units/units.service';
 import { ProductionCsvUploadComponent } from './csv-upload/production-csv-upload.component';
-import { ProductionFormComponent } from './manual-data-imput/production-form.component';
 
 @Component({
   selector: 'app-add-production-data',
@@ -45,7 +43,6 @@ import { ProductionFormComponent } from './manual-data-imput/production-form.com
     MatIconModule,
     RouterModule,
     ProductionCsvUploadComponent,
-    ProductionFormComponent,
   ],
   templateUrl: './add-production-data.component.html',
 })
@@ -66,18 +63,5 @@ export class AddProductionDataComponent {
     },
   }));
 
-  hydrogenProductionQuery = injectQuery(() => ({
-    queryKey: ['h2-production'],
-    queryFn: async () => this.unitsService.getHydrogenProductionUnits(),
-  }));
-
-  hydrogenStorageQuery = injectQuery(() => ({
-    queryKey: ['h2-storage'],
-    queryFn: async () => this.unitsService.getHydrogenStorageUnits(),
-  }));
-
-  constructor(
-    private readonly unitsService: UnitsService,
-    private readonly powerAccessApprovalsService: PowerAccessApprovalService,
-  ) {}
+  constructor(private readonly powerAccessApprovalsService: PowerAccessApprovalService) {}
 }

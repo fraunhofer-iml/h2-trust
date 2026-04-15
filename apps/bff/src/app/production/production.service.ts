@@ -112,20 +112,28 @@ export class ProductionService {
   }
 
   async importCsvFiles(
-    powerProductionFiles: Express.Multer.File[],
-    hydrogenProductionFiles: Express.Multer.File[],
+    powerProductionFiles: Express.Multer.File[] | Express.Multer.File,
+    hydrogenProductionFiles: Express.Multer.File[] | Express.Multer.File,
     dto: ProductionCSVUploadDto,
     userId: string,
   ) {
+    const normalizedPowerProductionFiles = Array.isArray(powerProductionFiles)
+      ? powerProductionFiles
+      : [powerProductionFiles];
+
     const powerProductions = await this.uploadAndMapFilesToUnits(
-      dto.powerProductionUnitIds,
-      powerProductionFiles,
+      dto.unitIds,
+      normalizedPowerProductionFiles,
       BatchType.POWER,
     );
 
+    const normalizedHydrogenProductionFiles = Array.isArray(hydrogenProductionFiles)
+      ? hydrogenProductionFiles
+      : [hydrogenProductionFiles];
+
     const hydrogenProductions = await this.uploadAndMapFilesToUnits(
-      dto.hydrogenProductionUnitIds,
-      hydrogenProductionFiles,
+      dto.unitIds,
+      normalizedHydrogenProductionFiles,
       BatchType.HYDROGEN,
     );
 
@@ -157,7 +165,7 @@ export class ProductionService {
       throw new BadRequestException(`Missing file for ${type} production.`);
     }
 
-    const normalizedUnitIds = Array.isArray(unitIds) ? unitIds : [unitIds];
+    const normalizedUnitIds: string[] = Array.isArray(unitIds) ? unitIds : [unitIds];
 
     if (normalizedUnitIds.length < files.length) {
       throw new BadRequestException(
