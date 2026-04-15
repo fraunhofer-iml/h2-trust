@@ -32,7 +32,7 @@ export class TransportationDetailsEntity {
     return new TransportationDetailsEntity(
       transportationDetails.id,
       transportationDetails.distance.toNumber() ?? 0,
-      transportationDetails.transportMode as TransportMode,
+      transportationDetails.transportMode,
       validFuelType,
     );
   }

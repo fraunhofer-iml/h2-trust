@@ -77,7 +77,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       capacity: baseUnit.hydrogenStorageUnit?.capacity.toNumber() ?? 0,
       pressure: baseUnit.hydrogenStorageUnit?.pressure.toNumber() ?? 0,
       filling: baseUnit.hydrogenStorageUnit ? HydrogenStorageUnitEntity.mapFilling(baseUnit.hydrogenStorageUnit) : [],
-      type: baseUnit.hydrogenStorageUnit?.type as HydrogenStorageType,
+      type: baseUnit.hydrogenStorageUnit?.type,
     };
   }
 
@@ -91,7 +91,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       capacity: baseUnit.hydrogenStorageUnit?.capacity.toNumber() ?? 0,
       pressure: baseUnit.hydrogenStorageUnit?.pressure.toNumber() ?? 0,
       filling: baseUnit.hydrogenStorageUnit ? HydrogenStorageUnitEntity.mapFilling(baseUnit.hydrogenStorageUnit) : [],
-      type: baseUnit.hydrogenStorageUnit?.type as HydrogenStorageType,
+      type: baseUnit.hydrogenStorageUnit?.type,
     };
   }
 
@@ -107,7 +107,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       capacity: nestedHydrogenStorageUnit.capacity.toNumber() ?? 0,
       pressure: nestedHydrogenStorageUnit.pressure.toNumber() ?? 0,
       filling: HydrogenStorageUnitEntity.mapFilling(nestedHydrogenStorageUnit),
-      type: nestedHydrogenStorageUnit.type as HydrogenStorageType,
+      type: nestedHydrogenStorageUnit.type,
     };
   }
 
@@ -125,9 +125,9 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
 
         return new HydrogenComponentEntity(
           batch?.processStep?.id ?? null,
-          batch.batchDetails.qualityDetails.color as HydrogenColor,
+          batch.batchDetails.qualityDetails.color,
           batch.amount?.toNumber() ?? 0,
-          batch.batchDetails.qualityDetails.rfnboType as RfnboType,
+          batch.batchDetails.qualityDetails.rfnboType,
         );
       }) ?? []
     );

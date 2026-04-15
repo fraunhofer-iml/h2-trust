@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { EnumLabelMapper } from 'libs/api/src/lib/labels';
 import { BatchType, HydrogenColor, HydrogenProductionMethod, ProcessType, RfnboType } from '@h2-trust/domain';
 import { CompanyDtoMock } from '../../../company';
 import { HydrogenBatchDto } from '../hydrogen-batch.dto';
@@ -15,7 +16,7 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
   {
     id: 'hydrogen-batch-1',
     amount: 300,
-    unit: BatchType.HYDROGEN,
+    unit: EnumLabelMapper.getMeasurementUnit(BatchType.HYDROGEN),
     color: HydrogenColor.GREEN,
     createdAt: new Date(),
     accountingPeriodEnd: new Date(),
@@ -51,7 +52,7 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
   {
     id: 'hydrogen-batch-3',
     amount: 300,
-    unit: BatchType.HYDROGEN,
+    unit: EnumLabelMapper.getMeasurementUnit(BatchType.HYDROGEN),
     color: HydrogenColor.YELLOW,
     createdAt: new Date(),
     accountingPeriodEnd: new Date(),
@@ -69,7 +70,7 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
   {
     id: 'hydrogen-batch-4',
     amount: 600,
-    unit: BatchType.HYDROGEN,
+    unit: EnumLabelMapper.getMeasurementUnit(BatchType.HYDROGEN),
     color: HydrogenColor.MIX,
     createdAt: new Date(),
     emission: EmissionMock,

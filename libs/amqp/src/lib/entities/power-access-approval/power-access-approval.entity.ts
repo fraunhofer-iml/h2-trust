@@ -45,7 +45,7 @@ export class PowerAccessApprovalEntity {
     return <PowerAccessApprovalEntity>{
       id: powerAccessApproval.id,
       decidedAt: powerAccessApproval.decidedAt,
-      status: powerAccessApproval.status as PowerAccessApprovalStatus,
+      status: powerAccessApproval.status,
       powerProducer: CompanyEntity.fromNestedDatabase(powerAccessApproval.powerProducer),
       powerProductionUnit: PowerProductionUnitEntity.fromNestedPowerProductionUnit(
         powerAccessApproval.powerProductionUnit,
