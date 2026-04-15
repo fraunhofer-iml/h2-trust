@@ -18,14 +18,14 @@ export class DisabledDecentralizedStorageService extends DecentralizedStorageSer
 
     constructor() {
         super();
-        this.logger.debug('⛓️‍💥 Feature verification is disabled: Decentralized file storage will not be used.');
+        this.logger.debug('⛓️‍💥 Decentralized storage service disabled.');
     }
 
     async uploadFile(_fileName: string, _file: Buffer, _contentType: ContentType): Promise<string> {
-        throw new Error('Feature verification is disabled: DecentralizedStorageService not initialized.');
+        throw new Error('Upload failed: decentralized storage service not initialized.');
     }
 
     async downloadFile(_fileName: string): Promise<Readable> {
-        throw new Error('Feature verification is disabled: DecentralizedStorageService not initialized.');
+        throw new Error('Download failed: decentralized storage service not initialized.');
     }
 }

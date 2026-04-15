@@ -58,14 +58,14 @@ export class BlockchainService {
       this.explorerUrl = verification!.blockchain.explorerUrl;
       this.smartContractAddress = verification!.blockchain.smartContractAddress;
 
-      this.logger.debug('🔗 Feature verification is enabled: Blockchain is used for proof storage.');
-      this.logger.debug(`🌐 Endpoint URL: ${this.endpointUrl}`);
-      this.logger.debug(`🧭 Explorer URL: ${this.explorerUrl}`);
-      this.logger.debug(`📄 Smart Contract Address: ${this.smartContractAddress}`);
+      this.logger.debug('🔗 Blockchain service initialized.');
+      this.logger.debug(`🌐 Endpoint: ${this.endpointUrl}`);
+      this.logger.debug(`🧭 Explorer: ${this.explorerUrl}`);
+      this.logger.debug(`📄 Contract: ${this.smartContractAddress}`);
 
       this.contract = this.createContract(verification!.blockchain.artifactPath, verification!.blockchain.privateKey);
     } else {
-      this.logger.debug('⛓️‍💥 Feature verification is disabled: Blockchain will not be used.');
+      this.logger.debug('⛓️‍💥 Blockchain service disabled.');
     }
   }
 
@@ -81,53 +81,50 @@ export class BlockchainService {
 
   async storeProofs(proofEntries: ProofEntry[]): Promise<string | null> {
     if (!this.contract) {
-      throw new Error('Feature verification is disabled: BlockchainService not initialized.');
+      throw new Error('Store failed: blockchain service not initialized.');
     }
 
-    this.logger.debug(`📝 Storing proofs:\n${proofEntries.map((e) => JSON.stringify(e)).join('\n')}`);
+    this.logger.debug(`Storing proofs:\n${proofEntries.map((e) => JSON.stringify(e)).join('\n')}`);
 
     const tx = await this.contract.storeProofs(proofEntries);
     await tx.wait();
 
-    this.logger.debug(`✅ Proof stored: ${tx.hash}`);
+    this.logger.debug(`Stored proofs, tx: ${tx.hash}`);
     return tx.hash;
   }
 
   async retrieveProof(uuid: string): Promise<ProofEntity | null> {
     if (!this.contract) {
-      throw new Error('Feature verification is disabled: BlockchainService not initialized.');
+      throw new Error('Retrieve failed: blockchain service not initialized.');
     }
-
-    this.logger.debug(`🔍 Retrieving proof: ${uuid}`);
 
     try {
       const proof: Proof = await this.contract.getProofByUuid(uuid);
-      this.logger.debug(`✅ Proof retrieved: ${JSON.stringify(proof)}`);
+      this.logger.debug(`Retrieved proof '${uuid}': ${JSON.stringify(proof)}`);
       return new ProofEntity(uuid, proof.hash, proof.cid);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      const message = `❌ Error retrieving proof for ${uuid}: ${errorMessage}`;
-      this.logger.error(message, error instanceof Error ? error.stack : undefined);
+      this.logger.error(`Retrieve failed for '${uuid}': ${errorMessage}`, error instanceof Error ? error.stack : undefined);
       return null;
     }
   }
 
   async retrieveBlockchainMetadata(transactionHash: string): Promise<BlockchainMetadata | null> {
     if (!this.contract) {
-      throw new Error('Feature verification is disabled: BlockchainService not initialized.');
+      throw new Error('Retrieve metadata failed: blockchain service not initialized.');
     }
 
     const receipt = await this.contract.runner.provider.getTransactionReceipt(transactionHash);
 
     if (!receipt) {
-      this.logger.debug(`⏭️ Transaction receipt not found for ${transactionHash}`);
+      this.logger.warn(`Transaction receipt not found for '${transactionHash}'`);
       return null;
     }
 
     const block = await this.contract.runner.provider.getBlock(receipt.blockNumber);
 
     if (!block) {
-      this.logger.debug(`⏭️ Block not found for ${receipt.blockNumber}`);
+      this.logger.warn(`Block not found for '${receipt.blockNumber}'`);
       return null;
     }
 
