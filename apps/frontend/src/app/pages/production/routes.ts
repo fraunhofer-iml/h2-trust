@@ -8,6 +8,7 @@
 
 import { Route } from '@angular/router';
 import { AddProductionDataComponent } from './add-production-data/add-production-data.component';
+import { FileSelectionComponent } from './add-production-data/file-selection/file-selection.component';
 import { ProductionViewComponent } from './generated-productions/production-view.component';
 import { ProductionFilesComponent } from './uploaded-production-files/production-files.component';
 
@@ -15,6 +16,10 @@ export const PRODUCTION_ROUTES: Route[] = [
   {
     path: 'data',
     component: ProductionViewComponent,
+  },
+  {
+    path: 'data/select',
+    component: FileSelectionComponent,
   },
   {
     path: 'files',

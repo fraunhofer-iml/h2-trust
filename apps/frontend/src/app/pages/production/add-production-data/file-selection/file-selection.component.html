@@ -1,0 +1,90 @@
+<div class="flex h-full flex-col gap-4 p-8">
+  <div class="flex flex-row items-center justify-between gap-2 text-lg text-neutral-500">
+    <span class="flex flex-row items-center gap-2">
+      <a routerLink="/production/data" class="cursor-pointer hover:underline">Data</a>
+      <span class="material-symbols-outlined"> keyboard_arrow_right </span>
+      Add
+    </span>
+  </div>
+
+  <div class="grid min-h-0 flex-1 grid-cols-3 gap-2">
+    <div class="flex flex-col overflow-hidden rounded-lg bg-white p-4">
+      <span>My Hydrogen Productions</span>
+      @if (uploadsQuery.data()?.length === 0) {
+        <p class="text-neutral-500">No files found.</p>
+      }
+      <form [formGroup]="form" class="min-h-0 flex-1 overflow-auto">
+        <mat-selection-list #filesList formControlName="hydrogenFileId" name="shoes" [multiple]="false">
+          @for (file of uploadsQuery.data(); track file) {
+            <mat-list-option
+              [value]="file.id"
+              class="my-2 !h-fit !rounded-md border"
+              togglePosition="before"
+              [ngClass]="option.selected ? 'border-primary-300' : 'border-neutral-300'"
+              #option
+              ><span matListItemTitle>{{ file.startedAt | date: 'short' }} - {{ file.endedAt | date: 'short' }}</span>
+
+              <span matListItemLine class="pb-2">{{ file.amount | unit: 'kg' }} • {{ file.uploadedBy }} </span>
+            </mat-list-option>
+          }
+        </mat-selection-list>
+      </form>
+    </div>
+    <div class="col-span-2 flex min-h-0 flex-1 flex-col gap-2">
+      <div
+        class="flex h-full flex-col overflow-hidden rounded-lg bg-white p-4"
+        [ngClass]="form.controls.hydrogenFileId.value ? 'bg-white' : 'bg-neutral-50'"
+      >
+        <span>Matching Power Productions</span>
+
+        @if (!form.controls.hydrogenFileId.value) {
+          <div
+            class="mt-4 flex w-full flex-grow flex-col items-center justify-center rounded-lg border border-dashed bg-neutral-50 p-4 text-center text-sm"
+          >
+            <span class="material-symbols-outlined p-2 text-4xl text-primary-400"> select</span>
+            <p>
+              <strong>No Hydrogen Production selected </strong>
+            </p>
+            <p>Please select a Hydrogen Production Dataset to continue.</p>
+          </div>
+        } @else {
+          <form [formGroup]="form" class="overflow-auto">
+            <mat-selection-list #powerFilesList formControlName="powerFiles" [multiple]="true">
+              @for (file of uploadsQuery.data(); track file) {
+                <mat-list-option
+                  [value]="file"
+                  togglePosition="before"
+                  class="my-2 !h-fit !rounded-md border"
+                  [ngClass]="powerDataSet.selected ? 'border-primary-300' : 'border-neutral-300'"
+                  #powerDataSet
+                >
+                  <span matListItemTitle
+                    >{{ file.startedAt | date: 'short' }} - {{ file.endedAt | date: 'short' }}</span
+                  >
+                  <div matListItemLine class="grid w-full grid-cols-3 pb-2">
+                    <span>{{ file.amount | unit: 'kg' }}</span>
+                    <span>
+                      {{ file.uploadedBy }}
+                    </span>
+                    <span> unit </span>
+                  </div>
+                </mat-list-option>
+              }
+            </mat-selection-list>
+          </form>
+          <mat-divider></mat-divider>
+          <div class="flex items-center justify-between px-2 py-4 text-right text-neutral-500">
+            <span>Total Power used:</span>
+            <strong>
+              {{ totalPower | unit: MeasurementUnit.KWH }}
+            </strong>
+          </div>
+        }
+      </div>
+      <div class="flex justify-end gap-2 rounded-lg bg-white p-4">
+        <button matButton>Cancel</button>
+        <button matButton="filled">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
