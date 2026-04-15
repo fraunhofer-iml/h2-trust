@@ -7,6 +7,8 @@
  */
 
 import { PowerAccessApprovalDeepDbType, PowerAccessApprovalNestedDbType } from '@h2-trust/database';
+import { PowerAccessApprovalStatus } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 import { CompanyEntity } from '../company';
 import { DocumentEntity } from '../document';
 import { PowerProductionUnitEntity } from '../unit';
@@ -14,7 +16,7 @@ import { PowerProductionUnitEntity } from '../unit';
 export class PowerAccessApprovalEntity {
   id: string;
   decidedAt: Date;
-  status: string;
+  status: PowerAccessApprovalStatus;
   powerProducer: CompanyEntity;
   powerProductionUnit: PowerProductionUnitEntity;
   hydrogenProducer: CompanyEntity;
@@ -23,7 +25,7 @@ export class PowerAccessApprovalEntity {
   constructor(
     id: string,
     decidedAt: Date,
-    status: string,
+    status: PowerAccessApprovalStatus,
     powerProducer: CompanyEntity,
     powerProductionUnit: PowerProductionUnitEntity,
     hydrogenProducer: CompanyEntity,
@@ -39,6 +41,7 @@ export class PowerAccessApprovalEntity {
   }
 
   static fromDeepDatabase(powerAccessApproval: PowerAccessApprovalDeepDbType): PowerAccessApprovalEntity {
+    assertValidEnum(powerAccessApproval.status, PowerAccessApprovalStatus, 'PowerAccessApprovalStatus');
     return <PowerAccessApprovalEntity>{
       id: powerAccessApproval.id,
       decidedAt: powerAccessApproval.decidedAt,

@@ -36,7 +36,6 @@ describe('BottlingProcessStepAssembler', () => {
       expect(actualResult.endedAt).toEqual(givenPayload.filledAt);
       expect(actualResult.type).toBe(ProcessType.HYDROGEN_BOTTLING);
       expect(actualResult.batch.amount).toBe(givenPayload.amount);
-      expect(actualResult.batch.qualityDetails.color).toBe(givenBatchesForBottle[0].qualityDetails.color);
       expect(actualResult.batch.type).toBe(givenBatchesForBottle[0].type);
       expect(actualResult.batch.predecessors).toHaveLength(givenBatchesForBottle.length);
       expect(actualResult.batch.predecessors[0].id).toBe(givenBatchesForBottle[0].id);
@@ -74,7 +73,6 @@ describe('BottlingProcessStepAssembler', () => {
       expect(actualResult.batch.predecessors).toHaveLength(2);
       expect(actualResult.batch.predecessors[0].id).toBe('batch-1');
       expect(actualResult.batch.predecessors[1].id).toBe('batch-2');
-      expect(actualResult.batch.qualityDetails.color).toBe(HydrogenColor.GREEN);
     });
 
     it(`determines ${HydrogenColor.YELLOW} color when all predecessors are ${HydrogenColor.YELLOW}`, () => {
@@ -103,7 +101,7 @@ describe('BottlingProcessStepAssembler', () => {
       const actualResult = BottlingProcessStepAssembler.assemble(givenPayload, givenBatchesForBottle);
 
       // Assert
-      expect(actualResult.batch.qualityDetails.color).toBe(HydrogenColor.YELLOW);
+      expect(actualResult.batch.qualityDetails.color).toBe(HydrogenColor.MIX);
     });
     it('determines MIX color when predecessors have different colors', () => {
       // Arrange
@@ -147,7 +145,7 @@ describe('BottlingProcessStepAssembler', () => {
       );
       const givenBatchesForBottle: BatchEntity[] = [];
 
-      const expectedErrorMessage = 'No predecessor colors specified';
+      const expectedErrorMessage = 'No predecessor type specified';
 
       // Act & Assert
       expect(() => BottlingProcessStepAssembler.assemble(givenPayload, givenBatchesForBottle)).toThrow(

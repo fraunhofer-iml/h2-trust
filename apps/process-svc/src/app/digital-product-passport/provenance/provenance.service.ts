@@ -27,8 +27,7 @@ export class ProvenanceService {
     if (!root || !root.type) {
       throw new Error('Invalid process step.');
     }
-
-    const provenanceBuilder: ProvenanceBuilderFn = this.provenanceBuilders[root.type as ProcessType];
+    const provenanceBuilder: ProvenanceBuilderFn = this.provenanceBuilders[root.type];
 
     if (!provenanceBuilder) {
       throw new Error(`Unsupported process type [${root.type}].`);

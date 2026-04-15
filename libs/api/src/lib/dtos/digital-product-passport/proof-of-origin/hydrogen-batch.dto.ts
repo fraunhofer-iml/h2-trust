@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType } from '@h2-trust/domain';
+import { BatchType, HydrogenColor, HydrogenProductionMethod, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentDto } from '../general-information';
 import { BatchDto } from './batch.dto';
 import { EmissionDto } from './emission.dto';
@@ -14,10 +14,10 @@ import { EmissionDto } from './emission.dto';
 export class HydrogenBatchDto extends BatchDto {
   producer: string;
   unitId: string;
-  typeOfProduction: string;
+  typeOfProduction: HydrogenProductionMethod;
   hydrogenComposition: HydrogenComponentDto[];
-  color: string;
-  rfnboType: string;
+  color: HydrogenColor;
+  rfnboType: RfnboType;
   processStep: string;
 
   // optional for all bottled batches, since bottled batches only have a creation/bottling time and no accounting period
@@ -31,10 +31,10 @@ export class HydrogenBatchDto extends BatchDto {
     unit: string,
     producer: string,
     unitId: string,
-    typeOfProduction: string,
+    typeOfProduction: HydrogenProductionMethod,
     hydrogenComposition: HydrogenComponentDto[],
-    color: string,
-    rfnboType: string,
+    color: HydrogenColor,
+    rfnboType: RfnboType,
     processStep: string,
     accountingPeriodEnd?: Date,
   ) {

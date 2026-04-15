@@ -6,13 +6,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { HydrogenColor, RfnboType } from '@h2-trust/domain';
+
 export class HydrogenComponentEntity {
   processId: string | null;
-  color: string;
+  color: HydrogenColor;
   amount: number;
-  rfnboType: string;
+  rfnboType: RfnboType;
 
-  constructor(processId: string | null, color: string, amount: number, rfnboType: string) {
+  constructor(processId: string | null, color: HydrogenColor, amount: number, rfnboType: RfnboType) {
     this.processId = processId;
     this.color = color;
     this.amount = amount;
