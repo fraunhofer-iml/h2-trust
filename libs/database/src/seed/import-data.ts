@@ -163,9 +163,9 @@ export async function seedDatabase() {
       createRecord: async (data: any) => await prisma.document.create({ data }),
     },
     {
-      name: 'powerAccessApproval',
+      name: 'powerPurchaseAgreement',
       records: PowerPurchaseAgreementSeed,
-      createRecord: async (data: any) => await prisma.powerAccessApproval.create({ data }),
+      createRecord: async (data: any) => await prisma.powerPurchaseAgreement.create({ data }),
     },
   ];
 

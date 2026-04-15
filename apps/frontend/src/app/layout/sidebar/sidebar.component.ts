@@ -18,7 +18,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { Router, RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
+import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { ROUTES } from '../../shared/constants/routes';
 import { UserProfile } from '../../shared/model/user-profile.model';
 import { AuthService } from '../../shared/services/auth/auth.service';
@@ -60,8 +60,8 @@ export class SidebarComponent implements OnInit {
   protected isMenuOpen = false;
 
   ppaRequestsQuery = injectQuery(() => ({
-    queryKey: ['ppa-requests', PowerAccessApprovalStatus.PENDING],
-    queryFn: () => this.ppaService.getPpaRequests(PpaRequestRole.RECEIVER, PowerAccessApprovalStatus.PENDING),
+    queryKey: ['ppa-requests', PowerPurchaseAgreementStatus.PENDING],
+    queryFn: () => this.ppaService.getPpaRequests(PpaRequestRole.RECEIVER, PowerPurchaseAgreementStatus.PENDING),
   }));
 
   protected roles = inject(UserRolesStore);

@@ -35,14 +35,14 @@ export class PowerPurchaseAgreementDto {
     this.energySource = energySource;
   }
 
-  static fromEntity(powerAccessApproval: PowerPurchaseAgreementEntity): PowerPurchaseAgreementDto {
+  static fromEntity(powerPurchaseAgreement: PowerPurchaseAgreementEntity): PowerPurchaseAgreementDto {
     return <PowerPurchaseAgreementDto>{
-      id: powerAccessApproval.id,
-      hydrogenProducer: powerAccessApproval.hydrogenProducer,
-      powerProducer: powerAccessApproval.powerProducer,
-      powerProductionUnit: PowerProductionOverviewDto.fromEntity(powerAccessApproval.powerProductionUnit),
-      status: powerAccessApproval.status,
-      energySource: powerAccessApproval.powerProductionUnit.type?.name,
+      id: powerPurchaseAgreement.id,
+      hydrogenProducer: powerPurchaseAgreement.hydrogenProducer,
+      powerProducer: powerPurchaseAgreement.powerProducer,
+      powerProductionUnit: PowerProductionOverviewDto.fromEntity(powerPurchaseAgreement.powerProductionUnit),
+      status: powerPurchaseAgreement.status,
+      energySource: powerPurchaseAgreement.powerProductionUnit.type?.name,
     };
   }
 }

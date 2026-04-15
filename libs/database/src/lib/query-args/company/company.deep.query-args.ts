@@ -7,7 +7,7 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { powerPurchaseAgreementNestedQueryArgs } from '../power-access-approval/power-access-approval.nested.query-args';
+import { powerPurchaseAgreementNestedQueryArgs } from '../power-purchase-agreement/power-purchase-agreement.nested.query-args';
 
 export const companyDeepQueryArgs = Prisma.validator<Prisma.CompanyDefaultArgs>()({
   include: {

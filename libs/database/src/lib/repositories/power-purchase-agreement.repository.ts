@@ -10,20 +10,20 @@ import { Injectable } from '@nestjs/common';
 import { PowerPurchaseAgreementEntity } from '@h2-trust/amqp';
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { PrismaService } from '../prisma.service';
-import { powerAccessApprovalDeepQueryArgs } from '../query-args/power-access-approval/power-access-approval.deep.query-args';
+import { powerPurchaseAgreementDeepQueryArgs } from '../query-args/power-purchase-agreement/power-purchase-agreement.deep.query-args';
 
 @Injectable()
 export class PowerPurchaseAgreementRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findAll(producerId: string, _status: PowerPurchaseAgreementStatus): Promise<PowerPurchaseAgreementEntity[]> {
-    return this.prismaService.powerAccessApproval
+    return this.prismaService.powerPurchaseAgreement
       .findMany({
         where: {
           OR: [{ powerProducerId: producerId }, { hydrogenProducerId: producerId }],
           status: _status,
         },
-        ...powerAccessApprovalDeepQueryArgs,
+        ...powerPurchaseAgreementDeepQueryArgs,
       })
       .then((result) => result.map(PowerPurchaseAgreementEntity.fromDeepDatabase));
   }

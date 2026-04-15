@@ -15,7 +15,7 @@ export * from './batch';
 export * from './document';
 export * from './address';
 export * from './production';
-export * from './power-access-approval';
+export * from './power-purchase-agreement';
 export * from './csv-import';
 export * from './compliance';
 export * from './digital-product-passport';

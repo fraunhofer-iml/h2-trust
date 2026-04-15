@@ -6,4 +6,4 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './power-access-approval.entity';
+export * from './power-purchase-agreement.entity';

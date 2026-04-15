@@ -12,7 +12,7 @@ import { CompanyDbTypeMock } from './company-db-type.mock';
 import { DocumentDbTypeMock } from './document-db-type.mock';
 import { PowerProductionUnitDeepDbTypeMock } from './power-production-unit-db-type.mock';
 
-export const PowerAccessApprovalDbTypeMock = <PowerPurchaseAgreementDeepDbType[]>[
+export const PowerPurchaseAgreementDbTypeMock = <PowerPurchaseAgreementDeepDbType[]>[
   {
     ...PowerPurchaseAgreementSeed[0],
     powerProducer: CompanyDbTypeMock[0],

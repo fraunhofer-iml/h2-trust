@@ -15,7 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatDivider } from '@angular/material/divider';
 import { PpaRequestDto } from '@h2-trust/api';
-import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
+import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
 import { ConfirmationResult } from '../../dialog-data';
 import { RequestConfirmationDialogComponent } from '../ppa-confirmation/request-confirmation-dialog.component';
@@ -35,7 +35,7 @@ import { RequestConfirmationDialogComponent } from '../ppa-confirmation/request-
   templateUrl: './ppa-request-card.component.html',
 })
 export class PpaRequestCardComponent {
-  protected readonly PowerAccessApprovalStatus = PowerAccessApprovalStatus;
+  protected readonly PowerPurchaseAgreementStatus = PowerPurchaseAgreementStatus;
   protected readonly PpaRequestRole = PpaRequestRole;
 
   request = input.required<PpaRequestDto>();
@@ -43,7 +43,7 @@ export class PpaRequestCardComponent {
 
   readonly dialog = inject(MatDialog);
 
-  openDialog(status: PowerAccessApprovalStatus.APPROVED | PowerAccessApprovalStatus.REJECTED): void {
+  openDialog(status: PowerPurchaseAgreementStatus.APPROVED | PowerPurchaseAgreementStatus.REJECTED): void {
     const dialogRef = this.dialog.open(RequestConfirmationDialogComponent, {
       data: { status, request: this.request() },
     });
@@ -60,7 +60,7 @@ export class PpaRequestCardComponent {
 
     let targetDate: Date;
 
-    if (this.request().status === PowerAccessApprovalStatus.PENDING) {
+    if (this.request().status === PowerPurchaseAgreementStatus.PENDING) {
       prefix = 'Created ';
       targetDate = new Date(this.request().createdAt);
     } else {

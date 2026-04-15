@@ -15,7 +15,7 @@ export class HydrogenProductionOverviewDto {
   ratedPower: number;
   technology: string;
   producing: boolean;
-  powerAccessApprovalStatus: boolean;
+  powerPurchaseAgreementStatus: boolean;
   powerProducerId: string;
   powerProducerName: string;
   active: boolean;
@@ -26,7 +26,7 @@ export class HydrogenProductionOverviewDto {
     ratedPower: number,
     technology: string,
     producing: boolean,
-    powerAccessApprovalStatus: boolean,
+    powerPurchaseAgreementStatus: boolean,
     powerProducerId: string,
     powerProducerName: string,
     active: boolean,
@@ -36,7 +36,7 @@ export class HydrogenProductionOverviewDto {
     this.ratedPower = ratedPower;
     this.technology = technology;
     this.producing = producing;
-    this.powerAccessApprovalStatus = powerAccessApprovalStatus;
+    this.powerPurchaseAgreementStatus = powerPurchaseAgreementStatus;
     this.powerProducerId = powerProducerId;
     this.powerProducerName = powerProducerName;
     this.active = active;
@@ -51,7 +51,7 @@ export class HydrogenProductionOverviewDto {
       ratedPower: unit.ratedPower,
       technology: EnumLabelMapper.getHydrogenProductionTechnology(unit.technology),
       producing: true,
-      powerAccessApprovalStatus: HydrogenProductionOverviewDto.existsPowerProducer(unit),
+      powerPurchaseAgreementStatus: HydrogenProductionOverviewDto.existsPowerProducer(unit),
       powerProducerId: firstApproval?.powerProducer.id ?? '',
       powerProducerName: firstApproval?.powerProducer.name ?? '',
       active: unit.active,

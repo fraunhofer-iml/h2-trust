@@ -83,7 +83,7 @@ export abstract class BaseUnitDto {
         name: unit.owner?.name,
         hydrogenApprovals:
           unit.owner?.hydrogenApprovals?.map((approval) => ({
-            powerAccessApprovalStatus: approval.status,
+            powerPurchaseAgreementStatus: approval.status,
             powerProducerId: approval.powerProducer.id,
           })) ?? [],
       },

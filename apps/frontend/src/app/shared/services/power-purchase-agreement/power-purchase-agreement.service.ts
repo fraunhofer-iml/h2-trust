@@ -22,7 +22,9 @@ export class PowerPurchaseAgreementService {
     if (status) {
       params = params.append('status', status);
     }
-    return lastValueFrom(this.httpClient.get<PowerPurchaseAgreementDto[]>(API.POWER_ACCESS_APPROVALS.BASE, { params }));
+    return lastValueFrom(
+      this.httpClient.get<PowerPurchaseAgreementDto[]>(API.POWER_PURCHASE_AGREEMENTS.BASE, { params }),
+    );
   }
 
   getPpaRequests(role: PpaRequestRole, status?: PowerPurchaseAgreementStatus) {
@@ -35,16 +37,16 @@ export class PowerPurchaseAgreementService {
       params = params.append('role', role);
     }
 
-    return lastValueFrom(this.httpClient.get<PpaRequestDto[]>(API.POWER_ACCESS_APPROVALS.REQUESTS, { params }));
+    return lastValueFrom(this.httpClient.get<PpaRequestDto[]>(API.POWER_PURCHASE_AGREEMENTS.REQUESTS, { params }));
   }
 
   createPpaRequest(dto: PpaRequestCreateDto) {
-    return lastValueFrom(this.httpClient.post<PpaRequestDto[]>(API.POWER_ACCESS_APPROVALS.REQUESTS, dto));
+    return lastValueFrom(this.httpClient.post<PpaRequestDto[]>(API.POWER_PURCHASE_AGREEMENTS.REQUESTS, dto));
   }
 
   decidePpaRequest(requestId: string, dto: PpaRequestDecisionDto) {
     return lastValueFrom(
-      this.httpClient.patch<PpaRequestDto>(API.POWER_ACCESS_APPROVALS.REQUESTS_SINGLE(requestId), dto),
+      this.httpClient.patch<PpaRequestDto>(API.POWER_PURCHASE_AGREEMENTS.REQUESTS_SINGLE(requestId), dto),
     );
   }
 }

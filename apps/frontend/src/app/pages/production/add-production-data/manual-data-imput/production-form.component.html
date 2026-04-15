@@ -26,7 +26,7 @@
     <mat-form-field appearance="outline" class="col-span-2">
       <mat-label>Power Production</mat-label>
       <mat-select formControlName="powerProductionUnit">
-        @for (approval of powerAccessApprovals(); track approval) {
+        @for (approval of powerPurchaseAgreements(); track approval) {
           <mat-option [value]="approval.value" [disabled]="!approval.value.active">{{ approval.name }}</mat-option>
         }
       </mat-select>

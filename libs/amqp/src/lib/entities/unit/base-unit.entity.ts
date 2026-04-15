@@ -125,7 +125,7 @@ export abstract class BaseUnitEntity {
   private static mapHydrogenApprovals(unit: BaseUnitDeepDbType) {
     return (
       unit.owner?.hydrogenApprovals?.map((approval) => ({
-        powerAccessApprovalStatus: approval.status,
+        powerPurchaseAgreementStatus: approval.status,
         powerProducerId: approval.powerProducerId,
         powerProducerName: approval.powerProducer.name,
       })) ?? []

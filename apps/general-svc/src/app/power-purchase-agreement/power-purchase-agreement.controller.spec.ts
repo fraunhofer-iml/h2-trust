@@ -10,7 +10,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PowerPurchaseAgreementEntity } from '@h2-trust/amqp';
 import {
   DatabaseModule,
-  PowerAccessApprovalDbTypeMock,
+  PowerPurchaseAgreementDbTypeMock,
   PowerPurchaseAgreementDeepDbType,
   PrismaService,
   UserRepository,
@@ -20,7 +20,7 @@ import { UserEntityFixture } from '@h2-trust/fixtures';
 import { PowerPurchaseAgreementController } from './power-purchase-agreement.controller';
 import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 
-describe('PowerAccessApprovalController', () => {
+describe('PowerPurchaseAgreementController', () => {
   let controller: PowerPurchaseAgreementController;
   let userRepository: UserRepository;
   let prismaService: PrismaService;
@@ -37,7 +37,7 @@ describe('PowerAccessApprovalController', () => {
       })
       .overrideProvider(PrismaService)
       .useValue({
-        powerAccessApproval: {
+        powerPurchaseAgreement: {
           findMany: jest.fn(),
         },
       })
@@ -52,10 +52,10 @@ describe('PowerAccessApprovalController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should get power access approvals ', async () => {
-    const mockedPowerAccessApprovals: PowerPurchaseAgreementDeepDbType[] = PowerAccessApprovalDbTypeMock;
+  it('should get power purchase aggrements ', async () => {
+    const mockedPurchaseAgreements: PowerPurchaseAgreementDeepDbType[] = PowerPurchaseAgreementDbTypeMock;
 
-    jest.spyOn(prismaService.powerAccessApproval, 'findMany').mockResolvedValue(mockedPowerAccessApprovals);
+    jest.spyOn(prismaService.powerPurchaseAgreement, 'findMany').mockResolvedValue(mockedPurchaseAgreements);
 
     const actualResponse: PowerPurchaseAgreementEntity[] = await controller.findAll({
       userId: UserEntityFixture.createPowerUser().id,
@@ -63,8 +63,8 @@ describe('PowerAccessApprovalController', () => {
     });
 
     expect(userRepository.findUser).toHaveBeenCalledTimes(1);
-    expect(prismaService.powerAccessApproval.findMany).toHaveBeenCalledTimes(1);
+    expect(prismaService.powerPurchaseAgreement.findMany).toHaveBeenCalledTimes(1);
     expect(actualResponse).toBeDefined();
-    expect(actualResponse.length).toBe(mockedPowerAccessApprovals.length);
+    expect(actualResponse.length).toBe(mockedPurchaseAgreements.length);
   });
 });

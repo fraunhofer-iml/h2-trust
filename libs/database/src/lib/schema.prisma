@@ -37,7 +37,7 @@ model Document {
   processStep   ProcessStep? @relation(fields: [processStepId], references: [id])
   processStepId String?
 
-  powerAccessApprovals PowerAccessApproval[]
+  powerPurchaseAgreements PowerPurchaseAgreement[]
 }
 
 model CsvImport {
@@ -73,10 +73,10 @@ model Company {
   address   Address @relation(fields: [addressId], references: [id])
   addressId String
 
-  hydrogenApprovals PowerAccessApproval[] @relation(name: "HydrogenProducer")
-  powerApprovals    PowerAccessApproval[] @relation(name: "PowerProducer")
-  unitOwners        Unit[]                @relation(name: "UnitOwner")
-  unitOperators     Unit[]                @relation(name: "UnitOperator")
+  hydrogenAgreements PowerPurchaseAgreement[] @relation(name: "HydrogenProducer")
+  powerAgreements    PowerPurchaseAgreement[] @relation(name: "PowerProducer")
+  unitOwners        Unit[]                   @relation(name: "UnitOwner")
+  unitOperators     Unit[]                   @relation(name: "UnitOperator")
   users             User[]
   batches           Batch[]
 }
@@ -148,7 +148,7 @@ model PowerProductionUnit {
   type     PowerProductionType @relation(fields: [typeName], references: [name])
   typeName String
 
-  powerAccessApprovals PowerAccessApproval[]
+  powerPurchaseAgreements PowerPurchaseAgreement[]
   stagedProductions    StagedProduction[]
 }
 

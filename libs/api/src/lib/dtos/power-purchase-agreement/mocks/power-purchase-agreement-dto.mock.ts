@@ -11,7 +11,7 @@ import { CompanyDtoMock } from '../../company';
 import { PowerProductionUnitOverviewDtoMock } from '../../unit/mocks/power-production-unit-overview-dto.mock';
 import { PowerPurchaseAgreementDto } from '../power-purchase-agreement.dto';
 
-export const PowerAccessApprovalDtoMock = <PowerPurchaseAgreementDto[]>[
+export const PowerPurchaseAgreementDtoMock = <PowerPurchaseAgreementDto[]>[
   <PowerPurchaseAgreementDto>{
     id: 'paa-1',
     hydrogenProducer: CompanyDtoMock[1],

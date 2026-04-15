@@ -11,7 +11,7 @@
     <app-production-csv-upload
       [hydrogenProductionUnits]="hydrogenProductionQuery.data() ?? []"
       [hydrogenStorageUnits]="hydrogenStorageQuery.data() ?? []"
-      [powerAccessApprovals]="approvalsQuery.data() ?? []"
+      [powerPurchaseAgreements]="approvalsQuery.data() ?? []"
       (switchToForm)="useCSV = false"
     >
     </app-production-csv-upload>
@@ -19,7 +19,7 @@
     <app-production-form
       [hydrogenProductionUnits]="hydrogenProductionQuery.data() ?? []"
       [hydrogenStorageUnits]="hydrogenStorageQuery.data() ?? []"
-      [powerAccessApprovals]="approvalsQuery.data() ?? []"
+      [powerPurchaseAgreements]="approvalsQuery.data() ?? []"
       (switchToUpload)="useCSV = true"
     ></app-production-form>
   }

@@ -6,12 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export class PowerAccessApprovalConnectionDto {
-  powerAccessApprovalStatus: string;
+export class PowerPurchaseAgreementConnectionDto {
+  powerPurchaseAgreementStatus: string;
   powerProducerId: string;
 
-  constructor(powerAccessApprovalStatus: string, powerProducerId: string) {
-    this.powerAccessApprovalStatus = powerAccessApprovalStatus;
+  constructor(powerPurchaseAgreementStatus: string, powerProducerId: string) {
+    this.powerPurchaseAgreementStatus = powerPurchaseAgreementStatus;
     this.powerProducerId = powerProducerId;
   }
 }

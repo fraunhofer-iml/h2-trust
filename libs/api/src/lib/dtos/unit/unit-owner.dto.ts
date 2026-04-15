@@ -6,14 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerAccessApprovalConnectionDto } from './power-access-approval-connectopn.dto';
+import { PowerPurchaseAgreementConnectionDto } from './power-purchase-agreement-connectopn.dto';
 
 export class UnitOwnerDto {
   id: string;
   name: string;
-  hydrogenApprovals: PowerAccessApprovalConnectionDto[];
+  hydrogenApprovals: PowerPurchaseAgreementConnectionDto[];
 
-  constructor(id: string, name: string, hydrogenApprovals: PowerAccessApprovalConnectionDto[]) {
+  constructor(id: string, name: string, hydrogenApprovals: PowerPurchaseAgreementConnectionDto[]) {
     this.id = id;
     this.name = name;
     this.hydrogenApprovals = hydrogenApprovals;

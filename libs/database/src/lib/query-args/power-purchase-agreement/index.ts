@@ -6,4 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './power-access-approval-dto.mock';
+export * from './power-purchase-agreement.deep.query-args';
+export * from './power-purchase-agreement.nested.query-args';
+export * from './power-purchase-agreement.flat.query-args';

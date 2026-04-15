@@ -8,7 +8,7 @@
 
 import { CompanyDbBaseType, CompanyDeepDbType, CompanyFlatDbType, CompanyNestedDbType } from '@h2-trust/database';
 import { AddressEntity } from '../address';
-import { PowerPurchaseAgreementEntity } from '../power-access-approval';
+import { PowerPurchaseAgreementEntity } from '../power-purchase-agreement';
 import { UserEntity } from '../user';
 
 export class CompanyEntity {

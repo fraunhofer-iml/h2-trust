@@ -20,7 +20,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { MeasurementUnit, PowerAccessApprovalStatus } from '@h2-trust/domain';
+import { MeasurementUnit, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { PowerPurchaseAgreementService } from '../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { ProductionService } from '../../../shared/services/production/production.service';
@@ -54,9 +54,9 @@ export class AddProductionDataComponent {
   readonly MeasurementUnit = MeasurementUnit;
 
   approvalsQuery = injectQuery(() => ({
-    queryKey: ['power-access-approvals'],
+    queryKey: ['power-purchase-agreement'],
     queryFn: async () => {
-      const approvals = await this.powerAccessApprovalsService.getApprovals(PowerAccessApprovalStatus.APPROVED);
+      const approvals = await this.powerPurchaseAgreementsService.getApprovals(PowerPurchaseAgreementStatus.APPROVED);
       return [
         ...approvals.map((a) => ({
           value: a.powerProductionUnit,
@@ -78,6 +78,6 @@ export class AddProductionDataComponent {
 
   constructor(
     private readonly unitsService: UnitsService,
-    private readonly powerAccessApprovalsService: PowerPurchaseAgreementService,
+    private readonly powerPurchaseAgreementsService: PowerPurchaseAgreementService,
   ) {}
 }

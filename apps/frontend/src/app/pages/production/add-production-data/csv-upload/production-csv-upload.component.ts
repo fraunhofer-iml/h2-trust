@@ -68,7 +68,7 @@ export class ProductionCsvUploadComponent {
   productionService: ProductionService = inject(ProductionService);
   router = inject(Router);
 
-  powerAccessApprovals = input<{ value: PowerProductionOverviewDto; name: string }[]>([]);
+  powerPurchaseAgreements = input<{ value: PowerProductionOverviewDto; name: string }[]>([]);
   hydrogenProductionUnits = input<HydrogenProductionOverviewDto[]>([]);
   hydrogenStorageUnits = input<HydrogenStorageOverviewDto[]>([]);
 
