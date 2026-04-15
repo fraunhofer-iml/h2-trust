@@ -9,23 +9,23 @@
 import { lastValueFrom } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { PowerAccessApprovalDto, PpaRequestCreateDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/api';
-import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
+import { PowerPurchaseAgreementDto, PpaRequestCreateDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/api';
+import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { API } from '../../constants/api-endpoints';
 
 @Injectable()
-export class PowerAccessApprovalService {
+export class PowerPurchaseAgreementService {
   constructor(private readonly httpClient: HttpClient) {}
 
-  getApprovals(status?: PowerAccessApprovalStatus) {
+  getApprovals(status?: PowerPurchaseAgreementStatus) {
     let params = new HttpParams();
     if (status) {
       params = params.append('status', status);
     }
-    return lastValueFrom(this.httpClient.get<PowerAccessApprovalDto[]>(API.POWER_ACCESS_APPROVALS.BASE, { params }));
+    return lastValueFrom(this.httpClient.get<PowerPurchaseAgreementDto[]>(API.POWER_ACCESS_APPROVALS.BASE, { params }));
   }
 
-  getPpaRequests(role: PpaRequestRole, status?: PowerAccessApprovalStatus) {
+  getPpaRequests(role: PpaRequestRole, status?: PowerPurchaseAgreementStatus) {
     let params = new HttpParams();
     if (status) {
       params = params.append('status', status);

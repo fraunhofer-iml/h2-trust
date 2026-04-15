@@ -8,7 +8,7 @@
 
 import { Prisma } from '@prisma/client';
 
-export const powerAccessApprovalFlatQueryArgs = Prisma.validator<Prisma.PowerAccessApprovalDefaultArgs>()({
+export const powerPurchaseAgreementFlatQueryArgs = Prisma.validator<Prisma.PowerPurchaseAgreementDefaultArgs>()({
   include: {
     document: true,
     hydrogenProducer: true,

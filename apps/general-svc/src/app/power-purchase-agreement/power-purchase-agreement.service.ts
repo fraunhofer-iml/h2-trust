@@ -13,7 +13,7 @@ import {
   PowerProductionUnitEntity,
   PowerPurchaseAgreementEntity,
   ReadByIdPayload,
-  ReadPowerAccessApprovalsPayload,
+  ReadPowerPurchaseAgreementsPayload,
   UserEntity,
 } from '@h2-trust/amqp';
 import { PowerProductionType, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
@@ -25,14 +25,14 @@ export class PowerPurchaseAgreementService {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async findAll(payload: ReadPowerAccessApprovalsPayload): Promise<PowerPurchaseAgreementEntity[]> {
+  async findAll(payload: ReadPowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity[]> {
     const user: UserEntity = await this.userRepository.findUser(payload.userId);
-    return this.powerPurchaseAgreementRepository.findAll(user.company.id, payload.powerAccessApprovalStatus);
+    return this.powerPurchaseAgreementRepository.findAll(user.company.id, payload.powerPurchaseAgreementStatus);
   }
 
   async findApprovedGridPowerProductionUnitByUserId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity> {
     const approvals = await this.findAll(
-      new ReadPowerAccessApprovalsPayload(payload.id, PowerPurchaseAgreementStatus.APPROVED),
+      new ReadPowerPurchaseAgreementsPayload(payload.id, PowerPurchaseAgreementStatus.APPROVED),
     );
 
     const approvalForGrid = approvals.find(

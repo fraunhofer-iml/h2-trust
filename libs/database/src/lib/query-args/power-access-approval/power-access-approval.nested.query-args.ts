@@ -10,7 +10,7 @@ import { Prisma } from '@prisma/client';
 import { companyFlatQueryArgs } from '../company/company.flat.query-args';
 import { powerProductionUnitNestedQueryArgs } from '../unit';
 
-export const powerAccessApprovalNestedQueryArgs = Prisma.validator<Prisma.PowerAccessApprovalDefaultArgs>()({
+export const powerPurchaseAgreementNestedQueryArgs = Prisma.validator<Prisma.PowerPurchaseAgreementDefaultArgs>()({
   include: {
     document: true,
     powerProducer: companyFlatQueryArgs,

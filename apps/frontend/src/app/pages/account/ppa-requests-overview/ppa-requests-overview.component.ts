@@ -12,7 +12,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
 import { ppaRequestsQueryOptions } from '../../../shared/queries/ppa-requests.query';
-import { PowerAccessApprovalService } from '../../../shared/services/power-access-approvals/power-access-approvals.service';
+import { PowerPurchaseAgreementService } from '../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 
 interface RequestLabels {
@@ -29,7 +29,7 @@ export class PpaRequestsOverviewComponent {
   role = input.required<PpaRequestRole>();
   protected PowerAccessApprovalStatus = PowerAccessApprovalStatus;
 
-  protected readonly ppaService = inject(PowerAccessApprovalService);
+  protected readonly ppaService = inject(PowerPurchaseAgreementService);
   protected readonly unitsService = inject(UnitsService);
 
   ppaRequestsQuery = injectQuery(() => ppaRequestsQueryOptions(this.ppaService, this.role()));

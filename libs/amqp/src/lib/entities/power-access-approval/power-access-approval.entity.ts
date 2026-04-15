@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerAccessApprovalDeepDbType, PowerAccessApprovalNestedDbType } from '@h2-trust/database';
+import { PowerPurchaseAgreementDeepDbType, PowerPurchaseAgreementNestedDbType } from '@h2-trust/database';
 import { CompanyEntity } from '../company';
 import { DocumentEntity } from '../document';
 import { PowerProductionUnitEntity } from '../unit';
@@ -38,21 +38,21 @@ export class PowerPurchaseAgreementEntity {
     this.document = document;
   }
 
-  static fromDeepDatabase(powerAccessApproval: PowerAccessApprovalDeepDbType): PowerPurchaseAgreementEntity {
+  static fromDeepDatabase(powerPurchaseAgreement: PowerPurchaseAgreementDeepDbType): PowerPurchaseAgreementEntity {
     return <PowerPurchaseAgreementEntity>{
-      id: powerAccessApproval.id,
-      decidedAt: powerAccessApproval.decidedAt,
-      status: powerAccessApproval.status,
-      powerProducer: CompanyEntity.fromNestedDatabase(powerAccessApproval.powerProducer),
+      id: powerPurchaseAgreement.id,
+      decidedAt: powerPurchaseAgreement.decidedAt,
+      status: powerPurchaseAgreement.status,
+      powerProducer: CompanyEntity.fromNestedDatabase(powerPurchaseAgreement.powerProducer),
       powerProductionUnit: PowerProductionUnitEntity.fromNestedPowerProductionUnit(
-        powerAccessApproval.powerProductionUnit,
+        powerPurchaseAgreement.powerProductionUnit,
       ),
-      hydrogenProducer: CompanyEntity.fromNestedDatabase(powerAccessApproval.hydrogenProducer),
-      document: DocumentEntity.fromDatabase(powerAccessApproval.document),
+      hydrogenProducer: CompanyEntity.fromNestedDatabase(powerPurchaseAgreement.hydrogenProducer),
+      document: DocumentEntity.fromDatabase(powerPurchaseAgreement.document),
     };
   }
 
-  static fromNestedDatabase(approval: PowerAccessApprovalNestedDbType): PowerPurchaseAgreementEntity {
+  static fromNestedDatabase(approval: PowerPurchaseAgreementNestedDbType): PowerPurchaseAgreementEntity {
     return <PowerPurchaseAgreementEntity>{
       ...approval,
       hydrogenProducer: CompanyEntity.fromFlatDatabase(approval.hydrogenProducer),

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export enum PowerAccessApprovalPatterns {
-  READ = 'power-access-approval.read',
-  READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID = 'power-access-approval.read-approved-grid-power-production-unit-by-user-id',
+export enum PowerPurchaseAgreementPatterns {
+  READ = 'power-purchase-agreement.read',
+  READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID = 'power-purchase-agreement.read-approved-grid-power-production-unit-by-user-id',
 }

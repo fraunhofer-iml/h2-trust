@@ -6,15 +6,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerAccessApproval } from '@prisma/client';
+import { PowerPurchaseAgreement } from '@prisma/client';
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { CompanySeed } from './company.seed';
 import { DocumentSeed } from './document.seed';
 import { PowerProductionUnitSeed } from './unit';
 
-export const PowerAccessApprovalSeed: readonly PowerAccessApproval[] = Object.freeze([
+export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Object.freeze([
   {
-    id: 'power-access-approval-0',
+    id: 'power-purchase-agreement-0',
     decidedAt: new Date('2025-02-01'),
     status: PowerPurchaseAgreementStatus.APPROVED,
     powerProducerId: CompanySeed[0].id,
@@ -23,7 +23,7 @@ export const PowerAccessApprovalSeed: readonly PowerAccessApproval[] = Object.fr
     documentId: DocumentSeed[0].id,
   },
   {
-    id: 'power-access-approval-1',
+    id: 'power-purchase-agreement-1',
     decidedAt: new Date('2025-02-01'),
     status: PowerPurchaseAgreementStatus.APPROVED,
     powerProducerId: CompanySeed[2].id,
@@ -32,7 +32,7 @@ export const PowerAccessApprovalSeed: readonly PowerAccessApproval[] = Object.fr
     documentId: DocumentSeed[0].id,
   },
   {
-    id: 'power-access-approval-2',
+    id: 'power-purchase-agreement-2',
     decidedAt: new Date('2025-08-14'),
     status: PowerPurchaseAgreementStatus.APPROVED,
     powerProducerId: CompanySeed[2].id,
@@ -41,7 +41,7 @@ export const PowerAccessApprovalSeed: readonly PowerAccessApproval[] = Object.fr
     documentId: DocumentSeed[0].id,
   },
   {
-    id: 'power-access-approval-3',
+    id: 'power-purchase-agreement-3',
     decidedAt: new Date('2025-08-14'),
     status: PowerPurchaseAgreementStatus.APPROVED,
     powerProducerId: CompanySeed[1].id,

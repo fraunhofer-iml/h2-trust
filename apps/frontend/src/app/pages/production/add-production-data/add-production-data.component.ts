@@ -22,7 +22,7 @@ import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MeasurementUnit, PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
-import { PowerAccessApprovalService } from '../../../shared/services/power-access-approvals/power-access-approvals.service';
+import { PowerPurchaseAgreementService } from '../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { ProductionService } from '../../../shared/services/production/production.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { ProductionCsvUploadComponent } from './csv-upload/production-csv-upload.component';
@@ -30,7 +30,7 @@ import { ProductionFormComponent } from './manual-data-imput/production-form.com
 
 @Component({
   selector: 'app-add-production-data',
-  providers: [provideNativeDateAdapter(), CompaniesService, ProductionService, PowerAccessApprovalService],
+  providers: [provideNativeDateAdapter(), CompaniesService, ProductionService, PowerPurchaseAgreementService],
   imports: [
     MatDialogModule,
     ReactiveFormsModule,
@@ -78,6 +78,6 @@ export class AddProductionDataComponent {
 
   constructor(
     private readonly unitsService: UnitsService,
-    private readonly powerAccessApprovalsService: PowerAccessApprovalService,
+    private readonly powerAccessApprovalsService: PowerPurchaseAgreementService,
   ) {}
 }

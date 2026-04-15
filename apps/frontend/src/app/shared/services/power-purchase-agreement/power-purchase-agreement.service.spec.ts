@@ -8,14 +8,14 @@
 
 import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { PowerAccessApprovalService } from './power-access-approvals.service';
+import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 
 describe('UnitsService', () => {
-  let service: PowerAccessApprovalService;
+  let service: PowerPurchaseAgreementService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ providers: [PowerAccessApprovalService, provideHttpClient()] });
-    service = TestBed.inject(PowerAccessApprovalService);
+    TestBed.configureTestingModule({ providers: [PowerPurchaseAgreementService, provideHttpClient()] });
+    service = TestBed.inject(PowerPurchaseAgreementService);
   });
 
   it('should be created', () => {

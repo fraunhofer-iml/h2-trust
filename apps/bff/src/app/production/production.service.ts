@@ -16,8 +16,8 @@ import {
   CsvDocumentEntity,
   FinalizeProductionsPayload,
   PaginatedProcessStepEntity,
-  PowerAccessApprovalPatterns,
   PowerProductionUnitEntity,
+  PowerPurchaseAgreementPatterns,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionDataFilter,
@@ -131,7 +131,7 @@ export class ProductionService {
 
     const gridPowerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
       this.generalSvc.send(
-        PowerAccessApprovalPatterns.READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID,
+        PowerPurchaseAgreementPatterns.READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID,
         new ReadByIdPayload(userId),
       ),
     );

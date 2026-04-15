@@ -11,7 +11,7 @@ import { BrokerQueues } from '@h2-trust/amqp';
 import { PowerPurchaseAgreementController } from './power-purchase-agreement.controller';
 import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 
-describe('PowerAccessApprovalController', () => {
+describe('PowerPurchaseAgreementController', () => {
   let controller: PowerPurchaseAgreementController;
 
   beforeEach(async () => {

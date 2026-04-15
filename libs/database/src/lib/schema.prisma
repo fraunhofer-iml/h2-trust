@@ -251,7 +251,7 @@ model TransportationDetails {
   processStepDetails ProcessStepDetails @relation(fields: [id], references: [id])
 }
 
-model PowerAccessApproval {
+model PowerPurchaseAgreement {
   id        String   @id @default(uuid(7))
   status    String
   decidedAt DateTime

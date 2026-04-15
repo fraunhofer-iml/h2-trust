@@ -8,7 +8,7 @@
 
 import { QUERY_KEYS } from 'apps/frontend/src/app/shared/queries/shared-query-keys';
 import { powerProductionUnitsQueryOptions } from 'apps/frontend/src/app/shared/queries/units.query';
-import { PowerAccessApprovalService } from 'apps/frontend/src/app/shared/services/power-access-approvals/power-access-approvals.service';
+import { PowerPurchaseAgreementService } from 'apps/frontend/src/app/shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
 import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
@@ -53,7 +53,7 @@ export class RequestConfirmationDialogComponent {
     status: PowerAccessApprovalStatus.APPROVED | PowerAccessApprovalStatus.REJECTED;
     request: PpaRequestDto;
   }>(MAT_DIALOG_DATA);
-  private ppaService = inject(PowerAccessApprovalService);
+  private ppaService = inject(PowerPurchaseAgreementService);
   private unitsService = inject(UnitsService);
   private queryClient = inject(QueryClient);
 

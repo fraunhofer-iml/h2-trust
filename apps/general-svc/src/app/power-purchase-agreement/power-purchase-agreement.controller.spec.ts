@@ -11,7 +11,7 @@ import { PowerPurchaseAgreementEntity } from '@h2-trust/amqp';
 import {
   DatabaseModule,
   PowerAccessApprovalDbTypeMock,
-  PowerAccessApprovalDeepDbType,
+  PowerPurchaseAgreementDeepDbType,
   PrismaService,
   UserRepository,
 } from '@h2-trust/database';
@@ -53,13 +53,13 @@ describe('PowerAccessApprovalController', () => {
   });
 
   it('should get power access approvals ', async () => {
-    const mockedPowerAccessApprovals: PowerAccessApprovalDeepDbType[] = PowerAccessApprovalDbTypeMock;
+    const mockedPowerAccessApprovals: PowerPurchaseAgreementDeepDbType[] = PowerAccessApprovalDbTypeMock;
 
     jest.spyOn(prismaService.powerAccessApproval, 'findMany').mockResolvedValue(mockedPowerAccessApprovals);
 
     const actualResponse: PowerPurchaseAgreementEntity[] = await controller.findAll({
       userId: UserEntityFixture.createPowerUser().id,
-      powerAccessApprovalStatus: PowerPurchaseAgreementStatus.APPROVED,
+      powerPurchaseAgreementStatus: PowerPurchaseAgreementStatus.APPROVED,
     });
 
     expect(userRepository.findUser).toHaveBeenCalledTimes(1);

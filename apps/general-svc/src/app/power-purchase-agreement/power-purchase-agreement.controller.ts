@@ -9,11 +9,11 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
-  PowerAccessApprovalPatterns,
   PowerProductionUnitEntity,
   PowerPurchaseAgreementEntity,
+  PowerPurchaseAgreementPatterns,
   ReadByIdPayload,
-  ReadPowerAccessApprovalsPayload,
+  ReadPowerPurchaseAgreementsPayload,
 } from '@h2-trust/amqp';
 import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 
@@ -21,12 +21,12 @@ import { PowerPurchaseAgreementService } from './power-purchase-agreement.servic
 export class PowerPurchaseAgreementController {
   constructor(private readonly service: PowerPurchaseAgreementService) {}
 
-  @MessagePattern(PowerAccessApprovalPatterns.READ)
-  async findAll(payload: ReadPowerAccessApprovalsPayload): Promise<PowerPurchaseAgreementEntity[]> {
+  @MessagePattern(PowerPurchaseAgreementPatterns.READ)
+  async findAll(payload: ReadPowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity[]> {
     return this.service.findAll(payload);
   }
 
-  @MessagePattern(PowerAccessApprovalPatterns.READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID)
+  @MessagePattern(PowerPurchaseAgreementPatterns.READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID)
   async readApprovedGridPowerProductionUnitByUserId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity> {
     return this.service.findApprovedGridPowerProductionUnitByUserId(payload);
   }

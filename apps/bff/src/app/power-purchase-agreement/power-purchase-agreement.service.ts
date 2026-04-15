@@ -9,7 +9,7 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BrokerQueues, PowerAccessApprovalPatterns, ReadPowerAccessApprovalsPayload } from '@h2-trust/amqp';
+import { BrokerQueues, PowerPurchaseAgreementPatterns, ReadPowerPurchaseAgreementsPayload } from '@h2-trust/amqp';
 import { PowerPurchaseAgreementDto } from '@h2-trust/api';
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 
@@ -21,12 +21,12 @@ export class PowerPurchaseAgreementService {
     userId: string,
     status: PowerPurchaseAgreementStatus,
   ): Promise<PowerPurchaseAgreementDto[]> {
-    const payload = new ReadPowerAccessApprovalsPayload(userId, status);
+    const payload = new ReadPowerPurchaseAgreementsPayload(userId, status);
 
-    const powerAccessApprovals = await firstValueFrom(
-      this.generalService.send(PowerAccessApprovalPatterns.READ, payload),
+    const powerPurchaseAgreements = await firstValueFrom(
+      this.generalService.send(PowerPurchaseAgreementPatterns.READ, payload),
     );
-    return powerAccessApprovals.map(PowerPurchaseAgreementDto.fromEntity);
+    return powerPurchaseAgreements.map(PowerPurchaseAgreementDto.fromEntity);
   }
 
   getPowerPurchaseAggrements() {}

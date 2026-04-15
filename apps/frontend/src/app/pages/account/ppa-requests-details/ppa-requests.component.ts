@@ -18,7 +18,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PpaRequestDto } from '@h2-trust/api';
 import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
 import { ppaRequestsQueryOptions } from '../../../shared/queries/ppa-requests.query';
-import { PowerAccessApprovalService } from '../../../shared/services/power-access-approvals/power-access-approvals.service';
+import { PowerPurchaseAgreementService } from '../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { UserRolesStore } from '../../../shared/store/user-role.store';
 import { CreatePpaRequestComponent } from '../create-ppa-request/create-ppa-request.component';
@@ -42,7 +42,7 @@ export class PpaRequestsComponent {
   protected readonly PpaRequestRole = PpaRequestRole;
 
   protected readonly unitsService = inject(UnitsService);
-  protected readonly ppaService = inject(PowerAccessApprovalService);
+  protected readonly ppaService = inject(PowerPurchaseAgreementService);
   protected roles = inject(UserRolesStore);
   dialog = inject(MatDialog);
 

@@ -10,7 +10,7 @@ import { Prisma } from '@prisma/client';
 import { companyNestedQueryArgs } from '../company/company.nested.query-args';
 import { powerProductionUnitNestedQueryArgs } from '../unit/unit.nested.query-args';
 
-export const powerAccessApprovalDeepQueryArgs = Prisma.validator<Prisma.PowerAccessApprovalDefaultArgs>()({
+export const powerPurchaseAgreementDeepQueryArgs = Prisma.validator<Prisma.PowerPurchaseAgreementDefaultArgs>()({
   include: {
     document: true,
     powerProducer: companyNestedQueryArgs,
