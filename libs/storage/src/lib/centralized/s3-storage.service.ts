@@ -35,6 +35,8 @@ export class S3StorageService extends CentralizedStorageService {
     await this.client.send(
       new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: contentType }),
     );
+
+    this.logger.debug(`Uploaded '${fileName}'`);
   }
 
   async downloadFile(fileName: string): Promise<Readable> {

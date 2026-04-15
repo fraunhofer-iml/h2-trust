@@ -14,6 +14,7 @@ import { BatchType } from '@h2-trust/domain';
 import { CentralizedStorageService, ContentType, DecentralizedStorageService } from '@h2-trust/storage';
 import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
 import { ParsedImport } from './production.types';
+import { ConfigurationService } from '@h2-trust/configuration';
 
 @Injectable()
 export class CsvImportProcessingService {
@@ -22,10 +23,15 @@ export class CsvImportProcessingService {
     HYDROGEN: ['time', 'amount', 'power'],
   };
 
+  private readonly featureVerificationEnabled: boolean;
+
   constructor(
+    configService: ConfigurationService,
     private readonly centralizedStorageService: CentralizedStorageService,
     private readonly decentralizedStorageService: DecentralizedStorageService,
-  ) {}
+  ) {
+    this.featureVerificationEnabled = configService.getGlobalConfiguration().featureFlags.verificationEnabled;
+  }
 
   async parseAndUploadFiles<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
     unitFileImports: UnitFileImport[],
@@ -53,7 +59,10 @@ export class CsvImportProcessingService {
 
         const fileName = `${expectedHash}.csv`;
         await this.centralizedStorageService.uploadFile(fileName, buffer, ContentType.CSV);
-        const cid = await this.decentralizedStorageService.uploadFile(fileName, buffer, ContentType.CSV);
+
+        const cid = this.featureVerificationEnabled
+          ? await this.decentralizedStorageService.uploadFile(fileName, buffer, ContentType.CSV)
+          : null;
 
         return {
           periods: new UnitAccountingPeriods<T>(ufi.unitId, accountingPeriods),
