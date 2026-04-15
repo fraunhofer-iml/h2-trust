@@ -7,7 +7,7 @@
  */
 
 import { HydrogenStorageUnitEntity } from '@h2-trust/amqp';
-import { UnitType } from '@h2-trust/domain';
+import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../address';
 import { CompanyBaseDto } from '../company';
 import { BaseUnitDto } from './base-unit.dto';
@@ -15,7 +15,7 @@ import { FillingDto } from './filling.dto';
 import { UnitOwnerDto } from './unit-owner.dto';
 
 export class HydrogenStorageUnitDto extends BaseUnitDto {
-  storageType: string;
+  storageType: HydrogenStorageType;
   capacity: number;
   pressure: number;
   filling: FillingDto[];
@@ -33,7 +33,7 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
     capacity: number,
     filling: FillingDto[],
     pressure: number,
-    storageType: string,
+    storageType: HydrogenStorageType,
     unitType: UnitType,
     modelNumber: string,
     owner: UnitOwnerDto,

@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { BatchType } from '@h2-trust/domain';
 import { EmissionDto } from './emission.dto';
 
 export abstract class BatchDto {
@@ -14,7 +15,7 @@ export abstract class BatchDto {
   createdAt: Date;
   amount: number;
   unit: string;
-  batchType: string;
+  batchType: BatchType;
 
   protected constructor(
     id: string,
@@ -22,7 +23,7 @@ export abstract class BatchDto {
     creationDate: Date,
     amount: number,
     unit: string,
-    batchType: string,
+    batchType: BatchType,
   ) {
     this.id = id;
     this.emission = emission;

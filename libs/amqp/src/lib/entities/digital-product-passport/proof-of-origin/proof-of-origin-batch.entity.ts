@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType, EnergySource, PowerType } from '@h2-trust/domain';
+import { BatchType, EnergySource, HydrogenColor, PowerType, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentEntity } from '../../bottling';
 import { ProofOfOriginEmissionEntity } from './proof-of-origin-emission.entity';
 
@@ -81,8 +81,8 @@ export class ProofOfOriginHydrogenBatchEntity extends ProofOfOriginBaseBatchEnti
   hydrogenComposition: HydrogenComponentEntity[];
   producer?: string;
   unitId?: string;
-  color?: string;
-  rfnboType?: string;
+  color?: HydrogenColor;
+  rfnboType?: RfnboType;
   processStep?: string;
   accountingPeriodEnd?: Date;
 
@@ -94,8 +94,8 @@ export class ProofOfOriginHydrogenBatchEntity extends ProofOfOriginBaseBatchEnti
     hydrogenComposition: HydrogenComponentEntity[],
     producer?: string,
     unitId?: string,
-    color?: string,
-    rfnboType?: string,
+    color?: HydrogenColor,
+    rfnboType?: RfnboType,
     processStep?: string,
     accountingPeriodEnd?: Date,
   ) {

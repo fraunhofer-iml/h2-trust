@@ -7,14 +7,15 @@
  */
 
 import { HydrogenComponentEntity } from '@h2-trust/amqp';
+import { HydrogenColor, RfnboType } from '@h2-trust/domain';
 
 export class HydrogenComponentDto {
   processId: string | null;
-  rfnboType: string;
-  color: string;
+  rfnboType: RfnboType;
+  color: HydrogenColor;
   amount: number;
 
-  constructor(processId: string | null, color: string, amount: number, rfnboType: string) {
+  constructor(processId: string | null, color: HydrogenColor, amount: number, rfnboType: RfnboType) {
     this.processId = processId;
     this.rfnboType = rfnboType;
     this.color = color;

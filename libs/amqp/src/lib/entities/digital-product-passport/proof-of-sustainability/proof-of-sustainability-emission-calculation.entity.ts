@@ -6,21 +6,21 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CalculationTopic } from '@h2-trust/domain';
+import { CalculationTopic, MeasurementUnit } from '@h2-trust/domain';
 
 // TODO-MP: we are currently misusing this entity and its fields for different contexts (improvement in DUHGW-322)
 export class ProofOfSustainabilityEmissionCalculationEntity {
   name: string;
   basisOfCalculation: string[];
   result: number;
-  unit: string;
+  unit: MeasurementUnit;
   calculationTopic: CalculationTopic;
 
   constructor(
     name: string,
     basisOfCalculation: string[],
     result: number,
-    unit: string,
+    unit: MeasurementUnit,
     calculationTopic: CalculationTopic,
   ) {
     this.name = name;

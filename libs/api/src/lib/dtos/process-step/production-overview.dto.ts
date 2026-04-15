@@ -7,15 +7,15 @@
  */
 
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
-import { BatchType, PowerType } from '@h2-trust/domain';
+import { BatchType, HydrogenColor, PowerType, RfnboType } from '@h2-trust/domain';
 
 export class ProductionOverviewDto {
   startedAt: string;
   endedAt: string;
   productionUnit: string;
   producedAmount: number;
-  color: string;
-  rfnboType: string;
+  color: HydrogenColor;
+  rfnboType: RfnboType;
   powerProducer: string;
   powerConsumed: number;
   storageUnit: string;
@@ -27,12 +27,12 @@ export class ProductionOverviewDto {
     endedAt: string,
     productionUnit: string,
     producedAmount: number,
-    color: string,
-    rfnboType: string,
+    color: HydrogenColor,
+    rfnboType: RfnboType,
     powerProducer: string,
     powerConsumed: number,
     storageUnit: string,
-    powerType: string,
+    powerType: PowerType,
     powerProductionUnit: string,
   ) {
     this.startedAt = startedAt;
@@ -44,7 +44,7 @@ export class ProductionOverviewDto {
     this.powerProducer = powerProducer;
     this.powerConsumed = powerConsumed;
     this.storageUnit = storageUnit;
-    this.powerType = powerType as PowerType;
+    this.powerType = powerType;
     this.powerProductionUnit = powerProductionUnit;
   }
 

@@ -7,7 +7,7 @@
  */
 
 import { HydrogenComponentEntity, HydrogenStorageUnitEntity } from '@h2-trust/amqp';
-import { HydrogenStorageType } from '@h2-trust/domain';
+import { HydrogenColor, HydrogenStorageType, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentDto } from '../digital-product-passport';
 
 export class HydrogenStorageOverviewDto {
@@ -59,12 +59,15 @@ export class HydrogenStorageOverviewDto {
    * @returns A list of fillings in which no RFNBO type occurs twice and in which the amounts of the fillings with the same RFNBO type have been added together.
    */
   private static mapHydrogenComposition(unit: HydrogenStorageUnitEntity): HydrogenComponentDto[] {
-    const compositionMap = new Map<string, number>();
+    const compositionMap = new Map<RfnboType, number>();
 
     unit.filling?.forEach((filling: HydrogenComponentEntity) => {
       compositionMap.set(filling.rfnboType, (compositionMap.get(filling.rfnboType) ?? 0) + filling.amount);
     });
 
-    return Array.from(compositionMap, ([rfnboType, amount]) => new HydrogenComponentDto(null, '', amount, rfnboType));
+    return Array.from(
+      compositionMap,
+      ([rfnboType, amount]) => new HydrogenComponentDto(null, HydrogenColor.MIX, amount, rfnboType),
+    );
   }
 }
