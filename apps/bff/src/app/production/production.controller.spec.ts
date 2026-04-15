@@ -326,6 +326,8 @@ describe('ProductionController', () => {
       'Arbitrum Sepolia',
       '0xcontract',
       'https://sepolia.arbiscan.io/tx/0xhash',
+      'some-cid',
+      'https://ipfs.io/ipfs/some-cid',
     );
 
     jest
