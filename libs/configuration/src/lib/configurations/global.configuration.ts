@@ -31,7 +31,7 @@ export interface AmqpConfiguration {
   queuePrefix: string;
 }
 
-export type CentralizedStorageConfiguration = S3Configuration
+export type CentralizedStorageConfiguration = S3Configuration;
 
 export interface KeycloakConfiguration {
   url: string;
