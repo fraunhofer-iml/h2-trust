@@ -2,7 +2,7 @@ import { PowerAccessApprovalService } from 'apps/frontend/src/app/shared/service
 import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -39,26 +39,35 @@ export class FileSelectionComponent {
   protected readonly MeasurementUnit = MeasurementUnit;
 
   form = new FormGroup({
-    hydrogenFileId: new FormControl<string | null>(null),
-    powerFiles: new FormControl<ProcessedCsvDto[] | null>([]),
+    hydrogenFileId: new FormControl<string | null>(null, Validators.required),
+    powerFiles: new FormControl<ProcessedCsvDto[] | null>([], [Validators.required, Validators.minLength(1)]),
   });
 
   uploadsQuery = injectQuery(() => ({
     queryKey: ['production'],
     queryFn: async () => {
-      const data = await this.productionService.getUploadedCsvFiles();
-      return [...data, ...data, ...data, ...data, ...data];
+      return this.productionService.getUploadedCsvFiles();
     },
   }));
 
   approvalsQuery = injectQuery(() => ({
     queryKey: ['power-access-approvals'],
-    queryFn: async () => this.powerAccessApprovalsService.getApprovals(PowerAccessApprovalStatus.APPROVED),
+    queryFn: async () => {
+      const approvals = await this.powerAccessApprovalsService.getApprovals(PowerAccessApprovalStatus.APPROVED);
+      return approvals.filter((a) => a.energySource !== 'GRID');
+    },
   }));
 
   data = computed(() => {
-    // const uploads = this.uploadsQuery.data();
-    // const approvals = this.approvalsQuery.data();
+    const uploads = this.uploadsQuery.data();
+    const approvals = this.approvalsQuery.data();
+
+    const result = (approvals ?? []).map((ppa) => ({
+      ...ppa,
+      uploads: (uploads ?? []).filter((r) => r.unitId === ppa.powerProductionUnit.id),
+    }));
+
+    return result;
   });
 
   onSelectionChange(selectedOptions: ProcessedCsvDto[]): void {

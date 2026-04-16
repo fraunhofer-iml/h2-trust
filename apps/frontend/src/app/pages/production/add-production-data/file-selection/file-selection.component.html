@@ -11,14 +11,23 @@
     <div class="flex flex-col overflow-hidden rounded-lg bg-white p-4">
       <span>My Hydrogen Productions</span>
       @if (uploadsQuery.data()?.length === 0) {
-        <p class="text-neutral-500">No files found.</p>
+        <div
+          class="mt-4 flex h-full w-full flex-grow flex-col items-center justify-center rounded-lg border border-dashed bg-neutral-50 p-4 text-center text-sm"
+        >
+          <span class="material-symbols-outlined p-2 text-4xl text-primary-400"> select</span>
+          <p>
+            <strong>No Hydrogen Production available </strong>
+          </p>
+          <p>Please upload your Hydrogen Production files to continue.</p>
+        </div>
       }
+
       <form [formGroup]="form" class="min-h-0 flex-1 overflow-auto">
         <mat-selection-list #filesList formControlName="hydrogenFileId" name="shoes" [multiple]="false">
           @for (file of uploadsQuery.data(); track file) {
             <mat-list-option
               [value]="file.id"
-              class="my-2 !h-fit !rounded-md border"
+              class="my-2 !rounded-md border"
               togglePosition="before"
               [ngClass]="option.selected ? 'border-primary-300' : 'border-neutral-300'"
               #option
@@ -48,29 +57,59 @@
             <p>Please select a Hydrogen Production Dataset to continue.</p>
           </div>
         } @else {
-          <form [formGroup]="form" class="overflow-auto">
-            <mat-selection-list #powerFilesList formControlName="powerFiles" [multiple]="true">
-              @for (file of uploadsQuery.data(); track file) {
-                <mat-list-option
-                  [value]="file"
-                  togglePosition="before"
-                  class="my-2 !h-fit !rounded-md border"
-                  [ngClass]="powerDataSet.selected ? 'border-primary-300' : 'border-neutral-300'"
-                  #powerDataSet
-                >
-                  <span matListItemTitle
-                    >{{ file.startedAt | date: 'short' }} - {{ file.endedAt | date: 'short' }}</span
-                  >
-                  <div matListItemLine class="grid w-full grid-cols-3 pb-2">
-                    <span>{{ file.amount | unit: 'kg' }}</span>
-                    <span>
-                      {{ file.uploadedBy }}
-                    </span>
-                    <span> unit </span>
-                  </div>
-                </mat-list-option>
-              }
-            </mat-selection-list>
+          <form [formGroup]="form" class="h-full min-h-0 overflow-auto">
+            @for (item of data(); track $index) {
+              <div class="my-2 rounded-md border bg-white">
+                <div class="flex flex-col px-4 py-2">
+                  <span class="flex items-center gap-4 text-sm text-neutral-700">
+                    {{ item.powerProductionUnit.name }}
+                  </span>
+
+                  <span class="flex items-center gap-4 text-xs text-primary-500">
+                    <span class="flex items-center gap-1 text-primary-500"
+                      ><span class="material-symbols-outlined text-lg">home</span>{{ item.powerProducer.name }}</span
+                    >
+                    <span class="flex items-center gap-1 text-primary-500"
+                      ><span class="material-symbols-outlined text-lg">label</span
+                      >{{ item.powerProductionUnit.typeName }}</span
+                    >
+                  </span>
+                </div>
+
+                <mat-divider></mat-divider>
+
+                <div class="rounded-b-md bg-neutral-100 p-2">
+                  @if (item.uploads.length === 0) {
+                    <span class="text-sm text-neutral-600">No Data available for this PPA.</span>
+                  } @else {
+                    <mat-selection-list
+                      #powerFilesList
+                      formControlName="powerFiles"
+                      [multiple]="true"
+                      class="!m-0 !p-0"
+                    >
+                      @for (file of item.uploads; track $index) {
+                        <mat-list-option
+                          [value]="file"
+                          togglePosition="before"
+                          class="!rounded-md border !bg-white"
+                          [ngClass]="{
+                            'border-primary-300': powerDataSet.selected,
+                            'mt-1': $index > 0,
+                          }"
+                          #powerDataSet
+                        >
+                          <span matListItemTitle class="flex justify-between"
+                            ><span> {{ file.startedAt | date: 'medium' }} - {{ file.endedAt | date: 'medium' }} </span>
+                            <strong>{{ file.amount | unit: 'kg' }}</strong>
+                          </span>
+                        </mat-list-option>
+                      }
+                    </mat-selection-list>
+                  }
+                </div>
+              </div>
+            }
           </form>
           <mat-divider></mat-divider>
           <div class="flex items-center justify-between px-2 py-4 text-right text-neutral-500">
@@ -83,7 +122,7 @@
       </div>
       <div class="flex justify-end gap-2 rounded-lg bg-white p-4">
         <button matButton>Cancel</button>
-        <button matButton="filled">Save</button>
+        <button matButton="filled" [disabled]="form.invalid">Save</button>
       </div>
     </div>
   </div>
