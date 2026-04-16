@@ -17,10 +17,11 @@ import { DateTimeUtil } from '@h2-trust/utils';
 import { BaseSheetComponent } from '../../../../layout/sheet/sheet.component';
 import { ProductionService } from '../../../../shared/services/production/production.service';
 import { VerificationResultStore } from '../../../../shared/store/verification-result.store';
+import { CompactPipe } from 'apps/frontend/src/app/shared/pipes/compact-pipe';
 
 @Component({
   selector: 'app-verify',
-  imports: [MatButtonModule, BaseSheetComponent, ClipboardModule, CommonModule],
+  imports: [MatButtonModule, BaseSheetComponent, ClipboardModule, CommonModule, CompactPipe],
   templateUrl: './verify.component.html',
 })
 export class VerifyComponent {
@@ -54,21 +55,6 @@ export class VerifyComponent {
     }
 
     window.open(url, '_blank');
-  }
-
-  compactValue(value: string | null) {
-    if (!value) {
-      return 'Not available';
-    }
-
-    const leadingChars = 6;
-    const trailingChars = 4;
-
-    if (value.length <= leadingChars + trailingChars + 3) {
-      return value;
-    }
-
-    return `${value.slice(0, leadingChars)}...${value.slice(-trailingChars)}`;
   }
 
   get result() {
