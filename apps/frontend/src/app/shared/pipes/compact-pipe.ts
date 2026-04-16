@@ -10,18 +10,18 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'compact' })
 export class CompactPipe implements PipeTransform {
-    transform(value: string | null) {
-        if (!value) {
-            return 'Not available';
-        }
-
-        const leadingChars = 6;
-        const trailingChars = 4;
-
-        if (value.length <= leadingChars + trailingChars + 3) {
-            return value;
-        }
-
-        return `${value.slice(0, leadingChars)}...${value.slice(-trailingChars)}`;
+  transform(value: string | null) {
+    if (!value) {
+      return 'Not available';
     }
+
+    const leadingChars = 6;
+    const trailingChars = 4;
+
+    if (value.length <= leadingChars + trailingChars + 3) {
+      return value;
+    }
+
+    return `${value.slice(0, leadingChars)}...${value.slice(-trailingChars)}`;
+  }
 }

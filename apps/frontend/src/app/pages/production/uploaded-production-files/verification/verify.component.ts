@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CompactPipe } from 'apps/frontend/src/app/shared/pipes/compact-pipe';
 import { toast } from 'ngx-sonner';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CommonModule } from '@angular/common';
@@ -17,7 +18,6 @@ import { DateTimeUtil } from '@h2-trust/utils';
 import { BaseSheetComponent } from '../../../../layout/sheet/sheet.component';
 import { ProductionService } from '../../../../shared/services/production/production.service';
 import { VerificationResultStore } from '../../../../shared/store/verification-result.store';
-import { CompactPipe } from 'apps/frontend/src/app/shared/pipes/compact-pipe';
 
 @Component({
   selector: 'app-verify',

@@ -54,7 +54,7 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly storageService: CentralizedStorageService,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
   async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
     const payload = new CreateProductionsPayload(
@@ -118,11 +118,7 @@ export class ProductionService {
     dto: ProductionCSVUploadDto,
     userId: string,
   ) {
-    const powerProductions = this.mapUnitsToFiles(
-      dto.powerProductionUnitIds,
-      powerProductionFiles,
-      BatchType.POWER,
-    );
+    const powerProductions = this.mapUnitsToFiles(dto.powerProductionUnitIds, powerProductionFiles, BatchType.POWER);
 
     const hydrogenProductions = this.mapUnitsToFiles(
       dto.hydrogenProductionUnitIds,
@@ -149,11 +145,7 @@ export class ProductionService {
     return AccountingPeriodMatchingResultDto.fromEntity(matchingResult);
   }
 
-  private mapUnitsToFiles(
-    unitIds: string | string[],
-    files: Express.Multer.File[],
-    type: BatchType,
-  ): UnitFileImport[] {
+  private mapUnitsToFiles(unitIds: string | string[], files: Express.Multer.File[], type: BatchType): UnitFileImport[] {
     if (!files || files.length === 0) {
       throw new BadRequestException(`Missing file for ${type} production.`);
     }
