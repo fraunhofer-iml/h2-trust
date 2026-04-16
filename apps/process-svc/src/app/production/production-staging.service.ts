@@ -13,6 +13,7 @@ import {
   AccountingPeriodPower,
   BrokerException,
   CsvDocumentEntity,
+  DistributedProductionEntity,
   ProductionStagingResultEntity,
   StageProductionsPayload,
   UnitAccountingPeriods,
@@ -59,12 +60,19 @@ export class ProductionStagingService {
   ) {}
 
   async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
-    const [preparedPowerProductions, preparedHydrogenProductions] = await Promise.all([
-      this.prepareProductions<AccountingPeriodPower>(payload.powerProductions, BatchType.POWER),
-      this.prepareProductions<AccountingPeriodHydrogen>(payload.hydrogenProductions, BatchType.HYDROGEN),
-    ]);
+    const stagePowerProductions: UnitFileReference[] = payload.stageProductions.filter(
+      (sp) => sp.productionType === BatchType.POWER,
+    );
+    const stageHydrogenProductions: UnitFileReference[] = payload.stageProductions.filter(
+      (sp) => sp.productionType === BatchType.HYDROGEN,
+    );
 
-    const distributedProductions = ProductionDistributor.distributeProductions(
+    const preparedPowerProductions: PreparedProduction<AccountingPeriodPower>[] =
+      await this.prepareProductions<AccountingPeriodPower>(stagePowerProductions, BatchType.POWER);
+    const preparedHydrogenProductions: PreparedProduction<AccountingPeriodHydrogen>[] =
+      await this.prepareProductions<AccountingPeriodHydrogen>(stageHydrogenProductions, BatchType.HYDROGEN);
+
+    const distributedProductions: DistributedProductionEntity[] = ProductionDistributor.distributeProductions(
       preparedPowerProductions.map((power) => power.periods),
       preparedHydrogenProductions.map((hydrogen) => hydrogen.periods),
       payload.gridPowerProductionUnitId,
@@ -75,8 +83,12 @@ export class ProductionStagingService {
     const { csvImportId, csvDocuments } = await this.prismaService.$transaction(async (tx) => {
       const csvImportId = await this.csvImportRepository.createCsvImport(payload.userId, tx);
 
-      const documentInputs = this.assembleCsvDocumentInputs(preparedProductions);
-      const csvDocuments = await this.csvImportRepository.createCsvDocuments(csvImportId, documentInputs, tx);
+      const documentInputs: CreateCsvDocumentInput[] = this.assembleCsvDocumentInputs(preparedProductions);
+      const csvDocuments: CsvDocumentEntity[] = await this.csvImportRepository.createCsvDocuments(
+        csvImportId,
+        documentInputs,
+        tx,
+      );
 
       await this.stagedProductionRepository.stageDistributedProductions(distributedProductions, csvImportId, tx);
 

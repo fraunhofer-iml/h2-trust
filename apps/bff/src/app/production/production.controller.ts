@@ -210,12 +210,7 @@ export class ProductionController {
     },
     @AuthenticatedUser() user: AuthenticatedKCUser,
   ) {
-    return this.service.importCsvFiles(
-      files[FileUploadKeys.POWER_PRODUCTION],
-      files[FileUploadKeys.HYDROGEN_PRODUCTION],
-      dto,
-      user.sub,
-    );
+    return this.service.importCsvFiles(files[FileUploadKeys.HYDROGEN_PRODUCTION], dto, user.sub);
   }
 
   @Post('csv/submit')

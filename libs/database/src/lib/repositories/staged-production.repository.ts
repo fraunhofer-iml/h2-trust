@@ -26,6 +26,7 @@ export class StagedProductionRepository {
   ): Promise<void> {
     const client = tx ?? this.prismaService;
 
+    //TODO-LG: fix according to new prisma db layout
     await client.stagedProduction.createMany({
       data: distributedProductions.map(
         ({ startedAt, hydrogenAmount, hydrogenProductionUnitId, powerAmount, powerProductionUnitId }) => ({

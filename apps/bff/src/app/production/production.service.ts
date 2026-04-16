@@ -16,8 +16,6 @@ import {
   CsvDocumentEntity,
   FinalizeProductionsPayload,
   PaginatedProcessStepEntity,
-  PowerAccessApprovalPatterns,
-  PowerProductionUnitEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionDataFilter,
@@ -111,37 +109,13 @@ export class ProductionService {
     return ProductionStatisticsDto.fromEntity(productionStatistics);
   }
 
-  async importCsvFiles(
-    powerProductionFiles: Express.Multer.File[],
-    hydrogenProductionFiles: Express.Multer.File[],
-    dto: ProductionCSVUploadDto,
-    userId: string,
-  ) {
-    const powerProductions = await this.uploadAndMapFilesToUnits(
-      dto.powerProductionUnitIds,
-      powerProductionFiles,
-      BatchType.POWER,
+  async importCsvFiles(stageProductionFiles: Express.Multer.File[], dto: ProductionCSVUploadDto, userId: string) {
+    const powerProductions: UnitFileReference[] = await this.uploadAndMapFilesToUnits(
+      dto.stageProductionUnitIds,
+      stageProductionFiles,
     );
 
-    const hydrogenProductions = await this.uploadAndMapFilesToUnits(
-      dto.hydrogenProductionUnitIds,
-      hydrogenProductionFiles,
-      BatchType.HYDROGEN,
-    );
-
-    const gridPowerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
-      this.generalSvc.send(
-        PowerAccessApprovalPatterns.READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID,
-        new ReadByIdPayload(userId),
-      ),
-    );
-
-    const payload = new StageProductionsPayload(
-      powerProductions,
-      hydrogenProductions,
-      gridPowerProductionUnit.id,
-      userId,
-    );
+    const payload = new StageProductionsPayload(powerProductions, userId);
     const matchingResult = await firstValueFrom(
       this.processSvc.send<ProductionStagingResultEntity>(ProductionMessagePatterns.STAGE, payload),
     );
@@ -149,26 +123,23 @@ export class ProductionService {
   }
 
   private async uploadAndMapFilesToUnits(
-    unitIds: string | string[],
+    unitIds: string[],
     files: Express.Multer.File[],
-    type: BatchType,
   ): Promise<UnitFileReference[]> {
     if (!files || files.length === 0) {
-      throw new BadRequestException(`Missing file for ${type} production.`);
+      throw new BadRequestException(`Missing file for stage production.`);
     }
 
-    const normalizedUnitIds = Array.isArray(unitIds) ? unitIds : [unitIds];
-
-    if (normalizedUnitIds.length < files.length) {
+    if (unitIds.length < files.length) {
       throw new BadRequestException(
-        `Not enough unit IDs provided for ${type} production files: expected ${files.length}, got ${normalizedUnitIds.length}.`,
+        `Not enough unit IDs provided for stage production files: expected ${files.length}, got ${unitIds.length}.`,
       );
     }
 
     return Promise.all(
       files.map(async (file, i) => {
         const fileName = await this.storageService.uploadFileWithRandomFileName(file.originalname, file.buffer);
-        return new UnitFileReference(normalizedUnitIds[i], fileName);
+        return new UnitFileReference(unitIds[i], fileName, BatchType.HYDROGEN);
       }),
     );
   }

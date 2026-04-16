@@ -101,6 +101,8 @@ export class ProductionDistributor {
     return parsedProductions;
   }
 
+  //TODO-LG: add normalizeStagedPower to update the accounting periods to 1h
+
   private static normalizePower(data: UnitAccountingPeriods<AccountingPeriodPower>[]): Map<string, PowerItem[]> {
     const powerItemsByDateHour = new Map<string, PowerItem[]>();
 

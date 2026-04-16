@@ -120,6 +120,7 @@ model Unit {
 
   documents    Document[]
   processSteps ProcessStep[]
+  stagedProductions    StagedProduction[]
 }
 
 model PowerProductionType {
@@ -149,7 +150,6 @@ model PowerProductionUnit {
   typeName String
 
   powerAccessApprovals PowerAccessApproval[]
-  stagedProductions    StagedProduction[]
 }
 
 model HydrogenProductionUnit {
@@ -162,7 +162,6 @@ model HydrogenProductionUnit {
   waterConsumptionLitersPerHour Decimal @db.Decimal(7, 3)
 
   generalInfo       Unit               @relation(fields: [id], references: [id])
-  stagedProductions StagedProduction[]
 }
 
 model HydrogenStorageUnit {
@@ -273,16 +272,14 @@ model PowerAccessApproval {
 
 model StagedProduction {
   id             String   @id @default(uuid(7))
-  powerAmount    Decimal  @db.Decimal(18, 6)
-  hydrogenAmount Decimal  @db.Decimal(18, 6)
+  amount         Decimal  @db.Decimal(18, 6)
+  usedPower      Decimal  @db.Decimal(18, 6)
   startedAt      DateTime
+  type           String
 
   csvImport   CsvImport @relation(fields: [csvImportId], references: [id])
   csvImportId String
 
-  powerProductionUnit   PowerProductionUnit @relation(fields: [powerProductionUnitId], references: [id])
-  powerProductionUnitId String
-
-  hydrogenProductionUnit   HydrogenProductionUnit @relation(fields: [hydrogenProductionUnitId], references: [id])
-  hydrogenProductionUnitId String
+  productionUnit Unit   @relation(fields: [unitId], references: [id])
+  unitId     String
 }
