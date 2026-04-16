@@ -32,4 +32,8 @@ export class HashUtil {
     const storedBytes = new Uint8Array(Buffer.from(storedHash, 'hex'));
     return timingSafeEqual(computedBytes, storedBytes);
   }
+
+  static hashBuffer(buffer: Buffer): string {
+    return createHash('sha256').update(buffer).digest('hex');
+  }
 }

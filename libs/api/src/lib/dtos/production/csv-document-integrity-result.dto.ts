@@ -19,7 +19,9 @@ export class CsvDocumentIntegrityResultDto {
   blockTimestamp: Date | null;
   network: string | null;
   smartContractAddress: string | null;
-  explorerUrl: string | null;
+  blockchainExplorerUrl: string | null;
+  cid: string | null;
+  ipfsExplorerUrl: string | null;
 
   constructor(
     documentId: string,
@@ -31,7 +33,9 @@ export class CsvDocumentIntegrityResultDto {
     blockTimestamp: Date | null,
     network: string | null,
     smartContractAddress: string | null,
-    explorerUrl: string | null,
+    blockchainExplorerUrl: string | null,
+    cid: string | null,
+    ipfsExplorerUrl: string | null,
   ) {
     this.documentId = documentId;
     this.fileName = fileName;
@@ -42,7 +46,9 @@ export class CsvDocumentIntegrityResultDto {
     this.blockTimestamp = blockTimestamp;
     this.network = network;
     this.smartContractAddress = smartContractAddress;
-    this.explorerUrl = explorerUrl;
+    this.blockchainExplorerUrl = blockchainExplorerUrl;
+    this.cid = cid;
+    this.ipfsExplorerUrl = ipfsExplorerUrl;
   }
 
   static fromEntity(entity: VerifyCsvDocumentIntegrityResultEntity): CsvDocumentIntegrityResultDto {
@@ -56,7 +62,9 @@ export class CsvDocumentIntegrityResultDto {
       entity.blockTimestamp,
       entity.network,
       entity.smartContractAddress,
-      entity.explorerUrl,
+      entity.blockchainExplorerUrl,
+      entity.cid,
+      entity.ipfsExplorerUrl,
     );
   }
 }

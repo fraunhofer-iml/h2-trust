@@ -13,6 +13,7 @@ import bffConfiguration from './configurations/bff.configuration';
 import generalSvcConfiguration from './configurations/general-svc.configuration';
 import globalConfiguration from './configurations/global.configuration';
 import processSvcConfiguration from './configurations/process-svc.configuration';
+import { FeatureFlagService } from './feature-flag.service';
 import { KeycloakConfigurationService } from './keycloak.configuration.service';
 
 @Module({
@@ -25,7 +26,7 @@ import { KeycloakConfigurationService } from './keycloak.configuration.service';
     }),
   ],
   controllers: [],
-  providers: [ConfigurationService, KeycloakConfigurationService],
-  exports: [ConfigurationService, KeycloakConfigurationService],
+  providers: [ConfigurationService, KeycloakConfigurationService, FeatureFlagService],
+  exports: [ConfigurationService, KeycloakConfigurationService, FeatureFlagService],
 })
 export class ConfigurationModule {}

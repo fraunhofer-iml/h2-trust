@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PassThrough } from 'stream';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
   AccountingPeriodHydrogen,
@@ -15,161 +14,78 @@ import {
   CsvDocumentEntity,
   ProductionStagingResultEntity,
   StageProductionsPayload,
-  UnitAccountingPeriods,
-  UnitFileReference,
 } from '@h2-trust/amqp';
-import { BlockchainService, HashUtil, ProofEntry } from '@h2-trust/blockchain';
-import {
-  CreateCsvDocumentInput,
-  CsvImportRepository,
-  PrismaService,
-  StagedProductionRepository,
-} from '@h2-trust/database';
+import { BlockchainService, ProofEntry } from '@h2-trust/blockchain';
+import { FeatureFlagService } from '@h2-trust/configuration';
+import { CsvImportRepository, PrismaService, StagedProductionRepository } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
-import { StorageService } from '@h2-trust/storage';
-import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
+import { CsvImportProcessingService } from './csv-import-processing.service';
 import { ProductionDistributor } from './production-distributor';
-
-interface DocumentProof {
-  fileName: string;
-  hash: string;
-  cid: string;
-}
-
-interface PreparedProduction<T extends AccountingPeriodPower | AccountingPeriodHydrogen> extends DocumentProof {
-  periods: UnitAccountingPeriods<T>;
-  type: Exclude<BatchType, BatchType.WATER>;
-}
+import { DocumentProof } from './production.types';
 
 @Injectable()
 export class ProductionStagingService {
-  private static readonly validHeaders: Record<Exclude<BatchType, BatchType.WATER>, string[]> = {
-    POWER: ['time', 'amount'],
-    HYDROGEN: ['time', 'amount', 'power'],
-  };
-
   private readonly logger = new Logger(this.constructor.name);
 
   constructor(
-    private readonly stagedProductionRepository: StagedProductionRepository,
-    private readonly storageService: StorageService,
     private readonly blockchainService: BlockchainService,
+    private readonly featureFlagService: FeatureFlagService,
+    private readonly csvImportProcessingService: CsvImportProcessingService,
     private readonly csvImportRepository: CsvImportRepository,
     private readonly prismaService: PrismaService,
+    private readonly stagedProductionRepository: StagedProductionRepository,
   ) {}
 
   async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
-    const [preparedPowerProductions, preparedHydrogenProductions] = await Promise.all([
-      this.prepareProductions<AccountingPeriodPower>(payload.powerProductions, BatchType.POWER),
-      this.prepareProductions<AccountingPeriodHydrogen>(payload.hydrogenProductions, BatchType.HYDROGEN),
+    const [parsedPowerImports, parsedHydrogenImports] = await Promise.all([
+      this.csvImportProcessingService.parseAndUploadFiles<AccountingPeriodPower>(
+        payload.powerProductionImports,
+        BatchType.POWER,
+      ),
+      this.csvImportProcessingService.parseAndUploadFiles<AccountingPeriodHydrogen>(
+        payload.hydrogenProductionImports,
+        BatchType.HYDROGEN,
+      ),
     ]);
 
     const distributedProductions = ProductionDistributor.distributeProductions(
-      preparedPowerProductions.map((power) => power.periods),
-      preparedHydrogenProductions.map((hydrogen) => hydrogen.periods),
+      parsedPowerImports.map((parsedImport) => parsedImport.periods),
+      parsedHydrogenImports.map((parsedImport) => parsedImport.periods),
       payload.gridPowerProductionUnitId,
     );
 
-    const preparedProductions = [...preparedPowerProductions, ...preparedHydrogenProductions];
+    const parsedImports = [...parsedPowerImports, ...parsedHydrogenImports];
 
     const { csvImportId, csvDocuments } = await this.prismaService.$transaction(async (tx) => {
-      const csvImportId = await this.csvImportRepository.createCsvImport(payload.userId, tx);
+      const csvImportId = await this.csvImportRepository.saveCsvImport(payload.userId, tx);
 
-      const documentInputs = this.assembleCsvDocumentInputs(preparedProductions);
-      const csvDocuments = await this.csvImportRepository.createCsvDocuments(csvImportId, documentInputs, tx);
+      const csvDocumentInputs = this.csvImportProcessingService.createCsvDocumentInputs(parsedImports);
+      const csvDocuments = await this.csvImportRepository.saveCsvDocuments(csvImportId, csvDocumentInputs, tx);
 
       await this.stagedProductionRepository.stageDistributedProductions(distributedProductions, csvImportId, tx);
 
       return { csvImportId, csvDocuments };
     });
 
-    await this.storeBlockchainProofs(preparedProductions, csvDocuments);
+    await this.storeProofsOnBlockchain(parsedImports, csvDocuments);
 
     return new ProductionStagingResultEntity(csvImportId, distributedProductions);
   }
 
-  private async prepareProductions<T extends AccountingPeriodHydrogen | AccountingPeriodPower>(
-    unitFileReferences: UnitFileReference[],
-    type: Exclude<BatchType, BatchType.WATER>,
-  ): Promise<PreparedProduction<T>[]> {
-    const headers = ProductionStagingService.validHeaders[type];
-
-    return Promise.all(
-      unitFileReferences.map(async (ufr) => {
-        const downloadingStream = await this.storageService.downloadFile(ufr.fileName);
-        const hashingStream = new PassThrough();
-        const parsingStream = new PassThrough();
-
-        const cleanup = (err: Error) => {
-          downloadingStream.destroy(err);
-          hashingStream.destroy(err);
-          parsingStream.destroy(err);
-        };
-        downloadingStream.on('error', cleanup);
-        hashingStream.on('error', cleanup);
-        parsingStream.on('error', cleanup);
-
-        downloadingStream.pipe(hashingStream);
-        downloadingStream.pipe(parsingStream);
-
-        const [hash, accountingPeriods] = await Promise.all([
-          HashUtil.hashStream(hashingStream),
-          AccountingPeriodCsvParser.parseStream<T>(parsingStream, headers, ufr.fileName),
-        ]);
-
-        if (!accountingPeriods.length) {
-          throw new BrokerException(
-            `${type} production file does not contain any valid items.`,
-            HttpStatus.BAD_REQUEST,
-          );
-        }
-
-        return {
-          periods: new UnitAccountingPeriods<T>(ufr.unitId, accountingPeriods),
-          type,
-          fileName: ufr.fileName,
-          hash,
-          cid: ufr.fileName, // TODO-MP: store IPFS CID (DUHGW-341)
-        };
-      }),
-    );
-  }
-
-  private assembleCsvDocumentInputs<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
-    preparedProductions: PreparedProduction<T>[],
-  ): CreateCsvDocumentInput[] {
-    return preparedProductions.map((production) => {
-      const { startedAt, endedAt, amount } = production.periods.accountingPeriods.reduce(
-        (acc, accountingPeriod) => {
-          const time = accountingPeriod.time.getTime();
-          const amount = accountingPeriod.amount;
-
-          return {
-            startedAt: Math.min(acc.startedAt, time),
-            endedAt: Math.max(acc.endedAt, time),
-            amount: acc.amount + amount,
-          };
-        },
-        { startedAt: Infinity, endedAt: -Infinity, amount: 0 },
-      );
-
-      return {
-        type: production.type,
-        startedAt: new Date(startedAt),
-        endedAt: new Date(endedAt),
-        fileName: production.fileName,
-        amount,
-      };
-    });
-  }
-
-  private async storeBlockchainProofs(
+  private async storeProofsOnBlockchain(
     documentProofs: DocumentProof[],
     csvDocuments: CsvDocumentEntity[],
   ): Promise<void> {
-    if (!this.blockchainService.blockchainEnabled) {
-      this.logger.debug(`⏭️ Blockchain disabled, skipping proof storage of ${documentProofs.length} entries`);
+    if (!this.featureFlagService.verificationEnabled) {
+      this.logger.debug(`Blockchain integration disabled, skipping proof storage of ${documentProofs.length} entries`);
       return;
+    }
+
+    if (documentProofs.length !== csvDocuments.length) {
+      throw new BrokerException(
+        `Number of document proofs (${documentProofs.length}) does not match number of CSV documents (${csvDocuments.length}).`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
 
     const csvDocumentsByFileName = new Map(csvDocuments.map((csvDocument) => [csvDocument.fileName, csvDocument]));
@@ -198,6 +114,7 @@ export class ProductionStagingService {
         `Failed to store proofs for documents on-chain: ${documentProofs.map((d) => d.fileName).join(', ')}`,
         error instanceof Error ? error.stack : undefined,
       );
+      throw error;
     }
   }
 }

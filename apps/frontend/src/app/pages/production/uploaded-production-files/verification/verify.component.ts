@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CompactPipe } from 'apps/frontend/src/app/shared/pipes/compact-pipe';
 import { toast } from 'ngx-sonner';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CommonModule } from '@angular/common';
@@ -13,17 +14,19 @@ import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { ProcessedCsvDto } from '@h2-trust/api';
 import { CsvDocumentIntegrityStatus } from '@h2-trust/domain';
+import { DateTimeUtil } from '@h2-trust/utils';
 import { BaseSheetComponent } from '../../../../layout/sheet/sheet.component';
 import { ProductionService } from '../../../../shared/services/production/production.service';
 import { VerificationResultStore } from '../../../../shared/store/verification-result.store';
 
 @Component({
   selector: 'app-verify',
-  imports: [MatButtonModule, BaseSheetComponent, ClipboardModule, CommonModule],
+  imports: [MatButtonModule, BaseSheetComponent, ClipboardModule, CommonModule, CompactPipe],
   templateUrl: './verify.component.html',
 })
 export class VerifyComponent {
   protected readonly CsvDocumentIntegrityStatus = CsvDocumentIntegrityStatus;
+  protected readonly DateTimeUtil = DateTimeUtil;
   disabled = input.required<boolean>();
   file = input.required<ProcessedCsvDto>();
 
@@ -39,15 +42,15 @@ export class VerifyComponent {
     this.verifying = false;
   }
 
-  onCopied(success: boolean) {
+  onCopied(success: boolean, label: string) {
     if (success) {
-      toast.success('Transaction hash copied to clipboard!');
+      toast.success(`${label} copied to clipboard.`);
     }
   }
 
-  openExplorer(url: string | null) {
+  openUrl(url: string | null) {
     if (!url) {
-      toast.error('Missing explorer url!');
+      toast.error('Link is not available.');
       return;
     }
 
