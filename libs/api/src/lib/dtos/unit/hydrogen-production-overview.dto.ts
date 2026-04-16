@@ -43,7 +43,7 @@ export class HydrogenProductionOverviewDto {
   }
 
   static fromEntity(unit: HydrogenProductionUnitEntity): HydrogenProductionOverviewDto {
-    const firstApproval = unit.owner?.hydrogenApprovals?.[0];
+    const firstAgreement = unit.owner?.hydrogenAgreements?.[0];
 
     return <HydrogenProductionOverviewDto>{
       id: unit.id,
@@ -52,13 +52,13 @@ export class HydrogenProductionOverviewDto {
       technology: EnumLabelMapper.getHydrogenProductionTechnology(unit.technology),
       producing: true,
       powerPurchaseAgreementStatus: HydrogenProductionOverviewDto.existsPowerProducer(unit),
-      powerProducerId: firstApproval?.powerProducer.id ?? '',
-      powerProducerName: firstApproval?.powerProducer.name ?? '',
+      powerProducerId: firstAgreement?.powerProducer.id ?? '',
+      powerProducerName: firstAgreement?.powerProducer.name ?? '',
       active: unit.active,
     };
   }
 
   private static existsPowerProducer(unit: HydrogenProductionUnitEntity) {
-    return unit.owner?.hydrogenApprovals?.length ? unit.owner.hydrogenApprovals.length !== 0 : false;
+    return unit.owner?.hydrogenAgreements?.length ? unit.owner.hydrogenAgreements.length !== 0 : false;
   }
 }

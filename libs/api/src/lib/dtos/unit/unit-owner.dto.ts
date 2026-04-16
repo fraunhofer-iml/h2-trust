@@ -11,11 +11,11 @@ import { PowerPurchaseAgreementConnectionDto } from './power-purchase-agreement-
 export class UnitOwnerDto {
   id: string;
   name: string;
-  hydrogenApprovals: PowerPurchaseAgreementConnectionDto[];
+  hydrogenAgreements: PowerPurchaseAgreementConnectionDto[];
 
-  constructor(id: string, name: string, hydrogenApprovals: PowerPurchaseAgreementConnectionDto[]) {
+  constructor(id: string, name: string, hydrogenAgreements: PowerPurchaseAgreementConnectionDto[]) {
     this.id = id;
     this.name = name;
-    this.hydrogenApprovals = hydrogenApprovals;
+    this.hydrogenAgreements = hydrogenAgreements;
   }
 }

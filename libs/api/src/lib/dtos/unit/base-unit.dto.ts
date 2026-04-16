@@ -81,10 +81,10 @@ export abstract class BaseUnitDto {
       owner: {
         id: unit.owner?.id,
         name: unit.owner?.name,
-        hydrogenApprovals:
-          unit.owner?.hydrogenApprovals?.map((approval) => ({
-            powerPurchaseAgreementStatus: approval.status,
-            powerProducerId: approval.powerProducer.id,
+        hydrogenAgreements:
+          unit.owner?.hydrogenAgreements?.map((agreement) => ({
+            powerPurchaseAgreementStatus: agreement.status,
+            powerProducerId: agreement.powerProducer.id,
           })) ?? [],
       },
       operator: new CompanyBaseDto(unit.operator.id, unit.operator.name),

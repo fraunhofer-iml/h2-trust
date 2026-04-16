@@ -17,7 +17,7 @@ import { API } from '../../constants/api-endpoints';
 export class PowerPurchaseAgreementService {
   constructor(private readonly httpClient: HttpClient) {}
 
-  getApprovals(status?: PowerPurchaseAgreementStatus) {
+  getAgreements(status?: PowerPurchaseAgreementStatus) {
     let params = new HttpParams();
     if (status) {
       params = params.append('status', status);

@@ -12,8 +12,8 @@ import { powerPurchaseAgreementNestedQueryArgs } from '../power-purchase-agreeme
 export const companyDeepQueryArgs = Prisma.validator<Prisma.CompanyDefaultArgs>()({
   include: {
     address: true,
-    hydrogenApprovals: powerPurchaseAgreementNestedQueryArgs,
-    powerApprovals: powerPurchaseAgreementNestedQueryArgs,
+    hydrogenAgreements: powerPurchaseAgreementNestedQueryArgs,
+    powerAgreements: powerPurchaseAgreementNestedQueryArgs,
     unitOwners: true,
     unitOperators: true,
     users: true,

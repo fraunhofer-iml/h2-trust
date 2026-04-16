@@ -27,7 +27,7 @@ export class PowerPurchaseAgreementController {
   @Get()
   @ApiBearerAuth()
   @ApiOperation({
-    description: 'Retrieve all companies with their power purchase agreement. Optionally filter by approval status.',
+    description: 'Retrieve all companies with their power purchase agreement. Optionally filter by agreement status.',
   })
   @ApiOkResponse({
     description: 'Returns a list of all companies with their power purchase agreement matching the filter criteria.',
@@ -40,19 +40,19 @@ export class PowerPurchaseAgreementController {
     examples: {
       allTypes: {
         value: null,
-        description: 'Get approvals of all status',
+        description: 'Get agreements of all status',
       },
       APPROVED: {
         value: PowerPurchaseAgreementStatus.APPROVED,
-        description: `Get all Power Agreements Approvals with status "${PowerPurchaseAgreementStatus.APPROVED}"`,
+        description: `Get all Power Agreements with status "${PowerPurchaseAgreementStatus.APPROVED}"`,
       },
       PENDING: {
         value: PowerPurchaseAgreementStatus.PENDING,
-        description: `Get all Power Agreements Approvals with status "${PowerPurchaseAgreementStatus.PENDING}"`,
+        description: `Get all Power Agreements with status "${PowerPurchaseAgreementStatus.PENDING}"`,
       },
       REJECTED: {
         value: PowerPurchaseAgreementStatus.REJECTED,
-        description: `Get all Power Agreements Approvals with status "${PowerPurchaseAgreementStatus.REJECTED}"`,
+        description: `Get all Power Agreements with status "${PowerPurchaseAgreementStatus.REJECTED}"`,
       },
     },
   })

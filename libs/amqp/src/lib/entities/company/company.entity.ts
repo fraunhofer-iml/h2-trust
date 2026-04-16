@@ -18,7 +18,7 @@ export class CompanyEntity {
   type: string;
   address: AddressEntity;
   users: UserEntity[];
-  hydrogenApprovals: PowerPurchaseAgreementEntity[];
+  hydrogenAgreements: PowerPurchaseAgreementEntity[];
 
   constructor(
     id: string,
@@ -27,7 +27,7 @@ export class CompanyEntity {
     type: string,
     address: AddressEntity,
     users: UserEntity[],
-    hydrogenApprovals: PowerPurchaseAgreementEntity[],
+    hydrogenAgreements: PowerPurchaseAgreementEntity[],
   ) {
     this.id = id;
     this.name = name;
@@ -35,7 +35,7 @@ export class CompanyEntity {
     this.type = type;
     this.address = address;
     this.users = users;
-    this.hydrogenApprovals = hydrogenApprovals;
+    this.hydrogenAgreements = hydrogenAgreements;
   }
 
   static fromDeepDatabase(company: CompanyDeepDbType): CompanyEntity {
@@ -46,7 +46,7 @@ export class CompanyEntity {
       company.type,
       AddressEntity.fromDatabase(company.address),
       [],
-      company.hydrogenApprovals.map((approval) => PowerPurchaseAgreementEntity.fromNestedDatabase(approval)),
+      company.hydrogenAgreements.map((agreement) => PowerPurchaseAgreementEntity.fromNestedDatabase(agreement)),
     );
   }
 

@@ -53,12 +53,12 @@ export class AddProductionDataComponent {
   useCSV = true;
   readonly MeasurementUnit = MeasurementUnit;
 
-  approvalsQuery = injectQuery(() => ({
+  agreementsQuery = injectQuery(() => ({
     queryKey: ['power-purchase-agreement'],
     queryFn: async () => {
-      const approvals = await this.powerPurchaseAgreementsService.getApprovals(PowerPurchaseAgreementStatus.APPROVED);
+      const agreements = await this.powerPurchaseAgreementsService.getAgreements(PowerPurchaseAgreementStatus.APPROVED);
       return [
-        ...approvals.map((a) => ({
+        ...agreements.map((a) => ({
           value: a.powerProductionUnit,
           name: `${a.powerProducer.name} | ${a.powerProductionUnit.name}`,
         })),

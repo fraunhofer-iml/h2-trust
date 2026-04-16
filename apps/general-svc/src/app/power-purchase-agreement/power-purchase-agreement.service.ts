@@ -31,20 +31,20 @@ export class PowerPurchaseAgreementService {
   }
 
   async findApprovedGridPowerProductionUnitByUserId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity> {
-    const approvals = await this.findAll(
+    const agreements = await this.findAll(
       new ReadPowerPurchaseAgreementsPayload(payload.id, PowerPurchaseAgreementStatus.APPROVED),
     );
 
-    const approvalForGrid = approvals.find(
-      (approval) => approval.powerProductionUnit.type.name === PowerProductionType.GRID,
+    const agreementForGrid = agreements.find(
+      (agreement) => agreement.powerProductionUnit.type.name === PowerProductionType.GRID,
     );
 
-    if (!approvalForGrid)
+    if (!agreementForGrid)
       throw new BrokerException(
         `No grid connection found for user with id ${payload.id}.`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
 
-    return approvalForGrid.powerProductionUnit;
+    return agreementForGrid.powerProductionUnit;
   }
 }

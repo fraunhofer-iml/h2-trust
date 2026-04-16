@@ -52,12 +52,12 @@ export class PowerPurchaseAgreementEntity {
     };
   }
 
-  static fromNestedDatabase(approval: PowerPurchaseAgreementNestedDbType): PowerPurchaseAgreementEntity {
+  static fromNestedDatabase(agreement: PowerPurchaseAgreementNestedDbType): PowerPurchaseAgreementEntity {
     return <PowerPurchaseAgreementEntity>{
-      ...approval,
-      hydrogenProducer: CompanyEntity.fromFlatDatabase(approval.hydrogenProducer),
-      powerProducer: CompanyEntity.fromFlatDatabase(approval.powerProducer),
-      powerProductionUnit: PowerProductionUnitEntity.fromNestedPowerProductionUnit(approval.powerProductionUnit),
+      ...agreement,
+      hydrogenProducer: CompanyEntity.fromFlatDatabase(agreement.hydrogenProducer),
+      powerProducer: CompanyEntity.fromFlatDatabase(agreement.powerProducer),
+      powerProductionUnit: PowerProductionUnitEntity.fromNestedPowerProductionUnit(agreement.powerProductionUnit),
     };
   }
 }
