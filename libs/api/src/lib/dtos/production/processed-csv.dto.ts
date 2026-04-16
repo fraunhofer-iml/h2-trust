@@ -42,10 +42,10 @@ export class ProcessedCsvDto {
     this.verifiable = verifiable;
   }
 
-  static fromEntity(entity: CsvDocumentEntity, minioUrl: string, companyName: string): ProcessedCsvDto {
+  static fromEntity(entity: CsvDocumentEntity, storageUrl: string, companyName: string): ProcessedCsvDto {
     return new ProcessedCsvDto(
       entity.id,
-      `${minioUrl}/${entity.fileName}`,
+      `${storageUrl}/${entity.fileName}`,
       entity.fileName,
       companyName,
       entity.startedAt,

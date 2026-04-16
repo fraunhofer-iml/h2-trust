@@ -6,13 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { UnitFileReference } from './unit-file-reference.entity';
+import { UnitFileImport } from './unit-file-import';
 
 export class ImportedFileBundles {
-  powerProduction: UnitFileReference[];
-  hydrogenProduction: UnitFileReference[];
+  powerProduction: UnitFileImport[];
+  hydrogenProduction: UnitFileImport[];
 
-  constructor(powerProduction: UnitFileReference[], hydrogenProduction: UnitFileReference[]) {
+  constructor(powerProduction: UnitFileImport[], hydrogenProduction: UnitFileImport[]) {
     this.powerProduction = powerProduction;
     this.hydrogenProduction = hydrogenProduction;
   }

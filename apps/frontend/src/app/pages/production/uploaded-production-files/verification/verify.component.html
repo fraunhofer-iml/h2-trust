@@ -2,7 +2,7 @@
   <button matButton="filled" disabled class="gap-1">
     <span class="flex flex-row items-center gap-2">
       <span class="material-symbols-outlined animate-spin" matButtonPrefix>progress_activity</span>
-      Verifiying...
+      Verifying...
     </span>
   </button>
 } @else if (!result || result.status === CsvDocumentIntegrityStatus.FAILED) {
@@ -18,7 +18,7 @@
     <h1 class="font-semibold">Verification Result</h1>
 
     @if (result; as res) {
-      <p class="">File-Id: {{ res.documentId }}</p>
+      <p class="text-sm text-neutral-600">{{ res.fileName || 'Not available' }}</p>
       <div class="mt-4 flex flex-col gap-4">
         <div
           class="rounded-xl border-2 p-4"
@@ -40,62 +40,129 @@
         <div
           class="flex flex-col gap-4 rounded-xl border-[2px] border-solid border-neutral-100 bg-neutral-50 p-4 text-sm text-neutral-600"
         >
-          <span class="text-md font-semibold">Details</span>
+          <div>
+            <span class="text-md font-semibold text-black">Blockchain Proof</span>
+            <p class="mt-1 text-xs text-neutral-500">Shows the blockchain record used to verify this file.</p>
+          </div>
 
           <span>
-            File Name
-            <p class="truncate text-black">{{ res.fileName }}</p>
-          </span>
-
-          <span class="">
             Transaction Hash
-            <p class="truncate text-black">{{ res.transactionHash }}</p>
+            <p class="font-mono text-black" [attr.title]="res.transactionHash || null">
+              {{ res.transactionHash | compact }}
+            </p>
           </span>
 
           <span>
             Block Number
-            <p class="text-black">{{ res.blockNumber }}</p>
+            <p class="text-black">{{ res.blockNumber || 'Not available' }}</p>
           </span>
 
           <span>
             Block Timestamp
-            <p class="text-black">{{ res.blockTimestamp }}</p>
+            <p class="text-black">
+              {{ res.blockTimestamp | date: 'full' : 'UTC' }}
+            </p>
           </span>
 
           <span>
             Smart Contract Address
-            <p class="truncate text-black">{{ res.smartContractAddress }}</p>
+            <p class="font-mono text-black" [attr.title]="res.smartContractAddress || null">
+              {{ res.smartContractAddress | compact }}
+            </p>
           </span>
 
           <span>
             Network
-            <p class="text-black">{{ res.network }}</p>
+            <p class="text-black">{{ res.network || 'Not available' }}</p>
           </span>
-        </div>
 
-        <div class="rounded-xl border-[2px] border-neutral-100 bg-neutral-50 p-4 text-sm text-neutral-600">
-          <span class="text-md font-semibold">Actions</span>
-          <p>
-            You can view the full verification details on the blockchain explorer or copy the transaction hash for your
-            records.
-          </p>
-          <div class="mt-4 flex flex-row gap-4">
-            <button matButton="outlined" (click)="openExplorer(res.explorerUrl)">
-              <span class="flex flex-row items-center gap-2">
+          <div class="mt-4 grid max-w-4xl grid-cols-1 gap-3 sm:grid-cols-2">
+            <button matButton="outlined" (click)="openUrl(res.blockchainExplorerUrl)">
+              <span class="flex items-center gap-2 text-center">
                 <span class="material-symbols-outlined">token</span>
-                Blockchain Explorer
+                <span class="font-medium">Open Blockchain Explorer</span>
               </span>
             </button>
             <button
               matButton="outlined"
               [cdkCopyToClipboard]="res.transactionHash ?? ''"
-              (cdkCopyToClipboardCopied)="onCopied($event)"
+              (cdkCopyToClipboardCopied)="onCopied($event, 'Transaction hash')"
             >
-              <span class="flex flex-row items-center gap-2">
+              <span class="flex items-center gap-2 text-center">
                 <span class="material-symbols-outlined">content_copy</span>
-                Transaction Hash
+                <span class="font-medium">Copy Transaction Hash</span>
               </span>
             </button>
+          </div>
+        </div>
+
+        <div
+          class="flex flex-col gap-4 rounded-xl border-[2px] border-solid border-neutral-100 bg-neutral-50 p-4 text-sm text-neutral-600"
+        >
+          <div>
+            <span class="text-md font-semibold text-black">IPFS Reference</span>
+            <p class="mt-1 text-xs text-neutral-500">Shows where the file can be independently retrieved.</p>
+          </div>
+
+          <span>
+            Content Identifier
+            <p class="font-mono text-black" [attr.title]="res.cid || null">{{ res.cid | compact }}</p>
+          </span>
+
+          <div class="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <button matButton="outlined" (click)="openUrl(res.ipfsExplorerUrl)">
+              <span class="flex items-center gap-2 text-center">
+                <span class="material-symbols-outlined">description</span>
+                <span class="font-medium">Open IPFS Explorer</span>
+              </span>
+            </button>
+            <button
+              matButton="outlined"
+              [cdkCopyToClipboard]="res.cid ?? ''"
+              (cdkCopyToClipboardCopied)="onCopied($event, 'Content identifier')"
+            >
+              <span class="flex items-center gap-2 text-center">
+                <span class="material-symbols-outlined">content_copy</span>
+                <span class="font-medium">Copy Content Identifier</span>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-3 rounded-lg border border-neutral-100 bg-white p-4 text-sm text-neutral-600">
+          <div>
+            <span class="font-semibold text-neutral-900">Checked Steps</span>
+            <p class="mt-1 text-xs text-neutral-500">
+              This verification process compares the file from centralized storage with the proof registered on the
+              blockchain.
+            </p>
+          </div>
+
+          <div class="flex items-center gap-3 text-neutral-800">
+            <span
+              class="flex h-5 w-5 items-center justify-center rounded-full bg-neutral-100 text-[11px] font-semibold text-neutral-600"
+            >
+              1
+            </span>
+            <span>File loaded from centralized storage</span>
+          </div>
+
+          <div class="flex items-center gap-3 text-neutral-800">
+            <span
+              class="flex h-5 w-5 items-center justify-center rounded-full bg-neutral-100 text-[11px] font-semibold text-neutral-600"
+            >
+              2
+            </span>
+            <span>Proof loaded from blockchain</span>
+          </div>
+
+          <div class="flex items-center gap-3 text-neutral-800">
+            <span
+              class="flex h-5 w-5 items-center justify-center rounded-full bg-neutral-100 text-[11px] font-semibold text-neutral-600"
+            >
+              3
+            </span>
+            <span>File matches the registered proof</span>
           </div>
         </div>
       </div>

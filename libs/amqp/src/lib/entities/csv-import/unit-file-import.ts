@@ -6,25 +6,24 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { BatchType } from '@h2-trust/domain';
+import { IsNotEmpty, IsString } from 'class-validator';
 
-export class UnitFileReference {
+export class UnitFileImport {
   @IsString()
   @IsNotEmpty()
   unitId: string;
 
   @IsString()
   @IsNotEmpty()
-  fileName: string;
+  hashedFileBuffer: string;
 
-  @IsEnum(BatchType)
+  @IsString()
   @IsNotEmpty()
-  productionType: BatchType;
+  encodedFileBuffer: string;
 
-  constructor(unitId: string, fileName: string, productionType: BatchType) {
+  constructor(unitId: string, hashedFileBuffer: string, encodedFileBuffer: string) {
     this.unitId = unitId;
-    this.fileName = fileName;
-    this.productionType = productionType;
+    this.hashedFileBuffer = hashedFileBuffer;
+    this.encodedFileBuffer = encodedFileBuffer;
   }
 }
