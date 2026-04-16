@@ -37,7 +37,7 @@ export class BottlingAllocator {
       const { batchesForBottle, processStepsToBeSplit, consumedSplitProcessSteps, processStepsForRemainingAmount } =
         BottlingAllocator.processBottlingForEachRfnboType(
           processSteps,
-          hydrogenComponent.rfnboType as RfnboType,
+          hydrogenComponent.rfnboType,
           hydrogenComponent.amount,
           hydrogenStorageUnitId,
         );
@@ -159,6 +159,7 @@ export class BottlingAllocator {
         qualityDetails: {
           color: predecessorProcessStep.batch.qualityDetails.color,
           rfnboType: predecessorProcessStep.batch.qualityDetails.rfnboType,
+          powerType: predecessorProcessStep.batch.qualityDetails.powerType,
         },
         type: BatchType.HYDROGEN,
         predecessors: [

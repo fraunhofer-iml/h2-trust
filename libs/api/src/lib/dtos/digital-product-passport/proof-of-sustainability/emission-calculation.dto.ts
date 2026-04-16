@@ -6,20 +6,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CalculationTopic } from '@h2-trust/domain';
+import { CalculationTopic, MeasurementUnit } from '@h2-trust/domain';
 
 export class EmissionCalculationDto {
   name: string;
   basisOfCalculation: string[];
   result: number;
-  unit: string;
+  unit: MeasurementUnit;
   calculationTopic: CalculationTopic;
 
   constructor(
     name: string,
     basisOfCalculation: string[],
     result: number,
-    unit: string,
+    unit: MeasurementUnit,
     calculationTopic: CalculationTopic,
   ) {
     this.name = name;

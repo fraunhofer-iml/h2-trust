@@ -33,6 +33,7 @@ function getPowerBatchEntities(
       powerSupplyEmission.result,
       powerSupplyEmission.basisOfCalculation,
     );
+    const powerType: PowerType = powerProduction.batch?.qualityDetails?.powerType ?? PowerType.NOT_SPECIFIED;
 
     return {
       id: powerProduction.batch.id,
@@ -42,9 +43,9 @@ function getPowerBatchEntities(
       batchType: BatchType.POWER,
       producer: powerProduction.batch.owner.name,
       unitId: powerProduction.executedBy.id,
-      energySource: energySource as EnergySource,
+      energySource: energySource,
       accountingPeriodEnd: powerProduction.endedAt,
-      powerType: (powerProduction.batch?.qualityDetails?.powerType ?? PowerType.NOT_SPECIFIED) as PowerType,
+      powerType: powerType,
     };
   });
 }

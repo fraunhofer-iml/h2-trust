@@ -7,6 +7,8 @@
  */
 
 import { ProcessStepDeepDbType } from '@h2-trust/database';
+import { ProcessType } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 import { ConcreteUnitEntity } from '../../types';
 import { BatchEntity } from '../batch';
 import { DocumentEntity } from '../document';
@@ -18,7 +20,7 @@ export class ProcessStepEntity {
   id?: string;
   startedAt: Date;
   endedAt: Date;
-  type: string;
+  type: ProcessType;
   batch: BatchEntity;
   recordedBy: UserEntity;
   executedBy: ConcreteUnitEntity;
@@ -29,7 +31,7 @@ export class ProcessStepEntity {
     id: string | undefined,
     startedAt: Date,
     endedAt: Date,
-    type: string,
+    type: ProcessType,
     batch: BatchEntity,
     recordedBy: UserEntity,
     executedBy: ConcreteUnitEntity,
@@ -48,6 +50,7 @@ export class ProcessStepEntity {
   }
 
   static fromDeepDatabase(processStep: ProcessStepDeepDbType): ProcessStepEntity {
+    assertValidEnum(processStep.type, ProcessType, 'ProcessType');
     return new ProcessStepEntity(
       processStep.id,
       processStep.startedAt,

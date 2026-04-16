@@ -7,6 +7,8 @@
  */
 
 import { PowerPurchaseAgreementDeepDbType, PowerPurchaseAgreementNestedDbType } from '@h2-trust/database';
+import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 import { CompanyEntity } from '../company';
 import { DocumentEntity } from '../document';
 import { PowerProductionUnitEntity } from '../unit';
@@ -14,7 +16,7 @@ import { PowerProductionUnitEntity } from '../unit';
 export class PowerPurchaseAgreementEntity {
   id: string;
   decidedAt: Date;
-  status: string;
+  status: PowerPurchaseAgreementStatus;
   powerProducer: CompanyEntity;
   powerProductionUnit: PowerProductionUnitEntity;
   hydrogenProducer: CompanyEntity;
@@ -23,7 +25,7 @@ export class PowerPurchaseAgreementEntity {
   constructor(
     id: string,
     decidedAt: Date,
-    status: string,
+    status: PowerPurchaseAgreementStatus,
     powerProducer: CompanyEntity,
     powerProductionUnit: PowerProductionUnitEntity,
     hydrogenProducer: CompanyEntity,
@@ -39,6 +41,7 @@ export class PowerPurchaseAgreementEntity {
   }
 
   static fromDeepDatabase(powerPurchaseAgreement: PowerPurchaseAgreementDeepDbType): PowerPurchaseAgreementEntity {
+    assertValidEnum(powerPurchaseAgreement.status, PowerPurchaseAgreementStatus, 'PowerPurchaseAgreementStatus');
     return <PowerPurchaseAgreementEntity>{
       id: powerPurchaseAgreement.id,
       decidedAt: powerPurchaseAgreement.decidedAt,

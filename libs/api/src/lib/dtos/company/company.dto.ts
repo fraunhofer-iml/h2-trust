@@ -7,6 +7,7 @@
  */
 
 import { CompanyEntity } from '@h2-trust/amqp';
+import { CompanyType } from '@h2-trust/domain';
 import { AddressDto } from '../address';
 import { UserDto } from '../user';
 
@@ -14,11 +15,11 @@ export class CompanyDto {
   id: string;
   name: string;
   mastrNumber: string;
-  type: string;
+  type: CompanyType;
   address: AddressDto;
   users: UserDto[];
 
-  constructor(id: string, name: string, mastrNumber: string, type: string, address: AddressDto, users: UserDto[]) {
+  constructor(id: string, name: string, mastrNumber: string, type: CompanyType, address: AddressDto, users: UserDto[]) {
     this.id = id;
     this.name = name;
     this.mastrNumber = mastrNumber;

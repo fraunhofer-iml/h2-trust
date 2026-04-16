@@ -7,7 +7,7 @@
  */
 
 import { PowerPurchaseAgreementEntity } from '@h2-trust/amqp';
-import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
+import { EnergySource, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { CompanyDto } from '../company';
 import { PowerProductionOverviewDto } from '../unit';
 
@@ -17,7 +17,7 @@ export class PowerPurchaseAgreementDto {
   powerProducer: CompanyDto;
   powerProductionUnit: PowerProductionOverviewDto;
   status: PowerPurchaseAgreementStatus;
-  energySource: string;
+  energySource: EnergySource;
 
   constructor(
     id: string,
@@ -25,7 +25,7 @@ export class PowerPurchaseAgreementDto {
     powerProducer: CompanyDto,
     powerProductionUnit: PowerProductionOverviewDto,
     status: PowerPurchaseAgreementStatus,
-    energySource: string,
+    energySource: EnergySource,
   ) {
     this.id = id;
     this.hydrogenProducer = hydrogenProducer;
@@ -42,7 +42,7 @@ export class PowerPurchaseAgreementDto {
       powerProducer: powerPurchaseAgreement.powerProducer,
       powerProductionUnit: PowerProductionOverviewDto.fromEntity(powerPurchaseAgreement.powerProductionUnit),
       status: powerPurchaseAgreement.status,
-      energySource: powerPurchaseAgreement.powerProductionUnit.type?.name,
+      energySource: powerPurchaseAgreement.powerProductionUnit.type.energySource,
     };
   }
 }

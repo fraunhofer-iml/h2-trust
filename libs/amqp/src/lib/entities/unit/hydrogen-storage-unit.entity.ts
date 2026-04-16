@@ -12,7 +12,8 @@ import {
   HydrogenStorageUnitDeepDbType,
   HydrogenStorageUnitNestedDbType,
 } from '@h2-trust/database';
-import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
+import { HydrogenColor, HydrogenStorageType, RfnboType, UnitType } from '@h2-trust/domain';
+import { assertDefined, assertValidEnum } from '@h2-trust/utils';
 import { AddressEntity } from '../address';
 import { HydrogenComponentEntity } from '../bottling';
 import { CompanyEntity } from '../company';
@@ -67,6 +68,8 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   }
 
   static fromDeepDatabase(baseUnit: BaseUnitDeepDbType): HydrogenStorageUnitEntity {
+    assertValidEnum(baseUnit.hydrogenStorageUnit?.type, HydrogenStorageType, 'HydrogenStorageType');
+
     return {
       ...BaseUnitEntity.fromDeepBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_STORAGE,
@@ -74,11 +77,13 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       capacity: baseUnit.hydrogenStorageUnit?.capacity.toNumber() ?? 0,
       pressure: baseUnit.hydrogenStorageUnit?.pressure.toNumber() ?? 0,
       filling: baseUnit.hydrogenStorageUnit ? HydrogenStorageUnitEntity.mapFilling(baseUnit.hydrogenStorageUnit) : [],
-      type: baseUnit.hydrogenStorageUnit?.type as HydrogenStorageType,
+      type: baseUnit.hydrogenStorageUnit?.type,
     };
   }
 
   static fromNestedDatabase(baseUnit: BaseUnitNestedDbType): HydrogenStorageUnitEntity {
+    assertValidEnum(baseUnit.hydrogenStorageUnit?.type, HydrogenStorageType, 'HydrogenStorageType');
+
     return {
       ...BaseUnitEntity.fromNestedBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_STORAGE,
@@ -86,13 +91,15 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       capacity: baseUnit.hydrogenStorageUnit?.capacity.toNumber() ?? 0,
       pressure: baseUnit.hydrogenStorageUnit?.pressure.toNumber() ?? 0,
       filling: baseUnit.hydrogenStorageUnit ? HydrogenStorageUnitEntity.mapFilling(baseUnit.hydrogenStorageUnit) : [],
-      type: baseUnit.hydrogenStorageUnit?.type as HydrogenStorageType,
+      type: baseUnit.hydrogenStorageUnit?.type,
     };
   }
 
   static fromNestedHydrogenStorageUnit(
     nestedHydrogenStorageUnit: HydrogenStorageUnitNestedDbType,
   ): HydrogenStorageUnitEntity {
+    assertValidEnum(nestedHydrogenStorageUnit.type, HydrogenStorageType, 'HydrogenStorageType');
+
     return {
       ...BaseUnitEntity.fromFlatBaseUnit(nestedHydrogenStorageUnit.generalInfo),
       unitType: UnitType.HYDROGEN_STORAGE,
@@ -100,7 +107,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       capacity: nestedHydrogenStorageUnit.capacity.toNumber() ?? 0,
       pressure: nestedHydrogenStorageUnit.pressure.toNumber() ?? 0,
       filling: HydrogenStorageUnitEntity.mapFilling(nestedHydrogenStorageUnit),
-      type: nestedHydrogenStorageUnit.type as HydrogenStorageType,
+      type: nestedHydrogenStorageUnit.type,
     };
   }
 
@@ -109,9 +116,13 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   ): HydrogenComponentEntity[] {
     return (
       unit?.filling?.map((batch) => {
-        if (!batch.batchDetails?.qualityDetails?.color) {
-          throw new Error(`Hydrogen batch [${batch.id}] in storage unit is missing color information.`);
-        }
+        assertDefined(
+          batch.batchDetails?.qualityDetails?.color,
+          `batch.batchDetails.qualityDetails.color for batch ${batch.id}`,
+        );
+        assertValidEnum(batch.batchDetails?.qualityDetails?.color, HydrogenColor, 'HydrogenColor');
+        assertValidEnum(batch.batchDetails.qualityDetails.rfnboType, RfnboType, 'RfnboType');
+
         return new HydrogenComponentEntity(
           batch?.processStep?.id ?? null,
           batch.batchDetails.qualityDetails.color,
