@@ -28,6 +28,4 @@ export class PowerPurchaseAgreementService {
     );
     return powerPurchaseAgreements.map(PowerPurchaseAgreementDto.fromEntity);
   }
-
-  getPowerPurchaseAggrements() {}
 }
