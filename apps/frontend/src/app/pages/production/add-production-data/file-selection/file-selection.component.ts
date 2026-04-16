@@ -1,6 +1,7 @@
+import { PowerAccessApprovalService } from 'apps/frontend/src/app/shared/services/power-access-approvals/power-access-approvals.service';
 import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -11,7 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ProcessedCsvDto } from '@h2-trust/api';
-import { MeasurementUnit } from '@h2-trust/domain';
+import { MeasurementUnit, PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 
 @Component({
@@ -34,6 +35,7 @@ import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 })
 export class FileSelectionComponent {
   protected productionService = inject(ProductionService);
+  protected readonly powerAccessApprovalsService = inject(PowerAccessApprovalService);
   protected readonly MeasurementUnit = MeasurementUnit;
 
   form = new FormGroup({
@@ -48,6 +50,16 @@ export class FileSelectionComponent {
       return [...data, ...data, ...data, ...data, ...data];
     },
   }));
+
+  approvalsQuery = injectQuery(() => ({
+    queryKey: ['power-access-approvals'],
+    queryFn: async () => this.powerAccessApprovalsService.getApprovals(PowerAccessApprovalStatus.APPROVED),
+  }));
+
+  data = computed(() => {
+    // const uploads = this.uploadsQuery.data();
+    // const approvals = this.approvalsQuery.data();
+  });
 
   onSelectionChange(selectedOptions: ProcessedCsvDto[]): void {
     this.form.controls.powerFiles.patchValue(selectedOptions);
