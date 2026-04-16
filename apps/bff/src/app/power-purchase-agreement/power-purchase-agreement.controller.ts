@@ -20,7 +20,7 @@ import {
 import { PowerProductionType, PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 
-@Controller('power-purchase-agreement')
+@Controller('power-purchase-agreements')
 export class PowerPurchaseAgreementController {
   constructor(private readonly powerPurchaseAgreementService: PowerPurchaseAgreementService) {}
 
