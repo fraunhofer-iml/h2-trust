@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { danger, fail, message, warn } from 'danger';
+import { danger, fail, warn } from 'danger';
 
 const pr = danger.github.pr;
 const isDependabot = pr.user.login === 'dependabot[bot]';
@@ -19,7 +19,7 @@ const hasPackageJson = modifiedFiles.includes('package.json');
 const hasPackageLock = modifiedFiles.includes('package-lock.json');
 
 if (pr.draft) {
-  fail('Pull request is marked as Draft. Please remove this before requesting review.');
+  fail('Remove the Draft status before requesting review.');
 }
 
 if (!isDependabot) {
@@ -29,7 +29,7 @@ if (!isDependabot) {
 
   if (!conventionalType || !CONVENTIONAL_TYPES.includes(conventionalType)) {
     fail(
-      `PR title must follow Conventional Commits format (e.g. \`feat: add login\`). Valid types: ${CONVENTIONAL_TYPES.join(', ')}`,
+      `Follow the Conventional Commits format in the PR title (e.g. \`feat: add login\`). Valid types: ${CONVENTIONAL_TYPES.join(', ')}`,
     );
   } else {
     await danger.github.api.issues.addLabels({
@@ -45,20 +45,18 @@ if (!isDependabot) {
   }
 
   if (!pr.assignees || pr.assignees.length === 0) {
-    fail('Pull request needs an assignee.');
+    fail('Assign at least one person to this pull request.');
   }
 
   if (!pr.body || pr.body.trim().length < 10) {
-    fail('Pull request needs a meaningful description.');
+    fail('Add a meaningful description to this pull request.');
   }
 }
 
 if (hasSmartContractChanges && !hasArtifactChanges) {
-  warn('Smart contract modified but no artifact updated. Did you forget to run `npx hardhat compile`?');
+  warn('Smart contract modified without an artifact update. Did you forget to run `npx hardhat compile`?');
 }
 
 if (hasPackageJson && !hasPackageLock) {
-  message(
-    'Changes were made to package.json, but not to package-lock.json. Please run `npm install` and commit the lockfile.',
-  );
+  warn('`package.json` was modified without updating `package-lock.json`. Please run `npm install` and commit the lockfile.');
 }
