@@ -58,7 +58,12 @@ import { danger, fail, warn } from 'danger';
     }
 
     if (!pr.assignees || pr.assignees.length === 0) {
-      fail('Assign at least one person to this pull request.');
+      await danger.github.api.issues.addAssignees({
+        owner: danger.github.thisPR.owner,
+        repo: danger.github.thisPR.repo,
+        issue_number: pr.number,
+        assignees: [pr.user.login],
+      });
     }
 
     if (!pr.body || pr.body.trim().length < 10) {
