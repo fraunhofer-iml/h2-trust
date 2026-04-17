@@ -11,6 +11,13 @@ import { danger, fail, message, warn } from 'danger';
 const pr = danger.github.pr;
 const isDependabot = pr.user.login === 'dependabot[bot]';
 
+const modifiedFiles = danger.git.modified_files;
+const hasSpecFiles = modifiedFiles.some((f) => f.endsWith('.spec.ts'));
+const hasSmartContractChanges = modifiedFiles.some((f) => f.endsWith('.sol'));
+const hasArtifactChanges = modifiedFiles.some((f) => f.startsWith('docker/') && f.endsWith('.json'));
+const hasPackageJson = modifiedFiles.includes('package.json');
+const hasPackageLock = modifiedFiles.includes('package-lock.json');
+
 if (pr.draft) {
   fail('Pull request is marked as Draft. Please remove this before requesting review.');
 }
@@ -31,6 +38,10 @@ if (!isDependabot) {
       issue_number: pr.number,
       labels: [conventionalType],
     });
+
+    if (conventionalType === 'feat' && !hasSpecFiles) {
+      warn('No test files modified. Consider adding or updating tests for this feature.');
+    }
   }
 
   if (!pr.assignees || pr.assignees.length === 0) {
@@ -40,20 +51,13 @@ if (!isDependabot) {
   if (!pr.body || pr.body.trim().length < 10) {
     fail('Pull request needs a meaningful description.');
   }
-
-  const hasNewTests = danger.git.modified_files.some((f) => f.endsWith('.spec.ts'));
-  if (conventionalType === 'feat' && !hasNewTests) {
-    warn('No test files modified. Consider adding or updating tests for this feature.');
-  }
 }
 
-const smartContractModified = danger.git.modified_files.some((f) => f.endsWith('.sol'));
-const artifactsModified = danger.git.modified_files.some((f) => f.startsWith('docker/') && f.endsWith('.json'));
-if (smartContractModified && !artifactsModified) {
+if (hasSmartContractChanges && !hasArtifactChanges) {
   warn('Smart contract modified but no artifact updated. Did you forget to run `npx hardhat compile`?');
 }
 
-if (danger.git.modified_files.includes('package.json') && !danger.git.modified_files.includes('package-lock.json')) {
+if (hasPackageJson && !hasPackageLock) {
   message(
     'Changes were made to package.json, but not to package-lock.json. Please run `npm install` and commit the lockfile.',
   );
