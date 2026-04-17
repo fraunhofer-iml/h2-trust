@@ -16,13 +16,15 @@ export class StagedProductionEntity {
   unitId: string;
   usedPower: number;
   type: BatchType;
+  filename: string;
 
-  constructor(startedAt: Date, amount: number, unitId: string, usedPower: number, type: BatchType) {
+  constructor(startedAt: Date, amount: number, unitId: string, usedPower: number, type: BatchType, filename: string) {
     this.startedAt = startedAt;
     this.amount = amount;
     this.unitId = unitId;
     this.usedPower = usedPower;
     this.type = type;
+    this.filename = filename;
   }
 
   static fromDeepDatabase(stagedProduction: StagedProductionDeepDbType) {
@@ -34,6 +36,7 @@ export class StagedProductionEntity {
       stagedProduction.unitId,
       stagedProduction.usedPower.toNumber(),
       stagedProduction.type,
+      '',
     );
   }
 }

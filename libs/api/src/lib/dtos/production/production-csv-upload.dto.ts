@@ -7,7 +7,7 @@
  */
 
 import { ArrayNotEmpty, IsArray, IsNotEmpty, IsString, ValidateIf } from 'class-validator';
-import { ProcessType } from '@h2-trust/domain';
+import { BatchType } from '@h2-trust/domain';
 
 export class ProductionCSVUploadDto {
   @ValidateIf((o) => typeof o.powerProductionUnitIds === 'string')
@@ -24,10 +24,10 @@ export class ProductionCSVUploadDto {
   @ValidateIf((o) => Array.isArray(o.stageProductionType))
   @IsArray()
   @ArrayNotEmpty()
-  stageProductionType: ProcessType[];
+  stageProductionTypes: BatchType[];
 
   constructor() {
     this.stageProductionUnitIds = [];
-    this.stageProductionType = [];
+    this.stageProductionTypes = [];
   }
 }

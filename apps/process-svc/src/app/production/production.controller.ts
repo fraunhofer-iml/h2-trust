@@ -12,7 +12,6 @@ import {
   CreateHydrogenProductionStatisticsPayload,
   CreateProductionsPayload,
   CsvDocumentEntity,
-  FinalizeProductionsPayload,
   ProcessStepEntity,
   ProductionMessagePatterns,
   ProductionStagingResultEntity,
@@ -51,8 +50,8 @@ export class ProductionController {
   }
 
   @MessagePattern(ProductionMessagePatterns.FINALIZE)
-  async finalizeProductions(payload: FinalizeProductionsPayload): Promise<ProcessStepEntity[]> {
-    return this.productionService.finalizeProductions(payload);
+  async finalizeProductions(): Promise<ProcessStepEntity[]> {
+    return [];
   }
 
   @MessagePattern(ProductionMessagePatterns.READ_CSV_DOCUMENTS_BY_COMPANY)

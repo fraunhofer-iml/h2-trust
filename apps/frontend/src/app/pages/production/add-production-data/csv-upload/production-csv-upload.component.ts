@@ -34,7 +34,7 @@ import {
   ImportSubmissionDto,
   PowerProductionOverviewDto,
 } from '@h2-trust/api';
-import { FileUploadKeys, MeasurementUnit } from '@h2-trust/domain';
+import { BatchType, FileUploadKeys, MeasurementUnit } from '@h2-trust/domain';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { FileForm } from './file-upload.form';
 
@@ -76,7 +76,6 @@ export class ProductionCsvUploadComponent {
 
   form = new FormGroup({
     hydrogenProductionFiles: new FormArray<FileForm>([], minFormArrayLength(1)),
-    powerProductionFiles: new FormArray<FileForm>([], minFormArrayLength(1)),
   });
 
   storageUnit = new FormControl<string | null>('', Validators.required);
@@ -109,9 +108,6 @@ export class ProductionCsvUploadComponent {
   get hydrogenProductionFiles() {
     return this.form.get(FileUploadKeys.HYDROGEN_PRODUCTION) as FormArray<FileForm>;
   }
-  get powerProductionFiles() {
-    return this.form.get(FileUploadKeys.POWER_PRODUCTION) as FormArray<FileForm>;
-  }
 
   onDragOver(event: DragEvent): void {
     event.preventDefault();
@@ -120,21 +116,13 @@ export class ProductionCsvUploadComponent {
   submit() {
     const data = new FormData();
 
-    this.form.controls.powerProductionFiles.controls.forEach((control) => {
-      const file: File | null = control.controls.file.value;
-      const unitId = control.value.unitId;
-      if (file && unitId) {
-        data.append(FileUploadKeys.POWER_PRODUCTION, file);
-        data.append('powerProductionUnitIds', unitId);
-      }
-    });
-
     this.form.controls.hydrogenProductionFiles.controls.forEach((control) => {
       const file: File | null = control.controls.file.value;
       const unitId = control.value.unitId;
       if (file && unitId) {
-        data.append(FileUploadKeys.HYDROGEN_PRODUCTION, file);
-        data.append('hydrogenProductionUnitIds', unitId);
+        data.append(FileUploadKeys.STAGE_PRODUCTION, file);
+        data.append('stageProductionUnitIds', unitId);
+        data.append('stageProductionTypes', BatchType.HYDROGEN);
       }
     });
 
@@ -146,7 +134,7 @@ export class ProductionCsvUploadComponent {
     form.updateValueAndValidity();
   }
 
-  addHydrogenProductionFileWithUnit(file: File, form: FormArray<FileForm>) {
+  addStageProductionFileWithUnit(file: File, form: FormArray<FileForm>) {
     form.clear();
     this.addFileFormWithUnit(file, form);
   }

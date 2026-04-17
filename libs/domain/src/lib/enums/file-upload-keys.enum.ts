@@ -9,6 +9,7 @@
 // TODO-MP: this enum will be moved to libs/api when implementing DUHGW-344
 // We cannot move it now because building frontend would fail due to polyfill issues.
 export enum FileUploadKeys {
+  STAGE_PRODUCTION = 'powerProductionFiles',
   POWER_PRODUCTION = 'powerProductionFiles',
   HYDROGEN_PRODUCTION = 'hydrogenProductionFiles',
 }

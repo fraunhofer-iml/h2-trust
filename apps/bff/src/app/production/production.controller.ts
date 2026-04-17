@@ -205,12 +205,11 @@ export class ProductionController {
     @Body() dto: ProductionCSVUploadDto,
     @UploadedFiles()
     files: {
-      [FileUploadKeys.POWER_PRODUCTION]: Express.Multer.File[];
-      [FileUploadKeys.HYDROGEN_PRODUCTION]: Express.Multer.File[];
+      [FileUploadKeys.STAGE_PRODUCTION]: Express.Multer.File[];
     },
     @AuthenticatedUser() user: AuthenticatedKCUser,
   ) {
-    return this.service.importCsvFiles(files[FileUploadKeys.HYDROGEN_PRODUCTION], dto, user.sub);
+    return this.service.importCsvFiles(files[FileUploadKeys.STAGE_PRODUCTION], dto, user.sub);
   }
 
   @Post('csv/submit')

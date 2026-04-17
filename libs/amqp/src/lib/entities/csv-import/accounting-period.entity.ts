@@ -6,20 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export class AccountingPeriodPower {
+export class StageProductionAccountingPeriod {
   amount: number;
   time: Date;
-
-  constructor(amount: number, time: Date) {
-    this.amount = amount;
-    this.time = time;
-  }
-}
-
-export class AccountingPeriodHydrogen {
-  amount: number;
-  time: Date;
-  power: number;
+  power?: number;
 
   constructor(amount: number, time: Date, power: number) {
     this.amount = amount;
