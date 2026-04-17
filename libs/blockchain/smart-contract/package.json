@@ -8,7 +8,8 @@
     "deploy-local": "npx hardhat run scripts/deploy.ts --network local",
     "deploy-private": "npx hardhat run scripts/deploy.ts --network private",
     "deploy-public": "npx hardhat run scripts/deploy.ts --network arbitrumSepolia",
-    "test": "npx hardhat test"
+    "test": "npx hardhat test",
+    "typecheck": "npx tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-ethers": "^4.0.8",
