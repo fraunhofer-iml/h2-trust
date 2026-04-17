@@ -120,7 +120,6 @@
     "material-symbols": "^0.44.2",
     "multer": "^2.1.1",
     "nest-keycloak-connect": "^1.10.1",
-    "ngx-csv-parser": "^2.0.0",
     "ngx-echarts": "^21.0.0",
     "ngx-sonner": "^3.1.0",
     "reflect-metadata": "^0.2.2",
