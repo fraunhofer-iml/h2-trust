@@ -8,7 +8,7 @@
 
 export * from './batch';
 export * from './company';
-export * from './power-access-approval';
+export * from './power-purchase-agreement';
 export * from './process-step';
 export * from './staged-production';
 export * from './unit';

@@ -54,7 +54,7 @@ export class ProductionFormComponent {
 
   private readonly accountingPeriodInMinutes: number = TimeInSeconds.ACCOUNTING_PERIOD / 60;
 
-  powerAccessApprovals = input<{ value: PowerProductionOverviewDto; name: string }[]>([]);
+  powerPurchaseAgreements = input<{ value: PowerProductionOverviewDto; name: string }[]>([]);
   hydrogenProductionUnits = input<HydrogenProductionOverviewDto[]>([]);
   hydrogenStorageUnits = input<HydrogenStorageOverviewDto[]>([]);
 

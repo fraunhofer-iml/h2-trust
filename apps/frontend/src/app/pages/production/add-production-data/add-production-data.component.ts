@@ -20,9 +20,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { MeasurementUnit, PowerAccessApprovalStatus } from '@h2-trust/domain';
+import { MeasurementUnit, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
-import { PowerAccessApprovalService } from '../../../shared/services/power-access-approvals/power-access-approvals.service';
+import { PowerPurchaseAgreementService } from '../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { ProductionService } from '../../../shared/services/production/production.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { ProductionCsvUploadComponent } from './csv-upload/production-csv-upload.component';
@@ -30,7 +30,7 @@ import { ProductionFormComponent } from './manual-data-imput/production-form.com
 
 @Component({
   selector: 'app-add-production-data',
-  providers: [provideNativeDateAdapter(), CompaniesService, ProductionService, PowerAccessApprovalService],
+  providers: [provideNativeDateAdapter(), CompaniesService, ProductionService, PowerPurchaseAgreementService],
   imports: [
     MatDialogModule,
     ReactiveFormsModule,
@@ -53,12 +53,12 @@ export class AddProductionDataComponent {
   useCSV = true;
   readonly MeasurementUnit = MeasurementUnit;
 
-  approvalsQuery = injectQuery(() => ({
-    queryKey: ['power-access-approvals'],
+  agreementsQuery = injectQuery(() => ({
+    queryKey: ['power-purchase-agreement'],
     queryFn: async () => {
-      const approvals = await this.powerAccessApprovalsService.getApprovals(PowerAccessApprovalStatus.APPROVED);
+      const agreements = await this.powerPurchaseAgreementsService.getAgreements(PowerPurchaseAgreementStatus.APPROVED);
       return [
-        ...approvals.map((a) => ({
+        ...agreements.map((a) => ({
           value: a.powerProductionUnit,
           name: `${a.powerProducer.name} | ${a.powerProductionUnit.name}`,
         })),
@@ -78,6 +78,6 @@ export class AddProductionDataComponent {
 
   constructor(
     private readonly unitsService: UnitsService,
-    private readonly powerAccessApprovalsService: PowerAccessApprovalService,
+    private readonly powerPurchaseAgreementsService: PowerPurchaseAgreementService,
   ) {}
 }

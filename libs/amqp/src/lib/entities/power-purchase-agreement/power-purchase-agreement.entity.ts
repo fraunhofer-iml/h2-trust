@@ -1,0 +1,66 @@
+/*
+ * Copyright Fraunhofer Institute for Material Flow and Logistics
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * For details on the licensing terms, see the LICENSE file.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { PowerPurchaseAgreementDeepDbType, PowerPurchaseAgreementNestedDbType } from '@h2-trust/database';
+import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
+import { CompanyEntity } from '../company';
+import { DocumentEntity } from '../document';
+import { PowerProductionUnitEntity } from '../unit';
+
+export class PowerPurchaseAgreementEntity {
+  id: string;
+  decidedAt: Date;
+  status: PowerPurchaseAgreementStatus;
+  powerProducer: CompanyEntity;
+  powerProductionUnit: PowerProductionUnitEntity;
+  hydrogenProducer: CompanyEntity;
+  document: DocumentEntity;
+
+  constructor(
+    id: string,
+    decidedAt: Date,
+    status: PowerPurchaseAgreementStatus,
+    powerProducer: CompanyEntity,
+    powerProductionUnit: PowerProductionUnitEntity,
+    hydrogenProducer: CompanyEntity,
+    document: DocumentEntity,
+  ) {
+    this.id = id;
+    this.decidedAt = decidedAt;
+    this.status = status;
+    this.powerProducer = powerProducer;
+    this.powerProductionUnit = powerProductionUnit;
+    this.hydrogenProducer = hydrogenProducer;
+    this.document = document;
+  }
+
+  static fromDeepDatabase(powerPurchaseAgreement: PowerPurchaseAgreementDeepDbType): PowerPurchaseAgreementEntity {
+    assertValidEnum(powerPurchaseAgreement.status, PowerPurchaseAgreementStatus, 'PowerPurchaseAgreementStatus');
+    return <PowerPurchaseAgreementEntity>{
+      id: powerPurchaseAgreement.id,
+      decidedAt: powerPurchaseAgreement.decidedAt,
+      status: powerPurchaseAgreement.status,
+      powerProducer: CompanyEntity.fromNestedDatabase(powerPurchaseAgreement.powerProducer),
+      powerProductionUnit: PowerProductionUnitEntity.fromNestedPowerProductionUnit(
+        powerPurchaseAgreement.powerProductionUnit,
+      ),
+      hydrogenProducer: CompanyEntity.fromNestedDatabase(powerPurchaseAgreement.hydrogenProducer),
+      document: DocumentEntity.fromDatabase(powerPurchaseAgreement.document),
+    };
+  }
+
+  static fromNestedDatabase(agreement: PowerPurchaseAgreementNestedDbType): PowerPurchaseAgreementEntity {
+    return <PowerPurchaseAgreementEntity>{
+      ...agreement,
+      hydrogenProducer: CompanyEntity.fromFlatDatabase(agreement.hydrogenProducer),
+      powerProducer: CompanyEntity.fromFlatDatabase(agreement.powerProducer),
+      powerProductionUnit: PowerProductionUnitEntity.fromNestedPowerProductionUnit(agreement.powerProductionUnit),
+    };
+  }
+}

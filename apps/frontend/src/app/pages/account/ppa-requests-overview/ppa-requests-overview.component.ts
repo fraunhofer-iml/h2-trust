@@ -10,14 +10,14 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, input, Signal } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
+import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { ppaRequestsQueryOptions } from '../../../shared/queries/ppa-requests.query';
-import { PowerAccessApprovalService } from '../../../shared/services/power-access-approvals/power-access-approvals.service';
+import { PowerPurchaseAgreementService } from '../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 
 interface RequestLabels {
   heading: string;
-  description: Record<PowerAccessApprovalStatus, string>;
+  description: Record<PowerPurchaseAgreementStatus, string>;
 }
 
 @Component({
@@ -27,9 +27,9 @@ interface RequestLabels {
 })
 export class PpaRequestsOverviewComponent {
   role = input.required<PpaRequestRole>();
-  protected PowerAccessApprovalStatus = PowerAccessApprovalStatus;
+  protected PowerPurchaseAgreementStatus = PowerPurchaseAgreementStatus;
 
-  protected readonly ppaService = inject(PowerAccessApprovalService);
+  protected readonly ppaService = inject(PowerPurchaseAgreementService);
   protected readonly unitsService = inject(UnitsService);
 
   ppaRequestsQuery = injectQuery(() => ppaRequestsQueryOptions(this.ppaService, this.role()));
@@ -41,9 +41,9 @@ export class PpaRequestsOverviewComponent {
         return acc;
       },
       {
-        [PowerAccessApprovalStatus.APPROVED]: 0,
-        [PowerAccessApprovalStatus.REJECTED]: 0,
-        [PowerAccessApprovalStatus.PENDING]: 0,
+        [PowerPurchaseAgreementStatus.APPROVED]: 0,
+        [PowerPurchaseAgreementStatus.REJECTED]: 0,
+        [PowerPurchaseAgreementStatus.PENDING]: 0,
       },
     );
 
@@ -54,18 +54,18 @@ export class PpaRequestsOverviewComponent {
     const labelsReceiver: RequestLabels = {
       heading: 'RECEIVED',
       description: {
-        [PowerAccessApprovalStatus.APPROVED]: 'Requests you have approved.',
-        [PowerAccessApprovalStatus.REJECTED]: 'Requests you have declined.',
-        [PowerAccessApprovalStatus.PENDING]: 'Requests awaiting your review.',
+        [PowerPurchaseAgreementStatus.APPROVED]: 'Requests you have approved.',
+        [PowerPurchaseAgreementStatus.REJECTED]: 'Requests you have declined.',
+        [PowerPurchaseAgreementStatus.PENDING]: 'Requests awaiting your review.',
       },
     };
 
     const labelsSender: RequestLabels = {
       heading: 'SENT',
       description: {
-        [PowerAccessApprovalStatus.APPROVED]: 'Requests that have been approved.',
-        [PowerAccessApprovalStatus.REJECTED]: 'Requests that have been declined.',
-        [PowerAccessApprovalStatus.PENDING]: 'Requests awaiting response.',
+        [PowerPurchaseAgreementStatus.APPROVED]: 'Requests that have been approved.',
+        [PowerPurchaseAgreementStatus.REJECTED]: 'Requests that have been declined.',
+        [PowerPurchaseAgreementStatus.PENDING]: 'Requests awaiting response.',
       },
     };
 
