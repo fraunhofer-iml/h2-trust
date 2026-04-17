@@ -12,12 +12,12 @@ import { danger, fail, warn } from 'danger';
   const pr = danger.github.pr;
   const isDependabot = pr.user.login === 'dependabot[bot]';
 
-  const modifiedFiles = danger.git.modified_files;
-  const hasSpecFiles = modifiedFiles.some((f) => f.endsWith('.spec.ts'));
-  const hasSmartContractChanges = modifiedFiles.some((f) => f.endsWith('.sol'));
-  const hasArtifactChanges = modifiedFiles.some((f) => f.startsWith('docker/') && f.endsWith('.json'));
-  const hasPackageJson = modifiedFiles.includes('package.json');
-  const hasPackageLock = modifiedFiles.includes('package-lock.json');
+  const touchedFiles = [...danger.git.modified_files, ...danger.git.created_files];
+  const hasSpecFiles = touchedFiles.some((f) => f.endsWith('.spec.ts'));
+  const hasSmartContractChanges = touchedFiles.some((f) => f.endsWith('.sol'));
+  const hasArtifactChanges = touchedFiles.some((f) => f.startsWith('docker/') && f.endsWith('.json'));
+  const hasPackageJson = touchedFiles.includes('package.json');
+  const hasPackageLock = touchedFiles.includes('package-lock.json');
 
   if (pr.draft) {
     fail('Remove the Draft status before requesting review.');
