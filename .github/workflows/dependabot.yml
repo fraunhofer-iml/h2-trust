@@ -25,24 +25,21 @@ jobs:
       - name: Label Patch Updates
         if: >
           steps.metadata.outputs.update-type == 'version-update:semver-patch'
-        run: gh pr edit "$PR_URL" --add-label "patch"
+        run: gh api repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels -f 'labels[]=patch'
         env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Label Minor Updates
         if: >
           steps.metadata.outputs.update-type == 'version-update:semver-minor'
-        run: gh pr edit "$PR_URL" --add-label "minor"
+        run: gh api repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels -f 'labels[]=minor'
         env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Label Major Updates
         if: steps.metadata.outputs.update-type == 'version-update:semver-major'
-        run: gh pr edit "$PR_URL" --add-label "major"
+        run: gh api repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels -f 'labels[]=major'
         env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Approve PR for Patch and Minor Updates
