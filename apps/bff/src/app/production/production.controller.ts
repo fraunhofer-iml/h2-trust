@@ -27,10 +27,11 @@ import {
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   ProductionStatisticsDto,
+  StagedProductionDto,
   type AuthenticatedKCUser,
   type CsvContentType,
 } from '@h2-trust/api';
-import { FileUploadKeys } from '@h2-trust/domain';
+import { BatchType, FileUploadKeys } from '@h2-trust/domain';
 import { ProductionService } from './production.service';
 
 @Controller('productions')
@@ -186,17 +187,60 @@ export class ProductionController {
     description: "Retrieve all staged productions for the authenticated user's company.",
   })
   @ApiQuery({
+    name: 'scope',
+    description: 'Search by staged production owner',
+    required: false,
+  })
+  @ApiQuery({
     name: 'type',
     description: 'Search by csv content type (hydrogen or power)',
     required: false,
   })
+  @ApiQuery({
+    name: 'from',
+    description: 'Start date of searched period',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'to',
+    description: 'end date of searched period',
+    required: false,
+  })
   async readStagedProductionsByCompanyAndType(
+    @Query('scope') scope: 'own' | 'received',
     @Query('type') type: CsvContentType,
     @Query('from') from: Date,
     @Query('to') to: Date,
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
-  ): Promise<ProcessedCsvDto[]> {
-    return this.service.readCsvDocumentsByCompany(authenticatedUser.sub);
+  ): Promise<StagedProductionDto[]> {
+    console.log({
+      scope,
+      type,
+      from,
+      to,
+      user: authenticatedUser.sub,
+    });
+
+    return [
+      {
+        amountProduced: 20,
+        csvContentType: BatchType.HYDROGEN,
+        endedAt: new Date(),
+        startedAt: new Date(),
+        productionUnitId: 'power-production-unit-1',
+        uploadedBy: 'Green Power',
+        amountConsumed: 20,
+      },
+
+      {
+        amountProduced: 20,
+        csvContentType: BatchType.POWER,
+        endedAt: new Date(),
+        startedAt: new Date(),
+        productionUnitId: 'power-production-unit-1',
+        uploadedBy: 'Green Power',
+      },
+    ];
   }
 
   @Get('csv/:id')

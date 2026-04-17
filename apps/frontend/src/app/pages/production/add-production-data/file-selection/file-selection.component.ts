@@ -1,8 +1,10 @@
 import { PowerAccessApprovalService } from 'apps/frontend/src/app/shared/services/power-access-approvals/power-access-approvals.service';
 import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
 import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
+import { map } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -12,8 +14,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { ProcessedCsvDto } from '@h2-trust/api';
-import { MeasurementUnit, PowerAccessApprovalStatus } from '@h2-trust/domain';
+import { StagedProductionDto } from '@h2-trust/api';
+import { BatchType, MeasurementUnit, PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 
 @Component({
@@ -41,15 +43,32 @@ export class FileSelectionComponent {
   protected readonly MeasurementUnit = MeasurementUnit;
 
   form = new FormGroup({
-    hydrogenFileId: new FormControl<string | null>(null, Validators.required),
-    powerFiles: new FormControl<ProcessedCsvDto[] | null>([], [Validators.required, Validators.minLength(1)]),
+    hydrogenFile: new FormControl<StagedProductionDto[] | null>(null, [Validators.required, Validators.minLength(1)]),
+    powerFiles: new FormControl<StagedProductionDto[] | null>([], [Validators.required, Validators.minLength(1)]),
     storageUnit: new FormControl<string | null>({ value: null, disabled: true }, Validators.required),
   });
 
-  uploadsQuery = injectQuery(() => ({
+  selectedHydrogenFile = toSignal<StagedProductionDto | undefined | null>(
+    this.form.controls.hydrogenFile.valueChanges.pipe(map((val) => (val ? val[0] : val))),
+  );
+
+  powerProductionsQuery = injectQuery(() => ({
+    queryKey: ['production', this.selectedHydrogenFile()],
+    queryFn: async () => {
+      console.log(this.selectedHydrogenFile());
+      return this.productionService.getStagedProductions(
+        BatchType.POWER,
+        'received',
+        this.selectedHydrogenFile()?.startedAt,
+        this.selectedHydrogenFile()?.endedAt,
+      );
+    },
+  }));
+
+  hydrogenProductionsQuery = injectQuery(() => ({
     queryKey: ['production'],
     queryFn: async () => {
-      return this.productionService.getUploadedCsvFiles();
+      return this.productionService.getStagedProductions(BatchType.HYDROGEN, 'own');
     },
   }));
 
@@ -67,27 +86,23 @@ export class FileSelectionComponent {
   }));
 
   data = computed(() => {
-    const uploads = this.uploadsQuery.data();
+    const uploads = this.powerProductionsQuery.data();
     const approvals = this.approvalsQuery.data();
 
     const result = (approvals ?? []).map((ppa) => ({
       ...ppa,
-      uploads: (uploads ?? []).filter((r) => r.unitId === ppa.powerProductionUnit.id),
+      uploads: (uploads ?? []).filter((r) => r.productionUnitId === ppa.powerProductionUnit.id),
     }));
 
     return result;
   });
 
-  onSelectionChange(selectedOptions: ProcessedCsvDto[]): void {
-    this.form.controls.powerFiles.patchValue(selectedOptions);
-  }
-
   get totalPower() {
-    return this.form.controls.powerFiles.value?.reduce((acc, item) => acc + item.amount, 0);
+    return this.form.controls.powerFiles.value?.reduce((acc, item) => acc + item.amountProduced, 0);
   }
 
   constructor() {
-    this.form.controls.hydrogenFileId.valueChanges.subscribe(() => {
+    this.form.controls.hydrogenFile.valueChanges.subscribe(() => {
       this.form.controls.powerFiles.patchValue([]);
     });
 

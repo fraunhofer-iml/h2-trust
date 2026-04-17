@@ -19,7 +19,6 @@ export class ProcessedCsvDto {
   csvContentType: CsvContentType;
   amount: number;
   verifiable: boolean;
-  unitId: string;
 
   constructor(
     id: string,

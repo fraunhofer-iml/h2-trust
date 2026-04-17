@@ -11,7 +11,7 @@
     <div class="flex h-full flex-col gap-2">
       <div class="flex h-full flex-col overflow-hidden rounded-lg bg-white p-4">
         <span>My Hydrogen Productions</span>
-        @if (uploadsQuery.data()?.length === 0) {
+        @if (hydrogenProductionsQuery.data()?.length === 0) {
           <div
             class="mt-4 flex w-full flex-grow flex-col items-center justify-center rounded-lg border border-dashed bg-neutral-50 p-4 text-center text-sm"
           >
@@ -24,20 +24,22 @@
         }
 
         <form [formGroup]="form" class="h-full min-h-0 flex-1 overflow-auto">
-          <mat-selection-list #filesList formControlName="hydrogenFileId" name="shoes" [multiple]="false">
-            @for (file of uploadsQuery.data(); track file) {
+          <mat-selection-list #filesList formControlName="hydrogenFile" name="hydrogenFile" [multiple]="false">
+            @for (dataset of hydrogenProductionsQuery.data(); track dataset) {
               <mat-list-option
-                [value]="file.id"
-                class="my-2 !h-fit !rounded-md border"
+                [value]="dataset"
+                class="mb-2 !h-fit !rounded-md border"
                 togglePosition="before"
                 [ngClass]="option.selected ? 'border-primary-300' : 'border-neutral-300'"
                 #option
                 ><span matListItemTitle
-                  >{{ file.startedAt | date: 'mediumDate' }}, {{ file.startedAt | date: 'shortTime' }} -
-                  {{ file.endedAt | date: 'mediumDate' }}, {{ file.endedAt | date: 'shortTime' }}</span
+                  >{{ dataset.startedAt | date: 'mediumDate' }}, {{ dataset.startedAt | date: 'shortTime' }} -
+                  {{ dataset.endedAt | date: 'mediumDate' }}, {{ dataset.endedAt | date: 'shortTime' }}</span
                 >
-
-                <p matListItemLine class="pb-3">{{ file.amount | unit: 'kg' }} • {{ file.uploadedBy }}</p>
+                <p matListItemLine class="pb-3">
+                  {{ dataset.amountProduced | unit: MeasurementUnit.KG_H2 }} •
+                  {{ dataset.amountConsumed | unit: MeasurementUnit.KWH }}
+                </p>
               </mat-list-option>
             }
           </mat-selection-list>
@@ -61,11 +63,11 @@
     <div class="col-span-2 flex min-h-0 flex-1 flex-col gap-2">
       <div
         class="flex h-full flex-col overflow-hidden rounded-lg bg-white p-4"
-        [ngClass]="form.controls.hydrogenFileId.value ? 'bg-white' : 'bg-neutral-50'"
+        [ngClass]="form.controls.hydrogenFile.value ? 'bg-white' : 'bg-neutral-50'"
       >
         <span>Matching Power Productions</span>
 
-        @if (!form.controls.hydrogenFileId.value) {
+        @if (!form.controls.hydrogenFile.value) {
           <div
             class="mt-4 flex w-full flex-grow flex-col items-center justify-center rounded-lg border border-dashed bg-neutral-50 p-4 text-center text-sm"
           >
@@ -120,7 +122,7 @@
                         >
                           <span matListItemTitle class="flex justify-between"
                             ><span> {{ file.startedAt | date: 'medium' }} - {{ file.endedAt | date: 'medium' }} </span>
-                            <strong>{{ file.amount | unit: 'kg' }}</strong>
+                            <strong>{{ file.amountProduced | unit: MeasurementUnit.KG }}</strong>
                           </span>
                         </mat-list-option>
                       }

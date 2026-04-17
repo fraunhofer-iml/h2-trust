@@ -12,6 +12,7 @@ import { Injectable } from '@angular/core';
 import {
   AccountingPeriodMatchingResultDto,
   CreateProductionDto,
+  CsvContentType,
   CsvDocumentIntegrityResultDto,
   DownloadFilesDto,
   ImportSubmissionDto,
@@ -19,6 +20,7 @@ import {
   ProcessedCsvDto,
   ProductionOverviewDto,
   ProductionStatisticsDto,
+  StagedProductionDto,
 } from '@h2-trust/api';
 import { FilterModel } from '../../../pages/production/model/generated-productions-filter.model';
 import { PaginationModel } from '../../../pages/production/model/pagination.model';
@@ -48,6 +50,18 @@ export class ProductionService {
 
   getUploadedCsvFiles() {
     return lastValueFrom(this.httpClient.get<ProcessedCsvDto[]>(API.PRODUCTION.CSV));
+  }
+
+  getStagedProductions(type?: CsvContentType, scope?: 'own' | 'received', from?: Date, to?: Date) {
+    let params = new HttpParams();
+    if (type) params = params.set('type', type);
+    if (scope) params = params.set('scope', scope);
+    if (from) params = params.set('from', from.toISOString());
+    if (to) params = params.set('to', to.toISOString());
+
+    console.log(params);
+
+    return lastValueFrom(this.httpClient.get<StagedProductionDto[]>(API.PRODUCTION.STAGING, { params }));
   }
 
   addProductionData(dto: CreateProductionDto) {
