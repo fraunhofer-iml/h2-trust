@@ -54,10 +54,10 @@ export class PpaRequestCardComponent {
   }
 
   get dateLable() {
-    let prefix = '';
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
+    let prefix: string;
     let targetDate: Date;
 
     if (this.request().status === PowerAccessApprovalStatus.PENDING) {
