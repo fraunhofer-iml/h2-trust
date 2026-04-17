@@ -24,7 +24,19 @@ import { danger, fail, warn } from 'danger';
   }
 
   if (!isDependabot) {
-    const CONVENTIONAL_TYPES = ['build', 'chore', 'ci', 'docs', 'feat', 'fix', 'perf', 'refactor', 'revert', 'style', 'test'];
+    const CONVENTIONAL_TYPES = [
+      'build',
+      'chore',
+      'ci',
+      'docs',
+      'feat',
+      'fix',
+      'perf',
+      'refactor',
+      'revert',
+      'style',
+      'test',
+    ];
     const match = pr.title.match(/^(\w+)(\(.+\))?!?: /);
     const conventionalType = match?.[1];
 
@@ -59,6 +71,8 @@ import { danger, fail, warn } from 'danger';
   }
 
   if (hasPackageJson && !hasPackageLock) {
-    warn('`package.json` was modified without updating `package-lock.json`. Please run `npm install` and commit the lockfile.');
+    warn(
+      '`package.json` was modified without updating `package-lock.json`. Please run `npm install` and commit the lockfile.',
+    );
   }
-})()
+})();
