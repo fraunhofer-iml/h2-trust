@@ -25,7 +25,14 @@ describe('ProofStorage', function () {
   const PROOF_ENTRY_2 = { uuid: UUID_2, hash: HASH_2, cid: CID_2 };
 
   async function deployProofStorage() {
-    const [alice, bob] = await ethers.getSigners();
+    const signers = await ethers.getSigners();
+    const alice = signers[0];
+    const bob = signers[1];
+
+    if (!alice || !bob) {
+      throw new Error('Expected at least two signers in the Hardhat test environment.');
+    }
+
     const proofStorage = await ethers.deployContract('ProofStorage');
     return { proofStorage, alice, bob };
   }
