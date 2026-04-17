@@ -7,16 +7,24 @@
  */
 
 import { ProcessStepEntity } from '@h2-trust/amqp';
+import { HydrogenColor, RfnboType } from '@h2-trust/domain';
 
 export class BottlingOverviewDto {
   id: string;
   filledAt: Date;
   owner?: string;
   filledAmount?: number;
-  color?: string;
-  rfnboType?: string;
+  color?: HydrogenColor;
+  rfnboType?: RfnboType;
 
-  constructor(id: string, filledAt: Date, owner: string, filledAmount: number, color: string, rfnboType?: string) {
+  constructor(
+    id: string,
+    filledAt: Date,
+    owner: string,
+    filledAmount: number,
+    color: HydrogenColor,
+    rfnboType?: RfnboType,
+  ) {
     this.id = id;
     this.filledAt = filledAt;
     this.owner = owner;

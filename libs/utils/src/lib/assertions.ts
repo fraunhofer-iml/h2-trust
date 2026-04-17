@@ -21,3 +21,13 @@ export function assertBoolean(value: unknown, name: string): asserts value is bo
     throw new Error(message);
   }
 }
+
+export function assertValidEnum<E extends Record<string, string | number>>(
+  value: unknown,
+  enumType: E,
+  enumName: string,
+): asserts value is E[keyof E] {
+  if (!Object.values(enumType).includes(value as E[keyof E])) {
+    throw new Error(`The value ${value} is not a valid ${enumName}`);
+  }
+}
