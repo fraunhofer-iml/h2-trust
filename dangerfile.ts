@@ -47,6 +47,12 @@ if (!isDependabot) {
   }
 }
 
+const smartContractModified = danger.git.modified_files.some((f) => f.endsWith('.sol'));
+const artifactsModified = danger.git.modified_files.some((f) => f.startsWith('docker/') && f.endsWith('.json'));
+if (smartContractModified && !artifactsModified) {
+  warn('Smart contract modified but no artifact updated. Did you forget to run `npx hardhat compile`?');
+}
+
 if (danger.git.modified_files.includes('package.json') && !danger.git.modified_files.includes('package-lock.json')) {
   message(
     'Changes were made to package.json, but not to package-lock.json. Please run `npm install` and commit the lockfile.',
