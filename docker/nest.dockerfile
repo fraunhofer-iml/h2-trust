@@ -1,4 +1,4 @@
-FROM node:24.14-alpine3.23
+FROM node:25.9-alpine3.23
 
 ARG APP
 ENV NODE_ENV="production"
