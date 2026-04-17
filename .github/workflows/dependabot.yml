@@ -25,20 +25,26 @@ jobs:
       - name: Label Patch Updates
         if: >
           steps.metadata.outputs.update-type == 'version-update:semver-patch'
-        run: echo '{"labels":["patch"]}' | gh api repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels --input -
+        run:
+          echo '{"labels":["patch"]}' | gh api repos/${{ github.repository }}/issues/${{
+          github.event.pull_request.number }}/labels --input -
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Label Minor Updates
         if: >
           steps.metadata.outputs.update-type == 'version-update:semver-minor'
-        run: echo '{"labels":["minor"]}' | gh api repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels --input -
+        run:
+          echo '{"labels":["minor"]}' | gh api repos/${{ github.repository }}/issues/${{
+          github.event.pull_request.number }}/labels --input -
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Label Major Updates
         if: steps.metadata.outputs.update-type == 'version-update:semver-major'
-        run: echo '{"labels":["major"]}' | gh api repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels --input -
+        run:
+          echo '{"labels":["major"]}' | gh api repos/${{ github.repository }}/issues/${{
+          github.event.pull_request.number }}/labels --input -
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
