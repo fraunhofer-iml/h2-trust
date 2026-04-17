@@ -11,6 +11,26 @@ import { danger, fail, message } from 'danger';
 const pr = danger.github.pr;
 const isDependabot = pr.user.login === 'dependabot[bot]';
 
+const CONVENTIONAL_TYPES = ['build', 'chore', 'ci', 'docs', 'feat', 'fix', 'perf', 'refactor', 'revert', 'style', 'test'];
+
+if (!isDependabot) {
+  const match = pr.title.match(/^(\w+)(\(.+\))?!?: /);
+  const conventionalType = match?.[1];
+
+  if (!conventionalType || !CONVENTIONAL_TYPES.includes(conventionalType)) {
+    fail(
+      `PR title must follow Conventional Commits format (e.g. \`feat: add login\`). Valid types: ${CONVENTIONAL_TYPES.join(', ')}`,
+    );
+  } else {
+    await danger.github.api.issues.addLabels({
+      owner: danger.github.thisPR.owner,
+      repo: danger.github.thisPR.repo,
+      issue_number: pr.number,
+      labels: [conventionalType],
+    });
+  }
+}
+
 // Ensure package-lock.json is updated when package.json is changed
 if (danger.git.modified_files.includes('package.json') && !danger.git.modified_files.includes('package-lock.json')) {
   message(
