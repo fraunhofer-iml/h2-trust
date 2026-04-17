@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { danger, fail, message } from 'danger';
+import { danger, fail, message, warn } from 'danger';
 
 const pr = danger.github.pr;
 const isDependabot = pr.user.login === 'dependabot[bot]';
@@ -39,6 +39,11 @@ if (!isDependabot) {
 
   if (!pr.body || pr.body.trim().length < 10) {
     fail('Pull request needs a meaningful description.');
+  }
+
+  const hasNewTests = danger.git.modified_files.some((f) => f.endsWith('.spec.ts'));
+  if (conventionalType === 'feat' && !hasNewTests) {
+    warn('No test files modified. Consider adding or updating tests for this feature.');
   }
 }
 
