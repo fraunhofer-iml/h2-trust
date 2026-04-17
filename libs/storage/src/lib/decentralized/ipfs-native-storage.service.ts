@@ -92,7 +92,7 @@ export class IpfsNativeStorageService extends DecentralizedStorageService {
       return await fetch(url, { ...init, signal: controller.signal });
     } catch (error) {
       if (error instanceof Error && error.name === 'AbortError') {
-        throw new Error(`Request timed out after ${timeoutMs} ms: ${url}`);
+        throw new Error(`Request timed out after ${timeoutMs} ms: ${url}`, { cause: error });
       }
       throw error;
     } finally {

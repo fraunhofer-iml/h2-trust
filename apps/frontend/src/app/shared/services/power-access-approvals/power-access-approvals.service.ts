@@ -8,14 +8,14 @@
 
 import { lastValueFrom } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { PowerAccessApprovalDto, PpaRequestCreateDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/api';
 import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
 import { API } from '../../constants/api-endpoints';
 
 @Injectable()
 export class PowerAccessApprovalService {
-  constructor(private readonly httpClient: HttpClient) {}
+  private readonly httpClient = inject(HttpClient);
 
   getApprovals(status?: PowerAccessApprovalStatus) {
     let params = new HttpParams();

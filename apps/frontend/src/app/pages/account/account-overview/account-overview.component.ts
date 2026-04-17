@@ -46,16 +46,12 @@ export class AccountOverviewComponent implements OnInit {
   protected readonly PpaRequestRole = PpaRequestRole;
 
   protected readonly unitsService = inject(UnitsService);
-  dialog = inject(MatDialog);
-
-  constructor(
-    private readonly authService: AuthService,
-    private readonly accountService: UsersService,
-  ) {}
+  protected readonly authService = inject(AuthService);
+  protected readonly accountService = inject(UsersService);
+  protected readonly roles = inject(UserRolesStore);
+  readonly dialog = inject(MatDialog);
 
   userId$ = signal<string | undefined>(undefined);
-
-  protected roles = inject(UserRolesStore);
 
   accountQuery = injectQuery(() => ({
     queryKey: ['account-info', this.userId$()],
