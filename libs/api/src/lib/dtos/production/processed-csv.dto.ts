@@ -31,7 +31,6 @@ export class ProcessedCsvDto {
     csvContentType: CsvContentType,
     amount: number,
     verifiable: boolean,
-    unitId: string,
   ) {
     this.id = id;
     this.url = url;
@@ -42,7 +41,6 @@ export class ProcessedCsvDto {
     this.csvContentType = csvContentType;
     this.amount = amount;
     this.verifiable = verifiable;
-    this.unitId = unitId;
   }
 
   static fromEntity(entity: CsvDocumentEntity, storageUrl: string, companyName: string): ProcessedCsvDto {
@@ -56,8 +54,6 @@ export class ProcessedCsvDto {
       entity.type as CsvContentType,
       entity.amount,
       Boolean(entity.transactionHash),
-      // TODO: replace with actual unit id
-      'power-production-unit-0',
     );
   }
 }

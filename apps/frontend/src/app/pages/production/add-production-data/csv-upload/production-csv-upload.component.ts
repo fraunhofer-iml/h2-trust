@@ -11,7 +11,7 @@ import { FileTypes } from 'apps/frontend/src/app/shared/constants/file-types';
 import { ROUTES } from 'apps/frontend/src/app/shared/constants/routes';
 import { FileSizePipe } from 'apps/frontend/src/app/shared/pipes/file-size.pipe';
 import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
-import { minFormArrayLength } from 'apps/frontend/src/app/shared/util/form-array-lengh.validator';
+import { minFormArrayLength } from 'apps/frontend/src/app/shared/util/form-array-length.validator';
 import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';

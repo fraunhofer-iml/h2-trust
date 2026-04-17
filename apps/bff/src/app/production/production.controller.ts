@@ -28,6 +28,7 @@ import {
   ProductionOverviewDto,
   ProductionStatisticsDto,
   type AuthenticatedKCUser,
+  type CsvContentType,
 } from '@h2-trust/api';
 import { FileUploadKeys } from '@h2-trust/domain';
 import { ProductionService } from './production.service';
@@ -174,6 +175,25 @@ export class ProductionController {
     description: "Retrieve all csv documents for the authenticated user's company.",
   })
   async readCsvDocumentsByCompany(
+    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+  ): Promise<ProcessedCsvDto[]> {
+    return this.service.readCsvDocumentsByCompany(authenticatedUser.sub);
+  }
+
+  @Get('staging')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: "Retrieve all staged productions for the authenticated user's company.",
+  })
+  @ApiQuery({
+    name: 'type',
+    description: 'Search by csv content type (hydrogen or power)',
+    required: false,
+  })
+  async readStagedProductionsByCompanyAndType(
+    @Query('type') type: CsvContentType,
+    @Query('from') from: Date,
+    @Query('to') to: Date,
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<ProcessedCsvDto[]> {
     return this.service.readCsvDocumentsByCompany(authenticatedUser.sub);

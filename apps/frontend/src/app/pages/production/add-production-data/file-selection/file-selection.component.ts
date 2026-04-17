@@ -1,5 +1,6 @@
 import { PowerAccessApprovalService } from 'apps/frontend/src/app/shared/services/power-access-approvals/power-access-approvals.service';
 import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
+import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -36,11 +37,13 @@ import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 export class FileSelectionComponent {
   protected productionService = inject(ProductionService);
   protected readonly powerAccessApprovalsService = inject(PowerAccessApprovalService);
+  protected readonly unitsService = inject(UnitsService);
   protected readonly MeasurementUnit = MeasurementUnit;
 
   form = new FormGroup({
     hydrogenFileId: new FormControl<string | null>(null, Validators.required),
     powerFiles: new FormControl<ProcessedCsvDto[] | null>([], [Validators.required, Validators.minLength(1)]),
+    storageUnit: new FormControl<string | null>({ value: null, disabled: true }, Validators.required),
   });
 
   uploadsQuery = injectQuery(() => ({
@@ -56,6 +59,11 @@ export class FileSelectionComponent {
       const approvals = await this.powerAccessApprovalsService.getApprovals(PowerAccessApprovalStatus.APPROVED);
       return approvals.filter((a) => a.energySource !== 'GRID');
     },
+  }));
+
+  storageUnitsQuery = injectQuery(() => ({
+    queryKey: ['hydrogen-storage-unit'],
+    queryFn: () => this.unitsService.getHydrogenStorageUnits(),
   }));
 
   data = computed(() => {
@@ -81,6 +89,10 @@ export class FileSelectionComponent {
   constructor() {
     this.form.controls.hydrogenFileId.valueChanges.subscribe(() => {
       this.form.controls.powerFiles.patchValue([]);
+    });
+
+    this.form.controls.powerFiles.valueChanges.subscribe((val) => {
+      if (val && val.length > 0) this.form.controls.storageUnit.enable();
     });
   }
 }
