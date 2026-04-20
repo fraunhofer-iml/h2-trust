@@ -60,6 +60,11 @@ export class ProductionController {
     return this.csvDocumentService.findByCompany(payload);
   }
 
+  @MessagePattern(ProductionMessagePatterns.READ_STAGED_PRODUCTION_BY_COMPANY)
+  async readStagedProductionsByCompany(): Promise<CsvDocumentEntity[]> {
+    throw new NotImplementedException();
+  }
+
   @MessagePattern(ProductionMessagePatterns.VERIFY_CSV_DOCUMENT_INTEGRITY)
   async verifyCsvDocumentIntegrity(payload: ReadByIdPayload): Promise<VerifyCsvDocumentIntegrityResultEntity> {
     return this.csvDocumentService.verifyCsvDocumentIntegrity(payload);
