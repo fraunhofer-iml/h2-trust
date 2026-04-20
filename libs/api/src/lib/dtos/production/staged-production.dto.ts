@@ -11,6 +11,7 @@ export class StagedProductionDto {
   amountConsumed?: number; // amount of power consumed, only set if csv content type is hydrogen
 
   constructor(
+    id: string,
     startedAt: Date,
     endedAt: Date,
     amountProduced: number,
@@ -19,6 +20,7 @@ export class StagedProductionDto {
     productionUnitId: string,
     amountConsumed?: number,
   ) {
+    this.id = id;
     this.startedAt = startedAt;
     this.endedAt = endedAt;
     this.amountProduced = amountProduced;

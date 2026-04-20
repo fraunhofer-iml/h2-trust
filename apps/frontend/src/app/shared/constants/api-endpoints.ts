@@ -51,9 +51,9 @@ export const API = {
     STATISTICS: PRODUCTION_ENDPOINT + 'statistics',
     CSV: PRODUCTION_ENDPOINT + 'csv/',
     STAGING: PRODUCTION_ENDPOINT + 'staging/',
+    STAGING_SUBMIT: PRODUCTION_ENDPOINT + 'staging/submit',
     CSV_VERIFY: (id: string) => `${API.PRODUCTION.CSV}${id}`,
     CSV_IMPORT: PRODUCTION_ENDPOINT + 'csv/import',
-    CSV_SUBMIT: PRODUCTION_ENDPOINT + 'csv/submit',
   },
   FILE_DOWNLOAD: {
     BASE: FILE_DOWNLOAD_ENDPOINT,

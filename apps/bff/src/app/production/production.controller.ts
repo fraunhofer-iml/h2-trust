@@ -225,7 +225,7 @@ export class ProductionController {
   ): Promise<StagedProductionDto[]> {
     return [
       {
-        id: 'steging-id-1',
+        id: 'staging-id-1',
         amountProduced: 120,
         csvContentType: BatchType.POWER,
         endedAt: new Date(),
@@ -279,6 +279,7 @@ export class ProductionController {
   @Post('staging/submit')
   @ApiBearerAuth()
   submitCsvData(@Body() _dto: StagingSubmissionDto, @AuthenticatedUser() _user: AuthenticatedKCUser) {
+    console.log(_dto);
     throw new NotImplementedException();
   }
 }

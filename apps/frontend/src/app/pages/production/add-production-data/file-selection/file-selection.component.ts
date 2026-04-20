@@ -38,7 +38,7 @@ import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
   templateUrl: './file-selection.component.html',
 })
 export class FileSelectionComponent {
-  protected productionService = inject(ProductionService);
+  protected readonly productionService = inject(ProductionService);
   protected readonly powerAccessApprovalsService = inject(PowerAccessApprovalService);
   protected readonly unitsService = inject(UnitsService);
   protected readonly MeasurementUnit = MeasurementUnit;
@@ -126,14 +126,15 @@ export class FileSelectionComponent {
   }
 
   save() {
-    const { hydrogenProduction: hydrogenFile, storageUnit, powerProductions: powerFiles } = this.form.value;
-    if (!hydrogenFile || !storageUnit || powerFiles?.length === 0) return;
+    const { hydrogenProduction, storageUnit, powerProductions } = this.form.value;
+    if (!hydrogenProduction || !storageUnit || powerProductions?.length === 0) return;
 
     const dto: StagingSubmissionDto = {
       storageUnitId: storageUnit,
-      stagedHydrogenProduction: hydrogenFile[0].id,
-      stagedPowerProductions: (powerFiles ?? []).map((f) => f.id),
+      stagedHydrogenProduction: hydrogenProduction[0].id,
+      stagedPowerProductions: (powerProductions ?? []).map((item) => item.id),
     };
+
     this.mutation.mutate(dto);
   }
 }

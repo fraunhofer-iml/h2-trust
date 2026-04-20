@@ -22,7 +22,7 @@
       }
 
       <form [formGroup]="form" class="mt-2 min-h-0 flex-1 overflow-auto">
-        <mat-selection-list #filesList formControlName="hydrogenFile" [multiple]="false">
+        <mat-selection-list #filesList formControlName="hydrogenProduction" [multiple]="false">
           @for (dataset of hydrogenProductionsQuery.data(); track dataset) {
             <mat-list-option
               [value]="dataset"
@@ -134,8 +134,8 @@
       </div>
 
       <div class="flex justify-end gap-2 rounded-lg bg-white p-4">
-        <button matButton>Cancel</button>
-        <button matButton="filled" [disabled]="form.invalid">Save</button>
+        <a matButton routerLink="/production/data">Cancel</a>
+        <button matButton="filled" [disabled]="form.invalid" (click)="save()">Save</button>
       </div>
     </div>
   </div>

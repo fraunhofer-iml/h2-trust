@@ -163,7 +163,11 @@ export class ProductionCsvUploadComponent {
   save() {
     const id = this.mutation.data()?.id;
     if (!this.storageUnit.value || !id) return;
-    const dto: StagingSubmissionDto = { storageUnitId: this.storageUnit.value, importId: id };
+    const dto: StagingSubmissionDto = {
+      storageUnitId: this.storageUnit.value,
+      stagedHydrogenProduction: id,
+      stagedPowerProductions: [],
+    };
     this.submitMutation.mutate(dto);
   }
 

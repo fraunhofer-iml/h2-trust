@@ -78,7 +78,7 @@ export class ProductionService {
   }
 
   submitCsv(dto: StagingSubmissionDto) {
-    return lastValueFrom(this.httpClient.post<ProductionOverviewDto[]>(API.PRODUCTION.CSV_SUBMIT, dto));
+    return lastValueFrom(this.httpClient.post<ProductionOverviewDto[]>(API.PRODUCTION.STAGING_SUBMIT, dto));
   }
 
   downloadFiles(dto: DownloadFilesDto) {
