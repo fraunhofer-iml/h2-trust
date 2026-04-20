@@ -6,13 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus } from '@nestjs/common';
 import { BaseUnitNestedDbType } from '@h2-trust/database';
 import { HydrogenProductionUnitEntity } from './hydrogen-production-unit.entity';
 import { HydrogenStorageUnitEntity } from './hydrogen-storage-unit.entity';
 import { PowerProductionUnitEntity } from './power-production-unit.entity';
 import { ConcreteUnitEntity } from './unit.type';
-import { BrokerException } from '@h2-trust/messaging';
 
 export function getSpecificUnit(unit: BaseUnitNestedDbType): ConcreteUnitEntity {
   if (unit.hydrogenProductionUnit) {
@@ -24,5 +22,5 @@ export function getSpecificUnit(unit: BaseUnitNestedDbType): ConcreteUnitEntity 
   if (unit.hydrogenStorageUnit) {
     return HydrogenStorageUnitEntity.fromNestedDatabase(unit);
   }
-  throw new BrokerException('', HttpStatus.INTERNAL_SERVER_ERROR);
+  throw new Error('Unknown unit type');
 }

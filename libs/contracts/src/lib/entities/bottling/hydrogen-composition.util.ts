@@ -6,9 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus } from '@nestjs/common';
 import { HydrogenComponentEntity } from '..';
-import { BrokerException } from '@h2-trust/messaging';
 
 export class HydrogenCompositionUtil {
   /**
@@ -30,7 +28,7 @@ export class HydrogenCompositionUtil {
 
     const totalAmount = mergedHydrogenComponents.reduce((sum, item) => sum + item.amount, 0);
     if (totalAmount <= 0) {
-      throw new BrokerException(`Total stored amount is not greater than 0`, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new Error(`Total stored amount is not greater than 0`);
     }
 
     return mergedHydrogenComponents.map(
