@@ -20,14 +20,14 @@ export class StagedProductionRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async saveStagedProduction(
-    stageProduction: StagedProductionEntity[],
+    stagedProduction: StagedProductionEntity[],
     csvImportId: string,
     tx?: Prisma.TransactionClient,
   ): Promise<void> {
     const client = tx ?? this.prismaService;
 
     await client.stagedProduction.createMany({
-      data: stageProduction.map(({ startedAt, amount, unitId, usedPower, type }) => ({
+      data: stagedProduction.map(({ startedAt, amount, unitId, usedPower, type }) => ({
         startedAt,
         amount,
         unitId,

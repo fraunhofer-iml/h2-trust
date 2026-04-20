@@ -6,13 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { StageProductionAccountingPeriod } from './accounting-period.entity';
+import { StagedProductionAccountingPeriod } from './accounting-period.entity';
 
 export class UnitAccountingPeriods {
   unitId: string;
-  accountingPeriods: StageProductionAccountingPeriod[];
+  accountingPeriods: StagedProductionAccountingPeriod[];
 
-  constructor(unitId: string, accountingPeriods: StageProductionAccountingPeriod[]) {
+  constructor(unitId: string, accountingPeriods: StagedProductionAccountingPeriod[]) {
     this.unitId = unitId;
     this.accountingPeriods = accountingPeriods;
   }

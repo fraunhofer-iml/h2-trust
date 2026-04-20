@@ -15,7 +15,7 @@ export class StageProductionsPayload {
   @ArrayNotEmpty()
   @ValidateNested({ each: true })
   @Type(() => UnitFileImport)
-  stageProductions: UnitFileImport[];
+  productionImports: UnitFileImport[];
 
   @IsString()
   @IsNotEmpty()
@@ -26,7 +26,7 @@ export class StageProductionsPayload {
   userId: string;
 
   constructor(powerProductions: UnitFileImport[], gridPowerProductionUnitId: string, userId: string) {
-    this.stageProductions = powerProductions;
+    this.productionImports = powerProductions;
     this.gridPowerProductionUnitId = gridPowerProductionUnitId;
     this.userId = userId;
   }

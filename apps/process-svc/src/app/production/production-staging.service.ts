@@ -43,7 +43,7 @@ export class ProductionStagingService {
 
   async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
     const parsedProductionImports: ParsedImport[] = await this.csvImportProcessingService.parseAndUploadFiles(
-      payload.stageProductions,
+      payload.productionImports,
     );
 
     const powerUnitAccountingPeriods: UnitAccountingPeriods[] = parsedProductionImports

@@ -17,17 +17,17 @@ export class ProductionCSVUploadDto {
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
-  stageProductionUnitIds: string[];
+  stagedProductionUnitIds: string[];
 
   @IsString()
   @IsNotEmpty()
   @ValidateIf((o) => Array.isArray(o.stageProductionType))
   @IsArray()
   @ArrayNotEmpty()
-  stageProductionTypes: BatchType[];
+  stagedProductionTypes: BatchType[];
 
   constructor() {
-    this.stageProductionUnitIds = [];
-    this.stageProductionTypes = [];
+    this.stagedProductionUnitIds = [];
+    this.stagedProductionTypes = [];
   }
 }

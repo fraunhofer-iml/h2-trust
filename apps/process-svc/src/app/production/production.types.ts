@@ -40,5 +40,5 @@ export interface DocumentProof {
 
 export interface ParsedImport extends DocumentProof {
   periods: UnitAccountingPeriods;
-  type: BatchType;
+  type: Exclude<BatchType, BatchType.WATER>;
 }

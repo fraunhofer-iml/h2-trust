@@ -118,9 +118,9 @@ export class ProductionService {
     userId: string,
   ) {
     const stageProductions: UnitFileImport[] = this.mapUnitsToFiles(
-      dto.stageProductionUnitIds,
+      dto.stagedProductionUnitIds,
       stageProductionFiles,
-      dto.stageProductionTypes,
+      dto.stagedProductionTypes,
     );
 
     const gridPowerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
