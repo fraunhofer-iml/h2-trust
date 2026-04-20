@@ -13,7 +13,6 @@ import {
   ProductionStagingResultEntity,
   StagedProductionEntity,
   StageProductionsPayload,
-  UnitAccountingPeriods,
 } from '@h2-trust/amqp';
 import { BlockchainService, ProofEntry } from '@h2-trust/blockchain';
 import { FeatureFlagService } from '@h2-trust/configuration';
@@ -23,7 +22,6 @@ import {
   PrismaService,
   StagedProductionRepository,
 } from '@h2-trust/database';
-import { BatchType } from '@h2-trust/domain';
 import { CsvImportProcessingService } from './csv-import-processing.service';
 import { ProductionNormalizer } from './production-normalizer';
 import { DocumentProof, ParsedImport } from './production.types';
@@ -46,40 +44,22 @@ export class ProductionStagingService {
       payload.productionImports,
     );
 
-    const powerUnitAccountingPeriods: UnitAccountingPeriods[] = parsedProductionImports
-      .filter((prod) => prod.type == BatchType.POWER)
-      .map((prod) => prod.periods);
-    const hydrogenUnitAccountingPeriods: UnitAccountingPeriods[] = parsedProductionImports
-      .filter((prod) => prod.type == BatchType.HYDROGEN)
-      .map((prod) => prod.periods);
-
-    const spPowerProductions: StagedProductionEntity[] = ProductionNormalizer.normalizeProduction(
-      powerUnitAccountingPeriods,
-      BatchType.POWER,
-    );
-
-    const spHydrogenProductions: StagedProductionEntity[] = ProductionNormalizer.normalizeProduction(
-      hydrogenUnitAccountingPeriods,
-      BatchType.HYDROGEN,
-    );
-
-    const parsedStagedProductions: StagedProductionEntity[] = [...spPowerProductions, ...spHydrogenProductions];
+    const stagedProductions: StagedProductionEntity[] =
+      ProductionNormalizer.normalizeProduction(parsedProductionImports);
 
     const { csvImportId, csvDocuments } = await this.prismaService.$transaction(async (tx) => {
       const csvImportId = await this.csvImportRepository.saveCsvImport(payload.userId, tx);
-
       const csvDocumentInputs: CreateCsvDocumentInput[] =
         this.csvImportProcessingService.createCsvDocumentInputs(parsedProductionImports);
       const csvDocuments = await this.csvImportRepository.saveCsvDocuments(csvImportId, csvDocumentInputs, tx);
 
-      await this.stagedProductionRepository.saveStagedProduction(parsedStagedProductions, csvImportId, tx);
+      await this.stagedProductionRepository.saveStagedProduction(stagedProductions, csvImportId, tx);
 
       return { csvImportId, csvDocuments };
     });
 
     await this.storeProofsOnBlockchain(parsedProductionImports, csvDocuments);
-
-    return new ProductionStagingResultEntity(csvImportId, parsedStagedProductions);
+    return new ProductionStagingResultEntity(csvImportId, stagedProductions);
   }
 
   private async storeProofsOnBlockchain(

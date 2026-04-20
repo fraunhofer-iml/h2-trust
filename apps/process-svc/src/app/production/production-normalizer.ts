@@ -8,6 +8,7 @@
 
 import { StagedProductionEntity, UnitAccountingPeriods } from '@h2-trust/amqp';
 import { BatchType } from '@h2-trust/domain';
+import { ParsedImport } from './production.types';
 
 interface PowerItem {
   unitId: string;
@@ -27,7 +28,33 @@ export class ProductionNormalizer {
    * @param type The type of the stage productions that should be created.
    * @returns A list of staged productions with only one entry per hour.
    */
-  public static normalizeProduction(
+  public static normalizeProduction(parsedImports: ParsedImport[]): StagedProductionEntity[] {
+    const parsedAccountingPeriodGroups: Record<BatchType, UnitAccountingPeriods[]> =
+      this.groupAccountingPeriodsByType(parsedImports);
+
+    const stagedProductionResult: StagedProductionEntity[] = [];
+    Object.entries(parsedAccountingPeriodGroups).forEach(([productionType, parsedAccountingPeriodGroup]) => {
+      const stagedProductionsForType: StagedProductionEntity[] = this.normalizeAccountingPeriods(
+        parsedAccountingPeriodGroup,
+        productionType as BatchType,
+      );
+      stagedProductionResult.push(...stagedProductionsForType);
+    });
+    return stagedProductionResult;
+  }
+
+  private static groupAccountingPeriodsByType(
+    parsedImports: ParsedImport[],
+  ): Record<BatchType, UnitAccountingPeriods[]> {
+    return parsedImports.reduce<Record<string, UnitAccountingPeriods[]>>((acc, parsedImport) => {
+      return {
+        ...acc,
+        [parsedImport.type]: [...(acc[parsedImport.type] ?? []), parsedImport.periods],
+      };
+    }, {});
+  }
+
+  private static normalizeAccountingPeriods(
     accountingPeriods: UnitAccountingPeriods[],
     type: BatchType,
   ): StagedProductionEntity[] {
