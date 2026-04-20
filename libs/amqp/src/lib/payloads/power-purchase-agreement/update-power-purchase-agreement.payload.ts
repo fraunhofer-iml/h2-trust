@@ -6,5 +6,4 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './read-power-purchase-agreements.payload';
-export * from './create-power-purchase-agreements.payload';
+export class UpdatePowerPurchaseAgreementPayload {}

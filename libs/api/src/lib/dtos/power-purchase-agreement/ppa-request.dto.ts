@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { PowerPurchaseAgreementEntity } from '@h2-trust/amqp';
 import { PowerProductionType, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { CompanyDto } from '../company';
 import { PowerProductionOverviewDto } from '../unit';
@@ -52,5 +53,20 @@ export class PpaRequestDto {
     this.decidedBy = decidedBy;
     this.decidedAt = decidedAt;
     this.comment = comment;
+  }
+
+  static fromEntity(powerPurchaseAgreement: PowerPurchaseAgreementEntity, user: UserDetailsDto): PpaRequestDto {
+    return <PpaRequestDto>{
+      id: powerPurchaseAgreement.id,
+      createdAt: powerPurchaseAgreement.createdAt,
+      decidedAt: powerPurchaseAgreement.decidedAt,
+      validFrom: powerPurchaseAgreement.validFrom,
+      validTo: powerPurchaseAgreement.validTo,
+      sender: user,
+      receiver: powerPurchaseAgreement.powerProducer,
+      powerProductionType: powerPurchaseAgreement.powerProductionUnit.type.name,
+      powerProductionUnit: PowerProductionOverviewDto.fromEntity(powerPurchaseAgreement.powerProductionUnit),
+      status: powerPurchaseAgreement.status,
+    };
   }
 }

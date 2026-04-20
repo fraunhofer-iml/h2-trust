@@ -23,8 +23,14 @@ export class PowerPurchaseAgreementController {
 
   @MessagePattern(PowerPurchaseAgreementPatterns.READ)
   async findAll(payload: ReadPowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity[]> {
+    console.log(payload);
     return this.service.findAll(payload);
   }
+
+  /*  @MessagePattern(PowerPurchaseAgreementPatterns.CREATE)
+  async createPPA(payload: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity[]> {
+    return; this.service.createPPA(payload);
+  } */
 
   @MessagePattern(PowerPurchaseAgreementPatterns.READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID)
   async readApprovedGridPowerProductionUnitByUserId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity> {

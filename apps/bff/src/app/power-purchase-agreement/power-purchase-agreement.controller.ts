@@ -7,24 +7,17 @@
  */
 
 import { AuthenticatedUser } from 'nest-keycloak-connect';
-import { Body, Controller, Get, NotImplementedException, Param, Patch, Post, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
-import {
-  CompanyDto,
-  PowerPurchaseAgreementDto,
-  PpaRequestCreateDto,
-  PpaRequestDto,
-  UserDetailsDto,
-  type AuthenticatedKCUser,
-} from '@h2-trust/api';
-import { PowerProductionType, PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
+import { Controller, Get, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { PowerPurchaseAgreementDto, PpaRequestDto, type AuthenticatedKCUser } from '@h2-trust/api';
+import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 
 @Controller('power-purchase-agreements')
 export class PowerPurchaseAgreementController {
   constructor(private readonly powerPurchaseAgreementService: PowerPurchaseAgreementService) {}
 
-  @Get()
+  /*   @Get()
   @ApiBearerAuth()
   @ApiOperation({
     description: 'Retrieve all companies with their power purchase agreement. Optionally filter by agreement status.',
@@ -56,47 +49,71 @@ export class PowerPurchaseAgreementController {
       },
     },
   })
+  //Is this naming up to date?
   getCompaniesWithPowerPurchaseAgreement(
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
     @Query('status') powerPurchaseAgreementStatus: PowerPurchaseAgreementStatus,
   ): Promise<PowerPurchaseAgreementDto[]> {
     return this.powerPurchaseAgreementService.readByUserAndStatus(authenticatedUser.sub, powerPurchaseAgreementStatus);
-  }
+  } */
 
-  //TODO: Add id to query params since only ppas that are meant for you should be retrieved
   @Get('requests')
-  getPPARequest(
-    @Query('role') _role: PpaRequestRole,
-    @Query('status') _status: PowerPurchaseAgreementStatus,
-  ): PpaRequestDto[] {
-    return [
-      {
-        createdAt: new Date(),
-        id: '456867',
-        powerProductionType: PowerProductionType.HYDRO_POWER_PLANT,
-        receiver: { name: 'Test' } as CompanyDto,
-        sender: { name: 'hans ', company: { name: 'testo test ' } } as UserDetailsDto,
-        status: PowerPurchaseAgreementStatus.PENDING,
-        validFrom: new Date(),
-        validTo: new Date(),
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Retrieve all companies with their power purchase agreement. Optionally filter by agreement status.',
+  })
+  @ApiOkResponse({
+    description: 'Returns a list of all companies with their power purchase agreement matching the filter criteria.',
+    type: [PowerPurchaseAgreementDto],
+  })
+  @ApiQuery({
+    name: 'role',
+    enum: PpaRequestRole,
+    required: true,
+    examples: {
+      allTypes: {
+        value: null,
+        description: 'Possible roles to request ppas"s with',
       },
-    ];
+      APPROVED: {
+        value: PowerPurchaseAgreementStatus.APPROVED,
+        description: `Get all Power Agreements with status "${PowerPurchaseAgreementStatus.APPROVED}"`,
+      },
+      PENDING: {
+        value: PowerPurchaseAgreementStatus.PENDING,
+        description: `Get all Power Agreements with status "${PowerPurchaseAgreementStatus.PENDING}"`,
+      },
+      REJECTED: {
+        value: PowerPurchaseAgreementStatus.REJECTED,
+        description: `Get all Power Agreements with status "${PowerPurchaseAgreementStatus.REJECTED}"`,
+      },
+    },
+  })
+  getPPARequest(
+    @AuthenticatedUser() user: AuthenticatedKCUser,
+    @Query('role') role: PpaRequestRole,
+    @Query('status') status?: PowerPurchaseAgreementStatus,
+  ): Promise<PpaRequestDto[]> {
+    return this.powerPurchaseAgreementService.readAll(user.sub, role, status);
   }
 
-  @Post('requests')
+  /*   @Post('requests')
   @ApiOkResponse({ description: 'Returns created Request', type: PpaRequestDto })
-  createPpaRequest(@Body() _dto: PpaRequestCreateDto, @AuthenticatedUser() _user: AuthenticatedKCUser): PpaRequestDto {
-    throw new NotImplementedException();
+  createPpaRequest(
+    @Body() dto: PpaRequestCreateDto,
+    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+  ): Promise<PpaRequestDto> {
+    return this.powerPurchaseAgreementService.createPPA(dto, authenticatedUser.sub);
   }
 
   @Patch('requests/:id')
-  @ApiOkResponse({ description: 'Returns Request that war rejected or denied', type: PpaRequestDto })
+  @ApiOkResponse({ description: 'Returns Request that were rejected or denied', type: PpaRequestDto })
   @ApiParam({ name: 'id', description: 'Id of PPA Request to update' })
   closePpaRequest(
-    @Body() _dto: PpaRequestDto,
-    @Param('id') _id: string,
-    @AuthenticatedUser() _user: AuthenticatedKCUser,
-  ): PpaRequestDto {
-    throw new NotImplementedException();
-  }
+    @Body() dto: PpaRequestDto,
+        @Param('id') powerPurchaseAgreementRequestId: string,
+    @AuthenticatedUser() user: AuthenticatedKCUser,
+  ): Promise<PpaRequestDto> {
+    return this.powerPurchaseAgreementService.updatePPA(dto, user.sub);
+  } */
 }

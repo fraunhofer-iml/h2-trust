@@ -27,12 +27,20 @@ export class PowerPurchaseAgreementService {
 
   async findAll(payload: ReadPowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity[]> {
     const user: UserEntity = await this.userRepository.findUser(payload.userId);
-    return this.powerPurchaseAgreementRepository.findAll(user.company.id, payload.powerPurchaseAgreementStatus);
+    return this.powerPurchaseAgreementRepository.findAll(
+      user.company.id,
+      payload.powerPurchaseAgreementStatus,
+      payload.powerPurchaseAgreementRole,
+    );
   }
+
+  /*   async createPPA(payload: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity> {
+    return this.powerPurchaseAgreementRepository.create(payload);
+  } */
 
   async findApprovedGridPowerProductionUnitByUserId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity> {
     const agreements = await this.findAll(
-      new ReadPowerPurchaseAgreementsPayload(payload.id, PowerPurchaseAgreementStatus.APPROVED),
+      new ReadPowerPurchaseAgreementsPayload(payload.id, undefined, PowerPurchaseAgreementStatus.APPROVED),
     );
 
     const agreementForGrid = agreements.find(

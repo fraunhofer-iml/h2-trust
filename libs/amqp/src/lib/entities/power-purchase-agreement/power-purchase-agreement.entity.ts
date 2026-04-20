@@ -16,6 +16,9 @@ import { PowerProductionUnitEntity } from '../unit';
 export class PowerPurchaseAgreementEntity {
   id: string;
   decidedAt: Date;
+  createdAt: Date;
+  validFrom: Date;
+  validTo: Date;
   status: PowerPurchaseAgreementStatus;
   powerProducer: CompanyEntity;
   powerProductionUnit: PowerProductionUnitEntity;
@@ -25,6 +28,9 @@ export class PowerPurchaseAgreementEntity {
   constructor(
     id: string,
     decidedAt: Date,
+    createdAt: Date,
+    validFrom: Date,
+    validTo: Date,
     status: PowerPurchaseAgreementStatus,
     powerProducer: CompanyEntity,
     powerProductionUnit: PowerProductionUnitEntity,
@@ -33,6 +39,9 @@ export class PowerPurchaseAgreementEntity {
   ) {
     this.id = id;
     this.decidedAt = decidedAt;
+    this.createdAt = createdAt;
+    this.validFrom = validFrom;
+    this.validTo = validTo;
     this.status = status;
     this.powerProducer = powerProducer;
     this.powerProductionUnit = powerProductionUnit;

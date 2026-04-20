@@ -75,10 +75,10 @@ model Company {
 
   hydrogenAgreements PowerPurchaseAgreement[] @relation(name: "HydrogenProducer")
   powerAgreements    PowerPurchaseAgreement[] @relation(name: "PowerProducer")
-  unitOwners        Unit[]                   @relation(name: "UnitOwner")
-  unitOperators     Unit[]                   @relation(name: "UnitOperator")
-  users             User[]
-  batches           Batch[]
+  unitOwners         Unit[]                   @relation(name: "UnitOwner")
+  unitOperators      Unit[]                   @relation(name: "UnitOperator")
+  users              User[]
+  batches            Batch[]
 }
 
 model User {
@@ -149,7 +149,7 @@ model PowerProductionUnit {
   typeName String
 
   powerPurchaseAgreements PowerPurchaseAgreement[]
-  stagedProductions    StagedProduction[]
+  stagedProductions       StagedProduction[]
 }
 
 model HydrogenProductionUnit {
@@ -205,7 +205,7 @@ model BatchDetails {
 }
 
 model QualityDetails {
-  id        String  @id
+  id        String @id
   color     String
   rfnboType String
   powerType String
@@ -252,9 +252,12 @@ model TransportationDetails {
 }
 
 model PowerPurchaseAgreement {
-  id        String   @id @default(uuid(7))
+  id        String    @id @default(uuid(7))
   status    String
-  decidedAt DateTime
+  decidedAt DateTime?
+  createdAt DateTime
+  validFrom DateTime
+  validTo   DateTime
 
   powerProducer   Company @relation(fields: [powerProducerId], references: [id], name: "PowerProducer")
   powerProducerId String
