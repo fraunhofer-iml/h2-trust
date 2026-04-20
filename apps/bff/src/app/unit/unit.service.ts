@@ -21,7 +21,7 @@ import {
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
   UnitUpdateActiveDto,
-} from '@h2-trust/api';
+} from '@h2-trust/contracts';
 import { UserService } from '../user/user.service';
 import { HydrogenStorageUnitEntity, ReadByIdPayload } from '@h2-trust/contracts';
 

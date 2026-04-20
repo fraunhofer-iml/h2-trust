@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { EmissionCalculationDto, ProofOfSustainabilityDto } from '@h2-trust/api';
+import { EmissionCalculationDto, ProofOfSustainabilityDto } from '@h2-trust/contracts';
 import { CalculationTopic, MeasurementUnit } from '@h2-trust/domain';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { BottlingService } from '../../../../shared/services/bottling/bottling.service';

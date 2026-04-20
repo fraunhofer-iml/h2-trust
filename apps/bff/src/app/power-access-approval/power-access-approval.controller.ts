@@ -16,7 +16,7 @@ import {
   PpaRequestDto,
   UserDetailsDto,
   type AuthenticatedKCUser,
-} from '@h2-trust/api';
+} from '@h2-trust/contracts';
 import { PowerAccessApprovalStatus, PowerProductionType, PpaRequestRole } from '@h2-trust/domain';
 import { PowerAccessApprovalService } from './power-access-approval.service';
 

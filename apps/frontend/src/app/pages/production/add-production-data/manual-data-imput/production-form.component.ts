@@ -27,7 +27,7 @@ import {
   HydrogenProductionOverviewDto,
   HydrogenStorageOverviewDto,
   PowerProductionOverviewDto,
-} from '@h2-trust/api';
+} from '@h2-trust/contracts';
 import { MeasurementUnit, TimeInSeconds } from '@h2-trust/domain';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 

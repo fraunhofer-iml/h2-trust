@@ -7,7 +7,7 @@
  */
 
 import { FormControl } from '@angular/forms';
-import { HydrogenStorageOverviewDto, UserDto } from '@h2-trust/api';
+import { HydrogenStorageOverviewDto, UserDto } from '@h2-trust/contracts';
 import { FuelType, TransportMode } from '@h2-trust/domain';
 
 export type BottlingForm = {

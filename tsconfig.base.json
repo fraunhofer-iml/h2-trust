@@ -33,7 +33,6 @@
       "@h2-trust/messaging": [
         "libs/messaging/src/index.ts"
       ],
-      "@h2-trust/api": ["libs/api/src/index.ts"],
       "@h2-trust/blockchain": ["libs/blockchain/src/index.ts"],
       "@h2-trust/configuration": ["libs/configuration/src/index.ts"],
       "@h2-trust/contracts": [

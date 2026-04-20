@@ -10,7 +10,7 @@ import { PowerTypeChipComponent } from 'apps/frontend/src/app/layout/chips/power
 import { ProofOfOriginCardComponent } from 'apps/frontend/src/app/layout/proof-of-origin-card/proof-of-origin-card.component';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
-import { PowerBatchDto } from '@h2-trust/api';
+import { PowerBatchDto } from '@h2-trust/contracts';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { BaseSheetComponent } from '../../../../../../layout/sheet/sheet.component';
 import { UnitPipe } from '../../../../../../shared/pipes/unit.pipe';

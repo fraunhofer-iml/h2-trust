@@ -6,6 +6,4 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import baseConfig from '../../eslint.config.mjs';
-
-export default [...baseConfig];
+import 'reflect-metadata';

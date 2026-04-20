@@ -9,7 +9,7 @@
 import { lastValueFrom } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { PowerAccessApprovalDto, PpaRequestCreateDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/api';
+import { PowerAccessApprovalDto, PpaRequestCreateDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/contracts';
 import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
 import { API } from '../../constants/api-endpoints';
 

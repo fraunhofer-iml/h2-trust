@@ -25,7 +25,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { CsvContentType, ProcessedCsvDto } from '@h2-trust/api';
+import { CsvContentType, ProcessedCsvDto } from '@h2-trust/contracts';
 import { BatchType, CsvDocumentIntegrityStatus, MeasurementUnit } from '@h2-trust/domain';
 import { ICONS } from '../../../shared/constants/icons';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';

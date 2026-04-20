@@ -25,7 +25,7 @@ import {
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
   UserDetailsDto,
-} from '@h2-trust/api';
+} from '@h2-trust/contracts';
 import {
   HydrogenProductionUnitEntityFixture,
   HydrogenStorageUnitEntityFixture,

@@ -15,7 +15,7 @@ import { Component, inject, input } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { injectMutation } from '@tanstack/angular-query-experimental';
-import { DownloadFilesDto, ProcessedCsvDto } from '@h2-trust/api';
+import { DownloadFilesDto, ProcessedCsvDto } from '@h2-trust/contracts';
 
 @Component({
   selector: 'app-download-button',

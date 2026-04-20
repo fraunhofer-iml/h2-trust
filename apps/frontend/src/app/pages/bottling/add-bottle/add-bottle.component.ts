@@ -22,7 +22,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
-import { HydrogenComponentDto, HydrogenStorageOverviewDto, UserDto } from '@h2-trust/api';
+import { HydrogenComponentDto, HydrogenStorageOverviewDto, UserDto } from '@h2-trust/contracts';
 import { FuelType, MeasurementUnit, RfnboType, TransportMode } from '@h2-trust/domain';
 import { FileDragAndDropComponent } from '../../../layout/drag-and-drop/file-drag-and-drop.component';
 import { FileCardComponent } from '../../../layout/file-card/file-card.component';

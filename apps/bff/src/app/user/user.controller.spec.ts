@@ -10,7 +10,7 @@ import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues, UserMessagePatterns } from '@h2-trust/messaging';
-import { UserDetailsDto } from '@h2-trust/api';
+import { UserDetailsDto } from '@h2-trust/contracts';
 import { UserEntityFixture } from '@h2-trust/fixtures';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';

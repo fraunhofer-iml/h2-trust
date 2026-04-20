@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenProductionOverviewDto } from '@h2-trust/api';
+import { HydrogenProductionOverviewDto } from '@h2-trust/contracts';
 import { HydrogenProductionTechnology } from '@h2-trust/domain';
 
 export const HydrogenProductionUnitOverviewDtoMock = <HydrogenProductionOverviewDto[]>[

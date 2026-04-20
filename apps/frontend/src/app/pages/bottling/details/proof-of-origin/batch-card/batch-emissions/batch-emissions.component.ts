@@ -7,7 +7,7 @@
  */
 
 import { Component, input } from '@angular/core';
-import { EmissionDto } from '@h2-trust/api';
+import { EmissionDto } from '@h2-trust/contracts';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { UnitPipe } from '../../../../../../shared/pipes/unit.pipe';
 

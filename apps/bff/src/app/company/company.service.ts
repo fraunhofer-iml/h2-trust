@@ -10,7 +10,7 @@ import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { BrokerQueues, CompanyMessagePatterns } from '@h2-trust/messaging';
-import { CompanyDto } from '@h2-trust/api';
+import { CompanyDto } from '@h2-trust/contracts';
 
 @Injectable()
 export class CompanyService {

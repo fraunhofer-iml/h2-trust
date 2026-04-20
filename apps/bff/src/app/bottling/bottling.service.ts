@@ -14,7 +14,7 @@ import {
   DigitalProductPassportPatterns,
   ProcessStepMessagePatterns,
 } from '@h2-trust/messaging';
-import { BottlingDto, BottlingOverviewDto, DigitalProductPassportDto } from '@h2-trust/api';
+import { BottlingDto, BottlingOverviewDto, DigitalProductPassportDto } from '@h2-trust/contracts';
 import { ProcessType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 import { ProcessStepEntity, DigitalProductPassportEntity, CreateHydrogenBottlingPayload, CreateHydrogenTransportationPayload, ReadByIdPayload, ReadProcessStepsByTypesAndActiveAndOwnerPayload } from '@h2-trust/contracts';

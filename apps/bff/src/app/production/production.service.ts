@@ -26,7 +26,7 @@ import {
   ProductionOverviewDto,
   ProductionStatisticsDto,
   UserDetailsDto,
-} from '@h2-trust/api';
+} from '@h2-trust/contracts';
 import { HashUtil } from '@h2-trust/blockchain';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 import { CentralizedStorageService } from '@h2-trust/storage';

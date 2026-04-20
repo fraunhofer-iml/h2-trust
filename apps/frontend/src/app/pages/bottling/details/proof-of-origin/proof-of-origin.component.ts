@@ -8,7 +8,7 @@
 
 import { CommonModule } from '@angular/common';
 import { Component, computed, input, signal } from '@angular/core';
-import { BatchDto, ClassificationDto, HydrogenBatchDto, PowerBatchDto, SectionDto, WaterBatchDto } from '@h2-trust/api';
+import { BatchDto, ClassificationDto, HydrogenBatchDto, PowerBatchDto, SectionDto, WaterBatchDto } from '@h2-trust/contracts';
 import { BatchType } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
 import { H2BatchCardComponent } from './batch-card/h2-batch-card/h2-batch-card.component';

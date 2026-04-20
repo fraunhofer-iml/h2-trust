@@ -23,7 +23,7 @@ import {
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   UserDetailsDtoMock,
-} from '@h2-trust/api';
+} from '@h2-trust/contracts';
 import {
   CsvDocumentIntegrityStatus,
   EnergySource,

@@ -12,7 +12,7 @@ import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import { HydrogenProductionUnitDto, HydrogenProductionUnitInputDto } from '@h2-trust/api';
+import { HydrogenProductionUnitDto, HydrogenProductionUnitInputDto } from '@h2-trust/contracts';
 import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology } from '@h2-trust/domain';
 import { UnitTypeChipComponent } from '../../../layout/unit-type-chip/unit-type-chip.component';
 import { QUERY_KEYS } from '../../../shared/queries/shared-query-keys';

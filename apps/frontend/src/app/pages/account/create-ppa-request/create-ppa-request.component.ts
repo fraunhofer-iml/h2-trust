@@ -17,7 +17,7 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import { PpaRequestCreateDto } from '@h2-trust/api';
+import { PpaRequestCreateDto } from '@h2-trust/contracts';
 import { PowerProductionType, PpaRequestRole } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
 import { QUERY_KEYS } from '../../../shared/queries/shared-query-keys';

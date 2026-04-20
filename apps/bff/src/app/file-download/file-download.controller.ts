@@ -8,7 +8,7 @@
 
 import type { Response } from 'express';
 import { Body, Controller, Post, Res } from '@nestjs/common';
-import { DownloadFilesDto } from '@h2-trust/api';
+import { DownloadFilesDto } from '@h2-trust/contracts';
 import { FileDownloadService } from './file-download.service';
 
 @Controller('file-download')

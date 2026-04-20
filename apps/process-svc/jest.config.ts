@@ -9,6 +9,7 @@
 export default {
   displayName: 'process-svc',
   preset: '../../jest.preset.js',
+  setupFiles: ['../../test/jest.setup.ts'], // TODO-MP: remove after new paths are in place
   testEnvironment: 'node',
   coverageReporters: [['lcov', { projectRoot: process.cwd() }], 'text', 'text-summary'],
   transform: {

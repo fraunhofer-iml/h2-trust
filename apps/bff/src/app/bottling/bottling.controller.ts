@@ -23,7 +23,7 @@ import {
   BottlingOverviewDto,
   DigitalProductPassportDto,
   type AuthenticatedKCUser,
-} from '@h2-trust/api';
+} from '@h2-trust/contracts';
 import 'multer';
 import { AuthenticatedUser, Public } from 'nest-keycloak-connect';
 import { BottlingService } from './bottling.service';

@@ -12,7 +12,7 @@ import { RFNBO_CRITERIA } from 'apps/frontend/src/app/shared/constants/rfnbo-cri
 import { RfnboStatus } from 'apps/frontend/src/app/shared/constants/rfnbo-status';
 import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
-import { GridEnergyRfnboDto, RenewableEnergyRfnboDto, RfnboBaseDto } from '@h2-trust/api';
+import { GridEnergyRfnboDto, RenewableEnergyRfnboDto, RfnboBaseDto } from '@h2-trust/contracts';
 import { RfnboCheckCardComponent } from './rfnbo-check-card/rfnbo-check-card.component';
 
 @Component({

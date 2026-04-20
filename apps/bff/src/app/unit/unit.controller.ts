@@ -21,7 +21,7 @@ import {
   PowerProductionUnitInputDto,
   UnitUpdateActiveDto,
   type AuthenticatedKCUser,
-} from '@h2-trust/api';
+} from '@h2-trust/contracts';
 import { UnitService } from './unit.service';
 
 @Controller('units')

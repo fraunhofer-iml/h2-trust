@@ -10,7 +10,7 @@ import { ICONS } from 'apps/frontend/src/app/shared/constants/icons';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { EmissionCalculationDto } from '@h2-trust/api';
+import { EmissionCalculationDto } from '@h2-trust/contracts';
 import { CalculationTopic, MeasurementUnit } from '@h2-trust/domain';
 import { BaseSheetComponent } from '../../../../../layout/sheet/sheet.component';
 import { PrettyEnumPipe } from '../../../../../shared/pipes/format-enum.pipe';

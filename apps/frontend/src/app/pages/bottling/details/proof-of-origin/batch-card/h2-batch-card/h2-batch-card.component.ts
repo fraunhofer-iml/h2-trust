@@ -9,7 +9,7 @@
 import { ProofOfOriginCardComponent } from 'apps/frontend/src/app/layout/proof-of-origin-card/proof-of-origin-card.component';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
-import { HydrogenBatchDto } from '@h2-trust/api';
+import { HydrogenBatchDto } from '@h2-trust/contracts';
 import { MeasurementUnit, RfnboType } from '@h2-trust/domain';
 import { RfnboChipComponent } from '../../../../../../layout/chips/rfnbo-chip.component';
 import { BaseSheetComponent } from '../../../../../../layout/sheet/sheet.component';

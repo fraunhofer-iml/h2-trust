@@ -8,7 +8,7 @@
 
 import { Component, input } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
-import { PpaRequestDto } from '@h2-trust/api';
+import { PpaRequestDto } from '@h2-trust/contracts';
 import { PpaRequestRole } from '@h2-trust/domain';
 import { EmptyRequestsComponent } from '../empty-requests-list/empty-requests.component';
 import { PpaRequestCardComponent } from '../ppa-request-card/ppa-request-card.component';

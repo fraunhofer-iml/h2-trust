@@ -15,7 +15,7 @@ import {
   BottlingDtoMock,
   BottlingOverviewDto,
   UserDetailsDtoMock,
-} from '@h2-trust/api';
+} from '@h2-trust/contracts';
 import { ProcessStepEntityFixture } from '@h2-trust/fixtures';
 import 'multer';
 import { of } from 'rxjs';
