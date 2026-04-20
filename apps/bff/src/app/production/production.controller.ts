@@ -18,7 +18,7 @@ import {
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -41,7 +41,7 @@ import {
   type AuthenticatedKCUser,
   type CsvContentType,
 } from '@h2-trust/api';
-import { BatchType, FileUploadKeys } from '@h2-trust/domain';
+import { BatchType } from '@h2-trust/domain';
 import { ProductionService } from './production.service';
 
 @Controller('productions')
@@ -256,24 +256,15 @@ export class ProductionController {
   }
 
   @Post('csv/import')
-  @UseInterceptors(
-    FileFieldsInterceptor([{ name: FileUploadKeys.POWER_PRODUCTION }, { name: FileUploadKeys.HYDROGEN_PRODUCTION }]),
-  )
+  @UseInterceptors(FilesInterceptor('files'))
   importCsvFile(
     @Body() dto: ProductionCSVUploadDto,
     @UploadedFiles()
-    files: {
-      [FileUploadKeys.POWER_PRODUCTION]: Express.Multer.File[];
-      [FileUploadKeys.HYDROGEN_PRODUCTION]: Express.Multer.File[];
-    },
+    files: Express.Multer.File[] | Express.Multer.File,
     @AuthenticatedUser() user: AuthenticatedKCUser,
   ) {
-    return this.service.importCsvFiles(
-      files[FileUploadKeys.POWER_PRODUCTION],
-      files[FileUploadKeys.HYDROGEN_PRODUCTION],
-      dto,
-      user.sub,
-    );
+    // TODO-LG: adjust this endpoint (DUHGW-421)
+    return this.service.importCsvFiles(files, files, dto, user.sub);
   }
 
   @Post('staging/submit')

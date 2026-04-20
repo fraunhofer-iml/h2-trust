@@ -1,123 +1,82 @@
-<div class="grid w-full grid-cols-2 gap-4" [formGroup]="form">
-  @if (mutation.isPending()) {
-    <!--LOADING-->
-    <div class="col-span-2 flex flex-col items-center gap-4 rounded-lg bg-white p-8">
-      <mat-spinner></mat-spinner>
-      <span class="text-neutral-500">Processing files...</span>
-    </div>
-  } @else if (mutation.isError()) {
-    <!--ERROR-->
-    <div class="col-span-2 flex flex-col items-center gap-2 rounded-lg bg-white p-8">
-      <span class="material-symbols-outlined text-4xl text-primary-200">error</span>
-      <span class="text-neutral-500">Failed to import files.</span>
-      <button mat-button (click)="cancel()">try again</button>
-    </div>
-  } @else if (mutation.isSuccess()) {
-    <!--RESULT-->
-    <div class="col-span-2 grid grid-cols-3 gap-4 rounded-lg bg-white p-4">
-      <div class="col-span-3 flex flex-col">
-        <h2>Import Result</h2>
-        <span class="text-sm text-neutral-500">
-          {{ mutation.data().id }}
-        </span>
-      </div>
+<div class="flex w-full flex-col gap-4" [formGroup]="form">
+  <!--FILE INPUT-->
 
-      <div class="flex flex-row items-center gap-4 rounded-xl bg-primary-400/20 p-4 text-sm text-neutral-500">
-        <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
-          <span class="material-symbols-outlined text-4xl text-primary-400">humidity_low</span>
-        </div>
-        <span>
-          Hydrogen Produced <br />
-          <span class="text-2xl text-primary-600">{{ mutation.data().hydrogenProduced | number }} </span>
-          <span class="text-primary-600">{{ MeasurementUnit.KG }}</span></span
+  @if (roles.isHydrogenProducer() && roles.isPowerProducer()) {
+    <div class="grid grid-cols-2 gap-2 rounded-lg bg-white p-4">
+      <span class="col-span-2">Type Selection</span>
+
+      @for (unitType of availableUnitTypes; track $index) {
+        <div
+          class="group flex cursor-pointer flex-col gap-2 rounded-md border-2 p-4 hover:border-primary-200 hover:shadow-lg"
+          [ngClass]="
+            type() === unitType ? 'border-primary-200 text-primary-100' : 'border-neutral-300 text-neutral-500'
+          "
+          (click)="selectedTypeControl.setValue(unitType)"
+          role="none"
         >
-      </div>
-
-      <div class="flex flex-row items-center gap-4 rounded-xl bg-primary-400/20 p-4 text-sm text-neutral-500">
-        <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
-          <span class="material-symbols-outlined text-4xl text-primary-400">electric_bolt</span>
+          <div
+            class="flex size-10 items-center justify-center rounded-full border group-hover:border-primary-200 group-hover:bg-primary-100"
+            [ngClass]="type() === unitType ? 'border-primary-200 bg-primary-100' : 'border-neutral-200 bg-neutral-100'"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary-600"
+              [ngClass]="type() === unitType ? 'text-primary-600' : 'text-neutral-400'"
+            >
+              {{ unitType === BatchType.HYDROGEN ? ICONS.HYDROGEN_PRODUCTION : ICONS.POWER_PRODUCTION }}
+            </span>
+          </div>
+          <span class="text-base text-neutral-700">{{ unitType | prettyEnum | titlecase }} production data</span>
         </div>
-        <span>
-          Power Used <br />
-          <span class="text-2xl text-primary-600">{{ mutation.data().powerUsed | number }} </span>
-          <span class="text-primary-600">{{ MeasurementUnit.KWH }}</span></span
-        >
-      </div>
-
-      <div class="flex flex-row items-center gap-4 rounded-xl bg-primary-400/20 p-4 text-sm text-neutral-500">
-        <div class="flex items-center justify-center rounded-full bg-white p-2 text-center">
-          <span class="material-symbols-outlined text-4xl text-primary-400">functions</span>
-        </div>
-        <span>
-          Number of Batches <br />
-          <span class="text-2xl text-primary-600">{{ mutation.data().numberOfBatches | number }} </span>
-        </span>
-      </div>
+      }
     </div>
+  }
 
-    <div class="col-span-2 flex flex-col gap-2 rounded-lg bg-white p-4">
-      <span>To save the imported data, please select a hydrogen storage unit.</span>
+  <div class="flex flex-col gap-4 rounded-lg bg-white p-4" formArrayName="files">
+    <span>CSV files</span>
 
-      <mat-form-field appearance="outline" class="min-w-40">
-        <mat-label>Hydrogen Storage Unit</mat-label>
-        <mat-select [formControl]="storageUnit">
-          @for (unit of hydrogenStorageUnits(); track unit) {
-            <mat-option [value]="unit.id"
-              >{{ unit.name }} (Remaining Capacity: {{ unit.capacity - unit.filling | unit: MeasurementUnit.KG }})
-            </mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-    </div>
+    <div
+      class="flex rounded-lg p-4"
+      [ngClass]="!type() ? 'bg-neutral-100 text-neutral-400' : 'bg-primary-100 text-neutral-600'"
+    >
+      <span class="material-symbols-outlined pr-2">lightbulb_2</span>
 
-    <div class="col-span-2 flex justify-end gap-2 rounded-lg bg-white p-4">
-      <button mat-button (click)="cancel()">Cancel</button>
-      <button mat-flat-button (click)="save()" [disabled]="storageUnit.invalid">Save</button>
-    </div>
-  } @else {
-    <!--FILE INPUT-->
-    <div class="col-span-2 rounded-lg bg-primary-300/30 p-4 text-neutral-600">
-      <span class="flex items-center gap-1 font-semibold">
-        <span class="material-symbols-outlined">lightbulb_2</span>Hint</span
-      >
-      <p>
+      <span>
         Upload comma-delimited CSV files with a header row. Required columns: <strong>time</strong>,
         <strong>amount</strong> for power data and <strong>time</strong>, <strong>amount</strong>,
         <strong>power</strong> for hydrogen data.
-      </p>
-      <p class="pt-2">
-        Prefer to input data? <button mat-stroked-button class="ml-2" (click)="switchToForm.emit()">Input Data</button>
-      </p>
+      </span>
     </div>
-    <div class="flex flex-col gap-4 rounded-lg bg-white p-4" formArrayName="hydrogenProductionFiles">
-      <span>Hydrogen Production</span>
-      <app-file-drag-and-drop
-        [acceptedFileTypes]="FileTypes.CSV"
-        (fileSelected)="addHydrogenProductionFileWithUnit($event, hydrogenProductionFiles)"
-      ></app-file-drag-and-drop>
-      @if (hydrogenProductionFiles.controls.length !== 0) {
-        @for (file of hydrogenProductionFiles.controls; track file; let i = $index) {
+
+    <app-file-drag-and-drop
+      [acceptedFileTypes]="FileTypes.CSV"
+      (fileSelected)="addFileFormWithUnit($event, files)"
+      [disabled]="!type()"
+    ></app-file-drag-and-drop>
+
+    @if (type(); as type) {
+      @if (files.controls.length !== 0) {
+        @for (file of files.controls; track file; let i = $index) {
           <div [formGroupName]="i" class="rounded-md bg-neutral-100 p-4">
             <div class="flex flex-row justify-between pb-4">
               <div class="flex flex-col">
                 <span class="text-base text-neutral-600">
-                  {{ hydrogenProductionFiles.controls[i].controls.file.value?.name }}
+                  {{ files.controls[i].controls.file.value?.name }}
                 </span>
                 <span class="text-sm text-neutral-500">
-                  ({{ hydrogenProductionFiles.controls[i].controls.file.value?.size ?? 0 | fileSize }})</span
+                  ({{ files.controls[i].controls.file.value?.size ?? 0 | fileSize }})</span
                 >
               </div>
               <span
                 class="material-symbols-outlined text-neutral-500 hover:cursor-pointer"
                 role="none"
-                (click)="removeFile(i, hydrogenProductionFiles)"
+                (click)="removeFile(i, files)"
                 >close</span
               >
             </div>
             <mat-form-field class="w-full" appearance="outline">
-              <mat-label>Hydrogen Production Unit</mat-label>
+              <mat-label>Unit</mat-label>
               <mat-select formControlName="unitId">
-                @for (unit of hydrogenProductionUnits(); track unit) {
+                @for (unit of queries[type].data(); track unit) {
                   <mat-option [value]="unit.id" [disabled]="!unit.active">{{ unit.name }} </mat-option>
                 }
               </mat-select></mat-form-field
@@ -127,51 +86,10 @@
       } @else {
         <span class="text-sm text-neutral-500">No file selected.</span>
       }
-    </div>
+    }
+  </div>
 
-    <div class="flex flex-col gap-4 rounded-lg bg-white p-4" formArrayName="powerProductionFiles">
-      <span>Power Production</span>
-      <app-file-drag-and-drop
-        [acceptedFileTypes]="FileTypes.CSV"
-        (fileSelected)="addFileFormWithUnit($event, powerProductionFiles)"
-      ></app-file-drag-and-drop>
-      @if (powerProductionFiles.controls.length !== 0) {
-        @for (file of powerProductionFiles.controls; track $index; let j = $index) {
-          <div [formGroupName]="j" class="rounded-md bg-neutral-100 p-4">
-            <div class="flex flex-row justify-between pb-4">
-              <div class="flex flex-col">
-                <span class="text-base text-neutral-600">
-                  {{ powerProductionFiles.controls[j].controls.file.value?.name }}
-                </span>
-                <span class="text-sm text-neutral-500">
-                  ({{ powerProductionFiles.controls[j].controls.file.value?.size ?? 0 | fileSize }})</span
-                >
-              </div>
-              <span
-                class="material-symbols-outlined text-neutral-500 hover:cursor-pointer"
-                role="none"
-                (click)="removeFile(j, powerProductionFiles)"
-                >close</span
-              >
-            </div>
-            <mat-form-field class="w-full" appearance="outline">
-              <mat-label>Power Production Unit</mat-label>
-              <mat-select formControlName="unitId">
-                @for (unit of powerAccessApprovals(); track unit) {
-                  <mat-option [value]="unit.value.id" [disabled]="!unit.value.active"
-                    >{{ unit.value.name }}
-                  </mat-option>
-                }
-              </mat-select></mat-form-field
-            >
-          </div>
-        }
-      } @else {
-        <span class="text-sm text-neutral-500">No files selected.</span>
-      }
-    </div>
-    <div class="col-span-2 flex justify-end gap-4 rounded-lg bg-white p-4">
-      <button mat-flat-button (click)="submit()" [disabled]="form.invalid">Submit</button>
-    </div>
-  }
+  <div class="col-span-2 flex justify-end gap-4 rounded-lg bg-white p-4">
+    <button mat-flat-button (click)="submit()" [disabled]="form.invalid">Submit</button>
+  </div>
 </div>
