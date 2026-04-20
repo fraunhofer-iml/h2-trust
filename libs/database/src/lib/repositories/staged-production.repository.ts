@@ -8,7 +8,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { DistributedProductionEntity, StagedProductionEntity } from '@h2-trust/amqp';
+import { StagedProductionEntity } from '@h2-trust/amqp';
 import { PrismaService } from '../prisma.service';
 import { stagedProductionDeepQueryArgs } from '../query-args';
 import { StagedProductionDeepDbType } from '../types';
@@ -19,24 +19,22 @@ export class StagedProductionRepository {
 
   constructor(private readonly prismaService: PrismaService) {}
 
-  async stageDistributedProductions(
-    distributedProductions: DistributedProductionEntity[],
+  async saveStageProduction(
+    stageProduction: StagedProductionEntity[],
     csvImportId: string,
     tx?: Prisma.TransactionClient,
   ): Promise<void> {
     const client = tx ?? this.prismaService;
 
     await client.stagedProduction.createMany({
-      data: distributedProductions.map(
-        ({ startedAt, hydrogenAmount, hydrogenProductionUnitId, powerAmount, powerProductionUnitId }) => ({
-          startedAt,
-          hydrogenAmount,
-          hydrogenProductionUnitId,
-          csvImportId,
-          powerAmount,
-          powerProductionUnitId,
-        }),
-      ),
+      data: stageProduction.map(({ startedAt, amount, unitId, usedPower, type }) => ({
+        startedAt,
+        amount,
+        unitId,
+        csvImportId,
+        usedPower,
+        type,
+      })),
     });
   }
 

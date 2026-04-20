@@ -8,20 +8,25 @@
 
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
-  AccountingPeriodHydrogen,
-  AccountingPeriodPower,
   BrokerException,
   CsvDocumentEntity,
   ProductionStagingResultEntity,
+  StagedProductionEntity,
   StageProductionsPayload,
+  UnitAccountingPeriods,
 } from '@h2-trust/amqp';
 import { BlockchainService, ProofEntry } from '@h2-trust/blockchain';
 import { FeatureFlagService } from '@h2-trust/configuration';
-import { CsvImportRepository, PrismaService, StagedProductionRepository } from '@h2-trust/database';
+import {
+  CreateCsvDocumentInput,
+  CsvImportRepository,
+  PrismaService,
+  StagedProductionRepository,
+} from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
 import { CsvImportProcessingService } from './csv-import-processing.service';
 import { ProductionDistributor } from './production-distributor';
-import { DocumentProof } from './production.types';
+import { DocumentProof, ParsedImport } from './production.types';
 
 @Injectable()
 export class ProductionStagingService {
@@ -37,39 +42,44 @@ export class ProductionStagingService {
   ) {}
 
   async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
-    const [parsedPowerImports, parsedHydrogenImports] = await Promise.all([
-      this.csvImportProcessingService.parseAndUploadFiles<AccountingPeriodPower>(
-        payload.powerProductionImports,
-        BatchType.POWER,
-      ),
-      this.csvImportProcessingService.parseAndUploadFiles<AccountingPeriodHydrogen>(
-        payload.hydrogenProductionImports,
-        BatchType.HYDROGEN,
-      ),
-    ]);
-
-    const distributedProductions = ProductionDistributor.distributeProductions(
-      parsedPowerImports.map((parsedImport) => parsedImport.periods),
-      parsedHydrogenImports.map((parsedImport) => parsedImport.periods),
-      payload.gridPowerProductionUnitId,
+    const parsedProductionImports: ParsedImport[] = await this.csvImportProcessingService.parseAndUploadFiles(
+      payload.stageProductions,
     );
 
-    const parsedImports = [...parsedPowerImports, ...parsedHydrogenImports];
+    const parsedPowerProductions: UnitAccountingPeriods[] = parsedProductionImports
+      .filter((prod) => prod.type == BatchType.POWER)
+      .map((prod) => prod.periods);
+    const parsedHydrogenProductions: UnitAccountingPeriods[] = parsedProductionImports
+      .filter((prod) => prod.type == BatchType.HYDROGEN)
+      .map((prod) => prod.periods);
+
+    const spPowerProductions: StagedProductionEntity[] = ProductionDistributor.normalizeProduction(
+      parsedPowerProductions,
+      BatchType.POWER,
+    );
+
+    const spHydrogenProductions: StagedProductionEntity[] = ProductionDistributor.normalizeProduction(
+      parsedHydrogenProductions,
+      BatchType.HYDROGEN,
+    );
+
+    const createdStageProductions: StagedProductionEntity[] = [...spPowerProductions, ...spHydrogenProductions];
 
     const { csvImportId, csvDocuments } = await this.prismaService.$transaction(async (tx) => {
       const csvImportId = await this.csvImportRepository.saveCsvImport(payload.userId, tx);
 
-      const csvDocumentInputs = this.csvImportProcessingService.createCsvDocumentInputs(parsedImports);
+      const csvDocumentInputs: CreateCsvDocumentInput[] =
+        this.csvImportProcessingService.createCsvDocumentInputs(parsedProductionImports);
       const csvDocuments = await this.csvImportRepository.saveCsvDocuments(csvImportId, csvDocumentInputs, tx);
 
-      await this.stagedProductionRepository.stageDistributedProductions(distributedProductions, csvImportId, tx);
+      await this.stagedProductionRepository.saveStageProduction(createdStageProductions, csvImportId, tx);
 
       return { csvImportId, csvDocuments };
     });
 
-    await this.storeProofsOnBlockchain(parsedImports, csvDocuments);
+    await this.storeProofsOnBlockchain(parsedProductionImports, csvDocuments);
 
-    return new ProductionStagingResultEntity(csvImportId, distributedProductions);
+    return new ProductionStagingResultEntity(csvImportId, createdStageProductions);
   }
 
   private async storeProofsOnBlockchain(

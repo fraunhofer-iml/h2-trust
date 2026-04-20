@@ -7,7 +7,7 @@
  */
 
 import { firstValueFrom } from 'rxjs';
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BatchEntity,
@@ -16,7 +16,6 @@ import {
   CreateHydrogenProductionStatisticsPayload,
   CreateProductionEntity,
   CreateProductionsPayload,
-  FinalizeProductionsPayload,
   HydrogenProductionUnitEntity,
   HydrogenStatisticsEntity,
   PowerProductionUnitEntity,
@@ -25,11 +24,8 @@ import {
   ProductionStatisticsEntity,
   ReadByIdPayload,
   ReadByIdsPayload,
-  StagedProductionEntity,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
-import { ConfigurationService } from '@h2-trust/configuration';
-import { StagedProductionRepository } from '@h2-trust/database';
 import { BatchType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { ProductionCreationService } from './production-creation.service';
@@ -37,19 +33,19 @@ import { ProductionUtils } from './utils/production.utils';
 
 @Injectable()
 export class ProductionService {
-  private readonly logger = new Logger(this.constructor.name);
-  private readonly productionChunkSize: number;
+  //private readonly logger = new Logger(this.constructor.name);
+  //private readonly productionChunkSize: number;
 
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
-    private readonly configurationService: ConfigurationService,
+    //private readonly configurationService: ConfigurationService,
     private readonly productionCreationService: ProductionCreationService,
-    private readonly stagedProductionRepository: StagedProductionRepository,
+    //private readonly stagedProductionRepository: StagedProductionRepository,
     private readonly processStepService: ProcessStepService,
   ) {
-    this.productionChunkSize = this.configurationService.getProcessSvcConfiguration().productionChunkSize;
+    //this.productionChunkSize = this.configurationService.getProcessSvcConfiguration().productionChunkSize;
   }
-
+  /*
   async finalizeProductions(payload: FinalizeProductionsPayload): Promise<ProcessStepEntity[]> {
     const stagedProductions: StagedProductionEntity[] =
       await this.stagedProductionRepository.getStagedProductionsByCsvImportId(payload.importId);
@@ -97,7 +93,7 @@ export class ProductionService {
     );
     const productionUnitForId: Map<string, ConcreteUnitEntity> = await this.getProductionUnits(createProductions);
     return this.productionCreationService.createAndPersistProductions(createProductions, productionUnitForId);
-  }
+  }*/
 
   private async getProductionUnits(
     createProductions: CreateProductionEntity[],
