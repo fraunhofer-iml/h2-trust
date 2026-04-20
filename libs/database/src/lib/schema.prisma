@@ -325,7 +325,6 @@ model StagedProduction {
   id             String   @id @default(uuid(7))
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-  
   powerAmount    Decimal  @db.Decimal(18, 6)
   hydrogenAmount Decimal  @db.Decimal(18, 6)
   startedAt      DateTime
