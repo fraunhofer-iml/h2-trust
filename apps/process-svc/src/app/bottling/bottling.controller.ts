@@ -9,13 +9,10 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
-  CreateHydrogenBottlingPayload,
-  ProcessStepMessagePatterns,
-  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
-  ReadProcessStepsByTypesAndActiveAndOwnerPayload,
+  ProcessStepMessagePatterns
 } from '@h2-trust/amqp';
 import { BottlingService } from './bottling.service';
-import { ProcessStepEntity, PaginatedProcessStepEntity } from '@h2-trust/contracts';
+import { ProcessStepEntity, PaginatedProcessStepEntity, CreateHydrogenBottlingPayload, ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload, ReadProcessStepsByTypesAndActiveAndOwnerPayload } from '@h2-trust/contracts';
 
 @Controller()
 export class BottlingController {

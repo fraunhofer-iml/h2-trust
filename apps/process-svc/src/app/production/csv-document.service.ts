@@ -7,7 +7,7 @@
  */
 
 import { Injectable, Logger } from '@nestjs/common';
-import { ReadByIdPayload } from '@h2-trust/amqp';
+import { ReadByIdPayload } from '@h2-trust/contracts';
 import { BlockchainService, HashUtil } from '@h2-trust/blockchain';
 import { FeatureFlagService } from '@h2-trust/configuration';
 import { CsvImportRepository } from '@h2-trust/database';

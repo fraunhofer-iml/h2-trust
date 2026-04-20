@@ -10,11 +10,9 @@ import { PowerAccessApprovalRepository, UserRepository } from 'libs/database/src
 import { HttpStatus, Injectable } from '@nestjs/common';
 import {
   BrokerException,
-  ReadByIdPayload,
-  ReadPowerAccessApprovalsPayload,
 } from '@h2-trust/amqp';
 import { PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
-import { PowerAccessApprovalEntity, UserEntity, PowerProductionUnitEntity } from '@h2-trust/contracts';
+import { PowerAccessApprovalEntity, UserEntity, PowerProductionUnitEntity, ReadPowerAccessApprovalsPayload, ReadByIdPayload } from '@h2-trust/contracts';
 
 @Injectable()
 export class PowerAccessApprovalService {

@@ -11,17 +11,13 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
-  CreateHydrogenBottlingPayload,
-  CreateHydrogenTransportationPayload,
   DigitalProductPassportPatterns,
   ProcessStepMessagePatterns,
-  ReadByIdPayload,
-  ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
 import { BottlingDto, BottlingOverviewDto, DigitalProductPassportDto } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
-import { ProcessStepEntity, DigitalProductPassportEntity } from '@h2-trust/contracts';
+import { ProcessStepEntity, DigitalProductPassportEntity, CreateHydrogenBottlingPayload, CreateHydrogenTransportationPayload, ReadByIdPayload, ReadProcessStepsByTypesAndActiveAndOwnerPayload } from '@h2-trust/contracts';
 
 @Injectable()
 export class BottlingService {

@@ -8,7 +8,7 @@
 
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues, CreateHydrogenBottlingPayload } from '@h2-trust/amqp';
+import { BrokerQueues } from '@h2-trust/amqp';
 import { DocumentRepository } from '@h2-trust/database';
 import { HydrogenColor, RfnboType } from '@h2-trust/domain';
 import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures';
@@ -16,7 +16,7 @@ import { CentralizedStorageService, ContentType } from '@h2-trust/storage';
 import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { BottlingService } from './bottling.service';
-import { DocumentEntity } from '@h2-trust/contracts';
+import { CreateHydrogenBottlingPayload, DocumentEntity } from '@h2-trust/contracts';
 
 describe('BottlingService', () => {
   let service: BottlingService;

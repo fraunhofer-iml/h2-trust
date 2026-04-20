@@ -8,16 +8,10 @@
 
 import { Injectable } from '@nestjs/common';
 import {
-  ConcreteUnitEntity,
-  CreateHydrogenProductionUnitPayload,
-  CreateHydrogenStorageUnitPayload,
-  CreatePowerProductionUnitPayload,
-  ReadByIdPayload,
-  ReadByIdsPayload,
-  UpdateUnitStatusPayload,
+  ConcreteUnitEntity
 } from '@h2-trust/amqp';
 import { PowerProductionTypeRepository, UnitRepository } from '@h2-trust/database';
-import { BaseUnitEntity, HydrogenProductionUnitEntity, HydrogenStorageUnitEntity, PowerProductionTypeEntity, PowerProductionUnitEntity } from '@h2-trust/contracts';
+import { BaseUnitEntity, CreateHydrogenProductionUnitPayload, CreateHydrogenStorageUnitPayload, CreatePowerProductionUnitPayload, HydrogenProductionUnitEntity, HydrogenStorageUnitEntity, PowerProductionTypeEntity, PowerProductionUnitEntity, ReadByIdPayload, ReadByIdsPayload, UpdateUnitStatusPayload } from '@h2-trust/contracts';
 
 @Injectable()
 export class UnitService {

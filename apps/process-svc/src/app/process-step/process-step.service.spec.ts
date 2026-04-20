@@ -11,7 +11,7 @@ import {
   CreateManyProcessStepsPayload,
   ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
-} from '@h2-trust/amqp';
+} from '@h2-trust/contracts';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
 import { ProcessType } from '@h2-trust/domain';

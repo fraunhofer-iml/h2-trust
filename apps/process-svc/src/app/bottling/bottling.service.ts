@@ -9,10 +9,7 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
   BrokerException,
-  CreateHydrogenBottlingPayload,
   HydrogenCompositionUtil,
-  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
-  ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
 import { DocumentRepository } from '@h2-trust/database';
 import { HydrogenColor, RfnboType } from '@h2-trust/domain';
@@ -20,7 +17,7 @@ import { CentralizedStorageService, ContentType } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { BottlingProcessStepAssembler } from './utils/bottling-process-step.assembler';
 import { BottlingAllocation, BottlingAllocator } from './utils/bottling.allocator';
-import { ProcessStepEntity, PaginatedProcessStepEntity, HydrogenComponentEntity, BatchEntity, DocumentEntity } from '@h2-trust/contracts';
+import { ProcessStepEntity, PaginatedProcessStepEntity, HydrogenComponentEntity, BatchEntity, DocumentEntity, CreateHydrogenBottlingPayload, ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload, ReadProcessStepsByTypesAndActiveAndOwnerPayload } from '@h2-trust/contracts';
 
 @Injectable()
 export class BottlingService {

@@ -10,12 +10,7 @@ import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
-  AddressPayload,
   BrokerQueues,
-  CreateHydrogenProductionUnitPayload,
-  CreateHydrogenStorageUnitPayload,
-  CreatePowerProductionUnitPayload,
-  ReadByIdPayload,
 } from '@h2-trust/amqp';
 import {
   BaseUnitDeepDbTypeMock,
@@ -35,7 +30,7 @@ import {
 } from '@h2-trust/fixtures';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
-import { PowerProductionUnitEntity, HydrogenProductionUnitEntity, HydrogenStorageUnitEntity } from '@h2-trust/contracts';
+import { PowerProductionUnitEntity, HydrogenProductionUnitEntity, HydrogenStorageUnitEntity, AddressPayload, CreateHydrogenProductionUnitPayload, CreateHydrogenStorageUnitPayload, CreatePowerProductionUnitPayload, ReadByIdPayload } from '@h2-trust/contracts';
 
 describe('UnitController', () => {
   let controller: UnitController;

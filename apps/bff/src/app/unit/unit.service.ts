@@ -9,7 +9,7 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BrokerQueues, ReadByIdPayload, UnitMessagePatterns } from '@h2-trust/amqp';
+import { BrokerQueues, UnitMessagePatterns } from '@h2-trust/amqp';
 import {
   HydrogenProductionOverviewDto,
   HydrogenProductionUnitDto,
@@ -23,7 +23,7 @@ import {
   UnitUpdateActiveDto,
 } from '@h2-trust/api';
 import { UserService } from '../user/user.service';
-import { HydrogenStorageUnitEntity } from '@h2-trust/contracts';
+import { HydrogenStorageUnitEntity, ReadByIdPayload } from '@h2-trust/contracts';
 
 @Injectable()
 export class UnitService {

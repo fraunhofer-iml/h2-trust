@@ -11,4 +11,3 @@ export * from './lib/types';
 export * from './lib/amqp.module';
 export * from './lib/rpc-exception.filter';
 export * from './lib/util';
-export * from './lib/payloads';

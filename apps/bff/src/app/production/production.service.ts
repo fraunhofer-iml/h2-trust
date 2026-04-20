@@ -11,16 +11,9 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
-  CreateHydrogenProductionStatisticsPayload,
-  CreateProductionsPayload,
-  FinalizeProductionsPayload,
   PowerAccessApprovalPatterns,
   ProcessStepMessagePatterns,
-  ProductionDataFilter,
   ProductionMessagePatterns,
-  ReadByIdPayload,
-  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
-  StageProductionsPayload,
 } from '@h2-trust/amqp';
 import {
   AccountingPeriodMatchingResultDto,
@@ -38,7 +31,7 @@ import { HashUtil } from '@h2-trust/blockchain';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
-import { CsvDocumentEntity, PaginatedProcessStepEntity, PowerProductionUnitEntity, ProcessStepEntity, ProductionStagingResultEntity, ProductionStatisticsEntity, UnitFileImport, VerifyCsvDocumentIntegrityResultEntity } from '@h2-trust/contracts';
+import { CreateHydrogenProductionStatisticsPayload, CreateProductionsPayload, CsvDocumentEntity, FinalizeProductionsPayload, PaginatedProcessStepEntity, PowerProductionUnitEntity, ProcessStepEntity, ProductionDataFilter, ProductionStagingResultEntity, ProductionStatisticsEntity, ReadByIdPayload, ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload, StageProductionsPayload, UnitFileImport, VerifyCsvDocumentIntegrityResultEntity } from '@h2-trust/contracts';
 
 @Injectable()
 export class ProductionService {
@@ -47,7 +40,7 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly storageService: CentralizedStorageService,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
     const payload = new CreateProductionsPayload(
