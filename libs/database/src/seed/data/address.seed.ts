@@ -7,10 +7,13 @@
  */
 
 import { Address, Prisma } from '@prisma/client';
+import { auditTimestamp } from './audit-timestamp.constant';
 
 export const AddressSeed: readonly Address[] = Object.freeze([
   {
     id: 'address-power-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     street: 'Joseph-von-Fraunhofer-Str. 2-4',
     postalCode: '44227 ',
     city: 'Dortmund',
@@ -21,6 +24,8 @@ export const AddressSeed: readonly Address[] = Object.freeze([
   },
   {
     id: 'address-grid-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     street: 'Stromnetzstraße 1',
     postalCode: '11111',
     city: 'Netzstadt',
@@ -31,6 +36,8 @@ export const AddressSeed: readonly Address[] = Object.freeze([
   },
   {
     id: 'address-hydrogen-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     street: 'Am Technologiepark 3',
     postalCode: '44227',
     city: 'Dortmund',
@@ -41,6 +48,8 @@ export const AddressSeed: readonly Address[] = Object.freeze([
   },
   {
     id: 'address-recipient-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     street: 'Empfängerstraße 1',
     postalCode: '09876',
     city: 'Empfängerstadt',
@@ -51,6 +60,8 @@ export const AddressSeed: readonly Address[] = Object.freeze([
   },
   {
     id: 'address-power-unit-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     street: 'Windweg 12',
     postalCode: '12345',
     city: 'Musterstadt',
@@ -61,6 +72,8 @@ export const AddressSeed: readonly Address[] = Object.freeze([
   },
   {
     id: 'address-hydrogen-unit-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     street: 'Innovationspark 21',
     postalCode: '44142',
     city: 'Dortmund',

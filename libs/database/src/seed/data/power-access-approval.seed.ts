@@ -8,6 +8,7 @@
 
 import { PowerAccessApproval } from '@prisma/client';
 import { PowerAccessApprovalStatus } from '@h2-trust/domain';
+import { auditTimestamp } from './audit-timestamp.constant';
 import { CompanySeed } from './company.seed';
 import { DocumentSeed } from './document.seed';
 import { PowerProductionUnitSeed } from './unit';
@@ -15,6 +16,8 @@ import { PowerProductionUnitSeed } from './unit';
 export const PowerAccessApprovalSeed: readonly PowerAccessApproval[] = Object.freeze([
   {
     id: 'power-access-approval-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     decidedAt: new Date('2025-02-01'),
     status: PowerAccessApprovalStatus.APPROVED,
     powerProducerId: CompanySeed[0].id,
@@ -24,6 +27,8 @@ export const PowerAccessApprovalSeed: readonly PowerAccessApproval[] = Object.fr
   },
   {
     id: 'power-access-approval-1',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     decidedAt: new Date('2025-02-01'),
     status: PowerAccessApprovalStatus.APPROVED,
     powerProducerId: CompanySeed[2].id,
@@ -33,6 +38,8 @@ export const PowerAccessApprovalSeed: readonly PowerAccessApproval[] = Object.fr
   },
   {
     id: 'power-access-approval-2',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     decidedAt: new Date('2025-08-14'),
     status: PowerAccessApprovalStatus.APPROVED,
     powerProducerId: CompanySeed[2].id,
@@ -42,6 +49,8 @@ export const PowerAccessApprovalSeed: readonly PowerAccessApproval[] = Object.fr
   },
   {
     id: 'power-access-approval-3',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     decidedAt: new Date('2025-08-14'),
     status: PowerAccessApprovalStatus.APPROVED,
     powerProducerId: CompanySeed[1].id,

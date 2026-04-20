@@ -8,11 +8,14 @@
 
 import { Batch, Prisma } from '@prisma/client';
 import { BatchType } from '@h2-trust/domain';
+import { auditTimestamp } from '../audit-timestamp.constant';
 import { CompanySeed } from '../company.seed';
 
 export const HydrogenBottlingBatchSeed: readonly Batch[] = Object.freeze([
   {
     id: 'batch-hydrogen-bottled-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     type: BatchType.HYDROGEN,
     amount: new Prisma.Decimal(15),
     active: false,
@@ -21,6 +24,8 @@ export const HydrogenBottlingBatchSeed: readonly Batch[] = Object.freeze([
   },
   {
     id: 'batch-hydrogen-bottled-1',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     type: BatchType.HYDROGEN,
     amount: new Prisma.Decimal(10),
     active: false,
@@ -29,6 +34,8 @@ export const HydrogenBottlingBatchSeed: readonly Batch[] = Object.freeze([
   },
   {
     id: 'batch-hydrogen-bottled-2',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     type: BatchType.HYDROGEN,
     amount: new Prisma.Decimal(10),
     active: false,
