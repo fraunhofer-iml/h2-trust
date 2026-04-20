@@ -58,7 +58,7 @@ export class FileSelectionComponent {
       Validators.minLength(1),
     ]),
     powerProductions: new FormControl<StagedProductionDto[] | null>([], [Validators.required, Validators.minLength(1)]),
-    storageUnit: new FormControl<string | null>({ value: null, disabled: true }, Validators.required),
+    storageUnit: new FormControl<string | null>(null, Validators.required),
   });
 
   selectedHydrogenFile = signal<StagedProductionDto | null>(null);
@@ -125,7 +125,6 @@ export class FileSelectionComponent {
     this.form.controls.hydrogenProduction.valueChanges.subscribe((val) => {
       this.selectedHydrogenFile.set(val ? val[0] : null);
       if (val && val.length > 0) {
-        this.form.controls.storageUnit.enable();
         this.form.controls.powerProductions.patchValue([]);
       }
     });
