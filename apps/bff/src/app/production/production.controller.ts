@@ -204,7 +204,8 @@ export class ProductionController {
     files: Express.Multer.File[] | Express.Multer.File,
     @AuthenticatedUser() user: AuthenticatedKCUser,
   ) {
-    return this.service.importCsvFiles(files, dto, user.sub);
+    // TODO-LG: adjust this endpoint (DUHGW-421)
+    return this.service.importCsvFiles(files, files, dto, user.sub);
   }
 
   @Post('csv/submit')

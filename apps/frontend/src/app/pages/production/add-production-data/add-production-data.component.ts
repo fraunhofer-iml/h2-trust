@@ -26,7 +26,6 @@ import { PowerAccessApprovalService } from '../../../shared/services/power-acces
 import { ProductionService } from '../../../shared/services/production/production.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { ProductionCsvUploadComponent } from './csv-upload/production-csv-upload.component';
-import { ProductionFormComponent } from './manual-data-imput/production-form.component';
 
 @Component({
   selector: 'app-add-production-data',
@@ -45,7 +44,6 @@ import { ProductionFormComponent } from './manual-data-imput/production-form.com
     MatIconModule,
     RouterModule,
     ProductionCsvUploadComponent,
-    ProductionFormComponent,
   ],
   templateUrl: './add-production-data.component.html',
 })
