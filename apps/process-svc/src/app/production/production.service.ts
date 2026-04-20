@@ -33,67 +33,11 @@ import { ProductionUtils } from './utils/production.utils';
 
 @Injectable()
 export class ProductionService {
-  //private readonly logger = new Logger(this.constructor.name);
-  //private readonly productionChunkSize: number;
-
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
-    //private readonly configurationService: ConfigurationService,
     private readonly productionCreationService: ProductionCreationService,
-    //private readonly stagedProductionRepository: StagedProductionRepository,
     private readonly processStepService: ProcessStepService,
-  ) {
-    //this.productionChunkSize = this.configurationService.getProcessSvcConfiguration().productionChunkSize;
-  }
-  /*
-  async finalizeProductions(payload: FinalizeProductionsPayload): Promise<ProcessStepEntity[]> {
-    const stagedProductions: StagedProductionEntity[] =
-      await this.stagedProductionRepository.getStagedProductionsByCsvImportId(payload.importId);
-
-    const powerProductionUnits: PowerProductionUnitEntity[] = await firstValueFrom(
-      this.generalSvc.send(
-        UnitMessagePatterns.READ_MANY,
-        new ReadByIdsPayload(
-          Array.from(new Set(stagedProductions.map((stagedProduction) => stagedProduction.powerProductionUnitId))),
-        ),
-      ),
-    );
-
-    const powerProductionUnitById = new Map<string, PowerProductionUnitEntity>(
-      powerProductionUnits.map((powerProductionUnit) => [powerProductionUnit.id, powerProductionUnit]),
-    );
-
-    const createProductions: CreateProductionEntity[] = stagedProductions
-      .map((stagedProduction) => {
-        const powerProductionUnit: PowerProductionUnitEntity = powerProductionUnitById.get(
-          stagedProduction.powerProductionUnitId,
-        );
-
-        const createProductionEntity: CreateProductionEntity = new CreateProductionEntity(
-          stagedProduction.startedAt,
-          new Date(new Date(stagedProduction.startedAt).setMinutes(59, 59, 999)),
-          stagedProduction.powerProductionUnitId,
-          PowerType.RENEWABLE,
-          stagedProduction.powerAmount,
-          stagedProduction.hydrogenProductionUnitId,
-          stagedProduction.hydrogenAmount,
-          payload.recordedBy,
-          stagedProduction.hydrogenColor,
-          payload.hydrogenStorageUnitId,
-          stagedProduction.powerProductionUnitOwnerId,
-          stagedProduction.hydrogenProductionUnitOwnerId,
-          stagedProduction.waterConsumptionLitersPerHour,
-        );
-        return ProductionUtils.splitGridPowerProduction(createProductionEntity, powerProductionUnit.type.energySource);
-      })
-      .flatMap((x) => x);
-
-    this.logger.debug(
-      `Finalizing ${createProductions.length} staged productions in chunks of ${this.productionChunkSize}`,
-    );
-    const productionUnitForId: Map<string, ConcreteUnitEntity> = await this.getProductionUnits(createProductions);
-    return this.productionCreationService.createAndPersistProductions(createProductions, productionUnitForId);
-  }*/
+  ) {}
 
   private async getProductionUnits(
     createProductions: CreateProductionEntity[],
