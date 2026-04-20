@@ -7,17 +7,6 @@
  */
 
 import { FileDragAndDropComponent } from 'apps/frontend/src/app/layout/drag-and-drop/file-drag-and-drop.component';
-import { FileTypes } from 'apps/frontend/src/app/shared/constants/file-types';
-import { ICONS } from 'apps/frontend/src/app/shared/constants/icons';
-import { FileSizePipe } from 'apps/frontend/src/app/shared/pipes/file-size.pipe';
-import {
-  hydrogenProductionUnitsQueryOptions,
-  powerProductionUnitsQueryOptions,
-} from 'apps/frontend/src/app/shared/queries/units.query';
-import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
-import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
-import { UserRolesStore } from 'apps/frontend/src/app/shared/store/user-role.store';
-import { minFormArrayLength } from 'apps/frontend/src/app/shared/util/form-array-lengh.validator';
 import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -25,45 +14,59 @@ import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatChipsModule } from '@angular/material/chips';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
-import { Router } from '@angular/router';
+import { MatTimepickerModule } from '@angular/material/timepicker';
+import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
 import { CsvContentType } from '@h2-trust/api';
 import { BatchType } from '@h2-trust/domain';
+import { FileTypes } from '../../../../shared/constants/file-types';
+import { ICONS } from '../../../../shared/constants/icons';
+import { FileSizePipe } from '../../../../shared/pipes/file-size.pipe';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
+import {
+  hydrogenProductionUnitsQueryOptions,
+  powerProductionUnitsQueryOptions,
+} from '../../../../shared/queries/units.query';
+import { CompaniesService } from '../../../../shared/services/companies/companies.service';
+import { PowerAccessApprovalService } from '../../../../shared/services/power-access-approvals/power-access-approvals.service';
+import { ProductionService } from '../../../../shared/services/production/production.service';
+import { UnitsService } from '../../../../shared/services/units/units.service';
+import { UserRolesStore } from '../../../../shared/store/user-role.store';
+import { minFormArrayLength } from '../../../../shared/util/form-array-length.validator';
 import { FileForm } from './file-upload.form';
 
 @Component({
-  selector: 'app-production-csv-upload',
+  selector: 'app-add-production-data',
+  providers: [provideNativeDateAdapter(), CompaniesService, ProductionService, PowerAccessApprovalService],
   imports: [
-    CommonModule,
-    MatRadioModule,
-    MatChipsModule,
-    MatButtonModule,
-    FileDragAndDropComponent,
-    MatProgressSpinnerModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    FormsModule,
+    MatDialogModule,
     ReactiveFormsModule,
-    MatMenuModule,
-    MatSelectModule,
+    FormsModule,
     MatInputModule,
-    FileSizePipe,
+    MatFormFieldModule,
+    MatTimepickerModule,
+    MatDatepickerModule,
+    MatButtonToggleModule,
+    MatSelectModule,
     MatButtonModule,
-    MatProgressBarModule,
+    MatIconModule,
+    RouterModule,
+    FileDragAndDropComponent,
+    CommonModule,
+    FileSizePipe,
     PrettyEnumPipe,
   ],
-  templateUrl: './production-csv-upload.component.html',
+  templateUrl: './add-production-data.component.html',
 })
-export class ProductionCsvUploadComponent {
+export class AddProductionDataComponent {
   protected readonly FileTypes = FileTypes;
   protected readonly BatchType = BatchType;
   protected readonly ICONS = ICONS.UNITS;

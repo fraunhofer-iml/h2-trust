@@ -258,13 +258,13 @@ export class ProductionController {
   @Post('csv/import')
   @UseInterceptors(FilesInterceptor('files'))
   importCsvFile(
-    @Body() dto: ProductionCSVUploadDto,
+    @Body() _dto: ProductionCSVUploadDto,
     @UploadedFiles()
-    files: Express.Multer.File[] | Express.Multer.File,
-    @AuthenticatedUser() user: AuthenticatedKCUser,
+    _files: Express.Multer.File[] | Express.Multer.File,
+    @AuthenticatedUser() _user: AuthenticatedKCUser,
   ) {
     // TODO-LG: adjust this endpoint (DUHGW-421)
-    return this.service.importCsvFiles(files, files, dto, user.sub);
+    throw new NotImplementedException();
   }
 
   @Post('staging/submit')

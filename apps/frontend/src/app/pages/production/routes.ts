@@ -7,8 +7,8 @@
  */
 
 import { Route } from '@angular/router';
-import { AddProductionDataComponent } from './add-production-data/add-production-data.component';
 import { FileSelectionComponent } from './add-production-data/file-selection/file-selection.component';
+import { AddProductionDataComponent } from './add-production-data/file-upload/add-production-data.component';
 import { ProductionViewComponent } from './generated-productions/production-view.component';
 import { ProductionFilesComponent } from './uploaded-production-files/production-files.component';
 
