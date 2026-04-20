@@ -7,6 +7,7 @@
  */
 
 import { BatchEntity, ConcreteUnitEntity, UnitAccountingPeriods } from '@h2-trust/amqp';
+import { CsvContentType } from '@h2-trust/api';
 import { BatchType, HydrogenColor, PowerType, ProcessType } from '@h2-trust/domain';
 
 export interface AccountingPeriod {
@@ -40,5 +41,5 @@ export interface DocumentProof {
 
 export interface ParsedImport extends DocumentProof {
   periods: UnitAccountingPeriods;
-  type: Exclude<BatchType, BatchType.WATER>;
+  type: CsvContentType;
 }

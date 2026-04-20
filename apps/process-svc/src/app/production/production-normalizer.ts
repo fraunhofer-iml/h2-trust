@@ -7,7 +7,7 @@
  */
 
 import { StagedProductionEntity, UnitAccountingPeriods } from '@h2-trust/amqp';
-import { BatchType } from '@h2-trust/domain';
+import { CsvContentType } from '@h2-trust/api';
 import { ParsedImport } from './production.types';
 
 interface PowerItem {
@@ -29,14 +29,14 @@ export class ProductionNormalizer {
    * @returns A list of staged productions with only one entry per hour.
    */
   public static normalizeProduction(parsedImports: ParsedImport[]): StagedProductionEntity[] {
-    const parsedAccountingPeriodGroups: Record<BatchType, UnitAccountingPeriods[]> =
+    const parsedAccountingPeriodGroups: Record<CsvContentType, UnitAccountingPeriods[]> =
       this.groupAccountingPeriodsByType(parsedImports);
 
     const stagedProductionResult: StagedProductionEntity[] = [];
     Object.entries(parsedAccountingPeriodGroups).forEach(([productionType, parsedAccountingPeriodGroup]) => {
       const stagedProductionsForType: StagedProductionEntity[] = this.normalizeAccountingPeriods(
         parsedAccountingPeriodGroup,
-        productionType as BatchType,
+        productionType as CsvContentType,
       );
       stagedProductionResult.push(...stagedProductionsForType);
     });
@@ -45,7 +45,7 @@ export class ProductionNormalizer {
 
   private static groupAccountingPeriodsByType(
     parsedImports: ParsedImport[],
-  ): Record<BatchType, UnitAccountingPeriods[]> {
+  ): Record<CsvContentType, UnitAccountingPeriods[]> {
     return parsedImports.reduce<Record<string, UnitAccountingPeriods[]>>((acc, parsedImport) => {
       return {
         ...acc,
@@ -56,7 +56,7 @@ export class ProductionNormalizer {
 
   private static normalizeAccountingPeriods(
     accountingPeriods: UnitAccountingPeriods[],
-    type: BatchType,
+    type: CsvContentType,
   ): StagedProductionEntity[] {
     const unitAccountingPeriodsByDateHour = new Map<string, StagedProductionEntity[]>();
 

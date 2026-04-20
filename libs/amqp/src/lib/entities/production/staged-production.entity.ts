@@ -6,19 +6,26 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CsvContentType } from '@h2-trust/api';
 import { StagedProductionDeepDbType } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
-import { assertValidEnum } from '@h2-trust/utils';
 
 export class StagedProductionEntity {
   startedAt: Date;
   amount: number;
   unitId: string;
   usedPower: number;
-  type: BatchType;
+  type: CsvContentType;
   filename: string;
 
-  constructor(startedAt: Date, amount: number, unitId: string, usedPower: number, type: BatchType, filename: string) {
+  constructor(
+    startedAt: Date,
+    amount: number,
+    unitId: string,
+    usedPower: number,
+    type: CsvContentType,
+    filename: string,
+  ) {
     this.startedAt = startedAt;
     this.amount = amount;
     this.unitId = unitId;
@@ -28,7 +35,10 @@ export class StagedProductionEntity {
   }
 
   static fromDeepDatabase(stagedProduction: StagedProductionDeepDbType) {
-    assertValidEnum(stagedProduction.type, BatchType, 'BatchType');
+    if (stagedProduction.type != BatchType.HYDROGEN && stagedProduction.type != BatchType.POWER) {
+      const message = `The staged production is not of type ${BatchType.HYDROGEN} or ${BatchType.POWER}`;
+      throw new Error(message);
+    }
 
     return new StagedProductionEntity(
       stagedProduction.startedAt,
