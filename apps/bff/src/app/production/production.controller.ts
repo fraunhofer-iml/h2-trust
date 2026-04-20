@@ -41,7 +41,6 @@ import {
   type AuthenticatedKCUser,
   type CsvContentType,
 } from '@h2-trust/api';
-import { BatchType } from '@h2-trust/domain';
 import { ProductionService } from './production.service';
 
 @Controller('productions')
