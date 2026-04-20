@@ -25,7 +25,7 @@ import {
 } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
 import { CsvImportProcessingService } from './csv-import-processing.service';
-import { ProductionDistributor } from './production-distributor';
+import { ProductionNormalizer } from './production-normalizer';
 import { DocumentProof, ParsedImport } from './production.types';
 
 @Injectable()
@@ -46,20 +46,20 @@ export class ProductionStagingService {
       payload.stageProductions,
     );
 
-    const parsedPowerProductions: UnitAccountingPeriods[] = parsedProductionImports
+    const powerUnitAccountingPeriods: UnitAccountingPeriods[] = parsedProductionImports
       .filter((prod) => prod.type == BatchType.POWER)
       .map((prod) => prod.periods);
-    const parsedHydrogenProductions: UnitAccountingPeriods[] = parsedProductionImports
+    const hydrogenUnitAccountingPeriods: UnitAccountingPeriods[] = parsedProductionImports
       .filter((prod) => prod.type == BatchType.HYDROGEN)
       .map((prod) => prod.periods);
 
-    const spPowerProductions: StagedProductionEntity[] = ProductionDistributor.normalizeProduction(
-      parsedPowerProductions,
+    const spPowerProductions: StagedProductionEntity[] = ProductionNormalizer.normalizeProduction(
+      powerUnitAccountingPeriods,
       BatchType.POWER,
     );
 
-    const spHydrogenProductions: StagedProductionEntity[] = ProductionDistributor.normalizeProduction(
-      parsedHydrogenProductions,
+    const spHydrogenProductions: StagedProductionEntity[] = ProductionNormalizer.normalizeProduction(
+      hydrogenUnitAccountingPeriods,
       BatchType.HYDROGEN,
     );
 

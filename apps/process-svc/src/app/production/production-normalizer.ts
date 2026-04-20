@@ -20,14 +20,20 @@ interface HydrogenItem {
   powerConsumed: number;
 }
 
-export class ProductionDistributor {
+export class ProductionNormalizer {
   /**
-   * Should accept a list of accounting periods and merge them so that we receive a list of only one Element per hour
+   * Takes a list of accounting periods and merges them so that the result is a list of staged productions containing just one entry per hour.
+   * @param accountingPeriods The list of accounting periods.
+   * @param type The type of the stage productions that should be created.
+   * @returns A list of staged productions with only one entry per hour.
    */
-  public static normalizeProduction(data: UnitAccountingPeriods[], type: BatchType): StagedProductionEntity[] {
+  public static normalizeProduction(
+    accountingPeriods: UnitAccountingPeriods[],
+    type: BatchType,
+  ): StagedProductionEntity[] {
     const unitAccountingPeriodsByDateHour = new Map<string, StagedProductionEntity[]>();
 
-    data.forEach((bundle) => {
+    accountingPeriods.forEach((bundle) => {
       const hourlyProductionTotals = bundle.accountingPeriods.reduce(
         (acc, item) => {
           console.log(item);
