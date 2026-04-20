@@ -12,7 +12,7 @@ import { assertValidEnum } from '@h2-trust/utils';
 import { ConcreteUnitEntity } from '../../../../../amqp/src/lib/types';
 import { BatchEntity } from '../batch';
 import { DocumentEntity } from '../document';
-import { getSpecificUnit } from '../unit/entity-utils';
+import { getSpecificUnit } from '../unit/unit.factory';
 import { UserEntity } from '../user';
 import { TransportationDetailsEntity } from './transportation-details.entity';
 
