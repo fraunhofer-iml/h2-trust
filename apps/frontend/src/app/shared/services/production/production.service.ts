@@ -15,12 +15,12 @@ import {
   CsvContentType,
   CsvDocumentIntegrityResultDto,
   DownloadFilesDto,
-  ImportSubmissionDto,
   PaginatedProductionDataDto,
   ProcessedCsvDto,
   ProductionOverviewDto,
   ProductionStatisticsDto,
   StagedProductionDto,
+  StagingSubmissionDto,
 } from '@h2-trust/api';
 import { FilterModel } from '../../../pages/production/model/generated-productions-filter.model';
 import { PaginationModel } from '../../../pages/production/model/pagination.model';
@@ -52,14 +52,19 @@ export class ProductionService {
     return lastValueFrom(this.httpClient.get<ProcessedCsvDto[]>(API.PRODUCTION.CSV));
   }
 
-  getStagedProductions(type?: CsvContentType, scope?: 'own' | 'received', from?: Date, to?: Date) {
+  getStagedProductions(type?: CsvContentType, scope?: 'own' | 'received', from?: Date | string, to?: Date | string) {
     let params = new HttpParams();
     if (type) params = params.set('type', type);
     if (scope) params = params.set('scope', scope);
-    if (from) params = params.set('from', from.toISOString());
-    if (to) params = params.set('to', to.toISOString());
 
-    console.log(params);
+    if (from) {
+      params = params.set('from', from instanceof Date ? from.toISOString() : from);
+    }
+    if (to) {
+      params = params.set('to', to instanceof Date ? to.toISOString() : to);
+    }
+
+    console.log(params.toString());
 
     return lastValueFrom(this.httpClient.get<StagedProductionDto[]>(API.PRODUCTION.STAGING, { params }));
   }
@@ -72,7 +77,7 @@ export class ProductionService {
     return lastValueFrom(this.httpClient.post<AccountingPeriodMatchingResultDto>(API.PRODUCTION.CSV_IMPORT, data));
   }
 
-  submitCsv(dto: ImportSubmissionDto) {
+  submitCsv(dto: StagingSubmissionDto) {
     return lastValueFrom(this.httpClient.post<ProductionOverviewDto[]>(API.PRODUCTION.CSV_SUBMIT, dto));
   }
 

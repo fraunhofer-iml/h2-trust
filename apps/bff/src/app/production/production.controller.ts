@@ -7,7 +7,17 @@
  */
 
 import { AuthenticatedUser } from 'nest-keycloak-connect';
-import { Body, Controller, Get, Param, Post, Query, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotImplementedException,
+  Param,
+  Post,
+  Query,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
@@ -21,13 +31,13 @@ import {
 import {
   CreateProductionDto,
   CsvDocumentIntegrityResultDto,
-  ImportSubmissionDto,
   PaginatedProductionDataDto,
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   ProductionStatisticsDto,
   StagedProductionDto,
+  StagingSubmissionDto,
   type AuthenticatedKCUser,
   type CsvContentType,
 } from '@h2-trust/api';
@@ -207,38 +217,22 @@ export class ProductionController {
     required: false,
   })
   async readStagedProductionsByCompanyAndType(
-    @Query('scope') scope: 'own' | 'received',
-    @Query('type') type: CsvContentType,
-    @Query('from') from: Date,
-    @Query('to') to: Date,
-    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+    @Query('scope') _scope: 'own' | 'received',
+    @Query('type') _type: CsvContentType,
+    @Query('from') _from: Date,
+    @Query('to') _to: Date,
+    @AuthenticatedUser() _authenticatedUser: AuthenticatedKCUser,
   ): Promise<StagedProductionDto[]> {
-    console.log({
-      scope,
-      type,
-      from,
-      to,
-      user: authenticatedUser.sub,
-    });
-
     return [
       {
-        amountProduced: 20,
-        csvContentType: BatchType.HYDROGEN,
-        endedAt: new Date(),
-        startedAt: new Date(),
-        productionUnitId: 'power-production-unit-1',
-        uploadedBy: 'Green Power',
-        amountConsumed: 20,
-      },
-
-      {
-        amountProduced: 20,
+        id: 'steging-id-1',
+        amountProduced: 120,
         csvContentType: BatchType.POWER,
         endedAt: new Date(),
-        startedAt: new Date(),
         productionUnitId: 'power-production-unit-1',
-        uploadedBy: 'Green Power',
+        startedAt: new Date(),
+        uploadedBy: 'test',
+        amountConsumed: 30,
       },
     ];
   }
@@ -282,9 +276,9 @@ export class ProductionController {
     );
   }
 
-  @Post('csv/submit')
+  @Post('staging/submit')
   @ApiBearerAuth()
-  submitCsvData(@Body() dto: ImportSubmissionDto, @AuthenticatedUser() user: AuthenticatedKCUser) {
-    return this.service.submitCsvData(dto, user.sub);
+  submitCsvData(@Body() _dto: StagingSubmissionDto, @AuthenticatedUser() _user: AuthenticatedKCUser) {
+    throw new NotImplementedException();
   }
 }

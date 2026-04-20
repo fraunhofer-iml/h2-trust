@@ -1,6 +1,7 @@
 import { CsvContentType } from '../../types';
 
 export class StagedProductionDto {
+  id: string;
   startedAt: Date;
   endedAt: Date;
   amountProduced: number;

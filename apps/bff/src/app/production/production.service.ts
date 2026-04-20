@@ -34,12 +34,12 @@ import {
   AccountingPeriodMatchingResultDto,
   CreateProductionDto,
   CsvDocumentIntegrityResultDto,
-  ImportSubmissionDto,
   PaginatedProductionDataDto,
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   ProductionStatisticsDto,
+  StagingSubmissionDto,
   UserDetailsDto,
 } from '@h2-trust/api';
 import { HashUtil } from '@h2-trust/blockchain';
@@ -166,8 +166,12 @@ export class ProductionService {
     });
   }
 
-  async submitCsvData(dto: ImportSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    const payload: FinalizeProductionsPayload = new FinalizeProductionsPayload(userId, dto.storageUnitId, dto.importId);
+  async submitCsvData(dto: StagingSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
+    const payload: FinalizeProductionsPayload = new FinalizeProductionsPayload(
+      userId,
+      dto.storageUnitId,
+      dto.stagedHydrogenProduction,
+    );
     const processSteps: ProcessStepEntity[] = await firstValueFrom(
       this.processSvc.send<ProcessStepEntity[]>(ProductionMessagePatterns.FINALIZE, payload),
     );

@@ -1,10 +1,11 @@
+import { ROUTES } from 'apps/frontend/src/app/shared/constants/routes';
 import { PowerAccessApprovalService } from 'apps/frontend/src/app/shared/services/power-access-approvals/power-access-approvals.service';
 import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
 import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
-import { map } from 'rxjs';
+import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -12,9 +13,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
-import { RouterModule } from '@angular/router';
-import { injectQuery } from '@tanstack/angular-query-experimental';
-import { StagedProductionDto } from '@h2-trust/api';
+import { Router, RouterModule } from '@angular/router';
+import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
+import { StagedProductionDto, StagingSubmissionDto } from '@h2-trust/api';
 import { BatchType, MeasurementUnit, PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 
@@ -41,32 +42,37 @@ export class FileSelectionComponent {
   protected readonly powerAccessApprovalsService = inject(PowerAccessApprovalService);
   protected readonly unitsService = inject(UnitsService);
   protected readonly MeasurementUnit = MeasurementUnit;
+  private readonly router = inject(Router);
 
   form = new FormGroup({
-    hydrogenFile: new FormControl<StagedProductionDto[] | null>(null, [Validators.required, Validators.minLength(1)]),
-    powerFiles: new FormControl<StagedProductionDto[] | null>([], [Validators.required, Validators.minLength(1)]),
+    hydrogenProduction: new FormControl<StagedProductionDto[] | null>(null, [
+      Validators.required,
+      Validators.minLength(1),
+    ]),
+    powerProductions: new FormControl<StagedProductionDto[] | null>([], [Validators.required, Validators.minLength(1)]),
     storageUnit: new FormControl<string | null>({ value: null, disabled: true }, Validators.required),
   });
 
-  selectedHydrogenFile = toSignal<StagedProductionDto | undefined | null>(
-    this.form.controls.hydrogenFile.valueChanges.pipe(map((val) => (val ? val[0] : val))),
-  );
+  selectedHydrogenFile = signal<StagedProductionDto | null>(null);
 
   powerProductionsQuery = injectQuery(() => ({
-    queryKey: ['production', this.selectedHydrogenFile()],
-    queryFn: async () => {
-      console.log(this.selectedHydrogenFile());
-      return this.productionService.getStagedProductions(
+    queryKey: [
+      'power-production',
+      this.selectedHydrogenFile()?.startedAt,
+      this.selectedHydrogenFile()?.endedAt,
+      BatchType.POWER,
+    ],
+    queryFn: async () =>
+      this.productionService.getStagedProductions(
         BatchType.POWER,
         'received',
         this.selectedHydrogenFile()?.startedAt,
         this.selectedHydrogenFile()?.endedAt,
-      );
-    },
+      ),
   }));
 
   hydrogenProductionsQuery = injectQuery(() => ({
-    queryKey: ['production'],
+    queryKey: ['hydrogen-production'],
     queryFn: async () => {
       return this.productionService.getStagedProductions(BatchType.HYDROGEN, 'own');
     },
@@ -89,6 +95,8 @@ export class FileSelectionComponent {
     const uploads = this.powerProductionsQuery.data();
     const approvals = this.approvalsQuery.data();
 
+    console.log(uploads);
+
     const result = (approvals ?? []).map((ppa) => ({
       ...ppa,
       uploads: (uploads ?? []).filter((r) => r.productionUnitId === ppa.powerProductionUnit.id),
@@ -98,16 +106,34 @@ export class FileSelectionComponent {
   });
 
   get totalPower() {
-    return this.form.controls.powerFiles.value?.reduce((acc, item) => acc + item.amountProduced, 0);
+    return this.form.controls.powerProductions.value?.reduce((acc, item) => acc + item.amountProduced, 0);
   }
 
-  constructor() {
-    this.form.controls.hydrogenFile.valueChanges.subscribe(() => {
-      this.form.controls.powerFiles.patchValue([]);
-    });
+  mutation = injectMutation(() => ({
+    mutationFn: (dto: StagingSubmissionDto) => this.productionService.submitCsv(dto),
+    onSuccess: () => this.router.navigateByUrl(ROUTES.PRODUCTION_DATA),
+    onError: (e: HttpErrorResponse) => toast.error(e.error.message),
+  }));
 
-    this.form.controls.powerFiles.valueChanges.subscribe((val) => {
-      if (val && val.length > 0) this.form.controls.storageUnit.enable();
+  constructor() {
+    this.form.controls.hydrogenProduction.valueChanges.subscribe((val) => {
+      this.selectedHydrogenFile.set(val ? val[0] : null);
+      if (val && val.length > 0) {
+        this.form.controls.storageUnit.enable();
+        this.form.controls.powerProductions.patchValue([]);
+      }
     });
+  }
+
+  save() {
+    const { hydrogenProduction: hydrogenFile, storageUnit, powerProductions: powerFiles } = this.form.value;
+    if (!hydrogenFile || !storageUnit || powerFiles?.length === 0) return;
+
+    const dto: StagingSubmissionDto = {
+      storageUnitId: storageUnit,
+      stagedHydrogenProduction: hydrogenFile[0].id,
+      stagedPowerProductions: (powerFiles ?? []).map((f) => f.id),
+    };
+    this.mutation.mutate(dto);
   }
 }

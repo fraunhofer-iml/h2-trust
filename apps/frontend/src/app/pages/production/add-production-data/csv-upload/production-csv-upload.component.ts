@@ -31,8 +31,8 @@ import { injectMutation } from '@tanstack/angular-query-experimental';
 import {
   HydrogenProductionOverviewDto,
   HydrogenStorageOverviewDto,
-  ImportSubmissionDto,
   PowerProductionOverviewDto,
+  StagingSubmissionDto,
 } from '@h2-trust/api';
 import { FileUploadKeys, MeasurementUnit } from '@h2-trust/domain';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
@@ -92,7 +92,7 @@ export class ProductionCsvUploadComponent {
   }));
 
   submitMutation = injectMutation(() => ({
-    mutationFn: (dto: ImportSubmissionDto) => {
+    mutationFn: (dto: StagingSubmissionDto) => {
       return this.productionService.submitCsv(dto);
     },
     onSuccess: () => this.router.navigateByUrl(ROUTES.PRODUCTION_DATA),
@@ -163,7 +163,7 @@ export class ProductionCsvUploadComponent {
   save() {
     const id = this.mutation.data()?.id;
     if (!this.storageUnit.value || !id) return;
-    const dto: ImportSubmissionDto = { storageUnitId: this.storageUnit.value, importId: id };
+    const dto: StagingSubmissionDto = { storageUnitId: this.storageUnit.value, importId: id };
     this.submitMutation.mutate(dto);
   }
 
