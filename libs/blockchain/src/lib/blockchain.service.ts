@@ -16,7 +16,7 @@ import {
   type ContractTransactionResponse,
 } from 'ethers';
 import { Injectable, Logger } from '@nestjs/common';
-import { ProofEntity } from '@h2-trust/amqp';
+import { ProofEntity } from '@h2-trust/contracts';
 import { ConfigurationService } from '@h2-trust/configuration';
 
 export interface ProofEntry {

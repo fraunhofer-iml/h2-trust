@@ -12,7 +12,7 @@ import {
   ProductionChainEntity,
   ProofOfOriginBatchEntity,
   ProvenanceEntity,
-} from '@h2-trust/amqp';
+} from '@h2-trust/contracts';
 import { EnergySource, ProofOfOrigin } from '@h2-trust/domain';
 import {
   ProcessStepEntityFixture,

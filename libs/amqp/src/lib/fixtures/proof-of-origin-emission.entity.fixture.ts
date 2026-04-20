@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProofOfOriginEmissionEntity } from '@h2-trust/amqp';
+import { ProofOfOriginEmissionEntity } from '@h2-trust/contracts';
 
 export const ProofOfOriginEmissionEntityFixture = {
   create: (overrides: Partial<ProofOfOriginEmissionEntity> = {}): ProofOfOriginEmissionEntity =>

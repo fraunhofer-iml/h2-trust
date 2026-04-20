@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenProductionUnitEntity, PowerProductionUnitEntity, ProductionChainEntity } from '@h2-trust/amqp';
+import { HydrogenProductionUnitEntity, PowerProductionUnitEntity, ProductionChainEntity } from '@h2-trust/contracts';
 import { ProcessStepEntityFixture } from './process-step.entity.fixture';
 
 export const ProductionChainEntityFixture = {

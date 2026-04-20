@@ -8,21 +8,13 @@
 
 import { Logger } from '@nestjs/common';
 import {
-  BatchEntity,
-  CompanyEntity,
-  ConcreteUnitEntity,
-  CreateProductionEntity,
-  HydrogenProductionUnitEntity,
-  HydrogenStorageUnitEntity,
-  PowerProductionUnitEntity,
-  ProcessStepEntity,
-  QualityDetailsEntity,
-  UserEntity,
+  ConcreteUnitEntity
 } from '@h2-trust/amqp';
 import { BatchType, HydrogenColor, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { DateTimeUtil } from '@h2-trust/utils';
 import { AccountingPeriod, ProcessStepParams } from './production.types';
 import { ProductionUtils } from './utils/production.utils';
+import { CreateProductionEntity, ProcessStepEntity, PowerProductionUnitEntity, HydrogenProductionUnitEntity, HydrogenStorageUnitEntity, QualityDetailsEntity, BatchEntity, CompanyEntity, UserEntity } from '@h2-trust/contracts';
 
 export class ProductionAssembler {
   private static readonly logger = new Logger(ProductionAssembler.name);

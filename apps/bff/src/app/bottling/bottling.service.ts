@@ -13,9 +13,7 @@ import {
   BrokerQueues,
   CreateHydrogenBottlingPayload,
   CreateHydrogenTransportationPayload,
-  DigitalProductPassportEntity,
   DigitalProductPassportPatterns,
-  ProcessStepEntity,
   ProcessStepMessagePatterns,
   ReadByIdPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
@@ -23,6 +21,7 @@ import {
 import { BottlingDto, BottlingOverviewDto, DigitalProductPassportDto } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
+import { ProcessStepEntity, DigitalProductPassportEntity } from '@h2-trust/contracts';
 
 @Injectable()
 export class BottlingService {

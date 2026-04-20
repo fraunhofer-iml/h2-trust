@@ -8,8 +8,9 @@
 
 import { parse } from 'csv-parse';
 import { HttpStatus, Logger } from '@nestjs/common';
-import { AccountingPeriodHydrogen, AccountingPeriodPower, BrokerException } from '@h2-trust/amqp';
+import { BrokerException } from '@h2-trust/amqp';
 import { DateTimeUtil } from '@h2-trust/utils';
+import { AccountingPeriodHydrogen, AccountingPeriodPower } from '@h2-trust/contracts';
 
 export class AccountingPeriodCsvParser {
   private static readonly logger: Logger = new Logger(AccountingPeriodCsvParser.name);

@@ -11,19 +11,15 @@ import { MessagePattern } from '@nestjs/microservices';
 import {
   CreateHydrogenProductionStatisticsPayload,
   CreateProductionsPayload,
-  CsvDocumentEntity,
   FinalizeProductionsPayload,
-  ProcessStepEntity,
   ProductionMessagePatterns,
-  ProductionStagingResultEntity,
-  ProductionStatisticsEntity,
   ReadByIdPayload,
   StageProductionsPayload,
-  VerifyCsvDocumentIntegrityResultEntity,
 } from '@h2-trust/amqp';
 import { CsvDocumentService } from './csv-document.service';
 import { ProductionStagingService } from './production-staging.service';
 import { ProductionService } from './production.service';
+import { CsvDocumentEntity, ProcessStepEntity, ProductionStagingResultEntity, ProductionStatisticsEntity, VerifyCsvDocumentIntegrityResultEntity } from '@h2-trust/contracts';
 
 @Controller()
 export class ProductionController {

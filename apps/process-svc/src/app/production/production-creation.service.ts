@@ -11,17 +11,13 @@ import {
   BrokerException,
   ConcreteUnitEntity,
   CreateManyProcessStepsPayload,
-  CreateProductionEntity,
-  HydrogenProductionUnitEntity,
-  PowerProductionUnitEntity,
-  ProcessStepEntity,
-  ProductionChainEntity,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { BatchType, RfnboType } from '@h2-trust/domain';
 import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { ProductionAssembler } from './production.assembler';
+import { CreateProductionEntity, HydrogenProductionUnitEntity, PowerProductionUnitEntity, ProcessStepEntity, ProductionChainEntity } from '@h2-trust/contracts';
 
 @Injectable()
 export class ProductionCreationService {

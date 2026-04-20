@@ -13,22 +13,14 @@ import {
   BrokerQueues,
   CreateHydrogenProductionStatisticsPayload,
   CreateProductionsPayload,
-  CsvDocumentEntity,
   FinalizeProductionsPayload,
-  PaginatedProcessStepEntity,
   PowerAccessApprovalPatterns,
-  PowerProductionUnitEntity,
-  ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionDataFilter,
   ProductionMessagePatterns,
-  ProductionStagingResultEntity,
-  ProductionStatisticsEntity,
   ReadByIdPayload,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   StageProductionsPayload,
-  UnitFileImport,
-  VerifyCsvDocumentIntegrityResultEntity,
 } from '@h2-trust/amqp';
 import {
   AccountingPeriodMatchingResultDto,
@@ -46,6 +38,7 @@ import { HashUtil } from '@h2-trust/blockchain';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
+import { CsvDocumentEntity, PaginatedProcessStepEntity, PowerProductionUnitEntity, ProcessStepEntity, ProductionStagingResultEntity, ProductionStatisticsEntity, UnitFileImport, VerifyCsvDocumentIntegrityResultEntity } from '@h2-trust/contracts';
 
 @Injectable()
 export class ProductionService {

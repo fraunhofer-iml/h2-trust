@@ -8,8 +8,9 @@
 
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { DigitalProductPassportEntity, DigitalProductPassportPatterns, ReadByIdPayload } from '@h2-trust/amqp';
+import { DigitalProductPassportPatterns, ReadByIdPayload } from '@h2-trust/amqp';
 import { DigitalProductPassportService } from './digital-product-passport.service';
+import { DigitalProductPassportEntity } from '@h2-trust/contracts';
 
 @Controller()
 export class DigitalProductPassportController {

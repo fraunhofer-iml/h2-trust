@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenComponentEntity, HydrogenStorageUnitEntity } from '@h2-trust/amqp';
+import { HydrogenComponentEntity, HydrogenStorageUnitEntity } from '@h2-trust/contracts';
 import { HydrogenColor, HydrogenStorageType, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentDto } from '../digital-product-passport';
 

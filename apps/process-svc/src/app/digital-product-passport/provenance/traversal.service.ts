@@ -7,7 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
+import { BatchEntity, ProcessStepEntity } from '@h2-trust/contracts';
 import { ProcessType } from '@h2-trust/domain';
 import { ProcessStepService } from '../../process-step/process-step.service';
 

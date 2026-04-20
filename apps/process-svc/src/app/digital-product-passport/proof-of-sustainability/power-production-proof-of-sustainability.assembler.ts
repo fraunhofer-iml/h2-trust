@@ -12,7 +12,7 @@ import {
   ProofOfSustainabilityEmissionCalculationEntity,
   ProofOfSustainabilityEmissionEntity,
   ProvenanceEntity,
-} from '@h2-trust/amqp';
+} from '@h2-trust/contracts';
 import { EnumLabelMapper } from '@h2-trust/strings';
 import {
   CalculationTopic,

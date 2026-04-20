@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { TransportationDetailsEntity } from '@h2-trust/amqp';
+import { TransportationDetailsEntity } from '@h2-trust/contracts';
 import { FuelType, TransportMode } from '@h2-trust/domain';
 
 export const TransportationDetailsEntityFixture = {

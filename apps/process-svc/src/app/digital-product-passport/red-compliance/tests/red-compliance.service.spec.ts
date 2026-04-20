@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RedComplianceEntity } from '@h2-trust/amqp';
+import { RedComplianceEntity } from '@h2-trust/contracts';
 import { BiddingZone } from '@h2-trust/domain';
 import {
   HydrogenProductionUnitEntityFixture,

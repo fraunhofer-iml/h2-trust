@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepEntity } from '@h2-trust/amqp';
+import { ProcessStepEntity } from '@h2-trust/contracts';
 import { HydrogenColor, RfnboType } from '@h2-trust/domain';
 
 export class BottlingOverviewDto {

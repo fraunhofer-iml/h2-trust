@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProofOfOriginClassificationEntity, ProofOfOriginSubClassificationEntity } from '@h2-trust/amqp';
+import { ProofOfOriginClassificationEntity, ProofOfOriginSubClassificationEntity } from '@h2-trust/contracts';
 import { BatchType } from '@h2-trust/domain';
 
 export const ProofOfOriginSubClassificationEntityFixture = {

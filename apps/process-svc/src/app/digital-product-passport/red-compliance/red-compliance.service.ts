@@ -14,7 +14,7 @@ import {
   ProcessStepEntity,
   ProductionChainEntity,
   RedComplianceEntity,
-} from '@h2-trust/amqp';
+} from '@h2-trust/contracts';
 import { BiddingZone } from '@h2-trust/domain';
 import { assertBoolean, assertDefined, DateTimeUtil } from '@h2-trust/utils';
 

@@ -10,7 +10,7 @@ import {
   ProofOfSustainabilityEmissionCalculationEntity,
   ProofOfSustainabilityEmissionEntity,
   ProvenanceEntity,
-} from '@h2-trust/amqp';
+} from '@h2-trust/contracts';
 
 export interface ProofOfSustainabilityAssembler {
   assembleEmissions(provenance: ProvenanceEntity): ProofOfSustainabilityEmissionCalculationEntity[];

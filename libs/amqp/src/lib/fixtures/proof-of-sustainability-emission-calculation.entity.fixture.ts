@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProofOfSustainabilityEmissionCalculationEntity } from '@h2-trust/amqp';
+import { ProofOfSustainabilityEmissionCalculationEntity } from '@h2-trust/contracts';
 import { CalculationTopic } from '@h2-trust/domain';
 
 export const ProofOfSustainabilityEmissionCalculationEntityFixture = {

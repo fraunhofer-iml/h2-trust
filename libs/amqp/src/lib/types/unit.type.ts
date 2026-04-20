@@ -6,6 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenProductionUnitEntity, HydrogenStorageUnitEntity, PowerProductionUnitEntity } from '../entities';
+import { HydrogenProductionUnitEntity, HydrogenStorageUnitEntity, PowerProductionUnitEntity } from '../../../../contracts/src/lib/entities';
 
 export type ConcreteUnitEntity = PowerProductionUnitEntity | HydrogenProductionUnitEntity | HydrogenStorageUnitEntity;

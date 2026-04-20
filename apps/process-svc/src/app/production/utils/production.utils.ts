@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchEntity, CreateProductionEntity, ProcessStepEntity } from '@h2-trust/amqp';
+import { BatchEntity, CreateProductionEntity, ProcessStepEntity } from '@h2-trust/contracts';
 import { EnergySource, HydrogenColor, PowerType, RenewableShareInGridMix, TimeInSeconds } from '@h2-trust/domain';
 import { DateTimeUtil } from '@h2-trust/utils';
 import { AccountingPeriod } from '../production.types';

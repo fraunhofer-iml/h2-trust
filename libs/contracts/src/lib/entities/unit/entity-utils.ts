@@ -8,8 +8,8 @@
 
 import { HttpStatus } from '@nestjs/common';
 import { BaseUnitNestedDbType } from '@h2-trust/database';
-import { BrokerException } from '../../broker';
-import { ConcreteUnitEntity } from '../../types';
+import { BrokerException } from '../../../../../amqp/src/lib/broker';
+import { ConcreteUnitEntity } from '../../../../../amqp/src/lib/types';
 import { HydrogenProductionUnitEntity } from './hydrogen-production-unit.entity';
 import { HydrogenStorageUnitEntity } from './hydrogen-storage-unit.entity';
 import { PowerProductionUnitEntity } from './power-production-unit.entity';

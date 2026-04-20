@@ -7,7 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { CompanyEntity } from '@h2-trust/amqp';
+import { CompanyEntity } from '@h2-trust/contracts';
 import { PrismaService } from '../prisma.service';
 import { companyDeepQueryArgs } from '../query-args';
 

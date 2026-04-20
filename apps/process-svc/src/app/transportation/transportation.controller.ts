@@ -8,8 +8,9 @@
 
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { CreateHydrogenTransportationPayload, ProcessStepEntity, ProcessStepMessagePatterns } from '@h2-trust/amqp';
+import { CreateHydrogenTransportationPayload, ProcessStepMessagePatterns } from '@h2-trust/amqp';
 import { TransportationService } from './transportation.service';
+import { ProcessStepEntity } from '@h2-trust/contracts';
 
 @Controller()
 export class TransportationController {

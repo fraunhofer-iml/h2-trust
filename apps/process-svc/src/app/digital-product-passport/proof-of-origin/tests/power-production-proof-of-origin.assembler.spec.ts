@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepEntity, ProofOfOriginPowerBatchEntity } from '@h2-trust/amqp';
+import { ProcessStepEntity, ProofOfOriginPowerBatchEntity } from '@h2-trust/contracts';
 import { BatchType, EnergySource } from '@h2-trust/domain';
 import {
   PowerProductionTypeEntityFixture,

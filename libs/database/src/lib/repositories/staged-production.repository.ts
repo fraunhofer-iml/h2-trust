@@ -8,7 +8,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { DistributedProductionEntity, StagedProductionEntity } from '@h2-trust/amqp';
+import { DistributedProductionEntity, StagedProductionEntity } from '@h2-trust/contracts';
 import { PrismaService } from '../prisma.service';
 import { stagedProductionDeepQueryArgs } from '../query-args';
 import { StagedProductionDeepDbType } from '../types';

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenComponentEntity } from '@h2-trust/amqp';
+import { HydrogenComponentEntity } from '@h2-trust/contracts';
 import { BatchType, HydrogenColor, ProcessType, RfnboType } from '@h2-trust/domain';
 import {
   BatchEntityFixture,

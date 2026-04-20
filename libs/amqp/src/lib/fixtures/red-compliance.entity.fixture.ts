@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RedComplianceEntity } from '@h2-trust/amqp';
+import { RedComplianceEntity } from '@h2-trust/contracts';
 
 type RedComplianceEntityOverrides = Partial<Omit<RedComplianceEntity, 'isRedCompliant'>>;
 

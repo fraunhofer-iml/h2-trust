@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerProductionUnitEntity } from '@h2-trust/amqp';
+import { PowerProductionUnitEntity } from '@h2-trust/contracts';
 import { BiddingZone, GridLevel, UnitType } from '@h2-trust/domain';
 import { AddressEntityFixture } from './address.entity.fixture';
 import { CompanyEntityFixture } from './company.entity.fixture';

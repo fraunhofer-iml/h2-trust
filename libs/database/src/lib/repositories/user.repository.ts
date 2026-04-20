@@ -7,7 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { UserEntity } from '@h2-trust/amqp';
+import { UserEntity } from '@h2-trust/contracts';
 import { PrismaService } from '../prisma.service';
 import { userDeepQueryArgs } from '../query-args';
 import { assertRecordFound } from './utils';

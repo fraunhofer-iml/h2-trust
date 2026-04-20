@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PaginatedProcessStepEntity } from '@h2-trust/amqp';
+import { PaginatedProcessStepEntity } from '@h2-trust/contracts';
 import { ProductionOverviewDto } from './production-overview.dto';
 
 export class PaginatedProductionDataDto {

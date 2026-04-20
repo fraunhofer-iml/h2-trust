@@ -11,9 +11,6 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   BrokerQueues,
-  HydrogenProductionUnitEntity,
-  HydrogenStorageUnitEntity,
-  PowerProductionUnitEntity,
   ReadByIdPayload,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
@@ -38,6 +35,7 @@ import {
 import { UserService } from '../user/user.service';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
+import { HydrogenProductionUnitEntity } from '@h2-trust/contracts';
 
 describe('UnitController', () => {
   let controller: UnitController;

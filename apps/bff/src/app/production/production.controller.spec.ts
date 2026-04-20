@@ -10,12 +10,8 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   BrokerQueues,
-  PaginatedProcessStepEntity,
-  PowerProductionTypeEntity,
-  ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
-  VerifyCsvDocumentIntegrityResultEntity,
 } from '@h2-trust/amqp';
 import {
   AccountingPeriodMatchingResultDto,
@@ -42,6 +38,7 @@ import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
+import { PaginatedProcessStepEntity, PowerProductionTypeEntity, ProcessStepEntity, VerifyCsvDocumentIntegrityResultEntity } from '@h2-trust/contracts';
 
 describe('ProductionController', () => {
   let controller: ProductionController;

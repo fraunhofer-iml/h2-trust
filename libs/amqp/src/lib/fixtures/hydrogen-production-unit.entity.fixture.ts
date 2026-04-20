@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenProductionUnitEntity } from '@h2-trust/amqp';
+import { HydrogenProductionUnitEntity } from '@h2-trust/contracts';
 import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
 import { AddressEntityFixture } from './address.entity.fixture';
 import { CompanyEntityFixture } from './company.entity.fixture';

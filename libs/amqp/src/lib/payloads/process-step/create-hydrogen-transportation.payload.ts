@@ -9,7 +9,7 @@
 import { Type } from 'class-transformer';
 import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, ValidateIf } from 'class-validator';
 import { FuelType, TransportMode } from '@h2-trust/domain';
-import { BatchEntity, ProcessStepEntity } from '../../entities';
+import { BatchEntity, ProcessStepEntity } from '../../../../../contracts/src/lib/entities';
 
 export class CreateHydrogenTransportationPayload {
   @IsNotEmpty()

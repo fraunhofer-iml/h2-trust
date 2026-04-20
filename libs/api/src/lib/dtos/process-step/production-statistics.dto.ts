@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProductionStatisticsEntity } from '@h2-trust/amqp';
+import { ProductionStatisticsEntity } from '@h2-trust/contracts';
 
 export class ProductionStatisticsDto {
   hydrogen: HydrogenStatisticsDto;

@@ -15,9 +15,6 @@ import {
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
   CreatePowerProductionUnitPayload,
-  HydrogenProductionUnitEntity,
-  HydrogenStorageUnitEntity,
-  PowerProductionUnitEntity,
   ReadByIdPayload,
 } from '@h2-trust/amqp';
 import {
@@ -38,6 +35,7 @@ import {
 } from '@h2-trust/fixtures';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
+import { PowerProductionUnitEntity, HydrogenProductionUnitEntity, HydrogenStorageUnitEntity } from '@h2-trust/contracts';
 
 describe('UnitController', () => {
   let controller: UnitController;

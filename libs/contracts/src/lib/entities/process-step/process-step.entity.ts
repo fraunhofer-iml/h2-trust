@@ -9,7 +9,7 @@
 import { ProcessStepDeepDbType } from '@h2-trust/database';
 import { ProcessType } from '@h2-trust/domain';
 import { assertValidEnum } from '@h2-trust/utils';
-import { ConcreteUnitEntity } from '../../types';
+import { ConcreteUnitEntity } from '../../../../../amqp/src/lib/types';
 import { BatchEntity } from '../batch';
 import { DocumentEntity } from '../document';
 import { getSpecificUnit } from '../unit/entity-utils';

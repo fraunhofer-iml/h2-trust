@@ -8,7 +8,7 @@
 
 import { CompanyRepository } from 'libs/database/src/lib';
 import { Injectable } from '@nestjs/common';
-import { CompanyEntity } from '@h2-trust/amqp';
+import { CompanyEntity } from '@h2-trust/contracts';
 
 @Injectable()
 export class CompanyService {

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CompanyEntity } from '@h2-trust/amqp';
+import { CompanyEntity } from '@h2-trust/contracts';
 import { CompanyType } from '@h2-trust/domain';
 import { AddressEntityFixture } from './address.entity.fixture';
 

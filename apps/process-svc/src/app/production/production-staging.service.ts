@@ -8,11 +8,7 @@
 
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
-  AccountingPeriodHydrogen,
-  AccountingPeriodPower,
   BrokerException,
-  CsvDocumentEntity,
-  ProductionStagingResultEntity,
   StageProductionsPayload,
 } from '@h2-trust/amqp';
 import { BlockchainService, ProofEntry } from '@h2-trust/blockchain';
@@ -22,6 +18,7 @@ import { BatchType } from '@h2-trust/domain';
 import { CsvImportProcessingService } from './csv-import-processing.service';
 import { ProductionDistributor } from './production-distributor';
 import { DocumentProof } from './production.types';
+import { ProductionStagingResultEntity, AccountingPeriodPower, AccountingPeriodHydrogen, CsvDocumentEntity } from '@h2-trust/contracts';
 
 @Injectable()
 export class ProductionStagingService {

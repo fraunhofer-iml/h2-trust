@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepEntity, ProofOfSustainabilityEmissionCalculationEntity } from '@h2-trust/amqp';
+import { ProcessStepEntity, ProofOfSustainabilityEmissionCalculationEntity } from '@h2-trust/contracts';
 import { EnumLabelMapper } from '@h2-trust/strings';
 import {
   CalculationTopic,

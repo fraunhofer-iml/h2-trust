@@ -8,13 +8,10 @@
 
 import { HttpStatus } from '@nestjs/common';
 import {
-  AccountingPeriodHydrogen,
-  AccountingPeriodPower,
   BrokerException,
-  DistributedProductionEntity,
-  UnitAccountingPeriods,
 } from '@h2-trust/amqp';
 import { BatchType } from '@h2-trust/domain';
+import { AccountingPeriodHydrogen, AccountingPeriodPower, DistributedProductionEntity, UnitAccountingPeriods } from '@h2-trust/contracts';
 
 interface PowerItem {
   unitId: string;

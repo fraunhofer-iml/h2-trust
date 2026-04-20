@@ -7,7 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { AccountingPeriodHydrogen, AccountingPeriodPower, UnitAccountingPeriods, UnitFileImport } from '@h2-trust/amqp';
+import { AccountingPeriodHydrogen, AccountingPeriodPower, UnitAccountingPeriods, UnitFileImport } from '@h2-trust/contracts';
 import { HashUtil } from '@h2-trust/blockchain';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { CreateCsvDocumentInput } from '@h2-trust/database';

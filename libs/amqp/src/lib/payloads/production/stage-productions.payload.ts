@@ -8,7 +8,7 @@
 
 import { Type } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
-import { UnitFileImport } from '../../entities';
+import { UnitFileImport } from '../../../../../contracts/src/lib/entities';
 
 export class StageProductionsPayload {
   @IsArray()

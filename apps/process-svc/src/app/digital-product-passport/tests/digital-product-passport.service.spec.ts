@@ -15,7 +15,7 @@ import {
   ProofOfSustainabilityEntity,
   ProvenanceEntity,
   RedComplianceEntity,
-} from '@h2-trust/amqp';
+} from '@h2-trust/contracts';
 import {
   ProcessStepEntityFixture,
   ProductionChainEntityFixture,

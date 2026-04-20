@@ -12,7 +12,7 @@ import {
   ProofOfOriginHydrogenBatchEntity,
   ProofOfOriginSectionEntity,
   ProvenanceEntity,
-} from '@h2-trust/amqp';
+} from '@h2-trust/contracts';
 import { HydrogenColor, ProcessType, ProofOfOrigin } from '@h2-trust/domain';
 import {
   BatchEntityFixture,

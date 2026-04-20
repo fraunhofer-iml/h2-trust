@@ -7,7 +7,6 @@
  */
 
 export * from './lib/broker';
-export * from './lib/entities';
 export * from './lib/types';
 export * from './lib/amqp.module';
 export * from './lib/rpc-exception.filter';

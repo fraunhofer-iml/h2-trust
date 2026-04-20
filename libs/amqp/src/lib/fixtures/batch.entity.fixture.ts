@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchEntity } from '@h2-trust/amqp';
+import { BatchEntity } from '@h2-trust/contracts';
 import { BatchType } from '@h2-trust/domain';
 import { CompanyEntityFixture } from './company.entity.fixture';
 import { QualityDetailsEntityFixture } from './quality-details.entity.fixture';

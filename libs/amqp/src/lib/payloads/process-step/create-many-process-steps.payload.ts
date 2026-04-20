@@ -8,7 +8,7 @@
 
 import { Type } from 'class-transformer';
 import { ArrayNotEmpty, IsNotEmpty } from 'class-validator';
-import { ProcessStepEntity } from '../../entities';
+import { ProcessStepEntity } from '../../../../../contracts/src/lib/entities';
 
 /*
  * This payload wraps the ProcessStepEntity domain objects rather than raw creation parameters.

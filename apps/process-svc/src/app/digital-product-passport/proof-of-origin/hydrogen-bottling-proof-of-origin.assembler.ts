@@ -8,18 +8,17 @@
 
 import { HttpStatus } from '@nestjs/common';
 import {
-  BrokerException,
   HydrogenComponentEntity,
-  HydrogenCompositionUtil,
   ProofOfOriginEmissionEntity,
   ProofOfOriginHydrogenBatchEntity,
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
   ProvenanceEntity,
-} from '@h2-trust/amqp';
+} from '@h2-trust/contracts';
 import { BatchType, ProcessType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
 import { assembleHydrogenBottlingEmissionCalculation } from '../proof-of-sustainability/hydrogen-bottling-proof-of-sustainability.assembler';
 import { ProofOfOriginAssembler } from './proof-of-origin-assembler.interface';
+import { BrokerException, HydrogenCompositionUtil } from '@h2-trust/amqp';
 
 /**
  * Calculates the hydrogen components of the bottling as a proportion of the total volume bottled.

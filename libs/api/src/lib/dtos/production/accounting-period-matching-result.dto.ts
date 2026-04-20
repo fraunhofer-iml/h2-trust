@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProductionStagingResultEntity } from '@h2-trust/amqp';
+import { ProductionStagingResultEntity } from '@h2-trust/contracts';
 
 export class AccountingPeriodMatchingResultDto {
   id: string;

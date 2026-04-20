@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerProductionTypeEntity } from '@h2-trust/amqp';
+import { PowerProductionTypeEntity } from '@h2-trust/contracts';
 import { EnergySource, HydrogenColor, PowerProductionType } from '@h2-trust/domain';
 
 export const PowerProductionTypeEntityFixture = {

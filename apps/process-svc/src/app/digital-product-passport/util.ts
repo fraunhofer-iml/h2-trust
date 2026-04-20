@@ -10,7 +10,7 @@ import {
   ProofOfOriginBatchEntity,
   ProofOfOriginClassificationEntity,
   ProofOfOriginSubClassificationEntity,
-} from '@h2-trust/amqp';
+} from '@h2-trust/contracts';
 import { BatchType } from '@h2-trust/domain';
 
 export class Util {

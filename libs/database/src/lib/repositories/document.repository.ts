@@ -7,7 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { DocumentEntity } from '@h2-trust/amqp';
+import { DocumentEntity } from '@h2-trust/contracts';
 import { buildDocumentCreateInput } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 
