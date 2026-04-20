@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ClassificationType } from '../../../types';
+import { ClassificationType } from '../../process-step';
 import { BatchDto } from './batch.dto';
 
 /**

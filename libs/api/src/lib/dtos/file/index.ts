@@ -6,5 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+export * from './csv-content.type';
 export * from './file-info.dto';
+export * from './file.type';
 export * from './mocks';

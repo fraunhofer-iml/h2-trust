@@ -5,6 +5,9 @@
     "declaration": true,
     "types": ["node"]
   },
-  "include": ["src/**/*.ts", "../api/src/lib/types/authenticated-kc-user.type.ts"],
+  "include": [
+    "src/**/*.ts",
+    "../api/src/lib/dtos/user/authenticated-kc-user.type.ts"
+  ],
   "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]
 }

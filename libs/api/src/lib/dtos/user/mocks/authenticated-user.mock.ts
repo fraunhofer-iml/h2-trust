@@ -6,6 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AuthenticatedKCUser } from '../../../types';
+import { AuthenticatedKCUser } from "../authenticated-kc-user.type";
 
 export const AuthenticatedUserMock: AuthenticatedKCUser = { sub: 'user-id-1' };
