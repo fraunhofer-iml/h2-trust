@@ -9,7 +9,7 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BrokerQueues, UnitMessagePatterns } from '@h2-trust/amqp';
+import { BrokerQueues, UnitMessagePatterns } from '@h2-trust/messaging';
 import {
   HydrogenProductionOverviewDto,
   HydrogenProductionUnitDto,

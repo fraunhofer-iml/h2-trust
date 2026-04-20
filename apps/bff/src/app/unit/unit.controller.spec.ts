@@ -12,7 +12,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import {
   BrokerQueues,
   UnitMessagePatterns,
-} from '@h2-trust/amqp';
+} from '@h2-trust/messaging';
 import {
   HydrogenProductionOverviewDto,
   HydrogenProductionUnitCreateDtoMock,

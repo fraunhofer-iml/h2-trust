@@ -9,7 +9,7 @@
 import { HttpStatus } from '@nestjs/common';
 import {
   BrokerException,
-} from '@h2-trust/amqp';
+} from '@h2-trust/messaging';
 import { BatchType } from '@h2-trust/domain';
 import { AccountingPeriodHydrogen, AccountingPeriodPower, DistributedProductionEntity, UnitAccountingPeriods } from '@h2-trust/contracts';
 

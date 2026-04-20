@@ -7,7 +7,7 @@
  */
 
 import { HttpStatus } from '@nestjs/common';
-import { BrokerException } from '../../../../../amqp/src/lib/broker/broker-exception';
+import { BrokerException } from '../../../../../messaging/src/lib/broker/broker-exception';
 import { HydrogenComponentEntity } from '..';
 
 export class HydrogenCompositionUtil {

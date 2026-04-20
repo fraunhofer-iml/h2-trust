@@ -8,7 +8,7 @@
 
 import { parse } from 'csv-parse';
 import { HttpStatus, Logger } from '@nestjs/common';
-import { BrokerException } from '@h2-trust/amqp';
+import { BrokerException } from '@h2-trust/messaging';
 import { DateTimeUtil } from '@h2-trust/utils';
 import { AccountingPeriodHydrogen, AccountingPeriodPower } from '@h2-trust/contracts';
 

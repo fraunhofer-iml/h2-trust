@@ -7,7 +7,7 @@
  */
 
 import { Module } from '@nestjs/common';
-import { Broker } from '@h2-trust/amqp';
+import { Broker } from '@h2-trust/messaging';
 import { ProcessStepModule } from '../process-step/process-step.module';
 import { DigitalProductPassportController } from './digital-product-passport.controller';
 import { DigitalProductPassportService } from './digital-product-passport.service';

@@ -8,7 +8,7 @@
 
 import { HttpStatus } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { BrokerException } from '@h2-trust/amqp';
+import { BrokerException } from 'libs/messaging/src';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 import { ProcessStepEntity } from '@h2-trust/contracts';
 

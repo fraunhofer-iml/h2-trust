@@ -7,7 +7,7 @@
  */
 
 import { Module } from '@nestjs/common';
-import { Broker } from '@h2-trust/amqp';
+import { Broker } from '@h2-trust/messaging';
 import { BlockchainModule } from '@h2-trust/blockchain';
 import { ConfigurationModule } from '@h2-trust/configuration';
 import { DatabaseModule } from '@h2-trust/database';

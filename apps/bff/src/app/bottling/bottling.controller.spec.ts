@@ -8,7 +8,7 @@
 
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues, ProcessStepMessagePatterns } from '@h2-trust/amqp';
+import { BrokerQueues, ProcessStepMessagePatterns } from '@h2-trust/messaging';
 import {
   AuthenticatedUserMock,
   BottlingDto,

@@ -7,7 +7,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues } from '@h2-trust/amqp';
+import { BrokerQueues } from '@h2-trust/messaging';
 import { PowerAccessApprovalController } from './power-access-approval.controller';
 import { PowerAccessApprovalService } from './power-access-approval.service';
 

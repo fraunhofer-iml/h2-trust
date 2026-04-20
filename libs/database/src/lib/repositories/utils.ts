@@ -7,7 +7,7 @@
  */
 
 import { HttpStatus } from '@nestjs/common';
-import { BrokerException } from '@h2-trust/amqp';
+import { BrokerException } from 'libs/messaging/src';
 
 export function assertRecordFound(fetchedRecord: any, id: string, entityLabel = 'Record') {
   if (!fetchedRecord) {

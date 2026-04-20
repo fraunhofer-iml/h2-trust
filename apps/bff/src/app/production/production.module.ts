@@ -7,7 +7,7 @@
  */
 
 import { Module } from '@nestjs/common';
-import { Broker } from '@h2-trust/amqp';
+import { Broker } from '@h2-trust/messaging';
 import { StorageModule } from '@h2-trust/storage';
 import { UserModule } from '../user/user.module';
 import { ProductionController } from './production.controller';

@@ -10,7 +10,7 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   ProductionMessagePatterns,
-} from '@h2-trust/amqp';
+} from '@h2-trust/messaging';
 import { CsvDocumentService } from './csv-document.service';
 import { ProductionStagingService } from './production-staging.service';
 import { ProductionService } from './production.service';

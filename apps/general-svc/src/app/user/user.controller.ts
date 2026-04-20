@@ -8,7 +8,7 @@
 
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { UserMessagePatterns } from '@h2-trust/amqp';
+import { UserMessagePatterns } from '@h2-trust/messaging';
 import { UserService } from './user.service';
 import { ReadByIdPayload, UserEntity } from '@h2-trust/contracts';
 

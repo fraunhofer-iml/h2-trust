@@ -13,7 +13,7 @@ import {
   BrokerQueues,
   DigitalProductPassportPatterns,
   ProcessStepMessagePatterns,
-} from '@h2-trust/amqp';
+} from '@h2-trust/messaging';
 import { BottlingDto, BottlingOverviewDto, DigitalProductPassportDto } from '@h2-trust/api';
 import { ProcessType } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';

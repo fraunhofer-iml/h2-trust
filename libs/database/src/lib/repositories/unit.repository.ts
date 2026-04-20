@@ -10,7 +10,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import {
   BrokerException
-} from '@h2-trust/amqp';
+} from 'libs/messaging/src';
 import {
   buildHydrogenProductionUnitCreateInput,
   buildHydrogenStorageUnitCreateInput,

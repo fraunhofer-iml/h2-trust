@@ -12,7 +12,7 @@ import {
   BrokerQueues,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
-} from '@h2-trust/amqp';
+} from '@h2-trust/messaging';
 import {
   AccountingPeriodMatchingResultDto,
   AuthenticatedKCUser,

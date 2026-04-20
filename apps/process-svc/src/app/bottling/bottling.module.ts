@@ -7,7 +7,7 @@
  */
 
 import { Module } from '@nestjs/common';
-import { Broker } from '@h2-trust/amqp';
+import { Broker } from '@h2-trust/messaging';
 import { DatabaseModule } from '@h2-trust/database';
 import { StorageModule } from '@h2-trust/storage';
 import { ProcessStepModule } from '../process-step/process-step.module';

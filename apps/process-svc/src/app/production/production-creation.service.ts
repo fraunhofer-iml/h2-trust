@@ -13,7 +13,7 @@ import { DigitalProductPassportService } from '../digital-product-passport/digit
 import { ProcessStepService } from '../process-step/process-step.service';
 import { ProductionAssembler } from './production.assembler';
 import { ConcreteUnitEntity, CreateManyProcessStepsPayload, CreateProductionEntity, HydrogenProductionUnitEntity, PowerProductionUnitEntity, ProcessStepEntity, ProductionChainEntity } from '@h2-trust/contracts';
-import { BrokerException } from '@h2-trust/amqp';
+import { BrokerException } from '@h2-trust/messaging';
 
 @Injectable()
 export class ProductionCreationService {

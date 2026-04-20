@@ -12,7 +12,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
   UnitMessagePatterns,
-} from '@h2-trust/amqp';
+} from '@h2-trust/messaging';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { StagedProductionRepository } from '@h2-trust/database';
 import { BatchType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';

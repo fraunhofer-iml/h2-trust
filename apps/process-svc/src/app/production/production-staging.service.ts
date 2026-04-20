@@ -9,7 +9,7 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
   BrokerException,
-} from '@h2-trust/amqp';
+} from '@h2-trust/messaging';
 import { BlockchainService, ProofEntry } from '@h2-trust/blockchain';
 import { FeatureFlagService } from '@h2-trust/configuration';
 import { CsvImportRepository, PrismaService, StagedProductionRepository } from '@h2-trust/database';

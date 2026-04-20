@@ -11,7 +11,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   BrokerQueues,
-} from '@h2-trust/amqp';
+} from '@h2-trust/messaging';
 import {
   BaseUnitDeepDbTypeMock,
   baseUnitDeepQueryArgs,
