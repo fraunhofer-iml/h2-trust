@@ -7,10 +7,13 @@
  */
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateHydrogenTransportationPayload } from '@h2-trust/contracts';
+import {
+  CreateHydrogenTransportationPayload,
+  ProcessStepEntity,
+  TransportationDetailsEntity,
+} from '@h2-trust/contracts';
 import { BatchType, FuelType, ProcessType, TransportMode } from '@h2-trust/domain';
 import { ProcessStepService } from '../process-step/process-step.service';
-import { ProcessStepEntity, TransportationDetailsEntity } from '@h2-trust/contracts';
 
 @Injectable()
 export class TransportationService {

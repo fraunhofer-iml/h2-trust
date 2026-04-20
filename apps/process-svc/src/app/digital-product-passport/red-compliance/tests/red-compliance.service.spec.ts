@@ -7,12 +7,12 @@
  */
 
 import { RedComplianceEntity } from '@h2-trust/contracts';
-import { BiddingZone } from '@h2-trust/domain';
 import {
   HydrogenProductionUnitEntityFixture,
   PowerProductionUnitEntityFixture,
   ProcessStepEntityFixture,
 } from '@h2-trust/contracts/testing';
+import { BiddingZone } from '@h2-trust/domain';
 import {
   areUnitsInSameBiddingZone,
   determineRedCompliance,

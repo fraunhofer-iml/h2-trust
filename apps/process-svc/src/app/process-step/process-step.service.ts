@@ -7,15 +7,19 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import { CentralizedStorageConfiguration, ConfigurationService } from '@h2-trust/configuration';
 import {
+  CreateHydrogenProductionStatisticsPayload,
+  CreateManyProcessStepsPayload,
   DocumentEntity,
   PaginatedProcessStepEntity,
   ProcessStepEntity,
+  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
+  ReadProcessStepsByPredecessorTypesAndOwnerPayload,
+  ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/contracts';
-import { CentralizedStorageConfiguration, ConfigurationService } from '@h2-trust/configuration';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
 import { ProcessType, RfnboType } from '@h2-trust/domain';
-import { CreateHydrogenProductionStatisticsPayload, CreateManyProcessStepsPayload, ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload, ReadProcessStepsByPredecessorTypesAndOwnerPayload, ReadProcessStepsByTypesAndActiveAndOwnerPayload } from '@h2-trust/contracts';
 
 @Injectable()
 export class ProcessStepService {

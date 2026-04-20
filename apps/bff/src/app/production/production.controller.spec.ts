@@ -9,11 +9,6 @@
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
-  BrokerQueues,
-  ProcessStepMessagePatterns,
-  ProductionMessagePatterns,
-} from '@h2-trust/messaging';
-import {
   AccountingPeriodMatchingResultDto,
   AuthenticatedKCUser,
   CreateProductionDto,
@@ -25,20 +20,30 @@ import {
   UserDetailsDtoMock,
 } from '@h2-trust/contracts';
 import {
+  BatchEntityFixture,
+  HydrogenProductionUnitEntityFixture,
+  UserEntityFixture,
+} from '@h2-trust/contracts/testing';
+import {
   CsvDocumentIntegrityStatus,
   EnergySource,
   HydrogenColor,
   PowerProductionType,
   ProcessType,
 } from '@h2-trust/domain';
-import { BatchEntityFixture, HydrogenProductionUnitEntityFixture, UserEntityFixture } from '@h2-trust/contracts/testing';
+import { BrokerQueues, ProcessStepMessagePatterns, ProductionMessagePatterns } from '@h2-trust/messaging';
 import 'multer';
 import { of } from 'rxjs';
+import {
+  PaginatedProcessStepEntity,
+  PowerProductionTypeEntity,
+  ProcessStepEntity,
+  VerifyCsvDocumentIntegrityResultEntity,
+} from '@h2-trust/contracts';
 import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
-import { PaginatedProcessStepEntity, PowerProductionTypeEntity, ProcessStepEntity, VerifyCsvDocumentIntegrityResultEntity } from '@h2-trust/contracts';
 
 describe('ProductionController', () => {
   let controller: ProductionController;

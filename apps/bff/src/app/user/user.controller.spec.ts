@@ -9,12 +9,11 @@
 import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues, UserMessagePatterns } from '@h2-trust/messaging';
-import { UserDetailsDto } from '@h2-trust/contracts';
+import { ReadByIdPayload, UserDetailsDto, UserEntity } from '@h2-trust/contracts';
 import { UserEntityFixture } from '@h2-trust/contracts/testing';
+import { BrokerQueues, UserMessagePatterns } from '@h2-trust/messaging';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
-import { ReadByIdPayload, UserEntity } from '@h2-trust/contracts';
 
 describe('UserController', () => {
   let controller: UserController;

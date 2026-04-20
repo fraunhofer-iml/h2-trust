@@ -9,9 +9,8 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { ReadByIdPayload, UserDetailsDto } from '@h2-trust/contracts';
 import { BrokerQueues, UserMessagePatterns } from '@h2-trust/messaging';
-import { UserDetailsDto } from '@h2-trust/contracts';
-import { ReadByIdPayload } from '@h2-trust/contracts';
 
 @Injectable()
 export class UserService {

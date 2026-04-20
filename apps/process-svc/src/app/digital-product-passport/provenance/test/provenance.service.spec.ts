@@ -8,8 +8,8 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProvenanceEntity } from '@h2-trust/contracts';
-import { ProcessType } from '@h2-trust/domain';
 import { ProcessStepEntityFixture } from '@h2-trust/contracts/testing';
+import { ProcessType } from '@h2-trust/domain';
 import { ProcessStepService } from '../../../process-step/process-step.service';
 import { ProvenanceService } from '../provenance.service';
 import { TraversalService } from '../traversal.service';

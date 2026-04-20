@@ -9,8 +9,8 @@
 import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues, CompanyMessagePatterns } from '@h2-trust/messaging';
 import { CompanyDto, CompanyDtoMock } from '@h2-trust/contracts';
+import { BrokerQueues, CompanyMessagePatterns } from '@h2-trust/messaging';
 import { CompanyController } from './company.controller';
 import { CompanyService } from './company.service';
 

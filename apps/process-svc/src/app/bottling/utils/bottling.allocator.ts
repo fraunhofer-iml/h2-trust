@@ -7,9 +7,9 @@
  */
 
 import { HttpStatus } from '@nestjs/common';
-import { BrokerException } from '@h2-trust/messaging';
+import { BatchEntity, HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/contracts';
 import { BatchType, ProcessType, RfnboType } from '@h2-trust/domain';
-import { BatchEntity, ProcessStepEntity, HydrogenComponentEntity } from '@h2-trust/contracts';
+import { BrokerException } from '@h2-trust/messaging';
 
 export interface BottlingAllocation {
   batchesForBottle: BatchEntity[];

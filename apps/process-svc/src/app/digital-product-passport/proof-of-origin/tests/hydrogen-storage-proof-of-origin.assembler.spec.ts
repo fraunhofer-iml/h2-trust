@@ -13,8 +13,8 @@ import {
   ProofOfOriginHydrogenBatchEntity,
   ProvenanceEntity,
 } from '@h2-trust/contracts';
-import { BatchType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
 import { ProcessStepEntityFixture } from '@h2-trust/contracts/testing';
+import { BatchType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
 import { assembleHydrogenStorageSection } from '../hydrogen-storage-proof-of-origin.assembler';
 
 describe('HydrogenStorageProofOfOriginAssembler', () => {

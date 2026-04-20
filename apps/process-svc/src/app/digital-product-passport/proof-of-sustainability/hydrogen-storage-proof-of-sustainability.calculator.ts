@@ -7,7 +7,6 @@
  */
 
 import { ProcessStepEntity, ProofOfSustainabilityEmissionCalculationEntity } from '@h2-trust/contracts';
-import { EnumLabelMapper } from '@h2-trust/strings';
 import {
   CalculationTopic,
   EmissionNumericConstants,
@@ -17,6 +16,7 @@ import {
   PowerType,
   ProcessType,
 } from '@h2-trust/domain';
+import { EnumLabelMapper } from '@h2-trust/strings';
 
 export function computeHydrogenStorageEmissionCalculations(
   hydrogenProduction: ProcessStepEntity,

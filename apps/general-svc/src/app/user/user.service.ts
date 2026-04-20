@@ -7,9 +7,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { ReadByIdPayload } from '@h2-trust/contracts';
+import { ReadByIdPayload, UserEntity } from '@h2-trust/contracts';
 import { UserRepository } from '@h2-trust/database';
-import { UserEntity } from '@h2-trust/contracts';
 
 @Injectable()
 export class UserService {

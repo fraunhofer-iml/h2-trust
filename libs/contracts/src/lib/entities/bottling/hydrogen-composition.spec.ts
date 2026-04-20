@@ -6,10 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { HydrogenComponentEntity } from '@h2-trust/contracts';
 import { HydrogenColor, RfnboType } from '@h2-trust/domain';
 import { BrokerException } from '../../../../../messaging/src/lib/broker/broker-exception';
 import { HydrogenCompositionUtil } from './hydrogen-composition.util';
-import { HydrogenComponentEntity } from '@h2-trust/contracts';
 
 describe('HydrogenCompositionUtil', () => {
   describe('computeHydrogenComposition', () => {

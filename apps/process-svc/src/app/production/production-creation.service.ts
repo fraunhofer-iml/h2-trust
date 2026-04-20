@@ -8,12 +8,20 @@
 
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { ConfigurationService } from '@h2-trust/configuration';
+import {
+  ConcreteUnitEntity,
+  CreateManyProcessStepsPayload,
+  CreateProductionEntity,
+  HydrogenProductionUnitEntity,
+  PowerProductionUnitEntity,
+  ProcessStepEntity,
+  ProductionChainEntity,
+} from '@h2-trust/contracts';
 import { BatchType, RfnboType } from '@h2-trust/domain';
+import { BrokerException } from '@h2-trust/messaging';
 import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { ProductionAssembler } from './production.assembler';
-import { ConcreteUnitEntity, CreateManyProcessStepsPayload, CreateProductionEntity, HydrogenProductionUnitEntity, PowerProductionUnitEntity, ProcessStepEntity, ProductionChainEntity } from '@h2-trust/contracts';
-import { BrokerException } from '@h2-trust/messaging';
 
 @Injectable()
 export class ProductionCreationService {

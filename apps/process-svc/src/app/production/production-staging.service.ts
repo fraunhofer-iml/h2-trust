@@ -7,17 +7,21 @@
  */
 
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import {
-  BrokerException,
-} from '@h2-trust/messaging';
 import { BlockchainService, ProofEntry } from '@h2-trust/blockchain';
 import { FeatureFlagService } from '@h2-trust/configuration';
+import {
+  AccountingPeriodHydrogen,
+  AccountingPeriodPower,
+  CsvDocumentEntity,
+  ProductionStagingResultEntity,
+  StageProductionsPayload,
+} from '@h2-trust/contracts';
 import { CsvImportRepository, PrismaService, StagedProductionRepository } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
+import { BrokerException } from '@h2-trust/messaging';
 import { CsvImportProcessingService } from './csv-import-processing.service';
 import { ProductionDistributor } from './production-distributor';
 import { DocumentProof } from './production.types';
-import { ProductionStagingResultEntity, AccountingPeriodPower, AccountingPeriodHydrogen, CsvDocumentEntity, StageProductionsPayload } from '@h2-trust/contracts';
 
 @Injectable()
 export class ProductionStagingService {

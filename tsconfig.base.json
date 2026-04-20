@@ -30,24 +30,16 @@
     "target": "es2024",
     "lib": ["es2024"],
     "paths": {
-      "@h2-trust/messaging": [
-        "libs/messaging/src/index.ts"
-      ],
+      "@h2-trust/messaging": ["libs/messaging/src/index.ts"],
       "@h2-trust/blockchain": ["libs/blockchain/src/index.ts"],
       "@h2-trust/configuration": ["libs/configuration/src/index.ts"],
-      "@h2-trust/contracts": [
-        "libs/contracts/src/index.ts"
-      ],
-      "@h2-trust/contracts/testing": [
-        "libs/contracts/src/testing.ts"
-      ],
+      "@h2-trust/contracts": ["libs/contracts/src/index.ts"],
+      "@h2-trust/contracts/testing": ["libs/contracts/src/testing.ts"],
       "@h2-trust/csv-parser": ["libs/csv-parser/src/index.ts"],
       "@h2-trust/database": ["libs/database/src/index.ts"],
       "@h2-trust/domain": ["libs/domain/src/index.ts"],
       "@h2-trust/storage": ["libs/storage/src/index.ts"],
-      "@h2-trust/strings": [
-        "libs/strings/src/index.ts"
-      ],
+      "@h2-trust/strings": ["libs/strings/src/index.ts"],
       "@h2-trust/utils": ["libs/utils/src/index.ts"],
       "@fraunhofer-iml/contracts": ["libs/contracts/src/index.ts"],
       "@fraunhofer-iml/strings": ["libs/strings/src/index.ts"]

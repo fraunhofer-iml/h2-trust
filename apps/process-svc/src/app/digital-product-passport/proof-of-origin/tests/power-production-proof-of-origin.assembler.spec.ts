@@ -7,12 +7,12 @@
  */
 
 import { ProcessStepEntity, ProofOfOriginPowerBatchEntity } from '@h2-trust/contracts';
-import { BatchType, EnergySource } from '@h2-trust/domain';
 import {
   PowerProductionTypeEntityFixture,
   PowerProductionUnitEntityFixture,
   ProcessStepEntityFixture,
 } from '@h2-trust/contracts/testing';
+import { BatchType, EnergySource } from '@h2-trust/domain';
 import { buildPowerSupplySubClassifications } from '../power-production-proof-of-origin.assembler';
 
 describe('PowerProductionProofOfOriginAssembler', () => {

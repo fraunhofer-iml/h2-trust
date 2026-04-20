@@ -9,8 +9,8 @@
 import { HydrogenStorageUnitEntity } from '@h2-trust/contracts';
 import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { AddressEntityFixture } from '../../address/fixtures/address.fixture';
-import { CompanyEntityFixture } from '../../company/fixtures/company.fixture';
 import { HydrogenComponentEntityFixture } from '../../bottling/fixtures/hydrogen-component.fixture';
+import { CompanyEntityFixture } from '../../company/fixtures/company.fixture';
 
 export const HydrogenStorageUnitEntityFixture = {
   create: (overrides: Partial<HydrogenStorageUnitEntity> = {}): HydrogenStorageUnitEntity =>

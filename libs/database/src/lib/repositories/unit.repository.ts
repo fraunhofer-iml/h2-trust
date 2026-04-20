@@ -6,11 +6,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { BrokerException } from 'libs/messaging/src';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import {
-  BrokerException
-} from 'libs/messaging/src';
+  BaseUnitEntity,
+  ConcreteUnitEntity,
+  CreateHydrogenProductionUnitPayload,
+  CreateHydrogenStorageUnitPayload,
+  CreatePowerProductionUnitPayload,
+  HydrogenProductionUnitEntity,
+  HydrogenStorageUnitEntity,
+  PowerProductionUnitEntity,
+  UpdateUnitStatusPayload,
+} from '@h2-trust/contracts';
 import {
   buildHydrogenProductionUnitCreateInput,
   buildHydrogenStorageUnitCreateInput,
@@ -19,7 +28,6 @@ import {
 import { PrismaService } from '../prisma.service';
 import { baseUnitDeepQueryArgs } from '../query-args';
 import { assertAllIdsFound, assertRecordFound } from './utils';
-import { PowerProductionUnitEntity, HydrogenProductionUnitEntity, HydrogenStorageUnitEntity, BaseUnitEntity, CreateHydrogenProductionUnitPayload, CreateHydrogenStorageUnitPayload, CreatePowerProductionUnitPayload, UpdateUnitStatusPayload, ConcreteUnitEntity } from '@h2-trust/contracts';
 
 @Injectable()
 export class UnitRepository {

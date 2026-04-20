@@ -10,14 +10,19 @@ import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
-  BrokerQueues,
-  DigitalProductPassportPatterns,
-  ProcessStepMessagePatterns,
-} from '@h2-trust/messaging';
-import { BottlingDto, BottlingOverviewDto, DigitalProductPassportDto } from '@h2-trust/contracts';
+  BottlingDto,
+  BottlingOverviewDto,
+  CreateHydrogenBottlingPayload,
+  CreateHydrogenTransportationPayload,
+  DigitalProductPassportDto,
+  DigitalProductPassportEntity,
+  ProcessStepEntity,
+  ReadByIdPayload,
+  ReadProcessStepsByTypesAndActiveAndOwnerPayload,
+} from '@h2-trust/contracts';
 import { ProcessType } from '@h2-trust/domain';
+import { BrokerQueues, DigitalProductPassportPatterns, ProcessStepMessagePatterns } from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';
-import { ProcessStepEntity, DigitalProductPassportEntity, CreateHydrogenBottlingPayload, CreateHydrogenTransportationPayload, ReadByIdPayload, ReadProcessStepsByTypesAndActiveAndOwnerPayload } from '@h2-trust/contracts';
 
 @Injectable()
 export class BottlingService {

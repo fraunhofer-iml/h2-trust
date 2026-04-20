@@ -10,20 +10,20 @@ import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
-  BrokerQueues,
-  UnitMessagePatterns,
-} from '@h2-trust/messaging';
-import {
   HydrogenProductionOverviewDto,
   HydrogenProductionUnitCreateDtoMock,
   HydrogenProductionUnitDto,
+  HydrogenProductionUnitEntity,
   HydrogenProductionUnitInputDto,
   HydrogenStorageUnitCreateDtoMock,
   HydrogenStorageUnitDto,
+  HydrogenStorageUnitEntity,
   HydrogenStorageUnitInputDto,
   PowerProductionUnitCreateDtoMock,
   PowerProductionUnitDto,
+  PowerProductionUnitEntity,
   PowerProductionUnitInputDto,
+  ReadByIdPayload,
   UserDetailsDto,
 } from '@h2-trust/contracts';
 import {
@@ -31,10 +31,10 @@ import {
   HydrogenStorageUnitEntityFixture,
   PowerProductionUnitEntityFixture,
 } from '@h2-trust/contracts/testing';
+import { BrokerQueues, UnitMessagePatterns } from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
-import { HydrogenProductionUnitEntity, HydrogenStorageUnitEntity, PowerProductionUnitEntity, ReadByIdPayload } from '@h2-trust/contracts';
 
 describe('UnitController', () => {
   let controller: UnitController;

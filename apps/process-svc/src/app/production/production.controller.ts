@@ -9,12 +9,21 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
-  ProductionMessagePatterns,
-} from '@h2-trust/messaging';
+  CreateHydrogenProductionStatisticsPayload,
+  CreateProductionsPayload,
+  CsvDocumentEntity,
+  FinalizeProductionsPayload,
+  ProcessStepEntity,
+  ProductionStagingResultEntity,
+  ProductionStatisticsEntity,
+  ReadByIdPayload,
+  StageProductionsPayload,
+  VerifyCsvDocumentIntegrityResultEntity,
+} from '@h2-trust/contracts';
+import { ProductionMessagePatterns } from '@h2-trust/messaging';
 import { CsvDocumentService } from './csv-document.service';
 import { ProductionStagingService } from './production-staging.service';
 import { ProductionService } from './production.service';
-import { CreateHydrogenProductionStatisticsPayload, CreateProductionsPayload, CsvDocumentEntity, FinalizeProductionsPayload, ProcessStepEntity, ProductionStagingResultEntity, ProductionStatisticsEntity, ReadByIdPayload, StageProductionsPayload, VerifyCsvDocumentIntegrityResultEntity } from '@h2-trust/contracts';
 
 @Controller()
 export class ProductionController {

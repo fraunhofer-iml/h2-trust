@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus } from '@nestjs/common';
 import { BrokerException } from 'libs/messaging/src';
+import { HttpStatus } from '@nestjs/common';
 
 export function assertRecordFound(fetchedRecord: any, id: string, entityLabel = 'Record') {
   if (!fetchedRecord) {

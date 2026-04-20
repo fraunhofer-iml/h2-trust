@@ -13,13 +13,13 @@ import {
   ProofOfOriginSectionEntity,
   ProvenanceEntity,
 } from '@h2-trust/contracts';
-import { HydrogenColor, ProcessType, ProofOfOrigin } from '@h2-trust/domain';
 import {
   BatchEntityFixture,
   ProcessStepEntityFixture,
   ProductionChainEntityFixture,
   QualityDetailsEntityFixture,
 } from '@h2-trust/contracts/testing';
+import { HydrogenColor, ProcessType, ProofOfOrigin } from '@h2-trust/domain';
 import { assembleHydrogenBottlingSection } from '../hydrogen-bottling-proof-of-origin.assembler';
 
 describe('HydrogenBottlingProofOfOriginAssembler', () => {

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EmissionProcessStepType } from "../../process-step";
+import { EmissionProcessStepType } from '../../process-step';
 
 export class EmissionForProcessStepDto {
   amount: number;

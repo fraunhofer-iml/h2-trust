@@ -7,9 +7,9 @@
  */
 
 import { HttpStatus } from '@nestjs/common';
-import { BrokerException } from '@h2-trust/messaging';
-import { BatchType, HydrogenColor, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { BatchEntity, CreateHydrogenBottlingPayload, ProcessStepEntity } from '@h2-trust/contracts';
+import { BatchType, HydrogenColor, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
+import { BrokerException } from '@h2-trust/messaging';
 
 export class BottlingProcessStepAssembler {
   static assemble(payload: CreateHydrogenBottlingPayload, batchesForBottle: BatchEntity[]): ProcessStepEntity {

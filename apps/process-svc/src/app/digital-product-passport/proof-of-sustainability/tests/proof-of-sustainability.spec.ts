@@ -14,8 +14,8 @@ import {
   ProvenanceEntity,
   TransportationDetailsEntity,
 } from '@h2-trust/contracts';
-import { CalculationTopic } from '@h2-trust/domain';
 import { ProcessStepEntityFixture, TransportationDetailsEntityFixture } from '@h2-trust/contracts/testing';
+import { CalculationTopic } from '@h2-trust/domain';
 import { assembleHydrogenBottlingEmissions } from '../hydrogen-bottling-proof-of-sustainability.assembler';
 import { assembleHydrogenProductionEmissions } from '../hydrogen-production-proof-of-sustainability.assembler';
 import { computeHydrogenStorageEmissionCalculations } from '../hydrogen-storage-proof-of-sustainability.calculator';

@@ -9,14 +9,25 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
-  UnitMessagePatterns,
-} from '@h2-trust/messaging';
+  BaseUnitEntity,
+  ConcreteUnitEntity,
+  CreateHydrogenProductionUnitPayload,
+  CreateHydrogenStorageUnitPayload,
+  CreatePowerProductionUnitPayload,
+  HydrogenProductionUnitEntity,
+  HydrogenStorageUnitEntity,
+  PowerProductionTypeEntity,
+  PowerProductionUnitEntity,
+  ReadByIdPayload,
+  ReadByIdsPayload,
+  UpdateUnitStatusPayload,
+} from '@h2-trust/contracts';
+import { UnitMessagePatterns } from '@h2-trust/messaging';
 import { UnitService } from './unit.service';
-import { BaseUnitEntity, ConcreteUnitEntity, CreateHydrogenProductionUnitPayload, CreateHydrogenStorageUnitPayload, CreatePowerProductionUnitPayload, HydrogenProductionUnitEntity, HydrogenStorageUnitEntity, PowerProductionTypeEntity, PowerProductionUnitEntity, ReadByIdPayload, ReadByIdsPayload, UpdateUnitStatusPayload } from '@h2-trust/contracts';
 
 @Controller()
 export class UnitController {
-  constructor(private readonly service: UnitService) { }
+  constructor(private readonly service: UnitService) {}
 
   @MessagePattern(UnitMessagePatterns.READ)
   async readUnit(payload: ReadByIdPayload): Promise<ConcreteUnitEntity> {

@@ -13,7 +13,6 @@ import {
   ProofOfSustainabilityEmissionEntity,
   ProvenanceEntity,
 } from '@h2-trust/contracts';
-import { EnumLabelMapper } from '@h2-trust/strings';
 import {
   CalculationTopic,
   EmissionNumericConstants,
@@ -23,6 +22,7 @@ import {
   PowerType,
   ProcessType,
 } from '@h2-trust/domain';
+import { EnumLabelMapper } from '@h2-trust/strings';
 import { ProofOfSustainabilityAssembler } from './proof-of-sustainability-assembler.interface';
 
 export function assemblePowerSupplyEmissionCalculation(

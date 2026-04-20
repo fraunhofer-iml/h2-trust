@@ -17,9 +17,9 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/contracts';
 import { BatchType, ProcessType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
+import { BrokerException } from '@h2-trust/messaging';
 import { assembleHydrogenBottlingEmissionCalculation } from '../proof-of-sustainability/hydrogen-bottling-proof-of-sustainability.assembler';
 import { ProofOfOriginAssembler } from './proof-of-origin-assembler.interface';
-import { BrokerException } from '@h2-trust/messaging';
 
 /**
  * Calculates the hydrogen components of the bottling as a proportion of the total volume bottled.

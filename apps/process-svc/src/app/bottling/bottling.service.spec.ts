@@ -8,15 +8,15 @@
 
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues } from '@h2-trust/messaging';
+import { CreateHydrogenBottlingPayload, DocumentEntity } from '@h2-trust/contracts';
+import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/contracts/testing';
 import { DocumentRepository } from '@h2-trust/database';
 import { HydrogenColor, RfnboType } from '@h2-trust/domain';
-import { BatchEntityFixture, ProcessStepEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/contracts/testing';
+import { BrokerQueues } from '@h2-trust/messaging';
 import { CentralizedStorageService, ContentType } from '@h2-trust/storage';
 import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { BottlingService } from './bottling.service';
-import { CreateHydrogenBottlingPayload, DocumentEntity } from '@h2-trust/contracts';
 
 describe('BottlingService', () => {
   let service: BottlingService;

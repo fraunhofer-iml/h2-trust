@@ -13,8 +13,8 @@ import { DocumentEntityFixture } from '../../document/fixtures/document.fixture'
 import { HydrogenProductionUnitEntityFixture } from '../../unit/fixtures/hydrogen-production-unit.fixture';
 import { HydrogenStorageUnitEntityFixture } from '../../unit/fixtures/hydrogen-storage-unit.fixture';
 import { PowerProductionUnitEntityFixture } from '../../unit/fixtures/power-production-unit.fixture';
-import { TransportationDetailsEntityFixture } from './transportation-details.fixture';
 import { UserEntityFixture } from '../../user/fixtures/user.fixture';
+import { TransportationDetailsEntityFixture } from './transportation-details.fixture';
 
 export const ProcessStepEntityFixture = {
   createPowerProduction: (overrides: Partial<ProcessStepEntity> = {}): ProcessStepEntity =>

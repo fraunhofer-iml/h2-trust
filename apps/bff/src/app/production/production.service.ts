@@ -9,29 +9,43 @@
 import { firstValueFrom } from 'rxjs';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { HashUtil } from '@h2-trust/blockchain';
+import {
+  AccountingPeriodMatchingResultDto,
+  CreateHydrogenProductionStatisticsPayload,
+  CreateProductionDto,
+  CreateProductionsPayload,
+  CsvDocumentEntity,
+  CsvDocumentIntegrityResultDto,
+  FinalizeProductionsPayload,
+  ImportSubmissionDto,
+  PaginatedProcessStepEntity,
+  PaginatedProductionDataDto,
+  PowerProductionUnitEntity,
+  ProcessedCsvDto,
+  ProcessStepEntity,
+  ProductionCSVUploadDto,
+  ProductionDataFilter,
+  ProductionOverviewDto,
+  ProductionStagingResultEntity,
+  ProductionStatisticsDto,
+  ProductionStatisticsEntity,
+  ReadByIdPayload,
+  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
+  StageProductionsPayload,
+  UnitFileImport,
+  UserDetailsDto,
+  VerifyCsvDocumentIntegrityResultEntity,
+} from '@h2-trust/contracts';
+import { BatchType, ProcessType } from '@h2-trust/domain';
 import {
   BrokerQueues,
   PowerAccessApprovalPatterns,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
 } from '@h2-trust/messaging';
-import {
-  AccountingPeriodMatchingResultDto,
-  CreateProductionDto,
-  CsvDocumentIntegrityResultDto,
-  ImportSubmissionDto,
-  PaginatedProductionDataDto,
-  ProcessedCsvDto,
-  ProductionCSVUploadDto,
-  ProductionOverviewDto,
-  ProductionStatisticsDto,
-  UserDetailsDto,
-} from '@h2-trust/contracts';
-import { HashUtil } from '@h2-trust/blockchain';
-import { BatchType, ProcessType } from '@h2-trust/domain';
 import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
-import { CreateHydrogenProductionStatisticsPayload, CreateProductionsPayload, CsvDocumentEntity, FinalizeProductionsPayload, PaginatedProcessStepEntity, PowerProductionUnitEntity, ProcessStepEntity, ProductionDataFilter, ProductionStagingResultEntity, ProductionStatisticsEntity, ReadByIdPayload, ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload, StageProductionsPayload, UnitFileImport, VerifyCsvDocumentIntegrityResultEntity } from '@h2-trust/contracts';
 
 @Injectable()
 export class ProductionService {
@@ -40,7 +54,7 @@ export class ProductionService {
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly storageService: CentralizedStorageService,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
   async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
     const payload = new CreateProductionsPayload(

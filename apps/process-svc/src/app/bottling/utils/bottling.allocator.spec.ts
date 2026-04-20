@@ -7,7 +7,6 @@
  */
 
 import { HydrogenComponentEntity } from '@h2-trust/contracts';
-import { BatchType, HydrogenColor, ProcessType, RfnboType } from '@h2-trust/domain';
 import {
   BatchEntityFixture,
   HydrogenComponentEntityFixture,
@@ -15,6 +14,7 @@ import {
   ProcessStepEntityFixture,
   QualityDetailsEntityFixture,
 } from '@h2-trust/contracts/testing';
+import { BatchType, HydrogenColor, ProcessType, RfnboType } from '@h2-trust/domain';
 import { BottlingAllocator } from './bottling.allocator';
 
 describe('BottlingAllocator', () => {

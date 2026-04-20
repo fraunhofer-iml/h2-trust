@@ -7,13 +7,12 @@
  */
 
 import { Injectable, Logger } from '@nestjs/common';
-import { ReadByIdPayload } from '@h2-trust/contracts';
 import { BlockchainService, HashUtil } from '@h2-trust/blockchain';
 import { FeatureFlagService } from '@h2-trust/configuration';
+import { CsvDocumentEntity, ReadByIdPayload, VerifyCsvDocumentIntegrityResultEntity } from '@h2-trust/contracts';
 import { CsvImportRepository } from '@h2-trust/database';
 import { CsvDocumentIntegrityStatus } from '@h2-trust/domain';
 import { CentralizedStorageService, DecentralizedStorageService } from '@h2-trust/storage';
-import { CsvDocumentEntity, VerifyCsvDocumentIntegrityResultEntity } from '@h2-trust/contracts';
 
 @Injectable()
 export class CsvDocumentService {
