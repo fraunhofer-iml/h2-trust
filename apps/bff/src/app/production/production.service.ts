@@ -143,13 +143,13 @@ export class ProductionService {
     types: BatchType | BatchType[],
   ): UnitFileImport[] {
     const normalizedFiles = Array.isArray(files) ? files : [files];
-    const normalizedUnitIds = Array.isArray(unitIds) ? unitIds : [unitIds];
-    const normalizedTypes = Array.isArray(types) ? types : [types];
-    const containsInvalidBatchTypes = normalizedTypes.find(
+    const normalizedUnitIds: string[] = Array.isArray(unitIds) ? unitIds : [unitIds];
+    const normalizedTypes: BatchType[] = Array.isArray(types) ? types : [types];
+    const invalidBatchType: BatchType = normalizedTypes.find(
       (type) => type != BatchType.HYDROGEN && type != BatchType.POWER,
     );
 
-    if (containsInvalidBatchTypes) {
+    if (invalidBatchType) {
       throw new BadRequestException(`Stage production contains invalid types.`);
     }
 
