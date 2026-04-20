@@ -112,7 +112,11 @@ export class ProductionService {
     return ProductionStatisticsDto.fromEntity(productionStatistics);
   }
 
-  async importCsvFiles(stageProductionFiles: Express.Multer.File[], dto: ProductionCSVUploadDto, userId: string) {
+  async importCsvFiles(
+    stageProductionFiles: Express.Multer.File | Express.Multer.File[],
+    dto: ProductionCSVUploadDto,
+    userId: string,
+  ) {
     const stageProductions: UnitFileImport[] = this.mapUnitsToFiles(
       dto.stageProductionUnitIds,
       stageProductionFiles,
@@ -135,23 +139,24 @@ export class ProductionService {
 
   private mapUnitsToFiles(
     unitIds: string | string[],
-    files: Express.Multer.File[],
+    files: Express.Multer.File | Express.Multer.File[],
     types: BatchType | BatchType[],
   ): UnitFileImport[] {
-    if (!files || files.length === 0) {
-      throw new BadRequestException(`Missing file for ${types} production.`);
-    }
-
+    const normalizedFiles = Array.isArray(files) ? files : [files];
     const normalizedUnitIds = Array.isArray(unitIds) ? unitIds : [unitIds];
     const normalizedTypes = Array.isArray(types) ? types : [types];
 
-    if (normalizedUnitIds.length < files.length) {
+    if (!normalizedFiles || normalizedFiles.length === 0) {
+      throw new BadRequestException(`Missing file for ${types} production.`);
+    }
+
+    if (normalizedUnitIds.length < normalizedFiles.length) {
       throw new BadRequestException(
-        `Not enough unit IDs provided for ${types} production files: expected ${files.length}, got ${normalizedUnitIds.length}.`,
+        `Not enough unit IDs provided for ${types} production files: expected ${normalizedFiles.length}, got ${normalizedUnitIds.length}.`,
       );
     }
 
-    return files.map((file, i) => {
+    return normalizedFiles.map((file, i) => {
       const unitId = normalizedUnitIds[i];
       const productionType = normalizedTypes[i];
       const hashedFileBuffer = HashUtil.hashBuffer(file.buffer);
