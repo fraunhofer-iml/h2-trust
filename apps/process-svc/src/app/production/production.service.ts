@@ -11,7 +11,6 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
-  ConcreteUnitEntity,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
@@ -20,7 +19,7 @@ import { BatchType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { ProductionCreationService } from './production-creation.service';
 import { ProductionUtils } from './utils/production.utils';
-import { BatchEntity, CreateHydrogenProductionStatisticsPayload, CreateProductionEntity, CreateProductionsPayload, FinalizeProductionsPayload, HydrogenProductionUnitEntity, HydrogenStatisticsEntity, PowerProductionUnitEntity, PowerStatisticsEntity, ProcessStepEntity, ProductionStatisticsEntity, ReadByIdPayload, ReadByIdsPayload, StagedProductionEntity } from '@h2-trust/contracts';
+import { BatchEntity, ConcreteUnitEntity, CreateHydrogenProductionStatisticsPayload, CreateProductionEntity, CreateProductionsPayload, FinalizeProductionsPayload, HydrogenProductionUnitEntity, HydrogenStatisticsEntity, PowerProductionUnitEntity, PowerStatisticsEntity, ProcessStepEntity, ProductionStatisticsEntity, ReadByIdPayload, ReadByIdsPayload, StagedProductionEntity } from '@h2-trust/contracts';
 
 @Injectable()
 export class ProductionService {

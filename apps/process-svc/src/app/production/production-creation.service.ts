@@ -7,16 +7,13 @@
  */
 
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import {
-  BrokerException,
-  ConcreteUnitEntity,
-} from '@h2-trust/amqp';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { BatchType, RfnboType } from '@h2-trust/domain';
 import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { ProductionAssembler } from './production.assembler';
-import { CreateManyProcessStepsPayload, CreateProductionEntity, HydrogenProductionUnitEntity, PowerProductionUnitEntity, ProcessStepEntity, ProductionChainEntity } from '@h2-trust/contracts';
+import { ConcreteUnitEntity, CreateManyProcessStepsPayload, CreateProductionEntity, HydrogenProductionUnitEntity, PowerProductionUnitEntity, ProcessStepEntity, ProductionChainEntity } from '@h2-trust/contracts';
+import { BrokerException } from '@h2-trust/amqp';
 
 @Injectable()
 export class ProductionCreationService {

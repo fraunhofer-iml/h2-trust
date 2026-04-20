@@ -9,12 +9,12 @@
 import { ProcessStepDeepDbType } from '@h2-trust/database';
 import { ProcessType } from '@h2-trust/domain';
 import { assertValidEnum } from '@h2-trust/utils';
-import { ConcreteUnitEntity } from '../../../../../amqp/src/lib/types';
 import { BatchEntity } from '../batch';
 import { DocumentEntity } from '../document';
 import { getSpecificUnit } from '../unit/unit.factory';
 import { UserEntity } from '../user';
 import { TransportationDetailsEntity } from './transportation-details.entity';
+import { ConcreteUnitEntity } from '../unit';
 
 export class ProcessStepEntity {
   id?: string;

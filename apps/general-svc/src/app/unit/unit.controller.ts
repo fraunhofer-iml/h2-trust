@@ -9,11 +9,10 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
-  ConcreteUnitEntity,
   UnitMessagePatterns,
 } from '@h2-trust/amqp';
 import { UnitService } from './unit.service';
-import { BaseUnitEntity, CreateHydrogenProductionUnitPayload, CreateHydrogenStorageUnitPayload, CreatePowerProductionUnitPayload, HydrogenProductionUnitEntity, HydrogenStorageUnitEntity, PowerProductionTypeEntity, PowerProductionUnitEntity, ReadByIdPayload, ReadByIdsPayload, UpdateUnitStatusPayload } from '@h2-trust/contracts';
+import { BaseUnitEntity, ConcreteUnitEntity, CreateHydrogenProductionUnitPayload, CreateHydrogenStorageUnitPayload, CreatePowerProductionUnitPayload, HydrogenProductionUnitEntity, HydrogenStorageUnitEntity, PowerProductionTypeEntity, PowerProductionUnitEntity, ReadByIdPayload, ReadByIdsPayload, UpdateUnitStatusPayload } from '@h2-trust/contracts';
 
 @Controller()
 export class UnitController {
