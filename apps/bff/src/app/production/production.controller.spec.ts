@@ -25,6 +25,7 @@ import {
   UserEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
 import {
+  BatchType,
   CsvDocumentIntegrityStatus,
   EnergySource,
   HydrogenColor,
@@ -199,11 +200,9 @@ describe('ProductionController', () => {
   it('should throw because files are missing ', async () => {
     const givenAuthenticatedUser: AuthenticatedKCUser = { sub: 'user-1' };
 
-    const dto: ProductionCSVUploadDto = { hydrogenProductionUnitIds: [], powerProductionUnitIds: [] };
+    const dto: ProductionCSVUploadDto = { unitIds: [], csvContentType: BatchType.HYDROGEN };
 
-    await expect(
-      controller.importCsvFile(dto, { powerProductionFiles: [], hydrogenProductionFiles: [] }, givenAuthenticatedUser),
-    ).rejects.toThrow(Error);
+    await expect(controller.importCsvFile(dto, [], givenAuthenticatedUser)).rejects.toThrow(Error);
   });
 
   it('should parse csv', async () => {
@@ -258,23 +257,16 @@ describe('ProductionController', () => {
       .spyOn(processSvc, 'send')
       .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(expectedResponse));
 
-    const dto: ProductionCSVUploadDto = {
-      hydrogenProductionUnitIds: ['hydrogen-production-unit-1'],
-      powerProductionUnitIds: ['power-production-unit-1'],
-    };
+    const dto: ProductionCSVUploadDto = { unitIds: ['id', 'id'], csvContentType: BatchType.HYDROGEN };
 
-    const actualResponse = await controller.importCsvFile(
-      dto,
-      { powerProductionFiles: [powerFile], hydrogenProductionFiles: [h2File] },
-      givenAuthenticatedUser,
-    );
+    const actualResponse = await controller.importCsvFile(dto, [powerFile, h2File], givenAuthenticatedUser);
 
     expect(actualResponse.numberOfBatches).toBe(1);
   });
 
   it('should throw error because unitId is missing', async () => {
     const givenAuthenticatedUser: AuthenticatedKCUser = { sub: 'user-1' };
-    const dto: ProductionCSVUploadDto = { hydrogenProductionUnitIds: ['test-id'], powerProductionUnitIds: [] };
+    const dto: ProductionCSVUploadDto = { unitIds: [], csvContentType: BatchType.HYDROGEN };
 
     const powerContent = 'time,amount\n2025-11-27T09:00:00Z,2\n2025-11-27T09:00:00Z,2';
     const powerFile: Express.Multer.File = {
@@ -290,27 +282,9 @@ describe('ProductionController', () => {
       stream: null as any,
     };
 
-    const h2Content = 'time,amount,power\n2025-11-27T09:00:00Z,2\n2025-11-27T09:00:00Z,2,2';
-    const h2File: Express.Multer.File = {
-      fieldname: 'file',
-      originalname: 'h2File.csv',
-      encoding: '7bit',
-      mimetype: 'text/csv',
-      buffer: Buffer.from(h2Content, 'utf-8'),
-      size: Buffer.byteLength(h2Content),
-      destination: '',
-      filename: 'h2File',
-      path: '',
-      stream: null as any,
-    };
-
-    await expect(
-      controller.importCsvFile(
-        dto,
-        { powerProductionFiles: [powerFile], hydrogenProductionFiles: [h2File] },
-        givenAuthenticatedUser,
-      ),
-    ).rejects.toThrow('Not enough unit IDs provided for POWER production files: expected 1, got 0');
+    await expect(controller.importCsvFile(dto, [powerFile], givenAuthenticatedUser)).rejects.toThrow(
+      'Not enough unit IDs provided for POWER production files: expected 1, got 0',
+    );
   });
 
   it('should verify csv document integrity and return verification details', async () => {

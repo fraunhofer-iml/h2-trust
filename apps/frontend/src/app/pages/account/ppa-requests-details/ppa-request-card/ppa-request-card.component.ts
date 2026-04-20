@@ -17,7 +17,6 @@ import { MatDivider } from '@angular/material/divider';
 import { PpaRequestDto } from '@h2-trust/contracts/dtos';
 import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
-import { ConfirmationResult } from '../../dialog-data';
 import { RequestConfirmationDialogComponent } from '../ppa-confirmation/request-confirmation-dialog.component';
 
 @Component({
@@ -44,12 +43,8 @@ export class PpaRequestCardComponent {
   readonly dialog = inject(MatDialog);
 
   openDialog(status: PowerAccessApprovalStatus.APPROVED | PowerAccessApprovalStatus.REJECTED): void {
-    const dialogRef = this.dialog.open(RequestConfirmationDialogComponent, {
+    this.dialog.open(RequestConfirmationDialogComponent, {
       data: { status, request: this.request() },
-    });
-
-    dialogRef.afterClosed().subscribe((result: ConfirmationResult) => {
-      console.log(result);
     });
   }
 

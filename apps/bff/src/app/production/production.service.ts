@@ -117,18 +117,14 @@ export class ProductionService {
   }
 
   async importCsvFiles(
-    powerProductionFiles: Express.Multer.File[],
-    hydrogenProductionFiles: Express.Multer.File[],
+    powerProductionFiles: Express.Multer.File[] | Express.Multer.File,
+    hydrogenProductionFiles: Express.Multer.File[] | Express.Multer.File,
     dto: ProductionCSVUploadDto,
     userId: string,
   ) {
-    const powerProductions = this.mapUnitsToFiles(dto.powerProductionUnitIds, powerProductionFiles, BatchType.POWER);
+    const powerProductions = this.mapUnitsToFiles(dto.unitIds, powerProductionFiles, BatchType.POWER);
 
-    const hydrogenProductions = this.mapUnitsToFiles(
-      dto.hydrogenProductionUnitIds,
-      hydrogenProductionFiles,
-      BatchType.HYDROGEN,
-    );
+    const hydrogenProductions = this.mapUnitsToFiles(dto.unitIds, hydrogenProductionFiles, BatchType.HYDROGEN);
 
     const gridPowerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
       this.generalSvc.send(
@@ -149,20 +145,26 @@ export class ProductionService {
     return AccountingPeriodMatchingResultDto.fromEntity(matchingResult);
   }
 
-  private mapUnitsToFiles(unitIds: string | string[], files: Express.Multer.File[], type: BatchType): UnitFileImport[] {
-    if (!files || files.length === 0) {
+  private mapUnitsToFiles(
+    unitIds: string | string[],
+    files: Express.Multer.File | Express.Multer.File[],
+    type: BatchType,
+  ): UnitFileImport[] {
+    const normalizedFiles: Express.Multer.File[] = Array.isArray(files) ? files : [files];
+
+    if (!normalizedFiles || normalizedFiles.length === 0) {
       throw new BadRequestException(`Missing file for ${type} production.`);
     }
 
-    const normalizedUnitIds = Array.isArray(unitIds) ? unitIds : [unitIds];
+    const normalizedUnitIds: string[] = Array.isArray(unitIds) ? unitIds : [unitIds];
 
-    if (normalizedUnitIds.length < files.length) {
+    if (normalizedUnitIds.length < normalizedFiles.length) {
       throw new BadRequestException(
-        `Not enough unit IDs provided for ${type} production files: expected ${files.length}, got ${normalizedUnitIds.length}.`,
+        `Not enough unit IDs provided for ${type} production files: expected ${normalizedFiles.length}, got ${normalizedUnitIds.length}.`,
       );
     }
 
-    return files.map((file, i) => {
+    return normalizedFiles.map((file, i) => {
       const unitId = normalizedUnitIds[i];
       const hashedFileBuffer = HashUtil.hashBuffer(file.buffer);
       const encodedFileBuffer = file.buffer.toString('base64');
