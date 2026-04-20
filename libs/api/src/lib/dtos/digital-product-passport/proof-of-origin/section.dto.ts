@@ -16,7 +16,7 @@ import {
   ProofOfOriginSubClassificationEntity,
   ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/amqp';
-import { EnumLabelMapper } from '@h2-trust/api';
+import { EnumLabelMapper } from '@h2-trust/strings';
 import { BatchType, HydrogenColor, HydrogenProductionMethod, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentDto } from '../general-information';
 import { BatchDto } from './batch.dto';

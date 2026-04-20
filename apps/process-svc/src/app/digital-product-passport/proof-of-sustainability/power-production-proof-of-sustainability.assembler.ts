@@ -13,7 +13,7 @@ import {
   ProofOfSustainabilityEmissionEntity,
   ProvenanceEntity,
 } from '@h2-trust/amqp';
-import { EnumLabelMapper } from '@h2-trust/api';
+import { EnumLabelMapper } from '@h2-trust/strings';
 import {
   CalculationTopic,
   EmissionNumericConstants,

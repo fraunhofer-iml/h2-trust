@@ -7,5 +7,4 @@
  */
 
 export * from './lib/dtos';
-export * from './lib/labels';
 export * from './lib/types';
