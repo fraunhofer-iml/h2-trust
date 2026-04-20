@@ -24,9 +24,14 @@ export class UnitFileImport {
 
   @IsEnum(BatchType)
   @IsNotEmpty()
-  productionType: BatchType;
+  productionType: Exclude<BatchType, BatchType.WATER>;
 
-  constructor(unitId: string, hashedFileBuffer: string, encodedFileBuffer: string, productionType: BatchType) {
+  constructor(
+    unitId: string,
+    hashedFileBuffer: string,
+    encodedFileBuffer: string,
+    productionType: Exclude<BatchType, BatchType.WATER>,
+  ) {
     this.unitId = unitId;
     this.hashedFileBuffer = hashedFileBuffer;
     this.encodedFileBuffer = encodedFileBuffer;

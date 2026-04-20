@@ -18,10 +18,9 @@ import { ParsedImport } from './production.types';
 
 @Injectable()
 export class CsvImportProcessingService {
-  private static readonly validHeaders: Record<BatchType, string[]> = {
+  private static readonly validHeaders: Record<Exclude<BatchType, BatchType.WATER>, string[]> = {
     POWER: ['time', 'amount'],
     HYDROGEN: ['time', 'amount', 'power'],
-    WATER: [],
   };
 
   private readonly featureVerificationEnabled: boolean;

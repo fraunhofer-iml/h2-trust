@@ -145,6 +145,13 @@ export class ProductionService {
     const normalizedFiles = Array.isArray(files) ? files : [files];
     const normalizedUnitIds = Array.isArray(unitIds) ? unitIds : [unitIds];
     const normalizedTypes = Array.isArray(types) ? types : [types];
+    const containsInvalidBatchTypes = normalizedTypes.find(
+      (type) => type != BatchType.HYDROGEN && type != BatchType.POWER,
+    );
+
+    if (containsInvalidBatchTypes) {
+      throw new BadRequestException(`Stage production contains invalid types.`);
+    }
 
     if (!normalizedFiles || normalizedFiles.length === 0) {
       throw new BadRequestException(`Missing file for ${types} production.`);
@@ -161,7 +168,12 @@ export class ProductionService {
       const productionType = normalizedTypes[i];
       const hashedFileBuffer = HashUtil.hashBuffer(file.buffer);
       const encodedFileBuffer = file.buffer.toString('base64');
-      return new UnitFileImport(unitId, hashedFileBuffer, encodedFileBuffer, productionType);
+      return new UnitFileImport(
+        unitId,
+        hashedFileBuffer,
+        encodedFileBuffer,
+        productionType as BatchType.HYDROGEN | BatchType.POWER,
+      );
     });
   }
 
