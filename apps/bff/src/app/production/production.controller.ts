@@ -8,7 +8,7 @@
 
 import { AuthenticatedUser } from 'nest-keycloak-connect';
 import { Body, Controller, Get, Param, Post, Query, UploadedFiles, UseInterceptors } from '@nestjs/common';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -29,7 +29,6 @@ import {
   ProductionStatisticsDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/api';
-import { FileUploadKeys } from '@h2-trust/domain';
 import { ProductionService } from './production.service';
 
 @Controller('productions')
@@ -198,24 +197,15 @@ export class ProductionController {
   }
 
   @Post('csv/import')
-  @UseInterceptors(
-    FileFieldsInterceptor([{ name: FileUploadKeys.POWER_PRODUCTION }, { name: FileUploadKeys.HYDROGEN_PRODUCTION }]),
-  )
+  @UseInterceptors(FilesInterceptor('files'))
   importCsvFile(
     @Body() dto: ProductionCSVUploadDto,
     @UploadedFiles()
-    files: {
-      [FileUploadKeys.POWER_PRODUCTION]: Express.Multer.File[];
-      [FileUploadKeys.HYDROGEN_PRODUCTION]: Express.Multer.File[];
-    },
+    files: Express.Multer.File[] | Express.Multer.File,
     @AuthenticatedUser() user: AuthenticatedKCUser,
   ) {
-    return this.service.importCsvFiles(
-      files[FileUploadKeys.POWER_PRODUCTION],
-      files[FileUploadKeys.HYDROGEN_PRODUCTION],
-      dto,
-      user.sub,
-    );
+    // TODO-LG: adjust this endpoint (DUHGW-421)
+    return this.service.importCsvFiles(files, files, dto, user.sub);
   }
 
   @Post('csv/submit')

@@ -6,19 +6,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CommonModule } from '@angular/common';
 import { Component, input, output } from '@angular/core';
 import { FileTypes } from '../../shared/constants/file-types';
 
 @Component({
   selector: 'app-file-drag-and-drop',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './file-drag-and-drop.component.html',
 })
 export class FileDragAndDropComponent {
   acceptedFileTypes = input<FileTypes>();
+  disabled = input<boolean>(false);
   fileSelected = output<File>();
 
   onFileSelected(event: Event): void {
+    if (this.disabled()) return;
     const target = event.target as HTMLInputElement;
     if (!target.files) return;
     const file = target.files[0];
@@ -26,6 +29,7 @@ export class FileDragAndDropComponent {
   }
 
   onDrop(event: DragEvent): void {
+    if (this.disabled()) return;
     event.preventDefault();
     const file = event.dataTransfer?.files[0];
     if (!file) return;

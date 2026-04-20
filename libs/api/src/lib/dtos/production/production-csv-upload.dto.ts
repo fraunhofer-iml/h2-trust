@@ -6,29 +6,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ArrayNotEmpty, IsArray, IsNotEmpty, IsString, ValidateIf } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { ArrayNotEmpty, IsArray, IsIn, IsString } from 'class-validator';
+import { BatchType } from '@h2-trust/domain';
+import { type CsvContentType } from '../../types';
 
 export class ProductionCSVUploadDto {
-  @ValidateIf((o) => typeof o.powerProductionUnitIds === 'string')
-  @IsString()
-  @IsNotEmpty()
-  @ValidateIf((o) => Array.isArray(o.powerProductionUnitIds))
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
-  powerProductionUnitIds: string | string[];
+  unitIds: string | string[];
 
-  @ValidateIf((o) => typeof o.powerProductionUnitIds === 'string')
-  @IsString()
-  @IsNotEmpty()
-  @ValidateIf((o) => Array.isArray(o.powerProductionUnitIds))
-  @IsArray()
-  @ArrayNotEmpty()
-  @IsString({ each: true })
-  hydrogenProductionUnitIds: string | string[];
+  @IsIn([BatchType.POWER, BatchType.HYDROGEN])
+  csvContentType: CsvContentType;
 
-  constructor() {
-    this.powerProductionUnitIds = [];
-    this.hydrogenProductionUnitIds = [];
+  constructor(unitIds: string[], csvContentType: CsvContentType) {
+    this.unitIds = unitIds;
+    this.csvContentType = csvContentType;
   }
 }
