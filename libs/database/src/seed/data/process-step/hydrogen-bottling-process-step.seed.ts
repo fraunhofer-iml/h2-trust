@@ -8,12 +8,15 @@
 
 import { ProcessStep } from '@prisma/client';
 import { ProcessType } from '@h2-trust/domain';
+import { auditTimestamp } from '../audit-timestamp.constant';
 import { HydrogenStorageUnitSeed } from '../unit';
 import { UserSeed } from '../user.seed';
 
 export const HydrogenBottlingProcessStepSeed: readonly ProcessStep[] = Object.freeze([
   {
     id: 'process-step-hydrogen-bottling-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     type: ProcessType.HYDROGEN_BOTTLING,
     startedAt: new Date('2025-10-01T20:01:02.000Z'),
     endedAt: new Date('2025-10-01T20:01:02.000Z'),
@@ -23,6 +26,8 @@ export const HydrogenBottlingProcessStepSeed: readonly ProcessStep[] = Object.fr
   },
   {
     id: 'process-step-hydrogen-bottling-1',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     type: ProcessType.HYDROGEN_BOTTLING,
     startedAt: new Date('2025-10-03T13:11:41.000Z'),
     endedAt: new Date('2025-10-03T13:11:41.000Z'),
@@ -32,6 +37,8 @@ export const HydrogenBottlingProcessStepSeed: readonly ProcessStep[] = Object.fr
   },
   {
     id: 'process-step-hydrogen-bottling-2',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     type: ProcessType.HYDROGEN_BOTTLING,
     startedAt: new Date('2025-10-03T14:12:13.000Z'),
     endedAt: new Date('2025-10-03T14:12:13.000Z'),
