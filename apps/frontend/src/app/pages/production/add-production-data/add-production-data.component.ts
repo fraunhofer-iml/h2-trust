@@ -24,6 +24,7 @@ import { MeasurementUnit, PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { PowerAccessApprovalService } from '../../../shared/services/power-access-approvals/power-access-approvals.service';
 import { ProductionService } from '../../../shared/services/production/production.service';
+import { UnitsService } from '../../../shared/services/units/units.service';
 import { ProductionCsvUploadComponent } from './csv-upload/production-csv-upload.component';
 
 @Component({
