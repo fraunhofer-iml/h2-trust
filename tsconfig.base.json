@@ -39,7 +39,9 @@
       "@h2-trust/domain": ["libs/domain/src/index.ts"],
       "@h2-trust/fixtures": ["libs/amqp/src/lib/fixtures/index.ts"],
       "@h2-trust/storage": ["libs/storage/src/index.ts"],
-      "@h2-trust/utils": ["libs/utils/src/index.ts"]
+      "@h2-trust/utils": ["libs/utils/src/index.ts"],
+      "@fraunhofer-iml/contracts": ["libs/contracts/src/index.ts"],
+      "@fraunhofer-iml/strings": ["libs/strings/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
