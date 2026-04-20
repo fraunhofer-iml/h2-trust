@@ -64,8 +64,6 @@ export class ProductionService {
       params = params.set('to', to instanceof Date ? to.toISOString() : to);
     }
 
-    console.log(params.toString());
-
     return lastValueFrom(this.httpClient.get<StagedProductionDto[]>(API.PRODUCTION.STAGING, { params }));
   }
 

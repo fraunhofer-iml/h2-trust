@@ -95,8 +95,6 @@ export class FileSelectionComponent {
     const uploads = this.powerProductionsQuery.data();
     const approvals = this.approvalsQuery.data();
 
-    console.log(uploads);
-
     const result = (approvals ?? []).map((ppa) => ({
       ...ppa,
       uploads: (uploads ?? []).filter((r) => r.productionUnitId === ppa.powerProductionUnit.id),

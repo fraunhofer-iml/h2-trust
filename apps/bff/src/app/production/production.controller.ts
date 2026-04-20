@@ -279,7 +279,6 @@ export class ProductionController {
   @Post('staging/submit')
   @ApiBearerAuth()
   submitCsvData(@Body() _dto: StagingSubmissionDto, @AuthenticatedUser() _user: AuthenticatedKCUser) {
-    console.log(_dto);
     throw new NotImplementedException();
   }
 }
