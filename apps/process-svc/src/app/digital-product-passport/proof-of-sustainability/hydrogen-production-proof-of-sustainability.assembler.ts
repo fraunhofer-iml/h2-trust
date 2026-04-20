@@ -11,7 +11,6 @@ import {
   ProofOfSustainabilityEmissionEntity,
   ProvenanceEntity,
 } from '@h2-trust/amqp';
-import { EnumLabelMapper } from '@h2-trust/api';
 import { CalculationTopic, EmissionStringConstants, HydrogenColor, MeasurementUnit } from '@h2-trust/domain';
 import { computeHydrogenStorageEmissionCalculations } from './hydrogen-storage-proof-of-sustainability.calculator';
 import { ProofOfSustainabilityAssembler } from './proof-of-sustainability-assembler.interface';
@@ -37,7 +36,7 @@ export function assembleHydrogenProductionEmissions(
     provenance
       .getAllHydrogenLeafProductions()
       .reduce((map, entity, index) => {
-        const color = EnumLabelMapper.getHydrogenColor(entity.batch.qualityDetails?.color as HydrogenColor);
+        const color = entity.batch.qualityDetails?.color ?? HydrogenColor.MIX;
         return map.set(color, (map.get(color) ?? 0) + hydrogenStorageEmissionCalculations[index].result);
       }, new Map<string, number>())
       .entries(),

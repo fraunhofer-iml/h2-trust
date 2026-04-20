@@ -9,10 +9,13 @@
 import { Company } from '@prisma/client';
 import { CompanyType } from '@h2-trust/domain';
 import { AddressSeed } from './address.seed';
+import { auditTimestamp } from './audit-timestamp.constant';
 
 export const CompanySeed: readonly Company[] = Object.freeze([
   {
     id: 'company-power-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     name: 'GreenPower GmbH',
     mastrNumber: 'ABR900000187654',
     type: CompanyType.POWER_PRODUCER,
@@ -20,6 +23,8 @@ export const CompanySeed: readonly Company[] = Object.freeze([
   },
   {
     id: 'company-grid-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     name: 'Power Grid AG',
     mastrNumber: 'PG1000',
     type: CompanyType.POWER_PRODUCER,
@@ -27,6 +32,8 @@ export const CompanySeed: readonly Company[] = Object.freeze([
   },
   {
     id: 'company-hydrogen-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     name: 'Hydrogen Solutions GmbH',
     mastrNumber: 'ABR900000176543',
     type: CompanyType.HYDROGEN_PRODUCER,
@@ -34,6 +41,8 @@ export const CompanySeed: readonly Company[] = Object.freeze([
   },
   {
     id: 'company-recipient-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     name: 'Hydrogen Logistics',
     mastrNumber: 'R112233',
     type: CompanyType.HYDROGEN_RECIPIENT,

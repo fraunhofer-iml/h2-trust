@@ -7,6 +7,8 @@
  */
 
 import { StagedProductionDeepDbType } from '@h2-trust/database';
+import { HydrogenColor } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 
 export class StagedProductionEntity {
   startedAt: Date;
@@ -16,7 +18,7 @@ export class StagedProductionEntity {
   powerAmount: number;
   powerProductionUnitId: string;
   powerProductionUnitOwnerId: string;
-  hydrogenColor: string;
+  hydrogenColor: HydrogenColor;
   waterConsumptionLitersPerHour: number;
 
   constructor(
@@ -27,7 +29,7 @@ export class StagedProductionEntity {
     powerAmount: number,
     powerProductionUnitId: string,
     powerProductionUnitOwnerId: string,
-    hydrogenColor: string,
+    hydrogenColor: HydrogenColor,
     waterConsumptionLitersPerHour: number,
   ) {
     this.startedAt = startedAt;
@@ -42,6 +44,7 @@ export class StagedProductionEntity {
   }
 
   static fromDeepDatabase(stagedProduction: StagedProductionDeepDbType) {
+    assertValidEnum(stagedProduction.powerProductionUnit.type.hydrogenColor, HydrogenColor, 'HydrogenColor');
     return new StagedProductionEntity(
       stagedProduction.startedAt,
       stagedProduction.hydrogenAmount.toNumber(),

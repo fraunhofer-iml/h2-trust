@@ -9,7 +9,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   CreateManyProcessStepsPayload,
-  ProductionDataFilter,
   ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/amqp';
@@ -24,9 +23,8 @@ describe('ProcessStepService', () => {
 
   const configurationServiceMock = {
     getGlobalConfiguration: jest.fn().mockReturnValue({
-      minio: {
-        endPoint: 'localhost',
-        port: 9000,
+      centralizedStorage: {
+        endpointUrl: 'http://localhost:9000',
         bucketName: 'test-bucket',
       },
     }),

@@ -63,19 +63,6 @@ describe('ProvenanceService', () => {
       await expect(service.buildProvenance(givenProcessStep)).rejects.toThrow('Invalid process step.');
     });
 
-    it('throws error when process step type is invalid', async () => {
-      // Arrange
-      const givenProcessStep = ProcessStepEntityFixture.createPowerProduction();
-      givenProcessStep.type = 'INVALID_TYPE';
-
-      processStepServiceMock.readProcessStep.mockResolvedValue(givenProcessStep);
-
-      // Act & Assert
-      await expect(service.buildProvenance(givenProcessStep)).rejects.toThrow(
-        `Unsupported process type [${givenProcessStep.type}].`,
-      );
-    });
-
     it(`returns ProvenanceEntity for ${ProcessType.POWER_PRODUCTION} process type`, async () => {
       // Arrange
       const givenProcessStep = ProcessStepEntityFixture.createPowerProduction();

@@ -27,7 +27,7 @@ import {
   ReadByIdPayload,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   StageProductionsPayload,
-  UnitFileReference,
+  UnitFileImport,
   VerifyCsvDocumentIntegrityResultEntity,
 } from '@h2-trust/amqp';
 import {
@@ -42,8 +42,9 @@ import {
   ProductionStatisticsDto,
   UserDetailsDto,
 } from '@h2-trust/api';
+import { HashUtil } from '@h2-trust/blockchain';
 import { BatchType, ProcessType } from '@h2-trust/domain';
-import { StorageService } from '@h2-trust/storage';
+import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -51,7 +52,7 @@ export class ProductionService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
-    private readonly storageService: StorageService,
+    private readonly storageService: CentralizedStorageService,
     private readonly userService: UserService,
   ) {}
 
@@ -117,23 +118,11 @@ export class ProductionService {
     dto: ProductionCSVUploadDto,
     userId: string,
   ) {
-    const normalizedPowerProductionFiles = Array.isArray(powerProductionFiles)
-      ? powerProductionFiles
-      : [powerProductionFiles];
+    const powerProductions = this.mapUnitsToFiles(dto.powerProductionUnitIds, powerProductionFiles, BatchType.POWER);
 
-    const powerProductions = await this.uploadAndMapFilesToUnits(
-      dto.unitIds,
-      normalizedPowerProductionFiles,
-      BatchType.POWER,
-    );
-
-    const normalizedHydrogenProductionFiles = Array.isArray(hydrogenProductionFiles)
-      ? hydrogenProductionFiles
-      : [hydrogenProductionFiles];
-
-    const hydrogenProductions = await this.uploadAndMapFilesToUnits(
-      dto.unitIds,
-      normalizedHydrogenProductionFiles,
+    const hydrogenProductions = this.mapUnitsToFiles(
+      dto.hydrogenProductionUnitIds,
+      hydrogenProductionFiles,
       BatchType.HYDROGEN,
     );
 
@@ -156,11 +145,7 @@ export class ProductionService {
     return AccountingPeriodMatchingResultDto.fromEntity(matchingResult);
   }
 
-  private async uploadAndMapFilesToUnits(
-    unitIds: string | string[],
-    files: Express.Multer.File[],
-    type: BatchType,
-  ): Promise<UnitFileReference[]> {
+  private mapUnitsToFiles(unitIds: string | string[], files: Express.Multer.File[], type: BatchType): UnitFileImport[] {
     if (!files || files.length === 0) {
       throw new BadRequestException(`Missing file for ${type} production.`);
     }
@@ -173,12 +158,12 @@ export class ProductionService {
       );
     }
 
-    return Promise.all(
-      files.map(async (file, i) => {
-        const fileName = await this.storageService.uploadFileWithRandomFileName(file.originalname, file.buffer);
-        return new UnitFileReference(normalizedUnitIds[i], fileName);
-      }),
-    );
+    return files.map((file, i) => {
+      const unitId = normalizedUnitIds[i];
+      const hashedFileBuffer = HashUtil.hashBuffer(file.buffer);
+      const encodedFileBuffer = file.buffer.toString('base64');
+      return new UnitFileImport(unitId, hashedFileBuffer, encodedFileBuffer);
+    });
   }
 
   async submitCsvData(dto: ImportSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
@@ -200,7 +185,7 @@ export class ProductionService {
     );
 
     return csvDocuments.map((doc) =>
-      ProcessedCsvDto.fromEntity(doc, this.storageService.minioUrl, userDetails.company.name),
+      ProcessedCsvDto.fromEntity(doc, this.storageService.baseUrl, userDetails.company.name),
     );
   }
 

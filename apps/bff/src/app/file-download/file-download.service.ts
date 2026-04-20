@@ -9,11 +9,11 @@
 import { Response } from 'express';
 import { ZipFile } from 'yazl';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { StorageService } from '@h2-trust/storage';
+import { CentralizedStorageService } from '@h2-trust/storage';
 
 @Injectable()
 export class FileDownloadService {
-  constructor(private readonly storage: StorageService) {}
+  constructor(private readonly storage: CentralizedStorageService) {}
 
   async downloadFilesAsZip(res: Response, fileNames: string[]) {
     const filesExist = await Promise.all(fileNames.map((f) => this.storage.fileExists(f)));

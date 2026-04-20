@@ -7,16 +7,16 @@
  */
 
 import { HydrogenProductionUnitEntity } from '@h2-trust/amqp';
-import { UnitType } from '@h2-trust/domain';
+import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../address';
 import { CompanyBaseDto } from '../company';
 import { BaseUnitDto } from './base-unit.dto';
 import { UnitOwnerDto } from './unit-owner.dto';
 
 export class HydrogenProductionUnitDto extends BaseUnitDto {
-  method: string;
-  technology: string;
-  biddingZone: string;
+  method: HydrogenProductionMethod;
+  technology: HydrogenProductionTechnology;
+  biddingZone: BiddingZone;
   ratedPower: number;
   pressure: number;
   waterConsumptionLitersPerHour: number;
@@ -36,10 +36,10 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     owner: UnitOwnerDto,
     operator: CompanyBaseDto,
     unitType: UnitType,
-    biddingZone: string,
+    biddingZone: BiddingZone,
     pressure: number,
-    method: string,
-    technology: string,
+    method: HydrogenProductionMethod,
+    technology: HydrogenProductionTechnology,
     waterConsumptionLitersPerHour: number,
     active: boolean,
   ) {

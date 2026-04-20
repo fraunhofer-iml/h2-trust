@@ -8,7 +8,7 @@
 
 import { lastValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
   HydrogenProductionOverviewDto,
   HydrogenProductionUnitDto,
@@ -26,7 +26,7 @@ import { API } from '../../constants/api-endpoints';
 
 @Injectable()
 export class UnitsService {
-  constructor(private readonly httpClient: HttpClient) {}
+  private readonly httpClient = inject(HttpClient);
 
   getHydrogenProductionUnits() {
     console.log('h2');

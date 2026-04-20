@@ -7,6 +7,8 @@
  */
 
 import { CompanyDbBaseType, CompanyDeepDbType, CompanyFlatDbType, CompanyNestedDbType } from '@h2-trust/database';
+import { CompanyType } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 import { AddressEntity } from '../address';
 import { PowerAccessApprovalEntity } from '../power-access-approval';
 import { UserEntity } from '../user';
@@ -15,7 +17,7 @@ export class CompanyEntity {
   id: string;
   name: string;
   mastrNumber: string;
-  type: string;
+  type: CompanyType;
   address: AddressEntity;
   users: UserEntity[];
   hydrogenApprovals: PowerAccessApprovalEntity[];
@@ -24,7 +26,7 @@ export class CompanyEntity {
     id: string,
     name: string,
     mastrNumber: string,
-    type: string,
+    type: CompanyType,
     address: AddressEntity,
     users: UserEntity[],
     hydrogenApprovals: PowerAccessApprovalEntity[],
@@ -39,6 +41,7 @@ export class CompanyEntity {
   }
 
   static fromDeepDatabase(company: CompanyDeepDbType): CompanyEntity {
+    assertValidEnum(company.type, CompanyType, 'CompanyType');
     return new CompanyEntity(
       company.id,
       company.name,
@@ -51,6 +54,7 @@ export class CompanyEntity {
   }
 
   static fromNestedDatabase(company: CompanyNestedDbType): CompanyEntity {
+    assertValidEnum(company.type, CompanyType, 'CompanyType');
     return new CompanyEntity(
       company.id,
       company.name,
@@ -63,6 +67,7 @@ export class CompanyEntity {
   }
 
   static fromFlatDatabase(company: CompanyFlatDbType): CompanyEntity {
+    assertValidEnum(company.type, CompanyType, 'CompanyType');
     return new CompanyEntity(
       company.id,
       company.name,
@@ -75,6 +80,7 @@ export class CompanyEntity {
   }
 
   static fromBaseType(company: CompanyDbBaseType): CompanyEntity {
+    assertValidEnum(company.type, CompanyType, 'CompanyType');
     return new CompanyEntity(
       company.id,
       company.name,

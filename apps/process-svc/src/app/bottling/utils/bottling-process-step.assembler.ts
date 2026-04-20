@@ -8,10 +8,11 @@
 
 import { HttpStatus } from '@nestjs/common';
 import { BatchEntity, BrokerException, CreateHydrogenBottlingPayload, ProcessStepEntity } from '@h2-trust/amqp';
-import { BatchType, HydrogenColor, ProcessType, RfnboType } from '@h2-trust/domain';
+import { BatchType, HydrogenColor, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 
 export class BottlingProcessStepAssembler {
   static assemble(payload: CreateHydrogenBottlingPayload, batchesForBottle: BatchEntity[]): ProcessStepEntity {
+    const bottlingTypes = BottlingProcessStepAssembler.determinePredecessorTypes(batchesForBottle);
     return {
       startedAt: payload.filledAt,
       endedAt: payload.filledAt,
@@ -19,8 +20,9 @@ export class BottlingProcessStepAssembler {
       batch: {
         amount: payload.amount,
         qualityDetails: {
-          color: BottlingProcessStepAssembler.determineBottleQualityFromPredecessors(batchesForBottle),
-          rfnboType: BottlingProcessStepAssembler.determineRfnboTypeOfPredecessors(batchesForBottle),
+          color: HydrogenColor.MIX,
+          rfnboType: bottlingTypes.bottlingRfnboType,
+          powerType: bottlingTypes.bottlingPowerType,
         },
         type: BatchType.HYDROGEN,
         predecessors: batchesForBottle.map((batch) => ({
@@ -33,31 +35,32 @@ export class BottlingProcessStepAssembler {
     } as ProcessStepEntity;
   }
 
-  private static determineBottleQualityFromPredecessors(predecessors: BatchEntity[]): HydrogenColor {
-    const colors: HydrogenColor[] = predecessors
-      .map((batch) => batch.qualityDetails?.color)
-      .map((color) => HydrogenColor[color as keyof typeof HydrogenColor]);
+  private static determinePredecessorTypes(predecessors: BatchEntity[]): {
+    bottlingRfnboType: RfnboType;
+    bottlingPowerType: PowerType;
+  } {
+    const validPredecessors: BatchEntity[] = predecessors.filter((batch) => batch.qualityDetails !== undefined);
 
-    if (colors.length === 0) {
-      throw new BrokerException(`No predecessor colors specified`, HttpStatus.BAD_REQUEST);
+    const rfnboTypes: RfnboType[] = [];
+    const powerTypes: PowerType[] = [];
+
+    validPredecessors.forEach((batch) => {
+      rfnboTypes.push(batch.qualityDetails.rfnboType);
+      powerTypes.push(batch.qualityDetails.powerType);
+    });
+
+    if (rfnboTypes.length === 0 || powerTypes.length === 0) {
+      throw new BrokerException(`No predecessor type specified`, HttpStatus.BAD_REQUEST);
     }
 
-    const firstColor = colors[0];
-    const allColorsAreEqual = colors.every((color) => color === firstColor);
+    const firstRfnboType = rfnboTypes[0];
+    const allRfnboTypesAreEqual = rfnboTypes.every((rfnboType) => rfnboType === firstRfnboType);
+    const bottlingRfnboType: RfnboType = allRfnboTypesAreEqual ? firstRfnboType : RfnboType.NON_CERTIFIABLE;
 
-    return allColorsAreEqual ? firstColor : HydrogenColor.MIX;
-  }
+    const firstPowerType = powerTypes[0];
+    const allPowerTypesAreEqual = powerTypes.every((powerType) => powerType === firstPowerType);
+    const bottlingPowerType: PowerType = allPowerTypesAreEqual ? firstPowerType : PowerType.NOT_SPECIFIED;
 
-  private static determineRfnboTypeOfPredecessors(predecessors: BatchEntity[]): RfnboType {
-    const rfnboTypes: RfnboType[] = predecessors
-      .map((batch) => batch.qualityDetails.rfnboType)
-      .map((rfnboType) => RfnboType[rfnboType as keyof typeof RfnboType]);
-
-    if (rfnboTypes.length === 0) {
-      throw new BrokerException(`No predecessor rfnbo type specified`, HttpStatus.BAD_REQUEST);
-    }
-
-    const allRfnboTypesAreEqual = rfnboTypes.every((rfnboType) => rfnboType === rfnboTypes[0]);
-    return allRfnboTypesAreEqual ? rfnboTypes[0] : RfnboType.NON_CERTIFIABLE;
+    return { bottlingRfnboType, bottlingPowerType };
   }
 }

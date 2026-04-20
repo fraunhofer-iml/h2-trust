@@ -8,6 +8,7 @@
 
 import { TransportationDetailsDbType } from '@h2-trust/database';
 import { FuelType, TransportMode } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 
 export class TransportationDetailsEntity {
   id: string;
@@ -26,10 +27,12 @@ export class TransportationDetailsEntity {
     const fuelType = transportationDetails.fuelType?.toUpperCase() as FuelType;
     const validFuelType = Object.values(FuelType).includes(fuelType) ? fuelType : null;
 
+    assertValidEnum(transportationDetails.transportMode, TransportMode, 'TransportMode');
+
     return new TransportationDetailsEntity(
       transportationDetails.id,
       transportationDetails.distance.toNumber() ?? 0,
-      transportationDetails.transportMode as TransportMode,
+      transportationDetails.transportMode,
       validFuelType,
     );
   }

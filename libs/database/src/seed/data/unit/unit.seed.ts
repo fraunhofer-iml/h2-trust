@@ -8,11 +8,14 @@
 
 import { Unit } from '@prisma/client';
 import { AddressSeed } from '../address.seed';
+import { auditTimestamp } from '../audit-timestamp.constant';
 import { CompanySeed } from '../company.seed';
 
 export const UnitSeed: readonly Unit[] = Object.freeze([
   {
     id: 'power-production-unit-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     name: 'Photovoltaic System 001',
     mastrNumber: 'BG-1500-2025',
     manufacturer: 'AgriVolt Systems',
@@ -28,6 +31,8 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
   },
   {
     id: 'power-production-unit-1',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     name: 'Wind Turbine 001',
     mastrNumber: 'SEE202300123456',
     manufacturer: 'Wind Energy GmbH',
@@ -43,6 +48,8 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
   },
   {
     id: 'power-production-unit-2',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     name: 'Hydro Power Plant 001',
     mastrNumber: 'NUC-X1-2020',
     manufacturer: 'CoreNova Technologies',
@@ -58,6 +65,8 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
   },
   {
     id: 'power-production-unit-3',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     name: 'Grid Connection',
     mastrNumber: 'GRID-2025-01',
     manufacturer: CompanySeed[3].name,
@@ -73,6 +82,8 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
   },
   {
     id: 'hydrogen-production-unit-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     name: 'Hydrogen Electrolyzer Dortmund 001',
     mastrNumber: 'SEE900000198765',
     manufacturer: 'HydroNova Technologies GmbH',
@@ -88,6 +99,8 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
   },
   {
     id: 'hydrogen-storage-unit-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     name: 'Hydrogen Storage Dortmund 001',
     mastrNumber: 'SEE900000239841',
     manufacturer: 'HydroNova Technologies GmbH',

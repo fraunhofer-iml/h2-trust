@@ -22,7 +22,9 @@ export function injectUnitQuery<T>(
       try {
         return await fetchFn(id() ?? '');
       } catch (err: any) {
-        throw new Error(err.status === 404 ? ERROR_MESSAGES.unitNotFound + id() : ERROR_MESSAGES.unknownError);
+        throw new Error(err.status === 404 ? ERROR_MESSAGES.unitNotFound + id() : ERROR_MESSAGES.unknownError, {
+          cause: err,
+        });
       }
     },
     enabled: !!id(),
