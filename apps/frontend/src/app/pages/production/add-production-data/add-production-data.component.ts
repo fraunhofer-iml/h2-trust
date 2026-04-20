@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -49,6 +49,8 @@ import { ProductionCsvUploadComponent } from './csv-upload/production-csv-upload
 })
 export class AddProductionDataComponent {
   readonly MeasurementUnit = MeasurementUnit;
+  private readonly unitsService = inject(UnitsService);
+  private readonly powerAccessApprovalsService = inject(PowerAccessApprovalService);
 
   approvalsQuery = injectQuery(() => ({
     queryKey: ['power-access-approvals'],
@@ -72,9 +74,4 @@ export class AddProductionDataComponent {
     queryKey: ['h2-storage'],
     queryFn: async () => this.unitsService.getHydrogenStorageUnits(),
   }));
-
-  constructor(
-    private readonly unitsService: UnitsService,
-    private readonly powerAccessApprovalsService: PowerAccessApprovalService,
-  ) {}
 }

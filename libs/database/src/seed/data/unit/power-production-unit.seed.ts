@@ -8,12 +8,15 @@
 
 import { PowerProductionUnit, Prisma } from '@prisma/client';
 import { BiddingZone, GridLevel } from '@h2-trust/domain';
+import { auditTimestamp } from '../audit-timestamp.constant';
 import { PowerProductionTypeSeed } from './power-production-type.seed';
 import { UnitSeed } from './unit.seed';
 
 export const PowerProductionUnitSeed: readonly PowerProductionUnit[] = Object.freeze([
   {
     id: UnitSeed[0].id,
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     electricityMeterNumber: '123456789012',
     gridOperator: 'Powernetz GmbH',
     gridConnectionNumber: 'DE0012345678901234',
@@ -26,6 +29,8 @@ export const PowerProductionUnitSeed: readonly PowerProductionUnit[] = Object.fr
   },
   {
     id: UnitSeed[1].id,
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     electricityMeterNumber: 'EMN-2025-002',
     gridOperator: 'FluxDirect Energy Networks',
     gridConnectionNumber: 'GCN-2025-002',
@@ -38,6 +43,8 @@ export const PowerProductionUnitSeed: readonly PowerProductionUnit[] = Object.fr
   },
   {
     id: UnitSeed[2].id,
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     electricityMeterNumber: 'EMN-2025-003',
     gridOperator: 'FluxDirect Energy Networks',
     gridConnectionNumber: 'GCN-2025-003',
@@ -50,6 +57,8 @@ export const PowerProductionUnitSeed: readonly PowerProductionUnit[] = Object.fr
   },
   {
     id: UnitSeed[3].id,
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     electricityMeterNumber: 'EMN-2025-004',
     gridOperator: 'FluxDirect Energy Networks',
     gridConnectionNumber: 'GRID-2025-004',

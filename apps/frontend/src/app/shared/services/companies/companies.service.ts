@@ -8,13 +8,13 @@
 
 import { lastValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { CompanyDto } from '@h2-trust/api';
 import { API } from '../../constants/api-endpoints';
 
 @Injectable()
 export class CompaniesService {
-  constructor(private readonly httpClient: HttpClient) {}
+  private readonly httpClient = inject(HttpClient);
 
   getCompanies() {
     return lastValueFrom(this.httpClient.get<CompanyDto[]>(API.COMPANIES.BASE));
