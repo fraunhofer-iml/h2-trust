@@ -63,7 +63,7 @@ export class ProductionStagingService {
       BatchType.HYDROGEN,
     );
 
-    const createdStageProductions: StagedProductionEntity[] = [...spPowerProductions, ...spHydrogenProductions];
+    const parsedStagedProductions: StagedProductionEntity[] = [...spPowerProductions, ...spHydrogenProductions];
 
     const { csvImportId, csvDocuments } = await this.prismaService.$transaction(async (tx) => {
       const csvImportId = await this.csvImportRepository.saveCsvImport(payload.userId, tx);
@@ -72,14 +72,14 @@ export class ProductionStagingService {
         this.csvImportProcessingService.createCsvDocumentInputs(parsedProductionImports);
       const csvDocuments = await this.csvImportRepository.saveCsvDocuments(csvImportId, csvDocumentInputs, tx);
 
-      await this.stagedProductionRepository.saveStageProduction(createdStageProductions, csvImportId, tx);
+      await this.stagedProductionRepository.saveStagedProduction(parsedStagedProductions, csvImportId, tx);
 
       return { csvImportId, csvDocuments };
     });
 
     await this.storeProofsOnBlockchain(parsedProductionImports, csvDocuments);
 
-    return new ProductionStagingResultEntity(csvImportId, createdStageProductions);
+    return new ProductionStagingResultEntity(csvImportId, parsedStagedProductions);
   }
 
   private async storeProofsOnBlockchain(
