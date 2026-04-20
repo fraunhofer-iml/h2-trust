@@ -7,8 +7,8 @@
  */
 
 import { HttpStatus } from '@nestjs/common';
-import { BrokerException } from '../../../../../messaging/src/lib/broker/broker-exception';
 import { HydrogenComponentEntity } from '..';
+import { BrokerException } from '@h2-trust/messaging';
 
 export class HydrogenCompositionUtil {
   /**

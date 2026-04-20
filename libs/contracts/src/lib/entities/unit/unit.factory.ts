@@ -8,11 +8,11 @@
 
 import { HttpStatus } from '@nestjs/common';
 import { BaseUnitNestedDbType } from '@h2-trust/database';
-import { BrokerException } from '../../../../../messaging/src/lib/broker';
 import { HydrogenProductionUnitEntity } from './hydrogen-production-unit.entity';
 import { HydrogenStorageUnitEntity } from './hydrogen-storage-unit.entity';
 import { PowerProductionUnitEntity } from './power-production-unit.entity';
 import { ConcreteUnitEntity } from './unit.type';
+import { BrokerException } from '@h2-trust/messaging';
 
 export function getSpecificUnit(unit: BaseUnitNestedDbType): ConcreteUnitEntity {
   if (unit.hydrogenProductionUnit) {

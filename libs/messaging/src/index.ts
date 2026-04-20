@@ -6,6 +6,4 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './lib/broker';
-export * from './lib/amqp.module';
-export * from './lib/rpc-exception.filter';
+export * from './lib';

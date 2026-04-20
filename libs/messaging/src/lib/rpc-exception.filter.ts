@@ -10,7 +10,7 @@ import { Observable, throwError } from 'rxjs';
 import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, HttpStatus, Logger } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { Prisma } from '@prisma/client';
-import { BrokerException } from './broker/broker-exception';
+import { BrokerException } from './broker-exception';
 
 interface ErrorDetails {
   message: string;
