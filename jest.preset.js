@@ -8,7 +8,4 @@
 
 const nxPreset = require('@nx/jest/preset').default;
 
-module.exports = {
-  ...nxPreset,
-  setupFiles: [...(nxPreset.setupFiles ?? []), 'reflect-metadata'], // TODO-MP: remove after new paths are in place
-};
+module.exports = { ...nxPreset };
