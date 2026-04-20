@@ -8,8 +8,8 @@
 
 import { Company } from '@prisma/client';
 import { CompanyType } from '@h2-trust/domain';
-import { auditTimestamp } from './audit-timestamp.constant';
 import { AddressSeed } from './address.seed';
+import { auditTimestamp } from './audit-timestamp.constant';
 
 export const CompanySeed: readonly Company[] = Object.freeze([
   {
