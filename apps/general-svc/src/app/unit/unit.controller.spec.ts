@@ -27,7 +27,7 @@ import {
   HydrogenProductionUnitEntityFixture,
   HydrogenStorageUnitEntityFixture,
   PowerProductionUnitEntityFixture,
-} from '@h2-trust/fixtures';
+} from '@h2-trust/contracts/testing';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
 import { PowerProductionUnitEntity, HydrogenProductionUnitEntity, HydrogenStorageUnitEntity, AddressPayload, CreateHydrogenProductionUnitPayload, CreateHydrogenStorageUnitPayload, CreatePowerProductionUnitPayload, ReadByIdPayload } from '@h2-trust/contracts';

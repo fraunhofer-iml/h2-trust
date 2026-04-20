@@ -13,7 +13,7 @@ import { BlockchainService, HashUtil } from '@h2-trust/blockchain';
 import { FeatureFlagService } from '@h2-trust/configuration';
 import { CsvImportRepository } from '@h2-trust/database';
 import { BatchType, CsvDocumentIntegrityStatus } from '@h2-trust/domain';
-import { CsvDocumentEntityFixture, ProofEntityFixture } from '@h2-trust/fixtures';
+import { CsvDocumentEntityFixture, ProofEntityFixture } from '@h2-trust/contracts/testing';
 import { CentralizedStorageService, DecentralizedStorageService } from '@h2-trust/storage';
 import { CsvDocumentService } from './csv-document.service';
 import { CsvDocumentEntity, ProofEntity } from '@h2-trust/contracts';

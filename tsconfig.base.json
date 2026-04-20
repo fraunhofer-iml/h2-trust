@@ -38,12 +38,12 @@
       "@h2-trust/contracts": [
         "libs/contracts/src/index.ts"
       ],
+      "@h2-trust/contracts/testing": [
+        "libs/contracts/src/testing.ts"
+      ],
       "@h2-trust/csv-parser": ["libs/csv-parser/src/index.ts"],
       "@h2-trust/database": ["libs/database/src/index.ts"],
       "@h2-trust/domain": ["libs/domain/src/index.ts"],
-      "@h2-trust/fixtures": [
-        "libs/contracts/src/lib/fixtures/index.ts"
-      ],
       "@h2-trust/storage": ["libs/storage/src/index.ts"],
       "@h2-trust/strings": [
         "libs/strings/src/index.ts"

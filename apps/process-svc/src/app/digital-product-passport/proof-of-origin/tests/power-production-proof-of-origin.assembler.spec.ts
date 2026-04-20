@@ -12,7 +12,7 @@ import {
   PowerProductionTypeEntityFixture,
   PowerProductionUnitEntityFixture,
   ProcessStepEntityFixture,
-} from '@h2-trust/fixtures';
+} from '@h2-trust/contracts/testing';
 import { buildPowerSupplySubClassifications } from '../power-production-proof-of-origin.assembler';
 
 describe('PowerProductionProofOfOriginAssembler', () => {

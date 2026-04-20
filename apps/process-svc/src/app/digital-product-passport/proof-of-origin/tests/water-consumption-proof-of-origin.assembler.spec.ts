@@ -8,7 +8,7 @@
 
 import { ProcessStepEntity, ProofOfOriginWaterBatchEntity } from '@h2-trust/contracts';
 import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
-import { ProcessStepEntityFixture } from '@h2-trust/fixtures';
+import { ProcessStepEntityFixture } from '@h2-trust/contracts/testing';
 import { assembleWaterSupplyClassification } from '../water-consumption-proof-of-origin.assembler';
 
 describe('WaterConsumptionProofOfOriginAssembler', () => {

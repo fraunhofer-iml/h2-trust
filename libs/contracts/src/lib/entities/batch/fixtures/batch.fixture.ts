@@ -8,8 +8,8 @@
 
 import { BatchEntity } from '@h2-trust/contracts';
 import { BatchType } from '@h2-trust/domain';
-import { CompanyEntityFixture } from './company.entity.fixture';
-import { QualityDetailsEntityFixture } from './quality-details.entity.fixture';
+import { CompanyEntityFixture } from '../../company/fixtures/company.fixture';
+import { QualityDetailsEntityFixture } from './quality-details.fixture';
 
 export const BatchEntityFixture = {
   createPowerBatch: (overrides: Partial<BatchEntity> = {}): BatchEntity =>

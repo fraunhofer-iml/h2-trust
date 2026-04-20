@@ -12,8 +12,8 @@ import {
   ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/contracts';
 import { EnergySource, HydrogenColor, PowerType, RfnboType } from '@h2-trust/domain';
-import { HydrogenComponentEntityFixture } from './hydrogen-component.entity.fixture';
-import { ProofOfOriginEmissionEntityFixture } from './proof-of-origin-emission.entity.fixture';
+import { HydrogenComponentEntityFixture } from '../../../bottling/fixtures/hydrogen-component.fixture';
+import { ProofOfOriginEmissionEntityFixture } from './proof-of-origin-emission.fixture';
 
 export const ProofOfOriginPowerBatchEntityFixture = {
   create: (overrides: Partial<ProofOfOriginPowerBatchEntity> = {}): ProofOfOriginPowerBatchEntity =>

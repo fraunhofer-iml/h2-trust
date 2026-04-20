@@ -15,7 +15,7 @@ import {
   UserRepository,
 } from '@h2-trust/database';
 import { PowerAccessApprovalStatus } from '@h2-trust/domain';
-import { UserEntityFixture } from '@h2-trust/fixtures';
+import { UserEntityFixture } from '@h2-trust/contracts/testing';
 import { PowerAccessApprovalController } from './power-access-approval.controller';
 import { PowerAccessApprovalService } from './power-access-approval.service';
 import { PowerAccessApprovalEntity } from '@h2-trust/contracts';

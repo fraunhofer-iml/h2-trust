@@ -12,7 +12,7 @@ import {
   HydrogenProductionUnitEntityFixture,
   PowerProductionUnitEntityFixture,
   ProcessStepEntityFixture,
-} from '@h2-trust/fixtures';
+} from '@h2-trust/contracts/testing';
 import {
   areUnitsInSameBiddingZone,
   determineRedCompliance,

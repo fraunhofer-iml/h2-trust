@@ -45,25 +45,8 @@ export default [
         {
           paths: [
             {
-              name: '@h2-trust/fixtures',
+              name: '@h2-trust/contracts/testing',
               message: 'Fixtures are test-only. Do not import them from production code.',
-            },
-          ],
-        },
-      ],
-    },
-  },
-  {
-    files: ['**/*.spec.ts', '**/*.test.ts'],
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        {
-          patterns: [
-            {
-              group: ['@h2-trust/messaging'],
-              importNamePattern: 'Fixture$',
-              message: 'Import fixtures from @h2-trust/fixtures.',
             },
           ],
         },

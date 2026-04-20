@@ -8,7 +8,7 @@
 
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/contracts';
 import { BatchType } from '@h2-trust/domain';
-import { BatchEntityFixture, CompanyEntityFixture } from '@h2-trust/fixtures';
+import { BatchEntityFixture, CompanyEntityFixture } from '@h2-trust/contracts/testing';
 import { ProductionUtils } from './production.utils';
 
 describe('ProductionUtils.calculateAccountingPeriods', () => {

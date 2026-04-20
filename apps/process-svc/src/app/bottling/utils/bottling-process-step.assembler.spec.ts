@@ -8,7 +8,7 @@
 
 import { CreateHydrogenBottlingPayload } from '@h2-trust/contracts';
 import { HydrogenColor, ProcessType, RfnboType } from '@h2-trust/domain';
-import { BatchEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures';
+import { BatchEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/contracts/testing';
 import { BottlingProcessStepAssembler } from './bottling-process-step.assembler';
 import { BatchEntity } from '@h2-trust/contracts';
 

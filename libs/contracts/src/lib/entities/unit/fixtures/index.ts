@@ -6,9 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const nxPreset = require('@nx/jest/preset').default;
-
-module.exports = {
-  ...nxPreset,
-  setupFiles: [...(nxPreset.setupFiles ?? []), 'reflect-metadata'],
-};
+export * from './hydrogen-production-unit.fixture';
+export * from './hydrogen-storage-unit.fixture';
+export * from './power-production-type.fixture';
+export * from './power-production-unit.fixture';

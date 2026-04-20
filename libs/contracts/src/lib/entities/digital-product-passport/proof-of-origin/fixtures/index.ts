@@ -6,9 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const nxPreset = require('@nx/jest/preset').default;
-
-module.exports = {
-  ...nxPreset,
-  setupFiles: [...(nxPreset.setupFiles ?? []), 'reflect-metadata'],
-};
+export * from './proof-of-origin-batch.fixture';
+export * from './proof-of-origin-classification.fixture';
+export * from './proof-of-origin-emission.fixture';
+export * from './proof-of-origin-section.fixture';

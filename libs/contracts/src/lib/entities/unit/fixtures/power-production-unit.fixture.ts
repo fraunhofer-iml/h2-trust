@@ -8,9 +8,9 @@
 
 import { PowerProductionUnitEntity } from '@h2-trust/contracts';
 import { BiddingZone, GridLevel, UnitType } from '@h2-trust/domain';
-import { AddressEntityFixture } from './address.entity.fixture';
-import { CompanyEntityFixture } from './company.entity.fixture';
-import { PowerProductionTypeEntityFixture } from './power-production-type.entity.fixture';
+import { AddressEntityFixture } from '../../address/fixtures/address.fixture';
+import { CompanyEntityFixture } from '../../company/fixtures/company.fixture';
+import { PowerProductionTypeEntityFixture } from './power-production-type.fixture';
 
 export const PowerProductionUnitEntityFixture = {
   create: (overrides: Partial<PowerProductionUnitEntity> = {}): PowerProductionUnitEntity =>

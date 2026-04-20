@@ -8,8 +8,8 @@
 
 import { HydrogenProductionUnitEntity } from '@h2-trust/contracts';
 import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
-import { AddressEntityFixture } from './address.entity.fixture';
-import { CompanyEntityFixture } from './company.entity.fixture';
+import { AddressEntityFixture } from '../../address/fixtures/address.fixture';
+import { CompanyEntityFixture } from '../../company/fixtures/company.fixture';
 
 export const HydrogenProductionUnitEntityFixture = {
   create: (overrides: Partial<HydrogenProductionUnitEntity> = {}): HydrogenProductionUnitEntity =>

@@ -21,7 +21,7 @@ import {
   ProductionChainEntityFixture,
   ProofOfOriginSectionEntityFixture,
   ProofOfSustainabilityEntityFixture,
-} from '@h2-trust/fixtures';
+} from '@h2-trust/contracts/testing';
 import { ProcessStepService } from '../../process-step/process-step.service';
 import { DigitalProductPassportService } from '../digital-product-passport.service';
 import { ProvenanceService } from '../provenance/provenance.service';

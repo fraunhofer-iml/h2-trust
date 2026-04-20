@@ -19,7 +19,7 @@ import {
   ProductionChainEntityFixture,
   ProofOfOriginPowerBatchEntityFixture,
   ProofOfOriginSubClassificationEntityFixture,
-} from '@h2-trust/fixtures';
+} from '@h2-trust/contracts/testing';
 import { assembleHydrogenProductionSection } from '../hydrogen-production-proof-of-origin.assembler';
 
 describe('HydrogenProductionProofOfOriginAssembler', () => {

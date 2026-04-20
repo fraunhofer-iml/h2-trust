@@ -19,7 +19,7 @@ import {
   ProcessStepEntityFixture,
   ProductionChainEntityFixture,
   QualityDetailsEntityFixture,
-} from '@h2-trust/fixtures';
+} from '@h2-trust/contracts/testing';
 import { assembleHydrogenBottlingSection } from '../hydrogen-bottling-proof-of-origin.assembler';
 
 describe('HydrogenBottlingProofOfOriginAssembler', () => {

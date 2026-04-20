@@ -6,9 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const nxPreset = require('@nx/jest/preset').default;
-
-module.exports = {
-  ...nxPreset,
-  setupFiles: [...(nxPreset.setupFiles ?? []), 'reflect-metadata'],
-};
+export * from './proof-of-sustainability.fixture';
+export * from './proof-of-sustainability-emission.fixture';
+export * from './proof-of-sustainability-emission-calculation.fixture';

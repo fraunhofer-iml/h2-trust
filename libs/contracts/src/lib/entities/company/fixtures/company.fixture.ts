@@ -8,7 +8,7 @@
 
 import { CompanyEntity } from '@h2-trust/contracts';
 import { CompanyType } from '@h2-trust/domain';
-import { AddressEntityFixture } from './address.entity.fixture';
+import { AddressEntityFixture } from '../../address/fixtures/address.fixture';
 
 export const CompanyEntityFixture = {
   createPowerProducer: (overrides: Partial<CompanyEntity> = {}): CompanyEntity =>

@@ -7,7 +7,7 @@
  */
 
 import { HydrogenProductionUnitEntity, PowerProductionUnitEntity, ProductionChainEntity } from '@h2-trust/contracts';
-import { ProcessStepEntityFixture } from './process-step.entity.fixture';
+import { ProcessStepEntityFixture } from '../../process-step/fixtures/process-step.fixture';
 
 export const ProductionChainEntityFixture = {
   create: (): ProductionChainEntity =>

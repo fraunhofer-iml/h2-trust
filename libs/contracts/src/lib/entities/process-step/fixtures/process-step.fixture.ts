@@ -8,13 +8,13 @@
 
 import { ProcessStepEntity } from '@h2-trust/contracts';
 import { ProcessType } from '@h2-trust/domain';
-import { BatchEntityFixture } from './batch.entity.fixture';
-import { DocumentEntityFixture } from './document.entity.fixture';
-import { HydrogenProductionUnitEntityFixture } from './hydrogen-production-unit.entity.fixture';
-import { HydrogenStorageUnitEntityFixture } from './hydrogen-storage-unit.entity.fixture';
-import { PowerProductionUnitEntityFixture } from './power-production-unit.entity.fixture';
-import { TransportationDetailsEntityFixture } from './transportation-details.entity.fixture';
-import { UserEntityFixture } from './user.entity.fixture';
+import { BatchEntityFixture } from '../../batch/fixtures/batch.fixture';
+import { DocumentEntityFixture } from '../../document/fixtures/document.fixture';
+import { HydrogenProductionUnitEntityFixture } from '../../unit/fixtures/hydrogen-production-unit.fixture';
+import { HydrogenStorageUnitEntityFixture } from '../../unit/fixtures/hydrogen-storage-unit.fixture';
+import { PowerProductionUnitEntityFixture } from '../../unit/fixtures/power-production-unit.fixture';
+import { TransportationDetailsEntityFixture } from './transportation-details.fixture';
+import { UserEntityFixture } from '../../user/fixtures/user.fixture';
 
 export const ProcessStepEntityFixture = {
   createPowerProduction: (overrides: Partial<ProcessStepEntity> = {}): ProcessStepEntity =>

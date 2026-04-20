@@ -7,7 +7,7 @@
  */
 
 import { UserEntity } from '@h2-trust/contracts';
-import { CompanyEntityFixture } from './company.entity.fixture';
+import { CompanyEntityFixture } from '../../company/fixtures/company.fixture';
 
 export const UserEntityFixture = {
   createPowerUser: (overrides: Partial<UserEntity> = {}): UserEntity =>

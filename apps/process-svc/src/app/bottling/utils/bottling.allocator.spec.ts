@@ -14,7 +14,7 @@ import {
   HydrogenStorageUnitEntityFixture,
   ProcessStepEntityFixture,
   QualityDetailsEntityFixture,
-} from '@h2-trust/fixtures';
+} from '@h2-trust/contracts/testing';
 import { BottlingAllocator } from './bottling.allocator';
 
 describe('BottlingAllocator', () => {
