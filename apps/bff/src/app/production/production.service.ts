@@ -12,31 +12,35 @@ import { ClientProxy } from '@nestjs/microservices';
 import { HashUtil } from '@h2-trust/blockchain';
 import {
   AccountingPeriodMatchingResultDto,
-  CreateHydrogenProductionStatisticsPayload,
   CreateProductionDto,
-  CreateProductionsPayload,
-  CsvDocumentEntity,
   CsvDocumentIntegrityResultDto,
-  FinalizeProductionsPayload,
   ImportSubmissionDto,
-  PaginatedProcessStepEntity,
   PaginatedProductionDataDto,
-  PowerProductionUnitEntity,
   ProcessedCsvDto,
-  ProcessStepEntity,
   ProductionCSVUploadDto,
-  ProductionDataFilter,
   ProductionOverviewDto,
-  ProductionStagingResultEntity,
   ProductionStatisticsDto,
+  UserDetailsDto,
+} from '@h2-trust/contracts/dtos';
+import {
+  CsvDocumentEntity,
+  PaginatedProcessStepEntity,
+  PowerProductionUnitEntity,
+  ProcessStepEntity,
+  ProductionStagingResultEntity,
   ProductionStatisticsEntity,
+  UnitFileImport,
+  VerifyCsvDocumentIntegrityResultEntity,
+} from '@h2-trust/contracts/entities';
+import {
+  CreateHydrogenProductionStatisticsPayload,
+  CreateProductionsPayload,
+  FinalizeProductionsPayload,
+  ProductionDataFilter,
   ReadByIdPayload,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   StageProductionsPayload,
-  UnitFileImport,
-  UserDetailsDto,
-  VerifyCsvDocumentIntegrityResultEntity,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/payloads';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 import {
   BrokerQueues,

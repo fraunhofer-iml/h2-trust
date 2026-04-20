@@ -15,7 +15,7 @@ import {
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
   ProvenanceEntity,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
 import { assembleHydrogenBottlingEmissionCalculation } from '../proof-of-sustainability/hydrogen-bottling-proof-of-sustainability.assembler';

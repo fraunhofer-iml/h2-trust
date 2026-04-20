@@ -10,7 +10,7 @@ import {
   ProofOfOriginBatchEntity,
   ProofOfOriginClassificationEntity,
   ProofOfOriginSubClassificationEntity,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/entities';
 import { BatchType } from '@h2-trust/domain';
 
 export class Util {

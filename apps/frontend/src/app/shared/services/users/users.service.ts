@@ -9,7 +9,7 @@
 import { lastValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { UserDetailsDto } from '@h2-trust/contracts';
+import { UserDetailsDto } from '@h2-trust/contracts/dtos';
 import { API } from '../../constants/api-endpoints';
 
 @Injectable()

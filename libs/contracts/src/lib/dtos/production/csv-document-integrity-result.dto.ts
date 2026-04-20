@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { VerifyCsvDocumentIntegrityResultEntity } from '@h2-trust/contracts';
+import { VerifyCsvDocumentIntegrityResultEntity } from '@h2-trust/contracts/entities';
 import { CsvDocumentIntegrityStatus } from '@h2-trust/domain';
 
 export class CsvDocumentIntegrityResultDto {

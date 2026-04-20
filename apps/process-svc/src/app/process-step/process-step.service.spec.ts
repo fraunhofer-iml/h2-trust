@@ -8,12 +8,12 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigurationService } from '@h2-trust/configuration';
+import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import {
   CreateManyProcessStepsPayload,
   ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
-} from '@h2-trust/contracts';
-import { ProcessStepEntityFixture } from '@h2-trust/contracts/testing';
+} from '@h2-trust/contracts/payloads';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
 import { ProcessType } from '@h2-trust/domain';
 import { ProcessStepService } from './process-step.service';

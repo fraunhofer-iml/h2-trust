@@ -8,7 +8,7 @@
 
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { CompanyEntity } from '@h2-trust/contracts';
+import { CompanyEntity } from '@h2-trust/contracts/entities';
 import { CompanyMessagePatterns } from '@h2-trust/messaging';
 import { CompanyService } from './company.service';
 

@@ -13,20 +13,22 @@ import { ConfigurationService } from '@h2-trust/configuration';
 import {
   BatchEntity,
   ConcreteUnitEntity,
-  CreateHydrogenProductionStatisticsPayload,
   CreateProductionEntity,
-  CreateProductionsPayload,
-  FinalizeProductionsPayload,
   HydrogenProductionUnitEntity,
   HydrogenStatisticsEntity,
   PowerProductionUnitEntity,
   PowerStatisticsEntity,
   ProcessStepEntity,
   ProductionStatisticsEntity,
+  StagedProductionEntity,
+} from '@h2-trust/contracts/entities';
+import {
+  CreateHydrogenProductionStatisticsPayload,
+  CreateProductionsPayload,
+  FinalizeProductionsPayload,
   ReadByIdPayload,
   ReadByIdsPayload,
-  StagedProductionEntity,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/payloads';
 import { StagedProductionRepository } from '@h2-trust/database';
 import { BatchType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { BrokerQueues, UnitMessagePatterns } from '@h2-trust/messaging';

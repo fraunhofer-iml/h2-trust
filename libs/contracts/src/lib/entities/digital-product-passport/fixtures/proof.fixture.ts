@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProofEntity } from '@h2-trust/contracts';
+import { ProofEntity } from '@h2-trust/contracts/entities';
 
 export const ProofEntityFixture = {
   create: (overrides: Partial<ProofEntity> = {}): ProofEntity =>

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { UserEntity } from '@h2-trust/contracts';
+import { UserEntity } from '@h2-trust/contracts/entities';
 import { CompanyEntityFixture } from '../../company/fixtures/company.fixture';
 
 export const UserEntityFixture = {

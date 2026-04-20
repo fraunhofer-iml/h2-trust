@@ -8,7 +8,7 @@
 
 import { Type } from 'class-transformer';
 import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
-import { AddressPayload, CreatePowerProductionUnitPayload } from '@h2-trust/contracts';
+import { AddressPayload, CreatePowerProductionUnitPayload } from '@h2-trust/contracts/payloads';
 import { BiddingZone, GridLevel, PowerProductionType, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 import { UnitInputDto } from './unit-input.dto';

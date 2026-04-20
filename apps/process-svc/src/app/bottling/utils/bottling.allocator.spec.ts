@@ -6,14 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenComponentEntity } from '@h2-trust/contracts';
+import { HydrogenComponentEntity } from '@h2-trust/contracts/entities';
 import {
   BatchEntityFixture,
   HydrogenComponentEntityFixture,
   HydrogenStorageUnitEntityFixture,
   ProcessStepEntityFixture,
   QualityDetailsEntityFixture,
-} from '@h2-trust/contracts/testing';
+} from '@h2-trust/contracts/entities/fixtures';
 import { BatchType, HydrogenColor, ProcessType, RfnboType } from '@h2-trust/domain';
 import { BottlingAllocator } from './bottling.allocator';
 

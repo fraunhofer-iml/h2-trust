@@ -12,7 +12,7 @@ import {
   AccountingPeriodPower,
   DistributedProductionEntity,
   UnitAccountingPeriods,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/entities';
 import { BatchType } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
 

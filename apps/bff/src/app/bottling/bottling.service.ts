@@ -9,17 +9,14 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { BottlingDto, BottlingOverviewDto, DigitalProductPassportDto } from '@h2-trust/contracts/dtos';
+import { DigitalProductPassportEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
 import {
-  BottlingDto,
-  BottlingOverviewDto,
   CreateHydrogenBottlingPayload,
   CreateHydrogenTransportationPayload,
-  DigitalProductPassportDto,
-  DigitalProductPassportEntity,
-  ProcessStepEntity,
   ReadByIdPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/payloads';
 import { ProcessType } from '@h2-trust/domain';
 import { BrokerQueues, DigitalProductPassportPatterns, ProcessStepMessagePatterns } from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';

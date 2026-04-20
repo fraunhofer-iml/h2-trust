@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchEntity, ProcessStepEntity } from '@h2-trust/contracts';
+import { BatchEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { BatchType, HydrogenColor, PowerType, RfnboType } from '@h2-trust/domain';
 
 export class ProductionOverviewDto {

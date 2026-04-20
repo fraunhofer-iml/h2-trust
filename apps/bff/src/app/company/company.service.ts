@@ -9,7 +9,7 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { CompanyDto } from '@h2-trust/contracts';
+import { CompanyDto } from '@h2-trust/contracts/dtos';
 import { BrokerQueues, CompanyMessagePatterns } from '@h2-trust/messaging';
 
 @Injectable()

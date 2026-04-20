@@ -12,14 +12,16 @@ import { Prisma } from '@prisma/client';
 import {
   BaseUnitEntity,
   ConcreteUnitEntity,
-  CreateHydrogenProductionUnitPayload,
-  CreateHydrogenStorageUnitPayload,
-  CreatePowerProductionUnitPayload,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
   PowerProductionUnitEntity,
+} from '@h2-trust/contracts/entities';
+import {
+  CreateHydrogenProductionUnitPayload,
+  CreateHydrogenStorageUnitPayload,
+  CreatePowerProductionUnitPayload,
   UpdateUnitStatusPayload,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/payloads';
 import {
   buildHydrogenProductionUnitCreateInput,
   buildHydrogenStorageUnitCreateInput,

@@ -18,12 +18,12 @@ import {
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   UserDetailsDtoMock,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/dtos';
 import {
   BatchEntityFixture,
   HydrogenProductionUnitEntityFixture,
   UserEntityFixture,
-} from '@h2-trust/contracts/testing';
+} from '@h2-trust/contracts/entities/fixtures';
 import {
   CsvDocumentIntegrityStatus,
   EnergySource,
@@ -39,7 +39,7 @@ import {
   PowerProductionTypeEntity,
   ProcessStepEntity,
   VerifyCsvDocumentIntegrityResultEntity,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/entities';
 import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 import { ProductionController } from './production.controller';

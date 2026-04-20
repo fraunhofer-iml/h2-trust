@@ -7,7 +7,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { CompanyEntity } from '@h2-trust/contracts';
+import { CompanyEntity } from '@h2-trust/contracts/entities';
 import { CompanyDbTypeMock, CompanyDeepDbType, DatabaseModule, PrismaService } from '@h2-trust/database';
 import { CompanyController } from './company.controller';
 import { CompanyService } from './company.service';

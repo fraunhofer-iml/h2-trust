@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchEntity, ProcessStepEntity } from '@h2-trust/contracts';
-import { BatchEntityFixture, CompanyEntityFixture } from '@h2-trust/contracts/testing';
+import { BatchEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
+import { BatchEntityFixture, CompanyEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { BatchType } from '@h2-trust/domain';
 import { ProductionUtils } from './production.utils';
 

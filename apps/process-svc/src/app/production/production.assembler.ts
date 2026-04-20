@@ -18,7 +18,7 @@ import {
   ProcessStepEntity,
   QualityDetailsEntity,
   UserEntity,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/entities';
 import { BatchType, HydrogenColor, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { DateTimeUtil } from '@h2-trust/utils';
 import { AccountingPeriod, ProcessStepParams } from './production.types';

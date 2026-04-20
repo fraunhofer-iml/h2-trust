@@ -12,13 +12,13 @@ import {
   ProofOfOriginHydrogenBatchEntity,
   ProofOfOriginSectionEntity,
   ProvenanceEntity,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/entities';
 import {
   BatchEntityFixture,
   ProcessStepEntityFixture,
   ProductionChainEntityFixture,
   QualityDetailsEntityFixture,
-} from '@h2-trust/contracts/testing';
+} from '@h2-trust/contracts/entities/fixtures';
 import { HydrogenColor, ProcessType, ProofOfOrigin } from '@h2-trust/domain';
 import { assembleHydrogenBottlingSection } from '../hydrogen-bottling-proof-of-origin.assembler';
 

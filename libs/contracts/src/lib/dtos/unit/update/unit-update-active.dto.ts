@@ -7,7 +7,7 @@
  */
 
 import { IsBoolean, IsNotEmpty } from 'class-validator';
-import { UpdateUnitStatusPayload } from '@h2-trust/contracts';
+import { UpdateUnitStatusPayload } from '@h2-trust/contracts/payloads';
 
 export class UnitUpdateActiveDto {
   @IsBoolean()

@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { QueryClient } from '@tanstack/angular-query-experimental';
-import { HydrogenProductionUnitDto } from '@h2-trust/contracts';
+import { HydrogenProductionUnitDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit, UnitType } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';

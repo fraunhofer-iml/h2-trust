@@ -20,7 +20,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { ProductionOverviewDto } from '@h2-trust/contracts';
+import { ProductionOverviewDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { PowerTypeChipComponent } from '../../../layout/chips/power-type-chip.component';
 import { RfnboChipComponent } from '../../../layout/chips/rfnbo-chip.component';

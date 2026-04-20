@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CsvDocumentEntity } from '@h2-trust/contracts';
+import { CsvDocumentEntity } from '@h2-trust/contracts/entities';
 import { CsvContentType } from '../file';
 
 export class ProcessedCsvDto {

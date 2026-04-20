@@ -41,9 +41,9 @@ export default [
       'no-restricted-imports': [
         'error',
         {
-          paths: [
+          patterns: [
             {
-              name: '@h2-trust/contracts/testing',
+              group: ['@h2-trust/contracts/*/fixtures'],
               message: 'Fixtures are test-only. Do not import them from production code.',
             },
           ],

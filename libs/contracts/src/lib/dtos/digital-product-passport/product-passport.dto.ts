@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DigitalProductPassportEntity } from '@h2-trust/contracts';
+import { DigitalProductPassportEntity } from '@h2-trust/contracts/entities';
 import { BatchType, HydrogenColor, PowerType } from '@h2-trust/domain';
 import { FileInfoDto } from '../file/file-info.dto';
 import { HydrogenComponentDto } from './general-information/hydrogen-component.dto';

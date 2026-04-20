@@ -8,7 +8,7 @@
 
 import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { ProcessStepEntity } from '@h2-trust/contracts';
+import { ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { BatchType } from '@h2-trust/domain';
 import { buildProcessStepCreateInput } from '../create-inputs';
 import { PrismaService } from '../prisma.service';

@@ -9,7 +9,8 @@
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { PowerAccessApprovalDto, ReadPowerAccessApprovalsPayload } from '@h2-trust/contracts';
+import { PowerAccessApprovalDto } from '@h2-trust/contracts/dtos';
+import { ReadPowerAccessApprovalsPayload } from '@h2-trust/contracts/payloads';
 import { PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { BrokerQueues, PowerAccessApprovalPatterns } from '@h2-trust/messaging';
 

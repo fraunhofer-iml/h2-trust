@@ -7,7 +7,7 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { DocumentEntity } from '@h2-trust/contracts';
+import { DocumentEntity } from '@h2-trust/contracts/entities';
 
 export function buildDocumentCreateInput(document: DocumentEntity, processStepId: string): Prisma.DocumentCreateInput {
   return Prisma.validator<Prisma.DocumentCreateInput>()({

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenStorageUnitInputDto } from '@h2-trust/contracts';
+import { HydrogenStorageUnitInputDto } from '@h2-trust/contracts/dtos';
 import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
 
 export const HydrogenStorageUnitCreateDtoMock = <HydrogenStorageUnitInputDto[]>[

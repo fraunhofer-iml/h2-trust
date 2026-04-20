@@ -28,7 +28,7 @@ import {
   ProductionOverviewDto,
   ProductionStatisticsDto,
   type AuthenticatedKCUser,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/dtos';
 import { FileUploadKeys } from '@h2-trust/domain';
 import { ProductionService } from './production.service';
 

@@ -12,8 +12,8 @@ import {
   ProductionChainEntity,
   ProofOfOriginHydrogenBatchEntity,
   ProvenanceEntity,
-} from '@h2-trust/contracts';
-import { ProcessStepEntityFixture } from '@h2-trust/contracts/testing';
+} from '@h2-trust/contracts/entities';
+import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
 import { assembleHydrogenTransportationSection } from '../hydrogen-transportation-proof-of-origin.assembler';
 

@@ -7,8 +7,8 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProvenanceEntity } from '@h2-trust/contracts';
-import { ProcessStepEntityFixture } from '@h2-trust/contracts/testing';
+import { ProvenanceEntity } from '@h2-trust/contracts/entities';
+import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { ProcessType } from '@h2-trust/domain';
 import { ProcessStepService } from '../../../process-step/process-step.service';
 import { ProvenanceService } from '../provenance.service';

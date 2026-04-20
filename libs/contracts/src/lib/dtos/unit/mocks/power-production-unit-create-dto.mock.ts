@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerProductionUnitInputDto } from '@h2-trust/contracts';
+import { PowerProductionUnitInputDto } from '@h2-trust/contracts/dtos';
 import { BiddingZone, GridLevel, PowerProductionType, UnitType } from '@h2-trust/domain';
 
 export const PowerProductionUnitCreateDtoMock = <PowerProductionUnitInputDto[]>[

@@ -13,8 +13,8 @@ import {
   ProofOfSustainabilityEmissionCalculationEntity,
   ProvenanceEntity,
   TransportationDetailsEntity,
-} from '@h2-trust/contracts';
-import { ProcessStepEntityFixture, TransportationDetailsEntityFixture } from '@h2-trust/contracts/testing';
+} from '@h2-trust/contracts/entities';
+import { ProcessStepEntityFixture, TransportationDetailsEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { CalculationTopic } from '@h2-trust/domain';
 import { assembleHydrogenBottlingEmissions } from '../hydrogen-bottling-proof-of-sustainability.assembler';
 import { assembleHydrogenProductionEmissions } from '../hydrogen-production-proof-of-sustainability.assembler';

@@ -8,13 +8,12 @@
 
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
+import { PaginatedProcessStepEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
 import {
   CreateHydrogenBottlingPayload,
-  PaginatedProcessStepEntity,
-  ProcessStepEntity,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/payloads';
 import { ProcessStepMessagePatterns } from '@h2-trust/messaging';
 import { BottlingService } from './bottling.service';
 

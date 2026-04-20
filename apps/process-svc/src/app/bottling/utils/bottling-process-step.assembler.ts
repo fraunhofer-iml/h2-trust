@@ -7,7 +7,8 @@
  */
 
 import { HttpStatus } from '@nestjs/common';
-import { BatchEntity, CreateHydrogenBottlingPayload, ProcessStepEntity } from '@h2-trust/contracts';
+import { BatchEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
+import { CreateHydrogenBottlingPayload } from '@h2-trust/contracts/payloads';
 import { BatchType, HydrogenColor, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
 

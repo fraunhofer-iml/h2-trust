@@ -14,7 +14,7 @@ import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatDivider } from '@angular/material/divider';
-import { PpaRequestDto } from '@h2-trust/contracts';
+import { PpaRequestDto } from '@h2-trust/contracts/dtos';
 import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
 import { ConfirmationResult } from '../../dialog-data';

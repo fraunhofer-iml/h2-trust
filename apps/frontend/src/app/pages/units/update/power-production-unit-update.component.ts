@@ -12,7 +12,7 @@ import { FormGroup } from '@angular/forms';
 import { MatAnchor, MatButtonModule } from '@angular/material/button';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
-import { PowerProductionUnitDto, PowerProductionUnitInputDto } from '@h2-trust/contracts';
+import { PowerProductionUnitDto, PowerProductionUnitInputDto } from '@h2-trust/contracts/dtos';
 import { PowerProductionType } from '@h2-trust/domain';
 import { UnitTypeChipComponent } from '../../../layout/unit-type-chip/unit-type-chip.component';
 import { UnitsService } from '../../../shared/services/units/units.service';

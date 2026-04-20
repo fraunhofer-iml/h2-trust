@@ -16,7 +16,7 @@ import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { QueryClient } from '@tanstack/angular-query-experimental';
-import { PowerProductionUnitDto } from '@h2-trust/contracts';
+import { PowerProductionUnitDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit, UnitType } from '@h2-trust/domain';
 import { BoolPipe } from '../../../../shared/pipes/bool-pipe';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';

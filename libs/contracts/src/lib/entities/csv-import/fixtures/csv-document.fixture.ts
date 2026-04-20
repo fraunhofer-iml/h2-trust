@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CsvDocumentEntity } from '@h2-trust/contracts';
+import { CsvDocumentEntity } from '@h2-trust/contracts/entities';
 
 export const CsvDocumentEntityFixture = {
   create: (overrides: Partial<CsvDocumentEntity> = {}): CsvDocumentEntity =>

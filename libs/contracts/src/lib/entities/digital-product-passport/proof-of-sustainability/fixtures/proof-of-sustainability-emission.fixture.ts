@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProofOfSustainabilityEmissionEntity } from '@h2-trust/contracts';
+import { ProofOfSustainabilityEmissionEntity } from '@h2-trust/contracts/entities';
 
 export const ProofOfSustainabilityEmissionEntityFixture = {
   create: (overrides: Partial<ProofOfSustainabilityEmissionEntity> = {}): ProofOfSustainabilityEmissionEntity =>

@@ -12,7 +12,7 @@ import {
   ProofOfOriginSectionEntity,
   ProofOfOriginSubClassificationEntity,
   ProvenanceEntity,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/entities';
 import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
 import { Util } from '../util';
 import { buildPowerSupplySubClassifications } from './power-production-proof-of-origin.assembler';

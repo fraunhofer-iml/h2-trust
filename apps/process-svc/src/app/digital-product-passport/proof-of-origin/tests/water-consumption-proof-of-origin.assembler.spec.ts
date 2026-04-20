@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepEntity, ProofOfOriginWaterBatchEntity } from '@h2-trust/contracts';
-import { ProcessStepEntityFixture } from '@h2-trust/contracts/testing';
+import { ProcessStepEntity, ProofOfOriginWaterBatchEntity } from '@h2-trust/contracts/entities';
+import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
 import { assembleWaterSupplyClassification } from '../water-consumption-proof-of-origin.assembler';
 

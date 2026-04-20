@@ -7,7 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { PowerProductionTypeEntity } from '@h2-trust/contracts';
+import { PowerProductionTypeEntity } from '@h2-trust/contracts/entities';
 import { PrismaService } from '../prisma.service';
 
 @Injectable()

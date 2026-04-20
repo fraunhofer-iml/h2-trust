@@ -8,13 +8,8 @@
 
 import { PowerAccessApprovalRepository, UserRepository } from 'libs/database/src/lib';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import {
-  PowerAccessApprovalEntity,
-  PowerProductionUnitEntity,
-  ReadByIdPayload,
-  ReadPowerAccessApprovalsPayload,
-  UserEntity,
-} from '@h2-trust/contracts';
+import { PowerAccessApprovalEntity, PowerProductionUnitEntity, UserEntity } from '@h2-trust/contracts/entities';
+import { ReadByIdPayload, ReadPowerAccessApprovalsPayload } from '@h2-trust/contracts/payloads';
 import { PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
 

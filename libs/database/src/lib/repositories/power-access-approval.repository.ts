@@ -7,7 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { PowerAccessApprovalEntity } from '@h2-trust/contracts';
+import { PowerAccessApprovalEntity } from '@h2-trust/contracts/entities';
 import { PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { PrismaService } from '../prisma.service';
 import { powerAccessApprovalDeepQueryArgs } from '../query-args/power-access-approval/power-access-approval.deep.query-args';

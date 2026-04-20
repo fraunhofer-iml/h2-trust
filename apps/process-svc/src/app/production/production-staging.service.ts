@@ -14,8 +14,8 @@ import {
   AccountingPeriodPower,
   CsvDocumentEntity,
   ProductionStagingResultEntity,
-  StageProductionsPayload,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/entities';
+import { StageProductionsPayload } from '@h2-trust/contracts/payloads';
 import { CsvImportRepository, PrismaService, StagedProductionRepository } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';

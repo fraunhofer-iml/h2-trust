@@ -17,7 +17,7 @@ import {
 } from 'ethers';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { ProofEntity } from '@h2-trust/contracts';
+import { ProofEntity } from '@h2-trust/contracts/entities';
 
 export interface ProofEntry {
   uuid: string;

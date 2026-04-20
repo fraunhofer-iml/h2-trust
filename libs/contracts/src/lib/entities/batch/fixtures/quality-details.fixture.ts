@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { QualityDetailsEntity } from '@h2-trust/contracts';
+import { QualityDetailsEntity } from '@h2-trust/contracts/entities';
 import { HydrogenColor, PowerType, RfnboType } from '@h2-trust/domain';
 
 export const QualityDetailsEntityFixture = {

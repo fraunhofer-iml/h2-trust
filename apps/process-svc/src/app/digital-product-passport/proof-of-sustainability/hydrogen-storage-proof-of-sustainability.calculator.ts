@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepEntity, ProofOfSustainabilityEmissionCalculationEntity } from '@h2-trust/contracts';
+import { ProcessStepEntity, ProofOfSustainabilityEmissionCalculationEntity } from '@h2-trust/contracts/entities';
 import {
   CalculationTopic,
   EmissionNumericConstants,

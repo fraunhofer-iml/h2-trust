@@ -6,12 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepEntity, ProofOfOriginPowerBatchEntity } from '@h2-trust/contracts';
+import { ProcessStepEntity, ProofOfOriginPowerBatchEntity } from '@h2-trust/contracts/entities';
 import {
   PowerProductionTypeEntityFixture,
   PowerProductionUnitEntityFixture,
   ProcessStepEntityFixture,
-} from '@h2-trust/contracts/testing';
+} from '@h2-trust/contracts/entities/fixtures';
 import { BatchType, EnergySource } from '@h2-trust/domain';
 import { buildPowerSupplySubClassifications } from '../power-production-proof-of-origin.assembler';
 

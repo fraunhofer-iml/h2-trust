@@ -21,7 +21,7 @@ import {
   PowerProductionUnitInputDto,
   UnitInputDto,
   UnitUpdateActiveDto,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/dtos';
 import { API } from '../../constants/api-endpoints';
 
 @Injectable()

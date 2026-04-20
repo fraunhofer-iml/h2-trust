@@ -33,7 +33,7 @@ import {
   HydrogenStorageOverviewDto,
   ImportSubmissionDto,
   PowerProductionOverviewDto,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/dtos';
 import { FileUploadKeys, MeasurementUnit } from '@h2-trust/domain';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { FileForm } from './file-upload.form';

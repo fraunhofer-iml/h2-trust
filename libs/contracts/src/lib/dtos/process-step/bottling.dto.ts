@@ -8,7 +8,7 @@
 
 import { Transform } from 'class-transformer';
 import { IsEnum, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, ValidateIf } from 'class-validator';
-import { BatchEntity, CompanyEntity, ProcessStepEntity, QualityDetailsEntity } from '@h2-trust/contracts';
+import { BatchEntity, CompanyEntity, ProcessStepEntity, QualityDetailsEntity } from '@h2-trust/contracts/entities';
 import { FuelType, HydrogenColor, RfnboType, TransportMode } from '@h2-trust/domain';
 
 export class BottlingDto {

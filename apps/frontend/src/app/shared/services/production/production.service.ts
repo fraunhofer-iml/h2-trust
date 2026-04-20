@@ -19,7 +19,7 @@ import {
   ProcessedCsvDto,
   ProductionOverviewDto,
   ProductionStatisticsDto,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/dtos';
 import { FilterModel } from '../../../pages/production/model/generated-productions-filter.model';
 import { PaginationModel } from '../../../pages/production/model/pagination.model';
 import { API } from '../../constants/api-endpoints';

@@ -15,7 +15,7 @@ import {
   PowerBatchDto,
   SectionDto,
   WaterBatchDto,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/dtos';
 import { BatchType } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
 import { H2BatchCardComponent } from './batch-card/h2-batch-card/h2-batch-card.component';

@@ -9,15 +9,17 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
   BatchEntity,
-  CreateHydrogenBottlingPayload,
   DocumentEntity,
   HydrogenComponentEntity,
   HydrogenCompositionUtil,
   PaginatedProcessStepEntity,
   ProcessStepEntity,
+} from '@h2-trust/contracts/entities';
+import {
+  CreateHydrogenBottlingPayload,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/payloads';
 import { DocumentRepository } from '@h2-trust/database';
 import { HydrogenColor, RfnboType } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';

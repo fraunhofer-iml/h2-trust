@@ -10,21 +10,23 @@ import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
-  AddressPayload,
-  CreateHydrogenProductionUnitPayload,
-  CreateHydrogenStorageUnitPayload,
-  CreatePowerProductionUnitPayload,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
   PowerProductionUnitEntity,
-  ReadByIdPayload,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/entities';
 import {
   CompanyEntityFixture,
   HydrogenProductionUnitEntityFixture,
   HydrogenStorageUnitEntityFixture,
   PowerProductionUnitEntityFixture,
-} from '@h2-trust/contracts/testing';
+} from '@h2-trust/contracts/entities/fixtures';
+import {
+  AddressPayload,
+  CreateHydrogenProductionUnitPayload,
+  CreateHydrogenStorageUnitPayload,
+  CreatePowerProductionUnitPayload,
+  ReadByIdPayload,
+} from '@h2-trust/contracts/payloads';
 import {
   BaseUnitDeepDbTypeMock,
   baseUnitDeepQueryArgs,

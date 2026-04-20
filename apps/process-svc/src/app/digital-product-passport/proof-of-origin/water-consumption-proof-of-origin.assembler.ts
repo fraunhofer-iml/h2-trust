@@ -12,7 +12,7 @@ import {
   ProofOfOriginEmissionEntity,
   ProofOfOriginWaterBatchEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType, ProofOfOrigin } from '@h2-trust/domain';
 import { assembleWaterSupplyEmissionCalculation } from '../proof-of-sustainability/water-consumption-proof-of-sustainability.assembler';
 import { Util } from '../util';

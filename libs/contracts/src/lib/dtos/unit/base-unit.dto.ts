@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BaseUnitEntity } from '@h2-trust/contracts';
+import { BaseUnitEntity } from '@h2-trust/contracts/entities';
 import { UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../address';
 import { CompanyBaseDto } from '../company';

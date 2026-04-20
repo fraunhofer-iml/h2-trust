@@ -8,7 +8,7 @@
 
 import { ProofOfOriginCardComponent } from 'apps/frontend/src/app/layout/proof-of-origin-card/proof-of-origin-card.component';
 import { Component, input } from '@angular/core';
-import { WaterBatchDto } from '@h2-trust/contracts';
+import { WaterBatchDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { BaseSheetComponent } from '../../../../../../layout/sheet/sheet.component';
 import { UnitPipe } from '../../../../../../shared/pipes/unit.pipe';

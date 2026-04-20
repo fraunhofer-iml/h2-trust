@@ -11,7 +11,7 @@ import {
   ProofOfOriginHydrogenBatchEntity,
   ProofOfOriginSectionEntity,
   ProvenanceEntity,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/entities';
 import { ProofOfOrigin } from '@h2-trust/domain';
 import { proofOfOriginAssemblers } from './proof-of-origin-assembler.registry.const';
 

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepEntity } from '@h2-trust/contracts';
+import { ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { ProcessType } from '@h2-trust/domain';
 import { BatchEntityFixture } from '../../batch/fixtures/batch.fixture';
 import { DocumentEntityFixture } from '../../document/fixtures/document.fixture';

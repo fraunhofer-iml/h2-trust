@@ -8,7 +8,7 @@
 
 import { Controller, Get } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
-import { CompanyDto } from '@h2-trust/contracts';
+import { CompanyDto } from '@h2-trust/contracts/dtos';
 import { CompanyService } from './company.service';
 
 @Controller('companies')

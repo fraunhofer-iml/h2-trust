@@ -11,17 +11,19 @@ import { MessagePattern } from '@nestjs/microservices';
 import {
   BaseUnitEntity,
   ConcreteUnitEntity,
-  CreateHydrogenProductionUnitPayload,
-  CreateHydrogenStorageUnitPayload,
-  CreatePowerProductionUnitPayload,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
   PowerProductionTypeEntity,
   PowerProductionUnitEntity,
+} from '@h2-trust/contracts/entities';
+import {
+  CreateHydrogenProductionUnitPayload,
+  CreateHydrogenStorageUnitPayload,
+  CreatePowerProductionUnitPayload,
   ReadByIdPayload,
   ReadByIdsPayload,
   UpdateUnitStatusPayload,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/payloads';
 import { UnitMessagePatterns } from '@h2-trust/messaging';
 import { UnitService } from './unit.service';
 

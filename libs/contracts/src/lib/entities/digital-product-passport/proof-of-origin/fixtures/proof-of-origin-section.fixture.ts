@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProofOfOriginSectionEntity } from '@h2-trust/contracts';
+import { ProofOfOriginSectionEntity } from '@h2-trust/contracts/entities';
 
 export const ProofOfOriginSectionEntityFixture = {
   create: (overrides: Partial<ProofOfOriginSectionEntity> = {}): ProofOfOriginSectionEntity =>

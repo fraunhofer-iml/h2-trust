@@ -7,8 +7,8 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateHydrogenTransportationPayload } from '@h2-trust/contracts';
-import { BatchEntityFixture, ProcessStepEntityFixture } from '@h2-trust/contracts/testing';
+import { BatchEntityFixture, ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
+import { CreateHydrogenTransportationPayload } from '@h2-trust/contracts/payloads';
 import { BatchType, FuelType, ProcessType, TransportMode } from '@h2-trust/domain';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { TransportationService } from '../transportation/transportation.service';

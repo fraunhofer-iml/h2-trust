@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenStorageOverviewDto } from '@h2-trust/contracts';
+import { HydrogenStorageOverviewDto } from '@h2-trust/contracts/dtos';
 import { HydrogenColor } from '@h2-trust/domain';
 
 export const HydrogenStorageUnitOverviewDtoMock = <HydrogenStorageOverviewDto[]>[

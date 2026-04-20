@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DocumentEntity } from '@h2-trust/contracts';
+import { DocumentEntity } from '@h2-trust/contracts/entities';
 
 export const DocumentEntityFixture = {
   create: (overrides: Partial<DocumentEntity> = {}): DocumentEntity =>

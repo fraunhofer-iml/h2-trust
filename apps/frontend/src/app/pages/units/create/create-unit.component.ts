@@ -26,7 +26,7 @@ import {
   HydrogenStorageUnitInputDto,
   PowerProductionUnitInputDto,
   UnitInputDto,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/dtos';
 import { HydrogenProductionMethod, HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { ICONS } from '../../../shared/constants/icons';
 import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';

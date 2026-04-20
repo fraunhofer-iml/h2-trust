@@ -8,12 +8,8 @@
 
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import {
-  PowerAccessApprovalEntity,
-  PowerProductionUnitEntity,
-  ReadByIdPayload,
-  ReadPowerAccessApprovalsPayload,
-} from '@h2-trust/contracts';
+import { PowerAccessApprovalEntity, PowerProductionUnitEntity } from '@h2-trust/contracts/entities';
+import { ReadByIdPayload, ReadPowerAccessApprovalsPayload } from '@h2-trust/contracts/payloads';
 import { PowerAccessApprovalPatterns } from '@h2-trust/messaging';
 import { PowerAccessApprovalService } from './power-access-approval.service';
 

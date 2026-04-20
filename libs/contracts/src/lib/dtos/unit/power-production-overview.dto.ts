@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerProductionUnitEntity } from '@h2-trust/contracts';
+import { PowerProductionUnitEntity } from '@h2-trust/contracts/entities';
 
 export class PowerProductionOverviewDto {
   id: string;

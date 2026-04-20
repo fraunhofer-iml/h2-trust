@@ -13,7 +13,7 @@ import { EChartsOption } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { PercentPipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
-import { HydrogenStorageOverviewDto } from '@h2-trust/contracts';
+import { HydrogenStorageOverviewDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { CHART_COLORS } from '../../../../shared/constants/chart-colors';
 import { ERROR_MESSAGES } from '../../../../shared/constants/error.messages';

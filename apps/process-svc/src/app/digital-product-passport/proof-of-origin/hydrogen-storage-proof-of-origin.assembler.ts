@@ -15,7 +15,7 @@ import {
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
   ProvenanceEntity,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/entities';
 import { BatchType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
 import { computeHydrogenStorageEmissionCalculations } from '../proof-of-sustainability/hydrogen-storage-proof-of-sustainability.calculator';
 import { Util } from '../util';

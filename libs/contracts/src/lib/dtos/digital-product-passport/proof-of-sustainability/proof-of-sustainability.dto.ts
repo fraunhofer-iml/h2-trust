@@ -10,7 +10,7 @@ import {
   ProofOfSustainabilityEmissionCalculationEntity,
   ProofOfSustainabilityEmissionEntity,
   ProofOfSustainabilityEntity,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/entities';
 import { EmissionCalculationDto } from './emission-calculation.dto';
 import { EmissionForProcessStepDto } from './process-step-emission.dto';
 

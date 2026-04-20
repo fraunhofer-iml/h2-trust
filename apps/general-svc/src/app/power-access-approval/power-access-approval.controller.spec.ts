@@ -7,8 +7,8 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { PowerAccessApprovalEntity } from '@h2-trust/contracts';
-import { UserEntityFixture } from '@h2-trust/contracts/testing';
+import { PowerAccessApprovalEntity } from '@h2-trust/contracts/entities';
+import { UserEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import {
   DatabaseModule,
   PowerAccessApprovalDbTypeMock,

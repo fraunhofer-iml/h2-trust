@@ -13,24 +13,26 @@ import {
   HydrogenProductionOverviewDto,
   HydrogenProductionUnitCreateDtoMock,
   HydrogenProductionUnitDto,
-  HydrogenProductionUnitEntity,
   HydrogenProductionUnitInputDto,
   HydrogenStorageUnitCreateDtoMock,
   HydrogenStorageUnitDto,
-  HydrogenStorageUnitEntity,
   HydrogenStorageUnitInputDto,
   PowerProductionUnitCreateDtoMock,
   PowerProductionUnitDto,
-  PowerProductionUnitEntity,
   PowerProductionUnitInputDto,
-  ReadByIdPayload,
   UserDetailsDto,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/dtos';
+import {
+  HydrogenProductionUnitEntity,
+  HydrogenStorageUnitEntity,
+  PowerProductionUnitEntity,
+} from '@h2-trust/contracts/entities';
 import {
   HydrogenProductionUnitEntityFixture,
   HydrogenStorageUnitEntityFixture,
   PowerProductionUnitEntityFixture,
-} from '@h2-trust/contracts/testing';
+} from '@h2-trust/contracts/entities/fixtures';
+import { ReadByIdPayload } from '@h2-trust/contracts/payloads';
 import { BrokerQueues, UnitMessagePatterns } from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';
 import { UnitController } from './unit.controller';

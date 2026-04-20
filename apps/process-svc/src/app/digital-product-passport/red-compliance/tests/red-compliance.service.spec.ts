@@ -6,12 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RedComplianceEntity } from '@h2-trust/contracts';
+import { RedComplianceEntity } from '@h2-trust/contracts/entities';
 import {
   HydrogenProductionUnitEntityFixture,
   PowerProductionUnitEntityFixture,
   ProcessStepEntityFixture,
-} from '@h2-trust/contracts/testing';
+} from '@h2-trust/contracts/entities/fixtures';
 import { BiddingZone } from '@h2-trust/domain';
 import {
   areUnitsInSameBiddingZone,

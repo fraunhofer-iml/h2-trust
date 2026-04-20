@@ -10,7 +10,7 @@ import {
   ProofOfOriginHydrogenBatchEntity,
   ProofOfOriginPowerBatchEntity,
   ProofOfOriginWaterBatchEntity,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/entities';
 import { EnergySource, HydrogenColor, PowerType, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentEntityFixture } from '../../../bottling/fixtures/hydrogen-component.fixture';
 import { ProofOfOriginEmissionEntityFixture } from './proof-of-origin-emission.fixture';

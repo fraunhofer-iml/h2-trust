@@ -12,7 +12,7 @@ import {
   BatchEntity,
   ConcreteUnitEntity,
   UnitAccountingPeriods,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/entities';
 import { BatchType, HydrogenColor, PowerType, ProcessType } from '@h2-trust/domain';
 
 export interface AccountingPeriod {

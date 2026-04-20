@@ -10,7 +10,7 @@ import { ProofOfOriginCardComponent } from 'apps/frontend/src/app/layout/proof-o
 import { ICONS } from 'apps/frontend/src/app/shared/constants/icons';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
-import { ClassificationDto } from '@h2-trust/contracts';
+import { ClassificationDto } from '@h2-trust/contracts/dtos';
 import { BatchType, MeasurementUnit } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../../../shared/pipes/format-enum.pipe';
 import { UnitPipe } from '../../../../../shared/pipes/unit.pipe';

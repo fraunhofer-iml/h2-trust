@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AddressEntity } from '@h2-trust/contracts';
+import { AddressEntity } from '@h2-trust/contracts/entities';
 
 export const AddressEntityFixture = {
   create: (overrides: Partial<AddressEntity> = {}): AddressEntity =>

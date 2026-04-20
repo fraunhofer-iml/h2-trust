@@ -7,7 +7,7 @@
  */
 
 import { IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
-import { AddressPayload, CreateHydrogenStorageUnitPayload } from '@h2-trust/contracts';
+import { AddressPayload, CreateHydrogenStorageUnitPayload } from '@h2-trust/contracts/payloads';
 import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 import { UnitInputDto } from './unit-input.dto';

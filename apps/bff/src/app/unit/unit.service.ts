@@ -15,14 +15,14 @@ import {
   HydrogenProductionUnitInputDto,
   HydrogenStorageOverviewDto,
   HydrogenStorageUnitDto,
-  HydrogenStorageUnitEntity,
   HydrogenStorageUnitInputDto,
   PowerProductionOverviewDto,
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
-  ReadByIdPayload,
   UnitUpdateActiveDto,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/dtos';
+import { HydrogenStorageUnitEntity } from '@h2-trust/contracts/entities';
+import { ReadByIdPayload } from '@h2-trust/contracts/payloads';
 import { BrokerQueues, UnitMessagePatterns } from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';
 

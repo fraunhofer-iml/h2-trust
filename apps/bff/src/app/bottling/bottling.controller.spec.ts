@@ -14,8 +14,8 @@ import {
   BottlingDtoMock,
   BottlingOverviewDto,
   UserDetailsDtoMock,
-} from '@h2-trust/contracts';
-import { ProcessStepEntityFixture } from '@h2-trust/contracts/testing';
+} from '@h2-trust/contracts/dtos';
+import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { BrokerQueues, ProcessStepMessagePatterns } from '@h2-trust/messaging';
 import 'multer';
 import { of } from 'rxjs';

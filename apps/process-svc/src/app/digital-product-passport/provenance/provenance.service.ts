@@ -13,7 +13,7 @@ import {
   ProcessStepEntity,
   ProductionChainEntity,
   ProvenanceEntity,
-} from '@h2-trust/contracts';
+} from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 import { TraversalService } from './traversal.service';
 

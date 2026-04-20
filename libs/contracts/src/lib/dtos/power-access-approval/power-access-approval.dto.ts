@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerAccessApprovalEntity } from '@h2-trust/contracts';
+import { PowerAccessApprovalEntity } from '@h2-trust/contracts/entities';
 import { EnergySource, PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { CompanyDto } from '../company';
 import { PowerProductionOverviewDto } from '../unit';
