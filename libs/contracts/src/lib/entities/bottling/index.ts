@@ -7,3 +7,4 @@
  */
 
 export * from './hydrogen-component.entity';
+export * from './hydrogen-composition.util';

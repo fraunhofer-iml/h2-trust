@@ -7,7 +7,7 @@
  */
 
 import { HydrogenColor, RfnboType } from '@h2-trust/domain';
-import { BrokerException } from '../broker/broker-exception';
+import { BrokerException } from '../../../../../amqp/src/lib/broker/broker-exception';
 import { HydrogenCompositionUtil } from './hydrogen-composition.util';
 import { HydrogenComponentEntity } from '@h2-trust/contracts';
 
