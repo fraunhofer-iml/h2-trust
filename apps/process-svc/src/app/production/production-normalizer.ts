@@ -59,14 +59,14 @@ export class ProductionNormalizer {
   }
 
   private static normalizeAccountingPeriods(
-    accountingPeriods: UnitAccountingPeriods[],
+    unitAccountingPeriods: UnitAccountingPeriods[],
     type: CsvContentType,
     ownerId: string,
   ): StagedProductionEntity[] {
     const unitAccountingPeriodsByDateHour = new Map<string, StagedProductionEntity[]>();
 
-    accountingPeriods.forEach((bundle) => {
-      const hourlyProductionTotals = bundle.accountingPeriods.reduce(
+    unitAccountingPeriods.forEach((unitAccountingPeriod) => {
+      const hourlyProductionTotals = unitAccountingPeriod.accountingPeriods.reduce(
         (acc, item) => {
           const date = new Date(item.time);
           const dateHourKey = date.toISOString().slice(0, 13);
@@ -76,7 +76,7 @@ export class ProductionNormalizer {
         },
         {} as Record<string, number>,
       );
-      const hourlyPowerUsedTotals = bundle.accountingPeriods.reduce(
+      const hourlyPowerUsedTotals = unitAccountingPeriod.accountingPeriods.reduce(
         (acc, item) => {
           const date = new Date(item.time);
           const dateHourKey = date.toISOString().slice(0, 13);
@@ -89,7 +89,7 @@ export class ProductionNormalizer {
       );
       Object.entries(hourlyProductionTotals).forEach(([timestamp, amount]) => {
         this.addToMap<StagedProductionEntity>(unitAccountingPeriodsByDateHour, `${timestamp}:00:00Z`, {
-          unitId: bundle.unitId,
+          unitId: unitAccountingPeriod.unitId,
           ownerId: ownerId,
           amount,
           startedAt: new Date(`${timestamp}:00:00Z`),
@@ -104,7 +104,10 @@ export class ProductionNormalizer {
   }
 
   private static addToMap<T extends PowerItem | HydrogenItem>(map: Map<string, T[]>, key: string, value: T): void {
-    if (!map.get(key)) map.set(key, [value]);
-    else map.get(key).push(value);
+    if (!map.get(key)) {
+      map.set(key, [value]);
+    } else {
+      map.get(key).push(value);
+    }
   }
 }
