@@ -14,7 +14,7 @@ import { DigitalProductPassportService } from './digital-product-passport.servic
 import { ProvenanceModule } from './provenance/provenance.module';
 
 @Module({
-  imports: [ProcessStepModule, ProvenanceModule, ProcessStepModule, ProvenanceModule, Broker.getGeneralSvcBroker()],
+  imports: [ProcessStepModule, ProvenanceModule, Broker.getGeneralSvcBroker()],
   controllers: [DigitalProductPassportController],
   providers: [DigitalProductPassportService],
   exports: [DigitalProductPassportService],
