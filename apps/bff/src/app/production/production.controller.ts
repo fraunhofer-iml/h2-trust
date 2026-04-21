@@ -32,10 +32,12 @@ import {
   CreateProductionDto,
   CsvDocumentIntegrityResultDto,
   PaginatedProductionDataDto,
+  PaginatedStagedProductionDto,
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   ProductionStatisticsDto,
+  StagedProductionDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/api';
 import { ProductionService } from './production.service';
@@ -142,6 +144,39 @@ export class ProductionController {
     @Query('month') month: Date,
   ): Promise<PaginatedProductionDataDto> {
     return this.service.readHydrogenProductionsByOwner(authenticatedUser.sub, pageNumber, pageSize, unitName, month);
+  }
+
+  @Get('/staging')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: "Retrieve all staged hydrogen productions for the authenticated user's company.",
+  })
+  @ApiOkResponse({
+    description: "Returns a list of all staged hydrogen productions belonging to the authenticated user's company.",
+    type: [StagedProductionDto],
+  })
+  @ApiQuery({
+    name: 'pageNumber',
+    type: Number,
+    description: 'Used to get a specific page of pagination',
+    required: false,
+    minimum: 1,
+    example: '1',
+  })
+  @ApiQuery({
+    name: 'pageSize',
+    type: Number,
+    description: 'Used to define the amount of data retrieved',
+    required: false,
+    minimum: 5,
+    example: '5',
+  })
+  async readStagedHydrogenProductionsByOwner(
+    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+    @Query('pageNumber') pageNumber: number,
+    @Query('pageSize') pageSize: number,
+  ): Promise<PaginatedStagedProductionDto> {
+    return this.service.readStagedHydrogenProductionsByOwner(authenticatedUser.sub, pageNumber, pageSize);
   }
 
   @Get('/statistics')

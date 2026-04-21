@@ -10,7 +10,9 @@ import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
   BrokerException,
   CsvDocumentEntity,
+  PaginatedStagedProductionEntity,
   ProductionStagingResultEntity,
+  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   StagedProductionEntity,
   StageProductionsPayload,
 } from '@h2-trust/amqp';
@@ -38,6 +40,31 @@ export class ProductionStagingService {
     private readonly prismaService: PrismaService,
     private readonly stagedProductionRepository: StagedProductionRepository,
   ) {}
+
+  async readStagedProductions(
+    payload: ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
+  ): Promise<PaginatedStagedProductionEntity> {
+    const stagedProductions: StagedProductionEntity[] = await this.stagedProductionRepository.findStagedProductions(
+      payload.ownerId,
+    );
+    return this.createStagedProductionPagination(stagedProductions, payload.filter.pageSize, payload.filter.pageNumber);
+  }
+
+  private createStagedProductionPagination(
+    stagedProductions: StagedProductionEntity[],
+    pageSize: number,
+    pageNumber: number,
+  ): PaginatedStagedProductionEntity {
+    const paginationStart: number = (pageNumber - 1) * pageSize;
+    const paginationEnd: number = pageNumber * pageSize;
+
+    return new PaginatedStagedProductionEntity(
+      stagedProductions.slice(paginationStart, paginationEnd),
+      pageNumber,
+      pageSize,
+      stagedProductions.length,
+    );
+  }
 
   async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
     const parsedProductionImports: ParsedImport[] = await this.csvImportProcessingService.parseAndUploadFiles(

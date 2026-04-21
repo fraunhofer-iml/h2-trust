@@ -14,3 +14,5 @@ export * from './import-submission.dto';
 export * from './processed-csv.dto';
 export * from './download-files.dto';
 export * from './csv-document-integrity-result.dto';
+export * from './staged-production.dto';
+export * from './paginated-staged-production.dto';

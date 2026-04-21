@@ -19,6 +19,17 @@ export class StagedProductionRepository {
 
   constructor(private readonly prismaService: PrismaService) {}
 
+  async findStagedProductions(ownerId: string): Promise<StagedProductionEntity[]> {
+    return this.prismaService.stagedProduction
+      .findMany({
+        where: {
+          ownerId: ownerId,
+        },
+        ...stagedProductionDeepQueryArgs,
+      })
+      .then((stagedProduction) => stagedProduction.map(StagedProductionEntity.fromDeepDatabase));
+  }
+
   async saveStagedProductions(
     stagedProductions: StagedProductionEntity[],
     csvImportId: string,

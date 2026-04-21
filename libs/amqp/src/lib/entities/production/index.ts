@@ -13,3 +13,4 @@ export * from './staged-production.entity';
 export * from './verify-csv-document-integrity-result.entity';
 export * from './production-statistics.entity';
 export * from './root-production.entity';
+export * from './paginated-staged-production.entity';
