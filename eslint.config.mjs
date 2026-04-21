@@ -97,7 +97,7 @@ export default [
     },
   },
   {
-    files: ['**/*.ts', '**/*.js', '**/*.mjs'],
+    files: ['**/*.ts', '**/*.cts', '**/*.mts', '**/*.js', '**/*.cjs', '**/*.mjs'],
     plugins: {
       'license-header': licenseHeader,
     },
