@@ -12,7 +12,7 @@ import { PowerAccessApprovalController } from './power-access-approval.controlle
 import { PowerAccessApprovalService } from './power-access-approval.service';
 
 @Module({
-  imports: [new Broker().getGeneralSvcBroker()],
+  imports: [Broker.getGeneralSvcBroker()],
   controllers: [PowerAccessApprovalController],
   providers: [PowerAccessApprovalService],
 })

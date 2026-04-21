@@ -12,7 +12,7 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
 @Module({
-  imports: [new Broker().getGeneralSvcBroker()],
+  imports: [Broker.getGeneralSvcBroker()],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],

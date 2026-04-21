@@ -12,7 +12,7 @@ import { CompanyController } from './company.controller';
 import { CompanyService } from './company.service';
 
 @Module({
-  imports: [new Broker().getGeneralSvcBroker()],
+  imports: [Broker.getGeneralSvcBroker()],
   controllers: [CompanyController],
   providers: [CompanyService],
 })

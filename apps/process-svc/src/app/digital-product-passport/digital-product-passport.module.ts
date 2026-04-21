@@ -19,7 +19,7 @@ import { ProvenanceModule } from './provenance/provenance.module';
     ProvenanceModule,
     ProcessStepModule,
     ProvenanceModule,
-    new Broker().getGeneralSvcBroker(),
+    Broker.getGeneralSvcBroker(),
   ],
   controllers: [DigitalProductPassportController],
   providers: [DigitalProductPassportService],

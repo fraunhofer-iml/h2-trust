@@ -7,6 +7,24 @@
  */
 
 export class BrokerQueues {
-  public static QUEUE_GENERAL_SVC = process.env['AMQP_QUEUE_PREFIX'] + 'general-svc';
-  public static QUEUE_PROCESS_SVC = process.env['AMQP_QUEUE_PREFIX'] + 'process-svc';
+  private static _QUEUE_GENERAL_SVC = buildQueueName('general-svc');
+  private static _QUEUE_PROCESS_SVC = buildQueueName('process-svc');
+
+  public static get QUEUE_GENERAL_SVC(): string {
+    return this._QUEUE_GENERAL_SVC;
+  }
+
+  public static get QUEUE_PROCESS_SVC(): string {
+    return this._QUEUE_PROCESS_SVC;
+  }
+}
+
+function buildQueueName(suffix: string): string {
+  const prefix = process.env['AMQP_QUEUE_PREFIX'];
+
+  if (prefix === undefined) {
+    throw new Error('AMQP_QUEUE_PREFIX is not defined');
+  }
+
+  return `${prefix}${suffix}`;
 }

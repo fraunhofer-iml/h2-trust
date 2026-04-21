@@ -15,7 +15,7 @@ import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';
 
 @Module({
-  imports: [DatabaseModule, ProcessStepModule, StorageModule, new Broker().getGeneralSvcBroker()],
+  imports: [DatabaseModule, ProcessStepModule, StorageModule, Broker.getGeneralSvcBroker()],
   controllers: [BottlingController],
   providers: [BottlingService],
 })

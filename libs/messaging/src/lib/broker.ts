@@ -11,15 +11,15 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { BrokerQueues } from './broker-queues';
 
 export class Broker {
-  public getGeneralSvcBroker(): DynamicModule {
-    return this.getMessageBroker(BrokerQueues.QUEUE_GENERAL_SVC);
+  public static getGeneralSvcBroker(): DynamicModule {
+    return Broker.getMessageBroker(BrokerQueues.QUEUE_GENERAL_SVC);
   }
 
-  public getProcessSvcBroker(): DynamicModule {
-    return this.getMessageBroker(BrokerQueues.QUEUE_PROCESS_SVC);
+  public static getProcessSvcBroker(): DynamicModule {
+    return Broker.getMessageBroker(BrokerQueues.QUEUE_PROCESS_SVC);
   }
 
-  private getMessageBroker(queue: string): DynamicModule {
+  private static getMessageBroker(queue: string): DynamicModule {
     const amqpUri = process.env['AMQP_URI'];
 
     if (!amqpUri) {
@@ -32,7 +32,7 @@ export class Broker {
         transport: Transport.RMQ,
         options: {
           urls: [amqpUri],
-          queue: queue,
+          queue,
           queueOptions: {
             durable: false,
           },
