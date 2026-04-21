@@ -55,7 +55,7 @@ export class ProductionStagingService {
         this.csvImportProcessingService.createCsvDocumentInputs(parsedProductionImports);
       const csvDocuments = await this.csvImportRepository.saveCsvDocuments(csvImportId, csvDocumentInputs, tx);
 
-      await this.stagedProductionRepository.saveStagedProduction(stagedProductions, csvImportId, tx);
+      await this.stagedProductionRepository.saveStagedProductions(stagedProductions, csvImportId, tx);
 
       return { csvImportId, csvDocuments };
     });

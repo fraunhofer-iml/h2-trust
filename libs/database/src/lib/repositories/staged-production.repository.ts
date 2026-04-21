@@ -19,7 +19,7 @@ export class StagedProductionRepository {
 
   constructor(private readonly prismaService: PrismaService) {}
 
-  async saveStagedProduction(
+  async saveStagedProductions(
     stagedProductions: StagedProductionEntity[],
     csvImportId: string,
     tx?: Prisma.TransactionClient,
