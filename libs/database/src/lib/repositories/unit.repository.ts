@@ -29,7 +29,7 @@ import {
 } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 import { baseUnitDeepQueryArgs } from '../query-args';
-import { assertAllIdsFound, assertRecordFound } from './utils';
+import { assertAllIdsFound, assertRecordFound } from './assertions.utils';
 
 @Injectable()
 export class UnitRepository {

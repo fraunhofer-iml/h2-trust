@@ -13,7 +13,7 @@ import { BatchType } from '@h2-trust/domain';
 import { buildProcessStepCreateInput } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 import { processStepDeepQueryArgs } from '../query-args';
-import { assertRecordFound } from './utils';
+import { assertRecordFound } from './assertions.utils';
 
 @Injectable()
 export class ProcessStepRepository {
