@@ -80,8 +80,8 @@ export class ProductionNormalizer {
         (acc, item) => {
           const date = new Date(item.time);
           const dateHourKey = date.toISOString().slice(0, 13);
-          const usedPower = item.power ?? 0;
-          acc[dateHourKey] = (acc[dateHourKey] || 0) + usedPower;
+          const powerUsed = item.power ?? 0;
+          acc[dateHourKey] = (acc[dateHourKey] || 0) + powerUsed;
 
           return acc;
         },
@@ -94,7 +94,7 @@ export class ProductionNormalizer {
           amount,
           startedAt: new Date(`${timestamp}:00:00Z`),
           endedAt: new Date(`${timestamp}:59:59Z`),
-          usedPower: timestamp in hourlyPowerUsedTotals ? hourlyPowerUsedTotals[timestamp] : 0,
+          powerUsed: timestamp in hourlyPowerUsedTotals ? hourlyPowerUsedTotals[timestamp] : 0,
           type: type,
         });
       });

@@ -16,7 +16,7 @@ export class StagedProductionEntity {
   amount: number;
   unitId: string;
   ownerId: string;
-  usedPower: number;
+  powerUsed: number;
   type: CsvContentType;
   csvImportId?: string;
 
@@ -26,7 +26,7 @@ export class StagedProductionEntity {
     amount: number,
     unitId: string,
     ownerId: string,
-    usedPower: number,
+    powerUsed: number,
     type: CsvContentType,
     csvImportId?: string,
   ) {
@@ -35,7 +35,7 @@ export class StagedProductionEntity {
     this.amount = amount;
     this.unitId = unitId;
     this.ownerId = ownerId;
-    this.usedPower = usedPower;
+    this.powerUsed = powerUsed;
     this.type = type;
     this.csvImportId = csvImportId;
   }
@@ -52,7 +52,7 @@ export class StagedProductionEntity {
       stagedProduction.amount.toNumber(),
       stagedProduction.unitId,
       stagedProduction.ownerId,
-      stagedProduction.usedPower.toNumber(),
+      stagedProduction.powerUsed.toNumber(),
       stagedProduction.type,
       stagedProduction.csvImportId,
     );

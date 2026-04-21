@@ -16,22 +16,22 @@ export class ProductionStagingResultEntity {
   numberOfBatches: number;
 
   constructor(id: string, stagedProductions: StagedProductionEntity[]) {
-    const { amount, usedPower } = (stagedProductions ?? []).reduce(
+    const { amount, powerUsed } = (stagedProductions ?? []).reduce(
       (acc, curr) => {
         acc.amount += curr.amount;
-        acc.usedPower += curr.usedPower;
+        acc.powerUsed += curr.powerUsed;
         return acc;
       },
       {
         amount: 0,
-        usedPower: 0,
+        powerUsed: 0,
       },
     );
 
     this.id = id;
     this.createdAt = stagedProductions[0].startedAt;
     this.numberOfBatches = stagedProductions.length;
-    this.powerUsed = usedPower;
+    this.powerUsed = powerUsed;
     this.amount = amount;
   }
 }
