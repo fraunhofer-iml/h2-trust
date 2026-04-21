@@ -138,17 +138,18 @@ export class AddBottleComponent {
   }
 
   private createTimestamp() {
-    let pickedDate = new Date();
-    let pickedTimeAsDate = new Date();
+    const dateValue = this.bottleFormGroup.controls['date']?.value;
+    const timeValue = this.bottleFormGroup.controls['time']?.value;
 
-    if (this.bottleFormGroup.controls['date']?.value && this.bottleFormGroup.controls['time']?.value) {
-      pickedDate = new Date(this.bottleFormGroup.controls['date'].value);
-      pickedTimeAsDate = new Date(this.bottleFormGroup.controls['time'].value);
-      pickedDate.setHours(pickedTimeAsDate.getHours());
-      pickedDate.setMinutes(pickedTimeAsDate.getMinutes());
-    } else {
+    if (!dateValue || !timeValue) {
       throw new Error('No Date and/or Time Found');
     }
+
+    const pickedDate = new Date(dateValue);
+    const pickedTimeAsDate = new Date(timeValue);
+
+    pickedDate.setHours(pickedTimeAsDate.getHours());
+    pickedDate.setMinutes(pickedTimeAsDate.getMinutes());
 
     return pickedDate;
   }

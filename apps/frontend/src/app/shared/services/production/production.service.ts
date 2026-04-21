@@ -8,7 +8,7 @@
 
 import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
   AccountingPeriodMatchingResultDto,
   CreateProductionDto,
@@ -26,7 +26,7 @@ import { API } from '../../constants/api-endpoints';
 
 @Injectable()
 export class ProductionService {
-  constructor(private readonly httpClient: HttpClient) {}
+  private readonly httpClient = inject(HttpClient);
 
   getProductions({ month, unit }: FilterModel, { pageIndex, pageSize }: PaginationModel) {
     let params = new HttpParams();
