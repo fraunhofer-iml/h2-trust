@@ -1,8 +1,6 @@
 @import 'tailwindcss';
-@import 'tailwind-animate';
 
-/* Content sources for Nx monorepo */
-@source '../../../libs/**/*.{ts,html}';
+@plugin 'tailwindcss-animate';
 
 /* Custom theme */
 @theme {
