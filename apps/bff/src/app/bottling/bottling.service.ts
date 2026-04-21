@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 import { BottlingDto, BottlingOverviewDto, DigitalProductPassportDto } from '@h2-trust/contracts/dtos';
 import { DigitalProductPassportEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
 import {

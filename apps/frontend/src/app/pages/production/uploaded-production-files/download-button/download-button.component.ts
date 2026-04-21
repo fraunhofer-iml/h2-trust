@@ -6,8 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
-import { toast } from 'ngx-sonner';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -15,6 +13,8 @@ import { Component, inject, input } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { injectMutation } from '@tanstack/angular-query-experimental';
+import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
+import { toast } from 'ngx-sonner';
 import { DownloadFilesDto, ProcessedCsvDto } from '@h2-trust/contracts/dtos';
 
 @Component({

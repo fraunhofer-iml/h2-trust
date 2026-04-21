@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { KeycloakService } from 'keycloak-angular';
 import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { KeycloakService } from 'keycloak-angular';
 import { AuthService } from '../auth/auth.service';
 import { UsersService } from './users.service';
 

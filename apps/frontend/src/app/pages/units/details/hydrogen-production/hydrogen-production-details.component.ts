@@ -6,13 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ErrorCardComponent } from 'apps/frontend/src/app/layout/error-card/error-card.component';
-import { LoadingCardComponent } from 'apps/frontend/src/app/layout/loading-card/loading-card.component';
-import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { QueryClient } from '@tanstack/angular-query-experimental';
+import { ErrorCardComponent } from 'apps/frontend/src/app/layout/error-card/error-card.component';
+import { LoadingCardComponent } from 'apps/frontend/src/app/layout/loading-card/loading-card.component';
+import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
 import { HydrogenProductionUnitDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit, UnitType } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';

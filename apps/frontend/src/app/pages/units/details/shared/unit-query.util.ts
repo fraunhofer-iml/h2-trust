@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ERROR_MESSAGES } from 'apps/frontend/src/app/shared/constants/error.messages';
 import { Signal } from '@angular/core';
 import { injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { ERROR_MESSAGES } from 'apps/frontend/src/app/shared/constants/error.messages';
 import { UnitType } from '@h2-trust/domain';
 
 export function injectUnitQuery<T>(

@@ -7,6 +7,7 @@
  */
 
 import { readFileSync } from 'fs';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   BaseContract,
   Contract,
@@ -15,7 +16,6 @@ import {
   Wallet,
   type ContractTransactionResponse,
 } from 'ethers';
-import { Injectable, Logger } from '@nestjs/common';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { ProofEntity } from '@h2-trust/contracts/entities';
 

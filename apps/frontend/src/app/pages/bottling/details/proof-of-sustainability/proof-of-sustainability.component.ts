@@ -6,13 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { InfoTooltipComponent } from 'apps/frontend/src/app/layout/info-tooltip/info-tooltip.component';
-import { ChemicalNames } from 'apps/frontend/src/app/shared/constants/chemical-names';
-import { EMISSIONS } from 'apps/frontend/src/app/shared/constants/emissions';
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { InfoTooltipComponent } from 'apps/frontend/src/app/layout/info-tooltip/info-tooltip.component';
+import { ChemicalNames } from 'apps/frontend/src/app/shared/constants/chemical-names';
+import { EMISSIONS } from 'apps/frontend/src/app/shared/constants/emissions';
 import { EmissionCalculationDto, ProofOfSustainabilityDto } from '@h2-trust/contracts/dtos';
 import { CalculationTopic, MeasurementUnit } from '@h2-trust/domain';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';

@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BrokerException } from 'libs/messaging/src';
 import { HttpStatus } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { BrokerException } from 'libs/messaging/src';
 import { ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 

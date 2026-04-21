@@ -6,11 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { QUERY_KEYS } from 'apps/frontend/src/app/shared/queries/shared-query-keys';
-import { powerProductionUnitsQueryOptions } from 'apps/frontend/src/app/shared/queries/units.query';
-import { PowerAccessApprovalService } from 'apps/frontend/src/app/shared/services/power-access-approvals/power-access-approvals.service';
-import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
-import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -25,6 +20,11 @@ import {
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { QUERY_KEYS } from 'apps/frontend/src/app/shared/queries/shared-query-keys';
+import { powerProductionUnitsQueryOptions } from 'apps/frontend/src/app/shared/queries/units.query';
+import { PowerAccessApprovalService } from 'apps/frontend/src/app/shared/services/power-access-approvals/power-access-approvals.service';
+import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
+import { toast } from 'ngx-sonner';
 import { PowerProductionOverviewDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/contracts/dtos';
 import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';

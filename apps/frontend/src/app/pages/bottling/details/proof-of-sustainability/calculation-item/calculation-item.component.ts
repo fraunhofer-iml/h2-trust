@@ -6,10 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ICONS } from 'apps/frontend/src/app/shared/constants/icons';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { ICONS } from 'apps/frontend/src/app/shared/constants/icons';
 import { EmissionCalculationDto } from '@h2-trust/contracts/dtos';
 import { CalculationTopic, MeasurementUnit } from '@h2-trust/domain';
 import { BaseSheetComponent } from '../../../../../layout/sheet/sheet.component';

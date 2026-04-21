@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
+import { of } from 'rxjs';
 import { CompanyDto, CompanyDtoMock } from '@h2-trust/contracts/dtos';
 import { BrokerQueues, CompanyMessagePatterns } from '@h2-trust/messaging';
 import { CompanyController } from './company.controller';

@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AuthenticatedUser } from 'nest-keycloak-connect';
 import { Body, Controller, Get, Param, Patch, Post, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { AuthenticatedUser } from 'nest-keycloak-connect';
 import {
   HydrogenProductionOverviewDto,
   HydrogenProductionUnitDto,

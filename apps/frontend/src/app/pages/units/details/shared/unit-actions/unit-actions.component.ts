@@ -6,13 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
-import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
 import { Component, inject, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { injectMutation } from '@tanstack/angular-query-experimental';
+import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-unit-actions',

@@ -6,10 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Observable, throwError } from 'rxjs';
 import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, HttpStatus, Logger } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { Prisma } from '@prisma/client';
+import { Observable, throwError } from 'rxjs';
 import { BrokerException } from './broker-exception';
 
 interface ErrorDetails {

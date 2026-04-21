@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import licenseHeader from 'eslint-plugin-license-header';
 import nx from '@nx/eslint-plugin';
+import licenseHeader from 'eslint-plugin-license-header';
 
 export default [
   ...nx.configs['flat/base'],

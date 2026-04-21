@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { NgxSonnerToaster } from 'ngx-sonner';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { NgxSonnerToaster } from 'ngx-sonner';
 import { SidebarComponent } from './layout/sidebar/sidebar.component';
 
 @Component({

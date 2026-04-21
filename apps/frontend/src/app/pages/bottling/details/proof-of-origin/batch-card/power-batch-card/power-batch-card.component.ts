@@ -6,10 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerTypeChipComponent } from 'apps/frontend/src/app/layout/chips/power-type-chip.component';
-import { ProofOfOriginCardComponent } from 'apps/frontend/src/app/layout/proof-of-origin-card/proof-of-origin-card.component';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
+import { PowerTypeChipComponent } from 'apps/frontend/src/app/layout/chips/power-type-chip.component';
+import { ProofOfOriginCardComponent } from 'apps/frontend/src/app/layout/proof-of-origin-card/proof-of-origin-card.component';
 import { PowerBatchDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { BaseSheetComponent } from '../../../../../../layout/sheet/sheet.component';

@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { parse } from 'csv-parse';
 import { HttpStatus, Logger } from '@nestjs/common';
+import { parse } from 'csv-parse';
 import { AccountingPeriodHydrogen, AccountingPeriodPower } from '@h2-trust/contracts/entities';
 import { BrokerException } from '@h2-trust/messaging';
 import { DateTimeUtil } from '@h2-trust/utils';
