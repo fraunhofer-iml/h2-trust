@@ -10,6 +10,7 @@ import {
   BatchType,
   CsvDocumentIntegrityStatus,
   EnergySource,
+  FuelType,
   GridLevel,
   HydrogenColor,
   HydrogenProductionMethod,
@@ -50,8 +51,8 @@ export class EnumLabelMapper {
     [HydrogenStorageType.LIQUID_HYDROGEN]: 'Liquid Hydrogen',
   };
 
-  private static readonly FUEL_TYPE_LABELS: Record<string, string> = {
-    DIESEL: 'Diesel',
+  private static readonly FUEL_TYPE_LABELS: Record<FuelType, string> = {
+    [FuelType.DIESEL]: 'Diesel',
   };
 
   private static readonly ENERGY_SOURCE_LABELS: Record<EnergySource, string> = {
@@ -61,13 +62,13 @@ export class EnumLabelMapper {
     [EnergySource.WIND_ENERGY]: 'Wind Turbine',
   };
 
-  private static readonly HYDROGEN_COLORS: Record<HydrogenColor, string> = {
+  private static readonly HYDROGEN_COLOR_LABELS: Record<HydrogenColor, string> = {
     [HydrogenColor.GREEN]: 'Green',
     [HydrogenColor.MIX]: 'Mix',
     [HydrogenColor.YELLOW]: 'Yellow',
   };
 
-  private static readonly MEASUREMENT_UNIT_LABELS: Record<BatchType, string> = {
+  private static readonly BATCH_TYPE_MEASUREMENT_UNIT: Record<BatchType, string> = {
     [BatchType.HYDROGEN]: MeasurementUnit.KG,
     [BatchType.POWER]: MeasurementUnit.KWH,
     [BatchType.WATER]: MeasurementUnit.L,
@@ -99,7 +100,7 @@ export class EnumLabelMapper {
     return this.getLabel(value, this.HYDROGEN_STORAGE_TYPE_LABELS);
   }
 
-  public static getFuelType(value: string): string {
+  public static getFuelType(value: FuelType): string {
     return this.getLabel(value, this.FUEL_TYPE_LABELS);
   }
 
@@ -108,11 +109,11 @@ export class EnumLabelMapper {
   }
 
   public static getHydrogenColor(value: HydrogenColor): string {
-    return this.getLabel(value, this.HYDROGEN_COLORS);
+    return this.getLabel(value, this.HYDROGEN_COLOR_LABELS);
   }
 
   public static getMeasurementUnit(value: BatchType): string {
-    return this.getLabel(value, this.MEASUREMENT_UNIT_LABELS);
+    return this.getLabel(value, this.BATCH_TYPE_MEASUREMENT_UNIT);
   }
 
   public static getCsvDocumentIntegrityStatus(value: CsvDocumentIntegrityStatus): string {
@@ -121,9 +122,11 @@ export class EnumLabelMapper {
 
   private static getLabel<T extends string>(value: T, labels: Record<T, string>): string {
     const label = labels[value];
+
     if (!label) {
       throw new Error(`Unmapped enum value: ${value}`);
     }
+
     return label;
   }
 }
