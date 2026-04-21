@@ -1,3 +1,4 @@
+;
 /*
  * Copyright Fraunhofer Institute for Material Flow and Logistics
  *
@@ -8,6 +9,7 @@
 
 import licenseHeader from 'eslint-plugin-license-header';
 import nx from '@nx/eslint-plugin';
+
 
 export default [
   ...nx.configs['flat/base'],
@@ -45,6 +47,46 @@ export default [
             {
               group: ['@h2-trust/contracts/*/fixtures'],
               message: 'Fixtures are test-only. Do not import them from production code.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // Frontend: DTOs only - no entities & payloads
+    files: ['apps/frontend/**/*.ts'],
+    ignores: ['**/*.spec.ts', '**/*.test.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@h2-trust/contracts/entities', '@h2-trust/contracts/entities/*'],
+              message: 'Frontend must not import entities. Use @h2-trust/contracts/dtos.',
+            },
+            {
+              group: ['@h2-trust/contracts/payloads', '@h2-trust/contracts/payloads/*'],
+              message: 'Frontend must not import payloads. Use @h2-trust/contracts/dtos.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // Microservices: entities & payloads only - no DTOs
+    files: ['apps/process-svc/**/*.ts', 'apps/general-svc/**/*.ts'],
+    ignores: ['**/*.spec.ts', '**/*.test.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@h2-trust/contracts/dtos', '@h2-trust/contracts/dtos/*'],
+              message: 'Microservices must not import DTOs. Use @h2-trust/contracts/payloads or /entities.',
             },
           ],
         },
