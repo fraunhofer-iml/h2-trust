@@ -7,7 +7,7 @@
  */
 
 import { StagedProductionEntity, UnitAccountingPeriods } from '@h2-trust/amqp';
-import { BatchType } from '@h2-trust/domain';
+import { CsvContentType } from '@h2-trust/api';
 import { ParsedImport } from './production.types';
 
 interface PowerItem {
@@ -28,15 +28,16 @@ export class ProductionNormalizer {
    * @param type The type of the stage productions that should be created.
    * @returns A list of staged productions with only one entry per hour.
    */
-  public static normalizeProduction(parsedImports: ParsedImport[]): StagedProductionEntity[] {
-    const parsedAccountingPeriodGroups: Record<BatchType, UnitAccountingPeriods[]> =
+  public static normalizeProduction(parsedImports: ParsedImport[], ownerId: string): StagedProductionEntity[] {
+    const parsedAccountingPeriodGroups: Record<CsvContentType, UnitAccountingPeriods[]> =
       this.groupAccountingPeriodsByType(parsedImports);
 
     const stagedProductionResult: StagedProductionEntity[] = [];
     Object.entries(parsedAccountingPeriodGroups).forEach(([productionType, parsedAccountingPeriodGroup]) => {
       const stagedProductionsForType: StagedProductionEntity[] = this.normalizeAccountingPeriods(
         parsedAccountingPeriodGroup,
-        productionType as BatchType,
+        productionType as CsvContentType,
+        ownerId,
       );
       stagedProductionResult.push(...stagedProductionsForType);
     });
@@ -45,25 +46,28 @@ export class ProductionNormalizer {
 
   private static groupAccountingPeriodsByType(
     parsedImports: ParsedImport[],
-  ): Record<BatchType, UnitAccountingPeriods[]> {
-    return parsedImports.reduce<Record<string, UnitAccountingPeriods[]>>((acc, parsedImport) => {
-      return {
-        ...acc,
-        [parsedImport.type]: [...(acc[parsedImport.type] ?? []), parsedImport.periods],
-      };
-    }, {});
+  ): Record<CsvContentType, UnitAccountingPeriods[]> {
+    return parsedImports.reduce<Record<CsvContentType, UnitAccountingPeriods[]>>(
+      (acc, parsedImport) => {
+        return {
+          ...acc,
+          [parsedImport.type]: [...(acc[parsedImport.type] ?? []), parsedImport.periods],
+        };
+      },
+      {} as Record<CsvContentType, UnitAccountingPeriods[]>,
+    );
   }
 
   private static normalizeAccountingPeriods(
     accountingPeriods: UnitAccountingPeriods[],
-    type: BatchType,
+    type: CsvContentType,
+    ownerId: string,
   ): StagedProductionEntity[] {
     const unitAccountingPeriodsByDateHour = new Map<string, StagedProductionEntity[]>();
 
     accountingPeriods.forEach((bundle) => {
       const hourlyProductionTotals = bundle.accountingPeriods.reduce(
         (acc, item) => {
-          console.log(item);
           const date = new Date(item.time);
           const dateHourKey = date.toISOString().slice(0, 13);
 
@@ -86,11 +90,12 @@ export class ProductionNormalizer {
       Object.entries(hourlyProductionTotals).forEach(([timestamp, amount]) => {
         this.addToMap<StagedProductionEntity>(unitAccountingPeriodsByDateHour, `${timestamp}:00:00Z`, {
           unitId: bundle.unitId,
+          ownerId: ownerId,
           amount,
           startedAt: new Date(`${timestamp}:00:00Z`),
+          endedAt: new Date(`${timestamp}:59:59Z`),
           usedPower: timestamp in hourlyPowerUsedTotals ? hourlyPowerUsedTotals[timestamp] : 0,
           type: type,
-          filename: '',
         });
       });
     });

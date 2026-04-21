@@ -7,6 +7,7 @@
  */
 
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import type { CsvContentType } from '@h2-trust/api';
 import { BatchType } from '@h2-trust/domain';
 
 export class UnitFileImport {
@@ -24,14 +25,9 @@ export class UnitFileImport {
 
   @IsEnum(BatchType)
   @IsNotEmpty()
-  productionType: Exclude<BatchType, BatchType.WATER>;
+  productionType: CsvContentType;
 
-  constructor(
-    unitId: string,
-    hashedFileBuffer: string,
-    encodedFileBuffer: string,
-    productionType: Exclude<BatchType, BatchType.WATER>,
-  ) {
+  constructor(unitId: string, hashedFileBuffer: string, encodedFileBuffer: string, productionType: CsvContentType) {
     this.unitId = unitId;
     this.hashedFileBuffer = hashedFileBuffer;
     this.encodedFileBuffer = encodedFileBuffer;

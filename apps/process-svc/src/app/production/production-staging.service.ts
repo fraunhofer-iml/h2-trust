@@ -44,8 +44,10 @@ export class ProductionStagingService {
       payload.productionImports,
     );
 
-    const stagedProductions: StagedProductionEntity[] =
-      ProductionNormalizer.normalizeProduction(parsedProductionImports);
+    const stagedProductions: StagedProductionEntity[] = ProductionNormalizer.normalizeProduction(
+      parsedProductionImports,
+      payload.companyId,
+    );
 
     const { csvImportId, csvDocuments } = await this.prismaService.$transaction(async (tx) => {
       const csvImportId = await this.csvImportRepository.saveCsvImport(payload.userId, tx);
@@ -53,7 +55,7 @@ export class ProductionStagingService {
         this.csvImportProcessingService.createCsvDocumentInputs(parsedProductionImports);
       const csvDocuments = await this.csvImportRepository.saveCsvDocuments(csvImportId, csvDocumentInputs, tx);
 
-      await this.stagedProductionRepository.saveStagedProduction(stagedProductions, csvImportId, tx);
+      await this.stagedProductionRepository.saveStagedProductions(stagedProductions, csvImportId, tx);
 
       return { csvImportId, csvDocuments };
     });

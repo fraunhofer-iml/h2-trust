@@ -7,7 +7,17 @@
  */
 
 import { AuthenticatedUser } from 'nest-keycloak-connect';
-import { Body, Controller, Get, Param, Post, Query, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotImplementedException,
+  Param,
+  Post,
+  Query,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
@@ -21,7 +31,6 @@ import {
 import {
   CreateProductionDto,
   CsvDocumentIntegrityResultDto,
-  ImportSubmissionDto,
   PaginatedProductionDataDto,
   ProcessedCsvDto,
   ProductionCSVUploadDto,
@@ -209,7 +218,8 @@ export class ProductionController {
 
   @Post('csv/submit')
   @ApiBearerAuth()
-  submitCsvData(@Body() dto: ImportSubmissionDto, @AuthenticatedUser() user: AuthenticatedKCUser) {
-    return this.service.submitCsvData(dto, user.sub);
+  submitCsvData() {
+    //TODO-LG: Implement finalize functionality (DUHGW-425)
+    throw new NotImplementedException();
   }
 }
