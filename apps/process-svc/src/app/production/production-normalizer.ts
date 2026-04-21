@@ -29,33 +29,30 @@ export class ProductionNormalizer {
    * @returns A list of staged productions with only one entry per hour.
    */
   public static normalizeProduction(parsedImports: ParsedImport[], ownerId: string): StagedProductionEntity[] {
-    const parsedAccountingPeriodGroups: Record<CsvContentType, UnitAccountingPeriods[]> =
+    const parsedAccountingPeriodGroups: Map<CsvContentType, UnitAccountingPeriods[]> =
       this.groupAccountingPeriodsByType(parsedImports);
 
     const stagedProductionResult: StagedProductionEntity[] = [];
-    Object.entries(parsedAccountingPeriodGroups).forEach(([productionType, parsedAccountingPeriodGroup]) => {
+    for (const [productionType, parsedAccountingPeriodGroup] of parsedAccountingPeriodGroups) {
       const stagedProductionsForType: StagedProductionEntity[] = this.normalizeAccountingPeriods(
         parsedAccountingPeriodGroup,
-        productionType as CsvContentType,
+        productionType,
         ownerId,
       );
       stagedProductionResult.push(...stagedProductionsForType);
-    });
+    }
     return stagedProductionResult;
   }
 
   private static groupAccountingPeriodsByType(
     parsedImports: ParsedImport[],
-  ): Record<CsvContentType, UnitAccountingPeriods[]> {
-    return parsedImports.reduce<Record<CsvContentType, UnitAccountingPeriods[]>>(
-      (acc, parsedImport) => {
-        return {
-          ...acc,
-          [parsedImport.type]: [...(acc[parsedImport.type] ?? []), parsedImport.periods],
-        };
-      },
-      {} as Record<CsvContentType, UnitAccountingPeriods[]>,
-    );
+  ): Map<CsvContentType, UnitAccountingPeriods[]> {
+    const result = new Map<CsvContentType, UnitAccountingPeriods[]>();
+    for (const parsedImport of parsedImports) {
+      const existing = result.get(parsedImport.type) ?? [];
+      result.set(parsedImport.type, [...existing, parsedImport.periods]);
+    }
+    return result;
   }
 
   private static normalizeAccountingPeriods(
