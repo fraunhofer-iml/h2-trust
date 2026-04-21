@@ -6,7 +6,4 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './file.type';
-export * from './authenticated-kc-user.type';
-export * from './classification-type.type';
-export * from './emission-process-step.type';
+export const auditTimestamp = new Date('2026-01-01T00:00:00.000Z');

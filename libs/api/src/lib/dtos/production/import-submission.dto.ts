@@ -6,19 +6,24 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 
-export class ImportSubmissionDto {
+export class StagingSubmissionDto {
   @IsString()
   @IsNotEmpty()
-  importId: string;
+  stagedHydrogenProduction: string;
+
+  @IsNotEmpty()
+  @IsArray()
+  stagedPowerProductions: string[];
 
   @IsString()
   @IsNotEmpty()
   storageUnitId: string;
 
-  constructor(importId: string, storageUnitId: string) {
-    this.importId = importId;
+  constructor(stagedHydrogenProduction: string, stagedPowerProductions: string[], storageUnitId: string) {
+    this.stagedHydrogenProduction = stagedHydrogenProduction;
+    this.stagedPowerProductions = stagedPowerProductions;
     this.storageUnitId = storageUnitId;
   }
 }

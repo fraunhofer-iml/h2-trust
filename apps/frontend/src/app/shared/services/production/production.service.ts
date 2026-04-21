@@ -11,15 +11,16 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import {
   AccountingPeriodMatchingResultDto,
-  CreateProductionDto,
   CsvDocumentIntegrityResultDto,
   DownloadFilesDto,
-  ImportSubmissionDto,
   PaginatedProductionDataDto,
   ProcessedCsvDto,
   ProductionOverviewDto,
   ProductionStatisticsDto,
+  StagedProductionDto,
+  StagingSubmissionDto,
 } from '@h2-trust/api';
+import { CsvContentType, StagingScope } from '@h2-trust/domain';
 import { FilterModel } from '../../../pages/production/model/generated-productions-filter.model';
 import { PaginationModel } from '../../../pages/production/model/pagination.model';
 import { API } from '../../constants/api-endpoints';
@@ -50,16 +51,27 @@ export class ProductionService {
     return lastValueFrom(this.httpClient.get<ProcessedCsvDto[]>(API.PRODUCTION.CSV));
   }
 
-  addProductionData(dto: CreateProductionDto) {
-    return lastValueFrom(this.httpClient.post<ProductionOverviewDto[]>(API.PRODUCTION.BASE, dto));
+  getStagedProductions(type?: CsvContentType, scope?: StagingScope, from?: Date | string, to?: Date | string) {
+    let params = new HttpParams();
+    if (type) params = params.set('type', type);
+    if (scope) params = params.set('scope', scope);
+
+    if (from) {
+      params = params.set('from', from instanceof Date ? from.toISOString() : from);
+    }
+    if (to) {
+      params = params.set('to', to instanceof Date ? to.toISOString() : to);
+    }
+
+    return lastValueFrom(this.httpClient.get<StagedProductionDto[]>(API.PRODUCTION.PENDING, { params }));
   }
 
   uploadCsv(data: FormData) {
-    return lastValueFrom(this.httpClient.post<AccountingPeriodMatchingResultDto>(API.PRODUCTION.CSV_IMPORT, data));
+    return lastValueFrom(this.httpClient.post<AccountingPeriodMatchingResultDto>(API.PRODUCTION.CSV, data));
   }
 
-  submitCsv(dto: ImportSubmissionDto) {
-    return lastValueFrom(this.httpClient.post<ProductionOverviewDto[]>(API.PRODUCTION.CSV_SUBMIT, dto));
+  submitCsv(dto: StagingSubmissionDto) {
+    return lastValueFrom(this.httpClient.post<ProductionOverviewDto[]>(API.PRODUCTION.BASE, dto));
   }
 
   downloadFiles(dto: DownloadFilesDto) {

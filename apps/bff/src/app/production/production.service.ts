@@ -12,7 +12,6 @@ import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
   CreateHydrogenProductionStatisticsPayload,
-  CreateProductionsPayload,
   CsvDocumentEntity,
   FinalizeProductionsPayload,
   PaginatedProcessStepEntity,
@@ -32,14 +31,13 @@ import {
 } from '@h2-trust/amqp';
 import {
   AccountingPeriodMatchingResultDto,
-  CreateProductionDto,
   CsvDocumentIntegrityResultDto,
-  ImportSubmissionDto,
   PaginatedProductionDataDto,
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   ProductionStatisticsDto,
+  StagingSubmissionDto,
   UserDetailsDto,
 } from '@h2-trust/api';
 import { HashUtil } from '@h2-trust/blockchain';
@@ -55,27 +53,6 @@ export class ProductionService {
     private readonly storageService: CentralizedStorageService,
     private readonly userService: UserService,
   ) {}
-
-  async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    const payload = new CreateProductionsPayload(
-      dto.productionStartedAt,
-      dto.productionEndedAt,
-      dto.powerProductionUnitId,
-      dto.powerAmountKwh,
-      dto.hydrogenProductionUnitId,
-      dto.hydrogenAmountKg,
-      userId,
-      dto.hydrogenStorageUnitId,
-    );
-
-    const processSteps: ProcessStepEntity[] = await firstValueFrom(
-      this.processSvc.send(ProductionMessagePatterns.CREATE, payload),
-    );
-
-    return processSteps
-      .filter((processStep) => processStep.type === ProcessType.HYDROGEN_PRODUCTION)
-      .map(ProductionOverviewDto.fromEntity);
-  }
 
   async readHydrogenProductionsByOwner(
     userId: string,
@@ -113,18 +90,14 @@ export class ProductionService {
   }
 
   async importCsvFiles(
-    powerProductionFiles: Express.Multer.File[],
-    hydrogenProductionFiles: Express.Multer.File[],
+    powerProductionFiles: Express.Multer.File[] | Express.Multer.File,
+    hydrogenProductionFiles: Express.Multer.File[] | Express.Multer.File,
     dto: ProductionCSVUploadDto,
     userId: string,
   ) {
-    const powerProductions = this.mapUnitsToFiles(dto.powerProductionUnitIds, powerProductionFiles, BatchType.POWER);
+    const powerProductions = this.mapUnitsToFiles(dto.unitIds, powerProductionFiles, BatchType.POWER);
 
-    const hydrogenProductions = this.mapUnitsToFiles(
-      dto.hydrogenProductionUnitIds,
-      hydrogenProductionFiles,
-      BatchType.HYDROGEN,
-    );
+    const hydrogenProductions = this.mapUnitsToFiles(dto.unitIds, hydrogenProductionFiles, BatchType.HYDROGEN);
 
     const gridPowerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
       this.generalSvc.send(
@@ -145,20 +118,26 @@ export class ProductionService {
     return AccountingPeriodMatchingResultDto.fromEntity(matchingResult);
   }
 
-  private mapUnitsToFiles(unitIds: string | string[], files: Express.Multer.File[], type: BatchType): UnitFileImport[] {
-    if (!files || files.length === 0) {
+  private mapUnitsToFiles(
+    unitIds: string | string[],
+    files: Express.Multer.File | Express.Multer.File[],
+    type: BatchType,
+  ): UnitFileImport[] {
+    const normalizedFiles: Express.Multer.File[] = Array.isArray(files) ? files : [files];
+
+    if (!normalizedFiles || normalizedFiles.length === 0) {
       throw new BadRequestException(`Missing file for ${type} production.`);
     }
 
-    const normalizedUnitIds = Array.isArray(unitIds) ? unitIds : [unitIds];
+    const normalizedUnitIds: string[] = Array.isArray(unitIds) ? unitIds : [unitIds];
 
-    if (normalizedUnitIds.length < files.length) {
+    if (normalizedUnitIds.length < normalizedFiles.length) {
       throw new BadRequestException(
-        `Not enough unit IDs provided for ${type} production files: expected ${files.length}, got ${normalizedUnitIds.length}.`,
+        `Not enough unit IDs provided for ${type} production files: expected ${normalizedFiles.length}, got ${normalizedUnitIds.length}.`,
       );
     }
 
-    return files.map((file, i) => {
+    return normalizedFiles.map((file, i) => {
       const unitId = normalizedUnitIds[i];
       const hashedFileBuffer = HashUtil.hashBuffer(file.buffer);
       const encodedFileBuffer = file.buffer.toString('base64');
@@ -166,8 +145,12 @@ export class ProductionService {
     });
   }
 
-  async submitCsvData(dto: ImportSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    const payload: FinalizeProductionsPayload = new FinalizeProductionsPayload(userId, dto.storageUnitId, dto.importId);
+  async submitCsvData(dto: StagingSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
+    const payload: FinalizeProductionsPayload = new FinalizeProductionsPayload(
+      userId,
+      dto.storageUnitId,
+      dto.stagedHydrogenProduction,
+    );
     const processSteps: ProcessStepEntity[] = await firstValueFrom(
       this.processSvc.send<ProcessStepEntity[]>(ProductionMessagePatterns.FINALIZE, payload),
     );

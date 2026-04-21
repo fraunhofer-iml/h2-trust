@@ -21,7 +21,10 @@ import { MeasurementUnit, UnitType } from '@h2-trust/domain';
 import { UnitCardComponent } from '../../../layout/unit-card/unit-card.component';
 import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
-import { hydrogenProductionUnitsQueryOptions } from '../../../shared/queries/units.query';
+import {
+  hydrogenProductionUnitsQueryOptions,
+  powerProductionUnitsQueryOptions,
+} from '../../../shared/queries/units.query';
 import { UnitsService } from '../../../shared/services/units/units.service';
 
 @Component({
@@ -56,12 +59,9 @@ export class HydrogenAssetsComponent {
     queryFn: () => this.unitsService.getHydrogenStorageUnits(),
   }));
 
-  powerProductionQuery = injectQuery(() => ({
-    queryKey: ['power-production'],
-    queryFn: async () => this.unitsService.getPowerProductionUnits(),
-  }));
-
   hydrogenProductionUnitsQuery = injectQuery(() => hydrogenProductionUnitsQueryOptions(this.unitsService));
+
+  powerProductionQuery = injectQuery(() => powerProductionUnitsQueryOptions(this.unitsService));
 
   toggle(unitType: UnitType | null) {
     if (this.typeToShow === unitType) {
