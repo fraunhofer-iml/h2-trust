@@ -22,7 +22,6 @@ import {
 } from './repositories';
 
 @Module({
-  controllers: [],
   providers: [
     PrismaService,
     BatchRepository,
