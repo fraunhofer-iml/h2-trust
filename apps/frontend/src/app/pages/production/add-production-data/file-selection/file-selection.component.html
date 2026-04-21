@@ -1,0 +1,144 @@
+<div class="flex h-screen flex-col gap-4 overflow-hidden p-8" [formGroup]="form">
+  <div class="flex items-center gap-2 text-lg text-neutral-500">
+    <a routerLink="/production/data" class="hover:underline">Data</a>
+    <span class="material-symbols-outlined">keyboard_arrow_right</span>
+    Add
+  </div>
+
+  <div class="grid min-h-0 flex-1 grid-cols-3 gap-2">
+    <div class="flex h-full min-h-0 flex-col gap-2">
+      <div class="flex flex-col rounded-lg bg-white p-4">
+        <span class="pb-4">Hydrogen Storage Unit</span>
+        <mat-form-field appearance="outline" class="w-full pb-2">
+          <mat-label>Hydrogen Storage Unit</mat-label>
+          <mat-select [formControl]="form.controls.storageUnit">
+            @for (unit of storageUnitsQuery.data(); track unit) {
+              <mat-option [value]="unit.id">{{ unit.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- H2 PRODUCTIONS -->
+      <div class="flex h-full min-h-0 flex-col rounded-lg bg-white p-4">
+        <span>My Hydrogen Productions</span>
+
+        @if (hydrogenProductionsQuery.data()?.length === 0) {
+          <div
+            class="mt-4 flex h-full flex-col items-center justify-center rounded-lg border border-dashed bg-neutral-50 p-4 text-center text-sm"
+          >
+            <span class="material-symbols-outlined p-2 text-4xl text-primary-400">select</span>
+            <p><strong>No Hydrogen Production available</strong></p>
+            <p>Please upload your Hydrogen Production files to continue.</p>
+          </div>
+        }
+
+        <mat-selection-list
+          #filesList
+          formControlName="hydrogenProduction"
+          [multiple]="false"
+          class="subtle-scrollbar mt-2 min-h-0 flex-1 overflow-auto"
+        >
+          @for (dataset of hydrogenProductionsQuery.data(); track dataset) {
+            <mat-list-option
+              [value]="dataset"
+              [ngClass]="option.selected ? 'border-primary-300' : 'border-neutral-300'"
+              class="mb-2 !h-fit !rounded-md border"
+              togglePosition="before"
+              #option
+            >
+              <span matListItemTitle>
+                {{ dataset.startedAt | date: 'mediumDate' }}, {{ dataset.startedAt | date: 'shortTime' }} –
+                {{ dataset.endedAt | date: 'mediumDate' }}, {{ dataset.endedAt | date: 'shortTime' }}
+              </span>
+              <p matListItemLine class="pb-3">
+                {{ dataset.amountProduced | unit: MeasurementUnit.KG_H2 }} •
+                {{ dataset.amountConsumed | unit: MeasurementUnit.KWH }}
+              </p>
+            </mat-list-option>
+          }
+        </mat-selection-list>
+      </div>
+    </div>
+
+    <!-- POWER PRODUCTIONS -->
+    <div class="col-span-2 flex min-h-0 flex-col gap-2">
+      <div class="flex h-full min-h-0 flex-col rounded-lg bg-white p-4">
+        <span>Matching Power Productions</span>
+
+        @if (!form.controls.hydrogenProduction.value) {
+          <div
+            class="mt-4 flex h-full flex-col items-center justify-center rounded-lg border border-dashed bg-neutral-50 p-4 text-center text-sm"
+          >
+            <span class="material-symbols-outlined p-2 text-4xl text-primary-400">select</span>
+            <p><strong>No Hydrogen Production selected</strong></p>
+            <p>Please select a Hydrogen Production Dataset to continue.</p>
+          </div>
+        } @else {
+          <div class="subtle-scrollbar mt-2 min-h-0 flex-1 overflow-auto">
+            @for (item of data(); track $index) {
+              <div class="my-2 overflow-hidden rounded-md border">
+                <div
+                  class="flex flex-col px-2 pt-2"
+                  [ngClass]="item.uploads.length === 0 ? 'bg-neutral-100' : 'bg-primary-50'"
+                >
+                  <span class="text-sm text-neutral-700">{{ item.powerProductionUnit.name }}</span>
+                  <span
+                    class="flex gap-4 text-xs"
+                    [ngClass]="item.uploads.length === 0 ? 'text-neutral-500' : 'text-primary-500'"
+                  >
+                    <span class="flex items-center gap-1">
+                      <span class="material-symbols-outlined text-lg">home</span>
+                      {{ item.powerProducer.name }}
+                    </span>
+                    <span class="flex items-center gap-1">
+                      <span class="material-symbols-outlined text-lg">label</span>
+                      {{ item.powerProductionUnit.typeName }}
+                    </span>
+                  </span>
+                </div>
+
+                @if (item.uploads.length === 0) {
+                  <div class="border-t bg-white px-2 py-1 text-sm text-neutral-600">
+                    No Data available for this PPA.
+                  </div>
+                } @else {
+                  <mat-divider />
+                  <mat-selection-list formControlName="powerProductions" [multiple]="true" class="!m-0 !p-0">
+                    @for (powerDataset of item.uploads; track $index) {
+                      @if ($index > 0) {
+                        <mat-divider />
+                      }
+                      <mat-list-option [value]="powerDataset" togglePosition="before" class="!bg-white">
+                        <span matListItemTitle class="flex justify-between">
+                          <span>
+                            {{ powerDataset.startedAt | date: 'mediumDate' }},
+                            {{ powerDataset.startedAt | date: 'shortTime' }} –
+                            {{ powerDataset.endedAt | date: 'mediumDate' }},
+                            {{ powerDataset.endedAt | date: 'shortTime' }}
+                          </span>
+                          <strong>{{ powerDataset.amountProduced | unit: MeasurementUnit.KG }}</strong>
+                        </span>
+                      </mat-list-option>
+                    }
+                  </mat-selection-list>
+                }
+              </div>
+            }
+          </div>
+
+          <mat-divider />
+          <div class="flex items-center justify-between py-4 text-neutral-500">
+            <span>Total Power used:</span>
+            <strong>{{ totalPower | unit: MeasurementUnit.KWH }}</strong>
+          </div>
+        }
+      </div>
+
+      <div class="flex justify-end gap-2 rounded-lg bg-white p-4">
+        <a matButton routerLink="/production/data">Cancel</a>
+        <button matButton="filled" [disabled]="form.invalid" (click)="save()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

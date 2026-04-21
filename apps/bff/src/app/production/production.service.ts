@@ -12,7 +12,6 @@ import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
   CreateHydrogenProductionStatisticsPayload,
-  CreateProductionsPayload,
   CsvDocumentEntity,
   FinalizeProductionsPayload,
   PaginatedProcessStepEntity,
@@ -33,12 +32,12 @@ import {
   CreateProductionDto,
   CsvContentType,
   CsvDocumentIntegrityResultDto,
-  ImportSubmissionDto,
   PaginatedProductionDataDto,
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   ProductionStatisticsDto,
+  StagingSubmissionDto,
   UserDetailsDto,
 } from '@h2-trust/api';
 import { HashUtil } from '@h2-trust/blockchain';
@@ -53,27 +52,6 @@ export class ProductionService {
     private readonly storageService: CentralizedStorageService,
     private readonly userService: UserService,
   ) {}
-
-  async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    const payload = new CreateProductionsPayload(
-      dto.productionStartedAt,
-      dto.productionEndedAt,
-      dto.powerProductionUnitId,
-      dto.powerAmountKwh,
-      dto.hydrogenProductionUnitId,
-      dto.hydrogenAmountKg,
-      userId,
-      dto.hydrogenStorageUnitId,
-    );
-
-    const processSteps: ProcessStepEntity[] = await firstValueFrom(
-      this.processSvc.send(ProductionMessagePatterns.CREATE, payload),
-    );
-
-    return processSteps
-      .filter((processStep) => processStep.type === ProcessType.HYDROGEN_PRODUCTION)
-      .map(ProductionOverviewDto.fromEntity);
-  }
 
   async readHydrogenProductionsByOwner(
     userId: string,
@@ -161,9 +139,13 @@ export class ProductionService {
   }
 
   //TODO-LG: Implement finalize functionality (DUHGW-425)
-  async submitCsvData(dto: ImportSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    const payload: FinalizeProductionsPayload = new FinalizeProductionsPayload(userId, dto.storageUnitId, dto.importId);
-    const processSteps: ProcessStepEntity[] = await firstValueFrom(
+  async submitCsvData(dto: StagingSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
+    const payload: FinalizeProductionsPayload = new FinalizeProductionsPayload(
+      userId,
+      dto.storageUnitId,
+      dto.stagedHydrogenProduction,
+    );
+  const processSteps: ProcessStepEntity[] = await firstValueFrom(
       this.processSvc.send<ProcessStepEntity[]>(ProductionMessagePatterns.FINALIZE, payload),
     );
     return processSteps.map(ProductionOverviewDto.fromEntity);

@@ -49,10 +49,9 @@ export const API = {
   PRODUCTION: {
     BASE: PRODUCTION_ENDPOINT,
     STATISTICS: PRODUCTION_ENDPOINT + 'statistics',
-    CSV: PRODUCTION_ENDPOINT + 'csv/',
-    CSV_VERIFY: (id: string) => `${API.PRODUCTION.CSV}${id}`,
-    CSV_IMPORT: PRODUCTION_ENDPOINT + 'csv/import',
-    CSV_SUBMIT: PRODUCTION_ENDPOINT + 'csv/submit',
+    PENDING: PRODUCTION_ENDPOINT + 'pending/',
+    CSV: PRODUCTION_ENDPOINT + 'pending/csv/',
+    CSV_VERIFY: (id: string) => `${API.PRODUCTION.CSV}${id}/verify`,
   },
   FILE_DOWNLOAD: {
     BASE: FILE_DOWNLOAD_ENDPOINT,
