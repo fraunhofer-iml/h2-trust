@@ -17,7 +17,7 @@ export class CompanyService {
   constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
 
   async findAll(): Promise<CompanyDto[]> {
-    const companies = await firstValueFrom(this.generalService.send(CompanyMessagePatterns.READ_ALL, {}));
+    const companies = await firstValueFrom(this.generalService.send(CompanyMessagePatterns.READ, {}));
     return companies.map(CompanyDto.fromEntity);
   }
 }

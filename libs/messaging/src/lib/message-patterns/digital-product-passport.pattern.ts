@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export enum DigitalProductPassportPatterns {
-  READ_DIGITAL_PRODUCT_PASSPORT = 'digital-product-passport.read-digital-product-passport',
+export enum DigitalProductPassportMessagePatterns {
+  READ = 'digital-product-passport.read',
   READ_GENERAL_INFORMATION = 'digital-product-passport.read-general-information',
   READ_PROOF_OF_ORIGIN = 'digital-product-passport.read-proof-of-origin',
   READ_PROOF_OF_SUSTAINABILITY = 'digital-product-passport.read-proof-of-sustainability',

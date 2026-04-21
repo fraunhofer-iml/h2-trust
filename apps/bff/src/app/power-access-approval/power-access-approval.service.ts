@@ -12,7 +12,7 @@ import { firstValueFrom } from 'rxjs';
 import { PowerAccessApprovalDto } from '@h2-trust/contracts/dtos';
 import { ReadPowerAccessApprovalsPayload } from '@h2-trust/contracts/payloads';
 import { PowerAccessApprovalStatus } from '@h2-trust/domain';
-import { BrokerQueues, PowerAccessApprovalPatterns } from '@h2-trust/messaging';
+import { BrokerQueues, PowerAccessApprovalMessagePatterns } from '@h2-trust/messaging';
 
 @Injectable()
 export class PowerAccessApprovalService {
@@ -22,7 +22,7 @@ export class PowerAccessApprovalService {
     const payload = new ReadPowerAccessApprovalsPayload(userId, status);
 
     const powerAccessApprovals = await firstValueFrom(
-      this.generalService.send(PowerAccessApprovalPatterns.READ, payload),
+      this.generalService.send(PowerAccessApprovalMessagePatterns.READ, payload),
     );
     return powerAccessApprovals.map(PowerAccessApprovalDto.fromEntity);
   }

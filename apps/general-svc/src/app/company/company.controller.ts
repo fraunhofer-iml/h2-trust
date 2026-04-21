@@ -16,7 +16,7 @@ import { CompanyService } from './company.service';
 export class CompanyController {
   constructor(private readonly service: CompanyService) {}
 
-  @MessagePattern(CompanyMessagePatterns.READ_ALL)
+  @MessagePattern(CompanyMessagePatterns.READ)
   async findAll(): Promise<CompanyEntity[]> {
     return this.service.findAll();
   }

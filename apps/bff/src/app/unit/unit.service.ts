@@ -34,18 +34,18 @@ export class UnitService {
   ) {}
 
   async readPowerProductionUnit(id: string): Promise<PowerProductionUnitDto> {
-    const unit = await firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, new ReadByIdPayload(id)));
+    const unit = await firstValueFrom(this.generalService.send(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(id)));
     return PowerProductionUnitDto.fromEntity(unit);
   }
 
   async readHydrogenProductionUnit(id: string): Promise<HydrogenProductionUnitDto> {
-    return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, new ReadByIdPayload(id))).then(
+    return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(id))).then(
       HydrogenProductionUnitDto.fromEntity,
     );
   }
 
   async readHydrogenStorageUnit(id: string): Promise<HydrogenStorageUnitDto> {
-    return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ, new ReadByIdPayload(id))).then(
+    return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(id))).then(
       HydrogenStorageUnitDto.fromEntity,
     );
   }
@@ -54,7 +54,7 @@ export class UnitService {
     const ownerId = await this.getCompanyIdFromUserId(userId);
 
     const units = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION_UNITS, new ReadByIdPayload(ownerId)),
+      this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION, new ReadByIdPayload(ownerId)),
     );
     return units.map(PowerProductionOverviewDto.fromEntity);
   }
@@ -62,7 +62,7 @@ export class UnitService {
   async readHydrogenProductionUnits(userId: string): Promise<HydrogenProductionOverviewDto[]> {
     const ownerId = await this.getCompanyIdFromUserId(userId);
     const units = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS, new ReadByIdPayload(ownerId)),
+      this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION, new ReadByIdPayload(ownerId)),
     );
     return units.map(HydrogenProductionOverviewDto.fromEntity);
   }
@@ -71,7 +71,7 @@ export class UnitService {
     const ownerId = await this.getCompanyIdFromUserId(userId);
 
     const units: HydrogenStorageUnitEntity[] = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_STORAGE_UNITS, new ReadByIdPayload(ownerId)),
+      this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_STORAGE, new ReadByIdPayload(ownerId)),
     );
     return units.map(HydrogenStorageOverviewDto.fromEntity);
   }
@@ -79,7 +79,7 @@ export class UnitService {
   async createPowerProductionUnit(dto: PowerProductionUnitInputDto): Promise<PowerProductionUnitDto> {
     return firstValueFrom(
       this.generalService.send(
-        UnitMessagePatterns.CREATE_POWER_PRODUCTION_UNIT,
+        UnitMessagePatterns.CREATE_POWER_PRODUCTION,
         PowerProductionUnitInputDto.toPayload(dto),
       ),
     ).then(PowerProductionUnitDto.fromEntity);
@@ -88,7 +88,7 @@ export class UnitService {
   async createHydrogenProductionUnit(dto: HydrogenProductionUnitInputDto): Promise<HydrogenProductionUnitDto> {
     return firstValueFrom(
       this.generalService.send(
-        UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION_UNIT,
+        UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION,
         HydrogenProductionUnitInputDto.toPayload(dto),
       ),
     ).then(HydrogenProductionUnitDto.fromEntity);
@@ -97,7 +97,7 @@ export class UnitService {
   async createHydrogenStorageUnit(dto: HydrogenStorageUnitInputDto): Promise<HydrogenStorageUnitDto> {
     return firstValueFrom(
       this.generalService.send(
-        UnitMessagePatterns.CREATE_HYDROGEN_STORAGE_UNIT,
+        UnitMessagePatterns.CREATE_HYDROGEN_STORAGE,
         HydrogenStorageUnitInputDto.toPayload(dto),
       ),
     ).then(HydrogenStorageUnitDto.fromEntity);
@@ -105,14 +105,14 @@ export class UnitService {
 
   async updateUnitStatus(id: string, active: boolean): Promise<void> {
     await firstValueFrom(
-      this.generalService.send<void>(UnitMessagePatterns.UPDATE_UNIT_STATUS, UnitUpdateActiveDto.toPayload(id, active)),
+      this.generalService.send<void>(UnitMessagePatterns.UPDATE_STATUS, UnitUpdateActiveDto.toPayload(id, active)),
     );
   }
 
   async updateHydrogenProductionUnit(id: string, dto: HydrogenProductionUnitInputDto): Promise<void> {
     return await firstValueFrom(
       this.generalService.send<void>(
-        UnitMessagePatterns.UPDATE_HYDROGEN_PRODUCTION_UNIT,
+        UnitMessagePatterns.UPDATE_HYDROGEN_PRODUCTION,
         HydrogenProductionUnitInputDto.toPayload(dto, id),
       ),
     );
@@ -121,7 +121,7 @@ export class UnitService {
   async updatePowerProductionUnit(id: string, dto: PowerProductionUnitInputDto): Promise<void> {
     return await firstValueFrom(
       this.generalService.send<void>(
-        UnitMessagePatterns.UPDATE_POWER_PRODUCTION_UNIT,
+        UnitMessagePatterns.UPDATE_POWER_PRODUCTION,
         PowerProductionUnitInputDto.toPayload(dto, id),
       ),
     );
@@ -129,7 +129,7 @@ export class UnitService {
   async updateHydrogenStorageUnit(id: string, dto: HydrogenStorageUnitInputDto): Promise<void> {
     return await firstValueFrom(
       this.generalService.send<void>(
-        UnitMessagePatterns.UPDATE_HYDROGEN_STORAGE_UNIT,
+        UnitMessagePatterns.UPDATE_HYDROGEN_STORAGE,
         HydrogenStorageUnitInputDto.toPayload(dto, id),
       ),
     );

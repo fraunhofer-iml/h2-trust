@@ -80,7 +80,7 @@ describe('UnitController', () => {
     const actualResponse: HydrogenProductionUnitDto = await controller.getHydrogenProductionUnitById(givenUserId);
 
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
-    expect(sendRequestSpy).toHaveBeenCalledWith(UnitMessagePatterns.READ, new ReadByIdPayload(givenUserId));
+    expect(sendRequestSpy).toHaveBeenCalledWith(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(givenUserId));
     expect(actualResponse).toEqual(expectedResponse);
   });
 
@@ -107,7 +107,7 @@ describe('UnitController', () => {
     expect(readUserRequestSpy).toHaveBeenCalledWith(givenUserId);
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
     expect(sendRequestSpy).toHaveBeenCalledWith(
-      UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS,
+      UnitMessagePatterns.READ_HYDROGEN_PRODUCTION,
       new ReadByIdPayload(fixtureUser.company.id),
     );
     expect(actualResponse).toEqual(expectedResponse);
@@ -127,7 +127,7 @@ describe('UnitController', () => {
 
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
     expect(sendRequestSpy).toHaveBeenCalledWith(
-      UnitMessagePatterns.CREATE_POWER_PRODUCTION_UNIT,
+      UnitMessagePatterns.CREATE_POWER_PRODUCTION,
       PowerProductionUnitInputDto.toPayload(givenDto as PowerProductionUnitInputDto),
     );
     expect(actualResponse).toEqual(expectedResponse);
@@ -147,7 +147,7 @@ describe('UnitController', () => {
 
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
     expect(sendRequestSpy).toHaveBeenCalledWith(
-      UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION_UNIT,
+      UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION,
       HydrogenProductionUnitInputDto.toPayload(givenDto as HydrogenProductionUnitInputDto),
     );
     expect(actualResponse).toEqual(expectedResponse);
@@ -167,7 +167,7 @@ describe('UnitController', () => {
 
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
     expect(sendRequestSpy).toHaveBeenCalledWith(
-      UnitMessagePatterns.CREATE_HYDROGEN_STORAGE_UNIT,
+      UnitMessagePatterns.CREATE_HYDROGEN_STORAGE,
       HydrogenStorageUnitInputDto.toPayload(givenDto as HydrogenStorageUnitInputDto),
     );
     expect(actualResponse).toEqual(expectedResponse);

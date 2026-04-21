@@ -44,7 +44,7 @@ import {
 import { BatchType, ProcessType } from '@h2-trust/domain';
 import {
   BrokerQueues,
-  PowerAccessApprovalPatterns,
+  PowerAccessApprovalMessagePatterns,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
 } from '@h2-trust/messaging';
@@ -128,7 +128,7 @@ export class ProductionService {
 
     const gridPowerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
       this.generalSvc.send(
-        PowerAccessApprovalPatterns.READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID,
+        PowerAccessApprovalMessagePatterns.READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID,
         new ReadByIdPayload(userId),
       ),
     );

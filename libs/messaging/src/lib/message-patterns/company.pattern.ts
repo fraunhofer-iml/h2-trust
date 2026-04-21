@@ -7,5 +7,5 @@
  */
 
 export enum CompanyMessagePatterns {
-  READ_ALL = 'company.read-all',
+  READ = 'company.read',
 }

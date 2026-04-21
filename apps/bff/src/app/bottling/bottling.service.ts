@@ -18,7 +18,7 @@ import {
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/contracts/payloads';
 import { ProcessType } from '@h2-trust/domain';
-import { BrokerQueues, DigitalProductPassportPatterns, ProcessStepMessagePatterns } from '@h2-trust/messaging';
+import { BrokerQueues, DigitalProductPassportMessagePatterns, ProcessStepMessagePatterns } from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -80,7 +80,7 @@ export class BottlingService {
   async readDigitalProductPassport(id: string): Promise<DigitalProductPassportDto> {
     const entity = await firstValueFrom(
       this.processSvc.send<DigitalProductPassportEntity>(
-        DigitalProductPassportPatterns.READ_DIGITAL_PRODUCT_PASSPORT,
+        DigitalProductPassportMessagePatterns.READ,
         new ReadByIdPayload(id),
       ),
     );
