@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType } from '@h2-trust/domain';
-
-export type CsvContentType = BatchType.HYDROGEN | BatchType.POWER;
+export enum StagingScope {
+  OWN = 'OWN',
+  RECEIVED = 'RECEIVED',
+}
