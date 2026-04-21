@@ -7,7 +7,7 @@
  */
 
 import { StagedProductionEntity, UnitAccountingPeriods } from '@h2-trust/amqp';
-import { CsvContentType } from '@h2-trust/api';
+import { CsvContentType } from '@h2-trust/domain';
 import { ParsedImport } from './production.types';
 
 interface PowerItem {

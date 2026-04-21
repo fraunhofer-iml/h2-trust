@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { NotImplementedException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
@@ -131,7 +130,7 @@ describe('ProductionController', () => {
 
     const dto: ProductionCSVUploadDto = { unitIds: [], csvContentType: CsvContentType.HYDROGEN };
 
-    expect(() => controller.importCsvFile(dto, [], givenAuthenticatedUser)).toThrow(NotImplementedException);
+    await expect(controller.importCsvFile(dto, [], givenAuthenticatedUser)).rejects.toThrow(Error);
   });
 
   it('should parse csv', async () => {
@@ -173,6 +172,7 @@ describe('ProductionController', () => {
       path: '',
       stream: null as any,
     };
+    jest.spyOn(userService, 'readUserWithCompany').mockResolvedValue(UserDetailsDtoMock[0]);
 
     jest.spyOn(generalSvc, 'send').mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: any) =>
       of({
@@ -188,9 +188,9 @@ describe('ProductionController', () => {
 
     const dto: ProductionCSVUploadDto = { unitIds: ['id', 'id'], csvContentType: CsvContentType.HYDROGEN };
 
-    expect(() => controller.importCsvFile(dto, [powerFile, h2File], givenAuthenticatedUser)).toThrow(
-      NotImplementedException,
-    );
+    const actualResponse = await controller.importCsvFile(dto, [powerFile, h2File], givenAuthenticatedUser);
+
+    expect(actualResponse.numberOfBatches).toBe(1);
   });
 
   it('should throw error because unitId is missing', async () => {
@@ -211,7 +211,9 @@ describe('ProductionController', () => {
       stream: null as any,
     };
 
-    expect(() => controller.importCsvFile(dto, [powerFile], givenAuthenticatedUser)).toThrow(NotImplementedException);
+    await expect(controller.importCsvFile(dto, [powerFile], givenAuthenticatedUser)).rejects.toThrow(
+      'Not enough unit IDs provided for HYDROGEN production files: expected 1, got 0',
+    );
   });
 
   it('should verify csv document integrity and return verification details', async () => {

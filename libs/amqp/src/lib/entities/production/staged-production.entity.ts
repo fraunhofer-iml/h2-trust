@@ -6,9 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CsvContentType } from '@h2-trust/api';
 import { StagedProductionDeepDbType } from '@h2-trust/database';
-import { BatchType } from '@h2-trust/domain';
+import { CsvContentType } from '@h2-trust/domain';
 
 export class StagedProductionEntity {
   startedAt: Date;
@@ -41,8 +40,8 @@ export class StagedProductionEntity {
   }
 
   static fromDeepDatabase(stagedProduction: StagedProductionDeepDbType) {
-    if (stagedProduction.type != BatchType.HYDROGEN && stagedProduction.type != BatchType.POWER) {
-      const message = `The staged production is not of type ${BatchType.HYDROGEN} or ${BatchType.POWER}`;
+    if (stagedProduction.type != CsvContentType.HYDROGEN && stagedProduction.type != CsvContentType.POWER) {
+      const message = `The staged production is not of type ${CsvContentType.HYDROGEN} or ${CsvContentType.POWER}`;
       throw new Error(message);
     }
 

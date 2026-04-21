@@ -29,8 +29,6 @@ import {
 } from '@h2-trust/amqp';
 import {
   AccountingPeriodMatchingResultDto,
-  CreateProductionDto,
-  CsvContentType,
   CsvDocumentIntegrityResultDto,
   PaginatedProductionDataDto,
   ProcessedCsvDto,
@@ -41,7 +39,7 @@ import {
   UserDetailsDto,
 } from '@h2-trust/api';
 import { HashUtil } from '@h2-trust/blockchain';
-import { BatchType, ProcessType } from '@h2-trust/domain';
+import { CsvContentType, ProcessType } from '@h2-trust/domain';
 import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 
@@ -116,7 +114,7 @@ export class ProductionService {
     const normalizedFiles = Array.isArray(files) ? files : [files];
     const normalizedUnitIds: string[] = Array.isArray(unitIds) ? unitIds : [unitIds];
 
-    if (type != BatchType.HYDROGEN && type != BatchType.POWER) {
+    if (type != CsvContentType.HYDROGEN && type != CsvContentType.POWER) {
       throw new BadRequestException(`Stage production contains invalid types.`);
     }
 
@@ -145,7 +143,7 @@ export class ProductionService {
       dto.storageUnitId,
       dto.stagedHydrogenProduction,
     );
-  const processSteps: ProcessStepEntity[] = await firstValueFrom(
+    const processSteps: ProcessStepEntity[] = await firstValueFrom(
       this.processSvc.send<ProcessStepEntity[]>(ProductionMessagePatterns.FINALIZE, payload),
     );
     return processSteps.map(ProductionOverviewDto.fromEntity);
