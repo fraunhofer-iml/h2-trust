@@ -242,6 +242,7 @@ describe('ProductionController', () => {
       path: '',
       stream: null as any,
     };
+    jest.spyOn(userService, 'readUserWithCompany').mockResolvedValue(UserDetailsDtoMock[0]);
 
     jest.spyOn(generalSvc, 'send').mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: any) =>
       of({
