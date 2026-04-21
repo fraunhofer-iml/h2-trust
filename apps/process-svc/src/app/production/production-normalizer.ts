@@ -28,7 +28,7 @@ export class ProductionNormalizer {
    * @param type The type of the stage productions that should be created.
    * @returns A list of staged productions with only one entry per hour.
    */
-  public static normalizeProduction(parsedImports: ParsedImport[]): StagedProductionEntity[] {
+  public static normalizeProduction(parsedImports: ParsedImport[], ownerId: string): StagedProductionEntity[] {
     const parsedAccountingPeriodGroups: Record<CsvContentType, UnitAccountingPeriods[]> =
       this.groupAccountingPeriodsByType(parsedImports);
 
@@ -37,6 +37,7 @@ export class ProductionNormalizer {
       const stagedProductionsForType: StagedProductionEntity[] = this.normalizeAccountingPeriods(
         parsedAccountingPeriodGroup,
         productionType as CsvContentType,
+        ownerId,
       );
       stagedProductionResult.push(...stagedProductionsForType);
     });
@@ -57,6 +58,7 @@ export class ProductionNormalizer {
   private static normalizeAccountingPeriods(
     accountingPeriods: UnitAccountingPeriods[],
     type: CsvContentType,
+    ownerId: string,
   ): StagedProductionEntity[] {
     const unitAccountingPeriodsByDateHour = new Map<string, StagedProductionEntity[]>();
 
@@ -86,8 +88,10 @@ export class ProductionNormalizer {
       Object.entries(hourlyProductionTotals).forEach(([timestamp, amount]) => {
         this.addToMap<StagedProductionEntity>(unitAccountingPeriodsByDateHour, `${timestamp}:00:00Z`, {
           unitId: bundle.unitId,
+          ownerId: ownerId,
           amount,
           startedAt: new Date(`${timestamp}:00:00Z`),
+          endedAt: new Date(`${timestamp}:59:59Z`),
           usedPower: timestamp in hourlyPowerUsedTotals ? hourlyPowerUsedTotals[timestamp] : 0,
           type: type,
           filename: '',

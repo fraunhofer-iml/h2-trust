@@ -27,8 +27,10 @@ export class StagedProductionRepository {
     const client = tx ?? this.prismaService;
 
     await client.stagedProduction.createMany({
-      data: stagedProduction.map(({ startedAt, amount, unitId, usedPower, type }) => ({
+      data: stagedProduction.map(({ startedAt, endedAt, ownerId, amount, unitId, usedPower, type }) => ({
         startedAt,
+        endedAt,
+        ownerId,
         amount,
         unitId,
         csvImportId,

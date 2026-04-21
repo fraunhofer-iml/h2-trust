@@ -86,10 +86,11 @@ model Company {
   address   Address @relation(fields: [addressId], references: [id])
   addressId String
 
-  hydrogenApprovals PowerAccessApproval[] @relation(name: "HydrogenProducer")
-  powerApprovals    PowerAccessApproval[] @relation(name: "PowerProducer")
-  unitOwners        Unit[]                @relation(name: "UnitOwner")
-  unitOperators     Unit[]                @relation(name: "UnitOperator")
+  hydrogenApprovals     PowerAccessApproval[] @relation(name: "HydrogenProducer")
+  powerApprovals        PowerAccessApproval[] @relation(name: "PowerProducer")
+  unitOwners            Unit[]                @relation(name: "UnitOwner")
+  unitOperators         Unit[]                @relation(name: "UnitOperator")
+  stageProductionOwners StagedProduction[]    @relation(name: "StageProductionOwner")
   users             User[]
   batches           Batch[]
 }
@@ -328,11 +329,16 @@ model StagedProduction {
   amount         Decimal  @db.Decimal(18, 6)
   usedPower      Decimal  @db.Decimal(18, 6)
   startedAt      DateTime
+  endedAt        DateTime
   type           String
+  active         Boolean  @default(true)
 
   csvImport   CsvImport @relation(fields: [csvImportId], references: [id])
   csvImportId String
 
   productionUnit Unit   @relation(fields: [unitId], references: [id])
   unitId     String
+
+  owner   Company @relation(name: "StageProductionOwner", fields: [ownerId], references: [id])
+  ownerId String
 }

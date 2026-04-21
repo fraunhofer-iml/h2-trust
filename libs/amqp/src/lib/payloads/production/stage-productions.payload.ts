@@ -25,9 +25,19 @@ export class StageProductionsPayload {
   @IsNotEmpty()
   userId: string;
 
-  constructor(powerProductions: UnitFileImport[], gridPowerProductionUnitId: string, userId: string) {
+  @IsString()
+  @IsNotEmpty()
+  companyId: string;
+
+  constructor(
+    powerProductions: UnitFileImport[],
+    gridPowerProductionUnitId: string,
+    userId: string,
+    companyId: string,
+  ) {
     this.productionImports = powerProductions;
     this.gridPowerProductionUnitId = gridPowerProductionUnitId;
     this.userId = userId;
+    this.companyId = companyId;
   }
 }

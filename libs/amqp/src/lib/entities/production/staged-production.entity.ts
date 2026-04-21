@@ -12,23 +12,29 @@ import { BatchType } from '@h2-trust/domain';
 
 export class StagedProductionEntity {
   startedAt: Date;
+  endedAt: Date;
   amount: number;
   unitId: string;
+  ownerId: string;
   usedPower: number;
   type: CsvContentType;
   filename: string;
 
   constructor(
     startedAt: Date,
+    endedAt: Date,
     amount: number,
     unitId: string,
+    ownerId: string,
     usedPower: number,
     type: CsvContentType,
     filename: string,
   ) {
     this.startedAt = startedAt;
+    this.endedAt = endedAt;
     this.amount = amount;
     this.unitId = unitId;
+    this.ownerId = ownerId;
     this.usedPower = usedPower;
     this.type = type;
     this.filename = filename;
@@ -42,11 +48,13 @@ export class StagedProductionEntity {
 
     return new StagedProductionEntity(
       stagedProduction.startedAt,
+      stagedProduction.endedAt,
       stagedProduction.amount.toNumber(),
       stagedProduction.unitId,
+      stagedProduction.ownerId,
       stagedProduction.usedPower.toNumber(),
       stagedProduction.type,
-      '',
+      stagedProduction.csvImportId,
     );
   }
 }

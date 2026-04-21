@@ -44,8 +44,10 @@ export class ProductionStagingService {
       payload.productionImports,
     );
 
-    const stagedProductions: StagedProductionEntity[] =
-      ProductionNormalizer.normalizeProduction(parsedProductionImports);
+    const stagedProductions: StagedProductionEntity[] = ProductionNormalizer.normalizeProduction(
+      parsedProductionImports,
+      payload.companyId,
+    );
 
     const { csvImportId, csvDocuments } = await this.prismaService.$transaction(async (tx) => {
       const csvImportId = await this.csvImportRepository.saveCsvImport(payload.userId, tx);
