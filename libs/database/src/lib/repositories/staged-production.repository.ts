@@ -9,6 +9,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { StagedProductionEntity } from '@h2-trust/amqp';
+import { BatchType } from '@h2-trust/domain';
 import { PrismaService } from '../prisma.service';
 import { stagedProductionDeepQueryArgs } from '../query-args';
 import { StagedProductionDeepDbType } from '../types';
@@ -19,11 +20,12 @@ export class StagedProductionRepository {
 
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findStagedProductions(ownerId: string): Promise<StagedProductionEntity[]> {
+  async findStagedProductions(ownerId: string, type: BatchType): Promise<StagedProductionEntity[]> {
     return this.prismaService.stagedProduction
       .findMany({
         where: {
           ownerId: ownerId,
+          type: type,
         },
         ...stagedProductionDeepQueryArgs,
       })

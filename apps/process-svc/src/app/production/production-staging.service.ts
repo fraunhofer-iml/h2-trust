@@ -24,6 +24,7 @@ import {
   PrismaService,
   StagedProductionRepository,
 } from '@h2-trust/database';
+import { BatchType } from '@h2-trust/domain';
 import { CsvImportProcessingService } from './csv-import-processing.service';
 import { ProductionNormalizer } from './production-normalizer';
 import { DocumentProof, ParsedImport } from './production.types';
@@ -46,6 +47,7 @@ export class ProductionStagingService {
   ): Promise<PaginatedStagedProductionEntity> {
     const stagedProductions: StagedProductionEntity[] = await this.stagedProductionRepository.findStagedProductions(
       payload.ownerId,
+      BatchType.HYDROGEN,
     );
     return this.createStagedProductionPagination(stagedProductions, payload.filter.pageSize, payload.filter.pageNumber);
   }
