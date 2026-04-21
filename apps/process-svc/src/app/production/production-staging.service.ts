@@ -6,11 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import {
   BrokerException,
   CsvDocumentEntity,
   PaginatedStagedProductionEntity,
+  PowerAccessApprovalEntity,
   ProductionStagingResultEntity,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   StagedProductionEntity,
@@ -21,10 +22,11 @@ import { FeatureFlagService } from '@h2-trust/configuration';
 import {
   CreateCsvDocumentInput,
   CsvImportRepository,
+  PowerAccessApprovalRepository,
   PrismaService,
   StagedProductionRepository,
 } from '@h2-trust/database';
-import { BatchType } from '@h2-trust/domain';
+import { BatchType, PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { CsvImportProcessingService } from './csv-import-processing.service';
 import { ProductionNormalizer } from './production-normalizer';
 import { DocumentProof, ParsedImport } from './production.types';
@@ -40,13 +42,45 @@ export class ProductionStagingService {
     private readonly csvImportRepository: CsvImportRepository,
     private readonly prismaService: PrismaService,
     private readonly stagedProductionRepository: StagedProductionRepository,
+    private readonly accessApprovalRepository: PowerAccessApprovalRepository,
   ) {}
+
+  async readAllStagedPowerProductionsForStagedHydrogenProduction(
+    stagedHydrogenProductionId: string,
+    companyId: string,
+  ) {
+    const stagedHydrogenProduction: StagedProductionEntity =
+      await this.stagedProductionRepository.findStagedProduction(stagedHydrogenProductionId);
+
+    if (!stagedHydrogenProduction) {
+      throw NotFoundException;
+    }
+
+    const accessableStagedPowerProductions: StagedProductionEntity[] =
+      await this.readAllAccessableStagePowerProductionsForCompany(companyId);
+
+    return accessableStagedPowerProductions.filter(
+      (powerProduction) => powerProduction.startedAt === stagedHydrogenProduction.startedAt,
+    );
+  }
+
+  async readAllAccessableStagePowerProductionsForCompany(companyId: string): Promise<StagedProductionEntity[]> {
+    const ownApprovals: PowerAccessApprovalEntity[] = await this.accessApprovalRepository.findAll(
+      companyId,
+      PowerAccessApprovalStatus.APPROVED,
+    );
+
+    const accessableUnitIds: string[] = ownApprovals.map((approval) => approval.powerProductionUnit.id);
+
+    return this.stagedProductionRepository.findStagedProductions(undefined, accessableUnitIds, undefined);
+  }
 
   async readStagedProductions(
     payload: ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ): Promise<PaginatedStagedProductionEntity> {
     const stagedProductions: StagedProductionEntity[] = await this.stagedProductionRepository.findStagedProductions(
       payload.ownerId,
+      undefined,
       BatchType.HYDROGEN,
     );
     return this.createStagedProductionPagination(stagedProductions, payload.filter.pageSize, payload.filter.pageNumber);

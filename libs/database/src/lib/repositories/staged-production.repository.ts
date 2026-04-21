@@ -20,13 +20,29 @@ export class StagedProductionRepository {
 
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findStagedProductions(ownerId: string, type: BatchType): Promise<StagedProductionEntity[]> {
+  async findStagedProduction(id: string): Promise<StagedProductionEntity> {
+    return this.prismaService.stagedProduction
+      .findUnique({
+        where: {
+          id: id,
+        },
+        ...stagedProductionDeepQueryArgs,
+      })
+      .then((stagedProduction) => StagedProductionEntity.fromDeepDatabase(stagedProduction));
+  }
+
+  async findStagedProductions(ownerId: string, unitIds: string[], type: BatchType): Promise<StagedProductionEntity[]> {
+    const stagedProductionFilter: Prisma.StagedProductionWhereInput = {
+      ...(ownerId !== undefined && { ownerId }),
+      ...(unitIds !== undefined &&
+        unitIds.length > 0 && {
+          unitId: { in: unitIds },
+        }),
+      ...(type !== undefined && { type }),
+    };
     return this.prismaService.stagedProduction
       .findMany({
-        where: {
-          ownerId: ownerId,
-          type: type,
-        },
+        where: stagedProductionFilter,
         ...stagedProductionDeepQueryArgs,
       })
       .then((stagedProduction) => stagedProduction.map(StagedProductionEntity.fromDeepDatabase));
