@@ -27,7 +27,7 @@
           <div
             class="mt-4 flex h-full flex-col items-center justify-center rounded-lg border border-dashed bg-neutral-50 p-4 text-center text-sm"
           >
-            <span class="material-symbols-outlined p-2 text-4xl text-primary-400">select</span>
+            <span class="material-symbols-outlined text-primary-400 p-2 text-4xl">select</span>
             <p><strong>No Hydrogen Production available</strong></p>
             <p>Please upload your Hydrogen Production files to continue.</p>
           </div>
@@ -43,7 +43,7 @@
             <mat-list-option
               [value]="dataset"
               [ngClass]="option.selected ? 'border-primary-300' : 'border-neutral-300'"
-              class="mb-2 !h-fit !rounded-md border"
+              class="mb-2 h-fit! rounded-md! border"
               togglePosition="before"
               #option
             >
@@ -70,7 +70,7 @@
           <div
             class="mt-4 flex h-full flex-col items-center justify-center rounded-lg border border-dashed bg-neutral-50 p-4 text-center text-sm"
           >
-            <span class="material-symbols-outlined p-2 text-4xl text-primary-400">select</span>
+            <span class="material-symbols-outlined text-primary-400 p-2 text-4xl">select</span>
             <p><strong>No Hydrogen Production selected</strong></p>
             <p>Please select a Hydrogen Production Dataset to continue.</p>
           </div>
@@ -104,12 +104,12 @@
                   </div>
                 } @else {
                   <mat-divider />
-                  <mat-selection-list formControlName="powerProductions" [multiple]="true" class="!m-0 !p-0">
+                  <mat-selection-list formControlName="powerProductions" [multiple]="true" class="m-0! p-0!">
                     @for (powerDataset of item.uploads; track $index) {
                       @if ($index > 0) {
                         <mat-divider />
                       }
-                      <mat-list-option [value]="powerDataset" togglePosition="before" class="!bg-white">
+                      <mat-list-option [value]="powerDataset" togglePosition="before" class="bg-white!">
                         <span matListItemTitle class="flex justify-between">
                           <span>
                             {{ powerDataset.startedAt | date: 'mediumDate' }},
