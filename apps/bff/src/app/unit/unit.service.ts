@@ -34,7 +34,9 @@ export class UnitService {
   ) {}
 
   async readPowerProductionUnit(id: string): Promise<PowerProductionUnitDto> {
-    const unit = await firstValueFrom(this.generalService.send(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(id)));
+    const unit = await firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(id)),
+    );
     return PowerProductionUnitDto.fromEntity(unit);
   }
 
@@ -78,10 +80,7 @@ export class UnitService {
 
   async createPowerProductionUnit(dto: PowerProductionUnitInputDto): Promise<PowerProductionUnitDto> {
     return firstValueFrom(
-      this.generalService.send(
-        UnitMessagePatterns.CREATE_POWER_PRODUCTION,
-        PowerProductionUnitInputDto.toPayload(dto),
-      ),
+      this.generalService.send(UnitMessagePatterns.CREATE_POWER_PRODUCTION, PowerProductionUnitInputDto.toPayload(dto)),
     ).then(PowerProductionUnitDto.fromEntity);
   }
 
@@ -96,10 +95,7 @@ export class UnitService {
 
   async createHydrogenStorageUnit(dto: HydrogenStorageUnitInputDto): Promise<HydrogenStorageUnitDto> {
     return firstValueFrom(
-      this.generalService.send(
-        UnitMessagePatterns.CREATE_HYDROGEN_STORAGE,
-        HydrogenStorageUnitInputDto.toPayload(dto),
-      ),
+      this.generalService.send(UnitMessagePatterns.CREATE_HYDROGEN_STORAGE, HydrogenStorageUnitInputDto.toPayload(dto)),
     ).then(HydrogenStorageUnitDto.fromEntity);
   }
 

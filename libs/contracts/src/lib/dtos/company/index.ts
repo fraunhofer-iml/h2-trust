@@ -7,5 +7,5 @@
  */
 
 export * from './company.dto';
-export * from './mocks';
 export * from './company-base.dto';
+export * from './mocks';

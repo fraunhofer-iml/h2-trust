@@ -8,6 +8,7 @@
 
 import nx from '@nx/eslint-plugin';
 import licenseHeader from 'eslint-plugin-license-header';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 
 export default [
   ...nx.configs['flat/base'],
@@ -105,8 +106,12 @@ export default [
     },
   },
   {
-    files: ['**/*.ts', '**/*.tsx', '**/*.cts', '**/*.mts', '**/*.js', '**/*.jsx', '**/*.cjs', '**/*.mjs'],
-    // Override or add rules here
-    rules: {},
+    files: ['**/*.ts', '**/*.cts', '**/*.mts', '**/*.js', '**/*.cjs', '**/*.mjs'],
+    plugins: {
+      'simple-import-sort': simpleImportSort,
+    },
+    rules: {
+      'simple-import-sort/exports': 'error',
+    },
   },
 ];

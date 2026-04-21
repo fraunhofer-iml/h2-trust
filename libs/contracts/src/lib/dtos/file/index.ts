@@ -7,6 +7,6 @@
  */
 
 export * from './csv-content.type';
-export * from './file-info.dto';
 export * from './file.type';
+export * from './file-info.dto';
 export * from './mocks';

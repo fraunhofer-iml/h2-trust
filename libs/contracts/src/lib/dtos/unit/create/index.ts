@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+export * from './hydrogen-production-unit-input.dto';
 export * from './hydrogen-storage-input.dto';
 export * from './power-production-unit-input.dto';
 export * from './unit-input.dto';
-export * from './hydrogen-production-unit-input.dto';

@@ -8,10 +8,10 @@
 
 export * from './address';
 export * from './company';
-export * from './production';
+export * from './digital-product-passport';
+export * from './file';
+export * from './power-access-approval';
 export * from './process-step';
+export * from './production';
 export * from './unit';
 export * from './user';
-export * from './power-access-approval';
-export * from './file';
-export * from './digital-product-passport';

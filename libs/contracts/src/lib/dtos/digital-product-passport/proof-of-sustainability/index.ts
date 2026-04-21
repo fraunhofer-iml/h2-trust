@@ -8,6 +8,6 @@
 
 export * from './emission-calculation.dto';
 export * from './emission-computation-result.dto';
+export * from './mocks';
 export * from './process-step-emission.dto';
 export * from './proof-of-sustainability.dto';
-export * from './mocks';

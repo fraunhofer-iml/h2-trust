@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './message-patterns';
+export * from './broker';
 export * from './broker-exception';
 export * from './broker-queues';
-export * from './broker';
+export * from './message-patterns';
 export * from './rpc-exception.filter';
