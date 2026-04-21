@@ -44,7 +44,7 @@ export default [
         {
           patterns: [
             {
-              group: ['@h2-trust/contracts/*/fixtures'],
+              group: ['@h2-trust/contracts/*/fixtures', '@h2-trust/contracts/*/fixtures/**'],
               message: 'Fixtures are test-only. Do not import them from production code.',
             },
             {
