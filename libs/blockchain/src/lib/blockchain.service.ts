@@ -54,16 +54,18 @@ export class BlockchainService {
 
     if (featureFlags.verificationEnabled) {
       // verification is guaranteed to be defined when verificationEnabled is true (set together in config)
-      this.endpointUrl = verification!.blockchain.endpointUrl;
-      this.explorerUrl = verification!.blockchain.explorerUrl;
-      this.smartContractAddress = verification!.blockchain.smartContractAddress;
+      const { blockchain } = verification!;
+
+      this.endpointUrl = blockchain.endpointUrl;
+      this.explorerUrl = blockchain.explorerUrl;
+      this.smartContractAddress = blockchain.smartContractAddress;
 
       this.logger.debug('🔗 Blockchain integration initialized.');
       this.logger.debug(`🌐 Endpoint: ${this.endpointUrl}`);
       this.logger.debug(`🧭 Explorer: ${this.explorerUrl}`);
       this.logger.debug(`📄 Contract: ${this.smartContractAddress}`);
 
-      this.contract = this.createContract(verification!.blockchain.artifactPath, verification!.blockchain.privateKey);
+      this.contract = this.createContract(blockchain.artifactPath, blockchain.privateKey);
     } else {
       this.logger.debug('⛓️‍💥 Blockchain integration disabled.');
     }
