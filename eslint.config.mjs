@@ -46,6 +46,10 @@ export default [
               group: ['@h2-trust/contracts/*/fixtures'],
               message: 'Fixtures are test-only. Do not import them from production code.',
             },
+            {
+              group: ['apps/*', 'libs/*'],
+              message: 'Use relative imports within an app/lib or @h2-trust/* aliases across boundaries.',
+            },
           ],
         },
       ],

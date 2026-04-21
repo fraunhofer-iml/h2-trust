@@ -8,7 +8,6 @@
 
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { BrokerException } from 'libs/messaging/src';
 import {
   BaseUnitEntity,
   ConcreteUnitEntity,
@@ -22,6 +21,7 @@ import {
   CreatePowerProductionUnitPayload,
   UpdateUnitStatusPayload,
 } from '@h2-trust/contracts/payloads';
+import { BrokerException } from '@h2-trust/messaging';
 import {
   buildHydrogenProductionUnitCreateInput,
   buildHydrogenStorageUnitCreateInput,

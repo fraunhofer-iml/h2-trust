@@ -7,9 +7,9 @@
  */
 
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { PowerAccessApprovalRepository, UserRepository } from 'libs/database/src/lib';
 import { PowerAccessApprovalEntity, PowerProductionUnitEntity, UserEntity } from '@h2-trust/contracts/entities';
 import { ReadByIdPayload, ReadPowerAccessApprovalsPayload } from '@h2-trust/contracts/payloads';
+import { PowerAccessApprovalRepository, UserRepository } from '@h2-trust/database';
 import { PowerAccessApprovalStatus, PowerProductionType } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
 

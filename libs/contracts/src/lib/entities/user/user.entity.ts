@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { UserDeepDbType, UserFlatDbType, UserNestedDbType } from 'libs/database/src/lib/types';
+import { UserDeepDbType, UserFlatDbType, UserNestedDbType } from '@h2-trust/database';
 import { CompanyEntity } from '../company';
 
 export class UserEntity {

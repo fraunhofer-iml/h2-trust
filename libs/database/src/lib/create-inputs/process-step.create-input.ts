@@ -8,9 +8,9 @@
 
 import { HttpStatus } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { BrokerException } from 'libs/messaging/src';
 import { ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType } from '@h2-trust/domain';
+import { BrokerException } from '@h2-trust/messaging';
 
 export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Prisma.ProcessStepCreateInput {
   const hydrogenStorageUnitId = processStep.batch.hydrogenStorageUnit?.id;
