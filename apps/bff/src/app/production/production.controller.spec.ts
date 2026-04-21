@@ -6,12 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { NotImplementedException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   BrokerQueues,
   PaginatedProcessStepEntity,
-  PowerProductionTypeEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
@@ -20,7 +20,6 @@ import {
 import {
   AccountingPeriodMatchingResultDto,
   AuthenticatedKCUser,
-  CreateProductionDto,
   CreateProductionDtoMock,
   CsvDocumentIntegrityResultDto,
   PaginatedProductionDataDto,
@@ -28,19 +27,11 @@ import {
   ProductionOverviewDto,
   UserDetailsDtoMock,
 } from '@h2-trust/api';
-import {
-  BatchType,
-  CsvDocumentIntegrityStatus,
-  EnergySource,
-  HydrogenColor,
-  PowerProductionType,
-  ProcessType,
-} from '@h2-trust/domain';
+import { CsvContentType, CsvDocumentIntegrityStatus, ProcessType } from '@h2-trust/domain';
 import { BatchEntityFixture, HydrogenProductionUnitEntityFixture, UserEntityFixture } from '@h2-trust/fixtures';
+import { CentralizedStorageService } from '@h2-trust/storage';
 import 'multer';
 import { of } from 'rxjs';
-import { NotImplementedException } from '@nestjs/common';
-import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
@@ -138,7 +129,7 @@ describe('ProductionController', () => {
   it('should throw because files are missing ', async () => {
     const givenAuthenticatedUser: AuthenticatedKCUser = { sub: 'user-1' };
 
-    const dto: ProductionCSVUploadDto = { unitIds: [], csvContentType: BatchType.HYDROGEN };
+    const dto: ProductionCSVUploadDto = { unitIds: [], csvContentType: CsvContentType.HYDROGEN };
 
     expect(() => controller.importCsvFile(dto, [], givenAuthenticatedUser)).toThrow(NotImplementedException);
   });
@@ -195,7 +186,7 @@ describe('ProductionController', () => {
       .spyOn(processSvc, 'send')
       .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(expectedResponse));
 
-    const dto: ProductionCSVUploadDto = { unitIds: ['id', 'id'], csvContentType: BatchType.HYDROGEN };
+    const dto: ProductionCSVUploadDto = { unitIds: ['id', 'id'], csvContentType: CsvContentType.HYDROGEN };
 
     expect(() => controller.importCsvFile(dto, [powerFile, h2File], givenAuthenticatedUser)).toThrow(
       NotImplementedException,
@@ -204,7 +195,7 @@ describe('ProductionController', () => {
 
   it('should throw error because unitId is missing', async () => {
     const givenAuthenticatedUser: AuthenticatedKCUser = { sub: 'user-1' };
-    const dto: ProductionCSVUploadDto = { unitIds: [], csvContentType: BatchType.HYDROGEN };
+    const dto: ProductionCSVUploadDto = { unitIds: [], csvContentType: CsvContentType.HYDROGEN };
 
     const powerContent = 'time,amount\n2025-11-27T09:00:00Z,2\n2025-11-27T09:00:00Z,2';
     const powerFile: Express.Multer.File = {
