@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { assertDefined } from './assertions';
+import { assertDefined } from './assertions.util';
 
 export class DateTimeUtil {
   static toValidDate(value: unknown, name: string): Date {

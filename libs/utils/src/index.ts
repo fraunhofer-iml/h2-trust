@@ -6,5 +6,5 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './lib/assertions';
+export * from './lib/assertions.util';
 export * from './lib/date-time.util';
