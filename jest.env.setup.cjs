@@ -8,5 +8,5 @@
 
 require('reflect-metadata');
 
-process.env['AMQP_QUEUE_PREFIX'] ??= '';
+process.env['AMQP_QUEUE_PREFIX'] ??= 'test-';
 process.env['AMQP_URI'] ??= 'amqp://localhost';
