@@ -13,9 +13,9 @@ import { Component, inject, input } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { injectMutation } from '@tanstack/angular-query-experimental';
-import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
 import { toast } from 'ngx-sonner';
 import { DownloadFilesDto, ProcessedCsvDto } from '@h2-trust/contracts/dtos';
+import { ProductionService } from '../../../../shared/services/production/production.service';
 
 @Component({
   selector: 'app-download-button',

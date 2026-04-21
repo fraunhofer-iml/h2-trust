@@ -15,10 +15,10 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { InfoTooltipComponent } from 'apps/frontend/src/app/layout/info-tooltip/info-tooltip.component';
-import { RFNBO_CRITERIA } from 'apps/frontend/src/app/shared/constants/rfnbo-criteria';
-import { PrettyEnumPipe } from 'apps/frontend/src/app/shared/pipes/format-enum.pipe';
 import { BiddingZone, GridLevel, PowerProductionType } from '@h2-trust/domain';
+import { InfoTooltipComponent } from '../../../../layout/info-tooltip/info-tooltip.component';
+import { RFNBO_CRITERIA } from '../../../../shared/constants/rfnbo-criteria';
+import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
 import { PowerProductionFormGroup } from '../forms';
 
 @Component({

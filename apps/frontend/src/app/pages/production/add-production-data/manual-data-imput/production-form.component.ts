@@ -18,9 +18,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router } from '@angular/router';
 import { injectMutation } from '@tanstack/angular-query-experimental';
-import { ERROR_MESSAGES } from 'apps/frontend/src/app/shared/constants/error.messages';
-import { ROUTES } from 'apps/frontend/src/app/shared/constants/routes';
-import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
 import { toast } from 'ngx-sonner';
 import {
   CreateProductionDto,
@@ -29,7 +26,10 @@ import {
   PowerProductionOverviewDto,
 } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit, TimeInSeconds } from '@h2-trust/domain';
+import { ERROR_MESSAGES } from '../../../../shared/constants/error.messages';
+import { ROUTES } from '../../../../shared/constants/routes';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
+import { ProductionService } from '../../../../shared/services/production/production.service';
 
 @Component({
   selector: 'app-production-form',

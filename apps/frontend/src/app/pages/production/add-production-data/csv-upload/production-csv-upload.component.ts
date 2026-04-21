@@ -22,22 +22,22 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
-import { FileDragAndDropComponent } from 'apps/frontend/src/app/layout/drag-and-drop/file-drag-and-drop.component';
-import { FileTypes } from 'apps/frontend/src/app/shared/constants/file-types';
-import { ICONS } from 'apps/frontend/src/app/shared/constants/icons';
-import { FileSizePipe } from 'apps/frontend/src/app/shared/pipes/file-size.pipe';
-import {
-  hydrogenProductionUnitsQueryOptions,
-  powerProductionUnitsQueryOptions,
-} from 'apps/frontend/src/app/shared/queries/units.query';
-import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
-import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
-import { UserRolesStore } from 'apps/frontend/src/app/shared/store/user-role.store';
-import { minFormArrayLength } from 'apps/frontend/src/app/shared/util/form-array-lengh.validator';
 import { toast } from 'ngx-sonner';
 import { CsvContentType } from '@h2-trust/contracts/dtos';
 import { BatchType } from '@h2-trust/domain';
+import { FileDragAndDropComponent } from '../../../../layout/drag-and-drop/file-drag-and-drop.component';
+import { FileTypes } from '../../../../shared/constants/file-types';
+import { ICONS } from '../../../../shared/constants/icons';
+import { FileSizePipe } from '../../../../shared/pipes/file-size.pipe';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
+import {
+  hydrogenProductionUnitsQueryOptions,
+  powerProductionUnitsQueryOptions,
+} from '../../../../shared/queries/units.query';
+import { ProductionService } from '../../../../shared/services/production/production.service';
+import { UnitsService } from '../../../../shared/services/units/units.service';
+import { UserRolesStore } from '../../../../shared/store/user-role.store';
+import { minFormArrayLength } from '../../../../shared/util/form-array-lengh.validator';
 import { FileForm } from './file-upload.form';
 
 @Component({

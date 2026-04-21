@@ -8,8 +8,6 @@
 
 import { PercentPipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
-import { PrettyEnumPipe } from 'apps/frontend/src/app/shared/pipes/format-enum.pipe';
-import { UnitPipe } from 'apps/frontend/src/app/shared/pipes/unit.pipe';
 import * as echarts from 'echarts';
 import { EChartsOption } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
@@ -17,6 +15,8 @@ import { HydrogenStorageOverviewDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { CHART_COLORS } from '../../../../shared/constants/chart-colors';
 import { ERROR_MESSAGES } from '../../../../shared/constants/error.messages';
+import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
+import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { formatNumberForChart } from '../../../../shared/util/number-format.util';
 
 @Component({

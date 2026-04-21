@@ -15,8 +15,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { CompaniesService } from 'apps/frontend/src/app/shared/services/companies/companies.service';
-import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
+import { CompaniesService } from '../../../../shared/services/companies/companies.service';
+import { UnitsService } from '../../../../shared/services/units/units.service';
 import { UnitFormGroup } from '../forms';
 
 @Component({

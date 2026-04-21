@@ -8,10 +8,10 @@
 
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
-import { ProofOfOriginCardComponent } from 'apps/frontend/src/app/layout/proof-of-origin-card/proof-of-origin-card.component';
-import { ICONS } from 'apps/frontend/src/app/shared/constants/icons';
 import { ClassificationDto } from '@h2-trust/contracts/dtos';
 import { BatchType, MeasurementUnit } from '@h2-trust/domain';
+import { ProofOfOriginCardComponent } from '../../../../../layout/proof-of-origin-card/proof-of-origin-card.component';
+import { ICONS } from '../../../../../shared/constants/icons';
 import { PrettyEnumPipe } from '../../../../../shared/pipes/format-enum.pipe';
 import { UnitPipe } from '../../../../../shared/pipes/unit.pipe';
 

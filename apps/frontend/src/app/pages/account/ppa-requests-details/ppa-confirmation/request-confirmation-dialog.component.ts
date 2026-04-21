@@ -20,14 +20,14 @@ import {
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import { QUERY_KEYS } from 'apps/frontend/src/app/shared/queries/shared-query-keys';
-import { powerProductionUnitsQueryOptions } from 'apps/frontend/src/app/shared/queries/units.query';
-import { PowerAccessApprovalService } from 'apps/frontend/src/app/shared/services/power-access-approvals/power-access-approvals.service';
-import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
 import { toast } from 'ngx-sonner';
 import { PowerProductionOverviewDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/contracts/dtos';
 import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
+import { QUERY_KEYS } from '../../../../shared/queries/shared-query-keys';
+import { powerProductionUnitsQueryOptions } from '../../../../shared/queries/units.query';
+import { PowerAccessApprovalService } from '../../../../shared/services/power-access-approvals/power-access-approvals.service';
+import { UnitsService } from '../../../../shared/services/units/units.service';
 
 @Component({
   selector: 'app-request-confirmation-dialog',

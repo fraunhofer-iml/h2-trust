@@ -10,12 +10,12 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { CompactPipe } from 'apps/frontend/src/app/shared/pipes/compact-pipe';
 import { toast } from 'ngx-sonner';
 import { ProcessedCsvDto } from '@h2-trust/contracts/dtos';
 import { CsvDocumentIntegrityStatus } from '@h2-trust/domain';
 import { DateTimeUtil } from '@h2-trust/utils';
 import { BaseSheetComponent } from '../../../../layout/sheet/sheet.component';
+import { CompactPipe } from '../../../../shared/pipes/compact-pipe';
 import { ProductionService } from '../../../../shared/services/production/production.service';
 import { VerificationResultStore } from '../../../../shared/store/verification-result.store';
 
