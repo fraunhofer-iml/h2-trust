@@ -14,6 +14,7 @@ import {
   PowerPurchaseAgreementPatterns,
   ReadByIdPayload,
   ReadPowerPurchaseAgreementsPayload,
+  UpdatePowerPurchaseAgreementPayload,
 } from '@h2-trust/amqp';
 import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 
@@ -31,6 +32,11 @@ export class PowerPurchaseAgreementController {
   async createPPA(payload: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity[]> {
     return; this.service.createPPA(payload);
   } */
+
+  @MessagePattern(PowerPurchaseAgreementPatterns.UPDATE)
+  async updatePPAStatus(payload: UpdatePowerPurchaseAgreementPayload): Promise<PowerPurchaseAgreementEntity> {
+    return this.service.updatePPA(payload);
+  }
 
   @MessagePattern(PowerPurchaseAgreementPatterns.READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID)
   async readApprovedGridPowerProductionUnitByUserId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity> {

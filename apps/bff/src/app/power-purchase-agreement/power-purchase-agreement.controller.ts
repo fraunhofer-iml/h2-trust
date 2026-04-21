@@ -7,9 +7,14 @@
  */
 
 import { AuthenticatedUser } from 'nest-keycloak-connect';
-import { Controller, Get, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
-import { PowerPurchaseAgreementDto, PpaRequestDto, type AuthenticatedKCUser } from '@h2-trust/api';
+import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
+import {
+  PowerPurchaseAgreementDto,
+  PpaRequestDecisionDto,
+  PpaRequestDto,
+  type AuthenticatedKCUser,
+} from '@h2-trust/api';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 
@@ -104,16 +109,16 @@ export class PowerPurchaseAgreementController {
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<PpaRequestDto> {
     return this.powerPurchaseAgreementService.createPPA(dto, authenticatedUser.sub);
-  }
+  } */
 
   @Patch('requests/:id')
   @ApiOkResponse({ description: 'Returns Request that were rejected or denied', type: PpaRequestDto })
   @ApiParam({ name: 'id', description: 'Id of PPA Request to update' })
   closePpaRequest(
-    @Body() dto: PpaRequestDto,
-        @Param('id') powerPurchaseAgreementRequestId: string,
+    @Body() dto: PpaRequestDecisionDto,
+    @Param('id') powerPurchaseAgreementRequestId: string,
     @AuthenticatedUser() user: AuthenticatedKCUser,
   ): Promise<PpaRequestDto> {
-    return this.powerPurchaseAgreementService.updatePPA(dto, user.sub);
-  } */
+    return this.powerPurchaseAgreementService.updatePPA(dto, powerPurchaseAgreementRequestId, user.sub);
+  }
 }

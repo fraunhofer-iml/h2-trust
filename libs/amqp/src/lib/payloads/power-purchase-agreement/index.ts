@@ -8,3 +8,4 @@
 
 export * from './read-power-purchase-agreements.payload';
 export * from './create-power-purchase-agreements.payload';
+export * from './update-power-purchase-agreement.payload';

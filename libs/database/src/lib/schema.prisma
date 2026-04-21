@@ -127,7 +127,8 @@ model PowerProductionType {
   energySource  String
   hydrogenColor String
 
-  powerProductionUnits PowerProductionUnit[]
+  powerProductionUnits    PowerProductionUnit[]
+  powerPurchaseAgreements PowerPurchaseAgreement[]
 
   @@unique([name, energySource, hydrogenColor])
 }
@@ -252,12 +253,14 @@ model TransportationDetails {
 }
 
 model PowerPurchaseAgreement {
-  id        String    @id @default(uuid(7))
+  id        String   @id @default(uuid(7))
   status    String
-  decidedAt DateTime?
   createdAt DateTime
   validFrom DateTime
   validTo   DateTime
+
+  suggestedPowerType     PowerProductionType @relation(fields: [suggestedPowerTypeName], references: [name])
+  suggestedPowerTypeName String
 
   powerProducer   Company @relation(fields: [powerProducerId], references: [id], name: "PowerProducer")
   powerProducerId String
@@ -270,6 +273,8 @@ model PowerPurchaseAgreement {
 
   document   Document @relation(fields: [documentId], references: [id])
   documentId String
+
+  decision Decision?
 
   @@unique([powerProducerId, powerProductionUnitId, hydrogenProducerId])
 }
@@ -288,4 +293,14 @@ model StagedProduction {
 
   hydrogenProductionUnit   HydrogenProductionUnit @relation(fields: [hydrogenProductionUnitId], references: [id])
   hydrogenProductionUnitId String
+}
+
+model Decision {
+  id        String    @id @default(uuid(7))
+  status    String
+  decidedAt DateTime?
+  comment   String?
+
+  powerPurchaseAgreements  PowerPurchaseAgreement @relation(fields: [powerPurchaseAgreementId], references: [id])
+  powerPurchaseAgreementId String                 @unique
 }

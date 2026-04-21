@@ -9,5 +9,6 @@
 export enum PowerPurchaseAgreementPatterns {
   READ = 'power-purchase-agreement.read',
   CREATE = 'power-purchase-agreement.create',
+  UPDATE = 'power-purchase-agreement.update',
   READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID = 'power-purchase-agreement.read-approved-grid-power-production-unit-by-user-id',
 }

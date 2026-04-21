@@ -22,9 +22,6 @@ export class PowerPurchaseAgreementRepository {
     status?: PowerPurchaseAgreementStatus,
     role?: PpaRequestRole,
   ): Promise<PowerPurchaseAgreementEntity[]> {
-    console.log(producerId);
-    console.log(status);
-    console.log(role);
     return this.prismaService.powerPurchaseAgreement
       .findMany({
         where: this.buildRoleQuery(producerId, status, role),
@@ -33,11 +30,11 @@ export class PowerPurchaseAgreementRepository {
       .then((result) => result.map(PowerPurchaseAgreementEntity.fromDeepDatabase));
   }
 
-  /*   async insert(ppa: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity> {
+  /*    async insert(ppa: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity> {
     return; this.prismaService.powerPurchaseAgreement.create();
-  }
-  async update(ppa: PowerPurchaseAgreementEntity, status: string): Promise<PowerPurchaseAgreementEntity> {
-    return this.prismaService.powerPurchaseAgreement.update()
+  } */
+  /*   async update(ppa: UpdatePowerPurchaseAgreementPayload): Promise<PowerPurchaseAgreementEntity> {
+    return this.prismaService.powerPurchaseAgreement.update({ where: { id: ppa.id } ,data : {}});
   } */
 
   private buildRoleQuery(

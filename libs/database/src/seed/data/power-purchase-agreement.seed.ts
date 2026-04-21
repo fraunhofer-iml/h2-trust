@@ -10,16 +10,16 @@ import { PowerPurchaseAgreement } from '@prisma/client';
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { CompanySeed } from './company.seed';
 import { DocumentSeed } from './document.seed';
-import { PowerProductionUnitSeed } from './unit';
+import { PowerProductionTypeSeed, PowerProductionUnitSeed } from './unit';
 
 export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Object.freeze([
   {
     id: 'power-purchase-agreement-0',
-    decidedAt: new Date('2025-02-01'),
     createdAt: new Date('2025-01-28'),
     validFrom: new Date('2025-02-01'),
     validTo: new Date('2025-02-14'),
     status: PowerPurchaseAgreementStatus.APPROVED,
+    suggestedPowerTypeName: PowerProductionTypeSeed[0].name,
     powerProducerId: CompanySeed[0].id,
     powerProductionUnitId: PowerProductionUnitSeed[0].id,
     hydrogenProducerId: CompanySeed[2].id,
@@ -27,11 +27,11 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
   },
   {
     id: 'power-purchase-agreement-1',
-    decidedAt: new Date('2025-02-01'),
     createdAt: new Date('2025-01-28'),
     validFrom: new Date('2025-02-01'),
     validTo: new Date('2025-02-14'),
     status: PowerPurchaseAgreementStatus.APPROVED,
+    suggestedPowerTypeName: PowerProductionTypeSeed[1].name,
     powerProducerId: CompanySeed[2].id,
     powerProductionUnitId: PowerProductionUnitSeed[1].id,
     hydrogenProducerId: CompanySeed[2].id,
@@ -39,11 +39,11 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
   },
   {
     id: 'power-purchase-agreement-2',
-    decidedAt: new Date('2025-08-14'),
     createdAt: new Date('2025-08-01'),
     validFrom: new Date('2025-08-01'),
     validTo: new Date('2025-08-16'),
     status: PowerPurchaseAgreementStatus.APPROVED,
+    suggestedPowerTypeName: PowerProductionTypeSeed[2].name,
     powerProducerId: CompanySeed[2].id,
     powerProductionUnitId: PowerProductionUnitSeed[2].id,
     hydrogenProducerId: CompanySeed[2].id,
@@ -51,11 +51,11 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
   },
   {
     id: 'power-purchase-agreement-3',
-    decidedAt: new Date('2025-08-14'),
     createdAt: new Date('2025-08-01'),
     validFrom: new Date('2025-08-01'),
     validTo: new Date('2025-08-16'),
     status: PowerPurchaseAgreementStatus.APPROVED,
+    suggestedPowerTypeName: PowerProductionTypeSeed[2].name,
     powerProducerId: CompanySeed[1].id,
     powerProductionUnitId: PowerProductionUnitSeed[3].id,
     hydrogenProducerId: CompanySeed[2].id,
