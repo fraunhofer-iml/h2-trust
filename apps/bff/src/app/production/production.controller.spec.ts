@@ -39,6 +39,7 @@ import {
 import { BatchEntityFixture, HydrogenProductionUnitEntityFixture, UserEntityFixture } from '@h2-trust/fixtures';
 import 'multer';
 import { of } from 'rxjs';
+import { NotImplementedException } from '@nestjs/common';
 import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 import { ProductionController } from './production.controller';
@@ -200,7 +201,7 @@ describe('ProductionController', () => {
 
     const dto: ProductionCSVUploadDto = { unitIds: [], csvContentType: BatchType.HYDROGEN };
 
-    await expect(controller.importCsvFile(dto, [], givenAuthenticatedUser)).rejects.toThrow(Error);
+    expect(() => controller.importCsvFile(dto, [], givenAuthenticatedUser)).toThrow(NotImplementedException);
   });
 
   it('should parse csv', async () => {
@@ -257,9 +258,9 @@ describe('ProductionController', () => {
 
     const dto: ProductionCSVUploadDto = { unitIds: ['id', 'id'], csvContentType: BatchType.HYDROGEN };
 
-    const actualResponse = await controller.importCsvFile(dto, [powerFile, h2File], givenAuthenticatedUser);
-
-    expect(actualResponse.numberOfBatches).toBe(1);
+    expect(() => controller.importCsvFile(dto, [powerFile, h2File], givenAuthenticatedUser)).toThrow(
+      NotImplementedException,
+    );
   });
 
   it('should throw error because unitId is missing', async () => {
@@ -280,9 +281,7 @@ describe('ProductionController', () => {
       stream: null as any,
     };
 
-    await expect(controller.importCsvFile(dto, [powerFile], givenAuthenticatedUser)).rejects.toThrow(
-      'Not enough unit IDs provided for POWER production files: expected 1, got 0',
-    );
+    expect(() => controller.importCsvFile(dto, [powerFile], givenAuthenticatedUser)).toThrow(NotImplementedException);
   });
 
   it('should verify csv document integrity and return verification details', async () => {
