@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { requireEnv } from "@h2-trust/utils";
+import { requireEnv } from '@h2-trust/utils';
 
 export class BrokerQueues {
   private static _QUEUE_GENERAL_SVC = buildQueueName('general-svc');

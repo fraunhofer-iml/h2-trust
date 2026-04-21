@@ -8,8 +8,8 @@
 
 import { DynamicModule } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { BrokerQueues } from './broker-queues';
 import { requireEnv } from '@h2-trust/utils';
+import { BrokerQueues } from './broker-queues';
 
 export class Broker {
   public static getGeneralSvcBroker(): DynamicModule {
