@@ -18,7 +18,7 @@ export class StagedProductionEntity {
   ownerId: string;
   usedPower: number;
   type: CsvContentType;
-  filename: string;
+  csvImportId?: string;
 
   constructor(
     startedAt: Date,
@@ -28,7 +28,7 @@ export class StagedProductionEntity {
     ownerId: string,
     usedPower: number,
     type: CsvContentType,
-    filename: string,
+    csvImportId?: string,
   ) {
     this.startedAt = startedAt;
     this.endedAt = endedAt;
@@ -37,7 +37,7 @@ export class StagedProductionEntity {
     this.ownerId = ownerId;
     this.usedPower = usedPower;
     this.type = type;
-    this.filename = filename;
+    this.csvImportId = csvImportId;
   }
 
   static fromDeepDatabase(stagedProduction: StagedProductionDeepDbType) {

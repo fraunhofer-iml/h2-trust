@@ -6,8 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import type { CsvContentType } from '@h2-trust/api';
+import { BatchType } from '@h2-trust/domain';
 
 export class UnitFileImport {
   @IsString()
@@ -22,6 +23,7 @@ export class UnitFileImport {
   @IsNotEmpty()
   encodedFileBuffer: string;
 
+  @IsEnum(BatchType)
   @IsNotEmpty()
   productionType: CsvContentType;
 

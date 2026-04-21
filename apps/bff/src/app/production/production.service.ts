@@ -16,8 +16,6 @@ import {
   CsvDocumentEntity,
   FinalizeProductionsPayload,
   PaginatedProcessStepEntity,
-  PowerAccessApprovalPatterns,
-  PowerProductionUnitEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionDataFilter,
@@ -51,7 +49,6 @@ import { UserService } from '../user/user.service';
 @Injectable()
 export class ProductionService {
   constructor(
-    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly storageService: CentralizedStorageService,
     private readonly userService: UserService,
@@ -126,19 +123,7 @@ export class ProductionService {
 
     const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
 
-    const gridPowerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
-      this.generalSvc.send(
-        PowerAccessApprovalPatterns.READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID,
-        new ReadByIdPayload(userId),
-      ),
-    );
-
-    const payload = new StageProductionsPayload(
-      stageProductions,
-      gridPowerProductionUnit.id,
-      userId,
-      userDetails.company.id,
-    );
+    const payload = new StageProductionsPayload(stageProductions, userId, userDetails.company.id);
     const matchingResult = await firstValueFrom(
       this.processSvc.send<ProductionStagingResultEntity>(ProductionMessagePatterns.STAGE, payload),
     );
@@ -175,6 +160,7 @@ export class ProductionService {
     });
   }
 
+  //TODO-LG: Implement finalize functionality (DUHGW-425)
   async submitCsvData(dto: ImportSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
     const payload: FinalizeProductionsPayload = new FinalizeProductionsPayload(userId, dto.storageUnitId, dto.importId);
     const processSteps: ProcessStepEntity[] = await firstValueFrom(

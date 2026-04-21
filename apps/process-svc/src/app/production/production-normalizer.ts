@@ -47,12 +47,15 @@ export class ProductionNormalizer {
   private static groupAccountingPeriodsByType(
     parsedImports: ParsedImport[],
   ): Record<CsvContentType, UnitAccountingPeriods[]> {
-    return parsedImports.reduce<Record<string, UnitAccountingPeriods[]>>((acc, parsedImport) => {
-      return {
-        ...acc,
-        [parsedImport.type]: [...(acc[parsedImport.type] ?? []), parsedImport.periods],
-      };
-    }, {});
+    return parsedImports.reduce<Record<CsvContentType, UnitAccountingPeriods[]>>(
+      (acc, parsedImport) => {
+        return {
+          ...acc,
+          [parsedImport.type]: [...(acc[parsedImport.type] ?? []), parsedImport.periods],
+        };
+      },
+      {} as Record<CsvContentType, UnitAccountingPeriods[]>,
+    );
   }
 
   private static normalizeAccountingPeriods(
@@ -65,7 +68,6 @@ export class ProductionNormalizer {
     accountingPeriods.forEach((bundle) => {
       const hourlyProductionTotals = bundle.accountingPeriods.reduce(
         (acc, item) => {
-          console.log(item);
           const date = new Date(item.time);
           const dateHourKey = date.toISOString().slice(0, 13);
 
@@ -94,7 +96,6 @@ export class ProductionNormalizer {
           endedAt: new Date(`${timestamp}:59:59Z`),
           usedPower: timestamp in hourlyPowerUsedTotals ? hourlyPowerUsedTotals[timestamp] : 0,
           type: type,
-          filename: '',
         });
       });
     });
