@@ -1,0 +1,49 @@
+@import 'tailwindcss';
+@import 'tailwind-animate';
+
+/* Content sources for Nx monorepo */
+@source '../../../libs/**/*.{ts,html}';
+
+/* Custom theme */
+@theme {
+  /* Primary */
+  --color-primary-50: #f1f7f9;
+  --color-primary-100: #d2e5eb;
+  --color-primary-200: #a4c9d3;
+  --color-primary-300: #6aa7b4;
+  --color-primary-400: #3f8796;
+  --color-primary-500: #1f6a79;
+  --color-primary-600: #0f5361;
+  --color-primary-700: #0b3f4b;
+  --color-primary-800: #09323c;
+  --color-primary-900: #062127;
+
+  /* Secondary */
+  --color-secondary-50: #e6f5ec;
+  --color-secondary-100: #cce6d8;
+  --color-secondary-200: #a8d0bf;
+  --color-secondary-300: #85b8a6;
+  --color-secondary-400: #689f8e;
+  --color-secondary-500: #517f72;
+  --color-secondary-600: #40665b;
+  --color-secondary-700: #345147;
+  --color-secondary-800: #273d35;
+  --color-secondary-900: #192824;
+
+  /* Tertiary */
+  --color-tertiary-50: #fff4e3;
+  --color-tertiary-100: #fde7c0;
+  --color-tertiary-200: #f7c86f;
+  --color-tertiary-300: #f2ac33;
+  --color-tertiary-400: #d9961f;
+  --color-tertiary-500: #b47c0f;
+  --color-tertiary-600: #8d6300;
+  --color-tertiary-700: #7c5700;
+  --color-tertiary-800: #6b4b00;
+  --color-tertiary-900: #4a3300;
+
+  /* Custom colors */
+  --color-rfnbo-green: #4f9c83;
+  --color-rfnbo-gray: #a1a3a6;
+  --color-error-red: #bd554f;
+}

@@ -16,10 +16,10 @@ import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
   selector: 'app-power-type-chip',
   imports: [CommonModule, PrettyEnumPipe],
   template: `<div
-    class="flex w-fit flex-row items-center gap-2 rounded-lg border border-neutral-200 pl-2 pr-4"
+    class="flex w-fit flex-row items-center gap-2 rounded-lg border border-neutral-200 pr-4 pl-2"
     [ngClass]="chipColor"
   >
-    <span class="material-symbols-outlined text-lg"> {{ icon() }} </span>
+    <span class="material-symbols-outlined text-base!"> {{ icon() }} </span>
     {{ this.powerType() | prettyEnum | titlecase }}
   </div>`,
 })
