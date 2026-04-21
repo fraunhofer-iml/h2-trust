@@ -1,5 +1,5 @@
 <div class="grid grid-cols-2 gap-4" [formGroup]="form">
-  <div class="col-span-2 rounded-lg bg-primary-300/30 p-4 text-neutral-600">
+  <div class="bg-primary-300/30 col-span-2 rounded-lg p-4 text-neutral-600">
     <span class="flex items-center gap-1 font-semibold">
       <span class="material-symbols-outlined">lightbulb_2</span>Hint</span
     >
@@ -122,7 +122,7 @@
     </mat-form-field>
 
     @if (amountNotAvailable()) {
-      <div class="col-span-2 flex flex-row items-center gap-2 text-sm text-primary-600">
+      <div class="text-primary-600 col-span-2 flex flex-row items-center gap-2 text-sm">
         <span class="material-symbols-outlined">warning</span>
         {{ ERROR_MESSAGES.amountIsGreaterThanRemainingCapacity }}
       </div>
