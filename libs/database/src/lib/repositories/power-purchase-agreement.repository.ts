@@ -16,12 +16,12 @@ import { powerPurchaseAgreementDeepQueryArgs } from '../query-args/power-purchas
 export class PowerPurchaseAgreementRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findAll(producerId: string, _status: PowerPurchaseAgreementStatus): Promise<PowerPurchaseAgreementEntity[]> {
+  async findAll(producerId: string, status: PowerPurchaseAgreementStatus): Promise<PowerPurchaseAgreementEntity[]> {
     return this.prismaService.powerPurchaseAgreement
       .findMany({
         where: {
           OR: [{ powerProducerId: producerId }, { hydrogenProducerId: producerId }],
-          status: _status,
+          status: status,
         },
         ...powerPurchaseAgreementDeepQueryArgs,
       })

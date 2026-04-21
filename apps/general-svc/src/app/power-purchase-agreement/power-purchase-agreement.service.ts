@@ -39,11 +39,12 @@ export class PowerPurchaseAgreementService {
       (agreement) => agreement.powerProductionUnit.type.name === PowerProductionType.GRID,
     );
 
-    if (!agreementForGrid)
+    if (!agreementForGrid) {
       throw new BrokerException(
         `No grid connection found for user with id ${payload.id}.`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    }
 
     return agreementForGrid.powerProductionUnit;
   }

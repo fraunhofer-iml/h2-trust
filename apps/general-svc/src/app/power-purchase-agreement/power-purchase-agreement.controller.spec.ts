@@ -52,7 +52,7 @@ describe('PowerPurchaseAgreementController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should get power purchase aggrements ', async () => {
+  it('should get power purchase agrements ', async () => {
     const mockedPurchaseAgreements: PowerPurchaseAgreementDeepDbType[] = PowerPurchaseAgreementDbTypeMock;
 
     jest.spyOn(prismaService.powerPurchaseAgreement, 'findMany').mockResolvedValue(mockedPurchaseAgreements);
