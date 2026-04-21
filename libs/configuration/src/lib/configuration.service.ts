@@ -21,59 +21,35 @@ import {
 
 @Injectable()
 export class ConfigurationService {
-  logger = new Logger(ConfigurationService.name);
+  private readonly logger = new Logger(ConfigurationService.name);
 
   constructor(private readonly configService: ConfigService) {}
 
   public getBffConfiguration(): BffConfiguration {
-    const bffConfiguration = this.configService.get<BffConfiguration>(BFF_CONFIGURATION_IDENTIFIER);
-
-    if (!bffConfiguration) {
-      const errorMessage = 'Environment variables for bff service configuration missing.';
-      this.logger.error(errorMessage);
-      throw new Error(errorMessage);
-    }
-
-    return bffConfiguration;
+    return this.getConfig<BffConfiguration>(BFF_CONFIGURATION_IDENTIFIER, 'bff service');
   }
 
   public getGeneralSvcConfiguration(): GeneralSvcConfiguration {
-    const generalSvcConfiguration = this.configService.get<GeneralSvcConfiguration>(
-      GENERAL_SVC_CONFIGURATION_IDENTIFIER,
-    );
-
-    if (!generalSvcConfiguration) {
-      const errorMessage = 'Environment variables for general service configuration missing.';
-      this.logger.error(errorMessage);
-      throw new Error(errorMessage);
-    }
-
-    return generalSvcConfiguration;
+    return this.getConfig<GeneralSvcConfiguration>(GENERAL_SVC_CONFIGURATION_IDENTIFIER, 'general service');
   }
 
   public getGlobalConfiguration(): GlobalConfiguration {
-    const globalConfiguration = this.configService.get<GlobalConfiguration>(GLOBAL_CONFIGURATION_IDENTIFIER);
-
-    if (!globalConfiguration) {
-      const msg = 'Environment variables for global configuration missing.';
-      this.logger.error(msg);
-      throw new Error(msg);
-    }
-
-    return globalConfiguration;
+    return this.getConfig<GlobalConfiguration>(GLOBAL_CONFIGURATION_IDENTIFIER, 'global');
   }
 
   public getProcessSvcConfiguration(): ProcessSvcConfiguration {
-    const processSvcConfiguration = this.configService.get<ProcessSvcConfiguration>(
-      PROCESS_SVC_CONFIGURATION_IDENTIFIER,
-    );
+    return this.getConfig<ProcessSvcConfiguration>(PROCESS_SVC_CONFIGURATION_IDENTIFIER, 'process service');
+  }
 
-    if (!processSvcConfiguration) {
-      const errorMessage = 'Environment variables for process service configuration missing.';
-      this.logger.error(errorMessage);
-      throw new Error(errorMessage);
+  private getConfig<T>(identifier: string, label: string): T {
+    const config = this.configService.get<T>(identifier);
+
+    if (!config) {
+      const message = `Environment variables for ${label} configuration are missing.`;
+      this.logger.error(message);
+      throw new Error(message);
     }
 
-    return processSvcConfiguration;
+    return config;
   }
 }
