@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { requireEnv } from '../../util';
+import { requireEnv } from '../../../../../utils/src/lib/env.util';
 
 export const DECENTRALIZED_STORAGE_PROVIDERS = {
   IPFS_NATIVE: 'ipfs-native',

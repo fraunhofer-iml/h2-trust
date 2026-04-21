@@ -9,6 +9,7 @@
 import { DynamicModule } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { BrokerQueues } from './broker-queues';
+import { requireEnv } from '@h2-trust/utils';
 
 export class Broker {
   public static getGeneralSvcBroker(): DynamicModule {
@@ -20,11 +21,7 @@ export class Broker {
   }
 
   private static getMessageBroker(queue: string): DynamicModule {
-    const amqpUri = process.env['AMQP_URI'];
-
-    if (!amqpUri) {
-      throw new Error('AMQP_URI is not defined');
-    }
+    const amqpUri = requireEnv('AMQP_URI');
 
     return ClientsModule.register([
       {

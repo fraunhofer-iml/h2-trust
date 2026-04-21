@@ -8,12 +8,12 @@
 
 import { LogLevel } from '@nestjs/common';
 import { registerAs } from '@nestjs/config';
-import { requireEnv } from '../util';
 import {
   buildVerificationConfiguration,
   S3Configuration,
   VerificationConfiguration,
 } from './features/verification.configuration';
+import { requireEnv } from '@h2-trust/utils';
 
 export const GLOBAL_CONFIGURATION_IDENTIFIER = 'global-configuration';
 

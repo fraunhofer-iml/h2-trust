@@ -6,6 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { requireEnv } from "@h2-trust/utils";
+
 export class BrokerQueues {
   private static _QUEUE_GENERAL_SVC = buildQueueName('general-svc');
   private static _QUEUE_PROCESS_SVC = buildQueueName('process-svc');
@@ -20,11 +22,7 @@ export class BrokerQueues {
 }
 
 function buildQueueName(suffix: string): string {
-  const prefix = process.env['AMQP_QUEUE_PREFIX'];
-
-  if (prefix === undefined) {
-    throw new Error('AMQP_QUEUE_PREFIX is not defined');
-  }
+  const prefix = requireEnv('AMQP_QUEUE_PREFIX');
 
   return `${prefix}${suffix}`;
 }

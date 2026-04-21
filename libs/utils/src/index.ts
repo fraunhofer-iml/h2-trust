@@ -8,3 +8,4 @@
 
 export * from './lib/assertions.util';
 export * from './lib/date-time.util';
+export * from './lib/env.util';
