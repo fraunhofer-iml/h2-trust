@@ -6,5 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+require('reflect-metadata');
+
 process.env['AMQP_QUEUE_PREFIX'] ??= '';
 process.env['AMQP_URI'] ??= 'amqp://localhost';
