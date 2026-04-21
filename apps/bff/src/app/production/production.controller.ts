@@ -19,17 +19,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
 import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-} from '@nestjs/swagger';
-import {
-  CreateProductionDto,
   CsvDocumentIntegrityResultDto,
   PaginatedProductionDataDto,
   ProcessedCsvDto,
@@ -39,64 +30,13 @@ import {
   StagedProductionDto,
   StagingSubmissionDto,
   type AuthenticatedKCUser,
-  type CsvContentType,
 } from '@h2-trust/api';
+import { CsvContentType, StagingScope } from '@h2-trust/domain';
 import { ProductionService } from './production.service';
 
 @Controller('productions')
 export class ProductionController {
   constructor(private readonly service: ProductionService) {}
-
-  @Post()
-  @ApiBearerAuth()
-  @ApiOperation({
-    description: 'Create power and hydrogen process steps.',
-  })
-  @ApiCreatedResponse({
-    description: 'Returns the newly created power and hydrogen process steps.',
-    type: [ProductionOverviewDto],
-  })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        hydrogenProductionUnitId: {
-          type: 'string',
-          default: 'hydrogen-production-unit-1',
-        },
-        powerProductionUnitId: {
-          type: 'string',
-          default: 'power-production-unit-1',
-        },
-        hydrogenStorageUnitId: {
-          type: 'string',
-          default: 'hydrogen-storage-unit-1',
-        },
-        productionStartedAt: {
-          type: 'string',
-          default: '2025-01-01T10:00:00Z',
-        },
-        productionEndedAt: {
-          type: 'string',
-          default: '2025-01-01T11:00:00Z',
-        },
-        hydrogenAmountKg: {
-          type: 'number',
-          default: 5,
-        },
-        powerAmountKwh: {
-          type: 'number',
-          default: 10,
-        },
-      },
-    },
-  })
-  async createProductions(
-    @Body() dto: CreateProductionDto,
-    @AuthenticatedUser() user: AuthenticatedKCUser,
-  ): Promise<ProductionOverviewDto[]> {
-    return this.service.createProductions(dto, user.sub);
-  }
 
   @Get()
   @ApiBearerAuth()
@@ -179,10 +119,10 @@ export class ProductionController {
     return this.service.assembleHydrogenProductionStatistics(authenticatedUser.sub, unitName, month);
   }
 
-  @Get('csv')
+  @Get('pending/csv')
   @ApiBearerAuth()
   @ApiOperation({
-    description: "Retrieve all csv documents for the authenticated user's company.",
+    description: "Retrieve all uploaded csv documents for the authenticated user's company.",
   })
   async readCsvDocumentsByCompany(
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
@@ -190,7 +130,7 @@ export class ProductionController {
     return this.service.readCsvDocumentsByCompany(authenticatedUser.sub);
   }
 
-  @Get('staging')
+  @Get('pending')
   @ApiBearerAuth()
   @ApiOperation({
     description: "Retrieve all staged productions for the authenticated user's company.",
@@ -199,24 +139,32 @@ export class ProductionController {
     name: 'scope',
     description: 'Search by staged production owner',
     required: false,
+    example: StagingScope.OWN,
+    enum: StagingScope,
   })
   @ApiQuery({
     name: 'type',
     description: 'Search by csv content type (hydrogen or power)',
     required: false,
+    enum: CsvContentType,
+    example: CsvContentType.POWER,
   })
   @ApiQuery({
     name: 'from',
     description: 'Start date of searched period',
     required: false,
+    type: Date,
+    example: new Date('2026-01-01'),
   })
   @ApiQuery({
     name: 'to',
     description: 'end date of searched period',
     required: false,
+    type: Date,
+    example: new Date('2026-02-01'),
   })
   async readStagedProductionsByCompanyAndType(
-    @Query('scope') _scope: 'own' | 'received',
+    @Query('scope') _scope: StagingScope,
     @Query('type') _type: CsvContentType,
     @Query('from') _from: Date,
     @Query('to') _to: Date,
@@ -225,7 +173,7 @@ export class ProductionController {
     return [];
   }
 
-  @Get('csv/:id')
+  @Get('pending/csv/:id/verify')
   @ApiBearerAuth()
   @ApiOperation({
     description: 'Verify csv document integrity against the blockchain proof and return structured result details.',
@@ -243,7 +191,11 @@ export class ProductionController {
     return this.service.verifyCsvDocumentIntegrity(id);
   }
 
-  @Post('csv/import')
+  @Post('pending/csv')
+  @ApiOperation({
+    description: 'Create staged productions by uploading csv files.',
+  })
+  @ApiBearerAuth()
   @UseInterceptors(FilesInterceptor('files'))
   importCsvFile(
     @Body() _dto: ProductionCSVUploadDto,
@@ -255,9 +207,12 @@ export class ProductionController {
     throw new NotImplementedException();
   }
 
-  @Post('staging/submit')
+  @Post()
+  @ApiOperation({
+    description: 'Create production process steps by finalizing the staged productions.',
+  })
   @ApiBearerAuth()
-  submitCsvData(@Body() _dto: StagingSubmissionDto, @AuthenticatedUser() _user: AuthenticatedKCUser) {
+  createProductionsFromStaging(@Body() _dto: StagingSubmissionDto, @AuthenticatedUser() _user: AuthenticatedKCUser) {
     throw new NotImplementedException();
   }
 }

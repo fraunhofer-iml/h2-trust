@@ -12,7 +12,6 @@ import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
   CreateHydrogenProductionStatisticsPayload,
-  CreateProductionsPayload,
   CsvDocumentEntity,
   FinalizeProductionsPayload,
   PaginatedProcessStepEntity,
@@ -32,7 +31,6 @@ import {
 } from '@h2-trust/amqp';
 import {
   AccountingPeriodMatchingResultDto,
-  CreateProductionDto,
   CsvDocumentIntegrityResultDto,
   PaginatedProductionDataDto,
   ProcessedCsvDto,
@@ -55,27 +53,6 @@ export class ProductionService {
     private readonly storageService: CentralizedStorageService,
     private readonly userService: UserService,
   ) {}
-
-  async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    const payload = new CreateProductionsPayload(
-      dto.productionStartedAt,
-      dto.productionEndedAt,
-      dto.powerProductionUnitId,
-      dto.powerAmountKwh,
-      dto.hydrogenProductionUnitId,
-      dto.hydrogenAmountKg,
-      userId,
-      dto.hydrogenStorageUnitId,
-    );
-
-    const processSteps: ProcessStepEntity[] = await firstValueFrom(
-      this.processSvc.send(ProductionMessagePatterns.CREATE, payload),
-    );
-
-    return processSteps
-      .filter((processStep) => processStep.type === ProcessType.HYDROGEN_PRODUCTION)
-      .map(ProductionOverviewDto.fromEntity);
-  }
 
   async readHydrogenProductionsByOwner(
     userId: string,

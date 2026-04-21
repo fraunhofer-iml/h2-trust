@@ -24,7 +24,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
 import { StagedProductionDto, StagingSubmissionDto } from '@h2-trust/api';
-import { BatchType, MeasurementUnit, PowerAccessApprovalStatus } from '@h2-trust/domain';
+import { BatchType, CsvContentType, MeasurementUnit, PowerAccessApprovalStatus, StagingScope } from '@h2-trust/domain';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 
 @Component({
@@ -72,8 +72,8 @@ export class FileSelectionComponent {
     ],
     queryFn: async () =>
       this.productionService.getStagedProductions(
-        BatchType.POWER,
-        'received',
+        CsvContentType.POWER,
+        StagingScope.RECEIVED,
         this.selectedHydrogenFile()?.startedAt,
         this.selectedHydrogenFile()?.endedAt,
       ),
@@ -82,7 +82,7 @@ export class FileSelectionComponent {
   hydrogenProductionsQuery = injectQuery(() => ({
     queryKey: ['hydrogen-production'],
     queryFn: async () => {
-      return this.productionService.getStagedProductions(BatchType.HYDROGEN, 'own');
+      return this.productionService.getStagedProductions(CsvContentType.HYDROGEN, StagingScope.OWN);
     },
   }));
 

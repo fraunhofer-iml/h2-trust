@@ -89,67 +89,6 @@ describe('ProductionController', () => {
     userService = module.get<UserService>(UserService);
   });
 
-  it('should create production', async () => {
-    const givenDto: CreateProductionDto = CreateProductionDtoMock;
-
-    jest
-      .spyOn(generalSvc, 'send')
-      .mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: any) =>
-        of({
-          ratedPower: 100,
-          type: <PowerProductionTypeEntity>{
-            name: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
-            energySource: EnergySource.SOLAR_ENERGY,
-            hydrogenColor: HydrogenColor.GREEN,
-          },
-        }),
-      )
-      .mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: any) =>
-        of({
-          company: {
-            id: 'company-power-production-1',
-          },
-        }),
-      )
-      .mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: any) =>
-        of({
-          company: {
-            id: 'company-hydrogen-production-1',
-          },
-        }),
-      );
-
-    const mockedProcessStepEntities: ProcessStepEntity[] = [
-      {
-        id: 'hydrogen-production-process-step-1',
-        startedAt: new Date(CreateProductionDtoMock.productionStartedAt),
-        endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
-        type: ProcessType.HYDROGEN_PRODUCTION,
-        batch: BatchEntityFixture.createHydrogenBatch(),
-        recordedBy: UserEntityFixture.createHydrogenUser(),
-        executedBy: HydrogenProductionUnitEntityFixture.create(),
-      },
-      {
-        id: 'hydrogen-production-process-step-2',
-        startedAt: new Date(CreateProductionDtoMock.productionEndedAt),
-        endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
-        type: ProcessType.HYDROGEN_PRODUCTION,
-        batch: BatchEntityFixture.createHydrogenBatch(),
-        recordedBy: UserEntityFixture.createHydrogenUser(),
-        executedBy: HydrogenProductionUnitEntityFixture.create(),
-      },
-    ];
-
-    jest
-      .spyOn(processSvc, 'send')
-      .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(mockedProcessStepEntities));
-
-    const expectedResponse: ProductionOverviewDto[] = mockedProcessStepEntities.map(ProductionOverviewDto.fromEntity);
-    const actualResponse: ProductionOverviewDto[] = await controller.createProductions(givenDto, { sub: 'user-1' });
-
-    expect(actualResponse).toEqual(expectedResponse);
-  });
-
   it('should read hydrogen productions', async () => {
     const givenAuthenticatedUser: AuthenticatedKCUser = { sub: 'user-1' };
     const processStepEntityMocks: ProcessStepEntity[] = [

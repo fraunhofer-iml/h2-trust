@@ -25,8 +25,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
-import { CsvContentType } from '@h2-trust/api';
-import { BatchType } from '@h2-trust/domain';
+import { BatchType, CsvContentType } from '@h2-trust/domain';
 import { FileTypes } from '../../../../shared/constants/file-types';
 import { ICONS } from '../../../../shared/constants/icons';
 import { FileSizePipe } from '../../../../shared/pipes/file-size.pipe';
@@ -68,10 +67,10 @@ import { FileForm } from './file-upload.form';
 })
 export class AddProductionDataComponent {
   protected readonly FileTypes = FileTypes;
-  protected readonly BatchType = BatchType;
+  protected readonly CsvContentType = CsvContentType;
   protected readonly ICONS = ICONS.UNITS;
 
-  availableUnitTypes: CsvContentType[] = [BatchType.HYDROGEN, BatchType.POWER];
+  availableUnitTypes: CsvContentType[] = [CsvContentType.HYDROGEN, CsvContentType.POWER];
 
   productionService = inject(ProductionService);
   router = inject(Router);

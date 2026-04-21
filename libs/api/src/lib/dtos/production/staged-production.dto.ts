@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CsvContentType } from '../../types';
+import { CsvContentType } from '@h2-trust/domain';
 
 export class StagedProductionDto {
   id: string;

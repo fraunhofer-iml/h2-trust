@@ -33,7 +33,7 @@
                 class="material-symbols-outlined group-hover:text-primary-600"
                 [ngClass]="type() === unitType ? 'text-primary-600' : 'text-neutral-400'"
               >
-                {{ unitType === BatchType.HYDROGEN ? ICONS.HYDROGEN_PRODUCTION : ICONS.POWER_PRODUCTION }}
+                {{ unitType === CsvContentType.HYDROGEN ? ICONS.HYDROGEN_PRODUCTION : ICONS.POWER_PRODUCTION }}
               </span>
             </div>
             <span class="text-base text-neutral-700">{{ unitType | prettyEnum | titlecase }} production data</span>
