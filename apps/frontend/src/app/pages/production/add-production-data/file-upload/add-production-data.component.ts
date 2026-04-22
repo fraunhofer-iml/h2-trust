@@ -15,7 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -41,6 +41,7 @@ import { UnitsService } from '../../../../shared/services/units/units.service';
 import { UserRolesStore } from '../../../../shared/store/user-role.store';
 import { minFormArrayLength } from '../../../../shared/util/form-array-length.validator';
 import { FileForm } from './file-upload.form';
+import { LoadingModalComponent } from './loading-modal/loading-modal.component';
 
 @Component({
   selector: 'app-add-production-data',
@@ -76,6 +77,7 @@ export class AddProductionDataComponent {
   router = inject(Router);
   unitsService = inject(UnitsService);
   roles = inject(UserRolesStore);
+  loadingModal = inject(MatDialog);
 
   hydrogenProductionUnitsQuery = injectQuery(() => hydrogenProductionUnitsQueryOptions(this.unitsService));
   powerProductionQuery = injectQuery(() => powerProductionUnitsQueryOptions(this.unitsService));
@@ -97,6 +99,8 @@ export class AddProductionDataComponent {
     files: new FormArray<FileForm>([], minFormArrayLength(1)),
   });
 
+  modalRef: MatDialogRef<LoadingModalComponent> | undefined;
+
   mutation = injectMutation(() => ({
     mutationFn: (data: FormData) => {
       return this.productionService.uploadCsv(data);
@@ -105,7 +109,9 @@ export class AddProductionDataComponent {
       toast.error(e.error.message);
     },
     onSuccess: () => {
+      this.modalRef?.close();
       toast.success('Upload successful!');
+      this.router.navigateByUrl('/production/files');
     },
   }));
 
@@ -142,6 +148,8 @@ export class AddProductionDataComponent {
         data.append('unitIds', unitId);
       }
     });
+
+    this.modalRef = this.loadingModal.open(LoadingModalComponent);
 
     this.mutation.mutate(data);
   }
