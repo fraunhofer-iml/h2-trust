@@ -39,11 +39,7 @@ import {
   StageProductionsPayload,
 } from '@h2-trust/contracts/payloads';
 import { CsvContentType, ProcessType } from '@h2-trust/domain';
-import {
-  BrokerQueues,
-  ProcessStepMessagePatterns,
-  ProductionMessagePatterns,
-} from '@h2-trust/messaging';
+import { BrokerQueues, ProcessStepMessagePatterns, ProductionMessagePatterns } from '@h2-trust/messaging';
 import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 

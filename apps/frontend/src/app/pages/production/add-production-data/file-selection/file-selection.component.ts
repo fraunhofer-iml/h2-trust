@@ -6,11 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ROUTES } from 'apps/frontend/src/app/shared/constants/routes';
-import { PowerAccessApprovalService } from 'apps/frontend/src/app/shared/services/power-access-approvals/power-access-approvals.service';
-import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
-import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
-import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
@@ -23,9 +18,20 @@ import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
-import { BatchType, CsvContentType, MeasurementUnit, PowerAccessApprovalStatus, StagingScope } from '@h2-trust/domain';
-import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
+import { ROUTES } from 'apps/frontend/src/app/shared/constants/routes';
+import { PowerPurchaseAgreementService } from 'apps/frontend/src/app/shared/services/power-purchase-agreement/power-purchase-agreement.service';
+import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
+import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
+import { toast } from 'ngx-sonner';
 import { StagedProductionDto, StagingSubmissionDto } from '@h2-trust/contracts/dtos';
+import {
+  BatchType,
+  CsvContentType,
+  MeasurementUnit,
+  PowerPurchaseAgreementStatus,
+  StagingScope,
+} from '@h2-trust/domain';
+import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 
 @Component({
   selector: 'app-file-selection',
@@ -47,7 +53,7 @@ import { StagedProductionDto, StagingSubmissionDto } from '@h2-trust/contracts/d
 })
 export class FileSelectionComponent {
   protected readonly productionService = inject(ProductionService);
-  protected readonly powerAccessApprovalsService = inject(PowerAccessApprovalService);
+  protected readonly powerPurchaseAgreementService = inject(PowerPurchaseAgreementService);
   protected readonly unitsService = inject(UnitsService);
   protected readonly MeasurementUnit = MeasurementUnit;
   private readonly router = inject(Router);
@@ -87,9 +93,9 @@ export class FileSelectionComponent {
   }));
 
   approvalsQuery = injectQuery(() => ({
-    queryKey: ['power-access-approvals'],
+    queryKey: ['power-purchase-agreements'],
     queryFn: async () => {
-      const approvals = await this.powerAccessApprovalsService.getApprovals(PowerAccessApprovalStatus.APPROVED);
+      const approvals = await this.powerPurchaseAgreementService.getAgreements(PowerPurchaseAgreementStatus.APPROVED);
       return approvals.filter((a) => a.energySource !== 'GRID');
     },
   }));

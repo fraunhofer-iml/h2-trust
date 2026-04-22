@@ -6,15 +6,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Body, Controller, Get, NotImplementedException, Param, Post, Query, UploadedFiles, UseInterceptors } from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
 import {
-  ApiBearerAuth,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-} from '@nestjs/swagger';
+  Body,
+  Controller,
+  Get,
+  NotImplementedException,
+  Param,
+  Post,
+  Query,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { AuthenticatedUser } from 'nest-keycloak-connect';
 import {
   CsvDocumentIntegrityResultDto,
@@ -27,8 +31,8 @@ import {
   StagingSubmissionDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/contracts/dtos';
-import { ProductionService } from './production.service';
 import { CsvContentType, StagingScope } from '@h2-trust/domain';
+import { ProductionService } from './production.service';
 
 @Controller('productions')
 export class ProductionController {

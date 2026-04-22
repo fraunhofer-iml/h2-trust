@@ -20,10 +20,10 @@ import {
   StagedProductionDto,
   StagingSubmissionDto,
 } from '@h2-trust/contracts/dtos';
+import { CsvContentType, StagingScope } from '@h2-trust/domain';
 import { FilterModel } from '../../../pages/production/model/generated-productions-filter.model';
 import { PaginationModel } from '../../../pages/production/model/pagination.model';
 import { API } from '../../constants/api-endpoints';
-import { CsvContentType, StagingScope } from '@h2-trust/domain';
 
 @Injectable()
 export class ProductionService {

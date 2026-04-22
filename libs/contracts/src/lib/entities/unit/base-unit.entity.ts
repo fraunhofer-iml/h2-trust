@@ -117,17 +117,17 @@ export abstract class BaseUnitEntity {
     return unit.owner
       ? {
           id: unit.ownerId,
-          hydrogenApprovals: BaseUnitEntity.mapHydrogenApprovals(unit),
+          hydrogenAgreements: BaseUnitEntity.mapHydrogenAgreements(unit),
         }
       : undefined;
   }
 
-  private static mapHydrogenApprovals(unit: BaseUnitDeepDbType) {
+  private static mapHydrogenAgreements(unit: BaseUnitDeepDbType) {
     return (
-      unit.owner?.hydrogenApprovals?.map((approval) => ({
-        powerAccessApprovalStatus: approval.status,
-        powerProducerId: approval.powerProducerId,
-        powerProducerName: approval.powerProducer.name,
+      unit.owner?.hydrogenAgreements?.map((agreement) => ({
+        powerPurchaseAgreementStatus: agreement.status,
+        powerProducerId: agreement.powerProducerId,
+        powerProducerName: agreement.powerProducer.name,
       })) ?? []
     );
   }
