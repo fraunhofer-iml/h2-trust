@@ -303,10 +303,10 @@ model TransportationDetails {
 
 model PowerPurchaseAgreement {
   id        String   @id @default(uuid(7))
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
-  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime? @updatedAt
+
   validFrom DateTime
   validTo   DateTime
 

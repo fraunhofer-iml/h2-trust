@@ -8,11 +8,13 @@
 
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PowerPurchaseAgreementEntity } from '@h2-trust/contracts/entities';
-import { UpdatePowerPurchaseAgreementPayload } from '@h2-trust/contracts/payloads';
+
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PrismaService } from '../prisma.service';
 import { powerPurchaseAgreementDeepQueryArgs } from '../query-args/power-purchase-agreement/power-purchase-agreement.deep.query-args';
+import { PowerPurchaseAgreementEntity } from '@h2-trust/contracts/entities';
+import { CreatePowerPurchaseAgreementsPayload, UpdatePowerPurchaseAgreementPayload } from '@h2-trust/contracts/payloads';
+import { create } from 'domain';
 
 @Injectable()
 export class PowerPurchaseAgreementRepository {
@@ -31,9 +33,9 @@ export class PowerPurchaseAgreementRepository {
       .then((result) => result.map(PowerPurchaseAgreementEntity.fromDeepDatabase));
   }
 
-  /*    async insert(ppa: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity> {
-    return; this.prismaService.powerPurchaseAgreement.create();
-  } */
+  async create(ppa: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity> {
+    return this.prismaService.powerPurchaseAgreement.create({ data: {decision:{create}} });
+  }
 
   async updatePpaStatus(ppa: UpdatePowerPurchaseAgreementPayload): Promise<any> {
     return this.prismaService.powerPurchaseAgreement

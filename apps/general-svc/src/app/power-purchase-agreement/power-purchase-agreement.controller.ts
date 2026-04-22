@@ -10,6 +10,7 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { PowerProductionUnitEntity, PowerPurchaseAgreementEntity } from '@h2-trust/contracts/entities';
 import {
+  CreatePowerPurchaseAgreementsPayload,
   ReadByIdPayload,
   ReadPowerPurchaseAgreementsPayload,
   UpdatePowerPurchaseAgreementPayload,
@@ -27,10 +28,10 @@ export class PowerPurchaseAgreementController {
     return this.service.findAll(payload);
   }
 
-  /*  @MessagePattern(PowerPurchaseAgreementPatterns.CREATE)
+   @MessagePattern(PowerPurchaseAgreementPatterns.CREATE)
   async createPPA(payload: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity[]> {
     return; this.service.createPPA(payload);
-  } */
+  }
 
   @MessagePattern(PowerPurchaseAgreementPatterns.UPDATE)
   async updatePPAStatus(payload: UpdatePowerPurchaseAgreementPayload): Promise<PowerPurchaseAgreementEntity> {

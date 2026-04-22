@@ -9,6 +9,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { PowerProductionUnitEntity, PowerPurchaseAgreementEntity, UserEntity } from '@h2-trust/contracts/entities';
 import {
+  CreatePowerPurchaseAgreementsPayload,
   ReadByIdPayload,
   ReadPowerPurchaseAgreementsPayload,
   UpdatePowerPurchaseAgreementPayload,
@@ -33,9 +34,9 @@ export class PowerPurchaseAgreementService {
     );
   }
 
-  /*   async createPPA(payload: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity> {
+    async createPPA(payload: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity> {
     return this.powerPurchaseAgreementRepository.create(payload);
-  } */
+  }
 
   async updatePPA(payload: UpdatePowerPurchaseAgreementPayload): Promise<PowerPurchaseAgreementEntity> {
     return this.powerPurchaseAgreementRepository.updatePpaStatus(payload);

@@ -8,12 +8,14 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
-import { PpaDto, PpaRequestDecisionDto, PpaRequestDto, UserDetailsDto } from '@h2-trust/contracts/dtos';
-import { ReadPowerPurchaseAgreementsPayload, UpdatePowerPurchaseAgreementPayload } from '@h2-trust/contracts/payloads';
+
+
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { BrokerQueues, PowerPurchaseAgreementPatterns } from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';
+import { PpaRequestDto, PpaDto, PpaRequestCreateDto, UserDetailsDto, PpaRequestDecisionDto } from '@h2-trust/contracts/dtos';
+import { ReadPowerPurchaseAgreementsPayload, CreatePowerPurchaseAgreementsPayload, UpdatePowerPurchaseAgreementPayload } from '@h2-trust/contracts/payloads';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class PowerPurchaseAgreementService {
@@ -22,16 +24,13 @@ export class PowerPurchaseAgreementService {
     private readonly userService: UserService,
   ) {}
 
-  /*   async readByUserAndStatus(
-    userId: string,
-    status: PowerPurchaseAgreementStatus,
-  ): Promise<PowerPurchaseAgreementDto[]> {
+  /* async readByUserAndStatus(userId: string, status: PowerPurchaseAgreementStatus): Promise<PpaDto[]> {
     const payload = new ReadPowerPurchaseAgreementsPayload(userId, status);
 
     const powerPurchaseAgreements = await firstValueFrom(
       this.generalService.send(PowerPurchaseAgreementPatterns.READ, payload),
     );
-    return powerPurchaseAgreements.map(PowerPurchaseAgreementDto.fromEntity);
+    return powerPurchaseAgreements.map(PpaDto.fromEntity);
   } */
 
   async readAll(userId: string, role: PpaRequestRole, status?: PowerPurchaseAgreementStatus): Promise<PpaRequestDto[]> {
@@ -42,7 +41,7 @@ export class PowerPurchaseAgreementService {
     return powerPurchaseAgreements.map(PpaDto.fromEntity);
   }
 
-  /* async createPPA(dto: PpaRequestCreateDto, userId: string): Promise<PpaRequestDto> {
+  async createPPA(dto: PpaRequestCreateDto, userId: string): Promise<PpaRequestDto> {
     const payload = new CreatePowerPurchaseAgreementsPayload(
       dto.companyId,
       dto.powerProductionType,
@@ -56,7 +55,7 @@ export class PowerPurchaseAgreementService {
 
     const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
     return PpaRequestDto.fromEntity(powerPurchaseAgreement, userDetails);
-  } */
+  }
 
   async updatePPA(
     dto: PpaRequestDecisionDto,

@@ -6,10 +6,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { AuthenticatedUser } from 'nest-keycloak-connect';
-import { PpaDto, PpaRequestDecisionDto, PpaRequestDto, type AuthenticatedKCUser } from '@h2-trust/contracts/dtos';
+import {
+  PpaDto,
+  PpaRequestCreateDto,
+  PpaRequestDecisionDto,
+  PpaRequestDto,
+  type AuthenticatedKCUser,
+} from '@h2-trust/contracts/dtos';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 
@@ -17,14 +23,14 @@ import { PowerPurchaseAgreementService } from './power-purchase-agreement.servic
 export class PowerPurchaseAgreementController {
   constructor(private readonly powerPurchaseAgreementService: PowerPurchaseAgreementService) {}
 
-  /*   @Get()
+  /* @Get()
   @ApiBearerAuth()
   @ApiOperation({
     description: 'Retrieve all companies with their power purchase agreement. Optionally filter by agreement status.',
   })
   @ApiOkResponse({
     description: 'Returns a list of all companies with their power purchase agreement matching the filter criteria.',
-    type: [PowerPurchaseAgreementDto],
+    type: [PpaDto],
   })
   @ApiQuery({
     name: 'status',
@@ -53,7 +59,7 @@ export class PowerPurchaseAgreementController {
   getCompaniesWithPowerPurchaseAgreement(
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
     @Query('status') powerPurchaseAgreementStatus: PowerPurchaseAgreementStatus,
-  ): Promise<PowerPurchaseAgreementDto[]> {
+  ): Promise<PpaDto[]> {
     return this.powerPurchaseAgreementService.readByUserAndStatus(authenticatedUser.sub, powerPurchaseAgreementStatus);
   } */
 
@@ -97,14 +103,14 @@ export class PowerPurchaseAgreementController {
     return this.powerPurchaseAgreementService.readAll(user.sub, role, status);
   }
 
-  /*   @Post('requests')
+  @Post('requests')
   @ApiOkResponse({ description: 'Returns created Request', type: PpaRequestDto })
   createPpaRequest(
     @Body() dto: PpaRequestCreateDto,
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<PpaRequestDto> {
     return this.powerPurchaseAgreementService.createPPA(dto, authenticatedUser.sub);
-  } */
+  }
 
   @Patch('requests/:id')
   @ApiOkResponse({ description: 'Returns Request that were rejected or denied', type: PpaRequestDto })
