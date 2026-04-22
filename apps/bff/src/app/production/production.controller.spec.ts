@@ -23,20 +23,12 @@ import {
   HydrogenProductionUnitEntityFixture,
   UserEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
-import {
-  BatchType,
-  CsvDocumentIntegrityStatus,
-  EnergySource,
-  HydrogenColor,
-  PowerProductionType,
-  ProcessType,
-} from '@h2-trust/domain';
+import { CsvContentType, CsvDocumentIntegrityStatus, ProcessType } from '@h2-trust/domain';
 import { BrokerQueues, ProcessStepMessagePatterns, ProductionMessagePatterns } from '@h2-trust/messaging';
 import 'multer';
 import { of } from 'rxjs';
 import {
   PaginatedProcessStepEntity,
-  PowerProductionTypeEntity,
   ProcessStepEntity,
   VerifyCsvDocumentIntegrityResultEntity,
 } from '@h2-trust/contracts/entities';

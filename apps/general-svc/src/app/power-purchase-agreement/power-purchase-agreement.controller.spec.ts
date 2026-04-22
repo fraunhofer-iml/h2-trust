@@ -17,6 +17,8 @@ import {
   UserRepository,
 } from '@h2-trust/database';
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
+import { PowerPurchaseAgreementController } from './power-purchase-agreement.controller';
+import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 
 describe('PowerPurchaseAgreementController', () => {
   let controller: PowerPurchaseAgreementController;
