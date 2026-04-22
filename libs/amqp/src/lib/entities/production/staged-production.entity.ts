@@ -6,53 +6,52 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CsvContentType } from '@h2-trust/api';
 import { StagedProductionDeepDbType } from '@h2-trust/database';
-import { BatchType } from '@h2-trust/domain';
+import { CsvContentType } from '@h2-trust/domain';
 
 export class StagedProductionEntity {
   startedAt: Date;
   endedAt: Date;
-  amount: number;
+  amountProduced: number;
   unitId: string;
   ownerId: string;
-  usedPower: number;
+  powerConsumed: number;
   type: CsvContentType;
   csvImportId?: string;
 
   constructor(
     startedAt: Date,
     endedAt: Date,
-    amount: number,
+    amountProduced: number,
     unitId: string,
     ownerId: string,
-    usedPower: number,
+    powerConsumed: number,
     type: CsvContentType,
     csvImportId?: string,
   ) {
     this.startedAt = startedAt;
     this.endedAt = endedAt;
-    this.amount = amount;
+    this.amountProduced = amountProduced;
     this.unitId = unitId;
     this.ownerId = ownerId;
-    this.usedPower = usedPower;
+    this.powerConsumed = powerConsumed;
     this.type = type;
     this.csvImportId = csvImportId;
   }
 
   static fromDeepDatabase(stagedProduction: StagedProductionDeepDbType) {
-    if (stagedProduction.type != BatchType.HYDROGEN && stagedProduction.type != BatchType.POWER) {
-      const message = `The staged production is not of type ${BatchType.HYDROGEN} or ${BatchType.POWER}`;
+    if (stagedProduction.type != CsvContentType.HYDROGEN && stagedProduction.type != CsvContentType.POWER) {
+      const message = `The staged production is not of type ${CsvContentType.HYDROGEN} or ${CsvContentType.POWER}`;
       throw new Error(message);
     }
 
     return new StagedProductionEntity(
       stagedProduction.startedAt,
       stagedProduction.endedAt,
-      stagedProduction.amount.toNumber(),
+      stagedProduction.amountProduced.toNumber(),
       stagedProduction.unitId,
       stagedProduction.ownerId,
-      stagedProduction.usedPower.toNumber(),
+      stagedProduction.powerConsumed.toNumber(),
       stagedProduction.type,
       stagedProduction.csvImportId,
     );

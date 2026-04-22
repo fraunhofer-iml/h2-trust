@@ -16,7 +16,8 @@ import {
   CsvDocumentEntity,
   FinalizeProductionsPayload,
   PaginatedProcessStepEntity,
-  PaginatedStagedProductionEntity,
+  PowerAccessApprovalPatterns,
+  PowerProductionUnitEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionDataFilter,
@@ -31,20 +32,17 @@ import {
 } from '@h2-trust/amqp';
 import {
   AccountingPeriodMatchingResultDto,
-  CreateProductionDto,
-  CsvContentType,
   CsvDocumentIntegrityResultDto,
-  ImportSubmissionDto,
   PaginatedProductionDataDto,
-  PaginatedStagedProductionDto,
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   ProductionStatisticsDto,
+  StagingSubmissionDto,
   UserDetailsDto,
 } from '@h2-trust/api';
 import { HashUtil } from '@h2-trust/blockchain';
-import { BatchType, ProcessType } from '@h2-trust/domain';
+import { CsvContentType, ProcessType } from '@h2-trust/domain';
 import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 
@@ -55,27 +53,6 @@ export class ProductionService {
     private readonly storageService: CentralizedStorageService,
     private readonly userService: UserService,
   ) {}
-
-  async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    const payload = new CreateProductionsPayload(
-      dto.productionStartedAt,
-      dto.productionEndedAt,
-      dto.powerProductionUnitId,
-      dto.powerAmountKwh,
-      dto.hydrogenProductionUnitId,
-      dto.hydrogenAmountKg,
-      userId,
-      dto.hydrogenStorageUnitId,
-    );
-
-    const processSteps: ProcessStepEntity[] = await firstValueFrom(
-      this.processSvc.send(ProductionMessagePatterns.CREATE, payload),
-    );
-
-    return processSteps
-      .filter((processStep) => processStep.type === ProcessType.HYDROGEN_PRODUCTION)
-      .map(ProductionOverviewDto.fromEntity);
-  }
 
   async readHydrogenProductionsByOwner(
     userId: string,
@@ -139,7 +116,7 @@ export class ProductionService {
       dto.unitIds,
       stageProductionFiles,
       dto.csvContentType,
-    );
+
 
     const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
 
@@ -158,7 +135,7 @@ export class ProductionService {
     const normalizedFiles = Array.isArray(files) ? files : [files];
     const normalizedUnitIds: string[] = Array.isArray(unitIds) ? unitIds : [unitIds];
 
-    if (type != BatchType.HYDROGEN && type != BatchType.POWER) {
+    if (type != CsvContentType.HYDROGEN && type != CsvContentType.POWER) {
       throw new BadRequestException(`Stage production contains invalid types.`);
     }
 
@@ -181,8 +158,12 @@ export class ProductionService {
   }
 
   //TODO-LG: Implement finalize functionality (DUHGW-425)
-  async submitCsvData(dto: ImportSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    const payload: FinalizeProductionsPayload = new FinalizeProductionsPayload(userId, dto.storageUnitId, dto.importId);
+  async submitCsvData(dto: StagingSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
+    const payload: FinalizeProductionsPayload = new FinalizeProductionsPayload(
+      userId,
+      dto.storageUnitId,
+      dto.stagedHydrogenProduction,
+    );
     const processSteps: ProcessStepEntity[] = await firstValueFrom(
       this.processSvc.send<ProcessStepEntity[]>(ProductionMessagePatterns.FINALIZE, payload),
     );

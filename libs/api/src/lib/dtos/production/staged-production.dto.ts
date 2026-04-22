@@ -6,37 +6,36 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { StagedProductionEntity } from '@h2-trust/amqp';
-import { CsvContentType } from '@h2-trust/api';
+import { CsvContentType } from '@h2-trust/domain';
 
 export class StagedProductionDto {
+  id: string;
   startedAt: Date;
   endedAt: Date;
-  amount: number;
-  unitId: string;
-  ownerId: string;
-  usedPower: number;
-  type: CsvContentType;
-  csvImportId?: string;
+  amountProduced: number;
+  csvContentType: CsvContentType;
+  uploadedBy: string; // company name
+  productionUnitId: string;
+  amountConsumed?: number; // amount of power consumed, only set if csv content type is hydrogen
 
   constructor(
+    id: string,
     startedAt: Date,
     endedAt: Date,
-    amount: number,
-    unitId: string,
-    ownerId: string,
-    usedPower: number,
-    type: CsvContentType,
-    csvImportId?: string,
+    amountProduced: number,
+    csvContentType: CsvContentType,
+    uploadedBy: string,
+    productionUnitId: string,
+    amountConsumed?: number,
   ) {
+    this.id = id;
     this.startedAt = startedAt;
     this.endedAt = endedAt;
-    this.amount = amount;
-    this.unitId = unitId;
-    this.ownerId = ownerId;
-    this.usedPower = usedPower;
-    this.type = type;
-    this.csvImportId = csvImportId;
+    this.amountProduced = amountProduced;
+    this.csvContentType = csvContentType;
+    this.uploadedBy = uploadedBy;
+    this.productionUnitId = productionUnitId;
+    this.amountConsumed = amountConsumed;
   }
 
   static fromEntity(stagedProduction: StagedProductionEntity) {

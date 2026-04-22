@@ -7,17 +7,17 @@
  */
 
 import { StagedProductionEntity, UnitAccountingPeriods } from '@h2-trust/amqp';
-import { CsvContentType } from '@h2-trust/api';
+import { CsvContentType } from '@h2-trust/domain';
 import { ParsedImport } from './production.types';
 
 interface PowerItem {
   unitId: string;
-  amount: number;
+  amountProduced: number;
 }
 
 interface HydrogenItem {
   unitId: string;
-  amount: number;
+  amountProduced: number;
   powerConsumed: number;
 }
 
@@ -29,44 +29,41 @@ export class ProductionNormalizer {
    * @returns A list of staged productions with only one entry per hour.
    */
   public static normalizeProduction(parsedImports: ParsedImport[], ownerId: string): StagedProductionEntity[] {
-    const parsedAccountingPeriodGroups: Record<CsvContentType, UnitAccountingPeriods[]> =
+    const parsedAccountingPeriodGroups: Map<CsvContentType, UnitAccountingPeriods[]> =
       this.groupAccountingPeriodsByType(parsedImports);
 
     const stagedProductionResult: StagedProductionEntity[] = [];
-    Object.entries(parsedAccountingPeriodGroups).forEach(([productionType, parsedAccountingPeriodGroup]) => {
+    for (const [productionType, parsedAccountingPeriodGroup] of parsedAccountingPeriodGroups) {
       const stagedProductionsForType: StagedProductionEntity[] = this.normalizeAccountingPeriods(
         parsedAccountingPeriodGroup,
-        productionType as CsvContentType,
+        productionType,
         ownerId,
       );
       stagedProductionResult.push(...stagedProductionsForType);
-    });
+    }
     return stagedProductionResult;
   }
 
   private static groupAccountingPeriodsByType(
     parsedImports: ParsedImport[],
-  ): Record<CsvContentType, UnitAccountingPeriods[]> {
-    return parsedImports.reduce<Record<CsvContentType, UnitAccountingPeriods[]>>(
-      (acc, parsedImport) => {
-        return {
-          ...acc,
-          [parsedImport.type]: [...(acc[parsedImport.type] ?? []), parsedImport.periods],
-        };
-      },
-      {} as Record<CsvContentType, UnitAccountingPeriods[]>,
-    );
+  ): Map<CsvContentType, UnitAccountingPeriods[]> {
+    const result = new Map<CsvContentType, UnitAccountingPeriods[]>();
+    for (const parsedImport of parsedImports) {
+      const existing = result.get(parsedImport.type) ?? [];
+      result.set(parsedImport.type, [...existing, parsedImport.periods]);
+    }
+    return result;
   }
 
   private static normalizeAccountingPeriods(
-    accountingPeriods: UnitAccountingPeriods[],
+    unitAccountingPeriods: UnitAccountingPeriods[],
     type: CsvContentType,
     ownerId: string,
   ): StagedProductionEntity[] {
     const unitAccountingPeriodsByDateHour = new Map<string, StagedProductionEntity[]>();
 
-    accountingPeriods.forEach((bundle) => {
-      const hourlyProductionTotals = bundle.accountingPeriods.reduce(
+    unitAccountingPeriods.forEach((unitAccountingPeriod) => {
+      const hourlyProductionTotals = unitAccountingPeriod.accountingPeriods.reduce(
         (acc, item) => {
           const date = new Date(item.time);
           const dateHourKey = date.toISOString().slice(0, 13);
@@ -76,12 +73,12 @@ export class ProductionNormalizer {
         },
         {} as Record<string, number>,
       );
-      const hourlyPowerUsedTotals = bundle.accountingPeriods.reduce(
+      const hourlyPowerUsedTotals = unitAccountingPeriod.accountingPeriods.reduce(
         (acc, item) => {
           const date = new Date(item.time);
           const dateHourKey = date.toISOString().slice(0, 13);
-          const usedPower = item.power ?? 0;
-          acc[dateHourKey] = (acc[dateHourKey] || 0) + usedPower;
+          const powerUsed = item.power ?? 0;
+          acc[dateHourKey] = (acc[dateHourKey] || 0) + powerUsed;
 
           return acc;
         },
@@ -89,12 +86,12 @@ export class ProductionNormalizer {
       );
       Object.entries(hourlyProductionTotals).forEach(([timestamp, amount]) => {
         this.addToMap<StagedProductionEntity>(unitAccountingPeriodsByDateHour, `${timestamp}:00:00Z`, {
-          unitId: bundle.unitId,
+          unitId: unitAccountingPeriod.unitId,
           ownerId: ownerId,
-          amount,
+          amountProduced: amount,
           startedAt: new Date(`${timestamp}:00:00Z`),
           endedAt: new Date(`${timestamp}:59:59Z`),
-          usedPower: timestamp in hourlyPowerUsedTotals ? hourlyPowerUsedTotals[timestamp] : 0,
+          powerConsumed: timestamp in hourlyPowerUsedTotals ? hourlyPowerUsedTotals[timestamp] : 0,
           type: type,
         });
       });
@@ -104,7 +101,10 @@ export class ProductionNormalizer {
   }
 
   private static addToMap<T extends PowerItem | HydrogenItem>(map: Map<string, T[]>, key: string, value: T): void {
-    if (!map.get(key)) map.set(key, [value]);
-    else map.get(key).push(value);
+    if (!map.get(key)) {
+      map.set(key, [value]);
+    } else {
+      map.get(key).push(value);
+    }
   }
 }

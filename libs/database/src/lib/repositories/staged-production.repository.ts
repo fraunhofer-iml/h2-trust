@@ -9,7 +9,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { StagedProductionEntity } from '@h2-trust/amqp';
-import { BatchType } from '@h2-trust/domain';
 import { PrismaService } from '../prisma.service';
 import { stagedProductionDeepQueryArgs } from '../query-args';
 import { StagedProductionDeepDbType } from '../types';
@@ -56,14 +55,14 @@ export class StagedProductionRepository {
     const client = tx ?? this.prismaService;
 
     await client.stagedProduction.createMany({
-      data: stagedProductions.map(({ startedAt, endedAt, ownerId, amount, unitId, usedPower, type }) => ({
+      data: stagedProductions.map(({ startedAt, endedAt, ownerId, amountProduced, unitId, powerConsumed, type }) => ({
         startedAt,
         endedAt,
         ownerId,
-        amount,
+        amountProduced,
         unitId,
         csvImportId,
-        usedPower,
+        powerConsumed,
         type,
       })),
     });

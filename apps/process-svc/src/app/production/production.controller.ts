@@ -12,7 +12,6 @@ import {
   CreateHydrogenProductionStatisticsPayload,
   CreateProductionsPayload,
   CsvDocumentEntity,
-  PaginatedStagedProductionEntity,
   ProcessStepEntity,
   ProductionMessagePatterns,
   ProductionStagingResultEntity,

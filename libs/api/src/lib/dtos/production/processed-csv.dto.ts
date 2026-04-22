@@ -7,7 +7,7 @@
  */
 
 import { CsvDocumentEntity } from '@h2-trust/amqp';
-import { CsvContentType } from '../../types';
+import { CsvContentType } from '@h2-trust/domain';
 
 export class ProcessedCsvDto {
   id: string;

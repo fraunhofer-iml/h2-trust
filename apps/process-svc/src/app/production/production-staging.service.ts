@@ -6,14 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
   BrokerException,
   CsvDocumentEntity,
   PaginatedStagedProductionEntity,
   PowerAccessApprovalEntity,
   ProductionStagingResultEntity,
-  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   StagedProductionEntity,
   StageProductionsPayload,
 } from '@h2-trust/amqp';
@@ -22,11 +21,9 @@ import { FeatureFlagService } from '@h2-trust/configuration';
 import {
   CreateCsvDocumentInput,
   CsvImportRepository,
-  PowerAccessApprovalRepository,
   PrismaService,
   StagedProductionRepository,
 } from '@h2-trust/database';
-import { BatchType, PowerAccessApprovalStatus } from '@h2-trust/domain';
 import { CsvImportProcessingService } from './csv-import-processing.service';
 import { ProductionNormalizer } from './production-normalizer';
 import { DocumentProof, ParsedImport } from './production.types';

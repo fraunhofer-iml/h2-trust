@@ -25,8 +25,8 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { CsvContentType, ProcessedCsvDto } from '@h2-trust/api';
-import { BatchType, CsvDocumentIntegrityStatus, MeasurementUnit } from '@h2-trust/domain';
+import { ProcessedCsvDto } from '@h2-trust/api';
+import { BatchType, CsvContentType, CsvDocumentIntegrityStatus, MeasurementUnit } from '@h2-trust/domain';
 import { ICONS } from '../../../shared/constants/icons';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { ProductionService } from '../../../shared/services/production/production.service';
@@ -85,8 +85,8 @@ export class ProductionFilesComponent implements AfterViewInit {
   ] as const;
 
   readonly displayedCsvContentTypes: { name: string; value: CsvContentType | null }[] = [
-    { name: 'Hydrogen', value: BatchType.HYDROGEN },
-    { name: 'Power', value: BatchType.POWER },
+    { name: 'Hydrogen', value: CsvContentType.HYDROGEN },
+    { name: 'Power', value: CsvContentType.POWER },
     { name: 'All', value: null },
   ] as const;
 
@@ -125,10 +125,7 @@ export class ProductionFilesComponent implements AfterViewInit {
 
   uploadsQuery = injectQuery(() => ({
     queryKey: ['production'],
-    queryFn: async (): Promise<ProcessedCsvDto[]> => {
-      const data = await this.productionService.getUploadedCsvFiles();
-      return data;
-    },
+    queryFn: async (): Promise<ProcessedCsvDto[]> => this.productionService.getUploadedCsvFiles(),
   }));
 
   datasource$ = computed(() => {

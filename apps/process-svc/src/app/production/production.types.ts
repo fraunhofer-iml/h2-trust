@@ -7,8 +7,7 @@
  */
 
 import { BatchEntity, ConcreteUnitEntity, UnitAccountingPeriods } from '@h2-trust/amqp';
-import { CsvContentType } from '@h2-trust/api';
-import { BatchType, HydrogenColor, PowerType, ProcessType } from '@h2-trust/domain';
+import { BatchType, CsvContentType, HydrogenColor, PowerType, ProcessType } from '@h2-trust/domain';
 
 export interface AccountingPeriod {
   startedAt: Date;
