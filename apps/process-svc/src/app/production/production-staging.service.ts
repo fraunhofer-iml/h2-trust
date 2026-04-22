@@ -12,10 +12,15 @@ import { FeatureFlagService } from '@h2-trust/configuration';
 import {
   CsvDocumentEntity,
   PowerPurchaseAgreementEntity,
+  ProcessStepEntity,
   ProductionStagingResultEntity,
   StagedProductionEntity,
 } from '@h2-trust/contracts/entities';
-import { ReadStagedProductionsPayload, StageProductionsPayload } from '@h2-trust/contracts/payloads';
+import {
+  FinalizeProductionsPayload,
+  ReadStagedProductionsPayload,
+  StageProductionsPayload,
+} from '@h2-trust/contracts/payloads';
 import {
   CreateCsvDocumentInput,
   CsvImportRepository,
@@ -25,6 +30,7 @@ import {
 } from '@h2-trust/database';
 import { PowerPurchaseAgreementStatus, StagingScope } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
+import { ProcessStepService } from '../process-step/process-step.service';
 import { CsvImportProcessingService } from './csv-import-processing.service';
 import { ProductionNormalizer } from './production-normalizer';
 import { DocumentProof, ParsedImport } from './production.types';
@@ -41,7 +47,18 @@ export class ProductionStagingService {
     private readonly prismaService: PrismaService,
     private readonly stagedProductionRepository: StagedProductionRepository,
     private readonly powerPurchaseAgreementRepository: PowerPurchaseAgreementRepository,
+    private readonly processStepService: ProcessStepService,
   ) {}
+
+  async createProductionsFromStaging(payload: FinalizeProductionsPayload): Promise<ProcessStepEntity[]> {
+    const stagedHydrogenProduction: StagedProductionEntity = await this.stagedProductionRepository.findStagedProduction(
+      payload.stagedHydrogenProduction,
+    );
+    const stagedPowerProduction: StagedProductionEntity = await this.stagedProductionRepository.findStagedProduction(
+      payload.stagedPowerProductions[0],
+    );
+    return [];
+  }
 
   async readStagedProductions(payload: ReadStagedProductionsPayload): Promise<StagedProductionEntity[]> {
     if (payload.stagingScope == StagingScope.OWN) {

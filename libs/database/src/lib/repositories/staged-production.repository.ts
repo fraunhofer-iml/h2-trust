@@ -20,6 +20,17 @@ export class StagedProductionRepository {
 
   constructor(private readonly prismaService: PrismaService) {}
 
+  async findStagedProduction(id: string): Promise<StagedProductionEntity> {
+    return this.prismaService.stagedProduction
+      .findFirst({
+        where: {
+          id: id,
+        },
+        ...stagedProductionDeepQueryArgs,
+      })
+      .then((stagedProduction) => StagedProductionEntity.fromDeepDatabase(stagedProduction));
+  }
+
   async findStagedProductions(
     payload: ReadStagedProductionsPayload,
     onlyOwnProductions: boolean,
