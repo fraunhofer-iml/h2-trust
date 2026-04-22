@@ -11,9 +11,11 @@ import { PowerAccessApprovalService } from 'apps/frontend/src/app/shared/service
 import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
 import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
 import { toast } from 'ngx-sonner';
+import { map } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -63,7 +65,9 @@ export class FileSelectionComponent {
     storageUnit: new FormControl<string | null>(null, Validators.required),
   });
 
-  selectedHydrogenFile = signal<StagedProductionDto | null>(null);
+  selectedHydrogenFile = toSignal(
+    this.form.controls.hydrogenProduction.valueChanges.pipe(map((val) => (val ? val[0] : null))),
+  );
 
   powerProductionsQuery = injectQuery(() => ({
     queryKey: [
@@ -126,7 +130,6 @@ export class FileSelectionComponent {
 
   constructor() {
     this.form.controls.hydrogenProduction.valueChanges.subscribe((val) => {
-      this.selectedHydrogenFile.set(val ? val[0] : null);
       if (val && val.length > 0) {
         this.form.controls.powerProductions.patchValue([]);
       }
