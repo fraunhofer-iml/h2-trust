@@ -10,6 +10,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BrokerQueues } from '@h2-trust/messaging';
 import { PowerPurchaseAgreementController } from './power-purchase-agreement.controller';
 import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
+import { UserService } from '../user/user.service';
 
 describe('PowerPurchaseAgreementController', () => {
   let controller: PowerPurchaseAgreementController;
@@ -19,6 +20,7 @@ describe('PowerPurchaseAgreementController', () => {
       controllers: [PowerPurchaseAgreementController],
       providers: [
         PowerPurchaseAgreementService,
+        UserService,
         {
           provide: BrokerQueues.QUEUE_GENERAL_SVC,
           useValue: {
