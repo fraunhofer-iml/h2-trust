@@ -9,7 +9,9 @@
       [description]="pendingEmptyState().description"
     />
   } @else {
-    <div class="mx-4 grid grid-cols-2 gap-4 rounded-md border border-dashed bg-neutral-50 p-4 2xl:grid-cols-3">
+    <div
+      class="mx-4 grid grid-cols-2 gap-4 rounded-md border border-dashed border-neutral-300 bg-neutral-50 p-4 2xl:grid-cols-3"
+    >
       @for (request of data()?.pending; track request.id) {
         <app-ppa-request-card [request]="request" [role]="role()" />
       }
@@ -28,7 +30,9 @@
       [description]="closedEmptyState().description"
     />
   } @else {
-    <div class="mx-4 grid grid-cols-2 gap-4 rounded-md border border-dashed bg-neutral-50 p-4 2xl:grid-cols-3">
+    <div
+      class="mx-4 grid grid-cols-2 gap-4 rounded-md border border-dashed border-neutral-300 bg-neutral-50 p-4 2xl:grid-cols-3"
+    >
       @for (request of data()?.closed; track request.id) {
         <app-ppa-request-card [request]="request" [role]="role()" />
       }
