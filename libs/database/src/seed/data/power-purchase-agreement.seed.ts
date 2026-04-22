@@ -8,6 +8,7 @@
 
 import { PowerPurchaseAgreement } from '@prisma/client';
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
+import { auditTimestamp } from './audit-timestamp.constant';
 import { CompanySeed } from './company.seed';
 import { DocumentSeed } from './document.seed';
 import { PowerProductionTypeSeed, PowerProductionUnitSeed } from './unit';
@@ -15,7 +16,8 @@ import { PowerProductionTypeSeed, PowerProductionUnitSeed } from './unit';
 export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Object.freeze([
   {
     id: 'power-purchase-agreement-0',
-    createdAt: new Date('2025-01-28'),
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     validFrom: new Date('2025-02-01'),
     validTo: new Date('2025-02-14'),
     status: PowerPurchaseAgreementStatus.APPROVED,
@@ -27,7 +29,8 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
   },
   {
     id: 'power-purchase-agreement-1',
-    createdAt: new Date('2025-01-28'),
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     validFrom: new Date('2025-02-01'),
     validTo: new Date('2025-02-14'),
     status: PowerPurchaseAgreementStatus.APPROVED,
@@ -39,7 +42,8 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
   },
   {
     id: 'power-purchase-agreement-2',
-    createdAt: new Date('2025-08-01'),
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     validFrom: new Date('2025-08-01'),
     validTo: new Date('2025-08-16'),
     status: PowerPurchaseAgreementStatus.APPROVED,
@@ -51,7 +55,8 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
   },
   {
     id: 'power-purchase-agreement-3',
-    createdAt: new Date('2025-08-01'),
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     validFrom: new Date('2025-08-01'),
     validTo: new Date('2025-08-16'),
     status: PowerPurchaseAgreementStatus.APPROVED,

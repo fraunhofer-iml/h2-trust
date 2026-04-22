@@ -35,7 +35,7 @@ export class PowerPurchaseAgreementController {
 
   @MessagePattern(PowerPurchaseAgreementPatterns.UPDATE)
   async updatePPAStatus(payload: UpdatePowerPurchaseAgreementPayload): Promise<PowerPurchaseAgreementEntity> {
-    return this.service.updatePPA(payload);
+    return this.service.updatePPAStatus(payload);
   }
 
   @MessagePattern(PowerPurchaseAgreementPatterns.READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID)

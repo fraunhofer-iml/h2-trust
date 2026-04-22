@@ -39,7 +39,7 @@ export class PowerPurchaseAgreementService {
     return this.powerPurchaseAgreementRepository.create(payload);
   } */
 
-  async updatePPA(payload: UpdatePowerPurchaseAgreementPayload): Promise<PowerPurchaseAgreementEntity> {
+  async updatePPAStatus(payload: UpdatePowerPurchaseAgreementPayload): Promise<PowerPurchaseAgreementEntity> {
     return this.powerPurchaseAgreementRepository.update(payload);
   }
 

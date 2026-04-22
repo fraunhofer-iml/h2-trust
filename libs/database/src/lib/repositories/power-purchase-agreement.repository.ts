@@ -37,7 +37,13 @@ export class PowerPurchaseAgreementRepository {
     return this.prismaService.powerPurchaseAgreement
       .update({
         where: { id: ppa.ppaId },
-        data: {},
+        data: {
+          decision: {
+            update: {
+              data: { status: ppa.decision },
+            },
+          },
+        },
         ...powerPurchaseAgreementDeepQueryArgs,
       })
       .then((result) => PowerPurchaseAgreementEntity.fromDeepDatabase(result));
