@@ -22,11 +22,6 @@ export class AccountingPeriodMatchingResultDto {
   }
 
   static fromEntity(entity: ProductionStagingResultEntity) {
-    return new AccountingPeriodMatchingResultDto(
-      entity.id,
-      entity.powerUsed,
-      entity.hydrogenProduced,
-      entity.numberOfBatches,
-    );
+    return new AccountingPeriodMatchingResultDto(entity.id, entity.powerUsed, entity.amount, entity.numberOfBatches);
   }
 }

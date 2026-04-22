@@ -8,22 +8,19 @@
 
 import { HttpStatus, Logger } from '@nestjs/common';
 import { parse } from 'csv-parse';
-import { AccountingPeriodHydrogen, AccountingPeriodPower } from '@h2-trust/contracts/entities';
 import { BrokerException } from '@h2-trust/messaging';
 import { DateTimeUtil } from '@h2-trust/utils';
+import { StagedProductionAccountingPeriod } from '@h2-trust/contracts/entities';
 
 export class AccountingPeriodCsvParser {
   private static readonly logger: Logger = new Logger(AccountingPeriodCsvParser.name);
   private static readonly dateTimeRegex = /^\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2}(:\d{2})?$/;
 
-  static async parseBuffer<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
-    buffer: Buffer,
-    columns: string[],
-  ): Promise<T[]> {
+  static async parseBuffer(buffer: Buffer, columns: string[]): Promise<StagedProductionAccountingPeriod[]> {
     let skipped = 0;
     let invalid = 0;
 
-    const parser = parse<T>({
+    const parser = parse({
       columns: (header) => {
         const normalizedColumns = header.map((h) => h.trim().replace(/^\uFEFF/, ''));
         for (const column of columns) {
@@ -76,11 +73,11 @@ export class AccountingPeriodCsvParser {
       },
     });
 
-    return new Promise<T[]>((resolve, reject) => {
-      const records: T[] = [];
+    return new Promise((resolve, reject) => {
+      const records: StagedProductionAccountingPeriod[] = [];
 
       parser.on('readable', () => {
-        let record: T | null;
+        let record: StagedProductionAccountingPeriod | null;
         while ((record = parser.read()) !== null) {
           records.push(record);
         }

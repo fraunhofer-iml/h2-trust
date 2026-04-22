@@ -15,31 +15,19 @@ export class StageProductionsPayload {
   @ArrayNotEmpty()
   @ValidateNested({ each: true })
   @Type(() => UnitFileImport)
-  powerProductionImports: UnitFileImport[];
-
-  @IsArray()
-  @ArrayNotEmpty()
-  @ValidateNested({ each: true })
-  @Type(() => UnitFileImport)
-  hydrogenProductionImports: UnitFileImport[];
-
-  @IsString()
-  @IsNotEmpty()
-  gridPowerProductionUnitId: string;
+  productionImports: UnitFileImport[];
 
   @IsString()
   @IsNotEmpty()
   userId: string;
 
-  constructor(
-    powerProductionImports: UnitFileImport[],
-    hydrogenProductionImports: UnitFileImport[],
-    gridPowerProductionUnitId: string,
-    userId: string,
-  ) {
-    this.powerProductionImports = powerProductionImports;
-    this.hydrogenProductionImports = hydrogenProductionImports;
-    this.gridPowerProductionUnitId = gridPowerProductionUnitId;
+  @IsString()
+  @IsNotEmpty()
+  companyId: string;
+
+  constructor(powerProductions: UnitFileImport[], userId: string, companyId: string) {
+    this.productionImports = powerProductions;
     this.userId = userId;
+    this.companyId = companyId;
   }
 }

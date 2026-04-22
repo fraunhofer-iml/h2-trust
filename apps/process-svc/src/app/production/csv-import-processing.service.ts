@@ -10,8 +10,6 @@ import { Injectable } from '@nestjs/common';
 import { HashUtil } from '@h2-trust/blockchain';
 import { ConfigurationService } from '@h2-trust/configuration';
 import {
-  AccountingPeriodHydrogen,
-  AccountingPeriodPower,
   UnitAccountingPeriods,
   UnitFileImport,
 } from '@h2-trust/contracts/entities';
@@ -38,14 +36,10 @@ export class CsvImportProcessingService {
     this.featureVerificationEnabled = configService.getGlobalConfiguration().featureFlags.verificationEnabled;
   }
 
-  async parseAndUploadFiles<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
-    unitFileImports: UnitFileImport[],
-    type: Exclude<BatchType, BatchType.WATER>,
-  ): Promise<ParsedImport<T>[]> {
-    const headers = CsvImportProcessingService.validHeaders[type];
-
+  async parseAndUploadFiles(unitFileImports: UnitFileImport[]): Promise<ParsedImport[]> {
     return Promise.all(
       unitFileImports.map(async (ufi) => {
+        const headers = CsvImportProcessingService.validHeaders[ufi.productionType];
         const buffer = Buffer.from(ufi.encodedFileBuffer, 'base64');
         const computedHash = HashUtil.hashBuffer(buffer);
         const expectedHash = ufi.hashedFileBuffer;
@@ -56,10 +50,10 @@ export class CsvImportProcessingService {
           );
         }
 
-        const accountingPeriods = await AccountingPeriodCsvParser.parseBuffer<T>(buffer, headers);
+        const accountingPeriods = await AccountingPeriodCsvParser.parseBuffer(buffer, headers);
 
         if (!accountingPeriods.length) {
-          throw new Error(`${type} production file does not contain any valid items.`);
+          throw new Error(`${ufi.productionType} production file does not contain any valid items.`);
         }
 
         const fileName = `${expectedHash}.csv`;
@@ -70,8 +64,8 @@ export class CsvImportProcessingService {
           : null;
 
         return {
-          periods: new UnitAccountingPeriods<T>(ufi.unitId, accountingPeriods),
-          type,
+          periods: new UnitAccountingPeriods(ufi.unitId, accountingPeriods),
+          type: ufi.productionType,
           fileName,
           hash: expectedHash,
           cid,
@@ -80,9 +74,7 @@ export class CsvImportProcessingService {
     );
   }
 
-  createCsvDocumentInputs<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
-    parsedImports: ParsedImport<T>[],
-  ): CreateCsvDocumentInput[] {
+  createCsvDocumentInputs(parsedImports: ParsedImport[]): CreateCsvDocumentInput[] {
     return parsedImports.map((production) => {
       const { startedAt, endedAt, amount } = production.periods.accountingPeriods.reduce(
         (acc, accountingPeriod) => {
