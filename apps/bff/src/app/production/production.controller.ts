@@ -21,6 +21,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { AuthenticatedUser } from 'nest-keycloak-connect';
 import {
+  AccountingPeriodMatchingResultDto,
   CsvDocumentIntegrityResultDto,
   PaginatedProductionDataDto,
   ProcessedCsvDto,
@@ -198,12 +199,12 @@ export class ProductionController {
   @ApiBearerAuth()
   @UseInterceptors(FilesInterceptor('files'))
   importCsvFile(
-    @Body() _dto: ProductionCSVUploadDto,
+    @Body() dto: ProductionCSVUploadDto,
     @UploadedFiles()
-    _files: Express.Multer.File[] | Express.Multer.File,
-    @AuthenticatedUser() _user: AuthenticatedKCUser,
-  ) {
-    return this.service.importCsvFiles(_files, _dto, _user.sub);
+    files: Express.Multer.File[] | Express.Multer.File,
+    @AuthenticatedUser() user: AuthenticatedKCUser,
+  ): Promise<AccountingPeriodMatchingResultDto> {
+    return this.service.importCsvFiles(files, dto, user.sub);
   }
 
   @Post()
