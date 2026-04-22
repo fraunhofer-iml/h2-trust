@@ -9,17 +9,19 @@
 import { Controller, NotImplementedException } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
-  CreateHydrogenProductionStatisticsPayload,
-  CreateProductionsPayload,
   CsvDocumentEntity,
   ProcessStepEntity,
-  ProductionMessagePatterns,
   ProductionStagingResultEntity,
   ProductionStatisticsEntity,
+  VerifyCsvDocumentIntegrityResultEntity,
+} from '@h2-trust/contracts/entities';
+import {
+  CreateHydrogenProductionStatisticsPayload,
+  CreateProductionsPayload,
   ReadByIdPayload,
   StageProductionsPayload,
-  VerifyCsvDocumentIntegrityResultEntity,
-} from '@h2-trust/amqp';
+} from '@h2-trust/contracts/payloads';
+import { ProductionMessagePatterns } from '@h2-trust/messaging';
 import { CsvDocumentService } from './csv-document.service';
 import { ProductionStagingService } from './production-staging.service';
 import { ProductionService } from './production.service';

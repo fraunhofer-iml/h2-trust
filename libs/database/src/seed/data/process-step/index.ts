@@ -6,11 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './power-production-process-step.seed';
-export * from './water-consumption-process-step.seed';
-export * from './hydrogen-production-process-step.seed';
 export * from './hydrogen-bottling-process-step.seed';
+export * from './hydrogen-production-process-step.seed';
 export * from './hydrogen-transportation-process-step.seed';
+export * from './power-production-process-step.seed';
 export * from './process-step.seed';
-export * from './transportation-details.seed';
 export * from './process-step-details.seed';
+export * from './transportation-details.seed';
+export * from './water-consumption-process-step.seed';

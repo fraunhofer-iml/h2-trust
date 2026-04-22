@@ -6,9 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { InfoTooltipComponent } from 'apps/frontend/src/app/layout/info-tooltip/info-tooltip.component';
-import { RFNBO_CRITERIA } from 'apps/frontend/src/app/shared/constants/rfnbo-criteria';
-import { PrettyEnumPipe } from 'apps/frontend/src/app/shared/pipes/format-enum.pipe';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,6 +16,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { BiddingZone, GridLevel, PowerProductionType } from '@h2-trust/domain';
+import { InfoTooltipComponent } from '../../../../layout/info-tooltip/info-tooltip.component';
+import { RFNBO_CRITERIA } from '../../../../shared/constants/rfnbo-criteria';
+import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
 import { PowerProductionFormGroup } from '../forms';
 
 @Component({

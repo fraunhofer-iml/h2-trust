@@ -6,16 +6,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PrettyEnumPipe } from 'apps/frontend/src/app/shared/pipes/format-enum.pipe';
-import { UnitPipe } from 'apps/frontend/src/app/shared/pipes/unit.pipe';
+import { DecimalPipe, PercentPipe } from '@angular/common';
+import { Component, computed, inject, input } from '@angular/core';
 import * as echarts from 'echarts';
 import { EChartsOption } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
-import { DecimalPipe, PercentPipe } from '@angular/common';
-import { Component, computed, inject, input } from '@angular/core';
-import { HydrogenComponentDto } from '@h2-trust/api';
+import { HydrogenComponentDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { CHART_COLORS } from '../../../../shared/constants/chart-colors';
+import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
+import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { formatNumberForChart } from '../../../../shared/util/number-format.util';
 
 @Component({

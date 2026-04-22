@@ -7,9 +7,9 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { UnitAccountingPeriods, UnitFileImport } from '@h2-trust/amqp';
 import { HashUtil } from '@h2-trust/blockchain';
 import { ConfigurationService } from '@h2-trust/configuration';
+import { UnitAccountingPeriods, UnitFileImport } from '@h2-trust/contracts/entities';
 import { CreateCsvDocumentInput } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
 import { CentralizedStorageService, ContentType, DecentralizedStorageService } from '@h2-trust/storage';

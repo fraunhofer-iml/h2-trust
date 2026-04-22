@@ -6,27 +6,28 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 import {
   BatchEntity,
-  BrokerQueues,
   ConcreteUnitEntity,
-  CreateHydrogenProductionStatisticsPayload,
   CreateProductionEntity,
-  CreateProductionsPayload,
   HydrogenProductionUnitEntity,
   HydrogenStatisticsEntity,
   PowerProductionUnitEntity,
   PowerStatisticsEntity,
   ProcessStepEntity,
   ProductionStatisticsEntity,
+} from '@h2-trust/contracts/entities';
+import {
+  CreateHydrogenProductionStatisticsPayload,
+  CreateProductionsPayload,
   ReadByIdPayload,
   ReadByIdsPayload,
-  UnitMessagePatterns,
-} from '@h2-trust/amqp';
+} from '@h2-trust/contracts/payloads';
 import { BatchType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
+import { BrokerQueues, UnitMessagePatterns } from '@h2-trust/messaging';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { ProductionCreationService } from './production-creation.service';
 import { ProductionUtils } from './utils/production.utils';
@@ -48,7 +49,7 @@ export class ProductionService {
       production.hydrogenProductionUnitId,
     ]);
     const productionUnits: ConcreteUnitEntity[] = await firstValueFrom(
-      this.generalSvc.send(UnitMessagePatterns.READ_MANY, new ReadByIdsPayload(productionUnitIds)),
+      this.generalSvc.send(UnitMessagePatterns.READ_MANY_BY_IDS, new ReadByIdsPayload(productionUnitIds)),
     );
     return new Map<string, ConcreteUnitEntity>(
       productionUnits.map((productionUnit) => [productionUnit.id, productionUnit]),
@@ -57,11 +58,11 @@ export class ProductionService {
 
   async createProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
     const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
-      this.generalSvc.send(UnitMessagePatterns.READ, new ReadByIdPayload(payload.powerProductionUnitId)),
+      this.generalSvc.send(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(payload.powerProductionUnitId)),
     );
 
     const hydrogenProductionUnit: HydrogenProductionUnitEntity = await firstValueFrom(
-      this.generalSvc.send(UnitMessagePatterns.READ, new ReadByIdPayload(payload.hydrogenProductionUnitId)),
+      this.generalSvc.send(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(payload.hydrogenProductionUnitId)),
     );
 
     const createProductionEntity: CreateProductionEntity = new CreateProductionEntity(

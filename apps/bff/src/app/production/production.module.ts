@@ -7,14 +7,14 @@
  */
 
 import { Module } from '@nestjs/common';
-import { Broker } from '@h2-trust/amqp';
+import { Broker } from '@h2-trust/messaging';
 import { StorageModule } from '@h2-trust/storage';
 import { UserModule } from '../user/user.module';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
 
 @Module({
-  imports: [StorageModule, UserModule, new Broker().getGeneralSvcBroker(), new Broker().getProcessSvcBroker()],
+  imports: [StorageModule, UserModule, Broker.getGeneralSvcBroker(), Broker.getProcessSvcBroker()],
   controllers: [ProductionController],
   providers: [ProductionService],
 })

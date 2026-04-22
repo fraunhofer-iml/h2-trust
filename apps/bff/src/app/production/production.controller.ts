@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AuthenticatedUser } from 'nest-keycloak-connect';
 import {
   Body,
   Controller,
@@ -20,6 +19,7 @@ import {
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
+import { AuthenticatedUser } from 'nest-keycloak-connect';
 import {
   CsvDocumentIntegrityResultDto,
   PaginatedProductionDataDto,
@@ -30,7 +30,7 @@ import {
   StagedProductionDto,
   StagingSubmissionDto,
   type AuthenticatedKCUser,
-} from '@h2-trust/api';
+} from '@h2-trust/contracts/dtos';
 import { CsvContentType, StagingScope } from '@h2-trust/domain';
 import { ProductionService } from './production.service';
 

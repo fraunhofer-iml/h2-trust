@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { defineConfig } from 'hardhat/config';
 import hardhatToolboxMochaEthersPlugin from '@nomicfoundation/hardhat-toolbox-mocha-ethers';
+import { defineConfig } from 'hardhat/config';
 import 'dotenv/config';
 
 const MNEMONIC = process.env.MNEMONIC || '';

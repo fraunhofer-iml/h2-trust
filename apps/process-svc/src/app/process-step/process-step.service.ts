@@ -7,17 +7,15 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import { CentralizedStorageConfiguration, ConfigurationService } from '@h2-trust/configuration';
+import { DocumentEntity, PaginatedProcessStepEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
 import {
   CreateHydrogenProductionStatisticsPayload,
   CreateManyProcessStepsPayload,
-  DocumentEntity,
-  PaginatedProcessStepEntity,
-  ProcessStepEntity,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
-} from '@h2-trust/amqp';
-import { CentralizedStorageConfiguration, ConfigurationService } from '@h2-trust/configuration';
+} from '@h2-trust/contracts/payloads';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
 import { ProcessType, RfnboType } from '@h2-trust/domain';
 

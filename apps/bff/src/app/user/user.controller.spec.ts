@@ -6,12 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues, ReadByIdPayload, UserEntity, UserMessagePatterns } from '@h2-trust/amqp';
-import { UserDetailsDto } from '@h2-trust/api';
-import { UserEntityFixture } from '@h2-trust/fixtures';
+import { of } from 'rxjs';
+import { UserDetailsDto } from '@h2-trust/contracts/dtos';
+import { UserEntity } from '@h2-trust/contracts/entities';
+import { UserEntityFixture } from '@h2-trust/contracts/entities/fixtures';
+import { ReadByIdPayload } from '@h2-trust/contracts/payloads';
+import { BrokerQueues, UserMessagePatterns } from '@h2-trust/messaging';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 

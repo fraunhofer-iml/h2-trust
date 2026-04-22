@@ -6,12 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BrokerQueues, PowerPurchaseAgreementPatterns, ReadPowerPurchaseAgreementsPayload } from '@h2-trust/amqp';
-import { PowerPurchaseAgreementDto } from '@h2-trust/api';
+import { firstValueFrom } from 'rxjs';
+import { PowerPurchaseAgreementDto } from '@h2-trust/contracts/dtos';
+import { ReadPowerPurchaseAgreementsPayload } from '@h2-trust/contracts/payloads';
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
+import { BrokerQueues, PowerPurchaseAgreementPatterns } from '@h2-trust/messaging';
 
 @Injectable()
 export class PowerPurchaseAgreementService {

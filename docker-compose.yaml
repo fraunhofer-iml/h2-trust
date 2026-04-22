@@ -131,7 +131,7 @@ services:
     ports:
       - '8080:8080'
     volumes:
-      - './libs/configuration/src/keycloak/realm.json:/opt/keycloak/data/import/realm.json'
+      - './docker/keycloak/realm.json:/opt/keycloak/data/import/realm.json'
     healthcheck:
       test: ['CMD-SHELL', 'curl -sf http://localhost:8080/health/ready']
       <<: *healthcheck-defaults

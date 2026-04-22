@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Response } from 'express';
 import { ZipFile } from 'yazl';
-import { Injectable, NotFoundException } from '@nestjs/common';
 import { CentralizedStorageService } from '@h2-trust/storage';
 
 @Injectable()

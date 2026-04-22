@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -17,7 +16,8 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import { PpaRequestCreateDto } from '@h2-trust/api';
+import { toast } from 'ngx-sonner';
+import { PpaRequestCreateDto } from '@h2-trust/contracts/dtos';
 import { PowerProductionType, PpaRequestRole } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
 import { QUERY_KEYS } from '../../../shared/queries/shared-query-keys';

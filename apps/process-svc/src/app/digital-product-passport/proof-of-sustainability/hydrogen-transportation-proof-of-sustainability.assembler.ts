@@ -11,8 +11,7 @@ import {
   ProofOfSustainabilityEmissionCalculationEntity,
   ProofOfSustainabilityEmissionEntity,
   ProvenanceEntity,
-} from '@h2-trust/amqp';
-import { EnumLabelMapper } from '@h2-trust/api';
+} from '@h2-trust/contracts/entities';
 import {
   CalculationTopic,
   EmissionNumericConstants,
@@ -23,6 +22,7 @@ import {
   TrailerParameter,
   TransportMode,
 } from '@h2-trust/domain';
+import { EnumLabelMapper } from '@h2-trust/strings';
 import { ProofOfSustainabilityAssembler } from './proof-of-sustainability-assembler.interface';
 
 function assemblePipelineEmissionCalculation(): ProofOfSustainabilityEmissionCalculationEntity {

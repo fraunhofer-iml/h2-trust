@@ -6,12 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProofOfOriginCardComponent } from 'apps/frontend/src/app/layout/proof-of-origin-card/proof-of-origin-card.component';
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
-import { HydrogenBatchDto } from '@h2-trust/api';
+import { HydrogenBatchDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit, RfnboType } from '@h2-trust/domain';
 import { RfnboChipComponent } from '../../../../../../layout/chips/rfnbo-chip.component';
+import { ProofOfOriginCardComponent } from '../../../../../../layout/proof-of-origin-card/proof-of-origin-card.component';
 import { BaseSheetComponent } from '../../../../../../layout/sheet/sheet.component';
 import { PrettyEnumPipe } from '../../../../../../shared/pipes/format-enum.pipe';
 import { UnitPipe } from '../../../../../../shared/pipes/unit.pipe';

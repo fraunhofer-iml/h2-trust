@@ -11,7 +11,7 @@ import {
   ProofOfSustainabilityEmissionEntity,
   ProofOfSustainabilityEntity,
   ProvenanceEntity,
-} from '@h2-trust/amqp';
+} from '@h2-trust/contracts/entities';
 import { EmissionNumericConstants, EmissionStringConstants } from '@h2-trust/domain';
 import { proofOfSustainabilityAssemblers } from './proof-of-sustainability-assembler.registry.const';
 

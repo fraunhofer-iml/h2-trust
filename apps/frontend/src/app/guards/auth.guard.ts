@@ -6,10 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AuthGuardData, createAuthGuard } from 'keycloak-angular';
-import Keycloak from 'keycloak-js';
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { AuthGuardData, createAuthGuard } from 'keycloak-angular';
+import Keycloak from 'keycloak-js';
 
 const isAccessAllowed = async (
   _route: ActivatedRouteSnapshot,

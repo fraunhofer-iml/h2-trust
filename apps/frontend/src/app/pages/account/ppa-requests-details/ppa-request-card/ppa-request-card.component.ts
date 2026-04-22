@@ -6,16 +6,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PpaStatusChipComponent } from 'apps/frontend/src/app/layout/chips/ppa-status-chip.component';
-import { BaseSheetComponent } from 'apps/frontend/src/app/layout/sheet/sheet.component';
 import { A11yModule } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatDivider } from '@angular/material/divider';
-import { PpaRequestDto } from '@h2-trust/api';
+import { PpaRequestDto } from '@h2-trust/contracts/dtos';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
+import { PpaStatusChipComponent } from '../../../../layout/chips/ppa-status-chip.component';
+import { BaseSheetComponent } from '../../../../layout/sheet/sheet.component';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
 import { RequestConfirmationDialogComponent } from '../ppa-confirmation/request-confirmation-dialog.component';
 
