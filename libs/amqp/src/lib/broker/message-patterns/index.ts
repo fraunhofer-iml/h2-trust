@@ -8,7 +8,7 @@
 
 export * from './company.pattern';
 export * from './digital-product-passport.pattern';
-export * from './power-access-approval.pattern';
+export * from './power-purchase-agreement.pattern';
 export * from './process-step.pattern';
 export * from './production.pattern';
 export * from './unit.pattern';

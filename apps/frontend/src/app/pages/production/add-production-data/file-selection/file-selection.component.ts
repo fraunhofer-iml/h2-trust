@@ -7,7 +7,7 @@
  */
 
 import { ROUTES } from 'apps/frontend/src/app/shared/constants/routes';
-import { PowerAccessApprovalService } from 'apps/frontend/src/app/shared/services/power-access-approvals/power-access-approvals.service';
+import { PowerPurchaseAgreementService } from 'apps/frontend/src/app/shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
 import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
 import { toast } from 'ngx-sonner';
@@ -26,7 +26,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
 import { StagedProductionDto, StagingSubmissionDto } from '@h2-trust/api';
-import { BatchType, CsvContentType, MeasurementUnit, PowerAccessApprovalStatus, StagingScope } from '@h2-trust/domain';
+import {
+  BatchType,
+  CsvContentType,
+  MeasurementUnit,
+  PowerPurchaseAgreementStatus,
+  StagingScope,
+} from '@h2-trust/domain';
 import { EmptyStateComponent } from '../../../../layout/empty-state/empty-state.component';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 
@@ -51,7 +57,7 @@ import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 })
 export class FileSelectionComponent {
   protected readonly productionService = inject(ProductionService);
-  protected readonly powerAccessApprovalsService = inject(PowerAccessApprovalService);
+  protected readonly powerPurchaseAgreementService = inject(PowerPurchaseAgreementService);
   protected readonly unitsService = inject(UnitsService);
   protected readonly MeasurementUnit = MeasurementUnit;
   private readonly router = inject(Router);
@@ -93,7 +99,7 @@ export class FileSelectionComponent {
   approvalsQuery = injectQuery(() => ({
     queryKey: ['power-access-approvals'],
     queryFn: async () => {
-      const approvals = await this.powerAccessApprovalsService.getApprovals(PowerAccessApprovalStatus.APPROVED);
+      const approvals = await this.powerPurchaseAgreementService.getAgreements(PowerPurchaseAgreementStatus.APPROVED);
       return approvals.filter((a) => a.energySource !== 'GRID');
     },
   }));

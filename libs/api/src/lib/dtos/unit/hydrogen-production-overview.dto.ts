@@ -15,7 +15,7 @@ export class HydrogenProductionOverviewDto {
   ratedPower: number;
   technology: HydrogenProductionTechnology;
   producing: boolean;
-  powerAccessApprovalStatus: boolean;
+  powerPurchaseAgreementStatus: boolean;
   powerProducerId: string;
   powerProducerName: string;
   active: boolean;
@@ -26,7 +26,7 @@ export class HydrogenProductionOverviewDto {
     ratedPower: number,
     technology: HydrogenProductionTechnology,
     producing: boolean,
-    powerAccessApprovalStatus: boolean,
+    powerPurchaseAgreementStatus: boolean,
     powerProducerId: string,
     powerProducerName: string,
     active: boolean,
@@ -36,14 +36,14 @@ export class HydrogenProductionOverviewDto {
     this.ratedPower = ratedPower;
     this.technology = technology;
     this.producing = producing;
-    this.powerAccessApprovalStatus = powerAccessApprovalStatus;
+    this.powerPurchaseAgreementStatus = powerPurchaseAgreementStatus;
     this.powerProducerId = powerProducerId;
     this.powerProducerName = powerProducerName;
     this.active = active;
   }
 
   static fromEntity(unit: HydrogenProductionUnitEntity): HydrogenProductionOverviewDto {
-    const firstApproval = unit.owner?.hydrogenApprovals?.[0];
+    const firstAgreement = unit.owner?.hydrogenAgreements?.[0];
 
     return {
       id: unit.id,
@@ -51,14 +51,14 @@ export class HydrogenProductionOverviewDto {
       ratedPower: unit.ratedPower,
       technology: unit.technology,
       producing: true,
-      powerAccessApprovalStatus: HydrogenProductionOverviewDto.existsPowerProducer(unit),
-      powerProducerId: firstApproval?.powerProducer.id ?? '',
-      powerProducerName: firstApproval?.powerProducer.name ?? '',
+      powerPurchaseAgreementStatus: HydrogenProductionOverviewDto.existsPowerProducer(unit),
+      powerProducerId: firstAgreement?.powerProducer.id ?? '',
+      powerProducerName: firstAgreement?.powerProducer.name ?? '',
       active: unit.active,
     };
   }
 
   private static existsPowerProducer(unit: HydrogenProductionUnitEntity) {
-    return unit.owner?.hydrogenApprovals?.length ? unit.owner.hydrogenApprovals.length !== 0 : false;
+    return unit.owner?.hydrogenAgreements?.length ? unit.owner.hydrogenAgreements.length !== 0 : false;
   }
 }
