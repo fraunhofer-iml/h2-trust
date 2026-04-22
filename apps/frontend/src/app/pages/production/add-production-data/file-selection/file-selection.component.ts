@@ -25,6 +25,7 @@ import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
 import { StagedProductionDto, StagingSubmissionDto } from '@h2-trust/api';
 import { BatchType, CsvContentType, MeasurementUnit, PowerAccessApprovalStatus, StagingScope } from '@h2-trust/domain';
+import { EmptyStateComponent } from '../../../../layout/empty-state/empty-state.component';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 
 @Component({
@@ -42,6 +43,7 @@ import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
     FormsModule,
     MatChipsModule,
     MatButtonModule,
+    EmptyStateComponent,
   ],
   templateUrl: './file-selection.component.html',
 })
@@ -81,9 +83,7 @@ export class FileSelectionComponent {
 
   hydrogenProductionsQuery = injectQuery(() => ({
     queryKey: ['hydrogen-production'],
-    queryFn: async () => {
-      return this.productionService.getStagedProductions(CsvContentType.HYDROGEN, StagingScope.OWN);
-    },
+    queryFn: () => this.productionService.getStagedProductions(CsvContentType.HYDROGEN, StagingScope.OWN),
   }));
 
   approvalsQuery = injectQuery(() => ({
@@ -117,7 +117,10 @@ export class FileSelectionComponent {
 
   mutation = injectMutation(() => ({
     mutationFn: (dto: StagingSubmissionDto) => this.productionService.submitCsv(dto),
-    onSuccess: () => this.router.navigateByUrl(ROUTES.PRODUCTION_DATA),
+    onSuccess: () => {
+      toast.success('Successfully created new productions!');
+      this.router.navigateByUrl(ROUTES.PRODUCTION_DATA);
+    },
     onError: (e: HttpErrorResponse) => toast.error(e.error.message),
   }));
 

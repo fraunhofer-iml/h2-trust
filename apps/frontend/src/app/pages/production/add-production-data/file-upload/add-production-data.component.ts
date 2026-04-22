@@ -104,6 +104,9 @@ export class AddProductionDataComponent {
     onError: (e: HttpErrorResponse) => {
       toast.error(e.error.message);
     },
+    onSuccess: () => {
+      toast.success('Fileupload successful!');
+    },
   }));
 
   constructor() {
