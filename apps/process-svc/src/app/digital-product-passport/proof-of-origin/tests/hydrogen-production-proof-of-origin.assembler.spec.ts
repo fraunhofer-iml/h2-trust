@@ -12,14 +12,14 @@ import {
   ProductionChainEntity,
   ProofOfOriginBatchEntity,
   ProvenanceEntity,
-} from '@h2-trust/amqp';
-import { EnergySource, ProofOfOrigin } from '@h2-trust/domain';
+} from '@h2-trust/contracts/entities';
 import {
   ProcessStepEntityFixture,
   ProductionChainEntityFixture,
   ProofOfOriginPowerBatchEntityFixture,
   ProofOfOriginSubClassificationEntityFixture,
-} from '@h2-trust/fixtures';
+} from '@h2-trust/contracts/entities/fixtures';
+import { EnergySource, ProofOfOrigin } from '@h2-trust/domain';
 import { assembleHydrogenProductionSection } from '../hydrogen-production-proof-of-origin.assembler';
 
 describe('HydrogenProductionProofOfOriginAssembler', () => {

@@ -8,7 +8,7 @@
 
 import { LogLevel } from '@nestjs/common';
 import { registerAs } from '@nestjs/config';
-import { requireEnv } from '../util';
+import { requireEnv } from '@h2-trust/utils';
 import {
   buildVerificationConfiguration,
   S3Configuration,

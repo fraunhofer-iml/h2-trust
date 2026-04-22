@@ -8,7 +8,7 @@
 
 export * from './create-inputs';
 export * from './database.module';
-export * from './query-args';
 export * from './prisma.service';
+export * from './query-args';
 export * from './repositories';
 export * from './types';

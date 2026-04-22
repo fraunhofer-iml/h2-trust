@@ -7,7 +7,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { CsvDocumentIntegrityResultDto } from '@h2-trust/api';
+import { CsvDocumentIntegrityResultDto } from '@h2-trust/contracts/dtos';
 
 @Injectable()
 export class VerificationResultStore {

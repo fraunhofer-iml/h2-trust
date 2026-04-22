@@ -18,7 +18,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { BottlingOverviewDto } from '@h2-trust/api';
+import { BottlingOverviewDto } from '@h2-trust/contracts/dtos';
 import { RfnboChipComponent } from '../../../layout/chips/rfnbo-chip.component';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
@@ -40,7 +40,12 @@ import { UnitsService } from '../../../shared/services/units/units.service';
   ],
   providers: [BottlingService],
   templateUrl: './bottling-overview.component.html',
-  styleUrl: './bottling-overview.component.scss',
+  styles: `
+    .mat-mdc-row:hover {
+      background-color: #f2fafc;
+      cursor: pointer;
+    }
+  `,
 })
 export class BottlingOverviewComponent implements AfterViewInit {
   displayedColumns = ['id', 'filledAt', 'owner', 'filledAmount', 'color'];

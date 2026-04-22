@@ -7,7 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { PowerPurchaseAgreementEntity } from '@h2-trust/amqp';
+import { PowerPurchaseAgreementEntity } from '@h2-trust/contracts/entities';
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { PrismaService } from '../prisma.service';
 import { powerPurchaseAgreementDeepQueryArgs } from '../query-args/power-purchase-agreement/power-purchase-agreement.deep.query-args';

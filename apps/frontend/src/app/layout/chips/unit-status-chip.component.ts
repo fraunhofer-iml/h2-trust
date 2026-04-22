@@ -25,7 +25,7 @@ import { ICONS } from '../../shared/constants/icons';
       }"
     >
       <span
-        class="material-symbols-outlined text-lg"
+        class="material-symbols-outlined text-base!"
         [ngClass]="{
           'text-primary-400': unit().unitType === UnitType.POWER_PRODUCTION && unit().active,
           'text-secondary-400': unit().unitType === UnitType.HYDROGEN_PRODUCTION && unit().active,

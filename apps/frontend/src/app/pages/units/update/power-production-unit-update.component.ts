@@ -6,13 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { toast } from 'ngx-sonner';
 import { Component, inject, input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatAnchor, MatButtonModule } from '@angular/material/button';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
-import { PowerProductionUnitDto, PowerProductionUnitInputDto } from '@h2-trust/api';
+import { toast } from 'ngx-sonner';
+import { PowerProductionUnitDto, PowerProductionUnitInputDto } from '@h2-trust/contracts/dtos';
 import { PowerProductionType } from '@h2-trust/domain';
 import { UnitTypeChipComponent } from '../../../layout/chips/unit-type-chip.component';
 import { UnitsService } from '../../../shared/services/units/units.service';

@@ -6,13 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as echarts from 'echarts';
-import { EChartsOption, LegendComponentOption, PieSeriesOption } from 'echarts';
-import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { PercentPipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { EmissionForProcessStepDto, EmissionProcessStepType } from '@h2-trust/api';
+import * as echarts from 'echarts';
+import { EChartsOption, LegendComponentOption, PieSeriesOption } from 'echarts';
+import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
+import { EmissionForProcessStepDto, EmissionProcessStepType } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit } from '@h2-trust/domain';
 
 @Component({

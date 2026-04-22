@@ -7,7 +7,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues } from '@h2-trust/amqp';
+import { BrokerQueues } from '@h2-trust/messaging';
 import { PowerPurchaseAgreementController } from './power-purchase-agreement.controller';
 import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 

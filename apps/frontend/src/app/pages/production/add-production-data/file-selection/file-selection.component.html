@@ -100,12 +100,12 @@
                   </div>
                 } @else {
                   <mat-divider />
-                  <mat-selection-list formControlName="powerProductions" [multiple]="true" class="!m-0 !p-0">
+                  <mat-selection-list formControlName="powerProductions" [multiple]="true" class="m-0! p-0!">
                     @for (powerDataset of item.uploads; track $index) {
                       @if ($index > 0) {
                         <mat-divider />
                       }
-                      <mat-list-option [value]="powerDataset" togglePosition="before" class="!bg-white">
+                      <mat-list-option [value]="powerDataset" togglePosition="before" class="bg-white!">
                         <span matListItemTitle class="flex justify-between">
                           <span>
                             {{ powerDataset.startedAt | date: 'mediumDate' }},

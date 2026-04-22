@@ -3,9 +3,9 @@
   (click)="sheet.open()"
   role="none"
 >
-  <div class="flex w-full !select-none flex-row items-center gap-4 text-neutral-400">
+  <div class="flex w-full flex-row items-center gap-4 text-neutral-400 select-none!">
     <div class="flex min-w-14 items-center justify-center rounded-full bg-white p-2 text-center">
-      <span class="material-symbols-outlined text-4xl text-primary-400">{{ getIcon(topic().key) }}</span>
+      <span class="material-symbols-outlined text-primary-400 text-4xl!">{{ getIcon(topic().key) }}</span>
     </div>
     <span class="grow text-xs text-neutral-500">
       Calculation details for
@@ -19,9 +19,9 @@
   <div class="flex flex-col gap-4">
     <span class="font-semibold text-neutral-500">{{ topic().key | prettyEnum | titlecase }}</span>
     @for (item of topic().items; track $index) {
-      <div class="flex w-full flex-col justify-between rounded-xl border-[2px] border-solid border-neutral-100">
+      <div class="flex w-full flex-col justify-between rounded-xl border-2 border-solid border-neutral-100">
         <div
-          class="flex w-full justify-between rounded-xl border-b-[2px] border-solid border-neutral-100 bg-neutral-50 p-4 text-neutral-800"
+          class="flex w-full justify-between rounded-xl border-b-2 border-solid border-neutral-100 bg-neutral-50 p-4 text-neutral-800"
         >
           <h2>{{ item.name | number: '1.2-2' }} {{ MeasurementUnit.G_CO2 }}</h2>
           <span class="ml-2">{{ item.result | unit: item.unit }}</span>

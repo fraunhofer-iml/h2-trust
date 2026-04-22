@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { StagedProductionEntity, UnitAccountingPeriods } from '@h2-trust/amqp';
+import { StagedProductionEntity, UnitAccountingPeriods } from '@h2-trust/contracts/entities';
 import { CsvContentType } from '@h2-trust/domain';
 import { ParsedImport } from './production.types';
 

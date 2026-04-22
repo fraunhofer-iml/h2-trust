@@ -15,13 +15,13 @@ import {
   ProofOfSustainabilityEntity,
   ProvenanceEntity,
   RedComplianceEntity,
-} from '@h2-trust/amqp';
+} from '@h2-trust/contracts/entities';
 import {
   ProcessStepEntityFixture,
   ProductionChainEntityFixture,
   ProofOfOriginSectionEntityFixture,
   ProofOfSustainabilityEntityFixture,
-} from '@h2-trust/fixtures';
+} from '@h2-trust/contracts/entities/fixtures';
 import { ProcessStepService } from '../../process-step/process-step.service';
 import { DigitalProductPassportService } from '../digital-product-passport.service';
 import { ProvenanceService } from '../provenance/provenance.service';

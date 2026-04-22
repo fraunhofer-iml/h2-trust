@@ -10,16 +10,18 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import {
   BaseUnitEntity,
-  BrokerException,
   ConcreteUnitEntity,
-  CreateHydrogenProductionUnitPayload,
-  CreateHydrogenStorageUnitPayload,
-  CreatePowerProductionUnitPayload,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
   PowerProductionUnitEntity,
+} from '@h2-trust/contracts/entities';
+import {
+  CreateHydrogenProductionUnitPayload,
+  CreateHydrogenStorageUnitPayload,
+  CreatePowerProductionUnitPayload,
   UpdateUnitStatusPayload,
-} from '@h2-trust/amqp';
+} from '@h2-trust/contracts/payloads';
+import { BrokerException } from '@h2-trust/messaging';
 import {
   buildHydrogenProductionUnitCreateInput,
   buildHydrogenStorageUnitCreateInput,
@@ -27,7 +29,7 @@ import {
 } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 import { baseUnitDeepQueryArgs } from '../query-args';
-import { assertAllIdsFound, assertRecordFound } from './utils';
+import { assertAllIdsFound, assertRecordFound } from './assertions.utils';
 
 @Injectable()
 export class UnitRepository {

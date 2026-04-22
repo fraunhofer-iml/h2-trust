@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
 import {
   AccountingPeriodMatchingResultDto,
   CsvDocumentIntegrityResultDto,
@@ -19,7 +19,7 @@ import {
   ProductionStatisticsDto,
   StagedProductionDto,
   StagingSubmissionDto,
-} from '@h2-trust/api';
+} from '@h2-trust/contracts/dtos';
 import { CsvContentType, StagingScope } from '@h2-trust/domain';
 import { FilterModel } from '../../../pages/production/model/generated-productions-filter.model';
 import { PaginationModel } from '../../../pages/production/model/pagination.model';

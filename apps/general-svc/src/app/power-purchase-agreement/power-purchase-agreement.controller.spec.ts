@@ -7,7 +7,8 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { PowerPurchaseAgreementEntity } from '@h2-trust/amqp';
+import { PowerPurchaseAgreementEntity } from '@h2-trust/contracts/entities';
+import { UserEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import {
   DatabaseModule,
   PowerPurchaseAgreementDbTypeMock,
@@ -16,7 +17,6 @@ import {
   UserRepository,
 } from '@h2-trust/database';
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
-import { UserEntityFixture } from '@h2-trust/fixtures';
 import { PowerPurchaseAgreementController } from './power-purchase-agreement.controller';
 import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 
