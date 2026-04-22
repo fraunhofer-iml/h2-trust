@@ -9,7 +9,7 @@
 import { lastValueFrom } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { PowerPurchaseAgreementDto, PpaRequestCreateDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/api';
+import { PpaDto, PpaRequestCreateDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/api';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { API } from '../../constants/api-endpoints';
 
@@ -22,9 +22,7 @@ export class PowerPurchaseAgreementService {
     if (status) {
       params = params.append('status', status);
     }
-    return lastValueFrom(
-      this.httpClient.get<PowerPurchaseAgreementDto[]>(API.POWER_PURCHASE_AGREEMENTS.BASE, { params }),
-    );
+    return lastValueFrom(this.httpClient.get<PpaDto[]>(API.POWER_PURCHASE_AGREEMENTS.BASE, { params }));
   }
 
   getPpaRequests(role: PpaRequestRole, status?: PowerPurchaseAgreementStatus) {

@@ -22,3 +22,4 @@ export * from './power-purchase-agreement.db.type';
 export * from './transportation-details.db.type';
 export * from './quality-details.db.type';
 export * from './staged-production.db.type';
+export * from './decision.db.type';

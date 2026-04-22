@@ -19,5 +19,6 @@ export const PowerPurchaseAgreementDbTypeMock = <PowerPurchaseAgreementDeepDbTyp
     hydrogenProducer: CompanyDbTypeMock[1],
     document: DocumentDbTypeMock[0],
     powerProductionUnit: PowerProductionUnitDeepDbTypeMock[0],
+    decision: null,
   },
 ];

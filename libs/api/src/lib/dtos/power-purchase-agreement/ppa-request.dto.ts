@@ -11,6 +11,7 @@ import { PowerProductionType, PowerPurchaseAgreementStatus } from '@h2-trust/dom
 import { CompanyDto } from '../company';
 import { PowerProductionOverviewDto } from '../unit';
 import { UserDetailsDto } from '../user';
+import { PpaRequestDecisionDto } from './ppa-request-decision.dto';
 
 export class PpaRequestDto {
   id: string;
@@ -25,6 +26,7 @@ export class PpaRequestDto {
   powerProductionUnit?: PowerProductionOverviewDto;
   status: PowerPurchaseAgreementStatus;
   comment?: string;
+  decision?: PpaRequestDecisionDto;
 
   constructor(
     id: string,
@@ -59,7 +61,6 @@ export class PpaRequestDto {
     return <PpaRequestDto>{
       id: powerPurchaseAgreement.id,
       createdAt: powerPurchaseAgreement.createdAt,
-      decidedAt: powerPurchaseAgreement.decidedAt,
       validFrom: powerPurchaseAgreement.validFrom,
       validTo: powerPurchaseAgreement.validTo,
       sender: user,

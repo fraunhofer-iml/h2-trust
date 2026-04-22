@@ -8,7 +8,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PowerPurchaseAgreementEntity } from '@h2-trust/amqp';
+import { PowerPurchaseAgreementEntity, UpdatePowerPurchaseAgreementPayload } from '@h2-trust/amqp';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PrismaService } from '../prisma.service';
 import { powerPurchaseAgreementDeepQueryArgs } from '../query-args/power-purchase-agreement/power-purchase-agreement.deep.query-args';
@@ -33,9 +33,15 @@ export class PowerPurchaseAgreementRepository {
   /*    async insert(ppa: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity> {
     return; this.prismaService.powerPurchaseAgreement.create();
   } */
-  /*   async update(ppa: UpdatePowerPurchaseAgreementPayload): Promise<PowerPurchaseAgreementEntity> {
-    return this.prismaService.powerPurchaseAgreement.update({ where: { id: ppa.id } ,data : {}});
-  } */
+  async update(ppa: UpdatePowerPurchaseAgreementPayload): Promise<any> {
+    return this.prismaService.powerPurchaseAgreement
+      .update({
+        where: { id: ppa.ppaId },
+        data: {},
+        ...powerPurchaseAgreementDeepQueryArgs,
+      })
+      .then((result) => PowerPurchaseAgreementEntity.fromDeepDatabase(result));
+  }
 
   private buildRoleQuery(
     producerId: string,
@@ -60,7 +66,6 @@ export class PowerPurchaseAgreementRepository {
     if (status) {
       query.status = status;
     }
-    console.log(query);
     return query;
   }
 }

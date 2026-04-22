@@ -10,12 +10,12 @@ import { PowerPurchaseAgreementDeepDbType, PowerPurchaseAgreementNestedDbType } 
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { assertValidEnum } from '@h2-trust/utils';
 import { CompanyEntity } from '../company';
+import { DecisionEntity } from '../decision';
 import { DocumentEntity } from '../document';
 import { PowerProductionUnitEntity } from '../unit';
 
 export class PowerPurchaseAgreementEntity {
   id: string;
-  decidedAt: Date;
   createdAt: Date;
   validFrom: Date;
   validTo: Date;
@@ -24,10 +24,10 @@ export class PowerPurchaseAgreementEntity {
   powerProductionUnit: PowerProductionUnitEntity;
   hydrogenProducer: CompanyEntity;
   document: DocumentEntity;
+  decision?: DecisionEntity;
 
   constructor(
     id: string,
-    decidedAt: Date,
     createdAt: Date,
     validFrom: Date,
     validTo: Date,
@@ -36,9 +36,9 @@ export class PowerPurchaseAgreementEntity {
     powerProductionUnit: PowerProductionUnitEntity,
     hydrogenProducer: CompanyEntity,
     document: DocumentEntity,
+    decision?: DecisionEntity,
   ) {
     this.id = id;
-    this.decidedAt = decidedAt;
     this.createdAt = createdAt;
     this.validFrom = validFrom;
     this.validTo = validTo;
@@ -47,21 +47,24 @@ export class PowerPurchaseAgreementEntity {
     this.powerProductionUnit = powerProductionUnit;
     this.hydrogenProducer = hydrogenProducer;
     this.document = document;
+    this.decision = decision;
   }
 
   static fromDeepDatabase(powerPurchaseAgreement: PowerPurchaseAgreementDeepDbType): PowerPurchaseAgreementEntity {
     assertValidEnum(powerPurchaseAgreement.status, PowerPurchaseAgreementStatus, 'PowerPurchaseAgreementStatus');
-    return <PowerPurchaseAgreementEntity>{
-      id: powerPurchaseAgreement.id,
-      decidedAt: powerPurchaseAgreement.decidedAt,
-      status: powerPurchaseAgreement.status,
-      powerProducer: CompanyEntity.fromNestedDatabase(powerPurchaseAgreement.powerProducer),
-      powerProductionUnit: PowerProductionUnitEntity.fromNestedPowerProductionUnit(
-        powerPurchaseAgreement.powerProductionUnit,
-      ),
-      hydrogenProducer: CompanyEntity.fromNestedDatabase(powerPurchaseAgreement.hydrogenProducer),
-      document: DocumentEntity.fromDatabase(powerPurchaseAgreement.document),
-    };
+
+    return new PowerPurchaseAgreementEntity(
+      powerPurchaseAgreement.id,
+      powerPurchaseAgreement.createdAt,
+      powerPurchaseAgreement.validFrom,
+      powerPurchaseAgreement.validTo,
+      powerPurchaseAgreement.status,
+      CompanyEntity.fromNestedDatabase(powerPurchaseAgreement.powerProducer),
+      PowerProductionUnitEntity.fromNestedPowerProductionUnit(powerPurchaseAgreement.powerProductionUnit),
+      CompanyEntity.fromNestedDatabase(powerPurchaseAgreement.hydrogenProducer),
+      DocumentEntity.fromDatabase(powerPurchaseAgreement.document),
+      powerPurchaseAgreement.decision ? DecisionEntity.fromDatabase(powerPurchaseAgreement.decision) : undefined,
+    );
   }
 
   static fromNestedDatabase(agreement: PowerPurchaseAgreementNestedDbType): PowerPurchaseAgreementEntity {

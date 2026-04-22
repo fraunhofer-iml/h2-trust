@@ -15,3 +15,4 @@ export * from './user';
 export * from './power-purchase-agreement';
 export * from './file';
 export * from './digital-product-passport';
+export * from './decision';

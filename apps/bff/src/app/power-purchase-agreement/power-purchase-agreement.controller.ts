@@ -9,12 +9,7 @@
 import { AuthenticatedUser } from 'nest-keycloak-connect';
 import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
-import {
-  PowerPurchaseAgreementDto,
-  PpaRequestDecisionDto,
-  PpaRequestDto,
-  type AuthenticatedKCUser,
-} from '@h2-trust/api';
+import { PpaDto, PpaRequestDecisionDto, PpaRequestDto, type AuthenticatedKCUser } from '@h2-trust/api';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 
@@ -69,7 +64,7 @@ export class PowerPurchaseAgreementController {
   })
   @ApiOkResponse({
     description: 'Returns a list of all companies with their power purchase agreement matching the filter criteria.',
-    type: [PowerPurchaseAgreementDto],
+    type: [PpaDto],
   })
   @ApiQuery({
     name: 'role',

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './power-purchase-agreement.dto';
+export * from './ppa.dto';
 export * from './ppa-request.dto';
 export * from './ppa-request-create.dto';
 export * from './ppa-request-decision.dto';

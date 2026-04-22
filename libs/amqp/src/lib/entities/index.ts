@@ -19,3 +19,4 @@ export * from './power-purchase-agreement';
 export * from './csv-import';
 export * from './compliance';
 export * from './digital-product-passport';
+export * from './decision';

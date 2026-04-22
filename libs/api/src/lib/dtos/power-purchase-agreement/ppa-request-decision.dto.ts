@@ -35,4 +35,6 @@ export class PpaRequestDecisionDto {
     this.powerProductionUnitId = powerProductionUnitId;
     this.comment = comment;
   }
+
+  
 }

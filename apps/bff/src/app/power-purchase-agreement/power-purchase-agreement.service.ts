@@ -15,7 +15,7 @@ import {
   ReadPowerPurchaseAgreementsPayload,
   UpdatePowerPurchaseAgreementPayload,
 } from '@h2-trust/amqp';
-import { PowerPurchaseAgreementDto, PpaRequestDecisionDto, PpaRequestDto, UserDetailsDto } from '@h2-trust/api';
+import { PpaDto, PpaRequestDecisionDto, PpaRequestDto, UserDetailsDto } from '@h2-trust/api';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { UserService } from '../user/user.service';
 
@@ -43,7 +43,7 @@ export class PowerPurchaseAgreementService {
     const powerPurchaseAgreements = await firstValueFrom(
       this.generalService.send(PowerPurchaseAgreementPatterns.READ, payload),
     );
-    return powerPurchaseAgreements.map(PowerPurchaseAgreementDto.fromEntity);
+    return powerPurchaseAgreements.map(PpaDto.fromEntity);
   }
 
   /* async createPPA(dto: PpaRequestCreateDto, userId: string): Promise<PpaRequestDto> {

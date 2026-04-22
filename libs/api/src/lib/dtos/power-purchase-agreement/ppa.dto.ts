@@ -9,15 +9,17 @@
 import { PowerPurchaseAgreementEntity } from '@h2-trust/amqp';
 import { EnergySource, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { CompanyDto } from '../company';
+import { DecisionDto } from '../decision';
 import { PowerProductionOverviewDto } from '../unit';
 
-export class PowerPurchaseAgreementDto {
+export class PpaDto {
   id: string;
   hydrogenProducer: CompanyDto;
   powerProducer: CompanyDto;
   powerProductionUnit: PowerProductionOverviewDto;
   status: PowerPurchaseAgreementStatus;
   energySource: EnergySource;
+  decision?: DecisionDto;
 
   constructor(
     id: string,
@@ -26,6 +28,7 @@ export class PowerPurchaseAgreementDto {
     powerProductionUnit: PowerProductionOverviewDto,
     status: PowerPurchaseAgreementStatus,
     energySource: EnergySource,
+    decision?: DecisionDto,
   ) {
     this.id = id;
     this.hydrogenProducer = hydrogenProducer;
@@ -33,10 +36,11 @@ export class PowerPurchaseAgreementDto {
     this.powerProductionUnit = powerProductionUnit;
     this.status = status;
     this.energySource = energySource;
+    this.decision = decision;
   }
 
-  static fromEntity(powerPurchaseAgreement: PowerPurchaseAgreementEntity): PowerPurchaseAgreementDto {
-    return <PowerPurchaseAgreementDto>{
+  static fromEntity(powerPurchaseAgreement: PowerPurchaseAgreementEntity): PpaDto {
+    return <PpaDto>{
       id: powerPurchaseAgreement.id,
       hydrogenProducer: powerPurchaseAgreement.hydrogenProducer,
       powerProducer: powerPurchaseAgreement.powerProducer,

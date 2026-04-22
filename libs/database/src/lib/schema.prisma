@@ -91,6 +91,7 @@ model User {
 
   processSteps ProcessStep[]
   csvImports   CsvImport[]
+  decisions    Decision[]
 }
 
 model Unit {
@@ -151,6 +152,7 @@ model PowerProductionUnit {
 
   powerPurchaseAgreements PowerPurchaseAgreement[]
   stagedProductions       StagedProduction[]
+  decisions               Decision[]
 }
 
 model HydrogenProductionUnit {
@@ -296,11 +298,17 @@ model StagedProduction {
 }
 
 model Decision {
-  id        String    @id @default(uuid(7))
+  id        String   @id @default(uuid(7))
   status    String
-  decidedAt DateTime?
+  decidedAt DateTime
   comment   String?
 
-  powerPurchaseAgreements  PowerPurchaseAgreement @relation(fields: [powerPurchaseAgreementId], references: [id])
+  powerPurchaseAgreement   PowerPurchaseAgreement @relation(fields: [powerPurchaseAgreementId], references: [id])
   powerPurchaseAgreementId String                 @unique
+
+  decidingUser User   @relation(fields: [userId], references: [id])
+  userId       String
+
+  grantedPowerProductionUnit PowerProductionUnit? @relation(fields: [powerProductionUnitId], references: [id])
+  powerProductionUnitId      String?
 }
