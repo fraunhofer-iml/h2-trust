@@ -203,8 +203,7 @@ export class ProductionController {
     _files: Express.Multer.File[] | Express.Multer.File,
     @AuthenticatedUser() _user: AuthenticatedKCUser,
   ) {
-    // TODO-LG: adjust this endpoint (DUHGW-421)
-    throw new NotImplementedException();
+    return this.service.importCsvFiles(_files, _dto, _user.sub);
   }
 
   @Post()
@@ -213,6 +212,7 @@ export class ProductionController {
   })
   @ApiBearerAuth()
   createProductionsFromStaging(@Body() _dto: StagingSubmissionDto, @AuthenticatedUser() _user: AuthenticatedKCUser) {
+    //TODO-LG: Implement finalize functionality (DUHGW-425)
     throw new NotImplementedException();
   }
 }
