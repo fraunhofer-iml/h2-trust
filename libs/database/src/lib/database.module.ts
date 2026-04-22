@@ -13,8 +13,8 @@ import {
   CompanyRepository,
   CsvImportRepository,
   DocumentRepository,
-  PowerAccessApprovalRepository,
   PowerProductionTypeRepository,
+  PowerPurchaseAgreementRepository,
   ProcessStepRepository,
   StagedProductionRepository,
   UnitRepository,
@@ -22,14 +22,13 @@ import {
 } from './repositories';
 
 @Module({
-  controllers: [],
   providers: [
     PrismaService,
     BatchRepository,
     CompanyRepository,
     CsvImportRepository,
     DocumentRepository,
-    PowerAccessApprovalRepository,
+    PowerPurchaseAgreementRepository,
     PowerProductionTypeRepository,
     ProcessStepRepository,
     StagedProductionRepository,
@@ -42,7 +41,7 @@ import {
     CompanyRepository,
     CsvImportRepository,
     DocumentRepository,
-    PowerAccessApprovalRepository,
+    PowerPurchaseAgreementRepository,
     PowerProductionTypeRepository,
     ProcessStepRepository,
     StagedProductionRepository,

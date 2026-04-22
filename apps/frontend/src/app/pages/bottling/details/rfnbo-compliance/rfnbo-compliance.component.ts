@@ -6,13 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RfnboChipComponent } from 'apps/frontend/src/app/layout/chips/rfnbo-chip.component';
-import { ICONS } from 'apps/frontend/src/app/shared/constants/icons';
-import { RFNBO_CRITERIA } from 'apps/frontend/src/app/shared/constants/rfnbo-criteria';
-import { RfnboStatus } from 'apps/frontend/src/app/shared/constants/rfnbo-status';
 import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
-import { GridEnergyRfnboDto, RenewableEnergyRfnboDto, RfnboBaseDto } from '@h2-trust/api';
+import { GridEnergyRfnboDto, RenewableEnergyRfnboDto, RfnboBaseDto } from '@h2-trust/contracts/dtos';
+import { RfnboChipComponent } from '../../../../layout/chips/rfnbo-chip.component';
+import { ICONS } from '../../../../shared/constants/icons';
+import { RFNBO_CRITERIA } from '../../../../shared/constants/rfnbo-criteria';
+import { RfnboStatus } from '../../../../shared/constants/rfnbo-status';
 import { RfnboCheckCardComponent } from './rfnbo-check-card/rfnbo-check-card.component';
 
 @Component({

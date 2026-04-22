@@ -6,8 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FileDragAndDropComponent } from 'apps/frontend/src/app/layout/drag-and-drop/file-drag-and-drop.component';
-import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject } from '@angular/core';
@@ -25,7 +23,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
+import { toast } from 'ngx-sonner';
 import { BatchType, CsvContentType } from '@h2-trust/domain';
+import { FileDragAndDropComponent } from '../../../../layout/drag-and-drop/file-drag-and-drop.component';
 import { FileTypes } from '../../../../shared/constants/file-types';
 import { ICONS } from '../../../../shared/constants/icons';
 import { FileSizePipe } from '../../../../shared/pipes/file-size.pipe';
@@ -35,7 +35,7 @@ import {
   powerProductionUnitsQueryOptions,
 } from '../../../../shared/queries/units.query';
 import { CompaniesService } from '../../../../shared/services/companies/companies.service';
-import { PowerAccessApprovalService } from '../../../../shared/services/power-access-approvals/power-access-approvals.service';
+import { PowerPurchaseAgreementService } from '../../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { ProductionService } from '../../../../shared/services/production/production.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
 import { UserRolesStore } from '../../../../shared/store/user-role.store';
@@ -44,7 +44,7 @@ import { FileForm } from './file-upload.form';
 
 @Component({
   selector: 'app-add-production-data',
-  providers: [provideNativeDateAdapter(), CompaniesService, ProductionService, PowerAccessApprovalService],
+  providers: [provideNativeDateAdapter(), CompaniesService, ProductionService, PowerPurchaseAgreementService],
   imports: [
     MatDialogModule,
     ReactiveFormsModule,

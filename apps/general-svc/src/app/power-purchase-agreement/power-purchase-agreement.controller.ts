@@ -1,0 +1,29 @@
+/*
+ * Copyright Fraunhofer Institute for Material Flow and Logistics
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * For details on the licensing terms, see the LICENSE file.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { Controller } from '@nestjs/common';
+import { MessagePattern } from '@nestjs/microservices';
+import { PowerProductionUnitEntity, PowerPurchaseAgreementEntity } from '@h2-trust/contracts/entities';
+import { ReadByIdPayload, ReadPowerPurchaseAgreementsPayload } from '@h2-trust/contracts/payloads';
+import { PowerPurchaseAgreementPatterns } from '@h2-trust/messaging';
+import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
+
+@Controller()
+export class PowerPurchaseAgreementController {
+  constructor(private readonly service: PowerPurchaseAgreementService) {}
+
+  @MessagePattern(PowerPurchaseAgreementPatterns.READ)
+  async findAll(payload: ReadPowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity[]> {
+    return this.service.findAll(payload);
+  }
+
+  @MessagePattern(PowerPurchaseAgreementPatterns.READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID)
+  async readApprovedGridPowerProductionUnitByUserId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity> {
+    return this.service.findApprovedGridPowerProductionUnitByUserId(payload);
+  }
+}

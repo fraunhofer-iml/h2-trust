@@ -11,7 +11,7 @@ import { BASE_URL } from '../../../environments/environment';
 const USERS_ENDPOINT = BASE_URL + '/users/';
 const UNITS_ENDPOINT = BASE_URL + '/units/';
 const COMPANIES_ENDPOINT = BASE_URL + '/companies/';
-const POWER_ACCESS_APPROVALS_ENDPOINT = BASE_URL + '/power-access-approvals/';
+const POWER_PURCHASE_AGREEMENTS_ENDPOINT = BASE_URL + '/power-purchase-agreements/';
 const BOTTLING_ENDPOINT = BASE_URL + '/bottlings/';
 const PRODUCTION_ENDPOINT = BASE_URL + '/productions/';
 const FILE_DOWNLOAD_ENDPOINT = BASE_URL + '/file-download/';
@@ -37,10 +37,10 @@ export const API = {
     },
   },
   COMPANIES: { BASE: COMPANIES_ENDPOINT },
-  POWER_ACCESS_APPROVALS: {
-    BASE: POWER_ACCESS_APPROVALS_ENDPOINT,
-    REQUESTS: POWER_ACCESS_APPROVALS_ENDPOINT + 'requests/',
-    REQUESTS_SINGLE: (id: string) => `${API.POWER_ACCESS_APPROVALS.REQUESTS}${id}`,
+  POWER_PURCHASE_AGREEMENTS: {
+    BASE: POWER_PURCHASE_AGREEMENTS_ENDPOINT,
+    REQUESTS: POWER_PURCHASE_AGREEMENTS_ENDPOINT + 'requests/',
+    REQUESTS_SINGLE: (id: string) => `${API.POWER_PURCHASE_AGREEMENTS.REQUESTS}${id}`,
   },
   BOTTLING: {
     BASE: BOTTLING_ENDPOINT,

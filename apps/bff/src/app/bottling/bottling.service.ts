@@ -6,22 +6,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
+import { BottlingDto, BottlingOverviewDto, DigitalProductPassportDto } from '@h2-trust/contracts/dtos';
+import { DigitalProductPassportEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
 import {
-  BrokerQueues,
   CreateHydrogenBottlingPayload,
   CreateHydrogenTransportationPayload,
-  DigitalProductPassportEntity,
-  DigitalProductPassportPatterns,
-  ProcessStepEntity,
-  ProcessStepMessagePatterns,
   ReadByIdPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
-} from '@h2-trust/amqp';
-import { BottlingDto, BottlingOverviewDto, DigitalProductPassportDto } from '@h2-trust/api';
+} from '@h2-trust/contracts/payloads';
 import { ProcessType } from '@h2-trust/domain';
+import { BrokerQueues, DigitalProductPassportMessagePatterns, ProcessStepMessagePatterns } from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -83,7 +80,7 @@ export class BottlingService {
   async readDigitalProductPassport(id: string): Promise<DigitalProductPassportDto> {
     const entity = await firstValueFrom(
       this.processSvc.send<DigitalProductPassportEntity>(
-        DigitalProductPassportPatterns.READ_DIGITAL_PRODUCT_PASSPORT,
+        DigitalProductPassportMessagePatterns.READ,
         new ReadByIdPayload(id),
       ),
     );

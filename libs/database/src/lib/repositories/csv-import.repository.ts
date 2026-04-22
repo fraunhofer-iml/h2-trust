@@ -8,7 +8,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { CsvDocumentEntity } from '@h2-trust/amqp';
+import { CsvDocumentEntity } from '@h2-trust/contracts/entities';
 import { PrismaService } from '../prisma.service';
 
 export interface CreateCsvDocumentInput {

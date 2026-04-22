@@ -11,8 +11,8 @@ import { Prisma } from '@prisma/client';
 export const companyFlatQueryArgs = Prisma.validator<Prisma.CompanyDefaultArgs>()({
   include: {
     address: true,
-    hydrogenApprovals: true,
-    powerApprovals: true,
+    hydrogenAgreements: true,
+    powerAgreements: true,
     unitOwners: true,
     unitOperators: true,
     users: true,

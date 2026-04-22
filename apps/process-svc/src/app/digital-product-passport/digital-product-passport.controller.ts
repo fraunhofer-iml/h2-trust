@@ -8,14 +8,16 @@
 
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { DigitalProductPassportEntity, DigitalProductPassportPatterns, ReadByIdPayload } from '@h2-trust/amqp';
+import { DigitalProductPassportEntity } from '@h2-trust/contracts/entities';
+import { ReadByIdPayload } from '@h2-trust/contracts/payloads';
+import { DigitalProductPassportMessagePatterns } from '@h2-trust/messaging';
 import { DigitalProductPassportService } from './digital-product-passport.service';
 
 @Controller()
 export class DigitalProductPassportController {
   constructor(private readonly digitalProductPassportService: DigitalProductPassportService) {}
 
-  @MessagePattern(DigitalProductPassportPatterns.READ_DIGITAL_PRODUCT_PASSPORT)
+  @MessagePattern(DigitalProductPassportMessagePatterns.READ)
   async readDigitalProductPassport(payload: ReadByIdPayload): Promise<DigitalProductPassportEntity> {
     return this.digitalProductPassportService.readDigitalProductPassport(payload.id);
   }

@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CallHandler, ExecutionContext, HttpException, Injectable, NestInterceptor } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { CallHandler, ExecutionContext, HttpException, Injectable, NestInterceptor } from '@nestjs/common';
 
 @Injectable()
 export class AllErrorsInterceptor implements NestInterceptor {

@@ -12,9 +12,9 @@ import {
   ProductionChainEntity,
   ProofOfOriginHydrogenBatchEntity,
   ProvenanceEntity,
-} from '@h2-trust/amqp';
+} from '@h2-trust/contracts/entities';
+import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
-import { ProcessStepEntityFixture } from '@h2-trust/fixtures';
 import { assembleHydrogenTransportationSection } from '../hydrogen-transportation-proof-of-origin.assembler';
 
 describe('HydrogenTransportationProofOfOriginAssembler', () => {

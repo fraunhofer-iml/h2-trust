@@ -7,7 +7,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserEntity } from '@h2-trust/amqp';
+import { UserEntity } from '@h2-trust/contracts/entities';
 import {
   DatabaseModule,
   PrismaService,

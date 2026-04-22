@@ -7,7 +7,7 @@
  */
 
 import { registerAs } from '@nestjs/config';
-import { requireEnv } from '../util';
+import { requireEnv } from '@h2-trust/utils';
 
 export const BFF_CONFIGURATION_IDENTIFIER = 'bff-configuration';
 

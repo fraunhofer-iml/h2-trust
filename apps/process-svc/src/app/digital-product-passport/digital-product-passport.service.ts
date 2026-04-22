@@ -16,7 +16,7 @@ import {
   ProofOfSustainabilityEntity,
   ProvenanceEntity,
   RedComplianceEntity,
-} from '@h2-trust/amqp';
+} from '@h2-trust/contracts/entities';
 import { PowerType, RfnboType } from '@h2-trust/domain';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { createProofOfOrigin, getHydrogenBottlingCompositions } from './proof-of-origin/proof-of-origin.service';

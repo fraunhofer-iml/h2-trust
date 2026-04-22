@@ -6,17 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { of } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  BrokerQueues,
-  HydrogenProductionUnitEntity,
-  HydrogenStorageUnitEntity,
-  PowerProductionUnitEntity,
-  ReadByIdPayload,
-  UnitMessagePatterns,
-} from '@h2-trust/amqp';
+import { of } from 'rxjs';
 import {
   HydrogenProductionOverviewDto,
   HydrogenProductionUnitCreateDtoMock,
@@ -29,12 +21,19 @@ import {
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
   UserDetailsDto,
-} from '@h2-trust/api';
+} from '@h2-trust/contracts/dtos';
+import {
+  HydrogenProductionUnitEntity,
+  HydrogenStorageUnitEntity,
+  PowerProductionUnitEntity,
+} from '@h2-trust/contracts/entities';
 import {
   HydrogenProductionUnitEntityFixture,
   HydrogenStorageUnitEntityFixture,
   PowerProductionUnitEntityFixture,
-} from '@h2-trust/fixtures';
+} from '@h2-trust/contracts/entities/fixtures';
+import { ReadByIdPayload } from '@h2-trust/contracts/payloads';
+import { BrokerQueues, UnitMessagePatterns } from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
@@ -81,7 +80,7 @@ describe('UnitController', () => {
     const actualResponse: HydrogenProductionUnitDto = await controller.getHydrogenProductionUnitById(givenUserId);
 
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
-    expect(sendRequestSpy).toHaveBeenCalledWith(UnitMessagePatterns.READ, new ReadByIdPayload(givenUserId));
+    expect(sendRequestSpy).toHaveBeenCalledWith(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(givenUserId));
     expect(actualResponse).toEqual(expectedResponse);
   });
 
@@ -108,7 +107,7 @@ describe('UnitController', () => {
     expect(readUserRequestSpy).toHaveBeenCalledWith(givenUserId);
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
     expect(sendRequestSpy).toHaveBeenCalledWith(
-      UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_UNITS,
+      UnitMessagePatterns.READ_HYDROGEN_PRODUCTION,
       new ReadByIdPayload(fixtureUser.company.id),
     );
     expect(actualResponse).toEqual(expectedResponse);
@@ -128,7 +127,7 @@ describe('UnitController', () => {
 
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
     expect(sendRequestSpy).toHaveBeenCalledWith(
-      UnitMessagePatterns.CREATE_POWER_PRODUCTION_UNIT,
+      UnitMessagePatterns.CREATE_POWER_PRODUCTION,
       PowerProductionUnitInputDto.toPayload(givenDto as PowerProductionUnitInputDto),
     );
     expect(actualResponse).toEqual(expectedResponse);
@@ -148,7 +147,7 @@ describe('UnitController', () => {
 
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
     expect(sendRequestSpy).toHaveBeenCalledWith(
-      UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION_UNIT,
+      UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION,
       HydrogenProductionUnitInputDto.toPayload(givenDto as HydrogenProductionUnitInputDto),
     );
     expect(actualResponse).toEqual(expectedResponse);
@@ -168,7 +167,7 @@ describe('UnitController', () => {
 
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
     expect(sendRequestSpy).toHaveBeenCalledWith(
-      UnitMessagePatterns.CREATE_HYDROGEN_STORAGE_UNIT,
+      UnitMessagePatterns.CREATE_HYDROGEN_STORAGE,
       HydrogenStorageUnitInputDto.toPayload(givenDto as HydrogenStorageUnitInputDto),
     );
     expect(actualResponse).toEqual(expectedResponse);

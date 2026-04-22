@@ -6,29 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { firstValueFrom } from 'rxjs';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import {
-  BrokerQueues,
-  CreateHydrogenProductionStatisticsPayload,
-  CsvDocumentEntity,
-  FinalizeProductionsPayload,
-  PaginatedProcessStepEntity,
-  ProcessStepEntity,
-  ProcessStepMessagePatterns,
-  ProductionDataFilter,
-  ProductionMessagePatterns,
-  ProductionStagingResultEntity,
-  ProductionStatisticsEntity,
-  ReadByIdPayload,
-  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
-  StagedProductionEntity,
-  StageProductionFilter,
-  StageProductionsPayload,
-  UnitFileImport,
-  VerifyCsvDocumentIntegrityResultEntity,
-} from '@h2-trust/amqp';
+import { firstValueFrom } from 'rxjs';
+import { HashUtil } from '@h2-trust/blockchain';
 import {
   AccountingPeriodMatchingResultDto,
   CsvDocumentIntegrityResultDto,
@@ -37,12 +18,28 @@ import {
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   ProductionStatisticsDto,
-  StagedProductionDto,
   StagingSubmissionDto,
   UserDetailsDto,
-} from '@h2-trust/api';
-import { HashUtil } from '@h2-trust/blockchain';
-import { CsvContentType, ProcessType, StagingScope } from '@h2-trust/domain';
+} from '@h2-trust/contracts/dtos';
+import {
+  CsvDocumentEntity,
+  PaginatedProcessStepEntity,
+  ProcessStepEntity,
+  ProductionStagingResultEntity,
+  ProductionStatisticsEntity,
+  UnitFileImport,
+  VerifyCsvDocumentIntegrityResultEntity,
+} from '@h2-trust/contracts/entities';
+import {
+  CreateHydrogenProductionStatisticsPayload,
+  FinalizeProductionsPayload,
+  ProductionDataFilter,
+  ReadByIdPayload,
+  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
+  StageProductionsPayload,
+} from '@h2-trust/contracts/payloads';
+import { CsvContentType, ProcessType } from '@h2-trust/domain';
+import { BrokerQueues, ProcessStepMessagePatterns, ProductionMessagePatterns } from '@h2-trust/messaging';
 import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 

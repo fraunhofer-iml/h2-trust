@@ -12,7 +12,7 @@ import {
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
   CreatePowerProductionUnitPayload,
-} from '@h2-trust/amqp';
+} from '@h2-trust/contracts/payloads';
 
 export function buildBaseUnitCreateInput(payload: BaseCreateUnitPayload): Prisma.UnitCreateInput {
   return Prisma.validator<Prisma.UnitCreateInput>()({
