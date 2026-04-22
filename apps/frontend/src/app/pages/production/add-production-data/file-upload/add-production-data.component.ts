@@ -7,6 +7,7 @@
  */
 
 import { FileDragAndDropComponent } from 'apps/frontend/src/app/layout/drag-and-drop/file-drag-and-drop.component';
+import { PowerPurchaseAgreementService } from 'apps/frontend/src/app/shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -35,7 +36,6 @@ import {
   powerProductionUnitsQueryOptions,
 } from '../../../../shared/queries/units.query';
 import { CompaniesService } from '../../../../shared/services/companies/companies.service';
-import { PowerAccessApprovalService } from '../../../../shared/services/power-access-approvals/power-access-approvals.service';
 import { ProductionService } from '../../../../shared/services/production/production.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
 import { UserRolesStore } from '../../../../shared/store/user-role.store';
@@ -44,7 +44,7 @@ import { FileForm } from './file-upload.form';
 
 @Component({
   selector: 'app-add-production-data',
-  providers: [provideNativeDateAdapter(), CompaniesService, ProductionService, PowerAccessApprovalService],
+  providers: [provideNativeDateAdapter(), CompaniesService, ProductionService, PowerPurchaseAgreementService],
   imports: [
     MatDialogModule,
     ReactiveFormsModule,
