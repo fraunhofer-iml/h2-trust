@@ -7,7 +7,7 @@
  */
 
 import { CsvDocumentEntity } from '@h2-trust/contracts/entities';
-import { CsvContentType } from '../file';
+import { CsvContentType } from '@h2-trust/domain';
 
 export class ProcessedCsvDto {
   id: string;

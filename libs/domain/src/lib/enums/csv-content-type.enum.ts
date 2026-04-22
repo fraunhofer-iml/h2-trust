@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './file.type';
-export * from './file-info.dto';
-export * from './mocks';
+export enum CsvContentType {
+  POWER = 'POWER',
+  HYDROGEN = 'HYDROGEN',
+}

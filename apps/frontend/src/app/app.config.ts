@@ -23,6 +23,7 @@ import { AuthService } from './shared/services/auth/auth.service';
 import { BottlingService } from './shared/services/bottling/bottling.service';
 import { CompaniesService } from './shared/services/companies/companies.service';
 import { PowerAccessApprovalService } from './shared/services/power-access-approvals/power-access-approvals.service';
+import { ProductionService } from './shared/services/production/production.service';
 import { UnitsService } from './shared/services/units/units.service';
 import { UsersService } from './shared/services/users/users.service';
 import { VerificationResultStore } from './shared/store/verification-result.store';
@@ -41,6 +42,7 @@ export const appConfig: ApplicationConfig = {
     VerificationResultStore,
     CompaniesService,
     PowerAccessApprovalService,
+    ProductionService,
     { provide: LOCALE_ID, useValue: 'en-GB' },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,

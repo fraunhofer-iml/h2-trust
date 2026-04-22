@@ -8,8 +8,7 @@
 
 import { Transform } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsIn, IsString } from 'class-validator';
-import { BatchType } from '@h2-trust/domain';
-import type { CsvContentType } from '../file/csv-content.type';
+import { BatchType, CsvContentType } from '@h2-trust/domain';
 
 export class ProductionCSVUploadDto {
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))

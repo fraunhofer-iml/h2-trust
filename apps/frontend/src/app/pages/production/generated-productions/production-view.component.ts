@@ -18,6 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { DateTime } from 'luxon';
 import { ProductionOverviewDto } from '@h2-trust/contracts/dtos';
@@ -58,6 +59,7 @@ export const DATE_FORMATS = {
     RfnboChipComponent,
     PowerTypeChipComponent,
     UnitPipe,
+    RouterModule,
   ],
   providers: [ProductionService, MatFormFieldModule, ReactiveFormsModule, provideLuxonDateAdapter(DATE_FORMATS)],
   templateUrl: './production-view.component.html',

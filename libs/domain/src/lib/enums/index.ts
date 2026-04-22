@@ -29,3 +29,5 @@ export * from './proof-of-origin.enum';
 export * from './rfnbo-type.enum';
 export * from './transport-mode.enum';
 export * from './unit-type.enum';
+export * from './staging-scope.enum';
+export * from './csv-content-type.enum';
