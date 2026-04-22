@@ -7,5 +7,5 @@
  */
 
 export * from './unit.deep.query-args';
-export * from './unit.nested.query-args';
 export * from './unit.flat.query-args';
+export * from './unit.nested.query-args';

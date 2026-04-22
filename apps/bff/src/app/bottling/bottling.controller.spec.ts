@@ -8,15 +8,15 @@
 
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues, ProcessStepMessagePatterns } from '@h2-trust/amqp';
 import {
   AuthenticatedUserMock,
   BottlingDto,
   BottlingDtoMock,
   BottlingOverviewDto,
   UserDetailsDtoMock,
-} from '@h2-trust/api';
-import { ProcessStepEntityFixture } from '@h2-trust/fixtures';
+} from '@h2-trust/contracts/dtos';
+import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
+import { BrokerQueues, ProcessStepMessagePatterns } from '@h2-trust/messaging';
 import 'multer';
 import { of } from 'rxjs';
 import { RfnboType } from '@h2-trust/domain';

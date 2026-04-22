@@ -8,14 +8,13 @@
 
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
+import { PowerProductionUnitEntity, PowerPurchaseAgreementEntity } from '@h2-trust/contracts/entities';
 import {
-  PowerProductionUnitEntity,
-  PowerPurchaseAgreementEntity,
-  PowerPurchaseAgreementPatterns,
   ReadByIdPayload,
   ReadPowerPurchaseAgreementsPayload,
   UpdatePowerPurchaseAgreementPayload,
-} from '@h2-trust/amqp';
+} from '@h2-trust/contracts/payloads';
+import { PowerPurchaseAgreementPatterns } from '@h2-trust/messaging';
 import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 
 @Controller()

@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import Keycloak, { KeycloakProfile } from 'keycloak-js';
 import { inject, Injectable } from '@angular/core';
+import Keycloak, { KeycloakProfile } from 'keycloak-js';
 import { UserProfile } from '../../model/user-profile.model';
 import { VerificationResultStore } from '../../store/verification-result.store';
 

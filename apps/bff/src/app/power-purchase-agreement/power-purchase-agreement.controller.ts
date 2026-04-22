@@ -6,10 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AuthenticatedUser } from 'nest-keycloak-connect';
 import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { PpaDto, PpaRequestDecisionDto, PpaRequestDto, type AuthenticatedKCUser } from '@h2-trust/api';
+import { AuthenticatedUser } from 'nest-keycloak-connect';
+import { PpaDto, PpaRequestDecisionDto, PpaRequestDto, type AuthenticatedKCUser } from '@h2-trust/contracts/dtos';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 

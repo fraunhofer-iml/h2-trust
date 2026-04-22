@@ -6,18 +6,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerPurchaseAgreementRepository, UserRepository } from 'libs/database/src/lib';
 import { HttpStatus, Injectable } from '@nestjs/common';
+import { PowerProductionUnitEntity, PowerPurchaseAgreementEntity, UserEntity } from '@h2-trust/contracts/entities';
 import {
-  BrokerException,
-  PowerProductionUnitEntity,
-  PowerPurchaseAgreementEntity,
   ReadByIdPayload,
   ReadPowerPurchaseAgreementsPayload,
   UpdatePowerPurchaseAgreementPayload,
-  UserEntity,
-} from '@h2-trust/amqp';
+} from '@h2-trust/contracts/payloads';
+import { PowerPurchaseAgreementRepository, UserRepository } from '@h2-trust/database';
 import { PowerProductionType, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
+import { BrokerException } from '@h2-trust/messaging';
 
 @Injectable()
 export class PowerPurchaseAgreementService {

@@ -7,5 +7,5 @@
  */
 
 export * from './power-purchase-agreement.deep.query-args';
-export * from './power-purchase-agreement.nested.query-args';
 export * from './power-purchase-agreement.flat.query-args';
+export * from './power-purchase-agreement.nested.query-args';

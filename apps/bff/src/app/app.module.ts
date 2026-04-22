@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AuthGuard, KeycloakConnectModule } from 'nest-keycloak-connect';
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard, KeycloakConnectModule } from 'nest-keycloak-connect';
 import { ConfigurationModule, KeycloakConfigurationService } from '@h2-trust/configuration';
 import { BottlingModule } from './bottling/bottling.module';
 import { CompanyModule } from './company/company.module';

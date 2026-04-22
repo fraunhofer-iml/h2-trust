@@ -7,21 +7,20 @@
  */
 
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import {
-  AccountingPeriodHydrogen,
-  AccountingPeriodPower,
-  BrokerException,
-  CsvDocumentEntity,
-  ProductionStagingResultEntity,
-  StageProductionsPayload,
-} from '@h2-trust/amqp';
 import { BlockchainService, ProofEntry } from '@h2-trust/blockchain';
 import { FeatureFlagService } from '@h2-trust/configuration';
-import { CsvImportRepository, PrismaService, StagedProductionRepository } from '@h2-trust/database';
-import { BatchType } from '@h2-trust/domain';
+import { CsvDocumentEntity, ProductionStagingResultEntity, StagedProductionEntity } from '@h2-trust/contracts/entities';
+import { StageProductionsPayload } from '@h2-trust/contracts/payloads';
+import {
+  CreateCsvDocumentInput,
+  CsvImportRepository,
+  PrismaService,
+  StagedProductionRepository,
+} from '@h2-trust/database';
+import { BrokerException } from '@h2-trust/messaging';
 import { CsvImportProcessingService } from './csv-import-processing.service';
-import { ProductionDistributor } from './production-distributor';
-import { DocumentProof } from './production.types';
+import { ProductionNormalizer } from './production-normalizer';
+import { DocumentProof, ParsedImport } from './production.types';
 
 @Injectable()
 export class ProductionStagingService {
@@ -37,39 +36,28 @@ export class ProductionStagingService {
   ) {}
 
   async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
-    const [parsedPowerImports, parsedHydrogenImports] = await Promise.all([
-      this.csvImportProcessingService.parseAndUploadFiles<AccountingPeriodPower>(
-        payload.powerProductionImports,
-        BatchType.POWER,
-      ),
-      this.csvImportProcessingService.parseAndUploadFiles<AccountingPeriodHydrogen>(
-        payload.hydrogenProductionImports,
-        BatchType.HYDROGEN,
-      ),
-    ]);
-
-    const distributedProductions = ProductionDistributor.distributeProductions(
-      parsedPowerImports.map((parsedImport) => parsedImport.periods),
-      parsedHydrogenImports.map((parsedImport) => parsedImport.periods),
-      payload.gridPowerProductionUnitId,
+    const parsedProductionImports: ParsedImport[] = await this.csvImportProcessingService.parseAndUploadFiles(
+      payload.productionImports,
     );
 
-    const parsedImports = [...parsedPowerImports, ...parsedHydrogenImports];
+    const stagedProductions: StagedProductionEntity[] = ProductionNormalizer.normalizeProduction(
+      parsedProductionImports,
+      payload.companyId,
+    );
 
     const { csvImportId, csvDocuments } = await this.prismaService.$transaction(async (tx) => {
       const csvImportId = await this.csvImportRepository.saveCsvImport(payload.userId, tx);
-
-      const csvDocumentInputs = this.csvImportProcessingService.createCsvDocumentInputs(parsedImports);
+      const csvDocumentInputs: CreateCsvDocumentInput[] =
+        this.csvImportProcessingService.createCsvDocumentInputs(parsedProductionImports);
       const csvDocuments = await this.csvImportRepository.saveCsvDocuments(csvImportId, csvDocumentInputs, tx);
 
-      await this.stagedProductionRepository.stageDistributedProductions(distributedProductions, csvImportId, tx);
+      await this.stagedProductionRepository.saveStagedProductions(stagedProductions, csvImportId, tx);
 
       return { csvImportId, csvDocuments };
     });
 
-    await this.storeProofsOnBlockchain(parsedImports, csvDocuments);
-
-    return new ProductionStagingResultEntity(csvImportId, distributedProductions);
+    await this.storeProofsOnBlockchain(parsedProductionImports, csvDocuments);
+    return new ProductionStagingResultEntity(csvImportId, stagedProductions);
   }
 
   private async storeProofsOnBlockchain(

@@ -8,7 +8,8 @@
 
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PowerPurchaseAgreementEntity, UpdatePowerPurchaseAgreementPayload } from '@h2-trust/amqp';
+import { PowerPurchaseAgreementEntity } from '@h2-trust/contracts/entities';
+import { UpdatePowerPurchaseAgreementPayload } from '@h2-trust/contracts/payloads';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PrismaService } from '../prisma.service';
 import { powerPurchaseAgreementDeepQueryArgs } from '../query-args/power-purchase-agreement/power-purchase-agreement.deep.query-args';
@@ -54,7 +55,7 @@ export class PowerPurchaseAgreementRepository {
     status?: PowerPurchaseAgreementStatus,
     role?: PpaRequestRole,
   ): Prisma.PowerPurchaseAgreementWhereInput {
-    let query: Prisma.PowerPurchaseAgreementWhereInput = {};
+    let query: Prisma.PowerPurchaseAgreementWhereInput;
 
     switch (role) {
       case PpaRequestRole.RECEIVER:

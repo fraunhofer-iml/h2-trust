@@ -7,7 +7,7 @@
  */
 
 import { registerAs } from '@nestjs/config';
-import { requireEnv } from '../util';
+import { requireEnv } from '@h2-trust/utils';
 
 export const PROCESS_SVC_CONFIGURATION_IDENTIFIER = 'process-svc-configuration';
 

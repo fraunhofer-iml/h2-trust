@@ -6,29 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { firstValueFrom } from 'rxjs';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import {
-  BrokerQueues,
-  CreateHydrogenProductionStatisticsPayload,
-  CsvDocumentEntity,
-  FinalizeProductionsPayload,
-  PaginatedProcessStepEntity,
-  PowerProductionUnitEntity,
-  PowerPurchaseAgreementPatterns,
-  ProcessStepEntity,
-  ProcessStepMessagePatterns,
-  ProductionDataFilter,
-  ProductionMessagePatterns,
-  ProductionStagingResultEntity,
-  ProductionStatisticsEntity,
-  ReadByIdPayload,
-  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
-  StageProductionsPayload,
-  UnitFileImport,
-  VerifyCsvDocumentIntegrityResultEntity,
-} from '@h2-trust/amqp';
+import { firstValueFrom } from 'rxjs';
+import { HashUtil } from '@h2-trust/blockchain';
 import {
   AccountingPeriodMatchingResultDto,
   CsvDocumentIntegrityResultDto,
@@ -39,16 +20,32 @@ import {
   ProductionStatisticsDto,
   StagingSubmissionDto,
   UserDetailsDto,
-} from '@h2-trust/api';
-import { HashUtil } from '@h2-trust/blockchain';
-import { BatchType, ProcessType } from '@h2-trust/domain';
+} from '@h2-trust/contracts/dtos';
+import {
+  CsvDocumentEntity,
+  PaginatedProcessStepEntity,
+  ProcessStepEntity,
+  ProductionStagingResultEntity,
+  ProductionStatisticsEntity,
+  UnitFileImport,
+  VerifyCsvDocumentIntegrityResultEntity,
+} from '@h2-trust/contracts/entities';
+import {
+  CreateHydrogenProductionStatisticsPayload,
+  FinalizeProductionsPayload,
+  ProductionDataFilter,
+  ReadByIdPayload,
+  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
+  StageProductionsPayload,
+} from '@h2-trust/contracts/payloads';
+import { CsvContentType, ProcessType } from '@h2-trust/domain';
+import { BrokerQueues, ProcessStepMessagePatterns, ProductionMessagePatterns } from '@h2-trust/messaging';
 import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 
 @Injectable()
 export class ProductionService {
   constructor(
-    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly storageService: CentralizedStorageService,
     private readonly userService: UserService,
@@ -90,28 +87,19 @@ export class ProductionService {
   }
 
   async importCsvFiles(
-    powerProductionFiles: Express.Multer.File[] | Express.Multer.File,
-    hydrogenProductionFiles: Express.Multer.File[] | Express.Multer.File,
+    stageProductionFiles: Express.Multer.File | Express.Multer.File[],
     dto: ProductionCSVUploadDto,
     userId: string,
   ) {
-    const powerProductions = this.mapUnitsToFiles(dto.unitIds, powerProductionFiles, BatchType.POWER);
-
-    const hydrogenProductions = this.mapUnitsToFiles(dto.unitIds, hydrogenProductionFiles, BatchType.HYDROGEN);
-
-    const gridPowerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
-      this.generalSvc.send(
-        PowerPurchaseAgreementPatterns.READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID,
-        new ReadByIdPayload(userId),
-      ),
+    const stageProductions: UnitFileImport[] = this.mapUnitsToFiles(
+      dto.unitIds,
+      stageProductionFiles,
+      dto.csvContentType,
     );
 
-    const payload = new StageProductionsPayload(
-      powerProductions,
-      hydrogenProductions,
-      gridPowerProductionUnit.id,
-      userId,
-    );
+    const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
+
+    const payload = new StageProductionsPayload(stageProductions, userId, userDetails.company.id);
     const matchingResult = await firstValueFrom(
       this.processSvc.send<ProductionStagingResultEntity>(ProductionMessagePatterns.STAGE, payload),
     );
@@ -121,15 +109,18 @@ export class ProductionService {
   private mapUnitsToFiles(
     unitIds: string | string[],
     files: Express.Multer.File | Express.Multer.File[],
-    type: BatchType,
+    type: CsvContentType,
   ): UnitFileImport[] {
-    const normalizedFiles: Express.Multer.File[] = Array.isArray(files) ? files : [files];
+    const normalizedFiles = Array.isArray(files) ? files : [files];
+    const normalizedUnitIds: string[] = Array.isArray(unitIds) ? unitIds : [unitIds];
+
+    if (type != CsvContentType.HYDROGEN && type != CsvContentType.POWER) {
+      throw new BadRequestException(`Stage production contains invalid types.`);
+    }
 
     if (!normalizedFiles || normalizedFiles.length === 0) {
       throw new BadRequestException(`Missing file for ${type} production.`);
     }
-
-    const normalizedUnitIds: string[] = Array.isArray(unitIds) ? unitIds : [unitIds];
 
     if (normalizedUnitIds.length < normalizedFiles.length) {
       throw new BadRequestException(
@@ -141,10 +132,11 @@ export class ProductionService {
       const unitId = normalizedUnitIds[i];
       const hashedFileBuffer = HashUtil.hashBuffer(file.buffer);
       const encodedFileBuffer = file.buffer.toString('base64');
-      return new UnitFileImport(unitId, hashedFileBuffer, encodedFileBuffer);
+      return new UnitFileImport(unitId, hashedFileBuffer, encodedFileBuffer, type);
     });
   }
 
+  //TODO-LG: Implement finalize functionality (DUHGW-425)
   async submitCsvData(dto: StagingSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
     const payload: FinalizeProductionsPayload = new FinalizeProductionsPayload(
       userId,

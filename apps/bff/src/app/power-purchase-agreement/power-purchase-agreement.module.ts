@@ -7,13 +7,13 @@
  */
 
 import { Module } from '@nestjs/common';
-import { Broker } from '@h2-trust/amqp';
+import { Broker } from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';
 import { PowerPurchaseAgreementController } from './power-purchase-agreement.controller';
 import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 
 @Module({
-  imports: [new Broker().getGeneralSvcBroker()],
+  imports: [Broker.getGeneralSvcBroker()],
   controllers: [PowerPurchaseAgreementController],
   providers: [PowerPurchaseAgreementService, UserService],
 })

@@ -24,7 +24,7 @@ import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
     }"
   >
     <span
-      class="material-symbols-outlined text-lg"
+      class="material-symbols-outlined text-base!"
       [ngClass]="{
         'text-secondary-400': status() === PowerPurchaseAgreementStatus.APPROVED,
         'text-error-red': status() === PowerPurchaseAgreementStatus.REJECTED,

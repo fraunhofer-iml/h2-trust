@@ -15,10 +15,10 @@
 
   <div class="grid grid-cols-6 gap-4">
     @if (batchQuery.isLoading()) {
-      <app-loading-card class="col-span-4 h-[16rem]"></app-loading-card>
-      <app-loading-card class="col-span-2 h-[16rem]"></app-loading-card>
-      <app-loading-card class="col-span-3 h-[20rem]"></app-loading-card>
-      <app-loading-card class="col-span-3 h-[20rem]"></app-loading-card>
+      <app-loading-card class="col-span-4 h-64"></app-loading-card>
+      <app-loading-card class="col-span-2 h-64"></app-loading-card>
+      <app-loading-card class="col-span-3 h-80"></app-loading-card>
+      <app-loading-card class="col-span-3 h-80"></app-loading-card>
     }
 
     @if (batchQuery.isSuccess()) {
@@ -66,7 +66,7 @@
               (click)="openFile(file.url)"
               role="none"
             >
-              <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-100">
+              <div class="bg-primary-100 flex h-10 w-10 items-center justify-center rounded-lg">
                 <span class="material-symbols-outlined text-primary-500"> attach_file </span>
               </div>
               <span class="text-sm text-neutral-600">{{ file.description }}</span>

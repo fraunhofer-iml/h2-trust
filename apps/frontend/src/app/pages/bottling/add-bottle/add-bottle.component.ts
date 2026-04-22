@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -22,7 +21,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
-import { HydrogenComponentDto, HydrogenStorageOverviewDto, UserDto } from '@h2-trust/api';
+import { toast } from 'ngx-sonner';
+import { HydrogenComponentDto, HydrogenStorageOverviewDto, UserDto } from '@h2-trust/contracts/dtos';
 import { FuelType, MeasurementUnit, RfnboType, TransportMode } from '@h2-trust/domain';
 import { FileDragAndDropComponent } from '../../../layout/drag-and-drop/file-drag-and-drop.component';
 import { FileCardComponent } from '../../../layout/file-card/file-card.component';

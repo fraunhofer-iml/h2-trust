@@ -26,9 +26,6 @@ jobs:
         with:
           install-smart-contract-deps: 'true'
 
-      - name: Run Tests for amqp
-        run: npx nx run amqp:test
-
       - name: Run Tests for bff
         run: npx nx run bff:test
 

@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import hre, { network } from 'hardhat';
 import { verifyContract } from '@nomicfoundation/hardhat-verify/verify';
+import hre, { network } from 'hardhat';
 
 const contractName = 'ProofStorage';
 const uuid = '019c28ac-5ac3-736a-ba99-0466b7541afe';

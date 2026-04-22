@@ -1,7 +1,7 @@
 <div class="my-4 flex w-full flex-col gap-4 rounded-lg bg-white py-4">
   <!-- PENDING Section -->
   <span class="px-4 text-xs text-neutral-400">PENDING</span>
-  <div class="mx-4 flex flex-col gap-2 rounded-md border border-dashed bg-neutral-50 p-4">
+  <div class="mx-4 flex flex-col gap-2 rounded-md border border-dashed border-neutral-300 bg-neutral-50 p-4">
     @if (data()?.pending?.length === 0) {
       <app-empty-requests [role]="role()" [pending]="true" />
     }
@@ -17,7 +17,7 @@
 
   <!-- COMPLETED Section -->
   <span class="px-4 text-xs text-neutral-400">COMPLETED</span>
-  <div class="to mx-4 flex flex-col gap-2 rounded-md border border-dashed bg-neutral-50 p-4">
+  <div class="to mx-4 flex flex-col gap-2 rounded-md border border-dashed border-neutral-300 bg-neutral-50 p-4">
     @if (data()?.closed?.length === 0) {
       <app-empty-requests [role]="role()" [pending]="false" />
     }

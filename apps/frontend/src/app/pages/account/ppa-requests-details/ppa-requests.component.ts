@@ -15,7 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { PpaRequestDto } from '@h2-trust/api';
+import { PpaRequestDto } from '@h2-trust/contracts/dtos';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { ppaRequestsQueryOptions } from '../../../shared/queries/ppa-requests.query';
 import { PowerPurchaseAgreementService } from '../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';

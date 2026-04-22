@@ -6,11 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { BrokerQueues, ReadByIdPayload, UserMessagePatterns } from '@h2-trust/amqp';
-import { UserDetailsDto } from '@h2-trust/api';
+import { firstValueFrom } from 'rxjs';
+import { UserDetailsDto } from '@h2-trust/contracts/dtos';
+import { ReadByIdPayload } from '@h2-trust/contracts/payloads';
+import { BrokerQueues, UserMessagePatterns } from '@h2-trust/messaging';
 
 @Injectable()
 export class UserService {

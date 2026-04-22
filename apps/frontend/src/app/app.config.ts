@@ -6,17 +6,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
-  includeBearerTokenInterceptor,
-  provideKeycloak,
-} from 'keycloak-angular';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, LOCALE_ID, provideZoneChangeDetection } from '@angular/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideTanStackQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import {
+  INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
+  includeBearerTokenInterceptor,
+  provideKeycloak,
+} from 'keycloak-angular';
 import { appRoutes } from './app.routes';
 import { apiCondition, keycloakOptions } from './init/keycloak-config';
 import { AuthService } from './shared/services/auth/auth.service';
