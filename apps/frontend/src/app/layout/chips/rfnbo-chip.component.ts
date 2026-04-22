@@ -15,8 +15,11 @@ import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
 @Component({
   selector: 'app-rfnbo-chip',
   imports: [CommonModule, PrettyEnumPipe],
-  template: `<div class="flex w-fit min-w-40 flex-row items-center gap-2 rounded-lg border px-2" [ngClass]="chipColor">
-    <span class="material-symbols-outlined text-lg"> {{ icon() }} </span>
+  template: `<div
+    class="flex w-fit min-w-40 flex-row items-center gap-2 rounded-lg border px-2 text-sm"
+    [ngClass]="chipColor"
+  >
+    <span class="material-symbols-outlined text-base!"> {{ icon() }} </span>
     {{ this.normalizedStatus() | prettyEnum | titlecase }}
   </div>`,
 })

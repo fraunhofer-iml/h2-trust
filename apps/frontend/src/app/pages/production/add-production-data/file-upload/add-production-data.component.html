@@ -16,7 +16,7 @@
 
         @for (unitType of availableUnitTypes; track $index) {
           <div
-            class="group flex cursor-pointer flex-col gap-2 rounded-md border-2 p-4 hover:border-primary-200 hover:shadow-lg"
+            class="group hover:border-primary-200 flex cursor-pointer flex-col gap-2 rounded-md border-2 p-4 hover:shadow-lg"
             [ngClass]="
               type() === unitType ? 'border-primary-200 text-primary-100' : 'border-neutral-300 text-neutral-500'
             "
@@ -24,7 +24,7 @@
             role="none"
           >
             <div
-              class="flex size-10 items-center justify-center rounded-full border group-hover:border-primary-200 group-hover:bg-primary-100"
+              class="group-hover:border-primary-200 group-hover:bg-primary-100 flex size-10 items-center justify-center rounded-full border"
               [ngClass]="
                 type() === unitType ? 'border-primary-200 bg-primary-100' : 'border-neutral-200 bg-neutral-100'
               "
