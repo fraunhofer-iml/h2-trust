@@ -10,7 +10,6 @@ import { Prisma } from '@prisma/client';
 
 export const stagedProductionFlatQueryArgs = Prisma.validator<Prisma.StagedProductionDefaultArgs>()({
   include: {
-    hydrogenProductionUnit: true,
-    powerProductionUnit: true,
+    productionUnit: true,
   },
 });

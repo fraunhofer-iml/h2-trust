@@ -6,7 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { CsvContentType } from '@h2-trust/domain';
 
 export class UnitFileImport {
   @IsString()
@@ -21,9 +22,14 @@ export class UnitFileImport {
   @IsNotEmpty()
   encodedFileBuffer: string;
 
-  constructor(unitId: string, hashedFileBuffer: string, encodedFileBuffer: string) {
+  @IsEnum(CsvContentType)
+  @IsNotEmpty()
+  productionType: CsvContentType;
+
+  constructor(unitId: string, hashedFileBuffer: string, encodedFileBuffer: string, productionType: CsvContentType) {
     this.unitId = unitId;
     this.hashedFileBuffer = hashedFileBuffer;
     this.encodedFileBuffer = encodedFileBuffer;
+    this.productionType = productionType;
   }
 }

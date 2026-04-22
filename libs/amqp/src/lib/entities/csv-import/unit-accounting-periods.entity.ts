@@ -6,13 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AccountingPeriodHydrogen, AccountingPeriodPower } from './accounting-period.entity';
+import { StagedProductionAccountingPeriod } from './accounting-period.entity';
 
-export class UnitAccountingPeriods<T extends AccountingPeriodPower | AccountingPeriodHydrogen> {
+export class UnitAccountingPeriods {
   unitId: string;
-  accountingPeriods: T[];
+  accountingPeriods: StagedProductionAccountingPeriod[];
 
-  constructor(unitId: string, accountingPeriods: T[]) {
+  constructor(unitId: string, accountingPeriods: StagedProductionAccountingPeriod[]) {
     this.unitId = unitId;
     this.accountingPeriods = accountingPeriods;
   }
