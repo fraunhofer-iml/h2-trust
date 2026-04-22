@@ -96,8 +96,8 @@ export class FileSelectionComponent {
     queryFn: () => this.productionService.getStagedProductions(CsvContentType.HYDROGEN, StagingScope.OWN),
   }));
 
-  approvalsQuery = injectQuery(() => ({
-    queryKey: ['power-access-approvals'],
+  powerPurchaseAgreementsQuery = injectQuery(() => ({
+    queryKey: ['power-purchase-agreements'],
     queryFn: async () => {
       const approvals = await this.powerPurchaseAgreementService.getAgreements(PowerPurchaseAgreementStatus.APPROVED);
       return approvals.filter((a) => a.energySource !== 'GRID');
@@ -111,7 +111,7 @@ export class FileSelectionComponent {
 
   data = computed(() => {
     const uploads = this.powerProductionsQuery.data();
-    const approvals = this.approvalsQuery.data();
+    const approvals = this.powerPurchaseAgreementsQuery.data();
 
     const result = (approvals ?? []).map((ppa) => ({
       ...ppa,
