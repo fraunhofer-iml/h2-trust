@@ -19,7 +19,6 @@ export class StagedProductionRepository {
 
   constructor(private readonly prismaService: PrismaService) {}
 
-  //TODO-LG: add from and to Dates
   async findStagedProductions(
     payload: StageProductionFilter,
     onlyOwnProductions: boolean,
@@ -28,6 +27,8 @@ export class StagedProductionRepository {
     const stagedProductionFilter: Prisma.StagedProductionWhereInput = {
       ...(payload.ownerId !== undefined && onlyOwnProductions && { ownerId: payload.ownerId }),
       ...(payload.type !== undefined && { type: payload.type }),
+      ...(payload.from !== undefined && { startedAt: payload.from }),
+      ...(payload.to !== undefined && { endedAt: payload.to }),
       ...(unitIds !== undefined &&
         unitIds.length > 0 && {
           unitId: { in: unitIds },
