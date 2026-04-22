@@ -20,13 +20,13 @@ import {
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import { PowerPurchaseAgreementService } from 'apps/frontend/src/app/shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { toast } from 'ngx-sonner';
 import { PowerProductionOverviewDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/contracts/dtos';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
 import { QUERY_KEYS } from '../../../../shared/queries/shared-query-keys';
 import { powerProductionUnitsQueryOptions } from '../../../../shared/queries/units.query';
+import { PowerPurchaseAgreementService } from '../../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
 
 @Component({

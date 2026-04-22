@@ -18,10 +18,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
-import { ROUTES } from 'apps/frontend/src/app/shared/constants/routes';
-import { PowerPurchaseAgreementService } from 'apps/frontend/src/app/shared/services/power-purchase-agreement/power-purchase-agreement.service';
-import { ProductionService } from 'apps/frontend/src/app/shared/services/production/production.service';
-import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
 import { toast } from 'ngx-sonner';
 import { StagedProductionDto, StagingSubmissionDto } from '@h2-trust/contracts/dtos';
 import {
@@ -31,7 +27,11 @@ import {
   PowerPurchaseAgreementStatus,
   StagingScope,
 } from '@h2-trust/domain';
+import { ROUTES } from '../../../../shared/constants/routes';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
+import { PowerPurchaseAgreementService } from '../../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
+import { ProductionService } from '../../../../shared/services/production/production.service';
+import { UnitsService } from '../../../../shared/services/units/units.service';
 
 @Component({
   selector: 'app-file-selection',

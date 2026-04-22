@@ -7,9 +7,9 @@
  */
 
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { PowerPurchaseAgreementRepository, UserRepository } from 'libs/database/src/lib';
 import { PowerProductionUnitEntity, PowerPurchaseAgreementEntity, UserEntity } from '@h2-trust/contracts/entities';
 import { ReadByIdPayload, ReadPowerPurchaseAgreementsPayload } from '@h2-trust/contracts/payloads';
+import { PowerPurchaseAgreementRepository, UserRepository } from '@h2-trust/database';
 import { PowerProductionType, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
 
