@@ -8,11 +8,14 @@
 
 import { HydrogenStorageUnit, Prisma } from '@prisma/client';
 import { HydrogenStorageType } from '@h2-trust/domain';
+import { auditTimestamp } from '../audit-timestamp.constant';
 import { UnitSeed } from './unit.seed';
 
 export const HydrogenStorageUnitSeed: readonly HydrogenStorageUnit[] = Object.freeze([
   {
     id: UnitSeed[5].id,
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     type: HydrogenStorageType.COMPRESSED_GASEOUS_HYDROGEN,
     capacity: new Prisma.Decimal(1200),
     pressure: new Prisma.Decimal(350),

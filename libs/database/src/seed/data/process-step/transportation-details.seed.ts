@@ -8,22 +8,29 @@
 
 import { Prisma, TransportationDetails } from '@prisma/client';
 import { FuelType, TransportMode } from '@h2-trust/domain';
+import { auditTimestamp } from '../audit-timestamp.constant';
 
 export const TransportationDetailsSeed: readonly TransportationDetails[] = Object.freeze([
   {
     id: 'transportation-details-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     transportMode: TransportMode.PIPELINE,
     fuelType: null,
     distance: new Prisma.Decimal(0),
   },
   {
     id: 'transportation-details-1',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     transportMode: TransportMode.TRAILER,
     fuelType: FuelType.DIESEL,
     distance: new Prisma.Decimal(100),
   },
   {
     id: 'transportation-details-2',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     transportMode: TransportMode.TRAILER,
     fuelType: FuelType.DIESEL,
     distance: new Prisma.Decimal(100),

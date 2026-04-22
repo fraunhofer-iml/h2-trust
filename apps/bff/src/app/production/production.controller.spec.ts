@@ -6,12 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { NotImplementedException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   BrokerQueues,
   PaginatedProcessStepEntity,
-  PowerProductionTypeEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionMessagePatterns,
@@ -20,7 +20,6 @@ import {
 import {
   AccountingPeriodMatchingResultDto,
   AuthenticatedKCUser,
-  CreateProductionDto,
   CreateProductionDtoMock,
   CsvDocumentIntegrityResultDto,
   PaginatedProductionDataDto,
@@ -28,17 +27,11 @@ import {
   ProductionOverviewDto,
   UserDetailsDtoMock,
 } from '@h2-trust/api';
-import {
-  CsvDocumentIntegrityStatus,
-  EnergySource,
-  HydrogenColor,
-  PowerProductionType,
-  ProcessType,
-} from '@h2-trust/domain';
+import { CsvContentType, CsvDocumentIntegrityStatus, ProcessType } from '@h2-trust/domain';
 import { BatchEntityFixture, HydrogenProductionUnitEntityFixture, UserEntityFixture } from '@h2-trust/fixtures';
+import { CentralizedStorageService } from '@h2-trust/storage';
 import 'multer';
 import { of } from 'rxjs';
-import { StorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
@@ -67,7 +60,7 @@ describe('ProductionController', () => {
           },
         },
         {
-          provide: StorageService,
+          provide: CentralizedStorageService,
           useValue: {
             uploadFileWithRandomFileName: jest.fn().mockResolvedValue('random-file-name.csv'),
           },
@@ -85,67 +78,6 @@ describe('ProductionController', () => {
     generalSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_GENERAL_SVC) as ClientProxy;
     processSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_PROCESS_SVC) as ClientProxy;
     userService = module.get<UserService>(UserService);
-  });
-
-  it('should create production', async () => {
-    const givenDto: CreateProductionDto = CreateProductionDtoMock;
-
-    jest
-      .spyOn(generalSvc, 'send')
-      .mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: any) =>
-        of({
-          ratedPower: 100,
-          type: <PowerProductionTypeEntity>{
-            name: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
-            energySource: EnergySource.SOLAR_ENERGY,
-            hydrogenColor: HydrogenColor.GREEN,
-          },
-        }),
-      )
-      .mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: any) =>
-        of({
-          company: {
-            id: 'company-power-production-1',
-          },
-        }),
-      )
-      .mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: any) =>
-        of({
-          company: {
-            id: 'company-hydrogen-production-1',
-          },
-        }),
-      );
-
-    const mockedProcessStepEntities: ProcessStepEntity[] = [
-      {
-        id: 'hydrogen-production-process-step-1',
-        startedAt: new Date(CreateProductionDtoMock.productionStartedAt),
-        endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
-        type: ProcessType.HYDROGEN_PRODUCTION,
-        batch: BatchEntityFixture.createHydrogenBatch(),
-        recordedBy: UserEntityFixture.createHydrogenUser(),
-        executedBy: HydrogenProductionUnitEntityFixture.create(),
-      },
-      {
-        id: 'hydrogen-production-process-step-2',
-        startedAt: new Date(CreateProductionDtoMock.productionEndedAt),
-        endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
-        type: ProcessType.HYDROGEN_PRODUCTION,
-        batch: BatchEntityFixture.createHydrogenBatch(),
-        recordedBy: UserEntityFixture.createHydrogenUser(),
-        executedBy: HydrogenProductionUnitEntityFixture.create(),
-      },
-    ];
-
-    jest
-      .spyOn(processSvc, 'send')
-      .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(mockedProcessStepEntities));
-
-    const expectedResponse: ProductionOverviewDto[] = mockedProcessStepEntities.map(ProductionOverviewDto.fromEntity);
-    const actualResponse: ProductionOverviewDto[] = await controller.createProductions(givenDto, { sub: 'user-1' });
-
-    expect(actualResponse).toEqual(expectedResponse);
   });
 
   it('should read hydrogen productions', async () => {
@@ -197,11 +129,9 @@ describe('ProductionController', () => {
   it('should throw because files are missing ', async () => {
     const givenAuthenticatedUser: AuthenticatedKCUser = { sub: 'user-1' };
 
-    const dto: ProductionCSVUploadDto = { hydrogenProductionUnitIds: [], powerProductionUnitIds: [] };
+    const dto: ProductionCSVUploadDto = { unitIds: [], csvContentType: CsvContentType.HYDROGEN };
 
-    await expect(
-      controller.importCsvFile(dto, { powerProductionFiles: [], hydrogenProductionFiles: [] }, givenAuthenticatedUser),
-    ).rejects.toThrow(Error);
+    expect(() => controller.importCsvFile(dto, [], givenAuthenticatedUser)).toThrow(NotImplementedException);
   });
 
   it('should parse csv', async () => {
@@ -256,23 +186,16 @@ describe('ProductionController', () => {
       .spyOn(processSvc, 'send')
       .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(expectedResponse));
 
-    const dto: ProductionCSVUploadDto = {
-      hydrogenProductionUnitIds: ['hydrogen-production-unit-1'],
-      powerProductionUnitIds: ['power-production-unit-1'],
-    };
+    const dto: ProductionCSVUploadDto = { unitIds: ['id', 'id'], csvContentType: CsvContentType.HYDROGEN };
 
-    const actualResponse = await controller.importCsvFile(
-      dto,
-      { powerProductionFiles: [powerFile], hydrogenProductionFiles: [h2File] },
-      givenAuthenticatedUser,
+    expect(() => controller.importCsvFile(dto, [powerFile, h2File], givenAuthenticatedUser)).toThrow(
+      NotImplementedException,
     );
-
-    expect(actualResponse.numberOfBatches).toBe(1);
   });
 
   it('should throw error because unitId is missing', async () => {
     const givenAuthenticatedUser: AuthenticatedKCUser = { sub: 'user-1' };
-    const dto: ProductionCSVUploadDto = { hydrogenProductionUnitIds: ['test-id'], powerProductionUnitIds: [] };
+    const dto: ProductionCSVUploadDto = { unitIds: [], csvContentType: CsvContentType.HYDROGEN };
 
     const powerContent = 'time,amount\n2025-11-27T09:00:00Z,2\n2025-11-27T09:00:00Z,2';
     const powerFile: Express.Multer.File = {
@@ -288,27 +211,7 @@ describe('ProductionController', () => {
       stream: null as any,
     };
 
-    const h2Content = 'time,amount,power\n2025-11-27T09:00:00Z,2\n2025-11-27T09:00:00Z,2,2';
-    const h2File: Express.Multer.File = {
-      fieldname: 'file',
-      originalname: 'h2File.csv',
-      encoding: '7bit',
-      mimetype: 'text/csv',
-      buffer: Buffer.from(h2Content, 'utf-8'),
-      size: Buffer.byteLength(h2Content),
-      destination: '',
-      filename: 'h2File',
-      path: '',
-      stream: null as any,
-    };
-
-    await expect(
-      controller.importCsvFile(
-        dto,
-        { powerProductionFiles: [powerFile], hydrogenProductionFiles: [h2File] },
-        givenAuthenticatedUser,
-      ),
-    ).rejects.toThrow('Not enough unit IDs provided for POWER production files: expected 1, got 0');
+    expect(() => controller.importCsvFile(dto, [powerFile], givenAuthenticatedUser)).toThrow(NotImplementedException);
   });
 
   it('should verify csv document integrity and return verification details', async () => {
@@ -326,6 +229,8 @@ describe('ProductionController', () => {
       'Arbitrum Sepolia',
       '0xcontract',
       'https://sepolia.arbiscan.io/tx/0xhash',
+      'some-cid',
+      'https://ipfs.io/ipfs/some-cid',
     );
 
     jest

@@ -6,27 +6,26 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { NestMinioModule, NestMinioOptions } from 'nestjs-minio';
 import { Module } from '@nestjs/common';
 import { ConfigurationModule, ConfigurationService } from '@h2-trust/configuration';
-import { StorageService } from './storage.service';
+import { CentralizedStorageService } from './centralized/centralized-storage.service';
+import { DecentralizedStorageService } from './decentralized/decentralized-storage.service';
+import { createCentralizedStorageService, createDecentralizedStorageService } from './storage.factory';
 
 @Module({
-  imports: [
-    ConfigurationModule,
-    NestMinioModule.registerAsync({
-      imports: [ConfigurationModule],
+  imports: [ConfigurationModule],
+  providers: [
+    {
+      provide: CentralizedStorageService,
       inject: [ConfigurationService],
-      useFactory: async (configService: ConfigurationService): Promise<NestMinioOptions> => ({
-        endPoint: configService.getGlobalConfiguration().minio.endPoint,
-        port: configService.getGlobalConfiguration().minio.port,
-        useSSL: configService.getGlobalConfiguration().minio.useSSL,
-        accessKey: configService.getGlobalConfiguration().minio.accessKey,
-        secretKey: configService.getGlobalConfiguration().minio.secretKey,
-      }),
-    }),
+      useFactory: createCentralizedStorageService,
+    },
+    {
+      provide: DecentralizedStorageService,
+      inject: [ConfigurationService],
+      useFactory: createDecentralizedStorageService,
+    },
   ],
-  providers: [StorageService],
-  exports: [StorageService],
+  exports: [CentralizedStorageService, DecentralizedStorageService],
 })
 export class StorageModule {}

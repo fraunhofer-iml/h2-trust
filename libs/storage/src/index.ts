@@ -7,4 +7,6 @@
  */
 
 export * from './lib/storage.module';
-export * from './lib/storage.service';
+export * from './lib/content-types';
+export * from './lib/centralized/index';
+export * from './lib/decentralized/index';

@@ -17,7 +17,6 @@ import { MatDivider } from '@angular/material/divider';
 import { PpaRequestDto } from '@h2-trust/api';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
-import { ConfirmationResult } from '../../dialog-data';
 import { RequestConfirmationDialogComponent } from '../ppa-confirmation/request-confirmation-dialog.component';
 
 @Component({
@@ -44,20 +43,16 @@ export class PpaRequestCardComponent {
   readonly dialog = inject(MatDialog);
 
   openDialog(status: PowerPurchaseAgreementStatus.APPROVED | PowerPurchaseAgreementStatus.REJECTED): void {
-    const dialogRef = this.dialog.open(RequestConfirmationDialogComponent, {
+    this.dialog.open(RequestConfirmationDialogComponent, {
       data: { status, request: this.request() },
-    });
-
-    dialogRef.afterClosed().subscribe((result: ConfirmationResult) => {
-      console.log(result);
     });
   }
 
   get dateLable() {
-    let prefix = '';
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
+    let prefix: string;
     let targetDate: Date;
 
     if (this.request().status === PowerPurchaseAgreementStatus.PENDING) {

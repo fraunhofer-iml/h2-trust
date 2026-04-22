@@ -21,6 +21,33 @@ body {
   height: 100%;
 }
 
+.subtle-scrollbar {
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.2s;
+
+  &:hover {
+    scrollbar-color: #ababab transparent;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 3px;
+  }
+
+  &:hover::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  &:hover::-webkit-scrollbar-thumb:hover {
+    scrollbar-color: #ababab transparent;
+    cursor: pointer;
+  }
+}
+
 :root {
   @include mat.all-component-themes(m3-theme.$h2-trust-theme);
   @include mat.table-overrides(

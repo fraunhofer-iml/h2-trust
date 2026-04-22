@@ -7,7 +7,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { StorageService } from '@h2-trust/storage';
+import { CentralizedStorageService } from '@h2-trust/storage';
 import { FileDownloadController } from './file-download.controller';
 import { FileDownloadService } from './file-download.service';
 
@@ -20,7 +20,7 @@ describe('FileDownloadController', () => {
       providers: [
         FileDownloadService,
         {
-          provide: StorageService,
+          provide: CentralizedStorageService,
           useValue: {},
         },
       ],

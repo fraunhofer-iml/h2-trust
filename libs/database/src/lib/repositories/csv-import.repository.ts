@@ -23,7 +23,7 @@ export interface CreateCsvDocumentInput {
 export class CsvImportRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async createCsvImport(uploadedById: string, tx?: Prisma.TransactionClient): Promise<string> {
+  async saveCsvImport(uploadedById: string, tx?: Prisma.TransactionClient): Promise<string> {
     const client = tx ?? this.prismaService;
 
     const csvImport = await client.csvImport.create({
@@ -33,7 +33,7 @@ export class CsvImportRepository {
     return csvImport.id;
   }
 
-  async createCsvDocuments(
+  async saveCsvDocuments(
     csvImportId: string,
     inputs: CreateCsvDocumentInput[],
     tx?: Prisma.TransactionClient,

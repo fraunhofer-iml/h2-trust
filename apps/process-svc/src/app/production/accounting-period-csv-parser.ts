@@ -15,15 +15,10 @@ export class AccountingPeriodCsvParser {
   private static readonly logger: Logger = new Logger(AccountingPeriodCsvParser.name);
   private static readonly dateTimeRegex = /^\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2}(:\d{2})?$/;
 
-  static async parseStream<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
-    stream: NodeJS.ReadableStream,
+  static async parseBuffer<T extends AccountingPeriodPower | AccountingPeriodHydrogen>(
+    buffer: Buffer,
     columns: string[],
-    fileName: string,
   ): Promise<T[]> {
-    if (!fileName.toLowerCase().endsWith('.csv')) {
-      throw new BrokerException(`Invalid file type: expected .csv but got: ${fileName}`, HttpStatus.BAD_REQUEST);
-    }
-
     let skipped = 0;
     let invalid = 0;
 
@@ -96,13 +91,14 @@ export class AccountingPeriodCsvParser {
       });
 
       parser.on('end', () => {
-        this.logger.log(`Parsed records: ${records.length}`);
-        this.logger.log(`Skipped records: ${skipped}`);
-        this.logger.log(`Invalid records: ${invalid}`);
+        this.logger.debug(`Parsed records: ${records.length}`);
+        this.logger.debug(`Skipped records: ${skipped}`);
+        this.logger.debug(`Invalid records: ${invalid}`);
         resolve(records.filter((row) => Object.values(row).every((val) => val !== null)));
       });
 
-      stream.pipe(parser);
+      parser.write(buffer);
+      parser.end();
     });
   }
 }
