@@ -12,12 +12,12 @@ import { ParsedImport } from './production.types';
 
 interface PowerItem {
   unitId: string;
-  amount: number;
+  amountProduced: number;
 }
 
 interface HydrogenItem {
   unitId: string;
-  amount: number;
+  amountProduced: number;
   powerConsumed: number;
 }
 
@@ -88,10 +88,10 @@ export class ProductionNormalizer {
         this.addToMap<StagedProductionEntity>(unitAccountingPeriodsByDateHour, `${timestamp}:00:00Z`, {
           unitId: unitAccountingPeriod.unitId,
           ownerId: ownerId,
-          amount,
+          amountProduced: amount,
           startedAt: new Date(`${timestamp}:00:00Z`),
           endedAt: new Date(`${timestamp}:59:59Z`),
-          powerUsed: timestamp in hourlyPowerUsedTotals ? hourlyPowerUsedTotals[timestamp] : 0,
+          powerConsumed: timestamp in hourlyPowerUsedTotals ? hourlyPowerUsedTotals[timestamp] : 0,
           type: type,
         });
       });

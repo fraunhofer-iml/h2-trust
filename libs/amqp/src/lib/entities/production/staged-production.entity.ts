@@ -12,29 +12,29 @@ import { CsvContentType } from '@h2-trust/domain';
 export class StagedProductionEntity {
   startedAt: Date;
   endedAt: Date;
-  amount: number;
+  amountProduced: number;
   unitId: string;
   ownerId: string;
-  powerUsed: number;
+  powerConsumed: number;
   type: CsvContentType;
   csvImportId?: string;
 
   constructor(
     startedAt: Date,
     endedAt: Date,
-    amount: number,
+    amountProduced: number,
     unitId: string,
     ownerId: string,
-    powerUsed: number,
+    powerConsumed: number,
     type: CsvContentType,
     csvImportId?: string,
   ) {
     this.startedAt = startedAt;
     this.endedAt = endedAt;
-    this.amount = amount;
+    this.amountProduced = amountProduced;
     this.unitId = unitId;
     this.ownerId = ownerId;
-    this.powerUsed = powerUsed;
+    this.powerConsumed = powerConsumed;
     this.type = type;
     this.csvImportId = csvImportId;
   }
@@ -48,10 +48,10 @@ export class StagedProductionEntity {
     return new StagedProductionEntity(
       stagedProduction.startedAt,
       stagedProduction.endedAt,
-      stagedProduction.amount.toNumber(),
+      stagedProduction.amountProduced.toNumber(),
       stagedProduction.unitId,
       stagedProduction.ownerId,
-      stagedProduction.powerUsed.toNumber(),
+      stagedProduction.powerConsumed.toNumber(),
       stagedProduction.type,
       stagedProduction.csvImportId,
     );

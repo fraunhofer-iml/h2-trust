@@ -18,8 +18,8 @@ export class ProductionStagingResultEntity {
   constructor(id: string, stagedProductions: StagedProductionEntity[]) {
     const { amount, powerUsed } = (stagedProductions ?? []).reduce(
       (acc, curr) => {
-        acc.amount += curr.amount;
-        acc.powerUsed += curr.powerUsed;
+        acc.amount += curr.amountProduced;
+        acc.powerUsed += curr.powerConsumed;
         return acc;
       },
       {
