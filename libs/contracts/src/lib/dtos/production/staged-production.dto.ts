@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { StagedProductionEntity } from '@h2-trust/amqp';
+import { StagedProductionEntity } from '@h2-trust/contracts/entities';
 import { CsvContentType } from '@h2-trust/domain';
 
 export class StagedProductionDto {

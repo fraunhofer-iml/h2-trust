@@ -9,15 +9,21 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { BlockchainService, ProofEntry } from '@h2-trust/blockchain';
 import { FeatureFlagService } from '@h2-trust/configuration';
-import { CsvDocumentEntity, ProductionStagingResultEntity, StagedProductionEntity } from '@h2-trust/contracts/entities';
-import { StageProductionsPayload } from '@h2-trust/contracts/payloads';
+import {
+  CsvDocumentEntity,
+  PowerPurchaseAgreementEntity,
+  ProductionStagingResultEntity,
+  StagedProductionEntity,
+} from '@h2-trust/contracts/entities';
+import { StageProductionFilter, StageProductionsPayload } from '@h2-trust/contracts/payloads';
 import {
   CreateCsvDocumentInput,
   CsvImportRepository,
-  PowerAccessApprovalRepository,
+  PowerPurchaseAgreementRepository,
   PrismaService,
   StagedProductionRepository,
 } from '@h2-trust/database';
+import { PowerPurchaseAgreementStatus, StagingScope } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
 import { CsvImportProcessingService } from './csv-import-processing.service';
 import { ProductionNormalizer } from './production-normalizer';
@@ -34,7 +40,7 @@ export class ProductionStagingService {
     private readonly csvImportRepository: CsvImportRepository,
     private readonly prismaService: PrismaService,
     private readonly stagedProductionRepository: StagedProductionRepository,
-    private readonly accessApprovalRepository: PowerAccessApprovalRepository,
+    private readonly powerPurchaseAgreementRepository: PowerPurchaseAgreementRepository,
   ) {}
 
   async readStagedProductions(payload: StageProductionFilter): Promise<StagedProductionEntity[]> {
@@ -43,9 +49,9 @@ export class ProductionStagingService {
     if (onlyOwnProductions) {
       return this.stagedProductionRepository.findStagedProductions(payload, true, []);
     } else {
-      const ownApprovals: PowerAccessApprovalEntity[] = await this.accessApprovalRepository.findAll(
+      const ownApprovals: PowerPurchaseAgreementEntity[] = await this.powerPurchaseAgreementRepository.findAll(
         payload.ownerId,
-        PowerAccessApprovalStatus.APPROVED,
+        PowerPurchaseAgreementStatus.APPROVED,
       );
       const accessableUnitIds: string[] = ownApprovals.map((approval) => approval.powerProductionUnit.id);
       return this.stagedProductionRepository.findStagedProductions(payload, false, accessableUnitIds);

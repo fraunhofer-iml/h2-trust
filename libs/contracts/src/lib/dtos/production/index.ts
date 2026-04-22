@@ -15,4 +15,3 @@ export * from './mocks';
 export * from './processed-csv.dto';
 export * from './production-csv-upload.dto';
 export * from './staged-production.dto';
-export * from './paginated-staged-production.dto';

@@ -13,13 +13,13 @@ import {
   ProcessStepEntity,
   ProductionStagingResultEntity,
   ProductionStatisticsEntity,
+  StagedProductionEntity,
   VerifyCsvDocumentIntegrityResultEntity,
 } from '@h2-trust/contracts/entities';
 import {
   CreateHydrogenProductionStatisticsPayload,
   CreateProductionsPayload,
   ReadByIdPayload,
-  StagedProductionEntity,
   StageProductionFilter,
   StageProductionsPayload,
 } from '@h2-trust/contracts/payloads';

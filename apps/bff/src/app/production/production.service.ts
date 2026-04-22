@@ -18,6 +18,7 @@ import {
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   ProductionStatisticsDto,
+  StagedProductionDto,
   StagingSubmissionDto,
   UserDetailsDto,
 } from '@h2-trust/contracts/dtos';
@@ -27,6 +28,7 @@ import {
   ProcessStepEntity,
   ProductionStagingResultEntity,
   ProductionStatisticsEntity,
+  StagedProductionEntity,
   UnitFileImport,
   VerifyCsvDocumentIntegrityResultEntity,
 } from '@h2-trust/contracts/entities';
@@ -36,9 +38,10 @@ import {
   ProductionDataFilter,
   ReadByIdPayload,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
+  StageProductionFilter,
   StageProductionsPayload,
 } from '@h2-trust/contracts/payloads';
-import { CsvContentType, ProcessType } from '@h2-trust/domain';
+import { CsvContentType, ProcessType, StagingScope } from '@h2-trust/domain';
 import { BrokerQueues, ProcessStepMessagePatterns, ProductionMessagePatterns } from '@h2-trust/messaging';
 import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
