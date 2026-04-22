@@ -34,14 +34,15 @@ export class PowerPurchaseAgreementRepository {
   /*    async insert(ppa: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity> {
     return; this.prismaService.powerPurchaseAgreement.create();
   } */
-  async update(ppa: UpdatePowerPurchaseAgreementPayload): Promise<any> {
+
+  async updatePpaStatus(ppa: UpdatePowerPurchaseAgreementPayload): Promise<any> {
     return this.prismaService.powerPurchaseAgreement
       .update({
         where: { id: ppa.ppaId },
         data: {
           decision: {
             update: {
-              data: { status: ppa.decision },
+              data: this.buildDecisionUpdateQuery(ppa),
             },
           },
         },
@@ -72,6 +73,26 @@ export class PowerPurchaseAgreementRepository {
 
     if (status) {
       query.status = status;
+    }
+    return query;
+  }
+
+  private buildDecisionUpdateQuery(payload: UpdatePowerPurchaseAgreementPayload) {
+    let query: Prisma.DecisionUncheckedUpdateWithoutPowerPurchaseAgreementInput = {};
+
+    if (payload.decidingUserId) {
+      query.userId = payload.decidingUserId;
+    }
+
+    if (payload.powerProductionUnitId) {
+      query.powerProductionUnitId = payload.powerProductionUnitId;
+    }
+
+    if (payload.comment) {
+      query.comment = payload.comment;
+    }
+    if (payload.decision) {
+      query.status = payload.decision;
     }
     return query;
   }
