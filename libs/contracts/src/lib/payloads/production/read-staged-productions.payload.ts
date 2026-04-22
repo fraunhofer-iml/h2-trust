@@ -32,7 +32,7 @@ export class ReadStagedProductionsPayload {
   @Type(() => Date)
   to?: Date;
 
-  constructor(owner: string, stagingScope: StagingScope, type: CsvContentType, from: Date, to: Date) {
+  constructor(owner: string, stagingScope?: StagingScope, type?: CsvContentType, from?: Date, to?: Date) {
     this.ownerId = owner;
     this.stagingScope = stagingScope;
     this.type = type;

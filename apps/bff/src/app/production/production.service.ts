@@ -85,10 +85,10 @@ export class ProductionService {
     const ownerId = userDetails.company.id;
     const payload = new ReadStagedProductionsPayload(ownerId, stagingScope, type, from, to);
 
-    const stageProductions: StagedProductionEntity[] = await firstValueFrom(
+    const stagedProductions: StagedProductionEntity[] = await firstValueFrom(
       this.processSvc.send(ProductionMessagePatterns.READ_STAGED_PRODUCTION_BY_COMPANY, payload),
     );
-    return stageProductions.map(StagedProductionDto.fromEntity);
+    return stagedProductions.map(StagedProductionDto.fromEntity);
   }
 
   async assembleHydrogenProductionStatistics(
