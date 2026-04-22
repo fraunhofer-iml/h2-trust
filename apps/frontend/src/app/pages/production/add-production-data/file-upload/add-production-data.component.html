@@ -1,0 +1,107 @@
+<div class="flex flex-col gap-4 overflow-auto p-8">
+  <div class="flex flex-row items-center justify-between gap-2 text-lg text-neutral-500">
+    <span class="flex flex-row items-center gap-2">
+      <a routerLink="/production/data" class="cursor-pointer hover:underline">Uploads</a>
+      <span class="material-symbols-outlined"> keyboard_arrow_right </span>
+      Add
+    </span>
+  </div>
+
+  <div class="flex w-full flex-col gap-4" [formGroup]="form">
+    <!--FILE INPUT-->
+
+    @if (roles.isHydrogenProducer() && roles.isPowerProducer()) {
+      <div class="grid grid-cols-2 gap-2 rounded-lg bg-white p-4">
+        <span class="col-span-2">Type Selection</span>
+
+        @for (unitType of availableUnitTypes; track $index) {
+          <div
+            class="group flex cursor-pointer flex-col gap-2 rounded-md border-2 p-4 hover:border-primary-200 hover:shadow-lg"
+            [ngClass]="
+              type() === unitType ? 'border-primary-200 text-primary-100' : 'border-neutral-300 text-neutral-500'
+            "
+            (click)="selectedTypeControl.setValue(unitType)"
+            role="none"
+          >
+            <div
+              class="flex size-10 items-center justify-center rounded-full border group-hover:border-primary-200 group-hover:bg-primary-100"
+              [ngClass]="
+                type() === unitType ? 'border-primary-200 bg-primary-100' : 'border-neutral-200 bg-neutral-100'
+              "
+            >
+              <span
+                class="material-symbols-outlined group-hover:text-primary-600"
+                [ngClass]="type() === unitType ? 'text-primary-600' : 'text-neutral-400'"
+              >
+                {{ unitType === CsvContentType.HYDROGEN ? ICONS.HYDROGEN_PRODUCTION : ICONS.POWER_PRODUCTION }}
+              </span>
+            </div>
+            <span class="text-base text-neutral-700">{{ unitType | prettyEnum | titlecase }} production data</span>
+          </div>
+        }
+      </div>
+    }
+
+    <div class="flex flex-col gap-4 rounded-lg bg-white p-4" formArrayName="files">
+      <span>CSV files</span>
+
+      <div
+        class="flex rounded-lg p-4"
+        [ngClass]="!type() ? 'bg-neutral-100 text-neutral-400' : 'bg-primary-100 text-neutral-600'"
+      >
+        <span class="material-symbols-outlined pr-2">lightbulb_2</span>
+
+        <span>
+          Upload comma-delimited CSV files with a header row. Required columns: <strong>time</strong>,
+          <strong>amount</strong> for power data and <strong>time</strong>, <strong>amount</strong>,
+          <strong>power</strong> for hydrogen data.
+        </span>
+      </div>
+
+      <app-file-drag-and-drop
+        [acceptedFileTypes]="FileTypes.CSV"
+        (fileSelected)="addFileFormWithUnit($event, files)"
+        [disabled]="!type()"
+      ></app-file-drag-and-drop>
+
+      @if (type(); as type) {
+        @if (files.controls.length !== 0) {
+          @for (file of files.controls; track file; let i = $index) {
+            <div [formGroupName]="i" class="rounded-md bg-neutral-100 p-4">
+              <div class="flex flex-row justify-between pb-4">
+                <div class="flex flex-col">
+                  <span class="text-base text-neutral-600">
+                    {{ files.controls[i].controls.file.value?.name }}
+                  </span>
+                  <span class="text-sm text-neutral-500">
+                    ({{ files.controls[i].controls.file.value?.size ?? 0 | fileSize }})</span
+                  >
+                </div>
+                <span
+                  class="material-symbols-outlined text-neutral-500 hover:cursor-pointer"
+                  role="none"
+                  (click)="removeFile(i, files)"
+                  >close</span
+                >
+              </div>
+              <mat-form-field class="w-full" appearance="outline">
+                <mat-label>Unit</mat-label>
+                <mat-select formControlName="unitId">
+                  @for (unit of queries[type].data(); track unit) {
+                    <mat-option [value]="unit.id" [disabled]="!unit.active">{{ unit.name }} </mat-option>
+                  }
+                </mat-select></mat-form-field
+              >
+            </div>
+          }
+        } @else {
+          <span class="text-sm text-neutral-500">No file selected.</span>
+        }
+      }
+    </div>
+
+    <div class="col-span-2 flex justify-end gap-4 rounded-lg bg-white p-4">
+      <button mat-flat-button (click)="submit()" [disabled]="form.invalid">Submit</button>
+    </div>
+  </div>
+</div>

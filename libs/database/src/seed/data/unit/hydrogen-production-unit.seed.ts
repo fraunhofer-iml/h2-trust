@@ -8,11 +8,14 @@
 
 import { HydrogenProductionUnit, Prisma } from '@prisma/client';
 import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology } from '@h2-trust/domain';
+import { auditTimestamp } from '../audit-timestamp.constant';
 import { UnitSeed } from './unit.seed';
 
 export const HydrogenProductionUnitSeed: readonly HydrogenProductionUnit[] = Object.freeze([
   {
     id: UnitSeed[4].id,
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
     method: HydrogenProductionMethod.ELECTROLYSIS,
     technology: HydrogenProductionTechnology.PEM,
     biddingZone: BiddingZone.DE_LU,

@@ -52,8 +52,12 @@ updates:
         patterns:
           - '@types/*'
     ignore:
-      - dependency-name: '*'
-        update-types: ['version-update:semver-major']
+      - dependency-name: '@nestjs/*'
+        versions: ['>= 11.0.0']
+      - dependency-name: '@prisma/*'
+        versions: ['>= 7.0.0']
+      - dependency-name: 'prisma'
+        versions: ['>= 7.0.0']
 
   - package-ecosystem: 'npm'
     directory: '/libs/blockchain/smart-contract'
@@ -83,9 +87,6 @@ updates:
         patterns:
           - '@types/node'
           - 'typescript'
-    ignore:
-      - dependency-name: '*'
-        update-types: ['version-update:semver-major']
 
   - package-ecosystem: 'docker'
     directories:
@@ -103,8 +104,8 @@ updates:
       - 'dependencies'
       - 'docker'
     ignore:
-      - dependency-name: '*'
-        update-types: ['version-update:semver-major']
+      - dependency-name: 'node'
+        versions: ['>= 25.0.0']
 
   - package-ecosystem: 'docker-compose'
     directory: '/'
@@ -118,8 +119,8 @@ updates:
       - 'dependencies'
       - 'docker'
     ignore:
-      - dependency-name: '*'
-        update-types: ['version-update:semver-major']
+      - dependency-name: 'node'
+        versions: ['>= 25.0.0']
 
   - package-ecosystem: 'github-actions'
     directory: '/'

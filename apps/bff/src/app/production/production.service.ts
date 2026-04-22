@@ -12,7 +12,6 @@ import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
   CreateHydrogenProductionStatisticsPayload,
-  CreateProductionsPayload,
   CsvDocumentEntity,
   FinalizeProductionsPayload,
   PaginatedProcessStepEntity,
@@ -27,23 +26,23 @@ import {
   ReadByIdPayload,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   StageProductionsPayload,
-  UnitFileReference,
+  UnitFileImport,
   VerifyCsvDocumentIntegrityResultEntity,
 } from '@h2-trust/amqp';
 import {
   AccountingPeriodMatchingResultDto,
-  CreateProductionDto,
   CsvDocumentIntegrityResultDto,
-  ImportSubmissionDto,
   PaginatedProductionDataDto,
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   ProductionStatisticsDto,
+  StagingSubmissionDto,
   UserDetailsDto,
 } from '@h2-trust/api';
+import { HashUtil } from '@h2-trust/blockchain';
 import { BatchType, ProcessType } from '@h2-trust/domain';
-import { StorageService } from '@h2-trust/storage';
+import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -51,30 +50,9 @@ export class ProductionService {
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
-    private readonly storageService: StorageService,
+    private readonly storageService: CentralizedStorageService,
     private readonly userService: UserService,
   ) {}
-
-  async createProductions(dto: CreateProductionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    const payload = new CreateProductionsPayload(
-      dto.productionStartedAt,
-      dto.productionEndedAt,
-      dto.powerProductionUnitId,
-      dto.powerAmountKwh,
-      dto.hydrogenProductionUnitId,
-      dto.hydrogenAmountKg,
-      userId,
-      dto.hydrogenStorageUnitId,
-    );
-
-    const processSteps: ProcessStepEntity[] = await firstValueFrom(
-      this.processSvc.send(ProductionMessagePatterns.CREATE, payload),
-    );
-
-    return processSteps
-      .filter((processStep) => processStep.type === ProcessType.HYDROGEN_PRODUCTION)
-      .map(ProductionOverviewDto.fromEntity);
-  }
 
   async readHydrogenProductionsByOwner(
     userId: string,
@@ -112,22 +90,14 @@ export class ProductionService {
   }
 
   async importCsvFiles(
-    powerProductionFiles: Express.Multer.File[],
-    hydrogenProductionFiles: Express.Multer.File[],
+    powerProductionFiles: Express.Multer.File[] | Express.Multer.File,
+    hydrogenProductionFiles: Express.Multer.File[] | Express.Multer.File,
     dto: ProductionCSVUploadDto,
     userId: string,
   ) {
-    const powerProductions = await this.uploadAndMapFilesToUnits(
-      dto.powerProductionUnitIds,
-      powerProductionFiles,
-      BatchType.POWER,
-    );
+    const powerProductions = this.mapUnitsToFiles(dto.unitIds, powerProductionFiles, BatchType.POWER);
 
-    const hydrogenProductions = await this.uploadAndMapFilesToUnits(
-      dto.hydrogenProductionUnitIds,
-      hydrogenProductionFiles,
-      BatchType.HYDROGEN,
-    );
+    const hydrogenProductions = this.mapUnitsToFiles(dto.unitIds, hydrogenProductionFiles, BatchType.HYDROGEN);
 
     const gridPowerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
       this.generalSvc.send(
@@ -148,33 +118,39 @@ export class ProductionService {
     return AccountingPeriodMatchingResultDto.fromEntity(matchingResult);
   }
 
-  private async uploadAndMapFilesToUnits(
+  private mapUnitsToFiles(
     unitIds: string | string[],
-    files: Express.Multer.File[],
+    files: Express.Multer.File | Express.Multer.File[],
     type: BatchType,
-  ): Promise<UnitFileReference[]> {
-    if (!files || files.length === 0) {
+  ): UnitFileImport[] {
+    const normalizedFiles: Express.Multer.File[] = Array.isArray(files) ? files : [files];
+
+    if (!normalizedFiles || normalizedFiles.length === 0) {
       throw new BadRequestException(`Missing file for ${type} production.`);
     }
 
-    const normalizedUnitIds = Array.isArray(unitIds) ? unitIds : [unitIds];
+    const normalizedUnitIds: string[] = Array.isArray(unitIds) ? unitIds : [unitIds];
 
-    if (normalizedUnitIds.length < files.length) {
+    if (normalizedUnitIds.length < normalizedFiles.length) {
       throw new BadRequestException(
-        `Not enough unit IDs provided for ${type} production files: expected ${files.length}, got ${normalizedUnitIds.length}.`,
+        `Not enough unit IDs provided for ${type} production files: expected ${normalizedFiles.length}, got ${normalizedUnitIds.length}.`,
       );
     }
 
-    return Promise.all(
-      files.map(async (file, i) => {
-        const fileName = await this.storageService.uploadFileWithRandomFileName(file.originalname, file.buffer);
-        return new UnitFileReference(normalizedUnitIds[i], fileName);
-      }),
-    );
+    return normalizedFiles.map((file, i) => {
+      const unitId = normalizedUnitIds[i];
+      const hashedFileBuffer = HashUtil.hashBuffer(file.buffer);
+      const encodedFileBuffer = file.buffer.toString('base64');
+      return new UnitFileImport(unitId, hashedFileBuffer, encodedFileBuffer);
+    });
   }
 
-  async submitCsvData(dto: ImportSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
-    const payload: FinalizeProductionsPayload = new FinalizeProductionsPayload(userId, dto.storageUnitId, dto.importId);
+  async submitCsvData(dto: StagingSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
+    const payload: FinalizeProductionsPayload = new FinalizeProductionsPayload(
+      userId,
+      dto.storageUnitId,
+      dto.stagedHydrogenProduction,
+    );
     const processSteps: ProcessStepEntity[] = await firstValueFrom(
       this.processSvc.send<ProcessStepEntity[]>(ProductionMessagePatterns.FINALIZE, payload),
     );
@@ -192,7 +168,7 @@ export class ProductionService {
     );
 
     return csvDocuments.map((doc) =>
-      ProcessedCsvDto.fromEntity(doc, this.storageService.minioUrl, userDetails.company.name),
+      ProcessedCsvDto.fromEntity(doc, this.storageService.baseUrl, userDetails.company.name),
     );
   }
 

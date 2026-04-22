@@ -9,9 +9,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CsvDocumentEntity, ReadByIdPayload, VerifyCsvDocumentIntegrityResultEntity } from '@h2-trust/amqp';
 import { BlockchainService, HashUtil } from '@h2-trust/blockchain';
+import { FeatureFlagService } from '@h2-trust/configuration';
 import { CsvImportRepository } from '@h2-trust/database';
 import { CsvDocumentIntegrityStatus } from '@h2-trust/domain';
-import { StorageService } from '@h2-trust/storage';
+import { CentralizedStorageService, DecentralizedStorageService } from '@h2-trust/storage';
 
 @Injectable()
 export class CsvDocumentService {
@@ -19,8 +20,10 @@ export class CsvDocumentService {
 
   constructor(
     private readonly blockchainService: BlockchainService,
+    private readonly featureFlagService: FeatureFlagService,
     private readonly csvImportRepository: CsvImportRepository,
-    private readonly storageService: StorageService,
+    private readonly centralizedStorageService: CentralizedStorageService,
+    private readonly decentralizedStorageService: DecentralizedStorageService,
   ) {}
 
   async findByCompany(payload: ReadByIdPayload): Promise<CsvDocumentEntity[]> {
@@ -28,62 +31,68 @@ export class CsvDocumentService {
   }
 
   async verifyCsvDocumentIntegrity(payload: ReadByIdPayload): Promise<VerifyCsvDocumentIntegrityResultEntity> {
-    const document = await this.csvImportRepository.findCsvDocumentById(payload.id);
+    const csvDocument = await this.csvImportRepository.findCsvDocumentById(payload.id);
 
-    if (!document) {
-      const message = `Document with id ${payload.id} does not exist, cannot verify file.`;
+    if (!csvDocument) {
+      const message = `CsvDocument with id ${payload.id} does not exist, cannot verify file.`;
       return this.createFailedResult(payload.id, null, message, null);
     }
 
-    if (!document.transactionHash) {
-      const message = `Document with id ${document.id} has no transaction hash, cannot verify file.`;
-      return this.createFailedResult(document.id, document.fileName, message, document.transactionHash);
+    if (!csvDocument.transactionHash) {
+      const message = `CsvDocument with id ${csvDocument.id} has no transaction hash, cannot verify file.`;
+      return this.createFailedResult(csvDocument.id, csvDocument.fileName, message, csvDocument.transactionHash);
     }
 
-    if (!this.blockchainService.blockchainEnabled) {
-      const message = 'Blockchain integration is disabled, cannot verify file integrity.';
-      return this.createFailedResult(document.id, document.fileName, message, document.transactionHash);
+    if (!this.featureFlagService.verificationEnabled) {
+      const message = 'Blockchain integration disabled, cannot verify file integrity.';
+      return this.createFailedResult(csvDocument.id, csvDocument.fileName, message, csvDocument.transactionHash);
     }
 
     try {
       const [fileStream, proof, blockchainMetadata] = await Promise.all([
-        this.storageService.downloadFile(document.fileName),
-        this.blockchainService.retrieveProof(document.id),
-        this.blockchainService.retrieveBlockchainMetadata(document.transactionHash),
+        this.centralizedStorageService.downloadFile(csvDocument.fileName),
+        this.blockchainService.retrieveProof(csvDocument.id),
+        this.blockchainService.retrieveBlockchainMetadata(csvDocument.transactionHash),
       ]);
 
       if (!fileStream) {
-        const message = `File with name ${document.fileName} does not exist in storage, cannot verify file.`;
-        return this.createFailedResult(document.id, document.fileName, message, document.transactionHash);
+        const message = `Csv file with name ${csvDocument.fileName} does not exist in storage, cannot verify file.`;
+        return this.createFailedResult(csvDocument.id, csvDocument.fileName, message, csvDocument.transactionHash);
       }
 
       if (!proof) {
-        const message = `No blockchain proof found for document with id ${document.id}, cannot verify file.`;
-        return this.createFailedResult(document.id, document.fileName, message, document.transactionHash);
+        const message = `No blockchain proof found for CsvDocument with id ${csvDocument.id}, cannot verify file.`;
+        return this.createFailedResult(csvDocument.id, csvDocument.fileName, message, csvDocument.transactionHash);
+      }
+
+      if (!blockchainMetadata) {
+        const message = `No blockchain metadata found for CsvDocument with id ${csvDocument.id}, cannot verify file.`;
+        return this.createFailedResult(csvDocument.id, csvDocument.fileName, message, csvDocument.transactionHash);
       }
 
       const validHash = await HashUtil.verifyStreamWithStoredHash(fileStream, proof.hash);
 
       this.logger.debug(
-        `${validHash ? '✅ Valid' : '❌ Invalid'} integrity for document with id ${document.id} and file name ${document.fileName}`,
+        `${validHash ? '✅ Valid' : '❌ Invalid'} integrity for CsvDocument with id ${csvDocument.id} and file name ${csvDocument.fileName}`,
       );
 
       return this.createSuccessfulResult(
-        document.id,
-        document.fileName,
+        csvDocument.id,
+        csvDocument.fileName,
         validHash,
-        document.transactionHash,
-        blockchainMetadata?.blockNumber ?? null,
-        blockchainMetadata?.blockTimestamp ?? null,
+        csvDocument.transactionHash,
+        blockchainMetadata.blockNumber,
+        blockchainMetadata.blockTimestamp,
+        proof.cid,
       );
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
 
-      const logMessage = `❌ Failed to verify integrity for document with id ${document.id} and file name ${document.fileName}: ${errorMessage}`;
+      const logMessage = `❌ Failed to verify integrity for CsvDocument with id ${csvDocument.id} and file name ${csvDocument.fileName}: ${errorMessage}`;
       this.logger.error(logMessage, error instanceof Error ? error.stack : undefined);
 
       const resultMessage = `Verification failed due to unexpected error: ${errorMessage}`;
-      return this.createFailedResult(document.id, document.fileName, resultMessage, document.transactionHash);
+      return this.createFailedResult(csvDocument.id, csvDocument.fileName, resultMessage, csvDocument.transactionHash);
     }
   }
 
@@ -92,15 +101,16 @@ export class CsvDocumentService {
     fileName: string,
     validHash: boolean,
     transactionHash: string,
-    blockNumber: number | null,
-    blockTimestamp: Date | null,
+    blockNumber: number,
+    blockTimestamp: Date,
+    cid: string,
   ): VerifyCsvDocumentIntegrityResultEntity {
     const status = validHash ? CsvDocumentIntegrityStatus.VERIFIED : CsvDocumentIntegrityStatus.MISMATCH;
     const message = validHash
-      ? `File integrity verified successfully for document with id ${documentId}.`
-      : `File integrity mismatch for document with id ${documentId}.`;
+      ? 'The file matches the registered proof.'
+      : 'The file does not match the registered proof.';
 
-    return this.createResult(documentId, fileName, status, message, transactionHash, blockNumber, blockTimestamp);
+    return this.createResult(documentId, fileName, status, message, transactionHash, blockNumber, blockTimestamp, cid);
   }
 
   private createFailedResult(
@@ -117,6 +127,7 @@ export class CsvDocumentService {
       transactionHash,
       null,
       null,
+      null,
     );
   }
 
@@ -128,12 +139,15 @@ export class CsvDocumentService {
     transactionHash: string | null,
     blockNumber: number | null,
     blockTimestamp: Date | null,
+    cid: string | null,
   ): VerifyCsvDocumentIntegrityResultEntity {
-    const { blockchainEnabled } = this.blockchainService;
-    const explorerUrl =
-      blockchainEnabled && transactionHash ? `${this.blockchainService.explorerUrl}/${transactionHash}` : null;
-    const network = blockchainEnabled ? this.blockchainService.rpcUrl : null;
-    const smartContractAddress = blockchainEnabled ? this.blockchainService.smartContractAddress : null;
+    const { verificationEnabled } = this.featureFlagService;
+    const ipfsExplorerUrl =
+      verificationEnabled && cid ? `${this.decentralizedStorageService.explorerUrl}/${cid}` : null;
+    const blockchainExplorerUrl =
+      verificationEnabled && transactionHash ? `${this.blockchainService.explorerUrl}/${transactionHash}` : null;
+    const network = verificationEnabled ? this.blockchainService.endpointUrl : null;
+    const smartContractAddress = verificationEnabled ? this.blockchainService.smartContractAddress : null;
 
     return new VerifyCsvDocumentIntegrityResultEntity(
       documentId,
@@ -145,7 +159,9 @@ export class CsvDocumentService {
       blockTimestamp,
       network,
       smartContractAddress,
-      explorerUrl,
+      blockchainExplorerUrl,
+      cid,
+      ipfsExplorerUrl,
     );
   }
 }

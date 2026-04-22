@@ -9,15 +9,21 @@
 import { LogLevel } from '@nestjs/common';
 import { registerAs } from '@nestjs/config';
 import { requireEnv } from '../util';
+import {
+  buildVerificationConfiguration,
+  S3Configuration,
+  VerificationConfiguration,
+} from './features/verification.configuration';
 
 export const GLOBAL_CONFIGURATION_IDENTIFIER = 'global-configuration';
 
 export interface GlobalConfiguration {
   logLevel: LogLevel[];
   amqp: AmqpConfiguration;
-  minio: MinioConfiguration;
-  blockchain: BlockchainConfiguration;
+  centralizedStorage: CentralizedStorageConfiguration;
   keycloak: KeycloakConfiguration;
+  featureFlags: FeatureFlagsConfiguration;
+  verification?: VerificationConfiguration;
 }
 
 export interface AmqpConfiguration {
@@ -25,23 +31,7 @@ export interface AmqpConfiguration {
   queuePrefix: string;
 }
 
-export interface MinioConfiguration {
-  useSSL: boolean;
-  endPoint: string;
-  port: number;
-  accessKey: string;
-  secretKey: string;
-  bucketName: string;
-}
-
-export interface BlockchainConfiguration {
-  enabled: boolean;
-  rpcUrl: string;
-  privateKey: string;
-  artifactPath: string;
-  smartContractAddress: string;
-  explorerUrl: string;
-}
+export type CentralizedStorageConfiguration = S3Configuration;
 
 export interface KeycloakConfiguration {
   url: string;
@@ -50,32 +40,35 @@ export interface KeycloakConfiguration {
   clientSecret: string;
 }
 
-export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => ({
-  logLevel: requireEnv('LOG_LEVEL').split(','),
-  amqp: {
-    uri: requireEnv('AMQP_URI'),
-    queuePrefix: requireEnv('AMQP_QUEUE_PREFIX'),
-  },
-  minio: {
-    useSSL: requireEnv('MINIO_USE_SSL') === 'true',
-    endPoint: requireEnv('MINIO_ENDPOINT'),
-    port: parseInt(requireEnv('MINIO_PORT')),
-    accessKey: requireEnv('MINIO_ACCESS_KEY'),
-    secretKey: requireEnv('MINIO_SECRET_KEY'),
-    bucketName: requireEnv('MINIO_BUCKET_NAME'),
-  },
-  blockchain: {
-    enabled: requireEnv('BLOCKCHAIN_ENABLED') === 'true',
-    rpcUrl: requireEnv('BLOCKCHAIN_RPC_URL'),
-    privateKey: requireEnv('BLOCKCHAIN_PRIVATE_KEY'),
-    artifactPath: requireEnv('BLOCKCHAIN_ARTIFACT_PATH'),
-    smartContractAddress: requireEnv('BLOCKCHAIN_SMART_CONTRACT_ADDRESS'),
-    explorerUrl: requireEnv('BLOCKCHAIN_EXPLORER_URL'),
-  },
-  keycloak: {
-    url: requireEnv('KEYCLOAK_URL'),
-    realm: requireEnv('KEYCLOAK_REALM'),
-    clientId: requireEnv('KEYCLOAK_CLIENT_ID'),
-    clientSecret: requireEnv('KEYCLOAK_CLIENT_SECRET'),
-  },
-}));
+export interface FeatureFlagsConfiguration {
+  verificationEnabled: boolean;
+}
+
+export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => {
+  const verificationEnabled = requireEnv('FEATURE_VERIFICATION_ENABLED') === 'true';
+
+  return {
+    logLevel: requireEnv('LOG_LEVEL').split(','),
+    amqp: {
+      uri: requireEnv('AMQP_URI'),
+      queuePrefix: requireEnv('AMQP_QUEUE_PREFIX'),
+    } satisfies AmqpConfiguration,
+    centralizedStorage: {
+      endpointUrl: requireEnv('CENTRALIZED_STORAGE_ENDPOINT_URL'),
+      region: requireEnv('CENTRALIZED_STORAGE_REGION'),
+      accessKey: requireEnv('CENTRALIZED_STORAGE_ACCESS_KEY'),
+      secretKey: requireEnv('CENTRALIZED_STORAGE_SECRET_KEY'),
+      bucketName: requireEnv('CENTRALIZED_STORAGE_BUCKET_NAME'),
+    } satisfies CentralizedStorageConfiguration,
+    keycloak: {
+      url: requireEnv('KEYCLOAK_URL'),
+      realm: requireEnv('KEYCLOAK_REALM'),
+      clientId: requireEnv('KEYCLOAK_CLIENT_ID'),
+      clientSecret: requireEnv('KEYCLOAK_CLIENT_SECRET'),
+    } satisfies KeycloakConfiguration,
+    featureFlags: {
+      verificationEnabled,
+    } satisfies FeatureFlagsConfiguration,
+    verification: verificationEnabled ? buildVerificationConfiguration() : undefined,
+  };
+});
