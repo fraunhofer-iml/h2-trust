@@ -19,9 +19,9 @@ import {
   DocumentSeed,
   HydrogenProductionUnitSeed,
   HydrogenStorageUnitSeed,
-  PowerAccessApprovalSeed,
   PowerProductionTypeSeed,
   PowerProductionUnitSeed,
+  PowerPurchaseAgreementSeed,
   ProcessStepDetailsSeed,
   ProcessStepSeed,
   QualityDetailsSeed,
@@ -163,9 +163,9 @@ export async function seedDatabase() {
       createRecord: async (data: any) => await prisma.document.create({ data }),
     },
     {
-      name: 'powerAccessApproval',
-      records: PowerAccessApprovalSeed,
-      createRecord: async (data: any) => await prisma.powerAccessApproval.create({ data }),
+      name: 'powerPurchaseAgreement',
+      records: PowerPurchaseAgreementSeed,
+      createRecord: async (data: any) => await prisma.powerPurchaseAgreement.create({ data }),
     },
   ];
 

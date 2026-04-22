@@ -7,7 +7,7 @@
  */
 
 export * from './common';
-export * from './power-access-approval';
+export * from './power-purchase-agreement';
 export * from './process-step';
 export * from './production';
 export * from './unit';

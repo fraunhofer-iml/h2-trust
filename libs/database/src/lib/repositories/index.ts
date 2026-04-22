@@ -12,7 +12,7 @@ export * from './document.repository';
 export * from './process-step.repository';
 export * from './unit.repository';
 export * from './user.repository';
-export * from './power-access-approval.repository';
+export * from './power-purchase-agreement.repository';
 export * from './power-production-type.repository';
 export * from './company.repository';
 export * from './staged-production.repository';
