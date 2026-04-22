@@ -57,24 +57,31 @@
         </div>
       </div>
 
-      <div class="col-span-2 rounded-lg bg-white p-4">
-        <h3 class="mb-2 font-semibold text-neutral-500">Attached Files</h3>
-        <div class="flex max-h-60 flex-col gap-2 overflow-y-auto">
-          @for (file of batchQuery.data().attachedFiles; track $index) {
-            <div
-              class="flex flex-row items-center gap-4 rounded-lg border-2 border-solid border-neutral-100 p-2 hover:cursor-pointer hover:border-neutral-200"
-              (click)="openFile(file.url)"
-              role="none"
-            >
-              <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-100">
-                <span class="material-symbols-outlined text-primary-500"> attach_file </span>
-              </div>
-              <span class="text-sm text-neutral-600">{{ file.description }}</span>
-            </div>
-          }
-        </div>
+      <div class="col-span-2 flex flex-col gap-2 rounded-lg bg-white p-4">
+        <h3 class="font-semibold text-neutral-500">Attached Files</h3>
+
         @if (batchQuery.data().attachedFiles.length === 0) {
-          <span class="text-sm text-neutral-600">No files attached.</span>
+          <app-empty-state
+            title="No files"
+            description="There are no attached files."
+            icon="folder"
+            class="h-full"
+          ></app-empty-state>
+        } @else {
+          <div class="flex max-h-60 flex-col gap-2 overflow-y-auto">
+            @for (file of batchQuery.data().attachedFiles; track $index) {
+              <div
+                class="flex flex-row items-center gap-4 rounded-lg border-2 border-solid border-neutral-100 p-2 hover:cursor-pointer hover:border-neutral-200"
+                (click)="openFile(file.url)"
+                role="none"
+              >
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-100">
+                  <span class="material-symbols-outlined text-primary-500"> attach_file </span>
+                </div>
+                <span class="text-sm text-neutral-600">{{ file.description }}</span>
+              </div>
+            }
+          </div>
         }
       </div>
       <app-proof-of-origin class="col-span-6 2xl:col-span-3" [proofOfOrigin$]="batchQuery.data().proofOfOrigin">
