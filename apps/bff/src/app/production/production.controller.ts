@@ -170,7 +170,7 @@ export class ProductionController {
     @Query('to') _to: Date,
     @AuthenticatedUser() _authenticatedUser: AuthenticatedKCUser,
   ): Promise<StagedProductionDto[]> {
-    return this.service.readStagedHydrogenProductionsByOwner(_authenticatedUser.sub, _scope, _type, _from, _to);
+    return this.service.readStagedProductionsByCompanyAndType(_authenticatedUser.sub, _scope, _type, _from, _to);
   }
 
   @Get('pending/csv/:id/verify')

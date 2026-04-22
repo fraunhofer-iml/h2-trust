@@ -15,7 +15,7 @@ import {
   ProductionStagingResultEntity,
   StagedProductionEntity,
 } from '@h2-trust/contracts/entities';
-import { StageProductionFilter, StageProductionsPayload } from '@h2-trust/contracts/payloads';
+import { ReadStagedProductionsPayload, StageProductionsPayload } from '@h2-trust/contracts/payloads';
 import {
   CreateCsvDocumentInput,
   CsvImportRepository,
@@ -43,17 +43,15 @@ export class ProductionStagingService {
     private readonly powerPurchaseAgreementRepository: PowerPurchaseAgreementRepository,
   ) {}
 
-  async readStagedProductions(payload: StageProductionFilter): Promise<StagedProductionEntity[]> {
-    const onlyOwnProductions: boolean = payload.stagingScope == StagingScope.OWN;
-
-    if (onlyOwnProductions) {
+  async readStagedProductions(payload: ReadStagedProductionsPayload): Promise<StagedProductionEntity[]> {
+    if (payload.stagingScope == StagingScope.OWN) {
       return this.stagedProductionRepository.findStagedProductions(payload, true, []);
     } else {
-      const ownApprovals: PowerPurchaseAgreementEntity[] = await this.powerPurchaseAgreementRepository.findAll(
+      const approvedAgreements: PowerPurchaseAgreementEntity[] = await this.powerPurchaseAgreementRepository.findAll(
         payload.ownerId,
         PowerPurchaseAgreementStatus.APPROVED,
       );
-      const accessableUnitIds: string[] = ownApprovals.map((approval) => approval.powerProductionUnit.id);
+      const accessableUnitIds: string[] = approvedAgreements.map((approval) => approval.powerProductionUnit.id);
       return this.stagedProductionRepository.findStagedProductions(payload, false, accessableUnitIds);
     }
   }

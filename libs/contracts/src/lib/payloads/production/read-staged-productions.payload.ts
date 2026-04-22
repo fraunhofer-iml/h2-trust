@@ -10,7 +10,7 @@ import { Type } from 'class-transformer';
 import { IsDate, IsEnum, IsOptional, IsString } from 'class-validator';
 import { CsvContentType, StagingScope } from '@h2-trust/domain';
 
-export class StageProductionFilter {
+export class ReadStagedProductionsPayload {
   @IsString()
   ownerId: string;
 

@@ -38,7 +38,7 @@ import {
   ProductionDataFilter,
   ReadByIdPayload,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
-  StageProductionFilter,
+  ReadStagedProductionsPayload,
   StageProductionsPayload,
 } from '@h2-trust/contracts/payloads';
 import { CsvContentType, ProcessType, StagingScope } from '@h2-trust/domain';
@@ -74,7 +74,7 @@ export class ProductionService {
     return PaginatedProductionDataDto.fromEntity(paginatedProcessStep);
   }
 
-  async readStagedHydrogenProductionsByOwner(
+  async readStagedProductionsByCompanyAndType(
     userId: string,
     stagingScope?: StagingScope,
     type?: CsvContentType,
@@ -83,12 +83,12 @@ export class ProductionService {
   ): Promise<StagedProductionDto[]> {
     const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
     const ownerId = userDetails.company.id;
-    const payload = new StageProductionFilter(ownerId, stagingScope, type, from, to);
+    const payload = new ReadStagedProductionsPayload(ownerId, stagingScope, type, from, to);
 
     const stageProductions: StagedProductionEntity[] = await firstValueFrom(
       this.processSvc.send(ProductionMessagePatterns.READ_STAGED_PRODUCTION_BY_COMPANY, payload),
     );
-    return stageProductions.map((stageProduction) => StagedProductionDto.fromEntity(stageProduction));
+    return stageProductions.map(StagedProductionDto.fromEntity);
   }
 
   async assembleHydrogenProductionStatistics(

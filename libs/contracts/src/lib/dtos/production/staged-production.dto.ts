@@ -8,6 +8,7 @@
 
 import { StagedProductionEntity } from '@h2-trust/contracts/entities';
 import { CsvContentType } from '@h2-trust/domain';
+import { assertDefined } from '@h2-trust/utils';
 
 export class StagedProductionDto {
   id: string;
@@ -17,7 +18,7 @@ export class StagedProductionDto {
   csvContentType: CsvContentType;
   uploadedBy: string; // company name
   productionUnitId: string;
-  amountConsumed?: number; // amount of power consumed, only set if csv content type is hydrogen
+  powerConsumed?: number; // amount of power consumed, only set if csv content type is hydrogen
 
   constructor(
     id: string,
@@ -27,7 +28,7 @@ export class StagedProductionDto {
     csvContentType: CsvContentType,
     uploadedBy: string,
     productionUnitId: string,
-    amountConsumed?: number,
+    powerConsumed?: number,
   ) {
     this.id = id;
     this.startedAt = startedAt;
@@ -36,12 +37,13 @@ export class StagedProductionDto {
     this.csvContentType = csvContentType;
     this.uploadedBy = uploadedBy;
     this.productionUnitId = productionUnitId;
-    this.amountConsumed = amountConsumed;
+    this.powerConsumed = powerConsumed;
   }
 
-  static fromEntity(stagedProduction: StagedProductionEntity) {
+  static fromEntity(stagedProduction: StagedProductionEntity): StagedProductionDto {
+    assertDefined(stagedProduction.id, `stage production id`);
     return new StagedProductionDto(
-      stagedProduction.id ?? '',
+      stagedProduction.id,
       stagedProduction.startedAt,
       stagedProduction.endedAt,
       stagedProduction.amountProduced,

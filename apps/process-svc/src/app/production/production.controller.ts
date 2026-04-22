@@ -20,7 +20,7 @@ import {
   CreateHydrogenProductionStatisticsPayload,
   CreateProductionsPayload,
   ReadByIdPayload,
-  StageProductionFilter,
+  ReadStagedProductionsPayload,
   StageProductionsPayload,
 } from '@h2-trust/contracts/payloads';
 import { ProductionMessagePatterns } from '@h2-trust/messaging';
@@ -65,7 +65,7 @@ export class ProductionController {
   }
 
   @MessagePattern(ProductionMessagePatterns.READ_STAGED_PRODUCTION_BY_COMPANY)
-  async readStagedProductionsByCompany(payload: StageProductionFilter): Promise<StagedProductionEntity[]> {
+  async readStagedProductionsByCompany(payload: ReadStagedProductionsPayload): Promise<StagedProductionEntity[]> {
     return this.productionStagingService.readStagedProductions(payload);
   }
 

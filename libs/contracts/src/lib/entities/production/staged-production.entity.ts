@@ -21,7 +21,7 @@ export class StagedProductionEntity {
   csvImportId?: string;
 
   constructor(
-    id: string,
+    id: string | undefined,
     startedAt: Date,
     endedAt: Date,
     amountProduced: number,
