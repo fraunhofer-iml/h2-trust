@@ -28,6 +28,8 @@ import { BatchType, CsvContentType } from '@h2-trust/domain';
 import { FileDragAndDropComponent } from '../../../../layout/drag-and-drop/file-drag-and-drop.component';
 import { FileTypes } from '../../../../shared/constants/file-types';
 import { ICONS } from '../../../../shared/constants/icons';
+import { UploadFlowAction } from '../../../../shared/constants/upload-flow-action.enum';
+import { ModalData } from '../../../../shared/model/modal-data.model';
 import { FileSizePipe } from '../../../../shared/pipes/file-size.pipe';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
 import {
@@ -42,8 +44,6 @@ import { UserRolesStore } from '../../../../shared/store/user-role.store';
 import { minFormArrayLength } from '../../../../shared/util/form-array-length.validator';
 import { FileForm } from './file-upload.form';
 import { LoadingModalComponent } from './loading-modal/loading-modal.component';
-import { ModalData } from './modal-data.model';
-import { UploadFlowAction } from './upload-flow-action.enum';
 
 @Component({
   selector: 'app-add-production-data',

@@ -3,8 +3,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Router } from '@angular/router';
-import { ModalData } from '../modal-data.model';
-import { UploadFlowAction } from '../upload-flow-action.enum';
+import { UploadFlowAction } from '../../../../../shared/constants/upload-flow-action.enum';
+import { ModalData } from '../../../../../shared/model/modal-data.model';
 
 @Component({
   selector: 'app-loading-modal',
