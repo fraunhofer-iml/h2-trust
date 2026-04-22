@@ -8,7 +8,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { StagedProductionEntity } from '@h2-trust/amqp';
+import { StagedProductionEntity, StageProductionFilter } from '@h2-trust/amqp';
 import { PrismaService } from '../prisma.service';
 import { stagedProductionDeepQueryArgs } from '../query-args';
 import { StagedProductionDeepDbType } from '../types';
@@ -19,25 +19,19 @@ export class StagedProductionRepository {
 
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findStagedProduction(id: string): Promise<StagedProductionEntity> {
-    return this.prismaService.stagedProduction
-      .findUnique({
-        where: {
-          id: id,
-        },
-        ...stagedProductionDeepQueryArgs,
-      })
-      .then((stagedProduction) => StagedProductionEntity.fromDeepDatabase(stagedProduction));
-  }
-
-  async findStagedProductions(ownerId: string, unitIds: string[], type: BatchType): Promise<StagedProductionEntity[]> {
+  //TODO-LG: add from and to Dates
+  async findStagedProductions(
+    payload: StageProductionFilter,
+    onlyOwnProductions: boolean,
+    unitIds: string[],
+  ): Promise<StagedProductionEntity[]> {
     const stagedProductionFilter: Prisma.StagedProductionWhereInput = {
-      ...(ownerId !== undefined && { ownerId }),
+      ...(payload.ownerId !== undefined && onlyOwnProductions && { ownerId: payload.ownerId }),
+      ...(payload.type !== undefined && { type: payload.type }),
       ...(unitIds !== undefined &&
         unitIds.length > 0 && {
           unitId: { in: unitIds },
         }),
-      ...(type !== undefined && { type }),
     };
     return this.prismaService.stagedProduction
       .findMany({

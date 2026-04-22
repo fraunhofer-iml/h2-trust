@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { StagedProductionEntity } from '@h2-trust/amqp';
 import { CsvContentType } from '@h2-trust/domain';
 
 export class StagedProductionDto {
@@ -39,15 +40,15 @@ export class StagedProductionDto {
   }
 
   static fromEntity(stagedProduction: StagedProductionEntity) {
-    return new StagedProductionEntity(
+    return new StagedProductionDto(
+      stagedProduction.id ?? '',
       stagedProduction.startedAt,
       stagedProduction.endedAt,
-      stagedProduction.amount,
-      stagedProduction.unitId,
-      stagedProduction.ownerId,
-      stagedProduction.usedPower,
+      stagedProduction.amountProduced,
       stagedProduction.type,
-      stagedProduction.csvImportId,
+      stagedProduction.ownerId,
+      stagedProduction.unitId,
+      stagedProduction.powerConsumed,
     );
   }
 }

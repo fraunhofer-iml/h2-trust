@@ -10,10 +10,10 @@ import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
   BrokerException,
   CsvDocumentEntity,
-  PaginatedStagedProductionEntity,
   PowerAccessApprovalEntity,
   ProductionStagingResultEntity,
   StagedProductionEntity,
+  StageProductionFilter,
   StageProductionsPayload,
 } from '@h2-trust/amqp';
 import { BlockchainService, ProofEntry } from '@h2-trust/blockchain';
@@ -21,9 +21,11 @@ import { FeatureFlagService } from '@h2-trust/configuration';
 import {
   CreateCsvDocumentInput,
   CsvImportRepository,
+  PowerAccessApprovalRepository,
   PrismaService,
   StagedProductionRepository,
 } from '@h2-trust/database';
+import { PowerAccessApprovalStatus, StagingScope } from '@h2-trust/domain';
 import { CsvImportProcessingService } from './csv-import-processing.service';
 import { ProductionNormalizer } from './production-normalizer';
 import { DocumentProof, ParsedImport } from './production.types';
@@ -42,61 +44,19 @@ export class ProductionStagingService {
     private readonly accessApprovalRepository: PowerAccessApprovalRepository,
   ) {}
 
-  async readAllStagedPowerProductionsForStagedHydrogenProduction(
-    stagedHydrogenProductionId: string,
-    companyId: string,
-  ) {
-    const stagedHydrogenProduction: StagedProductionEntity =
-      await this.stagedProductionRepository.findStagedProduction(stagedHydrogenProductionId);
+  async readStagedProductions(payload: StageProductionFilter): Promise<StagedProductionEntity[]> {
+    const onlyOwnProductions: boolean = payload.stagingScope == StagingScope.OWN;
 
-    if (!stagedHydrogenProduction) {
-      throw NotFoundException;
+    if (onlyOwnProductions) {
+      return this.stagedProductionRepository.findStagedProductions(payload, true, []);
+    } else {
+      const ownApprovals: PowerAccessApprovalEntity[] = await this.accessApprovalRepository.findAll(
+        payload.ownerId,
+        PowerAccessApprovalStatus.APPROVED,
+      );
+      const accessableUnitIds: string[] = ownApprovals.map((approval) => approval.powerProductionUnit.id);
+      return this.stagedProductionRepository.findStagedProductions(payload, false, accessableUnitIds);
     }
-
-    const accessableStagedPowerProductions: StagedProductionEntity[] =
-      await this.readAllAccessableStagePowerProductionsForCompany(companyId);
-
-    return accessableStagedPowerProductions.filter(
-      (powerProduction) => powerProduction.startedAt === stagedHydrogenProduction.startedAt,
-    );
-  }
-
-  async readAllAccessableStagePowerProductionsForCompany(companyId: string): Promise<StagedProductionEntity[]> {
-    const ownApprovals: PowerAccessApprovalEntity[] = await this.accessApprovalRepository.findAll(
-      companyId,
-      PowerAccessApprovalStatus.APPROVED,
-    );
-
-    const accessableUnitIds: string[] = ownApprovals.map((approval) => approval.powerProductionUnit.id);
-
-    return this.stagedProductionRepository.findStagedProductions(undefined, accessableUnitIds, undefined);
-  }
-
-  async readStagedProductions(
-    payload: ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
-  ): Promise<PaginatedStagedProductionEntity> {
-    const stagedProductions: StagedProductionEntity[] = await this.stagedProductionRepository.findStagedProductions(
-      payload.ownerId,
-      undefined,
-      BatchType.HYDROGEN,
-    );
-    return this.createStagedProductionPagination(stagedProductions, payload.filter.pageSize, payload.filter.pageNumber);
-  }
-
-  private createStagedProductionPagination(
-    stagedProductions: StagedProductionEntity[],
-    pageSize: number,
-    pageNumber: number,
-  ): PaginatedStagedProductionEntity {
-    const paginationStart: number = (pageNumber - 1) * pageSize;
-    const paginationEnd: number = pageNumber * pageSize;
-
-    return new PaginatedStagedProductionEntity(
-      stagedProductions.slice(paginationStart, paginationEnd),
-      pageNumber,
-      pageSize,
-      stagedProductions.length,
-    );
   }
 
   async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {

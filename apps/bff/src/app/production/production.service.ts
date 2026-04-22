@@ -12,12 +12,9 @@ import { ClientProxy } from '@nestjs/microservices';
 import {
   BrokerQueues,
   CreateHydrogenProductionStatisticsPayload,
-  CreateProductionsPayload,
   CsvDocumentEntity,
   FinalizeProductionsPayload,
   PaginatedProcessStepEntity,
-  PowerAccessApprovalPatterns,
-  PowerProductionUnitEntity,
   ProcessStepEntity,
   ProcessStepMessagePatterns,
   ProductionDataFilter,
@@ -26,6 +23,8 @@ import {
   ProductionStatisticsEntity,
   ReadByIdPayload,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
+  StagedProductionEntity,
+  StageProductionFilter,
   StageProductionsPayload,
   UnitFileImport,
   VerifyCsvDocumentIntegrityResultEntity,
@@ -38,11 +37,12 @@ import {
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   ProductionStatisticsDto,
+  StagedProductionDto,
   StagingSubmissionDto,
   UserDetailsDto,
 } from '@h2-trust/api';
 import { HashUtil } from '@h2-trust/blockchain';
-import { CsvContentType, ProcessType } from '@h2-trust/domain';
+import { CsvContentType, ProcessType, StagingScope } from '@h2-trust/domain';
 import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 
@@ -76,20 +76,19 @@ export class ProductionService {
 
   async readStagedHydrogenProductionsByOwner(
     userId: string,
-    pageNumber?: number,
-    pageSize?: number,
-  ): Promise<PaginatedStagedProductionDto> {
+    stagingScope?: StagingScope,
+    type?: CsvContentType,
+    from?: Date,
+    to?: Date,
+  ): Promise<StagedProductionDto[]> {
     const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
     const ownerId = userDetails.company.id;
-    const payload = new ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload(
-      [ProcessType.POWER_PRODUCTION],
-      ownerId,
-      new ProductionDataFilter(pageNumber, pageSize),
-    );
-    const paginatedProcessStep: PaginatedStagedProductionEntity = await firstValueFrom(
+    const payload = new StageProductionFilter(ownerId, stagingScope, type, from, to);
+
+    const stageProductions: StagedProductionEntity[] = await firstValueFrom(
       this.processSvc.send(ProductionMessagePatterns.READ_STAGED_PRODUCTION_BY_COMPANY, payload),
     );
-    return PaginatedStagedProductionDto.fromEntity(paginatedProcessStep);
+    return stageProductions.map((stageProduction) => StagedProductionDto.fromEntity(stageProduction));
   }
 
   async assembleHydrogenProductionStatistics(
@@ -116,7 +115,7 @@ export class ProductionService {
       dto.unitIds,
       stageProductionFiles,
       dto.csvContentType,
-
+    );
 
     const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
 

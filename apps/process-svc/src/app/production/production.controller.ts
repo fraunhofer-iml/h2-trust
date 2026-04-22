@@ -17,7 +17,8 @@ import {
   ProductionStagingResultEntity,
   ProductionStatisticsEntity,
   ReadByIdPayload,
-  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
+  StagedProductionEntity,
+  StageProductionFilter,
   StageProductionsPayload,
   VerifyCsvDocumentIntegrityResultEntity,
 } from '@h2-trust/amqp';
@@ -62,9 +63,7 @@ export class ProductionController {
   }
 
   @MessagePattern(ProductionMessagePatterns.READ_STAGED_PRODUCTION_BY_COMPANY)
-  async readStagedProductionsByCompany(
-    payload: ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
-  ): Promise<PaginatedStagedProductionEntity> {
+  async readStagedProductionsByCompany(payload: StageProductionFilter): Promise<StagedProductionEntity[]> {
     return this.productionStagingService.readStagedProductions(payload);
   }
 

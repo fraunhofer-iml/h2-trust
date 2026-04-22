@@ -10,6 +10,7 @@ import { StagedProductionDeepDbType } from '@h2-trust/database';
 import { CsvContentType } from '@h2-trust/domain';
 
 export class StagedProductionEntity {
+  id?: string;
   startedAt: Date;
   endedAt: Date;
   amountProduced: number;
@@ -20,6 +21,7 @@ export class StagedProductionEntity {
   csvImportId?: string;
 
   constructor(
+    id: string,
     startedAt: Date,
     endedAt: Date,
     amountProduced: number,
@@ -29,6 +31,7 @@ export class StagedProductionEntity {
     type: CsvContentType,
     csvImportId?: string,
   ) {
+    this.id = id;
     this.startedAt = startedAt;
     this.endedAt = endedAt;
     this.amountProduced = amountProduced;
@@ -46,6 +49,7 @@ export class StagedProductionEntity {
     }
 
     return new StagedProductionEntity(
+      stagedProduction.id,
       stagedProduction.startedAt,
       stagedProduction.endedAt,
       stagedProduction.amountProduced.toNumber(),
