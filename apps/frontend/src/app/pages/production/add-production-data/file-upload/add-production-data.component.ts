@@ -105,7 +105,7 @@ export class AddProductionDataComponent {
       toast.error(e.error.message);
     },
     onSuccess: () => {
-      toast.success('Fileupload successful!');
+      toast.success('Upload successful!');
     },
   }));
 
