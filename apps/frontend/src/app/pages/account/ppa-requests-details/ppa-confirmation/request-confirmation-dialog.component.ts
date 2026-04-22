@@ -6,11 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { QUERY_KEYS } from 'apps/frontend/src/app/shared/queries/shared-query-keys';
-import { powerProductionUnitsQueryOptions } from 'apps/frontend/src/app/shared/queries/units.query';
-import { PowerAccessApprovalService } from 'apps/frontend/src/app/shared/services/power-access-approvals/power-access-approvals.service';
-import { UnitsService } from 'apps/frontend/src/app/shared/services/units/units.service';
-import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -25,9 +20,14 @@ import {
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import { PowerProductionOverviewDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/api';
-import { PowerAccessApprovalStatus, PpaRequestRole } from '@h2-trust/domain';
+import { toast } from 'ngx-sonner';
+import { PowerProductionOverviewDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/contracts/dtos';
+import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
+import { QUERY_KEYS } from '../../../../shared/queries/shared-query-keys';
+import { powerProductionUnitsQueryOptions } from '../../../../shared/queries/units.query';
+import { PowerPurchaseAgreementService } from '../../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
+import { UnitsService } from '../../../../shared/services/units/units.service';
 
 @Component({
   selector: 'app-request-confirmation-dialog',
@@ -46,14 +46,14 @@ import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
   templateUrl: './request-confirmation-dialog.component.html',
 })
 export class RequestConfirmationDialogComponent {
-  protected readonly PowerAccessApprovalStatus = PowerAccessApprovalStatus;
+  protected readonly PowerPurchaseAgreementStatus = PowerPurchaseAgreementStatus;
 
   readonly dialogRef = inject(MatDialogRef<RequestConfirmationDialogComponent>);
   readonly data = inject<{
-    status: PowerAccessApprovalStatus.APPROVED | PowerAccessApprovalStatus.REJECTED;
+    status: PowerPurchaseAgreementStatus.APPROVED | PowerPurchaseAgreementStatus.REJECTED;
     request: PpaRequestDto;
   }>(MAT_DIALOG_DATA);
-  private ppaService = inject(PowerAccessApprovalService);
+  private ppaService = inject(PowerPurchaseAgreementService);
   private unitsService = inject(UnitsService);
   private queryClient = inject(QueryClient);
 
@@ -71,7 +71,7 @@ export class RequestConfirmationDialogComponent {
     mutationFn: (dto: PpaRequestDecisionDto) => this.ppaService.decidePpaRequest(this.data.request.id, dto),
     onError: () =>
       toast.error(
-        `Failed to ${this.data.status === PowerAccessApprovalStatus.REJECTED ? 'reject' : 'approve'} Request`,
+        `Failed to ${this.data.status === PowerPurchaseAgreementStatus.REJECTED ? 'reject' : 'approve'} Request`,
       ),
     onSuccess: () => {
       this.queryClient.invalidateQueries({ queryKey: [...QUERY_KEYS.PPA_REQUESTS, PpaRequestRole.RECEIVER] });
@@ -80,7 +80,7 @@ export class RequestConfirmationDialogComponent {
   }));
 
   constructor() {
-    if (this.data.status === PowerAccessApprovalStatus.APPROVED)
+    if (this.data.status === PowerPurchaseAgreementStatus.APPROVED)
       this.form.controls.unit.setValidators(Validators.required);
   }
 
@@ -91,7 +91,7 @@ export class RequestConfirmationDialogComponent {
   confirm(): void {
     const val = this.form.value;
 
-    if (this.data.status === PowerAccessApprovalStatus.APPROVED && !val.unit) return;
+    if (this.data.status === PowerPurchaseAgreementStatus.APPROVED && !val.unit) return;
 
     const dto: PpaRequestDecisionDto = {
       decision: this.data.status,

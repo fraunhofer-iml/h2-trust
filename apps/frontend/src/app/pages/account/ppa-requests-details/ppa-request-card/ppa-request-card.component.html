@@ -1,12 +1,12 @@
 <div
   class="flex flex-col gap-2 rounded-lg border border-neutral-300 bg-linear-to-bl to-white to-40% py-4"
   [ngClass]="{
-    'from-tertiary-50': request().status === PowerAccessApprovalStatus.PENDING,
-    'from-error-red/20': request().status === PowerAccessApprovalStatus.REJECTED,
-    'from-secondary-100': request().status === PowerAccessApprovalStatus.APPROVED,
-    'cursor-pointer hover:-translate-y-1': request().status !== PowerAccessApprovalStatus.PENDING,
+    'from-tertiary-50': request().status === PowerPurchaseAgreementStatus.PENDING,
+    'from-error-red/20': request().status === PowerPurchaseAgreementStatus.REJECTED,
+    'from-secondary-100': request().status === PowerPurchaseAgreementStatus.APPROVED,
+    'cursor-pointer hover:-translate-y-1': request().status !== PowerPurchaseAgreementStatus.PENDING,
   }"
-  (click)="request().status !== PowerAccessApprovalStatus.PENDING && sheet.open()"
+  (click)="request().status !== PowerPurchaseAgreementStatus.PENDING && sheet.open()"
   role="none"
 >
   <div class="flex justify-between px-4">
@@ -27,7 +27,7 @@
       <span class="text-neutral-500">Valid</span>
       <span>{{ request().validFrom | date: 'shortDate' }} - {{ request().validTo | date: 'shortDate' }}</span>
     </span>
-    @if (request().status === PowerAccessApprovalStatus.PENDING) {
+    @if (request().status === PowerPurchaseAgreementStatus.PENDING) {
       <span class="flex justify-between">
         <span class="text-neutral-500">Requested type</span>
         {{ request().powerProductionType | prettyEnum | titlecase }}
@@ -35,19 +35,19 @@
     }
   </div>
 
-  @if (request().status === PowerAccessApprovalStatus.PENDING && role() === PpaRequestRole.RECEIVER) {
+  @if (request().status === PowerPurchaseAgreementStatus.PENDING && role() === PpaRequestRole.RECEIVER) {
     <div class="dash border border-dashed border-neutral-200"></div>
     <div class="flex gap-2 px-4 pt-2">
       <button
         matButton="outlined"
         class="delete-button-outlined flex-1"
-        (click)="openDialog(PowerAccessApprovalStatus.REJECTED)"
+        (click)="openDialog(PowerPurchaseAgreementStatus.REJECTED)"
       >
         <span class="flex items-center gap-2 pr-2"
           ><span class="material-symbols-outlined text-xl">close</span> Reject</span
         >
       </button>
-      <button matButton="outlined" class="flex-1" (click)="openDialog(PowerAccessApprovalStatus.APPROVED)">
+      <button matButton="outlined" class="flex-1" (click)="openDialog(PowerPurchaseAgreementStatus.APPROVED)">
         <span class="flex items-center gap-2 pr-2"
           ><span class="material-symbols-outlined text-xl">check</span> Approve</span
         >
@@ -60,9 +60,9 @@
   <div
     class="flex flex-col gap-2 rounded-lg border bg-linear-to-bl to-white to-40% py-4"
     [ngClass]="{
-      'from-tertiary-50': request().status === PowerAccessApprovalStatus.PENDING,
-      'from-error-red/20': request().status === PowerAccessApprovalStatus.REJECTED,
-      'from-secondary-100': request().status === PowerAccessApprovalStatus.APPROVED,
+      'from-tertiary-50': request().status === PowerPurchaseAgreementStatus.PENDING,
+      'from-error-red/20': request().status === PowerPurchaseAgreementStatus.REJECTED,
+      'from-secondary-100': request().status === PowerPurchaseAgreementStatus.APPROVED,
     }"
   >
     <div class="flex justify-between px-4">
@@ -91,7 +91,7 @@
         <span class="text-neutral-500">Requested type</span>
         {{ request().powerProductionType | prettyEnum | titlecase }}
       </span>
-      @if (request().status !== PowerAccessApprovalStatus.PENDING) {
+      @if (request().status !== PowerPurchaseAgreementStatus.PENDING) {
         <span class="flex justify-between">
           <span class="text-neutral-500">Power Production Unit</span> {{ request().powerProductionUnit?.name }}
         </span>
@@ -105,7 +105,7 @@
       }
     </div>
 
-    @if (request().status !== PowerAccessApprovalStatus.PENDING) {
+    @if (request().status !== PowerPurchaseAgreementStatus.PENDING) {
       <mat-divider />
       <div class="px-4 text-sm text-neutral-600">
         <p class="text-neutral-500">

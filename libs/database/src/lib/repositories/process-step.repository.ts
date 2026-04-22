@@ -8,12 +8,12 @@
 
 import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { ProcessStepEntity } from '@h2-trust/amqp';
+import { ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { BatchType } from '@h2-trust/domain';
 import { buildProcessStepCreateInput } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 import { processStepDeepQueryArgs } from '../query-args';
-import { assertRecordFound } from './utils';
+import { assertRecordFound } from './assertions.utils';
 
 @Injectable()
 export class ProcessStepRepository {

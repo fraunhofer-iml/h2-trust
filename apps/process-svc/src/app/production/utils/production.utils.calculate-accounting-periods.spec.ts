@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchEntity, ProcessStepEntity } from '@h2-trust/amqp';
+import { BatchEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
+import { BatchEntityFixture, CompanyEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { BatchType } from '@h2-trust/domain';
-import { BatchEntityFixture, CompanyEntityFixture } from '@h2-trust/fixtures';
 import { ProductionUtils } from './production.utils';
 
 describe('ProductionUtils.calculateAccountingPeriods', () => {

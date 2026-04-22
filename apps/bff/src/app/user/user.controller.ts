@@ -8,7 +8,7 @@
 
 import { Controller, Get, Param } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
-import { UserDetailsDto } from '@h2-trust/api';
+import { UserDetailsDto } from '@h2-trust/contracts/dtos';
 import { UserService } from './user.service';
 
 @Controller('users')

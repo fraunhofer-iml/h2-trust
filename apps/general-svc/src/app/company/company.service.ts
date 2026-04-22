@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CompanyRepository } from 'libs/database/src/lib';
 import { Injectable } from '@nestjs/common';
-import { CompanyEntity } from '@h2-trust/amqp';
+import { CompanyEntity } from '@h2-trust/contracts/entities';
+import { CompanyRepository } from '@h2-trust/database';
 
 @Injectable()
 export class CompanyService {

@@ -6,9 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchEntity, CreateHydrogenBottlingPayload } from '@h2-trust/amqp';
+import { BatchEntity } from '@h2-trust/contracts/entities';
+import { BatchEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/contracts/entities/fixtures';
+import { CreateHydrogenBottlingPayload } from '@h2-trust/contracts/payloads';
 import { HydrogenColor, ProcessType, RfnboType } from '@h2-trust/domain';
-import { BatchEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/fixtures';
 import { BottlingProcessStepAssembler } from './bottling-process-step.assembler';
 
 describe('BottlingProcessStepAssembler', () => {

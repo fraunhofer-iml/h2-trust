@@ -7,10 +7,10 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { UserEntity } from '@h2-trust/amqp';
+import { UserEntity } from '@h2-trust/contracts/entities';
 import { PrismaService } from '../prisma.service';
 import { userDeepQueryArgs } from '../query-args';
-import { assertRecordFound } from './utils';
+import { assertRecordFound } from './assertions.utils';
 
 @Injectable()
 export class UserRepository {

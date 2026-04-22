@@ -8,14 +8,15 @@
 
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { CompanyEntity, CompanyMessagePatterns } from '@h2-trust/amqp';
+import { CompanyEntity } from '@h2-trust/contracts/entities';
+import { CompanyMessagePatterns } from '@h2-trust/messaging';
 import { CompanyService } from './company.service';
 
 @Controller()
 export class CompanyController {
   constructor(private readonly service: CompanyService) {}
 
-  @MessagePattern(CompanyMessagePatterns.READ_ALL)
+  @MessagePattern(CompanyMessagePatterns.READ)
   async findAll(): Promise<CompanyEntity[]> {
     return this.service.findAll();
   }

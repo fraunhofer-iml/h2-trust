@@ -13,7 +13,7 @@ import {
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
   ProvenanceEntity,
-} from '@h2-trust/amqp';
+} from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType, ProofOfOrigin } from '@h2-trust/domain';
 import { assembleHydrogenTransportationEmissionCalculation } from '../proof-of-sustainability/hydrogen-transportation-proof-of-sustainability.assembler';
 import { ProofOfOriginAssembler } from './proof-of-origin-assembler.interface';

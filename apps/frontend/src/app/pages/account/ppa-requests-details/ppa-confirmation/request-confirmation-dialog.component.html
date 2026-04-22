@@ -1,6 +1,6 @@
-<h3 mat-dialog-title>{{ data.status === PowerAccessApprovalStatus.APPROVED ? 'Approve' : 'Reject' }} Request</h3>
+<h3 mat-dialog-title>{{ data.status === PowerPurchaseAgreementStatus.APPROVED ? 'Approve' : 'Reject' }} Request</h3>
 <form [formGroup]="form" class="flex w-lg! flex-col gap-2 px-6 text-sm text-neutral-500">
-  @if (data.status === PowerAccessApprovalStatus.APPROVED) {
+  @if (data.status === PowerPurchaseAgreementStatus.APPROVED) {
     <p>
       Please select a power production unit. The desired Power Production Type is
       <strong>{{ data.request.powerProductionType | prettyEnum | titlecase }}</strong
@@ -33,6 +33,6 @@
 <mat-dialog-actions>
   <button matButton (click)="close()">Cancel</button>
   <button matButton (click)="confirm()" cdkFocusInitial [disabled]="form.invalid">
-    {{ data.status === PowerAccessApprovalStatus.APPROVED ? 'Approve' : 'Reject' }}
+    {{ data.status === PowerPurchaseAgreementStatus.APPROVED ? 'Approve' : 'Reject' }}
   </button>
 </mat-dialog-actions>

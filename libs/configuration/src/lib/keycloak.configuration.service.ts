@@ -6,13 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Injectable } from '@nestjs/common';
 import {
   KeycloakConnectOptions,
   KeycloakConnectOptionsFactory,
   PolicyEnforcementMode,
   TokenValidation,
 } from 'nest-keycloak-connect';
-import { Injectable } from '@nestjs/common';
 import { ConfigurationService } from './configuration.service';
 
 @Injectable()
