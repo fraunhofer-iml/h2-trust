@@ -31,12 +31,14 @@ export class S3StorageService extends CentralizedStorageService {
     this.logger.debug(`🌐 Endpoint: ${this.endpointUrl}`);
   }
 
-  async uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<void> {
+  async uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<string> {
     await this.client.send(
       new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: contentType }),
     );
 
     this.logger.debug(`Uploaded '${fileName}'`);
+
+    return `${this.endpointUrl}/${fileName}`;
   }
 
   async downloadFile(fileName: string): Promise<Readable> {
