@@ -10,7 +10,7 @@ import { Readable } from 'stream';
 import { ContentType } from '../content-types';
 
 export abstract class CentralizedStorageService {
-  abstract readonly baseUrl: string;
+  abstract readonly endpointUrl: string;
 
   abstract uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<void>;
 
