@@ -7,16 +7,24 @@
  */
 
 import { PowerProductionUnitEntity } from '@h2-trust/contracts/entities';
+import { PowerProductionType } from '@h2-trust/domain';
 
 export class PowerProductionOverviewDto {
   id: string;
   name: string;
   ratedPower: number;
-  typeName: string;
+  typeName: PowerProductionType;
   producing: boolean;
   active: boolean;
 
-  constructor(id: string, name: string, ratedPower: number, typeName: string, producing: boolean, active: boolean) {
+  constructor(
+    id: string,
+    name: string,
+    ratedPower: number,
+    typeName: PowerProductionType,
+    producing: boolean,
+    active: boolean,
+  ) {
     this.id = id;
     this.name = name;
     this.ratedPower = ratedPower;

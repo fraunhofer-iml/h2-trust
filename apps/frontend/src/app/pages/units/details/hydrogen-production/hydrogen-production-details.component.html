@@ -27,7 +27,7 @@
             </div>
             <div class="flex flex-col text-sm">
               <span class="text-sm text-neutral-400">Method</span
-              ><span>{{ unit.method || '--' | prettyEnum | titlecase }}</span>
+              ><span>{{ unit.method || '--' | enum: 'hydrogenProductionMethod' }}</span>
             </div>
             <div class="flex flex-col text-sm">
               <span class="text-sm text-neutral-400">Technology</span><span>{{ unit.technology || '--' }}</span>

@@ -1,6 +1,6 @@
 <div class="relative">
   <button (mouseenter)="showComplianceInfo = true" (mouseleave)="showComplianceInfo = false">
-    <app-rfnbo-chip [rfnboType]="redCompliance()?.rfnboType ?? 'unknown'"></app-rfnbo-chip>
+    <app-rfnbo-chip [rfnboType]="redCompliance().rfnboType"></app-rfnbo-chip>
   </button>
   @if (redCompliance(); as redCompliance) {
     <div

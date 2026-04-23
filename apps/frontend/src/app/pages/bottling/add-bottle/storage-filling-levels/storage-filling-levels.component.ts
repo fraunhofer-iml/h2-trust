@@ -15,20 +15,20 @@ import { HydrogenStorageOverviewDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { CHART_COLORS } from '../../../../shared/constants/chart-colors';
 import { ERROR_MESSAGES } from '../../../../shared/constants/error.messages';
-import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
+import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { formatNumberForChart } from '../../../../shared/util/number-format.util';
 
 @Component({
   selector: 'app-storage-filling-levels',
   imports: [NgxEchartsDirective],
-  providers: [provideEchartsCore({ echarts }), UnitPipe, PercentPipe, PrettyEnumPipe],
+  providers: [provideEchartsCore({ echarts }), UnitPipe, PercentPipe, EnumPipe],
   templateUrl: './storage-filling-levels.component.html',
 })
 export class StorageFillingLevelsComponent {
   unitPipe = inject(UnitPipe);
   percentPipe = inject(PercentPipe);
-  prettyEnumPipe = inject(PrettyEnumPipe);
+  enumPipe = inject(EnumPipe);
 
   chartData = input<HydrogenStorageOverviewDto[]>();
   chartOption$ = computed(() => this.getOption(this.chartData() ?? []));
@@ -176,7 +176,7 @@ export class StorageFillingLevelsComponent {
     let tooltip = '';
     params.forEach((item) => {
       const valueWithUnit = this.unitPipe.transform(item.value, MeasurementUnit.KG);
-      tooltip += `${item.marker} ${this.prettyEnumPipe.transform(item.seriesName).toLowerCase()}: ${valueWithUnit}<br/>`;
+      tooltip += `${item.marker} ${this.enumPipe.transform(item.seriesName, 'rfnboType').toLowerCase()}: ${valueWithUnit}<br/>`;
     });
     return tooltip;
   };

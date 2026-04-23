@@ -24,7 +24,7 @@
             </div>
             <div class="flex flex-col text-sm">
               <span class="text-sm text-neutral-400">Grid Level</span
-              ><span>{{ unit.gridLevel | prettyEnum | titlecase }}</span>
+              ><span>{{ unit.gridLevel | enum: 'gridLevel' }}</span>
             </div>
             <div class="flex flex-col text-sm">
               <span class="text-sm text-neutral-400">Grid Connection Number</span
@@ -40,7 +40,7 @@
             </div>
             <div class="flex flex-col text-sm">
               <span class="text-sm text-neutral-400">Power Production Type</span
-              ><span>{{ unit.type.name | prettyEnum | titlecase }}</span>
+              ><span>{{ unit.type.name | enum: 'powerProductionType' }}</span>
             </div>
             <div class="flex flex-col text-sm">
               <span class="text-sm text-neutral-400">Decommissioning Planned On</span

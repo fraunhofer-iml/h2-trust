@@ -13,7 +13,6 @@ import { MeasurementUnit, RfnboType } from '@h2-trust/domain';
 import { RfnboChipComponent } from '../../../../../../layout/chips/rfnbo-chip.component';
 import { ProofOfOriginCardComponent } from '../../../../../../layout/proof-of-origin-card/proof-of-origin-card.component';
 import { BaseSheetComponent } from '../../../../../../layout/sheet/sheet.component';
-import { PrettyEnumPipe } from '../../../../../../shared/pipes/format-enum.pipe';
 import { UnitPipe } from '../../../../../../shared/pipes/unit.pipe';
 import { H2CompositionChartComponent } from '../../../chart/h2-composition-chart.component';
 import { BatchEmissionsComponent } from '../batch-emissions/batch-emissions.component';
@@ -25,7 +24,6 @@ import { BatchEmissionsComponent } from '../batch-emissions/batch-emissions.comp
     BaseSheetComponent,
     RfnboChipComponent,
     H2CompositionChartComponent,
-    PrettyEnumPipe,
     BatchEmissionsComponent,
     UnitPipe,
     ProofOfOriginCardComponent,

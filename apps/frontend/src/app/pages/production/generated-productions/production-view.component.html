@@ -5,7 +5,7 @@
 
   <div class="flex w-full justify-between gap-2 rounded-md bg-white p-4">
     <div class="flex items-center gap-2">
-      <mat-form-field appearance="outline" class="w-[28rem]">
+      <mat-form-field appearance="outline" class="w-md">
         <mat-label>Search hydrogen production unit or Id</mat-label>
         <input matInput placeholder="Hydrogen...." [formField]="filterForm.unit" />
         @if (filterForm.unit().value()) {

@@ -28,8 +28,8 @@ import { BatchType, CsvContentType } from '@h2-trust/domain';
 import { FileDragAndDropComponent } from '../../../../layout/drag-and-drop/file-drag-and-drop.component';
 import { FileTypes } from '../../../../shared/constants/file-types';
 import { ICONS } from '../../../../shared/constants/icons';
+import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { FileSizePipe } from '../../../../shared/pipes/file-size.pipe';
-import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
 import {
   hydrogenProductionUnitsQueryOptions,
   powerProductionUnitsQueryOptions,
@@ -61,7 +61,7 @@ import { FileForm } from './file-upload.form';
     FileDragAndDropComponent,
     CommonModule,
     FileSizePipe,
-    PrettyEnumPipe,
+    EnumPipe,
   ],
   templateUrl: './add-production-data.component.html',
 })

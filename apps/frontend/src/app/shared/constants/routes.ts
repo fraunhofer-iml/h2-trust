@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export enum ROUTES {
+export enum H2TrustRoutes {
   UNITS = 'units',
   PRODUCTION = 'production',
   PRODUCTION_FILES = 'production/files',

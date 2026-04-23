@@ -19,7 +19,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { Router, RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
-import { ROUTES } from '../../shared/constants/routes';
+import { H2TrustRoutes } from '../../shared/constants/routes';
 import { UserProfile } from '../../shared/model/user-profile.model';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { PowerPurchaseAgreementService } from '../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
@@ -30,7 +30,7 @@ import { UserRolesStore } from '../../shared/store/user-role.store';
 interface SidebarOption {
   title: string;
   icon: string;
-  route: ROUTES | null;
+  route: H2TrustRoutes | null;
   visible: Signal<boolean>;
   children?: SidebarOption[];
 }
@@ -74,7 +74,7 @@ export class SidebarComponent implements OnInit {
     {
       title: 'Units',
       icon: 'water_drop',
-      route: ROUTES.UNITS,
+      route: H2TrustRoutes.UNITS,
       visible: signal(true),
     },
     {
@@ -86,13 +86,13 @@ export class SidebarComponent implements OnInit {
         {
           title: 'Data',
           icon: 'table',
-          route: ROUTES.PRODUCTION_DATA,
+          route: H2TrustRoutes.PRODUCTION_DATA,
           visible: this.visible$,
         },
         {
           title: 'Uploads',
           icon: 'files',
-          route: ROUTES.PRODUCTION_FILES,
+          route: H2TrustRoutes.PRODUCTION_FILES,
           visible: signal(true),
         },
       ],
@@ -100,7 +100,7 @@ export class SidebarComponent implements OnInit {
     {
       title: 'Bottling',
       icon: 'propane_tank',
-      route: ROUTES.BOTTLING,
+      route: H2TrustRoutes.BOTTLING,
       visible: this.visible$,
     },
   ];

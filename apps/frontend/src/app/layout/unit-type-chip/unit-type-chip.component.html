@@ -16,5 +16,5 @@
   >
     {{ getIcon() }}
   </span>
-  {{ unitType() | prettyEnum | titlecase }}
+  {{ unitType() | enum: 'unitType' }}
 </div>

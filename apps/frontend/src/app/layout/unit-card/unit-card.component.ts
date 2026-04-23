@@ -6,17 +6,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CommonModule, TitleCasePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { UnitType } from '@h2-trust/domain';
 import { ICONS } from '../../shared/constants/icons';
-import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
+import { EnumPipe } from '../../shared/pipes/enum.pipe';
 import { UnitStatusChipComponent } from '../chips/unit-status-chip.component';
 
 @Component({
   selector: 'app-unit-card',
-  imports: [TitleCasePipe, PrettyEnumPipe, MatChipsModule, UnitStatusChipComponent, CommonModule],
+  imports: [EnumPipe, MatChipsModule, UnitStatusChipComponent, CommonModule],
   templateUrl: './unit-card.component.html',
 })
 export class UnitCardComponent {

@@ -41,7 +41,7 @@
                     >{{ getIcon(type) }}</span
                   >
                 </div>
-                <span class="text-base text-neutral-700">{{ type | prettyEnum | titlecase }}</span>
+                <span class="text-base text-neutral-700">{{ type | enum: 'unitType' }}</span>
               </div>
               <mat-radio-button [value]="type"> </mat-radio-button>
             </div>
