@@ -11,8 +11,15 @@
 >
   <div class="flex justify-between px-4">
     <div>
-      <strong>{{ request().sender.company.name }}</strong>
-      <p class="text-xs text-neutral-400">{{ request().sender.name }} • {{ dateLable }}</p>
+      <strong class="text-neutral-700">{{
+        role() === PpaRequestRole.RECEIVER ? request().sender.company.name : request().receiver.name
+      }}</strong>
+      <p class="text-xs text-neutral-400">
+        @if (role() === PpaRequestRole.RECEIVER) {
+          {{ request().sender.name }} •
+        }
+        {{ dateLable }}
+      </p>
     </div>
     <app-ppa-status-chip [status]="request().status"></app-ppa-status-chip>
   </div>
@@ -21,11 +28,8 @@
 
   <div class="flex flex-col gap-1 px-4 text-sm">
     <span class="flex justify-between">
-      <span class="text-neutral-500">Created on</span> {{ request().decidedAt | date }}
-    </span>
-    <span class="flex justify-between">
       <span class="text-neutral-500">Valid</span>
-      <span>{{ request().validFrom | date: 'shortDate' }} - {{ request().validTo | date: 'shortDate' }}</span>
+      <span>{{ request().validFrom | date: 'mediumDate' }} - {{ request().validTo | date: 'mediumDate' }}</span>
     </span>
     @if (request().status === PowerPurchaseAgreementStatus.PENDING) {
       <span class="flex justify-between">
@@ -67,8 +71,15 @@
   >
     <div class="flex justify-between px-4">
       <div>
-        <strong>{{ request().sender.company.name }}</strong>
-        <p class="text-xs text-neutral-400">{{ request().sender.name }} • {{ dateLable }}</p>
+        <strong class="text-neutral-700">{{
+          role() === PpaRequestRole.RECEIVER ? request().sender.company.name : request().receiver.name
+        }}</strong>
+        <p class="text-xs text-neutral-400">
+          @if (role() === PpaRequestRole.RECEIVER) {
+            {{ request().sender.name }} •
+          }
+          {{ dateLable }}
+        </p>
       </div>
       <app-ppa-status-chip [status]="request().status"></app-ppa-status-chip>
     </div>

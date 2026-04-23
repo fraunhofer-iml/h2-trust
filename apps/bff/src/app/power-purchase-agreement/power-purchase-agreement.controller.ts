@@ -74,11 +74,11 @@ export class PowerPurchaseAgreementController {
         createdAt: new Date(),
         id: '456867',
         powerProductionType: PowerProductionType.HYDRO_POWER_PLANT,
-        receiver: { name: 'Test' } as CompanyDto,
-        sender: { name: 'hans ', company: { name: 'testo test ' } } as UserDetailsDto,
+        receiver: { name: 'GreenPower GmbH' } as CompanyDto,
+        sender: { name: 'Hannes Hydrogen ', company: { name: 'Green Hydrogen AG' } } as UserDetailsDto,
         status: PowerPurchaseAgreementStatus.PENDING,
-        validFrom: new Date(),
-        validTo: new Date(),
+        validFrom: new Date('2026-01-01'),
+        validTo: new Date('2028-12-31'),
       },
     ];
   }
