@@ -13,17 +13,17 @@ import { EmissionCalculationDto } from '@h2-trust/contracts/dtos';
 import { CalculationTopic, MeasurementUnit } from '@h2-trust/domain';
 import { BaseSheetComponent } from '../../../../../layout/sheet/sheet.component';
 import { ICONS } from '../../../../../shared/constants/icons';
-import { PrettyEnumPipe } from '../../../../../shared/pipes/format-enum.pipe';
+import { EnumPipe } from '../../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../../shared/pipes/unit.pipe';
 
 @Component({
   selector: 'app-calculation-item',
-  imports: [CommonModule, PrettyEnumPipe, MatExpansionModule, BaseSheetComponent, UnitPipe],
+  imports: [CommonModule, MatExpansionModule, BaseSheetComponent, UnitPipe, EnumPipe],
   templateUrl: './calculation-item.component.html',
 })
 export class CalculationItemComponent {
   topic = input.required<{
-    key: string;
+    key: CalculationTopic;
     items: EmissionCalculationDto[];
   }>();
 

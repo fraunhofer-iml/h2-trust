@@ -6,10 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export enum H2TrustRoutes {
-  UNITS = 'units',
-  PRODUCTION = 'production',
-  PRODUCTION_FILES = 'production/files',
-  PRODUCTION_DATA = 'production/data',
-  BOTTLING = 'bottling',
-}
+import { ENUM_LABEL_RESOLVERS } from '../constants/eum-label-resolvers';
+
+export type EnumLabelKey = keyof typeof ENUM_LABEL_RESOLVERS;

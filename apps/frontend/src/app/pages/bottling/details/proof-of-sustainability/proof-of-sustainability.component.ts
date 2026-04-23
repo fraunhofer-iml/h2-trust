@@ -49,16 +49,19 @@ export class ProofOfSustainabilityComponent {
   calculations = computed(() => this.mapCalculations(this.proofOfSustainability$()?.calculations ?? []));
 
   mapCalculations(calculations: EmissionCalculationDto[]) {
-    const groupedObj: Record<string, EmissionCalculationDto[]> = {};
+    const groupedObj: Record<CalculationTopic, EmissionCalculationDto[]> = {
+      [CalculationTopic.POWER_SUPPLY]: [],
+      [CalculationTopic.WATER_SUPPLY]: [],
+      [CalculationTopic.HYDROGEN_STORAGE]: [],
+      [CalculationTopic.HYDROGEN_BOTTLING]: [],
+      [CalculationTopic.HYDROGEN_TRANSPORTATION]: [],
+    };
 
     for (const item of calculations) {
-      if (!groupedObj[item.calculationTopic]) {
-        groupedObj[item.calculationTopic] = [];
-      }
       groupedObj[item.calculationTopic].push(item);
     }
     return Object.entries(groupedObj).map(([key, items]) => ({
-      key,
+      key: key as CalculationTopic,
       items,
     }));
   }

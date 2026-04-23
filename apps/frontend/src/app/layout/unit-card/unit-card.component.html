@@ -6,7 +6,7 @@
       </span>
       <div class="flex flex-col justify-center text-sm">
         <span class="font-semibold text-neutral-800"> {{ name() }}</span>
-        <span class="">{{ unittype() | prettyEnum | titlecase }} Unit</span>
+        <span class="">{{ unittype() | enum: 'unitType' }} Unit</span>
       </div>
     </div>
 

@@ -18,7 +18,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { BiddingZone, GridLevel, PowerProductionType } from '@h2-trust/domain';
 import { InfoTooltipComponent } from '../../../../layout/info-tooltip/info-tooltip.component';
 import { RFNBO_CRITERIA } from '../../../../shared/constants/rfnbo-criteria';
-import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
+import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { PowerProductionFormGroup } from '../forms';
 
 @Component({
@@ -28,12 +28,12 @@ import { PowerProductionFormGroup } from '../forms';
     MatFormFieldModule,
     ReactiveFormsModule,
     MatSelectModule,
-    PrettyEnumPipe,
     InfoTooltipComponent,
     MatDatepickerModule,
     FormsModule,
     MatInputModule,
     MatCheckboxModule,
+    EnumPipe,
   ],
   providers: [provideNativeDateAdapter()],
 

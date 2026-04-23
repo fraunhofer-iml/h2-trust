@@ -29,7 +29,7 @@ import {
 } from '@h2-trust/contracts/dtos';
 import { HydrogenProductionMethod, HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { ICONS } from '../../../shared/constants/icons';
-import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
+import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { QUERY_KEYS } from '../../../shared/queries/shared-query-keys';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
@@ -63,12 +63,12 @@ import { PowerProductionUnitFormComponent } from '../forms/power-production/powe
     MatDatepickerModule,
     MatButtonModule,
     MatSelectModule,
-    PrettyEnumPipe,
     MatCheckboxModule,
     BaseUnitFormComponent,
     HydrogenProductionUnitFormComponent,
     PowerProductionUnitFormComponent,
     HydrogenUnitFormComponent,
+    EnumPipe,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './create-unit.component.html',
