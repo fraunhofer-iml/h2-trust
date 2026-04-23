@@ -51,8 +51,8 @@ export class ProductionStagingService {
         payload.ownerId,
         PowerPurchaseAgreementStatus.APPROVED,
       );
-      const accessableUnitIds: string[] = approvedAgreements.map((approval) => approval.powerProductionUnit.id);
-      return this.stagedProductionRepository.findStagedProductions(payload, false, accessableUnitIds);
+      const accessibleUnitIds: string[] = approvedAgreements.map((approval) => approval.powerProductionUnit.id);
+      return this.stagedProductionRepository.findStagedProductions(payload, false, accessibleUnitIds);
     }
   }
 

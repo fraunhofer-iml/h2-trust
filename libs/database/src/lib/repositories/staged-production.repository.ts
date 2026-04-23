@@ -26,7 +26,7 @@ export class StagedProductionRepository {
     unitIds: string[],
   ): Promise<StagedProductionEntity[]> {
     const stagedProductionFilter: Prisma.StagedProductionWhereInput = {
-      ...(payload.ownerId !== undefined && onlyOwnProductions && { ownerId: payload.ownerId }),
+      ...(onlyOwnProductions && { ownerId: payload.ownerId }),
       ...(payload.type !== undefined && { type: payload.type }),
       ...(payload.from !== undefined && { startedAt: payload.from }),
       ...(payload.to !== undefined && { endedAt: payload.to }),
@@ -35,12 +35,11 @@ export class StagedProductionRepository {
           unitId: { in: unitIds },
         }),
     };
-    return this.prismaService.stagedProduction
-      .findMany({
-        where: stagedProductionFilter,
-        ...stagedProductionDeepQueryArgs,
-      })
-      .then((stagedProduction) => stagedProduction.map(StagedProductionEntity.fromDeepDatabase));
+    const stagedProductions: StagedProductionDeepDbType[] = await this.prismaService.stagedProduction.findMany({
+      where: stagedProductionFilter,
+      ...stagedProductionDeepQueryArgs,
+    });
+    return stagedProductions.map(StagedProductionEntity.fromDeepDatabase);
   }
 
   async saveStagedProductions(
