@@ -16,6 +16,10 @@ export class CreatePowerPurchaseAgreementsPayload {
   companyId: string;
 
   @IsNotEmpty()
+  @IsString()
+  userId: string;
+
+  @IsNotEmpty()
   @IsEnum(PowerProductionType)
   powerProductionType: PowerProductionType;
 
@@ -29,7 +33,14 @@ export class CreatePowerPurchaseAgreementsPayload {
   @IsNotEmpty()
   validTo: Date;
 
-  constructor(companyId: string, powerProductionType: PowerProductionType, validFrom: Date, validTo: Date) {
+  constructor(
+    companyId: string,
+    powerProductionType: PowerProductionType,
+    validFrom: Date,
+    validTo: Date,
+    userId: string,
+  ) {
+    this.userId = userId;
     this.companyId = companyId;
     this.powerProductionType = powerProductionType;
     this.validFrom = validFrom;

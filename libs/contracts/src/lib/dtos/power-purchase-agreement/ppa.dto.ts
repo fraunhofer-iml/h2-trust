@@ -16,18 +16,18 @@ export class PpaDto {
   id: string;
   hydrogenProducer: CompanyDto;
   powerProducer: CompanyDto;
-  powerProductionUnit: PowerProductionOverviewDto;
   status: PowerPurchaseAgreementStatus;
   energySource: EnergySource;
+  powerProductionUnit?: PowerProductionOverviewDto;
   decision?: DecisionDto;
 
   constructor(
     id: string,
     hydrogenProducer: CompanyDto,
     powerProducer: CompanyDto,
-    powerProductionUnit: PowerProductionOverviewDto,
     status: PowerPurchaseAgreementStatus,
     energySource: EnergySource,
+    powerProductionUnit?: PowerProductionOverviewDto,
     decision?: DecisionDto,
   ) {
     this.id = id;
@@ -44,9 +44,13 @@ export class PpaDto {
       id: powerPurchaseAgreement.id,
       hydrogenProducer: powerPurchaseAgreement.hydrogenProducer,
       powerProducer: powerPurchaseAgreement.powerProducer,
-      powerProductionUnit: PowerProductionOverviewDto.fromEntity(powerPurchaseAgreement.powerProductionUnit),
+      powerProductionUnit: powerPurchaseAgreement.powerProductionUnit
+        ? PowerProductionOverviewDto.fromEntity(powerPurchaseAgreement.powerProductionUnit)
+        : undefined,
       status: powerPurchaseAgreement.status,
-      energySource: powerPurchaseAgreement.powerProductionUnit.type.energySource,
+      energySource: powerPurchaseAgreement.powerProductionUnit
+        ? powerPurchaseAgreement.powerProductionUnit.type.energySource
+        : undefined,
     };
   }
 }

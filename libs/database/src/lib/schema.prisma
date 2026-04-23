@@ -302,10 +302,11 @@ model TransportationDetails {
 }
 
 model PowerPurchaseAgreement {
-  id        String   @id @default(uuid(7))
+  id     String @id @default(uuid(7))
+  status String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime? @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
 
   validFrom DateTime
   validTo   DateTime
@@ -319,11 +320,11 @@ model PowerPurchaseAgreement {
   hydrogenProducer   Company @relation(fields: [hydrogenProducerId], references: [id], name: "HydrogenProducer")
   hydrogenProducerId String
 
-  powerProductionUnit   PowerProductionUnit @relation(fields: [powerProductionUnitId], references: [id])
-  powerProductionUnitId String
+  powerProductionUnit   PowerProductionUnit? @relation(fields: [powerProductionUnitId], references: [id])
+  powerProductionUnitId String?
 
-  document   Document @relation(fields: [documentId], references: [id])
-  documentId String
+  document   Document? @relation(fields: [documentId], references: [id])
+  documentId String?
 
   decision Decision?
 
@@ -354,7 +355,6 @@ model StagedProduction {
 
 model Decision {
   id        String   @id @default(uuid(7))
-  status    String
   decidedAt DateTime
   comment   String?
 

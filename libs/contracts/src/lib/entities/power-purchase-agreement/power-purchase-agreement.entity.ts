@@ -20,10 +20,11 @@ export class PowerPurchaseAgreementEntity {
   validFrom: Date;
   validTo: Date;
   status: PowerPurchaseAgreementStatus;
+  suggestedPowerProductionTypeName: string;
   powerProducer: CompanyEntity;
-  powerProductionUnit: PowerProductionUnitEntity;
   hydrogenProducer: CompanyEntity;
-  document: DocumentEntity;
+  powerProductionUnit?: PowerProductionUnitEntity;
+  document?: DocumentEntity;
   decision?: DecisionEntity;
 
   constructor(
@@ -33,9 +34,10 @@ export class PowerPurchaseAgreementEntity {
     validTo: Date,
     status: PowerPurchaseAgreementStatus,
     powerProducer: CompanyEntity,
-    powerProductionUnit: PowerProductionUnitEntity,
     hydrogenProducer: CompanyEntity,
-    document: DocumentEntity,
+    suggestedPowerProductionTypeName: string,
+    document?: DocumentEntity,
+    powerProductionUnit?: PowerProductionUnitEntity,
     decision?: DecisionEntity,
   ) {
     this.id = id;
@@ -48,6 +50,7 @@ export class PowerPurchaseAgreementEntity {
     this.hydrogenProducer = hydrogenProducer;
     this.document = document;
     this.decision = decision;
+    this.suggestedPowerProductionTypeName = suggestedPowerProductionTypeName;
   }
 
   static fromDeepDatabase(powerPurchaseAgreement: PowerPurchaseAgreementDeepDbType): PowerPurchaseAgreementEntity {
@@ -60,9 +63,12 @@ export class PowerPurchaseAgreementEntity {
       powerPurchaseAgreement.validTo,
       powerPurchaseAgreement.status,
       CompanyEntity.fromNestedDatabase(powerPurchaseAgreement.powerProducer),
-      PowerProductionUnitEntity.fromNestedPowerProductionUnit(powerPurchaseAgreement.powerProductionUnit),
       CompanyEntity.fromNestedDatabase(powerPurchaseAgreement.hydrogenProducer),
-      DocumentEntity.fromDatabase(powerPurchaseAgreement.document),
+      powerPurchaseAgreement.suggestedPowerTypeName,
+      powerPurchaseAgreement.document ? DocumentEntity.fromDatabase(powerPurchaseAgreement.document) : undefined,
+      powerPurchaseAgreement.powerProductionUnit
+        ? PowerProductionUnitEntity.fromNestedPowerProductionUnit(powerPurchaseAgreement.powerProductionUnit)
+        : undefined,
       powerPurchaseAgreement.decision ? DecisionEntity.fromDatabase(powerPurchaseAgreement.decision) : undefined,
     );
   }
@@ -70,9 +76,12 @@ export class PowerPurchaseAgreementEntity {
   static fromNestedDatabase(agreement: PowerPurchaseAgreementNestedDbType): PowerPurchaseAgreementEntity {
     return <PowerPurchaseAgreementEntity>{
       ...agreement,
+      suggestedPowerProductionTypeName: agreement.suggestedPowerTypeName,
       hydrogenProducer: CompanyEntity.fromFlatDatabase(agreement.hydrogenProducer),
       powerProducer: CompanyEntity.fromFlatDatabase(agreement.powerProducer),
-      powerProductionUnit: PowerProductionUnitEntity.fromNestedPowerProductionUnit(agreement.powerProductionUnit),
+      powerProductionUnit: agreement.powerProductionUnit
+        ? PowerProductionUnitEntity.fromNestedPowerProductionUnit(agreement.powerProductionUnit)
+        : undefined,
     };
   }
 }

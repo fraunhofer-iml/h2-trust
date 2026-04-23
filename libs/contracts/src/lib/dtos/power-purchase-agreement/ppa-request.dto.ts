@@ -16,15 +16,15 @@ import { PpaRequestDecisionDto } from './ppa-request-decision.dto';
 export class PpaRequestDto {
   id: string;
   createdAt: Date;
-  decidedAt?: Date;
-  decidedBy?: string;
+  status: PowerPurchaseAgreementStatus;
   validFrom: Date;
   validTo: Date;
   sender: UserDetailsDto;
   receiver: CompanyDto;
   powerProductionType: PowerProductionType;
   powerProductionUnit?: PowerProductionOverviewDto;
-  status: PowerPurchaseAgreementStatus;
+  decidedAt?: Date;
+  decidedBy?: string;
   comment?: string;
   decision?: PpaRequestDecisionDto;
 
@@ -36,8 +36,8 @@ export class PpaRequestDto {
     sender: UserDetailsDto,
     receiver: CompanyDto,
     powerType: PowerProductionType,
-    powerProductionUnit: PowerProductionOverviewDto,
     status: PowerPurchaseAgreementStatus,
+    powerProductionUnit?: PowerProductionOverviewDto,
     decidedAt?: Date,
     decidedBy?: string,
     comment?: string,
@@ -65,8 +65,10 @@ export class PpaRequestDto {
       validTo: powerPurchaseAgreement.validTo,
       sender: user,
       receiver: powerPurchaseAgreement.powerProducer,
-      powerProductionType: powerPurchaseAgreement.powerProductionUnit.type.name,
-      powerProductionUnit: PowerProductionOverviewDto.fromEntity(powerPurchaseAgreement.powerProductionUnit),
+      powerProductionType: powerPurchaseAgreement.suggestedPowerProductionTypeName,
+      powerProductionUnit: powerPurchaseAgreement.powerProductionUnit
+        ? PowerProductionOverviewDto.fromEntity(powerPurchaseAgreement.powerProductionUnit)
+        : undefined,
       status: powerPurchaseAgreement.status,
     };
   }

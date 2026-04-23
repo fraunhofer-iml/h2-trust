@@ -8,14 +8,22 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-
-
+import { firstValueFrom } from 'rxjs';
+import {
+  PpaDto,
+  PpaRequestCreateDto,
+  PpaRequestDecisionDto,
+  PpaRequestDto,
+  UserDetailsDto,
+} from '@h2-trust/contracts/dtos';
+import {
+  CreatePowerPurchaseAgreementsPayload,
+  ReadPowerPurchaseAgreementsPayload,
+  UpdatePowerPurchaseAgreementPayload,
+} from '@h2-trust/contracts/payloads';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { BrokerQueues, PowerPurchaseAgreementPatterns } from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';
-import { PpaRequestDto, PpaDto, PpaRequestCreateDto, UserDetailsDto, PpaRequestDecisionDto } from '@h2-trust/contracts/dtos';
-import { ReadPowerPurchaseAgreementsPayload, CreatePowerPurchaseAgreementsPayload, UpdatePowerPurchaseAgreementPayload } from '@h2-trust/contracts/payloads';
-import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class PowerPurchaseAgreementService {
@@ -47,12 +55,12 @@ export class PowerPurchaseAgreementService {
       dto.powerProductionType,
       dto.validFrom,
       dto.validTo,
+      userId,
     );
 
     const powerPurchaseAgreement = await firstValueFrom(
       this.generalService.send(PowerPurchaseAgreementPatterns.CREATE, payload),
     );
-
     const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
     return PpaRequestDto.fromEntity(powerPurchaseAgreement, userDetails);
   }

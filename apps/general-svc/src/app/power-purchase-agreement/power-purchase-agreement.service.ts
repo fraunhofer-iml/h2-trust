@@ -34,8 +34,9 @@ export class PowerPurchaseAgreementService {
     );
   }
 
-    async createPPA(payload: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity> {
-    return this.powerPurchaseAgreementRepository.create(payload);
+  async createPPA(payload: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity> {
+    const hydrogenProducerCompany: UserEntity = await this.userRepository.findUser(payload.userId);
+    return this.powerPurchaseAgreementRepository.create(payload, hydrogenProducerCompany.company.id);
   }
 
   async updatePPA(payload: UpdatePowerPurchaseAgreementPayload): Promise<PowerPurchaseAgreementEntity> {

@@ -24,13 +24,12 @@ export class PowerPurchaseAgreementController {
 
   @MessagePattern(PowerPurchaseAgreementPatterns.READ)
   async findAll(payload: ReadPowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity[]> {
-    console.log(payload);
     return this.service.findAll(payload);
   }
 
-   @MessagePattern(PowerPurchaseAgreementPatterns.CREATE)
-  async createPPA(payload: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity[]> {
-    return; this.service.createPPA(payload);
+  @MessagePattern(PowerPurchaseAgreementPatterns.CREATE)
+  async createPPA(payload: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity> {
+    return this.service.createPPA(payload);
   }
 
   @MessagePattern(PowerPurchaseAgreementPatterns.UPDATE)

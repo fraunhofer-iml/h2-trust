@@ -8,13 +8,14 @@
 
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-
+import { PowerPurchaseAgreementEntity } from '@h2-trust/contracts/entities';
+import {
+  CreatePowerPurchaseAgreementsPayload,
+  UpdatePowerPurchaseAgreementPayload,
+} from '@h2-trust/contracts/payloads';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PrismaService } from '../prisma.service';
 import { powerPurchaseAgreementDeepQueryArgs } from '../query-args/power-purchase-agreement/power-purchase-agreement.deep.query-args';
-import { PowerPurchaseAgreementEntity } from '@h2-trust/contracts/entities';
-import { CreatePowerPurchaseAgreementsPayload, UpdatePowerPurchaseAgreementPayload } from '@h2-trust/contracts/payloads';
-import { create } from 'domain';
 
 @Injectable()
 export class PowerPurchaseAgreementRepository {
@@ -30,11 +31,38 @@ export class PowerPurchaseAgreementRepository {
         where: this.buildRoleQuery(producerId, status, role),
         ...powerPurchaseAgreementDeepQueryArgs,
       })
-      .then((result) => result.map(PowerPurchaseAgreementEntity.fromDeepDatabase));
+      .then((result) => {
+        console.log('PPA findMany result:', result);
+        return result.map(PowerPurchaseAgreementEntity.fromDeepDatabase);
+      });
   }
 
-  async create(ppa: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity> {
-    return this.prismaService.powerPurchaseAgreement.create({ data: {decision:{create}} });
+  async create(
+    ppa: CreatePowerPurchaseAgreementsPayload,
+    hydrogenProducerCompanyId: string,
+  ): Promise<PowerPurchaseAgreementEntity> {
+    return this.prismaService.powerPurchaseAgreement
+      .create({
+        data: {
+          createdAt: new Date(),
+          validTo: ppa.validTo,
+          validFrom: ppa.validFrom,
+          status: PowerPurchaseAgreementStatus.PENDING,
+          suggestedPowerType: {
+            connect: {
+              name: ppa.powerProductionType,
+            },
+          },
+          hydrogenProducer: {
+            connect: {
+              id: hydrogenProducerCompanyId,
+            },
+          },
+          powerProducer: { connect: { id: ppa.companyId } },
+        },
+        ...powerPurchaseAgreementDeepQueryArgs,
+      })
+      .then((result) => PowerPurchaseAgreementEntity.fromDeepDatabase(result));
   }
 
   async updatePpaStatus(ppa: UpdatePowerPurchaseAgreementPayload): Promise<any> {
@@ -42,6 +70,7 @@ export class PowerPurchaseAgreementRepository {
       .update({
         where: { id: ppa.ppaId },
         data: {
+          status: ppa.decision,
           decision: {
             update: {
               data: this.buildDecisionUpdateQuery(ppa),
@@ -92,9 +121,6 @@ export class PowerPurchaseAgreementRepository {
 
     if (payload.comment) {
       query.comment = payload.comment;
-    }
-    if (payload.decision) {
-      query.status = payload.decision;
     }
     return query;
   }
