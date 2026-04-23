@@ -18,7 +18,7 @@ import { InfoTooltipComponent } from '../../../../layout/info-tooltip/info-toolt
 import { LoadingCardComponent } from '../../../../layout/loading-card/loading-card.component';
 import { RFNBO_CRITERIA } from '../../../../shared/constants/rfnbo-criteria';
 import { BoolPipe } from '../../../../shared/pipes/bool-pipe';
-import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
+import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { UnitsService } from '../../../../shared/services/units/units.service';
 import { UnitActionsComponent } from '../shared/unit-actions/unit-actions.component';
@@ -38,7 +38,7 @@ import { injectUnitQuery, useQueryInvalidation } from '../shared/unit-query.util
     LoadingCardComponent,
     MatButtonModule,
     UnitActionsComponent,
-    PrettyEnumPipe,
+    EnumPipe,
   ],
   templateUrl: './power-production-details.component.html',
 })

@@ -23,7 +23,7 @@ import { RfnboCheckCardComponent } from './rfnbo-check-card/rfnbo-check-card.com
 export class RfnboComplianceComponent {
   protected readonly RFNBO_CRITERIA = RFNBO_CRITERIA;
 
-  redCompliance = input<RfnboBaseDto>();
+  redCompliance = input.required<RfnboBaseDto>();
   showComplianceInfo = false;
 
   isGridDto(dto: RfnboBaseDto): dto is GridEnergyRfnboDto {

@@ -6,9 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, Optional } from '@nestjs/common';
 import { HashUtil } from '@h2-trust/blockchain';
-import { ConfigurationService } from '@h2-trust/configuration';
 import { UnitAccountingPeriods, UnitFileImport } from '@h2-trust/contracts/entities';
 import { CreateCsvDocumentInput } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
@@ -23,15 +22,10 @@ export class CsvImportProcessingService {
     HYDROGEN: ['time', 'amount', 'power'],
   };
 
-  private readonly featureVerificationEnabled: boolean;
-
   constructor(
-    configService: ConfigurationService,
     private readonly centralizedStorageService: CentralizedStorageService,
-    private readonly decentralizedStorageService: DecentralizedStorageService,
-  ) {
-    this.featureVerificationEnabled = configService.getGlobalConfiguration().featureFlags.verificationEnabled;
-  }
+    @Optional() private readonly decentralizedStorageService: DecentralizedStorageService | null,
+  ) {}
 
   async parseAndUploadFiles(unitFileImports: UnitFileImport[]): Promise<ParsedImport[]> {
     return Promise.all(
@@ -56,7 +50,7 @@ export class CsvImportProcessingService {
         const fileName = `${expectedHash}.csv`;
         await this.centralizedStorageService.uploadFile(fileName, buffer, ContentType.CSV);
 
-        const cid = this.featureVerificationEnabled
+        const cid = this.decentralizedStorageService
           ? await this.decentralizedStorageService.uploadFile(fileName, buffer, ContentType.CSV)
           : null;
 

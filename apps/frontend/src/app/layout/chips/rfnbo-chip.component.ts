@@ -10,26 +10,26 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 import { RfnboType } from '@h2-trust/domain';
 import { ICONS } from '../../shared/constants/icons';
-import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
+import { EnumPipe } from '../../shared/pipes/enum.pipe';
 
 @Component({
   selector: 'app-rfnbo-chip',
-  imports: [CommonModule, PrettyEnumPipe],
+  imports: [CommonModule, EnumPipe],
   template: `<div
     class="flex w-fit min-w-40 flex-row items-center gap-2 rounded-lg border px-2 text-sm"
     [ngClass]="chipColor"
   >
     <span class="material-symbols-outlined text-base!"> {{ icon() }} </span>
-    {{ this.normalizedStatus() | prettyEnum | titlecase }}
+    {{ this.normalizedStatus() | enum: 'rfnboType' }}
   </div>`,
 })
 export class RfnboChipComponent {
   protected readonly defaultChipColor = 'text-neutral-600 bg-neutral-600/20 border-neutral-600/10 rounded-md';
   protected readonly defaultIconColor = 'bg-neutral-600';
 
-  rfnboType = input.required<string | boolean>();
+  rfnboType = input.required<RfnboType | boolean>();
 
-  normalizedStatus = computed((): string => {
+  normalizedStatus = computed((): RfnboType => {
     const status = this.rfnboType();
 
     if (typeof status === 'boolean') {

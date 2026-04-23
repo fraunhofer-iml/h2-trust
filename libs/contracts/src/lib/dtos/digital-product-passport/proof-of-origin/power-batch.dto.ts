@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType, EnergySource, PowerType } from '@h2-trust/domain';
+import { BatchType, EnergySource, MeasurementUnit, PowerType } from '@h2-trust/domain';
 import { BatchDto } from './batch.dto';
 import { EmissionDto } from './emission.dto';
 
@@ -22,7 +22,7 @@ export class PowerBatchDto extends BatchDto {
     emission: EmissionDto,
     creationDate: Date,
     amount: number,
-    unit: string,
+    unit: MeasurementUnit,
     producer: string,
     unitId: string,
     energySource: EnergySource,

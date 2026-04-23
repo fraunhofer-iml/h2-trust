@@ -27,7 +27,7 @@
             </div>
             <div class="flex flex-col text-sm">
               <span class="text-sm text-neutral-400">Storage Type</span
-              ><span>{{ unit.storageType || '--' | prettyEnum | titlecase }}</span>
+              ><span>{{ unit.storageType || '--' | enum: 'hydrogenStorageType' }}</span>
             </div>
           </div>
         </div>

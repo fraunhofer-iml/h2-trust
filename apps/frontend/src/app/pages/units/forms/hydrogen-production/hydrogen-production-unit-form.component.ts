@@ -14,7 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { BiddingZone, GridLevel, HydrogenProductionMethod, PowerProductionType } from '@h2-trust/domain';
 import { H2_PRODUCTION_TYPES } from '../../../../shared/constants/hydrogen-production-types';
-import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
+import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { HydrogenProductionFormGroup } from '../forms';
 
 @Component({
@@ -24,9 +24,9 @@ import { HydrogenProductionFormGroup } from '../forms';
     MatFormFieldModule,
     ReactiveFormsModule,
     MatSelectModule,
-    PrettyEnumPipe,
     FormsModule,
     MatInputModule,
+    EnumPipe,
   ],
   templateUrl: './hydrogen-production-unit-form.component.html',
 })

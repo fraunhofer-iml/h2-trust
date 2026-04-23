@@ -6,7 +6,7 @@
       <mat-label>Method</mat-label>
       <mat-select formControlName="method">
         <mat-option [value]="HydrogenProductionMethod.ELECTROLYSIS">{{
-          HydrogenProductionMethod.ELECTROLYSIS | prettyEnum | titlecase
+          HydrogenProductionMethod.ELECTROLYSIS | enum: 'hydrogenProductionMethod'
         }}</mat-option>
       </mat-select> </mat-form-field
     ><mat-form-field appearance="outline">
