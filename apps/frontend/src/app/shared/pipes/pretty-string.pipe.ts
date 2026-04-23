@@ -3,7 +3,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({
   name: 'pretty',
 })
-export class EnumPipe implements PipeTransform {
+export class PrettyStringPipe implements PipeTransform {
   transform(value: string | undefined | null): string {
     if (!value) {
       return '';

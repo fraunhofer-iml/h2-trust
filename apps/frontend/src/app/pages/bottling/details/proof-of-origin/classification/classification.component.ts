@@ -12,11 +12,12 @@ import { ClassificationDto } from '@h2-trust/contracts/dtos';
 import { BatchType, MeasurementUnit } from '@h2-trust/domain';
 import { ProofOfOriginCardComponent } from '../../../../../layout/proof-of-origin-card/proof-of-origin-card.component';
 import { ICONS } from '../../../../../shared/constants/icons';
+import { PrettyStringPipe } from '../../../../../shared/pipes/pretty-string.pipe';
 import { UnitPipe } from '../../../../../shared/pipes/unit.pipe';
 
 @Component({
   selector: 'app-classification',
-  imports: [CommonModule, UnitPipe, ProofOfOriginCardComponent],
+  imports: [CommonModule, UnitPipe, ProofOfOriginCardComponent, PrettyStringPipe],
   templateUrl: './classification.component.html',
 })
 export class ClassificationComponent {
