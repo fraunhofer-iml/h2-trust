@@ -1,0 +1,33 @@
+@if (data.err(); as err) {
+  <div class="flex w-lg flex-col items-center justify-center gap-3 px-8 pt-8 pb-4 text-center">
+    <span class="bg-error-red/20 material-symbols-outlined border-error-red text-error-red rounded-full border p-2"
+      >close</span
+    >
+    <span class="font-medium text-neutral-700">Failed to process your files.</span>
+    <span class="px-8 text-sm text-neutral-500">{{ err.error.message }} </span>
+    <mat-dialog-actions>
+      <button matButton="filled" class="delete-button" (click)="close(UploadFlowAction.FIX_REQUIRED)">Try again</button>
+    </mat-dialog-actions>
+  </div>
+} @else if (data.data(); as data) {
+  <div class="flex w-lg flex-col items-center justify-center gap-3 px-8 pt-8 pb-4 text-center">
+    <span class="bg-primary-50 material-symbols-outlined border-primary-200 text-primary-500 rounded-full border p-2"
+      >check</span
+    >
+    <span class="font-medium text-neutral-700">File import was successful.</span>
+    <span class="px-8 text-sm text-neutral-500">We created {{ data.numberOfBatches }} Batches. </span>
+    <mat-dialog-actions>
+      <button matButton (click)="close(UploadFlowAction.NEXT_UPLOAD)">Import more files</button>
+      <button matButton="filled" (click)="close(UploadFlowAction.EXIT)">View all uploads</button>
+    </mat-dialog-actions>
+  </div>
+} @else {
+  <div class="flex w-lg flex-col items-center justify-center gap-3 px-12 py-10 text-center">
+    <span class="bg-primary-50 material-symbols-outlined border-primary-200 text-primary-500 rounded-full border p-2"
+      >upload</span
+    >
+    <span class="font-medium text-neutral-700">Processing your files...</span>
+    <span class="px-8 text-sm text-neutral-500">This may take a moment depending on the number and size of files.</span>
+    <mat-progress-bar mode="indeterminate" class="mt-2 w-full" />
+  </div>
+}
