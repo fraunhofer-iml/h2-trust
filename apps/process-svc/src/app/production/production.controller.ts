@@ -13,12 +13,14 @@ import {
   ProcessStepEntity,
   ProductionStagingResultEntity,
   ProductionStatisticsEntity,
+  StagedProductionEntity,
   VerifyCsvDocumentIntegrityResultEntity,
 } from '@h2-trust/contracts/entities';
 import {
   CreateHydrogenProductionStatisticsPayload,
   CreateProductionsPayload,
   ReadByIdPayload,
+  ReadStagedProductionsPayload,
   StageProductionsPayload,
 } from '@h2-trust/contracts/payloads';
 import { ProductionMessagePatterns } from '@h2-trust/messaging';
@@ -60,6 +62,11 @@ export class ProductionController {
   @MessagePattern(ProductionMessagePatterns.READ_CSV_DOCUMENTS_BY_COMPANY)
   async readCsvDocumentsByCompany(payload: ReadByIdPayload): Promise<CsvDocumentEntity[]> {
     return this.csvDocumentService.findByCompany(payload);
+  }
+
+  @MessagePattern(ProductionMessagePatterns.READ_STAGED_PRODUCTION_BY_COMPANY)
+  async readStagedProductionsByCompany(payload: ReadStagedProductionsPayload): Promise<StagedProductionEntity[]> {
+    return this.productionStagingService.readStagedProductions(payload);
   }
 
   @MessagePattern(ProductionMessagePatterns.VERIFY_CSV_DOCUMENT_INTEGRITY)

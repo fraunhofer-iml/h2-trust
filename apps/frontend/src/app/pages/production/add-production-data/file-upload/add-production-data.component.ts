@@ -15,7 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -23,12 +23,17 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
-import { toast } from 'ngx-sonner';
+import { AccountingPeriodMatchingResultDto } from '@h2-trust/contracts/dtos';
 import { BatchType, CsvContentType } from '@h2-trust/domain';
 import { FileDragAndDropComponent } from '../../../../layout/drag-and-drop/file-drag-and-drop.component';
 import { FileTypes } from '../../../../shared/constants/file-types';
 import { ICONS } from '../../../../shared/constants/icons';
+<<<<<<< HEAD
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
+=======
+import { UploadFlowAction } from '../../../../shared/constants/upload-flow-action.enum';
+import { ModalData } from '../../../../shared/model/modal-data.model';
+>>>>>>> main
 import { FileSizePipe } from '../../../../shared/pipes/file-size.pipe';
 import {
   hydrogenProductionUnitsQueryOptions,
@@ -41,6 +46,7 @@ import { UnitsService } from '../../../../shared/services/units/units.service';
 import { UserRolesStore } from '../../../../shared/store/user-role.store';
 import { minFormArrayLength } from '../../../../shared/util/form-array-length.validator';
 import { FileForm } from './file-upload.form';
+import { LoadingModalComponent } from './loading-modal/loading-modal.component';
 
 @Component({
   selector: 'app-add-production-data',
@@ -76,34 +82,32 @@ export class AddProductionDataComponent {
   router = inject(Router);
   unitsService = inject(UnitsService);
   roles = inject(UserRolesStore);
+  loadingModal = inject(MatDialog);
 
   hydrogenProductionUnitsQuery = injectQuery(() => hydrogenProductionUnitsQueryOptions(this.unitsService));
-  powerProductionQuery = injectQuery(() => powerProductionUnitsQueryOptions(this.unitsService));
+  powerProductionUnitsQuery = injectQuery(() => powerProductionUnitsQueryOptions(this.unitsService));
   queries = {
-    [BatchType.POWER]: this.powerProductionQuery,
+    [BatchType.POWER]: this.powerProductionUnitsQuery,
     [BatchType.HYDROGEN]: this.hydrogenProductionUnitsQuery,
   };
 
   selectedTypeControl = new FormControl<CsvContentType | undefined>(undefined);
-  selectedTypeValue = toSignal(this.selectedTypeControl.valueChanges);
+  selectedType$ = toSignal(this.selectedTypeControl.valueChanges);
 
   type = computed(() => {
-    if (this.roles.isPowerProducer() && !this.roles.isHydrogenProducer()) return BatchType.POWER;
-    if (!this.roles.isPowerProducer() && this.roles.isHydrogenProducer()) return BatchType.HYDROGEN;
-    return this.selectedTypeValue();
+    if (this.roles.isPowerProducer() && !this.roles.isHydrogenProducer()) return CsvContentType.POWER;
+    if (!this.roles.isPowerProducer() && this.roles.isHydrogenProducer()) return CsvContentType.HYDROGEN;
+    return this.selectedType$();
   });
 
   form = new FormGroup({
-    files: new FormArray<FileForm>([], minFormArrayLength(1)),
+    files: new FormArray<FileForm>([], [minFormArrayLength(1), Validators.required]),
   });
 
-  mutation = injectMutation(() => ({
-    mutationFn: (data: FormData) => {
-      return this.productionService.uploadCsv(data);
-    },
-    onError: (e: HttpErrorResponse) => {
-      toast.error(e.error.message);
-    },
+  modalRef: MatDialogRef<LoadingModalComponent> | undefined;
+
+  mutation = injectMutation<AccountingPeriodMatchingResultDto, HttpErrorResponse, FormData>(() => ({
+    mutationFn: (data: FormData) => this.productionService.uploadCsv(data),
   }));
 
   constructor() {
@@ -127,6 +131,30 @@ export class AddProductionDataComponent {
     const type = this.type();
     if (!type) return;
 
+    const data = this.createFormData(type);
+
+    this.mutation.reset();
+
+    this.openDialog(type);
+
+    this.mutation.mutate(data);
+  }
+
+  removeFile(index: number, formArray: FormArray<FileForm> | FormArray<FormGroup<{ file: FormControl<File | null> }>>) {
+    formArray.controls.splice(index, 1);
+    formArray.updateValueAndValidity();
+  }
+
+  addFileFormWithUnit(file: File, formArray: FormArray<FileForm>) {
+    formArray.push(
+      new FormGroup<{ file: FormControl<File | null>; unitId: FormControl<string | null> }>({
+        file: new FormControl<File | null>(file),
+        unitId: new FormControl<string | null>(null, Validators.required),
+      }),
+    );
+  }
+
+  private createFormData(type: CsvContentType) {
     const data = new FormData();
     data.append('csvContentType', type);
 
@@ -140,20 +168,35 @@ export class AddProductionDataComponent {
       }
     });
 
-    this.mutation.mutate(data);
+    return data;
   }
 
-  removeFile(index: number, form: FormArray<FileForm> | FormArray<FormGroup<{ file: FormControl<File | null> }>>) {
-    form.controls.splice(index, 1);
-    form.updateValueAndValidity();
+  private openDialog(type: CsvContentType) {
+    const data: ModalData = { err: this.mutation.error, data: this.mutation.data, type };
+
+    this.modalRef = this.loadingModal.open(LoadingModalComponent, {
+      disableClose: true,
+      data,
+    });
+
+    this.modalRef.afterClosed().subscribe((action: UploadFlowAction) => this.onDialogClosed(action));
   }
 
-  addFileFormWithUnit(file: File, form: FormArray<FileForm>) {
-    form.push(
-      new FormGroup<{ file: FormControl<File | null>; unitId: FormControl<string | null> }>({
-        file: new FormControl<File | null>(file),
-        unitId: new FormControl<string | null>(null, Validators.required),
-      }),
-    );
+  private onDialogClosed(action: UploadFlowAction) {
+    switch (action) {
+      case UploadFlowAction.NEXT_UPLOAD:
+        this.mutation.reset();
+        this.form.controls.files.clear();
+        this.selectedTypeControl.reset();
+        break;
+
+      case UploadFlowAction.FIX_REQUIRED:
+        this.mutation.reset();
+        break;
+
+      case UploadFlowAction.EXIT:
+        this.router.navigate(['/production/files']);
+        break;
+    }
   }
 }

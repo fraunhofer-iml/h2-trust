@@ -73,7 +73,7 @@
 
           <span>
             Network
-            <p class="text-black">{{ res.network || 'Not available' }}</p>
+            <p class="text-black">{{ res.blockchainNetwork || 'Not available' }}</p>
           </span>
 
           <div class="mt-4 grid max-w-4xl grid-cols-1 gap-3 sm:grid-cols-2">
@@ -107,6 +107,11 @@
           <span>
             Content Identifier
             <p class="font-mono text-black" [attr.title]="res.cid || null">{{ res.cid | compact }}</p>
+          </span>
+
+          <span>
+            Network
+            <p class="text-black">{{ res.ipfsNetwork || 'Not available' }}</p>
           </span>
 
           <div class="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">

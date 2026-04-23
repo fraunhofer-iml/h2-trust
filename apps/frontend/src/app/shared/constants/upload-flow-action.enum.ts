@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { StorageService } from '../storage.service';
-
-export abstract class DecentralizedStorageService extends StorageService {
-  abstract readonly explorerUrl: string;
+export enum UploadFlowAction {
+  NEXT_UPLOAD = 'NEXT_UPLOAD',
+  FIX_REQUIRED = 'FIX_REQUIRED',
+  EXIT = 'EXIT',
 }

@@ -9,14 +9,21 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { BlockchainService, ProofEntry } from '@h2-trust/blockchain';
 import { FeatureFlagService } from '@h2-trust/configuration';
-import { CsvDocumentEntity, ProductionStagingResultEntity, StagedProductionEntity } from '@h2-trust/contracts/entities';
-import { StageProductionsPayload } from '@h2-trust/contracts/payloads';
+import {
+  CsvDocumentEntity,
+  PowerPurchaseAgreementEntity,
+  ProductionStagingResultEntity,
+  StagedProductionEntity,
+} from '@h2-trust/contracts/entities';
+import { ReadStagedProductionsPayload, StageProductionsPayload } from '@h2-trust/contracts/payloads';
 import {
   CreateCsvDocumentInput,
   CsvImportRepository,
+  PowerPurchaseAgreementRepository,
   PrismaService,
   StagedProductionRepository,
 } from '@h2-trust/database';
+import { PowerPurchaseAgreementStatus, StagingScope } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
 import { CsvImportProcessingService } from './csv-import-processing.service';
 import { ProductionNormalizer } from './production-normalizer';
@@ -33,7 +40,21 @@ export class ProductionStagingService {
     private readonly csvImportRepository: CsvImportRepository,
     private readonly prismaService: PrismaService,
     private readonly stagedProductionRepository: StagedProductionRepository,
+    private readonly powerPurchaseAgreementRepository: PowerPurchaseAgreementRepository,
   ) {}
+
+  async readStagedProductions(payload: ReadStagedProductionsPayload): Promise<StagedProductionEntity[]> {
+    if (payload.stagingScope == StagingScope.OWN) {
+      return this.stagedProductionRepository.findStagedProductions(payload, true, []);
+    } else {
+      const approvedAgreements: PowerPurchaseAgreementEntity[] = await this.powerPurchaseAgreementRepository.findAll(
+        payload.ownerId,
+        PowerPurchaseAgreementStatus.APPROVED,
+      );
+      const accessibleUnitIds: string[] = approvedAgreements.map((approval) => approval.powerProductionUnit.id);
+      return this.stagedProductionRepository.findStagedProductions(payload, false, accessibleUnitIds);
+    }
+  }
 
   async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
     const parsedProductionImports: ParsedImport[] = await this.csvImportProcessingService.parseAndUploadFiles(

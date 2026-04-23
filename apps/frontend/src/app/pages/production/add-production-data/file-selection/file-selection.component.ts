@@ -8,7 +8,8 @@
 
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -19,6 +20,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
 import { toast } from 'ngx-sonner';
+import { map } from 'rxjs';
 import { StagedProductionDto, StagingSubmissionDto } from '@h2-trust/contracts/dtos';
 import {
   BatchType,
@@ -27,6 +29,7 @@ import {
   PowerPurchaseAgreementStatus,
   StagingScope,
 } from '@h2-trust/domain';
+import { EmptyStateComponent } from '../../../../layout/empty-state/empty-state.component';
 import { H2TrustRoutes } from '../../../../shared/constants/routes';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { PowerPurchaseAgreementService } from '../../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
@@ -48,6 +51,7 @@ import { UnitsService } from '../../../../shared/services/units/units.service';
     FormsModule,
     MatChipsModule,
     MatButtonModule,
+    EmptyStateComponent,
   ],
   templateUrl: './file-selection.component.html',
 })
@@ -67,7 +71,9 @@ export class FileSelectionComponent {
     storageUnit: new FormControl<string | null>(null, Validators.required),
   });
 
-  selectedHydrogenFile = signal<StagedProductionDto | null>(null);
+  selectedHydrogenFile = toSignal(
+    this.form.controls.hydrogenProduction.valueChanges.pipe(map((val) => (val ? val[0] : null))),
+  );
 
   powerProductionsQuery = injectQuery(() => ({
     queryKey: [
@@ -87,12 +93,10 @@ export class FileSelectionComponent {
 
   hydrogenProductionsQuery = injectQuery(() => ({
     queryKey: ['hydrogen-production'],
-    queryFn: async () => {
-      return this.productionService.getStagedProductions(CsvContentType.HYDROGEN, StagingScope.OWN);
-    },
+    queryFn: () => this.productionService.getStagedProductions(CsvContentType.HYDROGEN, StagingScope.OWN),
   }));
 
-  approvalsQuery = injectQuery(() => ({
+  powerPurchaseAgreementsQuery = injectQuery(() => ({
     queryKey: ['power-purchase-agreements'],
     queryFn: async () => {
       const approvals = await this.powerPurchaseAgreementService.getAgreements(PowerPurchaseAgreementStatus.APPROVED);
@@ -107,7 +111,7 @@ export class FileSelectionComponent {
 
   data = computed(() => {
     const uploads = this.powerProductionsQuery.data();
-    const approvals = this.approvalsQuery.data();
+    const approvals = this.powerPurchaseAgreementsQuery.data();
 
     const result = (approvals ?? []).map((ppa) => ({
       ...ppa,
@@ -123,13 +127,15 @@ export class FileSelectionComponent {
 
   mutation = injectMutation(() => ({
     mutationFn: (dto: StagingSubmissionDto) => this.productionService.submitCsv(dto),
-    onSuccess: () => this.router.navigateByUrl(H2TrustRoutes.PRODUCTION_DATA),
+    onSuccess: () => {
+      toast.success('Successfully created new productions!');
+      this.router.navigateByUrl(H2TrustRoutes.PRODUCTION_DATA);
+    },
     onError: (e: HttpErrorResponse) => toast.error(e.error.message),
   }));
 
   constructor() {
     this.form.controls.hydrogenProduction.valueChanges.subscribe((val) => {
-      this.selectedHydrogenFile.set(val ? val[0] : null);
       if (val && val.length > 0) {
         this.form.controls.powerProductions.patchValue([]);
       }
