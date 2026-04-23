@@ -9,6 +9,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { StagedProductionEntity } from '@h2-trust/contracts/entities';
+import { ReadStagedProductionsPayload } from '@h2-trust/contracts/payloads';
 import { PrismaService } from '../prisma.service';
 import { stagedProductionDeepQueryArgs } from '../query-args';
 import { StagedProductionDeepDbType } from '../types';
@@ -18,6 +19,28 @@ export class StagedProductionRepository {
   static readonly DAY_IN_MS = 24 * 60 * 60 * 1000;
 
   constructor(private readonly prismaService: PrismaService) {}
+
+  async findStagedProductions(
+    payload: ReadStagedProductionsPayload,
+    onlyOwnProductions: boolean,
+    unitIds: string[],
+  ): Promise<StagedProductionEntity[]> {
+    const stagedProductionFilter: Prisma.StagedProductionWhereInput = {
+      ...(onlyOwnProductions && { ownerId: payload.ownerId }),
+      ...(payload.type !== undefined && { type: payload.type }),
+      ...(payload.from !== undefined && { startedAt: payload.from }),
+      ...(payload.to !== undefined && { endedAt: payload.to }),
+      ...(unitIds !== undefined &&
+        unitIds.length > 0 && {
+          unitId: { in: unitIds },
+        }),
+    };
+    const stagedProductions: StagedProductionDeepDbType[] = await this.prismaService.stagedProduction.findMany({
+      where: stagedProductionFilter,
+      ...stagedProductionDeepQueryArgs,
+    });
+    return stagedProductions.map(StagedProductionEntity.fromDeepDatabase);
+  }
 
   async saveStagedProductions(
     stagedProductions: StagedProductionEntity[],

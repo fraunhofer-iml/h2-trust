@@ -18,6 +18,7 @@ import {
   ProductionCSVUploadDto,
   ProductionOverviewDto,
   ProductionStatisticsDto,
+  StagedProductionDto,
   StagingSubmissionDto,
   UserDetailsDto,
 } from '@h2-trust/contracts/dtos';
@@ -27,6 +28,7 @@ import {
   ProcessStepEntity,
   ProductionStagingResultEntity,
   ProductionStatisticsEntity,
+  StagedProductionEntity,
   UnitFileImport,
   VerifyCsvDocumentIntegrityResultEntity,
 } from '@h2-trust/contracts/entities';
@@ -36,9 +38,10 @@ import {
   ProductionDataFilter,
   ReadByIdPayload,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
+  ReadStagedProductionsPayload,
   StageProductionsPayload,
 } from '@h2-trust/contracts/payloads';
-import { CsvContentType, ProcessType } from '@h2-trust/domain';
+import { CsvContentType, ProcessType, StagingScope } from '@h2-trust/domain';
 import { BrokerQueues, ProcessStepMessagePatterns, ProductionMessagePatterns } from '@h2-trust/messaging';
 import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
@@ -69,6 +72,23 @@ export class ProductionService {
       this.processSvc.send(ProcessStepMessagePatterns.READ_PAGINATION_BY_PREDECESSOR_TYPES_AND_OWNER, payload),
     );
     return PaginatedProductionDataDto.fromEntity(paginatedProcessStep);
+  }
+
+  async readStagedProductionsByCompanyAndType(
+    userId: string,
+    stagingScope?: StagingScope,
+    type?: CsvContentType,
+    from?: Date,
+    to?: Date,
+  ): Promise<StagedProductionDto[]> {
+    const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
+    const ownerId = userDetails.company.id;
+    const payload = new ReadStagedProductionsPayload(ownerId, stagingScope, type, from, to);
+
+    const stagedProductions: StagedProductionEntity[] = await firstValueFrom(
+      this.processSvc.send(ProductionMessagePatterns.READ_STAGED_PRODUCTION_BY_COMPANY, payload),
+    );
+    return stagedProductions.map(StagedProductionDto.fromEntity);
   }
 
   async assembleHydrogenProductionStatistics(

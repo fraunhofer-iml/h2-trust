@@ -165,13 +165,13 @@ export class ProductionController {
     example: new Date('2026-02-01'),
   })
   async readStagedProductionsByCompanyAndType(
-    @Query('scope') _scope: StagingScope,
-    @Query('type') _type: CsvContentType,
-    @Query('from') _from: Date,
-    @Query('to') _to: Date,
-    @AuthenticatedUser() _authenticatedUser: AuthenticatedKCUser,
+    @Query('scope') scope: StagingScope,
+    @Query('type') type: CsvContentType,
+    @Query('from') from: Date,
+    @Query('to') to: Date,
+    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<StagedProductionDto[]> {
-    return [];
+    return this.service.readStagedProductionsByCompanyAndType(authenticatedUser.sub, scope, type, from, to);
   }
 
   @Get('pending/csv/:id/verify')
