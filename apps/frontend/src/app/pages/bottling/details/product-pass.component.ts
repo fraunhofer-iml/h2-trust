@@ -39,6 +39,7 @@ import { RfnboComplianceComponent } from './rfnbo-compliance/rfnbo-compliance.co
     RfnboComplianceComponent,
     LoadingCardComponent,
     PrettyStringPipe,
+    EmptyStateComponent,
   ],
   templateUrl: './product-pass.component.html',
 })
