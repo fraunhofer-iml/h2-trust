@@ -14,6 +14,7 @@ import { DecentralizedStorageService } from './decentralized-storage.service';
 export class DisabledDecentralizedStorageService extends DecentralizedStorageService {
   private readonly logger = new Logger(this.constructor.name);
 
+  readonly endpointUrl: string | null = null;
   readonly explorerUrl: string | null = null;
 
   constructor() {

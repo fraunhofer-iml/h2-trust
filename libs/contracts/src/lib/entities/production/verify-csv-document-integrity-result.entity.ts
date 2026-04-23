@@ -16,10 +16,11 @@ export class VerifyCsvDocumentIntegrityResultEntity {
   transactionHash: string | null;
   blockNumber: number | null;
   blockTimestamp: Date | null;
-  network: string | null;
+  blockchainNetwork: string | null;
   smartContractAddress: string | null;
   blockchainExplorerUrl: string | null;
   cid: string | null;
+  ipfsNetwork: string | null;
   ipfsExplorerUrl: string | null;
 
   constructor(
@@ -30,10 +31,11 @@ export class VerifyCsvDocumentIntegrityResultEntity {
     transactionHash: string | null,
     blockNumber: number | null,
     blockTimestamp: Date | null,
-    network: string | null,
+    blockchainNetwork: string | null,
     smartContractAddress: string | null,
     blockchainExplorerUrl: string | null,
     cid: string | null,
+    ipfsNetwork: string | null,
     ipfsExplorerUrl: string | null,
   ) {
     this.documentId = documentId;
@@ -43,10 +45,11 @@ export class VerifyCsvDocumentIntegrityResultEntity {
     this.transactionHash = transactionHash;
     this.blockNumber = blockNumber;
     this.blockTimestamp = blockTimestamp;
-    this.network = network;
+    this.blockchainNetwork = blockchainNetwork;
     this.smartContractAddress = smartContractAddress;
     this.blockchainExplorerUrl = blockchainExplorerUrl;
     this.cid = cid;
+    this.ipfsNetwork = ipfsNetwork;
     this.ipfsExplorerUrl = ipfsExplorerUrl;
   }
 }

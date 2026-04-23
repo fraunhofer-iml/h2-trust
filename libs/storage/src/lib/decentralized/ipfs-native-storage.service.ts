@@ -16,7 +16,7 @@ export class IpfsNativeStorageService extends DecentralizedStorageService {
   private readonly logger = new Logger(this.constructor.name);
 
   constructor(
-    private readonly endpointUrl: string,
+    public readonly endpointUrl: string,
     public readonly explorerUrl: string,
   ) {
     super();
