@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Optional } from '@nestjs/common';
 import { BlockchainService, HashUtil } from '@h2-trust/blockchain';
 import { FeatureFlagService } from '@h2-trust/configuration';
 import { CsvDocumentEntity, VerifyCsvDocumentIntegrityResultEntity } from '@h2-trust/contracts/entities';
@@ -24,7 +24,7 @@ export class CsvDocumentService {
     private readonly featureFlagService: FeatureFlagService,
     private readonly csvImportRepository: CsvImportRepository,
     private readonly centralizedStorageService: CentralizedStorageService,
-    private readonly decentralizedStorageService: DecentralizedStorageService,
+    @Optional() private readonly decentralizedStorageService: DecentralizedStorageService | null,
   ) {}
 
   async findByCompany(payload: ReadByIdPayload): Promise<CsvDocumentEntity[]> {
@@ -147,9 +147,12 @@ export class CsvDocumentService {
     const smartContractAddress = verificationEnabled ? this.blockchainService.smartContractAddress : null;
     const blockchainExplorerUrl =
       verificationEnabled && transactionHash ? `${this.blockchainService.explorerUrl}/${transactionHash}` : null;
-    const ipfsNetwork = verificationEnabled ? this.decentralizedStorageService.endpointUrl : null;
+    const ipfsNetwork =
+      verificationEnabled && this.decentralizedStorageService ? this.decentralizedStorageService.endpointUrl : null;
     const ipfsExplorerUrl =
-      verificationEnabled && cid ? `${this.decentralizedStorageService.explorerUrl}/${cid}` : null;
+      verificationEnabled && cid && this.decentralizedStorageService
+        ? `${this.decentralizedStorageService.explorerUrl}/${cid}`
+        : null;
 
     return new VerifyCsvDocumentIntegrityResultEntity(
       documentId,

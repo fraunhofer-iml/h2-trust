@@ -20,7 +20,9 @@ export function createCentralizedStorageService(configService: ConfigurationServ
   return new S3StorageService(s3ClientConfig, config.bucketName);
 }
 
-export function createDecentralizedStorageService(configService: ConfigurationService): DecentralizedStorageService {
+export function createDecentralizedStorageService(
+  configService: ConfigurationService,
+): DecentralizedStorageService | null {
   const { featureFlags, verification } = configService.getGlobalConfiguration();
 
   if (!featureFlags.verificationEnabled || !verification) {
