@@ -16,11 +16,7 @@ import {
   ProductionStagingResultEntity,
   StagedProductionEntity,
 } from '@h2-trust/contracts/entities';
-import {
-  FinalizeProductionsPayload,
-  ReadStagedProductionsPayload,
-  StageProductionsPayload,
-} from '@h2-trust/contracts/payloads';
+import { ReadStagedProductionsPayload, StageProductionsPayload } from '@h2-trust/contracts/payloads';
 import {
   CreateCsvDocumentInput,
   CsvImportRepository,
@@ -49,6 +45,19 @@ export class ProductionStagingService {
     private readonly powerPurchaseAgreementRepository: PowerPurchaseAgreementRepository,
     private readonly processStepService: ProcessStepService,
   ) {}
+
+  async readStagedProductions(payload: ReadStagedProductionsPayload): Promise<StagedProductionEntity[]> {
+    if (payload.stagingScope == StagingScope.OWN) {
+      return this.stagedProductionRepository.findStagedProductions(payload, true, []);
+    } else {
+      const approvedAgreements: PowerPurchaseAgreementEntity[] = await this.powerPurchaseAgreementRepository.findAll(
+        payload.ownerId,
+        PowerPurchaseAgreementStatus.APPROVED,
+      );
+      const accessibleUnitIds: string[] = approvedAgreements.map((approval) => approval.powerProductionUnit.id);
+      return this.stagedProductionRepository.findStagedProductions(payload, false, accessibleUnitIds);
+    }
+  }
 
   async createProductionsFromStaging(payload: FinalizeProductionsPayload): Promise<ProcessStepEntity[]> {
     const stagedHydrogenProduction: StagedProductionEntity = await this.stagedProductionRepository.findStagedProduction(
