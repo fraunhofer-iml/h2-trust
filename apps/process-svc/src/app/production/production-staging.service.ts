@@ -118,19 +118,7 @@ export class ProductionStagingService {
       stagedHydrogenProduction.unitId,
     ) as HydrogenProductionUnitEntity;
 
-    const createRenewablePowerProductionEntity: CreateProductionEntity[] = stagedPowerProductions.map(
-      (stagedPowerProduction) =>
-        this.convertStagedProductionToProductionEntity(
-          stagedHydrogenProduction,
-          stagedPowerProduction,
-          PowerType.RENEWABLE,
-          payload.storageUnitId,
-          hydrogenProductionUnit.waterConsumptionLitersPerHour,
-          payload.recordedBy,
-        ),
-    );
-
-    const createGridPowerProductionEntity: CreateProductionEntity[] = this.createGridPowerProductionEntity(
+    const createProductionEntity: CreateProductionEntity[] = this.getStagedProductionDistribution(
       stagedHydrogenProduction,
       stagedPowerProductions,
       payload.storageUnitId,
@@ -138,13 +126,12 @@ export class ProductionStagingService {
       payload.recordedBy,
     );
 
-    const createProductionEntities: CreateProductionEntity[] = [
-      ...createRenewablePowerProductionEntity,
-      ...createGridPowerProductionEntity,
-    ];
+    this.getStagedProductionsToSetInactive(stagedHydrogenProduction, stagedPowerProductions);
+
+    this.getRemainingPowerProduction(stagedHydrogenProduction, stagedPowerProductions);
 
     const persistedProcessSteps: ProcessStepEntity[] = await this.productionCreationService.createAndPersistProductions(
-      createProductionEntities,
+      createProductionEntity,
       productionUnitForId,
     );
 
@@ -158,32 +145,85 @@ export class ProductionStagingService {
     return this.stagedProductionRepository.setStagedProductionsToInactive(ids);
   }
 
-  createGridPowerProductionEntity(
+  getStagedProductionDistribution(
     stagedHydrogenProduction: StagedProductionEntity,
     stagedPowerProductions: StagedProductionEntity[],
     hydrogenStorageUnitId: string,
     waterConsumption: number,
     recordedBy: string,
   ): CreateProductionEntity[] {
-    const consumedGridPowerPercentage: number = ProductionUtils.calculateRequiredGridPowerPercentage(
-      stagedHydrogenProduction,
-      stagedPowerProductions,
-    );
+    const createProductionEntities: CreateProductionEntity[] = [];
 
-    if (consumedGridPowerPercentage == 0) {
-      return [];
+    let remainingPowerConsuption = stagedHydrogenProduction.powerConsumed;
+    let remainingHydrogenProduction = stagedHydrogenProduction.amountProduced;
+
+    for (const stagedPowerProduction of stagedPowerProductions) {
+      if (stagedPowerProduction.amountProduced >= remainingPowerConsuption) {
+        //since the current power production is sufficient to take care of the remaining power consumption we can return the list with this power production.
+        const powerUsed: number = remainingPowerConsuption;
+        const amountProduced: number = remainingHydrogenProduction;
+
+        const createProductionEntity: CreateProductionEntity = new CreateProductionEntity(
+          stagedHydrogenProduction.startedAt,
+          stagedHydrogenProduction.endedAt,
+          stagedPowerProduction.unitId,
+          PowerType.RENEWABLE,
+          powerUsed,
+          stagedHydrogenProduction.unitId,
+          amountProduced,
+          recordedBy,
+          HydrogenColor.MIX,
+          hydrogenStorageUnitId,
+          stagedPowerProduction.ownerId,
+          stagedHydrogenProduction.ownerId,
+          waterConsumption,
+        );
+        createProductionEntities.push(createProductionEntity);
+        return createProductionEntities;
+      } else {
+        //add one createProductionEntity with amountProduced of stagedProduction.amountProduced
+        //wen need the share of the produced power from the total power consumption of the hydrogen production
+        const powerUsed: number = stagedPowerProduction.amountProduced;
+
+        const shareOfPowerProductionFromTotalPowerConsumption: number =
+          (stagedPowerProduction.amountProduced * 100) / stagedHydrogenProduction.powerConsumed;
+        const amountProduced: number =
+          (stagedHydrogenProduction.amountProduced / 100) * shareOfPowerProductionFromTotalPowerConsumption;
+        const createProductionEntity: CreateProductionEntity = new CreateProductionEntity(
+          stagedHydrogenProduction.startedAt,
+          stagedHydrogenProduction.endedAt,
+          stagedPowerProduction.unitId,
+          PowerType.RENEWABLE,
+          powerUsed,
+          stagedHydrogenProduction.unitId,
+          amountProduced,
+          recordedBy,
+          HydrogenColor.MIX,
+          hydrogenStorageUnitId,
+          stagedPowerProduction.ownerId,
+          stagedHydrogenProduction.ownerId,
+          waterConsumption,
+        );
+        createProductionEntities.push(createProductionEntity);
+
+        remainingPowerConsuption = remainingPowerConsuption - stagedPowerProduction.amountProduced;
+        remainingHydrogenProduction = remainingHydrogenProduction - amountProduced;
+      }
     }
-    const girdPowerConsumed: number = (stagedHydrogenProduction.powerConsumed / 100) * consumedGridPowerPercentage;
-    const amountProducedWithGridPower: number =
-      (stagedHydrogenProduction.amountProduced / 100) * consumedGridPowerPercentage;
+
+    //at this point we have remaining power consumption and hydrogen production and no remaining power production
+    //the remaining amounts will be created via GRID
+    const gridPowerConsumed: number = remainingPowerConsuption;
+    const amountOfHydrogenProducedWithGridPower: number = remainingHydrogenProduction;
+
     const gridPowerCreateEntity: CreateProductionEntity = new CreateProductionEntity(
       stagedHydrogenProduction.startedAt,
       stagedHydrogenProduction.endedAt,
       this.gridPowerUnitId,
       PowerType.NOT_SPECIFIED,
-      girdPowerConsumed,
+      gridPowerConsumed,
       stagedHydrogenProduction.unitId,
-      amountProducedWithGridPower,
+      amountOfHydrogenProducedWithGridPower,
       recordedBy,
       HydrogenColor.MIX,
       hydrogenStorageUnitId,
@@ -191,62 +231,61 @@ export class ProductionStagingService {
       stagedHydrogenProduction.ownerId,
       waterConsumption,
     );
-    return ProductionUtils.splitGridPowerProduction(gridPowerCreateEntity, EnergySource.GRID);
+    const gridPowerCreateEntities: CreateProductionEntity[] = ProductionUtils.splitGridPowerProduction(
+      gridPowerCreateEntity,
+      EnergySource.GRID,
+    );
+    createProductionEntities.push(...gridPowerCreateEntities);
+    return createProductionEntities;
   }
 
-  convertStagedProductionToProductionEntity(
+  getStagedProductionsToSetInactive(
     stagedHydrogenProduction: StagedProductionEntity,
-    stagedPowerProduction: StagedProductionEntity,
-    powerType: PowerType,
-    hydrogenStorageUnitId: string,
-    waterConsumption: number,
-    recordedBy: string,
-  ): CreateProductionEntity {
-    const percentageOfProducedPowerFromConsumedPower =
-      stagedHydrogenProduction.powerConsumed != 0
-        ? (stagedPowerProduction.amountProduced * 100) / stagedHydrogenProduction.powerConsumed
-        : 0;
+    stagedPowerProductions: StagedProductionEntity[],
+  ) {
+    let stagedProductionsToSetInactive: StagedProductionEntity[] = [stagedHydrogenProduction];
 
-    //case: the power production is bigger than the required power
-    if (percentageOfProducedPowerFromConsumedPower > 100) {
-      //TODO-LG: Add a split of stagedPower here
-    }
+    let remainingPowerConsuption = stagedHydrogenProduction.powerConsumed;
 
-    if (percentageOfProducedPowerFromConsumedPower >= 100) {
-      return new CreateProductionEntity(
-        stagedHydrogenProduction.startedAt,
-        stagedHydrogenProduction.endedAt,
-        stagedPowerProduction.unitId,
-        powerType,
-        stagedHydrogenProduction.powerConsumed,
-        stagedHydrogenProduction.unitId,
-        stagedHydrogenProduction.amountProduced,
-        recordedBy,
-        HydrogenColor.MIX,
-        hydrogenStorageUnitId,
-        stagedPowerProduction.ownerId,
-        stagedHydrogenProduction.ownerId,
-        waterConsumption,
-      );
-    } else {
-      const producedHydrogenAmount: number =
-        (stagedHydrogenProduction.amountProduced / 100) * percentageOfProducedPowerFromConsumedPower;
-      return new CreateProductionEntity(
-        stagedHydrogenProduction.startedAt,
-        stagedHydrogenProduction.endedAt,
-        stagedPowerProduction.unitId,
-        powerType,
-        stagedPowerProduction.amountProduced,
-        stagedHydrogenProduction.unitId,
-        producedHydrogenAmount,
-        recordedBy,
-        HydrogenColor.MIX,
-        hydrogenStorageUnitId,
-        stagedPowerProduction.ownerId,
-        stagedHydrogenProduction.ownerId,
-        waterConsumption,
-      );
+    for (const stagedPowerProduction of stagedPowerProductions) {
+      remainingPowerConsuption = remainingPowerConsuption - stagedPowerProduction.amountProduced;
+      stagedProductionsToSetInactive.push(stagedPowerProduction);
+      this.logger.debug(`The staged production ${stagedPowerProduction.id} should be deactivated`);
+
+      if (remainingPowerConsuption < 0) {
+        return stagedProductionsToSetInactive;
+      }
     }
+    return undefined;
+  }
+
+  getRemainingPowerProduction(
+    stagedHydrogenProduction: StagedProductionEntity,
+    stagedPowerProductions: StagedProductionEntity[],
+  ): StagedProductionEntity {
+    let remainingPowerConsuption = stagedHydrogenProduction.powerConsumed;
+
+    for (const stagedPowerProduction of stagedPowerProductions) {
+      remainingPowerConsuption = remainingPowerConsuption - stagedPowerProduction.amountProduced;
+      if (remainingPowerConsuption < 0) {
+        const remainingPowerProduction: number = Math.abs(remainingPowerConsuption);
+        const splittedPowerProduction: StagedProductionEntity = new StagedProductionEntity(
+          undefined,
+          stagedPowerProduction.startedAt,
+          stagedPowerProduction.endedAt,
+          remainingPowerProduction,
+          stagedPowerProduction.unitId,
+          stagedPowerProduction.ownerId,
+          stagedPowerProduction.powerConsumed,
+          stagedPowerProduction.type,
+          stagedPowerProduction.csvImportId,
+        );
+        this.logger.debug(`The remainig power of ${splittedPowerProduction.amountProduced} was persisted`);
+        return splittedPowerProduction;
+      }
+    }
+    this.logger.debug(`No split was necessary`);
+    return undefined;
   }
 
   async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
