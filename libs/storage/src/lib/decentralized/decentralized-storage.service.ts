@@ -9,5 +9,5 @@
 import { StorageService } from '../storage.service';
 
 export abstract class DecentralizedStorageService extends StorageService {
-  abstract readonly explorerUrl: string | null;
+  abstract readonly explorerUrl: string;
 }

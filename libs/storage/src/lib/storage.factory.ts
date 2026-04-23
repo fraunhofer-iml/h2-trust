@@ -11,7 +11,6 @@ import { ConfigurationService, DECENTRALIZED_STORAGE_PROVIDERS, S3Configuration 
 import { CentralizedStorageService } from './centralized/centralized-storage.service';
 import { S3StorageService } from './centralized/s3-storage.service';
 import { DecentralizedStorageService } from './decentralized/decentralized-storage.service';
-import { DisabledDecentralizedStorageService } from './decentralized/disabled-decentralized-storage.service';
 import { IpfsNativeStorageService } from './decentralized/ipfs-native-storage.service';
 import { IpfsPinningStorageService } from './decentralized/ipfs-pinning-storage.service';
 
@@ -25,7 +24,7 @@ export function createDecentralizedStorageService(configService: ConfigurationSe
   const { featureFlags, verification } = configService.getGlobalConfiguration();
 
   if (!featureFlags.verificationEnabled || !verification) {
-    return new DisabledDecentralizedStorageService();
+    return null;
   }
 
   const { decentralizedStorage } = verification;
