@@ -26,7 +26,7 @@ export class IpfsPinningStorageService extends DecentralizedStorageService {
     super();
 
     this.client = new S3Client(s3ClientConfig);
-    this.endpointUrl = s3ClientConfig.endpoint?.toString() ?? null;
+    this.endpointUrl = s3ClientConfig.endpoint.toString();
 
     this.logger.debug('🔗 IPFS pinning initialized.');
     this.logger.debug(`🌐 Endpoint: ${this.endpointUrl}`);
