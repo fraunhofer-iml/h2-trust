@@ -14,7 +14,7 @@ import { injectMutation, injectQuery } from '@tanstack/angular-query-experimenta
 import { toast } from 'ngx-sonner';
 import { PowerProductionUnitDto, PowerProductionUnitInputDto } from '@h2-trust/contracts/dtos';
 import { PowerProductionType } from '@h2-trust/domain';
-import { UnitTypeChipComponent } from '../../../layout/unit-type-chip/unit-type-chip.component';
+import { UnitTypeChipComponent } from '../../../layout/chips/unit-type-chip.component';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { BaseUnitFormComponent } from '../forms/base-unit/base-unit-form-component';
 import { newPowerProductionForm, newUnitForm, PowerProductionFormGroup, UnitFormGroup } from '../forms/forms';
@@ -26,9 +26,9 @@ import { PowerProductionUnitFormComponent } from '../forms/power-production/powe
     BaseUnitFormComponent,
     PowerProductionUnitFormComponent,
     RouterModule,
-    UnitTypeChipComponent,
     MatAnchor,
     MatButtonModule,
+    UnitTypeChipComponent,
   ],
   templateUrl: './power-production-unit-update.component.html',
 })

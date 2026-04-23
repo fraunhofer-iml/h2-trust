@@ -1,31 +1,41 @@
 <div class="my-4 flex w-full flex-col gap-4 rounded-lg bg-white py-4">
   <!-- PENDING Section -->
   <span class="px-4 text-xs text-neutral-400">PENDING</span>
-  <div class="mx-4 flex flex-col gap-2 rounded-md border border-dashed border-neutral-300 bg-neutral-50 p-4">
-    @if (data()?.pending?.length === 0) {
-      <app-empty-requests [role]="role()" [pending]="true" />
-    }
-
-    <div class="grid grid-cols-2 gap-4 2xl:grid-cols-3">
+  @if (data()?.pending?.length === 0) {
+    <app-empty-state
+      class="mx-4"
+      [icon]="pendingEmptyState().icon"
+      [title]="pendingEmptyState().title"
+      [description]="pendingEmptyState().description"
+    />
+  } @else {
+    <div
+      class="mx-4 grid grid-cols-2 gap-4 rounded-md border border-dashed border-neutral-300 bg-neutral-50 p-4 2xl:grid-cols-3"
+    >
       @for (request of data()?.pending; track request.id) {
         <app-ppa-request-card [request]="request" [role]="role()" />
       }
     </div>
-  </div>
+  }
 
   <mat-divider />
 
   <!-- COMPLETED Section -->
   <span class="px-4 text-xs text-neutral-400">COMPLETED</span>
-  <div class="to mx-4 flex flex-col gap-2 rounded-md border border-dashed border-neutral-300 bg-neutral-50 p-4">
-    @if (data()?.closed?.length === 0) {
-      <app-empty-requests [role]="role()" [pending]="false" />
-    }
-
-    <div class="grid grid-cols-2 gap-4 2xl:grid-cols-3">
+  @if (data()?.closed?.length === 0) {
+    <app-empty-state
+      class="mx-4"
+      [icon]="closedEmptyState().icon"
+      [title]="closedEmptyState().title"
+      [description]="closedEmptyState().description"
+    />
+  } @else {
+    <div
+      class="mx-4 grid grid-cols-2 gap-4 rounded-md border border-dashed border-neutral-300 bg-neutral-50 p-4 2xl:grid-cols-3"
+    >
       @for (request of data()?.closed; track request.id) {
         <app-ppa-request-card [request]="request" [role]="role()" />
       }
     </div>
-  </div>
+  }
 </div>

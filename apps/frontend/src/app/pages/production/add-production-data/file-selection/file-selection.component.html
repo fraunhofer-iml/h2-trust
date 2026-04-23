@@ -20,60 +20,56 @@
       </div>
 
       <!-- H2 PRODUCTIONS -->
-      <div class="flex h-full min-h-0 flex-col rounded-lg bg-white p-4">
+      <div class="flex h-full min-h-0 flex-col gap-2 rounded-lg bg-white p-4">
         <span>My Hydrogen Productions</span>
 
         @if (hydrogenProductionsQuery.data()?.length === 0) {
-          <div
-            class="mt-4 flex h-full flex-col items-center justify-center rounded-lg border border-dashed bg-neutral-50 p-4 text-center text-sm"
+          <app-empty-state
+            class="h-full"
+            title="No Hydrogen Production available"
+            description="Please upload your Hydrogen Production files to continue."
+          />
+        } @else {
+          <mat-selection-list
+            #filesList
+            formControlName="hydrogenProduction"
+            [multiple]="false"
+            class="subtle-scrollbar mt-2 min-h-0 flex-1 overflow-auto"
           >
-            <span class="material-symbols-outlined text-primary-400 p-2 text-4xl">select</span>
-            <p><strong>No Hydrogen Production available</strong></p>
-            <p>Please upload your Hydrogen Production files to continue.</p>
-          </div>
+            @for (dataset of hydrogenProductionsQuery.data(); track dataset) {
+              <mat-list-option
+                [value]="dataset"
+                [ngClass]="option.selected ? 'border-primary-300' : 'border-neutral-300'"
+                class="mb-2 !h-fit !rounded-md border"
+                togglePosition="before"
+                #option
+              >
+                <span matListItemTitle>
+                  {{ dataset.startedAt | date: 'mediumDate' }}, {{ dataset.startedAt | date: 'shortTime' }} –
+                  {{ dataset.endedAt | date: 'mediumDate' }}, {{ dataset.endedAt | date: 'shortTime' }}
+                </span>
+                <p matListItemLine class="pb-3">
+                  {{ dataset.amountProduced | unit: MeasurementUnit.KG_H2 }} •
+                  {{ dataset.amountConsumed | unit: MeasurementUnit.KWH }}
+                </p>
+              </mat-list-option>
+            }
+          </mat-selection-list>
         }
-
-        <mat-selection-list
-          #filesList
-          formControlName="hydrogenProduction"
-          [multiple]="false"
-          class="subtle-scrollbar mt-2 min-h-0 flex-1 overflow-auto"
-        >
-          @for (dataset of hydrogenProductionsQuery.data(); track dataset) {
-            <mat-list-option
-              [value]="dataset"
-              [ngClass]="option.selected ? 'border-primary-300' : 'border-neutral-300'"
-              class="mb-2 h-fit! rounded-md! border"
-              togglePosition="before"
-              #option
-            >
-              <span matListItemTitle>
-                {{ dataset.startedAt | date: 'mediumDate' }}, {{ dataset.startedAt | date: 'shortTime' }} –
-                {{ dataset.endedAt | date: 'mediumDate' }}, {{ dataset.endedAt | date: 'shortTime' }}
-              </span>
-              <p matListItemLine class="pb-3">
-                {{ dataset.amountProduced | unit: MeasurementUnit.KG_H2 }} •
-                {{ dataset.powerConsumed | unit: MeasurementUnit.KWH }}
-              </p>
-            </mat-list-option>
-          }
-        </mat-selection-list>
       </div>
     </div>
 
     <!-- POWER PRODUCTIONS -->
     <div class="col-span-2 flex min-h-0 flex-col gap-2">
-      <div class="flex h-full min-h-0 flex-col rounded-lg bg-white p-4">
+      <div class="flex h-full min-h-0 flex-col gap-2 rounded-lg bg-white p-4">
         <span>Matching Power Productions</span>
 
         @if (!form.controls.hydrogenProduction.value) {
-          <div
-            class="mt-4 flex h-full flex-col items-center justify-center rounded-lg border border-dashed bg-neutral-50 p-4 text-center text-sm"
-          >
-            <span class="material-symbols-outlined text-primary-400 p-2 text-4xl">select</span>
-            <p><strong>No Hydrogen Production selected</strong></p>
-            <p>Please select a Hydrogen Production Dataset to continue.</p>
-          </div>
+          <app-empty-state
+            class="h-full"
+            title="No Hydrogen Production selected"
+            description="Please select a Hydrogen Production Dataset to continue."
+          />
         } @else {
           <div class="subtle-scrollbar mt-2 min-h-0 flex-1 overflow-auto">
             @for (item of data(); track $index) {

@@ -14,7 +14,7 @@ import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-quer
 import { toast } from 'ngx-sonner';
 import { HydrogenProductionUnitDto, HydrogenProductionUnitInputDto } from '@h2-trust/contracts/dtos';
 import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology } from '@h2-trust/domain';
-import { UnitTypeChipComponent } from '../../../layout/unit-type-chip/unit-type-chip.component';
+import { UnitTypeChipComponent } from '../../../layout/chips/unit-type-chip.component';
 import { QUERY_KEYS } from '../../../shared/queries/shared-query-keys';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { BaseUnitFormComponent } from '../forms/base-unit/base-unit-form-component';
@@ -32,9 +32,9 @@ import { HydrogenProductionUnitFormComponent } from '../forms/hydrogen-productio
   imports: [
     RouterModule,
     MatButtonModule,
-    UnitTypeChipComponent,
     BaseUnitFormComponent,
     HydrogenProductionUnitFormComponent,
+    UnitTypeChipComponent,
   ],
   templateUrl: './hydrogen-production-unit-update.component.html',
 })
