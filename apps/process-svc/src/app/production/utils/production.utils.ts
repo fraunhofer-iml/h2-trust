@@ -6,7 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchEntity, CreateProductionEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
+import {
+  BatchEntity,
+  CreateProductionEntity,
+  ProcessStepEntity,
+  StagedProductionEntity,
+} from '@h2-trust/contracts/entities';
 import { EnergySource, HydrogenColor, PowerType, RenewableShareInGridMix, TimeInSeconds } from '@h2-trust/domain';
 import { DateTimeUtil } from '@h2-trust/utils';
 import { AccountingPeriod } from '../production.types';
@@ -168,6 +173,21 @@ export class ProductionUtils {
     }
 
     return batchesByStartedAt;
+  }
+
+  static calculateRequiredGridPowerPercentage(
+    stagedHydrogenProduction: StagedProductionEntity,
+    stagedPowerProductions: StagedProductionEntity[],
+  ): number {
+    const powerProductionSum: number = stagedPowerProductions.reduce(
+      (sum, { amountProduced }) => sum + amountProduced,
+      0,
+    );
+    const requiredPower: number = stagedHydrogenProduction.powerConsumed;
+
+    const cunsumedGridPower: number = Math.max(requiredPower - powerProductionSum, 0);
+
+    return requiredPower != 0 ? (cunsumedGridPower * 100) / requiredPower : 0;
   }
 
   /**
