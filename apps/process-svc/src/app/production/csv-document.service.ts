@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Optional } from '@nestjs/common';
 import { BlockchainService, HashUtil } from '@h2-trust/blockchain';
 import { FeatureFlagService } from '@h2-trust/configuration';
 import { CsvDocumentEntity, VerifyCsvDocumentIntegrityResultEntity } from '@h2-trust/contracts/entities';
@@ -24,7 +24,7 @@ export class CsvDocumentService {
     private readonly featureFlagService: FeatureFlagService,
     private readonly csvImportRepository: CsvImportRepository,
     private readonly centralizedStorageService: CentralizedStorageService,
-    private readonly decentralizedStorageService: DecentralizedStorageService,
+    @Optional() private readonly decentralizedStorageService: DecentralizedStorageService | null,
   ) {}
 
   async findByCompany(payload: ReadByIdPayload): Promise<CsvDocumentEntity[]> {
@@ -143,12 +143,8 @@ export class CsvDocumentService {
     cid: string | null,
   ): VerifyCsvDocumentIntegrityResultEntity {
     const { verificationEnabled } = this.featureFlagService;
-    const ipfsExplorerUrl =
-      verificationEnabled && cid ? `${this.decentralizedStorageService.explorerUrl}/${cid}` : null;
-    const blockchainExplorerUrl =
-      verificationEnabled && transactionHash ? `${this.blockchainService.explorerUrl}/${transactionHash}` : null;
-    const network = verificationEnabled ? this.blockchainService.endpointUrl : null;
-    const smartContractAddress = verificationEnabled ? this.blockchainService.smartContractAddress : null;
+    const blockchain = verificationEnabled ? this.blockchainService : null;
+    const ipfs = verificationEnabled ? this.decentralizedStorageService : null;
 
     return new VerifyCsvDocumentIntegrityResultEntity(
       documentId,
@@ -158,11 +154,12 @@ export class CsvDocumentService {
       transactionHash,
       blockNumber,
       blockTimestamp,
-      network,
-      smartContractAddress,
-      blockchainExplorerUrl,
+      blockchain?.endpointUrl ?? null,
+      blockchain?.smartContractAddress ?? null,
+      blockchain && transactionHash ? `${blockchain.explorerUrl}/${transactionHash}` : null,
       cid,
-      ipfsExplorerUrl,
+      ipfs?.endpointUrl ?? null,
+      ipfs && cid ? `${ipfs.explorerUrl}/${cid}` : null,
     );
   }
 }

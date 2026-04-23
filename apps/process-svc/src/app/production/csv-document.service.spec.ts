@@ -157,7 +157,7 @@ describe('CsvDocumentService', () => {
       expect(actualResult.transactionHash).toBe(givenDocument.transactionHash);
       expect(actualResult.blockNumber).toBe(123);
       expect(actualResult.blockTimestamp).toEqual(new Date('2026-01-01T00:15:00.000Z'));
-      expect(actualResult.network).toBe(blockchainServiceMock.endpointUrl);
+      expect(actualResult.blockchainNetwork).toBe(blockchainServiceMock.endpointUrl);
       expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
       expect(actualResult.blockchainExplorerUrl).toBe(
         `${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`,
@@ -202,7 +202,7 @@ describe('CsvDocumentService', () => {
       expect(actualResult.transactionHash).toBe(givenDocument.transactionHash);
       expect(actualResult.blockNumber).toBe(456);
       expect(actualResult.blockTimestamp).toEqual(new Date('2026-01-01T00:15:00.000Z'));
-      expect(actualResult.network).toBe(blockchainServiceMock.endpointUrl);
+      expect(actualResult.blockchainNetwork).toBe(blockchainServiceMock.endpointUrl);
       expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
       expect(actualResult.blockchainExplorerUrl).toBe(
         `${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`,
@@ -237,7 +237,7 @@ describe('CsvDocumentService', () => {
       expect(actualResult.message).toContain('Blockchain integration disabled, cannot verify file integrity.');
       expect(actualResult.blockNumber).toBeNull();
       expect(actualResult.blockTimestamp).toBeNull();
-      expect(actualResult.network).toBeNull();
+      expect(actualResult.blockchainNetwork).toBeNull();
       expect(actualResult.smartContractAddress).toBeNull();
       expect(actualResult.blockchainExplorerUrl).toBeNull();
       expect(storageServiceMock.downloadFile).not.toHaveBeenCalled();
@@ -263,7 +263,7 @@ describe('CsvDocumentService', () => {
       expect(actualResult.message).toContain(`Document with id ${givenPayload.id} does not exist`);
       expect(actualResult.blockNumber).toBeNull();
       expect(actualResult.blockTimestamp).toBeNull();
-      expect(actualResult.network).toBe(blockchainServiceMock.endpointUrl);
+      expect(actualResult.blockchainNetwork).toBe(blockchainServiceMock.endpointUrl);
       expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
       expect(actualResult.blockchainExplorerUrl).toBeNull();
 
@@ -300,7 +300,7 @@ describe('CsvDocumentService', () => {
       expect(actualResult.message).toContain(`Document with id ${givenPayload.id} has no transaction hash`);
       expect(actualResult.blockNumber).toBeNull();
       expect(actualResult.blockTimestamp).toBeNull();
-      expect(actualResult.network).toBe(blockchainServiceMock.endpointUrl);
+      expect(actualResult.blockchainNetwork).toBe(blockchainServiceMock.endpointUrl);
       expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
       expect(actualResult.blockchainExplorerUrl).toBeNull();
 
@@ -344,7 +344,7 @@ describe('CsvDocumentService', () => {
       );
       expect(actualResult.blockNumber).toBeNull();
       expect(actualResult.blockTimestamp).toBeNull();
-      expect(actualResult.network).toBe(blockchainServiceMock.endpointUrl);
+      expect(actualResult.blockchainNetwork).toBe(blockchainServiceMock.endpointUrl);
       expect(actualResult.smartContractAddress).toBe(blockchainServiceMock.smartContractAddress);
       expect(actualResult.blockchainExplorerUrl).toBe(
         `${blockchainServiceMock.explorerUrl}/${givenDocument.transactionHash}`,
