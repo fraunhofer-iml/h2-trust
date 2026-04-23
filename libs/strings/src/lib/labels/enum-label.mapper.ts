@@ -106,20 +106,20 @@ export class EnumLabelMapper {
     [RfnboType.NOT_SPECIFIED]: 'Not Specified',
   };
 
-  private static PPA_STATUS_LABELS: Record<PowerPurchaseAgreementStatus, string> = {
+  private static readonly PPA_STATUS_LABELS: Record<PowerPurchaseAgreementStatus, string> = {
     [PowerPurchaseAgreementStatus.REJECTED]: 'Rejected',
     [PowerPurchaseAgreementStatus.PENDING]: 'Pending',
     [PowerPurchaseAgreementStatus.APPROVED]: 'Approved',
   };
 
-  private static POWER_TYPE_LABELS: Record<PowerType, string> = {
+  private static readonly POWER_TYPE_LABELS: Record<PowerType, string> = {
     [PowerType.RENEWABLE]: 'Renewable',
     [PowerType.PARTLY_RENEWABLE]: 'Partly Renewable',
     [PowerType.NON_RENEWABLE]: 'Non Renewable',
     [PowerType.NOT_SPECIFIED]: 'Not Specified',
   };
 
-  private static CSV_CONTENT_TYPE_LABELS: Record<CsvContentType, string> = {
+  private static readonly CSV_CONTENT_TYPE_LABELS: Record<CsvContentType, string> = {
     [CsvContentType.POWER]: 'Power',
     [CsvContentType.HYDROGEN]: 'Hydrogen',
   };
