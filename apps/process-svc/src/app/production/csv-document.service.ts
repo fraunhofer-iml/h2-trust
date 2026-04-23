@@ -143,16 +143,8 @@ export class CsvDocumentService {
     cid: string | null,
   ): VerifyCsvDocumentIntegrityResultEntity {
     const { verificationEnabled } = this.featureFlagService;
-    const blockchainNetwork = verificationEnabled ? this.blockchainService.endpointUrl : null;
-    const smartContractAddress = verificationEnabled ? this.blockchainService.smartContractAddress : null;
-    const blockchainExplorerUrl =
-      verificationEnabled && transactionHash ? `${this.blockchainService.explorerUrl}/${transactionHash}` : null;
-    const ipfsNetwork =
-      verificationEnabled && this.decentralizedStorageService ? this.decentralizedStorageService.endpointUrl : null;
-    const ipfsExplorerUrl =
-      verificationEnabled && cid && this.decentralizedStorageService
-        ? `${this.decentralizedStorageService.explorerUrl}/${cid}`
-        : null;
+    const blockchain = verificationEnabled ? this.blockchainService : null;
+    const ipfs = verificationEnabled ? this.decentralizedStorageService : null;
 
     return new VerifyCsvDocumentIntegrityResultEntity(
       documentId,
@@ -162,12 +154,12 @@ export class CsvDocumentService {
       transactionHash,
       blockNumber,
       blockTimestamp,
-      blockchainNetwork,
-      smartContractAddress,
-      blockchainExplorerUrl,
+      blockchain?.endpointUrl ?? null,
+      blockchain?.smartContractAddress ?? null,
+      blockchain && transactionHash ? `${blockchain.explorerUrl}/${transactionHash}` : null,
       cid,
-      ipfsNetwork,
-      ipfsExplorerUrl,
+      ipfs?.endpointUrl ?? null,
+      ipfs && cid ? `${ipfs.explorerUrl}/${cid}` : null,
     );
   }
 }
