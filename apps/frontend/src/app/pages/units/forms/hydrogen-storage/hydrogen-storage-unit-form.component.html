@@ -6,10 +6,10 @@
       <mat-label>Type</mat-label>
       <mat-select formControlName="hydrogenStorageType">
         <mat-option [value]="HydrogenStorageType.LIQUID_HYDROGEN">{{
-          HydrogenStorageType.LIQUID_HYDROGEN | prettyEnum | titlecase
+          HydrogenStorageType.LIQUID_HYDROGEN | enum: 'hydrogenStorageType'
         }}</mat-option>
         <mat-option [value]="HydrogenStorageType.COMPRESSED_GASEOUS_HYDROGEN">{{
-          HydrogenStorageType.COMPRESSED_GASEOUS_HYDROGEN | prettyEnum | titlecase
+          HydrogenStorageType.COMPRESSED_GASEOUS_HYDROGEN | enum: 'hydrogenStorageType'
         }}</mat-option>
       </mat-select> </mat-form-field
     ><mat-form-field appearance="outline">

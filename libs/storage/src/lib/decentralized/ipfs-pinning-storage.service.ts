@@ -16,6 +16,8 @@ export class IpfsPinningStorageService extends DecentralizedStorageService {
   private readonly logger = new Logger(this.constructor.name);
   private readonly client: S3Client;
 
+  public readonly endpointUrl: string;
+
   constructor(
     private readonly s3ClientConfig: S3ClientConfig,
     private readonly bucketName: string,
@@ -24,9 +26,10 @@ export class IpfsPinningStorageService extends DecentralizedStorageService {
     super();
 
     this.client = new S3Client(s3ClientConfig);
+    this.endpointUrl = s3ClientConfig.endpoint.toString();
 
     this.logger.debug('🔗 IPFS pinning initialized.');
-    this.logger.debug(`🌐 Endpoint: ${this.s3ClientConfig.endpoint}`);
+    this.logger.debug(`🌐 Endpoint: ${this.endpointUrl}`);
     this.logger.debug(`🧭 Explorer: ${this.explorerUrl}`);
   }
 

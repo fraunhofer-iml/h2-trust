@@ -16,7 +16,7 @@ export class S3StorageService extends CentralizedStorageService {
   private readonly logger = new Logger(this.constructor.name);
   private readonly client: S3Client;
 
-  public readonly baseUrl: string;
+  public readonly endpointUrl: string;
 
   constructor(
     s3ClientConfig: S3ClientConfig,
@@ -25,18 +25,20 @@ export class S3StorageService extends CentralizedStorageService {
     super();
 
     this.client = new S3Client(s3ClientConfig);
-    this.baseUrl = `${s3ClientConfig.endpoint}/${this.bucketName}`;
+    this.endpointUrl = `${s3ClientConfig.endpoint}/${this.bucketName}`;
 
     this.logger.debug('🔗 S3 initialized.');
-    this.logger.debug(`🌐 Endpoint: ${this.baseUrl}`);
+    this.logger.debug(`🌐 Endpoint: ${this.endpointUrl}`);
   }
 
-  async uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<void> {
+  async uploadFile(fileName: string, file: Buffer, contentType: ContentType): Promise<string> {
     await this.client.send(
       new PutObjectCommand({ Bucket: this.bucketName, Key: fileName, Body: file, ContentType: contentType }),
     );
 
     this.logger.debug(`Uploaded '${fileName}'`);
+
+    return `${this.endpointUrl}/${fileName}`;
   }
 
   async downloadFile(fileName: string): Promise<Readable> {

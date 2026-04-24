@@ -30,7 +30,7 @@
     @if (request().status === PowerPurchaseAgreementStatus.PENDING) {
       <span class="flex justify-between">
         <span class="text-neutral-500">Requested type</span>
-        {{ request().powerProductionType | prettyEnum | titlecase }}
+        {{ request().powerProductionType | enum: 'powerProductionType' }}
       </span>
     }
   </div>
@@ -89,7 +89,7 @@
       </span>
       <span class="flex justify-between">
         <span class="text-neutral-500">Requested type</span>
-        {{ request().powerProductionType | prettyEnum | titlecase }}
+        {{ request().powerProductionType | enum: 'powerProductionType' }}
       </span>
       @if (request().status !== PowerPurchaseAgreementStatus.PENDING) {
         <span class="flex justify-between">

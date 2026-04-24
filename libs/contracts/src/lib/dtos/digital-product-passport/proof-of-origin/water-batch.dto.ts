@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType } from '@h2-trust/domain';
+import { BatchType, MeasurementUnit } from '@h2-trust/domain';
 import { BatchDto } from './batch.dto';
 import { EmissionDto } from './emission.dto';
 import { WaterDetailsDto } from './water-details.dto';
@@ -19,7 +19,7 @@ export class WaterBatchDto extends BatchDto {
     emission: EmissionDto,
     creationDate: Date,
     amount: number,
-    unit: string,
+    unit: MeasurementUnit,
     deionizedWater: WaterDetailsDto,
   ) {
     super(id, emission, creationDate, amount, unit, BatchType.WATER);

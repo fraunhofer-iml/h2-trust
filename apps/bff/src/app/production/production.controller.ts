@@ -21,6 +21,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { AuthenticatedUser } from 'nest-keycloak-connect';
 import {
+  AccountingPeriodMatchingResultDto,
   CsvDocumentIntegrityResultDto,
   PaginatedProductionDataDto,
   ProcessedCsvDto,
@@ -164,13 +165,13 @@ export class ProductionController {
     example: new Date('2026-02-01'),
   })
   async readStagedProductionsByCompanyAndType(
-    @Query('scope') _scope: StagingScope,
-    @Query('type') _type: CsvContentType,
-    @Query('from') _from: Date,
-    @Query('to') _to: Date,
-    @AuthenticatedUser() _authenticatedUser: AuthenticatedKCUser,
+    @Query('scope') scope: StagingScope,
+    @Query('type') type: CsvContentType,
+    @Query('from') from: Date,
+    @Query('to') to: Date,
+    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<StagedProductionDto[]> {
-    return [];
+    return this.service.readStagedProductionsByCompanyAndType(authenticatedUser.sub, scope, type, from, to);
   }
 
   @Get('pending/csv/:id/verify')
@@ -198,12 +199,12 @@ export class ProductionController {
   @ApiBearerAuth()
   @UseInterceptors(FilesInterceptor('files'))
   importCsvFile(
-    @Body() _dto: ProductionCSVUploadDto,
+    @Body() dto: ProductionCSVUploadDto,
     @UploadedFiles()
-    _files: Express.Multer.File[] | Express.Multer.File,
-    @AuthenticatedUser() _user: AuthenticatedKCUser,
-  ) {
-    return this.service.importCsvFiles(_files, _dto, _user.sub);
+    files: Express.Multer.File[] | Express.Multer.File,
+    @AuthenticatedUser() user: AuthenticatedKCUser,
+  ): Promise<AccountingPeriodMatchingResultDto> {
+    return this.service.importCsvFiles(files, dto, user.sub);
   }
 
   @Post()

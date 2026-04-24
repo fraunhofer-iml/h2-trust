@@ -9,10 +9,14 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'prettyEnum',
+  name: 'pretty',
 })
-export class PrettyEnumPipe implements PipeTransform {
-  transform(value: string): string {
-    return value.split('_').join(' ');
+export class PrettyStringPipe implements PipeTransform {
+  transform(value: string | undefined | null): string {
+    if (!value) {
+      return '';
+    }
+
+    return value.split('_').join(' ').toLowerCase();
   }
 }

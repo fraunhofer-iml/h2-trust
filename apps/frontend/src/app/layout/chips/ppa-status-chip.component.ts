@@ -10,11 +10,11 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { ICONS } from '../../shared/constants/icons';
-import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
+import { EnumPipe } from '../../shared/pipes/enum.pipe';
 
 @Component({
   selector: 'app-ppa-status-chip',
-  imports: [CommonModule, PrettyEnumPipe],
+  imports: [CommonModule, EnumPipe],
   template: ` <div
     class="flex w-fit flex-row items-center gap-2 rounded-lg border bg-white px-2 text-sm"
     [ngClass]="{
@@ -33,7 +33,7 @@ import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
     >
       {{ icon() }}
     </span>
-    {{ status() | prettyEnum | titlecase }}
+    {{ status() | enum: 'ppaStatus' }}
   </div>`,
 })
 export class PpaStatusChipComponent {

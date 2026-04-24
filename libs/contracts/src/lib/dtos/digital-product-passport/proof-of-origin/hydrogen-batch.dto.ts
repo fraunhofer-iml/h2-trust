@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType, HydrogenColor, HydrogenProductionMethod, RfnboType } from '@h2-trust/domain';
+import { BatchType, HydrogenColor, HydrogenProductionMethod, MeasurementUnit, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentDto } from '../general-information';
 import { BatchDto } from './batch.dto';
 import { EmissionDto } from './emission.dto';
@@ -28,7 +28,7 @@ export class HydrogenBatchDto extends BatchDto {
     emission: EmissionDto,
     creationDate: Date,
     amount: number,
-    unit: string,
+    unit: MeasurementUnit,
     producer: string,
     unitId: string,
     typeOfProduction: HydrogenProductionMethod,

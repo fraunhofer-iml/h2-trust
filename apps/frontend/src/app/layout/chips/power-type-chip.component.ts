@@ -10,17 +10,17 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 import { PowerType } from '@h2-trust/domain';
 import { ICONS } from '../../shared/constants/icons';
-import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
+import { EnumPipe } from '../../shared/pipes/enum.pipe';
 
 @Component({
   selector: 'app-power-type-chip',
-  imports: [CommonModule, PrettyEnumPipe],
+  imports: [CommonModule, EnumPipe],
   template: `<div
     class="flex w-fit flex-row items-center gap-2 rounded-lg border border-neutral-200 pr-4 pl-2"
     [ngClass]="chipColor"
   >
     <span class="material-symbols-outlined text-base!"> {{ icon() }} </span>
-    {{ this.powerType() | prettyEnum | titlecase }}
+    {{ this.powerType() | enum: 'powerType' }}
   </div>`,
 })
 export class PowerTypeChipComponent {

@@ -19,7 +19,7 @@ import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-quer
 import { toast } from 'ngx-sonner';
 import { PpaRequestCreateDto } from '@h2-trust/contracts/dtos';
 import { PowerProductionType, PpaRequestRole } from '@h2-trust/domain';
-import { PrettyEnumPipe } from '../../../shared/pipes/format-enum.pipe';
+import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { QUERY_KEYS } from '../../../shared/queries/shared-query-keys';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { PowerPurchaseAgreementService } from '../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
@@ -39,7 +39,7 @@ interface RequestForm {
     MatInputModule,
     MatSelectModule,
     ReactiveFormsModule,
-    PrettyEnumPipe,
+    EnumPipe,
     CommonModule,
     MatDatepickerModule,
   ],

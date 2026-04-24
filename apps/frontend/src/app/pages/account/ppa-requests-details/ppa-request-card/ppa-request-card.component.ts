@@ -16,14 +16,14 @@ import { PpaRequestDto } from '@h2-trust/contracts/dtos';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { PpaStatusChipComponent } from '../../../../layout/chips/ppa-status-chip.component';
 import { BaseSheetComponent } from '../../../../layout/sheet/sheet.component';
-import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
+import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { RequestConfirmationDialogComponent } from '../ppa-confirmation/request-confirmation-dialog.component';
 
 @Component({
   selector: 'app-ppa-request-card',
   imports: [
     PpaStatusChipComponent,
-    PrettyEnumPipe,
+    EnumPipe,
     CommonModule,
     MatDivider,
     MatButtonModule,
