@@ -173,11 +173,10 @@ export class ProductionStagingService {
             stagedPowerProduction.amountProduced,
           );
 
-      //TODO-LG: rewrite to power usage instead of hydrogen usage
       const partialWaterConsumption: number = ProductionUtils.calculatePartialAmountRelativeToPowerProduction(
         waterConsumption,
-        stagedHydrogenProduction.amountProduced,
-        amountProduced,
+        stagedHydrogenProduction.powerConsumed,
+        stagedPowerProduction.amountProduced,
       );
       const createProductionEntity: CreateProductionEntity = new CreateProductionEntity(
         stagedHydrogenProduction.startedAt,
@@ -207,8 +206,8 @@ export class ProductionStagingService {
 
     const partialWaterConsumption: number = ProductionUtils.calculatePartialAmountRelativeToPowerProduction(
       waterConsumption,
-      stagedHydrogenProduction.amountProduced,
-      remainingHydrogenProduction,
+      stagedHydrogenProduction.powerConsumed,
+      remainingPowerConsuption,
     );
     const gridPowerCreateEntity: CreateProductionEntity = new CreateProductionEntity(
       stagedHydrogenProduction.startedAt,
