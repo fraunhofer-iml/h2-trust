@@ -182,6 +182,9 @@ export class ProductionUtils {
     totalPowerConsumption: number,
     partialPowerConsumption: number,
   ) {
+    if (totalAmount <= 0 || totalPowerConsumption <= 0) {
+      throw new Error(`The partial amount could not be calculated because at least one total is 0.`);
+    }
     const shareOfPartialPowerFromTotalPower: number = (partialPowerConsumption * 100) / totalPowerConsumption;
     return (totalAmount / 100) * shareOfPartialPowerFromTotalPower;
   }

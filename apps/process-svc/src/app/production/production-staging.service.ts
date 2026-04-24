@@ -94,7 +94,7 @@ export class ProductionStagingService {
    * @param payload Information on finding and combining staged productions.
    * @returns The newly created process steps.
    */
-  async createProductionsFromStaging(payload: FinalizeProductionsPayload): Promise<ProcessStepEntity[]> {
+  public async createProductionsFromStaging(payload: FinalizeProductionsPayload): Promise<ProcessStepEntity[]> {
     const stagedProductions: StagedProductionEntity[] =
       await this.stagedProductionRepository.findStagedProductionsForIds([
         payload.stagedHydrogenProduction,
@@ -130,7 +130,6 @@ export class ProductionStagingService {
       payload.storageUnitId,
       hydrogenProductionUnit.waterConsumptionLitersPerHour,
       payload.recordedBy,
-      this.defaultGridPowerUnitId,
     );
 
     const persistedProcessSteps: ProcessStepEntity[] = await this.productionCreationService.createAndPersistProductions(
@@ -151,18 +150,17 @@ export class ProductionStagingService {
    * @param stagedHydrogenProduction The staged hydrogen production object to be used for matching.
    * @param stagedPowerProductions The staged power production objects to be used for matching.
    * @param hydrogenStorageUnitId The hydrogen storage facility in which the produced hydrogen is to be stored.
-   * @param waterConsumption The total amount of water required for hydrogen production.
+   * @param totalWaterConsumption The total amount of water required for hydrogen production.
    * @param recordedBy The user performing the finalisation.
    * @param gridPowerUnitId The Id of the default production unit for grid electricity.
    * @returns The new process steps to be saved.
    */
-  getStagedProductionDistribution(
+  private getStagedProductionDistribution(
     stagedHydrogenProduction: StagedProductionEntity,
     stagedPowerProductions: StagedProductionEntity[],
     hydrogenStorageUnitId: string,
-    waterConsumption: number,
+    totalWaterConsumption: number,
     recordedBy: string,
-    gridPowerUnitId: string,
   ): CreateProductionEntity[] {
     const createProductionEntities: CreateProductionEntity[] = [];
 
@@ -172,45 +170,20 @@ export class ProductionStagingService {
     //First, all staged power production processes selected for matching are reviewed, and new process steps are derived from them.
     //The staged hydrogen production is broken down step by step, depending on the amount of power available.
     for (const stagedPowerProduction of stagedPowerProductions) {
-      const isCurrentPowerProductionSufficient: boolean =
-        stagedPowerProduction.amountProduced >= remainingPowerConsuption;
-
-      const powerConsumed: number = isCurrentPowerProductionSufficient
-        ? remainingPowerConsuption
-        : stagedPowerProduction.amountProduced;
-      const amountProduced: number = isCurrentPowerProductionSufficient
-        ? remainingHydrogenProduction
-        : ProductionUtils.calculatePartialAmountRelativeToPowerProduction(
-            stagedHydrogenProduction.amountProduced,
-            stagedHydrogenProduction.powerConsumed,
-            stagedPowerProduction.amountProduced,
-          );
-
-      const partialWaterConsumption: number = ProductionUtils.calculatePartialAmountRelativeToPowerProduction(
-        waterConsumption,
-        stagedHydrogenProduction.powerConsumed,
-        stagedPowerProduction.amountProduced,
-      );
-      const createProductionEntity: CreateProductionEntity = new CreateProductionEntity(
-        stagedHydrogenProduction.startedAt,
-        stagedHydrogenProduction.endedAt,
-        stagedPowerProduction.unitId,
-        PowerType.RENEWABLE,
-        powerConsumed,
-        stagedHydrogenProduction.unitId,
-        amountProduced,
+      const createProductionEntity: CreateProductionEntity = this.getStagedProductionCreateEntity(
+        stagedHydrogenProduction,
+        stagedPowerProduction,
+        remainingHydrogenProduction,
+        remainingPowerConsuption,
+        totalWaterConsumption,
         recordedBy,
-        HydrogenColor.MIX,
         hydrogenStorageUnitId,
-        stagedPowerProduction.ownerId,
-        stagedHydrogenProduction.ownerId,
-        partialWaterConsumption,
       );
 
       createProductionEntities.push(createProductionEntity);
 
       remainingPowerConsuption = remainingPowerConsuption - stagedPowerProduction.amountProduced;
-      remainingHydrogenProduction = remainingHydrogenProduction - amountProduced;
+      remainingHydrogenProduction = remainingHydrogenProduction - createProductionEntity.hydrogenAmountKg;
 
       if (remainingPowerConsuption <= 0) {
         return createProductionEntities;
@@ -219,19 +192,107 @@ export class ProductionStagingService {
 
     //At this point, we still have remaining hydrogen production but no further staged power generation.
     // So the rest must be topped up with grid electricity.
-    const partialWaterConsumption: number = ProductionUtils.calculatePartialAmountRelativeToPowerProduction(
-      waterConsumption,
-      stagedHydrogenProduction.powerConsumed,
+    const gridPowerCreateEntities: CreateProductionEntity[] = this.getGridPowerCreateEntity(
+      stagedHydrogenProduction,
+      totalWaterConsumption,
       remainingPowerConsuption,
+      remainingHydrogenProduction,
+      recordedBy,
+      hydrogenStorageUnitId,
     );
+
+    createProductionEntities.push(...gridPowerCreateEntities);
+    return createProductionEntities;
+  }
+
+  /**
+   * Generate new process steps based on two staged production elements and the remaining values for hydrogen produced and power consumed.
+   * @param stagedHydrogenProduction The staged hydrogen production element for which process steps are to be created.
+   * @param stagedHydrogenProduction The staged power production elements for which process steps are to be created.
+   * @param remainingHydrogenProduction The remaining quantity of hydrogen that needs to be produced. Used to determine the amountProduced value.
+   * @param remainingPowerConsuption The remaining amount of power that needs to be generated. Used to determine the powerConsumed value.
+   * @param totalWaterConsumption The total amount of water produced during hydrogen production.
+   * @param recordedBy The user who is to create the new process steps.
+   * @param hydrogenStorageUnitId The hydrogen storage facility in which the new hydrogen is to be stored.
+   * @returns The new process steps that have been created.
+   */
+  private getStagedProductionCreateEntity(
+    stagedHydrogenProduction: StagedProductionEntity,
+    stagedPowerProduction: StagedProductionEntity,
+    remainingHydrogenProduction: number,
+    remainingPowerConsuption: number,
+    totalWaterConsumption: number,
+    recordedBy: string,
+    hydrogenStorageUnitId: string,
+  ) {
+    const isCurrentPowerProductionSufficient: boolean =
+      stagedPowerProduction.amountProduced >= remainingPowerConsuption;
+
+    const powerConsumed: number = isCurrentPowerProductionSufficient
+      ? remainingPowerConsuption
+      : stagedPowerProduction.amountProduced;
+    const amountProduced: number = isCurrentPowerProductionSufficient
+      ? remainingHydrogenProduction
+      : ProductionUtils.calculatePartialAmountRelativeToPowerProduction(
+          stagedHydrogenProduction.amountProduced,
+          stagedHydrogenProduction.powerConsumed,
+          stagedPowerProduction.amountProduced,
+        );
+
+    const partialWaterConsumption: number = ProductionUtils.calculatePartialAmountRelativeToPowerProduction(
+      totalWaterConsumption,
+      stagedHydrogenProduction.powerConsumed,
+      stagedPowerProduction.amountProduced,
+    );
+    return new CreateProductionEntity(
+      stagedHydrogenProduction.startedAt,
+      stagedHydrogenProduction.endedAt,
+      stagedPowerProduction.unitId,
+      PowerType.RENEWABLE,
+      powerConsumed,
+      stagedHydrogenProduction.unitId,
+      amountProduced,
+      recordedBy,
+      HydrogenColor.MIX,
+      hydrogenStorageUnitId,
+      stagedPowerProduction.ownerId,
+      stagedHydrogenProduction.ownerId,
+      partialWaterConsumption,
+    );
+  }
+
+  /**
+   * Accepts the information required to generate Grid Power Process Steps for a given staged production element.
+   * @param stagedHydrogenProduction The staged hydrogen production element for which process steps are to be created.
+   * @param totalWaterConsumption The total amount of water produced during hydrogen production.
+   * @param gridPowerConsumption The amount of grid power to be used.
+   * @param gridPoweredHydrogen The amount of hydrogen produced by the Grid.
+   * @param recordedBy The user who is to create the new process steps.
+   * @param hydrogenStorageUnitId The hydrogen storage facility in which the new hydrogen is to be stored.
+   * @returns The process steps for hydrogen produced using grid electricity.
+   */
+  private getGridPowerCreateEntity(
+    stagedHydrogenProduction: StagedProductionEntity,
+    totalWaterConsumption: number,
+    gridPowerConsumption: number,
+    gridPoweredHydrogen: number,
+    recordedBy: string,
+    hydrogenStorageUnitId: string,
+  ) {
+    const partialWaterConsumption: number = ProductionUtils.calculatePartialAmountRelativeToPowerProduction(
+      totalWaterConsumption,
+      stagedHydrogenProduction.powerConsumed,
+      gridPowerConsumption,
+    );
+
     const gridPowerCreateEntity: CreateProductionEntity = new CreateProductionEntity(
       stagedHydrogenProduction.startedAt,
       stagedHydrogenProduction.endedAt,
-      gridPowerUnitId,
+      this.defaultGridPowerUnitId,
       PowerType.NOT_SPECIFIED,
-      remainingPowerConsuption,
+      gridPowerConsumption,
       stagedHydrogenProduction.unitId,
-      remainingHydrogenProduction,
+      gridPoweredHydrogen,
       recordedBy,
       HydrogenColor.MIX,
       hydrogenStorageUnitId,
@@ -239,13 +300,7 @@ export class ProductionStagingService {
       stagedHydrogenProduction.ownerId,
       partialWaterConsumption,
     );
-    const gridPowerCreateEntities: CreateProductionEntity[] = ProductionUtils.splitGridPowerProduction(
-      gridPowerCreateEntity,
-      EnergySource.GRID,
-    );
-
-    createProductionEntities.push(...gridPowerCreateEntities);
-    return createProductionEntities;
+    return ProductionUtils.splitGridPowerProduction(gridPowerCreateEntity, EnergySource.GRID);
   }
 
   /**
@@ -254,7 +309,7 @@ export class ProductionStagingService {
    * @param stagedHydrogenProduction The staged hydrogen production, which is to be deactivated.
    * @param stagedPowerProductions The staged power production, which may need to be deactivated.
    */
-  async setStagedProductionsToInactive(
+  private async setStagedProductionsToInactive(
     stagedHydrogenProduction: StagedProductionEntity,
     stagedPowerProductions: StagedProductionEntity[],
   ): Promise<void> {
@@ -281,7 +336,7 @@ export class ProductionStagingService {
    * @param stagedHydrogenProduction The staged hydrogen production used for the matching.
    * @param stagedPowerProductions The staged power production used for the matching.
    */
-  async saveRemainingPowerProduction(
+  private async saveRemainingPowerProduction(
     stagedHydrogenProduction: StagedProductionEntity,
     stagedPowerProductions: StagedProductionEntity[],
   ): Promise<void> {
