@@ -40,7 +40,7 @@
               <mat-list-option
                 [value]="dataset"
                 [ngClass]="option.selected ? 'border-primary-300' : 'border-neutral-300'"
-                class="mb-2 !h-fit !rounded-md border"
+                class="mb-2 h-fit! rounded-md! border"
                 togglePosition="before"
                 #option
               >
@@ -73,7 +73,7 @@
         } @else {
           <div class="subtle-scrollbar mt-2 min-h-0 flex-1 overflow-auto">
             @for (item of data(); track $index) {
-              <div class="my-2 overflow-hidden rounded-md border">
+              <div class="my-2 overflow-hidden rounded-md border border-neutral-300">
                 <div
                   class="flex flex-col px-2 pt-2"
                   [ngClass]="item.uploads.length === 0 ? 'bg-neutral-100' : 'bg-primary-50'"
@@ -84,18 +84,18 @@
                     [ngClass]="item.uploads.length === 0 ? 'text-neutral-500' : 'text-primary-500'"
                   >
                     <span class="flex items-center gap-1">
-                      <span class="material-symbols-outlined text-lg">home</span>
+                      <span class="material-symbols-outlined text-lg!">home</span>
                       {{ item.powerProducer.name }}
                     </span>
                     <span class="flex items-center gap-1">
-                      <span class="material-symbols-outlined text-lg">label</span>
+                      <span class="material-symbols-outlined text-lg!">label</span>
                       {{ item.powerProductionUnit.typeName }}
                     </span>
                   </span>
                 </div>
 
                 @if (item.uploads.length === 0) {
-                  <div class="border-t bg-white px-2 py-1 text-sm text-neutral-600">
+                  <div class="border-t border-neutral-300 bg-white px-2 py-1 text-sm text-neutral-600">
                     No Data available for this PPA.
                   </div>
                 } @else {
@@ -132,7 +132,7 @@
       </div>
 
       <div class="flex justify-end gap-2 rounded-lg bg-white p-4">
-        <a matButton routerLink="/production/data">Cancel</a>
+        <a matButton routerLink="/production/files">Cancel</a>
         <button matButton="filled" [disabled]="form.invalid" (click)="save()">Save</button>
       </div>
     </div>
