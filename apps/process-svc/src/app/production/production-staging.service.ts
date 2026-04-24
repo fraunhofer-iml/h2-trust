@@ -297,7 +297,6 @@ export class ProductionStagingService {
         }
       }
     }
-    this.logger.debug(`No split was necessary`);
   }
 
   async readStagedProductions(payload: ReadStagedProductionsPayload): Promise<StagedProductionEntity[]> {
