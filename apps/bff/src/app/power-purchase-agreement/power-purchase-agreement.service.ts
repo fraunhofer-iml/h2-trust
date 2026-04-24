@@ -9,13 +9,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import {
-  PpaDto,
-  PpaRequestCreateDto,
-  PpaRequestDecisionDto,
-  PpaRequestDto,
-  UserDetailsDto,
-} from '@h2-trust/contracts/dtos';
+import { PpaRequestCreateDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/contracts/dtos';
 import {
   CreatePowerPurchaseAgreementsPayload,
   ReadPowerPurchaseAgreementsPayload,
@@ -23,14 +17,10 @@ import {
 } from '@h2-trust/contracts/payloads';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { BrokerQueues, PowerPurchaseAgreementPatterns } from '@h2-trust/messaging';
-import { UserService } from '../user/user.service';
 
 @Injectable()
 export class PowerPurchaseAgreementService {
-  constructor(
-    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
-    private readonly userService: UserService,
-  ) {}
+  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
 
   /* async readByUserAndStatus(userId: string, status: PowerPurchaseAgreementStatus): Promise<PpaDto[]> {
     const payload = new ReadPowerPurchaseAgreementsPayload(userId, status);
@@ -46,7 +36,7 @@ export class PowerPurchaseAgreementService {
     const powerPurchaseAgreements = await firstValueFrom(
       this.generalService.send(PowerPurchaseAgreementPatterns.READ, payload),
     );
-    return powerPurchaseAgreements.map(PpaDto.fromEntity);
+    return powerPurchaseAgreements.map(PpaRequestDto.fromEntity);
   }
 
   async createPPA(dto: PpaRequestCreateDto, userId: string): Promise<PpaRequestDto> {
@@ -61,8 +51,8 @@ export class PowerPurchaseAgreementService {
     const powerPurchaseAgreement = await firstValueFrom(
       this.generalService.send(PowerPurchaseAgreementPatterns.CREATE, payload),
     );
-    const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
-    return PpaRequestDto.fromEntity(powerPurchaseAgreement, userDetails);
+
+    return PpaRequestDto.fromEntity(powerPurchaseAgreement);
   }
 
   async updatePPA(
@@ -82,7 +72,6 @@ export class PowerPurchaseAgreementService {
       this.generalService.send(PowerPurchaseAgreementPatterns.UPDATE, payload),
     );
 
-    const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
-    return PpaRequestDto.fromEntity(powerPurchaseAgreement, userDetails);
+    return PpaRequestDto.fromEntity(powerPurchaseAgreement);
   }
 }

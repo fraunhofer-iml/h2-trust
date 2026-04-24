@@ -12,6 +12,7 @@ import { auditTimestamp } from './audit-timestamp.constant';
 import { CompanySeed } from './company.seed';
 import { DocumentSeed } from './document.seed';
 import { PowerProductionTypeSeed, PowerProductionUnitSeed } from './unit';
+import { UserSeed } from './user.seed';
 
 export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Object.freeze([
   {
@@ -21,6 +22,7 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
     validFrom: new Date('2025-02-01'),
     validTo: new Date('2025-02-14'),
     status: PowerPurchaseAgreementStatus.APPROVED,
+    creatingUserId: UserSeed[0].id,
     suggestedPowerTypeName: PowerProductionTypeSeed[0].name,
     powerProducerId: CompanySeed[0].id,
     powerProductionUnitId: PowerProductionUnitSeed[0].id,
@@ -34,6 +36,7 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
     validFrom: new Date('2025-02-01'),
     validTo: new Date('2025-02-14'),
     status: PowerPurchaseAgreementStatus.APPROVED,
+    creatingUserId: UserSeed[0].id,
     suggestedPowerTypeName: PowerProductionTypeSeed[1].name,
     powerProducerId: CompanySeed[2].id,
     powerProductionUnitId: PowerProductionUnitSeed[1].id,
@@ -47,6 +50,7 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
     validFrom: new Date('2025-08-01'),
     validTo: new Date('2025-08-16'),
     status: PowerPurchaseAgreementStatus.APPROVED,
+    creatingUserId: UserSeed[0].id,
     suggestedPowerTypeName: PowerProductionTypeSeed[2].name,
     powerProducerId: CompanySeed[2].id,
     powerProductionUnitId: PowerProductionUnitSeed[2].id,
@@ -60,6 +64,7 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
     validFrom: new Date('2025-08-01'),
     validTo: new Date('2025-08-16'),
     status: PowerPurchaseAgreementStatus.APPROVED,
+    creatingUserId: UserSeed[0].id,
     suggestedPowerTypeName: PowerProductionTypeSeed[2].name,
     powerProducerId: CompanySeed[1].id,
     powerProductionUnitId: PowerProductionUnitSeed[3].id,

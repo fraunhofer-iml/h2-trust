@@ -13,6 +13,7 @@ import { CompanyEntity } from '../company';
 import { DecisionEntity } from '../decision';
 import { DocumentEntity } from '../document';
 import { PowerProductionUnitEntity } from '../unit';
+import { UserEntity } from '../user';
 
 export class PowerPurchaseAgreementEntity {
   id: string;
@@ -21,6 +22,7 @@ export class PowerPurchaseAgreementEntity {
   validTo: Date;
   status: PowerPurchaseAgreementStatus;
   suggestedPowerProductionTypeName: string;
+  creator: UserEntity;
   powerProducer: CompanyEntity;
   hydrogenProducer: CompanyEntity;
   powerProductionUnit?: PowerProductionUnitEntity;
@@ -36,6 +38,7 @@ export class PowerPurchaseAgreementEntity {
     powerProducer: CompanyEntity,
     hydrogenProducer: CompanyEntity,
     suggestedPowerProductionTypeName: string,
+    creator: UserEntity,
     document?: DocumentEntity,
     powerProductionUnit?: PowerProductionUnitEntity,
     decision?: DecisionEntity,
@@ -48,6 +51,7 @@ export class PowerPurchaseAgreementEntity {
     this.powerProducer = powerProducer;
     this.powerProductionUnit = powerProductionUnit;
     this.hydrogenProducer = hydrogenProducer;
+    this.creator = creator;
     this.document = document;
     this.decision = decision;
     this.suggestedPowerProductionTypeName = suggestedPowerProductionTypeName;
@@ -65,6 +69,7 @@ export class PowerPurchaseAgreementEntity {
       CompanyEntity.fromNestedDatabase(powerPurchaseAgreement.powerProducer),
       CompanyEntity.fromNestedDatabase(powerPurchaseAgreement.hydrogenProducer),
       powerPurchaseAgreement.suggestedPowerTypeName,
+      UserEntity.fromDeepDatabase(powerPurchaseAgreement.creatingUser),
       powerPurchaseAgreement.document ? DocumentEntity.fromDatabase(powerPurchaseAgreement.document) : undefined,
       powerPurchaseAgreement.powerProductionUnit
         ? PowerProductionUnitEntity.fromNestedPowerProductionUnit(powerPurchaseAgreement.powerProductionUnit)
@@ -76,6 +81,7 @@ export class PowerPurchaseAgreementEntity {
   static fromNestedDatabase(agreement: PowerPurchaseAgreementNestedDbType): PowerPurchaseAgreementEntity {
     return <PowerPurchaseAgreementEntity>{
       ...agreement,
+      creator: UserEntity.fromDeepDatabase(agreement.creatingUser),
       suggestedPowerProductionTypeName: agreement.suggestedPowerTypeName,
       hydrogenProducer: CompanyEntity.fromFlatDatabase(agreement.hydrogenProducer),
       powerProducer: CompanyEntity.fromFlatDatabase(agreement.powerProducer),

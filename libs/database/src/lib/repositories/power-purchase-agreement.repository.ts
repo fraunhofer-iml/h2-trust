@@ -58,6 +58,7 @@ export class PowerPurchaseAgreementRepository {
               id: hydrogenProducerCompanyId,
             },
           },
+          creatingUser: { connect: { id: ppa.userId } },
           powerProducer: { connect: { id: ppa.companyId } },
         },
         ...powerPurchaseAgreementDeepQueryArgs,

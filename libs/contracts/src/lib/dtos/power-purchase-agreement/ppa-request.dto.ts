@@ -57,13 +57,13 @@ export class PpaRequestDto {
     this.comment = comment;
   }
 
-  static fromEntity(powerPurchaseAgreement: PowerPurchaseAgreementEntity, user: UserDetailsDto): PpaRequestDto {
+  static fromEntity(powerPurchaseAgreement: PowerPurchaseAgreementEntity): PpaRequestDto {
     return <PpaRequestDto>{
       id: powerPurchaseAgreement.id,
       createdAt: powerPurchaseAgreement.createdAt,
       validFrom: powerPurchaseAgreement.validFrom,
       validTo: powerPurchaseAgreement.validTo,
-      sender: user,
+      sender: powerPurchaseAgreement.creator,
       receiver: powerPurchaseAgreement.powerProducer,
       powerProductionType: powerPurchaseAgreement.suggestedPowerProductionTypeName,
       powerProductionUnit: powerPurchaseAgreement.powerProductionUnit

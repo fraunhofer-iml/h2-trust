@@ -106,9 +106,10 @@ model User {
   company   Company @relation(fields: [companyId], references: [id])
   companyId String
 
-  processSteps ProcessStep[]
-  csvImports   CsvImport[]
-  decisions    Decision[]
+  processSteps            ProcessStep[]
+  csvImports              CsvImport[]
+  decisions               Decision[]
+  powerPurchaseAgreements PowerPurchaseAgreement[]
 }
 
 model Unit {
@@ -310,6 +311,9 @@ model PowerPurchaseAgreement {
 
   validFrom DateTime
   validTo   DateTime
+
+  creatingUser   User   @relation(fields: [creatingUserId], references: [id])
+  creatingUserId String
 
   suggestedPowerType     PowerProductionType @relation(fields: [suggestedPowerTypeName], references: [name])
   suggestedPowerTypeName String
