@@ -258,7 +258,7 @@ export class ProductionStagingService {
     stagedHydrogenProduction: StagedProductionEntity,
     stagedPowerProductions: StagedProductionEntity[],
   ): Promise<void> {
-    let stagedProductionsToSetInactive: StagedProductionEntity[] = [stagedHydrogenProduction];
+    const stagedProductionsToSetInactive: StagedProductionEntity[] = [stagedHydrogenProduction];
 
     let remainingPowerConsuption = stagedHydrogenProduction.powerConsumed;
 
