@@ -65,7 +65,7 @@
 
 <app-base-sheet #sheet>
   <div
-    class="flex flex-col gap-2 rounded-lg border bg-linear-to-bl to-white to-40% py-4"
+    class="flex flex-col gap-2 rounded-lg border border-neutral-300 bg-linear-to-bl to-white to-40% py-4"
     [ngClass]="{
       'from-tertiary-50': request().status === PowerPurchaseAgreementStatus.PENDING,
       'from-error-red/20': request().status === PowerPurchaseAgreementStatus.REJECTED,
