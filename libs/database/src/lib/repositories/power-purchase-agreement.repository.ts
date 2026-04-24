@@ -73,9 +73,7 @@ export class PowerPurchaseAgreementRepository {
         data: {
           status: ppa.decision,
           decision: {
-            update: {
-              data: this.buildDecisionUpdateQuery(ppa),
-            },
+            create: this.buildDecisionUpdateQuery(ppa),
           },
         },
         ...powerPurchaseAgreementDeepQueryArgs,
@@ -109,20 +107,26 @@ export class PowerPurchaseAgreementRepository {
     return query;
   }
 
-  private buildDecisionUpdateQuery(payload: UpdatePowerPurchaseAgreementPayload) {
-    const query: Prisma.DecisionUncheckedUpdateWithoutPowerPurchaseAgreementInput = {};
+  private buildDecisionUpdateQuery(
+    payload: UpdatePowerPurchaseAgreementPayload,
+  ): Prisma.DecisionCreateWithoutPowerPurchaseAgreementInput {
+    const base: Prisma.DecisionCreateWithoutPowerPurchaseAgreementInput = {
+      decidedAt: new Date(),
+      decidingUser: {
+        connect: { id: payload.decidingUserId },
+      },
+      comment: payload.comment ?? undefined,
+    };
 
-    if (payload.decidingUserId) {
-      query.userId = payload.decidingUserId;
+    if (payload.decision === PowerPurchaseAgreementStatus.APPROVED) {
+      return {
+        ...base,
+        grantedPowerProductionUnit: {
+          connect: { id: payload.powerProductionUnitId },
+        },
+      };
     }
 
-    if (payload.powerProductionUnitId) {
-      query.powerProductionUnitId = payload.powerProductionUnitId;
-    }
-
-    if (payload.comment) {
-      query.comment = payload.comment;
-    }
-    return query;
+    return base;
   }
 }
