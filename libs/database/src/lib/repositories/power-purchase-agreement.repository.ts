@@ -43,24 +43,7 @@ export class PowerPurchaseAgreementRepository {
   ): Promise<PowerPurchaseAgreementEntity> {
     return this.prismaService.powerPurchaseAgreement
       .create({
-        data: {
-          createdAt: new Date(),
-          validTo: ppa.validTo,
-          validFrom: ppa.validFrom,
-          status: PowerPurchaseAgreementStatus.PENDING,
-          suggestedPowerType: {
-            connect: {
-              name: ppa.powerProductionType,
-            },
-          },
-          hydrogenProducer: {
-            connect: {
-              id: hydrogenProducerCompanyId,
-            },
-          },
-          creatingUser: { connect: { id: ppa.userId } },
-          powerProducer: { connect: { id: ppa.companyId } },
-        },
+        data: this.buildPowerPurchaseAgreementCreateData(ppa, hydrogenProducerCompanyId),
         ...powerPurchaseAgreementDeepQueryArgs,
       })
       .then((result) => PowerPurchaseAgreementEntity.fromDeepDatabase(result));
@@ -70,17 +53,21 @@ export class PowerPurchaseAgreementRepository {
     return this.prismaService.powerPurchaseAgreement
       .update({
         where: { id: ppa.ppaId },
-        data: {
-          status: ppa.decision,
-          updatedAt: new Date(),
-          powerProductionUnit: ppa.powerProductionUnitId ? { connect: { id: ppa.powerProductionUnitId } } : {},
-          decision: {
-            create: this.buildDecisionUpdateQuery(ppa),
-          },
-        },
+        data: this.buildPowerPurchaseAgreementStatusUpdateData(ppa),
         ...powerPurchaseAgreementDeepQueryArgs,
       })
       .then((result) => PowerPurchaseAgreementEntity.fromDeepDatabase(result));
+  }
+
+  private buildPowerPurchaseAgreementStatusUpdateData(ppa: UpdatePowerPurchaseAgreementPayload) {
+    return {
+      status: ppa.decision,
+      updatedAt: new Date(),
+      powerProductionUnit: ppa.powerProductionUnitId ? { connect: { id: ppa.powerProductionUnitId } } : undefined,
+      decision: {
+        create: this.buildDecisionUpdateQuery(ppa),
+      },
+    };
   }
 
   private buildRoleQuery(
@@ -130,5 +117,33 @@ export class PowerPurchaseAgreementRepository {
     }
 
     return base;
+  }
+
+  private buildPowerPurchaseAgreementCreateData(
+    ppa: CreatePowerPurchaseAgreementsPayload,
+    hydrogenProducerCompanyId: string,
+  ) {
+    return {
+      createdAt: new Date(),
+      validTo: ppa.validTo,
+      validFrom: ppa.validFrom,
+      status: PowerPurchaseAgreementStatus.PENDING,
+      suggestedPowerType: {
+        connect: {
+          name: ppa.powerProductionType,
+        },
+      },
+      hydrogenProducer: {
+        connect: {
+          id: hydrogenProducerCompanyId,
+        },
+      },
+      creatingUser: {
+        connect: { id: ppa.userId },
+      },
+      powerProducer: {
+        connect: { id: ppa.companyId },
+      },
+    };
   }
 }
