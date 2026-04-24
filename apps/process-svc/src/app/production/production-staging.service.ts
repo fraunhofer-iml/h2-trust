@@ -145,6 +145,17 @@ export class ProductionStagingService {
     return persistedProcessSteps;
   }
 
+  /**
+   * Accepts the provided information for matching staged hydrogen production and staged power production.
+   * Matches the individual staged productions so that they result in valid new process steps.
+   * @param stagedHydrogenProduction The staged hydrogen production object to be used for matching.
+   * @param stagedPowerProductions The staged power production objects to be used for matching.
+   * @param hydrogenStorageUnitId The hydrogen storage facility in which the produced hydrogen is to be stored.
+   * @param waterConsumption The total amount of water required for hydrogen production.
+   * @param recordedBy The user performing the finalisation.
+   * @param gridPowerUnitId The Id of the default production unit for grid electricity.
+   * @returns The new process steps to be saved.
+   */
   getStagedProductionDistribution(
     stagedHydrogenProduction: StagedProductionEntity,
     stagedPowerProductions: StagedProductionEntity[],
@@ -158,6 +169,8 @@ export class ProductionStagingService {
     let remainingPowerConsuption = stagedHydrogenProduction.powerConsumed;
     let remainingHydrogenProduction = stagedHydrogenProduction.amountProduced;
 
+    //First, all staged power production processes selected for matching are reviewed, and new process steps are derived from them.
+    //The staged hydrogen production is broken down step by step, depending on the amount of power available.
     for (const stagedPowerProduction of stagedPowerProductions) {
       const isCurrentPowerProductionSufficient: boolean =
         stagedPowerProduction.amountProduced >= remainingPowerConsuption;
@@ -204,6 +217,8 @@ export class ProductionStagingService {
       }
     }
 
+    //At this point, we still have remaining hydrogen production but no further staged power generation.
+    // So the rest must be topped up with grid electricity.
     const partialWaterConsumption: number = ProductionUtils.calculatePartialAmountRelativeToPowerProduction(
       waterConsumption,
       stagedHydrogenProduction.powerConsumed,
@@ -247,7 +262,6 @@ export class ProductionStagingService {
 
     let remainingPowerConsuption = stagedHydrogenProduction.powerConsumed;
 
-    //TODO-LG: update loop
     for (const stagedPowerProduction of stagedPowerProductions) {
       remainingPowerConsuption = remainingPowerConsuption - stagedPowerProduction.amountProduced;
       stagedProductionsToSetInactive.push(stagedPowerProduction);
