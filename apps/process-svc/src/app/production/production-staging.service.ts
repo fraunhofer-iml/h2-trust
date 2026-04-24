@@ -177,16 +177,6 @@ export class ProductionStagingService {
     return this.stagedProductionRepository.setStagedProductionsToInactive(ids);
   }
 
-  calculatePartialAmountRelativeToPowerProduction(
-    totalAmount: number,
-    totalPowerConsumption: number,
-    partialPowerConsumption: number,
-  ) {
-    const shareOfPartialPowerFromTotalPower: number = (partialPowerConsumption * 100) / totalPowerConsumption;
-    const partialAmount: number = (totalAmount / 100) * shareOfPartialPowerFromTotalPower;
-    return partialAmount;
-  }
-
   getStagedProductionDistribution(
     stagedHydrogenProduction: StagedProductionEntity,
     stagedPowerProductions: StagedProductionEntity[],
@@ -209,13 +199,13 @@ export class ProductionStagingService {
         : stagedPowerProduction.amountProduced;
       const amountProduced: number = isCurrentPowerProductionSufficient
         ? remainingHydrogenProduction
-        : this.calculatePartialAmountRelativeToPowerProduction(
+        : ProductionUtils.calculatePartialAmountRelativeToPowerProduction(
             stagedHydrogenProduction.amountProduced,
             stagedHydrogenProduction.powerConsumed,
             stagedPowerProduction.amountProduced,
           );
 
-      const partialWaterConsumption: number = this.calculatePartialAmountRelativeToPowerProduction(
+      const partialWaterConsumption: number = ProductionUtils.calculatePartialAmountRelativeToPowerProduction(
         waterConsumption,
         stagedHydrogenProduction.amountProduced,
         amountProduced,
@@ -246,7 +236,7 @@ export class ProductionStagingService {
       }
     }
 
-    const partialWaterConsumption: number = this.calculatePartialAmountRelativeToPowerProduction(
+    const partialWaterConsumption: number = ProductionUtils.calculatePartialAmountRelativeToPowerProduction(
       waterConsumption,
       stagedHydrogenProduction.amountProduced,
       remainingHydrogenProduction,

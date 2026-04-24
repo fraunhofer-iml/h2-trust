@@ -203,9 +203,9 @@ export class ProductionController {
   })
   @ApiBearerAuth()
   createProductionsFromStaging(
-    @Body() _dto: StagingSubmissionDto,
-    @AuthenticatedUser() _user: AuthenticatedKCUser,
+    @Body() dto: StagingSubmissionDto,
+    @AuthenticatedUser() user: AuthenticatedKCUser,
   ): Promise<ProductionOverviewDto[]> {
-    return this.service.createProductionsFromStaging(_dto, _user.sub);
+    return this.service.createProductionsFromStaging(dto, user.sub);
   }
 }

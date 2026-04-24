@@ -6,12 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  BatchEntity,
-  CreateProductionEntity,
-  ProcessStepEntity,
-  StagedProductionEntity,
-} from '@h2-trust/contracts/entities';
+import { BatchEntity, CreateProductionEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { EnergySource, HydrogenColor, PowerType, RenewableShareInGridMix, TimeInSeconds } from '@h2-trust/domain';
 import { DateTimeUtil } from '@h2-trust/utils';
 import { AccountingPeriod } from '../production.types';
@@ -175,19 +170,20 @@ export class ProductionUtils {
     return batchesByStartedAt;
   }
 
-  static calculateRequiredGridPowerPercentage(
-    stagedHydrogenProduction: StagedProductionEntity,
-    stagedPowerProductions: StagedProductionEntity[],
-  ): number {
-    const powerProductionSum: number = stagedPowerProductions.reduce(
-      (sum, { amountProduced }) => sum + amountProduced,
-      0,
-    );
-    const requiredPower: number = stagedHydrogenProduction.powerConsumed;
-
-    const cunsumedGridPower: number = Math.max(requiredPower - powerProductionSum, 0);
-
-    return requiredPower != 0 ? (cunsumedGridPower * 100) / requiredPower : 0;
+  /**
+   * Takes a total value (e.g., hydrogen production or water consumption) and calculates the proportionate value based on total and proportionate power production.
+   * @param totalAmount The total amount to be prorated.
+   * @param totalPowerConsumption The total amount of electricity to be used as a reference.
+   * @param partialPowerConsumption The partial amount of electricity to be used as a reference.
+   * @returns The partial amount.
+   */
+  static calculatePartialAmountRelativeToPowerProduction(
+    totalAmount: number,
+    totalPowerConsumption: number,
+    partialPowerConsumption: number,
+  ) {
+    const shareOfPartialPowerFromTotalPower: number = (partialPowerConsumption * 100) / totalPowerConsumption;
+    return (totalAmount / 100) * shareOfPartialPowerFromTotalPower;
   }
 
   /**
