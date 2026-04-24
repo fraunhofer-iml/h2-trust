@@ -20,13 +20,14 @@ export class StagedProductionRepository {
 
   constructor(private readonly prismaService: PrismaService) {}
 
-  async setStagedProductionsToInactive(ids: string[]) {
-    return this.prismaService.stagedProduction.updateMany({
+  async setStagedProductionsToInactive(ids: string[]): Promise<number> {
+    const affectedColumns = await this.prismaService.stagedProduction.updateMany({
       where: {
         id: { in: ids },
       },
       data: { active: false },
     });
+    return affectedColumns.count;
   }
 
   async findStagedProductionsForIds(ids: string[]): Promise<StagedProductionEntity[]> {

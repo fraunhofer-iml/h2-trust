@@ -16,7 +16,6 @@ import {
   CreateProductionEntity,
   CsvDocumentEntity,
   HydrogenProductionUnitEntity,
-  PowerProductionUnitEntity,
   PowerPurchaseAgreementEntity,
   ProcessStepEntity,
   ProductionStagingResultEntity,
@@ -24,7 +23,6 @@ import {
 } from '@h2-trust/contracts/entities';
 import {
   FinalizeProductionsPayload,
-  ReadByIdPayload,
   ReadByIdsPayload,
   ReadStagedProductionsPayload,
   StageProductionsPayload,
@@ -56,6 +54,8 @@ import { ProductionUtils } from './utils/production.utils';
 export class ProductionStagingService {
   private readonly logger = new Logger(this.constructor.name);
 
+  private readonly defaultGridPowerUnitId = DefaultGridProvider.DEFAULT_GRID_POWER_PRODUCTION_UNIT_ID;
+
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly productionCreationService: ProductionCreationService,
@@ -68,44 +68,32 @@ export class ProductionStagingService {
     private readonly powerPurchaseAgreementRepository: PowerPurchaseAgreementRepository,
   ) {}
 
-  private async getProductionUnits(productionUnitIds: string[]): Promise<Map<string, ConcreteUnitEntity>> {
+  /**
+   * Retrieve the specific production unit objects for a list of production unit IDs via the general-svc.
+   * @param productionUnitIds The production unit IDs to be used to retrieve the production units.
+   * @returns The specific production unit objects are returned as a map so that the units can be retrieved and used later via their unit IDs.
+   */
+  private async getProductionUnits(
+    productionUnitIds: string[],
+    hydrogenStorageUnitId: string,
+  ): Promise<Map<string, ConcreteUnitEntity>> {
+    const unitIds: string[] = [...productionUnitIds, hydrogenStorageUnitId, this.defaultGridPowerUnitId];
     const productionUnits: ConcreteUnitEntity[] = await firstValueFrom(
-      this.generalSvc.send(UnitMessagePatterns.READ_MANY_BY_IDS, new ReadByIdsPayload(productionUnitIds)),
+      this.generalSvc.send(UnitMessagePatterns.READ_MANY_BY_IDS, new ReadByIdsPayload(unitIds)),
     );
+
     return new Map<string, ConcreteUnitEntity>(
       productionUnits.map((productionUnit) => [productionUnit.id, productionUnit]),
     );
   }
 
-  private async getOwnGridPowerProductionUnit(): Promise<PowerProductionUnitEntity> {
-    const ownPowerProductions: PowerProductionUnitEntity[] = await firstValueFrom(
-      this.generalSvc.send(
-        UnitMessagePatterns.READ_POWER_PRODUCTION,
-        new ReadByIdPayload(DefaultGridProvider.DEFAULT_GRID_PROVIDER_COMPANY_ID),
-      ),
-    );
-    const ownGridPowerProduction: PowerProductionUnitEntity = ownPowerProductions.find(
-      (powerProduction) => powerProduction.type.energySource == EnergySource.GRID,
-    );
-    if (!ownGridPowerProduction) {
-      throw new BrokerException(`The user does not have a GRID power production`, HttpStatus.BAD_REQUEST);
-    }
-    return ownGridPowerProduction;
-  }
-
-  async readStagedProductions(payload: ReadStagedProductionsPayload): Promise<StagedProductionEntity[]> {
-    if (payload.stagingScope == StagingScope.OWN) {
-      return this.stagedProductionRepository.findStagedProductions(payload, true, []);
-    } else {
-      const approvedAgreements: PowerPurchaseAgreementEntity[] = await this.powerPurchaseAgreementRepository.findAll(
-        payload.ownerId,
-        PowerPurchaseAgreementStatus.APPROVED,
-      );
-      const accessibleUnitIds: string[] = approvedAgreements.map((approval) => approval.powerProductionUnit.id);
-      return this.stagedProductionRepository.findStagedProductions(payload, false, accessibleUnitIds);
-    }
-  }
-
+  /**
+   * Combines staged power production and staged hydrogen production to generate new process steps.
+   * Sets the existing staged productions to inactive and creates new staged productions for the remaining amounts of power.
+   * If the power supplied by the specified staged power production units is insufficient, GRID power will be used.
+   * @param payload Information on finding and combining staged productions.
+   * @returns The newly created process steps.
+   */
   async createProductionsFromStaging(payload: FinalizeProductionsPayload): Promise<ProcessStepEntity[]> {
     const stagedProductions: StagedProductionEntity[] =
       await this.stagedProductionRepository.findStagedProductionsForIds([
@@ -125,11 +113,12 @@ export class ProductionStagingService {
     }
 
     //get a map with all relevant units, that can be used without requesting it from the general-svc
-    const gridPowerUnit: PowerProductionUnitEntity = await this.getOwnGridPowerProductionUnit();
     const stagedProductionUnitIds: string[] = stagedProductions.map((stagedProduction) => stagedProduction.unitId);
-    stagedProductionUnitIds.push(payload.storageUnitId);
-    const productionUnitForId: Map<string, ConcreteUnitEntity> = await this.getProductionUnits(stagedProductionUnitIds);
-    productionUnitForId.set(gridPowerUnit.id, gridPowerUnit);
+    const productionUnitForId: Map<string, ConcreteUnitEntity> = await this.getProductionUnits(
+      stagedProductionUnitIds,
+      payload.storageUnitId,
+    );
+
     const hydrogenProductionUnit: HydrogenProductionUnitEntity = productionUnitForId.get(
       stagedHydrogenProduction.unitId,
     ) as HydrogenProductionUnitEntity;
@@ -141,7 +130,7 @@ export class ProductionStagingService {
       payload.storageUnitId,
       hydrogenProductionUnit.waterConsumptionLitersPerHour,
       payload.recordedBy,
-      gridPowerUnit.id,
+      this.defaultGridPowerUnitId,
     );
 
     const persistedProcessSteps: ProcessStepEntity[] = await this.productionCreationService.createAndPersistProductions(
@@ -149,32 +138,11 @@ export class ProductionStagingService {
       productionUnitForId,
     );
 
-    //check if there is a power production that should be splitted and save the split power production
-    const splitPowerProduction: StagedProductionEntity = this.getRemainingPowerProduction(
-      stagedHydrogenProduction,
-      stagedPowerProductions,
-    );
+    await this.saveRemainingPowerProduction(stagedHydrogenProduction, stagedPowerProductions);
 
-    if (splitPowerProduction) {
-      await this.stagedProductionRepository.saveStagedProductions(
-        [splitPowerProduction],
-        splitPowerProduction.csvImportId,
-      );
-    }
-
-    //set used staged production to inactive
-    const stagedProductionsToInactivate: StagedProductionEntity[] = this.getStagedProductionsToSetInactive(
-      stagedHydrogenProduction,
-      stagedPowerProductions,
-    );
-    await this.setStagedProductionsToInactive(stagedProductionsToInactivate);
+    await this.setStagedProductionsToInactive(stagedHydrogenProduction, stagedPowerProductions);
 
     return persistedProcessSteps;
-  }
-
-  setStagedProductionsToInactive(stagedProductions: StagedProductionEntity[]) {
-    const ids: string[] = stagedProductions.map((stagedProduction) => stagedProduction.id);
-    return this.stagedProductionRepository.setStagedProductionsToInactive(ids);
   }
 
   getStagedProductionDistribution(
@@ -205,6 +173,7 @@ export class ProductionStagingService {
             stagedPowerProduction.amountProduced,
           );
 
+      //TODO-LG: rewrite to power usage instead of hydrogen usage
       const partialWaterConsumption: number = ProductionUtils.calculatePartialAmountRelativeToPowerProduction(
         waterConsumption,
         stagedHydrogenProduction.amountProduced,
@@ -241,72 +210,68 @@ export class ProductionStagingService {
       stagedHydrogenProduction.amountProduced,
       remainingHydrogenProduction,
     );
-
-    const gridPowerCreateEntities: CreateProductionEntity[] = this.getGridPowerCreateEntities(
-      stagedHydrogenProduction,
-      remainingHydrogenProduction,
-      remainingPowerConsuption,
-      partialWaterConsumption,
+    const gridPowerCreateEntity: CreateProductionEntity = new CreateProductionEntity(
+      stagedHydrogenProduction.startedAt,
+      stagedHydrogenProduction.endedAt,
       gridPowerUnitId,
+      PowerType.NOT_SPECIFIED,
+      remainingPowerConsuption,
+      stagedHydrogenProduction.unitId,
+      remainingHydrogenProduction,
       recordedBy,
+      HydrogenColor.MIX,
       hydrogenStorageUnitId,
+      stagedHydrogenProduction.ownerId,
+      stagedHydrogenProduction.ownerId,
+      partialWaterConsumption,
+    );
+    const gridPowerCreateEntities: CreateProductionEntity[] = ProductionUtils.splitGridPowerProduction(
+      gridPowerCreateEntity,
+      EnergySource.GRID,
     );
 
     createProductionEntities.push(...gridPowerCreateEntities);
     return createProductionEntities;
   }
 
-  getGridPowerCreateEntities(
-    stagedHydrogenProduction: StagedProductionEntity,
-    amountProduced: number,
-    powerConsumed: number,
-    waterConsumed: number,
-    gridPowerUnitId: string,
-    recordedBy: string,
-    hydrogenStorageUnitId: string,
-  ): CreateProductionEntity[] {
-    const gridPowerCreateEntity: CreateProductionEntity = new CreateProductionEntity(
-      stagedHydrogenProduction.startedAt,
-      stagedHydrogenProduction.endedAt,
-      gridPowerUnitId,
-      PowerType.NOT_SPECIFIED,
-      powerConsumed,
-      stagedHydrogenProduction.unitId,
-      amountProduced,
-      recordedBy,
-      HydrogenColor.MIX,
-      hydrogenStorageUnitId,
-      stagedHydrogenProduction.ownerId,
-      stagedHydrogenProduction.ownerId,
-      waterConsumed,
-    );
-    return ProductionUtils.splitGridPowerProduction(gridPowerCreateEntity, EnergySource.GRID);
-  }
-
-  getStagedProductionsToSetInactive(
+  /**
+   * Identify which of the specified staged production elements need to be deactivated.
+   * These are all affected staged productions, with the exception of the power productions, which do not need to be used for matching.
+   * @param stagedHydrogenProduction The staged hydrogen production, which is to be deactivated.
+   * @param stagedPowerProductions The staged power production, which may need to be deactivated.
+   */
+  async setStagedProductionsToInactive(
     stagedHydrogenProduction: StagedProductionEntity,
     stagedPowerProductions: StagedProductionEntity[],
-  ): StagedProductionEntity[] {
+  ): Promise<void> {
     let stagedProductionsToSetInactive: StagedProductionEntity[] = [stagedHydrogenProduction];
 
     let remainingPowerConsuption = stagedHydrogenProduction.powerConsumed;
 
+    //TODO-LG: update loop
     for (const stagedPowerProduction of stagedPowerProductions) {
       remainingPowerConsuption = remainingPowerConsuption - stagedPowerProduction.amountProduced;
       stagedProductionsToSetInactive.push(stagedPowerProduction);
-      this.logger.debug(`The staged production ${stagedPowerProduction.id} should be deactivated`);
 
       if (remainingPowerConsuption < 0) {
-        return stagedProductionsToSetInactive;
+        break;
       }
     }
-    return stagedProductionsToSetInactive;
+    const ids: string[] = stagedProductionsToSetInactive.map((stagedProduction) => stagedProduction.id);
+    const affectedColumns: number = await this.stagedProductionRepository.setStagedProductionsToInactive(ids);
+    this.logger.debug(`${affectedColumns} staged productions have been deactivated`);
   }
 
-  getRemainingPowerProduction(
+  /**
+   * Check whether any of the staged power productions used for matching have been used only partially.
+   * Save the remaining amount of the power production as a new staged power production.
+   * @param stagedHydrogenProduction The staged hydrogen production used for the matching.
+   * @param stagedPowerProductions The staged power production used for the matching.
+   */
+  async saveRemainingPowerProduction(
     stagedHydrogenProduction: StagedProductionEntity,
     stagedPowerProductions: StagedProductionEntity[],
-  ): StagedProductionEntity {
+  ): Promise<void> {
     let remainingPowerConsuption = stagedHydrogenProduction.powerConsumed;
 
     for (const stagedPowerProduction of stagedPowerProductions) {
@@ -324,12 +289,29 @@ export class ProductionStagingService {
           stagedPowerProduction.type,
           stagedPowerProduction.csvImportId,
         );
-        this.logger.debug(`The remainig power of ${splittedPowerProduction.amountProduced} was persisted`);
-        return splittedPowerProduction;
+        if (splittedPowerProduction) {
+          this.logger.debug(`The remainig power of ${splittedPowerProduction.amountProduced} was persisted.`);
+          await this.stagedProductionRepository.saveStagedProductions(
+            [splittedPowerProduction],
+            splittedPowerProduction.csvImportId,
+          );
+        }
       }
     }
     this.logger.debug(`No split was necessary`);
-    return undefined;
+  }
+
+  async readStagedProductions(payload: ReadStagedProductionsPayload): Promise<StagedProductionEntity[]> {
+    if (payload.stagingScope == StagingScope.OWN) {
+      return this.stagedProductionRepository.findStagedProductions(payload, true, []);
+    } else {
+      const approvedAgreements: PowerPurchaseAgreementEntity[] = await this.powerPurchaseAgreementRepository.findAll(
+        payload.ownerId,
+        PowerPurchaseAgreementStatus.APPROVED,
+      );
+      const accessibleUnitIds: string[] = approvedAgreements.map((approval) => approval.powerProductionUnit.id);
+      return this.stagedProductionRepository.findStagedProductions(payload, false, accessibleUnitIds);
+    }
   }
 
   async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
