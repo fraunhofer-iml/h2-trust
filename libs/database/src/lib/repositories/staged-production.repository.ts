@@ -20,6 +20,28 @@ export class StagedProductionRepository {
 
   constructor(private readonly prismaService: PrismaService) {}
 
+  async setStagedProductionsToInactive(ids: string[]): Promise<number> {
+    const affectedColumns = await this.prismaService.stagedProduction.updateMany({
+      where: {
+        id: { in: ids },
+      },
+      data: { active: false },
+    });
+    return affectedColumns.count;
+  }
+
+  async findStagedProductionsForIds(ids: string[]): Promise<StagedProductionEntity[]> {
+    const stagedProductions: StagedProductionDeepDbType[] = await this.prismaService.stagedProduction.findMany({
+      where: {
+        id: { in: ids },
+        active: true,
+      },
+      ...stagedProductionDeepQueryArgs,
+    });
+
+    return stagedProductions.map(StagedProductionEntity.fromDeepDatabase);
+  }
+
   async findStagedProductions(
     payload: ReadStagedProductionsPayload,
     onlyOwnProductions: boolean,
@@ -34,6 +56,7 @@ export class StagedProductionRepository {
         unitIds.length > 0 && {
           unitId: { in: unitIds },
         }),
+      active: true,
     };
     const stagedProductions: StagedProductionDeepDbType[] = await this.prismaService.stagedProduction.findMany({
       where: stagedProductionFilter,
