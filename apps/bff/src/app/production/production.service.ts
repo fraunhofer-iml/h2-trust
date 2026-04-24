@@ -156,12 +156,12 @@ export class ProductionService {
     });
   }
 
-  //TODO-LG: Implement finalize functionality (DUHGW-425)
-  async submitCsvData(dto: StagingSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
+  async createProductionsFromStaging(dto: StagingSubmissionDto, userId: string): Promise<ProductionOverviewDto[]> {
     const payload: FinalizeProductionsPayload = new FinalizeProductionsPayload(
       userId,
-      dto.storageUnitId,
       dto.stagedHydrogenProduction,
+      dto.stagedPowerProductions,
+      dto.storageUnitId,
     );
     const processSteps: ProcessStepEntity[] = await firstValueFrom(
       this.processSvc.send<ProcessStepEntity[]>(ProductionMessagePatterns.FINALIZE, payload),
