@@ -72,6 +72,8 @@ export class PowerPurchaseAgreementRepository {
         where: { id: ppa.ppaId },
         data: {
           status: ppa.decision,
+          updatedAt: new Date(),
+          powerProductionUnit: ppa.powerProductionUnitId ? { connect: { id: ppa.powerProductionUnitId } } : {},
           decision: {
             create: this.buildDecisionUpdateQuery(ppa),
           },
