@@ -31,7 +31,7 @@
       <span class="text-neutral-500">Valid</span>
       <span>{{ request().validFrom | date: 'mediumDate' }} - {{ request().validTo | date: 'mediumDate' }}</span>
     </span>
-    @if (request().status === PowerPurchaseAgreementStatus.PENDING) {
+    @if (request().status !== PowerPurchaseAgreementStatus.APPROVED) {
       <span class="flex justify-between">
         <span class="text-neutral-500">Requested type</span>
         {{ request().powerProductionType | enum: 'powerProductionType' }}
@@ -61,73 +61,76 @@
 </div>
 
 <app-base-sheet #sheet>
+  <div class="flex items-center justify-between pb-4">
+    <div>
+      <strong class="text-neutral-700">{{
+        role() === PpaRequestRole.RECEIVER ? request().sender.company.name : request().receiver.name
+      }}</strong>
+      <p class="text-xs text-neutral-400">
+        @if (role() === PpaRequestRole.RECEIVER) {
+          {{ request().sender.name }} •
+        }
+        {{ dateLable }}
+      </p>
+    </div>
+    <app-ppa-status-chip [status]="request().status"></app-ppa-status-chip>
+  </div>
+
   <div
-    class="flex flex-col gap-2 rounded-lg border bg-linear-to-bl to-white to-40% py-4"
+    class="flex flex-col gap-2 rounded-lg border-2 border-neutral-100 bg-neutral-50 p-4"
     [ngClass]="{
       'from-tertiary-50': request().status === PowerPurchaseAgreementStatus.PENDING,
       'from-error-red/20': request().status === PowerPurchaseAgreementStatus.REJECTED,
       'from-secondary-100': request().status === PowerPurchaseAgreementStatus.APPROVED,
     }"
   >
-    <div class="flex justify-between px-4">
+    <div class="grid grid-cols-2 gap-4 text-sm">
+      <span class="col-span-2 text-lg text-neutral-500">Details</span>
       <div>
-        <strong class="text-neutral-700">{{
-          role() === PpaRequestRole.RECEIVER ? request().sender.company.name : request().receiver.name
-        }}</strong>
-        <p class="text-xs text-neutral-400">
-          @if (role() === PpaRequestRole.RECEIVER) {
-            {{ request().sender.name }} •
-          }
-          {{ dateLable }}
-        </p>
+        <span class="text-neutral-500">Created on</span>
+        <p>{{ request().createdAt | date }}</p>
       </div>
-      <app-ppa-status-chip [status]="request().status"></app-ppa-status-chip>
-    </div>
 
-    <mat-divider />
+      <div>
+        <span class="text-neutral-500">Created by</span>
+        <p>{{ request().sender.name }}</p>
+      </div>
 
-    <div class="flex flex-col gap-1 px-4 text-sm">
-      <span class="flex justify-between">
-        <span class="text-neutral-500">Created on</span> {{ request().createdAt | date }}
-      </span>
-      <span class="flex justify-between">
-        <span class="text-neutral-500">Created by</span> {{ request().sender.name }}
-      </span>
-
-      <span class="flex justify-between">
+      <div>
         <span class="text-neutral-500">Valid</span>
-        <span>{{ request().validFrom | date: 'shortDate' }} - {{ request().validTo | date: 'shortDate' }}</span>
-      </span>
-      <span class="flex justify-between">
-        <span class="text-neutral-500">Requested type</span>
-        {{ request().powerProductionType | enum: 'powerProductionType' }}
-      </span>
-      @if (request().status !== PowerPurchaseAgreementStatus.PENDING) {
-        <span class="flex justify-between">
-          <span class="text-neutral-500">Power Production Unit</span> {{ request().powerProductionUnit?.name }}
-        </span>
+        <p>{{ request().validFrom | date: 'shortDate' }} - {{ request().validTo | date: 'shortDate' }}</p>
+      </div>
 
-        <span class="flex justify-between">
-          <span class="text-neutral-500">Decided on</span> {{ request().decidedAt | date }}
+      <div>
+        <span class="text-neutral-500">Requested type</span>
+        <p>{{ request().powerProductionType | enum: 'powerProductionType' }}</p>
+      </div>
+      @if (request().status !== PowerPurchaseAgreementStatus.PENDING) {
+        <div>
+          <span class="text-neutral-500">Power Production Unit</span>
+          <p>{{ request().powerProductionUnit?.name }}</p>
+        </div>
+
+        <span>
+          <span class="text-neutral-500">Decided on</span>
+          <p>{{ request().decidedAt | date }}</p>
         </span>
-        <span class="flex justify-between">
-          <span class="text-neutral-500">Decided by</span> {{ request().decidedBy }}
-        </span>
+        <div>
+          <span class="text-neutral-500">Decided by</span>
+          <p>{{ request().decidedBy }}</p>
+        </div>
+
+        <div class="col-span-2">
+          <span class="text-neutral-500">
+            @if (role() === PpaRequestRole.RECEIVER) {
+              Your Comment
+            } @else {
+              Comment from {{ request().receiver.name }}
+            }
+          </span>
+          <p>{{ request().comment ?? 'No comment available.' }}</p>
+        </div>
       }
     </div>
-
-    @if (request().status !== PowerPurchaseAgreementStatus.PENDING) {
-      <mat-divider />
-      <div class="px-4 text-sm text-neutral-600">
-        <p class="text-neutral-500">
-          @if (role() === PpaRequestRole.RECEIVER) {
-            Your Comment
-          } @else {
-            Comment from {{ request().receiver.name }}
-          }
-        </p>
-        <p>{{ request().comment ?? 'No comment available.' }}</p>
-      </div>
-    }
   </div>
 </app-base-sheet>
