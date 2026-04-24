@@ -16,6 +16,7 @@ import {
   CreateProductionEntity,
   CsvDocumentEntity,
   HydrogenProductionUnitEntity,
+  PowerProductionUnitEntity,
   PowerPurchaseAgreementEntity,
   ProcessStepEntity,
   ProductionStagingResultEntity,
@@ -23,6 +24,7 @@ import {
 } from '@h2-trust/contracts/entities';
 import {
   FinalizeProductionsPayload,
+  ReadByIdPayload,
   ReadByIdsPayload,
   ReadStagedProductionsPayload,
   StageProductionsPayload,
@@ -54,7 +56,7 @@ export class ProductionStagingService {
   private readonly logger = new Logger(this.constructor.name);
 
   //TODO-LG: move grid power unit id into env vairables
-  private readonly gridPowerUnitId: string = 'power-production-unit-3';
+  private readonly gridPowerSupplier: string = 'company-grid-0';
 
   constructor(
     @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
@@ -77,6 +79,19 @@ export class ProductionStagingService {
     );
   }
 
+  private async getOwnGridPowerProductionUnit(): Promise<PowerProductionUnitEntity> {
+    const ownPowerProductions: PowerProductionUnitEntity[] = await firstValueFrom(
+      this.generalSvc.send(UnitMessagePatterns.READ_POWER_PRODUCTION, new ReadByIdPayload(this.gridPowerSupplier)),
+    );
+    const ownGridPowerProduction: PowerProductionUnitEntity = ownPowerProductions.find(
+      (powerProduction) => powerProduction.type.energySource == EnergySource.GRID,
+    );
+    if (!ownGridPowerProduction) {
+      throw new BrokerException(`The user does not have a GRID power production`, HttpStatus.BAD_REQUEST);
+    }
+    return ownGridPowerProduction;
+  }
+
   async readStagedProductions(payload: ReadStagedProductionsPayload): Promise<StagedProductionEntity[]> {
     if (payload.stagingScope == StagingScope.OWN) {
       return this.stagedProductionRepository.findStagedProductions(payload, true, []);
@@ -90,7 +105,6 @@ export class ProductionStagingService {
     }
   }
 
-  //TODO-LG: fix problem with distributed power production (petra and hannes have both staged power productions)
   async createProductionsFromStaging(payload: FinalizeProductionsPayload): Promise<ProcessStepEntity[]> {
     const stagedProductions: StagedProductionEntity[] =
       await this.stagedProductionRepository.findStagedProductionsForIds([
@@ -109,10 +123,12 @@ export class ProductionStagingService {
       throw new BrokerException(`The given Staged Production Ids are invalid`, HttpStatus.BAD_REQUEST);
     }
 
+    const gridPowerUnit: PowerProductionUnitEntity = await this.getOwnGridPowerProductionUnit();
+
     const stagedProductionUnitIds: string[] = stagedProductions.map((stagedProduction) => stagedProduction.unitId);
-    stagedProductionUnitIds.push(this.gridPowerUnitId);
     stagedProductionUnitIds.push(payload.storageUnitId);
     const productionUnitForId: Map<string, ConcreteUnitEntity> = await this.getProductionUnits(stagedProductionUnitIds);
+    productionUnitForId.set(gridPowerUnit.id, gridPowerUnit);
 
     const hydrogenProductionUnit: HydrogenProductionUnitEntity = productionUnitForId.get(
       stagedHydrogenProduction.unitId,
@@ -124,9 +140,8 @@ export class ProductionStagingService {
       payload.storageUnitId,
       hydrogenProductionUnit.waterConsumptionLitersPerHour,
       payload.recordedBy,
+      gridPowerUnit.id,
     );
-
-    this.getStagedProductionsToSetInactive(stagedHydrogenProduction, stagedPowerProductions);
 
     this.getRemainingPowerProduction(stagedHydrogenProduction, stagedPowerProductions);
 
@@ -135,8 +150,12 @@ export class ProductionStagingService {
       productionUnitForId,
     );
 
-    //TODO-LG: set the staged production to inactive
-    //await this.setStagedProductionsToInactive([...stagedHydrogenProduction, ...stagedPowerProductions]);
+    const stagedProductionsToInactivate: StagedProductionEntity[] = this.getStagedProductionsToSetInactive(
+      stagedHydrogenProduction,
+      stagedPowerProductions,
+    );
+
+    await this.setStagedProductionsToInactive(stagedProductionsToInactivate);
     return persistedProcessSteps;
   }
 
@@ -151,6 +170,7 @@ export class ProductionStagingService {
     hydrogenStorageUnitId: string,
     waterConsumption: number,
     recordedBy: string,
+    gridPowerUnitId: string,
   ): CreateProductionEntity[] {
     const createProductionEntities: CreateProductionEntity[] = [];
 
@@ -219,7 +239,7 @@ export class ProductionStagingService {
     const gridPowerCreateEntity: CreateProductionEntity = new CreateProductionEntity(
       stagedHydrogenProduction.startedAt,
       stagedHydrogenProduction.endedAt,
-      this.gridPowerUnitId,
+      gridPowerUnitId,
       PowerType.NOT_SPECIFIED,
       gridPowerConsumed,
       stagedHydrogenProduction.unitId,
@@ -242,7 +262,7 @@ export class ProductionStagingService {
   getStagedProductionsToSetInactive(
     stagedHydrogenProduction: StagedProductionEntity,
     stagedPowerProductions: StagedProductionEntity[],
-  ) {
+  ): StagedProductionEntity[] {
     let stagedProductionsToSetInactive: StagedProductionEntity[] = [stagedHydrogenProduction];
 
     let remainingPowerConsuption = stagedHydrogenProduction.powerConsumed;
@@ -256,7 +276,7 @@ export class ProductionStagingService {
         return stagedProductionsToSetInactive;
       }
     }
-    return undefined;
+    return stagedProductionsToSetInactive;
   }
 
   getRemainingPowerProduction(

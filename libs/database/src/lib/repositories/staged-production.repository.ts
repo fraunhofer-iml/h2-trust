@@ -33,6 +33,7 @@ export class StagedProductionRepository {
     const stagedProductions: StagedProductionDeepDbType[] = await this.prismaService.stagedProduction.findMany({
       where: {
         id: { in: ids },
+        active: true,
       },
       ...stagedProductionDeepQueryArgs,
     });
@@ -54,6 +55,7 @@ export class StagedProductionRepository {
         unitIds.length > 0 && {
           unitId: { in: unitIds },
         }),
+      active: true,
     };
     const stagedProductions: StagedProductionDeepDbType[] = await this.prismaService.stagedProduction.findMany({
       where: stagedProductionFilter,
