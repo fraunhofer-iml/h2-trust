@@ -61,7 +61,7 @@ services:
         mc anonymous set download local/${CENTRALIZED_STORAGE_BUCKET_NAME}
 
   kubo:
-    image: ipfs/kubo:v0.40.1
+    image: ipfs/kubo:v0.41.0
     restart: unless-stopped
     command: ['daemon']
     environment:
