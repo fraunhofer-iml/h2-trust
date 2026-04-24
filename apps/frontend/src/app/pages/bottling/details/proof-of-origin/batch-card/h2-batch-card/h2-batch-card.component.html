@@ -52,7 +52,7 @@
 
       <div class="flex flex-col text-sm">
         <span class="text-sm text-neutral-500">Process Step:</span
-        ><span>{{ batch().processStep | prettyEnum | titlecase }}</span>
+        ><span>{{ batch().processStep | pretty | titlecase }}</span>
       </div>
 
       @if (batch().processStep !== 'BOTTLING') {
@@ -60,7 +60,8 @@
           <span class="text-sm text-neutral-500">Producer:</span><span>{{ batch().producer }}</span>
         </div>
         <div class="flex flex-col text-sm">
-          <span class="text-sm text-neutral-500">Type of Production:</span><span>{{ batch().typeOfProduction }}</span>
+          <span class="text-sm text-neutral-500">Type of Production:</span
+          ><span>{{ batch().typeOfProduction | enum: 'hydrogenProductionMethod' }}</span>
         </div>
       }
 

@@ -30,8 +30,8 @@ import { FileTypes } from '../../../../shared/constants/file-types';
 import { ICONS } from '../../../../shared/constants/icons';
 import { UploadFlowAction } from '../../../../shared/constants/upload-flow-action.enum';
 import { ModalData } from '../../../../shared/model/modal-data.model';
+import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { FileSizePipe } from '../../../../shared/pipes/file-size.pipe';
-import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
 import {
   hydrogenProductionUnitsQueryOptions,
   powerProductionUnitsQueryOptions,
@@ -64,7 +64,7 @@ import { LoadingModalComponent } from './loading-modal/loading-modal.component';
     FileDragAndDropComponent,
     CommonModule,
     FileSizePipe,
-    PrettyEnumPipe,
+    EnumPipe,
   ],
   templateUrl: './add-production-data.component.html',
 })

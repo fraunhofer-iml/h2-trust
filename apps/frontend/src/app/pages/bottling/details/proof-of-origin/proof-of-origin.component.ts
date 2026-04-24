@@ -17,7 +17,7 @@ import {
   WaterBatchDto,
 } from '@h2-trust/contracts/dtos';
 import { BatchType } from '@h2-trust/domain';
-import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
+import { PrettyStringPipe } from '../../../../shared/pipes/pretty-string.pipe';
 import { H2BatchCardComponent } from './batch-card/h2-batch-card/h2-batch-card.component';
 import { PowerBatchCardComponent } from './batch-card/power-batch-card/power-batch-card.component';
 import { WaterBatchCardComponent } from './batch-card/water-batch-card/water-batch-card.component';
@@ -28,10 +28,10 @@ import { ClassificationComponent } from './classification/classification.compone
   imports: [
     CommonModule,
     ClassificationComponent,
-    PrettyEnumPipe,
     WaterBatchCardComponent,
     H2BatchCardComponent,
     PowerBatchCardComponent,
+    PrettyStringPipe,
   ],
   templateUrl: './proof-of-origin.component.html',
 })

@@ -3,7 +3,7 @@
   @if (data.status === PowerPurchaseAgreementStatus.APPROVED) {
     <p>
       Please select a power production unit. The desired Power Production Type is
-      <strong>{{ data.request.powerProductionType | prettyEnum | titlecase }}</strong
+      <strong>{{ data.request.powerProductionType | enum: 'powerProductionType' }}</strong
       >.
     </p>
     <mat-form-field appearance="outline" class="col-span-2">

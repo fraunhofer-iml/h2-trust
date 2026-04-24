@@ -11,11 +11,11 @@ import { Component, input } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { UnitType } from '@h2-trust/domain';
 import { ICONS } from '../../shared/constants/icons';
-import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
+import { EnumPipe } from '../../shared/pipes/enum.pipe';
 
 @Component({
   selector: 'app-unit-type-chip',
-  imports: [CommonModule, PrettyEnumPipe, MatChipsModule],
+  imports: [CommonModule, MatChipsModule, EnumPipe],
   template: `<div
     class="flex w-fit min-w-40 flex-row items-center gap-2 rounded-lg border px-2 text-sm"
     [ngClass]="{
@@ -34,7 +34,7 @@ import { PrettyEnumPipe } from '../../shared/pipes/format-enum.pipe';
     >
       {{ getIcon() }}
     </span>
-    {{ unitType() | prettyEnum | titlecase }}
+    {{ unitType() | enum: 'unitType' }}
   </div>`,
 })
 export class UnitTypeChipComponent {

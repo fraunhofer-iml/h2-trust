@@ -14,7 +14,7 @@ import { HydrogenProductionUnitDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit, UnitType } from '@h2-trust/domain';
 import { ErrorCardComponent } from '../../../../layout/error-card/error-card.component';
 import { LoadingCardComponent } from '../../../../layout/loading-card/loading-card.component';
-import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
+import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { UnitsService } from '../../../../shared/services/units/units.service';
 import { UnitActionsComponent } from '../shared/unit-actions/unit-actions.component';
@@ -30,8 +30,8 @@ import { injectUnitQuery, useQueryInvalidation } from '../shared/unit-query.util
     ErrorCardComponent,
     LoadingCardComponent,
     UnitActionsComponent,
-    PrettyEnumPipe,
     CommonModule,
+    EnumPipe,
   ],
   templateUrl: './hydrogen-production-details.component.html',
 })

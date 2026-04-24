@@ -14,14 +14,14 @@ import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { HydrogenComponentDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { CHART_COLORS } from '../../../../shared/constants/chart-colors';
-import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
+import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { formatNumberForChart } from '../../../../shared/util/number-format.util';
 
 @Component({
   selector: 'app-h2-composition-chart',
   imports: [NgxEchartsDirective],
-  providers: [provideEchartsCore({ echarts }), PercentPipe, DecimalPipe, UnitPipe, PrettyEnumPipe],
+  providers: [provideEchartsCore({ echarts }), PercentPipe, DecimalPipe, UnitPipe, EnumPipe],
   templateUrl: './h2-composition-chart.component.html',
 })
 export class H2CompositionChartComponent {
@@ -31,7 +31,7 @@ export class H2CompositionChartComponent {
 
   percentPipe = inject(PercentPipe);
   unitPipe = inject(UnitPipe);
-  prettyEnumPipe = inject(PrettyEnumPipe);
+  enumPipe = inject(EnumPipe);
 
   private getOption(chartData: HydrogenComponentDto[]): EChartsOption {
     return {
@@ -76,6 +76,6 @@ export class H2CompositionChartComponent {
 
   private readonly labelFormatter = (params: any) => {
     const percentage = this.percentPipe.transform((params.percent ?? 0) / 100, '1.0-1');
-    return `${this.prettyEnumPipe.transform(params.name).toLowerCase()}\n ${this.unitPipe.transform(params.value, MeasurementUnit.KG)} (${percentage})`;
+    return `${this.enumPipe.transform(params.name, 'rfnboType').toLowerCase()}\n ${this.unitPipe.transform(params.value, MeasurementUnit.KG)} (${percentage})`;
   };
 }

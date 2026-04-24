@@ -16,7 +16,7 @@
       <mat-label>Type</mat-label>
       <mat-select formControlName="powerProductionType">
         @for (type of availablePowerProductionType; track type) {
-          <mat-option [value]="type[1]">{{ type[0] | prettyEnum | titlecase }}</mat-option>
+          <mat-option [value]="type[1]">{{ type[1] | enum: 'powerProductionType' }}</mat-option>
         }
       </mat-select>
     </mat-form-field>

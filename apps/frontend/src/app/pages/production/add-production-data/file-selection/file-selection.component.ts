@@ -30,7 +30,7 @@ import {
   StagingScope,
 } from '@h2-trust/domain';
 import { EmptyStateComponent } from '../../../../layout/empty-state/empty-state.component';
-import { ROUTES } from '../../../../shared/constants/routes';
+import { H2TrustRoutes } from '../../../../shared/constants/routes';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { PowerPurchaseAgreementService } from '../../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { ProductionService } from '../../../../shared/services/production/production.service';
@@ -129,7 +129,7 @@ export class FileSelectionComponent {
     mutationFn: (dto: StagingSubmissionDto) => this.productionService.submitCsv(dto),
     onSuccess: () => {
       toast.success('Successfully created new productions!');
-      this.router.navigateByUrl(ROUTES.PRODUCTION_DATA);
+      this.router.navigateByUrl(H2TrustRoutes.PRODUCTION_DATA);
     },
     onError: (e: HttpErrorResponse) => toast.error(e.error.message),
   }));

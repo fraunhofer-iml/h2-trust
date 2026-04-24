@@ -11,7 +11,7 @@
             track unitType
           ) {
             <mat-chip-option selectable [selected]="typeToShow === unitType" (click)="toggle(unitType)">
-              {{ unitType | prettyEnum | titlecase }}
+              {{ unitType | enum: 'unitType' }}
             </mat-chip-option>
           }
           <mat-chip-option
@@ -39,7 +39,8 @@
               {{ item.ratedPower | unit: MeasurementUnit.KWH }}</mat-chip
             >
             <mat-chip>
-              <span matChipAvatar class="material-symbols-outlined">lab_panel</span>{{ item.technology }}</mat-chip
+              <span matChipAvatar class="material-symbols-outlined">lab_panel</span
+              >{{ item.technology | enum: 'hydrogenProductionTechnology' }}</mat-chip
             >
           </app-unit-card>
         </a>
@@ -56,7 +57,7 @@
             >
             <mat-chip>
               <span matChipAvatar class="material-symbols-outlined">label</span>
-              {{ item.storageType | prettyEnum | titlecase }}</mat-chip
+              {{ item.storageType | enum: 'hydrogenStorageType' }}</mat-chip
             >
           </app-unit-card>
         </a>
@@ -72,7 +73,8 @@
               {{ item.ratedPower | unit: MeasurementUnit.KWH }}</mat-chip
             >
             <mat-chip>
-              <span matChipAvatar class="material-symbols-outlined">category</span>{{ item.typeName }}</mat-chip
+              <span matChipAvatar class="material-symbols-outlined">category</span
+              >{{ item.typeName | enum: 'powerProductionType' }}</mat-chip
             >
           </app-unit-card>
         </a>

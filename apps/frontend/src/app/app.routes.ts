@@ -8,7 +8,7 @@
 
 import { Route } from '@angular/router';
 import { canActivateAuth } from './guards/auth.guard';
-import { ROUTES } from './shared/constants/routes';
+import { H2TrustRoutes } from './shared/constants/routes';
 
 export const appRoutes: Route[] = [
   {
@@ -17,16 +17,16 @@ export const appRoutes: Route[] = [
     loadChildren: () => import('./pages/account/routes').then((m) => m.ACCOUNT_ROUTES),
   },
   {
-    path: ROUTES.UNITS,
+    path: H2TrustRoutes.UNITS,
     canActivate: [canActivateAuth],
     loadChildren: () => import('./pages/units/routes').then((m) => m.HYDROGEN_ASSETS_ROUTES),
   },
   {
-    path: ROUTES.BOTTLING,
+    path: H2TrustRoutes.BOTTLING,
     loadChildren: () => import('./pages/bottling/routes').then((m) => m.BOTTLING_ROUTES),
   },
   {
-    path: ROUTES.PRODUCTION,
+    path: H2TrustRoutes.PRODUCTION,
     canActivate: [canActivateAuth],
     loadChildren: () => import('./pages/production/routes').then((m) => m.PRODUCTION_ROUTES),
   },

@@ -14,29 +14,29 @@
       <div class="grid grid-cols-2 gap-2 rounded-lg bg-white p-4">
         <span class="col-span-2">Type Selection</span>
 
-        @for (unitType of availableUnitTypes; track $index) {
+        @for (contentType of availableUnitTypes; track $index) {
           <div
             class="group hover:border-primary-200 flex cursor-pointer flex-col gap-2 rounded-md border-2 p-4 hover:shadow-lg"
             [ngClass]="
-              type() === unitType ? 'border-primary-200 text-primary-100' : 'border-neutral-300 text-neutral-500'
+              type() === contentType ? 'border-primary-200 text-primary-100' : 'border-neutral-300 text-neutral-500'
             "
-            (click)="selectedTypeControl.setValue(unitType)"
+            (click)="selectedTypeControl.setValue(contentType)"
             role="none"
           >
             <div
               class="group-hover:border-primary-200 group-hover:bg-primary-100 flex size-10 items-center justify-center rounded-full border"
               [ngClass]="
-                type() === unitType ? 'border-primary-200 bg-primary-100' : 'border-neutral-200 bg-neutral-100'
+                type() === contentType ? 'border-primary-200 bg-primary-100' : 'border-neutral-200 bg-neutral-100'
               "
             >
               <span
                 class="material-symbols-outlined group-hover:text-primary-600"
-                [ngClass]="type() === unitType ? 'text-primary-600' : 'text-neutral-400'"
+                [ngClass]="type() === contentType ? 'text-primary-600' : 'text-neutral-400'"
               >
-                {{ unitType === CsvContentType.HYDROGEN ? ICONS.HYDROGEN_PRODUCTION : ICONS.POWER_PRODUCTION }}
+                {{ contentType === CsvContentType.HYDROGEN ? ICONS.HYDROGEN_PRODUCTION : ICONS.POWER_PRODUCTION }}
               </span>
             </div>
-            <span class="text-base text-neutral-700">{{ unitType | prettyEnum | titlecase }} production data</span>
+            <span class="text-base text-neutral-700">{{ contentType | enum: 'csvContentType' }} production data</span>
           </div>
         }
       </div>

@@ -13,7 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { HydrogenStorageType } from '@h2-trust/domain';
-import { PrettyEnumPipe } from '../../../../shared/pipes/format-enum.pipe';
+import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { HydrogenStorageFormGroup } from '../forms';
 
 @Component({
@@ -23,9 +23,9 @@ import { HydrogenStorageFormGroup } from '../forms';
     MatFormFieldModule,
     ReactiveFormsModule,
     MatSelectModule,
-    PrettyEnumPipe,
     FormsModule,
     MatInputModule,
+    EnumPipe,
   ],
   templateUrl: './hydrogen-storage-unit-form.component.html',
 })

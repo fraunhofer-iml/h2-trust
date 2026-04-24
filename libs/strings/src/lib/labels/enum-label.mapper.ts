@@ -8,6 +8,8 @@
 
 import {
   BatchType,
+  CalculationTopic,
+  CsvContentType,
   CsvDocumentIntegrityStatus,
   EnergySource,
   FuelType,
@@ -18,6 +20,10 @@ import {
   HydrogenStorageType,
   MeasurementUnit,
   PowerProductionType,
+  PowerPurchaseAgreementStatus,
+  PowerType,
+  RfnboType,
+  UnitType,
 } from '@h2-trust/domain';
 
 export class EnumLabelMapper {
@@ -80,6 +86,44 @@ export class EnumLabelMapper {
     [CsvDocumentIntegrityStatus.FAILED]: 'Failed',
   };
 
+  private static readonly UNIT_TYPE_LABELS: Record<UnitType, string> = {
+    [UnitType.POWER_PRODUCTION]: 'Power Production',
+    [UnitType.HYDROGEN_PRODUCTION]: 'Hydrogen Production',
+    [UnitType.HYDROGEN_STORAGE]: 'Hydrogen Storage',
+  };
+
+  private static readonly CALCULATION_TOPIC_LABELS: Record<CalculationTopic, string> = {
+    [CalculationTopic.HYDROGEN_BOTTLING]: 'Bottling',
+    [CalculationTopic.POWER_SUPPLY]: 'Power Supply',
+    [CalculationTopic.WATER_SUPPLY]: 'Water Supply',
+    [CalculationTopic.HYDROGEN_STORAGE]: 'Hydrogen Storage',
+    [CalculationTopic.HYDROGEN_TRANSPORTATION]: 'Transportation',
+  };
+
+  private static readonly RFNBO_TYPE_LABELS: Record<RfnboType, string> = {
+    [RfnboType.RFNBO_READY]: 'RFNBO Ready',
+    [RfnboType.NON_CERTIFIABLE]: 'Non Certifiable',
+    [RfnboType.NOT_SPECIFIED]: 'Not Specified',
+  };
+
+  private static readonly PPA_STATUS_LABELS: Record<PowerPurchaseAgreementStatus, string> = {
+    [PowerPurchaseAgreementStatus.REJECTED]: 'Rejected',
+    [PowerPurchaseAgreementStatus.PENDING]: 'Pending',
+    [PowerPurchaseAgreementStatus.APPROVED]: 'Approved',
+  };
+
+  private static readonly POWER_TYPE_LABELS: Record<PowerType, string> = {
+    [PowerType.RENEWABLE]: 'Renewable',
+    [PowerType.PARTLY_RENEWABLE]: 'Partly Renewable',
+    [PowerType.NON_RENEWABLE]: 'Non Renewable',
+    [PowerType.NOT_SPECIFIED]: 'Not Specified',
+  };
+
+  private static readonly CSV_CONTENT_TYPE_LABELS: Record<CsvContentType, string> = {
+    [CsvContentType.POWER]: 'Power',
+    [CsvContentType.HYDROGEN]: 'Hydrogen',
+  };
+
   public static getPowerProductionType(value: PowerProductionType): string {
     return this.getLabel(value, this.POWER_PRODUCTION_TYPE_LABELS);
   }
@@ -118,6 +162,30 @@ export class EnumLabelMapper {
 
   public static getCsvDocumentIntegrityStatus(value: CsvDocumentIntegrityStatus): string {
     return this.getLabel(value, this.CSV_DOCUMENT_INTEGRITY_STATUS_LABELS);
+  }
+
+  public static getUnitType(value: UnitType): string {
+    return this.getLabel(value, this.UNIT_TYPE_LABELS);
+  }
+
+  public static getCalculationTopic(value: CalculationTopic): string {
+    return this.getLabel(value, this.CALCULATION_TOPIC_LABELS);
+  }
+
+  public static getRfnboType(value: RfnboType): string {
+    return this.getLabel(value, this.RFNBO_TYPE_LABELS);
+  }
+
+  public static getPPaStatus(value: PowerPurchaseAgreementStatus): string {
+    return this.getLabel(value, this.PPA_STATUS_LABELS);
+  }
+
+  public static getPowerType(value: PowerType): string {
+    return this.getLabel(value, this.POWER_TYPE_LABELS);
+  }
+
+  public static getCsvContentType(value: CsvContentType): string {
+    return this.getLabel(value, this.CSV_CONTENT_TYPE_LABELS);
   }
 
   private static getLabel<T extends string>(value: T, labels: Record<T, string>): string {
