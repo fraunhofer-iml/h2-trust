@@ -110,7 +110,7 @@ export class PowerPurchaseAgreementRepository {
   }
 
   private buildDecisionUpdateQuery(payload: UpdatePowerPurchaseAgreementPayload) {
-    let query: Prisma.DecisionUncheckedUpdateWithoutPowerPurchaseAgreementInput = {};
+    const query: Prisma.DecisionUncheckedUpdateWithoutPowerPurchaseAgreementInput = {};
 
     if (payload.decidingUserId) {
       query.userId = payload.decidingUserId;
