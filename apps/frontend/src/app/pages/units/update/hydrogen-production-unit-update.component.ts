@@ -15,8 +15,9 @@ import { toast } from 'ngx-sonner';
 import { HydrogenProductionUnitDto, HydrogenProductionUnitInputDto } from '@h2-trust/contracts/dtos';
 import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology } from '@h2-trust/domain';
 import { UnitTypeChipComponent } from '../../../layout/chips/unit-type-chip.component';
-import { QUERY_KEYS } from '../../../shared/queries/shared-query-keys';
+import { QUERY_KEY_PREFIX } from '../../../shared/queries/shared-query-keys';
 import { UnitsService } from '../../../shared/services/units/units.service';
+import { useQueryInvalidation } from '../details/shared/unit-query.util';
 import { BaseUnitFormComponent } from '../forms/base-unit/base-unit-form-component';
 import {
   addValidatorsToFormGroup,
@@ -49,7 +50,7 @@ export class HydrogenProductionUnitUpdateComponent {
   queryClient = inject(QueryClient);
 
   unitQuery = injectQuery(() => ({
-    queryKey: ['hydrogen-production-unit', this.id()],
+    queryKey: [QUERY_KEY_PREFIX.HYDROGEN_PRODUCTION_UNITS, this.id()],
     queryFn: async () => {
       const unit = await this.unitsService.getHydrogenProductionUnit(this.id() ?? '');
       this.setFormData(unit);
@@ -74,7 +75,7 @@ export class HydrogenProductionUnitUpdateComponent {
   }
 
   private onSuccess() {
-    this.queryClient.invalidateQueries({ queryKey: QUERY_KEYS.HYDROGEN_PRODUCTION_UNITS });
+    useQueryInvalidation(this.queryClient, QUERY_KEY_PREFIX.HYDROGEN_PRODUCTION_UNITS);
     this.navigateToDetailsView();
   }
 

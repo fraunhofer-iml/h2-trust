@@ -6,8 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const QUERY_KEYS = {
-  HYDROGEN_PRODUCTION_UNITS: ['hydrogen-production-units'],
-  POWER_PRODUCTION_UNITS: ['power-production-units'],
-  PPA_REQUESTS: ['ppa-requests'],
+export const QUERY_KEY_PREFIX = {
+  HYDROGEN_PRODUCTION_UNITS: 'hydrogen-production-units',
+  HYDROGEN_STORAGE_UNITS: 'hydrogen-storage-units',
+  POWER_PRODUCTION_UNITS: 'power-production-units',
+  PPA_REQUESTS: 'ppa-requests',
 };
+
+export type QueryKeyPrefix = keyof typeof QUERY_KEY_PREFIX;

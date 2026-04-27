@@ -24,7 +24,7 @@ import { toast } from 'ngx-sonner';
 import { PowerProductionOverviewDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/contracts/dtos';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
-import { QUERY_KEYS } from '../../../../shared/queries/shared-query-keys';
+import { QUERY_KEY_PREFIX } from '../../../../shared/queries/shared-query-keys';
 import { powerProductionUnitsQueryOptions } from '../../../../shared/queries/units.query';
 import { PowerPurchaseAgreementService } from '../../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
@@ -74,7 +74,7 @@ export class RequestConfirmationDialogComponent {
         `Failed to ${this.data.status === PowerPurchaseAgreementStatus.REJECTED ? 'reject' : 'approve'} Request`,
       ),
     onSuccess: () => {
-      this.queryClient.invalidateQueries({ queryKey: [...QUERY_KEYS.PPA_REQUESTS, PpaRequestRole.RECEIVER] });
+      this.queryClient.invalidateQueries({ queryKey: [...QUERY_KEY_PREFIX.PPA_REQUESTS, PpaRequestRole.RECEIVER] });
       toast.success(`Request ${this.data.status.toLowerCase()}.`);
     },
   }));

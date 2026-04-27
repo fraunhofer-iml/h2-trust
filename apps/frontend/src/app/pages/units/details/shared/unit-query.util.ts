@@ -8,16 +8,15 @@
 
 import { Signal } from '@angular/core';
 import { injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import { UnitType } from '@h2-trust/domain';
 import { ERROR_MESSAGES } from '../../../../shared/constants/error.messages';
 
 export function injectUnitQuery<T>(
-  unitType: UnitType,
+  prefix: string,
   id: Signal<string | undefined>,
   fetchFn: (id: string) => Promise<T>,
 ) {
   return injectQuery(() => ({
-    queryKey: [unitType, id()],
+    queryKey: [prefix, id()],
     queryFn: async () => {
       try {
         return await fetchFn(id() ?? '');
@@ -31,6 +30,6 @@ export function injectUnitQuery<T>(
   }));
 }
 
-export function useQueryInvalidation(queryClient: QueryClient, unitType: UnitType, id: Signal<string | undefined>) {
-  return () => queryClient.invalidateQueries({ queryKey: [unitType, id()] });
+export function useQueryInvalidation(queryClient: QueryClient, prefix: string) {
+  return () => queryClient.invalidateQueries({ queryKey: [prefix] });
 }
