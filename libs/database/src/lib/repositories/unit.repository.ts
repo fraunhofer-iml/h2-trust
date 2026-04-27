@@ -303,7 +303,7 @@ export class UnitRepository {
             update: {
               where: { id: payload.id },
               data: {
-                type: payload.modelType,
+                type: payload.storageType,
                 capacity: payload.capacity,
                 pressure: payload.pressure,
               },
