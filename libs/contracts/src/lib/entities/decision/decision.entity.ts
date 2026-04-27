@@ -14,6 +14,7 @@ export class DecisionEntity {
   powerPurchaseAgreementId: string;
   decidingUserId: string;
   grantedPowerProductionUnitId: string;
+  comment?: string;
 
   constructor(
     id: string,
@@ -21,12 +22,14 @@ export class DecisionEntity {
     powerPurchaseAgreementId: string,
     decidingUserId: string,
     grantedPowerProductionUnitId: string,
+    comment?: string,
   ) {
     this.id = id;
     this.decidedAt = decidedAt;
     this.powerPurchaseAgreementId = powerPurchaseAgreementId;
     this.decidingUserId = decidingUserId;
     this.grantedPowerProductionUnitId = grantedPowerProductionUnitId;
+    this.comment = comment;
   }
 
   static fromDatabase(decision: DecisionDbType) {
@@ -36,6 +39,7 @@ export class DecisionEntity {
       powerPurchaseAgreementId: decision.powerPurchaseAgreementId,
       decidingUserId: decision.userId,
       grantedPowerProductionUnitId: decision.powerPurchaseAgreementId,
+      comment: decision.comment,
     };
   }
 }

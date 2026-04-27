@@ -69,6 +69,7 @@ export class PpaRequestDto {
         : undefined,
       status: powerPurchaseAgreement.status,
       decidedBy: powerPurchaseAgreement.decision?.decidingUserId,
+      comment: powerPurchaseAgreement.decision?.comment,
     };
   }
 }
