@@ -14,3 +14,4 @@ export * from './power-purchase-agreement.seed';
 export * from './process-step';
 export * from './unit';
 export * from './user.seed';
+export * from './decision.seed';

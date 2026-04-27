@@ -16,6 +16,7 @@ import {
   BatchRelationWaterHydrogenSeed,
   BatchSeed,
   CompanySeed,
+  DecisionSeed,
   DocumentSeed,
   HydrogenProductionUnitSeed,
   HydrogenStorageUnitSeed,
@@ -166,6 +167,11 @@ export async function seedDatabase() {
       name: 'powerPurchaseAgreement',
       records: PowerPurchaseAgreementSeed,
       createRecord: async (data: any) => await prisma.powerPurchaseAgreement.create({ data }),
+    },
+    {
+      name: 'decision',
+      records: DecisionSeed,
+      createRecord: async (data: any) => await prisma.decision.create({ data }),
     },
   ];
 
