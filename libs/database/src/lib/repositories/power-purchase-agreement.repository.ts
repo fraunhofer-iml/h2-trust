@@ -32,7 +32,6 @@ export class PowerPurchaseAgreementRepository {
         ...powerPurchaseAgreementDeepQueryArgs,
       })
       .then((result) => {
-        console.log('PPA findMany result:', result);
         return result.map(PowerPurchaseAgreementEntity.fromDeepDatabase);
       });
   }

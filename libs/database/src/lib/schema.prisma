@@ -368,6 +368,6 @@ model Decision {
   decidingUser User   @relation(fields: [userId], references: [id])
   userId       String
 
-  grantedPowerProductionUnit PowerProductionUnit? @relation(fields: [powerProductionUnitId], references: [id])
-  powerProductionUnitId      String?
+  grantedPowerProductionUnit   PowerProductionUnit? @relation(fields: [grantedPowerProductionUnitId], references: [id])
+  grantedPowerProductionUnitId String?
 }

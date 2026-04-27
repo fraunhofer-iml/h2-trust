@@ -23,7 +23,7 @@ import { PowerPurchaseAgreementService } from './power-purchase-agreement.servic
 export class PowerPurchaseAgreementController {
   constructor(private readonly powerPurchaseAgreementService: PowerPurchaseAgreementService) {}
 
-  /* @Get()
+  @Get()
   @ApiBearerAuth()
   @ApiOperation({
     description: 'Retrieve all companies with their power purchase agreement. Optionally filter by agreement status.',
@@ -56,12 +56,12 @@ export class PowerPurchaseAgreementController {
     },
   })
   //Is this naming up to date?
-  getCompaniesWithPowerPurchaseAgreement(
+  getPpasByStatus(
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
     @Query('status') powerPurchaseAgreementStatus: PowerPurchaseAgreementStatus,
   ): Promise<PpaDto[]> {
     return this.powerPurchaseAgreementService.readByUserAndStatus(authenticatedUser.sub, powerPurchaseAgreementStatus);
-  } */
+  }
 
   @Get('requests')
   @ApiBearerAuth()

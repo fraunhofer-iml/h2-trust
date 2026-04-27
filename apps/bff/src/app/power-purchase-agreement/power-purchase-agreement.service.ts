@@ -9,7 +9,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { PpaRequestCreateDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/contracts/dtos';
+import { PpaDto, PpaRequestCreateDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/contracts/dtos';
 import {
   CreatePowerPurchaseAgreementsPayload,
   ReadPowerPurchaseAgreementsPayload,
@@ -22,14 +22,15 @@ import { BrokerQueues, PowerPurchaseAgreementPatterns } from '@h2-trust/messagin
 export class PowerPurchaseAgreementService {
   constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
 
-  /* async readByUserAndStatus(userId: string, status: PowerPurchaseAgreementStatus): Promise<PpaDto[]> {
-    const payload = new ReadPowerPurchaseAgreementsPayload(userId, status);
+  async readByUserAndStatus(userId: string, status: PowerPurchaseAgreementStatus): Promise<PpaDto[]> {
+    const payload = new ReadPowerPurchaseAgreementsPayload(userId, undefined, status);
 
     const powerPurchaseAgreements = await firstValueFrom(
       this.generalService.send(PowerPurchaseAgreementPatterns.READ, payload),
     );
+    console.log(powerPurchaseAgreements);
     return powerPurchaseAgreements.map(PpaDto.fromEntity);
-  } */
+  }
 
   async readAll(userId: string, role: PpaRequestRole, status?: PowerPurchaseAgreementStatus): Promise<PpaRequestDto[]> {
     const payload = new ReadPowerPurchaseAgreementsPayload(userId, role, status);
