@@ -26,7 +26,6 @@ import {
   buildHydrogenProductionUnitCreateInput,
   buildHydrogenStorageUnitCreateInput,
   buildPowerProductionUnitCreateInput,
-  new Prisma.Decimal,
 } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 import { baseUnitDeepQueryArgs } from '../query-args';
