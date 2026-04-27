@@ -26,6 +26,7 @@ import {
   buildHydrogenProductionUnitCreateInput,
   buildHydrogenStorageUnitCreateInput,
   buildPowerProductionUnitCreateInput,
+  new Prisma.Decimal,
 } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 import { baseUnitDeepQueryArgs } from '../query-args';
@@ -199,9 +200,9 @@ export class UnitRepository {
                 method: payload.method,
                 technology: payload.technology,
                 biddingZone: payload.biddingZone,
-                ratedPower: payload.ratedPower,
-                pressure: payload.pressure,
-                waterConsumptionLitersPerHour: payload.waterConsumptionLitersPerHour,
+                ratedPower: new Prisma.Decimal(payload.ratedPower),
+                pressure: new Prisma.Decimal(payload.pressure),
+                waterConsumptionLitersPerHour: new Prisma.Decimal(payload.waterConsumptionLitersPerHour),
               },
             },
           },
@@ -253,7 +254,7 @@ export class UnitRepository {
                 gridConnectionNumber: payload.gridConnectionNumber,
                 gridLevel: payload.gridLevel,
                 biddingZone: payload.biddingZone,
-                ratedPower: payload.ratedPower,
+                ratedPower: new Prisma.Decimal(payload.ratedPower),
                 decommissioningPlannedOn: payload.decommissioningPlannedOn,
                 financialSupportReceived: payload.financialSupportReceived,
                 type: { connect: { name: payload.powerProductionType } },
@@ -304,8 +305,8 @@ export class UnitRepository {
               where: { id: payload.id },
               data: {
                 type: payload.storageType,
-                capacity: payload.capacity,
-                pressure: payload.pressure,
+                capacity: new Prisma.Decimal(payload.capacity),
+                pressure: new Prisma.Decimal(payload.pressure),
               },
             },
           },
