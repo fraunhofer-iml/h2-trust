@@ -9,6 +9,7 @@
 import { Prisma } from '@prisma/client';
 import { companyFlatQueryArgs } from '../company/company.flat.query-args';
 import { powerProductionUnitNestedQueryArgs } from '../unit';
+import { userDeepQueryArgs } from '../user';
 
 export const powerPurchaseAgreementNestedQueryArgs = Prisma.validator<Prisma.PowerPurchaseAgreementDefaultArgs>()({
   include: {
@@ -16,5 +17,6 @@ export const powerPurchaseAgreementNestedQueryArgs = Prisma.validator<Prisma.Pow
     powerProducer: companyFlatQueryArgs,
     hydrogenProducer: companyFlatQueryArgs,
     powerProductionUnit: powerProductionUnitNestedQueryArgs,
+    creatingUser: userDeepQueryArgs,
   },
 });

@@ -8,7 +8,9 @@
 
 import { Prisma } from '@prisma/client';
 import { companyNestedQueryArgs } from '../company/company.nested.query-args';
+import { decisionDeepQueryArgs } from '../decision';
 import { powerProductionUnitNestedQueryArgs } from '../unit/unit.nested.query-args';
+import { userDeepQueryArgs } from '../user';
 
 export const powerPurchaseAgreementDeepQueryArgs = Prisma.validator<Prisma.PowerPurchaseAgreementDefaultArgs>()({
   include: {
@@ -16,5 +18,7 @@ export const powerPurchaseAgreementDeepQueryArgs = Prisma.validator<Prisma.Power
     powerProducer: companyNestedQueryArgs,
     hydrogenProducer: companyNestedQueryArgs,
     powerProductionUnit: powerProductionUnitNestedQueryArgs,
+    creatingUser: userDeepQueryArgs,
+    decision: decisionDeepQueryArgs,
   },
 });

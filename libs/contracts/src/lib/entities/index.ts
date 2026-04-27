@@ -12,6 +12,7 @@ export * from './bottling';
 export * from './company';
 export * from './compliance';
 export * from './csv-import';
+export * from './decision';
 export * from './digital-product-passport';
 export * from './document';
 export * from './power-purchase-agreement';

@@ -6,8 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './mocks';
-export * from './ppa.dto';
-export * from './ppa-request.dto';
-export * from './ppa-request-create.dto';
-export * from './ppa-request-decision.dto';
+import { Decision } from '@prisma/client';
+
+export type DecisionDbType = Decision;

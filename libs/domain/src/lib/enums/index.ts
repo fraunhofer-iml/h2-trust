@@ -23,6 +23,7 @@ export * from './hydrogen-storage-type.enum';
 export * from './measurement-unit.enum';
 export * from './power-production-type.enum';
 export * from './power-purchase-agreement-status.enum';
+export * from './power-purchase-agreement-status.enum';
 export * from './power-type.enum';
 export * from './ppa-request-role.enum';
 export * from './process-type.enum';

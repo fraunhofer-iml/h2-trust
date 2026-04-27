@@ -6,20 +6,25 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 
 export class ReadPowerPurchaseAgreementsPayload {
   @IsString()
   @IsNotEmpty()
   userId: string;
 
-  @IsEnum(PowerPurchaseAgreementStatus)
-  @IsNotEmpty()
-  powerPurchaseAgreementStatus: PowerPurchaseAgreementStatus;
+  @IsOptional()
+  @IsEnum(PpaRequestRole)
+  powerPurchaseAgreementRole?: PpaRequestRole;
 
-  constructor(userId: string, powerPurchaseAgreementStatus: PowerPurchaseAgreementStatus) {
+  @IsEnum(PowerPurchaseAgreementStatus)
+  @IsOptional()
+  powerPurchaseAgreementStatus?: PowerPurchaseAgreementStatus;
+
+  constructor(userId: string, ppaRole?: PpaRequestRole, powerPurchaseAgreementStatus?: PowerPurchaseAgreementStatus) {
     this.userId = userId;
+    this.powerPurchaseAgreementRole = ppaRole;
     this.powerPurchaseAgreementStatus = powerPurchaseAgreementStatus;
   }
 }

@@ -11,6 +11,7 @@ export * from './base-unit.db.type';
 export * from './batch.db.type';
 export * from './company.db.type';
 export * from './csv-document.db.type';
+export * from './decision.db.type';
 export * from './document.db.type';
 export * from './hydrogen-storage-unit.db.type';
 export * from './mocks';

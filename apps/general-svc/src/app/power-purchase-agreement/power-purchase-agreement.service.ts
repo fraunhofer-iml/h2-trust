@@ -8,7 +8,12 @@
 
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { PowerProductionUnitEntity, PowerPurchaseAgreementEntity, UserEntity } from '@h2-trust/contracts/entities';
-import { ReadByIdPayload, ReadPowerPurchaseAgreementsPayload } from '@h2-trust/contracts/payloads';
+import {
+  CreatePowerPurchaseAgreementsPayload,
+  ReadByIdPayload,
+  ReadPowerPurchaseAgreementsPayload,
+  UpdatePowerPurchaseAgreementPayload,
+} from '@h2-trust/contracts/payloads';
 import { PowerPurchaseAgreementRepository, UserRepository } from '@h2-trust/database';
 import { PowerProductionType, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
@@ -22,24 +27,36 @@ export class PowerPurchaseAgreementService {
 
   async findAll(payload: ReadPowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity[]> {
     const user: UserEntity = await this.userRepository.findUser(payload.userId);
-    return this.powerPurchaseAgreementRepository.findAll(user.company.id, payload.powerPurchaseAgreementStatus);
+    return this.powerPurchaseAgreementRepository.findAll(
+      user.company.id,
+      payload.powerPurchaseAgreementStatus,
+      payload.powerPurchaseAgreementRole,
+    );
+  }
+
+  async createPPA(payload: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity> {
+    const hydrogenProducerCompany: UserEntity = await this.userRepository.findUser(payload.userId);
+    return this.powerPurchaseAgreementRepository.create(payload, hydrogenProducerCompany.company.id);
+  }
+
+  async updatePPA(payload: UpdatePowerPurchaseAgreementPayload): Promise<PowerPurchaseAgreementEntity> {
+    return this.powerPurchaseAgreementRepository.updatePpaStatus(payload);
   }
 
   async findApprovedGridPowerProductionUnitByUserId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity> {
     const agreements = await this.findAll(
-      new ReadPowerPurchaseAgreementsPayload(payload.id, PowerPurchaseAgreementStatus.APPROVED),
+      new ReadPowerPurchaseAgreementsPayload(payload.id, undefined, PowerPurchaseAgreementStatus.APPROVED),
     );
 
     const agreementForGrid = agreements.find(
       (agreement) => agreement.powerProductionUnit.type.name === PowerProductionType.GRID,
     );
 
-    if (!agreementForGrid) {
+    if (!agreementForGrid)
       throw new BrokerException(
         `No grid connection found for user with id ${payload.id}.`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
-    }
 
     return agreementForGrid.powerProductionUnit;
   }

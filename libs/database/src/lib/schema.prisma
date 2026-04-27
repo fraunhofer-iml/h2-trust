@@ -106,8 +106,10 @@ model User {
   company   Company @relation(fields: [companyId], references: [id])
   companyId String
 
-  processSteps ProcessStep[]
-  csvImports   CsvImport[]
+  processSteps            ProcessStep[]
+  csvImports              CsvImport[]
+  decisions               Decision[]
+  powerPurchaseAgreements PowerPurchaseAgreement[]
 }
 
 model Unit {
@@ -151,7 +153,8 @@ model PowerProductionType {
   energySource  String
   hydrogenColor String
 
-  powerProductionUnits PowerProductionUnit[]
+  powerProductionUnits    PowerProductionUnit[]
+  powerPurchaseAgreements PowerPurchaseAgreement[]
 
   @@unique([name, energySource, hydrogenColor])
 }
@@ -176,6 +179,7 @@ model PowerProductionUnit {
   typeName String
 
   powerPurchaseAgreements PowerPurchaseAgreement[]
+  decisions               Decision[]
 }
 
 model HydrogenProductionUnit {
@@ -299,12 +303,20 @@ model TransportationDetails {
 }
 
 model PowerPurchaseAgreement {
-  id        String   @id @default(uuid(7))
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id     String @id @default(uuid(7))
+  status String
 
-  status    String
-  decidedAt DateTime
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+
+  validFrom DateTime
+  validTo   DateTime
+
+  creatingUser   User   @relation(fields: [creatingUserId], references: [id])
+  creatingUserId String
+
+  suggestedPowerType     PowerProductionType @relation(fields: [suggestedPowerTypeName], references: [name])
+  suggestedPowerTypeName String
 
   powerProducer   Company @relation(fields: [powerProducerId], references: [id], name: "PowerProducer")
   powerProducerId String
@@ -312,11 +324,13 @@ model PowerPurchaseAgreement {
   hydrogenProducer   Company @relation(fields: [hydrogenProducerId], references: [id], name: "HydrogenProducer")
   hydrogenProducerId String
 
-  powerProductionUnit   PowerProductionUnit @relation(fields: [powerProductionUnitId], references: [id])
-  powerProductionUnitId String
+  powerProductionUnit   PowerProductionUnit? @relation(fields: [powerProductionUnitId], references: [id])
+  powerProductionUnitId String?
 
-  document   Document @relation(fields: [documentId], references: [id])
-  documentId String
+  document   Document? @relation(fields: [documentId], references: [id])
+  documentId String?
+
+  decision Decision?
 
   @@unique([powerProducerId, powerProductionUnitId, hydrogenProducerId])
 }
@@ -341,4 +355,19 @@ model StagedProduction {
 
   owner   Company @relation(name: "StageProductionOwner", fields: [ownerId], references: [id])
   ownerId String
+}
+
+model Decision {
+  id        String   @id @default(uuid(7))
+  decidedAt DateTime
+  comment   String?
+
+  powerPurchaseAgreement   PowerPurchaseAgreement @relation(fields: [powerPurchaseAgreementId], references: [id])
+  powerPurchaseAgreementId String                 @unique
+
+  decidingUser User   @relation(fields: [userId], references: [id])
+  userId       String
+
+  grantedPowerProductionUnit PowerProductionUnit? @relation(fields: [powerProductionUnitId], references: [id])
+  powerProductionUnitId      String?
 }

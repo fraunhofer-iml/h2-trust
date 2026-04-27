@@ -9,7 +9,12 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { PowerProductionUnitEntity, PowerPurchaseAgreementEntity } from '@h2-trust/contracts/entities';
-import { ReadByIdPayload, ReadPowerPurchaseAgreementsPayload } from '@h2-trust/contracts/payloads';
+import {
+  CreatePowerPurchaseAgreementsPayload,
+  ReadByIdPayload,
+  ReadPowerPurchaseAgreementsPayload,
+  UpdatePowerPurchaseAgreementPayload,
+} from '@h2-trust/contracts/payloads';
 import { PowerPurchaseAgreementPatterns } from '@h2-trust/messaging';
 import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 
@@ -20,6 +25,16 @@ export class PowerPurchaseAgreementController {
   @MessagePattern(PowerPurchaseAgreementPatterns.READ)
   async findAll(payload: ReadPowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity[]> {
     return this.service.findAll(payload);
+  }
+
+  @MessagePattern(PowerPurchaseAgreementPatterns.CREATE)
+  async createPPA(payload: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity> {
+    return this.service.createPPA(payload);
+  }
+
+  @MessagePattern(PowerPurchaseAgreementPatterns.UPDATE)
+  async updatePPAStatus(payload: UpdatePowerPurchaseAgreementPayload): Promise<PowerPurchaseAgreementEntity> {
+    return this.service.updatePPA(payload);
   }
 
   @MessagePattern(PowerPurchaseAgreementPatterns.READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID)

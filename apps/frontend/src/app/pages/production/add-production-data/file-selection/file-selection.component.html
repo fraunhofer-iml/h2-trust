@@ -78,7 +78,9 @@
                   class="flex flex-col px-2 pt-2"
                   [ngClass]="item.uploads.length === 0 ? 'bg-neutral-100' : 'bg-primary-50'"
                 >
-                  <span class="text-sm text-neutral-700">{{ item.powerProductionUnit.name }}</span>
+                  <span class="text-sm text-neutral-700">{{
+                    item.powerProductionUnit ? item.powerProductionUnit.name : ' Not set'
+                  }}</span>
                   <span
                     class="flex gap-4 text-xs"
                     [ngClass]="item.uploads.length === 0 ? 'text-neutral-500' : 'text-primary-500'"
@@ -88,8 +90,8 @@
                       {{ item.powerProducer.name }}
                     </span>
                     <span class="flex items-center gap-1">
-                      <span class="material-symbols-outlined text-lg!">label</span>
-                      {{ item.powerProductionUnit.typeName }}
+                      <span class="material-symbols-outlined text-lg">label</span>
+                      {{ item.powerProductionUnit ? item.powerProductionUnit.typeName : ' Not set' }}
                     </span>
                   </span>
                 </div>
