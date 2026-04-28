@@ -137,7 +137,7 @@ services:
       <<: *healthcheck-defaults
 
   rabbitmq:
-    image: rabbitmq:4.2-management-alpine
+    image: rabbitmq:4.3-management-alpine
     restart: unless-stopped
     volumes:
       - './docker/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf'
