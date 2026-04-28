@@ -10,8 +10,9 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { QueryClient } from '@tanstack/angular-query-experimental';
+import { QueryKeyPrefix } from 'apps/frontend/src/app/shared/queries/shared-query-keys';
 import { HydrogenStorageUnitDto } from '@h2-trust/contracts/dtos';
-import { MeasurementUnit, UnitType } from '@h2-trust/domain';
+import { MeasurementUnit } from '@h2-trust/domain';
 import { ErrorCardComponent } from '../../../../layout/error-card/error-card.component';
 import { LoadingCardComponent } from '../../../../layout/loading-card/loading-card.component';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
@@ -19,7 +20,7 @@ import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { UnitsService } from '../../../../shared/services/units/units.service';
 import { UnitActionsComponent } from '../shared/unit-actions/unit-actions.component';
 import { UnitDetailsComponent } from '../shared/unit-details/unit-details.component';
-import { injectUnitQuery, useQueryInvalidation } from '../shared/unit-query.util';
+import { injectUnitQuery } from '../shared/unit-query.util';
 
 @Component({
   selector: 'app-hydrogen-storage-details',
@@ -43,9 +44,9 @@ export class HydrogenStorageDetailsComponent {
   unitsService = inject(UnitsService);
   private queryClient = inject(QueryClient);
 
-  unitQuery = injectUnitQuery<HydrogenStorageUnitDto>(UnitType.HYDROGEN_STORAGE, this.id, (id) =>
+  unitQuery = injectUnitQuery<HydrogenStorageUnitDto>(QueryKeyPrefix.HYDROGEN_STORAGE_UNITS, this.id, (id) =>
     this.unitsService.getHydrogenStorageUnit(id),
   );
 
-  onUnitStatusChange = useQueryInvalidation(this.queryClient, UnitType.HYDROGEN_STORAGE, this.id);
+  onUnitStatusChange = () => this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.HYDROGEN_STORAGE_UNITS] });
 }

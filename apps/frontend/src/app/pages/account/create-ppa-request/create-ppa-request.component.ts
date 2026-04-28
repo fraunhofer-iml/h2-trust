@@ -20,7 +20,7 @@ import { toast } from 'ngx-sonner';
 import { PpaRequestCreateDto } from '@h2-trust/contracts/dtos';
 import { PowerProductionType, PpaRequestRole } from '@h2-trust/domain';
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
-import { QUERY_KEY_PREFIX } from '../../../shared/queries/shared-query-keys';
+import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { PowerPurchaseAgreementService } from '../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
 
@@ -73,7 +73,7 @@ export class CreatePpaRequestComponent {
     mutationFn: (dto: PpaRequestCreateDto) => this.ppaService.createPpaRequest(dto),
     onError: () => toast.error('Failed to create PPA Request'),
     onSuccess: () => {
-      this.queryClient.invalidateQueries({ queryKey: [...QUERY_KEY_PREFIX.PPA_REQUESTS, PpaRequestRole.SENDER] });
+      this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.PPA_REQUESTS, PpaRequestRole.SENDER] });
       toast.success('Successfully created PPA Request');
     },
   }));

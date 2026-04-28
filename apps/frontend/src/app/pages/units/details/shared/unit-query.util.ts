@@ -7,11 +7,12 @@
  */
 
 import { Signal } from '@angular/core';
-import { injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { injectQuery } from '@tanstack/angular-query-experimental';
+import { QueryKeyPrefix } from 'apps/frontend/src/app/shared/queries/shared-query-keys';
 import { ERROR_MESSAGES } from '../../../../shared/constants/error.messages';
 
 export function injectUnitQuery<T>(
-  prefix: string,
+  prefix: QueryKeyPrefix,
   id: Signal<string | undefined>,
   fetchFn: (id: string) => Promise<T>,
 ) {
@@ -28,8 +29,4 @@ export function injectUnitQuery<T>(
     },
     enabled: !!id(),
   }));
-}
-
-export function useQueryInvalidation(queryClient: QueryClient, prefix: string) {
-  return () => queryClient.invalidateQueries({ queryKey: [prefix] });
 }
