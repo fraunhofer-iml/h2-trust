@@ -116,7 +116,7 @@
     "keycloak-angular": "^21.0.0",
     "keycloak-connect": "^26.1.1",
     "keycloak-js": "^26.2.3",
-    "material-symbols": "^0.44.2",
+    "material-symbols": "^0.44.4",
     "multer": "^2.1.1",
     "nest-keycloak-connect": "^1.10.1",
     "ngx-echarts": "^21.0.0",
