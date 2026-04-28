@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Controller, NotImplementedException } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   CsvDocumentEntity,
@@ -19,6 +19,7 @@ import {
 import {
   CreateHydrogenProductionStatisticsPayload,
   CreateProductionsPayload,
+  FinalizeProductionsPayload,
   ReadByIdPayload,
   ReadStagedProductionsPayload,
   StageProductionsPayload,
@@ -54,9 +55,8 @@ export class ProductionController {
   }
 
   @MessagePattern(ProductionMessagePatterns.FINALIZE)
-  async finalizeProductions(): Promise<ProcessStepEntity[]> {
-    //TODO-LG: Implement finalize functionality (DUHGW-425)
-    throw new NotImplementedException();
+  async createProductionsFromStaging(payload: FinalizeProductionsPayload): Promise<ProcessStepEntity[]> {
+    return this.productionStagingService.createProductionsFromStaging(payload);
   }
 
   @MessagePattern(ProductionMessagePatterns.READ_CSV_DOCUMENTS_BY_COMPANY)

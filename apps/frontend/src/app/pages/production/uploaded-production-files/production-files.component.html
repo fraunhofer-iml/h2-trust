@@ -125,20 +125,20 @@
             <div
               [matTooltip]="resultStore.getVerificationResult(file.id)?.message"
               [matTooltipPosition]="'above'"
-              class="border/30 flex w-fit flex-row items-center gap-2 rounded-md px-2 py-1 text-sm"
+              class="flex w-fit flex-row items-center gap-2 rounded-md border border-neutral-300 px-2 text-sm text-neutral-600"
               [ngClass]="{
                 'border-red-600 bg-red-100 text-red-700': getStatus(file.id) === CsvDocumentIntegrityStatus.MISMATCH,
                 'border-yellow-600 bg-yellow-100 text-yellow-700':
                   getStatus(file.id) === CsvDocumentIntegrityStatus.FAILED,
-                'border-secondary-500 bg-secondary-100 text-secondary-700':
+                'border-secondary-500/30 bg-secondary-100 text-secondary-700':
                   getStatus(file.id) === CsvDocumentIntegrityStatus.VERIFIED,
               }"
             >
               @if (file.verifiable) {
-                <span class="material-symbols-outlined text-sm"> {{ getIcon(getStatus(file.id)) }} </span
+                <span class="material-symbols-outlined text-lg!"> {{ getIcon(getStatus(file.id)) }} </span
                 >{{ getStatus(file.id) ?? 'open' | titlecase }}
               } @else {
-                <span class="material-symbols-outlined text-sm"> block </span>Not verifiable
+                <span class="material-symbols-outlined text-lg!"> block </span>Not verifiable
               }
             </div>
           </td>
