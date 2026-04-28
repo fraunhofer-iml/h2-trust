@@ -6,17 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  Body,
-  Controller,
-  Get,
-  NotImplementedException,
-  Param,
-  Post,
-  Query,
-  UploadedFiles,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { AuthenticatedUser } from 'nest-keycloak-connect';
@@ -212,8 +202,10 @@ export class ProductionController {
     description: 'Create production process steps by finalizing the staged productions.',
   })
   @ApiBearerAuth()
-  createProductionsFromStaging(@Body() _dto: StagingSubmissionDto, @AuthenticatedUser() _user: AuthenticatedKCUser) {
-    //TODO-LG: Implement finalize functionality (DUHGW-425)
-    throw new NotImplementedException();
+  createProductionsFromStaging(
+    @Body() dto: StagingSubmissionDto,
+    @AuthenticatedUser() user: AuthenticatedKCUser,
+  ): Promise<ProductionOverviewDto[]> {
+    return this.service.createProductionsFromStaging(dto, user.sub);
   }
 }
