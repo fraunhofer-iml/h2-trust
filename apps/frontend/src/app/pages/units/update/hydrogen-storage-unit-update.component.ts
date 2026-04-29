@@ -28,7 +28,7 @@ export class HydrogenStorageUnitUpdateComponent extends AbstractUnitUpdateCompon
   HydrogenStorageUnitDto,
   HydrogenStorageUnitInputDto
 > {
-  id = input<string>();
+  override id = input<string>();
 
   protected override queryPrefix = QueryKeyPrefix.HYDROGEN_STORAGE_UNITS;
   hydrogenStorageUnitForm: FormGroup<HydrogenStorageFormGroup> = newH2StorageForm();

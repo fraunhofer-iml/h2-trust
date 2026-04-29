@@ -34,31 +34,30 @@ export class HydrogenProductionUnitUpdateComponent extends AbstractUnitUpdateCom
   HydrogenProductionUnitDto,
   HydrogenProductionUnitInputDto
 > {
-  id = input<string>();
+  override id = input<string>();
 
-  queryPrefix = QueryKeyPrefix.HYDROGEN_PRODUCTION_UNITS;
+  protected override readonly queryPrefix = QueryKeyPrefix.HYDROGEN_PRODUCTION_UNITS;
 
   hydrogenProductionForm: FormGroup<HydrogenProductionFormGroup> = newH2ProductionForm();
 
-  fetchUnit(id: string): Promise<HydrogenProductionUnitDto> {
-    return this.unitsService.getHydrogenProductionUnit(id);
-  }
-  updateUnit(id: string, dto: HydrogenProductionUnitInputDto): Promise<HydrogenProductionUnitDto> {
-    return this.unitsService.updateHydrogenProductionUnit(id, dto);
-  }
+  override fetchUnit = (id: string): Promise<HydrogenProductionUnitDto> =>
+    this.unitsService.getHydrogenProductionUnit(id);
 
-  buildDto() {
+  override updateUnit = (id: string, dto: HydrogenProductionUnitInputDto): Promise<HydrogenProductionUnitDto> =>
+    this.unitsService.updateHydrogenProductionUnit(id, dto);
+
+  override buildDto() {
     return {
       ...this.unitForm.value,
       ...this.hydrogenProductionForm.value,
     } as HydrogenProductionUnitInputDto;
   }
 
-  protected navigateToDetailsView() {
+  override navigateToDetailsView() {
     this.router.navigateByUrl(`units/hydrogen-production/${this.id()}`);
   }
 
-  protected setFormData(unit: HydrogenProductionUnitDto) {
+  protected override setFormData(unit: HydrogenProductionUnitDto) {
     this.unitForm.patchValue({ ...unit, owner: unit.owner.id, operator: unit.operator.id });
     this.hydrogenProductionForm.patchValue({
       ...unit,

@@ -35,9 +35,9 @@ export class PowerProductionUnitUpdateComponent extends AbstractUnitUpdateCompon
   PowerProductionUnitDto,
   PowerProductionUnitInputDto
 > {
-  id = input<string>();
+  override id = input<string>();
 
-  queryPrefix = QueryKeyPrefix.POWER_PRODUCTION_UNITS;
+  protected override readonly queryPrefix = QueryKeyPrefix.POWER_PRODUCTION_UNITS;
   powerProductionForm: FormGroup<PowerProductionFormGroup> = newPowerProductionForm();
 
   override fetchUnit(id: string): Promise<PowerProductionUnitDto> {
@@ -48,14 +48,14 @@ export class PowerProductionUnitUpdateComponent extends AbstractUnitUpdateCompon
     return this.unitsService.updatePowerProductionUnit(id, dto);
   }
 
-  buildDto(): PowerProductionUnitInputDto {
+  override buildDto(): PowerProductionUnitInputDto {
     return {
       ...this.unitForm.value,
       ...this.powerProductionForm.value,
     } as PowerProductionUnitInputDto;
   }
 
-  protected navigateToDetailsView() {
+  protected override navigateToDetailsView() {
     this.router.navigateByUrl(`units/power-production/${this.id()}`);
   }
 
