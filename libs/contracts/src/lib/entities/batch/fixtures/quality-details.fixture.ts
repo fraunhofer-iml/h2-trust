@@ -10,22 +10,10 @@ import { QualityDetailsEntity } from '@h2-trust/contracts/entities';
 import { PowerType, RfnboType } from '@h2-trust/domain';
 
 export const QualityDetailsEntityFixture = {
-  createGreen: (overrides: Partial<QualityDetailsEntity> = {}): QualityDetailsEntity =>
+  create: (overrides: Partial<QualityDetailsEntity> = {}): QualityDetailsEntity =>
     new QualityDetailsEntity(
       overrides.id ?? 'quality-details-1',
       overrides.rfnboType ?? RfnboType.RFNBO_READY,
       overrides.powerType ?? PowerType.RENEWABLE,
-    ),
-  createYellow: (overrides: Partial<QualityDetailsEntity> = {}): QualityDetailsEntity =>
-    new QualityDetailsEntity(
-      overrides.id ?? 'quality-details-1',
-      overrides.rfnboType ?? RfnboType.NON_CERTIFIABLE,
-      overrides.powerType ?? PowerType.NON_RENEWABLE,
-    ),
-  createMix: (overrides: Partial<QualityDetailsEntity> = {}): QualityDetailsEntity =>
-    new QualityDetailsEntity(
-      overrides.id ?? 'quality-details-1',
-      overrides.rfnboType ?? RfnboType.NON_CERTIFIABLE,
-      overrides.powerType ?? PowerType.NON_RENEWABLE,
     ),
 } as const;

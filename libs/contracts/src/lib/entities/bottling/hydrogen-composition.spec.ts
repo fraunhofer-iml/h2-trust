@@ -7,47 +7,47 @@
  */
 
 import { HydrogenComponentEntity } from '@h2-trust/contracts/entities';
-import { HydrogenColor, RfnboType } from '@h2-trust/domain';
-import { BrokerException } from '../../../../../messaging/src/lib/broker/broker-exception';
 import { HydrogenCompositionUtil } from './hydrogen-composition.util';
+import { RfnboType } from '@h2-trust/domain';
+import { BrokerException } from '@h2-trust/messaging';
 
 describe('HydrogenCompositionUtil', () => {
   describe('computeHydrogenComposition', () => {
-    it('should calculate hydrogen composition with one color', () => {
+    it('should calculate hydrogen composition', () => {
       const bottleAmount = 1;
-      const components = [new HydrogenComponentEntity(null, HydrogenColor.GREEN, 1, RfnboType.RFNBO_READY)];
+      const components = [new HydrogenComponentEntity(null, 1, RfnboType.RFNBO_READY)];
 
       const actualResponse = HydrogenCompositionUtil.computeHydrogenComposition(components, bottleAmount);
       expect(actualResponse).toEqual(components);
     });
 
-    it('should calculate hydrogen composition with two different colors', () => {
+    it('should calculate hydrogen composition with two components', () => {
       const bottleAmount = 1;
       const components = [
-        new HydrogenComponentEntity(null, HydrogenColor.GREEN, 2, RfnboType.RFNBO_READY),
-        new HydrogenComponentEntity(null, HydrogenColor.YELLOW, 3, RfnboType.NOT_SPECIFIED),
+        new HydrogenComponentEntity(null, 2, RfnboType.RFNBO_READY),
+        new HydrogenComponentEntity(null, 3, RfnboType.NOT_SPECIFIED),
       ];
 
       const expectedResponse = [
-        new HydrogenComponentEntity(null, HydrogenColor.GREEN, 0.4, RfnboType.RFNBO_READY),
-        new HydrogenComponentEntity(null, HydrogenColor.YELLOW, 0.6, RfnboType.NOT_SPECIFIED),
+        new HydrogenComponentEntity(null, 0.4, RfnboType.RFNBO_READY),
+        new HydrogenComponentEntity(null, 0.6, RfnboType.NOT_SPECIFIED),
       ];
 
       const actualResponse = HydrogenCompositionUtil.computeHydrogenComposition(components, bottleAmount);
       expect(actualResponse).toEqual(expectedResponse);
     });
 
-    it('should calculate hydrogen composition with a duplicate color', () => {
+    it('should calculate hydrogen composition with duplicate rfnbo type', () => {
       const bottleAmount = 1;
       const components = [
-        new HydrogenComponentEntity(null, HydrogenColor.GREEN, 2, RfnboType.RFNBO_READY),
-        new HydrogenComponentEntity(null, HydrogenColor.YELLOW, 4, RfnboType.NOT_SPECIFIED),
-        new HydrogenComponentEntity(null, HydrogenColor.GREEN, 2, RfnboType.RFNBO_READY),
+        new HydrogenComponentEntity(null, 2, RfnboType.RFNBO_READY),
+        new HydrogenComponentEntity(null, 4, RfnboType.NOT_SPECIFIED),
+        new HydrogenComponentEntity(null, 2, RfnboType.RFNBO_READY),
       ];
 
       const expectedResponse = [
-        new HydrogenComponentEntity(null, HydrogenColor.GREEN, 0.5, RfnboType.RFNBO_READY),
-        new HydrogenComponentEntity(null, HydrogenColor.YELLOW, 0.5, RfnboType.NOT_SPECIFIED),
+        new HydrogenComponentEntity(null, 0.5, RfnboType.RFNBO_READY),
+        new HydrogenComponentEntity(null, 0.5, RfnboType.NOT_SPECIFIED),
       ];
 
       const actualResponse = HydrogenCompositionUtil.computeHydrogenComposition(components, bottleAmount);
@@ -56,7 +56,7 @@ describe('HydrogenCompositionUtil', () => {
 
     it('should throw an error if totalPredecessorAmount is zero', () => {
       const bottleAmount = 30;
-      const components = [new HydrogenComponentEntity(null, HydrogenColor.GREEN, 0, RfnboType.RFNBO_READY)];
+      const components = [new HydrogenComponentEntity(null, 0, RfnboType.RFNBO_READY)];
 
       expect(() => HydrogenCompositionUtil.computeHydrogenComposition(components, bottleAmount)).toThrow(
         BrokerException,

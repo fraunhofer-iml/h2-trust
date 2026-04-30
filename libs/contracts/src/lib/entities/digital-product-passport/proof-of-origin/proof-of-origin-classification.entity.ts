@@ -40,7 +40,7 @@ export class ProofOfOriginClassificationEntity {
 
 /**
  * A leaf classification that contains batches but no further sub-classifications.
- * Used for grouping batches by a specific criterion (e.g., energy source, hydrogen color).
+ * Used for grouping batches by a specific criterion (e.g. energy source).
  */
 export class ProofOfOriginSubClassificationEntity {
   name: string;

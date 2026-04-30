@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType, EnergySource, HydrogenColor, MeasurementUnit } from '@h2-trust/domain';
+import { BatchType, EnergySource, MeasurementUnit } from '@h2-trust/domain';
 import { ClassificationDto } from '../classification.dto';
 import { hydrogenBatchesMock } from './hydrogen-batches.mock';
 import { PowerBatchesMock } from './power-batches.mock';
@@ -44,13 +44,13 @@ export const powerSupplyClassificationsMock: ClassificationDto[] = [
   },
 ];
 
-export const hydrogenColorClassificationsMock: ClassificationDto[] = [
+export const hydrogenProductionClassificationsMock: ClassificationDto[] = [
   {
     amount: 400,
     batches: [hydrogenBatchesMock[0], hydrogenBatchesMock[1]],
     classifications: [],
     emissionOfProcessStep: 260,
-    name: HydrogenColor.GREEN,
+    name: "test1",
     classificationType: BatchType.HYDROGEN,
     unit: MeasurementUnit.KG,
   },
@@ -59,7 +59,7 @@ export const hydrogenColorClassificationsMock: ClassificationDto[] = [
     batches: [hydrogenBatchesMock[2]],
     classifications: [],
     emissionOfProcessStep: 260,
-    name: HydrogenColor.YELLOW,
+    name: "test2",
     classificationType: BatchType.HYDROGEN,
     unit: MeasurementUnit.KG,
   },

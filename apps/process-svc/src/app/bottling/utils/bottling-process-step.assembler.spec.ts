@@ -9,7 +9,7 @@
 import { BatchEntity } from '@h2-trust/contracts/entities';
 import { BatchEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { CreateHydrogenBottlingPayload } from '@h2-trust/contracts/payloads';
-import { HydrogenColor, ProcessType, RfnboType } from '@h2-trust/domain';
+import { ProcessType, RfnboType } from '@h2-trust/domain';
 import { BottlingProcessStepAssembler } from './bottling-process-step.assembler';
 
 describe('BottlingProcessStepAssembler', () => {
@@ -22,11 +22,10 @@ describe('BottlingProcessStepAssembler', () => {
         new Date('2024-01-15T10:00:00Z'),
         'recorder-1',
         'storage-unit-1',
-        HydrogenColor.GREEN,
         RfnboType.RFNBO_READY,
       );
       const givenBatchesForBottle = [
-        BatchEntityFixture.createHydrogenBatch({ qualityDetails: QualityDetailsEntityFixture.createGreen() }),
+        BatchEntityFixture.createHydrogenBatch({ qualityDetails: QualityDetailsEntityFixture.create() }),
       ];
 
       // Act
@@ -45,7 +44,7 @@ describe('BottlingProcessStepAssembler', () => {
       expect(actualResult.executedBy.id).toBe(givenPayload.hydrogenStorageUnitId);
     });
 
-    it(`determines ${HydrogenColor.GREEN} color when all predecessors are ${HydrogenColor.GREEN}`, () => {
+    it(`determines all predecessors`, () => {
       // Arrange
       const givenPayload = new CreateHydrogenBottlingPayload(
         200,
@@ -53,17 +52,16 @@ describe('BottlingProcessStepAssembler', () => {
         new Date('2024-01-15T10:00:00Z'),
         'recorder-1',
         'storage-unit-1',
-        HydrogenColor.GREEN,
         RfnboType.RFNBO_READY,
       );
       const givenBatchesForBottle = [
         BatchEntityFixture.createHydrogenBatch({
           id: 'batch-1',
-          qualityDetails: QualityDetailsEntityFixture.createGreen(),
+          qualityDetails: QualityDetailsEntityFixture.create(),
         }),
         BatchEntityFixture.createHydrogenBatch({
           id: 'batch-2',
-          qualityDetails: QualityDetailsEntityFixture.createGreen(),
+          qualityDetails: QualityDetailsEntityFixture.create(),
         }),
       ];
 
@@ -76,63 +74,6 @@ describe('BottlingProcessStepAssembler', () => {
       expect(actualResult.batch.predecessors[1].id).toBe('batch-2');
     });
 
-    it(`determines ${HydrogenColor.YELLOW} color when all predecessors are ${HydrogenColor.YELLOW}`, () => {
-      // Arrange
-      const givenPayload = new CreateHydrogenBottlingPayload(
-        100,
-        'owner-1',
-        new Date('2024-01-15T10:00:00Z'),
-        'recorder-1',
-        'storage-unit-1',
-        HydrogenColor.YELLOW,
-        RfnboType.NON_CERTIFIABLE,
-      );
-      const givenBatchesForBottle = [
-        BatchEntityFixture.createHydrogenBatch({
-          id: 'batch-1',
-          qualityDetails: QualityDetailsEntityFixture.createYellow(),
-        }),
-        BatchEntityFixture.createHydrogenBatch({
-          id: 'batch-2',
-          qualityDetails: QualityDetailsEntityFixture.createYellow(),
-        }),
-      ];
-
-      // Act
-      const actualResult = BottlingProcessStepAssembler.assemble(givenPayload, givenBatchesForBottle);
-
-      // Assert
-      expect(actualResult.batch.qualityDetails.color).toBe(HydrogenColor.MIX);
-    });
-    it('determines MIX color when predecessors have different colors', () => {
-      // Arrange
-      const givenPayload = new CreateHydrogenBottlingPayload(
-        100,
-        'owner-1',
-        new Date('2024-01-15T10:00:00Z'),
-        'recorder-1',
-        'storage-unit-1',
-        HydrogenColor.GREEN,
-        RfnboType.RFNBO_READY,
-      );
-      const givenBatchesForBottle = [
-        BatchEntityFixture.createHydrogenBatch({
-          id: 'batch-1',
-          qualityDetails: QualityDetailsEntityFixture.createGreen(),
-        }),
-        BatchEntityFixture.createHydrogenBatch({
-          id: 'batch-2',
-          qualityDetails: QualityDetailsEntityFixture.createYellow(),
-        }),
-      ];
-
-      // Act
-      const actualResult = BottlingProcessStepAssembler.assemble(givenPayload, givenBatchesForBottle);
-
-      // Assert
-      expect(actualResult.batch.qualityDetails.color).toBe(HydrogenColor.MIX);
-    });
-
     it('throws exception when no predecessor batches provided', () => {
       // Arrange
       const givenPayload = new CreateHydrogenBottlingPayload(
@@ -141,7 +82,6 @@ describe('BottlingProcessStepAssembler', () => {
         new Date('2024-01-15T10:00:00Z'),
         'recorder-1',
         'storage-unit-1',
-        HydrogenColor.GREEN,
         RfnboType.RFNBO_READY,
       );
       const givenBatchesForBottle: BatchEntity[] = [];

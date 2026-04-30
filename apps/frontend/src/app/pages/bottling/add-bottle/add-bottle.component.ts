@@ -128,7 +128,6 @@ export class AddBottleComponent {
     data.append('filledAt', this.createTimestamp().toISOString());
     data.append('recordedBy', '');
     data.append('hydrogenStorageUnit', this.bottleFormGroup.value.storageUnit?.id ?? '');
-    data.append('color', 'MIX');
     data.append('rfnboType', this.bottleFormGroup.value.type ?? '');
     data.append('transportMode', this.bottleFormGroup.value.transportMode ?? '');
     data.append('fuelType', this.bottleFormGroup.value.fuelType ?? '');

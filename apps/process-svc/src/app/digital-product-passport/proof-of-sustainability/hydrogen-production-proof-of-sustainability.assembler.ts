@@ -11,7 +11,7 @@ import {
   ProofOfSustainabilityEmissionEntity,
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
-import { CalculationTopic, EmissionStringConstants, HydrogenColor, MeasurementUnit } from '@h2-trust/domain';
+import { CalculationTopic, EmissionStringConstants, MeasurementUnit } from '@h2-trust/domain';
 import { computeHydrogenStorageEmissionCalculations } from './hydrogen-storage-proof-of-sustainability.calculator';
 import { ProofOfSustainabilityAssembler } from './proof-of-sustainability-assembler.interface';
 
@@ -36,7 +36,7 @@ export function assembleHydrogenProductionEmissions(
     provenance
       .getAllHydrogenLeafProductions()
       .reduce((map, _, index) => {
-        const color = HydrogenColor.MIX; // TODO-MP: what should we do here instead?
+        const color = 'MIX'; // TODO-MP: what should we do here instead?
         return map.set(color, (map.get(color) ?? 0) + hydrogenStorageEmissionCalculations[index].result);
       }, new Map<string, number>())
       .entries(),
