@@ -78,7 +78,6 @@ describe('BottlingController', () => {
       filledAt: new Date(givenDto.filledAt),
       recordedById: AuthenticatedUserMock.sub,
       hydrogenStorageUnitId: givenDto.hydrogenStorageUnit,
-      color: givenDto.color,
       files: [] as Express.Multer.File[],
       rfnboType: RfnboType.RFNBO_READY,
     };

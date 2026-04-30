@@ -16,7 +16,6 @@ export * from './energy-source.enum';
 export * from './file-upload-keys.enum';
 export * from './fuel-type.enum';
 export * from './grid-level.enum';
-export * from './hydrogen-color.enum';
 export * from './hydrogen-production-method.enum';
 export * from './hydrogen-production-technology.enum';
 export * from './hydrogen-storage-type.enum';

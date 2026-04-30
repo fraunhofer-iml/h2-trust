@@ -71,7 +71,6 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
       filling:
         unit.filling?.map((filling) => ({
           id: '',
-          color: filling.color,
           amount: filling.amount,
         })) ?? [],
     };
