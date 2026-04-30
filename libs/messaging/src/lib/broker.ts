@@ -31,7 +31,7 @@ export class Broker {
           urls: [amqpUri],
           queue,
           queueOptions: {
-            durable: false,
+            durable: true,
           },
         },
       },
