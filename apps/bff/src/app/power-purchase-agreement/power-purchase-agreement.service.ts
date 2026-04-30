@@ -28,7 +28,6 @@ export class PowerPurchaseAgreementService {
     const powerPurchaseAgreements = await firstValueFrom(
       this.generalService.send(PowerPurchaseAgreementPatterns.READ, payload),
     );
-    console.log(powerPurchaseAgreements);
     return powerPurchaseAgreements.map(PpaDto.fromEntity);
   }
 
