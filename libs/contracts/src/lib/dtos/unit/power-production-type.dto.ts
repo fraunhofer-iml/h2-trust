@@ -6,16 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EnergySource, HydrogenColor, PowerProductionType } from '@h2-trust/domain';
+import { EnergySource, PowerProductionType } from '@h2-trust/domain';
 
 export class PowerProductionTypeDto {
   name: PowerProductionType;
   energySource: EnergySource;
-  hydrogenColor: HydrogenColor;
 
-  constructor(name: PowerProductionType, energySource: EnergySource, hydrogenColor: HydrogenColor) {
+  constructor(name: PowerProductionType, energySource: EnergySource) {
     this.name = name;
     this.energySource = energySource;
-    this.hydrogenColor = hydrogenColor;
   }
 }

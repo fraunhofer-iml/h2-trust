@@ -100,7 +100,6 @@ export class ProductionAssembler {
         activity: true,
         type: BatchType.HYDROGEN,
         owner: entity.ownerIdOfHydrogenProductionUnit,
-        quality: entity.hydrogenColor,
         hydrogenStorageUnitId: entity.hydrogenStorageUnitId,
         powerType: (powerProductions[0]?.batch?.qualityDetails?.powerType as PowerType) ?? PowerType.NOT_SPECIFIED,
       },

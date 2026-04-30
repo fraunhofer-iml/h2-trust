@@ -149,11 +149,10 @@ model PowerProductionType {
   updatedAt DateTime @updatedAt
 
   energySource  String
-  hydrogenColor String
 
   powerProductionUnits PowerProductionUnit[]
 
-  @@unique([name, energySource, hydrogenColor])
+  @@unique([name, energySource])
 }
 
 model PowerProductionUnit {
