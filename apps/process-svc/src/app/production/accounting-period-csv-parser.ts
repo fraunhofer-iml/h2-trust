@@ -10,7 +10,6 @@ import { HttpStatus, Logger } from '@nestjs/common';
 import { parse } from 'csv-parse';
 import { StagedProductionAccountingPeriod } from '@h2-trust/contracts/entities';
 import { BrokerException } from '@h2-trust/messaging';
-import { DateTimeUtil } from '@h2-trust/utils';
 
 export class AccountingPeriodCsvParser {
   private static readonly logger: Logger = new Logger(AccountingPeriodCsvParser.name);
@@ -41,13 +40,13 @@ export class AccountingPeriodCsvParser {
           if (AccountingPeriodCsvParser.dateTimeRegex.test(value)) {
             const [datePart, timePart] = value.split(/\s+/);
             const [day, month, year] = datePart.split('.').map(Number);
-            const [hours, minutes, seconds = 0] = timePart.split(':').map(Number);
-            return DateTimeUtil.toGermanDate(new Date(year, month - 1, day, hours, minutes, seconds));
+            const [hours, minutes] = timePart.split(':').map(Number);
+            return new Date(year, month - 1, day, hours, minutes);
           } else if (!isNaN(Date.parse(value))) {
-            date = DateTimeUtil.toGermanDate(new Date(value));
+            date = new Date(value);
           } else if (!isNaN(Number(value))) {
             const num = Number(value);
-            date = DateTimeUtil.toGermanDate(new Date((num - 25569) * 86400 * 1000));
+            date = new Date((num - 25569) * 86400 * 1000);
           }
           if (!date || isNaN(date.getTime())) {
             invalid++;
