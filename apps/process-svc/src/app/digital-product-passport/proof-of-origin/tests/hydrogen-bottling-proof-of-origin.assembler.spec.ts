@@ -19,7 +19,7 @@ import {
   ProductionChainEntityFixture,
   QualityDetailsEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
-import { HydrogenColor, ProcessType, ProofOfOrigin } from '@h2-trust/domain';
+import { ProcessType, ProofOfOrigin } from '@h2-trust/domain';
 import { assembleHydrogenBottlingSection } from '../hydrogen-bottling-proof-of-origin.assembler';
 
 describe('HydrogenBottlingProofOfOriginAssembler', () => {
@@ -47,7 +47,6 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
       expect(batch.amount).toBe(givenHydrogenBottling.batch.amount);
       expect(batch.batchType).toBe(givenHydrogenBottling.batch.type);
       expect(batch.unitId).toBe(givenHydrogenBottling.executedBy.id);
-      expect(batch.color).toBe(givenHydrogenBottling.batch.qualityDetails.color);
       expect(batch.processStep).toBe(givenHydrogenBottling.type);
       expect(batch.accountingPeriodEnd).toBe(givenHydrogenBottling.endedAt);
     });
@@ -61,7 +60,7 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
           predecessors: [
             BatchEntityFixture.createHydrogenBatch({
               amount: 100,
-              qualityDetails: QualityDetailsEntityFixture.createGreen(),
+              qualityDetails: QualityDetailsEntityFixture.create(),
             }),
           ],
         }),
@@ -70,10 +69,8 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
       const givenProvenance = new ProvenanceEntity(givenProcessStep, [givenProductionChain], givenProcessStep);
 
       const actualResult = assembleHydrogenBottlingSection(givenProvenance);
-      const hydrogenComponentsResult = actualResult[0].batches[0] as ProofOfOriginHydrogenBatchEntity;
 
       expect(actualResult).toHaveLength(1);
-      expect(hydrogenComponentsResult.color).toBe(HydrogenColor.GREEN);
     });
 
     it('assembles amount from one predecessor', () => {
@@ -83,7 +80,7 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
           predecessors: [
             BatchEntityFixture.createHydrogenBatch({
               amount: 100,
-              qualityDetails: QualityDetailsEntityFixture.createGreen(),
+              qualityDetails: QualityDetailsEntityFixture.create(),
             }),
           ],
         }),
@@ -96,22 +93,21 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
       const hydrogenComponentsResult = actualResult[0].batches[0] as ProofOfOriginHydrogenBatchEntity;
 
       expect(actualResult).toHaveLength(1);
-      expect(hydrogenComponentsResult.color).toBe(HydrogenColor.GREEN);
       expect(hydrogenComponentsResult.amount).toBe(100);
     });
 
-    it('assembles amount from two predecessors with same color', () => {
+    it('assembles amount from two predecessors', () => {
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling({
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
           predecessors: [
             BatchEntityFixture.createHydrogenBatch({
               amount: 50,
-              qualityDetails: QualityDetailsEntityFixture.createGreen(),
+              qualityDetails: QualityDetailsEntityFixture.create(),
             }),
             BatchEntityFixture.createHydrogenBatch({
               amount: 50,
-              qualityDetails: QualityDetailsEntityFixture.createGreen(),
+              qualityDetails: QualityDetailsEntityFixture.create(),
             }),
           ],
         }),
@@ -124,35 +120,7 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
       const hydrogenComponentsResult = actualResult[0].batches[0] as ProofOfOriginHydrogenBatchEntity;
 
       expect(actualResult).toHaveLength(1);
-      expect(hydrogenComponentsResult.color).toBe(HydrogenColor.GREEN);
       expect(hydrogenComponentsResult.amount).toBe(100);
-    });
-
-    it('assembles amount from two predecessors with different colors', () => {
-      const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling({
-        batch: BatchEntityFixture.createHydrogenBatch({
-          amount: 100,
-          predecessors: [
-            BatchEntityFixture.createHydrogenBatch({
-              amount: 60,
-              qualityDetails: QualityDetailsEntityFixture.createGreen(),
-            }),
-            BatchEntityFixture.createHydrogenBatch({
-              amount: 40,
-              qualityDetails: QualityDetailsEntityFixture.createYellow(),
-            }),
-          ],
-        }),
-      });
-
-      const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
-      givenProductionChain.hydrogenLeafProduction = givenProcessStep;
-      givenProductionChain.hydrogenRootProduction = givenProcessStep;
-      const givenProvenance = new ProvenanceEntity(givenProcessStep, [givenProductionChain], givenProcessStep);
-
-      const actualResult = assembleHydrogenBottlingSection(givenProvenance);
-
-      expect(actualResult).toHaveLength(1);
     });
 
     it('returns [] when process step is undefined', () => {

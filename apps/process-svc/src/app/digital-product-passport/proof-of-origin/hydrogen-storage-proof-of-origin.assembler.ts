@@ -34,14 +34,12 @@ function assembleHydrogenStorageBatch(
     hydrogenComposition: [
       {
         processId: null,
-        color: hydrogenStorage.batch?.qualityDetails?.color,
         amount: hydrogenStorage.batch.amount,
         rfnboType: hydrogenStorage.batch?.qualityDetails?.rfnboType,
       },
     ],
     producer: hydrogenStorage.batch.owner?.name,
     unitId: hydrogenStorage.executedBy.id,
-    color: hydrogenStorage.batch?.qualityDetails?.color,
     rfnboType: hydrogenStorage.batch?.qualityDetails?.rfnboType,
     processStep: hydrogenStorage.type,
     accountingPeriodEnd: hydrogenStorage.endedAt,

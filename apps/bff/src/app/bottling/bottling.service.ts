@@ -39,7 +39,6 @@ export class BottlingService {
       new Date(dto.filledAt),
       userId,
       dto.hydrogenStorageUnit,
-      dto.color,
       dto.rfnboType,
       files,
     );

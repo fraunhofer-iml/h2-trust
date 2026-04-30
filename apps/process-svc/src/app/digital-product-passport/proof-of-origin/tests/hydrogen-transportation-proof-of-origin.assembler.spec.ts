@@ -50,7 +50,6 @@ describe('HydrogenTransportationProofOfOriginAssembler', () => {
       expect(batch.createdAt).toEqual(ProcessStepEntityFixture.createHydrogenTransportation().startedAt);
       expect(batch.amount).toBe(ProcessStepEntityFixture.createHydrogenTransportation().batch.amount);
       expect(batch.unitId).toBe(ProcessStepEntityFixture.createHydrogenTransportation().executedBy.id);
-      expect(batch.color).toBe(ProcessStepEntityFixture.createHydrogenTransportation().batch.qualityDetails.color);
       expect(batch.processStep).toBe(ProcessStepEntityFixture.createHydrogenTransportation().type);
       expect(batch.accountingPeriodEnd).toEqual(ProcessStepEntityFixture.createHydrogenTransportation().endedAt);
     });
@@ -87,7 +86,6 @@ describe('HydrogenTransportationProofOfOriginAssembler', () => {
       expect(batch.createdAt).toEqual(ProcessStepEntityFixture.createHydrogenTransportation().startedAt);
       expect(batch.amount).toBe(ProcessStepEntityFixture.createHydrogenTransportation().batch.amount);
       expect(batch.unitId).toBe(ProcessStepEntityFixture.createHydrogenTransportation().executedBy.id);
-      expect(batch.color).toBe(ProcessStepEntityFixture.createHydrogenTransportation().batch.qualityDetails.color);
       expect(batch.processStep).toBe(ProcessStepEntityFixture.createHydrogenTransportation().type);
       expect(batch.accountingPeriodEnd).toEqual(ProcessStepEntityFixture.createHydrogenTransportation().endedAt);
     });
