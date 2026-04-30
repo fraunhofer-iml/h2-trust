@@ -32,15 +32,7 @@ export function assembleHydrogenProductionEmissions(
 
   const totalEmissions = hydrogenStorageEmissionCalculations.reduce((sum, curr) => sum + curr.result, 0);
 
-  const totalEmissionsGrouped = Array.from(
-    provenance
-      .getAllHydrogenLeafProductions()
-      .reduce((map, _, index) => {
-        const color = 'MIX'; // TODO-MP: what should we do here instead?
-        return map.set(color, (map.get(color) ?? 0) + hydrogenStorageEmissionCalculations[index].result);
-      }, new Map<string, number>())
-      .entries(),
-  ).map(([color, result]) => `${color}: ${result} ${MeasurementUnit.G_CO2}`);
+  const totalEmissionsGrouped = [`${hydrogenStorageEmissionCalculations.at(0)?.name}: ${totalEmissions} ${MeasurementUnit.G_CO2}`];
 
   const totalEmissionsPerKgHydrogen = totalEmissions / hydrogenAmount;
 
