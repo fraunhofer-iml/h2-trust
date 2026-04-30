@@ -14,6 +14,7 @@ import {
   UpdatePowerPurchaseAgreementPayload,
 } from '@h2-trust/contracts/payloads';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
+import { buildPowerPurchaseAgreementCreateData } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 import { powerPurchaseAgreementDeepQueryArgs } from '../query-args/power-purchase-agreement/power-purchase-agreement.deep.query-args';
 
@@ -42,7 +43,7 @@ export class PowerPurchaseAgreementRepository {
   ): Promise<PowerPurchaseAgreementEntity> {
     return this.prismaService.powerPurchaseAgreement
       .create({
-        data: this.buildPowerPurchaseAgreementCreateData(ppa, hydrogenProducerCompanyId),
+        data: buildPowerPurchaseAgreementCreateData(ppa, hydrogenProducerCompanyId),
         ...powerPurchaseAgreementDeepQueryArgs,
       })
       .then((result) => PowerPurchaseAgreementEntity.fromDeepDatabase(result));
@@ -116,33 +117,5 @@ export class PowerPurchaseAgreementRepository {
     }
 
     return base;
-  }
-
-  private buildPowerPurchaseAgreementCreateData(
-    ppa: CreatePowerPurchaseAgreementsPayload,
-    hydrogenProducerCompanyId: string,
-  ) {
-    return {
-      createdAt: new Date(),
-      validTo: ppa.validTo,
-      validFrom: ppa.validFrom,
-      status: PowerPurchaseAgreementStatus.PENDING,
-      suggestedPowerType: {
-        connect: {
-          name: ppa.powerProductionType,
-        },
-      },
-      hydrogenProducer: {
-        connect: {
-          id: hydrogenProducerCompanyId,
-        },
-      },
-      creatingUser: {
-        connect: { id: ppa.userId },
-      },
-      powerProducer: {
-        connect: { id: ppa.companyId },
-      },
-    };
   }
 }

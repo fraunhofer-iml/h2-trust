@@ -9,3 +9,4 @@
 export * from './document.create-input';
 export * from './process-step.create-input';
 export * from './unit.create-input';
+export * from './power-purchase-agreement.create-input';

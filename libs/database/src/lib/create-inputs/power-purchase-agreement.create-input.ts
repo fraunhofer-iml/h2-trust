@@ -6,13 +6,33 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Prisma } from '@prisma/client';
-import { CreatePowerPurchaseAgreementsPayload } from '@h2-trust/amqp';
+import { CreatePowerPurchaseAgreementsPayload } from '@h2-trust/contracts/payloads';
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 
-export function buildPowerPurchaseCreateInput(
-  payload: CreatePowerPurchaseAgreementsPayload,
-): Prisma.PowerPurchaseAgreementCreateInput {
-  return; /* Prisma.validator<Prisma.PowerPurchaseAgreementCreateInput>()({status:PowerPurchaseAgreementStatus.PENDING,hydrogenProducer:payload.
-  }); */
+export function buildPowerPurchaseAgreementCreateData(
+  ppa: CreatePowerPurchaseAgreementsPayload,
+  hydrogenProducerCompanyId: string,
+) {
+  return {
+    createdAt: new Date(),
+    validTo: ppa.validTo,
+    validFrom: ppa.validFrom,
+    status: PowerPurchaseAgreementStatus.PENDING,
+    suggestedPowerType: {
+      connect: {
+        name: ppa.powerProductionType,
+      },
+    },
+    hydrogenProducer: {
+      connect: {
+        id: hydrogenProducerCompanyId,
+      },
+    },
+    creatingUser: {
+      connect: { id: ppa.userId },
+    },
+    powerProducer: {
+      connect: { id: ppa.companyId },
+    },
+  };
 }

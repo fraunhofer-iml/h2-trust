@@ -55,7 +55,6 @@ export class PowerPurchaseAgreementController {
       },
     },
   })
-  //Is this naming up to date?
   getPpasByStatus(
     @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
     @Query('status') powerPurchaseAgreementStatus: PowerPurchaseAgreementStatus,
