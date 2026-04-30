@@ -8,7 +8,7 @@
 
 import { Body, Controller, Get, NotImplementedException, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { AuthenticatedUser } from 'nest-keycloak-connect';
+import { KeycloakUser } from 'nest-keycloak-connect';
 import {
   CompanyDto,
   PowerPurchaseAgreementDto,
@@ -57,7 +57,7 @@ export class PowerPurchaseAgreementController {
     },
   })
   getCompaniesWithPowerPurchaseAgreement(
-    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
     @Query('status') powerPurchaseAgreementStatus: PowerPurchaseAgreementStatus,
   ): Promise<PowerPurchaseAgreementDto[]> {
     return this.powerPurchaseAgreementService.readByUserAndStatus(authenticatedUser.sub, powerPurchaseAgreementStatus);
@@ -85,7 +85,7 @@ export class PowerPurchaseAgreementController {
 
   @Post('requests')
   @ApiOkResponse({ description: 'Returns created Request', type: PpaRequestDto })
-  createPpaRequest(@Body() _dto: PpaRequestCreateDto, @AuthenticatedUser() _user: AuthenticatedKCUser): PpaRequestDto {
+  createPpaRequest(@Body() _dto: PpaRequestCreateDto, @KeycloakUser() _user: AuthenticatedKCUser): PpaRequestDto {
     throw new NotImplementedException();
   }
 
@@ -95,7 +95,7 @@ export class PowerPurchaseAgreementController {
   closePpaRequest(
     @Body() _dto: PpaRequestDto,
     @Param('id') _id: string,
-    @AuthenticatedUser() _user: AuthenticatedKCUser,
+    @KeycloakUser() _user: AuthenticatedKCUser,
   ): PpaRequestDto {
     throw new NotImplementedException();
   }
