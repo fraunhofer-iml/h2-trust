@@ -5,7 +5,10 @@
     Add
   </div>
 
-  <app-type-selection [types]="unitTypes" [typeControl]="selectedType">Unit type</app-type-selection>
+  <div class="flex flex-col gap-2 rounded-lg bg-white p-4">
+    <span>Unit Type</span>
+    <app-type-selection [types]="unitTypes" [typeControl]="selectedType"></app-type-selection>
+  </div>
 
   <app-base-unit-form [unitForm]="unitForm"></app-base-unit-form>
 
