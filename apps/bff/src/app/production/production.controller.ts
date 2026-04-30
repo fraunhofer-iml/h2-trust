@@ -9,7 +9,7 @@
 import { Body, Controller, Get, Param, Post, Query, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { AuthenticatedUser } from 'nest-keycloak-connect';
+import { KeycloakUser } from 'nest-keycloak-connect';
 import {
   AccountingPeriodMatchingResultDto,
   CsvDocumentIntegrityResultDto,
@@ -69,7 +69,7 @@ export class ProductionController {
     example: '2024-09-20T07:55:55.695Z',
   })
   async readHydrogenProductionsByOwner(
-    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
     @Query('pageNumber') pageNumber: number,
     @Query('pageSize') pageSize: number,
     @Query('unitName') unitName: string,
@@ -103,7 +103,7 @@ export class ProductionController {
     required: false,
   })
   assembleHydrogenProductionsStatisticsByOwner(
-    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
     @Query('month') month: Date,
     @Query('unitName') unitName: string,
   ): Promise<ProductionStatisticsDto> {
@@ -116,7 +116,7 @@ export class ProductionController {
     description: "Retrieve all uploaded csv documents for the authenticated user's company.",
   })
   async readCsvDocumentsByCompany(
-    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<ProcessedCsvDto[]> {
     return this.service.readCsvDocumentsByCompany(authenticatedUser.sub);
   }
@@ -159,7 +159,7 @@ export class ProductionController {
     @Query('type') type: CsvContentType,
     @Query('from') from: Date,
     @Query('to') to: Date,
-    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<StagedProductionDto[]> {
     return this.service.readStagedProductionsByCompanyAndType(authenticatedUser.sub, scope, type, from, to);
   }
@@ -192,7 +192,7 @@ export class ProductionController {
     @Body() dto: ProductionCSVUploadDto,
     @UploadedFiles()
     files: Express.Multer.File[] | Express.Multer.File,
-    @AuthenticatedUser() user: AuthenticatedKCUser,
+    @KeycloakUser() user: AuthenticatedKCUser,
   ): Promise<AccountingPeriodMatchingResultDto> {
     return this.service.importCsvFiles(files, dto, user.sub);
   }
@@ -204,7 +204,7 @@ export class ProductionController {
   @ApiBearerAuth()
   createProductionsFromStaging(
     @Body() dto: StagingSubmissionDto,
-    @AuthenticatedUser() user: AuthenticatedKCUser,
+    @KeycloakUser() user: AuthenticatedKCUser,
   ): Promise<ProductionOverviewDto[]> {
     return this.service.createProductionsFromStaging(dto, user.sub);
   }
