@@ -184,7 +184,7 @@ export class AddBottleComponent {
 
   displayComposition(hydrogenComposition: HydrogenComponentDto[]) {
     const sum = hydrogenComposition.reduce((a, b) => a + b.amount, 0);
-    return hydrogenComposition.map((c) => ` (${((c.amount * 100) / sum).toFixed(2)} %)`);
+    return hydrogenComposition.map((c) => ` ${c.rfnboType} (${((c.amount * 100) / sum).toFixed(2)} %)`);
   }
 
   isAmountAvailable(requestedAmount: number | null, hydrogenComposition: HydrogenComponentDto[]) {
