@@ -8,8 +8,8 @@
 
 import { Signal } from '@angular/core';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { QueryKeyPrefix } from 'apps/frontend/src/app/shared/queries/shared-query-keys';
 import { ERROR_MESSAGES } from '../../../../shared/constants/error.messages';
+import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
 
 export function injectUnitQuery<T>(
   prefix: QueryKeyPrefix,
