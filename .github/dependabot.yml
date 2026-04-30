@@ -52,8 +52,6 @@ updates:
         patterns:
           - '@types/*'
     ignore:
-      - dependency-name: '@nestjs/*'
-        versions: ['>= 11.0.0']
       - dependency-name: '@prisma/*'
         versions: ['>= 7.0.0']
       - dependency-name: 'prisma'
