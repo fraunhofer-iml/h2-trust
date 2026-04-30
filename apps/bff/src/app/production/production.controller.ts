@@ -115,9 +115,7 @@ export class ProductionController {
   @ApiOperation({
     description: "Retrieve all uploaded csv documents for the authenticated user's company.",
   })
-  async readCsvDocumentsByCompany(
-    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
-  ): Promise<ProcessedCsvDto[]> {
+  async readCsvDocumentsByCompany(@KeycloakUser() authenticatedUser: AuthenticatedKCUser): Promise<ProcessedCsvDto[]> {
     return this.service.readCsvDocumentsByCompany(authenticatedUser.sub);
   }
 
