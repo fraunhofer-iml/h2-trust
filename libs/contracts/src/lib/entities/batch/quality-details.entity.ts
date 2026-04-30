@@ -25,10 +25,6 @@ export class QualityDetailsEntity {
     assertValidEnum(qualityDetails.rfnboType, RfnboType, 'RfnboType');
     assertValidEnum(qualityDetails.powerType, PowerType, 'PowerType');
 
-    return new QualityDetailsEntity(
-      qualityDetails.id,
-      qualityDetails.rfnboType,
-      qualityDetails.powerType,
-    );
+    return new QualityDetailsEntity(qualityDetails.id, qualityDetails.rfnboType, qualityDetails.powerType);
   }
 }

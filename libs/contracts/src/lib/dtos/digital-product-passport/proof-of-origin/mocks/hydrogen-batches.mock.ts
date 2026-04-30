@@ -6,13 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  BatchType,
-  HydrogenProductionMethod,
-  MeasurementUnit,
-  ProcessType,
-  RfnboType,
-} from '@h2-trust/domain';
+import { BatchType, HydrogenProductionMethod, MeasurementUnit, ProcessType, RfnboType } from '@h2-trust/domain';
 import { CompanyDtoMock } from '../../../company';
 import { HydrogenBatchDto } from '../hydrogen-batch.dto';
 import { EmissionMock } from './emissions.mock';
@@ -25,9 +19,7 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
     createdAt: new Date(),
     accountingPeriodEnd: new Date(),
     emission: EmissionMock,
-    hydrogenComposition: [
-      { processId: null, amount: 300, rfnboType: RfnboType.RFNBO_READY },
-    ],
+    hydrogenComposition: [{ processId: null, amount: 300, rfnboType: RfnboType.RFNBO_READY }],
     processStep: ProcessType.HYDROGEN_PRODUCTION,
     producer: CompanyDtoMock[1].name,
     rfnboType: RfnboType.RFNBO_READY,
@@ -42,9 +34,7 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
     createdAt: new Date(),
     accountingPeriodEnd: new Date(),
     emission: EmissionMock,
-    hydrogenComposition: [
-      { processId: null, amount: 300, rfnboType: RfnboType.RFNBO_READY },
-    ],
+    hydrogenComposition: [{ processId: null, amount: 300, rfnboType: RfnboType.RFNBO_READY }],
     processStep: ProcessType.HYDROGEN_PRODUCTION,
     producer: CompanyDtoMock[1].name,
     rfnboType: RfnboType.RFNBO_READY,
@@ -59,9 +49,7 @@ export const hydrogenBatchesMock: HydrogenBatchDto[] = [
     createdAt: new Date(),
     accountingPeriodEnd: new Date(),
     emission: EmissionMock,
-    hydrogenComposition: [
-      { processId: null, amount: 300, rfnboType: RfnboType.NON_CERTIFIABLE },
-    ],
+    hydrogenComposition: [{ processId: null, amount: 300, rfnboType: RfnboType.NON_CERTIFIABLE }],
     processStep: ProcessType.HYDROGEN_PRODUCTION,
     producer: CompanyDtoMock[1].name,
     rfnboType: RfnboType.NON_CERTIFIABLE,

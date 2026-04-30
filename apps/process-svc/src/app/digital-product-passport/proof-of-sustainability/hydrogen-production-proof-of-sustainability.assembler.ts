@@ -32,7 +32,9 @@ export function assembleHydrogenProductionEmissions(
 
   const totalEmissions = hydrogenStorageEmissionCalculations.reduce((sum, curr) => sum + curr.result, 0);
 
-  const totalEmissionsGrouped = [`${hydrogenStorageEmissionCalculations.at(0)?.name}: ${totalEmissions} ${MeasurementUnit.G_CO2}`];
+  const totalEmissionsGrouped = [
+    `${hydrogenStorageEmissionCalculations.at(0)?.name}: ${totalEmissions} ${MeasurementUnit.G_CO2}`,
+  ];
 
   const totalEmissionsPerKgHydrogen = totalEmissions / hydrogenAmount;
 

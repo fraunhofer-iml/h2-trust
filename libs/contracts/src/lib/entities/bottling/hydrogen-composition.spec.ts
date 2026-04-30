@@ -7,9 +7,9 @@
  */
 
 import { HydrogenComponentEntity } from '@h2-trust/contracts/entities';
-import { HydrogenCompositionUtil } from './hydrogen-composition.util';
 import { RfnboType } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
+import { HydrogenCompositionUtil } from './hydrogen-composition.util';
 
 describe('HydrogenCompositionUtil', () => {
   describe('computeHydrogenComposition', () => {

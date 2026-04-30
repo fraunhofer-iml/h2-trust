@@ -14,10 +14,7 @@ export const HydrogenStorageUnitOverviewDtoMock = <HydrogenStorageOverviewDto[]>
     name: 'Storage Unit 1',
     capacity: 1000,
     filling: 750,
-    hydrogenComposition: [
-      { amount: 80 },
-      { amount: 20 },
-    ],
+    hydrogenComposition: [{ amount: 80 }, { amount: 20 }],
   },
   {
     id: 'storage-2',

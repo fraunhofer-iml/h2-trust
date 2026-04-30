@@ -16,13 +16,7 @@ export class BottlingOverviewDto {
   filledAmount?: number;
   rfnboType?: RfnboType;
 
-  constructor(
-    id: string,
-    filledAt: Date,
-    owner: string,
-    filledAmount: number,
-    rfnboType?: RfnboType,
-  ) {
+  constructor(id: string, filledAt: Date, owner: string, filledAmount: number, rfnboType?: RfnboType) {
     this.id = id;
     this.filledAt = filledAt;
     this.owner = owner;

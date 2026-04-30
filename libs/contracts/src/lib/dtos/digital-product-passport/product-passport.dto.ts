@@ -67,12 +67,12 @@ export class DigitalProductPassportDto {
       entity.powerType == PowerType.NON_RENEWABLE
         ? new GridEnergyRfnboDto(entity.isEmissionReductionAbove70Percent, false, false, false)
         : new RenewableEnergyRfnboDto(
-          entity.isEmissionReductionAbove70Percent,
-          entity.redCompliance.isGeoCorrelationValid,
-          entity.redCompliance.isTimeCorrelationValid,
-          entity.redCompliance.isAdditionalityFulfilled,
-          entity.redCompliance.financialSupportReceived,
-        );
+            entity.isEmissionReductionAbove70Percent,
+            entity.redCompliance.isGeoCorrelationValid,
+            entity.redCompliance.isTimeCorrelationValid,
+            entity.redCompliance.isAdditionalityFulfilled,
+            entity.redCompliance.financialSupportReceived,
+          );
 
     return new DigitalProductPassportDto(
       entity.id,
