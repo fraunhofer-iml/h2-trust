@@ -10,37 +10,11 @@
   <div class="flex w-full flex-col gap-4" [formGroup]="form">
     <!--FILE INPUT-->
 
-    @if (roles.isHydrogenProducer() && roles.isPowerProducer()) {
-      <div class="grid grid-cols-2 gap-2 rounded-lg bg-white p-4">
-        <span class="col-span-2">Type Selection</span>
-
-        @for (contentType of availableUnitTypes; track $index) {
-          <div
-            class="group hover:border-primary-200 flex cursor-pointer flex-col gap-2 rounded-md border-2 p-4 hover:shadow-lg"
-            [ngClass]="
-              type() === contentType ? 'border-primary-200 text-primary-100' : 'border-neutral-300 text-neutral-500'
-            "
-            (click)="selectedTypeControl.setValue(contentType)"
-            role="none"
-          >
-            <div
-              class="group-hover:border-primary-200 group-hover:bg-primary-100 flex size-10 items-center justify-center rounded-full border"
-              [ngClass]="
-                type() === contentType ? 'border-primary-200 bg-primary-100' : 'border-neutral-200 bg-neutral-100'
-              "
-            >
-              <span
-                class="material-symbols-outlined group-hover:text-primary-600"
-                [ngClass]="type() === contentType ? 'text-primary-600' : 'text-neutral-400'"
-              >
-                {{ contentType === CsvContentType.HYDROGEN ? ICONS.HYDROGEN_PRODUCTION : ICONS.POWER_PRODUCTION }}
-              </span>
-            </div>
-            <span class="text-base text-neutral-700">{{ contentType | enum: 'csvContentType' }} production data</span>
-          </div>
-        }
-      </div>
-    }
+    <div [class.hidden]="!(roles.isHydrogenProducer() && roles.isPowerProducer())">
+      <app-type-selection [types]="availableUnitTypes" [typeControl]="selectedTypeControl"
+        >Type Selection</app-type-selection
+      >
+    </div>
 
     <div class="flex flex-col gap-4 rounded-lg bg-white p-4" formArrayName="files">
       <span>CSV files</span>
