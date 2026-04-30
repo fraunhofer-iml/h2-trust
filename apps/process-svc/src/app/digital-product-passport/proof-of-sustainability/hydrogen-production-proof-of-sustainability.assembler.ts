@@ -35,8 +35,8 @@ export function assembleHydrogenProductionEmissions(
   const totalEmissionsGrouped = Array.from(
     provenance
       .getAllHydrogenLeafProductions()
-      .reduce((map, entity, index) => {
-        const color = entity.batch.qualityDetails?.color ?? HydrogenColor.MIX;
+      .reduce((map, _, index) => {
+        const color = HydrogenColor.MIX; // TODO-MP: what should we do here instead?
         return map.set(color, (map.get(color) ?? 0) + hydrogenStorageEmissionCalculations[index].result);
       }, new Map<string, number>())
       .entries(),

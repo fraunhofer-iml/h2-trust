@@ -7,7 +7,7 @@
  */
 
 import { DigitalProductPassportEntity } from '@h2-trust/contracts/entities';
-import { BatchType, HydrogenColor, PowerType } from '@h2-trust/domain';
+import { BatchType, PowerType } from '@h2-trust/domain';
 import { FileInfoDto } from '../file/file-info.dto';
 import { HydrogenComponentDto } from './general-information/hydrogen-component.dto';
 import { GridEnergyRfnboDto, RenewableEnergyRfnboDto, RfnboBaseDto } from './general-information/rfnbo-compliance.dto';
@@ -19,7 +19,6 @@ export class DigitalProductPassportDto {
   filledAt: Date;
   owner?: string;
   filledAmount?: number;
-  color?: HydrogenColor;
   producer?: string;
   product: string;
   hydrogenComposition: HydrogenComponentDto[];
@@ -33,7 +32,6 @@ export class DigitalProductPassportDto {
     timestamp: Date,
     owner: string,
     filledAmount: number,
-    color: HydrogenColor,
     producer: string,
     hydrogenComposition: HydrogenComponentDto[],
     attachedFiles: FileInfoDto[],
@@ -45,7 +43,6 @@ export class DigitalProductPassportDto {
     this.filledAt = timestamp;
     this.owner = owner;
     this.filledAmount = filledAmount;
-    this.color = color;
     this.producer = producer;
     this.hydrogenComposition = hydrogenComposition;
     this.product = BatchType.HYDROGEN;
@@ -70,19 +67,18 @@ export class DigitalProductPassportDto {
       entity.powerType == PowerType.NON_RENEWABLE
         ? new GridEnergyRfnboDto(entity.isEmissionReductionAbove70Percent, false, false, false)
         : new RenewableEnergyRfnboDto(
-            entity.isEmissionReductionAbove70Percent,
-            entity.redCompliance.isGeoCorrelationValid,
-            entity.redCompliance.isTimeCorrelationValid,
-            entity.redCompliance.isAdditionalityFulfilled,
-            entity.redCompliance.financialSupportReceived,
-          );
+          entity.isEmissionReductionAbove70Percent,
+          entity.redCompliance.isGeoCorrelationValid,
+          entity.redCompliance.isTimeCorrelationValid,
+          entity.redCompliance.isAdditionalityFulfilled,
+          entity.redCompliance.financialSupportReceived,
+        );
 
     return new DigitalProductPassportDto(
       entity.id,
       entity.filledAt,
       entity.owner ?? '',
       entity.filledAmount ?? 0,
-      entity.color ?? HydrogenColor.MIX,
       entity.producer ?? '',
       hydrogenComposition,
       attachedFiles,

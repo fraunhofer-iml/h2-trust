@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType, HydrogenColor, PowerType, RfnboType } from '@h2-trust/domain';
+import { BatchType, PowerType, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentEntity } from '../bottling';
 import { RedComplianceEntity } from '../compliance';
 import { DocumentEntity } from '../document';
@@ -18,7 +18,6 @@ export class DigitalProductPassportEntity {
   filledAt: Date;
   owner?: string;
   filledAmount?: number;
-  color?: HydrogenColor;
   producer?: string;
   product: string;
   hydrogenComposition: HydrogenComponentEntity[];
@@ -35,7 +34,6 @@ export class DigitalProductPassportEntity {
     timestamp: Date,
     owner: string,
     filledAmount: number,
-    color: HydrogenColor,
     producer: string,
     hydrogenComposition: HydrogenComponentEntity[],
     attachedFiles: DocumentEntity[],
@@ -49,7 +47,6 @@ export class DigitalProductPassportEntity {
     this.filledAt = timestamp;
     this.owner = owner;
     this.filledAmount = filledAmount;
-    this.color = color;
     this.producer = producer;
     this.hydrogenComposition = hydrogenComposition;
     this.product = BatchType.HYDROGEN;

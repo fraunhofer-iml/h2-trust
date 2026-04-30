@@ -19,7 +19,7 @@ import {
   QualityDetailsEntity,
   UserEntity,
 } from '@h2-trust/contracts/entities';
-import { BatchType, HydrogenColor, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
+import { BatchType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { DateTimeUtil } from '@h2-trust/utils';
 import { AccountingPeriod, ProcessStepParams } from './production.types';
 import { ProductionUtils } from './utils/production.utils';
@@ -143,7 +143,6 @@ export class ProductionAssembler {
 
     const qualityDetails: QualityDetailsEntity = new QualityDetailsEntity(
       null,
-      batchParams.quality ?? HydrogenColor.MIX,
       RfnboType.NOT_SPECIFIED,
       batchParams.powerType,
     );

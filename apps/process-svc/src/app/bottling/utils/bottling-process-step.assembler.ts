@@ -9,7 +9,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { CreateHydrogenBottlingPayload } from '@h2-trust/contracts/payloads';
-import { BatchType, HydrogenColor, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
+import { BatchType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
 
 export class BottlingProcessStepAssembler {
@@ -22,7 +22,6 @@ export class BottlingProcessStepAssembler {
       batch: {
         amount: payload.amount,
         qualityDetails: {
-          color: HydrogenColor.MIX,
           rfnboType: bottlingTypes.bottlingRfnboType,
           powerType: bottlingTypes.bottlingPowerType,
         },

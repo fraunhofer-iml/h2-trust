@@ -244,7 +244,6 @@ model QualityDetails {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  color     String
   rfnboType String
   powerType String
 
