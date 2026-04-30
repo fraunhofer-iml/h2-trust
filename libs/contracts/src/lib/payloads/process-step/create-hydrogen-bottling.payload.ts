@@ -8,7 +8,7 @@
 
 import { Type } from 'class-transformer';
 import { IsArray, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
-import { HydrogenColor, RfnboType } from '@h2-trust/domain';
+import { RfnboType } from '@h2-trust/domain';
 import 'multer';
 
 export class CreateHydrogenBottlingPayload {
@@ -34,10 +34,6 @@ export class CreateHydrogenBottlingPayload {
   @IsNotEmpty()
   hydrogenStorageUnitId: string;
 
-  @IsEnum(HydrogenColor)
-  @IsNotEmpty()
-  color: HydrogenColor;
-
   @IsEnum(RfnboType)
   @IsNotEmpty()
   rfnboType: RfnboType;
@@ -52,7 +48,6 @@ export class CreateHydrogenBottlingPayload {
     filledAt: Date,
     recordedById: string,
     hydrogenStorageUnitId: string,
-    color: HydrogenColor,
     rfnboType: RfnboType,
     files?: Express.Multer.File[],
   ) {
@@ -61,7 +56,6 @@ export class CreateHydrogenBottlingPayload {
     this.filledAt = filledAt;
     this.recordedById = recordedById;
     this.hydrogenStorageUnitId = hydrogenStorageUnitId;
-    this.color = color;
     this.rfnboType = rfnboType;
     this.files = files;
   }

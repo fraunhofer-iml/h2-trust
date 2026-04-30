@@ -30,7 +30,6 @@ function assembleHydrogenTransportationBatch(
     batchType: BatchType.HYDROGEN,
     hydrogenComposition: [],
     unitId: hydrogenTransportation.executedBy.id,
-    color: hydrogenTransportation.batch?.qualityDetails?.color,
     rfnboType: hydrogenTransportation.batch?.qualityDetails?.rfnboType,
     processStep: hydrogenTransportation.type,
     accountingPeriodEnd: hydrogenTransportation.endedAt,

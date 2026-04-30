@@ -12,8 +12,8 @@ import {
   HydrogenStorageUnitDeepDbType,
   HydrogenStorageUnitNestedDbType,
 } from '@h2-trust/database';
-import { HydrogenColor, HydrogenStorageType, RfnboType, UnitType } from '@h2-trust/domain';
-import { assertDefined, assertValidEnum } from '@h2-trust/utils';
+import { HydrogenStorageType, RfnboType, UnitType } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 import { AddressEntity } from '../address';
 import { HydrogenComponentEntity } from '../bottling';
 import { CompanyEntity } from '../company';
@@ -116,18 +116,12 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   ): HydrogenComponentEntity[] {
     return (
       unit?.filling?.map((batch) => {
-        assertDefined(
-          batch.batchDetails?.qualityDetails?.color,
-          `batch.batchDetails.qualityDetails.color for batch ${batch.id}`,
-        );
-        assertValidEnum(batch.batchDetails?.qualityDetails?.color, HydrogenColor, 'HydrogenColor');
-        assertValidEnum(batch.batchDetails.qualityDetails.rfnboType, RfnboType, 'RfnboType');
+        assertValidEnum(batch.batchDetails?.qualityDetails?.rfnboType, RfnboType, 'RfnboType');
 
         return new HydrogenComponentEntity(
           batch?.processStep?.id ?? null,
-          batch.batchDetails.qualityDetails.color,
           batch.amount?.toNumber() ?? 0,
-          batch.batchDetails.qualityDetails.rfnboType,
+          batch.batchDetails?.qualityDetails?.rfnboType,
         );
       }) ?? []
     );

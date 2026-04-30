@@ -7,18 +7,16 @@
  */
 
 import { HydrogenComponentEntity } from '@h2-trust/contracts/entities';
-import { HydrogenColor, RfnboType } from '@h2-trust/domain';
+import { RfnboType } from '@h2-trust/domain';
 
 export class HydrogenComponentDto {
   processId: string | null;
   rfnboType: RfnboType;
-  color: HydrogenColor;
   amount: number;
 
-  constructor(processId: string | null, color: HydrogenColor, amount: number, rfnboType: RfnboType) {
+  constructor(processId: string | null, amount: number, rfnboType: RfnboType) {
     this.processId = processId;
     this.rfnboType = rfnboType;
-    this.color = color;
     this.amount = amount;
   }
 
@@ -26,7 +24,6 @@ export class HydrogenComponentDto {
     return <HydrogenComponentDto>{
       processId: hydrogenComponentEntity.processId,
       rfnboType: hydrogenComponentEntity.rfnboType,
-      color: hydrogenComponentEntity.color,
       amount: hydrogenComponentEntity.amount,
     };
   }

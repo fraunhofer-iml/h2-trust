@@ -7,7 +7,7 @@
  */
 
 import { HydrogenComponentEntity, HydrogenStorageUnitEntity } from '@h2-trust/contracts/entities';
-import { HydrogenColor, HydrogenStorageType, RfnboType } from '@h2-trust/domain';
+import { HydrogenStorageType, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentDto } from '../digital-product-passport';
 
 export class HydrogenStorageOverviewDto {
@@ -65,9 +65,6 @@ export class HydrogenStorageOverviewDto {
       compositionMap.set(filling.rfnboType, (compositionMap.get(filling.rfnboType) ?? 0) + filling.amount);
     });
 
-    return Array.from(
-      compositionMap,
-      ([rfnboType, amount]) => new HydrogenComponentDto(null, HydrogenColor.MIX, amount, rfnboType),
-    );
+    return Array.from(compositionMap, ([rfnboType, amount]) => new HydrogenComponentDto(null, amount, rfnboType));
   }
 }

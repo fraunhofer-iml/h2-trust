@@ -21,7 +21,7 @@ import {
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/contracts/payloads';
 import { DocumentRepository } from '@h2-trust/database';
-import { HydrogenColor, RfnboType } from '@h2-trust/domain';
+import { RfnboType } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
 import { CentralizedStorageService, ContentType } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step/process-step.service';
@@ -74,7 +74,6 @@ export class BottlingService {
 
     const fillings: HydrogenComponentEntity[] = processStepsFromStorageUnit.map((processStep) => ({
       processId: processStep.id,
-      color: processStep.batch.qualityDetails.color,
       amount: processStep.batch.amount,
       rfnboType: processStep.batch.qualityDetails.rfnboType,
     }));
@@ -140,7 +139,7 @@ export class BottlingService {
     hydrogenStorageUnitId: string,
   ): Promise<HydrogenComponentEntity[]> {
     if (rfnboType === RfnboType.RFNBO_READY) {
-      return [new HydrogenComponentEntity(null, HydrogenColor.GREEN, batchAmount, RfnboType.RFNBO_READY)];
+      return [new HydrogenComponentEntity(null, batchAmount, RfnboType.RFNBO_READY)];
     }
 
     try {
