@@ -1,57 +1,55 @@
-<div class="flex flex-col gap-2 rounded-lg bg-white">
-  <div class="grid gap-2" [ngClass]="types().length > 2 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-2'">
-    @for (type of types(); track type) {
-      <button
-        type="button"
-        class="group hover:border-primary-300 flex cursor-pointer flex-col gap-2 rounded-md border-2 p-4 text-left transition-colors hover:shadow-lg"
-        [disabled]="isDisabled(type)"
-        [ngClass]="
-          isDisabled(type)
-            ? 'cursor-not-allowed border-neutral-200 bg-neutral-100 text-neutral-400 opacity-70'
-            : isSelected(type)
-              ? 'border-primary-500 bg-primary-50 text-primary-900 ring-primary-200 ring-1'
-              : 'border-neutral-300 bg-white text-neutral-600'
-        "
-        (click)="selectType(type)"
+<div class="flex w-full flex-row gap-4">
+  @for (type of types(); track type) {
+    <button
+      type="button"
+      class="group hover:border-primary-300 flex w-full cursor-pointer flex-col gap-2 rounded-md border-2 p-4 text-left ring-1 ring-transparent transition-colors hover:shadow-lg"
+      [disabled]="isDisabled(type)"
+      [ngClass]="{
+        'cursor-not-allowed border-neutral-200 bg-neutral-100 text-neutral-400 opacity-70': isDisabled(type),
+        'border-primary-500 bg-primary-50 text-primary-900 ring-primary-200': !isDisabled(type) && isSelected(type),
+        'border-neutral-300 bg-white text-neutral-600': !isDisabled(type) && !isSelected(type),
+      }"
+      (click)="selectType(type)"
+    >
+      <div
+        class="group-hover:border-primary-300 group-hover:bg-primary-100 flex size-10 items-center justify-center rounded-full border transition-colors"
+        [ngClass]="{
+          'border-neutral-200 bg-neutral-100': isDisabled(type) || !isSelected(type),
+          'border-primary-500 bg-primary-200': !isDisabled(type) && isSelected(type),
+        }"
       >
-        <div
-          class="group-hover:border-primary-300 group-hover:bg-primary-100 flex size-10 items-center justify-center rounded-full border transition-colors"
-          [ngClass]="
-            isDisabled(type)
-              ? 'border-neutral-200 bg-neutral-100'
-              : isSelected(type)
-                ? 'border-primary-500 bg-primary-200'
-                : 'border-neutral-200 bg-neutral-100'
-          "
-        >
-          <span
-            class="material-symbols-outlined group-hover:text-primary-700"
-            [ngClass]="
-              isDisabled(type) ? 'text-neutral-400' : isSelected(type) ? 'text-primary-800' : 'text-neutral-500'
-            "
-          >
-            {{ getIcon(type) }}
-          </span>
-        </div>
-
         <span
-          class="group-hover:text-primary-700 text-base"
-          [ngClass]="
-            isDisabled(type)
-              ? 'text-neutral-400'
-              : isSelected(type)
-                ? 'text-primary-800 font-semibold'
-                : 'text-neutral-600'
-          "
-          >{{ getLabel(type) }}</span
+          class="material-symbols-outlined group-hover:text-primary-700"
+          [ngClass]="{
+            'text-neutral-400': isDisabled(type),
+            'text-primary-800': !isDisabled(type) && isSelected(type),
+            'text-neutral-500': !isDisabled(type) && !isSelected(type),
+          }"
         >
+          {{ getIcon(type) }}
+        </span>
+      </div>
 
-        @if (getDescription(type)) {
-          <span class="text-sm leading-5" [ngClass]="isDisabled(type) ? 'text-neutral-400' : 'text-neutral-600'">
-            {{ getDescription(type) }}
-          </span>
-        }
-      </button>
-    }
-  </div>
+      <span
+        class="group-hover:text-primary-700 text-base text-neutral-600"
+        [ngClass]="{
+          'text-neutral-400': isDisabled(type),
+          'text-primary-800 font-semibold': !isDisabled(type) && isSelected(type),
+        }"
+        >{{ getLabel(type) }}</span
+      >
+
+      @if (getDescription(type)) {
+        <span
+          class="text-sm leading-5"
+          [ngClass]="{
+            'text-neutral-400': isDisabled(type),
+            'text-neutral-600': !isDisabled(type),
+          }"
+        >
+          {{ getDescription(type) }}
+        </span>
+      }
+    </button>
+  }
 </div>
