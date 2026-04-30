@@ -42,48 +42,6 @@
           "sourceMap": true,
           "namedChunks": true
         },
-        "dev": {
-          "budgets": [
-            {
-              "type": "initial",
-              "maximumWarning": "2mb",
-              "maximumError": "4mb"
-            },
-            {
-              "type": "anyComponentStyle",
-              "maximumWarning": "100kb",
-              "maximumError": "100kb"
-            }
-          ],
-          "fileReplacements": [
-            {
-              "replace": "apps/frontend/src/environments/environment.ts",
-              "with": "apps/frontend/src/environments/environment.development.ts"
-            }
-          ],
-          "outputHashing": "all"
-        },
-        "staging": {
-          "budgets": [
-            {
-              "type": "initial",
-              "maximumWarning": "2mb",
-              "maximumError": "4mb"
-            },
-            {
-              "type": "anyComponentStyle",
-              "maximumWarning": "100kb",
-              "maximumError": "100kb"
-            }
-          ],
-          "fileReplacements": [
-            {
-              "replace": "apps/frontend/src/environments/environment.ts",
-              "with": "apps/frontend/src/environments/environment.staging.ts"
-            }
-          ],
-          "outputHashing": "all"
-        },
         "production": {
           "budgets": [
             {
@@ -95,12 +53,6 @@
               "type": "anyComponentStyle",
               "maximumWarning": "100kb",
               "maximumError": "100kb"
-            }
-          ],
-          "fileReplacements": [
-            {
-              "replace": "apps/frontend/src/environments/environment.ts",
-              "with": "apps/frontend/src/environments/environment.production.ts"
             }
           ],
           "outputHashing": "all"

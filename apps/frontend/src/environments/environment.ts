@@ -6,11 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const BASE_URL = 'http://localhost:3000';
-
+declare const window: any;
+export const BFF_URL = window.env?.BFF_URL;
+export const KEYCLOAK_URL = window.env?.KEYCLOAK_URL;
+export const KEYCLOAK_REALM = window.env?.KEYCLOAK_REALM;
+export const KEYCLOAK_CLIENT_FRONTEND_ID = window.env?.KEYCLOAK_CLIENT_FRONTEND_ID;
 export const environment = {
   production: false,
-  KEYCLOAK_URL: 'http://localhost:8080',
-  KEYCLOAK_REALM: 'h2-trust',
-  KEYCLOAK_CLIENT_ID: 'h2-trust-frontend',
+  KEYCLOAK_URL: KEYCLOAK_URL,
+  KEYCLOAK_REALM: KEYCLOAK_REALM,
+  KEYCLOAK_CLIENT_ID: KEYCLOAK_CLIENT_FRONTEND_ID,
 };
