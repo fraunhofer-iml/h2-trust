@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType, HydrogenColor, HydrogenProductionMethod, MeasurementUnit, RfnboType } from '@h2-trust/domain';
+import { BatchType, HydrogenProductionMethod, MeasurementUnit, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentDto } from '../general-information';
 import { BatchDto } from './batch.dto';
 import { EmissionDto } from './emission.dto';
@@ -16,7 +16,6 @@ export class HydrogenBatchDto extends BatchDto {
   unitId: string;
   typeOfProduction: HydrogenProductionMethod;
   hydrogenComposition: HydrogenComponentDto[];
-  color: HydrogenColor;
   rfnboType: RfnboType;
   processStep: string;
 
@@ -33,7 +32,6 @@ export class HydrogenBatchDto extends BatchDto {
     unitId: string,
     typeOfProduction: HydrogenProductionMethod,
     hydrogenComposition: HydrogenComponentDto[],
-    color: HydrogenColor,
     rfnboType: RfnboType,
     processStep: string,
     accountingPeriodEnd?: Date,
@@ -43,7 +41,6 @@ export class HydrogenBatchDto extends BatchDto {
     this.unitId = unitId;
     this.typeOfProduction = typeOfProduction;
     this.hydrogenComposition = hydrogenComposition;
-    this.color = color;
     this.rfnboType = rfnboType;
     this.processStep = processStep;
     this.accountingPeriodEnd = accountingPeriodEnd;

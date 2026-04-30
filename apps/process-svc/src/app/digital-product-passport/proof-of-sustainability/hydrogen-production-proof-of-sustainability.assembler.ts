@@ -11,7 +11,7 @@ import {
   ProofOfSustainabilityEmissionEntity,
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
-import { CalculationTopic, EmissionStringConstants, HydrogenColor, MeasurementUnit } from '@h2-trust/domain';
+import { CalculationTopic, EmissionStringConstants, MeasurementUnit } from '@h2-trust/domain';
 import { computeHydrogenStorageEmissionCalculations } from './hydrogen-storage-proof-of-sustainability.calculator';
 import { ProofOfSustainabilityAssembler } from './proof-of-sustainability-assembler.interface';
 
@@ -32,15 +32,9 @@ export function assembleHydrogenProductionEmissions(
 
   const totalEmissions = hydrogenStorageEmissionCalculations.reduce((sum, curr) => sum + curr.result, 0);
 
-  const totalEmissionsGrouped = Array.from(
-    provenance
-      .getAllHydrogenLeafProductions()
-      .reduce((map, entity, index) => {
-        const color = entity.batch.qualityDetails?.color ?? HydrogenColor.MIX;
-        return map.set(color, (map.get(color) ?? 0) + hydrogenStorageEmissionCalculations[index].result);
-      }, new Map<string, number>())
-      .entries(),
-  ).map(([color, result]) => `${color}: ${result} ${MeasurementUnit.G_CO2}`);
+  const totalEmissionsGrouped = [
+    `${hydrogenStorageEmissionCalculations.at(0)?.name}: ${totalEmissions} ${MeasurementUnit.G_CO2}`,
+  ];
 
   const totalEmissionsPerKgHydrogen = totalEmissions / hydrogenAmount;
 

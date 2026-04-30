@@ -7,7 +7,7 @@
  */
 
 import { BatchEntity, CreateProductionEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
-import { EnergySource, HydrogenColor, PowerType, RenewableShareInGridMix, TimeInSeconds } from '@h2-trust/domain';
+import { EnergySource, PowerType, RenewableShareInGridMix, TimeInSeconds } from '@h2-trust/domain';
 import { DateTimeUtil } from '@h2-trust/utils';
 import { AccountingPeriod } from '../production.types';
 
@@ -246,7 +246,6 @@ export class ProductionUtils {
       createProductionEntity.hydrogenProductionUnitId,
       hydrogenAmount,
       createProductionEntity.recordedBy,
-      HydrogenColor.GREEN,
       createProductionEntity.hydrogenStorageUnitId,
       createProductionEntity.ownerIdOfPowerProductionUnit,
       createProductionEntity.ownerIdOfHydrogenProductionUnit,
