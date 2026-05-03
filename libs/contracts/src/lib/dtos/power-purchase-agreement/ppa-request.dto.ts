@@ -68,7 +68,7 @@ export class PpaRequestDto {
         ? PowerProductionOverviewDto.fromEntity(powerPurchaseAgreement.powerProductionUnit)
         : undefined,
       status: powerPurchaseAgreement.status,
-      decidedBy: powerPurchaseAgreement.decision?.decidingUserId,
+      decidedBy: powerPurchaseAgreement.decision?.decidingUserName,
       comment: powerPurchaseAgreement.decision?.comment,
     };
   }

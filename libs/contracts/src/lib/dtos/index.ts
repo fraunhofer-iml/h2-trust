@@ -8,7 +8,6 @@
 
 export * from './address';
 export * from './company';
-export * from './decision';
 export * from './digital-product-passport';
 export * from './file';
 export * from './power-purchase-agreement';

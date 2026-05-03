@@ -331,8 +331,6 @@ model PowerPurchaseAgreement {
   documentId String?
 
   decision Decision?
-
-  @@unique([powerProducerId, powerProductionUnitId, hydrogenProducerId])
 }
 
 model StagedProduction {
