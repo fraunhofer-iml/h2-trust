@@ -21,7 +21,7 @@ import { proofOfOriginSectionAssemblers } from './proof-of-origin-assembler.regi
  * @param provenance The provenance, which tracks the entire production chain of a BOTTLING or a TRANSPORTATION.
  * @returns A list of the ProofOfOrigin sections for all production steps shown in the provenance or an empty list if it is not a bottling or a transport.
  */
-export function createProofOfOrigin(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {
+export function assembleProofOfOrigin(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {
   if (!provenance) {
     return [];
   }

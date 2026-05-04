@@ -14,10 +14,10 @@ import {
 } from '@h2-trust/contracts/entities';
 import { ProcessStepEntityFixture, TransportationDetailsEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { CalculationTopic } from '@h2-trust/domain';
-import { createProofOfSustainability } from './proof-of-sustainability.service';
+import { assembleProofOfSustainability } from './proof-of-sustainability.assembler';
 
-describe('ProofOfSustainability', () => {
-  it('createProofOfSustainability', () => {
+describe('ProofOfSustainabilityAssembler', () => {
+  it('assembleProofOfSustainability', () => {
     // Arrange
     const givenPowerProduction = ProcessStepEntityFixture.createPowerProduction();
     const givenWaterConsumption = ProcessStepEntityFixture.createWaterConsumption();
@@ -40,7 +40,7 @@ describe('ProofOfSustainability', () => {
     );
 
     // Act
-    const actualResult = createProofOfSustainability(givenProvenance);
+    const actualResult = assembleProofOfSustainability(givenProvenance);
 
     // Assert
     expect(actualResult).toBeDefined();

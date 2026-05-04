@@ -20,7 +20,7 @@ import { proofOfSustainabilityEmissionAssemblers } from './proof-of-sustainabili
  * @param provenance The provenance, which covers the entire production chain.
  * @returns The generated ProofOfSustainability.
  */
-export function createProofOfSustainability(provenance: ProvenanceEntity): ProofOfSustainabilityEntity {
+export function assembleProofOfSustainability(provenance: ProvenanceEntity): ProofOfSustainabilityEntity {
   if (!provenance) {
     throw new Error('Provenance is undefined.');
   }
@@ -32,15 +32,7 @@ export function createProofOfSustainability(provenance: ProvenanceEntity): Proof
     ? provenance.hydrogenBottling.batch.amount
     : provenance.root.batch.amount;
 
-  return assembleProofOfSustainability(provenance.root.id, emissionCalculations, hydrogenAmount);
-}
-
-function assembleProofOfSustainability(
-  batchId: string,
-  emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
-  hydrogenAmountKg: number,
-): ProofOfSustainabilityEntity {
-  const applicationEmissions: ProofOfSustainabilityEmissionEntity[] =
+   const applicationEmissions: ProofOfSustainabilityEmissionEntity[] =
     assembleApplicationEmissions(emissionCalculations);
 
   const hydrogenProductionEmissionAmount: number = applicationEmissions
@@ -58,7 +50,7 @@ function assembleProofOfSustainability(
   const emissions: ProofOfSustainabilityEmissionEntity[] = [...applicationEmissions, ...regulatoryEmissions];
 
   const totalEmissions: number = applicationEmissionAmount;
-  const amountCO2PerKgH2: number = applicationEmissionAmount / hydrogenAmountKg;
+  const amountCO2PerKgH2: number = applicationEmissionAmount / hydrogenAmount;
   const amountCO2PerMJH2: number = amountCO2PerKgH2 / EmissionNumericConstants.H2_LOWER_HEATING_VALUE_MJ_PER_KG;
 
   const emissionReductionPercentage: number =
@@ -67,7 +59,7 @@ function assembleProofOfSustainability(
     100;
 
   return new ProofOfSustainabilityEntity(
-    batchId,
+    provenance.root.id,
     totalEmissions,
     amountCO2PerKgH2,
     amountCO2PerMJH2,
