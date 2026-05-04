@@ -13,7 +13,7 @@ import {
   ProcessStepEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
 import { BatchType, EnergySource } from '@h2-trust/domain';
-import { buildPowerSupplySubClassifications } from '../power-production-proof-of-origin.assembler';
+import { buildPowerSupplySubClassifications } from './power-production-classification.assembler';
 
 describe('PowerProductionProofOfOriginAssembler', () => {
   describe('buildPowerSupplySubClassifications', () => {

@@ -14,10 +14,10 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
 import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
-import { Util } from '../util';
-import { buildPowerSupplySubClassifications } from './power-production-proof-of-origin.assembler';
-import { ProofOfOriginAssembler } from './proof-of-origin-assembler.interface';
-import { assembleWaterSupplyClassification } from './water-consumption-proof-of-origin.assembler';
+import { Util } from '../../util';
+import { buildPowerSupplySubClassifications } from '../classifications/power-production-classification.assembler';
+import { ProofOfOriginSectionAssembler } from '../proof-of-origin-assembler.interface';
+import { assembleWaterSupplyClassification } from '../classifications/water-consumption-classification.assembler';
 
 export function assembleHydrogenProductionSection(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {
   const powerProductions: ProcessStepEntity[] = provenance.getAllPowerProductions();
@@ -62,6 +62,6 @@ export function assembleHydrogenProductionSection(provenance: ProvenanceEntity):
   return [new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION, [], classifications)];
 }
 
-export const hydrogenProductionProofOfOriginAssembler: ProofOfOriginAssembler = {
+export const hydrogenProductionProofOfOriginAssembler: ProofOfOriginSectionAssembler = {
   assembleSection: assembleHydrogenProductionSection,
 };

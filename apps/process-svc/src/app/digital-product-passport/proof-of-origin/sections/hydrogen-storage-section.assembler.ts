@@ -17,9 +17,9 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
 import { BatchType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
-import { computeHydrogenStorageEmissionCalculations } from '../proof-of-sustainability/hydrogen-storage-proof-of-sustainability.calculator';
-import { Util } from '../util';
-import { ProofOfOriginAssembler } from './proof-of-origin-assembler.interface';
+import { computeHydrogenStorageEmissionCalculations } from '../../proof-of-sustainability/hydrogen-storage-proof-of-sustainability.calculator';
+import { Util } from '../../util';
+import { ProofOfOriginSectionAssembler } from '../proof-of-origin-assembler.interface';
 
 function assembleHydrogenStorageBatch(
   hydrogenStorage: ProcessStepEntity,
@@ -93,6 +93,6 @@ export function assembleHydrogenStorageSection(provenance: ProvenanceEntity): Pr
   return [new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_STORAGE_SECTION, [], classifications)];
 }
 
-export const hydrogenStorageProofOfOriginAssembler: ProofOfOriginAssembler = {
+export const hydrogenStorageProofOfOriginAssembler: ProofOfOriginSectionAssembler = {
   assembleSection: assembleHydrogenStorageSection,
 };

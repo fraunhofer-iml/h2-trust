@@ -16,8 +16,8 @@ import {
   ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/contracts/entities';
 import { BatchType, EnergySource, PowerType, ProcessType } from '@h2-trust/domain';
-import { computePowerSupplyEmissionCalculations } from '../proof-of-sustainability/power-production-proof-of-sustainability.assembler';
-import { Util } from '../util';
+import { computePowerSupplyEmissionCalculations } from '../../proof-of-sustainability/power-production-proof-of-sustainability.assembler';
+import { Util } from '../../util';
 
 function getPowerBatchEntities(
   powerProductionProcesses: ProcessStepEntity[],

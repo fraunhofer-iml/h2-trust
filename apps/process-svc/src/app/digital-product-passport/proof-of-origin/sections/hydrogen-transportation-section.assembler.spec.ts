@@ -15,7 +15,7 @@ import {
 } from '@h2-trust/contracts/entities';
 import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
-import { assembleHydrogenTransportationSection } from '../hydrogen-transportation-proof-of-origin.assembler';
+import { assembleHydrogenTransportationSection } from './hydrogen-transportation-transportation.assembler';
 
 describe('HydrogenTransportationProofOfOriginAssembler', () => {
   describe('assembleHydrogenTransportationSection', () => {

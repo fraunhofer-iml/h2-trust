@@ -15,8 +15,8 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType, ProofOfOrigin } from '@h2-trust/domain';
-import { assembleHydrogenTransportationEmissionCalculation } from '../proof-of-sustainability/hydrogen-transportation-proof-of-sustainability.assembler';
-import { ProofOfOriginAssembler } from './proof-of-origin-assembler.interface';
+import { assembleHydrogenTransportationEmissionCalculation } from '../../proof-of-sustainability/hydrogen-transportation-proof-of-sustainability.assembler';
+import { ProofOfOriginSectionAssembler } from '../proof-of-origin-assembler.interface';
 
 function assembleHydrogenTransportationBatch(
   hydrogenTransportation: ProcessStepEntity,
@@ -56,6 +56,6 @@ export function assembleHydrogenTransportationSection(provenance: ProvenanceEnti
   return [new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION, [batch], [])];
 }
 
-export const hydrogenTransportationProofOfOriginAssembler: ProofOfOriginAssembler = {
+export const hydrogenTransportationProofOfOriginAssembler: ProofOfOriginSectionAssembler = {
   assembleSection: assembleHydrogenTransportationSection,
 };

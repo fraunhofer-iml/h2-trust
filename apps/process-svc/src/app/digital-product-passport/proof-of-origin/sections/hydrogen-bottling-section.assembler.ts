@@ -18,8 +18,8 @@ import {
 } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
-import { assembleHydrogenBottlingEmissionCalculation } from '../proof-of-sustainability/hydrogen-bottling-proof-of-sustainability.assembler';
-import { ProofOfOriginAssembler } from './proof-of-origin-assembler.interface';
+import { assembleHydrogenBottlingEmissionCalculation } from '../../proof-of-sustainability/hydrogen-bottling-proof-of-sustainability.assembler';
+import { ProofOfOriginSectionAssembler } from '../proof-of-origin-assembler.interface';
 
 /**
  * Calculates the hydrogen components of the bottling as a proportion of the total volume bottled.
@@ -90,6 +90,6 @@ export function assembleHydrogenBottlingSection(provenance: ProvenanceEntity): P
   return [new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_BOTTLING_SECTION, [batch], [])];
 }
 
-export const hydrogenBottlingProofOfOriginAssembler: ProofOfOriginAssembler = {
+export const hydrogenBottlingProofOfOriginAssembler: ProofOfOriginSectionAssembler = {
   assembleSection: assembleHydrogenBottlingSection,
 };

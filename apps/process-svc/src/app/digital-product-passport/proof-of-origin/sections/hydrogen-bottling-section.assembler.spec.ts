@@ -20,7 +20,7 @@ import {
   QualityDetailsEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
 import { ProcessType, ProofOfOrigin } from '@h2-trust/domain';
-import { assembleHydrogenBottlingSection } from '../hydrogen-bottling-proof-of-origin.assembler';
+import { assembleHydrogenBottlingSection } from './hydrogen-bottling-section.assembler';
 
 describe('HydrogenBottlingProofOfOriginAssembler', () => {
   describe('assembleHydrogenBottlingSection', () => {

@@ -20,7 +20,7 @@ import {
   ProofOfOriginSubClassificationEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
 import { EnergySource, ProofOfOrigin } from '@h2-trust/domain';
-import { assembleHydrogenProductionSection } from '../hydrogen-production-proof-of-origin.assembler';
+import { assembleHydrogenProductionSection } from './hydrogen-production-section.assembler';
 
 describe('HydrogenProductionProofOfOriginAssembler', () => {
   describe('assembleHydrogenProductionSection', () => {

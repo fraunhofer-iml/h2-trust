@@ -9,7 +9,7 @@
 import { ProcessStepEntity, ProofOfOriginWaterBatchEntity } from '@h2-trust/contracts/entities';
 import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
-import { assembleWaterSupplyClassification } from '../water-consumption-proof-of-origin.assembler';
+import { assembleWaterSupplyClassification } from './water-consumption-classification.assembler';
 
 describe('WaterConsumptionProofOfOriginAssembler', () => {
   describe('assembleWaterSupplyClassification', () => {

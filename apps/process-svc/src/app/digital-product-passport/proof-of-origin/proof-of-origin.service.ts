@@ -13,7 +13,7 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
 import { ProofOfOrigin } from '@h2-trust/domain';
-import { proofOfOriginAssemblers } from './proof-of-origin-assembler.registry.const';
+import { proofOfOriginSectionAssemblers } from './proof-of-origin-assembler.registry.const';
 
 /**
  * If the provided provenance relates to hydrogen bottling or hydrogen transport, the ProofOfOrigin sections for all nodes must be returned.
@@ -25,7 +25,7 @@ export function createProofOfOrigin(provenance: ProvenanceEntity): ProofOfOrigin
   if (!provenance) {
     return [];
   }
-  return proofOfOriginAssemblers.flatMap((proofOfOriginAssembler) =>
+  return proofOfOriginSectionAssemblers.flatMap((proofOfOriginAssembler) =>
     proofOfOriginAssembler.assembleSection(provenance),
   );
 }
