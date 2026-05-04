@@ -8,7 +8,7 @@
 
 import { BatchEntity, CreateProductionEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { EnergySource, PowerType, RenewableShareInGridMix, TimeInSeconds } from '@h2-trust/domain';
-import { DateTimeUtil } from '@h2-trust/utils';
+import { convertDateToMilliseconds, convertDateToSeconds } from '@h2-trust/utils';
 import { AccountingPeriod } from '../production.types';
 
 export function calculateNumberOfAccountingPeriods(
@@ -97,8 +97,8 @@ export function calculateWaterAmount(startedAt: Date, endedAt: Date, waterConsum
     throw new Error(`waterConsumptionPerHour must be non-negative: [${waterConsumptionPerHour}]`);
   }
 
-  const startedAtInSeconds = DateTimeUtil.convertDateToSeconds(startedAt);
-  const endedAtInSeconds = DateTimeUtil.convertDateToSeconds(endedAt);
+  const startedAtInSeconds = convertDateToSeconds(startedAt);
+  const endedAtInSeconds = convertDateToSeconds(endedAt);
   const durationInSeconds = calculateDuration(startedAtInSeconds, endedAtInSeconds);
   return (waterConsumptionPerHour / TimeInSeconds.ONE_HOUR) * durationInSeconds;
 }
@@ -109,8 +109,8 @@ export function calculateAccountingPeriods(
   totalAmount: number,
   predecessors: ProcessStepEntity[],
 ): AccountingPeriod[] {
-  const startInSeconds = DateTimeUtil.convertDateToSeconds(startedAt);
-  const endInSeconds = DateTimeUtil.convertDateToSeconds(endedAt);
+  const startInSeconds = convertDateToSeconds(startedAt);
+  const endInSeconds = convertDateToSeconds(endedAt);
   const alignedStartInSeconds =
     Math.floor(startInSeconds / TimeInSeconds.ACCOUNTING_PERIOD) * TimeInSeconds.ACCOUNTING_PERIOD;
 
@@ -138,7 +138,7 @@ export function calculateAccountingPeriods(
       i,
     );
 
-    const startedAtConverted = DateTimeUtil.convertDateToMilliseconds(accountingPeriodStartedAt);
+    const startedAtConverted = convertDateToMilliseconds(accountingPeriodStartedAt);
     const accountingPeriodPredecessors = predecessorsByStartedAt.get(startedAtConverted) || [];
 
     accountingPeriods.push({
@@ -156,7 +156,7 @@ function groupBatchesByStartedAt(processSteps: ProcessStepEntity[]): Map<number,
   const batchesByStartedAt = new Map<number, BatchEntity[]>();
 
   for (const processStep of processSteps) {
-    const startedAt = DateTimeUtil.convertDateToMilliseconds(processStep.startedAt);
+    const startedAt = convertDateToMilliseconds(processStep.startedAt);
 
     const batches = batchesByStartedAt.get(startedAt) || [];
     batches.push(processStep.batch);

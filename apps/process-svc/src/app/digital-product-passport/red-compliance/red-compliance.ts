@@ -16,7 +16,7 @@ import {
   RedComplianceEntity,
 } from '@h2-trust/contracts/entities';
 import { BiddingZone } from '@h2-trust/domain';
-import { assertBoolean, assertDefined, DateTimeUtil } from '@h2-trust/utils';
+import { assertBoolean, assertDefined, subtractMonthsSafe, toValidDate } from '@h2-trust/utils';
 
 export function determineRedCompliance(
   hydrogenProduction: ProcessStepEntity,
@@ -88,8 +88,8 @@ export function isWithinTimeCorrelation(
   powerProduction: ProcessStepEntity,
   hydrogenProduction: ProcessStepEntity,
 ): boolean {
-  const powerStartedAt = DateTimeUtil.toValidDate(powerProduction?.startedAt, 'powerProduction.startedAt');
-  const hydrogenStartedAt = DateTimeUtil.toValidDate(hydrogenProduction?.startedAt, 'hydrogenProduction.startedAt');
+  const powerStartedAt = toValidDate(powerProduction?.startedAt, 'powerProduction.startedAt');
+  const hydrogenStartedAt = toValidDate(hydrogenProduction?.startedAt, 'hydrogenProduction.startedAt');
 
   // Rounding to the same hour and comparing
   const msPerHour = 60 * 60 * 1000;
@@ -102,11 +102,11 @@ export function meetsAdditionalityCriterion(
   powerUnit: PowerProductionUnitEntity,
   hydrogenUnit: HydrogenProductionUnitEntity,
 ): boolean {
-  const powerCommissioning = DateTimeUtil.toValidDate(powerUnit?.commissionedOn, 'powerUnit.commissionedOn');
-  const hydrogenCommissioning = DateTimeUtil.toValidDate(hydrogenUnit?.commissionedOn, 'hydrogenUnit.commissionedOn');
+  const powerCommissioning = toValidDate(powerUnit?.commissionedOn, 'powerUnit.commissionedOn');
+  const hydrogenCommissioning = toValidDate(hydrogenUnit?.commissionedOn, 'hydrogenUnit.commissionedOn');
 
   // Limit date: 36 months prior to commissioning of the hydrogen production unit
-  const limitDate = DateTimeUtil.subtractMonthsSafe(hydrogenCommissioning, 36);
+  const limitDate = subtractMonthsSafe(hydrogenCommissioning, 36);
 
   // Power generation must not occur BEFORE this limit date (i.e., it must be >=).
   return powerCommissioning >= limitDate;

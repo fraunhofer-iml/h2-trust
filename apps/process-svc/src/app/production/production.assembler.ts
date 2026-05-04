@@ -20,7 +20,7 @@ import {
   UserEntity,
 } from '@h2-trust/contracts/entities';
 import { BatchType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
-import { DateTimeUtil } from '@h2-trust/utils';
+import { formatDate } from '@h2-trust/utils';
 import { AccountingPeriod, ProcessStepParams } from './production.types';
 import { calculateAccountingPeriods, calculateWaterAmount } from './utils/production.utils';
 
@@ -120,7 +120,7 @@ function createProcessSteps(
 
 function createProcessStep(accountingPeriod: AccountingPeriod, params: ProcessStepParams): ProcessStepEntity {
   logger.debug(
-    `${DateTimeUtil.formatDate(accountingPeriod.startedAt)} | ${DateTimeUtil.formatDate(accountingPeriod.endedAt)} | ${params.type} | ${params.executedBy} | ${accountingPeriod.amount}`,
+    `${formatDate(accountingPeriod.startedAt)} | ${formatDate(accountingPeriod.endedAt)} | ${params.type} | ${params.executedBy} | ${accountingPeriod.amount}`,
   );
 
   const { batchParams } = params;
