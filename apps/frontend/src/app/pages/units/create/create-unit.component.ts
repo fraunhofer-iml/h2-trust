@@ -28,7 +28,7 @@ import {
 } from '@h2-trust/contracts/dtos';
 import { HydrogenProductionMethod, HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { TypeSelectionComponent } from '../../../layout/type-selection/type-selection.component';
-import { QUERY_KEYS } from '../../../shared/queries/shared-query-keys';
+import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { BaseUnitFormComponent } from '../forms/base-unit/base-unit-form-component';
@@ -113,7 +113,7 @@ export class CreateUnitComponent {
   }));
 
   private onSuccess = () => {
-    this.queryClient.invalidateQueries({ queryKey: QUERY_KEYS.HYDROGEN_PRODUCTION_UNITS });
+    this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.HYDROGEN_PRODUCTION_UNITS] });
     this.router.navigateByUrl('units');
     toast.success('Successfully created.');
   };
