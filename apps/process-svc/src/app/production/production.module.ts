@@ -20,7 +20,6 @@ import { ProductionCreationService } from './production-creation.service';
 import { ProductionStagingService } from './production-staging.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
-import { StagedProductionCleanupModule } from './tasks/staged-production-cleanup.module';
 
 @Module({
   imports: [
@@ -28,7 +27,6 @@ import { StagedProductionCleanupModule } from './tasks/staged-production-cleanup
     ConfigurationModule,
     DatabaseModule,
     ProcessStepModule,
-    StagedProductionCleanupModule,
     StorageModule,
     ProcessStepModule,
     DigitalProductPassportModule,
@@ -43,4 +41,4 @@ import { StagedProductionCleanupModule } from './tasks/staged-production-cleanup
     ProductionStagingService,
   ],
 })
-export class ProductionModule {}
+export class ProductionModule { }
