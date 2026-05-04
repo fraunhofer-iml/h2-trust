@@ -27,7 +27,6 @@ export class KeycloakConfigurationService implements KeycloakConnectOptionsFacto
       secret: this.configurationService.getGlobalConfiguration().keycloak.clientSecret,
       policyEnforcement: PolicyEnforcementMode.PERMISSIVE,
       tokenValidation: TokenValidation.ONLINE,
-      useNestLogger: true,
     };
   }
 }

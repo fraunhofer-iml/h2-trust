@@ -14,7 +14,6 @@ import {
   EnergySource,
   FuelType,
   GridLevel,
-  HydrogenColor,
   HydrogenProductionMethod,
   HydrogenProductionTechnology,
   HydrogenStorageType,
@@ -66,12 +65,6 @@ export class EnumLabelMapper {
     [EnergySource.HYDRO_POWER]: 'Hydro Power Plant',
     [EnergySource.SOLAR_ENERGY]: 'Photovoltaic System',
     [EnergySource.WIND_ENERGY]: 'Wind Turbine',
-  };
-
-  private static readonly HYDROGEN_COLOR_LABELS: Record<HydrogenColor, string> = {
-    [HydrogenColor.GREEN]: 'Green',
-    [HydrogenColor.MIX]: 'Mix',
-    [HydrogenColor.YELLOW]: 'Yellow',
   };
 
   private static readonly BATCH_TYPE_MEASUREMENT_UNIT: Record<BatchType, string> = {
@@ -150,10 +143,6 @@ export class EnumLabelMapper {
 
   public static getEnergySource(value: EnergySource): string {
     return this.getLabel(value, this.ENERGY_SOURCE_LABELS);
-  }
-
-  public static getHydrogenColor(value: HydrogenColor): string {
-    return this.getLabel(value, this.HYDROGEN_COLOR_LABELS);
   }
 
   public static getMeasurementUnit(value: BatchType): string {

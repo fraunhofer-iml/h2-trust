@@ -74,7 +74,6 @@ export class ProductionService {
       payload.hydrogenProductionUnitId,
       payload.hydrogenAmountKg,
       payload.userId,
-      powerProductionUnit.type.hydrogenColor,
       payload.hydrogenStorageUnitId,
       powerProductionUnit.owner.id,
       hydrogenProductionUnit.owner.id,
