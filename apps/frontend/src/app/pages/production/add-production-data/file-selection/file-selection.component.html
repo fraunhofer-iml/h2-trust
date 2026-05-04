@@ -71,7 +71,11 @@
             description="Please select a Hydrogen Production Dataset to continue."
           />
         } @else {
-          <div class="subtle-scrollbar mt-2 min-h-0 flex-1 overflow-auto">
+          <mat-selection-list
+            formControlName="powerProductions"
+            [multiple]="true"
+            class="subtle-scrollbar m-0! mt-2 min-h-0 flex-1 overflow-auto p-0!"
+          >
             @for (item of data(); track $index) {
               <div class="my-2 overflow-hidden rounded-md border border-neutral-300">
                 <div
@@ -100,33 +104,90 @@
                   </div>
                 } @else {
                   <mat-divider />
-                  <mat-selection-list formControlName="powerProductions" [multiple]="true" class="m-0! p-0!">
-                    @for (powerDataset of item.uploads; track $index) {
-                      @if ($index > 0) {
-                        <mat-divider />
-                      }
-                      <mat-list-option [value]="powerDataset" togglePosition="before" class="bg-white!">
-                        <span matListItemTitle class="flex justify-between">
-                          <span>
-                            {{ powerDataset.startedAt | date: 'mediumDate' }},
-                            {{ powerDataset.startedAt | date: 'shortTime' }} –
-                            {{ powerDataset.endedAt | date: 'mediumDate' }},
-                            {{ powerDataset.endedAt | date: 'shortTime' }}
-                          </span>
-                          <strong>{{ powerDataset.amountProduced | unit: MeasurementUnit.KWH }}</strong>
-                        </span>
-                      </mat-list-option>
+                  @for (powerDataset of item.uploads; track $index) {
+                    @if ($index > 0) {
+                      <mat-divider />
                     }
-                  </mat-selection-list>
+                    <mat-list-option [value]="powerDataset" togglePosition="before" class="bg-white!">
+                      <span matListItemTitle class="flex justify-between">
+                        <span>
+                          {{ powerDataset.startedAt | date: 'mediumDate' }},
+                          {{ powerDataset.startedAt | date: 'shortTime' }} –
+                          {{ powerDataset.endedAt | date: 'mediumDate' }},
+                          {{ powerDataset.endedAt | date: 'shortTime' }}
+                        </span>
+                        <strong>{{ powerDataset.amountProduced | unit: MeasurementUnit.KWH }}</strong>
+                      </span>
+                    </mat-list-option>
+                  }
                 }
               </div>
             }
-          </div>
+          </mat-selection-list>
 
-          <mat-divider />
-          <div class="flex items-center justify-between py-4 text-neutral-500">
-            <span>Total Power used:</span>
-            <strong>{{ totalPower | unit: MeasurementUnit.KWH }}</strong>
+          <div class="w-full border-t border-dashed border-neutral-400"></div>
+
+          <!-- POWER COVERAGE -->
+
+          <div class="">
+            <div class="text-sm font-medium text-neutral-700">Power Coverage</div>
+
+            <div class="space-y-4">
+              <div>
+                <div class="mb-2 flex items-center justify-between text-xs text-neutral-600">
+                  <span>Selected vs. Required</span>
+                  <strong>
+                    {{ selectedPowerProduction() | unit: MeasurementUnit.KWH }} /
+                    {{ powerConsumed() | unit: MeasurementUnit.KWH }}
+                  </strong>
+                </div>
+                <div class="relative h-2 rounded-full bg-neutral-200">
+                  <div
+                    class="bg-primary-200 absolute inset-y-0 left-0 rounded-full transition-all duration-300"
+                    [ngStyle]="{ width: (powerConsumed() / chartMax()) * 100 + '%' }"
+                  ></div>
+                  <div
+                    class="absolute inset-y-0 left-0 rounded-full transition-all duration-300"
+                    [ngClass]="
+                      selectedPowerProduction() >= (selectedHydrogenFile()?.powerConsumed ?? 0)
+                        ? 'bg-primary-500'
+                        : 'bg-tertiary-400'
+                    "
+                    [ngStyle]="{ width: (selectedPowerProduction() / chartMax()) * 100 + '%' }"
+                  ></div>
+                </div>
+                <div class="mt-2 flex items-center gap-4 text-xs text-neutral-600">
+                  <span class="flex items-center gap-1">
+                    <span
+                      class="h-2 w-2 rounded-full"
+                      [ngClass]="selectedPowerProduction() >= powerConsumed() ? 'bg-primary-500' : 'bg-tertiary-400'"
+                    ></span>
+                    Selected
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <span class="bg-primary-200 h-2 w-2 rounded-full"></span>
+                    Required
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            @if (selectedPowerProduction() > 0) {
+              @if (selectedPowerProduction() >= powerConsumed()) {
+                <div class="text-primary-600 pt-2 text-xs">
+                  Power demand is fully covered. Surplus:
+                  {{ selectedPowerProduction() - powerConsumed() | unit: MeasurementUnit.KWH }}
+                </div>
+              } @else {
+                <div class="text-tertiary-700 pt-2 text-xs">
+                  Power demand is not fully covered. Missing:
+                  {{
+                    (selectedHydrogenFile()?.powerConsumed ?? 0) - selectedPowerProduction()
+                      | unit: MeasurementUnit.KWH
+                  }}. Grid power will be used to cover the remaining amount.
+                </div>
+              }
+            }
           </div>
         }
       </div>
