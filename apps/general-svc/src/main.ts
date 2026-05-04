@@ -25,7 +25,7 @@ async function bootstrap() {
       urls: [amqpUri],
       queue: BrokerQueues.QUEUE_GENERAL_SVC,
       queueOptions: {
-        durable: false,
+        durable: true,
       },
     },
   });

@@ -158,7 +158,6 @@ export class BottlingAllocator {
         active: active,
         amount: remainingAmount,
         qualityDetails: {
-          color: predecessorProcessStep.batch.qualityDetails.color,
           rfnboType: predecessorProcessStep.batch.qualityDetails.rfnboType,
           powerType: predecessorProcessStep.batch.qualityDetails.powerType,
         },
