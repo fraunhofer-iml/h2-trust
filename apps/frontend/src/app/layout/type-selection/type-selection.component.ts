@@ -57,25 +57,23 @@ export class TypeSelectionComponent {
     return this.descriptions()[type] ?? '';
   }
 
-  private getEnumType(type: SelectableType): EnumLabelKey {
-    const unitTypes = new Set<SelectableType>(Object.values(UnitType));
-    if (unitTypes.has(type)) {
-      return 'unitType';
-    }
-
-    const csvContentTypes = new Set<SelectableType>(Object.values(CsvContentType));
-    if (csvContentTypes.has(type)) {
-      return 'csvContentType';
-    }
-
-    return 'rfnboType';
-  }
-
   isDisabled(type: SelectableType) {
     return this.disabledTypes().includes(type);
   }
 
   isSelected(type: SelectableType) {
     return this.typeControl().value === type;
+  }
+
+  private getEnumType(type: SelectableType): EnumLabelKey {
+    if (Object.values(UnitType).includes(type as UnitType)) {
+      return 'unitType';
+    }
+
+    if (Object.values(CsvContentType).includes(type as CsvContentType)) {
+      return 'csvContentType';
+    }
+
+    return 'rfnboType';
   }
 }
