@@ -7,7 +7,6 @@
  */
 
 import { HttpStatus } from '@nestjs/common';
-import { BrokerException } from '@h2-trust/messaging';
 import { parseAccountingPeriodCsvBuffer } from './accounting-period-csv-parser';
 
 describe('parseAccountingPeriodCsvBuffer', () => {
