@@ -43,11 +43,11 @@ import {
   StagingScope,
 } from '@h2-trust/domain';
 import { BrokerException, BrokerQueues, UnitMessagePatterns } from '@h2-trust/messaging';
-import { CsvImportProcessingService } from './csv-import-processing.service';
 import { ProductionCreationService } from './production-creation.service';
 import { ProductionNormalizer } from './production-normalizer';
 import { DocumentProof, ParsedImport } from './production.types';
 import { ProductionUtils } from './utils/production.utils';
+import { CsvImportProcessingService } from './csv/csv-import-processing.service';
 
 @Injectable()
 export class ProductionStagingService {

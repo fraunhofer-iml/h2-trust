@@ -13,7 +13,7 @@ import { CreateCsvDocumentInput } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
 import { CentralizedStorageService, ContentType, DecentralizedStorageService } from '@h2-trust/storage';
 import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
-import { ParsedImport } from './production.types';
+import { ParsedImport } from '../production.types';
 
 @Injectable()
 export class CsvImportProcessingService {
