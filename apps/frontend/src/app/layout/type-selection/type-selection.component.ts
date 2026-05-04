@@ -7,16 +7,19 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CsvContentType, RfnboType, UnitType } from '@h2-trust/domain';
 import { ICONS } from '../../shared/constants/icons';
+import { EnumLabelKey } from '../../shared/model/enum-label-key.type';
+import { EnumPipe } from '../../shared/pipes/enum.pipe';
 
 type SelectableType = UnitType | CsvContentType | RfnboType;
 
 @Component({
   selector: 'app-type-selection',
   imports: [CommonModule, ReactiveFormsModule],
+  providers: [EnumPipe],
   templateUrl: './type-selection.component.html',
 })
 export class TypeSelectionComponent {
@@ -24,6 +27,7 @@ export class TypeSelectionComponent {
   typeControl = input.required<FormControl<SelectableType | null | undefined>>();
   descriptions = input<Record<string, string>>({});
   disabledTypes = input<readonly SelectableType[]>([]);
+  private readonly enumPipe = inject(EnumPipe);
 
   private readonly iconMap: Record<string, string> = {
     [UnitType.HYDROGEN_PRODUCTION]: ICONS.UNITS.HYDROGEN_PRODUCTION,
@@ -34,16 +38,6 @@ export class TypeSelectionComponent {
     [RfnboType.RFNBO_READY]: ICONS.HYDROGEN.RFNBO_READY,
     [RfnboType.NON_CERTIFIABLE]: ICONS.HYDROGEN.NON_CERTIFIABLE,
   };
-  private readonly labelMap: Record<string, string> = {
-    [UnitType.HYDROGEN_PRODUCTION]: 'Hydrogen production',
-    [UnitType.POWER_PRODUCTION]: 'Power production',
-    [UnitType.HYDROGEN_STORAGE]: 'Hydrogen storage',
-    [CsvContentType.HYDROGEN]: 'Hydrogen production data',
-    [CsvContentType.POWER]: 'Power production data',
-    [RfnboType.RFNBO_READY]: 'RFNBO Ready',
-    [RfnboType.NON_CERTIFIABLE]: 'Non certifiable',
-  };
-
   selectType(type: SelectableType) {
     if (this.isDisabled(type)) return;
 
@@ -56,11 +50,25 @@ export class TypeSelectionComponent {
   }
 
   getLabel(type: SelectableType) {
-    return this.labelMap[type] ?? '';
+    return this.enumPipe.transform(type, this.getEnumType(type));
   }
 
   getDescription(type: SelectableType) {
     return this.descriptions()[type] ?? '';
+  }
+
+  private getEnumType(type: SelectableType): EnumLabelKey {
+    const unitTypes = new Set<SelectableType>(Object.values(UnitType));
+    if (unitTypes.has(type)) {
+      return 'unitType';
+    }
+
+    const csvContentTypes = new Set<SelectableType>(Object.values(CsvContentType));
+    if (csvContentTypes.has(type)) {
+      return 'csvContentType';
+    }
+
+    return 'rfnboType';
   }
 
   isDisabled(type: SelectableType) {

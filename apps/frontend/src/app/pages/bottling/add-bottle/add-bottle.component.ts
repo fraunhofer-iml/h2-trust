@@ -28,6 +28,7 @@ import { FileDragAndDropComponent } from '../../../layout/drag-and-drop/file-dra
 import { FileCardComponent } from '../../../layout/file-card/file-card.component';
 import { TypeSelectionComponent } from '../../../layout/type-selection/type-selection.component';
 import { FileTypes } from '../../../shared/constants/file-types';
+import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
@@ -37,7 +38,7 @@ import { StorageFillingLevelsComponent } from './storage-filling-levels/storage-
 
 @Component({
   selector: 'app-add-bottle',
-  providers: [provideNativeDateAdapter(), CompaniesService, BottlingService],
+  providers: [provideNativeDateAdapter(), CompaniesService, BottlingService, EnumPipe],
   imports: [
     MatDialogModule,
     CommonModule,
@@ -65,6 +66,7 @@ export class AddBottleComponent {
   unitsService = inject(UnitsService);
   companiesService = inject(CompaniesService);
   processService = inject(BottlingService);
+  enumPipe = inject(EnumPipe);
 
   protected readonly FileTypes = FileTypes;
   protected readonly TransportType = TransportMode;
@@ -192,7 +194,9 @@ export class AddBottleComponent {
 
   displayComposition(hydrogenComposition: HydrogenComponentDto[]) {
     const sum = hydrogenComposition.reduce((a, b) => a + b.amount, 0);
-    return hydrogenComposition.map((c) => ` ${c.rfnboType} (${((c.amount * 100) / sum).toFixed(2)} %)`);
+    return hydrogenComposition.map(
+      (c) => ` ${this.enumPipe.transform(c.rfnboType, 'rfnboType')} (${((c.amount * 100) / sum).toFixed(2)} %)`,
+    );
   }
 
   isAmountAvailable(requestedAmount: number | null, hydrogenComposition: HydrogenComponentDto[]) {
