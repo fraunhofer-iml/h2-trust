@@ -8,7 +8,7 @@
 
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, inject, Signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -75,7 +75,7 @@ export class FileSelectionComponent {
     this.form.controls.hydrogenProduction.valueChanges.pipe(map((val) => (val ? val[0] : null))),
   );
 
-  selectedPowerProduction: Signal<number> = toSignal(
+  selectedPowerProduction = toSignal(
     this.form.controls.powerProductions.valueChanges.pipe(
       map((value) => (value ?? []).reduce((acc, item) => acc + item.amountProduced, 0) ?? 0),
     ),
@@ -135,11 +135,10 @@ export class FileSelectionComponent {
   }
 
   chartMax = computed(() => {
-    return this.powerConsumed() > this.selectedPowerProduction()
-      ? this.powerConsumed()
-      : this.selectedPowerProduction() > 0
-        ? this.selectedPowerProduction()
-        : 1;
+    const powerConsumed = this.powerConsumed();
+    const selectedPowerProduction = this.selectedPowerProduction();
+
+    return Math.max(powerConsumed, selectedPowerProduction, 1);
   });
 
   mutation = injectMutation(() => ({
