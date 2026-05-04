@@ -8,7 +8,7 @@
 
 import { Readable } from 'stream';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BlockchainService, HashUtil } from '@h2-trust/blockchain';
+import { BlockchainService, verifyStreamWithStoredHash } from '@h2-trust/blockchain';
 import { FeatureFlagService } from '@h2-trust/configuration';
 import { CsvDocumentEntity, ProofEntity } from '@h2-trust/contracts/entities';
 import { CsvDocumentEntityFixture, ProofEntityFixture } from '@h2-trust/contracts/entities/fixtures';
@@ -18,8 +18,14 @@ import { BatchType, CsvDocumentIntegrityStatus } from '@h2-trust/domain';
 import { CentralizedStorageService, DecentralizedStorageService } from '@h2-trust/storage';
 import { CsvDocumentService } from './csv-document.service';
 
+jest.mock('@h2-trust/blockchain', () => ({
+  ...jest.requireActual('@h2-trust/blockchain'),
+  verifyStreamWithStoredHash: jest.fn(),
+}));
+
 describe('CsvDocumentService', () => {
   let service: CsvDocumentService;
+  const verifyStreamWithStoredHashMock = jest.mocked(verifyStreamWithStoredHash);
 
   const csvImportRepositoryMock = {
     findAllCsvDocumentsByCompanyId: jest.fn(),
@@ -140,7 +146,7 @@ describe('CsvDocumentService', () => {
         blockNumber: 123,
         blockTimestamp: new Date('2026-01-01T00:15:00.000Z'),
       });
-      jest.spyOn(HashUtil, 'verifyStreamWithStoredHash').mockResolvedValue(true);
+      verifyStreamWithStoredHashMock.mockResolvedValue(true);
 
       // Act
       const actualResult = await service.verifyCsvDocumentIntegrity(givenPayload);
@@ -150,7 +156,7 @@ describe('CsvDocumentService', () => {
       expect(storageServiceMock.downloadFile).toHaveBeenCalledWith(givenDocument.fileName);
       expect(blockchainServiceMock.retrieveProof).toHaveBeenCalledWith(givenDocument.id);
       expect(blockchainServiceMock.retrieveBlockchainMetadata).toHaveBeenCalledWith(givenDocument.transactionHash);
-      expect(HashUtil.verifyStreamWithStoredHash).toHaveBeenCalledWith(givenFileStream, givenProof.hash);
+      expect(verifyStreamWithStoredHashMock).toHaveBeenCalledWith(givenFileStream, givenProof.hash);
       expect(actualResult.status).toBe(CsvDocumentIntegrityStatus.VERIFIED);
       expect(actualResult.documentId).toBe(givenDocument.id);
       expect(actualResult.fileName).toBe(givenDocument.fileName);
@@ -190,7 +196,7 @@ describe('CsvDocumentService', () => {
         blockNumber: 456,
         blockTimestamp: new Date('2026-01-01T00:15:00.000Z'),
       });
-      jest.spyOn(HashUtil, 'verifyStreamWithStoredHash').mockResolvedValue(false);
+      verifyStreamWithStoredHashMock.mockResolvedValue(false);
 
       // Act
       const actualResult = await service.verifyCsvDocumentIntegrity(givenPayload);
@@ -224,7 +230,7 @@ describe('CsvDocumentService', () => {
 
       featureFlagServiceMock.verificationEnabled = false;
       csvImportRepositoryMock.findCsvDocumentById.mockResolvedValue(givenDocument);
-      const hashVerifySpy = jest.spyOn(HashUtil, 'verifyStreamWithStoredHash');
+      const hashVerifySpy = verifyStreamWithStoredHashMock;
 
       // Act
       const actualResult = await service.verifyCsvDocumentIntegrity(givenPayload);
@@ -250,7 +256,7 @@ describe('CsvDocumentService', () => {
       // Arrange
       const givenPayload = new ReadByIdPayload('missing-document-id');
       csvImportRepositoryMock.findCsvDocumentById.mockResolvedValue(null);
-      const hashVerifySpy = jest.spyOn(HashUtil, 'verifyStreamWithStoredHash');
+      const hashVerifySpy = verifyStreamWithStoredHashMock;
 
       // Act
       const actualResult = await service.verifyCsvDocumentIntegrity(givenPayload);
@@ -287,7 +293,7 @@ describe('CsvDocumentService', () => {
       );
 
       csvImportRepositoryMock.findCsvDocumentById.mockResolvedValue(givenDocument);
-      const hashVerifySpy = jest.spyOn(HashUtil, 'verifyStreamWithStoredHash');
+      const hashVerifySpy = verifyStreamWithStoredHashMock;
 
       // Act
       const actualResult = await service.verifyCsvDocumentIntegrity(givenPayload);
@@ -329,7 +335,7 @@ describe('CsvDocumentService', () => {
         blockNumber: 789,
         blockTimestamp: new Date('2026-01-01T00:15:00.000Z'),
       });
-      const hashVerifySpy = jest.spyOn(HashUtil, 'verifyStreamWithStoredHash');
+      const hashVerifySpy = verifyStreamWithStoredHashMock;
 
       // Act
       const actualResult = await service.verifyCsvDocumentIntegrity(givenPayload);

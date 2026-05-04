@@ -7,7 +7,7 @@
  */
 
 import { Injectable, Logger, Optional } from '@nestjs/common';
-import { BlockchainService, HashUtil } from '@h2-trust/blockchain';
+import { BlockchainService, verifyStreamWithStoredHash } from '@h2-trust/blockchain';
 import { FeatureFlagService } from '@h2-trust/configuration';
 import { CsvDocumentEntity, VerifyCsvDocumentIntegrityResultEntity } from '@h2-trust/contracts/entities';
 import { ReadByIdPayload } from '@h2-trust/contracts/payloads';
@@ -71,7 +71,7 @@ export class CsvDocumentService {
         return this.createFailedResult(csvDocument.id, csvDocument.fileName, message, csvDocument.transactionHash);
       }
 
-      const validHash = await HashUtil.verifyStreamWithStoredHash(fileStream, proof.hash);
+      const validHash = await verifyStreamWithStoredHash(fileStream, proof.hash);
 
       this.logger.debug(
         `${validHash ? '✅ Valid' : '❌ Invalid'} integrity for CsvDocument with id ${csvDocument.id} and file name ${csvDocument.fileName}`,

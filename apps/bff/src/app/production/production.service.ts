@@ -9,7 +9,7 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { HashUtil } from '@h2-trust/blockchain';
+import { hashBuffer } from '@h2-trust/blockchain';
 import {
   AccountingPeriodMatchingResultDto,
   CsvDocumentIntegrityResultDto,
@@ -150,7 +150,7 @@ export class ProductionService {
 
     return normalizedFiles.map((file, i) => {
       const unitId = normalizedUnitIds[i];
-      const hashedFileBuffer = HashUtil.hashBuffer(file.buffer);
+      const hashedFileBuffer = hashBuffer(file.buffer);
       const encodedFileBuffer = file.buffer.toString('base64');
       return new UnitFileImport(unitId, hashedFileBuffer, encodedFileBuffer, type);
     });

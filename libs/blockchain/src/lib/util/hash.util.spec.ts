@@ -7,9 +7,9 @@
  */
 
 import { Readable } from 'stream';
-import { HashUtil } from './hash.util';
+import { hashStream, verifyStreamWithStoredHash } from './hash.util';
 
-describe('HashUtil', () => {
+describe('hash util functions', () => {
   describe('hash', () => {
     it('should return correct SHA-256 hex digest for known input', async () => {
       // arrange
@@ -17,7 +17,7 @@ describe('HashUtil', () => {
       const expectedHash = 'b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9';
 
       // act
-      const actualHash = await HashUtil.hashStream(givenStream);
+      const actualHash = await hashStream(givenStream);
 
       // assert
       expect(actualHash).toBe(expectedHash);
@@ -29,7 +29,7 @@ describe('HashUtil', () => {
       const expectedHash = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
 
       // act
-      const actualHash = await HashUtil.hashStream(givenStream);
+      const actualHash = await hashStream(givenStream);
 
       // assert
       expect(actualHash).toBe(expectedHash);
@@ -44,7 +44,7 @@ describe('HashUtil', () => {
       });
 
       // act & assert
-      await expect(HashUtil.hashStream(givenStream)).rejects.toThrow('stream error');
+      await expect(hashStream(givenStream)).rejects.toThrow('stream error');
     });
   });
 
@@ -53,7 +53,7 @@ describe('HashUtil', () => {
       const givenStream = Readable.from(Buffer.from('hello world'));
       const givenStoredHash = 'b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9';
 
-      const actualResult = await HashUtil.verifyStreamWithStoredHash(givenStream, givenStoredHash);
+      const actualResult = await verifyStreamWithStoredHash(givenStream, givenStoredHash);
 
       expect(actualResult).toBe(true);
     });
@@ -62,7 +62,7 @@ describe('HashUtil', () => {
       const givenStream = Readable.from(Buffer.from('hello world'));
       const givenStoredHash = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
 
-      const actualResult = await HashUtil.verifyStreamWithStoredHash(givenStream, givenStoredHash);
+      const actualResult = await verifyStreamWithStoredHash(givenStream, givenStoredHash);
 
       expect(actualResult).toBe(false);
     });

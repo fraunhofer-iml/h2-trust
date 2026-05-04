@@ -9,31 +9,29 @@
 import { createHash, timingSafeEqual } from 'crypto';
 import { Readable } from 'stream';
 
-export class HashUtil {
-  static async hashStream(stream: Readable): Promise<string> {
-    const hash = createHash('sha256');
+export async function hashStream(stream: Readable): Promise<string> {
+  const hash = createHash('sha256');
 
-    return new Promise((resolve, reject) => {
-      stream.on('error', reject);
-      hash.on('error', reject);
-      hash.on('finish', () => resolve(hash.digest('hex')));
-      stream.pipe(hash);
-    });
+  return new Promise((resolve, reject) => {
+    stream.on('error', reject);
+    hash.on('error', reject);
+    hash.on('finish', () => resolve(hash.digest('hex')));
+    stream.pipe(hash);
+  });
+}
+
+export async function verifyStreamWithStoredHash(stream: Readable, storedHash: string): Promise<boolean> {
+  const computedHash = await hashStream(stream);
+
+  if (computedHash.length !== storedHash.length) {
+    return false;
   }
 
-  static async verifyStreamWithStoredHash(stream: Readable, storedHash: string): Promise<boolean> {
-    const computedHash = await HashUtil.hashStream(stream);
+  const computedBytes = new Uint8Array(Buffer.from(computedHash, 'hex'));
+  const storedBytes = new Uint8Array(Buffer.from(storedHash, 'hex'));
+  return timingSafeEqual(computedBytes, storedBytes);
+}
 
-    if (computedHash.length !== storedHash.length) {
-      return false;
-    }
-
-    const computedBytes = new Uint8Array(Buffer.from(computedHash, 'hex'));
-    const storedBytes = new Uint8Array(Buffer.from(storedHash, 'hex'));
-    return timingSafeEqual(computedBytes, storedBytes);
-  }
-
-  static hashBuffer(buffer: Buffer): string {
-    return createHash('sha256').update(buffer).digest('hex');
-  }
+export function hashBuffer(buffer: Buffer): string {
+  return createHash('sha256').update(buffer).digest('hex');
 }

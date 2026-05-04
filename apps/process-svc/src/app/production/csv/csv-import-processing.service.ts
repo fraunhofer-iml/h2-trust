@@ -7,7 +7,7 @@
  */
 
 import { Injectable, Optional } from '@nestjs/common';
-import { HashUtil } from '@h2-trust/blockchain';
+import { hashBuffer } from '@h2-trust/blockchain';
 import { UnitAccountingPeriods, UnitFileImport } from '@h2-trust/contracts/entities';
 import { CreateCsvDocumentInput } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
@@ -32,7 +32,7 @@ export class CsvImportProcessingService {
       unitFileImports.map(async (ufi) => {
         const headers = CsvImportProcessingService.validHeaders[ufi.productionType];
         const buffer = Buffer.from(ufi.encodedFileBuffer, 'base64');
-        const computedHash = HashUtil.hashBuffer(buffer);
+        const computedHash = hashBuffer(buffer);
         const expectedHash = ufi.hashedFileBuffer;
 
         if (computedHash !== expectedHash) {
