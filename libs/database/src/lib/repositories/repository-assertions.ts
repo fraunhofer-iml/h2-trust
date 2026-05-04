@@ -9,11 +9,14 @@
 import { HttpStatus } from '@nestjs/common';
 import { BrokerException } from '@h2-trust/messaging';
 
-export function assertRecordFound(fetchedRecord: any, id: string, entityLabel = 'Record') {
+export function assertRecordFound<T>(
+  fetchedRecord: T | null | undefined,
+  id: string,
+  entityLabel = 'Record',
+): asserts fetchedRecord is T {
   if (!fetchedRecord) {
     throw new BrokerException(`${entityLabel} with ID '${id}' not found.`, HttpStatus.NOT_FOUND);
   }
-  return fetchedRecord;
 }
 
 export function assertAllIdsFound<T extends { id: string }>(

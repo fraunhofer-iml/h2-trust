@@ -82,7 +82,7 @@ export class FileSelectionComponent {
       this.selectedHydrogenFile()?.endedAt,
       BatchType.POWER,
     ],
-    queryFn: async () =>
+    queryFn: () =>
       this.productionService.getStagedProductions(
         CsvContentType.POWER,
         StagingScope.RECEIVED,

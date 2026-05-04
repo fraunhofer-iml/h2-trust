@@ -9,7 +9,7 @@
 import { createHash, timingSafeEqual } from 'crypto';
 import { Readable } from 'stream';
 
-export async function hashStream(stream: Readable): Promise<string> {
+export function hashStream(stream: Readable): Promise<string> {
   const hash = createHash('sha256');
 
   return new Promise((resolve, reject) => {

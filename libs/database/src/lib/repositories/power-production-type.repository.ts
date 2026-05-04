@@ -15,8 +15,7 @@ export class PowerProductionTypeRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findPowerProductionTypes(): Promise<PowerProductionTypeEntity[]> {
-    return this.prismaService.powerProductionType
-      .findMany()
-      .then((result) => result.map(PowerProductionTypeEntity.fromDatabase));
+    const result = await this.prismaService.powerProductionType.findMany();
+    return result.map(PowerProductionTypeEntity.fromDatabase);
   }
 }

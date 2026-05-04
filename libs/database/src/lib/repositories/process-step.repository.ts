@@ -19,18 +19,18 @@ import { assertRecordFound } from './repository-assertions';
 export class ProcessStepRepository {
   private readonly logger = new Logger(ProcessStepRepository.name);
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   async findProcessStep(id: string): Promise<ProcessStepEntity> {
-    return this.prismaService.processStep
+    const processStep = await this.prismaService.processStep
       .findUnique({
         where: {
           id: id,
         },
         ...processStepDeepQueryArgs,
-      })
-      .then((record) => assertRecordFound(record, id, 'process-step'))
-      .then(ProcessStepEntity.fromDeepDatabase);
+      });
+    assertRecordFound(processStep, id, 'process-step');
+    return ProcessStepEntity.fromDeepDatabase(processStep);
   }
 
   async findProcessStepsByPredecessorTypesAndOwner(
@@ -42,14 +42,14 @@ export class ProcessStepRepository {
     const predecessorsFilter: Prisma.BatchWhereInput =
       Array.isArray(predecessorProcessTypes) && predecessorProcessTypes.length > 0
         ? {
-            predecessors: {
-              some: {
-                processStep: {
-                  type: { in: predecessorProcessTypes },
-                },
+          predecessors: {
+            some: {
+              processStep: {
+                type: { in: predecessorProcessTypes },
               },
             },
-          }
+          },
+        }
         : {};
 
     const batchOwnerFilter: Prisma.BatchWhereInput = {
@@ -62,18 +62,18 @@ export class ProcessStepRepository {
 
     const hydrogenUnitWhereInput: Prisma.UnitWhereInput = hydrogenProductionUnitName
       ? {
-          name: {
-            contains: hydrogenProductionUnitName,
-            mode: 'insensitive',
-          },
-        }
+        name: {
+          contains: hydrogenProductionUnitName,
+          mode: 'insensitive',
+        },
+      }
       : {};
 
     const periodWhereInput: Prisma.DateTimeFilter = period
       ? {
-          gte: new Date(period.getFullYear(), period.getMonth(), 1),
-          lt: new Date(period.getFullYear(), period.getMonth() + 1, 1),
-        }
+        gte: new Date(period.getFullYear(), period.getMonth(), 1),
+        lt: new Date(period.getFullYear(), period.getMonth() + 1, 1),
+      }
       : {};
 
     return this.prismaService.processStep

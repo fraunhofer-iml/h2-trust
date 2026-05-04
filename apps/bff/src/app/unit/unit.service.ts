@@ -31,32 +31,34 @@ export class UnitService {
   constructor(
     @Inject(QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   async readPowerProductionUnit(id: string): Promise<PowerProductionUnitDto> {
     const unit = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(id)),
+      this.generalService.send(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(id))
     );
     return PowerProductionUnitDto.fromEntity(unit);
   }
 
   async readHydrogenProductionUnit(id: string): Promise<HydrogenProductionUnitDto> {
-    return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(id))).then(
-      HydrogenProductionUnitDto.fromEntity,
+    const unit = await firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(id))
     );
+    return HydrogenProductionUnitDto.fromEntity(unit);
   }
 
   async readHydrogenStorageUnit(id: string): Promise<HydrogenStorageUnitDto> {
-    return firstValueFrom(this.generalService.send(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(id))).then(
-      HydrogenStorageUnitDto.fromEntity,
+    const unit = await firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(id))
     );
+    return HydrogenStorageUnitDto.fromEntity(unit);
   }
 
   async readPowerProductionUnits(userId: string): Promise<PowerProductionOverviewDto[]> {
     const ownerId = await this.getCompanyIdFromUserId(userId);
 
     const units = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION, new ReadByIdPayload(ownerId)),
+      this.generalService.send(UnitMessagePatterns.READ_POWER_PRODUCTION, new ReadByIdPayload(ownerId))
     );
     return units.map(PowerProductionOverviewDto.fromEntity);
   }
@@ -64,7 +66,7 @@ export class UnitService {
   async readHydrogenProductionUnits(userId: string): Promise<HydrogenProductionOverviewDto[]> {
     const ownerId = await this.getCompanyIdFromUserId(userId);
     const units = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION, new ReadByIdPayload(ownerId)),
+      this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION, new ReadByIdPayload(ownerId))
     );
     return units.map(HydrogenProductionOverviewDto.fromEntity);
   }
@@ -73,65 +75,56 @@ export class UnitService {
     const ownerId = await this.getCompanyIdFromUserId(userId);
 
     const units: HydrogenStorageUnitEntity[] = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_STORAGE, new ReadByIdPayload(ownerId)),
+      this.generalService.send(UnitMessagePatterns.READ_HYDROGEN_STORAGE, new ReadByIdPayload(ownerId))
     );
     return units.map(HydrogenStorageOverviewDto.fromEntity);
   }
 
   async createPowerProductionUnit(dto: PowerProductionUnitInputDto): Promise<PowerProductionUnitDto> {
-    return firstValueFrom(
+    const unit = await firstValueFrom(
       this.generalService.send(UnitMessagePatterns.CREATE_POWER_PRODUCTION, PowerProductionUnitInputDto.toPayload(dto)),
-    ).then(PowerProductionUnitDto.fromEntity);
+    );
+    return PowerProductionUnitDto.fromEntity(unit);
   }
 
   async createHydrogenProductionUnit(dto: HydrogenProductionUnitInputDto): Promise<HydrogenProductionUnitDto> {
-    return firstValueFrom(
-      this.generalService.send(
-        UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION,
-        HydrogenProductionUnitInputDto.toPayload(dto),
-      ),
-    ).then(HydrogenProductionUnitDto.fromEntity);
+    const unit = await firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION, HydrogenProductionUnitInputDto.toPayload(dto)),
+    );
+    return HydrogenProductionUnitDto.fromEntity(unit);
   }
 
   async createHydrogenStorageUnit(dto: HydrogenStorageUnitInputDto): Promise<HydrogenStorageUnitDto> {
-    return firstValueFrom(
+    const unit = await firstValueFrom(
       this.generalService.send(UnitMessagePatterns.CREATE_HYDROGEN_STORAGE, HydrogenStorageUnitInputDto.toPayload(dto)),
-    ).then(HydrogenStorageUnitDto.fromEntity);
+    );
+    return HydrogenStorageUnitDto.fromEntity(unit);
   }
 
   async updateUnitStatus(id: string, active: boolean): Promise<void> {
-    await firstValueFrom(
-      this.generalService.send<void>(UnitMessagePatterns.UPDATE_STATUS, UnitUpdateActiveDto.toPayload(id, active)),
+    return firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.UPDATE_STATUS, UnitUpdateActiveDto.toPayload(id, active)),
     );
   }
 
   async updateHydrogenProductionUnit(id: string, dto: HydrogenProductionUnitInputDto): Promise<void> {
-    return await firstValueFrom(
-      this.generalService.send<void>(
-        UnitMessagePatterns.UPDATE_HYDROGEN_PRODUCTION,
-        HydrogenProductionUnitInputDto.toPayload(dto, id),
-      ),
+    return firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.UPDATE_HYDROGEN_PRODUCTION, HydrogenProductionUnitInputDto.toPayload(dto, id)),
     );
   }
 
   async updatePowerProductionUnit(id: string, dto: PowerProductionUnitInputDto): Promise<void> {
-    return await firstValueFrom(
-      this.generalService.send<void>(
-        UnitMessagePatterns.UPDATE_POWER_PRODUCTION,
-        PowerProductionUnitInputDto.toPayload(dto, id),
-      ),
+    return firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.UPDATE_POWER_PRODUCTION, PowerProductionUnitInputDto.toPayload(dto, id)),
     );
   }
   async updateHydrogenStorageUnit(id: string, dto: HydrogenStorageUnitInputDto): Promise<void> {
-    return await firstValueFrom(
-      this.generalService.send<void>(
-        UnitMessagePatterns.UPDATE_HYDROGEN_STORAGE,
-        HydrogenStorageUnitInputDto.toPayload(dto, id),
-      ),
+    return firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.UPDATE_HYDROGEN_STORAGE, HydrogenStorageUnitInputDto.toPayload(dto, id)),
     );
   }
   private async getCompanyIdFromUserId(id: string): Promise<string> {
-    const userDetails = await this.userService.readUserWithCompany(id);
-    return userDetails.company.id;
+    const userWithCompany = await this.userService.readUserWithCompany(id);
+    return userWithCompany.company.id;
   }
 }

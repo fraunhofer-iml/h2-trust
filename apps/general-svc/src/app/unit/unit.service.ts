@@ -32,57 +32,57 @@ export class UnitService {
     private readonly powerProductionTypeRepository: PowerProductionTypeRepository,
   ) {}
 
-  async readUnitById(id: string): Promise<ConcreteUnitEntity> {
+  readUnitById(id: string): Promise<ConcreteUnitEntity> {
     return this.unitRepository.findUnitById(id);
   }
 
-  async readUnitsByIds(ids: string[]): Promise<ConcreteUnitEntity[]> {
+  readUnitsByIds(ids: string[]): Promise<ConcreteUnitEntity[]> {
     return this.unitRepository.findUnitsByIds(ids);
   }
 
-  async readPowerProductionUnitsByOwnerId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity[]> {
+  readPowerProductionUnitsByOwnerId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity[]> {
     return this.unitRepository.findPowerProductionUnitsByOwnerId(payload.id);
   }
 
-  async readPowerProductionUnitsByIds(payload: ReadByIdsPayload): Promise<PowerProductionUnitEntity[]> {
+  readPowerProductionUnitsByIds(payload: ReadByIdsPayload): Promise<PowerProductionUnitEntity[]> {
     return this.unitRepository.findPowerProductionUnitsByIds(payload.ids);
   }
 
-  async readHydrogenProductionUnitsByOwnerId(payload: ReadByIdPayload): Promise<HydrogenProductionUnitEntity[]> {
+  readHydrogenProductionUnitsByOwnerId(payload: ReadByIdPayload): Promise<HydrogenProductionUnitEntity[]> {
     return this.unitRepository.findHydrogenProductionUnitsByOwnerId(payload.id);
   }
 
-  async readHydrogenProductionUnitsByIds(payload: ReadByIdsPayload): Promise<HydrogenProductionUnitEntity[]> {
+  readHydrogenProductionUnitsByIds(payload: ReadByIdsPayload): Promise<HydrogenProductionUnitEntity[]> {
     return this.unitRepository.findHydrogenProductionUnitsByIds(payload.ids);
   }
 
-  async readHydrogenStorageUnitsByOwnerId(payload: ReadByIdPayload): Promise<HydrogenStorageUnitEntity[]> {
+  readHydrogenStorageUnitsByOwnerId(payload: ReadByIdPayload): Promise<HydrogenStorageUnitEntity[]> {
     return this.unitRepository.findHydrogenStorageUnitsByOwnerId(payload.id);
   }
 
-  async readPowerProductionTypes(): Promise<PowerProductionTypeEntity[]> {
+  readPowerProductionTypes(): Promise<PowerProductionTypeEntity[]> {
     return this.powerProductionTypeRepository.findPowerProductionTypes();
   }
 
-  async updateOrCreateHydrogenProductionUnit(
+  updateOrCreateHydrogenProductionUnit(
     payload: CreateHydrogenProductionUnitPayload,
   ): Promise<HydrogenProductionUnitEntity> {
     return this.unitRepository.updateOrCreateHydrogenProductionUnit(payload);
   }
 
-  async updateOrCreatePowerProductionUnit(
+  updateOrCreatePowerProductionUnit(
     payload: CreatePowerProductionUnitPayload,
   ): Promise<PowerProductionUnitEntity> {
     return this.unitRepository.updateOrCreatePowerProductionUnit(payload);
   }
 
-  async updateOrCreateHydrogenStorageUnit(
+  updateOrCreateHydrogenStorageUnit(
     payload: CreateHydrogenStorageUnitPayload,
   ): Promise<HydrogenStorageUnitEntity> {
     return this.unitRepository.updateOrCreateHydrogenStorageUnit(payload);
   }
 
-  async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<BaseUnitEntity> {
+  updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<BaseUnitEntity> {
     return this.unitRepository.updateUnitStatus(payload);
   }
 }

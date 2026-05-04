@@ -13,11 +13,10 @@ import { companyDeepQueryArgs } from '../query-args';
 
 @Injectable()
 export class CompanyRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   async findAll(): Promise<CompanyEntity[]> {
-    return this.prismaService.company
-      .findMany({ ...companyDeepQueryArgs })
-      .then((result) => result.map(CompanyEntity.fromDeepDatabase));
+    const companies = await this.prismaService.company.findMany({ ...companyDeepQueryArgs });
+    return companies.map(CompanyEntity.fromDeepDatabase);
   }
 }
