@@ -30,7 +30,7 @@ import { BatchType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { BrokerQueues, UnitMessagePatterns } from '@h2-trust/messaging';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { ProductionCreationService } from './production-creation.service';
-import { ProductionUtils } from './utils/production.utils';
+import { splitGridPowerProduction } from './utils/production.utils';
 
 @Injectable()
 export class ProductionService {
@@ -80,7 +80,7 @@ export class ProductionService {
       hydrogenProductionUnit.waterConsumptionLitersPerHour,
     );
 
-    const createProductionEntities: CreateProductionEntity[] = ProductionUtils.splitGridPowerProduction(
+    const createProductionEntities: CreateProductionEntity[] = splitGridPowerProduction(
       createProductionEntity,
       powerProductionUnit.type.energySource,
     );

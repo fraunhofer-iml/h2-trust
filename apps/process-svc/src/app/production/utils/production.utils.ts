@@ -11,164 +11,160 @@ import { EnergySource, PowerType, RenewableShareInGridMix, TimeInSeconds } from 
 import { DateTimeUtil } from '@h2-trust/utils';
 import { AccountingPeriod } from '../production.types';
 
-export class ProductionUtils {
-  static calculateNumberOfAccountingPeriods(
-    startedAtInSeconds: number,
-    endedAtInSeconds: number,
-    accountingPeriodInSeconds: number,
-  ): number {
-    const durationInSeconds = this.calculateDuration(startedAtInSeconds, endedAtInSeconds);
+export function calculateNumberOfAccountingPeriods(
+  startedAtInSeconds: number,
+  endedAtInSeconds: number,
+  accountingPeriodInSeconds: number,
+): number {
+  const durationInSeconds = calculateDuration(startedAtInSeconds, endedAtInSeconds);
 
-    if (!Number.isFinite(accountingPeriodInSeconds)) {
-      throw new Error(`accountingPeriodInSeconds must be a finite number: ${accountingPeriodInSeconds}`);
-    }
-
-    if (accountingPeriodInSeconds <= 0) {
-      throw new Error('accountingPeriodInSeconds must be greater than zero');
-    }
-
-    return Math.ceil(durationInSeconds / accountingPeriodInSeconds);
+  if (!Number.isFinite(accountingPeriodInSeconds)) {
+    throw new Error(`accountingPeriodInSeconds must be a finite number: ${accountingPeriodInSeconds}`);
   }
 
-  static calculateDuration(startedAtInSeconds: number, endedAtInSeconds: number) {
-    const durationInSeconds = endedAtInSeconds - startedAtInSeconds;
-
-    if (startedAtInSeconds < 0) {
-      throw new Error('startedAtInSeconds must be positive');
-    }
-
-    if (endedAtInSeconds < 0) {
-      throw new Error('endedAtInSeconds must be positive');
-    }
-
-    if (durationInSeconds <= 0) {
-      throw new Error('endedAtInSeconds must be greater than startedAtInSeconds');
-    }
-
-    return durationInSeconds;
+  if (accountingPeriodInSeconds <= 0) {
+    throw new Error('accountingPeriodInSeconds must be greater than zero');
   }
 
-  static calculateBatchAmountPerAccountingPeriod(batchAmount: number, numberOfAccountingPeriods: number): number {
-    if (batchAmount <= 0) {
-      throw new Error('batchAmount must be greater than zero');
-    }
+  return Math.ceil(durationInSeconds / accountingPeriodInSeconds);
+}
 
-    if (numberOfAccountingPeriods <= 0) {
-      throw new Error('numberOfAccountingPeriods must be greater than zero');
-    }
+export function calculateDuration(startedAtInSeconds: number, endedAtInSeconds: number) {
+  const durationInSeconds = endedAtInSeconds - startedAtInSeconds;
 
-    return batchAmount / Math.max(1, numberOfAccountingPeriods);
+  if (startedAtInSeconds < 0) {
+    throw new Error('startedAtInSeconds must be positive');
   }
 
-  static calculateProductionStartDate(
-    startedAtInSeconds: number,
-    accountingPeriodInSeconds: number,
-    accountingPeriodIndex: number,
-  ): Date {
-    return this.calculateProductionDate(startedAtInSeconds, accountingPeriodInSeconds, accountingPeriodIndex, false);
+  if (endedAtInSeconds < 0) {
+    throw new Error('endedAtInSeconds must be positive');
   }
 
-  static calculateProductionEndDate(
-    startedAtInSeconds: number,
-    accountingPeriodInSeconds: number,
-    accountingPeriodIndex: number,
-  ): Date {
-    return this.calculateProductionDate(startedAtInSeconds, accountingPeriodInSeconds, accountingPeriodIndex, true);
+  if (durationInSeconds <= 0) {
+    throw new Error('endedAtInSeconds must be greater than startedAtInSeconds');
   }
 
-  static calculateProductionDate(
-    startedAtInSeconds: number,
-    accountingPeriodInSeconds: number,
-    accountingPeriodIndex: number,
-    isEnd: boolean,
-  ): Date {
-    const productionStartedAtInMs = startedAtInSeconds * 1000;
-    const accountingPeriodInMs = accountingPeriodInSeconds * 1000;
-    const accountingPeriodOffsetInMs = (accountingPeriodIndex + (isEnd ? 1 : 0)) * accountingPeriodInMs;
+  return durationInSeconds;
+}
 
-    return new Date(
-      isEnd
-        ? productionStartedAtInMs + accountingPeriodOffsetInMs - 1000 // Subtract 1 second to ensure the end time is before the next period starts
-        : productionStartedAtInMs + accountingPeriodOffsetInMs,
-    );
+export function calculateBatchAmountPerAccountingPeriod(batchAmount: number, numberOfAccountingPeriods: number): number {
+  if (batchAmount <= 0) {
+    throw new Error('batchAmount must be greater than zero');
   }
 
-  static calculateWaterAmount(startedAt: Date, endedAt: Date, waterConsumptionPerHour: number): number {
-    if (waterConsumptionPerHour < 0) {
-      throw new Error(`waterConsumptionPerHour must be non-negative: [${waterConsumptionPerHour}]`);
-    }
-
-    const startedAtInSeconds = DateTimeUtil.convertDateToSeconds(startedAt);
-    const endedAtInSeconds = DateTimeUtil.convertDateToSeconds(endedAt);
-    const durationInSeconds = ProductionUtils.calculateDuration(startedAtInSeconds, endedAtInSeconds);
-    return (waterConsumptionPerHour / TimeInSeconds.ONE_HOUR) * durationInSeconds;
+  if (numberOfAccountingPeriods <= 0) {
+    throw new Error('numberOfAccountingPeriods must be greater than zero');
   }
 
-  static calculateAccountingPeriods(
-    startedAt: Date,
-    endedAt: Date,
-    totalAmount: number,
-    predecessors: ProcessStepEntity[],
-  ): AccountingPeriod[] {
-    const startInSeconds = DateTimeUtil.convertDateToSeconds(startedAt);
-    const endInSeconds = DateTimeUtil.convertDateToSeconds(endedAt);
-    const alignedStartInSeconds =
-      Math.floor(startInSeconds / TimeInSeconds.ACCOUNTING_PERIOD) * TimeInSeconds.ACCOUNTING_PERIOD;
+  return batchAmount / Math.max(1, numberOfAccountingPeriods);
+}
 
-    const numberOfAccountingPeriods = ProductionUtils.calculateNumberOfAccountingPeriods(
+export function calculateProductionStartDate(
+  startedAtInSeconds: number,
+  accountingPeriodInSeconds: number,
+  accountingPeriodIndex: number,
+): Date {
+  return calculateProductionDate(startedAtInSeconds, accountingPeriodInSeconds, accountingPeriodIndex, false);
+}
+
+export function calculateProductionEndDate(
+  startedAtInSeconds: number,
+  accountingPeriodInSeconds: number,
+  accountingPeriodIndex: number,
+): Date {
+  return calculateProductionDate(startedAtInSeconds, accountingPeriodInSeconds, accountingPeriodIndex, true);
+}
+
+export function calculateProductionDate(
+  startedAtInSeconds: number,
+  accountingPeriodInSeconds: number,
+  accountingPeriodIndex: number,
+  isEnd: boolean,
+): Date {
+  const productionStartedAtInMs = startedAtInSeconds * 1000;
+  const accountingPeriodInMs = accountingPeriodInSeconds * 1000;
+  const accountingPeriodOffsetInMs = (accountingPeriodIndex + (isEnd ? 1 : 0)) * accountingPeriodInMs;
+
+  return new Date(
+    isEnd
+      ? productionStartedAtInMs + accountingPeriodOffsetInMs - 1000 // Subtract 1 second to ensure the end time is before the next period starts
+      : productionStartedAtInMs + accountingPeriodOffsetInMs,
+  );
+}
+
+export function calculateWaterAmount(startedAt: Date, endedAt: Date, waterConsumptionPerHour: number): number {
+  if (waterConsumptionPerHour < 0) {
+    throw new Error(`waterConsumptionPerHour must be non-negative: [${waterConsumptionPerHour}]`);
+  }
+
+  const startedAtInSeconds = DateTimeUtil.convertDateToSeconds(startedAt);
+  const endedAtInSeconds = DateTimeUtil.convertDateToSeconds(endedAt);
+  const durationInSeconds = calculateDuration(startedAtInSeconds, endedAtInSeconds);
+  return (waterConsumptionPerHour / TimeInSeconds.ONE_HOUR) * durationInSeconds;
+}
+
+export function calculateAccountingPeriods(
+  startedAt: Date,
+  endedAt: Date,
+  totalAmount: number,
+  predecessors: ProcessStepEntity[],
+): AccountingPeriod[] {
+  const startInSeconds = DateTimeUtil.convertDateToSeconds(startedAt);
+  const endInSeconds = DateTimeUtil.convertDateToSeconds(endedAt);
+  const alignedStartInSeconds =
+    Math.floor(startInSeconds / TimeInSeconds.ACCOUNTING_PERIOD) * TimeInSeconds.ACCOUNTING_PERIOD;
+
+  const numberOfAccountingPeriods = calculateNumberOfAccountingPeriods(
+    alignedStartInSeconds,
+    endInSeconds,
+    TimeInSeconds.ACCOUNTING_PERIOD,
+  );
+
+  const amountPerAccountingPeriod = calculateBatchAmountPerAccountingPeriod(totalAmount, numberOfAccountingPeriods);
+
+  const predecessorsByStartedAt = groupBatchesByStartedAt(predecessors);
+  const accountingPeriods: AccountingPeriod[] = [];
+
+  for (let i = 0; i < numberOfAccountingPeriods; i++) {
+    const accountingPeriodStartedAt = calculateProductionStartDate(
       alignedStartInSeconds,
-      endInSeconds,
       TimeInSeconds.ACCOUNTING_PERIOD,
+      i,
     );
 
-    const amountPerAccountingPeriod = ProductionUtils.calculateBatchAmountPerAccountingPeriod(
-      totalAmount,
-      numberOfAccountingPeriods,
+    const accountingPeriodEndedAt = calculateProductionEndDate(
+      alignedStartInSeconds,
+      TimeInSeconds.ACCOUNTING_PERIOD,
+      i,
     );
 
-    const predecessorsByStartedAt = this.groupBatchesByStartedAt(predecessors);
-    const accountingPeriods: AccountingPeriod[] = [];
+    const startedAtConverted = DateTimeUtil.convertDateToMilliseconds(accountingPeriodStartedAt);
+    const accountingPeriodPredecessors = predecessorsByStartedAt.get(startedAtConverted) || [];
 
-    for (let i = 0; i < numberOfAccountingPeriods; i++) {
-      const startedAt = ProductionUtils.calculateProductionStartDate(
-        alignedStartInSeconds,
-        TimeInSeconds.ACCOUNTING_PERIOD,
-        i,
-      );
-
-      const endedAt = ProductionUtils.calculateProductionEndDate(
-        alignedStartInSeconds,
-        TimeInSeconds.ACCOUNTING_PERIOD,
-        i,
-      );
-
-      const startedAtConverted = DateTimeUtil.convertDateToMilliseconds(startedAt);
-      const predecessors = predecessorsByStartedAt.get(startedAtConverted) || [];
-
-      accountingPeriods.push({
-        startedAt: startedAt,
-        endedAt: endedAt,
-        amount: amountPerAccountingPeriod,
-        predecessors: predecessors,
-      });
-    }
-
-    return accountingPeriods;
+    accountingPeriods.push({
+      startedAt: accountingPeriodStartedAt,
+      endedAt: accountingPeriodEndedAt,
+      amount: amountPerAccountingPeriod,
+      predecessors: accountingPeriodPredecessors,
+    });
   }
 
-  private static groupBatchesByStartedAt(processSteps: ProcessStepEntity[]): Map<number, BatchEntity[]> {
-    const batchesByStartedAt = new Map<number, BatchEntity[]>();
+  return accountingPeriods;
+}
 
-    for (const processStep of processSteps) {
-      const startedAt = DateTimeUtil.convertDateToMilliseconds(processStep.startedAt);
+function groupBatchesByStartedAt(processSteps: ProcessStepEntity[]): Map<number, BatchEntity[]> {
+  const batchesByStartedAt = new Map<number, BatchEntity[]>();
 
-      const batches = batchesByStartedAt.get(startedAt) || [];
-      batches.push(processStep.batch);
-      batchesByStartedAt.set(startedAt, batches);
-    }
+  for (const processStep of processSteps) {
+    const startedAt = DateTimeUtil.convertDateToMilliseconds(processStep.startedAt);
 
-    return batchesByStartedAt;
+    const batches = batchesByStartedAt.get(startedAt) || [];
+    batches.push(processStep.batch);
+    batchesByStartedAt.set(startedAt, batches);
   }
+
+  return batchesByStartedAt;
+}
 
   /**
    * Takes a total value (e.g., hydrogen production or water consumption) and calculates the proportionate value based on total and proportionate power production.
@@ -177,17 +173,17 @@ export class ProductionUtils {
    * @param partialPowerConsumption The partial amount of electricity to be used as a reference.
    * @returns The partial amount.
    */
-  static calculatePartialAmountRelativeToPowerProduction(
-    totalAmount: number,
-    totalPowerConsumption: number,
-    partialPowerConsumption: number,
-  ) {
-    if (totalAmount <= 0 || totalPowerConsumption <= 0) {
-      throw new Error(`The partial amount could not be calculated because at least one total is 0.`);
-    }
-    const shareOfPartialPowerFromTotalPower: number = (partialPowerConsumption * 100) / totalPowerConsumption;
-    return (totalAmount / 100) * shareOfPartialPowerFromTotalPower;
+export function calculatePartialAmountRelativeToPowerProduction(
+  totalAmount: number,
+  totalPowerConsumption: number,
+  partialPowerConsumption: number,
+) {
+  if (totalAmount <= 0 || totalPowerConsumption <= 0) {
+    throw new Error(`The partial amount could not be calculated because at least one total is 0.`);
   }
+  const shareOfPartialPowerFromTotalPower: number = (partialPowerConsumption * 100) / totalPowerConsumption;
+  return (totalAmount / 100) * shareOfPartialPowerFromTotalPower;
+}
 
   /**
    * If the PowerProduction is grid electricity, then the CreateProductionsPayload should be split into two parts so that both a HydrogenBatch from renewable electricity and one from non-renewable electricity can be created.
@@ -195,61 +191,59 @@ export class ProductionUtils {
    * @param powerProductionUnitEnergyType The energy type of the power production unit to be tested on grid electricity.
    * @returns In the Grid Electricity case, a list of the productions to be created for the two electricity options is returned. In the case of renewable electricity, nothing is done and the original payload is returned.
    */
-  static splitGridPowerProduction(
-    createProduction: CreateProductionEntity,
-    powerProductionUnitEnergySource: EnergySource,
-  ): CreateProductionEntity[] {
-    if (powerProductionUnitEnergySource != EnergySource.GRID) {
-      return [createProduction];
-    }
-
-    const renewablePowerAmountKwh = (createProduction.powerAmountKwh * RenewableShareInGridMix.DE) / 100;
-    const renewableHydrogenAmountKg = (createProduction.hydrogenAmountKg * RenewableShareInGridMix.DE) / 100;
-    const renewableWaterConsumption =
-      (createProduction.waterConsumptionLitersPerHour * RenewableShareInGridMix.DE) / 100;
-
-    const notRenewablePowerAmountKwh = createProduction.powerAmountKwh - renewablePowerAmountKwh;
-    const notRenewableHydrogenAmountKg = createProduction.hydrogenAmountKg - renewableHydrogenAmountKg;
-    const notRenewableWaterConsumption = createProduction.waterConsumptionLitersPerHour - renewableWaterConsumption;
-
-    return [
-      ProductionUtils.createEntityForNewAmounts(
-        createProduction,
-        renewableHydrogenAmountKg,
-        renewablePowerAmountKwh,
-        renewableWaterConsumption,
-        PowerType.PARTLY_RENEWABLE,
-      ),
-      ProductionUtils.createEntityForNewAmounts(
-        createProduction,
-        notRenewableHydrogenAmountKg,
-        notRenewablePowerAmountKwh,
-        notRenewableWaterConsumption,
-        PowerType.NON_RENEWABLE,
-      ),
-    ];
+export function splitGridPowerProduction(
+  createProduction: CreateProductionEntity,
+  powerProductionUnitEnergySource: EnergySource,
+): CreateProductionEntity[] {
+  if (powerProductionUnitEnergySource != EnergySource.GRID) {
+    return [createProduction];
   }
 
-  private static createEntityForNewAmounts(
-    createProductionEntity: CreateProductionEntity,
-    hydrogenAmount: number,
-    powerAmount: number,
-    waterConsumption: number,
-    powerType: PowerType,
-  ): CreateProductionEntity {
-    return new CreateProductionEntity(
-      createProductionEntity.productionStartedAt,
-      createProductionEntity.productionEndedAt,
-      createProductionEntity.powerProductionUnitId,
-      powerType,
-      powerAmount,
-      createProductionEntity.hydrogenProductionUnitId,
-      hydrogenAmount,
-      createProductionEntity.recordedBy,
-      createProductionEntity.hydrogenStorageUnitId,
-      createProductionEntity.ownerIdOfPowerProductionUnit,
-      createProductionEntity.ownerIdOfHydrogenProductionUnit,
-      waterConsumption,
-    );
-  }
+  const renewablePowerAmountKwh = (createProduction.powerAmountKwh * RenewableShareInGridMix.DE) / 100;
+  const renewableHydrogenAmountKg = (createProduction.hydrogenAmountKg * RenewableShareInGridMix.DE) / 100;
+  const renewableWaterConsumption = (createProduction.waterConsumptionLitersPerHour * RenewableShareInGridMix.DE) / 100;
+
+  const notRenewablePowerAmountKwh = createProduction.powerAmountKwh - renewablePowerAmountKwh;
+  const notRenewableHydrogenAmountKg = createProduction.hydrogenAmountKg - renewableHydrogenAmountKg;
+  const notRenewableWaterConsumption = createProduction.waterConsumptionLitersPerHour - renewableWaterConsumption;
+
+  return [
+    createEntityForNewAmounts(
+      createProduction,
+      renewableHydrogenAmountKg,
+      renewablePowerAmountKwh,
+      renewableWaterConsumption,
+      PowerType.PARTLY_RENEWABLE,
+    ),
+    createEntityForNewAmounts(
+      createProduction,
+      notRenewableHydrogenAmountKg,
+      notRenewablePowerAmountKwh,
+      notRenewableWaterConsumption,
+      PowerType.NON_RENEWABLE,
+    ),
+  ];
+}
+
+function createEntityForNewAmounts(
+  createProductionEntity: CreateProductionEntity,
+  hydrogenAmount: number,
+  powerAmount: number,
+  waterConsumption: number,
+  powerType: PowerType,
+): CreateProductionEntity {
+  return new CreateProductionEntity(
+    createProductionEntity.productionStartedAt,
+    createProductionEntity.productionEndedAt,
+    createProductionEntity.powerProductionUnitId,
+    powerType,
+    powerAmount,
+    createProductionEntity.hydrogenProductionUnitId,
+    hydrogenAmount,
+    createProductionEntity.recordedBy,
+    createProductionEntity.hydrogenStorageUnitId,
+    createProductionEntity.ownerIdOfPowerProductionUnit,
+    createProductionEntity.ownerIdOfHydrogenProductionUnit,
+    waterConsumption,
+  );
 }

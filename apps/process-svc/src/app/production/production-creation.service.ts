@@ -21,12 +21,17 @@ import { BatchType, RfnboType } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
 import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
 import { ProcessStepService } from '../process-step/process-step.service';
-import { ProductionAssembler } from './production.assembler';
+import {
+  assembleHydrogenProductions,
+  assemblePowerProductions,
+  assembleWaterConsumptions,
+} from './production.assembler';
 
 @Injectable()
 export class ProductionCreationService {
   private readonly logger = new Logger(this.constructor.name);
   private readonly productionChunkSize: number;
+  
   constructor(
     private readonly configurationService: ConfigurationService,
     private readonly processStepService: ProcessStepService,
@@ -48,10 +53,10 @@ export class ProductionCreationService {
 
       // Step 1: Create power and water (each returns array with 1 element due to 1:1 relation)
       const power: ProcessStepEntity[] = createProductionsChunk.flatMap((production) =>
-        ProductionAssembler.assemblePowerProductions(production, productionUnitsForId),
+        assemblePowerProductions(production, productionUnitsForId),
       );
       const water: ProcessStepEntity[] = createProductionsChunk.flatMap((production) =>
-        ProductionAssembler.assembleWaterConsumptions(production, productionUnitsForId),
+        assembleWaterConsumptions(production, productionUnitsForId),
       );
 
       if (power.length !== createProductionsChunk.length || water.length !== createProductionsChunk.length) {
@@ -85,7 +90,7 @@ export class ProductionCreationService {
 
       // Step 4: Create hydrogen with persisted predecessors
       const hydrogenToPersist: ProcessStepEntity[] = createProductionsChunk.flatMap((production, index) =>
-        ProductionAssembler.assembleHydrogenProductions(
+        assembleHydrogenProductions(
           production,
           [persistedPower[index]],
           [persistedWater[index]],

@@ -12,7 +12,7 @@ import { UnitAccountingPeriods, UnitFileImport } from '@h2-trust/contracts/entit
 import { CreateCsvDocumentInput } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
 import { CentralizedStorageService, ContentType, DecentralizedStorageService } from '@h2-trust/storage';
-import { AccountingPeriodCsvParser } from './accounting-period-csv-parser';
+import { parseAccountingPeriodCsvBuffer } from './accounting-period-csv-parser';
 import { ParsedImport } from '../production.types';
 
 @Injectable()
@@ -41,7 +41,7 @@ export class CsvImportProcessingService {
           );
         }
 
-        const accountingPeriods = await AccountingPeriodCsvParser.parseBuffer(buffer, headers);
+        const accountingPeriods = await parseAccountingPeriodCsvBuffer(buffer, headers);
 
         if (!accountingPeriods.length) {
           throw new Error(`${ufi.productionType} production file does not contain any valid items.`);
