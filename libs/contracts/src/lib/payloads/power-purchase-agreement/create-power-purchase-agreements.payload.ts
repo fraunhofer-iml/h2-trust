@@ -7,8 +7,9 @@
  */
 
 import { Type } from 'class-transformer';
-import { IsDate, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsDate, IsEnum, IsNotEmpty, IsString, Validate } from 'class-validator';
 import { PowerProductionType } from '@h2-trust/domain';
+import { IsBeforeConstraint } from '@h2-trust/validation';
 
 export class CreatePowerPurchaseAgreementsPayload {
   @IsNotEmpty()
@@ -31,6 +32,7 @@ export class CreatePowerPurchaseAgreementsPayload {
   @IsDate()
   @Type(() => Date)
   @IsNotEmpty()
+  @Validate(IsBeforeConstraint)
   validTo: Date;
 
   constructor(

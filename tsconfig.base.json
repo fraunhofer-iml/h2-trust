@@ -43,7 +43,8 @@
       "@h2-trust/messaging": ["libs/messaging/src/index.ts"],
       "@h2-trust/storage": ["libs/storage/src/index.ts"],
       "@h2-trust/strings": ["libs/strings/src/index.ts"],
-      "@h2-trust/utils": ["libs/utils/src/index.ts"]
+      "@h2-trust/utils": ["libs/utils/src/index.ts"],
+      "@h2-trust/validation": ["./libs/validation/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
