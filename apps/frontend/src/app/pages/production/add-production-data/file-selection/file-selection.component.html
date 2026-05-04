@@ -45,8 +45,10 @@
                 #option
               >
                 <span matListItemTitle>
-                  {{ dataset.startedAt | date: 'mediumDate' }}, {{ dataset.startedAt | date: 'shortTime' }} –
-                  {{ dataset.endedAt | date: 'mediumDate' }}, {{ dataset.endedAt | date: 'shortTime' }}
+                  {{ dataset.startedAt | date: 'mediumDate' : 'UTC' }},
+                  {{ dataset.startedAt | date: 'shortTime' : 'UTC' }} –
+                  {{ dataset.endedAt | date: 'mediumDate' : 'UTC' }},
+                  {{ dataset.endedAt | date: 'shortTime' : 'UTC' }}
                 </span>
                 <p matListItemLine class="pb-3">
                   {{ dataset.amountProduced | unit: MeasurementUnit.KG_H2 }} •
@@ -108,10 +110,10 @@
                       <mat-list-option [value]="powerDataset" togglePosition="before" class="bg-white!">
                         <span matListItemTitle class="flex justify-between">
                           <span>
-                            {{ powerDataset.startedAt | date: 'mediumDate' }},
-                            {{ powerDataset.startedAt | date: 'shortTime' }} –
-                            {{ powerDataset.endedAt | date: 'mediumDate' }},
-                            {{ powerDataset.endedAt | date: 'shortTime' }}
+                            {{ powerDataset.startedAt | date: 'mediumDate' : 'UTC' }},
+                            {{ powerDataset.startedAt | date: 'shortTime' : 'UTC' }} –
+                            {{ powerDataset.endedAt | date: 'mediumDate' : 'UTC' }},
+                            {{ powerDataset.endedAt | date: 'shortTime' : 'UTC' }}
                           </span>
                           <strong>{{ powerDataset.amountProduced | unit: MeasurementUnit.KWH }}</strong>
                         </span>
