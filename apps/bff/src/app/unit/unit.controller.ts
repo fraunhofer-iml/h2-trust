@@ -8,7 +8,7 @@
 
 import { Body, Controller, Get, Param, Patch, Post, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
-import { KeycloakUser } from 'nest-keycloak-connect';
+import { AuthenticatedUser } from 'nest-keycloak-connect';
 import {
   HydrogenProductionOverviewDto,
   HydrogenProductionUnitDto,
@@ -37,7 +37,7 @@ export class UnitController {
     description: 'Returns a list of all hydrogen-storage units of the authenticated user ',
   })
   getHydrogenStorageUnits(
-    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<HydrogenStorageOverviewDto[]> {
     return this.unitService.readHydrogenStorageUnits(authenticatedUser.sub);
   }
@@ -75,7 +75,7 @@ export class UnitController {
     description: 'Returns a list of all power-production units of the authenticated user ',
   })
   getPowerProductionUnits(
-    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<PowerProductionOverviewDto[]> {
     return this.unitService.readPowerProductionUnits(authenticatedUser.sub);
   }
@@ -113,7 +113,7 @@ export class UnitController {
     description: 'Returns a list of all hydrogen-storage units of the authenticated user ',
   })
   getHydrogenProductionUnits(
-    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<HydrogenProductionOverviewDto[]> {
     return this.unitService.readHydrogenProductionUnits(authenticatedUser.sub);
   }
