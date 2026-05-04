@@ -19,20 +19,20 @@ import { BiddingZone } from '@h2-trust/domain';
 import { assertBoolean, assertDefined, DateTimeUtil } from '@h2-trust/utils';
 
 export function determineRedCompliance(
-  hydrogenProdution: ProcessStepEntity,
+  hydrogenProduction: ProcessStepEntity,
   powerProduction: ProcessStepEntity,
 ): RedComplianceEntity {
-  if (!hydrogenProdution?.executedBy || !powerProduction?.executedBy) {
+  if (!hydrogenProduction?.executedBy || !powerProduction?.executedBy) {
     throw new RpcException(
       `The passed-in power production or hydrogen production do not have an executedBy unit specified.`,
     );
   }
   const powerProductionUnit: PowerProductionUnitEntity = powerProduction.executedBy as PowerProductionUnitEntity;
   const hydrogenProductionUnit: HydrogenProductionUnitEntity =
-    hydrogenProdution.executedBy as HydrogenProductionUnitEntity;
+    hydrogenProduction.executedBy as HydrogenProductionUnitEntity;
 
   const isGeoCorrelationValid = areUnitsInSameBiddingZone(powerProductionUnit, hydrogenProductionUnit);
-  const isTimeCorrelationValid = isWithinTimeCorrelation(powerProduction, hydrogenProdution);
+  const isTimeCorrelationValid = isWithinTimeCorrelation(powerProduction, hydrogenProduction);
   const isAdditionalityFulfilled = meetsAdditionalityCriterion(powerProductionUnit, hydrogenProductionUnit);
   const isFinancialSupportReceived = hasFinancialSupport(powerProductionUnit);
 

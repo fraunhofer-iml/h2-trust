@@ -13,13 +13,7 @@ import {
   ProcessStepEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
 import { BiddingZone } from '@h2-trust/domain';
-import {
-  areUnitsInSameBiddingZone,
-  determineRedCompliance,
-  hasFinancialSupport,
-  isWithinTimeCorrelation,
-  meetsAdditionalityCriterion,
-} from '../red-compliance.service';
+import { determineRedCompliance, areUnitsInSameBiddingZone, isWithinTimeCorrelation, meetsAdditionalityCriterion, hasFinancialSupport } from './red-compliance';
 
 describe('RedComplianceService', () => {
   describe('determineRedCompliance', () => {

@@ -22,7 +22,7 @@ import { ProcessStepService } from '../process-step/process-step.service';
 import { assembleProofOfOrigin, getHydrogenBottlingCompositions } from './proof-of-origin/proof-of-origin.assembler';
 import { assembleProofOfSustainability } from './proof-of-sustainability/proof-of-sustainability.assembler';
 import { ProvenanceService } from './provenance/provenance.service';
-import { determineRedCompliance, determineTotalRedCompliance } from './red-compliance/red-compliance.service';
+import { determineRedCompliance, determineTotalRedCompliance } from './red-compliance/red-compliance';
 
 @Injectable()
 export class DigitalProductPassportService {
