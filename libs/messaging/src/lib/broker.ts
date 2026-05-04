@@ -7,7 +7,7 @@
  */
 
 import { DynamicModule } from '@nestjs/common';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ClientsModule, RmqOptions, Transport } from '@nestjs/microservices';
 import { requireEnv } from '@h2-trust/utils';
 import { QUEUE_GENERAL_SVC, QUEUE_PROCESS_SVC } from './broker-queues';
 
@@ -20,19 +20,26 @@ export function getProcessSvcBroker(): DynamicModule {
 }
 
 function getMessageBroker(queue: string): DynamicModule {
-  const amqpUri = requireEnv('AMQP_URI');
-
   return ClientsModule.register([
     {
       name: queue,
-      transport: Transport.RMQ,
-      options: {
-        urls: [amqpUri],
-        queue,
-        queueOptions: {
-          durable: true,
-        },
-      },
+      ...getRmqMicroserviceOptions(queue),
     },
   ]);
 }
+
+export function getRmqMicroserviceOptions(queue: string): RmqOptions {
+  const amqpUri = requireEnv('AMQP_URI');
+
+  return {
+    transport: Transport.RMQ,
+    options: {
+      urls: [amqpUri],
+      queue,
+      queueOptions: {
+        durable: true,
+      },
+    },
+  };
+}
+
