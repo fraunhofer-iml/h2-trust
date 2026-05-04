@@ -13,7 +13,6 @@ import {
   EnergySource,
   FuelType,
   GridLevel,
-  HydrogenColor,
   HydrogenProductionMethod,
   HydrogenProductionTechnology,
   HydrogenStorageType,
@@ -34,7 +33,6 @@ export const ENUM_LABEL_RESOLVERS = {
   hydrogenStorageType: (value: HydrogenStorageType) => EnumLabelMapper.getHydrogenStorageType(value),
   fuelType: (value: FuelType) => EnumLabelMapper.getFuelType(value),
   energySource: (value: EnergySource) => EnumLabelMapper.getEnergySource(value),
-  hydrogenColor: (value: HydrogenColor) => EnumLabelMapper.getHydrogenColor(value),
   csvDocumentIntegrityStatus: (value: CsvDocumentIntegrityStatus) =>
     EnumLabelMapper.getCsvDocumentIntegrityStatus(value),
   unitType: (value: UnitType) => EnumLabelMapper.getUnitType(value),
