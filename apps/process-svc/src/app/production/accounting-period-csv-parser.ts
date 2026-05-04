@@ -10,12 +10,17 @@ import { HttpStatus, Logger } from '@nestjs/common';
 import { parse } from 'csv-parse';
 import { StagedProductionAccountingPeriod } from '@h2-trust/contracts/entities';
 import { BrokerException } from '@h2-trust/messaging';
+import { DateTimeUtil } from '@h2-trust/utils';
 
 export class AccountingPeriodCsvParser {
   private static readonly logger: Logger = new Logger(AccountingPeriodCsvParser.name);
   private static readonly dateTimeRegex = /^\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2}(:\d{2})?$/;
 
-  static async parseBuffer(buffer: Buffer, columns: string[]): Promise<StagedProductionAccountingPeriod[]> {
+  static async parseBuffer(
+    buffer: Buffer,
+    columns: string[],
+    timezone: string,
+  ): Promise<StagedProductionAccountingPeriod[]> {
     let skipped = 0;
     let invalid = 0;
 
@@ -38,10 +43,7 @@ export class AccountingPeriodCsvParser {
           let date: Date | null = null;
 
           if (AccountingPeriodCsvParser.dateTimeRegex.test(value)) {
-            const [datePart, timePart] = value.split(/\s+/);
-            const [day, month, year] = datePart.split('.').map(Number);
-            const [hours, minutes] = timePart.split(':').map(Number);
-            return new Date(Date.UTC(year, month - 1, day, hours, minutes));
+            return DateTimeUtil.parseLocalTimeToUTC(value, timezone);
           } else if (!isNaN(Date.parse(value))) {
             date = new Date(value);
           } else if (!isNaN(Number(value))) {

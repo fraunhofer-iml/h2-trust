@@ -25,9 +25,13 @@ export class StageProductionsPayload {
   @IsNotEmpty()
   companyId: string;
 
-  constructor(powerProductions: UnitFileImport[], userId: string, companyId: string) {
+  @IsString()
+  timeZoneName: string;
+
+  constructor(powerProductions: UnitFileImport[], userId: string, companyId: string, timeZoneName: string) {
     this.productionImports = powerProductions;
     this.userId = userId;
     this.companyId = companyId;
+    this.timeZoneName = timeZoneName;
   }
 }

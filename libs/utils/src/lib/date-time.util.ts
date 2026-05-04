@@ -88,4 +88,37 @@ export class DateTimeUtil {
     const seconds = String(date.getSeconds()).padStart(2, '0');
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
   }
+
+  /**
+   * Accepts a timestamp as string and converts it to UTC.
+   * @param value The date string that should be converted to UTC
+   * @param timezoneName The name of the time zone of the value.
+   * @returns The date string as UTC date.
+   */
+  static parseLocalTimeToUTC(value: string, timezoneName: string): Date {
+    const [datePart, timePart] = value.split(/\s+/);
+    const [day, month, year] = datePart.split('.').map(Number);
+    const [hours, minutes] = timePart.split(':').map(Number);
+
+    const localTime = Date.UTC(year, month - 1, day, hours, minutes);
+    const localTimezoneOffset: number = this.getTimezoneOffset(timezoneName);
+
+    return new Date(localTime + localTimezoneOffset * 60000);
+  }
+
+  private static getTimezoneOffset(timezoneName: string): number {
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: timezoneName,
+    });
+
+    const now = new Date();
+    const parts = formatter.formatToParts(now);
+    const localDate = new Date(
+      parseInt(parts.find((p) => p.type === 'year')?.value || '0'),
+      parseInt(parts.find((p) => p.type === 'month')?.value || '1') - 1,
+      parseInt(parts.find((p) => p.type === 'day')?.value || '1'),
+    );
+
+    return localDate.getTimezoneOffset();
+  }
 }

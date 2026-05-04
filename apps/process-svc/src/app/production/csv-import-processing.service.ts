@@ -27,7 +27,7 @@ export class CsvImportProcessingService {
     @Optional() private readonly decentralizedStorageService: DecentralizedStorageService | null,
   ) {}
 
-  async parseAndUploadFiles(unitFileImports: UnitFileImport[]): Promise<ParsedImport[]> {
+  async parseAndUploadFiles(unitFileImports: UnitFileImport[], timezoneName: string): Promise<ParsedImport[]> {
     return Promise.all(
       unitFileImports.map(async (ufi) => {
         const headers = CsvImportProcessingService.validHeaders[ufi.productionType];
@@ -41,7 +41,7 @@ export class CsvImportProcessingService {
           );
         }
 
-        const accountingPeriods = await AccountingPeriodCsvParser.parseBuffer(buffer, headers);
+        const accountingPeriods = await AccountingPeriodCsvParser.parseBuffer(buffer, headers, timezoneName);
 
         if (!accountingPeriods.length) {
           throw new Error(`${ufi.productionType} production file does not contain any valid items.`);

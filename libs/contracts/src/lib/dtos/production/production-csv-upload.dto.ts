@@ -20,8 +20,13 @@ export class ProductionCSVUploadDto {
   @IsIn([BatchType.POWER, BatchType.HYDROGEN])
   csvContentType: CsvContentType;
 
-  constructor(unitIds: string[], csvContentType: CsvContentType) {
+  timeZoneName: string;
+
+  constructor(unitIds: string[], csvContentType: CsvContentType, timeZoneName: string) {
+    //TODO-LG: check if the given timeZoneName is valid
+    //Intl.supportedValuesOf('timeZone').includes(timeZoneName)
     this.unitIds = unitIds;
     this.csvContentType = csvContentType;
+    this.timeZoneName = timeZoneName ?? 'Europe/Berlin';
   }
 }
