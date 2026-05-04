@@ -7,13 +7,13 @@
  */
 
 import { Module } from '@nestjs/common';
-import { Broker } from '@h2-trust/messaging';
+import { getProcessSvcBroker } from '@h2-trust/messaging';
 import { UserModule } from '../user/user.module';
 import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';
 
 @Module({
-  imports: [UserModule, Broker.getProcessSvcBroker()],
+  imports: [UserModule, getProcessSvcBroker()],
   controllers: [BottlingController],
   providers: [BottlingService],
 })

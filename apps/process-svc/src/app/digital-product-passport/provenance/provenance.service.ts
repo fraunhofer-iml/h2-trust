@@ -15,7 +15,7 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType } from '@h2-trust/domain';
-import { TraversalService } from './traversal.service';
+import { TraversalService } from './traversal/traversal.service';
 
 type ProvenanceBuilderFn = (root: ProcessStepEntity) => Promise<ProvenanceEntity>;
 
