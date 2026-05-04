@@ -23,7 +23,7 @@ import {
   ProcessType,
 } from '@h2-trust/domain';
 import { EnumLabelMapper } from '@h2-trust/strings';
-import { ProofOfSustainabilityAssembler } from './proof-of-sustainability-assembler.interface';
+import { ProofOfSustainabilityEmissionAssembler } from '../proof-of-sustainability-assembler.interface';
 
 export function assemblePowerSupplyEmissionCalculation(
   powerProduction: ProcessStepEntity,
@@ -72,7 +72,7 @@ export function computePowerSupplyEmissionCalculations(
   });
 }
 
-export function assemblePowerProductionEmissions(
+export function assemblePowerProductionEmissionCalculations(
   provenance: ProvenanceEntity,
 ): ProofOfSustainabilityEmissionCalculationEntity[] {
   if (!provenance.getAllPowerProductions()) {
@@ -109,7 +109,7 @@ export function assemblePowerProductionEmissions(
   ];
 }
 
-export function calculatePowerSupplyEmission(
+export function calculatePowerSupplyEmissions(
   emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
 ): ProofOfSustainabilityEmissionEntity[] {
   const powerSupplyEmissionAmount = emissionCalculations
@@ -126,7 +126,7 @@ export function calculatePowerSupplyEmission(
   return [powerSupplyEmission];
 }
 
-export const powerProductionProofOfSustainabilityAssembler: ProofOfSustainabilityAssembler = {
-  assembleEmissions: assemblePowerProductionEmissions,
-  calculateEmission: calculatePowerSupplyEmission,
+export const powerProductionEmissionAssembler: ProofOfSustainabilityEmissionAssembler = {
+  assembleEmissionCalculations: assemblePowerProductionEmissionCalculations,
+  calculateEmissions: calculatePowerSupplyEmissions,
 };

@@ -12,9 +12,12 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
 
-export interface ProofOfSustainabilityAssembler {
-  assembleEmissions(provenance: ProvenanceEntity): ProofOfSustainabilityEmissionCalculationEntity[];
-  calculateEmission(
+export interface ProofOfSustainabilityEmissionAssembler {
+  assembleEmissionCalculations(
+    provenance: ProvenanceEntity
+  ): ProofOfSustainabilityEmissionCalculationEntity[];
+
+  calculateEmissions(
     emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
   ): ProofOfSustainabilityEmissionEntity[];
 }

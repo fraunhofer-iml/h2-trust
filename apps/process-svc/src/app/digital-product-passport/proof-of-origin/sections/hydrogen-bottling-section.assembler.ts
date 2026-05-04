@@ -18,7 +18,7 @@ import {
 } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
-import { assembleHydrogenBottlingEmissionCalculation } from '../../proof-of-sustainability/hydrogen-bottling-proof-of-sustainability.assembler';
+import { assembleHydrogenBottlingEmissionCalculation } from '../../proof-of-sustainability/emissions/hydrogen-bottling-emission-calculation.assembler';
 import { ProofOfOriginSectionAssembler } from '../proof-of-origin-assembler.interface';
 
 /**

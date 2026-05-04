@@ -6,17 +6,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { hydrogenBottlingProofOfSustainabilityAssembler } from './hydrogen-bottling-proof-of-sustainability.assembler';
-import { hydrogenProductionProofOfSustainabilityAssembler } from './hydrogen-production-proof-of-sustainability.assembler';
-import { hydrogenTransportationProofOfSustainabilityAssembler } from './hydrogen-transportation-proof-of-sustainability.assembler';
-import { powerProductionProofOfSustainabilityAssembler } from './power-production-proof-of-sustainability.assembler';
-import { ProofOfSustainabilityAssembler } from './proof-of-sustainability-assembler.interface';
-import { waterConsumptionProofOfSustainabilityAssembler } from './water-consumption-proof-of-sustainability.assembler';
+import { hydrogenBottlingEmissionAssembler } from './emissions/hydrogen-bottling-emission-calculation.assembler';
+import { hydrogenProductionEmissionAssembler } from './emissions/hydrogen-production-emission-calculation.assembler';
+import { hydrogenTransportationEmissionAssembler } from './emissions/hydrogen-transportation-emission-calculation.assembler';
+import { powerProductionEmissionAssembler } from './emissions/power-production-emission-calculation.assembler';
+import { ProofOfSustainabilityEmissionAssembler } from './proof-of-sustainability-assembler.interface';
+import { waterConsumptionEmissionAssembler } from './emissions/water-consumption-emission-calculation.assembler';
 
-export const proofOfSustainabilityAssemblers: ProofOfSustainabilityAssembler[] = [
-  powerProductionProofOfSustainabilityAssembler,
-  waterConsumptionProofOfSustainabilityAssembler,
-  hydrogenProductionProofOfSustainabilityAssembler,
-  hydrogenBottlingProofOfSustainabilityAssembler,
-  hydrogenTransportationProofOfSustainabilityAssembler,
+export const proofOfSustainabilityEmissionAssemblers: ProofOfSustainabilityEmissionAssembler[] = [
+  powerProductionEmissionAssembler,
+  waterConsumptionEmissionAssembler,
+  hydrogenProductionEmissionAssembler,
+  hydrogenBottlingEmissionAssembler,
+  hydrogenTransportationEmissionAssembler,
 ];

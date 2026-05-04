@@ -23,7 +23,7 @@ import {
   TransportMode,
 } from '@h2-trust/domain';
 import { EnumLabelMapper } from '@h2-trust/strings';
-import { ProofOfSustainabilityAssembler } from './proof-of-sustainability-assembler.interface';
+import { ProofOfSustainabilityEmissionAssembler } from '../proof-of-sustainability-assembler.interface';
 
 function assemblePipelineEmissionCalculation(): ProofOfSustainabilityEmissionCalculationEntity {
   const result = 0;
@@ -112,7 +112,7 @@ export function assembleHydrogenTransportationEmissionCalculation(
   }
 }
 
-export function assembleHydrogenTransportationEmissions(
+export function assembleHydrogenTransportationEmissionCalculations(
   provenance: ProvenanceEntity,
 ): ProofOfSustainabilityEmissionCalculationEntity[] {
   if (!provenance || provenance.root.type !== ProcessType.HYDROGEN_TRANSPORTATION) {
@@ -139,7 +139,7 @@ export function assembleHydrogenTransportationEmissions(
   ];
 }
 
-export function calculateHydrogenTransportationEmission(
+export function calculateHydrogenTransportationEmissions(
   emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
 ): ProofOfSustainabilityEmissionEntity[] {
   const hydrogenTransportationEmissionAmount = emissionCalculations
@@ -156,7 +156,7 @@ export function calculateHydrogenTransportationEmission(
   return [hydrogenTransportationEmission];
 }
 
-export const hydrogenTransportationProofOfSustainabilityAssembler: ProofOfSustainabilityAssembler = {
-  assembleEmissions: assembleHydrogenTransportationEmissions,
-  calculateEmission: calculateHydrogenTransportationEmission,
+export const hydrogenTransportationEmissionAssembler: ProofOfSustainabilityEmissionAssembler = {
+  assembleEmissionCalculations: assembleHydrogenTransportationEmissionCalculations,
+  calculateEmissions: calculateHydrogenTransportationEmissions,
 };

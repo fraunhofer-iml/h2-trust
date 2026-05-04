@@ -19,7 +19,7 @@ import {
   MeasurementUnit,
   ProcessType,
 } from '@h2-trust/domain';
-import { ProofOfSustainabilityAssembler } from './proof-of-sustainability-assembler.interface';
+import { ProofOfSustainabilityEmissionAssembler } from '../proof-of-sustainability-assembler.interface';
 
 export function assembleWaterSupplyEmissionCalculation(
   waterSupply: ProcessStepEntity,
@@ -46,7 +46,7 @@ export function assembleWaterSupplyEmissionCalculation(
   );
 }
 
-export function assembleWaterConsumptionEmissions(
+export function assembleWaterConsumptionEmissionCalculations(
   provenance: ProvenanceEntity,
 ): ProofOfSustainabilityEmissionCalculationEntity[] {
   if (!provenance.getAllWaterConsumptions()) {
@@ -75,7 +75,7 @@ export function assembleWaterConsumptionEmissions(
   ];
 }
 
-export function calculateWaterSupplyEmission(
+export function calculateWaterSupplyEmissions(
   emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
 ): ProofOfSustainabilityEmissionEntity[] {
   const waterSupplyEmissionAmount = emissionCalculations
@@ -92,7 +92,7 @@ export function calculateWaterSupplyEmission(
   return [waterSupplyEmission];
 }
 
-export const waterConsumptionProofOfSustainabilityAssembler: ProofOfSustainabilityAssembler = {
-  assembleEmissions: assembleWaterConsumptionEmissions,
-  calculateEmission: calculateWaterSupplyEmission,
+export const waterConsumptionEmissionAssembler: ProofOfSustainabilityEmissionAssembler = {
+  assembleEmissionCalculations: assembleWaterConsumptionEmissionCalculations,
+  calculateEmissions: calculateWaterSupplyEmissions,
 };

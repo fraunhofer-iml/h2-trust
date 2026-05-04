@@ -13,7 +13,7 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
 import { EmissionNumericConstants, EmissionStringConstants } from '@h2-trust/domain';
-import { proofOfSustainabilityAssemblers } from './proof-of-sustainability-assembler.registry.const';
+import { proofOfSustainabilityEmissionAssemblers } from './proof-of-sustainability-assembler.registry.const';
 
 /**
  * Calculates the emissions figures for the individual process steps in a production chain based on a provenance. It then compiles the results into a Proof of Sustainability.
@@ -26,9 +26,8 @@ export function createProofOfSustainability(provenance: ProvenanceEntity): Proof
   }
 
   const emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[] =
-    proofOfSustainabilityAssemblers.flatMap((proofOfSustainabilityAssembler) =>
-      proofOfSustainabilityAssembler.assembleEmissions(provenance),
-    );
+    proofOfSustainabilityEmissionAssemblers.flatMap((proofOfSustainabilityAssembler) => proofOfSustainabilityAssembler.assembleEmissionCalculations(provenance));
+
   const hydrogenAmount = provenance.hydrogenBottling
     ? provenance.hydrogenBottling.batch.amount
     : provenance.root.batch.amount;
@@ -81,8 +80,8 @@ function assembleProofOfSustainability(
 function assembleApplicationEmissions(
   emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
 ): ProofOfSustainabilityEmissionEntity[] {
-  return proofOfSustainabilityAssemblers.flatMap((proofOfSustainabilityAssembler) =>
-    proofOfSustainabilityAssembler.calculateEmission(emissionCalculations),
+  return proofOfSustainabilityEmissionAssemblers.flatMap((proofOfSustainabilityAssembler) =>
+    proofOfSustainabilityAssembler.calculateEmissions(emissionCalculations),
   );
 }
 

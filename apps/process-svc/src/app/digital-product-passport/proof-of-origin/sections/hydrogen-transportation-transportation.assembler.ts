@@ -15,7 +15,7 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType, ProofOfOrigin } from '@h2-trust/domain';
-import { assembleHydrogenTransportationEmissionCalculation } from '../../proof-of-sustainability/hydrogen-transportation-proof-of-sustainability.assembler';
+import { assembleHydrogenTransportationEmissionCalculation } from '../../proof-of-sustainability/emissions/hydrogen-transportation-emission-calculation.assembler';
 import { ProofOfOriginSectionAssembler } from '../proof-of-origin-assembler.interface';
 
 function assembleHydrogenTransportationBatch(

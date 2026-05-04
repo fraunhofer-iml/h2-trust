@@ -13,7 +13,7 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
 import { CalculationTopic, EmissionStringConstants, MeasurementUnit, ProcessType } from '@h2-trust/domain';
-import { ProofOfSustainabilityAssembler } from './proof-of-sustainability-assembler.interface';
+import { ProofOfSustainabilityEmissionAssembler } from '../proof-of-sustainability-assembler.interface';
 
 export function assembleHydrogenBottlingEmissionCalculation(
   hydrogenBottling: ProcessStepEntity,
@@ -34,7 +34,7 @@ export function assembleHydrogenBottlingEmissionCalculation(
   );
 }
 
-export function assembleHydrogenBottlingEmissions(
+export function assembleHydrogenBottlingEmissionCalculations(
   provenance: ProvenanceEntity,
 ): ProofOfSustainabilityEmissionCalculationEntity[] {
   if (!provenance || !provenance.hydrogenBottling) {
@@ -61,7 +61,7 @@ export function assembleHydrogenBottlingEmissions(
   ];
 }
 
-export function calculateHydrogenBottlingEmission(
+export function calculateHydrogenBottlingEmissions(
   emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
 ): ProofOfSustainabilityEmissionEntity[] {
   const hydrogenBottlingEmissionAmount = emissionCalculations
@@ -78,7 +78,7 @@ export function calculateHydrogenBottlingEmission(
   return [hydrogenBottlingEmission];
 }
 
-export const hydrogenBottlingProofOfSustainabilityAssembler: ProofOfSustainabilityAssembler = {
-  assembleEmissions: assembleHydrogenBottlingEmissions,
-  calculateEmission: calculateHydrogenBottlingEmission,
+export const hydrogenBottlingEmissionAssembler: ProofOfSustainabilityEmissionAssembler = {
+  assembleEmissionCalculations: assembleHydrogenBottlingEmissionCalculations,
+  calculateEmissions: calculateHydrogenBottlingEmissions,
 };

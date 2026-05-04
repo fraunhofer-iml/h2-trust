@@ -18,7 +18,7 @@ import {
 } from '@h2-trust/domain';
 import { EnumLabelMapper } from '@h2-trust/strings';
 
-export function computeHydrogenStorageEmissionCalculations(
+export function assembleHydrogenStorageEmissionCalculations(
   hydrogenProduction: ProcessStepEntity,
 ): ProofOfSustainabilityEmissionCalculationEntity[] {
   if (hydrogenProduction?.type !== ProcessType.HYDROGEN_PRODUCTION) {

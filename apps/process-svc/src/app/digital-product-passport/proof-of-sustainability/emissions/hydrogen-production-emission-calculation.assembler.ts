@@ -12,10 +12,10 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
 import { CalculationTopic, EmissionStringConstants, MeasurementUnit } from '@h2-trust/domain';
-import { computeHydrogenStorageEmissionCalculations } from './hydrogen-storage-proof-of-sustainability.calculator';
-import { ProofOfSustainabilityAssembler } from './proof-of-sustainability-assembler.interface';
+import { assembleHydrogenStorageEmissionCalculations } from './hydrogen-storage-emission-calculation.assembler';
+import { ProofOfSustainabilityEmissionAssembler } from '../proof-of-sustainability-assembler.interface';
 
-export function assembleHydrogenProductionEmissions(
+export function assembleHydrogenProductionEmissionCalculations(
   provenance: ProvenanceEntity,
 ): ProofOfSustainabilityEmissionCalculationEntity[] {
   if (!provenance || !provenance.getAllHydrogenLeafProductions()) {
@@ -28,7 +28,7 @@ export function assembleHydrogenProductionEmissions(
 
   const hydrogenStorageEmissionCalculations = provenance
     .getAllHydrogenLeafProductions()
-    .flatMap((hydrogenProduction) => computeHydrogenStorageEmissionCalculations(hydrogenProduction));
+    .flatMap((hydrogenProduction) => assembleHydrogenStorageEmissionCalculations(hydrogenProduction));
 
   const totalEmissions = hydrogenStorageEmissionCalculations.reduce((sum, curr) => sum + curr.result, 0);
 
@@ -49,7 +49,7 @@ export function assembleHydrogenProductionEmissions(
   ];
 }
 
-export function calculateHydrogenStorageEmission(
+export function calculateHydrogenStorageEmissions(
   emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
 ): ProofOfSustainabilityEmissionEntity[] {
   const hydrogenStorageEmissionAmount = emissionCalculations
@@ -66,7 +66,7 @@ export function calculateHydrogenStorageEmission(
   return [hydrogenStorageEmission];
 }
 
-export const hydrogenProductionProofOfSustainabilityAssembler: ProofOfSustainabilityAssembler = {
-  assembleEmissions: assembleHydrogenProductionEmissions,
-  calculateEmission: calculateHydrogenStorageEmission,
+export const hydrogenProductionEmissionAssembler: ProofOfSustainabilityEmissionAssembler = {
+  assembleEmissionCalculations: assembleHydrogenProductionEmissionCalculations,
+  calculateEmissions: calculateHydrogenStorageEmissions,
 };
