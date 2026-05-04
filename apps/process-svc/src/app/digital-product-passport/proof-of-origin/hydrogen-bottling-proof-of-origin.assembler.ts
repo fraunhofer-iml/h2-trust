@@ -51,7 +51,6 @@ function assembleCompositionForBottling(provenance: ProvenanceEntity): HydrogenC
       (hydrogenRootProduction) =>
         new HydrogenComponentEntity(
           '',
-          hydrogenRootProduction.batch.qualityDetails?.color,
           hydrogenRootProduction.batch.amount,
           hydrogenRootProduction.batch.qualityDetails?.rfnboType ?? RfnboType.NOT_SPECIFIED,
         ),
@@ -83,7 +82,6 @@ export function assembleHydrogenBottlingSection(provenance: ProvenanceEntity): P
     batchType: BatchType.HYDROGEN,
     hydrogenComposition: hydrogenComponentsOfBottling,
     unitId: provenance.hydrogenBottling.executedBy.id,
-    color: provenance.hydrogenBottling.batch?.qualityDetails?.color,
     rfnboType: provenance.hydrogenBottling.batch?.qualityDetails?.rfnboType,
     processStep: provenance.hydrogenBottling.type,
     accountingPeriodEnd: provenance.hydrogenBottling.endedAt,

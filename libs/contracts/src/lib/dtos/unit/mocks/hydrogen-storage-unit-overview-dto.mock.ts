@@ -7,7 +7,6 @@
  */
 
 import { HydrogenStorageOverviewDto } from '@h2-trust/contracts/dtos';
-import { HydrogenColor } from '@h2-trust/domain';
 
 export const HydrogenStorageUnitOverviewDtoMock = <HydrogenStorageOverviewDto[]>[
   {
@@ -15,16 +14,13 @@ export const HydrogenStorageUnitOverviewDtoMock = <HydrogenStorageOverviewDto[]>
     name: 'Storage Unit 1',
     capacity: 1000,
     filling: 750,
-    hydrogenComposition: [
-      { color: HydrogenColor.GREEN, amount: 80 },
-      { color: HydrogenColor.YELLOW, amount: 20 },
-    ],
+    hydrogenComposition: [{ amount: 80 }, { amount: 20 }],
   },
   {
     id: 'storage-2',
     name: 'Storage Unit 2',
     capacity: 2000,
     filling: 1500,
-    hydrogenComposition: [{ color: HydrogenColor.GREEN, amount: 100 }],
+    hydrogenComposition: [{ amount: 100 }],
   },
 ];

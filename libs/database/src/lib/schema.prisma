@@ -151,12 +151,11 @@ model PowerProductionType {
   updatedAt DateTime @updatedAt
 
   energySource  String
-  hydrogenColor String
 
   powerProductionUnits    PowerProductionUnit[]
   powerPurchaseAgreements PowerPurchaseAgreement[]
 
-  @@unique([name, energySource, hydrogenColor])
+  @@unique([name, energySource])
 }
 
 model PowerProductionUnit {
@@ -249,7 +248,6 @@ model QualityDetails {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  color     String
   rfnboType String
   powerType String
 

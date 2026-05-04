@@ -7,34 +7,30 @@
  */
 
 import { PowerProductionTypeEntity } from '@h2-trust/contracts/entities';
-import { EnergySource, HydrogenColor, PowerProductionType } from '@h2-trust/domain';
+import { EnergySource, PowerProductionType } from '@h2-trust/domain';
 
 export const PowerProductionTypeEntityFixture = {
   createSolarEnergy: (overrides: Partial<PowerProductionTypeEntity> = {}): PowerProductionTypeEntity =>
     new PowerProductionTypeEntity(
       overrides.name ?? PowerProductionType.PHOTOVOLTAIC_SYSTEM,
       overrides.energySource ?? EnergySource.SOLAR_ENERGY,
-      overrides.hydrogenColor ?? HydrogenColor.GREEN,
     ),
 
   createWindEnergy: (overrides: Partial<PowerProductionTypeEntity> = {}): PowerProductionTypeEntity =>
     new PowerProductionTypeEntity(
       overrides.name ?? PowerProductionType.WIND_TURBINE,
       overrides.energySource ?? EnergySource.WIND_ENERGY,
-      overrides.hydrogenColor ?? HydrogenColor.GREEN,
     ),
 
   createHydroPower: (overrides: Partial<PowerProductionTypeEntity> = {}): PowerProductionTypeEntity =>
     new PowerProductionTypeEntity(
       overrides.name ?? PowerProductionType.HYDRO_POWER_PLANT,
       overrides.energySource ?? EnergySource.HYDRO_POWER,
-      overrides.hydrogenColor ?? HydrogenColor.GREEN,
     ),
 
   createGrid: (overrides: Partial<PowerProductionTypeEntity> = {}): PowerProductionTypeEntity =>
     new PowerProductionTypeEntity(
       overrides.name ?? PowerProductionType.GRID,
       overrides.energySource ?? EnergySource.GRID,
-      overrides.hydrogenColor ?? HydrogenColor.YELLOW,
     ),
 } as const;

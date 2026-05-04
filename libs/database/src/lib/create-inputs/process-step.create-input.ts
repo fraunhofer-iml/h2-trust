@@ -46,12 +46,11 @@ export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Pri
       create: {
         active: processStep.batch.active ?? true,
         amount: processStep.batch.amount,
-        ...(processStep.batch.qualityDetails?.color && {
+        ...(processStep.batch.qualityDetails && {
           batchDetails: {
             create: {
               qualityDetails: {
                 create: {
-                  color: processStep.batch.qualityDetails.color,
                   rfnboType: processStep.batch.qualityDetails.rfnboType,
                   powerType: processStep.batch.qualityDetails.powerType,
                 },

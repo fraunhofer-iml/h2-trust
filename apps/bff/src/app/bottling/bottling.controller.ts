@@ -25,7 +25,7 @@ import {
   type AuthenticatedKCUser,
 } from '@h2-trust/contracts/dtos';
 import 'multer';
-import { AuthenticatedUser, Public } from 'nest-keycloak-connect';
+import { KeycloakUser, Public } from 'nest-keycloak-connect';
 import { BottlingService } from './bottling.service';
 
 @Controller('bottlings')
@@ -57,10 +57,6 @@ export class BottlingController {
         amount: {
           type: 'number',
           default: BottlingDtoMock[0].amount,
-        },
-        color: {
-          type: 'string',
-          default: BottlingDtoMock[0].color,
         },
         rfnboType: {
           type: 'string',
@@ -100,7 +96,7 @@ export class BottlingController {
   async createBottlingAndTransportation(
     @Body() dto: BottlingDto,
     @UploadedFiles() files: Express.Multer.File[],
-    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<BottlingOverviewDto> {
     return this.bottlingService.createBottlingAndTransportation(dto, files, authenticatedUser.sub);
   }
@@ -115,7 +111,7 @@ export class BottlingController {
     type: [BottlingOverviewDto],
   })
   async readBottlingsAndTransportationsByOwner(
-    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<BottlingOverviewDto[]> {
     return this.bottlingService.readBottlingsAndTransportationsByOwner(authenticatedUser.sub);
   }

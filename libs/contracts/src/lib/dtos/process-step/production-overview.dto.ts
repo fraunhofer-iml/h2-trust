@@ -7,14 +7,13 @@
  */
 
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
-import { BatchType, HydrogenColor, PowerType, RfnboType } from '@h2-trust/domain';
+import { BatchType, PowerType, RfnboType } from '@h2-trust/domain';
 
 export class ProductionOverviewDto {
   startedAt: string;
   endedAt: string;
   productionUnit: string;
   producedAmount: number;
-  color: HydrogenColor;
   rfnboType: RfnboType;
   powerProducer: string;
   powerConsumed: number;
@@ -27,7 +26,6 @@ export class ProductionOverviewDto {
     endedAt: string,
     productionUnit: string,
     producedAmount: number,
-    color: HydrogenColor,
     rfnboType: RfnboType,
     powerProducer: string,
     powerConsumed: number,
@@ -39,7 +37,6 @@ export class ProductionOverviewDto {
     this.endedAt = endedAt;
     this.productionUnit = productionUnit;
     this.producedAmount = producedAmount;
-    this.color = color;
     this.rfnboType = rfnboType;
     this.powerProducer = powerProducer;
     this.powerConsumed = powerConsumed;
@@ -54,7 +51,6 @@ export class ProductionOverviewDto {
       endedAt: processStep.endedAt.toString(),
       productionUnit: processStep.executedBy?.name,
       producedAmount: processStep.batch?.amount,
-      color: processStep.batch?.qualityDetails?.color,
       rfnboType: processStep.batch?.qualityDetails?.rfnboType,
       powerProducer: processStep.batch?.predecessors?.[0]?.owner?.name,
       powerConsumed: ProductionOverviewDto.determinePowerConsumed(processStep),
