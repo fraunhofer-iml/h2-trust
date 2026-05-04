@@ -14,7 +14,7 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
 import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
-import { Util } from '../../util';
+import { assembleClassification } from '../../util';
 import { buildPowerSupplySubClassifications } from '../classifications/power-production-classification.assembler';
 import { ProofOfOriginSectionAssembler } from '../proof-of-origin-assembler.interface';
 import { assembleWaterSupplyClassification } from '../classifications/water-consumption-classification.assembler';
@@ -40,7 +40,7 @@ export function assembleHydrogenProductionSection(provenance: ProvenanceEntity):
       bottledKgHydrogen,
     );
 
-    const powerSupplyClassification: ProofOfOriginClassificationEntity = Util.assembleClassification(
+    const powerSupplyClassification: ProofOfOriginClassificationEntity = assembleClassification(
       ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION,
       BatchType.POWER,
       [],

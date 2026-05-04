@@ -17,7 +17,7 @@ import {
 } from '@h2-trust/contracts/entities';
 import { BatchType, EnergySource, PowerType, ProcessType } from '@h2-trust/domain';
 import { computePowerSupplyEmissionCalculations } from '../../proof-of-sustainability/emissions/power-production-emission-calculation.assembler';
-import { Util } from '../../util';
+import { assembleSubClassification } from '../../util';
 
 function getPowerBatchEntities(
   powerProductionProcesses: ProcessStepEntity[],
@@ -83,7 +83,7 @@ export function buildPowerSupplySubClassifications(
         energySource,
       );
 
-      const subClassification: ProofOfOriginSubClassificationEntity = Util.assembleSubClassification(
+      const subClassification: ProofOfOriginSubClassificationEntity = assembleSubClassification(
         energySource,
         BatchType.POWER,
         productionPowerBatches,

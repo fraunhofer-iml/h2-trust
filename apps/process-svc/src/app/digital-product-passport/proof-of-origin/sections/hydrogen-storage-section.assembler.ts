@@ -18,7 +18,7 @@ import {
 } from '@h2-trust/contracts/entities';
 import { BatchType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
 import { assembleHydrogenStorageEmissionCalculations } from '../../proof-of-sustainability/emissions/hydrogen-storage-emission-calculation.assembler';
-import { Util } from '../../util';
+import { assembleClassification } from '../../util';
 import { ProofOfOriginSectionAssembler } from '../proof-of-origin-assembler.interface';
 
 function assembleHydrogenStorageBatch(
@@ -80,7 +80,7 @@ export function assembleHydrogenStorageSection(provenance: ProvenanceEntity): Pr
       },
     );
 
-    const classification: ProofOfOriginClassificationEntity = Util.assembleClassification(
+    const classification: ProofOfOriginClassificationEntity = assembleClassification(
       rfnboType,
       BatchType.HYDROGEN,
       batchesForHydrogenRfnboType,

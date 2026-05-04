@@ -14,7 +14,7 @@ import {
   ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType, ProofOfOrigin } from '@h2-trust/domain';
-import { Util } from '../../util';
+import { assembleClassification } from '../../util';
 import { assembleWaterSupplyEmissionCalculation } from '../../proof-of-sustainability/emissions/water-consumption-emission-calculation.assembler';
 
 function getWaterBatchEntities(
@@ -60,5 +60,5 @@ export function assembleWaterSupplyClassification(
     bottledKgHydrogen,
   );
 
-  return Util.assembleClassification(ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION, BatchType.WATER, waterBatches, []);
+  return assembleClassification(ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION, BatchType.WATER, waterBatches, []);
 }
