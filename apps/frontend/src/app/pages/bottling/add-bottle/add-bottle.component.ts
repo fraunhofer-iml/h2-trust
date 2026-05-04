@@ -7,6 +7,7 @@
  */
 
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -101,12 +102,25 @@ export class AddBottleComponent {
   }));
 
   mutation = injectMutation(() => ({
-    mutationFn: (dto: FormData) => this.processService.createBottleBatch(dto),
-    onSuccess: () => {
-      toast.success('Successfully created.');
-      this.router.navigateByUrl('bottling');
+    mutationFn: async (dto: FormData) => {
+      const promise = this.processService.createBottleBatch(dto);
+
+      toast.promise(promise, {
+        loading: 'Creating Batch...',
+        success: () => {
+          this.router.navigateByUrl('bottling');
+          return 'Successfully created.';
+        },
+        error: (error): string => {
+          if (error instanceof HttpErrorResponse || error instanceof Error) {
+            return error.message;
+          }
+          return 'Failed to create batch';
+        },
+      });
+
+      await promise;
     },
-    onError: (e) => toast.error(e.message),
   }));
 
   constructor() {
