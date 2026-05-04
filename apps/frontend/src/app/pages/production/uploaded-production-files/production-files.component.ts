@@ -30,6 +30,7 @@ import { BatchType, CsvContentType, CsvDocumentIntegrityStatus, MeasurementUnit 
 import { ICONS } from '../../../shared/constants/icons';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { ProductionService } from '../../../shared/services/production/production.service';
+import { UserRolesStore } from '../../../shared/store/user-role.store';
 import { VerificationResultStore } from '../../../shared/store/verification-result.store';
 import { DownloadButtonComponent } from './download-button/download-button.component';
 import { VerifyComponent } from './verification/verify.component';
@@ -72,7 +73,7 @@ export class ProductionFilesComponent implements AfterViewInit {
   protected readonly MeasurementUnit = MeasurementUnit;
   protected readonly CsvContentType = BatchType;
   protected readonly CsvDocumentIntegrityStatus = CsvDocumentIntegrityStatus;
-  readonly displayedColumns = [
+  private displayedColumns = [
     'select',
     'name',
     'uploadedBy',
@@ -84,6 +85,13 @@ export class ProductionFilesComponent implements AfterViewInit {
     'button',
   ] as const;
 
+  displayedColumns$ = computed(() => {
+    if (this.roles.isHydrogenProducer() && this.roles.isPowerProducer()) {
+      return this.displayedColumns;
+    }
+    return this.displayedColumns.filter((col) => col !== 'type');
+  });
+
   readonly displayedCsvContentTypes: { name: string; value: CsvContentType | null }[] = [
     { name: 'Hydrogen', value: CsvContentType.HYDROGEN },
     { name: 'Power', value: CsvContentType.POWER },
@@ -92,6 +100,7 @@ export class ProductionFilesComponent implements AfterViewInit {
 
   productionService = inject(ProductionService);
   resultStore = inject(VerificationResultStore);
+  roles = inject(UserRolesStore);
 
   searchModel = signal<FilterModel>({
     input: '',

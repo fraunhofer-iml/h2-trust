@@ -12,16 +12,19 @@
           </button>
         }
       </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Type</mat-label>
-        <mat-select [formField]="searchForm.fileType">
-          @for (type of displayedCsvContentTypes; track $index) {
-            <mat-option [value]="type.value">
-              {{ type.name }}
-            </mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
+
+      @if (roles.isHydrogenProducer() && roles.isPowerProducer()) {
+        <mat-form-field appearance="outline">
+          <mat-label>Type</mat-label>
+          <mat-select [formField]="searchForm.fileType">
+            @for (type of displayedCsvContentTypes; track $index) {
+              <mat-option [value]="type.value">
+                {{ type.name }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
 
       <mat-form-field appearance="outline">
         <mat-label>Date range</mat-label>
@@ -153,8 +156,8 @@
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let file; columns: displayedColumns" class="group"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns$()"></tr>
+        <tr mat-row *matRowDef="let file; columns: displayedColumns$()" class="group"></tr>
 
         <!-- No data row -->
         <tr class="mat-row" *matNoDataRow>
