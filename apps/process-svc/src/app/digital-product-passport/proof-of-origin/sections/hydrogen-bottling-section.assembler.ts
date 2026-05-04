@@ -9,7 +9,7 @@
 import { HttpStatus } from '@nestjs/common';
 import {
   HydrogenComponentEntity,
-  HydrogenCompositionUtil,
+  computeHydrogenComposition,
   ProofOfOriginEmissionEntity,
   ProofOfOriginHydrogenBatchEntity,
   ProofOfOriginSectionEntity,
@@ -56,7 +56,7 @@ function assembleCompositionForBottling(provenance: ProvenanceEntity): HydrogenC
         ),
     );
 
-  return HydrogenCompositionUtil.computeHydrogenComposition(hydrogenComponentsOfProductions, bottlingBatchAmount);
+  return computeHydrogenComposition(hydrogenComponentsOfProductions, bottlingBatchAmount);
 }
 
 export function assembleHydrogenBottlingSection(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {

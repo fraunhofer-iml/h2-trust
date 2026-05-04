@@ -11,7 +11,7 @@ import {
   BatchEntity,
   DocumentEntity,
   HydrogenComponentEntity,
-  HydrogenCompositionUtil,
+  computeHydrogenComposition,
   PaginatedProcessStepEntity,
   ProcessStepEntity,
 } from '@h2-trust/contracts/entities';
@@ -143,7 +143,7 @@ export class BottlingService {
     }
 
     try {
-      return HydrogenCompositionUtil.computeHydrogenComposition(hydrogenStorageUnitFillings, batchAmount);
+      return computeHydrogenComposition(hydrogenStorageUnitFillings, batchAmount);
     } catch (BrokerException) {
       throw new BrokerException(
         `Total stored amount of ${hydrogenStorageUnitId} is not greater than 0`,
