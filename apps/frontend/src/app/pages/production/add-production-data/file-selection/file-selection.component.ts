@@ -139,7 +139,7 @@ export class FileSelectionComponent {
           if (error instanceof HttpErrorResponse || error instanceof Error) {
             return error.message;
           }
-          return 'Failed to create batches';
+          return 'Failed to create batches.';
         },
       });
 

@@ -106,7 +106,7 @@ export class AddBottleComponent {
       const promise = this.processService.createBottleBatch(dto);
 
       toast.promise(promise, {
-        loading: 'Creating Batch...',
+        loading: 'Creating batch...',
         success: () => {
           this.router.navigateByUrl('bottling');
           return 'Successfully created.';
@@ -115,7 +115,7 @@ export class AddBottleComponent {
           if (error instanceof HttpErrorResponse || error instanceof Error) {
             return error.message;
           }
-          return 'Failed to create batch';
+          return 'Failed to create batch.';
         },
       });
 
