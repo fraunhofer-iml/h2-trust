@@ -8,7 +8,7 @@
 
 import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { AuthenticatedUser } from 'nest-keycloak-connect';
+import { KeycloakUser } from 'nest-keycloak-connect';
 import {
   PpaDto,
   PpaRequestCreateDto,
@@ -56,7 +56,7 @@ export class PowerPurchaseAgreementController {
     },
   })
   getPpasByStatus(
-    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
     @Query('status') powerPurchaseAgreementStatus: PowerPurchaseAgreementStatus,
   ): Promise<PpaDto[]> {
     return this.powerPurchaseAgreementService.readByUserAndStatus(authenticatedUser.sub, powerPurchaseAgreementStatus);
@@ -95,7 +95,7 @@ export class PowerPurchaseAgreementController {
     },
   })
   getPPARequest(
-    @AuthenticatedUser() user: AuthenticatedKCUser,
+    @KeycloakUser() user: AuthenticatedKCUser,
     @Query('role') role: PpaRequestRole,
     @Query('status') status?: PowerPurchaseAgreementStatus,
   ): Promise<PpaRequestDto[]> {
@@ -106,7 +106,7 @@ export class PowerPurchaseAgreementController {
   @ApiOkResponse({ description: 'Returns created Request', type: PpaRequestDto })
   createPpaRequest(
     @Body() dto: PpaRequestCreateDto,
-    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<PpaRequestDto> {
     return this.powerPurchaseAgreementService.createPPA(dto, authenticatedUser.sub);
   }
@@ -117,7 +117,7 @@ export class PowerPurchaseAgreementController {
   closePpaRequest(
     @Body() dto: PpaRequestDecisionDto,
     @Param('id') powerPurchaseAgreementRequestId: string,
-    @AuthenticatedUser() user: AuthenticatedKCUser,
+    @KeycloakUser() user: AuthenticatedKCUser,
   ): Promise<PpaRequestDto> {
     return this.powerPurchaseAgreementService.updatePPA(dto, powerPurchaseAgreementRequestId, user.sub);
   }
