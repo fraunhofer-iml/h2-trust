@@ -41,7 +41,7 @@ export class AccountingPeriodCsvParser {
             const [datePart, timePart] = value.split(/\s+/);
             const [day, month, year] = datePart.split('.').map(Number);
             const [hours, minutes] = timePart.split(':').map(Number);
-            return new Date(year, month - 1, day, hours, minutes);
+            return new Date(Date.UTC(year, month - 1, day, hours, minutes));
           } else if (!isNaN(Date.parse(value))) {
             date = new Date(value);
           } else if (!isNaN(Number(value))) {
