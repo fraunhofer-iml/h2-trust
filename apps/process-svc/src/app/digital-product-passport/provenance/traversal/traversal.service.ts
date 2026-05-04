@@ -9,7 +9,7 @@
 import { Injectable } from '@nestjs/common';
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { ProcessType } from '@h2-trust/domain';
-import { ProcessStepService } from '../../process-step/process-step.service';
+import { ProcessStepService } from '../../../process-step/process-step.service';
 
 @Injectable()
 export class TraversalService {
