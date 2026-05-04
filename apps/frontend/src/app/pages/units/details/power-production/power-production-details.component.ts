@@ -12,7 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { QueryClient } from '@tanstack/angular-query-experimental';
 import { PowerProductionUnitDto } from '@h2-trust/contracts/dtos';
-import { MeasurementUnit, UnitType } from '@h2-trust/domain';
+import { MeasurementUnit } from '@h2-trust/domain';
 import { ErrorCardComponent } from '../../../../layout/error-card/error-card.component';
 import { InfoTooltipComponent } from '../../../../layout/info-tooltip/info-tooltip.component';
 import { LoadingCardComponent } from '../../../../layout/loading-card/loading-card.component';
@@ -20,10 +20,11 @@ import { RFNBO_CRITERIA } from '../../../../shared/constants/rfnbo-criteria';
 import { BoolPipe } from '../../../../shared/pipes/bool-pipe';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
+import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
 import { UnitsService } from '../../../../shared/services/units/units.service';
 import { UnitActionsComponent } from '../shared/unit-actions/unit-actions.component';
 import { UnitDetailsComponent } from '../shared/unit-details/unit-details.component';
-import { injectUnitQuery, useQueryInvalidation } from '../shared/unit-query.util';
+import { injectUnitQuery } from '../shared/unit-query.util';
 
 @Component({
   selector: 'app-power-production-details',
@@ -51,9 +52,9 @@ export class PowerProductionDetailsComponent {
   private unitsService = inject(UnitsService);
   private queryClient = inject(QueryClient);
 
-  unitQuery = injectUnitQuery<PowerProductionUnitDto>(UnitType.POWER_PRODUCTION, this.id, (id) =>
+  unitQuery = injectUnitQuery<PowerProductionUnitDto>(QueryKeyPrefix.POWER_PRODUCTION_UNITS, this.id, (id) =>
     this.unitsService.getPowerProductionUnit(id),
   );
 
-  onUnitStatusChange = useQueryInvalidation(this.queryClient, UnitType.POWER_PRODUCTION, this.id);
+  onUnitStatusChange = () => this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.POWER_PRODUCTION_UNITS] });
 }
