@@ -63,9 +63,16 @@ export class PowerPurchaseAgreementRepository {
     return {
       status: ppa.decision,
       updatedAt: new Date(),
-      powerProductionUnit: ppa.powerProductionUnitId ? { connect: { id: ppa.powerProductionUnitId } } : undefined,
+      powerProductionUnit:
+        ppa.decision === PowerPurchaseAgreementStatus.APPROVED && ppa.powerProductionUnitId
+          ? { connect: { id: ppa.powerProductionUnitId } }
+          : { disconnect: true },
       decision: {
-        create: this.buildDecisionUpdateQuery(ppa),
+        upsert: {
+          where: { powerPurchaseAgreementId: ppa.ppaId },
+          create: this.buildDecisionUpdateQuery(ppa),
+          update: this.buildDecisionUpdateQuery(ppa),
+        },
       },
     };
   }

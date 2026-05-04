@@ -14,7 +14,7 @@ import {
   ReadPowerPurchaseAgreementsPayload,
   UpdatePowerPurchaseAgreementPayload,
 } from '@h2-trust/contracts/payloads';
-import { PowerPurchaseAgreementRepository, UserRepository } from '@h2-trust/database';
+import { PowerPurchaseAgreementRepository, UnitRepository, UserRepository } from '@h2-trust/database';
 import { PowerProductionType, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
 
@@ -23,6 +23,7 @@ export class PowerPurchaseAgreementService {
   constructor(
     private readonly powerPurchaseAgreementRepository: PowerPurchaseAgreementRepository,
     private readonly userRepository: UserRepository,
+    private readonly unitRepostitory: UnitRepository,
   ) {}
 
   async findAll(payload: ReadPowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity[]> {
@@ -40,6 +41,30 @@ export class PowerPurchaseAgreementService {
   }
 
   async updatePPA(payload: UpdatePowerPurchaseAgreementPayload): Promise<PowerPurchaseAgreementEntity> {
+    const user: UserEntity = await this.userRepository.findUser(payload.decidingUserId);
+    const agreements: PowerPurchaseAgreementEntity[] = await this.powerPurchaseAgreementRepository.findAll(
+      user.company.id,
+      undefined,
+      undefined,
+    );
+    const hasAccessToAgreement: boolean = agreements.some((agreement) => agreement.id === payload.ppaId);
+    if (!hasAccessToAgreement) {
+      throw new BrokerException(
+        `User ${user.name} is not authorized to update power purchase agreement of this company.`,
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    const ownedUnits: PowerProductionUnitEntity[] = await this.unitRepostitory.findPowerProductionUnitsByOwnerId(
+      user.company.id,
+    );
+    const isOwnerOfProductionUnit: boolean = ownedUnits.some((unit) => unit.id === payload.powerProductionUnitId);
+    if (!isOwnerOfProductionUnit) {
+      throw new BrokerException(
+        `User ${user.name} is not authorized to grant access of this power production unit.`,
+        HttpStatus.FORBIDDEN,
+      );
+    }
     return this.powerPurchaseAgreementRepository.updatePpaStatus(payload);
   }
 
