@@ -6,26 +6,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Component, inject, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { Router, RouterModule } from '@angular/router';
-import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import { toast } from 'ngx-sonner';
+import { RouterModule } from '@angular/router';
 import { HydrogenProductionUnitDto, HydrogenProductionUnitInputDto } from '@h2-trust/contracts/dtos';
 import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology } from '@h2-trust/domain';
 import { UnitTypeChipComponent } from '../../../layout/chips/unit-type-chip.component';
-import { QUERY_KEYS } from '../../../shared/queries/shared-query-keys';
-import { UnitsService } from '../../../shared/services/units/units.service';
+import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { BaseUnitFormComponent } from '../forms/base-unit/base-unit-form-component';
-import {
-  addValidatorsToFormGroup,
-  HydrogenProductionFormGroup,
-  newH2ProductionForm,
-  newUnitForm,
-  UnitFormGroup,
-} from '../forms/forms';
+import { addValidatorsToFormGroup, HydrogenProductionFormGroup, newH2ProductionForm } from '../forms/forms';
 import { HydrogenProductionUnitFormComponent } from '../forms/hydrogen-production/hydrogen-production-unit-form.component';
+import { AbstractUnitUpdateComponent } from './abstract-unit-update.component';
 
 @Component({
   selector: 'app-hydrogen-production-unit-update',
@@ -38,51 +30,34 @@ import { HydrogenProductionUnitFormComponent } from '../forms/hydrogen-productio
   ],
   templateUrl: './hydrogen-production-unit-update.component.html',
 })
-export class HydrogenProductionUnitUpdateComponent {
-  unitForm: FormGroup<UnitFormGroup> = newUnitForm();
+export class HydrogenProductionUnitUpdateComponent extends AbstractUnitUpdateComponent<
+  HydrogenProductionUnitDto,
+  HydrogenProductionUnitInputDto
+> {
+  override id = input<string>();
+
+  protected override readonly queryPrefix = QueryKeyPrefix.HYDROGEN_PRODUCTION_UNITS;
+
   hydrogenProductionForm: FormGroup<HydrogenProductionFormGroup> = newH2ProductionForm();
 
-  id = input<string>();
+  override fetchUnit = (id: string): Promise<HydrogenProductionUnitDto> =>
+    this.unitsService.getHydrogenProductionUnit(id);
 
-  unitsService = inject(UnitsService);
-  router = inject(Router);
-  queryClient = inject(QueryClient);
+  override updateUnit = (id: string, dto: HydrogenProductionUnitInputDto): Promise<HydrogenProductionUnitDto> =>
+    this.unitsService.updateHydrogenProductionUnit(id, dto);
 
-  unitQuery = injectQuery(() => ({
-    queryKey: ['hydrogen-production-unit', this.id()],
-    queryFn: async () => {
-      const unit = await this.unitsService.getHydrogenProductionUnit(this.id() ?? '');
-      this.setFormData(unit);
-      return unit;
-    },
-    enabled: !!this.id(),
-  }));
-
-  unitMutation = injectMutation(() => ({
-    mutationFn: (dto: HydrogenProductionUnitInputDto) =>
-      this.unitsService.updateHydrogenProductionUnit(this.id() ?? '', dto),
-    onSuccess: () => this.onSuccess(),
-    onError: () => toast.error('Failed to update unit.'),
-  }));
-
-  onSave() {
-    const dto = {
+  override buildDto() {
+    return {
       ...this.unitForm.value,
       ...this.hydrogenProductionForm.value,
     } as HydrogenProductionUnitInputDto;
-    this.unitMutation.mutate(dto);
   }
 
-  private onSuccess() {
-    this.queryClient.invalidateQueries({ queryKey: QUERY_KEYS.HYDROGEN_PRODUCTION_UNITS });
-    this.navigateToDetailsView();
-  }
-
-  protected navigateToDetailsView() {
+  override navigateToDetailsView() {
     this.router.navigateByUrl(`units/hydrogen-production/${this.id()}`);
   }
 
-  private setFormData(unit: HydrogenProductionUnitDto) {
+  protected override setFormData(unit: HydrogenProductionUnitDto) {
     this.unitForm.patchValue({ ...unit, owner: unit.owner.id, operator: unit.operator.id });
     this.hydrogenProductionForm.patchValue({
       ...unit,

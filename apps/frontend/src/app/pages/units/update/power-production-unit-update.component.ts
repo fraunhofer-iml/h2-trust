@@ -6,19 +6,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Component, inject, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatAnchor, MatButtonModule } from '@angular/material/button';
-import { Router, RouterModule } from '@angular/router';
-import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
-import { toast } from 'ngx-sonner';
+import { RouterModule } from '@angular/router';
 import { PowerProductionUnitDto, PowerProductionUnitInputDto } from '@h2-trust/contracts/dtos';
 import { PowerProductionType } from '@h2-trust/domain';
 import { UnitTypeChipComponent } from '../../../layout/chips/unit-type-chip.component';
-import { UnitsService } from '../../../shared/services/units/units.service';
+import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { BaseUnitFormComponent } from '../forms/base-unit/base-unit-form-component';
-import { newPowerProductionForm, newUnitForm, PowerProductionFormGroup, UnitFormGroup } from '../forms/forms';
+import { newPowerProductionForm, PowerProductionFormGroup } from '../forms/forms';
 import { PowerProductionUnitFormComponent } from '../forms/power-production/power-production-unit-form.component';
+import { AbstractUnitUpdateComponent } from './abstract-unit-update.component';
 
 @Component({
   selector: 'app-power-production-unit-update',
@@ -32,45 +31,35 @@ import { PowerProductionUnitFormComponent } from '../forms/power-production/powe
   ],
   templateUrl: './power-production-unit-update.component.html',
 })
-export class PowerProductionUnitUpdateComponent {
-  unitForm: FormGroup<UnitFormGroup> = newUnitForm();
+export class PowerProductionUnitUpdateComponent extends AbstractUnitUpdateComponent<
+  PowerProductionUnitDto,
+  PowerProductionUnitInputDto
+> {
+  override id = input<string>();
+
+  protected override readonly queryPrefix = QueryKeyPrefix.POWER_PRODUCTION_UNITS;
   powerProductionForm: FormGroup<PowerProductionFormGroup> = newPowerProductionForm();
 
-  id = input<string>();
+  override fetchUnit(id: string): Promise<PowerProductionUnitDto> {
+    return this.unitsService.getPowerProductionUnit(id);
+  }
 
-  unitsService = inject(UnitsService);
-  router = inject(Router);
+  override updateUnit(id: string, dto: PowerProductionUnitInputDto): Promise<PowerProductionUnitDto> {
+    return this.unitsService.updatePowerProductionUnit(id, dto);
+  }
 
-  unitQuery = injectQuery(() => ({
-    queryKey: ['power-production-unit', this.id()],
-    queryFn: async () => {
-      const unit = await this.unitsService.getPowerProductionUnit(this.id() ?? '');
-      this.setFormData(unit);
-      return unit;
-    },
-    enabled: !!this.id(),
-  }));
-
-  unitMutation = injectMutation(() => ({
-    mutationFn: (dto: PowerProductionUnitInputDto) => this.unitsService.updatePowerProductionUnit(this.id() ?? '', dto),
-    onSuccess: () => this.navigateToDetailsView(),
-    onError: () => toast.error('Failed to update unit.'),
-  }));
-
-  onSave() {
-    const dto = {
+  override buildDto(): PowerProductionUnitInputDto {
+    return {
       ...this.unitForm.value,
       ...this.powerProductionForm.value,
     } as PowerProductionUnitInputDto;
-
-    this.unitMutation.mutate(dto);
   }
 
-  protected navigateToDetailsView() {
+  protected override navigateToDetailsView() {
     this.router.navigateByUrl(`units/power-production/${this.id()}`);
   }
 
-  private setFormData(unit: PowerProductionUnitDto) {
+  protected override setFormData(unit: PowerProductionUnitDto) {
     this.unitForm.patchValue({ ...unit, owner: unit.owner.id, operator: unit.operator.id });
     this.powerProductionForm.patchValue({
       ...unit,
