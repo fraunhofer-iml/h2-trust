@@ -8,7 +8,7 @@
 
 import { HydrogenComponentEntity } from '@h2-trust/contracts/entities';
 import { RfnboType } from '@h2-trust/domain';
-import { computeHydrogenComposition } from './hydrogen-composition.util';
+import { computeHydrogenComposition } from './hydrogen-composition';
 
 describe('computeHydrogenComposition', () => {
   it('should calculate hydrogen composition', () => {
@@ -57,7 +57,6 @@ describe('computeHydrogenComposition', () => {
     const components = [new HydrogenComponentEntity(null, 0, RfnboType.RFNBO_READY)];
 
     expect(() => computeHydrogenComposition(components, bottleAmount)).toThrow(Error);
-
     expect(() => computeHydrogenComposition(components, bottleAmount)).toThrow(
       'Total stored amount is not greater than 0',
     );

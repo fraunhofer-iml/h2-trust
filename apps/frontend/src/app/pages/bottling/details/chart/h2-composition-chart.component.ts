@@ -16,7 +16,7 @@ import { MeasurementUnit } from '@h2-trust/domain';
 import { CHART_COLORS } from '../../../../shared/constants/chart-colors';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
-import { formatNumberForChart } from '../../../../shared/util/number-format.util';
+import { formatNumberForChart } from '../../../../shared/formatting/chart-number-format';
 
 @Component({
   selector: 'app-h2-composition-chart',

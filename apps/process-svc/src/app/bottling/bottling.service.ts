@@ -11,7 +11,6 @@ import {
   BatchEntity,
   DocumentEntity,
   HydrogenComponentEntity,
-  computeHydrogenComposition,
   PaginatedProcessStepEntity,
   ProcessStepEntity,
 } from '@h2-trust/contracts/entities';
@@ -27,6 +26,7 @@ import { CentralizedStorageService, ContentType } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { allocateBottling, BottlingAllocation } from './utils/bottling.allocator';
 import { assembleBottling } from './utils/bottling.assembler';
+import { computeHydrogenComposition } from './utils/hydrogen-composition';
 
 @Injectable()
 export class BottlingService {

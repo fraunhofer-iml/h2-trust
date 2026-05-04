@@ -9,7 +9,6 @@
 import { HttpStatus } from '@nestjs/common';
 import {
   HydrogenComponentEntity,
-  computeHydrogenComposition,
   ProofOfOriginEmissionEntity,
   ProofOfOriginHydrogenBatchEntity,
   ProofOfOriginSectionEntity,
@@ -18,6 +17,7 @@ import {
 } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
+import { computeHydrogenComposition } from '../../../bottling/utils/hydrogen-composition';
 import { assembleHydrogenBottlingEmissionCalculation } from '../../proof-of-sustainability/emissions/hydrogen-bottling-emission-calculation.assembler';
 import { ProofOfOriginSectionAssembler } from '../proof-of-origin-assembler.interface';
 

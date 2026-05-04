@@ -7,7 +7,7 @@
  */
 
 import { Readable } from 'stream';
-import { hashStream, verifyStreamWithStoredHash } from './hash.util';
+import { hashStream, verifyStreamWithStoredHash } from './hash';
 
 describe('hash util functions', () => {
   describe('hash', () => {

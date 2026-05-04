@@ -24,7 +24,7 @@ import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
 import { UnitsService } from '../../../../shared/services/units/units.service';
 import { UnitActionsComponent } from '../shared/unit-actions/unit-actions.component';
 import { UnitDetailsComponent } from '../shared/unit-details/unit-details.component';
-import { injectUnitQuery } from '../shared/unit-query.util';
+import { injectUnitQuery } from '../shared/inject-unit-query';
 
 @Component({
   selector: 'app-power-production-details',

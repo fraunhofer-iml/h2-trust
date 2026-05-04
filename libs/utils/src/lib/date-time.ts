@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { assertDefined } from './assertions.util';
+import { assertDefined } from './assertions';
 
 export function toValidDate(value: unknown, name: string): Date {
   assertDefined(value, name);

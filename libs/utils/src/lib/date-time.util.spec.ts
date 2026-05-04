@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { subtractMonthsSafe } from './date-time.util';
+import { subtractMonthsSafe } from './date-time';
 
 describe('subtractMonthsSafe', () => {
   describe('subtractMonthsSafe', () => {
