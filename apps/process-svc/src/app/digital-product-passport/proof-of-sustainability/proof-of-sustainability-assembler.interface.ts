@@ -13,9 +13,7 @@ import {
 } from '@h2-trust/contracts/entities';
 
 export interface ProofOfSustainabilityEmissionAssembler {
-  assembleEmissionCalculations(
-    provenance: ProvenanceEntity
-  ): ProofOfSustainabilityEmissionCalculationEntity[];
+  assembleEmissionCalculations(provenance: ProvenanceEntity): ProofOfSustainabilityEmissionCalculationEntity[];
 
   calculateEmissions(
     emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],

@@ -16,7 +16,7 @@ import { PowerPurchaseAgreementPatterns, QUEUE_GENERAL_SVC } from '@h2-trust/mes
 
 @Injectable()
 export class PowerPurchaseAgreementService {
-  constructor(@Inject(QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) { }
+  constructor(@Inject(QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
 
   async readByUserAndStatus(
     userId: string,

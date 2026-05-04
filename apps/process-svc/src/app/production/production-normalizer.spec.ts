@@ -8,8 +8,8 @@
 
 import { StagedProductionAccountingPeriod, UnitAccountingPeriods } from '@h2-trust/contracts/entities';
 import { CsvContentType } from '@h2-trust/domain';
-import { ParsedImport } from './production.types';
 import { normalizeProduction } from './production-normalizer';
+import { ParsedImport } from './production.types';
 
 describe('normalizeProduction', () => {
   describe('normalizeProduction', () => {

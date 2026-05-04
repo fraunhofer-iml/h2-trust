@@ -32,9 +32,9 @@ import {
   getHydrogenProductionMethod,
   getHydrogenProductionTechnology,
   getHydrogenStorageType,
-  getPPaStatus,
   getPowerProductionType,
   getPowerType,
+  getPPaStatus,
   getRfnboType,
   getUnitType,
 } from '@h2-trust/strings';

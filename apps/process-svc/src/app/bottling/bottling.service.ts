@@ -35,7 +35,7 @@ export class BottlingService {
     private readonly storageService: CentralizedStorageService,
     private readonly documentRepository: DocumentRepository,
     private readonly processStepService: ProcessStepService,
-  ) { }
+  ) {}
 
   async readProcessStepsByTypesAndActiveAndOwner(
     payload: ReadProcessStepsByTypesAndActiveAndOwnerPayload,

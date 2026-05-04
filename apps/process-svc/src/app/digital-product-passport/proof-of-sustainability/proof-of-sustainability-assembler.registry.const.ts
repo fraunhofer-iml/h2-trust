@@ -10,8 +10,8 @@ import { hydrogenBottlingEmissionAssembler } from './emissions/hydrogen-bottling
 import { hydrogenProductionEmissionAssembler } from './emissions/hydrogen-production-emission-calculation.assembler';
 import { hydrogenTransportationEmissionAssembler } from './emissions/hydrogen-transportation-emission-calculation.assembler';
 import { powerProductionEmissionAssembler } from './emissions/power-production-emission-calculation.assembler';
-import { ProofOfSustainabilityEmissionAssembler } from './proof-of-sustainability-assembler.interface';
 import { waterConsumptionEmissionAssembler } from './emissions/water-consumption-emission-calculation.assembler';
+import { ProofOfSustainabilityEmissionAssembler } from './proof-of-sustainability-assembler.interface';
 
 export const proofOfSustainabilityEmissionAssemblers: ProofOfSustainabilityEmissionAssembler[] = [
   powerProductionEmissionAssembler,

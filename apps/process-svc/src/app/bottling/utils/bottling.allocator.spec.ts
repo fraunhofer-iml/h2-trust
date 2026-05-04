@@ -33,11 +33,7 @@ describe('allocateBottling', () => {
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 100 })];
 
       // Act
-      const actualResult = allocateBottling(
-        givenProcessSteps,
-        givenHydrogenComposition,
-        givenHydrogenStorageUnitId,
-      );
+      const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
 
       // Assert
       expect(actualResult.batchesForBottle).toHaveLength(1);
@@ -71,11 +67,7 @@ describe('allocateBottling', () => {
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 100 })];
 
       // Act
-      const actualResult = allocateBottling(
-        givenProcessSteps,
-        givenHydrogenComposition,
-        givenHydrogenStorageUnitId,
-      );
+      const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
 
       // Assert
       expect(actualResult.batchesForBottle).toHaveLength(2);
@@ -101,11 +93,7 @@ describe('allocateBottling', () => {
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 100 })];
 
       // Act
-      const actualResult = allocateBottling(
-        givenProcessSteps,
-        givenHydrogenComposition,
-        givenHydrogenStorageUnitId,
-      );
+      const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
 
       // Assert
       expect(actualResult.batchesForBottle).toHaveLength(0);
@@ -136,11 +124,7 @@ describe('allocateBottling', () => {
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 80 })];
 
       // Act
-      const actualResult = allocateBottling(
-        givenProcessSteps,
-        givenHydrogenComposition,
-        givenHydrogenStorageUnitId,
-      );
+      const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
 
       // Assert
       const consumedStep = actualResult.consumedSplitProcessSteps[0];
@@ -180,11 +164,7 @@ describe('allocateBottling', () => {
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 100 })];
 
       // Act
-      const actualResult = allocateBottling(
-        givenProcessSteps,
-        givenHydrogenComposition,
-        givenHydrogenStorageUnitId,
-      );
+      const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
 
       // Assert
       expect(actualResult.batchesForBottle).toHaveLength(1);
@@ -226,11 +206,7 @@ describe('allocateBottling', () => {
       const givenHydrogenComposition: HydrogenComponentEntity[] = [];
 
       // Act
-      const actualResult = allocateBottling(
-        givenProcessSteps,
-        givenHydrogenComposition,
-        givenHydrogenStorageUnitId,
-      );
+      const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
 
       // Assert
       expect(actualResult.batchesForBottle).toHaveLength(0);

@@ -6,13 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  ProofOfSustainabilityEmissionCalculationEntity,
-  ProvenanceEntity,
-} from '@h2-trust/contracts/entities';
+import { ProofOfSustainabilityEmissionCalculationEntity, ProvenanceEntity } from '@h2-trust/contracts/entities';
 import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { CalculationTopic } from '@h2-trust/domain';
 import { assembleHydrogenBottlingEmissionCalculations } from './hydrogen-bottling-emission-calculation.assembler';
+
 describe('ProofOfSustainability', () => {
   describe('assembleHydrogenBottlingEmissionCalculations', () => {
     it('computes emissions for provenance with hydrogen bottling only', () => {
@@ -21,7 +19,8 @@ describe('ProofOfSustainability', () => {
       const givenProvenance = new ProvenanceEntity(givenHydrogenBottling, [], givenHydrogenBottling);
 
       // Act
-      const actualResult: ProofOfSustainabilityEmissionCalculationEntity = assembleHydrogenBottlingEmissionCalculations(givenProvenance)[0];
+      const actualResult: ProofOfSustainabilityEmissionCalculationEntity =
+        assembleHydrogenBottlingEmissionCalculations(givenProvenance)[0];
 
       // Assert
       expect(actualResult).toBeDefined();

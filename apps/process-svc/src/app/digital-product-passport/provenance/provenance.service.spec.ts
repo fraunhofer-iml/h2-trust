@@ -13,6 +13,7 @@ import { ProcessType } from '@h2-trust/domain';
 import { ProcessStepService } from '../../process-step/process-step.service';
 import { ProvenanceService } from './provenance.service';
 import { TraversalService } from './traversal/traversal.service';
+
 describe('ProvenanceService', () => {
   let service: ProvenanceService;
 

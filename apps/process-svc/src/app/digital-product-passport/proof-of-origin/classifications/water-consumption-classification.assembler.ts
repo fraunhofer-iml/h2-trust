@@ -14,8 +14,8 @@ import {
   ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType, ProofOfOrigin } from '@h2-trust/domain';
-import { assembleClassification } from '../../util';
 import { assembleWaterSupplyEmissionCalculation } from '../../proof-of-sustainability/emissions/water-consumption-emission-calculation.assembler';
+import { assembleClassification } from '../../util';
 
 function getWaterBatchEntities(
   waterConsumptionProcesses: ProcessStepEntity[],

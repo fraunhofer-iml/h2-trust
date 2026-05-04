@@ -14,7 +14,7 @@ import { CompanyMessagePatterns, QUEUE_GENERAL_SVC } from '@h2-trust/messaging';
 
 @Injectable()
 export class CompanyService {
-  constructor(@Inject(QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) { }
+  constructor(@Inject(QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
 
   async findAll(): Promise<CompanyDto[]> {
     const companies = await firstValueFrom(this.generalService.send(CompanyMessagePatterns.READ, {}));

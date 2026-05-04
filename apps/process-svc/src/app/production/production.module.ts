@@ -14,12 +14,12 @@ import { getGeneralSvcBroker } from '@h2-trust/messaging';
 import { StorageModule } from '@h2-trust/storage';
 import { DigitalProductPassportModule } from '../digital-product-passport/digital-product-passport.module';
 import { ProcessStepModule } from '../process-step/process-step.module';
+import { CsvDocumentService } from './csv/csv-document.service';
+import { CsvImportProcessingService } from './csv/csv-import-processing.service';
 import { ProductionCreationService } from './production-creation.service';
 import { ProductionStagingService } from './production-staging.service';
 import { ProductionController } from './production.controller';
 import { ProductionService } from './production.service';
-import { CsvDocumentService } from './csv/csv-document.service';
-import { CsvImportProcessingService } from './csv/csv-import-processing.service';
 
 @Module({
   imports: [
@@ -41,4 +41,4 @@ import { CsvImportProcessingService } from './csv/csv-import-processing.service'
     ProductionStagingService,
   ],
 })
-export class ProductionModule { }
+export class ProductionModule {}

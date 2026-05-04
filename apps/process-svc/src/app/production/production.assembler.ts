@@ -98,13 +98,10 @@ export function assembleHydrogenProductions(
     },
   };
 
-  return createProcessSteps(
-    entity.productionStartedAt,
-    entity.productionEndedAt,
-    entity.hydrogenAmountKg,
-    params,
-    [...powerProductions, ...waterConsumptions],
-  );
+  return createProcessSteps(entity.productionStartedAt, entity.productionEndedAt, entity.hydrogenAmountKg, params, [
+    ...powerProductions,
+    ...waterConsumptions,
+  ]);
 }
 
 function createProcessSteps(
@@ -114,7 +111,12 @@ function createProcessSteps(
   params: ProcessStepParams,
   predecessors: ProcessStepEntity[],
 ): ProcessStepEntity[] {
-  const accountingPeriods: AccountingPeriod[] = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
+  const accountingPeriods: AccountingPeriod[] = calculateAccountingPeriods(
+    startedAt,
+    endedAt,
+    totalAmount,
+    predecessors,
+  );
   return accountingPeriods.map((accountingPeriod) => createProcessStep(accountingPeriod, params));
 }
 

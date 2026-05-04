@@ -12,8 +12,8 @@ import { UnitAccountingPeriods, UnitFileImport } from '@h2-trust/contracts/entit
 import { CreateCsvDocumentInput } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
 import { CentralizedStorageService, ContentType, DecentralizedStorageService } from '@h2-trust/storage';
-import { parseAccountingPeriodCsvBuffer } from './accounting-period-csv-parser';
 import { ParsedImport } from '../production.types';
+import { parseAccountingPeriodCsvBuffer } from './accounting-period-csv-parser';
 
 @Injectable()
 export class CsvImportProcessingService {

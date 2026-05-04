@@ -47,7 +47,10 @@ export function calculateDuration(startedAtInSeconds: number, endedAtInSeconds: 
   return durationInSeconds;
 }
 
-export function calculateBatchAmountPerAccountingPeriod(batchAmount: number, numberOfAccountingPeriods: number): number {
+export function calculateBatchAmountPerAccountingPeriod(
+  batchAmount: number,
+  numberOfAccountingPeriods: number,
+): number {
   if (batchAmount <= 0) {
     throw new Error('batchAmount must be greater than zero');
   }
@@ -166,13 +169,13 @@ function groupBatchesByStartedAt(processSteps: ProcessStepEntity[]): Map<number,
   return batchesByStartedAt;
 }
 
-  /**
-   * Takes a total value (e.g., hydrogen production or water consumption) and calculates the proportionate value based on total and proportionate power production.
-   * @param totalAmount The total amount to be prorated.
-   * @param totalPowerConsumption The total amount of electricity to be used as a reference.
-   * @param partialPowerConsumption The partial amount of electricity to be used as a reference.
-   * @returns The partial amount.
-   */
+/**
+ * Takes a total value (e.g., hydrogen production or water consumption) and calculates the proportionate value based on total and proportionate power production.
+ * @param totalAmount The total amount to be prorated.
+ * @param totalPowerConsumption The total amount of electricity to be used as a reference.
+ * @param partialPowerConsumption The partial amount of electricity to be used as a reference.
+ * @returns The partial amount.
+ */
 export function calculatePartialAmountRelativeToPowerProduction(
   totalAmount: number,
   totalPowerConsumption: number,
@@ -185,12 +188,12 @@ export function calculatePartialAmountRelativeToPowerProduction(
   return (totalAmount / 100) * shareOfPartialPowerFromTotalPower;
 }
 
-  /**
-   * If the PowerProduction is grid electricity, then the CreateProductionsPayload should be split into two parts so that both a HydrogenBatch from renewable electricity and one from non-renewable electricity can be created.
-   * @param createProductionsPayload The production payload, which may need to be split up.
-   * @param powerProductionUnitEnergyType The energy type of the power production unit to be tested on grid electricity.
-   * @returns In the Grid Electricity case, a list of the productions to be created for the two electricity options is returned. In the case of renewable electricity, nothing is done and the original payload is returned.
-   */
+/**
+ * If the PowerProduction is grid electricity, then the CreateProductionsPayload should be split into two parts so that both a HydrogenBatch from renewable electricity and one from non-renewable electricity can be created.
+ * @param createProductionsPayload The production payload, which may need to be split up.
+ * @param powerProductionUnitEnergyType The energy type of the power production unit to be tested on grid electricity.
+ * @returns In the Grid Electricity case, a list of the productions to be created for the two electricity options is returned. In the case of renewable electricity, nothing is done and the original payload is returned.
+ */
 export function splitGridPowerProduction(
   createProduction: CreateProductionEntity,
   powerProductionUnitEnergySource: EnergySource,

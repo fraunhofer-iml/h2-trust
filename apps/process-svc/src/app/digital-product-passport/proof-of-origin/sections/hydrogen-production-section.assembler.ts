@@ -16,8 +16,8 @@ import {
 import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
 import { assembleClassification } from '../../util';
 import { buildPowerSupplySubClassifications } from '../classifications/power-production-classification.assembler';
-import { ProofOfOriginSectionAssembler } from '../proof-of-origin-assembler.interface';
 import { assembleWaterSupplyClassification } from '../classifications/water-consumption-classification.assembler';
+import { ProofOfOriginSectionAssembler } from '../proof-of-origin-assembler.interface';
 
 export function assembleHydrogenProductionSection(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {
   const powerProductions: ProcessStepEntity[] = provenance.getAllPowerProductions();

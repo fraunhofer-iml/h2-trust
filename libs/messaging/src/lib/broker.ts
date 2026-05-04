@@ -42,4 +42,3 @@ export function getRmqMicroserviceOptions(queue: string): RmqOptions {
     },
   };
 }
-

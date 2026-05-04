@@ -15,9 +15,9 @@ import { HydrogenStorageOverviewDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { CHART_COLORS } from '../../../../shared/constants/chart-colors';
 import { ERROR_MESSAGES } from '../../../../shared/constants/error.messages';
+import { formatNumberForChart } from '../../../../shared/formatting/chart-number-format';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
-import { formatNumberForChart } from '../../../../shared/formatting/chart-number-format';
 
 @Component({
   selector: 'app-storage-filling-levels',

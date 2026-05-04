@@ -12,8 +12,8 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
 import { CalculationTopic, EmissionStringConstants, MeasurementUnit } from '@h2-trust/domain';
-import { assembleHydrogenStorageEmissionCalculations } from './hydrogen-storage-emission-calculation.assembler';
 import { ProofOfSustainabilityEmissionAssembler } from '../proof-of-sustainability-assembler.interface';
+import { assembleHydrogenStorageEmissionCalculations } from './hydrogen-storage-emission-calculation.assembler';
 
 export function assembleHydrogenProductionEmissionCalculations(
   provenance: ProvenanceEntity,

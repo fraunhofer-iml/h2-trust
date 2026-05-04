@@ -43,14 +43,11 @@ import {
   StagingScope,
 } from '@h2-trust/domain';
 import { BrokerException, QUEUE_GENERAL_SVC, UnitMessagePatterns } from '@h2-trust/messaging';
+import { CsvImportProcessingService } from './csv/csv-import-processing.service';
 import { ProductionCreationService } from './production-creation.service';
 import { normalizeProduction } from './production-normalizer';
 import { DocumentProof, ParsedImport } from './production.types';
-import {
-  calculatePartialAmountRelativeToPowerProduction,
-  splitGridPowerProduction,
-} from './utils/production.utils';
-import { CsvImportProcessingService } from './csv/csv-import-processing.service';
+import { calculatePartialAmountRelativeToPowerProduction, splitGridPowerProduction } from './utils/production.utils';
 
 @Injectable()
 export class ProductionStagingService {

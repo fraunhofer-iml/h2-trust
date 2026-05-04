@@ -26,13 +26,15 @@ export function assembleProofOfSustainability(provenance: ProvenanceEntity): Pro
   }
 
   const emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[] =
-    proofOfSustainabilityEmissionAssemblers.flatMap((proofOfSustainabilityAssembler) => proofOfSustainabilityAssembler.assembleEmissionCalculations(provenance));
+    proofOfSustainabilityEmissionAssemblers.flatMap((proofOfSustainabilityAssembler) =>
+      proofOfSustainabilityAssembler.assembleEmissionCalculations(provenance),
+    );
 
   const hydrogenAmount = provenance.hydrogenBottling
     ? provenance.hydrogenBottling.batch.amount
     : provenance.root.batch.amount;
 
-   const applicationEmissions: ProofOfSustainabilityEmissionEntity[] =
+  const applicationEmissions: ProofOfSustainabilityEmissionEntity[] =
     assembleApplicationEmissions(emissionCalculations);
 
   const hydrogenProductionEmissionAmount: number = applicationEmissions

@@ -31,7 +31,7 @@ import {
 export class ProductionCreationService {
   private readonly logger = new Logger(this.constructor.name);
   private readonly productionChunkSize: number;
-  
+
   constructor(
     private readonly configurationService: ConfigurationService,
     private readonly processStepService: ProcessStepService,
@@ -90,12 +90,7 @@ export class ProductionCreationService {
 
       // Step 4: Create hydrogen with persisted predecessors
       const hydrogenToPersist: ProcessStepEntity[] = createProductionsChunk.flatMap((production, index) =>
-        assembleHydrogenProductions(
-          production,
-          [persistedPower[index]],
-          [persistedWater[index]],
-          productionUnitsForId,
-        ),
+        assembleHydrogenProductions(production, [persistedPower[index]], [persistedWater[index]], productionUnitsForId),
       );
 
       // Step 5: Add RFNBO Type to hydrogen

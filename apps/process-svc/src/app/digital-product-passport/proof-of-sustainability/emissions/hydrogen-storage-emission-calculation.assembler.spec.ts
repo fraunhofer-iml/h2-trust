@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProcessStepEntityFixture, } from '@h2-trust/contracts/entities/fixtures';
+import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { CalculationTopic } from '@h2-trust/domain';
 import { assembleHydrogenStorageEmissionCalculations } from './hydrogen-storage-emission-calculation.assembler';
 

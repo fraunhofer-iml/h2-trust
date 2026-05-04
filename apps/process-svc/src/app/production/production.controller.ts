@@ -25,9 +25,9 @@ import {
   StageProductionsPayload,
 } from '@h2-trust/contracts/payloads';
 import { ProductionMessagePatterns } from '@h2-trust/messaging';
+import { CsvDocumentService } from './csv/csv-document.service';
 import { ProductionStagingService } from './production-staging.service';
 import { ProductionService } from './production.service';
-import { CsvDocumentService } from './csv/csv-document.service';
 
 @Controller()
 export class ProductionController {

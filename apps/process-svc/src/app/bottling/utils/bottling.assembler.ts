@@ -12,8 +12,10 @@ import { CreateHydrogenBottlingPayload } from '@h2-trust/contracts/payloads';
 import { BatchType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
 
-
-export function assembleBottling(payload: CreateHydrogenBottlingPayload, batchesForBottle: BatchEntity[]): ProcessStepEntity {
+export function assembleBottling(
+  payload: CreateHydrogenBottlingPayload,
+  batchesForBottle: BatchEntity[],
+): ProcessStepEntity {
   const bottlingTypes = determinePredecessorTypes(batchesForBottle);
   return {
     startedAt: payload.filledAt,
@@ -64,4 +66,3 @@ function determinePredecessorTypes(predecessors: BatchEntity[]): {
 
   return { bottlingRfnboType, bottlingPowerType };
 }
-
