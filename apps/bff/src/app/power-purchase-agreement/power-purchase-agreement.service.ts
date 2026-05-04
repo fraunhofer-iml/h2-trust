@@ -12,11 +12,11 @@ import { firstValueFrom } from 'rxjs';
 import { PowerPurchaseAgreementDto } from '@h2-trust/contracts/dtos';
 import { ReadPowerPurchaseAgreementsPayload } from '@h2-trust/contracts/payloads';
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
-import { BrokerQueues, PowerPurchaseAgreementPatterns } from '@h2-trust/messaging';
+import { PowerPurchaseAgreementPatterns, QUEUE_GENERAL_SVC } from '@h2-trust/messaging';
 
 @Injectable()
 export class PowerPurchaseAgreementService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
+  constructor(@Inject(QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) { }
 
   async readByUserAndStatus(
     userId: string,

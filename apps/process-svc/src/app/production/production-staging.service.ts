@@ -42,7 +42,7 @@ import {
   PowerType,
   StagingScope,
 } from '@h2-trust/domain';
-import { BrokerException, BrokerQueues, UnitMessagePatterns } from '@h2-trust/messaging';
+import { BrokerException, QUEUE_GENERAL_SVC, UnitMessagePatterns } from '@h2-trust/messaging';
 import { ProductionCreationService } from './production-creation.service';
 import { normalizeProduction } from './production-normalizer';
 import { DocumentProof, ParsedImport } from './production.types';
@@ -59,7 +59,7 @@ export class ProductionStagingService {
   private readonly defaultGridPowerUnitId = DefaultGridProvider.DEFAULT_GRID_POWER_PRODUCTION_UNIT_ID;
 
   constructor(
-    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
+    @Inject(QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly productionCreationService: ProductionCreationService,
     private readonly blockchainService: BlockchainService,
     private readonly featureFlagService: FeatureFlagService,

@@ -42,14 +42,14 @@ import {
   StageProductionsPayload,
 } from '@h2-trust/contracts/payloads';
 import { CsvContentType, ProcessType, StagingScope } from '@h2-trust/domain';
-import { BrokerQueues, ProcessStepMessagePatterns, ProductionMessagePatterns } from '@h2-trust/messaging';
+import { ProcessStepMessagePatterns, ProductionMessagePatterns, QUEUE_PROCESS_SVC } from '@h2-trust/messaging';
 import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 
 @Injectable()
 export class ProductionService {
   constructor(
-    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
+    @Inject(QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly storageService: CentralizedStorageService,
     private readonly userService: UserService,
   ) {}

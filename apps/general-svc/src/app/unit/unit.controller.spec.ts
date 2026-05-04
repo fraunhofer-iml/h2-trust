@@ -37,7 +37,7 @@ import {
   PrismaService,
 } from '@h2-trust/database';
 import { RfnboType } from '@h2-trust/domain';
-import { BrokerQueues } from '@h2-trust/messaging';
+import { QUEUE_PROCESS_SVC } from '@h2-trust/messaging';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
 
@@ -54,7 +54,7 @@ describe('UnitController', () => {
       providers: [
         UnitService,
         {
-          provide: BrokerQueues.QUEUE_PROCESS_SVC,
+          provide: QUEUE_PROCESS_SVC,
           useValue: {
             send: jest.fn(),
           },
@@ -75,7 +75,7 @@ describe('UnitController', () => {
     controller = module.get<UnitController>(UnitController);
     unitService = module.get(UnitService);
     prisma = module.get<PrismaService>(PrismaService);
-    queue = module.get(BrokerQueues.QUEUE_PROCESS_SVC);
+    queue = module.get(QUEUE_PROCESS_SVC);
   });
 
   it('should be defined', () => {

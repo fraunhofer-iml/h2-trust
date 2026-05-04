@@ -27,7 +27,7 @@ import {
   ReadByIdsPayload,
 } from '@h2-trust/contracts/payloads';
 import { BatchType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
-import { BrokerQueues, UnitMessagePatterns } from '@h2-trust/messaging';
+import { QUEUE_GENERAL_SVC, UnitMessagePatterns } from '@h2-trust/messaging';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { ProductionCreationService } from './production-creation.service';
 import { splitGridPowerProduction } from './utils/production.utils';
@@ -35,7 +35,7 @@ import { splitGridPowerProduction } from './utils/production.utils';
 @Injectable()
 export class ProductionService {
   constructor(
-    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
+    @Inject(QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly productionCreationService: ProductionCreationService,
     private readonly processStepService: ProcessStepService,
   ) {}
