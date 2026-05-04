@@ -25,8 +25,8 @@ import { RfnboType } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
 import { CentralizedStorageService, ContentType } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step/process-step.service';
-import { BottlingProcessStepAssembler } from './utils/bottling-process-step.assembler';
 import { allocateBottling, BottlingAllocation } from './utils/bottling.allocator';
+import { assembleBottling } from './utils/bottling.assembler';
 
 @Injectable()
 export class BottlingService {
@@ -35,7 +35,7 @@ export class BottlingService {
     private readonly storageService: CentralizedStorageService,
     private readonly documentRepository: DocumentRepository,
     private readonly processStepService: ProcessStepService,
-  ) {}
+  ) { }
 
   async readProcessStepsByTypesAndActiveAndOwner(
     payload: ReadProcessStepsByTypesAndActiveAndOwnerPayload,
@@ -106,7 +106,7 @@ export class BottlingService {
       allocation.processStepsForRemainingAmount.map((ps) => this.processStepService.createProcessStep(ps)),
     );
 
-    const bottlingProcessStep: ProcessStepEntity = BottlingProcessStepAssembler.assemble(payload, [
+    const bottlingProcessStep: ProcessStepEntity = assembleBottling(payload, [
       ...allocation.batchesForBottle,
       ...persistedConsumedSplitBatches,
     ]);

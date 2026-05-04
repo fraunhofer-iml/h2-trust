@@ -10,7 +10,7 @@ import { BatchEntity } from '@h2-trust/contracts/entities';
 import { BatchEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { CreateHydrogenBottlingPayload } from '@h2-trust/contracts/payloads';
 import { ProcessType, RfnboType } from '@h2-trust/domain';
-import { BottlingProcessStepAssembler } from './bottling-process-step.assembler';
+import { assembleBottling } from './bottling.assembler';
 
 describe('BottlingProcessStepAssembler', () => {
   describe('assemble', () => {
@@ -29,7 +29,7 @@ describe('BottlingProcessStepAssembler', () => {
       ];
 
       // Act
-      const actualResult = BottlingProcessStepAssembler.assemble(givenPayload, givenBatchesForBottle);
+      const actualResult = assembleBottling(givenPayload, givenBatchesForBottle);
 
       // Assert
       expect(actualResult.startedAt).toEqual(givenPayload.filledAt);
@@ -66,7 +66,7 @@ describe('BottlingProcessStepAssembler', () => {
       ];
 
       // Act
-      const actualResult = BottlingProcessStepAssembler.assemble(givenPayload, givenBatchesForBottle);
+      const actualResult = assembleBottling(givenPayload, givenBatchesForBottle);
 
       // Assert
       expect(actualResult.batch.predecessors).toHaveLength(2);
@@ -89,9 +89,8 @@ describe('BottlingProcessStepAssembler', () => {
       const expectedErrorMessage = 'No predecessor type specified';
 
       // Act & Assert
-      expect(() => BottlingProcessStepAssembler.assemble(givenPayload, givenBatchesForBottle)).toThrow(
-        expectedErrorMessage,
-      );
+      expect(() => assembleBottling(givenPayload, givenBatchesForBottle)).toThrow(expectedErrorMessage);
     });
   });
 });
+
