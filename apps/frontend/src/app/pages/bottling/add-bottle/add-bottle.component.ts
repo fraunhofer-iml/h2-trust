@@ -29,6 +29,7 @@ import { FileDragAndDropComponent } from '../../../layout/drag-and-drop/file-dra
 import { FileCardComponent } from '../../../layout/file-card/file-card.component';
 import { TypeSelectionComponent } from '../../../layout/type-selection/type-selection.component';
 import { FileTypes } from '../../../shared/constants/file-types';
+import { H2TrustRoutes } from '../../../shared/constants/routes';
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
@@ -108,7 +109,7 @@ export class AddBottleComponent {
       toast.promise(promise, {
         loading: 'Creating batch...',
         success: () => {
-          this.router.navigateByUrl('bottling');
+          this.router.navigateByUrl(H2TrustRoutes.BOTTLING);
           return 'Successfully created.';
         },
         error: (error): string => {
