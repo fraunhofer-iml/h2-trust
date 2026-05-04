@@ -14,9 +14,9 @@ import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { HydrogenComponentDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { CHART_COLORS } from '../../../../shared/constants/chart-colors';
+import { formatNumberForChart } from '../../../../shared/formatting/chart-number-format';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
-import { formatNumberForChart } from '../../../../shared/util/number-format.util';
 
 @Component({
   selector: 'app-h2-composition-chart',

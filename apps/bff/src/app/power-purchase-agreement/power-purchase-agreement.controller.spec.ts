@@ -7,7 +7,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { BrokerQueues } from '@h2-trust/messaging';
+import { QUEUE_GENERAL_SVC } from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';
 import { PowerPurchaseAgreementController } from './power-purchase-agreement.controller';
 import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
@@ -22,7 +22,7 @@ describe('PowerPurchaseAgreementController', () => {
         PowerPurchaseAgreementService,
         UserService,
         {
-          provide: BrokerQueues.QUEUE_GENERAL_SVC,
+          provide: QUEUE_GENERAL_SVC,
           useValue: {
             send: jest.fn(),
           },

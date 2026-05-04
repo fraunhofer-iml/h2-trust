@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProductionUtils } from './production.utils';
+import { calculateProductionDate } from './production.utils';
 
 describe('ProductionUtils.calculateProductionDate', () => {
   it('should calculate the correct start date for the first accountingPeriod', () => {
@@ -17,7 +17,7 @@ describe('ProductionUtils.calculateProductionDate', () => {
 
     const expectedDate = new Date((1000 + 0 * 60) * 1000);
 
-    const actualDate = ProductionUtils.calculateProductionDate(
+    const actualDate = calculateProductionDate(
       productionStartedAtInSeconds,
       accountingPeriodInSeconds,
       accountingPeriodIndex,
@@ -36,7 +36,7 @@ describe('ProductionUtils.calculateProductionDate', () => {
     // (1000 + (0+1)*60) * 1000 - 1000 = (1000 + 60) * 1000 - 1000 = 1060000 - 1000 = 1059000
     const expectedDate = new Date((1000 + 1 * 60) * 1000 - 1000);
 
-    const actualDate = ProductionUtils.calculateProductionDate(
+    const actualDate = calculateProductionDate(
       productionStartedAtInSeconds,
       accountingPeriodInSeconds,
       accountingPeriodIndex,
@@ -55,7 +55,7 @@ describe('ProductionUtils.calculateProductionDate', () => {
     // (2000 + 2*120) * 1000 = (2000 + 240) * 1000 = 2240000
     const expectedDate = new Date((2000 + 2 * 120) * 1000);
 
-    const actualDate = ProductionUtils.calculateProductionDate(
+    const actualDate = calculateProductionDate(
       productionStartedAtInSeconds,
       accountingPeriodInSeconds,
       accountingPeriodIndex,
@@ -74,7 +74,7 @@ describe('ProductionUtils.calculateProductionDate', () => {
     // (2000 + (2+1)*120) * 1000 - 1000 = (2000 + 360) * 1000 - 1000 = 2360000 - 1000 = 2359000
     const expectedDate = new Date((2000 + 3 * 120) * 1000 - 1000);
 
-    const actualDate = ProductionUtils.calculateProductionDate(
+    const actualDate = calculateProductionDate(
       productionStartedAtInSeconds,
       accountingPeriodInSeconds,
       accountingPeriodIndex,

@@ -8,6 +8,6 @@
 
 import { ProofOfOriginSectionEntity, ProvenanceEntity } from '@h2-trust/contracts/entities';
 
-export interface ProofOfOriginAssembler {
+export interface ProofOfOriginSectionAssembler {
   assembleSection(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[];
 }

@@ -16,11 +16,11 @@ import {
   UpdatePowerPurchaseAgreementPayload,
 } from '@h2-trust/contracts/payloads';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
-import { BrokerQueues, PowerPurchaseAgreementPatterns } from '@h2-trust/messaging';
+import { PowerPurchaseAgreementPatterns, QUEUE_GENERAL_SVC } from '@h2-trust/messaging';
 
 @Injectable()
 export class PowerPurchaseAgreementService {
-  constructor(@Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
+  constructor(@Inject(QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy) {}
 
   async readByUserAndStatus(userId: string, status: PowerPurchaseAgreementStatus): Promise<PpaDto[]> {
     const payload = new ReadPowerPurchaseAgreementsPayload(userId, undefined, status);

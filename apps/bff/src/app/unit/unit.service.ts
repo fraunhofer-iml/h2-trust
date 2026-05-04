@@ -23,13 +23,13 @@ import {
 } from '@h2-trust/contracts/dtos';
 import { HydrogenStorageUnitEntity } from '@h2-trust/contracts/entities';
 import { ReadByIdPayload } from '@h2-trust/contracts/payloads';
-import { BrokerQueues, UnitMessagePatterns } from '@h2-trust/messaging';
+import { QUEUE_GENERAL_SVC, UnitMessagePatterns } from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';
 
 @Injectable()
 export class UnitService {
   constructor(
-    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
+    @Inject(QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     private readonly userService: UserService,
   ) {}
 

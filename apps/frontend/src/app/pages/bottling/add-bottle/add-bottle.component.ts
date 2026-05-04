@@ -26,7 +26,9 @@ import { HydrogenComponentDto, HydrogenStorageOverviewDto, UserDto } from '@h2-t
 import { FuelType, MeasurementUnit, RfnboType, TransportMode } from '@h2-trust/domain';
 import { FileDragAndDropComponent } from '../../../layout/drag-and-drop/file-drag-and-drop.component';
 import { FileCardComponent } from '../../../layout/file-card/file-card.component';
+import { TypeSelectionComponent } from '../../../layout/type-selection/type-selection.component';
 import { FileTypes } from '../../../shared/constants/file-types';
+import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
@@ -36,7 +38,7 @@ import { StorageFillingLevelsComponent } from './storage-filling-levels/storage-
 
 @Component({
   selector: 'app-add-bottle',
-  providers: [provideNativeDateAdapter(), CompaniesService, BottlingService],
+  providers: [provideNativeDateAdapter(), CompaniesService, BottlingService, EnumPipe],
   imports: [
     MatDialogModule,
     CommonModule,
@@ -52,6 +54,7 @@ import { StorageFillingLevelsComponent } from './storage-filling-levels/storage-
     MatRadioModule,
     RouterModule,
     UnitPipe,
+    TypeSelectionComponent,
     StorageFillingLevelsComponent,
     FileDragAndDropComponent,
     FileCardComponent,
@@ -63,11 +66,14 @@ export class AddBottleComponent {
   unitsService = inject(UnitsService);
   companiesService = inject(CompaniesService);
   processService = inject(BottlingService);
+  enumPipe = inject(EnumPipe);
 
   protected readonly FileTypes = FileTypes;
   protected readonly TransportType = TransportMode;
   protected readonly FuelType = FuelType;
   protected readonly MeasurementUnit = MeasurementUnit;
+  protected readonly RfnboType = RfnboType;
+  protected readonly bottleTypes = [RfnboType.RFNBO_READY, RfnboType.NON_CERTIFIABLE] as const;
 
   dateDelimiter: Date = new Date();
   uploadedFiles: File[] = [];
@@ -109,6 +115,10 @@ export class AddBottleComponent {
     );
 
     this.bottleFormGroup.controls.amount?.valueChanges.subscribe((amount) => this.onAmountChnage(amount));
+  }
+
+  get bottleTypeControl() {
+    return this.bottleFormGroup.controls.type as FormControl<RfnboType | undefined>;
   }
 
   removeFile(file: File): void {
@@ -184,13 +194,35 @@ export class AddBottleComponent {
 
   displayComposition(hydrogenComposition: HydrogenComponentDto[]) {
     const sum = hydrogenComposition.reduce((a, b) => a + b.amount, 0);
-    return hydrogenComposition.map((c) => ` ${c.rfnboType} (${((c.amount * 100) / sum).toFixed(2)} %)`);
+    return hydrogenComposition.map(
+      (c) => ` ${this.enumPipe.transform(c.rfnboType, 'rfnboType')} (${((c.amount * 100) / sum).toFixed(2)} %)`,
+    );
   }
 
   isAmountAvailable(requestedAmount: number | null, hydrogenComposition: HydrogenComponentDto[]) {
     if (!requestedAmount) return false;
     const rfnboAmount = this.getAvailableGreenAmount(hydrogenComposition);
     return requestedAmount <= rfnboAmount;
+  }
+
+  rfnboDisabledTypes(hydrogenComposition: HydrogenComponentDto[]) {
+    const amount = this.bottleFormGroup.value.amount;
+    if (this.isAmountAvailable(amount ?? null, hydrogenComposition)) {
+      return [];
+    }
+
+    return [RfnboType.RFNBO_READY];
+  }
+
+  rfnboDescriptions(hydrogenComposition: HydrogenComponentDto[]) {
+    return {
+      [RfnboType.RFNBO_READY]: `The bottling will contain RFNBO ready hydrogen only. Available amount: ${this.getAvailableGreenAmount(
+        hydrogenComposition,
+      ).toFixed(2)} kg`,
+      [RfnboType.NON_CERTIFIABLE]: `The composition of the filling will correspond to the hydrogen composition of the selected storage unit: ${this.displayComposition(
+        hydrogenComposition,
+      )}.`,
+    };
   }
 
   getAvailableGreenAmount(hydrogenComposition: HydrogenComponentDto[]) {
