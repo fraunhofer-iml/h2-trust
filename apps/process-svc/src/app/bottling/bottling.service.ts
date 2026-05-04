@@ -26,7 +26,7 @@ import { BrokerException } from '@h2-trust/messaging';
 import { CentralizedStorageService, ContentType } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { BottlingProcessStepAssembler } from './utils/bottling-process-step.assembler';
-import { BottlingAllocation, BottlingAllocator } from './utils/bottling.allocator';
+import { allocateBottling, BottlingAllocation } from './utils/bottling.allocator';
 
 @Injectable()
 export class BottlingService {
@@ -85,7 +85,7 @@ export class BottlingService {
       payload.hydrogenStorageUnitId,
     );
 
-    const allocation: BottlingAllocation = BottlingAllocator.allocate(
+    const allocation: BottlingAllocation = allocateBottling(
       processStepsFromStorageUnit,
       hydrogenComposition,
       payload.hydrogenStorageUnitId,

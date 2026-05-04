@@ -15,9 +15,9 @@ import {
   QualityDetailsEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
 import { BatchType, ProcessType, RfnboType } from '@h2-trust/domain';
-import { BottlingAllocator } from './bottling.allocator';
+import { allocateBottling } from './bottling.allocator';
 
-describe('BottlingAllocator', () => {
+describe('allocateBottling', () => {
   describe('allocate', () => {
     it('allocates single process step when amount matches exactly', () => {
       // Arrange
@@ -33,7 +33,7 @@ describe('BottlingAllocator', () => {
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 100 })];
 
       // Act
-      const actualResult = BottlingAllocator.allocate(
+      const actualResult = allocateBottling(
         givenProcessSteps,
         givenHydrogenComposition,
         givenHydrogenStorageUnitId,
@@ -71,7 +71,7 @@ describe('BottlingAllocator', () => {
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 100 })];
 
       // Act
-      const actualResult = BottlingAllocator.allocate(
+      const actualResult = allocateBottling(
         givenProcessSteps,
         givenHydrogenComposition,
         givenHydrogenStorageUnitId,
@@ -101,7 +101,7 @@ describe('BottlingAllocator', () => {
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 100 })];
 
       // Act
-      const actualResult = BottlingAllocator.allocate(
+      const actualResult = allocateBottling(
         givenProcessSteps,
         givenHydrogenComposition,
         givenHydrogenStorageUnitId,
@@ -136,7 +136,7 @@ describe('BottlingAllocator', () => {
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 80 })];
 
       // Act
-      const actualResult = BottlingAllocator.allocate(
+      const actualResult = allocateBottling(
         givenProcessSteps,
         givenHydrogenComposition,
         givenHydrogenStorageUnitId,
@@ -180,7 +180,7 @@ describe('BottlingAllocator', () => {
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 100 })];
 
       // Act
-      const actualResult = BottlingAllocator.allocate(
+      const actualResult = allocateBottling(
         givenProcessSteps,
         givenHydrogenComposition,
         givenHydrogenStorageUnitId,
@@ -207,9 +207,9 @@ describe('BottlingAllocator', () => {
       const expectedErrorMessage = `There is not enough hydrogen in storage unit ${givenHydrogenStorageUnitId} for the requested amount of 100 of quality ${RfnboType.RFNBO_READY}.`;
 
       // Act & Assert
-      expect(() =>
-        BottlingAllocator.allocate(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId),
-      ).toThrow(expectedErrorMessage);
+      expect(() => allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId)).toThrow(
+        expectedErrorMessage,
+      );
     });
 
     it('returns empty results when hydrogen composition is empty', () => {
@@ -226,7 +226,7 @@ describe('BottlingAllocator', () => {
       const givenHydrogenComposition: HydrogenComponentEntity[] = [];
 
       // Act
-      const actualResult = BottlingAllocator.allocate(
+      const actualResult = allocateBottling(
         givenProcessSteps,
         givenHydrogenComposition,
         givenHydrogenStorageUnitId,
