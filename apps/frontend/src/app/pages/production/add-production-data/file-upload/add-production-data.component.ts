@@ -26,11 +26,10 @@ import { injectMutation, injectQuery } from '@tanstack/angular-query-experimenta
 import { AccountingPeriodMatchingResultDto } from '@h2-trust/contracts/dtos';
 import { BatchType, CsvContentType } from '@h2-trust/domain';
 import { FileDragAndDropComponent } from '../../../../layout/drag-and-drop/file-drag-and-drop.component';
+import { TypeSelectionComponent } from '../../../../layout/type-selection/type-selection.component';
 import { FileTypes } from '../../../../shared/constants/file-types';
-import { ICONS } from '../../../../shared/constants/icons';
 import { UploadFlowAction } from '../../../../shared/constants/upload-flow-action.enum';
 import { ModalData } from '../../../../shared/model/modal-data.model';
-import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { FileSizePipe } from '../../../../shared/pipes/file-size.pipe';
 import {
   hydrogenProductionUnitsQueryOptions,
@@ -62,16 +61,15 @@ import { LoadingModalComponent } from './loading-modal/loading-modal.component';
     MatIconModule,
     RouterModule,
     FileDragAndDropComponent,
+    TypeSelectionComponent,
     CommonModule,
     FileSizePipe,
-    EnumPipe,
   ],
   templateUrl: './add-production-data.component.html',
 })
 export class AddProductionDataComponent {
   protected readonly FileTypes = FileTypes;
   protected readonly CsvContentType = CsvContentType;
-  protected readonly ICONS = ICONS.UNITS;
 
   availableUnitTypes: CsvContentType[] = [CsvContentType.HYDROGEN, CsvContentType.POWER];
 

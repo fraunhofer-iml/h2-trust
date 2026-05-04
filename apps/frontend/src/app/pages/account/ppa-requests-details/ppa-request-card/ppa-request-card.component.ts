@@ -45,6 +45,7 @@ export class PpaRequestCardComponent {
   openDialog(status: PowerPurchaseAgreementStatus.APPROVED | PowerPurchaseAgreementStatus.REJECTED): void {
     this.dialog.open(RequestConfirmationDialogComponent, {
       data: { status, request: this.request() },
+      disableClose: true,
     });
   }
 

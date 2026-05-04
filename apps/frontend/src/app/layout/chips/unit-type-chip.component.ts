@@ -25,7 +25,7 @@ import { EnumPipe } from '../../shared/pipes/enum.pipe';
     }"
   >
     <span
-      class="material-symbols-outlined text-lg"
+      class="material-symbols-outlined text-base!"
       [ngClass]="{
         'text-primary-400': unitType() === UnitType.POWER_PRODUCTION,
         'text-secondary-400': unitType() === UnitType.HYDROGEN_PRODUCTION,
