@@ -56,6 +56,6 @@ export function assembleHydrogenTransportationSection(provenance: ProvenanceEnti
   return [new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION, [batch], [])];
 }
 
-export const hydrogenTransportationProofOfOriginAssembler: ProofOfOriginSectionAssembler = {
+export const hydrogenTransportationSectionAssembler: ProofOfOriginSectionAssembler = {
   assembleSection: assembleHydrogenTransportationSection,
 };

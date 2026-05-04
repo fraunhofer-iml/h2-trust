@@ -7,14 +7,14 @@
  */
 
 import { ProofOfOriginSectionAssembler } from './proof-of-origin-assembler.interface';
-import { hydrogenBottlingProofOfOriginAssembler } from './sections/hydrogen-bottling-section.assembler';
-import { hydrogenProductionProofOfOriginAssembler } from './sections/hydrogen-production-section.assembler';
-import { hydrogenStorageProofOfOriginAssembler } from './sections/hydrogen-storage-section.assembler';
-import { hydrogenTransportationProofOfOriginAssembler } from './sections/hydrogen-transportation-transportation.assembler';
+import { hydrogenBottlingSectionAssembler } from './sections/hydrogen-bottling-section.assembler';
+import { hydrogenProductionSectionAssembler } from './sections/hydrogen-production-section.assembler';
+import { hydrogenStorageSectionAssembler } from './sections/hydrogen-storage-section.assembler';
+import { hydrogenTransportationSectionAssembler } from './sections/hydrogen-transportation-transportation.assembler';
 
 export const proofOfOriginSectionAssemblers: ProofOfOriginSectionAssembler[] = [
-  hydrogenProductionProofOfOriginAssembler,
-  hydrogenStorageProofOfOriginAssembler,
-  hydrogenTransportationProofOfOriginAssembler,
-  hydrogenBottlingProofOfOriginAssembler,
+  hydrogenBottlingSectionAssembler,
+  hydrogenProductionSectionAssembler,
+  hydrogenStorageSectionAssembler,
+  hydrogenTransportationSectionAssembler,
 ];

@@ -93,6 +93,6 @@ export function assembleHydrogenStorageSection(provenance: ProvenanceEntity): Pr
   return [new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_STORAGE_SECTION, [], classifications)];
 }
 
-export const hydrogenStorageProofOfOriginAssembler: ProofOfOriginSectionAssembler = {
+export const hydrogenStorageSectionAssembler: ProofOfOriginSectionAssembler = {
   assembleSection: assembleHydrogenStorageSection,
 };

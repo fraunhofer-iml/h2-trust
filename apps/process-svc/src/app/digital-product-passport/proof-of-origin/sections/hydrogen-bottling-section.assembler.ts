@@ -90,6 +90,6 @@ export function assembleHydrogenBottlingSection(provenance: ProvenanceEntity): P
   return [new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_BOTTLING_SECTION, [batch], [])];
 }
 
-export const hydrogenBottlingProofOfOriginAssembler: ProofOfOriginSectionAssembler = {
+export const hydrogenBottlingSectionAssembler: ProofOfOriginSectionAssembler = {
   assembleSection: assembleHydrogenBottlingSection,
 };
