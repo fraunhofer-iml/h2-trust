@@ -22,7 +22,7 @@ import {
   PowerType,
   ProcessType,
 } from '@h2-trust/domain';
-import { EnumLabelMapper } from '@h2-trust/strings';
+import { getEnergySource } from '@h2-trust/strings';
 import { ProofOfSustainabilityEmissionAssembler } from '../proof-of-sustainability-assembler.interface';
 
 export function assemblePowerSupplyEmissionCalculation(
@@ -37,7 +37,7 @@ export function assemblePowerSupplyEmissionCalculation(
   const powerInput = `Power Input: ${power} ${MeasurementUnit.KWH}`;
   const powerType: PowerType = powerProduction.batch.qualityDetails.powerType as PowerType;
 
-  const emissionFactorLabel = EnumLabelMapper.getEnergySource(energySource);
+  const emissionFactorLabel = getEnergySource(energySource);
   const emissionFactor = EmissionNumericConstants.POWER_TYPE_EMISSION_FACTORS[powerType];
   const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} ${MeasurementUnit.G_CO2_PER_KWH}`;
 

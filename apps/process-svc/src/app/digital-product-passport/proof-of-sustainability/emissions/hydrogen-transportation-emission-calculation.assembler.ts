@@ -22,7 +22,7 @@ import {
   TrailerParameter,
   TransportMode,
 } from '@h2-trust/domain';
-import { EnumLabelMapper } from '@h2-trust/strings';
+import { getFuelType } from '@h2-trust/strings';
 import { ProofOfSustainabilityEmissionAssembler } from '../proof-of-sustainability-assembler.interface';
 
 function assemblePipelineEmissionCalculation(): ProofOfSustainabilityEmissionCalculationEntity {
@@ -56,7 +56,7 @@ function assembleTrailerEmissionCalculation(
   const emissionCh4AndN2O = tonPerKg * transportDistance * emissionFactorCh4AndN2O;
   const result = (emissionsFuelCombustion + emissionCh4AndN2O) * hydrogenAmount;
 
-  const fuelTypeLabel = EnumLabelMapper.getFuelType(fuelType);
+  const fuelTypeLabel = getFuelType(fuelType);
   const tonPerKgInput = `Ton per Kg: ${tonPerKg} ton/kg`;
   const transportDistanceInput = `Transport Distance: ${transportDistance} ${MeasurementUnit.KM}`;
   const transportEfficiencyInput = `Transport Efficiency: ${transportEfficiency} ${MeasurementUnit.MJ_FUEL_PER_TON_KM}`;
