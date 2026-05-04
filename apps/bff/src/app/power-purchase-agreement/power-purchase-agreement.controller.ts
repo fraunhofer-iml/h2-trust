@@ -69,7 +69,7 @@ export class PowerPurchaseAgreementController {
   })
   @ApiOkResponse({
     description: 'Returns a list of all companies with their power purchase agreement matching the filter criteria.',
-    type: [PpaDto],
+    type: [PpaRequestDto],
   })
   @ApiQuery({
     name: 'role',
