@@ -109,7 +109,8 @@ export function parseLocalTimeToUTC(inputTime: string | number, timeZone: string
   assertValidTimeZone(timeZone);
 
   //The input time interpreted as UTC (will be used for the offset calculation)
-  const localInputDateAsUTC: Date = typeof inputTime === 'string' ? parseTimeStringToUTC(inputTime) : new Date(inputTime);
+  const localInputDateAsUTC: Date =
+    typeof inputTime === 'string' ? parseTimeStringToUTC(inputTime) : new Date(inputTime);
 
   const timeZoneFormatter = new Intl.DateTimeFormat('en-US', {
     timeZone: timeZone,
