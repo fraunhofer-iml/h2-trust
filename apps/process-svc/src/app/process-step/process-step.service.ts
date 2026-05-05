@@ -27,18 +27,18 @@ export class ProcessStepService {
     private readonly processStepRepository: ProcessStepRepository,
   ) {}
 
-  async updateRfnboStatus(
+  updateRfnboStatus(
     processStep: ProcessStepEntity,
     rfnboType: RfnboType,
   ): Promise<{ id: string; batchId: string }> {
     return this.batchRepository.setRfnboStatus(processStep.batch.id, rfnboType);
   }
 
-  async createProcessStep(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
+  createProcessStep(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
     return this.processStepRepository.insertProcessStep(processStep);
   }
 
-  async createManyProcessSteps(payload: CreateManyProcessStepsPayload): Promise<ProcessStepEntity[]> {
+  createManyProcessSteps(payload: CreateManyProcessStepsPayload): Promise<ProcessStepEntity[]> {
     return this.processStepRepository.insertManyProcessSteps(payload.processSteps);
   }
 
@@ -94,11 +94,11 @@ export class ProcessStepService {
     return documents;
   }
 
-  async readAllProcessStepsFromStorageUnit(hydrogenStorageUnitId: string): Promise<ProcessStepEntity[]> {
+  readAllProcessStepsFromStorageUnit(hydrogenStorageUnitId: string): Promise<ProcessStepEntity[]> {
     return this.processStepRepository.findAllProcessStepsFromStorageUnit(hydrogenStorageUnitId);
   }
 
-  async readProcessStepsByPredecessorTypesAndOwner(
+  readProcessStepsByPredecessorTypesAndOwner(
     payload: ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   ): Promise<ProcessStepEntity[]> {
     return this.processStepRepository.findProcessStepsByPredecessorTypesAndOwner(
@@ -107,7 +107,7 @@ export class ProcessStepService {
     );
   }
 
-  async readProcessStepsByPredecessorTypesAndUnitAndDate(
+  readProcessStepsByPredecessorTypesAndUnitAndDate(
     predecessorProcessType: string[],
     payload: CreateHydrogenProductionStatisticsPayload,
   ): Promise<ProcessStepEntity[]> {
@@ -143,7 +143,7 @@ export class ProcessStepService {
     );
   }
 
-  async readProcessStepsByTypesAndActiveAndOwner(
+  readProcessStepsByTypesAndActiveAndOwner(
     payload: ReadProcessStepsByTypesAndActiveAndOwnerPayload,
   ): Promise<ProcessStepEntity[]> {
     return this.processStepRepository.findProcessStepsByTypesAndActiveAndOwner(
@@ -153,7 +153,7 @@ export class ProcessStepService {
     );
   }
 
-  async setBatchesInactive(batchIds: string[]): Promise<{ count: number }> {
+  setBatchesInactive(batchIds: string[]): Promise<{ count: number }> {
     return this.batchRepository.setBatchesInactive(batchIds);
   }
 }

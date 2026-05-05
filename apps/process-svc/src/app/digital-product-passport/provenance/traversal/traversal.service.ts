@@ -15,13 +15,13 @@ import { ProcessStepService } from '../../../process-step/process-step.service';
 export class TraversalService {
   constructor(private readonly processStepService: ProcessStepService) {}
 
-  async fetchPowerProductionsFromHydrogenProductions(
+  fetchPowerProductionsFromHydrogenProductions(
     hydrogenProductions: ProcessStepEntity[],
   ): Promise<ProcessStepEntity[]> {
     return this.fetchPredecessorProcessStepsFromHydrogenProductions(hydrogenProductions, ProcessType.POWER_PRODUCTION);
   }
 
-  async fetchWaterConsumptionsFromHydrogenProductions(
+  fetchWaterConsumptionsFromHydrogenProductions(
     hydrogenProductions: ProcessStepEntity[],
   ): Promise<ProcessStepEntity[]> {
     return this.fetchPredecessorProcessStepsFromHydrogenProductions(hydrogenProductions, ProcessType.WATER_CONSUMPTION);
@@ -57,7 +57,7 @@ export class TraversalService {
     return Array.from(collectedProcessSteps.values());
   }
 
-  async fetchHydrogenProductionsFromHydrogenBottling(
+  fetchHydrogenProductionsFromHydrogenBottling(
     hydrogenBottling: ProcessStepEntity,
   ): Promise<ProcessStepEntity[]> {
     return this.fetchPredecessorProcessSteps(
@@ -106,7 +106,7 @@ export class TraversalService {
     return processStepsOfPredecessorBatches;
   }
 
-  async getPredecessorsForBatch(batch: BatchEntity): Promise<ProcessStepEntity[]> {
+  getPredecessorsForBatch(batch: BatchEntity): Promise<ProcessStepEntity[]> {
     return Promise.all(
       batch.predecessors.map((predecessor) => {
         return this.processStepService.readProcessStep(predecessor.processStepId);
@@ -124,7 +124,7 @@ export class TraversalService {
     return predecessorBatches;
   }
 
-  private async fetchProcessStepsOfBatches(batches: BatchEntity[]): Promise<ProcessStepEntity[]> {
+  private fetchProcessStepsOfBatches(batches: BatchEntity[]): Promise<ProcessStepEntity[]> {
     const promises = batches.map(({ processStepId }) => this.processStepService.readProcessStep(processStepId));
     return Promise.all(promises);
   }
