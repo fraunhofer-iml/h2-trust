@@ -20,11 +20,10 @@ export class ProductionCSVUploadDto {
   @IsIn([BatchType.POWER, BatchType.HYDROGEN])
   csvContentType: CsvContentType;
 
+  //has to be a valid IANA Time Zone value (e.g. Europe/Berlin, US/Central, UTC, ...)
   timeZone: string;
 
   constructor(unitIds: string[], csvContentType: CsvContentType, timeZone: string) {
-    //TODO-LG: check if the given timeZoneName is valid
-    //Intl.supportedValuesOf('timeZone').includes(timeZoneName)
     this.unitIds = unitIds;
     this.csvContentType = csvContentType;
     this.timeZone = timeZone ?? 'Europe/Berlin';
