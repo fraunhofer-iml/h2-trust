@@ -12,8 +12,8 @@ import {
   ProofOfOriginSectionEntity,
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
-import { ProofOfOrigin } from '@h2-trust/domain';
 import { proofOfOriginSectionAssemblers } from './proof-of-origin-assembler.registry.const';
+import { ProofOfOrigin } from '@h2-trust/domain';
 
 /**
  * If the provided provenance relates to hydrogen bottling or hydrogen transport, the ProofOfOrigin sections for all nodes must be returned.
@@ -25,19 +25,34 @@ export function assembleProofOfOrigin(provenance: ProvenanceEntity): ProofOfOrig
   if (!provenance) {
     return [];
   }
-  return proofOfOriginSectionAssemblers.flatMap((proofOfOriginAssembler) =>
-    proofOfOriginAssembler.assembleSection(provenance),
-  );
+
+  return proofOfOriginSectionAssemblers
+    .flatMap((proofOfOriginAssembler) => proofOfOriginAssembler.assembleSection(provenance))
+    .sort((a, b) => getProofOfOriginSectionOrder(a.name) - getProofOfOriginSectionOrder(b.name));
 }
 
-export function getHydrogenBottlingCompositions(
-  proofOfOrigin: ProofOfOriginSectionEntity[],
-): HydrogenComponentEntity[] {
+function getProofOfOriginSectionOrder(name: string): number {
+  switch (name) {
+    case ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION:
+      return 0;
+    case ProofOfOrigin.HYDROGEN_STORAGE_SECTION:
+      return 1;
+    case ProofOfOrigin.HYDROGEN_BOTTLING_SECTION:
+      return 2;
+    case ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION:
+      return 3;
+    default:
+      return Number.MAX_SAFE_INTEGER;
+  }
+}
+
+export function getHydrogenBottlingCompositions(proofOfOrigin: ProofOfOriginSectionEntity[]): HydrogenComponentEntity[] {
   if (!proofOfOrigin) {
     return [];
   }
+
   const bottling: ProofOfOriginSectionEntity = proofOfOrigin.find(
-    (section) => section.name == ProofOfOrigin.HYDROGEN_BOTTLING_SECTION,
+    (section) => section.name === ProofOfOrigin.HYDROGEN_BOTTLING_SECTION,
   );
   return bottling ? (bottling.batches[0] as ProofOfOriginHydrogenBatchEntity).hydrogenComposition : [];
 }
