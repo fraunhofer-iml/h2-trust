@@ -6,11 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { PowerPurchaseAgreementStatus } from "@h2-trust/domain";
+
 export class PowerPurchaseAgreementConnectionDto {
-  powerPurchaseAgreementStatus: string;
+  powerPurchaseAgreementStatus: PowerPurchaseAgreementStatus;
   powerProducerId: string;
 
-  constructor(powerPurchaseAgreementStatus: string, powerProducerId: string) {
+  constructor(powerPurchaseAgreementStatus: PowerPurchaseAgreementStatus, powerProducerId: string) {
     this.powerPurchaseAgreementStatus = powerPurchaseAgreementStatus;
     this.powerProducerId = powerProducerId;
   }
