@@ -31,3 +31,14 @@ export function assertValidEnum<E extends Record<string, string | number>>(
     throw new Error(`The value ${value} is not a valid ${enumName}`);
   }
 }
+
+export function assertValidTimeZone(value: string): asserts value is string {
+  assertDefined(value, 'timezone');
+
+  try {
+    Intl.DateTimeFormat(undefined, { timeZone: value });
+  } catch {
+    const message = `${value} must be a valid timezone.`;
+    throw new Error(message);
+  }
+}

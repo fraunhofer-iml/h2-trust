@@ -14,18 +14,22 @@ describe('parseAccountingPeriodCsvBuffer', () => {
     it('parses localized datetime values with amount and power columns', async () => {
       const buffer = Buffer.from('time,amount,power\n01.02.2026 13:45,12.5,33');
 
-      const actualResult = await parseAccountingPeriodCsvBuffer(buffer, ['time', 'amount', 'power']);
+      const actualResult = await parseAccountingPeriodCsvBuffer(buffer, ['time', 'amount', 'power'], 'UTC');
 
       expect(actualResult).toHaveLength(1);
       expect(actualResult[0].amount).toBe(12.5);
       expect(actualResult[0].power).toBe(33);
-      expect(actualResult[0].time).toEqual(new Date(2026, 1, 1, 13, 45));
+      expect(actualResult[0].time.getUTCFullYear()).toEqual(2026);
+      expect(actualResult[0].time.getUTCMonth()).toEqual(1);
+      expect(actualResult[0].time.getUTCDate()).toEqual(1);
+      expect(actualResult[0].time.getUTCHours()).toEqual(13);
+      expect(actualResult[0].time.getUTCMinutes()).toEqual(45);
     });
 
     it('parses ISO timestamps and Excel serial dates', async () => {
       const buffer = Buffer.from('time,amount\n2026-01-01T10:00:00Z,5\n25569.25,7');
 
-      const actualResult = await parseAccountingPeriodCsvBuffer(buffer, ['time', 'amount']);
+      const actualResult = await parseAccountingPeriodCsvBuffer(buffer, ['time', 'amount'], 'UTC');
 
       expect(actualResult).toHaveLength(2);
       expect(actualResult[0].time.toISOString()).toBe('2026-01-01T10:00:00.000Z');
@@ -36,7 +40,9 @@ describe('parseAccountingPeriodCsvBuffer', () => {
     it('throws a broker exception when a required column is missing', async () => {
       const buffer = Buffer.from('time,amount\n2026-01-01T10:00:00Z,5');
 
-      await expect(parseAccountingPeriodCsvBuffer(buffer, ['time', 'amount', 'power'])).rejects.toMatchObject({
+      await expect(
+        parseAccountingPeriodCsvBuffer(buffer, ['time', 'amount', 'power'], 'Europe/Berlin'),
+      ).rejects.toMatchObject({
         message: 'Missing required column: power',
         error: {
           status: HttpStatus.BAD_REQUEST,
@@ -49,7 +55,7 @@ describe('parseAccountingPeriodCsvBuffer', () => {
         'time,amount,power\ninvalid-date,10,5\n2026-01-01T00:00:00Z,0,5\n2026-01-01T01:00:00Z,10,invalid\n2026-01-01T02:00:00Z,12,6',
       );
 
-      const actualResult = await parseAccountingPeriodCsvBuffer(buffer, ['time', 'amount', 'power']);
+      const actualResult = await parseAccountingPeriodCsvBuffer(buffer, ['time', 'amount', 'power'], 'UTC');
 
       expect(actualResult).toHaveLength(1);
       expect(actualResult[0].time.toISOString()).toBe('2026-01-01T02:00:00.000Z');

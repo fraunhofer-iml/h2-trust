@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { assertDefined } from './assertions';
+import { assertDefined, assertValidTimeZone } from './assertions';
 
 export function toValidDate(value: unknown, name: string): Date {
   assertDefined(value, name);
@@ -86,4 +86,51 @@ export function formatDate(date: Date): string {
   const minutes = String(date.getMinutes()).padStart(2, '0');
   const seconds = String(date.getSeconds()).padStart(2, '0');
   return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+}
+
+function parseTimeStringToUTC(inputTime: string): Date {
+  if (inputTime.includes('T')) {
+    return new Date(inputTime);
+  }
+  const [inputDatePart, inputTimePart] = inputTime.split(/\s+/);
+  const [inputDay, inputMonth, inputYear] = inputDatePart.split('.').map(Number);
+  const [inputHour, inputMinute] = inputTimePart.split(':').map(Number);
+
+  return new Date(Date.UTC(inputYear, inputMonth - 1, inputDay, inputHour, inputMinute, 0));
+}
+
+/**
+ * Accepts a timestamp as string and converts it to UTC.
+ * @param value The date string that should be converted to UTC
+ * @param timeZone The name of the time zone of the value.
+ * @returns The date string as UTC date.
+ */
+export function convertLocalTimeToUTC(inputTime: string | number, timeZone: string): Date {
+  assertValidTimeZone(timeZone);
+
+  //The input time interpreted as UTC (will be used for the offset calculation)
+  const localInputDateAsUTC: Date =
+    typeof inputTime === 'string' ? parseTimeStringToUTC(inputTime) : new Date(inputTime);
+
+  const timeZoneFormatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  });
+
+  //The input time converted to the local format (will be used to get the offset)
+  const localFormatDate = timeZoneFormatter.formatToParts(localInputDateAsUTC);
+  const localFormatHour = parseInt(localFormatDate.find((p) => p.type === 'hour')?.value || '0');
+  const localFormatMinute = parseInt(localFormatDate.find((p) => p.type === 'minute')?.value || '0');
+
+  //Calculate the offset
+  const hourDiff = localInputDateAsUTC.getUTCHours() - localFormatHour;
+  const minuteDiff = localInputDateAsUTC.getUTCMinutes() - localFormatMinute;
+
+  return new Date(localInputDateAsUTC.getTime() + hourDiff * 3600000 + minuteDiff * 60000);
 }
