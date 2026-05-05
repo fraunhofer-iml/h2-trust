@@ -9,12 +9,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { HydrogenBatchDto } from '@h2-trust/contracts/dtos';
-import { MeasurementUnit, RfnboType } from '@h2-trust/domain';
+import { MeasurementUnit, ProcessType, RfnboType } from '@h2-trust/domain';
 import { RfnboChipComponent } from '../../../../../../layout/chips/rfnbo-chip.component';
 import { ProofOfOriginCardComponent } from '../../../../../../layout/proof-of-origin-card/proof-of-origin-card.component';
 import { BaseSheetComponent } from '../../../../../../layout/sheet/sheet.component';
 import { EnumPipe } from '../../../../../../shared/pipes/enum.pipe';
-import { PrettyStringPipe } from '../../../../../../shared/pipes/pretty-string.pipe';
 import { UnitPipe } from '../../../../../../shared/pipes/unit.pipe';
 import { H2CompositionChartComponent } from '../../../chart/h2-composition-chart.component';
 import { BatchEmissionsComponent } from '../batch-emissions/batch-emissions.component';
@@ -30,13 +29,13 @@ import { BatchEmissionsComponent } from '../batch-emissions/batch-emissions.comp
     UnitPipe,
     ProofOfOriginCardComponent,
     EnumPipe,
-    PrettyStringPipe,
   ],
   templateUrl: './h2-batch-card.component.html',
 })
 export class H2BatchCardComponent {
   protected readonly MeasurementUnit = MeasurementUnit;
   protected readonly RfnboType = RfnboType;
+  protected readonly ProcessType = ProcessType;
 
   batch = input.required<HydrogenBatchDto>();
 }

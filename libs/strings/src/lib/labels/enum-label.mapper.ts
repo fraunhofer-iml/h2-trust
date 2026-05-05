@@ -21,6 +21,7 @@ import {
   PowerProductionType,
   PowerPurchaseAgreementStatus,
   PowerType,
+  ProcessType,
   RfnboType,
   UnitType,
 } from '@h2-trust/domain';
@@ -116,6 +117,20 @@ const CSV_CONTENT_TYPE_LABELS: Record<CsvContentType, string> = {
   [CsvContentType.HYDROGEN]: 'Hydrogen',
 };
 
+const BATCH_TYPE_LABELS: Record<BatchType, string> = {
+  [BatchType.POWER]: 'Power',
+  [BatchType.HYDROGEN]: 'Hydrogen',
+  [BatchType.WATER]: 'Water',
+};
+
+const PROCESS_TYPE_LABELS: Record<ProcessType, string> = {
+  [ProcessType.HYDROGEN_BOTTLING]: 'Hydrogen Bottling',
+  [ProcessType.HYDROGEN_PRODUCTION]: 'Hydrogen Production',
+  [ProcessType.HYDROGEN_TRANSPORTATION]: 'Hydrogen Transportation',
+  [ProcessType.POWER_PRODUCTION]: 'Power Production',
+  [ProcessType.WATER_CONSUMPTION]: 'Water Consumption',
+};
+
 export function getPowerProductionType(value: PowerProductionType): string {
   return getLabel(value, POWER_PRODUCTION_TYPE_LABELS);
 }
@@ -174,6 +189,14 @@ export function getPowerType(value: PowerType): string {
 
 export function getCsvContentType(value: CsvContentType): string {
   return getLabel(value, CSV_CONTENT_TYPE_LABELS);
+}
+
+export function getBatchType(value: BatchType): string {
+  return getLabel(value, BATCH_TYPE_LABELS);
+}
+
+export function getProcessType(value: ProcessType): string {
+  return getLabel(value, PROCESS_TYPE_LABELS);
 }
 
 function getLabel<T extends string>(value: T, labels: Record<T, string>): string {

@@ -3,7 +3,7 @@
   <div class="mb-4 flex items-center gap-2 text-sm text-neutral-500">
     <span class="cursor-pointer" (click)="sectionIndex$.set(-1); classificationIndex$.set([])" role="none">
       @if (sectionIndex$() > -1 && proofOfOrigin$(); as data) {
-        {{ data[sectionIndex$()].name | titlecase }}
+        {{ data[sectionIndex$()].name }}
       }
     </span>
 

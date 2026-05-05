@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DatePipe, TitleCasePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { AfterViewInit, Component, inject, signal, ViewChild } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { debounce, form, FormField } from '@angular/forms/signals';
@@ -49,7 +49,6 @@ export const DATE_FORMATS = {
     MatPaginatorModule,
     MatTableModule,
     DatePipe,
-    TitleCasePipe,
     MatButtonModule,
     MatSortModule,
     ProductionStatisticsComponent,
