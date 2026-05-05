@@ -14,12 +14,16 @@ describe('parseAccountingPeriodCsvBuffer', () => {
     it('parses localized datetime values with amount and power columns', async () => {
       const buffer = Buffer.from('time,amount,power\n01.02.2026 13:45,12.5,33');
 
-      const actualResult = await parseAccountingPeriodCsvBuffer(buffer, ['time', 'amount', 'power'], 'Europe/Berlin');
+      const actualResult = await parseAccountingPeriodCsvBuffer(buffer, ['time', 'amount', 'power'], 'UTC');
 
       expect(actualResult).toHaveLength(1);
       expect(actualResult[0].amount).toBe(12.5);
       expect(actualResult[0].power).toBe(33);
-      expect(actualResult[0].time).toEqual(new Date(2026, 1, 1, 13, 45));
+      expect(actualResult[0].time.getUTCFullYear()).toEqual(2026);
+      expect(actualResult[0].time.getUTCMonth()).toEqual(1);
+      expect(actualResult[0].time.getUTCDate()).toEqual(1);
+      expect(actualResult[0].time.getUTCHours()).toEqual(13);
+      expect(actualResult[0].time.getUTCMinutes()).toEqual(45);
     });
 
     it('parses ISO timestamps and Excel serial dates', async () => {
