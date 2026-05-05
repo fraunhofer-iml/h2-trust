@@ -22,9 +22,9 @@ import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
 import { UnitsService } from '../../../../shared/services/units/units.service';
+import { injectUnitQuery } from '../shared/inject-unit-query';
 import { UnitActionsComponent } from '../shared/unit-actions/unit-actions.component';
 import { UnitDetailsComponent } from '../shared/unit-details/unit-details.component';
-import { injectUnitQuery } from '../shared/unit-query.util';
 
 @Component({
   selector: 'app-power-production-details',

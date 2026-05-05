@@ -10,7 +10,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import { of } from 'rxjs';
 import { CompanyDto, CompanyDtoMock } from '@h2-trust/contracts/dtos';
-import { BrokerQueues, CompanyMessagePatterns } from '@h2-trust/messaging';
+import { CompanyMessagePatterns, QUEUE_GENERAL_SVC } from '@h2-trust/messaging';
 import { CompanyController } from './company.controller';
 import { CompanyService } from './company.service';
 
@@ -25,7 +25,7 @@ describe('CompanyController', () => {
       providers: [
         CompanyService,
         {
-          provide: BrokerQueues.QUEUE_GENERAL_SVC,
+          provide: QUEUE_GENERAL_SVC,
           useValue: {
             send: jest.fn(),
           },
@@ -34,7 +34,7 @@ describe('CompanyController', () => {
     }).compile();
 
     controller = module.get<CompanyController>(CompanyController);
-    clientProxy = module.get<ClientProxy>(BrokerQueues.QUEUE_GENERAL_SVC) as ClientProxy;
+    clientProxy = module.get<ClientProxy>(QUEUE_GENERAL_SVC) as ClientProxy;
   });
 
   it('should be defined', () => {

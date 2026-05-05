@@ -13,7 +13,7 @@ import { UserDetailsDto } from '@h2-trust/contracts/dtos';
 import { UserEntity } from '@h2-trust/contracts/entities';
 import { UserEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { ReadByIdPayload } from '@h2-trust/contracts/payloads';
-import { BrokerQueues, UserMessagePatterns } from '@h2-trust/messaging';
+import { QUEUE_GENERAL_SVC, UserMessagePatterns } from '@h2-trust/messaging';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
@@ -27,7 +27,7 @@ describe('UserController', () => {
       providers: [
         UserService,
         {
-          provide: BrokerQueues.QUEUE_GENERAL_SVC,
+          provide: QUEUE_GENERAL_SVC,
           useValue: {
             send: jest.fn(),
           },
@@ -36,7 +36,7 @@ describe('UserController', () => {
     }).compile();
 
     controller = module.get<UserController>(UserController);
-    generalSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_GENERAL_SVC) as ClientProxy;
+    generalSvc = module.get<ClientProxy>(QUEUE_GENERAL_SVC) as ClientProxy;
   });
 
   afterEach(() => {

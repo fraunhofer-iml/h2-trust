@@ -18,13 +18,17 @@ import {
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/contracts/payloads';
 import { ProcessType } from '@h2-trust/domain';
-import { BrokerQueues, DigitalProductPassportMessagePatterns, ProcessStepMessagePatterns } from '@h2-trust/messaging';
+import {
+  DigitalProductPassportMessagePatterns,
+  ProcessStepMessagePatterns,
+  QUEUE_PROCESS_SVC,
+} from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';
 
 @Injectable()
 export class BottlingService {
   constructor(
-    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
+    @Inject(QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly userService: UserService,
   ) {}
 
