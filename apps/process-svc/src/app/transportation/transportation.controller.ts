@@ -18,9 +18,7 @@ export class TransportationController {
   constructor(private readonly transportationService: TransportationService) {}
 
   @MessagePattern(ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION)
-  async createHydrogenTransportationProcessStep(
-    payload: CreateHydrogenTransportationPayload,
-  ): Promise<ProcessStepEntity> {
+  createHydrogenTransportationProcessStep(payload: CreateHydrogenTransportationPayload): Promise<ProcessStepEntity> {
     return this.transportationService.createHydrogenTransportationProcessStep(payload);
   }
 }

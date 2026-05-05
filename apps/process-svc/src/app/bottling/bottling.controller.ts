@@ -22,19 +22,19 @@ export class BottlingController {
   constructor(private readonly bottlingService: BottlingService) {}
 
   @MessagePattern(ProcessStepMessagePatterns.CREATE_HYDROGEN_BOTTLING)
-  async createHydrogenBottlingProcessStep(payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
+  createHydrogenBottlingProcessStep(payload: CreateHydrogenBottlingPayload): Promise<ProcessStepEntity> {
     return this.bottlingService.createHydrogenBottlingProcessStep(payload);
   }
 
   @MessagePattern(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_OWNER)
-  async readProcessStepsByTypesAndActiveAndOwner(
+  readProcessStepsByTypesAndActiveAndOwner(
     payload: ReadProcessStepsByTypesAndActiveAndOwnerPayload,
   ): Promise<ProcessStepEntity[]> {
     return this.bottlingService.readProcessStepsByTypesAndActiveAndOwner(payload);
   }
 
   @MessagePattern(ProcessStepMessagePatterns.READ_PAGINATION_BY_PREDECESSOR_TYPES_AND_OWNER)
-  async readProcessStepsByPredecessorTypesAndOwner(
+  readProcessStepsByPredecessorTypesAndOwner(
     payload: ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ): Promise<PaginatedProcessStepEntity> {
     return this.bottlingService.readProcessStepsByPredecessorTypesAndOwner(payload);

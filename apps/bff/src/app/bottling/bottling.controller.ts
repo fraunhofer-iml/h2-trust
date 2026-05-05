@@ -93,7 +93,7 @@ export class BottlingController {
       },
     },
   })
-  async createBottlingAndTransportation(
+  createBottlingAndTransportation(
     @Body() dto: BottlingDto,
     @UploadedFiles() files: Express.Multer.File[],
     @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
@@ -110,7 +110,7 @@ export class BottlingController {
     description: "Returns a list of all bottling process steps belonging to the authenticated user's company.",
     type: [BottlingOverviewDto],
   })
-  async readBottlingsAndTransportationsByOwner(
+  readBottlingsAndTransportationsByOwner(
     @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<BottlingOverviewDto[]> {
     return this.bottlingService.readBottlingsAndTransportationsByOwner(authenticatedUser.sub);
@@ -132,7 +132,7 @@ export class BottlingController {
     description: 'Unique identifier of the transportation process step.',
     example: 'process-step-hydrogen-bottling-1',
   })
-  async readDigitalProductPassport(@Param('id') id: string): Promise<DigitalProductPassportDto> {
+  readDigitalProductPassport(@Param('id') id: string): Promise<DigitalProductPassportDto> {
     return this.bottlingService.readDigitalProductPassport(id);
   }
 }

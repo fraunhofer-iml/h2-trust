@@ -39,53 +39,53 @@ export async function seedDatabase() {
     {
       name: 'address',
       records: AddressSeed,
-      createRecord: async (data: any) => await prisma.address.create({ data }),
+      createRecord: (data: any) => prisma.address.create({ data }),
     },
     {
       name: 'company',
       records: CompanySeed,
-      createRecord: async (data: any) => await prisma.company.create({ data }),
+      createRecord: (data: any) => prisma.company.create({ data }),
     },
     {
       name: 'user',
       records: UserSeed,
-      createRecord: async (data: any) => await prisma.user.create({ data }),
+      createRecord: (data: any) => prisma.user.create({ data }),
     },
     {
       name: 'unit',
       records: UnitSeed,
-      createRecord: async (data: any) => await prisma.unit.create({ data }),
+      createRecord: (data: any) => prisma.unit.create({ data }),
     },
     {
       name: 'powerProductionType',
       records: PowerProductionTypeSeed,
-      createRecord: async (data: any) => await prisma.powerProductionType.create({ data }),
+      createRecord: (data: any) => prisma.powerProductionType.create({ data }),
     },
     {
       name: 'powerProductionUnit',
       records: PowerProductionUnitSeed,
-      createRecord: async (data: any) => await prisma.powerProductionUnit.create({ data }),
+      createRecord: (data: any) => prisma.powerProductionUnit.create({ data }),
     },
     {
       name: 'hydrogenStorageUnit',
       records: HydrogenStorageUnitSeed,
-      createRecord: async (data: any) => await prisma.hydrogenStorageUnit.create({ data }),
+      createRecord: (data: any) => prisma.hydrogenStorageUnit.create({ data }),
     },
     {
       name: 'hydrogenProductionUnit',
       records: HydrogenProductionUnitSeed,
-      createRecord: async (data: any) => await prisma.hydrogenProductionUnit.create({ data }),
+      createRecord: (data: any) => prisma.hydrogenProductionUnit.create({ data }),
     },
     {
       name: 'batch',
       records: BatchSeed,
-      createRecord: async (data: any) => await prisma.batch.create({ data }),
+      createRecord: (data: any) => prisma.batch.create({ data }),
     },
     {
       name: 'batchRelationPowerHydrogen',
       records: BatchRelationPowerHydrogenSeed,
-      createRecord: async (data: any) =>
-        await prisma.batch.update({
+      createRecord: (data: any) =>
+        prisma.batch.update({
           where: { id: data.A },
           data: {
             predecessors: {
@@ -97,8 +97,8 @@ export async function seedDatabase() {
     {
       name: 'batchRelationWaterHydrogen',
       records: BatchRelationWaterHydrogenSeed,
-      createRecord: async (data: any) =>
-        await prisma.batch.update({
+      createRecord: (data: any) =>
+        prisma.batch.update({
           where: { id: data.A },
           data: {
             predecessors: {
@@ -110,8 +110,8 @@ export async function seedDatabase() {
     {
       name: 'batchRelationBottlingProduction',
       records: BatchRelationBottlingProductionSeed,
-      createRecord: async (data: any) =>
-        await prisma.batch.update({
+      createRecord: (data: any) =>
+        prisma.batch.update({
           where: { id: data.A },
           data: {
             predecessors: {
@@ -123,8 +123,8 @@ export async function seedDatabase() {
     {
       name: 'batchRelationTransportationBottling',
       records: BatchRelationTransportationBottlingSeed,
-      createRecord: async (data: any) =>
-        await prisma.batch.update({
+      createRecord: (data: any) =>
+        prisma.batch.update({
           where: { id: data.A },
           data: {
             predecessors: {
@@ -136,37 +136,37 @@ export async function seedDatabase() {
     {
       name: 'batchDetails',
       records: BatchDetailsSeed,
-      createRecord: async (data: any) => await prisma.batchDetails.create({ data }),
+      createRecord: (data: any) => prisma.batchDetails.create({ data }),
     },
     {
       name: 'qualityDetails',
       records: QualityDetailsSeed,
-      createRecord: async (data: any) => await prisma.qualityDetails.create({ data }),
+      createRecord: (data: any) => prisma.qualityDetails.create({ data }),
     },
     {
       name: 'processStep',
       records: ProcessStepSeed,
-      createRecord: async (data: any) => await prisma.processStep.create({ data }),
+      createRecord: (data: any) => prisma.processStep.create({ data }),
     },
     {
       name: 'processStepDetails',
       records: ProcessStepDetailsSeed,
-      createRecord: async (data: any) => await prisma.processStepDetails.create({ data }),
+      createRecord: (data: any) => prisma.processStepDetails.create({ data }),
     },
     {
       name: 'transportationDetails',
       records: TransportationDetailsSeed,
-      createRecord: async (data: any) => await prisma.transportationDetails.create({ data }),
+      createRecord: (data: any) => prisma.transportationDetails.create({ data }),
     },
     {
       name: 'document',
       records: DocumentSeed,
-      createRecord: async (data: any) => await prisma.document.create({ data }),
+      createRecord: (data: any) => prisma.document.create({ data }),
     },
     {
       name: 'powerPurchaseAgreement',
       records: PowerPurchaseAgreementSeed,
-      createRecord: async (data: any) => await prisma.powerPurchaseAgreement.create({ data }),
+      createRecord: (data: any) => prisma.powerPurchaseAgreement.create({ data }),
     },
     {
       name: 'decision',

@@ -82,7 +82,7 @@ export class FileSelectionComponent {
       this.selectedHydrogenFile()?.endedAt,
       BatchType.POWER,
     ],
-    queryFn: async () =>
+    queryFn: () =>
       this.productionService.getStagedProductions(
         CsvContentType.POWER,
         StagingScope.RECEIVED,
@@ -126,12 +126,25 @@ export class FileSelectionComponent {
   }
 
   mutation = injectMutation(() => ({
-    mutationFn: (dto: StagingSubmissionDto) => this.productionService.submitCsv(dto),
-    onSuccess: () => {
-      toast.success('Successfully created new productions!');
-      this.router.navigateByUrl(H2TrustRoutes.PRODUCTION_DATA);
+    mutationFn: async (dto: StagingSubmissionDto) => {
+      const promise = this.productionService.submitCsv(dto);
+
+      toast.promise(promise, {
+        loading: 'Creating production batches...',
+        success: () => {
+          this.router.navigateByUrl(H2TrustRoutes.PRODUCTION_DATA);
+          return 'Successfully created new productions!';
+        },
+        error: (error): string => {
+          if (error instanceof HttpErrorResponse || error instanceof Error) {
+            return error.message;
+          }
+          return 'Failed to create batches.';
+        },
+      });
+
+      await promise;
     },
-    onError: (e: HttpErrorResponse) => toast.error(e.error.message),
   }));
 
   constructor() {

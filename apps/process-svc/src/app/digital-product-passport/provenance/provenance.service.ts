@@ -23,7 +23,7 @@ type ProvenanceBuilderFn = (root: ProcessStepEntity) => Promise<ProvenanceEntity
 export class ProvenanceService {
   constructor(private readonly traversalService: TraversalService) {}
 
-  public async buildProvenance(root: ProcessStepEntity): Promise<ProvenanceEntity> {
+  async buildProvenance(root: ProcessStepEntity): Promise<ProvenanceEntity> {
     if (!root || !root.type) {
       throw new Error('Invalid process step.');
     }

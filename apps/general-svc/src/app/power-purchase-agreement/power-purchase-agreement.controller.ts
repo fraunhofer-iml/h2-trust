@@ -23,7 +23,7 @@ export class PowerPurchaseAgreementController {
   constructor(private readonly service: PowerPurchaseAgreementService) {}
 
   @MessagePattern(PowerPurchaseAgreementPatterns.READ)
-  async findAll(payload: ReadPowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity[]> {
+  findAll(payload: ReadPowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity[]> {
     return this.service.findAll(payload);
   }
 
@@ -38,7 +38,7 @@ export class PowerPurchaseAgreementController {
   }
 
   @MessagePattern(PowerPurchaseAgreementPatterns.READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID)
-  async readApprovedGridPowerProductionUnitByUserId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity> {
+  readApprovedGridPowerProductionUnitByUserId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity> {
     return this.service.findApprovedGridPowerProductionUnitByUserId(payload);
   }
 }

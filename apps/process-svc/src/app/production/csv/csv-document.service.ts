@@ -27,7 +27,7 @@ export class CsvDocumentService {
     @Optional() private readonly decentralizedStorageService: DecentralizedStorageService | null,
   ) {}
 
-  async findByCompany(payload: ReadByIdPayload): Promise<CsvDocumentEntity[]> {
+  findByCompany(payload: ReadByIdPayload): Promise<CsvDocumentEntity[]> {
     return this.csvImportRepository.findAllCsvDocumentsByCompanyId(payload.id);
   }
 
