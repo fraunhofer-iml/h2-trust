@@ -38,39 +38,39 @@ export class ProductionController {
   ) {}
 
   @MessagePattern(ProductionMessagePatterns.CREATE)
-  async createProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
+  createProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
     return this.productionService.createProductions(payload);
   }
 
   @MessagePattern(ProductionMessagePatterns.ASSEMBLE_PRODUCTION_STATISTICS)
-  async assembleProductionStatistics(
+  assembleProductionStatistics(
     payload: CreateHydrogenProductionStatisticsPayload,
   ): Promise<ProductionStatisticsEntity> {
     return this.productionService.assembleProductionStatistics(payload);
   }
 
   @MessagePattern(ProductionMessagePatterns.STAGE)
-  async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
+  stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
     return this.productionStagingService.stageProductions(payload);
   }
 
   @MessagePattern(ProductionMessagePatterns.FINALIZE)
-  async createProductionsFromStaging(payload: FinalizeProductionsPayload): Promise<ProcessStepEntity[]> {
+  createProductionsFromStaging(payload: FinalizeProductionsPayload): Promise<ProcessStepEntity[]> {
     return this.productionStagingService.createProductionsFromStaging(payload);
   }
 
   @MessagePattern(ProductionMessagePatterns.READ_CSV_DOCUMENTS_BY_COMPANY)
-  async readCsvDocumentsByCompany(payload: ReadByIdPayload): Promise<CsvDocumentEntity[]> {
+  readCsvDocumentsByCompany(payload: ReadByIdPayload): Promise<CsvDocumentEntity[]> {
     return this.csvDocumentService.findByCompany(payload);
   }
 
   @MessagePattern(ProductionMessagePatterns.READ_STAGED_PRODUCTION_BY_COMPANY)
-  async readStagedProductionsByCompany(payload: ReadStagedProductionsPayload): Promise<StagedProductionEntity[]> {
+  readStagedProductionsByCompany(payload: ReadStagedProductionsPayload): Promise<StagedProductionEntity[]> {
     return this.productionStagingService.readStagedProductions(payload);
   }
 
   @MessagePattern(ProductionMessagePatterns.VERIFY_CSV_DOCUMENT_INTEGRITY)
-  async verifyCsvDocumentIntegrity(payload: ReadByIdPayload): Promise<VerifyCsvDocumentIntegrityResultEntity> {
+  verifyCsvDocumentIntegrity(payload: ReadByIdPayload): Promise<VerifyCsvDocumentIntegrityResultEntity> {
     return this.csvDocumentService.verifyCsvDocumentIntegrity(payload);
   }
 }

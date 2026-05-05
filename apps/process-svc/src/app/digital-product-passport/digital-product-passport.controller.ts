@@ -18,7 +18,7 @@ export class DigitalProductPassportController {
   constructor(private readonly digitalProductPassportService: DigitalProductPassportService) {}
 
   @MessagePattern(DigitalProductPassportMessagePatterns.READ)
-  async readDigitalProductPassport(payload: ReadByIdPayload): Promise<DigitalProductPassportEntity> {
+  readDigitalProductPassport(payload: ReadByIdPayload): Promise<DigitalProductPassportEntity> {
     return this.digitalProductPassportService.readDigitalProductPassport(payload.id);
   }
 }

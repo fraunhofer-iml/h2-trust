@@ -37,7 +37,7 @@ export class BottlingService {
     private readonly processStepService: ProcessStepService,
   ) {}
 
-  async readProcessStepsByTypesAndActiveAndOwner(
+  readProcessStepsByTypesAndActiveAndOwner(
     payload: ReadProcessStepsByTypesAndActiveAndOwnerPayload,
   ): Promise<ProcessStepEntity[]> {
     return this.processStepService.readProcessStepsByTypesAndActiveAndOwner(payload);

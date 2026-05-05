@@ -68,7 +68,7 @@ export class ProductionController {
     required: false,
     example: '2024-09-20T07:55:55.695Z',
   })
-  async readHydrogenProductionsByOwner(
+  readHydrogenProductionsByOwner(
     @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
     @Query('pageNumber') pageNumber: number,
     @Query('pageSize') pageSize: number,
@@ -115,7 +115,7 @@ export class ProductionController {
   @ApiOperation({
     description: "Retrieve all uploaded csv documents for the authenticated user's company.",
   })
-  async readCsvDocumentsByCompany(@KeycloakUser() authenticatedUser: AuthenticatedKCUser): Promise<ProcessedCsvDto[]> {
+  readCsvDocumentsByCompany(@KeycloakUser() authenticatedUser: AuthenticatedKCUser): Promise<ProcessedCsvDto[]> {
     return this.service.readCsvDocumentsByCompany(authenticatedUser.sub);
   }
 
@@ -152,7 +152,7 @@ export class ProductionController {
     type: Date,
     example: new Date('2026-02-01'),
   })
-  async readStagedProductionsByCompanyAndType(
+  readStagedProductionsByCompanyAndType(
     @Query('scope') scope: StagingScope,
     @Query('type') type: CsvContentType,
     @Query('from') from: Date,

@@ -15,7 +15,7 @@ import { UserRepository } from '@h2-trust/database';
 export class UserService {
   constructor(private readonly repository: UserRepository) {}
 
-  async readUserWithCompany(payload: ReadByIdPayload): Promise<UserEntity> {
+  readUserWithCompany(payload: ReadByIdPayload): Promise<UserEntity> {
     return this.repository.findUser(payload.id);
   }
 }
