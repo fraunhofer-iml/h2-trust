@@ -99,7 +99,7 @@ export function parseLocalTimeToUTC(timeString: string, timeZone: string): Date 
   const [inputDay, inputMonth, inputYear] = inputDatePart.split('.').map(Number);
   const [inputHour, inputMinute] = inputTimePart.split(':').map(Number);
 
-  assertValidTimeZone(timeZone, 'timezone');
+  assertValidTimeZone(timeZone);
 
   const timeZoneFormatter = new Intl.DateTimeFormat('en-US', {
     timeZone: timeZone,

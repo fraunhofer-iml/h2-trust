@@ -46,8 +46,7 @@
               >
                 <span matListItemTitle>
                   {{ dataset.startedAt | date: 'mediumDate' }}, {{ dataset.startedAt | date: 'shortTime' }} –
-                  {{ dataset.endedAt | date: 'mediumDate' }},
-                  {{ dataset.endedAt | date: 'shortTime' }}
+                  {{ dataset.endedAt | date: 'mediumDate' }}, {{ dataset.endedAt | date: 'shortTime' }}
                 </span>
                 <p matListItemLine class="pb-3">
                   {{ dataset.amountProduced | unit: MeasurementUnit.KG_H2 }} •
