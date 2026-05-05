@@ -6,7 +6,4 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Prisma } from '@prisma/client';
-import { decisionDeepQueryArgs } from '../query-args/decision';
-
-export type DecisionDbType = Prisma.DecisionGetPayload<typeof decisionDeepQueryArgs>;
+export * from './power-purchase-agreement-decision.entity';

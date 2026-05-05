@@ -23,12 +23,12 @@ export class PowerPurchaseAgreementService {
   constructor(
     private readonly powerPurchaseAgreementRepository: PowerPurchaseAgreementRepository,
     private readonly userRepository: UserRepository,
-    private readonly unitRepostitory: UnitRepository,
+    private readonly unitRepository: UnitRepository,
   ) {}
 
   async findAll(payload: ReadPowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity[]> {
     const user: UserEntity = await this.userRepository.findUser(payload.userId);
-    return this.powerPurchaseAgreementRepository.findAll(
+    return this.powerPurchaseAgreementRepository.findAllPowerPurchaseAgreements(
       user.company.id,
       payload.powerPurchaseAgreementStatus,
       payload.powerPurchaseAgreementRole,
@@ -37,34 +37,18 @@ export class PowerPurchaseAgreementService {
 
   async createPPA(payload: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity> {
     const hydrogenProducerCompany: UserEntity = await this.userRepository.findUser(payload.userId);
-    return this.powerPurchaseAgreementRepository.create(payload, hydrogenProducerCompany.company.id);
+    return this.powerPurchaseAgreementRepository.createPowerPurchaseAgreement(
+      payload,
+      hydrogenProducerCompany.company.id,
+    );
   }
 
   async updatePPA(payload: UpdatePowerPurchaseAgreementPayload): Promise<PowerPurchaseAgreementEntity> {
     const user: UserEntity = await this.userRepository.findUser(payload.decidingUserId);
-    const agreements: PowerPurchaseAgreementEntity[] = await this.powerPurchaseAgreementRepository.findAll(
-      user.company.id,
-      undefined,
-      undefined,
-    );
-    const hasAccessToAgreement: boolean = agreements.some((agreement) => agreement.id === payload.ppaId);
-    if (!hasAccessToAgreement) {
-      throw new BrokerException(
-        `User ${user.name} is not authorized to update power purchase agreement of this company.`,
-        HttpStatus.FORBIDDEN,
-      );
-    }
 
-    const ownedUnits: PowerProductionUnitEntity[] = await this.unitRepostitory.findPowerProductionUnitsByOwnerId(
-      user.company.id,
-    );
-    const isOwnerOfProductionUnit: boolean = ownedUnits.some((unit) => unit.id === payload.powerProductionUnitId);
-    if (!isOwnerOfProductionUnit) {
-      throw new BrokerException(
-        `User ${user.name} is not authorized to grant access of this power production unit.`,
-        HttpStatus.FORBIDDEN,
-      );
-    }
+    this.checkUserAccessToPowerPurchaseAgreement(user, payload.ppaId);
+    this.hasUserOwnershipOverPowerProductionUnit(user, payload.powerProductionUnitId);
+
     return this.powerPurchaseAgreementRepository.updatePpaStatus(payload);
   }
 
@@ -84,5 +68,28 @@ export class PowerPurchaseAgreementService {
       );
 
     return agreementForGrid.powerProductionUnit;
+  }
+
+  private async checkUserAccessToPowerPurchaseAgreement(user: UserEntity, ppaId: string) {
+    const hasAccessToAgreement: boolean = await this.powerPurchaseAgreementRepository.canDecideAgreement(user, ppaId);
+    if (!hasAccessToAgreement) {
+      throw new BrokerException(
+        `User ${user.name} is not authorized to update power purchase agreement of this company.`,
+        HttpStatus.FORBIDDEN,
+      );
+    }
+  }
+
+  private async hasUserOwnershipOverPowerProductionUnit(user: UserEntity, powerProductionUnitId: string) {
+    const isOwnerOfProductionUnit: boolean = await this.unitRepository.ownsPowerProductionUnit(
+      user,
+      powerProductionUnitId,
+    );
+    if (!isOwnerOfProductionUnit) {
+      throw new BrokerException(
+        `User ${user.name} is not authorized to grant access of this power production unit.`,
+        HttpStatus.FORBIDDEN,
+      );
+    }
   }
 }

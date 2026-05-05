@@ -13,10 +13,9 @@ import { userDeepQueryArgs } from '../user';
 
 export const powerPurchaseAgreementNestedQueryArgs = Prisma.validator<Prisma.PowerPurchaseAgreementDefaultArgs>()({
   include: {
-    document: true,
     powerProducer: companyFlatQueryArgs,
     hydrogenProducer: companyFlatQueryArgs,
     powerProductionUnit: powerProductionUnitNestedQueryArgs,
-    creatingUser: userDeepQueryArgs,
+    requestingUser: userDeepQueryArgs,
   },
 });

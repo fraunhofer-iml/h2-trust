@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DecisionDbType } from '@h2-trust/database';
+import { PowerPurchaseAgreementDecisionDbType } from '@h2-trust/database';
 
-export class DecisionEntity {
+export class PowerPurchaseAgreementDecisionEntity {
   id: string;
   decidedAt: Date;
   powerPurchaseAgreementId: string;
@@ -32,14 +32,14 @@ export class DecisionEntity {
     this.decidingUserName = decidingUserName;
   }
 
-  static fromDatabase(decision: DecisionDbType) {
-    return <DecisionEntity>{
-      id: decision.id,
-      decidedAt: decision.decidedAt,
-      powerPurchaseAgreementId: decision.powerPurchaseAgreementId,
-      decidingUserName: decision.decidingUser.name,
-      grantedPowerProductionUnitId: decision.grantedPowerProductionUnitId,
-      comment: decision.comment,
-    };
+  static fromDatabase(decision: PowerPurchaseAgreementDecisionDbType) {
+    return new PowerPurchaseAgreementDecisionEntity(
+      decision.id,
+      decision.decidedAt,
+      decision.powerPurchaseAgreementId,
+      decision.decidingUser.name,
+      decision.grantedPowerProductionUnitId ?? '',
+      decision.comment ?? undefined,
+    );
   }
 }

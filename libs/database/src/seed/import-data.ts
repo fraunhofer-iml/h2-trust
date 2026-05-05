@@ -16,12 +16,12 @@ import {
   BatchRelationWaterHydrogenSeed,
   BatchSeed,
   CompanySeed,
-  DecisionSeed,
   DocumentSeed,
   HydrogenProductionUnitSeed,
   HydrogenStorageUnitSeed,
   PowerProductionTypeSeed,
   PowerProductionUnitSeed,
+  PowerPurchaseAgreementDecisionSeed,
   PowerPurchaseAgreementSeed,
   ProcessStepDetailsSeed,
   ProcessStepSeed,
@@ -169,9 +169,9 @@ export async function seedDatabase() {
       createRecord: (data: any) => prisma.powerPurchaseAgreement.create({ data }),
     },
     {
-      name: 'decision',
-      records: DecisionSeed,
-      createRecord: async (data: any) => await prisma.decision.create({ data }),
+      name: 'powerPurchaseAgreementDecision',
+      records: PowerPurchaseAgreementDecisionSeed,
+      createRecord: async (data: any) => await prisma.powerPurchaseAgreementDecision.create({ data }),
     },
   ];
 

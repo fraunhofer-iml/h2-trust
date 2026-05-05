@@ -8,7 +8,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PowerPurchaseAgreementEntity } from '@h2-trust/contracts/entities';
+import { PowerPurchaseAgreementEntity, UserEntity } from '@h2-trust/contracts/entities';
 import {
   CreatePowerPurchaseAgreementsPayload,
   UpdatePowerPurchaseAgreementPayload,
@@ -22,41 +22,36 @@ import { powerPurchaseAgreementDeepQueryArgs } from '../query-args/power-purchas
 export class PowerPurchaseAgreementRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findAll(
+  async findAllPowerPurchaseAgreements(
     producerId: string,
     status?: PowerPurchaseAgreementStatus,
     role?: PpaRequestRole,
   ): Promise<PowerPurchaseAgreementEntity[]> {
-    return this.prismaService.powerPurchaseAgreement
-      .findMany({
-        where: this.buildRoleQuery(producerId, status, role),
-        ...powerPurchaseAgreementDeepQueryArgs,
-      })
-      .then((result) => {
-        return result.map(PowerPurchaseAgreementEntity.fromDeepDatabase);
-      });
+    const powerPurchaseAgreements = await this.prismaService.powerPurchaseAgreement.findMany({
+      where: this.buildRoleQuery(producerId, status, role),
+      ...powerPurchaseAgreementDeepQueryArgs,
+    });
+    return powerPurchaseAgreements.map(PowerPurchaseAgreementEntity.fromDeepDatabase);
   }
 
-  async create(
+  async createPowerPurchaseAgreement(
     ppa: CreatePowerPurchaseAgreementsPayload,
     hydrogenProducerCompanyId: string,
   ): Promise<PowerPurchaseAgreementEntity> {
-    return this.prismaService.powerPurchaseAgreement
-      .create({
-        data: buildPowerPurchaseAgreementCreateData(ppa, hydrogenProducerCompanyId),
-        ...powerPurchaseAgreementDeepQueryArgs,
-      })
-      .then((result) => PowerPurchaseAgreementEntity.fromDeepDatabase(result));
+    const powerPurchaseAgreement = await this.prismaService.powerPurchaseAgreement.create({
+      data: buildPowerPurchaseAgreementCreateData(ppa, hydrogenProducerCompanyId),
+      ...powerPurchaseAgreementDeepQueryArgs,
+    });
+    return PowerPurchaseAgreementEntity.fromDeepDatabase(powerPurchaseAgreement);
   }
 
-  async updatePpaStatus(ppa: UpdatePowerPurchaseAgreementPayload): Promise<any> {
-    return this.prismaService.powerPurchaseAgreement
-      .update({
-        where: { id: ppa.ppaId },
-        data: this.buildPowerPurchaseAgreementStatusUpdateData(ppa),
-        ...powerPurchaseAgreementDeepQueryArgs,
-      })
-      .then((result) => PowerPurchaseAgreementEntity.fromDeepDatabase(result));
+  async updatePpaStatus(ppa: UpdatePowerPurchaseAgreementPayload): Promise<PowerPurchaseAgreementEntity> {
+    const powerPurchaseAgreement = await this.prismaService.powerPurchaseAgreement.update({
+      where: { id: ppa.ppaId },
+      data: this.buildPowerPurchaseAgreementStatusUpdateData(ppa),
+      ...powerPurchaseAgreementDeepQueryArgs,
+    });
+    return PowerPurchaseAgreementEntity.fromDeepDatabase(powerPurchaseAgreement);
   }
 
   private buildPowerPurchaseAgreementStatusUpdateData(ppa: UpdatePowerPurchaseAgreementPayload) {
@@ -105,8 +100,8 @@ export class PowerPurchaseAgreementRepository {
 
   private buildDecisionUpdateQuery(
     payload: UpdatePowerPurchaseAgreementPayload,
-  ): Prisma.DecisionCreateWithoutPowerPurchaseAgreementInput {
-    const base: Prisma.DecisionCreateWithoutPowerPurchaseAgreementInput = {
+  ): Prisma.PowerPurchaseAgreementDecisionCreateWithoutPowerPurchaseAgreementInput {
+    const base: Prisma.PowerPurchaseAgreementDecisionCreateWithoutPowerPurchaseAgreementInput = {
       decidedAt: new Date(),
       decidingUser: {
         connect: { id: payload.decidingUserId },
@@ -124,5 +119,14 @@ export class PowerPurchaseAgreementRepository {
     }
 
     return base;
+  }
+
+  async canDecideAgreement(user: UserEntity, powerPurchaseAgreementId: string): Promise<boolean> {
+    const agreements: PowerPurchaseAgreementEntity[] = await this.findAllPowerPurchaseAgreements(
+      user.company.id,
+      undefined,
+      undefined,
+    );
+    return agreements.some((agreement) => agreement.id === powerPurchaseAgreementId);
   }
 }

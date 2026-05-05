@@ -14,6 +14,7 @@ import {
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
   PowerProductionUnitEntity,
+  UserEntity,
 } from '@h2-trust/contracts/entities';
 import {
   CreateHydrogenProductionUnitPayload,
@@ -308,5 +309,10 @@ export class UnitRepository {
     });
 
     if (!unit?.active) throw new Error(`Unit with Id ${id} is inactive.`);
+  }
+
+  async ownsPowerProductionUnit(user: UserEntity, powerProductionUnitId: string): Promise<boolean> {
+    const ownedUnits: PowerProductionUnitEntity[] = await this.findPowerProductionUnitsByOwnerId(user.company.id);
+    return ownedUnits.some((unit) => unit.id === powerProductionUnitId);
   }
 }

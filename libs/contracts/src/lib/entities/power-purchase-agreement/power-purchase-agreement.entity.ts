@@ -10,8 +10,7 @@ import { PowerPurchaseAgreementDeepDbType, PowerPurchaseAgreementNestedDbType } 
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { assertValidEnum } from '@h2-trust/utils';
 import { CompanyEntity } from '../company';
-import { DecisionEntity } from '../decision';
-import { DocumentEntity } from '../document';
+import { PowerPurchaseAgreementDecisionEntity } from '../power-purchase-agreement-decision';
 import { PowerProductionUnitEntity } from '../unit';
 import { UserEntity } from '../user';
 
@@ -26,8 +25,7 @@ export class PowerPurchaseAgreementEntity {
   powerProducer: CompanyEntity;
   hydrogenProducer: CompanyEntity;
   powerProductionUnit?: PowerProductionUnitEntity;
-  document?: DocumentEntity;
-  decision?: DecisionEntity;
+  decision?: PowerPurchaseAgreementDecisionEntity;
 
   constructor(
     id: string,
@@ -39,9 +37,8 @@ export class PowerPurchaseAgreementEntity {
     hydrogenProducer: CompanyEntity,
     suggestedPowerProductionTypeName: string,
     creator: UserEntity,
-    document?: DocumentEntity,
     powerProductionUnit?: PowerProductionUnitEntity,
-    decision?: DecisionEntity,
+    decision?: PowerPurchaseAgreementDecisionEntity,
   ) {
     this.id = id;
     this.createdAt = createdAt;
@@ -52,7 +49,6 @@ export class PowerPurchaseAgreementEntity {
     this.powerProductionUnit = powerProductionUnit;
     this.hydrogenProducer = hydrogenProducer;
     this.creator = creator;
-    this.document = document;
     this.decision = decision;
     this.suggestedPowerProductionTypeName = suggestedPowerProductionTypeName;
   }
@@ -69,25 +65,30 @@ export class PowerPurchaseAgreementEntity {
       CompanyEntity.fromNestedDatabase(powerPurchaseAgreement.powerProducer),
       CompanyEntity.fromNestedDatabase(powerPurchaseAgreement.hydrogenProducer),
       powerPurchaseAgreement.suggestedPowerTypeName,
-      UserEntity.fromDeepDatabase(powerPurchaseAgreement.creatingUser),
-      powerPurchaseAgreement.document ? DocumentEntity.fromDatabase(powerPurchaseAgreement.document) : undefined,
+      UserEntity.fromDeepDatabase(powerPurchaseAgreement.requestingUser),
       powerPurchaseAgreement.powerProductionUnit
         ? PowerProductionUnitEntity.fromNestedPowerProductionUnit(powerPurchaseAgreement.powerProductionUnit)
         : undefined,
-      powerPurchaseAgreement.decision ? DecisionEntity.fromDatabase(powerPurchaseAgreement.decision) : undefined,
+      powerPurchaseAgreement.decision
+        ? PowerPurchaseAgreementDecisionEntity.fromDatabase(powerPurchaseAgreement.decision)
+        : undefined,
     );
   }
 
-  static fromNestedDatabase(agreement: PowerPurchaseAgreementNestedDbType): PowerPurchaseAgreementEntity {
-    return <PowerPurchaseAgreementEntity>{
-      ...agreement,
-      creator: UserEntity.fromDeepDatabase(agreement.creatingUser),
-      suggestedPowerProductionTypeName: agreement.suggestedPowerTypeName,
-      hydrogenProducer: CompanyEntity.fromFlatDatabase(agreement.hydrogenProducer),
-      powerProducer: CompanyEntity.fromFlatDatabase(agreement.powerProducer),
-      powerProductionUnit: agreement.powerProductionUnit
-        ? PowerProductionUnitEntity.fromNestedPowerProductionUnit(agreement.powerProductionUnit)
+  static fromNestedDatabase(powerPurchaseAgreement: PowerPurchaseAgreementNestedDbType): PowerPurchaseAgreementEntity {
+    return new PowerPurchaseAgreementEntity(
+      powerPurchaseAgreement.id,
+      powerPurchaseAgreement.createdAt,
+      powerPurchaseAgreement.validFrom,
+      powerPurchaseAgreement.validTo,
+      powerPurchaseAgreement.status as PowerPurchaseAgreementStatus,
+      CompanyEntity.fromFlatDatabase(powerPurchaseAgreement.powerProducer),
+      CompanyEntity.fromFlatDatabase(powerPurchaseAgreement.hydrogenProducer),
+      powerPurchaseAgreement.suggestedPowerTypeName,
+      UserEntity.fromDeepDatabase(powerPurchaseAgreement.requestingUser),
+      powerPurchaseAgreement.powerProductionUnit
+        ? PowerProductionUnitEntity.fromNestedPowerProductionUnit(powerPurchaseAgreement.powerProductionUnit)
         : undefined,
-    };
+    );
   }
 }

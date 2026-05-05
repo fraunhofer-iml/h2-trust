@@ -81,6 +81,25 @@ export class PowerPurchaseAgreementController {
         description: 'Possible roles to request ppas"s with',
       },
       APPROVED: {
+        value: PpaRequestRole.SENDER,
+        description: `Get all Power Agreements as "${PpaRequestRole.SENDER}"`,
+      },
+      PENDING: {
+        value: PpaRequestRole.RECEIVER,
+        description: `Get all Power Agreements as "${PpaRequestRole.RECEIVER}"`,
+      },
+    },
+  })
+  @ApiQuery({
+    name: 'status',
+    enum: PowerPurchaseAgreementStatus,
+    required: false,
+    examples: {
+      allTypes: {
+        value: null,
+        description: 'Possible status to request ppas"s with',
+      },
+      APPROVED: {
         value: PowerPurchaseAgreementStatus.APPROVED,
         description: `Get all Power Agreements with status "${PowerPurchaseAgreementStatus.APPROVED}"`,
       },
@@ -94,7 +113,7 @@ export class PowerPurchaseAgreementController {
       },
     },
   })
-  getPPARequest(
+  getPpaRequest(
     @KeycloakUser() user: AuthenticatedKCUser,
     @Query('role') role: PpaRequestRole,
     @Query('status') status?: PowerPurchaseAgreementStatus,

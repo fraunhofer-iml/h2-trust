@@ -42,8 +42,6 @@ model Document {
 
   processStep   ProcessStep? @relation(fields: [processStepId], references: [id])
   processStepId String?
-
-  powerPurchaseAgreements PowerPurchaseAgreement[]
 }
 
 model CsvImport {
@@ -108,7 +106,7 @@ model User {
 
   processSteps            ProcessStep[]
   csvImports              CsvImport[]
-  decisions               Decision[]
+  decisions               PowerPurchaseAgreementDecision[]
   powerPurchaseAgreements PowerPurchaseAgreement[]
 }
 
@@ -150,7 +148,7 @@ model PowerProductionType {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  energySource  String
+  energySource String
 
   powerProductionUnits    PowerProductionUnit[]
   powerPurchaseAgreements PowerPurchaseAgreement[]
@@ -178,7 +176,7 @@ model PowerProductionUnit {
   typeName String
 
   powerPurchaseAgreements PowerPurchaseAgreement[]
-  decisions               Decision[]
+  decisions               PowerPurchaseAgreementDecision[]
 }
 
 model HydrogenProductionUnit {
@@ -301,17 +299,16 @@ model TransportationDetails {
 }
 
 model PowerPurchaseAgreement {
-  id     String @id @default(uuid(7))
-  status String
-
+  id        String    @id @default(uuid(7))
   createdAt DateTime  @default(now())
   updatedAt DateTime?
 
+  status    String
   validFrom DateTime
   validTo   DateTime
 
-  creatingUser   User   @relation(fields: [creatingUserId], references: [id])
-  creatingUserId String
+  requestingUser   User   @relation(fields: [requestingUserId], references: [id])
+  requestingUserId String
 
   suggestedPowerType     PowerProductionType @relation(fields: [suggestedPowerTypeName], references: [name])
   suggestedPowerTypeName String
@@ -325,10 +322,22 @@ model PowerPurchaseAgreement {
   powerProductionUnit   PowerProductionUnit? @relation(fields: [powerProductionUnitId], references: [id])
   powerProductionUnitId String?
 
-  document   Document? @relation(fields: [documentId], references: [id])
-  documentId String?
+  decision PowerPurchaseAgreementDecision?
+}
 
-  decision Decision?
+model PowerPurchaseAgreementDecision {
+  id        String   @id @default(uuid(7))
+  decidedAt DateTime
+  comment   String?
+
+  powerPurchaseAgreement   PowerPurchaseAgreement @relation(fields: [powerPurchaseAgreementId], references: [id])
+  powerPurchaseAgreementId String                 @unique
+
+  decidingUser User   @relation(fields: [userId], references: [id])
+  userId       String
+
+  grantedPowerProductionUnit   PowerProductionUnit? @relation(fields: [grantedPowerProductionUnitId], references: [id])
+  grantedPowerProductionUnitId String?
 }
 
 model StagedProduction {
@@ -351,19 +360,4 @@ model StagedProduction {
 
   owner   Company @relation(name: "StageProductionOwner", fields: [ownerId], references: [id])
   ownerId String
-}
-
-model Decision {
-  id        String   @id @default(uuid(7))
-  decidedAt DateTime
-  comment   String?
-
-  powerPurchaseAgreement   PowerPurchaseAgreement @relation(fields: [powerPurchaseAgreementId], references: [id])
-  powerPurchaseAgreementId String                 @unique
-
-  decidingUser User   @relation(fields: [userId], references: [id])
-  userId       String
-
-  grantedPowerProductionUnit   PowerProductionUnit? @relation(fields: [grantedPowerProductionUnitId], references: [id])
-  grantedPowerProductionUnitId String?
 }

@@ -28,12 +28,12 @@ export class PowerPurchaseAgreementController {
   }
 
   @MessagePattern(PowerPurchaseAgreementPatterns.CREATE)
-  async createPPA(payload: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity> {
+  createPPA(payload: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity> {
     return this.service.createPPA(payload);
   }
 
   @MessagePattern(PowerPurchaseAgreementPatterns.UPDATE)
-  async updatePPAStatus(payload: UpdatePowerPurchaseAgreementPayload): Promise<PowerPurchaseAgreementEntity> {
+  updatePPAStatus(payload: UpdatePowerPurchaseAgreementPayload): Promise<PowerPurchaseAgreementEntity> {
     return this.service.updatePPA(payload);
   }
 

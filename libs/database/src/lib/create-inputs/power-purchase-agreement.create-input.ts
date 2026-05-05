@@ -28,7 +28,7 @@ export function buildPowerPurchaseAgreementCreateData(
         id: hydrogenProducerCompanyId,
       },
     },
-    creatingUser: {
+    requestingUser: {
       connect: { id: ppa.userId },
     },
     powerProducer: {
