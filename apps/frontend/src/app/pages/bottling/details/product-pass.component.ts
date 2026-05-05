@@ -16,6 +16,7 @@ import { EmptyStateComponent } from '../../../layout/empty-state/empty-state.com
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
 import { LoadingCardComponent } from '../../../layout/loading-card/loading-card.component';
 import { ERROR_MESSAGES } from '../../../shared/constants/error.messages';
+import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
@@ -23,7 +24,6 @@ import { H2CompositionChartComponent } from './chart/h2-composition-chart.compon
 import { ProofOfOriginComponent } from './proof-of-origin/proof-of-origin.component';
 import { ProofOfSustainabilityComponent } from './proof-of-sustainability/proof-of-sustainability.component';
 import { RfnboComplianceComponent } from './rfnbo-compliance/rfnbo-compliance.component';
-import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 
 @Component({
   selector: 'app-product-pass',
@@ -39,7 +39,7 @@ import { EnumPipe } from '../../../shared/pipes/enum.pipe';
     RfnboComplianceComponent,
     LoadingCardComponent,
     EmptyStateComponent,
-    EnumPipe
+    EnumPipe,
   ],
   templateUrl: './product-pass.component.html',
 })

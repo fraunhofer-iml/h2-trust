@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerPurchaseAgreementStatus } from "@h2-trust/domain";
+import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 
 export class PowerPurchaseAgreementConnectionDto {
   powerPurchaseAgreementStatus: PowerPurchaseAgreementStatus;
