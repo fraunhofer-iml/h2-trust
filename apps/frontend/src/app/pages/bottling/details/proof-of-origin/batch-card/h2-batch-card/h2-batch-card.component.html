@@ -2,7 +2,7 @@
   <div>
     <h3 class="text-base">
       {{ batch().createdAt | date: 'mediumDate' }}, {{ batch().createdAt | date: 'shortTime' }}
-      @if (batch().processStep !== 'BOTTLING') {
+      @if (batch().processStep !== ProcessType.HYDROGEN_BOTTLING) {
         - {{ batch().accountingPeriodEnd | date: 'shortTime' }}
       }
     </h3>
@@ -20,7 +20,7 @@
         <div class="flex flex-row items-center gap-2">
           <h3 class="text-base">
             {{ batch().createdAt | date: 'mediumDate' }}, {{ batch().createdAt | date: 'shortTime' }}
-            @if (batch().processStep !== 'BOTTLING') {
+            @if (batch().processStep !== ProcessType.HYDROGEN_BOTTLING) {
               - {{ batch().accountingPeriodEnd | date: 'shortTime' }}
             }
           </h3>
@@ -32,7 +32,7 @@
 
     <div class="grid grid-cols-2 gap-4 rounded-xl border-2 border-solid border-neutral-100 bg-neutral-50 p-4">
       <span class="col-span-2 text-neutral-600">Batch Details</span>
-      @if (batch().processStep !== 'BOTTLING') {
+      @if (batch().processStep !== ProcessType.HYDROGEN_BOTTLING) {
         <div class="flex flex-col text-sm">
           <span class="text-sm text-neutral-500">Created at:</span
           ><span>{{ batch().createdAt | date: 'mediumDate' }}</span>
@@ -52,10 +52,10 @@
 
       <div class="flex flex-col text-sm">
         <span class="text-sm text-neutral-500">Process Step:</span
-        ><span>{{ batch().processStep | pretty | titlecase }}</span>
+        ><span>{{ batch().processStep }}</span>
       </div>
 
-      @if (batch().processStep !== 'BOTTLING') {
+      @if (batch().processStep !== ProcessType.HYDROGEN_BOTTLING) {
         <div class="flex flex-col text-sm">
           <span class="text-sm text-neutral-500">Producer:</span><span>{{ batch().producer }}</span>
         </div>
