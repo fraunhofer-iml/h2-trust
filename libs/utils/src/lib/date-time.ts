@@ -88,18 +88,28 @@ export function formatDate(date: Date): string {
   return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 }
 
+function parseTimeStringToUTC(inputTime: string): Date {
+  if (inputTime.includes('T')) {
+    return new Date(inputTime);
+  }
+  const [inputDatePart, inputTimePart] = inputTime.split(/\s+/);
+  const [inputDay, inputMonth, inputYear] = inputDatePart.split('.').map(Number);
+  const [inputHour, inputMinute] = inputTimePart.split(':').map(Number);
+
+  return new Date(Date.UTC(inputYear, inputMonth - 1, inputDay, inputHour, inputMinute, 0));
+}
+
 /**
  * Accepts a timestamp as string and converts it to UTC.
  * @param value The date string that should be converted to UTC
  * @param timeZone The name of the time zone of the value.
  * @returns The date string as UTC date.
  */
-export function parseLocalTimeToUTC(timeString: string, timeZone: string): Date {
-  const [inputDatePart, inputTimePart] = timeString.split(/\s+/);
-  const [inputDay, inputMonth, inputYear] = inputDatePart.split('.').map(Number);
-  const [inputHour, inputMinute] = inputTimePart.split(':').map(Number);
-
+export function parseLocalTimeToUTC(inputTime: string | number, timeZone: string): Date {
   assertValidTimeZone(timeZone);
+
+  //The input time interpreted as UTC (will be used for the offset calculation)
+  let localInputDateAsUTC: Date = typeof inputTime === 'string' ? parseTimeStringToUTC(inputTime) : new Date(inputTime);
 
   const timeZoneFormatter = new Intl.DateTimeFormat('en-US', {
     timeZone: timeZone,
@@ -112,17 +122,14 @@ export function parseLocalTimeToUTC(timeString: string, timeZone: string): Date 
     hour12: false,
   });
 
-  //The input time interpreted as UTC (will be used for the offset calculation)
-  const localInputDateAsUTC = new Date(Date.UTC(inputYear, inputMonth - 1, inputDay, inputHour, inputMinute, 0));
-
   //The input time converted to the local format (will be used to get the offset)
   const localFormatDate = timeZoneFormatter.formatToParts(localInputDateAsUTC);
   const localFormatHour = parseInt(localFormatDate.find((p) => p.type === 'hour')?.value || '0');
   const localFormatMinute = parseInt(localFormatDate.find((p) => p.type === 'minute')?.value || '0');
 
   //Calculate the offset
-  const hourDiff = inputHour - localFormatHour;
-  const minuteDiff = inputMinute - localFormatMinute;
+  const hourDiff = localInputDateAsUTC.getUTCHours() - localFormatHour;
+  const minuteDiff = localInputDateAsUTC.getUTCMinutes() - localFormatMinute;
 
   return new Date(localInputDateAsUTC.getTime() + hourDiff * 3600000 + minuteDiff * 60000);
 }

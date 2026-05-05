@@ -41,13 +41,11 @@ export async function parseAccountingPeriodCsvBuffer(
       if (context.column === 'time') {
         let date: Date | null = null;
 
-        if (dateTimeRegex.test(value)) {
+        if (dateTimeRegex.test(value) || !isNaN(Date.parse(value))) {
           return parseLocalTimeToUTC(value, timeZone);
-        } else if (!isNaN(Date.parse(value))) {
-          date = new Date(value);
         } else if (!isNaN(Number(value))) {
           const num = Number(value);
-          date = new Date((num - 25569) * 86400 * 1000);
+          date = parseLocalTimeToUTC((num - 25569) * 86400 * 1000, timeZone);
         }
         if (!date || isNaN(date.getTime())) {
           invalid++;
