@@ -1,0 +1,14 @@
+{
+  "servers": {
+    "prisma": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "prisma", "mcp"]
+    },
+    "nx": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "nx", "mcp"]
+    }
+  }
+}

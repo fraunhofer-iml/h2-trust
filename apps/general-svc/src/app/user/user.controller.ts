@@ -18,7 +18,7 @@ export class UserController {
   constructor(private readonly service: UserService) {}
 
   @MessagePattern(UserMessagePatterns.READ)
-  async readUserWithCompany(payload: ReadByIdPayload): Promise<UserEntity> {
+  readUserWithCompany(payload: ReadByIdPayload): Promise<UserEntity> {
     return this.service.readUserWithCompany(payload);
   }
 }

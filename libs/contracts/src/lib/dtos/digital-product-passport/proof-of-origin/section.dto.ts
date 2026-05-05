@@ -17,7 +17,7 @@ import {
   ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/contracts/entities';
 import { BatchType, HydrogenProductionMethod, MeasurementUnit, RfnboType } from '@h2-trust/domain';
-import { EnumLabelMapper } from '@h2-trust/strings';
+import { getMeasurementUnit } from '@h2-trust/strings';
 import { HydrogenComponentDto } from '../general-information';
 import { BatchDto } from './batch.dto';
 import { ClassificationDto } from './classification.dto';
@@ -131,7 +131,7 @@ export class SectionDto {
       classification.amount,
       batches,
       classifications,
-      EnumLabelMapper.getMeasurementUnit(classification.classificationType),
+      getMeasurementUnit(classification.classificationType),
       classification.classificationType,
     );
   }
@@ -147,7 +147,7 @@ export class SectionDto {
       subClassification.amount,
       batches,
       [], // Leaf classification has no nested classifications
-      EnumLabelMapper.getMeasurementUnit(subClassification.classificationType),
+      getMeasurementUnit(subClassification.classificationType),
       subClassification.classificationType,
     );
   }

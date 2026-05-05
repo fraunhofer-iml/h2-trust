@@ -24,7 +24,12 @@ import {
   UserEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
 import { CsvContentType, CsvDocumentIntegrityStatus, ProcessType } from '@h2-trust/domain';
-import { BrokerQueues, ProcessStepMessagePatterns, ProductionMessagePatterns } from '@h2-trust/messaging';
+import {
+  ProcessStepMessagePatterns,
+  ProductionMessagePatterns,
+  QUEUE_GENERAL_SVC,
+  QUEUE_PROCESS_SVC,
+} from '@h2-trust/messaging';
 import 'multer';
 import { of } from 'rxjs';
 import {
@@ -49,13 +54,13 @@ describe('ProductionController', () => {
       providers: [
         ProductionService,
         {
-          provide: BrokerQueues.QUEUE_GENERAL_SVC,
+          provide: QUEUE_GENERAL_SVC,
           useValue: {
             send: jest.fn(),
           },
         },
         {
-          provide: BrokerQueues.QUEUE_PROCESS_SVC,
+          provide: QUEUE_PROCESS_SVC,
           useValue: {
             send: jest.fn(),
           },
@@ -76,8 +81,8 @@ describe('ProductionController', () => {
     }).compile();
 
     controller = module.get<ProductionController>(ProductionController);
-    generalSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_GENERAL_SVC) as ClientProxy;
-    processSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_PROCESS_SVC) as ClientProxy;
+    generalSvc = module.get<ClientProxy>(QUEUE_GENERAL_SVC) as ClientProxy;
+    processSvc = module.get<ClientProxy>(QUEUE_PROCESS_SVC) as ClientProxy;
     userService = module.get<UserService>(UserService);
   });
 

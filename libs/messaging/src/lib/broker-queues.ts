@@ -8,18 +8,8 @@
 
 import { requireEnv } from '@h2-trust/utils';
 
-export class BrokerQueues {
-  private static _QUEUE_GENERAL_SVC = buildQueueName('general-svc');
-  private static _QUEUE_PROCESS_SVC = buildQueueName('process-svc');
-
-  public static get QUEUE_GENERAL_SVC(): string {
-    return this._QUEUE_GENERAL_SVC;
-  }
-
-  public static get QUEUE_PROCESS_SVC(): string {
-    return this._QUEUE_PROCESS_SVC;
-  }
-}
+export const QUEUE_GENERAL_SVC = buildQueueName('general-svc');
+export const QUEUE_PROCESS_SVC = buildQueueName('process-svc');
 
 function buildQueueName(suffix: string): string {
   const prefix = requireEnv('AMQP_QUEUE_PREFIX');
