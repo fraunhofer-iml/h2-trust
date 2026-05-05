@@ -70,15 +70,11 @@ export class UnitService {
     return this.unitRepository.updateOrCreateHydrogenProductionUnit(payload);
   }
 
-  updateOrCreatePowerProductionUnit(
-    payload: CreatePowerProductionUnitPayload,
-  ): Promise<PowerProductionUnitEntity> {
+  updateOrCreatePowerProductionUnit(payload: CreatePowerProductionUnitPayload): Promise<PowerProductionUnitEntity> {
     return this.unitRepository.updateOrCreatePowerProductionUnit(payload);
   }
 
-  updateOrCreateHydrogenStorageUnit(
-    payload: CreateHydrogenStorageUnitPayload,
-  ): Promise<HydrogenStorageUnitEntity> {
+  updateOrCreateHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
     return this.unitRepository.updateOrCreateHydrogenStorageUnit(payload);
   }
 

@@ -14,16 +14,15 @@ import { assertRecordFound } from './repository-assertions';
 
 @Injectable()
 export class UserRepository {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async findUser(id: string): Promise<UserEntity> {
-    const user = await this.prismaService.user
-      .findUnique({
-        where: {
-          id: id,
-        },
-        ...userDeepQueryArgs,
-      });
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: id,
+      },
+      ...userDeepQueryArgs,
+    });
     assertRecordFound(user, id, 'User');
     return UserEntity.fromDeepDatabase(user);
   }

@@ -15,9 +15,7 @@ import { ProcessStepService } from '../../../process-step/process-step.service';
 export class TraversalService {
   constructor(private readonly processStepService: ProcessStepService) {}
 
-  fetchPowerProductionsFromHydrogenProductions(
-    hydrogenProductions: ProcessStepEntity[],
-  ): Promise<ProcessStepEntity[]> {
+  fetchPowerProductionsFromHydrogenProductions(hydrogenProductions: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
     return this.fetchPredecessorProcessStepsFromHydrogenProductions(hydrogenProductions, ProcessType.POWER_PRODUCTION);
   }
 
@@ -57,9 +55,7 @@ export class TraversalService {
     return Array.from(collectedProcessSteps.values());
   }
 
-  fetchHydrogenProductionsFromHydrogenBottling(
-    hydrogenBottling: ProcessStepEntity,
-  ): Promise<ProcessStepEntity[]> {
+  fetchHydrogenProductionsFromHydrogenBottling(hydrogenBottling: ProcessStepEntity): Promise<ProcessStepEntity[]> {
     return this.fetchPredecessorProcessSteps(
       hydrogenBottling,
       ProcessType.HYDROGEN_BOTTLING,

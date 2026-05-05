@@ -19,16 +19,15 @@ import { assertRecordFound } from './repository-assertions';
 export class ProcessStepRepository {
   private readonly logger = new Logger(ProcessStepRepository.name);
 
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async findProcessStep(id: string): Promise<ProcessStepEntity> {
-    const processStep = await this.prismaService.processStep
-      .findUnique({
-        where: {
-          id: id,
-        },
-        ...processStepDeepQueryArgs,
-      });
+    const processStep = await this.prismaService.processStep.findUnique({
+      where: {
+        id: id,
+      },
+      ...processStepDeepQueryArgs,
+    });
     assertRecordFound(processStep, id, 'process-step');
     return ProcessStepEntity.fromDeepDatabase(processStep);
   }
@@ -42,14 +41,14 @@ export class ProcessStepRepository {
     const predecessorsFilter: Prisma.BatchWhereInput =
       Array.isArray(predecessorProcessTypes) && predecessorProcessTypes.length > 0
         ? {
-          predecessors: {
-            some: {
-              processStep: {
-                type: { in: predecessorProcessTypes },
+            predecessors: {
+              some: {
+                processStep: {
+                  type: { in: predecessorProcessTypes },
+                },
               },
             },
-          },
-        }
+          }
         : {};
 
     const batchOwnerFilter: Prisma.BatchWhereInput = {
@@ -62,34 +61,33 @@ export class ProcessStepRepository {
 
     const hydrogenUnitWhereInput: Prisma.UnitWhereInput = hydrogenProductionUnitName
       ? {
-        name: {
-          contains: hydrogenProductionUnitName,
-          mode: 'insensitive',
-        },
-      }
+          name: {
+            contains: hydrogenProductionUnitName,
+            mode: 'insensitive',
+          },
+        }
       : {};
 
     const periodWhereInput: Prisma.DateTimeFilter = period
       ? {
-        gte: new Date(period.getFullYear(), period.getMonth(), 1),
-        lt: new Date(period.getFullYear(), period.getMonth() + 1, 1),
-      }
+          gte: new Date(period.getFullYear(), period.getMonth(), 1),
+          lt: new Date(period.getFullYear(), period.getMonth() + 1, 1),
+        }
       : {};
 
-    const processSteps = await this.prismaService.processStep
-      .findMany({
-        where: {
-          batch: batchFilter,
-          startedAt: periodWhereInput,
-          executedBy: {
-            ...hydrogenUnitWhereInput,
-          },
+    const processSteps = await this.prismaService.processStep.findMany({
+      where: {
+        batch: batchFilter,
+        startedAt: periodWhereInput,
+        executedBy: {
+          ...hydrogenUnitWhereInput,
         },
-        orderBy: {
-          endedAt: 'desc',
-        },
-        ...processStepDeepQueryArgs,
-      })
+      },
+      orderBy: {
+        endedAt: 'desc',
+      },
+      ...processStepDeepQueryArgs,
+    });
     return processSteps.map(ProcessStepEntity.fromDeepDatabase);
   }
 
@@ -98,48 +96,45 @@ export class ProcessStepRepository {
     active: boolean,
     ownerId: string,
   ): Promise<ProcessStepEntity[]> {
-    const processSteps = await this.prismaService.processStep
-      .findMany({
-        where: {
-          type: { in: processTypes },
-          batch: {
-            active: active,
-          },
-          executedBy: {
-            ownerId: ownerId,
-          },
+    const processSteps = await this.prismaService.processStep.findMany({
+      where: {
+        type: { in: processTypes },
+        batch: {
+          active: active,
         },
-        orderBy: {
-          endedAt: 'desc',
+        executedBy: {
+          ownerId: ownerId,
         },
-        ...processStepDeepQueryArgs,
-      });
+      },
+      orderBy: {
+        endedAt: 'desc',
+      },
+      ...processStepDeepQueryArgs,
+    });
     return processSteps.map(ProcessStepEntity.fromDeepDatabase);
   }
 
   async findAllProcessStepsFromStorageUnit(storageUnitId: string): Promise<ProcessStepEntity[]> {
-    const processSteps = await this.prismaService.processStep
-      .findMany({
-        where: {
-          batch: {
-            hydrogenStorageUnitId: storageUnitId,
-            active: true,
-          },
+    const processSteps = await this.prismaService.processStep.findMany({
+      where: {
+        batch: {
+          hydrogenStorageUnitId: storageUnitId,
+          active: true,
         },
-        orderBy: {
-          endedAt: 'asc',
-        },
-        ...processStepDeepQueryArgs,
-      });
+      },
+      orderBy: {
+        endedAt: 'asc',
+      },
+      ...processStepDeepQueryArgs,
+    });
     return processSteps.map(ProcessStepEntity.fromDeepDatabase);
   }
 
   async insertProcessStep(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
-    const createdProcessStep = await this.prismaService.processStep
-      .create({
-        data: buildProcessStepCreateInput(processStep),
-        ...processStepDeepQueryArgs,
-      });
+    const createdProcessStep = await this.prismaService.processStep.create({
+      data: buildProcessStepCreateInput(processStep),
+      ...processStepDeepQueryArgs,
+    });
     return ProcessStepEntity.fromDeepDatabase(createdProcessStep);
   }
 

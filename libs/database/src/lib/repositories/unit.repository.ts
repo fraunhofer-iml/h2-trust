@@ -33,7 +33,7 @@ import { assertAllIdsFound, assertRecordFound } from './repository-assertions';
 
 @Injectable()
 export class UnitRepository {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async findUnitById(id: string): Promise<ConcreteUnitEntity> {
     const unit = await this.prismaService.unit.findUnique({
@@ -149,7 +149,7 @@ export class UnitRepository {
   }
 
   async updateOrCreateHydrogenProductionUnit(
-    payload: CreateHydrogenProductionUnitPayload
+    payload: CreateHydrogenProductionUnitPayload,
   ): Promise<HydrogenProductionUnitEntity> {
     if (payload.id) {
       await this.validateUnitIsActive(payload.id);
@@ -195,7 +195,7 @@ export class UnitRepository {
       },
       create: buildHydrogenProductionUnitCreateInput(payload),
       include: baseUnitDeepQueryArgs.include,
-    })
+    });
     return HydrogenProductionUnitEntity.fromDeepDatabase(unit);
   }
 
@@ -249,7 +249,7 @@ export class UnitRepository {
       },
       create: buildPowerProductionUnitCreateInput(payload),
       include: baseUnitDeepQueryArgs.include,
-    })
+    });
     return PowerProductionUnitEntity.fromDeepDatabase(unit);
   }
 

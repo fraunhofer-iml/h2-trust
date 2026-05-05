@@ -13,7 +13,7 @@ import { companyDeepQueryArgs } from '../query-args';
 
 @Injectable()
 export class CompanyRepository {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async findAll(): Promise<CompanyEntity[]> {
     const companies = await this.prismaService.company.findMany({ ...companyDeepQueryArgs });

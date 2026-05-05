@@ -27,10 +27,7 @@ export class ProcessStepService {
     private readonly processStepRepository: ProcessStepRepository,
   ) {}
 
-  updateRfnboStatus(
-    processStep: ProcessStepEntity,
-    rfnboType: RfnboType,
-  ): Promise<{ id: string; batchId: string }> {
+  updateRfnboStatus(processStep: ProcessStepEntity, rfnboType: RfnboType): Promise<{ id: string; batchId: string }> {
     return this.batchRepository.setRfnboStatus(processStep.batch.id, rfnboType);
   }
 

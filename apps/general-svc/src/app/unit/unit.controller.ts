@@ -77,9 +77,7 @@ export class UnitController {
   }
 
   @MessagePattern(UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION)
-  createHydrogenProductionUnit(
-    payload: CreateHydrogenProductionUnitPayload,
-  ): Promise<HydrogenProductionUnitEntity> {
+  createHydrogenProductionUnit(payload: CreateHydrogenProductionUnitPayload): Promise<HydrogenProductionUnitEntity> {
     return this.service.updateOrCreateHydrogenProductionUnit(payload);
   }
 
@@ -89,9 +87,7 @@ export class UnitController {
   }
 
   @MessagePattern(UnitMessagePatterns.UPDATE_HYDROGEN_PRODUCTION)
-  updateHydrogenProductionUnit(
-    payload: CreateHydrogenProductionUnitPayload,
-  ): Promise<HydrogenProductionUnitEntity> {
+  updateHydrogenProductionUnit(payload: CreateHydrogenProductionUnitPayload): Promise<HydrogenProductionUnitEntity> {
     return this.service.updateOrCreateHydrogenProductionUnit(payload);
   }
 

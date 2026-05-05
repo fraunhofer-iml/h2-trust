@@ -16,7 +16,9 @@ export class DocumentRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async addDocumentToProcessStep(document: DocumentEntity, processStepId: string): Promise<DocumentEntity> {
-    const createdDocument = await this.prismaService.document.create({ data: buildDocumentCreateInput(document, processStepId) });
+    const createdDocument = await this.prismaService.document.create({
+      data: buildDocumentCreateInput(document, processStepId),
+    });
     return DocumentEntity.fromDatabase(createdDocument);
   }
 }

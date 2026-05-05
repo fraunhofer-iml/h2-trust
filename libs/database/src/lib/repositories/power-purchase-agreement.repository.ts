@@ -14,7 +14,7 @@ import { powerPurchaseAgreementDeepQueryArgs } from '../query-args/power-purchas
 
 @Injectable()
 export class PowerPurchaseAgreementRepository {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async findAll(producerId: string, status: PowerPurchaseAgreementStatus): Promise<PowerPurchaseAgreementEntity[]> {
     const powerPurchaseAgreements = await this.prismaService.powerPurchaseAgreement.findMany({
