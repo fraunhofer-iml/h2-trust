@@ -105,7 +105,7 @@ function parseTimeStringToUTC(inputTime: string): Date {
  * @param timeZone The name of the time zone of the value.
  * @returns The date string as UTC date.
  */
-export function parseLocalTimeToUTC(inputTime: string | number, timeZone: string): Date {
+export function convertLocalTimeToUTC(inputTime: string | number, timeZone: string): Date {
   assertValidTimeZone(timeZone);
 
   //The input time interpreted as UTC (will be used for the offset calculation)

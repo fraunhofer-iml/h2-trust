@@ -10,7 +10,7 @@ import { HttpStatus, Logger } from '@nestjs/common';
 import { parse } from 'csv-parse';
 import { StagedProductionAccountingPeriod } from '@h2-trust/contracts/entities';
 import { BrokerException } from '@h2-trust/messaging';
-import { parseLocalTimeToUTC } from '@h2-trust/utils';
+import { convertLocalTimeToUTC } from '@h2-trust/utils';
 
 const logger: Logger = new Logger('AccountingPeriodCsvParser');
 const dateTimeRegex = /^\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2}(:\d{2})?$/;
@@ -42,10 +42,10 @@ export async function parseAccountingPeriodCsvBuffer(
         let date: Date | null = null;
 
         if (dateTimeRegex.test(value) || !isNaN(Date.parse(value))) {
-          return parseLocalTimeToUTC(value, timeZone);
+          return convertLocalTimeToUTC(value, timeZone);
         } else if (!isNaN(Number(value))) {
           const num = Number(value);
-          date = parseLocalTimeToUTC((num - 25569) * 86400 * 1000, timeZone);
+          date = convertLocalTimeToUTC((num - 25569) * 86400 * 1000, timeZone);
         }
         if (!date || isNaN(date.getTime())) {
           invalid++;

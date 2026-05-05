@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { parseLocalTimeToUTC, subtractMonthsSafe } from './date-time';
+import { convertLocalTimeToUTC, subtractMonthsSafe } from './date-time';
 
 describe('subtractMonthsSafe', () => {
   describe('subtractMonthsSafe', () => {
@@ -223,12 +223,13 @@ describe('subtractMonthsSafe', () => {
       });
     });
   });
+
   describe('parseLocalTimeToUTC', () => {
     it('should convert from Europe/Brlin CEST local time to UTC', () => {
       const dateString = '01.12.2025 11:00';
       const timeZone = 'Europe/Berlin';
 
-      const result = parseLocalTimeToUTC(dateString, timeZone);
+      const result = convertLocalTimeToUTC(dateString, timeZone);
 
       expect(result.getUTCFullYear()).toBe(2025);
       expect(result.getUTCMonth()).toBe(11);
@@ -240,51 +241,55 @@ describe('subtractMonthsSafe', () => {
       const dateString = '01.05.2025 11:00';
       const timeZone = 'Europe/Berlin';
 
-      const result = parseLocalTimeToUTC(dateString, timeZone);
+      const result = convertLocalTimeToUTC(dateString, timeZone);
 
       expect(result.getUTCFullYear()).toBe(2025);
       expect(result.getUTCMonth()).toBe(4);
       expect(result.getUTCDate()).toBe(1);
       expect(result.getUTCHours()).toBe(9);
     });
+
     it('should convert from number of ms to UTC', () => {
       //number of ms for 01.12.2025 11:00
       const numberOfMs = 1764586800000;
       const timeZone = 'Europe/Berlin';
 
-      const result = parseLocalTimeToUTC(numberOfMs, timeZone);
+      const result = convertLocalTimeToUTC(numberOfMs, timeZone);
 
       expect(result.getUTCFullYear()).toBe(2025);
       expect(result.getUTCMonth()).toBe(11);
       expect(result.getUTCDate()).toBe(1);
       expect(result.getUTCHours()).toBe(10);
     });
+
     it('should convert from ISO to UTC', () => {
       const isoTime = '2025-12-01T11:00:00.000Z';
       const timeZone = 'Europe/Berlin';
 
-      const result = parseLocalTimeToUTC(isoTime, timeZone);
+      const result = convertLocalTimeToUTC(isoTime, timeZone);
 
       expect(result.getUTCFullYear()).toBe(2025);
       expect(result.getUTCMonth()).toBe(11);
       expect(result.getUTCDate()).toBe(1);
       expect(result.getUTCHours()).toBe(10);
     });
+
     it('should not convert if already in ISO format', () => {
       const isoTime = '2025-12-01T11:00:00.000Z';
       const timeZone = 'UTC';
 
-      const result = parseLocalTimeToUTC(isoTime, timeZone);
+      const result = convertLocalTimeToUTC(isoTime, timeZone);
 
       expect(result.getUTCFullYear()).toBe(2025);
       expect(result.getUTCMonth()).toBe(11);
       expect(result.getUTCDate()).toBe(1);
       expect(result.getUTCHours()).toBe(11);
     });
+
     it('Should not convert the time due to invalid time zone input', () => {
       const dateString = '01.05.2025 11:00';
       const invalidTimeZone = 'invalid';
-      expect(() => parseLocalTimeToUTC(dateString, invalidTimeZone)).toThrow();
+      expect(() => convertLocalTimeToUTC(dateString, invalidTimeZone)).toThrow();
     });
   });
 });
