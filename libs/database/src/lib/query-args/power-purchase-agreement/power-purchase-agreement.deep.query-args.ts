@@ -14,7 +14,7 @@ import { userDeepQueryArgs } from '../user';
 
 export const powerPurchaseAgreementDeepQueryArgs = Prisma.validator<Prisma.PowerPurchaseAgreementDefaultArgs>()({
   include: {
-    powerProducer: companyNestedQueryArgs,
+    requestedCompany: companyNestedQueryArgs,
     hydrogenProducer: companyNestedQueryArgs,
     powerProductionUnit: powerProductionUnitNestedQueryArgs,
     requestingUser: userDeepQueryArgs,

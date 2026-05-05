@@ -313,8 +313,8 @@ model PowerPurchaseAgreement {
   suggestedPowerType     PowerProductionType @relation(fields: [suggestedPowerTypeName], references: [name])
   suggestedPowerTypeName String
 
-  powerProducer   Company @relation(fields: [powerProducerId], references: [id], name: "PowerProducer")
-  powerProducerId String
+  requestedCompany   Company @relation(fields: [requestedCompanyId], references: [id], name: "PowerProducer")
+  requestedCompanyId String
 
   hydrogenProducer   Company @relation(fields: [hydrogenProducerId], references: [id], name: "HydrogenProducer")
   hydrogenProducerId String

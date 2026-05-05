@@ -31,7 +31,7 @@ export function buildPowerPurchaseAgreementCreateData(
     requestingUser: {
       connect: { id: ppa.userId },
     },
-    powerProducer: {
+    requestedCompany: {
       connect: { id: ppa.companyId },
     },
   };

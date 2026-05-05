@@ -22,7 +22,7 @@ export class PowerPurchaseAgreementEntity {
   status: PowerPurchaseAgreementStatus;
   suggestedPowerProductionTypeName: string;
   creator: UserEntity;
-  powerProducer: CompanyEntity;
+  requestedCompany: CompanyEntity;
   hydrogenProducer: CompanyEntity;
   powerProductionUnit?: PowerProductionUnitEntity;
   decision?: PowerPurchaseAgreementDecisionEntity;
@@ -33,7 +33,7 @@ export class PowerPurchaseAgreementEntity {
     validFrom: Date,
     validTo: Date,
     status: PowerPurchaseAgreementStatus,
-    powerProducer: CompanyEntity,
+    requestedCompany: CompanyEntity,
     hydrogenProducer: CompanyEntity,
     suggestedPowerProductionTypeName: string,
     creator: UserEntity,
@@ -45,7 +45,7 @@ export class PowerPurchaseAgreementEntity {
     this.validFrom = validFrom;
     this.validTo = validTo;
     this.status = status;
-    this.powerProducer = powerProducer;
+    this.requestedCompany = requestedCompany;
     this.powerProductionUnit = powerProductionUnit;
     this.hydrogenProducer = hydrogenProducer;
     this.creator = creator;
@@ -62,7 +62,7 @@ export class PowerPurchaseAgreementEntity {
       powerPurchaseAgreement.validFrom,
       powerPurchaseAgreement.validTo,
       powerPurchaseAgreement.status,
-      CompanyEntity.fromNestedDatabase(powerPurchaseAgreement.powerProducer),
+      CompanyEntity.fromNestedDatabase(powerPurchaseAgreement.requestedCompany),
       CompanyEntity.fromNestedDatabase(powerPurchaseAgreement.hydrogenProducer),
       powerPurchaseAgreement.suggestedPowerTypeName,
       UserEntity.fromDeepDatabase(powerPurchaseAgreement.requestingUser),
@@ -82,7 +82,7 @@ export class PowerPurchaseAgreementEntity {
       powerPurchaseAgreement.validFrom,
       powerPurchaseAgreement.validTo,
       powerPurchaseAgreement.status as PowerPurchaseAgreementStatus,
-      CompanyEntity.fromFlatDatabase(powerPurchaseAgreement.powerProducer),
+      CompanyEntity.fromFlatDatabase(powerPurchaseAgreement.requestedCompany),
       CompanyEntity.fromFlatDatabase(powerPurchaseAgreement.hydrogenProducer),
       powerPurchaseAgreement.suggestedPowerTypeName,
       UserEntity.fromDeepDatabase(powerPurchaseAgreement.requestingUser),

@@ -81,14 +81,14 @@ export class PowerPurchaseAgreementRepository {
 
     switch (role) {
       case PpaRequestRole.RECEIVER:
-        query = { powerProducerId: producerId };
+        query = { requestedCompanyId: producerId };
         break;
       case PpaRequestRole.SENDER:
         query = { hydrogenProducerId: producerId };
         break;
       default:
         query = {
-          OR: [{ powerProducerId: producerId }, { hydrogenProducerId: producerId }],
+          OR: [{ requestedCompanyId: producerId }, { hydrogenProducerId: producerId }],
         };
     }
 

@@ -16,7 +16,7 @@ export const PowerPurchaseAgreementDbTypeMock = <PowerPurchaseAgreementDeepDbTyp
   {
     ...PowerPurchaseAgreementSeed[0],
     requestingUser: UserDeepDbTypeMock[0],
-    powerProducer: CompanyDbTypeMock[0],
+    requestedCompany: CompanyDbTypeMock[0],
     hydrogenProducer: CompanyDbTypeMock[1],
     powerProductionUnit: PowerProductionUnitDeepDbTypeMock[0],
     decision: null,

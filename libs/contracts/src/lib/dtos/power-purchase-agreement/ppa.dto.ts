@@ -39,7 +39,7 @@ export class PpaDto {
     return <PpaDto>{
       id: powerPurchaseAgreement.id,
       hydrogenProducer: powerPurchaseAgreement.hydrogenProducer,
-      powerProducer: powerPurchaseAgreement.powerProducer,
+      powerProducer: powerPurchaseAgreement.requestedCompany,
       powerProductionUnit: powerPurchaseAgreement.powerProductionUnit
         ? PowerProductionOverviewDto.fromEntity(powerPurchaseAgreement.powerProductionUnit)
         : undefined,

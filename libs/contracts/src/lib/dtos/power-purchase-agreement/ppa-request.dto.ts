@@ -62,7 +62,7 @@ export class PpaRequestDto {
       validFrom: powerPurchaseAgreement.validFrom,
       validTo: powerPurchaseAgreement.validTo,
       sender: powerPurchaseAgreement.creator,
-      receiver: powerPurchaseAgreement.powerProducer,
+      receiver: powerPurchaseAgreement.requestedCompany,
       powerProductionType: powerPurchaseAgreement.suggestedPowerProductionTypeName,
       powerProductionUnit: powerPurchaseAgreement.powerProductionUnit
         ? PowerProductionOverviewDto.fromEntity(powerPurchaseAgreement.powerProductionUnit)
