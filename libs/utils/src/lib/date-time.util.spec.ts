@@ -223,4 +223,34 @@ describe('DateTimeUtil', () => {
       });
     });
   });
+  describe('parseLocalTimeToUTC', () => {
+    it('should convert from Europe/Brlin CEST local time to UTC', () => {
+      const dateString = '01.12.2025 11:00';
+      const timeZone = 'Europe/Berlin';
+
+      const result = DateTimeUtil.parseLocalTimeToUTC(dateString, timeZone);
+
+      expect(result.getUTCFullYear()).toBe(2025);
+      expect(result.getUTCMonth()).toBe(11);
+      expect(result.getUTCDate()).toBe(1);
+      expect(result.getUTCHours()).toBe(10);
+    });
+
+    it('should convert from Europe/Brlin CET local time to UTC', () => {
+      const dateString = '01.05.2025 11:00';
+      const timeZone = 'Europe/Berlin';
+
+      const result = DateTimeUtil.parseLocalTimeToUTC(dateString, timeZone);
+
+      expect(result.getUTCFullYear()).toBe(2025);
+      expect(result.getUTCMonth()).toBe(4);
+      expect(result.getUTCDate()).toBe(1);
+      expect(result.getUTCHours()).toBe(9);
+    });
+    it('Should not convert the time due to invalid time zone input', () => {
+      const dateString = '01.05.2025 11:00';
+      const invalidTimeZone = 'invalid';
+      expect(() => DateTimeUtil.parseLocalTimeToUTC(dateString, invalidTimeZone)).toThrow();
+    });
+  });
 });

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { assertDefined } from './assertions.util';
+import { assertDefined, assertValidTimeZone } from './assertions.util';
 
 export class DateTimeUtil {
   static toValidDate(value: unknown, name: string): Date {
@@ -95,17 +95,12 @@ export class DateTimeUtil {
    * @param timeZone The name of the time zone of the value.
    * @returns The date string as UTC date.
    */
-  static parseLocalTimeToUTC(timeString: string, timeZone: string = 'Europe/Berlin'): Date {
+  static parseLocalTimeToUTC(timeString: string, timeZone: string): Date {
     const [inputDatePart, inputTimePart] = timeString.split(/\s+/);
     const [inputDay, inputMonth, inputYear] = inputDatePart.split('.').map(Number);
     const [inputHour, inputMinute] = inputTimePart.split(':').map(Number);
 
-    // Validate the timezone via Intl before proceeding
-    try {
-      Intl.DateTimeFormat(undefined, { timeZone });
-    } catch {
-      throw new Error(`Invalid timezone: "${timeZone}"`);
-    }
+    assertValidTimeZone(timeZone, 'timezone');
 
     const timeZoneFormatter = new Intl.DateTimeFormat('en-US', {
       timeZone: timeZone,
