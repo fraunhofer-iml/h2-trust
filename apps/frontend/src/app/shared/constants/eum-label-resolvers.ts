@@ -7,6 +7,7 @@
  */
 
 import {
+  BatchType,
   CalculationTopic,
   CsvContentType,
   CsvDocumentIntegrityStatus,
@@ -19,10 +20,12 @@ import {
   PowerProductionType,
   PowerPurchaseAgreementStatus,
   PowerType,
+  ProcessType,
   RfnboType,
   UnitType,
 } from '@h2-trust/domain';
 import {
+  getBatchType,
   getCalculationTopic,
   getCsvContentType,
   getCsvDocumentIntegrityStatus,
@@ -35,6 +38,7 @@ import {
   getPowerProductionType,
   getPowerType,
   getPPaStatus,
+  getProcessType,
   getRfnboType,
   getUnitType,
 } from '@h2-trust/strings';
@@ -54,4 +58,6 @@ export const ENUM_LABEL_RESOLVERS = {
   ppaStatus: (value: PowerPurchaseAgreementStatus) => getPPaStatus(value),
   powerType: (value: PowerType) => getPowerType(value),
   csvContentType: (value: CsvContentType) => getCsvContentType(value),
+  batchType: (value: BatchType) => getBatchType(value),
+  processType: (value: ProcessType) => getProcessType(value),
 } as const;

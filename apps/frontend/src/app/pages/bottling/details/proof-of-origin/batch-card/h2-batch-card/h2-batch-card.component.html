@@ -52,7 +52,7 @@
 
       <div class="flex flex-col text-sm">
         <span class="text-sm text-neutral-500">Process Step:</span
-        ><span>{{ batch().processStep }}</span>
+        ><span>{{ batch().processStep | enum: 'processType' }}</span>
       </div>
 
       @if (batch().processStep !== ProcessType.HYDROGEN_BOTTLING) {

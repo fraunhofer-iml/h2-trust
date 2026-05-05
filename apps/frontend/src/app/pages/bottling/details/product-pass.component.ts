@@ -23,6 +23,7 @@ import { H2CompositionChartComponent } from './chart/h2-composition-chart.compon
 import { ProofOfOriginComponent } from './proof-of-origin/proof-of-origin.component';
 import { ProofOfSustainabilityComponent } from './proof-of-sustainability/proof-of-sustainability.component';
 import { RfnboComplianceComponent } from './rfnbo-compliance/rfnbo-compliance.component';
+import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 
 @Component({
   selector: 'app-product-pass',
@@ -38,6 +39,7 @@ import { RfnboComplianceComponent } from './rfnbo-compliance/rfnbo-compliance.co
     RfnboComplianceComponent,
     LoadingCardComponent,
     EmptyStateComponent,
+    EnumPipe
   ],
   templateUrl: './product-pass.component.html',
 })
