@@ -34,44 +34,6 @@
         "de": {
           "localize": ["de-DE"]
         },
-        "development": {
-          "buildOptimizer": false,
-          "optimization": false,
-          "vendorChunk": true,
-          "extractLicenses": false,
-          "sourceMap": true,
-          "namedChunks": true
-        },
-        "dev": {
-          "budgets": [
-            {
-              "type": "initial",
-              "maximumWarning": "2mb",
-              "maximumError": "4mb"
-            },
-            {
-              "type": "anyComponentStyle",
-              "maximumWarning": "100kb",
-              "maximumError": "100kb"
-            }
-          ],
-          "outputHashing": "all"
-        },
-        "staging": {
-          "budgets": [
-            {
-              "type": "initial",
-              "maximumWarning": "2mb",
-              "maximumError": "4mb"
-            },
-            {
-              "type": "anyComponentStyle",
-              "maximumWarning": "100kb",
-              "maximumError": "100kb"
-            }
-          ],
-          "outputHashing": "all"
-        },
         "production": {
           "budgets": [
             {
@@ -93,20 +55,11 @@
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
-        "en": {
-          "buildTarget": "frontend:build:development,en"
-        },
-        "de": {
-          "buildTarget": "frontend:build:development,de"
-        },
         "production": {
           "buildTarget": "frontend:build:production"
-        },
-        "development": {
-          "buildTarget": "frontend:build:development"
         }
       },
-      "defaultConfiguration": "development",
+      "defaultConfiguration": "production",
       "continuous": true
     },
     "extract-i18n": {
@@ -152,13 +105,6 @@
       "configurations": {
         "production": {
           "outputHashing": "media"
-        },
-        "development": {
-          "buildOptimizer": false,
-          "optimization": false,
-          "sourceMap": true,
-          "extractLicenses": false,
-          "vendorChunk": true
         }
       },
       "defaultConfiguration": "production"
@@ -177,16 +123,12 @@
     "serve-ssr": {
       "executor": "@angular-devkit/build-angular:ssr-dev-server",
       "configurations": {
-        "development": {
-          "browserTarget": "frontend:build:development",
-          "serverTarget": "frontend:server:development"
-        },
         "production": {
           "browserTarget": "frontend:build:production",
           "serverTarget": "frontend:server:production"
         }
       },
-      "defaultConfiguration": "development",
+      "defaultConfiguration": "production",
       "continuous": true
     },
     "prerender": {
@@ -195,10 +137,6 @@
         "routes": ["/"]
       },
       "configurations": {
-        "development": {
-          "browserTarget": "frontend:build:development",
-          "serverTarget": "frontend:server:development"
-        },
         "production": {
           "browserTarget": "frontend:build:production",
           "serverTarget": "frontend:server:production"
