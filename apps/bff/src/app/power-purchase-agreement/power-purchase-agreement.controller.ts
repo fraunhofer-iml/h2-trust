@@ -13,6 +13,7 @@ import {
   CompanyDto,
   PowerPurchaseAgreementDto,
   PpaRequestCreateDto,
+  PpaRequestDecisionDto,
   PpaRequestDto,
   UserDetailsDto,
   type AuthenticatedKCUser,
@@ -93,7 +94,7 @@ export class PowerPurchaseAgreementController {
   @ApiOkResponse({ description: 'Returns Request that war rejected or denied', type: PpaRequestDto })
   @ApiParam({ name: 'id', description: 'Id of PPA Request to update' })
   closePpaRequest(
-    @Body() _dto: PpaRequestDto,
+    @Body() _dto: PpaRequestDecisionDto,
     @Param('id') _id: string,
     @KeycloakUser() _user: AuthenticatedKCUser,
   ): PpaRequestDto {

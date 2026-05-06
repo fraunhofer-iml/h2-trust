@@ -21,8 +21,8 @@ export class PpaRequestDecisionDto {
   @IsNotEmpty({ message: 'Unit is required when approving' })
   powerProductionUnitId?: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   @IsNotEmpty()
   comment?: string;
 
