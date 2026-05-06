@@ -369,10 +369,11 @@ export class ProductionStagingService {
     if (payload.stagingScope == StagingScope.OWN) {
       return this.stagedProductionRepository.findStagedProductions(payload, true, []);
     } else {
-      const approvedAgreements: PowerPurchaseAgreementEntity[] = await this.powerPurchaseAgreementRepository.findAll(
-        payload.ownerId,
-        PowerPurchaseAgreementStatus.APPROVED,
-      );
+      const approvedAgreements: PowerPurchaseAgreementEntity[] =
+        await this.powerPurchaseAgreementRepository.findAllPowerPurchaseAgreements(
+          payload.ownerId,
+          PowerPurchaseAgreementStatus.APPROVED,
+        );
       const accessibleUnitIds: string[] = approvedAgreements.map((approval) => approval.powerProductionUnit.id);
       return this.stagedProductionRepository.findStagedProductions(payload, false, accessibleUnitIds);
     }
