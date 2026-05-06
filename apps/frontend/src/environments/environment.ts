@@ -20,7 +20,7 @@ function getEnvOrDefault(key: string, fallback: string): string {
   if (!value) {
     console.warn(
       `[env] Missing "${key}", falling back to default "${fallback}". ` +
-      'Check env.js / env.template.js and Docker env vars.'
+        'Check env.js / env.template.js and Docker env vars.',
     );
     return fallback;
   }
@@ -32,7 +32,7 @@ export const KEYCLOAK_URL = getEnvOrDefault('KEYCLOAK_URL', DEFAULT_KEYCLOAK_URL
 export const KEYCLOAK_REALM = getEnvOrDefault('KEYCLOAK_REALM', DEFAULT_KEYCLOAK_REALM);
 export const KEYCLOAK_CLIENT_FRONTEND_ID = getEnvOrDefault(
   'KEYCLOAK_CLIENT_FRONTEND_ID',
-  DEFAULT_KEYCLOAK_CLIENT_FRONTEND_ID
+  DEFAULT_KEYCLOAK_CLIENT_FRONTEND_ID,
 );
 export const environment = {
   production: false,
