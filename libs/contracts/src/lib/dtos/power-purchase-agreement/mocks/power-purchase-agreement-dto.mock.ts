@@ -9,10 +9,10 @@
 import { EnergySource, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { CompanyDtoMock } from '../../company';
 import { PowerProductionUnitOverviewDtoMock } from '../../unit/mocks/power-production-unit-overview-dto.mock';
-import { PowerPurchaseAgreementDto } from '../power-purchase-agreement.dto';
+import { PpaDto } from '../ppa.dto';
 
-export const PowerPurchaseAgreementDtoMock = <PowerPurchaseAgreementDto[]>[
-  <PowerPurchaseAgreementDto>{
+export const PowerPurchaseAgreementDtoMock = <PpaDto[]>[
+  <PpaDto>{
     id: 'paa-1',
     hydrogenProducer: CompanyDtoMock[1],
     powerProducer: CompanyDtoMock[0],

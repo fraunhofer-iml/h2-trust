@@ -15,6 +15,7 @@ export * from './csv-import';
 export * from './digital-product-passport';
 export * from './document';
 export * from './power-purchase-agreement';
+export * from './power-purchase-agreement-decision';
 export * from './process-step';
 export * from './production';
 export * from './unit';

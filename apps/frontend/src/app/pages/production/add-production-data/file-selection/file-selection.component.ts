@@ -124,7 +124,7 @@ export class FileSelectionComponent {
 
     const result = (approvals ?? []).map((ppa) => ({
       ...ppa,
-      uploads: (uploads ?? []).filter((r) => r.productionUnitId === ppa.powerProductionUnit.id),
+      uploads: (uploads ?? []).filter((r) => r.productionUnitId === ppa.powerProductionUnit?.id),
     }));
 
     return result;

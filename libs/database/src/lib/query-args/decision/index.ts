@@ -6,8 +6,4 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './mocks';
-export * from './ppa.dto';
-export * from './ppa-request.dto';
-export * from './ppa-request-create.dto';
-export * from './ppa-request-decision.dto';
+export * from './decision.deep.query-args';

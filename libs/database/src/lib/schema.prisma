@@ -42,8 +42,6 @@ model Document {
 
   processStep   ProcessStep? @relation(fields: [processStepId], references: [id])
   processStepId String?
-
-  powerPurchaseAgreements PowerPurchaseAgreement[]
 }
 
 model CsvImport {
@@ -106,8 +104,10 @@ model User {
   company   Company @relation(fields: [companyId], references: [id])
   companyId String
 
-  processSteps ProcessStep[]
-  csvImports   CsvImport[]
+  processSteps            ProcessStep[]
+  csvImports              CsvImport[]
+  decisions               PowerPurchaseAgreementDecision[]
+  powerPurchaseAgreements PowerPurchaseAgreement[]
 }
 
 model Unit {
@@ -148,9 +148,10 @@ model PowerProductionType {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  energySource  String
+  energySource String
 
-  powerProductionUnits PowerProductionUnit[]
+  powerProductionUnits    PowerProductionUnit[]
+  powerPurchaseAgreements PowerPurchaseAgreement[]
 
   @@unique([name, energySource])
 }
@@ -175,6 +176,7 @@ model PowerProductionUnit {
   typeName String
 
   powerPurchaseAgreements PowerPurchaseAgreement[]
+  decisions               PowerPurchaseAgreementDecision[]
 }
 
 model HydrogenProductionUnit {
@@ -297,26 +299,45 @@ model TransportationDetails {
 }
 
 model PowerPurchaseAgreement {
-  id        String   @id @default(uuid(7))
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String    @id @default(uuid(7))
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
 
   status    String
-  decidedAt DateTime
+  validFrom DateTime
+  validTo   DateTime
 
-  powerProducer   Company @relation(fields: [powerProducerId], references: [id], name: "PowerProducer")
-  powerProducerId String
+  requestingUser   User   @relation(fields: [requestingUserId], references: [id])
+  requestingUserId String
+
+  suggestedPowerType     PowerProductionType @relation(fields: [suggestedPowerTypeName], references: [name])
+  suggestedPowerTypeName String
+
+  requestedCompany   Company @relation(fields: [requestedCompanyId], references: [id], name: "PowerProducer")
+  requestedCompanyId String
 
   hydrogenProducer   Company @relation(fields: [hydrogenProducerId], references: [id], name: "HydrogenProducer")
   hydrogenProducerId String
 
-  powerProductionUnit   PowerProductionUnit @relation(fields: [powerProductionUnitId], references: [id])
-  powerProductionUnitId String
+  powerProductionUnit   PowerProductionUnit? @relation(fields: [powerProductionUnitId], references: [id])
+  powerProductionUnitId String?
 
-  document   Document @relation(fields: [documentId], references: [id])
-  documentId String
+  decision PowerPurchaseAgreementDecision?
+}
 
-  @@unique([powerProducerId, powerProductionUnitId, hydrogenProducerId])
+model PowerPurchaseAgreementDecision {
+  id        String   @id @default(uuid(7))
+  decidedAt DateTime
+  comment   String?
+
+  powerPurchaseAgreement   PowerPurchaseAgreement @relation(fields: [powerPurchaseAgreementId], references: [id])
+  powerPurchaseAgreementId String                 @unique
+
+  decidingUser User   @relation(fields: [userId], references: [id])
+  userId       String
+
+  grantedPowerProductionUnit   PowerProductionUnit? @relation(fields: [grantedPowerProductionUnitId], references: [id])
+  grantedPowerProductionUnitId String?
 }
 
 model StagedProduction {

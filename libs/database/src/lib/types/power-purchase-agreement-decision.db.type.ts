@@ -7,11 +7,8 @@
  */
 
 import { Prisma } from '@prisma/client';
+import { powerPurchaseAgreementDecisionDeepQueryArgs } from '../query-args/decision';
 
-export const powerPurchaseAgreementFlatQueryArgs = Prisma.validator<Prisma.PowerPurchaseAgreementDefaultArgs>()({
-  include: {
-    hydrogenProducer: true,
-    requestedCompany: true,
-    powerProductionUnit: true,
-  },
-});
+export type PowerPurchaseAgreementDecisionDbType = Prisma.PowerPurchaseAgreementDecisionGetPayload<
+  typeof powerPurchaseAgreementDecisionDeepQueryArgs
+>;
