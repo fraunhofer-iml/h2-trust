@@ -153,6 +153,9 @@ export class AddProductionDataComponent {
     const data = new FormData();
     data.append('csvContentType', type);
 
+    const timeZone = this.getTimeZone();
+    data.append('timeZone', timeZone);
+
     this.form.controls.files.controls.forEach((control) => {
       const file: File | null = control.controls.file.value;
       const unitId = control.value.unitId;
@@ -164,6 +167,10 @@ export class AddProductionDataComponent {
     });
 
     return data;
+  }
+
+  private getTimeZone() {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
   }
 
   private openDialog(type: CsvContentType) {

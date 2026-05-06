@@ -17,7 +17,7 @@ import {
 import { CreateHydrogenBottlingPayload } from '@h2-trust/contracts/payloads';
 import { DocumentRepository } from '@h2-trust/database';
 import { RfnboType } from '@h2-trust/domain';
-import { BrokerQueues } from '@h2-trust/messaging';
+import { QUEUE_GENERAL_SVC } from '@h2-trust/messaging';
 import { CentralizedStorageService, ContentType } from '@h2-trust/storage';
 import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
 import { ProcessStepService } from '../process-step/process-step.service';
@@ -57,7 +57,7 @@ describe('BottlingService', () => {
       providers: [
         BottlingService,
         {
-          provide: BrokerQueues.QUEUE_GENERAL_SVC,
+          provide: QUEUE_GENERAL_SVC,
           useValue: generalSvcMock,
         },
         {

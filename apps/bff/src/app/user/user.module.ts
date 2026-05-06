@@ -7,12 +7,12 @@
  */
 
 import { Module } from '@nestjs/common';
-import { Broker } from '@h2-trust/messaging';
+import { getGeneralSvcBroker } from '@h2-trust/messaging';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
 @Module({
-  imports: [Broker.getGeneralSvcBroker()],
+  imports: [getGeneralSvcBroker()],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],

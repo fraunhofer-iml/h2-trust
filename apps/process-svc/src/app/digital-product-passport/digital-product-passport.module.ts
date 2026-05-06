@@ -7,14 +7,14 @@
  */
 
 import { Module } from '@nestjs/common';
-import { Broker } from '@h2-trust/messaging';
+import { getGeneralSvcBroker } from '@h2-trust/messaging';
 import { ProcessStepModule } from '../process-step/process-step.module';
 import { DigitalProductPassportController } from './digital-product-passport.controller';
 import { DigitalProductPassportService } from './digital-product-passport.service';
 import { ProvenanceModule } from './provenance/provenance.module';
 
 @Module({
-  imports: [ProcessStepModule, ProvenanceModule, Broker.getGeneralSvcBroker()],
+  imports: [ProcessStepModule, ProvenanceModule, getGeneralSvcBroker()],
   controllers: [DigitalProductPassportController],
   providers: [DigitalProductPassportService],
   exports: [DigitalProductPassportService],

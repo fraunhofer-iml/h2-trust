@@ -13,7 +13,7 @@ import { BatchType } from '@h2-trust/domain';
 import { buildProcessStepCreateInput } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 import { processStepDeepQueryArgs } from '../query-args';
-import { assertRecordFound } from './assertions.utils';
+import { assertRecordFound } from './repository-assertions';
 
 @Injectable()
 export class ProcessStepRepository {
@@ -22,15 +22,14 @@ export class ProcessStepRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findProcessStep(id: string): Promise<ProcessStepEntity> {
-    return this.prismaService.processStep
-      .findUnique({
-        where: {
-          id: id,
-        },
-        ...processStepDeepQueryArgs,
-      })
-      .then((record) => assertRecordFound(record, id, 'process-step'))
-      .then(ProcessStepEntity.fromDeepDatabase);
+    const processStep = await this.prismaService.processStep.findUnique({
+      where: {
+        id: id,
+      },
+      ...processStepDeepQueryArgs,
+    });
+    assertRecordFound(processStep, id, 'process-step');
+    return ProcessStepEntity.fromDeepDatabase(processStep);
   }
 
   async findProcessStepsByPredecessorTypesAndOwner(
@@ -76,21 +75,20 @@ export class ProcessStepRepository {
         }
       : {};
 
-    return this.prismaService.processStep
-      .findMany({
-        where: {
-          batch: batchFilter,
-          startedAt: periodWhereInput,
-          executedBy: {
-            ...hydrogenUnitWhereInput,
-          },
+    const processSteps = await this.prismaService.processStep.findMany({
+      where: {
+        batch: batchFilter,
+        startedAt: periodWhereInput,
+        executedBy: {
+          ...hydrogenUnitWhereInput,
         },
-        orderBy: {
-          endedAt: 'desc',
-        },
-        ...processStepDeepQueryArgs,
-      })
-      .then((processSteps) => processSteps.map(ProcessStepEntity.fromDeepDatabase));
+      },
+      orderBy: {
+        endedAt: 'desc',
+      },
+      ...processStepDeepQueryArgs,
+    });
+    return processSteps.map(ProcessStepEntity.fromDeepDatabase);
   }
 
   async findProcessStepsByTypesAndActiveAndOwner(
@@ -98,49 +96,46 @@ export class ProcessStepRepository {
     active: boolean,
     ownerId: string,
   ): Promise<ProcessStepEntity[]> {
-    return this.prismaService.processStep
-      .findMany({
-        where: {
-          type: { in: processTypes },
-          batch: {
-            active: active,
-          },
-          executedBy: {
-            ownerId: ownerId,
-          },
+    const processSteps = await this.prismaService.processStep.findMany({
+      where: {
+        type: { in: processTypes },
+        batch: {
+          active: active,
         },
-        orderBy: {
-          endedAt: 'desc',
+        executedBy: {
+          ownerId: ownerId,
         },
-        ...processStepDeepQueryArgs,
-      })
-      .then((processSteps) => processSteps.map(ProcessStepEntity.fromDeepDatabase));
+      },
+      orderBy: {
+        endedAt: 'desc',
+      },
+      ...processStepDeepQueryArgs,
+    });
+    return processSteps.map(ProcessStepEntity.fromDeepDatabase);
   }
 
   async findAllProcessStepsFromStorageUnit(storageUnitId: string): Promise<ProcessStepEntity[]> {
-    return this.prismaService.processStep
-      .findMany({
-        where: {
-          batch: {
-            hydrogenStorageUnitId: storageUnitId,
-            active: true,
-          },
+    const processSteps = await this.prismaService.processStep.findMany({
+      where: {
+        batch: {
+          hydrogenStorageUnitId: storageUnitId,
+          active: true,
         },
-        orderBy: {
-          endedAt: 'asc',
-        },
-        ...processStepDeepQueryArgs,
-      })
-      .then((batches) => batches.map(ProcessStepEntity.fromDeepDatabase));
+      },
+      orderBy: {
+        endedAt: 'asc',
+      },
+      ...processStepDeepQueryArgs,
+    });
+    return processSteps.map(ProcessStepEntity.fromDeepDatabase);
   }
 
   async insertProcessStep(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
-    return this.prismaService.processStep
-      .create({
-        data: buildProcessStepCreateInput(processStep),
-        ...processStepDeepQueryArgs,
-      })
-      .then(ProcessStepEntity.fromDeepDatabase);
+    const createdProcessStep = await this.prismaService.processStep.create({
+      data: buildProcessStepCreateInput(processStep),
+      ...processStepDeepQueryArgs,
+    });
+    return ProcessStepEntity.fromDeepDatabase(createdProcessStep);
   }
 
   async insertManyProcessSteps(processSteps: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {

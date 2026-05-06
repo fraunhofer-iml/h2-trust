@@ -47,7 +47,7 @@ export class DownloadButtonComponent {
     },
   }));
 
-  async downloadSelected() {
+  downloadSelected() {
     const files = this.selectedFiles().selected;
 
     if (!files || files.length === 0) return;

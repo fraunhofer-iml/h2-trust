@@ -11,7 +11,6 @@ import {
   BatchEntity,
   DocumentEntity,
   HydrogenComponentEntity,
-  HydrogenCompositionUtil,
   PaginatedProcessStepEntity,
   ProcessStepEntity,
 } from '@h2-trust/contracts/entities';
@@ -25,8 +24,9 @@ import { RfnboType } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
 import { CentralizedStorageService, ContentType } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step/process-step.service';
-import { BottlingProcessStepAssembler } from './utils/bottling-process-step.assembler';
-import { BottlingAllocation, BottlingAllocator } from './utils/bottling.allocator';
+import { allocateBottling, BottlingAllocation } from './utils/bottling.allocator';
+import { assembleBottling } from './utils/bottling.assembler';
+import { computeHydrogenComposition } from './utils/hydrogen-composition';
 
 @Injectable()
 export class BottlingService {
@@ -37,7 +37,7 @@ export class BottlingService {
     private readonly processStepService: ProcessStepService,
   ) {}
 
-  async readProcessStepsByTypesAndActiveAndOwner(
+  readProcessStepsByTypesAndActiveAndOwner(
     payload: ReadProcessStepsByTypesAndActiveAndOwnerPayload,
   ): Promise<ProcessStepEntity[]> {
     return this.processStepService.readProcessStepsByTypesAndActiveAndOwner(payload);
@@ -85,7 +85,7 @@ export class BottlingService {
       payload.hydrogenStorageUnitId,
     );
 
-    const allocation: BottlingAllocation = BottlingAllocator.allocate(
+    const allocation: BottlingAllocation = allocateBottling(
       processStepsFromStorageUnit,
       hydrogenComposition,
       payload.hydrogenStorageUnitId,
@@ -106,7 +106,7 @@ export class BottlingService {
       allocation.processStepsForRemainingAmount.map((ps) => this.processStepService.createProcessStep(ps)),
     );
 
-    const bottlingProcessStep: ProcessStepEntity = BottlingProcessStepAssembler.assemble(payload, [
+    const bottlingProcessStep: ProcessStepEntity = assembleBottling(payload, [
       ...allocation.batchesForBottle,
       ...persistedConsumedSplitBatches,
     ]);
@@ -143,7 +143,7 @@ export class BottlingService {
     }
 
     try {
-      return HydrogenCompositionUtil.computeHydrogenComposition(hydrogenStorageUnitFillings, batchAmount);
+      return computeHydrogenComposition(hydrogenStorageUnitFillings, batchAmount);
     } catch (BrokerException) {
       throw new BrokerException(
         `Total stored amount of ${hydrogenStorageUnitId} is not greater than 0`,

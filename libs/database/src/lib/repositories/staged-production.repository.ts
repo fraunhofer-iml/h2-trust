@@ -104,7 +104,7 @@ export class StagedProductionRepository {
   async deleteExpiredStagedProductions() {
     const expirationThreshold: Date = new Date(Date.now() - StagedProductionRepository.DAY_IN_MS);
 
-    return await this.prismaService.stagedProduction.deleteMany({
+    return this.prismaService.stagedProduction.deleteMany({
       where: {
         csvImport: {
           createdAt: { lt: expirationThreshold },

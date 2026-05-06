@@ -7,11 +7,13 @@
  */
 
 import { CsvDocumentDbType } from '@h2-trust/database';
+import { CsvContentType } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 
 export class CsvDocumentEntity {
   id: string;
   fileName: string;
-  type: string;
+  type: CsvContentType;
   startedAt: Date;
   endedAt: Date;
   amount: number;
@@ -20,7 +22,7 @@ export class CsvDocumentEntity {
   constructor(
     id: string,
     fileName: string,
-    type: string,
+    type: CsvContentType,
     startedAt: Date,
     endedAt: Date,
     amount: number,
@@ -36,6 +38,8 @@ export class CsvDocumentEntity {
   }
 
   static fromDatabase(csvDocument: CsvDocumentDbType): CsvDocumentEntity {
+    assertValidEnum(csvDocument.type, CsvContentType, 'CsvContentType');
+
     return new CsvDocumentEntity(
       csvDocument.id,
       csvDocument.fileName,

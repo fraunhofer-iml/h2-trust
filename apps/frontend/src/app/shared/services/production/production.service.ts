@@ -82,7 +82,7 @@ export class ProductionService {
     );
   }
 
-  async validateFile(id: string): Promise<CsvDocumentIntegrityResultDto> {
+  validateFile(id: string): Promise<CsvDocumentIntegrityResultDto> {
     return firstValueFrom(this.httpClient.get<CsvDocumentIntegrityResultDto>(API.PRODUCTION.CSV_VERIFY(id)));
   }
 }

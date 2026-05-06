@@ -7,6 +7,7 @@
  */
 
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,6 +29,7 @@ import { FileDragAndDropComponent } from '../../../layout/drag-and-drop/file-dra
 import { FileCardComponent } from '../../../layout/file-card/file-card.component';
 import { TypeSelectionComponent } from '../../../layout/type-selection/type-selection.component';
 import { FileTypes } from '../../../shared/constants/file-types';
+import { H2TrustRoutes } from '../../../shared/constants/routes';
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
@@ -101,12 +103,25 @@ export class AddBottleComponent {
   }));
 
   mutation = injectMutation(() => ({
-    mutationFn: (dto: FormData) => this.processService.createBottleBatch(dto),
-    onSuccess: () => {
-      toast.success('Successfully created.');
-      this.router.navigateByUrl('bottling');
+    mutationFn: async (dto: FormData) => {
+      const promise = this.processService.createBottleBatch(dto);
+
+      toast.promise(promise, {
+        loading: 'Creating batch...',
+        success: () => {
+          this.router.navigateByUrl(H2TrustRoutes.BOTTLING);
+          return 'Successfully created.';
+        },
+        error: (error): string => {
+          if (error instanceof HttpErrorResponse || error instanceof Error) {
+            return error.message;
+          }
+          return 'Failed to create batch.';
+        },
+      });
+
+      await promise;
     },
-    onError: (e) => toast.error(e.message),
   }));
 
   constructor() {

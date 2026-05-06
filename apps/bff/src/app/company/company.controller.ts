@@ -24,7 +24,7 @@ export class CompanyController {
     description: 'Returns a list of all companies.',
     type: [CompanyDto],
   })
-  async findAll(): Promise<CompanyDto[]> {
+  findAll(): Promise<CompanyDto[]> {
     return this.companyService.findAll();
   }
 }

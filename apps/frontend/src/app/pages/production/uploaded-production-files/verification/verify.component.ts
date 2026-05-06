@@ -13,7 +13,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { toast } from 'ngx-sonner';
 import { ProcessedCsvDto } from '@h2-trust/contracts/dtos';
 import { CsvDocumentIntegrityStatus } from '@h2-trust/domain';
-import { DateTimeUtil } from '@h2-trust/utils';
 import { BaseSheetComponent } from '../../../../layout/sheet/sheet.component';
 import { CompactPipe } from '../../../../shared/pipes/compact-pipe';
 import { ProductionService } from '../../../../shared/services/production/production.service';
@@ -26,7 +25,6 @@ import { VerificationResultStore } from '../../../../shared/store/verification-r
 })
 export class VerifyComponent {
   protected readonly CsvDocumentIntegrityStatus = CsvDocumentIntegrityStatus;
-  protected readonly DateTimeUtil = DateTimeUtil;
   disabled = input.required<boolean>();
   file = input.required<ProcessedCsvDto>();
 

@@ -7,7 +7,7 @@
  */
 
 import { Transform } from 'class-transformer';
-import { ArrayNotEmpty, IsArray, IsIn, IsString } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsIn, IsString, IsTimeZone } from 'class-validator';
 import { BatchType, CsvContentType } from '@h2-trust/domain';
 
 export class ProductionCSVUploadDto {
@@ -20,8 +20,12 @@ export class ProductionCSVUploadDto {
   @IsIn([BatchType.POWER, BatchType.HYDROGEN])
   csvContentType: CsvContentType;
 
-  constructor(unitIds: string[], csvContentType: CsvContentType) {
+  @IsTimeZone()
+  timeZone: string;
+
+  constructor(unitIds: string[], csvContentType: CsvContentType, timeZone: string) {
     this.unitIds = unitIds;
     this.csvContentType = csvContentType;
+    this.timeZone = timeZone;
   }
 }
