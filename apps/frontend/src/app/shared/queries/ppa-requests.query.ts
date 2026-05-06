@@ -12,11 +12,11 @@ import { PowerPurchaseAgreementService } from '../services/power-purchase-agreem
 import { QueryKeyPrefix } from './shared-query-keys';
 
 export const ppaRequestsQueryOptions = (
-  unitsService: PowerPurchaseAgreementService,
+  ppaService: PowerPurchaseAgreementService,
   role: PpaRequestRole,
   status?: PowerPurchaseAgreementStatus,
 ) => ({
   queryKey: [QueryKeyPrefix.PPA_REQUESTS, role, status],
-  queryFn: () => unitsService.getPpaRequests(role, status),
+  queryFn: () => ppaService.getPpaRequests(role, status),
   staleTime: QUERY_CONFIG.STALE_TIME,
 });
