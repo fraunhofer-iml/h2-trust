@@ -21,6 +21,27 @@ export class ProcessStepRepository {
 
   constructor(private readonly prismaService: PrismaService) {}
 
+  async findPredecessorProcessSteps(startBatchId: string): Promise<string[]> {
+    const predecessors = await this.prismaService.$queryRaw<{ processStepId: string | null }[]>`
+      WITH RECURSIVE AllPredecessors AS (
+        SELECT "B" AS predecessor_id
+        FROM "_BatchRelation"
+        WHERE "A" = ${startBatchId}
+
+        UNION ALL
+
+        SELECT br."B"
+        FROM "_BatchRelation" br
+        INNER JOIN AllPredecessors ap ON br."A" = ap.predecessor_id
+      )
+      SELECT DISTINCT ps."id" AS "processStepId"
+      FROM AllPredecessors ap
+      JOIN "Batch" b ON b."id" = ap.predecessor_id
+      LEFT JOIN "ProcessStep" ps ON ps."batchId" = b."id"
+    `;
+    return predecessors.map((predecessor) => predecessor.processStepId);
+  }
+
   async findProcessStep(id: string): Promise<ProcessStepEntity> {
     const processStep = await this.prismaService.processStep.findUnique({
       where: {
@@ -30,6 +51,16 @@ export class ProcessStepRepository {
     });
     assertRecordFound(processStep, id, 'process-step');
     return ProcessStepEntity.fromDeepDatabase(processStep);
+  }
+
+  async findProcessSteps(ids: string[]): Promise<ProcessStepEntity[]> {
+    const processSteps = await this.prismaService.processStep.findMany({
+      where: {
+        id: { in: ids },
+      },
+      ...processStepDeepQueryArgs,
+    });
+    return processSteps.map(ProcessStepEntity.fromDeepDatabase);
   }
 
   async findProcessStepsByPredecessorTypesAndOwner(

@@ -24,6 +24,8 @@ export class ProvenanceService {
   constructor(private readonly traversalService: TraversalService) {}
 
   async buildProvenance(root: ProcessStepEntity): Promise<ProvenanceEntity> {
+    const processStepPredecessors: ProcessStepEntity[] = await this.traversalService.getProvenance(root);
+
     if (!root || !root.type) {
       throw new Error('Invalid process step.');
     }

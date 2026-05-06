@@ -15,6 +15,12 @@ import { ProcessStepService } from '../../../process-step/process-step.service';
 export class TraversalService {
   constructor(private readonly processStepService: ProcessStepService) {}
 
+  async getProvenance(processStep: ProcessStepEntity) {
+    const processStepIds = await this.processStepService.getPredecessorProcessSteps(processStep.batch.id);
+    const processSteps: ProcessStepEntity[] = await this.processStepService.getProcessSteps(processStepIds);
+    return [processStep, ...processSteps];
+  }
+
   fetchPowerProductionsFromHydrogenProductions(hydrogenProductions: ProcessStepEntity[]): Promise<ProcessStepEntity[]> {
     return this.fetchPredecessorProcessStepsFromHydrogenProductions(hydrogenProductions, ProcessType.POWER_PRODUCTION);
   }

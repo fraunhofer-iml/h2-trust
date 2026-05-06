@@ -27,6 +27,14 @@ export class ProcessStepService {
     private readonly processStepRepository: ProcessStepRepository,
   ) {}
 
+  getPredecessorProcessSteps(startBatchId: string): Promise<string[]> {
+    return this.processStepRepository.findPredecessorProcessSteps(startBatchId);
+  }
+
+  getProcessSteps(ids: string[]): Promise<ProcessStepEntity[]> {
+    return this.processStepRepository.findProcessSteps(ids);
+  }
+
   updateRfnboStatus(processStep: ProcessStepEntity, rfnboType: RfnboType): Promise<{ id: string; batchId: string }> {
     return this.batchRepository.setRfnboStatus(processStep.batch.id, rfnboType);
   }
