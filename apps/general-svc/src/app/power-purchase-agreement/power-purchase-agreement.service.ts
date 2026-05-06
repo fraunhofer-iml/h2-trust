@@ -47,7 +47,9 @@ export class PowerPurchaseAgreementService {
     const user: UserEntity = await this.userRepository.findUser(payload.decidingUserId);
 
     this.checkUserAccessToPowerPurchaseAgreement(user, payload.ppaId);
-    this.hasUserOwnershipOverPowerProductionUnit(user, payload.powerProductionUnitId);
+    if (payload.powerProductionUnitId) {
+      this.hasUserOwnershipOverPowerProductionUnit(user, payload.powerProductionUnitId);
+    }
 
     return this.powerPurchaseAgreementRepository.updatePpaStatus(payload);
   }
