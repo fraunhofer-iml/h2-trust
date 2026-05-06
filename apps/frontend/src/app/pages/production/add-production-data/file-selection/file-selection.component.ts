@@ -75,9 +75,9 @@ export class FileSelectionComponent {
     this.form.controls.hydrogenProduction.valueChanges.pipe(map((val) => (val ? val[0] : null))),
   );
 
-  selectedPowerProduction = toSignal(
+  selectedPowerAmount = toSignal(
     this.form.controls.powerProductions.valueChanges.pipe(
-      map((value) => (value ?? []).reduce((acc, item) => acc + item.amountProduced, 0) ?? 0),
+      map((value) => (value ?? []).reduce((acc, item) => acc + item.amountProduced, 0)),
     ),
     { initialValue: 0 },
   );
@@ -130,13 +130,9 @@ export class FileSelectionComponent {
     return result;
   });
 
-  get totalPower() {
-    return this.form.controls.powerProductions.value?.reduce((acc, item) => acc + item.amountProduced, 0);
-  }
-
   chartMax = computed(() => {
     const powerConsumed = this.powerConsumed();
-    const selectedPowerProduction = this.selectedPowerProduction();
+    const selectedPowerProduction = this.selectedPowerAmount();
 
     return Math.max(powerConsumed, selectedPowerProduction, 1);
   });
