@@ -52,7 +52,6 @@ export class PpaRequestsComponent {
 
   ppaRequestsSent = computed(() => {
     const requests = this.ppaRequestsSentQuery.data();
-    console.log('fetched sender');
     return this.mapByStatus(requests ?? []);
   });
 
@@ -60,7 +59,6 @@ export class PpaRequestsComponent {
 
   ppaRequestsReceived = computed(() => {
     const requests = this.ppaRequestsReceivedQuery.data();
-    console.log('fetched');
     return this.mapByStatus(requests ?? []);
   });
 
