@@ -7,10 +7,33 @@
  */
 
 declare const window: any;
-export const BFF_URL = window.env?.BFF_URL;
-export const KEYCLOAK_URL = window.env?.KEYCLOAK_URL;
-export const KEYCLOAK_REALM = window.env?.KEYCLOAK_REALM;
-export const KEYCLOAK_CLIENT_FRONTEND_ID = window.env?.KEYCLOAK_CLIENT_FRONTEND_ID;
+
+const DEFAULT_BFF_URL = 'http://localhost:3000';
+const DEFAULT_KEYCLOAK_URL = 'http://localhost:8080';
+const DEFAULT_KEYCLOAK_REALM = 'h2-trust';
+const DEFAULT_KEYCLOAK_CLIENT_FRONTEND_ID = 'h2-trust-frontend';
+
+const env = window?.env ?? {};
+
+function getEnvOrDefault(key: string, fallback: string): string {
+  const value = env[key];
+  if (!value) {
+    console.warn(
+      `[env] Missing "${key}", falling back to default "${fallback}". ` +
+      'Check env.js / env.template.js and Docker env vars.'
+    );
+    return fallback;
+  }
+  return value;
+}
+
+export const BFF_URL = getEnvOrDefault('BFF_URL', DEFAULT_BFF_URL);
+export const KEYCLOAK_URL = getEnvOrDefault('KEYCLOAK_URL', DEFAULT_KEYCLOAK_URL);
+export const KEYCLOAK_REALM = getEnvOrDefault('KEYCLOAK_REALM', DEFAULT_KEYCLOAK_REALM);
+export const KEYCLOAK_CLIENT_FRONTEND_ID = getEnvOrDefault(
+  'KEYCLOAK_CLIENT_FRONTEND_ID',
+  DEFAULT_KEYCLOAK_CLIENT_FRONTEND_ID
+);
 export const environment = {
   production: false,
   KEYCLOAK_URL: KEYCLOAK_URL,
