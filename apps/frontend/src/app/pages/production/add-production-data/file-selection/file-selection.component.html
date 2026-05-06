@@ -137,7 +137,7 @@
                 <div class="mb-2 flex items-center justify-between text-xs text-neutral-600">
                   <span>Selected vs. Required</span>
                   <strong>
-                    {{ selectedPowerProduction() | unit: MeasurementUnit.KWH }} /
+                    {{ selectedPowerAmount() | unit: MeasurementUnit.KWH }} /
                     {{ powerConsumed() | unit: MeasurementUnit.KWH }}
                   </strong>
                 </div>
@@ -149,18 +149,18 @@
                   <div
                     class="absolute inset-y-0 left-0 rounded-full transition-all duration-300"
                     [ngClass]="
-                      selectedPowerProduction() >= (selectedHydrogenFile()?.powerConsumed ?? 0)
+                      selectedPowerAmount() >= (selectedHydrogenFile()?.powerConsumed ?? 0)
                         ? 'bg-primary-500'
                         : 'bg-tertiary-400'
                     "
-                    [ngStyle]="{ width: (selectedPowerProduction() / chartMax()) * 100 + '%' }"
+                    [ngStyle]="{ width: (selectedPowerAmount() / chartMax()) * 100 + '%' }"
                   ></div>
                 </div>
                 <div class="mt-2 flex items-center gap-4 text-xs text-neutral-600">
                   <span class="flex items-center gap-1">
                     <span
                       class="h-2 w-2 rounded-full"
-                      [ngClass]="selectedPowerProduction() >= powerConsumed() ? 'bg-primary-500' : 'bg-tertiary-400'"
+                      [ngClass]="selectedPowerAmount() >= powerConsumed() ? 'bg-primary-500' : 'bg-tertiary-400'"
                     ></span>
                     Selected
                   </span>
@@ -172,18 +172,17 @@
               </div>
             </div>
 
-            @if (selectedPowerProduction() > 0) {
-              @if (selectedPowerProduction() >= powerConsumed()) {
+            @if (selectedPowerAmount() > 0) {
+              @if (selectedPowerAmount() >= powerConsumed()) {
                 <div class="text-primary-600 pt-2 text-xs">
                   Power demand is fully covered. Surplus:
-                  {{ selectedPowerProduction() - powerConsumed() | unit: MeasurementUnit.KWH }}
+                  {{ selectedPowerAmount() - powerConsumed() | unit: MeasurementUnit.KWH }}
                 </div>
               } @else {
                 <div class="text-tertiary-700 pt-2 text-xs">
                   Power demand is not fully covered. Missing:
                   {{
-                    (selectedHydrogenFile()?.powerConsumed ?? 0) - selectedPowerProduction()
-                      | unit: MeasurementUnit.KWH
+                    (selectedHydrogenFile()?.powerConsumed ?? 0) - selectedPowerAmount() | unit: MeasurementUnit.KWH
                   }}. Grid power will be used to cover the remaining amount.
                 </div>
               }
