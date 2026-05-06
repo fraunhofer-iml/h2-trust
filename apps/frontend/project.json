@@ -42,6 +42,36 @@
           "sourceMap": true,
           "namedChunks": true
         },
+        "dev": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "4mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "100kb",
+              "maximumError": "100kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "staging": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "4mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "100kb",
+              "maximumError": "100kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
         "production": {
           "budgets": [
             {
