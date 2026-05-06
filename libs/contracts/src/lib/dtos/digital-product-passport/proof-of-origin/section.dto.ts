@@ -16,8 +16,8 @@ import {
   ProofOfOriginSubClassificationEntity,
   ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/contracts/entities';
-import { BatchType, HydrogenColor, HydrogenProductionMethod, MeasurementUnit, RfnboType } from '@h2-trust/domain';
-import { EnumLabelMapper } from '@h2-trust/strings';
+import { BatchType, HydrogenProductionMethod, MeasurementUnit, RfnboType } from '@h2-trust/domain';
+import { getMeasurementUnit } from '@h2-trust/strings';
 import { HydrogenComponentDto } from '../general-information';
 import { BatchDto } from './batch.dto';
 import { ClassificationDto } from './classification.dto';
@@ -112,9 +112,8 @@ export class SectionDto {
       batch.unitId ?? '',
       HydrogenProductionMethod.ELECTROLYSIS,
       hydrogenComposition,
-      batch.color ?? HydrogenColor.MIX,
       batch.rfnboType ?? RfnboType.NOT_SPECIFIED,
-      batch.processStep ?? '',
+      batch.processStep,
       batch.accountingPeriodEnd,
     );
   }
@@ -132,7 +131,7 @@ export class SectionDto {
       classification.amount,
       batches,
       classifications,
-      EnumLabelMapper.getMeasurementUnit(classification.classificationType),
+      getMeasurementUnit(classification.classificationType),
       classification.classificationType,
     );
   }
@@ -148,7 +147,7 @@ export class SectionDto {
       subClassification.amount,
       batches,
       [], // Leaf classification has no nested classifications
-      EnumLabelMapper.getMeasurementUnit(subClassification.classificationType),
+      getMeasurementUnit(subClassification.classificationType),
       subClassification.classificationType,
     );
   }

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProductionUtils } from './production.utils';
+import { calculateWaterAmount } from './production.utils';
 
 describe('ProductionUtils.calculateWaterAmount', () => {
   describe('valid inputs', () => {
@@ -18,7 +18,7 @@ describe('ProductionUtils.calculateWaterAmount', () => {
       const expectedResult = 100;
 
       // Act
-      const actualResult = ProductionUtils.calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
+      const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
       // Assert
       expect(actualResult).toBe(expectedResult);
@@ -32,7 +32,7 @@ describe('ProductionUtils.calculateWaterAmount', () => {
       const expectedResult = 200;
 
       // Act
-      const actualResult = ProductionUtils.calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
+      const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
       // Assert
       expect(actualResult).toBe(expectedResult);
@@ -46,7 +46,7 @@ describe('ProductionUtils.calculateWaterAmount', () => {
       const expectedResult = 50;
 
       // Act
-      const actualResult = ProductionUtils.calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
+      const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
       // Assert
       expect(actualResult).toBe(expectedResult);
@@ -60,7 +60,7 @@ describe('ProductionUtils.calculateWaterAmount', () => {
       const expectedResult = 25;
 
       // Act
-      const actualResult = ProductionUtils.calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
+      const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
       // Assert
       expect(actualResult).toBe(expectedResult);
@@ -74,7 +74,7 @@ describe('ProductionUtils.calculateWaterAmount', () => {
       const expectedResult = 50.5;
 
       // Act
-      const actualResult = ProductionUtils.calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
+      const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
       // Assert
       expect(actualResult).toBe(expectedResult);
@@ -88,7 +88,7 @@ describe('ProductionUtils.calculateWaterAmount', () => {
       const expectedResult = 0;
 
       // Act
-      const actualResult = ProductionUtils.calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
+      const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
       // Assert
       expect(actualResult).toBe(expectedResult);
@@ -102,7 +102,7 @@ describe('ProductionUtils.calculateWaterAmount', () => {
       const expectedResult = 1;
 
       // Act
-      const actualResult = ProductionUtils.calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
+      const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
       // Assert
       expect(actualResult).toBe(expectedResult);
@@ -116,7 +116,7 @@ describe('ProductionUtils.calculateWaterAmount', () => {
       const expectedResult = 2400;
 
       // Act
-      const actualResult = ProductionUtils.calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
+      const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
       // Assert
       expect(actualResult).toBe(expectedResult);
@@ -130,7 +130,7 @@ describe('ProductionUtils.calculateWaterAmount', () => {
       const expectedResult = 100;
 
       // Act
-      const actualResult = ProductionUtils.calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
+      const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
       // Assert
       expect(actualResult).toBe(expectedResult);
@@ -146,7 +146,7 @@ describe('ProductionUtils.calculateWaterAmount', () => {
 
       // Act & Assert
       expect(() => {
-        ProductionUtils.calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
+        calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
       }).toThrow('endedAtInSeconds must be greater than startedAtInSeconds');
     });
 
@@ -158,7 +158,7 @@ describe('ProductionUtils.calculateWaterAmount', () => {
 
       // Act & Assert
       expect(() => {
-        ProductionUtils.calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
+        calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
       }).toThrow('endedAtInSeconds must be greater than startedAtInSeconds');
     });
 
@@ -170,7 +170,7 @@ describe('ProductionUtils.calculateWaterAmount', () => {
 
       // Act & Assert
       expect(() => {
-        ProductionUtils.calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
+        calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
       }).toThrow(`waterConsumptionPerHour must be non-negative: [${waterConsumptionPerHour}]`);
     });
   });
@@ -184,7 +184,7 @@ describe('ProductionUtils.calculateWaterAmount', () => {
       const expectedResult = 200;
 
       // Act
-      const actualResult = ProductionUtils.calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
+      const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
       // Assert
       expect(actualResult).toBe(expectedResult);
@@ -198,7 +198,7 @@ describe('ProductionUtils.calculateWaterAmount', () => {
       const expectedResult = 1000000;
 
       // Act
-      const actualResult = ProductionUtils.calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
+      const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
       // Assert
       expect(actualResult).toBe(expectedResult);
@@ -212,7 +212,7 @@ describe('ProductionUtils.calculateWaterAmount', () => {
       const expectedResult = 0.001;
 
       // Act
-      const actualResult = ProductionUtils.calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
+      const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
       // Assert
       expect(actualResult).toBe(expectedResult);

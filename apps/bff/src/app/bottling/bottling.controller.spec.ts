@@ -16,7 +16,7 @@ import {
   UserDetailsDtoMock,
 } from '@h2-trust/contracts/dtos';
 import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
-import { BrokerQueues, ProcessStepMessagePatterns } from '@h2-trust/messaging';
+import { ProcessStepMessagePatterns, QUEUE_PROCESS_SVC } from '@h2-trust/messaging';
 import 'multer';
 import { of } from 'rxjs';
 import { RfnboType } from '@h2-trust/domain';
@@ -41,7 +41,7 @@ describe('BottlingController', () => {
           },
         },
         {
-          provide: BrokerQueues.QUEUE_PROCESS_SVC,
+          provide: QUEUE_PROCESS_SVC,
           useValue: {
             send: jest.fn(),
           },
@@ -50,7 +50,7 @@ describe('BottlingController', () => {
     }).compile();
 
     controller = module.get<BottlingController>(BottlingController);
-    processSvc = module.get<ClientProxy>(BrokerQueues.QUEUE_PROCESS_SVC) as ClientProxy;
+    processSvc = module.get<ClientProxy>(QUEUE_PROCESS_SVC) as ClientProxy;
   });
 
   afterEach(() => {
@@ -78,7 +78,6 @@ describe('BottlingController', () => {
       filledAt: new Date(givenDto.filledAt),
       recordedById: AuthenticatedUserMock.sub,
       hydrogenStorageUnitId: givenDto.hydrogenStorageUnit,
-      color: givenDto.color,
       files: [] as Express.Multer.File[],
       rfnboType: RfnboType.RFNBO_READY,
     };

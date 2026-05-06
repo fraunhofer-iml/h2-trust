@@ -13,61 +13,59 @@ import {
 } from '@h2-trust/contracts/entities';
 import { BatchType } from '@h2-trust/domain';
 
-export class Util {
-  static assembleClassification(
-    classificationName: string,
-    classificationType: BatchType,
-    batches: ProofOfOriginBatchEntity[],
-    subClassifications: ProofOfOriginSubClassificationEntity[],
-  ): ProofOfOriginClassificationEntity {
-    return new ProofOfOriginClassificationEntity(
-      classificationName,
-      Util.calculateEmission(batches, subClassifications),
-      Util.calculateAmount(batches, subClassifications),
-      classificationType,
-      batches,
-      subClassifications,
-    );
-  }
+export function assembleClassification(
+  classificationName: string,
+  classificationType: BatchType,
+  batches: ProofOfOriginBatchEntity[],
+  subClassifications: ProofOfOriginSubClassificationEntity[],
+): ProofOfOriginClassificationEntity {
+  return new ProofOfOriginClassificationEntity(
+    classificationName,
+    calculateEmission(batches, subClassifications),
+    calculateAmount(batches, subClassifications),
+    classificationType,
+    batches,
+    subClassifications,
+  );
+}
 
-  static assembleSubClassification(
-    classificationName: string,
-    classificationType: BatchType,
-    batches: ProofOfOriginBatchEntity[] = [],
-  ): ProofOfOriginSubClassificationEntity {
-    return {
-      name: classificationName,
-      emissionOfProcessStep: Util.calculateBatchEmission(batches),
-      amount: Util.sumAmounts(batches),
-      batches,
-      classificationType,
-    };
-  }
+export function assembleSubClassification(
+  classificationName: string,
+  classificationType: BatchType,
+  batches: ProofOfOriginBatchEntity[] = [],
+): ProofOfOriginSubClassificationEntity {
+  return {
+    name: classificationName,
+    emissionOfProcessStep: calculateBatchEmission(batches),
+    amount: sumAmounts(batches),
+    batches,
+    classificationType,
+  };
+}
 
-  public static sumAmounts(arrayWithAmount: { amount: number }[]): number {
-    return arrayWithAmount.reduce((sum, item) => sum + item.amount, 0);
-  }
+export function sumAmounts(arrayWithAmount: { amount: number }[]): number {
+  return arrayWithAmount.reduce((sum, item) => sum + item.amount, 0);
+}
 
-  public static calculateBatchEmission(batches: ProofOfOriginBatchEntity[]): number {
-    return (batches || []).map((b) => b.emission?.totalEmissions ?? 0).reduce((a, b) => a + b, 0);
-  }
+export function calculateBatchEmission(batches: ProofOfOriginBatchEntity[]): number {
+  return (batches || []).map((b) => b.emission?.totalEmissions ?? 0).reduce((a, b) => a + b, 0);
+}
 
-  private static calculateAmount(
-    batches: ProofOfOriginBatchEntity[],
-    subClassifications: ProofOfOriginSubClassificationEntity[],
-  ): number {
-    return Util.sumAmounts(batches) || Util.sumAmounts(subClassifications);
-  }
+function calculateAmount(
+  batches: ProofOfOriginBatchEntity[],
+  subClassifications: ProofOfOriginSubClassificationEntity[],
+): number {
+  return sumAmounts(batches) || sumAmounts(subClassifications);
+}
 
-  private static calculateEmission(
-    batches: ProofOfOriginBatchEntity[],
-    subClassifications: ProofOfOriginSubClassificationEntity[],
-  ): number {
-    const batchEmissionSum = Util.calculateBatchEmission(batches);
-    const subClassificationEmissionSum = (subClassifications || [])
-      .map((c) => c.emissionOfProcessStep ?? 0)
-      .reduce((a, b) => a + b, 0);
+function calculateEmission(
+  batches: ProofOfOriginBatchEntity[],
+  subClassifications: ProofOfOriginSubClassificationEntity[],
+): number {
+  const batchEmissionSum = calculateBatchEmission(batches);
+  const subClassificationEmissionSum = (subClassifications || [])
+    .map((c) => c.emissionOfProcessStep ?? 0)
+    .reduce((a, b) => a + b, 0);
 
-    return batchEmissionSum + subClassificationEmissionSum;
-  }
+  return batchEmissionSum + subClassificationEmissionSum;
 }

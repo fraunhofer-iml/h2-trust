@@ -11,7 +11,7 @@ import {
   ProofOfOriginPowerBatchEntity,
   ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/contracts/entities';
-import { EnergySource, HydrogenColor, PowerType, RfnboType } from '@h2-trust/domain';
+import { EnergySource, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentEntityFixture } from '../../../bottling/fixtures/hydrogen-component.fixture';
 import { ProofOfOriginEmissionEntityFixture } from './proof-of-origin-emission.fixture';
 
@@ -49,12 +49,11 @@ export const ProofOfOriginHydrogenBatchEntityFixture = {
       overrides.emission ?? ProofOfOriginEmissionEntityFixture.create(),
       overrides.createdAt ?? new Date('2026-01-01T01:00:00Z'),
       overrides.amount ?? 50,
-      overrides.hydrogenComposition ?? [HydrogenComponentEntityFixture.createGreen()],
+      overrides.hydrogenComposition ?? [HydrogenComponentEntityFixture.createRfnboReady()],
+      overrides.processStep ?? ProcessType.HYDROGEN_PRODUCTION,
       overrides.producer ?? 'The Hydrogen Company',
       overrides.unitId ?? 'hydrogen-production-unit-1',
-      overrides.color ?? HydrogenColor.GREEN,
       overrides.rfnboType ?? RfnboType.RFNBO_READY,
-      overrides.processStep ?? 'process-step-1',
       overrides.accountingPeriodEnd ?? new Date('2026-12-31T23:59:59Z'),
     ),
 } as const;

@@ -25,7 +25,7 @@ import {
   type AuthenticatedKCUser,
 } from '@h2-trust/contracts/dtos';
 import 'multer';
-import { AuthenticatedUser, Public } from 'nest-keycloak-connect';
+import { KeycloakUser, Public } from 'nest-keycloak-connect';
 import { BottlingService } from './bottling.service';
 
 @Controller('bottlings')
@@ -57,10 +57,6 @@ export class BottlingController {
         amount: {
           type: 'number',
           default: BottlingDtoMock[0].amount,
-        },
-        color: {
-          type: 'string',
-          default: BottlingDtoMock[0].color,
         },
         rfnboType: {
           type: 'string',
@@ -97,10 +93,10 @@ export class BottlingController {
       },
     },
   })
-  async createBottlingAndTransportation(
+  createBottlingAndTransportation(
     @Body() dto: BottlingDto,
     @UploadedFiles() files: Express.Multer.File[],
-    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<BottlingOverviewDto> {
     return this.bottlingService.createBottlingAndTransportation(dto, files, authenticatedUser.sub);
   }
@@ -114,8 +110,8 @@ export class BottlingController {
     description: "Returns a list of all bottling process steps belonging to the authenticated user's company.",
     type: [BottlingOverviewDto],
   })
-  async readBottlingsAndTransportationsByOwner(
-    @AuthenticatedUser() authenticatedUser: AuthenticatedKCUser,
+  readBottlingsAndTransportationsByOwner(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<BottlingOverviewDto[]> {
     return this.bottlingService.readBottlingsAndTransportationsByOwner(authenticatedUser.sub);
   }
@@ -136,7 +132,7 @@ export class BottlingController {
     description: 'Unique identifier of the transportation process step.',
     example: 'process-step-hydrogen-bottling-1',
   })
-  async readDigitalProductPassport(@Param('id') id: string): Promise<DigitalProductPassportDto> {
+  readDigitalProductPassport(@Param('id') id: string): Promise<DigitalProductPassportDto> {
     return this.bottlingService.readDigitalProductPassport(id);
   }
 }

@@ -33,7 +33,7 @@ import {
   PowerProductionUnitEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
 import { ReadByIdPayload } from '@h2-trust/contracts/payloads';
-import { BrokerQueues, UnitMessagePatterns } from '@h2-trust/messaging';
+import { QUEUE_GENERAL_SVC, UnitMessagePatterns } from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
@@ -50,7 +50,7 @@ describe('UnitController', () => {
         UnitService,
         UserService,
         {
-          provide: BrokerQueues.QUEUE_GENERAL_SVC,
+          provide: QUEUE_GENERAL_SVC,
           useValue: {
             send: jest.fn(),
           },
@@ -59,7 +59,7 @@ describe('UnitController', () => {
     }).compile();
 
     controller = module.get(UnitController);
-    queue = module.get(BrokerQueues.QUEUE_GENERAL_SVC);
+    queue = module.get(QUEUE_GENERAL_SVC);
     userService = module.get(UserService);
   });
 

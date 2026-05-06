@@ -38,17 +38,16 @@ import {
   CsvContentType,
   DefaultGridProvider,
   EnergySource,
-  HydrogenColor,
   PowerPurchaseAgreementStatus,
   PowerType,
   StagingScope,
 } from '@h2-trust/domain';
-import { BrokerException, BrokerQueues, UnitMessagePatterns } from '@h2-trust/messaging';
-import { CsvImportProcessingService } from './csv-import-processing.service';
+import { BrokerException, QUEUE_GENERAL_SVC, UnitMessagePatterns } from '@h2-trust/messaging';
+import { CsvImportProcessingService } from './csv/csv-import-processing.service';
 import { ProductionCreationService } from './production-creation.service';
-import { ProductionNormalizer } from './production-normalizer';
+import { normalizeProduction } from './production-normalizer';
 import { DocumentProof, ParsedImport } from './production.types';
-import { ProductionUtils } from './utils/production.utils';
+import { calculatePartialAmountRelativeToPowerProduction, splitGridPowerProduction } from './utils/production.utils';
 
 @Injectable()
 export class ProductionStagingService {
@@ -57,7 +56,7 @@ export class ProductionStagingService {
   private readonly defaultGridPowerUnitId = DefaultGridProvider.DEFAULT_GRID_POWER_PRODUCTION_UNIT_ID;
 
   constructor(
-    @Inject(BrokerQueues.QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
+    @Inject(QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
     private readonly productionCreationService: ProductionCreationService,
     private readonly blockchainService: BlockchainService,
     private readonly featureFlagService: FeatureFlagService,
@@ -233,13 +232,13 @@ export class ProductionStagingService {
       : stagedPowerProduction.amountProduced;
     const amountProduced: number = isCurrentPowerProductionSufficient
       ? remainingHydrogenProduction
-      : ProductionUtils.calculatePartialAmountRelativeToPowerProduction(
+      : calculatePartialAmountRelativeToPowerProduction(
           stagedHydrogenProduction.amountProduced,
           stagedHydrogenProduction.powerConsumed,
           stagedPowerProduction.amountProduced,
         );
 
-    const partialWaterConsumption: number = ProductionUtils.calculatePartialAmountRelativeToPowerProduction(
+    const partialWaterConsumption: number = calculatePartialAmountRelativeToPowerProduction(
       totalWaterConsumption,
       stagedHydrogenProduction.powerConsumed,
       stagedPowerProduction.amountProduced,
@@ -253,7 +252,6 @@ export class ProductionStagingService {
       stagedHydrogenProduction.unitId,
       amountProduced,
       recordedBy,
-      HydrogenColor.MIX,
       hydrogenStorageUnitId,
       stagedPowerProduction.ownerId,
       stagedHydrogenProduction.ownerId,
@@ -279,7 +277,7 @@ export class ProductionStagingService {
     recordedBy: string,
     hydrogenStorageUnitId: string,
   ) {
-    const partialWaterConsumption: number = ProductionUtils.calculatePartialAmountRelativeToPowerProduction(
+    const partialWaterConsumption: number = calculatePartialAmountRelativeToPowerProduction(
       totalWaterConsumption,
       stagedHydrogenProduction.powerConsumed,
       gridPowerConsumption,
@@ -294,13 +292,12 @@ export class ProductionStagingService {
       stagedHydrogenProduction.unitId,
       gridPoweredHydrogen,
       recordedBy,
-      HydrogenColor.MIX,
       hydrogenStorageUnitId,
       stagedHydrogenProduction.ownerId,
       stagedHydrogenProduction.ownerId,
       partialWaterConsumption,
     );
-    return ProductionUtils.splitGridPowerProduction(gridPowerCreateEntity, EnergySource.GRID);
+    return splitGridPowerProduction(gridPowerCreateEntity, EnergySource.GRID);
   }
 
   /**
@@ -384,12 +381,10 @@ export class ProductionStagingService {
   async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
     const parsedProductionImports: ParsedImport[] = await this.csvImportProcessingService.parseAndUploadFiles(
       payload.productionImports,
+      payload.timeZone,
     );
 
-    const stagedProductions: StagedProductionEntity[] = ProductionNormalizer.normalizeProduction(
-      parsedProductionImports,
-      payload.companyId,
-    );
+    const stagedProductions: StagedProductionEntity[] = normalizeProduction(parsedProductionImports, payload.companyId);
 
     const { csvImportId, csvDocuments } = await this.prismaService.$transaction(async (tx) => {
       const csvImportId = await this.csvImportRepository.saveCsvImport(payload.userId, tx);

@@ -11,7 +11,6 @@ import {
   BatchEntity,
   DocumentEntity,
   HydrogenComponentEntity,
-  HydrogenCompositionUtil,
   PaginatedProcessStepEntity,
   ProcessStepEntity,
 } from '@h2-trust/contracts/entities';
@@ -21,12 +20,13 @@ import {
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/contracts/payloads';
 import { DocumentRepository } from '@h2-trust/database';
-import { HydrogenColor, RfnboType } from '@h2-trust/domain';
+import { RfnboType } from '@h2-trust/domain';
 import { BrokerException } from '@h2-trust/messaging';
 import { CentralizedStorageService, ContentType } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step/process-step.service';
-import { BottlingProcessStepAssembler } from './utils/bottling-process-step.assembler';
-import { BottlingAllocation, BottlingAllocator } from './utils/bottling.allocator';
+import { allocateBottling, BottlingAllocation } from './utils/bottling.allocator';
+import { assembleBottling } from './utils/bottling.assembler';
+import { computeHydrogenComposition } from './utils/hydrogen-composition';
 
 @Injectable()
 export class BottlingService {
@@ -37,7 +37,7 @@ export class BottlingService {
     private readonly processStepService: ProcessStepService,
   ) {}
 
-  async readProcessStepsByTypesAndActiveAndOwner(
+  readProcessStepsByTypesAndActiveAndOwner(
     payload: ReadProcessStepsByTypesAndActiveAndOwnerPayload,
   ): Promise<ProcessStepEntity[]> {
     return this.processStepService.readProcessStepsByTypesAndActiveAndOwner(payload);
@@ -74,7 +74,6 @@ export class BottlingService {
 
     const fillings: HydrogenComponentEntity[] = processStepsFromStorageUnit.map((processStep) => ({
       processId: processStep.id,
-      color: processStep.batch.qualityDetails.color,
       amount: processStep.batch.amount,
       rfnboType: processStep.batch.qualityDetails.rfnboType,
     }));
@@ -86,7 +85,7 @@ export class BottlingService {
       payload.hydrogenStorageUnitId,
     );
 
-    const allocation: BottlingAllocation = BottlingAllocator.allocate(
+    const allocation: BottlingAllocation = allocateBottling(
       processStepsFromStorageUnit,
       hydrogenComposition,
       payload.hydrogenStorageUnitId,
@@ -107,7 +106,7 @@ export class BottlingService {
       allocation.processStepsForRemainingAmount.map((ps) => this.processStepService.createProcessStep(ps)),
     );
 
-    const bottlingProcessStep: ProcessStepEntity = BottlingProcessStepAssembler.assemble(payload, [
+    const bottlingProcessStep: ProcessStepEntity = assembleBottling(payload, [
       ...allocation.batchesForBottle,
       ...persistedConsumedSplitBatches,
     ]);
@@ -140,11 +139,11 @@ export class BottlingService {
     hydrogenStorageUnitId: string,
   ): Promise<HydrogenComponentEntity[]> {
     if (rfnboType === RfnboType.RFNBO_READY) {
-      return [new HydrogenComponentEntity(null, HydrogenColor.GREEN, batchAmount, RfnboType.RFNBO_READY)];
+      return [new HydrogenComponentEntity(null, batchAmount, RfnboType.RFNBO_READY)];
     }
 
     try {
-      return HydrogenCompositionUtil.computeHydrogenComposition(hydrogenStorageUnitFillings, batchAmount);
+      return computeHydrogenComposition(hydrogenStorageUnitFillings, batchAmount);
     } catch (BrokerException) {
       throw new BrokerException(
         `Total stored amount of ${hydrogenStorageUnitId} is not greater than 0`,

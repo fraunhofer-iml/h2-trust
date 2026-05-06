@@ -9,7 +9,7 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { HashUtil } from '@h2-trust/blockchain';
+import { hashBuffer } from '@h2-trust/blockchain';
 import {
   AccountingPeriodMatchingResultDto,
   CsvDocumentIntegrityResultDto,
@@ -42,14 +42,14 @@ import {
   StageProductionsPayload,
 } from '@h2-trust/contracts/payloads';
 import { CsvContentType, ProcessType, StagingScope } from '@h2-trust/domain';
-import { BrokerQueues, ProcessStepMessagePatterns, ProductionMessagePatterns } from '@h2-trust/messaging';
+import { ProcessStepMessagePatterns, ProductionMessagePatterns, QUEUE_PROCESS_SVC } from '@h2-trust/messaging';
 import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
 
 @Injectable()
 export class ProductionService {
   constructor(
-    @Inject(BrokerQueues.QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
+    @Inject(QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
     private readonly storageService: CentralizedStorageService,
     private readonly userService: UserService,
   ) {}
@@ -119,7 +119,7 @@ export class ProductionService {
 
     const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
 
-    const payload = new StageProductionsPayload(stageProductions, userId, userDetails.company.id);
+    const payload = new StageProductionsPayload(stageProductions, userId, userDetails.company.id, dto.timeZone);
     const matchingResult = await firstValueFrom(
       this.processSvc.send<ProductionStagingResultEntity>(ProductionMessagePatterns.STAGE, payload),
     );
@@ -150,7 +150,7 @@ export class ProductionService {
 
     return normalizedFiles.map((file, i) => {
       const unitId = normalizedUnitIds[i];
-      const hashedFileBuffer = HashUtil.hashBuffer(file.buffer);
+      const hashedFileBuffer = hashBuffer(file.buffer);
       const encodedFileBuffer = file.buffer.toString('base64');
       return new UnitFileImport(unitId, hashedFileBuffer, encodedFileBuffer, type);
     });

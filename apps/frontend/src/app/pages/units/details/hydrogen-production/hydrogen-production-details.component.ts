@@ -11,15 +11,16 @@ import { Component, inject, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { QueryClient } from '@tanstack/angular-query-experimental';
 import { HydrogenProductionUnitDto } from '@h2-trust/contracts/dtos';
-import { MeasurementUnit, UnitType } from '@h2-trust/domain';
+import { MeasurementUnit } from '@h2-trust/domain';
 import { ErrorCardComponent } from '../../../../layout/error-card/error-card.component';
 import { LoadingCardComponent } from '../../../../layout/loading-card/loading-card.component';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
+import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
 import { UnitsService } from '../../../../shared/services/units/units.service';
+import { injectUnitQuery } from '../shared/inject-unit-query';
 import { UnitActionsComponent } from '../shared/unit-actions/unit-actions.component';
 import { UnitDetailsComponent } from '../shared/unit-details/unit-details.component';
-import { injectUnitQuery, useQueryInvalidation } from '../shared/unit-query.util';
 
 @Component({
   selector: 'app-hydrogen-production-details',
@@ -43,9 +44,10 @@ export class HydrogenProductionDetailsComponent {
   unitsService = inject(UnitsService);
   queryClient = inject(QueryClient);
 
-  unitQuery = injectUnitQuery<HydrogenProductionUnitDto>(UnitType.HYDROGEN_PRODUCTION, this.id, (id) =>
+  unitQuery = injectUnitQuery<HydrogenProductionUnitDto>(QueryKeyPrefix.HYDROGEN_PRODUCTION_UNITS, this.id, (id) =>
     this.unitsService.getHydrogenProductionUnit(id),
   );
 
-  onUnitStatusChange = useQueryInvalidation(this.queryClient, UnitType.HYDROGEN_PRODUCTION, this.id);
+  onUnitStatusChange = () =>
+    this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.HYDROGEN_PRODUCTION_UNITS] });
 }

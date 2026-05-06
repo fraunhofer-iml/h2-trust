@@ -17,14 +17,13 @@ export class PowerPurchaseAgreementRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findAll(producerId: string, status: PowerPurchaseAgreementStatus): Promise<PowerPurchaseAgreementEntity[]> {
-    return this.prismaService.powerPurchaseAgreement
-      .findMany({
-        where: {
-          OR: [{ powerProducerId: producerId }, { hydrogenProducerId: producerId }],
-          status: status,
-        },
-        ...powerPurchaseAgreementDeepQueryArgs,
-      })
-      .then((result) => result.map(PowerPurchaseAgreementEntity.fromDeepDatabase));
+    const powerPurchaseAgreements = await this.prismaService.powerPurchaseAgreement.findMany({
+      where: {
+        OR: [{ powerProducerId: producerId }, { hydrogenProducerId: producerId }],
+        status: status,
+      },
+      ...powerPurchaseAgreementDeepQueryArgs,
+    });
+    return powerPurchaseAgreements.map(PowerPurchaseAgreementEntity.fromDeepDatabase);
   }
 }

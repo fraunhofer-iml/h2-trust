@@ -90,7 +90,6 @@ export class PowerProductionUnitDto extends BaseUnitDto {
       type: {
         name: unit.type.name,
         energySource: unit.type.energySource,
-        hydrogenColor: unit.type.hydrogenColor,
       },
       financialSupportReceived: unit.financialSupportReceived,
     };

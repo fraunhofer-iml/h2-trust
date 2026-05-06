@@ -16,8 +16,8 @@ import {
 } from '@h2-trust/contracts/entities/fixtures';
 import { CreateHydrogenBottlingPayload } from '@h2-trust/contracts/payloads';
 import { DocumentRepository } from '@h2-trust/database';
-import { HydrogenColor, RfnboType } from '@h2-trust/domain';
-import { BrokerQueues } from '@h2-trust/messaging';
+import { RfnboType } from '@h2-trust/domain';
+import { QUEUE_GENERAL_SVC } from '@h2-trust/messaging';
 import { CentralizedStorageService, ContentType } from '@h2-trust/storage';
 import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
 import { ProcessStepService } from '../process-step/process-step.service';
@@ -57,7 +57,7 @@ describe('BottlingService', () => {
       providers: [
         BottlingService,
         {
-          provide: BrokerQueues.QUEUE_GENERAL_SVC,
+          provide: QUEUE_GENERAL_SVC,
           useValue: generalSvcMock,
         },
         {
@@ -87,7 +87,7 @@ describe('BottlingService', () => {
   });
 
   describe('createHydrogenBottlingProcessStep', () => {
-    it(`creates bottling process step for ${HydrogenColor.GREEN} hydrogen`, async () => {
+    it(`creates bottling process step`, async () => {
       // Arrange
       const givenPayload = new CreateHydrogenBottlingPayload(
         100,
@@ -95,14 +95,13 @@ describe('BottlingService', () => {
         new Date('2024-01-15T10:00:00Z'),
         'recorder-1',
         'storage-unit-1',
-        HydrogenColor.GREEN,
         RfnboType.RFNBO_READY,
       );
 
       const givenStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
-          qualityDetails: QualityDetailsEntityFixture.createGreen(),
+          qualityDetails: QualityDetailsEntityFixture.create(),
         }),
       });
 
@@ -126,45 +125,6 @@ describe('BottlingService', () => {
       expect(actualResult.id).toBe(givenCreatedBottlingProcessStep.id);
     });
 
-    it(`creates bottling process step for non-${HydrogenColor.GREEN} hydrogen`, async () => {
-      // Arrange
-      const givenPayload = new CreateHydrogenBottlingPayload(
-        100,
-        'owner-1',
-        new Date('2024-01-15T10:00:00Z'),
-        'recorder-1',
-        'storage-unit-1',
-        HydrogenColor.YELLOW,
-        RfnboType.NON_CERTIFIABLE,
-      );
-
-      const givenStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
-        batch: BatchEntityFixture.createHydrogenBatch({
-          amount: 100,
-          qualityDetails: QualityDetailsEntityFixture.createGreen(),
-        }),
-      });
-
-      const givenHydrogenStorageUnit = {
-        id: 'storage-unit-1',
-        filling: [{ color: HydrogenColor.GREEN, amount: 100, rfnboType: RfnboType.RFNBO_READY }],
-      };
-
-      const givenCreatedBottlingProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
-
-      processStepServiceMock.readAllProcessStepsFromStorageUnit.mockResolvedValue([givenStorageProcessStep]);
-      generalSvcMock.send.mockReturnValue(of(givenHydrogenStorageUnit));
-      processStepServiceMock.setBatchesInactive.mockResolvedValue({ count: 1 });
-      processStepServiceMock.createProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
-      processStepServiceMock.readProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
-
-      // Act
-      const actualResult = await service.createHydrogenBottlingProcessStep(givenPayload);
-
-      // Assert
-      expect(actualResult.id).toBe(givenCreatedBottlingProcessStep.id);
-    });
-
     it('throws error when no process steps found in storage unit', async () => {
       // Arrange
       const givenPayload = new CreateHydrogenBottlingPayload(
@@ -173,7 +133,6 @@ describe('BottlingService', () => {
         new Date('2024-01-15T10:00:00Z'),
         'recorder-1',
         'storage-unit-1',
-        HydrogenColor.GREEN,
         RfnboType.RFNBO_READY,
       );
 
@@ -194,7 +153,6 @@ describe('BottlingService', () => {
         new Date('2024-01-15T10:00:00Z'),
         'recorder-1',
         'storage-unit-1',
-        HydrogenColor.GREEN,
         RfnboType.RFNBO_READY,
         [givenFile],
       );
@@ -202,7 +160,7 @@ describe('BottlingService', () => {
       const givenStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
-          qualityDetails: QualityDetailsEntityFixture.createGreen(),
+          qualityDetails: QualityDetailsEntityFixture.create(),
         }),
       });
 

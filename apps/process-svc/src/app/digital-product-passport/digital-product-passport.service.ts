@@ -19,10 +19,10 @@ import {
 } from '@h2-trust/contracts/entities';
 import { PowerType, RfnboType } from '@h2-trust/domain';
 import { ProcessStepService } from '../process-step/process-step.service';
-import { createProofOfOrigin, getHydrogenBottlingCompositions } from './proof-of-origin/proof-of-origin.service';
-import { createProofOfSustainability } from './proof-of-sustainability/proof-of-sustainability.service';
+import { assembleProofOfOrigin, getHydrogenBottlingCompositions } from './proof-of-origin/proof-of-origin.assembler';
+import { assembleProofOfSustainability } from './proof-of-sustainability/proof-of-sustainability.assembler';
 import { ProvenanceService } from './provenance/provenance.service';
-import { determineRedCompliance, determineTotalRedCompliance } from './red-compliance/red-compliance.service';
+import { determineRedCompliance, determineTotalRedCompliance } from './red-compliance/red-compliance';
 
 @Injectable()
 export class DigitalProductPassportService {
@@ -44,7 +44,7 @@ export class DigitalProductPassportService {
 
     const powerType: PowerType = productionChain.powerProduction.batch.qualityDetails.powerType as PowerType;
     const provenance: ProvenanceEntity = ProvenanceEntity.fromProductionChain(productionChain);
-    const proofOfSustainability: ProofOfSustainabilityEntity = createProofOfSustainability(provenance);
+    const proofOfSustainability: ProofOfSustainabilityEntity = assembleProofOfSustainability(provenance);
     return this.determineRfnboType(redCompliance, powerType, proofOfSustainability);
   }
 
@@ -59,11 +59,11 @@ export class DigitalProductPassportService {
     const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStep);
     const redCompliance: RedComplianceEntity = determineTotalRedCompliance(provenance.productionChains);
 
-    const proofOfOrigin: ProofOfOriginSectionEntity[] = createProofOfOrigin(provenance);
+    const proofOfOrigin: ProofOfOriginSectionEntity[] = assembleProofOfOrigin(provenance);
 
     const hydrogenComponentsForBottling: HydrogenComponentEntity[] = getHydrogenBottlingCompositions(proofOfOrigin);
 
-    const proofOfSustainability: ProofOfSustainabilityEntity = createProofOfSustainability(provenance);
+    const proofOfSustainability: ProofOfSustainabilityEntity = assembleProofOfSustainability(provenance);
 
     const powerType: PowerType = this.determinePowerType(provenance.productionChains);
     const rfnboType: RfnboType = this.determineRfnboType(redCompliance, powerType, proofOfSustainability);
@@ -73,7 +73,6 @@ export class DigitalProductPassportService {
       processStep.endedAt,
       processStep.batch.owner.name ?? '',
       processStep.batch.amount ?? 0,
-      processStep.batch.qualityDetails.color,
       processStep.recordedBy.company.name ?? '',
       hydrogenComponentsForBottling,
       processStep.documents ?? [],

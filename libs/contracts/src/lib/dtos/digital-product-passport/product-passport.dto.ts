@@ -7,7 +7,7 @@
  */
 
 import { DigitalProductPassportEntity } from '@h2-trust/contracts/entities';
-import { BatchType, HydrogenColor, PowerType } from '@h2-trust/domain';
+import { BatchType, PowerType } from '@h2-trust/domain';
 import { FileInfoDto } from '../file/file-info.dto';
 import { HydrogenComponentDto } from './general-information/hydrogen-component.dto';
 import { GridEnergyRfnboDto, RenewableEnergyRfnboDto, RfnboBaseDto } from './general-information/rfnbo-compliance.dto';
@@ -19,9 +19,8 @@ export class DigitalProductPassportDto {
   filledAt: Date;
   owner?: string;
   filledAmount?: number;
-  color?: HydrogenColor;
   producer?: string;
-  product: string;
+  product: BatchType;
   hydrogenComposition: HydrogenComponentDto[];
   attachedFiles: FileInfoDto[];
   rfnboCompliance: RfnboBaseDto;
@@ -33,7 +32,6 @@ export class DigitalProductPassportDto {
     timestamp: Date,
     owner: string,
     filledAmount: number,
-    color: HydrogenColor,
     producer: string,
     hydrogenComposition: HydrogenComponentDto[],
     attachedFiles: FileInfoDto[],
@@ -45,7 +43,6 @@ export class DigitalProductPassportDto {
     this.filledAt = timestamp;
     this.owner = owner;
     this.filledAmount = filledAmount;
-    this.color = color;
     this.producer = producer;
     this.hydrogenComposition = hydrogenComposition;
     this.product = BatchType.HYDROGEN;
@@ -82,7 +79,6 @@ export class DigitalProductPassportDto {
       entity.filledAt,
       entity.owner ?? '',
       entity.filledAmount ?? 0,
-      entity.color ?? HydrogenColor.MIX,
       entity.producer ?? '',
       hydrogenComposition,
       attachedFiles,
