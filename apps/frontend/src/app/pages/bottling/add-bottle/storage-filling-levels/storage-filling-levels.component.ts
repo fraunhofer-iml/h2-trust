@@ -12,7 +12,7 @@ import * as echarts from 'echarts';
 import { EChartsOption } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { HydrogenStorageOverviewDto } from '@h2-trust/contracts/dtos';
-import { MeasurementUnit } from '@h2-trust/domain';
+import { MeasurementUnit, RfnboType } from '@h2-trust/domain';
 import { CHART_COLORS } from '../../../../shared/constants/chart-colors';
 import { ERROR_MESSAGES } from '../../../../shared/constants/error.messages';
 import { formatNumberForChart } from '../../../../shared/formatting/chart-number-format';
@@ -81,16 +81,17 @@ export class StorageFillingLevelsComponent {
               lineHeight: 20,
             },
             spacer: {
-              height: 8,
+              height: 10,
             },
             err: {
-              backgroundColor: '#fff',
-              color: '#0f5361',
-              padding: [6, 5, 5, 5],
-              borderRadius: 4,
-              fontSize: 12,
+              backgroundColor: '#fff9db',
+              color: '#7a5a00',
+              padding: [8, 9, 7, 9],
+              borderRadius: 6,
+              fontSize: 11,
               fontWeight: 'bold',
-              borderColor: '#0f5361',
+              lineHeight: 18,
+              borderColor: '#e8cf7a',
               borderWidth: 1,
             },
           },
@@ -176,8 +177,21 @@ export class StorageFillingLevelsComponent {
     let tooltip = '';
     params.forEach((item) => {
       const valueWithUnit = this.unitPipe.transform(item.value, MeasurementUnit.KG);
-      tooltip += `${item.marker} ${this.enumPipe.transform(item.seriesName, 'rfnboType').toLowerCase()}: ${valueWithUnit}<br/>`;
+      const marker = item.seriesName === 'EMPTY' ? this.emptyTooltipMarker : item.marker;
+      tooltip += `${marker} ${this.getSeriesName(item.seriesName)}: ${valueWithUnit}<br/>`;
     });
     return tooltip;
   };
+
+  private get emptyTooltipMarker(): string {
+    return '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;border:2px dashed #ababab;background:#ffffff;"></span>';
+  }
+
+  private getSeriesName(name: string) {
+    if ((Object.values(RfnboType) as string[]).includes(name)) {
+      return this.enumPipe.transform(name as RfnboType, 'rfnboType').toLowerCase();
+    }
+
+    return name.toLowerCase();
+  }
 }

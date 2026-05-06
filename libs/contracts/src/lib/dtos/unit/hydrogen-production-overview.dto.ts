@@ -52,8 +52,8 @@ export class HydrogenProductionOverviewDto {
       technology: unit.technology,
       producing: true,
       powerPurchaseAgreementStatus: HydrogenProductionOverviewDto.existsPowerProducer(unit),
-      powerProducerId: firstAgreement?.powerProducer.id ?? '',
-      powerProducerName: firstAgreement?.powerProducer.name ?? '',
+      powerProducerId: firstAgreement?.requestedCompany.id ?? '',
+      powerProducerName: firstAgreement?.requestedCompany.name ?? '',
       active: unit.active,
     };
   }
