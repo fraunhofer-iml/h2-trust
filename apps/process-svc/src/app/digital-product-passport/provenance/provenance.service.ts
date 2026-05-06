@@ -24,8 +24,6 @@ export class ProvenanceService {
   constructor(private readonly traversalService: TraversalService) {}
 
   async buildProvenance(root: ProcessStepEntity): Promise<ProvenanceEntity> {
-    const processStepPredecessors: ProcessStepEntity[] = await this.traversalService.getProvenance(root);
-
     if (!root || !root.type) {
       throw new Error('Invalid process step.');
     }
@@ -74,8 +72,9 @@ export class ProvenanceService {
       const leafProductionsOfBottling: ProcessStepEntity[] =
         await this.traversalService.fetchHydrogenProductionsFromHydrogenBottling(root);
 
-      const productionChains = [];
+      const processStepPredecessors: ProcessStepEntity[] = await this.traversalService.getPredecessorChain(root);
 
+      const productionChains = [];
       for (const hydrogenLeafProduction of leafProductionsOfBottling) {
         const productionChain: ProductionChainEntity = await this.getProductionChain(hydrogenLeafProduction);
         productionChains.push(productionChain);
@@ -100,6 +99,26 @@ export class ProvenanceService {
       return new ProvenanceEntity(root, productionChains, hydrogenBottling);
     },
   };
+
+  /**
+   * Only works if a bottling is present.
+   */
+  private getLeafHydrogenProductionsFromProductionChain(chainProcessSteps: ProcessStepEntity[]): ProcessStepEntity[] {
+    //first get the bottling ps
+    const bottling: ProcessStepEntity = chainProcessSteps.find(
+      (processStep) => processStep.type == ProcessType.HYDROGEN_BOTTLING,
+    );
+
+    if (!bottling) {
+      //throw error
+    }
+    const predecessorIdsOfBottling: string[] = bottling.batch.predecessors.map((pred) => pred.id);
+    return chainProcessSteps.filter((processStep) => processStep.batch.id in predecessorIdsOfBottling);
+  }
+
+  private getRootHydrogenProductionsFromProductionChain(chainProcessSteps: ProcessStepEntity[]): ProcessStepEntity[] {
+    return chainProcessSteps.filter((processStep) => this.isProcessStepRootHydrogenProduction(processStep));
+  }
 
   //TODO-LG: Improve performance (DUHGW-391)
   private async getRootHydrogenProductionsForHydrogenProductions(
