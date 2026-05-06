@@ -14,7 +14,16 @@
     <mat-tab [disabled]="!roles.isPowerProducer()">
       <ng-template mat-tab-label>
         <span class="material-symbols-outlined p-2">markunread_mailbox</span>
-        Requests received
+        <span
+          class="p-1"
+          matBadge="!"
+          matBadgeSize="small"
+          [matBadgeHidden]="ppaRequestsReceived().pending.length === 0"
+          [matBadgeOverlap]="false"
+          [matBadgePosition]="'above after'"
+        >
+          Requests received</span
+        >
       </ng-template>
 
       <app-ppa-requests-list [role]="PpaRequestRole.RECEIVER" [data]="ppaRequestsReceived()" />

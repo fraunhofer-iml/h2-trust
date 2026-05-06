@@ -53,7 +53,7 @@ export const PowerProductionUnitSeed: readonly PowerProductionUnit[] = Object.fr
     ratedPower: new Prisma.Decimal(1500),
     decommissioningPlannedOn: new Date('2043-06-15'),
     financialSupportReceived: true,
-    typeName: PowerProductionTypeSeed[2].name,
+    typeName: PowerProductionTypeSeed[1].name,
   },
   {
     id: UnitSeed[3].id,
