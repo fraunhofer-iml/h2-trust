@@ -382,6 +382,7 @@ export class ProductionStagingService {
   async stageProductions(payload: StageProductionsPayload): Promise<ProductionStagingResultEntity> {
     const parsedProductionImports: ParsedImport[] = await this.csvImportProcessingService.parseAndUploadFiles(
       payload.productionImports,
+      payload.timeZone,
     );
 
     const stagedProductions: StagedProductionEntity[] = normalizeProduction(parsedProductionImports, payload.companyId);

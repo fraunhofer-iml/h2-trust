@@ -135,7 +135,11 @@ describe('ProductionController', () => {
   it('should throw because files are missing ', async () => {
     const givenAuthenticatedUser: AuthenticatedKCUser = { sub: 'user-1' };
 
-    const dto: ProductionCSVUploadDto = { unitIds: [], csvContentType: CsvContentType.HYDROGEN };
+    const dto: ProductionCSVUploadDto = {
+      unitIds: [],
+      csvContentType: CsvContentType.HYDROGEN,
+      timeZone: 'Europe/Berlin',
+    };
 
     await expect(controller.importCsvFile(dto, [], givenAuthenticatedUser)).rejects.toThrow(Error);
   });
@@ -193,7 +197,11 @@ describe('ProductionController', () => {
       .spyOn(processSvc, 'send')
       .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(expectedResponse));
 
-    const dto: ProductionCSVUploadDto = { unitIds: ['id', 'id'], csvContentType: CsvContentType.HYDROGEN };
+    const dto: ProductionCSVUploadDto = {
+      unitIds: ['id', 'id'],
+      csvContentType: CsvContentType.HYDROGEN,
+      timeZone: 'Europe/Berlin',
+    };
 
     const actualResponse = await controller.importCsvFile(dto, [powerFile, h2File], givenAuthenticatedUser);
 
@@ -202,7 +210,11 @@ describe('ProductionController', () => {
 
   it('should throw error because unitId is missing', async () => {
     const givenAuthenticatedUser: AuthenticatedKCUser = { sub: 'user-1' };
-    const dto: ProductionCSVUploadDto = { unitIds: [], csvContentType: CsvContentType.HYDROGEN };
+    const dto: ProductionCSVUploadDto = {
+      unitIds: [],
+      csvContentType: CsvContentType.HYDROGEN,
+      timeZone: 'Europe/Berlin',
+    };
 
     const powerContent = 'time,amount\n2025-11-27T09:00:00Z,2\n2025-11-27T09:00:00Z,2';
     const powerFile: Express.Multer.File = {
