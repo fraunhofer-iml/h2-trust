@@ -21,6 +21,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { H2TrustRoutes } from '../../shared/constants/routes';
 import { UserProfile } from '../../shared/model/user-profile.model';
+import { ppaRequestsQueryOptions } from '../../shared/queries/ppa-requests.query';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { PowerPurchaseAgreementService } from '../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { UnitsService } from '../../shared/services/units/units.service';
@@ -59,10 +60,9 @@ export class SidebarComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   protected isMenuOpen = false;
 
-  ppaRequestsQuery = injectQuery(() => ({
-    queryKey: ['ppa-requests', PowerPurchaseAgreementStatus.PENDING],
-    queryFn: () => this.ppaService.getPpaRequests(PpaRequestRole.RECEIVER, PowerPurchaseAgreementStatus.PENDING),
-  }));
+  ppaRequestsQuery = injectQuery(() =>
+    ppaRequestsQueryOptions(this.ppaService, PpaRequestRole.RECEIVER, PowerPurchaseAgreementStatus.PENDING),
+  );
 
   protected roles = inject(UserRolesStore);
 
