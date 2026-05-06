@@ -8,6 +8,7 @@
 
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -34,6 +35,7 @@ import { PpaRequestsListComponent } from './ppa-requests-list/ppa-requests-list.
     RouterModule,
     MatTabsModule,
     PpaRequestsListComponent,
+    MatBadgeModule,
   ],
   templateUrl: './ppa-requests.component.html',
 })
@@ -50,6 +52,7 @@ export class PpaRequestsComponent {
 
   ppaRequestsSent = computed(() => {
     const requests = this.ppaRequestsSentQuery.data();
+    console.log('fetched sender');
     return this.mapByStatus(requests ?? []);
   });
 
@@ -57,6 +60,7 @@ export class PpaRequestsComponent {
 
   ppaRequestsReceived = computed(() => {
     const requests = this.ppaRequestsReceivedQuery.data();
+    console.log('fetched');
     return this.mapByStatus(requests ?? []);
   });
 

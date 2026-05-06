@@ -1,20 +1,24 @@
 <div
-  class="flex flex-col gap-2 rounded-lg border border-neutral-300 bg-linear-to-bl to-white to-40% py-4"
+  class="flex h-full flex-col gap-0 overflow-hidden rounded-lg border border-neutral-200 bg-white transition duration-200 ease-out"
   [ngClass]="{
-    'from-tertiary-50': request().status === PowerPurchaseAgreementStatus.PENDING,
-    'from-error-red/20': request().status === PowerPurchaseAgreementStatus.REJECTED,
-    'from-secondary-100': request().status === PowerPurchaseAgreementStatus.APPROVED,
-    'cursor-pointer hover:-translate-y-1': request().status !== PowerPurchaseAgreementStatus.PENDING,
+    'cursor-pointer hover:scale-[1.02] hover:shadow-lg': request().status !== PowerPurchaseAgreementStatus.PENDING,
   }"
   (click)="request().status !== PowerPurchaseAgreementStatus.PENDING && sheet.open()"
   role="none"
 >
-  <div class="flex justify-between px-4">
+  <div
+    class="flex justify-between px-4 py-3"
+    [ngClass]="{
+      'bg-tertiary-50': request().status === PowerPurchaseAgreementStatus.PENDING,
+      'bg-error-red/10': request().status === PowerPurchaseAgreementStatus.REJECTED,
+      'bg-secondary-100/60': request().status === PowerPurchaseAgreementStatus.APPROVED,
+    }"
+  >
     <div>
       <strong class="text-neutral-700">{{
         role() === PpaRequestRole.RECEIVER ? request().sender.company.name : request().receiver.name
       }}</strong>
-      <p class="text-xs text-neutral-400">
+      <p class="text-xs text-neutral-500">
         @if (role() === PpaRequestRole.RECEIVER) {
           {{ request().sender.name }} •
         }
@@ -26,7 +30,7 @@
 
   <mat-divider />
 
-  <div class="flex flex-col gap-1 px-4 text-sm">
+  <div class="flex flex-col gap-1 px-4 py-4 text-sm">
     <span class="flex justify-between">
       <span class="text-neutral-500">Valid</span>
       <span>{{ request().validFrom | date: 'mediumDate' }} - {{ request().validTo | date: 'mediumDate' }}</span>
@@ -40,8 +44,7 @@
   </div>
 
   @if (request().status === PowerPurchaseAgreementStatus.PENDING && role() === PpaRequestRole.RECEIVER) {
-    <div class="dash border border-dashed border-neutral-200"></div>
-    <div class="flex gap-2 px-4 pt-2">
+    <div class="flex gap-2 px-4 pb-4">
       <button
         matButton="outlined"
         class="delete-button-outlined flex-1"
@@ -61,7 +64,14 @@
 </div>
 
 <app-base-sheet #sheet>
-  <div class="flex items-center justify-between pb-4">
+  <div
+    class="mb-4 flex items-center justify-between rounded-lg px-4 py-3"
+    [ngClass]="{
+      'bg-tertiary-50': request().status === PowerPurchaseAgreementStatus.PENDING,
+      'bg-error-red/10': request().status === PowerPurchaseAgreementStatus.REJECTED,
+      'bg-secondary-100/60': request().status === PowerPurchaseAgreementStatus.APPROVED,
+    }"
+  >
     <div>
       <strong class="text-neutral-700">{{
         role() === PpaRequestRole.RECEIVER ? request().sender.company.name : request().receiver.name
@@ -76,14 +86,7 @@
     <app-ppa-status-chip [status]="request().status"></app-ppa-status-chip>
   </div>
 
-  <div
-    class="flex flex-col gap-2 rounded-lg border-2 border-neutral-100 bg-neutral-50 p-4"
-    [ngClass]="{
-      'from-tertiary-50': request().status === PowerPurchaseAgreementStatus.PENDING,
-      'from-error-red/20': request().status === PowerPurchaseAgreementStatus.REJECTED,
-      'from-secondary-100': request().status === PowerPurchaseAgreementStatus.APPROVED,
-    }"
-  >
+  <div class="flex flex-col gap-2 rounded-lg border border-neutral-200 bg-neutral-50 p-4">
     <div class="grid grid-cols-2 gap-4 text-sm">
       <span class="col-span-2 text-lg text-neutral-500">Details</span>
       <div>

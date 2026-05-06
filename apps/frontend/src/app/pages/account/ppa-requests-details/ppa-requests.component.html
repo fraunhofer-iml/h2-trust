@@ -11,10 +11,24 @@
   </div>
 
   <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="rounded-md" dynamicHeight>
-    <mat-tab [disabled]="!roles.isPowerProducer()">
+    <mat-tab
+      [disabled]="!roles.isPowerProducer()"
+      matBadge="!"
+      matBadgeSize="medium"
+      [matBadgeHidden]="ppaRequestsReceived().pending.length === 0"
+    >
       <ng-template mat-tab-label>
         <span class="material-symbols-outlined p-2">markunread_mailbox</span>
-        Requests received
+        <span
+          class="p-1"
+          matBadge="!"
+          matBadgeSize="small"
+          [matBadgeHidden]="ppaRequestsReceived().pending.length === 0"
+          [matBadgeOverlap]="false"
+          [matBadgePosition]="'above after'"
+        >
+          Requests received</span
+        >
       </ng-template>
 
       <app-ppa-requests-list [role]="PpaRequestRole.RECEIVER" [data]="ppaRequestsReceived()" />

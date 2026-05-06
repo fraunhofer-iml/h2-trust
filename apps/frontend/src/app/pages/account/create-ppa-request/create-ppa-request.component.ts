@@ -18,7 +18,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { toast } from 'ngx-sonner';
 import { PpaRequestCreateDto } from '@h2-trust/contracts/dtos';
-import { PowerProductionType, PpaRequestRole } from '@h2-trust/domain';
+import { PowerProductionType } from '@h2-trust/domain';
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
@@ -73,7 +73,7 @@ export class CreatePpaRequestComponent {
     mutationFn: (dto: PpaRequestCreateDto) => this.ppaService.createPpaRequest(dto),
     onError: () => toast.error('Failed to create PPA Request'),
     onSuccess: () => {
-      this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.PPA_REQUESTS, PpaRequestRole.SENDER] });
+      this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.PPA_REQUESTS] });
       toast.success('Successfully created PPA Request');
     },
   }));
