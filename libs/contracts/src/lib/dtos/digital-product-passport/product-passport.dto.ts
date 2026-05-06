@@ -20,7 +20,7 @@ export class DigitalProductPassportDto {
   owner?: string;
   filledAmount?: number;
   producer?: string;
-  product: string;
+  product: BatchType;
   hydrogenComposition: HydrogenComponentDto[];
   attachedFiles: FileInfoDto[];
   rfnboCompliance: RfnboBaseDto;

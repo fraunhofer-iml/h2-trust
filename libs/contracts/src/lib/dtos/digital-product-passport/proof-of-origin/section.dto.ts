@@ -113,7 +113,7 @@ export class SectionDto {
       HydrogenProductionMethod.ELECTROLYSIS,
       hydrogenComposition,
       batch.rfnboType ?? RfnboType.NOT_SPECIFIED,
-      batch.processStep ?? '',
+      batch.processStep,
       batch.accountingPeriodEnd,
     );
   }

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType, EnergySource, PowerType, RfnboType } from '@h2-trust/domain';
+import { BatchType, EnergySource, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentEntity } from '../../bottling';
 import { ProofOfOriginEmissionEntity } from './proof-of-origin-emission.entity';
 
@@ -82,7 +82,7 @@ export class ProofOfOriginHydrogenBatchEntity extends ProofOfOriginBaseBatchEnti
   producer?: string;
   unitId?: string;
   rfnboType?: RfnboType;
-  processStep?: string;
+  processStep: ProcessType;
   accountingPeriodEnd?: Date;
 
   constructor(
@@ -91,10 +91,10 @@ export class ProofOfOriginHydrogenBatchEntity extends ProofOfOriginBaseBatchEnti
     createdAt: Date,
     amount: number,
     hydrogenComposition: HydrogenComponentEntity[],
+    processStep: ProcessType,
     producer?: string,
     unitId?: string,
     rfnboType?: RfnboType,
-    processStep?: string,
     accountingPeriodEnd?: Date,
   ) {
     super(id, emission, createdAt, amount);

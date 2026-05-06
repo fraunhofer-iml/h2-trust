@@ -119,7 +119,7 @@ export class ProductionService {
 
     const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
 
-    const payload = new StageProductionsPayload(stageProductions, userId, userDetails.company.id);
+    const payload = new StageProductionsPayload(stageProductions, userId, userDetails.company.id, dto.timeZone);
     const matchingResult = await firstValueFrom(
       this.processSvc.send<ProductionStagingResultEntity>(ProductionMessagePatterns.STAGE, payload),
     );
