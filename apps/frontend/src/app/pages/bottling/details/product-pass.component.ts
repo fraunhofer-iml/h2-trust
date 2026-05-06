@@ -16,7 +16,7 @@ import { EmptyStateComponent } from '../../../layout/empty-state/empty-state.com
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
 import { LoadingCardComponent } from '../../../layout/loading-card/loading-card.component';
 import { ERROR_MESSAGES } from '../../../shared/constants/error.messages';
-import { PrettyStringPipe } from '../../../shared/pipes/pretty-string.pipe';
+import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
@@ -38,8 +38,8 @@ import { RfnboComplianceComponent } from './rfnbo-compliance/rfnbo-compliance.co
     UnitPipe,
     RfnboComplianceComponent,
     LoadingCardComponent,
-    PrettyStringPipe,
     EmptyStateComponent,
+    EnumPipe,
   ],
   templateUrl: './product-pass.component.html',
 })

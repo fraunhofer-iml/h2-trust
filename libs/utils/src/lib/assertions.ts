@@ -1,0 +1,44 @@
+/*
+ * Copyright Fraunhofer Institute for Material Flow and Logistics
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * For details on the licensing terms, see the LICENSE file.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+export function assertDefined<T>(value: T | undefined | null, name: string): asserts value is NonNullable<T> {
+  if (value === undefined || value === null) {
+    const message = `Missing ${name}`;
+    throw new Error(message);
+  }
+}
+
+export function assertBoolean(value: unknown, name: string): asserts value is boolean {
+  assertDefined(value, name);
+
+  if (typeof value !== 'boolean') {
+    const message = `${name} must be a boolean: ${value}`;
+    throw new Error(message);
+  }
+}
+
+export function assertValidEnum<E extends Record<string, string | number>>(
+  value: unknown,
+  enumType: E,
+  enumName: string,
+): asserts value is E[keyof E] {
+  if (!Object.values(enumType).includes(value as E[keyof E])) {
+    throw new Error(`The value ${value} is not a valid ${enumName}`);
+  }
+}
+
+export function assertValidTimeZone(value: string): asserts value is string {
+  assertDefined(value, 'timezone');
+
+  try {
+    Intl.DateTimeFormat(undefined, { timeZone: value });
+  } catch {
+    const message = `${value} must be a valid timezone.`;
+    throw new Error(message);
+  }
+}

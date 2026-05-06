@@ -14,7 +14,7 @@ import { CompanyRepository } from '@h2-trust/database';
 export class CompanyService {
   constructor(private readonly repository: CompanyRepository) {}
 
-  async findAll(): Promise<CompanyEntity[]> {
+  findAll(): Promise<CompanyEntity[]> {
     return this.repository.findAll();
   }
 }

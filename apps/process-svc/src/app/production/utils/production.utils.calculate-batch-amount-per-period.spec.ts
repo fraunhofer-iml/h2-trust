@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProductionUtils } from './production.utils';
+import { calculateBatchAmountPerAccountingPeriod } from './production.utils';
 
 describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
   it('should return the full amount if numberOfAccountingPeriods is less than 1', () => {
@@ -15,7 +15,7 @@ describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
 
     const expectedAmountPerPeriod = 10;
 
-    const actualAmountPerPeriod = ProductionUtils.calculateBatchAmountPerAccountingPeriod(
+    const actualAmountPerPeriod = calculateBatchAmountPerAccountingPeriod(
       givenBatchAmount,
       givenNumberOfAccountingPeriods,
     );
@@ -29,7 +29,7 @@ describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
 
     const expectedAmountPerPeriod = 5;
 
-    const actualAmountPerPeriod = ProductionUtils.calculateBatchAmountPerAccountingPeriod(
+    const actualAmountPerPeriod = calculateBatchAmountPerAccountingPeriod(
       givenBatchAmount,
       givenNumberOfAccountingPeriods,
     );
@@ -43,7 +43,7 @@ describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
 
     const expectedAmountPerPeriod = 10 / 2.2;
 
-    const actualAmountPerPeriod = ProductionUtils.calculateBatchAmountPerAccountingPeriod(
+    const actualAmountPerPeriod = calculateBatchAmountPerAccountingPeriod(
       givenBatchAmount,
       givenNumberOfAccountingPeriods,
     );
@@ -57,7 +57,7 @@ describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
 
     const expectedAmountPerPeriod = 10;
 
-    const actualAmountPerPeriod = ProductionUtils.calculateBatchAmountPerAccountingPeriod(
+    const actualAmountPerPeriod = calculateBatchAmountPerAccountingPeriod(
       givenBatchAmount,
       givenNumberOfAccountingPeriods,
     );
@@ -69,35 +69,35 @@ describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
     const givenBatchAmount = -10;
     const givenNumberOfAccountingPeriods = 1;
 
-    expect(() =>
-      ProductionUtils.calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods),
-    ).toThrow('batchAmount must be greater than zero');
+    expect(() => calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods)).toThrow(
+      'batchAmount must be greater than zero',
+    );
   });
 
   it('should throw if batchAmount is zero', () => {
     const givenBatchAmount = 0;
     const givenNumberOfAccountingPeriods = 1;
 
-    expect(() =>
-      ProductionUtils.calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods),
-    ).toThrow('batchAmount must be greater than zero');
+    expect(() => calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods)).toThrow(
+      'batchAmount must be greater than zero',
+    );
   });
 
   it('should throw if numberOfAccountingPeriods is negative', () => {
     const givenBatchAmount = 10;
     const givenNumberOfAccountingPeriods = -1;
 
-    expect(() =>
-      ProductionUtils.calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods),
-    ).toThrow('numberOfAccountingPeriods must be greater than zero');
+    expect(() => calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods)).toThrow(
+      'numberOfAccountingPeriods must be greater than zero',
+    );
   });
 
   it('should throw if numberOfAccountingPeriods is zero', () => {
     const givenBatchAmount = 10;
     const givenNumberOfAccountingPeriods = 0;
 
-    expect(() =>
-      ProductionUtils.calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods),
-    ).toThrow('numberOfAccountingPeriods must be greater than zero');
+    expect(() => calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods)).toThrow(
+      'numberOfAccountingPeriods must be greater than zero',
+    );
   });
 });

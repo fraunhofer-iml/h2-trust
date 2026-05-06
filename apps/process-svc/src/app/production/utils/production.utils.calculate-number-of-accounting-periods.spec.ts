@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProductionUtils } from './production.utils';
+import { calculateNumberOfAccountingPeriods } from './production.utils';
 
 describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
   it('should calculate correct number of periods (divisible)', () => {
@@ -16,7 +16,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
 
     const expectedNumberOfAccountingPeriods = 4;
 
-    const actualNumberOfAccountingPeriods = ProductionUtils.calculateNumberOfAccountingPeriods(
+    const actualNumberOfAccountingPeriods = calculateNumberOfAccountingPeriods(
       givenProductionStartedAtSeconds,
       givenProductionEndedAtSeconds,
       givenAccountingPeriodSeconds,
@@ -32,7 +32,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
 
     const expectedNumberOfAccountingPeriods = 3; // (10-5)/2 = 2.5 -> ceil = 3
 
-    const actualNumberOfAccountingPeriods = ProductionUtils.calculateNumberOfAccountingPeriods(
+    const actualNumberOfAccountingPeriods = calculateNumberOfAccountingPeriods(
       givenProductionStartedAtSeconds,
       givenProductionEndedAtSeconds,
       givenAccountingPeriodSeconds,
@@ -47,7 +47,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenAccountingPeriodSeconds = 15;
 
     expect(() =>
-      ProductionUtils.calculateNumberOfAccountingPeriods(
+      calculateNumberOfAccountingPeriods(
         givenProductionStartedAtSeconds,
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
@@ -61,7 +61,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenAccountingPeriodSeconds = 15;
 
     expect(() =>
-      ProductionUtils.calculateNumberOfAccountingPeriods(
+      calculateNumberOfAccountingPeriods(
         givenProductionStartedAtSeconds,
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
@@ -75,7 +75,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenAccountingPeriodSeconds = -5;
 
     expect(() =>
-      ProductionUtils.calculateNumberOfAccountingPeriods(
+      calculateNumberOfAccountingPeriods(
         givenProductionStartedAtSeconds,
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
@@ -89,7 +89,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenAccountingPeriodSeconds = 0;
 
     expect(() =>
-      ProductionUtils.calculateNumberOfAccountingPeriods(
+      calculateNumberOfAccountingPeriods(
         givenProductionStartedAtSeconds,
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
@@ -103,7 +103,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenAccountingPeriodSeconds = 15;
 
     expect(() =>
-      ProductionUtils.calculateNumberOfAccountingPeriods(
+      calculateNumberOfAccountingPeriods(
         givenProductionStartedAtSeconds,
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
@@ -117,7 +117,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenAccountingPeriodSeconds = 15;
 
     expect(() =>
-      ProductionUtils.calculateNumberOfAccountingPeriods(
+      calculateNumberOfAccountingPeriods(
         givenProductionStartedAtSeconds,
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,

@@ -16,7 +16,6 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, QueryClient } from '@tanstack/angular-query-experimental';
@@ -28,9 +27,8 @@ import {
   UnitInputDto,
 } from '@h2-trust/contracts/dtos';
 import { HydrogenProductionMethod, HydrogenStorageType, UnitType } from '@h2-trust/domain';
-import { ICONS } from '../../../shared/constants/icons';
-import { EnumPipe } from '../../../shared/pipes/enum.pipe';
-import { QUERY_KEYS } from '../../../shared/queries/shared-query-keys';
+import { TypeSelectionComponent } from '../../../layout/type-selection/type-selection.component';
+import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { BaseUnitFormComponent } from '../forms/base-unit/base-unit-form-component';
@@ -53,7 +51,6 @@ import { PowerProductionUnitFormComponent } from '../forms/power-production/powe
   selector: 'app-create-unit',
   imports: [
     CommonModule,
-    MatRadioModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -68,7 +65,7 @@ import { PowerProductionUnitFormComponent } from '../forms/power-production/powe
     HydrogenProductionUnitFormComponent,
     PowerProductionUnitFormComponent,
     HydrogenUnitFormComponent,
-    EnumPipe,
+    TypeSelectionComponent,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './create-unit.component.html',
@@ -77,6 +74,11 @@ export class CreateUnitComponent {
   protected readonly UnitType = UnitType;
   protected readonly HydrogenProductionMethod = HydrogenProductionMethod;
   protected readonly HydrogenStorageType = HydrogenStorageType;
+  protected readonly unitTypes = [
+    UnitType.HYDROGEN_PRODUCTION,
+    UnitType.POWER_PRODUCTION,
+    UnitType.HYDROGEN_STORAGE,
+  ] as const;
 
   unitsService = inject(UnitsService);
   companiesService = inject(CompaniesService);
@@ -111,7 +113,7 @@ export class CreateUnitComponent {
   }));
 
   private onSuccess = () => {
-    this.queryClient.invalidateQueries({ queryKey: QUERY_KEYS.HYDROGEN_PRODUCTION_UNITS });
+    this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.HYDROGEN_PRODUCTION_UNITS] });
     this.router.navigateByUrl('units');
     toast.success('Successfully created.');
   };
@@ -122,17 +124,6 @@ export class CreateUnitComponent {
 
   get selectedType() {
     return this.unitForm.get('unitType') as FormControl;
-  }
-
-  getIcon(unitType: UnitType) {
-    switch (unitType) {
-      case UnitType.HYDROGEN_PRODUCTION:
-        return ICONS.UNITS.HYDROGEN_PRODUCTION;
-      case UnitType.HYDROGEN_STORAGE:
-        return ICONS.UNITS.HYDROGEN_STORAGE;
-      case UnitType.POWER_PRODUCTION:
-        return ICONS.UNITS.POWER_PRODUCTION;
-    }
   }
 
   save() {

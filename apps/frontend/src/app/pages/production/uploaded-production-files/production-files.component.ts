@@ -134,7 +134,7 @@ export class ProductionFilesComponent implements AfterViewInit {
 
   uploadsQuery = injectQuery(() => ({
     queryKey: ['production'],
-    queryFn: async (): Promise<ProcessedCsvDto[]> => this.productionService.getUploadedCsvFiles(),
+    queryFn: (): Promise<ProcessedCsvDto[]> => this.productionService.getUploadedCsvFiles(),
   }));
 
   datasource$ = computed(() => {

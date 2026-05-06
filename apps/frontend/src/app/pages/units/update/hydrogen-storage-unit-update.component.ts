@@ -6,75 +6,59 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Component, inject, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { Router, RouterModule } from '@angular/router';
-import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
-import { toast } from 'ngx-sonner';
+import { RouterModule } from '@angular/router';
 import { HydrogenStorageUnitDto, HydrogenStorageUnitInputDto } from '@h2-trust/contracts/dtos';
 import { HydrogenStorageType } from '@h2-trust/domain';
 import { UnitTypeChipComponent } from '../../../layout/chips/unit-type-chip.component';
-import { UnitsService } from '../../../shared/services/units/units.service';
+import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { BaseUnitFormComponent } from '../forms/base-unit/base-unit-form-component';
-import {
-  addValidatorsToFormGroup,
-  HydrogenStorageFormGroup,
-  newH2StorageForm,
-  newUnitForm,
-  UnitFormGroup,
-} from '../forms/forms';
+import { addValidatorsToFormGroup, HydrogenStorageFormGroup, newH2StorageForm } from '../forms/forms';
 import { HydrogenUnitFormComponent } from '../forms/hydrogen-storage/hydrogen-storage-unit-form.component';
+import { AbstractUnitUpdateComponent } from './abstract-unit-update.component';
 
 @Component({
   selector: 'app-hydrogen-storage-unit-update',
   imports: [BaseUnitFormComponent, HydrogenUnitFormComponent, RouterModule, MatButtonModule, UnitTypeChipComponent],
   templateUrl: './hydrogen-storage-unit-update.component.html',
 })
-export class HydrogenStorageUnitUpdateComponent {
-  unitForm: FormGroup<UnitFormGroup> = newUnitForm();
+export class HydrogenStorageUnitUpdateComponent extends AbstractUnitUpdateComponent<
+  HydrogenStorageUnitDto,
+  HydrogenStorageUnitInputDto
+> {
+  override id = input<string>();
+
+  protected override queryPrefix = QueryKeyPrefix.HYDROGEN_STORAGE_UNITS;
   hydrogenStorageUnitForm: FormGroup<HydrogenStorageFormGroup> = newH2StorageForm();
 
-  id = input<string>();
-
-  unitsService = inject(UnitsService);
-  router = inject(Router);
-
-  unitQuery = injectQuery(() => ({
-    queryKey: ['power-production-unit', this.id()],
-    queryFn: async () => {
-      const unit = await this.unitsService.getHydrogenStorageUnit(this.id() ?? '');
-      this.setFormData(unit);
-      return unit;
-    },
-    enabled: !!this.id(),
-  }));
-
-  unitMutation = injectMutation(() => ({
-    mutationFn: (dto: HydrogenStorageUnitInputDto) => this.unitsService.updateHydrogenStorageUnit(this.id() ?? '', dto),
-    onSuccess: () => this.navigateToDetailsView(),
-    onError: () => toast.error('Failed to update unit.'),
-  }));
-
-  onSave() {
-    const dto = {
+  override buildDto(): HydrogenStorageUnitInputDto {
+    return {
       ...this.unitForm.value,
       ...this.hydrogenStorageUnitForm.value,
       storageType: this.hydrogenStorageUnitForm.value.hydrogenStorageType,
     } as HydrogenStorageUnitInputDto;
-    this.unitMutation.mutate(dto);
   }
 
-  protected navigateToDetailsView() {
+  protected override navigateToDetailsView() {
     this.router.navigateByUrl(`units/hydrogen-storage/${this.id()}`);
   }
 
-  private setFormData(unit: HydrogenStorageUnitDto) {
+  protected override setFormData(unit: HydrogenStorageUnitDto) {
     this.unitForm.patchValue({ ...unit, owner: unit.owner.id, operator: unit.operator.id });
     this.hydrogenStorageUnitForm.patchValue({
       ...unit,
       hydrogenStorageType: unit.storageType as HydrogenStorageType,
     });
     addValidatorsToFormGroup(this.hydrogenStorageUnitForm);
+  }
+
+  override fetchUnit(id: string): Promise<HydrogenStorageUnitDto> {
+    return this.unitsService.getHydrogenStorageUnit(id);
+  }
+
+  override updateUnit(id: string, dto: HydrogenStorageUnitInputDto): Promise<HydrogenStorageUnitDto> {
+    return this.unitsService.updateHydrogenStorageUnit(id, dto);
   }
 }

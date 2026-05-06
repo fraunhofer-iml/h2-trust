@@ -19,7 +19,7 @@ export class DigitalProductPassportEntity {
   owner?: string;
   filledAmount?: number;
   producer?: string;
-  product: string;
+  product: BatchType;
   hydrogenComposition: HydrogenComponentEntity[];
   attachedFiles: DocumentEntity[];
   redCompliance: RedComplianceEntity;

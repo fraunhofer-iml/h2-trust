@@ -6,15 +6,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { hydrogenBottlingProofOfOriginAssembler } from './hydrogen-bottling-proof-of-origin.assembler';
-import { hydrogenProductionProofOfOriginAssembler } from './hydrogen-production-proof-of-origin.assembler';
-import { hydrogenStorageProofOfOriginAssembler } from './hydrogen-storage-proof-of-origin.assembler';
-import { hydrogenTransportationProofOfOriginAssembler } from './hydrogen-transportation-proof-of-origin.assembler';
-import { ProofOfOriginAssembler } from './proof-of-origin-assembler.interface';
+import { ProofOfOriginSectionAssembler } from './proof-of-origin-assembler.interface';
+import { hydrogenBottlingSectionAssembler } from './sections/hydrogen-bottling-section.assembler';
+import { hydrogenProductionSectionAssembler } from './sections/hydrogen-production-section.assembler';
+import { hydrogenStorageSectionAssembler } from './sections/hydrogen-storage-section.assembler';
+import { hydrogenTransportationSectionAssembler } from './sections/hydrogen-transportation-transportation.assembler';
 
-export const proofOfOriginAssemblers: ProofOfOriginAssembler[] = [
-  hydrogenProductionProofOfOriginAssembler,
-  hydrogenStorageProofOfOriginAssembler,
-  hydrogenTransportationProofOfOriginAssembler,
-  hydrogenBottlingProofOfOriginAssembler,
+export const proofOfOriginSectionAssemblers: ProofOfOriginSectionAssembler[] = [
+  hydrogenBottlingSectionAssembler,
+  hydrogenProductionSectionAssembler,
+  hydrogenStorageSectionAssembler,
+  hydrogenTransportationSectionAssembler,
 ];

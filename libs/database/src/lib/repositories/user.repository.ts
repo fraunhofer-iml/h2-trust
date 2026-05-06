@@ -10,21 +10,20 @@ import { Injectable } from '@nestjs/common';
 import { UserEntity } from '@h2-trust/contracts/entities';
 import { PrismaService } from '../prisma.service';
 import { userDeepQueryArgs } from '../query-args';
-import { assertRecordFound } from './assertions.utils';
+import { assertRecordFound } from './repository-assertions';
 
 @Injectable()
 export class UserRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findUser(id: string): Promise<UserEntity> {
-    return this.prismaService.user
-      .findUnique({
-        where: {
-          id: id,
-        },
-        ...userDeepQueryArgs,
-      })
-      .then((result) => assertRecordFound(result, id, 'User'))
-      .then(UserEntity.fromDeepDatabase);
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: id,
+      },
+      ...userDeepQueryArgs,
+    });
+    assertRecordFound(user, id, 'User');
+    return UserEntity.fromDeepDatabase(user);
   }
 }
