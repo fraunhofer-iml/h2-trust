@@ -24,7 +24,7 @@ export class PowerPurchaseAgreementService {
     private readonly powerPurchaseAgreementRepository: PowerPurchaseAgreementRepository,
     private readonly userRepository: UserRepository,
     private readonly unitRepository: UnitRepository,
-  ) { }
+  ) {}
 
   async findAll(payload: ReadPowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity[]> {
     const user: UserEntity = await this.userRepository.findUser(payload.userId);

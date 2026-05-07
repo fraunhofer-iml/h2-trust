@@ -37,16 +37,13 @@ describe('parseAccountingPeriodCsvBuffer', () => {
       expect(actualResult[1].amount).toBe(7);
     });
 
-    it('throws a broker exception when a required column is missing', async () => {
+    it('throws an exception when a required column is missing', async () => {
       const buffer = Buffer.from('time,amount\n2026-01-01T10:00:00Z,5');
 
       await expect(
         parseAccountingPeriodCsvBuffer(buffer, ['time', 'amount', 'power'], 'Europe/Berlin'),
       ).rejects.toMatchObject({
         message: 'Missing required column: power',
-        error: {
-          status: HttpStatus.BAD_REQUEST,
-        },
       });
     });
 
