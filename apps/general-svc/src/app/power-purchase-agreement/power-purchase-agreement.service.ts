@@ -24,7 +24,7 @@ export class PowerPurchaseAgreementService {
     private readonly powerPurchaseAgreementRepository: PowerPurchaseAgreementRepository,
     private readonly userRepository: UserRepository,
     private readonly unitRepository: UnitRepository,
-  ) {}
+  ) { }
 
   async findAll(payload: ReadPowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity[]> {
     const user: UserEntity = await this.userRepository.findUser(payload.userId);
@@ -76,7 +76,6 @@ export class PowerPurchaseAgreementService {
   private async checkUserAccessToPowerPurchaseAgreement(user: UserEntity, ppaId: string) {
     const hasAccessToAgreement: boolean = await this.powerPurchaseAgreementRepository.canDecideAgreement(user, ppaId);
     if (!hasAccessToAgreement) {
-      // TODO: move authorization check into BFF guard with 403 mapping
       throw new DomainException(
         ErrorCode.DOMAIN_BUSINESS_RULE_VIOLATION,
         `User ${user.name} is not authorized to update power purchase agreement of this company.`,
@@ -90,7 +89,6 @@ export class PowerPurchaseAgreementService {
       powerProductionUnitId,
     );
     if (!isOwnerOfProductionUnit) {
-      // TODO: move authorization check into BFF guard with 403 mapping
       throw new DomainException(
         ErrorCode.DOMAIN_BUSINESS_RULE_VIOLATION,
         `User ${user.name} is not authorized to grant access of this power production unit.`,
