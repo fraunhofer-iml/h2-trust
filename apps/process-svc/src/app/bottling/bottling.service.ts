@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
   BatchEntity,
   DocumentEntity,
@@ -30,7 +30,6 @@ import { computeHydrogenComposition } from './utils/hydrogen-composition';
 
 @Injectable()
 export class BottlingService {
-  logger = new Logger('BottlingService');
   constructor(
     private readonly storageService: CentralizedStorageService,
     private readonly documentRepository: DocumentRepository,

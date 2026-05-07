@@ -14,7 +14,7 @@ import { RpcError } from './rpc-error';
 
 @Catch()
 export class RpcExceptionFilter implements ExceptionFilter {
-  private readonly logger = new Logger('RpcExceptionFilter');
+  private readonly logger = new Logger(this.constructor.name);
 
   catch(exception: unknown, _host: ArgumentsHost): Observable<never> {
     return throwError(() => new RpcException(this.toRpcError(exception)));
