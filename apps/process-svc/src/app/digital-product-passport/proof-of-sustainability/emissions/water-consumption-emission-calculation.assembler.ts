@@ -19,13 +19,14 @@ import {
   MeasurementUnit,
   ProcessType,
 } from '@h2-trust/domain';
+import { InternalException } from '@h2-trust/exceptions';
 import { ProofOfSustainabilityEmissionAssembler } from '../proof-of-sustainability-assembler.interface';
 
 export function assembleWaterSupplyEmissionCalculation(
   waterSupply: ProcessStepEntity,
 ): ProofOfSustainabilityEmissionCalculationEntity {
   if (waterSupply?.type !== ProcessType.WATER_CONSUMPTION) {
-    throw new Error(`Invalid process step type [${waterSupply?.type}] for water supply emission calculation`);
+    throw new InternalException(`Invalid process step type [${waterSupply?.type}] for water supply emission calculation`);
   }
 
   const waterInput = waterSupply.batch.amount;

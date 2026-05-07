@@ -22,6 +22,7 @@ import {
   TrailerParameter,
   TransportMode,
 } from '@h2-trust/domain';
+import { InternalException } from '@h2-trust/exceptions';
 import { getFuelType } from '@h2-trust/strings';
 import { ProofOfSustainabilityEmissionAssembler } from '../proof-of-sustainability-assembler.interface';
 
@@ -91,7 +92,7 @@ export function assembleHydrogenTransportationEmissionCalculation(
   hydrogenTransportation: ProcessStepEntity,
 ): ProofOfSustainabilityEmissionCalculationEntity {
   if (hydrogenTransportation?.type !== ProcessType.HYDROGEN_TRANSPORTATION) {
-    throw new Error(
+    throw new InternalException(
       `Invalid process step type [${hydrogenTransportation?.type}] for hydrogen transportation emission calculation`,
     );
   }
@@ -108,7 +109,7 @@ export function assembleHydrogenTransportationEmissionCalculation(
         hydrogenTransportation.transportationDetails.distance,
       );
     default:
-      throw new Error(`Unknown transport mode [${transportMode}] for process step [${hydrogenTransportation.id}]`);
+      throw new InternalException(`Unknown transport mode [${transportMode}] for process step [${hydrogenTransportation.id}]`);
   }
 }
 

@@ -22,6 +22,7 @@ import {
   PowerType,
   ProcessType,
 } from '@h2-trust/domain';
+import { InternalException } from '@h2-trust/exceptions';
 import { getEnergySource } from '@h2-trust/strings';
 import { ProofOfSustainabilityEmissionAssembler } from '../proof-of-sustainability-assembler.interface';
 
@@ -30,7 +31,7 @@ export function assemblePowerSupplyEmissionCalculation(
   energySource: EnergySource,
 ): ProofOfSustainabilityEmissionCalculationEntity {
   if (powerProduction?.type !== ProcessType.POWER_PRODUCTION) {
-    throw new Error(`Invalid process step type [${powerProduction?.type}] for power supply emission calculation`);
+    throw new InternalException(`Invalid process step type [${powerProduction?.type}] for power supply emission calculation`);
   }
 
   const power = powerProduction.batch.amount;
@@ -64,7 +65,7 @@ export function computePowerSupplyEmissionCalculations(
 
   return powerProductions.map((powerProduction) => {
     if (!powerProduction.executedBy) {
-      throw new Error(`PowerProductionUnit for process step ${powerProduction} not found.`);
+      throw new InternalException(`PowerProductionUnit for process step ${powerProduction} not found.`);
     }
 
     const unit = powerProduction.executedBy as PowerProductionUnitEntity;

@@ -9,6 +9,7 @@
 import { Injectable } from '@nestjs/common';
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { ProcessType } from '@h2-trust/domain';
+import { InternalException } from '@h2-trust/exceptions';
 import { ProcessStepService } from '../../../process-step/process-step.service';
 
 @Injectable()
@@ -73,7 +74,7 @@ export class TraversalService {
     );
 
     if (hydrogenBottlings?.length !== 1) {
-      throw new Error(
+      throw new InternalException(
         `Expected exactly one predecessor ${ProcessType.HYDROGEN_BOTTLING} process step, but found [${hydrogenBottlings?.length}].`,
       );
     }
@@ -94,7 +95,7 @@ export class TraversalService {
     this.assertAllProcessStepsOfType(processStepsOfPredecessorBatches, predecessorProcessType);
 
     if (!processStepsOfPredecessorBatches || processStepsOfPredecessorBatches.length !== predecessorBatches.length) {
-      throw new Error(
+      throw new InternalException(
         `Number of process steps must be [${predecessorBatches.length}], but found [${processStepsOfPredecessorBatches?.length ?? 0}].`,
       );
     }
@@ -114,7 +115,7 @@ export class TraversalService {
     const predecessorBatches: BatchEntity[] = processStep.batch?.predecessors;
 
     if (!Array.isArray(predecessorBatches) || predecessorBatches.length === 0) {
-      throw new Error(`No predecessors found for process step [${processStep.id}]`);
+      throw new InternalException(`No predecessors found for process step [${processStep.id}]`);
     }
 
     return predecessorBatches;
@@ -127,7 +128,7 @@ export class TraversalService {
 
   private assertAllProcessStepsOfType(processSteps: ProcessStepEntity[], expectedProcessType: ProcessType): void {
     if (!processSteps || processSteps.length === 0 || processSteps.some((processStep) => !processStep)) {
-      throw new Error(`Process steps of type [${expectedProcessType}] are missing.`);
+      throw new InternalException(`Process steps of type [${expectedProcessType}] are missing.`);
     }
 
     const invalidProcessSteps = processSteps
@@ -135,7 +136,7 @@ export class TraversalService {
       .map((processStep) => `${processStep.id} (${processStep.type})`);
 
     if (invalidProcessSteps.length > 0) {
-      throw new Error(
+      throw new InternalException(
         `All process steps must be of type [${expectedProcessType}], but found invalid types: ${invalidProcessSteps.join(', ')}`,
       );
     }

@@ -7,6 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import { InternalException } from '@h2-trust/exceptions';
 import {
   HydrogenProductionUnitEntity,
   PowerProductionUnitEntity,
@@ -25,12 +26,12 @@ export class ProvenanceService {
 
   async buildProvenance(root: ProcessStepEntity): Promise<ProvenanceEntity> {
     if (!root || !root.type) {
-      throw new Error('Invalid process step.');
+      throw new InternalException('Invalid process step.');
     }
     const provenanceBuilder: ProvenanceBuilderFn = this.provenanceBuilders[root.type];
 
     if (!provenanceBuilder) {
-      throw new Error(`Unsupported process type [${root.type}].`);
+      throw new InternalException(`Unsupported process type [${root.type}].`);
     }
 
     return provenanceBuilder(root);
