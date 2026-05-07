@@ -7,13 +7,13 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { DatabaseException, ErrorCode, RecordNotFoundException } from '@h2-trust/exceptions';
+import { DatabaseException, ErrorCode } from '@h2-trust/exceptions';
 
 export function wrapPrismaError(error: unknown): never {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     switch (error.code) {
       case 'P2025':
-        throw new RecordNotFoundException('Record not found', error);
+        throw new DatabaseException(ErrorCode.DATABASE_RECORD_NOT_FOUND, 'Record not found', error);
       case 'P2002':
         throw new DatabaseException(ErrorCode.DATABASE_RECORD_CONFLICT, 'Unique constraint violation', error);
       case 'P2003':

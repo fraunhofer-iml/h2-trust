@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RecordNotFoundException } from '@h2-trust/exceptions';
+import { DatabaseException, ErrorCode } from "@h2-trust/exceptions";
 
 export function assertRecordFound<T>(
   fetchedRecord: T | null | undefined,
@@ -14,7 +14,7 @@ export function assertRecordFound<T>(
   entityLabel = 'Record',
 ): asserts fetchedRecord is T {
   if (!fetchedRecord) {
-    throw new RecordNotFoundException(`${entityLabel} with ID '${id}' not found.`);
+    throw new DatabaseException(ErrorCode.DATABASE_RECORD_NOT_FOUND, `${entityLabel} with ID '${id}' not found.`);
   }
 }
 
@@ -26,6 +26,6 @@ export function assertAllIdsFound<T extends { id: string }>(
   const foundIds = fetchedRecords.map((u) => u.id);
   const notFound = requestedIds.filter((id) => !foundIds.includes(id));
   if (notFound.length) {
-    throw new RecordNotFoundException(`${entityLabel} [${notFound.join(', ')}] not found.`);
+    throw new DatabaseException(ErrorCode.DATABASE_RECORD_NOT_FOUND, `${entityLabel} [${notFound.join(', ')}] not found.`);
   }
 }
