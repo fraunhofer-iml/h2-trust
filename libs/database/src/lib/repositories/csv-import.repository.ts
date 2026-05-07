@@ -26,9 +26,7 @@ export class CsvImportRepository {
 
   async saveCsvImport(uploadedById: string, tx?: Prisma.TransactionClient): Promise<string> {
     const client = tx ?? this.prismaService;
-    const csvImport = await client.csvImport
-      .create({ data: { uploadedById } })
-      .catch(wrapPrismaError);
+    const csvImport = await client.csvImport.create({ data: { uploadedById } }).catch(wrapPrismaError);
 
     return csvImport.id;
   }
@@ -75,9 +73,7 @@ export class CsvImportRepository {
   }
 
   async findCsvDocumentById(id: string): Promise<CsvDocumentEntity | null> {
-    const document = await this.prismaService.csvDocument
-      .findUnique({ where: { id } })
-      .catch(wrapPrismaError);
+    const document = await this.prismaService.csvDocument.findUnique({ where: { id } }).catch(wrapPrismaError);
 
     return document ? CsvDocumentEntity.fromDatabase(document) : null;
   }

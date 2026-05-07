@@ -35,7 +35,7 @@ import { assertAllIdsFound, assertRecordFound } from './repository-assertions';
 
 @Injectable()
 export class UnitRepository {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async findUnitById(id: string): Promise<ConcreteUnitEntity> {
     const unit = await this.prismaService.unit
@@ -48,7 +48,7 @@ export class UnitRepository {
 
   async findUnitsByIds(ids: string[]): Promise<ConcreteUnitEntity[]> {
     const units = await this.prismaService.unit
-      .findMany({ where: { id: { in: ids, }, }, ...baseUnitDeepQueryArgs })
+      .findMany({ where: { id: { in: ids } }, ...baseUnitDeepQueryArgs })
       .catch(wrapPrismaError);
 
     assertAllIdsFound(units, ids, 'Units');
@@ -289,8 +289,8 @@ export class UnitRepository {
       .catch(wrapPrismaError);
 
     if (!unit?.active) {
-      throw new DomainException(ErrorCode.DOMAIN_RESOURCE_INACTIVE, `Unit with ID '${id}' is inactive.`)
-    };
+      throw new DomainException(ErrorCode.DOMAIN_RESOURCE_INACTIVE, `Unit with ID '${id}' is inactive.`);
+    }
   }
 
   async ownsPowerProductionUnit(user: UserEntity, powerProductionUnitId: string): Promise<boolean> {

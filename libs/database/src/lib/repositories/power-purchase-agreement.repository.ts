@@ -40,7 +40,10 @@ export class PowerPurchaseAgreementRepository {
     hydrogenProducerCompanyId: string,
   ): Promise<PowerPurchaseAgreementEntity> {
     const powerPurchaseAgreement = await this.prismaService.powerPurchaseAgreement
-      .create({ data: buildPowerPurchaseAgreementCreateData(ppa, hydrogenProducerCompanyId), ...powerPurchaseAgreementDeepQueryArgs })
+      .create({
+        data: buildPowerPurchaseAgreementCreateData(ppa, hydrogenProducerCompanyId),
+        ...powerPurchaseAgreementDeepQueryArgs,
+      })
       .catch(wrapPrismaError);
 
     return PowerPurchaseAgreementEntity.fromDeepDatabase(powerPurchaseAgreement);
@@ -48,7 +51,11 @@ export class PowerPurchaseAgreementRepository {
 
   async updatePpaStatus(ppa: UpdatePowerPurchaseAgreementPayload): Promise<PowerPurchaseAgreementEntity> {
     const powerPurchaseAgreement = await this.prismaService.powerPurchaseAgreement
-      .update({ where: { id: ppa.ppaId }, data: this.buildPowerPurchaseAgreementStatusUpdateData(ppa), ...powerPurchaseAgreementDeepQueryArgs })
+      .update({
+        where: { id: ppa.ppaId },
+        data: this.buildPowerPurchaseAgreementStatusUpdateData(ppa),
+        ...powerPurchaseAgreementDeepQueryArgs,
+      })
       .catch(wrapPrismaError);
 
     return PowerPurchaseAgreementEntity.fromDeepDatabase(powerPurchaseAgreement);

@@ -17,9 +17,7 @@ export class CompanyRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findAll(): Promise<CompanyEntity[]> {
-    const companies = await this.prismaService.company
-      .findMany({ ...companyDeepQueryArgs })
-      .catch(wrapPrismaError);
+    const companies = await this.prismaService.company.findMany({ ...companyDeepQueryArgs }).catch(wrapPrismaError);
 
     return companies.map(CompanyEntity.fromDeepDatabase);
   }

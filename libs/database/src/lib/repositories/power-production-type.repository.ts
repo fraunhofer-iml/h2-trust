@@ -13,12 +13,10 @@ import { wrapPrismaError } from './prisma-error.wrapper';
 
 @Injectable()
 export class PowerProductionTypeRepository {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async findPowerProductionTypes(): Promise<PowerProductionTypeEntity[]> {
-    const powerProductionTypes = await this.prismaService.powerProductionType
-      .findMany()
-      .catch(wrapPrismaError);
+    const powerProductionTypes = await this.prismaService.powerProductionType.findMany().catch(wrapPrismaError);
 
     return powerProductionTypes.map(PowerProductionTypeEntity.fromDatabase);
   }

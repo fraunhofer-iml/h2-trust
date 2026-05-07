@@ -13,13 +13,13 @@ import { wrapPrismaError } from './prisma-error.wrapper';
 
 @Injectable()
 export class BatchRepository {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async setBatchesInactive(batchIds: string[]): Promise<{ count: number }> {
     return this.prismaService.batch
       .updateMany({
         where: { id: { in: batchIds } },
-        data: { active: false }
+        data: { active: false },
       })
       .catch(wrapPrismaError);
   }
