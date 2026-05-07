@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+export * from './lib/blockchain.exception';
 export * from './lib/blockchain.module';
 export * from './lib/blockchain.service';
 export * from './lib/hash';

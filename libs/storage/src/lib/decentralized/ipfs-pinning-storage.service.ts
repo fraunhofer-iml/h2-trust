@@ -9,7 +9,9 @@
 import { Readable } from 'stream';
 import { GetObjectCommand, PutObjectCommand, S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
 import { Logger } from '@nestjs/common';
+import { ErrorCode } from '@h2-trust/exceptions';
 import { ContentType } from '../content-types';
+import { StorageException } from '../storage.exception';
 import { DecentralizedStorageService } from './decentralized-storage.service';
 
 export class IpfsPinningStorageService extends DecentralizedStorageService {
@@ -58,7 +60,7 @@ export class IpfsPinningStorageService extends DecentralizedStorageService {
     }
 
     if (!cid) {
-      throw new Error(`Upload failed: no CID returned for '${fileName}'`);
+      throw new StorageException(ErrorCode.STORAGE_UPLOAD_FAILED, `Upload failed: no CID returned for '${fileName}'`);
     }
 
     this.logger.debug(`Uploaded '${fileName}', CID: ${cid}`);
@@ -70,7 +72,7 @@ export class IpfsPinningStorageService extends DecentralizedStorageService {
     const response = await this.client.send(new GetObjectCommand({ Bucket: this.bucketName, Key: fileName }));
 
     if (!response.Body) {
-      throw new Error(`Download failed: empty response body for '${fileName}'`);
+      throw new StorageException(ErrorCode.STORAGE_DOWNLOAD_FAILED, `Download failed: empty response body for '${fileName}'`);
     }
 
     return Readable.fromWeb(response.Body.transformToWebStream() as ReadableStream<Uint8Array>);
