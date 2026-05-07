@@ -6,25 +6,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  ArgumentsHost,
-  BadRequestException,
-  Catch,
-  ExceptionFilter,
-  HttpException,
-  HttpStatus,
-  Logger,
-} from '@nestjs/common';
+import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, HttpException, Logger } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ErrorCode } from '@h2-trust/exceptions';
 import type { RpcError } from '@h2-trust/messaging';
 import { isRpcError, PROBLEM_DEFINITIONS } from './problem-definitions';
 
+// Based on RFC 9457: https://datatracker.ietf.org/doc/html/rfc9457
 interface ProblemDetail {
   type: string;
+  status: number;
   title: string;
   detail: string;
-  status: number;
   instance: string;
   timestamp: string;
   validationErrors?: string[];
@@ -36,28 +29,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
+    const problemDetail = this.toProblemDetail(exception, ctx.getRequest<Request>().path);
 
-    response
+    ctx
+      .getResponse<Response>()
       .header('Content-Type', 'application/problem+json')
-      .status(this.resolveStatus(exception))
-      .json(this.toProblemDetail(exception, request.path));
-  }
-
-  private resolveStatus(exception: unknown): number {
-    if (exception instanceof HttpException) {
-      const body = exception.getResponse();
-
-      if (isRpcError(body)) {
-        const problemDefinition = PROBLEM_DEFINITIONS[body.errorCode] ?? PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR];
-        return problemDefinition.httpStatus;
-      }
-
-      return exception.getStatus();
-    }
-
-    return HttpStatus.INTERNAL_SERVER_ERROR;
+      .status(problemDetail.status)
+      .json(problemDetail);
   }
 
   private toProblemDetail(exception: unknown, instance: string): ProblemDetail {
@@ -67,109 +45,106 @@ export class AllExceptionsFilter implements ExceptionFilter {
       const body = exception.getResponse();
 
       if (isRpcError(body)) {
+        // From the interceptor: HttpException wrapping an RpcError body
         return this.rpcErrorToProblemDetail(body, instance, timestamp);
       }
 
       if (exception instanceof BadRequestException) {
+        // BFF-native: BadRequestException from the ValidationPipe
         return this.validationPipeToProblemDetail(body, instance, timestamp);
       }
 
+      // BFF-native: other HttpExceptions from Guards, Controllers, etc.
       return this.nativeHttpExceptionToProblemDetail(exception, body, instance, timestamp);
     }
 
+    // Should not occur after the interceptor has run
     return this.unexpectedExceptionToProblemDetail(exception, instance, timestamp);
   }
 
-  // From the interceptor: HttpException wrapping an RpcError body
   private rpcErrorToProblemDetail(rpcError: RpcError, instance: string, timestamp: string): ProblemDetail {
     const problemDefinition = PROBLEM_DEFINITIONS[rpcError.errorCode] ?? PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR];
 
     const type = this.toTypeUri(rpcError.errorCode);
+    const status = problemDefinition.httpStatus;
     const title = problemDefinition.title;
     const detail = rpcError.errorCode === ErrorCode.INTERNAL_ERROR ? 'An internal error occurred' : rpcError.message;
-    const status = problemDefinition.httpStatus;
 
     const validationErrors = rpcError.validationErrors?.length ? { validationErrors: rpcError.validationErrors } : {};
 
     return {
       type,
+      status,
       title,
       detail,
-      status,
       instance,
       timestamp,
       ...validationErrors,
     };
   }
 
-  // BFF-native: BadRequestException from the ValidationPipe
   private validationPipeToProblemDetail(body: unknown, instance: string, timestamp: string): ProblemDetail {
     const type = this.toTypeUri(ErrorCode.VALIDATION_ERROR);
+    const status = PROBLEM_DEFINITIONS[ErrorCode.VALIDATION_ERROR].httpStatus;
     const title = PROBLEM_DEFINITIONS[ErrorCode.VALIDATION_ERROR].title;
     const detail = 'Validation failed';
-    const status = PROBLEM_DEFINITIONS[ErrorCode.VALIDATION_ERROR].httpStatus;
 
-    // ValidationPipe sets body.message to a string[] of per-field errors — extract it if present.
+    // ValidationPipe sets body.message to a string[] of per-field errors
     const fieldErrors = Array.isArray((body as any).message) ? (body as any).message : undefined;
     const validationErrors = fieldErrors ? { validationErrors: fieldErrors } : {};
 
     return {
       type,
+      status,
       title,
       detail,
-      status,
       instance,
       timestamp,
       ...validationErrors,
     };
   }
 
-  // BFF-native: other HttpExceptions from Guards, Controllers, etc.
   private nativeHttpExceptionToProblemDetail(
     exception: HttpException,
     body: unknown,
     instance: string,
     timestamp: string,
   ): ProblemDetail {
-    const type = this.toTypeUri(`http-${exception.getStatus()}`);
+    // about:blank signals no additional semantics beyond the HTTP status code (RFC 9457 §3.1.1)
+    const type = 'about:blank';
+    const status = exception.getStatus();
     const title = exception.constructor.name.replace(/Exception$/, '');
     const detail = typeof body === 'string' ? body : ((body as any)?.message ?? 'An error occurred');
-    const status = exception.getStatus();
 
     return {
       type,
+      status,
       title,
       detail,
-      status,
       instance,
       timestamp,
     };
   }
 
-  // Should not occur after the interceptor has run
-  private unexpectedExceptionToProblemDetail(
-    exception: unknown,
-    instance: string,
-    timestamp: string,
-  ): ProblemDetail {
+  private unexpectedExceptionToProblemDetail(exception: unknown, instance: string, timestamp: string): ProblemDetail {
     this.logger.error(`Unexpected exception: ${exception}`);
 
     const type = this.toTypeUri(ErrorCode.INTERNAL_ERROR);
-    const title = PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR].title;
     const status = PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR].httpStatus;
+    const title = PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR].title;
     const detail = 'An internal error occurred';
 
     return {
       type,
+      status,
       title,
       detail,
-      status,
       instance,
       timestamp,
     };
   }
 
   private toTypeUri(slug: string): string {
-    return `https://problems.h2-trust.com/${slug.toLowerCase().replace(/_/g, '-')}`;
+    return `urn:h2-trust:problem:${slug.toLowerCase().replace(/_/g, '-')}`;
   }
 }
