@@ -11,7 +11,6 @@ export * from './lib/blockchain.exception';
 export * from './lib/database.exception';
 export * from './lib/domain.exception';
 export * from './lib/error-codes';
-export * from './lib/infrastructure.exception';
 export * from './lib/internal.exception';
 export * from './lib/storage.exception';
 export * from './lib/validation.exception';

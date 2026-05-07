@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { AppException } from './app.exception';
 import { ErrorCode } from './error-codes';
-import { InfrastructureException } from './infrastructure.exception';
 
 export type DatabaseErrorCode =
   | ErrorCode.DATABASE_ERROR
@@ -15,7 +15,7 @@ export type DatabaseErrorCode =
   | ErrorCode.DATABASE_RECORD_NOT_FOUND
   | ErrorCode.DATABASE_RECORD_CONFLICT;
 
-export class DatabaseException extends InfrastructureException {
+export class DatabaseException extends AppException {
   constructor(errorCode: DatabaseErrorCode, message: string, cause?: unknown) {
     super(errorCode, message, cause);
   }
