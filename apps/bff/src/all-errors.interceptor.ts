@@ -18,17 +18,21 @@ export class AllErrorsInterceptor implements NestInterceptor {
   intercept(_context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       catchError((err) => {
-        // BFF-native HttpException (Guards, Controller, ValidationPipe) durchreichen.
-        // Andernfalls würde der Filter-Branch für native HttpExceptions nie greifen,
-        // weil der Body bereits zu RpcError umgeschrieben wäre.
-        if (err instanceof HttpException) throw err;
+        // Pass through BFF-native HttpExceptions (guards, controllers, ValidationPipe).
+        // Otherwise the filter branch for native HttpExceptions would never be reached
+        // because the body would already have been rewritten to an RpcError.
+        if (err instanceof HttpException) {
+          throw err;
+        }
 
         const rpcError: RpcError = isRpcError(err)
           ? err
           : { errorCode: ErrorCode.INTERNAL_ERROR, message: 'Internal server error' };
-        const def =
-          PROBLEM_DEFINITIONS[rpcError.errorCode as ErrorCode] ?? PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR];
-        throw new HttpException(rpcError, def.httpStatus);
+
+        const problemDefinition = PROBLEM_DEFINITIONS[rpcError.errorCode as ErrorCode]
+          ?? PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR];
+
+        throw new HttpException(rpcError, problemDefinition.httpStatus);
       }),
     );
   }

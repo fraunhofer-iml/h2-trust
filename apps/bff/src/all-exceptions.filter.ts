@@ -17,7 +17,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ErrorCode } from '@h2-trust/exceptions';
-import { isRpcError, PROBLEM_DEFINITIONS, ProblemResponse, toTypeUri } from './problem-definitions';
+import { isRpcError, PROBLEM_DEFINITIONS, ProblemResponse } from './problem-definitions';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -29,82 +29,110 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     response
-      .status(this.resolveStatus(exception))
       .header('Content-Type', 'application/problem+json')
-      .json(this.toProblem(exception, request.path));
+      .status(this.resolveStatus(exception))
+      .json(this.toProblemResponse(exception, request.path));
   }
 
-  private toProblem(exception: unknown, instance: string): ProblemResponse {
+  private resolveStatus(exception: unknown): number {
+    if (exception instanceof HttpException) {
+      const body = exception.getResponse();
+
+      if (isRpcError(body)) {
+        const problemDefinition = PROBLEM_DEFINITIONS[body.errorCode as ErrorCode]
+          ?? PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR];
+        return problemDefinition.httpStatus;
+      }
+
+      return exception.getStatus();
+    }
+
+    return HttpStatus.INTERNAL_SERVER_ERROR;
+  }
+
+  private toProblemResponse(exception: unknown, instance: string): ProblemResponse {
     const timestamp = new Date().toISOString();
 
     if (exception instanceof HttpException) {
       const body = exception.getResponse();
 
-      // Vom Interceptor: HttpException mit RpcError-Body
+      // From the interceptor: HttpException wrapping an RpcError body
       if (isRpcError(body)) {
-        const def = PROBLEM_DEFINITIONS[body.errorCode as ErrorCode] ?? PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR];
+        const problemDefinition = PROBLEM_DEFINITIONS[body.errorCode as ErrorCode]
+          ?? PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR];
+
+        const detail = body.errorCode === ErrorCode.INTERNAL_ERROR
+          ? 'An internal error occurred'
+          : body.message;
+
+        const validationErrors = body.validationErrors?.length
+          ? { validationErrors: body.validationErrors }
+          : {};
+
         return {
-          type: toTypeUri(body.errorCode),
-          title: def.title,
-          detail: body.errorCode === ErrorCode.INTERNAL_ERROR ? 'An internal error occurred' : body.message,
-          status: def.httpStatus,
+          type: this.toTypeUri(body.errorCode),
+          title: problemDefinition.title,
+          detail,
+          status: problemDefinition.httpStatus,
           instance,
           timestamp,
-          ...(body.validationErrors?.length ? { validationErrors: body.validationErrors } : {}),
+          ...validationErrors,
         };
       }
 
-      // BFF-nativ: BadRequestException aus ValidationPipe
+      // BFF-native: BadRequestException from the ValidationPipe
       if (exception instanceof BadRequestException) {
-        const res = body as any;
-        const errors = Array.isArray(res.message) ? res.message : undefined;
-        const def = PROBLEM_DEFINITIONS[ErrorCode.VALIDATION_ERROR];
+        const problemDefinition = PROBLEM_DEFINITIONS[ErrorCode.VALIDATION_ERROR];
+
+        // ValidationPipe sets body.message to a string[] of per-field errors — extract it if present.
+        const fieldErrors = Array.isArray((body as any).message)
+          ? (body as any).message
+          : undefined;
+        const validationErrors = fieldErrors ? { validationErrors: fieldErrors } : {};
+
         return {
-          type: toTypeUri(ErrorCode.VALIDATION_ERROR),
-          title: def.title,
+          type: this.toTypeUri(ErrorCode.VALIDATION_ERROR),
+          title: problemDefinition.title,
           detail: 'Validation failed',
-          status: def.httpStatus,
+          status: problemDefinition.httpStatus,
           instance,
           timestamp,
-          ...(errors ? { validationErrors: errors } : {}),
+          ...validationErrors,
         };
       }
 
-      // BFF-nativ: sonstige HttpException (Guards, Controller) — Status durchreichen
+      // BFF-native: other HttpExceptions from Guards, Controllers, etc.
       const status = exception.getStatus();
-      const detail = typeof body === 'string' ? body : ((body as any)?.message ?? 'An error occurred');
+
+      const detail = typeof body === 'string'
+        ? body
+        : ((body as any)?.message ?? 'An error occurred');
+
       return {
-        type: `https://problems.h2-trust.com/http-${status}`,
+        type: this.toTypeUri(`http-${status}`),
         title: exception.constructor.name.replace(/Exception$/, ''),
-        detail: Array.isArray(detail) ? detail.join('; ') : String(detail),
+        detail,
         status,
         instance,
         timestamp,
       };
     }
 
-    // Sollte nach Interceptor nicht vorkommen
-    this.logger.error(exception);
-    const def = PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR];
+    // Should not occur after the interceptor has run
+    this.logger.error(`Unexpected exception: ${exception}`);
+    const problemDefinition = PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR];
+
     return {
-      type: toTypeUri(ErrorCode.INTERNAL_ERROR),
-      title: def.title,
+      type: this.toTypeUri(ErrorCode.INTERNAL_ERROR),
+      title: problemDefinition.title,
       detail: 'An internal error occurred',
-      status: def.httpStatus,
+      status: problemDefinition.httpStatus,
       instance,
       timestamp,
     };
   }
 
-  private resolveStatus(exception: unknown): number {
-    if (exception instanceof HttpException) {
-      const body = exception.getResponse();
-      if (isRpcError(body)) {
-        const def = PROBLEM_DEFINITIONS[body.errorCode as ErrorCode] ?? PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR];
-        return def.httpStatus;
-      }
-      return exception.getStatus();
-    }
-    return HttpStatus.INTERNAL_SERVER_ERROR;
+  private toTypeUri(errorCode: string): string {
+    return `https://problems.h2-trust.com/${errorCode.toLowerCase().replace(/_/g, '-')}`;
   }
 }

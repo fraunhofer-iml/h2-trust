@@ -43,12 +43,9 @@ export interface ProblemResponse {
   validationErrors?: string[];
 }
 
-export function toTypeUri(errorCode: string): string {
-  return `https://problems.h2-trust.com/${errorCode.toLowerCase().replace(/_/g, '-')}`;
-}
-
 export function isRpcError(value: unknown): value is RpcError {
-  return (
-    typeof value === 'object' && value !== null && 'errorCode' in value && typeof (value as any).errorCode === 'string'
-  );
+  return typeof value === 'object'
+    && value !== null
+    && 'errorCode' in value
+    && typeof (value as any).errorCode === 'string';
 }
