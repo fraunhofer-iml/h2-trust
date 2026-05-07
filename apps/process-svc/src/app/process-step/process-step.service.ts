@@ -27,8 +27,10 @@ export class ProcessStepService {
     private readonly processStepRepository: ProcessStepRepository,
   ) {}
 
-  getPredecessorProcessSteps(startBatchId: string): Promise<string[]> {
-    return this.processStepRepository.findPredecessorProcessSteps(startBatchId);
+  public async getPredecessors(processStep: ProcessStepEntity) {
+    const processStepIds = await this.processStepRepository.findPredecessorProcessSteps(processStep.batch.id);
+    const processSteps: ProcessStepEntity[] = await this.getProcessSteps(processStepIds);
+    return [processStep, ...processSteps];
   }
 
   getProcessSteps(ids: string[]): Promise<ProcessStepEntity[]> {

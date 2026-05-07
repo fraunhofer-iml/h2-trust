@@ -9,11 +9,10 @@
 import { Module } from '@nestjs/common';
 import { ProcessStepModule } from '../../process-step/process-step.module';
 import { ProvenanceService } from './provenance.service';
-import { TraversalService } from './traversal/traversal.service';
 
 @Module({
   imports: [ProcessStepModule],
-  providers: [ProvenanceService, TraversalService],
+  providers: [ProvenanceService],
   exports: [ProvenanceService],
 })
 export class ProvenanceModule {}
