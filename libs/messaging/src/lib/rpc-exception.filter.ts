@@ -9,8 +9,10 @@
 import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, Logger } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { Observable, throwError } from 'rxjs';
-import { AppException, ErrorCode, InternalException, ValidationException } from '@h2-trust/exceptions';
+import { ErrorCode } from '@h2-trust/exceptions';
 import { RpcError } from './rpc-error';
+
+const KNOWN_ERROR_CODES = new Set<string>(Object.values(ErrorCode));
 
 @Catch()
 export class RpcExceptionFilter implements ExceptionFilter {
@@ -21,26 +23,30 @@ export class RpcExceptionFilter implements ExceptionFilter {
   }
 
   private toRpcError(exception: unknown): RpcError {
-    // Manually thrown from service methods
-    if (exception instanceof ValidationException) {
-      this.logger.warn(exception.message, exception.validationErrors);
-      return {
-        errorCode: exception.errorCode,
-        message: exception.message,
-        validationErrors: exception.validationErrors,
-      };
-    }
+    const errorCode = (exception as any)?.errorCode;
 
-    // Signals a bug or violated invariant
-    if (exception instanceof InternalException) {
-      this.logger.error(exception.message, exception.cause);
-      return { errorCode: ErrorCode.INTERNAL_ERROR, message: 'Internal server error' };
-    }
+    // Duck-typed AppException check: reliable across webpack bundle instances where instanceof may fail.
+    // All AppException subclasses carry a string errorCode matching a known ErrorCode value.
+    if (KNOWN_ERROR_CODES.has(errorCode)) {
+      const message: string = (exception as any).message ?? 'Unknown error';
+      const cause: unknown = (exception as any).cause;
+      const validationErrors: string[] | undefined = (exception as any).validationErrors;
 
-    // All other AppException subtypes (DatabaseException, DomainException, StorageException, etc.)
-    if (exception instanceof AppException) {
-      this.logger.error(exception.message, exception.cause);
-      return { errorCode: exception.errorCode, message: exception.message };
+      // Manually thrown ValidationException — validationErrors already structured
+      if (errorCode === ErrorCode.VALIDATION_ERROR) {
+        this.logger.warn(message, validationErrors);
+        return { errorCode: ErrorCode.VALIDATION_ERROR, message, validationErrors };
+      }
+
+      // InternalException signals a bug or violated invariant — cause logged, never forwarded to client
+      if (errorCode === ErrorCode.INTERNAL_ERROR) {
+        this.logger.error(message, cause);
+        return { errorCode: ErrorCode.INTERNAL_ERROR, message: 'Internal server error' };
+      }
+
+      // All other AppException subtypes (DatabaseException, DomainException, StorageException, etc.)
+      this.logger.error(message, cause);
+      return { errorCode: errorCode as ErrorCode, message };
     }
 
     // Thrown by the NestJS ValidationPipe (not under our control)
@@ -51,15 +57,14 @@ export class RpcExceptionFilter implements ExceptionFilter {
       return { errorCode: ErrorCode.VALIDATION_ERROR, message: 'Validation failed', validationErrors: errors };
     }
 
+    // RpcException from an inner microservice call
     if (exception instanceof RpcException) {
       const err = exception.getError();
 
-      // Thrown by another microservice
       if (typeof err === 'object' && err !== null && 'errorCode' in err && typeof (err as any).errorCode === 'string') {
         return err as RpcError;
       }
 
-      // Unknown payload
       this.logger.error(err);
       return { errorCode: ErrorCode.INTERNAL_ERROR, message: 'Internal server error' };
     }

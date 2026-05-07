@@ -23,30 +23,19 @@ export class StagedProductionRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async setStagedProductionsToInactive(ids: string[]): Promise<number> {
-    try {
-      const affectedColumns = await this.prismaService.stagedProduction.updateMany({
-        where: { id: { in: ids } },
-        data: { active: false },
-      });
-      return affectedColumns.count;
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+    const affectedColumns = await this.prismaService.stagedProduction
+      .updateMany({ where: { id: { in: ids } }, data: { active: false } })
+      .catch(wrapPrismaError);
+
+    return affectedColumns.count;
   }
 
   async findStagedProductionsForIds(ids: string[]): Promise<StagedProductionEntity[]> {
-    try {
-      const stagedProductions: StagedProductionDeepDbType[] = await this.prismaService.stagedProduction.findMany({
-        where: {
-          id: { in: ids },
-          active: true,
-        },
-        ...stagedProductionDeepQueryArgs,
-      });
-      return stagedProductions.map(StagedProductionEntity.fromDeepDatabase);
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+    const stagedProductions: StagedProductionDeepDbType[] = await this.prismaService.stagedProduction
+      .findMany({ where: { id: { in: ids }, active: true }, ...stagedProductionDeepQueryArgs })
+      .catch(wrapPrismaError);
+
+    return stagedProductions.map(StagedProductionEntity.fromDeepDatabase);
   }
 
   async findStagedProductions(
@@ -66,15 +55,11 @@ export class StagedProductionRepository {
       active: true,
     };
 
-    try {
-      const stagedProductions: StagedProductionDeepDbType[] = await this.prismaService.stagedProduction.findMany({
-        where: stagedProductionFilter,
-        ...stagedProductionDeepQueryArgs,
-      });
-      return stagedProductions.map(StagedProductionEntity.fromDeepDatabase);
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+    const stagedProductions: StagedProductionDeepDbType[] = await this.prismaService.stagedProduction
+      .findMany({ where: stagedProductionFilter, ...stagedProductionDeepQueryArgs })
+      .catch(wrapPrismaError);
+
+    return stagedProductions.map(StagedProductionEntity.fromDeepDatabase);
   }
 
   async saveStagedProductions(
@@ -83,9 +68,8 @@ export class StagedProductionRepository {
     tx?: Prisma.TransactionClient,
   ): Promise<void> {
     const client = tx ?? this.prismaService;
-
-    try {
-      await client.stagedProduction.createMany({
+    await client.stagedProduction
+      .createMany({
         data: stagedProductions.map(({ startedAt, endedAt, ownerId, amountProduced, unitId, powerConsumed, type }) => ({
           startedAt,
           endedAt,
@@ -96,45 +80,29 @@ export class StagedProductionRepository {
           powerConsumed,
           type,
         })),
-      });
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+      })
+      .catch(wrapPrismaError);
   }
 
   async getStagedProductionsByCsvImportId(csvImportId: string): Promise<StagedProductionEntity[]> {
-    try {
-      const stagedProductions: StagedProductionDeepDbType[] = await this.prismaService.stagedProduction.findMany({
-        where: { csvImportId },
-        include: { ...stagedProductionDeepQueryArgs.include },
-      });
+    const stagedProductions: StagedProductionDeepDbType[] = await this.prismaService.stagedProduction
+      .findMany({ where: { csvImportId }, include: { ...stagedProductionDeepQueryArgs.include } })
+      .catch(wrapPrismaError);
 
-      if (!stagedProductions || stagedProductions.length === 0) {
-        throw new DatabaseException(
-          ErrorCode.DATABASE_RECORD_NOT_FOUND,
-          `No staged productions found for CSV import '${csvImportId}'`,
-        );
-      }
-
-      return stagedProductions.map(StagedProductionEntity.fromDeepDatabase);
-    } catch (error) {
-      wrapPrismaError(error);
+    if (!stagedProductions || stagedProductions.length === 0) {
+      throw new DatabaseException(
+        ErrorCode.DATABASE_RECORD_NOT_FOUND,
+        `No staged productions found for CSV import '${csvImportId}'`,
+      );
     }
+
+    return stagedProductions.map(StagedProductionEntity.fromDeepDatabase);
   }
 
   async deleteExpiredStagedProductions() {
     const expirationThreshold: Date = new Date(Date.now() - StagedProductionRepository.DAY_IN_MS);
-
-    try {
-      return await this.prismaService.stagedProduction.deleteMany({
-        where: {
-          csvImport: {
-            createdAt: { lt: expirationThreshold },
-          },
-        },
-      });
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+    return this.prismaService.stagedProduction
+      .deleteMany({ where: { csvImport: { createdAt: { lt: expirationThreshold } } } })
+      .catch(wrapPrismaError);
   }
 }

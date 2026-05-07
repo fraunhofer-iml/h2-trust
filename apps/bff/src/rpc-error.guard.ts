@@ -6,7 +6,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ErrorCode } from '@h2-trust/exceptions';
 import type { RpcError } from '@h2-trust/messaging';
+
+// NestJS AMQP transport wraps the RpcException payload under .error on the client side
+export function extractRpcError(err: unknown): RpcError {
+  if (isRpcError(err)) {
+    return err;
+  }
+
+  const error = (err as any)?.error;
+
+  if (isRpcError(error)) {
+    return error;
+  }
+
+  return { errorCode: ErrorCode.INTERNAL_ERROR, message: 'Internal server error' };
+}
 
 export function isRpcError(value: unknown): value is RpcError {
   return (

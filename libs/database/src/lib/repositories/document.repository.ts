@@ -17,13 +17,10 @@ export class DocumentRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async addDocumentToProcessStep(document: DocumentEntity, processStepId: string): Promise<DocumentEntity> {
-    try {
-      const createdDocument = await this.prismaService.document.create({
-        data: buildDocumentCreateInput(document, processStepId),
-      });
-      return DocumentEntity.fromDatabase(createdDocument);
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+    const createdDocument = await this.prismaService.document
+      .create({ data: buildDocumentCreateInput(document, processStepId) })
+      .catch(wrapPrismaError);
+
+    return DocumentEntity.fromDatabase(createdDocument);
   }
 }

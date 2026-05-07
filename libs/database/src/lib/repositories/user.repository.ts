@@ -18,15 +18,11 @@ export class UserRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findUser(id: string): Promise<UserEntity> {
-    try {
-      const user = await this.prismaService.user.findUnique({
-        where: { id: id },
-        ...userDeepQueryArgs,
-      });
-      assertRecordFound(user, id, 'User');
-      return UserEntity.fromDeepDatabase(user);
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+    const user = await this.prismaService.user
+      .findUnique({ where: { id }, ...userDeepQueryArgs })
+      .catch(wrapPrismaError);
+
+    assertRecordFound(user, id, 'User');
+    return UserEntity.fromDeepDatabase(user);
   }
 }

@@ -28,43 +28,30 @@ export class PowerPurchaseAgreementRepository {
     status?: PowerPurchaseAgreementStatus,
     role?: PpaRequestRole,
   ): Promise<PowerPurchaseAgreementEntity[]> {
-    try {
-      const powerPurchaseAgreements = await this.prismaService.powerPurchaseAgreement.findMany({
-        where: this.buildRoleQuery(producerId, status, role),
-        ...powerPurchaseAgreementDeepQueryArgs,
-      });
-      return powerPurchaseAgreements.map(PowerPurchaseAgreementEntity.fromDeepDatabase);
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+    const powerPurchaseAgreements = await this.prismaService.powerPurchaseAgreement
+      .findMany({ where: this.buildRoleQuery(producerId, status, role), ...powerPurchaseAgreementDeepQueryArgs })
+      .catch(wrapPrismaError);
+
+    return powerPurchaseAgreements.map(PowerPurchaseAgreementEntity.fromDeepDatabase);
   }
 
   async createPowerPurchaseAgreement(
     ppa: CreatePowerPurchaseAgreementsPayload,
     hydrogenProducerCompanyId: string,
   ): Promise<PowerPurchaseAgreementEntity> {
-    try {
-      const powerPurchaseAgreement = await this.prismaService.powerPurchaseAgreement.create({
-        data: buildPowerPurchaseAgreementCreateData(ppa, hydrogenProducerCompanyId),
-        ...powerPurchaseAgreementDeepQueryArgs,
-      });
-      return PowerPurchaseAgreementEntity.fromDeepDatabase(powerPurchaseAgreement);
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+    const powerPurchaseAgreement = await this.prismaService.powerPurchaseAgreement
+      .create({ data: buildPowerPurchaseAgreementCreateData(ppa, hydrogenProducerCompanyId), ...powerPurchaseAgreementDeepQueryArgs })
+      .catch(wrapPrismaError);
+
+    return PowerPurchaseAgreementEntity.fromDeepDatabase(powerPurchaseAgreement);
   }
 
   async updatePpaStatus(ppa: UpdatePowerPurchaseAgreementPayload): Promise<PowerPurchaseAgreementEntity> {
-    try {
-      const powerPurchaseAgreement = await this.prismaService.powerPurchaseAgreement.update({
-        where: { id: ppa.ppaId },
-        data: this.buildPowerPurchaseAgreementStatusUpdateData(ppa),
-        ...powerPurchaseAgreementDeepQueryArgs,
-      });
-      return PowerPurchaseAgreementEntity.fromDeepDatabase(powerPurchaseAgreement);
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+    const powerPurchaseAgreement = await this.prismaService.powerPurchaseAgreement
+      .update({ where: { id: ppa.ppaId }, data: this.buildPowerPurchaseAgreementStatusUpdateData(ppa), ...powerPurchaseAgreementDeepQueryArgs })
+      .catch(wrapPrismaError);
+
+    return PowerPurchaseAgreementEntity.fromDeepDatabase(powerPurchaseAgreement);
   }
 
   private buildPowerPurchaseAgreementStatusUpdateData(ppa: UpdatePowerPurchaseAgreementPayload) {

@@ -17,11 +17,10 @@ export class CompanyRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findAll(): Promise<CompanyEntity[]> {
-    try {
-      const companies = await this.prismaService.company.findMany({ ...companyDeepQueryArgs });
-      return companies.map(CompanyEntity.fromDeepDatabase);
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+    const companies = await this.prismaService.company
+      .findMany({ ...companyDeepQueryArgs })
+      .catch(wrapPrismaError);
+
+    return companies.map(CompanyEntity.fromDeepDatabase);
   }
 }

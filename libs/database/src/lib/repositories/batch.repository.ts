@@ -13,31 +13,27 @@ import { wrapPrismaError } from './prisma-error.wrapper';
 
 @Injectable()
 export class BatchRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   async setBatchesInactive(batchIds: string[]): Promise<{ count: number }> {
-    try {
-      return await this.prismaService.batch.updateMany({
+    return this.prismaService.batch
+      .updateMany({
         where: { id: { in: batchIds } },
-        data: { active: false },
-      });
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+        data: { active: false }
+      })
+      .catch(wrapPrismaError);
   }
 
   async setRfnboStatus(batchId: string, rfnboType: RfnboType): Promise<{ id: string; batchId: string }> {
-    try {
-      return await this.prismaService.batchDetails.update({
+    return this.prismaService.batchDetails
+      .update({
         where: { batchId: batchId },
         data: {
           qualityDetails: {
             update: { rfnboType },
           },
         },
-      });
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+      })
+      .catch(wrapPrismaError);
   }
 }

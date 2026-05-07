@@ -35,37 +35,24 @@ import { assertAllIdsFound, assertRecordFound } from './repository-assertions';
 
 @Injectable()
 export class UnitRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   async findUnitById(id: string): Promise<ConcreteUnitEntity> {
-    try {
-      const unit = await this.prismaService.unit.findUnique({
-        where: {
-          id: id,
-        },
-        ...baseUnitDeepQueryArgs,
-      });
-      assertRecordFound(unit, id, 'Unit');
-      return this.mapToActualUnitEntity(unit);
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+    const unit = await this.prismaService.unit
+      .findUnique({ where: { id }, ...baseUnitDeepQueryArgs })
+      .catch(wrapPrismaError);
+
+    assertRecordFound(unit, id, 'Unit');
+    return this.mapToActualUnitEntity(unit);
   }
 
   async findUnitsByIds(ids: string[]): Promise<ConcreteUnitEntity[]> {
-    try {
-      const units = await this.prismaService.unit.findMany({
-        where: {
-          id: {
-            in: ids,
-          },
-        },
-        ...baseUnitDeepQueryArgs,
-      });
-      return units.map(this.mapToActualUnitEntity);
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+    const units = await this.prismaService.unit
+      .findMany({ where: { id: { in: ids, }, }, ...baseUnitDeepQueryArgs })
+      .catch(wrapPrismaError);
+
+    assertAllIdsFound(units, ids, 'Units');
+    return units.map(this.mapToActualUnitEntity);
   }
 
   mapToActualUnitEntity(baseUnit: Prisma.UnitGetPayload<typeof baseUnitDeepQueryArgs>): ConcreteUnitEntity {
@@ -85,101 +72,53 @@ export class UnitRepository {
   }
 
   async findPowerProductionUnitsByOwnerId(ownerId: string): Promise<PowerProductionUnitEntity[]> {
-    try {
-      const units = await this.prismaService.unit.findMany({
-        where: {
-          ownerId: ownerId,
-          powerProductionUnit: {
-            isNot: null,
-          },
-        },
-        ...baseUnitDeepQueryArgs,
-      });
-      return units.map(PowerProductionUnitEntity.fromDeepDatabase);
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+    const units = await this.prismaService.unit
+      .findMany({ where: { ownerId, powerProductionUnit: { isNot: null } }, ...baseUnitDeepQueryArgs })
+      .catch(wrapPrismaError);
+
+    return units.map(PowerProductionUnitEntity.fromDeepDatabase);
   }
 
   async findPowerProductionUnitsByIds(ids: string[]): Promise<PowerProductionUnitEntity[]> {
-    try {
-      const units = await this.prismaService.unit.findMany({
-        where: {
-          id: { in: ids },
-          powerProductionUnit: { isNot: null },
-        },
-        ...baseUnitDeepQueryArgs,
-      });
-      assertAllIdsFound(units, ids, 'PowerProductionUnits');
-      return units.map(PowerProductionUnitEntity.fromDeepDatabase);
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+    const units = await this.prismaService.unit
+      .findMany({ where: { id: { in: ids }, powerProductionUnit: { isNot: null } }, ...baseUnitDeepQueryArgs })
+      .catch(wrapPrismaError);
+
+    assertAllIdsFound(units, ids, 'PowerProductionUnits');
+    return units.map(PowerProductionUnitEntity.fromDeepDatabase);
   }
 
   async findHydrogenProductionUnitsByOwnerId(ownerId: string): Promise<HydrogenProductionUnitEntity[]> {
-    try {
-      const units = await this.prismaService.unit.findMany({
-        where: {
-          ownerId: ownerId,
-          hydrogenProductionUnit: {
-            isNot: null,
-          },
-        },
-        ...baseUnitDeepQueryArgs,
-      });
-      return units.map(HydrogenProductionUnitEntity.fromDeepDatabase);
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+    const units = await this.prismaService.unit
+      .findMany({ where: { ownerId, hydrogenProductionUnit: { isNot: null } }, ...baseUnitDeepQueryArgs })
+      .catch(wrapPrismaError);
+
+    return units.map(HydrogenProductionUnitEntity.fromDeepDatabase);
   }
 
   async findHydrogenProductionUnitsByIds(ids: string[]): Promise<HydrogenProductionUnitEntity[]> {
-    try {
-      const units = await this.prismaService.unit.findMany({
-        where: {
-          id: { in: ids },
-          hydrogenProductionUnit: { isNot: null },
-        },
-        ...baseUnitDeepQueryArgs,
-      });
-      assertAllIdsFound(units, ids, 'HydrogenProductionUnits');
-      return units.map(HydrogenProductionUnitEntity.fromDeepDatabase);
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+    const units = await this.prismaService.unit
+      .findMany({ where: { id: { in: ids }, hydrogenProductionUnit: { isNot: null } }, ...baseUnitDeepQueryArgs })
+      .catch(wrapPrismaError);
+
+    assertAllIdsFound(units, ids, 'HydrogenProductionUnits');
+    return units.map(HydrogenProductionUnitEntity.fromDeepDatabase);
   }
 
   async findHydrogenStorageUnitsByOwnerId(ownerId: string): Promise<HydrogenStorageUnitEntity[]> {
-    try {
-      const units = await this.prismaService.unit.findMany({
-        where: {
-          ownerId: ownerId,
-          hydrogenStorageUnit: {
-            isNot: null,
-          },
-        },
-        ...baseUnitDeepQueryArgs,
-      });
-      return units.map(HydrogenStorageUnitEntity.fromDeepDatabase);
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+    const units = await this.prismaService.unit
+      .findMany({ where: { ownerId, hydrogenStorageUnit: { isNot: null } }, ...baseUnitDeepQueryArgs })
+      .catch(wrapPrismaError);
+
+    return units.map(HydrogenStorageUnitEntity.fromDeepDatabase);
   }
 
   async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<BaseUnitEntity> {
-    try {
-      const unit = await this.prismaService.unit.update({
-        where: {
-          id: payload.id,
-        },
-        data: { active: payload.active },
-        include: baseUnitDeepQueryArgs.include,
-      });
-      return BaseUnitEntity.fromDeepBaseUnit(unit);
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+    const unit = await this.prismaService.unit
+      .update({ where: { id: payload.id }, data: { active: payload.active }, include: baseUnitDeepQueryArgs.include })
+      .catch(wrapPrismaError);
+
+    return BaseUnitEntity.fromDeepBaseUnit(unit);
   }
 
   async updateOrCreateHydrogenProductionUnit(
@@ -189,8 +128,8 @@ export class UnitRepository {
       await this.validateUnitIsActive(payload.id);
     }
 
-    try {
-      const unit = await this.prismaService.unit.upsert({
+    const unit = await this.prismaService.unit
+      .upsert({
         where: { id: payload.id ?? '' },
         update: {
           name: payload.name,
@@ -230,11 +169,10 @@ export class UnitRepository {
         },
         create: buildHydrogenProductionUnitCreateInput(payload),
         include: baseUnitDeepQueryArgs.include,
-      });
-      return HydrogenProductionUnitEntity.fromDeepDatabase(unit);
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+      })
+      .catch(wrapPrismaError);
+
+    return HydrogenProductionUnitEntity.fromDeepDatabase(unit);
   }
 
   async updateOrCreatePowerProductionUnit(
@@ -244,8 +182,8 @@ export class UnitRepository {
       await this.validateUnitIsActive(payload.id);
     }
 
-    try {
-      const unit = await this.prismaService.unit.upsert({
+    const unit = await this.prismaService.unit
+      .upsert({
         where: { id: payload.id ?? '' },
         update: {
           name: payload.name,
@@ -288,11 +226,10 @@ export class UnitRepository {
         },
         create: buildPowerProductionUnitCreateInput(payload),
         include: baseUnitDeepQueryArgs.include,
-      });
-      return PowerProductionUnitEntity.fromDeepDatabase(unit);
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+      })
+      .catch(wrapPrismaError);
+
+    return PowerProductionUnitEntity.fromDeepDatabase(unit);
   }
 
   async updateOrCreateHydrogenStorageUnit(
@@ -302,8 +239,8 @@ export class UnitRepository {
       await this.validateUnitIsActive(payload.id);
     }
 
-    try {
-      const unit = await this.prismaService.unit.upsert({
+    const unit = await this.prismaService.unit
+      .upsert({
         where: { id: payload.id ?? '' },
         update: {
           name: payload.name,
@@ -340,24 +277,20 @@ export class UnitRepository {
         },
         create: buildHydrogenStorageUnitCreateInput(payload),
         include: baseUnitDeepQueryArgs.include,
-      });
-      return HydrogenStorageUnitEntity.fromDeepDatabase(unit);
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+      })
+      .catch(wrapPrismaError);
+
+    return HydrogenStorageUnitEntity.fromDeepDatabase(unit);
   }
 
   private async validateUnitIsActive(id: string): Promise<void> {
-    try {
-      const unit = await this.prismaService.unit.findUnique({
-        where: { id: id },
-        select: { active: true },
-      });
-      if (!unit?.active)
-        throw new DomainException(ErrorCode.DOMAIN_RESOURCE_INACTIVE, `Unit with ID '${id}' is inactive.`);
-    } catch (error) {
-      wrapPrismaError(error);
-    }
+    const unit = await this.prismaService.unit
+      .findUnique({ where: { id }, select: { active: true } })
+      .catch(wrapPrismaError);
+
+    if (!unit?.active) {
+      throw new DomainException(ErrorCode.DOMAIN_RESOURCE_INACTIVE, `Unit with ID '${id}' is inactive.`)
+    };
   }
 
   async ownsPowerProductionUnit(user: UserEntity, powerProductionUnitId: string): Promise<boolean> {
