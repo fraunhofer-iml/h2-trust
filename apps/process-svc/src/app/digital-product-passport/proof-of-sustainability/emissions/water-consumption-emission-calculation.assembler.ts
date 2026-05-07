@@ -26,7 +26,9 @@ export function assembleWaterSupplyEmissionCalculation(
   waterSupply: ProcessStepEntity,
 ): ProofOfSustainabilityEmissionCalculationEntity {
   if (waterSupply?.type !== ProcessType.WATER_CONSUMPTION) {
-    throw new InternalException(`Invalid process step type [${waterSupply?.type}] for water supply emission calculation`);
+    throw new InternalException(
+      `Invalid process step type [${waterSupply?.type}] for water supply emission calculation`,
+    );
   }
 
   const waterInput = waterSupply.batch.amount;

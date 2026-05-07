@@ -22,7 +22,11 @@ export class RpcExceptionFilter implements ExceptionFilter {
 
   private toRpcError(exception: unknown): RpcError {
     if (exception instanceof ValidationException) {
-      return { errorCode: exception.errorCode, message: exception.message, validationErrors: exception.validationErrors };
+      return {
+        errorCode: exception.errorCode,
+        message: exception.message,
+        validationErrors: exception.validationErrors,
+      };
     }
     if (exception instanceof InternalException) {
       this.logger.error(exception.message, exception.cause);

@@ -42,8 +42,8 @@ import {
   PowerType,
   StagingScope,
 } from '@h2-trust/domain';
-import { QUEUE_GENERAL_SVC, UnitMessagePatterns } from '@h2-trust/messaging';
 import { InternalException, ValidationException } from '@h2-trust/exceptions';
+import { QUEUE_GENERAL_SVC, UnitMessagePatterns } from '@h2-trust/messaging';
 import { CsvImportProcessingService } from './csv/csv-import-processing.service';
 import { ProductionCreationService } from './production-creation.service';
 import { normalizeProduction } from './production-normalizer';

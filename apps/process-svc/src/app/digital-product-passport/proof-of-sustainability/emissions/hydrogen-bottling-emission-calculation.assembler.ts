@@ -20,7 +20,9 @@ export function assembleHydrogenBottlingEmissionCalculation(
   hydrogenBottling: ProcessStepEntity,
 ): ProofOfSustainabilityEmissionCalculationEntity {
   if (hydrogenBottling?.type !== ProcessType.HYDROGEN_BOTTLING) {
-    throw new InternalException(`Invalid process step type [${hydrogenBottling?.type}] for hydrogen bottling emission calculation`);
+    throw new InternalException(
+      `Invalid process step type [${hydrogenBottling?.type}] for hydrogen bottling emission calculation`,
+    );
   }
 
   const result = 0;

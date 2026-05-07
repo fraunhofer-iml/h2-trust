@@ -7,7 +7,6 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { InternalException } from '@h2-trust/exceptions';
 import {
   HydrogenProductionUnitEntity,
   PowerProductionUnitEntity,
@@ -16,6 +15,7 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType } from '@h2-trust/domain';
+import { InternalException } from '@h2-trust/exceptions';
 import { TraversalService } from './traversal/traversal.service';
 
 type ProvenanceBuilderFn = (root: ProcessStepEntity) => Promise<ProvenanceEntity>;

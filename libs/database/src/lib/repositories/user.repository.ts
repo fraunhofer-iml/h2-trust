@@ -10,8 +10,8 @@ import { Injectable } from '@nestjs/common';
 import { UserEntity } from '@h2-trust/contracts/entities';
 import { PrismaService } from '../prisma.service';
 import { userDeepQueryArgs } from '../query-args';
-import { assertRecordFound } from './repository-assertions';
 import { wrapPrismaError } from './prisma-error.wrapper';
+import { assertRecordFound } from './repository-assertions';
 
 @Injectable()
 export class UserRepository {

@@ -44,7 +44,9 @@ export function createDecentralizedStorageService(
       );
     }
     default:
-      throw new InternalException(`Unreachable: unhandled storage provider '${(decentralizedStorage as any).provider}'`);
+      throw new InternalException(
+        `Unreachable: unhandled storage provider '${(decentralizedStorage as any).provider}'`,
+      );
   }
 }
 

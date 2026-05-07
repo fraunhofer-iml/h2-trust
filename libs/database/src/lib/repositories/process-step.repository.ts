@@ -14,8 +14,8 @@ import { InternalException } from '@h2-trust/exceptions';
 import { buildProcessStepCreateInput } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 import { processStepDeepQueryArgs } from '../query-args';
-import { assertRecordFound } from './repository-assertions';
 import { wrapPrismaError } from './prisma-error.wrapper';
+import { assertRecordFound } from './repository-assertions';
 
 @Injectable()
 export class ProcessStepRepository {

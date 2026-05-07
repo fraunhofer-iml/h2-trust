@@ -109,7 +109,9 @@ export function assembleHydrogenTransportationEmissionCalculation(
         hydrogenTransportation.transportationDetails.distance,
       );
     default:
-      throw new InternalException(`Unknown transport mode [${transportMode}] for process step [${hydrogenTransportation.id}]`);
+      throw new InternalException(
+        `Unknown transport mode [${transportMode}] for process step [${hydrogenTransportation.id}]`,
+      );
   }
 }
 

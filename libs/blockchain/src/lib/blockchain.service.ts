@@ -85,7 +85,10 @@ export class BlockchainService {
 
   async storeProofs(proofEntries: ProofEntry[]): Promise<string> {
     if (!this.contract) {
-      throw new BlockchainException(ErrorCode.BLOCKCHAIN_NOT_INITIALIZED, 'Store failed: blockchain service not initialized.');
+      throw new BlockchainException(
+        ErrorCode.BLOCKCHAIN_NOT_INITIALIZED,
+        'Store failed: blockchain service not initialized.',
+      );
     }
 
     this.logger.debug(`Storing proofs:\n${proofEntries.map((e) => JSON.stringify(e)).join('\n')}`);
@@ -104,7 +107,10 @@ export class BlockchainService {
 
   async retrieveProof(uuid: string): Promise<ProofEntity | null> {
     if (!this.contract) {
-      throw new BlockchainException(ErrorCode.BLOCKCHAIN_NOT_INITIALIZED, 'Retrieve failed: blockchain service not initialized.');
+      throw new BlockchainException(
+        ErrorCode.BLOCKCHAIN_NOT_INITIALIZED,
+        'Retrieve failed: blockchain service not initialized.',
+      );
     }
 
     try {
@@ -123,7 +129,10 @@ export class BlockchainService {
 
   async retrieveBlockchainMetadata(transactionHash: string): Promise<BlockchainMetadata | null> {
     if (!this.contract) {
-      throw new BlockchainException(ErrorCode.BLOCKCHAIN_NOT_INITIALIZED, 'Retrieve metadata failed: blockchain service not initialized.');
+      throw new BlockchainException(
+        ErrorCode.BLOCKCHAIN_NOT_INITIALIZED,
+        'Retrieve metadata failed: blockchain service not initialized.',
+      );
     }
 
     const receipt = await this.contract.runner.provider.getTransactionReceipt(transactionHash);

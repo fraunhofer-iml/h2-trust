@@ -72,7 +72,10 @@ export class IpfsPinningStorageService extends DecentralizedStorageService {
     const response = await this.client.send(new GetObjectCommand({ Bucket: this.bucketName, Key: fileName }));
 
     if (!response.Body) {
-      throw new StorageException(ErrorCode.STORAGE_DOWNLOAD_FAILED, `Download failed: empty response body for '${fileName}'`);
+      throw new StorageException(
+        ErrorCode.STORAGE_DOWNLOAD_FAILED,
+        `Download failed: empty response body for '${fileName}'`,
+      );
     }
 
     return Readable.fromWeb(response.Body.transformToWebStream() as ReadableStream<Uint8Array>);

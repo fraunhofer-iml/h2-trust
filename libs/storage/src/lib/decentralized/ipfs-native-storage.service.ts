@@ -45,7 +45,10 @@ export class IpfsNativeStorageService extends DecentralizedStorageService {
     });
 
     if (!response.ok) {
-      throw new StorageException(ErrorCode.STORAGE_UPLOAD_FAILED, `Upload failed (${response.status}): ${await response.text()}`);
+      throw new StorageException(
+        ErrorCode.STORAGE_UPLOAD_FAILED,
+        `Upload failed (${response.status}): ${await response.text()}`,
+      );
     }
 
     const { Hash: cid } = (await response.json()) as { Hash: string };
@@ -75,7 +78,10 @@ export class IpfsNativeStorageService extends DecentralizedStorageService {
     });
 
     if (!response.ok) {
-      throw new StorageException(ErrorCode.STORAGE_DOWNLOAD_FAILED, `Download failed (${response.status}) for '${fileName}': ${await response.text()}`);
+      throw new StorageException(
+        ErrorCode.STORAGE_DOWNLOAD_FAILED,
+        `Download failed (${response.status}) for '${fileName}': ${await response.text()}`,
+      );
     }
 
     return Readable.fromWeb(response.body as ReadableStream<Uint8Array>);

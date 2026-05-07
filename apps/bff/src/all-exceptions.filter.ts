@@ -6,7 +6,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  BadRequestException,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+  HttpStatus,
+  Logger,
+} from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ErrorCode } from '@h2-trust/exceptions';
 import { isRpcError, PROBLEM_DEFINITIONS, ProblemResponse, toTypeUri } from './problem-definitions';

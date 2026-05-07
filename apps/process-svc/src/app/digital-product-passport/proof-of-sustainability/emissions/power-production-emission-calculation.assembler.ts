@@ -31,7 +31,9 @@ export function assemblePowerSupplyEmissionCalculation(
   energySource: EnergySource,
 ): ProofOfSustainabilityEmissionCalculationEntity {
   if (powerProduction?.type !== ProcessType.POWER_PRODUCTION) {
-    throw new InternalException(`Invalid process step type [${powerProduction?.type}] for power supply emission calculation`);
+    throw new InternalException(
+      `Invalid process step type [${powerProduction?.type}] for power supply emission calculation`,
+    );
   }
 
   const power = powerProduction.batch.amount;
