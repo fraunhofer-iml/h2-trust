@@ -6,7 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DatabaseErrorCode, ErrorCode, InfrastructureException } from '@h2-trust/exceptions';
+import { ErrorCode } from './error-codes';
+import { DatabaseErrorCode, InfrastructureException } from './infrastructure.exception';
 
 export class DatabaseException extends InfrastructureException {
   constructor(errorCode: DatabaseErrorCode, message: string, cause?: unknown) {

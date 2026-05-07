@@ -9,9 +9,8 @@
 import { Readable } from 'stream';
 import { GetObjectCommand, PutObjectCommand, S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
 import { Logger } from '@nestjs/common';
-import { ErrorCode } from '@h2-trust/exceptions';
+import { ErrorCode, StorageException } from '@h2-trust/exceptions';
 import { ContentType } from '../content-types';
-import { StorageException } from '../storage.exception';
 import { DecentralizedStorageService } from './decentralized-storage.service';
 
 export class IpfsPinningStorageService extends DecentralizedStorageService {

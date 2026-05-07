@@ -10,10 +10,10 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { StagedProductionEntity } from '@h2-trust/contracts/entities';
 import { ReadStagedProductionsPayload } from '@h2-trust/contracts/payloads';
+import { RecordNotFoundException } from '@h2-trust/exceptions';
 import { PrismaService } from '../prisma.service';
 import { stagedProductionDeepQueryArgs } from '../query-args';
 import { StagedProductionDeepDbType } from '../types';
-import { RecordNotFoundException } from './database.exception';
 import { wrapPrismaError } from './prisma-error.wrapper';
 
 @Injectable()

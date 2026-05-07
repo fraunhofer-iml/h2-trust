@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RecordNotFoundException } from './database.exception';
+import { RecordNotFoundException } from '@h2-trust/exceptions';
 
 export function assertRecordFound<T>(
   fetchedRecord: T | null | undefined,

@@ -7,8 +7,7 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { ErrorCode } from '@h2-trust/exceptions';
-import { DatabaseException, RecordNotFoundException } from './database.exception';
+import { DatabaseException, ErrorCode, RecordNotFoundException } from '@h2-trust/exceptions';
 
 export function wrapPrismaError(error: unknown): never {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {

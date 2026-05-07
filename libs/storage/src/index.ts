@@ -9,5 +9,4 @@
 export * from './lib/centralized/index';
 export * from './lib/content-types';
 export * from './lib/decentralized/index';
-export * from './lib/storage.exception';
 export * from './lib/storage.module';

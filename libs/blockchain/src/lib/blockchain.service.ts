@@ -18,8 +18,7 @@ import {
 } from 'ethers';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { ProofEntity } from '@h2-trust/contracts/entities';
-import { ErrorCode } from '@h2-trust/exceptions';
-import { BlockchainException } from './blockchain.exception';
+import { BlockchainException, ErrorCode } from '@h2-trust/exceptions';
 
 export interface ProofEntry {
   uuid: string;

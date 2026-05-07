@@ -8,9 +8,8 @@
 
 import { Readable } from 'stream';
 import { Logger } from '@nestjs/common';
-import { ErrorCode } from '@h2-trust/exceptions';
+import { ErrorCode, StorageException } from '@h2-trust/exceptions';
 import { ContentType } from '../content-types';
-import { StorageException } from '../storage.exception';
 import { DecentralizedStorageService } from './decentralized-storage.service';
 
 export class IpfsNativeStorageService extends DecentralizedStorageService {

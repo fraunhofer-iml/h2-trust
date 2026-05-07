@@ -9,7 +9,6 @@
 export * from './batch.repository';
 export * from './company.repository';
 export * from './csv-import.repository';
-export * from './database.exception';
 export * from './document.repository';
 export * from './power-production-type.repository';
 export * from './power-purchase-agreement.repository';
