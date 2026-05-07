@@ -39,7 +39,7 @@ export const PROBLEM_DEFINITIONS = {
   [ErrorCode.VALIDATION_ERROR]: { httpStatus: HttpStatus.BAD_REQUEST, title: 'Validation Error' },
 } as const satisfies Record<ErrorCode, ProblemDefinition>;
 
-export interface ProblemResponse {
+export interface ProblemDetail {
   type: string;
   title: string;
   detail: string;

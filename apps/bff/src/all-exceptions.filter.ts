@@ -18,7 +18,7 @@ import {
 import { Request, Response } from 'express';
 import { ErrorCode } from '@h2-trust/exceptions';
 import type { RpcError } from '@h2-trust/messaging';
-import { isRpcError, PROBLEM_DEFINITIONS, ProblemResponse } from './problem-definitions';
+import { isRpcError, PROBLEM_DEFINITIONS, ProblemDetail } from './problem-definitions';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -32,7 +32,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     response
       .header('Content-Type', 'application/problem+json')
       .status(this.resolveStatus(exception))
-      .json(this.toProblemResponse(exception, request.path));
+      .json(this.toProblemDetail(exception, request.path));
   }
 
   private resolveStatus(exception: unknown): number {
@@ -50,28 +50,28 @@ export class AllExceptionsFilter implements ExceptionFilter {
     return HttpStatus.INTERNAL_SERVER_ERROR;
   }
 
-  private toProblemResponse(exception: unknown, instance: string): ProblemResponse {
+  private toProblemDetail(exception: unknown, instance: string): ProblemDetail {
     const timestamp = new Date().toISOString();
 
     if (exception instanceof HttpException) {
       const body = exception.getResponse();
 
       if (isRpcError(body)) {
-        return this.rpcErrorToProblemResponse(body, instance, timestamp);
+        return this.rpcErrorToProblemDetail(body, instance, timestamp);
       }
 
       if (exception instanceof BadRequestException) {
-        return this.validationPipeToProblemResponse(body, instance, timestamp);
+        return this.validationPipeToProblemDetail(body, instance, timestamp);
       }
 
-      return this.nativeHttpExceptionToProblemResponse(exception, body, instance, timestamp);
+      return this.nativeHttpExceptionToProblemDetail(exception, body, instance, timestamp);
     }
 
-    return this.unexpectedExceptionToProblemResponse(exception, instance, timestamp);
+    return this.unexpectedExceptionToProblemDetail(exception, instance, timestamp);
   }
 
   // From the interceptor: HttpException wrapping an RpcError body
-  private rpcErrorToProblemResponse(rpcError: RpcError, instance: string, timestamp: string): ProblemResponse {
+  private rpcErrorToProblemDetail(rpcError: RpcError, instance: string, timestamp: string): ProblemDetail {
     const problemDefinition = PROBLEM_DEFINITIONS[rpcError.errorCode] ?? PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR];
 
     const type = this.toTypeUri(rpcError.errorCode);
@@ -93,7 +93,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
   }
 
   // BFF-native: BadRequestException from the ValidationPipe
-  private validationPipeToProblemResponse(body: unknown, instance: string, timestamp: string): ProblemResponse {
+  private validationPipeToProblemDetail(body: unknown, instance: string, timestamp: string): ProblemDetail {
     const type = this.toTypeUri(ErrorCode.VALIDATION_ERROR);
     const title = PROBLEM_DEFINITIONS[ErrorCode.VALIDATION_ERROR].title;
     const detail = 'Validation failed';
@@ -115,12 +115,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
   }
 
   // BFF-native: other HttpExceptions from Guards, Controllers, etc.
-  private nativeHttpExceptionToProblemResponse(
+  private nativeHttpExceptionToProblemDetail(
     exception: HttpException,
     body: unknown,
     instance: string,
     timestamp: string,
-  ): ProblemResponse {
+  ): ProblemDetail {
     const type = this.toTypeUri(`http-${exception.getStatus()}`);
     const title = exception.constructor.name.replace(/Exception$/, '');
     const detail = typeof body === 'string' ? body : ((body as any)?.message ?? 'An error occurred');
@@ -137,11 +137,11 @@ export class AllExceptionsFilter implements ExceptionFilter {
   }
 
   // Should not occur after the interceptor has run
-  private unexpectedExceptionToProblemResponse(
+  private unexpectedExceptionToProblemDetail(
     exception: unknown,
     instance: string,
     timestamp: string,
-  ): ProblemResponse {
+  ): ProblemDetail {
     this.logger.error(`Unexpected exception: ${exception}`);
 
     const type = this.toTypeUri(ErrorCode.INTERNAL_ERROR);
