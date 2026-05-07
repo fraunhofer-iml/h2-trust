@@ -7,7 +7,7 @@
  */
 
 export * from './broker';
-export * from './broker-exception';
 export * from './broker-queues';
 export * from './message-patterns';
+export * from './rpc-error';
 export * from './rpc-exception.filter';
