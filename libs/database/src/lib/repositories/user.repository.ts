@@ -11,19 +11,22 @@ import { UserEntity } from '@h2-trust/contracts/entities';
 import { PrismaService } from '../prisma.service';
 import { userDeepQueryArgs } from '../query-args';
 import { assertRecordFound } from './repository-assertions';
+import { wrapPrismaError } from './prisma-error.wrapper';
 
 @Injectable()
 export class UserRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findUser(id: string): Promise<UserEntity> {
-    const user = await this.prismaService.user.findUnique({
-      where: {
-        id: id,
-      },
-      ...userDeepQueryArgs,
-    });
-    assertRecordFound(user, id, 'User');
-    return UserEntity.fromDeepDatabase(user);
+    try {
+      const user = await this.prismaService.user.findUnique({
+        where: { id: id },
+        ...userDeepQueryArgs,
+      });
+      assertRecordFound(user, id, 'User');
+      return UserEntity.fromDeepDatabase(user);
+    } catch (error) {
+      wrapPrismaError(error);
+    }
   }
 }

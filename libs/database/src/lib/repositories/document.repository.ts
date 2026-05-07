@@ -10,15 +10,20 @@ import { Injectable } from '@nestjs/common';
 import { DocumentEntity } from '@h2-trust/contracts/entities';
 import { buildDocumentCreateInput } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
+import { wrapPrismaError } from './prisma-error.wrapper';
 
 @Injectable()
 export class DocumentRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async addDocumentToProcessStep(document: DocumentEntity, processStepId: string): Promise<DocumentEntity> {
-    const createdDocument = await this.prismaService.document.create({
-      data: buildDocumentCreateInput(document, processStepId),
-    });
-    return DocumentEntity.fromDatabase(createdDocument);
+    try {
+      const createdDocument = await this.prismaService.document.create({
+        data: buildDocumentCreateInput(document, processStepId),
+      });
+      return DocumentEntity.fromDatabase(createdDocument);
+    } catch (error) {
+      wrapPrismaError(error);
+    }
   }
 }

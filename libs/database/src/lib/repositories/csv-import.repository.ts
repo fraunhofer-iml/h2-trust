@@ -10,6 +10,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { CsvDocumentEntity } from '@h2-trust/contracts/entities';
 import { PrismaService } from '../prisma.service';
+import { wrapPrismaError } from './prisma-error.wrapper';
 
 export interface CreateCsvDocumentInput {
   fileName: string;
@@ -26,11 +27,12 @@ export class CsvImportRepository {
   async saveCsvImport(uploadedById: string, tx?: Prisma.TransactionClient): Promise<string> {
     const client = tx ?? this.prismaService;
 
-    const csvImport = await client.csvImport.create({
-      data: { uploadedById },
-    });
-
-    return csvImport.id;
+    try {
+      const csvImport = await client.csvImport.create({ data: { uploadedById } });
+      return csvImport.id;
+    } catch (error) {
+      wrapPrismaError(error);
+    }
   }
 
   async saveCsvDocuments(
@@ -40,32 +42,36 @@ export class CsvImportRepository {
   ): Promise<CsvDocumentEntity[]> {
     const client = tx ?? this.prismaService;
 
-    const documents = await client.csvDocument.createManyAndReturn({
-      data: inputs.map((input) => ({
-        fileName: input.fileName,
-        type: input.type,
-        startedAt: input.startedAt,
-        endedAt: input.endedAt,
-        amount: input.amount,
-        csvImportId,
-      })),
-    });
-
-    return documents.map(CsvDocumentEntity.fromDatabase);
+    try {
+      const documents = await client.csvDocument.createManyAndReturn({
+        data: inputs.map((input) => ({
+          fileName: input.fileName,
+          type: input.type,
+          startedAt: input.startedAt,
+          endedAt: input.endedAt,
+          amount: input.amount,
+          csvImportId,
+        })),
+      });
+      return documents.map(CsvDocumentEntity.fromDatabase);
+    } catch (error) {
+      wrapPrismaError(error);
+    }
   }
 
   async findAllCsvDocumentsByCompanyId(companyId: string): Promise<CsvDocumentEntity[]> {
-    const documents = await this.prismaService.csvDocument.findMany({
-      where: {
-        csvImport: {
-          uploadedBy: {
-            companyId,
+    try {
+      const documents = await this.prismaService.csvDocument.findMany({
+        where: {
+          csvImport: {
+            uploadedBy: { companyId },
           },
         },
-      },
-    });
-
-    return documents.map(CsvDocumentEntity.fromDatabase);
+      });
+      return documents.map(CsvDocumentEntity.fromDatabase);
+    } catch (error) {
+      wrapPrismaError(error);
+    }
   }
 
   async updateTransactionHash(
@@ -75,17 +81,22 @@ export class CsvImportRepository {
   ): Promise<void> {
     const client = tx ?? this.prismaService;
 
-    await client.csvDocument.updateMany({
-      where: { id: { in: csvDocumentIds } },
-      data: { transactionHash },
-    });
+    try {
+      await client.csvDocument.updateMany({
+        where: { id: { in: csvDocumentIds } },
+        data: { transactionHash },
+      });
+    } catch (error) {
+      wrapPrismaError(error);
+    }
   }
 
   async findCsvDocumentById(id: string): Promise<CsvDocumentEntity | null> {
-    const document = await this.prismaService.csvDocument.findUnique({
-      where: { id },
-    });
-
-    return document ? CsvDocumentEntity.fromDatabase(document) : null;
+    try {
+      const document = await this.prismaService.csvDocument.findUnique({ where: { id } });
+      return document ? CsvDocumentEntity.fromDatabase(document) : null;
+    } catch (error) {
+      wrapPrismaError(error);
+    }
   }
 }

@@ -17,6 +17,7 @@ import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { buildPowerPurchaseAgreementCreateData } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 import { powerPurchaseAgreementDeepQueryArgs } from '../query-args/power-purchase-agreement/power-purchase-agreement.deep.query-args';
+import { wrapPrismaError } from './prisma-error.wrapper';
 
 @Injectable()
 export class PowerPurchaseAgreementRepository {
@@ -27,31 +28,43 @@ export class PowerPurchaseAgreementRepository {
     status?: PowerPurchaseAgreementStatus,
     role?: PpaRequestRole,
   ): Promise<PowerPurchaseAgreementEntity[]> {
-    const powerPurchaseAgreements = await this.prismaService.powerPurchaseAgreement.findMany({
-      where: this.buildRoleQuery(producerId, status, role),
-      ...powerPurchaseAgreementDeepQueryArgs,
-    });
-    return powerPurchaseAgreements.map(PowerPurchaseAgreementEntity.fromDeepDatabase);
+    try {
+      const powerPurchaseAgreements = await this.prismaService.powerPurchaseAgreement.findMany({
+        where: this.buildRoleQuery(producerId, status, role),
+        ...powerPurchaseAgreementDeepQueryArgs,
+      });
+      return powerPurchaseAgreements.map(PowerPurchaseAgreementEntity.fromDeepDatabase);
+    } catch (error) {
+      wrapPrismaError(error);
+    }
   }
 
   async createPowerPurchaseAgreement(
     ppa: CreatePowerPurchaseAgreementsPayload,
     hydrogenProducerCompanyId: string,
   ): Promise<PowerPurchaseAgreementEntity> {
-    const powerPurchaseAgreement = await this.prismaService.powerPurchaseAgreement.create({
-      data: buildPowerPurchaseAgreementCreateData(ppa, hydrogenProducerCompanyId),
-      ...powerPurchaseAgreementDeepQueryArgs,
-    });
-    return PowerPurchaseAgreementEntity.fromDeepDatabase(powerPurchaseAgreement);
+    try {
+      const powerPurchaseAgreement = await this.prismaService.powerPurchaseAgreement.create({
+        data: buildPowerPurchaseAgreementCreateData(ppa, hydrogenProducerCompanyId),
+        ...powerPurchaseAgreementDeepQueryArgs,
+      });
+      return PowerPurchaseAgreementEntity.fromDeepDatabase(powerPurchaseAgreement);
+    } catch (error) {
+      wrapPrismaError(error);
+    }
   }
 
   async updatePpaStatus(ppa: UpdatePowerPurchaseAgreementPayload): Promise<PowerPurchaseAgreementEntity> {
-    const powerPurchaseAgreement = await this.prismaService.powerPurchaseAgreement.update({
-      where: { id: ppa.ppaId },
-      data: this.buildPowerPurchaseAgreementStatusUpdateData(ppa),
-      ...powerPurchaseAgreementDeepQueryArgs,
-    });
-    return PowerPurchaseAgreementEntity.fromDeepDatabase(powerPurchaseAgreement);
+    try {
+      const powerPurchaseAgreement = await this.prismaService.powerPurchaseAgreement.update({
+        where: { id: ppa.ppaId },
+        data: this.buildPowerPurchaseAgreementStatusUpdateData(ppa),
+        ...powerPurchaseAgreementDeepQueryArgs,
+      });
+      return PowerPurchaseAgreementEntity.fromDeepDatabase(powerPurchaseAgreement);
+    } catch (error) {
+      wrapPrismaError(error);
+    }
   }
 
   private buildPowerPurchaseAgreementStatusUpdateData(ppa: UpdatePowerPurchaseAgreementPayload) {
@@ -103,18 +116,14 @@ export class PowerPurchaseAgreementRepository {
   ): Prisma.PowerPurchaseAgreementDecisionCreateWithoutPowerPurchaseAgreementInput {
     const base: Prisma.PowerPurchaseAgreementDecisionCreateWithoutPowerPurchaseAgreementInput = {
       decidedAt: new Date(),
-      decidingUser: {
-        connect: { id: payload.decidingUserId },
-      },
+      decidingUser: { connect: { id: payload.decidingUserId } },
       comment: payload.comment ?? undefined,
     };
 
     if (payload.decision === PowerPurchaseAgreementStatus.APPROVED) {
       return {
         ...base,
-        grantedPowerProductionUnit: {
-          connect: { id: payload.powerProductionUnitId },
-        },
+        grantedPowerProductionUnit: { connect: { id: payload.powerProductionUnitId } },
       };
     }
 
@@ -122,11 +131,7 @@ export class PowerPurchaseAgreementRepository {
   }
 
   async canDecideAgreement(user: UserEntity, powerPurchaseAgreementId: string): Promise<boolean> {
-    const agreements: PowerPurchaseAgreementEntity[] = await this.findAllPowerPurchaseAgreements(
-      user.company.id,
-      undefined,
-      undefined,
-    );
+    const agreements = await this.findAllPowerPurchaseAgreements(user.company.id, undefined, undefined);
     return agreements.some((agreement) => agreement.id === powerPurchaseAgreementId);
   }
 }

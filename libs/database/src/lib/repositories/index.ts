@@ -7,6 +7,7 @@
  */
 
 export * from './batch.repository';
+export * from './database.exception';
 export * from './company.repository';
 export * from './csv-import.repository';
 export * from './document.repository';

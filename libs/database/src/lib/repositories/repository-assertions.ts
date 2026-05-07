@@ -1,13 +1,4 @@
-/*
- * Copyright Fraunhofer Institute for Material Flow and Logistics
- *
- * Licensed under the Apache License, Version 2.0 (the "License").
- * For details on the licensing terms, see the LICENSE file.
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import { HttpStatus } from '@nestjs/common';
-import { BrokerException } from '@h2-trust/messaging';
+import { RecordNotFoundException } from './database.exception';
 
 export function assertRecordFound<T>(
   fetchedRecord: T | null | undefined,
@@ -15,7 +6,7 @@ export function assertRecordFound<T>(
   entityLabel = 'Record',
 ): asserts fetchedRecord is T {
   if (!fetchedRecord) {
-    throw new BrokerException(`${entityLabel} with ID '${id}' not found.`, HttpStatus.NOT_FOUND);
+    throw new RecordNotFoundException(`${entityLabel} with ID '${id}' not found.`);
   }
 }
 
@@ -27,6 +18,6 @@ export function assertAllIdsFound<T extends { id: string }>(
   const foundIds = fetchedRecords.map((u) => u.id);
   const notFound = requestedIds.filter((id) => !foundIds.includes(id));
   if (notFound.length) {
-    throw new BrokerException(`${entityLabel} [${notFound.join(', ')}] not found.`, HttpStatus.NOT_FOUND);
+    throw new RecordNotFoundException(`${entityLabel} [${notFound.join(', ')}] not found.`);
   }
 }
