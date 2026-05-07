@@ -65,7 +65,7 @@ export class PowerPurchaseAgreementService {
 
     if (!agreementForGrid) {
       throw new DomainException(
-        ErrorCode.BUSINESS_RULE_VIOLATION,
+        ErrorCode.DOMAIN_BUSINESS_RULE_VIOLATION,
         `No grid connection found for user with id ${payload.id}.`,
       );
     }
@@ -78,7 +78,7 @@ export class PowerPurchaseAgreementService {
     if (!hasAccessToAgreement) {
       // TODO: move authorization check into BFF guard with 403 mapping
       throw new DomainException(
-        ErrorCode.BUSINESS_RULE_VIOLATION,
+        ErrorCode.DOMAIN_BUSINESS_RULE_VIOLATION,
         `User ${user.name} is not authorized to update power purchase agreement of this company.`,
       );
     }
@@ -92,7 +92,7 @@ export class PowerPurchaseAgreementService {
     if (!isOwnerOfProductionUnit) {
       // TODO: move authorization check into BFF guard with 403 mapping
       throw new DomainException(
-        ErrorCode.BUSINESS_RULE_VIOLATION,
+        ErrorCode.DOMAIN_BUSINESS_RULE_VIOLATION,
         `User ${user.name} is not authorized to grant access of this power production unit.`,
       );
     }

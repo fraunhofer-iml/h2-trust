@@ -6,7 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { InfrastructureException, StorageErrorCode } from './infrastructure.exception';
+import { ErrorCode } from './error-codes';
+import { InfrastructureException } from './infrastructure.exception';
+
+export type StorageErrorCode =
+  | ErrorCode.STORAGE_UPLOAD_FAILED
+  | ErrorCode.STORAGE_DOWNLOAD_FAILED
+  | ErrorCode.STORAGE_TIMEOUT;
 
 export class StorageException extends InfrastructureException {
   constructor(errorCode: StorageErrorCode, message: string, cause?: unknown) {

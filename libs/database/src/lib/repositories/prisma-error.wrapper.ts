@@ -15,7 +15,7 @@ export function wrapPrismaError(error: unknown): never {
       case 'P2025':
         throw new RecordNotFoundException('Record not found', error);
       case 'P2002':
-        throw new DatabaseException(ErrorCode.RECORD_CONFLICT, 'Unique constraint violation', error);
+        throw new DatabaseException(ErrorCode.DATABASE_RECORD_CONFLICT, 'Unique constraint violation', error);
       case 'P2003':
         throw new DatabaseException(ErrorCode.DATABASE_CONSTRAINT, 'Foreign key constraint violation', error);
       case 'P2014':

@@ -61,7 +61,7 @@ export class BottlingService {
 
     if (processStepsFromStorageUnit.length === 0) {
       throw new DomainException(
-        ErrorCode.BUSINESS_RULE_VIOLATION,
+        ErrorCode.DOMAIN_BUSINESS_RULE_VIOLATION,
         `No process steps found in storage unit '${payload.hydrogenStorageUnitId}'`,
       );
     }

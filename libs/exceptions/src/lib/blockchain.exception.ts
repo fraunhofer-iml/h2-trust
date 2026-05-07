@@ -6,7 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BlockchainErrorCode, InfrastructureException } from './infrastructure.exception';
+import { ErrorCode } from './error-codes';
+import { InfrastructureException } from './infrastructure.exception';
+
+export type BlockchainErrorCode =
+  | ErrorCode.BLOCKCHAIN_NOT_INITIALIZED
+  | ErrorCode.BLOCKCHAIN_STORE_FAILED
+  | ErrorCode.BLOCKCHAIN_RETRIEVE_FAILED;
 
 export class BlockchainException extends InfrastructureException {
   constructor(errorCode: BlockchainErrorCode, message: string, cause?: unknown) {

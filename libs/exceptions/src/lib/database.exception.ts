@@ -7,7 +7,13 @@
  */
 
 import { ErrorCode } from './error-codes';
-import { DatabaseErrorCode, InfrastructureException } from './infrastructure.exception';
+import { InfrastructureException } from './infrastructure.exception';
+
+export type DatabaseErrorCode =
+  | ErrorCode.DATABASE_ERROR
+  | ErrorCode.DATABASE_CONSTRAINT
+  | ErrorCode.DATABASE_RECORD_NOT_FOUND
+  | ErrorCode.DATABASE_RECORD_CONFLICT;
 
 export class DatabaseException extends InfrastructureException {
   constructor(errorCode: DatabaseErrorCode, message: string, cause?: unknown) {
@@ -17,6 +23,6 @@ export class DatabaseException extends InfrastructureException {
 
 export class RecordNotFoundException extends DatabaseException {
   constructor(message: string, cause?: unknown) {
-    super(ErrorCode.RECORD_NOT_FOUND, message, cause);
+    super(ErrorCode.DATABASE_RECORD_NOT_FOUND, message, cause);
   }
 }

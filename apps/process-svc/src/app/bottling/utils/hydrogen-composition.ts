@@ -28,7 +28,7 @@ export function computeHydrogenComposition(
   const totalAmount = mergedHydrogenComponents.reduce((sum, item) => sum + item.amount, 0);
   if (totalAmount <= 0) {
     throw new DomainException(
-      ErrorCode.BUSINESS_RULE_VIOLATION,
+      ErrorCode.DOMAIN_BUSINESS_RULE_VIOLATION,
       `Total stored amount of storage unit '${hydrogenStorageUnitId}' is not greater than 0`,
     );
   }

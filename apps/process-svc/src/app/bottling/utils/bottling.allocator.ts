@@ -102,7 +102,7 @@ function selectProcessStepsForBottlingAndCalculateRemainingAmount(
   }
 
   throw new DomainException(
-    ErrorCode.BUSINESS_RULE_VIOLATION,
+    ErrorCode.DOMAIN_BUSINESS_RULE_VIOLATION,
     `There is not enough hydrogen in storage unit '${storageUnitId}' for the requested amount of ${requestedAmount} of quality ${rfnboType}.`,
   );
 }

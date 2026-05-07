@@ -81,7 +81,7 @@ export class UnitRepository {
       return HydrogenStorageUnitEntity.fromDeepDatabase(baseUnit);
     }
 
-    throw new DomainException(ErrorCode.INCOMPATIBLE_DATA, 'Incompatible unit: no matching unit type found');
+    throw new DomainException(ErrorCode.DOMAIN_INCOMPATIBLE_DATA, 'Incompatible unit: no matching unit type found');
   }
 
   async findPowerProductionUnitsByOwnerId(ownerId: string): Promise<PowerProductionUnitEntity[]> {
@@ -353,7 +353,7 @@ export class UnitRepository {
         where: { id: id },
         select: { active: true },
       });
-      if (!unit?.active) throw new DomainException(ErrorCode.RESOURCE_INACTIVE, `Unit with ID '${id}' is inactive.`);
+      if (!unit?.active) throw new DomainException(ErrorCode.DOMAIN_RESOURCE_INACTIVE, `Unit with ID '${id}' is inactive.`);
     } catch (error) {
       wrapPrismaError(error);
     }
