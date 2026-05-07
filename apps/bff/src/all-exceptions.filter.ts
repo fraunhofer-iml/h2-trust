@@ -18,7 +18,17 @@ import {
 import { Request, Response } from 'express';
 import { ErrorCode } from '@h2-trust/exceptions';
 import type { RpcError } from '@h2-trust/messaging';
-import { isRpcError, PROBLEM_DEFINITIONS, ProblemDetail } from './problem-definitions';
+import { isRpcError, PROBLEM_DEFINITIONS } from './problem-definitions';
+
+interface ProblemDetail {
+  type: string;
+  title: string;
+  detail: string;
+  status: number;
+  instance: string;
+  timestamp: string;
+  validationErrors?: string[];
+}
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {

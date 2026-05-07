@@ -39,16 +39,6 @@ export const PROBLEM_DEFINITIONS = {
   [ErrorCode.VALIDATION_ERROR]: { httpStatus: HttpStatus.BAD_REQUEST, title: 'Validation Error' },
 } as const satisfies Record<ErrorCode, ProblemDefinition>;
 
-export interface ProblemDetail {
-  type: string;
-  title: string;
-  detail: string;
-  status: number;
-  instance: string;
-  timestamp: string;
-  validationErrors?: string[];
-}
-
 export function isRpcError(value: unknown): value is RpcError {
   return (
     typeof value === 'object' && value !== null && 'errorCode' in value && typeof (value as any).errorCode === 'string'
