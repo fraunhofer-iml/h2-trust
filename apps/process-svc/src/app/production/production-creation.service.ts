@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigurationService } from '@h2-trust/configuration';
 import {
   ConcreteUnitEntity,
@@ -18,7 +18,7 @@ import {
 } from '@h2-trust/contracts/entities';
 import { CreateManyProcessStepsPayload } from '@h2-trust/contracts/payloads';
 import { BatchType, RfnboType } from '@h2-trust/domain';
-import { BrokerException } from '@h2-trust/messaging';
+import { InternalException } from '@h2-trust/exceptions';
 import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
 import { ProcessStepService } from '../process-step/process-step.service';
 import {
@@ -60,9 +60,8 @@ export class ProductionCreationService {
       );
 
       if (power.length !== createProductionsChunk.length || water.length !== createProductionsChunk.length) {
-        throw new BrokerException(
+        throw new InternalException(
           `Expected 1:1 relation between given productions and created process steps, but got ${power.length} power and ${water.length} water for ${createProductionsChunk.length} productions.`,
-          HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
 
@@ -82,9 +81,8 @@ export class ProductionCreationService {
       );
 
       if (persistedPower.length !== persistedWater.length) {
-        throw new BrokerException(
+        throw new InternalException(
           `Expected 1:1 relation between power and water process steps, but got ${persistedPower.length} power and ${persistedWater.length} water.`,
-          HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
 
