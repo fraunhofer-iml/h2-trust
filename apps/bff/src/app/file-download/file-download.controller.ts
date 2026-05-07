@@ -7,6 +7,7 @@
  */
 
 import { Body, Controller, Post, Res } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import type { Response } from 'express';
 import { DownloadFilesDto } from '@h2-trust/contracts/dtos';
 import { FileDownloadService } from './file-download.service';
@@ -16,6 +17,7 @@ export class FileDownloadController {
   constructor(private service: FileDownloadService) {}
 
   @Post()
+  @ApiBearerAuth()
   findAll(@Body() dto: DownloadFilesDto, @Res() res: Response) {
     return this.service.downloadFilesAsZip(res, dto.ids);
   }

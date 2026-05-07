@@ -196,10 +196,10 @@ export class ProductionController {
   }
 
   @Post()
+  @ApiBearerAuth()
   @ApiOperation({
     description: 'Create production process steps by finalizing the staged productions.',
   })
-  @ApiBearerAuth()
   createProductionsFromStaging(
     @Body() dto: StagingSubmissionDto,
     @KeycloakUser() user: AuthenticatedKCUser,
