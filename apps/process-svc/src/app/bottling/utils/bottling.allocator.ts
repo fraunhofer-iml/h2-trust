@@ -6,10 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus } from '@nestjs/common';
 import { BatchEntity, HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType, RfnboType } from '@h2-trust/domain';
-import { BrokerException } from '@h2-trust/messaging';
+import { DomainException, ErrorCode } from '@h2-trust/exceptions';
 
 export interface BottlingAllocation {
   batchesForBottle: BatchEntity[];
@@ -102,8 +101,10 @@ function selectProcessStepsForBottlingAndCalculateRemainingAmount(
     pendingAmount -= currentProcessStep.batch.amount;
   }
 
-  const message = `There is not enough hydrogen in storage unit ${storageUnitId} for the requested amount of ${requestedAmount} of quality ${rfnboType}.`;
-  throw new BrokerException(message, HttpStatus.BAD_REQUEST);
+  throw new DomainException(
+    ErrorCode.BUSINESS_RULE_VIOLATION,
+    `There is not enough hydrogen in storage unit '${storageUnitId}' for the requested amount of ${requestedAmount} of quality ${rfnboType}.`,
+  );
 }
 
 function splitLastProcessStepIfNeeded(

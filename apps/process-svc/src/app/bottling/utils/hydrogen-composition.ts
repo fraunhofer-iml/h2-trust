@@ -7,24 +7,30 @@
  */
 
 import { HydrogenComponentEntity } from '@h2-trust/contracts/entities';
+import { DomainException, ErrorCode } from '@h2-trust/exceptions';
 
 /**
  * Merges a list of HydrogenComponents, so that all components are grouped together with the same RFNBO type.
  * Then sets the amount of each grouped HydrogenComponent to an amount value according to the requested bottleAmount.
  * @param hydrogenComponents The HydrogenComponents, that should be grouped.
  * @param bottleAmount The requested bottle Amount.
+ * @param hydrogenStorageUnitId The ID of the hydrogen storage unit (included in error context).
  * @returns The merged list of HydrogenComponents, where each RFNBO type only exists once.
  */
 export function computeHydrogenComposition(
   hydrogenComponents: HydrogenComponentEntity[],
   bottleAmount: number,
+  hydrogenStorageUnitId: string,
 ): HydrogenComponentEntity[] {
   //The list of HydrogenComponents merged according to their RFNBO Type
   const mergedHydrogenComponents = hydrogenComponents.reduce<HydrogenComponentEntity[]>(mergeSingleComponent, []);
 
   const totalAmount = mergedHydrogenComponents.reduce((sum, item) => sum + item.amount, 0);
   if (totalAmount <= 0) {
-    throw new Error(`Total stored amount is not greater than 0`);
+    throw new DomainException(
+      ErrorCode.BUSINESS_RULE_VIOLATION,
+      `Total stored amount of storage unit '${hydrogenStorageUnitId}' is not greater than 0`,
+    );
   }
 
   return mergedHydrogenComponents.map(
