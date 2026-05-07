@@ -67,7 +67,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const problemType = PROBLEM_TYPES[rpcError.errorCode] ?? PROBLEM_TYPES[ErrorCode.INTERNAL_ERROR];
 
     const type = this.toTypeUri(rpcError.errorCode);
-    const status = problemType.httpStatus;
+    const status = problemType.status;
     const title = problemType.title;
     const detail = rpcError.errorCode === ErrorCode.INTERNAL_ERROR ? 'An internal error occurred' : rpcError.message;
 
@@ -86,7 +86,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   private validationPipeToProblemDetail(body: unknown, instance: string, timestamp: string): ProblemDetail {
     const type = this.toTypeUri(ErrorCode.VALIDATION_ERROR);
-    const status = PROBLEM_TYPES[ErrorCode.VALIDATION_ERROR].httpStatus;
+    const status = PROBLEM_TYPES[ErrorCode.VALIDATION_ERROR].status;
     const title = PROBLEM_TYPES[ErrorCode.VALIDATION_ERROR].title;
     const detail = 'Validation failed';
 
@@ -131,7 +131,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     this.logger.error(`Unexpected exception: ${exception}`);
 
     const type = this.toTypeUri(ErrorCode.INTERNAL_ERROR);
-    const status = PROBLEM_TYPES[ErrorCode.INTERNAL_ERROR].httpStatus;
+    const status = PROBLEM_TYPES[ErrorCode.INTERNAL_ERROR].status;
     const title = PROBLEM_TYPES[ErrorCode.INTERNAL_ERROR].title;
     const detail = 'An internal error occurred';
 

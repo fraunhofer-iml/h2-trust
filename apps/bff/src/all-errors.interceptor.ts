@@ -32,7 +32,7 @@ export class AllErrorsInterceptor implements NestInterceptor {
 
         const problemType = PROBLEM_TYPES[rpcError.errorCode as ErrorCode] ?? PROBLEM_TYPES[ErrorCode.INTERNAL_ERROR];
 
-        throw new HttpException(rpcError, problemType.httpStatus);
+        throw new HttpException(rpcError, problemType.status);
       }),
     );
   }
