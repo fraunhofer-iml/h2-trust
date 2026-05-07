@@ -353,7 +353,8 @@ export class UnitRepository {
         where: { id: id },
         select: { active: true },
       });
-      if (!unit?.active) throw new DomainException(ErrorCode.DOMAIN_RESOURCE_INACTIVE, `Unit with ID '${id}' is inactive.`);
+      if (!unit?.active)
+        throw new DomainException(ErrorCode.DOMAIN_RESOURCE_INACTIVE, `Unit with ID '${id}' is inactive.`);
     } catch (error) {
       wrapPrismaError(error);
     }

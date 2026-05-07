@@ -17,8 +17,8 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ErrorCode } from '@h2-trust/exceptions';
-import { isRpcError, PROBLEM_DEFINITIONS, ProblemResponse } from './problem-definitions';
 import type { RpcError } from '@h2-trust/messaging';
+import { isRpcError, PROBLEM_DEFINITIONS, ProblemResponse } from './problem-definitions';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -40,8 +40,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       const body = exception.getResponse();
 
       if (isRpcError(body)) {
-        const problemDefinition = PROBLEM_DEFINITIONS[body.errorCode]
-          ?? PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR];
+        const problemDefinition = PROBLEM_DEFINITIONS[body.errorCode] ?? PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR];
         return problemDefinition.httpStatus;
       }
 
@@ -73,19 +72,14 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   // From the interceptor: HttpException wrapping an RpcError body
   private rpcErrorToProblemResponse(rpcError: RpcError, instance: string, timestamp: string): ProblemResponse {
-    const problemDefinition = PROBLEM_DEFINITIONS[rpcError.errorCode]
-      ?? PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR];
+    const problemDefinition = PROBLEM_DEFINITIONS[rpcError.errorCode] ?? PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR];
 
     const type = this.toTypeUri(rpcError.errorCode);
     const title = problemDefinition.title;
-    const detail = rpcError.errorCode === ErrorCode.INTERNAL_ERROR
-      ? 'An internal error occurred'
-      : rpcError.message;
+    const detail = rpcError.errorCode === ErrorCode.INTERNAL_ERROR ? 'An internal error occurred' : rpcError.message;
     const status = problemDefinition.httpStatus;
 
-    const validationErrors = rpcError.validationErrors?.length
-      ? { validationErrors: rpcError.validationErrors }
-      : {};
+    const validationErrors = rpcError.validationErrors?.length ? { validationErrors: rpcError.validationErrors } : {};
 
     return {
       type,
@@ -121,7 +115,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
   }
 
   // BFF-native: other HttpExceptions from Guards, Controllers, etc.
-  private nativeHttpExceptionToProblemResponse(exception: HttpException, body: unknown, instance: string, timestamp: string): ProblemResponse {
+  private nativeHttpExceptionToProblemResponse(
+    exception: HttpException,
+    body: unknown,
+    instance: string,
+    timestamp: string,
+  ): ProblemResponse {
     const type = this.toTypeUri(`http-${exception.getStatus()}`);
     const title = exception.constructor.name.replace(/Exception$/, '');
     const detail = typeof body === 'string' ? body : ((body as any)?.message ?? 'An error occurred');
@@ -138,7 +137,11 @@ export class AllExceptionsFilter implements ExceptionFilter {
   }
 
   // Should not occur after the interceptor has run
-  private unexpectedExceptionToProblemResponse(exception: unknown, instance: string, timestamp: string): ProblemResponse {
+  private unexpectedExceptionToProblemResponse(
+    exception: unknown,
+    instance: string,
+    timestamp: string,
+  ): ProblemResponse {
     this.logger.error(`Unexpected exception: ${exception}`);
 
     const type = this.toTypeUri(ErrorCode.INTERNAL_ERROR);

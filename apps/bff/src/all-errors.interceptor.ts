@@ -29,8 +29,8 @@ export class AllErrorsInterceptor implements NestInterceptor {
           ? err
           : { errorCode: ErrorCode.INTERNAL_ERROR, message: 'Internal server error' };
 
-        const problemDefinition = PROBLEM_DEFINITIONS[rpcError.errorCode as ErrorCode]
-          ?? PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR];
+        const problemDefinition =
+          PROBLEM_DEFINITIONS[rpcError.errorCode as ErrorCode] ?? PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR];
 
         throw new HttpException(rpcError, problemDefinition.httpStatus);
       }),

@@ -16,14 +16,20 @@ interface ProblemDefinition {
 }
 
 export const PROBLEM_DEFINITIONS = {
-  [ErrorCode.BLOCKCHAIN_NOT_INITIALIZED]: { httpStatus: HttpStatus.SERVICE_UNAVAILABLE, title: 'Blockchain Not Initialized' },
+  [ErrorCode.BLOCKCHAIN_NOT_INITIALIZED]: {
+    httpStatus: HttpStatus.SERVICE_UNAVAILABLE,
+    title: 'Blockchain Not Initialized',
+  },
   [ErrorCode.BLOCKCHAIN_RETRIEVE_FAILED]: { httpStatus: HttpStatus.BAD_GATEWAY, title: 'Blockchain Retrieve Failed' },
   [ErrorCode.BLOCKCHAIN_STORE_FAILED]: { httpStatus: HttpStatus.BAD_GATEWAY, title: 'Blockchain Store Failed' },
   [ErrorCode.DATABASE_CONSTRAINT]: { httpStatus: HttpStatus.BAD_REQUEST, title: 'Database Constraint Violation' },
   [ErrorCode.DATABASE_ERROR]: { httpStatus: HttpStatus.INTERNAL_SERVER_ERROR, title: 'Database Error' },
   [ErrorCode.DATABASE_RECORD_CONFLICT]: { httpStatus: HttpStatus.CONFLICT, title: 'Record Conflict' },
   [ErrorCode.DATABASE_RECORD_NOT_FOUND]: { httpStatus: HttpStatus.NOT_FOUND, title: 'Record Not Found' },
-  [ErrorCode.DOMAIN_BUSINESS_RULE_VIOLATION]: { httpStatus: HttpStatus.UNPROCESSABLE_ENTITY, title: 'Business Rule Violation' },
+  [ErrorCode.DOMAIN_BUSINESS_RULE_VIOLATION]: {
+    httpStatus: HttpStatus.UNPROCESSABLE_ENTITY,
+    title: 'Business Rule Violation',
+  },
   [ErrorCode.DOMAIN_INCOMPATIBLE_DATA]: { httpStatus: HttpStatus.UNPROCESSABLE_ENTITY, title: 'Incompatible Data' },
   [ErrorCode.DOMAIN_RESOURCE_INACTIVE]: { httpStatus: HttpStatus.CONFLICT, title: 'Resource Inactive' },
   [ErrorCode.STORAGE_DOWNLOAD_FAILED]: { httpStatus: HttpStatus.BAD_GATEWAY, title: 'Storage Download Failed' },
@@ -44,8 +50,7 @@ export interface ProblemResponse {
 }
 
 export function isRpcError(value: unknown): value is RpcError {
-  return typeof value === 'object'
-    && value !== null
-    && 'errorCode' in value
-    && typeof (value as any).errorCode === 'string';
+  return (
+    typeof value === 'object' && value !== null && 'errorCode' in value && typeof (value as any).errorCode === 'string'
+  );
 }

@@ -10,17 +10,17 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { StagedProductionEntity } from '@h2-trust/contracts/entities';
 import { ReadStagedProductionsPayload } from '@h2-trust/contracts/payloads';
+import { DatabaseException, ErrorCode } from '@h2-trust/exceptions';
 import { PrismaService } from '../prisma.service';
 import { stagedProductionDeepQueryArgs } from '../query-args';
 import { StagedProductionDeepDbType } from '../types';
 import { wrapPrismaError } from './prisma-error.wrapper';
-import { DatabaseException, ErrorCode } from '@h2-trust/exceptions';
 
 @Injectable()
 export class StagedProductionRepository {
   static readonly DAY_IN_MS = 24 * 60 * 60 * 1000;
 
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async setStagedProductionsToInactive(ids: string[]): Promise<number> {
     try {
@@ -61,8 +61,8 @@ export class StagedProductionRepository {
       ...(payload.to !== undefined && { endedAt: payload.to }),
       ...(unitIds !== undefined &&
         unitIds.length > 0 && {
-        unitId: { in: unitIds },
-      }),
+          unitId: { in: unitIds },
+        }),
       active: true,
     };
 
@@ -110,7 +110,10 @@ export class StagedProductionRepository {
       });
 
       if (!stagedProductions || stagedProductions.length === 0) {
-        throw new DatabaseException(ErrorCode.DATABASE_RECORD_NOT_FOUND, `No staged productions found for CSV import '${csvImportId}'`);
+        throw new DatabaseException(
+          ErrorCode.DATABASE_RECORD_NOT_FOUND,
+          `No staged productions found for CSV import '${csvImportId}'`,
+        );
       }
 
       return stagedProductions.map(StagedProductionEntity.fromDeepDatabase);
