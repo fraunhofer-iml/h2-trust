@@ -8,14 +8,13 @@
 
 import { HttpStatus } from '@nestjs/common';
 import { ErrorCode } from '@h2-trust/exceptions';
-import { RpcError } from '@h2-trust/messaging';
 
-interface ProblemDefinition {
+interface ProblemType {
   httpStatus: number;
   title: string;
 }
 
-export const PROBLEM_DEFINITIONS = {
+export const PROBLEM_TYPES = {
   [ErrorCode.BLOCKCHAIN_NOT_INITIALIZED]: {
     httpStatus: HttpStatus.SERVICE_UNAVAILABLE,
     title: 'Blockchain Not Initialized',
@@ -37,10 +36,4 @@ export const PROBLEM_DEFINITIONS = {
   [ErrorCode.STORAGE_UPLOAD_FAILED]: { httpStatus: HttpStatus.BAD_GATEWAY, title: 'Storage Upload Failed' },
   [ErrorCode.INTERNAL_ERROR]: { httpStatus: HttpStatus.INTERNAL_SERVER_ERROR, title: 'Internal Server Error' },
   [ErrorCode.VALIDATION_ERROR]: { httpStatus: HttpStatus.BAD_REQUEST, title: 'Validation Error' },
-} as const satisfies Record<ErrorCode, ProblemDefinition>;
-
-export function isRpcError(value: unknown): value is RpcError {
-  return (
-    typeof value === 'object' && value !== null && 'errorCode' in value && typeof (value as any).errorCode === 'string'
-  );
-}
+} as const satisfies Record<ErrorCode, ProblemType>;

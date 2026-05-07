@@ -10,7 +10,8 @@ import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, HttpExcepti
 import { Request, Response } from 'express';
 import { ErrorCode } from '@h2-trust/exceptions';
 import type { RpcError } from '@h2-trust/messaging';
-import { isRpcError, PROBLEM_DEFINITIONS } from './problem-definitions';
+import { PROBLEM_TYPES } from './problem-types';
+import { isRpcError } from './rpc-error.guard';
 
 // Based on RFC 9457: https://datatracker.ietf.org/doc/html/rfc9457
 interface ProblemDetail {
@@ -63,11 +64,11 @@ export class AllExceptionsFilter implements ExceptionFilter {
   }
 
   private rpcErrorToProblemDetail(rpcError: RpcError, instance: string, timestamp: string): ProblemDetail {
-    const problemDefinition = PROBLEM_DEFINITIONS[rpcError.errorCode] ?? PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR];
+    const problemType = PROBLEM_TYPES[rpcError.errorCode] ?? PROBLEM_TYPES[ErrorCode.INTERNAL_ERROR];
 
     const type = this.toTypeUri(rpcError.errorCode);
-    const status = problemDefinition.httpStatus;
-    const title = problemDefinition.title;
+    const status = problemType.httpStatus;
+    const title = problemType.title;
     const detail = rpcError.errorCode === ErrorCode.INTERNAL_ERROR ? 'An internal error occurred' : rpcError.message;
 
     const validationErrors = rpcError.validationErrors?.length ? { validationErrors: rpcError.validationErrors } : {};
@@ -85,8 +86,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   private validationPipeToProblemDetail(body: unknown, instance: string, timestamp: string): ProblemDetail {
     const type = this.toTypeUri(ErrorCode.VALIDATION_ERROR);
-    const status = PROBLEM_DEFINITIONS[ErrorCode.VALIDATION_ERROR].httpStatus;
-    const title = PROBLEM_DEFINITIONS[ErrorCode.VALIDATION_ERROR].title;
+    const status = PROBLEM_TYPES[ErrorCode.VALIDATION_ERROR].httpStatus;
+    const title = PROBLEM_TYPES[ErrorCode.VALIDATION_ERROR].title;
     const detail = 'Validation failed';
 
     // ValidationPipe sets body.message to a string[] of per-field errors
@@ -130,8 +131,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
     this.logger.error(`Unexpected exception: ${exception}`);
 
     const type = this.toTypeUri(ErrorCode.INTERNAL_ERROR);
-    const status = PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR].httpStatus;
-    const title = PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR].title;
+    const status = PROBLEM_TYPES[ErrorCode.INTERNAL_ERROR].httpStatus;
+    const title = PROBLEM_TYPES[ErrorCode.INTERNAL_ERROR].title;
     const detail = 'An internal error occurred';
 
     return {

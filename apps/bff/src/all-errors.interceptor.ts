@@ -11,7 +11,8 @@ import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ErrorCode } from '@h2-trust/exceptions';
 import { RpcError } from '@h2-trust/messaging';
-import { isRpcError, PROBLEM_DEFINITIONS } from './problem-definitions';
+import { PROBLEM_TYPES } from './problem-types';
+import { isRpcError } from './rpc-error.guard';
 
 @Injectable()
 export class AllErrorsInterceptor implements NestInterceptor {
@@ -29,10 +30,9 @@ export class AllErrorsInterceptor implements NestInterceptor {
           ? err
           : { errorCode: ErrorCode.INTERNAL_ERROR, message: 'Internal server error' };
 
-        const problemDefinition =
-          PROBLEM_DEFINITIONS[rpcError.errorCode as ErrorCode] ?? PROBLEM_DEFINITIONS[ErrorCode.INTERNAL_ERROR];
+        const problemType = PROBLEM_TYPES[rpcError.errorCode as ErrorCode] ?? PROBLEM_TYPES[ErrorCode.INTERNAL_ERROR];
 
-        throw new HttpException(rpcError, problemDefinition.httpStatus);
+        throw new HttpException(rpcError, problemType.httpStatus);
       }),
     );
   }
