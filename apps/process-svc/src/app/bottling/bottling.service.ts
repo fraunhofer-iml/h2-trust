@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
   BatchEntity,
   DocumentEntity,
@@ -21,7 +21,7 @@ import {
 } from '@h2-trust/contracts/payloads';
 import { DocumentRepository } from '@h2-trust/database';
 import { RfnboType } from '@h2-trust/domain';
-import { BrokerException } from '@h2-trust/messaging';
+import { DomainException, ErrorCode, ValidationException } from '@h2-trust/exceptions';
 import { CentralizedStorageService, ContentType } from '@h2-trust/storage';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { allocateBottling, BottlingAllocation } from './utils/bottling.allocator';
@@ -30,7 +30,6 @@ import { computeHydrogenComposition } from './utils/hydrogen-composition';
 
 @Injectable()
 export class BottlingService {
-  logger = new Logger('BottlingService');
   constructor(
     private readonly storageService: CentralizedStorageService,
     private readonly documentRepository: DocumentRepository,
@@ -47,16 +46,10 @@ export class BottlingService {
     payload: ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ): Promise<PaginatedProcessStepEntity> {
     if (payload.filter.pageNumber <= 0) {
-      throw new BrokerException(
-        `No process steps found in storage unit ${payload.filter.pageNumber}`,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new ValidationException(`pageNumber must be greater than 0, got ${payload.filter.pageNumber}`);
     }
     if (payload.filter.pageSize <= 0) {
-      throw new BrokerException(
-        `No process steps found in storage unit ${payload.filter.pageSize}`,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new ValidationException(`pageSize must be greater than 0, got ${payload.filter.pageSize}`);
     }
     return this.processStepService.readPaginatedProcessStepsByPredecessorTypesAndOwner(payload);
   }
@@ -66,9 +59,9 @@ export class BottlingService {
       await this.processStepService.readAllProcessStepsFromStorageUnit(payload.hydrogenStorageUnitId);
 
     if (processStepsFromStorageUnit.length === 0) {
-      throw new BrokerException(
-        `No process steps found in storage unit ${payload.hydrogenStorageUnitId}`,
-        HttpStatus.BAD_REQUEST,
+      throw new DomainException(
+        ErrorCode.DOMAIN_BUSINESS_RULE_VIOLATION,
+        `No process steps found in storage unit '${payload.hydrogenStorageUnitId}'`,
       );
     }
 
@@ -142,14 +135,7 @@ export class BottlingService {
       return [new HydrogenComponentEntity(null, batchAmount, RfnboType.RFNBO_READY)];
     }
 
-    try {
-      return computeHydrogenComposition(hydrogenStorageUnitFillings, batchAmount);
-    } catch (BrokerException) {
-      throw new BrokerException(
-        `Total stored amount of ${hydrogenStorageUnitId} is not greater than 0`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return computeHydrogenComposition(hydrogenStorageUnitFillings, batchAmount, hydrogenStorageUnitId);
   }
 
   private async addDocumentToProcessStep(file: Express.Multer.File, processStepId: string): Promise<DocumentEntity> {

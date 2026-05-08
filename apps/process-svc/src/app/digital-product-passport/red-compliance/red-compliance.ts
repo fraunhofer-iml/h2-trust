@@ -6,8 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpException, HttpStatus } from '@nestjs/common';
-import { RpcException } from '@nestjs/microservices';
 import {
   HydrogenProductionUnitEntity,
   PowerProductionUnitEntity,
@@ -16,6 +14,7 @@ import {
   RedComplianceEntity,
 } from '@h2-trust/contracts/entities';
 import { BiddingZone } from '@h2-trust/domain';
+import { InternalException } from '@h2-trust/exceptions';
 import { assertBoolean, assertDefined, subtractMonthsSafe, toValidDate } from '@h2-trust/utils';
 
 export function determineRedCompliance(
@@ -23,8 +22,8 @@ export function determineRedCompliance(
   powerProduction: ProcessStepEntity,
 ): RedComplianceEntity {
   if (!hydrogenProduction?.executedBy || !powerProduction?.executedBy) {
-    throw new RpcException(
-      `The passed-in power production or hydrogen production do not have an executedBy unit specified.`,
+    throw new InternalException(
+      'The passed-in power production or hydrogen production do not have an executedBy unit specified.',
     );
   }
   const powerProductionUnit: PowerProductionUnitEntity = powerProduction.executedBy as PowerProductionUnitEntity;
@@ -120,6 +119,6 @@ export function hasFinancialSupport(powerUnit: PowerProductionUnitEntity): boole
 export function assertValidBiddingZone(zone: unknown, name: string): asserts zone is BiddingZone {
   assertDefined(zone, name);
   if (!Object.values(BiddingZone).includes(zone as BiddingZone)) {
-    throw new HttpException(`Invalid BiddingZone: ${name}: ${zone}`, HttpStatus.INTERNAL_SERVER_ERROR);
+    throw new InternalException(`Invalid BiddingZone: ${name}: ${zone}`);
   }
 }

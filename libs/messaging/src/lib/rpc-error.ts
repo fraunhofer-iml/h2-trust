@@ -6,8 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './broker';
-export * from './broker-queues';
-export * from './message-patterns';
-export * from './rpc-error';
-export * from './rpc-exception.filter';
+import { ErrorCode } from '@h2-trust/exceptions';
+
+export interface RpcError {
+  errorCode: ErrorCode;
+  message: string;
+  validationErrors?: string[];
+}

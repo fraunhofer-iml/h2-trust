@@ -6,8 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus } from '@nestjs/common';
-import { BrokerException } from '@h2-trust/messaging';
+import { DatabaseException, ErrorCode } from '@h2-trust/exceptions';
 
 export function assertRecordFound<T>(
   fetchedRecord: T | null | undefined,
@@ -15,7 +14,7 @@ export function assertRecordFound<T>(
   entityLabel = 'Record',
 ): asserts fetchedRecord is T {
   if (!fetchedRecord) {
-    throw new BrokerException(`${entityLabel} with ID '${id}' not found.`, HttpStatus.NOT_FOUND);
+    throw new DatabaseException(ErrorCode.DATABASE_RECORD_NOT_FOUND, `${entityLabel} with ID '${id}' not found.`);
   }
 }
 
@@ -27,6 +26,9 @@ export function assertAllIdsFound<T extends { id: string }>(
   const foundIds = fetchedRecords.map((u) => u.id);
   const notFound = requestedIds.filter((id) => !foundIds.includes(id));
   if (notFound.length) {
-    throw new BrokerException(`${entityLabel} [${notFound.join(', ')}] not found.`, HttpStatus.NOT_FOUND);
+    throw new DatabaseException(
+      ErrorCode.DATABASE_RECORD_NOT_FOUND,
+      `${entityLabel} [${notFound.join(', ')}] not found.`,
+    );
   }
 }

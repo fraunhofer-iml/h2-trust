@@ -8,6 +8,7 @@
 
 import { Readable } from 'stream';
 import { Logger } from '@nestjs/common';
+import { ErrorCode, StorageException } from '@h2-trust/exceptions';
 import { ContentType } from '../content-types';
 import { DecentralizedStorageService } from './decentralized-storage.service';
 
@@ -43,7 +44,10 @@ export class IpfsNativeStorageService extends DecentralizedStorageService {
     });
 
     if (!response.ok) {
-      throw new Error(`Upload failed (${response.status}): ${await response.text()}`);
+      throw new StorageException(
+        ErrorCode.STORAGE_UPLOAD_FAILED,
+        `Upload failed (${response.status}): ${await response.text()}`,
+      );
     }
 
     const { Hash: cid } = (await response.json()) as { Hash: string };
@@ -73,7 +77,10 @@ export class IpfsNativeStorageService extends DecentralizedStorageService {
     });
 
     if (!response.ok) {
-      throw new Error(`Download failed (${response.status}) for '${fileName}': ${await response.text()}`);
+      throw new StorageException(
+        ErrorCode.STORAGE_DOWNLOAD_FAILED,
+        `Download failed (${response.status}) for '${fileName}': ${await response.text()}`,
+      );
     }
 
     return Readable.fromWeb(response.body as ReadableStream<Uint8Array>);
@@ -92,7 +99,7 @@ export class IpfsNativeStorageService extends DecentralizedStorageService {
       return await fetch(url, { ...init, signal: controller.signal });
     } catch (error) {
       if (error instanceof Error && error.name === 'AbortError') {
-        throw new Error(`Request timed out after ${timeoutMs} ms: ${url}`, { cause: error });
+        throw new StorageException(ErrorCode.STORAGE_TIMEOUT, `Request timed out after ${timeoutMs} ms: ${url}`, error);
       }
       throw error;
     } finally {

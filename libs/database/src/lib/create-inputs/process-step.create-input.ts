@@ -6,33 +6,29 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType } from '@h2-trust/domain';
-import { BrokerException } from '@h2-trust/messaging';
+import { InternalException } from '@h2-trust/exceptions';
 
 export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Prisma.ProcessStepCreateInput {
   const hydrogenStorageUnitId = processStep.batch.hydrogenStorageUnit?.id;
 
   if (processStep.type === ProcessType.POWER_PRODUCTION && hydrogenStorageUnitId) {
-    throw new BrokerException(
+    throw new InternalException(
       `Power production batch with amount [${processStep.batch.amount}] has a hydrogen storage unit [${hydrogenStorageUnitId}]`,
-      HttpStatus.INTERNAL_SERVER_ERROR,
     );
   }
 
   if (processStep.type === ProcessType.HYDROGEN_PRODUCTION && !hydrogenStorageUnitId) {
-    throw new BrokerException(
+    throw new InternalException(
       `Hydrogen production batch with amount [${processStep.batch.amount}] has no hydrogen storage unit`,
-      HttpStatus.INTERNAL_SERVER_ERROR,
     );
   }
 
   if (processStep.type === ProcessType.HYDROGEN_BOTTLING && hydrogenStorageUnitId) {
-    throw new BrokerException(
+    throw new InternalException(
       `Hydrogen bottling batch with amount [${processStep.batch.amount}] has a hydrogen storage unit [${hydrogenStorageUnitId}]`,
-      HttpStatus.INTERNAL_SERVER_ERROR,
     );
   }
 

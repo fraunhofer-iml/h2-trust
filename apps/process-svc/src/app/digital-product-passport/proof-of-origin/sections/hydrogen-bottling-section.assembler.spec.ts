@@ -135,7 +135,7 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
 
     it('throws error when process step type is invalid', () => {
       const givenProcessStep = ProcessStepEntityFixture.createPowerProduction();
-      const expectedErrorMessage = `There are no hydrogen productions in Provenance.`;
+      const expectedErrorMessage = `There are no hydrogen productions in provenance.`;
       const givenProvenance = new ProvenanceEntity(givenProcessStep, [], givenProcessStep);
 
       expect(() => assembleHydrogenBottlingSection(givenProvenance)).toThrow(expectedErrorMessage);

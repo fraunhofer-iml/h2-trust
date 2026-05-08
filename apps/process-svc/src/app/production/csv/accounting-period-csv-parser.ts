@@ -6,10 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { parse } from 'csv-parse';
 import { StagedProductionAccountingPeriod } from '@h2-trust/contracts/entities';
-import { BrokerException } from '@h2-trust/messaging';
+import { ValidationException } from '@h2-trust/exceptions';
 import { convertLocalTimeToUTC } from '@h2-trust/utils';
 
 const logger: Logger = new Logger('AccountingPeriodCsvParser');
@@ -28,7 +28,7 @@ export async function parseAccountingPeriodCsvBuffer(
       const normalizedColumns = header.map((h) => h.trim().replace(/^\uFEFF/, ''));
       for (const column of columns) {
         if (!normalizedColumns.includes(column)) {
-          throw new BrokerException(`Missing required column: ${column}`, HttpStatus.BAD_REQUEST);
+          throw new ValidationException(`Missing required column: ${column}`);
         }
       }
       return normalizedColumns;
