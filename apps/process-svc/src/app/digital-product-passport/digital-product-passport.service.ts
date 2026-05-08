@@ -18,6 +18,7 @@ import {
   RedComplianceEntity,
 } from '@h2-trust/contracts/entities';
 import { PowerType, RfnboType } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { assembleProofOfOrigin, getHydrogenBottlingCompositions } from './proof-of-origin/proof-of-origin.assembler';
 import { assembleProofOfSustainability } from './proof-of-sustainability/proof-of-sustainability.assembler';
@@ -42,7 +43,9 @@ export class DigitalProductPassportService {
       productionChain.powerProduction,
     );
 
-    const powerType: PowerType = productionChain.powerProduction.batch.qualityDetails.powerType as PowerType;
+    const rawPowerType = productionChain.powerProduction.batch.qualityDetails.powerType;
+    assertValidEnum(rawPowerType, PowerType, 'PowerType');
+    const powerType: PowerType = rawPowerType;
     const provenance: ProvenanceEntity = ProvenanceEntity.fromProductionChain(productionChain);
     const proofOfSustainability: ProofOfSustainabilityEntity = assembleProofOfSustainability(provenance);
     return this.determineRfnboType(redCompliance, powerType, proofOfSustainability);

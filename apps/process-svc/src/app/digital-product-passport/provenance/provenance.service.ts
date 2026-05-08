@@ -16,6 +16,7 @@ import {
 } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 import { InternalException } from '@h2-trust/exceptions';
+import { assertDefined } from '@h2-trust/utils';
 import { TraversalService } from './traversal/traversal.service';
 
 type ProvenanceBuilderFn = (root: ProcessStepEntity) => Promise<ProvenanceEntity>;
@@ -47,6 +48,8 @@ export class ProvenanceService {
     const waterConsumption: ProcessStepEntity = hydrogenRootProductions.find((ps) => ps.batch.type == BatchType.WATER);
     const powerProduction: ProcessStepEntity = hydrogenRootProductions.find((ps) => ps.batch.type == BatchType.POWER);
 
+    assertDefined(powerProduction.executedBy, 'powerProduction.executedBy');
+    assertDefined(rootHydrogenProduction.executedBy, 'rootHydrogenProduction.executedBy');
     return new ProductionChainEntity(
       hydrogenLeafProduction,
       rootHydrogenProduction,
