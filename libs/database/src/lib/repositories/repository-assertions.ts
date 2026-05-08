@@ -23,8 +23,8 @@ export function assertAllIdsFound<T extends { id: string }>(
   requestedIds: string[],
   entityLabel = 'Records',
 ): void {
-  const foundIds = fetchedRecords.map((u) => u.id);
-  const notFound = requestedIds.filter((id) => !foundIds.includes(id));
+  const foundIds = new Set(fetchedRecords.map((r) => r.id));
+  const notFound = requestedIds.filter((id) => !foundIds.has(id));
   if (notFound.length) {
     throw new DatabaseException(
       ErrorCode.DATABASE_RECORD_NOT_FOUND,
