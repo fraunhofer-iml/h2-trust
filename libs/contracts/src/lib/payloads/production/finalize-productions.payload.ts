@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsArray, IsNotEmpty, IsString } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsNotEmpty, IsString } from 'class-validator';
 
 export class FinalizeProductionsPayload {
   @IsString()
@@ -15,7 +15,9 @@ export class FinalizeProductionsPayload {
 
   @IsNotEmpty()
   @IsArray()
+  @ArrayNotEmpty()
   @IsString({ each: true })
+  @IsNotEmpty({ each: true })
   stagedPowerProductions: string[];
 
   @IsString()
