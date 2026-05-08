@@ -60,7 +60,7 @@ export function calculateBatchAmountPerAccountingPeriod(
     throw new InternalException('numberOfAccountingPeriods must be greater than zero');
   }
 
-  return batchAmount / Math.max(1, numberOfAccountingPeriods);
+  return batchAmount / numberOfAccountingPeriods;
 }
 
 export function calculateProductionStartDate(
