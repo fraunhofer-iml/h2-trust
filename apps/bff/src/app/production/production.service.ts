@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { hashBuffer } from '@h2-trust/blockchain';
@@ -42,6 +42,7 @@ import {
   StageProductionsPayload,
 } from '@h2-trust/contracts/payloads';
 import { CsvContentType, ProcessType, StagingScope } from '@h2-trust/domain';
+import { ValidationException } from '@h2-trust/exceptions';
 import { ProcessStepMessagePatterns, ProductionMessagePatterns, QUEUE_PROCESS_SVC } from '@h2-trust/messaging';
 import { CentralizedStorageService } from '@h2-trust/storage';
 import { UserService } from '../user/user.service';
@@ -135,16 +136,16 @@ export class ProductionService {
     const normalizedUnitIds: string[] = Array.isArray(unitIds) ? unitIds : [unitIds];
 
     if (type != CsvContentType.HYDROGEN && type != CsvContentType.POWER) {
-      throw new BadRequestException(`Stage production contains invalid types.`);
+      throw new ValidationException(`Stage production contains invalid types.`);
     }
 
     if (!normalizedFiles || normalizedFiles.length === 0) {
-      throw new BadRequestException(`Missing file for ${type} production.`);
+      throw new ValidationException(`Missing file for ${type} production.`);
     }
 
-    if (normalizedUnitIds.length < normalizedFiles.length) {
-      throw new BadRequestException(
-        `Not enough unit IDs provided for ${type} production files: expected ${normalizedFiles.length}, got ${normalizedUnitIds.length}.`,
+    if (normalizedUnitIds.length !== normalizedFiles.length) {
+      throw new ValidationException(
+        `Unit IDs count must match file count for ${type} production: expected ${normalizedFiles.length}, got ${normalizedUnitIds.length}.`,
       );
     }
 
