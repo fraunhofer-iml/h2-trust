@@ -122,6 +122,7 @@ export class PowerPurchaseAgreementController {
   }
 
   @Post('requests')
+  @ApiBearerAuth()
   @ApiOkResponse({ description: 'Returns created Request', type: PpaRequestDto })
   createPpaRequest(
     @Body() dto: PpaRequestCreateDto,
@@ -131,6 +132,7 @@ export class PowerPurchaseAgreementController {
   }
 
   @Patch('requests/:id')
+  @ApiBearerAuth()
   @ApiOkResponse({ description: 'Returns Request that were rejected or denied', type: PpaRequestDto })
   @ApiParam({ name: 'id', description: 'Id of PPA Request to update' })
   closePpaRequest(

@@ -138,7 +138,7 @@ describe('BottlingService', () => {
 
       processStepServiceMock.readAllProcessStepsFromStorageUnit.mockResolvedValue([]);
 
-      const expectedErrorMessage = `No process steps found in storage unit ${givenPayload.hydrogenStorageUnitId}`;
+      const expectedErrorMessage = `No process steps found in storage unit '${givenPayload.hydrogenStorageUnitId}'`;
 
       // Act & Assert
       await expect(service.createHydrogenBottlingProcessStep(givenPayload)).rejects.toThrow(expectedErrorMessage);

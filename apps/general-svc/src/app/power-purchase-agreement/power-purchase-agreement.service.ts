@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PowerProductionUnitEntity, PowerPurchaseAgreementEntity, UserEntity } from '@h2-trust/contracts/entities';
 import {
   CreatePowerPurchaseAgreementsPayload,
@@ -16,7 +16,7 @@ import {
 } from '@h2-trust/contracts/payloads';
 import { PowerPurchaseAgreementRepository, UnitRepository, UserRepository } from '@h2-trust/database';
 import { PowerProductionType, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
-import { BrokerException } from '@h2-trust/messaging';
+import { DomainException, ErrorCode } from '@h2-trust/exceptions';
 
 @Injectable()
 export class PowerPurchaseAgreementService {
@@ -63,11 +63,12 @@ export class PowerPurchaseAgreementService {
       (agreement) => agreement.powerProductionUnit.type.name === PowerProductionType.GRID,
     );
 
-    if (!agreementForGrid)
-      throw new BrokerException(
+    if (!agreementForGrid) {
+      throw new DomainException(
+        ErrorCode.DOMAIN_BUSINESS_RULE_VIOLATION,
         `No grid connection found for user with id ${payload.id}.`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    }
 
     return agreementForGrid.powerProductionUnit;
   }
@@ -75,9 +76,9 @@ export class PowerPurchaseAgreementService {
   private async checkUserAccessToPowerPurchaseAgreement(user: UserEntity, ppaId: string) {
     const hasAccessToAgreement: boolean = await this.powerPurchaseAgreementRepository.canDecideAgreement(user, ppaId);
     if (!hasAccessToAgreement) {
-      throw new BrokerException(
+      throw new DomainException(
+        ErrorCode.DOMAIN_BUSINESS_RULE_VIOLATION,
         `User ${user.name} is not authorized to update power purchase agreement of this company.`,
-        HttpStatus.FORBIDDEN,
       );
     }
   }
@@ -88,9 +89,9 @@ export class PowerPurchaseAgreementService {
       powerProductionUnitId,
     );
     if (!isOwnerOfProductionUnit) {
-      throw new BrokerException(
+      throw new DomainException(
+        ErrorCode.DOMAIN_BUSINESS_RULE_VIOLATION,
         `User ${user.name} is not authorized to grant access of this power production unit.`,
-        HttpStatus.FORBIDDEN,
       );
     }
   }

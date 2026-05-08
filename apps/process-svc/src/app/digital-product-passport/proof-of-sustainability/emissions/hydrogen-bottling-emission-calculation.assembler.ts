@@ -13,13 +13,16 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
 import { CalculationTopic, EmissionStringConstants, MeasurementUnit, ProcessType } from '@h2-trust/domain';
+import { InternalException } from '@h2-trust/exceptions';
 import { ProofOfSustainabilityEmissionAssembler } from '../proof-of-sustainability-assembler.interface';
 
 export function assembleHydrogenBottlingEmissionCalculation(
   hydrogenBottling: ProcessStepEntity,
 ): ProofOfSustainabilityEmissionCalculationEntity {
   if (hydrogenBottling?.type !== ProcessType.HYDROGEN_BOTTLING) {
-    throw new Error(`Invalid process step type [${hydrogenBottling?.type}] for hydrogen bottling emission calculation`);
+    throw new InternalException(
+      `Invalid process step type [${hydrogenBottling?.type}] for hydrogen bottling emission calculation`,
+    );
   }
 
   const result = 0;

@@ -13,6 +13,7 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
 import { EmissionNumericConstants, EmissionStringConstants } from '@h2-trust/domain';
+import { InternalException } from '@h2-trust/exceptions';
 import { proofOfSustainabilityEmissionAssemblers } from './proof-of-sustainability-assembler.registry.const';
 
 /**
@@ -22,7 +23,7 @@ import { proofOfSustainabilityEmissionAssemblers } from './proof-of-sustainabili
  */
 export function assembleProofOfSustainability(provenance: ProvenanceEntity): ProofOfSustainabilityEntity {
   if (!provenance) {
-    throw new Error('Provenance is undefined.');
+    throw new InternalException('Provenance is undefined.');
   }
 
   const emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[] =

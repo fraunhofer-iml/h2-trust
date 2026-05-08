@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { BlockchainService, ProofEntry } from '@h2-trust/blockchain';
@@ -42,7 +42,8 @@ import {
   PowerType,
   StagingScope,
 } from '@h2-trust/domain';
-import { BrokerException, QUEUE_GENERAL_SVC, UnitMessagePatterns } from '@h2-trust/messaging';
+import { InternalException, ValidationException } from '@h2-trust/exceptions';
+import { QUEUE_GENERAL_SVC, UnitMessagePatterns } from '@h2-trust/messaging';
 import { CsvImportProcessingService } from './csv/csv-import-processing.service';
 import { ProductionCreationService } from './production-creation.service';
 import { normalizeProduction } from './production-normalizer';
@@ -108,7 +109,7 @@ export class ProductionStagingService {
     );
 
     if (!stagedHydrogenProduction || stagedPowerProductions.length == 0) {
-      throw new BrokerException(`The given Staged Production Ids are invalid`, HttpStatus.BAD_REQUEST);
+      throw new ValidationException('The given staged production IDs are invalid');
     }
 
     //get a map with all relevant units, that can be used without requesting it from the general-svc
@@ -412,9 +413,8 @@ export class ProductionStagingService {
     }
 
     if (documentProofs.length !== csvDocuments.length) {
-      throw new BrokerException(
+      throw new InternalException(
         `Number of document proofs (${documentProofs.length}) does not match number of CSV documents (${csvDocuments.length}).`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
 
@@ -423,9 +423,8 @@ export class ProductionStagingService {
     const proofEntries: ProofEntry[] = documentProofs.map((documentProof) => {
       const csvDocument = csvDocumentsByFileName.get(documentProof.fileName);
       if (!csvDocument) {
-        throw new BrokerException(
-          `CSV document with file name ${documentProof.fileName} not found in database after creation.`,
-          HttpStatus.INTERNAL_SERVER_ERROR,
+        throw new InternalException(
+          `CSV document with file name '${documentProof.fileName}' not found in database after creation.`,
         );
       }
       return { uuid: csvDocument.id, hash: documentProof.hash, cid: documentProof.cid };

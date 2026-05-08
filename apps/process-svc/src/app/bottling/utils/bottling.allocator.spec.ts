@@ -184,7 +184,7 @@ describe('allocateBottling', () => {
       ];
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 100 })];
 
-      const expectedErrorMessage = `There is not enough hydrogen in storage unit ${givenHydrogenStorageUnitId} for the requested amount of 100 of quality ${RfnboType.RFNBO_READY}.`;
+      const expectedErrorMessage = `There is not enough hydrogen in storage unit '${givenHydrogenStorageUnitId}' for the requested amount of 100 of quality ${RfnboType.RFNBO_READY}.`;
 
       // Act & Assert
       expect(() => allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId)).toThrow(

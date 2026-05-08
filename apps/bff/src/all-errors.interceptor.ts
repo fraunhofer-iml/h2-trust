@@ -9,24 +9,24 @@
 import { CallHandler, ExecutionContext, HttpException, Injectable, NestInterceptor } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { PROBLEM_TYPES } from './problem-types';
+import { extractRpcError } from './rpc-error.guard';
 
 @Injectable()
 export class AllErrorsInterceptor implements NestInterceptor {
   intercept(_context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       catchError((err) => {
-        // Extract structured error from RpcException
-        const errorObject = err?.error ?? err?.response ?? err;
-
-        let message = errorObject?.message ?? err?.message ?? 'Internal server error';
-        const status = errorObject?.status ?? err?.status ?? 500;
-
-        // Handle validation errors (array of messages)
-        if (Array.isArray(message)) {
-          message = message.join('; ');
+        // Pass through BFF-native HttpExceptions (guards, controllers, ValidationPipe).
+        // Otherwise the filter branch for native HttpExceptions would never be reached
+        // because the body would already have been rewritten to an RpcError.
+        if (err instanceof HttpException) {
+          throw err;
         }
 
-        throw new HttpException(message, status);
+        const rpcError = extractRpcError(err);
+        const status = PROBLEM_TYPES[rpcError.errorCode].status;
+        throw new HttpException(rpcError, status);
       }),
     );
   }
