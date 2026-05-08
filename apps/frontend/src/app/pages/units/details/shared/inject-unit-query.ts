@@ -6,9 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { HttpErrorResponse } from '@angular/common/http';
 import { Signal } from '@angular/core';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { ERROR_MESSAGES } from '../../../../shared/constants/error.messages';
+import { toast } from 'ngx-sonner';
 import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
 
 export function injectUnitQuery<T>(
@@ -18,14 +19,9 @@ export function injectUnitQuery<T>(
 ) {
   return injectQuery(() => ({
     queryKey: [prefix, id()],
-    queryFn: async () => {
-      try {
-        return await fetchFn(id() ?? '');
-      } catch (err: any) {
-        throw new Error(err.status === 404 ? ERROR_MESSAGES.unitNotFound + id() : ERROR_MESSAGES.unknownError, {
-          cause: err,
-        });
-      }
+    queryFn: () => fetchFn(id() ?? ''),
+    onError: (err: HttpErrorResponse) => {
+      toast.error(err.name, { description: err.message });
     },
     enabled: !!id(),
   }));
