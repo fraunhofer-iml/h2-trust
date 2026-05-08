@@ -6,10 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ValidationException } from '@h2-trust/exceptions';
+
 export function assertDefined<T>(value: T | undefined | null, name: string): asserts value is NonNullable<T> {
   if (value === undefined || value === null) {
-    const message = `Missing ${name}`;
-    throw new Error(message);
+    throw new ValidationException(`Missing ${name}`);
   }
 }
 
@@ -17,28 +18,28 @@ export function assertBoolean(value: unknown, name: string): asserts value is bo
   assertDefined(value, name);
 
   if (typeof value !== 'boolean') {
-    const message = `${name} must be a boolean: ${value}`;
-    throw new Error(message);
+    throw new ValidationException(`${name} must be a boolean: ${value}`);
   }
 }
 
-export function assertValidEnum<E extends Record<string, string | number>>(
+export function assertValidEnum<E extends Record<string, string>>(
   value: unknown,
   enumType: E,
   enumName: string,
 ): asserts value is E[keyof E] {
   if (!Object.values(enumType).includes(value as E[keyof E])) {
-    throw new Error(`The value ${value} is not a valid ${enumName}`);
+    throw new ValidationException(`The value ${value} is not a valid ${enumName}`);
   }
 }
 
-export function assertValidTimeZone(value: string): asserts value is string {
-  assertDefined(value, 'timezone');
+export function assertValidTimeZone(value: unknown, name = 'timezone'): asserts value is string {
+  if (value === undefined || value === null || value === '') {
+    throw new ValidationException(`Missing ${name}`);
+  }
 
   try {
-    Intl.DateTimeFormat(undefined, { timeZone: value });
+    Intl.DateTimeFormat(undefined, { timeZone: value as string });
   } catch {
-    const message = `${value} must be a valid timezone.`;
-    throw new Error(message);
+    throw new ValidationException(`${value} must be a valid timezone.`);
   }
 }
