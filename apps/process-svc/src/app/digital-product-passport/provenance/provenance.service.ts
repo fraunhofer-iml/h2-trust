@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Injectable } from '@nestjs/common';
 import {
   BatchEntity,
   HydrogenProductionUnitEntity,
@@ -17,123 +16,108 @@ import {
 } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 
-type ProvenanceBuilderFn = (root: ProcessStepEntity, predecessorsOfRoot: ProcessStepEntity[]) => ProvenanceEntity;
+export function buildProvenance(root: ProcessStepEntity, predecessorsOfRoot: ProcessStepEntity[]): ProvenanceEntity {
+  if (!root || !root.type) {
+    throw new Error('Invalid process step.');
+  }
 
-@Injectable()
-export class ProvenanceService {
-  buildProvenance(root: ProcessStepEntity, predecessorsOfRoot: ProcessStepEntity[]): ProvenanceEntity {
-    if (!root || !root.type) {
-      throw new Error('Invalid process step.');
-    }
-    const provenanceBuilder: ProvenanceBuilderFn = this.provenanceBuilders[root.type];
+  switch (root.type) {
+    case ProcessType.WATER_CONSUMPTION:
+    case ProcessType.POWER_PRODUCTION:
+      return new ProvenanceEntity(root, []);
 
-    if (!provenanceBuilder) {
+    case ProcessType.HYDROGEN_PRODUCTION:
+      return new ProvenanceEntity(root, buildProductionChains(predecessorsOfRoot));
+
+    case ProcessType.HYDROGEN_BOTTLING:
+    case ProcessType.HYDROGEN_TRANSPORTATION:
+      return new ProvenanceEntity(
+        root,
+        buildProductionChains(predecessorsOfRoot),
+        getHydrogenBottling(predecessorsOfRoot),
+      );
+
+    default:
       throw new Error(`Unsupported process type [${root.type}].`);
-    }
-
-    return provenanceBuilder(root, predecessorsOfRoot);
   }
+}
 
-  private getProductionChain(processSteps: ProcessStepEntity[]): ProductionChainEntity[] {
-    const productionChains = [];
-    const bottling = processSteps.find((ps) => ps.type == ProcessType.HYDROGEN_BOTTLING);
+function buildProductionChains(processSteps: ProcessStepEntity[]): ProductionChainEntity[] {
+  const leafProductions: ProcessStepEntity[] = getLeafHydrogenProductions(processSteps);
 
-    if (!bottling) {
-      throw new Error('Missing bottling process step.');
+  return leafProductions.map((leafProduction) => {
+    const rootProduction: ProcessStepEntity = getRootProductionForLeaf(leafProduction, processSteps);
+    const predecessors: ProcessStepEntity[] = resolvePredecessors(rootProduction, processSteps);
+    const waterConsumption: ProcessStepEntity = predecessors.find((ps) => ps.batch.type === BatchType.WATER);
+    const powerProduction: ProcessStepEntity = predecessors.find((ps) => ps.batch.type === BatchType.POWER);
+
+    if (!waterConsumption) {
+      throw new Error(`Missing water consumption predecessor for root production [${rootProduction.id}].`);
+    }
+    if (!powerProduction) {
+      throw new Error(`Missing power production predecessor for root production [${rootProduction.id}].`);
     }
 
-    const hydrogenLeafProductions: ProcessStepEntity[] =
-      this.getLeafHydrogenProductionsFromProductionChain(processSteps);
-
-    for (const hydrogenLeafProduction of hydrogenLeafProductions) {
-      const hydrogenRootProduction: ProcessStepEntity = this.getRootProductionForLeafProduction(
-        hydrogenLeafProduction,
-        processSteps,
-      );
-      const hydrogenRootProductionPredecessors: ProcessStepEntity[] = hydrogenRootProduction.batch.predecessors
-        .map((pred) => pred.processStepId)
-        .map((predPs) => processSteps.find((ps) => ps.id == predPs));
-      const waterConsumption: ProcessStepEntity = hydrogenRootProductionPredecessors.find(
-        (ps) => ps.batch.type == BatchType.WATER,
-      );
-      const powerProduction: ProcessStepEntity = hydrogenRootProductionPredecessors.find(
-        (ps) => ps.batch.type == BatchType.POWER,
-      );
-
-      const newProdChain = new ProductionChainEntity(
-        hydrogenLeafProduction,
-        hydrogenRootProduction,
-        powerProduction,
-        waterConsumption,
-        powerProduction.executedBy as PowerProductionUnitEntity,
-        hydrogenRootProduction.executedBy as HydrogenProductionUnitEntity,
-      );
-      productionChains.push(newProdChain);
-    }
-    return productionChains;
-  }
-
-  private readonly provenanceBuilders: Record<ProcessType, ProvenanceBuilderFn> = {
-    [ProcessType.WATER_CONSUMPTION]: (root) => {
-      return new ProvenanceEntity(root, []);
-    },
-    [ProcessType.POWER_PRODUCTION]: (root) => {
-      return new ProvenanceEntity(root, []);
-    },
-    [ProcessType.HYDROGEN_PRODUCTION]: (root, allRelevantProcessSteps) => {
-      const productionChains = this.getProductionChain(allRelevantProcessSteps);
-      return new ProvenanceEntity(root, productionChains);
-    },
-
-    [ProcessType.HYDROGEN_BOTTLING]: (root, allRelevantProcessSteps) => {
-      const productionChains = this.getProductionChain(allRelevantProcessSteps);
-
-      return new ProvenanceEntity(root, productionChains, root);
-    },
-
-    [ProcessType.HYDROGEN_TRANSPORTATION]: (root, allRelevantProcessSteps) => {
-      //since we are assuming the TRANSPORT type here, we must first retrieve the BOTTLING element of the TRANSPORT and then proceed as if the root type were BOTTLING.
-      //await this.traversalService.fetchHydrogenProductionsFromHydrogenBottling(root);
-
-      const bottling: ProcessStepEntity = allRelevantProcessSteps.find(
-        (ps) => ps.type == ProcessType.HYDROGEN_BOTTLING,
-      );
-      const productionChains = this.getProductionChain(allRelevantProcessSteps);
-
-      return new ProvenanceEntity(root, productionChains, bottling);
-    },
-  };
-
-  private getLeafHydrogenProductionsFromProductionChain(
-    relevantProcessSteps: ProcessStepEntity[],
-  ): ProcessStepEntity[] {
-    const bottling: ProcessStepEntity = relevantProcessSteps.find(
-      (processStep) => processStep.type == ProcessType.HYDROGEN_BOTTLING,
+    return new ProductionChainEntity(
+      leafProduction,
+      rootProduction,
+      powerProduction,
+      waterConsumption,
+      powerProduction.executedBy as PowerProductionUnitEntity,
+      rootProduction.executedBy as HydrogenProductionUnitEntity,
     );
+  });
+}
 
-    if (!bottling) {
-      throw new Error('Bottling is not present.');
-    }
-    const predecessorIdsOfBottling: string[] = bottling.batch.predecessors.map((pred) => pred.processStepId);
-    return relevantProcessSteps.filter((processStep) => predecessorIdsOfBottling.includes(processStep.id));
+function getLeafHydrogenProductions(processSteps: ProcessStepEntity[]): ProcessStepEntity[] {
+  const bottling: ProcessStepEntity = getHydrogenBottling(processSteps);
+
+  if (!bottling) {
+    throw new Error('Missing bottling process step in production chain.');
   }
 
-  private getRootProductionForLeafProduction(
-    leafHydrogenProduction: ProcessStepEntity,
-    allRelevantProcessSteps: ProcessStepEntity[],
-  ): ProcessStepEntity {
-    let rootHydrogenProductionCandiate: BatchEntity = leafHydrogenProduction.batch;
+  const predecessorIds: string[] = bottling.batch.predecessors.map((pred) => pred.processStepId);
+  return processSteps.filter((processStep) => predecessorIds.includes(processStep.id));
+}
 
-    while (rootHydrogenProductionCandiate.predecessors.length > 0) {
-      const isBatchRootHydrogenProduction: boolean = rootHydrogenProductionCandiate.predecessors.every(
-        (pred) => pred.type == BatchType.POWER || pred.type == BatchType.WATER,
-      );
-      if (isBatchRootHydrogenProduction) {
-        return allRelevantProcessSteps.find((ps) => ps.id == rootHydrogenProductionCandiate.processStepId);
-      }
-      const candidateId: string = rootHydrogenProductionCandiate.predecessors[0].processStepId;
-      rootHydrogenProductionCandiate = allRelevantProcessSteps.find((ps) => ps.id == candidateId).batch;
+function getRootProductionForLeaf(
+  leafHydrogenProduction: ProcessStepEntity,
+  processSteps: ProcessStepEntity[],
+): ProcessStepEntity {
+  let currentBatch: BatchEntity = leafHydrogenProduction.batch;
+
+  while (currentBatch.predecessors.length > 0) {
+    const isRoot: boolean = currentBatch.predecessors.every(
+      (pred) => pred.type === BatchType.POWER || pred.type === BatchType.WATER,
+    );
+    if (isRoot) {
+      return findProcessStepById(currentBatch.processStepId, processSteps);
     }
-    return undefined;
+    const nextProcessStepId: string = currentBatch.predecessors[0].processStepId;
+    const nextProcessStep: ProcessStepEntity = findProcessStepById(nextProcessStepId, processSteps);
+    if (!nextProcessStep) {
+      throw new Error(`Process step [${nextProcessStepId}] not found while traversing production chain.`);
+    }
+
+    currentBatch = nextProcessStep.batch;
   }
+  return undefined;
+}
+
+function getHydrogenBottling(processSteps: ProcessStepEntity[]): ProcessStepEntity | undefined {
+  return processSteps.find((ps) => ps.type === ProcessType.HYDROGEN_BOTTLING);
+}
+
+function findProcessStepById(id: string, processSteps: ProcessStepEntity[]): ProcessStepEntity | undefined {
+  return processSteps.find((ps) => ps.id === id);
+}
+
+function resolvePredecessors(processStep: ProcessStepEntity, processSteps: ProcessStepEntity[]): ProcessStepEntity[] {
+  return processStep.batch.predecessors.map((pred) => {
+    const resolved = findProcessStepById(pred.processStepId, processSteps);
+    if (!resolved) {
+      throw new Error(`Predecessor process step [${pred.processStepId}] not found.`);
+    }
+    return resolved;
+  });
 }
