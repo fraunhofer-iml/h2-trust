@@ -6,11 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsArray, IsNotEmpty } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsNotEmpty, IsString } from 'class-validator';
 
 export class DownloadFilesDto {
+  @ArrayNotEmpty()
   @IsNotEmpty()
   @IsArray()
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
   ids: string[];
 
   constructor(ids: string[]) {
