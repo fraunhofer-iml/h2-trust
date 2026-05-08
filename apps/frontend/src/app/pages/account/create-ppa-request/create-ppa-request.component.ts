@@ -23,6 +23,7 @@ import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { PowerPurchaseAgreementService } from '../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
+import { toastQueryError } from '../../../shared/util/query-error-handler';
 
 interface RequestForm {
   companyId: FormControl<string | null>;
@@ -71,7 +72,7 @@ export class CreatePpaRequestComponent {
 
   mutation = injectMutation(() => ({
     mutationFn: (dto: PpaRequestCreateDto) => this.ppaService.createPpaRequest(dto),
-    onError: () => toast.error('Failed to create PPA Request'),
+    onError: (e) => toastQueryError(e),
     onSuccess: () => {
       this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.PPA_REQUESTS] });
       toast.success('Successfully created PPA Request');

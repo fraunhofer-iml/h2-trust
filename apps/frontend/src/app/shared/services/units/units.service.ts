@@ -57,6 +57,7 @@ export class UnitsService {
   }
 
   getPowerProductionUnit(id: string) {
+    console.log('refetch');
     return lastValueFrom(this.httpClient.get<PowerProductionUnitDto>(API.UNITS.POWER_PRODUCTION.BY_ID(id)));
   }
 

@@ -6,18 +6,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { QUERY_CONFIG } from '../constants/query-config';
+import { HttpErrorResponse } from '@angular/common/http';
 import { UnitsService } from '../services/units/units.service';
+import { toastQueryError } from '../util/query-error-handler';
 import { QueryKeyPrefix } from './shared-query-keys';
 
 export const hydrogenProductionUnitsQueryOptions = (unitsService: UnitsService) => ({
   queryKey: [QueryKeyPrefix.HYDROGEN_PRODUCTION_UNITS],
   queryFn: () => unitsService.getHydrogenProductionUnits(),
-  staleTime: QUERY_CONFIG.STALE_TIME,
+  onError: (e: HttpErrorResponse) => toastQueryError(e),
 });
 
 export const powerProductionUnitsQueryOptions = (unitsService: UnitsService) => ({
   queryKey: [QueryKeyPrefix.POWER_PRODUCTION_UNITS],
   queryFn: () => unitsService.getPowerProductionUnits(),
-  staleTime: QUERY_CONFIG.STALE_TIME,
+  onError: (e: HttpErrorResponse) => toastQueryError(e),
 });

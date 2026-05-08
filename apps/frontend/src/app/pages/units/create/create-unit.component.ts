@@ -31,6 +31,7 @@ import { TypeSelectionComponent } from '../../../layout/type-selection/type-sele
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
+import { toastQueryError } from '../../../shared/util/query-error-handler';
 import { BaseUnitFormComponent } from '../forms/base-unit/base-unit-form-component';
 import {
   addValidatorsToFormGroup,
@@ -96,19 +97,19 @@ export class CreateUnitComponent {
 
   createHydrogenStorageUnitMutation = injectMutation(() => ({
     mutationFn: (dto: HydrogenStorageUnitInputDto) => this.unitsService.createHydrogenStorageUnit(dto),
-    onError: (e) => toast.error(e.message),
+    onError: (e) => toastQueryError(e),
     onSuccess: () => this.onSuccess(),
   }));
 
   createPowerProductionUnitMutation = injectMutation(() => ({
     mutationFn: (dto: PowerProductionUnitInputDto) => this.unitsService.createPowerProductionUnit(dto),
-    onError: (e) => toast.error(e.message),
+    onError: (e) => toastQueryError(e),
     onSuccess: () => this.onSuccess(),
   }));
 
   createHydrogenProductionUnitMutation = injectMutation(() => ({
     mutationFn: (dto: HydrogenProductionUnitInputDto) => this.unitsService.createHydrogenProductionUnit(dto),
-    onError: (e) => toast.error(e.message),
+    onError: (e) => toastQueryError(e),
     onSuccess: () => this.onSuccess(),
   }));
 

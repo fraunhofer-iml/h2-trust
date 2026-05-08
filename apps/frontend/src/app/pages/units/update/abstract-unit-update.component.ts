@@ -6,13 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { HttpErrorResponse } from '@angular/common/http';
 import { inject, InputSignal } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import { toast } from 'ngx-sonner';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { UnitsService } from '../../../shared/services/units/units.service';
+import { toastQueryError } from '../../../shared/util/query-error-handler';
 import { newUnitForm, UnitFormGroup } from '../forms/forms';
 
 export abstract class AbstractUnitUpdateComponent<TUnitDto, TUnitInputDto> {
@@ -39,13 +40,14 @@ export abstract class AbstractUnitUpdateComponent<TUnitDto, TUnitInputDto> {
       this.setFormData(unit);
       return unit;
     },
+
     enabled: !!this.id(),
   }));
 
   unitMutation = injectMutation(() => ({
     mutationFn: (dto: TUnitInputDto) => this.updateUnit(this.id() ?? '', dto),
     onSuccess: () => this.onSuccess(),
-    onError: () => toast.error('Failed to update unit.'),
+    onError: (err: HttpErrorResponse) => toastQueryError(err),
   }));
 
   onSave() {

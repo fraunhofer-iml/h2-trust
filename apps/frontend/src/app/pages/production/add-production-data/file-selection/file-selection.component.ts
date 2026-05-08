@@ -7,7 +7,6 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -19,9 +18,9 @@ import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
-import { toast } from 'ngx-sonner';
+import { handleMutationWithPromiseToast } from 'apps/frontend/src/app/shared/util/query-error-handler';
 import { map } from 'rxjs';
-import { StagedProductionDto, StagingSubmissionDto } from '@h2-trust/contracts/dtos';
+import { ProductionOverviewDto, StagedProductionDto, StagingSubmissionDto } from '@h2-trust/contracts/dtos';
 import {
   BatchType,
   CsvContentType,
@@ -139,23 +138,11 @@ export class FileSelectionComponent {
 
   mutation = injectMutation(() => ({
     mutationFn: async (dto: StagingSubmissionDto) => {
-      const promise = this.productionService.submitCsv(dto);
-
-      toast.promise(promise, {
-        loading: 'Creating production batches...',
-        success: () => {
-          this.router.navigateByUrl(H2TrustRoutes.PRODUCTION_DATA);
-          return 'Successfully created new productions!';
-        },
-        error: (error): string => {
-          if (error instanceof HttpErrorResponse || error instanceof Error) {
-            return error.message;
-          }
-          return 'Failed to create batches.';
-        },
-      });
-
-      await promise;
+      await handleMutationWithPromiseToast<ProductionOverviewDto[]>(
+        this.productionService.submitCsv(dto),
+        'Successfully created',
+      );
+      this.router.navigateByUrl(H2TrustRoutes.PRODUCTION_DATA);
     },
   }));
 

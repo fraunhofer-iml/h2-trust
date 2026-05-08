@@ -20,6 +20,7 @@ import {
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { toastQueryError } from 'apps/frontend/src/app/shared/util/query-error-handler';
 import { toast } from 'ngx-sonner';
 import { PowerProductionOverviewDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/contracts/dtos';
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
@@ -69,10 +70,7 @@ export class RequestConfirmationDialogComponent {
 
   confirmationMutation = injectMutation(() => ({
     mutationFn: (dto: PpaRequestDecisionDto) => this.ppaService.decidePpaRequest(this.data.request.id, dto),
-    onError: () =>
-      toast.error(
-        `Failed to ${this.data.status === PowerPurchaseAgreementStatus.REJECTED ? 'reject' : 'approve'} Request`,
-      ),
+    onError: (e) => toastQueryError(e),
     onSuccess: () => {
       this.queryClient.invalidateQueries({
         queryKey: [QueryKeyPrefix.PPA_REQUESTS],
