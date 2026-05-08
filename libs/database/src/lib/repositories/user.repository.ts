@@ -15,8 +15,6 @@ import { assertRecordFound } from './repository-assertions';
 
 @Injectable()
 export class UserRepository {
-  private readonly entityLabel = 'User';
-
   constructor(private readonly prismaService: PrismaService) {}
 
   async findUser(id: string): Promise<UserEntity> {
@@ -24,11 +22,7 @@ export class UserRepository {
       .findUnique({ where: { id }, ...userDeepQueryArgs })
       .catch(wrapPrismaError);
 
-    this.assertFound(user, id);
+    assertRecordFound(user, id);
     return UserEntity.fromDeepDatabase(user);
-  }
-
-  private assertFound<T>(rec: T | null | undefined, id: string): asserts rec is T {
-    assertRecordFound(rec, id, this.entityLabel);
   }
 }

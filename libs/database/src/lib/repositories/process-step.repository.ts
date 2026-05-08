@@ -19,7 +19,6 @@ import { assertRecordFound } from './repository-assertions';
 
 @Injectable()
 export class ProcessStepRepository {
-  private readonly entityLabel = 'ProcessStep';
   private readonly logger = new Logger(ProcessStepRepository.name);
 
   constructor(private readonly prismaService: PrismaService) {}
@@ -29,7 +28,7 @@ export class ProcessStepRepository {
       .findUnique({ where: { id }, ...processStepDeepQueryArgs })
       .catch(wrapPrismaError);
 
-    this.assertFound(processStep, id);
+    assertRecordFound(processStep, id);
     return ProcessStepEntity.fromDeepDatabase(processStep);
   }
 
@@ -198,10 +197,6 @@ export class ProcessStepRepository {
     });
 
     return fetchedProcessSteps.map(ProcessStepEntity.fromDeepDatabase);
-  }
-
-  private assertFound<T>(rec: T | null | undefined, id: string): asserts rec is T {
-    assertRecordFound(rec, id, this.entityLabel);
   }
 
   private async persistProcessStepsIndividually(

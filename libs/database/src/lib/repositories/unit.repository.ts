@@ -35,10 +35,6 @@ import { assertAllIdsFound, assertRecordFound } from './repository-assertions';
 
 @Injectable()
 export class UnitRepository {
-  private readonly entityLabel = 'Unit';
-  private readonly powerProductionUnitsLabel = 'PowerProductionUnits';
-  private readonly hydrogenProductionUnitsLabel = 'HydrogenProductionUnits';
-
   constructor(private readonly prismaService: PrismaService) {}
 
   async findUnitById(id: string): Promise<ConcreteUnitEntity> {
@@ -46,7 +42,7 @@ export class UnitRepository {
       .findUnique({ where: { id }, ...baseUnitDeepQueryArgs })
       .catch(wrapPrismaError);
 
-    this.assertFound(unit, id);
+    assertRecordFound(unit, id);
     return this.mapToActualUnitEntity(unit);
   }
 
@@ -55,7 +51,7 @@ export class UnitRepository {
       .findMany({ where: { id: { in: ids } }, ...baseUnitDeepQueryArgs })
       .catch(wrapPrismaError);
 
-    assertAllIdsFound(units, ids, `${this.entityLabel}s`);
+    assertAllIdsFound(units, ids);
     return units.map(this.mapToActualUnitEntity);
   }
 
@@ -88,7 +84,7 @@ export class UnitRepository {
       .findMany({ where: { id: { in: ids }, powerProductionUnit: { isNot: null } }, ...baseUnitDeepQueryArgs })
       .catch(wrapPrismaError);
 
-    assertAllIdsFound(units, ids, this.powerProductionUnitsLabel);
+    assertAllIdsFound(units, ids);
     return units.map(PowerProductionUnitEntity.fromDeepDatabase);
   }
 
@@ -105,7 +101,7 @@ export class UnitRepository {
       .findMany({ where: { id: { in: ids }, hydrogenProductionUnit: { isNot: null } }, ...baseUnitDeepQueryArgs })
       .catch(wrapPrismaError);
 
-    assertAllIdsFound(units, ids, this.hydrogenProductionUnitsLabel);
+    assertAllIdsFound(units, ids);
     return units.map(HydrogenProductionUnitEntity.fromDeepDatabase);
   }
 
@@ -300,9 +296,5 @@ export class UnitRepository {
   async ownsPowerProductionUnit(user: UserEntity, powerProductionUnitId: string): Promise<boolean> {
     const ownedUnits = await this.findPowerProductionUnitsByOwnerId(user.company.id);
     return ownedUnits.some((unit) => unit.id === powerProductionUnitId);
-  }
-
-  private assertFound<T>(rec: T | null | undefined, id: string): asserts rec is T {
-    assertRecordFound(rec, id, this.entityLabel);
   }
 }
