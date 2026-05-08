@@ -29,7 +29,6 @@ export class UpdatePowerPurchaseAgreementPayload {
 
   @IsString()
   @IsOptional()
-  @IsNotEmpty()
   comment?: string;
 
   constructor(

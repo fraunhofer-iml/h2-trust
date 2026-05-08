@@ -15,6 +15,7 @@ export class FinalizeProductionsPayload {
 
   @IsNotEmpty()
   @IsArray()
+  @IsString({ each: true })
   stagedPowerProductions: string[];
 
   @IsString()
