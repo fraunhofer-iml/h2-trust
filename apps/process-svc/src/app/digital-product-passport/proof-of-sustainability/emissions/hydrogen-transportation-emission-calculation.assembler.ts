@@ -19,7 +19,6 @@ import {
   FuelType,
   MeasurementUnit,
   ProcessType,
-  TrailerParameter,
   TransportMode,
 } from '@h2-trust/domain';
 import { InternalException } from '@h2-trust/exceptions';

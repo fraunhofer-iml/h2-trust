@@ -83,12 +83,18 @@ export class UnitService {
   async createPowerProductionUnit(dto: PowerProductionUnitInputDto, userId: string): Promise<PowerProductionUnitDto> {
     const requesterCompanyId = await this.getCompanyIdFromUserId(userId);
     const unit = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.CREATE_POWER_PRODUCTION, PowerProductionUnitInputDto.toPayload(dto, undefined, requesterCompanyId)),
+      this.generalService.send(
+        UnitMessagePatterns.CREATE_POWER_PRODUCTION,
+        PowerProductionUnitInputDto.toPayload(dto, undefined, requesterCompanyId),
+      ),
     );
     return PowerProductionUnitDto.fromEntity(unit);
   }
 
-  async createHydrogenProductionUnit(dto: HydrogenProductionUnitInputDto, userId: string): Promise<HydrogenProductionUnitDto> {
+  async createHydrogenProductionUnit(
+    dto: HydrogenProductionUnitInputDto,
+    userId: string,
+  ): Promise<HydrogenProductionUnitDto> {
     const requesterCompanyId = await this.getCompanyIdFromUserId(userId);
     const unit = await firstValueFrom(
       this.generalService.send(
@@ -102,7 +108,10 @@ export class UnitService {
   async createHydrogenStorageUnit(dto: HydrogenStorageUnitInputDto, userId: string): Promise<HydrogenStorageUnitDto> {
     const requesterCompanyId = await this.getCompanyIdFromUserId(userId);
     const unit = await firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.CREATE_HYDROGEN_STORAGE, HydrogenStorageUnitInputDto.toPayload(dto, undefined, requesterCompanyId)),
+      this.generalService.send(
+        UnitMessagePatterns.CREATE_HYDROGEN_STORAGE,
+        HydrogenStorageUnitInputDto.toPayload(dto, undefined, requesterCompanyId),
+      ),
     );
     return HydrogenStorageUnitDto.fromEntity(unit);
   }
@@ -110,7 +119,10 @@ export class UnitService {
   async updateUnitStatus(id: string, active: boolean, userId: string): Promise<void> {
     const requesterCompanyId = await this.getCompanyIdFromUserId(userId);
     return firstValueFrom(
-      this.generalService.send(UnitMessagePatterns.UPDATE_STATUS, UnitUpdateActiveDto.toPayload(id, active, requesterCompanyId)),
+      this.generalService.send(
+        UnitMessagePatterns.UPDATE_STATUS,
+        UnitUpdateActiveDto.toPayload(id, active, requesterCompanyId),
+      ),
     );
   }
 

@@ -75,14 +75,18 @@ export class UnitService {
     return this.unitRepository.updateOrCreateHydrogenProductionUnit(payload);
   }
 
-  async updateOrCreatePowerProductionUnit(payload: CreatePowerProductionUnitPayload): Promise<PowerProductionUnitEntity> {
+  async updateOrCreatePowerProductionUnit(
+    payload: CreatePowerProductionUnitPayload,
+  ): Promise<PowerProductionUnitEntity> {
     if (payload.id) {
       await this.assertOwnership(payload.id, payload.requesterCompanyId);
     }
     return this.unitRepository.updateOrCreatePowerProductionUnit(payload);
   }
 
-  async updateOrCreateHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
+  async updateOrCreateHydrogenStorageUnit(
+    payload: CreateHydrogenStorageUnitPayload,
+  ): Promise<HydrogenStorageUnitEntity> {
     if (payload.id) {
       await this.assertOwnership(payload.id, payload.requesterCompanyId);
     }

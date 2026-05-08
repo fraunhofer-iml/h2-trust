@@ -115,4 +115,3 @@ export function hasFinancialSupport(powerUnit: PowerProductionUnitEntity): boole
   assertBoolean(powerUnit?.financialSupportReceived, 'powerUnit.financialSupportReceived');
   return !powerUnit.financialSupportReceived;
 }
-
