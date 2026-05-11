@@ -24,7 +24,6 @@ import {
 } from '@h2-trust/contracts/entities/fixtures';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { DigitalProductPassportService } from './digital-product-passport.service';
-import { ProvenanceService } from './provenance/provenance.service';
 
 describe('DigitalProductPassService', () => {
   let service: DigitalProductPassportService;
@@ -34,6 +33,7 @@ describe('DigitalProductPassService', () => {
     setBatchesInactive: jest.fn(),
     createProcessStep: jest.fn(),
     readProcessStep: jest.fn(),
+    getPredecessors: jest.fn(),
   };
 
   const redComplianceServiceMock = {
@@ -60,10 +60,6 @@ describe('DigitalProductPassService', () => {
         {
           provide: ProcessStepService,
           useValue: processStepServiceMock,
-        },
-        {
-          provide: ProvenanceService,
-          useValue: provenanceServiceMock,
         },
       ],
     }).compile();
@@ -93,6 +89,13 @@ describe('DigitalProductPassService', () => {
       const proofOfSustainability: ProofOfSustainabilityEntity = ProofOfSustainabilityEntityFixture.create();
 
       processStepServiceMock.readProcessStep.mockReturnValue(givenProductionChain.hydrogenRootProduction);
+      processStepServiceMock.getPredecessors.mockReturnValue([
+        givenHydrogenBottling,
+        givenProductionChain.hydrogenRootProduction,
+        givenProductionChain.powerProduction,
+        givenProductionChain.waterConsumption,
+      ]);
+
       provenanceServiceMock.buildProvenance.mockReturnValue(Promise.resolve(givenProvenance));
       redComplianceServiceMock.determineTotalRedCompliance.mockReturnValue(givenRedCompliance);
       proofOfOriginServiceMock.createProofOfOrigin.mockReturnValue(proofOfOrigin);
