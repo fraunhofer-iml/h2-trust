@@ -30,12 +30,8 @@ export class ProcessStepService {
 
   public async getPredecessors(processStep: ProcessStepEntity) {
     const processStepIds = await this.processStepRepository.findPredecessorProcessSteps(processStep.batch.id);
-    const processSteps: ProcessStepEntity[] = await this.getProcessSteps(processStepIds);
+    const processSteps: ProcessStepEntity[] = await this.processStepRepository.findProcessSteps(processStepIds);
     return [processStep, ...processSteps];
-  }
-
-  getProcessSteps(ids: string[]): Promise<ProcessStepEntity[]> {
-    return this.processStepRepository.findProcessSteps(ids);
   }
 
   updateRfnboStatus(processStep: ProcessStepEntity, rfnboType: RfnboType): Promise<{ id: string; batchId: string }> {
