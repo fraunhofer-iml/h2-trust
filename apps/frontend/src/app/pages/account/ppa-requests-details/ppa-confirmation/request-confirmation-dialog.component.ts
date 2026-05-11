@@ -22,7 +22,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { toast } from 'ngx-sonner';
 import { PowerProductionOverviewDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/contracts/dtos';
-import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
+import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
 import { powerProductionUnitsQueryOptions } from '../../../../shared/queries/units.query';
@@ -61,7 +61,7 @@ export class RequestConfirmationDialogComponent {
     comment: FormControl<string | null>;
     unit: FormControl<null | PowerProductionOverviewDto>;
   }>({
-    comment: new FormControl<string | null>(''),
+    comment: new FormControl<string | null>(null),
     unit: new FormControl<PowerProductionOverviewDto | null>(null),
   });
 
@@ -75,7 +75,7 @@ export class RequestConfirmationDialogComponent {
       ),
     onSuccess: () => {
       this.queryClient.invalidateQueries({
-        queryKey: [QueryKeyPrefix.PPA_REQUESTS, PpaRequestRole.RECEIVER],
+        queryKey: [QueryKeyPrefix.PPA_REQUESTS],
       });
       toast.success(`Request ${this.data.status.toLowerCase()}.`);
     },

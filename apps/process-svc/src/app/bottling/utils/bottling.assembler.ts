@@ -6,11 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus } from '@nestjs/common';
 import { BatchEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { CreateHydrogenBottlingPayload } from '@h2-trust/contracts/payloads';
 import { BatchType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
-import { BrokerException } from '@h2-trust/messaging';
+import { InternalException } from '@h2-trust/exceptions';
 
 export function assembleBottling(
   payload: CreateHydrogenBottlingPayload,
@@ -53,7 +52,7 @@ function determinePredecessorTypes(predecessors: BatchEntity[]): {
   });
 
   if (rfnboTypes.length === 0 || powerTypes.length === 0) {
-    throw new BrokerException(`No predecessor type specified`, HttpStatus.BAD_REQUEST);
+    throw new InternalException('No predecessor types found: batch list has no quality details');
   }
 
   const firstRfnboType = rfnboTypes[0];

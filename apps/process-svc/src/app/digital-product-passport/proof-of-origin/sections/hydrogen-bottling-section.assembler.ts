@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus } from '@nestjs/common';
 import {
   HydrogenComponentEntity,
   ProofOfOriginEmissionEntity,
@@ -16,7 +15,7 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
-import { BrokerException } from '@h2-trust/messaging';
+import { InternalException } from '@h2-trust/exceptions';
 import { computeHydrogenComposition } from '../../../bottling/utils/hydrogen-composition';
 import { assembleHydrogenBottlingEmissionCalculation } from '../../proof-of-sustainability/emissions/hydrogen-bottling-emission-calculation.assembler';
 import { ProofOfOriginSectionAssembler } from '../proof-of-origin-assembler.interface';
@@ -28,22 +27,22 @@ import { ProofOfOriginSectionAssembler } from '../proof-of-origin-assembler.inte
  */
 function assembleCompositionForBottling(provenance: ProvenanceEntity): HydrogenComponentEntity[] {
   if (!provenance.hydrogenBottling) {
-    const errorMessage = `There is no hydrogen bottling in provenance.`;
-    throw Error(errorMessage);
+    throw new InternalException('There is no hydrogen bottling in provenance.');
   }
   if (provenance.getAllHydrogenLeafProductions()?.length === 0) {
-    const errorMessage = `There are no hydrogen productions in Provenance.`;
-    throw Error(errorMessage);
+    throw new InternalException('There are no hydrogen productions in provenance.');
   }
   if (
     provenance.root.type !== ProcessType.HYDROGEN_BOTTLING &&
     provenance.root.type !== ProcessType.HYDROGEN_TRANSPORTATION
   ) {
-    const errorMessage = `The process step ${provenance.root.id} should be type ${ProcessType.HYDROGEN_BOTTLING} or ${ProcessType.HYDROGEN_TRANSPORTATION}, but is ${provenance.root.type}.`;
-    throw new BrokerException(errorMessage, HttpStatus.BAD_REQUEST);
+    throw new InternalException(
+      `The process step ${provenance.root.id} should be type ${ProcessType.HYDROGEN_BOTTLING} or ${ProcessType.HYDROGEN_TRANSPORTATION}, but is ${provenance.root.type}.`,
+    );
   }
 
   const bottlingBatchAmount = provenance.hydrogenBottling.batch.amount;
+  const hydrogenStorageUnitId = provenance.hydrogenBottling.executedBy.id;
 
   const hydrogenComponentsOfProductions = provenance
     .getAllHydrogenRootProductions()
@@ -56,7 +55,7 @@ function assembleCompositionForBottling(provenance: ProvenanceEntity): HydrogenC
         ),
     );
 
-  return computeHydrogenComposition(hydrogenComponentsOfProductions, bottlingBatchAmount);
+  return computeHydrogenComposition(hydrogenComponentsOfProductions, bottlingBatchAmount, hydrogenStorageUnitId);
 }
 
 export function assembleHydrogenBottlingSection(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {

@@ -34,7 +34,7 @@
       class="mx-4 grid grid-cols-2 gap-4 rounded-md border border-dashed border-neutral-300 bg-neutral-50 p-4 2xl:grid-cols-3"
     >
       @for (request of data()?.closed; track request.id) {
-        <app-ppa-request-card [request]="request" [role]="role()" />
+        <app-ppa-request-card [request]="request" [role]="role()" class="h-full" />
       }
     </div>
   }

@@ -15,10 +15,11 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType } from '@h2-trust/domain';
+import { InternalException } from '@h2-trust/exceptions';
 
 export function buildProvenance(root: ProcessStepEntity, predecessorsOfRoot: ProcessStepEntity[]): ProvenanceEntity {
   if (!root || !root.type) {
-    throw new Error('Invalid process step.');
+    throw new InternalException('Invalid process step.');
   }
 
   switch (root.type) {
@@ -38,7 +39,7 @@ export function buildProvenance(root: ProcessStepEntity, predecessorsOfRoot: Pro
       );
 
     default:
-      throw new Error(`Unsupported process type [${root.type}].`);
+      throw new InternalException(`Unsupported process type [${root.type}].`);
   }
 }
 

@@ -49,7 +49,7 @@ export class PpaRequestCardComponent {
     });
   }
 
-  get dateLable() {
+  get dateLabel() {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 

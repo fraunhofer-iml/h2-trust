@@ -17,6 +17,7 @@ export * from './mocks';
 export * from './power-production-type.db.type';
 export * from './power-production-unit.db.type';
 export * from './power-purchase-agreement.db.type';
+export * from './power-purchase-agreement-decision.db.type';
 export * from './process-step.db.type';
 export * from './quality-details.db.type';
 export * from './staged-production.db.type';
