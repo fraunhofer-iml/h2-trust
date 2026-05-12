@@ -7,11 +7,9 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import { toastQueryError } from 'apps/frontend/src/app/shared/util/query-error-handler';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { ErrorCardComponent } from '../../../../layout/error-card/error-card.component';
 import { LoadingCardComponent } from '../../../../layout/loading-card/loading-card.component';
@@ -47,7 +45,6 @@ export class HydrogenProductionDetailsComponent {
   unitQuery = injectQuery(() => ({
     queryKey: [QueryKeyPrefix.HYDROGEN_PRODUCTION_UNITS, this.id()],
     queryFn: () => this.unitsService.getHydrogenProductionUnit(this.id() ?? ''),
-    onError: (e: HttpErrorResponse) => toastQueryError(e),
   }));
 
   onUnitStatusChange = () =>

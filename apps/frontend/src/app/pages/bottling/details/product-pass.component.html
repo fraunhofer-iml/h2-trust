@@ -9,8 +9,8 @@
     Digital Product Passport
   </div>
 
-  @if (batchQuery.error()) {
-    <app-error-card [message]="ERROR_MESSAGES.dppNotFound + id()"></app-error-card>
+  @if (batchQuery.error(); as err) {
+    <app-error-card [error]="err" [routerLink]="isAuthenticated ? '/bottling' : undefined"></app-error-card>
   }
 
   <div class="grid grid-cols-6 gap-4">

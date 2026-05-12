@@ -27,12 +27,14 @@ function isProblemDetail(value: unknown): value is ProblemDetail {
 }
 
 export function toastQueryError(err: unknown, toastId?: string | number) {
+  console.log('errrrrrrrrrrrrrrrrrrrrrr');
+
   if (err instanceof HttpErrorResponse && isProblemDetail(err.error)) {
     const validationErrors = err.error.validationErrors;
     const description =
       validationErrors && validationErrors.length > 0 ? validationErrors.join(', ') : err.error.detail;
 
-    toast.error(err.error.title, { id: toastId, description: description });
+    toast.error(err.error.title, { description: description });
     return;
   }
 

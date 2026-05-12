@@ -6,15 +6,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, input } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
-import { ERROR_MESSAGES } from '../../shared/constants/error.messages';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-error-card',
-  imports: [MatIconModule],
+  imports: [MatIconModule, MatDividerModule, RouterModule, MatButtonModule],
   templateUrl: './error-card.component.html',
 })
 export class ErrorCardComponent {
-  message = input<string>(ERROR_MESSAGES.unknownError);
+  error = input<HttpErrorResponse>();
+
+  routerLink = input<string>();
 }

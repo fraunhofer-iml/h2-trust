@@ -1,9 +1,18 @@
-<div class="border-error-red/20 rounded-lg border bg-white p-4 text-sm text-neutral-700">
-  <span class="text-error-red mb-2 flex items-center gap-2 font-semibold">
-    <span class="bg-error-red/15 flex h-5 w-5 items-center justify-center rounded-full">
-      <span class="material-symbols-outlined text-sm">close</span>
-    </span>
-    Error
-  </span>
-  <p class="pl-7">{{ message() }}</p>
+<div
+  class="from-error-red/20 flex min-h-full w-full flex-col items-center justify-center rounded-full bg-radial to-transparent to-70% py-16 text-sm text-neutral-700"
+>
+  <div class="my-8 flex max-w-sm flex-col items-center gap-4 rounded-lg bg-neutral-100 p-8 shadow-lg">
+    <span
+      class="material-symbols-outlined bg-error-red/20 border-error-red text-error-red my-4 rounded-full border px-5 py-4 text-center text-3xl!"
+      >close</span
+    >
+    <span class="text-error-red text-lg font-semibold"> {{ error()?.error.title ?? 'An error occurred' }} </span>
+    <p class="text-center">{{ error()?.error.detail ?? 'Please try again later.' }}</p>
+
+    @if (routerLink()) {
+      <div class="my-2 h-px w-full bg-neutral-300"></div>
+
+      <a matButton="outlined" [routerLink]="routerLink()" class="w-fit">Back to overview</a>
+    }
+  </div>
 </div>
