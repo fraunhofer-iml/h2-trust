@@ -12,51 +12,60 @@
         <div class="h-px w-full bg-neutral-200"></div>
 
         @if (authenticated) {
-          <div class="flex flex-col gap-2 p-4">
-            @for (option of sidebarOptions; track $index) {
-              @if (option.visible()) {
-                <a
-                  [routerLink]="option.route"
-                  class="flex w-full flex-row gap-2 rounded-lg p-3 text-neutral-700"
-                  [ngClass]="{
-                    'bg-primary-100 text-primary-700 hover:bg-primary-100': isActive(option.route),
-                    'hover:bg-neutral-100': option.route,
-                  }"
-                >
-                  <span class="material-symbols-outlined">{{ option.icon }}</span>
-                  <span>{{ option.title }}</span>
-                </a>
-              }
+          @if (roles.isLoading()) {
+            <div class="flex animate-pulse flex-col gap-4 p-4">
+              <div class="h-12 rounded-lg bg-neutral-100"></div>
+              <div class="h-12 rounded-lg bg-neutral-100"></div>
+              <div class="h-12 rounded-lg bg-neutral-100"></div>
+            </div>
+          } @else if (roles.error()) {
+            <span class="p-4! text-sm text-neutral-400">Navigation not available.</span>
+          } @else {
+            <div class="flex flex-col gap-2 p-4">
+              @for (option of sidebarOptions; track $index) {
+                @if (option.visible()) {
+                  <a
+                    [routerLink]="option.route"
+                    class="flex w-full flex-row gap-2 rounded-lg p-3 text-neutral-700"
+                    [ngClass]="{
+                      'bg-primary-100 text-primary-700 hover:bg-primary-100': isActive(option.route),
+                      'hover:bg-neutral-100': option.route,
+                    }"
+                  >
+                    <span class="material-symbols-outlined">{{ option.icon }}</span>
+                    <span>{{ option.title }}</span>
+                  </a>
+                }
 
-              @if (option.children; as children) {
-                <div class="ml-6 flex flex-col gap-2 border-l-2 border-neutral-200 pl-2">
-                  @for (item of children; track $index) {
-                    @if (item.visible()) {
-                      <a
-                        [routerLink]="item.route"
-                        class="flex w-full flex-row gap-2 rounded-lg p-3 text-neutral-700 hover:bg-neutral-100"
-                        [ngClass]="{
-                          'bg-primary-100 text-primary-700 hover:bg-primary-100': isActive(item.route),
-                        }"
-                      >
-                        <span class="material-symbols-outlined">{{ item.icon }}</span>
-                        <span>{{ item.title }}</span>
-                      </a>
+                @if (option.children; as children) {
+                  <div class="ml-6 flex flex-col gap-2 border-l-2 border-neutral-200 pl-2">
+                    @for (item of children; track $index) {
+                      @if (item.visible()) {
+                        <a
+                          [routerLink]="item.route"
+                          class="flex w-full flex-row gap-2 rounded-lg p-3 text-neutral-700 hover:bg-neutral-100"
+                          [ngClass]="{
+                            'bg-primary-100 text-primary-700 hover:bg-primary-100': isActive(item.route),
+                          }"
+                        >
+                          <span class="material-symbols-outlined">{{ item.icon }}</span>
+                          <span>{{ item.title }}</span>
+                        </a>
+                      }
                     }
-                  }
-                </div>
+                  </div>
+                }
               }
-            }
-          </div>
+            </div>
+          }
         }
       </div>
       <div class="p-4">
         <div class="relative">
           @if (!authenticated) {
             <button
-              class="text-primary-700 flex w-full flex-row items-center justify-between rounded-lg border border-neutral-200 bg-white p-3 shadow-md"
+              class="text-primary-700 hover:bg-primary-50 flex w-full cursor-pointer flex-row items-center justify-between rounded-lg border border-neutral-200 bg-white p-4 shadow-md"
               (click)="signIn()"
-              role="none"
             >
               <span class="">Sign In</span>
               <span class="material-symbols-outlined">login</span>
@@ -68,32 +77,34 @@
                 isMenuOpen ? 'visible scale-100 opacity-100' : 'pointer-events-none invisible scale-95 opacity-0'
               "
             >
-              <!-- Account -->
-              <a
-                routerLink="/"
-                class="hover:bg-primary-100 hover:text-primary-600 flex items-center gap-3 rounded-lg p-3 text-neutral-600"
-                (click)="closeMenu(); $event.stopPropagation()"
-              >
-                <span class="material-symbols-outlined">person</span>
-                <span>My account</span>
-              </a>
-
-              <!-- PPA Requests -->
-              <a
-                routerLink="/ppa-requests"
-                class="hover:bg-primary-100 hover:text-primary-600 flex items-center gap-3 rounded-lg p-3 text-neutral-600"
-                (click)="closeMenu(); $event.stopPropagation()"
-              >
-                <span
-                  class="material-symbols-outlined relative"
-                  [matBadge]="ppaRequestsQuery.data()?.length"
-                  matBadgeSize="large"
-                  [matBadgeHidden]="ppaRequestsQuery.data()?.length === 0"
+              @if (!roles.isLoading() && !roles.error()) {
+                <!-- Account -->
+                <a
+                  routerLink="/"
+                  class="hover:bg-primary-100 hover:text-primary-600 flex items-center gap-3 rounded-lg p-3 text-neutral-600"
+                  (click)="closeMenu(); $event.stopPropagation()"
                 >
-                  mail
-                </span>
-                <span>PPA Requests</span>
-              </a>
+                  <span class="material-symbols-outlined">person</span>
+                  <span>My account</span>
+                </a>
+
+                <!-- PPA Requests -->
+                <a
+                  routerLink="/ppa-requests"
+                  class="hover:bg-primary-100 hover:text-primary-600 flex items-center gap-3 rounded-lg p-3 text-neutral-600"
+                  (click)="closeMenu(); $event.stopPropagation()"
+                >
+                  <span
+                    class="material-symbols-outlined relative"
+                    [matBadge]="ppaRequestsQuery.data()?.length"
+                    matBadgeSize="large"
+                    [matBadgeHidden]="ppaRequestsQuery.data()?.length === 0"
+                  >
+                    mail
+                  </span>
+                  <span>PPA Requests</span>
+                </a>
+              }
 
               <!-- Sign Out -->
               <button
@@ -134,6 +145,15 @@
   </div>
 
   <div class="h-full w-full overflow-auto bg-neutral-100">
-    <ng-content></ng-content>
+    @if (roles.error(); as err) {
+      <app-error-card [error]="err" [useRetry]="true" (retry)="retryQueries()"></app-error-card>
+    } @else if (roles.isLoading()) {
+      <div class="flex animate-pulse flex-col gap-4 p-8">
+        <div class="h-10 w-1/2 rounded-lg bg-white"></div>
+        <div class="h-40 rounded-lg bg-white"></div>
+      </div>
+    } @else {
+      <ng-content></ng-content>
+    }
   </div>
 </div>

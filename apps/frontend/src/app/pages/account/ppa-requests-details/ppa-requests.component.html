@@ -10,32 +10,42 @@
     }
   </div>
 
-  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="rounded-md" dynamicHeight>
-    <mat-tab [disabled]="!roles.isPowerProducer()">
-      <ng-template mat-tab-label>
-        <span class="material-symbols-outlined p-2">markunread_mailbox</span>
-        <span
-          class="p-1"
-          matBadge="!"
-          matBadgeSize="small"
-          [matBadgeHidden]="ppaRequestsReceived().pending.length === 0"
-          [matBadgeOverlap]="false"
-          [matBadgePosition]="'above after'"
-        >
-          Requests received</span
-        >
-      </ng-template>
+  @if (ppaRequestsReceivedQuery.isLoading() || ppaRequestsSentQuery.isLoading()) {
+    <app-loading-card></app-loading-card>
+  } @else if (ppaRequestsReceivedQuery.isError() || ppaRequestsSentQuery.isError()) {
+    <app-error-card
+      [error]="ppaRequestsReceivedQuery.error() ?? ppaRequestsSentQuery.error() ?? undefined"
+      (retry)="ppaRequestsReceivedQuery.refetch(); ppaRequestsSentQuery.refetch()"
+      [useRetry]="true"
+    ></app-error-card>
+  } @else {
+    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="rounded-md" dynamicHeight>
+      <mat-tab [disabled]="!roles.isPowerProducer()">
+        <ng-template mat-tab-label>
+          <span class="material-symbols-outlined p-2">markunread_mailbox</span>
+          <span
+            class="p-1"
+            matBadge="!"
+            matBadgeSize="small"
+            [matBadgeHidden]="ppaRequestsReceived().pending.length === 0"
+            [matBadgeOverlap]="false"
+            [matBadgePosition]="'above after'"
+          >
+            Requests received</span
+          >
+        </ng-template>
 
-      <app-ppa-requests-list [role]="PpaRequestRole.RECEIVER" [data]="ppaRequestsReceived()" />
-    </mat-tab>
+        <app-ppa-requests-list [role]="PpaRequestRole.RECEIVER" [data]="ppaRequestsReceived()" />
+      </mat-tab>
 
-    <mat-tab [disabled]="!roles.isHydrogenProducer()">
-      <ng-template mat-tab-label>
-        <span class="material-symbols-outlined p-2">outgoing_mail</span>
-        Requests sent
-      </ng-template>
+      <mat-tab [disabled]="!roles.isHydrogenProducer()">
+        <ng-template mat-tab-label>
+          <span class="material-symbols-outlined p-2">outgoing_mail</span>
+          Requests sent
+        </ng-template>
 
-      <app-ppa-requests-list [role]="PpaRequestRole.SENDER" [data]="ppaRequestsSent()" />
-    </mat-tab>
-  </mat-tab-group>
+        <app-ppa-requests-list [role]="PpaRequestRole.SENDER" [data]="ppaRequestsSent()" />
+      </mat-tab>
+    </mat-tab-group>
+  }
 </div>

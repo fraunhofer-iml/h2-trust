@@ -18,6 +18,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { RouterLink } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PpaRequestRole } from '@h2-trust/domain';
+import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
+import { LoadingCardComponent } from '../../../layout/loading-card/loading-card.component';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { UsersService } from '../../../shared/services/users/users.service';
@@ -39,6 +41,8 @@ import { PpaRequestsOverviewComponent } from '../ppa-requests-overview/ppa-reque
     CommonModule,
     MatTabsModule,
     PpaRequestsOverviewComponent,
+    ErrorCardComponent,
+    LoadingCardComponent,
   ],
   templateUrl: './account-overview.component.html',
 })

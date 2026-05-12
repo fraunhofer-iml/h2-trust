@@ -11,57 +11,43 @@
 
   @if (batchQuery.error(); as err) {
     <app-error-card [error]="err" [routerLink]="isAuthenticated ? '/bottling' : undefined"></app-error-card>
-  }
-
-  <div class="grid grid-cols-6 gap-4">
-    @if (batchQuery.isLoading()) {
-      <app-loading-card class="col-span-4 h-64"></app-loading-card>
-      <app-loading-card class="col-span-2 h-64"></app-loading-card>
-      <app-loading-card class="col-span-3 h-80"></app-loading-card>
-      <app-loading-card class="col-span-3 h-80"></app-loading-card>
-    }
-
-    @if (batchQuery.isSuccess()) {
+  } @else if (batchQuery.isLoading()) {
+    <app-loading-card></app-loading-card>
+  } @else if (batchQuery.data(); as batch) {
+    <div class="grid grid-cols-6 gap-4">
       <div class="col-span-4 rounded-lg bg-white p-4">
         <div class="flex flex-row justify-between">
           <h3 class="font-semibold text-neutral-500">General Information</h3>
-          <app-rfnbo-compliance
-            class="col-span-6"
-            [redCompliance]="batchQuery.data().rfnboCompliance"
-          ></app-rfnbo-compliance>
+          <app-rfnbo-compliance class="col-span-6" [redCompliance]="batch.rfnboCompliance"></app-rfnbo-compliance>
         </div>
 
         <div class="flex flex-row">
           <div class="mt-2 grid w-1/2 grid-cols-2 gap-2">
             <div class="flex flex-col text-sm">
-              <span class="text-sm text-neutral-400">Batch-Id</span><span>{{ batchQuery.data().id }}</span>
+              <span class="text-sm text-neutral-400">Batch-Id</span><span>{{ batch.id }}</span>
             </div>
             <div class="flex flex-col text-sm">
-              <span class="text-sm text-neutral-400">Date</span><span>{{ batchQuery.data().filledAt | date }}</span>
+              <span class="text-sm text-neutral-400">Date</span><span>{{ batch.filledAt | date }}</span>
             </div>
             <div class="flex flex-col text-sm">
-              <span class="text-sm text-neutral-400">Producer</span><span>{{ batchQuery.data().producer }}</span>
+              <span class="text-sm text-neutral-400">Producer</span><span>{{ batch.producer }}</span>
             </div>
             <div class="flex flex-col text-sm">
               <span class="text-sm text-neutral-400">Amount</span
-              ><span>{{ batchQuery.data().filledAmount | unit: MeasurementUnit.KG }}</span>
+              ><span>{{ batch.filledAmount | unit: MeasurementUnit.KG }}</span>
             </div>
             <div class="flex flex-col text-sm">
-              <span class="text-sm text-neutral-400">Product</span
-              ><span>{{ batchQuery.data().product | enum: 'batchType' }}</span>
+              <span class="text-sm text-neutral-400">Product</span><span>{{ batch.product | enum: 'batchType' }}</span>
             </div>
           </div>
-          <app-h2-composition-chart
-            class="w-1/2"
-            [chartData]="batchQuery.data().hydrogenComposition"
-          ></app-h2-composition-chart>
+          <app-h2-composition-chart class="w-1/2" [chartData]="batch.hydrogenComposition"></app-h2-composition-chart>
         </div>
       </div>
 
       <div class="col-span-2 flex flex-col gap-2 rounded-lg bg-white p-4">
         <h3 class="font-semibold text-neutral-500">Attached Files</h3>
 
-        @if (batchQuery.data().attachedFiles.length === 0) {
+        @if (batch.attachedFiles.length === 0) {
           <app-empty-state
             title="No files"
             description="There are no attached files."
@@ -70,7 +56,7 @@
           ></app-empty-state>
         } @else {
           <div class="flex max-h-60 flex-col gap-2 overflow-y-auto">
-            @for (file of batchQuery.data().attachedFiles; track $index) {
+            @for (file of batch.attachedFiles; track $index) {
               <div
                 class="flex flex-row items-center gap-4 rounded-lg border-2 border-solid border-neutral-100 p-2 hover:cursor-pointer hover:border-neutral-200"
                 (click)="openFile(file.url)"
@@ -85,12 +71,12 @@
           </div>
         }
       </div>
-      <app-proof-of-origin class="col-span-6 2xl:col-span-3" [proofOfOrigin$]="batchQuery.data().proofOfOrigin">
+      <app-proof-of-origin class="col-span-6 2xl:col-span-3" [proofOfOrigin$]="batch.proofOfOrigin">
       </app-proof-of-origin
       ><app-proof-of-sustainability
-        [proofOfSustainability$]="batchQuery.data().proofOfSustainability"
+        [proofOfSustainability$]="batch.proofOfSustainability"
         class="col-span-6 2xl:col-span-3"
       ></app-proof-of-sustainability>
-    }
-  </div>
+    </div>
+  }
 </div>

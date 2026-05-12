@@ -85,7 +85,6 @@ export class CreatePpaRequestComponent {
 
   save() {
     const dto: PpaRequestCreateDto = this.form.value as PpaRequestCreateDto;
-
     this.mutation.mutate(dto);
     this.close();
   }

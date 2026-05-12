@@ -7,7 +7,7 @@
  */
 
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,6 +20,8 @@ import { RouterModule } from '@angular/router';
 })
 export class ErrorCardComponent {
   error = input<HttpErrorResponse>();
-
   routerLink = input<string>();
+  useRetry = input<boolean>(false);
+
+  retry = output<void>();
 }

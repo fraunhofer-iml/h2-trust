@@ -27,6 +27,7 @@ import { PowerPurchaseAgreementService } from '../../shared/services/power-purch
 import { UnitsService } from '../../shared/services/units/units.service';
 import { UsersService } from '../../shared/services/users/users.service';
 import { UserRolesStore } from '../../shared/store/user-role.store';
+import { ErrorCardComponent } from '../error-card/error-card.component';
 
 interface SidebarOption {
   title: string;
@@ -48,6 +49,7 @@ interface SidebarOption {
     MatSelectModule,
     MatBadgeModule,
     MatMenuModule,
+    ErrorCardComponent,
   ],
   providers: [UsersService],
   templateUrl: './sidebar.component.html',
@@ -138,5 +140,9 @@ export class SidebarComponent implements OnInit {
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  retryQueries() {
+    this.roles.refetch();
   }
 }

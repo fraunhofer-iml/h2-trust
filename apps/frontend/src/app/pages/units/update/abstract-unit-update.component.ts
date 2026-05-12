@@ -11,6 +11,7 @@ import { inject, InputSignal } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { toast } from 'ngx-sonner';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { toastQueryError } from '../../../shared/util/query-error-handler';
@@ -56,6 +57,7 @@ export abstract class AbstractUnitUpdateComponent<TUnitDto, TUnitInputDto> {
   }
 
   private onSuccess() {
+    toast.success('Unit updated successfully');
     this.queryClient.invalidateQueries({ queryKey: [this.queryPrefix] });
     this.navigateToDetailsView();
   }

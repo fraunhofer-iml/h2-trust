@@ -1,18 +1,26 @@
-<div
-  class="from-error-red/20 flex min-h-full w-full flex-col items-center justify-center rounded-full bg-radial to-transparent to-70% py-16 text-sm text-neutral-700"
->
-  <div class="my-8 flex max-w-sm flex-col items-center gap-4 rounded-lg bg-neutral-100 p-8 shadow-lg">
-    <span
-      class="material-symbols-outlined bg-error-red/20 border-error-red text-error-red my-4 rounded-full border px-5 py-4 text-center text-3xl!"
-      >close</span
+<div class="flex h-full w-full items-center justify-center">
+  <div
+    class="from-error-red/30 flex min-h-full w-3xl flex-col items-center justify-center rounded-full bg-radial to-transparent to-70% py-16 text-sm text-neutral-700"
+  >
+    <div
+      class="ring-error-red/30 my-8 flex w-sm flex-col items-center gap-4 rounded-lg bg-neutral-100 p-8 shadow-lg ring-1"
     >
-    <span class="text-error-red text-lg font-semibold"> {{ error()?.error.title ?? 'An error occurred' }} </span>
-    <p class="text-center">{{ error()?.error.detail ?? 'Please try again later.' }}</p>
+      <span
+        class="material-symbols-outlined bg-error-red/30 border-error-red text-error-red my-4 rounded-full border px-5 py-4 text-center text-3xl!"
+        >close</span
+      >
+      <span class="text-error-red text-lg font-semibold"> {{ error()?.error.title ?? 'An error occurred' }} </span>
+      <p class="text-center">{{ error()?.error.detail ?? 'Please try again later.' }}</p>
+      @if (routerLink() || useRetry()) {
+        <div class="my-2 h-px w-full bg-neutral-300"></div>
+      }
+      @if (routerLink()) {
+        <a matButton="outlined" [routerLink]="routerLink()" class="w-fit">Back to overview</a>
+      }
 
-    @if (routerLink()) {
-      <div class="my-2 h-px w-full bg-neutral-300"></div>
-
-      <a matButton="outlined" [routerLink]="routerLink()" class="w-fit">Back to overview</a>
-    }
+      @if (useRetry()) {
+        <button matButton="outlined" class="w-fit" (click)="retry.emit()">Retry</button>
+      }
+    </div>
   </div>
 </div>
