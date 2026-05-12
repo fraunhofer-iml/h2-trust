@@ -21,6 +21,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
+import { toast } from 'ngx-sonner';
 import {
   BottlingOverviewDto,
   HydrogenComponentDto,
@@ -98,7 +99,16 @@ export class AddBottleComponent {
 
   hydrogenStorageQuery = injectQuery(() => ({
     queryKey: ['h2-storage'],
-    queryFn: () => this.unitsService.getHydrogenStorageUnits(),
+    queryFn: async () => {
+      const storageUnits = await this.unitsService.getHydrogenStorageUnits();
+      if (storageUnits.length === 0) {
+        toast.error('No hydrogen storage units available. Please add a storage unit first.', {
+          action: { label: 'Go to Units', onClick: () => this.router.navigateByUrl(`${H2TrustRoutes.UNITS}/create`) },
+          duration: 20000,
+        });
+      }
+      return storageUnits;
+    },
   }));
 
   recipientsQuery = injectQuery(() => ({
