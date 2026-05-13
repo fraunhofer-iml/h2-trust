@@ -12,9 +12,9 @@ import { Component, inject, input } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { injectMutation } from '@tanstack/angular-query-experimental';
-import { handleMutationWithPromiseToast } from 'apps/frontend/src/app/shared/util/query-error-handler';
 import { DownloadFilesDto, ProcessedCsvDto } from '@h2-trust/contracts/dtos';
 import { ProductionService } from '../../../../shared/services/production/production.service';
+import { handleMutationWithPromiseToast } from '../../../../shared/util/query-error-handler';
 
 @Component({
   selector: 'app-download-button',

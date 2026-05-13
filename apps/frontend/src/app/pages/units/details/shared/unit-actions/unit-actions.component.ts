@@ -11,8 +11,8 @@ import { Component, inject, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { injectMutation } from '@tanstack/angular-query-experimental';
-import { toastQueryError } from 'apps/frontend/src/app/shared/util/query-error-handler';
 import { UnitsService } from '../../../../../shared/services/units/units.service';
+import { toastQueryError } from '../../../../../shared/util/query-error-handler';
 
 @Component({
   selector: 'app-unit-actions',

@@ -20,16 +20,16 @@ import {
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import { Warnings } from 'apps/frontend/src/app/shared/constants/warnings';
-import { toastQueryError } from 'apps/frontend/src/app/shared/util/query-error-handler';
 import { toast } from 'ngx-sonner';
 import { PowerProductionOverviewDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/contracts/dtos';
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
+import { Warnings } from '../../../../shared/constants/warnings';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
 import { powerProductionUnitsQueryOptions } from '../../../../shared/queries/units.query';
 import { PowerPurchaseAgreementService } from '../../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
+import { toastQueryError } from '../../../../shared/util/query-error-handler';
 
 @Component({
   selector: 'app-request-confirmation-dialog',

@@ -18,8 +18,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
-import { hydrogenStorageUnitsQueryOptions } from 'apps/frontend/src/app/shared/queries/units.query';
-import { handleMutationWithPromiseToast } from 'apps/frontend/src/app/shared/util/query-error-handler';
 import { map } from 'rxjs';
 import { ProductionOverviewDto, StagedProductionDto, StagingSubmissionDto } from '@h2-trust/contracts/dtos';
 import {
@@ -32,9 +30,11 @@ import {
 import { EmptyStateComponent } from '../../../../layout/empty-state/empty-state.component';
 import { H2TrustRoutes } from '../../../../shared/constants/routes';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
+import { hydrogenStorageUnitsQueryOptions } from '../../../../shared/queries/units.query';
 import { PowerPurchaseAgreementService } from '../../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { ProductionService } from '../../../../shared/services/production/production.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
+import { handleMutationWithPromiseToast } from '../../../../shared/util/query-error-handler';
 
 @Component({
   selector: 'app-file-selection',
