@@ -14,15 +14,13 @@ interface ProblemDetail {
 function isProblemDetail(value: unknown): value is ProblemDetail {
   if (!value || typeof value !== 'object') return false;
 
-  const problem = value as Record<string, unknown>;
+  const p = value as Record<string, unknown>;
 
   return (
-    typeof problem['type'] === 'string' &&
-    typeof problem['status'] === 'number' &&
-    typeof problem['title'] === 'string' &&
-    typeof problem['detail'] === 'string' &&
-    typeof problem['instance'] === 'string' &&
-    typeof problem['timestamp'] === 'string'
+    ['type', 'title', 'detail', 'instance', 'timestamp'].every((key) => typeof p[key] === 'string') &&
+    typeof p['status'] === 'number' &&
+    (p['validationErrors'] === undefined ||
+      (Array.isArray(p['validationErrors']) && p['validationErrors'].every((e) => typeof e === 'string')))
   );
 }
 

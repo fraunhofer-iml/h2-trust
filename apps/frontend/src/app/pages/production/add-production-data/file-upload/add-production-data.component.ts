@@ -29,7 +29,6 @@ import { FileDragAndDropComponent } from '../../../../layout/drag-and-drop/file-
 import { TypeSelectionComponent } from '../../../../layout/type-selection/type-selection.component';
 import { FileTypes } from '../../../../shared/constants/file-types';
 import { UploadFlowAction } from '../../../../shared/constants/upload-flow-action.enum';
-import { ModalData } from '../../../../shared/model/modal-data.model';
 import { FileSizePipe } from '../../../../shared/pipes/file-size.pipe';
 import {
   hydrogenProductionUnitsQueryOptions,
@@ -43,6 +42,7 @@ import { UserRolesStore } from '../../../../shared/store/user-role.store';
 import { minFormArrayLength } from '../../../../shared/util/form-array-length.validator';
 import { FileForm } from './file-upload.form';
 import { LoadingModalComponent } from './loading-modal/loading-modal.component';
+import { ModalData } from './loading-modal/modal-data.model';
 
 @Component({
   selector: 'app-add-production-data',

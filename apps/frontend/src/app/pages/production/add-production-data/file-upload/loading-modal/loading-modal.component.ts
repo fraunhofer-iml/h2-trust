@@ -12,7 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { UploadFlowAction } from '../../../../../shared/constants/upload-flow-action.enum';
-import { ModalData } from '../../../../../shared/model/modal-data.model';
+import { ModalData } from './modal-data.model';
 
 @Component({
   selector: 'app-loading-modal',
