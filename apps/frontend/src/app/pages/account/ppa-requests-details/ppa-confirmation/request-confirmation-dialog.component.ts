@@ -20,6 +20,7 @@ import {
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { invalidateByQueryPrefix } from 'apps/frontend/src/app/shared/queries/query-invalidation';
 import { toast } from 'ngx-sonner';
 import { PowerProductionOverviewDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/contracts/dtos';
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';

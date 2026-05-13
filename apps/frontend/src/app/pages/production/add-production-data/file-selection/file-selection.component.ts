@@ -18,6 +18,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { invalidateByQueryPrefix } from 'apps/frontend/src/app/shared/queries/query-invalidation';
 import { QueryKeyPrefix } from 'apps/frontend/src/app/shared/queries/shared-query-keys';
 import { map } from 'rxjs';
 import { PpaDto, ProductionOverviewDto, StagedProductionDto, StagingSubmissionDto } from '@h2-trust/contracts/dtos';
