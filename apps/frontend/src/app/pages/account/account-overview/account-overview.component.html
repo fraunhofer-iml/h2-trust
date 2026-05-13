@@ -4,7 +4,7 @@
   @if (accountQuery.isLoading()) {
     <app-loading-card></app-loading-card>
   } @else if (accountQuery.isError()) {
-    <app-error-card [error]="accountQuery.error()" (retry)="accountQuery.refetch()" class="grow"></app-error-card>
+    <app-error-card [error]="accountQuery.error()" class="grow"></app-error-card>
   } @else if (accountQuery.data(); as account) {
     <div class="grid w-full grid-cols-2 gap-4 text-sm">
       <div class="flex flex-col gap-4 rounded-lg bg-white p-4">
