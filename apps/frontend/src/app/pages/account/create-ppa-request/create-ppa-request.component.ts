@@ -20,6 +20,7 @@ import { toast } from 'ngx-sonner';
 import { PpaRequestCreateDto } from '@h2-trust/contracts/dtos';
 import { PowerProductionType } from '@h2-trust/domain';
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
+import { companiesQueryOptions } from '../../../shared/queries/companies.query';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { PowerPurchaseAgreementService } from '../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
@@ -65,10 +66,7 @@ export class CreatePpaRequestComponent {
     validTo: new FormControl<Date | null>(null, Validators.required),
   });
 
-  companiesQuery = injectQuery(() => ({
-    queryKey: ['companies'],
-    queryFn: () => this.companiesService.getCompanies(),
-  }));
+  companiesQuery = injectQuery(() => companiesQueryOptions(this.companiesService));
 
   mutation = injectMutation(() => ({
     mutationFn: (dto: PpaRequestCreateDto) => this.ppaService.createPpaRequest(dto),

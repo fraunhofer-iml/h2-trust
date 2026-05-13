@@ -36,6 +36,7 @@ import { FileTypes } from '../../../shared/constants/file-types';
 import { H2TrustRoutes } from '../../../shared/constants/routes';
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
+import { companiesQueryOptions } from '../../../shared/queries/companies.query';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
@@ -114,10 +115,7 @@ export class AddBottleComponent {
     },
   }));
 
-  recipientsQuery = injectQuery(() => ({
-    queryKey: ['recipients'],
-    queryFn: () => this.companiesService.getCompanies(),
-  }));
+  recipientsQuery = injectQuery(() => companiesQueryOptions(this.companiesService));
 
   mutation = injectMutation(() => ({
     mutationFn: async (dto: FormData) => {
