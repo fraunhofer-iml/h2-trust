@@ -15,7 +15,6 @@ import { MeasurementUnit } from '@h2-trust/domain';
 import { EmptyStateComponent } from '../../../layout/empty-state/empty-state.component';
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
 import { LoadingCardComponent } from '../../../layout/loading-card/loading-card.component';
-import { ERROR_MESSAGES } from '../../../shared/constants/error.messages';
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { AuthService } from '../../../shared/services/auth/auth.service';
@@ -52,7 +51,6 @@ export class ProductPassComponent {
 
   id = input<string>('');
 
-  readonly ERROR_MESSAGES = ERROR_MESSAGES;
   readonly MeasurementUnit = MeasurementUnit;
 
   batchQuery = injectQuery(() => ({

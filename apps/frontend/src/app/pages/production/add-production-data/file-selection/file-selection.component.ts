@@ -19,6 +19,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
 import { handleMutationWithPromiseToast } from 'apps/frontend/src/app/shared/util/query-error-handler';
+import { toast } from 'ngx-sonner';
 import { map } from 'rxjs';
 import { ProductionOverviewDto, StagedProductionDto, StagingSubmissionDto } from '@h2-trust/contracts/dtos';
 import {
@@ -113,8 +114,20 @@ export class FileSelectionComponent {
   }));
 
   storageUnitsQuery = injectQuery(() => ({
-    queryKey: ['hydrogen-storage-unit'],
-    queryFn: () => this.unitsService.getHydrogenStorageUnits(),
+    queryKey: ['h2-storage'],
+    queryFn: async () => {
+      const storageUnits = await this.unitsService.getHydrogenStorageUnits();
+      if (storageUnits.length === 0) {
+        toast.error('No hydrogen storage units available.', {
+          action: {
+            label: 'Create Storage',
+            onClick: () => this.router.navigateByUrl(`${H2TrustRoutes.UNITS}/create`),
+          },
+          duration: 20000,
+        });
+      }
+      return storageUnits;
+    },
   }));
 
   data = computed(() => {

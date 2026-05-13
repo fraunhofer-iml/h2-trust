@@ -102,8 +102,11 @@ export class AddBottleComponent {
     queryFn: async () => {
       const storageUnits = await this.unitsService.getHydrogenStorageUnits();
       if (storageUnits.length === 0) {
-        toast.error('No hydrogen storage units available. Please add a storage unit first.', {
-          action: { label: 'Go to Units', onClick: () => this.router.navigateByUrl(`${H2TrustRoutes.UNITS}/create`) },
+        toast.error('No hydrogen storage units available.', {
+          action: {
+            label: 'Create Storage',
+            onClick: () => this.router.navigateByUrl(`${H2TrustRoutes.UNITS}/create`),
+          },
           duration: 20000,
         });
       }

@@ -7,7 +7,6 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
@@ -22,7 +21,6 @@ import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
 import { UnitsService } from '../../../../shared/services/units/units.service';
-import { toastQueryError } from '../../../../shared/util/query-error-handler';
 import { UnitActionsComponent } from '../shared/unit-actions/unit-actions.component';
 import { UnitDetailsComponent } from '../shared/unit-details/unit-details.component';
 
@@ -55,7 +53,6 @@ export class PowerProductionDetailsComponent {
   unitQuery = injectQuery(() => ({
     queryKey: [QueryKeyPrefix.POWER_PRODUCTION_UNITS, this.id()],
     queryFn: () => this.unitsService.getPowerProductionUnit(this.id() ?? ''),
-    onError: (e: HttpErrorResponse) => toastQueryError(e),
   }));
 
   onUnitStatusChange = () => this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.POWER_PRODUCTION_UNITS] });

@@ -20,6 +20,7 @@ import {
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { Warnings } from 'apps/frontend/src/app/shared/constants/warnings';
 import { toastQueryError } from 'apps/frontend/src/app/shared/util/query-error-handler';
 import { toast } from 'ngx-sonner';
 import { PowerProductionOverviewDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/contracts/dtos';
@@ -48,6 +49,7 @@ import { UnitsService } from '../../../../shared/services/units/units.service';
 })
 export class RequestConfirmationDialogComponent {
   protected readonly PowerPurchaseAgreementStatus = PowerPurchaseAgreementStatus;
+  protected readonly Warnings = Warnings;
 
   readonly dialogRef = inject(MatDialogRef<RequestConfirmationDialogComponent>);
   readonly data = inject<{

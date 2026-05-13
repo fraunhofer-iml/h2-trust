@@ -10,7 +10,11 @@
   </div>
 
   @if (batchQuery.error(); as err) {
-    <app-error-card [error]="err" [routerLink]="isAuthenticated ? '/bottling' : undefined"></app-error-card>
+    <app-error-card
+      [error]="err"
+      [routerLink]="isAuthenticated ? '/bottling' : undefined"
+      class="grow"
+    ></app-error-card>
   } @else if (batchQuery.isLoading()) {
     <app-loading-card></app-loading-card>
   } @else if (batchQuery.data(); as batch) {

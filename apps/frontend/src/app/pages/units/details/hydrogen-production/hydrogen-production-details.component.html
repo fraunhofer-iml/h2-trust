@@ -5,9 +5,9 @@
     {{ unitQuery.data()?.name ?? id() }}
   </div>
   @if (unitQuery.error(); as err) {
-    <app-error-card [error]="err" [routerLink]="'/units'"></app-error-card>
+    <app-error-card [error]="err" [routerLink]="'/units'" class="grow"></app-error-card>
   } @else if (unitQuery.isLoading()) {
-    <app-loading-card class="col-span-2" />
+    <app-loading-card class="col-span-2 h-full" />
   }
   @if (unitQuery.data(); as unit) {
     <div class="grid grid-cols-4 gap-4">
