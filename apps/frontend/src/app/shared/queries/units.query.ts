@@ -18,3 +18,8 @@ export const powerProductionUnitsQueryOptions = (unitsService: UnitsService) => 
   queryKey: [QueryKeyPrefix.POWER_PRODUCTION_UNITS],
   queryFn: () => unitsService.getPowerProductionUnits(),
 });
+
+export const hydrogenStorageUnitsQueryOptions = (unitsService: UnitsService) => ({
+  queryKey: [QueryKeyPrefix.HYDROGEN_STORAGE_UNITS],
+  queryFn: () => unitsService.getHydrogenStorageUnits(),
+});
