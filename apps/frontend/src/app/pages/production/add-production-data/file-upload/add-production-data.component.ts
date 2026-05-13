@@ -22,7 +22,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
-import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
+import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { AccountingPeriodMatchingResultDto } from '@h2-trust/contracts/dtos';
 import { BatchType, CsvContentType } from '@h2-trust/domain';
 import { FileDragAndDropComponent } from '../../../../layout/drag-and-drop/file-drag-and-drop.component';
@@ -30,6 +30,8 @@ import { TypeSelectionComponent } from '../../../../layout/type-selection/type-s
 import { FileTypes } from '../../../../shared/constants/file-types';
 import { UploadFlowAction } from '../../../../shared/constants/upload-flow-action.enum';
 import { FileSizePipe } from '../../../../shared/pipes/file-size.pipe';
+import { invalidateByQueryPrefix } from '../../../../shared/queries/query-invalidation';
+import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
 import {
   hydrogenProductionUnitsQueryOptions,
   powerProductionUnitsQueryOptions,
@@ -78,6 +80,7 @@ export class AddProductionDataComponent {
   unitsService = inject(UnitsService);
   roles = inject(UserRolesStore);
   loadingModal = inject(MatDialog);
+  private queryClient = inject(QueryClient);
 
   hydrogenProductionUnitsQuery = injectQuery(() => hydrogenProductionUnitsQueryOptions(this.unitsService));
   powerProductionUnitsQuery = injectQuery(() => powerProductionUnitsQueryOptions(this.unitsService));
@@ -104,6 +107,13 @@ export class AddProductionDataComponent {
 
   mutation = injectMutation<AccountingPeriodMatchingResultDto, HttpErrorResponse, FormData>(() => ({
     mutationFn: (data: FormData) => this.productionService.uploadCsv(data),
+    onSuccess: async () => {
+      await invalidateByQueryPrefix(this.queryClient, [
+        QueryKeyPrefix.PENDING_HYDROGEN_PRODUCTIONS,
+        QueryKeyPrefix.PENDING_POWER_PRODUCTIONS,
+        QueryKeyPrefix.PRODUCTIONS,
+      ]);
+    },
   }));
 
   constructor() {

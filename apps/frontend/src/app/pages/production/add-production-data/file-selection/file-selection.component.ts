@@ -17,9 +17,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
-import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
+import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { QueryKeyPrefix } from 'apps/frontend/src/app/shared/queries/shared-query-keys';
 import { map } from 'rxjs';
-import { ProductionOverviewDto, StagedProductionDto, StagingSubmissionDto } from '@h2-trust/contracts/dtos';
+import { PpaDto, ProductionOverviewDto, StagedProductionDto, StagingSubmissionDto } from '@h2-trust/contracts/dtos';
 import {
   BatchType,
   CsvContentType,
@@ -61,6 +62,7 @@ export class FileSelectionComponent {
   protected readonly unitsService = inject(UnitsService);
   protected readonly MeasurementUnit = MeasurementUnit;
   private readonly router = inject(Router);
+  private queryClient = inject(QueryClient);
 
   form = new FormGroup({
     hydrogenProduction: new FormControl<StagedProductionDto[] | null>(null, [
@@ -86,7 +88,7 @@ export class FileSelectionComponent {
 
   powerProductionsQuery = injectQuery(() => ({
     queryKey: [
-      'power-production',
+      QueryKeyPrefix.PENDING_POWER_PRODUCTIONS,
       this.selectedHydrogenFile()?.startedAt,
       this.selectedHydrogenFile()?.endedAt,
       BatchType.POWER,
@@ -101,16 +103,14 @@ export class FileSelectionComponent {
   }));
 
   hydrogenProductionsQuery = injectQuery(() => ({
-    queryKey: ['hydrogen-production'],
+    queryKey: [QueryKeyPrefix.PENDING_HYDROGEN_PRODUCTIONS],
     queryFn: () => this.productionService.getStagedProductions(CsvContentType.HYDROGEN, StagingScope.OWN),
   }));
 
   powerPurchaseAgreementsQuery = injectQuery(() => ({
-    queryKey: ['power-purchase-agreements'],
-    queryFn: async () => {
-      const approvals = await this.powerPurchaseAgreementService.getAgreements(PowerPurchaseAgreementStatus.APPROVED);
-      return approvals.filter((a) => a.energySource !== 'GRID');
-    },
+    queryKey: [QueryKeyPrefix.POWER_PURCHASE_AGREEMENTS, PowerPurchaseAgreementStatus.APPROVED],
+    queryFn: () => this.powerPurchaseAgreementService.getAgreements(PowerPurchaseAgreementStatus.APPROVED),
+    select: (approvals: PpaDto[]) => approvals.filter((a) => a.energySource !== 'GRID'),
   }));
 
   storageUnitsQuery = injectQuery(() => hydrogenStorageUnitsQueryOptions(this.unitsService));
@@ -136,10 +136,18 @@ export class FileSelectionComponent {
 
   mutation = injectMutation(() => ({
     mutationFn: async (dto: StagingSubmissionDto) => {
-      await handleMutationWithPromiseToast<ProductionOverviewDto[]>(
+      handleMutationWithPromiseToast<ProductionOverviewDto[]>(
         this.productionService.submitCsv(dto),
         'Successfully created',
       );
+    },
+    onSuccess: async () => {
+      invalidateByQueryPrefix(this.queryClient, [
+        QueryKeyPrefix.PENDING_HYDROGEN_PRODUCTIONS,
+        QueryKeyPrefix.PENDING_POWER_PRODUCTIONS,
+        QueryKeyPrefix.PRODUCTIONS,
+      ]);
+
       this.router.navigateByUrl(H2TrustRoutes.PRODUCTION_DATA);
     },
   }));

@@ -73,10 +73,11 @@ export class RequestConfirmationDialogComponent {
   confirmationMutation = injectMutation(() => ({
     mutationFn: (dto: PpaRequestDecisionDto) => this.ppaService.decidePpaRequest(this.data.request.id, dto),
     onError: (e) => toastQueryError(e),
-    onSuccess: () => {
-      this.queryClient.invalidateQueries({
-        queryKey: [QueryKeyPrefix.PPA_REQUESTS],
-      });
+    onSuccess: async () => {
+      await invalidateByQueryPrefix(this.queryClient, [
+        QueryKeyPrefix.PPA_REQUESTS,
+        QueryKeyPrefix.POWER_PURCHASE_AGREEMENTS,
+      ]);
       toast.success(`Request ${this.data.status.toLowerCase()}.`);
     },
   }));

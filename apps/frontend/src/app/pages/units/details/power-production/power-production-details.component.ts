@@ -45,14 +45,15 @@ export class PowerProductionDetailsComponent {
   protected readonly RFNBO_CRITERIA = RFNBO_CRITERIA;
   protected readonly MeasurementUnit = MeasurementUnit;
 
-  id = input<string>();
+  id = input<string>('');
 
   private unitsService = inject(UnitsService);
   private queryClient = inject(QueryClient);
 
   unitQuery = injectQuery(() => ({
     queryKey: [QueryKeyPrefix.POWER_PRODUCTION_UNITS, this.id()],
-    queryFn: () => this.unitsService.getPowerProductionUnit(this.id() ?? ''),
+    queryFn: () => this.unitsService.getPowerProductionUnit(this.id()),
+    enabled: !!this.id(),
   }));
 
   onUnitStatusChange = () => this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.POWER_PRODUCTION_UNITS] });

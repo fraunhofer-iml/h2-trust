@@ -28,7 +28,7 @@ export class HydrogenStorageUnitUpdateComponent extends AbstractUnitUpdateCompon
   HydrogenStorageUnitDto,
   HydrogenStorageUnitInputDto
 > {
-  override id = input<string>();
+  override id = input<string>('');
 
   protected override queryPrefix = QueryKeyPrefix.HYDROGEN_STORAGE_UNITS;
   hydrogenStorageUnitForm: FormGroup<HydrogenStorageFormGroup> = newH2StorageForm();
@@ -46,6 +46,7 @@ export class HydrogenStorageUnitUpdateComponent extends AbstractUnitUpdateCompon
   }
 
   protected override setFormData(unit: HydrogenStorageUnitDto) {
+    console.log('Setting form data for unit', unit);
     this.unitForm.patchValue({ ...unit, owner: unit.owner.id, operator: unit.operator.id });
     this.hydrogenStorageUnitForm.patchValue({
       ...unit,

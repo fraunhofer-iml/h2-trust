@@ -20,7 +20,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
-import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
+import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import {
   BottlingOverviewDto,
   HydrogenComponentDto,
@@ -36,6 +36,7 @@ import { H2TrustRoutes } from '../../../shared/constants/routes';
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { companiesQueryOptions } from '../../../shared/queries/companies.query';
+import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { hydrogenStorageUnitsQueryOptions } from '../../../shared/queries/units.query';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
@@ -75,6 +76,7 @@ export class AddBottleComponent {
   companiesService = inject(CompaniesService);
   processService = inject(BottlingService);
   enumPipe = inject(EnumPipe);
+  private queryClient = inject(QueryClient);
 
   protected readonly FileTypes = FileTypes;
   protected readonly TransportType = TransportMode;
@@ -108,7 +110,7 @@ export class AddBottleComponent {
         this.processService.createBottleBatch(dto),
         'Successfully created',
       );
-
+      await this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.BOTTLING] });
       this.router.navigateByUrl(H2TrustRoutes.BOTTLING);
     },
   }));
@@ -118,7 +120,7 @@ export class AddBottleComponent {
       this.onTransportModeChange(transportMode),
     );
 
-    this.bottleFormGroup.controls.amount?.valueChanges.subscribe((amount) => this.onAmountChnage(amount));
+    this.bottleFormGroup.controls.amount?.valueChanges.subscribe((amount) => this.onAmountChange(amount));
   }
 
   get bottleTypeControl() {
@@ -187,7 +189,7 @@ export class AddBottleComponent {
     distanceControl.updateValueAndValidity();
   }
 
-  private onAmountChnage(amount: number | null | undefined) {
+  private onAmountChange(amount: number | null | undefined) {
     if (!amount) return;
 
     this.bottleFormGroup.controls.type.reset();

@@ -37,14 +37,15 @@ import { UnitDetailsComponent } from '../shared/unit-details/unit-details.compon
 export class HydrogenStorageDetailsComponent {
   readonly MeasurementUnit = MeasurementUnit;
 
-  id = input<string>();
+  id = input<string>('');
 
   unitsService = inject(UnitsService);
   private queryClient = inject(QueryClient);
 
   unitQuery = injectQuery(() => ({
     queryKey: [QueryKeyPrefix.HYDROGEN_STORAGE_UNITS, this.id()],
-    queryFn: () => this.unitsService.getHydrogenStorageUnit(this.id() ?? ''),
+    queryFn: () => this.unitsService.getHydrogenStorageUnit(this.id()),
+    enabled: !!this.id(),
   }));
 
   onUnitStatusChange = () => this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.HYDROGEN_STORAGE_UNITS] });

@@ -29,6 +29,7 @@ import { ProcessedCsvDto } from '@h2-trust/contracts/dtos';
 import { BatchType, CsvContentType, CsvDocumentIntegrityStatus, MeasurementUnit } from '@h2-trust/domain';
 import { ICONS } from '../../../shared/constants/icons';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
+import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { ProductionService } from '../../../shared/services/production/production.service';
 import { UserRolesStore } from '../../../shared/store/user-role.store';
 import { VerificationResultStore } from '../../../shared/store/verification-result.store';
@@ -133,7 +134,7 @@ export class ProductionFilesComponent implements AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   uploadsQuery = injectQuery(() => ({
-    queryKey: ['production'],
+    queryKey: [QueryKeyPrefix.UPLOADED_FILES],
     queryFn: (): Promise<ProcessedCsvDto[]> => this.productionService.getUploadedCsvFiles(),
   }));
 
