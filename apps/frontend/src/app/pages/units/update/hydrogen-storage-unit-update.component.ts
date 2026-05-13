@@ -45,6 +45,13 @@ export class HydrogenStorageUnitUpdateComponent extends AbstractUnitUpdateCompon
     this.router.navigateByUrl(`units/hydrogen-storage/${this.id()}`);
   }
 
+  isSaveDisabled(): boolean {
+    if (this.unitForm.invalid || this.hydrogenStorageUnitForm.invalid) {
+      return true;
+    }
+    return false;
+  }
+
   protected override setFormData(unit: HydrogenStorageUnitDto) {
     this.unitForm.patchValue({ ...unit, owner: unit.owner.id, operator: unit.operator.id });
     this.hydrogenStorageUnitForm.patchValue({
@@ -52,6 +59,8 @@ export class HydrogenStorageUnitUpdateComponent extends AbstractUnitUpdateCompon
       hydrogenStorageType: unit.storageType as HydrogenStorageType,
     });
     addValidatorsToFormGroup(this.hydrogenStorageUnitForm);
+    this.unitForm.markAsPristine();
+    this.hydrogenStorageUnitForm.markAsPristine();
   }
 
   override fetchUnit(id: string): Promise<HydrogenStorageUnitDto> {

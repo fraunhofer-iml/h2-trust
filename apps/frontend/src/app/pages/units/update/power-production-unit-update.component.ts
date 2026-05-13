@@ -15,7 +15,7 @@ import { PowerProductionType } from '@h2-trust/domain';
 import { UnitTypeChipComponent } from '../../../layout/chips/unit-type-chip.component';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { BaseUnitFormComponent } from '../forms/base-unit/base-unit-form-component';
-import { newPowerProductionForm, PowerProductionFormGroup } from '../forms/forms';
+import { addValidatorsToFormGroup, newPowerProductionForm, PowerProductionFormGroup } from '../forms/forms';
 import { PowerProductionUnitFormComponent } from '../forms/power-production/power-production-unit-form.component';
 import { AbstractUnitUpdateComponent } from './abstract-unit-update.component';
 
@@ -59,6 +59,13 @@ export class PowerProductionUnitUpdateComponent extends AbstractUnitUpdateCompon
     this.router.navigateByUrl(`units/power-production/${this.id()}`);
   }
 
+  isSaveDisabled(): boolean {
+    if (this.unitForm.invalid || this.powerProductionForm.invalid) {
+      return true;
+    }
+    return false;
+  }
+
   protected override setFormData(unit: PowerProductionUnitDto) {
     this.unitForm.patchValue({ ...unit, owner: unit.owner.id, operator: unit.operator.id });
     this.powerProductionForm.patchValue({
@@ -66,5 +73,8 @@ export class PowerProductionUnitUpdateComponent extends AbstractUnitUpdateCompon
       biddingZone: unit.biddingZone,
       powerProductionType: unit.type.name as PowerProductionType,
     });
+    addValidatorsToFormGroup(this.powerProductionForm);
+    this.unitForm.markAsPristine();
+    this.powerProductionForm.markAsPristine();
   }
 }

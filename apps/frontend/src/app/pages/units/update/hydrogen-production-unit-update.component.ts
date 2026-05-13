@@ -57,6 +57,13 @@ export class HydrogenProductionUnitUpdateComponent extends AbstractUnitUpdateCom
     this.router.navigateByUrl(`units/hydrogen-production/${this.id()}`);
   }
 
+  isSaveDisabled(): boolean {
+    if (this.unitForm.invalid || this.hydrogenProductionForm.invalid) {
+      return true;
+    }
+    return false;
+  }
+
   protected override setFormData(unit: HydrogenProductionUnitDto) {
     this.unitForm.patchValue({ ...unit, owner: unit.owner.id, operator: unit.operator.id });
     this.hydrogenProductionForm.patchValue({
@@ -66,5 +73,7 @@ export class HydrogenProductionUnitUpdateComponent extends AbstractUnitUpdateCom
       technology: unit.technology as HydrogenProductionTechnology,
     });
     addValidatorsToFormGroup(this.hydrogenProductionForm);
+    this.unitForm.markAsPristine();
+    this.hydrogenProductionForm.markAsPristine();
   }
 }
