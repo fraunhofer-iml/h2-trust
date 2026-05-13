@@ -137,8 +137,4 @@ export class SidebarComponent implements OnInit {
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
   }
-
-  retryQueries() {
-    this.roles.refetch();
-  }
 }

@@ -17,11 +17,6 @@ import { UnitsService } from '../services/units/units.service';
 export class UserRolesStore {
   private unitsService = inject(UnitsService);
 
-  refetch() {
-    this.powerUnitsQuery.refetch();
-    this.hydrogenUnitsQuery.refetch();
-  }
-
   powerUnitsQuery = injectQuery(() => powerProductionUnitsQueryOptions(this.unitsService));
 
   hydrogenUnitsQuery = injectQuery(() => hydrogenProductionUnitsQueryOptions(this.unitsService));

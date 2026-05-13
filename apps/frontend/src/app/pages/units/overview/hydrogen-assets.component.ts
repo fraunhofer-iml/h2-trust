@@ -21,6 +21,7 @@ import { MeasurementUnit, UnitType } from '@h2-trust/domain';
 import { UnitCardComponent } from '../../../layout/unit-card/unit-card.component';
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
+import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import {
   hydrogenProductionUnitsQueryOptions,
   powerProductionUnitsQueryOptions,
@@ -55,7 +56,7 @@ export class HydrogenAssetsComponent {
   typeToShow: UnitType | null = null;
 
   hydrogenStorageQuery = injectQuery(() => ({
-    queryKey: ['h2-storage'],
+    queryKey: [QueryKeyPrefix.HYDROGEN_STORAGE_UNITS],
     queryFn: () => this.unitsService.getHydrogenStorageUnits(),
   }));
 

@@ -81,6 +81,7 @@ export class AddProductionDataComponent {
 
   hydrogenProductionUnitsQuery = injectQuery(() => hydrogenProductionUnitsQueryOptions(this.unitsService));
   powerProductionUnitsQuery = injectQuery(() => powerProductionUnitsQueryOptions(this.unitsService));
+
   queries = {
     [BatchType.POWER]: this.powerProductionUnitsQuery,
     [BatchType.HYDROGEN]: this.hydrogenProductionUnitsQuery,
