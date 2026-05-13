@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import {
   BiddingZone,
   GridLevel,
@@ -94,8 +94,12 @@ export const newUnitForm = () =>
 
 export const newH2StorageForm = () =>
   new FormGroup<HydrogenStorageFormGroup>({
-    capacity: new FormControl<number | null>(null, { validators: [Validators.required, Validators.min(0)] }),
-    pressure: new FormControl<number | null>(null, { validators: [Validators.required, Validators.min(0)] }),
+    capacity: new FormControl<number | null>(null, {
+      validators: [noNegativeZeroValidator, integerValidator],
+    }),
+    pressure: new FormControl<number | null>(null, {
+      validators: [noNegativeZeroValidator, numberWithOptionalDecimalValidator],
+    }),
     hydrogenStorageType: new FormControl<HydrogenStorageType | null>(null, Validators.required),
   });
 
@@ -105,7 +109,9 @@ export const newPowerProductionForm = () =>
     gridOperator: new FormControl<string | null>(null, Validators.required),
     gridLevel: new FormControl<GridLevel | null>(null, Validators.required),
     gridConnectionNumber: new FormControl<string | null>(null, Validators.required),
-    ratedPower: new FormControl<number | null>(null, { validators: [Validators.required, Validators.min(0)] }),
+    ratedPower: new FormControl<number | null>(null, {
+      validators: [noNegativeZeroValidator, numberWithOptionalDecimalValidator],
+    }),
     electricityMeterNumber: new FormControl<string | null>(null, Validators.required),
     powerProductionType: new FormControl<PowerProductionType | null>(null, Validators.required),
     decommissioningPlannedOn: new FormControl<Date | null>(null, Validators.required),
@@ -115,12 +121,16 @@ export const newPowerProductionForm = () =>
 export const newH2ProductionForm = () =>
   new FormGroup<HydrogenProductionFormGroup>({
     biddingZone: new FormControl<BiddingZone | null>(null, Validators.required),
-    ratedPower: new FormControl<number | null>(null, { validators: [Validators.required, Validators.min(0)] }),
+    ratedPower: new FormControl<number | null>(null, {
+      validators: [noNegativeZeroValidator, numberWithOptionalDecimalValidator],
+    }),
     method: new FormControl<HydrogenProductionMethod | null>(null, Validators.required),
     technology: new FormControl<HydrogenProductionTechnology | null>(null, Validators.required),
-    pressure: new FormControl<number | null>(null, { validators: [Validators.required, Validators.min(0)] }),
+    pressure: new FormControl<number | null>(null, {
+      validators: [noNegativeZeroValidator, numberWithOptionalDecimalValidator],
+    }),
     waterConsumptionLitersPerHour: new FormControl<number | null>(null, {
-      validators: [Validators.required, Validators.min(0)],
+      validators: [noNegativeZeroValidator, numberWithOptionalDecimalValidator],
     }),
   });
 
@@ -136,4 +146,43 @@ export const addValidatorsToFormGroup = (formGroup: FormGroup): void => {
     control.setValidators(validators);
     control.updateValueAndValidity({ emitEvent: false });
   });
+};
+
+export const noNegativeZeroValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  const value = control.value;
+  if (value === null || value === undefined || value === '') {
+    return null;
+  }
+  if (value < 0) {
+    return { negativeNotAllowed: true };
+  }
+  if (Object.is(value, -0)) {
+    return { negativeZeroNotAllowed: true };
+  }
+  return null;
+};
+
+export const numberWithOptionalDecimalValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  const value = control.value;
+  if (value === null || value === undefined || value === '') {
+    return null;
+  }
+  const str = String(value).trim();
+  const pattern = /^\d+([.,]\d+)?$/;
+  if (!pattern.test(str)) {
+    return { invalidNumberFormat: true };
+  }
+  return null;
+};
+
+export const integerValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  const value = control.value;
+  const str = String(value).trim();
+  const pattern = /^(0|[1-9]\d*)$/;
+
+  if (!pattern.test(str)) {
+    return { notAnInteger: true };
+  }
+
+  return null;
 };
