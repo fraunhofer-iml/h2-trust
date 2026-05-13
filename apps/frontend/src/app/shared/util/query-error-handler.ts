@@ -27,8 +27,6 @@ function isProblemDetail(value: unknown): value is ProblemDetail {
 }
 
 export function toastQueryError(err: unknown, toastId?: string | number) {
-  console.log('errrrrrrrrrrrrrrrrrrrrrr');
-
   if (err instanceof HttpErrorResponse && isProblemDetail(err.error)) {
     const validationErrors = err.error.validationErrors;
     const description =

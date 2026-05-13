@@ -67,34 +67,32 @@
                 isMenuOpen ? 'visible scale-100 opacity-100' : 'pointer-events-none invisible scale-95 opacity-0'
               "
             >
-              @if (!roles.isLoading() && !roles.error()) {
-                <!-- Account -->
-                <a
-                  routerLink="/"
-                  class="hover:bg-primary-100 hover:text-primary-600 flex items-center gap-3 rounded-lg p-3 text-neutral-600"
-                  (click)="closeMenu(); $event.stopPropagation()"
-                >
-                  <span class="material-symbols-outlined">person</span>
-                  <span>My account</span>
-                </a>
+              <!-- Account -->
+              <a
+                routerLink="/"
+                class="hover:bg-primary-100 hover:text-primary-600 flex items-center gap-3 rounded-lg p-3 text-neutral-600"
+                (click)="closeMenu(); $event.stopPropagation()"
+              >
+                <span class="material-symbols-outlined">person</span>
+                <span>My account</span>
+              </a>
 
-                <!-- PPA Requests -->
-                <a
-                  routerLink="/ppa-requests"
-                  class="hover:bg-primary-100 hover:text-primary-600 flex items-center gap-3 rounded-lg p-3 text-neutral-600"
-                  (click)="closeMenu(); $event.stopPropagation()"
+              <!-- PPA Requests -->
+              <a
+                routerLink="/ppa-requests"
+                class="hover:bg-primary-100 hover:text-primary-600 flex items-center gap-3 rounded-lg p-3 text-neutral-600"
+                (click)="closeMenu(); $event.stopPropagation()"
+              >
+                <span
+                  class="material-symbols-outlined relative"
+                  [matBadge]="ppaRequestsQuery.data()?.length"
+                  matBadgeSize="large"
+                  [matBadgeHidden]="ppaRequestsQuery.data()?.length === 0"
                 >
-                  <span
-                    class="material-symbols-outlined relative"
-                    [matBadge]="ppaRequestsQuery.data()?.length"
-                    matBadgeSize="large"
-                    [matBadgeHidden]="ppaRequestsQuery.data()?.length === 0"
-                  >
-                    mail
-                  </span>
-                  <span>PPA Requests</span>
-                </a>
-              }
+                  mail
+                </span>
+                <span>PPA Requests</span>
+              </a>
 
               <!-- Sign Out -->
               <button

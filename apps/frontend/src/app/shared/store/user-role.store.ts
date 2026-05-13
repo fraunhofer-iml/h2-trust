@@ -17,14 +17,11 @@ import { UnitsService } from '../services/units/units.service';
 export class UserRolesStore {
   private unitsService = inject(UnitsService);
 
-  powerUnitsQuery = injectQuery(() => powerProductionUnitsQueryOptions(this.unitsService));
+  private powerUnitsQuery = injectQuery(() => powerProductionUnitsQueryOptions(this.unitsService));
 
-  hydrogenUnitsQuery = injectQuery(() => hydrogenProductionUnitsQueryOptions(this.unitsService));
+  private hydrogenUnitsQuery = injectQuery(() => hydrogenProductionUnitsQueryOptions(this.unitsService));
 
   isPowerProducer = computed(() => (this.powerUnitsQuery.data()?.length ?? 0) > 0);
 
   isHydrogenProducer = computed(() => (this.hydrogenUnitsQuery.data()?.length ?? 0) > 0);
-
-  isLoading = computed(() => this.powerUnitsQuery.isPending() || this.hydrogenUnitsQuery.isPending());
-  error = computed(() => this.powerUnitsQuery.error() || this.hydrogenUnitsQuery.error());
 }
