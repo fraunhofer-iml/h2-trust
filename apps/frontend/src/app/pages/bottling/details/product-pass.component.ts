@@ -17,6 +17,7 @@ import { ErrorCardComponent } from '../../../layout/error-card/error-card.compon
 import { LoadingCardComponent } from '../../../layout/loading-card/loading-card.component';
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
+import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { H2CompositionChartComponent } from './chart/h2-composition-chart.component';
@@ -54,7 +55,7 @@ export class ProductPassComponent {
   readonly MeasurementUnit = MeasurementUnit;
 
   batchQuery = injectQuery(() => ({
-    queryKey: ['batch', this.id()],
+    queryKey: [QueryKeyPrefix.BOTTLING, this.id()],
     queryFn: () => this.bottlingService.findBatchById(this.id() ?? ''),
     enabled: !!this.id(),
   }));
