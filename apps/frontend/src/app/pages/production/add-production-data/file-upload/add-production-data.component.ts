@@ -111,7 +111,7 @@ export class AddProductionDataComponent {
       await invalidateByQueryPrefixes(this.queryClient, [
         QueryKeyPrefix.PENDING_HYDROGEN_PRODUCTIONS,
         QueryKeyPrefix.PENDING_POWER_PRODUCTIONS,
-        QueryKeyPrefix.PRODUCTIONS,
+        QueryKeyPrefix.UPLOADED_FILES,
       ]);
     },
   }));
