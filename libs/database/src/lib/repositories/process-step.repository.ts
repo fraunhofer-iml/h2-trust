@@ -15,13 +15,33 @@ import { buildProcessStepCreateInput } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 import { processStepDeepQueryArgs } from '../query-args';
 import { wrapPrismaError } from './prisma-error.wrapper';
-import { assertRecordFound } from './repository-assertions';
+import { assertAllIdsFound, assertRecordFound } from './repository-assertions';
 
 @Injectable()
 export class ProcessStepRepository {
   private readonly logger = new Logger(ProcessStepRepository.name);
 
   constructor(private readonly prismaService: PrismaService) {}
+
+  async findPredecessorProcessSteps(startBatchId: string): Promise<string[]> {
+    const predecessors = await this.prismaService.$queryRaw<{ processStepId: string }[]>`
+      WITH RECURSIVE AllPredecessors AS (
+        SELECT "B" AS predecessor_id
+        FROM "_BatchRelation"
+        WHERE "A" = ${startBatchId}
+
+        UNION ALL
+
+        SELECT br."B"
+        FROM "_BatchRelation" br
+        INNER JOIN AllPredecessors ap ON br."A" = ap.predecessor_id
+      )
+      SELECT DISTINCT ps."id" AS "processStepId"
+      FROM AllPredecessors ap
+      INNER JOIN "ProcessStep" ps ON ps."batchId" = ap.predecessor_id
+    `;
+    return predecessors.map((predecessor) => predecessor.processStepId);
+  }
 
   async findProcessStep(id: string): Promise<ProcessStepEntity> {
     const processStep = await this.prismaService.processStep
@@ -30,6 +50,17 @@ export class ProcessStepRepository {
 
     assertRecordFound(processStep, id, 'process-step');
     return ProcessStepEntity.fromDeepDatabase(processStep);
+  }
+
+  async findProcessSteps(ids: string[]): Promise<ProcessStepEntity[]> {
+    const processSteps = await this.prismaService.processStep.findMany({
+      where: {
+        id: { in: ids },
+      },
+      ...processStepDeepQueryArgs,
+    });
+    assertAllIdsFound(processSteps, ids, 'process-step');
+    return processSteps.map(ProcessStepEntity.fromDeepDatabase);
   }
 
   async findProcessStepsByPredecessorTypesAndOwner(

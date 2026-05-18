@@ -35,7 +35,7 @@ export class PowerProductionUnitUpdateComponent extends AbstractUnitUpdateCompon
   PowerProductionUnitDto,
   PowerProductionUnitInputDto
 > {
-  override id = input<string>();
+  override id = input<string>('');
 
   protected override readonly queryPrefix = QueryKeyPrefix.POWER_PRODUCTION_UNITS;
   powerProductionForm: FormGroup<PowerProductionFormGroup> = newPowerProductionForm();

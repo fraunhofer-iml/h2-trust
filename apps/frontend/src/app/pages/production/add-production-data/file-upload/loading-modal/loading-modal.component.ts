@@ -6,16 +6,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { UploadFlowAction } from '../../../../../shared/constants/upload-flow-action.enum';
-import { ModalData } from '../../../../../shared/model/modal-data.model';
+import { ModalData } from './modal-data.model';
 
 @Component({
   selector: 'app-loading-modal',
-  imports: [MatProgressBarModule, MatDialogModule, MatButtonModule],
+  imports: [MatProgressBarModule, MatDialogModule, MatButtonModule, CommonModule],
   templateUrl: './loading-modal.component.html',
 })
 export class LoadingModalComponent {

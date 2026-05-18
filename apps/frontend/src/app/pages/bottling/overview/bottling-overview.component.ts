@@ -7,7 +7,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, inject, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, effect, inject, ViewChild } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -20,6 +20,7 @@ import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { BottlingOverviewDto } from '@h2-trust/contracts/dtos';
 import { RfnboChipComponent } from '../../../layout/chips/rfnbo-chip.component';
+import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 
@@ -58,13 +59,14 @@ export class BottlingOverviewComponent implements AfterViewInit {
   processService = inject<BottlingService>(BottlingService);
 
   processingQuery = injectQuery(() => ({
-    queryKey: ['processing'],
-    queryFn: async () => {
-      const data = await this.processService.getBottlings();
-      this.dataSource.data = data;
-      return data;
-    },
+    queryKey: [QueryKeyPrefix.BOTTLING],
+    queryFn: async () => this.processService.getBottlings(),
   }));
+
+  protected readonly bottlingTableEffect = effect(async () => {
+    const data = await this.processService.getBottlings();
+    this.dataSource.data = data;
+  });
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
