@@ -34,7 +34,7 @@ export class HydrogenProductionUnitUpdateComponent extends AbstractUnitUpdateCom
   HydrogenProductionUnitDto,
   HydrogenProductionUnitInputDto
 > {
-  override id = input<string>();
+  override id = input<string>('');
 
   protected override readonly queryPrefix = QueryKeyPrefix.HYDROGEN_PRODUCTION_UNITS;
 

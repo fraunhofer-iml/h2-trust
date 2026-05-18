@@ -14,7 +14,7 @@ import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { HydrogenStorageOverviewDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit, RfnboType } from '@h2-trust/domain';
 import { CHART_COLORS } from '../../../../shared/constants/chart-colors';
-import { ERROR_MESSAGES } from '../../../../shared/constants/error.messages';
+import { Warnings } from '../../../../shared/constants/warnings';
 import { formatNumberForChart } from '../../../../shared/formatting/chart-number-format';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
@@ -148,7 +148,7 @@ export class StorageFillingLevelsComponent {
     const capacityInPercent = this.percentPipe.transform(totalH2Amount / (item?.capacity ?? 0), '1.2-2');
 
     const label = `{name|${value}}\n{filling|Filling: ${totalH2Amount}/${capacity} (${capacityInPercent})}`;
-    const overflowMessage = `\n{spacer| }\n{err|${ERROR_MESSAGES.maxCapacityExceeded}}`;
+    const overflowMessage = `\n{spacer| }\n{err|${Warnings.MAX_CAPACITY_EXCEEDED}}`;
 
     return totalH2Amount > (item?.capacity ?? 0) ? label + overflowMessage : label;
   }
