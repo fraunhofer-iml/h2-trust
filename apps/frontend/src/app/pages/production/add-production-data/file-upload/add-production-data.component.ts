@@ -30,7 +30,7 @@ import { TypeSelectionComponent } from '../../../../layout/type-selection/type-s
 import { FileTypes } from '../../../../shared/constants/file-types';
 import { UploadFlowAction } from '../../../../shared/constants/upload-flow-action.enum';
 import { FileSizePipe } from '../../../../shared/pipes/file-size.pipe';
-import { invalidateByQueryPrefix } from '../../../../shared/queries/query-invalidation';
+import { invalidateByQueryPrefixes } from '../../../../shared/queries/query-invalidation';
 import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
 import {
   hydrogenProductionUnitsQueryOptions,
@@ -108,7 +108,7 @@ export class AddProductionDataComponent {
   mutation = injectMutation<AccountingPeriodMatchingResultDto, HttpErrorResponse, FormData>(() => ({
     mutationFn: (data: FormData) => this.productionService.uploadCsv(data),
     onSuccess: async () => {
-      await invalidateByQueryPrefix(this.queryClient, [
+      await invalidateByQueryPrefixes(this.queryClient, [
         QueryKeyPrefix.PENDING_HYDROGEN_PRODUCTIONS,
         QueryKeyPrefix.PENDING_POWER_PRODUCTIONS,
         QueryKeyPrefix.PRODUCTIONS,

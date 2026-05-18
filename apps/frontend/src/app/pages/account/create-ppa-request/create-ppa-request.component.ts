@@ -71,8 +71,8 @@ export class CreatePpaRequestComponent {
   mutation = injectMutation(() => ({
     mutationFn: (dto: PpaRequestCreateDto) => this.ppaService.createPpaRequest(dto),
     onError: (e) => toastQueryError(e),
-    onSuccess: () => {
-      this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.PPA_REQUESTS] });
+    onSuccess: async () => {
+      await this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.PPA_REQUESTS] });
       toast.success('Successfully created PPA Request');
     },
   }));

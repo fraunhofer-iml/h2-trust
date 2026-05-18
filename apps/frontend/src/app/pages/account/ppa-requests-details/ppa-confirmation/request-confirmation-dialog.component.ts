@@ -20,7 +20,7 @@ import {
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import { invalidateByQueryPrefix } from 'apps/frontend/src/app/shared/queries/query-invalidation';
+import { invalidateByQueryPrefixes } from 'apps/frontend/src/app/shared/queries/query-invalidation';
 import { toast } from 'ngx-sonner';
 import { PowerProductionOverviewDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/contracts/dtos';
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
@@ -75,7 +75,7 @@ export class RequestConfirmationDialogComponent {
     mutationFn: (dto: PpaRequestDecisionDto) => this.ppaService.decidePpaRequest(this.data.request.id, dto),
     onError: (e) => toastQueryError(e),
     onSuccess: async () => {
-      await invalidateByQueryPrefix(this.queryClient, [
+      await invalidateByQueryPrefixes(this.queryClient, [
         QueryKeyPrefix.PPA_REQUESTS,
         QueryKeyPrefix.POWER_PURCHASE_AGREEMENTS,
       ]);

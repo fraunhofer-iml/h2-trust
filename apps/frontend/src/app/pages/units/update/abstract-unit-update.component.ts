@@ -60,9 +60,9 @@ export abstract class AbstractUnitUpdateComponent<TUnitDto, TUnitInputDto> {
     this.unitMutation.mutate(dto);
   }
 
-  private onSuccess() {
+  private async onSuccess() {
+    await this.queryClient.invalidateQueries({ queryKey: [this.queryPrefix] });
     toast.success('Unit updated successfully');
-    this.queryClient.invalidateQueries({ queryKey: [this.queryPrefix] });
     this.navigateToDetailsView();
   }
 }

@@ -28,6 +28,7 @@ import {
 } from '@h2-trust/contracts/dtos';
 import { HydrogenProductionMethod, HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { TypeSelectionComponent } from '../../../layout/type-selection/type-selection.component';
+import { H2TrustRoutes } from '../../../shared/constants/routes';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
@@ -98,26 +99,26 @@ export class CreateUnitComponent {
   createHydrogenStorageUnitMutation = injectMutation(() => ({
     mutationFn: (dto: HydrogenStorageUnitInputDto) => this.unitsService.createHydrogenStorageUnit(dto),
     onError: (e) => toastQueryError(e),
-    onSuccess: () => this.onSuccess(),
+    onSuccess: () => this.onSuccess(QueryKeyPrefix.HYDROGEN_STORAGE_UNITS),
   }));
 
   createPowerProductionUnitMutation = injectMutation(() => ({
     mutationFn: (dto: PowerProductionUnitInputDto) => this.unitsService.createPowerProductionUnit(dto),
     onError: (e) => toastQueryError(e),
-    onSuccess: () => this.onSuccess(),
+    onSuccess: () => this.onSuccess(QueryKeyPrefix.POWER_PRODUCTION_UNITS),
   }));
 
   createHydrogenProductionUnitMutation = injectMutation(() => ({
     mutationFn: (dto: HydrogenProductionUnitInputDto) => this.unitsService.createHydrogenProductionUnit(dto),
     onError: (e) => toastQueryError(e),
-    onSuccess: () => this.onSuccess(),
+    onSuccess: () => this.onSuccess(QueryKeyPrefix.HYDROGEN_PRODUCTION_UNITS),
   }));
 
-  private onSuccess = () => {
-    this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.HYDROGEN_PRODUCTION_UNITS] });
-    this.router.navigateByUrl('units');
+  private async onSuccess(queryKeyPrefix: QueryKeyPrefix) {
+    await this.queryClient.invalidateQueries({ queryKey: [queryKeyPrefix] });
     toast.success('Successfully created.');
-  };
+    this.router.navigateByUrl(H2TrustRoutes.UNITS);
+  }
 
   constructor() {
     this.unitForm.controls.unitType.valueChanges.subscribe((value) => this.onUnitTypeChange(value));

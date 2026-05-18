@@ -9,7 +9,7 @@
 import { QueryClient } from '@tanstack/angular-query-experimental';
 import { QueryKeyPrefix } from './shared-query-keys';
 
-export async function invalidateByQueryPrefix(
+export async function invalidateByQueryPrefixes(
   queryClient: QueryClient,
   queryKeys: ReadonlyArray<QueryKeyPrefix>,
 ): Promise<void> {
