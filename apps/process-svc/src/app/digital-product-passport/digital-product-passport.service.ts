@@ -21,15 +21,12 @@ import { PowerType, RfnboType } from '@h2-trust/domain';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { assembleProofOfOrigin, getHydrogenBottlingCompositions } from './proof-of-origin/proof-of-origin.assembler';
 import { assembleProofOfSustainability } from './proof-of-sustainability/proof-of-sustainability.assembler';
-import { ProvenanceService } from './provenance/provenance.service';
+import { buildProvenance } from './provenance/provenance.service';
 import { determineRedCompliance, determineTotalRedCompliance } from './red-compliance/red-compliance';
 
 @Injectable()
 export class DigitalProductPassportService {
-  constructor(
-    private readonly processStepService: ProcessStepService,
-    private readonly provenanceService: ProvenanceService,
-  ) {}
+  constructor(private readonly processStepService: ProcessStepService) {}
 
   /**
    * Calculates the RFNBO type for an existing production chain.
@@ -55,8 +52,9 @@ export class DigitalProductPassportService {
    */
   public async readDigitalProductPassport(processStepId: string): Promise<DigitalProductPassportEntity> {
     const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
+    const predecessors: ProcessStepEntity[] = await this.processStepService.getPredecessors(processStep);
 
-    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStep);
+    const provenance: ProvenanceEntity = buildProvenance(processStep, predecessors);
     const redCompliance: RedComplianceEntity = determineTotalRedCompliance(provenance.productionChains);
 
     const proofOfOrigin: ProofOfOriginSectionEntity[] = assembleProofOfOrigin(provenance);
