@@ -54,6 +54,6 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay()),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(appRoutes, withComponentInputBinding()),
-    provideTanStackQuery(new QueryClient({ defaultOptions: { queries: { staleTime: 5 * 60 * 1000 } } })),
+    provideTanStackQuery(new QueryClient({ defaultOptions: { queries: { staleTime: 60 * 1000 } } })),
   ],
 };
