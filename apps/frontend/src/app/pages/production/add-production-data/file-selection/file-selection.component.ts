@@ -18,8 +18,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import { invalidateByQueryPrefixes } from 'apps/frontend/src/app/shared/queries/query-invalidation';
-import { QueryKeyPrefix } from 'apps/frontend/src/app/shared/queries/shared-query-keys';
 import { map } from 'rxjs';
 import { PpaDto, ProductionOverviewDto, StagedProductionDto, StagingSubmissionDto } from '@h2-trust/contracts/dtos';
 import {
@@ -32,6 +30,8 @@ import {
 import { EmptyStateComponent } from '../../../../layout/empty-state/empty-state.component';
 import { H2TrustRoutes } from '../../../../shared/constants/routes';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
+import { invalidateByQueryPrefixes } from '../../../../shared/queries/query-invalidation';
+import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
 import { hydrogenStorageUnitsQueryOptions } from '../../../../shared/queries/units.query';
 import { PowerPurchaseAgreementService } from '../../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { ProductionService } from '../../../../shared/services/production/production.service';
