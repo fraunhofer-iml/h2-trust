@@ -95,6 +95,9 @@ function getRootProductionForLeaf(
     if (isRoot) {
       return findProcessStepById(currentBatch.processStepId, processSteps);
     }
+    //Since this is not a root production, the predecessor list must never be empty here.
+    //At the same time, the rule that a hydrogen production can have at most one hydrogen
+    //production as a predecessor ensures that there are never more than one predecessor.
     const nextProcessStepId: string = currentBatch.predecessors[0].processStepId;
     const nextProcessStep: ProcessStepEntity = findProcessStepById(nextProcessStepId, processSteps);
     if (!nextProcessStep) {
