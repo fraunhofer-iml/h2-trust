@@ -13,7 +13,6 @@ import {
   ProductionChainEntity,
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEntity,
-  ProvenanceEntity,
   RedComplianceEntity,
 } from '@h2-trust/contracts/entities';
 import {
@@ -49,10 +48,6 @@ describe('DigitalProductPassService', () => {
     createProofOfSustainability: jest.fn(),
   };
 
-  const provenanceServiceMock = {
-    buildProvenance: jest.fn(),
-  };
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -77,12 +72,6 @@ describe('DigitalProductPassService', () => {
       const givenHydrogenBottling: ProcessStepEntity = ProcessStepEntityFixture.createHydrogenBottling();
       const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
 
-      const givenProvenance = new ProvenanceEntity(
-        givenHydrogenBottling,
-        [givenProductionChain],
-        givenHydrogenBottling,
-      );
-
       const givenRedCompliance = new RedComplianceEntity(true, true, true, true);
 
       const proofOfOrigin: ProofOfOriginSectionEntity[] = [ProofOfOriginSectionEntityFixture.create()];
@@ -96,7 +85,6 @@ describe('DigitalProductPassService', () => {
         givenProductionChain.waterConsumption,
       ]);
 
-      provenanceServiceMock.buildProvenance.mockReturnValue(Promise.resolve(givenProvenance));
       redComplianceServiceMock.determineTotalRedCompliance.mockReturnValue(givenRedCompliance);
       proofOfOriginServiceMock.createProofOfOrigin.mockReturnValue(proofOfOrigin);
       proofOfOriginServiceMock.getHydrogenBottlingCompositions.mockReturnValue([]);
