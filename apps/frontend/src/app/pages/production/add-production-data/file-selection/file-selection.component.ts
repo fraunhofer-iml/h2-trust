@@ -75,6 +75,15 @@ export class FileSelectionComponent {
     this.form.controls.hydrogenProduction.valueChanges.pipe(map((val) => (val ? val[0] : null))),
   );
 
+  selectedPowerAmount = toSignal(
+    this.form.controls.powerProductions.valueChanges.pipe(
+      map((value) => (value ?? []).reduce((acc, item) => acc + item.amountProduced, 0)),
+    ),
+    { initialValue: 0 },
+  );
+
+  powerConsumed = computed(() => this.selectedHydrogenFile()?.powerConsumed ?? 0);
+
   powerProductionsQuery = injectQuery(() => ({
     queryKey: [
       'power-production',
@@ -115,15 +124,18 @@ export class FileSelectionComponent {
 
     const result = (approvals ?? []).map((ppa) => ({
       ...ppa,
-      uploads: (uploads ?? []).filter((r) => r.productionUnitId === ppa.powerProductionUnit.id),
+      uploads: (uploads ?? []).filter((r) => r.productionUnitId === ppa.powerProductionUnit?.id),
     }));
 
     return result;
   });
 
-  get totalPower() {
-    return this.form.controls.powerProductions.value?.reduce((acc, item) => acc + item.amountProduced, 0);
-  }
+  chartMax = computed(() => {
+    const powerConsumed = this.powerConsumed();
+    const selectedPowerProduction = this.selectedPowerAmount();
+
+    return Math.max(powerConsumed, selectedPowerProduction, 1);
+  });
 
   mutation = injectMutation(() => ({
     mutationFn: async (dto: StagingSubmissionDto) => {

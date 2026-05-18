@@ -18,6 +18,7 @@ import {
 } from '@h2-trust/contracts/payloads';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
 import { ProcessType, RfnboType } from '@h2-trust/domain';
+import { InternalException } from '@h2-trust/exceptions';
 
 @Injectable()
 export class ProcessStepService {
@@ -26,6 +27,12 @@ export class ProcessStepService {
     private readonly batchRepository: BatchRepository,
     private readonly processStepRepository: ProcessStepRepository,
   ) {}
+
+  public async getPredecessors(processStep: ProcessStepEntity): Promise<ProcessStepEntity[]> {
+    const processStepIds = await this.processStepRepository.findPredecessorProcessSteps(processStep.batch.id);
+    const processSteps: ProcessStepEntity[] = await this.processStepRepository.findProcessSteps(processStepIds);
+    return [processStep, ...processSteps];
+  }
 
   updateRfnboStatus(processStep: ProcessStepEntity, rfnboType: RfnboType): Promise<{ id: string; batchId: string }> {
     return this.batchRepository.setRfnboStatus(processStep.batch.id, rfnboType);
@@ -56,14 +63,14 @@ export class ProcessStepService {
 
   private async readPredecessorProcessStep(predecessorProcessStepId: string): Promise<ProcessStepEntity> {
     if (!predecessorProcessStepId) {
-      throw new Error('ProcessStepId of predecessor is missing.');
+      throw new InternalException('ProcessStepId of predecessor is missing.');
     }
 
     const predecessorProcessStep: ProcessStepEntity =
       await this.processStepRepository.findProcessStep(predecessorProcessStepId);
 
     if (predecessorProcessStep.type !== ProcessType.HYDROGEN_BOTTLING) {
-      throw new Error(
+      throw new InternalException(
         `Expected process type of predecessor to be ${ProcessType.HYDROGEN_BOTTLING}, but got ${predecessorProcessStep.type}.`,
       );
     }

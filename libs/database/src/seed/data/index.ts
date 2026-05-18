@@ -11,6 +11,7 @@ export * from './batch';
 export * from './company.seed';
 export * from './document.seed';
 export * from './power-purchase-agreement.seed';
+export * from './power-purchase-agreement-decision.seed';
 export * from './process-step';
 export * from './unit';
 export * from './user.seed';

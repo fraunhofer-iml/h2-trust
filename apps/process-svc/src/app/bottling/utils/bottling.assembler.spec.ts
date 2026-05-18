@@ -86,7 +86,7 @@ describe('BottlingProcessStepAssembler', () => {
       );
       const givenBatchesForBottle: BatchEntity[] = [];
 
-      const expectedErrorMessage = 'No predecessor type specified';
+      const expectedErrorMessage = 'No predecessor types found: batch list has no quality details';
 
       // Act & Assert
       expect(() => assembleBottling(givenPayload, givenBatchesForBottle)).toThrow(expectedErrorMessage);

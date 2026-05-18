@@ -18,6 +18,7 @@ import {
 } from 'ethers';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { ProofEntity } from '@h2-trust/contracts/entities';
+import { BlockchainException, ErrorCode } from '@h2-trust/exceptions';
 
 export interface ProofEntry {
   uuid: string;
@@ -83,13 +84,21 @@ export class BlockchainService {
 
   async storeProofs(proofEntries: ProofEntry[]): Promise<string> {
     if (!this.contract) {
-      throw new Error('Store failed: blockchain service not initialized.');
+      throw new BlockchainException(
+        ErrorCode.BLOCKCHAIN_NOT_INITIALIZED,
+        'Store failed: blockchain service not initialized.',
+      );
     }
 
     this.logger.debug(`Storing proofs:\n${proofEntries.map((e) => JSON.stringify(e)).join('\n')}`);
 
-    const tx = await this.contract.storeProofs(proofEntries);
-    await tx.wait();
+    let tx: ContractTransactionResponse;
+    try {
+      tx = await this.contract.storeProofs(proofEntries);
+      await tx.wait();
+    } catch (error) {
+      throw new BlockchainException(ErrorCode.BLOCKCHAIN_STORE_FAILED, 'Blockchain transaction failed', error);
+    }
 
     this.logger.debug(`Stored proofs, tx: ${tx.hash}`);
     return tx.hash;
@@ -97,7 +106,10 @@ export class BlockchainService {
 
   async retrieveProof(uuid: string): Promise<ProofEntity | null> {
     if (!this.contract) {
-      throw new Error('Retrieve failed: blockchain service not initialized.');
+      throw new BlockchainException(
+        ErrorCode.BLOCKCHAIN_NOT_INITIALIZED,
+        'Retrieve failed: blockchain service not initialized.',
+      );
     }
 
     try {
@@ -116,7 +128,10 @@ export class BlockchainService {
 
   async retrieveBlockchainMetadata(transactionHash: string): Promise<BlockchainMetadata | null> {
     if (!this.contract) {
-      throw new Error('Retrieve metadata failed: blockchain service not initialized.');
+      throw new BlockchainException(
+        ErrorCode.BLOCKCHAIN_NOT_INITIALIZED,
+        'Retrieve metadata failed: blockchain service not initialized.',
+      );
     }
 
     const receipt = await this.contract.runner.provider.getTransactionReceipt(transactionHash);

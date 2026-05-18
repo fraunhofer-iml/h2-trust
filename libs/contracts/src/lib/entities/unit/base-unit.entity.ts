@@ -126,8 +126,8 @@ export abstract class BaseUnitEntity {
     return (
       unit.owner?.hydrogenAgreements?.map((agreement) => ({
         powerPurchaseAgreementStatus: agreement.status,
-        powerProducerId: agreement.powerProducerId,
-        powerProducerName: agreement.powerProducer.name,
+        powerProducerId: agreement.requestedCompanyId,
+        powerProducerName: agreement.requestedCompany.name,
       })) ?? []
     );
   }

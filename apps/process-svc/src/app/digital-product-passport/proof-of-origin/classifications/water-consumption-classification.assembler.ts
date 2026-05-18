@@ -14,6 +14,7 @@ import {
   ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType, ProofOfOrigin } from '@h2-trust/domain';
+import { InternalException } from '@h2-trust/exceptions';
 import { assembleWaterSupplyEmissionCalculation } from '../../proof-of-sustainability/emissions/water-consumption-emission-calculation.assembler';
 import { assembleClassification } from '../../util';
 
@@ -52,7 +53,7 @@ export function assembleWaterSupplyClassification(
 ): ProofOfOriginClassificationEntity {
   if (!waterConsumptionProcess?.length || bottledKgHydrogen === 0 || !onlyWaterConsumption(waterConsumptionProcess)) {
     const message = 'No process steps of type water supply found.';
-    throw new Error(message);
+    throw new InternalException(message);
   }
 
   const waterBatches: ProofOfOriginWaterBatchEntity[] = getWaterBatchEntities(

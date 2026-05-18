@@ -9,13 +9,15 @@
 import { Injectable } from '@nestjs/common';
 import { PowerProductionTypeEntity } from '@h2-trust/contracts/entities';
 import { PrismaService } from '../prisma.service';
+import { wrapPrismaError } from './prisma-error.wrapper';
 
 @Injectable()
 export class PowerProductionTypeRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findPowerProductionTypes(): Promise<PowerProductionTypeEntity[]> {
-    const result = await this.prismaService.powerProductionType.findMany();
-    return result.map(PowerProductionTypeEntity.fromDatabase);
+    const powerProductionTypes = await this.prismaService.powerProductionType.findMany().catch(wrapPrismaError);
+
+    return powerProductionTypes.map(PowerProductionTypeEntity.fromDatabase);
   }
 }

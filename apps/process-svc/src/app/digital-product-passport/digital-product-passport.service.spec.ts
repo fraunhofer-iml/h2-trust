@@ -13,7 +13,6 @@ import {
   ProductionChainEntity,
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEntity,
-  ProvenanceEntity,
   RedComplianceEntity,
 } from '@h2-trust/contracts/entities';
 import {
@@ -24,7 +23,6 @@ import {
 } from '@h2-trust/contracts/entities/fixtures';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { DigitalProductPassportService } from './digital-product-passport.service';
-import { ProvenanceService } from './provenance/provenance.service';
 
 describe('DigitalProductPassService', () => {
   let service: DigitalProductPassportService;
@@ -34,6 +32,7 @@ describe('DigitalProductPassService', () => {
     setBatchesInactive: jest.fn(),
     createProcessStep: jest.fn(),
     readProcessStep: jest.fn(),
+    getPredecessors: jest.fn(),
   };
 
   const redComplianceServiceMock = {
@@ -49,10 +48,6 @@ describe('DigitalProductPassService', () => {
     createProofOfSustainability: jest.fn(),
   };
 
-  const provenanceServiceMock = {
-    buildProvenance: jest.fn(),
-  };
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -60,10 +55,6 @@ describe('DigitalProductPassService', () => {
         {
           provide: ProcessStepService,
           useValue: processStepServiceMock,
-        },
-        {
-          provide: ProvenanceService,
-          useValue: provenanceServiceMock,
         },
       ],
     }).compile();
@@ -81,19 +72,19 @@ describe('DigitalProductPassService', () => {
       const givenHydrogenBottling: ProcessStepEntity = ProcessStepEntityFixture.createHydrogenBottling();
       const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
 
-      const givenProvenance = new ProvenanceEntity(
-        givenHydrogenBottling,
-        [givenProductionChain],
-        givenHydrogenBottling,
-      );
-
       const givenRedCompliance = new RedComplianceEntity(true, true, true, true);
 
       const proofOfOrigin: ProofOfOriginSectionEntity[] = [ProofOfOriginSectionEntityFixture.create()];
       const proofOfSustainability: ProofOfSustainabilityEntity = ProofOfSustainabilityEntityFixture.create();
 
       processStepServiceMock.readProcessStep.mockReturnValue(givenProductionChain.hydrogenRootProduction);
-      provenanceServiceMock.buildProvenance.mockReturnValue(Promise.resolve(givenProvenance));
+      processStepServiceMock.getPredecessors.mockReturnValue([
+        givenHydrogenBottling,
+        givenProductionChain.hydrogenRootProduction,
+        givenProductionChain.powerProduction,
+        givenProductionChain.waterConsumption,
+      ]);
+
       redComplianceServiceMock.determineTotalRedCompliance.mockReturnValue(givenRedCompliance);
       proofOfOriginServiceMock.createProofOfOrigin.mockReturnValue(proofOfOrigin);
       proofOfOriginServiceMock.getHydrogenBottlingCompositions.mockReturnValue([]);

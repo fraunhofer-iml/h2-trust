@@ -6,10 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity, TransportationDetailsEntity } from '@h2-trust/contracts/entities';
 import { CreateHydrogenTransportationPayload } from '@h2-trust/contracts/payloads';
 import { BatchType, FuelType, ProcessType, TransportMode } from '@h2-trust/domain';
+import { ValidationException } from '@h2-trust/exceptions';
 import { ProcessStepService } from '../process-step/process-step.service';
 
 @Injectable()
@@ -50,17 +51,11 @@ export class TransportationService {
     switch (transportMode) {
       case TransportMode.TRAILER:
         if (!distance) {
-          throw new HttpException(
-            `Distance is required for transport mode [${TransportMode.TRAILER}].`,
-            HttpStatus.BAD_REQUEST,
-          );
+          throw new ValidationException(`Distance is required for transport mode [${TransportMode.TRAILER}].`);
         }
 
         if (!fuelType) {
-          throw new HttpException(
-            `Fuel type is required for transport mode [${TransportMode.TRAILER}].`,
-            HttpStatus.BAD_REQUEST,
-          );
+          throw new ValidationException(`Fuel type is required for transport mode [${TransportMode.TRAILER}].`);
         }
 
         output = new TransportationDetailsEntity(undefined, distance, transportMode, fuelType);
@@ -69,7 +64,7 @@ export class TransportationService {
         output = new TransportationDetailsEntity(undefined, 0, transportMode, undefined);
         break;
       default: {
-        throw new HttpException(`Invalid transport mode: ${transportMode}`, HttpStatus.BAD_REQUEST);
+        throw new ValidationException(`Invalid transport mode: ${transportMode}`);
       }
     }
 

@@ -10,12 +10,14 @@ import { HydrogenComponentEntity } from '@h2-trust/contracts/entities';
 import { RfnboType } from '@h2-trust/domain';
 import { computeHydrogenComposition } from './hydrogen-composition';
 
+const STORAGE_UNIT_ID = 'test-storage-unit';
+
 describe('computeHydrogenComposition', () => {
   it('should calculate hydrogen composition', () => {
     const bottleAmount = 1;
     const components = [new HydrogenComponentEntity(null, 1, RfnboType.RFNBO_READY)];
 
-    const actualResponse = computeHydrogenComposition(components, bottleAmount);
+    const actualResponse = computeHydrogenComposition(components, bottleAmount, STORAGE_UNIT_ID);
     expect(actualResponse).toEqual(components);
   });
 
@@ -31,7 +33,7 @@ describe('computeHydrogenComposition', () => {
       new HydrogenComponentEntity(null, 0.6, RfnboType.NOT_SPECIFIED),
     ];
 
-    const actualResponse = computeHydrogenComposition(components, bottleAmount);
+    const actualResponse = computeHydrogenComposition(components, bottleAmount, STORAGE_UNIT_ID);
     expect(actualResponse).toEqual(expectedResponse);
   });
 
@@ -48,17 +50,16 @@ describe('computeHydrogenComposition', () => {
       new HydrogenComponentEntity(null, 0.5, RfnboType.NOT_SPECIFIED),
     ];
 
-    const actualResponse = computeHydrogenComposition(components, bottleAmount);
+    const actualResponse = computeHydrogenComposition(components, bottleAmount, STORAGE_UNIT_ID);
     expect(actualResponse).toEqual(expectedResponse);
   });
 
-  it('should throw an error if totalPredecessorAmount is zero', () => {
+  it('should throw if total stored amount is zero', () => {
     const bottleAmount = 30;
     const components = [new HydrogenComponentEntity(null, 0, RfnboType.RFNBO_READY)];
 
-    expect(() => computeHydrogenComposition(components, bottleAmount)).toThrow(Error);
-    expect(() => computeHydrogenComposition(components, bottleAmount)).toThrow(
-      'Total stored amount is not greater than 0',
+    expect(() => computeHydrogenComposition(components, bottleAmount, STORAGE_UNIT_ID)).toThrow(
+      `Total stored amount of storage unit '${STORAGE_UNIT_ID}' is not greater than 0`,
     );
   });
 });

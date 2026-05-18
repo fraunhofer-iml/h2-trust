@@ -39,11 +39,13 @@
       "@h2-trust/contracts/payloads": ["libs/contracts/src/lib/payloads/index.ts"],
       "@h2-trust/contracts/payloads/fixtures": ["libs/contracts/src/lib/payloads/fixtures.ts"],
       "@h2-trust/database": ["libs/database/src/index.ts"],
+      "@h2-trust/exceptions": ["libs/exceptions/src/index.ts"],
       "@h2-trust/domain": ["libs/domain/src/index.ts"],
       "@h2-trust/messaging": ["libs/messaging/src/index.ts"],
       "@h2-trust/storage": ["libs/storage/src/index.ts"],
       "@h2-trust/strings": ["libs/strings/src/index.ts"],
-      "@h2-trust/utils": ["libs/utils/src/index.ts"]
+      "@h2-trust/utils": ["libs/utils/src/index.ts"],
+      "@h2-trust/validation": ["libs/validation/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

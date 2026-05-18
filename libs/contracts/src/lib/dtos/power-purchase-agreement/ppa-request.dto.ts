@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { PowerPurchaseAgreementEntity } from '@h2-trust/contracts/entities';
 import { PowerProductionType, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { CompanyDto } from '../company';
 import { PowerProductionOverviewDto } from '../unit';
@@ -14,15 +15,15 @@ import { UserDetailsDto } from '../user';
 export class PpaRequestDto {
   id: string;
   createdAt: Date;
-  decidedAt?: Date;
-  decidedBy?: string;
+  status: PowerPurchaseAgreementStatus;
   validFrom: Date;
   validTo: Date;
   sender: UserDetailsDto;
   receiver: CompanyDto;
   powerProductionType: PowerProductionType;
   powerProductionUnit?: PowerProductionOverviewDto;
-  status: PowerPurchaseAgreementStatus;
+  decidedAt?: Date;
+  decidedBy?: string;
   comment?: string;
 
   constructor(
@@ -33,8 +34,8 @@ export class PpaRequestDto {
     sender: UserDetailsDto,
     receiver: CompanyDto,
     powerType: PowerProductionType,
-    powerProductionUnit: PowerProductionOverviewDto,
     status: PowerPurchaseAgreementStatus,
+    powerProductionUnit?: PowerProductionOverviewDto,
     decidedAt?: Date,
     decidedBy?: string,
     comment?: string,
@@ -50,7 +51,25 @@ export class PpaRequestDto {
     this.powerProductionUnit = powerProductionUnit;
     this.status = status;
     this.decidedBy = decidedBy;
-    this.decidedAt = decidedAt;
     this.comment = comment;
+  }
+
+  static fromEntity(powerPurchaseAgreement: PowerPurchaseAgreementEntity): PpaRequestDto {
+    return <PpaRequestDto>{
+      id: powerPurchaseAgreement.id,
+      createdAt: powerPurchaseAgreement.createdAt,
+      decidedAt: powerPurchaseAgreement.decision?.decidedAt ?? undefined,
+      validFrom: powerPurchaseAgreement.validFrom,
+      validTo: powerPurchaseAgreement.validTo,
+      sender: powerPurchaseAgreement.creator,
+      receiver: powerPurchaseAgreement.requestedCompany,
+      powerProductionType: powerPurchaseAgreement.suggestedPowerProductionTypeName,
+      powerProductionUnit: powerPurchaseAgreement.powerProductionUnit
+        ? PowerProductionOverviewDto.fromEntity(powerPurchaseAgreement.powerProductionUnit)
+        : undefined,
+      status: powerPurchaseAgreement.status,
+      decidedBy: powerPurchaseAgreement.decision?.decidingUserName,
+      comment: powerPurchaseAgreement.decision?.comment,
+    };
   }
 }

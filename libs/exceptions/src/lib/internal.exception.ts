@@ -6,10 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RpcException } from '@nestjs/microservices';
+import { AppException } from './app.exception';
+import { ErrorCode } from './error-codes';
 
-export class BrokerException extends RpcException {
-  constructor(message: string, status: number) {
-    super({ message, status });
+export class InternalException extends AppException {
+  constructor(message: string, cause?: unknown) {
+    super(ErrorCode.INTERNAL_ERROR, message, cause);
   }
 }

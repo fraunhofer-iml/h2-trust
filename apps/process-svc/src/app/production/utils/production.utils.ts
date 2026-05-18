@@ -8,6 +8,7 @@
 
 import { BatchEntity, CreateProductionEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { EnergySource, PowerType, RenewableShareInGridMix, TimeInSeconds } from '@h2-trust/domain';
+import { InternalException } from '@h2-trust/exceptions';
 import { convertDateToMilliseconds, convertDateToSeconds } from '@h2-trust/utils';
 import { AccountingPeriod } from '../production.types';
 
@@ -19,11 +20,11 @@ export function calculateNumberOfAccountingPeriods(
   const durationInSeconds = calculateDuration(startedAtInSeconds, endedAtInSeconds);
 
   if (!Number.isFinite(accountingPeriodInSeconds)) {
-    throw new Error(`accountingPeriodInSeconds must be a finite number: ${accountingPeriodInSeconds}`);
+    throw new InternalException(`accountingPeriodInSeconds must be a finite number: ${accountingPeriodInSeconds}`);
   }
 
   if (accountingPeriodInSeconds <= 0) {
-    throw new Error('accountingPeriodInSeconds must be greater than zero');
+    throw new InternalException('accountingPeriodInSeconds must be greater than zero');
   }
 
   return Math.ceil(durationInSeconds / accountingPeriodInSeconds);
@@ -33,15 +34,15 @@ export function calculateDuration(startedAtInSeconds: number, endedAtInSeconds: 
   const durationInSeconds = endedAtInSeconds - startedAtInSeconds;
 
   if (startedAtInSeconds < 0) {
-    throw new Error('startedAtInSeconds must be positive');
+    throw new InternalException('startedAtInSeconds must be positive');
   }
 
   if (endedAtInSeconds < 0) {
-    throw new Error('endedAtInSeconds must be positive');
+    throw new InternalException('endedAtInSeconds must be positive');
   }
 
   if (durationInSeconds <= 0) {
-    throw new Error('endedAtInSeconds must be greater than startedAtInSeconds');
+    throw new InternalException('endedAtInSeconds must be greater than startedAtInSeconds');
   }
 
   return durationInSeconds;
@@ -52,11 +53,11 @@ export function calculateBatchAmountPerAccountingPeriod(
   numberOfAccountingPeriods: number,
 ): number {
   if (batchAmount <= 0) {
-    throw new Error('batchAmount must be greater than zero');
+    throw new InternalException('batchAmount must be greater than zero');
   }
 
   if (numberOfAccountingPeriods <= 0) {
-    throw new Error('numberOfAccountingPeriods must be greater than zero');
+    throw new InternalException('numberOfAccountingPeriods must be greater than zero');
   }
 
   return batchAmount / Math.max(1, numberOfAccountingPeriods);
@@ -97,7 +98,7 @@ export function calculateProductionDate(
 
 export function calculateWaterAmount(startedAt: Date, endedAt: Date, waterConsumptionPerHour: number): number {
   if (waterConsumptionPerHour < 0) {
-    throw new Error(`waterConsumptionPerHour must be non-negative: [${waterConsumptionPerHour}]`);
+    throw new InternalException(`waterConsumptionPerHour must be non-negative: [${waterConsumptionPerHour}]`);
   }
 
   const startedAtInSeconds = convertDateToSeconds(startedAt);
@@ -182,7 +183,7 @@ export function calculatePartialAmountRelativeToPowerProduction(
   partialPowerConsumption: number,
 ) {
   if (totalAmount <= 0 || totalPowerConsumption <= 0) {
-    throw new Error(`The partial amount could not be calculated because at least one total is 0.`);
+    throw new InternalException(`The partial amount could not be calculated because at least one total is 0.`);
   }
   const shareOfPartialPowerFromTotalPower: number = (partialPowerConsumption * 100) / totalPowerConsumption;
   return (totalAmount / 100) * shareOfPartialPowerFromTotalPower;

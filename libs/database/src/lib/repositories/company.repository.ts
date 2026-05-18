@@ -10,13 +10,15 @@ import { Injectable } from '@nestjs/common';
 import { CompanyEntity } from '@h2-trust/contracts/entities';
 import { PrismaService } from '../prisma.service';
 import { companyDeepQueryArgs } from '../query-args';
+import { wrapPrismaError } from './prisma-error.wrapper';
 
 @Injectable()
 export class CompanyRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findAll(): Promise<CompanyEntity[]> {
-    const companies = await this.prismaService.company.findMany({ ...companyDeepQueryArgs });
+    const companies = await this.prismaService.company.findMany({ ...companyDeepQueryArgs }).catch(wrapPrismaError);
+
     return companies.map(CompanyEntity.fromDeepDatabase);
   }
 }

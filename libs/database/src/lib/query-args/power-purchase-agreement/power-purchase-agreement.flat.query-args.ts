@@ -10,9 +10,8 @@ import { Prisma } from '@prisma/client';
 
 export const powerPurchaseAgreementFlatQueryArgs = Prisma.validator<Prisma.PowerPurchaseAgreementDefaultArgs>()({
   include: {
-    document: true,
     hydrogenProducer: true,
-    powerProducer: true,
+    requestedCompany: true,
     powerProductionUnit: true,
   },
 });
