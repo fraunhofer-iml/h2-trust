@@ -53,6 +53,7 @@ export abstract class AbstractUnitUpdateComponent<TUnitDto, TUnitInputDto> {
     mutationFn: (dto: TUnitInputDto) => this.updateUnit(this.id() ?? '', dto),
     onSuccess: () => this.onSuccess(),
     onError: (err: HttpErrorResponse) => toastQueryError(err),
+    enabled: !!this.id(),
   }));
 
   onSave() {
