@@ -7,7 +7,7 @@
  */
 
 import type { HttpErrorResponse } from '@angular/common/http';
-import { ProblemDetail } from '../../shared/model/problem-detail.model';
+import { ProblemDetail } from '@h2-trust/contracts/dtos';
 
 type ProblemHttpErrorResponse = HttpErrorResponse & {
   error: ProblemDetail | unknown;
