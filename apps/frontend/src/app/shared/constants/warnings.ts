@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export enum RfnboStatus {
-  RFNBO_READY = 'RFNBO Ready',
-  NON_CERTIFIABLE = 'Non Certifiable',
+export enum Warnings {
+  MAX_CAPACITY_EXCEEDED = 'Maximum storage capacity exceeded!',
+  UNIT_TYPE_MISMATCH = 'Unit type does not match the requested type!',
 }

@@ -10,8 +10,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
-import { QueryClient } from '@tanstack/angular-query-experimental';
-import { PowerProductionUnitDto } from '@h2-trust/contracts/dtos';
+import { injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { ErrorCardComponent } from '../../../../layout/error-card/error-card.component';
 import { InfoTooltipComponent } from '../../../../layout/info-tooltip/info-tooltip.component';
@@ -22,7 +21,6 @@ import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
 import { UnitsService } from '../../../../shared/services/units/units.service';
-import { injectUnitQuery } from '../shared/inject-unit-query';
 import { UnitActionsComponent } from '../shared/unit-actions/unit-actions.component';
 import { UnitDetailsComponent } from '../shared/unit-details/unit-details.component';
 
@@ -47,14 +45,16 @@ export class PowerProductionDetailsComponent {
   protected readonly RFNBO_CRITERIA = RFNBO_CRITERIA;
   protected readonly MeasurementUnit = MeasurementUnit;
 
-  id = input<string>();
+  id = input<string>('');
 
   private unitsService = inject(UnitsService);
   private queryClient = inject(QueryClient);
 
-  unitQuery = injectUnitQuery<PowerProductionUnitDto>(QueryKeyPrefix.POWER_PRODUCTION_UNITS, this.id, (id) =>
-    this.unitsService.getPowerProductionUnit(id),
-  );
+  unitQuery = injectQuery(() => ({
+    queryKey: [QueryKeyPrefix.POWER_PRODUCTION_UNITS, this.id()],
+    queryFn: () => this.unitsService.getPowerProductionUnit(this.id()),
+    enabled: !!this.id(),
+  }));
 
   onUnitStatusChange = () => this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.POWER_PRODUCTION_UNITS] });
 }

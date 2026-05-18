@@ -3,8 +3,8 @@
     <span class="bg-error-red/20 material-symbols-outlined border-error-red text-error-red rounded-full border p-2"
       >close</span
     >
-    <span class="font-medium text-neutral-700">Failed to process your files.</span>
-    <span class="px-8 text-sm text-neutral-500">{{ err.error.message }} </span>
+    <span class="font-medium text-neutral-700">{{ err.error.title }}</span>
+    <span class="px-8 text-sm text-neutral-500">{{ err.error.detail }} </span>
     <mat-dialog-actions>
       <button matButton="filled" class="delete-button" (click)="close(UploadFlowAction.FIX_REQUIRED)">Try again</button>
     </mat-dialog-actions>

@@ -7,7 +7,6 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -18,10 +17,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
-import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
-import { toast } from 'ngx-sonner';
+import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { map } from 'rxjs';
-import { StagedProductionDto, StagingSubmissionDto } from '@h2-trust/contracts/dtos';
+import { PpaDto, ProductionOverviewDto, StagedProductionDto, StagingSubmissionDto } from '@h2-trust/contracts/dtos';
 import {
   BatchType,
   CsvContentType,
@@ -32,9 +30,13 @@ import {
 import { EmptyStateComponent } from '../../../../layout/empty-state/empty-state.component';
 import { H2TrustRoutes } from '../../../../shared/constants/routes';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
+import { invalidateByQueryPrefixes } from '../../../../shared/queries/query-invalidation';
+import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
+import { hydrogenStorageUnitsQueryOptions } from '../../../../shared/queries/units.query';
 import { PowerPurchaseAgreementService } from '../../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { ProductionService } from '../../../../shared/services/production/production.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
+import { handleMutationWithPromiseToast } from '../../../../shared/util/query-error-handler';
 
 @Component({
   selector: 'app-file-selection',
@@ -61,6 +63,7 @@ export class FileSelectionComponent {
   protected readonly unitsService = inject(UnitsService);
   protected readonly MeasurementUnit = MeasurementUnit;
   private readonly router = inject(Router);
+  private queryClient = inject(QueryClient);
 
   form = new FormGroup({
     hydrogenProduction: new FormControl<StagedProductionDto[] | null>(null, [
@@ -86,7 +89,7 @@ export class FileSelectionComponent {
 
   powerProductionsQuery = injectQuery(() => ({
     queryKey: [
-      'power-production',
+      QueryKeyPrefix.PENDING_POWER_PRODUCTIONS,
       this.selectedHydrogenFile()?.startedAt,
       this.selectedHydrogenFile()?.endedAt,
       BatchType.POWER,
@@ -101,22 +104,17 @@ export class FileSelectionComponent {
   }));
 
   hydrogenProductionsQuery = injectQuery(() => ({
-    queryKey: ['hydrogen-production'],
+    queryKey: [QueryKeyPrefix.PENDING_HYDROGEN_PRODUCTIONS],
     queryFn: () => this.productionService.getStagedProductions(CsvContentType.HYDROGEN, StagingScope.OWN),
   }));
 
   powerPurchaseAgreementsQuery = injectQuery(() => ({
-    queryKey: ['power-purchase-agreements'],
-    queryFn: async () => {
-      const approvals = await this.powerPurchaseAgreementService.getAgreements(PowerPurchaseAgreementStatus.APPROVED);
-      return approvals.filter((a) => a.energySource !== 'GRID');
-    },
+    queryKey: [QueryKeyPrefix.POWER_PURCHASE_AGREEMENTS, PowerPurchaseAgreementStatus.APPROVED],
+    queryFn: () => this.powerPurchaseAgreementService.getAgreements(PowerPurchaseAgreementStatus.APPROVED),
+    select: (approvals: PpaDto[]) => approvals.filter((a) => a.energySource !== 'GRID'),
   }));
 
-  storageUnitsQuery = injectQuery(() => ({
-    queryKey: ['hydrogen-storage-unit'],
-    queryFn: () => this.unitsService.getHydrogenStorageUnits(),
-  }));
+  storageUnitsQuery = injectQuery(() => hydrogenStorageUnitsQueryOptions(this.unitsService));
 
   data = computed(() => {
     const uploads = this.powerProductionsQuery.data();
@@ -139,23 +137,19 @@ export class FileSelectionComponent {
 
   mutation = injectMutation(() => ({
     mutationFn: async (dto: StagingSubmissionDto) => {
-      const promise = this.productionService.submitCsv(dto);
+      handleMutationWithPromiseToast<ProductionOverviewDto[]>(
+        this.productionService.submitCsv(dto),
+        'Successfully created',
+      );
+    },
+    onSuccess: async () => {
+      await invalidateByQueryPrefixes(this.queryClient, [
+        QueryKeyPrefix.PENDING_HYDROGEN_PRODUCTIONS,
+        QueryKeyPrefix.PENDING_POWER_PRODUCTIONS,
+        QueryKeyPrefix.PRODUCTIONS,
+      ]);
 
-      toast.promise(promise, {
-        loading: 'Creating production batches...',
-        success: () => {
-          this.router.navigateByUrl(H2TrustRoutes.PRODUCTION_DATA);
-          return 'Successfully created new productions!';
-        },
-        error: (error): string => {
-          if (error instanceof HttpErrorResponse || error instanceof Error) {
-            return error.message;
-          }
-          return 'Failed to create batches.';
-        },
-      });
-
-      await promise;
+      this.router.navigateByUrl(H2TrustRoutes.PRODUCTION_DATA);
     },
   }));
 

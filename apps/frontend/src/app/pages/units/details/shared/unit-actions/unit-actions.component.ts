@@ -11,8 +11,8 @@ import { Component, inject, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { injectMutation } from '@tanstack/angular-query-experimental';
-import { toast } from 'ngx-sonner';
 import { UnitsService } from '../../../../../shared/services/units/units.service';
+import { toastQueryError } from '../../../../../shared/util/query-error-handler';
 
 @Component({
   selector: 'app-unit-actions',
@@ -29,6 +29,6 @@ export class UnitActionsComponent {
   mutation = injectMutation(() => ({
     mutationFn: (active: boolean) => this.unitsService.updateActive(this.unit().id, active),
     onSuccess: () => this.statusChange.emit(),
-    onError: () => toast.error('Failed to update unit status.'),
+    onError: (e) => toastQueryError(e),
   }));
 }
