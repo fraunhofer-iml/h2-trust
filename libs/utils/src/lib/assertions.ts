@@ -15,31 +15,33 @@ export function assertDefined<T>(value: T | undefined | null, name: string): ass
 }
 
 export function assertBoolean(value: unknown, name: string): asserts value is boolean {
-  assertDefined(value, name);
-
-  if (typeof value !== 'boolean') {
-    throw new ValidationException(`${name} must be a boolean: ${value}`);
+  if (value === undefined || value === null || typeof value !== 'boolean') {
+    throw new ValidationException(`${name} must be a boolean`);
   }
 }
 
 export function assertValidEnum<E extends Record<string, string>>(
   value: unknown,
   enumType: E,
-  enumName: string,
+  name: string,
 ): asserts value is E[keyof E] {
+  assertDefined(value, name);
+
   if (!Object.values(enumType).includes(value as E[keyof E])) {
-    throw new ValidationException(`The value ${value} is not a valid ${enumName}`);
+    throw new ValidationException(`The value ${value} is not a valid ${name}`);
   }
 }
 
 export function assertValidTimeZone(value: unknown, name = 'timezone'): asserts value is string {
-  if (value === undefined || value === null || value === '') {
-    throw new ValidationException(`Missing ${name}`);
+  assertDefined(value, name);
+
+  if (typeof value !== 'string' || value === '') {
+    throw new ValidationException(`${name} must be a non-empty string`);
   }
 
   try {
-    Intl.DateTimeFormat(undefined, { timeZone: value as string });
+    Intl.DateTimeFormat(undefined, { timeZone: value });
   } catch {
-    throw new ValidationException(`${value} must be a valid timezone.`);
+    throw new ValidationException(`${value} must be a valid timezone`);
   }
 }
