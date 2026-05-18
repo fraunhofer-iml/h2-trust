@@ -70,7 +70,11 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
   static fromDeepDatabase(baseUnit: BaseUnitDeepDbType): HydrogenProductionUnitEntity {
     assertDefined(baseUnit.hydrogenProductionUnit, 'hydrogenProductionUnit');
     assertValidEnum(baseUnit.hydrogenProductionUnit.method, HydrogenProductionMethod, 'HydrogenProductionMethod');
-    assertValidEnum(baseUnit.hydrogenProductionUnit.technology, HydrogenProductionTechnology, 'HydrogenProductionTechnology');
+    assertValidEnum(
+      baseUnit.hydrogenProductionUnit.technology,
+      HydrogenProductionTechnology,
+      'HydrogenProductionTechnology',
+    );
     assertValidEnum(baseUnit.hydrogenProductionUnit.biddingZone, BiddingZone, 'BiddingZone');
 
     return <HydrogenProductionUnitEntity>{
@@ -89,7 +93,11 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
   static fromNestedDatabase(baseUnit: BaseUnitNestedDbType): HydrogenProductionUnitEntity {
     assertDefined(baseUnit.hydrogenProductionUnit, 'hydrogenProductionUnit');
     assertValidEnum(baseUnit.hydrogenProductionUnit.method, HydrogenProductionMethod, 'HydrogenProductionMethod');
-    assertValidEnum(baseUnit.hydrogenProductionUnit.technology, HydrogenProductionTechnology, 'HydrogenProductionTechnology');
+    assertValidEnum(
+      baseUnit.hydrogenProductionUnit.technology,
+      HydrogenProductionTechnology,
+      'HydrogenProductionTechnology',
+    );
     assertValidEnum(baseUnit.hydrogenProductionUnit.biddingZone, BiddingZone, 'BiddingZone');
 
     return <HydrogenProductionUnitEntity>{
