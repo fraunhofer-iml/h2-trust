@@ -46,7 +46,6 @@ export class HydrogenStorageUnitUpdateComponent extends AbstractUnitUpdateCompon
   }
 
   protected override setFormData(unit: HydrogenStorageUnitDto) {
-    console.log('Setting form data for unit', unit);
     this.unitForm.patchValue({ ...unit, owner: unit.owner.id, operator: unit.operator.id });
     this.hydrogenStorageUnitForm.patchValue({
       ...unit,
