@@ -8,6 +8,7 @@
 
 import { StagedProductionDeepDbType } from '@h2-trust/database';
 import { CsvContentType } from '@h2-trust/domain';
+import { ValidationException } from '@h2-trust/exceptions';
 
 export class StagedProductionEntity {
   id?: string;
@@ -44,8 +45,9 @@ export class StagedProductionEntity {
 
   static fromDeepDatabase(stagedProduction: StagedProductionDeepDbType) {
     if (stagedProduction.type != CsvContentType.HYDROGEN && stagedProduction.type != CsvContentType.POWER) {
-      const message = `The staged production is not of type ${CsvContentType.HYDROGEN} or ${CsvContentType.POWER}`;
-      throw new Error(message);
+      throw new ValidationException(
+        `The staged production is not of type ${CsvContentType.HYDROGEN} or ${CsvContentType.POWER}`,
+      );
     }
 
     return new StagedProductionEntity(

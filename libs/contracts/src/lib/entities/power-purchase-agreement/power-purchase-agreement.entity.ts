@@ -76,12 +76,14 @@ export class PowerPurchaseAgreementEntity {
   }
 
   static fromNestedDatabase(powerPurchaseAgreement: PowerPurchaseAgreementNestedDbType): PowerPurchaseAgreementEntity {
+    assertValidEnum(powerPurchaseAgreement.status, PowerPurchaseAgreementStatus, 'PowerPurchaseAgreementStatus');
+
     return new PowerPurchaseAgreementEntity(
       powerPurchaseAgreement.id,
       powerPurchaseAgreement.createdAt,
       powerPurchaseAgreement.validFrom,
       powerPurchaseAgreement.validTo,
-      powerPurchaseAgreement.status as PowerPurchaseAgreementStatus,
+      powerPurchaseAgreement.status,
       CompanyEntity.fromFlatDatabase(powerPurchaseAgreement.requestedCompany),
       CompanyEntity.fromFlatDatabase(powerPurchaseAgreement.hydrogenProducer),
       powerPurchaseAgreement.suggestedPowerTypeName,
