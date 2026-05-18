@@ -15,7 +15,7 @@ import { buildProcessStepCreateInput } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 import { processStepDeepQueryArgs } from '../query-args';
 import { wrapPrismaError } from './prisma-error.wrapper';
-import { assertRecordFound } from './repository-assertions';
+import { assertAllIdsFound, assertRecordFound } from './repository-assertions';
 
 @Injectable()
 export class ProcessStepRepository {
@@ -59,6 +59,7 @@ export class ProcessStepRepository {
       },
       ...processStepDeepQueryArgs,
     });
+    assertAllIdsFound(processSteps, ids, 'process-step');
     return processSteps.map(ProcessStepEntity.fromDeepDatabase);
   }
 
