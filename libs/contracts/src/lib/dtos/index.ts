@@ -15,3 +15,4 @@ export * from './process-step';
 export * from './production';
 export * from './unit';
 export * from './user';
+export * from './problem-detail';

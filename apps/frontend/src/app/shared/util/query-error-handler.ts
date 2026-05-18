@@ -8,7 +8,7 @@
 
 import { HttpErrorResponse } from '@angular/common/http';
 import { toast } from 'ngx-sonner';
-import { ProblemDetail } from '../model/problem-detail.model';
+import { ProblemDetail } from '@h2-trust/contracts/dtos';
 
 function isProblemDetail(value: unknown): value is ProblemDetail {
   if (!value || typeof value !== 'object') return false;

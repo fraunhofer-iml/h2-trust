@@ -6,12 +6,4 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export interface ProblemDetail {
-  type: string;
-  status: number;
-  title: string;
-  detail: string;
-  instance: string;
-  timestamp: string;
-  validationErrors?: string[];
-}
+export * from './problem-detail.model';
