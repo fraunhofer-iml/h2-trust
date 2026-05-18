@@ -8,16 +8,7 @@
 
 import { HttpErrorResponse } from '@angular/common/http';
 import { toast } from 'ngx-sonner';
-
-interface ProblemDetail {
-  type: string;
-  status: number;
-  title: string;
-  detail: string;
-  instance: string;
-  timestamp: string;
-  validationErrors?: string[];
-}
+import { ProblemDetail } from '../model/problem-detail.model';
 
 function isProblemDetail(value: unknown): value is ProblemDetail {
   if (!value || typeof value !== 'object') return false;

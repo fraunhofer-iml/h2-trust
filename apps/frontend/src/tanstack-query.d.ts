@@ -7,9 +7,14 @@
  */
 
 import type { HttpErrorResponse } from '@angular/common/http';
+import { ProblemDetail } from '../../shared/model/problem-detail.model';
+
+type ProblemHttpErrorResponse = HttpErrorResponse & {
+  error: ProblemDetail | unknown;
+};
 
 declare module '@tanstack/query-core' {
   interface Register {
-    defaultError: HttpErrorResponse;
+    defaultError: ProblemHttpErrorResponse;
   }
 }
