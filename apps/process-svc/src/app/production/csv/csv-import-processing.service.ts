@@ -13,6 +13,7 @@ import { CreateCsvDocumentInput } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
 import { InternalException, ValidationException } from '@h2-trust/exceptions';
 import { CentralizedStorageService, ContentType, DecentralizedStorageService } from '@h2-trust/storage';
+import { assertValidTimeZone } from '@h2-trust/utils';
 import { ParsedImport } from '../production.types';
 import { parseAccountingPeriodCsvBuffer } from './accounting-period-csv-parser';
 
@@ -29,6 +30,7 @@ export class CsvImportProcessingService {
   ) {}
 
   async parseAndUploadFiles(unitFileImports: UnitFileImport[], timeZone: string): Promise<ParsedImport[]> {
+    assertValidTimeZone(timeZone);
     return Promise.all(
       unitFileImports.map(async (ufi) => {
         const headers = CsvImportProcessingService.validHeaders[ufi.productionType];

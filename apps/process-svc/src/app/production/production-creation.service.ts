@@ -98,6 +98,8 @@ export class ProductionCreationService {
         const powerProduction: ProcessStepEntity = persistedPower.find((power) => predecessorIds.includes(power.id));
         const waterConsumption: ProcessStepEntity = persistedWater.find((water) => predecessorIds.includes(water.id));
 
+        assertDefined(powerProduction, 'powerProduction');
+        assertDefined(waterConsumption, 'waterConsumption');
         assertDefined(powerProduction.executedBy, 'powerProduction.executedBy');
         assertDefined(waterConsumption.executedBy, 'waterConsumption.executedBy');
         const productionChain: ProductionChainEntity = new ProductionChainEntity(
