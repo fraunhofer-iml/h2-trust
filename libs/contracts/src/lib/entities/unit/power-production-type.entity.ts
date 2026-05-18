@@ -20,14 +20,11 @@ export class PowerProductionTypeEntity {
   }
 
   static fromDatabase(powerProductionUnitDbType: PowerProductionTypeDbType): PowerProductionTypeEntity {
-    assertValidEnum(powerProductionUnitDbType.energySource?.toUpperCase(), EnergySource, 'EnergySource');
-
-    const energySource = powerProductionUnitDbType.energySource?.toUpperCase() as EnergySource;
-    const validEnergySource = Object.values(EnergySource).includes(energySource) ? energySource : null;
+    assertValidEnum(powerProductionUnitDbType.energySource, EnergySource, 'EnergySource');
 
     return <PowerProductionTypeEntity>{
       name: powerProductionUnitDbType.name,
-      energySource: validEnergySource,
+      energySource: powerProductionUnitDbType.energySource,
     };
   }
 }
