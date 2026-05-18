@@ -28,6 +28,12 @@ export class ProcessStepService {
     private readonly processStepRepository: ProcessStepRepository,
   ) {}
 
+  public async getPredecessors(processStep: ProcessStepEntity): Promise<ProcessStepEntity[]> {
+    const processStepIds = await this.processStepRepository.findPredecessorProcessSteps(processStep.batch.id);
+    const processSteps: ProcessStepEntity[] = await this.processStepRepository.findProcessSteps(processStepIds);
+    return [processStep, ...processSteps];
+  }
+
   updateRfnboStatus(processStep: ProcessStepEntity, rfnboType: RfnboType): Promise<{ id: string; batchId: string }> {
     return this.batchRepository.setRfnboStatus(processStep.batch.id, rfnboType);
   }

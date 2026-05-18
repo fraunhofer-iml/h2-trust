@@ -23,6 +23,7 @@ import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import {
   hydrogenProductionUnitsQueryOptions,
+  hydrogenStorageUnitsQueryOptions,
   powerProductionUnitsQueryOptions,
 } from '../../../shared/queries/units.query';
 import { UnitsService } from '../../../shared/services/units/units.service';
@@ -54,10 +55,7 @@ export class HydrogenAssetsComponent {
 
   typeToShow: UnitType | null = null;
 
-  hydrogenStorageQuery = injectQuery(() => ({
-    queryKey: ['h2-storage'],
-    queryFn: () => this.unitsService.getHydrogenStorageUnits(),
-  }));
+  hydrogenStorageQuery = injectQuery(() => hydrogenStorageUnitsQueryOptions(this.unitsService));
 
   hydrogenProductionUnitsQuery = injectQuery(() => hydrogenProductionUnitsQueryOptions(this.unitsService));
 

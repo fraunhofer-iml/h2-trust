@@ -18,6 +18,8 @@ import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PpaRequestDto } from '@h2-trust/contracts/dtos';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
+import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
+import { LoadingCardComponent } from '../../../layout/loading-card/loading-card.component';
 import { ppaRequestsQueryOptions } from '../../../shared/queries/ppa-requests.query';
 import { PowerPurchaseAgreementService } from '../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
@@ -36,6 +38,8 @@ import { PpaRequestsListComponent } from './ppa-requests-list/ppa-requests-list.
     MatTabsModule,
     PpaRequestsListComponent,
     MatBadgeModule,
+    LoadingCardComponent,
+    ErrorCardComponent,
   ],
   templateUrl: './ppa-requests.component.html',
 })

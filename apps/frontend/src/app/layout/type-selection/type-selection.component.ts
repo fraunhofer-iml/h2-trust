@@ -10,8 +10,8 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CsvContentType, RfnboType, UnitType } from '@h2-trust/domain';
+import { EnumLabelKey } from '../../shared/constants/eum-label-resolvers';
 import { ICONS } from '../../shared/constants/icons';
-import { EnumLabelKey } from '../../shared/model/enum-label-key.type';
 import { EnumPipe } from '../../shared/pipes/enum.pipe';
 
 type SelectableType = UnitType | CsvContentType | RfnboType;

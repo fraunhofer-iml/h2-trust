@@ -23,11 +23,14 @@ import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-quer
 import { toast } from 'ngx-sonner';
 import { PowerProductionOverviewDto, PpaRequestDecisionDto, PpaRequestDto } from '@h2-trust/contracts/dtos';
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
+import { Warnings } from '../../../../shared/constants/warnings';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
+import { invalidateByQueryPrefixes } from '../../../../shared/queries/query-invalidation';
 import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
 import { powerProductionUnitsQueryOptions } from '../../../../shared/queries/units.query';
 import { PowerPurchaseAgreementService } from '../../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
+import { toastQueryError } from '../../../../shared/util/query-error-handler';
 
 @Component({
   selector: 'app-request-confirmation-dialog',
@@ -47,6 +50,7 @@ import { UnitsService } from '../../../../shared/services/units/units.service';
 })
 export class RequestConfirmationDialogComponent {
   protected readonly PowerPurchaseAgreementStatus = PowerPurchaseAgreementStatus;
+  protected readonly Warnings = Warnings;
 
   readonly dialogRef = inject(MatDialogRef<RequestConfirmationDialogComponent>);
   readonly data = inject<{
@@ -69,14 +73,12 @@ export class RequestConfirmationDialogComponent {
 
   confirmationMutation = injectMutation(() => ({
     mutationFn: (dto: PpaRequestDecisionDto) => this.ppaService.decidePpaRequest(this.data.request.id, dto),
-    onError: () =>
-      toast.error(
-        `Failed to ${this.data.status === PowerPurchaseAgreementStatus.REJECTED ? 'reject' : 'approve'} Request`,
-      ),
-    onSuccess: () => {
-      this.queryClient.invalidateQueries({
-        queryKey: [QueryKeyPrefix.PPA_REQUESTS],
-      });
+    onError: (e) => toastQueryError(e),
+    onSuccess: async () => {
+      await invalidateByQueryPrefixes(this.queryClient, [
+        QueryKeyPrefix.PPA_REQUESTS,
+        QueryKeyPrefix.POWER_PURCHASE_AGREEMENTS,
+      ]);
       toast.success(`Request ${this.data.status.toLowerCase()}.`);
     },
   }));

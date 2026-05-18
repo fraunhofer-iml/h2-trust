@@ -7,7 +7,7 @@
  */
 
 import { ProcessStepEntity } from '@h2-trust/contracts/entities';
-import { ProcessType } from '@h2-trust/domain';
+import { BatchType, ProcessType } from '@h2-trust/domain';
 import { BatchEntityFixture } from '../../batch/fixtures/batch.fixture';
 import { DocumentEntityFixture } from '../../document/fixtures/document.fixture';
 import { HydrogenProductionUnitEntityFixture } from '../../unit/fixtures/hydrogen-production-unit.fixture';
@@ -47,7 +47,13 @@ export const ProcessStepEntityFixture = {
       overrides.startedAt ?? new Date('2026-01-01T02:00:00Z'),
       overrides.endedAt ?? new Date('2026-01-01T02:59:59Z'),
       overrides.type ?? ProcessType.HYDROGEN_PRODUCTION,
-      overrides.batch ?? BatchEntityFixture.createHydrogenBatch({ id: 'batch-3', processStepId: 'process-step-3' }),
+      overrides.batch ??
+        BatchEntityFixture.createHydrogenBatch({
+          id: 'batch-3',
+          processStepId: 'process-step-3',
+          type: BatchType.HYDROGEN,
+          predecessors: [BatchEntityFixture.createWaterBatch(), BatchEntityFixture.createPowerBatch()],
+        }),
       overrides.recordedBy ?? UserEntityFixture.createHydrogenUser(),
       overrides.executedBy ?? HydrogenProductionUnitEntityFixture.create(),
       overrides.documents ?? [DocumentEntityFixture.create()],
@@ -59,7 +65,19 @@ export const ProcessStepEntityFixture = {
       overrides.startedAt ?? new Date('2026-01-01T03:00:00Z'),
       overrides.endedAt ?? new Date('2026-01-01T03:59:59Z'),
       overrides.type ?? ProcessType.HYDROGEN_BOTTLING,
-      overrides.batch ?? BatchEntityFixture.createHydrogenBatch({ id: 'batch-4', processStepId: 'process-step-4' }),
+      overrides.batch ??
+        BatchEntityFixture.createHydrogenBatch({
+          id: 'batch-4',
+          processStepId: 'process-step-4',
+          predecessors: [
+            BatchEntityFixture.createHydrogenBatch({
+              id: 'batch-3',
+              type: BatchType.HYDROGEN,
+              processStepId: 'process-step-3',
+              predecessors: [],
+            }),
+          ],
+        }),
       overrides.recordedBy ?? UserEntityFixture.createHydrogenUser(),
       overrides.executedBy ?? HydrogenStorageUnitEntityFixture.create(),
       overrides.documents ?? [DocumentEntityFixture.create()],
@@ -71,7 +89,19 @@ export const ProcessStepEntityFixture = {
       overrides.startedAt ?? new Date('2026-01-01T04:00:00Z'),
       overrides.endedAt ?? new Date('2026-01-01T04:59:59Z'),
       overrides.type ?? ProcessType.HYDROGEN_TRANSPORTATION,
-      overrides.batch ?? BatchEntityFixture.createHydrogenBatch({ id: 'batch-5', processStepId: 'process-step-5' }),
+      overrides.batch ??
+        BatchEntityFixture.createHydrogenBatch({
+          id: 'batch-5',
+          processStepId: 'process-step-5',
+          predecessors: [
+            BatchEntityFixture.createHydrogenBatch({
+              id: 'batch-4',
+              type: BatchType.HYDROGEN,
+              processStepId: 'process-step-4',
+              predecessors: [],
+            }),
+          ],
+        }),
       overrides.recordedBy ?? UserEntityFixture.createHydrogenUser(),
       overrides.executedBy ?? HydrogenStorageUnitEntityFixture.create(),
       overrides.documents ?? [DocumentEntityFixture.create()],

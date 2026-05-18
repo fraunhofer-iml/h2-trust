@@ -66,8 +66,6 @@ export class SidebarComponent implements OnInit {
 
   protected roles = inject(UserRolesStore);
 
-  visible$ = computed(() => this.roles.isHydrogenProducer());
-
   showBadge$ = computed(() => (this.ppaRequestsQuery.data()?.length ?? 0) > 0);
 
   sidebarOptions: SidebarOption[] = [
@@ -87,7 +85,7 @@ export class SidebarComponent implements OnInit {
           title: 'Data',
           icon: 'table',
           route: H2TrustRoutes.PRODUCTION_DATA,
-          visible: this.visible$,
+          visible: this.roles.isHydrogenProducer,
         },
         {
           title: 'Uploads',
@@ -101,7 +99,7 @@ export class SidebarComponent implements OnInit {
       title: 'Bottling',
       icon: 'propane_tank',
       route: H2TrustRoutes.BOTTLING,
-      visible: this.visible$,
+      visible: this.roles.isHydrogenProducer,
     },
   ];
 

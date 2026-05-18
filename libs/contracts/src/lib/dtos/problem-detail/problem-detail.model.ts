@@ -6,10 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-loading-card',
-  template: `<div class="h-60 w-full animate-pulse rounded-md bg-white"></div>`,
-})
-export class LoadingCardComponent {}
+// Based on RFC 9457: https://datatracker.ietf.org/doc/html/rfc9457
+export interface ProblemDetail {
+  type: string;
+  status: number;
+  title: string;
+  detail: string;
+  instance: string;
+  timestamp: string;
+  validationErrors?: string[];
+}
