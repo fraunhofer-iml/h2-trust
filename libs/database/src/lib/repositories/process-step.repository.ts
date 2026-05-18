@@ -38,8 +38,7 @@ export class ProcessStepRepository {
       )
       SELECT DISTINCT ps."id" AS "processStepId"
       FROM AllPredecessors ap
-      JOIN "Batch" b ON b."id" = ap.predecessor_id
-      INNER JOIN "ProcessStep" ps ON ps."batchId" = b."id"
+      INNER JOIN "ProcessStep" ps ON ps."batchId" = ap.predecessor_id
     `;
     return predecessors.map((predecessor) => predecessor.processStepId);
   }
