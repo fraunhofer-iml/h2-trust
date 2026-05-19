@@ -56,8 +56,8 @@ export class ProductionService {
 
   async readHydrogenProductionsByOwner(
     userId: string,
-    pageNumber?: number,
-    pageSize?: number,
+    pageNumber: number,
+    pageSize: number,
     unitName?: string,
     month?: Date,
   ): Promise<PaginatedProductionDataDto> {
