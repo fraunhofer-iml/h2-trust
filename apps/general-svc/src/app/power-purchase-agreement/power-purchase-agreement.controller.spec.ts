@@ -9,11 +9,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PowerPurchaseAgreementEntity } from '@h2-trust/contracts/entities';
 import { PowerPurchaseAgreementEntityFixture, UserEntityFixture } from '@h2-trust/contracts/entities/fixtures';
-import {
-  DatabaseModule,
-  PowerPurchaseAgreementRepository,
-  UserRepository,
-} from '@h2-trust/database';
+import { DatabaseModule, PowerPurchaseAgreementRepository, UserRepository } from '@h2-trust/database';
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { PowerPurchaseAgreementController } from './power-purchase-agreement.controller';
 import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
