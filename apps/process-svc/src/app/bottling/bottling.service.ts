@@ -23,6 +23,7 @@ import { DocumentRepository } from '@h2-trust/database';
 import { RfnboType } from '@h2-trust/domain';
 import { DomainException, ErrorCode, ValidationException } from '@h2-trust/exceptions';
 import { CentralizedStorageService, ContentType } from '@h2-trust/storage';
+import { assertDefined } from '@h2-trust/utils';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { allocateBottling, BottlingAllocation } from './utils/bottling.allocator';
 import { assembleBottling } from './utils/bottling.assembler';
@@ -139,6 +140,7 @@ export class BottlingService {
   }
 
   private async addDocumentToProcessStep(file: Express.Multer.File, processStepId: string): Promise<DocumentEntity> {
+    assertDefined(file.buffer, 'file.buffer');
     await this.storageService.uploadFile(file.originalname, Buffer.from(file.buffer), ContentType.PDF);
 
     return this.documentRepository.addDocumentToProcessStep(

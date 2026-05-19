@@ -6,12 +6,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsNotEmpty } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNotEmpty, ValidateNested } from 'class-validator';
 import { ProductionDataFilter } from './production-data-filter';
 import { ReadProcessStepsByPredecessorTypesAndOwnerPayload } from './read-process-steps-by-predecessor-types-and-company.payload';
 
 export class ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload extends ReadProcessStepsByPredecessorTypesAndOwnerPayload {
   @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => ProductionDataFilter)
   filter: ProductionDataFilter;
 
   constructor(predecessorProcessTypes: string[], ownerId: string, filter: ProductionDataFilter) {

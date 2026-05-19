@@ -16,6 +16,7 @@ import {
 } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 import { InternalException } from '@h2-trust/exceptions';
+import { assertDefined } from '@h2-trust/utils';
 
 export function buildProvenance(root: ProcessStepEntity, predecessorsOfRoot: ProcessStepEntity[]): ProvenanceEntity {
   if (!root || !root.type) {
@@ -63,6 +64,8 @@ function buildProductionChains(processSteps: ProcessStepEntity[]): ProductionCha
       throw new InternalException(`Missing power production predecessor for root production [${rootProduction.id}].`);
     }
 
+    assertDefined(powerProduction.executedBy, 'powerProduction.executedBy');
+    assertDefined(rootProduction.executedBy, 'rootProduction.executedBy');
     return new ProductionChainEntity(
       leafProduction,
       rootProduction,

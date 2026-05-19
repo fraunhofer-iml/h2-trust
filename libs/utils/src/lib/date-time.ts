@@ -6,19 +6,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ValidationException } from '@h2-trust/exceptions';
 import { assertDefined, assertValidTimeZone } from './assertions';
 
 export function toValidDate(value: unknown, name: string): Date {
   assertDefined(value, name);
 
   if (!(value instanceof Date || typeof value === 'string' || typeof value === 'number')) {
-    throw new Error(`[${name}] must be a Date, string or number: ${value}`);
+    throw new ValidationException(`[${name}] must be a Date, string or number: ${value}`);
   }
 
   const date = value instanceof Date ? value : new Date(value);
 
   if (Number.isNaN(date.getTime())) {
-    throw new Error(`[${name}] is not a valid date: ${value}`);
+    throw new ValidationException(`[${name}] is not a valid date: ${value}`);
   }
 
   return date;
@@ -29,7 +30,7 @@ export function convertDateStringToMilliseconds(date: string): number {
 
   const milliseconds = parsedDate.getTime();
   if (!Number.isFinite(milliseconds)) {
-    throw new Error(`Invalid date string: "${date}"`);
+    throw new ValidationException(`Invalid date string: "${date}"`);
   }
 
   return milliseconds;
@@ -41,7 +42,7 @@ export function convertDateStringToSeconds(date: string): number {
 
 export function convertDateToSeconds(date: Date): number {
   if (!date || !(date instanceof Date)) {
-    throw new Error('Invalid date parameter');
+    throw new ValidationException('Invalid date parameter');
   }
 
   return Math.floor(date.getTime() / 1000);
@@ -49,7 +50,7 @@ export function convertDateToSeconds(date: Date): number {
 
 export function convertDateToMilliseconds(date: Date | string): number {
   if (date == null) {
-    throw new Error('Date parameter cannot be null or undefined');
+    throw new ValidationException('Date parameter cannot be null or undefined');
   }
 
   if (date instanceof Date) {

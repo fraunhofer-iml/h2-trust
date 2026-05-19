@@ -6,10 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ArrayNotEmpty, IsNotEmpty, IsString } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsNotEmpty, IsString } from 'class-validator';
 
 export class ReadProcessStepsByPredecessorTypesAndOwnerPayload {
+  @IsArray()
   @IsString({ each: true })
+  @IsNotEmpty({ each: true })
   @ArrayNotEmpty()
   @IsNotEmpty()
   predecessorProcessTypes: string[];

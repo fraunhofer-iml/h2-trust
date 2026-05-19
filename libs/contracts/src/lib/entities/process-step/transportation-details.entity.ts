@@ -24,8 +24,9 @@ export class TransportationDetailsEntity {
   }
 
   static fromDatabase(transportationDetails: TransportationDetailsDbType): TransportationDetailsEntity {
-    const fuelType = transportationDetails.fuelType?.toUpperCase() as FuelType;
-    const validFuelType = Object.values(FuelType).includes(fuelType) ? fuelType : null;
+    if (transportationDetails.fuelType) {
+      assertValidEnum(transportationDetails.fuelType, FuelType, 'FuelType');
+    }
 
     assertValidEnum(transportationDetails.transportMode, TransportMode, 'TransportMode');
 
@@ -33,7 +34,7 @@ export class TransportationDetailsEntity {
       transportationDetails.id,
       transportationDetails.distance.toNumber() ?? 0,
       transportationDetails.transportMode,
-      validFuelType,
+      transportationDetails.fuelType as FuelType | null,
     );
   }
 }

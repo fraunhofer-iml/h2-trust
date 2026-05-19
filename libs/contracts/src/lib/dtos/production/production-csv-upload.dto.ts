@@ -7,19 +7,23 @@
  */
 
 import { Transform } from 'class-transformer';
-import { ArrayNotEmpty, IsArray, IsIn, IsString, IsTimeZone } from 'class-validator';
-import { BatchType, CsvContentType } from '@h2-trust/domain';
+import { ArrayNotEmpty, IsArray, IsEnum, IsNotEmpty, IsString, IsTimeZone } from 'class-validator';
+import { CsvContentType } from '@h2-trust/domain';
 
 export class ProductionCSVUploadDto {
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
+  @IsNotEmpty({ each: true })
   unitIds: string | string[];
 
-  @IsIn([BatchType.POWER, BatchType.HYDROGEN])
+  @IsEnum(CsvContentType)
+  @IsNotEmpty()
   csvContentType: CsvContentType;
 
+  @IsString()
+  @IsNotEmpty()
   @IsTimeZone()
   timeZone: string;
 
