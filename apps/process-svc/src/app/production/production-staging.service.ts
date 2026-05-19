@@ -355,13 +355,11 @@ export class ProductionStagingService {
           stagedPowerProduction.type,
           stagedPowerProduction.csvImportId,
         );
-        if (splittedPowerProduction) {
-          this.logger.debug(`The remainig power of ${splittedPowerProduction.amountProduced} was persisted.`);
-          await this.stagedProductionRepository.saveStagedProductions(
-            [splittedPowerProduction],
-            splittedPowerProduction.csvImportId,
-          );
-        }
+        this.logger.debug(`The remainig power of ${splittedPowerProduction.amountProduced} was persisted.`);
+        await this.stagedProductionRepository.saveStagedProductions(
+          [splittedPowerProduction],
+          splittedPowerProduction.csvImportId,
+        );
       }
     }
   }

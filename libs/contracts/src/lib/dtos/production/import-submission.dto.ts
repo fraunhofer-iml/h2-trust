@@ -6,15 +6,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsArray, IsNotEmpty, IsString } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsNotEmpty, IsString } from 'class-validator';
 
 export class StagingSubmissionDto {
   @IsString()
   @IsNotEmpty()
   stagedHydrogenProduction: string;
 
+  @ArrayNotEmpty()
   @IsNotEmpty()
   @IsArray()
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
   stagedPowerProductions: string[];
 
   @IsString()

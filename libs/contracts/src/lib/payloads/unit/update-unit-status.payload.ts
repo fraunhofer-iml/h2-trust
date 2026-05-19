@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class UpdateUnitStatusPayload {
   @IsNotEmpty()
@@ -16,6 +16,10 @@ export class UpdateUnitStatusPayload {
   @IsBoolean()
   @IsNotEmpty()
   active: boolean;
+
+  @IsString()
+  @IsOptional()
+  requesterCompanyId?: string;
 
   constructor(id: string, active: boolean) {
     this.id = id;

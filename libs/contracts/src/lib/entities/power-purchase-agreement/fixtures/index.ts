@@ -6,14 +6,4 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsNotEmpty, IsString } from 'class-validator';
-
-export class ReadByIdPayload {
-  @IsString()
-  @IsNotEmpty()
-  id: string;
-
-  constructor(id: string) {
-    this.id = id;
-  }
-}
+export * from './power-purchase-agreement.fixture';

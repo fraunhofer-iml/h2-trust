@@ -48,7 +48,7 @@ export function sumAmounts(arrayWithAmount: { amount: number }[]): number {
 }
 
 export function calculateBatchEmission(batches: ProofOfOriginBatchEntity[]): number {
-  return (batches || []).map((b) => b.emission?.totalEmissions ?? 0).reduce((a, b) => a + b, 0);
+  return batches.map((b) => b.emission?.totalEmissions ?? 0).reduce((a, b) => a + b, 0);
 }
 
 function calculateAmount(
@@ -63,7 +63,7 @@ function calculateEmission(
   subClassifications: ProofOfOriginSubClassificationEntity[],
 ): number {
   const batchEmissionSum = calculateBatchEmission(batches);
-  const subClassificationEmissionSum = (subClassifications || [])
+  const subClassificationEmissionSum = subClassifications
     .map((c) => c.emissionOfProcessStep ?? 0)
     .reduce((a, b) => a + b, 0);
 

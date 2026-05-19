@@ -7,7 +7,7 @@
  */
 
 import { Type } from 'class-transformer';
-import { ArrayNotEmpty, IsNotEmpty } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsNotEmpty } from 'class-validator';
 import { ProcessStepEntity } from '../../../../../contracts/src/lib/entities';
 
 /*
@@ -17,8 +17,10 @@ import { ProcessStepEntity } from '../../../../../contracts/src/lib/entities';
  * in process-svc and database operations in batch-svc.
  */
 export class CreateManyProcessStepsPayload {
+  @IsArray()
   @ArrayNotEmpty()
   @IsNotEmpty()
+  @IsNotEmpty({ each: true })
   @Type(() => ProcessStepEntity)
   processSteps: ProcessStepEntity[];
 

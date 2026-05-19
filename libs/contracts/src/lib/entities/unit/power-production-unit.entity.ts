@@ -8,6 +8,7 @@
 
 import { BaseUnitDeepDbType, BaseUnitNestedDbType, PowerProductionUnitNestedDbType } from '@h2-trust/database';
 import { BiddingZone, GridLevel, UnitType } from '@h2-trust/domain';
+import { assertDefined, assertValidEnum } from '@h2-trust/utils';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
 import { BaseUnitEntity } from './base-unit.entity';
@@ -77,55 +78,67 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
   }
 
   static fromDeepDatabase(baseUnit: BaseUnitDeepDbType): PowerProductionUnitEntity {
+    assertDefined(baseUnit.powerProductionUnit, 'powerProductionUnit');
+    assertValidEnum(baseUnit.powerProductionUnit.gridLevel, GridLevel, 'GridLevel');
+    assertValidEnum(baseUnit.powerProductionUnit.biddingZone, BiddingZone, 'BiddingZone');
+
     return <PowerProductionUnitEntity>{
       ...BaseUnitEntity.fromDeepBaseUnit(baseUnit),
       unitType: UnitType.POWER_PRODUCTION,
 
-      decommissioningPlannedOn: baseUnit.powerProductionUnit?.decommissioningPlannedOn,
-      electricityMeterNumber: baseUnit.powerProductionUnit?.electricityMeterNumber,
-      ratedPower: baseUnit.powerProductionUnit?.ratedPower?.toNumber() ?? 0,
-      gridOperator: baseUnit.powerProductionUnit?.gridOperator,
-      gridLevel: baseUnit.powerProductionUnit?.gridLevel,
-      biddingZone: baseUnit.powerProductionUnit?.biddingZone,
-      gridConnectionNumber: baseUnit.powerProductionUnit?.gridConnectionNumber,
-      financialSupportReceived: baseUnit.powerProductionUnit?.financialSupportReceived,
-      type: baseUnit.powerProductionUnit?.type,
+      decommissioningPlannedOn: baseUnit.powerProductionUnit.decommissioningPlannedOn,
+      electricityMeterNumber: baseUnit.powerProductionUnit.electricityMeterNumber,
+      ratedPower: baseUnit.powerProductionUnit.ratedPower?.toNumber() ?? 0,
+      gridOperator: baseUnit.powerProductionUnit.gridOperator,
+      gridLevel: baseUnit.powerProductionUnit.gridLevel,
+      biddingZone: baseUnit.powerProductionUnit.biddingZone,
+      gridConnectionNumber: baseUnit.powerProductionUnit.gridConnectionNumber,
+      financialSupportReceived: baseUnit.powerProductionUnit.financialSupportReceived,
+      type: baseUnit.powerProductionUnit.type,
     };
   }
 
   static fromNestedDatabase(baseUnit: BaseUnitNestedDbType): PowerProductionUnitEntity {
+    assertDefined(baseUnit.powerProductionUnit, 'powerProductionUnit');
+    assertValidEnum(baseUnit.powerProductionUnit.gridLevel, GridLevel, 'GridLevel');
+    assertValidEnum(baseUnit.powerProductionUnit.biddingZone, BiddingZone, 'BiddingZone');
+
     return <PowerProductionUnitEntity>{
       ...BaseUnitEntity.fromNestedBaseUnit(baseUnit),
       unitType: UnitType.POWER_PRODUCTION,
 
-      decommissioningPlannedOn: baseUnit.powerProductionUnit?.decommissioningPlannedOn,
-      electricityMeterNumber: baseUnit.powerProductionUnit?.electricityMeterNumber,
-      ratedPower: baseUnit.powerProductionUnit?.ratedPower?.toNumber() ?? 0,
-      gridOperator: baseUnit.powerProductionUnit?.gridOperator,
-      gridLevel: baseUnit.powerProductionUnit?.gridLevel,
-      biddingZone: baseUnit.powerProductionUnit?.biddingZone,
-      gridConnectionNumber: baseUnit.powerProductionUnit?.gridConnectionNumber,
-      financialSupportReceived: baseUnit.powerProductionUnit?.financialSupportReceived,
-      type: baseUnit.powerProductionUnit?.type,
+      decommissioningPlannedOn: baseUnit.powerProductionUnit.decommissioningPlannedOn,
+      electricityMeterNumber: baseUnit.powerProductionUnit.electricityMeterNumber,
+      ratedPower: baseUnit.powerProductionUnit.ratedPower?.toNumber() ?? 0,
+      gridOperator: baseUnit.powerProductionUnit.gridOperator,
+      gridLevel: baseUnit.powerProductionUnit.gridLevel,
+      biddingZone: baseUnit.powerProductionUnit.biddingZone,
+      gridConnectionNumber: baseUnit.powerProductionUnit.gridConnectionNumber,
+      financialSupportReceived: baseUnit.powerProductionUnit.financialSupportReceived,
+      type: baseUnit.powerProductionUnit.type,
     };
   }
 
   static fromNestedPowerProductionUnit(
     powerProductionUnit: PowerProductionUnitNestedDbType,
   ): PowerProductionUnitEntity {
+    assertDefined(powerProductionUnit.generalInfo.powerProductionUnit, 'powerProductionUnit');
+    assertValidEnum(powerProductionUnit.generalInfo.powerProductionUnit.gridLevel, GridLevel, 'GridLevel');
+    assertValidEnum(powerProductionUnit.generalInfo.powerProductionUnit.biddingZone, BiddingZone, 'BiddingZone');
+
     return <PowerProductionUnitEntity>{
       ...BaseUnitEntity.fromFlatBaseUnit(powerProductionUnit.generalInfo),
       unitType: UnitType.POWER_PRODUCTION,
 
-      decommissioningPlannedOn: powerProductionUnit.generalInfo.powerProductionUnit?.decommissioningPlannedOn,
-      electricityMeterNumber: powerProductionUnit.generalInfo.powerProductionUnit?.electricityMeterNumber,
-      ratedPower: powerProductionUnit.generalInfo.powerProductionUnit?.ratedPower?.toNumber() ?? 0,
-      gridOperator: powerProductionUnit.generalInfo.powerProductionUnit?.gridOperator,
-      gridLevel: powerProductionUnit.generalInfo.powerProductionUnit?.gridLevel,
-      biddingZone: powerProductionUnit.generalInfo.powerProductionUnit?.biddingZone,
-      gridConnectionNumber: powerProductionUnit.generalInfo.powerProductionUnit?.gridConnectionNumber,
-      financialSupportReceived: powerProductionUnit.generalInfo.powerProductionUnit?.financialSupportReceived,
-      type: powerProductionUnit.generalInfo.powerProductionUnit?.type,
+      decommissioningPlannedOn: powerProductionUnit.generalInfo.powerProductionUnit.decommissioningPlannedOn,
+      electricityMeterNumber: powerProductionUnit.generalInfo.powerProductionUnit.electricityMeterNumber,
+      ratedPower: powerProductionUnit.generalInfo.powerProductionUnit.ratedPower?.toNumber() ?? 0,
+      gridOperator: powerProductionUnit.generalInfo.powerProductionUnit.gridOperator,
+      gridLevel: powerProductionUnit.generalInfo.powerProductionUnit.gridLevel,
+      biddingZone: powerProductionUnit.generalInfo.powerProductionUnit.biddingZone,
+      gridConnectionNumber: powerProductionUnit.generalInfo.powerProductionUnit.gridConnectionNumber,
+      financialSupportReceived: powerProductionUnit.generalInfo.powerProductionUnit.financialSupportReceived,
+      type: powerProductionUnit.generalInfo.powerProductionUnit.type,
     };
   }
 }
