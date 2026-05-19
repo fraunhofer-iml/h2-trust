@@ -7,7 +7,7 @@
  */
 
 import { createInterceptorCondition, IncludeBearerTokenCondition, ProvideKeycloakOptions } from 'keycloak-angular';
-import { BFF_URL, environment } from '../../environments/environment';
+import { environment } from '../../environments/environment';
 
 export const keycloakOptions: ProvideKeycloakOptions = {
   config: {
@@ -24,5 +24,5 @@ export const keycloakOptions: ProvideKeycloakOptions = {
 };
 
 export const apiCondition = createInterceptorCondition<IncludeBearerTokenCondition>({
-  urlPattern: new RegExp(`^${BFF_URL}(\\/.*)?$`, 'i'),
+  urlPattern: new RegExp(`^${environment.BFF_URL}(\\/.*)?$`, 'i'),
 });
