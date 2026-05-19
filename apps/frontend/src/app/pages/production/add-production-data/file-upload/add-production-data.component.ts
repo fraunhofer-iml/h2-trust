@@ -119,8 +119,8 @@ export class AddProductionDataComponent {
   constructor() {
     this.form.updateValueAndValidity();
     this.selectedTypeControl.valueChanges.subscribe(() => {
-      this.form.controls.files.controls.forEach((control) => {
-        control.controls.unitId.setValue(null);
+      this.form.controls.files.controls.forEach((formGroup) => {
+        formGroup.controls.unitId.setValue(null);
       });
     });
   }
@@ -146,8 +146,8 @@ export class AddProductionDataComponent {
     this.mutation.mutate(data);
   }
 
-  removeFile(index: number, formArray: FormArray<FileForm> | FormArray<FormGroup<{ file: FormControl<File | null> }>>) {
-    formArray.controls.splice(index, 1);
+  removeFile(index: number, formArray: FormArray<FileForm>) {
+    formArray.removeAt(index);
     formArray.updateValueAndValidity();
   }
 
