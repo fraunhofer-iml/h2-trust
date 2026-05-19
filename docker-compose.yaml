@@ -6,7 +6,7 @@ x-healthcheck-defaults: &healthcheck-defaults
 
 services:
   postgres:
-    image: postgres:18.0-alpine
+    image: postgres:18.4-alpine
     restart: unless-stopped
     command: ['postgres', '-c', 'log_min_messages=ERROR']
     environment:
