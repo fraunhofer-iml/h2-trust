@@ -25,7 +25,9 @@ function resolveEnv(key: keyof EnvConfig, defaultValue: string): string {
   const value = env[key];
 
   if (!value) {
-    console.warn(`[env] Missing "${key}", falling back to default "${defaultValue}". Check env.js / env.template.js and Docker env vars.`);
+    console.warn(
+      `[env] "${key}" is missing or empty, using default "${defaultValue}". Check env.js and Docker env vars.`,
+    );
     return defaultValue;
   }
 
