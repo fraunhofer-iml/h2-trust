@@ -6,11 +6,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-declare const window: any;
+type EnvConfig = {
+  BFF_URL?: string;
+  KEYCLOAK_URL?: string;
+  KEYCLOAK_REALM?: string;
+  KEYCLOAK_CLIENT_FRONTEND_ID?: string;
+};
 
-const env = window?.env ?? {};
+declare global {
+  interface Window {
+    env?: EnvConfig;
+  }
+}
 
-function resolveEnv(key: string, defaultValue: string): string {
+const env: EnvConfig = window.env ?? {};
+
+function resolveEnv(key: keyof EnvConfig, defaultValue: string): string {
   const value = env[key];
 
   if (!value) {
