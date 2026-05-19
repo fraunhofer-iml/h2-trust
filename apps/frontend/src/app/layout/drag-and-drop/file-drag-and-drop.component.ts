@@ -21,18 +21,15 @@ export class FileDragAndDropComponent {
   fileSelected = output<File>();
 
   onFileSelected(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    if (this.disabled()) {
-      target.value = '';
-      return;
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file || this.disabled()) {
+      return this.resetInput(input);
     }
-    if (!target.files?.length) {
-      target.value = '';
-      return;
-    }
-    const file = target.files[0];
+
     this.fileSelected.emit(file);
-    target.value = '';
+    this.resetInput(input);
   }
 
   onDrop(event: DragEvent): void {
@@ -45,5 +42,9 @@ export class FileDragAndDropComponent {
 
   onDragOver(event: DragEvent): void {
     event.preventDefault();
+  }
+
+  private resetInput(input: HTMLInputElement) {
+    input.value = '';
   }
 }
