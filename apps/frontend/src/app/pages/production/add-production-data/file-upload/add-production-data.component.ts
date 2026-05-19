@@ -119,8 +119,8 @@ export class AddProductionDataComponent {
   constructor() {
     this.form.updateValueAndValidity();
     this.selectedTypeControl.valueChanges.subscribe(() => {
-      this.form.controls.files.controls.forEach((control) => {
-        control.controls.unitId.setValue(null);
+      this.form.controls.files.controls.forEach((formGroup) => {
+        formGroup.controls.unitId.setValue(null);
       });
     });
   }
