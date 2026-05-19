@@ -8,21 +8,11 @@
 
 import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, HttpException, Logger } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { ProblemDetail } from '@h2-trust/contracts/dtos';
 import { ErrorCode } from '@h2-trust/exceptions';
 import type { RpcError } from '@h2-trust/messaging';
 import { PROBLEM_TYPES } from './problem-types';
 import { isRpcError } from './rpc-error.guard';
-
-// Based on RFC 9457: https://datatracker.ietf.org/doc/html/rfc9457
-interface ProblemDetail {
-  type: string;
-  status: number;
-  title: string;
-  detail: string;
-  instance: string;
-  timestamp: string;
-  validationErrors?: string[];
-}
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {

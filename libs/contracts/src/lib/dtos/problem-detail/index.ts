@@ -6,6 +6,4 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const QUERY_CONFIG = {
-  STALE_TIME: 60 * 1000,
-};
+export * from './problem-detail.model';

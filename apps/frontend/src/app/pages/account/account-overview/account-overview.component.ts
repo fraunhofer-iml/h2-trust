@@ -18,6 +18,9 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { RouterLink } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PpaRequestRole } from '@h2-trust/domain';
+import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
+import { LoadingCardComponent } from '../../../layout/loading-card/loading-card.component';
+import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { UsersService } from '../../../shared/services/users/users.service';
@@ -39,6 +42,8 @@ import { PpaRequestsOverviewComponent } from '../ppa-requests-overview/ppa-reque
     CommonModule,
     MatTabsModule,
     PpaRequestsOverviewComponent,
+    ErrorCardComponent,
+    LoadingCardComponent,
   ],
   templateUrl: './account-overview.component.html',
 })
@@ -51,17 +56,17 @@ export class AccountOverviewComponent implements OnInit {
   protected readonly roles = inject(UserRolesStore);
   readonly dialog = inject(MatDialog);
 
-  userId$ = signal<string | undefined>(undefined);
+  userId = signal<string | undefined>(undefined);
 
   accountQuery = injectQuery(() => ({
-    queryKey: ['account-info', this.userId$()],
-    queryFn: () => this.accountService.getUserAccountInformation(this.userId$() ?? ''),
-    enabled: !!this.userId$(),
+    queryKey: [QueryKeyPrefix.USERS, this.userId()],
+    queryFn: () => this.accountService.getUserAccountInformation(this.userId() ?? ''),
+    enabled: !!this.userId(),
   }));
 
   async ngOnInit() {
     const userId = await this.authService.getUserId();
-    this.userId$.set(userId);
+    this.userId.set(userId);
   }
 
   openDialog() {

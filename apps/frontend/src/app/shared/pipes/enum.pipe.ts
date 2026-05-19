@@ -7,8 +7,7 @@
  */
 
 import { Pipe, PipeTransform } from '@angular/core';
-import { ENUM_LABEL_RESOLVERS } from '../constants/eum-label-resolvers';
-import { EnumLabelKey } from '../model/enum-label-key.type';
+import { ENUM_LABEL_RESOLVERS, EnumLabelKey } from '../constants/eum-label-resolvers';
 
 type EnumValueForKey<K extends EnumLabelKey> = Parameters<(typeof ENUM_LABEL_RESOLVERS)[K]>[0];
 

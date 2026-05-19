@@ -7,7 +7,6 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,9 +20,13 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
-import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
-import { toast } from 'ngx-sonner';
-import { HydrogenComponentDto, HydrogenStorageOverviewDto, UserDto } from '@h2-trust/contracts/dtos';
+import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import {
+  BottlingOverviewDto,
+  HydrogenComponentDto,
+  HydrogenStorageOverviewDto,
+  UserDto,
+} from '@h2-trust/contracts/dtos';
 import { FuelType, MeasurementUnit, RfnboType, TransportMode } from '@h2-trust/domain';
 import { FileDragAndDropComponent } from '../../../layout/drag-and-drop/file-drag-and-drop.component';
 import { FileCardComponent } from '../../../layout/file-card/file-card.component';
@@ -32,9 +35,13 @@ import { FileTypes } from '../../../shared/constants/file-types';
 import { H2TrustRoutes } from '../../../shared/constants/routes';
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
+import { companiesQueryOptions } from '../../../shared/queries/companies.query';
+import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
+import { hydrogenStorageUnitsQueryOptions } from '../../../shared/queries/units.query';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
+import { handleMutationWithPromiseToast } from '../../../shared/util/query-error-handler';
 import { BottlingForm } from './form';
 import { StorageFillingLevelsComponent } from './storage-filling-levels/storage-filling-levels.component';
 
@@ -69,6 +76,7 @@ export class AddBottleComponent {
   companiesService = inject(CompaniesService);
   processService = inject(BottlingService);
   enumPipe = inject(EnumPipe);
+  private queryClient = inject(QueryClient);
 
   protected readonly FileTypes = FileTypes;
   protected readonly TransportType = TransportMode;
@@ -92,35 +100,18 @@ export class AddBottleComponent {
     distance: new FormControl<number | null>(null),
   });
 
-  hydrogenStorageQuery = injectQuery(() => ({
-    queryKey: ['h2-storage'],
-    queryFn: () => this.unitsService.getHydrogenStorageUnits(),
-  }));
+  hydrogenStorageQuery = injectQuery(() => hydrogenStorageUnitsQueryOptions(this.unitsService));
 
-  recipientsQuery = injectQuery(() => ({
-    queryKey: ['recipients'],
-    queryFn: () => this.companiesService.getCompanies(),
-  }));
+  recipientsQuery = injectQuery(() => companiesQueryOptions(this.companiesService));
 
   mutation = injectMutation(() => ({
     mutationFn: async (dto: FormData) => {
-      const promise = this.processService.createBottleBatch(dto);
-
-      toast.promise(promise, {
-        loading: 'Creating batch...',
-        success: () => {
-          this.router.navigateByUrl(H2TrustRoutes.BOTTLING);
-          return 'Successfully created.';
-        },
-        error: (error): string => {
-          if (error instanceof HttpErrorResponse || error instanceof Error) {
-            return error.message;
-          }
-          return 'Failed to create batch.';
-        },
-      });
-
-      await promise;
+      await handleMutationWithPromiseToast<BottlingOverviewDto>(
+        this.processService.createBottleBatch(dto),
+        'Successfully created',
+      );
+      await this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.BOTTLING] });
+      this.router.navigateByUrl(H2TrustRoutes.BOTTLING);
     },
   }));
 
@@ -129,7 +120,7 @@ export class AddBottleComponent {
       this.onTransportModeChange(transportMode),
     );
 
-    this.bottleFormGroup.controls.amount?.valueChanges.subscribe((amount) => this.onAmountChnage(amount));
+    this.bottleFormGroup.controls.amount?.valueChanges.subscribe((amount) => this.onAmountChange(amount));
   }
 
   get bottleTypeControl() {
@@ -198,7 +189,7 @@ export class AddBottleComponent {
     distanceControl.updateValueAndValidity();
   }
 
-  private onAmountChnage(amount: number | null | undefined) {
+  private onAmountChange(amount: number | null | undefined) {
     if (!amount) return;
 
     this.bottleFormGroup.controls.type.reset();
