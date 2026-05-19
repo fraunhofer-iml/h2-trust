@@ -15,7 +15,7 @@ import {
 } from '@h2-trust/contracts/entities';
 import { BiddingZone } from '@h2-trust/domain';
 import { InternalException } from '@h2-trust/exceptions';
-import { assertBoolean, assertDefined, subtractMonthsSafe, toValidDate } from '@h2-trust/utils';
+import { assertBoolean, assertValidEnum, subtractMonthsSafe, toValidDate } from '@h2-trust/utils';
 
 export function determineRedCompliance(
   hydrogenProduction: ProcessStepEntity,
@@ -76,10 +76,10 @@ export function areUnitsInSameBiddingZone(
   powerUnit: PowerProductionUnitEntity,
   hydrogenUnit: HydrogenProductionUnitEntity,
 ): boolean {
-  const powerUnitZone: BiddingZone = powerUnit?.biddingZone;
-  const hydrogenUnitZone: BiddingZone = hydrogenUnit?.biddingZone;
-  assertValidBiddingZone(powerUnitZone, 'powerUnit.biddingZone');
-  assertValidBiddingZone(hydrogenUnitZone, 'hydrogenUnit.biddingZone');
+  const powerUnitZone = powerUnit?.biddingZone;
+  const hydrogenUnitZone = hydrogenUnit?.biddingZone;
+  assertValidEnum(powerUnitZone, BiddingZone, 'BiddingZone');
+  assertValidEnum(hydrogenUnitZone, BiddingZone, 'BiddingZone');
   return powerUnitZone === hydrogenUnitZone;
 }
 
@@ -114,11 +114,4 @@ export function meetsAdditionalityCriterion(
 export function hasFinancialSupport(powerUnit: PowerProductionUnitEntity): boolean {
   assertBoolean(powerUnit?.financialSupportReceived, 'powerUnit.financialSupportReceived');
   return !powerUnit.financialSupportReceived;
-}
-
-export function assertValidBiddingZone(zone: unknown, name: string): asserts zone is BiddingZone {
-  assertDefined(zone, name);
-  if (!Object.values(BiddingZone).includes(zone as BiddingZone)) {
-    throw new InternalException(`Invalid BiddingZone: ${name}: ${zone}`);
-  }
 }

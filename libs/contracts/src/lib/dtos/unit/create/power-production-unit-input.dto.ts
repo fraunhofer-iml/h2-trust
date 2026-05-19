@@ -100,8 +100,12 @@ export class PowerProductionUnitInputDto extends UnitInputDto {
     this.decommissioningPlannedOn = decommissioningPlannedOn;
   }
 
-  static toPayload(dto: PowerProductionUnitInputDto, id?: string): CreatePowerProductionUnitPayload {
-    return new CreatePowerProductionUnitPayload(
+  static toPayload(
+    dto: PowerProductionUnitInputDto,
+    id?: string,
+    requesterCompanyId?: string,
+  ): CreatePowerProductionUnitPayload {
+    const payload = new CreatePowerProductionUnitPayload(
       dto.name,
       dto.mastrNumber,
       dto.commissionedOn,
@@ -130,5 +134,7 @@ export class PowerProductionUnitInputDto extends UnitInputDto {
       dto.gridConnectionNumber,
       id,
     );
+    payload.requesterCompanyId = requesterCompanyId;
+    return payload;
   }
 }

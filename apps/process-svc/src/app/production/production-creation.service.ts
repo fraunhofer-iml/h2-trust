@@ -19,6 +19,7 @@ import {
 import { CreateManyProcessStepsPayload } from '@h2-trust/contracts/payloads';
 import { BatchType, RfnboType } from '@h2-trust/domain';
 import { InternalException } from '@h2-trust/exceptions';
+import { assertDefined } from '@h2-trust/utils';
 import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
 import { ProcessStepService } from '../process-step/process-step.service';
 import {
@@ -97,6 +98,10 @@ export class ProductionCreationService {
         const powerProduction: ProcessStepEntity = persistedPower.find((power) => predecessorIds.includes(power.id));
         const waterConsumption: ProcessStepEntity = persistedWater.find((water) => predecessorIds.includes(water.id));
 
+        assertDefined(powerProduction, 'powerProduction');
+        assertDefined(waterConsumption, 'waterConsumption');
+        assertDefined(powerProduction.executedBy, 'powerProduction.executedBy');
+        assertDefined(waterConsumption.executedBy, 'waterConsumption.executedBy');
         const productionChain: ProductionChainEntity = new ProductionChainEntity(
           hydrogen,
           hydrogen,

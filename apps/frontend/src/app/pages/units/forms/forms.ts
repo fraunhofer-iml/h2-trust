@@ -49,7 +49,7 @@ export type HydrogenProductionFormGroup = {
 export type HydrogenStorageFormGroup = {
   capacity: FormControl<number | null>;
   pressure: FormControl<number | null>;
-  hydrogenStorageType: FormControl<HydrogenStorageType | null>;
+  storageType: FormControl<HydrogenStorageType | null>;
 };
 
 export type PowerProductionFormGroup = {
@@ -96,7 +96,7 @@ export const newH2StorageForm = () =>
   new FormGroup<HydrogenStorageFormGroup>({
     capacity: new FormControl<number | null>(null, Validators.required),
     pressure: new FormControl<number | null>(null, Validators.required),
-    hydrogenStorageType: new FormControl<HydrogenStorageType | null>(null, Validators.required),
+    storageType: new FormControl<HydrogenStorageType | null>(null, Validators.required),
   });
 
 export const newPowerProductionForm = () =>

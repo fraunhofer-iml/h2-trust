@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const QUERY_CONFIG = {
-  STALE_TIME: 60 * 1000,
-};
+export enum Warnings {
+  MAX_CAPACITY_EXCEEDED = 'Maximum storage capacity exceeded!',
+  UNIT_TYPE_MISMATCH = 'Unit type does not match the requested type!',
+}

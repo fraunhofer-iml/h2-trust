@@ -8,14 +8,13 @@
 
 import { SelectionModel } from '@angular/cdk/collections';
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, input } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { injectMutation } from '@tanstack/angular-query-experimental';
-import { toast } from 'ngx-sonner';
 import { DownloadFilesDto, ProcessedCsvDto } from '@h2-trust/contracts/dtos';
 import { ProductionService } from '../../../../shared/services/production/production.service';
+import { handleMutationWithPromiseToast } from '../../../../shared/util/query-error-handler';
 
 @Component({
   selector: 'app-download-button',
@@ -29,18 +28,11 @@ export class DownloadButtonComponent {
 
   downloadMutation = injectMutation(() => ({
     mutationFn: async (dto: DownloadFilesDto) => {
-      const promise: Promise<Blob> = this.productionService.downloadFiles(dto);
-      toast.promise(promise, {
-        loading: 'Fetching Files...',
-        success: 'Download Successfull',
-        error: (error): string => {
-          if (error instanceof HttpErrorResponse) {
-            return `Failed to fetch files: ${error.statusText}`;
-          }
-          return 'Failed to fetch files';
-        },
-      });
-      const download = await promise;
+      const download = await handleMutationWithPromiseToast<Blob>(
+        this.productionService.downloadFiles(dto),
+        'Download Successful',
+      );
+
       const blobUrl = URL.createObjectURL(download);
       this.saveFile(blobUrl, 'download.zip');
       URL.revokeObjectURL(blobUrl);

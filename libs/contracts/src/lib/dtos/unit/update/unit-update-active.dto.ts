@@ -18,7 +18,9 @@ export class UnitUpdateActiveDto {
     this.active = active;
   }
 
-  static toPayload(id: string, active: boolean): UpdateUnitStatusPayload {
-    return new UpdateUnitStatusPayload(id, active);
+  static toPayload(id: string, active: boolean, requesterCompanyId?: string): UpdateUnitStatusPayload {
+    const payload = new UpdateUnitStatusPayload(id, active);
+    payload.requesterCompanyId = requesterCompanyId;
+    return payload;
   }
 }

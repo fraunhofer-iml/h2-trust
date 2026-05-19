@@ -12,8 +12,13 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { BiddingZone, GridLevel, HydrogenProductionMethod, PowerProductionType } from '@h2-trust/domain';
-import { H2_PRODUCTION_TYPES } from '../../../../shared/constants/hydrogen-production-types';
+import {
+  BiddingZone,
+  GridLevel,
+  HydrogenProductionMethod,
+  HydrogenProductionTechnology,
+  PowerProductionType,
+} from '@h2-trust/domain';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { HydrogenProductionFormGroup } from '../forms';
 
@@ -39,11 +44,15 @@ export class HydrogenProductionUnitFormComponent {
 
   hydrogenProductionForm = input.required<FormGroup<HydrogenProductionFormGroup>>();
 
+  private readonly H2_PRODUCTION_TYPES: Map<HydrogenProductionMethod, typeof HydrogenProductionTechnology> = new Map([
+    [HydrogenProductionMethod.ELECTROLYSIS, HydrogenProductionTechnology],
+  ]);
+
   get availableTechnologies() {
     const selectedMethod = this.hydrogenProductionForm().value.method;
     if (!selectedMethod) return [];
 
-    const technologiesForMethod = H2_PRODUCTION_TYPES.get(selectedMethod);
+    const technologiesForMethod = this.H2_PRODUCTION_TYPES.get(selectedMethod);
     if (!technologiesForMethod) return [];
 
     return Object.entries(technologiesForMethod) ?? [];

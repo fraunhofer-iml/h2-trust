@@ -26,6 +26,7 @@ import { MeasurementUnit } from '@h2-trust/domain';
 import { PowerTypeChipComponent } from '../../../layout/chips/power-type-chip.component';
 import { RfnboChipComponent } from '../../../layout/chips/rfnbo-chip.component';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
+import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { ProductionService } from '../../../shared/services/production/production.service';
 import { FilterModel } from '../model/generated-productions-filter.model';
 import { PaginationModel } from '../model/pagination.model';
@@ -95,7 +96,7 @@ export class ProductionViewComponent implements AfterViewInit {
     debounce(schemaPath.unit, 500);
   });
   productionQuery = injectQuery(() => ({
-    queryKey: ['production', this.filterModel(), this.pagination()],
+    queryKey: [QueryKeyPrefix.PRODUCTIONS, this.filterModel(), this.pagination()],
     queryFn: async () => {
       const paginatedData = await this.productionService.getProductions(this.filterModel(), this.pagination());
       this.dataSource.data = paginatedData.data;

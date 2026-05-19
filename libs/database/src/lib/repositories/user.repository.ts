@@ -22,7 +22,7 @@ export class UserRepository {
       .findUnique({ where: { id }, ...userDeepQueryArgs })
       .catch(wrapPrismaError);
 
-    assertRecordFound(user, id, 'User');
+    assertRecordFound(user, id);
     return UserEntity.fromDeepDatabase(user);
   }
 }

@@ -62,8 +62,11 @@ export class UnitController {
   @ApiOkResponse({
     description: 'Returns the created unit.',
   })
-  createHydrogenStorageUnit(@Body() dto: HydrogenStorageUnitInputDto): Promise<HydrogenStorageUnitDto> {
-    return this.unitService.createHydrogenStorageUnit(dto);
+  createHydrogenStorageUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Body() dto: HydrogenStorageUnitInputDto,
+  ): Promise<HydrogenStorageUnitDto> {
+    return this.unitService.createHydrogenStorageUnit(dto, authenticatedUser.sub);
   }
 
   @Get('power-production')
@@ -100,8 +103,11 @@ export class UnitController {
   @ApiOkResponse({
     description: 'Returns the created unit.',
   })
-  createPowerProductionUnit(@Body() dto: PowerProductionUnitInputDto): Promise<PowerProductionUnitDto> {
-    return this.unitService.createPowerProductionUnit(dto);
+  createPowerProductionUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Body() dto: PowerProductionUnitInputDto,
+  ): Promise<PowerProductionUnitDto> {
+    return this.unitService.createPowerProductionUnit(dto, authenticatedUser.sub);
   }
 
   @Get('hydrogen-production')
@@ -138,8 +144,11 @@ export class UnitController {
   @ApiOkResponse({
     description: 'Returns the created unit.',
   })
-  createHydrogenProductionUnit(@Body() dto: HydrogenProductionUnitInputDto): Promise<HydrogenProductionUnitDto> {
-    return this.unitService.createHydrogenProductionUnit(dto);
+  createHydrogenProductionUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Body() dto: HydrogenProductionUnitInputDto,
+  ): Promise<HydrogenProductionUnitDto> {
+    return this.unitService.createHydrogenProductionUnit(dto, authenticatedUser.sub);
   }
 
   @Patch(':id/active')
@@ -148,8 +157,12 @@ export class UnitController {
   @ApiOkResponse({
     description: 'Returns void if status update was successful.',
   })
-  updateUnitStatus(@Param('id') id: string, @Body() dto: UnitUpdateActiveDto): Promise<void> {
-    return this.unitService.updateUnitStatus(id, dto.active);
+  updateUnitStatus(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Param('id') id: string,
+    @Body() dto: UnitUpdateActiveDto,
+  ): Promise<void> {
+    return this.unitService.updateUnitStatus(id, dto.active, authenticatedUser.sub);
   }
 
   @Put('hydrogen-production/:unitId')
@@ -161,10 +174,11 @@ export class UnitController {
     description: 'Returns the updated unit.',
   })
   updateHydrogenProductionUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
     @Param('unitId') unitId: string,
     @Body() dto: HydrogenProductionUnitInputDto,
   ): Promise<void> {
-    return this.unitService.updateHydrogenProductionUnit(unitId, dto);
+    return this.unitService.updateHydrogenProductionUnit(unitId, dto, authenticatedUser.sub);
   }
 
   @Put('power-production/:unitId')
@@ -175,8 +189,12 @@ export class UnitController {
   @ApiOkResponse({
     description: 'Returns the updated unit.',
   })
-  updatePowerProductionUnit(@Param('unitId') unitId: string, @Body() dto: PowerProductionUnitInputDto): Promise<void> {
-    return this.unitService.updatePowerProductionUnit(unitId, dto);
+  updatePowerProductionUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Param('unitId') unitId: string,
+    @Body() dto: PowerProductionUnitInputDto,
+  ): Promise<void> {
+    return this.unitService.updatePowerProductionUnit(unitId, dto, authenticatedUser.sub);
   }
 
   @Put('hydrogen-storage/:unitId')
@@ -187,7 +205,11 @@ export class UnitController {
   @ApiOkResponse({
     description: 'Returns the hydrogen storage updated unit.',
   })
-  updateHydrogenStorageUnit(@Param('unitId') unitId: string, @Body() dto: HydrogenStorageUnitInputDto): Promise<void> {
-    return this.unitService.updateHydrogenStorageUnit(unitId, dto);
+  updateHydrogenStorageUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Param('unitId') unitId: string,
+    @Body() dto: HydrogenStorageUnitInputDto,
+  ): Promise<void> {
+    return this.unitService.updateHydrogenStorageUnit(unitId, dto, authenticatedUser.sub);
   }
 }

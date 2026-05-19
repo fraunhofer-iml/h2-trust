@@ -7,7 +7,6 @@
  */
 
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
-import { QUERY_CONFIG } from '../constants/query-config';
 import { PowerPurchaseAgreementService } from '../services/power-purchase-agreement/power-purchase-agreement.service';
 import { QueryKeyPrefix } from './shared-query-keys';
 
@@ -18,5 +17,4 @@ export const ppaRequestsQueryOptions = (
 ) => ({
   queryKey: [QueryKeyPrefix.PPA_REQUESTS, role, status],
   queryFn: () => ppaService.getPpaRequests(role, status),
-  staleTime: QUERY_CONFIG.STALE_TIME,
 });

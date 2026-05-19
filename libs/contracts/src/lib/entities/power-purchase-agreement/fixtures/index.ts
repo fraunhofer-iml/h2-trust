@@ -6,7 +6,4 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export enum RfnboStatus {
-  RFNBO_READY = 'RFNBO Ready',
-  NON_CERTIFIABLE = 'Non Certifiable',
-}
+export * from './power-purchase-agreement.fixture';

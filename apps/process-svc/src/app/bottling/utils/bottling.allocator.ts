@@ -9,6 +9,7 @@
 import { BatchEntity, HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { DomainException, ErrorCode } from '@h2-trust/exceptions';
+import { assertDefined } from '@h2-trust/utils';
 
 export interface BottlingAllocation {
   batchesForBottle: BatchEntity[];
@@ -117,6 +118,7 @@ function splitLastProcessStepIfNeeded(
   const processStepsForRemainingAmount: ProcessStepEntity[] = [];
   if (remainingAmount > 0) {
     const consumedSplitProcessStep = selectedProcessSteps.at(-1);
+    assertDefined(consumedSplitProcessStep, 'consumedSplitProcessStep');
     processStepsToBeSplit.push(consumedSplitProcessStep);
     batchesForBottle.pop();
 

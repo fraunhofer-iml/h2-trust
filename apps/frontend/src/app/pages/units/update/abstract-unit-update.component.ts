@@ -6,13 +6,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { inject, InputSignal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { effect, inject, InputSignal } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { toast } from 'ngx-sonner';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { UnitsService } from '../../../shared/services/units/units.service';
+import { toastQueryError } from '../../../shared/util/query-error-handler';
 import { newUnitForm, UnitFormGroup } from '../forms/forms';
 
 export abstract class AbstractUnitUpdateComponent<TUnitDto, TUnitInputDto> {
@@ -22,7 +24,7 @@ export abstract class AbstractUnitUpdateComponent<TUnitDto, TUnitInputDto> {
   protected readonly router = inject(Router);
   protected readonly queryClient = inject(QueryClient);
 
-  abstract id: InputSignal<string | undefined>;
+  abstract id: InputSignal<string>;
 
   protected abstract readonly queryPrefix: QueryKeyPrefix;
 
@@ -34,18 +36,24 @@ export abstract class AbstractUnitUpdateComponent<TUnitDto, TUnitInputDto> {
 
   unitQuery = injectQuery(() => ({
     queryKey: [this.queryPrefix, this.id()],
-    queryFn: async () => {
-      const unit = await this.fetchUnit(this.id() ?? '');
-      this.setFormData(unit);
-      return unit;
-    },
+    queryFn: async () => this.fetchUnit(this.id()),
     enabled: !!this.id(),
   }));
+
+  protected readonly patchFormEffect = effect(() => {
+    const id = this.id();
+    const unit = this.unitQuery.data();
+
+    if (!id || !unit) return;
+
+    this.setFormData(unit);
+  });
 
   unitMutation = injectMutation(() => ({
     mutationFn: (dto: TUnitInputDto) => this.updateUnit(this.id() ?? '', dto),
     onSuccess: () => this.onSuccess(),
-    onError: () => toast.error('Failed to update unit.'),
+    onError: (err: HttpErrorResponse) => toastQueryError(err),
+    enabled: !!this.id(),
   }));
 
   onSave() {
@@ -53,8 +61,9 @@ export abstract class AbstractUnitUpdateComponent<TUnitDto, TUnitInputDto> {
     this.unitMutation.mutate(dto);
   }
 
-  private onSuccess() {
-    this.queryClient.invalidateQueries({ queryKey: [this.queryPrefix] });
+  private async onSuccess() {
+    await this.queryClient.invalidateQueries({ queryKey: [this.queryPrefix] });
+    toast.success('Unit updated successfully');
     this.navigateToDetailsView();
   }
 }

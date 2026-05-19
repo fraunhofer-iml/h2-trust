@@ -11,8 +11,9 @@ import { hashBuffer } from '@h2-trust/blockchain';
 import { UnitAccountingPeriods, UnitFileImport } from '@h2-trust/contracts/entities';
 import { CreateCsvDocumentInput } from '@h2-trust/database';
 import { BatchType } from '@h2-trust/domain';
-import { ValidationException } from '@h2-trust/exceptions';
+import { InternalException, ValidationException } from '@h2-trust/exceptions';
 import { CentralizedStorageService, ContentType, DecentralizedStorageService } from '@h2-trust/storage';
+import { assertValidTimeZone } from '@h2-trust/utils';
 import { ParsedImport } from '../production.types';
 import { parseAccountingPeriodCsvBuffer } from './accounting-period-csv-parser';
 
@@ -29,6 +30,7 @@ export class CsvImportProcessingService {
   ) {}
 
   async parseAndUploadFiles(unitFileImports: UnitFileImport[], timeZone: string): Promise<ParsedImport[]> {
+    assertValidTimeZone(timeZone);
     return Promise.all(
       unitFileImports.map(async (ufi) => {
         const headers = CsvImportProcessingService.validHeaders[ufi.productionType];
@@ -67,6 +69,9 @@ export class CsvImportProcessingService {
   }
 
   createCsvDocumentInputs(parsedImports: ParsedImport[]): CreateCsvDocumentInput[] {
+    if (parsedImports.length === 0) {
+      throw new InternalException('createCsvDocumentInputs called with empty parsedImports');
+    }
     return parsedImports.map((production) => {
       const { startedAt, endedAt, amount } = production.periods.accountingPeriods.reduce(
         (acc, accountingPeriod) => {
