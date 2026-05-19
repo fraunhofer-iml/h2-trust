@@ -147,7 +147,7 @@ export class AddProductionDataComponent {
   }
 
   removeFile(index: number, formArray: FormArray<FileForm> | FormArray<FormGroup<{ file: FormControl<File | null> }>>) {
-    formArray.controls.splice(index, 1);
+    formArray.removeAt(index);
     formArray.updateValueAndValidity();
   }
 
