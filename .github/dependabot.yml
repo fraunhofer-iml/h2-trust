@@ -1,10 +1,12 @@
 version: 2
+# GitHub Dependabot does not support a true manual-only mode in dependabot.yml.
+# Use the manual trigger in GitHub: Insights -> Dependency graph -> Dependabot -> Check for updates.
+# The schedules below are therefore reduced to a minimal automatic cadence.
 updates:
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
-      interval: 'weekly'
-      day: 'friday'
+      interval: 'yearly'
       time: '07:00'
       timezone: 'Europe/Berlin'
     open-pull-requests-limit: 10
@@ -56,12 +58,15 @@ updates:
         versions: ['>= 7.0.0']
       - dependency-name: 'prisma'
         versions: ['>= 7.0.0']
+      - dependency-name: 'typescript'
+        versions: ['>= 6.0.0']
+      - dependency-name: 'chai'
+        versions: ['>= 6.0.0']
 
   - package-ecosystem: 'npm'
     directory: '/libs/blockchain/smart-contract'
     schedule:
-      interval: 'weekly'
-      day: 'friday'
+      interval: 'yearly'
       time: '07:00'
       timezone: 'Europe/Berlin'
     open-pull-requests-limit: 10
@@ -93,8 +98,7 @@ updates:
       - '/docker/blockchain'
       - '/docker/blockchain-setup'
     schedule:
-      interval: 'weekly'
-      day: 'friday'
+      interval: 'yearly'
       time: '07:00'
       timezone: 'Europe/Berlin'
     open-pull-requests-limit: 5
@@ -108,8 +112,7 @@ updates:
   - package-ecosystem: 'docker-compose'
     directory: '/'
     schedule:
-      interval: 'weekly'
-      day: 'friday'
+      interval: 'yearly'
       time: '07:00'
       timezone: 'Europe/Berlin'
     open-pull-requests-limit: 5
@@ -123,8 +126,7 @@ updates:
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
-      interval: 'weekly'
-      day: 'friday'
+      interval: 'yearly'
       time: '07:00'
       timezone: 'Europe/Berlin'
     open-pull-requests-limit: 0

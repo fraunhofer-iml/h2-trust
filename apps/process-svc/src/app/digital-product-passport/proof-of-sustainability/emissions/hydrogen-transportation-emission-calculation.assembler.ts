@@ -19,11 +19,11 @@ import {
   FuelType,
   MeasurementUnit,
   ProcessType,
-  TrailerParameter,
   TransportMode,
 } from '@h2-trust/domain';
 import { InternalException } from '@h2-trust/exceptions';
 import { getFuelType } from '@h2-trust/strings';
+import { assertDefined } from '@h2-trust/utils';
 import { ProofOfSustainabilityEmissionAssembler } from '../proof-of-sustainability-assembler.interface';
 
 function assemblePipelineEmissionCalculation(): ProofOfSustainabilityEmissionCalculationEntity {
@@ -44,9 +44,10 @@ function assembleTrailerEmissionCalculation(
   fuelType: FuelType,
   transportDistance: number,
 ): ProofOfSustainabilityEmissionCalculationEntity {
-  const trailerParameter: TrailerParameter =
+  const trailerParameter =
     EmissionNumericConstants.TRAILER_PARAMETERS.find((trailerEntry) => hydrogenAmount <= trailerEntry.capacity) ??
     EmissionNumericConstants.TRAILER_PARAMETERS.at(EmissionNumericConstants.TRAILER_PARAMETERS.length - 1);
+  assertDefined(trailerParameter, 'trailerParameter');
 
   const tonPerKg = 0.001;
   const transportEfficiency = trailerParameter.transportEfficiency;

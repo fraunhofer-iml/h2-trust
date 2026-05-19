@@ -42,6 +42,8 @@ describe('UnitController', () => {
   let controller: UnitController;
   let queue: ClientProxy;
   let userService: UserService;
+  const authenticatedUser = { sub: 'user-id-1' };
+  const fixtureUser = { company: { id: 'company-id-1' } } as UserDetailsDto;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -86,7 +88,6 @@ describe('UnitController', () => {
 
   it('should find all units', async () => {
     const givenUserId = 'user-id-1';
-    const fixtureUser = { company: { id: 'companyId' } } as UserDetailsDto;
     const fixtureUnits: HydrogenProductionUnitEntity[] = [HydrogenProductionUnitEntityFixture.create()];
     const expectedResponse: HydrogenProductionOverviewDto[] = fixtureUnits.map(
       HydrogenProductionOverviewDto.fromEntity,
@@ -118,17 +119,21 @@ describe('UnitController', () => {
     const fixtureUnit: PowerProductionUnitEntity = PowerProductionUnitEntityFixture.create();
     const expectedResponse: PowerProductionUnitDto = PowerProductionUnitDto.fromEntity(fixtureUnit);
 
+    const readUserRequestSpy = jest.spyOn(userService, 'readUserWithCompany');
+    readUserRequestSpy.mockResolvedValue(fixtureUser);
     const sendRequestSpy = jest.spyOn(queue, 'send');
     sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: any) => {
       return of(fixtureUnit);
     });
 
-    const actualResponse = await controller.createPowerProductionUnit(givenDto);
+    const actualResponse = await controller.createPowerProductionUnit(authenticatedUser, givenDto);
 
+    expect(readUserRequestSpy).toHaveBeenCalledTimes(1);
+    expect(readUserRequestSpy).toHaveBeenCalledWith(authenticatedUser.sub);
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
     expect(sendRequestSpy).toHaveBeenCalledWith(
       UnitMessagePatterns.CREATE_POWER_PRODUCTION,
-      PowerProductionUnitInputDto.toPayload(givenDto as PowerProductionUnitInputDto),
+      PowerProductionUnitInputDto.toPayload(givenDto as PowerProductionUnitInputDto, undefined, fixtureUser.company.id),
     );
     expect(actualResponse).toEqual(expectedResponse);
   });
@@ -138,17 +143,25 @@ describe('UnitController', () => {
     const fixtureUnit: HydrogenProductionUnitEntity = HydrogenProductionUnitEntityFixture.create();
     const expectedResponse: HydrogenProductionUnitDto = HydrogenProductionUnitDto.fromEntity(fixtureUnit);
 
+    const readUserRequestSpy = jest.spyOn(userService, 'readUserWithCompany');
+    readUserRequestSpy.mockResolvedValue(fixtureUser);
     const sendRequestSpy = jest.spyOn(queue, 'send');
     sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: any) => {
       return of(fixtureUnit);
     });
 
-    const actualResponse = await controller.createHydrogenProductionUnit(givenDto);
+    const actualResponse = await controller.createHydrogenProductionUnit(authenticatedUser, givenDto);
 
+    expect(readUserRequestSpy).toHaveBeenCalledTimes(1);
+    expect(readUserRequestSpy).toHaveBeenCalledWith(authenticatedUser.sub);
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
     expect(sendRequestSpy).toHaveBeenCalledWith(
       UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION,
-      HydrogenProductionUnitInputDto.toPayload(givenDto as HydrogenProductionUnitInputDto),
+      HydrogenProductionUnitInputDto.toPayload(
+        givenDto as HydrogenProductionUnitInputDto,
+        undefined,
+        fixtureUser.company.id,
+      ),
     );
     expect(actualResponse).toEqual(expectedResponse);
   });
@@ -158,17 +171,21 @@ describe('UnitController', () => {
     const fixtureUnit: HydrogenStorageUnitEntity = HydrogenStorageUnitEntityFixture.create();
     const expectedResponse: HydrogenStorageUnitDto = HydrogenStorageUnitDto.fromEntity(fixtureUnit);
 
+    const readUserRequestSpy = jest.spyOn(userService, 'readUserWithCompany');
+    readUserRequestSpy.mockResolvedValue(fixtureUser);
     const sendRequestSpy = jest.spyOn(queue, 'send');
     sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: any) => {
       return of(fixtureUnit);
     });
 
-    const actualResponse = await controller.createHydrogenStorageUnit(givenDto);
+    const actualResponse = await controller.createHydrogenStorageUnit(authenticatedUser, givenDto);
 
+    expect(readUserRequestSpy).toHaveBeenCalledTimes(1);
+    expect(readUserRequestSpy).toHaveBeenCalledWith(authenticatedUser.sub);
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
     expect(sendRequestSpy).toHaveBeenCalledWith(
       UnitMessagePatterns.CREATE_HYDROGEN_STORAGE,
-      HydrogenStorageUnitInputDto.toPayload(givenDto as HydrogenStorageUnitInputDto),
+      HydrogenStorageUnitInputDto.toPayload(givenDto as HydrogenStorageUnitInputDto, undefined, fixtureUser.company.id),
     );
     expect(actualResponse).toEqual(expectedResponse);
   });

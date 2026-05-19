@@ -6,11 +6,27 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { IsNotEmpty, IsString } from 'class-validator';
+
 export class AddressDto {
+  @IsString()
+  @IsNotEmpty()
   street: string;
+
+  @IsString()
+  @IsNotEmpty()
   postalCode: string;
+
+  @IsString()
+  @IsNotEmpty()
   city: string;
+
+  @IsString()
+  @IsNotEmpty()
   state: string;
+
+  @IsString()
+  @IsNotEmpty()
   country: string;
 
   constructor(street: string, postalCode: string, city: string, state: string, country: string) {

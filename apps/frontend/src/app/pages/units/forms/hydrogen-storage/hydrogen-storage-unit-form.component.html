@@ -4,7 +4,7 @@
   <div class="grid grid-cols-3 gap-2" [formGroup]="hydrogenStorageForm()">
     <mat-form-field appearance="outline">
       <mat-label>Type</mat-label>
-      <mat-select formControlName="hydrogenStorageType">
+      <mat-select formControlName="storageType">
         <mat-option [value]="HydrogenStorageType.LIQUID_HYDROGEN">{{
           HydrogenStorageType.LIQUID_HYDROGEN | enum: 'hydrogenStorageType'
         }}</mat-option>

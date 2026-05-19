@@ -48,7 +48,7 @@ export class ProcessStepRepository {
       .findUnique({ where: { id }, ...processStepDeepQueryArgs })
       .catch(wrapPrismaError);
 
-    assertRecordFound(processStep, id, 'process-step');
+    assertRecordFound(processStep, id);
     return ProcessStepEntity.fromDeepDatabase(processStep);
   }
 
@@ -59,7 +59,7 @@ export class ProcessStepRepository {
       },
       ...processStepDeepQueryArgs,
     });
-    assertAllIdsFound(processSteps, ids, 'process-step');
+    assertAllIdsFound(processSteps, ids);
     return processSteps.map(ProcessStepEntity.fromDeepDatabase);
   }
 

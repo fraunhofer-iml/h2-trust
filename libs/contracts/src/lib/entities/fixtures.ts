@@ -16,6 +16,7 @@ export * from './digital-product-passport/fixtures';
 export * from './digital-product-passport/proof-of-origin/fixtures';
 export * from './digital-product-passport/proof-of-sustainability/fixtures';
 export * from './document/fixtures';
+export * from './power-purchase-agreement/fixtures';
 export * from './process-step/fixtures';
 export * from './production/fixtures';
 export * from './unit/fixtures';

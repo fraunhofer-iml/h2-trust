@@ -16,7 +16,7 @@ import {
 } from '@h2-trust/contracts/payloads';
 import { PowerPurchaseAgreementRepository, UnitRepository, UserRepository } from '@h2-trust/database';
 import { PowerProductionType, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
-import { DomainException, ErrorCode } from '@h2-trust/exceptions';
+import { DomainException, ErrorCode, ValidationException } from '@h2-trust/exceptions';
 
 @Injectable()
 export class PowerPurchaseAgreementService {
@@ -36,6 +36,9 @@ export class PowerPurchaseAgreementService {
   }
 
   async createPPA(payload: CreatePowerPurchaseAgreementsPayload): Promise<PowerPurchaseAgreementEntity> {
+    if (payload.validFrom >= payload.validTo) {
+      throw new ValidationException('validFrom must be before validTo');
+    }
     const hydrogenProducerCompany: UserEntity = await this.userRepository.findUser(payload.userId);
     return this.powerPurchaseAgreementRepository.createPowerPurchaseAgreement(
       payload,
@@ -46,9 +49,9 @@ export class PowerPurchaseAgreementService {
   async updatePPA(payload: UpdatePowerPurchaseAgreementPayload): Promise<PowerPurchaseAgreementEntity> {
     const user: UserEntity = await this.userRepository.findUser(payload.decidingUserId);
 
-    this.checkUserAccessToPowerPurchaseAgreement(user, payload.ppaId);
+    await this.checkUserAccessToPowerPurchaseAgreement(user, payload.ppaId);
     if (payload.powerProductionUnitId) {
-      this.hasUserOwnershipOverPowerProductionUnit(user, payload.powerProductionUnitId);
+      await this.hasUserOwnershipOverPowerProductionUnit(user, payload.powerProductionUnitId);
     }
 
     return this.powerPurchaseAgreementRepository.updatePpaStatus(payload);

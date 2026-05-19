@@ -18,10 +18,6 @@ import { assembleHydrogenStorageEmissionCalculations } from './hydrogen-storage-
 export function assembleHydrogenProductionEmissionCalculations(
   provenance: ProvenanceEntity,
 ): ProofOfSustainabilityEmissionCalculationEntity[] {
-  if (!provenance || !provenance.getAllHydrogenLeafProductions()) {
-    return [];
-  }
-
   const hydrogenAmount = provenance.hydrogenBottling
     ? provenance.hydrogenBottling.batch.amount
     : provenance.root.batch.amount;
