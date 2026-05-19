@@ -42,48 +42,6 @@
           "sourceMap": true,
           "namedChunks": true
         },
-        "dev": {
-          "budgets": [
-            {
-              "type": "initial",
-              "maximumWarning": "2mb",
-              "maximumError": "4mb"
-            },
-            {
-              "type": "anyComponentStyle",
-              "maximumWarning": "100kb",
-              "maximumError": "100kb"
-            }
-          ],
-          "fileReplacements": [
-            {
-              "replace": "apps/frontend/src/environments/environment.ts",
-              "with": "apps/frontend/src/environments/environment.development.ts"
-            }
-          ],
-          "outputHashing": "all"
-        },
-        "staging": {
-          "budgets": [
-            {
-              "type": "initial",
-              "maximumWarning": "2mb",
-              "maximumError": "4mb"
-            },
-            {
-              "type": "anyComponentStyle",
-              "maximumWarning": "100kb",
-              "maximumError": "100kb"
-            }
-          ],
-          "fileReplacements": [
-            {
-              "replace": "apps/frontend/src/environments/environment.ts",
-              "with": "apps/frontend/src/environments/environment.staging.ts"
-            }
-          ],
-          "outputHashing": "all"
-        },
         "production": {
           "budgets": [
             {
@@ -95,33 +53,21 @@
               "type": "anyComponentStyle",
               "maximumWarning": "100kb",
               "maximumError": "100kb"
-            }
-          ],
-          "fileReplacements": [
-            {
-              "replace": "apps/frontend/src/environments/environment.ts",
-              "with": "apps/frontend/src/environments/environment.production.ts"
             }
           ],
           "outputHashing": "all"
         }
       },
-      "defaultConfiguration": "production"
+      "defaultConfiguration": "development"
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
-        "en": {
-          "buildTarget": "frontend:build:development,en"
-        },
-        "de": {
-          "buildTarget": "frontend:build:development,de"
+        "development": {
+          "buildTarget": "frontend:build:development"
         },
         "production": {
           "buildTarget": "frontend:build:production"
-        },
-        "development": {
-          "buildTarget": "frontend:build:development"
         }
       },
       "defaultConfiguration": "development",
@@ -168,18 +114,18 @@
         "inlineStyleLanguage": "scss"
       },
       "configurations": {
-        "production": {
-          "outputHashing": "media"
-        },
         "development": {
           "buildOptimizer": false,
           "optimization": false,
           "sourceMap": true,
           "extractLicenses": false,
           "vendorChunk": true
+        },
+        "production": {
+          "outputHashing": "media"
         }
       },
-      "defaultConfiguration": "production"
+      "defaultConfiguration": "development"
     },
     "i18n": {
       "sourceLocale": "de",
@@ -213,10 +159,6 @@
         "routes": ["/"]
       },
       "configurations": {
-        "development": {
-          "browserTarget": "frontend:build:development",
-          "serverTarget": "frontend:server:development"
-        },
         "production": {
           "browserTarget": "frontend:build:production",
           "serverTarget": "frontend:server:production"

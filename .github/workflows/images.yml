@@ -31,23 +31,17 @@ jobs:
         run: |
           if [[ "$GITHUB_REF_NAME" == 'main' ]]; then
             echo "version=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
-            echo "frontend_config=dev" >> "$GITHUB_OUTPUT"
             echo "push_latest=false" >> "$GITHUB_OUTPUT"
           elif [[ "$GITHUB_REF_NAME" =~ -rc\. ]]; then
             echo "version=$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
-            echo "frontend_config=staging" >> "$GITHUB_OUTPUT"
             echo "push_latest=false" >> "$GITHUB_OUTPUT"
           else
             echo "version=$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
-            echo "frontend_config=production" >> "$GITHUB_OUTPUT"
             echo "push_latest=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Build Backend Artifacts
-        run: npx nx run-many -t build --projects=bff,general-svc,process-svc --parallel
-
-      - name: Build Frontend Artifacts
-        run: npx nx run frontend:build --configuration=${{ steps.release.outputs.frontend_config }} --verbose
+      - name: Build Artifacts
+        run: npx nx run-many -t build --projects=frontend,bff,general-svc,process-svc --parallel
 
       - name: Setup Buildx
         uses: docker/setup-buildx-action@v3

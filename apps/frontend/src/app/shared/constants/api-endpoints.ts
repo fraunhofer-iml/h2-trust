@@ -6,15 +6,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BASE_URL } from '../../../environments/environment';
+import { environment } from '../../../environments/environment';
 
-const USERS_ENDPOINT = BASE_URL + '/users/';
-const UNITS_ENDPOINT = BASE_URL + '/units/';
-const COMPANIES_ENDPOINT = BASE_URL + '/companies/';
-const POWER_PURCHASE_AGREEMENTS_ENDPOINT = BASE_URL + '/power-purchase-agreements/';
-const BOTTLING_ENDPOINT = BASE_URL + '/bottlings/';
-const PRODUCTION_ENDPOINT = BASE_URL + '/productions/';
-const FILE_DOWNLOAD_ENDPOINT = BASE_URL + '/file-download/';
+const USERS_ENDPOINT = environment.BFF_URL + '/users/';
+const UNITS_ENDPOINT = environment.BFF_URL + '/units/';
+const COMPANIES_ENDPOINT = environment.BFF_URL + '/companies/';
+const POWER_PURCHASE_AGREEMENTS_ENDPOINT = environment.BFF_URL + '/power-purchase-agreements/';
+const BOTTLING_ENDPOINT = environment.BFF_URL + '/bottlings/';
+const PRODUCTION_ENDPOINT = environment.BFF_URL + '/productions/';
+const FILE_DOWNLOAD_ENDPOINT = environment.BFF_URL + '/file-download/';
 
 export const API = {
   USERS: {
