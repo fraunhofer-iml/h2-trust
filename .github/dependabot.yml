@@ -56,8 +56,6 @@ updates:
         versions: ['>= 7.0.0']
       - dependency-name: 'prisma'
         versions: ['>= 7.0.0']
-      - dependency-name: 'prisma'
-        versions: ['>= 7.0.0']
       - dependency-name: 'typescript'
         versions: ['>= 6.0.0']
       - dependency-name: 'chai'
