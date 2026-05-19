@@ -8,6 +8,7 @@
 
 import { BaseUnitDeepDbType, BaseUnitNestedDbType } from '@h2-trust/database';
 import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
+import { assertDefined, assertValidEnum } from '@h2-trust/utils';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
 import { BaseUnitEntity } from './base-unit.entity';
@@ -67,30 +68,48 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
   }
 
   static fromDeepDatabase(baseUnit: BaseUnitDeepDbType): HydrogenProductionUnitEntity {
+    assertDefined(baseUnit.hydrogenProductionUnit, 'hydrogenProductionUnit');
+    assertValidEnum(baseUnit.hydrogenProductionUnit.method, HydrogenProductionMethod, 'HydrogenProductionMethod');
+    assertValidEnum(
+      baseUnit.hydrogenProductionUnit.technology,
+      HydrogenProductionTechnology,
+      'HydrogenProductionTechnology',
+    );
+    assertValidEnum(baseUnit.hydrogenProductionUnit.biddingZone, BiddingZone, 'BiddingZone');
+
     return <HydrogenProductionUnitEntity>{
       ...BaseUnitEntity.fromDeepBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_PRODUCTION,
 
-      ratedPower: baseUnit.hydrogenProductionUnit?.ratedPower.toNumber(),
-      pressure: baseUnit.hydrogenProductionUnit?.pressure.toNumber(),
-      method: baseUnit.hydrogenProductionUnit?.method,
-      technology: baseUnit.hydrogenProductionUnit?.technology,
-      biddingZone: baseUnit.hydrogenProductionUnit?.biddingZone,
-      waterConsumptionLitersPerHour: baseUnit.hydrogenProductionUnit?.waterConsumptionLitersPerHour.toNumber(),
+      ratedPower: baseUnit.hydrogenProductionUnit.ratedPower.toNumber(),
+      pressure: baseUnit.hydrogenProductionUnit.pressure.toNumber(),
+      method: baseUnit.hydrogenProductionUnit.method,
+      technology: baseUnit.hydrogenProductionUnit.technology,
+      biddingZone: baseUnit.hydrogenProductionUnit.biddingZone,
+      waterConsumptionLitersPerHour: baseUnit.hydrogenProductionUnit.waterConsumptionLitersPerHour.toNumber(),
     };
   }
 
   static fromNestedDatabase(baseUnit: BaseUnitNestedDbType): HydrogenProductionUnitEntity {
+    assertDefined(baseUnit.hydrogenProductionUnit, 'hydrogenProductionUnit');
+    assertValidEnum(baseUnit.hydrogenProductionUnit.method, HydrogenProductionMethod, 'HydrogenProductionMethod');
+    assertValidEnum(
+      baseUnit.hydrogenProductionUnit.technology,
+      HydrogenProductionTechnology,
+      'HydrogenProductionTechnology',
+    );
+    assertValidEnum(baseUnit.hydrogenProductionUnit.biddingZone, BiddingZone, 'BiddingZone');
+
     return <HydrogenProductionUnitEntity>{
       ...BaseUnitEntity.fromNestedBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_PRODUCTION,
 
-      ratedPower: baseUnit.hydrogenProductionUnit?.ratedPower.toNumber(),
-      pressure: baseUnit.hydrogenProductionUnit?.pressure.toNumber(),
-      method: baseUnit.hydrogenProductionUnit?.method,
-      technology: baseUnit.hydrogenProductionUnit?.technology,
-      biddingZone: baseUnit.hydrogenProductionUnit?.biddingZone,
-      waterConsumptionLitersPerHour: baseUnit.hydrogenProductionUnit?.waterConsumptionLitersPerHour.toNumber(),
+      ratedPower: baseUnit.hydrogenProductionUnit.ratedPower.toNumber(),
+      pressure: baseUnit.hydrogenProductionUnit.pressure.toNumber(),
+      method: baseUnit.hydrogenProductionUnit.method,
+      technology: baseUnit.hydrogenProductionUnit.technology,
+      biddingZone: baseUnit.hydrogenProductionUnit.biddingZone,
+      waterConsumptionLitersPerHour: baseUnit.hydrogenProductionUnit.waterConsumptionLitersPerHour.toNumber(),
     };
   }
 }

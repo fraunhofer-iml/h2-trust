@@ -12,15 +12,13 @@ import {
   CompanyEntity,
   ConcreteUnitEntity,
   CreateProductionEntity,
-  HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
-  PowerProductionUnitEntity,
   ProcessStepEntity,
   QualityDetailsEntity,
   UserEntity,
 } from '@h2-trust/contracts/entities';
 import { BatchType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
-import { formatDate } from '@h2-trust/utils';
+import { assertDefined, assertValidEnum, formatDate } from '@h2-trust/utils';
 import { AccountingPeriod, ProcessStepParams } from './production.types';
 import { calculateAccountingPeriods, calculateWaterAmount } from './utils/production.utils';
 
@@ -30,9 +28,9 @@ export function assemblePowerProductions(
   entity: CreateProductionEntity,
   productionUnitsForId: Map<string, ConcreteUnitEntity>,
 ): ProcessStepEntity[] {
-  const powerProductionUnit: PowerProductionUnitEntity = productionUnitsForId.get(
-    entity.powerProductionUnitId,
-  ) as PowerProductionUnitEntity;
+  const powerProductionUnit = productionUnitsForId.get(entity.powerProductionUnitId);
+  assertDefined(powerProductionUnit, 'powerProductionUnit');
+  assertValidEnum(entity.powerType, PowerType, 'PowerType');
 
   const params: ProcessStepParams = {
     type: ProcessType.POWER_PRODUCTION,
@@ -42,7 +40,7 @@ export function assemblePowerProductions(
       activity: false,
       type: BatchType.POWER,
       owner: entity.ownerIdOfPowerProductionUnit,
-      powerType: entity.powerType as PowerType,
+      powerType: entity.powerType,
     },
   };
 
@@ -53,9 +51,8 @@ export function assembleWaterConsumptions(
   entity: CreateProductionEntity,
   productionUnitsForId: Map<string, ConcreteUnitEntity>,
 ): ProcessStepEntity[] {
-  const hydrogenProductionUnit: HydrogenProductionUnitEntity = productionUnitsForId.get(
-    entity.hydrogenProductionUnitId,
-  ) as HydrogenProductionUnitEntity;
+  const hydrogenProductionUnit = productionUnitsForId.get(entity.hydrogenProductionUnitId);
+  assertDefined(hydrogenProductionUnit, 'hydrogenProductionUnit');
   const waterAmountLiters = calculateWaterAmount(
     entity.productionStartedAt,
     entity.productionEndedAt,
@@ -82,9 +79,10 @@ export function assembleHydrogenProductions(
   waterConsumptions: ProcessStepEntity[],
   productionUnitsForId: Map<string, ConcreteUnitEntity>,
 ): ProcessStepEntity[] {
-  const hydrogenProductionUnit: HydrogenProductionUnitEntity = productionUnitsForId.get(
-    entity.hydrogenProductionUnitId,
-  ) as HydrogenProductionUnitEntity;
+  const hydrogenProductionUnit = productionUnitsForId.get(entity.hydrogenProductionUnitId);
+  assertDefined(hydrogenProductionUnit, 'hydrogenProductionUnit');
+  const rawPowerType = powerProductions[0]?.batch?.qualityDetails?.powerType ?? PowerType.NOT_SPECIFIED;
+  assertValidEnum(rawPowerType, PowerType, 'PowerType');
   const params: ProcessStepParams = {
     type: ProcessType.HYDROGEN_PRODUCTION,
     executedBy: hydrogenProductionUnit,
@@ -94,7 +92,7 @@ export function assembleHydrogenProductions(
       type: BatchType.HYDROGEN,
       owner: entity.ownerIdOfHydrogenProductionUnit,
       hydrogenStorageUnitId: entity.hydrogenStorageUnitId,
-      powerType: (powerProductions[0]?.batch?.qualityDetails?.powerType as PowerType) ?? PowerType.NOT_SPECIFIED,
+      powerType: rawPowerType,
     },
   };
 

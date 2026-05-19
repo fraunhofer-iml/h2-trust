@@ -27,6 +27,7 @@ import {
   ReadByIdsPayload,
 } from '@h2-trust/contracts/payloads';
 import { BatchType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
+import { InternalException } from '@h2-trust/exceptions';
 import { QUEUE_GENERAL_SVC, UnitMessagePatterns } from '@h2-trust/messaging';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { ProductionCreationService } from './production-creation.service';
@@ -108,7 +109,7 @@ export class ProductionService {
     ];
 
     if (invalidProcessTypes.length > 0) {
-      throw new Error(
+      throw new InternalException(
         `Expected only ${ProcessType.HYDROGEN_PRODUCTION} process steps, but received: ${invalidProcessTypes.join(', ')}`,
       );
     }
@@ -141,7 +142,7 @@ export class ProductionService {
             statistics.nonCertifiable += processStep.batch.amount;
             break;
           default:
-            throw new Error(`Rfnbotype of ${processStep.id} not defined`);
+            throw new InternalException(`Rfnbotype of ${processStep.id} not defined`);
         }
         return statistics;
       },

@@ -153,7 +153,7 @@ export class CreateUnitComponent {
       const dto = {
         ...baseDto,
         ...this.hydrogenStorageForm.value,
-        storageType: this.hydrogenStorageForm.value.hydrogenStorageType,
+        storageType: this.hydrogenStorageForm.value.storageType,
       } as HydrogenStorageUnitInputDto;
       return this.createHydrogenStorageUnitMutation.mutate(dto);
     }

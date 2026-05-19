@@ -18,7 +18,7 @@ export class FileDownloadController {
 
   @Post()
   @ApiBearerAuth()
-  findAll(@Body() dto: DownloadFilesDto, @Res() res: Response) {
+  findAll(@Body() dto: DownloadFilesDto, @Res() res: Response): Promise<void> {
     return this.service.downloadFilesAsZip(res, dto.ids);
   }
 }

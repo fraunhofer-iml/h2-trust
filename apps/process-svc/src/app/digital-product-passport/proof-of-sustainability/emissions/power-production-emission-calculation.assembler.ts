@@ -78,10 +78,6 @@ export function computePowerSupplyEmissionCalculations(
 export function assemblePowerProductionEmissionCalculations(
   provenance: ProvenanceEntity,
 ): ProofOfSustainabilityEmissionCalculationEntity[] {
-  if (!provenance.getAllPowerProductions()) {
-    return [];
-  }
-
   const hydrogenAmount = provenance.hydrogenBottling
     ? provenance.hydrogenBottling.batch.amount
     : provenance.root.batch.amount;
