@@ -34,6 +34,14 @@
         "de": {
           "localize": ["de-DE"]
         },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        },
         "production": {
           "budgets": [
             {
@@ -50,16 +58,19 @@
           "outputHashing": "all"
         }
       },
-      "defaultConfiguration": "production"
+      "defaultConfiguration": "development"
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
+        "development": {
+          "buildTarget": "frontend:build:development"
+        },
         "production": {
           "buildTarget": "frontend:build:production"
         }
       },
-      "defaultConfiguration": "production",
+      "defaultConfiguration": "development",
       "continuous": true
     },
     "extract-i18n": {
@@ -103,11 +114,18 @@
         "inlineStyleLanguage": "scss"
       },
       "configurations": {
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "sourceMap": true,
+          "extractLicenses": false,
+          "vendorChunk": true
+        },
         "production": {
           "outputHashing": "media"
         }
       },
-      "defaultConfiguration": "production"
+      "defaultConfiguration": "development"
     },
     "i18n": {
       "sourceLocale": "de",
@@ -123,12 +141,16 @@
     "serve-ssr": {
       "executor": "@angular-devkit/build-angular:ssr-dev-server",
       "configurations": {
+        "development": {
+          "browserTarget": "frontend:build:development",
+          "serverTarget": "frontend:server:development"
+        },
         "production": {
           "browserTarget": "frontend:build:production",
           "serverTarget": "frontend:server:production"
         }
       },
-      "defaultConfiguration": "production",
+      "defaultConfiguration": "development",
       "continuous": true
     },
     "prerender": {
