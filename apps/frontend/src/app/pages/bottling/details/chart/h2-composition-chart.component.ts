@@ -9,10 +9,10 @@
 import { DecimalPipe, PercentPipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import * as echarts from 'echarts';
-import { EChartsOption } from 'echarts';
+import { DefaultLabelFormatterCallbackParams, EChartsOption } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { HydrogenComponentDto } from '@h2-trust/contracts/dtos';
-import { MeasurementUnit } from '@h2-trust/domain';
+import { MeasurementUnit, RfnboType } from '@h2-trust/domain';
 import { CHART_COLORS } from '../../../../shared/constants/chart-colors';
 import { formatNumberForChart } from '../../../../shared/formatting/chart-number-format';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
@@ -74,8 +74,8 @@ export class H2CompositionChartComponent {
     };
   }
 
-  private readonly labelFormatter = (params: any) => {
+  private readonly labelFormatter = (params: DefaultLabelFormatterCallbackParams) => {
     const percentage = this.percentPipe.transform((params.percent ?? 0) / 100, '1.0-1');
-    return `${this.enumPipe.transform(params.name, 'rfnboType').toLowerCase()}\n ${this.unitPipe.transform(params.value, MeasurementUnit.KG)} (${percentage})`;
+    return `${this.enumPipe.transform(params.name as RfnboType, 'rfnboType').toLowerCase()}\n ${this.unitPipe.transform(params.value as number | null | undefined, MeasurementUnit.KG)} (${percentage})`;
   };
 }
