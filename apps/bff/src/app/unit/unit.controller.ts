@@ -19,6 +19,7 @@ import {
   PowerProductionOverviewDto,
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
+  UnitDto,
   UnitUpdateActiveDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/contracts/dtos';
@@ -134,6 +135,18 @@ export class UnitController {
   })
   getHydrogenProductionUnitById(@Param('id') id: string): Promise<HydrogenProductionUnitDto> {
     return this.unitService.readHydrogenProductionUnit(id);
+  }
+
+  @Get(':id')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Retrieve a unit by id',
+  })
+  @ApiOkResponse({
+    description: 'Returns the unit with the matching id.',
+  })
+  getUnitById(@Param('id') id: string): Promise<UnitDto> {
+    return this.unitService.readUnitById(id);
   }
 
   @Post('hydrogen-production')

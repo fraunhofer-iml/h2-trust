@@ -23,6 +23,7 @@ export const API = {
   },
   UNITS: {
     BASE: UNITS_ENDPOINT,
+    BY_ID: (id: string) => `${UNITS_ENDPOINT}${id}`,
     ACTIVE: (id: string) => `${UNITS_ENDPOINT}${id}/active`,
     POWER_PRODUCTION: {
       BASE: UNITS_ENDPOINT + 'power-production/',

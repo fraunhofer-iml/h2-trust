@@ -20,9 +20,9 @@ import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { unitsQueryOptions } from '../../../shared/queries/units.query';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import {
-  isHydrogenProductionUnit,
-  isHydrogenStorageUnit,
-  isPowerProductionUnit,
+  isHydrogenProductionUnitOverview,
+  isHydrogenStorageUnitOverview,
+  isPowerProductionUnitOverview,
 } from '../../../shared/util/unit-type-guards';
 
 @Component({
@@ -44,9 +44,9 @@ export class HydrogenAssetsComponent {
   protected readonly MeasurementUnit = MeasurementUnit;
   protected readonly UnitType = UnitType;
   protected readonly unitTypes = Object.values(UnitType);
-  protected readonly isHydrogenProductionUnit = isHydrogenProductionUnit;
-  protected readonly isHydrogenStorageUnit = isHydrogenStorageUnit;
-  protected readonly isPowerProductionUnit = isPowerProductionUnit;
+  protected readonly isHydrogenProductionUnit = isHydrogenProductionUnitOverview;
+  protected readonly isHydrogenStorageUnit = isHydrogenStorageUnitOverview;
+  protected readonly isPowerProductionUnit = isPowerProductionUnitOverview;
   protected readonly unitsService = inject(UnitsService);
 
   typeToShow = signal<UnitType | undefined>(undefined);

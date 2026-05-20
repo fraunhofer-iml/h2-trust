@@ -19,10 +19,12 @@ import {
   PowerProductionOverviewDto,
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
+  UnitDto,
   UnitUpdateActiveDto,
 } from '@h2-trust/contracts/dtos';
 import { HydrogenStorageUnitEntity } from '@h2-trust/contracts/entities';
 import { ReadByIdPayload } from '@h2-trust/contracts/payloads';
+import { UnitType } from '@h2-trust/domain';
 import { QUEUE_GENERAL_SVC, UnitMessagePatterns } from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';
 
@@ -32,6 +34,23 @@ export class UnitService {
     @Inject(QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     private readonly userService: UserService,
   ) {}
+
+  async readUnitById(id: string): Promise<UnitDto> {
+    const unit = await firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(id)),
+    );
+
+    switch (unit.unitType) {
+      case UnitType.POWER_PRODUCTION:
+        return PowerProductionUnitDto.fromEntity(unit);
+      case UnitType.HYDROGEN_PRODUCTION:
+        return HydrogenProductionUnitDto.fromEntity(unit);
+      case UnitType.HYDROGEN_STORAGE:
+        return HydrogenStorageUnitDto.fromEntity(unit);
+    }
+
+    throw new Error('Unknown unit type');
+  }
 
   async readPowerProductionUnit(id: string): Promise<PowerProductionUnitDto> {
     const unit = await firstValueFrom(

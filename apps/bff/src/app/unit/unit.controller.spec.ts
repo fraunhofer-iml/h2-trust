@@ -20,6 +20,7 @@ import {
   PowerProductionUnitCreateDtoMock,
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
+  UnitDto,
   UserDetailsDto,
 } from '@h2-trust/contracts/dtos';
 import {
@@ -69,17 +70,17 @@ describe('UnitController', () => {
     jest.clearAllMocks();
   });
 
-  it('should find a unit', async () => {
+  it('should find a unit by generic id route', async () => {
     const givenUserId = 'unit-id-1';
     const fixtureUnit: HydrogenProductionUnitEntity = HydrogenProductionUnitEntityFixture.create();
-    const expectedResponse: HydrogenProductionUnitDto = HydrogenProductionUnitDto.fromEntity(fixtureUnit);
+    const expectedResponse: UnitDto = HydrogenProductionUnitDto.fromEntity(fixtureUnit);
 
     const sendRequestSpy = jest.spyOn(queue, 'send');
     sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: any) => {
       return of(fixtureUnit);
     });
 
-    const actualResponse: HydrogenProductionUnitDto = await controller.getHydrogenProductionUnitById(givenUserId);
+    const actualResponse: UnitDto = await controller.getUnitById(givenUserId);
 
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
     expect(sendRequestSpy).toHaveBeenCalledWith(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(givenUserId));

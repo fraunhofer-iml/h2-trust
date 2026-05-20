@@ -8,20 +8,35 @@
 
 import {
   HydrogenProductionOverviewDto,
+  HydrogenProductionUnitDto,
   HydrogenStorageOverviewDto,
+  HydrogenStorageUnitDto,
   PowerProductionOverviewDto,
+  PowerProductionUnitDto,
+  UnitDto,
   UnitOverviewDto,
 } from '@h2-trust/contracts/dtos';
 import { UnitType } from '@h2-trust/domain';
 
-export function isHydrogenProductionUnit(unit: UnitOverviewDto): unit is HydrogenProductionOverviewDto {
+export function isHydrogenProductionUnitOverview(unit: UnitOverviewDto): unit is HydrogenProductionOverviewDto {
   return unit.unitType === UnitType.HYDROGEN_PRODUCTION;
 }
 
-export function isHydrogenStorageUnit(unit: UnitOverviewDto): unit is HydrogenStorageOverviewDto {
+export function isHydrogenStorageUnitOverview(unit: UnitOverviewDto): unit is HydrogenStorageOverviewDto {
   return unit.unitType === UnitType.HYDROGEN_STORAGE;
 }
 
-export function isPowerProductionUnit(unit: UnitOverviewDto): unit is PowerProductionOverviewDto {
+export function isPowerProductionUnitOverview(unit: UnitOverviewDto): unit is PowerProductionOverviewDto {
+  return unit.unitType === UnitType.POWER_PRODUCTION;
+}
+
+export function isHydrogenProductionUnitDetails(unit: UnitDto): unit is HydrogenProductionUnitDto {
+  return unit.unitType === UnitType.HYDROGEN_PRODUCTION;
+}
+export function isHydrogenStorageUnitDetails(unit: UnitDto): unit is HydrogenStorageUnitDto {
+  return unit.unitType === UnitType.HYDROGEN_STORAGE;
+}
+
+export function isPowerProductionUnitDetails(unit: UnitDto): unit is PowerProductionUnitDto {
   return unit.unitType === UnitType.POWER_PRODUCTION;
 }

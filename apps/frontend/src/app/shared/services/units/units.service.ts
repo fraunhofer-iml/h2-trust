@@ -19,6 +19,7 @@ import {
   PowerProductionOverviewDto,
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
+  UnitDto,
   UnitInputDto,
   UnitOverviewDto,
   UnitUpdateActiveDto,
@@ -29,6 +30,7 @@ import { API } from '../../constants/api-endpoints';
 @Injectable()
 export class UnitsService {
   private readonly httpClient = inject(HttpClient);
+
   getUnits(type?: UnitType) {
     console.log('Getting units with type', type);
     // TEST REMOVE LATER
@@ -67,6 +69,10 @@ export class UnitsService {
 
   createHydrogenProductionUnit(dto: HydrogenProductionUnitInputDto) {
     return lastValueFrom(this.httpClient.post<PowerProductionOverviewDto[]>(API.UNITS.HYDROGEN_PRODUCTION.BASE, dto));
+  }
+
+  getUnitById(id: string) {
+    return lastValueFrom(this.httpClient.get<UnitDto>(API.UNITS.BY_ID(id)));
   }
 
   getHydrogenStorageUnit(id: string) {
