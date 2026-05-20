@@ -9,7 +9,8 @@
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import { of } from 'rxjs';
-import { CompanyDto, CompanyDtoMock } from '@h2-trust/contracts/dtos';
+import { CompanyDto } from '@h2-trust/contracts/dtos';
+import { CompanyDtoFixture } from '@h2-trust/contracts/dtos/fixtures';
 import { CompanyMessagePatterns, QUEUE_GENERAL_SVC } from '@h2-trust/messaging';
 import { CompanyController } from './company.controller';
 import { CompanyService } from './company.service';
@@ -42,7 +43,11 @@ describe('CompanyController', () => {
   });
 
   it('should find all Companies', async () => {
-    const expectedResponse: CompanyDto[] = CompanyDtoMock;
+    const expectedResponse: CompanyDto[] = [
+      CompanyDtoFixture.create({ id: 'company-1' }),
+      CompanyDtoFixture.createHydrogenProducer({ id: 'company-2' }),
+      CompanyDtoFixture.createRecipient({ id: 'company-3' }),
+    ];
     const sendRequestSpy = jest.spyOn(clientProxy, 'send');
 
     sendRequestSpy.mockImplementation((_messagePattern: CompanyMessagePatterns, _data: unknown) => {
