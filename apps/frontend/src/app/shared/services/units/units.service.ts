@@ -20,13 +20,30 @@ import {
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
   UnitInputDto,
+  UnitOverviewDto,
   UnitUpdateActiveDto,
 } from '@h2-trust/contracts/dtos';
+import { UnitType } from '@h2-trust/domain';
 import { API } from '../../constants/api-endpoints';
 
 @Injectable()
 export class UnitsService {
   private readonly httpClient = inject(HttpClient);
+  getUnits(type?: UnitType) {
+    console.log('Getting units with type', type);
+    // TEST REMOVE LATER
+    return lastValueFrom(this.httpClient.get<UnitOverviewDto[]>(API.UNITS.HYDROGEN_PRODUCTION.BASE));
+
+    /*
+    let params = new HttpParams();
+
+    if (type) {
+      params = params.set('type', type);
+    }
+
+    return lastValueFrom(this.httpClient.get<UnitOverviewDto[]>(API.UNITS.BASE, { params }));
+**/
+  }
 
   getHydrogenProductionUnits() {
     return lastValueFrom(this.httpClient.get<HydrogenProductionOverviewDto[]>(API.UNITS.HYDROGEN_PRODUCTION.BASE));

@@ -7,11 +7,12 @@
  */
 
 import { PowerProductionUnitEntity } from '@h2-trust/contracts/entities';
-import { PowerProductionType } from '@h2-trust/domain';
+import { PowerProductionType, UnitType } from '@h2-trust/domain';
 
 export class PowerProductionOverviewDto {
   id: string;
   name: string;
+  unitType: UnitType;
   ratedPower: number;
   typeName: PowerProductionType;
   producing: boolean;
@@ -20,6 +21,7 @@ export class PowerProductionOverviewDto {
   constructor(
     id: string,
     name: string,
+    unitType: UnitType,
     ratedPower: number,
     typeName: PowerProductionType,
     producing: boolean,
@@ -27,6 +29,7 @@ export class PowerProductionOverviewDto {
   ) {
     this.id = id;
     this.name = name;
+    this.unitType = unitType;
     this.ratedPower = ratedPower;
     this.typeName = typeName;
     this.producing = producing;
@@ -37,6 +40,7 @@ export class PowerProductionOverviewDto {
     return {
       id: unit.id,
       name: unit.name,
+      unitType: UnitType.POWER_PRODUCTION,
       ratedPower: unit.ratedPower,
       typeName: unit.type?.name ?? undefined,
       producing: true,

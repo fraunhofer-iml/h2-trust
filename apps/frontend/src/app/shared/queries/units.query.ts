@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { UnitType } from '@h2-trust/domain';
 import { UnitsService } from '../services/units/units.service';
 import { QueryKeyPrefix } from './shared-query-keys';
 
@@ -22,4 +23,9 @@ export const powerProductionUnitsQueryOptions = (unitsService: UnitsService) => 
 export const hydrogenStorageUnitsQueryOptions = (unitsService: UnitsService) => ({
   queryKey: [QueryKeyPrefix.HYDROGEN_STORAGE_UNITS],
   queryFn: () => unitsService.getHydrogenStorageUnits(),
+});
+
+export const unitsQueryOptions = (unitsService: UnitsService, type?: UnitType) => ({
+  queryKey: [QueryKeyPrefix.UNITS, type],
+  queryFn: () => unitsService.getUnits(type),
 });

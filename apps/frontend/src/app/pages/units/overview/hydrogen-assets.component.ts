@@ -7,34 +7,28 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatChipSelectionChange, MatChipsModule } from '@angular/material/chips';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MeasurementUnit, UnitType } from '@h2-trust/domain';
 import { UnitCardComponent } from '../../../layout/unit-card/unit-card.component';
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
-import {
-  hydrogenProductionUnitsQueryOptions,
-  hydrogenStorageUnitsQueryOptions,
-  powerProductionUnitsQueryOptions,
-} from '../../../shared/queries/units.query';
+import { unitsQueryOptions } from '../../../shared/queries/units.query';
 import { UnitsService } from '../../../shared/services/units/units.service';
+import {
+  isHydrogenProductionUnit,
+  isHydrogenStorageUnit,
+  isPowerProductionUnit,
+} from '../../../shared/util/unit-type-guards';
 
 @Component({
   selector: 'app-hydrogen-assets',
   imports: [
-    ReactiveFormsModule,
     CommonModule,
-    MatCardModule,
-    MatTabsModule,
     RouterModule,
     MatButtonModule,
     UnitPipe,
@@ -42,7 +36,6 @@ import { UnitsService } from '../../../shared/services/units/units.service';
     EnumPipe,
     MatDividerModule,
     UnitCardComponent,
-    MatSlideToggleModule,
   ],
   providers: [],
   templateUrl: './hydrogen-assets.component.html',
@@ -50,26 +43,26 @@ import { UnitsService } from '../../../shared/services/units/units.service';
 export class HydrogenAssetsComponent {
   protected readonly MeasurementUnit = MeasurementUnit;
   protected readonly UnitType = UnitType;
-
+  protected readonly unitTypes = Object.values(UnitType);
+  protected readonly isHydrogenProductionUnit = isHydrogenProductionUnit;
+  protected readonly isHydrogenStorageUnit = isHydrogenStorageUnit;
+  protected readonly isPowerProductionUnit = isPowerProductionUnit;
   protected readonly unitsService = inject(UnitsService);
 
-  typeToShow: UnitType | null = null;
+  typeToShow = signal<UnitType | undefined>(undefined);
 
-  hydrogenStorageQuery = injectQuery(() => hydrogenStorageUnitsQueryOptions(this.unitsService));
+  unitsQuery = injectQuery(() => unitsQueryOptions(this.unitsService, this.typeToShow()));
 
-  hydrogenProductionUnitsQuery = injectQuery(() => hydrogenProductionUnitsQueryOptions(this.unitsService));
+  selectType(unitType: UnitType) {
+    if (this.typeToShow() === unitType) {
+      this.typeToShow.set(undefined);
+      return;
+    }
 
-  powerProductionQuery = injectQuery(() => powerProductionUnitsQueryOptions(this.unitsService));
-
-  toggle(unitType: UnitType | null) {
-    if (this.typeToShow === unitType) {
-      this.typeToShow = null;
-    } else this.typeToShow = unitType;
+    this.typeToShow.set(unitType);
   }
 
-  onAllChipSelection(event: MatChipSelectionChange) {
-    if (!event.selected && !this.typeToShow) {
-      event.source.select();
-    }
+  showAll() {
+    this.typeToShow.set(undefined);
   }
 }

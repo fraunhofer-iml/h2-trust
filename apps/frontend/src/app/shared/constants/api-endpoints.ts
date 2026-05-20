@@ -22,6 +22,7 @@ export const API = {
     DETAILS: (id: string) => `${USERS_ENDPOINT}${id}`,
   },
   UNITS: {
+    BASE: UNITS_ENDPOINT,
     ACTIVE: (id: string) => `${UNITS_ENDPOINT}${id}/active`,
     POWER_PRODUCTION: {
       BASE: UNITS_ENDPOINT + 'power-production/',

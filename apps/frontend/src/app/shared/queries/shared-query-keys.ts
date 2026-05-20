@@ -9,6 +9,7 @@
 export enum QueryKeyPrefix {
   USERS = 'users',
   COMPANIES = 'companies',
+  UNITS = 'units',
   HYDROGEN_PRODUCTION_UNITS = 'hydrogen-production-units',
   HYDROGEN_STORAGE_UNITS = 'hydrogen-storage-units',
   POWER_PRODUCTION_UNITS = 'power-production-units',
