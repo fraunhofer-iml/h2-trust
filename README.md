@@ -3,6 +3,7 @@
 [![Build](https://github.com/fraunhofer-iml/h2-trust/actions/workflows/build.yml/badge.svg)](https://github.com/fraunhofer-iml/h2-trust/actions/workflows/build.yml)
 [![Test](https://github.com/fraunhofer-iml/h2-trust/actions/workflows/test.yml/badge.svg)](https://github.com/fraunhofer-iml/h2-trust/actions/workflows/test.yml)
 [![Lint and Format](https://github.com/fraunhofer-iml/h2-trust/actions/workflows/lint-and-format.yml/badge.svg)](https://github.com/fraunhofer-iml/h2-trust/actions/workflows/lint-and-format.yml)
+[![CodeQL](https://github.com/fraunhofer-iml/h2-trust/actions/workflows/codeql.yml/badge.svg)](https://github.com/fraunhofer-iml/h2-trust/actions/workflows/codeql.yml)
 [![License](https://img.shields.io/github/license/fraunhofer-iml/h2-trust)](LICENSE)
 
 H2-Trust is a hydrogen product passport platform for tracking hydrogen batches, documenting process steps, and verifying
@@ -11,8 +12,18 @@ provenance and supporting evidence across the supply chain.
 It is maintained by Fraunhofer IML as part of the DUH-IT research project and is implemented as an Nx monorepo with an
 Angular frontend, NestJS services, shared TypeScript libraries, and a smart-contract package.
 
-> The long-form project documentation in [`/documentation`](./documentation) is being expanded in a separate PR. This
-> README focuses on what the project is, how it is structured, and how to run it locally.
+## Table of Contents
+
+- [Why H2-Trust](#why-h2-trust)
+- [Architecture at a glance](#architecture-at-a-glance)
+- [Technology stack](#technology-stack)
+- [Quick start](#quick-start)
+- [Common commands](#common-commands)
+- [Troubleshooting](#troubleshooting)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
 ## Why H2-Trust
 
@@ -129,9 +140,21 @@ npx eslint --quiet .
 npx prettier --check .
 ```
 
-## Repository documentation
+## Troubleshooting
 
-- [`README.md`](./README.md) – project overview and local onboarding
+**`docker compose` warnings or Prisma auth errors after fresh clone** The most common cause is a stale or missing
+`.env`. Copy `.env.example` and verify it is up to date before running `docker compose up` or any `npm run` commands. A
+mismatched `.env` caused `MINIO_BUCKET_NAME` warnings and Prisma pointing to the wrong database in past setups.
+
+**Smart-contract dependencies missing** `npm ci` at the repository root does _not_ install the smart-contract package.
+Always run the separate install step when touching blockchain code:
+
+```bash
+npm --prefix libs/blockchain/smart-contract ci --no-audit --no-fund
+```
+
+## Documentation
+
 - [`documentation/04-deployment-view.adoc`](./documentation/04-deployment-view.adoc) – deployment and setup walkthrough
 - [`documentation/index.adoc`](./documentation/index.adoc) – entry point for the architecture documentation set
 
@@ -142,6 +165,17 @@ Contributions, bug reports, and improvement suggestions are welcome.
 - Open an issue for bugs, questions, or enhancement ideas.
 - Open a pull request for focused, reviewable changes.
 - Keep changes within the existing Nx app/library boundaries when possible.
+
+**Code style**
+
+- 2-space indentation, single quotes, `printWidth: 120` (enforced by Prettier).
+- All `.ts`, `.js`, and `.mjs` files must carry the Apache 2.0 license header (enforced by ESLint).
+
+**Pull request requirements**
+
+- Assign yourself before marking the PR ready for review.
+- Fill in the PR description — empty descriptions are flagged by CI.
+- If you change `package.json`, also update `package-lock.json`; CI will flag a missing lockfile update.
 
 ## License
 
