@@ -8,7 +8,7 @@
 
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
-export const positiveValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+export const positiveNumberValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const value = control.value;
   if (value === null || value === undefined || value === '') {
     return null;
