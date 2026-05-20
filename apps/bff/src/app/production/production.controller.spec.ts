@@ -167,7 +167,7 @@ describe('ProductionController', () => {
       destination: '',
       filename: 'powerFile',
       path: '',
-      stream: null as unknown as Readable,
+      stream: null as Readable,
     };
 
     const h2Content = 'time,amount,power\n2025-11-27T09:00:00Z,2\n2025-11-27T09:00:00Z,2,2';
@@ -182,7 +182,7 @@ describe('ProductionController', () => {
       destination: '',
       filename: 'h2File',
       path: '',
-      stream: null as unknown as Readable,
+      stream: null as Readable,
     };
     jest.spyOn(userService, 'readUserWithCompany').mockResolvedValue(UserDetailsDtoMock[0]);
 
@@ -228,7 +228,7 @@ describe('ProductionController', () => {
       destination: '',
       filename: 'powerFile',
       path: '',
-      stream: null as unknown as Readable,
+      stream: null as Readable,
     };
 
     await expect(controller.importCsvFile(dto, [powerFile], givenAuthenticatedUser)).rejects.toThrow(
