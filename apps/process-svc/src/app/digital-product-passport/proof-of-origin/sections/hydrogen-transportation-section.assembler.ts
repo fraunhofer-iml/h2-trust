@@ -7,6 +7,7 @@
  */
 
 import {
+  HydrogenComponentEntity,
   ProcessStepEntity,
   ProofOfOriginEmissionEntity,
   ProofOfOriginHydrogenBatchEntity,
@@ -15,11 +16,13 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType, ProofOfOrigin } from '@h2-trust/domain';
+import { assembleComposition } from '../../../bottling/utils/hydrogen-composition';
 import { assembleHydrogenTransportationEmissionCalculation } from '../../proof-of-sustainability/emissions/hydrogen-transportation-emission-calculation.assembler';
 import { ProofOfOriginSectionAssembler } from '../proof-of-origin-assembler.interface';
 
 function assembleHydrogenTransportationBatch(
   hydrogenTransportation: ProcessStepEntity,
+  hydrogenComposition: HydrogenComponentEntity[],
   emission?: ProofOfOriginEmissionEntity,
 ): ProofOfOriginHydrogenBatchEntity {
   return {
@@ -28,7 +31,7 @@ function assembleHydrogenTransportationBatch(
     createdAt: hydrogenTransportation.startedAt,
     amount: hydrogenTransportation.batch.amount,
     batchType: BatchType.HYDROGEN,
-    hydrogenComposition: [],
+    hydrogenComposition: hydrogenComposition,
     unitId: hydrogenTransportation.executedBy.id,
     rfnboType: hydrogenTransportation.batch?.qualityDetails?.rfnboType,
     processStep: hydrogenTransportation.type,
@@ -51,7 +54,13 @@ export function assembleHydrogenTransportationSection(provenance: ProvenanceEnti
     emissionCalculation.basisOfCalculation,
   );
 
-  const batch: ProofOfOriginHydrogenBatchEntity = assembleHydrogenTransportationBatch(hydrogenTransportation, emission);
+  const hydrogenComponents: HydrogenComponentEntity[] = assembleComposition(provenance);
+
+  const batch: ProofOfOriginHydrogenBatchEntity = assembleHydrogenTransportationBatch(
+    hydrogenTransportation,
+    hydrogenComponents,
+    emission,
+  );
 
   return [new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION, [batch], [])];
 }
