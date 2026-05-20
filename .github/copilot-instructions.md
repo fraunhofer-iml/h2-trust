@@ -31,15 +31,15 @@
   - [libs/messaging](./libs/messaging): broker queues, message patterns, RMQ helpers; path alias `@h2-trust/messaging`
   - [libs/exceptions](./libs/exceptions): typed exception hierarchy (app, blockchain, database, domain, internal,
     storage, validation); path alias `@h2-trust/exceptions`
-  - [libs/configuration](./libs/configuration): env/config access used by apps
-  - [libs/database](./libs/database): Prisma schema, query args, seed data
-  - [libs/domain](./libs/domain): enums and domain-only types
-  - [libs/storage](./libs/storage): file/object storage abstraction
+  - [libs/configuration](./libs/configuration): env/config access used by apps; path alias `@h2-trust/configuration`
+  - [libs/database](./libs/database): Prisma schema, query args, seed data; path alias `@h2-trust/database`
+  - [libs/domain](./libs/domain): enums and domain-only types; path alias `@h2-trust/domain`
+  - [libs/storage](./libs/storage): file/object storage abstraction; path alias `@h2-trust/storage`
   - [libs/strings](./libs/strings): enum label mappers; path alias `@h2-trust/strings`
   - [libs/validation](./libs/validation): custom class-validator validators; path alias `@h2-trust/validation`
   - [libs/blockchain](./libs/blockchain): blockchain utilities plus separate Hardhat package in
-    `libs/blockchain/smart-contract`
-  - [libs/utils](./libs/utils): generic helpers
+    `libs/blockchain/smart-contract`; path alias `@h2-trust/blockchain`
+  - [libs/utils](./libs/utils): generic helpers; path alias `@h2-trust/utils`
 - Key repo-level config: [package.json](./package.json), [nx.json](./nx.json),
   [tsconfig.base.json](./tsconfig.base.json), [eslint.config.mjs](./eslint.config.mjs),
   [jest.config.ts](./jest.config.ts), [.prettierrc](./.prettierrc), [.editorconfig](./.editorconfig),
