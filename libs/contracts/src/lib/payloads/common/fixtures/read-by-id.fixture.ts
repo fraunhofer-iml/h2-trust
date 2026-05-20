@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './common/fixtures';
-export * from './power-purchase-agreement/fixtures';
-export * from './process-step/fixtures';
-export * from './production/fixtures';
-export * from './unit/fixtures';
+import { ReadByIdPayload } from '@h2-trust/contracts/payloads';
+
+export const ReadByIdPayloadFixture = {
+  create: (overrides: Partial<ReadByIdPayload> = {}): ReadByIdPayload => new ReadByIdPayload(overrides.id ?? 'id-1'),
+} as const;
