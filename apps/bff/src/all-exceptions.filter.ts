@@ -81,8 +81,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const detail = 'Validation failed';
 
     // ValidationPipe sets body.message to a string[] of per-field errors
-    const fieldErrors = Array.isArray((body as { message?: unknown }).message)
-      ? ((body as { message?: unknown[] }).message as string[])
+    const fieldErrors = Array.isArray((body as { message?: string[] }).message)
+      ? (body as { message: string[] }).message
       : undefined;
     const validationErrors = fieldErrors ? { validationErrors: fieldErrors } : {};
 
