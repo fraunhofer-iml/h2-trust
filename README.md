@@ -5,8 +5,8 @@
 [![Lint and Format](https://github.com/fraunhofer-iml/h2-trust/actions/workflows/lint-and-format.yml/badge.svg)](https://github.com/fraunhofer-iml/h2-trust/actions/workflows/lint-and-format.yml)
 [![License](https://img.shields.io/github/license/fraunhofer-iml/h2-trust)](LICENSE)
 
-H2-Trust is a hydrogen product passport platform for tracking hydrogen batches, documenting process steps, and
-verifying provenance and supporting evidence across the supply chain.
+H2-Trust is a hydrogen product passport platform for tracking hydrogen batches, documenting process steps, and verifying
+provenance and supporting evidence across the supply chain.
 
 It is maintained by Fraunhofer IML as part of the DUH-IT research project and is implemented as an Nx monorepo with an
 Angular frontend, NestJS services, shared TypeScript libraries, and a smart-contract package.
@@ -28,8 +28,10 @@ Angular frontend, NestJS services, shared TypeScript libraries, and a smart-cont
 - [`apps/frontend`](./apps/frontend) – Angular web application for end users
 - [`apps/bff`](./apps/bff) – NestJS backend-for-frontend and REST API entry point
 - [`apps/general-svc`](./apps/general-svc) – NestJS microservice for master data
-- [`apps/process-svc`](./apps/process-svc) – NestJS microservice for production, bottling, provenance, and product-passport workflows
-- [`libs/blockchain/smart-contract`](./libs/blockchain/smart-contract) – smart-contract package used for verification scenarios
+- [`apps/process-svc`](./apps/process-svc) – NestJS microservice for production, bottling, provenance, and
+  product-passport workflows
+- [`libs/blockchain/smart-contract`](./libs/blockchain/smart-contract) – smart-contract package used for verification
+  scenarios
 
 ### Shared libraries
 
@@ -38,7 +40,9 @@ Angular frontend, NestJS services, shared TypeScript libraries, and a smart-cont
 - [`libs/database`](./libs/database) – Prisma schema, database access, and seed data
 - [`libs/storage`](./libs/storage) – storage abstraction and implementations
 - [`libs/configuration`](./libs/configuration) – environment and runtime configuration
-- [`libs/domain`](./libs/domain), [`libs/strings`](./libs/strings), [`libs/utils`](./libs/utils), [`libs/validation`](./libs/validation), [`libs/exceptions`](./libs/exceptions) – shared domain, utility, validation, and exception helpers
+- [`libs/domain`](./libs/domain), [`libs/strings`](./libs/strings), [`libs/utils`](./libs/utils),
+  [`libs/validation`](./libs/validation), [`libs/exceptions`](./libs/exceptions) – shared domain, utility, validation,
+  and exception helpers
 
 ### Backing services used locally
 
@@ -97,9 +101,9 @@ set -a && source .env && set +a && npm run dev
 
 ### Default demo users
 
-| Role | Username | Password |
-| --- | --- | --- |
-| Power Producer | `petra` | `petra` |
+| Role              | Username | Password |
+| ----------------- | -------- | -------- |
+| Power Producer    | `petra`  | `petra`  |
 | Hydrogen Producer | `hannes` | `hannes` |
 
 ## Common commands
