@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Readable } from 'stream';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
@@ -117,7 +118,7 @@ describe('ProductionController', () => {
 
     jest
       .spyOn(processSvc, 'send')
-      .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) =>
+      .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: unknown) =>
         of(paginatedProcessStepEntityMock),
       );
 
@@ -166,7 +167,7 @@ describe('ProductionController', () => {
       destination: '',
       filename: 'powerFile',
       path: '',
-      stream: null as any,
+      stream: null as Readable,
     };
 
     const h2Content = 'time,amount,power\n2025-11-27T09:00:00Z,2\n2025-11-27T09:00:00Z,2,2';
@@ -181,21 +182,23 @@ describe('ProductionController', () => {
       destination: '',
       filename: 'h2File',
       path: '',
-      stream: null as any,
+      stream: null as Readable,
     };
     jest.spyOn(userService, 'readUserWithCompany').mockResolvedValue(UserDetailsDtoMock[0]);
 
-    jest.spyOn(generalSvc, 'send').mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: any) =>
-      of({
-        company: {
-          id: 'company-power-production-1',
-        },
-      }),
-    );
+    jest
+      .spyOn(generalSvc, 'send')
+      .mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: unknown) =>
+        of({
+          company: {
+            id: 'company-power-production-1',
+          },
+        }),
+      );
 
     jest
       .spyOn(processSvc, 'send')
-      .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(expectedResponse));
+      .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: unknown) => of(expectedResponse));
 
     const dto: ProductionCSVUploadDto = {
       unitIds: ['id', 'id'],
@@ -227,7 +230,7 @@ describe('ProductionController', () => {
       destination: '',
       filename: 'powerFile',
       path: '',
-      stream: null as any,
+      stream: null as Readable,
     };
 
     await expect(controller.importCsvFile(dto, [powerFile], givenAuthenticatedUser)).rejects.toThrow(
@@ -256,7 +259,7 @@ describe('ProductionController', () => {
 
     jest
       .spyOn(processSvc, 'send')
-      .mockImplementation((_messagePattern: ProductionMessagePatterns, _data: any) => of(givenVerificationEntity));
+      .mockImplementation((_messagePattern: ProductionMessagePatterns, _data: unknown) => of(givenVerificationEntity));
 
     // act
     const actualResponse = await controller.verifyCsvDocumentIntegrity(givenVerificationEntity.documentId);

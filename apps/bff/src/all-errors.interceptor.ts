@@ -14,7 +14,7 @@ import { extractRpcError } from './rpc-error.guard';
 
 @Injectable()
 export class AllErrorsInterceptor implements NestInterceptor {
-  intercept(_context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(_context: ExecutionContext, next: CallHandler): Observable<unknown> {
     return next.handle().pipe(
       catchError((err) => {
         // Pass through BFF-native HttpExceptions (guards, controllers, ValidationPipe).

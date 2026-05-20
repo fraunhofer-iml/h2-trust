@@ -8,8 +8,8 @@
 
 interface Data {
   name: string;
-  records: readonly any[];
-  createRecord: (record: any) => Promise<any>;
+  records: readonly unknown[];
+  createRecord: (record: unknown) => Promise<unknown>;
 }
 
 async function importData(data: Data[]) {
