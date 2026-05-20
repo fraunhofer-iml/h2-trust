@@ -8,18 +8,12 @@
 
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
-export const noNegativeZeroValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+export const positiveValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const value = control.value;
   if (value === null || value === undefined || value === '') {
     return null;
   }
-  if (value < 0) {
-    return { negativeNotAllowed: true };
-  }
-  if (Object.is(value, -0)) {
-    return { negativeZeroNotAllowed: true };
-  }
-  return null;
+  return value > 0 ? null : { mustBePositive: true };
 };
 
 export const integerValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {

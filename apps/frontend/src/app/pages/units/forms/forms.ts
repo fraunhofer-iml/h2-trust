@@ -16,7 +16,7 @@ import {
   PowerProductionType,
   UnitType,
 } from '@h2-trust/domain';
-import { integerValidator, noNegativeZeroValidator } from '../../../shared/util/number-validators';
+import { integerValidator, positiveValidator } from '../../../shared/util/number-validators';
 
 export type UnitFormGroup = {
   name: FormControl<string | null>;
@@ -96,10 +96,10 @@ export const newUnitForm = () =>
 export const newH2StorageForm = () =>
   new FormGroup<HydrogenStorageFormGroup>({
     capacity: new FormControl<number | null>(null, {
-      validators: [noNegativeZeroValidator, integerValidator],
+      validators: [positiveValidator, integerValidator],
     }),
     pressure: new FormControl<number | null>(null, {
-      validators: [noNegativeZeroValidator],
+      validators: [positiveValidator],
     }),
     storageType: new FormControl<HydrogenStorageType | null>(null, Validators.required),
   });
@@ -111,7 +111,7 @@ export const newPowerProductionForm = () =>
     gridLevel: new FormControl<GridLevel | null>(null, Validators.required),
     gridConnectionNumber: new FormControl<string | null>(null, Validators.required),
     ratedPower: new FormControl<number | null>(null, {
-      validators: [noNegativeZeroValidator],
+      validators: [positiveValidator],
     }),
     electricityMeterNumber: new FormControl<string | null>(null, Validators.required),
     powerProductionType: new FormControl<PowerProductionType | null>(null, Validators.required),
@@ -123,15 +123,15 @@ export const newH2ProductionForm = () =>
   new FormGroup<HydrogenProductionFormGroup>({
     biddingZone: new FormControl<BiddingZone | null>(null, Validators.required),
     ratedPower: new FormControl<number | null>(null, {
-      validators: [noNegativeZeroValidator],
+      validators: [positiveValidator],
     }),
     method: new FormControl<HydrogenProductionMethod | null>(null, Validators.required),
     technology: new FormControl<HydrogenProductionTechnology | null>(null, Validators.required),
     pressure: new FormControl<number | null>(null, {
-      validators: [noNegativeZeroValidator],
+      validators: [positiveValidator],
     }),
     waterConsumptionLitersPerHour: new FormControl<number | null>(null, {
-      validators: [noNegativeZeroValidator],
+      validators: [positiveValidator],
     }),
   });
 
