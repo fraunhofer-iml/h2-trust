@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
 import {
@@ -32,11 +32,6 @@ export class UnitsService {
   private readonly httpClient = inject(HttpClient);
 
   getUnits(type?: UnitType) {
-    console.log('Getting units with type', type);
-    // TEST REMOVE LATER
-    return lastValueFrom(this.httpClient.get<UnitOverviewDto[]>(API.UNITS.HYDROGEN_PRODUCTION.BASE));
-
-    /*
     let params = new HttpParams();
 
     if (type) {
@@ -44,7 +39,6 @@ export class UnitsService {
     }
 
     return lastValueFrom(this.httpClient.get<UnitOverviewDto[]>(API.UNITS.BASE, { params }));
-**/
   }
 
   getHydrogenProductionUnits() {

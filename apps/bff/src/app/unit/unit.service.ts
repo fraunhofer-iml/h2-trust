@@ -20,6 +20,7 @@ import {
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
   UnitDto,
+  UnitOverviewDto,
   UnitUpdateActiveDto,
 } from '@h2-trust/contracts/dtos';
 import { HydrogenStorageUnitEntity } from '@h2-trust/contracts/entities';
@@ -50,6 +51,28 @@ export class UnitService {
     }
 
     throw new Error('Unknown unit type');
+  }
+
+  async readUnits(userId: string, type?: UnitType): Promise<UnitOverviewDto[]> {
+    if (type === UnitType.POWER_PRODUCTION) {
+      return this.readPowerProductionUnits(userId);
+    }
+
+    if (type === UnitType.HYDROGEN_PRODUCTION) {
+      return this.readHydrogenProductionUnits(userId);
+    }
+
+    if (type === UnitType.HYDROGEN_STORAGE) {
+      return this.readHydrogenStorageUnits(userId);
+    }
+
+    const [powerProduction, hydrogenProduction, hydrogenStorage] = await Promise.all([
+      this.readPowerProductionUnits(userId),
+      this.readHydrogenProductionUnits(userId),
+      this.readHydrogenStorageUnits(userId),
+    ]);
+
+    return [...powerProduction, ...hydrogenProduction, ...hydrogenStorage];
   }
 
   async readPowerProductionUnit(id: string): Promise<PowerProductionUnitDto> {

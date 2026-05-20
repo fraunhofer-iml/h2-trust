@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Body, Controller, Get, Param, Patch, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { KeycloakUser } from 'nest-keycloak-connect';
 import {
@@ -20,14 +20,31 @@ import {
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
   UnitDto,
+  UnitOverviewDto,
   UnitUpdateActiveDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/contracts/dtos';
+import { UnitType } from '@h2-trust/domain';
 import { UnitService } from './unit.service';
 
 @Controller('units')
 export class UnitController {
   constructor(private readonly unitService: UnitService) {}
+
+  @Get()
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Retrieve all units of the authenticated user. Optionally filter by unit type.',
+  })
+  @ApiOkResponse({
+    description: 'Returns a list of all units of the authenticated user.',
+  })
+  getUnits(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Query('type') type?: UnitType,
+  ): Promise<UnitOverviewDto[]> {
+    return this.unitService.readUnits(authenticatedUser.sub, type);
+  }
 
   @Get('hydrogen-storage')
   @ApiBearerAuth()
