@@ -26,6 +26,8 @@ import {
   HydrogenStorageType,
 } from '@h2-trust/domain';
 import { UnitTypeChipComponent } from '../../../layout/chips/unit-type-chip.component';
+import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
+import { LoadingCardComponent } from '../../../layout/loading-card/loading-card.component';
 import { H2TrustRoutes } from '../../../shared/constants/routes';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { UnitsService } from '../../../shared/services/units/units.service';
@@ -61,6 +63,8 @@ import { PowerProductionUnitFormComponent } from '../forms/power-production/powe
     HydrogenUnitFormComponent,
     PowerProductionUnitFormComponent,
     UnitTypeChipComponent,
+    LoadingCardComponent,
+    ErrorCardComponent,
   ],
   templateUrl: './unit-update-page.component.html',
 })
@@ -101,14 +105,11 @@ export class UnitUpdatePageComponent {
       toast.success('Unit updated successfully');
       this.router.navigate([H2TrustRoutes.UNITS, this.id()]);
     },
-
     onError: (err: HttpErrorResponse) => toastQueryError(err),
     enabled: !!this.id(),
   }));
 
-  onSave() {
-    const unit = this.unitQuery.data();
-    if (!unit) return;
+  onSave(unit: UnitDto) {
     this.unitMutation.mutate(unit);
   }
 
