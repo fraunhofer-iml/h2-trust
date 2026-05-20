@@ -14,7 +14,7 @@ export const PowerProductionOverviewDtoFixture = {
     id: overrides.id ?? 'power-production-unit-1',
     name: overrides.name ?? 'Windpark Nord',
     ratedPower: overrides.ratedPower ?? 25,
-    typeName: overrides.typeName ?? PowerProductionType.WIND_OFFSHORE,
+    typeName: overrides.typeName ?? PowerProductionType.WIND_TURBINE,
     producing: overrides.producing ?? true,
     active: overrides.active ?? true,
   }),

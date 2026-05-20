@@ -17,7 +17,7 @@ export const PpaDtoFixture = {
     hydrogenProducer: overrides.hydrogenProducer ?? CompanyDtoFixture.createHydrogenProducer(),
     powerProducer: overrides.powerProducer ?? CompanyDtoFixture.create(),
     status: overrides.status ?? PowerPurchaseAgreementStatus.PENDING,
-    energySource: overrides.energySource ?? EnergySource.RENEWABLE,
+    energySource: overrides.energySource ?? EnergySource.WIND_ENERGY,
     powerProductionUnit: overrides.powerProductionUnit ?? PowerProductionOverviewDtoFixture.create(),
   }),
   createApproved: (overrides: Partial<PpaDto> = {}): PpaDto =>

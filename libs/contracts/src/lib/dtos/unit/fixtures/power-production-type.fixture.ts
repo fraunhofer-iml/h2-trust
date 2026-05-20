@@ -12,6 +12,6 @@ import { EnergySource, PowerProductionType } from '@h2-trust/domain';
 export const PowerProductionTypeDtoFixture = {
   create: (overrides: Partial<PowerProductionTypeDto> = {}): PowerProductionTypeDto => ({
     name: overrides.name ?? PowerProductionType.WIND_TURBINE,
-    energySource: overrides.energySource ?? EnergySource.RENEWABLE,
+    energySource: overrides.energySource ?? EnergySource.WIND_ENERGY,
   }),
 } as const;

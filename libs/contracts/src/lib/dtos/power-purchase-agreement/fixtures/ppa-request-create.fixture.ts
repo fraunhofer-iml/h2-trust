@@ -12,7 +12,7 @@ import { PowerProductionType } from '@h2-trust/domain';
 export const PpaRequestCreateDtoFixture = {
   create: (overrides: Partial<PpaRequestCreateDto> = {}): PpaRequestCreateDto => ({
     companyId: overrides.companyId ?? 'company-power-1',
-    powerProductionType: overrides.powerProductionType ?? PowerProductionType.WIND_OFFSHORE,
+    powerProductionType: overrides.powerProductionType ?? PowerProductionType.WIND_TURBINE,
     validFrom: overrides.validFrom ?? new Date('2026-06-01T00:00:00.000Z'),
     validTo: overrides.validTo ?? new Date('2026-12-31T00:00:00.000Z'),
   }),

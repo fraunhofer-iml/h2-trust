@@ -21,7 +21,7 @@ export const PpaRequestDtoFixture = {
     validTo: overrides.validTo ?? new Date('2026-12-31T00:00:00.000Z'),
     sender: overrides.sender ?? UserDetailsDtoFixture.create(),
     receiver: overrides.receiver ?? CompanyDtoFixture.create(),
-    powerProductionType: overrides.powerProductionType ?? PowerProductionType.WIND_OFFSHORE,
+    powerProductionType: overrides.powerProductionType ?? PowerProductionType.WIND_TURBINE,
     powerProductionUnit: overrides.powerProductionUnit ?? PowerProductionOverviewDtoFixture.create(),
     decidedAt: overrides.decidedAt,
     decidedBy: overrides.decidedBy,
