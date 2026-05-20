@@ -21,51 +21,37 @@
 
   <div class="3xl:grid-cols-4 grid grid-cols-3 gap-4">
     @for (item of unitsQuery.data() ?? []; track item.id) {
-      @if (isHydrogenProductionUnit(item)) {
-        <a [routerLink]="['hydrogen-production', item.id]">
-          <app-unit-card [name]="item.name" [unittype]="UnitType.HYDROGEN_PRODUCTION" [active]="item.active">
-            <mat-chip>
-              <span matChipAvatar class="material-symbols-outlined">charger</span>
-              {{ item.ratedPower | unit: MeasurementUnit.KWH }}</mat-chip
-            >
-            <mat-chip>
-              <span matChipAvatar class="material-symbols-outlined">lab_panel</span
-              >{{ item.technology | enum: 'hydrogenProductionTechnology' }}</mat-chip
-            >
-          </app-unit-card>
-        </a>
-      }
-
-      @if (isHydrogenStorageUnit(item)) {
-        <a [routerLink]="['hydrogen-storage', item.id]">
-          <app-unit-card [name]="item.name" [unittype]="UnitType.HYDROGEN_STORAGE" [active]="item.active">
-            <mat-chip>
-              <span matChipAvatar class="material-symbols-outlined">bar_chart</span> {{ item.filling | number }}/{{
-                item.capacity | unit: MeasurementUnit.KG
-              }}</mat-chip
-            >
-            <mat-chip>
-              <span matChipAvatar class="material-symbols-outlined">label</span>
-              {{ item.storageType | enum: 'hydrogenStorageType' }}</mat-chip
-            >
-          </app-unit-card>
-        </a>
-      }
-
-      @if (isPowerProductionUnit(item)) {
-        <a [routerLink]="['power-production', item.id]">
-          <app-unit-card [name]="item.name" [unittype]="UnitType.POWER_PRODUCTION" [active]="item.active">
-            <mat-chip>
-              <span matChipAvatar class="material-symbols-outlined">charger</span>
-              {{ item.ratedPower | unit: MeasurementUnit.KWH }}</mat-chip
-            >
-            <mat-chip>
-              <span matChipAvatar class="material-symbols-outlined">category</span
-              >{{ item.typeName | enum: 'powerProductionType' }}</mat-chip
-            >
-          </app-unit-card>
-        </a>
-      }
+      <app-unit-card [unit]="item">
+        @if (isHydrogenStorageUnit(item)) {
+          <mat-chip>
+            <span matChipAvatar class="material-symbols-outlined">bar_chart</span> {{ item.filling | number }}/{{
+              item.capacity | unit: MeasurementUnit.KG
+            }}</mat-chip
+          >
+          <mat-chip>
+            <span matChipAvatar class="material-symbols-outlined">label</span>
+            {{ item.storageType | enum: 'hydrogenStorageType' }}</mat-chip
+          >
+        } @else if (isPowerProductionUnit(item)) {
+          <mat-chip>
+            <span matChipAvatar class="material-symbols-outlined">charger</span>
+            {{ item.ratedPower | unit: MeasurementUnit.KWH }}</mat-chip
+          >
+          <mat-chip>
+            <span matChipAvatar class="material-symbols-outlined">category</span
+            >{{ item.typeName | enum: 'powerProductionType' }}</mat-chip
+          >
+        } @else if (isHydrogenProductionUnit(item)) {
+          <mat-chip>
+            <span matChipAvatar class="material-symbols-outlined">charger</span>
+            {{ item.ratedPower | unit: MeasurementUnit.KWH }}</mat-chip
+          >
+          <mat-chip>
+            <span matChipAvatar class="material-symbols-outlined">lab_panel</span
+            >{{ item.technology | enum: 'hydrogenProductionTechnology' }}</mat-chip
+          >
+        }
+      </app-unit-card>
     }
   </div>
 </div>
