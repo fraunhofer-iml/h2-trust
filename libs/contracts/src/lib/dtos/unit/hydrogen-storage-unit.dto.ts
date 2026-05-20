@@ -66,8 +66,8 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
     return {
       ...BaseUnitDto.fromEntity(unit),
       storageType: unit.type,
-      capacity: unit.capacity!,
-      pressure: unit.pressure!,
+      capacity: unit.capacity,
+      pressure: unit.pressure,
       filling:
         unit.filling?.map((filling) => ({
           id: '',

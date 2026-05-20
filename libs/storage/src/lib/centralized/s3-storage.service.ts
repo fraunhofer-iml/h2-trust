@@ -59,8 +59,17 @@ export class S3StorageService extends CentralizedStorageService {
     try {
       await this.client.send(new HeadObjectCommand({ Bucket: this.bucketName, Key: fileName }));
       return true;
-    } catch (err: any) {
-      if (err.name === 'NoSuchKey' || err.name === 'NotFound' || err.$metadata?.httpStatusCode === 404) {
+    } catch (err: unknown) {
+      if (
+        err !== null &&
+        typeof err === 'object' &&
+        ('name' in err || '$metadata' in err) &&
+        (
+          (err as { name?: string }).name === 'NoSuchKey' ||
+          (err as { name?: string }).name === 'NotFound' ||
+          (err as { $metadata?: { httpStatusCode?: number } }).$metadata?.httpStatusCode === 404
+        )
+      ) {
         return false;
       }
       throw err;

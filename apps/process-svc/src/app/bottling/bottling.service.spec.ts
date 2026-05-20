@@ -7,7 +7,6 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { of } from 'rxjs';
 import { DocumentEntity } from '@h2-trust/contracts/entities';
 import {
   BatchEntityFixture,

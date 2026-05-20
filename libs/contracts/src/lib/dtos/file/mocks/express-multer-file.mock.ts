@@ -13,7 +13,7 @@
 // Node.js's `stream` module, which is not available in the browser
 
 export interface DummyStream {
-  on(event: string, handler: (...args: any[]) => void): void;
+  on(event: string, handler: (...args: unknown[]) => void): void;
   pipe<T = unknown>(dest: T): T;
 }
 
@@ -31,7 +31,7 @@ export interface MulterFileMock {
 }
 
 const dummyStream: DummyStream = {
-  on(_event: string, _handler: (..._args: any[]) => void): void {
+  on(_event: string, _handler: (..._args: unknown[]) => void): void {
     // intentionally empty
   },
   pipe<T = unknown>(dest: T): T {

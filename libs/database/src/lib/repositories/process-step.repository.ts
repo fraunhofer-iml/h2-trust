@@ -210,11 +210,16 @@ export class ProcessStepRepository {
         throw new InternalException(`Invalid process step data: ${JSON.stringify(ps)}`);
       }
 
+      const persistedBatch = persistedBatches[index];
+      if (!persistedBatch) {
+        throw new InternalException(`Expected persisted batch at index ${index}`);
+      }
+
       return {
         startedAt: ps.startedAt,
         endedAt: ps.endedAt,
         type: ps.type,
-        batchId: persistedBatches[index]!.id,
+        batchId: persistedBatch.id,
         userId: ps.recordedBy.id,
         unitId: ps.executedBy.id,
       };
