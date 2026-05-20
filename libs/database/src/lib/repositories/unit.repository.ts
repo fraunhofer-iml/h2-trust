@@ -42,7 +42,7 @@ export class UnitRepository {
       .findUnique({ where: { id }, ...baseUnitDeepQueryArgs })
       .catch(wrapPrismaError);
 
-    assertRecordFound(unit, id, 'Unit');
+    assertRecordFound(unit, id);
     return this.mapToActualUnitEntity(unit);
   }
 
@@ -51,7 +51,7 @@ export class UnitRepository {
       .findMany({ where: { id: { in: ids } }, ...baseUnitDeepQueryArgs })
       .catch(wrapPrismaError);
 
-    assertAllIdsFound(units, ids, 'Units');
+    assertAllIdsFound(units, ids);
     return units.map(this.mapToActualUnitEntity);
   }
 
@@ -84,7 +84,7 @@ export class UnitRepository {
       .findMany({ where: { id: { in: ids }, powerProductionUnit: { isNot: null } }, ...baseUnitDeepQueryArgs })
       .catch(wrapPrismaError);
 
-    assertAllIdsFound(units, ids, 'PowerProductionUnits');
+    assertAllIdsFound(units, ids);
     return units.map(PowerProductionUnitEntity.fromDeepDatabase);
   }
 
@@ -101,7 +101,7 @@ export class UnitRepository {
       .findMany({ where: { id: { in: ids }, hydrogenProductionUnit: { isNot: null } }, ...baseUnitDeepQueryArgs })
       .catch(wrapPrismaError);
 
-    assertAllIdsFound(units, ids, 'HydrogenProductionUnits');
+    assertAllIdsFound(units, ids);
     return units.map(HydrogenProductionUnitEntity.fromDeepDatabase);
   }
 

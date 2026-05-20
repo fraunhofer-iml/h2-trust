@@ -49,7 +49,7 @@ export type HydrogenProductionFormGroup = {
 export type HydrogenStorageFormGroup = {
   capacity: FormControl<number | null>;
   pressure: FormControl<number | null>;
-  hydrogenStorageType: FormControl<HydrogenStorageType | null>;
+  storageType: FormControl<HydrogenStorageType | null>;
 };
 
 export type PowerProductionFormGroup = {

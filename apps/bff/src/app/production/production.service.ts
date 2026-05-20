@@ -56,8 +56,8 @@ export class ProductionService {
 
   async readHydrogenProductionsByOwner(
     userId: string,
-    pageNumber?: number,
-    pageSize?: number,
+    pageNumber: number,
+    pageSize: number,
     unitName?: string,
     month?: Date,
   ): Promise<PaginatedProductionDataDto> {
@@ -142,9 +142,9 @@ export class ProductionService {
       throw new BadRequestException(`Missing file for ${type} production.`);
     }
 
-    if (normalizedUnitIds.length < normalizedFiles.length) {
+    if (normalizedUnitIds.length !== normalizedFiles.length) {
       throw new BadRequestException(
-        `Not enough unit IDs provided for ${type} production files: expected ${normalizedFiles.length}, got ${normalizedUnitIds.length}.`,
+        `Unit IDs count must match file count for ${type} production: expected ${normalizedFiles.length}, got ${normalizedUnitIds.length}.`,
       );
     }
 

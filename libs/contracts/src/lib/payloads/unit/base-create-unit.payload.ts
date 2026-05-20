@@ -61,6 +61,10 @@ export abstract class BaseCreateUnitPayload {
   @IsOptional()
   id?: string;
 
+  @IsString()
+  @IsOptional()
+  requesterCompanyId?: string;
+
   protected constructor(
     name: string,
     mastrNumber: string,

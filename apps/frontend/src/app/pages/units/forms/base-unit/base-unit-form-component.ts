@@ -15,6 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { injectQuery } from '@tanstack/angular-query-experimental';
+import { companiesQueryOptions } from '../../../../shared/queries/companies.query';
 import { CompaniesService } from '../../../../shared/services/companies/companies.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
 import { UnitFormGroup } from '../forms';
@@ -40,8 +41,5 @@ export class BaseUnitFormComponent {
 
   unitForm = input.required<FormGroup<UnitFormGroup>>();
 
-  companiesQuery = injectQuery(() => ({
-    queryKey: ['recipients'],
-    queryFn: () => this.companiesService.getCompanies(),
-  }));
+  companiesQuery = injectQuery(() => companiesQueryOptions(this.companiesService));
 }

@@ -7,7 +7,7 @@
  */
 
 import { Type } from 'class-transformer';
-import { IsDate, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsDate, IsEnum, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 import { UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 
@@ -58,6 +58,7 @@ export abstract class UnitInputDto {
   commissionedOn: Date;
 
   @IsNotEmpty()
+  @ValidateNested()
   @Type(() => AddressDto)
   address: AddressDto;
 

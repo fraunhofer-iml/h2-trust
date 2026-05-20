@@ -11,10 +11,9 @@ import { getGeneralSvcBroker } from '@h2-trust/messaging';
 import { ProcessStepModule } from '../process-step/process-step.module';
 import { DigitalProductPassportController } from './digital-product-passport.controller';
 import { DigitalProductPassportService } from './digital-product-passport.service';
-import { ProvenanceModule } from './provenance/provenance.module';
 
 @Module({
-  imports: [ProcessStepModule, ProvenanceModule, getGeneralSvcBroker()],
+  imports: [ProcessStepModule, getGeneralSvcBroker()],
   controllers: [DigitalProductPassportController],
   providers: [DigitalProductPassportService],
   exports: [DigitalProductPassportService],

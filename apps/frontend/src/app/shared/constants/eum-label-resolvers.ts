@@ -61,3 +61,5 @@ export const ENUM_LABEL_RESOLVERS = {
   batchType: (value: BatchType) => getBatchType(value),
   processType: (value: ProcessType) => getProcessType(value),
 } as const;
+
+export type EnumLabelKey = keyof typeof ENUM_LABEL_RESOLVERS;

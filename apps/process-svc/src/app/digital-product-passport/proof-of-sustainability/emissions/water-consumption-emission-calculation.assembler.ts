@@ -52,10 +52,6 @@ export function assembleWaterSupplyEmissionCalculation(
 export function assembleWaterConsumptionEmissionCalculations(
   provenance: ProvenanceEntity,
 ): ProofOfSustainabilityEmissionCalculationEntity[] {
-  if (!provenance.getAllWaterConsumptions()) {
-    return [];
-  }
-
   const hydrogenAmount = provenance.hydrogenBottling
     ? provenance.hydrogenBottling.batch.amount
     : provenance.root.batch.amount;

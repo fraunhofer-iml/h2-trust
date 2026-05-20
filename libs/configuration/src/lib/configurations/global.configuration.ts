@@ -63,8 +63,8 @@ export default registerAs(GLOBAL_CONFIGURATION_IDENTIFIER, () => {
     keycloak: {
       url: requireEnv('KEYCLOAK_URL'),
       realm: requireEnv('KEYCLOAK_REALM'),
-      clientId: requireEnv('KEYCLOAK_CLIENT_ID'),
-      clientSecret: requireEnv('KEYCLOAK_CLIENT_SECRET'),
+      clientId: requireEnv('KEYCLOAK_CLIENT_BFF_ID'),
+      clientSecret: requireEnv('KEYCLOAK_CLIENT_BFF_SECRET'),
     } satisfies KeycloakConfiguration,
     featureFlags: {
       verificationEnabled,

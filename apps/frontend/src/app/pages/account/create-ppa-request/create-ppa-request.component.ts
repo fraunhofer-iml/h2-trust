@@ -20,9 +20,11 @@ import { toast } from 'ngx-sonner';
 import { PpaRequestCreateDto } from '@h2-trust/contracts/dtos';
 import { PowerProductionType } from '@h2-trust/domain';
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
+import { companiesQueryOptions } from '../../../shared/queries/companies.query';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
 import { PowerPurchaseAgreementService } from '../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
+import { toastQueryError } from '../../../shared/util/query-error-handler';
 
 interface RequestForm {
   companyId: FormControl<string | null>;
@@ -64,16 +66,13 @@ export class CreatePpaRequestComponent {
     validTo: new FormControl<Date | null>(null, Validators.required),
   });
 
-  companiesQuery = injectQuery(() => ({
-    queryKey: ['companies'],
-    queryFn: () => this.companiesService.getCompanies(),
-  }));
+  companiesQuery = injectQuery(() => companiesQueryOptions(this.companiesService));
 
   mutation = injectMutation(() => ({
     mutationFn: (dto: PpaRequestCreateDto) => this.ppaService.createPpaRequest(dto),
-    onError: () => toast.error('Failed to create PPA Request'),
-    onSuccess: () => {
-      this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.PPA_REQUESTS] });
+    onError: (e) => toastQueryError(e),
+    onSuccess: async () => {
+      await this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.PPA_REQUESTS] });
       toast.success('Successfully created PPA Request');
     },
   }));
@@ -84,7 +83,6 @@ export class CreatePpaRequestComponent {
 
   save() {
     const dto: PpaRequestCreateDto = this.form.value as PpaRequestCreateDto;
-
     this.mutation.mutate(dto);
     this.close();
   }

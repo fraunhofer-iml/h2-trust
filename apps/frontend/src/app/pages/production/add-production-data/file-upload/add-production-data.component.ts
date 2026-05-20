@@ -22,15 +22,16 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
-import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
+import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { AccountingPeriodMatchingResultDto } from '@h2-trust/contracts/dtos';
 import { BatchType, CsvContentType } from '@h2-trust/domain';
 import { FileDragAndDropComponent } from '../../../../layout/drag-and-drop/file-drag-and-drop.component';
 import { TypeSelectionComponent } from '../../../../layout/type-selection/type-selection.component';
 import { FileTypes } from '../../../../shared/constants/file-types';
 import { UploadFlowAction } from '../../../../shared/constants/upload-flow-action.enum';
-import { ModalData } from '../../../../shared/model/modal-data.model';
 import { FileSizePipe } from '../../../../shared/pipes/file-size.pipe';
+import { invalidateByQueryPrefixes } from '../../../../shared/queries/query-invalidation';
+import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
 import {
   hydrogenProductionUnitsQueryOptions,
   powerProductionUnitsQueryOptions,
@@ -43,6 +44,7 @@ import { UserRolesStore } from '../../../../shared/store/user-role.store';
 import { minFormArrayLength } from '../../../../shared/util/form-array-length.validator';
 import { FileForm } from './file-upload.form';
 import { LoadingModalComponent } from './loading-modal/loading-modal.component';
+import { ModalData } from './loading-modal/modal-data.model';
 
 @Component({
   selector: 'app-add-production-data',
@@ -78,9 +80,11 @@ export class AddProductionDataComponent {
   unitsService = inject(UnitsService);
   roles = inject(UserRolesStore);
   loadingModal = inject(MatDialog);
+  private queryClient = inject(QueryClient);
 
   hydrogenProductionUnitsQuery = injectQuery(() => hydrogenProductionUnitsQueryOptions(this.unitsService));
   powerProductionUnitsQuery = injectQuery(() => powerProductionUnitsQueryOptions(this.unitsService));
+
   queries = {
     [BatchType.POWER]: this.powerProductionUnitsQuery,
     [BatchType.HYDROGEN]: this.hydrogenProductionUnitsQuery,
@@ -103,13 +107,20 @@ export class AddProductionDataComponent {
 
   mutation = injectMutation<AccountingPeriodMatchingResultDto, HttpErrorResponse, FormData>(() => ({
     mutationFn: (data: FormData) => this.productionService.uploadCsv(data),
+    onSuccess: async () => {
+      await invalidateByQueryPrefixes(this.queryClient, [
+        QueryKeyPrefix.PENDING_HYDROGEN_PRODUCTIONS,
+        QueryKeyPrefix.PENDING_POWER_PRODUCTIONS,
+        QueryKeyPrefix.UPLOADED_FILES,
+      ]);
+    },
   }));
 
   constructor() {
     this.form.updateValueAndValidity();
     this.selectedTypeControl.valueChanges.subscribe(() => {
-      this.form.controls.files.controls.forEach((control) => {
-        control.controls.unitId.setValue(null);
+      this.form.controls.files.controls.forEach((formGroup) => {
+        formGroup.controls.unitId.setValue(null);
       });
     });
   }
@@ -135,8 +146,8 @@ export class AddProductionDataComponent {
     this.mutation.mutate(data);
   }
 
-  removeFile(index: number, formArray: FormArray<FileForm> | FormArray<FormGroup<{ file: FormControl<File | null> }>>) {
-    formArray.controls.splice(index, 1);
+  removeFile(index: number, formArray: FormArray<FileForm>) {
+    formArray.removeAt(index);
     formArray.updateValueAndValidity();
   }
 

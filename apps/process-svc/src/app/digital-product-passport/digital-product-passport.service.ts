@@ -18,18 +18,16 @@ import {
   RedComplianceEntity,
 } from '@h2-trust/contracts/entities';
 import { PowerType, RfnboType } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { assembleProofOfOrigin, getHydrogenBottlingCompositions } from './proof-of-origin/proof-of-origin.assembler';
 import { assembleProofOfSustainability } from './proof-of-sustainability/proof-of-sustainability.assembler';
-import { ProvenanceService } from './provenance/provenance.service';
+import { buildProvenance } from './provenance/provenance.service';
 import { determineRedCompliance, determineTotalRedCompliance } from './red-compliance/red-compliance';
 
 @Injectable()
 export class DigitalProductPassportService {
-  constructor(
-    private readonly processStepService: ProcessStepService,
-    private readonly provenanceService: ProvenanceService,
-  ) {}
+  constructor(private readonly processStepService: ProcessStepService) {}
 
   /**
    * Calculates the RFNBO type for an existing production chain.
@@ -42,7 +40,9 @@ export class DigitalProductPassportService {
       productionChain.powerProduction,
     );
 
-    const powerType: PowerType = productionChain.powerProduction.batch.qualityDetails.powerType as PowerType;
+    const rawPowerType = productionChain.powerProduction.batch.qualityDetails.powerType;
+    assertValidEnum(rawPowerType, PowerType, 'PowerType');
+    const powerType: PowerType = rawPowerType;
     const provenance: ProvenanceEntity = ProvenanceEntity.fromProductionChain(productionChain);
     const proofOfSustainability: ProofOfSustainabilityEntity = assembleProofOfSustainability(provenance);
     return this.determineRfnboType(redCompliance, powerType, proofOfSustainability);
@@ -55,8 +55,9 @@ export class DigitalProductPassportService {
    */
   public async readDigitalProductPassport(processStepId: string): Promise<DigitalProductPassportEntity> {
     const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
+    const predecessors: ProcessStepEntity[] = await this.processStepService.getPredecessors(processStep);
 
-    const provenance: ProvenanceEntity = await this.provenanceService.buildProvenance(processStep);
+    const provenance: ProvenanceEntity = buildProvenance(processStep, predecessors);
     const redCompliance: RedComplianceEntity = determineTotalRedCompliance(provenance.productionChains);
 
     const proofOfOrigin: ProofOfOriginSectionEntity[] = assembleProofOfOrigin(provenance);

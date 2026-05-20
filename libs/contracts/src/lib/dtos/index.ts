@@ -11,6 +11,7 @@ export * from './company';
 export * from './digital-product-passport';
 export * from './file';
 export * from './power-purchase-agreement';
+export * from './problem-detail';
 export * from './process-step';
 export * from './production';
 export * from './unit';

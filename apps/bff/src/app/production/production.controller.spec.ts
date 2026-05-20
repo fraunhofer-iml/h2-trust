@@ -231,7 +231,7 @@ describe('ProductionController', () => {
     };
 
     await expect(controller.importCsvFile(dto, [powerFile], givenAuthenticatedUser)).rejects.toThrow(
-      'Not enough unit IDs provided for HYDROGEN production files: expected 1, got 0',
+      'Unit IDs count must match file count for HYDROGEN production: expected 1, got 0.',
     );
   });
 
