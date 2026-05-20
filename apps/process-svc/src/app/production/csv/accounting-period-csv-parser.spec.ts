@@ -6,7 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus } from '@nestjs/common';
 import { parseAccountingPeriodCsvBuffer } from './accounting-period-csv-parser';
 
 describe('parseAccountingPeriodCsvBuffer', () => {

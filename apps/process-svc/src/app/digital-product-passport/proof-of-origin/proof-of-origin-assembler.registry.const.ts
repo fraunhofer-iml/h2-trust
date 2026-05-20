@@ -10,7 +10,7 @@ import { ProofOfOriginSectionAssembler } from './proof-of-origin-assembler.inter
 import { hydrogenBottlingSectionAssembler } from './sections/hydrogen-bottling-section.assembler';
 import { hydrogenProductionSectionAssembler } from './sections/hydrogen-production-section.assembler';
 import { hydrogenStorageSectionAssembler } from './sections/hydrogen-storage-section.assembler';
-import { hydrogenTransportationSectionAssembler } from './sections/hydrogen-transportation-transportation.assembler';
+import { hydrogenTransportationSectionAssembler } from './sections/hydrogen-transportation-section.assembler';
 
 export const proofOfOriginSectionAssemblers: ProofOfOriginSectionAssembler[] = [
   hydrogenBottlingSectionAssembler,

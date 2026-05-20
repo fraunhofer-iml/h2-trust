@@ -44,7 +44,7 @@ export class IpfsPinningStorageService extends DecentralizedStorageService {
       (next) => async (args) => {
         const result = await next(args);
         // The pinning service returns the IPFS CID in the x-amz-meta-cid response header after a successful upload.
-        cid = (result.response as any).headers?.['x-amz-meta-cid'];
+        cid = (result.response as { headers?: Record<string, string> }).headers?.['x-amz-meta-cid'];
         return result;
       },
       { step: 'deserialize' },

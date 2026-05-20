@@ -53,9 +53,8 @@ export class BlockchainService {
   constructor(configurationService: ConfigurationService) {
     const { featureFlags, verification } = configurationService.getGlobalConfiguration();
 
-    if (featureFlags.verificationEnabled) {
-      // verification is guaranteed to be defined when verificationEnabled is true (set together in config)
-      const { blockchain } = verification!;
+    if (featureFlags.verificationEnabled && verification) {
+      const { blockchain } = verification;
 
       this.endpointUrl = blockchain.endpointUrl;
       this.explorerUrl = blockchain.explorerUrl;

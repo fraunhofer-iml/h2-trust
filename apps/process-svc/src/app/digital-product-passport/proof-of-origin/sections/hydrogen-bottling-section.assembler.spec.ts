@@ -124,7 +124,7 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
     });
 
     it('returns [] when process step is undefined', () => {
-      const givenProcessStep = undefined as unknown as ProcessStepEntity;
+      const givenProcessStep = undefined as ProcessStepEntity;
       const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
       const givenProvenance = new ProvenanceEntity(givenProcessStep, [givenProductionChain], givenProcessStep);
 

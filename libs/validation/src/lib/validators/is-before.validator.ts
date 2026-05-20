@@ -11,9 +11,10 @@ import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface 
 @ValidatorConstraint({ name: 'isBefore', async: false })
 export class IsBeforeConstraint implements ValidatorConstraintInterface {
   validate(validTo: Date, args: ValidationArguments) {
-    const object = args.object as any;
-    const validFrom: Date = object.validFrom;
+    const object = args.object as { validFrom?: Date };
+    const validFrom: Date | undefined = object.validFrom;
 
+    if (!validFrom) return false;
     return validFrom < validTo;
   }
 
