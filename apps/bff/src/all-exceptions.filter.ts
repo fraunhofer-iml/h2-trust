@@ -81,7 +81,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const detail = 'Validation failed';
 
     // ValidationPipe sets body.message to a string[] of per-field errors
-    const fieldErrors = Array.isArray((body as any).message) ? (body as any).message : undefined;
+    const fieldErrors = Array.isArray((body as { message?: string[] }).message)
+      ? (body as { message: string[] }).message
+      : undefined;
     const validationErrors = fieldErrors ? { validationErrors: fieldErrors } : {};
 
     return {
@@ -105,7 +107,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const type = 'about:blank';
     const status = exception.getStatus();
     const title = exception.constructor.name.replace(/Exception$/, '');
-    const detail = typeof body === 'string' ? body : ((body as any)?.message ?? 'An error occurred');
+    const detail = typeof body === 'string' ? body : ((body as { message?: string })?.message ?? 'An error occurred');
 
     return {
       type,

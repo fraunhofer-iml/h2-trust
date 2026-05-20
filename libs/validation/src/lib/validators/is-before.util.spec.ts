@@ -16,7 +16,7 @@ describe('IsBeforeConstraint', () => {
     constraint = new IsBeforeConstraint();
   });
 
-  function mockArgs(object: any): ValidationArguments {
+  function mockArgs(object: Record<string, unknown>): ValidationArguments {
     return {
       object,
       value: undefined,
