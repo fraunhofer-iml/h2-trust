@@ -57,11 +57,8 @@ export class HydrogenProductionUnitUpdateComponent extends AbstractUnitUpdateCom
     this.router.navigateByUrl(`units/hydrogen-production/${this.id()}`);
   }
 
-  isSaveDisabled(): boolean {
-    if (this.unitForm.invalid || this.hydrogenProductionForm.invalid) {
-      return true;
-    }
-    return false;
+  isInvalid(): boolean {
+    return this.unitForm.invalid || this.hydrogenProductionForm.invalid;
   }
 
   protected override setFormData(unit: HydrogenProductionUnitDto) {

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import {
   BiddingZone,
   GridLevel,
@@ -16,6 +16,7 @@ import {
   PowerProductionType,
   UnitType,
 } from '@h2-trust/domain';
+import { integerValidator, noNegativeZeroValidator } from '../../../shared/util/number-validators';
 
 export type UnitFormGroup = {
   name: FormControl<string | null>;
@@ -98,9 +99,9 @@ export const newH2StorageForm = () =>
       validators: [noNegativeZeroValidator, integerValidator],
     }),
     pressure: new FormControl<number | null>(null, {
-      validators: [noNegativeZeroValidator, numberWithOptionalDecimalValidator],
+      validators: [noNegativeZeroValidator],
     }),
-    hydrogenStorageType: new FormControl<HydrogenStorageType | null>(null, Validators.required),
+    storageType: new FormControl<HydrogenStorageType | null>(null, Validators.required),
   });
 
 export const newPowerProductionForm = () =>
@@ -110,7 +111,7 @@ export const newPowerProductionForm = () =>
     gridLevel: new FormControl<GridLevel | null>(null, Validators.required),
     gridConnectionNumber: new FormControl<string | null>(null, Validators.required),
     ratedPower: new FormControl<number | null>(null, {
-      validators: [noNegativeZeroValidator, numberWithOptionalDecimalValidator],
+      validators: [noNegativeZeroValidator],
     }),
     electricityMeterNumber: new FormControl<string | null>(null, Validators.required),
     powerProductionType: new FormControl<PowerProductionType | null>(null, Validators.required),
@@ -122,15 +123,15 @@ export const newH2ProductionForm = () =>
   new FormGroup<HydrogenProductionFormGroup>({
     biddingZone: new FormControl<BiddingZone | null>(null, Validators.required),
     ratedPower: new FormControl<number | null>(null, {
-      validators: [noNegativeZeroValidator, numberWithOptionalDecimalValidator],
+      validators: [noNegativeZeroValidator],
     }),
     method: new FormControl<HydrogenProductionMethod | null>(null, Validators.required),
     technology: new FormControl<HydrogenProductionTechnology | null>(null, Validators.required),
     pressure: new FormControl<number | null>(null, {
-      validators: [noNegativeZeroValidator, numberWithOptionalDecimalValidator],
+      validators: [noNegativeZeroValidator],
     }),
     waterConsumptionLitersPerHour: new FormControl<number | null>(null, {
-      validators: [noNegativeZeroValidator, numberWithOptionalDecimalValidator],
+      validators: [noNegativeZeroValidator],
     }),
   });
 
@@ -146,43 +147,4 @@ export const addValidatorsToFormGroup = (formGroup: FormGroup): void => {
     control.setValidators(validators);
     control.updateValueAndValidity({ emitEvent: false });
   });
-};
-
-export const noNegativeZeroValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-  const value = control.value;
-  if (value === null || value === undefined || value === '') {
-    return null;
-  }
-  if (value < 0) {
-    return { negativeNotAllowed: true };
-  }
-  if (Object.is(value, -0)) {
-    return { negativeZeroNotAllowed: true };
-  }
-  return null;
-};
-
-export const numberWithOptionalDecimalValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-  const value = control.value;
-  if (value === null || value === undefined || value === '') {
-    return null;
-  }
-  const str = String(value).trim();
-  const pattern = /^\d+([.,]\d+)?$/;
-  if (!pattern.test(str)) {
-    return { invalidNumberFormat: true };
-  }
-  return null;
-};
-
-export const integerValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-  const value = control.value;
-  const str = String(value).trim();
-  const pattern = /^(0|[1-9]\d*)$/;
-
-  if (!pattern.test(str)) {
-    return { notAnInteger: true };
-  }
-
-  return null;
 };

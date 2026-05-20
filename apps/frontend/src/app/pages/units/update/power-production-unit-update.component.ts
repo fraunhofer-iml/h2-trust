@@ -59,11 +59,8 @@ export class PowerProductionUnitUpdateComponent extends AbstractUnitUpdateCompon
     this.router.navigateByUrl(`units/power-production/${this.id()}`);
   }
 
-  isSaveDisabled(): boolean {
-    if (this.unitForm.invalid || this.powerProductionForm.invalid) {
-      return true;
-    }
-    return false;
+  isInvalid(): boolean {
+    return this.unitForm.invalid || this.powerProductionForm.invalid;
   }
 
   protected override setFormData(unit: PowerProductionUnitDto) {

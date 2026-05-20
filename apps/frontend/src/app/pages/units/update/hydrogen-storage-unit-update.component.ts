@@ -45,11 +45,8 @@ export class HydrogenStorageUnitUpdateComponent extends AbstractUnitUpdateCompon
     this.router.navigateByUrl(`units/hydrogen-storage/${this.id()}`);
   }
 
-  isSaveDisabled(): boolean {
-    if (this.unitForm.invalid || this.hydrogenStorageUnitForm.invalid) {
-      return true;
-    }
-    return false;
+  isInvalid(): boolean {
+    return this.unitForm.invalid || this.hydrogenStorageUnitForm.invalid;
   }
 
   protected override setFormData(unit: HydrogenStorageUnitDto) {
