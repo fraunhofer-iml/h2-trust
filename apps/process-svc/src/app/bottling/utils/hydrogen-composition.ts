@@ -31,21 +31,21 @@ export function assembleComposition(provenance: ProvenanceEntity): HydrogenCompo
     );
   }
 
-  const bottlingBatchAmount = provenance.hydrogenBottling.batch.amount;
+  const rootBatchAmount = provenance.root.batch.amount;
   const hydrogenStorageUnitId = provenance.hydrogenBottling.executedBy.id;
 
   const hydrogenComponentsOfProductions = provenance
     .getAllHydrogenLeafProductions()
     .map(
-      (hydrogenRootProduction) =>
+      (hydrogenLeafProduction) =>
         new HydrogenComponentEntity(
           '',
-          hydrogenRootProduction.batch.amount,
-          hydrogenRootProduction.batch.qualityDetails?.rfnboType ?? RfnboType.NOT_SPECIFIED,
+          hydrogenLeafProduction.batch.amount,
+          hydrogenLeafProduction.batch.qualityDetails?.rfnboType ?? RfnboType.NOT_SPECIFIED,
         ),
     );
 
-  return computeHydrogenComposition(hydrogenComponentsOfProductions, bottlingBatchAmount, hydrogenStorageUnitId);
+  return computeHydrogenComposition(hydrogenComponentsOfProductions, rootBatchAmount, hydrogenStorageUnitId);
 }
 
 /**

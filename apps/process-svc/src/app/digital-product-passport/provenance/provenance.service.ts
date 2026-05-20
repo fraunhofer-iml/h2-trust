@@ -33,6 +33,10 @@ export function buildProvenance(root: ProcessStepEntity, predecessorsOfRoot: Pro
 
     case ProcessType.HYDROGEN_BOTTLING:
     case ProcessType.HYDROGEN_TRANSPORTATION:
+      const hydrogenBottling: ProcessStepEntity = getHydrogenBottling(predecessorsOfRoot);
+      if (!hydrogenBottling) {
+        throw new InternalException(`Missing hydrogen bottling for root production [${root.id}].`);
+      }
       return new ProvenanceEntity(
         root,
         buildProductionChains(predecessorsOfRoot),
