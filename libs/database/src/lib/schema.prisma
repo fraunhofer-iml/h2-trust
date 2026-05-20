@@ -190,6 +190,57 @@ model HydrogenProductionUnit {
   ratedPower                    Decimal @db.Decimal(18, 6)
   pressure                      Decimal @db.Decimal(8, 2)
   waterConsumptionLitersPerHour Decimal @db.Decimal(7, 3)
+  wasteWaterOutputLitersPerHour Decimal @db.Decimal(7, 3)
+  powerConsumptionPerKgHydrogen Decimal @db.Decimal(18, 6)
+  resinConsumptionPerKgHydrogen Decimal @db.Decimal(18, 6)
+
+  generalInfo Unit @relation(fields: [id], references: [id])
+}
+
+model CompressorUnit {
+  id        String   @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  type     String
+  powerPerKgHydrogen Decimal @db.Decimal(18, 6)
+
+  generalInfo Unit @relation(fields: [id], references: [id])
+}
+
+model TransportUnit {
+  id        String   @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  type     String
+  fuel     String
+
+  generalInfo Unit @relation(fields: [id], references: [id])
+}
+
+model BottlingUnit {
+  id        String   @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  type     String
+  powerConsumptionPerKgHydrogen Decimal @db.Decimal(18, 6)
+  compressedAirConsumptionPerKgHydrogen Decimal @db.Decimal(18, 6)
+  nitrogenConsumptionPerKgHydrogen Decimal @db.Decimal(18, 6)
+
+  generalInfo Unit @relation(fields: [id], references: [id])
+}
+
+model EndConsumerUnit {
+  id        String   @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  type     String
+  powerConsumptionPerKgHydrogen Decimal @db.Decimal(18, 6)
+  compressedAirConsumptionPerKgHydrogen Decimal @db.Decimal(18, 6)
+  nitrogenConsumptionPerKgHydrogen Decimal @db.Decimal(18, 6)
 
   generalInfo Unit @relation(fields: [id], references: [id])
 }
@@ -248,6 +299,8 @@ model QualityDetails {
 
   rfnboType String
   powerType String
+  usedRenewablePower Decimal @db.Decimal(18, 6)
+  usedGridPower Decimal @db.Decimal(18, 6)
 
   batchDetails BatchDetails @relation(fields: [id], references: [id])
 }
