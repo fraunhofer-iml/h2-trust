@@ -64,7 +64,12 @@ export class RpcExceptionFilter implements ExceptionFilter {
     if (exception instanceof RpcException) {
       const err = exception.getError();
 
-      if (typeof err === 'object' && err !== null && 'errorCode' in err && typeof (err as Record<string, unknown>)['errorCode'] === 'string') {
+      if (
+        typeof err === 'object' &&
+        err !== null &&
+        'errorCode' in err &&
+        typeof (err as Record<string, unknown>)['errorCode'] === 'string'
+      ) {
         return err as RpcError;
       }
 

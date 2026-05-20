@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Readable } from 'stream';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Readable } from 'stream';
 import {
   AccountingPeriodMatchingResultDto,
   AuthenticatedKCUser,
@@ -186,13 +186,15 @@ describe('ProductionController', () => {
     };
     jest.spyOn(userService, 'readUserWithCompany').mockResolvedValue(UserDetailsDtoMock[0]);
 
-    jest.spyOn(generalSvc, 'send').mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: unknown) =>
-      of({
-        company: {
-          id: 'company-power-production-1',
-        },
-      }),
-    );
+    jest
+      .spyOn(generalSvc, 'send')
+      .mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: unknown) =>
+        of({
+          company: {
+            id: 'company-power-production-1',
+          },
+        }),
+      );
 
     jest
       .spyOn(processSvc, 'send')

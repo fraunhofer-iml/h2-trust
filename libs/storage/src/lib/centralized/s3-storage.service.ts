@@ -64,11 +64,9 @@ export class S3StorageService extends CentralizedStorageService {
         err !== null &&
         typeof err === 'object' &&
         ('name' in err || '$metadata' in err) &&
-        (
-          (err as { name?: string }).name === 'NoSuchKey' ||
+        ((err as { name?: string }).name === 'NoSuchKey' ||
           (err as { name?: string }).name === 'NotFound' ||
-          (err as { $metadata?: { httpStatusCode?: number } }).$metadata?.httpStatusCode === 404
-        )
+          (err as { $metadata?: { httpStatusCode?: number } }).$metadata?.httpStatusCode === 404)
       ) {
         return false;
       }

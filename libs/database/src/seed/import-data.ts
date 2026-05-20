@@ -6,25 +6,25 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PrismaClient } from '@prisma/client';
-import type {
-  Address,
-  Batch,
-  BatchDetails,
-  Company,
-  Document,
-  HydrogenProductionUnit,
-  HydrogenStorageUnit,
-  PowerProductionType,
-  PowerProductionUnit,
-  PowerPurchaseAgreement,
-  PowerPurchaseAgreementDecision,
-  ProcessStep,
-  ProcessStepDetails,
-  QualityDetails,
-  TransportationDetails,
-  Unit,
-  User,
+import {
+  PrismaClient,
+  type Address,
+  type Batch,
+  type BatchDetails,
+  type Company,
+  type Document,
+  type HydrogenProductionUnit,
+  type HydrogenStorageUnit,
+  type PowerProductionType,
+  type PowerProductionUnit,
+  type PowerPurchaseAgreement,
+  type PowerPurchaseAgreementDecision,
+  type ProcessStep,
+  type ProcessStepDetails,
+  type QualityDetails,
+  type TransportationDetails,
+  type Unit,
+  type User,
 } from '@prisma/client';
 import {
   AddressSeed,
@@ -182,7 +182,8 @@ export async function seedDatabase() {
     {
       name: 'powerPurchaseAgreementDecision',
       records: PowerPurchaseAgreementDecisionSeed,
-      createRecord: (data) => prisma.powerPurchaseAgreementDecision.create({ data: data as PowerPurchaseAgreementDecision }),
+      createRecord: (data) =>
+        prisma.powerPurchaseAgreementDecision.create({ data: data as PowerPurchaseAgreementDecision }),
     },
   ];
 

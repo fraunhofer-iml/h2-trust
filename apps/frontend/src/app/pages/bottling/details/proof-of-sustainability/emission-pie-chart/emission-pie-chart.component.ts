@@ -82,7 +82,10 @@ export class EmissionPieChartComponent {
     };
   }
 
-  private readonly tooltipFormatter = (params: DefaultLabelFormatterCallbackParams, dataTotal: EmissionForProcessStepDto[]): string => {
+  private readonly tooltipFormatter = (
+    params: DefaultLabelFormatterCallbackParams,
+    dataTotal: EmissionForProcessStepDto[],
+  ): string => {
     const percent = this.percentPipe.transform((params.percent ?? 0) / 100, '1.0-1');
     const description = dataTotal.find((item) => item.name === params.name)?.description;
     return `${params.marker} ${params.name} (${description}): ${params.value} ${MeasurementUnit.G_CO2} (${percent})`;

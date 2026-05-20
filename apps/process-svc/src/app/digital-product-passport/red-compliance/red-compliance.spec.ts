@@ -6,7 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenProductionUnitEntity, PowerProductionUnitEntity, ProcessStepEntity, RedComplianceEntity } from '@h2-trust/contracts/entities';
+import {
+  HydrogenProductionUnitEntity,
+  PowerProductionUnitEntity,
+  ProcessStepEntity,
+  RedComplianceEntity,
+} from '@h2-trust/contracts/entities';
 import {
   HydrogenProductionUnitEntityFixture,
   PowerProductionUnitEntityFixture,
