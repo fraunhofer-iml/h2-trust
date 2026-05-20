@@ -7,6 +7,7 @@
  */
 
 import { CompanyBaseDto } from '@h2-trust/contracts/dtos';
+
 export const CompanyBaseDtoFixture = {
   create: (overrides: Partial<CompanyBaseDto> = {}): CompanyBaseDto => ({
     id: overrides.id ?? 'company-power-1',

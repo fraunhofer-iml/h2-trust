@@ -8,11 +8,7 @@
 
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  type AuthenticatedKCUser,
-  BottlingDto,
-  BottlingOverviewDto,
-} from '@h2-trust/contracts/dtos';
+import { BottlingDto, BottlingOverviewDto, type AuthenticatedKCUser } from '@h2-trust/contracts/dtos';
 import { BottlingDtoFixture, UserDetailsDtoFixture } from '@h2-trust/contracts/dtos/fixtures';
 import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { ProcessStepMessagePatterns, QUEUE_PROCESS_SVC } from '@h2-trust/messaging';

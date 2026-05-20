@@ -16,8 +16,7 @@ export const HydrogenStorageOverviewDtoFixture = {
     capacity: overrides.capacity ?? 100,
     filling: overrides.filling ?? 40,
     storageType: overrides.storageType ?? HydrogenStorageType.COMPRESSED_GASEOUS_HYDROGEN,
-    hydrogenComposition:
-      overrides.hydrogenComposition ?? [{ id: null, amount: 40, rfnboType: RfnboType.RFNBO_READY }],
+    hydrogenComposition: overrides.hydrogenComposition ?? [{ id: null, amount: 40, rfnboType: RfnboType.RFNBO_READY }],
     active: overrides.active ?? true,
   }),
 } as const;

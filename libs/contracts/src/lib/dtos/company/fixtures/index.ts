@@ -6,5 +6,5 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './company-base.fixture';
 export * from './company.fixture';
+export * from './company-base.fixture';

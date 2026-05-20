@@ -22,7 +22,10 @@ export const ClassificationDtoFixture = {
   }),
   createNested: (overrides: Partial<ClassificationDto> = {}): ClassificationDto => ({
     ...ClassificationDtoFixture.createLeaf(overrides),
-    classifications: overrides.classifications ?? [ClassificationDtoFixture.createLeaf({ name: 'Nested classification' })],
+    classifications: overrides.classifications ?? [
+      ClassificationDtoFixture.createLeaf({ name: 'Nested classification' }),
+    ],
   }),
-  create: (overrides: Partial<ClassificationDto> = {}): ClassificationDto => ClassificationDtoFixture.createLeaf(overrides),
+  create: (overrides: Partial<ClassificationDto> = {}): ClassificationDto =>
+    ClassificationDtoFixture.createLeaf(overrides),
 } as const;

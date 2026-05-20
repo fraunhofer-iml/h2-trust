@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CompanyType } from '@h2-trust/domain';
 import { UserDetailsDto } from '@h2-trust/contracts/dtos';
+import { CompanyType } from '@h2-trust/domain';
 import { AddressDtoFixture } from '../../address/fixtures';
 
 export const UserDetailsDtoFixture = {
