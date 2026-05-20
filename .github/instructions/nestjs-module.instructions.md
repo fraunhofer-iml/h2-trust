@@ -20,8 +20,6 @@ Register the feature module in the nearest `app.module.ts`.
 ## Module
 
 ```typescript
-// Apache license header required
-
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '@h2-trust/database';
 import { FeatureController } from './feature.controller';
@@ -44,8 +42,6 @@ Use `@MessagePattern` with the typed enum from `@h2-trust/messaging`. Return `*E
 (`@Get`, `@Post`, etc.) in microservice controllers.
 
 ```typescript
-// Apache license header required
-
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { FeatureEntity } from '@h2-trust/contracts/entities';
@@ -69,8 +65,6 @@ Use `@Controller('resource')` with HTTP method decorators. Return `*Dto` types, 
 Swagger decorators on every endpoint.
 
 ```typescript
-// Apache license header required
-
 import { Controller, Get, Param } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { FeatureDto } from '@h2-trust/contracts/dtos';
@@ -96,8 +90,6 @@ export class FeatureController {
 Inject the repository. Delegate persistence to the repository; keep business logic here.
 
 ```typescript
-// Apache license header required
-
 import { Injectable } from '@nestjs/common';
 import { FeatureEntity } from '@h2-trust/contracts/entities';
 import { FeatureRepository } from '@h2-trust/database';
@@ -133,8 +125,6 @@ Inject `ConfigurationService` from `@h2-trust/configuration`. Never inject `Conf
 ```typescript
 import { Injectable } from '@nestjs/common';
 import { ConfigurationService } from '@h2-trust/configuration';
-
-// Apache license header required
 
 @Injectable()
 export class FeatureService {

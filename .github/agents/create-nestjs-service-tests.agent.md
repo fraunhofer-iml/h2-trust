@@ -16,6 +16,9 @@ You are a specialist at creating and repairing NestJS service tests in this repo
 useful service-focused backend test coverage, keep service tests centered on domain behavior and orchestration, and
 validate with the narrowest relevant backend test command.
 
+Shared rules for validation commands, project-path mapping, TestingModule policy, mock typing, and assertion style are
+in the **Testing Conventions** section of `copilot-instructions.md`.
+
 ## Scope
 
 - Focus on service methods, orchestration, domain rules, repository and broker interactions, configuration-driven
@@ -44,33 +47,16 @@ validate with the narrowest relevant backend test command.
 - Use `apps/process-svc/src/app/production/utils/production.utils.calculate-water-amount.spec.ts` as the baseline for
   grouped scenario coverage in utility-like backend logic.
 
-## Preferred Validation Commands
-
-- Derive the owning Nx project from the spec path before running validation: `apps/bff/** -> bff`,
-  `apps/general-svc/** -> general-svc`, `apps/process-svc/** -> process-svc`, and `libs/<name>/** -> <name>` when
-  backend-oriented libs are under test.
-- For a single backend service spec file, prefer `npx nx test <project-name> --testFile=<spec-file-name>`.
-- If `--testFile` is insufficient, prefer `npx nx test <project-name> -- <spec-file-name>`.
-- If the test depends on checked-in backend environment variables or configuration, prefer
-  `set -a && source .env.example && set +a && npx nx test <project-name> --testFile=<spec-file-name>`.
-- If a narrow file run is not practical, fall back to the owning project target such as `npx nx test bff`,
-  `npx nx test general-svc`, or `npx nx test process-svc`.
-- Do not default to workspace-wide test commands.
-- Do not default to `npm test`.
-
 ## File Placement And Naming Rules
 
 - Prefer colocated service specs beside the implementation unless the surrounding feature already uses `tests/` or
   `test/` folders.
-- In `apps/process-svc`, preserve local `tests/` and `test/` conventions for digital-product-passport features instead
-  of normalizing them.
 - Use the class or utility name for the top-level `describe(...)`, such as `ProcessStepService`,
   `TransportationService`, or `ProductionUtils.calculateWaterAmount`.
 - Use nested `describe(...)` blocks for public method names or stable scenario groups.
 - Keep `it(...)` names behavior-oriented and concise, such as `delegates to ProcessStepRepository`,
   `throws error when transportation has no predecessor`, or
   `returns transportation process step with documents from predecessor`.
-- Prefer extending an existing service spec before creating a second spec file for the same service.
 
 ## Mocking And Assertion Rules
 
@@ -79,22 +65,6 @@ validate with the narrowest relevant backend test command.
 - Keep real collaboration inside the service unit when doing so improves confidence without making setup noisy.
 - Prefer assertions on returned values, collaborator calls with meaningful payloads, side effects, and thrown errors.
 - Reuse existing fixtures, factories, payload builders, and provider mock patterns before introducing new ones.
-- Use focused assertions or `expect.objectContaining(...)` when full equality would make the test brittle.
-- Add `afterEach(jest.clearAllMocks())` when the spec uses reusable spies or mutable mock state.
-- Prefer typed mocks and fixtures using `jest.Mocked<T>`, `Partial<T>`, `Pick<T>`, or `satisfies` instead of broad
-  casts.
-- Avoid `any`, `as unknown as`, and untyped inline doubles unless a third-party boundary leaves no reasonable
-  alternative.
-- Prefer typed fixture builders or focused object literals with `satisfies` over oversized entity-shaped mock objects.
-
-## TypeScript And Nx Hygiene
-
-- Keep imports inside the owning Nx project boundary and prefer existing `@h2-trust/*` aliases over deep relative
-  imports into another project.
-- Do not deep import internals from another Nx project unless the surrounding local code already follows that pattern.
-- Use TestingModule when DI behavior or provider wiring matters; keep pure TypeScript domain helpers framework-light
-  when Nest wiring is not under test.
-- Prefer the smallest typed shape needed for assertions rather than oversized mock objects that obscure intent.
 
 ## Constraints
 
@@ -107,13 +77,9 @@ validate with the narrowest relevant backend test command.
 ## Anti-Patterns To Avoid
 
 - Do not stop at instantiation tests when the service exposes meaningful domain behavior.
-- Do not assert private methods, internal call sequencing, or duplicated implementation logic.
-- Do not mix unrelated success and error scenarios into a single test case.
 - Do not duplicate production computations inside expected values when fixtures or focused field assertions can express
   the behavior more clearly.
 - Do not introduce oversized fixtures with irrelevant fields just to satisfy type shape.
-- Do not wrap a pure TypeScript helper in TestingModule unless Nest dependency injection is genuinely part of the
-  behavior under test.
 
 ## Definition Of Done
 

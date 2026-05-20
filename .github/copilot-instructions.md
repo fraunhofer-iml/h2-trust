@@ -47,7 +47,6 @@
 
 ## Coding Guidelines
 
-- Always preserve the Apache license header in new `.ts`, `.js`, and `.mjs` files; ESLint enforces it.
 - Use 2-space indentation, single quotes, and `printWidth: 120`.
 - Imports are auto-sorted by Prettier; prefer existing `@h2-trust/*` path aliases from
   [tsconfig.base.json](./tsconfig.base.json) over deep relative imports.
@@ -106,6 +105,11 @@
   - `set -a && source .env.example && set +a && npx nx run-many -t test --projects=bff,frontend,general-svc,process-svc,utils --parallel 5 --outputStyle=static`
   - `npm --prefix libs/blockchain/smart-contract test`
   - Do not use root `npm test` — it expands to inferred Jest targets for all projects including libs with no tests.
+- To run a single spec file: `npx nx test <project> --testFile=<filename>`; if insufficient,
+  `npx nx test <project> -- <filename>`. Prepend `set -a && source .env.example && set +a &&` when the test depends on
+  env-vars.
+- Nx project name from spec path: `apps/bff/**` → `bff`, `apps/general-svc/**` → `general-svc`, `apps/process-svc/**` →
+  `process-svc`, `libs/<name>/**` → `<name>`.
 - Smart-contract dependencies are not covered by the root install; always run the separate
   `npm --prefix libs/blockchain/smart-contract ...` install/build/test commands when touching blockchain code.
 
@@ -264,6 +268,10 @@ Throw the narrowest exception from `@h2-trust/exceptions`. See
 ## Testing Conventions
 
 - Test files are named `{name}.spec.ts` and live next to the source file.
+- Prefer extending an existing spec over creating a second spec file for the same unit.
+- In `apps/process-svc`, the `digital-product-passport` feature uses `tests/` and `test/` subdirectories — preserve that
+  convention; do not normalize to colocated.
+- `apps/bff-e2e` does not exist in this repo; do not create or reference it.
 - Use `@nestjs/testing` `Test.createTestingModule()` with `useValue` to mock dependencies:
 
 ```typescript
@@ -274,6 +282,16 @@ const module: TestingModule = await Test.createTestingModule({
 }).compile();
 ```
 
+- Use `TestingModule` only when NestJS DI behavior is part of what is under test; test pure TypeScript helpers outside
+  the Nest container.
+- Mock only real boundaries: repositories, broker clients, storage, external services, time, and filesystem/network
+  access.
+- Prefer typed mocks using `jest.Mocked<T>`, `Partial<T>`, `Pick<T>`, or `satisfies`; avoid `any` and `as unknown as`
+  unless a third-party boundary leaves no alternative.
+- Use `expect.objectContaining(...)` when full equality assertions would be brittle.
+- Add `afterEach(jest.clearAllMocks())` when the spec uses reusable spies or mutable mock state.
+- Do not assert private methods, internal call sequencing, or NestJS lifecycle details.
+- Do not mix unrelated success and error scenarios in a single test case.
 - Use fixtures from `@h2-trust/contracts/*/fixtures` only in test files — ESLint blocks them in production code.
 - Every `describe` block must have at minimum an `it('should be defined')` baseline test.
 - For Angular, use `jest-preset-angular` (already configured); no need to configure `TestBed` from scratch.

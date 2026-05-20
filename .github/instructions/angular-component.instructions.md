@@ -10,8 +10,6 @@ All components are standalone (Angular 21 default). Use `selector: 'app-{name}'`
 constructor injection.
 
 ```typescript
-// Apache license header required
-
 import { Component, inject } from '@angular/core';
 import { SomeService } from '../../shared/services/some/some.service';
 
