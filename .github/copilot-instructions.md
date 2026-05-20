@@ -10,7 +10,7 @@
 
 ## Toolchain and Runtime
 
-- CI and this repo expect Node `24.13.x`, npm `11.x`, and Nx `22.5.4`.
+- CI and this repo expect Node `24.13.x`, npm `11.x`, and Nx `22.7.2`.
 - Package manager is `npm`; the root lockfile is [package-lock.json](./package-lock.json).
 - Backing services come from [docker-compose.yaml](./docker-compose.yaml): PostgreSQL, MinIO, blockchain, Keycloak,
   RabbitMQ.
@@ -24,15 +24,19 @@
   - [apps/bff](./apps/bff): NestJS REST gateway with Swagger, entry [apps/bff/src/main.ts](./apps/bff/src/main.ts)
   - [apps/general-svc](./apps/general-svc): NestJS RMQ microservice for master data
   - [apps/process-svc](./apps/process-svc): NestJS RMQ microservice for production, bottling, provenance, DPP logic
-  - [apps/bff-e2e](./apps/bff-e2e): Jest-based backend e2e; currently not a reliable default validation target
   - [apps/frontend-e2e](./apps/frontend-e2e): Playwright setup for frontend e2e
 - Shared libs:
-  - [libs/api](./libs/api): DTOs, labels, shared API types
-  - [libs/amqp](./libs/amqp): broker queues, payloads, entities, RMQ helpers
+  - [libs/contracts](./libs/contracts): DTOs, entities, and payloads shared between apps; path aliases
+    `@h2-trust/contracts/dtos`, `@h2-trust/contracts/entities`, `@h2-trust/contracts/payloads`
+  - [libs/messaging](./libs/messaging): broker queues, message patterns, RMQ helpers; path alias `@h2-trust/messaging`
+  - [libs/exceptions](./libs/exceptions): typed exception hierarchy (app, blockchain, database, domain, internal,
+    storage, validation); path alias `@h2-trust/exceptions`
   - [libs/configuration](./libs/configuration): env/config access used by apps
   - [libs/database](./libs/database): Prisma schema, query args, seed data
   - [libs/domain](./libs/domain): enums and domain-only types
   - [libs/storage](./libs/storage): file/object storage abstraction
+  - [libs/strings](./libs/strings): enum label mappers; path alias `@h2-trust/strings`
+  - [libs/validation](./libs/validation): custom class-validator validators; path alias `@h2-trust/validation`
   - [libs/blockchain](./libs/blockchain): blockchain utilities plus separate Hardhat package in
     `libs/blockchain/smart-contract`
   - [libs/utils](./libs/utils): generic helpers
@@ -85,17 +89,14 @@
   - Prettier currently prints noisy false-positive messages about cached Nx project graphs and
     `panic: reflect: unimplemented: AssignableTo with interface` for Dockerfiles; if the command exits `0`, treat it as
     passing.
-- Safe default test sequence:
-  - `set -a && source .env.example && set +a && npx nx run-many -t test --projects=amqp,bff,frontend,general-svc,process-svc,utils --parallel 5 --outputStyle=static`
+- Safe default test sequence (matches CI exactly):
+  - `set -a && source .env.example && set +a && npx nx run-many -t test --projects=bff,frontend,general-svc,process-svc,utils --parallel 5 --outputStyle=static`
   - `npm --prefix libs/blockchain/smart-contract test`
 
 ## Known Failure Modes
 
-- Do not use root `npm test` as your default validation command. It currently expands to inferred Jest targets for libs
-  with no tests and also includes `bff-e2e`; this failed during validation even though the CI-covered suites passed.
-- `bff-e2e` is currently not a reliable default gate. It failed during validation because
-  [apps/bff-e2e/src/bff/test-utils/test.utils.ts](./apps/bff-e2e/src/bff/test-utils/test.utils.ts) truncates tables
-  (`ProcessType`, `EnergySource`) that are not present in the current Prisma schema.
+- Do not use root `npm test` as your default validation command. It expands to inferred Jest targets for all projects
+  including libs with no tests; use the explicit project list above instead.
 - `npm ci` at root emits a non-fatal peer warning from `@nestjs/swagger` / `@nestjs/mapped-types` about
   `class-validator`; do not treat that as a repo failure.
 - Smart-contract dependencies are not covered by the root install. Always run the separate
@@ -105,7 +106,7 @@
 
 - Main workflows live in [\.github/workflows](./.github/workflows):
   - `build.yml`: builds `bff`, `frontend`, `general-svc`, `process-svc`, then smart contracts
-  - `test.yml`: runs `amqp`, `bff`, `frontend`, `general-svc`, `process-svc`, `utils`, plus smart-contract tests
+  - `test.yml`: runs `bff`, `frontend`, `general-svc`, `process-svc`, `utils`, plus smart-contract tests
   - `lint-and-format.yml`: runs root ESLint and Prettier checks
   - `danger.yml`: PR hygiene only; checks assignee, non-draft status, PR description, and lockfile updates when
     `package.json` changes
