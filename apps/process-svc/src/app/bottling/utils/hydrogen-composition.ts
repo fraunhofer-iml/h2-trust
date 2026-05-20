@@ -19,7 +19,7 @@ export function assembleComposition(provenance: ProvenanceEntity): HydrogenCompo
   if (!provenance.hydrogenBottling) {
     throw new InternalException('There is no hydrogen bottling in provenance.');
   }
-  if (provenance.getAllHydrogenLeafProductions()?.length === 0) {
+  if (provenance.getAllHydrogenLeafProductions().length === 0) {
     throw new InternalException('There are no hydrogen productions in provenance.');
   }
   if (
