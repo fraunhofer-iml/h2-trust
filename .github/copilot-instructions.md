@@ -24,7 +24,7 @@
   - [apps/bff](./apps/bff): NestJS REST gateway with Swagger, entry [apps/bff/src/main.ts](./apps/bff/src/main.ts)
   - [apps/general-svc](./apps/general-svc): NestJS RMQ microservice for master data
   - [apps/process-svc](./apps/process-svc): NestJS RMQ microservice for production, bottling, provenance, DPP logic
-  - [apps/frontend-e2e](./apps/frontend-e2e): Playwright setup for frontend e2e
+  - [apps/frontend-e2e](./apps/frontend-e2e): Playwright setup for frontend e2e (not part of current CI test gate)
 - Shared libs:
   - [libs/contracts](./libs/contracts): DTOs, entities, and payloads shared between apps; path aliases
     `@h2-trust/contracts/dtos`, `@h2-trust/contracts/entities`, `@h2-trust/contracts/payloads`
@@ -51,10 +51,16 @@
 - Use 2-space indentation, single quotes, and `printWidth: 120`.
 - Imports are auto-sorted by Prettier; prefer existing `@h2-trust/*` path aliases from
   [tsconfig.base.json](./tsconfig.base.json) over deep relative imports.
+- Import order from [\.prettierrc](./.prettierrc): built-ins, third-party, `@h2-trust/*`, `../`, then `./`.
 - Keep changes inside the existing app/lib boundaries; Nx module-boundary checks run in ESLint.
 - Frontend uses Angular standalone bootstrap and Tailwind; component selector prefix is `app`.
 - Do not weaken validation behavior casually: `general-svc` and `process-svc` use strict `ValidationPipe`, while `bff`
   is intentionally less strict for now.
+- Danger enforces Conventional Commits in PR titles (`build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`,
+  `revert`, `style`, `test`) and labels PRs from the detected type.
+- Danger warns if a `feat` PR has no `.spec.ts` changes.
+- If `.sol` files change, also update smart-contract artifacts under `docker/` (run `npx hardhat compile`) to avoid
+  Danger warnings.
 
 ## Validated Setup and Command Order
 
@@ -71,6 +77,8 @@
 - `npm run setup:db-reset` works only when `.env` is already aligned with `.env.example`.
 - `npm run setup` is conceptually correct, but only use it after confirming `.env` is current; otherwise Prisma reset
   fails with authentication errors.
+- `FEATURE_VERIFICATION_ENABLED` in [\.env.example](./.env.example) gates IPFS/blockchain verification integration; when
+  disabled, those backing services are not required for normal flows.
 
 ## Validated Build, Run, Lint, and Test Commands
 
@@ -85,6 +93,8 @@
 - Lint and format:
   - `npx eslint --quiet .`
   - `npx prettier --check .`
+  - Auto-fix helpers from [package.json](./package.json): `npm run quality`, `npm run quality:format`,
+    `npm run quality:lint`
   - Markdown files are included in Prettier checks, including this instructions file.
   - Prettier currently prints noisy false-positive messages about cached Nx project graphs and
     `panic: reflect: unimplemented: AssignableTo with interface` for Dockerfiles; if the command exits `0`, treat it as
@@ -113,6 +123,7 @@
   - `codeql.yml`: JavaScript CodeQL analysis
   - `images.yml`: release-tag image builds using [docker/angular.dockerfile](./docker/angular.dockerfile) and
     [docker/nest.dockerfile](./docker/nest.dockerfile)
+  - `dependabot.yml`: auto-labels, auto-approves, and enables auto-merge for patch/minor Dependabot PRs
   - `slither.yml`: currently disabled (`if: false`)
 - If you change `package.json`, also update [package-lock.json](./package-lock.json) or Danger will flag the PR.
 
