@@ -10,12 +10,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import {
+  CreateHydrogenProductionStatisticsPayload,
   CreateManyProcessStepsPayload,
+  ProductionDataFilter,
+  ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/contracts/payloads';
 import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
-import { ProcessType } from '@h2-trust/domain';
+import { ProcessType, RfnboType } from '@h2-trust/domain';
 import { ProcessStepService } from './process-step.service';
 
 describe('ProcessStepService', () => {
@@ -31,10 +34,13 @@ describe('ProcessStepService', () => {
   };
 
   const batchRepositoryMock = {
+    setRfnboStatus: jest.fn(),
     setBatchesInactive: jest.fn(),
   };
 
   const processStepRepositoryMock = {
+    findPredecessorProcessSteps: jest.fn(),
+    findProcessSteps: jest.fn(),
     insertProcessStep: jest.fn(),
     insertManyProcessSteps: jest.fn(),
     findProcessStep: jest.fn(),
@@ -67,6 +73,50 @@ describe('ProcessStepService', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
+
+  describe('getPredecessors', () => {
+    it('loads predecessor process steps and returns them with the given process step first', async () => {
+      // Arrange
+      const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
+      const givenPredecessorProcessSteps = [
+        ProcessStepEntityFixture.createHydrogenProduction(),
+        ProcessStepEntityFixture.createPowerProduction(),
+      ];
+      const predecessorIds = givenPredecessorProcessSteps.map((processStep) => processStep.id);
+
+      processStepRepositoryMock.findPredecessorProcessSteps.mockResolvedValue(predecessorIds);
+      processStepRepositoryMock.findProcessSteps.mockResolvedValue(givenPredecessorProcessSteps);
+
+      // Act
+      const actualResult = await service.getPredecessors(givenProcessStep);
+
+      // Assert
+      expect(processStepRepositoryMock.findPredecessorProcessSteps).toHaveBeenCalledWith(givenProcessStep.batch.id);
+      expect(processStepRepositoryMock.findProcessSteps).toHaveBeenCalledWith(predecessorIds);
+      expect(actualResult).toEqual([givenProcessStep, ...givenPredecessorProcessSteps]);
+    });
+  });
+
+  describe('updateRfnboStatus', () => {
+    it('delegates to BatchRepository with the batch id and RFNBO type', async () => {
+      // Arrange
+      const givenProcessStep = ProcessStepEntityFixture.createHydrogenProduction();
+      const expected = { id: 'quality-details-1', batchId: givenProcessStep.batch.id };
+
+      batchRepositoryMock.setRfnboStatus.mockResolvedValue(expected);
+
+      // Act
+      const actualResult = await service.updateRfnboStatus(givenProcessStep, RfnboType.RFNBO_READY);
+
+      // Assert
+      expect(batchRepositoryMock.setRfnboStatus).toHaveBeenCalledWith(givenProcessStep.batch.id, RfnboType.RFNBO_READY);
+      expect(actualResult).toEqual(expected);
+    });
   });
 
   describe('createProcessStep', () => {
@@ -216,6 +266,69 @@ describe('ProcessStepService', () => {
         givenPayload.ownerId,
       );
       expect(actualResult).toEqual(givenProcessSteps);
+    });
+  });
+
+  describe('readProcessStepsByPredecessorTypesAndUnitAndDate', () => {
+    it('delegates to ProcessStepRepository with unit name and normalized month date', async () => {
+      // Arrange
+      const givenPayload = new CreateHydrogenProductionStatisticsPayload(
+        'company-1',
+        new Date('2026-01-01T00:00:00Z'),
+        'Hydrogen Production Unit 1',
+      );
+      const givenPredecessorTypes = [ProcessType.POWER_PRODUCTION];
+      const givenProcessSteps = [ProcessStepEntityFixture.createHydrogenProduction()];
+
+      processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner.mockResolvedValue(givenProcessSteps);
+
+      // Act
+      const actualResult = await service.readProcessStepsByPredecessorTypesAndUnitAndDate(
+        givenPredecessorTypes,
+        givenPayload,
+      );
+
+      // Assert
+      expect(processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner).toHaveBeenCalledWith(
+        givenPredecessorTypes,
+        givenPayload.ownerId,
+        givenPayload.unitName,
+        new Date(givenPayload.month),
+      );
+      expect(actualResult).toEqual(givenProcessSteps);
+    });
+  });
+
+  describe('readPaginatedProcessStepsByPredecessorTypesAndOwner', () => {
+    it('returns the requested page of process steps with pagination metadata', async () => {
+      // Arrange
+      const givenProcesses = [
+        ProcessStepEntityFixture.createHydrogenBottling({ id: 'process-step-1' }),
+        ProcessStepEntityFixture.createHydrogenProduction({ id: 'process-step-2' }),
+        ProcessStepEntityFixture.createPowerProduction({ id: 'process-step-3' }),
+      ];
+      const givenPayload = new ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload(
+        [ProcessType.HYDROGEN_PRODUCTION],
+        'company-1',
+        new ProductionDataFilter(2, 1, 'Hydrogen Production Unit 1', new Date('2026-01-01T00:00:00Z')),
+      );
+
+      processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner.mockResolvedValue(givenProcesses);
+
+      // Act
+      const actualResult = await service.readPaginatedProcessStepsByPredecessorTypesAndOwner(givenPayload);
+
+      // Assert
+      expect(processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner).toHaveBeenCalledWith(
+        givenPayload.predecessorProcessTypes,
+        givenPayload.ownerId,
+        givenPayload.filter.unitName,
+        new Date(givenPayload.filter.month),
+      );
+      expect(actualResult.processSteps).toEqual([givenProcesses[1]]);
+      expect(actualResult.currentPage).toBe(2);
+      expect(actualResult.pageSize).toBe(1);
+      expect(actualResult.totalAmountOfItems).toBe(3);
     });
   });
 
