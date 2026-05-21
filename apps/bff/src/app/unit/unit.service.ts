@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import {
@@ -50,7 +50,7 @@ export class UnitService {
         return HydrogenStorageUnitDto.fromEntity(unit);
     }
 
-    throw new Error('Unknown unit type');
+    throw new BadRequestException('Unknown unit type');
   }
 
   async readUnits(userId: string, type?: UnitType): Promise<UnitOverviewDto[]> {

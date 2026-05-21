@@ -99,23 +99,23 @@ export class CreateUnitComponent {
   createHydrogenStorageUnitMutation = injectMutation(() => ({
     mutationFn: (dto: HydrogenStorageUnitInputDto) => this.unitsService.createHydrogenStorageUnit(dto),
     onError: (e) => toastQueryError(e),
-    onSuccess: () => this.onSuccess(QueryKeyPrefix.UNITS, UnitType.HYDROGEN_STORAGE),
+    onSuccess: () => this.onSuccess(QueryKeyPrefix.UNITS),
   }));
 
   createPowerProductionUnitMutation = injectMutation(() => ({
     mutationFn: (dto: PowerProductionUnitInputDto) => this.unitsService.createPowerProductionUnit(dto),
     onError: (e) => toastQueryError(e),
-    onSuccess: () => this.onSuccess(QueryKeyPrefix.UNITS, UnitType.POWER_PRODUCTION),
+    onSuccess: () => this.onSuccess(QueryKeyPrefix.UNITS),
   }));
 
   createHydrogenProductionUnitMutation = injectMutation(() => ({
     mutationFn: (dto: HydrogenProductionUnitInputDto) => this.unitsService.createHydrogenProductionUnit(dto),
     onError: (e) => toastQueryError(e),
-    onSuccess: () => this.onSuccess(QueryKeyPrefix.UNITS, UnitType.HYDROGEN_PRODUCTION),
+    onSuccess: () => this.onSuccess(QueryKeyPrefix.UNITS),
   }));
 
-  private async onSuccess(queryKeyPrefix: QueryKeyPrefix, unitType: UnitType) {
-    await this.queryClient.invalidateQueries({ queryKey: [queryKeyPrefix, unitType] });
+  private async onSuccess(queryKeyPrefix: QueryKeyPrefix) {
+    await this.queryClient.invalidateQueries({ queryKey: [queryKeyPrefix] });
     toast.success('Successfully created.');
     this.router.navigateByUrl(H2TrustRoutes.UNITS);
   }

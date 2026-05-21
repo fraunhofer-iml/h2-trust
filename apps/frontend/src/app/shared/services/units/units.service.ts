@@ -49,7 +49,7 @@ export class UnitsService {
   }
 
   createHydrogenProductionUnit(dto: HydrogenProductionUnitInputDto) {
-    return lastValueFrom(this.httpClient.post<PowerProductionOverviewDto[]>(API.UNITS.HYDROGEN_PRODUCTION.BASE, dto));
+    return lastValueFrom(this.httpClient.post<HydrogenStorageOverviewDto[]>(API.UNITS.HYDROGEN_PRODUCTION.BASE, dto));
   }
 
   getUnitById(id: string) {
