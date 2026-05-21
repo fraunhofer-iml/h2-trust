@@ -28,7 +28,7 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
     // arrange
       const givenHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction();
 
-      const productionPowerBatches: ProofOfOriginBatchEntity = ProofOfOriginPowerBatchEntityFixture.create({
+      const givenProductionPowerBatches: ProofOfOriginBatchEntity = ProofOfOriginPowerBatchEntityFixture.create({
         accountingPeriodEnd: ProcessStepEntityFixture.createPowerProduction().endedAt,
         amount: ProcessStepEntityFixture.createPowerProduction().batch.amount,
       });
@@ -37,7 +37,7 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
         ProofOfOriginSubClassificationEntityFixture.create({
           name: EnergySource.SOLAR_ENERGY,
           emissionOfProcessStep: 0,
-          batches: [productionPowerBatches],
+          batches: [givenProductionPowerBatches],
         }),
       ];
 
@@ -61,7 +61,7 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
 
     it('should return a section with only power supply classification when no water consumptions are present', () => {
     // arrange
-      const productionChain: ProductionChainEntity = new ProductionChainEntity(
+      const givenProductionChain: ProductionChainEntity = new ProductionChainEntity(
         ProcessStepEntityFixture.createHydrogenBottling(),
         ProcessStepEntityFixture.createHydrogenBottling(),
         ProcessStepEntityFixture.createPowerProduction(),
@@ -71,9 +71,9 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
       );
 
       const givenProvenance = new ProvenanceEntity(
-        productionChain.hydrogenRootProduction,
-        [productionChain],
-        productionChain.hydrogenRootProduction,
+        givenProductionChain.hydrogenRootProduction,
+        [givenProductionChain],
+        givenProductionChain.hydrogenRootProduction,
       );
 
       // act
@@ -87,7 +87,7 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
 
     it('should return a section with only water supply classification when no power productions are present', () => {
     // arrange
-      const productionChain: ProductionChainEntity = new ProductionChainEntity(
+      const givenProductionChain: ProductionChainEntity = new ProductionChainEntity(
         ProcessStepEntityFixture.createHydrogenBottling(),
         ProcessStepEntityFixture.createHydrogenBottling(),
         ProcessStepEntityFixture.createPowerProduction(),
@@ -97,9 +97,9 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
       );
 
       const givenProvenance = new ProvenanceEntity(
-        productionChain.hydrogenRootProduction,
-        [productionChain],
-        productionChain.hydrogenRootProduction,
+        givenProductionChain.hydrogenRootProduction,
+        [givenProductionChain],
+        givenProductionChain.hydrogenRootProduction,
       );
 
       // act
@@ -112,7 +112,7 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
 
     it('should return a section with empty classifications when no power productions and no water consumptions are present', () => {
     // arrange
-      const productionChain: ProductionChainEntity = new ProductionChainEntity(
+      const givenProductionChain: ProductionChainEntity = new ProductionChainEntity(
         ProcessStepEntityFixture.createHydrogenBottling(),
         ProcessStepEntityFixture.createHydrogenBottling(),
         ProcessStepEntityFixture.createPowerProduction(),
@@ -122,9 +122,9 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
       );
 
       const givenProvenance = new ProvenanceEntity(
-        productionChain.hydrogenRootProduction,
-        [productionChain],
-        productionChain.hydrogenRootProduction,
+        givenProductionChain.hydrogenRootProduction,
+        [givenProductionChain],
+        givenProductionChain.hydrogenRootProduction,
       );
 
       // act

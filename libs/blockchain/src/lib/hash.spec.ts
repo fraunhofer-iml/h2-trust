@@ -42,9 +42,10 @@ describe('hash util functions', () => {
           this.destroy(new Error('stream error'));
         },
       });
+      const expectedErrorMessage = 'stream error';
 
       // act & assert
-      await expect(hashStream(givenStream)).rejects.toThrow('stream error');
+      await expect(hashStream(givenStream)).rejects.toThrow(expectedErrorMessage);
     });
   });
 

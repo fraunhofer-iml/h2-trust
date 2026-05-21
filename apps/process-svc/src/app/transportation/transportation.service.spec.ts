@@ -137,7 +137,9 @@ describe('TransportationService', () => {
       );
 
       // act & assert
-      await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(
+      const actualResult = service.createHydrogenTransportationProcessStep(givenPayload);
+
+      await expect(actualResult).rejects.toThrow(
         `Distance is required for transport mode [${TransportMode.TRAILER}].`,
       );
       expect(processStepServiceMock.setBatchesInactive).not.toHaveBeenCalled();
@@ -157,7 +159,9 @@ describe('TransportationService', () => {
       );
 
       // act & assert
-      await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(
+      const actualResult = service.createHydrogenTransportationProcessStep(givenPayload);
+
+      await expect(actualResult).rejects.toThrow(
         `Fuel type is required for transport mode [${TransportMode.TRAILER}].`,
       );
       expect(processStepServiceMock.setBatchesInactive).not.toHaveBeenCalled();
@@ -177,7 +181,9 @@ describe('TransportationService', () => {
       );
 
       // act & assert
-      await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(
+      const actualResult = service.createHydrogenTransportationProcessStep(givenPayload);
+
+      await expect(actualResult).rejects.toThrow(
         `Invalid transport mode: ${givenPayload.transportMode}`,
       );
       expect(processStepServiceMock.setBatchesInactive).not.toHaveBeenCalled();
@@ -200,7 +206,9 @@ describe('TransportationService', () => {
       processStepServiceMock.setBatchesInactive.mockRejectedValue(expectedError);
 
       // act & assert
-      await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(expectedError);
+      const actualResult = service.createHydrogenTransportationProcessStep(givenPayload);
+
+      await expect(actualResult).rejects.toThrow(expectedError);
       expect(processStepServiceMock.setBatchesInactive).toHaveBeenCalledWith([givenPredecessorBatch.id]);
       expect(processStepServiceMock.createProcessStep).not.toHaveBeenCalled();
     });
@@ -222,7 +230,9 @@ describe('TransportationService', () => {
       processStepServiceMock.createProcessStep.mockRejectedValue(expectedError);
 
       // act & assert
-      await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(expectedError);
+      const actualResult = service.createHydrogenTransportationProcessStep(givenPayload);
+
+      await expect(actualResult).rejects.toThrow(expectedError);
       expect(processStepServiceMock.setBatchesInactive).toHaveBeenCalledWith([givenPredecessorBatch.id]);
       expect(processStepServiceMock.createProcessStep).toHaveBeenCalledWith(
         expect.objectContaining({

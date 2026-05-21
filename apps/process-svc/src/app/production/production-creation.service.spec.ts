@@ -84,15 +84,15 @@ describe('ProductionCreationService', () => {
   describe('createAndPersistProductions', () => {
     it('should process productions across multiple chunks using the configured chunk size when called', async () => {
       // arrange
-      const localConfigurationServiceMock = {
+      const givenConfigurationServiceMock = {
         getProcessSvcConfiguration: jest.fn().mockReturnValue({ productionChunkSize: 1 }),
       };
-      const localService = new ProductionCreationService(
-        localConfigurationServiceMock as unknown as ConfigurationService,
+      const givenService = new ProductionCreationService(
+        givenConfigurationServiceMock as unknown as ConfigurationService,
         processStepServiceMock as unknown as ProcessStepService,
         digitalProductPassportServiceMock as unknown as DigitalProductPassportService,
       );
-      const firstCreateProduction = new CreateProductionEntity(
+      const givenFirstCreateProduction = new CreateProductionEntity(
         new Date('2026-01-01T01:00:00Z'),
         new Date('2026-01-01T01:59:59Z'),
         'power-unit-1',
@@ -106,7 +106,7 @@ describe('ProductionCreationService', () => {
         'hydrogen-owner-1',
         20,
       );
-      const secondCreateProduction = new CreateProductionEntity(
+      const givenSecondCreateProduction = new CreateProductionEntity(
         new Date('2026-01-01T02:00:00Z'),
         new Date('2026-01-01T02:59:59Z'),
         'power-unit-1',
@@ -124,7 +124,7 @@ describe('ProductionCreationService', () => {
         ['power-unit-1', PowerProductionUnitEntityFixture.create({ id: 'power-unit-1' })],
         ['hydrogen-unit-1', HydrogenProductionUnitEntityFixture.create({ id: 'hydrogen-unit-1' })],
       ]);
-      const powerToPersist = [
+      const givenPowerProcessStepsToPersist = [
         ProcessStepEntityFixture.createPowerProduction({
           id: 'power-to-persist-1',
           batch: BatchEntityFixture.createPowerBatch({ id: 'power-batch-to-persist-1', processStepId: 'power-to-persist-1' }),
@@ -134,7 +134,7 @@ describe('ProductionCreationService', () => {
           batch: BatchEntityFixture.createPowerBatch({ id: 'power-batch-to-persist-2', processStepId: 'power-to-persist-2' }),
         }),
       ];
-      const waterToPersist = [
+      const givenWaterProcessStepsToPersist = [
         ProcessStepEntityFixture.createWaterConsumption({
           id: 'water-to-persist-1',
           batch: BatchEntityFixture.createWaterBatch({ id: 'water-batch-to-persist-1', processStepId: 'water-to-persist-1' }),
@@ -146,7 +146,7 @@ describe('ProductionCreationService', () => {
           executedBy: HydrogenProductionUnitEntityFixture.create({ id: 'hydrogen-unit-1' }),
         }),
       ];
-      const persistedPower = [
+      const expectedPersistedPowerProcessSteps = [
         ProcessStepEntityFixture.createPowerProduction({
           id: 'persisted-power-1',
           batch: BatchEntityFixture.createPowerBatch({ id: 'persisted-power-batch-1', processStepId: 'persisted-power-1' }),
@@ -156,7 +156,7 @@ describe('ProductionCreationService', () => {
           batch: BatchEntityFixture.createPowerBatch({ id: 'persisted-power-batch-2', processStepId: 'persisted-power-2' }),
         }),
       ];
-      const persistedWater = [
+      const expectedPersistedWaterProcessSteps = [
         ProcessStepEntityFixture.createWaterConsumption({
           id: 'persisted-water-1',
           batch: BatchEntityFixture.createWaterBatch({ id: 'persisted-water-batch-1', processStepId: 'persisted-water-1' }),
@@ -168,13 +168,13 @@ describe('ProductionCreationService', () => {
           executedBy: HydrogenProductionUnitEntityFixture.create({ id: 'hydrogen-unit-1' }),
         }),
       ];
-      const hydrogenToPersist = [
+      const givenHydrogenProcessStepsToPersist = [
         ProcessStepEntityFixture.createHydrogenProduction({
           id: 'hydrogen-to-persist-1',
           batch: BatchEntityFixture.createHydrogenBatch({
             id: 'hydrogen-batch-to-persist-1',
             processStepId: 'hydrogen-to-persist-1',
-            predecessors: [persistedPower[0].batch, persistedWater[0].batch],
+            predecessors: [expectedPersistedPowerProcessSteps[0].batch, expectedPersistedWaterProcessSteps[0].batch],
             qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
           }),
         }),
@@ -183,12 +183,12 @@ describe('ProductionCreationService', () => {
           batch: BatchEntityFixture.createHydrogenBatch({
             id: 'hydrogen-batch-to-persist-2',
             processStepId: 'hydrogen-to-persist-2',
-            predecessors: [persistedPower[1].batch, persistedWater[1].batch],
+            predecessors: [expectedPersistedPowerProcessSteps[1].batch, expectedPersistedWaterProcessSteps[1].batch],
             qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
           }),
         }),
       ];
-      const persistedHydrogen = [
+      const expectedPersistedHydrogenProcessSteps = [
         ProcessStepEntityFixture.createHydrogenProduction({
           id: 'persisted-hydrogen-1',
           batch: BatchEntityFixture.createHydrogenBatch({ id: 'persisted-hydrogen-batch-1', processStepId: 'persisted-hydrogen-1' }),
@@ -200,41 +200,41 @@ describe('ProductionCreationService', () => {
       ];
 
       assemblePowerProductionsMock
-        .mockReturnValueOnce([powerToPersist[0]])
-        .mockReturnValueOnce([powerToPersist[1]]);
+        .mockReturnValueOnce([givenPowerProcessStepsToPersist[0]])
+        .mockReturnValueOnce([givenPowerProcessStepsToPersist[1]]);
       assembleWaterConsumptionsMock
-        .mockReturnValueOnce([waterToPersist[0]])
-        .mockReturnValueOnce([waterToPersist[1]]);
+        .mockReturnValueOnce([givenWaterProcessStepsToPersist[0]])
+        .mockReturnValueOnce([givenWaterProcessStepsToPersist[1]]);
       assembleHydrogenProductionsMock
-        .mockReturnValueOnce([hydrogenToPersist[0]])
-        .mockReturnValueOnce([hydrogenToPersist[1]]);
+        .mockReturnValueOnce([givenHydrogenProcessStepsToPersist[0]])
+        .mockReturnValueOnce([givenHydrogenProcessStepsToPersist[1]]);
       processStepServiceMock.createManyProcessSteps
-        .mockResolvedValueOnce([persistedPower[0], persistedWater[0]])
-        .mockResolvedValueOnce([persistedHydrogen[0]])
-        .mockResolvedValueOnce([persistedPower[1], persistedWater[1]])
-        .mockResolvedValueOnce([persistedHydrogen[1]]);
+        .mockResolvedValueOnce([expectedPersistedPowerProcessSteps[0], expectedPersistedWaterProcessSteps[0]])
+        .mockResolvedValueOnce([expectedPersistedHydrogenProcessSteps[0]])
+        .mockResolvedValueOnce([expectedPersistedPowerProcessSteps[1], expectedPersistedWaterProcessSteps[1]])
+        .mockResolvedValueOnce([expectedPersistedHydrogenProcessSteps[1]]);
       digitalProductPassportServiceMock.getRfnboType
         .mockReturnValueOnce(RfnboType.RFNBO_READY)
         .mockReturnValueOnce(RfnboType.NON_CERTIFIABLE);
 
       // act
-      const actualResult = await localService.createAndPersistProductions(
-        [firstCreateProduction, secondCreateProduction],
+      const actualResult = await givenService.createAndPersistProductions(
+        [givenFirstCreateProduction, givenSecondCreateProduction],
         givenProductionUnitsForId,
       );
 
       // assert
       expect(processStepServiceMock.createManyProcessSteps).toHaveBeenCalledTimes(4);
       expect(digitalProductPassportServiceMock.getRfnboType).toHaveBeenCalledTimes(2);
-      expect(hydrogenToPersist[0].batch.qualityDetails.rfnboType).toBe(RfnboType.RFNBO_READY);
-      expect(hydrogenToPersist[1].batch.qualityDetails.rfnboType).toBe(RfnboType.NON_CERTIFIABLE);
+      expect(givenHydrogenProcessStepsToPersist[0].batch.qualityDetails.rfnboType).toBe(RfnboType.RFNBO_READY);
+      expect(givenHydrogenProcessStepsToPersist[1].batch.qualityDetails.rfnboType).toBe(RfnboType.NON_CERTIFIABLE);
       expect(actualResult).toEqual([
-        persistedPower[0],
-        persistedWater[0],
-        persistedHydrogen[0],
-        persistedPower[1],
-        persistedWater[1],
-        persistedHydrogen[1],
+        expectedPersistedPowerProcessSteps[0],
+        expectedPersistedWaterProcessSteps[0],
+        expectedPersistedHydrogenProcessSteps[0],
+        expectedPersistedPowerProcessSteps[1],
+        expectedPersistedWaterProcessSteps[1],
+        expectedPersistedHydrogenProcessSteps[1],
       ]);
     });
 
@@ -339,7 +339,9 @@ describe('ProductionCreationService', () => {
       assembleWaterConsumptionsMock.mockReturnValue([ProcessStepEntityFixture.createWaterConsumption()]);
 
       // act & assert
-      await expect(service.createAndPersistProductions([givenCreateProduction], new Map())).rejects.toThrow(
+      const actualResult = service.createAndPersistProductions([givenCreateProduction], new Map());
+
+      await expect(actualResult).rejects.toThrow(
         'Expected 1:1 relation between given productions and created process steps, but got 0 power and 1 water for 1 productions.',
       );
       expect(processStepServiceMock.createManyProcessSteps).not.toHaveBeenCalled();
@@ -367,7 +369,9 @@ describe('ProductionCreationService', () => {
       processStepServiceMock.createManyProcessSteps.mockResolvedValue([ProcessStepEntityFixture.createPowerProduction()]);
 
       // act & assert
-      await expect(service.createAndPersistProductions([givenCreateProduction], new Map())).rejects.toThrow(
+      const actualResult = service.createAndPersistProductions([givenCreateProduction], new Map());
+
+      await expect(actualResult).rejects.toThrow(
         'Expected 1:1 relation between power and water process steps, but got 1 power and 0 water.',
       );
     });
@@ -397,7 +401,7 @@ describe('ProductionCreationService', () => {
         batch: BatchEntityFixture.createWaterBatch({ id: 'persisted-water-batch', processStepId: 'persisted-water' }),
         executedBy: HydrogenProductionUnitEntityFixture.create({ id: 'hydrogen-unit-1' }),
       });
-      const hydrogenWithUnknownPredecessor = ProcessStepEntityFixture.createHydrogenProduction({
+      const givenHydrogenWithUnknownPredecessor = ProcessStepEntityFixture.createHydrogenProduction({
         batch: BatchEntityFixture.createHydrogenBatch({
           predecessors: [
             BatchEntityFixture.createPowerBatch({ id: 'unknown-power-batch', processStepId: 'unknown-power' }),
@@ -409,11 +413,13 @@ describe('ProductionCreationService', () => {
 
       assemblePowerProductionsMock.mockReturnValue([ProcessStepEntityFixture.createPowerProduction()]);
       assembleWaterConsumptionsMock.mockReturnValue([ProcessStepEntityFixture.createWaterConsumption()]);
-      assembleHydrogenProductionsMock.mockReturnValue([hydrogenWithUnknownPredecessor]);
+      assembleHydrogenProductionsMock.mockReturnValue([givenHydrogenWithUnknownPredecessor]);
       processStepServiceMock.createManyProcessSteps.mockResolvedValueOnce([givenPersistedPower, givenPersistedWater]);
 
       // act & assert
-      await expect(service.createAndPersistProductions([givenCreateProduction], new Map())).rejects.toThrow(
+      const actualResult = service.createAndPersistProductions([givenCreateProduction], new Map());
+
+      await expect(actualResult).rejects.toThrow(
         'powerProduction',
       );
       expect(digitalProductPassportServiceMock.getRfnboType).not.toHaveBeenCalled();

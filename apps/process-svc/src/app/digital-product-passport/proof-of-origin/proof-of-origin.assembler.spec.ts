@@ -64,8 +64,11 @@ describe('ProofOfOriginAssembler', () => {
         ProofOfOriginSectionEntityFixture.create({ name: ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION }),
       ];
 
-      // act & assert
-      expect(getHydrogenBottlingCompositions(givenProofOfOrigin)).toEqual([]);
+      // act
+      const actualResult = getHydrogenBottlingCompositions(givenProofOfOrigin);
+
+      // assert
+      expect(actualResult).toEqual([]);
     });
 
     it('should return the hydrogen composition when the first bottling batch is present', () => {

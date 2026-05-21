@@ -89,7 +89,9 @@ describe('BottlingAssembler', () => {
       const expectedErrorMessage = 'No predecessor types found: batch list has no quality details';
 
       // act & assert
-      expect(() => assembleBottling(givenPayload, givenBatchesForBottle)).toThrow(expectedErrorMessage);
+      const actualOperation = () => assembleBottling(givenPayload, givenBatchesForBottle);
+
+      expect(actualOperation).toThrow(expectedErrorMessage);
     });
   });
 });

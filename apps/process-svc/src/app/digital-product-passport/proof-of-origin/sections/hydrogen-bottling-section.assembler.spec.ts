@@ -41,17 +41,17 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
       expect(actualResult.batches).toHaveLength(1);
       expect(actualResult.classifications).toEqual([]);
 
-      const batch = actualResult.batches[0] as ProofOfOriginHydrogenBatchEntity;
-      expect(batch.id).toBe(givenHydrogenBottling.batch.id);
-      expect(batch.emission).toBeDefined();
-      expect(batch.emission.totalEmissionsPerKgHydrogen).toBe(0);
-      expect(batch.emission.basisOfCalculation).toEqual(['E = [TBD]']);
-      expect(batch.createdAt).toBe(givenHydrogenBottling.startedAt);
-      expect(batch.amount).toBe(givenHydrogenBottling.batch.amount);
-      expect(batch.batchType).toBe(givenHydrogenBottling.batch.type);
-      expect(batch.unitId).toBe(givenHydrogenBottling.executedBy.id);
-      expect(batch.processStep).toBe(givenHydrogenBottling.type);
-      expect(batch.accountingPeriodEnd).toBe(givenHydrogenBottling.endedAt);
+      const givenBatch = actualResult.batches[0] as ProofOfOriginHydrogenBatchEntity;
+      expect(givenBatch.id).toBe(givenHydrogenBottling.batch.id);
+      expect(givenBatch.emission).toBeDefined();
+      expect(givenBatch.emission.totalEmissionsPerKgHydrogen).toBe(0);
+      expect(givenBatch.emission.basisOfCalculation).toEqual(['E = [TBD]']);
+      expect(givenBatch.createdAt).toBe(givenHydrogenBottling.startedAt);
+      expect(givenBatch.amount).toBe(givenHydrogenBottling.batch.amount);
+      expect(givenBatch.batchType).toBe(givenHydrogenBottling.batch.type);
+      expect(givenBatch.unitId).toBe(givenHydrogenBottling.executedBy.id);
+      expect(givenBatch.processStep).toBe(givenHydrogenBottling.type);
+      expect(givenBatch.accountingPeriodEnd).toBe(givenHydrogenBottling.endedAt);
     });
   });
 
@@ -98,11 +98,11 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
 
       // act
       const actualResult = assembleHydrogenBottlingSection(givenProvenance);
-      const hydrogenComponentsResult = actualResult[0].batches[0] as ProofOfOriginHydrogenBatchEntity;
+      const actualHydrogenComponentsResult = actualResult[0].batches[0] as ProofOfOriginHydrogenBatchEntity;
 
       // assert
       expect(actualResult).toHaveLength(1);
-      expect(hydrogenComponentsResult.amount).toBe(100);
+      expect(actualHydrogenComponentsResult.amount).toBe(100);
     });
 
     it('should assemble amount from two predecessors when called', () => {
@@ -128,11 +128,11 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
 
       // act
       const actualResult = assembleHydrogenBottlingSection(givenProvenance);
-      const hydrogenComponentsResult = actualResult[0].batches[0] as ProofOfOriginHydrogenBatchEntity;
+      const actualHydrogenComponentsResult = actualResult[0].batches[0] as ProofOfOriginHydrogenBatchEntity;
 
       // assert
       expect(actualResult).toHaveLength(1);
-      expect(hydrogenComponentsResult.amount).toBe(100);
+      expect(actualHydrogenComponentsResult.amount).toBe(100);
     });
 
     it('should return [] when process step is undefined', () => {
@@ -155,7 +155,9 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
       const givenProvenance = new ProvenanceEntity(givenProcessStep, [], givenProcessStep);
 
       // act & assert
-      expect(() => assembleHydrogenBottlingSection(givenProvenance)).toThrow(expectedErrorMessage);
+      const actualOperation = () => assembleHydrogenBottlingSection(givenProvenance);
+
+      expect(actualOperation).toThrow(expectedErrorMessage);
     });
   });
 });

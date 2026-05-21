@@ -28,13 +28,13 @@ describe('WaterConsumptionProofOfOriginAssembler', () => {
       expect(actualResult.batches).toHaveLength(1);
       expect(actualResult.subClassifications).toEqual([]);
 
-      const batch = actualResult.batches[0] as ProofOfOriginWaterBatchEntity;
-      expect(batch.id).toBe(givenWaterConsumption.batch.id);
-      expect(batch.emission).toBeDefined();
-      expect(batch.emission.totalEmissionsPerKgHydrogen).toBeGreaterThan(0);
-      expect(batch.createdAt).toBe(givenWaterConsumption.startedAt);
-      expect(batch.amount).toBe(givenWaterConsumption.batch.amount);
-      expect(batch.deionizedWaterAmount).toBe(givenWaterConsumption.batch.amount);
+      const givenBatch = actualResult.batches[0] as ProofOfOriginWaterBatchEntity;
+      expect(givenBatch.id).toBe(givenWaterConsumption.batch.id);
+      expect(givenBatch.emission).toBeDefined();
+      expect(givenBatch.emission.totalEmissionsPerKgHydrogen).toBeGreaterThan(0);
+      expect(givenBatch.createdAt).toBe(givenWaterConsumption.startedAt);
+      expect(givenBatch.amount).toBe(givenWaterConsumption.batch.amount);
+      expect(givenBatch.deionizedWaterAmount).toBe(givenWaterConsumption.batch.amount);
     });
 
     it('should return a classification with multiple water batches when multiple water supplies are provided', () => {
@@ -57,31 +57,35 @@ describe('WaterConsumptionProofOfOriginAssembler', () => {
       expect(actualResult.name).toBe(ProofOfOrigin.WATER_SUPPLY_CLASSIFICATION);
       expect(actualResult.batches).toHaveLength(2);
 
-      const batch1 = actualResult.batches[0] as ProofOfOriginWaterBatchEntity;
-      expect(batch1.id).toBe(givenWaterConsumption1.batch.id);
+      const givenBatch1 = actualResult.batches[0] as ProofOfOriginWaterBatchEntity;
+      expect(givenBatch1.id).toBe(givenWaterConsumption1.batch.id);
 
-      const batch2 = actualResult.batches[1] as ProofOfOriginWaterBatchEntity;
-      expect(batch2.id).toBe(givenWaterConsumption2.batch.id);
+      const givenBatch2 = actualResult.batches[1] as ProofOfOriginWaterBatchEntity;
+      expect(givenBatch2.id).toBe(givenWaterConsumption2.batch.id);
     });
 
     it('should throw error when no water supplies provided', () => {
     // arrange
       const givenWaterSupplies: ProcessStepEntity[] = [];
       const givenHydrogenAmount = 100;
-      const errorMessage = 'No process steps of type water supply found.';
+      const expectedErrorMessage = 'No process steps of type water supply found.';
 
       // act & assert
-      expect(() => assembleWaterSupplyClassification(givenWaterSupplies, givenHydrogenAmount)).toThrow(errorMessage);
+      const actualOperation = () => assembleWaterSupplyClassification(givenWaterSupplies, givenHydrogenAmount);
+
+      expect(actualOperation).toThrow(expectedErrorMessage);
     });
 
     it('should throw error when water supplies is undefined', () => {
     // arrange
       const givenWaterSupplies: ProcessStepEntity[] = undefined;
       const givenHydrogenAmount = 100;
-      const errorMessage = 'No process steps of type water supply found.';
+      const expectedErrorMessage = 'No process steps of type water supply found.';
 
       // act & assert
-      expect(() => assembleWaterSupplyClassification(givenWaterSupplies, givenHydrogenAmount)).toThrow(errorMessage);
+      const actualOperation = () => assembleWaterSupplyClassification(givenWaterSupplies, givenHydrogenAmount);
+
+      expect(actualOperation).toThrow(expectedErrorMessage);
     });
   });
 });

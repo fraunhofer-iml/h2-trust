@@ -288,7 +288,9 @@ describe('ProductionService', () => {
       ]);
 
       // act & assert
-      await expect(service.assembleProductionStatistics(givenPayload)).rejects.toThrow(
+      const actualResult = service.assembleProductionStatistics(givenPayload);
+
+      await expect(actualResult).rejects.toThrow(
         `Expected only ${ProcessType.HYDROGEN_PRODUCTION} process steps, but received: ${ProcessType.POWER_PRODUCTION}`,
       );
     });
@@ -305,7 +307,9 @@ describe('ProductionService', () => {
       processStepServiceMock.readProcessStepsByPredecessorTypesAndUnitAndDate.mockResolvedValue([givenProcessStep]);
 
       // act & assert
-      await expect(service.assembleProductionStatistics(givenPayload)).rejects.toThrow(
+      const actualResult = service.assembleProductionStatistics(givenPayload);
+
+      await expect(actualResult).rejects.toThrow(
         `Rfnbotype of ${givenProcessStep.id} not defined`,
       );
     });

@@ -83,7 +83,9 @@ describe('ProductionUtils.calculateBatchAmountPerAccountingPeriod', () => {
     const givenNumberOfAccountingPeriods = 1;
 
     // act & assert
-    expect(() => calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods)).toThrow(
+    const actualOperation = () => calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods);
+
+    expect(actualOperation).toThrow(
       'batchAmount must be greater than zero',
     );
   });
@@ -94,7 +96,9 @@ describe('ProductionUtils.calculateBatchAmountPerAccountingPeriod', () => {
     const givenNumberOfAccountingPeriods = 1;
 
     // act & assert
-    expect(() => calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods)).toThrow(
+    const actualOperation = () => calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods);
+
+    expect(actualOperation).toThrow(
       'batchAmount must be greater than zero',
     );
   });
@@ -105,7 +109,9 @@ describe('ProductionUtils.calculateBatchAmountPerAccountingPeriod', () => {
     const givenNumberOfAccountingPeriods = -1;
 
     // act & assert
-    expect(() => calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods)).toThrow(
+    const actualOperation = () => calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods);
+
+    expect(actualOperation).toThrow(
       'numberOfAccountingPeriods must be greater than zero',
     );
   });
@@ -116,7 +122,9 @@ describe('ProductionUtils.calculateBatchAmountPerAccountingPeriod', () => {
     const givenNumberOfAccountingPeriods = 0;
 
     // act & assert
-    expect(() => calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods)).toThrow(
+    const actualOperation = () => calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods);
+
+    expect(actualOperation).toThrow(
       'numberOfAccountingPeriods must be greater than zero',
     );
   });

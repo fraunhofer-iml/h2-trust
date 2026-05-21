@@ -133,7 +133,9 @@ describe('DigitalProductPassportService', () => {
       determineRedComplianceMock.mockReturnValue(new RedComplianceEntity(true, true, true, true));
 
       // act & assert
-      expect(() => service.getRfnboType(givenProductionChain)).toThrow('PowerType');
+      const actualOperation = () => service.getRfnboType(givenProductionChain);
+
+      expect(actualOperation).toThrow('PowerType');
       expect(assembleProofOfSustainabilityMock).not.toHaveBeenCalled();
     });
 
@@ -160,9 +162,9 @@ describe('DigitalProductPassportService', () => {
       const givenHydrogenBottling: ProcessStepEntity = ProcessStepEntityFixture.createHydrogenBottling();
       const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
       const givenRedCompliance = new RedComplianceEntity(true, true, true, true);
-      const proofOfOrigin: ProofOfOriginSectionEntity[] = [ProofOfOriginSectionEntityFixture.create()];
-      const proofOfSustainability: ProofOfSustainabilityEntity = ProofOfSustainabilityEntityFixture.create();
-      const hydrogenComponents: HydrogenComponentEntity[] = [];
+      const givenProofOfOrigin: ProofOfOriginSectionEntity[] = [ProofOfOriginSectionEntityFixture.create()];
+      const givenProofOfSustainability: ProofOfSustainabilityEntity = ProofOfSustainabilityEntityFixture.create();
+      const givenHydrogenComponents: HydrogenComponentEntity[] = [];
       const givenProvenance = new ProvenanceEntity(
         givenHydrogenBottling,
         [givenProductionChain],
@@ -179,9 +181,9 @@ describe('DigitalProductPassportService', () => {
 
       buildProvenanceMock.mockReturnValue(givenProvenance);
       determineTotalRedComplianceMock.mockReturnValue(givenRedCompliance);
-      assembleProofOfOriginMock.mockReturnValue(proofOfOrigin);
-      getHydrogenBottlingCompositionsMock.mockReturnValue(hydrogenComponents);
-      assembleProofOfSustainabilityMock.mockReturnValue(proofOfSustainability);
+      assembleProofOfOriginMock.mockReturnValue(givenProofOfOrigin);
+      getHydrogenBottlingCompositionsMock.mockReturnValue(givenHydrogenComponents);
+      assembleProofOfSustainabilityMock.mockReturnValue(givenProofOfSustainability);
 
       // act
       const actualResult: DigitalProductPassportEntity = await service.readDigitalProductPassport(
@@ -199,7 +201,7 @@ describe('DigitalProductPassportService', () => {
       ]);
       expect(determineTotalRedComplianceMock).toHaveBeenCalledWith(givenProvenance.productionChains);
       expect(assembleProofOfOriginMock).toHaveBeenCalledWith(givenProvenance);
-      expect(getHydrogenBottlingCompositionsMock).toHaveBeenCalledWith(proofOfOrigin);
+      expect(getHydrogenBottlingCompositionsMock).toHaveBeenCalledWith(givenProofOfOrigin);
       expect(assembleProofOfSustainabilityMock).toHaveBeenCalledWith(givenProvenance);
       expect(actualResult).toEqual(
         expect.objectContaining({
@@ -207,11 +209,11 @@ describe('DigitalProductPassportService', () => {
           owner: givenHydrogenBottling.batch.owner.name,
           filledAmount: givenHydrogenBottling.batch.amount,
           producer: givenHydrogenBottling.recordedBy.company.name,
-          hydrogenComposition: hydrogenComponents,
+          hydrogenComposition: givenHydrogenComponents,
           attachedFiles: givenHydrogenBottling.documents,
           redCompliance: givenRedCompliance,
-          proofOfSustainability,
-          proofOfOrigin,
+          proofOfSustainability: givenProofOfSustainability,
+          proofOfOrigin: givenProofOfOrigin,
           powerType: PowerType.RENEWABLE,
           rfnboType: RfnboType.RFNBO_READY,
         }),
@@ -252,24 +254,24 @@ describe('DigitalProductPassportService', () => {
     it('should return PARTLY_RENEWABLE when provenance contains partly renewable but no non-renewable power', async () => {
       // arrange
       const givenHydrogenBottling: ProcessStepEntity = ProcessStepEntityFixture.createHydrogenBottling();
-      const renewableChain: ProductionChainEntity = ProductionChainEntityFixture.create();
-      const partlyRenewableChain: ProductionChainEntity = ProductionChainEntityFixture.create();
-      partlyRenewableChain.powerProduction.batch.qualityDetails.powerType = PowerType.PARTLY_RENEWABLE;
+      const givenRenewableChain: ProductionChainEntity = ProductionChainEntityFixture.create();
+      const givenPartlyRenewableChain: ProductionChainEntity = ProductionChainEntityFixture.create();
+      givenPartlyRenewableChain.powerProduction.batch.qualityDetails.powerType = PowerType.PARTLY_RENEWABLE;
       const givenRedCompliance = new RedComplianceEntity(true, true, true, true);
       const givenProofOfSustainability: ProofOfSustainabilityEntity = ProofOfSustainabilityEntityFixture.create({
         emissionReductionPercentage: 85,
       });
       const givenProvenance = new ProvenanceEntity(
         givenHydrogenBottling,
-        [renewableChain, partlyRenewableChain],
+        [givenRenewableChain, givenPartlyRenewableChain],
         givenHydrogenBottling,
       );
 
       processStepServiceMock.readProcessStep.mockResolvedValue(givenHydrogenBottling);
       processStepServiceMock.getPredecessors.mockResolvedValue([
         givenHydrogenBottling,
-        renewableChain.powerProduction,
-        partlyRenewableChain.powerProduction,
+        givenRenewableChain.powerProduction,
+        givenPartlyRenewableChain.powerProduction,
       ]);
       buildProvenanceMock.mockReturnValue(givenProvenance);
       determineTotalRedComplianceMock.mockReturnValue(givenRedCompliance);

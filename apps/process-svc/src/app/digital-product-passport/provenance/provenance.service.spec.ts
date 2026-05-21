@@ -24,7 +24,9 @@ describe('Provenance', () => {
       givenProcessStep.type = undefined;
 
       // act & assert
-      expect(() => buildProvenance(givenProcessStep, [])).toThrow('Invalid process step.');
+      const actualOperation = () => buildProvenance(givenProcessStep, []);
+
+      expect(actualOperation).toThrow('Invalid process step.');
     });
 
     it(`should return ProvenanceEntity when the process type is ${ProcessType.POWER_PRODUCTION}`, () => {
@@ -195,9 +197,10 @@ describe('Provenance', () => {
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenTransportation();
 
       // act & assert
-      expect(() =>
-        buildProvenance(givenProcessStep, [ProcessStepEntityFixture.createHydrogenProduction()]),
-      ).toThrow(`Missing hydrogen bottling for root production [${givenProcessStep.id}].`);
+      const actualOperation = () =>
+        buildProvenance(givenProcessStep, [ProcessStepEntityFixture.createHydrogenProduction()]);
+
+      expect(actualOperation).toThrow(`Missing hydrogen bottling for root production [${givenProcessStep.id}].`);
     });
 
     it('should throw when the resolved hydrogen root production is missing a water predecessor', () => {
@@ -218,7 +221,9 @@ describe('Provenance', () => {
       });
 
       // act & assert
-      expect(() => buildProvenance(givenRootHydrogenProduction, [givenRootHydrogenProduction, givenPowerProduction])).toThrow(
+      const actualOperation = () => buildProvenance(givenRootHydrogenProduction, [givenRootHydrogenProduction, givenPowerProduction]);
+
+      expect(actualOperation).toThrow(
         `Missing water consumption predecessor for root production [${givenRootHydrogenProduction.id}].`,
       );
     });

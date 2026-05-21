@@ -127,17 +127,17 @@ describe('allocateBottling', () => {
       const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
 
       // assert
-      const consumedStep = actualResult.consumedSplitProcessSteps[0];
-      expect(consumedStep.type).toBe(ProcessType.HYDROGEN_PRODUCTION);
-      expect(consumedStep.batch.type).toBe(BatchType.HYDROGEN);
-      expect(consumedStep.batch.predecessors[0].id).toBe(givenProcessSteps[0].batch.id);
-      expect(consumedStep.startedAt).toEqual(givenProcessSteps[0].startedAt);
-      expect(consumedStep.endedAt).toEqual(givenProcessSteps[0].endedAt);
+      const expectedConsumedStep = actualResult.consumedSplitProcessSteps[0];
+      expect(expectedConsumedStep.type).toBe(ProcessType.HYDROGEN_PRODUCTION);
+      expect(expectedConsumedStep.batch.type).toBe(BatchType.HYDROGEN);
+      expect(expectedConsumedStep.batch.predecessors[0].id).toBe(givenProcessSteps[0].batch.id);
+      expect(expectedConsumedStep.startedAt).toEqual(givenProcessSteps[0].startedAt);
+      expect(expectedConsumedStep.endedAt).toEqual(givenProcessSteps[0].endedAt);
 
-      const remainingStep = actualResult.processStepsForRemainingAmount[0];
-      expect(remainingStep.type).toBe(ProcessType.HYDROGEN_PRODUCTION);
-      expect(remainingStep.batch.amount).toBe(120);
-      expect(remainingStep.batch.active).toBe(true);
+      const expectedRemainingStep = actualResult.processStepsForRemainingAmount[0];
+      expect(expectedRemainingStep.type).toBe(ProcessType.HYDROGEN_PRODUCTION);
+      expect(expectedRemainingStep.batch.amount).toBe(120);
+      expect(expectedRemainingStep.batch.active).toBe(true);
     });
 
     it('should filter process steps by rfnbo type when called', () => {
@@ -187,7 +187,9 @@ describe('allocateBottling', () => {
       const expectedErrorMessage = `There is not enough hydrogen in storage unit '${givenHydrogenStorageUnitId}' for the requested amount of 100 of quality ${RfnboType.RFNBO_READY}.`;
 
       // act & assert
-      expect(() => allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId)).toThrow(
+      const actualOperation = () => allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
+
+      expect(actualOperation).toThrow(
         expectedErrorMessage,
       );
     });

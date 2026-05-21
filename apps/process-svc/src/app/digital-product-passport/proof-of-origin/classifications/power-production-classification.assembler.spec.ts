@@ -44,22 +44,22 @@ describe('PowerProductionProofOfOriginAssembler', () => {
       // assert
       expect(actualResult).toHaveLength(2);
 
-      const solarSubClassification = actualResult.find((sc) => sc.name === EnergySource.SOLAR_ENERGY);
-      expect(solarSubClassification).toBeDefined();
-      expect(solarSubClassification.classificationType).toBe(BatchType.POWER);
-      expect(solarSubClassification.batches).toHaveLength(1);
+      const givenSolarSubClassification = actualResult.find((sc) => sc.name === EnergySource.SOLAR_ENERGY);
+      expect(givenSolarSubClassification).toBeDefined();
+      expect(givenSolarSubClassification.classificationType).toBe(BatchType.POWER);
+      expect(givenSolarSubClassification.batches).toHaveLength(1);
 
-      const solarBatch = solarSubClassification.batches[0] as ProofOfOriginPowerBatchEntity;
-      expect(solarBatch.id).toBe(givenSolarPowerProduction.batch.id);
-      expect(solarBatch.energySource).toBe(EnergySource.SOLAR_ENERGY);
+      const givenSolarBatch = givenSolarSubClassification.batches[0] as ProofOfOriginPowerBatchEntity;
+      expect(givenSolarBatch.id).toBe(givenSolarPowerProduction.batch.id);
+      expect(givenSolarBatch.energySource).toBe(EnergySource.SOLAR_ENERGY);
 
-      const windSubClassification = actualResult.find((sc) => sc.name === EnergySource.WIND_ENERGY);
-      expect(windSubClassification).toBeDefined();
-      expect(windSubClassification.batches).toHaveLength(1);
+      const givenWindSubClassification = actualResult.find((sc) => sc.name === EnergySource.WIND_ENERGY);
+      expect(givenWindSubClassification).toBeDefined();
+      expect(givenWindSubClassification.batches).toHaveLength(1);
 
-      const windBatch = windSubClassification.batches[0] as ProofOfOriginPowerBatchEntity;
-      expect(windBatch.id).toBe(givenWindPowerProduction.batch.id);
-      expect(windBatch.energySource).toBe(EnergySource.WIND_ENERGY);
+      const givenWindBatch = givenWindSubClassification.batches[0] as ProofOfOriginPowerBatchEntity;
+      expect(givenWindBatch.id).toBe(givenWindPowerProduction.batch.id);
+      expect(givenWindBatch.energySource).toBe(EnergySource.WIND_ENERGY);
     });
 
     it('should return an empty array when no power productions are provided', async () => {

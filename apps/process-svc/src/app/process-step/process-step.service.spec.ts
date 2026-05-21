@@ -87,9 +87,9 @@ describe('ProcessStepService', () => {
         ProcessStepEntityFixture.createHydrogenProduction(),
         ProcessStepEntityFixture.createPowerProduction(),
       ];
-      const predecessorIds = givenPredecessorProcessSteps.map((processStep) => processStep.id);
+      const expectedPredecessorIds = givenPredecessorProcessSteps.map((processStep) => processStep.id);
 
-      processStepRepositoryMock.findPredecessorProcessSteps.mockResolvedValue(predecessorIds);
+      processStepRepositoryMock.findPredecessorProcessSteps.mockResolvedValue(expectedPredecessorIds);
       processStepRepositoryMock.findProcessSteps.mockResolvedValue(givenPredecessorProcessSteps);
 
       // act
@@ -97,7 +97,7 @@ describe('ProcessStepService', () => {
 
       // assert
       expect(processStepRepositoryMock.findPredecessorProcessSteps).toHaveBeenCalledWith(givenProcessStep.batch.id);
-      expect(processStepRepositoryMock.findProcessSteps).toHaveBeenCalledWith(predecessorIds);
+      expect(processStepRepositoryMock.findProcessSteps).toHaveBeenCalledWith(expectedPredecessorIds);
       expect(actualResult).toEqual([givenProcessStep, ...givenPredecessorProcessSteps]);
     });
   });
@@ -106,16 +106,16 @@ describe('ProcessStepService', () => {
     it('should delegate to BatchRepository with the batch id and RFNBO type when called', async () => {
       // arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenProduction();
-      const expected = { id: 'quality-details-1', batchId: givenProcessStep.batch.id };
+      const expectedResult = { id: 'quality-details-1', batchId: givenProcessStep.batch.id };
 
-      batchRepositoryMock.setRfnboStatus.mockResolvedValue(expected);
+      batchRepositoryMock.setRfnboStatus.mockResolvedValue(expectedResult);
 
       // act
       const actualResult = await service.updateRfnboStatus(givenProcessStep, RfnboType.RFNBO_READY);
 
       // assert
       expect(batchRepositoryMock.setRfnboStatus).toHaveBeenCalledWith(givenProcessStep.batch.id, RfnboType.RFNBO_READY);
-      expect(actualResult).toEqual(expected);
+      expect(actualResult).toEqual(expectedResult);
     });
   });
 
@@ -206,7 +206,9 @@ describe('ProcessStepService', () => {
       const expectedErrorMessage = 'ProcessStepId of predecessor is missing.';
 
       // act & assert
-      await expect(service.readProcessStep(givenTransportationProcessStep.id)).rejects.toThrow(expectedErrorMessage);
+      const actualResult = service.readProcessStep(givenTransportationProcessStep.id);
+
+      await expect(actualResult).rejects.toThrow(expectedErrorMessage);
     });
 
     it('should throw error when predecessor is not hydrogen bottling', async () => {
@@ -219,10 +221,12 @@ describe('ProcessStepService', () => {
         .mockResolvedValueOnce(givenTransportationProcessStep)
         .mockResolvedValueOnce(givenPredecessorProcessStep);
 
-      const errorMessage = `Expected process type of predecessor to be ${ProcessType.HYDROGEN_BOTTLING}, but got ${ProcessType.HYDROGEN_PRODUCTION}.`;
+      const expectedErrorMessage = `Expected process type of predecessor to be ${ProcessType.HYDROGEN_BOTTLING}, but got ${ProcessType.HYDROGEN_PRODUCTION}.`;
 
       // act & assert
-      await expect(service.readProcessStep(givenTransportationProcessStep.id)).rejects.toThrow(errorMessage);
+      const actualResult = service.readProcessStep(givenTransportationProcessStep.id);
+
+      await expect(actualResult).rejects.toThrow(expectedErrorMessage);
     });
   });
 
@@ -361,16 +365,16 @@ describe('ProcessStepService', () => {
     it('should delegate to BatchRepository when called', async () => {
       // arrange
       const givenBatchIds = ['batch-1', 'batch-2'];
-      const expected = { count: 2 };
+      const expectedResult = { count: 2 };
 
-      batchRepositoryMock.setBatchesInactive.mockResolvedValue(expected);
+      batchRepositoryMock.setBatchesInactive.mockResolvedValue(expectedResult);
 
       // act
       const actualResult = await service.setBatchesInactive(givenBatchIds);
 
       // assert
       expect(batchRepositoryMock.setBatchesInactive).toHaveBeenCalledWith(givenBatchIds);
-      expect(actualResult).toEqual(expected);
+      expect(actualResult).toEqual(expectedResult);
     });
   });
 });

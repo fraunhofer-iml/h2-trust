@@ -133,7 +133,9 @@ describe('CsvImportProcessingService', () => {
       hashBufferMock.mockReturnValue('different-hash');
 
       // act & assert
-      await expect(service.parseAndUploadFiles([givenImport], 'Europe/Berlin')).rejects.toThrow(
+      const actualResult = service.parseAndUploadFiles([givenImport], 'Europe/Berlin');
+
+      await expect(actualResult).rejects.toThrow(
         'File integrity check failed for unit unit-1: expected hash expected-hash but computed different-hash',
       );
       expect(centralizedStorageServiceMock.uploadFile).not.toHaveBeenCalled();
@@ -153,7 +155,9 @@ describe('CsvImportProcessingService', () => {
       parseAccountingPeriodCsvBufferMock.mockResolvedValue([]);
 
       // act & assert
-      await expect(service.parseAndUploadFiles([givenImport], 'Europe/Berlin')).rejects.toThrow(
+      const actualResult = service.parseAndUploadFiles([givenImport], 'Europe/Berlin');
+
+      await expect(actualResult).rejects.toThrow(
         `${CsvContentType.HYDROGEN} production file does not contain any valid items.`,
       );
       expect(centralizedStorageServiceMock.uploadFile).not.toHaveBeenCalled();

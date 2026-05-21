@@ -258,7 +258,9 @@ describe('ProductionStagingService', () => {
       ]);
 
       // act & assert
-      await expect(service.createProductionsFromStaging(givenPayload)).rejects.toThrow(
+      const actualResult = service.createProductionsFromStaging(givenPayload);
+
+      await expect(actualResult).rejects.toThrow(
         'The given staged production IDs are invalid',
       );
       expect(productionCreationServiceMock.createAndPersistProductions).not.toHaveBeenCalled();
@@ -545,7 +547,7 @@ describe('ProductionStagingService', () => {
           12,
         ),
       ];
-      const tx = { id: 'transaction-1' };
+      const givenTransaction = { id: 'transaction-1' };
 
       featureFlagServiceMock.verificationEnabled = false;
       csvImportProcessingServiceMock.parseAndUploadFiles.mockResolvedValue(givenParsedImports);
@@ -553,7 +555,7 @@ describe('ProductionStagingService', () => {
       csvImportRepositoryMock.saveCsvImport.mockResolvedValue('csv-import-1');
       csvImportProcessingServiceMock.createCsvDocumentInputs.mockReturnValue(givenCsvDocumentInputs);
       csvImportRepositoryMock.saveCsvDocuments.mockResolvedValue(givenCsvDocuments);
-      prismaServiceMock.$transaction.mockImplementation(async (callback) => callback(tx));
+      prismaServiceMock.$transaction.mockImplementation(async (callback) => callback(givenTransaction));
 
       // act
       const actualResult = await service.stageProductions(givenPayload);
@@ -564,12 +566,12 @@ describe('ProductionStagingService', () => {
         givenPayload.timeZone,
       );
       expect(normalizeProductionMock).toHaveBeenCalledWith(givenParsedImports, givenPayload.companyId);
-      expect(csvImportRepositoryMock.saveCsvImport).toHaveBeenCalledWith(givenPayload.userId, tx);
-      expect(csvImportRepositoryMock.saveCsvDocuments).toHaveBeenCalledWith('csv-import-1', givenCsvDocumentInputs, tx);
+      expect(csvImportRepositoryMock.saveCsvImport).toHaveBeenCalledWith(givenPayload.userId, givenTransaction);
+      expect(csvImportRepositoryMock.saveCsvDocuments).toHaveBeenCalledWith('csv-import-1', givenCsvDocumentInputs, givenTransaction);
       expect(stagedProductionRepositoryMock.saveStagedProductions).toHaveBeenCalledWith(
         givenStagedProductions,
         'csv-import-1',
-        tx,
+        givenTransaction,
       );
       expect(blockchainServiceMock.storeProofs).not.toHaveBeenCalled();
       expect(csvImportRepositoryMock.updateTransactionHash).not.toHaveBeenCalled();
@@ -637,14 +639,14 @@ describe('ProductionStagingService', () => {
           12,
         ),
       ];
-      const tx = { id: 'transaction-1' };
+      const givenTransaction = { id: 'transaction-1' };
 
       csvImportProcessingServiceMock.parseAndUploadFiles.mockResolvedValue(givenParsedImports);
       normalizeProductionMock.mockReturnValue(givenStagedProductions);
       csvImportRepositoryMock.saveCsvImport.mockResolvedValue('csv-import-1');
       csvImportProcessingServiceMock.createCsvDocumentInputs.mockReturnValue(givenCsvDocumentInputs);
       csvImportRepositoryMock.saveCsvDocuments.mockResolvedValue(givenCsvDocuments);
-      prismaServiceMock.$transaction.mockImplementation(async (callback) => callback(tx));
+      prismaServiceMock.$transaction.mockImplementation(async (callback) => callback(givenTransaction));
       blockchainServiceMock.storeProofs.mockResolvedValue('tx-hash-1');
 
       // act
@@ -684,7 +686,7 @@ describe('ProductionStagingService', () => {
           cid: 'cid-1',
         },
       ];
-      const tx = { id: 'transaction-1' };
+      const givenTransaction = { id: 'transaction-1' };
 
       csvImportProcessingServiceMock.parseAndUploadFiles.mockResolvedValue(givenParsedImports);
       normalizeProductionMock.mockReturnValue([]);
@@ -699,10 +701,12 @@ describe('ProductionStagingService', () => {
         },
       ]);
       csvImportRepositoryMock.saveCsvDocuments.mockResolvedValue([]);
-      prismaServiceMock.$transaction.mockImplementation(async (callback) => callback(tx));
+      prismaServiceMock.$transaction.mockImplementation(async (callback) => callback(givenTransaction));
 
       // act & assert
-      await expect(service.stageProductions(givenPayload)).rejects.toThrow(
+      const actualResult = service.stageProductions(givenPayload);
+
+      await expect(actualResult).rejects.toThrow(
         'Number of document proofs (1) does not match number of CSV documents (0).',
       );
       expect(blockchainServiceMock.storeProofs).not.toHaveBeenCalled();
@@ -742,7 +746,7 @@ describe('ProductionStagingService', () => {
           12,
         ),
       ];
-      const tx = { id: 'transaction-1' };
+      const givenTransaction = { id: 'transaction-1' };
       const expectedError = new Error('blockchain unavailable');
 
       csvImportProcessingServiceMock.parseAndUploadFiles.mockResolvedValue(givenParsedImports);
@@ -758,11 +762,13 @@ describe('ProductionStagingService', () => {
         },
       ]);
       csvImportRepositoryMock.saveCsvDocuments.mockResolvedValue(givenCsvDocuments);
-      prismaServiceMock.$transaction.mockImplementation(async (callback) => callback(tx));
+      prismaServiceMock.$transaction.mockImplementation(async (callback) => callback(givenTransaction));
       blockchainServiceMock.storeProofs.mockRejectedValue(expectedError);
 
       // act & assert
-      await expect(service.stageProductions(givenPayload)).rejects.toThrow(expectedError);
+      const actualResult = service.stageProductions(givenPayload);
+
+      await expect(actualResult).rejects.toThrow(expectedError);
       expect(csvImportRepositoryMock.updateTransactionHash).not.toHaveBeenCalled();
     });
   });

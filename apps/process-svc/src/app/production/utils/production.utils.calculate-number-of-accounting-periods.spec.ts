@@ -54,13 +54,14 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenAccountingPeriodSeconds = 15;
 
     // act & assert
-    expect(() =>
+    const actualOperation = () =>
       calculateNumberOfAccountingPeriods(
         givenProductionStartedAtSeconds,
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
-      ),
-    ).toThrow('startedAtInSeconds must be positive');
+      );
+
+    expect(actualOperation).toThrow('startedAtInSeconds must be positive');
   });
 
   it('should throw when productionEndedAtSeconds is negative', () => {
@@ -70,13 +71,14 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenAccountingPeriodSeconds = 15;
 
     // act & assert
-    expect(() =>
+    const actualOperation = () =>
       calculateNumberOfAccountingPeriods(
         givenProductionStartedAtSeconds,
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
-      ),
-    ).toThrow('endedAtInSeconds must be positive');
+      );
+
+    expect(actualOperation).toThrow('endedAtInSeconds must be positive');
   });
 
   it('should throw when accountingPeriodInSeconds is negative', () => {
@@ -86,13 +88,14 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenAccountingPeriodSeconds = -5;
 
     // act & assert
-    expect(() =>
+    const actualOperation = () =>
       calculateNumberOfAccountingPeriods(
         givenProductionStartedAtSeconds,
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
-      ),
-    ).toThrow('accountingPeriodInSeconds must be greater than zero');
+      );
+
+    expect(actualOperation).toThrow('accountingPeriodInSeconds must be greater than zero');
   });
 
   it('should throw when accountingPeriodInSeconds is zero', () => {
@@ -102,13 +105,14 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenAccountingPeriodSeconds = 0;
 
     // act & assert
-    expect(() =>
+    const actualOperation = () =>
       calculateNumberOfAccountingPeriods(
         givenProductionStartedAtSeconds,
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
-      ),
-    ).toThrow('accountingPeriodInSeconds must be greater than zero');
+      );
+
+    expect(actualOperation).toThrow('accountingPeriodInSeconds must be greater than zero');
   });
 
   it('should throw when durationInSeconds is negative', () => {
@@ -118,13 +122,14 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenAccountingPeriodSeconds = 15;
 
     // act & assert
-    expect(() =>
+    const actualOperation = () =>
       calculateNumberOfAccountingPeriods(
         givenProductionStartedAtSeconds,
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
-      ),
-    ).toThrow('endedAtInSeconds must be greater than startedAtInSeconds');
+      );
+
+    expect(actualOperation).toThrow('endedAtInSeconds must be greater than startedAtInSeconds');
   });
 
   it('should throw when durationInSeconds is zero', () => {
@@ -134,12 +139,13 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
     const givenAccountingPeriodSeconds = 15;
 
     // act & assert
-    expect(() =>
+    const actualOperation = () =>
       calculateNumberOfAccountingPeriods(
         givenProductionStartedAtSeconds,
         givenProductionEndedAtSeconds,
         givenAccountingPeriodSeconds,
-      ),
-    ).toThrow('endedAtInSeconds must be greater than startedAtInSeconds');
+      );
+
+    expect(actualOperation).toThrow('endedAtInSeconds must be greater than startedAtInSeconds');
   });
 });

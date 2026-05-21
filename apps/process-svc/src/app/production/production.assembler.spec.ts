@@ -82,11 +82,11 @@ describe('ProductionAssembler', () => {
     });
 
     it('should throw when the power production unit is missing', () => {
-      const unitsWithoutPower = new Map<string, ConcreteUnitEntity>([
+      const givenUnitsWithoutPower = new Map<string, ConcreteUnitEntity>([
         ['hydrogen-unit-1', HydrogenProductionUnitEntityFixture.create({ id: 'hydrogen-unit-1' })],
       ]);
 
-      expect(() => assemblePowerProductions(createProduction, unitsWithoutPower)).toThrow('powerProductionUnit');
+      expect(() => assemblePowerProductions(createProduction, givenUnitsWithoutPower)).toThrow('powerProductionUnit');
     });
   });
 
@@ -108,7 +108,7 @@ describe('ProductionAssembler', () => {
   describe('assembleHydrogenProductions', () => {
     it('should create hydrogen process steps with hourly predecessor batches and storage unit reference when called', () => {
       // arrange
-      const powerProductions: ProcessStepEntity[] = [
+      const givenPowerProductions: ProcessStepEntity[] = [
         ProcessStepEntityFixture.createPowerProduction({
           id: 'power-1',
           startedAt: new Date('2026-01-01T01:00:00Z'),
@@ -132,7 +132,7 @@ describe('ProductionAssembler', () => {
           }),
         }),
       ];
-      const waterConsumptions: ProcessStepEntity[] = [
+      const givenWaterConsumptions: ProcessStepEntity[] = [
         ProcessStepEntityFixture.createWaterConsumption({
           id: 'water-1',
           startedAt: new Date('2026-01-01T01:00:00Z'),
@@ -158,8 +158,8 @@ describe('ProductionAssembler', () => {
       // act
       const actualResult = assembleHydrogenProductions(
         createProduction,
-        powerProductions,
-        waterConsumptions,
+        givenPowerProductions,
+        givenWaterConsumptions,
         productionUnitsForId,
       );
 

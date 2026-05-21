@@ -14,7 +14,7 @@ import { ParsedImport } from './production.types';
 describe('normalizeProduction', () => {
   it('should aggregate accounting periods per hour when unit and type are the same', () => {
     // arrange
-    const parsedImports: ParsedImport[] = [
+    const givenParsedImports: ParsedImport[] = [
       {
         fileName: 'hydrogen.csv',
         hash: 'hash',
@@ -29,7 +29,7 @@ describe('normalizeProduction', () => {
     ];
 
     // act
-    const actualResult = normalizeProduction(parsedImports, 'owner-1');
+    const actualResult = normalizeProduction(givenParsedImports, 'owner-1');
 
     // assert
     expect(actualResult).toHaveLength(2);
@@ -56,7 +56,7 @@ describe('normalizeProduction', () => {
 
   it('should keep imports separated when production types differ and unit-level results must be preserved', () => {
     // arrange
-    const parsedImports: ParsedImport[] = [
+    const givenParsedImports: ParsedImport[] = [
       {
         fileName: 'power.csv',
         hash: 'power-hash',
@@ -78,7 +78,7 @@ describe('normalizeProduction', () => {
     ];
 
     // act
-    const actualResult = normalizeProduction(parsedImports, 'owner-2');
+    const actualResult = normalizeProduction(givenParsedImports, 'owner-2');
 
     // assert
     expect(actualResult).toHaveLength(2);

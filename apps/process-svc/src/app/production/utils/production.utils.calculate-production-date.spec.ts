@@ -11,15 +11,15 @@ import { calculateProductionDate, calculateProductionEndDate, calculateProductio
 describe('ProductionUtils.calculateProductionStartDate', () => {
   it('should delegate to calculateProductionDate with isEnd set to false when called', () => {
     // arrange
-    const productionStartedAtInSeconds = 2000;
-    const accountingPeriodInSeconds = 120;
-    const accountingPeriodIndex = 2;
+    const givenProductionStartedAtInSeconds = 2000;
+    const givenAccountingPeriodInSeconds = 120;
+    const givenAccountingPeriodIndex = 2;
 
     // act
     const actualDate = calculateProductionStartDate(
-      productionStartedAtInSeconds,
-      accountingPeriodInSeconds,
-      accountingPeriodIndex,
+      givenProductionStartedAtInSeconds,
+      givenAccountingPeriodInSeconds,
+      givenAccountingPeriodIndex,
     );
 
     // assert
@@ -30,15 +30,15 @@ describe('ProductionUtils.calculateProductionStartDate', () => {
 describe('ProductionUtils.calculateProductionEndDate', () => {
   it('should delegate to calculateProductionDate with isEnd set to true when called', () => {
     // arrange
-    const productionStartedAtInSeconds = 2000;
-    const accountingPeriodInSeconds = 120;
-    const accountingPeriodIndex = 2;
+    const givenProductionStartedAtInSeconds = 2000;
+    const givenAccountingPeriodInSeconds = 120;
+    const givenAccountingPeriodIndex = 2;
 
     // act
     const actualDate = calculateProductionEndDate(
-      productionStartedAtInSeconds,
-      accountingPeriodInSeconds,
-      accountingPeriodIndex,
+      givenProductionStartedAtInSeconds,
+      givenAccountingPeriodInSeconds,
+      givenAccountingPeriodIndex,
     );
 
     // assert
@@ -49,19 +49,19 @@ describe('ProductionUtils.calculateProductionEndDate', () => {
 describe('ProductionUtils.calculateProductionDate', () => {
   it('should calculate the correct start date for the first accountingPeriod when called', () => {
   // arrange
-    const productionStartedAtInSeconds = 1000;
-    const accountingPeriodInSeconds = 60;
-    const accountingPeriodIndex = 0;
-    const isEnd = false;
+    const givenProductionStartedAtInSeconds = 1000;
+    const givenAccountingPeriodInSeconds = 60;
+    const givenAccountingPeriodIndex = 0;
+    const givenIsEnd = false;
 
     const expectedDate = new Date((1000 + 0 * 60) * 1000);
 
     // act
     const actualDate = calculateProductionDate(
-      productionStartedAtInSeconds,
-      accountingPeriodInSeconds,
-      accountingPeriodIndex,
-      isEnd,
+      givenProductionStartedAtInSeconds,
+      givenAccountingPeriodInSeconds,
+      givenAccountingPeriodIndex,
+      givenIsEnd,
     );
 
     // assert
@@ -70,20 +70,20 @@ describe('ProductionUtils.calculateProductionDate', () => {
 
   it('should calculate the correct end date for the first accountingPeriod when called', () => {
   // arrange
-    const productionStartedAtInSeconds = 1000;
-    const accountingPeriodInSeconds = 60;
-    const accountingPeriodIndex = 0;
-    const isEnd = true;
+    const givenProductionStartedAtInSeconds = 1000;
+    const givenAccountingPeriodInSeconds = 60;
+    const givenAccountingPeriodIndex = 0;
+    const givenIsEnd = true;
 
     // (1000 + (0+1)*60) * 1000 - 1000 = (1000 + 60) * 1000 - 1000 = 1060000 - 1000 = 1059000
     const expectedDate = new Date((1000 + 1 * 60) * 1000 - 1000);
 
     // act
     const actualDate = calculateProductionDate(
-      productionStartedAtInSeconds,
-      accountingPeriodInSeconds,
-      accountingPeriodIndex,
-      isEnd,
+      givenProductionStartedAtInSeconds,
+      givenAccountingPeriodInSeconds,
+      givenAccountingPeriodIndex,
+      givenIsEnd,
     );
 
     // assert
@@ -92,20 +92,20 @@ describe('ProductionUtils.calculateProductionDate', () => {
 
   it('should calculate the correct start date for a later accountingPeriod when called', () => {
   // arrange
-    const productionStartedAtInSeconds = 2000;
-    const accountingPeriodInSeconds = 120;
-    const accountingPeriodIndex = 2;
-    const isEnd = false;
+    const givenProductionStartedAtInSeconds = 2000;
+    const givenAccountingPeriodInSeconds = 120;
+    const givenAccountingPeriodIndex = 2;
+    const givenIsEnd = false;
 
     // (2000 + 2*120) * 1000 = (2000 + 240) * 1000 = 2240000
     const expectedDate = new Date((2000 + 2 * 120) * 1000);
 
     // act
     const actualDate = calculateProductionDate(
-      productionStartedAtInSeconds,
-      accountingPeriodInSeconds,
-      accountingPeriodIndex,
-      isEnd,
+      givenProductionStartedAtInSeconds,
+      givenAccountingPeriodInSeconds,
+      givenAccountingPeriodIndex,
+      givenIsEnd,
     );
 
     // assert
@@ -114,20 +114,20 @@ describe('ProductionUtils.calculateProductionDate', () => {
 
   it('should calculate the correct end date for a later accountingPeriod when called', () => {
   // arrange
-    const productionStartedAtInSeconds = 2000;
-    const accountingPeriodInSeconds = 120;
-    const accountingPeriodIndex = 2;
-    const isEnd = true;
+    const givenProductionStartedAtInSeconds = 2000;
+    const givenAccountingPeriodInSeconds = 120;
+    const givenAccountingPeriodIndex = 2;
+    const givenIsEnd = true;
 
     // (2000 + (2+1)*120) * 1000 - 1000 = (2000 + 360) * 1000 - 1000 = 2360000 - 1000 = 2359000
     const expectedDate = new Date((2000 + 3 * 120) * 1000 - 1000);
 
     // act
     const actualDate = calculateProductionDate(
-      productionStartedAtInSeconds,
-      accountingPeriodInSeconds,
-      accountingPeriodIndex,
-      isEnd,
+      givenProductionStartedAtInSeconds,
+      givenAccountingPeriodInSeconds,
+      givenAccountingPeriodIndex,
+      givenIsEnd,
     );
 
     // assert
