@@ -38,8 +38,8 @@ import {
   addValidatorsToFormGroup,
   HydrogenProductionFormGroup,
   HydrogenStorageFormGroup,
-  newH2ProductionForm,
-  newH2StorageForm,
+  newHydrogenProductionForm,
+  newHydrogenStorageForm,
   newPowerProductionForm,
   newUnitForm,
   PowerProductionFormGroup,
@@ -88,8 +88,8 @@ export class CreateUnitComponent {
   queryClient = inject(QueryClient);
 
   unitForm: FormGroup<UnitFormGroup> = newUnitForm();
-  hydrogenProductionForm: FormGroup<HydrogenProductionFormGroup> = newH2ProductionForm();
-  hydrogenStorageForm: FormGroup<HydrogenStorageFormGroup> = newH2StorageForm();
+  hydrogenProductionForm: FormGroup<HydrogenProductionFormGroup> = newHydrogenProductionForm();
+  hydrogenStorageForm: FormGroup<HydrogenStorageFormGroup> = newHydrogenStorageForm();
   powerProductionForm: FormGroup<PowerProductionFormGroup> = newPowerProductionForm();
   selectedForm:
     | FormGroup<PowerProductionFormGroup>

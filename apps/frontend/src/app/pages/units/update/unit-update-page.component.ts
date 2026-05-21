@@ -42,8 +42,8 @@ import {
   addValidatorsToFormGroup,
   HydrogenProductionFormGroup,
   HydrogenStorageFormGroup,
-  newH2ProductionForm,
-  newH2StorageForm,
+  newHydrogenProductionForm,
+  newHydrogenStorageForm,
   newPowerProductionForm,
   newUnitForm,
   PowerProductionFormGroup,
@@ -79,8 +79,8 @@ export class UnitUpdatePageComponent {
   protected isPowerProductionUnit = isPowerProductionUnitDetails;
 
   unitForm: FormGroup<UnitFormGroup> = newUnitForm();
-  hydrogenProductionForm: FormGroup<HydrogenProductionFormGroup> = newH2ProductionForm();
-  hydrogenStorageUnitForm: FormGroup<HydrogenStorageFormGroup> = newH2StorageForm();
+  hydrogenProductionForm: FormGroup<HydrogenProductionFormGroup> = newHydrogenProductionForm();
+  hydrogenStorageUnitForm: FormGroup<HydrogenStorageFormGroup> = newHydrogenStorageForm();
   powerProductionForm: FormGroup<PowerProductionFormGroup> = newPowerProductionForm();
 
   readonly unitQuery = injectQuery(() => ({
@@ -114,6 +114,8 @@ export class UnitUpdatePageComponent {
   }
 
   private async updateUnit(unit: UnitDto) {
+    const unitType = unit.unitType;
+
     if (this.isHydrogenProductionUnit(unit)) {
       const dto = this.buildHydrogenProductionDto();
       return this.unitsService.updateHydrogenProductionUnit(unit.id, dto);
@@ -129,7 +131,7 @@ export class UnitUpdatePageComponent {
       return this.unitsService.updatePowerProductionUnit(unit.id, dto);
     }
 
-    throw new Error('Fetched unit has unexpected type for update page');
+    throw new Error(`Fetched unit has unexpected type "${unitType}" for update page.`);
   }
 
   private buildHydrogenProductionDto(): HydrogenProductionUnitInputDto {

@@ -17,7 +17,7 @@ import {
 import { QueryKeyPrefix } from './shared-query-keys';
 
 // Generic factory for unit queries with type guard narrowing
-export function createUnitsQueryOptions<T extends UnitOverviewDto>(
+function createUnitsQueryOptions<T extends UnitOverviewDto>(
   unitsService: UnitsService,
   type: UnitType,
   typeGuard: (u: UnitOverviewDto) => u is T,
