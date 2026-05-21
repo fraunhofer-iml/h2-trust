@@ -46,7 +46,7 @@ export class UnitController {
       },
       APPROVED: {
         value: UnitType.POWER_PRODUCTION,
-        description: `Get all Power Productin Units"`,
+        description: `Get all Power Production Units"`,
       },
     },
   })
