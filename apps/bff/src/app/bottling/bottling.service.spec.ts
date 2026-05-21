@@ -7,7 +7,7 @@
  */
 
 import { ClientProxy } from '@nestjs/microservices';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { BottlingOverviewDto, DigitalProductPassportDto } from '@h2-trust/contracts/dtos';
 import { BottlingDtoFixture, UserDetailsDtoFixture } from '@h2-trust/contracts/dtos/fixtures';
 import { DigitalProductPassportEntity } from '@h2-trust/contracts/entities';
@@ -97,6 +97,35 @@ describe('BottlingService', () => {
       ),
     );
     expect(actualResponse).toEqual(BottlingOverviewDto.fromEntity(persistedTransportation));
+  });
+
+  it('createBottlingAndTransportation should reject when transportation creation fails', async () => {
+    const dto = BottlingDtoFixture.create();
+    const files: Express.Multer.File[] = [];
+    const userId = 'user-id-1';
+    const persistedBottling = ProcessStepEntityFixture.createHydrogenBottling({
+      startedAt: new Date(dto.filledAt),
+      endedAt: new Date(dto.filledAt),
+    });
+
+    processSvcMock.send
+      .mockImplementationOnce((_pattern, _payload) => of(persistedBottling))
+      .mockImplementationOnce((_pattern, _payload) => throwError(() => new Error('transport failed')));
+
+    await expect(service.createBottlingAndTransportation(dto, files, userId)).rejects.toThrow('transport failed');
+
+    expect(processSvcMock.send).toHaveBeenCalledTimes(2);
+    expect(processSvcMock.send).toHaveBeenNthCalledWith(
+      2,
+      ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION,
+      new CreateHydrogenTransportationPayload(
+        persistedBottling,
+        persistedBottling.batch,
+        dto.transportMode,
+        dto.distance,
+        dto.fuelType,
+      ),
+    );
   });
 
   it('readBottlingsAndTransportationsByOwner should resolve the company and request active bottling steps', async () => {

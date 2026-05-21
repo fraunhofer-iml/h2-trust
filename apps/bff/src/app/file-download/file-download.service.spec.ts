@@ -10,7 +10,6 @@ import { PassThrough, Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { NotFoundException } from '@nestjs/common';
 import type { Response } from 'express';
-import { ZipFile } from 'yazl';
 import { CentralizedStorageService } from '@h2-trust/storage';
 import { FileDownloadService } from './file-download.service';
 
@@ -114,6 +113,4 @@ describe('FileDownloadService', () => {
     expect(responseMock.status).not.toHaveBeenCalled();
     expect(responseMock.end).not.toHaveBeenCalled();
   });
-
-  expect(ZipFile).toBeDefined();
 });

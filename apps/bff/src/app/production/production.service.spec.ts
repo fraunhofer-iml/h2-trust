@@ -7,7 +7,7 @@
  */
 
 import { ClientProxy } from '@nestjs/microservices';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { hashBuffer } from '@h2-trust/blockchain';
 import {
   AccountingPeriodMatchingResultDto,
@@ -125,6 +125,14 @@ describe('ProductionService', () => {
       ),
     );
     expect(actualResponse).toEqual(PaginatedProductionDataDto.fromEntity(paginated));
+  });
+
+  it('readHydrogenProductionsByOwner should reject when the user company lookup fails', async () => {
+    userServiceMock.readUserWithCompany.mockRejectedValue(new Error('user lookup failed'));
+
+    await expect(service.readHydrogenProductionsByOwner('user-id-1', 1, 10)).rejects.toThrow('user lookup failed');
+
+    expect(processSvcMock.send).not.toHaveBeenCalled();
   });
 
   it('readStagedProductionsByCompanyAndType should request staged productions for the resolved owner', async () => {
@@ -326,5 +334,11 @@ describe('ProductionService', () => {
       new ReadByIdPayload(documentId),
     );
     expect(actualResponse).toEqual(CsvDocumentIntegrityResultDto.fromEntity(verificationResult));
+  });
+
+  it('verifyCsvDocumentIntegrity should propagate process service errors', async () => {
+    processSvcMock.send.mockImplementation((_pattern, _payload) => throwError(() => new Error('verification failed')));
+
+    await expect(service.verifyCsvDocumentIntegrity('document-1')).rejects.toThrow('verification failed');
   });
 });

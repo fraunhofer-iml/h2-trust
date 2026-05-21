@@ -7,7 +7,7 @@
  */
 
 import { ClientProxy } from '@nestjs/microservices';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import {
   HydrogenProductionOverviewDto,
   HydrogenProductionUnitInputDto,
@@ -61,37 +61,49 @@ describe('UnitService', () => {
     expect(service).toBeDefined();
   });
 
-  it('readPowerProductionUnit should request the unit by id and map the response', async () => {
-    const unit = PowerProductionUnitEntityFixture.create({ id: 'power-unit-1' });
+  it.each([
+    {
+      description: 'readPowerProductionUnit should request the unit by id and map the response',
+      createUnit: () => PowerProductionUnitEntityFixture.create({ id: 'power-unit-1' }),
+      execute: (id: string) => service.readPowerProductionUnit(id),
+      map: (unit: ReturnType<typeof PowerProductionUnitEntityFixture.create>) => PowerProductionUnitDto.fromEntity(unit),
+    },
+    {
+      description: 'readHydrogenProductionUnit should request the unit by id and map the response',
+      createUnit: () => HydrogenProductionUnitEntityFixture.create({ id: 'hydrogen-unit-1' }),
+      execute: (id: string) => service.readHydrogenProductionUnit(id),
+      map: (unit: ReturnType<typeof HydrogenProductionUnitEntityFixture.create>) =>
+        HydrogenProductionUnitDto.fromEntity(unit),
+    },
+    {
+      description: 'readHydrogenStorageUnit should request the unit by id and map the response',
+      createUnit: () => HydrogenStorageUnitEntityFixture.create({ id: 'storage-unit-1' }),
+      execute: (id: string) => service.readHydrogenStorageUnit(id),
+      map: (unit: ReturnType<typeof HydrogenStorageUnitEntityFixture.create>) => HydrogenStorageUnitDto.fromEntity(unit),
+    },
+  ])('$description', async ({ createUnit, execute, map }) => {
+    const unit = createUnit();
 
     generalServiceMock.send.mockImplementation((_pattern, _payload) => of(unit));
 
-    const actualResponse: PowerProductionUnitDto = await service.readPowerProductionUnit(unit.id);
+    const actualResponse = await execute(unit.id);
 
     expect(generalServiceMock.send).toHaveBeenCalledWith(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(unit.id));
-    expect(actualResponse).toEqual(PowerProductionUnitDto.fromEntity(unit));
+    expect(actualResponse).toEqual(map(unit));
   });
 
-  it('readHydrogenProductionUnit should request the unit by id and map the response', async () => {
-    const unit = HydrogenProductionUnitEntityFixture.create({ id: 'hydrogen-unit-1' });
+  it('readPowerProductionUnits should reject when the user company lookup fails', async () => {
+    userServiceMock.readUserWithCompany.mockRejectedValue(new Error('user lookup failed'));
 
-    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(unit));
+    await expect(service.readPowerProductionUnits('user-id-1')).rejects.toThrow('user lookup failed');
 
-    const actualResponse: HydrogenProductionUnitDto = await service.readHydrogenProductionUnit(unit.id);
-
-    expect(generalServiceMock.send).toHaveBeenCalledWith(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(unit.id));
-    expect(actualResponse).toEqual(HydrogenProductionUnitDto.fromEntity(unit));
+    expect(generalServiceMock.send).not.toHaveBeenCalled();
   });
 
-  it('readHydrogenStorageUnit should request the unit by id and map the response', async () => {
-    const unit = HydrogenStorageUnitEntityFixture.create({ id: 'storage-unit-1' });
+  it('readHydrogenStorageUnit should propagate broker errors', async () => {
+    generalServiceMock.send.mockImplementation((_pattern, _payload) => throwError(() => new Error('broker failed')));
 
-    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(unit));
-
-    const actualResponse: HydrogenStorageUnitDto = await service.readHydrogenStorageUnit(unit.id);
-
-    expect(generalServiceMock.send).toHaveBeenCalledWith(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(unit.id));
-    expect(actualResponse).toEqual(HydrogenStorageUnitDto.fromEntity(unit));
+    await expect(service.readHydrogenStorageUnit('storage-unit-1')).rejects.toThrow('broker failed');
   });
 
   it('readPowerProductionUnits should resolve the owner company and map the units', async () => {
