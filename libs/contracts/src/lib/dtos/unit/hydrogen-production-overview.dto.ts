@@ -7,8 +7,7 @@
  */
 
 import { HydrogenProductionUnitEntity } from '@h2-trust/contracts/entities';
-import { HydrogenProductionTechnology } from '@h2-trust/domain';
-import { UnitType } from '@h2-trust/domain';
+import { HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
 
 export class HydrogenProductionOverviewDto {
   id: string;

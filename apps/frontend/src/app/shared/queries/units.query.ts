@@ -16,23 +16,27 @@ import {
 } from '../util/unit-type-guards';
 import { QueryKeyPrefix } from './shared-query-keys';
 
-export const hydrogenProductionUnitsQueryOptions = (unitsService: UnitsService) => ({
-  queryKey: [QueryKeyPrefix.UNITS, UnitType.HYDROGEN_PRODUCTION],
-  queryFn: () => unitsService.getUnits(UnitType.HYDROGEN_PRODUCTION),
-  select: (units: UnitOverviewDto[]) => units.filter((u) => isHydrogenProductionUnitOverview(u)),
-});
+// Generic factory for unit queries with type guard narrowing
+export function createUnitsQueryOptions<T extends UnitOverviewDto>(
+  unitsService: UnitsService,
+  type: UnitType,
+  typeGuard: (u: UnitOverviewDto) => u is T,
+) {
+  return {
+    queryKey: [QueryKeyPrefix.UNITS, type],
+    queryFn: () => unitsService.getUnits(type),
+    select: (units: UnitOverviewDto[]) => units.filter(typeGuard) as T[],
+  };
+}
 
-export const powerProductionUnitsQueryOptions = (unitsService: UnitsService) => ({
-  queryKey: [QueryKeyPrefix.UNITS, UnitType.POWER_PRODUCTION],
-  queryFn: () => unitsService.getUnits(UnitType.POWER_PRODUCTION),
-  select: (units: UnitOverviewDto[]) => units.filter((u) => isPowerProductionUnitOverview(u)),
-});
+export const hydrogenProductionUnitsQueryOptions = (unitsService: UnitsService) =>
+  createUnitsQueryOptions(unitsService, UnitType.HYDROGEN_PRODUCTION, isHydrogenProductionUnitOverview);
 
-export const hydrogenStorageUnitsQueryOptions = (unitsService: UnitsService) => ({
-  queryKey: [QueryKeyPrefix.UNITS, UnitType.HYDROGEN_STORAGE],
-  queryFn: () => unitsService.getUnits(UnitType.HYDROGEN_STORAGE),
-  select: (units: UnitOverviewDto[]) => units.filter((u) => isHydrogenStorageUnitOverview(u)),
-});
+export const powerProductionUnitsQueryOptions = (unitsService: UnitsService) =>
+  createUnitsQueryOptions(unitsService, UnitType.POWER_PRODUCTION, isPowerProductionUnitOverview);
+
+export const hydrogenStorageUnitsQueryOptions = (unitsService: UnitsService) =>
+  createUnitsQueryOptions(unitsService, UnitType.HYDROGEN_STORAGE, isHydrogenStorageUnitOverview);
 
 export const unitsQueryOptions = (unitsService: UnitsService, type?: UnitType) => ({
   queryKey: [QueryKeyPrefix.UNITS, type],
