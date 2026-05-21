@@ -8,13 +8,8 @@
 
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  AuthenticatedUserMock,
-  BottlingDto,
-  BottlingDtoMock,
-  BottlingOverviewDto,
-  UserDetailsDtoMock,
-} from '@h2-trust/contracts/dtos';
+import { BottlingDto, BottlingOverviewDto, type AuthenticatedKCUser } from '@h2-trust/contracts/dtos';
+import { BottlingDtoFixture, UserDetailsDtoFixture } from '@h2-trust/contracts/dtos/fixtures';
 import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { ProcessStepMessagePatterns, QUEUE_PROCESS_SVC } from '@h2-trust/messaging';
 import 'multer';
@@ -27,6 +22,7 @@ import { BottlingService } from './bottling.service';
 describe('BottlingController', () => {
   let controller: BottlingController;
   let processSvc: ClientProxy;
+  const authenticatedUser: AuthenticatedKCUser = { sub: 'user-id-1' };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -37,7 +33,7 @@ describe('BottlingController', () => {
         {
           provide: UserService,
           useValue: {
-            readUserWithCompany: jest.fn().mockResolvedValue(UserDetailsDtoMock[0]),
+            readUserWithCompany: jest.fn().mockResolvedValue(UserDetailsDtoFixture.create()),
           },
         },
         {
@@ -62,7 +58,7 @@ describe('BottlingController', () => {
   });
 
   it('should create a bottling and transportation batch', async () => {
-    const givenDto: BottlingDto = BottlingDtoMock[0];
+    const givenDto: BottlingDto = BottlingDtoFixture.create();
     const processStepFixture = ProcessStepEntityFixture.createHydrogenBottling({
       startedAt: new Date(givenDto.filledAt),
       endedAt: new Date(givenDto.filledAt),
@@ -76,7 +72,7 @@ describe('BottlingController', () => {
       amount: givenDto.amount,
       ownerId: givenDto.recipient,
       filledAt: new Date(givenDto.filledAt),
-      recordedById: AuthenticatedUserMock.sub,
+      recordedById: authenticatedUser.sub,
       hydrogenStorageUnitId: givenDto.hydrogenStorageUnit,
       files: [] as Express.Multer.File[],
       rfnboType: RfnboType.RFNBO_READY,
@@ -94,7 +90,7 @@ describe('BottlingController', () => {
     const actualResponse: BottlingOverviewDto = await controller.createBottlingAndTransportation(
       givenDto,
       [],
-      AuthenticatedUserMock,
+      authenticatedUser,
     );
 
     expect(processSvcSpy).toHaveBeenCalledTimes(2);

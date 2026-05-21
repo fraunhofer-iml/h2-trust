@@ -11,20 +11,22 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { of } from 'rxjs';
 import {
   HydrogenProductionOverviewDto,
-  HydrogenProductionUnitCreateDtoMock,
   HydrogenProductionUnitDto,
   HydrogenProductionUnitInputDto,
   HydrogenStorageOverviewDto,
-  HydrogenStorageUnitCreateDtoMock,
   HydrogenStorageUnitDto,
   HydrogenStorageUnitInputDto,
-  PowerProductionUnitCreateDtoMock,
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
   UnitDto,
   UnitOverviewDto,
   UserDetailsDto,
 } from '@h2-trust/contracts/dtos';
+import {
+  HydrogenProductionUnitInputDtoFixture,
+  HydrogenStorageUnitInputDtoFixture,
+  PowerProductionUnitInputDtoFixture,
+} from '@h2-trust/contracts/dtos/fixtures';
 import {
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
@@ -146,7 +148,7 @@ describe('UnitController', () => {
   });
 
   it('should create power production unit', async () => {
-    const givenDto: PowerProductionUnitInputDto = PowerProductionUnitCreateDtoMock[0];
+    const givenDto: PowerProductionUnitInputDto = PowerProductionUnitInputDtoFixture.create();
     const fixtureUnit: PowerProductionUnitEntity = PowerProductionUnitEntityFixture.create();
     const expectedResponse: PowerProductionUnitDto = PowerProductionUnitDto.fromEntity(fixtureUnit);
 
@@ -170,7 +172,7 @@ describe('UnitController', () => {
   });
 
   it('should create hydrogen production unit', async () => {
-    const givenDto: HydrogenProductionUnitInputDto = HydrogenProductionUnitCreateDtoMock[0];
+    const givenDto: HydrogenProductionUnitInputDto = HydrogenProductionUnitInputDtoFixture.create();
     const fixtureUnit: HydrogenProductionUnitEntity = HydrogenProductionUnitEntityFixture.create();
     const expectedResponse: HydrogenProductionUnitDto = HydrogenProductionUnitDto.fromEntity(fixtureUnit);
 
@@ -198,7 +200,7 @@ describe('UnitController', () => {
   });
 
   it('should create hydrogen storage unit', async () => {
-    const givenDto: HydrogenStorageUnitInputDto = HydrogenStorageUnitCreateDtoMock[0];
+    const givenDto: HydrogenStorageUnitInputDto = HydrogenStorageUnitInputDtoFixture.create();
     const fixtureUnit: HydrogenStorageUnitEntity = HydrogenStorageUnitEntityFixture.create();
     const expectedResponse: HydrogenStorageUnitDto = HydrogenStorageUnitDto.fromEntity(fixtureUnit);
 

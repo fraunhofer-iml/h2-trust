@@ -12,13 +12,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import {
   AccountingPeriodMatchingResultDto,
   AuthenticatedKCUser,
-  CreateProductionDtoMock,
   CsvDocumentIntegrityResultDto,
   PaginatedProductionDataDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
-  UserDetailsDtoMock,
 } from '@h2-trust/contracts/dtos';
+import { CreateProductionDtoFixture, UserDetailsDtoFixture } from '@h2-trust/contracts/dtos/fixtures';
 import {
   BatchEntityFixture,
   HydrogenProductionUnitEntityFixture,
@@ -48,6 +47,8 @@ describe('ProductionController', () => {
   let generalSvc: ClientProxy;
   let processSvc: ClientProxy;
   let userService: UserService;
+  const createProductionDto = CreateProductionDtoFixture.create();
+  const fixtureUser = UserDetailsDtoFixture.create();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -92,15 +93,15 @@ describe('ProductionController', () => {
     const processStepEntityMocks: ProcessStepEntity[] = [
       {
         id: 'hydrogen-production-process-step-1',
-        startedAt: new Date(CreateProductionDtoMock.productionStartedAt),
-        endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
+        startedAt: new Date(createProductionDto.productionStartedAt),
+        endedAt: new Date(createProductionDto.productionEndedAt),
         type: ProcessType.HYDROGEN_PRODUCTION,
         batch: BatchEntityFixture.createHydrogenBatch(),
         recordedBy: UserEntityFixture.createHydrogenUser(),
         executedBy: HydrogenProductionUnitEntityFixture.create(),
       },
     ];
-    const paginatedProductionDataDtoMock: PaginatedProductionDataDto = {
+    const paginatedProductionDataDto: PaginatedProductionDataDto = {
       data: processStepEntityMocks.map(ProductionOverviewDto.fromEntity),
       totalItems: 1,
       currentPage: 1,
@@ -112,9 +113,9 @@ describe('ProductionController', () => {
       pageSize: 1,
     };
 
-    const expectedResponse: PaginatedProductionDataDto = paginatedProductionDataDtoMock;
+    const expectedResponse: PaginatedProductionDataDto = paginatedProductionDataDto;
 
-    jest.spyOn(userService, 'readUserWithCompany').mockResolvedValue(UserDetailsDtoMock[0]);
+    jest.spyOn(userService, 'readUserWithCompany').mockResolvedValue(fixtureUser);
 
     jest
       .spyOn(processSvc, 'send')
@@ -127,7 +128,7 @@ describe('ProductionController', () => {
       1,
       1,
       processStepEntityMocks[0].executedBy.name,
-      CreateProductionDtoMock.productionStartedAt,
+      createProductionDto.productionStartedAt,
     );
 
     expect(actualResponse).toEqual(expectedResponse);
@@ -184,7 +185,7 @@ describe('ProductionController', () => {
       path: '',
       stream: null as Readable,
     };
-    jest.spyOn(userService, 'readUserWithCompany').mockResolvedValue(UserDetailsDtoMock[0]);
+    jest.spyOn(userService, 'readUserWithCompany').mockResolvedValue(fixtureUser);
 
     jest
       .spyOn(generalSvc, 'send')
