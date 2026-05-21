@@ -25,7 +25,7 @@ export const CreatePowerProductionUnitPayloadFixture = {
       overrides.gridLevel ?? GridLevel.LOW_VOLTAGE,
       overrides.biddingZone ?? BiddingZone.DE_LU,
       overrides.financialSupportReceived ?? false,
-      overrides.powerProductionType ?? PowerProductionType.SOLAR,
+      overrides.powerProductionType ?? PowerProductionType.WIND_TURBINE,
       defaults.manufacturer,
       defaults.modelType,
       defaults.modelNumber,

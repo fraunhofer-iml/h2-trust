@@ -21,7 +21,7 @@ export const CreateHydrogenProductionUnitPayloadFixture = {
       defaults.address,
       defaults.ownerId,
       overrides.method ?? HydrogenProductionMethod.ELECTROLYSIS,
-      overrides.technology ?? HydrogenProductionTechnology.PEM_ELECTROLYSIS,
+      overrides.technology ?? HydrogenProductionTechnology.PEM,
       overrides.biddingZone ?? BiddingZone.DE_LU,
       overrides.ratedPower ?? 500,
       overrides.pressure ?? 35,
