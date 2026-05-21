@@ -11,7 +11,7 @@ import { BatchEntityFixture, ProcessStepEntityFixture } from '@h2-trust/contract
 import { CreateHydrogenTransportationPayload } from '@h2-trust/contracts/payloads';
 import { BatchType, FuelType, ProcessType, TransportMode } from '@h2-trust/domain';
 import { ProcessStepService } from '../process-step/process-step.service';
-import { TransportationService } from '../transportation/transportation.service';
+import { TransportationService } from './transportation.service';
 
 describe('TransportationService', () => {
   let service: TransportationService;
@@ -39,6 +39,10 @@ describe('TransportationService', () => {
     jest.clearAllMocks();
   });
 
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
+
   describe('createHydrogenTransportationProcessStep', () => {
     it('creates transportation process step with trailer transport mode', async () => {
       // Arrange
@@ -63,8 +67,10 @@ describe('TransportationService', () => {
       expect(processStepServiceMock.setBatchesInactive).toHaveBeenCalledWith([givenPredecessorBatch.id]);
       expect(processStepServiceMock.createProcessStep).toHaveBeenCalledWith(
         expect.objectContaining({
+          ...givenProcessStep,
           type: ProcessType.HYDROGEN_TRANSPORTATION,
           batch: expect.objectContaining({
+            ...givenProcessStep.batch,
             type: BatchType.HYDROGEN,
             predecessors: [givenPredecessorBatch],
           }),
@@ -101,15 +107,17 @@ describe('TransportationService', () => {
       expect(processStepServiceMock.setBatchesInactive).toHaveBeenCalledWith([givenPredecessorBatch.id]);
       expect(processStepServiceMock.createProcessStep).toHaveBeenCalledWith(
         expect.objectContaining({
+          ...givenProcessStep,
           type: ProcessType.HYDROGEN_TRANSPORTATION,
           batch: expect.objectContaining({
+            ...givenProcessStep.batch,
             type: BatchType.HYDROGEN,
             predecessors: [givenPredecessorBatch],
           }),
           transportationDetails: expect.objectContaining({
             distance: 0,
             transportMode: givenPayload.transportMode,
-            fuelType: givenPayload.fuelType,
+            fuelType: undefined,
           }),
         }),
       );
@@ -132,6 +140,8 @@ describe('TransportationService', () => {
       await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(
         `Distance is required for transport mode [${TransportMode.TRAILER}].`,
       );
+      expect(processStepServiceMock.setBatchesInactive).not.toHaveBeenCalled();
+      expect(processStepServiceMock.createProcessStep).not.toHaveBeenCalled();
     });
 
     it('throws error when trailer transport mode has no fuel type', async () => {
@@ -150,6 +160,8 @@ describe('TransportationService', () => {
       await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(
         `Fuel type is required for transport mode [${TransportMode.TRAILER}].`,
       );
+      expect(processStepServiceMock.setBatchesInactive).not.toHaveBeenCalled();
+      expect(processStepServiceMock.createProcessStep).not.toHaveBeenCalled();
     });
 
     it('throws error for invalid transport mode', async () => {
@@ -167,6 +179,66 @@ describe('TransportationService', () => {
       // Act & Assert
       await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(
         `Invalid transport mode: ${givenPayload.transportMode}`,
+      );
+      expect(processStepServiceMock.setBatchesInactive).not.toHaveBeenCalled();
+      expect(processStepServiceMock.createProcessStep).not.toHaveBeenCalled();
+    });
+
+    it('propagates errors from setting predecessor batches inactive and does not create the process step', async () => {
+      // Arrange
+      const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
+      const givenPredecessorBatch = BatchEntityFixture.createHydrogenBatch();
+      const givenPayload = new CreateHydrogenTransportationPayload(
+        givenProcessStep,
+        givenPredecessorBatch,
+        TransportMode.TRAILER,
+        100,
+        FuelType.DIESEL,
+      );
+      const expectedError = new Error('failed to deactivate predecessor batch');
+
+      processStepServiceMock.setBatchesInactive.mockRejectedValue(expectedError);
+
+      // Act & Assert
+      await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(expectedError);
+      expect(processStepServiceMock.setBatchesInactive).toHaveBeenCalledWith([givenPredecessorBatch.id]);
+      expect(processStepServiceMock.createProcessStep).not.toHaveBeenCalled();
+    });
+
+    it('propagates errors from process step creation after predecessor batches were deactivated', async () => {
+      // Arrange
+      const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
+      const givenPredecessorBatch = BatchEntityFixture.createHydrogenBatch();
+      const givenPayload = new CreateHydrogenTransportationPayload(
+        givenProcessStep,
+        givenPredecessorBatch,
+        TransportMode.TRAILER,
+        100,
+        FuelType.DIESEL,
+      );
+      const expectedError = new Error('failed to create transportation process step');
+
+      processStepServiceMock.setBatchesInactive.mockResolvedValue({ count: 1 });
+      processStepServiceMock.createProcessStep.mockRejectedValue(expectedError);
+
+      // Act & Assert
+      await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(expectedError);
+      expect(processStepServiceMock.setBatchesInactive).toHaveBeenCalledWith([givenPredecessorBatch.id]);
+      expect(processStepServiceMock.createProcessStep).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ...givenProcessStep,
+          type: ProcessType.HYDROGEN_TRANSPORTATION,
+          batch: expect.objectContaining({
+            ...givenProcessStep.batch,
+            type: BatchType.HYDROGEN,
+            predecessors: [givenPredecessorBatch],
+          }),
+          transportationDetails: expect.objectContaining({
+            distance: givenPayload.distance,
+            transportMode: givenPayload.transportMode,
+            fuelType: givenPayload.fuelType,
+          }),
+        }),
       );
     });
   });
