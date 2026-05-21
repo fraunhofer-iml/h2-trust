@@ -101,7 +101,7 @@ export class UnitUpdatePageComponent {
   readonly unitMutation = injectMutation(() => ({
     mutationFn: (unit: UnitDto) => this.updateUnit(unit),
     onSuccess: async () => {
-      await this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.UNITS, this.id()] });
+      await this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.UNITS] });
       toast.success('Unit updated successfully');
       this.router.navigate([H2TrustRoutes.UNITS, this.id()]);
     },
