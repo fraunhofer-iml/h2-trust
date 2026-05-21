@@ -12,8 +12,8 @@ import { CreateHydrogenBottlingPayload } from '@h2-trust/contracts/payloads';
 import { ProcessType, RfnboType } from '@h2-trust/domain';
 import { assembleBottling } from './bottling.assembler';
 
-describe('BottlingProcessStepAssembler', () => {
-  describe('assemble', () => {
+describe('BottlingAssembler', () => {
+  describe('assembleBottling', () => {
     it('assembles process step entity from payload and predecessor batches', () => {
       // Arrange
       const givenPayload = new CreateHydrogenBottlingPayload(

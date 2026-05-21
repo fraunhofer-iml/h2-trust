@@ -332,7 +332,7 @@ describe('ProductionStagingService', () => {
       ]);
     });
 
-    it('adds grid power productions when staged power is insufficient', async () => {
+    it('adds two grid-based productions when staged power is insufficient', async () => {
       // Arrange
       const givenPayload = FinalizeProductionsPayloadFixture.create({
         stagedPowerProductions: ['staged-power-1'],
@@ -396,10 +396,14 @@ describe('ProductionStagingService', () => {
           expect.objectContaining({
             powerProductionUnitId: DefaultGridProvider.DEFAULT_GRID_POWER_PRODUCTION_UNIT_ID,
             powerType: PowerType.PARTLY_RENEWABLE,
+            hydrogenProductionUnitId: 'hydrogen-unit-1',
+            hydrogenStorageUnitId: givenPayload.storageUnitId,
           }),
           expect.objectContaining({
             powerProductionUnitId: DefaultGridProvider.DEFAULT_GRID_POWER_PRODUCTION_UNIT_ID,
             powerType: PowerType.NON_RENEWABLE,
+            hydrogenProductionUnitId: 'hydrogen-unit-1',
+            hydrogenStorageUnitId: givenPayload.storageUnitId,
           }),
         ]),
       );

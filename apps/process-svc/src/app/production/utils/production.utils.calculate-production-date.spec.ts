@@ -6,7 +6,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { calculateProductionDate } from './production.utils';
+import { calculateProductionDate, calculateProductionEndDate, calculateProductionStartDate } from './production.utils';
+
+describe('ProductionUtils.calculateProductionStartDate', () => {
+  it('should delegate to calculateProductionDate with isEnd set to false', () => {
+    const actualDate = calculateProductionStartDate(2000, 120, 2);
+
+    expect(actualDate.getTime()).toBe(new Date((2000 + 2 * 120) * 1000).getTime());
+  });
+});
+
+describe('ProductionUtils.calculateProductionEndDate', () => {
+  it('should delegate to calculateProductionDate with isEnd set to true', () => {
+    const actualDate = calculateProductionEndDate(2000, 120, 2);
+
+    expect(actualDate.getTime()).toBe(new Date((2000 + 3 * 120) * 1000 - 1000).getTime());
+  });
+});
 
 describe('ProductionUtils.calculateProductionDate', () => {
   it('should calculate the correct start date for the first accountingPeriod', () => {

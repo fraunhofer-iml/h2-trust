@@ -10,7 +10,7 @@ import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures'
 import { CalculationTopic } from '@h2-trust/domain';
 import { assembleHydrogenStorageEmissionCalculations } from './hydrogen-storage-emission-calculation.assembler';
 
-describe('ProofOfSustainability', () => {
+describe('HydrogenStorageEmissionCalculationAssembler', () => {
   describe('assembleHydrogenStorageEmissionCalculations', () => {
     it('computes emissions for provenance with hydrogen bottling only', () => {
       // Arrange

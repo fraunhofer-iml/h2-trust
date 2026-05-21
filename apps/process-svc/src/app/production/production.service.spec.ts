@@ -21,7 +21,7 @@ import {
   CreateHydrogenProductionStatisticsPayloadFixture,
   CreateProductionsPayloadFixture,
 } from '@h2-trust/contracts/payloads/fixtures';
-import { EnergySource, PowerType, ProcessType, RenewableShareInGridMix, RfnboType } from '@h2-trust/domain';
+import { EnergySource, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { QUEUE_GENERAL_SVC } from '@h2-trust/messaging';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { ProductionCreationService } from './production-creation.service';
@@ -135,7 +135,7 @@ describe('ProductionService', () => {
       expect(actualResult).toEqual(expectedProcessSteps);
     });
 
-    it('splits grid power production into partly renewable and non-renewable create entities', async () => {
+    it('delegates two split grid productions with preserved shared metadata', async () => {
       // Arrange
       const givenPayload = CreateProductionsPayloadFixture.create({
         powerAmountKwh: 100,
@@ -174,15 +174,16 @@ describe('ProductionService', () => {
       expect(actualCreateProductions).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
+            powerProductionUnitId: givenPayload.powerProductionUnitId,
+            hydrogenProductionUnitId: givenPayload.hydrogenProductionUnitId,
+            hydrogenStorageUnitId: givenPayload.hydrogenStorageUnitId,
             powerType: PowerType.PARTLY_RENEWABLE,
-            powerAmountKwh: (givenPayload.powerAmountKwh * RenewableShareInGridMix.DE) / 100,
-            hydrogenAmountKg: (givenPayload.hydrogenAmountKg * RenewableShareInGridMix.DE) / 100,
           }),
           expect.objectContaining({
+            powerProductionUnitId: givenPayload.powerProductionUnitId,
+            hydrogenProductionUnitId: givenPayload.hydrogenProductionUnitId,
+            hydrogenStorageUnitId: givenPayload.hydrogenStorageUnitId,
             powerType: PowerType.NON_RENEWABLE,
-            powerAmountKwh: givenPayload.powerAmountKwh - (givenPayload.powerAmountKwh * RenewableShareInGridMix.DE) / 100,
-            hydrogenAmountKg:
-              givenPayload.hydrogenAmountKg - (givenPayload.hydrogenAmountKg * RenewableShareInGridMix.DE) / 100,
           }),
         ]),
       );

@@ -12,8 +12,7 @@ import { normalizeProduction } from './production-normalizer';
 import { ParsedImport } from './production.types';
 
 describe('normalizeProduction', () => {
-  describe('normalizeProduction', () => {
-    it('aggregates accounting periods per hour for the same unit and type', () => {
+  it('aggregates accounting periods per hour for the same unit and type', () => {
       const parsedImports: ParsedImport[] = [
         {
           fileName: 'hydrogen.csv',
@@ -52,7 +51,7 @@ describe('normalizeProduction', () => {
       expect(actualResult[1].endedAt).toEqual(new Date('2026-01-01T09:59:59Z'));
     });
 
-    it('keeps imports separated by production type while preserving unit level results', () => {
+  it('keeps imports separated by production type while preserving unit level results', () => {
       const parsedImports: ParsedImport[] = [
         {
           fileName: 'power.csv',
@@ -95,6 +94,5 @@ describe('normalizeProduction', () => {
           }),
         ]),
       );
-    });
   });
 });

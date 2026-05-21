@@ -11,7 +11,7 @@ import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures'
 import { CalculationTopic } from '@h2-trust/domain';
 import { assembleHydrogenBottlingEmissionCalculations } from './hydrogen-bottling-emission-calculation.assembler';
 
-describe('ProofOfSustainability', () => {
+describe('HydrogenBottlingEmissionCalculationAssembler', () => {
   describe('assembleHydrogenBottlingEmissionCalculations', () => {
     it('computes emissions for provenance with hydrogen bottling only', () => {
       // Arrange

@@ -10,6 +10,7 @@ import {
   HydrogenProductionUnitEntity,
   PowerProductionUnitEntity,
   ProcessStepEntity,
+  ProductionChainEntity,
   RedComplianceEntity,
 } from '@h2-trust/contracts/entities';
 import {
@@ -21,14 +22,15 @@ import { BiddingZone } from '@h2-trust/domain';
 import {
   areUnitsInSameBiddingZone,
   determineRedCompliance,
+  determineTotalRedCompliance,
   hasFinancialSupport,
   isWithinTimeCorrelation,
   meetsAdditionalityCriterion,
 } from './red-compliance';
 
-describe('RedComplianceService', () => {
+describe('RedCompliance', () => {
   describe('determineRedCompliance', () => {
-    it('throws RpcException when provenance is null', () => {
+    it('throws when both process steps are missing', () => {
       // Arrange
       const expectedErrorMessage = `The passed-in power production or hydrogen production do not have an executedBy unit specified.`;
 
@@ -36,7 +38,7 @@ describe('RedComplianceService', () => {
       expect(() => determineRedCompliance(undefined, undefined)).toThrow(expectedErrorMessage);
     });
 
-    it('throws RpcException when powerProductions is empty', () => {
+    it('throws when the power production is missing', () => {
       // Arrange
       const hydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction();
 
@@ -46,7 +48,7 @@ describe('RedComplianceService', () => {
       expect(() => determineRedCompliance(hydrogenProduction, undefined)).toThrow(expectedErrorMessage);
     });
 
-    it('throws RpcException when hydrogenProductions is empty', () => {
+    it('throws when the hydrogen production is missing', () => {
       // Arrange
       const powerProduction = ProcessStepEntityFixture.createPowerProduction();
 
@@ -200,7 +202,7 @@ describe('RedComplianceService', () => {
       expect(actualResult.financialSupportReceived).toBe(false);
     });
 
-    it('throws HttpException when power production unit is missing', () => {
+    it('throws when the power production unit is missing', () => {
       // Arrange
       const givenPowerProcessStep = ProcessStepEntityFixture.createPowerProduction();
       givenPowerProcessStep.executedBy = undefined;
@@ -214,7 +216,7 @@ describe('RedComplianceService', () => {
       );
     });
 
-    it('throws HttpException when hydrogen production unit is missing', () => {
+    it('throws when the hydrogen production unit is missing', () => {
       // Arrange
       const givenPowerProcessStep = ProcessStepEntityFixture.createPowerProduction();
       const givenHydrogenProcessStep = ProcessStepEntityFixture.createHydrogenProduction();
@@ -225,6 +227,69 @@ describe('RedComplianceService', () => {
       // Act & Assert
       expect(() => determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep)).toThrow(
         expectedErrorMessage,
+      );
+    });
+  });
+
+  describe('determineTotalRedCompliance', () => {
+    it('returns true for all flags when no production chains are given', () => {
+      const actualResult = determineTotalRedCompliance([]);
+
+      expect(actualResult).toEqual(
+        expect.objectContaining({
+          isGeoCorrelationValid: true,
+          isTimeCorrelationValid: true,
+          isAdditionalityFulfilled: true,
+          financialSupportReceived: true,
+        }),
+      );
+    });
+
+    it('aggregates false values across all production chains', () => {
+      const fullyCompliantChain: ProductionChainEntity = {
+        powerProductionUnit: PowerProductionUnitEntityFixture.create({
+          biddingZone: BiddingZone.DE_LU,
+          commissionedOn: new Date('2025-01-01T00:00:00Z'),
+          financialSupportReceived: false,
+        }),
+        hydrogenProductionUnit: HydrogenProductionUnitEntityFixture.create({
+          biddingZone: BiddingZone.DE_LU,
+          commissionedOn: new Date('2026-01-01T00:00:00Z'),
+        }),
+        powerProduction: ProcessStepEntityFixture.createPowerProduction({
+          startedAt: new Date('2026-02-01T10:00:00Z'),
+        }),
+        hydrogenRootProduction: ProcessStepEntityFixture.createHydrogenProduction({
+          startedAt: new Date('2026-02-01T10:30:00Z'),
+        }),
+      } as ProductionChainEntity;
+      const failingChain: ProductionChainEntity = {
+        powerProductionUnit: PowerProductionUnitEntityFixture.create({
+          biddingZone: BiddingZone.BE,
+          commissionedOn: new Date('2020-01-01T00:00:00Z'),
+          financialSupportReceived: true,
+        }),
+        hydrogenProductionUnit: HydrogenProductionUnitEntityFixture.create({
+          biddingZone: BiddingZone.DE_LU,
+          commissionedOn: new Date('2026-01-01T00:00:00Z'),
+        }),
+        powerProduction: ProcessStepEntityFixture.createPowerProduction({
+          startedAt: new Date('2026-02-01T08:00:00Z'),
+        }),
+        hydrogenRootProduction: ProcessStepEntityFixture.createHydrogenProduction({
+          startedAt: new Date('2026-02-01T10:00:00Z'),
+        }),
+      } as ProductionChainEntity;
+
+      const actualResult = determineTotalRedCompliance([fullyCompliantChain, failingChain]);
+
+      expect(actualResult).toEqual(
+        expect.objectContaining({
+          isGeoCorrelationValid: false,
+          isTimeCorrelationValid: false,
+          isAdditionalityFulfilled: false,
+          financialSupportReceived: false,
+        }),
       );
     });
   });

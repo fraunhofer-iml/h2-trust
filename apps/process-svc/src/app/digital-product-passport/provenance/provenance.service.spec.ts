@@ -16,7 +16,7 @@ import {
 import { ProcessType } from '@h2-trust/domain';
 import { buildProvenance } from './provenance.service';
 
-describe('ProvenanceService', () => {
+describe('Provenance', () => {
   describe('buildProvenance', () => {
     it('throws error when process step is not found', () => {
       // Arrange

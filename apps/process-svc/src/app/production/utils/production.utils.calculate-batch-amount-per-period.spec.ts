@@ -8,7 +8,7 @@
 
 import { calculateBatchAmountPerAccountingPeriod } from './production.utils';
 
-describe('ProductionUtils.calculateBatchAmountPerPeriod', () => {
+describe('ProductionUtils.calculateBatchAmountPerAccountingPeriod', () => {
   it('should return the full amount if numberOfAccountingPeriods is less than 1', () => {
     const givenBatchAmount = 10;
     const givenNumberOfAccountingPeriods = 0.5;
