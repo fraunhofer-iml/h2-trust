@@ -66,13 +66,10 @@ export class UnitService {
       return this.readHydrogenStorageUnits(userId);
     }
 
-    const user = await this.userService.readUserWithCompany(userId);
-    const ownerId = user.company.id;
-
     const [powerProduction, hydrogenProduction, hydrogenStorage] = await Promise.all([
-      this.readPowerProductionUnitsByOwnerId(ownerId),
-      this.readHydrogenProductionUnitsByOwnerId(ownerId),
-      this.readHydrogenStorageUnitsByOwnerId(ownerId),
+      this.readPowerProductionUnits(userId),
+      this.readHydrogenProductionUnits(userId),
+      this.readHydrogenStorageUnits(userId),
     ]);
 
     return [...powerProduction, ...hydrogenProduction, ...hydrogenStorage];
