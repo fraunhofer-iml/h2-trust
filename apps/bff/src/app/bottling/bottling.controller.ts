@@ -19,7 +19,6 @@ import {
 } from '@nestjs/swagger';
 import {
   BottlingDto,
-  BottlingDtoMock,
   BottlingOverviewDto,
   DigitalProductPassportDto,
   type AuthenticatedKCUser,
@@ -27,6 +26,18 @@ import {
 import 'multer';
 import { KeycloakUser, Public } from 'nest-keycloak-connect';
 import { BottlingService } from './bottling.service';
+
+const bottlingExampleDefaults = {
+  amount: 1,
+  rfnboType: 'RFNBO_READY',
+  recipient: 'company-recipient-1',
+  filledAt: '2025-04-07T00:00:00.000Z',
+  recordedBy: 'user-id-1',
+  hydrogenStorageUnit: 'hydrogen-storage-unit-1',
+  transportMode: 'TRAILER',
+  distance: 1000,
+  fuelType: 'DIESEL',
+} as const;
 
 @Controller('bottlings')
 export class BottlingController {
@@ -56,39 +67,39 @@ export class BottlingController {
         },
         amount: {
           type: 'number',
-          default: BottlingDtoMock[0].amount,
+          default: bottlingExampleDefaults.amount,
         },
         rfnboType: {
           type: 'string',
-          default: BottlingDtoMock[0].rfnboType,
+          default: bottlingExampleDefaults.rfnboType,
         },
         recipient: {
           type: 'string',
-          default: BottlingDtoMock[0].recipient,
+          default: bottlingExampleDefaults.recipient,
         },
         filledAt: {
           type: 'string',
-          default: BottlingDtoMock[0].filledAt,
+          default: bottlingExampleDefaults.filledAt,
         },
         recordedBy: {
           type: 'string',
-          default: BottlingDtoMock[0].recordedBy,
+          default: bottlingExampleDefaults.recordedBy,
         },
         hydrogenStorageUnit: {
           type: 'string',
-          default: BottlingDtoMock[0].hydrogenStorageUnit,
+          default: bottlingExampleDefaults.hydrogenStorageUnit,
         },
         transportMode: {
           type: 'string',
-          default: BottlingDtoMock[0].transportMode,
+          default: bottlingExampleDefaults.transportMode,
         },
         distance: {
           type: 'number',
-          default: BottlingDtoMock[0].distance,
+          default: bottlingExampleDefaults.distance,
         },
         fuelType: {
           type: 'string',
-          default: BottlingDtoMock[0].fuelType,
+          default: bottlingExampleDefaults.fuelType,
         },
       },
     },

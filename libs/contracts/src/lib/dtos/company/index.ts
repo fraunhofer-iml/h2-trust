@@ -8,4 +8,3 @@
 
 export * from './company.dto';
 export * from './company-base.dto';
-export * from './mocks';
