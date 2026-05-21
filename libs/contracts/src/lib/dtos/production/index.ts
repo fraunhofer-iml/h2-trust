@@ -11,7 +11,6 @@ export * from './create-production.dto';
 export * from './csv-document-integrity-result.dto';
 export * from './download-files.dto';
 export * from './import-submission.dto';
-export * from './mocks';
 export * from './processed-csv.dto';
 export * from './production-csv-upload.dto';
 export * from './staged-production.dto';
