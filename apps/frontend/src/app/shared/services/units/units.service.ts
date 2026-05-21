@@ -10,7 +10,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
 import {
-  HydrogenProductionOverviewDto,
   HydrogenProductionUnitDto,
   HydrogenProductionUnitInputDto,
   HydrogenStorageOverviewDto,
@@ -39,18 +38,6 @@ export class UnitsService {
     }
 
     return lastValueFrom(this.httpClient.get<UnitOverviewDto[]>(API.UNITS.BASE, { params }));
-  }
-
-  getHydrogenProductionUnits() {
-    return lastValueFrom(this.httpClient.get<HydrogenProductionOverviewDto[]>(API.UNITS.HYDROGEN_PRODUCTION.BASE));
-  }
-
-  getPowerProductionUnits() {
-    return lastValueFrom(this.httpClient.get<PowerProductionOverviewDto[]>(API.UNITS.POWER_PRODUCTION.BASE));
-  }
-
-  getHydrogenStorageUnits() {
-    return lastValueFrom(this.httpClient.get<HydrogenStorageOverviewDto[]>(API.UNITS.HYDROGEN_STORAGE.BASE));
   }
 
   createHydrogenStorageUnit(dto: UnitInputDto) {

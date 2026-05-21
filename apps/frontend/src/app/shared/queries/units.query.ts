@@ -6,23 +6,32 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { UnitOverviewDto } from '@h2-trust/contracts/dtos';
 import { UnitType } from '@h2-trust/domain';
 import { UnitsService } from '../services/units/units.service';
+import {
+  isHydrogenProductionUnitOverview,
+  isHydrogenStorageUnitOverview,
+  isPowerProductionUnitOverview,
+} from '../util/unit-type-guards';
 import { QueryKeyPrefix } from './shared-query-keys';
 
 export const hydrogenProductionUnitsQueryOptions = (unitsService: UnitsService) => ({
-  queryKey: [QueryKeyPrefix.HYDROGEN_PRODUCTION_UNITS],
-  queryFn: () => unitsService.getHydrogenProductionUnits(),
+  queryKey: [QueryKeyPrefix.UNITS, UnitType.HYDROGEN_PRODUCTION],
+  queryFn: () => unitsService.getUnits(UnitType.HYDROGEN_PRODUCTION),
+  select: (units: UnitOverviewDto[]) => units.filter((u) => isHydrogenProductionUnitOverview(u)),
 });
 
 export const powerProductionUnitsQueryOptions = (unitsService: UnitsService) => ({
-  queryKey: [QueryKeyPrefix.POWER_PRODUCTION_UNITS],
-  queryFn: () => unitsService.getPowerProductionUnits(),
+  queryKey: [QueryKeyPrefix.UNITS, UnitType.POWER_PRODUCTION],
+  queryFn: () => unitsService.getUnits(UnitType.POWER_PRODUCTION),
+  select: (units: UnitOverviewDto[]) => units.filter((u) => isPowerProductionUnitOverview(u)),
 });
 
 export const hydrogenStorageUnitsQueryOptions = (unitsService: UnitsService) => ({
-  queryKey: [QueryKeyPrefix.HYDROGEN_STORAGE_UNITS],
-  queryFn: () => unitsService.getHydrogenStorageUnits(),
+  queryKey: [QueryKeyPrefix.UNITS, UnitType.HYDROGEN_STORAGE],
+  queryFn: () => unitsService.getUnits(UnitType.HYDROGEN_STORAGE),
+  select: (units: UnitOverviewDto[]) => units.filter((u) => isHydrogenStorageUnitOverview(u)),
 });
 
 export const unitsQueryOptions = (unitsService: UnitsService, type?: UnitType) => ({
