@@ -20,7 +20,7 @@
           @switch (unit.unitType) {
             @case (UnitType.HYDROGEN_PRODUCTION) {
               @if (isHydrogenProductionUnitDetails(unit)) {
-                <div class="xlgrid-cols-4 grid grid-cols-3 gap-4">
+                <div class="grid grid-cols-3 gap-4 xl:grid-cols-4">
                   <div class="flex flex-col text-sm">
                     <span class="text-sm text-neutral-400">Bidding Zone</span><span>{{ unit.biddingZone }}</span>
                   </div>
