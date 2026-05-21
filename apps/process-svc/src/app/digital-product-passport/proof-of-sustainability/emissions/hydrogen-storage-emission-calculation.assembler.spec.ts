@@ -12,14 +12,14 @@ import { assembleHydrogenStorageEmissionCalculations } from './hydrogen-storage-
 
 describe('HydrogenStorageEmissionCalculationAssembler', () => {
   describe('assembleHydrogenStorageEmissionCalculations', () => {
-    it('computes emissions for provenance with hydrogen bottling only', () => {
-      // Arrange
+    it('should compute emissions for provenance with hydrogen bottling only when called', () => {
+      // arrange
       const givenHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction();
 
-      // Act
+      // act
       const actualResult = assembleHydrogenStorageEmissionCalculations(givenHydrogenProduction)[0];
 
-      // Assert
+      // assert
       expect(actualResult).toBeDefined();
       expect(actualResult.result).toBe(0); // TODO-MP: batchId or processStepId -> DUHGW-314
       expect(actualResult.calculationTopic).toEqual(CalculationTopic.HYDROGEN_STORAGE);

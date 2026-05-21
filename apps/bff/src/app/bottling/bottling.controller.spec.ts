@@ -43,40 +43,59 @@ describe('BottlingController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('delegates createBottlingAndTransportation to the service with uploaded files and user id', async () => {
-    const dto = BottlingDtoFixture.create();
-    const files = [{ originalname: 'evidence.pdf' }] as Express.Multer.File[];
-    const result: BottlingOverviewDto = BottlingOverviewDtoFixture.create();
+  it('should delegate createBottlingAndTransportation to the service when uploaded files are provided', async () => {
+    // arrange
+    const givenDto = BottlingDtoFixture.create();
+    const givenFiles = [{ originalname: 'evidence.pdf' }] as Express.Multer.File[];
+    const expectedOverview: BottlingOverviewDto = BottlingOverviewDtoFixture.create();
 
-    bottlingServiceMock.createBottlingAndTransportation.mockResolvedValue(result);
+    bottlingServiceMock.createBottlingAndTransportation.mockResolvedValue(expectedOverview);
 
-    await expect(controller.createBottlingAndTransportation(dto, files, authenticatedUser)).resolves.toEqual(result);
+    // act
+    const actualResult = await controller.createBottlingAndTransportation(givenDto, givenFiles, authenticatedUser);
+
+    // assert
+    expect(actualResult).toEqual(expectedOverview);
     expect(bottlingServiceMock.createBottlingAndTransportation).toHaveBeenCalledWith(
-      dto,
-      files,
+      givenDto,
+      givenFiles,
       authenticatedUser.sub,
     );
   });
 
-  it('delegates readBottlingsAndTransportationsByOwner to the service with the authenticated user id', async () => {
-    const result: BottlingOverviewDto[] = [BottlingOverviewDtoFixture.create()];
+  it('should delegate readBottlingsAndTransportationsByOwner to the service when the authenticated user requests them', async () => {
+    // arrange
+    const expectedOverviews: BottlingOverviewDto[] = [BottlingOverviewDtoFixture.create()];
 
-    bottlingServiceMock.readBottlingsAndTransportationsByOwner.mockResolvedValue(result);
+    bottlingServiceMock.readBottlingsAndTransportationsByOwner.mockResolvedValue(expectedOverviews);
 
-    await expect(controller.readBottlingsAndTransportationsByOwner(authenticatedUser)).resolves.toEqual(result);
+    // act
+    const actualResult = await controller.readBottlingsAndTransportationsByOwner(authenticatedUser);
+
+    // assert
+    expect(actualResult).toEqual(expectedOverviews);
     expect(bottlingServiceMock.readBottlingsAndTransportationsByOwner).toHaveBeenCalledWith(authenticatedUser.sub);
   });
 
-  it('delegates readDigitalProductPassport to the service by transportation id', async () => {
-    const result: DigitalProductPassportDto = DigitalProductPassportDtoFixture.create({ id: 'dpp-1' });
+  it('should delegate readDigitalProductPassport to the service when a transportation id is provided', async () => {
+    // arrange
+    const expectedPassport: DigitalProductPassportDto = DigitalProductPassportDtoFixture.create({ id: 'dpp-1' });
 
-    bottlingServiceMock.readDigitalProductPassport.mockResolvedValue(result);
+    bottlingServiceMock.readDigitalProductPassport.mockResolvedValue(expectedPassport);
 
-    await expect(controller.readDigitalProductPassport(result.id)).resolves.toEqual(result);
-    expect(bottlingServiceMock.readDigitalProductPassport).toHaveBeenCalledWith(result.id);
+    // act
+    const actualResult = await controller.readDigitalProductPassport(expectedPassport.id);
+
+    // assert
+    expect(actualResult).toEqual(expectedPassport);
+    expect(bottlingServiceMock.readDigitalProductPassport).toHaveBeenCalledWith(expectedPassport.id);
   });
 
-  it('marks the digital product passport endpoint as public', () => {
-    expect(Reflect.getMetadata(META_PUBLIC, BottlingController.prototype.readDigitalProductPassport)).toBe(true);
+  it('should mark the digital product passport endpoint as public when reading its metadata', () => {
+    // act
+    const actualResult = Reflect.getMetadata(META_PUBLIC, BottlingController.prototype.readDigitalProductPassport);
+
+    // assert
+    expect(actualResult).toBe(true);
   });
 });

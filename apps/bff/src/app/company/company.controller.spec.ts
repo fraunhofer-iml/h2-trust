@@ -29,12 +29,17 @@ describe('CompanyController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('delegates findAll to CompanyService', async () => {
-    const companies = [CompanyDtoFixture.create(), CompanyDtoFixture.createHydrogenProducer()];
+  it('should delegate findAll to CompanyService when handling the companies request', async () => {
+    // arrange
+    const expectedCompanies = [CompanyDtoFixture.create(), CompanyDtoFixture.createHydrogenProducer()];
 
-    companyServiceMock.findAll.mockResolvedValue(companies);
+    companyServiceMock.findAll.mockResolvedValue(expectedCompanies);
 
-    await expect(controller.findAll()).resolves.toEqual(companies);
+    // act
+    const actualResult = await controller.findAll();
+
+    // assert
+    expect(actualResult).toEqual(expectedCompanies);
     expect(companyServiceMock.findAll).toHaveBeenCalledWith();
   });
 });

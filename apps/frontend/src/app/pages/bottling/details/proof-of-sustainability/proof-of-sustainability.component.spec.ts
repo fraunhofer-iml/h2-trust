@@ -27,7 +27,14 @@ describe('ProofOfSustainabilityComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create the component when the test bed initializes it', () => {
+    // arrange
+    const initializedComponent = component;
+
+    // act
+    const actualResult = initializedComponent;
+
+    // assert
+    expect(actualResult).toBeTruthy();
   });
 });

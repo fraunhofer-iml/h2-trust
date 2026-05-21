@@ -80,8 +80,8 @@ describe('ProcessStepService', () => {
   });
 
   describe('getPredecessors', () => {
-    it('loads predecessor process steps and returns them with the given process step first', async () => {
-      // Arrange
+    it('should load predecessor process steps and return them with the given process step first when called', async () => {
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
       const givenPredecessorProcessSteps = [
         ProcessStepEntityFixture.createHydrogenProduction(),
@@ -92,10 +92,10 @@ describe('ProcessStepService', () => {
       processStepRepositoryMock.findPredecessorProcessSteps.mockResolvedValue(predecessorIds);
       processStepRepositoryMock.findProcessSteps.mockResolvedValue(givenPredecessorProcessSteps);
 
-      // Act
+      // act
       const actualResult = await service.getPredecessors(givenProcessStep);
 
-      // Assert
+      // assert
       expect(processStepRepositoryMock.findPredecessorProcessSteps).toHaveBeenCalledWith(givenProcessStep.batch.id);
       expect(processStepRepositoryMock.findProcessSteps).toHaveBeenCalledWith(predecessorIds);
       expect(actualResult).toEqual([givenProcessStep, ...givenPredecessorProcessSteps]);
@@ -103,41 +103,41 @@ describe('ProcessStepService', () => {
   });
 
   describe('updateRfnboStatus', () => {
-    it('delegates to BatchRepository with the batch id and RFNBO type', async () => {
-      // Arrange
+    it('should delegate to BatchRepository with the batch id and RFNBO type when called', async () => {
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenProduction();
       const expected = { id: 'quality-details-1', batchId: givenProcessStep.batch.id };
 
       batchRepositoryMock.setRfnboStatus.mockResolvedValue(expected);
 
-      // Act
+      // act
       const actualResult = await service.updateRfnboStatus(givenProcessStep, RfnboType.RFNBO_READY);
 
-      // Assert
+      // assert
       expect(batchRepositoryMock.setRfnboStatus).toHaveBeenCalledWith(givenProcessStep.batch.id, RfnboType.RFNBO_READY);
       expect(actualResult).toEqual(expected);
     });
   });
 
   describe('createProcessStep', () => {
-    it('delegates to ProcessStepRepository', async () => {
-      // Arrange
+    it('should delegate to ProcessStepRepository when called', async () => {
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
 
       processStepRepositoryMock.insertProcessStep.mockResolvedValue(givenProcessStep);
 
-      // Act
+      // act
       const actualResult = await service.createProcessStep(givenProcessStep);
 
-      // Assert
+      // assert
       expect(processStepRepositoryMock.insertProcessStep).toHaveBeenCalledWith(givenProcessStep);
       expect(actualResult).toEqual(givenProcessStep);
     });
   });
 
   describe('createManyProcessSteps', () => {
-    it('delegates to ProcessStepRepository', async () => {
-      // Arrange
+    it('should delegate to ProcessStepRepository when called', async () => {
+      // arrange
       const givenProcessSteps = [
         ProcessStepEntityFixture.createHydrogenBottling(),
         ProcessStepEntityFixture.createHydrogenProduction(),
@@ -146,26 +146,26 @@ describe('ProcessStepService', () => {
 
       processStepRepositoryMock.insertManyProcessSteps.mockResolvedValue(givenProcessSteps);
 
-      // Act
+      // act
       const actualResult = await service.createManyProcessSteps(givenPayload);
 
-      // Assert
+      // assert
       expect(processStepRepositoryMock.insertManyProcessSteps).toHaveBeenCalledWith(givenProcessSteps);
       expect(actualResult).toEqual(givenProcessSteps);
     });
   });
 
   describe('readProcessStep', () => {
-    it('returns process step with assembled documents for non-transportation type', async () => {
-      // Arrange
+    it('should return process step with assembled documents for non-transportation type when called', async () => {
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
 
       processStepRepositoryMock.findProcessStep.mockResolvedValue(givenProcessStep);
 
-      // Act
+      // act
       const actualResult = await service.readProcessStep(givenProcessStep.id);
 
-      // Assert
+      // assert
       expect(processStepRepositoryMock.findProcessStep).toHaveBeenCalledWith(givenProcessStep.id);
       expect(actualResult.id).toBe(givenProcessStep.id);
       expect(actualResult.documents).toHaveLength(1);
@@ -174,8 +174,8 @@ describe('ProcessStepService', () => {
       expect(actualResult.documents[0].storageUrl).toBe('http://localhost:9000/test-bucket/some.pdf');
     });
 
-    it('returns transportation process step with documents from predecessor', async () => {
-      // Arrange
+    it('should return transportation process step with documents from predecessor when called', async () => {
+      // arrange
       const givenPredecessorProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
       const givenTransportationProcessStep = ProcessStepEntityFixture.createHydrogenTransportation();
       givenTransportationProcessStep.batch.predecessors = [givenPredecessorProcessStep.batch];
@@ -184,10 +184,10 @@ describe('ProcessStepService', () => {
         .mockResolvedValueOnce(givenTransportationProcessStep)
         .mockResolvedValueOnce(givenPredecessorProcessStep);
 
-      // Act
+      // act
       const actualResult = await service.readProcessStep(givenTransportationProcessStep.id);
 
-      // Assert
+      // assert
       expect(processStepRepositoryMock.findProcessStep).toHaveBeenCalledTimes(2);
       expect(actualResult.id).toBe(givenTransportationProcessStep.id);
       expect(actualResult.documents).toHaveLength(1);
@@ -196,8 +196,8 @@ describe('ProcessStepService', () => {
       expect(actualResult.documents[0].storageUrl).toBe('http://localhost:9000/test-bucket/some.pdf');
     });
 
-    it('throws error when transportation has no predecessor', async () => {
-      // Arrange
+    it('should throw error when transportation has no predecessor', async () => {
+      // arrange
       const givenTransportationProcessStep = ProcessStepEntityFixture.createHydrogenTransportation();
       givenTransportationProcessStep.batch.predecessors = [];
 
@@ -205,12 +205,12 @@ describe('ProcessStepService', () => {
 
       const expectedErrorMessage = 'ProcessStepId of predecessor is missing.';
 
-      // Act & Assert
+      // act & assert
       await expect(service.readProcessStep(givenTransportationProcessStep.id)).rejects.toThrow(expectedErrorMessage);
     });
 
-    it('throws error when predecessor is not hydrogen bottling', async () => {
-      // Arrange
+    it('should throw error when predecessor is not hydrogen bottling', async () => {
+      // arrange
       const givenPredecessorProcessStep = ProcessStepEntityFixture.createHydrogenProduction();
       const givenTransportationProcessStep = ProcessStepEntityFixture.createHydrogenTransportation();
       givenTransportationProcessStep.batch.predecessors = [givenPredecessorProcessStep.batch];
@@ -221,14 +221,14 @@ describe('ProcessStepService', () => {
 
       const errorMessage = `Expected process type of predecessor to be ${ProcessType.HYDROGEN_BOTTLING}, but got ${ProcessType.HYDROGEN_PRODUCTION}.`;
 
-      // Act & Assert
+      // act & assert
       await expect(service.readProcessStep(givenTransportationProcessStep.id)).rejects.toThrow(errorMessage);
     });
   });
 
   describe('readAllProcessStepsFromStorageUnit', () => {
-    it('delegates to ProcessStepRepository', async () => {
-      // Arrange
+    it('should delegate to ProcessStepRepository when called', async () => {
+      // arrange
       const givenStorageUnitId = 'storage-unit-1';
       const givenProcessSteps = [
         ProcessStepEntityFixture.createHydrogenProduction(),
@@ -237,18 +237,18 @@ describe('ProcessStepService', () => {
 
       processStepRepositoryMock.findAllProcessStepsFromStorageUnit.mockResolvedValue(givenProcessSteps);
 
-      // Act
+      // act
       const actualResult = await service.readAllProcessStepsFromStorageUnit(givenStorageUnitId);
 
-      // Assert
+      // assert
       expect(processStepRepositoryMock.findAllProcessStepsFromStorageUnit).toHaveBeenCalledWith(givenStorageUnitId);
       expect(actualResult).toEqual(givenProcessSteps);
     });
   });
 
   describe('readProcessStepsByPredecessorTypesAndOwner', () => {
-    it('delegates to ProcessStepRepository', async () => {
-      // Arrange
+    it('should delegate to ProcessStepRepository when called', async () => {
+      // arrange
       const givenPayload = new ReadProcessStepsByPredecessorTypesAndOwnerPayload(
         [ProcessType.HYDROGEN_PRODUCTION],
         'company-1',
@@ -257,10 +257,10 @@ describe('ProcessStepService', () => {
 
       processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner.mockResolvedValue(givenProcessSteps);
 
-      // Act
+      // act
       const actualResult = await service.readProcessStepsByPredecessorTypesAndOwner(givenPayload);
 
-      // Assert
+      // assert
       expect(processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner).toHaveBeenCalledWith(
         givenPayload.predecessorProcessTypes,
         givenPayload.ownerId,
@@ -270,8 +270,8 @@ describe('ProcessStepService', () => {
   });
 
   describe('readProcessStepsByPredecessorTypesAndUnitAndDate', () => {
-    it('delegates to ProcessStepRepository with unit name and normalized month date', async () => {
-      // Arrange
+    it('should delegate to ProcessStepRepository with unit name and normalized month date when called', async () => {
+      // arrange
       const givenPayload = new CreateHydrogenProductionStatisticsPayload(
         'company-1',
         new Date('2026-01-01T00:00:00Z'),
@@ -282,13 +282,13 @@ describe('ProcessStepService', () => {
 
       processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner.mockResolvedValue(givenProcessSteps);
 
-      // Act
+      // act
       const actualResult = await service.readProcessStepsByPredecessorTypesAndUnitAndDate(
         givenPredecessorTypes,
         givenPayload,
       );
 
-      // Assert
+      // assert
       expect(processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner).toHaveBeenCalledWith(
         givenPredecessorTypes,
         givenPayload.ownerId,
@@ -300,8 +300,8 @@ describe('ProcessStepService', () => {
   });
 
   describe('readPaginatedProcessStepsByPredecessorTypesAndOwner', () => {
-    it('returns the requested page of process steps with pagination metadata', async () => {
-      // Arrange
+    it('should return the requested page of process steps with pagination metadata when called', async () => {
+      // arrange
       const givenProcesses = [
         ProcessStepEntityFixture.createHydrogenBottling({ id: 'process-step-1' }),
         ProcessStepEntityFixture.createHydrogenProduction({ id: 'process-step-2' }),
@@ -315,10 +315,10 @@ describe('ProcessStepService', () => {
 
       processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner.mockResolvedValue(givenProcesses);
 
-      // Act
+      // act
       const actualResult = await service.readPaginatedProcessStepsByPredecessorTypesAndOwner(givenPayload);
 
-      // Assert
+      // assert
       expect(processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner).toHaveBeenCalledWith(
         givenPayload.predecessorProcessTypes,
         givenPayload.ownerId,
@@ -333,8 +333,8 @@ describe('ProcessStepService', () => {
   });
 
   describe('readProcessStepsByTypesAndActiveAndOwner', () => {
-    it('delegates to ProcessStepRepository', async () => {
-      // Arrange
+    it('should delegate to ProcessStepRepository when called', async () => {
+      // arrange
       const givenPayload = new ReadProcessStepsByTypesAndActiveAndOwnerPayload(
         [ProcessType.HYDROGEN_BOTTLING],
         true,
@@ -344,10 +344,10 @@ describe('ProcessStepService', () => {
 
       processStepRepositoryMock.findProcessStepsByTypesAndActiveAndOwner.mockResolvedValue(givenProcessSteps);
 
-      // Act
+      // act
       const actualResult = await service.readProcessStepsByTypesAndActiveAndOwner(givenPayload);
 
-      // Assert
+      // assert
       expect(processStepRepositoryMock.findProcessStepsByTypesAndActiveAndOwner).toHaveBeenCalledWith(
         givenPayload.processTypes,
         givenPayload.active,
@@ -358,17 +358,17 @@ describe('ProcessStepService', () => {
   });
 
   describe('setBatchesInactive', () => {
-    it('delegates to BatchRepository', async () => {
-      // Arrange
+    it('should delegate to BatchRepository when called', async () => {
+      // arrange
       const givenBatchIds = ['batch-1', 'batch-2'];
       const expected = { count: 2 };
 
       batchRepositoryMock.setBatchesInactive.mockResolvedValue(expected);
 
-      // Act
+      // act
       const actualResult = await service.setBatchesInactive(givenBatchIds);
 
-      // Assert
+      // assert
       expect(batchRepositoryMock.setBatchesInactive).toHaveBeenCalledWith(givenBatchIds);
       expect(actualResult).toEqual(expected);
     });

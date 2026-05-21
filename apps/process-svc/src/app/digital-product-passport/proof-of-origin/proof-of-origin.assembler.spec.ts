@@ -36,15 +36,15 @@ jest.mock('./proof-of-origin-assembler.registry.const', () => ({
 
 describe('ProofOfOriginAssembler', () => {
   describe('assembleProofOfOrigin', () => {
-    it('returns an empty list for undefined provenance', () => {
+    it('should return an empty list when provenance is undefined', () => {
       expect(assembleProofOfOrigin(undefined as never)).toEqual([]);
     });
 
-    it('assembles sections from the registry and sorts them by proof-of-origin order', () => {
-      // Act
+    it('should assemble sections from the registry and sort them by proof-of-origin order when called', () => {
+      // act
       const actualResult = assembleProofOfOrigin({} as never);
 
-      // Assert
+      // assert
       expect(actualResult.map((section) => section.name)).toEqual([
         ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION,
         ProofOfOrigin.HYDROGEN_BOTTLING_SECTION,
@@ -54,22 +54,22 @@ describe('ProofOfOriginAssembler', () => {
   });
 
   describe('getHydrogenBottlingCompositions', () => {
-    it('returns an empty list when proof of origin is missing', () => {
+    it('should return an empty list when proof of origin is missing', () => {
       expect(getHydrogenBottlingCompositions(undefined as never)).toEqual([]);
     });
 
-    it('returns an empty list when no bottling section is present', () => {
-      // Arrange
+    it('should return an empty list when no bottling section is present', () => {
+      // arrange
       const givenProofOfOrigin = [
         ProofOfOriginSectionEntityFixture.create({ name: ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION }),
       ];
 
-      // Act & Assert
+      // act & assert
       expect(getHydrogenBottlingCompositions(givenProofOfOrigin)).toEqual([]);
     });
 
-    it('returns the hydrogen composition from the first bottling batch', () => {
-      // Arrange
+    it('should return the hydrogen composition when the first bottling batch is present', () => {
+      // arrange
       const givenHydrogenComposition = [
         HydrogenComponentEntityFixture.createRfnboReady({ amount: 60 }),
         HydrogenComponentEntityFixture.createNonCertifiable({ amount: 40 }),
@@ -86,10 +86,10 @@ describe('ProofOfOriginAssembler', () => {
         }),
       ];
 
-      // Act
+      // act
       const actualResult = getHydrogenBottlingCompositions(givenProofOfOrigin);
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(givenHydrogenComposition);
     });
   });

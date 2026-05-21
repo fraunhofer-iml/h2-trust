@@ -21,8 +21,8 @@ import {
 
 describe('DigitalProductPassportUtils', () => {
   describe('assembleClassification', () => {
-    it('aggregates amount and emissions from batches and sub-classifications', () => {
-      // Arrange
+    it('should aggregate amount and emissions from batches and sub-classifications when called', () => {
+      // arrange
       const givenPowerBatch = ProofOfOriginPowerBatchEntityFixture.create({
         amount: 10,
         emission: ProofOfOriginPowerBatchEntityFixture.create().emission,
@@ -34,7 +34,7 @@ describe('DigitalProductPassportUtils', () => {
         ProofOfOriginHydrogenBatchEntityFixture.create({ amount: 3 }),
       ]);
 
-      // Act
+      // act
       const actualResult = assembleClassification(
         'Power supply',
         BatchType.POWER,
@@ -42,7 +42,7 @@ describe('DigitalProductPassportUtils', () => {
         [givenSubClassification],
       );
 
-      // Assert
+      // assert
       expect(actualResult.name).toBe('Power supply');
       expect(actualResult.classificationType).toBe(BatchType.POWER);
       expect(actualResult.amount).toBe(15);
@@ -51,33 +51,33 @@ describe('DigitalProductPassportUtils', () => {
       expect(actualResult.subClassifications).toEqual([givenSubClassification]);
     });
 
-    it('falls back to sub-classification amount when no batches are present', () => {
-      // Arrange
+    it('should fall back to sub-classification amount when no batches are present', () => {
+      // arrange
       const givenSubClassification = assembleSubClassification('Hydrogen source', BatchType.HYDROGEN, [
         ProofOfOriginHydrogenBatchEntityFixture.create({ amount: 7 }),
       ]);
 
-      // Act
+      // act
       const actualResult = assembleClassification('Hydrogen supply', BatchType.HYDROGEN, [], [givenSubClassification]);
 
-      // Assert
+      // assert
       expect(actualResult.amount).toBe(7);
       expect(actualResult.emissionOfProcessStep).toBeCloseTo(givenSubClassification.emissionOfProcessStep);
     });
   });
 
   describe('assembleSubClassification', () => {
-    it('builds a sub-classification from the provided batches', () => {
-      // Arrange
+    it('should build a sub-classification from the provided batches when called', () => {
+      // arrange
       const givenBatches = [
         ProofOfOriginHydrogenBatchEntityFixture.create({ amount: 4 }),
         ProofOfOriginHydrogenBatchEntityFixture.create({ id: 'hydrogen-batch-2', amount: 6 }),
       ];
 
-      // Act
+      // act
       const actualResult = assembleSubClassification('Hydrogen composition', BatchType.HYDROGEN, givenBatches);
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(
         expect.objectContaining({
           name: 'Hydrogen composition',
@@ -91,14 +91,14 @@ describe('DigitalProductPassportUtils', () => {
   });
 
   describe('sumAmounts', () => {
-    it('returns the sum of all amounts', () => {
+    it('should return the sum of all amounts when called', () => {
       expect(sumAmounts([{ amount: 2 }, { amount: 3 }, { amount: 5 }])).toBe(10);
     });
   });
 
   describe('calculateBatchEmission', () => {
-    it('sums emissions and treats missing emissions as zero', () => {
-      // Arrange
+    it('should sum emissions and treat missing emissions as zero when called', () => {
+      // arrange
       const givenBatches = [
         ProofOfOriginPowerBatchEntityFixture.create(),
         {
@@ -107,10 +107,10 @@ describe('DigitalProductPassportUtils', () => {
         },
       ];
 
-      // Act
+      // act
       const actualResult = calculateBatchEmission(givenBatches);
 
-      // Assert
+      // assert
       expect(actualResult).toBeCloseTo(10.5);
     });
   });

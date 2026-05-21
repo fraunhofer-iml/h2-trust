@@ -13,15 +13,15 @@ import { assembleWaterConsumptionEmissionCalculations } from './water-consumptio
 
 describe('WaterConsumptionEmissionCalculationAssembler', () => {
   describe('assembleWaterConsumptionEmissionCalculations', () => {
-    it('computes emissions for provenance with hydrogen bottling only', () => {
-      // Arrange
+    it('should compute emissions for provenance with hydrogen bottling only when called', () => {
+      // arrange
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
       const givenProvenance = new ProvenanceEntity(givenHydrogenBottling, [], givenHydrogenBottling);
 
-      // Act
+      // act
       const actualResult = assembleWaterConsumptionEmissionCalculations(givenProvenance)[0];
 
-      // Assert
+      // assert
       expect(actualResult).toBeDefined();
       expect(actualResult.result).toBe(0); // TODO-MP: batchId or processStepId -> DUHGW-314
       expect(actualResult.calculationTopic).toEqual(CalculationTopic.WATER_SUPPLY);

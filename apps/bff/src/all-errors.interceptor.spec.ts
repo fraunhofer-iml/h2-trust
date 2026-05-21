@@ -13,47 +13,62 @@ import { PROBLEM_TYPES } from './problem-types';
 import { AllErrorsInterceptor } from './all-errors.interceptor';
 
 describe('AllErrorsInterceptor', () => {
-  const executionContextMock = {} as ExecutionContext;
+  const givenExecutionContext = {} as ExecutionContext;
 
   it('should be defined', () => {
     expect(new AllErrorsInterceptor()).toBeDefined();
   });
 
-  it('passes through native HttpExceptions unchanged', async () => {
-    const interceptor = new AllErrorsInterceptor();
-    const httpException = new NotFoundException('Missing');
-    const callHandlerMock: CallHandler = {
-      handle: jest.fn().mockReturnValue(throwError(() => httpException)),
+  it('should pass through native HttpExceptions when the call handler throws one', async () => {
+    // arrange
+    const givenInterceptor = new AllErrorsInterceptor();
+    const givenHttpException = new NotFoundException('Missing');
+    const givenCallHandler: CallHandler = {
+      handle: jest.fn().mockReturnValue(throwError(() => givenHttpException)),
     };
 
-    await expect(lastValueFrom(interceptor.intercept(executionContextMock, callHandlerMock))).rejects.toBe(httpException);
+    // act
+    const actualResult = lastValueFrom(givenInterceptor.intercept(givenExecutionContext, givenCallHandler));
+
+    // assert
+    await expect(actualResult).rejects.toBe(givenHttpException);
   });
 
-  it('wraps rpc errors into an HttpException with the mapped status code', async () => {
-    const interceptor = new AllErrorsInterceptor();
-    const rpcError = {
+  it('should wrap RPC errors into an HttpException when the call handler throws an RPC payload', async () => {
+    // arrange
+    const givenInterceptor = new AllErrorsInterceptor();
+    const givenRpcError = {
       errorCode: ErrorCode.DOMAIN_RESOURCE_INACTIVE,
       message: 'Resource inactive',
     };
-    const callHandlerMock: CallHandler = {
-      handle: jest.fn().mockReturnValue(throwError(() => ({ error: rpcError }))),
+    const givenCallHandler: CallHandler = {
+      handle: jest.fn().mockReturnValue(throwError(() => ({ error: givenRpcError }))),
     };
 
-    await expect(lastValueFrom(interceptor.intercept(executionContextMock, callHandlerMock))).rejects.toEqual(
+    // act
+    const actualResult = lastValueFrom(givenInterceptor.intercept(givenExecutionContext, givenCallHandler));
+
+    // assert
+    await expect(actualResult).rejects.toEqual(
       expect.objectContaining<HttpException>({
-        response: rpcError,
+        response: givenRpcError,
         status: PROBLEM_TYPES[ErrorCode.DOMAIN_RESOURCE_INACTIVE].status,
       }),
     );
   });
 
-  it('falls back to an internal error when the thrown value is not an rpc error', async () => {
-    const interceptor = new AllErrorsInterceptor();
-    const callHandlerMock: CallHandler = {
+  it('should fall back to an internal error when the thrown value is not an RPC error', async () => {
+    // arrange
+    const givenInterceptor = new AllErrorsInterceptor();
+    const givenCallHandler: CallHandler = {
       handle: jest.fn().mockReturnValue(throwError(() => new Error('boom'))),
     };
 
-    await expect(lastValueFrom(interceptor.intercept(executionContextMock, callHandlerMock))).rejects.toEqual(
+    // act
+    const actualResult = lastValueFrom(givenInterceptor.intercept(givenExecutionContext, givenCallHandler));
+
+    // assert
+    await expect(actualResult).rejects.toEqual(
       expect.objectContaining<HttpException>({
         response: {
           errorCode: ErrorCode.INTERNAL_ERROR,

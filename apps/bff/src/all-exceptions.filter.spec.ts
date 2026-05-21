@@ -37,23 +37,26 @@ describe('AllExceptionsFilter', () => {
     expect(new AllExceptionsFilter()).toBeDefined();
   });
 
-  it('maps rpc error responses to problem details', () => {
-    const filter = new AllExceptionsFilter();
-    const { host, response } = createHost('/rpc-error');
-    const exception = {
+  it('should map RPC error responses to problem details when catching a bad request exception with RPC payload', () => {
+    // arrange
+    const givenFilter = new AllExceptionsFilter();
+    const { host: givenHost, response: givenResponse } = createHost('/rpc-error');
+    const givenException = {
       getResponse: () => ({
         errorCode: ErrorCode.DATABASE_RECORD_NOT_FOUND,
         message: 'Company not found',
         validationErrors: ['id must be a uuid'],
       }),
     } as BadRequestException;
-    Object.setPrototypeOf(exception, BadRequestException.prototype);
+    Object.setPrototypeOf(givenException, BadRequestException.prototype);
 
-    filter.catch(exception, host);
+    // act
+    givenFilter.catch(givenException, givenHost);
 
-    expect(response.header).toHaveBeenCalledWith('Content-Type', 'application/problem+json');
-    expect(response.status).toHaveBeenCalledWith(PROBLEM_TYPES[ErrorCode.DATABASE_RECORD_NOT_FOUND].status);
-    expect(response.json).toHaveBeenCalledWith(
+    // assert
+    expect(givenResponse.header).toHaveBeenCalledWith('Content-Type', 'application/problem+json');
+    expect(givenResponse.status).toHaveBeenCalledWith(PROBLEM_TYPES[ErrorCode.DATABASE_RECORD_NOT_FOUND].status);
+    expect(givenResponse.json).toHaveBeenCalledWith(
       expect.objectContaining({
         type: 'urn:h2-trust:problem:database-record-not-found',
         status: PROBLEM_TYPES[ErrorCode.DATABASE_RECORD_NOT_FOUND].status,
@@ -65,14 +68,17 @@ describe('AllExceptionsFilter', () => {
     );
   });
 
-  it('maps validation pipe errors to validation problem details', () => {
-    const filter = new AllExceptionsFilter();
-    const { host, response } = createHost('/validation');
+  it('should map validation pipe errors to problem details when catching a validation exception array', () => {
+    // arrange
+    const givenFilter = new AllExceptionsFilter();
+    const { host: givenHost, response: givenResponse } = createHost('/validation');
 
-    filter.catch(new BadRequestException(['name should not be empty']), host);
+    // act
+    givenFilter.catch(new BadRequestException(['name should not be empty']), givenHost);
 
-    expect(response.status).toHaveBeenCalledWith(PROBLEM_TYPES[ErrorCode.VALIDATION_ERROR].status);
-    expect(response.json).toHaveBeenCalledWith(
+    // assert
+    expect(givenResponse.status).toHaveBeenCalledWith(PROBLEM_TYPES[ErrorCode.VALIDATION_ERROR].status);
+    expect(givenResponse.json).toHaveBeenCalledWith(
       expect.objectContaining({
         type: 'urn:h2-trust:problem:validation-error',
         detail: 'Validation failed',
@@ -82,14 +88,17 @@ describe('AllExceptionsFilter', () => {
     );
   });
 
-  it('maps native http exceptions to about:blank problem details', () => {
-    const filter = new AllExceptionsFilter();
-    const { host, response } = createHost('/native');
+  it('should map native HTTP exceptions to about:blank problem details when catching a framework exception', () => {
+    // arrange
+    const givenFilter = new AllExceptionsFilter();
+    const { host: givenHost, response: givenResponse } = createHost('/native');
 
-    filter.catch(new ConflictException('Already exists'), host);
+    // act
+    givenFilter.catch(new ConflictException('Already exists'), givenHost);
 
-    expect(response.status).toHaveBeenCalledWith(409);
-    expect(response.json).toHaveBeenCalledWith(
+    // assert
+    expect(givenResponse.status).toHaveBeenCalledWith(409);
+    expect(givenResponse.json).toHaveBeenCalledWith(
       expect.objectContaining({
         type: 'about:blank',
         status: 409,
@@ -100,16 +109,19 @@ describe('AllExceptionsFilter', () => {
     );
   });
 
-  it('maps unexpected exceptions to an internal problem detail and logs them', () => {
-    const filter = new AllExceptionsFilter();
-    const { host, response } = createHost('/unexpected');
-    const loggerSpy = jest.spyOn(Logger.prototype, 'error').mockImplementation(() => undefined);
+  it('should map unexpected exceptions to an internal problem detail when catching an unknown error', () => {
+    // arrange
+    const givenFilter = new AllExceptionsFilter();
+    const { host: givenHost, response: givenResponse } = createHost('/unexpected');
+    const givenLoggerSpy = jest.spyOn(Logger.prototype, 'error').mockImplementation(() => undefined);
 
-    filter.catch(new Error('boom'), host);
+    // act
+    givenFilter.catch(new Error('boom'), givenHost);
 
-    expect(loggerSpy).toHaveBeenCalledWith('Unexpected exception: Error: boom');
-    expect(response.status).toHaveBeenCalledWith(PROBLEM_TYPES[ErrorCode.INTERNAL_ERROR].status);
-    expect(response.json).toHaveBeenCalledWith(
+    // assert
+    expect(givenLoggerSpy).toHaveBeenCalledWith('Unexpected exception: Error: boom');
+    expect(givenResponse.status).toHaveBeenCalledWith(PROBLEM_TYPES[ErrorCode.INTERNAL_ERROR].status);
+    expect(givenResponse.json).toHaveBeenCalledWith(
       expect.objectContaining({
         type: 'urn:h2-trust:problem:internal-error',
         detail: 'An internal error occurred',

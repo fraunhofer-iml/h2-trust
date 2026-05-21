@@ -41,15 +41,18 @@ describe('CompanyService', () => {
   });
 
   describe('findAll', () => {
-    it('delegates to CompanyRepository', async () => {
-      const companies = [CompanyEntityFixture.createPowerProducer(), CompanyEntityFixture.createHydrogenProducer()];
+    it('should delegate to CompanyRepository when finding all companies', async () => {
+      // arrange
+      const expectedCompanies = [CompanyEntityFixture.createPowerProducer(), CompanyEntityFixture.createHydrogenProducer()];
 
-      repositoryMock.findAll.mockResolvedValue(companies);
+      repositoryMock.findAll.mockResolvedValue(expectedCompanies);
 
+      // act
       const actualResult = await service.findAll();
 
+      // assert
       expect(repositoryMock.findAll).toHaveBeenCalled();
-      expect(actualResult).toEqual(companies);
+      expect(actualResult).toEqual(expectedCompanies);
     });
   });
 });

@@ -44,8 +44,8 @@ describe('TransportationService', () => {
   });
 
   describe('createHydrogenTransportationProcessStep', () => {
-    it('creates transportation process step with trailer transport mode', async () => {
-      // Arrange
+    it('should create transportation process step with trailer transport mode when called', async () => {
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
       const givenPredecessorBatch = BatchEntityFixture.createHydrogenBatch();
       const givenPayload = new CreateHydrogenTransportationPayload(
@@ -60,10 +60,10 @@ describe('TransportationService', () => {
       processStepServiceMock.createProcessStep.mockResolvedValue(expectedTransportation);
       processStepServiceMock.setBatchesInactive.mockResolvedValue({ count: 1 });
 
-      // Act
+      // act
       const actualResult = await service.createHydrogenTransportationProcessStep(givenPayload);
 
-      // Assert
+      // assert
       expect(processStepServiceMock.setBatchesInactive).toHaveBeenCalledWith([givenPredecessorBatch.id]);
       expect(processStepServiceMock.createProcessStep).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -84,8 +84,8 @@ describe('TransportationService', () => {
       expect(actualResult).toEqual(expectedTransportation);
     });
 
-    it('creates transportation process step with pipeline transport mode', async () => {
-      // Arrange
+    it('should create transportation process step with pipeline transport mode when called', async () => {
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
       const givenPredecessorBatch = BatchEntityFixture.createHydrogenBatch();
       const givenPayload = new CreateHydrogenTransportationPayload(
@@ -100,10 +100,10 @@ describe('TransportationService', () => {
       processStepServiceMock.createProcessStep.mockResolvedValue(expectedTransportation);
       processStepServiceMock.setBatchesInactive.mockResolvedValue({ count: 1 });
 
-      // Act
+      // act
       const actualResult = await service.createHydrogenTransportationProcessStep(givenPayload);
 
-      // Assert
+      // assert
       expect(processStepServiceMock.setBatchesInactive).toHaveBeenCalledWith([givenPredecessorBatch.id]);
       expect(processStepServiceMock.createProcessStep).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -124,8 +124,8 @@ describe('TransportationService', () => {
       expect(actualResult).toEqual(expectedTransportation);
     });
 
-    it('throws error when trailer transport mode has no distance', async () => {
-      // Arrange
+    it('should throw error when trailer transport mode has no distance', async () => {
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
       const givenPredecessorBatch = BatchEntityFixture.createHydrogenBatch();
       const givenPayload = new CreateHydrogenTransportationPayload(
@@ -136,7 +136,7 @@ describe('TransportationService', () => {
         FuelType.DIESEL,
       );
 
-      // Act & Assert
+      // act & assert
       await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(
         `Distance is required for transport mode [${TransportMode.TRAILER}].`,
       );
@@ -144,8 +144,8 @@ describe('TransportationService', () => {
       expect(processStepServiceMock.createProcessStep).not.toHaveBeenCalled();
     });
 
-    it('throws error when trailer transport mode has no fuel type', async () => {
-      // Arrange
+    it('should throw error when trailer transport mode has no fuel type', async () => {
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
       const givenPredecessorBatch = BatchEntityFixture.createHydrogenBatch();
       const givenPayload = new CreateHydrogenTransportationPayload(
@@ -156,7 +156,7 @@ describe('TransportationService', () => {
         undefined,
       );
 
-      // Act & Assert
+      // act & assert
       await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(
         `Fuel type is required for transport mode [${TransportMode.TRAILER}].`,
       );
@@ -164,8 +164,8 @@ describe('TransportationService', () => {
       expect(processStepServiceMock.createProcessStep).not.toHaveBeenCalled();
     });
 
-    it('throws error for invalid transport mode', async () => {
-      // Arrange
+    it('should throw error for invalid transport mode when called', async () => {
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
       const givenPredecessorBatch = BatchEntityFixture.createHydrogenBatch();
       const givenPayload = new CreateHydrogenTransportationPayload(
@@ -176,7 +176,7 @@ describe('TransportationService', () => {
         FuelType.DIESEL,
       );
 
-      // Act & Assert
+      // act & assert
       await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(
         `Invalid transport mode: ${givenPayload.transportMode}`,
       );
@@ -184,8 +184,8 @@ describe('TransportationService', () => {
       expect(processStepServiceMock.createProcessStep).not.toHaveBeenCalled();
     });
 
-    it('propagates errors from setting predecessor batches inactive and does not create the process step', async () => {
-      // Arrange
+    it('should propagate errors from setting predecessor batches inactive and does not create the process step when called', async () => {
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
       const givenPredecessorBatch = BatchEntityFixture.createHydrogenBatch();
       const givenPayload = new CreateHydrogenTransportationPayload(
@@ -199,14 +199,14 @@ describe('TransportationService', () => {
 
       processStepServiceMock.setBatchesInactive.mockRejectedValue(expectedError);
 
-      // Act & Assert
+      // act & assert
       await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(expectedError);
       expect(processStepServiceMock.setBatchesInactive).toHaveBeenCalledWith([givenPredecessorBatch.id]);
       expect(processStepServiceMock.createProcessStep).not.toHaveBeenCalled();
     });
 
-    it('propagates errors from process step creation after predecessor batches were deactivated', async () => {
-      // Arrange
+    it('should propagate errors from process step creation after predecessor batches were deactivated when called', async () => {
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
       const givenPredecessorBatch = BatchEntityFixture.createHydrogenBatch();
       const givenPayload = new CreateHydrogenTransportationPayload(
@@ -221,7 +221,7 @@ describe('TransportationService', () => {
       processStepServiceMock.setBatchesInactive.mockResolvedValue({ count: 1 });
       processStepServiceMock.createProcessStep.mockRejectedValue(expectedError);
 
-      // Act & Assert
+      // act & assert
       await expect(service.createHydrogenTransportationProcessStep(givenPayload)).rejects.toThrow(expectedError);
       expect(processStepServiceMock.setBatchesInactive).toHaveBeenCalledWith([givenPredecessorBatch.id]);
       expect(processStepServiceMock.createProcessStep).toHaveBeenCalledWith(

@@ -9,26 +9,60 @@
 import { calculatePartialAmountRelativeToPowerProduction } from './production.utils';
 
 describe('ProductionUtils.calculatePartialAmountRelativeToPowerProduction', () => {
-  it('should return the proportional amount for the given partial power consumption', () => {
-    const actualAmount = calculatePartialAmountRelativeToPowerProduction(80, 200, 50);
+  it('should return the proportional amount for the given partial power consumption when called', () => {
+    // arrange
+    const totalAmount = 80;
+    const totalPowerConsumption = 200;
+    const partialPowerConsumption = 50;
 
+    // act
+    const actualAmount = calculatePartialAmountRelativeToPowerProduction(
+      totalAmount,
+      totalPowerConsumption,
+      partialPowerConsumption,
+    );
+
+    // assert
     expect(actualAmount).toBe(20);
   });
 
   it('should return zero when partialPowerConsumption is zero', () => {
-    const actualAmount = calculatePartialAmountRelativeToPowerProduction(80, 200, 0);
+    // arrange
+    const totalAmount = 80;
+    const totalPowerConsumption = 200;
+    const partialPowerConsumption = 0;
 
+    // act
+    const actualAmount = calculatePartialAmountRelativeToPowerProduction(
+      totalAmount,
+      totalPowerConsumption,
+      partialPowerConsumption,
+    );
+
+    // assert
     expect(actualAmount).toBe(0);
   });
 
-  it('should throw if totalAmount is zero', () => {
-    expect(() => calculatePartialAmountRelativeToPowerProduction(0, 200, 50)).toThrow(
+  it('should throw when totalAmount is zero', () => {
+    // arrange
+    const totalAmount = 0;
+    const totalPowerConsumption = 200;
+    const partialPowerConsumption = 50;
+
+    // act & assert
+    expect(() => calculatePartialAmountRelativeToPowerProduction(totalAmount, totalPowerConsumption, partialPowerConsumption)).toThrow(
       'The partial amount could not be calculated because at least one total is 0.',
     );
   });
 
-  it('should throw if totalPowerConsumption is zero', () => {
-    expect(() => calculatePartialAmountRelativeToPowerProduction(80, 0, 50)).toThrow(
+  it('should throw when totalPowerConsumption is zero', () => {
+    // arrange
+    const totalAmount = 80;
+    const totalPowerConsumption = 0;
+    const partialPowerConsumption = 50;
+
+    // act & assert
+    expect(() => calculatePartialAmountRelativeToPowerProduction(totalAmount, totalPowerConsumption, partialPowerConsumption)).toThrow(
       'The partial amount could not be calculated because at least one total is 0.',
     );
   });

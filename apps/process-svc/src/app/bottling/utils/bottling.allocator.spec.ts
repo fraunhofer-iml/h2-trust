@@ -19,8 +19,8 @@ import { allocateBottling } from './bottling.allocator';
 
 describe('allocateBottling', () => {
   describe('allocate', () => {
-    it('allocates single process step when amount matches exactly', () => {
-      // Arrange
+    it('should allocate single process step when amount matches exactly', () => {
+      // arrange
       const givenHydrogenStorageUnitId = 'storage-unit-1';
       const givenProcessSteps = [
         ProcessStepEntityFixture.createHydrogenProduction({
@@ -32,10 +32,10 @@ describe('allocateBottling', () => {
       ];
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 100 })];
 
-      // Act
+      // act
       const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
 
-      // Assert
+      // assert
       expect(actualResult.batchesForBottle).toHaveLength(1);
       expect(actualResult.batchesForBottle[0].id).toBe(givenProcessSteps[0].batch.id);
       expect(actualResult.processStepsToBeSplit).toHaveLength(0);
@@ -43,8 +43,8 @@ describe('allocateBottling', () => {
       expect(actualResult.processStepsForRemainingAmount).toHaveLength(0);
     });
 
-    it('allocates multiple process steps when single batch is not enough', () => {
-      // Arrange
+    it('should allocate multiple process steps when single batch is not enough', () => {
+      // arrange
       const givenHydrogenStorageUnitId = 'storage-unit-1';
       const givenProcessSteps = [
         ProcessStepEntityFixture.createHydrogenProduction({
@@ -66,18 +66,18 @@ describe('allocateBottling', () => {
       ];
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 100 })];
 
-      // Act
+      // act
       const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
 
-      // Assert
+      // assert
       expect(actualResult.batchesForBottle).toHaveLength(2);
       expect(actualResult.batchesForBottle[0].id).toBe(givenProcessSteps[0].batch.id);
       expect(actualResult.batchesForBottle[1].id).toBe(givenProcessSteps[1].batch.id);
       expect(actualResult.processStepsToBeSplit).toHaveLength(0);
     });
 
-    it('splits last process step when amount exceeds requested', () => {
-      // Arrange
+    it('should split last process step when amount exceeds requested', () => {
+      // arrange
       const givenHydrogenStorageUnitId = 'storage-unit-1';
       const givenProcessSteps = [
         ProcessStepEntityFixture.createHydrogenProduction({
@@ -92,10 +92,10 @@ describe('allocateBottling', () => {
       ];
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 100 })];
 
-      // Act
+      // act
       const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
 
-      // Assert
+      // assert
       expect(actualResult.batchesForBottle).toHaveLength(0);
       expect(actualResult.processStepsToBeSplit).toHaveLength(1);
       expect(actualResult.processStepsToBeSplit[0].id).toBe(givenProcessSteps[0].id);
@@ -107,8 +107,8 @@ describe('allocateBottling', () => {
       expect(actualResult.processStepsForRemainingAmount[0].batch.active).toBe(true);
     });
 
-    it('creates split process steps with correct properties', () => {
-      // Arrange
+    it('should create split process steps with correct properties when called', () => {
+      // arrange
       const givenHydrogenStorageUnitId = 'storage-unit-1';
       const givenProcessSteps = [
         ProcessStepEntityFixture.createHydrogenProduction({
@@ -123,10 +123,10 @@ describe('allocateBottling', () => {
       ];
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 80 })];
 
-      // Act
+      // act
       const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
 
-      // Assert
+      // assert
       const consumedStep = actualResult.consumedSplitProcessSteps[0];
       expect(consumedStep.type).toBe(ProcessType.HYDROGEN_PRODUCTION);
       expect(consumedStep.batch.type).toBe(BatchType.HYDROGEN);
@@ -140,8 +140,8 @@ describe('allocateBottling', () => {
       expect(remainingStep.batch.active).toBe(true);
     });
 
-    it('filters process steps by rfnbo type', () => {
-      // Arrange
+    it('should filter process steps by rfnbo type when called', () => {
+      // arrange
       const givenHydrogenStorageUnitId = 'storage-unit-1';
       const givenProcessSteps = [
         ProcessStepEntityFixture.createHydrogenProduction({
@@ -163,16 +163,16 @@ describe('allocateBottling', () => {
       ];
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 100 })];
 
-      // Act
+      // act
       const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
 
-      // Assert
+      // assert
       expect(actualResult.batchesForBottle).toHaveLength(1);
       expect(actualResult.batchesForBottle[0].id).toBe(givenProcessSteps[0].batch.id);
     });
 
-    it('throws exception when not enough rfnbo-ready hydrogen available', () => {
-      // Arrange
+    it('should throw exception when not enough rfnbo-ready hydrogen available', () => {
+      // arrange
       const givenHydrogenStorageUnitId = 'storage-unit-1';
       const givenProcessSteps = [
         ProcessStepEntityFixture.createHydrogenProduction({
@@ -186,14 +186,14 @@ describe('allocateBottling', () => {
 
       const expectedErrorMessage = `There is not enough hydrogen in storage unit '${givenHydrogenStorageUnitId}' for the requested amount of 100 of quality ${RfnboType.RFNBO_READY}.`;
 
-      // Act & Assert
+      // act & assert
       expect(() => allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId)).toThrow(
         expectedErrorMessage,
       );
     });
 
-    it('returns empty results when hydrogen composition is empty', () => {
-      // Arrange
+    it('should return empty results when hydrogen composition is empty', () => {
+      // arrange
       const givenHydrogenStorageUnitId = 'storage-unit-1';
       const givenProcessSteps = [
         ProcessStepEntityFixture.createHydrogenProduction({
@@ -205,10 +205,10 @@ describe('allocateBottling', () => {
       ];
       const givenHydrogenComposition: HydrogenComponentEntity[] = [];
 
-      // Act
+      // act
       const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
 
-      // Assert
+      // assert
       expect(actualResult.batchesForBottle).toHaveLength(0);
       expect(actualResult.processStepsToBeSplit).toHaveLength(0);
       expect(actualResult.consumedSplitProcessSteps).toHaveLength(0);

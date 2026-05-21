@@ -72,237 +72,323 @@ describe('UnitService', () => {
   });
 
   describe('read methods', () => {
-    it('delegates readUnitById to UnitRepository', async () => {
-      const unit = PowerProductionUnitEntityFixture.create();
-      unitRepositoryMock.findUnitById.mockResolvedValue(unit);
+    it('should delegate readUnitById to UnitRepository when reading a unit by id', async () => {
+      // arrange
+      const expectedUnit = PowerProductionUnitEntityFixture.create();
+      unitRepositoryMock.findUnitById.mockResolvedValue(expectedUnit);
 
-      const actualResult = await service.readUnitById(unit.id);
+      // act
+      const actualResult = await service.readUnitById(expectedUnit.id);
 
-      expect(unitRepositoryMock.findUnitById).toHaveBeenCalledWith(unit.id);
-      expect(actualResult).toEqual(unit);
+      // assert
+      expect(unitRepositoryMock.findUnitById).toHaveBeenCalledWith(expectedUnit.id);
+      expect(actualResult).toEqual(expectedUnit);
     });
 
-    it('delegates readUnitsByIds to UnitRepository', async () => {
-      const payload = new ReadByIdsPayload(['unit-1', 'unit-2']);
-      const units = [PowerProductionUnitEntityFixture.create({ id: 'unit-1' })];
-      unitRepositoryMock.findUnitsByIds.mockResolvedValue(units);
+    it('should delegate readUnitsByIds to UnitRepository when reading units by ids', async () => {
+      // arrange
+      const givenPayload = new ReadByIdsPayload(['unit-1', 'unit-2']);
+      const expectedUnits = [PowerProductionUnitEntityFixture.create({ id: 'unit-1' })];
+      unitRepositoryMock.findUnitsByIds.mockResolvedValue(expectedUnits);
 
-      const actualResult = await service.readUnitsByIds(payload.ids);
+      // act
+      const actualResult = await service.readUnitsByIds(givenPayload.ids);
 
-      expect(unitRepositoryMock.findUnitsByIds).toHaveBeenCalledWith(payload.ids);
-      expect(actualResult).toEqual(units);
+      // assert
+      expect(unitRepositoryMock.findUnitsByIds).toHaveBeenCalledWith(givenPayload.ids);
+      expect(actualResult).toEqual(expectedUnits);
     });
 
-    it('delegates readPowerProductionUnitsByOwnerId to UnitRepository', async () => {
-      const payload = new ReadByIdPayload('company-1');
-      const units = [PowerProductionUnitEntityFixture.create()];
-      unitRepositoryMock.findPowerProductionUnitsByOwnerId.mockResolvedValue(units);
+    it('should delegate readPowerProductionUnitsByOwnerId to UnitRepository when reading power units by owner', async () => {
+      // arrange
+      const givenPayload = new ReadByIdPayload('company-1');
+      const expectedUnits = [PowerProductionUnitEntityFixture.create()];
+      unitRepositoryMock.findPowerProductionUnitsByOwnerId.mockResolvedValue(expectedUnits);
 
-      const actualResult = await service.readPowerProductionUnitsByOwnerId(payload);
+      // act
+      const actualResult = await service.readPowerProductionUnitsByOwnerId(givenPayload);
 
-      expect(unitRepositoryMock.findPowerProductionUnitsByOwnerId).toHaveBeenCalledWith(payload.id);
-      expect(actualResult).toEqual(units);
+      // assert
+      expect(unitRepositoryMock.findPowerProductionUnitsByOwnerId).toHaveBeenCalledWith(givenPayload.id);
+      expect(actualResult).toEqual(expectedUnits);
     });
 
-    it('delegates readPowerProductionUnitsByIds to UnitRepository', async () => {
-      const payload = new ReadByIdsPayload(['unit-1']);
-      const units = [PowerProductionUnitEntityFixture.create({ id: 'unit-1' })];
-      unitRepositoryMock.findPowerProductionUnitsByIds.mockResolvedValue(units);
+    it('should delegate readPowerProductionUnitsByIds to UnitRepository when reading power units by ids', async () => {
+      // arrange
+      const givenPayload = new ReadByIdsPayload(['unit-1']);
+      const expectedUnits = [PowerProductionUnitEntityFixture.create({ id: 'unit-1' })];
+      unitRepositoryMock.findPowerProductionUnitsByIds.mockResolvedValue(expectedUnits);
 
-      const actualResult = await service.readPowerProductionUnitsByIds(payload);
+      // act
+      const actualResult = await service.readPowerProductionUnitsByIds(givenPayload);
 
-      expect(unitRepositoryMock.findPowerProductionUnitsByIds).toHaveBeenCalledWith(payload.ids);
-      expect(actualResult).toEqual(units);
+      // assert
+      expect(unitRepositoryMock.findPowerProductionUnitsByIds).toHaveBeenCalledWith(givenPayload.ids);
+      expect(actualResult).toEqual(expectedUnits);
     });
 
-    it('delegates readHydrogenProductionUnitsByOwnerId to UnitRepository', async () => {
-      const payload = new ReadByIdPayload('company-1');
-      const units = [HydrogenProductionUnitEntityFixture.create()];
-      unitRepositoryMock.findHydrogenProductionUnitsByOwnerId.mockResolvedValue(units);
+    it('should delegate readHydrogenProductionUnitsByOwnerId to UnitRepository when reading hydrogen units by owner', async () => {
+      // arrange
+      const givenPayload = new ReadByIdPayload('company-1');
+      const expectedUnits = [HydrogenProductionUnitEntityFixture.create()];
+      unitRepositoryMock.findHydrogenProductionUnitsByOwnerId.mockResolvedValue(expectedUnits);
 
-      const actualResult = await service.readHydrogenProductionUnitsByOwnerId(payload);
+      // act
+      const actualResult = await service.readHydrogenProductionUnitsByOwnerId(givenPayload);
 
-      expect(unitRepositoryMock.findHydrogenProductionUnitsByOwnerId).toHaveBeenCalledWith(payload.id);
-      expect(actualResult).toEqual(units);
+      // assert
+      expect(unitRepositoryMock.findHydrogenProductionUnitsByOwnerId).toHaveBeenCalledWith(givenPayload.id);
+      expect(actualResult).toEqual(expectedUnits);
     });
 
-    it('delegates readHydrogenProductionUnitsByIds to UnitRepository', async () => {
-      const payload = new ReadByIdsPayload(['unit-1']);
-      const units = [HydrogenProductionUnitEntityFixture.create({ id: 'unit-1' })];
-      unitRepositoryMock.findHydrogenProductionUnitsByIds.mockResolvedValue(units);
+    it('should delegate readHydrogenProductionUnitsByIds to UnitRepository when reading hydrogen units by ids', async () => {
+      // arrange
+      const givenPayload = new ReadByIdsPayload(['unit-1']);
+      const expectedUnits = [HydrogenProductionUnitEntityFixture.create({ id: 'unit-1' })];
+      unitRepositoryMock.findHydrogenProductionUnitsByIds.mockResolvedValue(expectedUnits);
 
-      const actualResult = await service.readHydrogenProductionUnitsByIds(payload);
+      // act
+      const actualResult = await service.readHydrogenProductionUnitsByIds(givenPayload);
 
-      expect(unitRepositoryMock.findHydrogenProductionUnitsByIds).toHaveBeenCalledWith(payload.ids);
-      expect(actualResult).toEqual(units);
+      // assert
+      expect(unitRepositoryMock.findHydrogenProductionUnitsByIds).toHaveBeenCalledWith(givenPayload.ids);
+      expect(actualResult).toEqual(expectedUnits);
     });
 
-    it('delegates readHydrogenStorageUnitsByOwnerId to UnitRepository', async () => {
-      const payload = new ReadByIdPayload('company-1');
-      const units = [HydrogenStorageUnitEntityFixture.create()];
-      unitRepositoryMock.findHydrogenStorageUnitsByOwnerId.mockResolvedValue(units);
+    it('should delegate readHydrogenStorageUnitsByOwnerId to UnitRepository when reading hydrogen storage units by owner', async () => {
+      // arrange
+      const givenPayload = new ReadByIdPayload('company-1');
+      const expectedUnits = [HydrogenStorageUnitEntityFixture.create()];
+      unitRepositoryMock.findHydrogenStorageUnitsByOwnerId.mockResolvedValue(expectedUnits);
 
-      const actualResult = await service.readHydrogenStorageUnitsByOwnerId(payload);
+      // act
+      const actualResult = await service.readHydrogenStorageUnitsByOwnerId(givenPayload);
 
-      expect(unitRepositoryMock.findHydrogenStorageUnitsByOwnerId).toHaveBeenCalledWith(payload.id);
-      expect(actualResult).toEqual(units);
+      // assert
+      expect(unitRepositoryMock.findHydrogenStorageUnitsByOwnerId).toHaveBeenCalledWith(givenPayload.id);
+      expect(actualResult).toEqual(expectedUnits);
     });
 
-    it('delegates readPowerProductionTypes to PowerProductionTypeRepository', async () => {
-      const powerProductionTypes = [PowerProductionTypeEntityFixture.createGrid()];
-      powerProductionTypeRepositoryMock.findPowerProductionTypes.mockResolvedValue(powerProductionTypes);
+    it('should delegate readPowerProductionTypes to PowerProductionTypeRepository when reading power production types', async () => {
+      // arrange
+      const expectedPowerProductionTypes = [PowerProductionTypeEntityFixture.createGrid()];
+      powerProductionTypeRepositoryMock.findPowerProductionTypes.mockResolvedValue(expectedPowerProductionTypes);
 
+      // act
       const actualResult = await service.readPowerProductionTypes();
 
+      // assert
       expect(powerProductionTypeRepositoryMock.findPowerProductionTypes).toHaveBeenCalled();
-      expect(actualResult).toEqual(powerProductionTypes);
+      expect(actualResult).toEqual(expectedPowerProductionTypes);
     });
   });
 
   describe('updateOrCreateHydrogenProductionUnit', () => {
-    it('delegates directly when the payload has no id', async () => {
-      const payload = CreateHydrogenProductionUnitPayloadFixture.create({ id: undefined });
-      const unit = HydrogenProductionUnitEntityFixture.create();
-      unitRepositoryMock.updateOrCreateHydrogenProductionUnit.mockResolvedValue(unit);
+    it('should delegate directly when the payload has no id', async () => {
+      // arrange
+      const givenPayload = CreateHydrogenProductionUnitPayloadFixture.create({ id: undefined });
+      const expectedUnit = HydrogenProductionUnitEntityFixture.create();
+      unitRepositoryMock.updateOrCreateHydrogenProductionUnit.mockResolvedValue(expectedUnit);
 
-      const actualResult = await service.updateOrCreateHydrogenProductionUnit(payload);
+      // act
+      const actualResult = await service.updateOrCreateHydrogenProductionUnit(givenPayload);
 
+      // assert
       expect(unitRepositoryMock.findUnitById).not.toHaveBeenCalled();
-      expect(unitRepositoryMock.updateOrCreateHydrogenProductionUnit).toHaveBeenCalledWith(payload);
-      expect(actualResult).toEqual(unit);
+      expect(unitRepositoryMock.updateOrCreateHydrogenProductionUnit).toHaveBeenCalledWith(givenPayload);
+      expect(actualResult).toEqual(expectedUnit);
     });
 
-    it('checks ownership before updating an existing unit', async () => {
-      const payload = CreateHydrogenProductionUnitPayloadFixture.create({ id: 'unit-1' });
-      payload.requesterCompanyId = 'company-1';
-      const existingUnit = HydrogenProductionUnitEntityFixture.create({ id: payload.id, owner: { id: 'company-1' } });
-      const updatedUnit = HydrogenProductionUnitEntityFixture.create({ id: payload.id });
+    it('should check ownership before updating an existing unit when the payload contains an id', async () => {
+      // arrange
+      const givenPayload = CreateHydrogenProductionUnitPayloadFixture.create({ id: 'unit-1' });
+      givenPayload.requesterCompanyId = 'company-1';
+      const givenExistingUnit = HydrogenProductionUnitEntityFixture.create({
+        id: givenPayload.id,
+        owner: { id: 'company-1' },
+      });
+      const expectedUpdatedUnit = HydrogenProductionUnitEntityFixture.create({ id: givenPayload.id });
 
-      unitRepositoryMock.findUnitById.mockResolvedValue(existingUnit);
-      unitRepositoryMock.updateOrCreateHydrogenProductionUnit.mockResolvedValue(updatedUnit);
+      unitRepositoryMock.findUnitById.mockResolvedValue(givenExistingUnit);
+      unitRepositoryMock.updateOrCreateHydrogenProductionUnit.mockResolvedValue(expectedUpdatedUnit);
 
-      const actualResult = await service.updateOrCreateHydrogenProductionUnit(payload);
+      // act
+      const actualResult = await service.updateOrCreateHydrogenProductionUnit(givenPayload);
 
-      expect(unitRepositoryMock.findUnitById).toHaveBeenCalledWith(payload.id);
-      expect(unitRepositoryMock.updateOrCreateHydrogenProductionUnit).toHaveBeenCalledWith(payload);
-      expect(actualResult).toEqual(updatedUnit);
+      // assert
+      expect(unitRepositoryMock.findUnitById).toHaveBeenCalledWith(givenPayload.id);
+      expect(unitRepositoryMock.updateOrCreateHydrogenProductionUnit).toHaveBeenCalledWith(givenPayload);
+      expect(actualResult).toEqual(expectedUpdatedUnit);
     });
 
-    it('throws when requester company does not own the existing unit', async () => {
-      const payload = CreateHydrogenProductionUnitPayloadFixture.create({ id: 'unit-1' });
-      payload.requesterCompanyId = 'company-2';
-      const existingUnit = HydrogenProductionUnitEntityFixture.create({ id: payload.id, owner: { id: 'company-1' } });
+    it('should throw DomainException when the requester company does not own the existing unit', async () => {
+      // arrange
+      const givenPayload = CreateHydrogenProductionUnitPayloadFixture.create({ id: 'unit-1' });
+      givenPayload.requesterCompanyId = 'company-2';
+      const givenExistingUnit = HydrogenProductionUnitEntityFixture.create({
+        id: givenPayload.id,
+        owner: { id: 'company-1' },
+      });
 
-      unitRepositoryMock.findUnitById.mockResolvedValue(existingUnit);
+      unitRepositoryMock.findUnitById.mockResolvedValue(givenExistingUnit);
 
-      await expect(service.updateOrCreateHydrogenProductionUnit(payload)).rejects.toThrow(DomainException);
+      // act
+      const actualResult = service.updateOrCreateHydrogenProductionUnit(givenPayload);
+
+      // assert
+      await expect(actualResult).rejects.toThrow(DomainException);
       expect(unitRepositoryMock.updateOrCreateHydrogenProductionUnit).not.toHaveBeenCalled();
     });
   });
 
   describe('updateOrCreatePowerProductionUnit', () => {
-    it('delegates directly when the payload has no id', async () => {
-      const payload = CreatePowerProductionUnitPayloadFixture.create({ id: undefined });
-      const unit = PowerProductionUnitEntityFixture.create();
-      unitRepositoryMock.updateOrCreatePowerProductionUnit.mockResolvedValue(unit);
+    it('should delegate directly when the payload has no id', async () => {
+      // arrange
+      const givenPayload = CreatePowerProductionUnitPayloadFixture.create({ id: undefined });
+      const expectedUnit = PowerProductionUnitEntityFixture.create();
+      unitRepositoryMock.updateOrCreatePowerProductionUnit.mockResolvedValue(expectedUnit);
 
-      const actualResult = await service.updateOrCreatePowerProductionUnit(payload);
+      // act
+      const actualResult = await service.updateOrCreatePowerProductionUnit(givenPayload);
 
+      // assert
       expect(unitRepositoryMock.findUnitById).not.toHaveBeenCalled();
-      expect(unitRepositoryMock.updateOrCreatePowerProductionUnit).toHaveBeenCalledWith(payload);
-      expect(actualResult).toEqual(unit);
+      expect(unitRepositoryMock.updateOrCreatePowerProductionUnit).toHaveBeenCalledWith(givenPayload);
+      expect(actualResult).toEqual(expectedUnit);
     });
 
-    it('checks ownership before updating an existing unit', async () => {
-      const payload = CreatePowerProductionUnitPayloadFixture.create({ id: 'unit-1' });
-      payload.requesterCompanyId = 'company-1';
-      const existingUnit = PowerProductionUnitEntityFixture.create({ id: payload.id, owner: { id: 'company-1' } });
-      const updatedUnit = PowerProductionUnitEntityFixture.create({ id: payload.id });
+    it('should check ownership before updating an existing unit when the payload contains an id', async () => {
+      // arrange
+      const givenPayload = CreatePowerProductionUnitPayloadFixture.create({ id: 'unit-1' });
+      givenPayload.requesterCompanyId = 'company-1';
+      const givenExistingUnit = PowerProductionUnitEntityFixture.create({
+        id: givenPayload.id,
+        owner: { id: 'company-1' },
+      });
+      const expectedUpdatedUnit = PowerProductionUnitEntityFixture.create({ id: givenPayload.id });
 
-      unitRepositoryMock.findUnitById.mockResolvedValue(existingUnit);
-      unitRepositoryMock.updateOrCreatePowerProductionUnit.mockResolvedValue(updatedUnit);
+      unitRepositoryMock.findUnitById.mockResolvedValue(givenExistingUnit);
+      unitRepositoryMock.updateOrCreatePowerProductionUnit.mockResolvedValue(expectedUpdatedUnit);
 
-      const actualResult = await service.updateOrCreatePowerProductionUnit(payload);
+      // act
+      const actualResult = await service.updateOrCreatePowerProductionUnit(givenPayload);
 
-      expect(unitRepositoryMock.findUnitById).toHaveBeenCalledWith(payload.id);
-      expect(unitRepositoryMock.updateOrCreatePowerProductionUnit).toHaveBeenCalledWith(payload);
-      expect(actualResult).toEqual(updatedUnit);
+      // assert
+      expect(unitRepositoryMock.findUnitById).toHaveBeenCalledWith(givenPayload.id);
+      expect(unitRepositoryMock.updateOrCreatePowerProductionUnit).toHaveBeenCalledWith(givenPayload);
+      expect(actualResult).toEqual(expectedUpdatedUnit);
     });
 
-    it('throws when requesterCompanyId is missing for an update', async () => {
-      const payload = CreatePowerProductionUnitPayloadFixture.create({ id: 'unit-1' });
-      payload.requesterCompanyId = undefined;
+    it('should throw an error when requesterCompanyId is missing for an update', async () => {
+      // arrange
+      const givenPayload = CreatePowerProductionUnitPayloadFixture.create({ id: 'unit-1' });
+      givenPayload.requesterCompanyId = undefined;
 
-      await expect(service.updateOrCreatePowerProductionUnit(payload)).rejects.toThrow('requesterCompanyId');
+      // act
+      const actualResult = service.updateOrCreatePowerProductionUnit(givenPayload);
+
+      // assert
+      await expect(actualResult).rejects.toThrow('requesterCompanyId');
       expect(unitRepositoryMock.findUnitById).not.toHaveBeenCalled();
       expect(unitRepositoryMock.updateOrCreatePowerProductionUnit).not.toHaveBeenCalled();
     });
   });
 
   describe('updateOrCreateHydrogenStorageUnit', () => {
-    it('delegates directly when the payload has no id', async () => {
-      const payload = CreateHydrogenStorageUnitPayloadFixture.create({ id: undefined });
-      const unit = HydrogenStorageUnitEntityFixture.create();
-      unitRepositoryMock.updateOrCreateHydrogenStorageUnit.mockResolvedValue(unit);
+    it('should delegate directly when the payload has no id', async () => {
+      // arrange
+      const givenPayload = CreateHydrogenStorageUnitPayloadFixture.create({ id: undefined });
+      const expectedUnit = HydrogenStorageUnitEntityFixture.create();
+      unitRepositoryMock.updateOrCreateHydrogenStorageUnit.mockResolvedValue(expectedUnit);
 
-      const actualResult = await service.updateOrCreateHydrogenStorageUnit(payload);
+      // act
+      const actualResult = await service.updateOrCreateHydrogenStorageUnit(givenPayload);
 
+      // assert
       expect(unitRepositoryMock.findUnitById).not.toHaveBeenCalled();
-      expect(unitRepositoryMock.updateOrCreateHydrogenStorageUnit).toHaveBeenCalledWith(payload);
-      expect(actualResult).toEqual(unit);
+      expect(unitRepositoryMock.updateOrCreateHydrogenStorageUnit).toHaveBeenCalledWith(givenPayload);
+      expect(actualResult).toEqual(expectedUnit);
     });
 
-    it('checks ownership before updating an existing unit', async () => {
-      const payload = CreateHydrogenStorageUnitPayloadFixture.create({ id: 'unit-1' });
-      payload.requesterCompanyId = 'company-1';
-      const existingUnit = HydrogenStorageUnitEntityFixture.create({ id: payload.id, owner: { id: 'company-1' } });
-      const updatedUnit = HydrogenStorageUnitEntityFixture.create({ id: payload.id });
+    it('should check ownership before updating an existing unit when the payload contains an id', async () => {
+      // arrange
+      const givenPayload = CreateHydrogenStorageUnitPayloadFixture.create({ id: 'unit-1' });
+      givenPayload.requesterCompanyId = 'company-1';
+      const givenExistingUnit = HydrogenStorageUnitEntityFixture.create({
+        id: givenPayload.id,
+        owner: { id: 'company-1' },
+      });
+      const expectedUpdatedUnit = HydrogenStorageUnitEntityFixture.create({ id: givenPayload.id });
 
-      unitRepositoryMock.findUnitById.mockResolvedValue(existingUnit);
-      unitRepositoryMock.updateOrCreateHydrogenStorageUnit.mockResolvedValue(updatedUnit);
+      unitRepositoryMock.findUnitById.mockResolvedValue(givenExistingUnit);
+      unitRepositoryMock.updateOrCreateHydrogenStorageUnit.mockResolvedValue(expectedUpdatedUnit);
 
-      const actualResult = await service.updateOrCreateHydrogenStorageUnit(payload);
+      // act
+      const actualResult = await service.updateOrCreateHydrogenStorageUnit(givenPayload);
 
-      expect(unitRepositoryMock.findUnitById).toHaveBeenCalledWith(payload.id);
-      expect(unitRepositoryMock.updateOrCreateHydrogenStorageUnit).toHaveBeenCalledWith(payload);
-      expect(actualResult).toEqual(updatedUnit);
+      // assert
+      expect(unitRepositoryMock.findUnitById).toHaveBeenCalledWith(givenPayload.id);
+      expect(unitRepositoryMock.updateOrCreateHydrogenStorageUnit).toHaveBeenCalledWith(givenPayload);
+      expect(actualResult).toEqual(expectedUpdatedUnit);
     });
 
-    it('throws when requester company does not own the existing unit', async () => {
-      const payload = CreateHydrogenStorageUnitPayloadFixture.create({ id: 'unit-1' });
-      payload.requesterCompanyId = 'company-2';
-      const existingUnit = HydrogenStorageUnitEntityFixture.create({ id: payload.id, owner: { id: 'company-1' } });
+    it('should throw DomainException when the requester company does not own the existing unit', async () => {
+      // arrange
+      const givenPayload = CreateHydrogenStorageUnitPayloadFixture.create({ id: 'unit-1' });
+      givenPayload.requesterCompanyId = 'company-2';
+      const givenExistingUnit = HydrogenStorageUnitEntityFixture.create({
+        id: givenPayload.id,
+        owner: { id: 'company-1' },
+      });
 
-      unitRepositoryMock.findUnitById.mockResolvedValue(existingUnit);
+      unitRepositoryMock.findUnitById.mockResolvedValue(givenExistingUnit);
 
-      await expect(service.updateOrCreateHydrogenStorageUnit(payload)).rejects.toThrow(DomainException);
+      // act
+      const actualResult = service.updateOrCreateHydrogenStorageUnit(givenPayload);
+
+      // assert
+      await expect(actualResult).rejects.toThrow(DomainException);
       expect(unitRepositoryMock.updateOrCreateHydrogenStorageUnit).not.toHaveBeenCalled();
     });
   });
 
   describe('updateUnitStatus', () => {
-    it('checks ownership before updating the status', async () => {
-      const payload = UpdateUnitStatusPayloadFixture.create({ id: 'unit-1', requesterCompanyId: 'company-1' });
-      const existingUnit = PowerProductionUnitEntityFixture.create({ id: payload.id, owner: { id: 'company-1' } });
-      const updatedUnit = PowerProductionUnitEntityFixture.create({ id: payload.id });
+    it('should check ownership before updating the status when the requester owns the unit', async () => {
+      // arrange
+      const givenPayload = UpdateUnitStatusPayloadFixture.create({ id: 'unit-1', requesterCompanyId: 'company-1' });
+      const givenExistingUnit = PowerProductionUnitEntityFixture.create({
+        id: givenPayload.id,
+        owner: { id: 'company-1' },
+      });
+      const expectedUpdatedUnit = PowerProductionUnitEntityFixture.create({ id: givenPayload.id });
 
-      unitRepositoryMock.findUnitById.mockResolvedValue(existingUnit);
-      unitRepositoryMock.updateUnitStatus.mockResolvedValue(updatedUnit);
+      unitRepositoryMock.findUnitById.mockResolvedValue(givenExistingUnit);
+      unitRepositoryMock.updateUnitStatus.mockResolvedValue(expectedUpdatedUnit);
 
-      const actualResult = await service.updateUnitStatus(payload);
+      // act
+      const actualResult = await service.updateUnitStatus(givenPayload);
 
-      expect(unitRepositoryMock.findUnitById).toHaveBeenCalledWith(payload.id);
-      expect(unitRepositoryMock.updateUnitStatus).toHaveBeenCalledWith(payload);
-      expect(actualResult).toEqual(updatedUnit);
+      // assert
+      expect(unitRepositoryMock.findUnitById).toHaveBeenCalledWith(givenPayload.id);
+      expect(unitRepositoryMock.updateUnitStatus).toHaveBeenCalledWith(givenPayload);
+      expect(actualResult).toEqual(expectedUpdatedUnit);
     });
 
-    it('throws when requester company does not own the unit', async () => {
-      const payload = UpdateUnitStatusPayloadFixture.create({ id: 'unit-1', requesterCompanyId: 'company-2' });
-      const existingUnit = PowerProductionUnitEntityFixture.create({ id: payload.id, owner: { id: 'company-1' } });
+    it('should throw DomainException when the requester company does not own the unit', async () => {
+      // arrange
+      const givenPayload = UpdateUnitStatusPayloadFixture.create({ id: 'unit-1', requesterCompanyId: 'company-2' });
+      const givenExistingUnit = PowerProductionUnitEntityFixture.create({
+        id: givenPayload.id,
+        owner: { id: 'company-1' },
+      });
 
-      unitRepositoryMock.findUnitById.mockResolvedValue(existingUnit);
+      unitRepositoryMock.findUnitById.mockResolvedValue(givenExistingUnit);
 
-      await expect(service.updateUnitStatus(payload)).rejects.toThrow(DomainException);
+      // act
+      const actualResult = service.updateUnitStatus(givenPayload);
+
+      // assert
+      await expect(actualResult).rejects.toThrow(DomainException);
       expect(unitRepositoryMock.updateUnitStatus).not.toHaveBeenCalled();
     });
   });

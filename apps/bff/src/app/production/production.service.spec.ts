@@ -98,220 +98,266 @@ describe('ProductionService', () => {
     expect(service).toBeDefined();
   });
 
-  it('readHydrogenProductionsByOwner should resolve the owner and map the paginated response', async () => {
-    const userId = 'user-id-1';
-    const userDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
-    const processStep = ProcessStepEntityFixture.createHydrogenProduction({ id: 'production-1' });
-    const paginated = new PaginatedProcessStepEntity([processStep], 1, 10, 1);
-    const month = new Date('2026-01-01T00:00:00.000Z');
+  it('should resolve the owner and map the paginated response when reading hydrogen productions by owner', async () => {
+    // arrange
+    const givenUserId = 'user-id-1';
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const givenProcessStep = ProcessStepEntityFixture.createHydrogenProduction({ id: 'production-1' });
+    const expectedPaginated = new PaginatedProcessStepEntity([givenProcessStep], 1, 10, 1);
+    const givenMonth = new Date('2026-01-01T00:00:00.000Z');
 
-    userServiceMock.readUserWithCompany.mockResolvedValue(userDetails);
-    processSvcMock.send.mockImplementation((_pattern, _payload) => of(paginated));
+    userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
+    processSvcMock.send.mockImplementation((_pattern, _payload) => of(expectedPaginated));
 
-    const actualResponse: PaginatedProductionDataDto = await service.readHydrogenProductionsByOwner(
-      userId,
+    // act
+    const actualResult: PaginatedProductionDataDto = await service.readHydrogenProductionsByOwner(
+      givenUserId,
       1,
       10,
       'Unit A',
-      month,
+      givenMonth,
     );
 
+    // assert
     expect(processSvcMock.send).toHaveBeenCalledWith(
       ProcessStepMessagePatterns.READ_PAGINATION_BY_PREDECESSOR_TYPES_AND_OWNER,
       new ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload(
         [ProcessType.POWER_PRODUCTION],
-        userDetails.company.id,
-        new ProductionDataFilter(1, 10, 'Unit A', month),
+        givenUserDetails.company.id,
+        new ProductionDataFilter(1, 10, 'Unit A', givenMonth),
       ),
     );
-    expect(actualResponse).toEqual(PaginatedProductionDataDto.fromEntity(paginated));
+    expect(actualResult).toEqual(PaginatedProductionDataDto.fromEntity(expectedPaginated));
   });
 
-  it('readHydrogenProductionsByOwner should reject when the user company lookup fails', async () => {
+  it('should reject when the user company lookup fails while reading hydrogen productions by owner', async () => {
+  // arrange
     userServiceMock.readUserWithCompany.mockRejectedValue(new Error('user lookup failed'));
 
-    await expect(service.readHydrogenProductionsByOwner('user-id-1', 1, 10)).rejects.toThrow('user lookup failed');
+    // act
+    const actualResult = service.readHydrogenProductionsByOwner('user-id-1', 1, 10);
 
+    // assert
+    await expect(actualResult).rejects.toThrow('user lookup failed');
     expect(processSvcMock.send).not.toHaveBeenCalled();
   });
 
-  it('readStagedProductionsByCompanyAndType should request staged productions for the resolved owner', async () => {
-    const userId = 'user-id-1';
-    const userDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
-    const from = new Date('2026-01-01T00:00:00.000Z');
-    const to = new Date('2026-01-31T23:59:59.999Z');
-    const stagedProductions = [
+  it('should request staged productions for the resolved owner when reading staged productions by company and type', async () => {
+    // arrange
+    const givenUserId = 'user-id-1';
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const givenFrom = new Date('2026-01-01T00:00:00.000Z');
+    const givenTo = new Date('2026-01-31T23:59:59.999Z');
+    const expectedStagedProductions = [
       new StagedProductionEntity(
         'staged-1',
         new Date('2026-01-05T08:00:00.000Z'),
         new Date('2026-01-05T09:00:00.000Z'),
         10,
         'unit-1',
-        userDetails.company.id,
+        givenUserDetails.company.id,
         5,
         CsvContentType.HYDROGEN,
       ),
     ];
 
-    userServiceMock.readUserWithCompany.mockResolvedValue(userDetails);
-    processSvcMock.send.mockImplementation((_pattern, _payload) => of(stagedProductions));
+    userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
+    processSvcMock.send.mockImplementation((_pattern, _payload) => of(expectedStagedProductions));
 
-    const actualResponse: StagedProductionDto[] = await service.readStagedProductionsByCompanyAndType(
-      userId,
+    // act
+    const actualResult: StagedProductionDto[] = await service.readStagedProductionsByCompanyAndType(
+      givenUserId,
       StagingScope.OWN,
       CsvContentType.HYDROGEN,
-      from,
-      to,
+      givenFrom,
+      givenTo,
     );
 
+    // assert
     expect(processSvcMock.send).toHaveBeenCalledWith(
       ProductionMessagePatterns.READ_STAGED_PRODUCTION_BY_COMPANY,
-      new ReadStagedProductionsPayload(userDetails.company.id, StagingScope.OWN, CsvContentType.HYDROGEN, from, to),
+      new ReadStagedProductionsPayload(
+        givenUserDetails.company.id,
+        StagingScope.OWN,
+        CsvContentType.HYDROGEN,
+        givenFrom,
+        givenTo,
+      ),
     );
-    expect(actualResponse).toEqual(stagedProductions.map(StagedProductionDto.fromEntity));
+    expect(actualResult).toEqual(expectedStagedProductions.map(StagedProductionDto.fromEntity));
   });
 
-  it('assembleHydrogenProductionStatistics should request statistics for the resolved owner', async () => {
-    const userId = 'user-id-1';
-    const month = new Date('2026-01-01T00:00:00.000Z');
-    const userDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
-    const statistics = new ProductionStatisticsEntity(
+  it('should request statistics for the resolved owner when assembling hydrogen production statistics', async () => {
+    // arrange
+    const givenUserId = 'user-id-1';
+    const givenMonth = new Date('2026-01-01T00:00:00.000Z');
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const expectedStatistics = new ProductionStatisticsEntity(
       new HydrogenStatisticsEntity(5, 10),
       new PowerStatisticsEntity(15, 3, 2),
     );
 
-    userServiceMock.readUserWithCompany.mockResolvedValue(userDetails);
-    processSvcMock.send.mockImplementation((_pattern, _payload) => of(statistics));
+    userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
+    processSvcMock.send.mockImplementation((_pattern, _payload) => of(expectedStatistics));
 
-    const actualResponse: ProductionStatisticsDto = await service.assembleHydrogenProductionStatistics(
-      userId,
+    // act
+    const actualResult: ProductionStatisticsDto = await service.assembleHydrogenProductionStatistics(
+      givenUserId,
       'Unit A',
-      month,
+      givenMonth,
     );
 
+    // assert
     expect(processSvcMock.send).toHaveBeenCalledWith(
       ProductionMessagePatterns.ASSEMBLE_PRODUCTION_STATISTICS,
-      new CreateHydrogenProductionStatisticsPayload(userDetails.company.id, month, 'Unit A'),
+      new CreateHydrogenProductionStatisticsPayload(givenUserDetails.company.id, givenMonth, 'Unit A'),
     );
-    expect(actualResponse).toEqual(ProductionStatisticsDto.fromEntity(statistics));
+    expect(actualResult).toEqual(ProductionStatisticsDto.fromEntity(expectedStatistics));
   });
 
-  it('importCsvFiles should hash, encode and stage each file for the resolved owner', async () => {
-    const userId = 'user-id-1';
-    const userDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
-    const dto = ProductionCsvUploadDtoFixture.create({ unitIds: ['unit-1', 'unit-2'], csvContentType: CsvContentType.HYDROGEN });
-    const firstFile = createFile('first.csv', 'first');
-    const secondFile = createFile('second.csv', 'second');
-    const stagedProductions = [
+  it('should hash, encode, and stage each file for the resolved owner when importing CSV files', async () => {
+    // arrange
+    const givenUserId = 'user-id-1';
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const givenDto = ProductionCsvUploadDtoFixture.create({ unitIds: ['unit-1', 'unit-2'], csvContentType: CsvContentType.HYDROGEN });
+    const givenFirstFile = createFile('first.csv', 'first');
+    const givenSecondFile = createFile('second.csv', 'second');
+    const givenStagedProductions = [
       new StagedProductionEntity(
         'staged-1',
         new Date('2026-01-05T08:00:00.000Z'),
         new Date('2026-01-05T09:00:00.000Z'),
         10,
         'unit-1',
-        userDetails.company.id,
+        givenUserDetails.company.id,
         5,
         CsvContentType.HYDROGEN,
       ),
     ];
-    const matchingResult = new ProductionStagingResultEntity('staging-1', stagedProductions);
+    const expectedMatchingResult = new ProductionStagingResultEntity('staging-1', givenStagedProductions);
 
-    userServiceMock.readUserWithCompany.mockResolvedValue(userDetails);
+    userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
     jest.mocked(hashBuffer).mockReturnValueOnce('hash-1').mockReturnValueOnce('hash-2');
-    processSvcMock.send.mockImplementation((_pattern, _payload) => of(matchingResult));
+    processSvcMock.send.mockImplementation((_pattern, _payload) => of(expectedMatchingResult));
 
-    const actualResponse: AccountingPeriodMatchingResultDto = await service.importCsvFiles(
-      [firstFile, secondFile],
-      dto,
-      userId,
+    // act
+    const actualResult: AccountingPeriodMatchingResultDto = await service.importCsvFiles(
+      [givenFirstFile, givenSecondFile],
+      givenDto,
+      givenUserId,
     );
 
+    // assert
     expect(processSvcMock.send).toHaveBeenCalledWith(
       ProductionMessagePatterns.STAGE,
       new StageProductionsPayload(
         [
-          new UnitFileImport('unit-1', 'hash-1', firstFile.buffer.toString('base64'), dto.csvContentType),
-          new UnitFileImport('unit-2', 'hash-2', secondFile.buffer.toString('base64'), dto.csvContentType),
+          new UnitFileImport('unit-1', 'hash-1', givenFirstFile.buffer.toString('base64'), givenDto.csvContentType),
+          new UnitFileImport('unit-2', 'hash-2', givenSecondFile.buffer.toString('base64'), givenDto.csvContentType),
         ],
-        userId,
-        userDetails.company.id,
-        dto.timeZone,
+        givenUserId,
+        givenUserDetails.company.id,
+        givenDto.timeZone,
       ),
     );
-    expect(actualResponse).toEqual(AccountingPeriodMatchingResultDto.fromEntity(matchingResult));
+    expect(actualResult).toEqual(AccountingPeriodMatchingResultDto.fromEntity(expectedMatchingResult));
   });
 
-  it('importCsvFiles should throw when no files are provided', async () => {
-    const dto = ProductionCsvUploadDtoFixture.create({ unitIds: ['unit-1'], csvContentType: CsvContentType.HYDROGEN });
+  it('should throw when no files are provided while importing CSV files', async () => {
+    // arrange
+    const givenDto = ProductionCsvUploadDtoFixture.create({ unitIds: ['unit-1'], csvContentType: CsvContentType.HYDROGEN });
 
-    await expect(service.importCsvFiles([], dto, 'user-id-1')).rejects.toThrow('Missing file for HYDROGEN production.');
+    // act
+    const actualResult = service.importCsvFiles([], givenDto, 'user-id-1');
+
+    // assert
+    await expect(actualResult).rejects.toThrow('Missing file for HYDROGEN production.');
   });
 
-  it('importCsvFiles should throw when the unit id count does not match the file count', async () => {
-    const dto = ProductionCsvUploadDtoFixture.create({ unitIds: [], csvContentType: CsvContentType.HYDROGEN });
-    const file = createFile('first.csv', 'first');
+  it('should throw when the unit id count does not match the file count while importing CSV files', async () => {
+    // arrange
+    const givenDto = ProductionCsvUploadDtoFixture.create({ unitIds: [], csvContentType: CsvContentType.HYDROGEN });
+    const givenFile = createFile('first.csv', 'first');
 
-    await expect(service.importCsvFiles([file], dto, 'user-id-1')).rejects.toThrow(
+    // act
+    const actualResult = service.importCsvFiles([givenFile], givenDto, 'user-id-1');
+
+    // assert
+    await expect(actualResult).rejects.toThrow(
       'Unit IDs count must match file count for HYDROGEN production: expected 1, got 0.',
     );
   });
 
-  it('importCsvFiles should throw when the csv type is invalid', async () => {
-    const dto = ProductionCsvUploadDtoFixture.create({
+  it('should throw when the CSV type is invalid while importing CSV files', async () => {
+    // arrange
+    const givenDto = ProductionCsvUploadDtoFixture.create({
       unitIds: ['unit-1'],
       csvContentType: 'INVALID' as CsvContentType,
     });
-    const file = createFile('first.csv', 'first');
+    const givenFile = createFile('first.csv', 'first');
 
-    await expect(service.importCsvFiles([file], dto, 'user-id-1')).rejects.toThrow(
+    // act
+    const actualResult = service.importCsvFiles([givenFile], givenDto, 'user-id-1');
+
+    // assert
+    await expect(actualResult).rejects.toThrow(
       'Stage production contains invalid types.',
     );
   });
 
-  it('createProductionsFromStaging should finalize the staged ids and map the response', async () => {
-    const userId = 'user-id-1';
-    const dto = StagingSubmissionDtoFixture.create();
-    const processSteps = [ProcessStepEntityFixture.createHydrogenProduction({ id: 'production-1' })];
+  it('should finalize the staged ids and map the response when creating productions from staging', async () => {
+    // arrange
+    const givenUserId = 'user-id-1';
+    const givenDto = StagingSubmissionDtoFixture.create();
+    const expectedProcessSteps = [ProcessStepEntityFixture.createHydrogenProduction({ id: 'production-1' })];
 
-    processSvcMock.send.mockImplementation((_pattern, _payload) => of(processSteps));
+    processSvcMock.send.mockImplementation((_pattern, _payload) => of(expectedProcessSteps));
 
-    const actualResponse = await service.createProductionsFromStaging(dto, userId);
+    // act
+    const actualResult = await service.createProductionsFromStaging(givenDto, givenUserId);
 
+    // assert
     expect(processSvcMock.send).toHaveBeenCalledWith(
       ProductionMessagePatterns.FINALIZE,
       new FinalizeProductionsPayload(
-        userId,
-        dto.stagedHydrogenProduction,
-        dto.stagedPowerProductions,
-        dto.storageUnitId,
+        givenUserId,
+        givenDto.stagedHydrogenProduction,
+        givenDto.stagedPowerProductions,
+        givenDto.storageUnitId,
       ),
     );
-    expect(actualResponse).toEqual(processSteps.map(ProductionOverviewDto.fromEntity));
+    expect(actualResult).toEqual(expectedProcessSteps.map(ProductionOverviewDto.fromEntity));
   });
 
-  it('readCsvDocumentsByCompany should map each csv document including its storage url', async () => {
-    const userId = 'user-id-1';
-    const userDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
-    const csvDocuments = [CsvDocumentEntityFixture.create({ id: 'document-1', fileName: 'document-1.csv', type: CsvContentType.HYDROGEN })];
+  it('should map each CSV document including its storage URL when reading CSV documents by company', async () => {
+    // arrange
+    const givenUserId = 'user-id-1';
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const expectedCsvDocuments = [CsvDocumentEntityFixture.create({ id: 'document-1', fileName: 'document-1.csv', type: CsvContentType.HYDROGEN })];
 
-    userServiceMock.readUserWithCompany.mockResolvedValue(userDetails);
-    processSvcMock.send.mockImplementation((_pattern, _payload) => of(csvDocuments));
+    userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
+    processSvcMock.send.mockImplementation((_pattern, _payload) => of(expectedCsvDocuments));
 
-    const actualResponse: ProcessedCsvDto[] = await service.readCsvDocumentsByCompany(userId);
+    // act
+    const actualResult: ProcessedCsvDto[] = await service.readCsvDocumentsByCompany(givenUserId);
 
+    // assert
     expect(processSvcMock.send).toHaveBeenCalledWith(
       ProductionMessagePatterns.READ_CSV_DOCUMENTS_BY_COMPANY,
-      new ReadByIdPayload(userDetails.company.id),
+      new ReadByIdPayload(givenUserDetails.company.id),
     );
-    expect(actualResponse).toEqual(
-      csvDocuments.map((document) => ProcessedCsvDto.fromEntity(document, storageServiceMock.endpointUrl, userDetails.company.name)),
+    expect(actualResult).toEqual(
+      expectedCsvDocuments.map((givenDocument) =>
+        ProcessedCsvDto.fromEntity(givenDocument, storageServiceMock.endpointUrl, givenUserDetails.company.name),
+      ),
     );
   });
 
-  it('verifyCsvDocumentIntegrity should request the verification result by document id and map the response', async () => {
-    const documentId = 'document-1';
-    const verificationResult = new VerifyCsvDocumentIntegrityResultEntity(
-      documentId,
+  it('should request the verification result by document id and map the response when verifying CSV document integrity', async () => {
+    // arrange
+    const givenDocumentId = 'document-1';
+    const expectedVerificationResult = new VerifyCsvDocumentIntegrityResultEntity(
+      givenDocumentId,
       'file.csv',
       CsvDocumentIntegrityStatus.VERIFIED,
       'File integrity verified successfully.',
@@ -325,20 +371,27 @@ describe('ProductionService', () => {
       'https://ipfs.io/ipfs/some-cid',
     );
 
-    processSvcMock.send.mockImplementation((_pattern, _payload) => of(verificationResult));
+    processSvcMock.send.mockImplementation((_pattern, _payload) => of(expectedVerificationResult));
 
-    const actualResponse: CsvDocumentIntegrityResultDto = await service.verifyCsvDocumentIntegrity(documentId);
+    // act
+    const actualResult: CsvDocumentIntegrityResultDto = await service.verifyCsvDocumentIntegrity(givenDocumentId);
 
+    // assert
     expect(processSvcMock.send).toHaveBeenCalledWith(
       ProductionMessagePatterns.VERIFY_CSV_DOCUMENT_INTEGRITY,
-      new ReadByIdPayload(documentId),
+      new ReadByIdPayload(givenDocumentId),
     );
-    expect(actualResponse).toEqual(CsvDocumentIntegrityResultDto.fromEntity(verificationResult));
+    expect(actualResult).toEqual(CsvDocumentIntegrityResultDto.fromEntity(expectedVerificationResult));
   });
 
-  it('verifyCsvDocumentIntegrity should propagate process service errors', async () => {
+  it('should propagate process service errors when verifying CSV document integrity', async () => {
+  // arrange
     processSvcMock.send.mockImplementation((_pattern, _payload) => throwError(() => new Error('verification failed')));
 
-    await expect(service.verifyCsvDocumentIntegrity('document-1')).rejects.toThrow('verification failed');
+    // act
+    const actualResult = service.verifyCsvDocumentIntegrity('document-1');
+
+    // assert
+    await expect(actualResult).rejects.toThrow('verification failed');
   });
 });

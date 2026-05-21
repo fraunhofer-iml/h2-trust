@@ -72,162 +72,200 @@ describe('PowerPurchaseAgreementService', () => {
   });
 
   describe('findAll', () => {
-    it('loads the user and delegates with the user company id', async () => {
-      const payload = new ReadPowerPurchaseAgreementsPayload(
+    it('should load the user and delegate with the company id when finding agreements', async () => {
+      // arrange
+      const givenPayload = new ReadPowerPurchaseAgreementsPayload(
         'user-1',
         PpaRequestRole.SENDER,
         PowerPurchaseAgreementStatus.APPROVED,
       );
-      const user = UserEntityFixture.createHydrogenUser();
-      const agreements = [PowerPurchaseAgreementEntityFixture.create()];
+      const givenUser = UserEntityFixture.createHydrogenUser();
+      const expectedAgreements = [PowerPurchaseAgreementEntityFixture.create()];
 
-      userRepositoryMock.findUser.mockResolvedValue(user);
-      powerPurchaseAgreementRepositoryMock.findAllPowerPurchaseAgreements.mockResolvedValue(agreements);
+      userRepositoryMock.findUser.mockResolvedValue(givenUser);
+      powerPurchaseAgreementRepositoryMock.findAllPowerPurchaseAgreements.mockResolvedValue(expectedAgreements);
 
-      const actualResult = await service.findAll(payload);
+      // act
+      const actualResult = await service.findAll(givenPayload);
 
-      expect(userRepositoryMock.findUser).toHaveBeenCalledWith(payload.userId);
+      // assert
+      expect(userRepositoryMock.findUser).toHaveBeenCalledWith(givenPayload.userId);
       expect(powerPurchaseAgreementRepositoryMock.findAllPowerPurchaseAgreements).toHaveBeenCalledWith(
-        user.company.id,
-        payload.powerPurchaseAgreementStatus,
-        payload.powerPurchaseAgreementRole,
+        givenUser.company.id,
+        givenPayload.powerPurchaseAgreementStatus,
+        givenPayload.powerPurchaseAgreementRole,
       );
-      expect(actualResult).toEqual(agreements);
+      expect(actualResult).toEqual(expectedAgreements);
     });
   });
 
   describe('createPPA', () => {
-    it('throws validation exception when validFrom is after or equal validTo', async () => {
-      const payload = CreatePowerPurchaseAgreementsPayloadFixture.create({
+    it('should throw ValidationException when validFrom is after or equal validTo', async () => {
+      // arrange
+      const givenPayload = CreatePowerPurchaseAgreementsPayloadFixture.create({
         validFrom: new Date('2026-12-31T00:00:00Z'),
         validTo: new Date('2026-12-31T00:00:00Z'),
       });
 
-      await expect(service.createPPA(payload)).rejects.toThrow(ValidationException);
+      // act
+      const actualResult = service.createPPA(givenPayload);
+
+      // assert
+      await expect(actualResult).rejects.toThrow(ValidationException);
       expect(userRepositoryMock.findUser).not.toHaveBeenCalled();
       expect(powerPurchaseAgreementRepositoryMock.createPowerPurchaseAgreement).not.toHaveBeenCalled();
     });
 
-    it('creates a ppa for the company of the requesting user', async () => {
-      const payload = CreatePowerPurchaseAgreementsPayloadFixture.create();
-      const user = UserEntityFixture.createHydrogenUser();
-      const agreement = PowerPurchaseAgreementEntityFixture.create();
+    it('should create a PPA for the requesting user company when the payload is valid', async () => {
+      // arrange
+      const givenPayload = CreatePowerPurchaseAgreementsPayloadFixture.create();
+      const givenUser = UserEntityFixture.createHydrogenUser();
+      const expectedAgreement = PowerPurchaseAgreementEntityFixture.create();
 
-      userRepositoryMock.findUser.mockResolvedValue(user);
-      powerPurchaseAgreementRepositoryMock.createPowerPurchaseAgreement.mockResolvedValue(agreement);
+      userRepositoryMock.findUser.mockResolvedValue(givenUser);
+      powerPurchaseAgreementRepositoryMock.createPowerPurchaseAgreement.mockResolvedValue(expectedAgreement);
 
-      const actualResult = await service.createPPA(payload);
+      // act
+      const actualResult = await service.createPPA(givenPayload);
 
-      expect(userRepositoryMock.findUser).toHaveBeenCalledWith(payload.userId);
+      // assert
+      expect(userRepositoryMock.findUser).toHaveBeenCalledWith(givenPayload.userId);
       expect(powerPurchaseAgreementRepositoryMock.createPowerPurchaseAgreement).toHaveBeenCalledWith(
-        payload,
-        user.company.id,
+        givenPayload,
+        givenUser.company.id,
       );
-      expect(actualResult).toEqual(agreement);
+      expect(actualResult).toEqual(expectedAgreement);
     });
   });
 
   describe('updatePPA', () => {
-    it('throws when the user is not allowed to decide the agreement', async () => {
-      const payload = UpdatePowerPurchaseAgreementPayloadFixture.create();
-      const user = UserEntityFixture.createHydrogenUser();
+    it('should throw DomainException when the user is not allowed to decide the agreement', async () => {
+      // arrange
+      const givenPayload = UpdatePowerPurchaseAgreementPayloadFixture.create();
+      const givenUser = UserEntityFixture.createHydrogenUser();
 
-      userRepositoryMock.findUser.mockResolvedValue(user);
+      userRepositoryMock.findUser.mockResolvedValue(givenUser);
       powerPurchaseAgreementRepositoryMock.canDecideAgreement.mockResolvedValue(false);
 
-      await expect(service.updatePPA(payload)).rejects.toThrow(DomainException);
-      expect(powerPurchaseAgreementRepositoryMock.canDecideAgreement).toHaveBeenCalledWith(user, payload.ppaId);
+      // act
+      const actualResult = service.updatePPA(givenPayload);
+
+      // assert
+      await expect(actualResult).rejects.toThrow(DomainException);
+      expect(powerPurchaseAgreementRepositoryMock.canDecideAgreement).toHaveBeenCalledWith(givenUser, givenPayload.ppaId);
       expect(unitRepositoryMock.ownsPowerProductionUnit).not.toHaveBeenCalled();
       expect(powerPurchaseAgreementRepositoryMock.updatePpaStatus).not.toHaveBeenCalled();
     });
 
-    it('updates the agreement without unit ownership lookup when no production unit id is provided', async () => {
-      const payload: UpdatePowerPurchaseAgreementPayload = UpdatePowerPurchaseAgreementPayloadFixture.create();
-      payload.powerProductionUnitId = undefined;
-      const user = UserEntityFixture.createHydrogenUser();
-      const agreement = PowerPurchaseAgreementEntityFixture.create();
+    it('should update the agreement without checking unit ownership when no production unit id is provided', async () => {
+      // arrange
+      const givenPayload: UpdatePowerPurchaseAgreementPayload = UpdatePowerPurchaseAgreementPayloadFixture.create();
+      givenPayload.powerProductionUnitId = undefined;
+      const givenUser = UserEntityFixture.createHydrogenUser();
+      const expectedAgreement = PowerPurchaseAgreementEntityFixture.create();
 
-      userRepositoryMock.findUser.mockResolvedValue(user);
+      userRepositoryMock.findUser.mockResolvedValue(givenUser);
       powerPurchaseAgreementRepositoryMock.canDecideAgreement.mockResolvedValue(true);
-      powerPurchaseAgreementRepositoryMock.updatePpaStatus.mockResolvedValue(agreement);
+      powerPurchaseAgreementRepositoryMock.updatePpaStatus.mockResolvedValue(expectedAgreement);
 
-      const actualResult = await service.updatePPA(payload);
+      // act
+      const actualResult = await service.updatePPA(givenPayload);
 
+      // assert
       expect(unitRepositoryMock.ownsPowerProductionUnit).not.toHaveBeenCalled();
-      expect(powerPurchaseAgreementRepositoryMock.updatePpaStatus).toHaveBeenCalledWith(payload);
-      expect(actualResult).toEqual(agreement);
+      expect(powerPurchaseAgreementRepositoryMock.updatePpaStatus).toHaveBeenCalledWith(givenPayload);
+      expect(actualResult).toEqual(expectedAgreement);
     });
 
-    it('throws when the deciding user does not own the selected power production unit', async () => {
-      const payload = UpdatePowerPurchaseAgreementPayloadFixture.create();
-      const user = UserEntityFixture.createHydrogenUser();
+    it('should throw DomainException when the deciding user does not own the selected power production unit', async () => {
+      // arrange
+      const givenPayload = UpdatePowerPurchaseAgreementPayloadFixture.create();
+      const givenUser = UserEntityFixture.createHydrogenUser();
 
-      userRepositoryMock.findUser.mockResolvedValue(user);
+      userRepositoryMock.findUser.mockResolvedValue(givenUser);
       powerPurchaseAgreementRepositoryMock.canDecideAgreement.mockResolvedValue(true);
       unitRepositoryMock.ownsPowerProductionUnit.mockResolvedValue(false);
 
-      await expect(service.updatePPA(payload)).rejects.toThrow(DomainException);
-      expect(unitRepositoryMock.ownsPowerProductionUnit).toHaveBeenCalledWith(user, payload.powerProductionUnitId);
+      // act
+      const actualResult = service.updatePPA(givenPayload);
+
+      // assert
+      await expect(actualResult).rejects.toThrow(DomainException);
+      expect(unitRepositoryMock.ownsPowerProductionUnit).toHaveBeenCalledWith(
+        givenUser,
+        givenPayload.powerProductionUnitId,
+      );
       expect(powerPurchaseAgreementRepositoryMock.updatePpaStatus).not.toHaveBeenCalled();
     });
 
-    it('updates the agreement after access and ownership checks pass', async () => {
-      const payload = UpdatePowerPurchaseAgreementPayloadFixture.create();
-      const user = UserEntityFixture.createHydrogenUser();
-      const agreement = PowerPurchaseAgreementEntityFixture.create();
+    it('should update the agreement when access and ownership checks pass', async () => {
+      // arrange
+      const givenPayload = UpdatePowerPurchaseAgreementPayloadFixture.create();
+      const givenUser = UserEntityFixture.createHydrogenUser();
+      const expectedAgreement = PowerPurchaseAgreementEntityFixture.create();
 
-      userRepositoryMock.findUser.mockResolvedValue(user);
+      userRepositoryMock.findUser.mockResolvedValue(givenUser);
       powerPurchaseAgreementRepositoryMock.canDecideAgreement.mockResolvedValue(true);
       unitRepositoryMock.ownsPowerProductionUnit.mockResolvedValue(true);
-      powerPurchaseAgreementRepositoryMock.updatePpaStatus.mockResolvedValue(agreement);
+      powerPurchaseAgreementRepositoryMock.updatePpaStatus.mockResolvedValue(expectedAgreement);
 
-      const actualResult = await service.updatePPA(payload);
+      // act
+      const actualResult = await service.updatePPA(givenPayload);
 
-      expect(powerPurchaseAgreementRepositoryMock.canDecideAgreement).toHaveBeenCalledWith(user, payload.ppaId);
-      expect(unitRepositoryMock.ownsPowerProductionUnit).toHaveBeenCalledWith(user, payload.powerProductionUnitId);
-      expect(powerPurchaseAgreementRepositoryMock.updatePpaStatus).toHaveBeenCalledWith(payload);
-      expect(actualResult).toEqual(agreement);
+      // assert
+      expect(powerPurchaseAgreementRepositoryMock.canDecideAgreement).toHaveBeenCalledWith(givenUser, givenPayload.ppaId);
+      expect(unitRepositoryMock.ownsPowerProductionUnit).toHaveBeenCalledWith(givenUser, givenPayload.powerProductionUnitId);
+      expect(powerPurchaseAgreementRepositoryMock.updatePpaStatus).toHaveBeenCalledWith(givenPayload);
+      expect(actualResult).toEqual(expectedAgreement);
     });
   });
 
   describe('findApprovedGridPowerProductionUnitByUserId', () => {
-    it('returns the approved grid unit for the user', async () => {
-      const payload = new ReadByIdPayload('user-1');
-      const user = UserEntityFixture.createHydrogenUser({ id: payload.id });
-      const gridUnit = PowerProductionUnitEntityFixture.create({
+    it('should return the approved grid unit when the user has one', async () => {
+      // arrange
+      const givenPayload = new ReadByIdPayload('user-1');
+      const givenUser = UserEntityFixture.createHydrogenUser({ id: givenPayload.id });
+      const expectedGridUnit = PowerProductionUnitEntityFixture.create({
         type: PowerProductionTypeEntityFixture.createGrid(),
       });
-      const agreements = [
+      const givenAgreements = [
         PowerPurchaseAgreementEntityFixture.create(),
-        PowerPurchaseAgreementEntityFixture.create({ powerProductionUnit: gridUnit }),
+        PowerPurchaseAgreementEntityFixture.create({ powerProductionUnit: expectedGridUnit }),
       ];
 
-      userRepositoryMock.findUser.mockResolvedValue(user);
-      powerPurchaseAgreementRepositoryMock.findAllPowerPurchaseAgreements.mockResolvedValue(agreements);
+      userRepositoryMock.findUser.mockResolvedValue(givenUser);
+      powerPurchaseAgreementRepositoryMock.findAllPowerPurchaseAgreements.mockResolvedValue(givenAgreements);
 
-      const actualResult = await service.findApprovedGridPowerProductionUnitByUserId(payload);
+      // act
+      const actualResult = await service.findApprovedGridPowerProductionUnitByUserId(givenPayload);
 
+      // assert
       expect(powerPurchaseAgreementRepositoryMock.findAllPowerPurchaseAgreements).toHaveBeenCalledWith(
-        user.company.id,
+        givenUser.company.id,
         PowerPurchaseAgreementStatus.APPROVED,
         undefined,
       );
-      expect(actualResult).toEqual(gridUnit);
+      expect(actualResult).toEqual(expectedGridUnit);
     });
 
-    it('throws when no approved grid unit exists for the user', async () => {
-      const payload = new ReadByIdPayload('user-1');
-      const user = UserEntityFixture.createHydrogenUser({ id: payload.id });
-      const nonGridAgreement = PowerPurchaseAgreementEntityFixture.create({
+    it('should throw DomainException when no approved grid unit exists for the user', async () => {
+      // arrange
+      const givenPayload = new ReadByIdPayload('user-1');
+      const givenUser = UserEntityFixture.createHydrogenUser({ id: givenPayload.id });
+      const givenNonGridAgreement = PowerPurchaseAgreementEntityFixture.create({
         powerProductionUnit: PowerProductionUnitEntityFixture.create({
           type: PowerProductionTypeEntityFixture.createSolarEnergy({ name: PowerProductionType.PHOTOVOLTAIC_SYSTEM }),
         }),
       });
 
-      userRepositoryMock.findUser.mockResolvedValue(user);
-      powerPurchaseAgreementRepositoryMock.findAllPowerPurchaseAgreements.mockResolvedValue([nonGridAgreement]);
+      userRepositoryMock.findUser.mockResolvedValue(givenUser);
+      powerPurchaseAgreementRepositoryMock.findAllPowerPurchaseAgreements.mockResolvedValue([givenNonGridAgreement]);
 
-      await expect(service.findApprovedGridPowerProductionUnitByUserId(payload)).rejects.toThrow(DomainException);
+      // act
+      const actualResult = service.findApprovedGridPowerProductionUnitByUserId(givenPayload);
+
+      // assert
+      await expect(actualResult).rejects.toThrow(DomainException);
     });
   });
 });

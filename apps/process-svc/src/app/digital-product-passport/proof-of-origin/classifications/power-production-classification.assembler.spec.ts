@@ -17,7 +17,8 @@ import { buildPowerSupplySubClassifications } from './power-production-classific
 
 describe('PowerProductionProofOfOriginAssembler', () => {
   describe('buildPowerSupplySubClassifications', () => {
-    it('returns sub-classifications grouped by energy source', async () => {
+    it('should return sub-classifications when power productions are grouped by energy source', async () => {
+    // arrange
       const givenSolarPowerProduction = ProcessStepEntityFixture.createPowerProduction({
         executedBy: PowerProductionUnitEntityFixture.create({
           type: PowerProductionTypeEntityFixture.createSolarEnergy(),
@@ -37,8 +38,10 @@ describe('PowerProductionProofOfOriginAssembler', () => {
       const givenPowerProductions = [givenSolarPowerProduction, givenWindPowerProduction];
       const givenHydrogenAmount = 100;
 
+      // act
       const actualResult = buildPowerSupplySubClassifications(givenPowerProductions, givenHydrogenAmount);
 
+      // assert
       expect(actualResult).toHaveLength(2);
 
       const solarSubClassification = actualResult.find((sc) => sc.name === EnergySource.SOLAR_ENERGY);
@@ -59,20 +62,26 @@ describe('PowerProductionProofOfOriginAssembler', () => {
       expect(windBatch.energySource).toBe(EnergySource.WIND_ENERGY);
     });
 
-    it('returns empty array when no power productions provided', async () => {
+    it('should return an empty array when no power productions are provided', async () => {
+    // arrange
       const givenPowerProductions: ProcessStepEntity[] = [];
       const givenHydrogenAmount = 100;
 
+      // act
       const actualResult = buildPowerSupplySubClassifications(givenPowerProductions, givenHydrogenAmount);
 
+      // assert
       expect(actualResult).toEqual([]);
     });
 
-    it('returns empty array when power productions is undefined', async () => {
+    it('should return an empty array when power productions are undefined', async () => {
+    // arrange
       const givenHydrogenAmount = 100;
 
+      // act
       const actualResult = buildPowerSupplySubClassifications(undefined, givenHydrogenAmount);
 
+      // assert
       expect(actualResult).toEqual([]);
     });
   });

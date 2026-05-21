@@ -10,165 +10,165 @@ import { calculateWaterAmount } from './production.utils';
 
 describe('ProductionUtils.calculateWaterAmount', () => {
   describe('valid inputs', () => {
-    it('should calculate water amount for 1 hour duration', () => {
-      // Arrange
+    it('should calculate water amount for 1 hour duration when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T01:00:00Z');
       const waterConsumptionPerHour = 100;
       const expectedResult = 100;
 
-      // Act
+      // act
       const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
-      // Assert
+      // assert
       expect(actualResult).toBe(expectedResult);
     });
 
-    it('should calculate water amount for 2 hours duration', () => {
-      // Arrange
+    it('should calculate water amount for 2 hours duration when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T02:00:00Z');
       const waterConsumptionPerHour = 100;
       const expectedResult = 200;
 
-      // Act
+      // act
       const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
-      // Assert
+      // assert
       expect(actualResult).toBe(expectedResult);
     });
 
-    it('should calculate water amount for 30 minutes duration', () => {
-      // Arrange
+    it('should calculate water amount for 30 minutes duration when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T00:30:00Z');
       const waterConsumptionPerHour = 100;
       const expectedResult = 50;
 
-      // Act
+      // act
       const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
-      // Assert
+      // assert
       expect(actualResult).toBe(expectedResult);
     });
 
-    it('should calculate water amount for 15 minutes duration', () => {
-      // Arrange
+    it('should calculate water amount for 15 minutes duration when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T00:15:00Z');
       const waterConsumptionPerHour = 100;
       const expectedResult = 25;
 
-      // Act
+      // act
       const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
-      // Assert
+      // assert
       expect(actualResult).toBe(expectedResult);
     });
 
-    it('should calculate water amount with fractional consumption rate', () => {
-      // Arrange
+    it('should calculate water amount with fractional consumption rate when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T01:00:00Z');
       const waterConsumptionPerHour = 50.5;
       const expectedResult = 50.5;
 
-      // Act
+      // act
       const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
-      // Assert
+      // assert
       expect(actualResult).toBe(expectedResult);
     });
 
-    it('should calculate water amount for zero consumption rate', () => {
-      // Arrange
+    it('should calculate water amount for zero consumption rate when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T01:00:00Z');
       const waterConsumptionPerHour = 0;
       const expectedResult = 0;
 
-      // Act
+      // act
       const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
-      // Assert
+      // assert
       expect(actualResult).toBe(expectedResult);
     });
 
-    it('should calculate water amount for very short duration (1 second)', () => {
-      // Arrange
+    it('should calculate water amount for very short duration (1 second) when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T00:00:01Z');
       const waterConsumptionPerHour = 3600;
       const expectedResult = 1;
 
-      // Act
+      // act
       const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
-      // Assert
+      // assert
       expect(actualResult).toBe(expectedResult);
     });
 
-    it('should calculate water amount for long duration (24 hours)', () => {
-      // Arrange
+    it('should calculate water amount for long duration (24 hours) when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-02T00:00:00Z');
       const waterConsumptionPerHour = 100;
       const expectedResult = 2400;
 
-      // Act
+      // act
       const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
-      // Assert
+      // assert
       expect(actualResult).toBe(expectedResult);
     });
 
-    it('should handle dates with milliseconds', () => {
-      // Arrange
+    it('should handle dates with milliseconds when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00.500Z');
       const endedAt = new Date('2024-01-01T01:00:00.500Z');
       const waterConsumptionPerHour = 100;
       const expectedResult = 100;
 
-      // Act
+      // act
       const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
-      // Assert
+      // assert
       expect(actualResult).toBe(expectedResult);
     });
   });
 
   describe('invalid inputs', () => {
     it('should throw error when endedAt is before startedAt', () => {
-      // Arrange
+      // arrange
       const startedAt = new Date('2024-01-01T01:00:00Z');
       const endedAt = new Date('2024-01-01T00:00:00Z');
       const waterConsumptionPerHour = 100;
 
-      // Act & Assert
+      // act & assert
       expect(() => {
         calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
       }).toThrow('endedAtInSeconds must be greater than startedAtInSeconds');
     });
 
     it('should throw error when startedAt equals endedAt', () => {
-      // Arrange
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T00:00:00Z');
       const waterConsumptionPerHour = 100;
 
-      // Act & Assert
+      // act & assert
       expect(() => {
         calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
       }).toThrow('endedAtInSeconds must be greater than startedAtInSeconds');
     });
 
-    it('should throw error for negative water consumption rate', () => {
-      // Arrange
+    it('should throw error for negative water consumption rate when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T01:00:00Z');
       const waterConsumptionPerHour = -100;
 
-      // Act & Assert
+      // act & assert
       expect(() => {
         calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
       }).toThrow(`waterConsumptionPerHour must be non-negative: [${waterConsumptionPerHour}]`);
@@ -176,45 +176,45 @@ describe('ProductionUtils.calculateWaterAmount', () => {
   });
 
   describe('edge cases', () => {
-    it('should calculate water amount across year boundary', () => {
-      // Arrange
+    it('should calculate water amount across year boundary when called', () => {
+      // arrange
       const startedAt = new Date('2023-12-31T23:00:00Z');
       const endedAt = new Date('2024-01-01T01:00:00Z');
       const waterConsumptionPerHour = 100;
       const expectedResult = 200;
 
-      // Act
+      // act
       const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
-      // Assert
+      // assert
       expect(actualResult).toBe(expectedResult);
     });
 
-    it('should handle very large water consumption values', () => {
-      // Arrange
+    it('should handle very large water consumption values when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T01:00:00Z');
       const waterConsumptionPerHour = 1000000;
       const expectedResult = 1000000;
 
-      // Act
+      // act
       const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
-      // Assert
+      // assert
       expect(actualResult).toBe(expectedResult);
     });
 
-    it('should handle very small water consumption values', () => {
-      // Arrange
+    it('should handle very small water consumption values when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T01:00:00Z');
       const waterConsumptionPerHour = 0.001;
       const expectedResult = 0.001;
 
-      // Act
+      // act
       const actualResult = calculateWaterAmount(startedAt, endedAt, waterConsumptionPerHour);
 
-      // Assert
+      // assert
       expect(actualResult).toBe(expectedResult);
     });
   });

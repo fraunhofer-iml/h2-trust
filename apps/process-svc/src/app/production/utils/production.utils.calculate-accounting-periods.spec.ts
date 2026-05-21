@@ -15,8 +15,8 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
   const emptyBatchEntityArray: readonly BatchEntity[] = [];
 
   describe('valid inputs', () => {
-    it('should calculate single accounting period for 1 hour duration', () => {
-      // Arrange
+    it('should calculate single accounting period for 1 hour duration when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T01:00:00Z');
       const totalAmount = 100;
@@ -30,15 +30,15 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
         },
       ];
 
-      // Act
+      // act
       const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
 
-    it('should calculate two accounting periods for 2 hour duration', () => {
-      // Arrange
+    it('should calculate two accounting periods for 2 hour duration when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T02:00:00Z');
       const totalAmount = 200;
@@ -59,15 +59,15 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
         },
       ];
 
-      // Act
+      // act
       const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
 
-    it('should align start time to accounting period boundary', () => {
-      // Arrange
+    it('should align start time to accounting period boundary when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:30:00Z');
       const endedAt = new Date('2024-01-01T01:30:00Z');
       const totalAmount = 100;
@@ -88,15 +88,15 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
         },
       ];
 
-      // Act
+      // act
       const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
 
-    it('should distribute amount evenly across multiple periods', () => {
-      // Arrange
+    it('should distribute amount evenly across multiple periods when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T03:00:00Z');
       const totalAmount = 300;
@@ -123,15 +123,15 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
         },
       ];
 
-      // Act
+      // act
       const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
 
-    it('should include predecessors matching the period start time', () => {
-      // Arrange
+    it('should include predecessors matching the period start time when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T02:00:00Z');
       const totalAmount = 200;
@@ -176,15 +176,15 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
         },
       ];
 
-      // Act
+      // act
       const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
 
-    it('should group multiple predecessors with same start time', () => {
-      // Arrange
+    it('should group multiple predecessors with same start time when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T01:00:00Z');
       const totalAmount = 100;
@@ -222,15 +222,15 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
         },
       ];
 
-      // Act
+      // act
       const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
 
-    it('should handle periods spanning across days', () => {
-      // Arrange
+    it('should handle periods spanning across days when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T23:00:00Z');
       const endedAt = new Date('2024-01-02T01:00:00Z');
       const totalAmount = 200;
@@ -251,66 +251,66 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
         },
       ];
 
-      // Act
+      // act
       const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
   });
 
   describe('invalid inputs', () => {
     it('should throw error when endedAt is before startedAt', () => {
-      // Arrange
+      // arrange
       const startedAt = new Date('2024-01-01T02:00:00Z');
       const endedAt = new Date('2024-01-01T01:00:00Z');
       const totalAmount = 100;
       const predecessors: ProcessStepEntity[] = [];
       const expectedResult = 'endedAtInSeconds must be greater than startedAtInSeconds';
 
-      // Act & Assert
+      // act & assert
       expect(() => {
         calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
       }).toThrow(expectedResult);
     });
 
     it('should throw error when startedAt equals endedAt', () => {
-      // Arrange
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T00:00:00Z');
       const totalAmount = 100;
       const predecessors: ProcessStepEntity[] = [];
       const expectedResult = 'endedAtInSeconds must be greater than startedAtInSeconds';
 
-      // Act & Assert
+      // act & assert
       expect(() => {
         calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
       }).toThrow(expectedResult);
     });
 
     it('should throw error when totalAmount is zero', () => {
-      // Arrange
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T01:00:00Z');
       const totalAmount = 0;
       const predecessors: ProcessStepEntity[] = [];
       const expectedResult = 'batchAmount must be greater than zero';
 
-      // Act & Assert
+      // act & assert
       expect(() => {
         calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
       }).toThrow(expectedResult);
     });
 
     it('should throw error when totalAmount is negative', () => {
-      // Arrange
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T01:00:00Z');
       const totalAmount = -100;
       const predecessors: ProcessStepEntity[] = [];
       const expectedResult = 'batchAmount must be greater than zero';
 
-      // Act & Assert
+      // act & assert
       expect(() => {
         calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
       }).toThrow(expectedResult);
@@ -318,8 +318,8 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
   });
 
   describe('edge cases', () => {
-    it('should handle very small amounts', () => {
-      // Arrange
+    it('should handle very small amounts when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T02:00:00Z');
       const totalAmount = 0.001;
@@ -340,15 +340,15 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
         },
       ];
 
-      // Act
+      // act
       const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
 
-    it('should handle very large amounts', () => {
-      // Arrange
+    it('should handle very large amounts when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T01:00:00Z');
       const totalAmount = 1000000;
@@ -362,15 +362,15 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
         },
       ];
 
-      // Act
+      // act
       const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
 
-    it('should handle many accounting periods', () => {
-      // Arrange
+    it('should handle many accounting periods when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T12:00:00Z');
       const totalAmount = 1200;
@@ -378,10 +378,10 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       const expectedNumberOfPeriods = 12;
       const amountPerPeriod = totalAmount / expectedNumberOfPeriods;
 
-      // Act
+      // act
       const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
-      // Assert
+      // assert
       expect(actualResult).toHaveLength(expectedNumberOfPeriods);
       expect(actualResult[0].amount).toBe(amountPerPeriod);
       expect(actualResult[11].amount).toBe(amountPerPeriod);
@@ -389,8 +389,8 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       expect(actualResult[11].startedAt).toEqual(new Date('2024-01-01T11:00:00Z'));
     });
 
-    it('should handle predecessors not matching any period start time', () => {
-      // Arrange
+    it('should handle predecessors not matching any period start time when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T02:00:00Z');
       const totalAmount = 200;
@@ -424,15 +424,15 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
         },
       ];
 
-      // Act
+      // act
       const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
 
-    it('should handle year boundary crossing', () => {
-      // Arrange
+    it('should handle year boundary crossing when called', () => {
+      // arrange
       const startedAt = new Date('2023-12-31T23:00:00Z');
       const endedAt = new Date('2024-01-01T01:00:00Z');
       const totalAmount = 200;
@@ -453,15 +453,15 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
         },
       ];
 
-      // Act
+      // act
       const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
 
-    it('should handle partial hour at end of period', () => {
-      // Arrange
+    it('should handle partial hour at end of period when called', () => {
+      // arrange
       const startedAt = new Date('2024-01-01T00:00:00Z');
       const endedAt = new Date('2024-01-01T00:30:00Z');
       const totalAmount = 100;
@@ -475,10 +475,10 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
         },
       ];
 
-      // Act
+      // act
       const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
   });

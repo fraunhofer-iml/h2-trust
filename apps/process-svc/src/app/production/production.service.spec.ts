@@ -73,8 +73,8 @@ describe('ProductionService', () => {
   });
 
   describe('createProductions', () => {
-    it('loads units and delegates the assembled production entities', async () => {
-      // Arrange
+    it('should load units and delegate the assembled production entities when called', async () => {
+      // arrange
       const givenPayload = CreateProductionsPayloadFixture.create();
       const givenPowerProductionUnit = PowerProductionUnitEntityFixture.create({
         id: givenPayload.powerProductionUnitId,
@@ -100,10 +100,10 @@ describe('ProductionService', () => {
         .mockReturnValueOnce(of([givenPowerProductionUnit, givenHydrogenProductionUnit, givenHydrogenStorageUnit]));
       productionCreationServiceMock.createAndPersistProductions.mockResolvedValue(expectedProcessSteps);
 
-      // Act
+      // act
       const actualResult = await service.createProductions(givenPayload);
 
-      // Assert
+      // assert
       expect(generalSvcMock.send).toHaveBeenCalledTimes(3);
       expect(productionCreationServiceMock.createAndPersistProductions).toHaveBeenCalledTimes(1);
 
@@ -135,8 +135,8 @@ describe('ProductionService', () => {
       expect(actualResult).toEqual(expectedProcessSteps);
     });
 
-    it('delegates two split grid productions with preserved shared metadata', async () => {
-      // Arrange
+    it('should delegate two split grid productions with preserved shared metadata when called', async () => {
+      // arrange
       const givenPayload = CreateProductionsPayloadFixture.create({
         powerAmountKwh: 100,
         hydrogenAmountKg: 10,
@@ -164,10 +164,10 @@ describe('ProductionService', () => {
         .mockReturnValueOnce(of([givenPowerProductionUnit, givenHydrogenProductionUnit, givenHydrogenStorageUnit]));
       productionCreationServiceMock.createAndPersistProductions.mockResolvedValue([]);
 
-      // Act
+      // act
       await service.createProductions(givenPayload);
 
-      // Assert
+      // assert
       const [actualCreateProductions] = productionCreationServiceMock.createAndPersistProductions.mock.calls[0];
 
       expect(actualCreateProductions).toHaveLength(2);
@@ -191,8 +191,8 @@ describe('ProductionService', () => {
   });
 
   describe('assembleProductionStatistics', () => {
-    it('returns hydrogen and power totals for valid hydrogen production steps', async () => {
-      // Arrange
+    it('should return hydrogen and power totals for valid hydrogen production steps when called', async () => {
+      // arrange
       const givenPayload = CreateHydrogenProductionStatisticsPayloadFixture.create();
       const givenHydrogenProcessStepOne = ProcessStepEntityFixture.createHydrogenProduction({
         batch: BatchEntityFixture.createHydrogenBatch({
@@ -253,10 +253,10 @@ describe('ProductionService', () => {
         givenInactiveHydrogenProcessStep,
       ]);
 
-      // Act
+      // act
       const actualResult = await service.assembleProductionStatistics(givenPayload);
 
-      // Assert
+      // assert
       expect(processStepServiceMock.readProcessStepsByPredecessorTypesAndUnitAndDate).toHaveBeenCalledWith(
         [ProcessType.POWER_PRODUCTION],
         givenPayload,
@@ -278,8 +278,8 @@ describe('ProductionService', () => {
       );
     });
 
-    it('throws when non-hydrogen process steps are returned', async () => {
-      // Arrange
+    it('should throw when non-hydrogen process steps are returned', async () => {
+      // arrange
       const givenPayload = CreateHydrogenProductionStatisticsPayloadFixture.create();
       const givenInvalidProcessStep = ProcessStepEntityFixture.createPowerProduction();
 
@@ -287,14 +287,14 @@ describe('ProductionService', () => {
         givenInvalidProcessStep,
       ]);
 
-      // Act & Assert
+      // act & assert
       await expect(service.assembleProductionStatistics(givenPayload)).rejects.toThrow(
         `Expected only ${ProcessType.HYDROGEN_PRODUCTION} process steps, but received: ${ProcessType.POWER_PRODUCTION}`,
       );
     });
 
-    it('throws when a hydrogen batch has no RFNBO type', async () => {
-      // Arrange
+    it('should throw when a hydrogen batch has no RFNBO type', async () => {
+      // arrange
       const givenPayload = CreateHydrogenProductionStatisticsPayloadFixture.create();
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
         batch: BatchEntityFixture.createHydrogenBatch({
@@ -304,22 +304,22 @@ describe('ProductionService', () => {
 
       processStepServiceMock.readProcessStepsByPredecessorTypesAndUnitAndDate.mockResolvedValue([givenProcessStep]);
 
-      // Act & Assert
+      // act & assert
       await expect(service.assembleProductionStatistics(givenPayload)).rejects.toThrow(
         `Rfnbotype of ${givenProcessStep.id} not defined`,
       );
     });
 
-    it('returns zero statistics when no hydrogen production steps are found', async () => {
-      // Arrange
+    it('should return zero statistics when no hydrogen production steps are found', async () => {
+      // arrange
       const givenPayload = CreateHydrogenProductionStatisticsPayloadFixture.create();
 
       processStepServiceMock.readProcessStepsByPredecessorTypesAndUnitAndDate.mockResolvedValue([]);
 
-      // Act
+      // act
       const actualResult = await service.assembleProductionStatistics(givenPayload);
 
-      // Assert
+      // assert
       expect(actualResult.hydrogen).toEqual(
         expect.objectContaining({
           nonCertifiable: 0,

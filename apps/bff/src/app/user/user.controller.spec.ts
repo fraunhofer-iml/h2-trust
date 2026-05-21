@@ -29,12 +29,17 @@ describe('UserController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('delegates readUserWithCompany to UserService', async () => {
-    const user = UserDetailsDtoFixture.create({ id: 'user-id-1' });
+  it('should delegate readUserWithCompany to UserService when handling a user details request', async () => {
+    // arrange
+    const expectedUser = UserDetailsDtoFixture.create({ id: 'user-id-1' });
 
-    userServiceMock.readUserWithCompany.mockResolvedValue(user);
+    userServiceMock.readUserWithCompany.mockResolvedValue(expectedUser);
 
-    await expect(controller.readUserWithCompany(user.id)).resolves.toEqual(user);
-    expect(userServiceMock.readUserWithCompany).toHaveBeenCalledWith(user.id);
+    // act
+    const actualResult = await controller.readUserWithCompany(expectedUser.id);
+
+    // assert
+    expect(actualResult).toEqual(expectedUser);
+    expect(userServiceMock.readUserWithCompany).toHaveBeenCalledWith(expectedUser.id);
   });
 });

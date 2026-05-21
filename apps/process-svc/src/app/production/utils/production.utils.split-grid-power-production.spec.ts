@@ -11,7 +11,8 @@ import { EnergySource, PowerType, RenewableShareInGridMix } from '@h2-trust/doma
 import { splitGridPowerProduction } from './production.utils';
 
 describe('ProductionUtils.splitGridPowerProduction', () => {
-  it('should return the original production unchanged for non-grid energy sources', () => {
+  it('should return the original production unchanged when the energy source is not grid', () => {
+  // arrange
     const givenCreateProduction = new CreateProductionEntity(
       new Date('2026-01-01T00:00:00Z'),
       new Date('2026-01-01T00:59:59Z'),
@@ -27,12 +28,15 @@ describe('ProductionUtils.splitGridPowerProduction', () => {
       20,
     );
 
+    // act
     const actualResult = splitGridPowerProduction(givenCreateProduction, EnergySource.SOLAR_ENERGY);
 
+    // assert
     expect(actualResult).toEqual([givenCreateProduction]);
   });
 
-  it('should split grid energy into partly renewable and non-renewable productions', () => {
+  it('should split grid energy into partly renewable and non-renewable productions when the energy source is grid', () => {
+  // arrange
     const givenCreateProduction = new CreateProductionEntity(
       new Date('2026-01-01T00:00:00Z'),
       new Date('2026-01-01T00:59:59Z'),
@@ -48,8 +52,10 @@ describe('ProductionUtils.splitGridPowerProduction', () => {
       20,
     );
 
+    // act
     const actualResult = splitGridPowerProduction(givenCreateProduction, EnergySource.GRID);
 
+    // assert
     expect(actualResult).toHaveLength(2);
     expect(actualResult).toEqual([
       expect.objectContaining({

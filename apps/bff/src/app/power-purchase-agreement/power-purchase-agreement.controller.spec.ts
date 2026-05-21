@@ -47,28 +47,36 @@ describe('PowerPurchaseAgreementController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('delegates getPpasByStatus to the service with the authenticated user id', async () => {
-    const agreements: PpaDto[] = [PpaDtoFixture.create({ status: PowerPurchaseAgreementStatus.APPROVED })];
+  it('should delegate getPpasByStatus to the service when the authenticated user requests agreements by status', async () => {
+    // arrange
+    const expectedAgreements: PpaDto[] = [PpaDtoFixture.create({ status: PowerPurchaseAgreementStatus.APPROVED })];
 
-    powerPurchaseAgreementServiceMock.readByUserAndStatus.mockResolvedValue(agreements);
+    powerPurchaseAgreementServiceMock.readByUserAndStatus.mockResolvedValue(expectedAgreements);
 
-    await expect(
-      controller.getPpasByStatus(authenticatedUser, PowerPurchaseAgreementStatus.APPROVED),
-    ).resolves.toEqual(agreements);
+    // act
+    const actualResult = await controller.getPpasByStatus(authenticatedUser, PowerPurchaseAgreementStatus.APPROVED);
+
+    // assert
+    expect(actualResult).toEqual(expectedAgreements);
     expect(powerPurchaseAgreementServiceMock.readByUserAndStatus).toHaveBeenCalledWith(
       authenticatedUser.sub,
       PowerPurchaseAgreementStatus.APPROVED,
     );
   });
 
-  it('delegates getPpaRequest to the service with role and optional status', async () => {
-    const requests: PpaRequestDto[] = [PpaRequestDtoFixture.create()];
+  it('should delegate getPpaRequest to the service when role and optional status are provided', async () => {
+    // arrange
+    const expectedRequests: PpaRequestDto[] = [PpaRequestDtoFixture.create()];
 
-    powerPurchaseAgreementServiceMock.readAll.mockResolvedValue(requests);
+    powerPurchaseAgreementServiceMock.readAll.mockResolvedValue(expectedRequests);
 
-    await expect(
+    // act
+    const actualResult = await controller.getPpaRequest(
       controller.getPpaRequest(authenticatedUser, PpaRequestRole.RECEIVER, PowerPurchaseAgreementStatus.PENDING),
-    ).resolves.toEqual(requests);
+    );
+
+    // assert
+    expect(actualResult).toEqual(expectedRequests);
     expect(powerPurchaseAgreementServiceMock.readAll).toHaveBeenCalledWith(
       authenticatedUser.sub,
       PpaRequestRole.RECEIVER,
@@ -76,25 +84,35 @@ describe('PowerPurchaseAgreementController', () => {
     );
   });
 
-  it('delegates createPpaRequest to the service with the authenticated user id', async () => {
-    const dto = PpaRequestCreateDtoFixture.create();
-    const request = PpaRequestDtoFixture.create();
+  it('should delegate createPpaRequest to the service when the authenticated user submits a request', async () => {
+    // arrange
+    const givenDto = PpaRequestCreateDtoFixture.create();
+    const expectedRequest = PpaRequestDtoFixture.create();
 
-    powerPurchaseAgreementServiceMock.createPPA.mockResolvedValue(request);
+    powerPurchaseAgreementServiceMock.createPPA.mockResolvedValue(expectedRequest);
 
-    await expect(controller.createPpaRequest(dto, authenticatedUser)).resolves.toEqual(request);
-    expect(powerPurchaseAgreementServiceMock.createPPA).toHaveBeenCalledWith(dto, authenticatedUser.sub);
+    // act
+    const actualResult = await controller.createPpaRequest(givenDto, authenticatedUser);
+
+    // assert
+    expect(actualResult).toEqual(expectedRequest);
+    expect(powerPurchaseAgreementServiceMock.createPPA).toHaveBeenCalledWith(givenDto, authenticatedUser.sub);
   });
 
-  it('delegates closePpaRequest to the service with the request id and authenticated user id', async () => {
-    const dto = PpaRequestDecisionDtoFixture.create();
-    const request = PpaRequestDtoFixture.createApproved();
+  it('should delegate closePpaRequest to the service when the authenticated user decides a request', async () => {
+    // arrange
+    const givenDto = PpaRequestDecisionDtoFixture.create();
+    const expectedRequest = PpaRequestDtoFixture.createApproved();
 
-    powerPurchaseAgreementServiceMock.updatePPA.mockResolvedValue(request);
+    powerPurchaseAgreementServiceMock.updatePPA.mockResolvedValue(expectedRequest);
 
-    await expect(controller.closePpaRequest(dto, 'ppa-request-1', authenticatedUser)).resolves.toEqual(request);
+    // act
+    const actualResult = await controller.closePpaRequest(givenDto, 'ppa-request-1', authenticatedUser);
+
+    // assert
+    expect(actualResult).toEqual(expectedRequest);
     expect(powerPurchaseAgreementServiceMock.updatePPA).toHaveBeenCalledWith(
-      dto,
+      givenDto,
       'ppa-request-1',
       authenticatedUser.sub,
     );

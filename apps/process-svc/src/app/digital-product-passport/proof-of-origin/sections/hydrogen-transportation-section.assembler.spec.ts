@@ -19,8 +19,8 @@ import { assembleHydrogenTransportationSection } from './hydrogen-transportation
 
 describe('HydrogenTransportationProofOfOriginAssembler', () => {
   describe('assembleHydrogenTransportationSection', () => {
-    it('returns section with hydrogen batch, composition and emissions for trailer transport', () => {
-      // Arrange
+    it('should return a section with hydrogen batch, composition, and emissions when transport mode is trailer', () => {
+      // arrange
       const productionChain: ProductionChainEntity = new ProductionChainEntity(
         ProcessStepEntityFixture.createHydrogenProduction(),
         ProcessStepEntityFixture.createHydrogenProduction(),
@@ -36,10 +36,10 @@ describe('HydrogenTransportationProofOfOriginAssembler', () => {
         ProcessStepEntityFixture.createHydrogenBottling(),
       );
 
-      // Act
+      // act
       const actualResult = assembleHydrogenTransportationSection(givenProvenance)[0];
 
-      // Assert
+      // assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION);
       expect(actualResult.batches).toHaveLength(1);
       expect(actualResult.classifications).toEqual([]);
@@ -54,8 +54,8 @@ describe('HydrogenTransportationProofOfOriginAssembler', () => {
       expect(batch.accountingPeriodEnd).toEqual(ProcessStepEntityFixture.createHydrogenTransportation().endedAt);
     });
 
-    it('returns section with zero emissions for pipeline transport', () => {
-      // Arrange
+    it('should return a section with zero emissions when transport mode is pipeline', () => {
+      // arrange
       const productionChain: ProductionChainEntity = new ProductionChainEntity(
         ProcessStepEntityFixture.createHydrogenProduction(),
         ProcessStepEntityFixture.createHydrogenProduction(),
@@ -71,10 +71,10 @@ describe('HydrogenTransportationProofOfOriginAssembler', () => {
         ProcessStepEntityFixture.createHydrogenBottling(),
       );
 
-      // Act
+      // act
       const actualResult = assembleHydrogenTransportationSection(givenProvenance)[0];
 
-      // Assert
+      // assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION);
       expect(actualResult.batches).toHaveLength(1);
 

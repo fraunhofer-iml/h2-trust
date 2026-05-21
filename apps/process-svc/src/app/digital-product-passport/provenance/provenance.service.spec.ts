@@ -18,23 +18,23 @@ import { buildProvenance } from './provenance.service';
 
 describe('Provenance', () => {
   describe('buildProvenance', () => {
-    it('throws error when process step is not found', () => {
-      // Arrange
+    it('should throw error when process step is not found', () => {
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createPowerProduction();
       givenProcessStep.type = undefined;
 
-      // Act & Assert
+      // act & assert
       expect(() => buildProvenance(givenProcessStep, [])).toThrow('Invalid process step.');
     });
 
-    it(`returns ProvenanceEntity for ${ProcessType.POWER_PRODUCTION} process type`, () => {
-      // Arrange
+    it(`should return ProvenanceEntity when the process type is ${ProcessType.POWER_PRODUCTION}`, () => {
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createPowerProduction();
 
-      // Act
+      // act
       const actualResult: ProvenanceEntity = buildProvenance(givenProcessStep, []);
 
-      // Assert
+      // assert
       expect(actualResult.root).toBe(givenProcessStep);
       expect(actualResult.hydrogenBottling).toBeUndefined();
       expect(actualResult.getAllHydrogenRootProductions()).toEqual([]);
@@ -42,14 +42,14 @@ describe('Provenance', () => {
       expect(actualResult.getAllPowerProductions()).toEqual([]);
     });
 
-    it(`returns ProvenanceEntity for ${ProcessType.WATER_CONSUMPTION} process type`, () => {
-      // Arrange
+    it(`should return ProvenanceEntity when the process type is ${ProcessType.WATER_CONSUMPTION}`, () => {
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createWaterConsumption();
 
-      // Act
+      // act
       const actualResult: ProvenanceEntity = buildProvenance(givenProcessStep, []);
 
-      // Assert
+      // assert
       expect(actualResult.root).toBe(givenProcessStep);
       expect(actualResult.hydrogenBottling).toBeUndefined();
       expect(actualResult.getAllHydrogenRootProductions()).toEqual([]);
@@ -57,20 +57,20 @@ describe('Provenance', () => {
       expect(actualResult.getAllPowerProductions()).toEqual([]);
     });
 
-    it(`returns ProvenanceEntity for ${ProcessType.HYDROGEN_PRODUCTION} process type`, () => {
-      // Arrange
+    it(`should return ProvenanceEntity when the process type is ${ProcessType.HYDROGEN_PRODUCTION}`, () => {
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenProduction();
       const givenWaterConsumptions = [ProcessStepEntityFixture.createWaterConsumption()];
       const givenPowerProductions = [ProcessStepEntityFixture.createPowerProduction()];
 
-      // Act
+      // act
       const actualResult = buildProvenance(givenProcessStep, [
         givenProcessStep,
         ...givenPowerProductions,
         ...givenWaterConsumptions,
       ]);
 
-      // Assert
+      // assert
       expect(actualResult.root).toBe(givenProcessStep);
       expect(actualResult.hydrogenBottling).toBeUndefined();
       expect(actualResult.getAllHydrogenRootProductions()).toEqual([givenProcessStep]);
@@ -78,14 +78,14 @@ describe('Provenance', () => {
       expect(actualResult.getAllPowerProductions()).toEqual(givenPowerProductions);
     });
 
-    it(`returns ProvenanceEntity for ${ProcessType.HYDROGEN_BOTTLING} process type`, () => {
-      // Arrange
+    it(`should return ProvenanceEntity when the process type is ${ProcessType.HYDROGEN_BOTTLING}`, () => {
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
       const givenHydrogenProductions = [ProcessStepEntityFixture.createHydrogenProduction()];
       const givenWaterConsumptions = [ProcessStepEntityFixture.createWaterConsumption()];
       const givenPowerProductions = [ProcessStepEntityFixture.createPowerProduction()];
 
-      // Act
+      // act
       const actualResult = buildProvenance(givenProcessStep, [
         givenProcessStep,
         ...givenHydrogenProductions,
@@ -93,7 +93,7 @@ describe('Provenance', () => {
         ...givenPowerProductions,
       ]);
 
-      // Assert
+      // assert
       expect(actualResult.root).toBe(givenProcessStep);
       expect(actualResult.hydrogenBottling).toBe(givenProcessStep);
       expect(actualResult.getAllHydrogenRootProductions()).toEqual(givenHydrogenProductions);
@@ -101,15 +101,15 @@ describe('Provenance', () => {
       expect(actualResult.getAllPowerProductions()).toEqual(givenPowerProductions);
     });
 
-    it(`returns ProvenanceEntity for ${ProcessType.HYDROGEN_TRANSPORTATION} process type`, () => {
-      // Arrange
+    it(`should return ProvenanceEntity when the process type is ${ProcessType.HYDROGEN_TRANSPORTATION}`, () => {
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenTransportation();
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
       const givenHydrogenProductions = [ProcessStepEntityFixture.createHydrogenProduction()];
       const givenWaterConsumptions = [ProcessStepEntityFixture.createWaterConsumption()];
       const givenPowerProductions = [ProcessStepEntityFixture.createPowerProduction()];
 
-      // Act
+      // act
       const actualResult = buildProvenance(givenProcessStep, [
         givenProcessStep,
         givenHydrogenBottling,
@@ -118,7 +118,7 @@ describe('Provenance', () => {
         ...givenWaterConsumptions,
       ]);
 
-      // Assert
+      // assert
       expect(actualResult.root).toBe(givenProcessStep);
       expect(actualResult.hydrogenBottling).toBe(givenHydrogenBottling);
       expect(actualResult.getAllHydrogenRootProductions()).toEqual(givenHydrogenProductions);
@@ -126,8 +126,8 @@ describe('Provenance', () => {
       expect(actualResult.getAllPowerProductions()).toEqual(givenPowerProductions);
     });
 
-    it('resolves hydrogen leaf and root productions across a multi-step hydrogen chain', () => {
-      // Arrange
+    it('should resolve hydrogen leaf and root productions across a multi-step hydrogen chain when called', () => {
+      // arrange
       const givenRootHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction({
         id: 'root-hydrogen-production',
         batch: BatchEntityFixture.createHydrogenBatch({
@@ -167,7 +167,7 @@ describe('Provenance', () => {
         }),
       });
 
-      // Act
+      // act
       const actualResult = buildProvenance(givenHydrogenBottling, [
         givenHydrogenBottling,
         givenLeafHydrogenProduction,
@@ -176,7 +176,7 @@ describe('Provenance', () => {
         givenWaterConsumption,
       ]);
 
-      // Assert
+      // assert
       expect(actualResult.hydrogenBottling).toBe(givenHydrogenBottling);
       expect(actualResult.productionChains).toHaveLength(1);
       expect(actualResult.productionChains[0]).toEqual(
@@ -190,18 +190,18 @@ describe('Provenance', () => {
       expect(actualResult.getAllHydrogenRootProductions()).toEqual([givenRootHydrogenProduction]);
     });
 
-    it('throws when a hydrogen bottling root has no bottling process step in the predecessor set', () => {
-      // Arrange
+    it('should throw when a hydrogen bottling root has no bottling process step in the predecessor set', () => {
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenTransportation();
 
-      // Act & Assert
+      // act & assert
       expect(() =>
         buildProvenance(givenProcessStep, [ProcessStepEntityFixture.createHydrogenProduction()]),
       ).toThrow(`Missing hydrogen bottling for root production [${givenProcessStep.id}].`);
     });
 
-    it('throws when the resolved hydrogen root production is missing a water predecessor', () => {
-      // Arrange
+    it('should throw when the resolved hydrogen root production is missing a water predecessor', () => {
+      // arrange
       const givenRootHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction({
         id: 'root-hydrogen-production',
         batch: BatchEntityFixture.createHydrogenBatch({
@@ -217,7 +217,7 @@ describe('Provenance', () => {
         executedBy: PowerProductionUnitEntityFixture.create({ id: 'power-unit-1' }),
       });
 
-      // Act & Assert
+      // act & assert
       expect(() => buildProvenance(givenRootHydrogenProduction, [givenRootHydrogenProduction, givenPowerProduction])).toThrow(
         `Missing water consumption predecessor for root production [${givenRootHydrogenProduction.id}].`,
       );

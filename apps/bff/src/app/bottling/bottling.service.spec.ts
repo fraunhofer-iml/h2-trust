@@ -53,116 +53,127 @@ describe('BottlingService', () => {
     expect(service).toBeDefined();
   });
 
-  it('createBottlingAndTransportation should create bottling first and transportation second', async () => {
-    const dto = BottlingDtoFixture.create();
-    const files: Express.Multer.File[] = [];
-    const userId = 'user-id-1';
-    const persistedBottling = ProcessStepEntityFixture.createHydrogenBottling({
-      startedAt: new Date(dto.filledAt),
-      endedAt: new Date(dto.filledAt),
+  it('should create bottling first and transportation second when both process calls succeed', async () => {
+    // arrange
+    const givenDto = BottlingDtoFixture.create();
+    const givenFiles: Express.Multer.File[] = [];
+    const givenUserId = 'user-id-1';
+    const givenPersistedBottling = ProcessStepEntityFixture.createHydrogenBottling({
+      startedAt: new Date(givenDto.filledAt),
+      endedAt: new Date(givenDto.filledAt),
     });
-    const persistedTransportation = ProcessStepEntityFixture.createHydrogenTransportation({
+    const expectedPersistedTransportation = ProcessStepEntityFixture.createHydrogenTransportation({
       id: 'transportation-1',
-      batch: persistedBottling.batch,
+      batch: givenPersistedBottling.batch,
     });
 
     processSvcMock.send
-      .mockImplementationOnce((_pattern, _payload) => of(persistedBottling))
-      .mockImplementationOnce((_pattern, _payload) => of(persistedTransportation));
+      .mockImplementationOnce((_pattern, _payload) => of(givenPersistedBottling))
+      .mockImplementationOnce((_pattern, _payload) => of(expectedPersistedTransportation));
 
-    const actualResponse = await service.createBottlingAndTransportation(dto, files, userId);
+    // act
+    const actualResult = await service.createBottlingAndTransportation(givenDto, givenFiles, givenUserId);
 
+    // assert
     expect(processSvcMock.send).toHaveBeenNthCalledWith(
       1,
       ProcessStepMessagePatterns.CREATE_HYDROGEN_BOTTLING,
       new CreateHydrogenBottlingPayload(
-        dto.amount,
-        dto.recipient,
-        new Date(dto.filledAt),
-        userId,
-        dto.hydrogenStorageUnit,
-        dto.rfnboType,
-        files,
+        givenDto.amount,
+        givenDto.recipient,
+        new Date(givenDto.filledAt),
+        givenUserId,
+        givenDto.hydrogenStorageUnit,
+        givenDto.rfnboType,
+        givenFiles,
       ),
     );
     expect(processSvcMock.send).toHaveBeenNthCalledWith(
       2,
       ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION,
       new CreateHydrogenTransportationPayload(
-        persistedBottling,
-        persistedBottling.batch,
-        dto.transportMode,
-        dto.distance,
-        dto.fuelType,
+        givenPersistedBottling,
+        givenPersistedBottling.batch,
+        givenDto.transportMode,
+        givenDto.distance,
+        givenDto.fuelType,
       ),
     );
-    expect(actualResponse).toEqual(BottlingOverviewDto.fromEntity(persistedTransportation));
+    expect(actualResult).toEqual(BottlingOverviewDto.fromEntity(expectedPersistedTransportation));
   });
 
-  it('createBottlingAndTransportation should reject when transportation creation fails', async () => {
-    const dto = BottlingDtoFixture.create();
-    const files: Express.Multer.File[] = [];
-    const userId = 'user-id-1';
-    const persistedBottling = ProcessStepEntityFixture.createHydrogenBottling({
-      startedAt: new Date(dto.filledAt),
-      endedAt: new Date(dto.filledAt),
+  it('should reject when transportation creation fails after bottling is created', async () => {
+    // arrange
+    const givenDto = BottlingDtoFixture.create();
+    const givenFiles: Express.Multer.File[] = [];
+    const givenUserId = 'user-id-1';
+    const givenPersistedBottling = ProcessStepEntityFixture.createHydrogenBottling({
+      startedAt: new Date(givenDto.filledAt),
+      endedAt: new Date(givenDto.filledAt),
     });
 
     processSvcMock.send
-      .mockImplementationOnce((_pattern, _payload) => of(persistedBottling))
+      .mockImplementationOnce((_pattern, _payload) => of(givenPersistedBottling))
       .mockImplementationOnce((_pattern, _payload) => throwError(() => new Error('transport failed')));
 
-    await expect(service.createBottlingAndTransportation(dto, files, userId)).rejects.toThrow('transport failed');
+    // act
+    const actualResult = service.createBottlingAndTransportation(givenDto, givenFiles, givenUserId);
 
+    // assert
+    await expect(actualResult).rejects.toThrow('transport failed');
     expect(processSvcMock.send).toHaveBeenCalledTimes(2);
     expect(processSvcMock.send).toHaveBeenNthCalledWith(
       2,
       ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION,
       new CreateHydrogenTransportationPayload(
-        persistedBottling,
-        persistedBottling.batch,
-        dto.transportMode,
-        dto.distance,
-        dto.fuelType,
+        givenPersistedBottling,
+        givenPersistedBottling.batch,
+        givenDto.transportMode,
+        givenDto.distance,
+        givenDto.fuelType,
       ),
     );
   });
 
-  it('readBottlingsAndTransportationsByOwner should resolve the company and request active bottling steps', async () => {
-    const userId = 'user-id-1';
-    const userDetails = UserDetailsDtoFixture.create({
+  it('should resolve the owner company and request active bottling steps when reading bottlings by owner', async () => {
+    // arrange
+    const givenUserId = 'user-id-1';
+    const givenUserDetails = UserDetailsDtoFixture.create({
       company: {
         ...UserDetailsDtoFixture.create().company,
         id: 'company-id-1',
         name: 'Company',
       },
     });
-    const processSteps = [
+    const expectedProcessSteps = [
       ProcessStepEntityFixture.createHydrogenBottling({ id: 'bottling-1' }),
       ProcessStepEntityFixture.createHydrogenTransportation({ id: 'transportation-1' }),
     ];
 
-    userServiceMock.readUserWithCompany.mockResolvedValue(userDetails);
-    processSvcMock.send.mockImplementation((_pattern, _payload) => of(processSteps));
+    userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
+    processSvcMock.send.mockImplementation((_pattern, _payload) => of(expectedProcessSteps));
 
-    const actualResponse = await service.readBottlingsAndTransportationsByOwner(userId);
+    // act
+    const actualResult = await service.readBottlingsAndTransportationsByOwner(givenUserId);
 
-    expect(userServiceMock.readUserWithCompany).toHaveBeenCalledWith(userId);
+    // assert
+    expect(userServiceMock.readUserWithCompany).toHaveBeenCalledWith(givenUserId);
     expect(processSvcMock.send).toHaveBeenCalledWith(
       ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_OWNER,
       new ReadProcessStepsByTypesAndActiveAndOwnerPayload(
         [ProcessType.HYDROGEN_BOTTLING, ProcessType.HYDROGEN_TRANSPORTATION],
         true,
-        userDetails.company.id,
+        givenUserDetails.company.id,
       ),
     );
-    expect(actualResponse).toEqual(processSteps.map(BottlingOverviewDto.fromEntity));
+    expect(actualResult).toEqual(expectedProcessSteps.map(BottlingOverviewDto.fromEntity));
   });
 
-  it('readDigitalProductPassport should request the passport by id and map the response', async () => {
-    const passportId = 'dpp-1';
-    const passport = new DigitalProductPassportEntity(
-      passportId,
+  it('should request the passport by id and map the response when reading a digital product passport', async () => {
+    // arrange
+    const givenPassportId = 'dpp-1';
+    const expectedPassport = new DigitalProductPassportEntity(
+      givenPassportId,
       new Date('2025-04-07T16:00:00.000Z'),
       'H2 Logistics',
       10,
@@ -176,14 +187,16 @@ describe('BottlingService', () => {
       RfnboType.RFNBO_READY,
     );
 
-    processSvcMock.send.mockImplementation((_pattern, _payload) => of(passport));
+    processSvcMock.send.mockImplementation((_pattern, _payload) => of(expectedPassport));
 
-    const actualResponse: DigitalProductPassportDto = await service.readDigitalProductPassport(passportId);
+    // act
+    const actualResult: DigitalProductPassportDto = await service.readDigitalProductPassport(givenPassportId);
 
+    // assert
     expect(processSvcMock.send).toHaveBeenCalledWith(
       DigitalProductPassportMessagePatterns.READ,
-      new ReadByIdPayload(passportId),
+      new ReadByIdPayload(givenPassportId),
     );
-    expect(actualResponse).toEqual(DigitalProductPassportDto.fromEntity(passport));
+    expect(actualResult).toEqual(DigitalProductPassportDto.fromEntity(expectedPassport));
   });
 });

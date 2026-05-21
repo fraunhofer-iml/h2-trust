@@ -42,16 +42,19 @@ describe('UserService', () => {
   });
 
   describe('readUserWithCompany', () => {
-    it('delegates to UserRepository with the payload id', async () => {
-      const payload = new ReadByIdPayload('user-1');
-      const user = UserEntityFixture.createHydrogenUser({ id: payload.id });
+    it('should delegate to UserRepository when reading a user by payload id', async () => {
+      // arrange
+      const givenPayload = new ReadByIdPayload('user-1');
+      const expectedUser = UserEntityFixture.createHydrogenUser({ id: givenPayload.id });
 
-      repositoryMock.findUser.mockResolvedValue(user);
+      repositoryMock.findUser.mockResolvedValue(expectedUser);
 
-      const actualResult = await service.readUserWithCompany(payload);
+      // act
+      const actualResult = await service.readUserWithCompany(givenPayload);
 
-      expect(repositoryMock.findUser).toHaveBeenCalledWith(payload.id);
-      expect(actualResult).toEqual(user);
+      // assert
+      expect(repositoryMock.findUser).toHaveBeenCalledWith(givenPayload.id);
+      expect(actualResult).toEqual(expectedUser);
     });
   });
 });

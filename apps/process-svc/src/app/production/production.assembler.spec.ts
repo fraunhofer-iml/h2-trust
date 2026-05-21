@@ -49,11 +49,11 @@ describe('ProductionAssembler', () => {
   ]);
 
   describe('assemblePowerProductions', () => {
-    it('creates hourly power process steps with renewable quality details', () => {
-      // Act
+    it('should create hourly power process steps with renewable quality details when called', () => {
+      // act
       const actualResult = assemblePowerProductions(createProduction, productionUnitsForId);
 
-      // Assert
+      // assert
       expect(actualResult).toHaveLength(2);
       expect(actualResult[0]).toEqual(
         expect.objectContaining({
@@ -81,7 +81,7 @@ describe('ProductionAssembler', () => {
       ]);
     });
 
-    it('throws when the power production unit is missing', () => {
+    it('should throw when the power production unit is missing', () => {
       const unitsWithoutPower = new Map<string, ConcreteUnitEntity>([
         ['hydrogen-unit-1', HydrogenProductionUnitEntityFixture.create({ id: 'hydrogen-unit-1' })],
       ]);
@@ -91,11 +91,11 @@ describe('ProductionAssembler', () => {
   });
 
   describe('assembleWaterConsumptions', () => {
-    it('creates hourly water consumption process steps with calculated batch amounts', () => {
-      // Act
+    it('should create hourly water consumption process steps with calculated batch amounts when called', () => {
+      // act
       const actualResult = assembleWaterConsumptions(createProduction, productionUnitsForId);
 
-      // Assert
+      // assert
       expect(actualResult).toHaveLength(2);
       expect(actualResult.map((processStep) => processStep.batch.amount)).toEqual([45, 45]);
       expect(actualResult.every((processStep) => processStep.type === ProcessType.WATER_CONSUMPTION)).toBe(true);
@@ -106,8 +106,8 @@ describe('ProductionAssembler', () => {
   });
 
   describe('assembleHydrogenProductions', () => {
-    it('creates hydrogen process steps with hourly predecessor batches and storage unit reference', () => {
-      // Arrange
+    it('should create hydrogen process steps with hourly predecessor batches and storage unit reference when called', () => {
+      // arrange
       const powerProductions: ProcessStepEntity[] = [
         ProcessStepEntityFixture.createPowerProduction({
           id: 'power-1',
@@ -155,7 +155,7 @@ describe('ProductionAssembler', () => {
         }),
       ];
 
-      // Act
+      // act
       const actualResult = assembleHydrogenProductions(
         createProduction,
         powerProductions,
@@ -163,7 +163,7 @@ describe('ProductionAssembler', () => {
         productionUnitsForId,
       );
 
-      // Assert
+      // assert
       expect(actualResult).toHaveLength(2);
       expect(actualResult.map((processStep) => processStep.batch.amount)).toEqual([15, 15]);
       expect(actualResult.every((processStep) => processStep.type === ProcessType.HYDROGEN_PRODUCTION)).toBe(true);

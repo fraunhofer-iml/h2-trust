@@ -30,13 +30,18 @@ describe('FileDownloadController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('delegates the requested file ids and response to FileDownloadService', async () => {
-    const dto = DownloadFilesDtoFixture.create({ ids: ['first.csv', 'second.csv'] });
-    const response = {} as Response;
+  it('should delegate the requested file ids and response to FileDownloadService when downloading files', async () => {
+    // arrange
+    const givenDto = DownloadFilesDtoFixture.create({ ids: ['first.csv', 'second.csv'] });
+    const givenResponse = {} as Response;
 
     fileDownloadServiceMock.downloadFilesAsZip.mockResolvedValue(undefined);
 
-    await expect(controller.findAll(dto, response)).resolves.toBeUndefined();
-    expect(fileDownloadServiceMock.downloadFilesAsZip).toHaveBeenCalledWith(response, dto.ids);
+    // act
+    const actualResult = await controller.findAll(givenDto, givenResponse);
+
+    // assert
+    expect(actualResult).toBeUndefined();
+    expect(fileDownloadServiceMock.downloadFilesAsZip).toHaveBeenCalledWith(givenResponse, givenDto.ids);
   });
 });

@@ -33,14 +33,17 @@ describe('UserService', () => {
     expect(service).toBeDefined();
   });
 
-  it('readUserWithCompany should request the user by id and map the response', async () => {
-    const user = UserEntityFixture.createPowerUser({ id: 'user-id-1' });
+  it('should request the user by id and map the response when reading a user with company', async () => {
+    // arrange
+    const expectedUser = UserEntityFixture.createPowerUser({ id: 'user-id-1' });
 
-    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(user));
+    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(expectedUser));
 
-    const actualResponse: UserDetailsDto = await service.readUserWithCompany(user.id);
+    // act
+    const actualResult: UserDetailsDto = await service.readUserWithCompany(expectedUser.id);
 
-    expect(generalServiceMock.send).toHaveBeenCalledWith(UserMessagePatterns.READ, new ReadByIdPayload(user.id));
-    expect(actualResponse).toEqual(UserDetailsDto.fromEntity(user));
+    // assert
+    expect(generalServiceMock.send).toHaveBeenCalledWith(UserMessagePatterns.READ, new ReadByIdPayload(expectedUser.id));
+    expect(actualResult).toEqual(UserDetailsDto.fromEntity(expectedUser));
   });
 });

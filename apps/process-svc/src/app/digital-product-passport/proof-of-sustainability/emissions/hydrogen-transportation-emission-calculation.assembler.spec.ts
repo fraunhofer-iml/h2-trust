@@ -13,8 +13,8 @@ import { assembleHydrogenTransportationEmissionCalculations } from './hydrogen-t
 
 describe('HydrogenTransportationEmissionCalculationAssembler', () => {
   describe('assembleHydrogenTransportationEmissionCalculations', () => {
-    it('computes emissions for provenance with hydrogen bottling only', () => {
-      // Arrange
+    it('should compute emissions for provenance with hydrogen bottling only when called', () => {
+      // arrange
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
       const transportationDetails: TransportationDetailsEntity = TransportationDetailsEntityFixture.createPipeline();
       const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation({
@@ -22,10 +22,10 @@ describe('HydrogenTransportationEmissionCalculationAssembler', () => {
       });
       const givenProvenance = new ProvenanceEntity(givenHydrogenTransportation, [], givenHydrogenBottling);
 
-      // Act
+      // act
       const actualResult = assembleHydrogenTransportationEmissionCalculations(givenProvenance)[0];
 
-      // Assert
+      // assert
       expect(actualResult).toBeDefined();
       expect(actualResult.result).toBe(0); // TODO-MP: batchId or processStepId -> DUHGW-314
       expect(actualResult.calculationTopic).toEqual(CalculationTopic.HYDROGEN_TRANSPORTATION);

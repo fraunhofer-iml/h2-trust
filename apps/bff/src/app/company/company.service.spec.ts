@@ -32,18 +32,21 @@ describe('CompanyService', () => {
     expect(service).toBeDefined();
   });
 
-  it('findAll should request all companies and map the response to dtos', async () => {
-    const companies = [
+  it('should request all companies and map the response to DTOs when finding all companies', async () => {
+    // arrange
+    const expectedCompanies = [
       CompanyEntityFixture.createPowerProducer({ id: 'company-1' }),
       CompanyEntityFixture.createHydrogenProducer({ id: 'company-2' }),
       CompanyEntityFixture.createPowerProducer({ id: 'company-3', name: 'Second Power Company' }),
     ];
 
-    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(companies));
+    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(expectedCompanies));
 
-    const actualResponse: CompanyDto[] = await service.findAll();
+    // act
+    const actualResult: CompanyDto[] = await service.findAll();
 
+    // assert
     expect(generalServiceMock.send).toHaveBeenCalledWith(CompanyMessagePatterns.READ, {});
-    expect(actualResponse).toEqual(companies.map(CompanyDto.fromEntity));
+    expect(actualResult).toEqual(expectedCompanies.map(CompanyDto.fromEntity));
   });
 });

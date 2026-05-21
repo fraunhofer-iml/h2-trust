@@ -42,73 +42,97 @@ describe('PowerPurchaseAgreementService', () => {
     expect(service).toBeDefined();
   });
 
-  it('readByUserAndStatus should send the filtered payload and map the response', async () => {
-    const userId = 'user-id-1';
-    const status = PowerPurchaseAgreementStatus.APPROVED;
-    const agreements = [PowerPurchaseAgreementEntityFixture.create({ id: 'ppa-1', status })];
+  it('should send the filtered payload and map the response when reading agreements by user and status', async () => {
+    // arrange
+    const givenUserId = 'user-id-1';
+    const givenStatus = PowerPurchaseAgreementStatus.APPROVED;
+    const expectedAgreements = [PowerPurchaseAgreementEntityFixture.create({ id: 'ppa-1', status: givenStatus })];
 
-    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(agreements));
+    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(expectedAgreements));
 
-    const actualResponse = await service.readByUserAndStatus(userId, status);
+    // act
+    const actualResult = await service.readByUserAndStatus(givenUserId, givenStatus);
 
+    // assert
     expect(generalServiceMock.send).toHaveBeenCalledWith(
       PowerPurchaseAgreementPatterns.READ,
-      new ReadPowerPurchaseAgreementsPayload(userId, undefined, status),
+      new ReadPowerPurchaseAgreementsPayload(givenUserId, undefined, givenStatus),
     );
-    expect(actualResponse).toEqual(agreements.map(PpaDto.fromEntity));
+    expect(actualResult).toEqual(expectedAgreements.map(PpaDto.fromEntity));
   });
 
-  it('readAll should include role and optional status in the request payload', async () => {
-    const userId = 'user-id-1';
-    const role = PpaRequestRole.RECEIVER;
-    const status = PowerPurchaseAgreementStatus.PENDING;
-    const agreements = [PowerPurchaseAgreementEntityFixture.create({ id: 'ppa-request-1', status })];
+  it('should include role and optional status in the request payload when reading all PPA requests', async () => {
+    // arrange
+    const givenUserId = 'user-id-1';
+    const givenRole = PpaRequestRole.RECEIVER;
+    const givenStatus = PowerPurchaseAgreementStatus.PENDING;
+    const expectedAgreements = [PowerPurchaseAgreementEntityFixture.create({ id: 'ppa-request-1', status: givenStatus })];
 
-    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(agreements));
+    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(expectedAgreements));
 
-    const actualResponse = await service.readAll(userId, role, status);
+    // act
+    const actualResult = await service.readAll(givenUserId, givenRole, givenStatus);
 
+    // assert
     expect(generalServiceMock.send).toHaveBeenCalledWith(
       PowerPurchaseAgreementPatterns.READ,
-      new ReadPowerPurchaseAgreementsPayload(userId, role, status),
+      new ReadPowerPurchaseAgreementsPayload(givenUserId, givenRole, givenStatus),
     );
-    expect(actualResponse).toEqual(agreements.map(PpaRequestDto.fromEntity));
+    expect(actualResult).toEqual(expectedAgreements.map(PpaRequestDto.fromEntity));
   });
 
-  it('createPPA should build the create payload from the dto and requesting user', async () => {
-    const userId = 'user-id-1';
-    const dto = PpaRequestCreateDtoFixture.create();
-    const agreement = PowerPurchaseAgreementEntityFixture.create({
+  it('should build the create payload from the DTO when creating a PPA request', async () => {
+    // arrange
+    const givenUserId = 'user-id-1';
+    const givenDto = PpaRequestCreateDtoFixture.create();
+    const expectedAgreement = PowerPurchaseAgreementEntityFixture.create({
       id: 'created-ppa-1',
       requestedCompany: PowerPurchaseAgreementEntityFixture.create().requestedCompany,
       status: PowerPurchaseAgreementStatus.PENDING,
     });
 
-    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(agreement));
+    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(expectedAgreement));
 
-    const actualResponse = await service.createPPA(dto, userId);
+    // act
+    const actualResult = await service.createPPA(givenDto, givenUserId);
 
+    // assert
     expect(generalServiceMock.send).toHaveBeenCalledWith(
       PowerPurchaseAgreementPatterns.CREATE,
-      new CreatePowerPurchaseAgreementsPayload(dto.companyId, dto.powerProductionType, dto.validFrom, dto.validTo, userId),
+      new CreatePowerPurchaseAgreementsPayload(
+        givenDto.companyId,
+        givenDto.powerProductionType,
+        givenDto.validFrom,
+        givenDto.validTo,
+        givenUserId,
+      ),
     );
-    expect(actualResponse).toEqual(PpaRequestDto.fromEntity(agreement));
+    expect(actualResult).toEqual(PpaRequestDto.fromEntity(expectedAgreement));
   });
 
-  it('updatePPA should send the decision payload and map the updated request', async () => {
-    const userId = 'user-id-1';
-    const ppaId = 'ppa-id-1';
-    const dto = PpaRequestDecisionDtoFixture.create();
-    const agreement = PowerPurchaseAgreementEntityFixture.create({ id: ppaId, status: dto.decision });
+  it('should send the decision payload and map the updated request when updating a PPA request', async () => {
+    // arrange
+    const givenUserId = 'user-id-1';
+    const givenPpaId = 'ppa-id-1';
+    const givenDto = PpaRequestDecisionDtoFixture.create();
+    const expectedAgreement = PowerPurchaseAgreementEntityFixture.create({ id: givenPpaId, status: givenDto.decision });
 
-    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(agreement));
+    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(expectedAgreement));
 
-    const actualResponse = await service.updatePPA(dto, ppaId, userId);
+    // act
+    const actualResult = await service.updatePPA(givenDto, givenPpaId, givenUserId);
 
+    // assert
     expect(generalServiceMock.send).toHaveBeenCalledWith(
       PowerPurchaseAgreementPatterns.UPDATE,
-      new UpdatePowerPurchaseAgreementPayload(ppaId, dto.decision, userId, dto.powerProductionUnitId, dto.comment),
+      new UpdatePowerPurchaseAgreementPayload(
+        givenPpaId,
+        givenDto.decision,
+        givenUserId,
+        givenDto.powerProductionUnitId,
+        givenDto.comment,
+      ),
     );
-    expect(actualResponse).toEqual(PpaRequestDto.fromEntity(agreement));
+    expect(actualResult).toEqual(PpaRequestDto.fromEntity(expectedAgreement));
   });
 });

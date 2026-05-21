@@ -82,8 +82,8 @@ describe('ProductionCreationService', () => {
   });
 
   describe('createAndPersistProductions', () => {
-    it('processes productions across multiple chunks using the configured chunk size', async () => {
-      // Arrange
+    it('should process productions across multiple chunks using the configured chunk size when called', async () => {
+      // arrange
       const localConfigurationServiceMock = {
         getProcessSvcConfiguration: jest.fn().mockReturnValue({ productionChunkSize: 1 }),
       };
@@ -217,13 +217,13 @@ describe('ProductionCreationService', () => {
         .mockReturnValueOnce(RfnboType.RFNBO_READY)
         .mockReturnValueOnce(RfnboType.NON_CERTIFIABLE);
 
-      // Act
+      // act
       const actualResult = await localService.createAndPersistProductions(
         [firstCreateProduction, secondCreateProduction],
         givenProductionUnitsForId,
       );
 
-      // Assert
+      // assert
       expect(processStepServiceMock.createManyProcessSteps).toHaveBeenCalledTimes(4);
       expect(digitalProductPassportServiceMock.getRfnboType).toHaveBeenCalledTimes(2);
       expect(hydrogenToPersist[0].batch.qualityDetails.rfnboType).toBe(RfnboType.RFNBO_READY);
@@ -238,8 +238,8 @@ describe('ProductionCreationService', () => {
       ]);
     });
 
-    it('persists power and water first, enriches hydrogen with RFNBO type, then persists hydrogen', async () => {
-      // Arrange
+    it('should persist power and water first, enrich hydrogen with RFNBO type, and then persist hydrogen when called', async () => {
+      // arrange
       const givenCreateProduction = {
         productionStartedAt: new Date('2026-01-01T01:00:00Z'),
         productionEndedAt: new Date('2026-01-01T01:59:59Z'),
@@ -301,10 +301,10 @@ describe('ProductionCreationService', () => {
         .mockResolvedValueOnce([givenPersistedHydrogen]);
       digitalProductPassportServiceMock.getRfnboType.mockReturnValue(RfnboType.RFNBO_READY);
 
-      // Act
+      // act
       const actualResult = await service.createAndPersistProductions([givenCreateProduction], givenProductionUnitsForId);
 
-      // Assert
+      // assert
       expect(processStepServiceMock.createManyProcessSteps).toHaveBeenCalledTimes(2);
       expect(processStepServiceMock.createManyProcessSteps.mock.calls[0][0].processSteps).toEqual([
         givenPowerToPersist,
@@ -318,8 +318,8 @@ describe('ProductionCreationService', () => {
       expect(actualResult).toEqual([givenPersistedPower, givenPersistedWater, givenPersistedHydrogen]);
     });
 
-    it('throws when assembled power and water do not match the given productions 1:1', async () => {
-      // Arrange
+    it('should throw when assembled power and water do not match the given productions 1:1', async () => {
+      // arrange
       const givenCreateProduction = {
         productionStartedAt: new Date('2026-01-01T01:00:00Z'),
         productionEndedAt: new Date('2026-01-01T01:59:59Z'),
@@ -338,15 +338,15 @@ describe('ProductionCreationService', () => {
       assemblePowerProductionsMock.mockReturnValue([]);
       assembleWaterConsumptionsMock.mockReturnValue([ProcessStepEntityFixture.createWaterConsumption()]);
 
-      // Act & Assert
+      // act & assert
       await expect(service.createAndPersistProductions([givenCreateProduction], new Map())).rejects.toThrow(
         'Expected 1:1 relation between given productions and created process steps, but got 0 power and 1 water for 1 productions.',
       );
       expect(processStepServiceMock.createManyProcessSteps).not.toHaveBeenCalled();
     });
 
-    it('throws when persisted power and water counts differ', async () => {
-      // Arrange
+    it('should throw when persisted power and water counts differ', async () => {
+      // arrange
       const givenCreateProduction = {
         productionStartedAt: new Date('2026-01-01T01:00:00Z'),
         productionEndedAt: new Date('2026-01-01T01:59:59Z'),
@@ -366,14 +366,14 @@ describe('ProductionCreationService', () => {
       assembleWaterConsumptionsMock.mockReturnValue([ProcessStepEntityFixture.createWaterConsumption()]);
       processStepServiceMock.createManyProcessSteps.mockResolvedValue([ProcessStepEntityFixture.createPowerProduction()]);
 
-      // Act & Assert
+      // act & assert
       await expect(service.createAndPersistProductions([givenCreateProduction], new Map())).rejects.toThrow(
         'Expected 1:1 relation between power and water process steps, but got 1 power and 0 water.',
       );
     });
 
-    it('throws when hydrogen predecessors cannot be resolved back to persisted power and water process steps', async () => {
-      // Arrange
+    it('should throw when hydrogen predecessors cannot be resolved back to persisted power and water process steps', async () => {
+      // arrange
       const givenCreateProduction = new CreateProductionEntity(
         new Date('2026-01-01T01:00:00Z'),
         new Date('2026-01-01T01:59:59Z'),
@@ -412,7 +412,7 @@ describe('ProductionCreationService', () => {
       assembleHydrogenProductionsMock.mockReturnValue([hydrogenWithUnknownPredecessor]);
       processStepServiceMock.createManyProcessSteps.mockResolvedValueOnce([givenPersistedPower, givenPersistedWater]);
 
-      // Act & Assert
+      // act & assert
       await expect(service.createAndPersistProductions([givenCreateProduction], new Map())).rejects.toThrow(
         'powerProduction',
       );

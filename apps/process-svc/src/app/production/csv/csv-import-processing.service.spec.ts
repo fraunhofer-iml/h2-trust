@@ -79,8 +79,8 @@ describe('CsvImportProcessingService', () => {
   });
 
   describe('parseAndUploadFiles', () => {
-    it('parses files, uploads them to both storages, and returns proof metadata', async () => {
-      // Arrange
+    it('should parse files, upload them to both storages, and return proof metadata when called', async () => {
+      // arrange
       const givenBuffer = Buffer.from('time,amount\n2026-01-01T00:00:00Z,12');
       const givenImport = new UnitFileImport('unit-1', 'expected-hash', givenBuffer.toString('base64'), CsvContentType.POWER);
       const givenAccountingPeriods = [
@@ -91,10 +91,10 @@ describe('CsvImportProcessingService', () => {
       parseAccountingPeriodCsvBufferMock.mockResolvedValue(givenAccountingPeriods);
       decentralizedStorageServiceMock.uploadFile.mockResolvedValue('cid-1');
 
-      // Act
+      // act
       const actualResult = await service.parseAndUploadFiles([givenImport], 'Europe/Berlin');
 
-      // Assert
+      // assert
       expect(parseAccountingPeriodCsvBufferMock).toHaveBeenCalledWith(
         givenBuffer,
         ['time', 'amount'],
@@ -121,8 +121,8 @@ describe('CsvImportProcessingService', () => {
       ]);
     });
 
-    it('throws when the computed file hash does not match the expected hash', async () => {
-      // Arrange
+    it('should throw when the computed file hash does not match the expected hash', async () => {
+      // arrange
       const givenImport = new UnitFileImport(
         'unit-1',
         'expected-hash',
@@ -132,7 +132,7 @@ describe('CsvImportProcessingService', () => {
 
       hashBufferMock.mockReturnValue('different-hash');
 
-      // Act & Assert
+      // act & assert
       await expect(service.parseAndUploadFiles([givenImport], 'Europe/Berlin')).rejects.toThrow(
         'File integrity check failed for unit unit-1: expected hash expected-hash but computed different-hash',
       );
@@ -140,8 +140,8 @@ describe('CsvImportProcessingService', () => {
       expect(decentralizedStorageServiceMock.uploadFile).not.toHaveBeenCalled();
     });
 
-    it('throws when the parsed CSV does not contain any valid accounting periods', async () => {
-      // Arrange
+    it('should throw when the parsed CSV does not contain any valid accounting periods', async () => {
+      // arrange
       const givenImport = new UnitFileImport(
         'unit-1',
         'expected-hash',
@@ -152,7 +152,7 @@ describe('CsvImportProcessingService', () => {
       hashBufferMock.mockReturnValue('expected-hash');
       parseAccountingPeriodCsvBufferMock.mockResolvedValue([]);
 
-      // Act & Assert
+      // act & assert
       await expect(service.parseAndUploadFiles([givenImport], 'Europe/Berlin')).rejects.toThrow(
         `${CsvContentType.HYDROGEN} production file does not contain any valid items.`,
       );
@@ -160,8 +160,8 @@ describe('CsvImportProcessingService', () => {
       expect(decentralizedStorageServiceMock.uploadFile).not.toHaveBeenCalled();
     });
 
-    it('returns a null CID when decentralized storage is not configured', async () => {
-      // Arrange
+    it('should return a null CID when decentralized storage is not configured', async () => {
+      // arrange
       service = await createService(false);
 
       const givenBuffer = Buffer.from('time,amount,power\n2026-01-01T00:00:00Z,12,5');
@@ -173,18 +173,18 @@ describe('CsvImportProcessingService', () => {
       hashBufferMock.mockReturnValue('expected-hash');
       parseAccountingPeriodCsvBufferMock.mockResolvedValue(givenAccountingPeriods);
 
-      // Act
+      // act
       const actualResult = await service.parseAndUploadFiles([givenImport], 'Europe/Berlin');
 
-      // Assert
+      // assert
       expect(actualResult[0].cid).toBeNull();
       expect(centralizedStorageServiceMock.uploadFile).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('createCsvDocumentInputs', () => {
-    it('aggregates start, end, and amount for each parsed import', () => {
-      // Arrange
+    it('should aggregate start, end, and amount for each parsed import when called', () => {
+      // arrange
       const givenParsedImports: ParsedImport[] = [
         {
           periods: new UnitAccountingPeriods('unit-1', [
@@ -198,10 +198,10 @@ describe('CsvImportProcessingService', () => {
         },
       ];
 
-      // Act
+      // act
       const actualResult = service.createCsvDocumentInputs(givenParsedImports);
 
-      // Assert
+      // assert
       expect(actualResult).toEqual([
         {
           type: CsvContentType.POWER,
@@ -213,7 +213,7 @@ describe('CsvImportProcessingService', () => {
       ]);
     });
 
-    it('throws when called with an empty import list', () => {
+    it('should throw when called with an empty import list', () => {
       expect(() => service.createCsvDocumentInputs([])).toThrow(
         'createCsvDocumentInputs called with empty parsedImports',
       );

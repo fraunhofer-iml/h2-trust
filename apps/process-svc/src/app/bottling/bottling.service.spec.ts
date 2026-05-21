@@ -77,8 +77,8 @@ describe('BottlingService', () => {
   });
 
   describe('readProcessStepsByTypesAndActiveAndOwner', () => {
-    it('delegates to ProcessStepService', async () => {
-      // Arrange
+    it('should delegate to ProcessStepService when called', async () => {
+      // arrange
       const givenPayload = new ReadProcessStepsByTypesAndActiveAndOwnerPayload(
         [ProcessType.HYDROGEN_BOTTLING],
         true,
@@ -88,48 +88,48 @@ describe('BottlingService', () => {
 
       processStepServiceMock.readProcessStepsByTypesAndActiveAndOwner.mockResolvedValue(givenProcessSteps);
 
-      // Act
+      // act
       const actualResult = await service.readProcessStepsByTypesAndActiveAndOwner(givenPayload);
 
-      // Assert
+      // assert
       expect(processStepServiceMock.readProcessStepsByTypesAndActiveAndOwner).toHaveBeenCalledWith(givenPayload);
       expect(actualResult).toEqual(givenProcessSteps);
     });
   });
 
   describe('readProcessStepsByPredecessorTypesAndOwner', () => {
-    it('throws when page number is not greater than zero', async () => {
-      // Arrange
+    it('should throw when page number is not greater than zero', async () => {
+      // arrange
       const givenPayload = new ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload(
         [ProcessType.HYDROGEN_PRODUCTION],
         'company-1',
         new ProductionDataFilter(0, 10),
       );
 
-      // Act & Assert
+      // act & assert
       await expect(service.readProcessStepsByPredecessorTypesAndOwner(givenPayload)).rejects.toThrow(
         'pageNumber must be greater than 0, got 0',
       );
       expect(processStepServiceMock.readPaginatedProcessStepsByPredecessorTypesAndOwner).not.toHaveBeenCalled();
     });
 
-    it('throws when page size is not greater than zero', async () => {
-      // Arrange
+    it('should throw when page size is not greater than zero', async () => {
+      // arrange
       const givenPayload = new ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload(
         [ProcessType.HYDROGEN_PRODUCTION],
         'company-1',
         new ProductionDataFilter(1, 0),
       );
 
-      // Act & Assert
+      // act & assert
       await expect(service.readProcessStepsByPredecessorTypesAndOwner(givenPayload)).rejects.toThrow(
         'pageSize must be greater than 0, got 0',
       );
       expect(processStepServiceMock.readPaginatedProcessStepsByPredecessorTypesAndOwner).not.toHaveBeenCalled();
     });
 
-    it('delegates to ProcessStepService for valid pagination', async () => {
-      // Arrange
+    it('should delegate to ProcessStepService for valid pagination when called', async () => {
+      // arrange
       const givenPayload = new ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload(
         [ProcessType.HYDROGEN_PRODUCTION],
         'company-1',
@@ -144,10 +144,10 @@ describe('BottlingService', () => {
 
       processStepServiceMock.readPaginatedProcessStepsByPredecessorTypesAndOwner.mockResolvedValue(expected);
 
-      // Act
+      // act
       const actualResult = await service.readProcessStepsByPredecessorTypesAndOwner(givenPayload);
 
-      // Assert
+      // assert
       expect(processStepServiceMock.readPaginatedProcessStepsByPredecessorTypesAndOwner).toHaveBeenCalledWith(
         givenPayload,
       );
@@ -156,8 +156,8 @@ describe('BottlingService', () => {
   });
 
   describe('createHydrogenBottlingProcessStep', () => {
-    it(`creates bottling process step`, async () => {
-      // Arrange
+    it(`should create a bottling process step when called`, async () => {
+      // arrange
       const givenPayload = new CreateHydrogenBottlingPayload(
         100,
         'owner-1',
@@ -181,10 +181,10 @@ describe('BottlingService', () => {
       processStepServiceMock.createProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
       processStepServiceMock.readProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
 
-      // Act
+      // act
       const actualResult = await service.createHydrogenBottlingProcessStep(givenPayload);
 
-      // Assert
+      // assert
       expect(processStepServiceMock.readAllProcessStepsFromStorageUnit).toHaveBeenCalledWith(
         givenPayload.hydrogenStorageUnitId,
       );
@@ -193,8 +193,8 @@ describe('BottlingService', () => {
       expect(actualResult.id).toBe(givenCreatedBottlingProcessStep.id);
     });
 
-    it('creates bottling process step for non-certifiable hydrogen using computed composition', async () => {
-      // Arrange
+    it('should create a bottling process step for non-certifiable hydrogen when using the computed composition', async () => {
+      // arrange
       const givenPayload = new CreateHydrogenBottlingPayload(
         50,
         'owner-1',
@@ -277,10 +277,10 @@ describe('BottlingService', () => {
         .mockResolvedValueOnce(givenCreatedBottlingProcessStep);
       processStepServiceMock.readProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
 
-      // Act
+      // act
       const actualResult = await service.createHydrogenBottlingProcessStep(givenPayload);
 
-      // Assert
+      // assert
       expect(processStepServiceMock.setBatchesInactive).toHaveBeenCalledWith([
         givenRfnboReadyStorageProcessStep.batch.id,
         givenNonCertifiableStorageProcessStep.batch.id,
@@ -300,8 +300,8 @@ describe('BottlingService', () => {
       expect(actualResult).toEqual(givenCreatedBottlingProcessStep);
     });
 
-    it('throws error when no process steps found in storage unit', async () => {
-      // Arrange
+    it('should throw error when no process steps found in storage unit', async () => {
+      // arrange
       const givenPayload = new CreateHydrogenBottlingPayload(
         100,
         'owner-1',
@@ -315,12 +315,12 @@ describe('BottlingService', () => {
 
       const expectedErrorMessage = `No process steps found in storage unit '${givenPayload.hydrogenStorageUnitId}'`;
 
-      // Act & Assert
+      // act & assert
       await expect(service.createHydrogenBottlingProcessStep(givenPayload)).rejects.toThrow(expectedErrorMessage);
     });
 
-    it('throws when uploaded file has no buffer', async () => {
-      // Arrange
+    it('should throw when uploaded file has no buffer', async () => {
+      // arrange
       const givenFile = { originalname: 'test.pdf' } as Express.Multer.File;
       const givenPayload = new CreateHydrogenBottlingPayload(
         100,
@@ -343,14 +343,14 @@ describe('BottlingService', () => {
       processStepServiceMock.setBatchesInactive.mockResolvedValue({ count: 1 });
       processStepServiceMock.createProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
 
-      // Act & Assert
+      // act & assert
       await expect(service.createHydrogenBottlingProcessStep(givenPayload)).rejects.toThrow('file.buffer');
       expect(storageServiceMock.uploadFile).not.toHaveBeenCalled();
       expect(documentRepositoryMock.addDocumentToProcessStep).not.toHaveBeenCalled();
     });
 
-    it('uploads files when provided in payload', async () => {
-      // Arrange
+    it('should upload files when provided in the payload', async () => {
+      // arrange
       const givenFile = { originalname: 'test.pdf', buffer: Buffer.from('test') } as Express.Multer.File;
       const givenPayload = new CreateHydrogenBottlingPayload(
         100,
@@ -378,10 +378,10 @@ describe('BottlingService', () => {
       storageServiceMock.uploadFile.mockResolvedValue(givenFile.originalname);
       documentRepositoryMock.addDocumentToProcessStep.mockResolvedValue({});
 
-      // Act
+      // act
       await service.createHydrogenBottlingProcessStep(givenPayload);
 
-      // Assert
+      // assert
       expect(storageServiceMock.uploadFile).toHaveBeenCalledWith(
         givenFile.originalname,
         Buffer.from(givenFile.buffer),

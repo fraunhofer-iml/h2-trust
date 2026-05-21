@@ -17,27 +17,27 @@ jest.mock('node:stream/promises', () => ({
   pipeline: jest.fn(),
 }));
 
-const addReadStream = jest.fn();
-const end = jest.fn();
-const outputStream = new PassThrough();
+const givenAddReadStream = jest.fn();
+const givenEnd = jest.fn();
+const givenOutputStream = new PassThrough();
 
 jest.mock('yazl', () => ({
   ZipFile: jest.fn().mockImplementation(() => ({
-    addReadStream,
-    end,
-    outputStream,
+    addReadStream: givenAddReadStream,
+    end: givenEnd,
+    outputStream: givenOutputStream,
   })),
 }));
 
 describe('FileDownloadService', () => {
   let service: FileDownloadService;
 
-  const storageMock = {
+  const givenStorageMock = {
     fileExists: jest.fn(),
     downloadFile: jest.fn(),
   };
 
-  const responseMock = {
+  const givenResponseMock = {
     setHeader: jest.fn(),
     status: jest.fn(),
     end: jest.fn(),
@@ -45,10 +45,10 @@ describe('FileDownloadService', () => {
   };
 
   beforeEach(() => {
-    responseMock.status.mockReturnValue(responseMock);
-    responseMock.headersSent = false;
+    givenResponseMock.status.mockReturnValue(givenResponseMock);
+    givenResponseMock.headersSent = false;
 
-    service = new FileDownloadService(storageMock as unknown as CentralizedStorageService);
+    service = new FileDownloadService(givenStorageMock as unknown as CentralizedStorageService);
   });
 
   afterEach(() => {
@@ -59,58 +59,72 @@ describe('FileDownloadService', () => {
     expect(service).toBeDefined();
   });
 
-  it('throws when at least one requested file is missing', async () => {
-    storageMock.fileExists.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
+  it('should throw when at least one requested file is missing', async () => {
+    // arrange
+    givenStorageMock.fileExists.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
 
-    await expect(service.downloadFilesAsZip(responseMock as unknown as Response, ['first.csv', 'missing.csv'])).rejects.toThrow(
+    // act
+    const actualResult = service.downloadFilesAsZip(givenResponseMock as unknown as Response, ['first.csv', 'missing.csv']);
+
+    // assert
+    await expect(actualResult).rejects.toThrow(
       new NotFoundException('Missing files: missing.csv'),
     );
 
-    expect(storageMock.downloadFile).not.toHaveBeenCalled();
+    expect(givenStorageMock.downloadFile).not.toHaveBeenCalled();
     expect(pipeline).not.toHaveBeenCalled();
   });
 
-  it('adds each file to the zip stream and pipes the archive to the response', async () => {
-    const firstFileStream = Readable.from(['first']);
-    const secondFileStream = Readable.from(['second']);
+  it('should add each file to the zip stream and pipe the archive to the response when all files exist', async () => {
+    // arrange
+    const givenFirstFileStream = Readable.from(['first']);
+    const givenSecondFileStream = Readable.from(['second']);
 
-    storageMock.fileExists.mockResolvedValue(true);
-    storageMock.downloadFile.mockResolvedValueOnce(firstFileStream).mockResolvedValueOnce(secondFileStream);
+    givenStorageMock.fileExists.mockResolvedValue(true);
+    givenStorageMock.downloadFile.mockResolvedValueOnce(givenFirstFileStream).mockResolvedValueOnce(givenSecondFileStream);
     jest.mocked(pipeline).mockResolvedValue(undefined);
 
-    await service.downloadFilesAsZip(responseMock as unknown as Response, ['first.csv', 'second.csv']);
+    // act
+    await service.downloadFilesAsZip(givenResponseMock as unknown as Response, ['first.csv', 'second.csv']);
 
-    expect(responseMock.setHeader).toHaveBeenCalledWith('Content-Type', 'application/zip');
-    expect(storageMock.downloadFile).toHaveBeenNthCalledWith(1, 'first.csv');
-    expect(storageMock.downloadFile).toHaveBeenNthCalledWith(2, 'second.csv');
-    expect(addReadStream).toHaveBeenNthCalledWith(1, firstFileStream, 'first.csv');
-    expect(addReadStream).toHaveBeenNthCalledWith(2, secondFileStream, 'second.csv');
-    expect(end).toHaveBeenCalledTimes(1);
-    expect(pipeline).toHaveBeenCalledWith(outputStream, responseMock);
-    expect(responseMock.status).not.toHaveBeenCalled();
-    expect(responseMock.end).not.toHaveBeenCalled();
+    // assert
+    expect(givenResponseMock.setHeader).toHaveBeenCalledWith('Content-Type', 'application/zip');
+    expect(givenStorageMock.downloadFile).toHaveBeenNthCalledWith(1, 'first.csv');
+    expect(givenStorageMock.downloadFile).toHaveBeenNthCalledWith(2, 'second.csv');
+    expect(givenAddReadStream).toHaveBeenNthCalledWith(1, givenFirstFileStream, 'first.csv');
+    expect(givenAddReadStream).toHaveBeenNthCalledWith(2, givenSecondFileStream, 'second.csv');
+    expect(givenEnd).toHaveBeenCalledTimes(1);
+    expect(pipeline).toHaveBeenCalledWith(givenOutputStream, givenResponseMock);
+    expect(givenResponseMock.status).not.toHaveBeenCalled();
+    expect(givenResponseMock.end).not.toHaveBeenCalled();
   });
 
-  it('returns a 500 response when piping the zip fails before headers are sent', async () => {
-    storageMock.fileExists.mockResolvedValue(true);
-    storageMock.downloadFile.mockResolvedValue(Readable.from(['file']));
+  it('should return a 500 response when piping the zip fails before headers are sent', async () => {
+    // arrange
+    givenStorageMock.fileExists.mockResolvedValue(true);
+    givenStorageMock.downloadFile.mockResolvedValue(Readable.from(['file']));
     jest.mocked(pipeline).mockRejectedValue(new Error('stream failed'));
 
-    await service.downloadFilesAsZip(responseMock as unknown as Response, ['first.csv']);
+    // act
+    await service.downloadFilesAsZip(givenResponseMock as unknown as Response, ['first.csv']);
 
-    expect(responseMock.status).toHaveBeenCalledWith(500);
-    expect(responseMock.end).toHaveBeenCalledTimes(1);
+    // assert
+    expect(givenResponseMock.status).toHaveBeenCalledWith(500);
+    expect(givenResponseMock.end).toHaveBeenCalledTimes(1);
   });
 
-  it('does not override the response when piping fails after headers were sent', async () => {
-    storageMock.fileExists.mockResolvedValue(true);
-    storageMock.downloadFile.mockResolvedValue(Readable.from(['file']));
-    responseMock.headersSent = true;
+  it('should not override the response when piping fails after headers were sent', async () => {
+    // arrange
+    givenStorageMock.fileExists.mockResolvedValue(true);
+    givenStorageMock.downloadFile.mockResolvedValue(Readable.from(['file']));
+    givenResponseMock.headersSent = true;
     jest.mocked(pipeline).mockRejectedValue(new Error('stream failed'));
 
-    await service.downloadFilesAsZip(responseMock as unknown as Response, ['first.csv']);
+    // act
+    await service.downloadFilesAsZip(givenResponseMock as unknown as Response, ['first.csv']);
 
-    expect(responseMock.status).not.toHaveBeenCalled();
-    expect(responseMock.end).not.toHaveBeenCalled();
+    // assert
+    expect(givenResponseMock.status).not.toHaveBeenCalled();
+    expect(givenResponseMock.end).not.toHaveBeenCalled();
   });
 });

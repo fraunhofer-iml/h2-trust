@@ -9,25 +9,55 @@
 import { calculateDuration } from './production.utils';
 
 describe('ProductionUtils.calculateDuration', () => {
-  it('should return the difference between start and end in seconds', () => {
-    const actualDuration = calculateDuration(300, 900);
+  it('should return the difference between start and end in seconds when end is after start', () => {
+    // arrange
+    const startedAtInSeconds = 300;
+    const endedAtInSeconds = 900;
 
+    // act
+    const actualDuration = calculateDuration(startedAtInSeconds, endedAtInSeconds);
+
+    // assert
     expect(actualDuration).toBe(600);
   });
 
-  it('should throw if startedAtInSeconds is negative', () => {
-    expect(() => calculateDuration(-1, 10)).toThrow('startedAtInSeconds must be positive');
+  it('should throw when startedAtInSeconds is negative', () => {
+    // arrange
+    const startedAtInSeconds = -1;
+    const endedAtInSeconds = 10;
+
+    // act & assert
+    expect(() => calculateDuration(startedAtInSeconds, endedAtInSeconds)).toThrow('startedAtInSeconds must be positive');
   });
 
-  it('should throw if endedAtInSeconds is negative', () => {
-    expect(() => calculateDuration(1, -10)).toThrow('endedAtInSeconds must be positive');
+  it('should throw when endedAtInSeconds is negative', () => {
+    // arrange
+    const startedAtInSeconds = 1;
+    const endedAtInSeconds = -10;
+
+    // act & assert
+    expect(() => calculateDuration(startedAtInSeconds, endedAtInSeconds)).toThrow('endedAtInSeconds must be positive');
   });
 
-  it('should throw if endedAtInSeconds equals startedAtInSeconds', () => {
-    expect(() => calculateDuration(10, 10)).toThrow('endedAtInSeconds must be greater than startedAtInSeconds');
+  it('should throw when endedAtInSeconds equals startedAtInSeconds', () => {
+    // arrange
+    const startedAtInSeconds = 10;
+    const endedAtInSeconds = 10;
+
+    // act & assert
+    expect(() => calculateDuration(startedAtInSeconds, endedAtInSeconds)).toThrow(
+      'endedAtInSeconds must be greater than startedAtInSeconds',
+    );
   });
 
-  it('should throw if endedAtInSeconds is before startedAtInSeconds', () => {
-    expect(() => calculateDuration(20, 10)).toThrow('endedAtInSeconds must be greater than startedAtInSeconds');
+  it('should throw when endedAtInSeconds is before startedAtInSeconds', () => {
+    // arrange
+    const startedAtInSeconds = 20;
+    const endedAtInSeconds = 10;
+
+    // act & assert
+    expect(() => calculateDuration(startedAtInSeconds, endedAtInSeconds)).toThrow(
+      'endedAtInSeconds must be greater than startedAtInSeconds',
+    );
   });
 });

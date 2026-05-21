@@ -24,7 +24,8 @@ import { assembleHydrogenProductionSection } from './hydrogen-production-section
 
 describe('HydrogenProductionProofOfOriginAssembler', () => {
   describe('assembleHydrogenProductionSection', () => {
-    it('returns section with power supply and water supply classifications', () => {
+    it('should return a section with power and water supply classifications when both inputs are present', () => {
+    // arrange
       const givenHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction();
 
       const productionPowerBatches: ProofOfOriginBatchEntity = ProofOfOriginPowerBatchEntityFixture.create({
@@ -46,8 +47,10 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
         givenHydrogenProduction,
       );
 
+      // act
       const actualResult = assembleHydrogenProductionSection(givenProvenance)[0];
 
+      // assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
       expect(actualResult.classifications).toHaveLength(2);
       expect(actualResult.classifications[0].name).toBe(ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION);
@@ -56,7 +59,8 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
       );
     });
 
-    it('returns section with only power supply classification when no water consumptions', () => {
+    it('should return a section with only power supply classification when no water consumptions are present', () => {
+    // arrange
       const productionChain: ProductionChainEntity = new ProductionChainEntity(
         ProcessStepEntityFixture.createHydrogenBottling(),
         ProcessStepEntityFixture.createHydrogenBottling(),
@@ -72,14 +76,17 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
         productionChain.hydrogenRootProduction,
       );
 
+      // act
       const actualResult = assembleHydrogenProductionSection(givenProvenance)[0];
 
+      // assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
       expect(actualResult.classifications).toHaveLength(2);
       expect(actualResult.classifications[0].name).toBe(ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION);
     });
 
-    it('returns section with only water supply classification when no power productions', () => {
+    it('should return a section with only water supply classification when no power productions are present', () => {
+    // arrange
       const productionChain: ProductionChainEntity = new ProductionChainEntity(
         ProcessStepEntityFixture.createHydrogenBottling(),
         ProcessStepEntityFixture.createHydrogenBottling(),
@@ -95,13 +102,16 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
         productionChain.hydrogenRootProduction,
       );
 
+      // act
       const actualResult = assembleHydrogenProductionSection(givenProvenance)[0];
 
+      // assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
       expect(actualResult.classifications).toHaveLength(2);
     });
 
-    it('returns section with empty classifications when no power productions and no water consumptions', () => {
+    it('should return a section with empty classifications when no power productions and no water consumptions are present', () => {
+    // arrange
       const productionChain: ProductionChainEntity = new ProductionChainEntity(
         ProcessStepEntityFixture.createHydrogenBottling(),
         ProcessStepEntityFixture.createHydrogenBottling(),
@@ -117,8 +127,10 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
         productionChain.hydrogenRootProduction,
       );
 
+      // act
       const actualResult = assembleHydrogenProductionSection(givenProvenance)[0];
 
+      // assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
       expect(actualResult.batches).toEqual([]);
     });

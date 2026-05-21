@@ -63,222 +63,264 @@ describe('UnitService', () => {
 
   it.each([
     {
-      description: 'readPowerProductionUnit should request the unit by id and map the response',
+      description: 'should request the unit by id and map the response when reading a power production unit',
       createUnit: () => PowerProductionUnitEntityFixture.create({ id: 'power-unit-1' }),
       execute: (id: string) => service.readPowerProductionUnit(id),
       map: (unit: ReturnType<typeof PowerProductionUnitEntityFixture.create>) => PowerProductionUnitDto.fromEntity(unit),
     },
     {
-      description: 'readHydrogenProductionUnit should request the unit by id and map the response',
+      description: 'should request the unit by id and map the response when reading a hydrogen production unit',
       createUnit: () => HydrogenProductionUnitEntityFixture.create({ id: 'hydrogen-unit-1' }),
       execute: (id: string) => service.readHydrogenProductionUnit(id),
       map: (unit: ReturnType<typeof HydrogenProductionUnitEntityFixture.create>) =>
         HydrogenProductionUnitDto.fromEntity(unit),
     },
     {
-      description: 'readHydrogenStorageUnit should request the unit by id and map the response',
+      description: 'should request the unit by id and map the response when reading a hydrogen storage unit',
       createUnit: () => HydrogenStorageUnitEntityFixture.create({ id: 'storage-unit-1' }),
       execute: (id: string) => service.readHydrogenStorageUnit(id),
       map: (unit: ReturnType<typeof HydrogenStorageUnitEntityFixture.create>) => HydrogenStorageUnitDto.fromEntity(unit),
     },
   ])('$description', async ({ createUnit, execute, map }) => {
-    const unit = createUnit();
+    // arrange
+    const expectedUnit = createUnit();
 
-    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(unit));
+    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(expectedUnit));
 
-    const actualResponse = await execute(unit.id);
+    // act
+    const actualResult = await execute(expectedUnit.id);
 
-    expect(generalServiceMock.send).toHaveBeenCalledWith(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(unit.id));
-    expect(actualResponse).toEqual(map(unit));
+    // assert
+    expect(generalServiceMock.send).toHaveBeenCalledWith(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(expectedUnit.id));
+    expect(actualResult).toEqual(map(expectedUnit));
   });
 
-  it('readPowerProductionUnits should reject when the user company lookup fails', async () => {
+  it('should reject when the user company lookup fails while reading power production units', async () => {
+  // arrange
     userServiceMock.readUserWithCompany.mockRejectedValue(new Error('user lookup failed'));
 
-    await expect(service.readPowerProductionUnits('user-id-1')).rejects.toThrow('user lookup failed');
+    // act
+    const actualResult = service.readPowerProductionUnits('user-id-1');
 
+    // assert
+    await expect(actualResult).rejects.toThrow('user lookup failed');
     expect(generalServiceMock.send).not.toHaveBeenCalled();
   });
 
-  it('readHydrogenStorageUnit should propagate broker errors', async () => {
+  it('should propagate broker errors when reading a hydrogen storage unit', async () => {
+  // arrange
     generalServiceMock.send.mockImplementation((_pattern, _payload) => throwError(() => new Error('broker failed')));
 
-    await expect(service.readHydrogenStorageUnit('storage-unit-1')).rejects.toThrow('broker failed');
+    // act
+    const actualResult = service.readHydrogenStorageUnit('storage-unit-1');
+
+    // assert
+    await expect(actualResult).rejects.toThrow('broker failed');
   });
 
-  it('readPowerProductionUnits should resolve the owner company and map the units', async () => {
-    const userId = 'user-id-1';
-    const userDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
-    const units = [PowerProductionUnitEntityFixture.create({ id: 'power-unit-1' })];
+  it('should resolve the owner company and map the units when reading power production units', async () => {
+    // arrange
+    const givenUserId = 'user-id-1';
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const expectedUnits = [PowerProductionUnitEntityFixture.create({ id: 'power-unit-1' })];
 
-    userServiceMock.readUserWithCompany.mockResolvedValue(userDetails);
-    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(units));
+    userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
+    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(expectedUnits));
 
-    const actualResponse: PowerProductionOverviewDto[] = await service.readPowerProductionUnits(userId);
+    // act
+    const actualResult: PowerProductionOverviewDto[] = await service.readPowerProductionUnits(givenUserId);
 
-    expect(userServiceMock.readUserWithCompany).toHaveBeenCalledWith(userId);
+    // assert
+    expect(userServiceMock.readUserWithCompany).toHaveBeenCalledWith(givenUserId);
     expect(generalServiceMock.send).toHaveBeenCalledWith(
       UnitMessagePatterns.READ_POWER_PRODUCTION,
-      new ReadByIdPayload(userDetails.company.id),
+      new ReadByIdPayload(givenUserDetails.company.id),
     );
-    expect(actualResponse).toEqual(units.map(PowerProductionOverviewDto.fromEntity));
+    expect(actualResult).toEqual(expectedUnits.map(PowerProductionOverviewDto.fromEntity));
   });
 
-  it('readHydrogenProductionUnits should resolve the owner company and map the units', async () => {
-    const userId = 'user-id-1';
-    const userDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
-    const units = [HydrogenProductionUnitEntityFixture.create({ id: 'hydrogen-unit-1' })];
+  it('should resolve the owner company and map the units when reading hydrogen production units', async () => {
+    // arrange
+    const givenUserId = 'user-id-1';
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const expectedUnits = [HydrogenProductionUnitEntityFixture.create({ id: 'hydrogen-unit-1' })];
 
-    userServiceMock.readUserWithCompany.mockResolvedValue(userDetails);
-    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(units));
+    userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
+    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(expectedUnits));
 
-    const actualResponse: HydrogenProductionOverviewDto[] = await service.readHydrogenProductionUnits(userId);
+    // act
+    const actualResult: HydrogenProductionOverviewDto[] = await service.readHydrogenProductionUnits(givenUserId);
 
-    expect(userServiceMock.readUserWithCompany).toHaveBeenCalledWith(userId);
+    // assert
+    expect(userServiceMock.readUserWithCompany).toHaveBeenCalledWith(givenUserId);
     expect(generalServiceMock.send).toHaveBeenCalledWith(
       UnitMessagePatterns.READ_HYDROGEN_PRODUCTION,
-      new ReadByIdPayload(userDetails.company.id),
+      new ReadByIdPayload(givenUserDetails.company.id),
     );
-    expect(actualResponse).toEqual(units.map(HydrogenProductionOverviewDto.fromEntity));
+    expect(actualResult).toEqual(expectedUnits.map(HydrogenProductionOverviewDto.fromEntity));
   });
 
-  it('readHydrogenStorageUnits should resolve the owner company and map the units', async () => {
-    const userId = 'user-id-1';
-    const userDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
-    const units = [HydrogenStorageUnitEntityFixture.create({ id: 'storage-unit-1' })];
+  it('should resolve the owner company and map the units when reading hydrogen storage units', async () => {
+    // arrange
+    const givenUserId = 'user-id-1';
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const expectedUnits = [HydrogenStorageUnitEntityFixture.create({ id: 'storage-unit-1' })];
 
-    userServiceMock.readUserWithCompany.mockResolvedValue(userDetails);
-    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(units));
+    userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
+    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(expectedUnits));
 
-    const actualResponse: HydrogenStorageOverviewDto[] = await service.readHydrogenStorageUnits(userId);
+    // act
+    const actualResult: HydrogenStorageOverviewDto[] = await service.readHydrogenStorageUnits(givenUserId);
 
-    expect(userServiceMock.readUserWithCompany).toHaveBeenCalledWith(userId);
+    // assert
+    expect(userServiceMock.readUserWithCompany).toHaveBeenCalledWith(givenUserId);
     expect(generalServiceMock.send).toHaveBeenCalledWith(
       UnitMessagePatterns.READ_HYDROGEN_STORAGE,
-      new ReadByIdPayload(userDetails.company.id),
+      new ReadByIdPayload(givenUserDetails.company.id),
     );
-    expect(actualResponse).toEqual(units.map(HydrogenStorageOverviewDto.fromEntity));
+    expect(actualResult).toEqual(expectedUnits.map(HydrogenStorageOverviewDto.fromEntity));
   });
 
-  it('createPowerProductionUnit should include the requesters company in the payload', async () => {
-    const userId = 'user-id-1';
-    const dto = PowerProductionUnitInputDtoFixture.create();
-    const userDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
-    const unit = PowerProductionUnitEntityFixture.create({ id: 'power-unit-1' });
+  it('should include the requester company in the payload when creating a power production unit', async () => {
+    // arrange
+    const givenUserId = 'user-id-1';
+    const givenDto = PowerProductionUnitInputDtoFixture.create();
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const expectedUnit = PowerProductionUnitEntityFixture.create({ id: 'power-unit-1' });
 
-    userServiceMock.readUserWithCompany.mockResolvedValue(userDetails);
-    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(unit));
+    userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
+    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(expectedUnit));
 
-    const actualResponse = await service.createPowerProductionUnit(dto, userId);
+    // act
+    const actualResult = await service.createPowerProductionUnit(givenDto, givenUserId);
 
+    // assert
     expect(generalServiceMock.send).toHaveBeenCalledWith(
       UnitMessagePatterns.CREATE_POWER_PRODUCTION,
-      PowerProductionUnitInputDto.toPayload(dto, undefined, userDetails.company.id),
+      PowerProductionUnitInputDto.toPayload(givenDto, undefined, givenUserDetails.company.id),
     );
-    expect(actualResponse).toEqual(PowerProductionUnitDto.fromEntity(unit));
+    expect(actualResult).toEqual(PowerProductionUnitDto.fromEntity(expectedUnit));
   });
 
-  it('createHydrogenProductionUnit should include the requesters company in the payload', async () => {
-    const userId = 'user-id-1';
-    const dto = HydrogenProductionUnitInputDtoFixture.create();
-    const userDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
-    const unit = HydrogenProductionUnitEntityFixture.create({ id: 'hydrogen-unit-1' });
+  it('should include the requester company in the payload when creating a hydrogen production unit', async () => {
+    // arrange
+    const givenUserId = 'user-id-1';
+    const givenDto = HydrogenProductionUnitInputDtoFixture.create();
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const expectedUnit = HydrogenProductionUnitEntityFixture.create({ id: 'hydrogen-unit-1' });
 
-    userServiceMock.readUserWithCompany.mockResolvedValue(userDetails);
-    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(unit));
+    userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
+    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(expectedUnit));
 
-    const actualResponse = await service.createHydrogenProductionUnit(dto, userId);
+    // act
+    const actualResult = await service.createHydrogenProductionUnit(givenDto, givenUserId);
 
+    // assert
     expect(generalServiceMock.send).toHaveBeenCalledWith(
       UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION,
-      HydrogenProductionUnitInputDto.toPayload(dto, undefined, userDetails.company.id),
+      HydrogenProductionUnitInputDto.toPayload(givenDto, undefined, givenUserDetails.company.id),
     );
-    expect(actualResponse).toEqual(HydrogenProductionUnitDto.fromEntity(unit));
+    expect(actualResult).toEqual(HydrogenProductionUnitDto.fromEntity(expectedUnit));
   });
 
-  it('createHydrogenStorageUnit should include the requesters company in the payload', async () => {
-    const userId = 'user-id-1';
-    const dto = HydrogenStorageUnitInputDtoFixture.create();
-    const userDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
-    const unit = HydrogenStorageUnitEntityFixture.create({ id: 'storage-unit-1' });
+  it('should include the requester company in the payload when creating a hydrogen storage unit', async () => {
+    // arrange
+    const givenUserId = 'user-id-1';
+    const givenDto = HydrogenStorageUnitInputDtoFixture.create();
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const expectedUnit = HydrogenStorageUnitEntityFixture.create({ id: 'storage-unit-1' });
 
-    userServiceMock.readUserWithCompany.mockResolvedValue(userDetails);
-    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(unit));
+    userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
+    generalServiceMock.send.mockImplementation((_pattern, _payload) => of(expectedUnit));
 
-    const actualResponse = await service.createHydrogenStorageUnit(dto, userId);
+    // act
+    const actualResult = await service.createHydrogenStorageUnit(givenDto, givenUserId);
 
+    // assert
     expect(generalServiceMock.send).toHaveBeenCalledWith(
       UnitMessagePatterns.CREATE_HYDROGEN_STORAGE,
-      HydrogenStorageUnitInputDto.toPayload(dto, undefined, userDetails.company.id),
+      HydrogenStorageUnitInputDto.toPayload(givenDto, undefined, givenUserDetails.company.id),
     );
-    expect(actualResponse).toEqual(HydrogenStorageUnitDto.fromEntity(unit));
+    expect(actualResult).toEqual(HydrogenStorageUnitDto.fromEntity(expectedUnit));
   });
 
-  it('updateUnitStatus should send the active flag with the requesters company id', async () => {
-    const userId = 'user-id-1';
-    const unitId = 'unit-id-1';
-    const dto = UnitUpdateActiveDtoFixture.create({ active: false });
-    const userDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+  it('should send the active flag with the requester company id when updating unit status', async () => {
+    // arrange
+    const givenUserId = 'user-id-1';
+    const givenUnitId = 'unit-id-1';
+    const givenDto = UnitUpdateActiveDtoFixture.create({ active: false });
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
 
-    userServiceMock.readUserWithCompany.mockResolvedValue(userDetails);
+    userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
     generalServiceMock.send.mockImplementation((_pattern, _payload) => of(undefined));
 
-    await service.updateUnitStatus(unitId, dto.active, userId);
+    // act
+    await service.updateUnitStatus(givenUnitId, givenDto.active, givenUserId);
 
+    // assert
     expect(generalServiceMock.send).toHaveBeenCalledWith(
       UnitMessagePatterns.UPDATE_STATUS,
-      UnitUpdateActiveDto.toPayload(unitId, dto.active, userDetails.company.id),
+      UnitUpdateActiveDto.toPayload(givenUnitId, givenDto.active, givenUserDetails.company.id),
     );
   });
 
-  it('updateHydrogenProductionUnit should send the update payload with requester company context', async () => {
-    const userId = 'user-id-1';
-    const unitId = 'unit-id-1';
-    const dto = HydrogenProductionUnitInputDtoFixture.create();
-    const userDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+  it('should send the update payload with requester company context when updating a hydrogen production unit', async () => {
+    // arrange
+    const givenUserId = 'user-id-1';
+    const givenUnitId = 'unit-id-1';
+    const givenDto = HydrogenProductionUnitInputDtoFixture.create();
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
 
-    userServiceMock.readUserWithCompany.mockResolvedValue(userDetails);
+    userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
     generalServiceMock.send.mockImplementation((_pattern, _payload) => of(undefined));
 
-    await service.updateHydrogenProductionUnit(unitId, dto, userId);
+    // act
+    await service.updateHydrogenProductionUnit(givenUnitId, givenDto, givenUserId);
 
+    // assert
     expect(generalServiceMock.send).toHaveBeenCalledWith(
       UnitMessagePatterns.UPDATE_HYDROGEN_PRODUCTION,
-      HydrogenProductionUnitInputDto.toPayload(dto, unitId, userDetails.company.id),
+      HydrogenProductionUnitInputDto.toPayload(givenDto, givenUnitId, givenUserDetails.company.id),
     );
   });
 
-  it('updatePowerProductionUnit should send the update payload with requester company context', async () => {
-    const userId = 'user-id-1';
-    const unitId = 'unit-id-1';
-    const dto = PowerProductionUnitInputDtoFixture.create();
-    const userDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+  it('should send the update payload with requester company context when updating a power production unit', async () => {
+    // arrange
+    const givenUserId = 'user-id-1';
+    const givenUnitId = 'unit-id-1';
+    const givenDto = PowerProductionUnitInputDtoFixture.create();
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
 
-    userServiceMock.readUserWithCompany.mockResolvedValue(userDetails);
+    userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
     generalServiceMock.send.mockImplementation((_pattern, _payload) => of(undefined));
 
-    await service.updatePowerProductionUnit(unitId, dto, userId);
+    // act
+    await service.updatePowerProductionUnit(givenUnitId, givenDto, givenUserId);
 
+    // assert
     expect(generalServiceMock.send).toHaveBeenCalledWith(
       UnitMessagePatterns.UPDATE_POWER_PRODUCTION,
-      PowerProductionUnitInputDto.toPayload(dto, unitId, userDetails.company.id),
+      PowerProductionUnitInputDto.toPayload(givenDto, givenUnitId, givenUserDetails.company.id),
     );
   });
 
-  it('updateHydrogenStorageUnit should send the update payload with requester company context', async () => {
-    const userId = 'user-id-1';
-    const unitId = 'unit-id-1';
-    const dto = HydrogenStorageUnitInputDtoFixture.create();
-    const userDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+  it('should send the update payload with requester company context when updating a hydrogen storage unit', async () => {
+    // arrange
+    const givenUserId = 'user-id-1';
+    const givenUnitId = 'unit-id-1';
+    const givenDto = HydrogenStorageUnitInputDtoFixture.create();
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
 
-    userServiceMock.readUserWithCompany.mockResolvedValue(userDetails);
+    userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
     generalServiceMock.send.mockImplementation((_pattern, _payload) => of(undefined));
 
-    await service.updateHydrogenStorageUnit(unitId, dto, userId);
+    // act
+    await service.updateHydrogenStorageUnit(givenUnitId, givenDto, givenUserId);
 
+    // assert
     expect(generalServiceMock.send).toHaveBeenCalledWith(
       UnitMessagePatterns.UPDATE_HYDROGEN_STORAGE,
-      HydrogenStorageUnitInputDto.toPayload(dto, unitId, userDetails.company.id),
+      HydrogenStorageUnitInputDto.toPayload(givenDto, givenUnitId, givenUserDetails.company.id),
     );
   });
 });

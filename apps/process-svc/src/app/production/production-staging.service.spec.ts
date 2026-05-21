@@ -156,8 +156,8 @@ describe('ProductionStagingService', () => {
   });
 
   describe('createProductionsFromStaging', () => {
-    it('creates productions from staged hydrogen and power entries and deactivates the consumed staging rows', async () => {
-      // Arrange
+    it('should create productions from staged hydrogen and power entries and deactivate the consumed staging rows when called', async () => {
+      // arrange
       const givenPayload = FinalizeProductionsPayloadFixture.create({
         stagedPowerProductions: ['staged-power-1'],
       });
@@ -202,10 +202,10 @@ describe('ProductionStagingService', () => {
       productionCreationServiceMock.createAndPersistProductions.mockResolvedValue(expectedProcessSteps);
       stagedProductionRepositoryMock.setStagedProductionsToInactive.mockResolvedValue(2);
 
-      // Act
+      // act
       const actualResult = await service.createProductionsFromStaging(givenPayload);
 
-      // Assert
+      // assert
       expect(stagedProductionRepositoryMock.findStagedProductionsForIds).toHaveBeenCalledWith([
         givenPayload.stagedHydrogenProduction,
         ...givenPayload.stagedPowerProductions,
@@ -240,8 +240,8 @@ describe('ProductionStagingService', () => {
       expect(actualResult).toEqual(expectedProcessSteps);
     });
 
-    it('throws when the staged production ids do not resolve to one hydrogen and at least one power entry', async () => {
-      // Arrange
+    it('should throw when the staged production ids do not resolve to one hydrogen and at least one power entry', async () => {
+      // arrange
       const givenPayload = FinalizeProductionsPayloadFixture.create();
 
       stagedProductionRepositoryMock.findStagedProductionsForIds.mockResolvedValue([
@@ -257,15 +257,15 @@ describe('ProductionStagingService', () => {
         ),
       ]);
 
-      // Act & Assert
+      // act & assert
       await expect(service.createProductionsFromStaging(givenPayload)).rejects.toThrow(
         'The given staged production IDs are invalid',
       );
       expect(productionCreationServiceMock.createAndPersistProductions).not.toHaveBeenCalled();
     });
 
-    it('persists remaining staged power when the final staged power entry is only partially consumed', async () => {
-      // Arrange
+    it('should persist remaining staged power when the final staged power entry is only partially consumed', async () => {
+      // arrange
       const givenPayload = FinalizeProductionsPayloadFixture.create({
         stagedPowerProductions: ['staged-power-1'],
       });
@@ -311,10 +311,10 @@ describe('ProductionStagingService', () => {
       ]);
       stagedProductionRepositoryMock.setStagedProductionsToInactive.mockResolvedValue(2);
 
-      // Act
+      // act
       await service.createProductionsFromStaging(givenPayload);
 
-      // Assert
+      // assert
       expect(stagedProductionRepositoryMock.saveStagedProductions).toHaveBeenCalledWith(
         [
           expect.objectContaining({
@@ -332,8 +332,8 @@ describe('ProductionStagingService', () => {
       ]);
     });
 
-    it('adds two grid-based productions when staged power is insufficient', async () => {
-      // Arrange
+    it('should add two grid-based productions when staged power is insufficient', async () => {
+      // arrange
       const givenPayload = FinalizeProductionsPayloadFixture.create({
         stagedPowerProductions: ['staged-power-1'],
       });
@@ -379,10 +379,10 @@ describe('ProductionStagingService', () => {
       ]);
       stagedProductionRepositoryMock.setStagedProductionsToInactive.mockResolvedValue(2);
 
-      // Act
+      // act
       await service.createProductionsFromStaging(givenPayload);
 
-      // Assert
+      // assert
       const [actualCreateProductions] = productionCreationServiceMock.createAndPersistProductions.mock.calls[0];
 
       expect(actualCreateProductions).toHaveLength(3);
@@ -412,8 +412,8 @@ describe('ProductionStagingService', () => {
   });
 
   describe('readStagedProductions', () => {
-    it('reads own staged productions directly from the repository', async () => {
-      // Arrange
+    it('should read own staged productions directly from the repository when called', async () => {
+      // arrange
       const givenPayload = {
         ownerId: 'company-1',
         stagingScope: StagingScope.OWN,
@@ -436,16 +436,16 @@ describe('ProductionStagingService', () => {
 
       stagedProductionRepositoryMock.findStagedProductions.mockResolvedValue(expectedStagedProductions);
 
-      // Act
+      // act
       const actualResult = await service.readStagedProductions(givenPayload);
 
-      // Assert
+      // assert
       expect(stagedProductionRepositoryMock.findStagedProductions).toHaveBeenCalledWith(givenPayload, true, []);
       expect(actualResult).toEqual(expectedStagedProductions);
     });
 
-    it('reads received staged productions for approved agreements only', async () => {
-      // Arrange
+    it('should read received staged productions for approved agreements only when called', async () => {
+      // arrange
       const givenPayload = {
         ownerId: 'company-1',
         stagingScope: StagingScope.RECEIVED,
@@ -473,10 +473,10 @@ describe('ProductionStagingService', () => {
       powerPurchaseAgreementRepositoryMock.findAllPowerPurchaseAgreements.mockResolvedValue([givenApprovedAgreement]);
       stagedProductionRepositoryMock.findStagedProductions.mockResolvedValue(expectedStagedProductions);
 
-      // Act
+      // act
       const actualResult = await service.readStagedProductions(givenPayload);
 
-      // Assert
+      // assert
       expect(powerPurchaseAgreementRepositoryMock.findAllPowerPurchaseAgreements).toHaveBeenCalledWith(
         givenPayload.ownerId,
         PowerPurchaseAgreementStatus.APPROVED,
@@ -491,8 +491,8 @@ describe('ProductionStagingService', () => {
   });
 
   describe('stageProductions', () => {
-    it('persists staged productions and skips blockchain proof storage when verification is disabled', async () => {
-      // Arrange
+    it('should persist staged productions and skip blockchain proof storage when verification is disabled', async () => {
+      // arrange
       const givenPayload = StageProductionsPayloadFixture.create({
         productionImports: [
           new UnitFileImport(
@@ -555,10 +555,10 @@ describe('ProductionStagingService', () => {
       csvImportRepositoryMock.saveCsvDocuments.mockResolvedValue(givenCsvDocuments);
       prismaServiceMock.$transaction.mockImplementation(async (callback) => callback(tx));
 
-      // Act
+      // act
       const actualResult = await service.stageProductions(givenPayload);
 
-      // Assert
+      // assert
       expect(csvImportProcessingServiceMock.parseAndUploadFiles).toHaveBeenCalledWith(
         givenPayload.productionImports,
         givenPayload.timeZone,
@@ -583,8 +583,8 @@ describe('ProductionStagingService', () => {
       );
     });
 
-    it('stores CSV proofs on-chain and updates the transaction hash when verification is enabled', async () => {
-      // Arrange
+    it('should store CSV proofs on-chain and update the transaction hash when verification is enabled', async () => {
+      // arrange
       const givenPayload = StageProductionsPayloadFixture.create({
         productionImports: [
           new UnitFileImport(
@@ -647,10 +647,10 @@ describe('ProductionStagingService', () => {
       prismaServiceMock.$transaction.mockImplementation(async (callback) => callback(tx));
       blockchainServiceMock.storeProofs.mockResolvedValue('tx-hash-1');
 
-      // Act
+      // act
       await service.stageProductions(givenPayload);
 
-      // Assert
+      // assert
       expect(blockchainServiceMock.storeProofs).toHaveBeenCalledWith([
         {
           uuid: 'csv-document-1',
@@ -661,8 +661,8 @@ describe('ProductionStagingService', () => {
       expect(csvImportRepositoryMock.updateTransactionHash).toHaveBeenCalledWith(['csv-document-1'], 'tx-hash-1');
     });
 
-    it('throws when the number of document proofs does not match the persisted CSV documents', async () => {
-      // Arrange
+    it('should throw when the number of document proofs does not match the persisted CSV documents', async () => {
+      // arrange
       const givenPayload = StageProductionsPayloadFixture.create({
         productionImports: [
           new UnitFileImport(
@@ -701,7 +701,7 @@ describe('ProductionStagingService', () => {
       csvImportRepositoryMock.saveCsvDocuments.mockResolvedValue([]);
       prismaServiceMock.$transaction.mockImplementation(async (callback) => callback(tx));
 
-      // Act & Assert
+      // act & assert
       await expect(service.stageProductions(givenPayload)).rejects.toThrow(
         'Number of document proofs (1) does not match number of CSV documents (0).',
       );
@@ -709,8 +709,8 @@ describe('ProductionStagingService', () => {
       expect(csvImportRepositoryMock.updateTransactionHash).not.toHaveBeenCalled();
     });
 
-    it('propagates blockchain storage errors without updating transaction hashes', async () => {
-      // Arrange
+    it('should propagate blockchain storage errors without updating transaction hashes when called', async () => {
+      // arrange
       const givenPayload = StageProductionsPayloadFixture.create({
         productionImports: [
           new UnitFileImport(
@@ -761,7 +761,7 @@ describe('ProductionStagingService', () => {
       prismaServiceMock.$transaction.mockImplementation(async (callback) => callback(tx));
       blockchainServiceMock.storeProofs.mockRejectedValue(expectedError);
 
-      // Act & Assert
+      // act & assert
       await expect(service.stageProductions(givenPayload)).rejects.toThrow(expectedError);
       expect(csvImportRepositoryMock.updateTransactionHash).not.toHaveBeenCalled();
     });
