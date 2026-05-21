@@ -11,7 +11,7 @@ import { parseAccountingPeriodCsvBuffer } from './accounting-period-csv-parser';
 describe('parseAccountingPeriodCsvBuffer', () => {
   describe('parseBuffer', () => {
     it('should parse localized datetime values when amount and power columns are present', async () => {
-    // arrange
+      // arrange
       const givenBuffer = Buffer.from('time,amount,power\n01.02.2026 13:45,12.5,33');
 
       // act
@@ -29,7 +29,7 @@ describe('parseAccountingPeriodCsvBuffer', () => {
     });
 
     it('should parse ISO timestamps and Excel serial dates when valid rows are provided', async () => {
-    // arrange
+      // arrange
       const givenBuffer = Buffer.from('time,amount\n2026-01-01T10:00:00Z,5\n25569.25,7');
 
       // act
@@ -43,21 +43,18 @@ describe('parseAccountingPeriodCsvBuffer', () => {
     });
 
     it('should throw an exception when a required column is missing', async () => {
-    // arrange
+      // arrange
       const givenBuffer = Buffer.from('time,amount\n2026-01-01T10:00:00Z,5');
 
       // act & assert
-      const actualResult = 
-        parseAccountingPeriodCsvBuffer(givenBuffer, ['time', 'amount', 'power'], 'Europe/Berlin'),
-      ;
-
+      const actualResult = parseAccountingPeriodCsvBuffer(givenBuffer, ['time', 'amount', 'power'], 'Europe/Berlin');
       await expect(actualResult).rejects.toMatchObject({
         message: 'Missing required column: power',
       });
     });
 
     it('should filter out rows when values are invalid or skipped', async () => {
-    // arrange
+      // arrange
       const givenBuffer = Buffer.from(
         'time,amount,power\ninvalid-date,10,5\n2026-01-01T00:00:00Z,0,5\n2026-01-01T01:00:00Z,10,invalid\n2026-01-01T02:00:00Z,12,6',
       );

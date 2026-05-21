@@ -11,7 +11,7 @@ import {
   ProofOfOriginHydrogenBatchEntityFixture,
   ProofOfOriginSectionEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
-import { ProofOfOrigin, ProcessType } from '@h2-trust/domain';
+import { ProcessType, ProofOfOrigin } from '@h2-trust/domain';
 import { assembleProofOfOrigin, getHydrogenBottlingCompositions } from './proof-of-origin.assembler';
 
 jest.mock('./proof-of-origin-assembler.registry.const', () => ({

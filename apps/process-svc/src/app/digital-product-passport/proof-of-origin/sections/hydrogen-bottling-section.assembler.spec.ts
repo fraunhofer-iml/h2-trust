@@ -25,7 +25,7 @@ import { assembleHydrogenBottlingSection } from './hydrogen-bottling-section.ass
 describe('HydrogenBottlingProofOfOriginAssembler', () => {
   describe('assembleHydrogenBottlingSection', () => {
     it('should return a section with hydrogen batch, composition, and emissions when the process step is valid', async () => {
-    // arrange
+      // arrange
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
       const givenProvenance = new ProvenanceEntity(
         givenHydrogenBottling,
@@ -57,7 +57,7 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
 
   describe('calculateHydrogenComposition', () => {
     it(`should return composition when the process step type is ${ProcessType.HYDROGEN_BOTTLING}`, () => {
-    // arrange
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling({
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
@@ -80,7 +80,7 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
     });
 
     it('should assemble amount from one predecessor when called', () => {
-    // arrange
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling({
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
@@ -106,7 +106,7 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
     });
 
     it('should assemble amount from two predecessors when called', () => {
-    // arrange
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling({
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
@@ -136,7 +136,7 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
     });
 
     it('should return [] when process step is undefined', () => {
-    // arrange
+      // arrange
       const givenProcessStep = undefined as ProcessStepEntity;
       const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
       const givenProvenance = new ProvenanceEntity(givenProcessStep, [givenProductionChain], givenProcessStep);
@@ -149,7 +149,7 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
     });
 
     it('should throw error when process step type is invalid', () => {
-    // arrange
+      // arrange
       const givenProcessStep = ProcessStepEntityFixture.createPowerProduction();
       const expectedErrorMessage = `There are no hydrogen productions in provenance.`;
       const givenProvenance = new ProvenanceEntity(givenProcessStep, [], givenProcessStep);

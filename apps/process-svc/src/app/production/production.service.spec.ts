@@ -309,9 +309,7 @@ describe('ProductionService', () => {
       // act & assert
       const actualResult = service.assembleProductionStatistics(givenPayload);
 
-      await expect(actualResult).rejects.toThrow(
-        `Rfnbotype of ${givenProcessStep.id} not defined`,
-      );
+      await expect(actualResult).rejects.toThrow(`Rfnbotype of ${givenProcessStep.id} not defined`);
     });
 
     it('should return zero statistics when no hydrogen production steps are found', async () => {

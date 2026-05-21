@@ -31,7 +31,12 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // act
-      const actualResult = calculateAccountingPeriods(givenStartedAt, givenEndedAt, givenTotalAmount, givenPredecessors);
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
       // assert
       expect(actualResult).toEqual(expectedResult);
@@ -60,7 +65,12 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // act
-      const actualResult = calculateAccountingPeriods(givenStartedAt, givenEndedAt, givenTotalAmount, givenPredecessors);
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
       // assert
       expect(actualResult).toEqual(expectedResult);
@@ -89,7 +99,12 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // act
-      const actualResult = calculateAccountingPeriods(givenStartedAt, givenEndedAt, givenTotalAmount, givenPredecessors);
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
       // assert
       expect(actualResult).toEqual(expectedResult);
@@ -124,7 +139,12 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // act
-      const actualResult = calculateAccountingPeriods(givenStartedAt, givenEndedAt, givenTotalAmount, givenPredecessors);
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
       // assert
       expect(actualResult).toEqual(expectedResult);
@@ -177,7 +197,12 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // act
-      const actualResult = calculateAccountingPeriods(givenStartedAt, givenEndedAt, givenTotalAmount, givenPredecessors);
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
       // assert
       expect(actualResult).toEqual(expectedResult);
@@ -223,7 +248,12 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // act
-      const actualResult = calculateAccountingPeriods(givenStartedAt, givenEndedAt, givenTotalAmount, givenPredecessors);
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
       // assert
       expect(actualResult).toEqual(expectedResult);
@@ -252,7 +282,12 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // act
-      const actualResult = calculateAccountingPeriods(givenStartedAt, givenEndedAt, givenTotalAmount, givenPredecessors);
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
       // assert
       expect(actualResult).toEqual(expectedResult);
@@ -349,7 +384,12 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // act
-      const actualResult = calculateAccountingPeriods(givenStartedAt, givenEndedAt, givenTotalAmount, givenPredecessors);
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
       // assert
       expect(actualResult).toEqual(expectedResult);
@@ -371,7 +411,12 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // act
-      const actualResult = calculateAccountingPeriods(givenStartedAt, givenEndedAt, givenTotalAmount, givenPredecessors);
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
       // assert
       expect(actualResult).toEqual(expectedResult);
@@ -387,7 +432,12 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       const expectedAmountPerPeriod = givenTotalAmount / expectedNumberOfPeriods;
 
       // act
-      const actualResult = calculateAccountingPeriods(givenStartedAt, givenEndedAt, givenTotalAmount, givenPredecessors);
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
       // assert
       expect(actualResult).toHaveLength(expectedNumberOfPeriods);
@@ -433,7 +483,12 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // act
-      const actualResult = calculateAccountingPeriods(givenStartedAt, givenEndedAt, givenTotalAmount, givenPredecessors);
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
       // assert
       expect(actualResult).toEqual(expectedResult);
@@ -462,7 +517,12 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // act
-      const actualResult = calculateAccountingPeriods(givenStartedAt, givenEndedAt, givenTotalAmount, givenPredecessors);
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
       // assert
       expect(actualResult).toEqual(expectedResult);
@@ -484,7 +544,12 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
       ];
 
       // act
-      const actualResult = calculateAccountingPeriods(givenStartedAt, givenEndedAt, givenTotalAmount, givenPredecessors);
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
       // assert
       expect(actualResult).toEqual(expectedResult);

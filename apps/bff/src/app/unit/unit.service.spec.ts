@@ -10,14 +10,14 @@ import { ClientProxy } from '@nestjs/microservices';
 import { of, throwError } from 'rxjs';
 import {
   HydrogenProductionOverviewDto,
-  HydrogenProductionUnitInputDto,
   HydrogenProductionUnitDto,
+  HydrogenProductionUnitInputDto,
   HydrogenStorageOverviewDto,
-  HydrogenStorageUnitInputDto,
   HydrogenStorageUnitDto,
+  HydrogenStorageUnitInputDto,
   PowerProductionOverviewDto,
-  PowerProductionUnitInputDto,
   PowerProductionUnitDto,
+  PowerProductionUnitInputDto,
   UnitUpdateActiveDto,
   type UserDetailsDto,
 } from '@h2-trust/contracts/dtos';
@@ -66,7 +66,8 @@ describe('UnitService', () => {
       description: 'should request the unit by id and map the response when reading a power production unit',
       createUnit: () => PowerProductionUnitEntityFixture.create({ id: 'power-unit-1' }),
       execute: (id: string) => service.readPowerProductionUnit(id),
-      map: (unit: ReturnType<typeof PowerProductionUnitEntityFixture.create>) => PowerProductionUnitDto.fromEntity(unit),
+      map: (unit: ReturnType<typeof PowerProductionUnitEntityFixture.create>) =>
+        PowerProductionUnitDto.fromEntity(unit),
     },
     {
       description: 'should request the unit by id and map the response when reading a hydrogen production unit',
@@ -79,7 +80,8 @@ describe('UnitService', () => {
       description: 'should request the unit by id and map the response when reading a hydrogen storage unit',
       createUnit: () => HydrogenStorageUnitEntityFixture.create({ id: 'storage-unit-1' }),
       execute: (id: string) => service.readHydrogenStorageUnit(id),
-      map: (unit: ReturnType<typeof HydrogenStorageUnitEntityFixture.create>) => HydrogenStorageUnitDto.fromEntity(unit),
+      map: (unit: ReturnType<typeof HydrogenStorageUnitEntityFixture.create>) =>
+        HydrogenStorageUnitDto.fromEntity(unit),
     },
   ])('$description', async ({ createUnit, execute, map }) => {
     // arrange
@@ -91,12 +93,15 @@ describe('UnitService', () => {
     const actualResult = await execute(expectedUnit.id);
 
     // assert
-    expect(generalServiceMock.send).toHaveBeenCalledWith(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(expectedUnit.id));
+    expect(generalServiceMock.send).toHaveBeenCalledWith(
+      UnitMessagePatterns.READ_BY_ID,
+      new ReadByIdPayload(expectedUnit.id),
+    );
     expect(actualResult).toEqual(map(expectedUnit));
   });
 
   it('should reject when the user company lookup fails while reading power production units', async () => {
-  // arrange
+    // arrange
     userServiceMock.readUserWithCompany.mockRejectedValue(new Error('user lookup failed'));
 
     // act
@@ -108,7 +113,7 @@ describe('UnitService', () => {
   });
 
   it('should propagate broker errors when reading a hydrogen storage unit', async () => {
-  // arrange
+    // arrange
     generalServiceMock.send.mockImplementation((_pattern, _payload) => throwError(() => new Error('broker failed')));
 
     // act
@@ -121,7 +126,9 @@ describe('UnitService', () => {
   it('should resolve the owner company and map the units when reading power production units', async () => {
     // arrange
     const givenUserId = 'user-id-1';
-    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({
+      company: { id: 'company-id-1', name: 'Company' },
+    });
     const expectedUnits = [PowerProductionUnitEntityFixture.create({ id: 'power-unit-1' })];
 
     userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
@@ -142,7 +149,9 @@ describe('UnitService', () => {
   it('should resolve the owner company and map the units when reading hydrogen production units', async () => {
     // arrange
     const givenUserId = 'user-id-1';
-    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({
+      company: { id: 'company-id-1', name: 'Company' },
+    });
     const expectedUnits = [HydrogenProductionUnitEntityFixture.create({ id: 'hydrogen-unit-1' })];
 
     userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
@@ -163,7 +172,9 @@ describe('UnitService', () => {
   it('should resolve the owner company and map the units when reading hydrogen storage units', async () => {
     // arrange
     const givenUserId = 'user-id-1';
-    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({
+      company: { id: 'company-id-1', name: 'Company' },
+    });
     const expectedUnits = [HydrogenStorageUnitEntityFixture.create({ id: 'storage-unit-1' })];
 
     userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
@@ -185,7 +196,9 @@ describe('UnitService', () => {
     // arrange
     const givenUserId = 'user-id-1';
     const givenDto = PowerProductionUnitInputDtoFixture.create();
-    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({
+      company: { id: 'company-id-1', name: 'Company' },
+    });
     const expectedUnit = PowerProductionUnitEntityFixture.create({ id: 'power-unit-1' });
 
     userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
@@ -206,7 +219,9 @@ describe('UnitService', () => {
     // arrange
     const givenUserId = 'user-id-1';
     const givenDto = HydrogenProductionUnitInputDtoFixture.create();
-    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({
+      company: { id: 'company-id-1', name: 'Company' },
+    });
     const expectedUnit = HydrogenProductionUnitEntityFixture.create({ id: 'hydrogen-unit-1' });
 
     userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
@@ -227,7 +242,9 @@ describe('UnitService', () => {
     // arrange
     const givenUserId = 'user-id-1';
     const givenDto = HydrogenStorageUnitInputDtoFixture.create();
-    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({
+      company: { id: 'company-id-1', name: 'Company' },
+    });
     const expectedUnit = HydrogenStorageUnitEntityFixture.create({ id: 'storage-unit-1' });
 
     userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
@@ -249,7 +266,9 @@ describe('UnitService', () => {
     const givenUserId = 'user-id-1';
     const givenUnitId = 'unit-id-1';
     const givenDto = UnitUpdateActiveDtoFixture.create({ active: false });
-    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({
+      company: { id: 'company-id-1', name: 'Company' },
+    });
 
     userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
     generalServiceMock.send.mockImplementation((_pattern, _payload) => of(undefined));
@@ -269,7 +288,9 @@ describe('UnitService', () => {
     const givenUserId = 'user-id-1';
     const givenUnitId = 'unit-id-1';
     const givenDto = HydrogenProductionUnitInputDtoFixture.create();
-    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({
+      company: { id: 'company-id-1', name: 'Company' },
+    });
 
     userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
     generalServiceMock.send.mockImplementation((_pattern, _payload) => of(undefined));
@@ -289,7 +310,9 @@ describe('UnitService', () => {
     const givenUserId = 'user-id-1';
     const givenUnitId = 'unit-id-1';
     const givenDto = PowerProductionUnitInputDtoFixture.create();
-    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({
+      company: { id: 'company-id-1', name: 'Company' },
+    });
 
     userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
     generalServiceMock.send.mockImplementation((_pattern, _payload) => of(undefined));
@@ -309,7 +332,9 @@ describe('UnitService', () => {
     const givenUserId = 'user-id-1';
     const givenUnitId = 'unit-id-1';
     const givenDto = HydrogenStorageUnitInputDtoFixture.create();
-    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({
+      company: { id: 'company-id-1', name: 'Company' },
+    });
 
     userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
     generalServiceMock.send.mockImplementation((_pattern, _payload) => of(undefined));

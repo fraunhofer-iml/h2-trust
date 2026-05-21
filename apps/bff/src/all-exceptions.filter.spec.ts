@@ -8,8 +8,8 @@
 
 import { ArgumentsHost, BadRequestException, ConflictException, Logger } from '@nestjs/common';
 import { ErrorCode } from '@h2-trust/exceptions';
-import { PROBLEM_TYPES } from './problem-types';
 import { AllExceptionsFilter } from './all-exceptions.filter';
+import { PROBLEM_TYPES } from './problem-types';
 
 describe('AllExceptionsFilter', () => {
   const createHost = (path = '/test') => {

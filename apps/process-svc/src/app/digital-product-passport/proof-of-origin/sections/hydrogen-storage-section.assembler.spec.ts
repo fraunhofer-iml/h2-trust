@@ -20,7 +20,7 @@ import { assembleHydrogenStorageSection } from './hydrogen-storage-section.assem
 describe('HydrogenStorageProofOfOriginAssembler', () => {
   describe('assembleHydrogenStorageSection', () => {
     it('should return a section when classifications are grouped by hydrogen RFNBO type', () => {
-    // arrange
+      // arrange
       const givenProductionChain: ProductionChainEntity = new ProductionChainEntity(
         ProcessStepEntityFixture.createHydrogenProduction(),
         ProcessStepEntityFixture.createHydrogenProduction(),
@@ -55,7 +55,7 @@ describe('HydrogenStorageProofOfOriginAssembler', () => {
     });
 
     it('should return an empty section when no hydrogen productions are provided', async () => {
-    // arrange
+      // arrange
       const givenProductionChain: ProductionChainEntity = new ProductionChainEntity(
         ProcessStepEntityFixture.createHydrogenBottling(),
         ProcessStepEntityFixture.createHydrogenBottling(),

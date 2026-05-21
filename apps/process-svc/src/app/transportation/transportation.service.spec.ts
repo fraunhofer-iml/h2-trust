@@ -139,9 +139,7 @@ describe('TransportationService', () => {
       // act & assert
       const actualResult = service.createHydrogenTransportationProcessStep(givenPayload);
 
-      await expect(actualResult).rejects.toThrow(
-        `Distance is required for transport mode [${TransportMode.TRAILER}].`,
-      );
+      await expect(actualResult).rejects.toThrow(`Distance is required for transport mode [${TransportMode.TRAILER}].`);
       expect(processStepServiceMock.setBatchesInactive).not.toHaveBeenCalled();
       expect(processStepServiceMock.createProcessStep).not.toHaveBeenCalled();
     });
@@ -183,9 +181,7 @@ describe('TransportationService', () => {
       // act & assert
       const actualResult = service.createHydrogenTransportationProcessStep(givenPayload);
 
-      await expect(actualResult).rejects.toThrow(
-        `Invalid transport mode: ${givenPayload.transportMode}`,
-      );
+      await expect(actualResult).rejects.toThrow(`Invalid transport mode: ${givenPayload.transportMode}`);
       expect(processStepServiceMock.setBatchesInactive).not.toHaveBeenCalled();
       expect(processStepServiceMock.createProcessStep).not.toHaveBeenCalled();
     });

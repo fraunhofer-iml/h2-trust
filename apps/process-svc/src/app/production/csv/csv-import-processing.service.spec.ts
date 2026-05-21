@@ -9,13 +9,9 @@
 import { Provider } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { hashBuffer } from '@h2-trust/blockchain';
-import {
-  StagedProductionAccountingPeriod,
-  UnitAccountingPeriods,
-  UnitFileImport,
-} from '@h2-trust/contracts/entities';
+import { StagedProductionAccountingPeriod, UnitAccountingPeriods, UnitFileImport } from '@h2-trust/contracts/entities';
 import { CsvContentType } from '@h2-trust/domain';
-import { ContentType, CentralizedStorageService, DecentralizedStorageService } from '@h2-trust/storage';
+import { CentralizedStorageService, ContentType, DecentralizedStorageService } from '@h2-trust/storage';
 import { ParsedImport } from '../production.types';
 import { parseAccountingPeriodCsvBuffer } from './accounting-period-csv-parser';
 import { CsvImportProcessingService } from './csv-import-processing.service';
@@ -82,10 +78,13 @@ describe('CsvImportProcessingService', () => {
     it('should parse files, upload them to both storages, and return proof metadata when called', async () => {
       // arrange
       const givenBuffer = Buffer.from('time,amount\n2026-01-01T00:00:00Z,12');
-      const givenImport = new UnitFileImport('unit-1', 'expected-hash', givenBuffer.toString('base64'), CsvContentType.POWER);
-      const givenAccountingPeriods = [
-        new StagedProductionAccountingPeriod(12, new Date('2026-01-01T00:00:00Z'), 0),
-      ];
+      const givenImport = new UnitFileImport(
+        'unit-1',
+        'expected-hash',
+        givenBuffer.toString('base64'),
+        CsvContentType.POWER,
+      );
+      const givenAccountingPeriods = [new StagedProductionAccountingPeriod(12, new Date('2026-01-01T00:00:00Z'), 0)];
 
       hashBufferMock.mockReturnValue('expected-hash');
       parseAccountingPeriodCsvBufferMock.mockResolvedValue(givenAccountingPeriods);
@@ -95,11 +94,7 @@ describe('CsvImportProcessingService', () => {
       const actualResult = await service.parseAndUploadFiles([givenImport], 'Europe/Berlin');
 
       // assert
-      expect(parseAccountingPeriodCsvBufferMock).toHaveBeenCalledWith(
-        givenBuffer,
-        ['time', 'amount'],
-        'Europe/Berlin',
-      );
+      expect(parseAccountingPeriodCsvBufferMock).toHaveBeenCalledWith(givenBuffer, ['time', 'amount'], 'Europe/Berlin');
       expect(centralizedStorageServiceMock.uploadFile).toHaveBeenCalledWith(
         'expected-hash.csv',
         givenBuffer,
@@ -169,10 +164,13 @@ describe('CsvImportProcessingService', () => {
       service = await createService(false);
 
       const givenBuffer = Buffer.from('time,amount,power\n2026-01-01T00:00:00Z,12,5');
-      const givenImport = new UnitFileImport('unit-1', 'expected-hash', givenBuffer.toString('base64'), CsvContentType.HYDROGEN);
-      const givenAccountingPeriods = [
-        new StagedProductionAccountingPeriod(12, new Date('2026-01-01T00:00:00Z'), 5),
-      ];
+      const givenImport = new UnitFileImport(
+        'unit-1',
+        'expected-hash',
+        givenBuffer.toString('base64'),
+        CsvContentType.HYDROGEN,
+      );
+      const givenAccountingPeriods = [new StagedProductionAccountingPeriod(12, new Date('2026-01-01T00:00:00Z'), 5)];
 
       hashBufferMock.mockReturnValue('expected-hash');
       parseAccountingPeriodCsvBufferMock.mockResolvedValue(givenAccountingPeriods);

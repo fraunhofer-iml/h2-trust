@@ -25,14 +25,14 @@ import {
   UserDetailsDtoFixture,
 } from '@h2-trust/contracts/dtos/fixtures';
 import {
+  HydrogenStatisticsEntity,
   PaginatedProcessStepEntity,
+  PowerStatisticsEntity,
   ProductionStagingResultEntity,
   ProductionStatisticsEntity,
   StagedProductionEntity,
   UnitFileImport,
   VerifyCsvDocumentIntegrityResultEntity,
-  HydrogenStatisticsEntity,
-  PowerStatisticsEntity,
 } from '@h2-trust/contracts/entities';
 import { CsvDocumentEntityFixture, ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import {
@@ -101,7 +101,9 @@ describe('ProductionService', () => {
   it('should resolve the owner and map the paginated response when reading hydrogen productions by owner', async () => {
     // arrange
     const givenUserId = 'user-id-1';
-    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({
+      company: { id: 'company-id-1', name: 'Company' },
+    });
     const givenProcessStep = ProcessStepEntityFixture.createHydrogenProduction({ id: 'production-1' });
     const expectedPaginated = new PaginatedProcessStepEntity([givenProcessStep], 1, 10, 1);
     const givenMonth = new Date('2026-01-01T00:00:00.000Z');
@@ -131,7 +133,7 @@ describe('ProductionService', () => {
   });
 
   it('should reject when the user company lookup fails while reading hydrogen productions by owner', async () => {
-  // arrange
+    // arrange
     userServiceMock.readUserWithCompany.mockRejectedValue(new Error('user lookup failed'));
 
     // act
@@ -145,7 +147,9 @@ describe('ProductionService', () => {
   it('should request staged productions for the resolved owner when reading staged productions by company and type', async () => {
     // arrange
     const givenUserId = 'user-id-1';
-    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({
+      company: { id: 'company-id-1', name: 'Company' },
+    });
     const givenFrom = new Date('2026-01-01T00:00:00.000Z');
     const givenTo = new Date('2026-01-31T23:59:59.999Z');
     const expectedStagedProductions = [
@@ -191,7 +195,9 @@ describe('ProductionService', () => {
     // arrange
     const givenUserId = 'user-id-1';
     const givenMonth = new Date('2026-01-01T00:00:00.000Z');
-    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({
+      company: { id: 'company-id-1', name: 'Company' },
+    });
     const expectedStatistics = new ProductionStatisticsEntity(
       new HydrogenStatisticsEntity(5, 10),
       new PowerStatisticsEntity(15, 3, 2),
@@ -218,8 +224,13 @@ describe('ProductionService', () => {
   it('should hash, encode, and stage each file for the resolved owner when importing CSV files', async () => {
     // arrange
     const givenUserId = 'user-id-1';
-    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
-    const givenDto = ProductionCsvUploadDtoFixture.create({ unitIds: ['unit-1', 'unit-2'], csvContentType: CsvContentType.HYDROGEN });
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({
+      company: { id: 'company-id-1', name: 'Company' },
+    });
+    const givenDto = ProductionCsvUploadDtoFixture.create({
+      unitIds: ['unit-1', 'unit-2'],
+      csvContentType: CsvContentType.HYDROGEN,
+    });
     const givenFirstFile = createFile('first.csv', 'first');
     const givenSecondFile = createFile('second.csv', 'second');
     const givenStagedProductions = [
@@ -265,7 +276,10 @@ describe('ProductionService', () => {
 
   it('should throw when no files are provided while importing CSV files', async () => {
     // arrange
-    const givenDto = ProductionCsvUploadDtoFixture.create({ unitIds: ['unit-1'], csvContentType: CsvContentType.HYDROGEN });
+    const givenDto = ProductionCsvUploadDtoFixture.create({
+      unitIds: ['unit-1'],
+      csvContentType: CsvContentType.HYDROGEN,
+    });
 
     // act
     const actualResult = service.importCsvFiles([], givenDto, 'user-id-1');
@@ -300,9 +314,7 @@ describe('ProductionService', () => {
     const actualResult = service.importCsvFiles([givenFile], givenDto, 'user-id-1');
 
     // assert
-    await expect(actualResult).rejects.toThrow(
-      'Stage production contains invalid types.',
-    );
+    await expect(actualResult).rejects.toThrow('Stage production contains invalid types.');
   });
 
   it('should finalize the staged ids and map the response when creating productions from staging', async () => {
@@ -332,8 +344,12 @@ describe('ProductionService', () => {
   it('should map each CSV document including its storage URL when reading CSV documents by company', async () => {
     // arrange
     const givenUserId = 'user-id-1';
-    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({ company: { id: 'company-id-1', name: 'Company' } });
-    const expectedCsvDocuments = [CsvDocumentEntityFixture.create({ id: 'document-1', fileName: 'document-1.csv', type: CsvContentType.HYDROGEN })];
+    const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({
+      company: { id: 'company-id-1', name: 'Company' },
+    });
+    const expectedCsvDocuments = [
+      CsvDocumentEntityFixture.create({ id: 'document-1', fileName: 'document-1.csv', type: CsvContentType.HYDROGEN }),
+    ];
 
     userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
     processSvcMock.send.mockImplementation((_pattern, _payload) => of(expectedCsvDocuments));
@@ -385,7 +401,7 @@ describe('ProductionService', () => {
   });
 
   it('should propagate process service errors when verifying CSV document integrity', async () => {
-  // arrange
+    // arrange
     processSvcMock.send.mockImplementation((_pattern, _payload) => throwError(() => new Error('verification failed')));
 
     // act

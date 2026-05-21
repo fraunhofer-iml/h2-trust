@@ -50,11 +50,14 @@ describe('ProductionUtils.calculatePartialAmountRelativeToPowerProduction', () =
     const givenPartialPowerConsumption = 50;
 
     // act & assert
-    const actualOperation = () => calculatePartialAmountRelativeToPowerProduction(givenTotalAmount, givenTotalPowerConsumption, givenPartialPowerConsumption);
+    const actualOperation = () =>
+      calculatePartialAmountRelativeToPowerProduction(
+        givenTotalAmount,
+        givenTotalPowerConsumption,
+        givenPartialPowerConsumption,
+      );
 
-    expect(actualOperation).toThrow(
-      'The partial amount could not be calculated because at least one total is 0.',
-    );
+    expect(actualOperation).toThrow('The partial amount could not be calculated because at least one total is 0.');
   });
 
   it('should throw when totalPowerConsumption is zero', () => {
@@ -64,10 +67,13 @@ describe('ProductionUtils.calculatePartialAmountRelativeToPowerProduction', () =
     const givenPartialPowerConsumption = 50;
 
     // act & assert
-    const actualOperation = () => calculatePartialAmountRelativeToPowerProduction(givenTotalAmount, givenTotalPowerConsumption, givenPartialPowerConsumption);
+    const actualOperation = () =>
+      calculatePartialAmountRelativeToPowerProduction(
+        givenTotalAmount,
+        givenTotalPowerConsumption,
+        givenPartialPowerConsumption,
+      );
 
-    expect(actualOperation).toThrow(
-      'The partial amount could not be calculated because at least one total is 0.',
-    );
+    expect(actualOperation).toThrow('The partial amount could not be calculated because at least one total is 0.');
   });
 });

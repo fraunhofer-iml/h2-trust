@@ -12,7 +12,7 @@ import { splitGridPowerProduction } from './production.utils';
 
 describe('ProductionUtils.splitGridPowerProduction', () => {
   it('should return the original production unchanged when the energy source is not grid', () => {
-  // arrange
+    // arrange
     const givenCreateProduction = new CreateProductionEntity(
       new Date('2026-01-01T00:00:00Z'),
       new Date('2026-01-01T00:59:59Z'),
@@ -36,7 +36,7 @@ describe('ProductionUtils.splitGridPowerProduction', () => {
   });
 
   it('should split grid energy into partly renewable and non-renewable productions when the energy source is grid', () => {
-  // arrange
+    // arrange
     const givenCreateProduction = new CreateProductionEntity(
       new Date('2026-01-01T00:00:00Z'),
       new Date('2026-01-01T00:59:59Z'),

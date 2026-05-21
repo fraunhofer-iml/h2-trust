@@ -14,7 +14,7 @@ import { assembleWaterSupplyClassification } from './water-consumption-classific
 describe('WaterConsumptionProofOfOriginAssembler', () => {
   describe('assembleWaterSupplyClassification', () => {
     it('should return a classification with water batches and emissions when water supplies are provided', () => {
-    // arrange
+      // arrange
       const givenWaterConsumption = ProcessStepEntityFixture.createWaterConsumption();
       const givenWaterSupplies = [givenWaterConsumption];
       const givenHydrogenAmount = 100;
@@ -38,7 +38,7 @@ describe('WaterConsumptionProofOfOriginAssembler', () => {
     });
 
     it('should return a classification with multiple water batches when multiple water supplies are provided', () => {
-    // arrange
+      // arrange
       const givenWaterConsumption1 = ProcessStepEntityFixture.createWaterConsumption();
       givenWaterConsumption1.id = 'water-consumption-1';
       givenWaterConsumption1.batch.id = 'water-batch-1';
@@ -65,7 +65,7 @@ describe('WaterConsumptionProofOfOriginAssembler', () => {
     });
 
     it('should throw error when no water supplies provided', () => {
-    // arrange
+      // arrange
       const givenWaterSupplies: ProcessStepEntity[] = [];
       const givenHydrogenAmount = 100;
       const expectedErrorMessage = 'No process steps of type water supply found.';
@@ -77,7 +77,7 @@ describe('WaterConsumptionProofOfOriginAssembler', () => {
     });
 
     it('should throw error when water supplies is undefined', () => {
-    // arrange
+      // arrange
       const givenWaterSupplies: ProcessStepEntity[] = undefined;
       const givenHydrogenAmount = 100;
       const expectedErrorMessage = 'No process steps of type water supply found.';

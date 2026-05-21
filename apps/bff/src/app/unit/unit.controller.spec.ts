@@ -96,12 +96,18 @@ describe('UnitController', () => {
       givenPowerProductionInput,
     );
     const actualHydrogenProductionOverview = await controller.getHydrogenProductionUnits(authenticatedUser);
-    const actualHydrogenProductionUnit = await controller.getHydrogenProductionUnitById(expectedHydrogenProductionUnit.id);
+    const actualHydrogenProductionUnit = await controller.getHydrogenProductionUnitById(
+      expectedHydrogenProductionUnit.id,
+    );
     const actualCreatedHydrogenProductionUnit = await controller.createHydrogenProductionUnit(
       authenticatedUser,
       givenHydrogenProductionInput,
     );
-    const actualUpdateUnitStatusResult = await controller.updateUnitStatus(authenticatedUser, 'unit-id-1', givenUpdateStatusDto);
+    const actualUpdateUnitStatusResult = await controller.updateUnitStatus(
+      authenticatedUser,
+      'unit-id-1',
+      givenUpdateStatusDto,
+    );
     const actualUpdateHydrogenProductionUnitResult = await controller.updateHydrogenProductionUnit(
       authenticatedUser,
       'hydrogen-unit-1',
@@ -134,17 +140,27 @@ describe('UnitController', () => {
     expect(actualUpdateHydrogenStorageUnitResult).toBeUndefined();
     expect(unitServiceMock.readHydrogenStorageUnits).toHaveBeenCalledWith(authenticatedUser.sub);
     expect(unitServiceMock.readHydrogenStorageUnit).toHaveBeenCalledWith(expectedHydrogenStorageUnit.id);
-    expect(unitServiceMock.createHydrogenStorageUnit).toHaveBeenCalledWith(givenHydrogenStorageInput, authenticatedUser.sub);
+    expect(unitServiceMock.createHydrogenStorageUnit).toHaveBeenCalledWith(
+      givenHydrogenStorageInput,
+      authenticatedUser.sub,
+    );
     expect(unitServiceMock.readPowerProductionUnits).toHaveBeenCalledWith(authenticatedUser.sub);
     expect(unitServiceMock.readPowerProductionUnit).toHaveBeenCalledWith(expectedPowerProductionUnit.id);
-    expect(unitServiceMock.createPowerProductionUnit).toHaveBeenCalledWith(givenPowerProductionInput, authenticatedUser.sub);
+    expect(unitServiceMock.createPowerProductionUnit).toHaveBeenCalledWith(
+      givenPowerProductionInput,
+      authenticatedUser.sub,
+    );
     expect(unitServiceMock.readHydrogenProductionUnits).toHaveBeenCalledWith(authenticatedUser.sub);
     expect(unitServiceMock.readHydrogenProductionUnit).toHaveBeenCalledWith(expectedHydrogenProductionUnit.id);
     expect(unitServiceMock.createHydrogenProductionUnit).toHaveBeenCalledWith(
       givenHydrogenProductionInput,
       authenticatedUser.sub,
     );
-    expect(unitServiceMock.updateUnitStatus).toHaveBeenCalledWith('unit-id-1', givenUpdateStatusDto.active, authenticatedUser.sub);
+    expect(unitServiceMock.updateUnitStatus).toHaveBeenCalledWith(
+      'unit-id-1',
+      givenUpdateStatusDto.active,
+      authenticatedUser.sub,
+    );
     expect(unitServiceMock.updateHydrogenProductionUnit).toHaveBeenCalledWith(
       'hydrogen-unit-1',
       givenHydrogenProductionInput,

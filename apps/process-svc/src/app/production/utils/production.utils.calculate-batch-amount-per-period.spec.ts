@@ -10,7 +10,7 @@ import { calculateBatchAmountPerAccountingPeriod } from './production.utils';
 
 describe('ProductionUtils.calculateBatchAmountPerAccountingPeriod', () => {
   it('should return the full amount when numberOfAccountingPeriods is less than 1', () => {
-  // arrange
+    // arrange
     const givenBatchAmount = 10;
     const givenNumberOfAccountingPeriods = 0.5;
 
@@ -27,7 +27,7 @@ describe('ProductionUtils.calculateBatchAmountPerAccountingPeriod', () => {
   });
 
   it('should divide the amount equally for integer periods when called', () => {
-  // arrange
+    // arrange
     const givenBatchAmount = 10;
     const givenNumberOfAccountingPeriods = 2;
 
@@ -44,7 +44,7 @@ describe('ProductionUtils.calculateBatchAmountPerAccountingPeriod', () => {
   });
 
   it('should divide the amount equally for non-integer periods when called', () => {
-  // arrange
+    // arrange
     const givenBatchAmount = 10;
     const givenNumberOfAccountingPeriods = 2.2;
 
@@ -61,7 +61,7 @@ describe('ProductionUtils.calculateBatchAmountPerAccountingPeriod', () => {
   });
 
   it('should return the full amount when numberOfAccountingPeriods is exactly 1', () => {
-  // arrange
+    // arrange
     const givenBatchAmount = 10;
     const givenNumberOfAccountingPeriods = 1;
 
@@ -78,54 +78,50 @@ describe('ProductionUtils.calculateBatchAmountPerAccountingPeriod', () => {
   });
 
   it('should throw when batchAmount is negative', () => {
-  // arrange
+    // arrange
     const givenBatchAmount = -10;
     const givenNumberOfAccountingPeriods = 1;
 
     // act & assert
-    const actualOperation = () => calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods);
+    const actualOperation = () =>
+      calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods);
 
-    expect(actualOperation).toThrow(
-      'batchAmount must be greater than zero',
-    );
+    expect(actualOperation).toThrow('batchAmount must be greater than zero');
   });
 
   it('should throw when batchAmount is zero', () => {
-  // arrange
+    // arrange
     const givenBatchAmount = 0;
     const givenNumberOfAccountingPeriods = 1;
 
     // act & assert
-    const actualOperation = () => calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods);
+    const actualOperation = () =>
+      calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods);
 
-    expect(actualOperation).toThrow(
-      'batchAmount must be greater than zero',
-    );
+    expect(actualOperation).toThrow('batchAmount must be greater than zero');
   });
 
   it('should throw when numberOfAccountingPeriods is negative', () => {
-  // arrange
+    // arrange
     const givenBatchAmount = 10;
     const givenNumberOfAccountingPeriods = -1;
 
     // act & assert
-    const actualOperation = () => calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods);
+    const actualOperation = () =>
+      calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods);
 
-    expect(actualOperation).toThrow(
-      'numberOfAccountingPeriods must be greater than zero',
-    );
+    expect(actualOperation).toThrow('numberOfAccountingPeriods must be greater than zero');
   });
 
   it('should throw when numberOfAccountingPeriods is zero', () => {
-  // arrange
+    // arrange
     const givenBatchAmount = 10;
     const givenNumberOfAccountingPeriods = 0;
 
     // act & assert
-    const actualOperation = () => calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods);
+    const actualOperation = () =>
+      calculateBatchAmountPerAccountingPeriod(givenBatchAmount, givenNumberOfAccountingPeriods);
 
-    expect(actualOperation).toThrow(
-      'numberOfAccountingPeriods must be greater than zero',
-    );
+    expect(actualOperation).toThrow('numberOfAccountingPeriods must be greater than zero');
   });
 });

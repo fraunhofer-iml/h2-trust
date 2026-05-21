@@ -14,7 +14,7 @@ const STORAGE_UNIT_ID = 'test-storage-unit';
 
 describe('computeHydrogenComposition', () => {
   it('should calculate hydrogen composition when called', () => {
-  // arrange
+    // arrange
     const givenBottleAmount = 1;
     const givenComponents = [new HydrogenComponentEntity(null, 1, RfnboType.RFNBO_READY)];
 
@@ -26,7 +26,7 @@ describe('computeHydrogenComposition', () => {
   });
 
   it('should calculate hydrogen composition with two components when called', () => {
-  // arrange
+    // arrange
     const givenBottleAmount = 1;
     const givenComponents = [
       new HydrogenComponentEntity(null, 2, RfnboType.RFNBO_READY),
@@ -46,7 +46,7 @@ describe('computeHydrogenComposition', () => {
   });
 
   it('should calculate hydrogen composition with duplicate rfnbo type when called', () => {
-  // arrange
+    // arrange
     const givenBottleAmount = 1;
     const givenComponents = [
       new HydrogenComponentEntity(null, 2, RfnboType.RFNBO_READY),
@@ -67,15 +67,13 @@ describe('computeHydrogenComposition', () => {
   });
 
   it('should throw when total stored amount is zero', () => {
-  // arrange
+    // arrange
     const givenBottleAmount = 30;
     const givenComponents = [new HydrogenComponentEntity(null, 0, RfnboType.RFNBO_READY)];
 
     // act & assert
     const actualOperation = () => computeHydrogenComposition(givenComponents, givenBottleAmount, STORAGE_UNIT_ID);
 
-    expect(actualOperation).toThrow(
-      `Total stored amount of storage unit '${STORAGE_UNIT_ID}' is not greater than 0`,
-    );
+    expect(actualOperation).toThrow(`Total stored amount of storage unit '${STORAGE_UNIT_ID}' is not greater than 0`);
   });
 });

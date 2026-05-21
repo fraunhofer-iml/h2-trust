@@ -219,9 +219,7 @@ describe('RedCompliance', () => {
       // act & assert
       const actualOperation = () => determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
 
-      expect(actualOperation).toThrow(
-        expectedErrorMessage,
-      );
+      expect(actualOperation).toThrow(expectedErrorMessage);
     });
 
     it('should throw when the hydrogen production unit is missing', () => {
@@ -235,9 +233,7 @@ describe('RedCompliance', () => {
       // act & assert
       const actualOperation = () => determineRedCompliance(givenHydrogenProcessStep, givenPowerProcessStep);
 
-      expect(actualOperation).toThrow(
-        expectedErrorMessage,
-      );
+      expect(actualOperation).toThrow(expectedErrorMessage);
     });
   });
 

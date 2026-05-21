@@ -16,7 +16,8 @@ describe('HydrogenTransportationEmissionCalculationAssembler', () => {
     it('should compute emissions for provenance with hydrogen bottling only when called', () => {
       // arrange
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
-      const givenTransportationDetails: TransportationDetailsEntity = TransportationDetailsEntityFixture.createPipeline();
+      const givenTransportationDetails: TransportationDetailsEntity =
+        TransportationDetailsEntityFixture.createPipeline();
       const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation({
         givenTransportationDetails,
       });

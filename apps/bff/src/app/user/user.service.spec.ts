@@ -43,7 +43,10 @@ describe('UserService', () => {
     const actualResult: UserDetailsDto = await service.readUserWithCompany(expectedUser.id);
 
     // assert
-    expect(generalServiceMock.send).toHaveBeenCalledWith(UserMessagePatterns.READ, new ReadByIdPayload(expectedUser.id));
+    expect(generalServiceMock.send).toHaveBeenCalledWith(
+      UserMessagePatterns.READ,
+      new ReadByIdPayload(expectedUser.id),
+    );
     expect(actualResult).toEqual(UserDetailsDto.fromEntity(expectedUser));
   });
 });

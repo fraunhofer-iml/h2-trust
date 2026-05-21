@@ -12,7 +12,7 @@ describe('subtractMonthsSafe', () => {
   describe('subtractMonthsSafe', () => {
     describe('basic subtraction', () => {
       it('should subtract one month when given a mid-month date', () => {
-      // arrange
+        // arrange
         const givenDate = new Date(Date.UTC(2024, 2, 15)); // March 15, 2024
 
         // act
@@ -25,7 +25,7 @@ describe('subtractMonthsSafe', () => {
       });
 
       it('should subtract multiple months when the result stays within the same year', () => {
-      // arrange
+        // arrange
         const givenDate = new Date(Date.UTC(2024, 5, 20)); // June 20, 2024
 
         // act
@@ -38,7 +38,7 @@ describe('subtractMonthsSafe', () => {
       });
 
       it('should preserve the date when subtracting zero months', () => {
-      // arrange
+        // arrange
         const givenDate = new Date(Date.UTC(2024, 5, 15)); // June 15, 2024
 
         // act
@@ -79,7 +79,7 @@ describe('subtractMonthsSafe', () => {
       });
 
       it('should preserve month and day when subtracting exactly 12 months', () => {
-      // arrange
+        // arrange
         const givenDate = new Date(Date.UTC(2024, 5, 15)); // June 15, 2024
 
         // act
@@ -148,7 +148,7 @@ describe('subtractMonthsSafe', () => {
 
     describe('leap year handling', () => {
       it('should clamp Feb 29 to Feb 28 when subtracting 12 months from a leap year date', () => {
-      // arrange
+        // arrange
         const givenDate = new Date(Date.UTC(2024, 1, 29)); // February 29, 2024
 
         // act
@@ -161,7 +161,7 @@ describe('subtractMonthsSafe', () => {
       });
 
       it('should return Feb 29 when subtracting into February of a leap year', () => {
-      // arrange
+        // arrange
         const givenDate = new Date(Date.UTC(2024, 2, 29)); // March 29, 2024
 
         // act
@@ -176,7 +176,7 @@ describe('subtractMonthsSafe', () => {
 
     describe('edge cases', () => {
       it('should preserve the first day when subtracting from the first day of a month', () => {
-      // arrange
+        // arrange
         const givenDate = new Date(Date.UTC(2024, 5, 1)); // June 1, 2024
 
         // act
@@ -189,7 +189,7 @@ describe('subtractMonthsSafe', () => {
       });
 
       it('should clamp the day when subtracting from the last day of December', () => {
-      // arrange
+        // arrange
         const givenDate = new Date(Date.UTC(2024, 11, 31)); // December 31, 2024
 
         // act
@@ -202,7 +202,7 @@ describe('subtractMonthsSafe', () => {
       });
 
       it('should subtract large month values when many years are crossed', () => {
-      // arrange
+        // arrange
         const givenDate = new Date(Date.UTC(2024, 5, 15)); // June 15, 2024
 
         // act
@@ -215,7 +215,7 @@ describe('subtractMonthsSafe', () => {
       });
 
       it('should return UTC midnight when the source date contains a time component', () => {
-      // arrange
+        // arrange
         const givenDate = new Date(Date.UTC(2024, 5, 15, 14, 30, 45, 123)); // with time
 
         // act
@@ -277,7 +277,7 @@ describe('subtractMonthsSafe', () => {
 
     describe('negative months (addition)', () => {
       it('should add months when a negative month value is provided', () => {
-      // arrange
+        // arrange
         const givenDate = new Date(Date.UTC(2024, 5, 15)); // June 15, 2024
 
         // act
@@ -290,7 +290,7 @@ describe('subtractMonthsSafe', () => {
       });
 
       it('should cross the year boundary when adding months via a negative month value', () => {
-      // arrange
+        // arrange
         const givenDate = new Date(Date.UTC(2024, 10, 15)); // November 15, 2024
 
         // act
@@ -316,7 +316,7 @@ describe('subtractMonthsSafe', () => {
       });
 
       it('should add large month values when a large negative month value is provided', () => {
-      // arrange
+        // arrange
         const givenDate = new Date(Date.UTC(2024, 5, 15)); // June 15, 2024
 
         // act
@@ -332,7 +332,7 @@ describe('subtractMonthsSafe', () => {
 
   describe('parseLocalTimeToUTC', () => {
     it('should convert Europe/Brlin CEST local time to UTC when given a localized date string', () => {
-    // arrange
+      // arrange
       const givenDateString = '01.12.2025 11:00';
       const givenTimeZone = 'Europe/Berlin';
 
@@ -347,7 +347,7 @@ describe('subtractMonthsSafe', () => {
     });
 
     it('should convert Europe/Brlin CET local time to UTC when given a localized date string', () => {
-    // arrange
+      // arrange
       const givenDateString = '01.05.2025 11:00';
       const givenTimeZone = 'Europe/Berlin';
 
@@ -362,7 +362,7 @@ describe('subtractMonthsSafe', () => {
     });
 
     it('should convert milliseconds to UTC when given a timestamp number', () => {
-    // arrange
+      // arrange
       //number of ms for 01.12.2025 11:00
       const givenNumberOfMs = 1764586800000;
       const givenTimeZone = 'Europe/Berlin';
@@ -378,7 +378,7 @@ describe('subtractMonthsSafe', () => {
     });
 
     it('should convert an ISO string to UTC when given a non-UTC time zone', () => {
-    // arrange
+      // arrange
       const givenIsoTime = '2025-12-01T11:00:00.000Z';
       const givenTimeZone = 'Europe/Berlin';
 
@@ -393,7 +393,7 @@ describe('subtractMonthsSafe', () => {
     });
 
     it('should not convert the time when the ISO input is already in UTC format', () => {
-    // arrange
+      // arrange
       const givenIsoTime = '2025-12-01T11:00:00.000Z';
       const givenTimeZone = 'UTC';
 
@@ -408,7 +408,7 @@ describe('subtractMonthsSafe', () => {
     });
 
     it('should throw when given an invalid time zone input', () => {
-    // arrange
+      // arrange
       const givenDateString = '01.05.2025 11:00';
       const givenInvalidTimeZone = 'invalid';
 

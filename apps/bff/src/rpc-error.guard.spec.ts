@@ -32,7 +32,7 @@ describe('rpc-error.guard', () => {
     });
 
     it('should return false when the value does not have a string error code', () => {
-    // act & assert
+      // act & assert
       expect(isRpcError(null)).toBe(false);
       expect(isRpcError(undefined)).toBe(false);
       expect(isRpcError({})).toBe(false);

@@ -187,11 +187,10 @@ describe('allocateBottling', () => {
       const expectedErrorMessage = `There is not enough hydrogen in storage unit '${givenHydrogenStorageUnitId}' for the requested amount of 100 of quality ${RfnboType.RFNBO_READY}.`;
 
       // act & assert
-      const actualOperation = () => allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
+      const actualOperation = () =>
+        allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
 
-      expect(actualOperation).toThrow(
-        expectedErrorMessage,
-      );
+      expect(actualOperation).toThrow(expectedErrorMessage);
     });
 
     it('should return empty results when hydrogen composition is empty', () => {

@@ -64,12 +64,13 @@ describe('FileDownloadService', () => {
     givenStorageMock.fileExists.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
 
     // act
-    const actualResult = service.downloadFilesAsZip(givenResponseMock as unknown as Response, ['first.csv', 'missing.csv']);
+    const actualResult = service.downloadFilesAsZip(givenResponseMock as unknown as Response, [
+      'first.csv',
+      'missing.csv',
+    ]);
 
     // assert
-    await expect(actualResult).rejects.toThrow(
-      new NotFoundException('Missing files: missing.csv'),
-    );
+    await expect(actualResult).rejects.toThrow(new NotFoundException('Missing files: missing.csv'));
 
     expect(givenStorageMock.downloadFile).not.toHaveBeenCalled();
     expect(pipeline).not.toHaveBeenCalled();
@@ -81,7 +82,9 @@ describe('FileDownloadService', () => {
     const givenSecondFileStream = Readable.from(['second']);
 
     givenStorageMock.fileExists.mockResolvedValue(true);
-    givenStorageMock.downloadFile.mockResolvedValueOnce(givenFirstFileStream).mockResolvedValueOnce(givenSecondFileStream);
+    givenStorageMock.downloadFile
+      .mockResolvedValueOnce(givenFirstFileStream)
+      .mockResolvedValueOnce(givenSecondFileStream);
     jest.mocked(pipeline).mockResolvedValue(undefined);
 
     // act

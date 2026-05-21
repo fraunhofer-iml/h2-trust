@@ -177,7 +177,9 @@ describe('ProductionUtils.calculateWaterAmount', () => {
         calculateWaterAmount(givenStartedAt, givenEndedAt, givenWaterConsumptionPerHour);
       };
 
-      expect(actualOperation).toThrow(`waterConsumptionPerHour must be non-negative: [${givenWaterConsumptionPerHour}]`);
+      expect(actualOperation).toThrow(
+        `waterConsumptionPerHour must be non-negative: [${givenWaterConsumptionPerHour}]`,
+      );
     });
   });
 

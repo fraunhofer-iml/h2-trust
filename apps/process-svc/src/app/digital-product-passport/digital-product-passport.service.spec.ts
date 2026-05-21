@@ -25,11 +25,11 @@ import {
 } from '@h2-trust/contracts/entities/fixtures';
 import { PowerType, RfnboType } from '@h2-trust/domain';
 import { ProcessStepService } from '../process-step/process-step.service';
+import { DigitalProductPassportService } from './digital-product-passport.service';
 import { assembleProofOfOrigin, getHydrogenBottlingCompositions } from './proof-of-origin/proof-of-origin.assembler';
 import { assembleProofOfSustainability } from './proof-of-sustainability/proof-of-sustainability.assembler';
 import { buildProvenance } from './provenance/provenance.service';
 import { determineRedCompliance, determineTotalRedCompliance } from './red-compliance/red-compliance';
-import { DigitalProductPassportService } from './digital-product-passport.service';
 
 jest.mock('./proof-of-origin/proof-of-origin.assembler', () => ({
   assembleProofOfOrigin: jest.fn(),
@@ -236,7 +236,10 @@ describe('DigitalProductPassportService', () => {
       );
 
       processStepServiceMock.readProcessStep.mockResolvedValue(givenHydrogenBottling);
-      processStepServiceMock.getPredecessors.mockResolvedValue([givenHydrogenBottling, givenProductionChain.powerProduction]);
+      processStepServiceMock.getPredecessors.mockResolvedValue([
+        givenHydrogenBottling,
+        givenProductionChain.powerProduction,
+      ]);
       buildProvenanceMock.mockReturnValue(givenProvenance);
       determineTotalRedComplianceMock.mockReturnValue(givenRedCompliance);
       assembleProofOfOriginMock.mockReturnValue([ProofOfOriginSectionEntityFixture.create()]);

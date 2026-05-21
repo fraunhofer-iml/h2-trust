@@ -48,7 +48,7 @@ describe('ProductionUtils.calculateProductionEndDate', () => {
 
 describe('ProductionUtils.calculateProductionDate', () => {
   it('should calculate the correct start date for the first accountingPeriod when called', () => {
-  // arrange
+    // arrange
     const givenProductionStartedAtInSeconds = 1000;
     const givenAccountingPeriodInSeconds = 60;
     const givenAccountingPeriodIndex = 0;
@@ -69,7 +69,7 @@ describe('ProductionUtils.calculateProductionDate', () => {
   });
 
   it('should calculate the correct end date for the first accountingPeriod when called', () => {
-  // arrange
+    // arrange
     const givenProductionStartedAtInSeconds = 1000;
     const givenAccountingPeriodInSeconds = 60;
     const givenAccountingPeriodIndex = 0;
@@ -91,7 +91,7 @@ describe('ProductionUtils.calculateProductionDate', () => {
   });
 
   it('should calculate the correct start date for a later accountingPeriod when called', () => {
-  // arrange
+    // arrange
     const givenProductionStartedAtInSeconds = 2000;
     const givenAccountingPeriodInSeconds = 120;
     const givenAccountingPeriodIndex = 2;
@@ -113,7 +113,7 @@ describe('ProductionUtils.calculateProductionDate', () => {
   });
 
   it('should calculate the correct end date for a later accountingPeriod when called', () => {
-  // arrange
+    // arrange
     const givenProductionStartedAtInSeconds = 2000;
     const givenAccountingPeriodInSeconds = 120;
     const givenAccountingPeriodIndex = 2;

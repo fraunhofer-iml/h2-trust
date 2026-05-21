@@ -10,7 +10,7 @@ import { calculateNumberOfAccountingPeriods } from './production.utils';
 
 describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
   it('should calculate correct number of periods (divisible) when called', () => {
-  // arrange
+    // arrange
     const givenProductionStartedAtSeconds = 15;
     const givenProductionEndedAtSeconds = 75;
     const givenAccountingPeriodSeconds = 15;
@@ -29,7 +29,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
   });
 
   it('should round up for non-divisible durations when called', () => {
-  // arrange
+    // arrange
     const givenProductionStartedAtSeconds = 5;
     const givenProductionEndedAtSeconds = 10;
     const givenAccountingPeriodSeconds = 2;
@@ -48,7 +48,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
   });
 
   it('should throw when productionStartedAtSeconds is negative', () => {
-  // arrange
+    // arrange
     const givenProductionStartedAtSeconds = -90;
     const givenProductionEndedAtSeconds = 75;
     const givenAccountingPeriodSeconds = 15;
@@ -65,7 +65,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
   });
 
   it('should throw when productionEndedAtSeconds is negative', () => {
-  // arrange
+    // arrange
     const givenProductionStartedAtSeconds = 90;
     const givenProductionEndedAtSeconds = -75;
     const givenAccountingPeriodSeconds = 15;
@@ -82,7 +82,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
   });
 
   it('should throw when accountingPeriodInSeconds is negative', () => {
-  // arrange
+    // arrange
     const givenProductionStartedAtSeconds = 0;
     const givenProductionEndedAtSeconds = 10;
     const givenAccountingPeriodSeconds = -5;
@@ -99,7 +99,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
   });
 
   it('should throw when accountingPeriodInSeconds is zero', () => {
-  // arrange
+    // arrange
     const givenProductionStartedAtSeconds = 0;
     const givenProductionEndedAtSeconds = 10;
     const givenAccountingPeriodSeconds = 0;
@@ -116,7 +116,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
   });
 
   it('should throw when durationInSeconds is negative', () => {
-  // arrange
+    // arrange
     const givenProductionStartedAtSeconds = 90;
     const givenProductionEndedAtSeconds = 75;
     const givenAccountingPeriodSeconds = 15;
@@ -133,7 +133,7 @@ describe('ProductionUtils.calculateNumberOfAccountingPeriods', () => {
   });
 
   it('should throw when durationInSeconds is zero', () => {
-  // arrange
+    // arrange
     const givenProductionStartedAtSeconds = 75;
     const givenProductionEndedAtSeconds = 75;
     const givenAccountingPeriodSeconds = 15;

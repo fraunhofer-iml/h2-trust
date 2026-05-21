@@ -9,10 +9,7 @@
 import { ClientProxy } from '@nestjs/microservices';
 import { of } from 'rxjs';
 import { PpaDto, PpaRequestDto } from '@h2-trust/contracts/dtos';
-import {
-  PpaRequestCreateDtoFixture,
-  PpaRequestDecisionDtoFixture,
-} from '@h2-trust/contracts/dtos/fixtures';
+import { PpaRequestCreateDtoFixture, PpaRequestDecisionDtoFixture } from '@h2-trust/contracts/dtos/fixtures';
 import { PowerPurchaseAgreementEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import {
   CreatePowerPurchaseAgreementsPayload,
@@ -66,7 +63,9 @@ describe('PowerPurchaseAgreementService', () => {
     const givenUserId = 'user-id-1';
     const givenRole = PpaRequestRole.RECEIVER;
     const givenStatus = PowerPurchaseAgreementStatus.PENDING;
-    const expectedAgreements = [PowerPurchaseAgreementEntityFixture.create({ id: 'ppa-request-1', status: givenStatus })];
+    const expectedAgreements = [
+      PowerPurchaseAgreementEntityFixture.create({ id: 'ppa-request-1', status: givenStatus }),
+    ];
 
     generalServiceMock.send.mockImplementation((_pattern, _payload) => of(expectedAgreements));
 

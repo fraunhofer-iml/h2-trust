@@ -43,7 +43,10 @@ describe('CompanyService', () => {
   describe('findAll', () => {
     it('should delegate to CompanyRepository when finding all companies', async () => {
       // arrange
-      const expectedCompanies = [CompanyEntityFixture.createPowerProducer(), CompanyEntityFixture.createHydrogenProducer()];
+      const expectedCompanies = [
+        CompanyEntityFixture.createPowerProducer(),
+        CompanyEntityFixture.createHydrogenProducer(),
+      ];
 
       repositoryMock.findAll.mockResolvedValue(expectedCompanies);
 

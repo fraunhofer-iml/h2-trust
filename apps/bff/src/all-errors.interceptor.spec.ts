@@ -9,8 +9,8 @@
 import { CallHandler, ExecutionContext, HttpException, NotFoundException } from '@nestjs/common';
 import { lastValueFrom, throwError } from 'rxjs';
 import { ErrorCode } from '@h2-trust/exceptions';
-import { PROBLEM_TYPES } from './problem-types';
 import { AllErrorsInterceptor } from './all-errors.interceptor';
+import { PROBLEM_TYPES } from './problem-types';
 
 describe('AllErrorsInterceptor', () => {
   const givenExecutionContext = {} as ExecutionContext;

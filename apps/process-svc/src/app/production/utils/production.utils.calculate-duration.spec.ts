@@ -51,9 +51,7 @@ describe('ProductionUtils.calculateDuration', () => {
     // act & assert
     const actualOperation = () => calculateDuration(givenStartedAtInSeconds, givenEndedAtInSeconds);
 
-    expect(actualOperation).toThrow(
-      'endedAtInSeconds must be greater than startedAtInSeconds',
-    );
+    expect(actualOperation).toThrow('endedAtInSeconds must be greater than startedAtInSeconds');
   });
 
   it('should throw when endedAtInSeconds is before startedAtInSeconds', () => {
@@ -64,8 +62,6 @@ describe('ProductionUtils.calculateDuration', () => {
     // act & assert
     const actualOperation = () => calculateDuration(givenStartedAtInSeconds, givenEndedAtInSeconds);
 
-    expect(actualOperation).toThrow(
-      'endedAtInSeconds must be greater than startedAtInSeconds',
-    );
+    expect(actualOperation).toThrow('endedAtInSeconds must be greater than startedAtInSeconds');
   });
 });

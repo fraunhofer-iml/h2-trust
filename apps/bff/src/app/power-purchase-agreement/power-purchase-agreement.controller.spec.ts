@@ -6,11 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  type AuthenticatedKCUser,
-  type PpaDto,
-  type PpaRequestDto,
-} from '@h2-trust/contracts/dtos';
+import { type AuthenticatedKCUser, type PpaDto, type PpaRequestDto } from '@h2-trust/contracts/dtos';
 import {
   PpaDtoFixture,
   PpaRequestCreateDtoFixture,

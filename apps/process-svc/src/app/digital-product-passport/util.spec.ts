@@ -12,12 +12,7 @@ import {
   ProofOfOriginWaterBatchEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
 import { BatchType } from '@h2-trust/domain';
-import {
-  assembleClassification,
-  assembleSubClassification,
-  calculateBatchEmission,
-  sumAmounts,
-} from './util';
+import { assembleClassification, assembleSubClassification, calculateBatchEmission, sumAmounts } from './util';
 
 describe('DigitalProductPassportUtils', () => {
   describe('assembleClassification', () => {

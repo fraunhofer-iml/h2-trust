@@ -13,13 +13,13 @@ import {
   PowerProductionTypeEntityFixture,
   PowerProductionUnitEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
+import { ReadByIdPayload, ReadByIdsPayload } from '@h2-trust/contracts/payloads';
 import {
   CreateHydrogenProductionUnitPayloadFixture,
   CreateHydrogenStorageUnitPayloadFixture,
   CreatePowerProductionUnitPayloadFixture,
   UpdateUnitStatusPayloadFixture,
 } from '@h2-trust/contracts/payloads/fixtures';
-import { ReadByIdPayload, ReadByIdsPayload } from '@h2-trust/contracts/payloads';
 import { PowerProductionTypeRepository, UnitRepository } from '@h2-trust/database';
 import { DomainException } from '@h2-trust/exceptions';
 import { UnitService } from './unit.service';

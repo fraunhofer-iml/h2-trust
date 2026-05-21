@@ -38,14 +38,14 @@ import {
 import {
   CsvContentType,
   DefaultGridProvider,
-  PowerType,
   PowerPurchaseAgreementStatus,
+  PowerType,
   StagingScope,
 } from '@h2-trust/domain';
 import { QUEUE_GENERAL_SVC } from '@h2-trust/messaging';
 import { CsvImportProcessingService } from './csv/csv-import-processing.service';
-import { normalizeProduction } from './production-normalizer';
 import { ProductionCreationService } from './production-creation.service';
+import { normalizeProduction } from './production-normalizer';
 import { ProductionStagingService } from './production-staging.service';
 
 jest.mock('./production-normalizer', () => ({
@@ -260,9 +260,7 @@ describe('ProductionStagingService', () => {
       // act & assert
       const actualResult = service.createProductionsFromStaging(givenPayload);
 
-      await expect(actualResult).rejects.toThrow(
-        'The given staged production IDs are invalid',
-      );
+      await expect(actualResult).rejects.toThrow('The given staged production IDs are invalid');
       expect(productionCreationServiceMock.createAndPersistProductions).not.toHaveBeenCalled();
     });
 
@@ -483,11 +481,9 @@ describe('ProductionStagingService', () => {
         givenPayload.ownerId,
         PowerPurchaseAgreementStatus.APPROVED,
       );
-      expect(stagedProductionRepositoryMock.findStagedProductions).toHaveBeenCalledWith(
-        givenPayload,
-        false,
-        ['power-unit-1'],
-      );
+      expect(stagedProductionRepositoryMock.findStagedProductions).toHaveBeenCalledWith(givenPayload, false, [
+        'power-unit-1',
+      ]);
       expect(actualResult).toEqual(expectedStagedProductions);
     });
   });
@@ -567,7 +563,11 @@ describe('ProductionStagingService', () => {
       );
       expect(normalizeProductionMock).toHaveBeenCalledWith(givenParsedImports, givenPayload.companyId);
       expect(csvImportRepositoryMock.saveCsvImport).toHaveBeenCalledWith(givenPayload.userId, givenTransaction);
-      expect(csvImportRepositoryMock.saveCsvDocuments).toHaveBeenCalledWith('csv-import-1', givenCsvDocumentInputs, givenTransaction);
+      expect(csvImportRepositoryMock.saveCsvDocuments).toHaveBeenCalledWith(
+        'csv-import-1',
+        givenCsvDocumentInputs,
+        givenTransaction,
+      );
       expect(stagedProductionRepositoryMock.saveStagedProductions).toHaveBeenCalledWith(
         givenStagedProductions,
         'csv-import-1',

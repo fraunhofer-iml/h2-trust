@@ -8,18 +8,22 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import {
-  PowerPurchaseAgreementEntityFixture,
   PowerProductionTypeEntityFixture,
   PowerProductionUnitEntityFixture,
+  PowerPurchaseAgreementEntityFixture,
   UserEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
+import {
+  ReadByIdPayload,
+  ReadPowerPurchaseAgreementsPayload,
+  UpdatePowerPurchaseAgreementPayload,
+} from '@h2-trust/contracts/payloads';
 import {
   CreatePowerPurchaseAgreementsPayloadFixture,
   UpdatePowerPurchaseAgreementPayloadFixture,
 } from '@h2-trust/contracts/payloads/fixtures';
-import { ReadByIdPayload, ReadPowerPurchaseAgreementsPayload, UpdatePowerPurchaseAgreementPayload } from '@h2-trust/contracts/payloads';
 import { PowerPurchaseAgreementRepository, UnitRepository, UserRepository } from '@h2-trust/database';
-import { PowerPurchaseAgreementStatus, PowerProductionType, PpaRequestRole } from '@h2-trust/domain';
+import { PowerProductionType, PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { DomainException, ValidationException } from '@h2-trust/exceptions';
 import { PowerPurchaseAgreementService } from './power-purchase-agreement.service';
 
@@ -152,7 +156,10 @@ describe('PowerPurchaseAgreementService', () => {
 
       // assert
       await expect(actualResult).rejects.toThrow(DomainException);
-      expect(powerPurchaseAgreementRepositoryMock.canDecideAgreement).toHaveBeenCalledWith(givenUser, givenPayload.ppaId);
+      expect(powerPurchaseAgreementRepositoryMock.canDecideAgreement).toHaveBeenCalledWith(
+        givenUser,
+        givenPayload.ppaId,
+      );
       expect(unitRepositoryMock.ownsPowerProductionUnit).not.toHaveBeenCalled();
       expect(powerPurchaseAgreementRepositoryMock.updatePpaStatus).not.toHaveBeenCalled();
     });
@@ -213,8 +220,14 @@ describe('PowerPurchaseAgreementService', () => {
       const actualResult = await service.updatePPA(givenPayload);
 
       // assert
-      expect(powerPurchaseAgreementRepositoryMock.canDecideAgreement).toHaveBeenCalledWith(givenUser, givenPayload.ppaId);
-      expect(unitRepositoryMock.ownsPowerProductionUnit).toHaveBeenCalledWith(givenUser, givenPayload.powerProductionUnitId);
+      expect(powerPurchaseAgreementRepositoryMock.canDecideAgreement).toHaveBeenCalledWith(
+        givenUser,
+        givenPayload.ppaId,
+      );
+      expect(unitRepositoryMock.ownsPowerProductionUnit).toHaveBeenCalledWith(
+        givenUser,
+        givenPayload.powerProductionUnitId,
+      );
       expect(powerPurchaseAgreementRepositoryMock.updatePpaStatus).toHaveBeenCalledWith(givenPayload);
       expect(actualResult).toEqual(expectedAgreement);
     });

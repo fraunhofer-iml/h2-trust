@@ -210,7 +210,9 @@ describe('Provenance', () => {
         batch: BatchEntityFixture.createHydrogenBatch({
           id: 'root-hydrogen-batch',
           processStepId: 'root-hydrogen-production',
-          predecessors: [BatchEntityFixture.createPowerBatch({ id: 'power-batch-1', processStepId: 'power-production-1' })],
+          predecessors: [
+            BatchEntityFixture.createPowerBatch({ id: 'power-batch-1', processStepId: 'power-production-1' }),
+          ],
         }),
         executedBy: HydrogenProductionUnitEntityFixture.create({ id: 'hydrogen-unit-1' }),
       });
@@ -221,7 +223,8 @@ describe('Provenance', () => {
       });
 
       // act & assert
-      const actualOperation = () => buildProvenance(givenRootHydrogenProduction, [givenRootHydrogenProduction, givenPowerProduction]);
+      const actualOperation = () =>
+        buildProvenance(givenRootHydrogenProduction, [givenRootHydrogenProduction, givenPowerProduction]);
 
       expect(actualOperation).toThrow(
         `Missing water consumption predecessor for root production [${givenRootHydrogenProduction.id}].`,

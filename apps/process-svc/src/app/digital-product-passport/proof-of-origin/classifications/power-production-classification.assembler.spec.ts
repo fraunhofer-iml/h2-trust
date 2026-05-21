@@ -18,7 +18,7 @@ import { buildPowerSupplySubClassifications } from './power-production-classific
 describe('PowerProductionProofOfOriginAssembler', () => {
   describe('buildPowerSupplySubClassifications', () => {
     it('should return sub-classifications when power productions are grouped by energy source', async () => {
-    // arrange
+      // arrange
       const givenSolarPowerProduction = ProcessStepEntityFixture.createPowerProduction({
         executedBy: PowerProductionUnitEntityFixture.create({
           type: PowerProductionTypeEntityFixture.createSolarEnergy(),
@@ -63,7 +63,7 @@ describe('PowerProductionProofOfOriginAssembler', () => {
     });
 
     it('should return an empty array when no power productions are provided', async () => {
-    // arrange
+      // arrange
       const givenPowerProductions: ProcessStepEntity[] = [];
       const givenHydrogenAmount = 100;
 
@@ -75,7 +75,7 @@ describe('PowerProductionProofOfOriginAssembler', () => {
     });
 
     it('should return an empty array when power productions are undefined', async () => {
-    // arrange
+      // arrange
       const givenHydrogenAmount = 100;
 
       // act

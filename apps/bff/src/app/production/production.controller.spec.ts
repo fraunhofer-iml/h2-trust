@@ -66,7 +66,13 @@ describe('ProductionController', () => {
     productionServiceMock.readHydrogenProductionsByOwner.mockResolvedValue(expectedResult);
 
     // act
-    const actualResult = await controller.readHydrogenProductionsByOwner(authenticatedUser, 1, 25, 'Unit A', givenMonth);
+    const actualResult = await controller.readHydrogenProductionsByOwner(
+      authenticatedUser,
+      1,
+      25,
+      'Unit A',
+      givenMonth,
+    );
 
     // assert
     expect(actualResult).toEqual(expectedResult);
@@ -146,7 +152,9 @@ describe('ProductionController', () => {
 
   it('should delegate verifyCsvDocumentIntegrity to the service when a document id is provided', async () => {
     // arrange
-    const expectedResult: CsvDocumentIntegrityResultDto = CsvDocumentIntegrityResultDtoFixture.create({ id: 'document-1' });
+    const expectedResult: CsvDocumentIntegrityResultDto = CsvDocumentIntegrityResultDtoFixture.create({
+      id: 'document-1',
+    });
 
     productionServiceMock.verifyCsvDocumentIntegrity.mockResolvedValue(expectedResult);
 
