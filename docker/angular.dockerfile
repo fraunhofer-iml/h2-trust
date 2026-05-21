@@ -9,7 +9,8 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY ./dist/apps/${APP}/browser/ /usr/share/nginx/html/
 
 RUN mkdir -p /usr/share/nginx/html/assets/env \
-  && chown -R nginx:nginx /usr/share/nginx/html
+  && chown -R nginx:root /usr/share/nginx/html \
+  && chmod -R g+rwX /usr/share/nginx/html
 
 USER nginx
 

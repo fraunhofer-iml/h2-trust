@@ -79,7 +79,7 @@ describe('UnitController', () => {
     const expectedResponse: UnitDto = HydrogenProductionUnitDto.fromEntity(fixtureUnit);
 
     const sendRequestSpy = jest.spyOn(queue, 'send');
-    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: any) => {
+    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: unknown) => {
       return of(fixtureUnit);
     });
 
@@ -100,7 +100,7 @@ describe('UnitController', () => {
     const readUserRequestSpy = jest.spyOn(userService, 'readUserWithCompany');
     readUserRequestSpy.mockResolvedValue(fixtureUser);
     const sendRequestSpy = jest.spyOn(queue, 'send');
-    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: any) => {
+    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: unknown) => {
       return of(fixtureUnits);
     });
 
@@ -153,7 +153,7 @@ describe('UnitController', () => {
     const readUserRequestSpy = jest.spyOn(userService, 'readUserWithCompany');
     readUserRequestSpy.mockResolvedValue(fixtureUser);
     const sendRequestSpy = jest.spyOn(queue, 'send');
-    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: any) => {
+    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: unknown) => {
       return of(fixtureUnit);
     });
 
@@ -177,7 +177,7 @@ describe('UnitController', () => {
     const readUserRequestSpy = jest.spyOn(userService, 'readUserWithCompany');
     readUserRequestSpy.mockResolvedValue(fixtureUser);
     const sendRequestSpy = jest.spyOn(queue, 'send');
-    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: any) => {
+    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: unknown) => {
       return of(fixtureUnit);
     });
 
@@ -205,7 +205,7 @@ describe('UnitController', () => {
     const readUserRequestSpy = jest.spyOn(userService, 'readUserWithCompany');
     readUserRequestSpy.mockResolvedValue(fixtureUser);
     const sendRequestSpy = jest.spyOn(queue, 'send');
-    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: any) => {
+    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: unknown) => {
       return of(fixtureUnit);
     });
 

@@ -7,7 +7,12 @@
  */
 
 import { S3ClientConfig } from '@aws-sdk/client-s3';
-import { ConfigurationService, DECENTRALIZED_STORAGE_PROVIDERS, S3Configuration } from '@h2-trust/configuration';
+import {
+  ConfigurationService,
+  DECENTRALIZED_STORAGE_PROVIDERS,
+  DecentralizedStorageConfiguration,
+  S3Configuration,
+} from '@h2-trust/configuration';
 import { InternalException } from '@h2-trust/exceptions';
 import { CentralizedStorageService } from './centralized/centralized-storage.service';
 import { S3StorageService } from './centralized/s3-storage.service';
@@ -45,7 +50,7 @@ export function createDecentralizedStorageService(
     }
     default:
       throw new InternalException(
-        `Unreachable: unhandled storage provider '${(decentralizedStorage as any).provider}'`,
+        `Unreachable: unhandled storage provider '${(decentralizedStorage as DecentralizedStorageConfiguration).provider}'`,
       );
   }
 }
