@@ -22,6 +22,7 @@ import {
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
   UnitDto,
+  UnitOverviewDto,
   UserDetailsDto,
 } from '@h2-trust/contracts/dtos';
 import {
@@ -103,9 +104,12 @@ describe('UnitController', () => {
       return of(fixtureUnits);
     });
 
-    const actualResponse: HydrogenProductionOverviewDto[] = await controller.getHydrogenProductionUnits({
-      sub: givenUserId,
-    });
+    const actualResponse: UnitOverviewDto[] = await controller.getUnits(
+      {
+        sub: givenUserId,
+      },
+      UnitType.HYDROGEN_PRODUCTION,
+    );
 
     expect(readUserRequestSpy).toHaveBeenCalledTimes(1);
     expect(readUserRequestSpy).toHaveBeenCalledWith(givenUserId);
