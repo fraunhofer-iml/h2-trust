@@ -18,5 +18,6 @@ export * from './power-production-overview.dto';
 export * from './power-production-type.dto';
 export * from './power-production-unit.dto';
 export * from './power-purchase-agreement-connection.dto';
+export * from './unit-overview.type';
 export * from './unit-owner.dto';
 export * from './update';

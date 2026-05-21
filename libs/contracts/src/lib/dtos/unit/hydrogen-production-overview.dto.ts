@@ -7,11 +7,12 @@
  */
 
 import { HydrogenProductionUnitEntity } from '@h2-trust/contracts/entities';
-import { HydrogenProductionTechnology } from '@h2-trust/domain';
+import { HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
 
 export class HydrogenProductionOverviewDto {
   id: string;
   name: string;
+  unitType: UnitType;
   ratedPower: number;
   technology: HydrogenProductionTechnology;
   producing: boolean;
@@ -23,6 +24,7 @@ export class HydrogenProductionOverviewDto {
   constructor(
     id: string,
     name: string,
+    unitType: UnitType,
     ratedPower: number,
     technology: HydrogenProductionTechnology,
     producing: boolean,
@@ -33,6 +35,7 @@ export class HydrogenProductionOverviewDto {
   ) {
     this.id = id;
     this.name = name;
+    this.unitType = unitType;
     this.ratedPower = ratedPower;
     this.technology = technology;
     this.producing = producing;
@@ -48,6 +51,7 @@ export class HydrogenProductionOverviewDto {
     return {
       id: unit.id,
       name: unit.name,
+      unitType: UnitType.HYDROGEN_PRODUCTION,
       ratedPower: unit.ratedPower,
       technology: unit.technology,
       producing: true,

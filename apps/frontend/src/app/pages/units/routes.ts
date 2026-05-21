@@ -8,24 +8,16 @@
 
 import { Route } from '@angular/router';
 import { CreateUnitComponent } from './create/create-unit.component';
-import { HydrogenProductionDetailsComponent } from './details/hydrogen-production/hydrogen-production-details.component';
-import { HydrogenStorageDetailsComponent } from './details/hydrogen-storage/hydrogen-storage-details.component';
-import { PowerProductionDetailsComponent } from './details/power-production/power-production-details.component';
+import { UnitDetailsPageComponent } from './details/unit-details-page.component';
 import { HydrogenAssetsComponent } from './overview/hydrogen-assets.component';
-import { HydrogenProductionUnitUpdateComponent } from './update/hydrogen-production-unit-update.component';
-import { HydrogenStorageUnitUpdateComponent } from './update/hydrogen-storage-unit-update.component';
-import { PowerProductionUnitUpdateComponent } from './update/power-production-unit-update.component';
+import { UnitUpdatePageComponent } from './update/unit-update-page.component';
 
 export const HYDROGEN_ASSETS_ROUTES: Route[] = [
   {
     path: '',
     component: HydrogenAssetsComponent,
   },
-  { path: 'power-production/:id', component: PowerProductionDetailsComponent },
-  { path: 'hydrogen-storage/:id', component: HydrogenStorageDetailsComponent },
-  { path: 'hydrogen-production/:id', component: HydrogenProductionDetailsComponent },
   { path: 'create', component: CreateUnitComponent },
-  { path: 'power-production/:id/edit', component: PowerProductionUnitUpdateComponent },
-  { path: 'hydrogen-production/:id/edit', component: HydrogenProductionUnitUpdateComponent },
-  { path: 'hydrogen-storage/:id/edit', component: HydrogenStorageUnitUpdateComponent },
+  { path: ':id', component: UnitDetailsPageComponent },
+  { path: ':id/edit', component: UnitUpdatePageComponent },
 ];

@@ -14,12 +14,15 @@ import {
   HydrogenProductionUnitCreateDtoMock,
   HydrogenProductionUnitDto,
   HydrogenProductionUnitInputDto,
+  HydrogenStorageOverviewDto,
   HydrogenStorageUnitCreateDtoMock,
   HydrogenStorageUnitDto,
   HydrogenStorageUnitInputDto,
   PowerProductionUnitCreateDtoMock,
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
+  UnitDto,
+  UnitOverviewDto,
   UserDetailsDto,
 } from '@h2-trust/contracts/dtos';
 import {
@@ -33,6 +36,7 @@ import {
   PowerProductionUnitEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
 import { ReadByIdPayload } from '@h2-trust/contracts/payloads';
+import { UnitType } from '@h2-trust/domain';
 import { QUEUE_GENERAL_SVC, UnitMessagePatterns } from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';
 import { UnitController } from './unit.controller';
@@ -69,17 +73,17 @@ describe('UnitController', () => {
     jest.clearAllMocks();
   });
 
-  it('should find a unit', async () => {
+  it('should find a unit by generic id route', async () => {
     const givenUserId = 'unit-id-1';
     const fixtureUnit: HydrogenProductionUnitEntity = HydrogenProductionUnitEntityFixture.create();
-    const expectedResponse: HydrogenProductionUnitDto = HydrogenProductionUnitDto.fromEntity(fixtureUnit);
+    const expectedResponse: UnitDto = HydrogenProductionUnitDto.fromEntity(fixtureUnit);
 
     const sendRequestSpy = jest.spyOn(queue, 'send');
     sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: unknown) => {
       return of(fixtureUnit);
     });
 
-    const actualResponse: HydrogenProductionUnitDto = await controller.getHydrogenProductionUnitById(givenUserId);
+    const actualResponse: UnitDto = await controller.getUnitById(givenUserId);
 
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
     expect(sendRequestSpy).toHaveBeenCalledWith(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(givenUserId));
@@ -100,15 +104,42 @@ describe('UnitController', () => {
       return of(fixtureUnits);
     });
 
-    const actualResponse: HydrogenProductionOverviewDto[] = await controller.getHydrogenProductionUnits({
-      sub: givenUserId,
-    });
+    const actualResponse: UnitOverviewDto[] = await controller.getUnits(
+      {
+        sub: givenUserId,
+      },
+      UnitType.HYDROGEN_PRODUCTION,
+    );
 
     expect(readUserRequestSpy).toHaveBeenCalledTimes(1);
     expect(readUserRequestSpy).toHaveBeenCalledWith(givenUserId);
     expect(sendRequestSpy).toHaveBeenCalledTimes(1);
     expect(sendRequestSpy).toHaveBeenCalledWith(
       UnitMessagePatterns.READ_HYDROGEN_PRODUCTION,
+      new ReadByIdPayload(fixtureUser.company.id),
+    );
+    expect(actualResponse).toEqual(expectedResponse);
+  });
+
+  it('should find all units filtered by type', async () => {
+    const givenUserId = 'user-id-1';
+    const fixtureUnits: HydrogenStorageUnitEntity[] = [HydrogenStorageUnitEntityFixture.create()];
+    const expectedResponse: HydrogenStorageOverviewDto[] = fixtureUnits.map(HydrogenStorageOverviewDto.fromEntity);
+
+    const readUserRequestSpy = jest.spyOn(userService, 'readUserWithCompany');
+    readUserRequestSpy.mockResolvedValue(fixtureUser);
+    const sendRequestSpy = jest.spyOn(queue, 'send');
+    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: any) => {
+      return of(fixtureUnits);
+    });
+
+    const actualResponse = await controller.getUnits({ sub: givenUserId }, UnitType.HYDROGEN_STORAGE);
+
+    expect(readUserRequestSpy).toHaveBeenCalledTimes(1);
+    expect(readUserRequestSpy).toHaveBeenCalledWith(givenUserId);
+    expect(sendRequestSpy).toHaveBeenCalledTimes(1);
+    expect(sendRequestSpy).toHaveBeenCalledWith(
+      UnitMessagePatterns.READ_HYDROGEN_STORAGE,
       new ReadByIdPayload(fixtureUser.company.id),
     );
     expect(actualResponse).toEqual(expectedResponse);

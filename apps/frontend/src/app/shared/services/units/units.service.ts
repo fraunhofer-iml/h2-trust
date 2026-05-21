@@ -6,11 +6,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
 import {
-  HydrogenProductionOverviewDto,
   HydrogenProductionUnitDto,
   HydrogenProductionUnitInputDto,
   HydrogenStorageOverviewDto,
@@ -19,25 +18,26 @@ import {
   PowerProductionOverviewDto,
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
+  UnitDto,
   UnitInputDto,
+  UnitOverviewDto,
   UnitUpdateActiveDto,
 } from '@h2-trust/contracts/dtos';
+import { UnitType } from '@h2-trust/domain';
 import { API } from '../../constants/api-endpoints';
 
 @Injectable()
 export class UnitsService {
   private readonly httpClient = inject(HttpClient);
 
-  getHydrogenProductionUnits() {
-    return lastValueFrom(this.httpClient.get<HydrogenProductionOverviewDto[]>(API.UNITS.HYDROGEN_PRODUCTION.BASE));
-  }
+  getUnits(type?: UnitType) {
+    let params = new HttpParams();
 
-  getPowerProductionUnits() {
-    return lastValueFrom(this.httpClient.get<PowerProductionOverviewDto[]>(API.UNITS.POWER_PRODUCTION.BASE));
-  }
+    if (type) {
+      params = params.set('type', type);
+    }
 
-  getHydrogenStorageUnits() {
-    return lastValueFrom(this.httpClient.get<HydrogenStorageOverviewDto[]>(API.UNITS.HYDROGEN_STORAGE.BASE));
+    return lastValueFrom(this.httpClient.get<UnitOverviewDto[]>(API.UNITS.BASE, { params }));
   }
 
   createHydrogenStorageUnit(dto: UnitInputDto) {
@@ -50,6 +50,10 @@ export class UnitsService {
 
   createHydrogenProductionUnit(dto: HydrogenProductionUnitInputDto) {
     return lastValueFrom(this.httpClient.post<PowerProductionOverviewDto[]>(API.UNITS.HYDROGEN_PRODUCTION.BASE, dto));
+  }
+
+  getUnitById(id: string) {
+    return lastValueFrom(this.httpClient.get<UnitDto>(API.UNITS.BY_ID(id)));
   }
 
   getHydrogenStorageUnit(id: string) {
