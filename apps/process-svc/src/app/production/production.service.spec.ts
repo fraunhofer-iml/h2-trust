@@ -21,7 +21,7 @@ import {
   CreateHydrogenProductionStatisticsPayloadFixture,
   CreateProductionsPayloadFixture,
 } from '@h2-trust/contracts/payloads/fixtures';
-import { EnergySource, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
+import { EnergySource, PowerType, ProcessType, RenewableShareInGridMix, RfnboType } from '@h2-trust/domain';
 import { QUEUE_GENERAL_SVC } from '@h2-trust/messaging';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { ProductionCreationService } from './production-creation.service';
@@ -133,6 +133,59 @@ describe('ProductionService', () => {
       );
       expect(actualProductionUnitsForId.get(givenPayload.hydrogenStorageUnitId)).toEqual(givenHydrogenStorageUnit);
       expect(actualResult).toEqual(expectedProcessSteps);
+    });
+
+    it('splits grid power production into partly renewable and non-renewable create entities', async () => {
+      // Arrange
+      const givenPayload = CreateProductionsPayloadFixture.create({
+        powerAmountKwh: 100,
+        hydrogenAmountKg: 10,
+      });
+      const givenPowerProductionUnit = PowerProductionUnitEntityFixture.create({
+        id: givenPayload.powerProductionUnitId,
+        owner: { id: 'power-owner-1' },
+        type: {
+          ...PowerProductionUnitEntityFixture.create().type,
+          energySource: EnergySource.GRID,
+        },
+      });
+      const givenHydrogenProductionUnit = HydrogenProductionUnitEntityFixture.create({
+        id: givenPayload.hydrogenProductionUnitId,
+        owner: { id: 'hydrogen-owner-1' },
+        waterConsumptionLitersPerHour: 25,
+      });
+      const givenHydrogenStorageUnit = HydrogenStorageUnitEntityFixture.create({
+        id: givenPayload.hydrogenStorageUnitId,
+      });
+
+      generalSvcMock.send
+        .mockReturnValueOnce(of(givenPowerProductionUnit))
+        .mockReturnValueOnce(of(givenHydrogenProductionUnit))
+        .mockReturnValueOnce(of([givenPowerProductionUnit, givenHydrogenProductionUnit, givenHydrogenStorageUnit]));
+      productionCreationServiceMock.createAndPersistProductions.mockResolvedValue([]);
+
+      // Act
+      await service.createProductions(givenPayload);
+
+      // Assert
+      const [actualCreateProductions] = productionCreationServiceMock.createAndPersistProductions.mock.calls[0];
+
+      expect(actualCreateProductions).toHaveLength(2);
+      expect(actualCreateProductions).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            powerType: PowerType.PARTLY_RENEWABLE,
+            powerAmountKwh: (givenPayload.powerAmountKwh * RenewableShareInGridMix.DE) / 100,
+            hydrogenAmountKg: (givenPayload.hydrogenAmountKg * RenewableShareInGridMix.DE) / 100,
+          }),
+          expect.objectContaining({
+            powerType: PowerType.NON_RENEWABLE,
+            powerAmountKwh: givenPayload.powerAmountKwh - (givenPayload.powerAmountKwh * RenewableShareInGridMix.DE) / 100,
+            hydrogenAmountKg:
+              givenPayload.hydrogenAmountKg - (givenPayload.hydrogenAmountKg * RenewableShareInGridMix.DE) / 100,
+          }),
+        ]),
+      );
     });
   });
 
@@ -253,6 +306,33 @@ describe('ProductionService', () => {
       // Act & Assert
       await expect(service.assembleProductionStatistics(givenPayload)).rejects.toThrow(
         `Rfnbotype of ${givenProcessStep.id} not defined`,
+      );
+    });
+
+    it('returns zero statistics when no hydrogen production steps are found', async () => {
+      // Arrange
+      const givenPayload = CreateHydrogenProductionStatisticsPayloadFixture.create();
+
+      processStepServiceMock.readProcessStepsByPredecessorTypesAndUnitAndDate.mockResolvedValue([]);
+
+      // Act
+      const actualResult = await service.assembleProductionStatistics(givenPayload);
+
+      // Assert
+      expect(actualResult.hydrogen).toEqual(
+        expect.objectContaining({
+          nonCertifiable: 0,
+          rfnboReady: 0,
+          total: 0,
+        }),
+      );
+      expect(actualResult.power).toEqual(
+        expect.objectContaining({
+          renewable: 0,
+          partlyRenewable: 0,
+          nonRenewable: 0,
+          total: 0,
+        }),
       );
     });
   });

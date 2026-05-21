@@ -196,7 +196,7 @@ describe('BottlingService', () => {
     it('creates bottling process step for non-certifiable hydrogen using computed composition', async () => {
       // Arrange
       const givenPayload = new CreateHydrogenBottlingPayload(
-        100,
+        50,
         'owner-1',
         new Date('2024-01-15T10:00:00Z'),
         'recorder-1',
@@ -204,26 +204,99 @@ describe('BottlingService', () => {
         RfnboType.NON_CERTIFIABLE,
       );
 
-      const givenStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
+      const givenRfnboReadyStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
+        id: 'storage-process-step-1',
         batch: BatchEntityFixture.createHydrogenBatch({
-          amount: 100,
+          id: 'storage-batch-1',
+          processStepId: 'storage-process-step-1',
+          amount: 50,
+          qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.RFNBO_READY }),
+          hydrogenStorageUnit: HydrogenStorageUnitEntityFixture.create({ id: givenPayload.hydrogenStorageUnitId }),
+        }),
+      });
+      const givenNonCertifiableStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
+        id: 'storage-process-step-2',
+        batch: BatchEntityFixture.createHydrogenBatch({
+          id: 'storage-batch-2',
+          processStepId: 'storage-process-step-2',
+          amount: 50,
           qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NON_CERTIFIABLE }),
           hydrogenStorageUnit: HydrogenStorageUnitEntityFixture.create({ id: givenPayload.hydrogenStorageUnitId }),
         }),
       });
+      const givenConsumedSplitReadyProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
+        id: 'consumed-split-ready',
+        batch: BatchEntityFixture.createHydrogenBatch({
+          id: 'consumed-split-ready-batch',
+          processStepId: 'consumed-split-ready',
+          amount: 25,
+          predecessors: [givenRfnboReadyStorageProcessStep.batch],
+          qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.RFNBO_READY }),
+        }),
+      });
+      const givenConsumedSplitNonCertifiableProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
+        id: 'consumed-split-non-certifiable',
+        batch: BatchEntityFixture.createHydrogenBatch({
+          id: 'consumed-split-non-certifiable-batch',
+          processStepId: 'consumed-split-non-certifiable',
+          amount: 25,
+          predecessors: [givenNonCertifiableStorageProcessStep.batch],
+          qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NON_CERTIFIABLE }),
+        }),
+      });
+      const givenRemainingReadyProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
+        id: 'remaining-ready',
+        batch: BatchEntityFixture.createHydrogenBatch({
+          id: 'remaining-ready-batch',
+          processStepId: 'remaining-ready',
+          amount: 25,
+          qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.RFNBO_READY }),
+        }),
+      });
+      const givenRemainingNonCertifiableProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
+        id: 'remaining-non-certifiable',
+        batch: BatchEntityFixture.createHydrogenBatch({
+          id: 'remaining-non-certifiable-batch',
+          processStepId: 'remaining-non-certifiable',
+          amount: 25,
+          qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NON_CERTIFIABLE }),
+        }),
+      });
       const givenCreatedBottlingProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
 
-      processStepServiceMock.readAllProcessStepsFromStorageUnit.mockResolvedValue([givenStorageProcessStep]);
-      processStepServiceMock.setBatchesInactive.mockResolvedValue({ count: 1 });
-      processStepServiceMock.createProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
+      processStepServiceMock.readAllProcessStepsFromStorageUnit.mockResolvedValue([
+        givenRfnboReadyStorageProcessStep,
+        givenNonCertifiableStorageProcessStep,
+      ]);
+      processStepServiceMock.setBatchesInactive.mockResolvedValue({ count: 2 });
+      processStepServiceMock.createProcessStep
+        .mockResolvedValueOnce(givenConsumedSplitReadyProcessStep)
+        .mockResolvedValueOnce(givenConsumedSplitNonCertifiableProcessStep)
+        .mockResolvedValueOnce(givenRemainingReadyProcessStep)
+        .mockResolvedValueOnce(givenRemainingNonCertifiableProcessStep)
+        .mockResolvedValueOnce(givenCreatedBottlingProcessStep);
       processStepServiceMock.readProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
 
       // Act
       const actualResult = await service.createHydrogenBottlingProcessStep(givenPayload);
 
       // Assert
-      expect(processStepServiceMock.setBatchesInactive).toHaveBeenCalledWith([givenStorageProcessStep.batch.id]);
-      expect(processStepServiceMock.createProcessStep).toHaveBeenCalledTimes(1);
+      expect(processStepServiceMock.setBatchesInactive).toHaveBeenCalledWith([
+        givenRfnboReadyStorageProcessStep.batch.id,
+        givenNonCertifiableStorageProcessStep.batch.id,
+      ]);
+      expect(processStepServiceMock.createProcessStep).toHaveBeenCalledTimes(5);
+      expect(processStepServiceMock.createProcessStep.mock.calls[4][0]).toEqual(
+        expect.objectContaining({
+          type: ProcessType.HYDROGEN_BOTTLING,
+          batch: expect.objectContaining({
+            predecessors: expect.arrayContaining([
+              expect.objectContaining({ id: givenConsumedSplitReadyProcessStep.batch.id }),
+              expect.objectContaining({ id: givenConsumedSplitNonCertifiableProcessStep.batch.id }),
+            ]),
+          }),
+        }),
+      );
       expect(actualResult).toEqual(givenCreatedBottlingProcessStep);
     });
 

@@ -124,6 +124,34 @@ describe('DigitalProductPassportService', () => {
       // Assert
       expect(actualResult).toBe(RfnboType.NON_CERTIFIABLE);
     });
+
+    it('throws when the production chain contains an invalid power type', () => {
+      // Arrange
+      const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
+      givenProductionChain.powerProduction.batch.qualityDetails.powerType = undefined as never;
+
+      determineRedComplianceMock.mockReturnValue(new RedComplianceEntity(true, true, true, true));
+
+      // Act & Assert
+      expect(() => service.getRfnboType(givenProductionChain)).toThrow('PowerType');
+      expect(assembleProofOfSustainabilityMock).not.toHaveBeenCalled();
+    });
+
+    it('returns NON_CERTIFIABLE when emission reduction is not above 70 percent', () => {
+      // Arrange
+      const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
+      const givenRedCompliance = new RedComplianceEntity(true, true, true, true);
+      const givenProofOfSustainability = ProofOfSustainabilityEntityFixture.create({ emissionReductionPercentage: 70 });
+
+      determineRedComplianceMock.mockReturnValue(givenRedCompliance);
+      assembleProofOfSustainabilityMock.mockReturnValue(givenProofOfSustainability);
+
+      // Act
+      const actualResult = service.getRfnboType(givenProductionChain);
+
+      // Assert
+      expect(actualResult).toBe(RfnboType.NON_CERTIFIABLE);
+    });
   });
 
   describe('readDigitalProductPassport', () => {
@@ -219,6 +247,42 @@ describe('DigitalProductPassportService', () => {
       // Assert
       expect(actualResult.powerType).toBe(PowerType.NON_RENEWABLE);
       expect(actualResult.rfnboType).toBe(RfnboType.NON_CERTIFIABLE);
+    });
+
+    it('returns PARTLY_RENEWABLE when provenance contains partly renewable but no non-renewable power', async () => {
+      // Arrange
+      const givenHydrogenBottling: ProcessStepEntity = ProcessStepEntityFixture.createHydrogenBottling();
+      const renewableChain: ProductionChainEntity = ProductionChainEntityFixture.create();
+      const partlyRenewableChain: ProductionChainEntity = ProductionChainEntityFixture.create();
+      partlyRenewableChain.powerProduction.batch.qualityDetails.powerType = PowerType.PARTLY_RENEWABLE;
+      const givenRedCompliance = new RedComplianceEntity(true, true, true, true);
+      const givenProofOfSustainability: ProofOfSustainabilityEntity = ProofOfSustainabilityEntityFixture.create({
+        emissionReductionPercentage: 85,
+      });
+      const givenProvenance = new ProvenanceEntity(
+        givenHydrogenBottling,
+        [renewableChain, partlyRenewableChain],
+        givenHydrogenBottling,
+      );
+
+      processStepServiceMock.readProcessStep.mockResolvedValue(givenHydrogenBottling);
+      processStepServiceMock.getPredecessors.mockResolvedValue([
+        givenHydrogenBottling,
+        renewableChain.powerProduction,
+        partlyRenewableChain.powerProduction,
+      ]);
+      buildProvenanceMock.mockReturnValue(givenProvenance);
+      determineTotalRedComplianceMock.mockReturnValue(givenRedCompliance);
+      assembleProofOfOriginMock.mockReturnValue([ProofOfOriginSectionEntityFixture.create()]);
+      getHydrogenBottlingCompositionsMock.mockReturnValue([]);
+      assembleProofOfSustainabilityMock.mockReturnValue(givenProofOfSustainability);
+
+      // Act
+      const actualResult = await service.readDigitalProductPassport(givenHydrogenBottling.id);
+
+      // Assert
+      expect(actualResult.powerType).toBe(PowerType.PARTLY_RENEWABLE);
+      expect(actualResult.rfnboType).toBe(RfnboType.RFNBO_READY);
     });
   });
 });
