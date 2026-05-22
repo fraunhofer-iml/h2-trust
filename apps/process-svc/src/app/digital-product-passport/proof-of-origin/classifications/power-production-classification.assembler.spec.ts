@@ -17,7 +17,8 @@ import { buildPowerSupplySubClassifications } from './power-production-classific
 
 describe('PowerProductionProofOfOriginAssembler', () => {
   describe('buildPowerSupplySubClassifications', () => {
-    it('returns sub-classifications grouped by energy source', async () => {
+    it('should return sub-classifications when power productions are grouped by energy source', async () => {
+      // arrange
       const givenSolarPowerProduction = ProcessStepEntityFixture.createPowerProduction({
         executedBy: PowerProductionUnitEntityFixture.create({
           type: PowerProductionTypeEntityFixture.createSolarEnergy(),
@@ -37,42 +38,50 @@ describe('PowerProductionProofOfOriginAssembler', () => {
       const givenPowerProductions = [givenSolarPowerProduction, givenWindPowerProduction];
       const givenHydrogenAmount = 100;
 
+      // act
       const actualResult = buildPowerSupplySubClassifications(givenPowerProductions, givenHydrogenAmount);
 
+      // assert
       expect(actualResult).toHaveLength(2);
 
-      const solarSubClassification = actualResult.find((sc) => sc.name === EnergySource.SOLAR_ENERGY);
-      expect(solarSubClassification).toBeDefined();
-      expect(solarSubClassification.classificationType).toBe(BatchType.POWER);
-      expect(solarSubClassification.batches).toHaveLength(1);
+      const givenSolarSubClassification = actualResult.find((sc) => sc.name === EnergySource.SOLAR_ENERGY);
+      expect(givenSolarSubClassification).toBeDefined();
+      expect(givenSolarSubClassification.classificationType).toBe(BatchType.POWER);
+      expect(givenSolarSubClassification.batches).toHaveLength(1);
 
-      const solarBatch = solarSubClassification.batches[0] as ProofOfOriginPowerBatchEntity;
-      expect(solarBatch.id).toBe(givenSolarPowerProduction.batch.id);
-      expect(solarBatch.energySource).toBe(EnergySource.SOLAR_ENERGY);
+      const givenSolarBatch = givenSolarSubClassification.batches[0] as ProofOfOriginPowerBatchEntity;
+      expect(givenSolarBatch.id).toBe(givenSolarPowerProduction.batch.id);
+      expect(givenSolarBatch.energySource).toBe(EnergySource.SOLAR_ENERGY);
 
-      const windSubClassification = actualResult.find((sc) => sc.name === EnergySource.WIND_ENERGY);
-      expect(windSubClassification).toBeDefined();
-      expect(windSubClassification.batches).toHaveLength(1);
+      const givenWindSubClassification = actualResult.find((sc) => sc.name === EnergySource.WIND_ENERGY);
+      expect(givenWindSubClassification).toBeDefined();
+      expect(givenWindSubClassification.batches).toHaveLength(1);
 
-      const windBatch = windSubClassification.batches[0] as ProofOfOriginPowerBatchEntity;
-      expect(windBatch.id).toBe(givenWindPowerProduction.batch.id);
-      expect(windBatch.energySource).toBe(EnergySource.WIND_ENERGY);
+      const givenWindBatch = givenWindSubClassification.batches[0] as ProofOfOriginPowerBatchEntity;
+      expect(givenWindBatch.id).toBe(givenWindPowerProduction.batch.id);
+      expect(givenWindBatch.energySource).toBe(EnergySource.WIND_ENERGY);
     });
 
-    it('returns empty array when no power productions provided', async () => {
+    it('should return an empty array when no power productions are provided', async () => {
+      // arrange
       const givenPowerProductions: ProcessStepEntity[] = [];
       const givenHydrogenAmount = 100;
 
+      // act
       const actualResult = buildPowerSupplySubClassifications(givenPowerProductions, givenHydrogenAmount);
 
+      // assert
       expect(actualResult).toEqual([]);
     });
 
-    it('returns empty array when power productions is undefined', async () => {
+    it('should return an empty array when power productions are undefined', async () => {
+      // arrange
       const givenHydrogenAmount = 100;
 
+      // act
       const actualResult = buildPowerSupplySubClassifications(undefined, givenHydrogenAmount);
 
+      // assert
       expect(actualResult).toEqual([]);
     });
   });

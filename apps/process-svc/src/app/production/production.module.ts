@@ -28,7 +28,6 @@ import { ProductionService } from './production.service';
     DatabaseModule,
     ProcessStepModule,
     StorageModule,
-    ProcessStepModule,
     DigitalProductPassportModule,
     getGeneralSvcBroker(),
   ],
