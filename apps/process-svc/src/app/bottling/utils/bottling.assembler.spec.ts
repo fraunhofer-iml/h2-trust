@@ -12,10 +12,10 @@ import { CreateHydrogenBottlingPayload } from '@h2-trust/contracts/payloads';
 import { ProcessType, RfnboType } from '@h2-trust/domain';
 import { assembleBottling } from './bottling.assembler';
 
-describe('BottlingProcessStepAssembler', () => {
-  describe('assemble', () => {
-    it('assembles process step entity from payload and predecessor batches', () => {
-      // Arrange
+describe('BottlingAssembler', () => {
+  describe('assembleBottling', () => {
+    it('should assemble process step entity from payload and predecessor batches when called', () => {
+      // arrange
       const givenPayload = new CreateHydrogenBottlingPayload(
         100,
         'owner-1',
@@ -28,10 +28,10 @@ describe('BottlingProcessStepAssembler', () => {
         BatchEntityFixture.createHydrogenBatch({ qualityDetails: QualityDetailsEntityFixture.create() }),
       ];
 
-      // Act
+      // act
       const actualResult = assembleBottling(givenPayload, givenBatchesForBottle);
 
-      // Assert
+      // assert
       expect(actualResult.startedAt).toEqual(givenPayload.filledAt);
       expect(actualResult.endedAt).toEqual(givenPayload.filledAt);
       expect(actualResult.type).toBe(ProcessType.HYDROGEN_BOTTLING);
@@ -44,8 +44,8 @@ describe('BottlingProcessStepAssembler', () => {
       expect(actualResult.executedBy.id).toBe(givenPayload.hydrogenStorageUnitId);
     });
 
-    it(`determines all predecessors`, () => {
-      // Arrange
+    it(`should determine all predecessors when called`, () => {
+      // arrange
       const givenPayload = new CreateHydrogenBottlingPayload(
         200,
         'owner-1',
@@ -65,17 +65,17 @@ describe('BottlingProcessStepAssembler', () => {
         }),
       ];
 
-      // Act
+      // act
       const actualResult = assembleBottling(givenPayload, givenBatchesForBottle);
 
-      // Assert
+      // assert
       expect(actualResult.batch.predecessors).toHaveLength(2);
       expect(actualResult.batch.predecessors[0].id).toBe('batch-1');
       expect(actualResult.batch.predecessors[1].id).toBe('batch-2');
     });
 
-    it('throws exception when no predecessor batches provided', () => {
-      // Arrange
+    it('should throw exception when no predecessor batches provided', () => {
+      // arrange
       const givenPayload = new CreateHydrogenBottlingPayload(
         100,
         'owner-1',
@@ -88,8 +88,10 @@ describe('BottlingProcessStepAssembler', () => {
 
       const expectedErrorMessage = 'No predecessor types found: batch list has no quality details';
 
-      // Act & Assert
-      expect(() => assembleBottling(givenPayload, givenBatchesForBottle)).toThrow(expectedErrorMessage);
+      // act & assert
+      const actualOperation = () => assembleBottling(givenPayload, givenBatchesForBottle);
+
+      expect(actualOperation).toThrow(expectedErrorMessage);
     });
   });
 });

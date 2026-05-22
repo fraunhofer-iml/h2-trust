@@ -19,8 +19,9 @@ import { assembleHydrogenStorageSection } from './hydrogen-storage-section.assem
 
 describe('HydrogenStorageProofOfOriginAssembler', () => {
   describe('assembleHydrogenStorageSection', () => {
-    it('returns section with classifications grouped by hydrogen rfnbo type', () => {
-      const productionChain: ProductionChainEntity = new ProductionChainEntity(
+    it('should return a section when classifications are grouped by hydrogen RFNBO type', () => {
+      // arrange
+      const givenProductionChain: ProductionChainEntity = new ProductionChainEntity(
         ProcessStepEntityFixture.createHydrogenProduction(),
         ProcessStepEntityFixture.createHydrogenProduction(),
         ProcessStepEntityFixture.createPowerProduction(),
@@ -30,29 +31,32 @@ describe('HydrogenStorageProofOfOriginAssembler', () => {
       );
 
       const givenProvenance = new ProvenanceEntity(
-        productionChain.hydrogenRootProduction,
-        [productionChain],
-        productionChain.hydrogenRootProduction,
+        givenProductionChain.hydrogenRootProduction,
+        [givenProductionChain],
+        givenProductionChain.hydrogenRootProduction,
       );
 
+      // act
       const actualResult = assembleHydrogenStorageSection(givenProvenance)[0];
 
+      // assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_STORAGE_SECTION);
       expect(actualResult.batches).toEqual([]);
       expect(actualResult.classifications).toHaveLength(1);
 
-      const rfnboReadyClassification = actualResult.classifications.find((c) => c.name === RfnboType.RFNBO_READY);
-      expect(rfnboReadyClassification).toBeDefined();
-      expect(rfnboReadyClassification.classificationType).toBe(BatchType.HYDROGEN);
-      expect(rfnboReadyClassification.batches).toHaveLength(1);
+      const givenRfnboReadyClassification = actualResult.classifications.find((c) => c.name === RfnboType.RFNBO_READY);
+      expect(givenRfnboReadyClassification).toBeDefined();
+      expect(givenRfnboReadyClassification.classificationType).toBe(BatchType.HYDROGEN);
+      expect(givenRfnboReadyClassification.batches).toHaveLength(1);
 
-      const rfnboReadyBatch = rfnboReadyClassification.batches[0] as ProofOfOriginHydrogenBatchEntity;
-      expect(rfnboReadyBatch.emission).toBeDefined();
-      expect(rfnboReadyBatch.rfnboType).toBe(RfnboType.RFNBO_READY);
+      const givenRfnboReadyBatch = givenRfnboReadyClassification.batches[0] as ProofOfOriginHydrogenBatchEntity;
+      expect(givenRfnboReadyBatch.emission).toBeDefined();
+      expect(givenRfnboReadyBatch.rfnboType).toBe(RfnboType.RFNBO_READY);
     });
 
-    it('returns empty section when no hydrogen productions provided', async () => {
-      const productionChain: ProductionChainEntity = new ProductionChainEntity(
+    it('should return an empty section when no hydrogen productions are provided', async () => {
+      // arrange
+      const givenProductionChain: ProductionChainEntity = new ProductionChainEntity(
         ProcessStepEntityFixture.createHydrogenBottling(),
         ProcessStepEntityFixture.createHydrogenBottling(),
         ProcessStepEntityFixture.createPowerProduction(),
@@ -62,13 +66,15 @@ describe('HydrogenStorageProofOfOriginAssembler', () => {
       );
 
       const givenProvenance = new ProvenanceEntity(
-        productionChain.hydrogenRootProduction,
-        [productionChain],
-        productionChain.hydrogenRootProduction,
+        givenProductionChain.hydrogenRootProduction,
+        [givenProductionChain],
+        givenProductionChain.hydrogenRootProduction,
       );
 
+      // act
       const actualResult = assembleHydrogenStorageSection(givenProvenance)[0];
 
+      // assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_STORAGE_SECTION);
       expect(actualResult.batches).toEqual([]);
     });

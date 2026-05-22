@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import {
   BiddingZone,
   GridLevel,
@@ -16,6 +16,7 @@ import {
   PowerProductionType,
   UnitType,
 } from '@h2-trust/domain';
+import { integerValidator, positiveNumberValidator } from '../../../shared/util/number-validators';
 
 export type UnitFormGroup = {
   name: FormControl<string | null>;
@@ -94,8 +95,12 @@ export const newUnitForm = () =>
 
 export const newHydrogenStorageForm = () =>
   new FormGroup<HydrogenStorageFormGroup>({
-    capacity: new FormControl<number | null>(null, Validators.required),
-    pressure: new FormControl<number | null>(null, Validators.required),
+    capacity: new FormControl<number | null>(null, {
+      validators: [positiveNumberValidator, integerValidator],
+    }),
+    pressure: new FormControl<number | null>(null, {
+      validators: [positiveNumberValidator],
+    }),
     storageType: new FormControl<HydrogenStorageType | null>(null, Validators.required),
   });
 
@@ -105,7 +110,9 @@ export const newPowerProductionForm = () =>
     gridOperator: new FormControl<string | null>(null, Validators.required),
     gridLevel: new FormControl<GridLevel | null>(null, Validators.required),
     gridConnectionNumber: new FormControl<string | null>(null, Validators.required),
-    ratedPower: new FormControl<number | null>(null, Validators.required),
+    ratedPower: new FormControl<number | null>(null, {
+      validators: [positiveNumberValidator],
+    }),
     electricityMeterNumber: new FormControl<string | null>(null, Validators.required),
     powerProductionType: new FormControl<PowerProductionType | null>(null, Validators.required),
     decommissioningPlannedOn: new FormControl<Date | null>(null, Validators.required),
@@ -115,22 +122,29 @@ export const newPowerProductionForm = () =>
 export const newHydrogenProductionForm = () =>
   new FormGroup<HydrogenProductionFormGroup>({
     biddingZone: new FormControl<BiddingZone | null>(null, Validators.required),
-    ratedPower: new FormControl<number | null>(null, Validators.required),
+    ratedPower: new FormControl<number | null>(null, {
+      validators: [positiveNumberValidator],
+    }),
     method: new FormControl<HydrogenProductionMethod | null>(null, Validators.required),
     technology: new FormControl<HydrogenProductionTechnology | null>(null, Validators.required),
-    pressure: new FormControl<number | null>(null, Validators.required),
-    waterConsumptionLitersPerHour: new FormControl<number | null>(null, Validators.required),
+    pressure: new FormControl<number | null>(null, {
+      validators: [positiveNumberValidator],
+    }),
+    waterConsumptionLitersPerHour: new FormControl<number | null>(null, {
+      validators: [positiveNumberValidator],
+    }),
   });
 
 export const addValidatorsToFormGroup = (formGroup: FormGroup): void => {
   const excludeKeys = ['decommissioningPlannedOn', 'gridConnectionNumber', 'gridOperator'];
   Object.keys(formGroup.controls).forEach((key) => {
-    if (!excludeKeys.includes(key)) {
-      const control = formGroup.get(key);
-      if (control) {
-        control.setValidators(Validators.required);
-        control.updateValueAndValidity();
-      }
-    }
+    if (excludeKeys.includes(key)) return;
+    const control = formGroup.get(key);
+    if (!control) return;
+    const existingValidator = control.validator;
+    const existingValidators: ValidatorFn[] = existingValidator ? [existingValidator] : [];
+    const validators: ValidatorFn[] = [...existingValidators, Validators.required];
+    control.setValidators(validators);
+    control.updateValueAndValidity({ emitEvent: false });
   });
 };
