@@ -14,56 +14,17 @@ import {
   ProofOfSustainabilityEmissionCalculationEntity,
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
-import { BatchType, ProcessType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
-import { InternalException } from '@h2-trust/exceptions';
-import { computeHydrogenComposition } from '../../../bottling/utils/hydrogen-composition';
+import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
+import { assembleComposition } from '../../../bottling/utils/hydrogen-composition';
 import { assembleHydrogenBottlingEmissionCalculation } from '../../proof-of-sustainability/emissions/hydrogen-bottling-emission-calculation.assembler';
 import { ProofOfOriginSectionAssembler } from '../proof-of-origin-assembler.interface';
-
-/**
- * Calculates the hydrogen components of the bottling as a proportion of the total volume bottled.
- * @param provenance The provenance, which covers the entire production chain from power, water and hydrogen production right through to bottling and transportation.
- * @returns The volume of HydrogenComponents filled in relation to the total volume filled.
- */
-function assembleCompositionForBottling(provenance: ProvenanceEntity): HydrogenComponentEntity[] {
-  if (!provenance.hydrogenBottling) {
-    throw new InternalException('There is no hydrogen bottling in provenance.');
-  }
-  if (provenance.getAllHydrogenLeafProductions()?.length === 0) {
-    throw new InternalException('There are no hydrogen productions in provenance.');
-  }
-  if (
-    provenance.root.type !== ProcessType.HYDROGEN_BOTTLING &&
-    provenance.root.type !== ProcessType.HYDROGEN_TRANSPORTATION
-  ) {
-    throw new InternalException(
-      `The process step ${provenance.root.id} should be type ${ProcessType.HYDROGEN_BOTTLING} or ${ProcessType.HYDROGEN_TRANSPORTATION}, but is ${provenance.root.type}.`,
-    );
-  }
-
-  const bottlingBatchAmount = provenance.hydrogenBottling.batch.amount;
-  const hydrogenStorageUnitId = provenance.hydrogenBottling.executedBy.id;
-
-  const hydrogenComponentsOfProductions = provenance
-    .getAllHydrogenRootProductions()
-    .map(
-      (hydrogenRootProduction) =>
-        new HydrogenComponentEntity(
-          '',
-          hydrogenRootProduction.batch.amount,
-          hydrogenRootProduction.batch.qualityDetails?.rfnboType ?? RfnboType.NOT_SPECIFIED,
-        ),
-    );
-
-  return computeHydrogenComposition(hydrogenComponentsOfProductions, bottlingBatchAmount, hydrogenStorageUnitId);
-}
 
 export function assembleHydrogenBottlingSection(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {
   if (!provenance.hydrogenBottling) {
     return [];
   }
 
-  const hydrogenComponentsOfBottling: HydrogenComponentEntity[] = assembleCompositionForBottling(provenance);
+  const hydrogenComponentsOfBottling: HydrogenComponentEntity[] = assembleComposition(provenance);
   const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
     assembleHydrogenBottlingEmissionCalculation(provenance.hydrogenBottling);
 

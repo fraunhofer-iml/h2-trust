@@ -1,191 +1,191 @@
-<a id="readme-top"></a>
+# H2-Trust
 
-[![Stars][stars-shield]][stars-url] [![Forks][forks-shield]][forks-url] [![Watchers][watchers-shield]][watchers-url]
-[![Contributors][contributors-shield]][contributors-url] [![Commit Activity][commitactivity-shield]][commitactivity-url]
-[![Last Commit][lastcommit-shield]][lastcommit-url] [![Issues][issues-shield]][issues-url]
-[![License][license-shield]][license-url]
+[![Build](https://github.com/fraunhofer-iml/h2-trust/actions/workflows/build.yml/badge.svg)](https://github.com/fraunhofer-iml/h2-trust/actions/workflows/build.yml)
+[![Test](https://github.com/fraunhofer-iml/h2-trust/actions/workflows/test.yml/badge.svg)](https://github.com/fraunhofer-iml/h2-trust/actions/workflows/test.yml)
+[![Lint and Format](https://github.com/fraunhofer-iml/h2-trust/actions/workflows/lint-and-format.yml/badge.svg)](https://github.com/fraunhofer-iml/h2-trust/actions/workflows/lint-and-format.yml)
+[![CodeQL](https://github.com/fraunhofer-iml/h2-trust/actions/workflows/codeql.yml/badge.svg)](https://github.com/fraunhofer-iml/h2-trust/actions/workflows/codeql.yml)
+[![License](https://img.shields.io/github/license/fraunhofer-iml/h2-trust)](LICENSE)
 
-<br />
-<div align="center">
-<h2 align="center">H2-Trust</h2>
-  <p align="center">
-    A NestJS-based application aimed at tracking hydrogen along the supply chain.
-    <br />
-    <a href="https://github.com/fraunhofer-iml/h2-trust/issues/new?labels=bug&template=bug-report---.md">🐞 Report Bug</a> &middot;
-    <a href="https://github.com/fraunhofer-iml/h2-trust/issues/new?labels=enhancement&template=feature-request---.md">💡 Request Feature</a>
-  </p>
-</div>
+H2-Trust is a hydrogen product passport platform for tracking hydrogen batches, documenting process steps, and verifying
+provenance and supporting evidence across the supply chain.
 
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">📚 About The Project</a>
-      <ul><li><a href="#description">📄 Description</a></li></ul>
-      <ul><li><a href="#built-with">🛠️ Built With</a></li></ul>
-      <ul><li><a href="#components-overview">🏗️ Components Overview</a></li></ul>
-    </li>
-    <li><a href="#getting-started">🚀 Getting Started</a></li>
-    <li>
-      <a href="#contributing">🤝 Contributing</a>
-      <ul><li><a href="#getting-involved">🌟 Getting Involved</a></li></ul>
-    </li>
-    <li><a href="#license">📜 License</a></li>
-    <li><a href="#contact">📬 Contact</a></li>
-    <li><a href="#acknowledgments">🙏 Acknowledgments</a></li>
-  </ol>
-</details>
+It is maintained by Fraunhofer IML as part of the DUH-IT research project and is implemented as an Nx monorepo with an
+Angular frontend, NestJS services, shared TypeScript libraries, and a smart-contract package.
 
-## 📚 About The Project <a id="about-the-project"></a>
+## Table of Contents
 
-### 📄 Description <a id="description"></a>
+- [Why H2-Trust](#why-h2-trust)
+- [Architecture at a glance](#architecture-at-a-glance)
+- [Technology stack](#technology-stack)
+- [Quick start](#quick-start)
+- [Common commands](#common-commands)
+- [Troubleshooting](#troubleshooting)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
-H2-Trust is our hydrogen product passport, developed as part of the research project DUH-IT. Our goal is to create a
-solution for automated, transparent, and tamper-proof verification of hydrogen properties throughout the entire supply
-chain.
+## Why H2-Trust
 
-### 🛠️ Built With <a id="built-with"></a>
+- Track hydrogen-related master data, batches, and process steps in one system.
+- Keep supporting evidence accessible through object storage and verification workflows.
+- Combine a web frontend with service-based backend processing and asynchronous messaging.
+- Support tamper-resistant verification scenarios with blockchain and decentralized storage integrations.
 
-- [![Angular][angular-shield]][angular-url] Framework for building dynamic web applications
-- [![Docker][docker-shield]][docker-url] Platform for containerizing and deploying applications efficiently
-- [![ESLint][eslint-shield]][eslint-url] Utility for linting and enforcing code quality in JavaScript and TypeScript
-- [![Jest][jest-shield]][jest-url] JavaScript testing framework
-- [![Keycloak][keycloak-shield]][keycloak-url] Identity and access management solution
-- [![MinIO][minio-shield]][minio-url] S3-compatible object storage
-- [![NestJS][nestjs-shield]][nestjs-url] Node.js framework for building scalable server-side applications
-- [![Nx][nx-shield]][nx-url] Build system for monorepos
-- [![PostgreSQL][postgresql-shield]][postgresql-url] Relational database management system known for reliability and
-  performance
-- [![Prettier][prettier-shield]][prettier-url] Code formatter for consistent style
-- [![Prisma][prisma-shield]][prisma-url] ORM for database management
-- [![RabbitMQ][rabbitmq-shield]][rabbitmq-url] Message broker for distributed systems, supporting AMQP
-- [![RxJS][rxjs-shield]][rxjs-url] Library for managing asynchronous events
-- [![Swagger][swagger-shield]][swagger-url] Tools for designing and documenting APIs
-- [![TailwindCSS][tailwindcss-shield]][tailwindcss-url] CSS framework for building custom designs
-- [![TypeScript][typescript-shield]][typescript-url] Strongly typed programming language that enhances JavaScript
+## Architecture at a glance
 
-### 🏗️ Components Overview <a id="components-overview"></a>
+### Applications
 
-The project consists of the following components:
+- [`apps/frontend`](./apps/frontend) – Angular web application for end users
+- [`apps/bff`](./apps/bff) – NestJS backend-for-frontend and REST API entry point
+- [`apps/general-svc`](./apps/general-svc) – NestJS microservice for master data
+- [`apps/process-svc`](./apps/process-svc) – NestJS microservice for production, bottling, provenance, and
+  product-passport workflows
+- [`libs/blockchain/smart-contract`](./libs/blockchain/smart-contract) – smart-contract package used for verification
+  scenarios
 
-1. **Frontend (`frontend`)**
-   - Allows users to manage units and track hydrogen batches.
+### Shared libraries
 
-2. **API Gateway (`api`)**
-   - Handles all incoming HTTP requests and routes them to the appropriate services via AMQP.
+- [`libs/contracts`](./libs/contracts) – shared DTOs, entities, and contracts
+- [`libs/messaging`](./libs/messaging) – RabbitMQ queue definitions and messaging helpers
+- [`libs/database`](./libs/database) – Prisma schema, database access, and seed data
+- [`libs/storage`](./libs/storage) – storage abstraction and implementations
+- [`libs/configuration`](./libs/configuration) – environment and runtime configuration
+- [`libs/domain`](./libs/domain), [`libs/strings`](./libs/strings), [`libs/utils`](./libs/utils),
+  [`libs/validation`](./libs/validation), [`libs/exceptions`](./libs/exceptions) – shared domain, utility, validation,
+  and exception helpers
 
-3. **General Service (`general-svc`)**
-   - Manages master data.
+### Backing services used locally
 
-4. **Process Service (`process-svc`)**
-   - Manages power, water and hydrogen batches with their process steps and handles workflows.
+- PostgreSQL
+- RabbitMQ
+- MinIO
+- Keycloak
+- Local blockchain node
+- IPFS (for verification-related scenarios)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+## Technology stack
 
-## 🚀 Getting Started <a id="getting-started"></a>
+- Angular 21
+- NestJS 11
+- Nx
+- TypeScript
+- Prisma + PostgreSQL
+- RabbitMQ
+- Keycloak
+- MinIO
+- Hardhat / Ethers
+- Docker Compose
 
-TLDR: open two terminal windows and run in one terminal window `docker-compose up` and in the other terminal window
-`cp .env.example .env && npm run setup && npm run dev`.
+## Quick start
 
-For a more detailed explanation of how to get a development environment running, including all prerequisites, please
-consult the chapters [Deployment View](./documentation/04-deployment-view.adoc) and
-[Tutorial](./documentation/05-tutorial.adoc) in our documentation. These two chapters provide step-by-step instructions
-to guide you through the process of installing, configuring and running H2-Trust on your local machine.
+### Prerequisites
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+- Node.js 24.13.x
+- npm 11.x
+- Docker with Docker Compose
+- Git
 
-## 🤝 Contributing <a id="contributing"></a>
+### Local setup
 
-### 🌟 Getting Involved <a id="getting-involved"></a>
+The commands below assume a Unix-like shell.
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any
-contributions you make are **greatly appreciated**.
+```bash
+git clone https://github.com/fraunhofer-iml/h2-trust.git
+cd h2-trust
+cp .env.example .env
+npm ci --no-audit --no-fund
+npm --prefix libs/blockchain/smart-contract ci --no-audit --no-fund
+set -a && source .env && set +a && docker compose up -d
+set -a && source .env && set +a && npm run setup
+set -a && source .env && set +a && npm run dev
+```
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also
-simply open an issue with the tag "enhancement".
+### Default local entry points
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/amazing-feature`)
-3. Commit your Changes (`git commit -m 'Add something amazing'`)
-4. Push to the Branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+- Frontend: <http://localhost:4200>
+- BFF / REST API: <http://localhost:3000>
+- Swagger UI: <http://localhost:3000/api>
+- Keycloak: <http://localhost:8080>
+- MinIO console: <http://localhost:9090>
+- RabbitMQ management: <http://localhost:15672>
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+### Default demo users
 
-## 📜 License <a id="license"></a>
+| Role              | Username | Password |
+| ----------------- | -------- | -------- |
+| Power Producer    | `petra`  | `petra`  |
+| Hydrogen Producer | `hannes` | `hannes` |
 
-Licensed under the Apache License 2.0. See `LICENSE` for details.
+## Common commands
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+```bash
+# start all application services in development mode
+npm run dev
 
-## 📬 Contact <a id="contact"></a>
+# run the main CI-aligned builds
+npx nx run-many -t build --projects=bff,frontend,general-svc,process-svc --parallel
+npm --prefix libs/blockchain/smart-contract run build
 
-Dominik Sparer: dominik.sparer@iml.fraunhofer.de
+# run the main CI-aligned test suites
+npx nx run bff:test
+npx nx run frontend:test
+npx nx run general-svc:test
+npx nx run process-svc:test
+npx nx run utils:test
+npm --prefix libs/blockchain/smart-contract test
 
-Michael Pichura: michael.pichura@iml.fraunhofer.de
+# run repository formatting and lint checks
+npx eslint --quiet .
+npx prettier --check .
+```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+## Troubleshooting
 
-## 🙏 Acknowledgments <a id="acknowledgments"></a>
+**`docker compose` warnings or Prisma auth errors after fresh clone** The most common cause is a stale or missing
+`.env`. Copy `.env.example` and verify it is up to date before running `docker compose up` or any `npm run` commands. A
+mismatched `.env` caused `MINIO_BUCKET_NAME` warnings and Prisma pointing to the wrong database in past setups.
 
-- [wait-for-it](https://github.com/vishnubob/wait-for-it) for providing the `wait-for-it.sh` script, which is included
-  unmodified in this project under the terms of the
-  [MIT License](https://github.com/vishnubob/wait-for-it/blob/master/LICENSE)
-- [Best-README-Template](https://github.com/othneildrew/Best-README-Template) provided inspiration and structure for
-  creating this README file
-- [Img Shields](https://shields.io) enabled the creation of customizable and visually appealing badges for this project
+**Smart-contract dependencies missing** `npm ci` at the repository root does _not_ install the smart-contract package.
+Always run the separate install step when touching blockchain code:
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+```bash
+npm --prefix libs/blockchain/smart-contract ci --no-audit --no-fund
+```
 
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+## Documentation
 
-[stars-shield]: https://img.shields.io/github/stars/fraunhofer-iml/h2-trust.svg?style=for-the-badge
-[stars-url]: https://github.com/fraunhofer-iml/h2-trust/stargazers
-[forks-shield]: https://img.shields.io/github/forks/fraunhofer-iml/h2-trust.svg?style=for-the-badge
-[forks-url]: https://github.com/fraunhofer-iml/h2-trust/forks
-[watchers-shield]: https://img.shields.io/github/watchers/fraunhofer-iml/h2-trust?style=for-the-badge
-[watchers-url]: https://github.com/fraunhofer-iml/h2-trust/watchers
-[contributors-shield]: https://img.shields.io/github/contributors/fraunhofer-iml/h2-trust.svg?style=for-the-badge
-[contributors-url]: https://github.com/fraunhofer-iml/h2-trust/graphs/contributors
-[commitactivity-shield]: https://img.shields.io/github/commit-activity/y/fraunhofer-iml/h2-trust?style=for-the-badge
-[commitactivity-url]: https://github.com/fraunhofer-iml/h2-trust/graphs/commit-activity
-[lastcommit-shield]: https://img.shields.io/github/last-commit/fraunhofer-iml/h2-trust?style=for-the-badge
-[lastcommit-url]: https://github.com/fraunhofer-iml/h2-trust/commits/main
-[issues-shield]: https://img.shields.io/github/issues/fraunhofer-iml/h2-trust.svg?style=for-the-badge
-[issues-url]: https://github.com/fraunhofer-iml/h2-trust/issues
-[license-shield]: https://img.shields.io/github/license/fraunhofer-iml/h2-trust.svg?style=for-the-badge
-[license-url]: https://github.com/fraunhofer-iml/h2-trust/blob/main/LICENSE
-[angular-shield]: https://img.shields.io/badge/Framework-Angular-DD0031?style=flat&logo=angular
-[angular-url]: https://angular.io/
-[docker-shield]: https://img.shields.io/badge/Platform-Docker-2496ED?style=flat&logo=docker
-[docker-url]: https://www.docker.com/
-[eslint-shield]: https://img.shields.io/badge/Linting-ESLint-4B32C3?style=flat&logo=eslint
-[eslint-url]: https://eslint.org/
-[jest-shield]: https://img.shields.io/badge/Testing-Jest-C21325?style=flat&logo=jest
-[jest-url]: https://jestjs.io/
-[keycloak-shield]: https://img.shields.io/badge/Library-Keycloak-DC382D?style=flat&logo=keycloak
-[keycloak-url]: https://www.keycloak.org/
-[minio-shield]: https://img.shields.io/badge/Storage-MinIO-FF6F00?style=flat&logo=minio
-[minio-url]: https://min.io/
-[nestjs-shield]: https://img.shields.io/badge/Framework-NestJS-E0234E?style=flat&logo=nestjs
-[nestjs-url]: https://nestjs.com/
-[nx-shield]: https://img.shields.io/badge/Tool-Nx-DD0031?style=flat&logo=nrwl
-[nx-url]: https://nx.dev/
-[postgresql-shield]: https://img.shields.io/badge/Database-PostgreSQL-336791?style=flat&logo=postgresql
-[postgresql-url]: https://www.postgresql.org/
-[prettier-shield]: https://img.shields.io/badge/Formatting-Prettier-F7B93E?style=flat&logo=prettier
-[prettier-url]: https://prettier.io/
-[prisma-shield]: https://img.shields.io/badge/ORM-Prisma-2D3748?style=flat&logo=prisma
-[prisma-url]: https://www.prisma.io/
-[rabbitmq-shield]: https://img.shields.io/badge/Message_Broker-RabbitMQ-FF6600?style=flat&logo=rabbitmq
-[rabbitmq-url]: https://www.rabbitmq.com/
-[rxjs-shield]: https://img.shields.io/badge/Library-RxJS-B7178C?style=flat&logo=reactivex
-[rxjs-url]: https://rxjs.dev/
-[swagger-shield]: https://img.shields.io/badge/API-Swagger-85EA2D?style=flat&logo=swagger
-[swagger-url]: https://swagger.io/
-[tailwindcss-shield]: https://img.shields.io/badge/CSS_Framework-TailwindCSS-06B6D4?style=flat&logo=tailwindcss
-[tailwindcss-url]: https://tailwindcss.com/
-[typescript-shield]: https://img.shields.io/badge/Language-TypeScript-007ACC?style=flat&logo=typescript
-[typescript-url]: https://www.typescriptlang.org/
+- [`documentation/04-deployment-view.adoc`](./documentation/04-deployment-view.adoc) – deployment and setup walkthrough
+- [`documentation/index.adoc`](./documentation/index.adoc) – entry point for the architecture documentation set
 
-test
+## Contributing
+
+Contributions, bug reports, and improvement suggestions are welcome.
+
+- Open an issue for bugs, questions, or enhancement ideas.
+- Open a pull request for focused, reviewable changes.
+- Keep changes within the existing Nx app/library boundaries when possible.
+
+**Code style**
+
+- 2-space indentation, single quotes, `printWidth: 120` (enforced by Prettier).
+- All `.ts`, `.js`, and `.mjs` files must carry the Apache 2.0 license header (enforced by ESLint).
+
+**Pull request requirements**
+
+- Assign yourself before marking the PR ready for review.
+- Fill in the PR description — empty descriptions are flagged by CI.
+- If you change `package.json`, also update `package-lock.json`; CI will flag a missing lockfile update.
+
+## License
+
+This project is licensed under the Apache License 2.0. See [`LICENSE`](./LICENSE).
+
+## Contact
+
+- Dominik Sparer – <dominik.sparer@iml.fraunhofer.de>
+- Michael Pichura – <michael.pichura@iml.fraunhofer.de>
+
+## Acknowledgments
+
+- [`wait-for-it`](https://github.com/vishnubob/wait-for-it) is included under the MIT License.

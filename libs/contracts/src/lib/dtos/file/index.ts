@@ -8,4 +8,3 @@
 
 export * from './file.type';
 export * from './file-info.dto';
-export * from './mocks';

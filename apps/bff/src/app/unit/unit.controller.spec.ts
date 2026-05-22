@@ -11,17 +11,19 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { of } from 'rxjs';
 import {
   HydrogenProductionOverviewDto,
-  HydrogenProductionUnitCreateDtoMock,
   HydrogenProductionUnitDto,
   HydrogenProductionUnitInputDto,
-  HydrogenStorageUnitCreateDtoMock,
   HydrogenStorageUnitDto,
   HydrogenStorageUnitInputDto,
-  PowerProductionUnitCreateDtoMock,
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
   UserDetailsDto,
 } from '@h2-trust/contracts/dtos';
+import {
+  HydrogenProductionUnitInputDtoFixture,
+  HydrogenStorageUnitInputDtoFixture,
+  PowerProductionUnitInputDtoFixture,
+} from '@h2-trust/contracts/dtos/fixtures';
 import {
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
@@ -75,7 +77,7 @@ describe('UnitController', () => {
     const expectedResponse: HydrogenProductionUnitDto = HydrogenProductionUnitDto.fromEntity(fixtureUnit);
 
     const sendRequestSpy = jest.spyOn(queue, 'send');
-    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: any) => {
+    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: unknown) => {
       return of(fixtureUnit);
     });
 
@@ -96,7 +98,7 @@ describe('UnitController', () => {
     const readUserRequestSpy = jest.spyOn(userService, 'readUserWithCompany');
     readUserRequestSpy.mockResolvedValue(fixtureUser);
     const sendRequestSpy = jest.spyOn(queue, 'send');
-    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: any) => {
+    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: unknown) => {
       return of(fixtureUnits);
     });
 
@@ -115,14 +117,14 @@ describe('UnitController', () => {
   });
 
   it('should create power production unit', async () => {
-    const givenDto: PowerProductionUnitInputDto = PowerProductionUnitCreateDtoMock[0];
+    const givenDto: PowerProductionUnitInputDto = PowerProductionUnitInputDtoFixture.create();
     const fixtureUnit: PowerProductionUnitEntity = PowerProductionUnitEntityFixture.create();
     const expectedResponse: PowerProductionUnitDto = PowerProductionUnitDto.fromEntity(fixtureUnit);
 
     const readUserRequestSpy = jest.spyOn(userService, 'readUserWithCompany');
     readUserRequestSpy.mockResolvedValue(fixtureUser);
     const sendRequestSpy = jest.spyOn(queue, 'send');
-    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: any) => {
+    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: unknown) => {
       return of(fixtureUnit);
     });
 
@@ -139,14 +141,14 @@ describe('UnitController', () => {
   });
 
   it('should create hydrogen production unit', async () => {
-    const givenDto: HydrogenProductionUnitInputDto = HydrogenProductionUnitCreateDtoMock[0];
+    const givenDto: HydrogenProductionUnitInputDto = HydrogenProductionUnitInputDtoFixture.create();
     const fixtureUnit: HydrogenProductionUnitEntity = HydrogenProductionUnitEntityFixture.create();
     const expectedResponse: HydrogenProductionUnitDto = HydrogenProductionUnitDto.fromEntity(fixtureUnit);
 
     const readUserRequestSpy = jest.spyOn(userService, 'readUserWithCompany');
     readUserRequestSpy.mockResolvedValue(fixtureUser);
     const sendRequestSpy = jest.spyOn(queue, 'send');
-    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: any) => {
+    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: unknown) => {
       return of(fixtureUnit);
     });
 
@@ -167,14 +169,14 @@ describe('UnitController', () => {
   });
 
   it('should create hydrogen storage unit', async () => {
-    const givenDto: HydrogenStorageUnitInputDto = HydrogenStorageUnitCreateDtoMock[0];
+    const givenDto: HydrogenStorageUnitInputDto = HydrogenStorageUnitInputDtoFixture.create();
     const fixtureUnit: HydrogenStorageUnitEntity = HydrogenStorageUnitEntityFixture.create();
     const expectedResponse: HydrogenStorageUnitDto = HydrogenStorageUnitDto.fromEntity(fixtureUnit);
 
     const readUserRequestSpy = jest.spyOn(userService, 'readUserWithCompany');
     readUserRequestSpy.mockResolvedValue(fixtureUser);
     const sendRequestSpy = jest.spyOn(queue, 'send');
-    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: any) => {
+    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: unknown) => {
       return of(fixtureUnit);
     });
 

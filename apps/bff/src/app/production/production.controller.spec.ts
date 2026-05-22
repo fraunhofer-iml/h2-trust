@@ -6,18 +6,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Readable } from 'stream';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   AccountingPeriodMatchingResultDto,
   AuthenticatedKCUser,
-  CreateProductionDtoMock,
   CsvDocumentIntegrityResultDto,
   PaginatedProductionDataDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
-  UserDetailsDtoMock,
 } from '@h2-trust/contracts/dtos';
+import { CreateProductionDtoFixture, UserDetailsDtoFixture } from '@h2-trust/contracts/dtos/fixtures';
 import {
   BatchEntityFixture,
   HydrogenProductionUnitEntityFixture,
@@ -47,6 +47,8 @@ describe('ProductionController', () => {
   let generalSvc: ClientProxy;
   let processSvc: ClientProxy;
   let userService: UserService;
+  const createProductionDto = CreateProductionDtoFixture.create();
+  const fixtureUser = UserDetailsDtoFixture.create();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -91,15 +93,15 @@ describe('ProductionController', () => {
     const processStepEntityMocks: ProcessStepEntity[] = [
       {
         id: 'hydrogen-production-process-step-1',
-        startedAt: new Date(CreateProductionDtoMock.productionStartedAt),
-        endedAt: new Date(CreateProductionDtoMock.productionEndedAt),
+        startedAt: new Date(createProductionDto.productionStartedAt),
+        endedAt: new Date(createProductionDto.productionEndedAt),
         type: ProcessType.HYDROGEN_PRODUCTION,
         batch: BatchEntityFixture.createHydrogenBatch(),
         recordedBy: UserEntityFixture.createHydrogenUser(),
         executedBy: HydrogenProductionUnitEntityFixture.create(),
       },
     ];
-    const paginatedProductionDataDtoMock: PaginatedProductionDataDto = {
+    const paginatedProductionDataDto: PaginatedProductionDataDto = {
       data: processStepEntityMocks.map(ProductionOverviewDto.fromEntity),
       totalItems: 1,
       currentPage: 1,
@@ -111,13 +113,13 @@ describe('ProductionController', () => {
       pageSize: 1,
     };
 
-    const expectedResponse: PaginatedProductionDataDto = paginatedProductionDataDtoMock;
+    const expectedResponse: PaginatedProductionDataDto = paginatedProductionDataDto;
 
-    jest.spyOn(userService, 'readUserWithCompany').mockResolvedValue(UserDetailsDtoMock[0]);
+    jest.spyOn(userService, 'readUserWithCompany').mockResolvedValue(fixtureUser);
 
     jest
       .spyOn(processSvc, 'send')
-      .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) =>
+      .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: unknown) =>
         of(paginatedProcessStepEntityMock),
       );
 
@@ -126,7 +128,7 @@ describe('ProductionController', () => {
       1,
       1,
       processStepEntityMocks[0].executedBy.name,
-      CreateProductionDtoMock.productionStartedAt,
+      createProductionDto.productionStartedAt,
     );
 
     expect(actualResponse).toEqual(expectedResponse);
@@ -166,7 +168,7 @@ describe('ProductionController', () => {
       destination: '',
       filename: 'powerFile',
       path: '',
-      stream: null as any,
+      stream: null as Readable,
     };
 
     const h2Content = 'time,amount,power\n2025-11-27T09:00:00Z,2\n2025-11-27T09:00:00Z,2,2';
@@ -181,21 +183,23 @@ describe('ProductionController', () => {
       destination: '',
       filename: 'h2File',
       path: '',
-      stream: null as any,
+      stream: null as Readable,
     };
-    jest.spyOn(userService, 'readUserWithCompany').mockResolvedValue(UserDetailsDtoMock[0]);
+    jest.spyOn(userService, 'readUserWithCompany').mockResolvedValue(fixtureUser);
 
-    jest.spyOn(generalSvc, 'send').mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: any) =>
-      of({
-        company: {
-          id: 'company-power-production-1',
-        },
-      }),
-    );
+    jest
+      .spyOn(generalSvc, 'send')
+      .mockImplementationOnce((_messagePattern: ProcessStepMessagePatterns, _data: unknown) =>
+        of({
+          company: {
+            id: 'company-power-production-1',
+          },
+        }),
+      );
 
     jest
       .spyOn(processSvc, 'send')
-      .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: any) => of(expectedResponse));
+      .mockImplementation((_messagePattern: ProcessStepMessagePatterns, _data: unknown) => of(expectedResponse));
 
     const dto: ProductionCSVUploadDto = {
       unitIds: ['id', 'id'],
@@ -227,7 +231,7 @@ describe('ProductionController', () => {
       destination: '',
       filename: 'powerFile',
       path: '',
-      stream: null as any,
+      stream: null as Readable,
     };
 
     await expect(controller.importCsvFile(dto, [powerFile], givenAuthenticatedUser)).rejects.toThrow(
@@ -256,7 +260,7 @@ describe('ProductionController', () => {
 
     jest
       .spyOn(processSvc, 'send')
-      .mockImplementation((_messagePattern: ProductionMessagePatterns, _data: any) => of(givenVerificationEntity));
+      .mockImplementation((_messagePattern: ProductionMessagePatterns, _data: unknown) => of(givenVerificationEntity));
 
     // act
     const actualResponse = await controller.verifyCsvDocumentIntegrity(givenVerificationEntity.documentId);

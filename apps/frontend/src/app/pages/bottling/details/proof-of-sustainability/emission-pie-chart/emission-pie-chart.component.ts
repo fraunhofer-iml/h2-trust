@@ -10,7 +10,7 @@ import { PercentPipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import * as echarts from 'echarts';
-import { EChartsOption, LegendComponentOption, PieSeriesOption } from 'echarts';
+import { DefaultLabelFormatterCallbackParams, EChartsOption, LegendComponentOption, PieSeriesOption } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { EmissionForProcessStepDto, EmissionProcessStepType } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit } from '@h2-trust/domain';
@@ -82,7 +82,10 @@ export class EmissionPieChartComponent {
     };
   }
 
-  private readonly tooltipFormatter = (params: any, dataTotal: EmissionForProcessStepDto[]): string => {
+  private readonly tooltipFormatter = (
+    params: DefaultLabelFormatterCallbackParams,
+    dataTotal: EmissionForProcessStepDto[],
+  ): string => {
     const percent = this.percentPipe.transform((params.percent ?? 0) / 100, '1.0-1');
     const description = dataTotal.find((item) => item.name === params.name)?.description;
     return `${params.marker} ${params.name} (${description}): ${params.value} ${MeasurementUnit.G_CO2} (${percent})`;
