@@ -21,9 +21,5 @@ export const integerValidator: ValidatorFn = (control: AbstractControl): Validat
   if (value === null || value === undefined || value === '') {
     return null;
   }
-  if (typeof value !== 'number' || !Number.isInteger(value) || value < 0) {
-    return { notAnInteger: true };
-  }
-
-  return null;
+  return typeof value === 'number' && Number.isInteger(value) ? null : { notAnInteger: true };
 };
