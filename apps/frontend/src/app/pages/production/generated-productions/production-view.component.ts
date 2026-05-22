@@ -84,7 +84,7 @@ export class ProductionViewComponent implements AfterViewInit {
   productionService = inject(ProductionService);
   filterModel = signal<FilterModel>({
     unit: '',
-    month: new Date(),
+    month: null,
   });
 
   pagination = signal<PaginationModel>({

@@ -21,7 +21,7 @@
     ></app-hydrogen-production-unit-form>
     <div class="relative flex w-full justify-end gap-2 rounded-md bg-white p-4">
       <button matButton="outlined" (click)="navigateToDetailsView()">Cancel</button>
-      <button matButton="filled" (click)="onSave()">Save</button>
+      <button matButton="filled" (click)="onSave()" [disabled]="isInvalid()">Save</button>
     </div>
   }
 </div>
