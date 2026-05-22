@@ -7,7 +7,7 @@
  */
 
 import { HydrogenStorageOverviewDto } from '@h2-trust/contracts/dtos';
-import { HydrogenStorageType, RfnboType } from '@h2-trust/domain';
+import { HydrogenStorageType, RfnboType, UnitType } from '@h2-trust/domain';
 
 export const HydrogenStorageOverviewDtoFixture = {
   create: (overrides: Partial<HydrogenStorageOverviewDto> = {}): HydrogenStorageOverviewDto => ({
@@ -15,8 +15,11 @@ export const HydrogenStorageOverviewDtoFixture = {
     name: overrides.name ?? 'Hydrogen Storage 1',
     capacity: overrides.capacity ?? 100,
     filling: overrides.filling ?? 40,
+    unitType: UnitType.HYDROGEN_STORAGE,
     storageType: overrides.storageType ?? HydrogenStorageType.COMPRESSED_GASEOUS_HYDROGEN,
-    hydrogenComposition: overrides.hydrogenComposition ?? [{ id: null, amount: 40, rfnboType: RfnboType.RFNBO_READY }],
+    hydrogenComposition: overrides.hydrogenComposition ?? [
+      { processId: null, amount: 40, rfnboType: RfnboType.RFNBO_READY },
+    ],
     active: overrides.active ?? true,
   }),
 } as const;

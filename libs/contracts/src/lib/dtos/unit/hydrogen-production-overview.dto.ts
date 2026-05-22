@@ -15,7 +15,6 @@ export class HydrogenProductionOverviewDto {
   unitType: UnitType;
   ratedPower: number;
   technology: HydrogenProductionTechnology;
-  producing: boolean;
   powerPurchaseAgreementStatus: boolean;
   powerProducerId: string;
   powerProducerName: string;
@@ -27,7 +26,6 @@ export class HydrogenProductionOverviewDto {
     unitType: UnitType,
     ratedPower: number,
     technology: HydrogenProductionTechnology,
-    producing: boolean,
     powerPurchaseAgreementStatus: boolean,
     powerProducerId: string,
     powerProducerName: string,
@@ -38,7 +36,6 @@ export class HydrogenProductionOverviewDto {
     this.unitType = unitType;
     this.ratedPower = ratedPower;
     this.technology = technology;
-    this.producing = producing;
     this.powerPurchaseAgreementStatus = powerPurchaseAgreementStatus;
     this.powerProducerId = powerProducerId;
     this.powerProducerName = powerProducerName;
@@ -54,7 +51,6 @@ export class HydrogenProductionOverviewDto {
       unitType: UnitType.HYDROGEN_PRODUCTION,
       ratedPower: unit.ratedPower,
       technology: unit.technology,
-      producing: true,
       powerPurchaseAgreementStatus: HydrogenProductionOverviewDto.existsPowerProducer(unit),
       powerProducerId: firstAgreement?.requestedCompany.id ?? '',
       powerProducerName: firstAgreement?.requestedCompany.name ?? '',

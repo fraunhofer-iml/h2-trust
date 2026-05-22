@@ -15,7 +15,6 @@ export class PowerProductionOverviewDto {
   unitType: UnitType;
   ratedPower: number;
   typeName: PowerProductionType;
-  producing: boolean;
   active: boolean;
 
   constructor(
@@ -24,7 +23,6 @@ export class PowerProductionOverviewDto {
     unitType: UnitType,
     ratedPower: number,
     typeName: PowerProductionType,
-    producing: boolean,
     active: boolean,
   ) {
     this.id = id;
@@ -32,7 +30,6 @@ export class PowerProductionOverviewDto {
     this.unitType = unitType;
     this.ratedPower = ratedPower;
     this.typeName = typeName;
-    this.producing = producing;
     this.active = active;
   }
 
@@ -43,7 +40,6 @@ export class PowerProductionOverviewDto {
       unitType: UnitType.POWER_PRODUCTION,
       ratedPower: unit.ratedPower,
       typeName: unit.type?.name ?? undefined,
-      producing: true,
       active: unit.active,
     };
   }
