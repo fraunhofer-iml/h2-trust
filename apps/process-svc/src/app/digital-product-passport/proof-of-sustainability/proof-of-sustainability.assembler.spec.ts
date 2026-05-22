@@ -17,8 +17,8 @@ import { CalculationTopic } from '@h2-trust/domain';
 import { assembleProofOfSustainability } from './proof-of-sustainability.assembler';
 
 describe('ProofOfSustainabilityAssembler', () => {
-  it('assembleProofOfSustainability', () => {
-    // Arrange
+  it('should assemble the proof of sustainability when called', () => {
+    // arrange
     const givenPowerProduction = ProcessStepEntityFixture.createPowerProduction();
     const givenWaterConsumption = ProcessStepEntityFixture.createWaterConsumption();
     const givenHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction();
@@ -41,10 +41,10 @@ describe('ProofOfSustainabilityAssembler', () => {
       givenHydrogenBottling,
     );
 
-    // Act
+    // act
     const actualResult = assembleProofOfSustainability(givenProvenance);
 
-    // Assert
+    // assert
     expect(actualResult).toBeDefined();
     expect(actualResult.batchId).toBe(givenHydrogenTransportation.id);
     expect(actualResult.calculations.length).toBe(5);

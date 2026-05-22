@@ -6,37 +6,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ClientProxy } from '@nestjs/microservices';
-import { Test, TestingModule } from '@nestjs/testing';
-import { of } from 'rxjs';
-import { UserDetailsDto } from '@h2-trust/contracts/dtos';
-import { UserEntity } from '@h2-trust/contracts/entities';
-import { UserEntityFixture } from '@h2-trust/contracts/entities/fixtures';
-import { ReadByIdPayload } from '@h2-trust/contracts/payloads';
-import { QUEUE_GENERAL_SVC, UserMessagePatterns } from '@h2-trust/messaging';
+import { UserDetailsDtoFixture } from '@h2-trust/contracts/dtos/fixtures';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
 describe('UserController', () => {
   let controller: UserController;
-  let generalSvc: ClientProxy;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [UserController],
-      providers: [
-        UserService,
-        {
-          provide: QUEUE_GENERAL_SVC,
-          useValue: {
-            send: jest.fn(),
-          },
-        },
-      ],
-    }).compile();
+  const userServiceMock = {
+    readUserWithCompany: jest.fn(),
+  };
 
-    controller = module.get<UserController>(UserController);
-    generalSvc = module.get<ClientProxy>(QUEUE_GENERAL_SVC) as ClientProxy;
+  beforeEach(() => {
+    controller = new UserController(userServiceMock as unknown as UserService);
   });
 
   afterEach(() => {
@@ -47,18 +29,17 @@ describe('UserController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('readUserWithCompany should request user and map dto', async () => {
-    const mockedUser: UserEntity = UserEntityFixture.createPowerUser({});
-    const expectedResponse = UserDetailsDto.fromEntity(mockedUser);
+  it('should delegate readUserWithCompany to UserService when handling a user details request', async () => {
+    // arrange
+    const expectedUser = UserDetailsDtoFixture.create({ id: 'user-id-1' });
 
-    const generalServiceSpy = jest
-      .spyOn(generalSvc, 'send')
-      .mockImplementation((_messagePattern, _data) => of(mockedUser));
+    userServiceMock.readUserWithCompany.mockResolvedValue(expectedUser);
 
-    const actualResponse = await controller.readUserWithCompany(mockedUser.id);
+    // act
+    const actualResult = await controller.readUserWithCompany(expectedUser.id);
 
-    expect(generalServiceSpy).toHaveBeenCalledTimes(1);
-    expect(generalServiceSpy).toHaveBeenCalledWith(UserMessagePatterns.READ, new ReadByIdPayload(mockedUser.id));
-    expect(actualResponse).toEqual(expectedResponse);
+    // assert
+    expect(actualResult).toEqual(expectedUser);
+    expect(userServiceMock.readUserWithCompany).toHaveBeenCalledWith(expectedUser.id);
   });
 });

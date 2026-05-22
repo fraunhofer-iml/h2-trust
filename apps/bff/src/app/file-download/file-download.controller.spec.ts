@@ -6,30 +6,42 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import { CentralizedStorageService } from '@h2-trust/storage';
+import type { Response } from 'express';
+import { DownloadFilesDtoFixture } from '@h2-trust/contracts/dtos/fixtures';
 import { FileDownloadController } from './file-download.controller';
 import { FileDownloadService } from './file-download.service';
 
 describe('FileDownloadController', () => {
   let controller: FileDownloadController;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [FileDownloadController],
-      providers: [
-        FileDownloadService,
-        {
-          provide: CentralizedStorageService,
-          useValue: {},
-        },
-      ],
-    }).compile();
+  const fileDownloadServiceMock = {
+    downloadFilesAsZip: jest.fn(),
+  };
 
-    controller = module.get<FileDownloadController>(FileDownloadController);
+  beforeEach(() => {
+    controller = new FileDownloadController(fileDownloadServiceMock as unknown as FileDownloadService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  it('should delegate the requested file ids and response to FileDownloadService when downloading files', async () => {
+    // arrange
+    const givenDto = DownloadFilesDtoFixture.create({ ids: ['first.csv', 'second.csv'] });
+    const givenResponse = {} as Response;
+
+    fileDownloadServiceMock.downloadFilesAsZip.mockResolvedValue(undefined);
+
+    // act
+    const actualResult = await controller.findAll(givenDto, givenResponse);
+
+    // assert
+    expect(actualResult).toBeUndefined();
+    expect(fileDownloadServiceMock.downloadFilesAsZip).toHaveBeenCalledWith(givenResponse, givenDto.ids);
   });
 });
