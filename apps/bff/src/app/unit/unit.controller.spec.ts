@@ -19,6 +19,7 @@ import {
   PowerProductionUnitInputDtoFixture,
   UnitUpdateActiveDtoFixture,
 } from '@h2-trust/contracts/dtos/fixtures';
+import { UnitType } from '@h2-trust/domain';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
 
@@ -26,15 +27,11 @@ describe('UnitController', () => {
   let controller: UnitController;
 
   const unitServiceMock = {
-    readHydrogenStorageUnits: jest.fn(),
-    readHydrogenStorageUnit: jest.fn(),
     createHydrogenStorageUnit: jest.fn(),
-    readPowerProductionUnits: jest.fn(),
-    readPowerProductionUnit: jest.fn(),
-    createPowerProductionUnit: jest.fn(),
-    readHydrogenProductionUnits: jest.fn(),
-    readHydrogenProductionUnit: jest.fn(),
+    readUnits: jest.fn(),
+    readUnitById: jest.fn(),
     createHydrogenProductionUnit: jest.fn(),
+    createPowerProductionUnit: jest.fn(),
     updateUnitStatus: jest.fn(),
     updateHydrogenProductionUnit: jest.fn(),
     updatePowerProductionUnit: jest.fn(),
@@ -64,18 +61,26 @@ describe('UnitController', () => {
     const expectedHydrogenStorageOverview = [HydrogenStorageOverviewDtoFixture.create()];
     const expectedHydrogenStorageUnit = HydrogenStorageUnitDtoFixture.create({ id: 'storage-unit-1' });
     const expectedPowerProductionOverview = [PowerProductionOverviewDtoFixture.create()];
+
     const expectedPowerProductionUnit = PowerProductionUnitDtoFixture.create({ id: 'power-unit-1' });
     const expectedHydrogenProductionOverview = [HydrogenProductionOverviewDtoFixture.create()];
     const expectedHydrogenProductionUnit = HydrogenProductionUnitDtoFixture.create({ id: 'hydrogen-unit-1' });
 
-    unitServiceMock.readHydrogenStorageUnits.mockResolvedValue(expectedHydrogenStorageOverview);
-    unitServiceMock.readHydrogenStorageUnit.mockResolvedValue(expectedHydrogenStorageUnit);
+    unitServiceMock.readUnits.mockImplementation(async (_userId: string, type?: UnitType) => {
+      switch (type) {
+        case UnitType.HYDROGEN_STORAGE:
+          return expectedHydrogenStorageOverview;
+        case UnitType.POWER_PRODUCTION:
+          return expectedPowerProductionOverview;
+        case UnitType.HYDROGEN_PRODUCTION:
+          return expectedHydrogenProductionOverview;
+        default:
+          return [expectedHydrogenProductionOverview, expectedHydrogenStorageOverview, expectedPowerProductionOverview];
+      }
+    });
     unitServiceMock.createHydrogenStorageUnit.mockResolvedValue(expectedHydrogenStorageUnit);
-    unitServiceMock.readPowerProductionUnits.mockResolvedValue(expectedPowerProductionOverview);
-    unitServiceMock.readPowerProductionUnit.mockResolvedValue(expectedPowerProductionUnit);
     unitServiceMock.createPowerProductionUnit.mockResolvedValue(expectedPowerProductionUnit);
-    unitServiceMock.readHydrogenProductionUnits.mockResolvedValue(expectedHydrogenProductionOverview);
-    unitServiceMock.readHydrogenProductionUnit.mockResolvedValue(expectedHydrogenProductionUnit);
+    unitServiceMock.readUnitById.mockResolvedValue(expectedHydrogenProductionUnit);
     unitServiceMock.createHydrogenProductionUnit.mockResolvedValue(expectedHydrogenProductionUnit);
     unitServiceMock.updateUnitStatus.mockResolvedValue(undefined);
     unitServiceMock.updateHydrogenProductionUnit.mockResolvedValue(undefined);
@@ -83,22 +88,18 @@ describe('UnitController', () => {
     unitServiceMock.updateHydrogenStorageUnit.mockResolvedValue(undefined);
 
     // act
-    const actualHydrogenStorageOverview = await controller.getHydrogenStorageUnits(authenticatedUser);
-    const actualHydrogenStorageUnit = await controller.getHydrogenStorageUnitById(expectedHydrogenStorageUnit.id);
+    const actualHydrogenStorageOverview = await controller.getUnits(authenticatedUser, UnitType.HYDROGEN_STORAGE);
     const actualCreatedHydrogenStorageUnit = await controller.createHydrogenStorageUnit(
       authenticatedUser,
       givenHydrogenStorageInput,
     );
-    const actualPowerProductionOverview = await controller.getPowerProductionUnits(authenticatedUser);
-    const actualPowerProductionUnit = await controller.getPowerProductionUnitById(expectedPowerProductionUnit.id);
+    const actualPowerProductionOverview = await controller.getUnits(authenticatedUser, UnitType.POWER_PRODUCTION);
     const actualCreatedPowerProductionUnit = await controller.createPowerProductionUnit(
       authenticatedUser,
       givenPowerProductionInput,
     );
-    const actualHydrogenProductionOverview = await controller.getHydrogenProductionUnits(authenticatedUser);
-    const actualHydrogenProductionUnit = await controller.getHydrogenProductionUnitById(
-      expectedHydrogenProductionUnit.id,
-    );
+    const actualHydrogenProductionOverview = await controller.getUnits(authenticatedUser, UnitType.HYDROGEN_PRODUCTION);
+    const actualHydrogenProductionUnit = await controller.getUnitById(expectedHydrogenProductionUnit.id);
     const actualCreatedHydrogenProductionUnit = await controller.createHydrogenProductionUnit(
       authenticatedUser,
       givenHydrogenProductionInput,
@@ -126,10 +127,8 @@ describe('UnitController', () => {
 
     // assert
     expect(actualHydrogenStorageOverview).toEqual(expectedHydrogenStorageOverview);
-    expect(actualHydrogenStorageUnit).toEqual(expectedHydrogenStorageUnit);
     expect(actualCreatedHydrogenStorageUnit).toEqual(expectedHydrogenStorageUnit);
     expect(actualPowerProductionOverview).toEqual(expectedPowerProductionOverview);
-    expect(actualPowerProductionUnit).toEqual(expectedPowerProductionUnit);
     expect(actualCreatedPowerProductionUnit).toEqual(expectedPowerProductionUnit);
     expect(actualHydrogenProductionOverview).toEqual(expectedHydrogenProductionOverview);
     expect(actualHydrogenProductionUnit).toEqual(expectedHydrogenProductionUnit);
@@ -138,20 +137,18 @@ describe('UnitController', () => {
     expect(actualUpdateHydrogenProductionUnitResult).toBeUndefined();
     expect(actualUpdatePowerProductionUnitResult).toBeUndefined();
     expect(actualUpdateHydrogenStorageUnitResult).toBeUndefined();
-    expect(unitServiceMock.readHydrogenStorageUnits).toHaveBeenCalledWith(authenticatedUser.sub);
-    expect(unitServiceMock.readHydrogenStorageUnit).toHaveBeenCalledWith(expectedHydrogenStorageUnit.id);
+    expect(unitServiceMock.readUnits).toHaveBeenCalledWith(authenticatedUser.sub, UnitType.HYDROGEN_STORAGE);
     expect(unitServiceMock.createHydrogenStorageUnit).toHaveBeenCalledWith(
       givenHydrogenStorageInput,
       authenticatedUser.sub,
     );
-    expect(unitServiceMock.readPowerProductionUnits).toHaveBeenCalledWith(authenticatedUser.sub);
-    expect(unitServiceMock.readPowerProductionUnit).toHaveBeenCalledWith(expectedPowerProductionUnit.id);
+    expect(unitServiceMock.readUnits).toHaveBeenCalledWith(authenticatedUser.sub, UnitType.POWER_PRODUCTION);
     expect(unitServiceMock.createPowerProductionUnit).toHaveBeenCalledWith(
       givenPowerProductionInput,
       authenticatedUser.sub,
     );
-    expect(unitServiceMock.readHydrogenProductionUnits).toHaveBeenCalledWith(authenticatedUser.sub);
-    expect(unitServiceMock.readHydrogenProductionUnit).toHaveBeenCalledWith(expectedHydrogenProductionUnit.id);
+    expect(unitServiceMock.readUnits).toHaveBeenCalledWith(authenticatedUser.sub, UnitType.HYDROGEN_PRODUCTION);
+    expect(unitServiceMock.readUnitById).toHaveBeenCalledWith(expectedHydrogenProductionUnit.id);
     expect(unitServiceMock.createHydrogenProductionUnit).toHaveBeenCalledWith(
       givenHydrogenProductionInput,
       authenticatedUser.sub,
