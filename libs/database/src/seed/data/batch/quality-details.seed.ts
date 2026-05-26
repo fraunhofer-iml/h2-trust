@@ -6,17 +6,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { QualityDetails } from '@prisma/client';
+import { Prisma, QualityDetails } from '@prisma/client';
 import { PowerType, RfnboType } from '@h2-trust/domain';
 import { auditTimestamp } from '../audit-timestamp.constant';
+import { HydrogenBottlingBatchSeed } from './hydrogen-bottling-batch.seed';
+import { HydrogenProductionBatchSeed } from './hydrogen-production-batch.seed';
+import { HydrogenTransportationBatchSeed } from './hydrogen-transportation-batch.seed';
+import { PowerProductionBatchSeed } from './power-production-batch.seed';
 
-export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
+export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.freeze([
   {
     id: 'quality-details-produced-0',
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.RFNBO_READY,
     powerType: PowerType.RENEWABLE,
+    batchId: HydrogenProductionBatchSeed[0].id,
   },
   {
     id: 'quality-details-produced-1',
@@ -24,6 +29,7 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.RFNBO_READY,
     powerType: PowerType.RENEWABLE,
+    batchId: HydrogenProductionBatchSeed[1].id,
   },
   {
     id: 'quality-details-produced-2',
@@ -31,6 +37,7 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
     powerType: PowerType.RENEWABLE,
+    batchId: HydrogenProductionBatchSeed[2].id,
   },
   {
     id: 'quality-details-produced-3',
@@ -38,6 +45,7 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
     powerType: PowerType.RENEWABLE,
+    batchId: HydrogenProductionBatchSeed[3].id,
   },
   {
     id: 'quality-details-produced-4',
@@ -45,6 +53,7 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
     powerType: PowerType.RENEWABLE,
+    batchId: HydrogenProductionBatchSeed[4].id,
   },
   {
     id: 'quality-details-produced-5',
@@ -52,6 +61,7 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
     powerType: PowerType.RENEWABLE,
+    batchId: HydrogenProductionBatchSeed[5].id,
   },
   {
     id: 'quality-details-produced-6',
@@ -59,6 +69,7 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
     powerType: PowerType.NON_RENEWABLE,
+    batchId: HydrogenProductionBatchSeed[6].id,
   },
   {
     id: 'quality-details-produced-7',
@@ -66,6 +77,7 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
     powerType: PowerType.PARTLY_RENEWABLE,
+    batchId: HydrogenProductionBatchSeed[7].id,
   },
   {
     id: 'quality-details-produced-8',
@@ -73,6 +85,7 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
     powerType: PowerType.PARTLY_RENEWABLE,
+    batchId: HydrogenProductionBatchSeed[8].id,
   },
   {
     id: 'quality-details-produced-9',
@@ -80,6 +93,7 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
     powerType: PowerType.RENEWABLE,
+    batchId: HydrogenProductionBatchSeed[9].id,
   },
   {
     id: 'quality-details-bottled-10',
@@ -87,6 +101,7 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.RFNBO_READY,
     powerType: PowerType.NOT_SPECIFIED,
+    batchId: HydrogenBottlingBatchSeed[0].id,
   },
   {
     id: 'quality-details-bottled-11',
@@ -94,6 +109,7 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
     powerType: PowerType.NOT_SPECIFIED,
+    batchId: HydrogenBottlingBatchSeed[1].id,
   },
   {
     id: 'quality-details-bottled-12',
@@ -101,6 +117,7 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
     powerType: PowerType.NOT_SPECIFIED,
+    batchId: HydrogenBottlingBatchSeed[2].id,
   },
   {
     id: 'quality-details-transported-13',
@@ -108,6 +125,8 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
     powerType: PowerType.NOT_SPECIFIED,
+    distance: new Prisma.Decimal(0),
+    batchId: HydrogenTransportationBatchSeed[0].id,
   },
   {
     id: 'quality-details-transported-14',
@@ -115,6 +134,8 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
     powerType: PowerType.NOT_SPECIFIED,
+    distance: new Prisma.Decimal(100),
+    batchId: HydrogenTransportationBatchSeed[1].id,
   },
   {
     id: 'quality-details-transported-15',
@@ -122,6 +143,8 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
     powerType: PowerType.NOT_SPECIFIED,
+    distance: new Prisma.Decimal(100),
+    batchId: HydrogenTransportationBatchSeed[2].id,
   },
   {
     id: 'quality-details-power-0',
@@ -129,6 +152,7 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NOT_SPECIFIED,
     powerType: PowerType.RENEWABLE,
+    batchId: PowerProductionBatchSeed[0].id,
   },
   {
     id: 'quality-details-power-1',
@@ -136,6 +160,7 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NOT_SPECIFIED,
     powerType: PowerType.RENEWABLE,
+    batchId: PowerProductionBatchSeed[1].id,
   },
   {
     id: 'quality-details-power-2',
@@ -143,6 +168,7 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NOT_SPECIFIED,
     powerType: PowerType.RENEWABLE,
+    batchId: PowerProductionBatchSeed[2].id,
   },
   {
     id: 'quality-details-power-3',
@@ -150,6 +176,7 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NOT_SPECIFIED,
     powerType: PowerType.RENEWABLE,
+    batchId: PowerProductionBatchSeed[3].id,
   },
   {
     id: 'quality-details-power-4',
@@ -157,6 +184,7 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NOT_SPECIFIED,
     powerType: PowerType.RENEWABLE,
+    batchId: PowerProductionBatchSeed[4].id,
   },
   {
     id: 'quality-details-power-5',
@@ -164,6 +192,7 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NOT_SPECIFIED,
     powerType: PowerType.RENEWABLE,
+    batchId: PowerProductionBatchSeed[5].id,
   },
   {
     id: 'quality-details-power-6',
@@ -171,6 +200,7 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NOT_SPECIFIED,
     powerType: PowerType.NON_RENEWABLE,
+    batchId: PowerProductionBatchSeed[6].id,
   },
   {
     id: 'quality-details-power-7',
@@ -178,6 +208,7 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NOT_SPECIFIED,
     powerType: PowerType.PARTLY_RENEWABLE,
+    batchId: PowerProductionBatchSeed[7].id,
   },
   {
     id: 'quality-details-power-8',
@@ -185,6 +216,7 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NOT_SPECIFIED,
     powerType: PowerType.PARTLY_RENEWABLE,
+    batchId: PowerProductionBatchSeed[8].id,
   },
   {
     id: 'quality-details-power-9',
@@ -192,5 +224,6 @@ export const QualityDetailsSeed: readonly QualityDetails[] = Object.freeze([
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NOT_SPECIFIED,
     powerType: PowerType.RENEWABLE,
+    batchId: PowerProductionBatchSeed[9].id,
   },
 ]);

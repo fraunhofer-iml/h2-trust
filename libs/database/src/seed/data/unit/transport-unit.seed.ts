@@ -6,18 +6,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Prisma, UnitSpecifications } from '@prisma/client';
-import { HydrogenStorageType } from '@h2-trust/domain';
+import { UnitSpecifications } from '@prisma/client';
+import { FuelType, TransportMode } from '@h2-trust/domain';
 import { auditTimestamp } from '../audit-timestamp.constant';
 import { UnitSeed } from './unit.seed';
 
-export const HydrogenStorageUnitSeed: readonly Partial<UnitSpecifications>[] = Object.freeze([
+export const TransportUnitSeed: readonly Partial<UnitSpecifications>[] = Object.freeze([
   {
-    id: UnitSeed[5].id,
+    id: UnitSeed[6].id,
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
-    unitId: UnitSeed[5].id,
-    storageType: HydrogenStorageType.COMPRESSED_GASEOUS_HYDROGEN,
-    capacity: new Prisma.Decimal(1200),
+    transportMode: TransportMode.TRAILER,
+    fuelType: FuelType.DIESEL,
   },
 ]);

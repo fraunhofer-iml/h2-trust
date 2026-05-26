@@ -9,7 +9,6 @@
 import { PrismaClient } from '@prisma/client';
 import {
   AddressSeed,
-  BatchDetailsSeed,
   BatchRelationBottlingProductionSeed,
   BatchRelationPowerHydrogenSeed,
   BatchRelationTransportationBottlingSeed,
@@ -17,16 +16,11 @@ import {
   BatchSeed,
   CompanySeed,
   DocumentSeed,
-  HydrogenProductionUnitSeed,
-  HydrogenStorageUnitSeed,
-  PowerProductionTypeSeed,
   PowerProductionUnitSeed,
   PowerPurchaseAgreementDecisionSeed,
   PowerPurchaseAgreementSeed,
-  ProcessStepDetailsSeed,
   ProcessStepSeed,
   QualityDetailsSeed,
-  TransportationDetailsSeed,
   UnitSeed,
   UserSeed,
 } from './data';
@@ -57,24 +51,9 @@ export async function seedDatabase() {
       createRecord: (data: any) => prisma.unit.create({ data }),
     },
     {
-      name: 'powerProductionType',
-      records: PowerProductionTypeSeed,
-      createRecord: (data: any) => prisma.powerProductionType.create({ data }),
-    },
-    {
-      name: 'powerProductionUnit',
+      name: 'unitSpecifications',
       records: PowerProductionUnitSeed,
-      createRecord: (data: any) => prisma.powerProductionUnit.create({ data }),
-    },
-    {
-      name: 'hydrogenStorageUnit',
-      records: HydrogenStorageUnitSeed,
-      createRecord: (data: any) => prisma.hydrogenStorageUnit.create({ data }),
-    },
-    {
-      name: 'hydrogenProductionUnit',
-      records: HydrogenProductionUnitSeed,
-      createRecord: (data: any) => prisma.hydrogenProductionUnit.create({ data }),
+      createRecord: (data: any) => prisma.unitSpecifications.create({ data }),
     },
     {
       name: 'batch',
@@ -134,11 +113,6 @@ export async function seedDatabase() {
         }),
     },
     {
-      name: 'batchDetails',
-      records: BatchDetailsSeed,
-      createRecord: (data: any) => prisma.batchDetails.create({ data }),
-    },
-    {
       name: 'qualityDetails',
       records: QualityDetailsSeed,
       createRecord: (data: any) => prisma.qualityDetails.create({ data }),
@@ -147,16 +121,6 @@ export async function seedDatabase() {
       name: 'processStep',
       records: ProcessStepSeed,
       createRecord: (data: any) => prisma.processStep.create({ data }),
-    },
-    {
-      name: 'processStepDetails',
-      records: ProcessStepDetailsSeed,
-      createRecord: (data: any) => prisma.processStepDetails.create({ data }),
-    },
-    {
-      name: 'transportationDetails',
-      records: TransportationDetailsSeed,
-      createRecord: (data: any) => prisma.transportationDetails.create({ data }),
     },
     {
       name: 'document',

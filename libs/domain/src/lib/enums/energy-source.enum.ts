@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+//TODO-LG: Remove this and use PowerProduction Type instead
 export enum EnergySource {
   GRID = 'GRID',
   HYDRO_POWER = 'HYDRO_POWER',

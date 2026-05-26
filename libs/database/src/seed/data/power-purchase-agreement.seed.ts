@@ -10,7 +10,7 @@ import { PowerPurchaseAgreement } from '@prisma/client';
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { auditTimestamp } from './audit-timestamp.constant';
 import { CompanySeed } from './company.seed';
-import { PowerProductionTypeSeed, PowerProductionUnitSeed } from './unit';
+import { PowerProductionUnitSeed } from './unit';
 import { UserSeed } from './user.seed';
 
 export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Object.freeze([
@@ -22,7 +22,6 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
     validTo: new Date('2025-02-14'),
     status: PowerPurchaseAgreementStatus.APPROVED,
     requestingUserId: UserSeed[0].id,
-    suggestedPowerTypeName: PowerProductionTypeSeed[0].name,
     requestedCompanyId: CompanySeed[0].id,
     powerProductionUnitId: PowerProductionUnitSeed[0].id,
     hydrogenProducerId: CompanySeed[2].id,
@@ -35,7 +34,6 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
     validTo: new Date('2025-02-14'),
     status: PowerPurchaseAgreementStatus.APPROVED,
     requestingUserId: UserSeed[0].id,
-    suggestedPowerTypeName: PowerProductionTypeSeed[1].name,
     requestedCompanyId: CompanySeed[2].id,
     powerProductionUnitId: PowerProductionUnitSeed[1].id,
     hydrogenProducerId: CompanySeed[2].id,
@@ -48,7 +46,6 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
     validTo: new Date('2025-08-16'),
     status: PowerPurchaseAgreementStatus.APPROVED,
     requestingUserId: UserSeed[0].id,
-    suggestedPowerTypeName: PowerProductionTypeSeed[2].name,
     requestedCompanyId: CompanySeed[2].id,
     powerProductionUnitId: PowerProductionUnitSeed[2].id,
     hydrogenProducerId: CompanySeed[2].id,
@@ -61,7 +58,6 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
     validTo: new Date('2025-08-16'),
     status: PowerPurchaseAgreementStatus.APPROVED,
     requestingUserId: UserSeed[0].id,
-    suggestedPowerTypeName: PowerProductionTypeSeed[2].name,
     requestedCompanyId: CompanySeed[1].id,
     powerProductionUnitId: PowerProductionUnitSeed[3].id,
     hydrogenProducerId: CompanySeed[2].id,

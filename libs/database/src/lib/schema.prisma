@@ -164,7 +164,8 @@ model UnitSpecifications {
   technology String?
 
   // Transport
-  fuel String?
+  transportMode String?
+  fuelType      String?
 
   // Storage
   storageType String?
@@ -191,20 +192,19 @@ model Batch {
 }
 
 model QualityDetails {
-  id        String   @id
+  id        String   @id @default(uuid(7))
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Emission Data
   rfnboType          String
   powerType          String
-  usedRenewablePower Decimal @db.Decimal(18, 6)
-  usedGridPower      Decimal @db.Decimal(18, 6)
-  transportMode      String
-  fuelType           String?
-  distance           Decimal @db.Decimal(8, 3)
+  usedRenewablePower Decimal? @db.Decimal(18, 6)
+  usedGridPower      Decimal? @db.Decimal(18, 6)
+  distance           Decimal? @db.Decimal(8, 3)
 
-  batch Batch @relation(fields: [id], references: [id])
+  batch   Batch  @relation(fields: [batchId], references: [id])
+  batchId String @unique
 }
 
 model ProcessStep {

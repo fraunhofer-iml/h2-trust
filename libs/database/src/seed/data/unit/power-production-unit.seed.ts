@@ -6,67 +6,54 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerProductionUnit, Prisma } from '@prisma/client';
-import { BiddingZone, GridLevel } from '@h2-trust/domain';
+import { Prisma, UnitSpecifications } from '@prisma/client';
+import { BiddingZone, PowerProductionType } from '@h2-trust/domain';
 import { auditTimestamp } from '../audit-timestamp.constant';
-import { PowerProductionTypeSeed } from './power-production-type.seed';
 import { UnitSeed } from './unit.seed';
 
-export const PowerProductionUnitSeed: readonly PowerProductionUnit[] = Object.freeze([
+export const PowerProductionUnitSeed: readonly Partial<UnitSpecifications>[] = Object.freeze([
   {
     id: UnitSeed[0].id,
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
-    electricityMeterNumber: '123456789012',
-    gridOperator: 'Powernetz GmbH',
-    gridConnectionNumber: 'DE0012345678901234',
-    gridLevel: GridLevel.LOW_VOLTAGE,
+    powerProductionType: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
     biddingZone: BiddingZone.DE_LU,
     ratedPower: new Prisma.Decimal(4.5),
     decommissioningPlannedOn: new Date('2045-04-01'),
     financialSupportReceived: false,
-    typeName: PowerProductionTypeSeed[0].name,
+    unitId: UnitSeed[0].id,
   },
   {
     id: UnitSeed[1].id,
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
-    electricityMeterNumber: 'EMN-2025-002',
-    gridOperator: 'FluxDirect Energy Networks',
-    gridConnectionNumber: 'GCN-2025-002',
-    gridLevel: GridLevel.MEDIUM_VOLTAGE,
+    powerProductionType: PowerProductionType.WIND_TURBINE,
     biddingZone: BiddingZone.FR,
     ratedPower: new Prisma.Decimal(1500),
     decommissioningPlannedOn: new Date('2043-06-15'),
     financialSupportReceived: true,
-    typeName: PowerProductionTypeSeed[1].name,
+    unitId: UnitSeed[1].id,
   },
   {
     id: UnitSeed[2].id,
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
-    electricityMeterNumber: 'EMN-2025-002',
-    gridOperator: 'FluxDirect Energy Networks',
-    gridConnectionNumber: 'GCN-2025-002',
-    gridLevel: GridLevel.MEDIUM_VOLTAGE,
+    powerProductionType: PowerProductionType.WIND_TURBINE,
     biddingZone: BiddingZone.FR,
     ratedPower: new Prisma.Decimal(1500),
     decommissioningPlannedOn: new Date('2043-06-15'),
     financialSupportReceived: true,
-    typeName: PowerProductionTypeSeed[1].name,
+    unitId: UnitSeed[2].id,
   },
   {
     id: UnitSeed[3].id,
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
-    electricityMeterNumber: 'EMN-2025-004',
-    gridOperator: 'FluxDirect Energy Networks',
-    gridConnectionNumber: 'GRID-2025-004',
-    gridLevel: GridLevel.EXTRA_HIGH_VOLTAGE,
+    powerProductionType: PowerProductionType.GRID,
     biddingZone: BiddingZone.DE_LU,
     ratedPower: new Prisma.Decimal(100000),
     decommissioningPlannedOn: new Date('2045-08-14'),
     financialSupportReceived: false,
-    typeName: PowerProductionTypeSeed[3].name,
+    unitId: UnitSeed[3].id,
   },
 ]);
