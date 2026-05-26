@@ -8,7 +8,6 @@
 
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
-import { MatDivider } from '@angular/material/divider';
 import { RouterModule } from '@angular/router';
 import { injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { UnitDto } from '@h2-trust/contracts/dtos';
@@ -45,7 +44,6 @@ import { UnitDetailsComponent } from './shared/unit-details/unit-details.compone
     UnitActionsComponent,
     EnumPipe,
     UnitCardComponent,
-    MatDivider,
   ],
   templateUrl: './unit-details-page.component.html',
 })
