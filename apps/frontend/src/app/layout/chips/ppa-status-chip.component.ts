@@ -16,19 +16,19 @@ import { EnumPipe } from '../../shared/pipes/enum.pipe';
   selector: 'app-ppa-status-chip',
   imports: [CommonModule, EnumPipe],
   template: ` <div
-    class="flex w-fit flex-row items-center gap-2 rounded-lg border bg-white px-2 text-sm"
+    class="flex w-fit flex-row items-center gap-2 rounded-lg border px-2 text-sm"
     [ngClass]="{
-      'border-secondary-300 text-secondary-400': status() === PowerPurchaseAgreementStatus.APPROVED,
-      'border-error-red text-error-red': status() === PowerPurchaseAgreementStatus.REJECTED,
-      'border-tertiary-400 text-tertiary-400': status() === PowerPurchaseAgreementStatus.PENDING,
+      'border-secondary-300 text-secondary-500 bg-secondary-50': status() === PowerPurchaseAgreementStatus.APPROVED,
+      'border-error-red text-error-red bg-error-red/20': status() === PowerPurchaseAgreementStatus.REJECTED,
+      'border-tertiary-400 text-tertiary-500 bg-tertiary-50': status() === PowerPurchaseAgreementStatus.PENDING,
     }"
   >
     <span
       class="material-symbols-outlined text-base!"
       [ngClass]="{
-        'text-secondary-400': status() === PowerPurchaseAgreementStatus.APPROVED,
+        'text-secondary-500': status() === PowerPurchaseAgreementStatus.APPROVED,
         'text-error-red': status() === PowerPurchaseAgreementStatus.REJECTED,
-        'text-tertiary-400': status() === PowerPurchaseAgreementStatus.PENDING,
+        'text-tertiary-500': status() === PowerPurchaseAgreementStatus.PENDING,
       }"
     >
       {{ icon() }}

@@ -76,11 +76,7 @@ export class CreateUnitComponent {
   protected readonly UnitType = UnitType;
   protected readonly HydrogenProductionMethod = HydrogenProductionMethod;
   protected readonly HydrogenStorageType = HydrogenStorageType;
-  protected readonly unitTypes = [
-    UnitType.HYDROGEN_PRODUCTION,
-    UnitType.POWER_PRODUCTION,
-    UnitType.HYDROGEN_STORAGE,
-  ] as const;
+  protected readonly unitTypes = Object.values(UnitType);
 
   unitsService = inject(UnitsService);
   companiesService = inject(CompaniesService);
