@@ -25,9 +25,9 @@ import {
   HydrogenProductionTechnology,
   HydrogenStorageType,
 } from '@h2-trust/domain';
-import { UnitTypeChipComponent } from '../../../layout/chips/unit-type-chip.component';
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
 import { LoadingCardComponent } from '../../../layout/loading-card/loading-card.component';
+import { UnitCardComponent } from '../../../layout/unit-card/unit-card.component';
 import { H2TrustRoutes } from '../../../shared/constants/routes';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { UnitsService } from '../../../shared/services/units/units.service';
@@ -62,9 +62,9 @@ import { PowerProductionUnitFormComponent } from '../forms/power-production/powe
     HydrogenProductionUnitFormComponent,
     HydrogenUnitFormComponent,
     PowerProductionUnitFormComponent,
-    UnitTypeChipComponent,
     LoadingCardComponent,
     ErrorCardComponent,
+    UnitCardComponent,
   ],
   templateUrl: './unit-update-page.component.html',
 })
