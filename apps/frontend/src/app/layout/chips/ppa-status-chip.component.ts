@@ -18,17 +18,17 @@ import { EnumPipe } from '../../shared/pipes/enum.pipe';
   template: ` <div
     class="flex w-fit flex-row items-center gap-2 rounded-lg border px-2 text-sm"
     [ngClass]="{
-      'border-secondary-300 text-secondary-500 bg-secondary-50': status() === PowerPurchaseAgreementStatus.APPROVED,
-      'border-error-red text-error-red bg-error-red/20': status() === PowerPurchaseAgreementStatus.REJECTED,
-      'border-tertiary-400 text-tertiary-500 bg-tertiary-50': status() === PowerPurchaseAgreementStatus.PENDING,
+      'border-secondary-100 text-secondary-700 bg-secondary-100/60': status() === PowerPurchaseAgreementStatus.APPROVED,
+      'border-error-red/20 text-error-red bg-error-red/20': status() === PowerPurchaseAgreementStatus.REJECTED,
+      'border-tertiary-100 text-tertiary-700 bg-tertiary-100/60': status() === PowerPurchaseAgreementStatus.PENDING,
     }"
   >
     <span
       class="material-symbols-outlined text-base!"
       [ngClass]="{
-        'text-secondary-500': status() === PowerPurchaseAgreementStatus.APPROVED,
+        'text-secondary-700': status() === PowerPurchaseAgreementStatus.APPROVED,
         'text-error-red': status() === PowerPurchaseAgreementStatus.REJECTED,
-        'text-tertiary-500': status() === PowerPurchaseAgreementStatus.PENDING,
+        'text-tertiary-700': status() === PowerPurchaseAgreementStatus.PENDING,
       }"
     >
       {{ icon() }}

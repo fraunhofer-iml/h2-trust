@@ -1,9 +1,9 @@
 <div class="my-4 flex w-full flex-col gap-4">
   <mat-expansion-panel class="rounded-lg bg-white! shadow-none!" [expanded]="true">
     <mat-expansion-panel-header class="min-h-14 rounded-md bg-white px-4">
-      <mat-panel-title class="text-[11px] font-semibold tracking-[0.12em] text-neutral-500">PENDING</mat-panel-title>
+      <mat-panel-title class="text-neutral-500">Pending</mat-panel-title>
       <mat-panel-description class="justify-end">
-        <span class="rounded-full border border-neutral-300 bg-white px-2 py-0.5 text-xs font-medium text-neutral-600">
+        <span class="rounded-full border border-neutral-300 bg-white px-2 py-1 text-xs font-medium text-neutral-600">
           {{ data()?.pending?.length ?? 0 }}
         </span>
       </mat-panel-description>
@@ -30,9 +30,9 @@
 
   <mat-expansion-panel class="rounded-lg bg-white! shadow-none!">
     <mat-expansion-panel-header class="min-h-14 rounded-md bg-white px-4">
-      <mat-panel-title class="text-[11px] font-semibold tracking-[0.12em] text-neutral-500">COMPLETED</mat-panel-title>
+      <mat-panel-title class="text-neutral-500">Completed</mat-panel-title>
       <mat-panel-description class="justify-end">
-        <span class="rounded-full border border-neutral-300 bg-white px-2 py-0.5 text-xs font-medium text-neutral-600">
+        <span class="rounded-full border border-neutral-300 bg-white px-2 py-1 text-xs font-medium text-neutral-600">
           {{ data()?.closed?.length ?? 0 }}
         </span>
       </mat-panel-description>
