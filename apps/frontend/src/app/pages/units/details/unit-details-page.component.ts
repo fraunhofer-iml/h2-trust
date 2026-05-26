@@ -8,6 +8,7 @@
 
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
+import { MatDivider } from '@angular/material/divider';
 import { RouterModule } from '@angular/router';
 import { injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { UnitDto } from '@h2-trust/contracts/dtos';
@@ -15,6 +16,7 @@ import { MeasurementUnit, UnitType } from '@h2-trust/domain';
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
 import { InfoTooltipComponent } from '../../../layout/info-tooltip/info-tooltip.component';
 import { LoadingCardComponent } from '../../../layout/loading-card/loading-card.component';
+import { UnitCardComponent } from '../../../layout/unit-card/unit-card.component';
 import { RFNBO_CRITERIA } from '../../../shared/constants/rfnbo-criteria';
 import { BoolPipe } from '../../../shared/pipes/bool-pipe';
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
@@ -42,6 +44,8 @@ import { UnitDetailsComponent } from './shared/unit-details/unit-details.compone
     LoadingCardComponent,
     UnitActionsComponent,
     EnumPipe,
+    UnitCardComponent,
+    MatDivider,
   ],
   templateUrl: './unit-details-page.component.html',
 })

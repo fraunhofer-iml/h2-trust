@@ -56,10 +56,6 @@ export class UnitsService {
     return lastValueFrom(this.httpClient.get<UnitDto>(API.UNITS.BY_ID(id)));
   }
 
-  getUnitById(id: string) {
-    return lastValueFrom(this.httpClient.get<UnitDto>(API.UNITS.BY_ID(id)));
-  }
-
   getHydrogenStorageUnit(id: string) {
     return lastValueFrom(this.httpClient.get<HydrogenStorageUnitDto>(API.UNITS.HYDROGEN_STORAGE.BY_ID(id)));
   }

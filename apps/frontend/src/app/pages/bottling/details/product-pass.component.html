@@ -21,7 +21,7 @@
     <div class="grid grid-cols-6 gap-4">
       <div class="col-span-4 rounded-lg bg-white p-4">
         <div class="flex flex-row justify-between">
-          <h3 class="font-semibold text-neutral-500">General Information</h3>
+          <h3 class="text-neutral-500">General Information</h3>
           <app-rfnbo-compliance class="col-span-6" [redCompliance]="batch.rfnboCompliance"></app-rfnbo-compliance>
         </div>
 
@@ -49,7 +49,7 @@
       </div>
 
       <div class="col-span-2 flex flex-col gap-2 rounded-lg bg-white p-4">
-        <h3 class="font-semibold text-neutral-500">Attached Files</h3>
+        <h3 class="text-neutral-500">Attached Files</h3>
 
         @if (batch.attachedFiles.length === 0) {
           <app-empty-state

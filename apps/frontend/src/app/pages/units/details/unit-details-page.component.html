@@ -12,10 +12,11 @@
   } @else if (unitQuery.data(); as unit) {
     <div class="grid grid-cols-4 gap-4">
       <div class="col-span-3 flex flex-col gap-4">
-        <app-unit-details [unit]="unit"></app-unit-details>
+        <app-unit-card [unit]="unit" [showActions]="false" class="rounded-lg bg-white p-4"></app-unit-card>
 
+        <app-unit-details [unit]="unit" class="rounded-lg bg-white p-4"></app-unit-details>
         <div class="rounded-lg bg-white p-4">
-          <h3 class="pb-4 font-semibold text-neutral-500">Additional Information</h3>
+          <h3 class="pb-4 text-neutral-500">Type Specific Information</h3>
 
           @switch (unit.unitType) {
             @case (UnitType.HYDROGEN_PRODUCTION) {
