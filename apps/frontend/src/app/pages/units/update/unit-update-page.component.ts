@@ -42,8 +42,13 @@ import {
   addValidatorsToFormGroup,
   HydrogenProductionFormGroup,
   HydrogenStorageFormGroup,
+<<<<<<< HEAD
   newH2ProductionForm,
   newH2StorageForm,
+=======
+  newHydrogenProductionForm,
+  newHydrogenStorageForm,
+>>>>>>> main
   newPowerProductionForm,
   newUnitForm,
   PowerProductionFormGroup,
@@ -79,8 +84,13 @@ export class UnitUpdatePageComponent {
   protected isPowerProductionUnit = isPowerProductionUnitDetails;
 
   unitForm: FormGroup<UnitFormGroup> = newUnitForm();
+<<<<<<< HEAD
   hydrogenProductionForm: FormGroup<HydrogenProductionFormGroup> = newH2ProductionForm();
   hydrogenStorageUnitForm: FormGroup<HydrogenStorageFormGroup> = newH2StorageForm();
+=======
+  hydrogenProductionForm: FormGroup<HydrogenProductionFormGroup> = newHydrogenProductionForm();
+  hydrogenStorageUnitForm: FormGroup<HydrogenStorageFormGroup> = newHydrogenStorageForm();
+>>>>>>> main
   powerProductionForm: FormGroup<PowerProductionFormGroup> = newPowerProductionForm();
 
   readonly unitQuery = injectQuery(() => ({
@@ -101,7 +111,11 @@ export class UnitUpdatePageComponent {
   readonly unitMutation = injectMutation(() => ({
     mutationFn: (unit: UnitDto) => this.updateUnit(unit),
     onSuccess: async () => {
+<<<<<<< HEAD
       await this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.UNITS, this.id()] });
+=======
+      await this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.UNITS] });
+>>>>>>> main
       toast.success('Unit updated successfully');
       this.router.navigate([H2TrustRoutes.UNITS, this.id()]);
     },
@@ -114,6 +128,11 @@ export class UnitUpdatePageComponent {
   }
 
   private async updateUnit(unit: UnitDto) {
+<<<<<<< HEAD
+=======
+    const unitType = unit.unitType;
+
+>>>>>>> main
     if (this.isHydrogenProductionUnit(unit)) {
       const dto = this.buildHydrogenProductionDto();
       return this.unitsService.updateHydrogenProductionUnit(unit.id, dto);
@@ -129,7 +148,11 @@ export class UnitUpdatePageComponent {
       return this.unitsService.updatePowerProductionUnit(unit.id, dto);
     }
 
+<<<<<<< HEAD
     throw new Error('Fetched unit has unexpected type for update page');
+=======
+    throw new Error(`Fetched unit has unexpected type "${unitType}" for update page.`);
+>>>>>>> main
   }
 
   private buildHydrogenProductionDto(): HydrogenProductionUnitInputDto {

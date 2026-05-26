@@ -6,51 +6,33 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ClientProxy } from '@nestjs/microservices';
-import { Test, TestingModule } from '@nestjs/testing';
+import { META_PUBLIC } from 'nest-keycloak-connect';
 import {
-  AuthenticatedUserMock,
-  BottlingDto,
-  BottlingDtoMock,
-  BottlingOverviewDto,
-  UserDetailsDtoMock,
+  type AuthenticatedKCUser,
+  type BottlingOverviewDto,
+  type DigitalProductPassportDto,
 } from '@h2-trust/contracts/dtos';
-import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
-import { ProcessStepMessagePatterns, QUEUE_PROCESS_SVC } from '@h2-trust/messaging';
-import 'multer';
-import { of } from 'rxjs';
-import { RfnboType } from '@h2-trust/domain';
-import { UserService } from '../user/user.service';
+import {
+  BottlingDtoFixture,
+  BottlingOverviewDtoFixture,
+  DigitalProductPassportDtoFixture,
+} from '@h2-trust/contracts/dtos/fixtures';
 import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';
 
 describe('BottlingController', () => {
   let controller: BottlingController;
-  let processSvc: ClientProxy;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [],
-      controllers: [BottlingController],
-      providers: [
-        BottlingService,
-        {
-          provide: UserService,
-          useValue: {
-            readUserWithCompany: jest.fn().mockResolvedValue(UserDetailsDtoMock[0]),
-          },
-        },
-        {
-          provide: QUEUE_PROCESS_SVC,
-          useValue: {
-            send: jest.fn(),
-          },
-        },
-      ],
-    }).compile();
+  const bottlingServiceMock = {
+    createBottlingAndTransportation: jest.fn(),
+    readBottlingsAndTransportationsByOwner: jest.fn(),
+    readDigitalProductPassport: jest.fn(),
+  };
 
-    controller = module.get<BottlingController>(BottlingController);
-    processSvc = module.get<ClientProxy>(QUEUE_PROCESS_SVC) as ClientProxy;
+  const authenticatedUser = { sub: 'user-id-1' } as AuthenticatedKCUser;
+
+  beforeEach(() => {
+    controller = new BottlingController(bottlingServiceMock as unknown as BottlingService);
   });
 
   afterEach(() => {
@@ -61,54 +43,59 @@ describe('BottlingController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should create a bottling and transportation batch', async () => {
-    const givenDto: BottlingDto = BottlingDtoMock[0];
-    const processStepFixture = ProcessStepEntityFixture.createHydrogenBottling({
-      startedAt: new Date(givenDto.filledAt),
-      endedAt: new Date(givenDto.filledAt),
-    });
+  it('should delegate createBottlingAndTransportation to the service when uploaded files are provided', async () => {
+    // arrange
+    const givenDto = BottlingDtoFixture.create();
+    const givenFiles = [{ originalname: 'evidence.pdf' }] as Express.Multer.File[];
+    const expectedOverview: BottlingOverviewDto = BottlingOverviewDtoFixture.create();
 
-    const processSvcSpy = jest
-      .spyOn(processSvc, 'send')
-      .mockImplementation((_messagePattern, _data) => of(processStepFixture));
+    bottlingServiceMock.createBottlingAndTransportation.mockResolvedValue(expectedOverview);
 
-    const expectedBatchSvcPayload1 = {
-      amount: givenDto.amount,
-      ownerId: givenDto.recipient,
-      filledAt: new Date(givenDto.filledAt),
-      recordedById: AuthenticatedUserMock.sub,
-      hydrogenStorageUnitId: givenDto.hydrogenStorageUnit,
-      files: [] as Express.Multer.File[],
-      rfnboType: RfnboType.RFNBO_READY,
-    };
+    // act
+    const actualResult = await controller.createBottlingAndTransportation(givenDto, givenFiles, authenticatedUser);
 
-    const expectedBatchSvcPayload2 = {
-      processStep: processStepFixture,
-      predecessorBatch: processStepFixture.batch,
-      distance: givenDto.distance,
-      transportMode: givenDto.transportMode,
-      fuelType: givenDto.fuelType,
-    };
-
-    const expectedResponse: BottlingOverviewDto = BottlingOverviewDto.fromEntity(processStepFixture);
-    const actualResponse: BottlingOverviewDto = await controller.createBottlingAndTransportation(
+    // assert
+    expect(actualResult).toEqual(expectedOverview);
+    expect(bottlingServiceMock.createBottlingAndTransportation).toHaveBeenCalledWith(
       givenDto,
-      [],
-      AuthenticatedUserMock,
+      givenFiles,
+      authenticatedUser.sub,
     );
+  });
 
-    expect(processSvcSpy).toHaveBeenCalledTimes(2);
-    expect(processSvcSpy).toHaveBeenNthCalledWith(
-      1,
-      ProcessStepMessagePatterns.CREATE_HYDROGEN_BOTTLING,
-      expectedBatchSvcPayload1,
-    );
-    expect(processSvcSpy).toHaveBeenNthCalledWith(
-      2,
-      ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION,
-      expectedBatchSvcPayload2,
-    );
+  it('should delegate readBottlingsAndTransportationsByOwner to the service when the authenticated user requests them', async () => {
+    // arrange
+    const expectedOverviews: BottlingOverviewDto[] = [BottlingOverviewDtoFixture.create()];
 
-    expect(actualResponse).toEqual(expectedResponse);
+    bottlingServiceMock.readBottlingsAndTransportationsByOwner.mockResolvedValue(expectedOverviews);
+
+    // act
+    const actualResult = await controller.readBottlingsAndTransportationsByOwner(authenticatedUser);
+
+    // assert
+    expect(actualResult).toEqual(expectedOverviews);
+    expect(bottlingServiceMock.readBottlingsAndTransportationsByOwner).toHaveBeenCalledWith(authenticatedUser.sub);
+  });
+
+  it('should delegate readDigitalProductPassport to the service when a transportation id is provided', async () => {
+    // arrange
+    const expectedPassport: DigitalProductPassportDto = DigitalProductPassportDtoFixture.create({ id: 'dpp-1' });
+
+    bottlingServiceMock.readDigitalProductPassport.mockResolvedValue(expectedPassport);
+
+    // act
+    const actualResult = await controller.readDigitalProductPassport(expectedPassport.id);
+
+    // assert
+    expect(actualResult).toEqual(expectedPassport);
+    expect(bottlingServiceMock.readDigitalProductPassport).toHaveBeenCalledWith(expectedPassport.id);
+  });
+
+  it('should mark the digital product passport endpoint as public when reading its metadata', () => {
+    // act
+    const actualResult = Reflect.getMetadata(META_PUBLIC, BottlingController.prototype.readDigitalProductPassport);
+
+    // assert
+    expect(actualResult).toBe(true);
   });
 });

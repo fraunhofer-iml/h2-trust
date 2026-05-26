@@ -6,4 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export {};
+export * from './common/fixtures';
+export * from './power-purchase-agreement/fixtures';
+export * from './process-step/fixtures';
+export * from './production/fixtures';
+export * from './unit/fixtures';

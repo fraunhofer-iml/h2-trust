@@ -7,7 +7,7 @@
  */
 
 import { Body, Controller, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { KeycloakUser } from 'nest-keycloak-connect';
 import {
   HydrogenProductionUnitDto,
@@ -35,6 +35,20 @@ export class UnitController {
   })
   @ApiOkResponse({
     description: 'Returns a list of all units of the authenticated user.',
+  })
+  @ApiQuery({
+    name: 'type',
+    enum: UnitType,
+    examples: {
+      allTypes: {
+        value: null,
+        description: 'Get all units of all types',
+      },
+      APPROVED: {
+        value: UnitType.POWER_PRODUCTION,
+        description: `Get all Power Production Units"`,
+      },
+    },
   })
   getUnits(
     @KeycloakUser() authenticatedUser: AuthenticatedKCUser,

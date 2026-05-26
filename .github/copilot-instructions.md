@@ -292,6 +292,15 @@ const module: TestingModule = await Test.createTestingModule({
 - Add `afterEach(jest.clearAllMocks())` when the spec uses reusable spies or mutable mock state.
 - Do not assert private methods, internal call sequencing, or NestJS lifecycle details.
 - Do not mix unrelated success and error scenarios in a single test case.
+- When the task is to add or repair tests, never modify existing production logic.
+- If a test task exposes a bug in existing production logic, report the bug explicitly to the user instead of changing
+  the implementation.
+- For DTO, entity, and payload test data, always use the corresponding shared fixtures from
+  `@h2-trust/contracts/*/fixtures` when they exist.
+- Do not hand-roll local DTO, entity, or payload objects in tests when an equivalent shared fixture exists in
+  `libs/contracts`.
+- If a required fixture is missing, add it to the corresponding `libs/contracts/*/fixtures` location and reuse it from
+  there instead of creating ad-hoc test data inside the spec.
 - Use fixtures from `@h2-trust/contracts/*/fixtures` only in test files — ESLint blocks them in production code.
 - Every `describe` block must have at minimum an `it('should be defined')` baseline test.
 - For Angular, use `jest-preset-angular` (already configured); no need to configure `TestBed` from scratch.

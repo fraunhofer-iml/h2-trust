@@ -15,470 +15,543 @@ describe('ProductionUtils.calculateAccountingPeriods', () => {
   const emptyBatchEntityArray: readonly BatchEntity[] = [];
 
   describe('valid inputs', () => {
-    it('should calculate single accounting period for 1 hour duration', () => {
-      // Arrange
-      const startedAt = new Date('2024-01-01T00:00:00Z');
-      const endedAt = new Date('2024-01-01T01:00:00Z');
-      const totalAmount = 100;
-      const predecessors: ProcessStepEntity[] = [];
+    it('should calculate single accounting period for 1 hour duration when called', () => {
+      // arrange
+      const givenStartedAt = new Date('2024-01-01T00:00:00Z');
+      const givenEndedAt = new Date('2024-01-01T01:00:00Z');
+      const givenTotalAmount = 100;
+      const givenPredecessors: ProcessStepEntity[] = [];
       const expectedResult = [
         {
-          startedAt: new Date(startedAt),
+          startedAt: new Date(givenStartedAt),
           endedAt: new Date('2024-01-01T00:59:59Z'),
-          amount: totalAmount,
+          amount: givenTotalAmount,
           predecessors: emptyBatchEntityArray,
         },
       ];
 
-      // Act
-      const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
+      // act
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
 
-    it('should calculate two accounting periods for 2 hour duration', () => {
-      // Arrange
-      const startedAt = new Date('2024-01-01T00:00:00Z');
-      const endedAt = new Date('2024-01-01T02:00:00Z');
-      const totalAmount = 200;
-      const predecessors: ProcessStepEntity[] = [];
-      const amountPerPeriod = totalAmount / 2;
+    it('should calculate two accounting periods for 2 hour duration when called', () => {
+      // arrange
+      const givenStartedAt = new Date('2024-01-01T00:00:00Z');
+      const givenEndedAt = new Date('2024-01-01T02:00:00Z');
+      const givenTotalAmount = 200;
+      const givenPredecessors: ProcessStepEntity[] = [];
+      const expectedAmountPerPeriod = givenTotalAmount / 2;
       const expectedResult = [
         {
-          startedAt: new Date(startedAt),
+          startedAt: new Date(givenStartedAt),
           endedAt: new Date('2024-01-01T00:59:59Z'),
-          amount: amountPerPeriod,
+          amount: expectedAmountPerPeriod,
           predecessors: emptyBatchEntityArray,
         },
         {
           startedAt: new Date('2024-01-01T01:00:00Z'),
           endedAt: new Date('2024-01-01T01:59:59Z'),
-          amount: amountPerPeriod,
+          amount: expectedAmountPerPeriod,
           predecessors: emptyBatchEntityArray,
         },
       ];
 
-      // Act
-      const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
+      // act
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
 
-    it('should align start time to accounting period boundary', () => {
-      // Arrange
-      const startedAt = new Date('2024-01-01T00:30:00Z');
-      const endedAt = new Date('2024-01-01T01:30:00Z');
-      const totalAmount = 100;
-      const predecessors: ProcessStepEntity[] = [];
-      const amountPerPeriod = totalAmount / 2;
+    it('should align start time to accounting period boundary when called', () => {
+      // arrange
+      const givenStartedAt = new Date('2024-01-01T00:30:00Z');
+      const givenEndedAt = new Date('2024-01-01T01:30:00Z');
+      const givenTotalAmount = 100;
+      const givenPredecessors: ProcessStepEntity[] = [];
+      const expectedAmountPerPeriod = givenTotalAmount / 2;
       const expectedResult = [
         {
           startedAt: new Date('2024-01-01T00:00:00Z'),
           endedAt: new Date('2024-01-01T00:59:59Z'),
-          amount: amountPerPeriod,
+          amount: expectedAmountPerPeriod,
           predecessors: emptyBatchEntityArray,
         },
         {
           startedAt: new Date('2024-01-01T01:00:00Z'),
           endedAt: new Date('2024-01-01T01:59:59Z'),
-          amount: amountPerPeriod,
+          amount: expectedAmountPerPeriod,
           predecessors: emptyBatchEntityArray,
         },
       ];
 
-      // Act
-      const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
+      // act
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
 
-    it('should distribute amount evenly across multiple periods', () => {
-      // Arrange
-      const startedAt = new Date('2024-01-01T00:00:00Z');
-      const endedAt = new Date('2024-01-01T03:00:00Z');
-      const totalAmount = 300;
-      const predecessors: ProcessStepEntity[] = [];
-      const amountPerPeriod = totalAmount / 3;
+    it('should distribute amount evenly across multiple periods when called', () => {
+      // arrange
+      const givenStartedAt = new Date('2024-01-01T00:00:00Z');
+      const givenEndedAt = new Date('2024-01-01T03:00:00Z');
+      const givenTotalAmount = 300;
+      const givenPredecessors: ProcessStepEntity[] = [];
+      const expectedAmountPerPeriod = givenTotalAmount / 3;
       const expectedResult = [
         {
-          startedAt: new Date(startedAt),
+          startedAt: new Date(givenStartedAt),
           endedAt: new Date('2024-01-01T00:59:59Z'),
-          amount: amountPerPeriod,
+          amount: expectedAmountPerPeriod,
           predecessors: emptyBatchEntityArray,
         },
         {
           startedAt: new Date('2024-01-01T01:00:00Z'),
           endedAt: new Date('2024-01-01T01:59:59Z'),
-          amount: amountPerPeriod,
+          amount: expectedAmountPerPeriod,
           predecessors: emptyBatchEntityArray,
         },
         {
           startedAt: new Date('2024-01-01T02:00:00Z'),
           endedAt: new Date('2024-01-01T02:59:59Z'),
-          amount: amountPerPeriod,
+          amount: expectedAmountPerPeriod,
           predecessors: emptyBatchEntityArray,
         },
       ];
 
-      // Act
-      const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
+      // act
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
 
-    it('should include predecessors matching the period start time', () => {
-      // Arrange
-      const startedAt = new Date('2024-01-01T00:00:00Z');
-      const endedAt = new Date('2024-01-01T02:00:00Z');
-      const totalAmount = 200;
+    it('should include predecessors matching the period start time when called', () => {
+      // arrange
+      const givenStartedAt = new Date('2024-01-01T00:00:00Z');
+      const givenEndedAt = new Date('2024-01-01T02:00:00Z');
+      const givenTotalAmount = 200;
 
-      const batch1 = BatchEntityFixture.createPowerBatch({
+      const givenBatch1 = BatchEntityFixture.createPowerBatch({
         id: 'batch-1',
         amount: 50,
         type: BatchType.POWER,
         owner: CompanyEntityFixture.createPowerProducer({ name: 'owner-1' }),
       });
-      const batch2 = BatchEntityFixture.createPowerBatch({
+      const givenBatch2 = BatchEntityFixture.createPowerBatch({
         id: 'batch-2',
         amount: 50,
         type: BatchType.POWER,
         owner: CompanyEntityFixture.createPowerProducer({ name: 'owner-2' }),
       });
-      const predecessors: ProcessStepEntity[] = [
+      const givenPredecessors: ProcessStepEntity[] = [
         {
           id: 'step-1',
-          startedAt: new Date(startedAt),
-          batch: batch1,
+          startedAt: new Date(givenStartedAt),
+          batch: givenBatch1,
         } as ProcessStepEntity,
         {
           id: 'step-2',
           startedAt: new Date('2024-01-01T01:00:00Z'),
-          batch: batch2,
+          batch: givenBatch2,
         } as ProcessStepEntity,
       ];
-      const amountPerPeriod = totalAmount / 2;
+      const expectedAmountPerPeriod = givenTotalAmount / 2;
       const expectedResult = [
         {
-          startedAt: new Date(startedAt),
+          startedAt: new Date(givenStartedAt),
           endedAt: new Date('2024-01-01T00:59:59Z'),
-          amount: amountPerPeriod,
-          predecessors: [batch1],
+          amount: expectedAmountPerPeriod,
+          predecessors: [givenBatch1],
         },
         {
           startedAt: new Date('2024-01-01T01:00:00Z'),
           endedAt: new Date('2024-01-01T01:59:59Z'),
-          amount: amountPerPeriod,
-          predecessors: [batch2],
+          amount: expectedAmountPerPeriod,
+          predecessors: [givenBatch2],
         },
       ];
 
-      // Act
-      const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
+      // act
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
 
-    it('should group multiple predecessors with same start time', () => {
-      // Arrange
-      const startedAt = new Date('2024-01-01T00:00:00Z');
-      const endedAt = new Date('2024-01-01T01:00:00Z');
-      const totalAmount = 100;
-      const batch1 = BatchEntityFixture.createPowerBatch({
+    it('should group multiple predecessors with same start time when called', () => {
+      // arrange
+      const givenStartedAt = new Date('2024-01-01T00:00:00Z');
+      const givenEndedAt = new Date('2024-01-01T01:00:00Z');
+      const givenTotalAmount = 100;
+      const givenBatch1 = BatchEntityFixture.createPowerBatch({
         id: 'batch-1',
         amount: 30,
         type: BatchType.POWER,
         owner: CompanyEntityFixture.createPowerProducer({ name: 'owner-1' }),
       });
-      const batch2 = BatchEntityFixture.createPowerBatch({
+      const givenBatch2 = BatchEntityFixture.createPowerBatch({
         id: 'batch-2',
         amount: 20,
         type: BatchType.POWER,
         owner: CompanyEntityFixture.createPowerProducer({ name: 'owner-2' }),
       });
 
-      const predecessors: ProcessStepEntity[] = [
+      const givenPredecessors: ProcessStepEntity[] = [
         {
           id: 'step-1',
-          startedAt: new Date(startedAt),
-          batch: batch1,
+          startedAt: new Date(givenStartedAt),
+          batch: givenBatch1,
         } as ProcessStepEntity,
         {
           id: 'step-2',
-          startedAt: new Date(startedAt),
-          batch: batch2,
+          startedAt: new Date(givenStartedAt),
+          batch: givenBatch2,
         } as ProcessStepEntity,
       ];
       const expectedResult = [
         {
-          startedAt: new Date(startedAt),
+          startedAt: new Date(givenStartedAt),
           endedAt: new Date('2024-01-01T00:59:59Z'),
-          amount: totalAmount,
-          predecessors: [batch1, batch2],
+          amount: givenTotalAmount,
+          predecessors: [givenBatch1, givenBatch2],
         },
       ];
 
-      // Act
-      const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
+      // act
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
 
-    it('should handle periods spanning across days', () => {
-      // Arrange
-      const startedAt = new Date('2024-01-01T23:00:00Z');
-      const endedAt = new Date('2024-01-02T01:00:00Z');
-      const totalAmount = 200;
-      const predecessors: ProcessStepEntity[] = [];
-      const amountPerPeriod = totalAmount / 2;
+    it('should handle periods spanning across days when called', () => {
+      // arrange
+      const givenStartedAt = new Date('2024-01-01T23:00:00Z');
+      const givenEndedAt = new Date('2024-01-02T01:00:00Z');
+      const givenTotalAmount = 200;
+      const givenPredecessors: ProcessStepEntity[] = [];
+      const expectedAmountPerPeriod = givenTotalAmount / 2;
       const expectedResult = [
         {
-          startedAt: new Date(startedAt),
+          startedAt: new Date(givenStartedAt),
           endedAt: new Date('2024-01-01T23:59:59Z'),
-          amount: amountPerPeriod,
+          amount: expectedAmountPerPeriod,
           predecessors: emptyBatchEntityArray,
         },
         {
           startedAt: new Date('2024-01-02T00:00:00Z'),
           endedAt: new Date('2024-01-02T00:59:59Z'),
-          amount: amountPerPeriod,
+          amount: expectedAmountPerPeriod,
           predecessors: emptyBatchEntityArray,
         },
       ];
 
-      // Act
-      const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
+      // act
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
   });
 
   describe('invalid inputs', () => {
     it('should throw error when endedAt is before startedAt', () => {
-      // Arrange
-      const startedAt = new Date('2024-01-01T02:00:00Z');
-      const endedAt = new Date('2024-01-01T01:00:00Z');
-      const totalAmount = 100;
-      const predecessors: ProcessStepEntity[] = [];
+      // arrange
+      const givenStartedAt = new Date('2024-01-01T02:00:00Z');
+      const givenEndedAt = new Date('2024-01-01T01:00:00Z');
+      const givenTotalAmount = 100;
+      const givenPredecessors: ProcessStepEntity[] = [];
       const expectedResult = 'endedAtInSeconds must be greater than startedAtInSeconds';
 
-      // Act & Assert
-      expect(() => {
-        calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
-      }).toThrow(expectedResult);
+      // act & assert
+      const actualOperation = () => {
+        calculateAccountingPeriods(givenStartedAt, givenEndedAt, givenTotalAmount, givenPredecessors);
+      };
+
+      expect(actualOperation).toThrow(expectedResult);
     });
 
     it('should throw error when startedAt equals endedAt', () => {
-      // Arrange
-      const startedAt = new Date('2024-01-01T00:00:00Z');
-      const endedAt = new Date('2024-01-01T00:00:00Z');
-      const totalAmount = 100;
-      const predecessors: ProcessStepEntity[] = [];
+      // arrange
+      const givenStartedAt = new Date('2024-01-01T00:00:00Z');
+      const givenEndedAt = new Date('2024-01-01T00:00:00Z');
+      const givenTotalAmount = 100;
+      const givenPredecessors: ProcessStepEntity[] = [];
       const expectedResult = 'endedAtInSeconds must be greater than startedAtInSeconds';
 
-      // Act & Assert
-      expect(() => {
-        calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
-      }).toThrow(expectedResult);
+      // act & assert
+      const actualOperation = () => {
+        calculateAccountingPeriods(givenStartedAt, givenEndedAt, givenTotalAmount, givenPredecessors);
+      };
+
+      expect(actualOperation).toThrow(expectedResult);
     });
 
     it('should throw error when totalAmount is zero', () => {
-      // Arrange
-      const startedAt = new Date('2024-01-01T00:00:00Z');
-      const endedAt = new Date('2024-01-01T01:00:00Z');
-      const totalAmount = 0;
-      const predecessors: ProcessStepEntity[] = [];
+      // arrange
+      const givenStartedAt = new Date('2024-01-01T00:00:00Z');
+      const givenEndedAt = new Date('2024-01-01T01:00:00Z');
+      const givenTotalAmount = 0;
+      const givenPredecessors: ProcessStepEntity[] = [];
       const expectedResult = 'batchAmount must be greater than zero';
 
-      // Act & Assert
-      expect(() => {
-        calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
-      }).toThrow(expectedResult);
+      // act & assert
+      const actualOperation = () => {
+        calculateAccountingPeriods(givenStartedAt, givenEndedAt, givenTotalAmount, givenPredecessors);
+      };
+
+      expect(actualOperation).toThrow(expectedResult);
     });
 
     it('should throw error when totalAmount is negative', () => {
-      // Arrange
-      const startedAt = new Date('2024-01-01T00:00:00Z');
-      const endedAt = new Date('2024-01-01T01:00:00Z');
-      const totalAmount = -100;
-      const predecessors: ProcessStepEntity[] = [];
+      // arrange
+      const givenStartedAt = new Date('2024-01-01T00:00:00Z');
+      const givenEndedAt = new Date('2024-01-01T01:00:00Z');
+      const givenTotalAmount = -100;
+      const givenPredecessors: ProcessStepEntity[] = [];
       const expectedResult = 'batchAmount must be greater than zero';
 
-      // Act & Assert
-      expect(() => {
-        calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
-      }).toThrow(expectedResult);
+      // act & assert
+      const actualOperation = () => {
+        calculateAccountingPeriods(givenStartedAt, givenEndedAt, givenTotalAmount, givenPredecessors);
+      };
+
+      expect(actualOperation).toThrow(expectedResult);
     });
   });
 
   describe('edge cases', () => {
-    it('should handle very small amounts', () => {
-      // Arrange
-      const startedAt = new Date('2024-01-01T00:00:00Z');
-      const endedAt = new Date('2024-01-01T02:00:00Z');
-      const totalAmount = 0.001;
-      const predecessors: ProcessStepEntity[] = [];
-      const amountPerPeriod = totalAmount / 2;
+    it('should handle very small amounts when called', () => {
+      // arrange
+      const givenStartedAt = new Date('2024-01-01T00:00:00Z');
+      const givenEndedAt = new Date('2024-01-01T02:00:00Z');
+      const givenTotalAmount = 0.001;
+      const givenPredecessors: ProcessStepEntity[] = [];
+      const expectedAmountPerPeriod = givenTotalAmount / 2;
       const expectedResult = [
         {
-          startedAt: new Date(startedAt),
+          startedAt: new Date(givenStartedAt),
           endedAt: new Date('2024-01-01T00:59:59Z'),
-          amount: amountPerPeriod,
+          amount: expectedAmountPerPeriod,
           predecessors: emptyBatchEntityArray,
         },
         {
           startedAt: new Date('2024-01-01T01:00:00Z'),
           endedAt: new Date('2024-01-01T01:59:59Z'),
-          amount: amountPerPeriod,
+          amount: expectedAmountPerPeriod,
           predecessors: emptyBatchEntityArray,
         },
       ];
 
-      // Act
-      const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
+      // act
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
 
-    it('should handle very large amounts', () => {
-      // Arrange
-      const startedAt = new Date('2024-01-01T00:00:00Z');
-      const endedAt = new Date('2024-01-01T01:00:00Z');
-      const totalAmount = 1000000;
-      const predecessors: ProcessStepEntity[] = [];
+    it('should handle very large amounts when called', () => {
+      // arrange
+      const givenStartedAt = new Date('2024-01-01T00:00:00Z');
+      const givenEndedAt = new Date('2024-01-01T01:00:00Z');
+      const givenTotalAmount = 1000000;
+      const givenPredecessors: ProcessStepEntity[] = [];
       const expectedResult = [
         {
-          startedAt: new Date(startedAt),
+          startedAt: new Date(givenStartedAt),
           endedAt: new Date('2024-01-01T00:59:59Z'),
-          amount: totalAmount,
+          amount: givenTotalAmount,
           predecessors: emptyBatchEntityArray,
         },
       ];
 
-      // Act
-      const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
+      // act
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
 
-    it('should handle many accounting periods', () => {
-      // Arrange
-      const startedAt = new Date('2024-01-01T00:00:00Z');
-      const endedAt = new Date('2024-01-01T12:00:00Z');
-      const totalAmount = 1200;
-      const predecessors: ProcessStepEntity[] = [];
+    it('should handle many accounting periods when called', () => {
+      // arrange
+      const givenStartedAt = new Date('2024-01-01T00:00:00Z');
+      const givenEndedAt = new Date('2024-01-01T12:00:00Z');
+      const givenTotalAmount = 1200;
+      const givenPredecessors: ProcessStepEntity[] = [];
       const expectedNumberOfPeriods = 12;
-      const amountPerPeriod = totalAmount / expectedNumberOfPeriods;
+      const expectedAmountPerPeriod = givenTotalAmount / expectedNumberOfPeriods;
 
-      // Act
-      const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
+      // act
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
-      // Assert
+      // assert
       expect(actualResult).toHaveLength(expectedNumberOfPeriods);
-      expect(actualResult[0].amount).toBe(amountPerPeriod);
-      expect(actualResult[11].amount).toBe(amountPerPeriod);
-      expect(actualResult[0].startedAt).toEqual(new Date(startedAt));
+      expect(actualResult[0].amount).toBe(expectedAmountPerPeriod);
+      expect(actualResult[11].amount).toBe(expectedAmountPerPeriod);
+      expect(actualResult[0].startedAt).toEqual(new Date(givenStartedAt));
       expect(actualResult[11].startedAt).toEqual(new Date('2024-01-01T11:00:00Z'));
     });
 
-    it('should handle predecessors not matching any period start time', () => {
-      // Arrange
-      const startedAt = new Date('2024-01-01T00:00:00Z');
-      const endedAt = new Date('2024-01-01T02:00:00Z');
-      const totalAmount = 200;
-      const batch1 = BatchEntityFixture.createPowerBatch({
+    it('should handle predecessors not matching any period start time when called', () => {
+      // arrange
+      const givenStartedAt = new Date('2024-01-01T00:00:00Z');
+      const givenEndedAt = new Date('2024-01-01T02:00:00Z');
+      const givenTotalAmount = 200;
+      const givenBatch1 = BatchEntityFixture.createPowerBatch({
         id: 'batch-1',
         amount: 50,
         type: BatchType.POWER,
         owner: CompanyEntityFixture.createPowerProducer({ name: 'owner-1' }),
       });
 
-      const predecessors: ProcessStepEntity[] = [
+      const givenPredecessors: ProcessStepEntity[] = [
         {
           id: 'step-1',
           startedAt: new Date('2024-01-01T00:30:00Z'),
-          batch: batch1,
+          batch: givenBatch1,
         } as ProcessStepEntity,
       ];
-      const amountPerPeriod = totalAmount / 2;
+      const expectedAmountPerPeriod = givenTotalAmount / 2;
       const expectedResult = [
         {
-          startedAt: new Date(startedAt),
+          startedAt: new Date(givenStartedAt),
           endedAt: new Date('2024-01-01T00:59:59Z'),
-          amount: amountPerPeriod,
+          amount: expectedAmountPerPeriod,
           predecessors: emptyBatchEntityArray,
         },
         {
           startedAt: new Date('2024-01-01T01:00:00Z'),
           endedAt: new Date('2024-01-01T01:59:59Z'),
-          amount: amountPerPeriod,
+          amount: expectedAmountPerPeriod,
           predecessors: emptyBatchEntityArray,
         },
       ];
 
-      // Act
-      const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
+      // act
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
 
-    it('should handle year boundary crossing', () => {
-      // Arrange
-      const startedAt = new Date('2023-12-31T23:00:00Z');
-      const endedAt = new Date('2024-01-01T01:00:00Z');
-      const totalAmount = 200;
-      const predecessors: ProcessStepEntity[] = [];
-      const amountPerPeriod = totalAmount / 2;
+    it('should handle year boundary crossing when called', () => {
+      // arrange
+      const givenStartedAt = new Date('2023-12-31T23:00:00Z');
+      const givenEndedAt = new Date('2024-01-01T01:00:00Z');
+      const givenTotalAmount = 200;
+      const givenPredecessors: ProcessStepEntity[] = [];
+      const expectedAmountPerPeriod = givenTotalAmount / 2;
       const expectedResult = [
         {
-          startedAt: new Date(startedAt),
+          startedAt: new Date(givenStartedAt),
           endedAt: new Date('2023-12-31T23:59:59Z'),
-          amount: amountPerPeriod,
+          amount: expectedAmountPerPeriod,
           predecessors: emptyBatchEntityArray,
         },
         {
           startedAt: new Date('2024-01-01T00:00:00Z'),
           endedAt: new Date('2024-01-01T00:59:59Z'),
-          amount: amountPerPeriod,
+          amount: expectedAmountPerPeriod,
           predecessors: emptyBatchEntityArray,
         },
       ];
 
-      // Act
-      const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
+      // act
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
 
-    it('should handle partial hour at end of period', () => {
-      // Arrange
-      const startedAt = new Date('2024-01-01T00:00:00Z');
-      const endedAt = new Date('2024-01-01T00:30:00Z');
-      const totalAmount = 100;
-      const predecessors: ProcessStepEntity[] = [];
+    it('should handle partial hour at end of period when called', () => {
+      // arrange
+      const givenStartedAt = new Date('2024-01-01T00:00:00Z');
+      const givenEndedAt = new Date('2024-01-01T00:30:00Z');
+      const givenTotalAmount = 100;
+      const givenPredecessors: ProcessStepEntity[] = [];
       const expectedResult = [
         {
-          startedAt: new Date(startedAt),
+          startedAt: new Date(givenStartedAt),
           endedAt: new Date('2024-01-01T00:59:59Z'),
-          amount: totalAmount,
+          amount: givenTotalAmount,
           predecessors: emptyBatchEntityArray,
         },
       ];
 
-      // Act
-      const actualResult = calculateAccountingPeriods(startedAt, endedAt, totalAmount, predecessors);
+      // act
+      const actualResult = calculateAccountingPeriods(
+        givenStartedAt,
+        givenEndedAt,
+        givenTotalAmount,
+        givenPredecessors,
+      );
 
-      // Assert
+      // assert
       expect(actualResult).toEqual(expectedResult);
     });
   });

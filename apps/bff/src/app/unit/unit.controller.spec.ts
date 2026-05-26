@@ -6,218 +6,172 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ClientProxy } from '@nestjs/microservices';
-import { Test, TestingModule } from '@nestjs/testing';
-import { of } from 'rxjs';
+import { type AuthenticatedKCUser } from '@h2-trust/contracts/dtos';
 import {
-  HydrogenProductionOverviewDto,
-  HydrogenProductionUnitCreateDtoMock,
-  HydrogenProductionUnitDto,
-  HydrogenProductionUnitInputDto,
-  HydrogenStorageOverviewDto,
-  HydrogenStorageUnitCreateDtoMock,
-  HydrogenStorageUnitDto,
-  HydrogenStorageUnitInputDto,
-  PowerProductionUnitCreateDtoMock,
-  PowerProductionUnitDto,
-  PowerProductionUnitInputDto,
-  UnitDto,
-  UnitOverviewDto,
-  UserDetailsDto,
-} from '@h2-trust/contracts/dtos';
-import {
-  HydrogenProductionUnitEntity,
-  HydrogenStorageUnitEntity,
-  PowerProductionUnitEntity,
-} from '@h2-trust/contracts/entities';
-import {
-  HydrogenProductionUnitEntityFixture,
-  HydrogenStorageUnitEntityFixture,
-  PowerProductionUnitEntityFixture,
-} from '@h2-trust/contracts/entities/fixtures';
-import { ReadByIdPayload } from '@h2-trust/contracts/payloads';
+  HydrogenProductionOverviewDtoFixture,
+  HydrogenProductionUnitDtoFixture,
+  HydrogenProductionUnitInputDtoFixture,
+  HydrogenStorageOverviewDtoFixture,
+  HydrogenStorageUnitDtoFixture,
+  HydrogenStorageUnitInputDtoFixture,
+  PowerProductionOverviewDtoFixture,
+  PowerProductionUnitDtoFixture,
+  PowerProductionUnitInputDtoFixture,
+  UnitUpdateActiveDtoFixture,
+} from '@h2-trust/contracts/dtos/fixtures';
 import { UnitType } from '@h2-trust/domain';
-import { QUEUE_GENERAL_SVC, UnitMessagePatterns } from '@h2-trust/messaging';
-import { UserService } from '../user/user.service';
 import { UnitController } from './unit.controller';
 import { UnitService } from './unit.service';
 
 describe('UnitController', () => {
   let controller: UnitController;
-  let queue: ClientProxy;
-  let userService: UserService;
-  const authenticatedUser = { sub: 'user-id-1' };
-  const fixtureUser = { company: { id: 'company-id-1' } } as UserDetailsDto;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [UnitController],
-      providers: [
-        UnitService,
-        UserService,
-        {
-          provide: QUEUE_GENERAL_SVC,
-          useValue: {
-            send: jest.fn(),
-          },
-        },
-      ],
-    }).compile();
+  const unitServiceMock = {
+    createHydrogenStorageUnit: jest.fn(),
+    readUnits: jest.fn(),
+    readUnitById: jest.fn(),
+    createHydrogenProductionUnit: jest.fn(),
+    createPowerProductionUnit: jest.fn(),
+    updateUnitStatus: jest.fn(),
+    updateHydrogenProductionUnit: jest.fn(),
+    updatePowerProductionUnit: jest.fn(),
+    updateHydrogenStorageUnit: jest.fn(),
+  };
 
-    controller = module.get(UnitController);
-    queue = module.get(QUEUE_GENERAL_SVC);
-    userService = module.get(UserService);
+  const authenticatedUser = { sub: 'user-id-1' } as AuthenticatedKCUser;
+
+  beforeEach(() => {
+    controller = new UnitController(unitServiceMock as unknown as UnitService);
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should find a unit by generic id route', async () => {
-    const givenUserId = 'unit-id-1';
-    const fixtureUnit: HydrogenProductionUnitEntity = HydrogenProductionUnitEntityFixture.create();
-    const expectedResponse: UnitDto = HydrogenProductionUnitDto.fromEntity(fixtureUnit);
-
-    const sendRequestSpy = jest.spyOn(queue, 'send');
-    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: unknown) => {
-      return of(fixtureUnit);
-    });
-
-    const actualResponse: UnitDto = await controller.getUnitById(givenUserId);
-
-    expect(sendRequestSpy).toHaveBeenCalledTimes(1);
-    expect(sendRequestSpy).toHaveBeenCalledWith(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(givenUserId));
-    expect(actualResponse).toEqual(expectedResponse);
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
   });
 
-  it('should find all units', async () => {
-    const givenUserId = 'user-id-1';
-    const fixtureUnits: HydrogenProductionUnitEntity[] = [HydrogenProductionUnitEntityFixture.create()];
-    const expectedResponse: HydrogenProductionOverviewDto[] = fixtureUnits.map(
-      HydrogenProductionOverviewDto.fromEntity,
-    );
+  it('should delegate all controller entry points to UnitService when each endpoint is invoked', async () => {
+    // arrange
+    const givenHydrogenStorageInput = HydrogenStorageUnitInputDtoFixture.create();
+    const givenPowerProductionInput = PowerProductionUnitInputDtoFixture.create();
+    const givenHydrogenProductionInput = HydrogenProductionUnitInputDtoFixture.create();
+    const givenUpdateStatusDto = UnitUpdateActiveDtoFixture.create({ active: false });
+    const expectedHydrogenStorageOverview = [HydrogenStorageOverviewDtoFixture.create()];
+    const expectedHydrogenStorageUnit = HydrogenStorageUnitDtoFixture.create({ id: 'storage-unit-1' });
+    const expectedPowerProductionOverview = [PowerProductionOverviewDtoFixture.create()];
 
-    const readUserRequestSpy = jest.spyOn(userService, 'readUserWithCompany');
-    readUserRequestSpy.mockResolvedValue(fixtureUser);
-    const sendRequestSpy = jest.spyOn(queue, 'send');
-    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: unknown) => {
-      return of(fixtureUnits);
+    const expectedPowerProductionUnit = PowerProductionUnitDtoFixture.create({ id: 'power-unit-1' });
+    const expectedHydrogenProductionOverview = [HydrogenProductionOverviewDtoFixture.create()];
+    const expectedHydrogenProductionUnit = HydrogenProductionUnitDtoFixture.create({ id: 'hydrogen-unit-1' });
+
+    unitServiceMock.readUnits.mockImplementation(async (_userId: string, type?: UnitType) => {
+      switch (type) {
+        case UnitType.HYDROGEN_STORAGE:
+          return expectedHydrogenStorageOverview;
+        case UnitType.POWER_PRODUCTION:
+          return expectedPowerProductionOverview;
+        case UnitType.HYDROGEN_PRODUCTION:
+          return expectedHydrogenProductionOverview;
+        default:
+          return [expectedHydrogenProductionOverview, expectedHydrogenStorageOverview, expectedPowerProductionOverview];
+      }
     });
+    unitServiceMock.createHydrogenStorageUnit.mockResolvedValue(expectedHydrogenStorageUnit);
+    unitServiceMock.createPowerProductionUnit.mockResolvedValue(expectedPowerProductionUnit);
+    unitServiceMock.readUnitById.mockResolvedValue(expectedHydrogenProductionUnit);
+    unitServiceMock.createHydrogenProductionUnit.mockResolvedValue(expectedHydrogenProductionUnit);
+    unitServiceMock.updateUnitStatus.mockResolvedValue(undefined);
+    unitServiceMock.updateHydrogenProductionUnit.mockResolvedValue(undefined);
+    unitServiceMock.updatePowerProductionUnit.mockResolvedValue(undefined);
+    unitServiceMock.updateHydrogenStorageUnit.mockResolvedValue(undefined);
 
-    const actualResponse: UnitOverviewDto[] = await controller.getUnits(
-      {
-        sub: givenUserId,
-      },
-      UnitType.HYDROGEN_PRODUCTION,
+    // act
+    const actualHydrogenStorageOverview = await controller.getUnits(authenticatedUser, UnitType.HYDROGEN_STORAGE);
+    const actualCreatedHydrogenStorageUnit = await controller.createHydrogenStorageUnit(
+      authenticatedUser,
+      givenHydrogenStorageInput,
+    );
+    const actualPowerProductionOverview = await controller.getUnits(authenticatedUser, UnitType.POWER_PRODUCTION);
+    const actualCreatedPowerProductionUnit = await controller.createPowerProductionUnit(
+      authenticatedUser,
+      givenPowerProductionInput,
+    );
+    const actualHydrogenProductionOverview = await controller.getUnits(authenticatedUser, UnitType.HYDROGEN_PRODUCTION);
+    const actualHydrogenProductionUnit = await controller.getUnitById(expectedHydrogenProductionUnit.id);
+    const actualCreatedHydrogenProductionUnit = await controller.createHydrogenProductionUnit(
+      authenticatedUser,
+      givenHydrogenProductionInput,
+    );
+    const actualUpdateUnitStatusResult = await controller.updateUnitStatus(
+      authenticatedUser,
+      'unit-id-1',
+      givenUpdateStatusDto,
+    );
+    const actualUpdateHydrogenProductionUnitResult = await controller.updateHydrogenProductionUnit(
+      authenticatedUser,
+      'hydrogen-unit-1',
+      givenHydrogenProductionInput,
+    );
+    const actualUpdatePowerProductionUnitResult = await controller.updatePowerProductionUnit(
+      authenticatedUser,
+      'power-unit-1',
+      givenPowerProductionInput,
+    );
+    const actualUpdateHydrogenStorageUnitResult = await controller.updateHydrogenStorageUnit(
+      authenticatedUser,
+      'storage-unit-1',
+      givenHydrogenStorageInput,
     );
 
-    expect(readUserRequestSpy).toHaveBeenCalledTimes(1);
-    expect(readUserRequestSpy).toHaveBeenCalledWith(givenUserId);
-    expect(sendRequestSpy).toHaveBeenCalledTimes(1);
-    expect(sendRequestSpy).toHaveBeenCalledWith(
-      UnitMessagePatterns.READ_HYDROGEN_PRODUCTION,
-      new ReadByIdPayload(fixtureUser.company.id),
+    // assert
+    expect(actualHydrogenStorageOverview).toEqual(expectedHydrogenStorageOverview);
+    expect(actualCreatedHydrogenStorageUnit).toEqual(expectedHydrogenStorageUnit);
+    expect(actualPowerProductionOverview).toEqual(expectedPowerProductionOverview);
+    expect(actualCreatedPowerProductionUnit).toEqual(expectedPowerProductionUnit);
+    expect(actualHydrogenProductionOverview).toEqual(expectedHydrogenProductionOverview);
+    expect(actualHydrogenProductionUnit).toEqual(expectedHydrogenProductionUnit);
+    expect(actualCreatedHydrogenProductionUnit).toEqual(expectedHydrogenProductionUnit);
+    expect(actualUpdateUnitStatusResult).toBeUndefined();
+    expect(actualUpdateHydrogenProductionUnitResult).toBeUndefined();
+    expect(actualUpdatePowerProductionUnitResult).toBeUndefined();
+    expect(actualUpdateHydrogenStorageUnitResult).toBeUndefined();
+    expect(unitServiceMock.readUnits).toHaveBeenCalledWith(authenticatedUser.sub, UnitType.HYDROGEN_STORAGE);
+    expect(unitServiceMock.createHydrogenStorageUnit).toHaveBeenCalledWith(
+      givenHydrogenStorageInput,
+      authenticatedUser.sub,
     );
-    expect(actualResponse).toEqual(expectedResponse);
-  });
-
-  it('should find all units filtered by type', async () => {
-    const givenUserId = 'user-id-1';
-    const fixtureUnits: HydrogenStorageUnitEntity[] = [HydrogenStorageUnitEntityFixture.create()];
-    const expectedResponse: HydrogenStorageOverviewDto[] = fixtureUnits.map(HydrogenStorageOverviewDto.fromEntity);
-
-    const readUserRequestSpy = jest.spyOn(userService, 'readUserWithCompany');
-    readUserRequestSpy.mockResolvedValue(fixtureUser);
-    const sendRequestSpy = jest.spyOn(queue, 'send');
-    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: any) => {
-      return of(fixtureUnits);
-    });
-
-    const actualResponse = await controller.getUnits({ sub: givenUserId }, UnitType.HYDROGEN_STORAGE);
-
-    expect(readUserRequestSpy).toHaveBeenCalledTimes(1);
-    expect(readUserRequestSpy).toHaveBeenCalledWith(givenUserId);
-    expect(sendRequestSpy).toHaveBeenCalledTimes(1);
-    expect(sendRequestSpy).toHaveBeenCalledWith(
-      UnitMessagePatterns.READ_HYDROGEN_STORAGE,
-      new ReadByIdPayload(fixtureUser.company.id),
+    expect(unitServiceMock.readUnits).toHaveBeenCalledWith(authenticatedUser.sub, UnitType.POWER_PRODUCTION);
+    expect(unitServiceMock.createPowerProductionUnit).toHaveBeenCalledWith(
+      givenPowerProductionInput,
+      authenticatedUser.sub,
     );
-    expect(actualResponse).toEqual(expectedResponse);
-  });
-
-  it('should create power production unit', async () => {
-    const givenDto: PowerProductionUnitInputDto = PowerProductionUnitCreateDtoMock[0];
-    const fixtureUnit: PowerProductionUnitEntity = PowerProductionUnitEntityFixture.create();
-    const expectedResponse: PowerProductionUnitDto = PowerProductionUnitDto.fromEntity(fixtureUnit);
-
-    const readUserRequestSpy = jest.spyOn(userService, 'readUserWithCompany');
-    readUserRequestSpy.mockResolvedValue(fixtureUser);
-    const sendRequestSpy = jest.spyOn(queue, 'send');
-    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: unknown) => {
-      return of(fixtureUnit);
-    });
-
-    const actualResponse = await controller.createPowerProductionUnit(authenticatedUser, givenDto);
-
-    expect(readUserRequestSpy).toHaveBeenCalledTimes(1);
-    expect(readUserRequestSpy).toHaveBeenCalledWith(authenticatedUser.sub);
-    expect(sendRequestSpy).toHaveBeenCalledTimes(1);
-    expect(sendRequestSpy).toHaveBeenCalledWith(
-      UnitMessagePatterns.CREATE_POWER_PRODUCTION,
-      PowerProductionUnitInputDto.toPayload(givenDto as PowerProductionUnitInputDto, undefined, fixtureUser.company.id),
+    expect(unitServiceMock.readUnits).toHaveBeenCalledWith(authenticatedUser.sub, UnitType.HYDROGEN_PRODUCTION);
+    expect(unitServiceMock.readUnitById).toHaveBeenCalledWith(expectedHydrogenProductionUnit.id);
+    expect(unitServiceMock.createHydrogenProductionUnit).toHaveBeenCalledWith(
+      givenHydrogenProductionInput,
+      authenticatedUser.sub,
     );
-    expect(actualResponse).toEqual(expectedResponse);
-  });
-
-  it('should create hydrogen production unit', async () => {
-    const givenDto: HydrogenProductionUnitInputDto = HydrogenProductionUnitCreateDtoMock[0];
-    const fixtureUnit: HydrogenProductionUnitEntity = HydrogenProductionUnitEntityFixture.create();
-    const expectedResponse: HydrogenProductionUnitDto = HydrogenProductionUnitDto.fromEntity(fixtureUnit);
-
-    const readUserRequestSpy = jest.spyOn(userService, 'readUserWithCompany');
-    readUserRequestSpy.mockResolvedValue(fixtureUser);
-    const sendRequestSpy = jest.spyOn(queue, 'send');
-    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: unknown) => {
-      return of(fixtureUnit);
-    });
-
-    const actualResponse = await controller.createHydrogenProductionUnit(authenticatedUser, givenDto);
-
-    expect(readUserRequestSpy).toHaveBeenCalledTimes(1);
-    expect(readUserRequestSpy).toHaveBeenCalledWith(authenticatedUser.sub);
-    expect(sendRequestSpy).toHaveBeenCalledTimes(1);
-    expect(sendRequestSpy).toHaveBeenCalledWith(
-      UnitMessagePatterns.CREATE_HYDROGEN_PRODUCTION,
-      HydrogenProductionUnitInputDto.toPayload(
-        givenDto as HydrogenProductionUnitInputDto,
-        undefined,
-        fixtureUser.company.id,
-      ),
+    expect(unitServiceMock.updateUnitStatus).toHaveBeenCalledWith(
+      'unit-id-1',
+      givenUpdateStatusDto.active,
+      authenticatedUser.sub,
     );
-    expect(actualResponse).toEqual(expectedResponse);
-  });
-
-  it('should create hydrogen storage unit', async () => {
-    const givenDto: HydrogenStorageUnitInputDto = HydrogenStorageUnitCreateDtoMock[0];
-    const fixtureUnit: HydrogenStorageUnitEntity = HydrogenStorageUnitEntityFixture.create();
-    const expectedResponse: HydrogenStorageUnitDto = HydrogenStorageUnitDto.fromEntity(fixtureUnit);
-
-    const readUserRequestSpy = jest.spyOn(userService, 'readUserWithCompany');
-    readUserRequestSpy.mockResolvedValue(fixtureUser);
-    const sendRequestSpy = jest.spyOn(queue, 'send');
-    sendRequestSpy.mockImplementation((_messagePattern: UnitMessagePatterns, _data: unknown) => {
-      return of(fixtureUnit);
-    });
-
-    const actualResponse = await controller.createHydrogenStorageUnit(authenticatedUser, givenDto);
-
-    expect(readUserRequestSpy).toHaveBeenCalledTimes(1);
-    expect(readUserRequestSpy).toHaveBeenCalledWith(authenticatedUser.sub);
-    expect(sendRequestSpy).toHaveBeenCalledTimes(1);
-    expect(sendRequestSpy).toHaveBeenCalledWith(
-      UnitMessagePatterns.CREATE_HYDROGEN_STORAGE,
-      HydrogenStorageUnitInputDto.toPayload(givenDto as HydrogenStorageUnitInputDto, undefined, fixtureUser.company.id),
+    expect(unitServiceMock.updateHydrogenProductionUnit).toHaveBeenCalledWith(
+      'hydrogen-unit-1',
+      givenHydrogenProductionInput,
+      authenticatedUser.sub,
     );
-    expect(actualResponse).toEqual(expectedResponse);
+    expect(unitServiceMock.updatePowerProductionUnit).toHaveBeenCalledWith(
+      'power-unit-1',
+      givenPowerProductionInput,
+      authenticatedUser.sub,
+    );
+    expect(unitServiceMock.updateHydrogenStorageUnit).toHaveBeenCalledWith(
+      'storage-unit-1',
+      givenHydrogenStorageInput,
+      authenticatedUser.sub,
+    );
   });
 });

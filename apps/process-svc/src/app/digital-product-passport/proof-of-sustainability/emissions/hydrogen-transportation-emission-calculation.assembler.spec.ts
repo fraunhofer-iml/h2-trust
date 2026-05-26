@@ -11,21 +11,22 @@ import { ProcessStepEntityFixture, TransportationDetailsEntityFixture } from '@h
 import { CalculationTopic } from '@h2-trust/domain';
 import { assembleHydrogenTransportationEmissionCalculations } from './hydrogen-transportation-emission-calculation.assembler';
 
-describe('ProofOfSustainability', () => {
+describe('HydrogenTransportationEmissionCalculationAssembler', () => {
   describe('assembleHydrogenTransportationEmissionCalculations', () => {
-    it('computes emissions for provenance with hydrogen bottling only', () => {
-      // Arrange
+    it('should compute emissions for provenance with hydrogen bottling only when called', () => {
+      // arrange
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
-      const transportationDetails: TransportationDetailsEntity = TransportationDetailsEntityFixture.createPipeline();
+      const givenTransportationDetails: TransportationDetailsEntity =
+        TransportationDetailsEntityFixture.createPipeline();
       const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation({
-        transportationDetails,
+        givenTransportationDetails,
       });
       const givenProvenance = new ProvenanceEntity(givenHydrogenTransportation, [], givenHydrogenBottling);
 
-      // Act
+      // act
       const actualResult = assembleHydrogenTransportationEmissionCalculations(givenProvenance)[0];
 
-      // Assert
+      // assert
       expect(actualResult).toBeDefined();
       expect(actualResult.result).toBe(0); // TODO-MP: batchId or processStepId -> DUHGW-314
       expect(actualResult.calculationTopic).toEqual(CalculationTopic.HYDROGEN_TRANSPORTATION);
