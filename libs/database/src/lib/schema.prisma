@@ -115,8 +115,8 @@ model Unit {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  type           String // "power", "hydrogen", "compressor", "transport", "bottling", "storage", "endconsumer"
   name           String
-  mastrNumber    String   @unique
   manufacturer   String
   modelType      String
   modelNumber    String
@@ -134,129 +134,41 @@ model Unit {
   operator   Company @relation(name: "UnitOperator", fields: [operatorId], references: [id])
   operatorId String
 
-  powerProductionUnit    PowerProductionUnit?
-  hydrogenProductionUnit HydrogenProductionUnit?
-  hydrogenStorageUnit    HydrogenStorageUnit?
-
-  documents         Document[]
-  processSteps      ProcessStep[]
-  stagedProductions StagedProduction[]
-}
-
-model PowerProductionType {
-  name      String   @id
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  energySource String
-
-  powerProductionUnits    PowerProductionUnit[]
-  powerPurchaseAgreements PowerPurchaseAgreement[]
-
-  @@unique([name, energySource])
-}
-
-model PowerProductionUnit {
-  id        String   @id
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  electricityMeterNumber   String
-  gridOperator             String
-  gridConnectionNumber     String
-  gridLevel                String
-  biddingZone              String
-  ratedPower               Decimal  @db.Decimal(18, 6)
-  decommissioningPlannedOn DateTime
-  financialSupportReceived Boolean
-
-  generalInfo Unit @relation(fields: [id], references: [id])
-
-  type     PowerProductionType @relation(fields: [typeName], references: [name])
-  typeName String
-
+  // Relations
+  specifications          UnitSpecifications?
+  documents               Document[]
+  processSteps            ProcessStep[]
+  stagedProductions       StagedProduction[]
   powerPurchaseAgreements PowerPurchaseAgreement[]
   decisions               PowerPurchaseAgreementDecision[]
 }
 
-model HydrogenProductionUnit {
+model UnitSpecifications {
   id        String   @id
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  method                        String
-  technology                    String
-  biddingZone                   String
-  ratedPower                    Decimal @db.Decimal(18, 6)
-  pressure                      Decimal @db.Decimal(8, 2)
-  waterConsumptionLitersPerHour Decimal @db.Decimal(7, 3)
-  wasteWaterOutputLitersPerHour Decimal @db.Decimal(7, 3)
-  powerConsumptionPerKgHydrogen Decimal @db.Decimal(18, 6)
-  resinConsumptionPerKgHydrogen Decimal @db.Decimal(18, 6)
+  unit   Unit   @relation(fields: [unitId], references: [id])
+  unitId String @unique
 
-  generalInfo Unit @relation(fields: [id], references: [id])
-}
+  // Power Production
+  powerProductionType      String?
+  biddingZone              String?
+  ratedPower               Decimal?  @db.Decimal(18, 6)
+  decommissioningPlannedOn DateTime?
+  financialSupportReceived Boolean?
+  energySource             String?
 
-model CompressorUnit {
-  id        String   @id
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  // Hydrogen Production
+  method     String?
+  technology String?
 
-  type     String
-  powerPerKgHydrogen Decimal @db.Decimal(18, 6)
+  // Transport
+  fuel String?
 
-  generalInfo Unit @relation(fields: [id], references: [id])
-}
-
-model TransportUnit {
-  id        String   @id
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  type     String
-  fuel     String
-
-  generalInfo Unit @relation(fields: [id], references: [id])
-}
-
-model BottlingUnit {
-  id        String   @id
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  type     String
-  powerConsumptionPerKgHydrogen Decimal @db.Decimal(18, 6)
-  compressedAirConsumptionPerKgHydrogen Decimal @db.Decimal(18, 6)
-  nitrogenConsumptionPerKgHydrogen Decimal @db.Decimal(18, 6)
-
-  generalInfo Unit @relation(fields: [id], references: [id])
-}
-
-model EndConsumerUnit {
-  id        String   @id
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  type     String
-  powerConsumptionPerKgHydrogen Decimal @db.Decimal(18, 6)
-  compressedAirConsumptionPerKgHydrogen Decimal @db.Decimal(18, 6)
-  nitrogenConsumptionPerKgHydrogen Decimal @db.Decimal(18, 6)
-
-  generalInfo Unit @relation(fields: [id], references: [id])
-}
-
-model HydrogenStorageUnit {
-  id        String   @id
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  type     String
-  capacity Decimal @db.Decimal(18, 6)
-  pressure Decimal @db.Decimal(8, 2)
-
-  generalInfo Unit @relation(fields: [id], references: [id])
-
-  filling Batch[]
+  // Storage
+  storageType String?
+  capacity    Decimal? @db.Decimal(18, 6)
 }
 
 model Batch {
@@ -271,25 +183,11 @@ model Batch {
   owner   Company @relation(fields: [ownerId], references: [id])
   ownerId String
 
-  hydrogenStorageUnit   HydrogenStorageUnit? @relation(fields: [hydrogenStorageUnitId], references: [id])
-  hydrogenStorageUnitId String?
-
-  batchDetails BatchDetails?
-  processStep  ProcessStep?
+  qualityDetails QualityDetails?
+  processStep    ProcessStep?
 
   predecessors Batch[] @relation("BatchRelation")
   successors   Batch[] @relation("BatchRelation")
-}
-
-model BatchDetails {
-  id        String   @id @default(uuid(7))
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  qualityDetails QualityDetails?
-
-  batch   Batch  @relation(fields: [batchId], references: [id])
-  batchId String @unique
 }
 
 model QualityDetails {
@@ -297,12 +195,16 @@ model QualityDetails {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  rfnboType String
-  powerType String
+  // Emission Data
+  rfnboType          String
+  powerType          String
   usedRenewablePower Decimal @db.Decimal(18, 6)
-  usedGridPower Decimal @db.Decimal(18, 6)
+  usedGridPower      Decimal @db.Decimal(18, 6)
+  transportMode      String
+  fuelType           String?
+  distance           Decimal @db.Decimal(8, 3)
 
-  batchDetails BatchDetails @relation(fields: [id], references: [id])
+  batch Batch @relation(fields: [id], references: [id])
 }
 
 model ProcessStep {
@@ -323,32 +225,7 @@ model ProcessStep {
   executedBy Unit   @relation(fields: [unitId], references: [id])
   unitId     String
 
-  processStepDetails ProcessStepDetails?
-
   documents Document[]
-}
-
-model ProcessStepDetails {
-  id        String   @id @default(uuid(7))
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  transportationDetails TransportationDetails?
-
-  processStep   ProcessStep @relation(fields: [processStepId], references: [id])
-  processStepId String      @unique
-}
-
-model TransportationDetails {
-  id        String   @id
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  transportMode String
-  fuelType      String?
-  distance      Decimal @db.Decimal(8, 3)
-
-  processStepDetails ProcessStepDetails @relation(fields: [id], references: [id])
 }
 
 model PowerPurchaseAgreement {
@@ -363,16 +240,13 @@ model PowerPurchaseAgreement {
   requestingUser   User   @relation(fields: [requestingUserId], references: [id])
   requestingUserId String
 
-  suggestedPowerType     PowerProductionType @relation(fields: [suggestedPowerTypeName], references: [name])
-  suggestedPowerTypeName String
-
   requestedCompany   Company @relation(fields: [requestedCompanyId], references: [id], name: "PowerProducer")
   requestedCompanyId String
 
   hydrogenProducer   Company @relation(fields: [hydrogenProducerId], references: [id], name: "HydrogenProducer")
   hydrogenProducerId String
 
-  powerProductionUnit   PowerProductionUnit? @relation(fields: [powerProductionUnitId], references: [id])
+  powerProductionUnit   Unit?   @relation(fields: [powerProductionUnitId], references: [id])
   powerProductionUnitId String?
 
   decision PowerPurchaseAgreementDecision?
@@ -389,7 +263,7 @@ model PowerPurchaseAgreementDecision {
   decidingUser User   @relation(fields: [userId], references: [id])
   userId       String
 
-  grantedPowerProductionUnit   PowerProductionUnit? @relation(fields: [grantedPowerProductionUnitId], references: [id])
+  grantedPowerProductionUnit   Unit?   @relation(fields: [grantedPowerProductionUnitId], references: [id])
   grantedPowerProductionUnitId String?
 }
 
