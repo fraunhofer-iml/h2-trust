@@ -7,12 +7,13 @@
  */
 
 import { HydrogenComponentEntity, HydrogenStorageUnitEntity } from '@h2-trust/contracts/entities';
-import { HydrogenStorageType, RfnboType } from '@h2-trust/domain';
+import { HydrogenStorageType, RfnboType, UnitType } from '@h2-trust/domain';
 import { HydrogenComponentDto } from '../digital-product-passport';
 
 export class HydrogenStorageOverviewDto {
   id: string;
   name: string;
+  unitType: UnitType;
   capacity: number;
   filling: number;
   storageType: HydrogenStorageType;
@@ -22,6 +23,7 @@ export class HydrogenStorageOverviewDto {
   constructor(
     id: string,
     name: string,
+    unitType: UnitType,
     capacity: number,
     filling: number,
     storageType: HydrogenStorageType,
@@ -30,6 +32,7 @@ export class HydrogenStorageOverviewDto {
   ) {
     this.id = id;
     this.name = name;
+    this.unitType = unitType;
     this.capacity = capacity;
     this.filling = filling;
     this.storageType = storageType;
@@ -41,6 +44,7 @@ export class HydrogenStorageOverviewDto {
     return <HydrogenStorageOverviewDto>{
       id: unit.id,
       name: unit.name,
+      unitType: UnitType.HYDROGEN_STORAGE,
       capacity: unit.capacity,
       storageType: unit.type,
       filling: HydrogenStorageOverviewDto.addUpFillingAmounts(unit),

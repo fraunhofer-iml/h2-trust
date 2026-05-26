@@ -38,8 +38,8 @@ import {
   addValidatorsToFormGroup,
   HydrogenProductionFormGroup,
   HydrogenStorageFormGroup,
-  newH2ProductionForm,
-  newH2StorageForm,
+  newHydrogenProductionForm,
+  newHydrogenStorageForm,
   newPowerProductionForm,
   newUnitForm,
   PowerProductionFormGroup,
@@ -88,8 +88,8 @@ export class CreateUnitComponent {
   queryClient = inject(QueryClient);
 
   unitForm: FormGroup<UnitFormGroup> = newUnitForm();
-  hydrogenProductionForm: FormGroup<HydrogenProductionFormGroup> = newH2ProductionForm();
-  hydrogenStorageForm: FormGroup<HydrogenStorageFormGroup> = newH2StorageForm();
+  hydrogenProductionForm: FormGroup<HydrogenProductionFormGroup> = newHydrogenProductionForm();
+  hydrogenStorageForm: FormGroup<HydrogenStorageFormGroup> = newHydrogenStorageForm();
   powerProductionForm: FormGroup<PowerProductionFormGroup> = newPowerProductionForm();
   selectedForm:
     | FormGroup<PowerProductionFormGroup>
@@ -99,19 +99,19 @@ export class CreateUnitComponent {
   createHydrogenStorageUnitMutation = injectMutation(() => ({
     mutationFn: (dto: HydrogenStorageUnitInputDto) => this.unitsService.createHydrogenStorageUnit(dto),
     onError: (e) => toastQueryError(e),
-    onSuccess: () => this.onSuccess(QueryKeyPrefix.HYDROGEN_STORAGE_UNITS),
+    onSuccess: () => this.onSuccess(QueryKeyPrefix.UNITS),
   }));
 
   createPowerProductionUnitMutation = injectMutation(() => ({
     mutationFn: (dto: PowerProductionUnitInputDto) => this.unitsService.createPowerProductionUnit(dto),
     onError: (e) => toastQueryError(e),
-    onSuccess: () => this.onSuccess(QueryKeyPrefix.POWER_PRODUCTION_UNITS),
+    onSuccess: () => this.onSuccess(QueryKeyPrefix.UNITS),
   }));
 
   createHydrogenProductionUnitMutation = injectMutation(() => ({
     mutationFn: (dto: HydrogenProductionUnitInputDto) => this.unitsService.createHydrogenProductionUnit(dto),
     onError: (e) => toastQueryError(e),
-    onSuccess: () => this.onSuccess(QueryKeyPrefix.HYDROGEN_PRODUCTION_UNITS),
+    onSuccess: () => this.onSuccess(QueryKeyPrefix.UNITS),
   }));
 
   private async onSuccess(queryKeyPrefix: QueryKeyPrefix) {

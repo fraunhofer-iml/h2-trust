@@ -7,7 +7,7 @@
  */
 
 import { HydrogenProductionOverviewDto } from '@h2-trust/contracts/dtos';
-import { HydrogenProductionTechnology } from '@h2-trust/domain';
+import { HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
 
 export const HydrogenProductionOverviewDtoFixture = {
   create: (overrides: Partial<HydrogenProductionOverviewDto> = {}): HydrogenProductionOverviewDto => ({
@@ -15,7 +15,7 @@ export const HydrogenProductionOverviewDtoFixture = {
     name: overrides.name ?? 'Electrolyzer 1',
     ratedPower: overrides.ratedPower ?? 50,
     technology: overrides.technology ?? HydrogenProductionTechnology.PEM,
-    producing: overrides.producing ?? true,
+    unitType: UnitType.HYDROGEN_PRODUCTION,
     powerPurchaseAgreementStatus: overrides.powerPurchaseAgreementStatus ?? true,
     powerProducerId: overrides.powerProducerId ?? 'company-power-1',
     powerProducerName: overrides.powerProducerName ?? 'PowerGen AG',

@@ -93,7 +93,7 @@ export const newUnitForm = () =>
     }),
   });
 
-export const newH2StorageForm = () =>
+export const newHydrogenStorageForm = () =>
   new FormGroup<HydrogenStorageFormGroup>({
     capacity: new FormControl<number | null>(null, {
       validators: [positiveNumberValidator, integerValidator],
@@ -119,7 +119,7 @@ export const newPowerProductionForm = () =>
     financialSupportReceived: new FormControl<boolean | null>(false),
   });
 
-export const newH2ProductionForm = () =>
+export const newHydrogenProductionForm = () =>
   new FormGroup<HydrogenProductionFormGroup>({
     biddingZone: new FormControl<BiddingZone | null>(null, Validators.required),
     ratedPower: new FormControl<number | null>(null, {

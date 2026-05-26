@@ -7,7 +7,7 @@
  */
 
 import { PowerProductionOverviewDto } from '@h2-trust/contracts/dtos';
-import { PowerProductionType } from '@h2-trust/domain';
+import { PowerProductionType, UnitType } from '@h2-trust/domain';
 
 export const PowerProductionOverviewDtoFixture = {
   create: (overrides: Partial<PowerProductionOverviewDto> = {}): PowerProductionOverviewDto => ({
@@ -15,7 +15,7 @@ export const PowerProductionOverviewDtoFixture = {
     name: overrides.name ?? 'Windpark Nord',
     ratedPower: overrides.ratedPower ?? 25,
     typeName: overrides.typeName ?? PowerProductionType.WIND_TURBINE,
-    producing: overrides.producing ?? true,
+    unitType: UnitType.POWER_PRODUCTION,
     active: overrides.active ?? true,
   }),
 } as const;
