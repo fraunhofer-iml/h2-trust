@@ -15,7 +15,7 @@ export function extractRpcError(err: unknown): RpcError {
     return err;
   }
 
-  const error = (err as any)?.error;
+  const error = (err as { error?: unknown })?.error;
 
   if (isRpcError(error)) {
     return error;
@@ -26,6 +26,9 @@ export function extractRpcError(err: unknown): RpcError {
 
 export function isRpcError(value: unknown): value is RpcError {
   return (
-    typeof value === 'object' && value !== null && 'errorCode' in value && typeof (value as any).errorCode === 'string'
+    typeof value === 'object' &&
+    value !== null &&
+    'errorCode' in value &&
+    typeof (value as Record<string, unknown>)['errorCode'] === 'string'
   );
 }

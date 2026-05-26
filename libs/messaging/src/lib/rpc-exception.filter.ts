@@ -23,14 +23,17 @@ export class RpcExceptionFilter implements ExceptionFilter {
   }
 
   private toRpcError(exception: unknown): RpcError {
-    const errorCode = (exception as any)?.errorCode;
+    const appException = exception as Record<string, unknown>;
+    const errorCode = appException?.['errorCode'];
 
     // Duck-typed AppException check: reliable across webpack bundle instances where instanceof may fail.
     // All AppException subclasses carry a string errorCode matching a known ErrorCode value.
-    if (KNOWN_ERROR_CODES.has(errorCode)) {
-      const message: string = (exception as any).message ?? 'Unknown error';
-      const cause: unknown = (exception as any).cause;
-      const validationErrors: string[] | undefined = (exception as any).validationErrors;
+    if (typeof errorCode === 'string' && KNOWN_ERROR_CODES.has(errorCode)) {
+      const message = typeof appException['message'] === 'string' ? appException['message'] : 'Unknown error';
+      const cause: unknown = appException['cause'];
+      const validationErrors = Array.isArray(appException['validationErrors'])
+        ? (appException['validationErrors'] as string[])
+        : undefined;
 
       // Manually thrown ValidationException — validationErrors already structured
       if (errorCode === ErrorCode.VALIDATION_ERROR) {
@@ -51,8 +54,8 @@ export class RpcExceptionFilter implements ExceptionFilter {
 
     // Thrown by the NestJS ValidationPipe (not under our control)
     if (exception instanceof BadRequestException) {
-      const response = exception.getResponse() as any;
-      const errors = Array.isArray(response.message) ? response.message : [];
+      const response = exception.getResponse() as { message?: unknown };
+      const errors = Array.isArray(response.message) ? (response.message as string[]) : [];
       this.logger.warn(exception.message, errors);
       return { errorCode: ErrorCode.VALIDATION_ERROR, message: 'Validation failed', validationErrors: errors };
     }
@@ -61,7 +64,12 @@ export class RpcExceptionFilter implements ExceptionFilter {
     if (exception instanceof RpcException) {
       const err = exception.getError();
 
-      if (typeof err === 'object' && err !== null && 'errorCode' in err && typeof (err as any).errorCode === 'string') {
+      if (
+        typeof err === 'object' &&
+        err !== null &&
+        'errorCode' in err &&
+        typeof (err as Record<string, unknown>)['errorCode'] === 'string'
+      ) {
         return err as RpcError;
       }
 

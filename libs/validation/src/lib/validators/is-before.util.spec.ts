@@ -16,7 +16,7 @@ describe('IsBeforeConstraint', () => {
     constraint = new IsBeforeConstraint();
   });
 
-  function mockArgs(object: any): ValidationArguments {
+  function mockArgs(object: Record<string, unknown>): ValidationArguments {
     return {
       object,
       value: undefined,
@@ -27,48 +27,64 @@ describe('IsBeforeConstraint', () => {
   }
 
   it('should return true when validFrom is before validTo', () => {
-    const validFrom = new Date('2024-01-01');
-    const validTo = new Date('2024-02-01');
+    // arrange
+    const givenValidFrom = new Date('2024-01-01');
+    const givenValidTo = new Date('2024-02-01');
 
-    const args = mockArgs({ validFrom });
+    const givenArgs = mockArgs({ validFrom: givenValidFrom });
 
-    const result = constraint.validate(validTo, args);
+    // act
+    const actualResult = constraint.validate(givenValidTo, givenArgs);
 
-    expect(result).toBe(true);
+    // assert
+    expect(actualResult).toBe(true);
   });
 
   it('should return false when validFrom is after validTo', () => {
-    const validFrom = new Date('2024-03-01');
-    const validTo = new Date('2024-02-01');
+    // arrange
+    const givenValidFrom = new Date('2024-03-01');
+    const givenValidTo = new Date('2024-02-01');
 
-    const args = mockArgs({ validFrom });
+    const givenArgs = mockArgs({ validFrom: givenValidFrom });
 
-    const result = constraint.validate(validTo, args);
+    // act
+    const actualResult = constraint.validate(givenValidTo, givenArgs);
 
-    expect(result).toBe(false);
+    // assert
+    expect(actualResult).toBe(false);
   });
 
   it('should return false when validFrom is equal to validTo', () => {
-    const date = new Date('2024-01-01');
+    // arrange
+    const givenDate = new Date('2024-01-01');
 
-    const args = mockArgs({ validFrom: date });
+    const givenArgs = mockArgs({ validFrom: givenDate });
 
-    const result = constraint.validate(date, args);
+    // act
+    const actualResult = constraint.validate(givenDate, givenArgs);
 
-    expect(result).toBe(false);
+    // assert
+    expect(actualResult).toBe(false);
   });
 
   it('should return false when validFrom is missing', () => {
-    const validTo = new Date('2024-02-01');
+    // arrange
+    const givenValidTo = new Date('2024-02-01');
 
-    const args = mockArgs({});
+    const givenArgs = mockArgs({});
 
-    const result = constraint.validate(validTo, args);
+    // act
+    const actualResult = constraint.validate(givenValidTo, givenArgs);
 
-    expect(result).toBe(false);
+    // assert
+    expect(actualResult).toBe(false);
   });
 
-  it('should return the default error message', () => {
-    expect(constraint.defaultMessage()).toBe('validFrom needs to be before validTo');
+  it('should return the default error message when no custom message is provided', () => {
+    // act
+    const actualResult = constraint.defaultMessage();
+
+    // assert
+    expect(actualResult).toBe('validFrom needs to be before validTo');
   });
 });

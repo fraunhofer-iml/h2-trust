@@ -86,8 +86,8 @@ describe('CsvDocumentService', () => {
   });
 
   describe('findByCompany', () => {
-    it('returns all csv documents for a company', async () => {
-      // Arrange
+    it('should return all CSV documents when a company is provided', async () => {
+      // arrange
       const givenCompanyId = 'company-1';
       const givenPayload = new ReadByIdPayload(givenCompanyId);
       const givenDocuments = [
@@ -111,18 +111,18 @@ describe('CsvDocumentService', () => {
 
       csvImportRepositoryMock.findAllCsvDocumentsByCompanyId.mockResolvedValue(givenDocuments);
 
-      // Act
+      // act
       const actualResult = await service.findByCompany(givenPayload);
 
-      // Assert
+      // assert
       expect(csvImportRepositoryMock.findAllCsvDocumentsByCompanyId).toHaveBeenCalledWith(givenCompanyId);
       expect(actualResult).toEqual(givenDocuments);
     });
   });
 
   describe('verifyCsvDocumentIntegrity', () => {
-    it(`returns ${CsvDocumentIntegrityStatus.VERIFIED} when file exists and hash verification succeeds`, async () => {
-      // Arrange
+    it(`should return ${CsvDocumentIntegrityStatus.VERIFIED} when file exists and hash verification succeeds`, async () => {
+      // arrange
       const givenPayload = new ReadByIdPayload('doc-1');
       const givenDocument = CsvDocumentEntityFixture.create({
         id: givenPayload.id,
@@ -148,10 +148,10 @@ describe('CsvDocumentService', () => {
       });
       verifyStreamWithStoredHashMock.mockResolvedValue(true);
 
-      // Act
+      // act
       const actualResult = await service.verifyCsvDocumentIntegrity(givenPayload);
 
-      // Assert
+      // assert
       expect(csvImportRepositoryMock.findCsvDocumentById).toHaveBeenCalledWith(givenPayload.id);
       expect(storageServiceMock.downloadFile).toHaveBeenCalledWith(givenDocument.fileName);
       expect(blockchainServiceMock.retrieveProof).toHaveBeenCalledWith(givenDocument.id);
@@ -171,8 +171,8 @@ describe('CsvDocumentService', () => {
       expect(actualResult.message).toContain('The file matches the registered proof.');
     });
 
-    it(`returns ${CsvDocumentIntegrityStatus.MISMATCH} when hash verification fails`, async () => {
-      // Arrange
+    it(`should return ${CsvDocumentIntegrityStatus.MISMATCH} when hash verification fails`, async () => {
+      // arrange
       const givenPayload = new ReadByIdPayload('doc-2');
       const givenDocument = CsvDocumentEntityFixture.create({
         id: givenPayload.id,
@@ -198,10 +198,10 @@ describe('CsvDocumentService', () => {
       });
       verifyStreamWithStoredHashMock.mockResolvedValue(false);
 
-      // Act
+      // act
       const actualResult = await service.verifyCsvDocumentIntegrity(givenPayload);
 
-      // Assert
+      // assert
       expect(actualResult.status).toBe(CsvDocumentIntegrityStatus.MISMATCH);
       expect(actualResult.documentId).toBe(givenDocument.id);
       expect(actualResult.fileName).toBe(givenDocument.fileName);
@@ -217,8 +217,8 @@ describe('CsvDocumentService', () => {
       expect(blockchainServiceMock.retrieveBlockchainMetadata).toHaveBeenCalledWith(givenDocument.transactionHash);
     });
 
-    it(`returns ${CsvDocumentIntegrityStatus.FAILED} when blockchain integration is disabled`, async () => {
-      // Arrange
+    it(`should return ${CsvDocumentIntegrityStatus.FAILED} when blockchain integration is disabled`, async () => {
+      // arrange
       const givenPayload = new ReadByIdPayload('doc-1');
       const givenDocument = CsvDocumentEntityFixture.create({
         id: givenPayload.id,
@@ -232,10 +232,10 @@ describe('CsvDocumentService', () => {
       csvImportRepositoryMock.findCsvDocumentById.mockResolvedValue(givenDocument);
       const hashVerifySpy = verifyStreamWithStoredHashMock;
 
-      // Act
+      // act
       const actualResult = await service.verifyCsvDocumentIntegrity(givenPayload);
 
-      // Assert
+      // assert
       expect(actualResult.status).toBe(CsvDocumentIntegrityStatus.FAILED);
       expect(actualResult.documentId).toBe(givenDocument.id);
       expect(actualResult.fileName).toBe(givenDocument.fileName);
@@ -252,16 +252,16 @@ describe('CsvDocumentService', () => {
       expect(hashVerifySpy).not.toHaveBeenCalled();
     });
 
-    it(`returns ${CsvDocumentIntegrityStatus.FAILED} when document does not exist`, async () => {
-      // Arrange
+    it(`should return ${CsvDocumentIntegrityStatus.FAILED} when document does not exist`, async () => {
+      // arrange
       const givenPayload = new ReadByIdPayload('missing-document-id');
       csvImportRepositoryMock.findCsvDocumentById.mockResolvedValue(null);
       const hashVerifySpy = verifyStreamWithStoredHashMock;
 
-      // Act
+      // act
       const actualResult = await service.verifyCsvDocumentIntegrity(givenPayload);
 
-      // Assert
+      // assert
       expect(actualResult.status).toBe(CsvDocumentIntegrityStatus.FAILED);
       expect(actualResult.documentId).toBe(givenPayload.id);
       expect(actualResult.fileName).toBeNull();
@@ -280,8 +280,8 @@ describe('CsvDocumentService', () => {
       expect(hashVerifySpy).not.toHaveBeenCalled();
     });
 
-    it(`returns ${CsvDocumentIntegrityStatus.FAILED} when document has no transaction hash`, async () => {
-      // Arrange
+    it(`should return ${CsvDocumentIntegrityStatus.FAILED} when document has no transaction hash`, async () => {
+      // arrange
       const givenPayload = new ReadByIdPayload('doc-without-hash');
       const givenDocument = new CsvDocumentEntity(
         givenPayload.id,
@@ -295,10 +295,10 @@ describe('CsvDocumentService', () => {
       csvImportRepositoryMock.findCsvDocumentById.mockResolvedValue(givenDocument);
       const hashVerifySpy = verifyStreamWithStoredHashMock;
 
-      // Act
+      // act
       const actualResult = await service.verifyCsvDocumentIntegrity(givenPayload);
 
-      // Assert
+      // assert
       expect(actualResult.status).toBe(CsvDocumentIntegrityStatus.FAILED);
       expect(actualResult.documentId).toBe(givenDocument.id);
       expect(actualResult.fileName).toBe(givenDocument.fileName);
@@ -317,8 +317,8 @@ describe('CsvDocumentService', () => {
       expect(hashVerifySpy).not.toHaveBeenCalled();
     });
 
-    it(`returns ${CsvDocumentIntegrityStatus.FAILED} when file does not exist in storage`, async () => {
-      // Arrange
+    it(`should return ${CsvDocumentIntegrityStatus.FAILED} when file does not exist in storage`, async () => {
+      // arrange
       const givenPayload = new ReadByIdPayload('doc-3');
       const givenDocument = CsvDocumentEntityFixture.create({
         id: givenPayload.id,
@@ -337,10 +337,10 @@ describe('CsvDocumentService', () => {
       });
       const hashVerifySpy = verifyStreamWithStoredHashMock;
 
-      // Act
+      // act
       const actualResult = await service.verifyCsvDocumentIntegrity(givenPayload);
 
-      // Assert
+      // assert
       expect(actualResult.status).toBe(CsvDocumentIntegrityStatus.FAILED);
       expect(actualResult.documentId).toBe(givenDocument.id);
       expect(actualResult.fileName).toBe(givenDocument.fileName);

@@ -9,7 +9,7 @@
 import { PercentPipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import * as echarts from 'echarts';
-import { EChartsOption } from 'echarts';
+import { EChartsOption, TooltipComponentFormatterCallbackParams } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { HydrogenStorageOverviewDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit, RfnboType } from '@h2-trust/domain';
@@ -172,13 +172,13 @@ export class StorageFillingLevelsComponent {
     return markLine;
   }
 
-  private readonly tooltipFormatter = (params: any) => {
+  private readonly tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
     if (!Array.isArray(params)) return '';
     let tooltip = '';
     params.forEach((item) => {
-      const valueWithUnit = this.unitPipe.transform(item.value, MeasurementUnit.KG);
+      const valueWithUnit = this.unitPipe.transform(item.value as number | null | undefined, MeasurementUnit.KG);
       const marker = item.seriesName === 'EMPTY' ? this.emptyTooltipMarker : item.marker;
-      tooltip += `${marker} ${this.getSeriesName(item.seriesName)}: ${valueWithUnit}<br/>`;
+      tooltip += `${marker} ${this.getSeriesName(item.seriesName ?? '')}: ${valueWithUnit}<br/>`;
     });
     return tooltip;
   };

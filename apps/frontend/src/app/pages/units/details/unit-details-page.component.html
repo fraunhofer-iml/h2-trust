@@ -1,0 +1,121 @@
+<div class="flex h-full flex-col gap-4 overflow-auto p-8">
+  <div class="flex flex-row items-center gap-2 text-lg text-neutral-500">
+    <a routerLink="/units" class="cursor-pointer hover:underline">Units</a>
+    <span class="material-symbols-outlined"> keyboard_arrow_right </span>
+    {{ unitQuery.data()?.name ?? id() }}
+  </div>
+
+  @if (unitQuery.error(); as err) {
+    <app-error-card [error]="err" [routerLink]="'/units'" class="grow"></app-error-card>
+  } @else if (unitQuery.isLoading()) {
+    <app-loading-card class="col-span-2 h-full" />
+  } @else if (unitQuery.data(); as unit) {
+    <div class="grid grid-cols-4 gap-4">
+      <div class="col-span-3 flex flex-col gap-4">
+        <app-unit-details [unit]="unit"></app-unit-details>
+
+        <div class="rounded-lg bg-white p-4">
+          <h3 class="pb-4 font-semibold text-neutral-500">Additional Information</h3>
+
+          @switch (unit.unitType) {
+            @case (UnitType.HYDROGEN_PRODUCTION) {
+              @if (isHydrogenProductionUnitDetails(unit)) {
+                <div class="grid grid-cols-3 gap-4 xl:grid-cols-4">
+                  <div class="flex flex-col text-sm">
+                    <span class="text-sm text-neutral-400">Bidding Zone</span><span>{{ unit.biddingZone }}</span>
+                  </div>
+                  <div class="flex flex-col text-sm">
+                    <span class="text-sm text-neutral-400">Rated Power</span
+                    ><span>{{ unit.ratedPower | unit: MeasurementUnit.MW }}</span>
+                  </div>
+                  <div class="flex flex-col text-sm">
+                    <span class="text-sm text-neutral-400">Method</span
+                    ><span>{{ unit.method || '--' | enum: 'hydrogenProductionMethod' }}</span>
+                  </div>
+                  <div class="flex flex-col text-sm">
+                    <span class="text-sm text-neutral-400">Technology</span><span>{{ unit.technology || '--' }}</span>
+                  </div>
+                  <div class="flex flex-col text-sm">
+                    <span class="text-sm text-neutral-400">Pressure</span
+                    ><span>{{ unit.pressure | unit: MeasurementUnit.BAR }} </span>
+                  </div>
+                  <div class="flex flex-col text-sm">
+                    <span class="text-sm text-neutral-400">Water Consumption</span
+                    ><span>{{ unit.waterConsumptionLitersPerHour | unit: MeasurementUnit.L_PER_H }}</span>
+                  </div>
+                </div>
+              }
+            }
+
+            @case (UnitType.HYDROGEN_STORAGE) {
+              @if (isHydrogenStorageUnitDetails(unit)) {
+                <div class="grid grid-cols-3 gap-4 xl:grid-cols-4">
+                  <div class="flex flex-col text-sm">
+                    <span class="text-sm text-neutral-400">Capacity</span
+                    ><span>{{ unit.capacity | unit: MeasurementUnit.KG }}</span>
+                  </div>
+                  <div class="flex flex-col text-sm">
+                    <span class="text-sm text-neutral-400">Pressure</span
+                    ><span>{{ unit.pressure | unit: MeasurementUnit.BAR }}</span>
+                  </div>
+                  <div class="flex flex-col text-sm">
+                    <span class="text-sm text-neutral-400">Storage Type</span
+                    ><span>{{ unit.storageType || '--' | enum: 'hydrogenStorageType' }}</span>
+                  </div>
+                </div>
+              }
+            }
+
+            @case (UnitType.POWER_PRODUCTION) {
+              @if (isPowerProductionUnitDetails(unit)) {
+                <div class="grid grid-cols-3 gap-4 xl:grid-cols-4">
+                  <div class="flex flex-col text-sm">
+                    <span class="text-sm text-neutral-400">Bidding Zone</span><span>{{ unit.biddingZone }}</span>
+                  </div>
+                  <div class="flex flex-col text-sm">
+                    <span class="text-sm text-neutral-400">Grid Operator</span><span>{{ unit.gridOperator }}</span>
+                  </div>
+                  <div class="flex flex-col text-sm">
+                    <span class="text-sm text-neutral-400">Grid Level</span
+                    ><span>{{ unit.gridLevel | enum: 'gridLevel' }}</span>
+                  </div>
+                  <div class="flex flex-col text-sm">
+                    <span class="text-sm text-neutral-400">Grid Connection Number</span
+                    ><span>{{ unit.gridConnectionNumber }}</span>
+                  </div>
+                  <div class="flex flex-col text-sm">
+                    <span class="text-sm text-neutral-400">Rated Power</span
+                    ><span>{{ unit.ratedPower | unit: MeasurementUnit.MW }}</span>
+                  </div>
+                  <div class="flex flex-col text-sm">
+                    <span class="text-sm text-neutral-400">Electricity Meter Number</span
+                    ><span>{{ unit.electricityMeterNumber || '--' }}</span>
+                  </div>
+                  <div class="flex flex-col text-sm">
+                    <span class="text-sm text-neutral-400">Power Production Type</span
+                    ><span>{{ unit.type.name | enum: 'powerProductionType' }}</span>
+                  </div>
+                  <div class="flex flex-col text-sm">
+                    <span class="text-sm text-neutral-400">Decommissioning Planned On</span
+                    ><span>{{ unit.decommissioningPlannedOn | date }}</span>
+                  </div>
+                  <div class="flex flex-col text-sm">
+                    <span class="flex flex-row items-center gap-2 text-sm text-neutral-400"
+                      >Financial Support
+                      <app-info-tooltip
+                        [tooltip]="RFNBO_CRITERIA.RENEWABLE_ENERGY.FINANCIAL_SUPPORT.DESCRIPTION"
+                      ></app-info-tooltip>
+                    </span>
+                    <span>{{ unit.financialSupportReceived | bool }}</span>
+                  </div>
+                </div>
+              }
+            }
+          }
+        </div>
+      </div>
+
+      <app-unit-actions [unit]="{ id: unit.id, active: unit.active }" (statusChange)="onUnitStatusChange()" />
+    </div>
+  }
+</div>

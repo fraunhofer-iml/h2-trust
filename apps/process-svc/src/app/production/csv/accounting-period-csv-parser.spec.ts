@@ -6,16 +6,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpStatus } from '@nestjs/common';
 import { parseAccountingPeriodCsvBuffer } from './accounting-period-csv-parser';
 
 describe('parseAccountingPeriodCsvBuffer', () => {
   describe('parseBuffer', () => {
-    it('parses localized datetime values with amount and power columns', async () => {
-      const buffer = Buffer.from('time,amount,power\n01.02.2026 13:45,12.5,33');
+    it('should parse localized datetime values when amount and power columns are present', async () => {
+      // arrange
+      const givenBuffer = Buffer.from('time,amount,power\n01.02.2026 13:45,12.5,33');
 
-      const actualResult = await parseAccountingPeriodCsvBuffer(buffer, ['time', 'amount', 'power'], 'UTC');
+      // act
+      const actualResult = await parseAccountingPeriodCsvBuffer(givenBuffer, ['time', 'amount', 'power'], 'UTC');
 
+      // assert
       expect(actualResult).toHaveLength(1);
       expect(actualResult[0].amount).toBe(12.5);
       expect(actualResult[0].power).toBe(33);
@@ -26,34 +28,41 @@ describe('parseAccountingPeriodCsvBuffer', () => {
       expect(actualResult[0].time.getUTCMinutes()).toEqual(45);
     });
 
-    it('parses ISO timestamps and Excel serial dates', async () => {
-      const buffer = Buffer.from('time,amount\n2026-01-01T10:00:00Z,5\n25569.25,7');
+    it('should parse ISO timestamps and Excel serial dates when valid rows are provided', async () => {
+      // arrange
+      const givenBuffer = Buffer.from('time,amount\n2026-01-01T10:00:00Z,5\n25569.25,7');
 
-      const actualResult = await parseAccountingPeriodCsvBuffer(buffer, ['time', 'amount'], 'UTC');
+      // act
+      const actualResult = await parseAccountingPeriodCsvBuffer(givenBuffer, ['time', 'amount'], 'UTC');
 
+      // assert
       expect(actualResult).toHaveLength(2);
       expect(actualResult[0].time.toISOString()).toBe('2026-01-01T10:00:00.000Z');
       expect(actualResult[1].time.toISOString()).toBe('1970-01-01T06:00:00.000Z');
       expect(actualResult[1].amount).toBe(7);
     });
 
-    it('throws an exception when a required column is missing', async () => {
-      const buffer = Buffer.from('time,amount\n2026-01-01T10:00:00Z,5');
+    it('should throw an exception when a required column is missing', async () => {
+      // arrange
+      const givenBuffer = Buffer.from('time,amount\n2026-01-01T10:00:00Z,5');
 
-      await expect(
-        parseAccountingPeriodCsvBuffer(buffer, ['time', 'amount', 'power'], 'Europe/Berlin'),
-      ).rejects.toMatchObject({
+      // act & assert
+      const actualResult = parseAccountingPeriodCsvBuffer(givenBuffer, ['time', 'amount', 'power'], 'Europe/Berlin');
+      await expect(actualResult).rejects.toMatchObject({
         message: 'Missing required column: power',
       });
     });
 
-    it('filters out rows with invalid or skipped values', async () => {
-      const buffer = Buffer.from(
+    it('should filter out rows when values are invalid or skipped', async () => {
+      // arrange
+      const givenBuffer = Buffer.from(
         'time,amount,power\ninvalid-date,10,5\n2026-01-01T00:00:00Z,0,5\n2026-01-01T01:00:00Z,10,invalid\n2026-01-01T02:00:00Z,12,6',
       );
 
-      const actualResult = await parseAccountingPeriodCsvBuffer(buffer, ['time', 'amount', 'power'], 'UTC');
+      // act
+      const actualResult = await parseAccountingPeriodCsvBuffer(givenBuffer, ['time', 'amount', 'power'], 'UTC');
 
+      // assert
       expect(actualResult).toHaveLength(1);
       expect(actualResult[0].time.toISOString()).toBe('2026-01-01T02:00:00.000Z');
       expect(actualResult[0].amount).toBe(12);

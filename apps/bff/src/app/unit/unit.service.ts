@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import {
@@ -19,10 +19,13 @@ import {
   PowerProductionOverviewDto,
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
+  UnitDto,
+  UnitOverviewDto,
   UnitUpdateActiveDto,
 } from '@h2-trust/contracts/dtos';
 import { HydrogenStorageUnitEntity } from '@h2-trust/contracts/entities';
 import { ReadByIdPayload } from '@h2-trust/contracts/payloads';
+import { UnitType } from '@h2-trust/domain';
 import { QUEUE_GENERAL_SVC, UnitMessagePatterns } from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';
 
@@ -32,6 +35,45 @@ export class UnitService {
     @Inject(QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     private readonly userService: UserService,
   ) {}
+
+  async readUnitById(id: string): Promise<UnitDto> {
+    const unit = await firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(id)),
+    );
+
+    switch (unit.unitType) {
+      case UnitType.POWER_PRODUCTION:
+        return PowerProductionUnitDto.fromEntity(unit);
+      case UnitType.HYDROGEN_PRODUCTION:
+        return HydrogenProductionUnitDto.fromEntity(unit);
+      case UnitType.HYDROGEN_STORAGE:
+        return HydrogenStorageUnitDto.fromEntity(unit);
+    }
+
+    throw new BadRequestException('Unknown unit type');
+  }
+
+  async readUnits(userId: string, type?: UnitType): Promise<UnitOverviewDto[]> {
+    if (type === UnitType.POWER_PRODUCTION) {
+      return this.readPowerProductionUnits(userId);
+    }
+
+    if (type === UnitType.HYDROGEN_PRODUCTION) {
+      return this.readHydrogenProductionUnits(userId);
+    }
+
+    if (type === UnitType.HYDROGEN_STORAGE) {
+      return this.readHydrogenStorageUnits(userId);
+    }
+
+    const [powerProduction, hydrogenProduction, hydrogenStorage] = await Promise.all([
+      this.readPowerProductionUnits(userId),
+      this.readHydrogenProductionUnits(userId),
+      this.readHydrogenStorageUnits(userId),
+    ]);
+
+    return [...powerProduction, ...hydrogenProduction, ...hydrogenStorage];
+  }
 
   async readPowerProductionUnit(id: string): Promise<PowerProductionUnitDto> {
     const unit = await firstValueFrom(

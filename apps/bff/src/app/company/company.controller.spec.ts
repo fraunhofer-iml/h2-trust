@@ -6,51 +6,40 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ClientProxy } from '@nestjs/microservices';
-import { Test, TestingModule } from '@nestjs/testing';
-import { of } from 'rxjs';
-import { CompanyDto, CompanyDtoMock } from '@h2-trust/contracts/dtos';
-import { CompanyMessagePatterns, QUEUE_GENERAL_SVC } from '@h2-trust/messaging';
+import { CompanyDtoFixture } from '@h2-trust/contracts/dtos/fixtures';
 import { CompanyController } from './company.controller';
 import { CompanyService } from './company.service';
 
 describe('CompanyController', () => {
   let controller: CompanyController;
-  let clientProxy: ClientProxy;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [],
-      controllers: [CompanyController],
-      providers: [
-        CompanyService,
-        {
-          provide: QUEUE_GENERAL_SVC,
-          useValue: {
-            send: jest.fn(),
-          },
-        },
-      ],
-    }).compile();
+  const companyServiceMock = {
+    findAll: jest.fn(),
+  };
 
-    controller = module.get<CompanyController>(CompanyController);
-    clientProxy = module.get<ClientProxy>(QUEUE_GENERAL_SVC) as ClientProxy;
+  beforeEach(() => {
+    controller = new CompanyController(companyServiceMock as unknown as CompanyService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should find all Companies', async () => {
-    const expectedResponse: CompanyDto[] = CompanyDtoMock;
-    const sendRequestSpy = jest.spyOn(clientProxy, 'send');
+  it('should delegate findAll to CompanyService when handling the companies request', async () => {
+    // arrange
+    const expectedCompanies = [CompanyDtoFixture.create(), CompanyDtoFixture.createHydrogenProducer()];
 
-    sendRequestSpy.mockImplementation((_messagePattern: CompanyMessagePatterns, _data: any) => {
-      return of(expectedResponse);
-    });
+    companyServiceMock.findAll.mockResolvedValue(expectedCompanies);
 
-    const actualResponse: CompanyDto[] = await controller.findAll();
+    // act
+    const actualResult = await controller.findAll();
 
-    expect(actualResponse).toEqual(expectedResponse);
+    // assert
+    expect(actualResult).toEqual(expectedCompanies);
+    expect(companyServiceMock.findAll).toHaveBeenCalledWith();
   });
 });

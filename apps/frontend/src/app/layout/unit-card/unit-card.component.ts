@@ -9,6 +9,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
+import { RouterModule } from '@angular/router';
+import { UnitOverviewDto } from '@h2-trust/contracts/dtos';
 import { UnitType } from '@h2-trust/domain';
 import { ICONS } from '../../shared/constants/icons';
 import { EnumPipe } from '../../shared/pipes/enum.pipe';
@@ -16,13 +18,11 @@ import { UnitStatusChipComponent } from '../chips/unit-status-chip.component';
 
 @Component({
   selector: 'app-unit-card',
-  imports: [EnumPipe, MatChipsModule, UnitStatusChipComponent, CommonModule],
+  imports: [EnumPipe, MatChipsModule, UnitStatusChipComponent, CommonModule, RouterModule],
   templateUrl: './unit-card.component.html',
 })
 export class UnitCardComponent {
-  name = input.required<string>();
-  unittype = input.required<UnitType>();
-  active = input.required<boolean>();
+  unit = input.required<UnitOverviewDto>();
 
   private styles: Record<UnitType, string> = {
     [UnitType.HYDROGEN_PRODUCTION]: 'text-secondary-700 group-hover:bg-secondary-200/80 bg-secondary-100',
@@ -31,12 +31,12 @@ export class UnitCardComponent {
   };
 
   styles$ = computed(() => {
-    const type = this.unittype();
+    const type = this.unit().unitType;
     return this.styles[type];
   });
 
   icon$ = computed(() => {
-    const type = this.unittype();
+    const type = this.unit().unitType;
     return ICONS.UNITS[type];
   });
 }
