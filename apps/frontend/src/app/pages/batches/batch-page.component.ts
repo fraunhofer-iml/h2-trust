@@ -1,21 +1,52 @@
+import { CommonModule } from '@angular/common';
 import { Component, effect, inject, signal } from '@angular/core';
-import { debounce, form } from '@angular/forms/signals';
-import { MatTableDataSource } from '@angular/material/table';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { debounce, form, FormField } from '@angular/forms/signals';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { BatchDto } from '@h2-trust/contracts/dtos';
-import { MeasurementUnit } from '@h2-trust/domain';
+import { MeasurementUnit, UnitType } from '@h2-trust/domain';
+import { RfnboChipComponent } from '../../layout/chips/rfnbo-chip.component';
+import { ICONS } from '../../shared/constants/icons';
 import { BatchFilterModel } from '../../shared/model/batch-filter.model';
 import { PaginationModel } from '../../shared/model/pagination.model';
+import { EnumPipe } from '../../shared/pipes/enum.pipe';
+import { UnitPipe } from '../../shared/pipes/unit.pipe';
 import { QueryKeyPrefix } from '../../shared/queries/shared-query-keys';
 import { BatchService } from '../../shared/services/batch/batch.service';
 
 @Component({
   selector: 'app-batch-page',
-  imports: [],
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatInputModule,
+    FormField,
+    MatPaginatorModule,
+    MatPaginatorModule,
+    MatTableModule,
+    MatInputModule,
+    FormField,
+    RfnboChipComponent,
+    UnitPipe,
+    EnumPipe,
+    MatButtonModule,
+  ],
   templateUrl: './batch-page.component.html',
 })
 export class BatchPageComponent {
   protected readonly MeasurementUnit = MeasurementUnit;
+  protected readonly availableBatchTypes = Object.values(UnitType);
+  protected readonly ICONS = ICONS.UNITS;
 
   batchService = inject(BatchService);
 
@@ -25,7 +56,7 @@ export class BatchPageComponent {
   totalItems = 0;
 
   filterModel = signal<BatchFilterModel>({
-    id: null,
+    id: '',
     batchType: null,
   });
 
@@ -51,4 +82,8 @@ export class BatchPageComponent {
     this.dataSource.data = paginatedData.data;
     this.totalItems = paginatedData.totalItems;
   });
+
+  onPageChange(e: PageEvent) {
+    this.paginationModel.set({ pageIndex: e.pageIndex, pageSize: e.pageSize });
+  }
 }

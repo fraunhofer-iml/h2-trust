@@ -10,5 +10,5 @@ import { ProcessType } from '@h2-trust/domain';
 
 export interface BatchFilterModel {
   batchType: ProcessType | null;
-  id: string | null;
+  id: string;
 }

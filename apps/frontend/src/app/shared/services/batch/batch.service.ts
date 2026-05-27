@@ -20,6 +20,6 @@ export class BatchService {
     params = params.set('pageNumber', pageIndex + 1);
     params = params.set('pageSize', pageSize);
 
-    return lastValueFrom(this.httpClient.get<PaginatedDataDto<BatchDto>>(API.PRODUCTION.BASE, { params }));
+    return lastValueFrom(this.httpClient.get<PaginatedDataDto<BatchDto>>(API.BATCHES.BASE, { params }));
   }
 }

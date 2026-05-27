@@ -15,6 +15,7 @@ const POWER_PURCHASE_AGREEMENTS_ENDPOINT = environment.BFF_URL + '/power-purchas
 const BOTTLING_ENDPOINT = environment.BFF_URL + '/bottlings/';
 const PRODUCTION_ENDPOINT = environment.BFF_URL + '/productions/';
 const FILE_DOWNLOAD_ENDPOINT = environment.BFF_URL + '/file-download/';
+const BATCH_ENDPOINT = environment.BFF_URL + '/batches/';
 
 export const API = {
   USERS: {
@@ -57,5 +58,8 @@ export const API = {
   },
   FILE_DOWNLOAD: {
     BASE: FILE_DOWNLOAD_ENDPOINT,
+  },
+  BATCHES: {
+    BASE: BATCH_ENDPOINT,
   },
 };
