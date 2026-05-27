@@ -29,21 +29,33 @@ export class VerificationStatusChipComponent {
   private readonly defaultChipClass = 'border-neutral-300 bg-neutral-100 text-neutral-600';
   private readonly defaultIconClass = 'text-neutral-600';
 
+  private readonly statusIcons = {
+    [CsvDocumentIntegrityStatus.MISMATCH]: 'cancel',
+    [CsvDocumentIntegrityStatus.FAILED]: 'warning',
+    [CsvDocumentIntegrityStatus.VERIFIED]: 'check_circle',
+  };
+
+  private readonly styleByStatus = {
+    [CsvDocumentIntegrityStatus.MISMATCH]: {
+      chipClass: 'border-red-600 bg-red-100 text-red-700',
+      iconClass: 'text-red-700',
+    },
+    [CsvDocumentIntegrityStatus.FAILED]: {
+      chipClass: 'border-yellow-600 bg-yellow-100 text-yellow-700',
+      iconClass: 'text-yellow-700',
+    },
+    [CsvDocumentIntegrityStatus.VERIFIED]: {
+      chipClass: 'border-secondary-100 bg-secondary-100/60 text-secondary-700',
+      iconClass: 'text-secondary-700',
+    },
+  };
+
   icon = computed(() => {
     if (!this.verifiable()) {
       return 'block';
     }
 
-    switch (this.status()) {
-      case CsvDocumentIntegrityStatus.MISMATCH:
-        return 'cancel';
-      case CsvDocumentIntegrityStatus.FAILED:
-        return 'warning';
-      case CsvDocumentIntegrityStatus.VERIFIED:
-        return 'check_circle';
-      default:
-        return 'circle';
-    }
+    return this.statusIcons[this.status() ?? CsvDocumentIntegrityStatus.VERIFIED] ?? 'circle';
   });
 
   chipClass = computed(() => {
@@ -51,16 +63,7 @@ export class VerificationStatusChipComponent {
       return this.defaultChipClass;
     }
 
-    switch (this.status()) {
-      case CsvDocumentIntegrityStatus.MISMATCH:
-        return 'border-red-600 bg-red-100 text-red-700';
-      case CsvDocumentIntegrityStatus.FAILED:
-        return 'border-yellow-600 bg-yellow-100 text-yellow-700';
-      case CsvDocumentIntegrityStatus.VERIFIED:
-        return 'border-secondary-100 bg-secondary-100/60 text-secondary-700';
-      default:
-        return this.defaultChipClass;
-    }
+    return this.styleByStatus[this.status() ?? CsvDocumentIntegrityStatus.VERIFIED]?.chipClass ?? this.defaultChipClass;
   });
 
   iconClass = computed(() => {
@@ -68,15 +71,6 @@ export class VerificationStatusChipComponent {
       return this.defaultIconClass;
     }
 
-    switch (this.status()) {
-      case CsvDocumentIntegrityStatus.MISMATCH:
-        return 'text-red-700';
-      case CsvDocumentIntegrityStatus.FAILED:
-        return 'text-yellow-700';
-      case CsvDocumentIntegrityStatus.VERIFIED:
-        return 'text-secondary-700';
-      default:
-        return this.defaultIconClass;
-    }
+    return this.styleByStatus[this.status() ?? CsvDocumentIntegrityStatus.VERIFIED]?.iconClass ?? this.defaultIconClass;
   });
 }
