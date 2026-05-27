@@ -34,10 +34,6 @@ export class ProductionController {
   @ApiOperation({
     description: "Retrieve all hydrogen productions for the authenticated user's company.",
   })
-  @ApiOkResponse({
-    description: "Returns a list of all hydrogen productions belonging to the authenticated user's company.",
-    type: [ProductionOverviewDto],
-  })
   @ApiQuery({
     name: 'pageNumber',
     type: Number,

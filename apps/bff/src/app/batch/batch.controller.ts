@@ -1,5 +1,5 @@
 import { Controller, Get, NotImplementedException, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { KeycloakUser } from 'nest-keycloak-connect';
 import { BatchDto, PaginatedDataDto, type AuthenticatedKCUser } from '@h2-trust/contracts/dtos';
 import { UnitType } from '@h2-trust/domain';
@@ -10,10 +10,6 @@ export class BatchController {
   @ApiBearerAuth()
   @ApiOperation({
     description: "Retrieve all hydrogen batches for the authenticated user's company.",
-  })
-  @ApiOkResponse({
-    description: "Retrieve all hydrogen batches for the authenticated user's company.",
-    type: [PaginatedDataDto<BatchDto>],
   })
   @ApiQuery({
     name: 'pageNumber',
