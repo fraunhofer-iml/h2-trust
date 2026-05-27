@@ -9,10 +9,7 @@
 
   @if (unitQuery.data(); as unit) {
     <div class="relative w-full rounded-md bg-white p-4">
-      <h3>{{ unit.name }}</h3>
-      <p class="text-sm text-neutral-400">Unit-Id: {{ unit.id }}</p>
-
-      <app-unit-type-chip [unitType]="unit.unitType" class="absolute top-4 right-4"></app-unit-type-chip>
+      <app-unit-card [unit]="unit" [showActions]="false"></app-unit-card>
     </div>
 
     <app-base-unit-form [unitForm]="unitForm"></app-base-unit-form>

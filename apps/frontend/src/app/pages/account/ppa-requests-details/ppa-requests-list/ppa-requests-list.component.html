@@ -1,41 +1,59 @@
-<div class="my-4 flex w-full flex-col gap-4 rounded-lg bg-white py-4">
-  <!-- PENDING Section -->
-  <span class="px-4 text-xs text-neutral-400">PENDING</span>
-  @if (data()?.pending?.length === 0) {
-    <app-empty-state
-      class="mx-4"
-      [icon]="pendingEmptyState().icon"
-      [title]="pendingEmptyState().title"
-      [description]="pendingEmptyState().description"
-    />
-  } @else {
-    <div
-      class="mx-4 grid grid-cols-2 gap-4 rounded-md border border-dashed border-neutral-300 bg-neutral-50 p-4 2xl:grid-cols-3"
-    >
-      @for (request of data()?.pending; track request.id) {
-        <app-ppa-request-card [request]="request" [role]="role()" />
+<div class="my-4 flex w-full flex-col gap-4">
+  <mat-expansion-panel class="rounded-lg bg-white! shadow-none!" [expanded]="true">
+    <mat-expansion-panel-header class="min-h-14 rounded-md bg-white px-4">
+      <mat-panel-title class="text-neutral-500">Pending</mat-panel-title>
+      <mat-panel-description class="justify-end">
+        <span class="rounded-full border border-neutral-300 bg-white px-2 py-1 text-xs font-medium text-neutral-600">
+          {{ data()?.pending?.length ?? 0 }}
+        </span>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <div class="p-4">
+      @if (data()?.pending?.length === 0) {
+        <app-empty-state
+          [icon]="pendingEmptyState().icon"
+          [title]="pendingEmptyState().title"
+          [description]="pendingEmptyState().description"
+        />
+      } @else {
+        <div
+          class="grid grid-cols-2 gap-4 rounded-md border border-dashed border-neutral-300 bg-neutral-50 p-4 2xl:grid-cols-3"
+        >
+          @for (request of data()?.pending; track request.id) {
+            <app-ppa-request-card [request]="request" [role]="role()" />
+          }
+        </div>
       }
     </div>
-  }
+  </mat-expansion-panel>
 
-  <mat-divider />
+  <mat-expansion-panel class="rounded-lg bg-white! shadow-none!">
+    <mat-expansion-panel-header class="min-h-14 rounded-md bg-white px-4">
+      <mat-panel-title class="text-neutral-500">Completed</mat-panel-title>
+      <mat-panel-description class="justify-end">
+        <span class="rounded-full border border-neutral-300 bg-white px-2 py-1 text-xs font-medium text-neutral-600">
+          {{ data()?.closed?.length ?? 0 }}
+        </span>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
 
-  <!-- COMPLETED Section -->
-  <span class="px-4 text-xs text-neutral-400">COMPLETED</span>
-  @if (data()?.closed?.length === 0) {
-    <app-empty-state
-      class="mx-4"
-      [icon]="closedEmptyState().icon"
-      [title]="closedEmptyState().title"
-      [description]="closedEmptyState().description"
-    />
-  } @else {
-    <div
-      class="mx-4 grid grid-cols-2 gap-4 rounded-md border border-dashed border-neutral-300 bg-neutral-50 p-4 2xl:grid-cols-3"
-    >
-      @for (request of data()?.closed; track request.id) {
-        <app-ppa-request-card [request]="request" [role]="role()" class="h-full" />
+    <div class="p-4">
+      @if (data()?.closed?.length === 0) {
+        <app-empty-state
+          [icon]="closedEmptyState().icon"
+          [title]="closedEmptyState().title"
+          [description]="closedEmptyState().description"
+        />
+      } @else {
+        <div
+          class="grid grid-cols-2 gap-4 rounded-md border border-dashed border-neutral-300 bg-neutral-50 p-4 2xl:grid-cols-3"
+        >
+          @for (request of data()?.closed; track request.id) {
+            <app-ppa-request-card [request]="request" [role]="role()" class="h-full" />
+          }
+        </div>
       }
     </div>
-  }
+  </mat-expansion-panel>
 </div>

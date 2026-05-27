@@ -6,14 +6,7 @@
   (click)="request().status !== PowerPurchaseAgreementStatus.PENDING && sheet.open()"
   role="none"
 >
-  <div
-    class="flex justify-between px-4 py-3"
-    [ngClass]="{
-      'bg-tertiary-50': request().status === PowerPurchaseAgreementStatus.PENDING,
-      'bg-error-red/10': request().status === PowerPurchaseAgreementStatus.REJECTED,
-      'bg-secondary-100/60': request().status === PowerPurchaseAgreementStatus.APPROVED,
-    }"
-  >
+  <div class="flex justify-between px-4 py-3">
     <div>
       <strong class="text-neutral-700">{{
         role() === PpaRequestRole.RECEIVER ? request().sender.company.name : request().receiver.name

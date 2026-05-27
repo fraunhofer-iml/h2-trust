@@ -29,7 +29,7 @@
             [matBadgeOverlap]="false"
             [matBadgePosition]="'above after'"
           >
-            Requests received</span
+            Inbox</span
           >
         </ng-template>
 
@@ -39,7 +39,7 @@
       <mat-tab [disabled]="!roles.isHydrogenProducer()">
         <ng-template mat-tab-label>
           <span class="material-symbols-outlined p-2">outgoing_mail</span>
-          Requests sent
+          Outbox
         </ng-template>
 
         <app-ppa-requests-list [role]="PpaRequestRole.SENDER" [data]="ppaRequestsSent()" />

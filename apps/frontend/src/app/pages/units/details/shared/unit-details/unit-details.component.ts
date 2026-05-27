@@ -9,14 +9,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDivider } from '@angular/material/divider';
 import { RouterModule } from '@angular/router';
 import { BaseUnitDto } from '@h2-trust/contracts/dtos';
-import { UnitStatusChipComponent } from '../../../../../layout/chips/unit-status-chip.component';
-import { UnitTypeChipComponent } from '../../../../../layout/chips/unit-type-chip.component';
 
 @Component({
   selector: 'app-unit-details',
-  imports: [CommonModule, RouterModule, UnitTypeChipComponent, MatChipsModule, UnitStatusChipComponent],
+  imports: [CommonModule, RouterModule, MatChipsModule, MatDivider],
   templateUrl: './unit-details.component.html',
 })
 export class UnitDetailsComponent {

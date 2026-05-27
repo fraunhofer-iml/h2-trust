@@ -21,37 +21,9 @@
 
   <div class="3xl:grid-cols-4 grid grid-cols-3 gap-4">
     @for (item of unitsQuery.data() ?? []; track item.id) {
-      <app-unit-card [unit]="item">
-        @if (isHydrogenStorageUnit(item)) {
-          <mat-chip>
-            <span matChipAvatar class="material-symbols-outlined">bar_chart</span> {{ item.filling | number }}/{{
-              item.capacity | unit: MeasurementUnit.KG
-            }}</mat-chip
-          >
-          <mat-chip>
-            <span matChipAvatar class="material-symbols-outlined">label</span>
-            {{ item.storageType | enum: 'hydrogenStorageType' }}</mat-chip
-          >
-        } @else if (isPowerProductionUnit(item)) {
-          <mat-chip>
-            <span matChipAvatar class="material-symbols-outlined">charger</span>
-            {{ item.ratedPower | unit: MeasurementUnit.KWH }}</mat-chip
-          >
-          <mat-chip>
-            <span matChipAvatar class="material-symbols-outlined">category</span
-            >{{ item.typeName | enum: 'powerProductionType' }}</mat-chip
-          >
-        } @else if (isHydrogenProductionUnit(item)) {
-          <mat-chip>
-            <span matChipAvatar class="material-symbols-outlined">charger</span>
-            {{ item.ratedPower | unit: MeasurementUnit.KWH }}</mat-chip
-          >
-          <mat-chip>
-            <span matChipAvatar class="material-symbols-outlined">lab_panel</span
-            >{{ item.technology | enum: 'hydrogenProductionTechnology' }}</mat-chip
-          >
-        }
-      </app-unit-card>
+      <div class="rounded-lg border border-neutral-200 bg-white p-4">
+        <app-unit-card [unit]="item"> </app-unit-card>
+      </div>
     }
   </div>
 </div>
