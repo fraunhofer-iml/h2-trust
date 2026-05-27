@@ -6,46 +6,55 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { ICONS } from '../../shared/constants/icons';
 import { EnumPipe } from '../../shared/pipes/enum.pipe';
+import { StatusChipComponent } from './status-chip.component';
 
 @Component({
   selector: 'app-ppa-status-chip',
-  imports: [CommonModule, EnumPipe],
-  template: ` <div
-    class="flex w-fit flex-row items-center gap-2 rounded-lg border px-2 text-sm"
-    [ngClass]="{
-      'border-secondary-100 text-secondary-700 bg-secondary-100/60': status() === PowerPurchaseAgreementStatus.APPROVED,
-      'border-error-red/20 text-error-red bg-error-red/20': status() === PowerPurchaseAgreementStatus.REJECTED,
-      'border-tertiary-100 text-tertiary-700 bg-tertiary-100/60': status() === PowerPurchaseAgreementStatus.PENDING,
-    }"
-  >
-    <span
-      class="material-symbols-outlined text-base!"
-      [ngClass]="{
-        'text-secondary-700': status() === PowerPurchaseAgreementStatus.APPROVED,
-        'text-error-red': status() === PowerPurchaseAgreementStatus.REJECTED,
-        'text-tertiary-700': status() === PowerPurchaseAgreementStatus.PENDING,
-      }"
-    >
-      {{ icon() }}
-    </span>
-    {{ status() | enum: 'ppaStatus' }}
-  </div>`,
+  imports: [StatusChipComponent, EnumPipe],
+  template: `<app-status-chip
+    [icon]="icon()"
+    [label]="status() | enum: 'ppaStatus'"
+    [chipClass]="chipClass()"
+    [iconClass]="iconClass()"
+  />`,
 })
 export class PpaStatusChipComponent {
   status = input.required<PowerPurchaseAgreementStatus>();
-  protected readonly PowerPurchaseAgreementStatus = PowerPurchaseAgreementStatus;
 
-  statusIcons = {
+  private readonly styleByStatus = {
+    [PowerPurchaseAgreementStatus.APPROVED]: {
+      chipClass: 'border-secondary-100 bg-secondary-100/60 text-secondary-700',
+      iconClass: 'text-secondary-700',
+    },
+    [PowerPurchaseAgreementStatus.REJECTED]: {
+      chipClass: 'border-red-600 bg-red-100 text-red-700',
+      iconClass: 'text-red-700',
+    },
+    [PowerPurchaseAgreementStatus.PENDING]: {
+      chipClass: 'border-tertiary-100 text-tertiary-700 bg-tertiary-100/60',
+      iconClass: 'text-tertiary-700',
+    },
+  };
+
+  private readonly statusIcons = {
     [PowerPurchaseAgreementStatus.APPROVED]: ICONS.PPA_STATUS.APPROVED,
     [PowerPurchaseAgreementStatus.REJECTED]: ICONS.PPA_STATUS.REJECTED,
     [PowerPurchaseAgreementStatus.PENDING]: ICONS.PPA_STATUS.PENDING,
   };
+
   icon = computed(() => {
     return this.statusIcons[this.status()];
+  });
+
+  chipClass = computed(() => {
+    return this.styleByStatus[this.status()].chipClass;
+  });
+
+  iconClass = computed(() => {
+    return this.styleByStatus[this.status()].iconClass;
   });
 }

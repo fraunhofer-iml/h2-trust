@@ -7,7 +7,13 @@
       <span class="font-semibold text-neutral-800"> {{ unit().name }}</span>
       <span class="">{{ unit().unitType | enum: 'unitType' }} Unit</span>
     </div>
-    <app-unit-status [active]="unit().active"></app-unit-status>
+    <div class="flex flex-row items-center gap-2">
+      <div
+        class="rounded-full"
+        [ngClass]="unit().active ? 'size-1 animate-ping bg-green-700/80' : 'size-2 bg-neutral-400'"
+      ></div>
+      {{ unit().active ? 'Active' : 'Inactive' }}
+    </div>
   </div>
   @if (showActions()) {
     <div class="flex flex-col items-end" [ngClass]="unit().active ? 'justify-between' : 'justify-end'">

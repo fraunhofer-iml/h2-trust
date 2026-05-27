@@ -6,25 +6,27 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 import { PowerType } from '@h2-trust/domain';
 import { ICONS } from '../../shared/constants/icons';
 import { EnumPipe } from '../../shared/pipes/enum.pipe';
+import { StatusChipComponent } from './status-chip.component';
 
 @Component({
   selector: 'app-power-type-chip',
-  imports: [CommonModule, EnumPipe],
-  template: `<div
-    class="flex w-fit flex-row items-center gap-2 rounded-lg border border-neutral-200 pr-4 pl-2"
-    [ngClass]="chipColor"
-  >
-    <span class="material-symbols-outlined text-base!"> {{ icon() }} </span>
-    {{ this.powerType() | enum: 'powerType' }}
-  </div>`,
+  imports: [StatusChipComponent, EnumPipe],
+  template: `<app-status-chip [icon]="icon()" [label]="powerType() | enum: 'powerType'" [chipClass]="chipClass()" />`,
 })
 export class PowerTypeChipComponent {
   powerType = input.required<PowerType>();
+
+  private readonly chipClassByPowerType = {
+    [PowerType.NOT_SPECIFIED]: 'border-neutral-300 bg-neutral-100 text-neutral-600',
+    [PowerType.NON_RENEWABLE]: 'border-neutral-300 bg-neutral-100 text-neutral-600',
+    [PowerType.PARTLY_RENEWABLE]:
+      'bg-gradient-to-r from-neutral-100 to-secondary-100 text-neutral-700 border-r-secondary-100 border-neutral-200',
+    [PowerType.RENEWABLE]: 'border-secondary-100 bg-secondary-100/60 text-secondary-700',
+  };
 
   icon = computed(() => {
     const type = this.powerType();
@@ -41,15 +43,7 @@ export class PowerTypeChipComponent {
     }
   });
 
-  private readonly chipColorByPowerType = {
-    [PowerType.NOT_SPECIFIED]: 'text-neutral-700 bg-neutral-100 ',
-    [PowerType.NON_RENEWABLE]: 'text-neutral-700 bg-neutral-100 ',
-    [PowerType.PARTLY_RENEWABLE]:
-      'bg-gradient-to-r from-neutral-100 to-secondary-100 text-neutral-700 border-r-secondary-100 ',
-    [PowerType.RENEWABLE]: 'bg-secondary-100/60 text-secondary-700 border-secondary-100 ',
-  };
-
-  get chipColor(): string | undefined {
-    return this.chipColorByPowerType[this.powerType()];
-  }
+  chipClass = computed(() => {
+    return this.chipClassByPowerType[this.powerType()];
+  });
 }

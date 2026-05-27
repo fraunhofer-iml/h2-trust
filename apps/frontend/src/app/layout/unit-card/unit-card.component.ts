@@ -16,22 +16,12 @@ import { RouterModule } from '@angular/router';
 import { UnitOverviewDto } from '@h2-trust/contracts/dtos';
 import { ICONS } from '../../shared/constants/icons';
 import { EnumPipe } from '../../shared/pipes/enum.pipe';
-import { UnitStatusComponent } from '../chips/unit-status-chip.component';
 
 type PartialUnitOverviewDto = Pick<UnitOverviewDto, 'id' | 'name' | 'unitType' | 'active'>;
 
 @Component({
   selector: 'app-unit-card',
-  imports: [
-    EnumPipe,
-    MatChipsModule,
-    CommonModule,
-    RouterModule,
-    UnitStatusComponent,
-    MatButtonModule,
-    MatMenuModule,
-    MatTooltip,
-  ],
+  imports: [EnumPipe, MatChipsModule, CommonModule, RouterModule, MatButtonModule, MatMenuModule, MatTooltip],
   templateUrl: './unit-card.component.html',
 })
 export class UnitCardComponent {

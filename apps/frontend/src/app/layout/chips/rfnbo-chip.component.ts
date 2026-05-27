@@ -6,28 +6,29 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 import { RfnboType } from '@h2-trust/domain';
 import { ICONS } from '../../shared/constants/icons';
 import { EnumPipe } from '../../shared/pipes/enum.pipe';
+import { StatusChipComponent } from './status-chip.component';
 
 @Component({
   selector: 'app-rfnbo-chip',
-  imports: [CommonModule, EnumPipe],
-  template: `<div
-    class="flex w-fit min-w-40 flex-row items-center gap-2 rounded-lg border px-2 text-sm"
-    [ngClass]="chipColor"
-  >
-    <span class="material-symbols-outlined text-base!"> {{ icon() }} </span>
-    {{ this.normalizedStatus() | enum: 'rfnboType' }}
-  </div>`,
+  imports: [StatusChipComponent, EnumPipe],
+  template: `<app-status-chip
+    [icon]="icon()"
+    [label]="normalizedStatus() | enum: 'rfnboType'"
+    [chipClass]="chipClass()"
+  />`,
 })
 export class RfnboChipComponent {
-  protected readonly defaultChipColor = 'text-neutral-600 bg-neutral-600/20 border-neutral-600/10 rounded-md';
-  protected readonly defaultIconColor = 'bg-neutral-600';
-
   rfnboType = input.required<RfnboType | boolean>();
+
+  private readonly chipClassByType = {
+    [RfnboType.NOT_SPECIFIED]: 'border-neutral-300 bg-neutral-100 text-neutral-600',
+    [RfnboType.RFNBO_READY]: 'border-secondary-100 bg-secondary-100/60 text-secondary-700',
+    [RfnboType.NON_CERTIFIABLE]: 'border-neutral-300 bg-neutral-100 text-neutral-600',
+  };
 
   normalizedStatus = computed((): RfnboType => {
     const status = this.rfnboType();
@@ -45,12 +46,7 @@ export class RfnboChipComponent {
       : ICONS.HYDROGEN.RFNBO_READY;
   });
 
-  private readonly chipColorByRFNBO = new Map([
-    ['RFNBO_READY', 'bg-secondary-100/60 text-secondary-600 border-secondary-100'],
-    ['NON_CERTIFIABLE', 'text-neutral-600 bg-neutral-100 border-neutral-200'],
-  ]);
-
-  get chipColor(): string | undefined {
-    return this.chipColorByRFNBO.get(this.normalizedStatus());
-  }
+  chipClass = computed(() => {
+    return this.chipClassByType[this.normalizedStatus()];
+  });
 }
