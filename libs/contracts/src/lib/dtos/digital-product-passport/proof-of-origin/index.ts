@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './batch.dto';
+export * from './dpp-batch.dto';
 export * from './classification.dto';
 export * from './emission.dto';
 export * from './hydrogen-batch.dto';

@@ -96,6 +96,12 @@ export class SidebarComponent implements OnInit {
       ],
     },
     {
+      title: 'Batches',
+      icon: 'data_table',
+      route: H2TrustRoutes.BATCHES,
+      visible: signal(true),
+    },
+    {
       title: 'Bottling',
       icon: 'propane_tank',
       route: H2TrustRoutes.BOTTLING,

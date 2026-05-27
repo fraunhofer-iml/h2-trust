@@ -25,6 +25,14 @@ export class FeatureComponent {
 }
 ```
 
+## Inputs, Outputs, and Template Control Flow
+
+- Use signal-based component APIs for inputs and outputs.
+- Do not use `@Input()` or `@Output()` decorators in components.
+- Prefer `input()` and `output()` from `@angular/core`.
+- In templates, do not use `*ngIf` or `*ngFor`.
+- Use the new control-flow syntax: `@if`, `@for`, and `@switch`.
+
 ## Data Fetching — TanStack Query
 
 Use `injectQuery` and `injectMutation` from `@tanstack/angular-query-experimental`. Define query options as factory

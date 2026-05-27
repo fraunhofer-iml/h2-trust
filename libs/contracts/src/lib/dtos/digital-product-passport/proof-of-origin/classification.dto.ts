@@ -7,7 +7,7 @@
  */
 
 import { ClassificationType } from '../../process-step';
-import { BatchDto } from './batch.dto';
+import { DppBatchDto } from './dpp-batch.dto';
 
 /**
  * Classifications for aggregation of batches or classifications
@@ -18,7 +18,7 @@ export class ClassificationDto {
   name: string;
   emissionOfProcessStep: number;
   amount: number;
-  batches: BatchDto[];
+  batches: DppBatchDto[];
   classifications: ClassificationDto[];
   /**
    * measuring unit for amount
@@ -30,7 +30,7 @@ export class ClassificationDto {
     name: string,
     emissionOfProcessStep: number,
     amount: number,
-    batches: BatchDto[],
+    batches: DppBatchDto[],
     classifications: ClassificationDto[],
     unit: string,
     type: ClassificationType,

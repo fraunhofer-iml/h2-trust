@@ -13,7 +13,7 @@ import { KeycloakUser } from 'nest-keycloak-connect';
 import {
   AccountingPeriodMatchingResultDto,
   CsvDocumentIntegrityResultDto,
-  PaginatedProductionDataDto,
+  PaginatedDataDto,
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
@@ -74,7 +74,7 @@ export class ProductionController {
     @Query('pageSize') pageSize: number,
     @Query('unitName') unitName: string,
     @Query('month') month: Date,
-  ): Promise<PaginatedProductionDataDto> {
+  ): Promise<PaginatedDataDto<ProductionOverviewDto>> {
     return this.service.readHydrogenProductionsByOwner(authenticatedUser.sub, pageNumber, pageSize, unitName, month);
   }
 

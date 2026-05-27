@@ -17,4 +17,5 @@ export enum QueryKeyPrefix {
   PRODUCTIONS = 'productions',
   UPLOADED_FILES = 'uploaded-files',
   BOTTLING = 'bottling',
+  BATCHES = 'batches',
 }

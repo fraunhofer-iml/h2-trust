@@ -30,4 +30,9 @@ export const appRoutes: Route[] = [
     canActivate: [canActivateAuth],
     loadChildren: () => import('./pages/production/routes').then((m) => m.PRODUCTION_ROUTES),
   },
+  {
+    path: H2TrustRoutes.BATCHES,
+    canActivate: [canActivateAuth],
+    loadChildren: () => import('./pages/batches/routes').then((m) => m.BATCH_ROUTES),
+  },
 ];

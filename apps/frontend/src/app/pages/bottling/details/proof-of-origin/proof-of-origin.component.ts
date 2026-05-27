@@ -9,8 +9,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, input, signal } from '@angular/core';
 import {
-  BatchDto,
   ClassificationDto,
+  DppBatchDto,
   HydrogenBatchDto,
   PowerBatchDto,
   SectionDto,
@@ -78,13 +78,13 @@ export class ProofOfOriginComponent {
     this.classificationIndex$.set(this.classificationIndex$().slice(0, index + 1));
   }
 
-  isInstanceOfWaterBatch(batch: BatchDto): WaterBatchDto | null {
+  isInstanceOfWaterBatch(batch: DppBatchDto): WaterBatchDto | null {
     return batch.batchType === BatchType.WATER ? (batch as WaterBatchDto) : null;
   }
-  isInstanceOfHydrogenBatch(batch: BatchDto): HydrogenBatchDto | null {
+  isInstanceOfHydrogenBatch(batch: DppBatchDto): HydrogenBatchDto | null {
     return batch.batchType === BatchType.HYDROGEN ? (batch as HydrogenBatchDto) : null;
   }
-  isInstanceOfPowerBatch(batch: BatchDto): PowerBatchDto | null {
+  isInstanceOfPowerBatch(batch: DppBatchDto): PowerBatchDto | null {
     return batch.batchType === BatchType.POWER ? (batch as PowerBatchDto) : null;
   }
 }

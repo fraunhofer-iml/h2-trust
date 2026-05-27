@@ -9,7 +9,7 @@
 import { BatchType, MeasurementUnit } from '@h2-trust/domain';
 import { EmissionDto } from './emission.dto';
 
-export abstract class BatchDto {
+export abstract class DppBatchDto {
   id: string;
   emission: EmissionDto;
   createdAt: Date;

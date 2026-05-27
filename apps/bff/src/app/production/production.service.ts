@@ -13,7 +13,7 @@ import { hashBuffer } from '@h2-trust/blockchain';
 import {
   AccountingPeriodMatchingResultDto,
   CsvDocumentIntegrityResultDto,
-  PaginatedProductionDataDto,
+  PaginatedDataDto,
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
@@ -60,7 +60,7 @@ export class ProductionService {
     pageSize: number,
     unitName?: string,
     month?: Date,
-  ): Promise<PaginatedProductionDataDto> {
+  ): Promise<PaginatedDataDto<ProductionOverviewDto>> {
     const userDetails: UserDetailsDto = await this.userService.readUserWithCompany(userId);
     const ownerId = userDetails.company.id;
     const payload = new ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload(
@@ -71,7 +71,11 @@ export class ProductionService {
     const paginatedProcessStep: PaginatedProcessStepEntity = await firstValueFrom(
       this.processSvc.send(ProcessStepMessagePatterns.READ_PAGINATION_BY_PREDECESSOR_TYPES_AND_OWNER, payload),
     );
-    return PaginatedProductionDataDto.fromEntity(paginatedProcessStep);
+    return PaginatedDataDto.fromEntity<ProductionOverviewDto>(
+      paginatedProcessStep.processSteps.map(ProductionOverviewDto.fromEntity),
+      paginatedProcessStep.totalAmountOfItems,
+      paginatedProcessStep.currentPage,
+    );
   }
 
   async readStagedProductionsByCompanyAndType(

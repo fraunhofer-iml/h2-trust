@@ -6,11 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export enum H2TrustRoutes {
-  UNITS = 'units',
-  PRODUCTION = 'production',
-  PRODUCTION_FILES = 'production/files',
-  PRODUCTION_DATA = 'production/data',
-  BOTTLING = 'bottling',
-  BATCHES = 'batches',
+import { ProcessType } from '@h2-trust/domain';
+
+export interface BatchFilterModel {
+  batchType: ProcessType | null;
+  id: string | null;
 }

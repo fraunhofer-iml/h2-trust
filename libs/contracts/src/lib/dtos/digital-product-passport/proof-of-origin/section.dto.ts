@@ -19,8 +19,8 @@ import {
 import { BatchType, HydrogenProductionMethod, MeasurementUnit, RfnboType } from '@h2-trust/domain';
 import { getMeasurementUnit } from '@h2-trust/strings';
 import { HydrogenComponentDto } from '../general-information';
-import { BatchDto } from './batch.dto';
 import { ClassificationDto } from './classification.dto';
+import { DppBatchDto } from './dpp-batch.dto';
 import { EmissionDto } from './emission.dto';
 import { HydrogenBatchDto } from './hydrogen-batch.dto';
 import { PowerBatchDto } from './power-batch.dto';
@@ -33,10 +33,10 @@ import { WaterDetailsDto } from './water-details.dto';
  */
 export class SectionDto {
   name: string;
-  batches: BatchDto[];
+  batches: DppBatchDto[];
   classifications: ClassificationDto[];
 
-  constructor(name: string, batches: BatchDto[], classifications: ClassificationDto[]) {
+  constructor(name: string, batches: DppBatchDto[], classifications: ClassificationDto[]) {
     this.name = name;
     this.batches = batches;
     this.classifications = classifications;
@@ -56,7 +56,7 @@ export class SectionDto {
     return new SectionDto(section.name, batches, classifications);
   }
 
-  private static fromBatchEntity(batch: ProofOfOriginBatchEntity): BatchDto {
+  private static fromBatchEntity(batch: ProofOfOriginBatchEntity): DppBatchDto {
     switch (batch.batchType) {
       case BatchType.POWER:
         return this.fromPowerBatchEntity(batch as ProofOfOriginPowerBatchEntity);
